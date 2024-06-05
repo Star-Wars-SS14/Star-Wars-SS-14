@@ -1,0 +1,10 @@
+- type: entity
+  parent: ClothingHeadBase
+  id: SW_ClothingHeadHatBunny
+  name: bunny ears
+  description: Cute bunny ears.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Misc/bunny.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Misc/bunny.rsi

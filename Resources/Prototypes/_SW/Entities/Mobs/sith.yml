@@ -1,0 +1,19 @@
+- type: entity
+  name: Sith
+  parent: BaseMobHuman
+  id: SW_MobSith
+  description: A miserable pile of secrets.
+  components:
+  - type: Loadout
+    prototypes: [SithGear]
+  - type: Dash
+    Dash: true
+    DashSound: /Audio/_SW/Abilities/dash.ogg
+    DashSpeed: 2
+    DashImpulse: 1
+    DashTime: 0.5
+    DashCooldown: 1
+  - type: LightningAbility
+    LightningRange: 3
+    BoltCount: 2
+    ArcDepth: 1

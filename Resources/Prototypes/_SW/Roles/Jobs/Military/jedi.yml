@@ -1,0 +1,34 @@
+- type: job
+  id: SW_Jedi
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: JobJedi
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 86400 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 21600 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Jedi_Padawan
+  name: job-name-jedi-padawan
+  description: job-description-jedi-padawan
+  playTimeTracker: JobJediPadawan
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 86400 # 24h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: startingGear
+  id: JediGear
+  equipment:
+    jumpsuit: SW_ClothingUniformJumpsuitJedi
+    shoes: SW_ClothingShoesBootsJedi
+    ears: ClothingHeadsetGrey
+    neck: SW_ClothingNeckCloakJediCloak

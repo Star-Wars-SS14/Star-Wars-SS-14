@@ -1,0 +1,16 @@
+- type: entity
+  id: BulletBlast
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 17
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+

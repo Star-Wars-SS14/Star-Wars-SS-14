@@ -1,0 +1,30 @@
+- type: department
+  id: Empire
+  description: department-Empire-description
+  color: "#8B0000"
+  roles:
+  - SW_Sith
+  - SW_Sith_Apprentice
+  - SW_ImperialOfficers
+  - SW_StormtrooperSergeant
+  - SW_StormtrooperSpecialist
+  - SW_StormtrooperMedic
+  - SW_StormtrooperEngineer
+  - SW_Stormtrooper
+  - SW_StormtrooperCargoTechnician
+  weight: 120
+
+- type: department
+  id: RebelAlliance
+  description: department-Rebel-Alliance-description
+  color: "#FF8C00"
+  roles:
+  - SW_Jedi
+  - SW_Jedi_Padawan
+  - SW_RepublicSergeant
+  - SW_RepublicSpecialist
+  - SW_RepublicMedic
+  - SW_RepublicEngineer
+  - SW_RepublicSolider
+  - SW_RepublicCargoTechnician
+  weight: 110

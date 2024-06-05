@@ -1,0 +1,28 @@
+- type: entity
+  parent: BaseSign
+  id: SW_BaseFlag
+  abstract: true
+  components:
+  - type: WallMount
+    arc: 360
+  - type: Sprite
+    drawdepth: WallTops
+    sprite: _SW/Structures/Wallmounts/Flags/flags.rsi
+    
+- type: entity
+  parent: SW_BaseFlag
+  id: SW_EmpireFlag
+  name: empire flag
+  description: "Some piece of white cloth. Definitely not the flag of France."
+  components:
+  - type: Sprite
+    state: empire_flag
+    
+- type: entity
+  parent: SW_BaseFlag
+  id: SW_EmpireFlagRed
+  name: empire flag red
+  description: "Some piece of white cloth. Definitely not the flag of France."
+  components:
+  - type: Sprite
+    state: empire_flag_red

@@ -1,0 +1,220 @@
+- type: entity
+  parent: BaseWall
+  id: SW_WallReinforced
+  name: WallReinforced
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Walls/solid.rsi
+  - type: Icon
+    sprite: _SW/Structures/Walls/solid.rsi
+    state: rgeneric
+  - type: Construction
+    graph: Girder
+    node: reinforcedWall
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StructuralMetallicStrong
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 600
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+      - !type:ChangeConstructionNodeBehavior
+        node: girder
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+  - type: IconSmooth
+    key: walls
+    base: reinf_over
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.ReinforcedWallVisuals.DeconstructionStage:
+        ReinforcedWallVisualLayers.Deconstruction:
+          -1: { visible: false }
+          0: { state: reinf_construct-0, visible: true}
+          1: { state: reinf_construct-1, visible: true}
+          2: { state: reinf_construct-2, visible: true}
+          3: { state: reinf_construct-3, visible: true}
+          4: { state: reinf_construct-4, visible: true}
+          5: { state: reinf_construct-5, visible: true}
+  - type: ReinforcedWallReplacementMarker
+  - type: StaticPrice
+    price: 150
+  - type: RadiationBlocker
+    resistance: 5
+
+- type: entity
+  parent: BaseWall
+  id: SW_WallSolid
+  name:  WallSolid
+  components:
+  - type: Tag
+    tags:
+      - Wall
+  - type: Sprite
+    sprite: _SW/Structures/Walls/solid.rsi
+  - type: WallReplacementMarker
+  - type: Construction
+    graph: Girder
+    node: wall
+  - type: Icon
+    sprite: _SW/Structures/Walls/solid.rsi
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+      - !type:ChangeConstructionNodeBehavior
+        node: girder
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+  - type: IconSmooth
+    key: walls
+    base: solid
+
+- type: entity
+  parent: BaseComputer
+  id: SW_WallLight
+  name: Wall_Light
+  description: "Wall light."
+  components:
+  - type: AmbientOnPowered
+  - type: AmbientSound
+    volume: -9
+    range: 3
+    enabled: false
+    sound:
+      path: /Audio/Ambience/Objects/vending_machine_hum.ogg
+  - type: Transform
+    noRot: true
+  - type: Sprite
+    sprite: _SW/Structures/Walls/lightwall.rsi
+    noRot: true
+    layers:
+    - map: [ "computerLayerBody" ]
+      state: off
+    - map: [ "computerLayerScreen" ]
+      state: glow
+      shader: unshaded
+  - type: Icon
+    sprite: _SW/Structures/Walls/lightwall.rsi
+    state: glow
+  - type: Electrified
+    enabled: false
+    usesApcPower: true
+  - type: LitOnPowered
+  - type: LightningTarget
+    priority: 1
+  - type: PointLight
+    enabled: false
+    castShadows: false
+    offset: "0, 4"
+    energy: 0.8
+    radius: 10
+  - type: StaticPrice
+    price: 150
+  - type: ApcPowerReceiver
+    powerLoad: 1000
+  - type: ExtensionCableReceiver
+  - type: WirelessNetworkConnection
+    range: 200
+  - type: DeviceLinkSink
+    ports:
+    - On
+    - Off
+  - type: Appearance
+  - type: PoweredLightVisuals
+    blinkingSound:
+      path: "/Audio/Machines/light_tube_on.ogg"
+    spriteStateMap:
+      off: base
+      on: glow
+
+- type: entity
+  id: SW_WallBasaultRock
+  parent: BaseWall
+  name: Basault
+  description: A rocky asteroid.
+  components:
+  - type: Transform
+    noRot: true
+  - type: Icon
+    sprite: _SW/Structures/Walls/basaultrock.rsi
+    state: basault
+  - type: Sprite
+    sprite: _SW/Structures/Walls/basaultrock.rsi
+    state: basault
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Rock
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 120
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          path: /Audio/Effects/break_stone.ogg
+          params:
+            volume: -6
+
+- type: entity
+  id: SW_WallBasaultSnowRock
+  parent: BaseWall
+  name: Basault snow
+  description: A rocky asteroid.
+  components:
+  - type: Transform
+    noRot: true
+  - type: Icon
+    sprite: _SW/Structures/Walls/basaultrocksnow.rsi
+    state: basaultsnow
+  - type: Sprite
+    sprite: _SW/Structures/Walls/basaultrocksnow.rsi
+    state: basaultsnow
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: Rock
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 120
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          path: /Audio/Effects/break_stone.ogg
+          params:
+            volume: -6

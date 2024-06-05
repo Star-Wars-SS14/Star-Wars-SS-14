@@ -1,0 +1,55 @@
+# Standart rock
+- type: entity
+  suffix: Несокрушимый, MapEnd
+  parent: MarkerBase
+  id: SW_RockSpawner
+  name: Рандомный спавнер камня
+  components:
+    - type: Sprite
+      layers:
+        - sprite: _SW/Structures/Walls/map_end.rsi
+          state: randomrock
+    - type: RandomSpawner
+      prototypes:
+        - SW_WallRock
+        - SW_WallRockCoal
+        - SW_WallRockGold
+        - SW_WallRockPlasma
+        - SW_WallRockQuartz
+        - SW_WallRockSilver
+        - SW_WallRockTin
+        - SW_WallRockUranium
+        - SW_WallRockBananium
+        - SW_WallRockArtifactFragment
+        - SW_WallRockSalt
+      chance: 1.0
+  placement:
+    mode: AlignTileAny
+
+# Basalt
+- type: entity
+  suffix: Несокрушимый, MapEnd
+  parent: MarkerBase
+  id: SW_BasaltSpawner
+  name: Рандомный спавнер базальта
+  components:
+    - type: Sprite
+      layers:
+        - sprite: _SW/Structures/Walls/map_end.rsi
+          state: randomrock
+    - type: RandomSpawner
+      prototypes:
+        - SW_WallRockBasalt
+        - SW_WallRockBasaltCoal
+        - SW_WallRockBasaltGold
+        - SW_WallRockBasaltPlasma
+        - SW_WallRockBasaltQuartz
+        - SW_WallRockBasaltSilver
+        - SW_WallRockBasaltTin
+        - SW_WallRockBasaltUranium
+        - SW_WallRockBasaltBananium
+        - SW_WallRockBasaltArtifactFragment
+        - SW_WallRockBasaltSalt
+      chance: 1.0
+  placement:
+    mode: AlignTileAny

@@ -1,0 +1,18 @@
+- type: job
+  id: SW_ImperialOfficers
+  name: job-name-imperial-officers
+  description: job-description-imperial-officers
+  playTimeTracker: JobImperialOfficers
+  startingGear: ImperialOfficersGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: startingGear
+  id: ImperialOfficersGear
+  equipment:
+    jumpsuit: SW_ClothingUniformJumpsuitOfficers
+    back: ClothingBackpackFilled
+    gloves: ClothingHandsGlovesColorBlack
+    shoes: SW_ClothingShoesBootsOfficers
+    ears: ClothingHeadsetGrey
+    head: SW_ClothingHeadCapOfficers

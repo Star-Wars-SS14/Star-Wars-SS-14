@@ -1,0 +1,35 @@
+- type: job
+  id: SW_Sith
+  name: job-name-sith
+  description: job-description-sith
+  playTimeTracker: JobSith
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 86400 # 24h
+  - !type:RoleTimeRequirement
+    role: JobSithApprentice
+    time: 21600 # 6h
+  startingGear: SithGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Sith_Apprentice
+  name: job-name-sith-apprentice
+  description: job-description-sith-apprentice
+  playTimeTracker: JobSithApprentice
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 86400 # 24h
+  startingGear: SithGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: startingGear
+  id: SithGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBlack
+    gloves: ClothingHandsGlovesColorBlack
+    shoes: ClothingShoesSwat
+    ears: ClothingHeadsetGrey
+    neck: SW_ClothingNeckCloakSithCloak

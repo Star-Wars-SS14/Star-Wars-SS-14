@@ -1,0 +1,510 @@
+- type: entity
+  abstract: true
+  parent: BaseStructure
+  id: SW_BaseRock
+  name: baserock
+  description: A rocky asteroid.
+  placement:
+    mode: SnapgridCenter
+    snap:
+    - Wall
+  components:
+  - type: Sprite
+    drawdepth: Walls
+  - type: Icon
+    state: full
+  - type: PlacementReplacement
+    key: walls
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.5,-0.5,0.5,0.5"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        density: 1000
+  - type: Occluder
+  - type: Airtight
+  - type: RadiationBlocker
+    resistance: 2
+  - type: Tag
+    tags:
+    - Wall
+
+# Standart rock
+- type: entity
+  suffix: Несокрушимый, MapEnd
+  parent: SW_BaseRock
+  id: SW_WallRock
+  name: Камень
+  description: A rocky asteroid.
+  components:
+    - type: Transform
+      noRot: true
+    - type: IconSmooth
+      key: walls
+      mode: NoSprite
+    - type: Icon
+      sprite: Structures/Walls/rock.rsi
+      state: rock
+    - type: SmoothEdge
+    - type: Sprite
+      sprite: Structures/Walls/rock.rsi
+      layers:
+        - state: rock
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_west
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRock
+  id: SW_WallRockCoal
+  description: An ore vein rich with coal.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_west
+        - state: rock_coal
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRock
+  id: SW_WallRockGold
+  description: An ore vein rich with gold.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_west
+        - state: rock_gold
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRock
+  id: SW_WallRockPlasma
+  description: An ore vein rich with plasma.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_west
+        - state: rock_phoron
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRock
+  id: SW_WallRockQuartz
+  description: An ore vein rich with quartz.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_west
+        - state: rock_quartz
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRock
+  id: SW_WallRockSilver
+  description: An ore vein rich with silver.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_west
+        - state: rock_silver
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRock
+  id: SW_WallRockTin
+  description: An ore vein rich with iron.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_west
+        - state: rock_tin
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRock
+  id: SW_WallRockUranium
+  description: An ore vein rich with uranium.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_west
+        - state: rock_uranium
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRock
+  id: SW_WallRockBananium
+  description: An ore vein rich with bananium.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_west
+        - state: rock_bananium
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRock
+  id: SW_WallRockArtifactFragment
+  description: A rock wall. What's that sticking out of it?
+  components:
+    - type: Sprite
+      layers:
+        - state: rock
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_west
+        - state: rock_artifact_fragment
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRock
+  id: SW_WallRockSalt
+  description: An ore vein rich with salt.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_west
+        - state: rock_salt
+
+# Basalt variants
+- type: entity
+  suffix: Несокрушимый, MapEnd
+  parent: SW_BaseRock
+  id: SW_WallRockBasalt
+  name: Базальт
+  description: A rocky asteroid.
+  components:
+    - type: Transform
+      noRot: true
+    - type: Icon
+      sprite: Structures/Walls/rock.rsi
+      state: rock_wall
+    - type: IconSmooth
+      key: walls
+      mode: NoSprite
+    - type: SmoothEdge
+    - type: Sprite
+      sprite: Structures/Walls/rock.rsi
+      layers:
+        - state: rock_wall
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_wall_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_wall_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_wall_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_wall_west
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRockBasalt
+  id: SW_WallRockBasaltCoal
+  description: An ore vein rich with coal.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock_wall
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_wall_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_wall_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_wall_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_wall_west
+        - state: rock_coal
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRockBasalt
+  id: SW_WallRockBasaltGold
+  description: An ore vein rich with gold.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock_wall
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_wall_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_wall_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_wall_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_wall_west
+        - state: rock_gold
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRockBasalt
+  id: SW_WallRockBasaltPlasma
+  description: An ore vein rich with plasma.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock_wall
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_wall_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_wall_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_wall_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_wall_west
+        - state: rock_phoron
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRockBasalt
+  id: SW_WallRockBasaltQuartz
+  description: An ore vein rich with quartz.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock_wall
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_wall_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_wall_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_wall_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_wall_west
+        - state: rock_quartz
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRockBasalt
+  id: SW_WallRockBasaltSilver
+  description: An ore vein rich with silver.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock_wall
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_wall_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_wall_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_wall_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_wall_west
+        - state: rock_silver
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRockBasalt
+  id: SW_WallRockBasaltTin
+  description: An ore vein rich with iron.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock_wall
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_wall_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_wall_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_wall_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_wall_west
+        - state: rock_tin
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRockBasalt
+  id: SW_WallRockBasaltUranium
+  description: An ore vein rich with uranium.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock_wall
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_wall_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_wall_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_wall_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_wall_west
+        - state: rock_uranium
+
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRockBasalt
+  id: SW_WallRockBasaltBananium
+  description: An ore vein rich with bananium.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock_wall
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_wall_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_wall_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_wall_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_wall_west
+        - state: rock_bananium
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRockBasalt
+  id: SW_WallRockBasaltArtifactFragment
+  description: A rock wall. What's that sticking out of it?
+  components:
+    - type: Sprite
+      layers:
+        - state: rock_wall
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_wall_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_wall_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_wall_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_wall_west
+        - state: rock_artifact_fragment
+
+- type: entity
+  noSpawn: true
+  parent: SW_WallRockBasalt
+  id: SW_WallRockBasaltSalt
+  description: An ore vein rich with salt.
+  components:
+    - type: Sprite
+      layers:
+        - state: rock_wall
+        - map: [ "enum.EdgeLayer.South" ]
+          state: rock_wall_south
+        - map: [ "enum.EdgeLayer.East" ]
+          state: rock_wall_east
+        - map: [ "enum.EdgeLayer.North" ]
+          state: rock_wall_north
+        - map: [ "enum.EdgeLayer.West" ]
+          state: rock_wall_west
+        - state: rock_salt
+        
+- type: entity
+  suffix: Несокрушимый, MapEnd
+  parent: SW_BaseRock
+  id: SW_WallRockBasaultDark
+  name: Базальт тёмный
+  description: A rocky asteroid.
+  components:
+    - type: Transform
+      noRot: true
+    - type: Icon
+      sprite: _SW/Structures/Walls/basaultrockdark.rsi
+      state: basaultdark
+    - type: Sprite
+      sprite: _SW/Structures/Walls/basaultrockdark.rsi
+      state: basaultdark
+       
+- type: entity
+  suffix: Несокрушимый, MapEnd
+  parent: SW_BaseRock
+  id: SW_WallRockBasaultDarkSnow
+  name: Снежный базальт тёмный
+  description: A rocky asteroid.
+  components:
+    - type: Transform
+      noRot: true
+    - type: Icon
+      sprite: _SW/Structures/Walls/basaultrockdarksnow.rsi
+      state: basaultdarksnow
+    - type: Sprite
+      sprite: _SW/Structures/Walls/basaultrockdarksnow.rsi
+      state: basaultdarksnow

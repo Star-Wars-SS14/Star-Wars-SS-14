@@ -1,0 +1,8 @@
+- type: entity
+  name: imperial officers
+  parent: BaseMobHuman
+  id: SW_MobImperialOfficers
+  description: A miserable pile of secrets.
+  components:
+  - type: Loadout
+    prototypes: [ImperialOfficersGear]

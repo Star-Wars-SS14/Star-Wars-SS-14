@@ -1,0 +1,32 @@
+- type: entity
+  id: BaseCartridgeBlaster
+  name: blast
+  parent: BaseCartridge
+  abstract: true
+  components:
+  - type: Tag
+    tags:
+    - Cartridge
+    - CartridgeBlast
+  - type: CartridgeAmmo
+    proto: BulletBlast
+    deleteOnSpawn: true
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
+    layers:
+    - state: base
+      map: ["enum.AmmoVisualLayers.Base"]
+  - type: Appearance
+  - type: SpentAmmoVisuals
+
+- type: entity
+  id: CartridgeBlast
+  name: cartridge (Blast)
+  parent: BaseCartridgeBlaster
+  components:
+  - type: CartridgeAmmo
+    proto: BulletBlast
+  - type: Sprite
+    layers:
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]

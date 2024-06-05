@@ -1,0 +1,22 @@
+﻿- type: entity
+  id: SW_BaseDoor
+  name: Base Door
+  parent: BaseMaterialDoorNavMap
+  description: Star Wars Door
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Doors/Standard/basic.rsi
+    layers:
+    - state: closed
+      map: ["enum.DoorVisualLayers.Base"]
+  - type: Door
+    bumpOpen: false
+    clickOpen: true
+    closeTimeOne: 0.2
+    closeTimeTwo: 0.6
+    openTimeOne: 0.6
+    openTimeTwo: 0.2
+    openSound:
+      path: /Audio/Effects/door_open.ogg
+    closeSound:
+      path: /Audio/Effects/door_close.ogg

@@ -1,0 +1,33 @@
+﻿- type: entity
+  id: ActionJediDash
+  name: Dash
+  description: Dash. #TODO: add description
+  noSpawn: true
+  components:
+  - type: InstantAction
+    icon: Interface/Actions/dash.png
+    event: !type:DashAbilityEvent
+    useDelay: 1
+
+- type: entity
+  id: ActionSithForceLightning
+  name: lightning
+  description: SithForceLightning. #TODO: add description
+  noSpawn: true
+  components:
+  - type: InstantAction
+    icon: Interface/Actions/lighting.png
+    event: !type:ForceLightningAbilityEvent
+    useDelay: 1
+
+- type: entity
+  id: ActionBlockLightSaber
+  name: lightning
+  description: ActionBlockLightSaber. #TODO: add description
+  noSpawn: true
+  components:
+  - type: InstantAction
+    icon: Interface/Actions/block.png
+    event: !type:BlockEvent
+    useDelay: 1
+

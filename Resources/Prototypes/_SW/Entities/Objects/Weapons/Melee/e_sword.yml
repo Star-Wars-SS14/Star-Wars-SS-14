@@ -1,0 +1,139 @@
+﻿- type: entity
+  name: energy sword
+  parent: EnergySword
+  id: Lightsaber
+  description: A very loud & dangerous sword with a beam made of pure, concentrated plasma. Cuts through unarmored targets like butter.
+  components:
+  - type: ItemToggle
+    soundActivate:
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberon.ogg
+      params:
+        volume: -5
+    soundDeactivate:
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberoff.ogg
+  - type: ItemToggleActiveSound
+    activeSound:
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberhum.ogg
+      params:
+        volume: -10
+  - type: ItemToggleMeleeWeapon
+    activatedSoundOnHit:
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaber1.ogg
+      params:
+        variation: 0.250
+    activatedSoundOnHitNoDamage:
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaber1.ogg
+      params:
+        variation: 0.250
+        volume: -10
+    activatedSoundOnSwing:
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsabermiss.ogg
+      params:
+        variation: 0.125
+  - type: Block
+
+
+- type: entity
+  name: double-bladed energy sword
+  parent: EnergySwordDouble
+  id: LightsaberDouble
+  description: Syndicate Command Interns thought that having one blade on the energy sword was not enough. This can be stored in pockets.
+  components:
+  - type: ItemToggle
+    soundActivate:
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberon.ogg
+      params:
+        volume: -5
+    soundDeactivate:
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberoff.ogg
+  - type: ItemToggleActiveSound
+    activeSound:
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberhum.ogg
+      params:
+        volume: -10
+  - type: ItemToggleMeleeWeapon
+    activatedSoundOnHit:
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaber1.ogg
+      params:
+        variation: 0.250
+    activatedSoundOnHitNoDamage:
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaber1.ogg
+      params:
+        variation: 0.250
+        volume: -10
+    activatedSoundOnSwing:
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsabermiss.ogg
+      params:
+        variation: 0.125
+
+- type: entity
+  name: Lightsaber Sith (Red)
+  parent: Lightsaber
+  id: SW_EnergySword_Sith
+  description: Red-colored blades were used by the Sith. Red is the color associated with the Dark Side.
+  components:
+  - type: EnergySword
+    ColorBlade: "Red"
+
+- type: entity
+  name: Lightsaber Jedi (Blue)
+  parent: Lightsaber
+  id: SW_EnergySword_Jedi_Blue
+  description: The blue blade was used mostly by Jedi defenders, whose main focus goes into lightsaber training.
+  components:
+  - type: EnergySword
+    ColorBlade: "Blue"
+
+- type: entity
+  name: Lightsaber Jedi (Green)
+  parent: Lightsaber
+  id: SW_EnergySword_Jedi_Green
+  description: A lightsaber with a green-colored blade was used by the Jedi Consuls. The consuls in the order were the bringers of peace. They disliked violence and were generally reluctant to use the lightsaber.
+  components:
+  - type: EnergySword
+    ColorBlade: "Green"
+
+- type: entity
+  name: Lightsaber Jedi (Purple)
+  parent: Lightsaber
+  id: SW_EnergySword_Jedi_Purple
+  description: The purple blade was used by Jedi who used an aggressive fighting style when dueling. The blade combines light and darkness.
+  components:
+  - type: EnergySword
+    ColorBlade: "Purple"
+
+- type: entity
+  name: Double-Bladed Lightsaber Sith (Red)
+  parent: LightsaberDouble
+  id: SW_EnergySwordDouble_Sith
+  description: Red-colored blades were used by the Sith. Red is the color associated with the Dark Side.
+  components:
+  - type: EnergySword
+    ColorBlade: "Red"
+
+- type: entity
+  name: Double-Bladed Lightsaber Jedi (Blue)
+  parent: LightsaberDouble
+  id: SW_EnergySwordDouble_Jedi_Blue
+  description: The blue blade was used mostly by Jedi defenders, whose main focus goes into lightsaber training.
+  components:
+  - type: EnergySword
+    ColorBlade: "Blue"
+
+- type: entity
+  name: Double-Bladed Lightsaber Jedi (Green)
+  parent: LightsaberDouble
+  id: SW_EnergySwordDouble_Jedi_Green
+  description: A lightsaber with a green-colored blade was used by the Jedi Consuls. The consuls in the order were the bringers of peace. They disliked violence and were generally reluctant to use the lightsaber.
+  components:
+  - type: EnergySword
+    ColorBlade: "Green"
+
+- type: entity
+  name: Double-Bladed Lightsaber Jedi (Purple)
+  parent: LightsaberDouble
+  id: SW_EnergySwordDouble_Jedi_Purple
+  description: The purple blade was used by Jedi who used an aggressive fighting style when dueling. The blade combines light and darkness.
+  components:
+  - type: EnergySword
+    ColorBlade: "Purple"

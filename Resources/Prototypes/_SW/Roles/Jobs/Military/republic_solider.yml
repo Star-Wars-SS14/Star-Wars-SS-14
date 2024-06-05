@@ -1,0 +1,86 @@
+- type: startingGear
+  id: RepublicSoliderGear
+  equipment:
+    jumpsuit: SW_ClothingUniformJumpsuitRebel
+    back: ClothingBackpackFilled
+    gloves: SW_ClothingHandsGlovesRebel
+    shoes: ClothingShoesCult
+    ears: ClothingHeadsetGrey
+    outerClothing: SW_ClothingOuterVestRebel
+    head: SW_RebelHelmet
+
+
+- type: job
+  id: SW_RepublicSergeant
+  name: job-name-republic-sergeant
+  description: job-description-republic-sergeant
+  playTimeTracker: JobRepublicSergeant
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 34800 # ~10h
+  - !type:RoleTimeRequirement
+    role: JobRepublicSpecialist
+    time: 6000 # ~2h
+  - !type:RoleTimeRequirement
+    role: JobRepublicMedic
+    time: 6000 # ~2h
+  - !type:RoleTimeRequirement
+    role: JobRepublicEngineer
+    time: 6000 # ~2h
+  startingGear: RepublicSoliderGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_RepublicSpecialist
+  name: job-name-republic-specialist
+  description: job-description-republic-specialist
+  playTimeTracker: JobRepublicSpecialist
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 34800 # ~10h
+  startingGear: RepublicSoliderGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_RepublicMedic
+  name: job-name-republic-medic
+  description: job-description-republic-medic
+  playTimeTracker: JobRepublicMedic
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 34800 # ~10h
+  startingGear: RepublicSoliderGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_RepublicEngineer
+  name: job-name-republic-engineer
+  description: job-description-republic-engineer
+  playTimeTracker: JobRepublicEngineer
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 34800 # ~10h
+  startingGear: RepublicSoliderGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_RepublicSolider
+  name: job-name-republic-solider
+  description: job-description-republic-solider
+  playTimeTracker: JobRepublicSolider
+  startingGear: RepublicSoliderGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_RepublicCargoTechnician
+  name: job-name-republic-cargotech
+  description: job-description-republic-cargotech
+  playTimeTracker: JobRepublicCargoTechnician
+  startingGear: RepublicSoliderGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone

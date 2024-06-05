@@ -1,0 +1,50 @@
+- type: playTimeTracker
+  id: JobJedi
+
+- type: playTimeTracker
+  id: JobJediPadawan
+
+- type: playTimeTracker
+  id: JobSith
+
+- type: playTimeTracker
+  id: JobSithApprentice
+
+- type: playTimeTracker
+  id: JobStormtrooper
+
+- type: playTimeTracker
+  id: JobStormtrooperSergeant
+
+- type: playTimeTracker
+  id: JobStormtrooperSpecialist
+
+- type: playTimeTracker
+  id: JobStormtrooperMedic
+
+- type: playTimeTracker
+  id: JobStormtrooperEngineer
+
+- type: playTimeTracker
+  id: JobStormtrooperCargoTechnician
+
+- type: playTimeTracker
+  id: JobRepublicSergeant
+
+- type: playTimeTracker
+  id: JobRepublicSpecialist
+
+- type: playTimeTracker
+  id: JobRepublicMedic
+
+- type: playTimeTracker
+  id: JobRepublicEngineer
+
+- type: playTimeTracker
+  id: JobRepublicSolider
+
+- type: playTimeTracker
+  id: JobRepublicCargoTechnician
+  
+- type: playTimeTracker
+  id: JobImperialOfficers

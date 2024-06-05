@@ -1,0 +1,59 @@
+- type: entity
+  id: SW_SpawnPointStormtrooper
+  parent: SpawnPointJobBase
+  name: Stormtrooper
+  components:
+  - type: SpawnPoint
+    job_id: Stormtrooper
+  - type: Sprite
+    layers:
+      - state: green
+      - state: SW_stormtrooper
+      
+- type: entity
+  id: SW_SpawnPointRepublicSoldier
+  parent: SpawnPointJobBase
+  name: Republic soldier
+  components:
+  - type: SpawnPoint
+    job_id: Republic soldier
+  - type: Sprite
+    layers:
+      - state: green
+      - state: passenger
+
+- type: entity
+  id: SW_SpawnPointJedi
+  parent: SpawnPointJobBase
+  name: Jedi
+  components:
+  - type: SpawnPoint
+    job_id: Jedi
+  - type: Sprite
+    layers:
+      - state: green
+      - state: passenger
+      
+- type: entity
+  id: SpawnPointSith
+  parent: SpawnPointJobBase
+  name: Sith
+  components:
+  - type: SpawnPoint
+    job_id: Sith
+  - type: Sprite
+    layers:
+      - state: green
+      - state: passenger
+      
+- type: entity
+  id: SW_SpawnPointImperialOfficers
+  parent: SpawnPointJobBase
+  name: Imperial officers
+  components:
+  - type: SpawnPoint
+    job_id: Imperial Officers
+  - type: Sprite
+    layers:
+      - state: green
+      - state: passenger

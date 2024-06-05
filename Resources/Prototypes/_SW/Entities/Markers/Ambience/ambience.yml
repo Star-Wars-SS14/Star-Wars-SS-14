@@ -1,0 +1,52 @@
+- type: entity
+  abstract: true
+  suffix: BattleAmbient
+  parent: MarkerBase
+  id: SW_BaseAmbientMarker
+  name: BaseAmbientMarker
+  components:
+  - type: Sprite
+    sprite: Markers/cross.rsi
+    layers:
+      - state: blue
+  - type: AmbientSound
+    range: 1000
+    volume: -1
+    sound:
+      path: /Audio/_SW/Ambience/Marker/BattleAmbient.ogg
+
+- type: entity
+  parent: SW_BaseAmbientMarker
+  id: SW_AmbientMarker_1
+  name: BattleAmbient
+  components:
+  - type: AmbientSound
+    sound:
+      path: /Audio/_SW/Ambience/Marker/BattleAmbient.ogg
+
+- type: entity
+  parent: SW_BaseAmbientMarker
+  id: SW_AmbientMarker_2
+  name: BattleAmbientReverb
+  components:
+  - type: AmbientSound
+    sound:
+      path: /Audio/_SW/Ambience/Marker/BattleAmbientReverb.ogg
+
+- type: entity
+  parent: SW_BaseAmbientMarker
+  id: SW_AmbientMarker_3
+  name: MassiveBattleAmbient
+  components:
+  - type: AmbientSound
+    sound:
+      path: /Audio/_SW/Ambience/Marker/MassiveBattleAmbient.ogg
+
+- type: entity
+  parent: SW_BaseAmbientMarker
+  id: SW_AmbientMarker_4
+  name: MassiveBattleAmbientReberb
+  components:
+  - type: AmbientSound
+    sound:
+      path: /Audio/_SW/Ambience/Marker/MassiveBattleAmbientReberb.ogg

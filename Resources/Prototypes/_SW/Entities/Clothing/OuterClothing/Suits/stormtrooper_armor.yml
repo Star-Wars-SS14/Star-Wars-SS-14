@@ -1,0 +1,24 @@
+- type: entity
+  parent: ClothingOuterBase
+  id: SW_StormtrooperArmor
+  name: Stormtrooper armor
+  description: A protective suit that was standard equipment for soldiers of the Galactic Empire's Stormtroopers.
+  components:
+    - type: Item
+      size: Huge
+    - type: Sprite
+      sprite: _SW/Clothing/OuterClothing/Suits/stormtrooper_armor.rsi
+    - type: Clothing
+      sprite: _SW/Clothing/OuterClothing/Suits/stormtrooper_armor.rsi
+    - type: PressureProtection
+      highPressureMultiplier: 0.02
+      lowPressureMultiplier: 1000
+    - type: TemperatureProtection
+      coefficient: 0.01
+    - type: Armor
+      modifiers:
+        coefficients:
+          Slash: 0.5
+          Heat: 0.5
+          Cold: 0.5
+    - type: GroupExamine

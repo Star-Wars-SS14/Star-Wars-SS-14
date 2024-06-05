@@ -1,0 +1,19 @@
+- type: entity
+  parent: PosterBase
+  id: PosterAgt
+  name: "Вступай!"
+  description: "Империя ждёт именно тебя!"
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Wallmounts/Posters/posters.rsi
+    state: poster1
+
+- type: entity
+  parent: PosterBase
+  id: PosterEmp
+  name: "Могучая Империя"
+  description: "Во Славу Великой Империи!"
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Wallmounts/Posters/posters.rsi
+    state: poster2

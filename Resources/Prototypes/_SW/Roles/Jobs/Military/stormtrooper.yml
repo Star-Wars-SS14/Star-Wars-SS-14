@@ -1,0 +1,86 @@
+- type: startingGear
+  id: StormtrooperGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBlack
+    back: ClothingBackpackFilled
+    gloves: ClothingHandsGlovesColorBlack
+    shoes: ClothingShoesSwat
+    ears: ClothingHeadsetGrey
+    head: SW_StormtrooperHelmet
+    outerClothing: SW_StormtrooperArmor
+
+- type: job
+  id: SW_StormtrooperSergeant
+  name: job-name-stormtrooper-sergeant
+  description: job-description-stormtrooper-sergeant
+  playTimeTracker: JobStormtrooperSergeant
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 34800 # ~10h
+  - !type:RoleTimeRequirement
+    role: JobStormtrooperSpecialist
+    time: 6000 # ~2h
+  - !type:RoleTimeRequirement
+    role: JobStormtrooperMedic
+    time: 6000 # ~2h
+  - !type:RoleTimeRequirement
+    role: JobStormtrooperEngineer
+    time: 6000 # ~2h
+  startingGear: StormtrooperGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_StormtrooperSpecialist
+  name: job-name-stormtrooper-specialist
+  description: job-description-stormtrooper-specialist
+  playTimeTracker: JobStormtrooperSpecialist
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 34800 # ~10h
+  startingGear: StormtrooperGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_StormtrooperMedic
+  name: job-name-stormtrooper-medic
+  description: job-description-stormtrooper-medic
+  playTimeTracker: JobStormtrooperMedic
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 34800 # ~10h
+  startingGear: StormtrooperGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_StormtrooperEngineer
+  name: job-name-stormtrooper-engineer
+  description: job-description-stormtrooper-engineer
+  playTimeTracker: JobStormtrooperEngineer
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 34800 # ~10h
+  startingGear: StormtrooperGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Stormtrooper
+  name: job-name-stormtrooper
+  description: job-description-stormtrooper
+  playTimeTracker: JobStormtrooper
+  startingGear: StormtrooperGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_StormtrooperCargoTechnician
+  name: job-name-stormtrooper-cargotech
+  description: job-description-stormtrooper-cargotech
+  playTimeTracker: JobStormtrooperCargoTechnician
+  startingGear: StormtrooperGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+

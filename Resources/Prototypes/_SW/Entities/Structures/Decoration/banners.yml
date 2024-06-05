@@ -1,0 +1,19 @@
+- type: entity
+  id: SW_BannerEmpire
+  parent: BannerBase
+  name: empire banner
+  description: A banner displaying the Nanotrasen logo. It looks rather cheap.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Decoration/banner.rsi
+    state: empire_banner
+    
+- type: entity
+  id: SW_BannerEmpireRed
+  parent: BannerBase
+  name: empire banner red
+  description: A banner displaying the Nanotrasen logo. It looks rather cheap.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Decoration/banner.rsi
+    state: empire_banner_red

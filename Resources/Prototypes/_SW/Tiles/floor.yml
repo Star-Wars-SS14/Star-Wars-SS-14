@@ -1,0 +1,91 @@
+﻿- type: tile
+  id: SW_FloorCorridor
+  name: Floor Corridor
+  sprite: /Textures/_SW/Tiles/corridor.png
+  baseTurf: Plating
+  isSubfloor: false
+  deconstructTools: [ Prying ]
+  footstepSounds:
+    collection: FootstepFloor
+  itemDrop: FloorTileItemSteel
+  heatCapacity: 10000
+
+- type: tile
+  id: SW_FloorSmallBlackTiles
+  name: Floor Small Black Tiles
+  sprite: /Textures/_SW/Tiles/small_black_tiles.png
+  baseTurf: Plating
+  isSubfloor: false
+  deconstructTools: [ Prying ]
+  footstepSounds:
+    collection: FootstepFloor
+  itemDrop: FloorTileItemSteel
+  heatCapacity: 10000
+
+- type: tile
+  id: SW_FloorSteeltile
+  name: Floor Steeltile
+  sprite: /Textures/_SW/Tiles/steeltile.png
+  baseTurf: Plating
+  isSubfloor: false
+  deconstructTools: [ Prying ]
+  footstepSounds:
+    collection: FootstepFloor
+  itemDrop: FloorTileItemSteel
+  heatCapacity: 10000
+  
+- type: tile
+  id: SW_FloorSnow
+  name: snow
+  sprite: /Textures/_SW/Tiles/snow.png
+  variants: 13
+  placementVariants:
+  - 0.8
+  - 0.0166
+  - 0.0166
+  - 0.0166
+  - 0.0166
+  - 0.0166
+  - 0.0166
+  - 0.0166
+  - 0.0166
+  - 0.0166
+  - 0.0166
+  - 0.0116
+  - 0.0116
+  edgeSpritePriority: 2
+  edgeSprites:
+    South: /Textures/_SW/Tiles/Planet/Snow/snow_double_edge_south.png
+    East: /Textures/_SW/Tiles/Planet/Snow/snow_double_edge_east.png
+    North: /Textures/_SW/Tiles/Planet/Snow/snow_double_edge_north.png
+    West: /Textures/_SW/Tiles/Planet/Snow/snow_double_edge_west.png
+  isSubfloor: true
+  footstepSounds:
+    collection: FootstepSnow
+  heatCapacity: 10000
+  weather: true
+  indestructible: true
+  
+- type: tile
+  id: SW_FloorAsphalt
+  name: asphalt
+  sprite: /Textures/_SW/Tiles/asphalt.png
+  variants: 10
+  placementVariants:
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  - 1.0
+  baseTurf: Plating
+  isSubfloor: false
+  deconstructTools: [ Prying ]
+  footstepSounds:
+    collection: FootstepTile
+  itemDrop: FloorTileItemSteel
+  heatCapacity: 10000

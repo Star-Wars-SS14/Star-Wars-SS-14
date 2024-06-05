@@ -1,0 +1,19 @@
+- type: entity
+  parent: ClothingOuterStorageBase
+  id: SW_ClothingOuterVestRebel
+  name: rebel vest
+  description: A synthetic armor vest. This one has added webbing and ballistic plates.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Vests/rebel_vest.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Vests/rebel_vest.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.3
+        Heat: 0.9
+  - type: ExplosionResistance
+    damageCoefficient: 0.9

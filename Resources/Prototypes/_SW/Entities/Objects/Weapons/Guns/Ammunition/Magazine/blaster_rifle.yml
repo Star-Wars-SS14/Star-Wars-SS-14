@@ -1,0 +1,19 @@
+  - type: entity
+    id: MagazineBlastRifle
+    name: "Magazine blast"
+    parent: BaseMagazineLightRifle
+    components:
+    - type: Tag
+      tags:
+      - MagazineBlast
+    - type: BallisticAmmoProvider
+      proto: CartridgeBlast
+      capacity: 50
+    - type: Sprite
+      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+    - type: Item
+    - type: MagazineVisuals
+      magState: mag
+      steps: 8
+      zeroVisible: false
+    - type: Appearance

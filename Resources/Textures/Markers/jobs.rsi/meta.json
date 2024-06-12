@@ -200,7 +200,10 @@
       "name": "warden"
     },
     {
-      "name": "zookeeper"
+        "name": "zookeeper"
+    },
+    {
+        "name": "SW_stormtrooper"
     }
   ]
 }

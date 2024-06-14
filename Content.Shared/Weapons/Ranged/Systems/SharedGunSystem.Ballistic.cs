@@ -32,11 +32,14 @@ public abstract partial class SharedGunSystem
 
     private void OnBallisticUse(EntityUid uid, BallisticAmmoProviderComponent component, UseInHandEvent args)
     {
-        if (args.Handled)
-            return;
+        if (component.bulletoutput)
+        {
+            if (args.Handled)
+                return;
 
-        ManualCycle(uid, component, TransformSystem.GetMapCoordinates(uid), args.User);
-        args.Handled = true;
+            ManualCycle(uid, component, Transform(uid).MapPosition, args.User);
+            args.Handled = true;
+        }
     }
 
     private void OnBallisticInteractUsing(EntityUid uid, BallisticAmmoProviderComponent component, InteractUsingEvent args)
@@ -155,7 +158,7 @@ public abstract partial class SharedGunSystem
 
     private void OnBallisticVerb(EntityUid uid, BallisticAmmoProviderComponent component, GetVerbsEvent<Verb> args)
     {
-        if (!args.CanAccess || !args.CanInteract || args.Hands == null || !component.Cycleable)
+        if (!args.CanAccess || !args.CanInteract || args.Hands == null || !component.Cycleable || !component.bulletoutput)
             return;
 
         if (component.Cycleable)
@@ -180,7 +183,7 @@ public abstract partial class SharedGunSystem
 
     private void ManualCycle(EntityUid uid, BallisticAmmoProviderComponent component, MapCoordinates coordinates, EntityUid? user = null, GunComponent? gunComp = null)
     {
-        if (!component.Cycleable)
+        if (!component.Cycleable || !component.bulletoutput)
             return;
 
         // Reset shotting for cycling

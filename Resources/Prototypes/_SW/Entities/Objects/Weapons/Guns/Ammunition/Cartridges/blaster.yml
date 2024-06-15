@@ -20,12 +20,121 @@
   - type: SpentAmmoVisuals
 
 - type: entity
-  id: CartridgeBlast
+  id: RedCartridgeBlast
   name: cartridge (Blast)
   parent: BaseCartridgeBlaster
   components:
   - type: CartridgeAmmo
-    proto: BulletBlast
+    proto: RedBulletBlast
+  - type: Sprite
+    layers:
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+      
+- type: entity
+  id: Z1RedCartridgeBlast
+  name: cartridge (Blast)
+  parent: BaseCartridgeBlaster
+  components:
+  - type: CartridgeAmmo
+    proto: Z1RedBulletBlast
+  - type: Sprite
+    layers:
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+
+- type: entity
+  id: GreenCartridgeBlast
+  name: green cartridge (Blast)
+  parent: BaseCartridgeBlaster
+  components:
+  - type: CartridgeAmmo
+    proto: GreenBulletBlast
+  - type: Sprite
+    layers:
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+
+- type: entity
+  id: H206GreenCartridgeBlast
+  name: green cartridge (Blast)
+  parent: BaseCartridgeBlaster
+  components:
+  - type: CartridgeAmmo
+    proto: H206GreenBulletBlast
+  - type: Sprite
+    layers:
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+
+
+- type: entity
+  id: BlueCartridgeBlast
+  name: blue cartridge (Blast)
+  parent: BaseCartridgeBlaster
+  components:
+  - type: CartridgeAmmo
+    proto: BlueBulletBlast
+  - type: Sprite
+    layers:
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+      
+- type: entity
+  id: CannonBlueCartridgeBlast
+  name: blue cartridge (Blast)
+  parent: BaseCartridgeBlaster
+  components:
+  - type: CartridgeAmmo
+    proto: CannonBlueBulletBlast
+  - type: Sprite
+    layers:
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+      
+- type: entity
+  id: SniperRifleBlueCartridgeBlast
+  name: blue cartridge (Blast)
+  parent: BaseCartridgeBlaster
+  components:
+  - type: CartridgeAmmo
+    proto: SniperRifleBlueBulletBlast
+  - type: Sprite
+    layers:
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+      
+- type: entity
+  id: YellowCartridgeBlast
+  name: yellow cartridge (Blast)
+  parent: BaseCartridgeBlaster
+  components:
+  - type: CartridgeAmmo
+    proto: YellowBulletBlast
+  - type: Sprite
+    layers:
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+
+- type: entity
+  id: CannonYellowCartridgeBlast
+  name: yellow cartridge (Blast)
+  parent: BaseCartridgeBlaster
+  components:
+  - type: CartridgeAmmo
+    proto: CannonYellowBulletBlast
+  - type: Sprite
+    layers:
+    - state: base
+      map: [ "enum.AmmoVisualLayers.Base" ]
+      
+- type: entity
+  id: SniperRifleYellowCartridgeBlast
+  name: yellow cartridge (Blast)
+  parent: BaseCartridgeBlaster
+  components:
+  - type: CartridgeAmmo
+    proto: SniperRifleYellowBulletBlast
   - type: Sprite
     layers:
     - state: base

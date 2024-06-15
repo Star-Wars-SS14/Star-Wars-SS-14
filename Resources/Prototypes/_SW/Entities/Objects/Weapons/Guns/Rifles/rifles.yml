@@ -355,8 +355,6 @@
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
-    - state: mag-0
-      map: [ "enum.GunVisualLayers.Mag" ]
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Snipers/k406.rsi
   - type: Gun

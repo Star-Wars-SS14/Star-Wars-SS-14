@@ -1,5 +1,5 @@
   - type: entity
-    id: MagazineBlastRifle
+    id: RedMagazineBlastRifle
     name: "Magazine blast"
     parent: BaseMagazineLightRifle
     components:
@@ -7,8 +7,188 @@
       tags:
       - MagazineBlast
     - type: BallisticAmmoProvider
-      proto: CartridgeBlast
+      proto: RedCartridgeBlast
       capacity: 50
+    - type: Sprite
+      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+    - type: Item
+    - type: MagazineVisuals
+      magState: mag
+      steps: 8
+      zeroVisible: false
+    - type: Appearance
+    
+  - type: entity
+    id: Z1RedMagazineBlastRifle
+    name: "Magazine blast"
+    parent: BaseMagazineLightRifle
+    components:
+    - type: Tag
+      tags:
+      - MagazineBlast
+    - type: BallisticAmmoProvider
+      proto: Z1RedCartridgeBlast
+      capacity: 35
+    - type: Sprite
+      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+    - type: Item
+    - type: MagazineVisuals
+      magState: mag
+      steps: 8
+      zeroVisible: false
+    - type: Appearance
+    
+  - type: entity
+    id: GreenMagazineBlastRifle
+    name: "Magazine blast"
+    parent: BaseMagazineLightRifle
+    components:
+    - type: Tag
+      tags:
+      - MagazineBlast
+    - type: BallisticAmmoProvider
+      proto: GreenCartridgeBlast
+      capacity: 50
+    - type: Sprite
+      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+    - type: Item
+    - type: MagazineVisuals
+      magState: mag
+      steps: 8
+      zeroVisible: false
+    - type: Appearance
+    
+  - type: entity
+    id: H206GreenMagazineBlastRifle
+    name: "Magazine blast"
+    parent: BaseMagazineLightRifle
+    components:
+    - type: Tag
+      tags:
+      - MagazineBlast
+    - type: BallisticAmmoProvider
+      proto: H206GreenCartridgeBlast
+      capacity: 70
+    - type: Sprite
+      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+    - type: Item
+    - type: MagazineVisuals
+      magState: mag
+      steps: 8
+      zeroVisible: false
+    - type: Appearance
+    
+  - type: entity
+    id: BlueMagazineBlastRifle
+    name: "Magazine blast"
+    parent: BaseMagazineLightRifle
+    components:
+    - type: Tag
+      tags:
+      - MagazineBlast
+    - type: BallisticAmmoProvider
+      proto: BlueCartridgeBlast
+      capacity: 50
+    - type: Sprite
+      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+    - type: Item
+    - type: MagazineVisuals
+      magState: mag
+      steps: 8
+      zeroVisible: false
+    - type: Appearance
+    
+  - type: entity
+    id: CannonBlueMagazineBlastRifle
+    name: "Magazine blast"
+    parent: BaseMagazineLightRifle
+    components:
+    - type: Tag
+      tags:
+      - MagazineBlast
+    - type: BallisticAmmoProvider
+      proto: CannonBlueCartridgeBlast
+      capacity: 100
+    - type: Sprite
+      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+    - type: Item
+    - type: MagazineVisuals
+      magState: mag
+      steps: 8
+      zeroVisible: false
+    - type: Appearance
+    
+  - type: entity
+    id: SniperRifleBlueMagazineBlastRifle
+    name: "Magazine blast"
+    parent: BaseMagazineLightRifle
+    components:
+    - type: Tag
+      tags:
+      - MagazineBlast
+    - type: BallisticAmmoProvider
+      proto: SniperRifleBlueCartridgeBlast
+      capacity: 60
+    - type: Sprite
+      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+    - type: Item
+    - type: MagazineVisuals
+      magState: mag
+      steps: 8
+      zeroVisible: false
+    - type: Appearance
+    
+  - type: entity
+    id: YellowMagazineBlastRifle
+    name: "Magazine blast"
+    parent: BaseMagazineLightRifle
+    components:
+    - type: Tag
+      tags:
+      - MagazineBlast
+    - type: BallisticAmmoProvider
+      proto: YellowCartridgeBlast
+      capacity: 50
+    - type: Sprite
+      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+    - type: Item
+    - type: MagazineVisuals
+      magState: mag
+      steps: 8
+      zeroVisible: false
+    - type: Appearance
+    
+  - type: entity
+    id: CannonYellowMagazineBlastRifle
+    name: "Magazine blast"
+    parent: BaseMagazineLightRifle
+    components:
+    - type: Tag
+      tags:
+      - MagazineBlast
+    - type: BallisticAmmoProvider
+      proto: CannonYellowCartridgeBlast
+      capacity: 100
+    - type: Sprite
+      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+    - type: Item
+    - type: MagazineVisuals
+      magState: mag
+      steps: 8
+      zeroVisible: false
+    - type: Appearance
+    
+  - type: entity
+    id: SniperRifleYellowMagazineBlastRifle
+    name: "Magazine blast"
+    parent: BaseMagazineLightRifle
+    components:
+    - type: Tag
+      tags:
+      - MagazineBlast
+    - type: BallisticAmmoProvider
+      proto: SniperRifleYellowCartridgeBlast
+      capacity: 60
     - type: Sprite
       sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
     - type: Item

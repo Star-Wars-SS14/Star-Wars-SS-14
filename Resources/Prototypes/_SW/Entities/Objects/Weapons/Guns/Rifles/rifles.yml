@@ -1,20 +1,18 @@
 - type: entity
-  name: E-1 blaster rifle
+  name: Imperial E-1 Enforcer Blaster Rifle
   parent: BaseWeaponRifle
-  id: SW_e1blasterrifle
+  id: SW_E1BlasterRifle
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
-    - state: mag-0
-      map: [ "enum.GunVisualLayers.Mag" ]
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
   - type: Gun
-    fireRate: 5
+    fireRate: 4.5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -24,7 +22,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: MagazineBlastRifle
+        startingItem: YellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -33,7 +31,7 @@
           - MagazineBlast
       gun_chamber:
         name: Chamber
-        startingItem: CartridgeBlast
+        startingItem: YellowCartridgeBlast
         priority: 1
         whitelist:
           tags:
@@ -49,9 +47,9 @@
   - type: Appearance
 
 - type: entity
-  name: P-301 Destroyer
+  name: P-301 Assault Disruptor
   parent: BaseWeaponRifle
-  id: SW_p301destroyer
+  id: SW_P301Destroyer
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
@@ -64,7 +62,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
   - type: Gun
-    fireRate: 5
+    fireRate: 4.5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -74,7 +72,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: MagazineBlastRifle
+        startingItem: RedMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -83,7 +81,7 @@
           - MagazineBlast
       gun_chamber:
         name: Chamber
-        startingItem: CartridgeBlast
+        startingItem: RedCartridgeBlast
         priority: 1
         whitelist:
           tags:
@@ -99,7 +97,7 @@
   - type: Appearance
 
 - type: entity
-  name: H-206 Renegade
+  name: H-206 Renegade Blaster Rifle
   parent: BaseWeaponRifle
   id: SW_h206renegade
   description: An iconic weapon of war. Uses .30 rifle ammo.
@@ -114,7 +112,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
   - type: Gun
-    fireRate: 5
+    fireRate: 6
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -124,7 +122,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: MagazineBlastRifle
+        startingItem: H206GreenMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -133,7 +131,7 @@
           - MagazineBlast
       gun_chamber:
         name: Chamber
-        startingItem: CartridgeBlast
+        startingItem: H206GreenCartridgeBlast
         priority: 1
         whitelist:
           tags:
@@ -149,7 +147,7 @@
   - type: Appearance
 
 - type: entity
-  name: J-111 Rancor
+  name: J-111 Rancor Enforcer
   parent: BaseWeaponRifle
   id: SW_j111rancor
   description: An iconic weapon of war. Uses .30 rifle ammo.
@@ -164,7 +162,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
   - type: Gun
-    fireRate: 5
+    fireRate: 4.5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -174,7 +172,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: MagazineBlastRifle
+        startingItem: BlueMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -183,7 +181,7 @@
           - MagazineBlast
       gun_chamber:
         name: Chamber
-        startingItem: CartridgeBlast
+        startingItem: BlueCartridgeBlast
         priority: 1
         whitelist:
           tags:
@@ -199,7 +197,7 @@
   - type: Appearance
 
 - type: entity
-  name: Z-1 blaster carbine
+  name: Z-1 Huntsman Carbine
   parent: BaseWeaponRifle
   id: SW_z1blastercarbine
   description: An iconic weapon of war. Uses .30 rifle ammo.
@@ -214,7 +212,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
   - type: Gun
-    fireRate: 5
+    fireRate: 3
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -224,7 +222,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: MagazineBlastRifle
+        startingItem: Z1RedMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -233,7 +231,7 @@
           - MagazineBlast
       gun_chamber:
         name: Chamber
-        startingItem: CartridgeBlast
+        startingItem: Z1RedCartridgeBlast
         priority: 1
         whitelist:
           tags:
@@ -249,7 +247,7 @@
   - type: Appearance
 
 - type: entity
-  name: Beryara МК-3
+  name: Beryar's MK-3 Sniper Rifle
   parent: BaseWeaponRifle
   id: SW_beryaramk3
   description: An iconic weapon of war. Uses .30 rifle ammo.
@@ -264,7 +262,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
   - type: Gun
-    fireRate: 1
+    fireRate: 7
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -274,7 +272,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: MagazineBlastRifle
+        startingItem: SniperRifleYellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -283,7 +281,7 @@
           - MagazineBlast
       gun_chamber:
         name: Chamber
-        startingItem: CartridgeBlast
+        startingItem: SniperRifleYellowCartridgeBlast
         priority: 1
         whitelist:
           tags:
@@ -299,22 +297,20 @@
   - type: Appearance
 
 - type: entity
-  name: Grantec F-11D
+  name: Grantek F-11D Sniper Rifle
   parent: BaseWeaponRifle
-  id: SW_grantecf11d
+  id: SW_grantekf11d
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/Snipers/f11d.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
-    - state: mag-0
-      map: [ "enum.GunVisualLayers.Mag" ]
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/Snipers/f11d.rsi
   - type: Gun
-    fireRate: 1
+    fireRate: 7
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -324,7 +320,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: MagazineBlastRifle
+        startingItem: SniperRifleBlueMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -333,7 +329,7 @@
           - MagazineBlast
       gun_chamber:
         name: Chamber
-        startingItem: CartridgeBlast
+        startingItem: SniperRifleBlueCartridgeBlast
         priority: 1
         whitelist:
           tags:
@@ -349,22 +345,32 @@
   - type: Appearance
 
 - type: entity
-  name: K-406 Ripper
+  name: K-406 Combat Ripper
   parent: BaseWeaponRifle
   id: SW_k406ripper
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
+<<<<<<< Updated upstream
     sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+=======
+    sprite: _SW/Objects/Weapons/Guns/Snipers/k406.rsi
+>>>>>>> Stashed changes
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
     - state: mag-0
       map: [ "enum.GunVisualLayers.Mag" ]
   - type: Clothing
+<<<<<<< Updated upstream
     sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
   - type: Gun
     fireRate: 1
+=======
+    sprite: _SW/Objects/Weapons/Guns/Snipers/k406.rsi
+  - type: Gun
+    fireRate: 7
+>>>>>>> Stashed changes
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -374,7 +380,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: MagazineBlastRifle
+        startingItem: SniperRifleYellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -383,7 +389,7 @@
           - MagazineBlast
       gun_chamber:
         name: Chamber
-        startingItem: CartridgeBlast
+        startingItem: SniperRifleYellowCartridgeBlast
         priority: 1
         whitelist:
           tags:
@@ -398,3 +404,242 @@
     zeroVisible: true
   - type: Appearance
 
+- type: entity
+  name: EL-34 Rotary Plasma Cannon
+  parent: BaseWeaponRifle
+  id: SW_EL34
+  description: An iconic weapon of war. Uses .30 rifle ammo.
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+    layers:
+    - state: base
+      map: [ "enum.GunVisualLayers.Base" ]
+  - type: Clothing
+    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+  - type: Gun
+    fireRate: 10
+    soundGunshot:
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+  - type: ChamberMagazineAmmoProvider
+    soundRack:
+      path: /Audio/Weapons/Guns/Cock/ltrifle_cock.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: CannonYellowMagazineBlastRifle
+        insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+          - MagazineBlast
+      gun_chamber:
+        name: Chamber
+        startingItem: CannonYellowCartridgeBlast
+        priority: 1
+        whitelist:
+          tags:
+          - CartridgeBlast
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      gun_chamber: !type:ContainerSlot
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance
+
+- type: entity
+  name: Grantek F-11D Assault Cannon
+  parent: BaseWeaponRifle
+  id: SW_GrantekF11D
+  description: An iconic weapon of war. Uses .30 rifle ammo.
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+    layers:
+    - state: base
+      map: [ "enum.GunVisualLayers.Base" ]
+  - type: Clothing
+    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+  - type: Gun
+    fireRate: 10
+    soundGunshot:
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+  - type: ChamberMagazineAmmoProvider
+    soundRack:
+      path: /Audio/Weapons/Guns/Cock/ltrifle_cock.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: CannonBlueMagazineBlastRifle
+        insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+          - MagazineBlast
+      gun_chamber:
+        name: Chamber
+        startingItem: CannonBlueCartridgeBlast
+        priority: 1
+        whitelist:
+          tags:
+          - CartridgeBlast
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      gun_chamber: !type:ContainerSlot
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance
+
+- type: entity
+  name: GT-13 ST Assault Cannon
+  parent: BaseWeaponRifle
+  id: SW_GT-13ST
+  description: An iconic weapon of war. Uses .30 rifle ammo.
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+    layers:
+    - state: base
+      map: [ "enum.GunVisualLayers.Base" ]
+  - type: Clothing
+    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+  - type: Gun
+    fireRate: 10
+    soundGunshot:
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+  - type: ChamberMagazineAmmoProvider
+    soundRack:
+      path: /Audio/Weapons/Guns/Cock/ltrifle_cock.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: CannonYellowMagazineBlastRifle
+        insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+          - MagazineBlast
+      gun_chamber:
+        name: Chamber
+        startingItem: CannonYellowCartridgeBlast
+        priority: 1
+        whitelist:
+          tags:
+          - CartridgeBlast
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      gun_chamber: !type:ContainerSlot
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance
+
+- type: entity
+  name: Gallantry
+  parent: BaseWeaponRifle
+  id: SW_Gallantry
+  description: An iconic weapon of war. Uses .30 rifle ammo.
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+    layers:
+    - state: base
+      map: [ "enum.GunVisualLayers.Base" ]
+  - type: Clothing
+    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+  - type: Gun
+    fireRate: 10
+    soundGunshot:
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+  - type: ChamberMagazineAmmoProvider
+    soundRack:
+      path: /Audio/Weapons/Guns/Cock/ltrifle_cock.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: CannonYellowMagazineBlastRifle
+        insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+          - MagazineBlast
+      gun_chamber:
+        name: Chamber
+        startingItem: CannonYellowCartridgeBlast
+        priority: 1
+        whitelist:
+          tags:
+          - CartridgeBlast
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      gun_chamber: !type:ContainerSlot
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance
+
+- type: entity
+  name: MK-1 Assault Cannon
+  parent: BaseWeaponRifle
+  id: SW_MK1
+  description: An iconic weapon of war. Uses .30 rifle ammo.
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+    layers:
+    - state: base
+      map: [ "enum.GunVisualLayers.Base" ]
+  - type: Clothing
+    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+  - type: Gun
+    fireRate: 10
+    soundGunshot:
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+  - type: ChamberMagazineAmmoProvider
+    soundRack:
+      path: /Audio/Weapons/Guns/Cock/ltrifle_cock.ogg
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: CannonYellowMagazineBlastRifle
+        insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
+        priority: 2
+        whitelist:
+          tags:
+          - MagazineBlast
+      gun_chamber:
+        name: Chamber
+        startingItem: CannonYellowCartridgeBlast
+        priority: 1
+        whitelist:
+          tags:
+          - CartridgeBlast
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+      gun_chamber: !type:ContainerSlot
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance

@@ -1,5 +1,5 @@
 - type: entity
-  id: BulletBlast
+  id: RedBulletBlast
   name: Blast
   parent: BaseBullet
   noSpawn: true
@@ -7,10 +7,153 @@
   - type: Projectile
     damage:
       types:
-        Heat: 17
+        Heat: 12
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+      
+- type: entity
+  id: Z1RedBulletBlast
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 19
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
     layers:
     - state: base
       shader: unshaded
 
+- type: entity
+  id: GreenBulletBlast
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 12
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/green_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+      
+- type: entity
+  id: H206GreenBulletBlast
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 7.5
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/green_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+
+- type: entity
+  id: BlueBulletBlast
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 12
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+
+- type: entity
+  id: CannonBlueBulletBlast
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 5
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+      
+- type: entity
+  id: SniperRifleBlueBulletBlast
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 7
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+      
+- type: entity
+  id: YellowBulletBlast
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 12
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+
+- type: entity
+  id: CannonYellowBulletBlast
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 5
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+      
+- type: entity
+  id: SniperRifleYellowBulletBlast
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 7
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded

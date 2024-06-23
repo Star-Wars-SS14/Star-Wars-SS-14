@@ -17,3 +17,13 @@
   - type: Sprite
     sprite: _SW/Structures/Decoration/banner.rsi
     state: empire_banner_red
+    
+- type: entity
+  id: SW_bannerguild
+  parent: BannerBase
+  name: Alderaanxi banners
+  description: A banner displaying the Nanotrasen logo. It looks rather cheap.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Decoration/banner.rsi
+    state: banner.guild

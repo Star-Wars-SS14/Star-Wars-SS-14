@@ -12,6 +12,9 @@
     },
     {
       "name": "empire_banner_red"
-    }   
+    },
+    {
+      "name": "banner.guild"
+    }
   ]
 }

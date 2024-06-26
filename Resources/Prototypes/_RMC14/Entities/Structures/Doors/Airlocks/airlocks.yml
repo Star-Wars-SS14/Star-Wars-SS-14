@@ -125,7 +125,7 @@
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/medi_door_glass.rsi
   - type: PaintableAirlock
-    department: Medbay
+    department: Command
 
 - type: entity
   parent: CMAirlockGlass

@@ -44,9 +44,6 @@
   - type: PhysicalComposition
     materialComposition:
       CMGlass: 25
-  - type: ToolRefinable
-    refineResult:
-    - id: CMSheetGlass1
 
 - type: entity
   parent: CMLightBulbBase

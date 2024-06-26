@@ -4,8 +4,6 @@
   id: CMApcBase
   name: area power controller
   components:
-  - type: AccessReader
-    access: [["AccessEngineering"]]
   - type: Sprite
     drawdepth: WallMountedItems
     sprite: _RMC14/Structures/Power/apc.rsi
@@ -51,7 +49,7 @@
       behaviors:
       - !type:SpawnEntitiesBehavior
         spawn:
-          SheetMetal1:
+          CMSheetMetal1:
             min: 1
             max: 1
       - !type:DoActsBehavior
@@ -93,7 +91,7 @@
       behaviors:
       - !type:SpawnEntitiesBehavior
         spawn:
-          SheetMetal1:
+          CMSheetMetal1:
             min: 1
             max: 1
       - !type:DoActsBehavior

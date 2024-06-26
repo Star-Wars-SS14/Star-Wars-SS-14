@@ -113,7 +113,7 @@
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/Double/medical_glass.rsi
   - type: PaintableAirlock
-    department: Medbay
+    department: Command
 
 - type: entity
   parent: CMDoubleDoorBase
@@ -124,7 +124,7 @@
     sprite: _RMC14/Structures/Doors/Airlocks/Double/medical_solid.rsi
   - type: Occluder
   - type: PaintableAirlock
-    department: Medbay
+    department: Command
 
 - type: entity
   parent: CMDoubleDoorBase

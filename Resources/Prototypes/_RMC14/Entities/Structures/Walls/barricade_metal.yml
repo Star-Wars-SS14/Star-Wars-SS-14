@@ -60,7 +60,7 @@
       behaviors:
       - !type:SpawnEntitiesBehavior
         spawn:
-          PartSheetMetal1:
+          CMSheetMetal1:
             min: 2
             max: 2
       - !type:PlaySoundBehavior
@@ -289,7 +289,7 @@
       behaviors:
       - !type:SpawnEntitiesBehavior
         spawn:
-          PartSheetPlasteel1:
+          CMSheetPlasteel1:
             min: 4
             max: 4
       - !type:PlaySoundBehavior

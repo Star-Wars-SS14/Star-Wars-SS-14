@@ -44,7 +44,7 @@
       behaviors:
       - !type:SpawnEntitiesBehavior
         spawn:
-          CMRodMetal:
+          RodMetal:
             min: 0
             max: 1
       - !type:DoActsBehavior

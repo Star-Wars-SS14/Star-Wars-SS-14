@@ -16,7 +16,7 @@
     - board
   - type: Occluder
   - type: PaintableAirlock
-    department: CMSquad
+    department: Command
 
 - type: entity
   parent: CMAirlock
@@ -26,7 +26,7 @@
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/com_door.rsi
   - type: PaintableAirlock
-    department: CMCommand
+    department: Command
 
 - type: entity
   parent: CMAirlock
@@ -36,7 +36,7 @@
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/engi_door.rsi
   - type: PaintableAirlock
-    department: CMEngineering
+    department: Engineering
 
 - type: entity
   parent: CMAirlock
@@ -46,7 +46,7 @@
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/medi_door.rsi
   - type: PaintableAirlock
-    department: CMMedbay
+    department: Medbay
 
 - type: entity
   parent: CMAirlock
@@ -56,7 +56,7 @@
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/sec_door.rsi
   - type: PaintableAirlock
-    department: CMMilitaryPolice
+    department: Command
 
 - type: entity
   parent: CMAirlock
@@ -115,7 +115,7 @@
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/engi_door_glass.rsi
   - type: PaintableAirlock
-    department: CMEngineering
+    department: Engineering
 
 - type: entity
   parent: CMAirlockGlass
@@ -125,7 +125,7 @@
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/medi_door_glass.rsi
   - type: PaintableAirlock
-    department: CMMedbay
+    department: Medbay
 
 - type: entity
   parent: CMAirlockGlass
@@ -135,7 +135,7 @@
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/sec_door_glass.rsi
   - type: PaintableAirlock
-    department: CMMilitaryPolice
+    department: Command
 
 # Prep
 - type: entity

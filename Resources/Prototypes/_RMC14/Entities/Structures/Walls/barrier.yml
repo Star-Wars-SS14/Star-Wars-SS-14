@@ -11,8 +11,6 @@
     - state: locked
       map: ["enum.LockVisualLayers.Lock"]
   - type: Appearance
-  - type: AccessReader
-    access: [["CMAccessMarinePrep"]] # code/game/machinery/deployable.dm line 8
   - type: Lock
     locked: false
     lockOnClick: true

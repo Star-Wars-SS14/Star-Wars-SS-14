@@ -67,5 +67,3 @@
     denySpriteState: pilot_door_deny
   - type: ApcPowerReceiver
     powerLoad: 0
-  - type: AccessReader
-    access: [["CMAccessPilot"]]

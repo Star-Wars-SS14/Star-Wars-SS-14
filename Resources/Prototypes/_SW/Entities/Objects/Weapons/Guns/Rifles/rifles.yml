@@ -287,9 +287,6 @@
     steps: 1
     zeroVisible: true
   - type: Appearance
-  - type: Scope
-    zoom: 1.25 # TODO RMC14 2x and 4x zoom
-    requireWielding: true
 
 - type: entity
   name: Grantek F-11D Sniper Rifle
@@ -338,9 +335,6 @@
     steps: 1
     zeroVisible: true
   - type: Appearance
-  - type: Scope
-    zoom: 1.25 # TODO RMC14 2x and 4x zoom
-    requireWielding: true
 
 - type: entity
   name: K-406 Combat Ripper
@@ -389,9 +383,6 @@
     steps: 1
     zeroVisible: true
   - type: Appearance
-  - type: Scope
-    zoom: 1.25 # TODO RMC14 2x and 4x zoom
-    requireWielding: true
 
 - type: entity
   name: EL-34 Rotary Plasma Cannon

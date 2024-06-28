@@ -1,17 +1,5 @@
 - type: construction
   parent: RMC
-  name: barbed wire
-  id: Barbedwire
-  graph: BarbedWireGraph
-  startNode: start
-  targetNode: nodeBarbedWire
-  category: construction-category-cm-materials
-  description: Create barbed wire to decorate your barricades.
-  icon: { sprite: _RMC14/Objects/barbed_wire.rsi, state: barbed_wire }
-  objectType: Item
-
-- type: construction
-  parent: RMC
   id: CMSheetGlassReinforced
   name: reinforced glass
   description: A reinforced sheet of glass.

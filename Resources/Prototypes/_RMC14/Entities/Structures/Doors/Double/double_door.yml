@@ -5,7 +5,6 @@
   - CMBaseDoorConstructible
   id: CMDoubleDoorBase
   components:
-  - type: CMDoubleDoor
   - type: Door
     openSpriteState: door_open
     closedSpriteState: door_closed

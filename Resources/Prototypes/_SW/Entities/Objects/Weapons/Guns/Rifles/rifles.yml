@@ -53,14 +53,12 @@
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/p301.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
-    - state: mag-0
-      map: [ "enum.GunVisualLayers.Mag" ]
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/p301.rsi
   - type: Gun
     fireRate: 4.5
     soundGunshot:
@@ -103,14 +101,12 @@
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/h206.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
-    - state: mag-0
-      map: [ "enum.GunVisualLayers.Mag" ]
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/h206.rsi
   - type: Gun
     fireRate: 6
     soundGunshot:
@@ -153,14 +149,12 @@
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/j111.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
-    - state: mag-0
-      map: [ "enum.GunVisualLayers.Mag" ]
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/j111.rsi
   - type: Gun
     fireRate: 4.5
     soundGunshot:
@@ -203,14 +197,12 @@
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/z1.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
-    - state: mag-0
-      map: [ "enum.GunVisualLayers.Mag" ]
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/z1.rsi
   - type: Gun
     fireRate: 3
     soundGunshot:

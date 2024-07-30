@@ -1,8 +1,8 @@
 - type: entity
   parent: ActionMarineBase
   id: CMActionToggleScope
-  name: Toggle Optics
-  description: Scope in or out with your optics.
+  name: Переключить оптику
+  description: Присмотреться с помощью бинокля...
   components:
   - type: InstantAction
     icon:

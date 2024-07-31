@@ -7,6 +7,3 @@
   showInVote: false
   rules:
     - SectorWar
-    - BasicStationEventScheduler
-    - GameRuleMeteorScheduler
-    - BasicRoundstartVariation

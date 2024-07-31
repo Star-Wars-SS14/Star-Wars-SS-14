@@ -50,7 +50,8 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
             }
 
             _map.InitializeMap(mapUid);
-            
+            _map.SetPaused(mapUid, false);
+
             var ev = new RuleLoadedGridsEvent(mapId, grids);
             RaiseLocalEvent(uid, ref ev);
         }

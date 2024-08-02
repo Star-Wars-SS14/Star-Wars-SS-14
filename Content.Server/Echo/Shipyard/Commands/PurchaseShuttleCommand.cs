@@ -1,8 +1,8 @@
 using Content.Server.Administration;
 using Content.Server.Maps;
-using Content.Server.Shipyard.Systems;
 using Content.Shared.Administration;
 using Robust.Shared.Console;
+using ShipyardSystem = Content.Server.Echo.Shipyard.Systems.ShipyardSystem;
 
 namespace Content.Server.Shipyard.Commands;
 

@@ -1,46 +1,49 @@
-using Content.Server.Access.Systems;
-using Content.Server.Popups;
-using Content.Server.Radio.EntitySystems;
-using Content.Server.Shipyard.Components;
-using Content.Shared.Bank.Components;
-using Content.Shared.Shipyard.Events;
-using Content.Shared.Shipyard.BUI;
-using Content.Shared.Shipyard.Prototypes;
-using Content.Shared.Shipyard.Components;
-using Content.Shared.Access.Systems;
-using Content.Shared.Access.Components;
-using Content.Shared.Shipyard;
-using Robust.Server.GameObjects;
-using Robust.Shared.Containers;
-using Robust.Shared.Prototypes;
-using Content.Shared.Radio;
+using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
+using Content.Server.Access.Systems;
 using Content.Server.Administration.Logs;
 using Content.Server.Cargo.Components;
-using Content.Shared.Mobs.Components;
-using Content.Shared.Mobs.Systems;
-using Content.Server.Maps;
-using Content.Shared.StationRecords;
 using Content.Server.Chat.Systems;
+using Content.Server.Echo.Bank;
+using Content.Server.Echo.GameTicking.Rules.Components;
 using Content.Server.Forensics;
+using Content.Server.Maps;
 using Content.Server.Mind;
+using Content.Server.Popups;
 using Content.Server.Preferences.Managers;
-using Content.Server.StationRecords;
-using Content.Server.StationRecords.Systems;
-using Content.Shared.Database;
-using Content.Shared.Preferences;
-using Content.Shared.Shuttles.Components;
-using static Content.Shared.Shipyard.Components.ShuttleDeedComponent;
+using Content.Server.Radio.EntitySystems;
+using Content.Server.Shipyard.Components;
 using Content.Server.Shuttles.Components;
 using Content.Server.Station.Components;
-using System.Text.RegularExpressions;
-using Content.Shared.UserInterface;
-using Robust.Shared.Audio;
-using Robust.Shared.Audio.Systems;
+using Content.Server.Station.Systems;
+using Content.Server.StationRecords;
+using Content.Server.StationRecords.Systems;
 using Content.Shared.Access;
-using BankSystem = Content.Server.Echo.Bank.BankSystem;
+using Content.Shared.Access.Components;
+using Content.Shared.Access.Systems;
+using Content.Shared.Bank.Components;
+using Content.Shared.Database;
+using Content.Shared.Echo.GameTicking.Components;
+using Content.Shared.Mobs.Components;
+using Content.Shared.Mobs.Systems;
+using Content.Shared.Preferences;
+using Content.Shared.Radio;
+using Content.Shared.Shipyard;
+using Content.Shared.Shipyard.BUI;
+using Content.Shared.Shipyard.Components;
+using Content.Shared.Shipyard.Events;
+using Content.Shared.Shipyard.Prototypes;
+using Content.Shared.Shuttles.Components;
+using Content.Shared.StationRecords;
+using Content.Shared.UserInterface;
+using Robust.Server.GameObjects;
+using Robust.Shared.Audio.Systems;
+using Robust.Shared.Containers;
+using Robust.Shared.Prototypes;
+using static Content.Shared.Shipyard.Components.ShuttleDeedComponent;
 
-namespace Content.Server.Shipyard.Systems;
+namespace Content.Server.Echo.Shipyard.Systems;
 
 public sealed partial class ShipyardSystem : SharedShipyardSystem
 {
@@ -52,7 +55,6 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly RadioSystem _radio = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly BankSystem _bank = default!;
     [Dependency] private readonly IdCardSystem _idSystem = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly StationRecordsSystem _records = default!;
@@ -61,11 +63,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     [Dependency] private readonly MindSystem _mind = default!;
     [Dependency] private readonly UserInterfaceSystem _userInterface = default!;
     [Dependency] private readonly EntityManager _entityManager = default!;
-
-    public void InitializeConsole()
-    {
-
-    }
+    [Dependency] private readonly BankSystem _bank = default!;
 
     private void OnPurchaseMessage(EntityUid uid, ShipyardConsoleComponent component, ShipyardConsolePurchaseMessage args)
     {
@@ -127,13 +125,6 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             return;
         }
 
-        if (!TryComp<BankAccountComponent>(player, out var bank))
-        {
-            ConsolePopup(args.Actor, Loc.GetString("shipyard-console-no-bank"));
-            PlayDenySound(args.Actor, uid, component);
-            return;
-        }
-
         // Keep track of whether or not a voucher was used.
         // TODO: voucher purchase should be done in a separate function.
         bool voucherUsed = false;
@@ -150,14 +141,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         }
         else
         {
-            if (bank.Balance <= vessel.Price)
-            {
-                ConsolePopup(args.Actor, Loc.GetString("cargo-console-insufficient-funds", ("cost", vessel.Price)));
-                PlayDenySound(args.Actor, uid, component);
-                return;
-            }
-
-            if (!_bank.TryBankWithdraw(player, vessel.Price))
+            if (!_bank.TryWithdraw(player, vessel.Price))
             {
                 ConsolePopup(args.Actor, Loc.GetString("cargo-console-insufficient-funds", ("cost", vessel.Price)));
                 PlayDenySound(args.Actor, uid, component);
@@ -166,7 +150,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         }
 
 
-        if (!TryPurchaseShuttle((EntityUid) station, vessel.ShuttlePath.ToString(), out var shuttle))
+        if (!TryPurchaseShuttle(station, vessel.ShuttlePath.ToString(), out var shuttle))
         {
             PlayDenySound(args.Actor, uid, component);
             return;
@@ -270,11 +254,11 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         PlayConfirmSound(args.Actor, uid, component);
         if (voucherUsed)
-            _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(player):actor} purchased shuttle {ToPrettyString(shuttle.Owner)} with a voucher via {ToPrettyString(component.Owner)}");
+            _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(player):actor} purchased shuttle {ToPrettyString((Entity<MetaDataComponent?>)shuttle.Owner)} with a voucher via {ToPrettyString(component.Owner)}");
         else
-            _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(player):actor} purchased shuttle {ToPrettyString(shuttle.Owner)} for {vessel.Price} credits via {ToPrettyString(component.Owner)}");
+            _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(player):actor} purchased shuttle {ToPrettyString((Entity<MetaDataComponent?>)shuttle.Owner)} for {vessel.Price} credits via {ToPrettyString(component.Owner)}");
 
-        RefreshState(uid, bank.Balance, true, name, sellValue, targetId, (ShipyardConsoleUiKey) args.UiKey, voucherUsed);
+        RefreshState(uid, 0, true, name, sellValue, targetId, (ShipyardConsoleUiKey) args.UiKey, voucherUsed);
     }
 
     private void TryParseShuttleName(ShuttleDeedComponent deed, string name)
@@ -319,13 +303,6 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             return;
         }
 
-        if (!TryComp<BankAccountComponent>(player, out var bank))
-        {
-            ConsolePopup(args.Actor, Loc.GetString("shipyard-console-no-bank"));
-            PlayDenySound(args.Actor, uid, component);
-            return;
-        }
-
         if (_station.GetOwningStation(uid) is not { Valid: true } stationUid)
         {
             ConsolePopup(args.Actor, Loc.GetString("shipyard-console-invalid-station"));
@@ -347,17 +324,17 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         var shuttleName = ToPrettyString(shuttleUid); // Grab the name before it gets 1984'd
 
         var saleResult = TrySellShuttle(stationUid, shuttleUid, out var bill);
-        if (saleResult.Error != ShipyardSaleError.Success)
+        if (saleResult.Error != ShipyardSystem.ShipyardSaleError.Success)
         {
             switch (saleResult.Error)
             {
-                case ShipyardSaleError.Undocked:
+                case ShipyardSystem.ShipyardSaleError.Undocked:
                     ConsolePopup(args.Actor, Loc.GetString("shipyard-console-sale-not-docked"));
                     break;
-                case ShipyardSaleError.OrganicsAboard:
+                case ShipyardSystem.ShipyardSaleError.OrganicsAboard:
                     ConsolePopup(args.Actor, Loc.GetString("shipyard-console-sale-organic-aboard", ("name", saleResult.OrganicName ?? "Somebody")));
                     break;
-                case ShipyardSaleError.InvalidShip:
+                case ShipyardSystem.ShipyardSaleError.InvalidShip:
                     ConsolePopup(args.Actor, Loc.GetString("shipyard-console-sale-invalid-ship"));
                     break;
                 default:
@@ -372,24 +349,11 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         if (!voucherUsed)
         {
-            var tax = CalculateSalesTax(component, bill);
-            if (tax != 0)
-            {
-                var query = EntityQueryEnumerator<StationBankAccountComponent>();
-
-                while (query.MoveNext(out _, out var comp))
-                {
-                    _cargo.DeductFunds(comp, -tax);
-                }
-
-                bill -= tax;
-            }
-
-            _bank.TryBankDeposit(player, bill);
+            _bank.TryWithdraw(player, -bill);
             PlayConfirmSound(args.Actor, uid, component);
         }
 
-        var name = GetFullName(deed);
+        var name = ShipyardSystem.GetFullName(deed);
         SendSellMessage(uid, deed.ShuttleOwner!, name, component.ShipyardChannel, player, secret: false);
         if (component.SecretShipyardChannel is { } secretChannel)
             SendSellMessage(uid, deed.ShuttleOwner!, name, secretChannel, player, secret: true);
@@ -410,7 +374,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         else
             _adminLogger.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(player):actor} sold {shuttleName} for {bill} credits via {ToPrettyString(component.Owner)}");
 
-        RefreshState(uid, bank.Balance, true, null, 0, refreshId, (ShipyardConsoleUiKey) args.UiKey, voucherUsed);
+        RefreshState(uid, 0, true, null, 0, refreshId, (ShipyardConsoleUiKey) args.UiKey, voucherUsed);
     }
 
     private void OnConsoleUIOpened(EntityUid uid, ShipyardConsoleComponent component, BoundUIOpenedEvent args)
@@ -420,15 +384,6 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         // kind of cursed. We need to update the UI when an Id is entered, but the UI needs to know the player characters bank account.
         if (!TryComp<ActivatableUIComponent>(uid, out var uiComp) || uiComp.Key == null)
-            return;
-
-        if (args.Actor is not { Valid: true } player)
-            return;
-
-        //      mayhaps re-enable this later for HoS/SA
-        //        var station = _station.GetOwningStation(uid);
-
-        if (!TryComp<BankAccountComponent>(player, out var bank))
             return;
 
         var targetId = component.TargetIdSlot.ContainerSlot?.ContainedEntity;
@@ -450,8 +405,8 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         sellValue -= CalculateSalesTax(component, sellValue);
 
-        var fullName = deed != null ? GetFullName(deed) : null;
-        RefreshState(uid, bank.Balance, true, fullName, sellValue, targetId, (ShipyardConsoleUiKey) args.UiKey, voucherUsed);
+        var fullName = deed != null ? ShipyardSystem.GetFullName(deed) : null;
+        RefreshState(uid, 0, true, fullName, sellValue, targetId, (ShipyardConsoleUiKey) args.UiKey, voucherUsed);
     }
 
     private void ConsolePopup(EntityUid uid, string text)
@@ -520,9 +475,6 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             if (user is not { Valid: true } player)
                 continue;
 
-            if (!TryComp<BankAccountComponent>(player, out var bank))
-                continue;
-
             var targetId = component.TargetIdSlot.ContainerSlot?.ContainedEntity;
 
             if (TryComp<ShuttleDeedComponent>(targetId, out var deed))
@@ -542,9 +494,9 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
             sellValue -= CalculateSalesTax(component, sellValue);
 
-            var fullName = deed != null ? GetFullName(deed) : null;
+            var fullName = deed != null ? ShipyardSystem.GetFullName(deed) : null;
             RefreshState(uid,
-                bank.Balance,
+                0,
                 true,
                 fullName,
                 sellValue,
@@ -681,6 +633,20 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
     private void RefreshState(EntityUid uid, int balance, bool access, string? shipDeed, int shipSellValue, EntityUid? targetId, ShipyardConsoleUiKey uiKey, bool freeListings)
     {
+        var station = _station.GetOwningStation(uid);
+        if(!TryComp<CapturableStationComponent>(station, out var capturableStationComponent))
+            return;
+
+        var query = EntityQueryEnumerator<SectorWarRuleComponent>();
+        while (query.MoveNext(out _, out var rule))
+        {
+            balance = capturableStationComponent.Fraction switch
+            {
+                SectorFractions.Alliance => rule.AllianceCredits,
+                SectorFractions.Resistance => rule.ResistanceCredits,
+                _ => balance,
+            };
+        }
         var newState = new ShipyardConsoleInterfaceState(
             balance,
             access,

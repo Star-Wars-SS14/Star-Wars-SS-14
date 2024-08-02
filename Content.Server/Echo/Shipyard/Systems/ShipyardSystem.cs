@@ -1,25 +1,23 @@
-using Content.Server.Shuttles.Systems;
-using Content.Server.Shuttles.Components;
-using Content.Server.Station.Components;
-using Content.Server.Cargo.Systems;
-using Content.Server.Station.Systems;
-using Content.Shared.Shipyard.Components;
-using Content.Shared.Shipyard;
-using Content.Shared.GameTicking;
-using Robust.Server.GameObjects;
-using Robust.Server.Maps;
-using Robust.Shared.Map;
-using Content.Shared.CCVar;
-using Robust.Shared.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
-using Content.Shared.Coordinates;
-using Content.Shared.Shipyard.Events;
+using Content.Server.Cargo.Systems;
+using Content.Server.Shuttles.Components;
+using Content.Server.Shuttles.Systems;
+using Content.Server.Station.Components;
+using Content.Server.Station.Systems;
+using Content.Shared.GameTicking;
 using Content.Shared.Mobs.Components;
+using Content.Shared.Shipyard;
+using Content.Shared.Shipyard.Components;
+using Content.Shared.Shipyard.Events;
+using Robust.Server.GameObjects;
+using Robust.Server.Maps;
+using Robust.Shared.Configuration;
 using Robust.Shared.Containers;
+using Robust.Shared.Map;
 
-namespace Content.Server.Shipyard.Systems;
+namespace Content.Server.Echo.Shipyard.Systems;
 
 public sealed partial class ShipyardSystem : SharedShipyardSystem
 {
@@ -69,7 +67,6 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     }
     private void OnShipyardStartup(EntityUid uid, ShipyardConsoleComponent component, ComponentStartup args)
     {
-        InitializeConsole();
         SetupShipyard();
     }
 

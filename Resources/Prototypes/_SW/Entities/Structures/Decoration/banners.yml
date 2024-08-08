@@ -1,6 +1,38 @@
 - type: entity
-  id: SW_BannerEmpire
+  id: SW_BannerBase
   parent: BannerBase
+  components:
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 75
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          MaterialCloth1:
+            min: 1
+            max: 2 
+  - type: Butcherable
+    butcheringType: Knife
+    spawned:
+    - id: MaterialCloth1
+      amount: 3 
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.2
+        density: 190
+        mask:
+        - TableMask          
+
+- type: entity       
+  id: SW_BannerEmpire
+  parent: SW_BannerBase
   name: empire banner
   description: A banner displaying the Nanotrasen logo. It looks rather cheap.
   components:
@@ -10,7 +42,7 @@
     
 - type: entity
   id: SW_BannerEmpireRed
-  parent: BannerBase
+  parent: SW_BannerBase
   name: empire banner red
   description: A banner displaying the Nanotrasen logo. It looks rather cheap.
   components:
@@ -20,10 +52,40 @@
     
 - type: entity
   id: SW_bannerguild
-  parent: BannerBase
+  parent: SW_BannerBase
   name: Alderaanxi banners
   description: A banner displaying the Nanotrasen logo. It looks rather cheap.
   components:
   - type: Sprite
     sprite: _SW/Structures/Decoration/banner.rsi
     state: banner.guild
+    
+- type: entity
+  id: SW_BannerEmpire
+  parent: SW_BannerBase
+  name: Alderaanxi banners
+  description: A banner displaying the Nanotrasen logo. It looks rather cheap.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Decoration/bannerEmpire.rsi
+    state: banner
+    
+- type: entity
+  id: SW_BannerMandalorian
+  parent: SW_BannerBase
+  name: Alderaanxi banners
+  description: A banner displaying the Nanotrasen logo. It looks rather cheap.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Decoration/bannerMandalorian.rsi
+    state: banner
+    
+- type: entity
+  id: SW_BannerRepublic
+  parent: SW_BannerBase
+  name: Alderaanxi banners
+  description: A banner displaying the Nanotrasen logo. It looks rather cheap.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Decoration/bannerRepublic.rsi
+    state: banner

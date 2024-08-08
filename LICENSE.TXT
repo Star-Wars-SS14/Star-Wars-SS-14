@@ -20,3 +20,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+Copyright (c) 2024 Star-Wars-SS14 (Owned by user "localpulse")
+
+All rights reserved.
+
+This source code is the exclusive property of Star-Wars-SS14 (Owned by user "localpulse") and is protected by copyright law. You are granted no rights or permissions to use, modify, distribute, sublicense, or reproduce this source code in any form, in whole or in part, without the express written consent of Star-Wars-SS14 (Owned by user "localpulse").
+
+Any unauthorized use or reproduction of this source code is strictly prohibited and may result in legal action.
+
+For inquiries or licensing requests, please contact Star-Wars-SS14 (Owned by user "localpulse") at starwars_ss14@proton.me.

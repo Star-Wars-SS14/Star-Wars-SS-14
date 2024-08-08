@@ -229,3 +229,28 @@
       state: shipyard_sr
     - map: ["computerLayerKeys"]
       state: telesci_key
+
+- type: entity
+  name: capture console
+  parent: [BaseComputer]
+  id: ComputerCapture
+  description: Used to controll the station's fraction
+  components:
+  - type: Sprite
+    sprite: _NF/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: shipyard
+    - map: ["computerLayerKeys"]
+      state: telesci_key
+  - type: ActivatableUI
+    singleUser: true
+    key: enum.CaptureConsoleUi.Key
+  - type: UserInterface
+    interfaces:
+      enum.CaptureConsoleUi.Key:
+        type: CaptureConsoleBoundUserInterface

@@ -1,6 +1,6 @@
 using Content.Shared.Containers.ItemSlots;
+using Content.Shared.Echo.Shipyard.BUI;
 using Content.Shared.Shipyard;
-using Content.Shared.Shipyard.BUI;
 using Content.Shared.Shipyard.Events;
 using Robust.Shared.Utility;
 using static Robust.Client.UserInterface.Controls.BaseButton;
@@ -39,16 +39,14 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
         }
         _menu.OnClose += Close;
         _menu.OnOrderApproved += ApproveOrder;
-        _menu.OnSellShip += SellShip;
-        _menu.TargetIdButton.OnPressed += _ => SendMessage(new ItemSlotButtonPressedEvent("ShipyardConsole-targetId"));
     }
 
-    private void Populate(List<string> prototypes, string name, bool freeListings)
+    private void Populate(List<string> prototypes, string name)
     {
         if (_menu == null)
             return;
 
-        _menu.PopulateProducts(prototypes, name, freeListings);
+        _menu.PopulateProducts(prototypes, name);
         _menu.PopulateCategories();
     }
 
@@ -60,9 +58,8 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
             return;
 
         Balance = cState.Balance;
-        ShipSellValue = cState.ShipSellValue;
         var castState = (ShipyardConsoleInterfaceState) state;
-        Populate(castState.ShipyardPrototypes, castState.ShipyardName, castState.FreeListings);
+        Populate(castState.ShipyardPrototypes, castState.ShipyardName);
         _menu?.UpdateState(castState);
     }
 

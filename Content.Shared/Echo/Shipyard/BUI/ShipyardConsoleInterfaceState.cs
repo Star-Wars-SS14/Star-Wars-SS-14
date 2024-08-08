@@ -1,40 +1,18 @@
 using Robust.Shared.Serialization;
 
-namespace Content.Shared.Shipyard.BUI;
+namespace Content.Shared.Echo.Shipyard.BUI;
 
 [NetSerializable, Serializable]
-public sealed class ShipyardConsoleInterfaceState : BoundUserInterfaceState
+public sealed class ShipyardConsoleInterfaceState(
+    int balance,
+    byte uiKey,
+    List<string> shipyardPrototypes,
+    string shipyardName)
+    : BoundUserInterfaceState
 {
-    public int Balance;
-    public readonly bool AccessGranted;
-    public readonly string? ShipDeedTitle;
-    public int ShipSellValue;
-    public readonly bool IsTargetIdPresent;
-    public readonly byte UiKey;
+    public int Balance = balance;
+    public readonly byte UiKey = uiKey;
 
-    public readonly List<string> ShipyardPrototypes;
-    public readonly string ShipyardName;
-    public readonly bool FreeListings;
-
-    public ShipyardConsoleInterfaceState(
-        int balance,
-        bool accessGranted,
-        string? shipDeedTitle,
-        int shipSellValue,
-        bool isTargetIdPresent,
-        byte uiKey,
-        List<string> shipyardPrototypes,
-        string shipyardName,
-        bool freeListings)
-    {
-        Balance = balance;
-        AccessGranted = accessGranted;
-        ShipDeedTitle = shipDeedTitle;
-        ShipSellValue = shipSellValue;
-        IsTargetIdPresent = isTargetIdPresent;
-        UiKey = uiKey;
-        ShipyardPrototypes = shipyardPrototypes;
-        ShipyardName = shipyardName;
-        FreeListings = freeListings;
-    }
+    public readonly List<string> ShipyardPrototypes = shipyardPrototypes;
+    public readonly string ShipyardName = shipyardName;
 }

@@ -354,19 +354,21 @@ namespace Content.Server.RoundEnd
         public override void Update(float frameTime)
         {
             // Check if we should auto-call.
-            int mins = _autoCalledBefore ? _cfg.GetCVar(CCVars.EmergencyShuttleAutoCallExtensionTime)
+            var mins = _autoCalledBefore
+                ? _cfg.GetCVar(CCVars.EmergencyShuttleAutoCallExtensionTime)
                                         : _cfg.GetCVar(CCVars.EmergencyShuttleAutoCallTime);
-            if (mins != 0 && _gameTiming.CurTime - AutoCallStartTime > TimeSpan.FromMinutes(mins))
-            {
-                if (!_shuttle.EmergencyShuttleArrived && ExpectedCountdownEnd is null)
-                {
-                    _autoCalledBefore = true; // Corvax-Announcements: Move before call RequestRoundEnd to play correct announcement sound type
-                    RequestRoundEnd(null, false, "round-end-system-shuttle-auto-called-announcement");
-                }
 
-                // Always reset auto-call in case of a recall.
-                SetAutoCallTime();
+            if (mins == 0 || _gameTiming.CurTime - AutoCallStartTime <= TimeSpan.FromMinutes(mins))
+                return;
+
+            if (!_shuttle.EmergencyShuttleArrived && ExpectedCountdownEnd is null)
+            {
+                _autoCalledBefore = true; // Corvax-Announcements: Move before call RequestRoundEnd to play correct announcement sound type
+                RequestRoundEnd(null, false, "round-end-system-shuttle-auto-called-announcement");
             }
+
+            // Always reset auto-call in case of a recall.
+            SetAutoCallTime();
         }
     }
 

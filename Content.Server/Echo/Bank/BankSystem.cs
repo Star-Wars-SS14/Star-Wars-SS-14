@@ -29,8 +29,11 @@ public sealed partial class BankSystem : EntitySystem
         if (!TryComp<CapturableStationComponent>(station, out var capturableStationComponent))
             return false;
 
+        var ruleActive = false;
+
         while (query.MoveNext(out _, out var rule))
         {
+            ruleActive = true;
             switch (capturableStationComponent.Fraction)
             {
                 case SectorFractions.Alliance:
@@ -58,6 +61,8 @@ public sealed partial class BankSystem : EntitySystem
                     break;
             }
         }
-        return true;
+
+
+        return ruleActive;
     }
 }

@@ -61,7 +61,7 @@
     state: banner.guild
     
 - type: entity
-  id: SW_BannerEmpire
+  id: SW_BannerEmpireSith
   parent: SW_BannerBase
   name: Alderaanxi banners
   description: A banner displaying the Nanotrasen logo. It looks rather cheap.

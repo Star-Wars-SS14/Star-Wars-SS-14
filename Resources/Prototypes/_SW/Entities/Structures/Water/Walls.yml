@@ -2,6 +2,7 @@
   id: SW_FloorWaterEntity
   name: water
   description: A real thirst quencher.
+  suffix: Wall  
   placement:
     mode: SnapgridCenter
     snap:
@@ -62,8 +63,5 @@
     blacklist:
       tags:
         - Catwalk
-  - type: TileEntityEffect
-    effects:
-    - !type:ExtinguishReaction
 
 

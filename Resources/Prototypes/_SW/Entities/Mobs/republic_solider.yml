@@ -1,9 +1,0 @@
-- type: entity
-  name: Rebuplic solider
-  parent: BaseMobHuman
-  id: SW_MobRebelSolider
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [RepublicSoliderGear]
-

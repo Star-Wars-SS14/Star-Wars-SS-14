@@ -1,9 +1,8 @@
-using Content.Client.Mapping;
 using Content.Client.Markers;
 using JetBrains.Annotations;
 using Robust.Client.Graphics;
-using Robust.Client.State;
 using Robust.Shared.Console;
+using Robust.Client.State;
 
 namespace Content.Client.Commands;
 
@@ -29,3 +28,4 @@ internal sealed class MappingClientSideSetupCommand : LocalizedCommands
         }
     }
 }
+

@@ -33,10 +33,6 @@
     doAfterDuration: 6.25
     allowDoAfterMovement: false
     canDefibCrit: false
-    cmZapHeal:
-    - Brute: -12
-    - Burn: -12
-    - Toxin: -12
     zapHeal:
       types:
         Asphyxiation: -200

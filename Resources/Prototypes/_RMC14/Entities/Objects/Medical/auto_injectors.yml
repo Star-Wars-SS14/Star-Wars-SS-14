@@ -129,14 +129,14 @@
   description: An autoinjector loaded with 3 uses of Dexalin+, designed to immediately oxygenate the entire body.
   components:
   - type: Hypospray
-    transferAmount: 1
+    transferAmount: 15
   - type: SolutionContainerManager
     solutions:
       pen:
-        maxVol: 3
+        maxVol: 45
         reagents:
-        - ReagentId: CMDexalinPlus
-          Quantity: 3
+        - ReagentId: DexalinPlus
+          Quantity: 45
 # TODO RMC14 tramadol
 
 - type: entity

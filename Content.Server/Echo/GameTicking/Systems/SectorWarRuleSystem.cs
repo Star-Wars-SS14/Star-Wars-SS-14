@@ -89,11 +89,11 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
         {
             var gameMap = _prototypeManager.Index(map);
             maps.Add(gameMap);
-            var mapUid = _map.CreateMap(out var mapId, false);
+           _map.CreateMap(out var mapId);
             GameTicker.LoadGameMap(gameMap, mapId, new MapLoadOptions { LoadMap = true, DoMapInit = true });
             //_map.InitializeMap(mapId);
             //_gameTicker.LoadGameMap(_prototype.Index<GameMapPrototype>(map.Id), mapId, null);
-
+            _map.SetPaused(mapId, false);
             Log.Info($"Created map {mapId} for {ToPrettyString(uid):rule}");
             /*
             if (gameMap.MapPath is var path)

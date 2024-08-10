@@ -1,4 +1,6 @@
-﻿using Content.Server.Station.Systems;
+﻿using System.Linq;
+using Content.Server.Station.Components;
+using Content.Server.Station.Systems;
 using Content.Server.Xenoarchaeology.Equipment.Components;
 using Content.Server.Xenoarchaeology.XenoArtifacts;
 using Content.Shared.Audio;
@@ -61,17 +63,34 @@ public sealed class CaptureConsoleSystem : EntitySystem
 
         var currentFraction = SectorFractions.Alliance;
 
-        if(TryComp<CapturableStationComponent>(_station.GetOwningStation(uid), out var capturableStationComponent))
+        if (TryComp<CapturableStationComponent>(_station.GetOwningStation(uid), out var capturableStationComponent))
             currentFraction = capturableStationComponent.Fraction;
 
         TimeSpan? totalTime = null;
+        SectorFractions? userFraction;
+        if (HasComp<AllianceStaffComponent>(uid))
+        {
+            userFraction = SectorFractions.Alliance;
+        }
+        else if (HasComp<ResistanceStaffComponent>(uid))
+        {
+            userFraction = SectorFractions.Resistance;
+        }
+        else
+        {
+            userFraction = null;
+        }
 
+        var station = GetNetEntity(_station.GetOwningStation(uid));
+        var name = _station.GetStationNames().First(x => x.Entity == station).Name;
         var state = new CaptureConsoleUpdateState(
             component.Capturing,
             component.StartTime,
             component.AccumulatedRunTime,
-            totalTime,
-            currentFraction
+            totalTime ?? TimeSpan.Zero,
+            currentFraction,
+            userFraction,
+            name
         );
 
         _ui.SetUiState(uid, CaptureConsoleUi.Key, state);
@@ -81,7 +100,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
         CaptureConsoleComponent component,
         CaptureConsoleButtonPressedMessage args)
     {
-
+        //TODO
 
         UpdateUserInterface(uid, component);
     }

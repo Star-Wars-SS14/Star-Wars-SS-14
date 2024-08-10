@@ -10,6 +10,7 @@ using Content.Shared.Preferences;
 using Content.Shared.Preferences.Loadouts;
 using Content.Shared.Roles;
 using Content.Shared.Traits;
+using Robust.Server.GameObjects;
 using Robust.Shared.GameStates;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
@@ -19,15 +20,18 @@ namespace Content.Server.Echo.Bank;
 public sealed partial class BankSystem : EntitySystem
 {
     [Dependency] private readonly StationSystem _station = default!;
+    [Dependency] private readonly TransformSystem _transform = default!;
 
     private readonly ISawmill _log = default!;
 
     public bool TryWithdraw(EntityUid uid, int amount)
     {
-        var station = _station.GetOwningStation(uid);
+        var station = _station.GetStationInMap(_transform.GetMapId(uid));
         var query = EntityQueryEnumerator<SectorWarRuleComponent>();
-        if (!TryComp<CapturableStationComponent>(station, out var capturableStationComponent))
+        if (station == null)
             return false;
+
+        var capturableStationComponent = EnsureComp<CapturableStationComponent>(station.Value);
 
         var ruleActive = false;
 

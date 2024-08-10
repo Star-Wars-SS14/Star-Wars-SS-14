@@ -16,17 +16,27 @@ public sealed class CaptureConsoleUpdateState(
     bool capturing,
     TimeSpan? startTime,
     TimeSpan? accumulatedRunTime,
-    TimeSpan? totalTime,
-    SectorFractions fraction
+    TimeSpan totalTime,
+    SectorFractions fraction,
+    SectorFractions? userFraction,
+    string stationName
 )
     : BoundUserInterfaceState
 {
     public bool Capturing = capturing;
     public TimeSpan? StartTime = startTime;
     public TimeSpan? AccumulatedRunTime = accumulatedRunTime;
-    public TimeSpan? TotalTime = totalTime;
-    public SectorFractions Fraction = fraction;
+    public TimeSpan TotalTime = totalTime;
+    public SectorFractions StationFraction = fraction;
+    public SectorFractions? UserFraction = userFraction;
+    public string StationName = stationName;
 }
+
+[RegisterComponent]
+public sealed partial class AllianceStaffComponent  : Component;
+
+[RegisterComponent]
+public sealed partial class ResistanceStaffComponent  : Component;
 
 [RegisterComponent]
 public sealed partial class CaptureConsoleComponent : Component
@@ -48,6 +58,4 @@ public sealed partial class CaptureConsoleComponent : Component
 }
 
 [Serializable, NetSerializable]
-public sealed class CaptureConsoleButtonPressedMessage : BoundUserInterfaceMessage
-{
-}
+public sealed class CaptureConsoleButtonPressedMessage : BoundUserInterfaceMessage;

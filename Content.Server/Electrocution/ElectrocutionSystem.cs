@@ -1,3 +1,5 @@
+using Content.Server._SW.Abilities;
+using Content.Server._SW.Lightsaber;
 using Content.Server.Administration.Logs;
 using Content.Server.Light.Components;
 using Content.Server.NodeContainer;
@@ -395,13 +397,15 @@ public sealed class ElectrocutionSystem : SharedElectrocutionSystem
             return false;
 
         var shouldStun = siemensCoefficient > 0.5f;
+        var hasLightningEventComponent = EntityManager.HasComponent<LightningEventComponent>(uid);
+        var hasBlockEventComponent = EntityManager.HasComponent<BlockEventComponent>(uid);
 
-        if (shouldStun)
+        if (shouldStun & !hasLightningEventComponent & !hasBlockEventComponent)
             _stun.TryParalyze(uid, time * ParalyzeTimeMultiplier, refresh, statusEffects);
 
         // TODO: Sparks here.
 
-        if (shockDamage is { } dmg)
+        if (shockDamage is { } dmg && !hasLightningEventComponent & !hasBlockEventComponent)
         {
             var actual = _damageable.TryChangeDamage(uid,
                 new DamageSpecifier(_prototypeManager.Index<DamageTypePrototype>(DamageType), dmg), origin: sourceUid);
@@ -413,22 +417,25 @@ public sealed class ElectrocutionSystem : SharedElectrocutionSystem
             }
         }
 
-        _stuttering.DoStutter(uid, time * StutteringTimeMultiplier, refresh, statusEffects);
-        _jittering.DoJitter(uid, time * JitterTimeMultiplier, refresh, JitterAmplitude, JitterFrequency, true, statusEffects);
+        if (!hasLightningEventComponent & !hasBlockEventComponent)
+        {
+            _stuttering.DoStutter(uid, time * StutteringTimeMultiplier, refresh, statusEffects);
+            _jittering.DoJitter(uid, time * JitterTimeMultiplier, refresh, JitterAmplitude, JitterFrequency, true, statusEffects);
 
-        _popup.PopupEntity(Loc.GetString("electrocuted-component-mob-shocked-popup-player"), uid, uid);
+            _popup.PopupEntity(Loc.GetString("electrocuted-component-mob-shocked-popup-player"), uid, uid);
+        }
 
         var filter = Filter.PvsExcept(uid, entityManager: EntityManager);
 
         var identifiedUid = Identity.Entity(uid, ent: EntityManager);
         // TODO: Allow being able to pass EntityUid to Loc...
-        if (sourceUid != null)
+        if (sourceUid != null && !hasLightningEventComponent & !hasBlockEventComponent)
         {
             _popup.PopupEntity(Loc.GetString("electrocuted-component-mob-shocked-by-source-popup-others",
                 ("mob", identifiedUid), ("source", (sourceUid.Value))), uid, filter, true);
             PlayElectrocutionSound(uid, sourceUid.Value);
         }
-        else
+        else if (!hasLightningEventComponent & !hasBlockEventComponent)
         {
             _popup.PopupEntity(Loc.GetString("electrocuted-component-mob-shocked-popup-others",
                 ("mob", identifiedUid)), uid, filter, true);

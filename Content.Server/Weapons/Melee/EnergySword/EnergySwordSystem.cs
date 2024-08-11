@@ -12,7 +12,6 @@ public sealed class EnergySwordSystem : EntitySystem
 {
     [Dependency] private readonly SharedRgbLightControllerSystem _rgbSystem = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
 
     public override void Initialize()
     {
@@ -21,16 +20,33 @@ public sealed class EnergySwordSystem : EntitySystem
         SubscribeLocalEvent<EnergySwordComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<EnergySwordComponent, InteractUsingEvent>(OnInteractUsing);
     }
-    // Used to pick a random color for the blade on map init.
+    // Used to pick a colors from list for the blade on map init.
     private void OnMapInit(EntityUid uid, EnergySwordComponent comp, MapInitEvent args)
     {
         if (comp.ColorOptions.Count != 0)
-            comp.ActivatedColor = _random.Pick(comp.ColorOptions);
+            CheckColor(uid, comp);
 
         if (!TryComp(uid, out AppearanceComponent? appearanceComponent))
             return;
         _appearance.SetData(uid, ToggleableLightVisuals.Color, comp.ActivatedColor, appearanceComponent);
     }
+
+    private void CheckColor(EntityUid uid, EnergySwordComponent comp)
+    {
+        Dictionary<string, int> colorMapping = new Dictionary<string, int>
+        {
+            { "Red", 0 },
+            { "Blue", 1 },
+            { "Green", 2 },
+            { "Purple", 3 }
+        };
+
+        if (colorMapping.TryGetValue(comp.ColorBlade, out int colorIndex))
+        {
+            comp.ActivatedColor = comp.ColorOptions[colorIndex];
+        }
+    }
+
 
     // Used to make the make the blade multicolored when using a multitool on it.
     private void OnInteractUsing(EntityUid uid, EnergySwordComponent comp, InteractUsingEvent args)

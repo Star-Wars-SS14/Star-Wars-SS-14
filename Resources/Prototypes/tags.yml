@@ -1344,3 +1344,29 @@
   
 - type: Tag
   id: CartridgeBlast
+  
+#CM
+
+- type: Tag
+  id: CMOintment
+
+- type: Tag
+  id: CMSurgicalLine
+
+- type: Tag
+  id: CMSynthGraft
+
+- type: Tag
+  id: CMBurnKit  
+  
+- type: Tag
+  id: CMTraumaKit   
+  
+- type: Tag
+  id: CMAutoInjector   
+
+- type: Tag
+  id: CMFirstAidKit   
+  
+
+  

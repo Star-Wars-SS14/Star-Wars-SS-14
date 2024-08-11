@@ -183,5 +183,5 @@
       pen:
         maxVol: 15.75
         reagents:
-        - ReagentId: CMEpinephrine
+        - ReagentId: Epinephrine
           Quantity: 15.75

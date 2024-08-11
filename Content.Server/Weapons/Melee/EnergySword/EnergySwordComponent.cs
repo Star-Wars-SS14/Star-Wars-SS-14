@@ -4,7 +4,7 @@ namespace Content.Server.Weapons.Melee.EnergySword;
 internal sealed partial class EnergySwordComponent : Component
 {
     [ViewVariables(VVAccess.ReadWrite), DataField("activatedColor"), AutoNetworkedField]
-    public Color ActivatedColor = Color.Tomato;
+    public Color ActivatedColor = Color.DodgerBlue;
 
     /// <summary>
     ///     A color option list for the random color picker.
@@ -12,10 +12,11 @@ internal sealed partial class EnergySwordComponent : Component
     [DataField("colorOptions")]
     public List<Color> ColorOptions = new()
     {
-        Color.Red,
-        Color.RoyalBlue,
-        Color.Green,
-        Color.Purple
+        Color.Tomato,
+        Color.DodgerBlue,
+        Color.Aqua,
+        Color.MediumSpringGreen,
+        Color.MediumOrchid
     };
 
     public bool Hacked = false;
@@ -24,9 +25,4 @@ internal sealed partial class EnergySwordComponent : Component
     /// </summary>
     [DataField("cycleRate")]
     public float CycleRate = 1f;
-    /// <summary>
-    ///     Color picker in Blade. Available color: Red, Blue, Green, Purple.
-    /// </summary>
-    [DataField("ColorBlade")]
-    public string ColorBlade = "Red";
 }

@@ -85,7 +85,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
 
 
         _chat.DispatchGlobalAnnouncement(Loc.GetString("station-capture-finish-announcement",
-            ("name", name),
+            ("name", name ?? "Unknown"),
             ("fraction", fractionText)));
 
         var query = EntityQueryEnumerator<SectorWarRuleComponent>();

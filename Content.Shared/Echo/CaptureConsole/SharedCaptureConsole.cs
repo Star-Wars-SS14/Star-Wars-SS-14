@@ -45,7 +45,7 @@ public sealed partial class CaptureConsoleComponent : Component
     public TimeSpan StartTime;
 
     [DataField(customTypeSerializer: typeof(TimespanSerializer))]
-    public TimeSpan CaptureDuration = TimeSpan.FromSeconds(15); //TimeSpan.FromMinutes(15);
+    public TimeSpan CaptureDuration = TimeSpan.FromMinutes(15);
 
     [ViewVariables(VVAccess.ReadWrite)]
     public bool Capturing = false;

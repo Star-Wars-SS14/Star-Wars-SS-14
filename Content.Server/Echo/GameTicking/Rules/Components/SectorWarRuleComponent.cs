@@ -17,7 +17,7 @@ public sealed partial class SectorWarRuleComponent : Component
     public ProtoId<GameMapPrototype>[] Maps;
 
     [DataField]
-    public List<int> AlertDelays = [5,30,15,5,1]; //In minutes. Left -> Right order.
+    public List<int> AlertDelays = [90,30,15,5]; //In minutes. Left -> Right order.
 
     [DataField]
     public TimeSpan LastAlertTime = TimeSpan.Zero;

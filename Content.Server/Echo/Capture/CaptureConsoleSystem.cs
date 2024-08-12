@@ -163,7 +163,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
         component.IsTimeout = true;
 
         var station = GetNetEntity(_station.GetOwningStation(uid));
-        var name = _station.GetStationNames().First(x => x.Entity == station).Name;
+        var name = _station.GetStationNames().FirstOrNull(x => x.Entity == station)?.Name;
 
         SectorFractions? fraction;
 
@@ -183,7 +183,10 @@ public sealed class CaptureConsoleSystem : EntitySystem
         if (component.Capturing)
         {
             component.Capturing = false;
-            _chat.DispatchGlobalAnnouncement(Loc.GetString("station-capture-cancel-announcement", ("name", name)), null, false);
+            _chat.DispatchGlobalAnnouncement(
+                Loc.GetString("station-capture-cancel-announcement", ("name", name ?? "Unknown")),
+                null,
+                false);
             goto x;
         }
 
@@ -191,7 +194,10 @@ public sealed class CaptureConsoleSystem : EntitySystem
         component.CapturingFraction = fraction.Value;
 
         component.StartTime = _timing.CurTime;
-        _chat.DispatchGlobalAnnouncement(Loc.GetString("station-capture-start-announcement", ("name", name)), null, false);
+        _chat.DispatchGlobalAnnouncement(
+            Loc.GetString("station-capture-start-announcement", ("name", name ?? "Unknown")),
+            null,
+            false);
         var query = EntityQueryEnumerator<SectorWarRuleComponent>();
         while (query.MoveNext(out var rule))
         {

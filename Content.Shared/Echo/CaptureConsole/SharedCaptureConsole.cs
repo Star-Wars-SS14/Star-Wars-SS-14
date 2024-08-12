@@ -1,7 +1,6 @@
 ﻿using Content.Shared.Echo.GameTicking.Components;
 using Robust.Shared.Serialization;
 using Robust.Shared.Serialization.TypeSerializers.Implementations;
-using Robust.Shared.Utility;
 
 namespace Content.Shared.Echo.CaptureConsole;
 

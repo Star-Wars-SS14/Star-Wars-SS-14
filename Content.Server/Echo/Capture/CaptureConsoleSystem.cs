@@ -8,6 +8,7 @@ using Content.Shared.Echo.CaptureConsole;
 using Content.Shared.Echo.GameTicking.Components;
 using Content.Shared.UserInterface;
 using Robust.Server.GameObjects;
+using Robust.Shared.Audio.Components;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
@@ -163,7 +164,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
         if (component.Capturing)
         {
             component.Capturing = false;
-            _chat.DispatchGlobalAnnouncement(Loc.GetString("station-capture-cancel-announcement", ("name", name)));
+            _chat.DispatchGlobalAnnouncement(Loc.GetString("station-capture-cancel-announcement", ("name", name)), null, false);
             goto x;
         }
 
@@ -171,18 +172,16 @@ public sealed class CaptureConsoleSystem : EntitySystem
         component.CapturingFraction = fraction.Value;
 
         component.StartTime = _timing.CurTime;
-        _chat.DispatchGlobalAnnouncement(Loc.GetString("station-capture-start-announcement", ("name", name)));
+        _chat.DispatchGlobalAnnouncement(Loc.GetString("station-capture-start-announcement", ("name", name)), null, false);
         var query = EntityQueryEnumerator<SectorWarRuleComponent>();
         while (query.MoveNext(out var rule))
         {
             var captureSound = rule.CaptureSound;
-            if (rule is { CurrentAudio.Component.Playing: false } or {CurrentAudio:null})
+            if (rule.CurrentAudio == null || rule.CurrentAudio.Value.Component.State != AudioState.Playing)
             {
                 rule.CurrentAudio = _audio.PlayGlobal(captureSound, Filter.Broadcast(), true);
             }
         }
-
-
 
         x:
 

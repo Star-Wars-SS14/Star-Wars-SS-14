@@ -12,6 +12,7 @@ using Content.Shared.GameTicking.Components;
 using Robust.Server.Audio;
 using Robust.Server.GameObjects;
 using Robust.Server.Maps;
+using Robust.Shared.Audio.Components;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -63,7 +64,7 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
         message.AppendLine(Loc.GetString("round-end-alliance-credits", ("credits", _gameRule.AllianceCredits)));
         message.AppendLine(Loc.GetString("round-end-resistance-credits", ("credits", _gameRule.ResistanceCredits)));
         args.AddLine(message.AppendLine().ToString());
-        if (_gameRule.CurrentAudio is { Component.Playing: true })
+        if (_gameRule.CurrentAudio is { Component.State: AudioState.Playing })
         {
             _audio.Stop(_gameRule.CurrentAudio?.Entity);
         }

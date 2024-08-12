@@ -8,10 +8,10 @@ namespace Content.Server.Echo.GameTicking.Rules.Components;
 public sealed partial class SectorWarRuleComponent : Component
 {
     [DataField]
-    public int AllianceCredits;
+    public int AllianceCredits = 100000;
 
     [DataField]
-    public int ResistanceCredits;
+    public int ResistanceCredits = 100000;
 
     [DataField]
     public ProtoId<GameMapPrototype>[] Maps;

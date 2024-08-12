@@ -19,7 +19,8 @@ public sealed class CaptureConsoleUpdateState(
     SectorFractions fraction,
     SectorFractions? userFraction,
     string stationName,
-    bool hasAccess)
+    bool hasAccess,
+    bool isTimeout)
     : BoundUserInterfaceState
 {
     public bool Capturing = capturing;
@@ -30,6 +31,7 @@ public sealed class CaptureConsoleUpdateState(
     public SectorFractions? UserFraction = userFraction;
     public string StationName = stationName;
     public bool HasAccess = hasAccess;
+    public bool IsTimeout = isTimeout;
 }
 
 [RegisterComponent]
@@ -49,6 +51,12 @@ public sealed partial class CaptureConsoleComponent : Component
 
     [ViewVariables(VVAccess.ReadWrite)]
     public bool Capturing = false;
+
+    [ViewVariables]
+    public bool IsTimeout = false;
+
+    [ViewVariables]
+    public TimeSpan TimeoutStart = TimeSpan.Zero;
 
     [DataField]
     public SectorFractions CapturingFraction = SectorFractions.Alliance;

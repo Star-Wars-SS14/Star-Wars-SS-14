@@ -5,16 +5,16 @@
   price: 60000
   category: Medium
   fraction: Resistance
-  shuttlePath: /Maps/Shuttles/cargo_fland.yml
+  shuttlePath: /Maps/Shuttles/emergency_pilgrim.yml
 
 - type: gameMap
   id: Vagabond
   mapName: 'NT Vagabond'
-  mapPath: /Maps/Shuttles/cargo_fland.yml
+  mapPath: /Maps/Shuttles/emergency_pilgrim.yml
   minPlayers: 0
   stations:
     Vagabond:
-      stationProto: StandardFrontierVessel
+      stationProto: StandardVessel
       components:
         - type: StationNameSetup
           mapNameTemplate: 'Vagabond {1}'

@@ -19,9 +19,6 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
     private CaptureConsoleUpdateState? _lastState;
     private SectorFractions? _lastUserFraction;
 
-    private bool _isTimeout;
-    private TimeSpan _timeoutStart = TimeSpan.Zero;
-
     public CaptureConsoleMenu()
     {
         RobustXamlLoader.Load(this);
@@ -29,8 +26,6 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
 
         CaptureButton.OnPressed += _ =>
         {
-            _timeoutStart = _timing.CurTime;
-            _isTimeout = true;
             OnCaptureButtonPressed?.Invoke();
         };
     }
@@ -38,16 +33,6 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
     protected override void FrameUpdate(FrameEventArgs args)
     {
         base.FrameUpdate(args);
-
-        if (_isTimeout)
-        {
-            CaptureButton.Disabled = true;
-            if (_timing.CurTime - _timeoutStart > TimeSpan.FromSeconds(15))
-            {
-                CaptureButton.Disabled = false;
-                _isTimeout = false;
-            }
-        }
 
         if (_lastState == null)
             return;
@@ -68,8 +53,6 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
         }
 
         UpdateInformationDisplay(_lastState);
-
-
     }
 
     public void UpdateInformationDisplay(CaptureConsoleUpdateState state)
@@ -149,7 +132,7 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
             CaptureButton.Text = Loc.GetString("capture-console-no-access");
         }
 
-        if (_isTimeout)
+        if (state.IsTimeout)
         {
             CaptureButton.Disabled = true;
         }

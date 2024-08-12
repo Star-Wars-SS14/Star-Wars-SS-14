@@ -12,16 +12,19 @@ public sealed class CaptureConsoleBoundUserInterface(EntityUid owner, Enum uiKey
     [ViewVariables]
     private CaptureConsoleMenu? _consoleMenu;
 
+
     protected override void Open()
     {
         base.Open();
 
         _consoleMenu = this.CreateWindow<CaptureConsoleMenu>();
 
-        _consoleMenu.OnCaptureButtonPressed += () =>
-        {
-            SendMessage(new CaptureConsoleButtonPressedMessage());
-        };
+        _consoleMenu.OnCaptureButtonPressed += OnButtonPressed;
+    }
+
+    private void OnButtonPressed()
+    {
+        SendMessage(new CaptureConsoleButtonPressedMessage());
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)
@@ -32,7 +35,7 @@ public sealed class CaptureConsoleBoundUserInterface(EntityUid owner, Enum uiKey
         {
             case CaptureConsoleUpdateState msg:
                 _consoleMenu?.UpdateInformationDisplay(msg);
-              //  _consoleMenu?.UpdateProgressBar(msg);
+                //  _consoleMenu?.UpdateProgressBar(msg);
                 break;
         }
     }
@@ -47,4 +50,3 @@ public sealed class CaptureConsoleBoundUserInterface(EntityUid owner, Enum uiKey
         _consoleMenu?.Dispose();
     }
 }
-

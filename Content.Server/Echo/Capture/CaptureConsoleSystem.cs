@@ -39,6 +39,18 @@ public sealed class CaptureConsoleSystem : EntitySystem
         var query = EntityQueryEnumerator<CaptureConsoleComponent>();
         while (query.MoveNext(out var uid, out var console))
         {
+            if (!console.IsTimeout)
+            {
+                goto y;
+            }
+
+            if (_timing.CurTime - console.TimeoutStart > TimeSpan.FromSeconds(15))
+            {
+                console.IsTimeout = false;
+                UpdateUserInterface(uid);
+            }
+
+            y:
             if (!console.Capturing)
                 continue;
 
@@ -135,7 +147,8 @@ public sealed class CaptureConsoleSystem : EntitySystem
             currentFraction,
             userFraction,
             name,
-            hasAccess
+            hasAccess,
+            component.IsTimeout
         );
 
         _ui.SetUiState(uid, CaptureConsoleUi.Key, state);
@@ -145,9 +158,14 @@ public sealed class CaptureConsoleSystem : EntitySystem
         CaptureConsoleComponent component,
         CaptureConsoleButtonPressedMessage args)
     {
+        component.TimeoutStart = _timing.CurTime;
+        component.IsTimeout = true;
+
         var station = GetNetEntity(_station.GetOwningStation(uid));
         var name = _station.GetStationNames().First(x => x.Entity == station).Name;
+
         SectorFractions? fraction;
+
         if (HasComp<AllianceStaffComponent>(args.Actor))
         {
             fraction = SectorFractions.Alliance;

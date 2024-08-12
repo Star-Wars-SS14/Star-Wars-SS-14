@@ -5,16 +5,16 @@
    price: 37500 # 15% markup +4890
    category: Small
    fraction: Alliance
-   shuttlePath: /Maps/Shuttles/arrivals.yml
+   shuttlePath: /Maps/Shuttles/dart.yml
 
  - type: gameMap
    id: WaveShot
    mapName: 'NC WaveShot'
-   mapPath: /Maps/Shuttles/arrivals.yml
+   mapPath: /Maps/Shuttles/dart.yml
    minPlayers: 0
    stations:
      WaveShot:
-       stationProto: StandardFrontierVessel
+       stationProto: StandardVessel
        components:
          - type: StationNameSetup
            mapNameTemplate: 'WaveShot {1}'

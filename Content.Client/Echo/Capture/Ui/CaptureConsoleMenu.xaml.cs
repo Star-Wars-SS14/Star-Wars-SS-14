@@ -67,12 +67,12 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
         }
         var message = new FormattedMessage();
 
-        message.TryAddMarkup($"[color=green]{Loc.GetString("capture-console-message-station-active")}[/color]",
+        message.TryAddMarkup($"[color=white]{Loc.GetString("capture-console-message-station-active")}[/color]",
             out _);
         message.PushNewline();
         message.PushNewline();
         message.TryAddMarkup(
-            $"[color=yellow]{Loc.GetString("capture-console-message-station-fraction",
+            $"[color=white]{Loc.GetString("capture-console-message-station-fraction",
                 ("stationFraction", state.StationFraction == SectorFractions.Alliance ?
                     Loc.GetString("capture-console-message-fraction-alliance") :
                     Loc.GetString("capture-console-message-fraction-resistance")))}[/color]",
@@ -80,14 +80,14 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
         message.PushNewline();
         message.PushNewline();
         message.TryAddMarkup(
-            $"[color=purple]{Loc.GetString("capture-console-capturing-status",
+            $"[color=yellow]{Loc.GetString("capture-console-capturing-status",
                 ("state", state.Capturing ? Loc.GetString("capture-console-capturing-status-true") :
                     Loc.GetString("capture-console-capturing-status-false")))}[/color]",
             out _);
         message.PushNewline();
         message.PushNewline();
         message.TryAddMarkup(
-            $"[color=blue]{Loc.GetString("capture-console-eta", ("time",
+            $"[color=red]{Loc.GetString("capture-console-eta", ("time",
                 state.TimeRemain.TotalSeconds))}[/color]",
             out _);
         message.PushNewline();
@@ -96,7 +96,7 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
         var leftInfoMessage = new FormattedMessage();
 
         leftInfoMessage.TryAddMarkup(
-            $"[color=yellow]{Loc.GetString("capture-console-message-user-fraction", ("fraction",
+            $"[color=white]{Loc.GetString("capture-console-message-user-fraction", ("fraction",
                 state.UserFraction switch
                 {
                     SectorFractions.Alliance => Loc.GetString("capture-console-message-fraction-alliance"),
@@ -107,7 +107,7 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
         leftInfoMessage.PushNewline();
         leftInfoMessage.PushNewline();
         leftInfoMessage.TryAddMarkup(
-            $"[color=green]{Loc.GetString("capture-console-message-current-station",
+            $"[color=red]{Loc.GetString("capture-console-message-current-station",
                 ("name", state.StationName))}[/color]",
             out _);
         leftInfoMessage.PushNewline();

@@ -1,4 +1,3 @@
-using Content.Server.Access.Systems;
 using Content.Server.Administration.Logs;
 using Content.Server.Chat.Systems;
 using Content.Server.Echo.Bank;
@@ -6,12 +5,11 @@ using Content.Server.Echo.GameTicking.Rules.Components;
 using Content.Server.Maps;
 using Content.Server.Mind;
 using Content.Server.Popups;
-using Content.Server.Preferences.Managers;
 using Content.Server.Radio.EntitySystems;
 using Content.Server.StationRecords;
 using Content.Server.StationRecords.Systems;
-using Content.Shared.Access.Systems;
 using Content.Shared.Database;
+using Content.Shared.Echo.CaptureConsole;
 using Content.Shared.Echo.GameTicking.Components;
 using Content.Shared.Echo.Shipyard.BUI;
 using Content.Shared.Echo.Shipyard.Prototypes;
@@ -30,24 +28,18 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server.Echo.Shipyard.Systems;
 
-public sealed partial class ShipyardSystem : SharedShipyardSystem
+public sealed partial class ShipyardSystem
 {
-    [Dependency] private readonly AccessSystem _accessSystem = default!;
-    [Dependency] private readonly AccessReaderSystem _access = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
-    [Dependency] private readonly IServerPreferencesManager _prefManager = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly RadioSystem _radio = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly IdCardSystem _idSystem = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly StationRecordsSystem _records = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly IAdminLogManager _adminLogger = default!;
     [Dependency] private readonly MindSystem _mind = default!;
-    [Dependency] private readonly UserInterfaceSystem _userInterface = default!;
-    [Dependency] private readonly EntityManager _entityManager = default!;
     [Dependency] private readonly BankSystem _bank = default!;
 
     private void OnPurchaseMessage(EntityUid uid,
@@ -55,6 +47,9 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         ShipyardConsolePurchaseMessage args)
     {
         if (args.Actor is not { Valid: true } player)
+            return;
+
+        if (!HasComp<ResistanceStaffComponent>(args.Actor) || !HasComp<AllianceStaffComponent>(args.Actor))
             return;
 
         if (!_prototypeManager.TryIndex<VesselPrototype>(args.Vessel, out var vessel))
@@ -196,30 +191,6 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     private void PlayConfirmSound(EntityUid playerUid, EntityUid consoleUid, ShipyardConsoleComponent component)
     {
         _audio.PlayEntity(component.ConfirmSound, playerUid, consoleUid);
-    }
-
-    private void OnItemSlotChanged(EntityUid uid, ShipyardConsoleComponent component, ContainerModifiedMessage args)
-    {
-        if (!component.Initialized)
-            return;
-
-        if (args.Container.ID != component.TargetIdSlot.ID)
-            return;
-
-        if (!TryComp<ActivatableUIComponent>(uid, out var uiComp) || uiComp.Key == null)
-            return;
-
-        var uiUsers = _ui.GetActors(uid, uiComp.Key);
-
-        foreach (var user in uiUsers)
-        {
-            if (user is not { Valid: true })
-                continue;
-
-            RefreshState(uid,
-                0,
-                (ShipyardConsoleUiKey)uiComp.Key);
-        }
     }
 
     /// <summary>

@@ -49,8 +49,13 @@ public sealed partial class ShipyardSystem
         if (args.Actor is not { Valid: true } player)
             return;
 
-        if (!HasComp<ResistanceStaffComponent>(args.Actor) || !HasComp<AllianceStaffComponent>(args.Actor))
-            return;
+        if (!HasComp<ResistanceStaffComponent>(args.Actor))
+        {
+            if (!HasComp<AllianceStaffComponent>(args.Actor))
+            {
+                return;
+            }
+        }
 
         if (!_prototypeManager.TryIndex<VesselPrototype>(args.Vessel, out var vessel))
         {

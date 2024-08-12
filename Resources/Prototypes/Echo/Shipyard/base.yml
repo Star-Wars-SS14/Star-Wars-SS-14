@@ -6,9 +6,6 @@
     - BaseStationRecords
     - BaseStationAlertLevels
     - BaseStationAllEventsEligible
-    - BaseStationRenameFaxes
-    - BaseStationRenameWarpPoints
-    - BaseStationSiliconLawFrontierShips
   noSpawn: true
   components:
     - type: Transform

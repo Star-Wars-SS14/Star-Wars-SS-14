@@ -77,7 +77,7 @@
 
 - type: entity
   parent: ClothingUniformBase
-  id: EchoClothingRegularGreenShirtGrayJeansBelt
+  id: EchoClothingRegularBeigeShirtGrayJeansBelt
   name: бежевая рубашка и серые джинсы с ремнём
   description: Самая обычная повседневная одежда.
   components:

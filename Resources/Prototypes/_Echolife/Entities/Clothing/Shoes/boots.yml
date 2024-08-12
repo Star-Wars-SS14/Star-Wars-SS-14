@@ -1,0 +1,10 @@
+- type: entity
+  parent: ClothingShoesBaseButcherable
+  id: EchoClothingShoesBootsResistance
+  name: ботинки сопротивления
+  description: Самые обычные ботинки.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Shoes/resistance_boots.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Shoes/resistance_boots.rsi

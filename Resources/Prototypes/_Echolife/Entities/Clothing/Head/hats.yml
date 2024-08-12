@@ -1,0 +1,21 @@
+- type: entity
+  parent: ClothingHeadBase
+  id: EchoClothingHeadHatGray
+  name: серая шапка
+  description: Простая шапка серого цвета.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Head/Hats/Color/gray.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Head/Hats/Color/gray.
+
+- type: entity
+  parent: ClothingHeadBase
+  id: EchoClothingHeadHatGreen
+  name: зелёная шапка
+  description: Простая шапка зелёного цвета.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Head/Hats/Color/green.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Head/Hats/Color/green.rsi

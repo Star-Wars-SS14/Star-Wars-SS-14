@@ -13,6 +13,7 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
+using Robust.Shared.Utility;
 
 namespace Content.Server.Echo.Capture;
 
@@ -138,7 +139,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
 
 
         var station = GetNetEntity(_station.GetOwningStation(uid));
-        var name = _station.GetStationNames().First(x => x.Entity == station).Name;
+        var name = _station.GetStationNames().FirstOrNull(x => x.Entity == station)?.Name;
         var state = new CaptureConsoleUpdateState(
             component.Capturing,
             component.StartTime,
@@ -146,7 +147,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
             component.CaptureDuration,
             currentFraction,
             userFraction,
-            name,
+            name ?? "Unknown",
             hasAccess,
             component.IsTimeout
         );

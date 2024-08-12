@@ -1,19 +1,13 @@
-﻿using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using Content.Server.Chat.Systems;
 using Content.Server.Echo.GameTicking.Rules.Components;
-using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
-using Content.Server.Xenoarchaeology.Equipment.Components;
 using Content.Server.Xenoarchaeology.XenoArtifacts;
 using Content.Shared.Audio;
 using Content.Shared.Echo.CaptureConsole;
 using Content.Shared.Echo.GameTicking.Components;
 using Content.Shared.UserInterface;
-using Content.Shared.Xenoarchaeology.Equipment;
-using JetBrains.Annotations;
 using Robust.Server.GameObjects;
-using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
@@ -24,12 +18,9 @@ namespace Content.Server.Echo.Capture;
 public sealed class CaptureConsoleSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!;
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly SharedAmbientSoundSystem _ambientSound = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly StationSystem _station = default!;
-    [Dependency] private readonly ArtifactSystem _artifact = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
 
     /// <inheritdoc/>
@@ -183,12 +174,19 @@ public sealed class CaptureConsoleSystem : EntitySystem
         _chat.DispatchGlobalAnnouncement(Loc.GetString("station-capture-start-announcement", ("name", name)));
         var query = EntityQueryEnumerator<SectorWarRuleComponent>();
         var captureSound = "";
+        SectorWarRuleComponent? lastRule = null;
         while (query.MoveNext(out var rule))
         {
             captureSound = rule.CaptureSound;
+            lastRule = rule;
         }
 
-        _audio.PlayGlobal(captureSound, Filter.Broadcast(), true);
+        if (lastRule?.CurrentAudio is { Component.Playing: false } or null)
+        {
+            if (lastRule != null)
+                lastRule.CurrentAudio = _audio.PlayGlobal(captureSound, Filter.Broadcast(), true);
+        }
+
         x:
 
         UpdateUserInterface(uid);

@@ -1,4 +1,5 @@
 ﻿using Content.Server.Maps;
+using Robust.Shared.Audio.Components;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server.Echo.GameTicking.Rules.Components;
@@ -35,4 +36,7 @@ public sealed partial class SectorWarRuleComponent : Component
 
     [DataField]
     public int CaptureReward = 45000;
+
+    [DataField]
+    public (EntityUid Entity, AudioComponent Component)? CurrentAudio;
 }

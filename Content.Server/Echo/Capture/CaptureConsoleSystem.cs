@@ -173,19 +173,16 @@ public sealed class CaptureConsoleSystem : EntitySystem
         component.StartTime = _timing.CurTime;
         _chat.DispatchGlobalAnnouncement(Loc.GetString("station-capture-start-announcement", ("name", name)));
         var query = EntityQueryEnumerator<SectorWarRuleComponent>();
-        var captureSound = "";
-        SectorWarRuleComponent? lastRule = null;
         while (query.MoveNext(out var rule))
         {
-            captureSound = rule.CaptureSound;
-            lastRule = rule;
+            var captureSound = rule.CaptureSound;
+            if (rule is { CurrentAudio.Component.Playing: false })
+            {
+                rule.CurrentAudio = _audio.PlayGlobal(captureSound, Filter.Broadcast(), true);
+            }
         }
 
-        if (lastRule?.CurrentAudio is { Component.Playing: false } or null)
-        {
-            if (lastRule != null)
-                lastRule.CurrentAudio = _audio.PlayGlobal(captureSound, Filter.Broadcast(), true);
-        }
+
 
         x:
 

@@ -85,8 +85,10 @@ public sealed class CaptureConsoleSystem : EntitySystem
 
 
         _chat.DispatchGlobalAnnouncement(Loc.GetString("station-capture-finish-announcement",
-            ("name", name ?? "Unknown"),
-            ("fraction", fractionText)));
+                ("name", name ?? "Unknown"),
+                ("fraction", fractionText)),
+            playSound: false,
+            colorOverride: Color.Yellow);
 
         var query = EntityQueryEnumerator<SectorWarRuleComponent>();
         while (query.MoveNext(out var rule))
@@ -103,7 +105,6 @@ public sealed class CaptureConsoleSystem : EntitySystem
         }
 
         UpdateUserInterface(uid);
-        //TODO
     }
 
     private void UpdateUserInterface(EntityUid uid,
@@ -186,7 +187,8 @@ public sealed class CaptureConsoleSystem : EntitySystem
             _chat.DispatchGlobalAnnouncement(
                 Loc.GetString("station-capture-cancel-announcement", ("name", name ?? "Unknown")),
                 null,
-                false);
+                false,
+                colorOverride: Color.Yellow);
             goto x;
         }
 
@@ -197,7 +199,8 @@ public sealed class CaptureConsoleSystem : EntitySystem
         _chat.DispatchGlobalAnnouncement(
             Loc.GetString("station-capture-start-announcement", ("name", name ?? "Unknown")),
             null,
-            false);
+            false,
+            colorOverride: Color.Yellow);
         var query = EntityQueryEnumerator<SectorWarRuleComponent>();
         while (query.MoveNext(out var rule))
         {

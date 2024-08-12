@@ -202,7 +202,8 @@ public sealed class CaptureConsoleSystem : EntitySystem
         while (query.MoveNext(out var rule))
         {
             var captureSound = rule.CaptureSound;
-            if (rule.CurrentAudio == null || rule.CurrentAudio.Value.Component.State != AudioState.Playing)
+
+            if (rule.CurrentAudio == null || Deleted(rule.CurrentAudio.Value.Entity))
             {
                 rule.CurrentAudio = _audio.PlayGlobal(captureSound, Filter.Broadcast(), true);
             }

@@ -64,7 +64,7 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
         message.AppendLine(Loc.GetString("round-end-alliance-credits", ("credits", _gameRule.AllianceCredits)));
         message.AppendLine(Loc.GetString("round-end-resistance-credits", ("credits", _gameRule.ResistanceCredits)));
         args.AddLine(message.AppendLine().ToString());
-        if (_gameRule.CurrentAudio is { Component.State: AudioState.Playing })
+        if (_gameRule.CurrentAudio != null && !Deleted(_gameRule.CurrentAudio.Value.Entity))
         {
             _audio.Stop(_gameRule.CurrentAudio?.Entity);
         }

@@ -14,3 +14,4 @@ capture-console-message-current-station = Текущая станция: { $name
 capture-console-title = Интерфейс управления станцией
 capture-console-capture-button = Захватить
 capture-console-cancel-button = Отмена
+capture-console-no-access = Нет доступа

@@ -1,10 +1,8 @@
-using Content.Shared.Store;
+using Content.Shared.Echo.GameTicking.Components;
 using Robust.Shared.Prototypes;
-using Robust.Shared.Serialization;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
 using Robust.Shared.Utility;
 
-namespace Content.Shared.Shipyard.Prototypes;
+namespace Content.Shared.Echo.Shipyard.Prototypes;
 
 [Prototype("vessel")]
 public sealed class VesselPrototype : IPrototype
@@ -37,26 +35,13 @@ public sealed class VesselPrototype : IPrototype
     /// <summary>
     ///     The group of the product. (e.g. Civilian, Syndicate, Contraband etc.)
     /// </summary>
-    [DataField("group")]
-    public string Group = string.Empty;
-
-    /// <summary>
-    ///     The access required to buy the product. (e.g. Command, Mail, Bailiff, etc.)
-    /// </summary>
-    [DataField("access")]
-    public string Access = string.Empty;
-
-    /// Frontier - Add this field for the MapChecker script.
-    /// <summary>
-    ///     The MapChecker override group for this vessel.
-    /// </summary>
-    [DataField("mapchecker_group_override")]
-    public string MapcheckerGroup = string.Empty;
+    [DataField("fraction")]
+    public SectorFractions Fraction = SectorFractions.Alliance;
 
     /// <summary>
     ///     Relative directory path to the given shuttle, i.e. `/Maps/Shuttles/yourshittle.yml`
     /// </summary>
     [DataField("shuttlePath", required: true)]
-    public ResPath ShuttlePath = default!;
+    public ResPath ShuttlePath;
 
 }

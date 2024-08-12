@@ -16,10 +16,8 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
     [Dependency] private readonly IGameTiming _timing = default!;
     public event Action? OnCaptureButtonPressed;
 
-    // For rendering the progress bar, updated from BUI state
-    private TimeSpan? _startTime;
-    private TimeSpan? _totalTime;
-    private TimeSpan? _accumulatedRunTime;
+    private CaptureConsoleUpdateState? _lastState;
+    private SectorFractions? _lastUserFraction;
 
     public CaptureConsoleMenu()
     {
@@ -33,23 +31,40 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
     {
         base.FrameUpdate(args);
 
-        if (_startTime is not { } start || _totalTime is not { } total || _accumulatedRunTime is not { } accumulated)
+        if (_lastState == null)
             return;
 
-        var remaining = total - accumulated;
+        var accumulated = _timing.CurTime - _lastState.StartTime;
+        var remaining = _lastState.CaptureDuration - accumulated;
 
-        remaining += start - _timing.CurTime;
+        if (_lastState is not { Capturing: true })
+        {
+            ProgressBar.Visible = false;
+            return;
+        }
 
-        var secsText = Math.Max((int)remaining.TotalSeconds, 0);
+        if (remaining != null)
+        {
+            _lastState.TimeRemain = remaining.Value;
+            ProgressBar.Value = Math.Clamp(1.0f - (float) remaining.Value.Divide(_lastState.CaptureDuration), 0.0f, 1.0f);
+        }
 
-        ProgressLabel.Text = Loc.GetString("analysis-console-progress-text",
-            ("seconds", secsText));
+        UpdateInformationDisplay(_lastState);
 
-        ProgressBar.Value = Math.Clamp(1.0f - (float)remaining.Divide(total), 0.0f, 1.0f);
+
     }
 
     public void UpdateInformationDisplay(CaptureConsoleUpdateState state)
     {
+        _lastState = state;
+        if (state.UserFraction != null)
+        {
+            _lastUserFraction = state.UserFraction;
+        }
+        else
+        {
+            state.UserFraction = _lastUserFraction;
+        }
         var message = new FormattedMessage();
 
         message.TryAddMarkup($"[color=green]{Loc.GetString("capture-console-message-station-active")}[/color]",
@@ -73,7 +88,7 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
         message.PushNewline();
         message.TryAddMarkup(
             $"[color=blue]{Loc.GetString("capture-console-eta", ("time",
-                state.TotalTime.ToString()))}[/color]",
+                state.TimeRemain.TotalSeconds))}[/color]",
             out _);
         message.PushNewline();
         Information.SetMessage(message);
@@ -100,15 +115,25 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
         CaptureButton.Text = state.Capturing
             ? Loc.GetString("capture-console-cancel-button")
             : Loc.GetString("capture-console-capture-button");
-    }
 
-    public void UpdateProgressBar(CaptureConsoleUpdateState state)
-    {
-        ProgressBar.Visible = state.Capturing;
-        ProgressLabel.Visible = state.Capturing;
+        if (state.UserFraction == state.StationFraction && !state.Capturing)
+        {
+            CaptureButton.Disabled = true;
+        }
+        else
+        {
+            CaptureButton.Disabled = false;
+        }
 
-        _startTime = state.StartTime;
-        _totalTime = state.TotalTime;
-        _accumulatedRunTime = state.AccumulatedRunTime;
+        if (!state.HasAccess)
+        {
+            CaptureButton.Disabled = true;
+            CaptureButton.Text = Loc.GetString("capture-console-no-access");
+        }
+
+        if (!state.Capturing)
+            return;
+
+        ProgressBar.Visible = true;
     }
 }

@@ -10,13 +10,7 @@ public sealed partial class SectorWarRuleComponent : Component
     public int AllianceCredits;
 
     [DataField]
-    public int AllianceCapturedSectors;
-
-    [DataField]
     public int ResistanceCredits;
-
-    [DataField]
-    public int ResistanceCapturedSectors;
 
     [DataField]
     public ProtoId<GameMapPrototype>[] Maps;
@@ -28,11 +22,17 @@ public sealed partial class SectorWarRuleComponent : Component
     public TimeSpan LastAlertTime = TimeSpan.Zero;
 
     [DataField]
-    public string AlertSound = "/Audio/Announcements/RoundEnd/apc_destroyed.ogg";
+    public string AlertSound = "/Audio/Echo/time_alert.ogg";
 
     [DataField]
-    public string AllianceWinSound = "/Audio/Announcements/RoundEnd/apc_destroyed.ogg";
+    public string AllianceWinSound = "/Audio/Echo/alliance_won.ogg";
 
     [DataField]
-    public string ResistanceWinSound = "/Audio/Announcements/RoundEnd/apc_destroyed.ogg";
+    public string ResistanceWinSound = "/Audio/Echo/resistance_won.ogg";
+
+    [DataField]
+    public string CaptureSound = "/Audio/Echo/capture.ogg";
+
+    [DataField]
+    public int CaptureReward = 45000;
 }

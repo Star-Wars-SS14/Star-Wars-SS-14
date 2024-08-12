@@ -38,7 +38,7 @@ public abstract class SharedShipyardSystem : EntitySystem
         {ShipyardConsoleUiKey.Expedition, "Expedition"},
         {ShipyardConsoleUiKey.Scrap, "Scrap"},
         {ShipyardConsoleUiKey.Sr, "Sr"},
-        {ShipyardConsoleUiKey.Custom, "<DO NOT USE>"}
+        {ShipyardConsoleUiKey.Custom, "<DO NOT USE>"},
     };
 
     [Dependency] private readonly ItemSlotsSystem _itemSlotsSystem = default!;

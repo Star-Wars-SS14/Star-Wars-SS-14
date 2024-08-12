@@ -28,11 +28,6 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
 
     private SectorWarRuleComponent? _gameRule;
 
-    public override void Initialize()
-    {
-        base.Initialize();
-    }
-
     protected override void AppendRoundEndText(EntityUid uid,
         SectorWarRuleComponent component,
         GameRuleComponent gameRule,
@@ -41,12 +36,27 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
         base.AppendRoundEndText(uid, component, gameRule, ref args);
         if (_gameRule == null)
             return;
+        var query = EntityQueryEnumerator<CapturableStationComponent>();
+        var allianceCap = 0;
+        var resistanceCap = 0;
+        while (query.MoveNext(out var station))
+        {
+            switch (station.Fraction)
+            {
+                case SectorFractions.Alliance:
+                    allianceCap++;
+                    break;
+                case SectorFractions.Resistance:
+                    resistanceCap++;
+                    break;
+            }
+        }
 
         var message = new StringBuilder();
 
-        message.AppendLine(_gameRule.AllianceCapturedSectors > _gameRule.ResistanceCapturedSectors
+        message.AppendLine(allianceCap > resistanceCap
             ? Loc.GetString("round-end-alliance-won")
-            : _gameRule.AllianceCapturedSectors < _gameRule.ResistanceCapturedSectors
+            : allianceCap < resistanceCap
                 ? Loc.GetString("round-end-resistance-won")
                 : Loc.GetString("round-end-wtf-draw"));
         message.AppendLine();
@@ -54,7 +64,7 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
         message.AppendLine(Loc.GetString("round-end-resistance-credits", ("credits", _gameRule.ResistanceCredits)));
         args.AddLine(message.AppendLine().ToString());
 
-        _audio.PlayGlobal(_gameRule.AllianceCapturedSectors > _gameRule.ResistanceCapturedSectors
+        _audio.PlayGlobal(allianceCap > resistanceCap
                 ? _gameRule.AllianceWinSound
                 : _gameRule.ResistanceWinSound,
             Filter.Broadcast(),
@@ -75,7 +85,8 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
         _gameRule.AlertDelays.RemoveAt(0);
 
         _audio.PlayGlobal(_gameRule.AlertSound, Filter.Broadcast(), true);
-        _chat.DispatchGlobalAnnouncement(Loc.GetString("sector-war-round-end-alert"));
+        _chat.DispatchGlobalAnnouncement(Loc.GetString("sector-war-round-end-alert",
+            ("time", (TimeSpan.FromHours(3) - _gameTiming.CurTime).ToString())));
     }
 
     protected override void Added(EntityUid uid,
@@ -89,7 +100,7 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
         {
             var gameMap = _prototypeManager.Index(map);
             maps.Add(gameMap);
-           _map.CreateMap(out var mapId);
+            _map.CreateMap(out var mapId);
             GameTicker.LoadGameMap(gameMap, mapId, new MapLoadOptions { LoadMap = true, DoMapInit = true });
             //_map.InitializeMap(mapId);
             //_gameTicker.LoadGameMap(_prototype.Index<GameMapPrototype>(map.Id), mapId, null);

@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System.Diagnostics;
+using System.Linq;
+using Content.Server.Chat.Systems;
+using Content.Server.Echo.GameTicking.Rules.Components;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
 using Content.Server.Xenoarchaeology.Equipment.Components;
@@ -12,6 +15,7 @@ using JetBrains.Annotations;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
@@ -26,6 +30,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly ArtifactSystem _artifact = default!;
+    [Dependency] private readonly ChatSystem _chat = default!;
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -42,15 +47,57 @@ public sealed class CaptureConsoleSystem : EntitySystem
         var query = EntityQueryEnumerator<CaptureConsoleComponent>();
         while (query.MoveNext(out var uid, out var console))
         {
-            if (_timing.CurTime - console.StartTime < console.CaptureDuration - console.AccumulatedRunTime)
+            if (!console.Capturing)
                 continue;
 
-            FinishCapturing(uid, console);
+            if (_timing.CurTime - console.StartTime < console.CaptureDuration)
+                continue;
+
+            FinishCapturing(uid, ref console);
         }
     }
 
-    private void FinishCapturing(EntityUid uid, CaptureConsoleComponent console)
+    private void FinishCapturing(EntityUid uid, ref CaptureConsoleComponent console)
     {
+        var station = _station.GetOwningStation(uid);
+        var name = _station.GetStationNames().First(x => x.Entity == GetNetEntity(station)).Name;
+
+        console.Capturing = false;
+
+        if (station == null)
+            return;
+
+        EnsureComp<CapturableStationComponent>(station.Value, out var capturable);
+
+        capturable.Fraction = console.CapturingFraction;
+
+        var fractionText = capturable.Fraction switch
+        {
+            SectorFractions.Alliance => Loc.GetString("capture-console-message-fraction-alliance"),
+            SectorFractions.Resistance => Loc.GetString("capture-console-message-fraction-resistance"),
+            _ => Loc.GetString("capture-console-message-user-no-fraction"),
+        };
+
+
+        _chat.DispatchGlobalAnnouncement(Loc.GetString("station-capture-finish-announcement",
+            ("name", name),
+            ("fraction", fractionText)));
+
+        var query = EntityQueryEnumerator<SectorWarRuleComponent>();
+        while (query.MoveNext(out var rule))
+        {
+            switch (capturable.Fraction)
+            {
+                case SectorFractions.Alliance:
+                    rule.AllianceCredits += rule.CaptureReward;
+                    break;
+                case SectorFractions.Resistance:
+                    rule.ResistanceCredits += rule.CaptureReward;
+                    break;
+            }
+        }
+
+        UpdateUserInterface(uid);
         //TODO
     }
 
@@ -62,35 +109,41 @@ public sealed class CaptureConsoleSystem : EntitySystem
             return;
 
         var currentFraction = SectorFractions.Alliance;
-
+        var hasAccess = true;
         if (TryComp<CapturableStationComponent>(_station.GetOwningStation(uid), out var capturableStationComponent))
             currentFraction = capturableStationComponent.Fraction;
 
-        TimeSpan? totalTime = null;
-        SectorFractions? userFraction;
-        if (HasComp<AllianceStaffComponent>(uid))
+        TimeSpan? totalTime = component.CaptureDuration - (_timing.CurTime - component.StartTime);
+
+        SectorFractions? userFraction = null;
+        if (args != null)
         {
-            userFraction = SectorFractions.Alliance;
+            if (HasComp<AllianceStaffComponent>(args.User))
+            {
+                userFraction = SectorFractions.Alliance;
+            }
+            else if (HasComp<ResistanceStaffComponent>(args.User))
+            {
+                userFraction = SectorFractions.Resistance;
+            }
+            else
+            {
+                hasAccess = false;
+            }
         }
-        else if (HasComp<ResistanceStaffComponent>(uid))
-        {
-            userFraction = SectorFractions.Resistance;
-        }
-        else
-        {
-            userFraction = null;
-        }
+
 
         var station = GetNetEntity(_station.GetOwningStation(uid));
         var name = _station.GetStationNames().First(x => x.Entity == station).Name;
         var state = new CaptureConsoleUpdateState(
             component.Capturing,
             component.StartTime,
-            component.AccumulatedRunTime,
-            totalTime ?? TimeSpan.Zero,
+            component.Capturing ? totalTime ?? TimeSpan.Zero : TimeSpan.Zero,
+            component.CaptureDuration,
             currentFraction,
             userFraction,
-            name
+            name,
+            hasAccess
         );
 
         _ui.SetUiState(uid, CaptureConsoleUi.Key, state);
@@ -100,31 +153,44 @@ public sealed class CaptureConsoleSystem : EntitySystem
         CaptureConsoleComponent component,
         CaptureConsoleButtonPressedMessage args)
     {
-        //TODO
-
-        UpdateUserInterface(uid, component);
-    }
-
-    /// <summary>
-    /// Stops the current scan
-    /// </summary>
-    [PublicAPI]
-    public void CancelScan(EntityUid artifact,
-        ActiveScannedArtifactComponent? component = null,
-        ArtifactAnalyzerComponent? analyzer = null)
-    {
-        if (!Resolve(artifact, ref component, false))
+        var station = GetNetEntity(_station.GetOwningStation(uid));
+        var name = _station.GetStationNames().First(x => x.Entity == station).Name;
+        SectorFractions? fraction;
+        if (HasComp<AllianceStaffComponent>(args.Actor))
+        {
+            fraction = SectorFractions.Alliance;
+        }
+        else if (HasComp<ResistanceStaffComponent>(args.Actor))
+        {
+            fraction = SectorFractions.Resistance;
+        }
+        else
+        {
             return;
+        }
 
-        if (!Resolve(component.Scanner, ref analyzer))
-            return;
+        if (component.Capturing)
+        {
+            component.Capturing = false;
+            _chat.DispatchGlobalAnnouncement(Loc.GetString("station-capture-cancel-announcement", ("name", name)));
+            goto x;
+        }
 
-        _audio.PlayPvs(component.ScanFailureSound, component.Scanner, AudioParams.Default.WithVolume(3f));
+        component.Capturing = true;
+        component.CapturingFraction = fraction.Value;
 
-        RemComp<ActiveArtifactAnalyzerComponent>(component.Scanner);
-        if (analyzer.Console != null)
-            UpdateUserInterface(analyzer.Console.Value);
+        component.StartTime = _timing.CurTime;
+        _chat.DispatchGlobalAnnouncement(Loc.GetString("station-capture-start-announcement", ("name", name)));
+        var query = EntityQueryEnumerator<SectorWarRuleComponent>();
+        var captureSound = "";
+        while (query.MoveNext(out var rule))
+        {
+            captureSound = rule.CaptureSound;
+        }
 
-        RemCompDeferred(artifact, component);
+        _audio.PlayGlobal(captureSound, Filter.Broadcast(), true);
+        x:
+
+        UpdateUserInterface(uid);
     }
 }

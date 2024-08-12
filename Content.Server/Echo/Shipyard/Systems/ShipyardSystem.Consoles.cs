@@ -14,13 +14,13 @@ using Content.Shared.Access.Systems;
 using Content.Shared.Database;
 using Content.Shared.Echo.GameTicking.Components;
 using Content.Shared.Echo.Shipyard.BUI;
+using Content.Shared.Echo.Shipyard.Prototypes;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Radio;
 using Content.Shared.Shipyard;
 using Content.Shared.Shipyard.Components;
 using Content.Shared.Shipyard.Events;
-using Content.Shared.Shipyard.Prototypes;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.UserInterface;
 using Robust.Server.GameObjects;
@@ -155,10 +155,6 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
         if (!component.Initialized)
             return;
 
-        // kind of cursed. We need to update the UI when an Id is entered, but the UI needs to know the player characters bank account.
-        if (!TryComp<ActivatableUIComponent>(uid, out var uiComp) || uiComp.Key == null)
-            return;
-
         RefreshState(uid, 0, (ShipyardConsoleUiKey)args.UiKey);
     }
 
@@ -186,37 +182,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
                 channel,
                 uid);
             _chat.TrySendInGameICMessage(uid,
-                Loc.GetString("shipyard-console-docking", ("owner", player!), ("vessel", name)),
-                InGameICChatType.Speak,
-                true);
-        }
-    }
-
-    private void SendSellMessage(EntityUid uid,
-        EntityUid? player,
-        string name,
-        string shipyardChannel,
-        EntityUid seller,
-        bool secret)
-    {
-        var channel = _prototypeManager.Index<RadioChannelPrototype>(shipyardChannel);
-
-        if (secret)
-        {
-            _radio.SendRadioMessage(uid, Loc.GetString("shipyard-console-leaving-secret"), channel, uid);
-            _chat.TrySendInGameICMessage(uid,
-                Loc.GetString("shipyard-console-leaving-secret"),
-                InGameICChatType.Speak,
-                true);
-        }
-        else
-        {
-            _radio.SendRadioMessage(uid,
-                Loc.GetString("shipyard-console-leaving", ("owner", player!), ("vessel", name!), ("player", seller)),
-                channel,
-                uid);
-            _chat.TrySendInGameICMessage(uid,
-                Loc.GetString("shipyard-console-leaving", ("owner", player!), ("vessel", name!), ("player", seller)),
+                Loc.GetString("shipyard-console-docking", ("owner", player), ("vessel", name)),
                 InGameICChatType.Speak,
                 true);
         }
@@ -317,13 +283,19 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
 
         foreach (var vessel in _prototypeManager.EnumeratePrototypes<VesselPrototype>())
         {
+            var station = _station.GetOwningStation(uid);
+
+            if (station == null)
+                continue;
+
+            EnsureComp<CapturableStationComponent>(station.Value, out var capturableStationComponent);
             // Check that the listing contains the shuttle or that the shuttle is in the group that the console is looking for
             if ((listing?.Shuttles.Contains(vessel.ID) ?? false) ||
                 // if the listing contains the shuttle, add it to the list or
 
                 // if the shuttle is in the group that the console is looking for
                 key != null && key != ShipyardConsoleUiKey.Custom &&
-                ShipyardGroupMapping.TryGetValue(key.Value, out var group) && vessel.Group == group)
+                ShipyardGroupMapping.TryGetValue(key.Value, out _) && vessel.Fraction == capturableStationComponent.Fraction)
             {
                 availableShuttles.Add(vessel.ID);
             }

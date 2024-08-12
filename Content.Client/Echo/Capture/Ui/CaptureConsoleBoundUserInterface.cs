@@ -32,7 +32,7 @@ public sealed class CaptureConsoleBoundUserInterface(EntityUid owner, Enum uiKey
         {
             case CaptureConsoleUpdateState msg:
                 _consoleMenu?.UpdateInformationDisplay(msg);
-                _consoleMenu?.UpdateProgressBar(msg);
+              //  _consoleMenu?.UpdateProgressBar(msg);
                 break;
         }
     }

@@ -15,21 +15,22 @@ public enum CaptureConsoleUi : byte
 public sealed class CaptureConsoleUpdateState(
     bool capturing,
     TimeSpan? startTime,
-    TimeSpan? accumulatedRunTime,
-    TimeSpan totalTime,
+    TimeSpan timeRemain,
+    TimeSpan captureDuration,
     SectorFractions fraction,
     SectorFractions? userFraction,
-    string stationName
-)
+    string stationName,
+    bool hasAccess)
     : BoundUserInterfaceState
 {
     public bool Capturing = capturing;
     public TimeSpan? StartTime = startTime;
-    public TimeSpan? AccumulatedRunTime = accumulatedRunTime;
-    public TimeSpan TotalTime = totalTime;
+    public TimeSpan TimeRemain = timeRemain;
+    public TimeSpan CaptureDuration = captureDuration;
     public SectorFractions StationFraction = fraction;
     public SectorFractions? UserFraction = userFraction;
     public string StationName = stationName;
+    public bool HasAccess = hasAccess;
 }
 
 [RegisterComponent]
@@ -45,16 +46,13 @@ public sealed partial class CaptureConsoleComponent : Component
     public TimeSpan StartTime;
 
     [DataField(customTypeSerializer: typeof(TimespanSerializer))]
-    public TimeSpan CaptureDuration = TimeSpan.FromMinutes(30);
-
-    [ViewVariables(VVAccess.ReadWrite)]
-    public TimeSpan AccumulatedRunTime;
+    public TimeSpan CaptureDuration = TimeSpan.FromSeconds(15); //TimeSpan.FromMinutes(15);
 
     [ViewVariables(VVAccess.ReadWrite)]
     public bool Capturing = false;
 
     [DataField]
-    public EntityUid Artifact;
+    public SectorFractions CapturingFraction = SectorFractions.Alliance;
 }
 
 [Serializable, NetSerializable]

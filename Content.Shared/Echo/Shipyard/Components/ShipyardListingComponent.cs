@@ -1,4 +1,4 @@
-using Content.Shared.Shipyard.Prototypes;
+using Content.Shared.Echo.Shipyard.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.List;
 
 namespace Content.Shared.Shipyard.Components;

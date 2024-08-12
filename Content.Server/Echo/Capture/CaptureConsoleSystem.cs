@@ -65,7 +65,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
     private void FinishCapturing(EntityUid uid, ref CaptureConsoleComponent console)
     {
         var station = _station.GetOwningStation(uid);
-        var name = _station.GetStationNames().First(x => x.Entity == GetNetEntity(station)).Name;
+        var name = _station.GetStationNames().FirstOrNull(x => x.Entity == GetNetEntity(station))?.Name;
 
         console.Capturing = false;
 

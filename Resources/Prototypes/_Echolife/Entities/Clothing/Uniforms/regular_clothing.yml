@@ -1,0 +1,87 @@
+- type: entity
+  parent: ClothingUniformBase
+  id: EchoClothingRegularGreenShirtBlueJeans
+  name: зелёная рубашка и синие джинсы
+  description: Самая обычная повседневная одежда.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Uniforms/RegularClothing/green-shirt_blue-jeans.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Uniforms/RegularClothing/green-shirt_blue-jeans.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: EchoClothingRegularGreenShirtBlueJeansBelt
+  name: зелёная рубашка и синие джинсы с ремнём
+  description: Самая обычная повседневная одежда.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Uniforms/RegularClothing/green-shirt_blue-jeans_belt.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Uniforms/RegularClothing/green-shirt_blue-jeans_belt.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: EchoClothingRegularGreenShirtGrayJeans
+  name: зелёная рубашка и серые джинсы
+  description: Самая обычная повседневная одежда.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Uniforms/RegularClothing/green-shirt_gray-jeans.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Uniforms/RegularClothing/green-shirt_gray-jeans.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: EchoClothingRegularGreenShirtGrayJeansBelt
+  name: зелёная рубашка и серые джинсы с ремнём
+  description: Самая обычная повседневная одежда.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Uniforms/RegularClothing/green-shirt_gray-jeans_belt.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Uniforms/RegularClothing/green-shirt_gray-jeans_belt.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: EchoClothingRegularBeigeShirtBlueJeans
+  name: бежевая рубашка и синие джинсы
+  description: Самая обычная повседневная одежда.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Uniforms/RegularClothing/beige-shirt_blue-jeans.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Uniforms/RegularClothing/beige-shirt_blue-jeans.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: EchoClothingRegularBeigeShirtBlueJeansBelt
+  name: бежевая рубашка и синие джинсы с ремнём
+  description: Самая обычная повседневная одежда.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Uniforms/RegularClothing/beige-shirt_blue-jeans_belt.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Uniforms/RegularClothing/beige-shirt_blue-jeans_belt.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: EchoClothingRegularBeigeShirtGrayJeans
+  name: бежевая рубашка и серые джинсы
+  description: Самая обычная повседневная одежда.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Uniforms/RegularClothing/beige-shirt_gray-jeans.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Uniforms/RegularClothing/beige-shirt_gray-jeans.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: EchoClothingRegularBeigeShirtGrayJeansBelt
+  name: бежевая рубашка и серые джинсы с ремнём
+  description: Самая обычная повседневная одежда.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Uniforms/RegularClothing/beige-shirt_gray-jeans_belt.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Uniforms/RegularClothing/beige-shirt_gray-jeans_belt.rsi

@@ -34,7 +34,7 @@
 - type: entity
   parent: ClothingShoesBaseButcherable
   id: EchoClothingShoesBootsCombineSpecops
-  name: ботинки солдата Альянса
+  name: ботинки спецназа Альянса
   description: Название говорит само за себя.
   components:
   - type: Sprite
@@ -45,7 +45,7 @@
 - type: entity
   parent: ClothingShoesBaseButcherable
   id: EchoClothingShoesBootsCombineStormtrooper
-  name: ботинки солдата Альянса
+  name: ботинки штурмовика Альянса
   description: Название говорит само за себя.
   components:
   - type: Sprite

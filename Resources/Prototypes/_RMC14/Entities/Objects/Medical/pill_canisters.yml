@@ -23,7 +23,7 @@
     - 0,0,7,1 
     storageOpenSound:
       collection: CMPillBottleOpen
-    maxItemSize: Small
+    maxItemSize: Tiny
     whitelist:
       components:
       - Pill
@@ -31,7 +31,7 @@
       - Dice
       - Paper
   - type: Item
-    size: Small
+    size: Tiny
     sprite: _RMC14/Objects/Chemistry/pill_canister.rsi
   - type: GenericVisualizer
     visuals:

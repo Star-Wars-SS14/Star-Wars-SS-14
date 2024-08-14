@@ -1,31 +1,96 @@
 - type: department
-  id: Empire
+  id: Roles_Empire
   description: department-Empire-description
   color: "#8B0000"
   roles:
-  - SW_Sith
-  - SW_Sith_Apprentice
-  - SW_ImperialGeneral
-  - SW_ImperialOfficers
-  - SW_StormtrooperSergeant
-  - SW_StormtrooperSpecialist
-  - SW_StormtrooperMedic
-  - SW_StormtrooperEngineer
-  - SW_Stormtrooper
-  - SW_StormtrooperCargoTechnician
-  weight: 120
+  - SW_Empire_Moff
+  - SW_Empire_Major
+  - SW_Empire_Lieutenant
+  - SW_Empire_Soldier
+  - SW_Empire_Medic
+  weight: 900
+  
+- type: department
+  id: Roles_Republic
+  description: department-Empire-description
+  color: "#8B0000"
+  roles:
+  - SW_Republic_General
+  - SW_Republic_Captain
+  - SW_Republic_Lieutenant
+  - SW_Republic_Soldier
+  - SW_Republic_Recruit
+  - SW_Republic_Medic
+  weight: 800  
 
 - type: department
-  id: RebelAlliance
-  description: department-Rebel-Alliance-description
-  color: "#FF8C00"
+  id: Roles_Sobrik
+  description: department-Sobrik-description
+  color: "#8B0000"
   roles:
-  - SW_Jedi
-  - SW_Jedi_Padawan
-  - SW_RepublicSergeant
-  - SW_RepublicSpecialist
-  - SW_RepublicMedic
-  - SW_RepublicEngineer
-  - SW_RepublicSolider
-  - SW_RepublicCargoTechnician
-  weight: 110
+  - SW_Sobrik_Captain
+  - SW_Sobrik_Officer
+  - SW_Sobrik_Medic
+  weight: 700
+  
+- type: department
+  id: Roles_Mandalorians
+  description: department-Empire-description
+  color: "#8B0000"
+  roles:
+  - SW_Mandalorian_Leader
+  - SW_Mandalorian_Veteran
+  - SW_Mandalorian_Warrior
+  - SW_Mandalorian_Recruit
+  weight: 600
+
+- type: department
+  id: Roles_Balmorran
+  description: department-Empire-description
+  color: "#8B0000"
+  roles:
+  - SW_Balmorran_Leader
+  - SW_Balmorran_Officer
+  - SW_Balmorran_Soldier
+  - SW_Balmorran_Recruit  
+  - SW_Balmorran_Medic
+  weight: 500
+  
+- type: department
+  id: Roles_Empire_Intelligence
+  description: department-Empire-description
+  color: "#8B0000"
+  roles:
+  - SW_Empire_Intelligence_Caretaker
+  - SW_Empire_Intelligence_Agent
+  weight: 400
+
+- type: department
+  id: Roles_Republic_Commander
+  description: department-Empire-description
+  color: "#8B0000"
+  roles:
+  - SW_Republic_Commander_Commander
+  - SW_Republic_Commander_Lieutenant
+  - SW_Republic_Commander_Medic
+  - SW_Republic_Commander_Stormtrooper
+  - SW_Republic_Commander_Sniper
+  weight: 300
+
+- type: department
+  id: Roles_Black_Sun
+  description: department-Empire-description
+  color: "#8B0000"
+  roles:
+  - SW_BlackSun_Sniper
+  - SW_BlackSun_Mercenary
+  weight: 200  
+  
+- type: department
+  id: Roles_Exchange
+  description: department-Empire-description
+  color: "#8B0000"
+  roles:
+  - SW_Exchange_Captain
+  - SW_Exchange_Operative
+  weight: 100  

@@ -1,0 +1,522 @@
+﻿###Sobrik
+- type: job
+  id: SW_Sobrik_Captain
+  name: job-name-Captain
+  description: job-description-jedi
+  playTimeTracker: Job_Sobrik_Captain
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+  
+- type: job
+  id: SW_Sobrik_Officer
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Sobrik_Officer
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone 
+
+- type: job
+  id: SW_Sobrik_Medic
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Sobrik_Medic
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone 
+  
+###Empire  
+#Command
+- type: job
+  id: SW_Empire_Moff
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Empire_Moff
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone 
+
+- type: job
+  id: SW_Empire_Major
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Empire_Major
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone 
+
+- type: job
+  id: SW_Empire_Lieutenant
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Empire_Lieutenant
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone 
+
+#Soldiers
+- type: job
+  id: SW_Empire_Soldier
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Empire_Soldier
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone 
+
+- type: job
+  id: SW_Empire_Medic
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Empire_Medic
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone   
+
+###Mandalorians
+- type: job
+  id: SW_Mandalorian_Leader
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Mandalorian_Leader
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone  
+  
+- type: job
+  id: SW_Mandalorian_Veteran
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Mandalorian_Veteran
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone   
+
+- type: job
+  id: SW_Mandalorian_Warrior
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Mandalorian_Warrior
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone    
+
+- type: job
+  id: SW_Mandalorian_Recruit
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Mandalorian_Recruit
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone   
+
+###Republic
+#Command
+- type: job
+  id: SW_Republic_General
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Republic_General
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone 
+  
+- type: job
+  id: SW_Republic_Captain
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Republic_Captain
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone  
+
+- type: job
+  id: SW_Republic_Lieutenant
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Republic_Lieutenant
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone  
+
+#Soldiers  
+- type: job
+  id: SW_Republic_Soldier
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Republic_Soldier
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone  
+  
+- type: job
+  id: SW_Republic_Medic
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Republic_Medic
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone 
+
+- type: job
+  id: SW_Republic_Recruit
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Republic_Recruit
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone   
+  
+###Balmorran resistance
+- type: job
+  id: SW_Balmorran_Leader
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Balmorran_Leader
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Balmorran_Officer
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Balmorran_Officer
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone 
+
+- type: job
+  id: SW_Balmorran_Medic
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Balmorran_Medic
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone  
+
+- type: job
+  id: SW_Balmorran_Soldier
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Balmorran_Soldier
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone  
+
+- type: job
+  id: SW_Balmorran_Recruit
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Balmorran_Recruit
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone 
+
+###Imperial Intelligence
+- type: job
+  id: SW_Empire_Intelligence_Caretaker
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Empire_Intelligence_Caretaker
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone 
+  
+- type: job
+  id: SW_Empire_Intelligence_Agent
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Empire_Intelligence_Agent
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone   
+  
+###Commander elite Republic
+- type: job
+  id: SW_Republic_Commander_Commander
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Republic_Commander_Commander
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Republic_Commander_Lieutenant
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Republic_Commander_Lieutenant
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Republic_Commander_Medic
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Republic_Commander_Medic
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone  
+  
+- type: job
+  id: SW_Republic_Commander_Stormtrooper
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Republic_Commander_Stormtrooper
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone   
+
+- type: job
+  id: SW_Republic_Commander_Sniper
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Republic_Commander_Sniper
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone   
+
+###Black Sun
+- type: job
+  id: SW_BlackSun_Sniper
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_BlackSun_Sniper
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone   
+
+- type: job
+  id: SW_BlackSun_Mercenary
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_BlackSun_Mercenary
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone 
+
+###Exchange
+- type: job
+  id: SW_Exchange_Captain
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Exchange_Captain
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone 
+  
+- type: job
+  id: SW_Exchange_Operative
+  name: job-name-jedi
+  description: job-description-jedi
+  playTimeTracker: Job_Exchange_Operative
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobJediPadawan
+    time: 0 # 6h
+  startingGear: JediGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone  

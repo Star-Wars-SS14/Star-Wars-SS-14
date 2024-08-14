@@ -1,61 +1,98 @@
 - type: playTimeTracker
-  id: JobJedi
+  id: Job_Sobrik_Captain
 
 - type: playTimeTracker
-  id: JobJediPadawan
+  id: Job_Sobrik_Officer
+  
+- type: playTimeTracker
+  id: Job_Sobrik_Medic  
+  
+- type: playTimeTracker
+  id: Job_Empire_Moff
 
 - type: playTimeTracker
-  id: JobSith
+  id: Job_Empire_Major
+  
+- type: playTimeTracker
+  id: Job_Empire_Lieutenant
+  
+- type: playTimeTracker
+  id: Job_Empire_Soldier
 
 - type: playTimeTracker
-  id: JobSithApprentice
+  id: Job_Empire_Medic
+  
+- type: playTimeTracker
+  id: Job_Mandalorian_Leader  
+  
+- type: playTimeTracker
+  id: Job_Mandalorian_Veteran
 
 - type: playTimeTracker
-  id: JobStormtrooper
+  id: Job_Mandalorian_Warrior
+  
+- type: playTimeTracker
+  id: Job_Mandalorian_Recruit  
+  
+- type: playTimeTracker
+  id: Job_Republic_General  
 
 - type: playTimeTracker
-  id: JobStormtrooperSergeant
+  id: Job_Republic_Captain  
 
 - type: playTimeTracker
-  id: JobStormtrooperSpecialist
+  id: Job_Republic_Lieutenant  
 
 - type: playTimeTracker
-  id: JobStormtrooperMedic
+  id: Job_Republic_Soldier  
 
 - type: playTimeTracker
-  id: JobStormtrooperEngineer
+  id: Job_Republic_Medic  
 
 - type: playTimeTracker
-  id: JobStormtrooperCargoTechnician
+  id: Job_Republic_Recruit 
 
 - type: playTimeTracker
-  id: JobRepublicSergeant
+  id: Job_Balmorran_Leader  
 
 - type: playTimeTracker
-  id: JobRepublicSpecialist
+  id: Job_Balmorran_Officer  
 
 - type: playTimeTracker
-  id: JobRepublicMedic
+  id: Job_Balmorran_Medic 
 
 - type: playTimeTracker
-  id: JobRepublicEngineer
+  id: Job_Balmorran_Soldier   
 
 - type: playTimeTracker
-  id: JobRepublicSolider
+  id: Job_Balmorran_Recruit  
 
 - type: playTimeTracker
-  id: JobRepublicCargoTechnician
+  id: Job_Empire_Intelligence_Caretaker 
 
 - type: playTimeTracker
-  id: JobImperialOfficers
+  id: Job_Empire_Intelligence_Agent    
 
 - type: playTimeTracker
-  id: JobImperialGenerals
-
-
-
-
-
+  id: Job_Republic_Commander_Commander  
 
 - type: playTimeTracker
-  id: JobImperialGenerals
+  id: Job_Republic_Commander_Lieutenant   
+
+- type: playTimeTracker
+  id: Job_Republic_Commander_Medic    
+
+- type: playTimeTracker
+  id: Job_Republic_Commander_Stormtrooper  
+
+- type: playTimeTracker
+  id: Job_Republic_Commander_Sniper     
+  
+- type: playTimeTracker
+  id: Job_BlackSun_Sniper 
+
+- type: playTimeTracker
+  id: Job_Exchange_Captain     
+  
+- type: playTimeTracker
+  id: Job_Exchange_Operative       

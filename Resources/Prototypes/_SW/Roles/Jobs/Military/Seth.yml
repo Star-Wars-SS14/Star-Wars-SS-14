@@ -1,0 +1,71 @@
+- type: startingGear
+  id: SithGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBlack
+    gloves: ClothingHandsGlovesColorBlack
+    shoes: ClothingShoesSwat
+    ears: ClothingHeadsetGrey 
+    neck: SW_ClothingNeckCloakSithCloak
+
+- type: startingGear
+  id: SithApprenticeGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBlack
+    gloves: ClothingHandsGlovesColorBlack
+    shoes: ClothingShoesSwat
+    ears: ClothingHeadsetGrey
+
+- type: startingGear
+  id: RepublicSoliderGear
+  equipment:
+    jumpsuit: SW_ClothingUniformJumpsuitRebel
+    back: ClothingBackpackFilled
+    gloves: SW_ClothingHandsGlovesRebel
+    shoes: ClothingShoesCult
+    ears: ClothingHeadsetGrey
+    outerClothing: SW_ClothingOuterVestRebel
+    head: SW_RebelHelmet
+
+- type: startingGear
+  id: JediGear
+  equipment:
+    jumpsuit: SW_ClothingUniformJumpsuitJedi
+    shoes: SW_ClothingShoesBootsJedi 
+    ears: ClothingHeadsetGrey
+    neck: SW_ClothingNeckCloakJediCloak
+
+- type: startingGear
+  id: JediPadawanGear
+  equipment:
+    jumpsuit: SW_ClothingUniformJumpsuitJedi
+    shoes: SW_ClothingShoesBootsJedi
+    ears: ClothingHeadsetGrey
+
+- type: startingGear
+  id: StormtrooperGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBlack
+    back: ClothingBackpackFilled
+    gloves: ClothingHandsGlovesColorBlack
+    shoes: ClothingShoesSwat
+    ears: ClothingHeadsetGrey
+    head: SW_StormtrooperHelmet
+    outerClothing: SW_StormtrooperArmor
+    
+- type: startingGear
+  id: ImperialGeneralGear
+  equipment:
+    jumpsuit: SW_ClothingUniformJumpsuitImperialGeneral
+    shoes: SW_ClothingShoesBootsImperialOfficers
+    ears: ClothingHeadsetGrey  
+    
+- type: startingGear
+  id: ImperialOfficersGear
+  equipment:
+    jumpsuit: SW_ClothingUniformJumpsuitOfficers
+    back: ClothingBackpackFilled
+    gloves: ClothingHandsGlovesColorBlack
+    shoes: SW_ClothingShoesBootsOfficers
+    ears: ClothingHeadsetGrey
+    head: SW_ClothingHeadCapOfficers
+    

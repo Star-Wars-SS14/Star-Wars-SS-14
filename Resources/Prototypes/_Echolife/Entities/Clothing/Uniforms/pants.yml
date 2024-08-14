@@ -1,7 +1,7 @@
 - type: entity
   parent: ClothingUniformBase
   id: EchoClothingPantsCombineSoldier
-  name: штаны солдата Альянса.
+  name: штаны солдата Альянса
   description: Название говорит само за себя.
   components:
   - type: Sprite
@@ -12,7 +12,7 @@
 - type: entity
   parent: ClothingUniformBase
   id: EchoClothingPantsCombineSniper
-  name: штаны снайпера Альянса.
+  name: штаны снайпера Альянса
   description: Название говорит само за себя.
   components:
   - type: Sprite
@@ -23,7 +23,7 @@
 - type: entity
   parent: ClothingUniformBase
   id: EchoClothingPantsCombineSpecops
-  name: штаны спецназа Альянса.
+  name: штаны спецназа Альянса
   description: Название говорит само за себя.
   components:
   - type: Sprite

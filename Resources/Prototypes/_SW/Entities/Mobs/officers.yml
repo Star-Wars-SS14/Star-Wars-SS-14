@@ -16,7 +16,7 @@
     DashCooldown: 1
   - type: NpcFactionMember
     factions:
-    - NanoTrasen    
+    - NanoTrasen
 
 - type: entity
   name: Rebuplic solider
@@ -41,8 +41,8 @@
     prototypes: [ImperialOfficersGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate    
-    
+    - Syndicate
+
 - type: entity
   name: Sith
   parent: BaseMobHuman
@@ -74,13 +74,17 @@
   components:
   - type: Loadout
     prototypes: [StormtrooperGear]
-  - type: Dash
-    Dash: false
-    DashSound: /Audio/_SW/Abilities/dash.ogg
-    DashSpeed: 2
-    DashImpulse: 1
-    DashTime: 0.5
-    DashCooldown: 1
   - type: NpcFactionMember
     factions:
-    - Syndicate    
+    - Syndicate
+
+- type: entity
+  name: imperial general
+  parent: BaseMobHuman
+  id: SW_MobImperialGeneral
+  components:
+  - type: Loadout
+    prototypes: [ImperialGeneralGear]
+  - type: NpcFactionMember
+    factions:
+    - Syndicate

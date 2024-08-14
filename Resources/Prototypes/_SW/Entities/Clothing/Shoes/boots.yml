@@ -2,7 +2,6 @@
   parent: ClothingShoesBaseButcherable
   id: SW_ClothingShoesBootsJedi
   name: Jedi boots
-  description: Robust combat boots for combat scenarios or combat situations. All combat, all the time.
   components:
   - type: Sprite
     sprite: _SW/Clothing/Shoes/Boots/jedi.rsi
@@ -13,9 +12,18 @@
   parent: ClothingShoesBaseButcherable
   id: SW_ClothingShoesBootsOfficers
   name: Officer boots
-  description: Robust combat boots for combat scenarios or combat situations. All combat, all the time.
   components:
   - type: Sprite
     sprite: _SW/Clothing/Shoes/Boots/officer.rsi
   - type: Clothing
     sprite: _SW/Clothing/Shoes/Boots/officer.rsi
+
+- type: entity
+  parent: ClothingShoesBaseButcherable
+  id: SW_ClothingShoesBootsImperialOfficers
+  name: Imperial Officer boots
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Shoes/Boots/imperial_officer.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Shoes/Boots/imperial_officer.rsi

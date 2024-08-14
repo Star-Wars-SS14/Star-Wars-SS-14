@@ -45,6 +45,17 @@
 
 - type: playTimeTracker
   id: JobRepublicCargoTechnician
-  
+
 - type: playTimeTracker
   id: JobImperialOfficers
+
+- type: playTimeTracker
+  id: JobImperialGenerals
+
+
+
+
+
+
+- type: playTimeTracker
+  id: JobImperialGenerals

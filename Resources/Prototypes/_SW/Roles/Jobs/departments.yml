@@ -5,6 +5,7 @@
   roles:
   - SW_Sith
   - SW_Sith_Apprentice
+  - SW_ImperialGeneral
   - SW_ImperialOfficers
   - SW_StormtrooperSergeant
   - SW_StormtrooperSpecialist

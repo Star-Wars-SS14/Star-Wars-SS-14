@@ -21,7 +21,7 @@
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 86400 # 24h
-  startingGear: JediGear
+  startingGear: JediPadawanGear
   icon: "JobIconPassenger"
   supervisors: job-supervisors-everyone
 
@@ -32,3 +32,10 @@
     shoes: SW_ClothingShoesBootsJedi
     ears: ClothingHeadsetGrey
     neck: SW_ClothingNeckCloakJediCloak
+
+- type: startingGear
+  id: JediPadawanGear
+  equipment:
+    jumpsuit: SW_ClothingUniformJumpsuitJedi
+    shoes: SW_ClothingShoesBootsJedi
+    ears: ClothingHeadsetGrey

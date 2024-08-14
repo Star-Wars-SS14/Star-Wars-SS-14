@@ -21,7 +21,7 @@
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 86400 # 24h
-  startingGear: SithGear
+  startingGear: SithApprenticeGear
   icon: "JobIconPassenger"
   supervisors: job-supervisors-everyone
 
@@ -33,3 +33,11 @@
     shoes: ClothingShoesSwat
     ears: ClothingHeadsetGrey
     neck: SW_ClothingNeckCloakSithCloak
+
+- type: startingGear
+  id: SithApprenticeGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBlack
+    gloves: ClothingHandsGlovesColorBlack
+    shoes: ClothingShoesSwat
+    ears: ClothingHeadsetGrey

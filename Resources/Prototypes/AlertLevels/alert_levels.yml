@@ -81,12 +81,10 @@
       shuttleTime: 1200
     evac: # EchoLife custom code :>
       announcement: alert-level-evac-announcement
-      selectable: false
       sound:
         path: /Audio/Misc/evacalert.ogg
         params:
           volume: -2
-      disableSelection: true
       color: Brown
       emergencyLightColor: Red
       forceEnableEmergencyLights: true

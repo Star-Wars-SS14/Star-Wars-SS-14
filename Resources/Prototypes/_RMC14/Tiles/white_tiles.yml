@@ -4,7 +4,7 @@
   parent: CMTileBase
   id: CMFloorSteelWhiteBase
   name: tiles-cm-white
-  itemDrop: CMTileItemSteel # TODO RMC14
+  itemDrop: CMSheetMetal1 # TODO RMC14
 
 - type: tile
   parent: CMFloorSteelWhiteBase

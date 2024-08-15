@@ -8,7 +8,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -23,7 +23,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor 
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -38,7 +38,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -55,7 +55,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -70,7 +70,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -85,7 +85,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -101,7 +101,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -116,7 +116,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -132,7 +132,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -147,7 +147,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -162,7 +162,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -177,7 +177,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -194,7 +194,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -209,7 +209,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -224,7 +224,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -240,7 +240,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -255,7 +255,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -270,7 +270,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -286,7 +286,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -301,7 +301,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -316,7 +316,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -331,7 +331,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -346,7 +346,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -362,7 +362,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -377,7 +377,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -393,7 +393,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -408,7 +408,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -423,7 +423,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -438,7 +438,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -453,7 +453,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -469,7 +469,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -484,7 +484,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -500,7 +500,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"
@@ -515,7 +515,7 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobJediPadawan
+    role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: JediGear
   icon: "JobIconPassenger"

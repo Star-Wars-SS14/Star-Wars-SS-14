@@ -90,9 +90,13 @@
   
 - type: playTimeTracker
   id: Job_BlackSun_Sniper 
+  
+- type: playTimeTracker
+  id: Job_BlackSun_Mercenary    
 
 - type: playTimeTracker
   id: Job_Exchange_Captain     
   
 - type: playTimeTracker
-  id: Job_Exchange_Operative       
+  id: Job_Exchange_Operative  
+  

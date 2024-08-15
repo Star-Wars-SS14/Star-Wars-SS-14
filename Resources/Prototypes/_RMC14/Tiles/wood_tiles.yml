@@ -7,7 +7,7 @@
     collection: FootstepWood
   barestepSounds:
     collection: BarestepWood
-  itemDrop: CMTileItemWood
+  itemDrop: CMSheetMetal1
 
 - type: tile
   parent: CMFloorWoodBase

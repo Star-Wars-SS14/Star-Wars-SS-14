@@ -1,0 +1,9 @@
+- type: gamePreset
+  id: SectorWar
+  alias:
+    - sector
+  name: sector-war-title
+  description: sector-war-description
+  showInVote: false
+  rules:
+    - SectorWar

@@ -1,0 +1,11 @@
+sector-war-title = Война секторов
+sector-war-description = Спустя несколько десятилетий Сопротивление наконец смогло дать отпор и захватило несколько станций на орбите планеты. Скоординируйте свои действия, развейте экономику, а после захватите все дочерние станции Альянса до того, как в сектор прибудут подкрепления.
+sector-war-round-end-alert = Внимание! Осталось времени: { $time }
+station-capture-start-announcement = Внимание! Захват станции { $name } начат!
+station-capture-cancel-announcement = Внимание! Захват станции { $name } был отменён.
+station-capture-finish-announcement = Внимание! Захват станции { $name } был завершён. Контроллирующая фракция: { $fraction }
+round-end-alliance-won = Победа Альянса!
+round-end-resistance-won = Победа Сопротивления!
+round-end-wtf-draw = Ничья?
+round-end-alliance-credits = Остаток кредитов альянса: { $credits }
+round-end-resistance-credits = Остаток кредитов сопротивления: { $credits }

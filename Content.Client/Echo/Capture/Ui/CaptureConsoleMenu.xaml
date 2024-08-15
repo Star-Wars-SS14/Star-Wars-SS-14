@@ -1,0 +1,44 @@
+﻿<controls:FancyWindow xmlns="https://spacestation14.io"
+    xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    xmlns:customControls="clr-namespace:Content.Client.Administration.UI.CustomControls"
+    Title="{Loc 'capture-console-title'}"
+    MinSize="650 320"
+    SetSize="650 320">
+    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
+        <BoxContainer Margin="10 10 10 10" MinWidth="150" Orientation="Vertical"
+            VerticalExpand="True" SizeFlagsStretchRatio="1">
+            <BoxContainer Orientation="Vertical" VerticalExpand="True">
+                <BoxContainer MinHeight="55"/>
+                <RichTextLabel Name="LeftInfoLabel" Text="[color=yellow]Test2[/color]"/>
+                <BoxContainer MinHeight="75"/>
+                <Button Name="CaptureButton"
+                    Text="{Loc 'capture-console-capture-button'}">
+                </Button>
+            </BoxContainer>
+            <BoxContainer Orientation="Vertical">
+                <Label Name="ProgressLabel"/>
+                <ProgressBar
+                    Name="ProgressBar"
+                    MinValue="0"
+                    MaxValue="1"
+                    SetHeight="20">
+                </ProgressBar>
+            </BoxContainer>
+        </BoxContainer>
+        <customControls:VSeparator StyleClasses="LowDivider" />
+        <PanelContainer Margin="10 10 10 10" HorizontalExpand="True" SizeFlagsStretchRatio="3">
+            <PanelContainer.PanelOverride>
+                <gfx:StyleBoxFlat BackgroundColor="#000000FF" />
+            </PanelContainer.PanelOverride>
+            <BoxContainer Margin="10 10 10 10" Orientation="Horizontal">
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                    <BoxContainer VerticalExpand="True">
+                        <RichTextLabel Name="Information"> </RichTextLabel>
+                    </BoxContainer>
+                </BoxContainer>
+                <BoxContainer VerticalExpand="True"></BoxContainer>
+            </BoxContainer>
+        </PanelContainer>
+    </BoxContainer>
+</controls:FancyWindow>

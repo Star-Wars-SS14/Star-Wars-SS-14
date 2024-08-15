@@ -1,11 +1,11 @@
 - type: entity
   parent: VendingMachineClothing
   id: VendingMachineClothingEcholife
-  name: Одеждомат 2
-  description: Выдает новую одежду
+  name: Раздатчик одежды
+  description: Выдает одежду
   components:
   - type: VendingMachine
-    pack: AllEchoClothingInventory
+    pack: EchoCivilianClothingInventory
     offState: off
     brokenState: broken
     normalState: normal-unshaded

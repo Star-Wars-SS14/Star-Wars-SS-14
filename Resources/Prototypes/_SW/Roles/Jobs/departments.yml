@@ -1,5 +1,5 @@
 - type: department
-  id: Roles_Empire
+  id: Cargo #Roles_Empire
   description: department-Empire-description
   color: "#8B0000"
   roles:
@@ -8,10 +8,10 @@
   - SW_Empire_Lieutenant
   - SW_Empire_Soldier
   - SW_Empire_Medic
-  weight: 900
+  weight: 1900
   
 - type: department
-  id: Roles_Republic
+  id: Civilian #Roles_Republic
   description: department-Empire-description
   color: "#8B0000"
   roles:
@@ -21,20 +21,20 @@
   - SW_Republic_Soldier
   - SW_Republic_Recruit
   - SW_Republic_Medic
-  weight: 800  
+  weight: 1800  
 
 - type: department
-  id: Roles_Sobrik
+  id: Command #Roles_Sobrik
   description: department-Sobrik-description
   color: "#8B0000"
   roles:
   - SW_Sobrik_Captain
   - SW_Sobrik_Officer
   - SW_Sobrik_Medic
-  weight: 700
+  weight: 1700
   
 - type: department
-  id: Roles_Mandalorians
+  id: Engineering #Roles_Mandalorians
   description: department-Empire-description
   color: "#8B0000"
   roles:
@@ -42,10 +42,10 @@
   - SW_Mandalorian_Veteran
   - SW_Mandalorian_Warrior
   - SW_Mandalorian_Recruit
-  weight: 600
+  weight: 1600
 
 - type: department
-  id: Roles_Balmorran
+  id: Medical #Roles_Balmorran
   description: department-Empire-description
   color: "#8B0000"
   roles:
@@ -54,19 +54,19 @@
   - SW_Balmorran_Soldier
   - SW_Balmorran_Recruit  
   - SW_Balmorran_Medic
-  weight: 500
+  weight: 1500
   
 - type: department
-  id: Roles_Empire_Intelligence
+  id: Security #Roles_Empire_Intelligence
   description: department-Empire-description
   color: "#8B0000"
   roles:
   - SW_Empire_Intelligence_Caretaker
   - SW_Empire_Intelligence_Agent
-  weight: 400
+  weight: 1400
 
 - type: department
-  id: Roles_Republic_Commander
+  id: Science #Roles_Republic_Commander
   description: department-Empire-description
   color: "#8B0000"
   roles:
@@ -75,16 +75,16 @@
   - SW_Republic_Commander_Medic
   - SW_Republic_Commander_Stormtrooper
   - SW_Republic_Commander_Sniper
-  weight: 300
+  weight: 1300
 
 - type: department
-  id: Roles_Black_Sun
+  id: Specific #Roles_Black_Sun
   description: department-Empire-description
   color: "#8B0000"
   roles:
   - SW_BlackSun_Sniper
   - SW_BlackSun_Mercenary
-  weight: 200  
+  weight: 1200  
   
 - type: department
   id: Roles_Exchange
@@ -93,4 +93,4 @@
   roles:
   - SW_Exchange_Captain
   - SW_Exchange_Operative
-  weight: 100  
+  weight: 1100    

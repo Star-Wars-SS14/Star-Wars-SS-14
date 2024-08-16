@@ -2,7 +2,6 @@
   parent: ClothingUniformBase
   id: SW_ClothingUniformJumpsuitRebel
   name: Rebel uniform
-  description: Advanced armored jumpsuit used by special forces in special operations.
   components:
   - type: Sprite
     sprite: _SW/Clothing/Uniforms/Jumpsuit/rebel.rsi
@@ -13,7 +12,6 @@
   parent: ClothingUniformBase
   id: SW_ClothingUniformJumpsuitJedi
   name: Jedi robe
-  description: Advanced armored jumpsuit used by special forces in special operations.
   components:
   - type: Sprite
     sprite: _SW/Clothing/Uniforms/Jumpsuit/jedi.rsi
@@ -24,9 +22,29 @@
   parent: ClothingUniformBase
   id: SW_ClothingUniformJumpsuitOfficers
   name: officer uniform
-  description: Advanced armored jumpsuit used by special forces in special operations.
   components:
   - type: Sprite
     sprite: _SW/Clothing/Uniforms/Jumpsuit/officer.rsi
   - type: Clothing
     sprite: _SW/Clothing/Uniforms/Jumpsuit/officer.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: SW_ClothingUniformJumpsuitImperialGeneral
+  name: imperial general uniform
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Uniforms/Jumpsuit/imperial_general.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Uniforms/Jumpsuit/imperial_general.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: SW_ClothingUniformJumpsuitImperialOfficers
+  name: imperial officer uniform
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Uniforms/Jumpsuit/imperial_officer.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Uniforms/Jumpsuit/imperial_officer.rsi
+

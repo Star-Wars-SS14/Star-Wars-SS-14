@@ -1,0 +1,96 @@
+- type: entity
+  parent: BodyBag
+  id: CMBodyBag
+  name: body bag
+  description: A folded bag designed for the storage and transportation of cadavers.
+  components:
+  - type: Sprite
+    sprite: _RMC14/Objects/Medical/bodybags.rsi
+    layers:
+    - state: bodybag_closed
+      map: ["unfoldedLayer", "enum.StorageVisualLayers.Base"]
+    - state: bodybag_folded
+      map: ["foldedLayer"]
+      visible: false
+    - state: bodybag_open
+      map: ["enum.StorageVisualLayers.Door"]
+    - state: paper
+      map: ["enum.PaperLabelVisuals.Layer"]
+  - type: Icon
+    sprite: _RMC14/Objects/Medical/bodybags.rsi
+    state: bodybag_closed
+  - type: EntityStorageVisuals
+    stateDoorOpen: bodybag_open
+
+- type: entity
+  parent: CMBodyBag
+  id: CMBodyBagFolded
+  suffix: folded
+  components:
+  - type: Foldable
+    folded: true
+
+- type: entity
+  parent: CMBodyBag
+  id: CMStasisBag # TODO RMC14 This needs to halt infected timers or something
+  name: stasis bag
+  description: A folded, reusable bag designed to prevent additional damage to an occupant.
+  components:
+  - type: Sprite
+    sprite: _RMC14/Objects/Medical/stasisbag.rsi
+    layers:
+    - state: bodybag_closed
+      map: ["unfoldedLayer", "enum.StorageVisualLayers.Base"]
+    - state: bodybag_folded
+      map: ["foldedLayer"]
+      visible: false
+    - state: bodybag_open
+      map: ["enum.StorageVisualLayers.Door"]
+    - state: paper
+      sprite: _RMC14/Objects/Medical/bodybags.rsi
+      map: ["enum.PaperLabelVisuals.Layer"]
+  - type: Icon
+    sprite: _RMC14/Objects/Medical/stasisbag.rsi
+  - type: EntityStorageVisuals
+    stateDoorOpen: bodybag_open
+
+- type: entity
+  parent: CMStasisBag
+  id: CMStasisBagFolded
+  suffix: folded
+  components:
+  - type: Foldable
+    folded: true
+
+- type: entity
+  parent: CMBodyBag
+  id: RMCThermalTarp # TODO RMC14 This needs to halt infected timers or something
+  name: V3 reactive thermal tarp
+  description: A more compact and improved version of the V2 thermal tarp, intended primarily for the transportation of deceased or wounded marines. It has improved cloaking technology than earlier models, allowing it to cloak to a greater degree and faster, but can only be used with special training.
+  components:
+  - type: Sprite
+    sprite: _RMC14/Objects/Medical/bodybags.rsi
+    layers:
+    - state: scouttarp_closed
+      map: ["unfoldedLayer", "enum.StorageVisualLayers.Base"]
+    - state: scouttarp_folded
+      map: ["foldedLayer"]
+      visible: false
+    - state: scouttarp_open
+      map: ["enum.StorageVisualLayers.Door"]
+    - state: paper
+      sprite: _RMC14/Objects/Medical/bodybags.rsi
+      map: ["enum.PaperLabelVisuals.Layer"]
+  - type: Icon
+    sprite: _RMC14/Objects/Medical/bodybags.rsi
+    state: scouttarp_closed
+  - type: EntityStorageVisuals
+    stateDoorOpen: scouttarp_open
+
+- type: entity
+  parent: RMCThermalTarp
+  id: RMCThermalTarpFolded
+  suffix: folded
+  components:
+  - type: Foldable
+    folded: true

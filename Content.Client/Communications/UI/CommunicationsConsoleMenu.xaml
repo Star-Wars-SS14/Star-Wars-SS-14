@@ -11,7 +11,7 @@
 
         <Control MinSize="10 10" />
 
-        <RichTextLabel Name="CountdownLabel" VerticalExpand="True" />
-        <Button Name="EmergencyShuttleButton" Text="Placeholder Text" Access="Public" />
+        <!-- <RichTextLabel Name="CountdownLabel" VerticalExpand="True" /> -->
+        <!-- <Button Name="EmergencyShuttleButton" Text="Placeholder Text" Access="Public" /> -->
     </BoxContainer>
 </controls:FancyWindow>

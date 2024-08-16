@@ -110,7 +110,7 @@ namespace Content.Server.Cargo.Systems
                 return;
             }
 
-            if(!TryComp<CapturableStationComponent>(station.Value, out var stationComponent))
+            if (!TryComp<CapturableStationComponent>(station.Value, out var stationComponent))
                 return;
 
             var balance = 0;
@@ -128,8 +128,6 @@ namespace Content.Server.Cargo.Systems
                     _ => balance,
                 };
             }
-
-
 
 
             // Find our order again. It might have been dispatched or approved already
@@ -353,8 +351,7 @@ namespace Content.Server.Cargo.Systems
                 if (!_uiSystem.HasUi(consoleUid, CargoConsoleUiKey.Orders))
                     continue;
 
-                if (!TryComp<CapturableStationComponent>(station.Value, out var capturableStationComponent))
-                    return;
+                EnsureComp<CapturableStationComponent>(station.Value, out var capturableStationComponent);
 
                 var balance = 0;
                 switch (capturableStationComponent.Fraction)

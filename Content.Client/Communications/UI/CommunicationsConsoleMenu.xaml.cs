@@ -70,8 +70,8 @@ namespace Content.Client.Communications.UI
 
             AlertLevelButton.Disabled = !AlertLevelSelectable;
 
-            EmergencyShuttleButton.OnPressed += _ => OnEmergencyLevel?.Invoke();
-            EmergencyShuttleButton.Disabled = !CanCall;
+            // EmergencyShuttleButton.OnPressed += _ => OnEmergencyLevel?.Invoke();
+            // EmergencyShuttleButton.Disabled = !CanCall;
         }
 
         protected override void FrameUpdate(FrameEventArgs args)
@@ -121,17 +121,17 @@ namespace Content.Client.Communications.UI
         {
             if (!CountdownStarted)
             {
-                CountdownLabel.SetMessage(string.Empty);
-                EmergencyShuttleButton.Text = Loc.GetString("comms-console-menu-call-shuttle");
+                // CountdownLabel.SetMessage(string.Empty);
+                // EmergencyShuttleButton.Text = Loc.GetString("comms-console-menu-call-shuttle");
                 return;
             }
 
             var diff = MathHelper.Max((CountdownEnd - _timing.CurTime) ?? TimeSpan.Zero, TimeSpan.Zero);
 
-            EmergencyShuttleButton.Text = Loc.GetString("comms-console-menu-recall-shuttle");
+            // EmergencyShuttleButton.Text = Loc.GetString("comms-console-menu-recall-shuttle");
             var infoText = Loc.GetString($"comms-console-menu-time-remaining",
             ("time", diff.TotalSeconds.ToString(CultureInfo.CurrentCulture)));
-            CountdownLabel.SetMessage(infoText);
+            // CountdownLabel.SetMessage(infoText);
         }
     }
 }

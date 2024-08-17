@@ -1,5 +1,5 @@
 - type: vendingMachineInventory
-  id: EchoCivilianClothingInventory
+  id: EchoСombineClothingInventory
   startingInventory:
     EchoClothingShoesBootsCombineSoldier: 4
     EchoClothingShoesBootsCombineSniper: 4

@@ -12,10 +12,6 @@
       "directions": 4
     },
     {
-        "name": "broken",
-        "directions": 4
-      },
-    {
       "name": "computer_blackmarket",
       "directions": 4
     },
@@ -266,94 +262,6 @@
             0.5
           ]
         ]
-    },
-    {
-        "name": "capture_a",
-        "directions": 4,
-        "delays": [
-          [
-            1.0,
-            0.3
-          ],
-          [
-            1.0,
-            0.3
-          ],
-          [
-            1.0,
-            0.3
-          ],
-          [
-            1.0,
-            0.3
-          ]
-        ]
-      },
-      {
-        "name": "capture_r",
-        "directions": 4,
-        "delays": [
-          [
-            1.0,
-            0.3
-          ],
-          [
-            1.0,
-            0.3
-          ],
-          [
-            1.0,
-            0.3
-          ],
-          [
-            1.0,
-            0.3
-          ]
-        ]
-      },
-      {
-        "name": "shuttle_a",
-        "directions": 4,
-        "delays": [
-          [
-            1.0,
-            0.3
-          ],
-          [
-            1.0,
-            0.3
-          ],
-          [
-            1.0,
-            0.3
-          ],
-          [
-            1.0,
-            0.3
-          ]
-        ]
-      },
-      {
-        "name": "shuttle_r",
-        "directions": 4,
-        "delays": [
-          [
-            1.0,
-            0.3
-          ],
-          [
-            1.0,
-            0.3
-          ],
-          [
-            1.0,
-            0.3
-          ],
-          [
-            1.0,
-            0.3
-          ]
-        ]
-      }
+    }
   ]
 }

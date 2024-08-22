@@ -52,7 +52,7 @@
   name: capture console
   parent: [BaseComputer]
   id: ComputerCapture
-  description: Used to controll the station's fraction
+  description: Used to control the station's fraction
   components:
   - type: CaptureConsole
   - type: Sprite
@@ -73,3 +73,69 @@
     interfaces:
       enum.CaptureConsoleUi.Key:
         type: CaptureConsoleBoundUserInterface
+
+# Combine & Resistance variations, yeahhh...
+- type: entity
+  parent: ComputerCapture
+  id: ComputerCaptureResistance
+  suffix: Сопротивление
+  name: консоль захвата
+  description: Используется для управления фракцией станции
+  components:
+  - type: Sprite
+    sprite: _NF/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerScreen"]
+      state: capture_r
+
+- type: entity
+  parent: ComputerCapture
+  id: ComputerCaptureCombine
+  suffix: Альянс
+  name: консоль захвата
+  description: Используется для управления фракцией станции
+  components:
+  - type: Sprite
+    sprite: _NF/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerScreen"]
+      state: capture_a
+
+- type: entity
+  parent: ComputerCapture
+  id: ComputerCaptureResistance
+  suffix: Сопротивление
+  name: консоль захвата
+  description: Используется для управления фракцией станции
+  components:
+  - type: Sprite
+    sprite: _NF/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerScreen"]
+      state: capture_r
+
+- type: entity
+  parent: ComputerShuttle
+  id: ComputerShuttleResistance
+  suffix: Альянс
+  name: консоль пилотирования шаттлом
+  description: Это нуждается в пояснении?
+  components:
+  - type: Sprite
+    sprite: _NF/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerScreen"]
+      state: shuttle_r
+
+- type: entity
+  parent: ComputerShuttle
+  id: ComputerShuttleCombine
+  suffix: Альянс
+  name: консоль пилотирования шаттлом
+  description: Это нуждается в пояснении?
+  components:
+  - type: Sprite
+    sprite: _NF/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerScreen"]
+      state: shuttle_a

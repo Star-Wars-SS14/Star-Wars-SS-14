@@ -1,3 +1,390 @@
+###Sobrik
+- type: entity
+  id: SW_SpawnPointSobrikCaptain
+  parent: SpawnPointJobBase
+  name: Sobrik Captain
+  components:
+  - type: SpawnPoint
+    job_id: SW_Sobrik_Captain
+  - type: Sprite
+    layers:
+    - state: green
+    - state: SW_stormtrooper
+
+- type: entity
+  id: SW_SpawnPointSobrikOfficer
+  parent: SpawnPointJobBase
+  name: Sobrik Officer
+  components:
+  - type: SpawnPoint
+    job_id: SW_Sobrik_Officer
+  - type: Sprite
+    layers:
+    - state: green
+    - state: SW_stormtrooper
+
+- type: entity
+  id: SW_SpawnPointSobrikMedic
+  parent: SpawnPointJobBase
+  name: Sobrik Medic
+  components:
+  - type: SpawnPoint
+    job_id: SW_Sobrik_Medic
+  - type: Sprite
+    layers:
+    - state: green
+    - state: SW_stormtrooper
+
+###Empire
+- type: entity
+  id: SW_SpawnPointEmpireMoff
+  parent: SpawnPointJobBase
+  name: Empire Moff
+  components:
+  - type: SpawnPoint
+    job_id: SW_Empire_Moff
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointEmpireMajor
+  parent: SpawnPointJobBase
+  name: Empire Major
+  components:
+  - type: SpawnPoint
+    job_id: SW_Empire_Major
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointEmpireLieutenant
+  parent: SpawnPointJobBase
+  name: Empire Lieutenant
+  components:
+  - type: SpawnPoint
+    job_id: SW_Empire_Lieutenant
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointEmpireSoldier
+  parent: SpawnPointJobBase
+  name: Empire Soldier
+  components:
+  - type: SpawnPoint
+    job_id: SW_Empire_Soldier
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointEmpireMedic
+  parent: SpawnPointJobBase
+  name: Empire Medic
+  components:
+  - type: SpawnPoint
+    job_id: SW_Empire_Medic
+  - type: Sprite
+    layers:
+    - state: green
+
+###Mandalorians
+- type: entity
+  id: SW_SpawnPointMandalorianLeader
+  parent: SpawnPointJobBase
+  name: Mandalorian Leader
+  components:
+  - type: SpawnPoint
+    job_id: SW_Mandalorian_Leader
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointMandalorianVeteran
+  parent: SpawnPointJobBase
+  name: Mandalorian Veteran
+  components:
+  - type: SpawnPoint
+    job_id: SW_Mandalorian_Veteran
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointMandalorianWarrior
+  parent: SpawnPointJobBase
+  name: Mandalorian Warrior
+  components:
+  - type: SpawnPoint
+    job_id: SW_Mandalorian_Warrior
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointMandalorianRecruit
+  parent: SpawnPointJobBase
+  name: Mandalorian Recruit
+  components:
+  - type: SpawnPoint
+    job_id: SW_Mandalorian_Recruit
+  - type: Sprite
+    layers:
+    - state: green
+
+###Republic
+- type: entity
+  id: SW_SpawnPointRepublicGeneral
+  parent: SpawnPointJobBase
+  name: Republic General
+  components:
+  - type: SpawnPoint
+    job_id: SW_Republic_General
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointRepublicCaptain
+  parent: SpawnPointJobBase
+  name: Republic Captain
+  components:
+  - type: SpawnPoint
+    job_id: SW_Republic_Captain
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointRepublicLieutenant
+  parent: SpawnPointJobBase
+  name: Republic Lieutenant
+  components:
+  - type: SpawnPoint
+    job_id: SW_Republic_Lieutenant
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointRepublicSoldiers
+  parent: SpawnPointJobBase
+  name: Republic Soldier
+  components:
+  - type: SpawnPoint
+    job_id: SW_Republic_Soldier
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointRepublicMedic
+  parent: SpawnPointJobBase
+  name: Republic Medic
+  components:
+  - type: SpawnPoint
+    job_id: SW_Republic_Medic
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointRepublicRecruit
+  parent: SpawnPointJobBase
+  name: Republic Recruit
+  components:
+  - type: SpawnPoint
+    job_id: SW_Republic_Recruit
+  - type: Sprite
+    layers:
+    - state: green
+
+###Balmorran resistance
+- type: entity
+  id: SW_SpawnPointBalmorranLeader
+  parent: SpawnPointJobBase
+  name: Balmorran Leader
+  components:
+  - type: SpawnPoint
+    job_id: SW_Balmorran_Leader
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointBalmorranOfficer
+  parent: SpawnPointJobBase
+  name: Balmorran Officer
+  components:
+  - type: SpawnPoint
+    job_id: SW_Balmorran_Officer
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointBalmorranMedic
+  parent: SpawnPointJobBase
+  name: Balmorran Medic
+  components:
+  - type: SpawnPoint
+    job_id: SW_Balmorran_Medic
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointBalmorranSoldier
+  parent: SpawnPointJobBase
+  name: Balmorran Soldier
+  components:
+  - type: SpawnPoint
+    job_id: SW_Balmorran_Soldier
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointBalmorranRecruit
+  parent: SpawnPointJobBase
+  name: Balmorran Recruit
+  components:
+  - type: SpawnPoint
+    job_id: SW_Balmorran_Recruit
+  - type: Sprite
+    layers:
+    - state: green
+
+###Imperial Intelligence
+- type: entity
+  id: SW_SpawnPointEmpireIntelligenceCaretaker
+  parent: SpawnPointJobBase
+  name: Empire Intelligence Caretaker
+  components:
+  - type: SpawnPoint
+    job_id: SW_Empire_Intelligence_Caretaker
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointEmpireIntelligenceAgent
+  parent: SpawnPointJobBase
+  name: Empire Intelligence Agent
+  components:
+  - type: SpawnPoint
+    job_id: SW_Empire_Intelligence_Agent
+  - type: Sprite
+    layers:
+    - state: green
+
+###Commander elite Republic
+- type: entity
+  id: SW_SpawnPointRepublicCommanderCommander
+  parent: SpawnPointJobBase
+  name: Republic Commander Commander
+  components:
+  - type: SpawnPoint
+    job_id: SW_Republic_Commander_Commander
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointRepublicCommanderLieutenant
+  parent: SpawnPointJobBase
+  name: Republic Commander Lieutenant
+  components:
+  - type: SpawnPoint
+    job_id: SW_Republic_Commander_Lieutenant
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointRepublicCommanderMedic
+  parent: SpawnPointJobBase
+  name: Republic Commander Medic
+  components:
+  - type: SpawnPoint
+    job_id: SW_Republic_Commander_Medic
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointRepublicCommanderStormtrooper
+  parent: SpawnPointJobBase
+  name: Republic Commander Stormtrooper
+  components:
+  - type: SpawnPoint
+    job_id: SW_Republic_Commander_Stormtrooper
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointRepublicCommanderSniper
+  parent: SpawnPointJobBase
+  name: Republic Commander Sniper
+  components:
+  - type: SpawnPoint
+    job_id: SW_Republic_Commander_Sniper
+  - type: Sprite
+    layers:
+    - state: green
+
+###Black Sun
+- type: entity
+  id: SW_SpawnPointBlackSun
+  parent: SpawnPointJobBase
+  name: Black Sun
+  components:
+  - type: SpawnPoint
+    job_id: SW_BlackSun
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointBlackSunMercenary
+  parent: SpawnPointJobBase
+  name: Black Sun Mercenary
+  components:
+  - type: SpawnPoint
+    job_id: SW_BlackSun_Mercenary
+  - type: Sprite
+    layers:
+    - state: green
+
+###Exchange
+- type: entity
+  id: SW_SpawnPointExchangeCaptain
+  parent: SpawnPointJobBase
+  name: Exchange Captain
+  components:
+  - type: SpawnPoint
+    job_id: SW_Exchange_Captain
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointExchangeOperative
+  parent: SpawnPointJobBase
+  name: Exchange Operative
+  components:
+  - type: SpawnPoint
+    job_id: SW_Exchange_Operative
+  - type: Sprite
+    layers:
+    - state: green
+
+### OLD
 - type: entity
   id: SW_SpawnPointStormtrooper
   parent: SpawnPointJobBase
@@ -9,7 +396,7 @@
     layers:
       - state: green
       - state: SW_stormtrooper
-      
+
 - type: entity
   id: SW_SpawnPointRepublicSoldier
   parent: SpawnPointJobBase
@@ -33,7 +420,7 @@
     layers:
       - state: green
       - state: passenger
-      
+
 - type: entity
   id: SpawnPointSith
   parent: SpawnPointJobBase
@@ -45,7 +432,7 @@
     layers:
       - state: green
       - state: passenger
-      
+
 - type: entity
   id: SW_SpawnPointImperialOfficers
   parent: SpawnPointJobBase

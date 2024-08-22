@@ -1,0 +1,70 @@
+﻿- type: entity
+  parent: ClothingOuterHardsuitBase
+  id: SW_HavokSuit
+  name: havok suit
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Havok/republic_gunner.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Havok/republic_gunner.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.3
+    lowPressureMultiplier: 1000
+  - type: Armor
+    modifiers:
+      coefficients:
+        Caustic: 0.1
+  - type: ClothingSpeedModifier
+    walkModifier: 0.9
+    sprintModifier: 0.95
+  - type: HeldSpeedModifier
+  - type: ToggleableClothing
+    clothingPrototype: SW_ClothingHeadHavokHelmet
+
+- type: entity
+  parent: SW_HavokSuit
+  id: SW_MedicalHavokSuit
+  name: havok suit medical
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Havok/medical_republic_gunner.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Havok/medical_republic_gunner.rsi
+  - type: ToggleableClothing
+    clothingPrototype: SW_ClothingHeadMedicalHavokHelmet
+
+- type: entity
+  parent: SW_HavokSuit
+  id: SW_SniperHavokSuit
+  name: havok suit Sniper
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Havok/sniper_republic_gunner.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Havok/sniper_republic_gunner.rsi
+  - type: ToggleableClothing
+    clothingPrototype: SW_ClothingHeadSniperHavokHelmet
+
+- type: entity
+  parent: SW_HavokSuit
+  id: SW_LieutenantHavokSuit
+  name: havok suit lieutenant
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Havok/LT_republic_gunner.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Havok/LT_republic_gunner.rsi
+  - type: ToggleableClothing
+    clothingPrototype: SW_ClothingHeadLieutenantHavokHelmet
+
+- type: entity
+  parent: SW_HavokSuit
+  id: SW_CommanderHavokSuit
+  name: havok suit commander
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Havok/commander_republic_gunner.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Havok/commander_republic_gunner.rsi
+  - type: ToggleableClothing
+    clothingPrototype: SW_ClothingHeadCommanderHavokHelmet

@@ -1,0 +1,54 @@
+﻿- type: entity
+  parent: ClothingHeadHardsuitBase
+  id: SW_ClothingHeadHavokHelmet
+  name: Havok helmet
+  components:
+  - type: BreathMask
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/Havok/helmet_republic_gunner.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/Havok/helmet_republic_gunner.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.3
+    lowPressureMultiplier: 1000
+
+- type: entity
+  parent: SW_ClothingHeadHavokHelmet
+  id: SW_ClothingHeadMedicalHavokHelmet
+  name: medical havok helmet
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/Havok/medical_helmet_republic_gunner.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/Havok/medical_helmet_republic_gunner.rsi
+
+- type: entity
+  parent: SW_ClothingHeadHavokHelmet
+  id: SW_ClothingHeadSniperHavokHelmet
+  name: sniper havok helmet
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/Havok/sniper_helmet_republic_gunner.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/Havok/sniper_helmet_republic_gunner.rsi
+
+- type: entity
+  parent: SW_ClothingHeadHavokHelmet
+  id: SW_ClothingHeadLieutenantHavokHelmet
+  name: lieutenant havok helmet
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/Havok/lieutenant_helmet_republic_gunner.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/Havok/lieutenant_helmet_republic_gunner.rsi
+
+- type: entity
+  parent: SW_ClothingHeadHavokHelmet
+  id: SW_ClothingHeadCommanderHavokHelmet
+  name: commander havok helmet
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/Havok/commander_helmet_republic_gunner.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/Havok/commander_helmet_republic_gunner.rsi
+

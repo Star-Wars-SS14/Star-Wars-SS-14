@@ -1,0 +1,1 @@
+ent-SW_ClothingHeadCapOfficers = Офицерская кепка

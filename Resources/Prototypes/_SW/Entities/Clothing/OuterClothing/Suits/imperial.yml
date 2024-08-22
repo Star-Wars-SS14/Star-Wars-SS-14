@@ -1,0 +1,70 @@
+﻿- type: entity
+  parent: ClothingOuterHardsuitBase
+  id: SW_ImperialSuit
+  name: imperial suit
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Imperial/imperial.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Imperial/imperial.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.3
+    lowPressureMultiplier: 1000
+  - type: Armor
+    modifiers:
+      coefficients:
+        Caustic: 0.1
+  - type: ClothingSpeedModifier
+    walkModifier: 0.9
+    sprintModifier: 0.95
+  - type: HeldSpeedModifier
+  - type: ToggleableClothing
+    clothingPrototype: SW_ClothingHeadImperialHelmet
+
+- type: entity
+  parent: SW_ImperialSuit
+  id: SW_LieutenantImperialSuit
+  name: imperial suit lieutenant
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Imperial/LT_imperial.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Imperial/LT_imperial.rsi
+  - type: ToggleableClothing
+    clothingPrototype: SW_ClothingHeadLieutenantImperialHelmet
+
+- type: entity
+  parent: SW_ImperialSuit
+  id: SW_MajorImperialSuit
+  name: imperial suit major
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Imperial/MR_imperial.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Imperial/MR_imperial.rsi
+  - type: ToggleableClothing
+    clothingPrototype: SW_ClothingHeadMajorImperialHelmet
+
+- type: entity
+  parent: SW_ImperialSuit
+  id: SW_MoffImperialSuit
+  name: imperial suit moff
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Imperial/MOFF_imperial.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Imperial/MOFF_imperial.rsi
+  - type: ToggleableClothing
+    clothingPrototype: SW_ClothingHeadImperialHelmet
+
+- type: entity
+  parent: SW_ImperialSuit
+  id: SW_MedicImperialSuit
+  name: imperial suit medic
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Imperial/MED_imperial.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Imperial/MED_imperial.rsi
+  - type: ToggleableClothing
+    clothingPrototype: SW_ClothingHeadMedicImperialHelmet

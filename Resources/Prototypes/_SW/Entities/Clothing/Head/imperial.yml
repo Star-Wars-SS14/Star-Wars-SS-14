@@ -1,0 +1,44 @@
+﻿- type: entity
+  parent: ClothingHeadHardsuitBase
+  id: SW_ClothingHeadImperialHelmet
+  name: imperial helmet
+  components:
+  - type: BreathMask
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/imperial_helmet.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/imperial_helmet.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.3
+    lowPressureMultiplier: 1000
+
+- type: entity
+  parent: SW_ClothingHeadImperialHelmet
+  id: SW_ClothingHeadLieutenantImperialHelmet
+  name: lieutenant imperial helmet
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/LT_imperial_helmet.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/LT_imperial_helmet.rsi
+
+- type: entity
+  parent: SW_ClothingHeadImperialHelmet
+  id: SW_ClothingHeadMajorImperialHelmet
+  name: major imperial helmet
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/MR_impertial_helmet.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/MR_impertial_helmet.rsi
+
+- type: entity
+  parent: SW_ClothingHeadImperialHelmet
+  id: SW_ClothingHeadMedicImperialHelmet
+  name: medic imperial helmet
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/medic_imperial_helmet.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/medic_imperial_helmet.rsi
+

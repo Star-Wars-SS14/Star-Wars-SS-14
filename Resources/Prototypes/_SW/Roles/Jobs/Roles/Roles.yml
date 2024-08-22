@@ -1,8 +1,7 @@
 ﻿###Sobrik
 - type: job
   id: SW_Sobrik_Captain
-  name: job-name-Captain
-  description: job-description-jedi
+  name: Sobrik Captain
   playTimeTracker: Job_Sobrik_Captain
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -10,29 +9,27 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: SobrikCaptainGear
   icon: "JobIconPassenger"
   supervisors: job-supervisors-everyone
-  
+
 - type: job
   id: SW_Sobrik_Officer
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Sobrik Officer
   playTimeTracker: Job_Sobrik_Officer
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 0 # 24h
   - !type:RoleTimeRequirement
-    role: JobMedicalDoctor 
+    role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: SobrikOfficerGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone 
+  supervisors: job-supervisors-everyone
 
 - type: job
   id: SW_Sobrik_Medic
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Sobrik Medic
   playTimeTracker: Job_Sobrik_Medic
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -40,16 +37,15 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: SobrikMedicGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone 
-  
-###Empire  
+  supervisors: job-supervisors-everyone
+
+###Empire
 #Command
 - type: job
   id: SW_Empire_Moff
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Empire Moff
   playTimeTracker: Job_Empire_Moff
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -57,14 +53,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: EmpireMoffGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone 
+  supervisors: job-supervisors-everyone
 
 - type: job
   id: SW_Empire_Major
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Empire Major
   playTimeTracker: Job_Empire_Major
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -72,14 +67,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: EmpireMajorGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone 
+  supervisors: job-supervisors-everyone
 
 - type: job
   id: SW_Empire_Lieutenant
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Empire Lieutenant
   playTimeTracker: Job_Empire_Lieutenant
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -87,15 +81,14 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: EmpireLieutenantGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone 
+  supervisors: job-supervisors-everyone
 
 #Soldiers
 - type: job
   id: SW_Empire_Soldier
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Empire Soldier
   playTimeTracker: Job_Empire_Soldier
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -103,14 +96,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: EmpireSoldierGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone 
+  supervisors: job-supervisors-everyone
 
 - type: job
   id: SW_Empire_Medic
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Empire Medic
   playTimeTracker: Job_Empire_Medic
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -118,15 +110,14 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: EmpireMedicalGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone   
+  supervisors: job-supervisors-everyone
 
 ###Mandalorians
 - type: job
   id: SW_Mandalorian_Leader
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Mandalorian Leader
   playTimeTracker: Job_Mandalorian_Leader
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -134,14 +125,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: MandalorianLeaderGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone  
-  
+  supervisors: job-supervisors-everyone
+
 - type: job
   id: SW_Mandalorian_Veteran
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Mandalorian Veteran
   playTimeTracker: Job_Mandalorian_Veteran
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -149,14 +139,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: MandalorianVeteranGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone   
+  supervisors: job-supervisors-everyone
 
 - type: job
   id: SW_Mandalorian_Warrior
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Mandalorian Warrior
   playTimeTracker: Job_Mandalorian_Warrior
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -164,14 +153,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: MandalorianWarriorGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone    
+  supervisors: job-supervisors-everyone
 
 - type: job
   id: SW_Mandalorian_Recruit
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Mandalorian Recruit
   playTimeTracker: Job_Mandalorian_Recruit
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -179,16 +167,15 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: MandalorianRecruitGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone   
+  supervisors: job-supervisors-everyone
 
 ###Republic
 #Command
 - type: job
   id: SW_Republic_General
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Republic General
   playTimeTracker: Job_Republic_General
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -196,14 +183,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: RepublicGeneralGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone 
-  
+  supervisors: job-supervisors-everyone
+
 - type: job
   id: SW_Republic_Captain
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Republic Captain
   playTimeTracker: Job_Republic_Captain
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -211,14 +197,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: RepublicCaptainGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone  
+  supervisors: job-supervisors-everyone
 
 - type: job
   id: SW_Republic_Lieutenant
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Republic Lieutenant
   playTimeTracker: Job_Republic_Lieutenant
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -226,15 +211,14 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: RepublicLieutenantGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone  
+  supervisors: job-supervisors-everyone
 
-#Soldiers  
+#Soldiers
 - type: job
   id: SW_Republic_Soldier
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Republic Soldier
   playTimeTracker: Job_Republic_Soldier
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -242,14 +226,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: RepublicSoldierGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone  
-  
+  supervisors: job-supervisors-everyone
+
 - type: job
   id: SW_Republic_Medic
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Republic Medic
   playTimeTracker: Job_Republic_Medic
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -257,14 +240,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: RepublicMedicGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone 
+  supervisors: job-supervisors-everyone
 
 - type: job
   id: SW_Republic_Recruit
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Republic Recruit
   playTimeTracker: Job_Republic_Recruit
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -272,15 +254,14 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: RepublicRecruitGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone   
-  
+  supervisors: job-supervisors-everyone
+
 ###Balmorran resistance
 - type: job
   id: SW_Balmorran_Leader
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Balmorran Leader
   playTimeTracker: Job_Balmorran_Leader
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -288,14 +269,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: BalmorranLeaderGear
   icon: "JobIconPassenger"
   supervisors: job-supervisors-everyone
 
 - type: job
   id: SW_Balmorran_Officer
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Balmorran Officer
   playTimeTracker: Job_Balmorran_Officer
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -303,14 +283,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: BalmorranOfficerGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone 
+  supervisors: job-supervisors-everyone
 
 - type: job
   id: SW_Balmorran_Medic
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Balmorran Medic
   playTimeTracker: Job_Balmorran_Medic
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -318,14 +297,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: BalmorranMedicGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone  
+  supervisors: job-supervisors-everyone
 
 - type: job
   id: SW_Balmorran_Soldier
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Balmorran Soldier
   playTimeTracker: Job_Balmorran_Soldier
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -333,14 +311,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: BalmorranSoldierGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone  
+  supervisors: job-supervisors-everyone
 
 - type: job
   id: SW_Balmorran_Recruit
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Balmorran Recruit
   playTimeTracker: Job_Balmorran_Recruit
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -348,15 +325,14 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: BalmorranRecruitGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone 
+  supervisors: job-supervisors-everyone
 
 ###Imperial Intelligence
 - type: job
   id: SW_Empire_Intelligence_Caretaker
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Empire Intelligence Caretaker
   playTimeTracker: Job_Empire_Intelligence_Caretaker
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -364,14 +340,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: SW_ImperialSuit
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone 
-  
+  supervisors: job-supervisors-everyone
+
 - type: job
   id: SW_Empire_Intelligence_Agent
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Empire Intelligence Agent
   playTimeTracker: Job_Empire_Intelligence_Agent
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -379,15 +354,14 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: SW_ImperialSuit
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone   
-  
+  supervisors: job-supervisors-everyone
+
 ###Commander elite Republic
 - type: job
   id: SW_Republic_Commander_Commander
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Havok Republic Commander
   playTimeTracker: Job_Republic_Commander_Commander
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -395,14 +369,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: RepublicCommanderCommanderGear
   icon: "JobIconPassenger"
   supervisors: job-supervisors-everyone
 
 - type: job
   id: SW_Republic_Commander_Lieutenant
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Havok Republic Lieutenant
   playTimeTracker: Job_Republic_Commander_Lieutenant
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -410,14 +383,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: RepublicCommanderLieutenantGear
   icon: "JobIconPassenger"
   supervisors: job-supervisors-everyone
 
 - type: job
   id: SW_Republic_Commander_Medic
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Havok Republic Medic
   playTimeTracker: Job_Republic_Commander_Medic
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -425,14 +397,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: RepublicCommanderMedicGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone  
-  
+  supervisors: job-supervisors-everyone
+
 - type: job
   id: SW_Republic_Commander_Stormtrooper
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Havok Republic Stormtrooper
   playTimeTracker: Job_Republic_Commander_Stormtrooper
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -440,14 +411,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: RepublicCommanderStormtrooperGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone   
+  supervisors: job-supervisors-everyone
 
 - type: job
   id: SW_Republic_Commander_Sniper
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Havok Republic Sniper
   playTimeTracker: Job_Republic_Commander_Sniper
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -455,15 +425,14 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: RepublicCommanderSniperGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone   
+  supervisors: job-supervisors-everyone
 
 ###Black Sun
 - type: job
-  id: SW_BlackSun_Sniper
-  name: job-name-jedi
-  description: job-description-jedi
+  id: SW_BlackSun
+  name: Black Sun
   playTimeTracker: Job_BlackSun_Sniper
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -471,14 +440,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: BlackSunGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone   
+  supervisors: job-supervisors-everyone
 
 - type: job
   id: SW_BlackSun_Mercenary
-  name: job-name-jedi
-  description: job-description-jedi
+  name: BlackSun Mercenary
   playTimeTracker: Job_BlackSun_Mercenary
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -486,15 +454,14 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: BlackSunMercenaryGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone 
+  supervisors: job-supervisors-everyone
 
 ###Exchange
 - type: job
   id: SW_Exchange_Captain
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Exchange Captain
   playTimeTracker: Job_Exchange_Captain
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -502,14 +469,13 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: ExchangeCaptainGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone 
-  
+  supervisors: job-supervisors-everyone
+
 - type: job
   id: SW_Exchange_Operative
-  name: job-name-jedi
-  description: job-description-jedi
+  name: Exchange Operative
   playTimeTracker: Job_Exchange_Operative
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -517,6 +483,6 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: JediGear
+  startingGear: ExchangeOperativeGear
   icon: "JobIconPassenger"
-  supervisors: job-supervisors-everyone  
+  supervisors: job-supervisors-everyone

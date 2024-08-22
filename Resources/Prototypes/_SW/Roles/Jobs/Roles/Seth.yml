@@ -1,321 +1,211 @@
 ###Sobrik
 - type: startingGear
-  id: Sobrik_Captain
+  id: SobrikCaptainGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
-    
-- type: startingGear
-  id: Sobrik_Officer
-  equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak    
+    outerClothing: SW_SobrikSuit
 
 - type: startingGear
-  id: Sobrik_Medic
+  id: SobrikOfficerGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    outerClothing: SW_SobrikSuit
+
+- type: startingGear
+  id: SobrikMedicGear
+  equipment:
+    outerClothing: SW_SobrikSuit
 
 ###Empire
 - type: startingGear
-  id: Empire_Moff
+  id: EmpireRecruitGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
-    
-- type: startingGear
-  id: Empire_Major
-  equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    outerClothing: SW_ImperialSuit
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
 
 - type: startingGear
-  id: Empire_Lieutenant
+  id: EmpireSoldierGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
-
-#Soldiers
-- type: startingGear
-  id: Empire_Soldier
-  equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    outerClothing: SW_ImperialSuit
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
 
 - type: startingGear
-  id: Empire_Medic
+  id: EmpireMedicalGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    outerClothing: SW_MedicImperialSuit
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+
+- type: startingGear
+  id: EmpireMoffGear
+  equipment:
+    outerClothing: SW_MoffImperialSuit
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+
+- type: startingGear
+  id: EmpireMajorGear
+  equipment:
+    outerClothing: SW_MajorImperialSuit
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+
+- type: startingGear
+  id: EmpireLieutenantGear
+  equipment:
+    outerClothing: SW_LieutenantImperialSuit
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
 
 ###Mandalorians
 - type: startingGear
-  id: Mandalorian_Leader
+  id: MandalorianLeaderGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    outerClothing: SW_MandalorianVeteranSuit
+    neck: SW_ClothingNeckCloakMandalorianCloak
 
 - type: startingGear
-  id: Mandalorian_Veteran
+  id: MandalorianVeteranGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    outerClothing: SW_MandalorianVeteranSuit
 
 - type: startingGear
-  id: Mandalorian_Warrior
+  id: MandalorianWarriorGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    outerClothing: SW_MandalorianSuit
 
 - type: startingGear
-  id: Mandalorian_Recruit
+  id: MandalorianRecruitGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    outerClothing: SW_MandalorianRecruitSuit
 
 ###Republic
 #Command
 - type: startingGear
-  id: Republic_General
+  id: RepublicGeneralGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    outerClothing: SW_GeneralRepublicSuit
 
 - type: startingGear
-  id: Republic_Captain
+  id: RepublicCaptainGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak  
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    outerClothing: SW_CaptainRepublicSuit
 
 - type: startingGear
-  id: Republic_Lieutenant
+  id: RepublicLieutenantGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
-    
-#Soldiers 
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    outerClothing: SW_LieutenantRepublicSuit
+
+#Soldiers
 - type: startingGear
-  id: Republic_Soldier
+  id: RepublicSoldierGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    outerClothing: SW_RepublicSuit
 
 - type: startingGear
-  id: Republic_Medic
+  id: RepublicMedicGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak  
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    outerClothing: SW_RepublicSuit
 
 - type: startingGear
-  id: Republic_Recruit
+  id: RepublicRecruitGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    outerClothing: SW_RepublicSuit
 
 ###Balmorran resistance
 - type: startingGear
-  id: Balmorran_Leader
+  id: BalmorranLeaderGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    outerClothing: SW_SobrikSuit
 
 - type: startingGear
-  id: Balmorran_Officer
+  id: BalmorranOfficerGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak  
+    outerClothing: SW_SobrikSuit
 
 - type: startingGear
-  id: Balmorran_Medic
+  id: BalmorranMedicGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    outerClothing: SW_SobrikSuit
 
 - type: startingGear
-  id: Balmorran_Soldier
+  id: BalmorranSoldierGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    outerClothing: SW_SobrikSuit
 
 - type: startingGear
-  id: Balmorran_Recruit
+  id: BalmorranRecruitGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak  
+    outerClothing: SW_SobrikSuit
 
 ###Imperial Intelligence
 - type: startingGear
-  id: Empire_Intelligence_Caretaker
+  id: EmpireIntelligenceCaretakerGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    outerClothing: SW_ImperialSuit
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
 
 - type: startingGear
-  id: Empire_Intelligence_Agent
+  id: EmpireIntelligenceAgentGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    outerClothing: SW_ImperialSuit
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
 
 ###Commander elite Republic
 - type: startingGear
-  id: Republic_Commander_Commander
+  id: RepublicCommanderCommanderGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak  
+    jumpsuit: SW_CommanderHavokSuit
 
 - type: startingGear
-  id: Republic_Commander_Lieutenant
+  id: RepublicCommanderLieutenantGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    jumpsuit: SW_LieutenantHavokSuit
 
 - type: startingGear
-  id: Republic_Commander_Medic
+  id: RepublicCommanderMedicGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    jumpsuit: SW_MedicalHavokSuit
 
 - type: startingGear
-  id: Republic_Commander_Stormtrooper
+  id: RepublicCommanderStormtrooperGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak  
+    jumpsuit: SW_HavokSuit
 
 - type: startingGear
-  id: Republic_Commander_Sniper
+  id: RepublicCommanderSniperGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    jumpsuit: SW_SniperHavokSuit
 
 ###Black Sun
 - type: startingGear
-  id: BlackSun_Sniper
+  id: BlackSunGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    outerClothing: SW_BlackSunArmor
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
 
 - type: startingGear
-  id: BlackSun_Mercenary
+  id: BlackSunMercenaryGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak  
+    outerClothing: SW_BlackSunArmor
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    head: SW_HelmetSunSquad
 
 ###Exchange
 - type: startingGear
-  id: Exchange_Captain
+  id: ExchangeCaptainGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
+    outerClothing: SW_ExchangeSuit
 
 - type: startingGear
-  id: Exchange_Operative
+  id: ExchangeOperativeGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
-    gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
-    neck: SW_ClothingNeckCloakSithCloak
-  
+    outerClothing: SW_ExchangeSuit
+
 ######old
 - type: startingGear
   id: SithGear
@@ -323,7 +213,7 @@
     jumpsuit: ClothingUniformJumpsuitColorBlack
     gloves: ClothingHandsGlovesColorBlack
     shoes: ClothingShoesSwat
-    ears: ClothingHeadsetGrey 
+    ears: ClothingHeadsetGrey
     neck: SW_ClothingNeckCloakSithCloak
 
 - type: startingGear
@@ -349,7 +239,7 @@
   id: JediGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitJedi
-    shoes: SW_ClothingShoesBootsJedi 
+    shoes: SW_ClothingShoesBootsJedi
     ears: ClothingHeadsetGrey
     neck: SW_ClothingNeckCloakJediCloak
 
@@ -370,14 +260,14 @@
     ears: ClothingHeadsetGrey
     head: SW_StormtrooperHelmet
     outerClothing: SW_StormtrooperArmor
-    
+
 - type: startingGear
   id: ImperialGeneralGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitImperialGeneral
     shoes: SW_ClothingShoesBootsImperialOfficers
-    ears: ClothingHeadsetGrey  
-    
+    ears: ClothingHeadsetGrey
+
 - type: startingGear
   id: ImperialOfficersGear
   equipment:
@@ -387,4 +277,3 @@
     shoes: SW_ClothingShoesBootsOfficers
     ears: ClothingHeadsetGrey
     head: SW_ClothingHeadCapOfficers
-    

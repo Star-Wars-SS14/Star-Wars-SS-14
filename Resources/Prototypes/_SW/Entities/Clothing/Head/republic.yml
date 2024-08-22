@@ -1,0 +1,44 @@
+﻿- type: entity
+  parent: ClothingHeadHardsuitBase
+  id: SW_ClothingHeadRepublicHelmet
+  name: republic helmet
+  components:
+  - type: BreathMask
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/republic_helmet.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/republic_helmet.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.3
+    lowPressureMultiplier: 1000
+
+- type: entity
+  parent: SW_ClothingHeadRepublicHelmet
+  id: SW_ClothingHeadLieutenantRepublicHelmet
+  name: lieutenant republic helmet
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/LT_republic_helmet.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/LT_republic_helmet.rsi
+
+- type: entity
+  parent: SW_ClothingHeadRepublicHelmet
+  id: SW_ClothingHeadСaptainRepublicHelmet
+  name: captain republic helmet
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/CAP_republic_helmet.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/CAP_republic_helmet.rsi
+
+- type: entity
+  parent: SW_ClothingHeadRepublicHelmet
+  id: SW_ClothingHeadGeneralRepublicHelmet
+  name: general republic helmet
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/GEN_republic_helmet.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/GEN_republic_helmet.rsi
+

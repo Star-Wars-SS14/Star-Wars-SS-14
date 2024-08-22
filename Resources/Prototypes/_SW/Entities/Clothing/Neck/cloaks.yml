@@ -14,7 +14,7 @@
   - type: ContainerContainer
     containers:
       toggleable-clothing: !type:ContainerSlot {}
-      
+
 - type: entity
   parent: ClothingNeckBase
   id: SW_ClothingNeckCloakJediCloak
@@ -31,3 +31,11 @@
   - type: ContainerContainer
     containers:
       toggleable-clothing: !type:ContainerSlot {}
+
+- type: entity
+  parent: ClothingNeckBase
+  id: SW_ClothingNeckCloakMandalorianCloak
+  name: Mandalorian cloak
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/Cloaks/mandalorian.rsi

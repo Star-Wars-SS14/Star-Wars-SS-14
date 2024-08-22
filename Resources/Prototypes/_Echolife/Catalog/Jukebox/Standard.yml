@@ -1,0 +1,41 @@
+- type: jukebox
+  id: music1
+  name: Radio FM 100.1
+  path:
+    path: /Audio/Jukebox/music_1.ogg
+
+- type: jukebox
+  id: music2
+  name: Radio FM 92.9
+  path:
+    path: /Audio/Jukebox/music_2.ogg
+
+- type: jukebox
+  id: music3
+  name: Radio FM 94.3
+  path:
+    path: /Audio/Jukebox/music_3_more-gun.ogg
+
+- type: jukebox
+  id: music4
+  name: Radio FM 122.4
+  path:
+    path: /Audio/Jukebox/music_4.ogg
+
+- type: jukebox
+  id: music5
+  name: Radio FM 148.8
+  path:
+    path: /Audio/Jukebox/music_5.ogg
+
+- type: jukebox
+  id: music6
+  name: Radio FM 133.2
+  path:
+    path: /Audio/Jukebox/music_6.ogg
+
+- type: jukebox
+  id: music7
+  name: Radio FM 119.7
+  path:
+    path: /Audio/Jukebox/music_7_pachka_sig.ogg

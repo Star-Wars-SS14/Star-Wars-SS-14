@@ -1,0 +1,22 @@
+- type: entity
+  id: EchoMusicRadio
+  name: музыкальное радио
+  parent: Jukebox
+  description: Радио, настроенное для вещания музыкальных станций.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Structures/Machines/music-radio.rsi
+    layers:
+    - state: "off"
+      map: ["enum.JukeboxVisualLayers.Base"]
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.3,-0.16,0.3,0.16"
+        mask:
+        - TabletopMachineMask
+        layer:
+        - TabletopMachineLayer
+        density: 190

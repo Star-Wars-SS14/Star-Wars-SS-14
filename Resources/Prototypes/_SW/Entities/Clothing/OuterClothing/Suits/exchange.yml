@@ -1,5 +1,5 @@
 ﻿- type: entity
-  parent: ClothingOuterHardsuitBase
+  parent: ClothingOuterBase
   id: SW_ExchangeSuit
   name: exchange suit
   components:
@@ -18,5 +18,3 @@
     walkModifier: 0.9
     sprintModifier: 0.95
   - type: HeldSpeedModifier
-  - type: ToggleableClothing
-    clothingPrototype: SW_ClothingHeadExchangeHelmet

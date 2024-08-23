@@ -1,5 +1,5 @@
 ﻿- type: entity
-  parent: ClothingHeadHardsuitBase
+  parent: ClothingHeadBase
   id: SW_ClothingHeadRecruitMandalorianHelmet
   name: recruit mandalorian helmet
   components:

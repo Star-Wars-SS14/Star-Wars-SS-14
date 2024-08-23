@@ -1,5 +1,5 @@
 ﻿- type: entity
-  parent: ClothingOuterHardsuitBase
+  parent: ClothingOuterBase
   id: SW_RepublicSuit
   name: republic suit
   components:
@@ -18,8 +18,6 @@
     walkModifier: 0.9
     sprintModifier: 0.95
   - type: HeldSpeedModifier
-  - type: ToggleableClothing
-    clothingPrototype: SW_ClothingHeadImperialHelmet
 
 - type: entity
   parent: SW_RepublicSuit
@@ -30,8 +28,6 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Republic/LT_republic.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Republic/LT_republic.rsi
-  - type: ToggleableClothing
-    clothingPrototype: SW_ClothingHeadLieutenantRepublicHelmet
 
 - type: entity
   parent: SW_RepublicSuit
@@ -42,8 +38,6 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Republic/CAP_republic.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Republic/CAP_republic.rsi
-  - type: ToggleableClothing
-    clothingPrototype: SW_ClothingHeadСaptainRepublicHelmet
 
 - type: entity
   parent: SW_RepublicSuit
@@ -54,6 +48,4 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Republic/GEN_republic.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Republic/GEN_republic.rsi
-  - type: ToggleableClothing
-    clothingPrototype: SW_ClothingHeadGeneralRepublicHelmet
 

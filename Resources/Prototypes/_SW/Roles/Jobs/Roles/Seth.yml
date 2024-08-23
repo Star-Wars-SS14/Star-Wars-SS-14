@@ -4,18 +4,24 @@
   equipment:
     outerClothing: SW_BallamorSuit
     head: SW_ClothingHeadBallamor
+    belt: ClothingBeltAssault
+    shoes: SW_ClothingShoesBootsballamor
 
 - type: startingGear
   id: SobrikOfficerGear
   equipment:
     outerClothing: SW_SobrikSuit
     mask: SW_ClothingMaskBallamor
+    belt: ClothingBeltAssault
+    shoes: SW_ClothingShoesBootsSobrik
 
 - type: startingGear
   id: SobrikMedicGear
   equipment:
     outerClothing: SW_SobrikSuit
     mask: SW_ClothingMaskBallamor
+    belt: ClothingBeltAssault
+    shoes: SW_ClothingShoesBootsSobrik
 
 ###Empire
 - type: startingGear
@@ -23,24 +29,31 @@
   equipment:
     outerClothing: SW_ImperialSuit
     jumpsuit: SW_ClothingUniformJumpsuitFleece
+    head: SW_ClothingHeadImperialHelmet
 
 - type: startingGear
   id: EmpireSoldierGear
   equipment:
     outerClothing: SW_ImperialSuit
     jumpsuit: SW_ClothingUniformJumpsuitFleece
+    head: SW_ClothingHeadImperialHelmet
 
 - type: startingGear
   id: EmpireMedicalGear
   equipment:
     outerClothing: SW_MedicImperialSuit
     jumpsuit: SW_ClothingUniformJumpsuitFleece
+    head: SW_ClothingHeadMedicImperialHelmet
 
 - type: startingGear
   id: EmpireMoffGear
   equipment:
-    outerClothing: SW_MoffImperialSuit
-    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    jumpsuit: SW_ClothingUniformJumpsuitImperialGeneral
+    gloves: ClothingHandsGlovesColorBlack
+    back: ClothingBackpackSatchel
+    belt: ClothingBeltAssault
+    shoes: ClothingShoesBootsJack
+    eyes: ClothingEyesGlassesSunglasses
 
 - type: startingGear
   id: EmpireMajorGear
@@ -51,6 +64,7 @@
     shoes: SW_ClothingShoesBootsOfficers
     ears: ClothingHeadsetGrey
     head: SW_ClothingHeadCapOfficers
+    belt: ClothingBeltAssault
 
 - type: startingGear
   id: EmpireLieutenantGear
@@ -61,6 +75,7 @@
     shoes: SW_ClothingShoesBootsOfficers
     ears: ClothingHeadsetGrey
     head: SW_ClothingHeadCapOfficers
+    belt: ClothingBeltAssault
 
 ###Mandalorians
 - type: startingGear
@@ -69,24 +84,41 @@
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     outerClothing: SW_MandalorianVeteranSuit
     neck: SW_ClothingNeckCloakMandalorianCloak
+    belt: ClothingBeltSalvageWebbing
+    shoes: ClothingShoesBootsJack
+    gloves: ClothingHandsGlovesCombat
+    head: SW_ClothingHeadMandalorianVeteranHelmet
 
 - type: startingGear
   id: MandalorianVeteranGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     outerClothing: SW_MandalorianVeteranSuit
+    belt: ClothingBeltSalvageWebbing
+    shoes: ClothingShoesBootsJack
+    gloves: ClothingHandsGlovesCombat
+    head: SW_ClothingHeadMandalorianVeteranHelmet
 
 - type: startingGear
   id: MandalorianWarriorGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     outerClothing: SW_MandalorianSuit
+    belt: ClothingBeltSalvageWebbing
+    shoes: ClothingShoesBootsJack
+    gloves: ClothingHandsGlovesCombat
+    head: SW_ClothingHeadMandalorianHelmet
 
 - type: startingGear
   id: MandalorianRecruitGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     outerClothing: SW_MandalorianRecruitSuit
+    belt: ClothingBeltMilitaryWebbing
+    back: ClothingBackpackMilitarySatchel
+    shoes: ClothingShoesBootsJack
+    gloves: ClothingHandsGlovesCombat
+    head: SW_ClothingHeadRecruitMandalorianHelmet
 
 ###Republic
 #Command
@@ -95,18 +127,24 @@
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     outerClothing: SW_GeneralRepublicSuit
+    shoes: ClothingShoesBootsJack
+    head: SW_ClothingHeadGeneralRepublicHelmet
 
 - type: startingGear
   id: RepublicCaptainGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     outerClothing: SW_CaptainRepublicSuit
+    shoes: ClothingShoesBootsJack
+    head: SW_ClothingHeadСaptainRepublicHelmet
 
 - type: startingGear
   id: RepublicLieutenantGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     outerClothing: SW_LieutenantRepublicSuit
+    shoes: ClothingShoesBootsJack
+    head: SW_ClothingHeadLieutenantRepublicHelmet
 
 #Soldiers
 - type: startingGear
@@ -114,18 +152,24 @@
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     outerClothing: SW_RepublicSuit
+    shoes: ClothingShoesBootsJack
+    head: SW_ClothingHeadRepublicHelmet
 
 - type: startingGear
   id: RepublicMedicGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     outerClothing: SW_RepublicSuit
+    shoes: ClothingShoesBootsJack
+    head: SW_ClothingHeadRepublicHelmet
 
 - type: startingGear
   id: RepublicRecruitGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     outerClothing: SW_RepublicSuit
+    shoes: ClothingShoesBootsJack
+    head: SW_ClothingHeadRepublicHelmet
 
 ###Balmorran resistance
 - type: startingGear
@@ -189,12 +233,14 @@
   equipment:
     outerClothing: SW_ImperialSuit
     jumpsuit: SW_ClothingUniformJumpsuitFleece
+    head: SW_ClothingHeadImperialHelmet
 
 - type: startingGear
   id: EmpireIntelligenceAgentGear
   equipment:
     outerClothing: SW_ImperialSuit
     jumpsuit: SW_ClothingUniformJumpsuitFleece
+    head: SW_ClothingHeadImperialHelmet
 
 ###Commander elite Republic
 - type: startingGear
@@ -202,30 +248,35 @@
   equipment:
     outerClothing: SW_CommanderHavokSuit
     jumpsuit: SW_ClothingUniformJumpsuitFleece
+    head: SW_ClothingHeadCommanderHavokHelmet
 
 - type: startingGear
   id: RepublicCommanderLieutenantGear
   equipment:
     outerClothing: SW_LieutenantHavokSuit
     jumpsuit: SW_ClothingUniformJumpsuitFleece
+    head: SW_ClothingHeadLieutenantHavokHelmet
 
 - type: startingGear
   id: RepublicCommanderMedicGear
   equipment:
     outerClothing: SW_MedicalHavokSuit
     jumpsuit: SW_ClothingUniformJumpsuitFleece
+    head: SW_ClothingHeadMedicalHavokHelmet
 
 - type: startingGear
   id: RepublicCommanderStormtrooperGear
   equipment:
     outerClothing: SW_HavokSuit
     jumpsuit: SW_ClothingUniformJumpsuitFleece
+    head: SW_ClothingHeadHavokHelmet
 
 - type: startingGear
   id: RepublicCommanderSniperGear
   equipment:
     outerClothing: SW_SniperHavokSuit
     jumpsuit: SW_ClothingUniformJumpsuitFleece
+    head: SW_ClothingHeadSniperHavokHelmet
 
 ###Black Sun
 - type: startingGear
@@ -233,6 +284,8 @@
   equipment:
     outerClothing: SW_BlackSunArmor
     jumpsuit: SW_ClothingUniformJumpsuitFleece
+    head: SW_HelmetSunSquad
+    belt: ClothingBeltSalvageWebbing
 
 - type: startingGear
   id: BlackSunMercenaryGear
@@ -240,17 +293,27 @@
     outerClothing: SW_BlackSunArmor
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     head: SW_HelmetSunSquad
+    belt: ClothingBeltSalvageWebbing
 
 ###Exchange
 - type: startingGear
   id: ExchangeCaptainGear
   equipment:
     outerClothing: SW_ExchangeSuit
+    belt: ClothingBeltAssault
+    shoes: SW_ClothingShoesBootsExchange
+    gloves: ClothingHandsGlovesCombat
+    head: SW_ClothingHeadExchangeHelmet
 
 - type: startingGear
   id: ExchangeOperativeGear
   equipment:
     outerClothing: SW_ExchangeSuit
+    belt: ClothingBeltSalvageWebbing
+    gloves: ClothingHandsGlovesColorBlack
+    eyes: ClothingEyesGlassesSunglasses
+    shoes: SW_ClothingShoesBootsExchange
+    head: SW_ClothingHeadExchangeHelmet
 
 ######old
 - type: startingGear

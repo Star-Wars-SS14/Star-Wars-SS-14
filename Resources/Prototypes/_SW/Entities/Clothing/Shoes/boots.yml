@@ -27,3 +27,33 @@
     sprite: _SW/Clothing/Shoes/Boots/imperial_officer.rsi
   - type: Clothing
     sprite: _SW/Clothing/Shoes/Boots/imperial_officer.rsi
+
+- type: entity
+  parent: ClothingShoesBaseButcherable
+  id: SW_ClothingShoesBootsballamor
+  name: ballamor boots
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Shoes/Boots/ballamor.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Shoes/Boots/ballamor.rsi
+
+- type: entity
+  parent: ClothingShoesBaseButcherable
+  id: SW_ClothingShoesBootsSobrik
+  name: sobrik boots
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Shoes/Boots/sobrik.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Shoes/Boots/sobrik.rsi
+
+- type: entity
+  parent: ClothingShoesBaseButcherable
+  id: SW_ClothingShoesBootsExchange
+  name: exchange boots
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Shoes/Boots/exchange.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Shoes/Boots/exchange.rsi

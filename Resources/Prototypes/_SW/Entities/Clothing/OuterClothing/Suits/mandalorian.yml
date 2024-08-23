@@ -1,5 +1,5 @@
 ﻿- type: entity
-  parent: ClothingOuterHardsuitBase
+  parent: ClothingOuterBase
   id: SW_MandalorianRecruitSuit
   name: recruit mandalorian suit
   components:
@@ -18,8 +18,6 @@
     walkModifier: 0.9
     sprintModifier: 0.95
   - type: HeldSpeedModifier
-  - type: ToggleableClothing
-    clothingPrototype: SW_ClothingHeadRecruitMandalorianHelmet
 
 - type: entity
   parent: SW_MandalorianRecruitSuit
@@ -30,8 +28,6 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/Mandalorian.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/Mandalorian.rsi
-  - type: ToggleableClothing
-    clothingPrototype: SW_ClothingHeadMandalorianHelmet
 
 - type: entity
   parent: SW_MandalorianRecruitSuit
@@ -42,5 +38,3 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVeteran.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVeteran.rsi
-  - type: ToggleableClothing
-    clothingPrototype: SW_ClothingHeadMandalorianVeteranHelmet

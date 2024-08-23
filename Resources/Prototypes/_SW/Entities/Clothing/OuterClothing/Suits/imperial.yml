@@ -1,5 +1,5 @@
 ﻿- type: entity
-  parent: ClothingOuterHardsuitBase
+  parent: ClothingOuterBase
   id: SW_ImperialSuit
   name: imperial suit
   components:
@@ -18,8 +18,6 @@
     walkModifier: 0.9
     sprintModifier: 0.95
   - type: HeldSpeedModifier
-  - type: ToggleableClothing
-    clothingPrototype: SW_ClothingHeadImperialHelmet
 
 - type: entity
   parent: SW_ImperialSuit
@@ -30,8 +28,6 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/LT_imperial.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/LT_imperial.rsi
-  - type: ToggleableClothing
-    clothingPrototype: SW_ClothingHeadLieutenantImperialHelmet
 
 - type: entity
   parent: SW_ImperialSuit
@@ -42,8 +38,6 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/MR_imperial.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/MR_imperial.rsi
-  - type: ToggleableClothing
-    clothingPrototype: SW_ClothingHeadMajorImperialHelmet
 
 - type: entity
   parent: SW_ImperialSuit
@@ -54,8 +48,6 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/MOFF_imperial.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/MOFF_imperial.rsi
-  - type: ToggleableClothing
-    clothingPrototype: SW_ClothingHeadImperialHelmet
 
 - type: entity
   parent: SW_ImperialSuit
@@ -66,5 +58,3 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/MED_imperial.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/MED_imperial.rsi
-  - type: ToggleableClothing
-    clothingPrototype: SW_ClothingHeadMedicImperialHelmet

@@ -340,7 +340,7 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: SW_ImperialSuit
+  startingGear: EmpireIntelligenceCaretakerGear
   icon: "JobIconPassenger"
   supervisors: job-supervisors-everyone
 
@@ -354,7 +354,7 @@
   - !type:RoleTimeRequirement
     role: JobMedicalDoctor
     time: 0 # 6h
-  startingGear: SW_ImperialSuit
+  startingGear: EmpireIntelligenceAgentGear
   icon: "JobIconPassenger"
   supervisors: job-supervisors-everyone
 

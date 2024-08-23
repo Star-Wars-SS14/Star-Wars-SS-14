@@ -14,6 +14,10 @@
     modifiers:
       coefficients:
         Caustic: 0.1
+        Heat: 0.6
+        Blunt: 0.2
+        Slash: 0.4
+        Piercing: 0.4
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.95
@@ -38,3 +42,11 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVeteran.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVeteran.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Caustic: 0.1
+        Heat: 0.6
+        Blunt: 0.3
+        Slash: 0.3
+        Piercing: 0.3

@@ -23,14 +23,14 @@
 - type: radioChannel
   id: Engineering
   name: chat-radio-engineering
-  keycode: 'и' # Corvax-Localization
+  keycode: 'ж' # Corvax-Localization
   frequency: 1357
   color: "#f37746"
 
 - type: radioChannel
   id: Medical
   name: chat-radio-medical
-  keycode: 'м' # Corvax-Localization
+  keycode: 'э' # Corvax-Localization
   frequency: 1355
   color: "#57b8f0"
 
@@ -44,14 +44,14 @@
 - type: radioChannel
   id: Security
   name: chat-radio-security
-  keycode: 'о' # Corvax-Localization
+  keycode: 'ч' # Corvax-Localization
   frequency: 1359
   color: "#dd3535"
 
 - type: radioChannel
   id: Service
   name: chat-radio-service
-  keycode: 'с' # Corvax-Localization
+  keycode: ']' # Corvax-Localization
   frequency: 1349
   color: "#6ca729"
 
@@ -81,7 +81,7 @@
 - type: radioChannel
   id: Binary
   name: chat-radio-binary
-  keycode: 'д' # Corvax-Localization
+  keycode: 'я' # Corvax-Localization
   frequency: 1001
   color: "#2ed2fd"
   # long range since otherwise it'd defeat the point of a handheld radio independent of telecomms
@@ -95,3 +95,4 @@
   color: "#f6ce64"
   # long range since otherwise it'd defeat the point of a handheld radio independent of telecomms
   longRange: true
+

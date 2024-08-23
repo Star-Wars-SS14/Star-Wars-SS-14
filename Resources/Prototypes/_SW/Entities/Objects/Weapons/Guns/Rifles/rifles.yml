@@ -2,7 +2,6 @@
   name: Imperial E-1 Enforcer Blaster Rifle
   parent: BaseWeaponRifle
   id: SW_E1BlasterRifle
-  description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
@@ -22,7 +21,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: YellowMagazineBlastRifle
+        startingItem: SW_YellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -50,7 +49,6 @@
   name: P-301 Assault Disruptor
   parent: BaseWeaponRifle
   id: SW_P301Destroyer
-  description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Rifles/p301.rsi
@@ -70,7 +68,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: RedMagazineBlastRifle
+        startingItem: SW_RedMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -98,7 +96,6 @@
   name: H-206 Renegade Blaster Rifle
   parent: BaseWeaponRifle
   id: SW_h206renegade
-  description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Rifles/h206.rsi
@@ -108,7 +105,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/h206.rsi
   - type: Gun
-    fireRate: 6
+    fireRate: 5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -118,7 +115,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: H206GreenMagazineBlastRifle
+        startingItem: SW_H206GreenMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -146,7 +143,6 @@
   name: J-111 Rancor Enforcer
   parent: BaseWeaponRifle
   id: SW_j111rancor
-  description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Rifles/j111.rsi
@@ -166,7 +162,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: BlueMagazineBlastRifle
+        startingItem: SW_BlueMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -194,7 +190,6 @@
   name: Z-1 Huntsman Carbine
   parent: BaseWeaponRifle
   id: SW_z1blastercarbine
-  description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Rifles/z1.rsi
@@ -204,7 +199,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/z1.rsi
   - type: Gun
-    fireRate: 3
+    fireRate: 1
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -214,7 +209,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: Z1RedMagazineBlastRifle
+        startingItem: SW_Z1RedMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -264,7 +259,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SniperRifleYellowMagazineBlastRifle
+        startingItem: SW_SniperRifleYellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -302,7 +297,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Snipers/f11d.rsi
   - type: Gun
-    fireRate: 7
+    fireRate: 2
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -312,7 +307,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SniperRifleBlueMagazineBlastRifle
+        startingItem: SW_SniperRifleBlueMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -350,7 +345,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Snipers/k406.rsi
   - type: Gun
-    fireRate: 7
+    fireRate: 0.75
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -360,7 +355,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SniperRifleYellowMagazineBlastRifle
+        startingItem: SW_SniperRifleYellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -388,17 +383,16 @@
   name: EL-34 Rotary Plasma Cannon
   parent: BaseWeaponRifle
   id: SW_EL34
-  description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
   - type: Gun
-    fireRate: 10
+    fireRate: 7
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -408,7 +402,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: CannonYellowMagazineBlastRifle
+        startingItem: SW_CannonYellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -439,14 +433,14 @@
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
   - type: Gun
-    fireRate: 10
+    fireRate: 0.75
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -456,7 +450,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: CannonBlueMagazineBlastRifle
+        startingItem: SW_CannonBlueMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -487,14 +481,14 @@
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
   - type: Gun
-    fireRate: 10
+    fireRate: 7
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -504,7 +498,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: CannonYellowMagazineBlastRifle
+        startingItem: SW_CannonYellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -535,14 +529,14 @@
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
   - type: Gun
-    fireRate: 10
+    fireRate: 7
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -552,7 +546,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: CannonYellowMagazineBlastRifle
+        startingItem: SW_CannonYellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2
@@ -583,14 +577,14 @@
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
   - type: Gun
-    fireRate: 10
+    fireRate: 7
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -600,7 +594,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: CannonYellowMagazineBlastRifle
+        startingItem: SW_CannonYellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/ltrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/ltrifle_magout.ogg
         priority: 2

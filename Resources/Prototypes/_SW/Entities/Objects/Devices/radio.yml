@@ -1,0 +1,227 @@
+﻿#Channels
+- type: radioChannel
+  id: SobrikChannel
+  name: chat-radio-sobrik
+  keycode: "c"
+  frequency: 9991
+  color: "#3cc37c"
+  longRange: true
+
+- type: radioChannel
+  id: EmpireChannel
+  name: chat-radio-empire
+  keycode: "е"
+  frequency: 9882
+  color: "#b74d48"
+  longRange: true
+
+- type: radioChannel
+  id: MandaloriansChannel
+  name: chat-radio-mandalorians
+  keycode: "м"
+  frequency: 9773
+  color: "#b3a24c"
+  longRange: true
+
+- type: radioChannel
+  id: RepublicChannel
+  name: chat-radio-republic
+  keycode: "р"
+  frequency: 9664
+  color: "#4c88b3"
+  longRange: true
+
+- type: radioChannel
+  id: BalmorranChannel
+  name: chat-radio-balmorran
+  keycode: "б"
+  frequency: 9550
+  color: "#799669"
+  longRange: true
+
+- type: radioChannel
+  id: ImperialIntelligenceChannel
+  name: chat-radio-imperial-intelligence
+  keycode: "и"
+  frequency: 9446
+  color: "#c4473b"
+  longRange: true
+
+- type: radioChannel
+  id: HavokChannel
+  name: chat-radio-havok
+  keycode: "х"
+  frequency: 9337
+  color: "#c63943"
+  longRange: true
+
+- type: radioChannel
+  id: BlackSunChannel
+  name: chat-radio-black-sun
+  keycode: "д"
+  frequency: 9228
+  color: "#6e000c"
+  longRange: true
+
+- type: radioChannel
+  id: ExchangeChannel
+  name: chat-radio-exchange
+  keycode: "о"
+  frequency: 9119
+  color: "#09645c"
+  longRange: true
+
+
+#Radio
+- type: entity
+  name: sobrik radio
+  description: Радио используется в целях коммуникации на поле боя.
+  parent: RadioHandheld
+  id: SW_RadioHandheldSobrik
+  components:
+  - type: RadioMicrophone
+    broadcastChannel: SobrikChannel
+  - type: RadioSpeaker
+    channels:
+    - SobrikChannel
+  - type: Sprite
+    sprite: Objects/Devices/securityhandy.rsi
+  - type: Item
+    sprite: Objects/Devices/securityhandy.rsi
+    heldPrefix: walkietalkie
+
+- type: entity
+  name: empire radio
+  description: Радио используется в целях коммуникации на поле боя.
+  parent: RadioHandheld
+  id: SW_RadioHandheldEmpire
+  components:
+  - type: RadioMicrophone
+    broadcastChannel: EmpireChannel
+  - type: RadioSpeaker
+    channels:
+    - EmpireChannel
+  - type: Sprite
+    sprite: Objects/Devices/securityhandy.rsi
+  - type: Item
+    sprite: Objects/Devices/securityhandy.rsi
+    heldPrefix: walkietalkie
+
+- type: entity
+  name: mandalorians radio
+  description: Радио используется в целях коммуникации на поле боя.
+  parent: RadioHandheld
+  id: SW_RadioHandheldMandalorian
+  components:
+  - type: RadioMicrophone
+    broadcastChannel: MandaloriansChannel
+  - type: RadioSpeaker
+    channels:
+    - MandaloriansChannel
+  - type: Sprite
+    sprite: Objects/Devices/securityhandy.rsi
+  - type: Item
+    sprite: Objects/Devices/securityhandy.rsi
+    heldPrefix: walkietalkie
+
+- type: entity
+  name: republic radio
+  description: Радио используется в целях коммуникации на поле боя.
+  parent: RadioHandheld
+  id: SW_RadioHandheldRepublic
+  components:
+  - type: RadioMicrophone
+    broadcastChannel: RepublicChannel
+  - type: RadioSpeaker
+    channels:
+    - RepublicChannel
+  - type: Sprite
+    sprite: Objects/Devices/securityhandy.rsi
+  - type: Item
+    sprite: Objects/Devices/securityhandy.rsi
+    heldPrefix: walkietalkie
+
+- type: entity
+  name: balmorran radio
+  description: Радио используется в целях коммуникации на поле боя.
+  parent: RadioHandheld
+  id: SW_RadioHandheldBalmorran
+  components:
+  - type: RadioMicrophone
+    broadcastChannel: BalmorranChannel
+  - type: RadioSpeaker
+    channels:
+    - BalmorranChannel
+  - type: Sprite
+    sprite: Objects/Devices/securityhandy.rsi
+  - type: Item
+    sprite: Objects/Devices/securityhandy.rsi
+    heldPrefix: walkietalkie
+
+- type: entity
+  name: imperial intelligence radio
+  description: Радио используется в целях коммуникации на поле боя.
+  parent: RadioHandheld
+  id: SW_RadioHandheldImperialIntelligence
+  components:
+  - type: RadioMicrophone
+    broadcastChannel: ImperialIntelligenceChannel
+  - type: RadioSpeaker
+    channels:
+    - ImperialIntelligenceChannel
+  - type: Sprite
+    sprite: Objects/Devices/securityhandy.rsi
+  - type: Item
+    sprite: Objects/Devices/securityhandy.rsi
+    heldPrefix: walkietalkie
+
+- type: entity
+  name: havok radio
+  description: Радио используется в целях коммуникации на поле боя.
+  parent: RadioHandheld
+  id: SW_RadioHandheldHavok
+  components:
+  - type: RadioMicrophone
+    broadcastChannel: HavokChannel
+  - type: RadioSpeaker
+    channels:
+    - HavokChannel
+  - type: Sprite
+    sprite: Objects/Devices/securityhandy.rsi
+  - type: Item
+    sprite: Objects/Devices/securityhandy.rsi
+    heldPrefix: walkietalkie
+
+- type: entity
+  name: black sun radio
+  description: Радио используется в целях коммуникации на поле боя.
+  parent: RadioHandheld
+  id: SW_RadioHandheldBlackSun
+  components:
+  - type: RadioMicrophone
+    broadcastChannel: BlackSunChannel
+  - type: RadioSpeaker
+    channels:
+    - BlackSunChannel
+  - type: Sprite
+    sprite: Objects/Devices/securityhandy.rsi
+  - type: Item
+    sprite: Objects/Devices/securityhandy.rsi
+    heldPrefix: walkietalkie
+
+- type: entity
+  name: exchange radio
+  description: Радио используется в целях коммуникации на поле боя.
+  parent: RadioHandheld
+  id: SW_RadioHandheldExchange
+  components:
+  - type: RadioMicrophone
+    broadcastChannel: ExchangeChannel
+  - type: RadioSpeaker
+    channels:
+    - ExchangeChannel
+  - type: Sprite
+    sprite: Objects/Devices/securityhandy.rsi
+  - type: Item
+    sprite: Objects/Devices/securityhandy.rsi
+    heldPrefix: walkietalkie

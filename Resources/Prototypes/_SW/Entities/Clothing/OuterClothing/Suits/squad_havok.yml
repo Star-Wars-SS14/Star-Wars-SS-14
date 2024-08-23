@@ -14,6 +14,10 @@
     modifiers:
       coefficients:
         Caustic: 0.1
+        Heat: 0.6
+        Blunt: 0.3
+        Slash: 0.3
+        Piercing: 0.3
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.95

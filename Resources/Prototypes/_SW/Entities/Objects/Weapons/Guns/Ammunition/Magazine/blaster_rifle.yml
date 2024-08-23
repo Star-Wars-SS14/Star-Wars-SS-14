@@ -1,6 +1,6 @@
   - type: entity
-    id: RedMagazineBlastRifle
-    name: "Magazine blast"
+    id: SW_RedMagazineBlastRifle
+    name: "P-301 Magazine blast"
     parent: BaseMagazineLightRifle
     components:
     - type: Tag
@@ -17,10 +17,10 @@
       steps: 8
       zeroVisible: false
     - type: Appearance
-    
+
   - type: entity
-    id: Z1RedMagazineBlastRifle
-    name: "Magazine blast"
+    id: SW_Z1RedMagazineBlastRifle
+    name: "Z1 Magazine blast"
     parent: BaseMagazineLightRifle
     components:
     - type: Tag
@@ -37,10 +37,10 @@
       steps: 8
       zeroVisible: false
     - type: Appearance
-    
+
   - type: entity
-    id: GreenMagazineBlastRifle
-    name: "Magazine blast"
+    id: SW_GreenMagazineBlastRifle
+    name: "Green Magazine blast"
     parent: BaseMagazineLightRifle
     components:
     - type: Tag
@@ -57,10 +57,10 @@
       steps: 8
       zeroVisible: false
     - type: Appearance
-    
+
   - type: entity
-    id: H206GreenMagazineBlastRifle
-    name: "Magazine blast"
+    id: SW_H206GreenMagazineBlastRifle
+    name: "H206 Magazine blast"
     parent: BaseMagazineLightRifle
     components:
     - type: Tag
@@ -77,10 +77,10 @@
       steps: 8
       zeroVisible: false
     - type: Appearance
-    
+
   - type: entity
-    id: BlueMagazineBlastRifle
-    name: "Magazine blast"
+    id: SW_BlueMagazineBlastRifle
+    name: "J-111 Magazine blast"
     parent: BaseMagazineLightRifle
     components:
     - type: Tag
@@ -97,10 +97,10 @@
       steps: 8
       zeroVisible: false
     - type: Appearance
-    
+
   - type: entity
-    id: CannonBlueMagazineBlastRifle
-    name: "Magazine blast"
+    id: SW_CannonBlueMagazineBlastRifle
+    name: "F-11D Magazine blast"
     parent: BaseMagazineLightRifle
     components:
     - type: Tag
@@ -117,10 +117,10 @@
       steps: 8
       zeroVisible: false
     - type: Appearance
-    
+
   - type: entity
-    id: SniperRifleBlueMagazineBlastRifle
-    name: "Magazine blast"
+    id: SW_SniperRifleBlueMagazineBlastRifle
+    name: "Grantek F-11D Magazine blast"
     parent: BaseMagazineLightRifle
     components:
     - type: Tag
@@ -137,10 +137,10 @@
       steps: 8
       zeroVisible: false
     - type: Appearance
-    
+
   - type: entity
-    id: YellowMagazineBlastRifle
-    name: "Magazine blast"
+    id: SW_YellowMagazineBlastRifle
+    name: "E-1 Magazine blast"
     parent: BaseMagazineLightRifle
     components:
     - type: Tag
@@ -157,10 +157,10 @@
       steps: 8
       zeroVisible: false
     - type: Appearance
-    
+
   - type: entity
-    id: CannonYellowMagazineBlastRifle
-    name: "Magazine blast"
+    id: SW_CannonYellowMagazineBlastRifle
+    name: "EL-34 Magazine blast"
     parent: BaseMagazineLightRifle
     components:
     - type: Tag
@@ -177,10 +177,10 @@
       steps: 8
       zeroVisible: false
     - type: Appearance
-    
+
   - type: entity
-    id: SniperRifleYellowMagazineBlastRifle
-    name: "Magazine blast"
+    id: SW_SniperRifleYellowMagazineBlastRifle
+    name: "K406 Ripper, MK-3 Magazine blast"
     parent: BaseMagazineLightRifle
     components:
     - type: Tag
@@ -188,7 +188,7 @@
       - MagazineBlast
     - type: BallisticAmmoProvider
       proto: SniperRifleYellowCartridgeBlast
-      capacity: 60
+      capacity: 40
     - type: Sprite
       sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
     - type: Item

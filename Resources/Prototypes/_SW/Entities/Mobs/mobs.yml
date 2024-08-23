@@ -1,41 +1,41 @@
 ###The old republic
 ##Republic
 - type: entity
-  name: Rebuplic solider
+  name: Rebuplic General
   parent: BaseMobHuman
   id: SW_MobRepublic_General
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [RepublicGeneralGear]
   - type: NpcFactionMember
     factions:
     - NanoTrasen
-    
+
 - type: entity
-  name: Rebuplic solider
+  name: Rebuplic Captain
   parent: BaseMobHuman
   id: SW_MobRepublic_Captain
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [RepublicCaptainGear]
   - type: NpcFactionMember
     factions:
-    - NanoTrasen     
-    
+    - NanoTrasen
+
 - type: entity
-  name: Rebuplic solider
+  name: Rebuplic Lieutenant
   parent: BaseMobHuman
   id: SW_MobRepublic_Lieutenant
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [RepublicLieutenantGear]
   - type: NpcFactionMember
     factions:
     - NanoTrasen
-  
+
 
 - type: entity
   name: Rebuplic solider
@@ -44,309 +44,284 @@
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [RepublicSoldierGear]
   - type: NpcFactionMember
     factions:
-    - NanoTrasen  
+    - NanoTrasen
 
 - type: entity
-  name: Rebuplic solider
+  name: Rebuplic Recruit
   parent: BaseMobHuman
   id: SW_MobRepublic_Recruit
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [RepublicRecruitGear]
   - type: NpcFactionMember
     factions:
-    - NanoTrasen   
+    - NanoTrasen
 
 - type: entity
-  name: Rebuplic solider
+  name: Rebuplic Medic
   parent: BaseMobHuman
   id: SW_MobRepublic_Medic
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [RepublicMedicGear]
   - type: NpcFactionMember
     factions:
-    - NanoTrasen  
-    
+    - NanoTrasen
+
 ##Republic_Commander
 - type: entity
-  name: Rebuplic solider
+  name: Rebuplic Commander Commander
   parent: BaseMobHuman
   id: SW_MobRepublic_Commander_Commander
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [RepublicCommanderCommanderGear]
   - type: NpcFactionMember
     factions:
     - NanoTrasen
 
 - type: entity
-  name: Rebuplic solider
+  name: Rebuplic Commander Lieutenant
   parent: BaseMobHuman
   id: SW_MobRepublic_Commander_Lieutenant
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [RepublicCommanderLieutenantGear]
   - type: NpcFactionMember
     factions:
     - NanoTrasen
 
 - type: entity
-  name: Rebuplic solider
+  name: Rebuplic Commander Medic
   parent: BaseMobHuman
   id: SW_MobRepublic_Commander_Medic
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [RepublicCommanderMedicGear]
   - type: NpcFactionMember
     factions:
     - NanoTrasen
 
 - type: entity
-  name: Rebuplic solider
+  name: Rebuplic Commander Stormtrooper
   parent: BaseMobHuman
   id: SW_MobRepublic_Commander_Stormtrooper
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [RepublicCommanderStormtrooperGear]
   - type: NpcFactionMember
     factions:
     - NanoTrasen
 
 - type: entity
-  name: Rebuplic solider
+  name: Rebuplic Commander Sniper
   parent: BaseMobHuman
   id: SW_MobRepublic_Commander_Sniper
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [RepublicCommanderSniperGear]
   - type: NpcFactionMember
     factions:
-    - NanoTrasen    
+    - NanoTrasen
 
 ##Empire
 - type: entity
-  name: Rebuplic solider
+  name: Empire Moff
   parent: BaseMobHuman
   id: SW_MobEmpire_Moff
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [EmpireMoffGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate  
+    - Syndicate
 
 - type: entity
-  name: Rebuplic solider
+  name: Empire Major
   parent: BaseMobHuman
   id: SW_MobEmpire_Major
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [EmpireMajorGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate 
+    - Syndicate
 
 - type: entity
-  name: Rebuplic solider
+  name: Empire Lieutenant
   parent: BaseMobHuman
   id: SW_MobEmpire_Lieutenant
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [EmpireLieutenantGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate     
-    
+    - Syndicate
+
 - type: entity
-  name: Rebuplic solider
+  name: Empire Soldier
   parent: BaseMobHuman
   id: SW_MobEmpire_Soldier
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [EmpireSoldierGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate 
-   
+    - Syndicate
+
 - type: entity
-  name: Rebuplic solider
+  name: Empire Medic
   parent: BaseMobHuman
   id: SW_MobEmpire_Medic
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [EmpireMedicalGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate 
-    
+    - Syndicate
+
 ##Sobrik
 - type: entity
-  name: Rebuplic solider
+  name: Sobrik Captain
   parent: BaseMobHuman
   id: SW_MobSobrik_Captain
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [SobrikCaptainGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate 
-    
+    - Syndicate
+
 - type: entity
-  name: Rebuplic solider
+  name: Sobrik Officer
   parent: BaseMobHuman
   id: SW_MobSobrik_Officer
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [SobrikOfficerGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate     
+    - Syndicate
 
 - type: entity
-  name: Rebuplic solider
+  name: Sobrik Medic
   parent: BaseMobHuman
   id: SW_MobSobrik_Medic
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [SobrikMedicGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate 
-    
+    - Syndicate
+
 ##Mandalorians
 - type: entity
-  name: Rebuplic solider
+  name: Mandalorian Leader
   parent: BaseMobHuman
   id: SW_MobMandalorian_Leader
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [MandalorianLeaderGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate 
-    
+    - Syndicate
+
 - type: entity
-  name: Rebuplic solider
+  name: Mandalorian Veteran
   parent: BaseMobHuman
   id: SW_MobMandalorian_Veteran
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [MandalorianVeteranGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate 
+    - Syndicate
 
 - type: entity
-  name: Rebuplic solider
+  name: Mandalorian Warrior
   parent: BaseMobHuman
   id: SW_MobMandalorian_Warrior
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [MandalorianWarriorGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate 
+    - Syndicate
 
 - type: entity
-  name: Rebuplic solider
+  name: Mandalorian Recruit
   parent: BaseMobHuman
   id: SW_MobMandalorian_Recruit
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [MandalorianRecruitGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate   
+    - Syndicate
 
-##Balmorran    
+##Balmorran
 - type: entity
-  name: Rebuplic solider
+  name: Balmorran Leader
   parent: BaseMobHuman
   id: SW_MobBalmorran_Leader
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [BalmorranLeaderGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate  
+    - Syndicate
 
 - type: entity
-  name: Rebuplic solider
+  name: Balmorran Officer
   parent: BaseMobHuman
   id: SW_MobBalmorran_Officer
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [BalmorranOfficerGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate  
+    - Syndicate
 
 - type: entity
-  name: Rebuplic solider
+  name: Balmorran Soldier
   parent: BaseMobHuman
   id: SW_MobBalmorran_Soldier
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [BalmorranSoldierGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate  
+    - Syndicate
 
 - type: entity
-  name: Rebuplic solider
+  name: Balmorran Recruit
   parent: BaseMobHuman
-  id: SW_MobBalmorran_Recruit  
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [RepublicSoliderGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate 
-
-- type: entity
-  name: Rebuplic solider
-  parent: BaseMobHuman
-  id: SW_MobBalmorran_Medic  
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [RepublicSoliderGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate   
-
-##Empire_Intelligence
-- type: entity
-  name: Rebuplic solider
-  parent: BaseMobHuman
-  id: SW_MobEmpire_Intelligence_Caretaker
+  id: SW_MobBalmorran_Recruit
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -356,67 +331,92 @@
     - Syndicate
 
 - type: entity
-  name: Rebuplic solider
+  name: Balmorran Medic
+  parent: BaseMobHuman
+  id: SW_MobBalmorran_Medic
+  description: A miserable pile of secrets.
+  components:
+  - type: Loadout
+    prototypes: [BalmorranRecruitGear]
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
+
+##Empire_Intelligence
+- type: entity
+  name: Empire Intelligence Caretaker
+  parent: BaseMobHuman
+  id: SW_MobEmpire_Intelligence_Caretaker
+  description: A miserable pile of secrets.
+  components:
+  - type: Loadout
+    prototypes: [EmpireIntelligenceCaretakerGear]
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
+
+- type: entity
+  name: Intelligence Agent
   parent: BaseMobHuman
   id: SW_MobEmpire_Intelligence_Agent
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [EmpireIntelligenceAgentGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate    
-    
-##Roles_Black_Sun    
+    - Syndicate
+
+##Roles_Black_Sun
 - type: entity
-  name: Rebuplic solider
+  name: BlackSun
   parent: BaseMobHuman
   id: SW_MobBlackSun_Sniper
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [BlackSunGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate 
+    - Syndicate
 
 - type: entity
-  name: Rebuplic solider
+  name: BlackSun Mercenary
   parent: BaseMobHuman
   id: SW_MobBlackSun_Mercenary
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [BlackSunMercenaryGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate 
+    - Syndicate
 
 ##Exchange
 - type: entity
-  name: Rebuplic solider
+  name: Exchange Captain
   parent: BaseMobHuman
-  id: SW_MobSW_Exchange_Captain
+  id: SW_MobExchange_Captain
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [ExchangeCaptainGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate 
-    
+    - Syndicate
+
 - type: entity
-  name: Rebuplic solider
+  name: Exchange Operative
   parent: BaseMobHuman
-  id: SW_MobSW_Exchange_Operative
+  id: SW_MobExchange_Operative
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [ExchangeOperativeGear]
   - type: NpcFactionMember
     factions:
-    - Syndicate     
-    
+    - Syndicate
+
 ###The Age of Rebellion
 #NanoTrasen
 - type: entity
@@ -508,5 +508,5 @@
   - type: NpcFactionMember
     factions:
     - Syndicate
-    
+
 

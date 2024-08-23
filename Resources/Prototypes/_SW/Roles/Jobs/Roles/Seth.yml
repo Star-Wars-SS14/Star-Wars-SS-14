@@ -2,17 +2,20 @@
 - type: startingGear
   id: SobrikCaptainGear
   equipment:
-    outerClothing: SW_SobrikSuit
+    outerClothing: SW_BallamorSuit
+    head: SW_ClothingHeadBallamor
 
 - type: startingGear
   id: SobrikOfficerGear
   equipment:
     outerClothing: SW_SobrikSuit
+    mask: SW_ClothingMaskBallamor
 
 - type: startingGear
   id: SobrikMedicGear
   equipment:
     outerClothing: SW_SobrikSuit
+    mask: SW_ClothingMaskBallamor
 
 ###Empire
 - type: startingGear
@@ -42,14 +45,22 @@
 - type: startingGear
   id: EmpireMajorGear
   equipment:
-    outerClothing: SW_MajorImperialSuit
-    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    jumpsuit: SW_ClothingUniformJumpsuitOfficers
+    back: ClothingBackpackFilled
+    gloves: ClothingHandsGlovesColorBlack
+    shoes: SW_ClothingShoesBootsOfficers
+    ears: ClothingHeadsetGrey
+    head: SW_ClothingHeadCapOfficers
 
 - type: startingGear
   id: EmpireLieutenantGear
   equipment:
-    outerClothing: SW_LieutenantImperialSuit
-    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    jumpsuit: SW_ClothingUniformJumpsuitOfficers
+    back: ClothingBackpackFilled
+    gloves: ClothingHandsGlovesColorBlack
+    shoes: SW_ClothingShoesBootsOfficers
+    ears: ClothingHeadsetGrey
+    head: SW_ClothingHeadCapOfficers
 
 ###Mandalorians
 - type: startingGear
@@ -120,27 +131,57 @@
 - type: startingGear
   id: BalmorranLeaderGear
   equipment:
-    outerClothing: SW_SobrikSuit
+    jumpsuit: SW_ClothingUniformJumpsuitRebel
+    back: ClothingBackpackFilled
+    gloves: SW_ClothingHandsGlovesRebel
+    shoes: ClothingShoesCult
+    ears: ClothingHeadsetGrey
+    outerClothing: SW_ClothingOuterVestRebel
+    head: SW_RebelHelmet
 
 - type: startingGear
   id: BalmorranOfficerGear
   equipment:
-    outerClothing: SW_SobrikSuit
+    jumpsuit: SW_ClothingUniformJumpsuitRebel
+    back: ClothingBackpackFilled
+    gloves: SW_ClothingHandsGlovesRebel
+    shoes: ClothingShoesCult
+    ears: ClothingHeadsetGrey
+    outerClothing: SW_ClothingOuterVestRebel
+    head: SW_RebelHelmet
 
 - type: startingGear
   id: BalmorranMedicGear
   equipment:
-    outerClothing: SW_SobrikSuit
+    jumpsuit: SW_ClothingUniformJumpsuitRebel
+    back: ClothingBackpackFilled
+    gloves: SW_ClothingHandsGlovesRebel
+    shoes: ClothingShoesCult
+    ears: ClothingHeadsetGrey
+    outerClothing: SW_ClothingOuterVestRebel
+    head: SW_RebelHelmet
 
 - type: startingGear
   id: BalmorranSoldierGear
   equipment:
-    outerClothing: SW_SobrikSuit
+    jumpsuit: SW_ClothingUniformJumpsuitRebel
+    back: ClothingBackpackFilled
+    gloves: SW_ClothingHandsGlovesRebel
+    shoes: ClothingShoesCult
+    ears: ClothingHeadsetGrey
+    outerClothing: SW_ClothingOuterVestRebel
+    head: SW_RebelHelmet
 
 - type: startingGear
   id: BalmorranRecruitGear
   equipment:
-    outerClothing: SW_SobrikSuit
+    jumpsuit: SW_ClothingUniformJumpsuitRebel
+    back: ClothingBackpackFilled
+    gloves: SW_ClothingHandsGlovesRebel
+    shoes: ClothingShoesCult
+    ears: ClothingHeadsetGrey
+    outerClothing: SW_ClothingOuterVestRebel
+    head: SW_RebelHelmet
 
 ###Imperial Intelligence
 - type: startingGear
@@ -159,27 +200,32 @@
 - type: startingGear
   id: RepublicCommanderCommanderGear
   equipment:
-    jumpsuit: SW_CommanderHavokSuit
+    outerClothing: SW_CommanderHavokSuit
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
 
 - type: startingGear
   id: RepublicCommanderLieutenantGear
   equipment:
-    jumpsuit: SW_LieutenantHavokSuit
+    outerClothing: SW_LieutenantHavokSuit
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
 
 - type: startingGear
   id: RepublicCommanderMedicGear
   equipment:
-    jumpsuit: SW_MedicalHavokSuit
+    outerClothing: SW_MedicalHavokSuit
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
 
 - type: startingGear
   id: RepublicCommanderStormtrooperGear
   equipment:
-    jumpsuit: SW_HavokSuit
+    outerClothing: SW_HavokSuit
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
 
 - type: startingGear
   id: RepublicCommanderSniperGear
   equipment:
-    jumpsuit: SW_SniperHavokSuit
+    outerClothing: SW_SniperHavokSuit
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
 
 ###Black Sun
 - type: startingGear

@@ -1,0 +1,9 @@
+﻿- type: entity
+  parent: ClothingHeadBase
+  id: SW_ClothingHeadBallamor
+  name: ballamor helmet
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/ballamor_helmet.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/ballamor_helmet.rsi

@@ -1,0 +1,10 @@
+﻿- type: entity
+  parent: ClothingMaskBase
+  id: SW_ClothingMaskBallamor
+  name: ballamor mask
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Mask/ballamor.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Mask/ballamor.rsi
+  - type: BreathMask

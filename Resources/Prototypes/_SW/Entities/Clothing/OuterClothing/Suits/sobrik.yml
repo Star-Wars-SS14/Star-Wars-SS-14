@@ -21,3 +21,12 @@
         Heat: 0.5
         Cold: 0.5
   - type: GroupExamine
+  - type: ToggleableClothing
+    clothingPrototype: SW_ClothingHeadHatHoodBallamor
+    requiredSlot:
+    - outerClothing
+    slot: head
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:ContainerSlot { }
+

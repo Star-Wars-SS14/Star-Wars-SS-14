@@ -1,0 +1,92 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Taken from tgstation at commit https://github.com/tgstation/tgstation/commit/d917f4c2a088419d5c3aec7656b7ff8cebd1822e idcluwne made by brainfood1183 (github) for ss14, idbrigmedic made by PuroSlavKing (Github), pirate made by brainfood1183 (github), idadmin made by Arimah (github)",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "image1"
+    },
+    {
+        "name": "image2"
+    },
+    {
+      "name": "image3"
+    },
+    {
+        "name": "image4"
+    },
+    {
+        "name": "image5"
+    },
+    {
+        "name": "image6"
+    },
+    {
+        "name": "image7"
+    },
+    {
+        "name": "image8"
+    },
+    {
+        "name": "image9"
+    },
+    {
+        "name": "image10"
+    },
+    {
+        "name": "image11"
+    },
+    {
+        "name": "image12"
+    },
+    {
+        "name": "image13"
+    },
+    {
+        "name": "image14"
+    },
+    {
+        "name": "image15"
+    },
+    {
+        "name": "image16"
+    },
+    {
+        "name": "image17"
+    },
+    {
+        "name": "image18"
+    },
+    {
+        "name": "image19"
+    },
+    {
+        "name": "image20"
+    },
+    {
+        "name": "image21"
+    },
+    {
+        "name": "image22"
+    },
+    {
+        "name": "image23"
+    },
+    {
+        "name": "image24"
+    },
+    {
+        "name": "image25"
+    },
+    {
+        "name": "image26"
+    },
+    {
+        "name": "image27"
+    }
+  ]
+}

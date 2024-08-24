@@ -85,9 +85,9 @@
     channels:
     - SobrikChannel
   - type: Sprite
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_sith.rsi
   - type: Item
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_sith.rsi
     heldPrefix: walkietalkie
 
 - type: entity
@@ -102,9 +102,9 @@
     channels:
     - EmpireChannel
   - type: Sprite
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_sith.rsi
   - type: Item
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_sith.rsi
     heldPrefix: walkietalkie
 
 - type: entity
@@ -119,9 +119,9 @@
     channels:
     - MandaloriansChannel
   - type: Sprite
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_hologram.rsi
   - type: Item
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_hologram.rsi
     heldPrefix: walkietalkie
 
 - type: entity
@@ -136,9 +136,9 @@
     channels:
     - RepublicChannel
   - type: Sprite
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_republic.rsi
   - type: Item
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_republic.rsi
     heldPrefix: walkietalkie
 
 - type: entity
@@ -153,9 +153,9 @@
     channels:
     - BalmorranChannel
   - type: Sprite
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_republic.rsi
   - type: Item
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_republic.rsi
     heldPrefix: walkietalkie
 
 - type: entity
@@ -170,9 +170,9 @@
     channels:
     - ImperialIntelligenceChannel
   - type: Sprite
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_sith.rsi
   - type: Item
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_sith.rsi
     heldPrefix: walkietalkie
 
 - type: entity
@@ -187,9 +187,9 @@
     channels:
     - HavokChannel
   - type: Sprite
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_republic.rsi
   - type: Item
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_republic.rsi
     heldPrefix: walkietalkie
 
 - type: entity
@@ -204,9 +204,9 @@
     channels:
     - BlackSunChannel
   - type: Sprite
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_hologram.rsi
   - type: Item
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_hologram.rsi
     heldPrefix: walkietalkie
 
 - type: entity
@@ -221,7 +221,7 @@
     channels:
     - ExchangeChannel
   - type: Sprite
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_hologram.rsi
   - type: Item
-    sprite: Objects/Devices/securityhandy.rsi
+    sprite: _SW/Objects/Devices/radio_hologram.rsi
     heldPrefix: walkietalkie

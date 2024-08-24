@@ -14,7 +14,7 @@
   id: music3
   name: Radio FM 94.3
   path:
-    path: /Audio/Jukebox/music_3_more-gun.ogg
+    path: /Audio/Jukebox/music_3.ogg
 
 - type: jukebox
   id: music4
@@ -38,4 +38,10 @@
   id: music7
   name: Radio FM 119.7
   path:
-    path: /Audio/Jukebox/music_7_pachka_sig.ogg
+    path: /Audio/Jukebox/music_7.ogg
+
+- type: jukebox
+  id: music8
+  name: Radio FM 99.7
+  path:
+    path: /Audio/Jukebox/music_8.ogg

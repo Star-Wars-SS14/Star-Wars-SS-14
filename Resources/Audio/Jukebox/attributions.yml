@@ -4,16 +4,9 @@
   - "music_4.ogg"
   - "music_5.ogg"
   - "music_6.ogg"
+  - "music_7.ogg"
+  - "music_8.ogg"
   license: "CC-BY-NC-SA-3.0"
   copyright: "Found somewhere by @zavanick on Discord"
   source: "https://github.com/Zavanick/EcHOLiFE"
 
-- files: ["music_3_more-gun.ogg"]
-  license: "CC-BY-NC-SA-3.0"
-  copyright: "Team Fortress 2 OST"
-  source: "https://github.com/Zavanick/EcHOLiFE"
-
-- files: ["music_7_pachka_sig.ogg"]
-  license: "CC-BY-NC-SA-3.0"
-  copyright: "Victor Tzoy"
-  source: "https://github.com/Zavanick/EcHOLiFE"

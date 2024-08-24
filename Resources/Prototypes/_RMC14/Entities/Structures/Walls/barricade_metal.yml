@@ -17,6 +17,7 @@
         layer:
         - TableLayer
         - LowImpassable
+        - BulletImpassable
   - type: Barricade
   - type: Damageable
     damageContainer: Inorganic

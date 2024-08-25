@@ -63,6 +63,13 @@
 
 - type: statusIcon
   parent: JobIcon
+  id: JobIconHeadPrisioner
+  icon:
+    sprite: /Textures/Interface/Misc/job_icons.rsi
+    state: HeadPrisioner
+
+- type: statusIcon
+  parent: JobIcon
   id: JobIconJanitor
   icon:
     sprite: /Textures/Interface/Misc/job_icons.rsi
@@ -123,6 +130,21 @@
   icon:
     sprite: /Textures/Interface/Misc/job_icons.rsi
     state: Lawyer
+
+- type: statusIcon
+  parent: JobIcon
+  id: JobIconHeadRevolutionary
+  icon:
+    sprite: /Textures/Interface/Misc/job_icons.rsi
+    state: HeadRevolutionary
+
+- type: statusIcon
+  parent: JobIcon
+  id: JobIconRevolutionary
+  icon:
+    sprite: /Textures/Interface/Misc/job_icons.rsi
+    state: Revolutionary
+
 
 - type: statusIcon
   parent: JobIcon
@@ -228,6 +250,20 @@
   icon:
     sprite: /Textures/Interface/Misc/job_icons.rsi
     state: HeadOfSecurity
+
+- type: statusIcon
+  parent: JobIcon
+  id: JobIconSyndicate
+  icon:
+    sprite: /Textures/Interface/Misc/job_icons.rsi
+    state: Syndicate
+
+- type: statusIcon
+  parent: JobIcon
+  id: JobIconHeadSyndicate
+  icon:
+    sprite: /Textures/Interface/Misc/job_icons.rsi
+    state: HeadSyndicate
 
 - type: statusIcon
   parent: JobIcon

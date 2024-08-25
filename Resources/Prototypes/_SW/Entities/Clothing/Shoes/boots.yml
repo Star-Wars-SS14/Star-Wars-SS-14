@@ -57,3 +57,13 @@
     sprite: _SW/Clothing/Shoes/Boots/exchange.rsi
   - type: Clothing
     sprite: _SW/Clothing/Shoes/Boots/exchange.rsi
+
+- type: entity
+  parent: ClothingShoesBaseButcherable
+  id: SW_ClothingShoesBootsCitizen
+  name: citizen boots
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Shoes/Boots/citizen.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Shoes/Boots/citizen.rsi

@@ -1,6 +1,7 @@
 - type: department
   id: Cargo #Roles_Empire
-  description: department-Empire-description
+  name: Империя
+  description: Непосредственно основной кулак имперских сил, задача непосредственно вести экспансию, захватывать важные точки с ресурсами и т.п.
   color: "#8B0000"
   roles:
   - SW_Empire_Moff
@@ -12,7 +13,8 @@
 
 - type: department
   id: Civilian #Roles_Republic
-  description: department-Empire-description
+  name: Республика
+  description: Республика, после поражения, вывела войска из Балморы. Но там всё ещё оставалась подпольная ячейка республиканских солдат, которые всё время создавали плацдарм для будущего вторжения
   color: "#8B0000"
   roles:
   - SW_Republic_General
@@ -25,7 +27,8 @@
 
 - type: department
   id: Command #Roles_Sobrik
-  description: department-Sobrik-description
+  name: Собрик
+  description: Охранники космопорта под сильным контролем империи.
   color: "#8B0000"
   roles:
   - SW_Sobrik_Captain
@@ -35,7 +38,8 @@
 
 - type: department
   id: Engineering #Roles_Mandalorians
-  description: department-Empire-description
+  name: Мандалорцы
+  description: Мандалорцы - воины, которые не боятся смерти.
   color: "#8B0000"
   roles:
   - SW_Mandalorian_Leader
@@ -44,21 +48,22 @@
   - SW_Mandalorian_Recruit
   weight: 1600
 
-- type: department
-  id: Medical #Roles_Balmorran
-  description: department-Empire-description
-  color: "#8B0000"
-  roles:
-  - SW_Balmorran_Leader
-  - SW_Balmorran_Officer
-  - SW_Balmorran_Soldier
-  - SW_Balmorran_Recruit
-  - SW_Balmorran_Medic
-  weight: 1500
+#- type: department
+ # id: Roles_Balmorran #Roles_Balmorran
+  #description: department-Empire-description
+  #color: "#8B0000"
+  #roles:
+  #- SW_Balmorran_Leader
+  #- SW_Balmorran_Officer
+  #- SW_Balmorran_Soldier
+  #- SW_Balmorran_Recruit
+  #- SW_Balmorran_Medic
+  #weight: 1500
 
 - type: department
   id: Security #Roles_Empire_Intelligence
-  description: department-Empire-description
+  name: Имперский разведывательный отряд
+  description: Элитный отряд империи, состоящий из лучших бойцов и прошедшие подготовку в разведовательный отдел.
   color: "#8B0000"
   roles:
   - SW_Empire_Intelligence_Caretaker
@@ -67,7 +72,8 @@
 
 - type: department
   id: Science #Roles_Republic_Commander
-  description: department-Empire-description
+  name: Республиканский Коммандос отряд
+  description: Элитный отряд республики, состоящий из лучших бойцов.
   color: "#8B0000"
   roles:
   - SW_Republic_Commander_Commander
@@ -79,7 +85,8 @@
 
 - type: department
   id: Specific #Roles_Black_Sun
-  description: department-Empire-description
+  name: Черное Солнце
+  description: Преступная организация "Черное Солнце", осколок группировки "Обмен".
   color: "#8B0000"
   roles:
   - SW_BlackSun_Mercenary
@@ -87,10 +94,20 @@
   weight: 1200
 
 - type: department
-  id: Roles_Exchange
-  description: department-Empire-description
+  id: Medical #Roles_Exchange
+  name: Обмен
+  description: Преступная организация "Обмен"
   color: "#8B0000"
   roles:
   - SW_Exchange_Captain
   - SW_Exchange_Operative
+  weight: 1100
+
+- type: department
+  id: Roles_Civilian
+  name: Обычные жители
+  description: Обычные жители планеты
+  color: "#8B0000"
+  roles:
+  - SW_Civialian
   weight: 1100

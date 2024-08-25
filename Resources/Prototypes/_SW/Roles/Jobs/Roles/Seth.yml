@@ -24,7 +24,7 @@
     mask: SW_ClothingMaskBallamor
     belt: ClothingBeltAssault
     shoes: SW_ClothingShoesBootsSobrik
-    id: SW_IDCardSobrikMedic
+    id: SW_IDCardSobrikMediccorvax_astra.yml
 
 ###Empire
 - type: startingGear
@@ -34,6 +34,7 @@
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     head: SW_ClothingHeadImperialHelmet
     id: SW_IDCardEmpireSoldier
+    shoes: ClothingShoesBootsCombatFilled
 
 - type: startingGear
   id: EmpireMedicalGear
@@ -42,6 +43,7 @@
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     head: SW_ClothingHeadMedicImperialHelmet
     id: SW_IDCardEmpireMedic
+    shoes: ClothingShoesBootsCombatFilled
 
 - type: startingGear
   id: EmpireMoffGear
@@ -251,6 +253,7 @@
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     head: SW_ClothingHeadImperialHelmet
     id: SW_IDCardEmpireIntelligenceCaretaker
+    shoes: ClothingShoesBootsCombatFilled
 
 - type: startingGear
   id: EmpireIntelligenceAgentGear
@@ -259,6 +262,7 @@
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     head: SW_ClothingHeadImperialHelmet
     id: SW_IDCardEmpireIntelligenceAgent
+    shoes: ClothingShoesBootsCombatFilled
 
 ###Commander elite Republic
 - type: startingGear
@@ -268,6 +272,8 @@
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     head: SW_ClothingHeadCommanderHavokHelmet
     id: SW_IDCardHavokCommander
+    neck: ClothingNeckHavok
+    shoes: ClothingShoesBootsCombatFilled
 
 - type: startingGear
   id: RepublicCommanderLieutenantGear
@@ -276,6 +282,7 @@
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     head: SW_ClothingHeadLieutenantHavokHelmet
     id: SW_IDCardHavokLieutenant
+    shoes: ClothingShoesBootsCombatFilled
 
 - type: startingGear
   id: RepublicCommanderMedicGear
@@ -284,6 +291,7 @@
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     head: SW_ClothingHeadMedicalHavokHelmet
     id: SW_IDCardHavokMedic
+    shoes: ClothingShoesBootsCombatFilled
 
 - type: startingGear
   id: RepublicCommanderStormtrooperGear
@@ -292,6 +300,7 @@
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     head: SW_ClothingHeadHavokHelmet
     id: SW_IDCardHavokStormtrooper
+    shoes: ClothingShoesBootsCombatFilled
 
 - type: startingGear
   id: RepublicCommanderSniperGear
@@ -300,6 +309,7 @@
     jumpsuit: SW_ClothingUniformJumpsuitFleece
     head: SW_ClothingHeadSniperHavokHelmet
     id: SW_IDCardHavokSniper
+    shoes: ClothingShoesBootsCombatFilled
 
 ###Black Sun
 - type: startingGear
@@ -310,6 +320,7 @@
     head: SW_HelmetSunSquad
     belt: ClothingBeltSalvageWebbing
     id: SW_IDCardBlackSun
+    shoes: ClothingShoesBootsCombatFilled
 
 - type: startingGear
   id: BlackSunMercenaryGear
@@ -319,6 +330,7 @@
     head: SW_HelmetSunSquad
     belt: ClothingBeltSalvageWebbing
     id: SW_IDCardBlackSunMercenary
+    shoes: ClothingShoesBootsCombatFilled
 
 ###Exchange
 - type: startingGear
@@ -341,6 +353,14 @@
     shoes: SW_ClothingShoesBootsExchange
     head: SW_ClothingHeadExchangeHelmet
     id: SW_IDCardExchangeOperative
+
+##citizen
+- type: startingGear
+  id: CitizenGear
+  equipment:
+    jumpsuit: SW_CitizenClothing
+    shoes: SW_ClothingShoesBootsCitizen
+    gloves: SW_ClothingHandsGlovesСitizen
 
 ######old
 - type: startingGear

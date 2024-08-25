@@ -8,3 +8,13 @@
     sprite: _SW/Clothing/Hands/Gloves/rebelgloves.rsi
   - type: Clothing
     sprite: _SW/Clothing/Hands/Gloves/rebelgloves.rsi
+
+- type: entity
+  parent: ClothingHandsBase
+  id: SW_ClothingHandsGlovesСitizen
+  name: citizen gloves
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Hands/Gloves/citizen.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Hands/Gloves/citizen.rsi

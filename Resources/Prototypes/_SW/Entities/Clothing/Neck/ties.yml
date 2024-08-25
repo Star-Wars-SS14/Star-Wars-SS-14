@@ -1,0 +1,9 @@
+- type: entity
+  parent: ClothingNeckBase
+  id: ClothingNeckHavok
+  name: havok neck
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/Ties/Havok_Command.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Neck/Ties/Havok_Command.rsi

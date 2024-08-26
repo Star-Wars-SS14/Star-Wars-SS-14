@@ -1,5 +1,5 @@
 ﻿- type: entity
-  parent: ClothingOuterBase
+  parent: [ClothingOuterBase, AllowSuitStorageClothing]
   id: SW_RepublicSuit
   name: republic suit
   components:

@@ -1,5 +1,5 @@
 ﻿- type: entity
-  parent: ClothingOuterBase
+  parent: [ClothingOuterBase, AllowSuitStorageClothing]
   id: SW_ImperialSuit
   name: imperial suit
   components:
@@ -22,6 +22,11 @@
     walkModifier: 0.9
     sprintModifier: 0.95
   - type: HeldSpeedModifier
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:ContainerSlot { }
+  - type: Item
+    size: Ginormous
 
 - type: entity
   parent: SW_ImperialSuit

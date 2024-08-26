@@ -24,7 +24,7 @@
     mask: SW_ClothingMaskBallamor
     belt: ClothingBeltAssault
     shoes: SW_ClothingShoesBootsSobrik
-    id: SW_IDCardSobrikMediccorvax_astra.yml
+    id: SW_IDCardSobrikMedic
 
 ###Empire
 - type: startingGear

@@ -1,6 +1,6 @@
 department-Cargo = Империя
 department-Civilian = Республика
-department-Command = Собрик
+department-Command = Имперский Гарнизон
 department-Engineering = Мандалорцы
 department-Medical = Обмен
 department-Security = Имперский разведывательный отряд

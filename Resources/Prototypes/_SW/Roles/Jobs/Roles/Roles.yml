@@ -1,7 +1,7 @@
 ﻿###Sobrik
 - type: job
   id: SW_Sobrik_Captain
-  name: Капитан Собрика
+  name: Комендант Гарнизона
   playTimeTracker: Job_Sobrik_Captain
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -15,7 +15,7 @@
 
 - type: job
   id: SW_Sobrik_Officer
-  name: Офицер Собрика
+  name: Медик Гарнизона
   playTimeTracker: Job_Sobrik_Officer
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -29,7 +29,7 @@
 
 - type: job
   id: SW_Sobrik_Medic
-  name: Медик Собрика
+  name: Офицер Гарнизона
   playTimeTracker: Job_Sobrik_Medic
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -498,5 +498,5 @@
     role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: CitizenGear
-  icon: "Passenger"
+  icon: "JobIconPassenger"
   supervisors: job-supervisors-everyone

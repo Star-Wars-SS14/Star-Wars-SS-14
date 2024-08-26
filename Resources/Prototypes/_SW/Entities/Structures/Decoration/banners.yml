@@ -14,12 +14,12 @@
         spawn:
           MaterialCloth1:
             min: 1
-            max: 2 
+            max: 2
   - type: Butcherable
     butcheringType: Knife
     spawned:
     - id: MaterialCloth1
-      amount: 3 
+      amount: 3
   - type: Fixtures
     fixtures:
       fix1:
@@ -28,63 +28,62 @@
           radius: 0.2
         density: 190
         mask:
-        - TableMask          
+        - TableMask
 
-- type: entity       
+- type: entity
   id: SW_BannerEmpire
   parent: SW_BannerBase
   name: empire banner
-  description: A banner displaying the Nanotrasen logo. It looks rather cheap.
+  description:  Имперский символ представлял собой изменённый галактический медальон Бенду, использовавшийся в Галактической Республике в свои последние дни, как герб.
   components:
   - type: Sprite
     sprite: _SW/Structures/Decoration/banner.rsi
     state: empire_banner
-    
+
 - type: entity
   id: SW_BannerEmpireRed
   parent: SW_BannerBase
   name: empire banner red
-  description: A banner displaying the Nanotrasen logo. It looks rather cheap.
+  description:  Имперский символ представлял собой изменённый галактический медальон Бенду, использовавшийся в Галактической Республике в свои последние дни, как герб.
   components:
   - type: Sprite
     sprite: _SW/Structures/Decoration/banner.rsi
     state: empire_banner_red
-    
+
 - type: entity
   id: SW_bannerguild
   parent: SW_BannerBase
   name: Alderaanxi banners
-  description: A banner displaying the Nanotrasen logo. It looks rather cheap.
   components:
   - type: Sprite
     sprite: _SW/Structures/Decoration/banner.rsi
     state: banner.guild
-    
+
 - type: entity
   id: SW_BannerEmpireSith
   parent: SW_BannerBase
-  name: Alderaanxi banners
-  description: A banner displaying the Nanotrasen logo. It looks rather cheap.
+  name: Empire banners
+  description: Имперский символ представлял собой изменённый галактический медальон Бенду, использовавшийся в Галактической Республике в свои последние дни, как герб.
   components:
   - type: Sprite
     sprite: _SW/Structures/Decoration/bannerEmpire.rsi
     state: banner
-    
+
 - type: entity
   id: SW_BannerMandalorian
   parent: SW_BannerBase
-  name: Alderaanxi banners
-  description: A banner displaying the Nanotrasen logo. It looks rather cheap.
+  name: Mandalorian banners
+  description: Мандалорцы, также называющие себя мандо'аде или «дети Мандалора» — воинственный, преимущественно кочевой народ состоявший из разумных существ вне зависимости от расы или пола, объединённых общей культурой.
   components:
   - type: Sprite
     sprite: _SW/Structures/Decoration/bannerMandalorian.rsi
     state: banner
-    
+
 - type: entity
   id: SW_BannerRepublic
   parent: SW_BannerBase
-  name: Alderaanxi banners
-  description: A banner displaying the Nanotrasen logo. It looks rather cheap.
+  name: Republic banners
+  description: Галактическая Республика, или просто Республика — наименование галактического государства, возглавляемая Верховным канцлером, имела ярко выраженное демократическое управление.
   components:
   - type: Sprite
     sprite: _SW/Structures/Decoration/bannerRepublic.rsi

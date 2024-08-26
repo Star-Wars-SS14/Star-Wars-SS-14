@@ -27,7 +27,7 @@
 
 - type: department
   id: Command #Roles_Sobrik
-  name: Собрик
+  name: Имперский Гарнизон
   description: Охранники космопорта под сильным контролем империи.
   color: "#8B0000"
   roles:

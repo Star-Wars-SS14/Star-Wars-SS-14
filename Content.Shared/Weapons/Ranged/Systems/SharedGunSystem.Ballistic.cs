@@ -26,7 +26,7 @@ public abstract partial class SharedGunSystem
         SubscribeLocalEvent<BallisticAmmoProviderComponent, GetVerbsEvent<Verb>>(OnBallisticVerb);
         SubscribeLocalEvent<BallisticAmmoProviderComponent, InteractUsingEvent>(OnBallisticInteractUsing);
         SubscribeLocalEvent<BallisticAmmoProviderComponent, AfterInteractEvent>(OnBallisticAfterInteract);
-        SubscribeLocalEvent<BallisticAmmoProviderComponent, AmmoFillDoAfterEvent>(OnBallisticAmmoFillDoAfter);
+        //SubscribeLocalEvent<BallisticAmmoProviderComponent, AmmoFillDoAfterEvent>(OnBallisticAmmoFillDoAfter);
         SubscribeLocalEvent<BallisticAmmoProviderComponent, UseInHandEvent>(OnBallisticUse);
     }
 
@@ -121,7 +121,7 @@ public abstract partial class SharedGunSystem
 
         List<(EntityUid? Entity, IShootable Shootable)> ammo = new();
         var evTakeAmmo = new TakeAmmoEvent(1, ammo, Transform(uid).Coordinates, args.User);
-        RaiseLocalEvent(uid, evTakeAmmo);
+        //RaiseLocalEvent(uid, evTakeAmmo);
 
         foreach (var (ent, _) in ammo)
         {
@@ -137,7 +137,7 @@ public abstract partial class SharedGunSystem
                     uid,
                     args.User);
 
-                SimulateInsertAmmo(ent.Value, uid, Transform(uid).Coordinates);
+                //SimulateInsertAmmo(ent.Value, uid, Transform(uid).Coordinates);
             }
             else
             {

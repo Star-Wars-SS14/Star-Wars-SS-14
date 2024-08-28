@@ -1,0 +1,31 @@
+- type: job
+  id: CombineMedic
+  name: Медик Комбайн
+  description: Специалисты, ответственные за лечение и восстановление бойцов. Обладают навыками первой помощи и медицинского обеспечения.
+  playTimeTracker: JobCombineMedic
+  requirements:
+  - !type:DepartmentTimeRequirement
+      department: AllAlliance
+      time: 42000 # 700 минут
+  startingGear: CombineMedicGear
+  icon: "JobIconParamedic"
+  supervisors: job-supervisors-cmo
+  canBeAntag: false
+  access:
+  - Medical
+  - Maintenance
+  extendedAccess:
+  - Chemistry
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant ]
+
+- type: startingGear
+  id: CombineMedicGear
+  equipment:
+    id: ParamedicPDA
+    ears: ClothingHeadsetMedical
+    belt: ClothingBeltMedicalEMTFilled
+  storage:
+    back:
+    - EmergencyRollerBedSpawnFolded

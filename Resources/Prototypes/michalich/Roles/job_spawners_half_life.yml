@@ -1,0 +1,191 @@
+- type: entity
+  id: SpawnPointAdministrator
+  parent: SpawnPointJobBase
+  name: Администратор Альянса
+  components:
+  - type: SpawnPoint
+    job_id: JobAdministrator
+  - type: Sprite
+    layers:
+      - state: green
+      - state: captain
+# -------------------------------------------------------------------   
+- type: entity
+  id: SpawnPointEliteCombine
+  parent: SpawnPointJobBase
+  name: Элитный Комбайн
+  components:
+  - type: SpawnPoint
+    job_id: JobCombineElite
+  - type: Sprite
+    layers:
+      - state: green
+      - state: captain
+
+- type: entity
+  id: SpawnPointCombineEngineer
+  parent: SpawnPointJobBase
+  name: Инженер Комбайн
+  components:
+  - type: SpawnPoint
+    job_id: JobCombineEngineer
+  - type: Sprite
+    layers:
+      - state: green
+      - state: captain
+
+- type: entity
+  id: SpawnPointCombineMedic
+  parent: SpawnPointJobBase
+  name: Медик Комбайн
+  components:
+  - type: SpawnPoint
+    job_id: JobCombineMedic
+  - type: Sprite
+    layers:
+      - state: green
+      - state: captain
+
+- type: entity
+  id: SpawnPointCombineOrdinal
+  parent: SpawnPointJobBase
+  name: Ординал Комбайн
+  components:
+  - type: SpawnPoint
+    job_id: JobCombineOrdinal
+  - type: Sprite
+    layers:
+      - state: green
+      - state: captain
+
+- type: entity
+  id: SpawnPointMetroKop
+  parent: SpawnPointJobBase
+  name: Метрокоп 
+  components:
+  - type: SpawnPoint
+    job_id: JobMetroKop
+  - type: Sprite
+    layers:
+      - state: green
+      - state: captain
+    
+- type: entity
+  id: SpawnPointSniperAlliance
+  parent: SpawnPointJobBase
+  name: Снайпер Альянса
+  components:
+  - type: SpawnPoint
+    job_id: JobSniperAlliance
+  - type: Sprite
+    layers:
+      - state: green
+      - state: captain
+    
+- type: entity
+  id: SpawnPointSoldier
+  parent: SpawnPointJobBase
+  name: Солдат Альянса
+  components:
+  - type: SpawnPoint
+    job_id: JobSoldier
+  - type: Sprite
+    layers:
+      - state: green
+      - state: captain
+# -------------------------------------------------------------------    
+- type: entity
+  id: SpawnPointLeader
+  parent: SpawnPointJobBase
+  name: Лидер Повстанцев
+  components:
+  - type: SpawnPoint
+    job_id: JobLeader
+  - type: Sprite
+    layers:
+      - state: green
+      - state: captain
+
+- type: entity
+  id: SpawnPointAgent
+  parent: SpawnPointJobBase
+  name: Агент Повстанцев
+  components:
+  - type: SpawnPoint
+    job_id: JobAgent
+  - type: Sprite
+    layers:
+      - state: green
+      - state: captain
+    
+- type: entity
+  id: SpawnPointCommander
+  parent: SpawnPointJobBase
+  name: Командир Повстанцев
+  components:
+  - type: SpawnPoint
+    job_id: JobCommander
+  - type: Sprite
+    layers:
+      - state: green
+      - state: captain
+
+- type: entity
+  id: SpawnPointInfantrym
+  parent: SpawnPointJobBase
+  name: Пехотинец Повстанцев
+  components:
+  - type: SpawnPoint
+    job_id: JobInfantrym
+  - type: Sprite
+    layers:
+      - state: green
+      - state: captain
+
+- type: entity
+  id: SpawnPointSniperResistance
+  parent: SpawnPointJobBase
+  name: Снайпер Повстанцев
+  components:
+  - type: SpawnPoint
+    job_id: JobSniperResistance
+  - type: Sprite
+    layers:
+      - state: green
+      - state: captain
+
+- type: entity
+  id: SpawnPointMedicResistance
+  parent: SpawnPointJobBase
+  name: Медик Повстанцев
+  components:
+  - type: SpawnPoint
+    job_id: JobMedicResistance
+  - type: Sprite
+    layers:
+      - state: green
+      - state: captain
+
+- type: entity
+  id: SpawnPointTechnician
+  parent: SpawnPointJobBase
+  name: Техник Повстанцев
+  components:
+  - type: SpawnPoint
+    job_id: JobTechnician
+  - type: Sprite
+    layers:
+      - state: green
+      - state: captain
+
+- type: entity
+  id: SpawnPointMilitiaman
+  parent: SpawnPointJobBase
+  name: Ополченец Повстанцев
+  components:
+  - type: SpawnPoint
+    job_id: JobMilitiaman
+  - type: Sprite
+    layers:
+      - state: green
+      - state: captain

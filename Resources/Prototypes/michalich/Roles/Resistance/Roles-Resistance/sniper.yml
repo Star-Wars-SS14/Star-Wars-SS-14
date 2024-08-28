@@ -1,0 +1,30 @@
+- type: job
+  id: SniperResistance
+  name: Снайпер Повстанцев
+  description: Ассасины, работающие в уединении и устраняющие врагов с большой дистанции. Умеют маскироваться и использовать окружающую среду для своей выгоды.
+  playTimeTracker: JobSniperResistance
+  requirements:
+  - !type:DepartmentTimeRequirement
+      department: AllResistance
+      time: 30000 # 500 минут
+  startingGear: SniperResistanceGear
+  icon: "JobIconSecurityOfficer"
+  supervisors: job-supervisors-hos
+  canBeAntag: false
+  access:
+  - Security
+  - Brig
+  - Maintenance
+  - Service
+  - External
+  - Cryogenics
+- type: startingGear
+  id: SniperResistanceGear
+  equipment:
+    eyes: ClothingEyesGlassesSecurity
+    ears: ClothingHeadsetSecurity
+    pocket1: WeaponPistolMk58
+  storage:
+    back:
+    - Flash
+    - MagazinePistol

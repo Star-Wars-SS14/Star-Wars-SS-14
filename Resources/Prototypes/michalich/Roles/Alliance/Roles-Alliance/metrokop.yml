@@ -1,0 +1,35 @@
+- type: job
+  id: MetroKop
+  name: Метрокоп Альянса
+  description: Городские охранники, защищающие порядок в метрополии. Они строго следят за соблюдением верховенства закона и контролируют граждан.
+  playTimeTracker: JobMetroKop
+  requirements:
+  - !type:DepartmentTimeRequirement
+      department: AllAlliance
+      time: 1 # Нада эрпэ вступлэныэ
+  whitelisted: true
+  startingGear: MetroKopGear
+  icon: "JobIconSecurityOfficer"
+  supervisors: job-supervisors-hos
+  canBeAntag: false
+  access:
+  - Security
+  - Brig
+  - Maintenance
+  - Service
+  - External
+  - Cryogenics
+  special:
+  - !type:AddImplantSpecial
+    implants: [ MindShieldImplant ]
+
+- type: startingGear
+  id: MetroKopGear
+  equipment:
+    eyes: ClothingEyesGlassesSecurity
+    ears: ClothingHeadsetSecurity
+    pocket1: WeaponPistolMk58
+  storage:
+    back:
+    - Flash
+    - MagazinePistol

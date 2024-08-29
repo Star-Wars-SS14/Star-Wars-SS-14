@@ -249,20 +249,22 @@
 - type: startingGear
   id: EmpireIntelligenceCaretakerGear
   equipment:
-    outerClothing: SW_ImperialSuit
-    jumpsuit: SW_ClothingUniformJumpsuitFleece
-    head: SW_ClothingHeadImperialHelmet
+    outerClothing: SW_ImperialIntelligenceSuit
+    jumpsuit: SW_ClothingUniformJumpsuitImperialIntelligence
+    head: SW_ClothingHeadImperialIntelligenceHelmet
     id: SW_IDCardEmpireIntelligenceCaretaker
     shoes: ClothingShoesBootsCombatFilled
+    gloves: ClothingHandsGlovesCombat
 
 - type: startingGear
   id: EmpireIntelligenceAgentGear
   equipment:
-    outerClothing: SW_ImperialSuit
-    jumpsuit: SW_ClothingUniformJumpsuitFleece
-    head: SW_ClothingHeadImperialHelmet
+    outerClothing: SW_ImperialIntelligenceSuit
+    jumpsuit: SW_ClothingUniformJumpsuitImperialIntelligence
+    head: SW_ClothingHeadImperialIntelligenceHelmet
     id: SW_IDCardEmpireIntelligenceAgent
     shoes: ClothingShoesBootsCombatFilled
+    gloves: ClothingHandsGlovesCombat
 
 ###Commander elite Republic
 - type: startingGear

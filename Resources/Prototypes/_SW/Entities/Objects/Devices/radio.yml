@@ -60,7 +60,7 @@
   name: chat-radio-black-sun
   keycode: "д"
   frequency: 9228
-  color: "#6e000c"
+  color: "#a93226"
   longRange: true
 
 - type: radioChannel

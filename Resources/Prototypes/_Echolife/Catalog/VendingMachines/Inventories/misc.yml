@@ -30,3 +30,8 @@
     EchoClothingOuterArmorCombineSniper: 4
     EchoClothingOuterArmorCombineSpecops: 4
     EchoClothingOuterArmorCombineStormtrooper: 4
+
+- type: vendingMachineInventory
+  id: Placeholder
+  startingInventory:
+    EchoClothingHeadHatGray: 1

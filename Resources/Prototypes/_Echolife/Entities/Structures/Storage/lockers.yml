@@ -1,0 +1,13 @@
+- type: entity
+  id: LockerCombineSecure
+  parent: LockerBaseSecure
+  name: шкаф альянса
+  description: Название было непонятным?
+  components:
+  - type: Appearance
+  - type: EntityStorageVisuals
+    stateBaseClosed: combine_secure
+    stateDoorOpen: combine_secure_icon
+    stateDoorClosed: combine_secure_door
+  - type: AccessReader
+    access: [["Captain"]]

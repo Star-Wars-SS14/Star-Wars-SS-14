@@ -427,13 +427,7 @@
   components:
   - type: Loadout
     prototypes: [JediGear]
-  - type: Dash
-    Dash: true
-    DashSound: /Audio/_SW/Abilities/dash.ogg
-    DashSpeed: 2
-    DashImpulse: 1
-    DashTime: 0.5
-    DashCooldown: 1
+  - type: LightForce
   - type: NpcFactionMember
     factions:
     - NanoTrasen
@@ -471,17 +465,7 @@
   components:
   - type: Loadout
     prototypes: [SithGear]
-  - type: Dash
-    Dash: true
-    DashSound: /Audio/_SW/Abilities/dash.ogg
-    DashSpeed: 2
-    DashImpulse: 1
-    DashTime: 0.5
-    DashCooldown: 1
-  - type: LightningAbility
-    LightningRange: 3
-    BoltCount: 2
-    ArcDepth: 1
+  - type: DarkForce
   - type: NpcFactionMember
     factions:
     - Syndicate

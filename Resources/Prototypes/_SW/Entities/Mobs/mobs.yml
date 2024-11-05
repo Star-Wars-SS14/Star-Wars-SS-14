@@ -428,6 +428,7 @@
   - type: Loadout
     prototypes: [JediGear]
   - type: LightForce
+  - type: Force
   - type: NpcFactionMember
     factions:
     - NanoTrasen
@@ -466,6 +467,7 @@
   - type: Loadout
     prototypes: [SithGear]
   - type: DarkForce
+  - type: Force
   - type: NpcFactionMember
     factions:
     - Syndicate

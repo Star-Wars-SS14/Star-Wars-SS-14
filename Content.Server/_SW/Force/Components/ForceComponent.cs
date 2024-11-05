@@ -7,7 +7,7 @@ public partial class ForceComponent : Component
 {
     // Dash
     [DataField("DashSound")]
-    public SoundSpecifier DashSound = new SoundPathSpecifier("/_SW/Abilities/dash.ogg");
+    public SoundSpecifier DashSound = new SoundPathSpecifier("/Audio/_SW/Abilities/dash.ogg");
 
     [DataField("DashSpeed")]
     public float DashSpeed = 2f;

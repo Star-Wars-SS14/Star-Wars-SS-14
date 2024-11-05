@@ -1,9 +1,13 @@
-﻿using Content.Server._SW.Force.Components;
+﻿using System.Linq;
+using System.Timers;
+using Content.Server._SW.Force.Components;
 using Content.Server.Lightning;
 using Content.Shared._SW;
+using Content.Shared.Actions;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
+using Timer = Robust.Shared.Timing.Timer;
 
 namespace Content.Server._SW.Force.Systems;
 
@@ -41,6 +45,14 @@ public sealed partial class ForceSystem
         _physics.SetBodyStatus(localPhysics, BodyStatus.InAir);
         _physics.SetLinearVelocity(user, localPhysics.LinearVelocity * comp.DashSpeed, body: localPhysics);
         _physics.ApplyLinearImpulse(user, localPhysics.LinearVelocity * comp.DashImpulse, body: localPhysics);
+
+        Timer.Spawn(1500,
+            () =>
+            {
+                _physics.SetBodyStatus(localPhysics, BodyStatus.OnGround);
+            });
+
+        args.Handled = true;
     }
 
     private void LightingAbility(Entity<DarkForceComponent> ent, ref ForceLightningAbilityEvent args)
@@ -49,5 +61,7 @@ public sealed partial class ForceSystem
         var lightningAbility = ent.Comp;
 
         _lightning.ShootRandomLightnings(user, lightningAbility.LightningRange, lightningAbility.BoltCount, arcDepth: lightningAbility.ArcDepth);
+
+        args.Handled = true;
     }
 }

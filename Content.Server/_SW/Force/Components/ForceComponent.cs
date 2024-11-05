@@ -9,15 +9,10 @@ public partial class ForceComponent : Component
     [DataField("DashSound")]
     public SoundSpecifier DashSound = new SoundPathSpecifier("/Audio/_SW/Abilities/dash.ogg");
 
-    [DataField("DashSpeed")]
-    public float DashSpeed = 2f;
+    [DataField("DashDistance")]
+    public int DashDistance = 3;
 
-    [DataField("DashImpulse")]
-    public float DashImpulse = 1f;
+    public string? DashEffectStart = "DashEffectStart";
 
-    [DataField("DashTime")]
-    public double DashTime = 0.5f;
-
-    [DataField("DashCooldown")]
-    public double DashCooldown = 1f;
+    public string? DashEffectEnd = "DashEffectEnd";
 }

@@ -1,0 +1,39 @@
+- type: entity
+  id: DashEffectStart
+  name: dash start effect
+  components:
+    - type: TimedDespawn
+      lifetime: 0.4
+    - type: EvaporationSparkle
+    - type: Transform
+      noRot: true
+      anchored: true
+    - type: Sprite
+      layers:
+        - sprite: _SW/Effects/dasheffect.rsi
+          state: start
+          shader: unshaded
+      netsync: false
+      drawdepth: Effects
+    - type: PointLight
+      color: "#828274"
+
+- type: entity
+  id: DashEffectEnd
+  name: dash end effect
+  components:
+    - type: TimedDespawn
+      lifetime: 0.4
+    - type: EvaporationSparkle
+    - type: Transform
+      noRot: true
+      anchored: true
+    - type: Sprite
+      layers:
+        - sprite: _SW/Effects/dasheffect.rsi
+          state: end
+          shader: unshaded
+      netsync: false
+      drawdepth: Effects
+    - type: PointLight
+      color: "#828274"

@@ -7,7 +7,7 @@
   - type: InstantAction
     icon: Interface/Actions/dash.png
     event: !type:DashAbilityEvent
-    useDelay: 1
+    useDelay: 8
 
 - type: entity
   id: ActionSithForceLightning
@@ -18,7 +18,7 @@
   - type: InstantAction
     icon: Interface/Actions/lighting.png
     event: !type:ForceLightningAbilityEvent
-    useDelay: 1
+    useDelay: 6
 
 - type: entity
   id: ActionBlockLightSaber

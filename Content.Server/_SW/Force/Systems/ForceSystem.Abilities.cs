@@ -26,14 +26,6 @@ public sealed partial class ForceSystem
         SubscribeLocalEvent<DarkForceComponent, ForceLightningAbilityEvent>(LightingAbility);
     }
 
-    #region DataLightForce
-    private const string DashAbilityId = "ActionJediDash";
-    #endregion
-
-    #region DataDarkForce
-    private const string ForceLightningAbilityId = "ActionSithForceLightning";
-    #endregion
-
     #region Dash
     private void DashAbility(Entity<ForceComponent> ent, ref DashAbilityEvent args)
     {

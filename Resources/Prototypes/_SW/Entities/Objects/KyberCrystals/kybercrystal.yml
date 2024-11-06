@@ -8,6 +8,7 @@
     sprite: _SW/Objects/KyberCrystals/kybercrystal.rsi
     state: whitecr
   - type: KyberCrystal
+    hexcolor: "White"
   - type: Item
     sprite: _SW/Objects/KyberCrystals/kybercrystal.rsi
     size: Tiny
@@ -20,6 +21,8 @@
   id: KyberCrystalBlack
   name: kyber crystal (black)
   components:
+  - type: KyberCrystal
+    hexcolor: "Black"
   - type: Sprite
     state: blackcr
 
@@ -28,6 +31,8 @@
   id: KyberCrystalBlue
   name: kyber crystal (blue)
   components:
+  - type: KyberCrystal
+    hexcolor: "Blue"
   - type: Sprite
     state: bluecr
 
@@ -36,6 +41,8 @@
   id: KyberCrystalWhiteBlue
   name: kyber crystal (white-blue)
   components:
+  - type: KyberCrystal
+    hexcolor: "White-blue"
   - type: Sprite
     state: golubcr
 
@@ -44,6 +51,8 @@
   id: KyberCrystalGreen
   name: kyber crystal (green)
   components:
+  - type: KyberCrystal
+    hexcolor: "Green"
   - type: Sprite
     state: greencr
 
@@ -52,6 +61,8 @@
   id: KyberCrystalIndigo
   name: kyber crystal (indigo)
   components:
+  - type: KyberCrystal
+    hexcolor: "Indigo"
   - type: Sprite
     state: indigocr
 
@@ -60,6 +71,8 @@
   id: KyberCrystalOrange
   name: kyber crystal (orange)
   components:
+  - type: KyberCrystal
+    hexcolor: "Orange"
   - type: Sprite
     state: orangecr
 
@@ -68,6 +81,8 @@
   id: KyberCrystalPink
   name: kyber crystal (pink)
   components:
+  - type: KyberCrystal
+    hexcolor: "Pink"
   - type: Sprite
     state: pinkcr
 
@@ -76,6 +91,8 @@
   id: KyberCrystalPurple
   name: kyber crystal (purple)
   components:
+  - type: KyberCrystal
+    hexcolor: "Purple"
   - type: Sprite
     state: purplecr
 
@@ -84,6 +101,8 @@
   id: KyberCrystalRed
   name: kyber crystal (red)
   components:
+  - type: KyberCrystal
+    hexcolor: "Red"
   - type: Sprite
     state: redcr
 
@@ -92,6 +111,8 @@
   id: KyberCrystalRedOrange
   name: kyber crystal (red-orange)
   components:
+  - type: KyberCrystal
+    hexcolor: "Red-orange"
   - type: Sprite
     state: redorangecr
 
@@ -100,6 +121,8 @@
   id: KyberCrystalYellow
   name: kyber crystal (yellow)
   components:
+  - type: KyberCrystal
+    hexcolor: "Yellow"
   - type: Sprite
     state: yellowcr
 
@@ -108,5 +131,7 @@
   id: KyberCrystalYellowGreen
   name: kyber crystal (yellow-green)
   components:
+  - type: KyberCrystal
+    hexcolor: "Yellow-green"
   - type: Sprite
     state: yellowgreencr

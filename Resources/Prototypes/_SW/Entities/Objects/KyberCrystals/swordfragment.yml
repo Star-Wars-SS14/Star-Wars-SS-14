@@ -11,3 +11,6 @@
   - type: Item
     size: Small
     sprite: Objects/Weapons/Melee/e_sword-inhands.rsi
+  - type: Tag
+    tags:
+    - SaberFragmentTag

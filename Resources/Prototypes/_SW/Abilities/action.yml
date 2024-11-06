@@ -32,6 +32,17 @@
     useDelay: 1
 
 - type: entity
+  id: CallSaberAction
+  name: Призвать световой меч
+  description: Пользуясь силой, призовите световой меч.
+  noSpawn: true
+  components:
+  - type: InstantAction
+    icon: Interface/Actions/subdue.png
+    event: !type:CallSaberAbilityEvent
+    useDelay: 30
+
+- type: entity
   id: ActionBlockLightSaber
   name: lightning
   description: ActionBlockLightSaber. #TODO: add description

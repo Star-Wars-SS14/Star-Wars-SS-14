@@ -2,12 +2,17 @@
 using Content.Server.Hands.Systems;
 using Content.Server.Lightning;
 using Content.Server.Popups;
+using Content.Server.Weapons.Melee.EnergySword;
 using Content.Shared._SW;
 using Content.Shared.Actions;
+using Content.Shared.Coordinates;
 using Content.Shared.Coordinates.Helpers;
+using Content.Shared.Interaction;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Popups;
+using Content.Shared.Tag;
+using Content.Shared.Toggleable;
 using Robust.Server.Containers;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
@@ -25,6 +30,8 @@ public sealed partial class ForceSystem
     [Dependency] private readonly ContainerSystem _containerSystem = default!;
     [Dependency] private readonly HandsSystem _handsSystem = default!;
     [Dependency] private readonly PopupSystem _popupSystem = default!;
+    [Dependency] private readonly TagSystem _tagSystem = default!;
+    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
 
     private void InitializeAbilities()
     {
@@ -34,6 +41,7 @@ public sealed partial class ForceSystem
         SubscribeLocalEvent<KyberCrystalComponent, MapInitEvent>(OnKyberMapInit);
         SubscribeLocalEvent<KyberCrystalComponent, GetItemActionsEvent>(OnGetKyber);
         SubscribeLocalEvent<SubdueAbilityEvent>(OnSubdueAction);
+        SubscribeLocalEvent<KyberCrystalComponent, AfterInteractEvent>(KyberAfterInteract);
     }
 
     #region DataLightForce
@@ -122,6 +130,9 @@ public sealed partial class ForceSystem
 
     private void OnGetKyber(EntityUid uid, KyberCrystalComponent component, GetItemActionsEvent args)
     {
+        if(!HasComp<ForceComponent>(args.User))
+            return;
+
         if(component.Owner != null)
             return;
 
@@ -139,13 +150,60 @@ public sealed partial class ForceSystem
         if (kyberComp.Owner != null)
         {
             _popupSystem.PopupEntity("Камень не может установить связь.. Его сила привязана к другому существу..", user, PopupType.Medium);
+            args.Handled = true;
             return;
         }
 
         kyberComp.Owner = user;
+
         _action.RemoveAction(kyberComp.KyberActionEntity);
 
         _popupSystem.PopupEntity("Камень установил связь..", user, PopupType.Medium);
+        args.Handled = true;
+    }
+
+    private void KyberAfterInteract(EntityUid uid, KyberCrystalComponent component, AfterInteractEvent args)
+    {
+        if (args.Target == null || !args.CanReach || args.Handled)
+            return;
+
+        if (component.Owner == null)
+        {
+            _popupSystem.PopupEntity("Камень не может установить связь с владельцем..", args.User, PopupType.Medium);
+            return;
+        }
+
+        var target = args.Target.Value;
+
+        if(!_tagSystem.HasTag(target, component.SaberFragmentTag))
+            return;
+
+        _popupSystem.PopupEntity("В мгновение, камень летит в фрагмент меча.. Меч исправен..", args.User, PopupType.Medium);
+
+        var saber = Spawn(component.SaberPrototype, target.ToCoordinates());
+
+        if(!TryComp<SaberComponent>(saber, out var saberComponent))
+            return;
+
+        if (!TryComp<EnergySwordComponent>(saber, out var energySwordComponent))
+            return;
+
+        energySwordComponent.ActivatedColor = component.Colors[component.Color];
+
+        if (!TryComp(saber, out AppearanceComponent? appearanceComponent))
+            return;
+
+        _appearance.SetData(saber, ToggleableLightVisuals.Color, energySwordComponent.ActivatedColor, appearanceComponent);
+
+        saberComponent.Owner = component.Owner;
+
+        _handsSystem.TryForcePickupAnyHand(args.User, saber);
+
+        _action.AddAction(args.User, component.CallSaberAction);
+
+        Del(uid);
+        Del(target);
+        args.Handled = true;
     }
     #endregion
 }

@@ -14,3 +14,7 @@ public sealed partial class BlockEvent : InstantActionEvent
 {
 }
 
+public sealed partial class SubdueAbilityEvent : InstantActionEvent
+{
+}
+

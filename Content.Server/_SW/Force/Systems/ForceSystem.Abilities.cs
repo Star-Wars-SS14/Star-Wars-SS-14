@@ -1,9 +1,13 @@
 ﻿using Content.Server._SW.Force.Components;
+using Content.Server.Hands.Systems;
 using Content.Server.Lightning;
+using Content.Server.Popups;
 using Content.Shared._SW;
+using Content.Shared.Actions;
 using Content.Shared.Coordinates.Helpers;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Systems;
+using Content.Shared.Popups;
 using Robust.Server.Containers;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
@@ -19,11 +23,17 @@ public sealed partial class ForceSystem
     [Dependency] private readonly IEntityManager _entManager = default!;
     [Dependency] private readonly PullingSystem _pullingSystem = default!;
     [Dependency] private readonly ContainerSystem _containerSystem = default!;
+    [Dependency] private readonly HandsSystem _handsSystem = default!;
+    [Dependency] private readonly PopupSystem _popupSystem = default!;
 
     private void InitializeAbilities()
     {
         SubscribeLocalEvent<ForceComponent, DashAbilityEvent>(DashAbility);
         SubscribeLocalEvent<DarkForceComponent, ForceLightningAbilityEvent>(LightingAbility);
+        // kyber
+        SubscribeLocalEvent<KyberCrystalComponent, MapInitEvent>(OnKyberMapInit);
+        SubscribeLocalEvent<KyberCrystalComponent, GetItemActionsEvent>(OnGetKyber);
+        SubscribeLocalEvent<SubdueAbilityEvent>(OnSubdueAction);
     }
 
     #region DataLightForce
@@ -91,6 +101,8 @@ public sealed partial class ForceSystem
         _entManager.SpawnEntity(component.DashEffectEnd, oldCoords);
     }
     #endregion
+
+    #region Lighting
     private void LightingAbility(Entity<DarkForceComponent> ent, ref ForceLightningAbilityEvent args)
     {
         var user = args.Performer;
@@ -100,4 +112,40 @@ public sealed partial class ForceSystem
 
         args.Handled = true;
     }
+    #endregion
+
+    #region Kyber
+    private void OnKyberMapInit(EntityUid uid, KyberCrystalComponent component, MapInitEvent args)
+    {
+        _action.AddAction(uid, ref component.KyberActionEntity, component.KyberActionPrototype);
+    }
+
+    private void OnGetKyber(EntityUid uid, KyberCrystalComponent component, GetItemActionsEvent args)
+    {
+        if(component.Owner != null)
+            return;
+
+        args.AddAction(ref component.KyberActionEntity, component.KyberActionPrototype);
+    }
+
+    private void OnSubdueAction(SubdueAbilityEvent args)
+    {
+        var user = args.Performer;
+        var kyber = _handsSystem.GetActiveItem(user);
+
+        if(!TryComp<KyberCrystalComponent>(kyber, out var kyberComp))
+            return;
+
+        if (kyberComp.Owner != null)
+        {
+            _popupSystem.PopupEntity("Камень не может установить связь.. Его сила привязана к другому существу..", user, PopupType.Medium);
+            return;
+        }
+
+        kyberComp.Owner = user;
+        _action.RemoveAction(kyberComp.KyberActionEntity);
+
+        _popupSystem.PopupEntity("Камень установил связь..", user, PopupType.Medium);
+    }
+    #endregion
 }

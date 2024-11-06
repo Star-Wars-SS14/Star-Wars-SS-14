@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "sprites maked by zgalnic",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+        "name": "blackcr"
+    },
+    {
+        "name": "bluecr"
+    },
+    {
+        "name": "bluegreencr"
+    },
+    {
+        "name": "golubcr"
+    },
+    {
+        "name": "greencr"
+    },
+    {
+        "name": "indigocr"
+    },
+    {
+        "name": "orangecr"
+    },
+    {
+        "name": "pinkcr"
+    },
+    {
+        "name": "purplecr"
+    },
+    {
+        "name": "redcr"
+    },
+    {
+        "name": "redorangecr"
+    },
+    {
+        "name": "whitecr"
+    },
+    {
+        "name": "yellowcr"
+    },
+    {
+        "name": "yellowgreencr"
+    }
+  ]
+}

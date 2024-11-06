@@ -1,0 +1,111 @@
+- type: entity
+  parent: BaseItem
+  id: KyberCrystal
+  name: kyber crystal (white)
+  description: Это.. это нечто..
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/KyberCrystals/kybercrystal.rsi
+    state: whitecr
+  - type: Item
+    sprite: _SW/Objects/KyberCrystals/kybercrystal.rsi
+    size: Tiny
+  - type: Tag
+    tags:
+    - KyberCrystalTag
+
+- type: entity
+  parent: KyberCrystal
+  id: KyberCrystalBlack
+  name: kyber crystal (black)
+  components:
+  - type: Sprite
+    state: blackcr
+
+- type: entity
+  parent: KyberCrystal
+  id: KyberCrystalBlue
+  name: kyber crystal (blue)
+  components:
+  - type: Sprite
+    state: bluecr
+
+- type: entity
+  parent: KyberCrystal
+  id: KyberCrystalWhiteBlue
+  name: kyber crystal (white-blue)
+  components:
+  - type: Sprite
+    state: golubcr
+
+- type: entity
+  parent: KyberCrystal
+  id: KyberCrystalGreen
+  name: kyber crystal (green)
+  components:
+  - type: Sprite
+    state: greencr
+
+- type: entity
+  parent: KyberCrystal
+  id: KyberCrystalIndigo
+  name: kyber crystal (indigo)
+  components:
+  - type: Sprite
+    state: indigocr
+
+- type: entity
+  parent: KyberCrystal
+  id: KyberCrystalOrange
+  name: kyber crystal (orange)
+  components:
+  - type: Sprite
+    state: orangecr
+
+- type: entity
+  parent: KyberCrystal
+  id: KyberCrystalPink
+  name: kyber crystal (pink)
+  components:
+  - type: Sprite
+    state: pinkcr
+
+- type: entity
+  parent: KyberCrystal
+  id: KyberCrystalPurple
+  name: kyber crystal (purple)
+  components:
+  - type: Sprite
+    state: purplecr
+
+- type: entity
+  parent: KyberCrystal
+  id: KyberCrystalRed
+  name: kyber crystal (red)
+  components:
+  - type: Sprite
+    state: redcr
+
+- type: entity
+  parent: KyberCrystal
+  id: KyberCrystalRedOrange
+  name: kyber crystal (red-orange)
+  components:
+  - type: Sprite
+    state: redorangecr
+
+- type: entity
+  parent: KyberCrystal
+  id: KyberCrystalYellow
+  name: kyber crystal (yellow)
+  components:
+  - type: Sprite
+    state: yellowcr
+
+- type: entity
+  parent: KyberCrystal
+  id: KyberCrystalYellowGreen
+  name: kyber crystal (yellow-green)
+  components:
+  - type: Sprite
+    state: yellowgreencr

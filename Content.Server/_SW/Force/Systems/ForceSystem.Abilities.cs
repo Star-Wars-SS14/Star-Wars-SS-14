@@ -17,6 +17,7 @@ using Robust.Server.Containers;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
+using static Robust.Shared.Maths.Color;
 
 namespace Content.Server._SW.Force.Systems;
 
@@ -46,6 +47,22 @@ public sealed partial class ForceSystem
 
     #region DataLightForce
     private const string DashAbilityId = "ActionJediDash";
+
+    private Dictionary<string, Color> Colors = new()
+    {
+        {"White", White},
+        {"Black", Black},
+        {"White-blue", LightBlue},
+        {"Green", Green},
+        {"Indigo", Indigo},
+        {"Orange", Orange},
+        {"Pink", Pink},
+        {"Purple", Purple},
+        {"Red", Red},
+        {"Red-orange", OrangeRed},
+        {"Yellow", Yellow},
+        {"Yellow-green", YellowGreen}
+    };
     #endregion
 
     #region DataDarkForce
@@ -188,12 +205,13 @@ public sealed partial class ForceSystem
         if (!TryComp<EnergySwordComponent>(saber, out var energySwordComponent))
             return;
 
-        energySwordComponent.ActivatedColor = component.Colors[component.Color];
-
         if (!TryComp(saber, out AppearanceComponent? appearanceComponent))
             return;
 
-        _appearance.SetData(saber, ToggleableLightVisuals.Color, energySwordComponent.ActivatedColor, appearanceComponent);
+        if (component.HexColor == null)
+            return;
+
+        _appearance.SetData(saber, ToggleableLightVisuals.Color, Colors[component.HexColor], appearanceComponent);
 
         saberComponent.Owner = component.Owner;
 

@@ -1,3 +1,4 @@
+using Content.Server._SW.Force.Components;
 using Content.Server.Administration.Logs;
 using Content.Server.Damage.Components;
 using Content.Server.Weapons.Ranged.Systems;
@@ -32,6 +33,10 @@ namespace Content.Server.Damage.Systems
 
         private void OnDoHit(EntityUid uid, DamageOtherOnHitComponent component, ThrowDoHitEvent args)
         {
+            // SW edit
+            if (TryComp<SaberComponent>(args.Thrown, out var saberComponent) && saberComponent.Owner == args.Target)
+                return;
+
             var dmg = _damageable.TryChangeDamage(args.Target, component.Damage, component.IgnoreResistances, origin: args.Component.Thrower);
 
             // Log damage only for mobs. Useful for when people throw spears at each other, but also avoids log-spam when explosions send glass shards flying.

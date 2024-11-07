@@ -2,7 +2,6 @@
 using Content.Server.Hands.Systems;
 using Content.Server.Lightning;
 using Content.Server.Popups;
-using Content.Server.Weapons.Melee.EnergySword;
 using Content.Shared._SW;
 using Content.Shared.Actions;
 using Content.Shared.Coordinates;
@@ -45,13 +44,11 @@ public sealed partial class ForceSystem
         SubscribeLocalEvent<KyberCrystalComponent, AfterInteractEvent>(KyberAfterInteract);
     }
 
-    #region DataLightForce
-    private const string DashAbilityId = "ActionJediDash";
-
-    private Dictionary<string, Color> Colors = new()
+    private readonly Dictionary<string, Color> _colors = new()
     {
         {"White", White},
         {"Black", Black},
+        {"Blue",  Blue},
         {"White-blue", LightBlue},
         {"Green", Green},
         {"Indigo", Indigo},
@@ -63,6 +60,9 @@ public sealed partial class ForceSystem
         {"Yellow", Yellow},
         {"Yellow-green", YellowGreen}
     };
+
+    #region DataLightForce
+    private const string DashAbilityId = "ActionJediDash";
     #endregion
 
     #region DataDarkForce
@@ -202,22 +202,19 @@ public sealed partial class ForceSystem
         if(!TryComp<SaberComponent>(saber, out var saberComponent))
             return;
 
-        if (!TryComp<EnergySwordComponent>(saber, out var energySwordComponent))
-            return;
-
         if (!TryComp(saber, out AppearanceComponent? appearanceComponent))
             return;
 
         if (component.HexColor == null)
             return;
 
-        _appearance.SetData(saber, ToggleableLightVisuals.Color, Colors[component.HexColor], appearanceComponent);
+        _appearance.SetData(saber, ToggleableLightVisuals.Color, _colors[component.HexColor], appearanceComponent);
 
         saberComponent.Owner = component.Owner;
 
         _handsSystem.TryForcePickupAnyHand(args.User, saber);
 
-        _action.AddAction(args.User, component.CallSaberAction);
+        saberComponent.CallSaberActionEntity = _action.AddAction(args.User, component.CallSaberAction);
 
         Del(uid);
         Del(target);

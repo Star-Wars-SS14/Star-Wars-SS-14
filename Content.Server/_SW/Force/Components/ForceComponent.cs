@@ -15,7 +15,7 @@ public partial class ForceComponent : Component
     public SoundSpecifier DashSound = new SoundPathSpecifier("/Audio/_SW/Abilities/dash.ogg");
 
     [DataField("DashDistance")]
-    public int DashDistance = 3;
+    public int DashDistance = 2;
 
     public string? DashEffectStart = "DashEffectStart";
 

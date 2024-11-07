@@ -3,10 +3,9 @@
 [RegisterComponent]
 public sealed partial class DarkForceComponent : ForceComponent
 {
-    public List<string> AbilitiesPrototypes =
+    public List<string> AbilitiesDarkPrototypes =
     [
-        "ActionSithForceLightning",
-        "ActionJediDash"
+        "ActionSithForceLightning"
     ];
 
     // Lighting

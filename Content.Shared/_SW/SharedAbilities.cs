@@ -14,3 +14,11 @@ public sealed partial class BlockEvent : InstantActionEvent
 {
 }
 
+public sealed partial class SubdueAbilityEvent : InstantActionEvent
+{
+}
+
+public sealed partial class CallSaberAbilityEvent : InstantActionEvent
+{
+}
+

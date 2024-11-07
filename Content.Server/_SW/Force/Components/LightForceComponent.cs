@@ -6,8 +6,5 @@ namespace Content.Server._SW.Force.Components;
 [RegisterComponent]
 public sealed partial class LightForceComponent : ForceComponent
 {
-    public List<string> AbilitiesPrototypes =
-    [
-        "ActionJediDash",
-    ];
+    public List<string> AbilitiesLightPrototypes = [];
 }

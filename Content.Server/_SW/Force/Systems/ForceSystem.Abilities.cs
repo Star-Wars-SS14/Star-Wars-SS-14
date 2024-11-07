@@ -1,13 +1,22 @@
 ﻿using Content.Server._SW.Force.Components;
+using Content.Server.Hands.Systems;
 using Content.Server.Lightning;
+using Content.Server.Popups;
 using Content.Shared._SW;
+using Content.Shared.Actions;
+using Content.Shared.Coordinates;
 using Content.Shared.Coordinates.Helpers;
+using Content.Shared.Interaction;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Systems;
+using Content.Shared.Popups;
+using Content.Shared.Tag;
+using Content.Shared.Toggleable;
 using Robust.Server.Containers;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
+using static Robust.Shared.Maths.Color;
 
 namespace Content.Server._SW.Force.Systems;
 
@@ -19,12 +28,46 @@ public sealed partial class ForceSystem
     [Dependency] private readonly IEntityManager _entManager = default!;
     [Dependency] private readonly PullingSystem _pullingSystem = default!;
     [Dependency] private readonly ContainerSystem _containerSystem = default!;
+    [Dependency] private readonly HandsSystem _handsSystem = default!;
+    [Dependency] private readonly PopupSystem _popupSystem = default!;
+    [Dependency] private readonly TagSystem _tagSystem = default!;
+    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
 
     private void InitializeAbilities()
     {
         SubscribeLocalEvent<ForceComponent, DashAbilityEvent>(DashAbility);
         SubscribeLocalEvent<DarkForceComponent, ForceLightningAbilityEvent>(LightingAbility);
+        // kyber
+        SubscribeLocalEvent<KyberCrystalComponent, MapInitEvent>(OnKyberMapInit);
+        SubscribeLocalEvent<KyberCrystalComponent, GetItemActionsEvent>(OnGetKyber);
+        SubscribeLocalEvent<SubdueAbilityEvent>(OnSubdueAction);
+        SubscribeLocalEvent<KyberCrystalComponent, AfterInteractEvent>(KyberAfterInteract);
     }
+
+    private readonly Dictionary<string, Color> _colors = new()
+    {
+        {"White", White},
+        {"Black", Black},
+        {"Blue",  Blue},
+        {"White-blue", LightBlue},
+        {"Green", Green},
+        {"Indigo", Indigo},
+        {"Orange", Orange},
+        {"Pink", Pink},
+        {"Purple", Purple},
+        {"Red", Red},
+        {"Red-orange", OrangeRed},
+        {"Yellow", Yellow},
+        {"Yellow-green", YellowGreen}
+    };
+
+    #region DataLightForce
+    private const string DashAbilityId = "ActionJediDash";
+    #endregion
+
+    #region DataDarkForce
+    private const string ForceLightningAbilityId = "ActionSithForceLightning";
+    #endregion
 
     #region Dash
     private void DashAbility(Entity<ForceComponent> ent, ref DashAbilityEvent args)
@@ -83,6 +126,8 @@ public sealed partial class ForceSystem
         _entManager.SpawnEntity(component.DashEffectEnd, oldCoords);
     }
     #endregion
+
+    #region Lighting
     private void LightingAbility(Entity<DarkForceComponent> ent, ref ForceLightningAbilityEvent args)
     {
         var user = args.Performer;
@@ -92,4 +137,88 @@ public sealed partial class ForceSystem
 
         args.Handled = true;
     }
+    #endregion
+
+    #region Kyber
+    private void OnKyberMapInit(EntityUid uid, KyberCrystalComponent component, MapInitEvent args)
+    {
+        _action.AddAction(uid, ref component.KyberActionEntity, component.KyberActionPrototype);
+    }
+
+    private void OnGetKyber(EntityUid uid, KyberCrystalComponent component, GetItemActionsEvent args)
+    {
+        if(!HasComp<ForceComponent>(args.User))
+            return;
+
+        if(component.Owner != null)
+            return;
+
+        args.AddAction(ref component.KyberActionEntity, component.KyberActionPrototype);
+    }
+
+    private void OnSubdueAction(SubdueAbilityEvent args)
+    {
+        var user = args.Performer;
+        var kyber = _handsSystem.GetActiveItem(user);
+
+        if(!TryComp<KyberCrystalComponent>(kyber, out var kyberComp))
+            return;
+
+        if (kyberComp.Owner != null)
+        {
+            _popupSystem.PopupEntity("Камень не может установить связь.. Его сила привязана к другому существу..", user, PopupType.Medium);
+            args.Handled = true;
+            return;
+        }
+
+        kyberComp.Owner = user;
+
+        _action.RemoveAction(kyberComp.KyberActionEntity);
+
+        _popupSystem.PopupEntity("Камень установил связь..", user, PopupType.Medium);
+        args.Handled = true;
+    }
+
+    private void KyberAfterInteract(EntityUid uid, KyberCrystalComponent component, AfterInteractEvent args)
+    {
+        if (args.Target == null || !args.CanReach || args.Handled)
+            return;
+
+        if (component.Owner == null)
+        {
+            _popupSystem.PopupEntity("Камень не может установить связь с владельцем..", args.User, PopupType.Medium);
+            return;
+        }
+
+        var target = args.Target.Value;
+
+        if(!_tagSystem.HasTag(target, component.SaberFragmentTag))
+            return;
+
+        _popupSystem.PopupEntity("В мгновение, камень летит в фрагмент меча.. Меч исправен..", args.User, PopupType.Medium);
+
+        var saber = Spawn(component.SaberPrototype, target.ToCoordinates());
+
+        if(!TryComp<SaberComponent>(saber, out var saberComponent))
+            return;
+
+        if (!TryComp(saber, out AppearanceComponent? appearanceComponent))
+            return;
+
+        if (component.HexColor == null)
+            return;
+
+        _appearance.SetData(saber, ToggleableLightVisuals.Color, _colors[component.HexColor], appearanceComponent);
+
+        saberComponent.Owner = component.Owner;
+
+        _handsSystem.TryForcePickupAnyHand(args.User, saber);
+
+        saberComponent.CallSaberActionEntity = _action.AddAction(args.User, component.CallSaberAction);
+
+        Del(uid);
+        Del(target);
+        args.Handled = true;
+    }
+    #endregion
 }

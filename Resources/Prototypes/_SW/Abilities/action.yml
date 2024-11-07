@@ -21,6 +21,28 @@
     useDelay: 6
 
 - type: entity
+  id: ActionSubdueKyber
+  name: Подчинить кайбер кристалл
+  description: Держа кайбер кристалл в руке, попробуйте его подчинить.
+  noSpawn: true
+  components:
+  - type: InstantAction
+    icon: Interface/Actions/subdue.png
+    event: !type:SubdueAbilityEvent
+    useDelay: 1
+
+- type: entity
+  id: CallSaberAction
+  name: Призвать световой меч
+  description: Пользуясь силой, призовите световой меч.
+  noSpawn: true
+  components:
+  - type: InstantAction
+    icon: Interface/Actions/subdue.png
+    event: !type:CallSaberAbilityEvent
+    useDelay: 30
+
+- type: entity
   id: ActionBlockLightSaber
   name: lightning
   description: ActionBlockLightSaber. #TODO: add description

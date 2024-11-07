@@ -10,8 +10,8 @@ public sealed partial class ForcePulledComponent : Component
     public float ActiveCooldown;
 
     [DataField]
-    public float Cooldown = 0.3F;
+    public float Cooldown = 0.2F;
 
     [DataField]
-    public float ThrowForce = 9.5F;
+    public float ThrowForce = 10F;
 }

@@ -15,9 +15,11 @@
   description: SithForceLightning. #TODO: add description
   noSpawn: true
   components:
-  - type: InstantAction
+  - type: EntityTargetAction
     icon: Interface/Actions/lighting.png
     event: !type:ForceLightningAbilityEvent
+    canTargetSelf: false
+    interactOnMiss: false
     useDelay: 6
 
 - type: entity

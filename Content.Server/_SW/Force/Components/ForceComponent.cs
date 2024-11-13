@@ -10,6 +10,9 @@ public partial class ForceComponent : Component
         "ActionJediDash"
     ];
 
+    [DataField("exp")]
+    public int Experience;
+
     // Dash
     [DataField("DashSound")]
     public SoundSpecifier DashSound = new SoundPathSpecifier("/Audio/_SW/Abilities/dash.ogg");

@@ -6,7 +6,7 @@ public sealed partial class DashAbilityEvent : InstantActionEvent
 {
 }
 
-public sealed partial class ForceLightningAbilityEvent : InstantActionEvent
+public sealed partial class ForceLightningAbilityEvent : EntityTargetActionEvent
 {
 }
 

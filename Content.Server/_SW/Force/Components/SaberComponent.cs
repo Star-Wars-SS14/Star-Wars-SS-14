@@ -9,6 +9,8 @@ public sealed partial class SaberComponent : Component
     [DataField, AutoNetworkedField]
     public EntityUid? CallSaberActionEntity;
 
+    public string CallSaberAction = "CallSaberAction";
+
     [DataField, AutoNetworkedField]
     public TimeSpan Duration = TimeSpan.FromSeconds(1);
 }

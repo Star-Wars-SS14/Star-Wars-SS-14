@@ -1,4 +1,6 @@
-﻿namespace Content.Server._SW.Force.Components;
+﻿using Content.Shared.FixedPoint;
+
+namespace Content.Server._SW.Force.Components;
 
 [RegisterComponent]
 public sealed partial class DarkForceComponent : ForceComponent
@@ -9,12 +11,25 @@ public sealed partial class DarkForceComponent : ForceComponent
     ];
 
     // Lighting
-    [DataField("LightningRange")]
-    public float LightningRange = 3f;
-
     [DataField("BoltCount")]
-    public int BoltCount = 2;
+    public int BoltCount = 3;
 
-    [DataField("ArcDepth")]
-    public int ArcDepth = 1;
+    [DataField("DamageLighting")]
+    public Dictionary<SithMasteryLevel, FixedPoint2> DamagesLighting = new ()
+    {
+        {SithMasteryLevel.SithAkolit, 3},
+        {SithMasteryLevel.SithLord, 4},
+        {SithMasteryLevel.SithDart, 5}
+    };
+
+    // Mastery
+    [DataField]
+    public SithMasteryLevel Mastery = SithMasteryLevel.SithAkolit;
+}
+
+public enum SithMasteryLevel : byte
+{
+    SithAkolit = 0,
+    SithLord = 1,
+    SithDart = 2,
 }

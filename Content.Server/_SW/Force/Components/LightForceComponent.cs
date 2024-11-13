@@ -7,4 +7,14 @@ namespace Content.Server._SW.Force.Components;
 public sealed partial class LightForceComponent : ForceComponent
 {
     public List<string> AbilitiesLightPrototypes = [];
+
+    [DataField]
+    public JediMasteryLevel Mastery = JediMasteryLevel.Padawan;
+}
+
+public enum JediMasteryLevel : byte
+{
+    Padawan = 0,
+    JediMaster = 1,
+    JediGrandMaster = 2,
 }

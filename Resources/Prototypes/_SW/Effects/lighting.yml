@@ -1,0 +1,61 @@
+- type: entity
+  name: lightning
+  id: RedSWLightning
+  components:
+  - type: Sprite
+    sprite: /Textures/Effects/lightning.rsi
+    drawdepth: Effects
+    layers:
+    - state: "lightning_1_red"
+      shader: unshaded
+  - type: Physics
+    canCollide: false
+  - type: Electrified
+    requirePower: false
+  - type: Lightning
+    canArc: false
+  - type: PointLight
+    enabled: true
+    color: "#ff0000"
+    radius: 2.5
+    softness: 1
+    autoRot: true
+    castShadows: false
+  - type: Beam
+    sound: /Audio/Effects/Lightning/swlightningshock.ogg
+  - type: TimedDespawn
+    lifetime: 2.5
+  - type: Tag
+    tags:
+      - HideContextMenu
+
+- type: entity
+  name: lightning
+  id: BlueSWLightning
+  components:
+  - type: Sprite
+    sprite: /Textures/Effects/lightning.rsi
+    drawdepth: Effects
+    layers:
+    - state: "lightning_1"
+      shader: unshaded
+  - type: Physics
+    canCollide: false
+  - type: Electrified
+    requirePower: false
+  - type: Lightning
+    canArc: false
+  - type: PointLight
+    enabled: true
+    color: "#374bff"
+    radius: 2.5
+    softness: 1
+    autoRot: true
+    castShadows: false
+  - type: Beam
+    sound: /Audio/Effects/Lightning/swlightningshock.ogg
+  - type: TimedDespawn
+    lifetime: 2.5
+  - type: Tag
+    tags:
+      - HideContextMenu

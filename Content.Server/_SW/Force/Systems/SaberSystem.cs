@@ -7,6 +7,7 @@ using Content.Server.Popups;
 using Content.Shared._SW;
 using Content.Shared.Actions;
 using Content.Shared.Item;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Throwing;
 using Robust.Server.Containers;
@@ -67,11 +68,17 @@ public sealed class SaberSystem : EntitySystem
     {
         var user = args.User;
 
-        if (component.Owner == user || component.Owner == null)
-            return;
+        if (component.Owner != user && component.Owner != null)
+        {
+            _popupSystem.PopupEntity("Световой меч отвергает вас!", user, PopupType.Medium);
+            args.Cancel();
+        }
 
-        _popupSystem.PopupEntity("Световой меч отвергает вас!", user, PopupType.Medium);
-        args.Cancel();
+        if (component.Owner == null)
+        {
+            // TODO: Акшен приватизации чужого меча
+           // _actionsSystem.AddAction(user, ref component.CallSaberActionEntity, component.CallSaberAction);
+        }
     }
 
     private void OnCallSaber(CallSaberAbilityEvent args)

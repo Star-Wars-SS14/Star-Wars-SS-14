@@ -13,6 +13,12 @@ public partial class ForceComponent : Component
     [DataField("exp")]
     public int Experience;
 
+    [DataField("addexpcritordead")]
+    public int AddExperienceCriticalOrDead = 10;
+
+    [DataField("exptonewlevel")]
+    public int ExperienceToNewLevel = 100;
+
     // Dash
     [DataField("DashSound")]
     public SoundSpecifier DashSound = new SoundPathSpecifier("/Audio/_SW/Abilities/dash.ogg");

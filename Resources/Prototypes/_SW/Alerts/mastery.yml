@@ -1,0 +1,44 @@
+- type: alertCategory
+  id: Mastery
+
+- type: alert
+  id: AlertPadawan
+  icons: [ /Textures/Interface/Alerts/_SW/Mastery/jedi1mastery.png ]
+  category: Mastery
+  name: alerts-padawan
+  description: alerts-padawan-desc
+
+- type: alert
+  id: AlertKnight
+  icons: [ /Textures/Interface/Alerts/_SW/Mastery/jedi2mastery.png ]
+  category: Mastery
+  name: alerts-knight
+  description: alerts-knight-desc
+
+- type: alert
+  id: AlertMaster
+  icons: [ /Textures/Interface/Alerts/_SW/Mastery/jedi3mastery.png ]
+  category: Mastery
+  name: alerts-master
+  description: alerts-master-desc
+
+- type: alert
+  id: AlertAkolit
+  icons: [ /Textures/Interface/Alerts/_SW/Mastery/sith1mastery.png ]
+  category: Mastery
+  name: alerts-akolit
+  description: alerts-akolit-desc
+
+- type: alert
+  id: AlertLord
+  icons: [ /Textures/Interface/Alerts/_SW/Mastery/sith2mastery.png ]
+  category: Mastery
+  name: alerts-lord
+  description: alerts-lord-desc
+
+- type: alert
+  id: AlertDart
+  icons: [ /Textures/Interface/Alerts/_SW/Mastery/sith3mastery.png ]
+  category: Mastery
+  name: alerts-dart
+  description: alerts-dart-desc

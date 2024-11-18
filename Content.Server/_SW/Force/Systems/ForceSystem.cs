@@ -4,6 +4,7 @@ using Content.Server.Hands.Systems;
 using Content.Server.Lightning;
 using Content.Server.Popups;
 using Content.Shared.Actions;
+using Content.Shared.Alert;
 using Content.Shared.Damage;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Pulling.Systems;
@@ -19,7 +20,6 @@ public sealed partial class ForceSystem : EntitySystem
 {
     [Dependency] private readonly SharedActionsSystem _action = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly LightningSystem _lightning = default!;
     [Dependency] private readonly TransformSystem _transform = default!;
     [Dependency] private readonly IEntityManager _entManager = default!;
     [Dependency] private readonly PullingSystem _pullingSystem = default!;
@@ -31,6 +31,7 @@ public sealed partial class ForceSystem : EntitySystem
     [Dependency] private readonly DamageableSystem _damageable = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly BeamSystem _beam = default!;
+    [Dependency] private readonly AlertsSystem _alertsSystem = default!;
 
     public override void Initialize()
     {
@@ -46,6 +47,22 @@ public sealed partial class ForceSystem : EntitySystem
     private void OnInitForce(EntityUid uid, ForceComponent comp, ComponentInit args)
     {
         SetupActions(uid, comp.AbilitiesPrototypes);
+
+        if (TryComp<DarkForceComponent>(uid, out var darkForceComponent))
+        {
+            if(_alertsSystem.IsShowingAlert(uid, darkForceComponent.SithMasteryAlerts[darkForceComponent.Mastery]))
+                return;
+
+            _alertsSystem.ShowAlert(uid, darkForceComponent.SithMasteryAlerts[darkForceComponent.Mastery]);
+        }
+
+        if (TryComp<LightForceComponent>(uid, out var lightForceComponent))
+        {
+            if(_alertsSystem.IsShowingAlert(uid, lightForceComponent.JediMasteryAlerts[lightForceComponent.Mastery]))
+                return;
+
+            _alertsSystem.ShowAlert(uid, lightForceComponent.JediMasteryAlerts[lightForceComponent.Mastery]);
+        }
     }
 
     #region darkForce

@@ -224,15 +224,16 @@ public sealed partial class ForceSystem
 
     private void OnMobStateChange(MobStateChangedEvent args)
     {
-        var user = args.Target;
-        if(!HasComp<ForceComponent>(user))
+        var target = args.Target;
+
+        if(!TryComp<ForceComponent>(target, out var targetForceComponent))
             return;
 
         var query = EntityQueryEnumerator<SaberComponent>();
 
         while (query.MoveNext(out _, out var saberComponent))
         {
-            if (saberComponent.Owner == null || saberComponent.Owner != user)
+            if (saberComponent.Owner == null || saberComponent.Owner != target)
                 continue;
 
             if (args.NewMobState != MobState.Dead)
@@ -244,6 +245,20 @@ public sealed partial class ForceSystem
             _action.RemoveAction(saberComponent.CallSaberActionEntity);
             saberComponent.Owner = null;
         }
+
+        if(args.Origin == null)
+            return;
+
+        var user = args.Origin;
+
+        if(!TryComp<ForceComponent>(user, out var userForceComponent))
+            return;
+
+        if(args is not ({ OldMobState: MobState.Critical, NewMobState: MobState.Dead } or {OldMobState: MobState.Alive, NewMobState: MobState.Critical}))
+            return;
+
+        userForceComponent.Experience += userForceComponent.AddExperienceCriticalOrDead;
+        UpdateMastery(user, userForceComponent);
     }
     #endregion
 }

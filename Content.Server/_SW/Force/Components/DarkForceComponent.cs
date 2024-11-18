@@ -1,4 +1,6 @@
-﻿using Content.Shared.FixedPoint;
+﻿using Content.Shared.Alert;
+using Content.Shared.FixedPoint;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._SW.Force.Components;
 
@@ -7,7 +9,7 @@ public sealed partial class DarkForceComponent : ForceComponent
 {
     public List<string> AbilitiesDarkPrototypes =
     [
-        "ActionSithForceLightning"
+        ""
     ];
 
     // Lighting
@@ -25,6 +27,26 @@ public sealed partial class DarkForceComponent : ForceComponent
     // Mastery
     [DataField]
     public SithMasteryLevel Mastery = SithMasteryLevel.SithAkolit;
+
+    [DataField]
+    public Dictionary<SithMasteryLevel, string> PopupsMessages = new()
+    {
+        {SithMasteryLevel.SithLord, "Вы чувствуете как темная сила поглащает вас.."},
+        {SithMasteryLevel.SithDart, "Ваша кожа содрагает.. темная сила вышла на новый уровень.."}
+    };
+
+    public Dictionary<SithMasteryLevel, string> MasteryAbilities = new ()
+    {
+        {SithMasteryLevel.SithLord, "ActionSithForceLightning"}
+    };
+
+    [DataField]
+    public Dictionary<SithMasteryLevel, ProtoId<AlertPrototype>> SithMasteryAlerts = new ()
+    {
+        { SithMasteryLevel.SithAkolit, "AlertAkolit" },
+        { SithMasteryLevel.SithLord, "AlertLord" },
+        { SithMasteryLevel.SithDart, "AlertDart" }
+    };
 }
 
 public enum SithMasteryLevel : byte

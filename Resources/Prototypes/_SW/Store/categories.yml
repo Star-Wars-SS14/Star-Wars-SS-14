@@ -1,0 +1,9 @@
+- type: storeCategory
+  id: MasteryLevels
+  name: mastery-category-levels
+  priority: 0
+
+- type: storeCategory
+  id: MasteryAbilities
+  name: mastery-category-abilities
+  priority: 1

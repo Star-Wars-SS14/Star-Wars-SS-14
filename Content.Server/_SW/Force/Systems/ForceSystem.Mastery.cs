@@ -1,6 +1,14 @@
 ﻿using System.Linq;
 using Content.Server._SW.Force.Components;
+using Content.Server.Store.Systems;
+using Content.Shared.Alert;
+using Content.Shared.FixedPoint;
 using Content.Shared.Popups;
+using Content.Shared.Store;
+using Content.Shared.Store.Components;
+using JetBrains.Annotations;
+using Robust.Server.GameObjects;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._SW.Force.Systems;
 
@@ -22,7 +30,7 @@ public sealed partial class ForceSystem
                 return;
 
             lightForceComponent.Mastery += 1;
-            InitializePopups(user, lightForceComponent: lightForceComponent);
+
             InitializeMasteryAlerts(user, lightForceComponent: lightForceComponent, oldJediMasteryLevel: (lightForceComponent.Mastery - 1));
             InitializeMasteryActions(user, lightForceComponent: lightForceComponent);
 
@@ -35,28 +43,11 @@ public sealed partial class ForceSystem
                 return;
 
             darkForceComponent.Mastery += 1;
-            InitializePopups(user, darkForceComponent);
+
             InitializeMasteryAlerts(user, darkForceComponent, oldSithMasteryLevel: (darkForceComponent.Mastery - 1));
             InitializeMasteryActions(user, darkForceComponent);
 
             forceComponent.Experience = 0;
-        }
-    }
-
-    private void InitializePopups(EntityUid? user, DarkForceComponent? darkForceComponent = null, LightForceComponent? lightForceComponent = null)
-    {
-        if (darkForceComponent != null)
-        {
-            _popupSystem.PopupEntity(darkForceComponent.PopupsMessages[darkForceComponent.Mastery],
-                (EntityUid) user!,
-                PopupType.LargeCaution);
-        }
-
-        if (lightForceComponent != null)
-        {
-            _popupSystem.PopupEntity(lightForceComponent.PopupsMessages[lightForceComponent.Mastery],
-                (EntityUid) user!,
-                PopupType.LargeCaution);
         }
     }
 
@@ -100,5 +91,29 @@ public sealed partial class ForceSystem
                 _action.AddAction(target, ability.Value);
             }
         }
+    }
+}
+
+[UsedImplicitly]
+[DataDefinition]
+public sealed partial class OpenMasteryShop : IAlertClick
+{
+    public void AlertClicked(EntityUid uid)
+    {
+        var entityManager = IoCManager.Resolve<IEntityManager>();
+
+        if(!entityManager.TryGetComponent<StoreComponent>(uid, out var storeComponent))
+            return;
+
+        if(!entityManager.TryGetComponent<ForceComponent>(uid, out var forceComponent))
+            return;
+
+        Dictionary<ProtoId<CurrencyPrototype>, FixedPoint2> newBalance = new ()
+        {
+            { forceComponent.MasteryCurrencyProto, forceComponent.Experience }
+        };
+
+        storeComponent.Balance = newBalance;
+        entityManager.EntitySysManager.GetEntitySystem<StoreSystem>().ToggleUi(uid, uid, storeComponent);
     }
 }

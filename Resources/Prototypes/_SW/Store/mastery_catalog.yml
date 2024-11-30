@@ -1,0 +1,23 @@
+- type: listing
+  id: MasteryLevel2
+  name: Уровень 2
+  description: Повышает силу способностей.
+  cost:
+    MasteryExperience: 30
+  categories:
+  - MasteryLevels
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+
+- type: listing
+  id: MasteryShopLighting
+  name: Улучшение молний!
+  description: Обучитесь новому исскуству владения молниями ситха!
+  cost:
+    MasteryExperience: 20
+  categories:
+  - MasteryAbilities
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1

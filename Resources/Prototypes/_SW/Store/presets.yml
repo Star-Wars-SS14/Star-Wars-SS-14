@@ -1,0 +1,8 @@
+- type: storePreset
+  id: StorePresetMastery
+  storeName: Mastery Shop
+  categories:
+    - MasteryLevels
+    - MasteryAbilities
+  currencyWhitelist:
+    - MasteryExperience

@@ -1,17 +1,21 @@
-alerts-padawan = Падаван
-alerts-padawan-desc = Падаван, низший ранг джедая. Подчиняйтесь своему мастеру.
+alerts-jedilevel1 = Уровень 1 (Джедай)
+alerts-jedilevel1-desc = Нажмите, чтобы открыть пробудить светлую силу.
 
-alerts-knight = Рыцарь
-alerts-knight-desc = Рыцарь, основное звено Ордена Джедаев. Встаньте на защиту Республики!
+alerts-jedilevel2 = Уровень 2 (Джедай)
+alerts-jedilevel2-desc = Нажмите, чтобы открыть пробудить светлую силу.
 
-alerts-master = Мастер
-alerts-master-desc = Мастер, наивысший ранг в Ордене Джедаев. Поддерживайте спокойствие в Республике, управляйте падаванами.
+alerts-jedilevel3 = Уровень 3 (Джедай)
+alerts-jedilevel3-desc = Нажмите, чтобы открыть пробудить светлую силу.
 
-alerts-akolit = Аколит
-alerts-akolit-desc = Вы - аколит. Подчиняйтесь своему наставнику, чтобы ощутить всю мощь тёмной силы.
+alerts-sithlevel1 = Уровень 1 (Ситх)
+alerts-sithlevel1-desc = Нажмите, чтобы открыть пробудить тёмную силу.
 
-alerts-lord = Лорд
-alerts-lord-desc = Лорд ситхов, весомое звено в рядах Империи. Уничтожьте Орден Джедаев!
+alerts-sithlevel2 = Уровень 2 (Ситх)
+alerts-sithlevel2-desc = Нажмите, чтобы открыть пробудить тёмную силу.
 
-alerts-dart = Дарт
-alerts-dart-desc = Вы.. вы.. вы и есть СИЛА!
+alerts-sithlevel3 = Уровень 3 (Ситх)
+alerts-sithlevel3-desc = Нажмите, чтобы открыть пробудить тёмную силу.
+
+mastery-category-levels = Уровни
+mastery-category-abilities = Способности
+store-currency-display-mastery-experience = Мастерство

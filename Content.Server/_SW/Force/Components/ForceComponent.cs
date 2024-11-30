@@ -1,4 +1,6 @@
-﻿using Robust.Shared.Audio;
+﻿using Content.Shared.Store;
+using Robust.Shared.Audio;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._SW.Force.Components;
 
@@ -13,11 +15,11 @@ public partial class ForceComponent : Component
     [DataField("exp")]
     public int Experience;
 
+    [DataField("currencyproto")]
+    public ProtoId<CurrencyPrototype> MasteryCurrencyProto = "MasteryExperience";
+
     [DataField("addexpcritordead")]
     public int AddExperienceCriticalOrDead = 10;
-
-    [DataField("exptonewlevel")]
-    public int ExperienceToNewLevel = 100;
 
     // Dash
     [DataField("DashSound")]

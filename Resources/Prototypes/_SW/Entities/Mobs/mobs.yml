@@ -1,3 +1,14 @@
+- type: entity
+  id: ForceUser
+  components:
+  - type: Force
+  - type: Store
+    categories:
+    - MasteryLevels
+    - MasteryAbilities
+    currencyWhitelist:
+    - MasteryExperience
+
 ###The old republic
 ##Republic
 - type: entity
@@ -421,14 +432,13 @@
 #NanoTrasen
 - type: entity
   name: Jedi
-  parent: BaseMobHuman
+  parent: [BaseMobHuman, ForceUser]
   id: SW_MobJedi
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [JediGear]
   - type: LightForce
-  - type: Force
   - type: NpcFactionMember
     factions:
     - NanoTrasen
@@ -460,14 +470,17 @@
 
 - type: entity
   name: Sith
-  parent: BaseMobHuman
+  parent: [BaseMobHuman, ForceUser]
   id: SW_MobSith
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [SithGear]
   - type: DarkForce
-  - type: Force
+  - type: UserInterface
+    interfaces:
+      enum.StoreUiKey.Key:
+        type: StoreBoundUserInterface
   - type: NpcFactionMember
     factions:
     - Syndicate

@@ -132,7 +132,7 @@ public sealed partial class ForceSystem
 
         for (var i = 0; i < lightningAbility.BoltCount; i++)
         {
-            _beam.TryCreateBeam(user, args.Target, lightningAbility.Mastery == SithMasteryLevel.SithAkolit ? "BlueSWLightning" : "RedSWLightning");
+            _beam.TryCreateBeam(user, args.Target, lightningAbility.Mastery == SithMasteryLevel.SithMasteryLevel1 ? "BlueSWLightning" : "RedSWLightning");
             _damageable.TryChangeDamage(args.Target, damage);
         }
 

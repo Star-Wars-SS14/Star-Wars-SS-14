@@ -8,9 +8,7 @@ namespace Content.Server._SW.Force.Components;
 public sealed partial class DarkForceComponent : ForceComponent
 {
     public List<string> AbilitiesDarkPrototypes =
-    [
-        ""
-    ];
+    [];
 
     // Lighting
     [DataField("BoltCount")]
@@ -19,39 +17,32 @@ public sealed partial class DarkForceComponent : ForceComponent
     [DataField("DamageLighting")]
     public Dictionary<SithMasteryLevel, FixedPoint2> DamagesLighting = new ()
     {
-        {SithMasteryLevel.SithAkolit, 3},
-        {SithMasteryLevel.SithLord, 4},
-        {SithMasteryLevel.SithDart, 5}
+        {SithMasteryLevel.SithMasteryLevel1, 3},
+        {SithMasteryLevel.SithMasteryLevel2, 4},
+        {SithMasteryLevel.SithMasteryLevel3, 5}
     };
 
     // Mastery
     [DataField]
-    public SithMasteryLevel Mastery = SithMasteryLevel.SithAkolit;
-
-    [DataField]
-    public Dictionary<SithMasteryLevel, string> PopupsMessages = new()
-    {
-        {SithMasteryLevel.SithLord, "Вы чувствуете как темная сила поглащает вас.."},
-        {SithMasteryLevel.SithDart, "Ваша кожа содрагает.. темная сила вышла на новый уровень.."}
-    };
+    public SithMasteryLevel Mastery = SithMasteryLevel.SithMasteryLevel1;
 
     public Dictionary<SithMasteryLevel, string> MasteryAbilities = new ()
     {
-        {SithMasteryLevel.SithLord, "ActionSithForceLightning"}
+        {SithMasteryLevel.SithMasteryLevel2, "ActionSithForceLightning"}
     };
 
     [DataField]
     public Dictionary<SithMasteryLevel, ProtoId<AlertPrototype>> SithMasteryAlerts = new ()
     {
-        { SithMasteryLevel.SithAkolit, "AlertAkolit" },
-        { SithMasteryLevel.SithLord, "AlertLord" },
-        { SithMasteryLevel.SithDart, "AlertDart" }
+        { SithMasteryLevel.SithMasteryLevel1, "AlertSithLevel1" },
+        { SithMasteryLevel.SithMasteryLevel2, "AlertSithLevel2" },
+        { SithMasteryLevel.SithMasteryLevel3, "AlertSithLevel3" }
     };
 }
 
 public enum SithMasteryLevel : byte
 {
-    SithAkolit = 0,
-    SithLord = 1,
-    SithDart = 2,
+    SithMasteryLevel1 = 0,
+    SithMasteryLevel2 = 1,
+    SithMasteryLevel3 = 2,
 }

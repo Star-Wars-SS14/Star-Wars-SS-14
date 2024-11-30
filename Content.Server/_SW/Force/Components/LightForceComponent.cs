@@ -12,29 +12,22 @@ public sealed partial class LightForceComponent : ForceComponent
 
     // Mastery
     [DataField]
-    public JediMasteryLevel Mastery = JediMasteryLevel.Padawan;
-
-    [DataField]
-    public Dictionary<JediMasteryLevel, string> PopupsMessages = new()
-    {
-        {JediMasteryLevel.JediKnight, "Вы чувствуете прилив сил.."},
-        {JediMasteryLevel.JediMaster, "Ваша кожа содрагает.. сила вышла на новый уровень.."}
-    };
+    public JediMasteryLevel Mastery = JediMasteryLevel.JediMasteryLevel1;
 
     public Dictionary<JediMasteryLevel, string> MasteryAbilities = [];
 
     [DataField]
     public Dictionary<JediMasteryLevel, ProtoId<AlertPrototype>> JediMasteryAlerts = new ()
     {
-        { JediMasteryLevel.Padawan, "AlertPadawan" },
-        { JediMasteryLevel.JediKnight, "AlertKnight" },
-        { JediMasteryLevel.JediMaster, "AlertMaster" }
+        { JediMasteryLevel.JediMasteryLevel1, "AlertJediLevel1" },
+        { JediMasteryLevel.JediMasteryLevel2, "AlertJediLevel2" },
+        { JediMasteryLevel.JediMasteryLevel3, "AlertJediLevel3" }
     };
 }
 
 public enum JediMasteryLevel : byte
 {
-    Padawan = 0,
-    JediKnight = 1,
-    JediMaster = 2,
+    JediMasteryLevel1 = 0,
+    JediMasteryLevel2 = 1,
+    JediMasteryLevel3 = 2,
 }

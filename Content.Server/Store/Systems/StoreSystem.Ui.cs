@@ -248,10 +248,7 @@ public sealed partial class StoreSystem
 
         if (listing.ProductEvent != null)
         {
-            if (!listing.RaiseProductEventOnUser)
-                RaiseLocalEvent(listing.ProductEvent);
-            else
-                RaiseLocalEvent(buyer, listing.ProductEvent);
+            RaiseLocalEvent(buyer, listing.ProductEvent, true);
         }
 
         //log dat shit.

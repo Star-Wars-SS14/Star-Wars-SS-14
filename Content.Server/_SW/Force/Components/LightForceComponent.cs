@@ -14,8 +14,6 @@ public sealed partial class LightForceComponent : ForceComponent
     [DataField]
     public JediMasteryLevel Mastery = JediMasteryLevel.JediMasteryLevel1;
 
-    public Dictionary<JediMasteryLevel, string> MasteryAbilities = [];
-
     [DataField]
     public Dictionary<JediMasteryLevel, ProtoId<AlertPrototype>> JediMasteryAlerts = new ()
     {

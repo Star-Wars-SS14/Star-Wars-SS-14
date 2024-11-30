@@ -258,7 +258,6 @@ public sealed partial class ForceSystem
             return;
 
         userForceComponent.Experience += userForceComponent.AddExperienceCriticalOrDead;
-        UpdateMastery(user, userForceComponent);
     }
     #endregion
 }

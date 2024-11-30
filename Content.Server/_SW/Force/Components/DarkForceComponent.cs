@@ -26,11 +26,6 @@ public sealed partial class DarkForceComponent : ForceComponent
     [DataField]
     public SithMasteryLevel Mastery = SithMasteryLevel.SithMasteryLevel1;
 
-    public Dictionary<SithMasteryLevel, string> MasteryAbilities = new ()
-    {
-        {SithMasteryLevel.SithMasteryLevel2, "ActionSithForceLightning"}
-    };
-
     [DataField]
     public Dictionary<SithMasteryLevel, ProtoId<AlertPrototype>> SithMasteryAlerts = new ()
     {

@@ -1,4 +1,5 @@
 ﻿using Content.Shared.Actions;
+using Robust.Shared.Serialization;
 
 namespace Content.Shared._SW;
 
@@ -22,3 +23,11 @@ public sealed partial class CallSaberAbilityEvent : InstantActionEvent
 {
 }
 
+public sealed partial class RemoveWizardChargeEvent : EntityEventArgs
+{
+}
+
+[Serializable, NetSerializable]
+public sealed partial class MasteryUpEvent : EntityEventArgs
+{
+}

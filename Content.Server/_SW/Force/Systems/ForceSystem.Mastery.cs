@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Content.Server._SW.Force.Components;
 using Content.Server.Store.Systems;
+using Content.Shared._SW;
 using Content.Shared.Alert;
 using Content.Shared.FixedPoint;
 using Content.Shared.Popups;
@@ -14,40 +15,32 @@ namespace Content.Server._SW.Force.Systems;
 
 public sealed partial class ForceSystem
 {
-    public void InitializeMastery() { }
-
-    private void UpdateMastery(EntityUid? user, ForceComponent forceComponent)
+    public void InitializeMastery()
     {
-        if(user == null)
+        SubscribeLocalEvent<StoreComponent, MasteryUpEvent>(OnMasteryUpBought);
+    }
+
+    private void OnMasteryUpBought(EntityUid player, StoreComponent storeComponent, MasteryUpEvent args)
+    {
+        if(!TryComp<ForceComponent>(player, out _))
             return;
 
-        if(forceComponent.Experience < forceComponent.ExperienceToNewLevel)
-            return;
-
-        if (TryComp<LightForceComponent>(user, out var lightForceComponent))
+        if (TryComp<DarkForceComponent>(player, out var darkForceComponent))
         {
-            if (lightForceComponent.Mastery == Enum.GetValues(typeof(JediMasteryLevel)).Cast<JediMasteryLevel>().Max())
-                return;
-
-            lightForceComponent.Mastery += 1;
-
-            InitializeMasteryAlerts(user, lightForceComponent: lightForceComponent, oldJediMasteryLevel: (lightForceComponent.Mastery - 1));
-            InitializeMasteryActions(user, lightForceComponent: lightForceComponent);
-
-            forceComponent.Experience = 0;
-        }
-
-        if (TryComp<DarkForceComponent>(user, out var darkForceComponent))
-        {
-            if (darkForceComponent.Mastery == Enum.GetValues(typeof(SithMasteryLevel)).Cast<SithMasteryLevel>().Max())
+            if(darkForceComponent.Mastery == SithMasteryLevel.SithMasteryLevel3)
                 return;
 
             darkForceComponent.Mastery += 1;
+            InitializeMasteryAlerts(player, darkForceComponent: darkForceComponent, oldSithMasteryLevel: (darkForceComponent.Mastery - 1));
+        }
 
-            InitializeMasteryAlerts(user, darkForceComponent, oldSithMasteryLevel: (darkForceComponent.Mastery - 1));
-            InitializeMasteryActions(user, darkForceComponent);
+        if (TryComp<LightForceComponent>(player, out var lightForceComponent))
+        {
+            if(lightForceComponent.Mastery == JediMasteryLevel.JediMasteryLevel3)
+                return;
 
-            forceComponent.Experience = 0;
+            lightForceComponent.Mastery += 1;
+            InitializeMasteryAlerts(player, lightForceComponent: lightForceComponent, oldJediMasteryLevel: (lightForceComponent.Mastery - 1));
         }
     }
 
@@ -67,29 +60,6 @@ public sealed partial class ForceSystem
                 _alertsSystem.ClearAlert((EntityUid) user!, lightForceComponent.JediMasteryAlerts[(JediMasteryLevel) oldJediMasteryLevel]);
 
             _alertsSystem.ShowAlert((EntityUid) user!, lightForceComponent.JediMasteryAlerts[lightForceComponent.Mastery]);
-        }
-    }
-
-    private void InitializeMasteryActions(EntityUid? user,
-        DarkForceComponent? darkForceComponent = null,
-        LightForceComponent? lightForceComponent = null)
-    {
-        var target = (EntityUid) user!;
-
-        if (lightForceComponent != null)
-        {
-            foreach (var ability in lightForceComponent.MasteryAbilities.Where(ability => lightForceComponent.Mastery == ability.Key))
-            {
-                _action.AddAction(target, ability.Value);
-            }
-        }
-
-        if (darkForceComponent != null)
-        {
-            foreach (var ability in darkForceComponent.MasteryAbilities.Where(ability => darkForceComponent.Mastery == ability.Key))
-            {
-                _action.AddAction(target, ability.Value);
-            }
         }
     }
 }

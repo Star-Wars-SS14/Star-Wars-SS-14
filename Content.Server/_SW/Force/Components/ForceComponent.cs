@@ -1,4 +1,5 @@
 ﻿using Content.Shared.Store;
+using Content.Shared.Store.Components;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
 
@@ -31,4 +32,24 @@ public partial class ForceComponent : Component
     public string? DashEffectStart = "DashEffectStart";
 
     public string? DashEffectEnd = "DashEffectEnd";
+}
+
+public sealed partial class MasteryTypeCondition : ListingCondition
+{
+    /// <summary>
+    /// The amount of times this listing can be purchased.
+    /// </summary>
+    [DataField("masteryType", required: true)]
+    public string MasteryType;
+
+    public override bool Condition(ListingConditionArgs args)
+    {
+        if (args.EntityManager.HasComponent<DarkForceComponent>(args.StoreEntity) && MasteryType == "light")
+            return false;
+
+        if (args.EntityManager.HasComponent<LightForceComponent>(args.StoreEntity) && MasteryType == "dark")
+            return false;
+
+        return true;
+    }
 }

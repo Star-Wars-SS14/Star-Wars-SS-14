@@ -18,6 +18,7 @@ public sealed partial class ForceSystem
     public void InitializeMastery()
     {
         SubscribeLocalEvent<StoreComponent, MasteryUpEvent>(OnMasteryUpBought);
+        SubscribeLocalEvent<StoreComponent, MasteryLightingUpgradeEvent>(OnMasteryLightingUpgrade);
     }
 
     private void OnMasteryUpBought(EntityUid player, StoreComponent storeComponent, MasteryUpEvent args)
@@ -42,6 +43,16 @@ public sealed partial class ForceSystem
             lightForceComponent.Mastery += 1;
             InitializeMasteryAlerts(player, lightForceComponent: lightForceComponent, oldJediMasteryLevel: (lightForceComponent.Mastery - 1));
         }
+    }
+
+    private void OnMasteryLightingUpgrade(EntityUid player,
+        StoreComponent storeComponent,
+        MasteryLightingUpgradeEvent args)
+    {
+        if(!TryComp<ForceComponent>(player, out _) || !TryComp<DarkForceComponent>(player, out var darkForceComponent))
+            return;
+
+        darkForceComponent.DamageLighting += darkForceComponent.BonusDamageFromUpgrade;
     }
 
     private void InitializeMasteryAlerts(EntityUid? user, DarkForceComponent? darkForceComponent = null, LightForceComponent? lightForceComponent = null, JediMasteryLevel? oldJediMasteryLevel = null, SithMasteryLevel? oldSithMasteryLevel = null)

@@ -9,7 +9,6 @@
   conditions:
   - !type:ListingLimitedStockCondition
     stock: 2
-  raiseUserEvent: true
   icon: /Textures/Interface/Alerts/_SW/Mastery/icon.png
   productEvent: !type:MasteryUpEvent
 
@@ -29,7 +28,7 @@
   productAction: ActionSithForceLightning
 
 - type: listing
-  id: MasteryShopLighting
+  id: MasteryLightingUpgrade
   name: Улучшения молний!
   description: Обучитесь новому уровню владения молниями ситха!
   cost:
@@ -41,3 +40,5 @@
     stock: 1
   - !type:MasteryTypeCondition
     masteryType: "dark"
+  icon: /Textures/_SW/Store/lightingupgrade.png
+  productEvent: !type:MasteryLightingUpgradeEvent

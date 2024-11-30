@@ -13,6 +13,7 @@ using Content.Shared.Mobs;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Popups;
+using Content.Shared.Store.Components;
 using Content.Shared.Tag;
 using Content.Shared.Toggleable;
 using Robust.Server.Containers;
@@ -128,11 +129,11 @@ public sealed partial class ForceSystem
         var user = args.Performer;
         var lightningAbility = ent.Comp;
 
-        DamageSpecifier damage = new(_prototypeManager.Index<DamageTypePrototype>("Heat"), lightningAbility.DamagesLighting[lightningAbility.Mastery]);
+        DamageSpecifier damage = new(_prototypeManager.Index<DamageTypePrototype>("Heat"), lightningAbility.DamageLighting);
 
         for (var i = 0; i < lightningAbility.BoltCount; i++)
         {
-            _beam.TryCreateBeam(user, args.Target, lightningAbility.Mastery == SithMasteryLevel.SithMasteryLevel1 ? "BlueSWLightning" : "RedSWLightning");
+            _beam.TryCreateBeam(user, args.Target, (lightningAbility.DamageLighting == lightningAbility.BaseLightingDamage) ? "BlueSWLightning" : "RedSWLightning");
             _damageable.TryChangeDamage(args.Target, damage);
         }
 

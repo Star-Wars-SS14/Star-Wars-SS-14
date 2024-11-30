@@ -31,3 +31,8 @@ public sealed partial class RemoveWizardChargeEvent : EntityEventArgs
 public sealed partial class MasteryUpEvent : EntityEventArgs
 {
 }
+
+[Serializable, NetSerializable]
+public sealed partial class MasteryLightingUpgradeEvent : EntityEventArgs
+{
+}

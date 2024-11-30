@@ -10,10 +10,6 @@
       shader: unshaded
   - type: Physics
     canCollide: false
-  - type: Electrified
-    requirePower: false
-  - type: Lightning
-    canArc: false
   - type: PointLight
     enabled: true
     color: "#ff0000"
@@ -41,10 +37,6 @@
       shader: unshaded
   - type: Physics
     canCollide: false
-  - type: Electrified
-    requirePower: false
-  - type: Lightning
-    canArc: false
   - type: PointLight
     enabled: true
     color: "#374bff"

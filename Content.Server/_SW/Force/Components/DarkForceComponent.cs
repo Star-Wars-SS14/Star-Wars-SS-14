@@ -11,16 +11,17 @@ public sealed partial class DarkForceComponent : ForceComponent
     [];
 
     // Lighting
-    [DataField("BoltCount")]
+    [DataField]
     public int BoltCount = 3;
 
-    [DataField("DamageLighting")]
-    public Dictionary<SithMasteryLevel, FixedPoint2> DamagesLighting = new ()
-    {
-        {SithMasteryLevel.SithMasteryLevel1, 3},
-        {SithMasteryLevel.SithMasteryLevel2, 4},
-        {SithMasteryLevel.SithMasteryLevel3, 5}
-    };
+    [DataField]
+    public FixedPoint2 DamageLighting = 4;
+
+    [DataField]
+    public FixedPoint2 BonusDamageFromUpgrade = 2.5;
+
+    [DataField]
+    public FixedPoint2 BaseLightingDamage = 4;
 
     // Mastery
     [DataField]

@@ -17,6 +17,15 @@
       ]
     },
     {
+      "name": "lightning_1_red",
+      "delays": [
+        [
+          0.120000005,
+          0.08
+        ]
+      ]
+    },
+    {
       "name": "lightning_2",
       "delays": [
         [

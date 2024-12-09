@@ -6,33 +6,27 @@ using Content.Shared._SW;
 using Content.Shared.Actions;
 using Content.Shared.Coordinates;
 using Content.Shared.Coordinates.Helpers;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Prototypes;
 using Content.Shared.Interaction;
+using Content.Shared.Mobs;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Popups;
+using Content.Shared.Store.Components;
 using Content.Shared.Tag;
 using Content.Shared.Toggleable;
 using Robust.Server.Containers;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
+using Robust.Shared.Prototypes;
 using static Robust.Shared.Maths.Color;
 
 namespace Content.Server._SW.Force.Systems;
 
 public sealed partial class ForceSystem
 {
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly LightningSystem _lightning = default!;
-    [Dependency] private readonly TransformSystem _transform = default!;
-    [Dependency] private readonly IEntityManager _entManager = default!;
-    [Dependency] private readonly PullingSystem _pullingSystem = default!;
-    [Dependency] private readonly ContainerSystem _containerSystem = default!;
-    [Dependency] private readonly HandsSystem _handsSystem = default!;
-    [Dependency] private readonly PopupSystem _popupSystem = default!;
-    [Dependency] private readonly TagSystem _tagSystem = default!;
-    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-
     private void InitializeAbilities()
     {
         SubscribeLocalEvent<ForceComponent, DashAbilityEvent>(DashAbility);
@@ -42,6 +36,8 @@ public sealed partial class ForceSystem
         SubscribeLocalEvent<KyberCrystalComponent, GetItemActionsEvent>(OnGetKyber);
         SubscribeLocalEvent<SubdueAbilityEvent>(OnSubdueAction);
         SubscribeLocalEvent<KyberCrystalComponent, AfterInteractEvent>(KyberAfterInteract);
+        // saber
+        SubscribeLocalEvent<MobStateChangedEvent>(OnMobStateChange);
     }
 
     private readonly Dictionary<string, Color> _colors = new()
@@ -133,7 +129,13 @@ public sealed partial class ForceSystem
         var user = args.Performer;
         var lightningAbility = ent.Comp;
 
-        _lightning.ShootRandomLightnings(user, lightningAbility.LightningRange, lightningAbility.BoltCount, arcDepth: lightningAbility.ArcDepth);
+        DamageSpecifier damage = new(_prototypeManager.Index<DamageTypePrototype>("Heat"), lightningAbility.DamageLighting);
+
+        for (var i = 0; i < lightningAbility.BoltCount; i++)
+        {
+            _beam.TryCreateBeam(user, args.Target, (lightningAbility.DamageLighting == lightningAbility.BaseLightingDamage) ? "BlueSWLightning" : "RedSWLightning");
+            _damageable.TryChangeDamage(args.Target, damage);
+        }
 
         args.Handled = true;
     }
@@ -219,6 +221,44 @@ public sealed partial class ForceSystem
         Del(uid);
         Del(target);
         args.Handled = true;
+    }
+
+    private void OnMobStateChange(MobStateChangedEvent args)
+    {
+        var target = args.Target;
+
+        if(!TryComp<ForceComponent>(target, out var targetForceComponent))
+            return;
+
+        var query = EntityQueryEnumerator<SaberComponent>();
+
+        while (query.MoveNext(out _, out var saberComponent))
+        {
+            if (saberComponent.Owner == null || saberComponent.Owner != target)
+                continue;
+
+            if (args.NewMobState != MobState.Dead)
+                continue;
+
+            if(saberComponent.CallSaberActionEntity == null)
+                continue;
+
+            _action.RemoveAction(saberComponent.CallSaberActionEntity);
+            saberComponent.Owner = null;
+        }
+
+        if(args.Origin == null)
+            return;
+
+        var user = args.Origin;
+
+        if(!TryComp<ForceComponent>(user, out var userForceComponent))
+            return;
+
+        if(args is not ({ OldMobState: MobState.Critical, NewMobState: MobState.Dead } or {OldMobState: MobState.Alive, NewMobState: MobState.Critical}))
+            return;
+
+        userForceComponent.Experience += userForceComponent.AddExperienceCriticalOrDead;
     }
     #endregion
 }

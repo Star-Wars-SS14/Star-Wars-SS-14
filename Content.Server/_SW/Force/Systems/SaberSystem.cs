@@ -7,6 +7,7 @@ using Content.Server.Popups;
 using Content.Shared._SW;
 using Content.Shared.Actions;
 using Content.Shared.Item;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Throwing;
 using Robust.Server.Containers;
@@ -32,6 +33,8 @@ public sealed class SaberSystem : EntitySystem
         SubscribeLocalEvent<SaberComponent, GettingPickedUpAttemptEvent>(OnSaberEquipped);
         SubscribeLocalEvent<CallSaberAbilityEvent>(OnCallSaber);
         SubscribeLocalEvent<SaberComponent, ComponentRemove>(OnComponentRemove);
+        SubscribeLocalEvent<SaberComponent, SaberPrivateAbilityEvent>(OnSaberPrivate);
+        SubscribeLocalEvent<SaberComponent, GetItemActionsEvent>(OnGetItemActions);
     }
 
     public override void Update(float frameTime)
@@ -61,6 +64,14 @@ public sealed class SaberSystem : EntitySystem
                 RemCompDeferred<ForcePulledComponent>(saber);
             }
         }
+    }
+
+    private void OnGetItemActions(EntityUid saber, SaberComponent component, GetItemActionsEvent args)
+    {
+        if(component.Owner == args.User && component.Owner != null)
+            return;
+
+        args.AddAction(ref component.PrivateSaberActionEntity, component.PrivateSaberAction);
     }
 
     private void OnSaberEquipped(EntityUid uid, SaberComponent component, GettingPickedUpAttemptEvent args)
@@ -106,6 +117,18 @@ public sealed class SaberSystem : EntitySystem
         var forcePulledComponent = AddComp<ForcePulledComponent>(saber);
 
         forcePulledComponent.ForceUser = forceUser;
+    }
+
+    private void OnSaberPrivate(EntityUid saber, SaberComponent component, SaberPrivateAbilityEvent args)
+    {
+        if (component.Owner == args.Performer || component.Owner != null)
+            return;
+
+        component.Owner = args.Performer;
+        _popupSystem.PopupEntity("Вы успешно подчинили меч!", args.Performer, PopupType.Medium);
+
+        _actionsSystem.RemoveAction(component.PrivateSaberActionEntity);
+        args.Handled = true;
     }
 
     private void OnComponentRemove(EntityUid saber, SaberComponent component, ComponentRemove args)

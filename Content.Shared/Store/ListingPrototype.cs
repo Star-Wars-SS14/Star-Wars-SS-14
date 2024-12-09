@@ -94,7 +94,7 @@ public partial class ListingData : IEquatable<ListingData>, ICloneable
     [DataField]
     public object? ProductEvent;
 
-    [DataField]
+    [DataField("raiseUserEvent")]
     public bool RaiseProductEventOnUser;
 
     /// <summary>

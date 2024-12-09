@@ -1,0 +1,4 @@
+- type: currency
+  id: MasteryExperience
+  displayName: store-currency-display-mastery-experience
+  canWithdraw: false

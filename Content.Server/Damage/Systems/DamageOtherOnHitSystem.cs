@@ -34,7 +34,7 @@ namespace Content.Server.Damage.Systems
         private void OnDoHit(EntityUid uid, DamageOtherOnHitComponent component, ThrowDoHitEvent args)
         {
             // SW edit
-            if (TryComp<SaberComponent>(args.Thrown, out var saberComponent) && saberComponent.Owner == args.Target)
+            if (TryComp<SaberComponent>(args.Thrown, out var saberComponent) && saberComponent.Owner == args.Target && HasComp<ForcePulledComponent>(args.Thrown))
                 return;
 
             var dmg = _damageable.TryChangeDamage(args.Target, component.Damage, component.IgnoreResistances, origin: args.Component.Thrower);

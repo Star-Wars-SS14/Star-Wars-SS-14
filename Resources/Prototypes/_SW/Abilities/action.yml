@@ -15,9 +15,11 @@
   description: SithForceLightning. #TODO: add description
   noSpawn: true
   components:
-  - type: InstantAction
+  - type: EntityTargetAction
     icon: Interface/Actions/lighting.png
     event: !type:ForceLightningAbilityEvent
+    canTargetSelf: false
+    interactOnMiss: false
     useDelay: 6
 
 - type: entity
@@ -53,3 +55,13 @@
     event: !type:BlockEvent
     useDelay: 1
 
+- type: entity
+  id: ActionSaberPrivate
+  name: Привязать световой меч
+  description: Держа световой меч в руках, подчините его.
+  noSpawn: true
+  components:
+  - type: InstantAction
+    icon: Interface/Actions/subdue.png
+    event: !type:SaberPrivateAbilityEvent
+    useDelay: 1

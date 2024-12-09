@@ -53,6 +53,7 @@ public sealed partial class ForceSystem
             return;
 
         darkForceComponent.DamageLighting += darkForceComponent.BonusDamageFromUpgrade;
+        darkForceComponent.BoltCount += darkForceComponent.UpgradeBoltCount;
     }
 
     private void InitializeMasteryAlerts(EntityUid? user, DarkForceComponent? darkForceComponent = null, LightForceComponent? lightForceComponent = null, JediMasteryLevel? oldJediMasteryLevel = null, SithMasteryLevel? oldSithMasteryLevel = null)

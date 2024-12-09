@@ -33,6 +33,8 @@ public sealed class SaberSystem : EntitySystem
         SubscribeLocalEvent<SaberComponent, GettingPickedUpAttemptEvent>(OnSaberEquipped);
         SubscribeLocalEvent<CallSaberAbilityEvent>(OnCallSaber);
         SubscribeLocalEvent<SaberComponent, ComponentRemove>(OnComponentRemove);
+        SubscribeLocalEvent<SaberComponent, SaberPrivateAbilityEvent>(OnSaberPrivate);
+        SubscribeLocalEvent<SaberComponent, GetItemActionsEvent>(OnGetItemActions);
     }
 
     public override void Update(float frameTime)
@@ -64,21 +66,23 @@ public sealed class SaberSystem : EntitySystem
         }
     }
 
+    private void OnGetItemActions(EntityUid saber, SaberComponent component, GetItemActionsEvent args)
+    {
+        if(component.Owner == args.User && component.Owner != null)
+            return;
+
+        args.AddAction(ref component.PrivateSaberActionEntity, component.PrivateSaberAction);
+    }
+
     private void OnSaberEquipped(EntityUid uid, SaberComponent component, GettingPickedUpAttemptEvent args)
     {
         var user = args.User;
 
-        if (component.Owner != user && component.Owner != null)
-        {
-            _popupSystem.PopupEntity("Световой меч отвергает вас!", user, PopupType.Medium);
-            args.Cancel();
-        }
+        if (component.Owner == user || component.Owner == null)
+            return;
 
-        if (component.Owner == null)
-        {
-            // TODO: Акшен приватизации чужого меча
-           // _actionsSystem.AddAction(user, ref component.CallSaberActionEntity, component.CallSaberAction);
-        }
+        _popupSystem.PopupEntity("Световой меч отвергает вас!", user, PopupType.Medium);
+        args.Cancel();
     }
 
     private void OnCallSaber(CallSaberAbilityEvent args)
@@ -113,6 +117,18 @@ public sealed class SaberSystem : EntitySystem
         var forcePulledComponent = AddComp<ForcePulledComponent>(saber);
 
         forcePulledComponent.ForceUser = forceUser;
+    }
+
+    private void OnSaberPrivate(EntityUid saber, SaberComponent component, SaberPrivateAbilityEvent args)
+    {
+        if (component.Owner == args.Performer || component.Owner != null)
+            return;
+
+        component.Owner = args.Performer;
+        _popupSystem.PopupEntity("Вы успешно подчинили меч!", args.Performer, PopupType.Medium);
+
+        _actionsSystem.RemoveAction(component.PrivateSaberActionEntity);
+        args.Handled = true;
     }
 
     private void OnComponentRemove(EntityUid saber, SaberComponent component, ComponentRemove args)

@@ -19,6 +19,10 @@ public sealed partial class SubdueAbilityEvent : InstantActionEvent
 {
 }
 
+public sealed partial class SaberPrivateAbilityEvent : InstantActionEvent
+{
+}
+
 public sealed partial class CallSaberAbilityEvent : InstantActionEvent
 {
 }

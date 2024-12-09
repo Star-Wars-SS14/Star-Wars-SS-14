@@ -11,8 +11,12 @@ public sealed partial class DarkForceComponent : ForceComponent
     [];
 
     // Lighting
+
     [DataField]
-    public int BoltCount = 3;
+    public int BoltCount = 2;
+
+    [DataField]
+    public int UpgradeBoltCount = 2;
 
     [DataField]
     public FixedPoint2 DamageLighting = 4;

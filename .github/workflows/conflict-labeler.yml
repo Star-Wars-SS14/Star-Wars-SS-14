@@ -1,6 +1,4 @@
 name: Check Merge Conflicts
-on:
-  workflow_dispatch:
 
 on:
   pull_request_target:

@@ -1,9 +1,5 @@
 ﻿name: "Labels: Untriaged"
 
-on:
-  issues:
-    types: [opened]
-
 jobs:
   add_label:
     runs-on: ubuntu-latest

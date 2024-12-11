@@ -1,9 +1,5 @@
 ﻿name: "Labels: Approve"
 
-on:
-  pull_request_review:
-    types: [submitted]
-
 jobs:
   remove_label:
     permissions:

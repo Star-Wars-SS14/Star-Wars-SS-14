@@ -1,4 +1,6 @@
 name: RGA schema validator
+on:
+  workflow_dispatch:
 
 jobs:
   yaml-schema-validation:

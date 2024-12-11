@@ -1,4 +1,6 @@
 name: RSI Validator
+on:
+  workflow_dispatch:
 
 jobs:
   validate_rsis:

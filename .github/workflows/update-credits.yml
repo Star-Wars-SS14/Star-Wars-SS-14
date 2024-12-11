@@ -1,4 +1,6 @@
 name: Update Contrib and Patreons in credits
+on:
+  workflow_dispatch:
 
 jobs:
   get_credits:

@@ -1,4 +1,6 @@
 ﻿name: "Labels: Untriaged"
+on:
+  workflow_dispatch:
 
 jobs:
   add_label:

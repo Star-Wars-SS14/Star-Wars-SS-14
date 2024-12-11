@@ -1,4 +1,6 @@
 name: YAML Linter
+on:
+  workflow_dispatch:
 
 jobs:
   build:

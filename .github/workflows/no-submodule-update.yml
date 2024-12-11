@@ -1,4 +1,6 @@
 name: No submodule update checker
+on:
+  workflow_dispatch:
 
 on:
   pull_request:

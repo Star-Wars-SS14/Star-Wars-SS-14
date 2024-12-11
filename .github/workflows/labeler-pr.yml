@@ -1,4 +1,6 @@
 ﻿name: "Labels: PR"
+on:
+  workflow_dispatch:
 
 jobs:
   labeler:

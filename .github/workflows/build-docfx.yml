@@ -1,4 +1,6 @@
 name: Build & Publish Docfx
+on:
+  workflow_dispatch:
 
 jobs:
   docfx:

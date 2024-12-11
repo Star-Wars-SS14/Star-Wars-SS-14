@@ -1,4 +1,6 @@
 name: Publish Public
+on:
+  workflow_dispatch:
 
 #concurrency:
 #  group: publish

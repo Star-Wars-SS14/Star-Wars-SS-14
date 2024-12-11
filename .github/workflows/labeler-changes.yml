@@ -1,4 +1,6 @@
 ﻿name: "Labels: Changes"
+on:
+  workflow_dispatch:
 
 jobs:
   update_label:

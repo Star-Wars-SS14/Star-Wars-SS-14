@@ -1,4 +1,6 @@
 ﻿name: Test Packaging
+on:
+  workflow_dispatch:
 
 jobs:
   build:

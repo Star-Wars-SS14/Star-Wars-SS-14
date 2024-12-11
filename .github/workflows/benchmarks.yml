@@ -1,4 +1,6 @@
 ﻿name: Benchmarks
+on:
+  workflow_dispatch:
 
 concurrency: benchmarks
 

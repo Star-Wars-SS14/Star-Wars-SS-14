@@ -1,4 +1,6 @@
 name: Diff RSIs
+on:
+  workflow_dispatch:
 
 jobs:
   diff:

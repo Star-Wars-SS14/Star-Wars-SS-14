@@ -1,4 +1,6 @@
 name: Update Wiki
+on:
+  workflow_dispatch:
 
 jobs:
   update-wiki:

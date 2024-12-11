@@ -1,4 +1,6 @@
 ﻿name: "Labels: Approve"
+on:
+  workflow_dispatch:
 
 jobs:
   remove_label:

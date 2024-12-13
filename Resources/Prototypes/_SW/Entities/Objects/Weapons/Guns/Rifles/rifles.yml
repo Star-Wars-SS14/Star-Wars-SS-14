@@ -58,7 +58,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/p301.rsi
   - type: Gun
-    fireRate: 3
+    fireRate: 2.5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -105,7 +105,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/h206.rsi
   - type: Gun
-    fireRate: 5
+    fireRate: 3.5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -152,7 +152,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/j111.rsi
   - type: Gun
-    fireRate: 4.5
+    fireRate: 5.5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -199,7 +199,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/z1.rsi
   - type: Gun
-    fireRate: 0.75
+    fireRate: 1.5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -297,7 +297,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Snipers/f11d.rsi
   - type: Gun
-    fireRate: 2
+    fireRate: 0.6
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider
@@ -345,7 +345,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Snipers/k406.rsi
   - type: Gun
-    fireRate: 0.5
+    fireRate: 1
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ChamberMagazineAmmoProvider

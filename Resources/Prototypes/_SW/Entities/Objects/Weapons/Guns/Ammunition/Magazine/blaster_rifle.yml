@@ -8,7 +8,7 @@
       - MagazineBlast
     - type: BallisticAmmoProvider
       proto: RedCartridgeBlast
-      capacity: 50
+      capacity: 25
     - type: Sprite
       sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
     - type: Item
@@ -28,7 +28,7 @@
       - MagazineBlast
     - type: BallisticAmmoProvider
       proto: Z1RedCartridgeBlast
-      capacity: 35
+      capacity: 20
     - type: Sprite
       sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
     - type: Item
@@ -68,7 +68,7 @@
       - MagazineBlast
     - type: BallisticAmmoProvider
       proto: H206GreenCartridgeBlast
-      capacity: 70
+      capacity: 35
     - type: Sprite
       sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
     - type: Item
@@ -88,7 +88,7 @@
       - MagazineBlast
     - type: BallisticAmmoProvider
       proto: BlueCartridgeBlast
-      capacity: 50
+      capacity: 30
     - type: Sprite
       sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
     - type: Item
@@ -128,7 +128,7 @@
       - MagazineBlast
     - type: BallisticAmmoProvider
       proto: SniperRifleBlueCartridgeBlast
-      capacity: 60
+      capacity: 8
     - type: Sprite
       sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
     - type: Item
@@ -148,7 +148,7 @@
       - MagazineBlast
     - type: BallisticAmmoProvider
       proto: YellowCartridgeBlast
-      capacity: 50
+      capacity: 30
     - type: Sprite
       sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
     - type: Item
@@ -188,7 +188,7 @@
       - MagazineBlast
     - type: BallisticAmmoProvider
       proto: SniperRifleYellowCartridgeBlast
-      capacity: 40
+      capacity: 12
     - type: Sprite
       sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
     - type: Item

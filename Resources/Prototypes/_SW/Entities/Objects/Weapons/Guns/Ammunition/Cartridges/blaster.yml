@@ -30,7 +30,7 @@
     layers:
     - state: base
       map: [ "enum.AmmoVisualLayers.Base" ]
-      
+
 - type: entity
   id: Z1RedCartridgeBlast
   name: cartridge (Blast)
@@ -79,7 +79,7 @@
     layers:
     - state: base
       map: [ "enum.AmmoVisualLayers.Base" ]
-      
+
 - type: entity
   id: CannonBlueCartridgeBlast
   name: blue cartridge (Blast)
@@ -91,7 +91,7 @@
     layers:
     - state: base
       map: [ "enum.AmmoVisualLayers.Base" ]
-      
+
 - type: entity
   id: SniperRifleBlueCartridgeBlast
   name: blue cartridge (Blast)
@@ -103,7 +103,7 @@
     layers:
     - state: base
       map: [ "enum.AmmoVisualLayers.Base" ]
-      
+
 - type: entity
   id: YellowCartridgeBlast
   name: yellow cartridge (Blast)
@@ -127,7 +127,7 @@
     layers:
     - state: base
       map: [ "enum.AmmoVisualLayers.Base" ]
-      
+
 - type: entity
   id: SniperRifleYellowCartridgeBlast
   name: yellow cartridge (Blast)

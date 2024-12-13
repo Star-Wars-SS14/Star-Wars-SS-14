@@ -7,7 +7,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 12
+        Heat: 19
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
     layers:
@@ -23,7 +23,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 15
+        Heat: 35
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
     layers:
@@ -55,7 +55,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 2.5
+        Heat: 16
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/green_ammo_casing.rsi
     layers:
@@ -71,7 +71,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 3
+        Heat: 14
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
     layers:
@@ -103,7 +103,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 7
+        Heat: 50
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
     layers:
@@ -151,7 +151,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 14
+        Heat: 40
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
     layers:

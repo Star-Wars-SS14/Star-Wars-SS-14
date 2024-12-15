@@ -1,26 +1,17 @@
-﻿using Content.Server._SW.Force.Components;
-using Content.Server.Hands.Systems;
-using Content.Server.Lightning;
-using Content.Server.Popups;
+﻿using System.Numerics;
+using Content.Server._SW.Force.Components;
 using Content.Shared._SW;
 using Content.Shared.Actions;
 using Content.Shared.Coordinates;
-using Content.Shared.Coordinates.Helpers;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.Interaction;
 using Content.Shared.Mobs;
 using Content.Shared.Movement.Pulling.Components;
-using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Popups;
-using Content.Shared.Store.Components;
-using Content.Shared.Tag;
 using Content.Shared.Toggleable;
-using Robust.Server.Containers;
-using Robust.Server.GameObjects;
-using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
-using Robust.Shared.Prototypes;
+using Robust.Shared.Physics.Components;
 using static Robust.Shared.Maths.Color;
 
 namespace Content.Server._SW.Force.Systems;
@@ -57,21 +48,19 @@ public sealed partial class ForceSystem
         {"Yellow-green", YellowGreen}
     };
 
-    #region DataLightForce
-    private const string DashAbilityId = "ActionJediDash";
-    #endregion
-
-    #region DataDarkForce
-    private const string ForceLightningAbilityId = "ActionSithForceLightning";
-    #endregion
-
     #region Dash
     private void DashAbility(Entity<ForceComponent> ent, ref DashAbilityEvent args)
     {
         var (_, component) = ent;
         var user = args.Performer;
 
+        if(!TryComp<PhysicsComponent>(user, out var physicsComponent))
+            return;
+
         if (!TryComp<TransformComponent>(user, out var xform))
+            return;
+
+        if(physicsComponent.BodyStatus != BodyStatus.OnGround)
             return;
 
         if (TryComp<PullableComponent>(user, out var pullable) && pullable.BeingPulled)
@@ -94,31 +83,29 @@ public sealed partial class ForceSystem
 
         var oldCoords = xform.Coordinates;
 
-        var offset = xform.LocalRotation.ToWorldVec().Normalized();
-        var direction = xform.LocalRotation.GetDir().ToVec();
-        var newOffset = offset + direction * component.DashDistance;
-
-        var coords = xform.Coordinates.Offset(newOffset).SnapToGrid(EntityManager);
-
-        Dash(user, component, coords, oldCoords);
+        Dash(user, component, physicsComponent, oldCoords);
 
         args.Handled = true;
     }
 
     private void Dash(EntityUid uid,
         ForceComponent component,
-        EntityCoordinates coords,
+        PhysicsComponent physicsComponent,
         EntityCoordinates oldCoords)
     {
-        PlaySoundAndApplyEffects(component, coords, oldCoords);
-        _transform.SetCoordinates(uid, coords);
+        PlaySoundAndApplyEffects(component, oldCoords);
+        _physicsSystem.SetBodyStatus(uid, physicsComponent, BodyStatus.InAir);
+
+        _physicsSystem.SetLinearVelocity(uid, physicsComponent.LinearVelocity * component.DashSpeed, body: physicsComponent);
+        _physicsSystem.ApplyLinearImpulse(uid, physicsComponent.LinearVelocity * component.DashDistance, body: physicsComponent);
+
+        var inDashingComponent = EnsureComp<InDashingComponent>(uid);
+        inDashingComponent.ActiveCooldown = inDashingComponent.Cooldown;
     }
 
-    private void PlaySoundAndApplyEffects(ForceComponent component, EntityCoordinates coords, EntityCoordinates oldCoords)
+    private void PlaySoundAndApplyEffects(ForceComponent component, EntityCoordinates oldCoords)
     {
-        _audio.PlayPvs(component.DashSound, coords);
-
-        _entManager.SpawnEntity(component.DashEffectStart, coords);
+        _audio.PlayPvs(component.DashSound, oldCoords);
         _entManager.SpawnEntity(component.DashEffectEnd, oldCoords);
     }
     #endregion
@@ -227,7 +214,7 @@ public sealed partial class ForceSystem
     {
         var target = args.Target;
 
-        if(!TryComp<ForceComponent>(target, out var targetForceComponent))
+        if(!TryComp<ForceComponent>(target, out _))
             return;
 
         var query = EntityQueryEnumerator<SaberComponent>();

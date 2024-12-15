@@ -28,6 +28,16 @@
     tags:
     - HidesHair
     - HidesNose
+  - type: RadioSpeaker
+    channels:
+    - Empire
+    enabled: true
+    toggleOnInteract: false
+  - type: RadioMicrophone
+    broadcastChannel: Empire
+    listenRange: 6
+    enabled: true
+    toggleOnInteract: false
 
 - type: entity
   parent: ClothingHeadBase

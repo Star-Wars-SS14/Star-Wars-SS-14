@@ -13,6 +13,7 @@ using Content.Shared.Tag;
 using Robust.Server.Containers;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Physics.Components;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server._SW.Force.Systems;
@@ -33,6 +34,7 @@ public sealed partial class ForceSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly BeamSystem _beam = default!;
     [Dependency] private readonly AlertsSystem _alertsSystem = default!;
+    [Dependency] private readonly PhysicsSystem _physicsSystem = default!;
 
     public override void Initialize()
     {
@@ -43,6 +45,29 @@ public sealed partial class ForceSystem : EntitySystem
 
         InitializeAbilities();
         InitializeMastery();
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        var query = EntityQueryEnumerator<InDashingComponent>();
+        while (query.MoveNext(out var target, out var comp))
+        {
+            if(!TryComp<TransformComponent>(target, out var transformComponent))
+                break;
+
+            if(!TryComp<PhysicsComponent>(target, out var physicsComponent))
+                break;
+
+            comp.ActiveCooldown -= frameTime;
+
+            if (comp.ActiveCooldown <= 0F)
+            {
+                _physicsSystem.SetBodyStatus(target, physicsComponent, BodyStatus.OnGround);
+                RemComp<InDashingComponent>(target);
+            }
+        }
     }
 
     private void OnInitForce(EntityUid uid, ForceComponent comp, ComponentInit args)

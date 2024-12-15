@@ -1,4 +1,5 @@
-﻿using Content.Shared.Store;
+﻿using System.Numerics;
+using Content.Shared.Store;
 using Content.Shared.Store.Components;
 using Robust.Shared.Audio;
 using Robust.Shared.Prototypes;
@@ -16,20 +17,24 @@ public partial class ForceComponent : Component
     [DataField("exp")]
     public int Experience;
 
-    [DataField("currencyproto")]
+    [DataField("currencyProto")]
     public ProtoId<CurrencyPrototype> MasteryCurrencyProto = "MasteryExperience";
 
-    [DataField("addexpcritordead")]
+    [DataField("addExpCritOrDead")]
     public int AddExperienceCriticalOrDead = 10;
 
     // Dash
-    [DataField("DashSound")]
+    [DataField]
     public SoundSpecifier DashSound = new SoundPathSpecifier("/Audio/_SW/Abilities/dash.ogg");
 
-    [DataField("DashDistance")]
-    public int DashDistance = 2;
+    [DataField]
+    public float DashDistance = 3F;
 
-    public string? DashEffectStart = "DashEffectStart";
+    [DataField]
+    public float DashSpeed = 2.5F;
+
+    [DataField]
+    public float DashSpeedOnZero = 6F;
 
     public string? DashEffectEnd = "DashEffectEnd";
 }

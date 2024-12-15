@@ -439,6 +439,10 @@
   - type: Loadout
     prototypes: [JediGear]
   - type: LightForce
+  - type: UserInterface
+    interfaces:
+      enum.StoreUiKey.Key:
+        type: StoreBoundUserInterface
   - type: NpcFactionMember
     factions:
     - NanoTrasen

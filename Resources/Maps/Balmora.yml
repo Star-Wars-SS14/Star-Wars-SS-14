@@ -128,6 +128,8 @@ entities:
     - type: MetaData
       name: Map Entity
     - type: Transform
+    - type: BecomesStation
+      id: SWBalmora
     - type: Map
       mapPaused: True
     - type: PhysicsMap

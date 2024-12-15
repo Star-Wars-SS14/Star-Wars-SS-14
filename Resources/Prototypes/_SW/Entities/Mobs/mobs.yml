@@ -512,4 +512,13 @@
     factions:
     - Syndicate
 
-
+- type: entity
+  name: civilian mob
+  parent: BaseMobHuman
+  id: SW_MobCivilian
+  components:
+  - type: Loadout
+    prototypes: [CitizenGear]
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen

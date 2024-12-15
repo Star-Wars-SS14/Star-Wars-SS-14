@@ -383,3 +383,14 @@
   - type: Sprite
     layers:
     - state: green
+
+- type: entity
+  id: SW_SpawnPointCivialian
+  parent: SpawnPointJobBase
+  name: Civilian (Житель)
+  components:
+  - type: SpawnPoint
+    job_id: SW_Civialian
+  - type: Sprite
+    layers:
+    - state: green

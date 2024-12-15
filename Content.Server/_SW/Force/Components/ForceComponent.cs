@@ -33,9 +33,6 @@ public partial class ForceComponent : Component
     [DataField]
     public float DashSpeed = 2.5F;
 
-    [DataField]
-    public float DashSpeedOnZero = 6F;
-
     public string? DashEffectEnd = "DashEffectEnd";
 }
 

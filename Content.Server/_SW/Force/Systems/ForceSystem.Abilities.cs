@@ -83,6 +83,12 @@ public sealed partial class ForceSystem
 
         var oldCoords = xform.Coordinates;
 
+        if (physicsComponent.LinearVelocity == Vector2.Zero)
+        {
+            _popupSystem.PopupEntity("Невозможно использовать стоя!", user, user, PopupType.MediumCaution);
+            return;
+        }
+
         Dash(user, component, physicsComponent, oldCoords);
 
         args.Handled = true;

@@ -1,0 +1,14 @@
+- type: entity
+  parent: ComputerComms
+  id: SWEmpireComputerComms
+  name: Имперская Консоль связи
+  components:
+    - type: CommunicationsConsole
+      title: Имперский Гарнизон
+      color: "#f0f0f0"
+      canShuttle: false
+      global: true
+      sound:
+        path: /Audio/Misc/siren.ogg
+        params:
+          volume: -4

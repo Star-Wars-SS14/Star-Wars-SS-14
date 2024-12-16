@@ -2,12 +2,12 @@
   parent: CMClosetBase
   id: CMWardrobeBase
   abstract: true
-  description: It's a storage unit for standard-issue attire.
+  description: Это хранилище для стандартной одежды.
 
 - type: entity
   parent: CMWardrobeBase
   id: CMWardrobeBlack
-  name: black wardrobe
+  name: чёрный гардероб
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Closets/black.rsi
@@ -15,7 +15,7 @@
 - type: entity
   parent: CMWardrobeBase
   id: CMWardrobeBlue
-  name: blue wardrobe
+  name: синий гардероб
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Closets/blue.rsi
@@ -23,7 +23,7 @@
 - type: entity
   parent: CMWardrobeBase
   id: CMWardrobeGreen
-  name: green wardrobe
+  name: зелёный гардероб
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Closets/green.rsi
@@ -31,7 +31,7 @@
 - type: entity
   parent: CMWardrobeBase
   id: CMWardrobeOrange
-  name: orange wardrobe
+  name: оранжевый гардероб
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Closets/orange.rsi
@@ -39,7 +39,7 @@
 - type: entity
   parent: CMWardrobeBase
   id: CMWardrobePink
-  name: pink wardrobe
+  name: розовый гардероб
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Closets/pink.rsi
@@ -47,7 +47,7 @@
 - type: entity
   parent: CMWardrobeBase
   id: CMWardrobePurple
-  name: purple wardrobe
+  name: фиолетовый гардероб
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Closets/purple.rsi
@@ -55,7 +55,7 @@
 - type: entity
   parent: CMWardrobeBase
   id: CMWardrobeRed
-  name: red wardrobe
+  name: красный гардероб
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Closets/red.rsi
@@ -63,7 +63,7 @@
 - type: entity
   parent: CMWardrobeBase
   id: CMWardrobeWhite
-  name: white wardrobe
+  name: белый шкаф
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Closets/white.rsi
@@ -71,7 +71,7 @@
 - type: entity
   parent: CMWardrobeBase
   id: CMWardrobeYellow
-  name: yellow wardrobe
+  name: жёлтый гардероб
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Closets/yellow.rsi

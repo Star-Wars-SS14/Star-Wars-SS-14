@@ -1,8 +1,8 @@
 ﻿- type: entity
   parent: BaseStructure
   id: CMRack
-  name: rack
-  description: A bunch of metal shelves stacked on top of eachother. Excellent for storage purposes, less so as cover.
+  name: стойка
+  description: Куча металлических полок, поставленных друг на друга. Отлично подходит для хранения, но не так удобен в качестве прикрытия.
   components:
   - type: MeleeSound
     soundGroups:

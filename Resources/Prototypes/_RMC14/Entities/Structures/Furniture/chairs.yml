@@ -2,8 +2,8 @@
 - type: entity
   parent: SeatBase
   id: CMSeatBase
-  name: chair
-  description: A rectangular metallic frame sitting on four legs with a back panel. Designed to fit the sitting position, more or less comfortably.
+  name: кресло
+  description: Прямоугольный металлический каркас на четырех ножках с задней панелью. Предназначен для более или менее удобного сидения.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Furniture/chairs.rsi
@@ -12,8 +12,8 @@
 - type: entity
   parent: CMSeatBase
   id: CMChair
-  name: chair
-  description: A rectangular metallic frame sitting on four legs with a back panel. Designed to fit the sitting position, more or less comfortably.
+  name: кресло
+  description: Прямоугольный металлический каркас на четырех ножках с задней панелью. Предназначен для более или менее удобного сидения.
   components:
   - type: Transform
     anchored: false
@@ -36,8 +36,8 @@
 - type: entity
   parent: CMSeatBase
   id: CMChairComfy
-  name: comfy chair
-  description: A chair with leather padding and adjustable headrest. You could probably sit in one of these for ages.
+  name: удобное кресло
+  description: Кресло с кожаной обивкой и регулируемым подголовником. В таком кресле можно просидеть целую вечность.
   components:
   - type: Sprite
     state: comfychair
@@ -55,7 +55,7 @@
 - type: entity
   parent: CMChairComfy
   id: CMChairComfyARES
-  description: A functional chair designed for comfortably sitting a single person with intent to facilitate interactions with the ship AI.
+  description: Функциональное кресло, предназначенное для комфортного сидения одного человека на целые века.
   suffix: ARES
   components:
   - type: Sprite
@@ -112,7 +112,7 @@
 - type: entity
   parent: CMChairComfy
   id: CMChairComfyAlpha
-  description: A simple chair permanently attached to the floor. Covered with a squeaky and way too hard faux-leather, unevenly painted in Alpha squad red. Only for the bravest and freshest Marine recruits.
+  description: Простой стул, прикрепленный к полу. Обитый скрипучей и слишком жесткой искусственной кожей.
   suffix: Alpha
   components:
   - type: Sprite
@@ -121,7 +121,7 @@
 - type: entity
   parent: CMChairComfy
   id: CMChairComfyBravo
-  description: A simple chair permanently attached to the floor. Covered with a squeaky and way too hard faux-leather, unevenly painted in Bravo squad brown. Certified fortified on all sides from enemy incursion.
+  description: Простой стул, прикрепленный к полу. Обтянутое скрипучей и слишком жесткой искусственной кожей.
   suffix: Bravo
   components:
   - type: Sprite
@@ -130,8 +130,7 @@
 - type: entity
   parent: CMChairComfy
   id: CMChairComfyCharlie
-  description: A simple chair permanently attached to the floor. Covered with a squeaky and way too hard faux-leather, unevenly painted in Charlie squad purple. Feels out of place without a full breakfast to accompany it.
-  suffix: Charlie
+  description: Простой стул, прикрепленный к полу. Обитый скрипучей и слишком жесткой искусственной кожей.
   components:
   - type: Sprite
     state: comfychair_charlie
@@ -139,7 +138,7 @@
 - type: entity
   parent: CMChairComfy
   id: CMChairComfyDelta
-  description: A simple chair permanently attached to the floor. Covered with a squeaky and way too hard faux-leather, unevenly painted in Delta squad blue. This chair is most likely to be the first to fight and first to die.
+  description: Простой стул, прикрепленный к полу. Обитый скрипучей и слишком жесткой искусственной кожей.
   suffix: Delta
   components:
   - type: Sprite
@@ -174,8 +173,8 @@
 - type: entity
   parent: CMSeatBase
   id: CMChairWood
-  name: wooden chair
-  description: Old is never too old to not be in fashion.
+  name: деревянный стул
+  description: Старое никогда не бывает слишком старым, чтобы не быть в моде.
   components:
   - type: Sprite
     state: wooden_chair
@@ -191,7 +190,7 @@
 - type: entity
   parent: CMChairWood
   id: CMChairWoodWings
-  description: Old is never too old to not be in fashion.
+  description: Старое никогда не бывает слишком старым, чтобы не быть в моде.
   components:
   - type: Sprite
     state: wooden_chair_wings

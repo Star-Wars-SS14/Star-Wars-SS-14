@@ -1,8 +1,8 @@
 - type: entity
   id: CMCarpetBase
   parent: BaseStructure
-  name: carpet
-  description: "Fancy walking surface."
+  name: ковер
+  description: "Удобная поверхность для ходьбы."
   abstract: true
   components:
   - type: Sprite

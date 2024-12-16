@@ -1,8 +1,8 @@
 - type: entity
   parent: Hypospray
   id: CMHypospray
-  name: hypospray
-  description: The DeForest Medical Corporation hypospray is a sterile, air-needle auto-injector for rapid administration of drugs to patients.
+  name: гипоспрей
+  description: КТО ВАМ ЭТО ЗАСПАВНИЛ В ЗВЕЗДНЫХ ВОЙНАХ.
   components:
   - type: Sprite
     sprite: _RMC14/Objects/Medical/hypospray.rsi

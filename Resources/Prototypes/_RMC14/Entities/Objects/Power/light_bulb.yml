@@ -51,8 +51,8 @@
 - type: entity
   parent: CMLightBulbBase
   id: CMLightBulb
-  name: light bulb
-  description: A replacement light bulb.
+  name: лампочка
+  description: Запасная лампочка.
   components:
   - type: LightBulb
     bulb: Bulb
@@ -64,8 +64,8 @@
 - type: entity
   parent: CMLightBulbBase
   id: CMLightBulbBroken
-  name: light bulb
-  description: A replacement light bulb.
+  name: лампочка
+  description: Запасная лампочка.
   suffix: Broken
   components:
   - type: LightBulb

@@ -2,8 +2,8 @@
 - type: entity
   parent: TableBase
   id: CMTable
-  name: table
-  description: A square metal surface resting on four legs. Useful to put stuff on.
+  name: стол
+  description: Квадратная металлическая поверхность, стоящая на четырех ножках. Пригодится для размещения вещей.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Furniture/Tables/standard.rsi
@@ -30,8 +30,8 @@
 - type: entity
   parent: CMTable
   id: CMTableReinforced
-  name: reinforced table
-  description: A square metal surface resting on four legs. This one has side panels, making it useful as a desk.
+  name: укреплённый стол
+  description: Квадратная металлическая поверхность на четырех ножках. У этой модели есть боковые панели, что позволяет использовать ее в качестве письменного стола.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Furniture/Tables/reinforced.rsi
@@ -53,8 +53,8 @@
 - type: entity
   parent: CMTableReinforced
   id: CMTableReinforcedBlack
-  name: black table
-  description: A sleek black metal table. Its legs are securely bolted to the floor.
+  name: чёрный стол
+  description: Изящный металлический стол черного цвета. Его ножки надежно прикручены к полу.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Furniture/Tables/black.rsi
@@ -65,8 +65,8 @@
 - type: entity
   parent: CMTable
   id: CMTableWooden
-  name: wooden table
-  description: A square wood surface resting on four legs. Useful to put stuff on.
+  name: деревянный стол
+  description: Квадратная деревянная поверхность, стоящая на четырех ножках. Пригодится для размещения вещей.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Furniture/Tables/wood.rsi
@@ -77,8 +77,8 @@
 - type: entity
   parent: CMTableWooden
   id: CMTableWoodenPoor
-  name: poor wooden table
-  description: A semi-poorly constructed wood surface resting on four legs. Useful to put stuff on.
+  name: плохой деревянный стол
+  description: Полупрозрачная деревянная поверхность, стоящая на четырех ножках. На нее можно положить вещи.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Furniture/Tables/poor_wood.rsi
@@ -89,8 +89,8 @@
 - type: entity
   parent: CMTableWooden
   id: CMTableWoodenFancy
-  name: fancy wooden table
-  description: A nicely crafted mahogany wood surface resting on four legs. Useful to put stuff on.
+  name: изящный деревянный стол
+  description: Красивая поверхность из красного дерева на четырех ножках. На ней можно разложить вещи. Сделано рабским трудом захваченных планет.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Furniture/Tables/fancy_wood.rsi
@@ -101,8 +101,8 @@
 - type: entity
   parent: CMTableWooden
   id: CMTableWoodenGambling
-  name: gambling table
-  description: A curved wood and carpet surface resting on four legs. Used for gambling games.
+  name: игорный стол
+  description: Изогнутая поверхность из дерева и ковролина, стоящая на четырех ножках. Используется для азартных игр.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Furniture/Tables/gambling.rsi
@@ -113,8 +113,8 @@
 - type: entity
   parent: CMTable
   id: CMTableAlmayer
-  name: table
-  description: A square metal surface resting on four legs. Useful to put stuff on. Can be flipped in emergencies to act as cover.
+  name: стол
+  description: Квадратная металлическая поверхность, стоящая на четырех ножках. Пригодится для размещения вещей. В экстренных случаях может быть перевернута, чтобы служить укрытием.
   suffix: Almayer
   components:
   - type: Sprite

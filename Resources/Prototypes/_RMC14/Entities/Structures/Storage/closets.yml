@@ -2,8 +2,8 @@
 - type: entity
   parent: ClosetBase
   id: CMClosetBase
-  name: closet
-  description: It's a basic storage unit.
+  name: шкаф
+  description: Это базовое хранилище.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Closets/standard.rsi
@@ -25,8 +25,8 @@
 - type: entity
   parent: CMClosetBase
   id: CMClosetEmergency
-  name: emergency closet
-  description: It's a storage unit for emergency breathmasks and o2 tanks.
+  name: аварийный шкаф
+  description: Это хранилище для аварийных респираторов и баллонов с кислородом.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Closets/emergency.rsi
@@ -34,8 +34,8 @@
 - type: entity
   parent: CMClosetBase
   id: CMClosetFire
-  name: fire-safety closet
-  description: It's a storage unit for fire-fighting supplies.
+  name: шкаф пожарной безопасности
+  description: Это склад для хранения пожарных принадлежностей.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Closets/firecloset.rsi
@@ -43,8 +43,8 @@
 - type: entity
   parent: CMClosetBase
   id: CMClosetTool
-  name: tool closet
-  description: It's a storage unit for tools.
+  name: шкаф для инструментов
+  description: Это хранилище для инструментов.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Closets/toolcloset.rsi
@@ -52,8 +52,8 @@
 - type: entity
   parent: CMClosetBase
   id: CMClosetRadiation
-  name: radiation suit closet
-  description: It's a storage unit for rad-protective suits.
+  name: шкаф для радиационного костюма
+  description: Это хранилище для радиозащитных костюмов.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Closets/radsuit.rsi
@@ -61,8 +61,8 @@
 - type: entity
   parent: CMClosetBase
   id: CMClosetBomb
-  name: EOD closet
-  description: It's a storage unit for explosion-protective suits.
+  name: шкаф для сапёров
+  description: Это хранилище для взрывозащитных костюмов.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Closets/bombsuit.rsi
@@ -71,8 +71,8 @@
 - type: entity
   parent: CMClosetBase
   id: CMClosetBio
-  name: level-3 biohazard suit closet
-  description: It's a storage unit for level-3 biohazard gear.
+  name: шкаф для костюмов биологической опасности уровня 3
+  description: Это хранилище для биологически опасного снаряжения третьего уровня.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Closets/bio.rsi
@@ -113,8 +113,8 @@
 - type: entity
   parent: CMClosetBase
   id: CMClosetAlien
-  name: strange closet
-  description: It looks alien!
+  name: странный шкаф
+  description: Странно.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Closets/acloset.rsi

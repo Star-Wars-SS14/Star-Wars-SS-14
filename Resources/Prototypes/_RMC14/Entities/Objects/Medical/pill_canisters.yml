@@ -2,8 +2,8 @@
 - type: entity
   parent: PillCanister
   id: CMPillCanister
-  name: pill bottle
-  description: It's an airtight container for storing medication.
+  name: бутылка для таблеток
+  description: Это герметичный контейнер для хранения лекарств.
   components:
   - type: Sprite
     sprite: _RMC14/Objects/Chemistry/pill_canister.rsi
@@ -20,7 +20,7 @@
     storageInsertSound: /Audio/Effects/pill_insert.ogg
     storageRemoveSound: /Audio/Effects/pill_remove.ogg
     grid:
-    - 0,0,7,1 
+    - 0,0,7,1
     storageOpenSound:
       collection: CMPillBottleOpen
     maxItemSize: Tiny
@@ -50,7 +50,7 @@
 - type: entity
   parent: CMPillCanister
   id: CMPillCanisterBicaridine
-  name: bicaridine pill bottle
+  name: флакон с таблетками бикаридина
   suffix: Bicaridine, 16
   components:
   - type: Sprite
@@ -68,7 +68,7 @@
 - type: entity
   parent: CMPillCanister
   id: CMPillCanisterDexalin
-  name: dexalin pill bottle
+  name: флакон с таблетками дексалина
   suffix: Dexalin, 16
   components:
   - type: Sprite
@@ -86,7 +86,7 @@
 - type: entity
   parent: CMPillCanister
   id: CMPillCanisterDylovene
-  name: dylovene pill bottle
+  name: флакон с таблетками диловена
   suffix: Dylovene, 16
   components:
   - type: Sprite
@@ -104,7 +104,7 @@
 - type: entity
   parent: CMPillCanister
   id: CMPillCanisterInaprovaline
-  name: inaprovaline pill bottle
+  name: флакон с таблетками инапровалина
   suffix: Inaprovaline, 16
   components:
   - type: Sprite
@@ -122,7 +122,7 @@
 - type: entity
   parent: CMPillCanister
   id: CMPillCanisterKelotane
-  name: kelotane pill bottle
+  name: флакон для таблеток келотана
   suffix: Kelotane, 16
   components:
   - type: Sprite
@@ -140,7 +140,7 @@
 - type: entity
   parent: CMPillCanister
   id: CMPillCanisterTricordrazine
-  name: tricordrazine pill bottle
+  name: флакон с таблетками трикордразина
   suffix: Tricordrazine, 16
   components:
   - type: Sprite

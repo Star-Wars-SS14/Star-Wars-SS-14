@@ -3,7 +3,7 @@
   abstract: true
   parent: CMTileBase
   id: CMFloorSteelGreenBase
-  name: tiles-cm-green
+  name: трава
 
 - type: tile
   parent: CMFloorSteelGreenBase

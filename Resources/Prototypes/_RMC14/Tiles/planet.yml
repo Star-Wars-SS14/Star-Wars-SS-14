@@ -13,13 +13,13 @@
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetDirt
-  name: tiles-cm-dirt
+  name: грязь
   sprite: /Textures/_RMC14/Tiles/planet/dirt.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetDesert
-  name: tiles-cm-desert
+  name: песок
   sprite: /Textures/_RMC14/Tiles/planet/desert/desert.png
   variants: 6
   placementVariants:
@@ -33,7 +33,7 @@
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetDesert1
-  name: tiles-cm-desert
+  name: песок
   sprite: /Textures/_RMC14/Tiles/planet/desert/desert_0.png
 
 - type: tile
@@ -64,13 +64,13 @@
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetSand
-  name: tiles-cm-sand
+  name: песок
   sprite: /Textures/_RMC14/Tiles/planet/sand.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetGrass
-  name: tiles-cm-grass
+  name: трава
   sprite: /Textures/_RMC14/Tiles/planet/grass.png
   variants: 4
   placementVariants:
@@ -83,7 +83,7 @@
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetGrass1
-  name: tiles-cm-grass
+  name: трава
   sprite: /Textures/_RMC14/Tiles/planet/grass1/grass.png
   edgeSpritePriority: 1
   edgeSprites:
@@ -101,7 +101,7 @@
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetGrass2
-  name: tiles-cm-grass
+  name: трава
   sprite: /Textures/_RMC14/Tiles/planet/grass2/grass.png
   edgeSpritePriority: 1
   edgeSprites:
@@ -120,7 +120,7 @@
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetGrass3
-  name: tiles-cm-grass
+  name: трава
   sprite: /Textures/_RMC14/Tiles/planet/grass3/grass.png
   edgeSpritePriority: 1
   edgeSprites:
@@ -140,86 +140,86 @@
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetGrassDirt
-  name: grass dirt
+  name: грязь
   sprite: /Textures/_RMC14/Tiles/planet/grass1/grass.png
   weedsSpreadable: false
 
 - type: tile
   parent: CMPlanetGrassDirt
   id: CMPlanetGrassDirtNW
-  name: grass dirt nw
+  name: грязь
   sprite: /Textures/_RMC14/Tiles/planet/grass_dirt/grassdirt_corner_0.png
 
 - type: tile
   parent: CMPlanetGrassDirt
   id: CMPlanetGrassDirtNE
-  name: grass dirt ne
+  name: грязь
   sprite: /Textures/_RMC14/Tiles/planet/grass_dirt/grassdirt_corner_1.png
 
 - type: tile
   parent: CMPlanetGrassDirt
   id: CMPlanetGrassDirtSE
-  name: grass dirt se
+  name: грязь
   sprite: /Textures/_RMC14/Tiles/planet/grass_dirt/grassdirt_corner_2.png
 
 - type: tile
   parent: CMPlanetGrassDirt
   id: CMPlanetGrassDirtSW
-  name: grass dirt sw
+  name: грязь
   sprite: /Textures/_RMC14/Tiles/planet/grass_dirt/grassdirt_corner_3.png
 
 - type: tile
   parent: CMPlanetGrassDirt
   id: CMPlanetGrassDirtNW2
-  name: grass dirt nw 2
+  name: грязь
   sprite: /Textures/_RMC14/Tiles/planet/grass_dirt/grassdirt_corner2_0.png
 
 - type: tile
   parent: CMPlanetGrassDirt
   id: CMPlanetGrassDirtSE2
-  name: grass dirt se 2
+  name: грязь
   sprite: /Textures/_RMC14/Tiles/planet/grass_dirt/grassdirt_corner2_1.png
 
 - type: tile
   parent: CMPlanetGrassDirt
   id: CMPlanetGrassDirtNE2
-  name: grass dirt ne 2
+  name: грязь
   sprite: /Textures/_RMC14/Tiles/planet/grass_dirt/grassdirt_corner2_2.png
 
 - type: tile
   parent: CMPlanetGrassDirt
   id: CMPlanetGrassDirtSW2
-  name: grass dirt sw 2
+  name: грязь
   sprite: /Textures/_RMC14/Tiles/planet/grass_dirt/grassdirt_corner2_3.png
 
 - type: tile
   parent: CMPlanetGrassDirt
   id: CMPlanetGrassDirtNorth
-  name: grass dirt north
+  name: грязь
   sprite: /Textures/_RMC14/Tiles/planet/grass_dirt/grassdirt_edge_0.png
 
 - type: tile
   parent: CMPlanetGrassDirt
   id: CMPlanetGrassDirtSouth
-  name: grass dirt south
+  name: грязь
   sprite: /Textures/_RMC14/Tiles/planet/grass_dirt/grassdirt_edge_1.png
 
 - type: tile
   parent: CMPlanetGrassDirt
   id: CMPlanetGrassDirtWest
-  name: grass dirt west
+  name: грязь
   sprite: /Textures/_RMC14/Tiles/planet/grass_dirt/grassdirt_edge_2.png
 
 - type: tile
   parent: CMPlanetGrassDirt
   id: CMPlanetGrassDirtEast
-  name: grass dirt east
+  name: грязь
   sprite: /Textures/_RMC14/Tiles/planet/grass_dirt/grassdirt_edge_3.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetWood
-  name: tiles-cm-wood
+  name: дерево
   sprite: /Textures/_RMC14/Tiles/planet/wood/wood.png
   footstepSounds:
     collection: FootstepWood
@@ -228,7 +228,7 @@
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetMattedGrass
-  name: matted grass
+  name: примятая трава
   sprite: /Textures/_RMC14/Tiles/planet/auto_strata_grass/grass.png
   variants: 8
   placementVariants:
@@ -246,7 +246,7 @@
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetRunedSandstone
-  name: runed sandstone
+  name: слоистый песчаник
   sprite: /Textures/_RMC14/Tiles/planet/runed_sandstone/runedsandstone.png
   footstepSounds:
     collection: FootstepWood
@@ -255,7 +255,7 @@
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetGCircuit
-  name: gcircuit
+  name: грязь
   sprite: /Textures/_RMC14/Tiles/planet/gcircuit/gcircuita.png
   footstepSounds:
     collection: FootstepHull
@@ -264,7 +264,7 @@
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetShuttleBlue
-  name: blue shuttle
+  name: синее покрытие
   sprite: /Textures/_RMC14/Tiles/planet/shuttle/floor.png
   footstepSounds:
     collection: FootstepHull
@@ -273,19 +273,19 @@
 - type: tile
   parent: CMPlanetShuttleBlue
   id: CMPlanetShuttleRed
-  name: red shuttle
+  name: красное покрытие
   sprite: /Textures/_RMC14/Tiles/planet/shuttle/floor4.png
 
 - type: tile
   parent: CMPlanetShuttleBlue
   id: CMPlanetShuttleDarkRed
-  name: dark red shuttle
+  name: чёрно-красное покрытие
   sprite: /Textures/_RMC14/Tiles/planet/shuttle/floor6.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetCorsatSquare
-  name: corsat squares
+  name: корсажные квадраты
   sprite: /Textures/_RMC14/Tiles/planet/corsat/squares.png
   footstepSounds:
     collection: FootstepHull
@@ -294,7 +294,7 @@
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetCorsatSquareWood
-  name: corsat squares wood
+  name: деревянные корсажные квадраты
   sprite: /Textures/_RMC14/Tiles/planet/corsat/squareswood.png
   footstepSounds:
     collection: FootstepWood
@@ -303,7 +303,7 @@
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetCorsatPlate
-  name: corsat plate
+  name: корсажная плитка
   sprite: /Textures/_RMC14/Tiles/planet/corsat/plate.png
   footstepSounds:
     collection: FootstepHull
@@ -312,7 +312,7 @@
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetPlasticFloor1
-  name: plastic tile
+  name: пластиковая плита
   sprite: /Textures/_RMC14/Tiles/planet/interior/plasticfloor1.png
   footstepSounds:
     collection: FootstepFloor
@@ -321,7 +321,7 @@
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetStrata
-  name: strata
+  name: страта
   sprite: /Textures/_RMC14/Tiles/planet/strata/floor.png
   footstepSounds:
     collection: FootstepHull
@@ -330,7 +330,7 @@
 - type: tile
   parent: CMPlanetStrata
   id: CMPlanetStrataMultiTiles
-  name: strata multi tiles
+  name: страта
   sprite: /Textures/_RMC14/Tiles/planet/strata/multi_tiles.png
   variants: 6
   placementVariants:
@@ -344,127 +344,127 @@
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetBeachGrassNorth
-  name: beach grass north
+  name: трава
   sprite: /Textures/_RMC14/Tiles/planet/beach/grassbeach_0.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetBeachGrassSouth
-  name: beach grass south
+  name: трава
   sprite: /Textures/_RMC14/Tiles/planet/beach/grassbeach_1.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetBeachGrassWest
-  name: beach grass west
+  name: трава
   sprite: /Textures/_RMC14/Tiles/planet/beach/grassbeach_2.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetBeachGrassEast
-  name: beach grass east
+  name: трава
   sprite: /Textures/_RMC14/Tiles/planet/beach/grassbeach_3.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetBeachGrassSE
-  name: beach grass corner se
+  name: трава
   sprite: /Textures/_RMC14/Tiles/planet/beach/gbcorner_0.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetBeachGrassNW
-  name: beach grass corner nw
+  name: трава
   sprite: /Textures/_RMC14/Tiles/planet/beach/gbcorner_1.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetBeachGrassNE
-  name: beach grass corner ne
+  name: трава
   sprite: /Textures/_RMC14/Tiles/planet/beach/gbcorner_2.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetBeachGrassSW
-  name: beach grass corner sw
+  name: трава
   sprite: /Textures/_RMC14/Tiles/planet/beach/gbcorner_3.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetCoastNorth
-  name: coast north
+  name: песок
   sprite: /Textures/_RMC14/Tiles/planet/beach/beach_0.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetCoastEast
-  name: coast east
+  name: песок
   sprite: /Textures/_RMC14/Tiles/planet/beach/beach_24.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetCoastSouth
-  name: coast south
+  name: песок
   sprite: /Textures/_RMC14/Tiles/planet/beach/beach_8.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetCoastWest
-  name: coast west
+  name: песок
   sprite: /Textures/_RMC14/Tiles/planet/beach/beach_16.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetCoastCornerNW
-  name: coast corner nw
+  name: песок
   sprite: /Textures/_RMC14/Tiles/planet/beach/beachcorner_0.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetCoastCornerNE
-  name: coast corner ne
+  name: песок
   sprite: /Textures/_RMC14/Tiles/planet/beach/beachcorner_8.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetCoastCornerSE
-  name: coast corner se
+  name: песок
   sprite: /Textures/_RMC14/Tiles/planet/beach/beachcorner_16.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetCoastCornerSW
-  name: coast corner sw
+  name: песок
   sprite: /Textures/_RMC14/Tiles/planet/beach/beachcorner_24.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetCoastCornerNW2
-  name: coast corner nw
+  name: песок
   sprite: /Textures/_RMC14/Tiles/planet/beach/beachcorner2_0.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetCoastCornerNE2
-  name: coast corner ne
+  name: песок
   sprite: /Textures/_RMC14/Tiles/planet/beach/beachcorner2_8.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetCoastCornerSW2
-  name: coast corner se
+  name: песок
   sprite: /Textures/_RMC14/Tiles/planet/beach/beachcorner2_16.png
 
 - type: tile
   parent: CMPlanetBase
   id: CMPlanetCoastCornerSE2
-  name: coast corner sw
+  name: песок
   sprite: /Textures/_RMC14/Tiles/planet/beach/beachcorner2_24.png
 
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetIce0
-  name: ice
+  name: лёд
   sprite: /Textures/_RMC14/Tiles/planet/auto_ice/ice_0.png
   variants: 8
   placementVariants:
@@ -480,7 +480,7 @@
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetIceComposite
-  name: ice
+  name: лёд
   sprite: /Textures/_RMC14/Tiles/planet/auto_ice/ice_0_composite1.png
   variants: 8
   placementVariants:
@@ -496,7 +496,7 @@
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetIce1
-  name: ice
+  name: лёд
   sprite: /Textures/_RMC14/Tiles/planet/auto_ice/ice_1.png
   variants: 8
   placementVariants:
@@ -512,7 +512,7 @@
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetIce2
-  name: ice
+  name: лёд
   sprite: /Textures/_RMC14/Tiles/planet/auto_ice/ice_2.png
   variants: 8
   placementVariants:
@@ -528,7 +528,7 @@
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetSnow1
-  name: snow
+  name: снег
   sprite: /Textures/_RMC14/Tiles/planet/snow2/snow_1.png
   variants: 8
   placementVariants:
@@ -544,7 +544,7 @@
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetSnow2
-  name: snow
+  name: снег
   sprite: /Textures/_RMC14/Tiles/planet/snow2/snow_2.png
   variants: 8
   placementVariants:
@@ -560,7 +560,7 @@
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetSnow3
-  name: snow
+  name: снег
   sprite: /Textures/_RMC14/Tiles/planet/snow2/snow_3.png
   variants: 8
   placementVariants:
@@ -576,7 +576,7 @@
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetSnow4
-  name: snow
+  name: снег
   sprite: /Textures/_RMC14/Tiles/planet/snow2/snow_4.png
   variants: 8
   placementVariants:
@@ -592,101 +592,101 @@
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetTallGrass
-  name: tall grass
+  name: высокая трава
   sprite: /Textures/_RMC14/Tiles/planet/tallgrass/tallgrass.png
 
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetTallGrassSnowNorth
-  name: tall grass
+  name: высокая трава
   sprite: /Textures/_RMC14/Tiles/planet/tallgrass/tallgrass_north_snow.png
 
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetTallGrassSnowEast
-  name: tall grass
+  name: высокая трава
   sprite: /Textures/_RMC14/Tiles/planet/tallgrass/tallgrass_east_snow.png
 
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetTallGrassSnowSouth
-  name: tall grass
+  name: высокая трава
   sprite: /Textures/_RMC14/Tiles/planet/tallgrass/tallgrass_south_snow.png
 
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetTallGrassSnowWest
-  name: tall grass
+  name: высокая трава
   sprite: /Textures/_RMC14/Tiles/planet/tallgrass/tallgrass_west_snow.png
 
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetTallGrassSnowNorthEast
-  name: tall grass
+  name: высокая трава
   sprite: /Textures/_RMC14/Tiles/planet/tallgrass/tallgrass_north_east_snow.png
 
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetTallGrassSnowNorthWest
-  name: tall grass
+  name: высокая трава
   sprite: /Textures/_RMC14/Tiles/planet/tallgrass/tallgrass_north_west_snow.png
 
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetTallGrassSnowSouthEast
-  name: tall grass
+  name: высокая трава
   sprite: /Textures/_RMC14/Tiles/planet/tallgrass/tallgrass_south_east_snow.png
 
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetTallGrassSnowSouthWest
-  name: tall grass
+  name: высокая трава
   sprite: /Textures/_RMC14/Tiles/planet/tallgrass/tallgrass_south_west_snow.png
 
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetTallGrassCompositeNorth
-  name: tall grass
+  name: высокая трава
   sprite: /Textures/_RMC14/Tiles/planet/tallgrass/tallgrass_north_composite.png
 
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetTallGrassCompositeEast
-  name: tall grass
+  name: высокая трава
   sprite: /Textures/_RMC14/Tiles/planet/tallgrass/tallgrass_east_composite.png
 
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetTallGrassCompositeSouth
-  name: tall grass
+  name: высокая трава
   sprite: /Textures/_RMC14/Tiles/planet/tallgrass/tallgrass_south_composite.png
 
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetTallGrassCompositeWest
-  name: tall grass
+  name: высокая трава
   sprite: /Textures/_RMC14/Tiles/planet/tallgrass/tallgrass_west_composite.png
 
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetTallGrassCompositeNorthEast
-  name: tall grass
+  name: высокая трава
   sprite: /Textures/_RMC14/Tiles/planet/tallgrass/tallgrass_north_east_composite.png
 
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetTallGrassCompositeNorthWest
-  name: tall grass
+  name: высокая трава
   sprite: /Textures/_RMC14/Tiles/planet/tallgrass/tallgrass_north_west_composite.png
 
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetTallGrassCompositeSouthEast
-  name: tall grass
+  name: высокая трава
   sprite: /Textures/_RMC14/Tiles/planet/tallgrass/tallgrass_south_east_composite.png
 
 - type: tile
   parent: CMPlanetBase
   id: RCMPlanetTallGrassCompositeSouthWest
-  name: tall grass
+  name: высокая трава
   sprite: /Textures/_RMC14/Tiles/planet/tallgrass/tallgrass_south_west_composite.png

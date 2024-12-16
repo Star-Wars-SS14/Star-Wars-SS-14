@@ -2,7 +2,7 @@
 - type: entity
   parent: SheetOtherBase
   id: CMSheetPhoron
-  name: phoron
+  name: форон
   suffix: "Full"
   components:
   - type: Sprite

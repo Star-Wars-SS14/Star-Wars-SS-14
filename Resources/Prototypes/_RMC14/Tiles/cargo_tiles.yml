@@ -1,7 +1,7 @@
 ﻿- type: tile
   parent: CMTileBase
   id: CMFloorCargoBase
-  name: tiles-cm-cargo
+  name: стальное покрытие
 
 - type: tile
   parent: CMFloorCargoBase

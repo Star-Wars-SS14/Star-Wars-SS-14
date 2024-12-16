@@ -1,8 +1,8 @@
 - type: entity
   parent: Beaker
   id: CMBeaker
-  name: beaker
-  description: A beaker. Can hold up to 60 units.
+  name: мензурка
+  description: Мензурка. Вмещает до 60 единиц вещества.
   components:
   - type: Sprite
     sprite: _RMC14/Objects/Medical/beaker.rsi
@@ -24,8 +24,8 @@
 - type: entity
   parent: LargeBeaker
   id: CMBeakerLarge
-  name: large beaker
-  description: A large beaker. Can hold up to 120 units.
+  name: большая мензурка
+  description: Большая мензурка. Вмещает до 120 единиц вещества.
   components:
   - type: Sprite
     sprite: _RMC14/Objects/Medical/large_beaker.rsi

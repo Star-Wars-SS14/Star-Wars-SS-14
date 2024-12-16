@@ -3,7 +3,7 @@
 - type: entity
   parent: Memorial
   id: CMMemorial
-  name: slab of victory
+  name: плита победы
   description: A ship memorial dedicated to the triumphs of the Marines and the fallen marines of this ship. On the left there are grand tales of victory etched into the slab. On the right there is a list of famous marines who have fallen in combat serving the Marines.
   components:
   - type: Sprite

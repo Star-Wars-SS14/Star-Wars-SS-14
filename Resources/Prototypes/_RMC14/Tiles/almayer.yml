@@ -12,13 +12,13 @@
 - type: tile
   parent: CMTileBase
   id: CMFloorSteel
-  name: tiles-cm-default
+  name: стальной пол
   sprite: /Textures/_RMC14/Tiles/almayer/default.png
 
 - type: tile
   parent: CMFloorSteel
   id: CMFloorSteelNoWeeds
-  name: tiles-cm-default-no-weeds
+  name: стальной пол
   sprite: /Textures/_RMC14/Tiles/almayer/default.png
   weedsSpreadable: false
   baseTurf: ""
@@ -27,7 +27,7 @@
 - type: tile
   parent: CMFloorSteelNoWeeds
   id: RMCFloorUnderplatingNoWeeds
-  name: tiles-rmc-underplating-no-weeds
+  name: стальное покрытие
   sprite: /Textures/_RMC14/Tiles/shiva/plating.png
   weedsSpreadable: false
   baseTurf: ""
@@ -37,59 +37,59 @@
 - type: tile
   parent: CMTileBase
   id: CMFloorPlate
-  name: tiles-cm-plate
+  name: стальные плиты
   sprite: /Textures/_RMC14/Tiles/almayer/plate.png
 
 - type: tile
   parent: CMTileBase
   id: CMFloorOffice
-  name: tiles-cm-office
+  name: офисное покрытие
   sprite: /Textures/_RMC14/Tiles/almayer/office_tile.png
 
 - type: tile
   parent: CMTileBase
   id: CMFloorSterile
-  name: tiles-cm-sterile
+  name: стерильное покрытие
   sprite: /Textures/_RMC14/Tiles/almayer/sterile.png
 
 - type: tile
   parent: CMTileBase
   id: CMFloorWhite
-  name: tiles-cm-white
+  name: белое покрытие
   sprite: /Textures/_RMC14/Tiles/almayer/whitefull.png
 
 - type: tile
   parent: CMTileBase
   id: CMFloorWhiteSterile
-  name: tiles-cm-white-sterile
+  name: белое стерильное покрытие
   sprite: /Textures/_RMC14/Tiles/almayer/white_sterile.png
 
 - type: tile
   parent: CMTileBase
   id: CMFloorBlack
-  name: tiles-cm-black
+  name: чёрное покрытие
   sprite: /Textures/_RMC14/Tiles/almayer/blackfull.png
 
 - type: tile
   parent: CMTileBase
   id: CMFloorAI
-  name: tiles-cm-ai
+  name: стальное покрытие
   sprite: /Textures/_RMC14/Tiles/almayer/ai_floors.png
 
 - type: tile
   parent: CMTileBase
   id: CMFloorTComms0
-  name: tiles-cm-tcomms
+  name: стальное покрытие
   sprite: /Textures/_RMC14/Tiles/almayer/tcomms_0.png
 
 - type: tile
   parent: CMTileBase
   id: CMFloorTComms1
-  name: tiles-cm-tcomms
+  name: стальное покрытие
   sprite: /Textures/_RMC14/Tiles/almayer/tcomms_1.png
 
 - type: tile
   parent: CMFloorPlate
   id: CMFloorOuterHullPlate
-  name: tiles-cm-plate
+  name: стальные плиты
   sprite: /Textures/_RMC14/Tiles/almayer/outerhull.png

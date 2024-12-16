@@ -1,8 +1,8 @@
 ﻿- type: entity
   parent: BaseStructure
   id: CMWindoorAssembly
-  name: windoor assembly
-  description: It opens, it closes, and you can see through it!
+  name: раздвижное окно
+  description: Это и окно, и раздвижная дверь. Вот это да!
   placement:
     mode: SnapgridCenter
   components:
@@ -52,8 +52,8 @@
 - type: entity
   parent: CMWindoorAssembly
   id: CMWindoorAssemblySecure
-  name: secure windoor assembly
-  description: It opens, it closes, and you can see through it! This one looks tough.
+  name: бронированное раздвижное окно
+  description: Это и прочное окно, и раздвижная дверь. Вот это да!
   components:
   - type: Sprite
     state: secure_assembly01

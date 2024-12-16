@@ -1,8 +1,8 @@
 ﻿- type: entity
   parent: BaseWindoor
   id: CMWindoor
-  name: glass door
-  description: A window, that is also a door. A windoor if you will.
+  name: раздвижное окно
+  description: Это и окно, и раздвижная дверь. Вот это да!
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Windoors/windoor.rsi
@@ -36,8 +36,8 @@
 - type: entity
   parent: BaseSecureWindoor
   id: CMWindoorSecure
-  name: secure glass door
-  description: A thick chunk of tempered glass on metal track. Probably more robust than you.
+  name: раздвижное бронеокно
+  description: Это и прочное окно, и раздвижная дверь. Вот это да!
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Windoors/secure.rsi

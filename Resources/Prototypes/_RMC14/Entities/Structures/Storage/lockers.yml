@@ -2,7 +2,7 @@
 - type: entity
   parent: CMClosetBase
   id: CMLockerBase
-  description: It's an immobile card-locked storage unit.
+  description: Это неподвижное хранилище, заблокированное картой.
   abstract: true
   components:
   - type: Sprite
@@ -30,7 +30,7 @@
 - type: entity
   parent: CMLockerBase
   id: CMLockerCommander
-  name: commanding officer's locker
+  name: шкафчик для одежды командира
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Lockers/commander.rsi

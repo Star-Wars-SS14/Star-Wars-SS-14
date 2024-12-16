@@ -7,8 +7,8 @@
 
 - type: entity
   id: RMCInflatableWall
-  name: inflatable wall
-  description: An inflated membrane. Activate to deflate. Do not puncture.
+  name: надувная стена
+  description: Надутая мембрана. Нажмите на кнопку сбоку, чтобы сдуть. Не протыкать.
   components:
   - type: Clickable
   - type: InteractionOutline
@@ -41,7 +41,7 @@
         spawn:
           RMCInflatableWallBroken:
             min: 1
-            max: 1      
+            max: 1
   - type: DisassembleOnAltVerb
     prototype: RMCInflatableWallFolded1
     doAfter: 3
@@ -54,8 +54,8 @@
 - type: entity
   parent: BaseMaterialDoor
   id: RMCInflatableDoor
-  name: inflatable door
-  description: An inflated membrane. Activate to deflate. Now with a door. Do not puncture.
+  name: надувная дверь
+  description: Надутая мембрана. Нажмите на кнопку сбоку, чтобы сдуть. Теперь с дверцей. Не протыкать.
   components:
   - type: Clickable
   - type: InteractionOutline
@@ -89,12 +89,12 @@
         damage: 80
       behaviors:
       - !type:DoActsBehavior
-        acts: ["Destruction"] 
+        acts: ["Destruction"]
       - !type:SpawnEntitiesBehavior
         spawn:
           RMCInflatableDoorBroken:
             min: 1
-            max: 1          
+            max: 1
   - type: DisassembleOnAltVerb
     prototype: RMCInflatableDoorFolded1
     doAfter: 3
@@ -104,8 +104,8 @@
 - type: entity
   parent: CMBaseStructure
   id: RMCInflatableWallBroken
-  name: popped inflatable wall
-  description: This used to be an inflatable wall, now it's just a mess of plastic.
+  name: сдутая надувная стена
+  description: Раньше это была надувная стена, а теперь - просто куча пластика.
   components:
   - type: Clickable
   - type: InteractionOutline
@@ -131,8 +131,8 @@
 - type: entity
   parent: RMCInflatableWallBroken
   id: RMCInflatableDoorBroken
-  name: popped inflatable door
-  description: This used to be an inflatable door, now it's just a mess of plastic.
+  name: пробитая надувная дверь
+  description: Раньше это была надувная дверь, а теперь - просто куча пластика.
   components:
   - type: Sprite
     sprite: _RMC14/Objects/Misc/inflatable_door.rsi

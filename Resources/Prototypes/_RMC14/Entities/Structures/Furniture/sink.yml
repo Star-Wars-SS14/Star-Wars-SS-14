@@ -1,9 +1,9 @@
 ﻿- type: entity
   parent: SinkEmpty
   id: CMSinkEmpty
-  name: sink
+  name: раковина
   suffix: Empty
-  description: A sink used for washing one's hands and face.
+  description: Раковина, используемая для мытья рук и лица.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Furniture/sink.rsi

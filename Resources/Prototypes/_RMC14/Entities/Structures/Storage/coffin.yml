@@ -1,8 +1,8 @@
 - type: entity
   parent: CMClosetBase
   id: CMCoffin
-  name: coffin
-  description: It's a burial receptacle for the dearly departed.
+  name: гроб
+  description: Это погребальный ящик для усопших.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Coffins/standard.rsi
@@ -36,8 +36,8 @@
 - type: entity
   parent: CMCoffin
   id: CMCoffinMarine
-  name: Marine coffin
-  description: A burial receptacle for dearly departed Marines, adorned in red and finished with the Corps' emblem on the interior. Semper fi.
+  name: солдатский гроб
+  description: Погребальный сосуд для ушедших из жизни солдат, украшенный красной эмблемой Империи на внутренней стороне.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Coffins/marine.rsi
@@ -45,8 +45,8 @@
 - type: entity
   parent: CMCoffin
   id: CMCoffinPred
-  name: strange coffin
-  description: It's a burial receptacle for the dearly departed. Seems to have weird markings on the side..?
+  name: странный гроб
+  description: Это погребальный сосуд для усопших. Кажется, на боку есть странная маркировка...?
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/Coffins/pred.rsi

@@ -2,8 +2,8 @@
   abstract: true
   parent: ChemicalMedipen
   id: CMAutoInjector
-  name: autoinjector
-  description: An autoinjector.
+  name: автоинъектор
+  description: Автоинъектор.
   noSpawn: true
   components:
   - type: Sprite
@@ -40,8 +40,8 @@
 - type: entity
   parent: CMAutoInjector
   id: CMEmergencyAutoInjector
-  name: emergency autoinjector (CAUTION)
-  description: An autoinjector loaded with a special cocktail of chemicals, to be used in life-threatening situations. Doesn't require any training to use.
+  name: аварийный автоинъектор (ОСТОРОЖНО)
+  description: Автоинъектор, заряженный специальным коктейлем химических веществ, для использования в опасных для жизни ситуациях. Не требует подготовки для использования.
   components:
   - type: Sprite
     sprite: _RMC14/Objects/Medical/emergency_auto_injector.rsi
@@ -73,8 +73,8 @@
 - type: entity
   parent: CMAutoInjector
   id: CMTricordrazineAutoInjector
-  name: tricordrazine autoinjector
-  description: An autoinjector loaded with 3 uses of Tricordrazine, a weak general use medicine for treating damage.
+  name: автоинъектор трикордразина
+  description: Автоинъектор с тремя порциями трикордразина, слабого лекарства общего применения для лечения повреждений.
   components:
   - type: SolutionContainerManager
     solutions:
@@ -87,8 +87,8 @@
 - type: entity
   parent: CMTricordrazineAutoInjector
   id: CMTricordrazineAutoInjectorNoSkill
-  name: first-aid autoinjector
-  description: An autoinjector loaded with a small dose of medicine for marines to treat themselves with.
+  name: автоинъектор первой помощи
+  description: Автоинъектор с небольшой дозой лекарства, которым морские пехотинцы могут лечиться самостоятельно.
   components:
   - type: Sprite
     sprite: _RMC14/Objects/Medical/auto_injectors.rsi
@@ -111,8 +111,8 @@
 - type: entity
   parent: CMAutoInjector
   id: CMKelotaneAutoInjector
-  name: kelotane autoinjector
-  description: An autoinjector loaded with 3 uses of Kelotane, a common burn medicine.
+  name: автоинъектор келотана
+  description: Автоинъектор с тремя порциями келотана, распространенного лекарства от ожогов.
   components:
   - type: SolutionContainerManager
     solutions:
@@ -125,8 +125,8 @@
 - type: entity
   parent: CMAutoInjector
   id: CMDexalinPlusAutoInjector
-  name: dexalin plus autoinjector
-  description: An autoinjector loaded with 3 uses of Dexalin+, designed to immediately oxygenate the entire body.
+  name: автоинъектор дексалина плюс
+  description: Автоинъектор с 3 порциями препарата дексалин+, предназначенного для мгновенного насыщения кислородом всего организма.
   components:
   - type: Hypospray
     transferAmount: 15
@@ -142,8 +142,8 @@
 - type: entity
   parent: CMAutoInjector
   id: CMBicaridineAutoInjector
-  name: bicaridine autoinjector
-  description: An autoinjector loaded with 3 uses of Bicaridine, a common brute and circulatory damage medicine.
+  name: автоинъектор бикаридина
+  description: Автоинъектор, заряженный тремя порциями бикаридина, распространенного препарата для восстановления кровообращения.
   components:
   - type: SolutionContainerManager
     solutions:
@@ -155,8 +155,8 @@
 - type: entity
   parent: CMAutoInjector
   id: CMInaprovalineAutoInjector
-  name: inaprovaline autoinjector
-  description: An autoinjector loaded with 3 uses of Inaprovaline, an emergency stabilization medicine for patients in critical condition.
+  name: автоинъектор инапровалина
+  description: Автоинъектор с тремя порциями инапровалина, препарата для экстренной стабилизации состояния пациентов в критическом состоянии.
   components:
   - type: Hypospray
     transferAmount: 30
@@ -173,8 +173,8 @@
 - type: entity
   parent: CMAutoInjector
   id: CMEpinephrineAutoInjector
-  name: epinephrine autoinjector
-  description: An autoinjector loaded with 3 uses of Epinephrine, better known as Adrenaline, a nerve stimulant useful in restarting the heart.
+  name: автоинъектор эпинефрина
+  description: Автоинъектор с тремя порциями эпинефрина, более известного как адреналин, - нервного стимулятора, помогающего перезапустить сердце.
   components:
   - type: Hypospray
     transferAmount: 5.25

@@ -1,12 +1,12 @@
 ﻿- type: tile
   parent: CMTileBase
   id: CMFloorStripedBase
-  name: tiles-cm-striped
+  name: плитка в полоску
 
 - type: tile
   parent: CMFloorStripedBase
   id: CMFloorPlating
-  name: tiles-cm-plating
+  name: стальное покрытие
   sprite: /Textures/_RMC14/Tiles/almayer/plating.png
 
 - type: tile

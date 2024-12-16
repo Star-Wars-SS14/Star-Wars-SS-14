@@ -1,8 +1,8 @@
 - type: entity
   parent: BaseItem
   id: RMCPowerCell
-  name: power cell
-  description: A rechargeable electrochemical power cell.
+  name: силовой элемент
+  description: Перезаряжаемый электрохимический элемент питания.
   components:
   - type: Sprite
     sprite: _RMC14/Objects/Power/cells.rsi
@@ -26,8 +26,8 @@
 - type: entity
   parent: RMCPowerCell
   id: RMCPowerCellCrap
-  name: We-Ya rechargeable mini-battery
-  description: Cheap, throwaway batteries provided by the Weston-Yamada Corporation. The 'rechargeable' feature was added to be more marketable to independent colonists hell-bent on 'using it till it disintegrates', a common sentiment on the frontier.
+  name: перезаряжаемая мини-батарейка Империи
+  description: Дешевые, одноразовые батарейки, поставляемые Империй. Функция «подзарядки» была добавлена для того, чтобы стать более популярной среди независимых колонистов, желающих «использовать его, пока он не распадется» - обычное настроение на фронтире.
   components:
   - type: Sprite
     layers:
@@ -68,7 +68,7 @@
 - type: entity
   parent: RMCPowerCell
   id: RMCPowerCellHigh
-  name: high-capacity power cell
+  name: высокомощный силовой элемент
   components:
   - type: Sprite
     layers:
@@ -92,7 +92,7 @@
 - type: entity
   parent: RMCPowerCell
   id: RMCPowerCellSuper
-  name: super-capacity power cell
+  name: сверхмощный энергетический элемент
   components:
   - type: Sprite
     layers:
@@ -116,7 +116,7 @@
 - type: entity
   parent: RMCPowerCell
   id: RMCPowerCellHyper
-  name: hyper-capacity power cell
+  name: сверхмощный силовой элемент
   components:
   - type: Sprite
     layers:
@@ -140,7 +140,7 @@
 - type: entity
   parent: RMCPowerCell
   id: RMCPowerCellInfinite
-  name: infinite-capacity power cell
+  name: админская батарейка
   components:
   - type: Sprite
     layers:
@@ -159,8 +159,8 @@
 - type: entity
   parent: RMCPowerCell
   id: RMCPowerCellPotato
-  name: potato battery
-  description: A rechargeable starch-based power cell.
+  name: картофельная батарея
+  description: Перезаряжаемый элемент питания на основе крахмала.
   components:
   - type: Sprite
     layers:

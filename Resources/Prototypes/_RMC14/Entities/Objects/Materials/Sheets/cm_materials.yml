@@ -2,14 +2,14 @@
 - type: material
   id: CMSteel
   stackEntity: CMSheetMetal
-  name: materials-metal
+  name: метал
   icon: { sprite: _RMC14/Objects/Materials/Sheets/metal.rsi, state: steel }
   price: 0.05
 
 - type: material
   id: CMPlasteel
   stackEntity: CMSheetPlasteel
-  name: materials-plasteel
+  name: пласталь
   icon: { sprite: _RMC14/Objects/Materials/Sheets/plasteel.rsi, state: plasteel }
   color: "#696969"
   price: 0.28
@@ -18,7 +18,7 @@
 - type: material
   id: CMGlass
   stackEntity: CMSheetGlass
-  name: materials-glass
+  name: стекло
   icon: { sprite: _RMC14/Objects/Materials/Sheets/glass.rsi, state: glass }
   color: "#a8ccd7"
   price: 0.075
@@ -26,7 +26,7 @@
 - type: material
   id: CMReinforcedGlass
   stackEntity: CMSheetGlassReinforced
-  name: materials-reinforced-glass
+  name: бронированное стекло
   icon: { sprite: _RMC14/Objects/Materials/Sheets/reinf_glass.rsi, state: rglass }
   color: "#549bb0"
   price: 0.16
@@ -36,7 +36,7 @@
 - type: material
   id: CMPhoronGlass
   stackEntity: CMSheetGlassPhoron
-  name: materials-phoron-glass
+  name: фороновое стекло
   icon: { sprite: _RMC14/Objects/Materials/Sheets/phoron_glass.rsi, state: phoronglass }
   color: "#b35989"
   price: 0.30
@@ -44,7 +44,7 @@
 - type: material
   id: CMPhoronGlassReinforced
   stackEntity: CMSheetGlassPhoronReinforced
-  name: materials-reinforced-phoron-glass
+  name: бронированное фороновое стекло
   icon: { sprite: _RMC14/Objects/Materials/Sheets/phoron_reinf_glass.rsi, state: phoronrglass }
   color: "#8c4069"
   price: 0.40
@@ -53,7 +53,7 @@
 - type: material
   id: CMPhoron
   stackEntity: CMSheetPhoron
-  name: materials-phoron
+  name: форон
   icon: { sprite: _RMC14/Objects/Materials/Sheets/phoron.rsi, state: phoron }
   color: "#7e009e"
   price: 0.2

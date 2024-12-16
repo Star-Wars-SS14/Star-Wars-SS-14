@@ -3,7 +3,7 @@
   - CMBaseDoor
   - CMBaseDoorConstructible
   id: CMAirlock
-  name: airlock
+  name: шлюз
   placement:
     mode: SnapgridCenter
   components:
@@ -61,7 +61,7 @@
 - type: entity
   parent: CMAirlock
   id: CMAirlockMaint
-  name: maintenance
+  name: обслуживание
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/maint_door.rsi
@@ -69,7 +69,7 @@
 - type: entity
   parent: CMAirlock
   id: CMAirlockSecure
-  name: secure airlock
+  name: защитный шлюз
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/secure_door.rsi
@@ -78,7 +78,7 @@
 - type: entity
   parent: CMAirlock
   id: CMAirlockGlass
-  name: glass airlock
+  name: стеклянный шлюз
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/personal_door_glass.rsi
@@ -141,7 +141,7 @@
 - type: entity
   parent: CMAirlockGlass
   id: CMAirlockPrep
-  name: preparations airlock
+  name: шлюз
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/prep_door.rsi
@@ -149,7 +149,7 @@
 - type: entity
   parent: CMAirlockPrep
   id: CMAirlockPrepAlpha
-  name: alpha squad preparations
+  name: шлюз
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/prep_door_alpha.rsi
@@ -157,7 +157,7 @@
 - type: entity
   parent: CMAirlockPrep
   id: CMAirlockPrepBravo
-  name: bravo squad preparations
+  name: шлюз
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/prep_door_bravo.rsi
@@ -165,7 +165,7 @@
 - type: entity
   parent: CMAirlockPrep
   id: CMAirlockPrepCharlie
-  name: charlie squad preparations
+  name: шлюз
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/prep_door_charlie.rsi
@@ -173,7 +173,7 @@
 - type: entity
   parent: CMAirlockPrep
   id: CMAirlockPrepDelta
-  name: delta squad preparations
+  name: шлюз
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/prep_door_delta.rsi

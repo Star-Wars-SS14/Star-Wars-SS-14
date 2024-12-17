@@ -4,10 +4,6 @@
   name: туалет
   suffix: Empty
   description: Устройство для удаления мелких отходов с вращательным моментом. Этот кажется удивительно чистым.
-  placement
-    mode: SnapgridCenter
-    snap:
-    - Disposal
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Furniture/toilet.rsi

@@ -60,7 +60,7 @@
     - HidesNose
 
 - type: entity
-  parent: ClothingHeadBase
+  parent: [ClothingHeadBase, RepublicRadioHelmet]
   id: SW_RebelHelmet
   name: Rebel helmet
   description: Helmet with automatic polarized lenses and communication unit.
@@ -75,4 +75,3 @@
           Slash: 0.5
           Heat: 0.5
           Cold: 0.5
-

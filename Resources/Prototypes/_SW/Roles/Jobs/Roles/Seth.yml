@@ -360,7 +360,7 @@
 - type: startingGear
   id: CitizenGear
   equipment:
-    jumpsuit: SW_CitizenClothing
+    outerClothing: SW_CitizenClothing
     shoes: SW_ClothingShoesBootsCitizen
     gloves: SW_ClothingHandsGlovesСitizen
 
@@ -383,7 +383,7 @@
     ears: ClothingHeadsetGrey
 
 - type: startingGear
-  id: RepublicSoliderGear
+  id: OldRepublicSoldierGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitRebel
     back: ClothingBackpackFilled

@@ -198,13 +198,7 @@ public sealed partial class StoreSystem
         if (!string.IsNullOrWhiteSpace(listing.ProductAction))
         {
             EntityUid? actionId;
-            // I guess we just allow duplicate actions?
-            // Allow duplicate actions and just have a single list buy for the buy-once ones.
-            if (!_mind.TryGetMind(buyer, out var mind, out _))
-                actionId = _actions.AddAction(buyer, listing.ProductAction);
-            else
-                actionId = _actionContainer.AddAction(mind, listing.ProductAction);
-
+            actionId = _actions.AddAction(buyer, listing.ProductAction); // SW edit
             // Add the newly bought action entity to the list of bought entities
             // And then add that action entity to the relevant product upgrade listing, if applicable
             if (actionId != null)
@@ -248,7 +242,7 @@ public sealed partial class StoreSystem
 
         if (listing.ProductEvent != null)
         {
-            RaiseLocalEvent(buyer, listing.ProductEvent, true);
+            RaiseLocalEvent(buyer, listing.ProductEvent);
         }
 
         //log dat shit.

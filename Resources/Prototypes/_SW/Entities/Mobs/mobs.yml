@@ -13,7 +13,7 @@
 ###The old republic
 ##Republic
 - type: entity
-  name: Rebuplic General
+  name: Republic General
   parent: BaseMobHuman
   id: SW_MobRepublic_General
   description: A miserable pile of secrets.
@@ -25,7 +25,7 @@
     - NanoTrasen
 
 - type: entity
-  name: Rebuplic Captain
+  name: Republic Captain
   parent: BaseMobHuman
   id: SW_MobRepublic_Captain
   description: A miserable pile of secrets.
@@ -37,7 +37,7 @@
     - NanoTrasen
 
 - type: entity
-  name: Rebuplic Lieutenant
+  name: Republic Lieutenant
   parent: BaseMobHuman
   id: SW_MobRepublic_Lieutenant
   description: A miserable pile of secrets.
@@ -50,7 +50,7 @@
 
 
 - type: entity
-  name: Rebuplic solider
+  name: Republic soldier
   parent: BaseMobHuman
   id: SW_MobRepublic_Soldier
   description: A miserable pile of secrets.
@@ -62,7 +62,7 @@
     - NanoTrasen
 
 - type: entity
-  name: Rebuplic Recruit
+  name: Republic Recruit
   parent: BaseMobHuman
   id: SW_MobRepublic_Recruit
   description: A miserable pile of secrets.
@@ -74,7 +74,7 @@
     - NanoTrasen
 
 - type: entity
-  name: Rebuplic Medic
+  name: Republic Medic
   parent: BaseMobHuman
   id: SW_MobRepublic_Medic
   description: A miserable pile of secrets.
@@ -87,7 +87,7 @@
 
 ##Republic_Commander
 - type: entity
-  name: Rebuplic Commander Commander
+  name: Republic Commander Commander
   parent: BaseMobHuman
   id: SW_MobRepublic_Commander_Commander
   description: A miserable pile of secrets.
@@ -99,7 +99,7 @@
     - NanoTrasen
 
 - type: entity
-  name: Rebuplic Commander Lieutenant
+  name: Republic Commander Lieutenant
   parent: BaseMobHuman
   id: SW_MobRepublic_Commander_Lieutenant
   description: A miserable pile of secrets.
@@ -111,7 +111,7 @@
     - NanoTrasen
 
 - type: entity
-  name: Rebuplic Commander Medic
+  name: Republic Commander Medic
   parent: BaseMobHuman
   id: SW_MobRepublic_Commander_Medic
   description: A miserable pile of secrets.
@@ -123,7 +123,7 @@
     - NanoTrasen
 
 - type: entity
-  name: Rebuplic Commander Stormtrooper
+  name: Republic Commander Stormtrooper
   parent: BaseMobHuman
   id: SW_MobRepublic_Commander_Stormtrooper
   description: A miserable pile of secrets.
@@ -135,7 +135,7 @@
     - NanoTrasen
 
 - type: entity
-  name: Rebuplic Commander Sniper
+  name: Republic Commander Sniper
   parent: BaseMobHuman
   id: SW_MobRepublic_Commander_Sniper
   description: A miserable pile of secrets.
@@ -337,7 +337,7 @@
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [RepublicSoldierGear]
   - type: NpcFactionMember
     factions:
     - Syndicate
@@ -449,13 +449,13 @@
     - NanoTrasen
 
 - type: entity
-  name: Rebuplic solider
+  name: Republic soldier
   parent: BaseMobHuman
-  id: SW_MobRebelSolider
+  id: SW_MobRebelsoldier
   description: A miserable pile of secrets.
   components:
   - type: Loadout
-    prototypes: [RepublicSoliderGear]
+    prototypes: [RepublicSoldierGear]
   - type: NpcFactionMember
     factions:
     - NanoTrasen

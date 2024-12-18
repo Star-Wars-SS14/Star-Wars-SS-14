@@ -383,7 +383,7 @@
     ears: ClothingHeadsetGrey
 
 - type: startingGear
-  id: RepublicSoliderGear
+  id: RepublicSoldierGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitRebel
     back: ClothingBackpackFilled

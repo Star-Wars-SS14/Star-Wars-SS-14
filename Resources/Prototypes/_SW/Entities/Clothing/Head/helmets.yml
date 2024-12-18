@@ -66,9 +66,9 @@
   description: Helmet with automatic polarized lenses and communication unit.
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/rebel_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/rebelhelmet.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/rebel_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/rebelhelmet.rsi
   - type: Armor
     modifiers:
         coefficients:

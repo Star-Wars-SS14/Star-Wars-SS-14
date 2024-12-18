@@ -5,9 +5,9 @@
   components:
   - type: BreathMask
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/Havok/helmet_republic_gunner.rsi
+    sprite: _SW/Clothing/Head/Helmets/Havok/helmetrepublicgunner.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/Havok/helmet_republic_gunner.rsi
+    sprite: _SW/Clothing/Head/Helmets/Havok/helmetrepublicgunner.rsi
   - type: PressureProtection
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000
@@ -18,9 +18,9 @@
   name: medical havok helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/Havok/medical_helmet_republic_gunner.rsi
+    sprite: _SW/Clothing/Head/Helmets/Havok/medicalhelmetrepublicgunner.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/Havok/medical_helmet_republic_gunner.rsi
+    sprite: _SW/Clothing/Head/Helmets/Havok/medicalhelmetrepublicgunner.rsi
 
 - type: entity
   parent: SW_ClothingHeadHavokHelmet
@@ -28,9 +28,9 @@
   name: sniper havok helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/Havok/sniper_helmet_republic_gunner.rsi
+    sprite: _SW/Clothing/Head/Helmets/Havok/sniperhelmetrepublicgunner.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/Havok/sniper_helmet_republic_gunner.rsi
+    sprite: _SW/Clothing/Head/Helmets/Havok/sniperhelmetrepublicgunner.rsi
 
 - type: entity
   parent: SW_ClothingHeadHavokHelmet
@@ -38,9 +38,9 @@
   name: lieutenant havok helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/Havok/lieutenant_helmet_republic_gunner.rsi
+    sprite: _SW/Clothing/Head/Helmets/Havok/lieutenanthelmetrepublicgunner.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/Havok/lieutenant_helmet_republic_gunner.rsi
+    sprite: _SW/Clothing/Head/Helmets/Havok/lieutenanthelmetrepublicgunner.rsi
 
 - type: entity
   parent: SW_ClothingHeadHavokHelmet
@@ -48,7 +48,7 @@
   name: commander havok helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/Havok/commander_helmet_republic_gunner.rsi
+    sprite: _SW/Clothing/Head/Helmets/Havok/commanderhelmetrepublicgunner.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/Havok/commander_helmet_republic_gunner.rsi
+    sprite: _SW/Clothing/Head/Helmets/Havok/commanderhelmetrepublicgunner.rsi
 

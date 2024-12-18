@@ -1,4 +1,4 @@
-using Content.Server.UserInterface;
+using Content.Shared._SW;
 using Content.Shared.Communications;
 using Robust.Shared.Audio;
 
@@ -55,6 +55,20 @@ namespace Content.Server.Communications
         [ViewVariables]
         [DataField]
         public bool CanShuttle = true;
+
+        /// <summary>
+        /// Can call reinforcements
+        /// </summary>
+        [ViewVariables]
+        [DataField]
+        public bool CanReinforcements;
+
+        /// <summary>
+        /// SW Fraction Type
+        /// </summary>
+        [ViewVariables]
+        [DataField("fractionType")]
+        public StarWarsFractionType SwFractionType;
 
         /// <summary>
         /// Announce on all grids (for nukies)

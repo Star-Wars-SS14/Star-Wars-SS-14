@@ -13,5 +13,9 @@
 
         <RichTextLabel Name="CountdownLabel" VerticalExpand="True" />
         <Button Name="EmergencyShuttleButton" Text="Placeholder Text" Access="Public" />
+
+        <Control MinSize="10 10" />
+
+        <Button Name="ReinforcementsShuttleButton" Text="Запросить подкрепление" Access="Public" />
     </BoxContainer>
 </controls:FancyWindow>

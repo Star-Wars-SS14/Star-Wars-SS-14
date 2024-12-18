@@ -62,6 +62,7 @@ namespace Content.Client.Communications.UI
 
             EmergencyShuttleButton.OnPressed += (_) => Owner.EmergencyShuttleButtonPressed();
             EmergencyShuttleButton.Disabled = !owner.CanCall;
+            EmergencyShuttleButton.Visible = false; // Отключена в связи с ненадобностью
 
             ReinforcementsShuttleButton.OnPressed += (_) => Owner.ReinforcementsButtonPressed();
             ReinforcementsShuttleButton.Disabled = !owner.CanReinforcements;

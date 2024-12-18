@@ -11,7 +11,7 @@
 
         <Control MinSize="10 10" />
 
-        <RichTextLabel Name="CountdownLabel" VerticalExpand="True" />
+        <RichTextLabel Name="CountdownLabel" VerticalExpand="True" Visible="False" />
         <Button Name="EmergencyShuttleButton" Text="Placeholder Text" Access="Public" />
 
         <Control MinSize="10 10" />

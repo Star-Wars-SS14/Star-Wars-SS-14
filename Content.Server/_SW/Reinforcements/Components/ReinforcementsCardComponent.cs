@@ -11,4 +11,7 @@ public sealed partial class ReinforcementsCardComponent : Component
 
     [DataField]
     public SoundSpecifier ConsoleSoundActivated = new SoundPathSpecifier("/Audio/Misc/siren.ogg");
+
+    [DataField]
+    public SoundSpecifier ConsoleSoundDeActivated = new SoundPathSpecifier("/Audio/Misc/notice2.ogg");
 }

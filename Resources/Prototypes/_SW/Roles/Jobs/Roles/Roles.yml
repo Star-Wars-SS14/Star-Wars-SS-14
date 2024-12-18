@@ -15,7 +15,7 @@
 
 - type: job
   id: SW_Sobrik_Officer
-  name: Медик Гарнизона
+  name: Офицер Гарнизона
   playTimeTracker: Job_Sobrik_Officer
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -29,7 +29,7 @@
 
 - type: job
   id: SW_Sobrik_Medic
-  name: Офицер Гарнизона
+  name: Медик Гарнизона
   playTimeTracker: Job_Sobrik_Medic
   requirements:
   - !type:OverallPlaytimeRequirement

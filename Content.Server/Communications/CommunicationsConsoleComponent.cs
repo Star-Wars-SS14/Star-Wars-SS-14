@@ -71,6 +71,13 @@ namespace Content.Server.Communications
         public StarWarsFractionType SwFractionType;
 
         /// <summary>
+        /// SW Data
+        /// </summary>
+        [ViewVariables]
+        [DataField("reinforcementCalled")]
+        public bool ReinforcementsIsCalled = false;
+
+        /// <summary>
         /// Announce on all grids (for nukies)
         /// </summary>
         [DataField]

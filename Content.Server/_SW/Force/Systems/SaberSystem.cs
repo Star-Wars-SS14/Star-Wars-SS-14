@@ -72,6 +72,7 @@ public sealed class SaberSystem : EntitySystem
             return;
 
         args.AddAction(ref component.PrivateSaberActionEntity, component.PrivateSaberAction);
+        args.AddAction(ref component.CallSaberActionEntity, component.CallSaberAction);
     }
 
     private void OnSaberEquipped(EntityUid uid, SaberComponent component, GettingPickedUpAttemptEvent args)

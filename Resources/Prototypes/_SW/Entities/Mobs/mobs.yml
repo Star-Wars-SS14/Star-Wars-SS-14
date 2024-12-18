@@ -440,6 +440,10 @@
   - type: Loadout
     prototypes: [JediGear]
   - type: LightForce
+    thresholds:
+      0: Alive
+      300: Critical
+      400: Dead
   - type: UserInterface
     interfaces:
       enum.StoreUiKey.Key:
@@ -481,6 +485,11 @@
   components:
   - type: Loadout
     prototypes: [SithGear]
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      300: Critical
+      400: Dead
   - type: DarkForce
   - type: UserInterface
     interfaces:

@@ -168,6 +168,7 @@ namespace Content.Server.Communications
             _uiSystem.SetUiState(uid, CommunicationsConsoleUiKey.Key, new CommunicationsConsoleInterfaceState(
                 CanAnnounce(comp),
                 CanCallOrRecall(comp),
+                CanReinforcements(comp),
                 levels,
                 currentLevel,
                 currentDelay,
@@ -178,6 +179,11 @@ namespace Content.Server.Communications
         private static bool CanAnnounce(CommunicationsConsoleComponent comp)
         {
             return comp.AnnouncementCooldownRemaining <= 0f;
+        }
+
+        private static bool CanReinforcements(CommunicationsConsoleComponent comp)
+        {
+            return comp.CanReinforcements;
         }
 
         private bool CanUse(EntityUid user, EntityUid console)

@@ -1,4 +1,5 @@
-﻿using Content.Shared.CCVar;
+﻿using Content.Shared._SW;
+using Content.Shared.CCVar;
 using Content.Shared.Chat;
 using Content.Shared.Communications;
 using Robust.Shared.Configuration;
@@ -21,6 +22,9 @@ namespace Content.Client.Communications.UI
 
         [ViewVariables]
         public bool CanCall { get; private set; }
+
+        [ViewVariables]
+        public bool CanReinforcements { get; private set; }
 
         [ViewVariables]
         public bool CountdownStarted { get; private set; }
@@ -66,6 +70,11 @@ namespace Content.Client.Communications.UI
                 CallShuttle();
         }
 
+        public void ReinforcementsButtonPressed()
+        {
+            CallReinforcements();
+        }
+
         public void AnnounceButtonPressed(string message)
         {
             var maxLength = _cfg.GetCVar(CCVars.ChatMaxAnnouncementLength);
@@ -83,6 +92,11 @@ namespace Content.Client.Communications.UI
             SendMessage(new CommunicationsConsoleCallEmergencyShuttleMessage());
         }
 
+        public void CallReinforcements()
+        {
+            SendMessage(new ReinforcementsBroadcastMessage());
+        }
+
         public void RecallShuttle()
         {
             SendMessage(new CommunicationsConsoleRecallEmergencyShuttleMessage());
@@ -98,6 +112,7 @@ namespace Content.Client.Communications.UI
             CanAnnounce = commsState.CanAnnounce;
             CanBroadcast = commsState.CanBroadcast;
             CanCall = commsState.CanCall;
+            CanReinforcements = commsState.CanReinforcements;
             _expectedCountdownTime = commsState.ExpectedCountdownEnd;
             CountdownStarted = commsState.CountdownStarted;
             AlertLevelSelectable = commsState.AlertLevels != null && !float.IsNaN(commsState.CurrentAlertDelay) && commsState.CurrentAlertDelay <= 0;
@@ -109,6 +124,7 @@ namespace Content.Client.Communications.UI
                 _menu.UpdateAlertLevels(commsState.AlertLevels, CurrentLevel);
                 _menu.AlertLevelButton.Disabled = !AlertLevelSelectable;
                 _menu.EmergencyShuttleButton.Disabled = !CanCall;
+                _menu.ReinforcementsShuttleButton.Disabled = !CanReinforcements;
                 _menu.AnnounceButton.Disabled = !CanAnnounce;
                 _menu.BroadcastButton.Disabled = !CanBroadcast;
             }
@@ -117,7 +133,8 @@ namespace Content.Client.Communications.UI
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);
-            if (!disposing) return;
+            if (!disposing)
+                return;
 
             _menu?.Dispose();
         }

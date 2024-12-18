@@ -18,9 +18,9 @@
   name: lieutenant imperial helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/LT_imperial_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/lt_imperial_helmet.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/LT_imperial_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/lt_imperial_helmet.rsi
 
 - type: entity
   parent: SW_ClothingHeadImperialHelmet
@@ -28,9 +28,9 @@
   name: major imperial helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/MR_impertial_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/mrimperialhelmet.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/MR_impertial_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/mrimperialhelmet.rsi
 
 - type: entity
   parent: SW_ClothingHeadImperialHelmet

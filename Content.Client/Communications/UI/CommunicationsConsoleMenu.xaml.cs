@@ -48,6 +48,7 @@ namespace Content.Client.Communications.UI
 
             BroadcastButton.OnPressed += (_) => Owner.BroadcastButtonPressed(Rope.Collapse(MessageInput.TextRope));
             BroadcastButton.Disabled = !owner.CanBroadcast;
+            BroadcastButton.Visible = false; // Отключена в связи с ненадобностью
 
             AlertLevelButton.OnItemSelected += args =>
             {
@@ -61,6 +62,11 @@ namespace Content.Client.Communications.UI
 
             EmergencyShuttleButton.OnPressed += (_) => Owner.EmergencyShuttleButtonPressed();
             EmergencyShuttleButton.Disabled = !owner.CanCall;
+            EmergencyShuttleButton.Visible = false; // Отключена в связи с ненадобностью
+
+            ReinforcementsShuttleButton.OnPressed += (_) => Owner.ReinforcementsButtonPressed();
+            ReinforcementsShuttleButton.Disabled = !owner.CanReinforcements;
+            ReinforcementsShuttleButton.Modulate = owner.CanReinforcements ? Color.DarkRed : Color.Red;
 
             UpdateCountdown();
             Timer.SpawnRepeating(1000, UpdateCountdown, _timerCancelTokenSource.Token);

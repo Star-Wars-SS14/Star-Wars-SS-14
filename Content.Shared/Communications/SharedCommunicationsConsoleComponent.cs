@@ -13,16 +13,18 @@ namespace Content.Shared.Communications
         public readonly bool CanAnnounce;
         public readonly bool CanBroadcast = true;
         public readonly bool CanCall;
+        public readonly bool CanReinforcements;
         public readonly TimeSpan? ExpectedCountdownEnd;
         public readonly bool CountdownStarted;
         public List<string>? AlertLevels;
         public string CurrentAlert;
         public float CurrentAlertDelay;
 
-        public CommunicationsConsoleInterfaceState(bool canAnnounce, bool canCall, List<string>? alertLevels, string currentAlert, float currentAlertDelay, TimeSpan? expectedCountdownEnd = null)
+        public CommunicationsConsoleInterfaceState(bool canAnnounce, bool canCall, bool canReinforcements, List<string>? alertLevels, string currentAlert, float currentAlertDelay, TimeSpan? expectedCountdownEnd = null)
         {
             CanAnnounce = canAnnounce;
             CanCall = canCall;
+            CanReinforcements = canReinforcements;
             ExpectedCountdownEnd = expectedCountdownEnd;
             CountdownStarted = expectedCountdownEnd != null;
             AlertLevels = alertLevels;

@@ -13,11 +13,11 @@
   - type: Armor
     modifiers:
       coefficients:
-        Caustic: 0.1
-        Heat: 0.6
-        Blunt: 0.2
-        Slash: 0.4
-        Piercing: 0.4
+        Caustic: 0.6
+        Heat: 0.5
+        Blunt: 0.4
+        Slash: 0.7
+        Piercing: 0.7
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.95
@@ -29,9 +29,9 @@
   name: mandalorian suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/Mandalorian.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/mandalorian.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/Mandalorian.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/mandalorian.rsi
 
 - type: entity
   parent: SW_MandalorianRecruitSuit
@@ -39,9 +39,9 @@
   name: veteran mandalorian suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVeteran.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/mandalorianveteran.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVeteran.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/mandalorianveteran.rsi
   - type: Armor
     modifiers:
       coefficients:

@@ -76,7 +76,7 @@
   description: Мандалорцы, также называющие себя мандо'аде или «дети Мандалора» — воинственный, преимущественно кочевой народ состоявший из разумных существ вне зависимости от расы или пола, объединённых общей культурой.
   components:
   - type: Sprite
-    sprite: _SW/Structures/Decoration/bannerMandalorian.rsi
+    sprite: _SW/Structures/Decoration/bannermandalorian.rsi
     state: banner
 
 - type: entity

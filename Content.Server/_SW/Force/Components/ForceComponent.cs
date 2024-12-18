@@ -38,9 +38,6 @@ public partial class ForceComponent : Component
 
 public sealed partial class MasteryTypeCondition : ListingCondition
 {
-    /// <summary>
-    /// The amount of times this listing can be purchased.
-    /// </summary>
     [DataField("masteryType", required: true)]
     public string MasteryType;
 

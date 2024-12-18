@@ -40,5 +40,8 @@
     stock: 1
   - !type:MasteryTypeCondition
     masteryType: "dark"
+  - !type:BuyBeforeCondition
+    whitelist:
+      - MasteryShopLighting
   icon: /Textures/_SW/Store/lightingupgrade.png
   productEvent: !type:MasteryLightingUpgradeEvent

@@ -49,7 +49,7 @@ public sealed partial class ForceSystem
         StoreComponent storeComponent,
         MasteryLightingUpgradeEvent args)
     {
-        if(!TryComp<ForceComponent>(player, out _) || !TryComp<DarkForceComponent>(player, out var darkForceComponent))
+        if (!TryComp<ForceComponent>(player, out _) || !TryComp<DarkForceComponent>(player, out var darkForceComponent))
             return;
 
         darkForceComponent.DamageLighting += darkForceComponent.BonusDamageFromUpgrade;

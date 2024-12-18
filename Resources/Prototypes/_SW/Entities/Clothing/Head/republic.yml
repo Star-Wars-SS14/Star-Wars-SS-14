@@ -18,9 +18,9 @@
   name: lieutenant republic helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/LT_republic_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/lt_republic_helmet.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/LT_republic_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/lt_republic_helmet.rsi
 
 - type: entity
   parent: SW_ClothingHeadRepublicHelmet
@@ -28,9 +28,9 @@
   name: captain republic helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/CAP_republic_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/cap_republic_helmet.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/CAP_republic_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/cap_republic_helmet.rsi
 
 - type: entity
   parent: SW_ClothingHeadRepublicHelmet
@@ -38,7 +38,7 @@
   name: general republic helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/GEN_republic_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/gen_republic_helmet.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/GEN_republic_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/gen_republic_helmet.rsi
 

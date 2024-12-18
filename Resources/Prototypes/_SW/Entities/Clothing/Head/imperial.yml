@@ -5,9 +5,9 @@
   components:
   - type: BreathMask
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/imperialhelmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/imperial_helmet.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/imperialhelmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/imperial_helmet.rsi
   - type: PressureProtection
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000
@@ -18,9 +18,9 @@
   name: lieutenant imperial helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/ltimperialhelmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/lt_imperial_helmet.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/ltimperialhelmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/lt_imperial_helmet.rsi
 
 - type: entity
   parent: SW_ClothingHeadImperialHelmet
@@ -38,7 +38,7 @@
   name: medic imperial helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/medicimperialhelmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/medic_imperial_helmet.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/medicimperialhelmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/medic_imperial_helmet.rsi
 

@@ -349,3 +349,12 @@ CrateJanitorExplosive: ClosetJanitorBombFilled
 
 # 2024-05-27
 DoorRemoteFirefight: null
+
+# SW 18-12-2024
+
+SW_RadioHandheldBlackSun: null
+SW_RadioHandheldEmpire: ClothingHeadsetAllEmpire
+SW_RadioHandheldExchange: null
+SW_RadioHandheldHavok: ClothingHeadsetHavok
+SW_RadioHandheldImperialIntelligence: ClothingHeadsetAllEmpire
+SW_RadioHandheldRepublic: ClothingHeadsetRepublic

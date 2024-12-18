@@ -70,6 +70,9 @@ namespace Content.Server.Communications
         [DataField("fractionType")]
         public StarWarsFractionType SwFractionType;
 
+        [DataField]
+        public SoundSpecifier ConsoleSoundReinforcements = new SoundPathSpecifier("/Audio/Misc/siren.ogg");
+
         /// <summary>
         /// SW Data
         /// </summary>

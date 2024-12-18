@@ -5,6 +5,7 @@ using Content.Server.Popups;
 using Content.Shared._SW;
 using Content.Shared.Interaction;
 using Content.Shared.Popups;
+using Robust.Shared.Audio;
 
 namespace Content.Server._SW.Reinforcements;
 
@@ -44,7 +45,7 @@ public sealed class ReinforcementsSystem : EntitySystem
         var sound = communicationsConsoleComponent.CanReinforcements ? component.ConsoleSoundActivated : component.ConsoleSoundDeActivated;
         var locInfo = GetLocInfo(communicationsConsoleComponent, component);
 
-        _chatSystem.DispatchGlobalAnnouncement($"Консоль управления {locInfo["fractionLoc"]} {locInfo["status"]} кнопку вызова подкреплений!", "Система общего взаимодействия 'Сатурн-09'", colorOverride: Color.IndianRed, announcementSound: sound);
+        _chatSystem.DispatchGlobalAnnouncement($"Зафиксирована попытка {locInfo["status"]} кнопки вызова подкреплений с консоли управления {locInfo["fractionLoc"]}! Информация на проверке.", "Система общего взаимодействия 'Сатурн-09'", colorOverride: Color.IndianRed, announcementSound: sound);
     }
 
     private void OnReinforcementsCall(EntityUid console,
@@ -57,12 +58,16 @@ public sealed class ReinforcementsSystem : EntitySystem
         if(component.ReinforcementsIsCalled)
             return;
 
+        var locInfo = GetLocInfo(component);
 
+        _chatSystem.DispatchGlobalAnnouncement($"Зафиксирована попытка запроса подкреплений с консоли управления {locInfo["fractionLoc"]}. Информация уточняется..", "Система общего взаимодействия 'Сатурн-09'", colorOverride: Color.MediumVioletRed, announcementSound: component.ConsoleSoundReinforcements);
     }
 
-    private Dictionary<string, string> GetLocInfo(CommunicationsConsoleComponent communicationsConsoleComponent, ReinforcementsCardComponent component)
+    private Dictionary<string, string> GetLocInfo(CommunicationsConsoleComponent communicationsConsoleComponent,
+        ReinforcementsCardComponent? component = null)
+
     {
-        var status = communicationsConsoleComponent.CanReinforcements ? "активировала" : "деактивировала";
+        var status = communicationsConsoleComponent.CanReinforcements ? "активации" : "деактивации";
         Dictionary<StarWarsFractionType, string> fractionLoc = new()
         {
             { StarWarsFractionType.Empire, "Империи" },
@@ -72,8 +77,8 @@ public sealed class ReinforcementsSystem : EntitySystem
 
         return new Dictionary<string, string>
         {
-            {"status", status},
-            {"fractionLoc", fractionLoc[component.FractionType]}
+            { "status", status },
+            { "fractionLoc", fractionLoc[component?.FractionType ?? communicationsConsoleComponent.SwFractionType] }
         };
     }
 }

@@ -2,7 +2,7 @@
   abstract: true
   parent: CMTileBase
   id: CMFloorWoodBase
-  name: tiles-cm-wood
+  name: деревянное покрытие
   footstepSounds:
     collection: FootstepWood
   barestepSounds:

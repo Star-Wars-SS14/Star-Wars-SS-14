@@ -1,8 +1,8 @@
 - type: entity
   parent: BaseStructureDynamic
   id: RMCSmallFloodlight
-  name: small floodlight
-  description: A small bit of light in the darkness.
+  name: небольшой прожектор
+  description: Маленький кусочек света во тьме.
   components:
   - type: Sprite
     noRot: true
@@ -20,7 +20,7 @@
   - type: PointLight
     radius: 6
     energy: 5
-    netsync: false      
+    netsync: false
   - type: Destructible
     thresholds:
     - trigger:
@@ -56,10 +56,8 @@
 - type: entity
   parent: BaseStructure
   id: RMCTallFloodlight
-  name: tall floodlight
-  description: A pillar of light in the darkness.
-  placement:
-    mode: SnapgridCenter
+  name: высокий прожектор
+  description: Столб света во тьме.
   components:
   - type: Sprite
     noRot: true
@@ -80,24 +78,13 @@
   - type: PointLight
     radius: 10
     energy: 8
-    netsync: false    
+    netsync: false
   - type: Destructible
     thresholds:
     - trigger:
         !type:DamageTrigger
         damage: 150
       behaviors:
-      - !type:PlaySoundBehavior
-        sound:
-          collection: MetalGlassBreak
-      - !type:SpawnEntitiesBehavior
-        spawn:
-          CMSheetMetal1:
-            min: 1
-            max: 1
-          CMSheetGlass1:
-            min: 1
-            max: 1
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
   - type: Physics
@@ -118,12 +105,12 @@
 - type: entity
   parent: BaseStructure
   id: RMCFloodlightBroken
-  name: tall broken floodlight
-  description: A pasted on note says 'To fix, unscrew the panel, crowbar out the damaged assembly, weld it fixed, add 2 cable, then close the panel.'
+  name: разбитый прожектор
+  description: В наклеенной записке говорится Чтобы починить, открутите панель, выньте ломом поврежденный узел, заварите его, добавьте 2 кабеля, затем закройте панель.
   components:
   - type: Damageable
     damageContainer: Inorganic
-    damageModifierSet: Metallic  
+    damageModifierSet: Metallic
   - type: Destructible
     thresholds:
     - trigger:
@@ -142,7 +129,7 @@
             min: 1
             max: 1
       - !type:DoActsBehavior
-        acts: [ "Destruction" ]   
+        acts: [ "Destruction" ]
   - type: Sprite
     noRot: true
     sprite: _RMC14/Objects/Misc/Lights/floodlightbig.rsi
@@ -162,15 +149,15 @@
         mask:
         - MachineMask
         layer:
-        - WallLayer       
+        - WallLayer
 
 # LZ Floodlights
 
 - type: entity
   parent: BaseStructure
   id: RMCLZFloodlight
-  name: LZ floodlight
-  description: An indestructible bit of light in the darkness. Never seems to run out of power.
+  name: имперский прожектор
+  description: Кажется, что у такого энергия никогда не иссякнет.
   placement:
     mode: SnapgridCenter
   components:

@@ -20,8 +20,8 @@
 - type: entity
   parent: CMShardBase
   id: CMShardGlass
-  name: glass shard
-  description: A shard of broken glass. Could probably be used as ... a throwing weapon?
+  name: осколок стекла
+  description: Осколок разбитого стекла. Может быть использован как... метательное оружие?
   components:
   - type: Tag
     tags:
@@ -31,8 +31,8 @@
 - type: entity
   parent: CMShardBase
   id: CMShardPhoron
-  name: phoron shard
-  description: A shard of broken phoron glass. Considerably tougher than normal glass shards. Apparently not tough enough to be a window.
+  name: осколок форона
+  description: Осколок разбитого форонского стекла. Значительно прочнее, чем обычные осколки стекла. Но, видимо, недостаточно прочный, чтобы стать окном.
   components:
   - type: Sprite
     layers:

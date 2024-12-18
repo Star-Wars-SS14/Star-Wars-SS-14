@@ -5,7 +5,7 @@
   minPlayers: 0
   maxPlayers: 200
   stations:
-    Frame:
+    SWBalmora:
       stationProto: StandardNanotrasenStation
       components:
       - type: StationNameSetup

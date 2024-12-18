@@ -1,13 +1,9 @@
 - type: entity
   parent: SeatBase
   id: CMToiletEmpty
-  name: toilet
+  name: туалет
   suffix: Empty
-  description: The HT-451, a torque rotation-based, waste disposal unit for small matter. This one seems remarkably clean.
-  placement:
-    mode: SnapgridCenter
-    snap:
-    - Disposal
+  description: Устройство для удаления мелких отходов с вращательным моментом. Этот кажется удивительно чистым.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Furniture/toilet.rsi

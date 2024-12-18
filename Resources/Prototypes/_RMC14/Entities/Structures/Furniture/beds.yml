@@ -1,8 +1,8 @@
 ﻿- type: entity
   parent: Bed
   id: CMBed
-  name: bed
-  description: A mattress seated on a rectangular metallic frame. This is used to support a lying person in a comfortable manner, notably for regular sleep. Ancient technology, but still useful.
+  name: кровать
+  description: Матрас на прямоугольном металлическом каркасе. Используется для удобной поддержки лежащего человека, в частности, для регулярного сна. Древняя технология, но все еще полезная.
   components:
   - type: Transform
     anchored: true

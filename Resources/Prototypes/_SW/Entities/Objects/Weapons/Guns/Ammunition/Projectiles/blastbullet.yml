@@ -7,7 +7,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 12
+        Heat: 38
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
     layers:
@@ -23,7 +23,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 15
+        Heat: 70
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
     layers:
@@ -39,7 +39,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 7
+        Heat: 21
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/green_ammo_casing.rsi
     layers:
@@ -55,7 +55,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 2.5
+        Heat: 32
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/green_ammo_casing.rsi
     layers:
@@ -71,7 +71,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 3
+        Heat: 28
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
     layers:
@@ -87,7 +87,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 8
+        Heat: 24
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
     layers:
@@ -103,7 +103,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 7
+        Heat: 75
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
     layers:
@@ -119,7 +119,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 7
+        Heat: 28
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
     layers:
@@ -135,7 +135,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 5
+        Heat: 20
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
     layers:
@@ -151,7 +151,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 14
+        Heat: 60
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
     layers:

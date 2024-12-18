@@ -4,8 +4,8 @@
 - type: entity
   parent: RollerBed
   id: CMRollerBed
-  name: roller bed
-  description: A collapsed roller bed that can be carried around.
+  name: кровать на роликах
+  description: Складная кровать на роликах, которую можно носить с собой.
   components:
   - type: Tag
     tags:
@@ -49,8 +49,8 @@
 - type: entity
   parent: CMRollerBed
   id: CMPortableSurgicalBed
-  name: portable surgical bed
-  description: A collapsible surgical bed. It's not perfect, but it's the best you'll get short of an actual surgical table.
+  name: переносная хирургическая кровать
+  description: Складная хирургическая кровать. Она не идеальна, но это лучшее, что вы можете получить, не считая настоящего хирургического стола.
   components:
   - type: Sprite
     layers:

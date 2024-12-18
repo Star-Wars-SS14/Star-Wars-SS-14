@@ -1,8 +1,8 @@
 - type: entity
   parent: BodyBag
   id: CMBodyBag
-  name: body bag
-  description: A folded bag designed for the storage and transportation of cadavers.
+  name: мешок для тела
+  description: Сложенный мешок, предназначенный для хранения и транспортировки трупов.
   components:
   - type: Sprite
     sprite: _RMC14/Objects/Medical/bodybags.rsi
@@ -33,8 +33,8 @@
 - type: entity
   parent: CMBodyBag
   id: CMStasisBag # TODO RMC14 This needs to halt infected timers or something
-  name: stasis bag
-  description: A folded, reusable bag designed to prevent additional damage to an occupant.
+  name: стазисный мешок
+  description: Сложенный мешок многоразового использования, предназначенный для предотвращения дополнительных повреждений пассажира.
   components:
   - type: Sprite
     sprite: _RMC14/Objects/Medical/stasisbag.rsi
@@ -65,8 +65,8 @@
 - type: entity
   parent: CMBodyBag
   id: RMCThermalTarp # TODO RMC14 This needs to halt infected timers or something
-  name: V3 reactive thermal tarp
-  description: A more compact and improved version of the V2 thermal tarp, intended primarily for the transportation of deceased or wounded marines. It has improved cloaking technology than earlier models, allowing it to cloak to a greater degree and faster, but can only be used with special training.
+  name: реактивный термобрезент V3
+  description: Более компактная и улучшенная версия термобрезента V2, предназначенная в первую очередь для транспортировки умерших или раненых солдат. Он обладает более совершенной технологией маскировки, чем предыдущие модели, что позволяет ему маскироваться в большей степени и быстрее, но использовать его можно только при специальной подготовке.
   components:
   - type: Sprite
     sprite: _RMC14/Objects/Medical/bodybags.rsi

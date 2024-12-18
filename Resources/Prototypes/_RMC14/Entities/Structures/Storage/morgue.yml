@@ -1,8 +1,8 @@
 - type: entity
   parent: Morgue
   id: CMMorgue
-  name: morgue
-  description: Used to store bodies until someone fetches them.
+  name: морг
+  description: Используется для хранения тел, пока их не заберут.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/morgue.rsi
@@ -39,8 +39,8 @@
 - type: entity
   parent: Crematorium
   id: CMCrematorium
-  name: crematorium
-  description: A human incinerator. Works well on barbecue nights.
+  name: крематорий
+  description: Человеческий мусоросжигатель. Хорошо работает в ночь барбекю.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Storage/morgue.rsi

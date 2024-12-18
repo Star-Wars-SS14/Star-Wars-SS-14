@@ -1,7 +1,7 @@
 ﻿- type: entity
   abstract: true
   id: CMFilingCabinetBase
-  description: A large cabinet with drawers.
+  description: Большой шкаф с выдвижными ящиками.
   suffix: Empty
   components:
   - type: Sprite
@@ -11,7 +11,7 @@
 - type: entity
   parent: [ CMFilingCabinetBase, filingCabinet ]
   id: CMFilingCabinet
-  name: filing cabinet
+  name: картотечный шкаф
   components:
   - type: Sprite
     state: filingcabinet
@@ -23,7 +23,7 @@
 - type: entity
   parent: [ CMFilingCabinetBase, filingCabinetTall ]
   id: CMFilingCabinetTall
-  name: tall filing cabinet
+  name: высокий картотечный шкаф
   components:
   - type: Sprite
     state: tallcabinet
@@ -35,7 +35,7 @@
 - type: entity
   parent: CMFilingCabinetTall
   id: CMFilingCabinetTallWood
-  name: tall wooden filing cabinet
+  name: высокий деревянный шкаф для бумаг
   components:
   - type: Sprite
     state: tallcabinet
@@ -47,7 +47,7 @@
 - type: entity
   parent: [ CMFilingCabinetBase, filingCabinetDrawer ]
   id: CMFilingCabinetChest
-  name: chest drawer
+  name: ящик комода
   components:
   - type: Sprite
     state: chestdrawer
@@ -59,7 +59,7 @@
 - type: entity
   parent: CMFilingCabinetChest
   id: CMFilingCabinetChestWood
-  name: wooden chest drawer
+  name: деревянный комод
   components:
   - type: Sprite
     state: chestdrawer

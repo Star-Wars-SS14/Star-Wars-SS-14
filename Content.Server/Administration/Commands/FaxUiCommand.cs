@@ -5,7 +5,7 @@ using Robust.Shared.Console;
 
 namespace Content.Server.Administration.Commands;
 
-[AdminCommand(AdminFlags.Fun)]
+[AdminCommand(AdminFlags.Spawn)]
 public sealed class FaxUiCommand : IConsoleCommand
 {
     public string Command => "faxui";

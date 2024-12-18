@@ -1,6 +1,6 @@
 - type: stack
   id: RMCCable
-  name: cable coil
+  name: катушка кабеля
   icon: { sprite: _RMC14/Objects/Power/coil.rsi, state: coil1 }
   spawn: RMCCableCoil
   maxCount: 30
@@ -8,8 +8,8 @@
 - type: entity
   parent: BaseItem
   id: RMCCableCoil
-  name: cable coil
-  description: A coil of power cable.
+  name: катушка кабеля
+  description: Катушка силового кабеля.
   suffix: Full
   components:
   - type: Sprite

@@ -17,8 +17,8 @@
   parent: CMBaseHealingItem
   abstract: true
   id: CMOintment
-  name: ointment
-  description: Used to treat those nasty burns. Less effective on caustic burns.
+  name: мазь
+  description: Используется для лечения неприятных ожогов. Менее эффективен при едких ожогах.
   suffix: Ten
   components:
   - type: Tag
@@ -45,11 +45,11 @@
     healingBeginSound:
       path: "/Audio/Items/Medical/ointment_begin.ogg"
     healingEndSound:
-      path: "/Audio/Items/Medical/ointment_end.ogg"    
+      path: "/Audio/Items/Medical/ointment_end.ogg"
 
 - type: stack
   id: CMOintment
-  name: ointment
+  name: мазь
   icon: { sprite: "/Textures/_RMC14/Objects/Medical/medical.rsi", state: ointment }
   spawn: CMOintment1
   maxCount: 10
@@ -76,8 +76,8 @@
   parent: CMBaseHealingItem
   abstract: true
   id: CMGauze
-  name: medical gauze
-  description: Some sterile gauze to wrap around bloody stumps and lacerations.
+  name: медицинская марля
+  description: Несколько стерильных марлевых салфеток для обматывания окровавленных культей и рваных ран.
   suffix: Ten
   components:
   - type: Tag
@@ -101,7 +101,7 @@
     healingBeginSound:
       path: "/Audio/Items/Medical/brutepack_begin.ogg"
     healingEndSound:
-      path: "/Audio/Items/Medical/brutepack_end.ogg"    
+      path: "/Audio/Items/Medical/brutepack_end.ogg"
 
 - type: stack
   id: CMGauze
@@ -129,8 +129,8 @@
 - type: entity
   parent: CMBaseHealingItem
   id: CMSurgicalLine
-  name: surgical line
-  description: A roll of military-grade surgical line, able to seamlessly sew up any wound. Also works as a robust fishing line for maritime deployments.
+  name: хирургическая нитка
+  description: Рулон хирургической лески военного класса, способной без труда зашить любую рану. Также используется в качестве прочной рыболовной лески для морских операций.
   components:
   - type: Tag
     tags:
@@ -143,8 +143,8 @@
 - type: entity
   parent: CMBaseHealingItem
   id: CMSynthGraft
-  name: synth graft
-  description: An applicator for silicon skin field grafts. The stuff reeks, itches like the dickens, hurts going on, and the color is a perfectly averaged multiethnic tone that doesn't blend with anyone's complexion. But at least you don't have to stay in sickbay.
+  name: синтетический трансплантат
+  description: Аппликатор для пересадки силиконовых кожных полей. Эта штука воняет, чешется до жути, болит, а цвет - совершенно усредненный мультиэтнический оттенок, который не сочетается ни с чьим цветом лица. Но, по крайней мере, вам не придется оставаться в лазарете.
   components:
   - type: Tag
     tags:
@@ -158,8 +158,8 @@
   parent: CMBaseHealingItem
   abstract: true
   id: CMBurnKit
-  name: burn kit
-  description: A treatment kit for severe burns.
+  name: набор для ожогов
+  description: Набор для лечения сильных ожогов.
   suffix: Ten
   components:
   - type: Stack
@@ -184,7 +184,7 @@
     healingBeginSound:
       path: "/Audio/Items/Medical/ointment_begin.ogg"
     healingEndSound:
-      path: "/Audio/Items/Medical/ointment_end.ogg"    
+      path: "/Audio/Items/Medical/ointment_end.ogg"
 
 - type: entity
   id: CMBurnKit1
@@ -204,7 +204,7 @@
 
 - type: stack
   id: CMBurnKit
-  name: advanced burn kit
+  name: расширенный набор для ожогов
   icon: { sprite: "/Textures/_RMC14/Objects/Medical/medical.rsi", state: burnkit }
   spawn: CMBurnKit1
   maxCount: 10
@@ -237,7 +237,7 @@
     healingBeginSound:
       path: "/Audio/Items/Medical/brutepack_begin.ogg"
     healingEndSound:
-      path: "/Audio/Items/Medical/brutepack_end.ogg"    
+      path: "/Audio/Items/Medical/brutepack_end.ogg"
 
 - type: entity
   id: CMTraumaKit1
@@ -257,7 +257,7 @@
 
 - type: stack
   id: CMTraumaKit
-  name: advanced trauma kit
+  name: расширенный травмокомплект
   icon: { sprite: "/Textures/_RMC14/Objects/Medical/medical.rsi", state: traumakit }
   spawn: CMTraumaKit1
   maxCount: 10

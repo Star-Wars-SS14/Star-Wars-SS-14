@@ -1,8 +1,8 @@
 - type: entity
   parent: PartRodMetal
   id: CMRodMetal
-  name: metal rod
-  description: Some rods. Can be used for building, or something.
+  name: металлические стержени
+  description: Несколько прутьев. Можно использовать для строительства или чего-то еще.
   suffix: Full
   components:
   - type: Sprite
@@ -50,8 +50,8 @@
 - type: entity
   parent: CMRodMetal
   id: CMRodPlasteel
-  name: plasteel rod
-  description: Some plasteel rods. Can be used for building sturdier structures and objects.
+  name: пласталевые стержни
+  description: Несколько прутьев из пластали. Можно использовать для создания более прочных конструкций и предметов.
   suffix: Full
   components:
   - type: PhysicalComposition

@@ -30,8 +30,8 @@
 - type: entity
   parent: CMPosterBase
   id: CMPosterBroken
-  name: broken poster
-  description: "You can't make out anything from the poster's original print. It's ruined."
+  name: сломанный плакат
+  description: «Вы не можете ничего разобрать на оригинальном оттиске плаката. Он испорчен».
   components:
   - type: Sprite
     drawdepth: WallTops

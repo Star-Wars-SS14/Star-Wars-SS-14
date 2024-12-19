@@ -1,7 +1,7 @@
 - type: entity
   parent: BaseWall
   id: SW_WallReinforced
-  name: WallReinforced
+  name: бронированная стена
   components:
   - type: Sprite
     sprite: _SW/Structures/Walls/solid.rsi
@@ -60,7 +60,7 @@
 - type: entity
   parent: BaseWall
   id: SW_WallSolid
-  name:  WallSolid
+  name: стена
   components:
   - type: Tag
     tags:
@@ -102,7 +102,7 @@
 - type: entity
   parent: BaseComputer
   id: SW_WallLight
-  name: Wall_Light
+  name: стена света
   description: "Wall light."
   components:
   - type: AmbientOnPowered
@@ -160,8 +160,8 @@
 - type: entity
   id: SW_WallBasaultRock
   parent: BaseWall
-  name: Basault
-  description: A rocky asteroid.
+  name: базальт
+  description: Рок энд Стоун!
   components:
   - type: Transform
     noRot: true
@@ -191,8 +191,8 @@
 - type: entity
   id: SW_WallBasaultSnowRock
   parent: BaseWall
-  name: Basault snow
-  description: A rocky asteroid.
+  name: снежный базальт
+  description: Рок энд- что то тут холодновато!
   components:
   - type: Transform
     noRot: true

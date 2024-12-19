@@ -1,6 +1,6 @@
 ﻿- type: tile
   id: SW_FloorCorridor
-  name: Floor Corridor
+  name: стальная плитка
   sprite: /Textures/_SW/Tiles/corridor.png
   baseTurf: Plating
   isSubfloor: false
@@ -12,7 +12,7 @@
 
 - type: tile
   id: SW_FloorSmallBlackTiles
-  name: Floor Small Black Tiles
+  name: чёрная стальная плитка
   sprite: /Textures/_SW/Tiles/small_black_tiles.png
   baseTurf: Plating
   isSubfloor: false
@@ -24,7 +24,7 @@
 
 - type: tile
   id: SW_FloorSteeltile
-  name: Floor Steeltile
+  name: стальная плитка
   sprite: /Textures/_SW/Tiles/steeltile.png
   baseTurf: Plating
   isSubfloor: false
@@ -33,10 +33,10 @@
     collection: FootstepFloor
   itemDrop: FloorTileItemSteel
   heatCapacity: 10000
-  
+
 - type: tile
   id: SW_FloorSnow
-  name: snow
+  name: снег
   sprite: /Textures/_SW/Tiles/snow.png
   variants: 13
   placementVariants:
@@ -65,10 +65,10 @@
   heatCapacity: 10000
   weather: true
   indestructible: true
-  
+
 - type: tile
   id: SW_FloorAsphalt
-  name: asphalt
+  name: асфальт
   sprite: /Textures/_SW/Tiles/asphalt.png
   variants: 10
   placementVariants:

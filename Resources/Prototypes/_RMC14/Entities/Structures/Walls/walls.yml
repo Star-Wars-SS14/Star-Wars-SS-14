@@ -2,8 +2,8 @@
 - type: entity
   parent: BaseWall
   id: CMWallMetal
-  name: wall
-  description: A huge chunk of metal used to separate rooms.
+  name: стена
+  description: Огромный кусок металла, используемый для разделения комнат.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/metal.rsi
@@ -30,8 +30,8 @@
 - type: entity
   parent: CMWallMetal
   id: CMWallMetalAlmayer
-  name: wall
-  description: A huge chunk of metal used to separate rooms.
+  name: стена
+  description: Огромный кусок металла, используемый для разделения комнат.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/almayer_black.rsi
@@ -45,8 +45,8 @@
 - type: entity
   parent: CMWallMetal
   id: CMWallMetalAlmayerWhite
-  name: wall
-  description: A huge chunk of metal used to separate rooms.
+  name: стена
+  description: Огромный кусок металла, используемый для разделения комнат.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/almayer_white.rsi
@@ -61,8 +61,8 @@
 - type: entity
   parent: BaseWall
   id: CMWallReinforced
-  name: reinforced wall
-  description: A huge chunk of reinforced metal used to separate rooms.
+  name: усиленная стена
+  description: Огромный кусок армированного металла, используемый для разделения комнат.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/rwall.rsi
@@ -141,8 +141,8 @@
 - type: entity
   parent: BaseWall
   id: CMWallReinforcedHeavy
-  name: heavy reinforced hull
-  description: A huge chunk of ultra-reinforced metal used to separate rooms. Looks virtually indestructible.
+  name: тяжелая армированная стена
+  description: Огромный кусок сверхпрочного металла, используемый для разделения комнат. Выглядит практически неразрушимым.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/rwall.rsi
@@ -218,8 +218,8 @@
 - type: entity
   parent: BaseWall
   id: CMWallRock
-  name: rock wall
-  description: A rough wall of hardened rock.
+  name: скальная стена
+  description: Неровная стена из затвердевшего камня.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/cave.rsi
@@ -235,8 +235,8 @@
 - type: entity
   parent: BaseWall
   id: CMWallCult
-  name: wall
-  description: The patterns engraved on the wall seem to shift as you try to focus on them. You feel sick.
+  name: стена
+  description: Выгравированные на стене узоры словно смещаются, когда вы пытаетесь сосредоточиться на них. Вы чувствуете недомогание.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/cult.rsi
@@ -263,8 +263,8 @@
 - type: entity
   parent: BaseWall
   id: CMWallWood
-  name: wood wall
-  description: A huge chunk of metal used to separate rooms.
+  name: деревянная стена
+  description: Самодельная стена.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/wood.rsi
@@ -290,8 +290,8 @@
 - type: entity
   parent: BaseWall
   id: CMWallJungle
-  name: jungle vegetation
-  description: Exceptionally dense vegetation that you can't see through.
+  name: растительность джунглей
+  description: Исключительно густая растительность, сквозь которую ничего не видно.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/jungle.rsi
@@ -317,8 +317,8 @@
 - type: entity
   parent: CMWallMetal
   id: CMWallSolaris
-  name: colony wall
-  description: Tough looking walls that have been blasted by sand since the day they were erected. A testament to human willpower.
+  name: стена колонии
+  description: Крепкие на вид стены, которые со дня своего возведения подверглись воздействию песка. Свидетельство человеческой силы воли.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/solaris_wall.rsi
@@ -333,8 +333,8 @@
 - type: entity
   parent: CMWallReinforced
   id: CMWallSolarisReinforced
-  name: reinforced colony wall
-  description: Tough looking walls that have been blasted by sand since the day they were erected. A testament to human willpower.
+  name: усиленная стена колонии
+  description: Крепкие на вид стены, которые со дня своего возведения подверглись воздействию песка. Свидетельство человеческой силы воли.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/solaris_rwall.rsi
@@ -349,8 +349,8 @@
 - type: entity
   parent: BaseWall
   id: CMWallSolarisHull
-  name: heavy reinforced colony wall
-  description: Tough looking walls that have been blasted by sand since the day they were erected. A testament to human willpower.
+  name: тяжелая усиленная стена колонии
+  description: Крепкие на вид стены, которые со дня своего возведения подверглись воздействию песка. Свидетельство человеческой силы воли.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/solaris_rwall.rsi
@@ -365,8 +365,8 @@
 - type: entity
   parent: BaseWall
   id: CMWallSolarisRock
-  name: rock wall
-  description: Tough looking walls that have been blasted by sand since the day they were erected. A testament to human willpower.
+  name: скальная стена
+  description: Крепкие на вид стены, которые со дня своего возведения подверглись воздействию песка. Свидетельство человеческой силы воли.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/solaris_rock.rsi

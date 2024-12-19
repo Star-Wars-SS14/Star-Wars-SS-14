@@ -1,6 +1,6 @@
 ﻿- type: entity
   id: CMOverheadPipe
-  name: overhead pipe segment
+  name: участок подвесной трубы
   placement:
     mode: SnapgridCenter
     snap:

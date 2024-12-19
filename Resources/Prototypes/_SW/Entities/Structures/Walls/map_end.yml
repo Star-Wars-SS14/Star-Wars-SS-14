@@ -2,8 +2,8 @@
   abstract: true
   parent: BaseStructure
   id: SW_BaseRock
-  name: baserock
-  description: A rocky asteroid.
+  name: камень
+  description: Рок энд Стоун!
   placement:
     mode: SnapgridCenter
     snap:
@@ -41,8 +41,8 @@
   suffix: Несокрушимый, MapEnd
   parent: SW_BaseRock
   id: SW_WallRock
-  name: Камень
-  description: A rocky asteroid.
+  name: камень
+  description: Рок энд Стоун!
   components:
     - type: Transform
       noRot: true
@@ -70,7 +70,7 @@
   noSpawn: true
   parent: SW_WallRock
   id: SW_WallRockCoal
-  description: An ore vein rich with coal.
+  description: Рудная жила, богатая углем.
   components:
     - type: Sprite
       layers:
@@ -89,7 +89,7 @@
   noSpawn: true
   parent: SW_WallRock
   id: SW_WallRockGold
-  description: An ore vein rich with gold.
+  description: Рудная жила, богатая золотом.
   components:
     - type: Sprite
       layers:
@@ -108,7 +108,7 @@
   noSpawn: true
   parent: SW_WallRock
   id: SW_WallRockPlasma
-  description: An ore vein rich with plasma.
+  description: Рудная жила, богатая плазмой.
   components:
     - type: Sprite
       layers:
@@ -127,7 +127,7 @@
   noSpawn: true
   parent: SW_WallRock
   id: SW_WallRockQuartz
-  description: An ore vein rich with quartz.
+  description: Рудная жила, богатая кварцем.
   components:
     - type: Sprite
       layers:
@@ -146,7 +146,7 @@
   noSpawn: true
   parent: SW_WallRock
   id: SW_WallRockSilver
-  description: An ore vein rich with silver.
+  description: Рудная жила, богатая серебром.
   components:
     - type: Sprite
       layers:
@@ -165,7 +165,7 @@
   noSpawn: true
   parent: SW_WallRock
   id: SW_WallRockTin
-  description: An ore vein rich with iron.
+  description: Рудная жила, богатая железом.
   components:
     - type: Sprite
       layers:
@@ -184,7 +184,7 @@
   noSpawn: true
   parent: SW_WallRock
   id: SW_WallRockUranium
-  description: An ore vein rich with uranium.
+  description: Рудная жила, богатая ураном.
   components:
     - type: Sprite
       layers:
@@ -203,7 +203,7 @@
   noSpawn: true
   parent: SW_WallRock
   id: SW_WallRockBananium
-  description: An ore vein rich with bananium.
+  description: Рудная жила, богатая бананом.
   components:
     - type: Sprite
       layers:
@@ -222,7 +222,7 @@
   noSpawn: true
   parent: SW_WallRock
   id: SW_WallRockArtifactFragment
-  description: A rock wall. What's that sticking out of it?
+  description: Скальная стена. Что это из нее торчит?
   components:
     - type: Sprite
       layers:
@@ -241,7 +241,7 @@
   noSpawn: true
   parent: SW_WallRock
   id: SW_WallRockSalt
-  description: An ore vein rich with salt.
+  description: Рудная жила, богатая солью.
   components:
     - type: Sprite
       layers:
@@ -261,8 +261,8 @@
   suffix: Несокрушимый, MapEnd
   parent: SW_BaseRock
   id: SW_WallRockBasalt
-  name: Базальт
-  description: A rocky asteroid.
+  name: базальт
+  description: Рок энд Стоун!
   components:
     - type: Transform
       noRot: true
@@ -290,7 +290,7 @@
   noSpawn: true
   parent: SW_WallRockBasalt
   id: SW_WallRockBasaltCoal
-  description: An ore vein rich with coal.
+  description: Рудная жила, богатая углем.
   components:
     - type: Sprite
       layers:
@@ -328,7 +328,7 @@
   noSpawn: true
   parent: SW_WallRockBasalt
   id: SW_WallRockBasaltPlasma
-  description: An ore vein rich with plasma.
+  description: Рудная жила, богатая плазмой.
   components:
     - type: Sprite
       layers:
@@ -347,7 +347,7 @@
   noSpawn: true
   parent: SW_WallRockBasalt
   id: SW_WallRockBasaltQuartz
-  description: An ore vein rich with quartz.
+  description: Рудная жила, богатая кварцем.
   components:
     - type: Sprite
       layers:
@@ -366,7 +366,7 @@
   noSpawn: true
   parent: SW_WallRockBasalt
   id: SW_WallRockBasaltSilver
-  description: An ore vein rich with silver.
+  description: Рудная жила, богатая серебром.
   components:
     - type: Sprite
       layers:
@@ -385,7 +385,7 @@
   noSpawn: true
   parent: SW_WallRockBasalt
   id: SW_WallRockBasaltTin
-  description: An ore vein rich with iron.
+  description: Рудная жила, богатая железом.
   components:
     - type: Sprite
       layers:
@@ -404,7 +404,7 @@
   noSpawn: true
   parent: SW_WallRockBasalt
   id: SW_WallRockBasaltUranium
-  description: An ore vein rich with uranium.
+  description: Рудная жила, богатая ураном.
   components:
     - type: Sprite
       layers:
@@ -424,7 +424,7 @@
   noSpawn: true
   parent: SW_WallRockBasalt
   id: SW_WallRockBasaltBananium
-  description: An ore vein rich with bananium.
+  description: Рудная жила, богатая бананом.
   components:
     - type: Sprite
       layers:
@@ -443,7 +443,7 @@
   noSpawn: true
   parent: SW_WallRockBasalt
   id: SW_WallRockBasaltArtifactFragment
-  description: A rock wall. What's that sticking out of it?
+  description: Скальная стена. Что это из нее торчит?
   components:
     - type: Sprite
       layers:
@@ -462,7 +462,7 @@
   noSpawn: true
   parent: SW_WallRockBasalt
   id: SW_WallRockBasaltSalt
-  description: An ore vein rich with salt.
+  description: Рудная жила, богатая солью.
   components:
     - type: Sprite
       layers:
@@ -476,13 +476,13 @@
         - map: [ "enum.EdgeLayer.West" ]
           state: rock_wall_west
         - state: rock_salt
-        
+
 - type: entity
   suffix: Несокрушимый, MapEnd
   parent: SW_BaseRock
   id: SW_WallRockBasaultDark
   name: Базальт тёмный
-  description: A rocky asteroid.
+  description: Рок энд Стоун!
   components:
     - type: Transform
       noRot: true
@@ -492,7 +492,7 @@
     - type: Sprite
       sprite: _SW/Structures/Walls/basaultrockdark.rsi
       state: basaultdark
-       
+
 - type: entity
   suffix: Несокрушимый, MapEnd
   parent: SW_BaseRock

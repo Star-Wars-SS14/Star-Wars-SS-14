@@ -1,7 +1,7 @@
 - type: entity
   id: SW_AlwaysPoweredWallLight
-  name: Light
-  description: "An always powered light."
+  name: лампа
+  description: "Постоянно работающий светильник."
   suffix: Always powered
   components:
   - type: MeleeSound
@@ -66,8 +66,8 @@
     - Wallmount
 
 - type: entity
-  name: Light
-  description: "A light fixture. Draws power and produces light when equipped with a light tube."
+  name: лампа
+  description: "Осветительный прибор. Потребляет энергию и излучает свет, если оснащен лампой.."
   id: SW_PoweredlightEmpty
   suffix: Empty
   parent: AlwaysPoweredWallLight
@@ -110,7 +110,7 @@
 
 - type: entity
   id: SW_Poweredlight
-  description: "A light fixture. Draws power and produces light when equipped with a light tube."
+  description: "Осветительный прибор. Потребляет энергию и излучает свет, если оснащен лампой."
   suffix: ""
   parent: SW_PoweredlightEmpty
   components:

@@ -1,7 +1,7 @@
-﻿- type: entity
+﻿- 2type: entity
   id: ActionJediDash
-  name: Dash
-  description: Dash. #TODO: add description
+  name: Прыжок
+  description: Это буквально телепортирует вас!
   noSpawn: true
   components:
   - type: InstantAction
@@ -11,8 +11,8 @@
 
 - type: entity
   id: ActionSithForceLightning
-  name: lightning
-  description: SithForceLightning. #TODO: add description
+  name: Молния
+  description: Используя тёмную силу вы испускаете разряд!
   noSpawn: true
   components:
   - type: EntityTargetAction

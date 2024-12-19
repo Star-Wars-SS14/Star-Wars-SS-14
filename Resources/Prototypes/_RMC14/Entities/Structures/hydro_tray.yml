@@ -1,6 +1,6 @@
 ﻿- type: entity
   parent: hydroponicsTray
-  name: hydroponics tray
+  name: лоток для гидропоники
   id: CMHydroponicsTray
   description: ""
   components:

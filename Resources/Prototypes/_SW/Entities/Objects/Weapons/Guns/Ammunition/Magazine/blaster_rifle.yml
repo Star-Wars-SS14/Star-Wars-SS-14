@@ -1,199 +1,174 @@
   - type: entity
-    id: SW_RedMagazineBlastRifle
-    name: "P-301 Magazine blast"
-    parent: BaseMagazineLightRifle
+    id: BaseBlasterMagazine
+    name: "magazine (.30 rifle)"
+    parent: BaseItem
+    abstract: true    
     components:
+    - type: Battery
+      maxCharge: 10000
+      startingCharge: 10000
+    - type: Item
+      size: Small
+    - type: Sprite
+      sprite: Objects/Weapons/Guns/Ammunition/Magazine/LightRifle/light_rifle_mag.rsi
+      layers:
+      - state: base
+        map: ["enum.GunVisualLayers.Base"]
+      - state: mag-1
+        map: ["enum.GunVisualLayers.Mag"]
     - type: Tag
       tags:
       - MagazineBlast
-    - type: BallisticAmmoProvider
-      proto: RedCartridgeBlast
-      capacity: 25
-    - type: Sprite
-      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
-    - type: Item
+    - type: Appearance
+    - type: ProjectileBatteryAmmoProvider
+      proto: YellowBulletBlast
+      fireCost: 100
     - type: MagazineVisuals
       magState: mag
       steps: 8
       zeroVisible: false
-    - type: Appearance
 
-  - type: entity
-    id: SW_Z1RedMagazineBlastRifle
-    name: "Z1 Magazine blast"
-    parent: BaseMagazineLightRifle
-    components:
-    - type: Tag
-      tags:
-      - MagazineBlast
-    - type: BallisticAmmoProvider
-      proto: Z1RedCartridgeBlast
-      capacity: 20
-    - type: Sprite
-      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
-    - type: Item
-    - type: MagazineVisuals
-      magState: mag
-      steps: 8
-      zeroVisible: false
-    - type: Appearance
-
-  - type: entity
-    id: SW_GreenMagazineBlastRifle
-    name: "Green Magazine blast"
-    parent: BaseMagazineLightRifle
-    components:
-    - type: Tag
-      tags:
-      - MagazineBlast
-    - type: BallisticAmmoProvider
-      proto: GreenCartridgeBlast
-      capacity: 50
-    - type: Sprite
-      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
-    - type: Item
-    - type: MagazineVisuals
-      magState: mag
-      steps: 8
-      zeroVisible: false
-    - type: Appearance
-
-  - type: entity
-    id: SW_H206GreenMagazineBlastRifle
-    name: "H206 Magazine blast"
-    parent: BaseMagazineLightRifle
-    components:
-    - type: Tag
-      tags:
-      - MagazineBlast
-    - type: BallisticAmmoProvider
-      proto: H206GreenCartridgeBlast
-      capacity: 35
-    - type: Sprite
-      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
-    - type: Item
-    - type: MagazineVisuals
-      magState: mag
-      steps: 8
-      zeroVisible: false
-    - type: Appearance
-
-  - type: entity
-    id: SW_BlueMagazineBlastRifle
-    name: "J-111 Magazine blast"
-    parent: BaseMagazineLightRifle
-    components:
-    - type: Tag
-      tags:
-      - MagazineBlast
-    - type: BallisticAmmoProvider
-      proto: BlueCartridgeBlast
-      capacity: 30
-    - type: Sprite
-      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
-    - type: Item
-    - type: MagazineVisuals
-      magState: mag
-      steps: 8
-      zeroVisible: false
-    - type: Appearance
-
-  - type: entity
-    id: SW_CannonBlueMagazineBlastRifle
-    name: "F-11D Magazine blast"
-    parent: BaseMagazineLightRifle
-    components:
-    - type: Tag
-      tags:
-      - MagazineBlast
-    - type: BallisticAmmoProvider
-      proto: CannonBlueCartridgeBlast
-      capacity: 100
-    - type: Sprite
-      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
-    - type: Item
-    - type: MagazineVisuals
-      magState: mag
-      steps: 8
-      zeroVisible: false
-    - type: Appearance
-
-  - type: entity
-    id: SW_SniperRifleBlueMagazineBlastRifle
-    name: "Grantek F-11D Magazine blast"
-    parent: BaseMagazineLightRifle
-    components:
-    - type: Tag
-      tags:
-      - MagazineBlast
-    - type: BallisticAmmoProvider
-      proto: SniperRifleBlueCartridgeBlast
-      capacity: 8
-    - type: Sprite
-      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
-    - type: Item
-    - type: MagazineVisuals
-      magState: mag
-      steps: 8
-      zeroVisible: false
-    - type: Appearance
 
   - type: entity
     id: SW_YellowMagazineBlastRifle
     name: "E-1 Magazine blast"
-    parent: BaseMagazineLightRifle
+    parent: BaseBlasterMagazine
     components:
     - type: Tag
       tags:
       - MagazineBlast
-    - type: BallisticAmmoProvider
-      proto: YellowCartridgeBlast
-      capacity: 30
+      - E-1Magazine
+    - type: ProjectileBatteryAmmoProvider
+      proto: YellowBulletBlast
     - type: Sprite
       sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
-    - type: Item
-    - type: MagazineVisuals
-      magState: mag
-      steps: 8
-      zeroVisible: false
-    - type: Appearance
+
+
+  - type: entity
+    id: SW_RedMagazineBlastRifle
+    name: "P-301 Magazine blast"
+    parent: BaseBlasterMagazine
+    components:
+    - type: Tag
+      tags:
+      - MagazineBlast
+      - P-301Magazine
+    - type: ProjectileBatteryAmmoProvider
+      proto: RedBulletBlast
+    - type: Sprite
+      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+
+  - type: entity
+    id: SW_Z1RedMagazineBlastRifle
+    name: "Z1 Magazine blast"
+    parent: BaseBlasterMagazine
+    components:
+    - type: Tag
+      tags:
+      - MagazineBlast
+      - Z-1Magazine
+    - type: ProjectileBatteryAmmoProvider
+      proto: RedBulletBlast
+    - type: Sprite
+      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+
+  # - type: entity
+  #   id: SW_GreenMagazineBlastRifle
+  #   name: "Green Magazine blast"
+  #   parent: BaseBlasterMagazine
+  #   components:
+  #   - type: Tag
+  #     tags:
+  #     - MagazineBlast
+  #     -
+  #   - type: ProjectileBatteryAmmoProvider
+  #     proto: GreenCartridgeBlast
+  #   - type: Sprite
+  #     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+ 
+  - type: entity
+    id: SW_H206GreenMagazineBlastRifle
+    name: "H206 Magazine blast"
+    parent: BaseBlasterMagazine
+    components:
+    - type: Tag
+      tags:
+      - MagazineBlast
+      - H-206Magazine
+    - type: ProjectileBatteryAmmoProvider
+      proto: GreenBulletBlast
+    - type: Sprite
+      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+
+  - type: entity
+    id: SW_BlueMagazineBlastRifle
+    name: "J-111 Magazine blast"
+    parent: BaseBlasterMagazine
+    components:
+    - type: Tag
+      tags:
+      - MagazineBlast
+      - J-111Magazine
+    - type: ProjectileBatteryAmmoProvider
+      proto: BlueBulletBlast
+    - type: Sprite
+      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+
+  - type: entity
+    id: SW_CannonBlueMagazineBlastRifle
+    name: "F-11D Magazine blast"
+    parent: BaseBlasterMagazine
+    components:
+    - type: Tag
+      tags:
+      - MagazineBlast
+      - F-11DCannonMagazine
+    - type: ProjectileBatteryAmmoProvider
+      proto: CannonBlueBulletBlast
+    - type: Sprite
+      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+
+  - type: entity
+    id: SW_SniperRifleBlueMagazineBlastRifle
+    name: "Grantek F-11D Magazine blast"
+    parent: BaseBlasterMagazine
+    components:
+    - type: Tag
+      tags:
+      - MagazineBlast
+      - F-11DSniperMagazine
+    - type: ProjectileBatteryAmmoProvider
+      proto: SniperRifleBlueBulletBlast
+      fireCost: 300
+    - type: Sprite
+      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
   - type: entity
     id: SW_CannonYellowMagazineBlastRifle
     name: "EL-34 Magazine blast"
-    parent: BaseMagazineLightRifle
+    parent: BaseBlasterMagazine
     components:
     - type: Tag
       tags:
       - MagazineBlast
-    - type: BallisticAmmoProvider
-      proto: CannonYellowCartridgeBlast
-      capacity: 100
+      - CannonYellowMagazine
+    - type: ProjectileBatteryAmmoProvider
+      proto: CannonYellowBulletBlast
     - type: Sprite
       sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
-    - type: Item
-    - type: MagazineVisuals
-      magState: mag
-      steps: 8
-      zeroVisible: false
-    - type: Appearance
 
   - type: entity
     id: SW_SniperRifleYellowMagazineBlastRifle
     name: "K406 Ripper, MK-3 Magazine blast"
-    parent: BaseMagazineLightRifle
+    parent: BaseBlasterMagazine
     components:
     - type: Tag
       tags:
       - MagazineBlast
-    - type: BallisticAmmoProvider
-      proto: SniperRifleYellowCartridgeBlast
-      capacity: 12
+      - SniperRifleYellowMagazine
+    - type: ProjectileBatteryAmmoProvider
+      proto: SniperRifleYellowBulletBlast
+      fireCost: 300
     - type: Sprite
       sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
-    - type: Item
-    - type: MagazineVisuals
-      magState: mag
-      steps: 8
-      zeroVisible: false
-    - type: Appearance
+

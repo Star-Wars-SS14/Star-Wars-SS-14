@@ -165,6 +165,9 @@
     name: "K406 Ripper, MK-3 Magazine blast"
     parent: BaseBlasterMagazine
     components:
+    - type: Battery
+      maxCharge: 10000
+      startingCharge: 300
     - type: Tag
       tags:
       - MagazineBlast

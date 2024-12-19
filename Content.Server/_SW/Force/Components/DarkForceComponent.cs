@@ -19,13 +19,13 @@ public sealed partial class DarkForceComponent : ForceComponent
     public int UpgradeBoltCount = 2;
 
     [DataField]
-    public FixedPoint2 DamageLighting = 4;
+    public FixedPoint2 DamageLighting = 5;
 
     [DataField]
-    public FixedPoint2 BonusDamageFromUpgrade = 2.5;
+    public FixedPoint2 BonusDamageFromUpgrade = 3.5;
 
     [DataField]
-    public FixedPoint2 BaseLightingDamage = 4;
+    public FixedPoint2 BaseLightingDamage = 5;
 
     // Mastery
     [DataField]

@@ -145,7 +145,7 @@ namespace Content.Server.GameTicking
                     return;
             }
 
-            SpawnPlayer(player, character, station, jobId, lateJoin, silent);
+            SpawnPlayer(player, character, station, jobId, false, silent);
         }
 
         private void SpawnPlayer(ICommonSession player,

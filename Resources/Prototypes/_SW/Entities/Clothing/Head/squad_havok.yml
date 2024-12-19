@@ -11,6 +11,10 @@
   - type: PressureProtection
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
 
 - type: entity
   parent: SW_ClothingHeadHavokHelmet
@@ -21,6 +25,10 @@
     sprite: _SW/Clothing/Head/Helmets/Havok/medicalhelmetrepublicgunner.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/Havok/medicalhelmetrepublicgunner.rsi
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
 
 - type: entity
   parent: SW_ClothingHeadHavokHelmet
@@ -31,6 +39,10 @@
     sprite: _SW/Clothing/Head/Helmets/Havok/sniperhelmetrepublicgunner.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/Havok/sniperhelmetrepublicgunner.rsi
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
 
 - type: entity
   parent: SW_ClothingHeadHavokHelmet
@@ -41,6 +53,10 @@
     sprite: _SW/Clothing/Head/Helmets/Havok/lieutenanthelmetrepublicgunner.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/Havok/lieutenanthelmetrepublicgunner.rsi
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
 
 - type: entity
   parent: SW_ClothingHeadHavokHelmet
@@ -51,4 +67,8 @@
     sprite: _SW/Clothing/Head/Helmets/Havok/commanderhelmetrepublicgunner.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/Havok/commanderhelmetrepublicgunner.rsi
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
 

@@ -13,5 +13,11 @@ public sealed partial class ForcePulledComponent : Component
     public float Cooldown = 0.2F;
 
     [DataField]
+    public int Attempts;
+
+    [DataField]
+    public int MaxAttempts = 50;
+
+    [DataField]
     public float ThrowForce = 10F;
 }

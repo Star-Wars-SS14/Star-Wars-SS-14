@@ -10,7 +10,7 @@
       - !type:SetAnchor
         value: false
       steps:
-      - material: CMGlassReinforced
+      - material: Glass
         amount: 5
         doAfter: 2
 

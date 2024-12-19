@@ -3,6 +3,10 @@
   id: SW_ClothingHeadImperialHelmet
   name: imperial helmet
   components:
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
   - type: BreathMask
   - type: Sprite
     sprite: _SW/Clothing/Head/Helmets/imperialhelmet.rsi
@@ -17,6 +21,10 @@
   id: SW_ClothingHeadLieutenantImperialHelmet
   name: lieutenant imperial helmet
   components:
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
   - type: Sprite
     sprite: _SW/Clothing/Head/Helmets/ltimperialhelmet.rsi
   - type: Clothing
@@ -27,6 +35,10 @@
   id: SW_ClothingHeadMajorImperialHelmet
   name: major imperial helmet
   components:
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
   - type: Sprite
     sprite: _SW/Clothing/Head/Helmets/mrimperialhelmet.rsi
   - type: Clothing
@@ -37,6 +49,10 @@
   id: SW_ClothingHeadMedicImperialHelmet
   name: medic imperial helmet
   components:
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
   - type: Sprite
     sprite: _SW/Clothing/Head/Helmets/medicimperialhelmet.rsi
   - type: Clothing

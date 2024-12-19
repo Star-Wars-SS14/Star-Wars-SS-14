@@ -3,6 +3,10 @@
   id: SW_ClothingHeadImperialIntelligenceHelmet
   name: imperial intelligence helmet
   components:
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
   - type: BreathMask
   - type: Sprite
     sprite: _SW/Clothing/Head/Helmets/imperialintelligencehelmet.rsi

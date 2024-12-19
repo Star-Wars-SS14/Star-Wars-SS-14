@@ -1,13 +1,13 @@
-﻿- type: entity
+- type: entity
   parent: ClothingHeadBase
   id: SW_ClothingHeadRecruitMandalorianHelmet
   name: recruit mandalorian helmet
   components:
   - type: BreathMask
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/headmandalorianrecruit.rsi
+    sprite: _SW/Clothing/Head/Helmets/HeadMandalorianRecruit.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/headmandalorianrecruit.rsi
+    sprite: _SW/Clothing/Head/Helmets/HeadMandalorianRecruit.rsi
   - type: PressureProtection
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000
@@ -18,9 +18,9 @@
   name: recruit mandalorian helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/mandalorian.rsi
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/mandalorian.rsi
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian.rsi
 
 - type: entity
   parent: SW_ClothingHeadRecruitMandalorianHelmet
@@ -28,6 +28,6 @@
   name: veteran mandalorian helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/mandalorianveteran.rsi
+    sprite: _SW/Clothing/Head/Helmets/MandalorianVeteran.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/mandalorianveteran.rsi
+    sprite: _SW/Clothing/Head/Helmets/MandalorianVeteran.rsi

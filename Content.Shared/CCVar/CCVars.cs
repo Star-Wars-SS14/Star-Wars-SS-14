@@ -143,7 +143,7 @@ namespace Content.Shared.CCVar
         ///     Controls the duration of the lobby timer in seconds. Defaults to 2 minutes and 30 seconds.
         /// </summary>
         public static readonly CVarDef<int>
-            GameLobbyDuration = CVarDef.Create("game.lobbyduration", 150, CVar.ARCHIVE);
+            GameLobbyDuration = CVarDef.Create("game.lobbyduration", 300, CVar.ARCHIVE);
 
         /// <summary>
         ///     Controls if players can latejoin at all.
@@ -155,7 +155,7 @@ namespace Content.Shared.CCVar
         ///     Controls the default game preset.
         /// </summary>
         public static readonly CVarDef<string>
-            GameLobbyDefaultPreset = CVarDef.Create("game.defaultpreset", "secret", CVar.ARCHIVE);
+            GameLobbyDefaultPreset = CVarDef.Create("game.defaultpreset", "extended", CVar.ARCHIVE);
 
         /// <summary>
         ///     Controls if the game can force a different preset if the current preset's criteria are not met.
@@ -179,7 +179,7 @@ namespace Content.Shared.CCVar
         ///     Controls the maximum number of character slots a player is allowed to have.
         /// </summary>
         public static readonly CVarDef<int>
-            GameMaxCharacterSlots = CVarDef.Create("game.maxcharacterslots", 30, CVar.ARCHIVE | CVar.SERVERONLY);
+            GameMaxCharacterSlots = CVarDef.Create("game.maxcharacterslots", 5, CVar.ARCHIVE | CVar.SERVERONLY);
 
         /// <summary>
         ///     Controls the game map prototype to load. SS14 stores these prototypes in Prototypes/Maps.
@@ -217,7 +217,7 @@ namespace Content.Shared.CCVar
         /// Is map rotation enabled?
         /// </summary>
         public static readonly CVarDef<bool>
-            GameMapRotation = CVarDef.Create("game.map_rotation", true, CVar.SERVERONLY);
+            GameMapRotation = CVarDef.Create("game.map_rotation", false, CVar.SERVERONLY);
 
         /// <summary>
         /// If roles should be restricted based on time.
@@ -260,7 +260,7 @@ namespace Content.Shared.CCVar
         /// Whether or not panic bunker is currently enabled.
         /// </summary>
         public static readonly CVarDef<bool> PanicBunkerEnabled =
-            CVarDef.Create("game.panic_bunker.enabled", false, CVar.NOTIFY | CVar.REPLICATED | CVar.SERVER);
+            CVarDef.Create("game.panic_bunker.enabled", true, CVar.NOTIFY | CVar.REPLICATED | CVar.SERVER);
 
         /// <summary>
         /// Whether or not the panic bunker will disable when an admin comes online.
@@ -272,7 +272,7 @@ namespace Content.Shared.CCVar
         /// Whether or not the panic bunker will enable when no admins are online.
         /// </summary>
         public static readonly CVarDef<bool> PanicBunkerEnableWithoutAdmins =
-            CVarDef.Create("game.panic_bunker.enable_without_admins", false, CVar.SERVERONLY);
+            CVarDef.Create("game.panic_bunker.enable_without_admins", true, CVar.SERVERONLY);
 
         /// <summary>
         /// Whether or not the panic bunker will count deadminned admins for
@@ -419,7 +419,7 @@ namespace Content.Shared.CCVar
         ///     Whether tips being shown is enabled at all.
         /// </summary>
         public static readonly CVarDef<bool> TipsEnabled =
-            CVarDef.Create("tips.enabled", true);
+            CVarDef.Create("tips.enabled", false);
 
         /// <summary>
         ///     The dataset prototype to use when selecting a random tip.
@@ -918,7 +918,7 @@ namespace Content.Shared.CCVar
         ///     <see cref="ContentTileDefinition.MapAtmosphere"/> set to true.
         /// </summary>
         public static readonly CVarDef<bool> ExplosionCanCreateVacuum =
-            CVarDef.Create("explosion.can_create_vacuum", true, CVar.SERVERONLY);
+            CVarDef.Create("explosion.can_create_vacuum", false, CVar.SERVERONLY);
 
         /*
          * Radiation
@@ -1239,7 +1239,7 @@ namespace Content.Shared.CCVar
         ///     Allows enabling/disabling player-started votes for ultimate authority
         /// </summary>
         public static readonly CVarDef<bool> VoteEnabled =
-            CVarDef.Create("vote.enabled", true, CVar.SERVERONLY);
+            CVarDef.Create("vote.enabled", false, CVar.SERVERONLY);
 
         /// <summary>
         ///     See vote.enabled, but specific to restart votes
@@ -1699,7 +1699,7 @@ namespace Content.Shared.CCVar
         /// Allows flavor text (character descriptions)
         /// </summary>
         public static readonly CVarDef<bool> FlavorText =
-            CVarDef.Create("ic.flavor_text", false, CVar.SERVER | CVar.REPLICATED);
+            CVarDef.Create("ic.flavor_text", true, CVar.SERVER | CVar.REPLICATED);
 
         /// <summary>
         /// Adds a period at the end of a sentence if the sentence ends in a letter.

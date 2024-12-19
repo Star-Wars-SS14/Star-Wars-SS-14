@@ -3,10 +3,14 @@ using Content.Server.Chat.Systems;
 using Content.Server.Radio;
 using Content.Server.Radio.Components;
 using Content.Server.Radio.EntitySystems;
+using Content.Shared.Chat;
+using Content.Shared.Examine;
 using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
+using Content.Shared.Radio;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._SW.Force.Systems;
 
@@ -14,6 +18,7 @@ public sealed class StarHelmetSystem : EntitySystem
 {
     [Dependency] private readonly INetManager _netMan = default!;
     [Dependency] private readonly RadioSystem _radio = default!;
+    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly RadioDeviceSystem _radioDevice = default!;
 
     public override void Initialize()
@@ -25,6 +30,37 @@ public sealed class StarHelmetSystem : EntitySystem
 
         SubscribeLocalEvent<WearingStarHelmetComponent, EntitySpokeEvent>(OnSpeak);
         SubscribeLocalEvent<StarHelmetComponent, RadioReceiveEvent>(OnHelmetReceive);
+
+        SubscribeLocalEvent<StarHelmetComponent, ExaminedEvent>(OnExamined);
+    }
+
+    private void OnExamined(EntityUid helmet, StarHelmetComponent component, ExaminedEvent args)
+    {
+        if (!args.IsInDetailsRange)
+            return;
+
+        if(component.Channels.Count == 0)
+            return;
+
+        if (component.Channels.Count > 0)
+        {
+            args.PushMarkup("Доступные каналы связи:");
+            RadioChannelPrototype? proto;
+            foreach (var id in component.Channels)
+            {
+                proto = _prototypeManager.Index<RadioChannelPrototype>(id);
+
+                var key = id == SharedChatSystem.CommonChannel
+                    ? SharedChatSystem.RadioCommonPrefix.ToString()
+                    : $"{SharedChatSystem.RadioChannelPrefix}{proto.KeyCode}";
+
+                args.PushMarkup(Loc.GetString("examine-starhelmet",
+                    ("color", proto.Color),
+                    ("key", key),
+                    ("id", proto.LocalizedName),
+                    ("freq", proto.Frequency)));
+            }
+        }
     }
 
     private void OnHelmetReceive(EntityUid helmet, StarHelmetComponent component, RadioReceiveEvent args)

@@ -3,11 +3,15 @@
   id: SW_ClothingHeadRepublicHelmet
   name: republic helmet
   components:
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
   - type: BreathMask
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/republic_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/republichelmet.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/republic_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/republichelmet.rsi
   - type: PressureProtection
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000
@@ -18,9 +22,9 @@
   name: lieutenant republic helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/lt_republic_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/ltrepublichelmet.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/lt_republic_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/ltrepublichelmet.rsi
 
 - type: entity
   parent: SW_ClothingHeadRepublicHelmet
@@ -28,9 +32,9 @@
   name: captain republic helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/cap_republic_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/caprepublichelmet.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/cap_republic_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/caprepublichelmet.rsi
 
 - type: entity
   parent: SW_ClothingHeadRepublicHelmet
@@ -38,7 +42,7 @@
   name: general republic helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/gen_republic_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/genrepublichelmet.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/gen_republic_helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/genrepublichelmet.rsi
 

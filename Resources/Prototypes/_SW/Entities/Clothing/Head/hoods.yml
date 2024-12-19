@@ -8,6 +8,10 @@
     sprite: _SW/Clothing/Head/Hoods/sith.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Hoods/sith.rsi
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
   - type: Tag
     tags:
     - HidesHair

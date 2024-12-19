@@ -55,7 +55,14 @@ public sealed class SaberSystem : EntitySystem
 
             if (_transformSystem.GetGridTilePositionOrDefault(saber) != _transformSystem.GetGridTilePositionOrDefault(((EntityUid) forceUser, transformComponent)) && comp.ActiveCooldown <= 0F)
             {
+                if (comp.Attempts >= comp.MaxAttempts)
+                {
+                    RemCompDeferred<ForcePulledComponent>(saber);
+                    continue;
+                }
+
                 comp.ActiveCooldown = comp.Cooldown;
+                comp.Attempts += 1;
                 _throwingSystem.TryThrow(saber, transformComponent.Coordinates, comp.ThrowForce);
             }
             else if (_transformSystem.GetGridTilePositionOrDefault(saber) == _transformSystem.GetGridTilePositionOrDefault(((EntityUid) forceUser, transformComponent)))
@@ -102,7 +109,7 @@ public sealed class SaberSystem : EntitySystem
 
             PullSaber(uid, user, saberComponent.Duration);
 
-            _popupSystem.PopupEntity("Под воздействием силы, меч возвращается вам в руки...", uid, PopupType.Medium);
+            _popupSystem.PopupEntity("Под воздействием силы, меч возвращается вам в руки...", user, user, PopupType.Medium);
         }
 
         args.Handled = true;

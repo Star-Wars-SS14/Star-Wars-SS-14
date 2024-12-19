@@ -11,6 +11,10 @@
   - type: Item
     size: Normal
   - type: BreathMask
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
   - type: PressureProtection
     highPressureMultiplier: 0.02
     lowPressureMultiplier: 1000
@@ -41,6 +45,10 @@
   - type: Item
     size: Normal
   - type: BreathMask
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
   - type: PressureProtection
     highPressureMultiplier: 0.02
     lowPressureMultiplier: 1000
@@ -67,6 +75,10 @@
   components:
   - type: Sprite
     sprite: _SW/Clothing/Head/Helmets/rebelhelmet.rsi
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/rebelhelmet.rsi
   - type: Armor

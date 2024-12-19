@@ -3,6 +3,10 @@
   id: SW_ClothingHeadRecruitMandalorianHelmet
   name: recruit mandalorian helmet
   components:
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
   - type: BreathMask
   - type: Sprite
     sprite: _SW/Clothing/Head/Helmets/HeadMandalorianRecruit.rsi

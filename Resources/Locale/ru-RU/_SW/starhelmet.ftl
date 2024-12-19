@@ -1,0 +1,1 @@
+examine-starhelmet = [color={ $color }]{ $key } для канала { $id } (частота { $freq })[/color]

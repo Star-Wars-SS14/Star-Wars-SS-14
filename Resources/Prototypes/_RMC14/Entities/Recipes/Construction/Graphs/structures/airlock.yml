@@ -10,7 +10,7 @@
       - !type:SetAnchor
         value: false
       steps:
-      - material: CMSteel
+      - material: Steel
         amount: 5
         doAfter: 2
 
@@ -35,7 +35,7 @@
 
     - to: glassAssembly
       steps:
-      - material: CMGlass
+      - material: Glass
         amount: 5
         doAfter: 2
 

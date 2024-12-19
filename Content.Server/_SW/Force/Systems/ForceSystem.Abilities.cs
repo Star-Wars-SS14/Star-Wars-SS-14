@@ -127,7 +127,7 @@ public sealed partial class ForceSystem
         for (var i = 0; i < lightningAbility.BoltCount; i++)
         {
             _beam.TryCreateBeam(user, args.Target, (lightningAbility.DamageLighting == lightningAbility.BaseLightingDamage) ? "BlueSWLightning" : "RedSWLightning");
-            _damageable.TryChangeDamage(args.Target, damage);
+            _damageable.TryChangeDamage(args.Target, damage, true);
         }
 
         args.Handled = true;

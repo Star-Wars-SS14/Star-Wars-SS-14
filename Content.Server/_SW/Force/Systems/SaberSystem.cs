@@ -102,7 +102,7 @@ public sealed class SaberSystem : EntitySystem
 
             PullSaber(uid, user, saberComponent.Duration);
 
-            _popupSystem.PopupEntity("Под воздействием силы, меч возвращается вам в руки...", uid, PopupType.Medium);
+            _popupSystem.PopupEntity("Под воздействием силы, меч возвращается вам в руки...", user, user, PopupType.Medium);
         }
 
         args.Handled = true;

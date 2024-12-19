@@ -1,7 +1,7 @@
 - type: entity
   id: CMCatwalk
-  name: catwalk
-  description: A catwalk for easier EVA maneuvering and cable placement.
+  name: мостик
+  description: Мостик для облегчения размещения кабелей.
   placement:
     mode: SnapgridCenter
   components:

@@ -1,6 +1,6 @@
 - type: entity
   id: SW_ReinforcedWindow
-  name: Reinforced window
+  name: бронированное стекло
   parent: Window
   components:
   - type: Sprite

@@ -21,15 +21,15 @@
   - type: Barricade
   - type: Damageable
     damageContainer: Inorganic
-    damageModifierSet: CMBarricade 
+    damageModifierSet: CMBarricade
   - type: InteractionOutline
 
 # Metal Barricade Tree
 - type: entity
   parent: CMBarricadeBase
   id: CMBarricadeMetal
-  name: metal barricade
-  description: A metal barricade that keeps the unwanted out. Upgradable with metal, plasteel, or metal rods for different attributes. Repair with a welder.
+  name: металическая баррикада
+  description: Металлическая баррикада, не позволяющая нежелательным лицам проникнуть внутрь. Модифицируется металлом, пластилином или металлическими прутьями для получения различных атрибутов. Ремонтируется с помощью сварочного аппарата.
   components:
   - type: MeleeSound
     soundGroups:
@@ -95,8 +95,8 @@
 - type: entity
   parent: CMBarricadeMetal
   id: CMBarricadeBrute
-  name: reinforced barricade
-  description: A heavy-duty barricade reinforced with metal and resistant against thrashing. Repair with a welder.
+  name: укреплённая баррикада
+  description: Сверхпрочная баррикада, усиленная металлом и устойчивая к ударам. Ремонт с помощью сварочного аппарата.
   components:
     - type: Sprite
       sprite: _RMC14/Structures/Walls/Barricades/barricade.rsi
@@ -186,8 +186,8 @@
 - type: entity
   parent: CMBarricadeBase
   id: CMBarricadeMetalDoor
-  name: folding metal barricade
-  description: A folding metal barricade weaker than the non-folding counterpart. Able to be opened and closed at a moment's notice. Repair with a welder.
+  name: складная металлическая баррикада
+  description: Складная металлическая баррикада слабее нескладных аналогов. Может быть открыта и закрыта в любой момент. Ремонтируется с помощью сварочного аппарата.
   components:
   - type: MeleeSound
     soundGroups:

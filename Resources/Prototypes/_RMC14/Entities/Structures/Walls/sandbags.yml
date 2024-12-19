@@ -1,8 +1,8 @@
 ﻿- type: entity
   parent: CMBarricadeBase
   id: CMBarricadeSandbag
-  name: sandbag barricade
-  description: A makeshift barricade made out of the sand from the ground. Tough to beat but easy to pierce.
+  name: мешки с песком
+  description: Самодельная баррикада, сделанная из песка на земле. Ее легко пробить.
   components:
   - type: Climbable
   - type: MeleeSound
@@ -44,8 +44,8 @@
 - type: entity
   parent: BaseItem
   id: CMSandbagEmpty
-  name: empty sandbags
-  description: Some empty sandbags, best to fill them up if you want to use them.
+  name: пустые мешки для песка
+  description: Несколько пустых мешков с песком, лучше наполнить их, если вы хотите их использовать.
   components:
   - type: Item
     size: Small
@@ -78,8 +78,8 @@
 - type: entity
   parent: BaseItem
   id: CMSandbagFull
-  name: sandbags
-  description: Some bags filled with sand. For now, just cumbersome, but soon to be used for fortifications.
+  name: мешки с песком
+  description: Несколько мешков, наполненных песком. Пока просто бесполезные, но скоро будут использоваться для укреплений.
   components:
   - type: Item
     size: Large
@@ -102,12 +102,12 @@
 
 - type: stack
   id: CMSandbagEmpty
-  name: empty sandbags
+  name: пустые мешки для песка
   spawn: CMSandbagEmpty
   maxCount: 50
 
 - type: stack
   id: CMSandbagFull
-  name: empty sandbags
+  name: пустые мешки для песка
   spawn: CMSandbagFull
   maxCount: 50

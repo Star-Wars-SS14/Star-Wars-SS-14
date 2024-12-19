@@ -1,8 +1,8 @@
 - type: entity
   id: SW_WindowDirectional
   parent: BaseStructure
-  name: Directional window
-  description: Don't smudge up the glass down there.
+  name: направленное окно
+  description: Не испачкайте.
   placement:
     mode: SnapgridCenter
     snap:

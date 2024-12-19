@@ -1,8 +1,8 @@
 - type: entity
   id: SW_WindowReinforcedDirectional
   parent: WindowDirectional
-  name: Directional reinforced window
-  description: Don't smudge up the glass down there.
+  name: направленное бронеокно
+  description: Не испачкайте.
   placement:
     mode: SnapgridCenter
     snap:

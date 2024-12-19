@@ -38,8 +38,8 @@
 - type: entity
   parent: CMBaseWindow
   id: CMWindowReinforcedAlmayerHull
-  name: hull window
-  description: A glass window with a special rod matrix inside a wall frame. This one was made out of exotic materials to prevent hull breaches. No way to get through here.
+  name: окно корпуса
+  description: Стеклянный иллюминатор со специальной стержневой матрицей внутри настенной рамы. Она была сделана из экзотических материалов, чтобы предотвратить пробоины в корпусе. Здесь не пройти.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Windows/almayer_window.rsi
@@ -56,14 +56,14 @@
 - type: entity
   parent: CMWindowReinforcedAlmayerHull
   id: CMWindowReinforcedAlmayer
-  name: reinforced window
-  description: A glass window with a special rod matrix inside a wall frame. It looks rather strong. Might take a few good hits to shatter it.
+  name: армированное окно
+  description: Стеклянная витрина со специальным стержнем-матрицей внутри настенной рамы. Выглядит довольно прочно. Потребуется несколько ударов, чтобы разбить его.
 
 - type: entity
   parent: CMBaseWindow
   id: CMWindowReinforcedWhiteHull
-  name: reinforced window
-  description: An ultra-reinforced window designed to keep research a secure area. This one was made out of exotic materials to prevent hull breaches. No way to get through here.
+  name: армированное окно
+  description: Сверхпрочное окно, предназначенное для обеспечения безопасности Имперских сил. Это было сделано из экзотических материалов, чтобы предотвратить пробоины в корпусе. Сюда не пробраться.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Windows/white_reinforced_window.rsi
@@ -80,14 +80,14 @@
 - type: entity
   parent: CMWindowReinforcedWhiteHull
   id: CMWindowReinforcedWhite
-  name: hull window
-  description: A glass window with a special rod matrix inside a wall frame. It looks rather strong. Might take a few good hits to shatter it.
+  name: окно корпуса
+  description: Стеклянная витрина со специальным стержнем-матрицей внутри настенной рамы. Выглядит довольно прочно. Потребуется несколько ударов, чтобы разбить его.
 
 - type: entity
   parent: CMWindowReinforcedWhite
   id: CMWindowWhiteColony
-  name: window
-  description: A glass window. It looks thin and flimsy. A few knocks with anything should shatter it.
+  name: окно
+  description: Стеклянная витрина. Оно выглядит тонким и хрупким. Несколько ударов чем-нибудь должны разбить его вдребезги.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Windows/colony_window.rsi
@@ -103,8 +103,8 @@
 - type: entity
   parent: CMWindowWhiteColony
   id: CMWindowWhiteColonyReinforced
-  name: reinforced window
-  description: A glass window with a special rod matrix inside a wall frame. It looks rather strong. Might take a few good hits to shatter it.
+  name: армированное окно
+  description: Стеклянная витрина со специальным стержнем-матрицей внутри настенной рамы. Выглядит довольно прочно. Потребуется несколько ударов, чтобы разбить его.
   components:
   - type: Sprite
     state: col_rwindow0
@@ -121,8 +121,8 @@
 - type: entity
   parent: CMBaseWindow
   id: CMWindowSolaris
-  name: window
-  description: A glass window inside a wall frame.
+  name: окно
+  description: Стеклянная витрина в стенной раме.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Windows/solaris_window.rsi
@@ -139,8 +139,8 @@
 - type: entity
   parent: CMBaseWindow
   id: CMWindowSolarisReinforced
-  name: reinforced window
-  description: A glass window. The inside is reinforced with a few tempered matrix rods along the base. It looks rather strong. Might take a few good hits to shatter it.
+  name: армированное окно
+  description: Стеклянное окно. Внутри укреплено несколькими стержнями из закаленной матрицы вдоль основания. Выглядит довольно прочным. Потребуется несколько хороших ударов, чтобы разбить его.
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Windows/solaris_rwindow.rsi
@@ -157,5 +157,5 @@
 - type: entity
   parent: CMWindowSolarisReinforced
   id: CMWindowSolarisHull
-  description: A glass window. Something tells you this one is somehow indestructible.
+  description: Стеклянная витрина. Что-то подсказывает, что оно несокрушимо.
   # 1000000 hp

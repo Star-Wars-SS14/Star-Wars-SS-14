@@ -1,8 +1,8 @@
 ﻿- type: entity
   id: CMWindowDirectional
   parent: WindowDirectional
-  name: window
-  description: A glass window. It looks thin and flimsy. A few knocks with anything should shatter it.
+  name: окно
+  description: Стеклянная витрина. Оно выглядит тонким и хрупким. Несколько ударов чем-нибудь должны разбить его вдребезги.
   components:
   - type: Transform
     anchored: true
@@ -28,8 +28,8 @@
 - type: entity
   id: CMWindowReinforcedDirectional
   parent: CMWindowDirectional
-  name: reinforced window
-  description: A glass window reinforced with bracing rods. It looks rather strong. Might take a few good hits to shatter it.
+  name: армированное окно
+  description: Стеклянная витрина, укрепленная прутьями. Выглядит довольно прочным. Потребуется несколько хороших ударов, чтобы разбить его.
   components:
   - type: Sprite
     state: rwindow
@@ -40,8 +40,8 @@
 - type: entity
   id: CMWindowTintedDirectional
   parent: CMWindowDirectional
-  name: tinted window
-  description: A tinted glass window. It looks rather strong and opaque. Might take a few good hits to shatter it.
+  name: тонированное стекло
+  description: Окно из тонированного стекла. Выглядит довольно прочным и непрозрачным. Потребуется несколько ударов, чтобы разбить его.
   components:
   - type: Sprite
     state: twindow
@@ -52,8 +52,8 @@
 - type: entity
   id: CMWindowUltraDirectional
   parent: CMWindowDirectional
-  name: ultra-reinforced window
-  description: An ultra-reinforced window designed to keep the briefing podium a secure area.
+  name: ультраармированное окно
+  description: Сверхпрочное окно, предназначенное для обеспечения безопасности Имперских сил.
   components:
   - type: Sprite
     state: fwindow

@@ -1,5 +1,5 @@
 - type: entity
-  name: lightning
+  name: молния
   id: RedSWLightning
   components:
   - type: Sprite
@@ -26,7 +26,7 @@
       - HideContextMenu
 
 - type: entity
-  name: lightning
+  name: молния
   id: BlueSWLightning
   components:
   - type: Sprite

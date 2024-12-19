@@ -2,8 +2,8 @@
 - type: entity
   parent: BaseFenceMetal
   id: CMFence
-  name: fence
-  description: A large metal mesh strewn between two poles. Intended as a cheap way to separate areas, while allowing one to see through it.
+  name: забор
+  description: Большая металлическая сетка, натянутая между двумя столбами. Предназначена для дешевого способа разделения территорий, позволяя при этом видеть сквозь нее.
   components:
   - type: Transform
     anchored: true

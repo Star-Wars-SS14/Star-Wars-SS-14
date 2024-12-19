@@ -1,8 +1,8 @@
 ﻿- type: entity
   id: SW_BaseDoor
-  name: Base Door
+  name: дверь
   parent: BaseMaterialDoorNavMap
-  description: Star Wars Door
+  description: Открывается, закрывается, за дверью может быть Ситх!
   components:
   - type: Sprite
     sprite: _SW/Structures/Doors/Standard/basic.rsi

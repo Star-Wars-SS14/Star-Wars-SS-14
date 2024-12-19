@@ -33,7 +33,7 @@
 - type: entity
   id: SW_BannerEmpire
   parent: SW_BannerBase
-  name: empire banner
+  name: имперский баннер
   description:  Имперский символ представлял собой изменённый галактический медальон Бенду, использовавшийся в Галактической Республике в свои последние дни, как герб.
   components:
   - type: Sprite
@@ -43,7 +43,7 @@
 - type: entity
   id: SW_BannerEmpireRed
   parent: SW_BannerBase
-  name: empire banner red
+  name: имперский баннер
   description:  Имперский символ представлял собой изменённый галактический медальон Бенду, использовавшийся в Галактической Республике в свои последние дни, как герб.
   components:
   - type: Sprite
@@ -62,7 +62,7 @@
 - type: entity
   id: SW_BannerEmpireSith
   parent: SW_BannerBase
-  name: Empire banners
+  name: имперский баннер
   description: Имперский символ представлял собой изменённый галактический медальон Бенду, использовавшийся в Галактической Республике в свои последние дни, как герб.
   components:
   - type: Sprite
@@ -72,7 +72,7 @@
 - type: entity
   id: SW_BannerMandalorian
   parent: SW_BannerBase
-  name: Mandalorian banners
+  name: мандалорский баннер
   description: Мандалорцы, также называющие себя мандо'аде или «дети Мандалора» — воинственный, преимущественно кочевой народ состоявший из разумных существ вне зависимости от расы или пола, объединённых общей культурой.
   components:
   - type: Sprite
@@ -82,7 +82,7 @@
 - type: entity
   id: SW_BannerRepublic
   parent: SW_BannerBase
-  name: Republic banners
+  name: баннер республики
   description: Галактическая Республика, или просто Республика — наименование галактического государства, возглавляемая Верховным канцлером, имела ярко выраженное демократическое управление.
   components:
   - type: Sprite

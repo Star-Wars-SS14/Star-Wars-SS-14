@@ -1,8 +1,8 @@
 ﻿# TODO RMC14 make a central system to manage these instead of ticking them all separately
 - type: entity
   id: CMFogWall
-  name: dense fog
-  description: It looks way too dangerous to traverse. Best wait until it has cleared up.
+  name: густой туман
+  description: Он выглядит слишком опасным для прохождения. Лучше подождать, пока не прояснится.
   suffix: 25 minutes
   placement:
     mode: SnapgridCenter

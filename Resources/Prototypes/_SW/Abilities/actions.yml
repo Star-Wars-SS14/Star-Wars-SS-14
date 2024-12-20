@@ -1,4 +1,4 @@
-﻿- 2type: entity
+﻿- type: entity
   id: ActionJediDash
   name: Прыжок
   description: Это буквально телепортирует вас!

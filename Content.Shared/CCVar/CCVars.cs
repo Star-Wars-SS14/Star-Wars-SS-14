@@ -260,7 +260,7 @@ namespace Content.Shared.CCVar
         /// Whether or not panic bunker is currently enabled.
         /// </summary>
         public static readonly CVarDef<bool> PanicBunkerEnabled =
-            CVarDef.Create("game.panic_bunker.enabled", true, CVar.NOTIFY | CVar.REPLICATED | CVar.SERVER);
+            CVarDef.Create("game.panic_bunker.enabled", false, CVar.NOTIFY | CVar.REPLICATED | CVar.SERVER);
 
         /// <summary>
         /// Whether or not the panic bunker will disable when an admin comes online.
@@ -272,7 +272,7 @@ namespace Content.Shared.CCVar
         /// Whether or not the panic bunker will enable when no admins are online.
         /// </summary>
         public static readonly CVarDef<bool> PanicBunkerEnableWithoutAdmins =
-            CVarDef.Create("game.panic_bunker.enable_without_admins", true, CVar.SERVERONLY);
+            CVarDef.Create("game.panic_bunker.enable_without_admins", false, CVar.SERVERONLY);
 
         /// <summary>
         /// Whether or not the panic bunker will count deadminned admins for

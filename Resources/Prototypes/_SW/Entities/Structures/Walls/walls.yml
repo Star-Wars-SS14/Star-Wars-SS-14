@@ -100,11 +100,36 @@
     base: solid
 
 - type: entity
-  parent: BaseComputer
+  parent: BaseWall
   id: SW_WallLight
   name: стена света
   description: "Wall light."
   components:
+  - type: Construction
+    graph: Girder
+    node: wall
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 400
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+      - !type:ChangeConstructionNodeBehavior
+        node: girder
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
   - type: AmbientOnPowered
   - type: AmbientSound
     volume: -9

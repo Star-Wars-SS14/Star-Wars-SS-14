@@ -1,4 +1,4 @@
-﻿using Content.Server._SW.Force.Components;
+using Content.Server._SW.Force.Components;
 using Content.Server.Chat.Systems;
 using Content.Server.Radio;
 using Content.Server.Radio.Components;
@@ -20,7 +20,6 @@ public sealed class StarHelmetSystem : EntitySystem
     [Dependency] private readonly RadioSystem _radio = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly RadioDeviceSystem _radioDevice = default!;
-
     public override void Initialize()
     {
         base.Initialize();
@@ -39,7 +38,7 @@ public sealed class StarHelmetSystem : EntitySystem
         if (!args.IsInDetailsRange)
             return;
 
-        if(component.Channels.Count == 0)
+        if (component.Channels.Count == 0)
             return;
 
         if (component.Channels.Count > 0)
@@ -69,24 +68,28 @@ public sealed class StarHelmetSystem : EntitySystem
             _netMan.ServerSendMessage(args.ChatMsg, actor.PlayerSession.Channel);
     }
 
-    private void OnSpeak(EntityUid helmet, WearingStarHelmetComponent component, EntitySpokeEvent args)
+    private void OnSpeak(EntityUid messageSource, WearingStarHelmetComponent component, EntitySpokeEvent args)
     {
-        if (args.Channel != null)
+        if (args.Channel != null && HasComp<ActiveRadioComponent>(component.Helmet))
         {
-            _radio.SendRadioMessage(helmet, args.Message, args.Channel, component.Helmet);
+            _radio.SendRadioMessage(messageSource, args.Message, args.Channel, component.Helmet);
             args.Channel = null;
         }
     }
 
     private void OnGotEquipped(EntityUid helmet, StarHelmetComponent component, GotEquippedEvent args)
     {
+        if (!args.SlotFlags.HasFlag(component.RequiredSlot))
+        {
+            return;
+        }
         EnsureComp<WearingStarHelmetComponent>(args.Equipee).Helmet = helmet;
         EnsureComp<ActiveRadioComponent>(helmet).Channels = new(component.Channels);
 
-        if(!TryComp<RadioSpeakerComponent>(helmet, out var radioSpeakerComponent))
+        if (!TryComp<RadioSpeakerComponent>(helmet, out var radioSpeakerComponent))
             return;
 
-        if(radioSpeakerComponent.Enabled)
+        if (radioSpeakerComponent.Enabled)
             _radioDevice.ToggleRadioSpeaker(helmet, helmet);
     }
 
@@ -95,10 +98,10 @@ public sealed class StarHelmetSystem : EntitySystem
         RemComp<ActiveRadioComponent>(helmet);
         RemComp<WearingStarHelmetComponent>(args.Equipee);
 
-        if(!TryComp<RadioSpeakerComponent>(helmet, out var radioSpeakerComponent))
+        if (!TryComp<RadioSpeakerComponent>(helmet, out var radioSpeakerComponent))
             return;
 
-        if(radioSpeakerComponent.Enabled == false)
+        if (radioSpeakerComponent.Enabled == false)
             _radioDevice.ToggleRadioSpeaker(helmet, helmet);
     }
 }

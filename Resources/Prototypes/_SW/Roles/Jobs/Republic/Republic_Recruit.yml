@@ -1,0 +1,13 @@
+- type: job
+  id: SW_Republic_Recruit
+  name: Рекрут Сил Республики
+  playTimeTracker: Job_Republic_Recruit
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: RepublicRecruitGear
+  icon: "JobIconRepublicRecruit"
+  supervisors: job-supervisors-everyone

@@ -7,9 +7,9 @@ public sealed partial class TTSSystem
     {
         var result = text;
         if (traits.HasFlag(SoundTraits.RateFast))
-            result = $"<prosody rate=\"fast\">{result}</prosody>";
+            result = $"{result}";
         if (traits.HasFlag(SoundTraits.PitchVerylow))
-            result = $"<prosody pitch=\"x-low\">{result}</prosody>";
+            result = $"{result}";
         return $"{result}";
     }
 

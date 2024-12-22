@@ -126,7 +126,7 @@ public sealed class TTSManager
 
     private string GenerateCacheKey(string speaker, string text)
     {
-        var key = $"{speaker}/{text}";
+        var key = $"{speaker}{text}";
         byte[] keyData = Encoding.UTF8.GetBytes(key);
         var sha256 = System.Security.Cryptography.SHA256.Create();
         var bytes = sha256.ComputeHash(keyData);

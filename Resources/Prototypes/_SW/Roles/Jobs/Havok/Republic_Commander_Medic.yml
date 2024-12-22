@@ -10,5 +10,5 @@
     role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: RepublicCommanderMedicGear
-  icon: "JobIconCommanderMedic"
+  icon: "JobIconHavocMedic"
   supervisors: job-supervisors-everyone

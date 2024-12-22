@@ -9,5 +9,5 @@
     role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: ExchangeCaptainGear
-  icon: "JobIconExchangeCapitan"
+  icon: "JobIconExchangeCaptain"
   supervisors: job-supervisors-everyone

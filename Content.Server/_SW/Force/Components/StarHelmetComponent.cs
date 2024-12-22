@@ -11,5 +11,5 @@ public sealed partial class StarHelmetComponent : Component
     public HashSet<string> Channels;
 
     [DataField("requiredSlot")]
-    public SlotFlags RequiredSlot = SlotFlags.EARS;
+    public SlotFlags RequiredSlot = SlotFlags.EARS | SlotFlags.HEAD;
 }

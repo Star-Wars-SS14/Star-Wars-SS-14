@@ -226,16 +226,16 @@
             "name": "EmpireSoldier"
         },
         {
-            "name": "HavocCommander"
+            "name": "CommanderCommander"
         },
         {
-            "name": "HavocMedic"
+            "name": "CommanderMedic"
         },
         {
-            "name": "HavocSniper"
+            "name": "CommanderSniper"
         },
         {
-            "name": "HavocStormtrooper"
+            "name": "CommanderStormtrooper"
         },
         {
             "name": "ImperialIntelligenceAgent"
@@ -281,6 +281,12 @@
         },
         {
             "name": "SobrikOfficer"
+        },
+        {
+            "name": "ExchangeCapitan"
+        },
+        {
+            "name": "ExchangeOperative"
         }
     ]
 }

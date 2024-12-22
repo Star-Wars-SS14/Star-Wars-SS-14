@@ -10,5 +10,5 @@
     role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: RepublicCommanderLieutenantGear
-  icon: "JobIconHavocStormtrooper"
+  icon: "JobIconCommanderStormtrooper"
   supervisors: job-supervisors-everyon

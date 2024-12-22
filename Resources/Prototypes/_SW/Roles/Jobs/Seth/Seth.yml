@@ -284,7 +284,7 @@
     gloves: ClothingHandsGlovesCombat
     ears: ClothingHeadsetSobrik
 
-###Commander elite Republic
+###Havok elite Republic
 - type: startingGear
   id: RepublicCommanderCommanderGear
   equipment:

@@ -16,6 +16,7 @@
   name: tts-voice-name-puchkow
   sex: male
   speaker: puchkow
+  roundStart: false
 
 - type: ttsVoice
   id: Moriarti
@@ -58,12 +59,14 @@
   name: tts-voice-name-obama
   sex: male
   speaker: obama
+  roundStart: false
 
 - type: ttsVoice
   id: Trump
   name: tts-voice-name-trump
   sex: male
   speaker: trump
+  roundStart: false
 
 - type: ttsVoice
   id: Dbkn
@@ -124,6 +127,7 @@
   name: tts-voice-name-gman
   sex: male
   speaker: gman
+  roundStart: false
 
 - type: ttsVoice
   id: Barni
@@ -154,6 +158,7 @@
   name: tts-voice-name-villager
   sex: male
   speaker: villager
+  roundStart: false
 
 - type: ttsVoice
   id: Squidward
@@ -166,6 +171,7 @@
   name: tts-voice-name-sentrybot
   sex: male
   speaker: sentrybot
+  roundStart: false
 
 - type: ttsVoice
   id: Polina
@@ -262,30 +268,35 @@
   name: tts-voice-name-glados
   sex: female
   speaker: glados
+  roundStart: false
 
 - type: ttsVoice
   id: Adventure_core
   name: tts-voice-name-adventure_core
   sex: male
   speaker: adventure_core
+  roundStart: false
 
 - type: ttsVoice
   id: Fact_core
   name: tts-voice-name-fact_core
   sex: male
   speaker: fact_core
+  roundStart: false
 
 - type: ttsVoice
   id: Space_core
   name: tts-voice-name-space_core
   sex: male
   speaker: space_core
+  roundStart: false
 
 - type: ttsVoice
   id: Turret_floor
   name: tts-voice-name-turret_floor
   sex: female
   speaker: turret_floor
+  roundStart: false
 
 - type: ttsVoice
   id: Geralt
@@ -484,6 +495,7 @@
   name: tts-voice-name-skippy
   sex: male
   speaker: skippy
+  roundStart: false
 
 - type: ttsVoice
   id: Jackie

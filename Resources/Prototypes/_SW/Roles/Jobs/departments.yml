@@ -76,11 +76,11 @@
   description: Элитный отряд республики, состоящий из лучших бойцов.
   color: "#8B0000"
   roles:
-  - SW_Havok_Commander
-  - SW_Havok_Lieutenant
-  - SW_Havok_Medic
-  - SW_Havok_Stormtrooper
-  - SW_Havok_Sniper
+  - SW_Republic_Commander_Commander
+  - SW_Republic_Commander_Lieutenant
+  - SW_Republic_Commander_Medic
+  - SW_Republic_Commander_Sniper
+  - SW_Republic_Commander_Stormtrooper
   weight: 1300
 
 - type: department

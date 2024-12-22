@@ -9,5 +9,5 @@
     role: JobMedicalDoctor
     time: 0 # 6h
   startingGear: RepublicSoldierGear
-  icon: "JobIconRepublicSoldier"
+  icon: "JobIconRepublicSolider"
   supervisors: job-supervisors-everyone

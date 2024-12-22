@@ -10,9 +10,9 @@ public sealed partial class TTSSystem
             result = $"<prosody rate=\"fast\">{result}</prosody>";
         if (traits.HasFlag(SoundTraits.PitchVerylow))
             result = $"<prosody pitch=\"x-low\">{result}</prosody>";
-        return $"<speak>{result}</speak>";
+        return $"{result}";
     }
-    
+
     [Flags]
     private enum SoundTraits : ushort
     {

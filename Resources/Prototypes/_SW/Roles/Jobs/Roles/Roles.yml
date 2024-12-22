@@ -1,0 +1,502 @@
+﻿###Sobrik
+- type: job
+  id: SW_Sobrik_Captain
+  name: Комендант Гарнизона
+  playTimeTracker: Job_Sobrik_Captain
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: SobrikCaptainGear
+  icon: "JobIconHeadPrisioner"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Sobrik_Officer
+  name: Офицер Гарнизона
+  playTimeTracker: Job_Sobrik_Officer
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: SobrikOfficerGear
+  icon: "JobIconPrisoner"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Sobrik_Medic
+  name: Медик Гарнизона
+  playTimeTracker: Job_Sobrik_Medic
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: SobrikMedicGear
+  icon: "JobIconParamedic"
+  supervisors: job-supervisors-everyone
+
+###Empire
+#Command
+- type: job
+  id: SW_Empire_Moff
+  name: МОФФ Сил Империи
+  playTimeTracker: Job_Empire_Moff
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: EmpireMoffGear
+  icon: "JobIconHeadOfSecurity"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Empire_Major
+  name: Майор Сил Империи
+  playTimeTracker: Job_Empire_Major
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: EmpireMajorGear
+  icon: "JobIconSeniorOfficer"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Empire_Lieutenant
+  name: Лейтенант Сил Империи
+  playTimeTracker: Job_Empire_Lieutenant
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: EmpireLieutenantGear
+  icon: "JobIconWarden"
+  supervisors: job-supervisors-everyone
+
+#Soldiers
+- type: job
+  id: SW_Empire_Soldier
+  name: Солдат Сил Империи
+  playTimeTracker: Job_Empire_Soldier
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: EmpireSoldierGear
+  icon: "JobIconSecurityOfficer"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Empire_Medic
+  name: Медик Сил Империи
+  playTimeTracker: Job_Empire_Medic
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: EmpireMedicalGear
+  icon: "JobIconBrigmedic"
+  supervisors: job-supervisors-everyone
+
+###Mandalorians
+- type: job
+  id: SW_Mandalorian_Leader
+  name: Лидер Мандалорцев
+  playTimeTracker: Job_Mandalorian_Leader
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: MandalorianLeaderGear
+  icon: "JobIconChiefEngineer"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Mandalorian_Veteran
+  name: Ветеран Мандалорцев
+  playTimeTracker: Job_Mandalorian_Veteran
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: MandalorianVeteranGear
+  icon: "JobIconSeniorEngineer"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Mandalorian_Warrior
+  name: Воин Мандалорцев
+  playTimeTracker: Job_Mandalorian_Warrior
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: MandalorianWarriorGear
+  icon: "JobIconStationEngineer"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Mandalorian_Recruit
+  name: Рекрут Мандалорцев
+  playTimeTracker: Job_Mandalorian_Recruit
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: MandalorianRecruitGear
+  icon: "JobIconTechnicalAssistant"
+  supervisors: job-supervisors-everyone
+
+###Republic
+#Command
+- type: job
+  id: SW_Republic_General
+  name: Генерал Сил Республики
+  playTimeTracker: Job_Republic_General
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: RepublicGeneralGear
+  icon: "JobIconCaptain"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Republic_Captain
+  name: Капитан Сил Республики
+  playTimeTracker: Job_Republic_Captain
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: RepublicCaptainGear
+  icon: "JobIconSeniorPhysician"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Republic_Lieutenant
+  name: Лейтенант Сил Республики
+  playTimeTracker: Job_Republic_Lieutenant
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: RepublicLieutenantGear
+  icon: "JobIconMedicalIntern"
+  supervisors: job-supervisors-everyone
+
+#Soldiers
+- type: job
+  id: SW_Republic_Soldier
+  name: Солдат Сил Республики
+  playTimeTracker: Job_Republic_Soldier
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: RepublicSoldierGear
+  icon: "JobIconMedicalIntern"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Republic_Medic
+  name: Медик Сил Республики
+  playTimeTracker: Job_Republic_Medic
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: RepublicMedicGear
+  icon: "JobIconGeneticist"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Republic_Recruit
+  name: Рекрут Сил Республики
+  playTimeTracker: Job_Republic_Recruit
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: RepublicRecruitGear
+  icon: "JobIconPsychologist"
+  supervisors: job-supervisors-everyone
+
+###Balmorran resistance
+- type: job
+  id: SW_Balmorran_Leader
+  name: Balmorran Leader
+  playTimeTracker: Job_Balmorran_Leader
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: BalmorranLeaderGear
+  icon: "JobIconResearchDirector"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Balmorran_Officer
+  name: Balmorran Officer
+  playTimeTracker: Job_Balmorran_Officer
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: BalmorranOfficerGear
+  icon: "JobIconScientist"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Balmorran_Medic
+  name: Balmorran Medic
+  playTimeTracker: Job_Balmorran_Medic
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: BalmorranMedicGear
+  icon: "JobIconScientist"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Balmorran_Soldier
+  name: Balmorran Soldier
+  playTimeTracker: Job_Balmorran_Soldier
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: BalmorranSoldierGear
+  icon: "JobIconScientist"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Balmorran_Recruit
+  name: Balmorran Recruit
+  playTimeTracker: Job_Balmorran_Recruit
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: BalmorranRecruitGear
+  icon: "JobIconScientist"
+  supervisors: job-supervisors-everyone
+
+###Imperial Intelligence
+- type: job
+  id: SW_Empire_Intelligence_Caretaker
+  name: Смотритель Имперской Разведки
+  playTimeTracker: Job_Empire_Intelligence_Caretaker
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: EmpireIntelligenceCaretakerGear
+  icon: "JobIconHeadOfPersonnel"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Empire_Intelligence_Agent
+  name: Агент Имперской Разведки
+  playTimeTracker: Job_Empire_Intelligence_Agent
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: EmpireIntelligenceAgentGear
+  icon: "JobIconLawyer"
+  supervisors: job-supervisors-everyone
+
+###Commander elite Republic
+- type: job
+  id: SW_Republic_Commander_Commander
+  name: Командир-Коммандос
+  playTimeTracker: Job_Republic_Commander_Commander
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: RepublicCommanderCommanderGear
+  icon: "JobIconHeadRevolutionary"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Republic_Commander_Lieutenant
+  name: Лейтенант-Коммандос
+  playTimeTracker: Job_Republic_Commander_Lieutenant
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: RepublicCommanderLieutenantGear
+  icon: "JobIconRevolutionary"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Republic_Commander_Medic
+  name: Медик-Коммандос
+  playTimeTracker: Job_Republic_Commander_Medic
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: RepublicCommanderMedicGear
+  icon: "JobIconBrigmedic"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Republic_Commander_Stormtrooper
+  name: Штурмовик-Коммандос
+  playTimeTracker: Job_Republic_Commander_Stormtrooper
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: RepublicCommanderStormtrooperGear
+  icon: "JobIconRevolutionary"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Republic_Commander_Sniper
+  name: Снайпер-Коммандос
+  playTimeTracker: Job_Republic_Commander_Sniper
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: RepublicCommanderSniperGear
+  icon: "JobIconRevolutionary"
+  supervisors: job-supervisors-everyone
+
+###Black Sun
+- type: job
+  id: SW_BlackSun
+  name: Черное Солнце
+  playTimeTracker: Job_BlackSun_Sniper
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: BlackSunGear
+  icon: "JobIconHeadSyndicate"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_BlackSun_Mercenary
+  name: Черное Солнце Наемник
+  playTimeTracker: Job_BlackSun_Mercenary
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: BlackSunMercenaryGear
+  icon: "JobIconSyndicate"
+  supervisors: job-supervisors-everyone
+
+###Exchange
+- type: job
+  id: SW_Exchange_Captain
+  name: Капитан обмена
+  playTimeTracker: Job_Exchange_Captain
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: ExchangeCaptainGear
+  icon: "JobIconHeadSyndicate"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Exchange_Operative
+  name: Оперативник обмена
+  playTimeTracker: Job_Exchange_Operative
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: ExchangeOperativeGear
+  icon: "JobIconSyndicate"
+  supervisors: job-supervisors-everyone
+
+- type: job
+  id: SW_Civialian
+  name: Житель
+  playTimeTracker: Job_Civialian
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: CitizenGear
+  icon: "JobIconPassenger"
+  supervisors: job-supervisors-everyone

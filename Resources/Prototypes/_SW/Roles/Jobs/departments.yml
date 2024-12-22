@@ -1,5 +1,5 @@
 - type: department
-  id: SW_Empire #Roles_Empire
+  id: Cargo #Roles_Empire
   name: Империя
   description: Непосредственно основной кулак имперских сил, задача непосредственно вести экспансию, захватывать важные точки с ресурсами и т.п.
   color: "#8B0000"
@@ -12,7 +12,7 @@
   weight: 1900
 
 - type: department
-  id: SW_Pepublic #Roles_Republic
+  id: Civilian #Roles_Republic
   name: Республика
   description: Республика, после поражения, вывела войска из Балморы. Но там всё ещё оставалась подпольная ячейка республиканских солдат, которые всё время создавали плацдарм для будущего вторжения
   color: "#8B0000"
@@ -26,7 +26,7 @@
   weight: 1800
 
 - type: department
-  id: SW_Sobrik #Roles_Sobrik
+  id: Command #Roles_Sobrik
   name: Имперский Гарнизон
   description: Охранники космопорта под сильным контролем империи.
   color: "#8B0000"
@@ -37,7 +37,7 @@
   weight: 1700
 
 - type: department
-  id: SW_Mandalorians #Roles_Mandalorians
+  id: Engineering #Roles_Mandalorians
   name: Мандалорцы
   description: Мандалорцы - воины, которые не боятся смерти.
   color: "#8B0000"
@@ -61,7 +61,7 @@
   #weight: 1500
 
 - type: department
-  id: SW_RP_Intelligence #Roles_Empire_Intelligence
+  id: Security #Roles_Empire_Intelligence
   name: Имперский разведывательный отряд
   description: Элитный отряд империи, состоящий из лучших бойцов и прошедшие подготовку в разведовательный отдел.
   color: "#8B0000"
@@ -71,20 +71,20 @@
   weight: 1400
 
 - type: department
-  id: SW_Havok #Roles_Havok
+  id: Science #Roles_Republic_Commander
   name: Республиканский Коммандос отряд
   description: Элитный отряд республики, состоящий из лучших бойцов.
   color: "#8B0000"
   roles:
-  - SW_Havok_Commander
-  - SW_Havok_Lieutenant
-  - SW_Havok_Medic
-  - SW_Havok_Stormtrooper
-  - SW_Havok_Sniper
+  - SW_Republic_Commander_Commander
+  - SW_Republic_Commander_Lieutenant
+  - SW_Republic_Commander_Medic
+  - SW_Republic_Commander_Stormtrooper
+  - SW_Republic_Commander_Sniper
   weight: 1300
 
 - type: department
-  id: SW_Blacksun #Roles_Black_Sun
+  id: Specific #Roles_Black_Sun
   name: Черное Солнце
   description: Преступная организация "Черное Солнце", осколок группировки "Обмен".
   color: "#8B0000"
@@ -94,7 +94,7 @@
   weight: 1200
 
 - type: department
-  id: SW_Exchange #Roles_Exchange
+  id: Medical #Roles_Exchange
   name: Обмен
   description: Преступная организация "Обмен"
   color: "#8B0000"
@@ -104,7 +104,7 @@
   weight: 1100
 
 - type: department
-  id: SW_Civilian
+  id: Roles_Civilian
   name: Обычные жители
   description: Обычные жители планеты
   color: "#8B0000"

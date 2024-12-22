@@ -613,7 +613,7 @@
   id: JobIconExchangeCapitan
   icon:
     sprite: /Textures/Interface/Misc/job_icons.rsi
-    state: ExchangeCaptain
+    state: ExchangeCapitan
 
 - type: statusIcon
   parent: JobIcon

@@ -5,6 +5,6 @@ department-SW_Sobrik = Имперский Гарнизон
 department-SW_Mandalorians = Мандалорцы
 department-SW_Exchange = Обмен
 department-SW_RP_Intelligence = Имперский разведывательный отряд
-department-SW_RP_Commander = Республиканский командный отряд
+department-SW_Havok = Республиканский командный отряд
 department-SW_Blacksun = Черное Солнце
 department-SW_Civilian = Обычные жители

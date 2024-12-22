@@ -53,7 +53,7 @@ public sealed class CCCVars
     /// Count of in-memory cached tts voice lines.
     /// </summary>
     public static readonly CVarDef<int> TTSMaxCache =
-        CVarDef.Create("tts.max_cache", 250, CVar.SERVERONLY | CVar.ARCHIVE);
+        CVarDef.Create("tts.max_cache", 8000, CVar.SERVERONLY | CVar.ARCHIVE);
 
     /*
      * Peaceful Round End

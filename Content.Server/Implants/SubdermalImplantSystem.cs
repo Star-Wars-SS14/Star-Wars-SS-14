@@ -26,6 +26,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Physics.Collision.Shapes;
 using System.Linq;
 using System.Collections.Generic;
+using Content.Server.Construction.Commands;
 namespace Content.Server.Implants;
 
 public sealed class SubdermalImplantSystem : SharedSubdermalImplantSystem
@@ -168,7 +169,10 @@ public sealed class SubdermalImplantSystem : SharedSubdermalImplantSystem
 
         foreach (TileRef tile in tilesInRange)
         {
-            tileList.Add(tile.GridIndices);
+            if (!tile.Tile.IsEmpty)
+            {
+                tileList.Add(tile.GridIndices);
+            }
         }
         bool valid = false;
         while (tileList.Count != 0)

@@ -1,0 +1,10 @@
+- type: entity
+  id: StandardSWStation
+  parent:
+    - BaseStation
+    - BaseStationJobsSpawning
+    - BaseStationAlertLevels
+    - BaseStationNanotrasen
+  noSpawn: true
+  components:
+    - type: Transform

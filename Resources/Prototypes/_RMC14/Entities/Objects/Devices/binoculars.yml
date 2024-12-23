@@ -1,8 +1,8 @@
 ﻿- type: entity
   parent: BaseItem
   id: RMCBinoculars
-  name: бинокли
-  description: Военные бинокли.
+  name: бинокль
+  description: Военный бинокль.
   components:
   - type: Item
     size: Small

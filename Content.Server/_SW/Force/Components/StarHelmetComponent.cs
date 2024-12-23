@@ -10,6 +10,8 @@ public sealed partial class StarHelmetComponent : Component
     [DataField("channels", customTypeSerializer: typeof(PrototypeIdHashSetSerializer<RadioChannelPrototype>))]
     public HashSet<string> Channels;
 
+    //список слотов, в которые можно поместить предметы с этим компонентом
+    //(не конкретно этот предмет, а вообще любые предметы с этим компонентом)
     [DataField("requiredSlot")]
-    public SlotFlags RequiredSlot = SlotFlags.EARS;
+    public static List<SlotFlags> AllowedSlots = new() { SlotFlags.EARS, SlotFlags.HEAD };
 }

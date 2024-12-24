@@ -1,4 +1,4 @@
-﻿using Content.Shared.Camera;
+using Content.Shared.Camera;
 using Content.Shared.Mobs;
 using Content.Shared.Movement.Events;
 using Content.Shared.Movement.Pulling.Events;
@@ -12,7 +12,7 @@ public partial class SharedScopeSystem
 {
     private void InitializeUser()
     {
-        SubscribeLocalEvent<ScopingComponent, MoveInputEvent>(OnMoveInput);
+        SubscribeLocalEvent<ScopingComponent, MoveEvent>(OnMoveInput);
         SubscribeLocalEvent<ScopingComponent, PullStartedMessage>(OnPullStarted);
         SubscribeLocalEvent<ScopingComponent, EntParentChangedMessage>(OnParentChanged);
         SubscribeLocalEvent<ScopingComponent, ContainerGettingInsertedAttemptEvent>(OnInsertAttempt);
@@ -24,7 +24,7 @@ public partial class SharedScopeSystem
         SubscribeLocalEvent<ScopingComponent, MobStateChangedEvent>(OnMobStateChanged);
     }
 
-    private void OnMoveInput(Entity<ScopingComponent> ent, ref MoveInputEvent args)
+    private void OnMoveInput(Entity<ScopingComponent> ent, ref MoveEvent args)
     {
         UserStopScoping(ent);
     }

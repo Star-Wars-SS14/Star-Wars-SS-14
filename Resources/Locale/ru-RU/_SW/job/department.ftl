@@ -6,4 +6,4 @@ department-SW_Exchange = Обмен
 department-SW_RP_Intelligence = Имперский разведывательный отряд
 department-SW_Blacksun = Черное Солнце
 department-SW_Civilian = Обычные жители
-department-SW_Havok = Республиканский командос отряд
+department-SW_Havok = Хавок

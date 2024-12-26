@@ -1,0 +1,23 @@
+name: Publish changelog (Discord)
+
+concurrency:
+  group: publish-discord
+
+on:
+  workflow_dispatch:
+  # schedule:
+  # - cron: '0 1 * * *' no thanks you
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+#    - name: Install dependencies
+#      run: sudo apt-get install -y python3-paramiko python3-lxml
+
+    - name: Publish changelog (Discord)
+      run: Tools/actions_changelogs_since_last_run.py
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        DISCORD_WEBHOOK_URL: ${{ secrets.CHANGELOG_DISCORD_WEBHOOK }}

@@ -1,3 +1,8 @@
+permissions:
+  actions: read
+  contents: read
+  pull-requests: read
+
 name: Publish changelog (Discord)
 
 concurrency:

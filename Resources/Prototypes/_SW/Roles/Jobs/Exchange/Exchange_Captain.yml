@@ -1,0 +1,13 @@
+- type: job
+  id: SW_Exchange_Captain
+  name: Капитан обмена
+  playTimeTracker: Job_Exchange_Captain
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: ExchangeCaptainGear
+  icon: "JobIconExchangeCaptain"
+  supervisors: job-supervisors-everyone

@@ -1,0 +1,13 @@
+- type: job
+  id: SW_Civialian
+  name: Житель
+  playTimeTracker: Job_Civialian
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: CitizenGear
+  icon: "JobIconCivialian"
+  supervisors: job-supervisors-everyone

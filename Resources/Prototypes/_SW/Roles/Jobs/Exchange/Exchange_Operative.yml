@@ -1,0 +1,13 @@
+- type: job
+  id: SW_Exchange_Operative
+  name: Оперативник обмена
+  playTimeTracker: Job_Exchange_Operative
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: ExchangeOperativeGear
+  icon: "JobIconExchangeOperative"
+  supervisors: job-supervisors-everyone

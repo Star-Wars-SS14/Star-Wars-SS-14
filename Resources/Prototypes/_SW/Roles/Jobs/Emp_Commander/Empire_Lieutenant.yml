@@ -1,0 +1,13 @@
+- type: job
+  id: SW_Empire_Lieutenant
+  name: Лейтенант Сил Империи
+  playTimeTracker: Job_Empire_Lieutenant
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: EmpireLieutenantGear
+  icon: "JobIconEmpireLieutenant"
+  supervisors: job-supervisors-everyone

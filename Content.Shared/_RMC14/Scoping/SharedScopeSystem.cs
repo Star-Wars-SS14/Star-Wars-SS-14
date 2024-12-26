@@ -18,8 +18,8 @@ namespace Content.Shared._RMC14.Scoping;
 
 public abstract partial class SharedScopeSystem : EntitySystem
 {
-    [Dependency] protected readonly ActionContainerSystem _actionContainer = default!;
-    [Dependency] protected readonly SharedActionsSystem _actionsSystem = default!;
+    [Dependency] private readonly ActionContainerSystem _actionContainer = default!;
+    [Dependency] private readonly SharedActionsSystem _actionsSystem = default!;
     [Dependency] private readonly SharedContainerSystem _container = default!;
     [Dependency] private readonly SharedContentEyeSystem _contentEye = default!;
     [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
@@ -80,15 +80,7 @@ public abstract partial class SharedScopeSystem : EntitySystem
     protected void OnDeselectHand(Entity<ScopeComponent> ent, ref HandDeselectedEvent args)
     {
         _actionContainer.EnsureAction(ent.Owner, ref ent.Comp.ScopingToggleActionEntity, ent.Comp.ScopingToggleAction);
-        ISawmill _ss = Logger.GetSawmill("aaassda");
         ActionsComponent actionsComponent = EnsureComp<ActionsComponent>(args.User);
-        if (ent.Comp.ScopingToggleActionEntity != null &&
-            (actionsComponent.Actions.Contains<EntityUid>(ent.Comp.ScopingToggleActionEntity.Value)))
-        {
-            _ss.Debug("contains");
-        }
-        _ss.Debug("Deselect");
-        _ss.Debug($"user: {args.User} owner: {ent.Owner}");
         _actionsSystem.RemoveProvidedActions(args.User, ent.Owner);
         Unscope(ent);
     }

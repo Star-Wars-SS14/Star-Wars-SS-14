@@ -77,7 +77,7 @@ public abstract partial class SharedScopeSystem : EntitySystem
         }
     }
 
-    protected void OnDeselectHand(Entity<ScopeComponent> ent, ref HandDeselectedEvent args)
+    private void OnDeselectHand(Entity<ScopeComponent> ent, ref HandDeselectedEvent args)
     {
         _actionContainer.EnsureAction(ent.Owner, ref ent.Comp.ScopingToggleActionEntity, ent.Comp.ScopingToggleAction);
         ActionsComponent actionsComponent = EnsureComp<ActionsComponent>(args.User);

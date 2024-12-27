@@ -1,0 +1,13 @@
+- type: job
+  id: SW_Sobrik_Medic
+  name: Медик Гарнизона
+  playTimeTracker: Job_Sobrik_Medic
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: SobrikMedicGear
+  icon: "JobIconSobrikMedic"
+  supervisors: job-supervisors-everyone

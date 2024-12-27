@@ -1,0 +1,13 @@
+- type: job
+  id: SW_Sobrik_Captain
+  name: Комендант Гарнизона
+  playTimeTracker: Job_Sobrik_Captain
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: SobrikCaptainGear
+  icon: "JobIconSobrikComendant"
+  supervisors: job-supervisors-everyone

@@ -1,0 +1,13 @@
+- type: job
+  id: SW_Mandalorian_Leader
+  name: Лидер Мандалорцев
+  playTimeTracker: Job_Mandalorian_Leader
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: MandalorianLeaderGear
+  icon: "JobIconMandalorianLeader"
+  supervisors: job-supervisors-everyone

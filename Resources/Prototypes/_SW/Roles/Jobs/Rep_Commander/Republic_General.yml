@@ -1,0 +1,13 @@
+- type: job
+  id: SW_Republic_General
+  name: Генерал Сил Республики
+  playTimeTracker: Job_Republic_General
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: RepublicGeneralGear
+  icon: "JobIconRepublicGeneral"
+  supervisors: job-supervisors-everyone

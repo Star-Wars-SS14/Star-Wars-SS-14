@@ -1,0 +1,13 @@
+- type: job
+  id: SW_BlackSun
+  name: Черное Солнце
+  playTimeTracker: Job_BlackSun
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 24h
+  - !type:RoleTimeRequirement
+    role: JobMedicalDoctor
+    time: 0 # 6h
+  startingGear: BlackSunGear
+  icon: "JobIconBlackSun"
+  supervisors: job-supervisors-everyone

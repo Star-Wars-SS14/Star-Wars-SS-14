@@ -1,0 +1,44 @@
+# Random humanoid
+- type: randomHumanoidSettings
+  id: EventHumanoid
+  components:
+    - type: RandomHumanoidAppearance
+      randomizeName: false
+    - type: GhostTakeoverAvailable
+
+# Empire
+# Empire Lieutenant
+- type: entity
+  id: RandomHumanoidSpawnerEmpireLieutenant
+  name: Empire Lieutenant
+  suffix: EmpireGhostRole, Basic
+  components:
+    - type: Sprite
+      layers:
+      - state: green
+    - type: RandomMetadata
+      nameSegments:
+      - NamesFirstMilitaryLieutenant
+      - NamesLastMilitary
+    - type: RandomHumanoidSpawner
+      settings: EmpireLieutenant
+
+- type: randomHumanoidSettings
+  id: EmpireLieutenant
+  parent: EventHumanoid
+  randomizeName: false
+  components:
+    - type: GhostRole
+      name: ghost-role-information-empire-lieutenant-name
+      description: ghost-role-information-empire-lieutenant-description
+      rules: ghost-role-information-nonantagonist-rules
+      raffle:
+        settings: short
+      job: EmpireLieutenant
+    - type: Loadout
+      prototypes: [ EmpireLieutenantGear ]
+      roleLoadout: [ RoleSurvivalExtended ]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesFirstMilitaryLeader
+      - NamesLastMilitary

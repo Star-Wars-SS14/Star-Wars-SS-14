@@ -16,6 +16,24 @@
   - Капрал
   - Ефрейтор
 
+# SW
+- type: dataset
+  id: NamesFirstMilitaryLieutenant
+  values:
+  - Лейтенант
+
+# SW
+- type: dataset
+  id: NamesFirstMilitarySoldier
+  values:
+  - Солдат
+
+# SW
+  - type: dataset
+  id: NamesFirstMilitaryMedic
+  values:
+  - Медик
+
 - type: dataset
   id: NamesLastMilitary
   values:
@@ -62,4 +80,4 @@
   - Шедар
   - Шаула
   - Электра
-  
+

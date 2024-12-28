@@ -252,3 +252,6 @@ ghost-role-information-artifact-name = Sentient Artifact
 ghost-role-information-artifact-description =
       Enact your eldritch whims.
       Forcibly activate your nodes for good or for evil.
+
+ghost-role-information-empire-lieutenant-name = Empire lieutenant
+ghost-role-information-empire-lieutenant-description = You are lieutenant of Empire, you must give the orders to your squad!

@@ -1,0 +1,25 @@
+# Empire
+#Lieutenant
+- type: startingGear
+  id: EmpireLieutenantGear
+  equipment:
+    jumpsuit: SW_ClothingUniformJumpsuitOfficers
+    back: ClothingBackpackMilitarySatchel
+    shoes: SW_ClothingShoesBootsOfficers
+    eyes: ClothingEyesGlassesSunglasses
+    gloves: ClothingHandsGlovesColorBlack
+    head: SW_ClothingHeadLieutenantImperialHelmet
+    outerClothing: SW_LieutenantImperialSuit
+    id: SW_IDCardEmpireLieutenant
+    ears: ClothingHeadsetRegular
+    belt: ClothingBeltAssault
+    pocket1: SW_YellowMagazineBlastRifle
+    pocket2: SW_YellowMagazineBlastRifle
+  inhand:
+  - SW_E1BlasterRifle
+  storage:
+    back:
+    - SW_YellowMagazineBlastRifle
+    - CMInaprovalineAutoInjector
+    - RegenerativeMesh
+    - BoxMRE

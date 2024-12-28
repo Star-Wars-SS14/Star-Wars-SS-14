@@ -61,6 +61,7 @@ namespace Content.Server.IoC
             IoCManager.Register<ServerInfoManager>();
             IoCManager.Register<PoissonDiskSampler>();
             IoCManager.Register<DiscordWebhook>();
+            IoCManager.Register<DiscordLink>();
             IoCManager.Register<ServerDbEntryManager>();
             IoCManager.Register<ISharedPlaytimeManager, PlayTimeTrackingManager>();
             IoCManager.Register<ServerApi>();

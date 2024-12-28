@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+using System.Linq;
+using System.Numerics;
 using Content.Shared.Actions;
 using Content.Shared.DoAfter;
 using Content.Shared.Hands;
@@ -33,13 +34,13 @@ public abstract partial class SharedScopeSystem : EntitySystem
         SubscribeLocalEvent<ScopeComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<ScopeComponent, ComponentRemove>(OnShutdown);
         SubscribeLocalEvent<ScopeComponent, EntityTerminatingEvent>(OnScopeEntityTerminating);
-        SubscribeLocalEvent<ScopeComponent, GotUnequippedHandEvent>(OnUnequip);
-        SubscribeLocalEvent<ScopeComponent, HandDeselectedEvent>(OnDeselectHand);
+
         SubscribeLocalEvent<ScopeComponent, ItemUnwieldedEvent>(OnUnwielded);
-        SubscribeLocalEvent<ScopeComponent, GetItemActionsEvent>(OnGetActions);
         SubscribeLocalEvent<ScopeComponent, ToggleActionEvent>(OnToggleAction);
         SubscribeLocalEvent<ScopeComponent, GunShotEvent>(OnGunShot);
         SubscribeLocalEvent<ScopeComponent, ScopeDoAfterEvent>(OnScopeDoAfter);
+        SubscribeLocalEvent<ScopeComponent, HandDeselectedEvent>(OnDeselectHand);
+        SubscribeLocalEvent<ScopeComponent, HandSelectedEvent>(OnHandSelected);
 
         SubscribeLocalEvent<GunScopingComponent, GotUnequippedHandEvent>(OnGunUnequip);
         SubscribeLocalEvent<GunScopingComponent, HandDeselectedEvent>(OnGunDeselectHand);
@@ -61,31 +62,34 @@ public abstract partial class SharedScopeSystem : EntitySystem
         Unscope(ent);
         _actionsSystem.RemoveProvidedActions(user, ent.Owner);
     }
-
     private void OnScopeEntityTerminating(Entity<ScopeComponent> ent, ref EntityTerminatingEvent args)
     {
         Unscope(ent);
     }
-
-    private void OnUnequip(Entity<ScopeComponent> ent, ref GotUnequippedHandEvent args)
+    private void OnHandSelected(Entity<ScopeComponent> ent, ref HandSelectedEvent args)
     {
-        Unscope(ent);
+        _actionContainer.EnsureAction(ent.Owner, ref ent.Comp.ScopingToggleActionEntity, ent.Comp.ScopingToggleAction);
+        ActionsComponent actionsComponent = EnsureComp<ActionsComponent>(args.User);
+        EntityUid? actionId = ent.Comp.ScopingToggleActionEntity;
+        if (actionId == null || !actionsComponent.Actions.Contains<EntityUid>(actionId.Value))
+        {
+            _actionsSystem.AddAction(args.User, ent.Comp.ScopingToggleAction, ent.Owner);
+        }
     }
 
     private void OnDeselectHand(Entity<ScopeComponent> ent, ref HandDeselectedEvent args)
     {
+        _actionContainer.EnsureAction(ent.Owner, ref ent.Comp.ScopingToggleActionEntity, ent.Comp.ScopingToggleAction);
+        ActionsComponent actionsComponent = EnsureComp<ActionsComponent>(args.User);
+        _actionsSystem.RemoveProvidedActions(args.User, ent.Owner);
         Unscope(ent);
     }
+
 
     private void OnUnwielded(Entity<ScopeComponent> ent, ref ItemUnwieldedEvent args)
     {
         if (ent.Comp.RequireWielding)
             Unscope(ent);
-    }
-
-    private void OnGetActions(Entity<ScopeComponent> ent, ref GetItemActionsEvent args)
-    {
-        args.AddAction(ref ent.Comp.ScopingToggleActionEntity, ent.Comp.ScopingToggleAction);
     }
 
     private void OnToggleAction(Entity<ScopeComponent> ent, ref ToggleActionEvent args)

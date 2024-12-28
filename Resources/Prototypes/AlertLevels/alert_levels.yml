@@ -1,22 +1,23 @@
 - type: alertLevels
   id: stationAlerts
-  defaultLevel: green
+  defaultLevel: aurek
   levels:
     aurek:
       announcement: alert-level-green-announcement
+      sound: /Audio/_SW/aurek.ogg
       color: Green
       emergencyLightColor: LawnGreen
       shuttleTime: 600
     besh:
       announcement: alert-level-blue-announcement
-      sound: /Audio/Misc/siren.ogg
+      sound: /Audio/_SW/besh.ogg
       color: DodgerBlue
       forceEnableEmergencyLights: true
       emergencyLightColor: DodgerBlue
       shuttleTime: 600
     kresh:
       announcement: alert-level-red-announcement
-      sound: /Audio/Misc/siren.ogg
+      sound: /Audio/_SW/kresh.ogg
       color: Red
       emergencyLightColor: Red
       forceEnableEmergencyLights: true

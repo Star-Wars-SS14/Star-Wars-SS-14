@@ -24,8 +24,8 @@
     fixtures:
       fix1:
         shape:
-          !type:PhysShapeCircle
-          radius: 0.2
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.7,0.45,0.6"
         density: 190
         mask:
         - TableMask

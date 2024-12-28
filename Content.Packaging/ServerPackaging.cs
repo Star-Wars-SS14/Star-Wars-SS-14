@@ -12,12 +12,12 @@ public static class ServerPackaging
 {
     private static readonly List<PlatformReg> Platforms = new()
     {
-        // new PlatformReg("win-x64", "Windows", true),
+        new PlatformReg("win-x64", "Windows", true),
         new PlatformReg("linux-x64", "Linux", true),
         new PlatformReg("linux-arm64", "Linux", true),
-        // new PlatformReg("osx-x64", "MacOS", true),
+        new PlatformReg("osx-x64", "MacOS", true),
         // Non-default platforms (i.e. for Watchdog Git)
-        // new PlatformReg("win-x86", "Windows", false),
+        new PlatformReg("win-x86", "Windows", false),
         new PlatformReg("linux-x86", "Linux", false),
         new PlatformReg("linux-arm", "Linux", false),
     };
@@ -34,8 +34,8 @@ public static class ServerPackaging
     private static readonly List<string> ServerContentAssemblies = new()
     {
         // Corvax-Secrets-Start
-        // "Content.Corvax.Interfaces.Shared",
-        // "Content.Corvax.Interfaces.Server",
+        "Content.Corvax.Interfaces.Shared",
+        "Content.Corvax.Interfaces.Server",
         // Corvax-Secrets-End
         "Content.Server.Database",
         "Content.Server",

@@ -2,6 +2,9 @@
 - type: randomHumanoidSettings
   id: EventHumanoid
   components:
+    - type: Icon
+      sprite: Mobs/Species/Human/parts.rsi
+      state: full
     - type: RandomHumanoidAppearance
       randomizeName: false
     - type: GhostTakeoverAvailable
@@ -13,9 +16,6 @@
   name: Empire Lieutenant
   suffix: EmpireGhostRole
   components:
-    - type: Icon
-      sprite: Mobs/Species/Human/parts.rsi
-      state: full
     - type: RandomMetadata
       nameSegments:
       - NamesFirstMilitaryLieutenant

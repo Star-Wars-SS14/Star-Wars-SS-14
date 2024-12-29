@@ -255,4 +255,4 @@ ghost-role-information-artifact-description =
 
 ghost-role-information-empire-lieutenant-name = Empire lieutenant
 ghost-role-information-empire-lieutenant-description = You are lieutenant of Empire, you must give the orders to your squad!
-ghost-role-information-empire lieutenant-rules = You, as Empire lieutenant must obey to Moff
+ghost-role-information-empire-lieutenant-rules = You as Empire lieutenant must obey to Moff

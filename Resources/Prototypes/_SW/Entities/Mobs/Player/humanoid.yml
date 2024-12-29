@@ -11,7 +11,7 @@
 - type: entity
   id: RandomHumanoidSpawnerEmpireLieutenant
   name: Empire Lieutenant
-  suffix: EmpireGhostRole, Basic
+  suffix: EmpireGhostRole
   components:
     - type: Sprite
       layers:
@@ -31,7 +31,7 @@
     - type: GhostRole
       name: ghost-role-information-empire-lieutenant-name
       description: ghost-role-information-empire-lieutenant-description
-      rules: ghost-role-information-empire-lieutenant-rules
+      rules: ghost-role-information-empire lieutenant-rules
       raffle:
         settings: short
       job: EmpireLieutenant

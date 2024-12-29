@@ -10,13 +10,12 @@
     gloves: ClothingHandsGlovesColorBlack
     head: SW_ClothingHeadLieutenantImperialHelmet
     outerClothing: SW_LieutenantImperialSuit
+    suitstorage: SW_E1BlasterRifle
     id: SW_IDCardEmpireLieutenant
     ears: ClothingHeadsetRegular
     belt: ClothingBeltAssault
     pocket1: SW_YellowMagazineBlastRifle
     pocket2: SW_YellowMagazineBlastRifle
-  inhand:
-  - SW_E1BlasterRifle
   storage:
     back:
     - SW_YellowMagazineBlastRifle

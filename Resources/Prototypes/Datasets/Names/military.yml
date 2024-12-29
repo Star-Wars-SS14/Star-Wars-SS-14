@@ -20,6 +20,7 @@
 - type: dataset
   id: NamesFirstMilitaryLieutenant
   values:
+  - Лейтенантус
   - Лейтенант
 
 # SW
@@ -29,7 +30,7 @@
   - Солдат
 
 # SW
-  - type: dataset
+- type: dataset
   id: NamesFirstMilitaryMedic
   values:
   - Медик

@@ -25,9 +25,6 @@
   parent: EventHumanoid
   randomizeName: false
   components:
-    - type: Icon
-      sprite: Mobs/Species/Human/parts.rsi
-      state: full
     - type: GhostRole
       name: ghost-role-information-empire-lieutenant-name
       description: ghost-role-information-empire-lieutenant-description

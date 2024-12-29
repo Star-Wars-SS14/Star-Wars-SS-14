@@ -20,7 +20,6 @@
 - type: dataset
   id: NamesFirstMilitaryLieutenant
   values:
-  - Лейтенантус
   - Лейтенант
 
 # SW

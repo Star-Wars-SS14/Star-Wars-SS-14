@@ -1,8 +1,10 @@
 # Random humanoid
 - type: randomHumanoidSettings
-  parent: BaseMobHuman
   id: EventHumanoidReinforcement
   components:
+    - type: Sprite
+      sprite: _SW/Structures/Decoration/bannerEmpire.rsi
+      state: banner
     - type: RandomHumanoidAppearance
       randomizeName: false
     - type: GhostTakeoverAvailable
@@ -12,7 +14,7 @@
 - type: entity
   id: RandomHumanoidSpawnerEmpireLieutenant
   name: Empire Lieutenant
-  suffix: EmpireGhostRole
+  suffix: GhostRole
   components:
     - type: RandomMetadata
       nameSegments:

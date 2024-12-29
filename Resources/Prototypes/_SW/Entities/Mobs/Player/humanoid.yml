@@ -99,3 +99,97 @@
     - type: NpcFactionMember
       factions:
       - Syndicate
+
+# Republic
+# Lieutenant
+- type: entity
+  id: RandomHumanoidSpawnerRepublicLieutenant
+  name: Republic Lieutenant
+  suffix: GhostRole
+  components:
+    - type: RandomHumanoidSpawner
+      settings: RepublicLieutenant
+
+- type: randomHumanoidSettings
+  id: RepublicLieutenant
+  parent: EventHumanoidReinforcement
+  randomizeName: false
+  components:
+    - type: GhostRole
+      name: ghost-role-information-republic-lieutenant-name
+      description: ghost-role-information-republic-lieutenant-description
+      rules: ghost-role-information-republic-lieutenant-rules
+      raffle:
+        settings: short
+      job: RepublicLieutenant
+    - type: Loadout
+      prototypes: [RepublicLieutenantBaseGear]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesFirstMilitaryLieutenant
+      - NamesLastMilitary
+    - type: NpcFactionMember
+      factions:
+      - Syndicate
+
+# Soldier
+- type: entity
+  id: RandomHumanoidSpawnerRepublicSoldier
+  name: Republic Soldier
+  suffix: GhostRole
+  components:
+    - type: RandomHumanoidSpawner
+      settings: RepublicSoldier
+
+- type: randomHumanoidSettings
+  id: RepublicSoldier
+  parent: EventHumanoidReinforcement
+  randomizeName: false
+  components:
+    - type: GhostRole
+      name: ghost-role-information-republic-soldier-name
+      description: ghost-role-information-republic-soldier-description
+      rules: ghost-role-information-republic-soldier-rules
+      raffle:
+        settings: short
+      job: RepublicSoldier
+    - type: Loadout
+      prototypes: [RepublicSoldierBaseGear]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesFirstMilitarySoldier
+      - NamesLastMilitary
+    - type: NpcFactionMember
+      factions:
+      - Syndicate
+
+# Medic
+- type: entity
+  id: RandomHumanoidSpawnerRepublicMedic
+  name: Republic Medic
+  suffix: GhostRole
+  components:
+    - type: RandomHumanoidSpawner
+      settings: RepublicMedic
+
+- type: randomHumanoidSettings
+  id: RepublicMedic
+  parent: EventHumanoidReinforcement
+  randomizeName: false
+  components:
+    - type: GhostRole
+      name: ghost-role-information-republic-medic-name
+      description: ghost-role-information-republic-medic-description
+      rules: ghost-role-information-republic-medic-rules
+      raffle:
+        settings: short
+      job: RepublicMedic
+    - type: Loadout
+      prototypes: [RepublicMedicBaseGear]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesFirstMilitaryMedic
+      - NamesLastMilitary
+    - type: NpcFactionMember
+      factions:
+      - Syndicate

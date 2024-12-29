@@ -1,11 +1,11 @@
 # Empire
-#Lieutenant
+# Lieutenant
 - type: startingGear
   id: EmpireLieutenantBaseGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitOfficers
     back: ClothingBackpackMilitarySatchel
-    shoes: SW_ClothingShoesBootsOfficers
+    shoes: ClothingShoesBootsJackSecFilled
     gloves: ClothingHandsGlovesColorBlack
     head: SW_ClothingHeadLieutenantImperialHelmet
     outerClothing: SW_LieutenantImperialSuit
@@ -67,10 +67,89 @@
     back:
     - Defibrillator
     - BoxMRE
+    - RMCBinoculars
+    - SW_YellowMagazineBlastRifle
+    belt:
     - CMInaprovalineAutoInjector
     - CMInaprovalineAutoInjector
     - CMKelotaneAutoInjector
     - CMKelotaneAutoInjector
     - AloeCream
+
+# Republic
+# Lieutenant
+- type: startingGear
+  id: RepublicLieutenantBaseGear
+  equipment:
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    back: ClothingBackpackMilitarySatchel
+    shoes: ClothingShoesBootsJackSecFilled
+    gloves: ClothingHandsGlovesColorBlack
+    head: SW_ClothingHeadLieutenantRepublicHelmet
+    outerClothing: SW_LieutenantRepublicSuit
+    suitstorage: SW_j111rancor
+    id: SW_IDCardRepublicLieutenant
+    ears: ClothingHeadsetRepublic
+    belt: ClothingBeltAssault
+    pocket1: SW_BlueMagazineBlastRifle
+    pocket2: SW_BlueMagazineBlastRifle
+  storage:
+    back:
+    - SW_BlueMagazineBlastRifle
+    - CMInaprovalineAutoInjector
+    - AloeCream
+    - BoxMRE
     - RMCBinoculars
-    - SW_YellowMagazineBlastRifle
+
+# Soldier
+- type: startingGear
+  id: RepublicSoldierBaseGear
+  equipment:
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    back: ClothingBackpackMilitarySatchel
+    shoes: ClothingShoesBootsJackSecFilled
+    gloves: ClothingHandsGlovesColorBlack
+    head: SW_ClothingHeadRepublicHelmet
+    outerClothing: SW_RepublicSuit
+    suitstorage: SW_h206renegade
+    id: SW_IDCardRepublicSoldier
+    ears: ClothingHeadsetRepublic
+    belt: ClothingBeltAssault
+    pocket1: SW_H206GreenMagazineBlastRifle
+    pocket2: SW_H206GreenMagazineBlastRifle
+  storage:
+    back:
+    - SW_H206GreenMagazineBlastRifle
+    - CMInaprovalineAutoInjector
+    - AloeCream
+    - BoxMRE
+    - RMCBinoculars
+
+# Medic
+- type: startingGear
+  id: RepublicMedicBaseGear
+  equipment:
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    back: ClothingBackpackSatchel
+    shoes: ClothingShoesBootsJackSecFilled
+    gloves: ClothingHandsGlovesColorBlack
+    head: SW_ClothingHeadRepublicHelmet
+    outerClothing: SW_RepublicSuit
+    suitstorage: SW_h206renegade
+    id: SW_IDCardRepublicMedic
+    ears: ClothingHeadsetRepublic
+    belt: ClothingBeltAssault
+    pocket1: SW_H206GreenMagazineBlastRifle
+    pocket2: SW_H206GreenMagazineBlastRifle
+  storage:
+    back:
+    - Defibrillator
+    - BoxMRE
+    - RMCBinoculars
+    - SW_H206GreenMagazineBlastRifle
+    belt:
+    - CMInaprovalineAutoInjector
+    - CMInaprovalineAutoInjector
+    - CMKelotaneAutoInjector
+    - CMKelotaneAutoInjector
+    - AloeCream

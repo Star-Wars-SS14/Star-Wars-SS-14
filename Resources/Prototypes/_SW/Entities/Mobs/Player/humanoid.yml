@@ -2,6 +2,9 @@
 - type: randomHumanoidSettings
   id: EventHumanoid
   components:
+    - type: Icon
+      sprite: Mobs/Species/Human/parts.rsi
+      state: full
     - type: RandomHumanoidAppearance
       randomizeName: false
     - type: GhostTakeoverAvailable
@@ -39,5 +42,5 @@
       - NamesFirstMilitaryLieutenant
       - NamesLastMilitary
     - type: NpcFactionMember
-    factions:
-    - Syndicate
+      factions:
+      - Syndicate

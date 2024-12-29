@@ -2062,7 +2062,7 @@ namespace Content.Shared.CCVar
         /// </summary>
         public static readonly CVarDef<bool> DebugOptionVisualizerTest =
             CVarDef.Create("debug.option_visualizer_test", false, CVar.CLIENTONLY);
-
+#region ЗВЁЗДНЫЕ ВОЙНЫ
         /// <summary>
         ///     The token used to authenticate with Discord. For the Bot to function set: discord.token, discord.guild_id, and discord.prefix.
         ///     If this is empty, the bot will not connect.
@@ -2096,5 +2096,10 @@ namespace Content.Shared.CCVar
         public static readonly CVarDef<bool> AdminAhelpRelayShowDiscord =
             CVarDef.Create("discord.ahelp_relay_show_discord", true, CVar.SERVERONLY);
     }
+
+    public static readonly CVarDef<bool> WelcomePopupLastSeen =
+        CVarDef.Create("game.welcome_window", false, CVar.ARCHIVE | CVar.CLIENTONLY);
+
+#endregion
 }
 

@@ -6,7 +6,7 @@ using Robust.Client.UserInterface.Controllers;
 using Robust.Shared.Configuration;
 using Robust.Shared.Utility;
 
-namespace Content.Client._SW.Darova.DarovaWindow;
+namespace Content.Client._SW.Darova;
 
 [UsedImplicitly]
 public sealed class WelcomeWindowUIController : UIController, IOnStateEntered<GameplayState>
@@ -16,8 +16,7 @@ public sealed class WelcomeWindowUIController : UIController, IOnStateEntered<Ga
 
     private const string ContentsPath = "/ServerInfo/InGameDarova.xml";
 
-    private Client.Darova.DarovaWindow? _window;
-    private int _currentHash;
+    private DarovaWindow? _window;
 
     public override void Initialize()
     {
@@ -25,8 +24,8 @@ public sealed class WelcomeWindowUIController : UIController, IOnStateEntered<Ga
 
         _gameplayStateLoad.OnScreenLoad += () =>
         {
-            _window = UIManager.CreateWindow<Client.Darova.DarovaWindow>();
-            _currentHash = _window.LoadContents(new ResPath(ContentsPath));
+            _window = UIManager.CreateWindow<DarovaWindow>();
+            _window.LoadContents(new ResPath(ContentsPath));
             _window.NoShowButton.OnPressed += _ => OnDoNotShow();
         };
 
@@ -42,8 +41,8 @@ public sealed class WelcomeWindowUIController : UIController, IOnStateEntered<Ga
 
     public void OnStateEntered(GameplayState state)
     {
-        var lastSeen = _config.GetCVar(CCVars.WelcomePopupLastSeen);
-        if (_currentHash == lastSeen)
+        var seen = _config.GetCVar(CCVars.WelcomePopupLastSeen);
+        if (seen)
             return;
 
         _window?.Open();
@@ -52,7 +51,7 @@ public sealed class WelcomeWindowUIController : UIController, IOnStateEntered<Ga
     private void OnDoNotShow()
     {
         _window?.Close();
-        _config.SetCVar(CCVars.WelcomePopupLastSeen, _currentHash);
+        _config.SetCVar(CCVars.WelcomePopupLastSeen, true);
         _config.SaveToFile();
     }
 }

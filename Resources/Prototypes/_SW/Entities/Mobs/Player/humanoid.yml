@@ -9,6 +9,7 @@
 # Empire
 # Lieutenant
 - type: entity
+  parent: BaseMobHuman
   id: RandomHumanoidSpawnerEmpireLieutenant
   name: Empire Lieutenant
   suffix: GhostRole

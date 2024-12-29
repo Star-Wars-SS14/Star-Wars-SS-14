@@ -265,14 +265,14 @@ ghost-role-information-empire-medic-name = Empire Medic
 ghost-role-information-empire-medic-description = You are Empire's medic, you must obey to the lieutenant of your squad.
 ghost-role-information-empire-medic-rules = As Empire's medic you must obey to lieutenant of your squad.
 
-ghost-role-information-empire-lieutenant-name = Republic Lieutenant
-ghost-role-information-empire-lieutenant-description = You are Republic's lieutenant, you must give the orders to your squad.
-ghost-role-information-empire-lieutenant-rules = As Republic's lieutenant must obey to Republic's Captain.
+ghost-role-information-republic-lieutenant-name = Republic Lieutenant
+ghost-role-information-republic-lieutenant-description = You are Republic's lieutenant, you must give the orders to your squad.
+ghost-role-information-republic-lieutenant-rules = As Republic's lieutenant must obey to Republic's Captain.
 
-ghost-role-information-empire-soldier-name = Republic Soldier
-ghost-role-information-empire-soldier-description = You are Republic's soldier, you must obey to the lieutenant of your squad.
-ghost-role-information-empire-soldier-rules = As Republic's soldier you must obey to lieutenant of your squad.
+ghost-role-information-republic-soldier-name = Republic Soldier
+ghost-role-information-republic-soldier-description = You are Republic's soldier, you must obey to the lieutenant of your squad.
+ghost-role-information-republic-soldier-rules = As Republic's soldier you must obey to lieutenant of your squad.
 
-ghost-role-information-empire-medic-name = Republic Medic
-ghost-role-information-empire-medic-description = You are Republic's medic, you must obey to the lieutenant of your squad.
-ghost-role-information-empire-medic-rules = As Republic's medic you must obey to lieutenant of your squad.
+ghost-role-information-republic-medic-name = Republic Medic
+ghost-role-information-republic-medic-description = You are Republic's medic, you must obey to the lieutenant of your squad.
+ghost-role-information-republic-medic-rules = As Republic's medic you must obey to lieutenant of your squad.

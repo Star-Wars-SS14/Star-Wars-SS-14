@@ -138,7 +138,7 @@
     suitstorage: SW_h206renegade
     id: SW_IDCardRepublicMedic
     ears: ClothingHeadsetRepublic
-    belt: ClothingBeltAssault
+    belt: ClothingBeltMilitaryWebbingMed
     pocket1: SW_H206GreenMagazineBlastRifle
     pocket2: SW_H206GreenMagazineBlastRifle
   storage:

@@ -62,7 +62,7 @@
     ears: ClothingHeadsetRegular
     belt: ClothingBeltMilitaryWebbingMed
     pocket1: SW_YellowMagazineBlastRifle
-    pocket2: SW_YellowMagazineBlastRifle
+    pocket2:
   storage:
     back:
     - Defibrillator

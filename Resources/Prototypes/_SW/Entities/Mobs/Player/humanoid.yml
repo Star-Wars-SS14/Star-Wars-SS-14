@@ -31,14 +31,13 @@
     - type: GhostRole
       name: ghost-role-information-empire-lieutenant-name
       description: ghost-role-information-empire-lieutenant-description
-      rules: ghost-role-information-nonantagonist-rules
+      rules: ghost-role-information-empire-lieutenant-rules
       raffle:
         settings: short
       job: EmpireLieutenant
     - type: Loadout
-      prototypes: [ EmpireLieutenantGear ]
-      roleLoadout: [ RoleSurvivalExtended ]
+      prototypes: [EmpireLieutenantBaseGear]
     - type: RandomMetadata
       nameSegments:
-      - NamesFirstMilitaryLeader
+      - NamesFirstMilitaryLieutenant
       - NamesLastMilitary

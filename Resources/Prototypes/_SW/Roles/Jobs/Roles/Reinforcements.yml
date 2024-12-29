@@ -1,7 +1,7 @@
 # Empire
 #Lieutenant
 - type: startingGear
-  id: EmpireLieutenantGear
+  id: EmpireLieutenantBaseGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitOfficers
     back: ClothingBackpackMilitarySatchel
@@ -23,3 +23,4 @@
     - CMInaprovalineAutoInjector
     - RegenerativeMesh
     - BoxMRE
+    - RMCBinoculars

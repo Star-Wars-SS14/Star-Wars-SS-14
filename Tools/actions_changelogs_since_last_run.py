@@ -37,11 +37,19 @@ def main():
         return
 
     session = requests.Session()
-    session.headers["Authorization"]        = f"Bearer {GITHUB_TOKEN}"
-    session.headers["Accept"]               = "Accept: application/vnd.github+json"
+    session.headers["Authorization"] = f"Bearer {GITHUB_TOKEN}"
+    session.headers["Accept"] = "application/vnd.github+json"
     session.headers["X-GitHub-Api-Version"] = "2022-11-28"
 
     most_recent = get_most_recent_workflow(session)
+    if not most_recent:
+        print("No recent successful workflows found.")
+        return
+
+    if 'head_commit' not in most_recent or most_recent['head_commit'] is None:
+        print("No head_commit found in the most recent workflow.")
+        return
+
     last_sha = most_recent['head_commit']['id']
     print(f"Last successful publish job was {most_recent['id']}: {last_sha}")
     last_changelog = yaml.safe_load(get_last_changelog(session, last_sha))
@@ -51,17 +59,19 @@ def main():
     diff = diff_changelog(last_changelog, cur_changelog)
     send_to_discord(diff)
 
-
 def get_most_recent_workflow(sess: requests.Session) -> Any:
     workflow_run = get_current_run(sess)
     past_runs = get_past_runs(sess, workflow_run)
-    for run in past_runs['workflow_runs']:
-        # First past successful run that isn't our current run.
+
+    for run in past_runs.get('workflow_runs', []):
         if run["id"] == workflow_run["id"]:
             continue
 
+        print(f"Found past successful workflow: {run}")
         return run
 
+    print("No past successful workflows found.")
+    return None
 
 def get_current_run(sess: requests.Session) -> Any:
     resp = sess.get(f"{GITHUB_API_URL}/repos/{GITHUB_REPOSITORY}/actions/runs/{GITHUB_RUN}")
@@ -70,17 +80,16 @@ def get_current_run(sess: requests.Session) -> Any:
 
 
 def get_past_runs(sess: requests.Session, current_run: Any) -> Any:
-    """
-    Get all successful workflow runs before our current one.
-    """
     params = {
         "status": "success",
         "created": f"<={current_run['created_at']}"
     }
     resp = sess.get(f"{current_run['workflow_url']}/runs", params=params)
     resp.raise_for_status()
-    return resp.json()
-
+    runs = resp.json()
+    if 'workflow_runs' not in runs or not runs['workflow_runs']:
+        print("No successful past workflow runs found.")
+    return runs
 
 def get_last_changelog(sess: requests.Session, sha: str) -> str:
     """

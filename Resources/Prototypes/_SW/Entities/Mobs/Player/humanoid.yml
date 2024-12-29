@@ -7,16 +7,12 @@
     - type: GhostTakeoverAvailable
 
 # Empire
-# Empire Lieutenant
+# Lieutenant
 - type: entity
   id: RandomHumanoidSpawnerEmpireLieutenant
   name: Empire Lieutenant
   suffix: GhostRole
   components:
-    - type: RandomMetadata
-      nameSegments:
-      - NamesFirstMilitaryLieutenant
-      - NamesLastMilitary
     - type: RandomHumanoidSpawner
       settings: EmpireLieutenant
 
@@ -37,6 +33,68 @@
     - type: RandomMetadata
       nameSegments:
       - NamesFirstMilitaryLieutenant
+      - NamesLastMilitary
+    - type: NpcFactionMember
+      factions:
+      - Syndicate
+
+# Soldier
+- type: entity
+  id: RandomHumanoidSpawnerEmpireSoldier
+  name: Empire Soldier
+  suffix: GhostRole
+  components:
+    - type: RandomHumanoidSpawner
+      settings: EmpireSoldier
+
+- type: randomHumanoidSettings
+  id: EmpireSoldier
+  parent: EventHumanoidReinforcement
+  randomizeName: false
+  components:
+    - type: GhostRole
+      name: ghost-role-information-empire-soldier-name
+      description: ghost-role-information-empire-soldier-description
+      rules: ghost-role-information-empire-soldier-rules
+      raffle:
+        settings: short
+      job: EmpireSoldier
+    - type: Loadout
+      prototypes: [EmpireSoldierBaseGear]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesFirstMilitarySoldier
+      - NamesLastMilitary
+    - type: NpcFactionMember
+      factions:
+      - Syndicate
+
+# Medic
+- type: entity
+  id: RandomHumanoidSpawnerEmpireMedic
+  name: Empire Medic
+  suffix: GhostRole
+  components:
+    - type: RandomHumanoidSpawner
+      settings: EmpireMedic
+
+- type: randomHumanoidSettings
+  id: EmpireMedic
+  parent: EventHumanoidReinforcement
+  randomizeName: false
+  components:
+    - type: GhostRole
+      name: ghost-role-information-empire-medic-name
+      description: ghost-role-information-empire-medic-description
+      rules: ghost-role-information-empire-medic-rules
+      raffle:
+        settings: short
+      job: EmpireMedic
+    - type: Loadout
+      prototypes: [EmpireMedicBaseGear]
+    - type: RandomMetadata
+      nameSegments:
+      - NamesFirstMilitaryMedic
       - NamesLastMilitary
     - type: NpcFactionMember
       factions:

@@ -253,6 +253,14 @@ ghost-role-information-artifact-description =
       Enact your eldritch whims.
       Forcibly activate your nodes for good or for evil.
 
-ghost-role-information-empire-lieutenant-name = Empire lieutenant
-ghost-role-information-empire-lieutenant-description = You are lieutenant of Empire, you must give the orders to your squad!
-ghost-role-information-empire-lieutenant-rules = You as Empire lieutenant must obey to Moff
+ghost-role-information-empire-lieutenant-name = Empire Lieutenant
+ghost-role-information-empire-lieutenant-description = You are Empire's lieutenant, you must give the orders to your squad.
+ghost-role-information-empire-lieutenant-rules = As Empire's lieutenant must obey to Moff.
+
+ghost-role-information-empire-soldier-name = Empire Soldier
+ghost-role-information-empire-soldier-description = You are Empire's soldier, you must obey to the lieutenant of your squad.
+ghost-role-information-empire-soldier-rules = As Empire's soldier you must obey to Lieutenant of your squad.
+
+ghost-role-information-empire-medic-name = Empire Medic
+ghost-role-information-empire-medic-description = You are Empire's medic, you must obey to the lieutenant of your squad.
+ghost-role-information-empire-medic-rules = As Empire's medic you must obey to Lieutenant of your squad.

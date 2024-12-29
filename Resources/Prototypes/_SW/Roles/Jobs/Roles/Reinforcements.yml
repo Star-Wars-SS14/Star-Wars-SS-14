@@ -6,7 +6,6 @@
     jumpsuit: SW_ClothingUniformJumpsuitOfficers
     back: ClothingBackpackMilitarySatchel
     shoes: SW_ClothingShoesBootsOfficers
-    eyes: ClothingEyesGlassesSunglasses
     gloves: ClothingHandsGlovesColorBlack
     head: SW_ClothingHeadLieutenantImperialHelmet
     outerClothing: SW_LieutenantImperialSuit
@@ -20,6 +19,58 @@
     back:
     - SW_YellowMagazineBlastRifle
     - CMInaprovalineAutoInjector
-    - RegenerativeMesh
+    - AloeCream
     - BoxMRE
     - RMCBinoculars
+
+# Soldier
+- type: startingGear
+  id: EmpireSoldierBaseGear
+  equipment:
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    back: ClothingBackpackMilitarySatchel
+    shoes: ClothingShoesBootsCombatFilled
+    gloves: ClothingHandsGlovesColorBlack
+    head: SW_ClothingHeadImperialHelmet
+    outerClothing: SW_ImperialSuit
+    suitstorage: SW_E1BlasterRifle
+    id: SW_IDCardEmpireSoldier
+    ears: ClothingHeadsetRegular
+    belt: ClothingBeltAssault
+    pocket1: SW_YellowMagazineBlastRifle
+    pocket2: SW_YellowMagazineBlastRifle
+  storage:
+    back:
+    - SW_YellowMagazineBlastRifle
+    - CMInaprovalineAutoInjector
+    - PillKelotane
+    - BoxMRE
+    - RMCBinoculars
+
+# Medic
+- type: startingGear
+  id: EmpireMedicBaseGear
+  equipment:
+    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    back: ClothingBackpackSatchel
+    shoes: ClothingShoesBootsCombatFilled
+    gloves: ClothingHandsGlovesColorBlack
+    head: SW_ClothingHeadMedicImperialHelmet
+    outerClothing: SW_MedicImperialSuit
+    suitstorage: SW_E1BlasterRifle
+    id: SW_IDCardEmpireMedic
+    ears: ClothingHeadsetRegular
+    belt: ClothingBeltMilitaryWebbingMed
+    pocket1: SW_YellowMagazineBlastRifle
+    pocket2: SW_YellowMagazineBlastRifle
+  storage:
+    back:
+    - Defibrillator
+    - BoxMRE
+    - CMInaprovalineAutoInjector
+    - CMInaprovalineAutoInjector
+    - CMKelotaneAutoInjector
+    - CMKelotaneAutoInjector
+    - AloeCream
+    - RMCBinoculars
+    - SW_YellowMagazineBlastRifle

@@ -41,6 +41,7 @@
 
 # Soldier
 - type: entity
+  parent: BaseMobHuman
   id: RandomHumanoidSpawnerEmpireSoldier
   name: Empire Soldier
   suffix: GhostRole
@@ -72,6 +73,7 @@
 
 # Medic
 - type: entity
+  parent: BaseMobHuman
   id: RandomHumanoidSpawnerEmpireMedic
   name: Empire Medic
   suffix: GhostRole
@@ -104,6 +106,7 @@
 # Republic
 # Lieutenant
 - type: entity
+  parent: BaseMobHuman
   id: RandomHumanoidSpawnerRepublicLieutenant
   name: Republic Lieutenant
   suffix: GhostRole
@@ -135,6 +138,7 @@
 
 # Soldier
 - type: entity
+  parent: BaseMobHuman
   id: RandomHumanoidSpawnerRepublicSoldier
   name: Republic Soldier
   suffix: GhostRole
@@ -166,6 +170,7 @@
 
 # Medic
 - type: entity
+  parent: BaseMobHuman
   id: RandomHumanoidSpawnerRepublicMedic
   name: Republic Medic
   suffix: GhostRole

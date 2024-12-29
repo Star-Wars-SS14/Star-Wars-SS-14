@@ -2,9 +2,6 @@
 - type: randomHumanoidSettings
   id: EventHumanoidReinforcement
   components:
-    - type: Sprite
-      sprite: _SW/Structures/Decoration/bannerEmpire.rsi
-      state: banner
     - type: RandomHumanoidAppearance
       randomizeName: false
     - type: GhostTakeoverAvailable

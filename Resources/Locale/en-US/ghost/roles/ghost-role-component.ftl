@@ -253,26 +253,26 @@ ghost-role-information-artifact-description =
       Enact your eldritch whims.
       Forcibly activate your nodes for good or for evil.
 
-ghost-role-information-empire-lieutenant-name = Empire Lieutenant
-ghost-role-information-empire-lieutenant-description = You are Empire's lieutenant, you must give the orders to your squad.
-ghost-role-information-empire-lieutenant-rules = As Empire's lieutenant must obey to Moff.
+ghost-role-information-empire-lieutenant-name = Empire Lieutenant Reinforcement
+ghost-role-information-empire-lieutenant-description = You are Empire's lieutenant reinforcement, you must give the orders to your squad.
+ghost-role-information-empire-lieutenant-rules = As Empire's lieutenant reinforcement you must obey to Moff.
 
-ghost-role-information-empire-soldier-name = Empire Soldier
-ghost-role-information-empire-soldier-description = You are Empire's soldier, you must obey to the lieutenant of your squad.
-ghost-role-information-empire-soldier-rules = As Empire's soldier you must obey to lieutenant of your squad.
+ghost-role-information-empire-soldier-name = Empire Soldier Reinforcement
+ghost-role-information-empire-soldier-description = You are Empire's soldier reinforcement, you must obey to the lieutenant of your squad and Moff.
+ghost-role-information-empire-soldier-rules = As Empire's soldier reinforcement you must obey to lieutenant of your squad and Moff.
 
-ghost-role-information-empire-medic-name = Empire Medic
-ghost-role-information-empire-medic-description = You are Empire's medic, you must obey to the lieutenant of your squad.
-ghost-role-information-empire-medic-rules = As Empire's medic you must obey to lieutenant of your squad.
+ghost-role-information-empire-medic-name = Empire Medic Reinforcement
+ghost-role-information-empire-medic-description = You are Empire's medic reinforcement, you must obey to the lieutenant of your squad and Moff.
+ghost-role-information-empire-medic-rules = As Empire's medic reinforcement you must obey to lieutenant of your squad and Moff.
 
-ghost-role-information-republic-lieutenant-name = Republic Lieutenant
-ghost-role-information-republic-lieutenant-description = You are Republic's lieutenant, you must give the orders to your squad.
-ghost-role-information-republic-lieutenant-rules = As Republic's lieutenant must obey to Republic's Captain.
+ghost-role-information-republic-lieutenant-name = Republic Lieutenant Reinforcement
+ghost-role-information-republic-lieutenant-description = You are Republic's lieutenant reinforcement, you must give the orders to your squad.
+ghost-role-information-republic-lieutenant-rules = As Republic's lieutenant reinforcement you must obey to Republic's Captain.
 
-ghost-role-information-republic-soldier-name = Republic Soldier
-ghost-role-information-republic-soldier-description = You are Republic's soldier, you must obey to the lieutenant of your squad.
-ghost-role-information-republic-soldier-rules = As Republic's soldier you must obey to lieutenant of your squad.
+ghost-role-information-republic-soldier-name = Republic Soldier Reinforcement
+ghost-role-information-republic-soldier-description = You are Republic's soldier reinforcement, you must obey to the lieutenant of your squad and Republic's Captain.
+ghost-role-information-republic-soldier-rules = As Republic's soldier reinforcement you must obey to lieutenant of your squad and Republic's Captain.
 
-ghost-role-information-republic-medic-name = Republic Medic
-ghost-role-information-republic-medic-description = You are Republic's medic, you must obey to the lieutenant of your squad.
-ghost-role-information-republic-medic-rules = As Republic's medic you must obey to lieutenant of your squad.
+ghost-role-information-republic-medic-name = Republic Medic Reinforcement
+ghost-role-information-republic-medic-description = You are Republic's medic reinforcement, you must obey to the lieutenant of your squad and Republic's Captain.
+ghost-role-information-republic-medic-rules = As Republic's medic reinforcement you must obey to lieutenant of your squad and Republic's Captain.

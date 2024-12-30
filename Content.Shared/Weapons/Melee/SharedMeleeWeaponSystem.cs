@@ -190,7 +190,6 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
     {
         if (args.SenderSession.AttachedEntity is not {} user)
             return;
-
         if (!TryGetWeapon(user, out var weaponUid, out var weapon) ||
             weaponUid != GetEntity(msg.Weapon))
         {

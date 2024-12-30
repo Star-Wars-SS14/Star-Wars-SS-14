@@ -151,8 +151,9 @@
   name: Empire Moff
   parent: BaseMobHuman
   id: SW_MobEmpire_Moff
-  description: A miserable pile of secrets.
+  description: A miserable pile of secrets.test
   components:
+  - type: ReflectOnAttack
   - type: Loadout
     prototypes: [EmpireMoffGear]
   - type: NpcFactionMember

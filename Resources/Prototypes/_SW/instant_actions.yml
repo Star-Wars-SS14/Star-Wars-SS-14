@@ -1,0 +1,59 @@
+- type: entity
+  id: SW_AdminInstantEffectBase
+  abstract: true
+  name: instant effect sw
+  components:
+  - type: Sprite
+    sprite: /Textures/Objects/Fun/goldbikehorn.rsi
+    visible: false
+    state: icon
+  - type: TriggerOnSpawn   
+
+- type: entity
+  id: ArtilleryOnTriggerInstantEffect
+  suffix: Artillery
+  parent: SW_AdminInstantEffectBase
+  components:
+  - type: ArtilleryOnTrigger
+    explosionType: Default
+    tileRadius: 7
+
+- type: entity
+  name: artillery call grenade
+  description: Grenade that calls artillery.
+  parent: BaseItem
+  id: ArtGrenade
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: Objects/Weapons/Grenades/grenade.rsi
+    layers:
+    - state: icon
+      map: ["enum.TriggerVisualLayers.Base"]
+  - type: Clothing
+    quickEquip: false
+    slots:
+    - Belt
+  - type: Appearance
+  - type: AnimationPlayer
+  - type: GenericVisualizer
+    visuals:
+      enum.Trigger.TriggerVisuals.VisualState:
+        enum.ConstructionVisuals.Layer:
+          Primed: { state: primed }
+          Unprimed: { state: icon }
+  - type: ArtilleryOnTrigger
+    explosionType: Default
+    maxIntensity: 10
+    intensitySlope: 3
+    totalIntensity: 120
+    tileRadius: 5
+  - type: OnUseTimerTrigger
+    beepSound:
+      path: "/Audio/Effects/beep1.ogg"
+      params:
+        volume: 5
+    initialBeepDelay: 0
+    beepInterval: 2 # 2 beeps total (at 0 and 2)
+    delay: 3.0

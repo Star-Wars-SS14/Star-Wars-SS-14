@@ -37,23 +37,19 @@ public sealed class ArtillerySystem : EntitySystem
                 _s.Debug($"left: {comp.TimesLeft}");
                 for (int i = 0; i < comp.ExplosionsCount; i++)
                 {
-                    MapCoordinates? coords = SelectRandomTileInRange(uid, Transform(uid), comp.TileRadius);
+                    EntityCoordinates? coords = SelectRandomTileInRange(uid, Transform(uid), comp.TileRadius);
                     if (coords == null)
                     {
                         continue;
                     }
                     _s.Debug(coords.Value.ToString());
-                    _explosionSystem.QueueExplosion
-                        (coords.Value,
-                        comp.ExplosionType,
-                        comp.TotalIntensity,
-                        comp.IntensitySlope,
-                        comp.MaxIntensity);
-                    _s.Debug("queued");
+                    Spawn(comp.ProtoId, coords.Value);
                 }
                 // Устанавливаем следующий момент выполнения
                 comp.NextTime = _time.CurTime + TimeSpan.FromSeconds(comp.DelayBetweenTimes);
-            } else if (comp.TimesLeft == 0){
+            }
+            else if (comp.TimesLeft == 0)
+            {
                 QueueDel(uid);
             }
         }
@@ -67,7 +63,7 @@ public sealed class ArtillerySystem : EntitySystem
         ent.Comp.TimesLeft = ent.Comp.TimesCount;
     }
 
-    private MapCoordinates? SelectRandomTileInRange(EntityUid uid, TransformComponent userXform, int radius)
+    private EntityCoordinates? SelectRandomTileInRange(EntityUid uid, TransformComponent userXform, int radius)
     {
         if (userXform.GridUid == null)
         {
@@ -78,21 +74,25 @@ public sealed class ArtillerySystem : EntitySystem
             return null;
         Vector2 tmp = new Vector2(radius, radius);
         var shape = new Box2(userXform.LocalPosition - tmp, userXform.LocalPosition + tmp);
-        IEnumerable<TileRef> tilesInRange = _mapSystem.GetLocalTilesIntersecting(uid, grid, shape, false);
+        List<TileRef> tilesInRange = _mapSystem.GetLocalTilesIntersecting(uid, grid, shape, false).ToList();
 
         if (tilesInRange.Count() == 0)
         {
             return null;
         }
+        foreach(TileRef tile in tilesInRange)
+        {
+            if (tile.Tile.IsEmpty)
+            {
+                tilesInRange.Remove(tile);
+            }
+        }
+
         EntityCoordinates? targetCoords = null;
-
-
         int index = _randomSystem.Next(tilesInRange.Count());
         TileRef selectedTile = tilesInRange.ElementAt(index);
         targetCoords = new EntityCoordinates(gridUid,
                     _mapSystem.TileCenterToVector(gridUid, grid, selectedTile.GridIndices));
-       
-        MapCoordinates result = _sharedTransformSystem.ToMapCoordinates(targetCoords.Value);
-        return result;
+        return targetCoords;
     }
 }

@@ -15,8 +15,21 @@
   parent: SW_AdminInstantEffectBase
   components:
   - type: ArtilleryOnTrigger
+    instantEffectToSpawn: AdminInstantEffectSmoke10
+    tilesRange: 10
+
+- type: entity
+  id: ExplodeOnSpawnInstantEffect
+  suffix: Explode
+  parent: SW_AdminInstantEffectBase
+  components:
+  - type: ExplodeOnTrigger
+  - type: Explosive
     explosionType: Default
-    tileRadius: 7
+    maxIntensity: 10
+    intensitySlope: 3
+    totalIntensity: 120
+    canCreateVacuum: false
 
 - type: entity
   name: artillery call grenade
@@ -44,11 +57,8 @@
           Primed: { state: primed }
           Unprimed: { state: icon }
   - type: ArtilleryOnTrigger
-    explosionType: Default
-    maxIntensity: 10
-    intensitySlope: 3
-    totalIntensity: 120
-    tileRadius: 5
+    instantEffectToSpawn: ExplodeOnSpawnInstantEffect
+    tilesRange: 10
   - type: OnUseTimerTrigger
     beepSound:
       path: "/Audio/Effects/beep1.ogg"

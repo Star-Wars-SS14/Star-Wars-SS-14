@@ -12,28 +12,8 @@ public sealed partial class ArtilleryOnTriggerComponent : Component
     public int TilesRange = 10;
 
     [ViewVariables(VVAccess.ReadWrite)]
-    [DataField("explosionType", required: true, customTypeSerializer: typeof(PrototypeIdSerializer<ExplosionPrototype>))]
-    public string ExplosionType = default!;
-
-    [ViewVariables(VVAccess.ReadWrite)]
-    [DataField("maxIntensity")]
-    public float MaxIntensity = 4;
-
-    [ViewVariables(VVAccess.ReadWrite)]
-    [DataField("intensitySlope")]
-    public float IntensitySlope = 1;
-
-    [ViewVariables(VVAccess.ReadWrite)]
-    [DataField("totalIntensity")]
-    public float TotalIntensity = 10;
-
-    [ViewVariables(VVAccess.ReadWrite)]
-    [DataField("tileBreakScale")]
-    public float TileBreakScale = 1f;
-
-    [ViewVariables(VVAccess.ReadWrite)]
-    [DataField("maxTileBreak")]
-    public int MaxTileBreak = int.MaxValue;
+    [DataField("instantEffectToSpawn", required: true)]
+    public string? ProtoId = null;
 
     /// <summary>
     /// How many explosions spawned per time simultaneously

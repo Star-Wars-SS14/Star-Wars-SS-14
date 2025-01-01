@@ -24,6 +24,7 @@ using Content.Shared.Emag.Components;
 using Content.Shared.Popups;
 using Robust.Server.GameObjects;
 using Robust.Shared.Configuration;
+using Robust.Shared.Map;
 
 namespace Content.Server.Communications
 {
@@ -42,6 +43,8 @@ namespace Content.Server.Communications
         [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
         [Dependency] private readonly IConfigurationManager _cfg = default!;
         [Dependency] private readonly IAdminLogManager _adminLogger = default!;
+        [Dependency] private readonly MapSystem _mapSystem = default!;
+        [Dependency] private readonly SharedTransformSystem _sharedTransformSystem = default!;
 
         private const float UIUpdateInterval = 5.0f;
 
@@ -59,9 +62,16 @@ namespace Content.Server.Communications
             SubscribeLocalEvent<CommunicationsConsoleComponent, CommunicationsConsoleBroadcastMessage>(OnBroadcastMessage);
             SubscribeLocalEvent<CommunicationsConsoleComponent, CommunicationsConsoleCallEmergencyShuttleMessage>(OnCallShuttleMessage);
             SubscribeLocalEvent<CommunicationsConsoleComponent, CommunicationsConsoleRecallEmergencyShuttleMessage>(OnRecallShuttleMessage);
+            SubscribeLocalEvent<CommunicationsConsoleComponent, CommunicationsConsoleCallArtileryMessage>(OnCallArtillery);
 
             // On console init, set cooldown
             SubscribeLocalEvent<CommunicationsConsoleComponent, MapInitEvent>(OnCommunicationsConsoleMapInit);
+        }
+
+        private void OnCallArtillery(Entity<CommunicationsConsoleComponent> ent, ref CommunicationsConsoleCallArtileryMessage args)
+        {
+            MapId id = _sharedTransformSystem.GetMapId(ent.Owner);
+            Spawn(ent.Comp.ArtilleryProto, new MapCoordinates(new System.Numerics.Vector2(args.x, args.y), id));
         }
 
         public override void Update(float frameTime)

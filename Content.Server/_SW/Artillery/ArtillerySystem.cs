@@ -88,17 +88,18 @@ public sealed class ArtillerySystem : EntitySystem
         {
             return null;
         }
+        List<TileRef> tilesNotEmpty = new();
         foreach (TileRef tile in tilesInRange)
         {
-            if (tile.Tile.IsEmpty)
+            if (!tile.Tile.IsEmpty)
             {
-                tilesInRange.Remove(tile);
+                tilesNotEmpty.Add(tile);
             }
         }
 
         EntityCoordinates? targetCoords = null;
-        int index = _randomSystem.Next(tilesInRange.Count());
-        TileRef selectedTile = tilesInRange.ElementAt(index);
+        int index = _randomSystem.Next(tilesNotEmpty.Count());
+        TileRef selectedTile = tilesNotEmpty.ElementAt(index);
         targetCoords = new EntityCoordinates(gridUid,
                     _mapSystem.TileCenterToVector(gridUid, grid, selectedTile.GridIndices));
         return targetCoords;

@@ -56,6 +56,18 @@ namespace Content.Shared.Communications
     }
 
     [Serializable, NetSerializable]
+    public sealed class CommunicationsConsoleCallArtileryMessage : BoundUserInterfaceMessage
+    {
+        public int x;
+        public int y;
+        public CommunicationsConsoleCallArtileryMessage(int _x, int _y)
+        {
+            x = _x;
+            y = _y;
+        }
+    }
+
+    [Serializable, NetSerializable]
     public sealed class CommunicationsConsoleBroadcastMessage : BoundUserInterfaceMessage
     {
         public readonly string Message;

@@ -80,6 +80,10 @@ namespace Content.Server.Communications
         [DataField("reinforcementCalled")]
         public bool ReinforcementsIsCalled = false;
 
+        [ViewVariables]
+        [DataField("artileryCalledProto")]
+        public string? ArtilleryProto = default!;
+
         /// <summary>
         /// Announce on all grids (for nukies)
         /// </summary>
@@ -91,5 +95,6 @@ namespace Content.Server.Communications
         /// </summary>
         [DataField]
         public SoundSpecifier Sound = new SoundPathSpecifier("/Audio/Announcements/announce.ogg");
+
     }
 }

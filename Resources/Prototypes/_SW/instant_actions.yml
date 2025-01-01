@@ -15,8 +15,9 @@
   parent: SW_AdminInstantEffectBase
   components:
   - type: ArtilleryOnTrigger
-    instantEffectToSpawn: AdminInstantEffectSmoke10
+    instantEffectToSpawn: ExplodeOnSpawnInstantEffect
     tilesRange: 10
+    bombSound: /Audio/_SW/bombsound.ogg
 
 - type: entity
   id: ExplodeOnSpawnInstantEffect
@@ -59,6 +60,7 @@
   - type: ArtilleryOnTrigger
     instantEffectToSpawn: ExplodeOnSpawnInstantEffect
     tilesRange: 10
+    bombSound: /Audio/_SW/bombsound.ogg
   - type: OnUseTimerTrigger
     beepSound:
       path: "/Audio/Effects/beep1.ogg"

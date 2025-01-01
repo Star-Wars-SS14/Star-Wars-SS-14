@@ -7,14 +7,16 @@ using Robust.Shared.Random;
 using System.Numerics;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Timing;
+using Robust.Server.Audio;
+using Content.Shared.Coordinates;
 namespace Content.Server._SW.Artillery;
 public sealed class ArtillerySystem : EntitySystem
 {
     [Dependency] private readonly ExplosionSystem _explosionSystem = default!;
     [Dependency] private readonly MapSystem _mapSystem = default!;
     [Dependency] private readonly IRobustRandom _randomSystem = default!;
-    [Dependency] private readonly SharedTransformSystem _sharedTransformSystem = default!;
     [Dependency] private readonly IGameTiming _time = default!;
+    [Dependency] private readonly AudioSystem _audioSystem = default!;
     ISawmill _s = default!;
     public override void Initialize()
     {
@@ -32,20 +34,16 @@ public sealed class ArtillerySystem : EntitySystem
         {
             if (_time.CurTime >= comp.NextTime && comp.Enabled && comp.TimesLeft > 0)
             {
-                // Выполняем действия любые тут                
                 comp.TimesLeft--;
-                _s.Debug($"left: {comp.TimesLeft}");
-                for (int i = 0; i < comp.ExplosionsCount; i++)
+                for (int i = 0; i < comp.CountPerTime; i++)
                 {
                     EntityCoordinates? coords = SelectRandomTileInRange(uid, Transform(uid), comp.TileRadius);
                     if (coords == null)
                     {
                         continue;
                     }
-                    _s.Debug(coords.Value.ToString());
                     Spawn(comp.ProtoId, coords.Value);
                 }
-                // Устанавливаем следующий момент выполнения
                 comp.NextTime = _time.CurTime + TimeSpan.FromSeconds(comp.DelayBetweenTimes);
             }
             else if (comp.TimesLeft == 0)
@@ -57,10 +55,20 @@ public sealed class ArtillerySystem : EntitySystem
 
     private void HandleTriggerArtillery(Entity<ArtilleryOnTriggerComponent> ent, ref TriggerEvent args)
     {
-        _s = Logger.GetSawmill("artilery");
-        _s.Debug($"uid: {ent.Owner}");
-        ent.Comp.Enabled = true;
-        ent.Comp.TimesLeft = ent.Comp.TimesCount;
+        _s = Logger.GetSawmill("art");
+        _s.Debug("1");
+        var playedInfo = _audioSystem.PlayPvs(ent.Comp.BombSound, ent.Owner.ToCoordinates());
+        _s.Debug("2");
+        Timer.Spawn(TimeSpan.FromSeconds(ent.Comp.DelayInSeconds), () =>
+        {
+            ent.Comp.Enabled = true;
+            ent.Comp.TimesLeft = ent.Comp.TimesCount;
+            if (playedInfo != null)
+            {
+                _audioSystem.Stop(playedInfo.Value.Entity);
+            }
+        });
+        _s.Debug("3");
     }
 
     private EntityCoordinates? SelectRandomTileInRange(EntityUid uid, TransformComponent userXform, int radius)
@@ -80,7 +88,7 @@ public sealed class ArtillerySystem : EntitySystem
         {
             return null;
         }
-        foreach(TileRef tile in tilesInRange)
+        foreach (TileRef tile in tilesInRange)
         {
             if (tile.Tile.IsEmpty)
             {

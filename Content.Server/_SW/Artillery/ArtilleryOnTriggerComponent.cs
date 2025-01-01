@@ -16,14 +16,14 @@ public sealed partial class ArtilleryOnTriggerComponent : Component
     public string? ProtoId = null;
 
     /// <summary>
-    /// How many explosions spawned per time simultaneously
+    /// How many instant effect spawned per time simultaneously
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]
-    [DataField("explosionsCount")]
-    public int ExplosionsCount = 5;
+    [DataField("countPerTime")]
+    public int CountPerTime = 5;
 
     /// <summary>
-    /// How many times explosions will be spawned
+    /// How many times instantEffects will be spawned
     /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]
     [DataField("timesCount")]
@@ -45,4 +45,12 @@ public sealed partial class ArtilleryOnTriggerComponent : Component
     public int TileRadius = 5;
 
     public bool Enabled = false;
+
+    [ViewVariables(VVAccess.ReadWrite)]
+    [DataField("delay")]
+    public float DelayInSeconds = 10f;
+
+    [ViewVariables(VVAccess.ReadWrite)]
+    [DataField("bombSound", required: true)]
+    public string? BombSound = null;
 }

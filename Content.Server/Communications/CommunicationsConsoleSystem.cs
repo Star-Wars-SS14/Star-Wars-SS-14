@@ -62,16 +62,9 @@ namespace Content.Server.Communications
             SubscribeLocalEvent<CommunicationsConsoleComponent, CommunicationsConsoleBroadcastMessage>(OnBroadcastMessage);
             SubscribeLocalEvent<CommunicationsConsoleComponent, CommunicationsConsoleCallEmergencyShuttleMessage>(OnCallShuttleMessage);
             SubscribeLocalEvent<CommunicationsConsoleComponent, CommunicationsConsoleRecallEmergencyShuttleMessage>(OnRecallShuttleMessage);
-            SubscribeLocalEvent<CommunicationsConsoleComponent, CommunicationsConsoleCallArtileryMessage>(OnCallArtillery);
 
             // On console init, set cooldown
             SubscribeLocalEvent<CommunicationsConsoleComponent, MapInitEvent>(OnCommunicationsConsoleMapInit);
-        }
-
-        private void OnCallArtillery(Entity<CommunicationsConsoleComponent> ent, ref CommunicationsConsoleCallArtileryMessage args)
-        {
-            MapId id = _sharedTransformSystem.GetMapId(ent.Owner);
-            Spawn(ent.Comp.ArtilleryProto, new MapCoordinates(new System.Numerics.Vector2(args.x, args.y), id));
         }
 
         public override void Update(float frameTime)

@@ -42,6 +42,8 @@ public sealed class ArtillerySystem : EntitySystem
                     {
                         continue;
                     }
+                    //вместо создания взрывов спавним прототип с instant effect-ом взрыва.
+                    //Это обеспечивает больше гибкости, так как можно изменить снаряды для артилерии просто изменив прототип instant effect-а.
                     Spawn(comp.ProtoId, coords.Value);
                 }
                 comp.NextTime = _time.CurTime + TimeSpan.FromSeconds(comp.DelayBetweenTimes);

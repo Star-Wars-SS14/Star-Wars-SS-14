@@ -4,6 +4,7 @@ using Content.Shared.Chat;
 using Content.Shared.Communications;
 using Robust.Shared.Configuration;
 using Robust.Shared.Timing;
+using Content.Shared._SW.Artillery;
 
 namespace Content.Client.Communications.UI
 {
@@ -89,7 +90,7 @@ namespace Content.Client.Communications.UI
             {
                 return;
             }
-            SendMessage(new CommunicationsConsoleCallArtileryMessage(x, y));
+            SendMessage(new ArtilleryConsoleCallArtileryMessage(x, y));
         }
 
         public void BroadcastButtonPressed(string message)

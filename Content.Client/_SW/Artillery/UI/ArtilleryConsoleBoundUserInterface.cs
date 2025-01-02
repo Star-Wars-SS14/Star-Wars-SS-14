@@ -15,32 +15,6 @@ namespace Content.Client._SW.Artillery.UI
 
         [ViewVariables]
         private ArtilleryConsoleMenu? _menu;
-
-        [ViewVariables]
-        public bool CanAnnounce { get; private set; }
-        [ViewVariables]
-        public bool CanBroadcast { get; private set; }
-
-        [ViewVariables]
-        public bool CanCall { get; private set; }
-
-        [ViewVariables]
-        public bool CanReinforcements { get; private set; }
-
-        [ViewVariables]
-        public bool CountdownStarted { get; private set; }
-
-        [ViewVariables]
-        public bool AlertLevelSelectable { get; private set; }
-
-        [ViewVariables]
-        public string CurrentLevel { get; private set; } = default!;
-
-        [ViewVariables]
-        private TimeSpan? _expectedCountdownTime;
-
-        public int Countdown => _expectedCountdownTime == null ? 0 : Math.Max((int) _expectedCountdownTime.Value.Subtract(_gameTiming.CurTime).TotalSeconds, 0);
-
         public ArtilleryConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
         {
         }
@@ -71,8 +45,6 @@ namespace Content.Client._SW.Artillery.UI
         protected override void UpdateState(BoundUserInterfaceState state)
         {
             base.UpdateState(state);
-
-
         }
 
         protected override void Dispose(bool disposing)

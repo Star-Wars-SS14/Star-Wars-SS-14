@@ -17,7 +17,6 @@ public sealed class ArtillerySystem : EntitySystem
     [Dependency] private readonly IRobustRandom _randomSystem = default!;
     [Dependency] private readonly IGameTiming _time = default!;
     [Dependency] private readonly AudioSystem _audioSystem = default!;
-    ISawmill _s = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -57,10 +56,7 @@ public sealed class ArtillerySystem : EntitySystem
 
     private void HandleTriggerArtillery(Entity<ArtilleryOnTriggerComponent> ent, ref TriggerEvent args)
     {
-        _s = Logger.GetSawmill("art");
-        _s.Debug("1");
         var playedInfo = _audioSystem.PlayPvs(ent.Comp.BombSound, ent.Owner.ToCoordinates());
-        _s.Debug("2");
         Timer.Spawn(TimeSpan.FromSeconds(ent.Comp.DelayInSeconds), () =>
         {
             ent.Comp.Enabled = true;
@@ -70,7 +66,6 @@ public sealed class ArtillerySystem : EntitySystem
                 _audioSystem.Stop(playedInfo.Value.Entity);
             }
         });
-        _s.Debug("3");
     }
 
     private EntityCoordinates? SelectRandomTileInRange(EntityUid uid, TransformComponent userXform, int radius)

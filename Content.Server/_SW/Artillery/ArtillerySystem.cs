@@ -1,7 +1,6 @@
 using System.Linq;
 using Content.Server.Explosion.EntitySystems;
 using Robust.Server.GameObjects;
-using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Random;
 using System.Numerics;

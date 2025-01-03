@@ -1,10 +1,8 @@
-using Content.Shared._SW;
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
 using Content.Shared.Communications;
 using Robust.Shared.Configuration;
 using Robust.Shared.Timing;
-using Content.Shared._SW.Artillery;
 
 namespace Content.Client.Communications.UI
 {
@@ -86,7 +84,7 @@ namespace Content.Client.Communications.UI
         public void CallArtileryButtonPressed(string xInString, string yInString)
         {
             int x, y;
-            if(!Int32.TryParse(xInString, out x) || !Int32.TryParse(yInString, out y))
+            if (!Int32.TryParse(xInString, out x) || !Int32.TryParse(yInString, out y))
             {
                 return;
             }

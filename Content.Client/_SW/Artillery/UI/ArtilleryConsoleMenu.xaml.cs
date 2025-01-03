@@ -23,7 +23,7 @@ namespace Content.Client._SW.Artillery.UI
             RobustXamlLoader.Load(this);
 
             Owner = owner;
-            ArtilleryButton.OnPressed += (_) => Owner.CallArtileryButtonPressed(Rope.Collapse(CoordsX.TextRope), Rope.Collapse(CoordsY.TextRope));
+            ArtilleryButton.OnPressed += (_) => Owner.CallArtileryButtonPressed(CoordsX.Text, CoordsY.Text);
             UpdateCountdown();
             Timer.SpawnRepeating(1000, UpdateCountdown, _timerCancelTokenSource.Token);
         }

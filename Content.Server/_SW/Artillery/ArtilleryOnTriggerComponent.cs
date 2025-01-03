@@ -40,10 +40,6 @@ public sealed partial class ArtilleryOnTriggerComponent : Component
 
     public TimeSpan NextTime = default!;
 
-    [ViewVariables(VVAccess.ReadWrite)]
-    [DataField("tileRadius")]
-    public int TileRadius = 5;
-
     public bool Enabled = false;
 
     [ViewVariables(VVAccess.ReadWrite)]

@@ -1,0 +1,37 @@
+- type: entity
+  name: artillery call grenade
+  description: Grenade that calls artillery.
+  parent: BaseItem
+  id: ArtGrenade
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: Objects/Weapons/Grenades/grenade.rsi
+    layers:
+    - state: icon
+      map: ["enum.TriggerVisualLayers.Base"]
+  - type: Clothing
+    quickEquip: false
+    slots:
+    - Belt
+  - type: Appearance
+  - type: AnimationPlayer
+  - type: GenericVisualizer
+    visuals:
+      enum.Trigger.TriggerVisuals.VisualState:
+        enum.ConstructionVisuals.Layer:
+          Primed: { state: primed }
+          Unprimed: { state: icon }
+  - type: ArtilleryOnTrigger
+    instantEffectToSpawn: ExplodeOnSpawnInstantEffect
+    tilesRange: 10
+    bombSound: /Audio/_SW/bombsound.ogg
+  - type: OnUseTimerTrigger
+    beepSound:
+      path: "/Audio/Effects/beep1.ogg"
+      params:
+        volume: 5
+    initialBeepDelay: 0
+    beepInterval: 2 # 2 beeps total (at 0 and 2)
+    delay: 3.0

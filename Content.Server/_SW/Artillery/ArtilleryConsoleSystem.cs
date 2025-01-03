@@ -33,6 +33,7 @@ namespace Content.Server._SW.Artillery
     {
         [Dependency] private readonly SharedTransformSystem _sharedTransformSystem = default!;
         [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
+        [Dependency] private readonly ChatSystem _chatSystem = default!;
 
         private const float UIUpdateInterval = 5.0f;
 
@@ -50,8 +51,11 @@ namespace Content.Server._SW.Artillery
                 return;
             }
             MapId id = _sharedTransformSystem.GetMapId(ent.Owner);
+            var title = Loc.GetString(ent.Comp.Title);
+            var msg = Loc.GetString(ent.Comp.AnnouncementText);
+            _chatSystem.DispatchGlobalAnnouncement(msg, title, announcementSound: ent.Comp.Sound, colorOverride: ent.Comp.Color);
             Spawn(ent.Comp.ArtilleryProto, new MapCoordinates(new System.Numerics.Vector2(args.x, args.y), id));
-            ent.Comp.CurrentDelay = ent.Comp.InitalDelayInSeconds;
+            ent.Comp.CurrentDelay = ent.Comp.DelayBetweenCalls;
         }
         public void UpdateArtilleryConsoleInterface(EntityUid uid, ArtilleryConsoleComponent comp)
         {
@@ -83,7 +87,7 @@ namespace Content.Server._SW.Artillery
 
         public void OnCommunicationsConsoleMapInit(EntityUid uid, ArtilleryConsoleComponent comp, MapInitEvent args)
         {
-
+            comp.CurrentDelay = comp.DelayBetweenCalls;
         }
     }
 }

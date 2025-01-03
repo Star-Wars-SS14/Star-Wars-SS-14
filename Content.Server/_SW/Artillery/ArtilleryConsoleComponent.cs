@@ -12,8 +12,27 @@ namespace Content.Server._SW.Artillery
         public string? ArtilleryProto = default!;
 
         [ViewVariables]
-        [DataField("delayBetweenCallsInSecons")]
-        public float InitalDelayInSeconds = 600;
+        [DataField("delayBetweenCallsInSeconds")]
+        public float DelayBetweenCalls = 600;
+
+        /// <summary>
+        /// Announcement color
+        /// </summary>
+        [ViewVariables]
+        [DataField]
+        public Color Color = Color.Red;
+
+        [ViewVariables(VVAccess.ReadWrite)]
+        [DataField]
+        public LocId Title = "artillery-console-announcement-sent-by";
+
+        [ViewVariables(VVAccess.ReadWrite)]
+        [DataField]
+        public SoundSpecifier Sound = default!;
+
+        [ViewVariables(VVAccess.ReadWrite)]
+        [DataField]
+        public LocId AnnouncementText = "artillery-console-announcement-text";
 
         public float CurrentDelay = 0f;
     }

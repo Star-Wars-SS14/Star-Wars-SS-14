@@ -24,7 +24,6 @@ using Content.Shared.Emag.Components;
 using Content.Shared.Popups;
 using Robust.Server.GameObjects;
 using Robust.Shared.Configuration;
-using Robust.Shared.Map;
 
 namespace Content.Server.Communications
 {
@@ -43,8 +42,6 @@ namespace Content.Server.Communications
         [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
         [Dependency] private readonly IConfigurationManager _cfg = default!;
         [Dependency] private readonly IAdminLogManager _adminLogger = default!;
-        [Dependency] private readonly MapSystem _mapSystem = default!;
-        [Dependency] private readonly SharedTransformSystem _sharedTransformSystem = default!;
 
         private const float UIUpdateInterval = 5.0f;
 

@@ -35,7 +35,7 @@ public sealed class ArtillerySystem : EntitySystem
                 comp.TimesLeft--;
                 for (int i = 0; i < comp.CountPerTime; i++)
                 {
-                    EntityCoordinates? coords = SelectRandomTileInRange(uid, Transform(uid), comp.TileRadius);
+                    EntityCoordinates? coords = SelectRandomTileInRange(uid, Transform(uid), comp.TilesRange);
                     if (coords == null)
                     {
                         continue;

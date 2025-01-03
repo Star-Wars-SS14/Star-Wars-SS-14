@@ -16,7 +16,7 @@
   components:
   - type: ArtilleryOnTrigger
     instantEffectToSpawn: ExplodeOnSpawnInstantEffect
-    tilesRange: 30
+    tilesRange: 20
     bombSound: /Audio/_SW/bombsound.ogg
 
 - type: entity

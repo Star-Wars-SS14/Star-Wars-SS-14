@@ -7,10 +7,14 @@ namespace Content.Server._SW.Artillery
     [RegisterComponent]
     public sealed partial class ArtilleryConsoleComponent : SharedCommunicationsConsoleComponent
     {
-        public float UIUpdateAccumulator = 0f;
-
         [ViewVariables]
         [DataField("artileryCalledProto")]
         public string? ArtilleryProto = default!;
+
+        [ViewVariables]
+        [DataField("delayBetweenCallsInSecons")]
+        public float InitalDelayInSeconds = 600;
+
+        public float CurrentDelay = 0f;
     }
 }

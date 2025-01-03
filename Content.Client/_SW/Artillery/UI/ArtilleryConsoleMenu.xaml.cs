@@ -29,7 +29,20 @@ namespace Content.Client._SW.Artillery.UI
         }
         public void UpdateCountdown()
         {
-
+            if (Owner.CountDownLeft == null)
+            {
+                CountdownLabel.SetMessage("");
+                return;
+            }
+            int count = (int) Math.Ceiling(Owner.CountDownLeft.Value.TotalSeconds);
+            if (count == 0)
+            {
+                CountdownLabel.SetMessage(Loc.GetString("artillery-ready-to-fire-console"));
+            }
+            else
+            {
+                CountdownLabel.SetMessage($"{Loc.GetString("artillery-time-remaining")}\n{count}s");
+            }
         }
 
         public override void Close()

@@ -40,17 +40,28 @@ namespace Content.Server._SW.Artillery
         {
             SubscribeLocalEvent<ArtilleryConsoleComponent, ArtilleryConsoleCallArtileryMessage>(OnCallArtillery);
             SubscribeLocalEvent<ArtilleryConsoleComponent, MapInitEvent>(OnCommunicationsConsoleMapInit);
-            SubscribeLocalEvent<ArtilleryConsoleComponent, ComponentInit>((uid, comp, _) => UpdateCommsConsoleInterface(uid, comp));
+            SubscribeLocalEvent<ArtilleryConsoleComponent, ComponentInit>((uid, comp, _) => UpdateArtilleryConsoleInterface(uid, comp));
         }
 
         private void OnCallArtillery(Entity<ArtilleryConsoleComponent> ent, ref ArtilleryConsoleCallArtileryMessage args)
         {
+            if (!CanCall(ent.Comp))
+            {
+                return;
+            }
             MapId id = _sharedTransformSystem.GetMapId(ent.Owner);
             Spawn(ent.Comp.ArtilleryProto, new MapCoordinates(new System.Numerics.Vector2(args.x, args.y), id));
+            ent.Comp.CurrentDelay = ent.Comp.InitalDelayInSeconds;
         }
-        public void UpdateCommsConsoleInterface(EntityUid uid, ArtilleryConsoleComponent comp)
+        public void UpdateArtilleryConsoleInterface(EntityUid uid, ArtilleryConsoleComponent comp)
         {
-        _uiSystem.SetUiState(uid, ArtilleryConsoleUiKey.Key, new ArtilleryConsoleInterfaceState());
+            _uiSystem.SetUiState(uid, ArtilleryConsoleUiKey.Key, new ArtilleryConsoleInterfaceState(CanCall(comp),
+                                                                                                    TimeSpan.FromSeconds(comp.CurrentDelay)));
+        }
+
+        public bool CanCall(ArtilleryConsoleComponent comp)
+        {
+            return comp.CurrentDelay <= 0f;
         }
 
         public override void Update(float frameTime)
@@ -58,21 +69,13 @@ namespace Content.Server._SW.Artillery
             var query = EntityQueryEnumerator<ArtilleryConsoleComponent>();
             while (query.MoveNext(out var uid, out var comp))
             {
-                //// TODO refresh the UI in a less horrible way
-                //if (comp.AnnouncementCooldownRemaining >= 0f)
-                //{
-                //    comp.AnnouncementCooldownRemaining -= frameTime;
-                //}
+                // TODO refresh the UI in a less horrible way
+                if (comp.CurrentDelay >= 0f)
+                {
+                    comp.CurrentDelay -= frameTime;
+                }
 
-                //comp.UIUpdateAccumulator += frameTime;
-
-                //if (comp.UIUpdateAccumulator < UIUpdateInterval)
-                //    continue;
-
-                //comp.UIUpdateAccumulator -= UIUpdateInterval;
-
-                //if (_uiSystem.IsUiOpen(uid, CommunicationsConsoleUiKey.Key))
-                //    UpdateCommsConsoleInterface(uid, comp);
+                UpdateArtilleryConsoleInterface(uid, comp);
             }
 
             base.Update(frameTime);

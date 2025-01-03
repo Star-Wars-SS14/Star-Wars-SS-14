@@ -21,9 +21,11 @@
   components:
     - type: ArtilleryConsole
       artileryCalledProto: ArtilleryOnTriggerInstantEffect
+      delayBetweenCallsInSecons: 5
     - type: ActivatableUI
       key: enum.ArtilleryConsoleUiKey.Key
     - type: UserInterface
       interfaces:
         enum.ArtilleryConsoleUiKey.Key:
           type: ArtilleryConsoleBoundUserInterface
+

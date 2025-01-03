@@ -44,8 +44,7 @@ namespace Content.Client.Communications.UI
             };
 
             AnnounceButton.OnPressed += (_) => Owner.AnnounceButtonPressed(Rope.Collapse(MessageInput.TextRope));
-            AnnounceButton.Disabled = !owner.CanAnnounce;
-            ArtilleryButton.OnPressed += (_) => Owner.CallArtileryButtonPressed(Rope.Collapse(CoordsX.TextRope), Rope.Collapse(CoordsY.TextRope));
+            AnnounceButton.Disabled = !owner.CanAnnounce;            
             BroadcastButton.OnPressed += (_) => Owner.BroadcastButtonPressed(Rope.Collapse(MessageInput.TextRope));
             BroadcastButton.Disabled = !owner.CanBroadcast;
             BroadcastButton.Visible = false; // Отключена в связи с ненадобностью

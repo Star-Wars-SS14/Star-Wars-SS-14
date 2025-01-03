@@ -1,3 +1,4 @@
+using Content.Shared._SW;
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
 using Content.Shared.Communications;
@@ -79,16 +80,6 @@ namespace Content.Client.Communications.UI
             var maxLength = _cfg.GetCVar(CCVars.ChatMaxAnnouncementLength);
             var msg = SharedChatSystem.SanitizeAnnouncement(message, maxLength);
             SendMessage(new CommunicationsConsoleAnnounceMessage(msg));
-        }
-
-        public void CallArtileryButtonPressed(string xInString, string yInString)
-        {
-            int x, y;
-            if (!Int32.TryParse(xInString, out x) || !Int32.TryParse(yInString, out y))
-            {
-                return;
-            }
-            SendMessage(new ArtilleryConsoleCallArtileryMessage(x, y));
         }
 
         public void BroadcastButtonPressed(string message)

@@ -22,9 +22,12 @@ public sealed class ArtilleryConsoleCallArtileryMessage : BoundUserInterfaceMess
 [Serializable, NetSerializable]
 public sealed class ArtilleryConsoleInterfaceState : BoundUserInterfaceState
 {
-
-    public ArtilleryConsoleInterfaceState()
+    public bool CanCall;
+    public TimeSpan? CountDownLeft;
+    public ArtilleryConsoleInterfaceState(bool can, TimeSpan? countDownLeft)
     {
+        CanCall = can;
+        CountDownLeft = countDownLeft;
     }
 }
 

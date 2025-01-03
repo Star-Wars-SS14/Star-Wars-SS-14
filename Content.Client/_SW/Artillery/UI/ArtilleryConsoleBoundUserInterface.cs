@@ -1,6 +1,7 @@
 using Robust.Shared.Configuration;
 using Robust.Shared.Timing;
 using Content.Shared._SW.Artillery;
+using Content.Shared.Communications;
 
 namespace Content.Client._SW.Artillery.UI
 {
@@ -11,8 +12,28 @@ namespace Content.Client._SW.Artillery.UI
 
         [ViewVariables]
         private ArtilleryConsoleMenu? _menu;
+        [ViewVariables]
+        public bool CountdownStarted { get; private set; }
+
+        public TimeSpan? CountDownLeft;
+
         public ArtilleryConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
         {
+           
+        }
+
+        protected override void UpdateState(BoundUserInterfaceState state)
+        {
+            base.UpdateState(state);
+
+            if (state is not ArtilleryConsoleInterfaceState artState)
+                return;
+            CountDownLeft = artState.CountDownLeft;
+            if (_menu != null)
+            {
+                _menu.UpdateCountdown();
+                _menu.ArtilleryButton.Disabled = !artState.CanCall;
+            }
         }
 
         protected override void Open()
@@ -34,11 +55,7 @@ namespace Content.Client._SW.Artillery.UI
             SendMessage(new ArtilleryConsoleCallArtileryMessage(x, y));
         }
 
-        protected override void UpdateState(BoundUserInterfaceState state)
-        {
-            base.UpdateState(state);
-        }
-
+        
         protected override void Dispose(bool disposing)
         {
             base.Dispose(disposing);

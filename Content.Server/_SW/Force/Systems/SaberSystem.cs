@@ -104,6 +104,7 @@ public sealed class SaberSystem : EntitySystem
     private void OnCallSaber(CallSaberAbilityEvent args)
     {
         var user = args.Performer;
+        var activeHand = _handsSystem.GetActiveHand(user);
 
         var query = EntityQueryEnumerator<SaberComponent>();
 
@@ -111,6 +112,15 @@ public sealed class SaberSystem : EntitySystem
         {
             if (saberComponent.Owner == null || saberComponent.Owner != user)
                 continue;
+
+            if (activeHand is { Container: not null })
+            {
+                if (activeHand.Container.ContainedEntity == uid)
+                {
+                    _popupSystem.PopupEntity("Вы не можете призвать меч, который и так у вас в руке!", user, user, PopupType.MediumCaution);
+                    continue;
+                }
+            }
 
             if (_containerSystem.IsEntityInContainer(uid) && !_containerSystem.TryRemoveFromContainer(uid))
                 continue;

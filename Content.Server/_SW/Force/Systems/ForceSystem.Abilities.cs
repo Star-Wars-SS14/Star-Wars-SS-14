@@ -172,6 +172,7 @@ public sealed partial class ForceSystem
             return;
         }
 
+        _popupSystem.PopupEntity("У вас нет привязанного меча!", jedi, jedi, PopupType.MediumCaution);
         args.Handled = false;
     }
 

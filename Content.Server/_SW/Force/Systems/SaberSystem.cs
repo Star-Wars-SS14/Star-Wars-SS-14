@@ -6,6 +6,9 @@ using Content.Server.Hands.Systems;
 using Content.Server.Popups;
 using Content.Shared._SW;
 using Content.Shared.Actions;
+using Content.Shared.Damage;
+using Content.Shared.Damage.Prototypes;
+using Content.Shared.FixedPoint;
 using Content.Shared.Item;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
@@ -13,6 +16,7 @@ using Content.Shared.Throwing;
 using Robust.Server.Containers;
 using Robust.Server.GameObjects;
 using Robust.Shared.Physics.Components;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._SW.Force.Systems;
 
@@ -25,6 +29,8 @@ public sealed class SaberSystem : EntitySystem
     [Dependency] private readonly ThrowingSystem _throwingSystem = default!;
     [Dependency] private readonly TransformSystem _transformSystem = default!;
     [Dependency] private readonly ActionsSystem _actionsSystem = default!;
+    [Dependency] private readonly DamageableSystem _damageableSystem = default!;
+    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
 
     public override void Initialize()
     {
@@ -45,30 +51,37 @@ public sealed class SaberSystem : EntitySystem
         while (query.MoveNext(out var saber, out var comp))
         {
             var forceUser = comp.ForceUser;
-            if(!TryComp<TransformComponent>(forceUser, out var transformComponent))
-                continue;
 
-            if (comp.ForceUser == null)
+            if (forceUser == null)
                 continue;
 
             comp.ActiveCooldown -= frameTime;
 
-            if (_transformSystem.GetGridTilePositionOrDefault(saber) != _transformSystem.GetGridTilePositionOrDefault(((EntityUid) forceUser, transformComponent)) && comp.ActiveCooldown <= 0F)
+            if (comp.ForceUser != null)
             {
-                if (comp.Attempts >= comp.MaxAttempts)
-                {
-                    RemCompDeferred<ForcePulledComponent>(saber);
+                if (!TryComp<TransformComponent>(forceUser, out var userTransformComponent))
                     continue;
-                }
 
-                comp.ActiveCooldown = comp.Cooldown;
-                comp.Attempts += 1;
-                _throwingSystem.TryThrow(saber, transformComponent.Coordinates, comp.ThrowForce);
-            }
-            else if (_transformSystem.GetGridTilePositionOrDefault(saber) == _transformSystem.GetGridTilePositionOrDefault(((EntityUid) forceUser, transformComponent)))
-            {
-                _handsSystem.TryPickupAnyHand((EntityUid) forceUser, saber);
-                RemCompDeferred<ForcePulledComponent>(saber);
+                if (_transformSystem.GetGridTilePositionOrDefault(saber) !=
+                    _transformSystem.GetGridTilePositionOrDefault(((EntityUid) forceUser, userTransformComponent)) &&
+                    comp.ActiveCooldown <= 0F)
+                {
+                    if (comp.Attempts >= comp.MaxAttempts)
+                    {
+                        RemCompDeferred<ForcePulledComponent>(saber);
+                        continue;
+                    }
+
+                    comp.ActiveCooldown = comp.Cooldown;
+                    comp.Attempts += 1;
+                    _throwingSystem.TryThrow(saber, userTransformComponent.Coordinates, comp.ThrowForce);
+                }
+                else if (_transformSystem.GetGridTilePositionOrDefault(saber) ==
+                         _transformSystem.GetGridTilePositionOrDefault(((EntityUid) forceUser, userTransformComponent)))
+                {
+                    _handsSystem.TryPickupAnyHand((EntityUid) forceUser, saber);
+                    RemCompDeferred<ForcePulledComponent>(saber);
+                }
             }
         }
     }
@@ -79,7 +92,6 @@ public sealed class SaberSystem : EntitySystem
             return;
 
         args.AddAction(ref component.PrivateSaberActionEntity, component.PrivateSaberAction);
-        args.AddAction(ref component.CallSaberActionEntity, component.CallSaberAction);
     }
 
     private void OnSaberEquipped(EntityUid uid, SaberComponent component, GettingPickedUpAttemptEvent args)
@@ -136,6 +148,8 @@ public sealed class SaberSystem : EntitySystem
         _popupSystem.PopupEntity("Вы успешно подчинили меч!", args.Performer, PopupType.Medium);
 
         _actionsSystem.RemoveAction(component.PrivateSaberActionEntity);
+
+        _actionsSystem.AddAction(args.Performer, component.CallSaberAction);
         args.Handled = true;
     }
 

@@ -45,3 +45,18 @@
       - MasteryShopLighting
   icon: /Textures/_SW/Store/lightingupgrade.png
   productEvent: !type:MasteryLightingUpgradeEvent
+
+- type: listing
+  id: MasteryShopForceAttack
+  name: Способность - атака летающим мечом!
+  description: Обучитесь новому исскуству владения световым мечом!
+  cost:
+    MasteryExperience: 30
+  categories:
+  - MasteryAbilities
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  - !type:MasteryTypeCondition
+    masteryType: "light"
+  productAction: ActionJediForceSaberAttack

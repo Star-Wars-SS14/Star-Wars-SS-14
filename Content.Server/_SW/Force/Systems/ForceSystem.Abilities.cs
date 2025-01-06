@@ -22,6 +22,7 @@ public sealed partial class ForceSystem
     {
         SubscribeLocalEvent<ForceComponent, DashAbilityEvent>(DashAbility);
         SubscribeLocalEvent<DarkForceComponent, ForceLightningAbilityEvent>(LightingAbility);
+        SubscribeLocalEvent<LightForceComponent, JediForceSaberAttackEvent>(OnForceAttack);
         // kyber
         SubscribeLocalEvent<KyberCrystalComponent, MapInitEvent>(OnKyberMapInit);
         SubscribeLocalEvent<KyberCrystalComponent, GetItemActionsEvent>(OnGetKyber);
@@ -85,7 +86,7 @@ public sealed partial class ForceSystem
 
         if (physicsComponent.LinearVelocity == Vector2.Zero)
         {
-            _popupSystem.PopupEntity("Невозможно использовать стоя!", user, user, PopupType.MediumCaution);
+            _popupSystem.PopupEntity("Невозможно использовать стоя/лежа!", user, user, PopupType.MediumCaution);
             return;
         }
 
@@ -131,6 +132,50 @@ public sealed partial class ForceSystem
         }
 
         args.Handled = true;
+    }
+    #endregion
+
+    #region ForceAttack
+    private void OnForceAttack(EntityUid jedi, LightForceComponent component, ref JediForceSaberAttackEvent args)
+    {
+        var user = args.Performer;
+        var target = args.Target;
+
+        var query = EntityQueryEnumerator<SaberComponent>();
+
+        while (query.MoveNext(out var uid, out var saberComponent))
+        {
+            if (saberComponent.Owner == null || saberComponent.Owner != user)
+                continue;
+
+            if (_containerSystem.IsEntityInContainer(uid) && !_containerSystem.TryRemoveFromContainer(uid))
+                continue;
+
+            if (!_toggleSystem.IsActivated(uid))
+            {
+                _toggleSystem.TryActivate(uid);
+            }
+
+            _handsSystem.TryDrop(jedi, uid, jedi.ToCoordinates());
+
+            SetSaberVelocity(uid, target, jedi);
+
+            args.Handled = true;
+        }
+    }
+
+    private void SetSaberVelocity(EntityUid saber, EntityUid target, EntityUid user)
+    {
+        if (!TryComp<PhysicsComponent>(saber, out var physics))
+            return;
+
+        _physicsSystem.SetLinearVelocity(saber, Vector2.Zero, false, body: physics);
+        _physicsSystem.SetAngularVelocity(saber, 0, false, body: physics);
+        var forcePulledComponent = EnsureComp<ForcePulledComponent>(saber);
+
+        forcePulledComponent.TargetUser = target;
+
+        _popupSystem.PopupEntity("Расслабляет руку, меч направляется в неизвестную сторону.", user, PopupType.Medium);
     }
     #endregion
 

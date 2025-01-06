@@ -11,8 +11,8 @@
 
 - type: entity
   id: ActionSithForceLightning
-  name: lightning
-  description: SithForceLightning. #TODO: add description
+  name: Ударить молнией. Вухахаахха
+  description: Ударьте своего врага молнией. Сделайте из него стейк медиум рейр..
   noSpawn: true
   components:
   - type: EntityTargetAction
@@ -46,8 +46,8 @@
 
 - type: entity
   id: ActionBlockLightSaber
-  name: lightning
-  description: ActionBlockLightSaber. #TODO: add description
+  name: Блок
+  description: Блок? #TODO: add description
   noSpawn: true
   components:
   - type: InstantAction
@@ -65,3 +65,17 @@
     icon: Interface/Actions/subdue.png
     event: !type:SaberPrivateAbilityEvent
     useDelay: 1
+
+- type: entity
+  id: ActionJediForceSaberAttack
+  name: Атака летающим мечом.
+  description: Выберите врага Республики и направьте на него справдливость. Меч долетит до него и справедливо отрежет ему ноги.. #TODO: add description
+  noSpawn: true
+  components:
+  - type: EntityTargetAction
+    icon: Interface/Actions/forcesaberattack.png
+    event: !type:JediForceSaberAttackEvent
+    canTargetSelf: false
+    range: 8
+    interactOnMiss: false
+    useDelay: 30

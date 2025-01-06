@@ -6,3 +6,5 @@
     - MasteryAbilities
   currencyWhitelist:
     - MasteryExperience
+  balance:
+    MasteryExperience: 30

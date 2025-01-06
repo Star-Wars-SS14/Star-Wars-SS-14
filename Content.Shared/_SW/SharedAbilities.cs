@@ -27,7 +27,7 @@ public sealed partial class CallSaberAbilityEvent : InstantActionEvent
 {
 }
 
-public sealed partial class RemoveWizardChargeEvent : EntityEventArgs
+public sealed partial class JediForceSaberAttackEvent : EntityTargetActionEvent
 {
 }
 

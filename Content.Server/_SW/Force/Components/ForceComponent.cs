@@ -15,7 +15,7 @@ public partial class ForceComponent : Component
     ];
 
     [DataField("exp")]
-    public int Experience;
+    public int Experience = 30;
 
     [DataField("currencyProto")]
     public ProtoId<CurrencyPrototype> MasteryCurrencyProto = "MasteryExperience";

@@ -1,10 +1,18 @@
-﻿namespace Content.Server._SW.Force.Components;
+﻿using Content.Shared.FixedPoint;
+
+namespace Content.Server._SW.Force.Components;
 
 [RegisterComponent]
 public sealed partial class ForcePulledComponent : Component
 {
     [DataField]
     public EntityUid? ForceUser;
+
+    [DataField]
+    public EntityUid? TargetUser;
+
+    [DataField]
+    public FixedPoint2 DamageFromSaber = FixedPoint2.New(40);
 
     [DataField]
     public float ActiveCooldown;
@@ -17,6 +25,9 @@ public sealed partial class ForcePulledComponent : Component
 
     [DataField]
     public int MaxAttempts = 50;
+
+    [DataField]
+    public int MaxAttemptsOnTarget = 25;
 
     [DataField]
     public float ThrowForce = 10F;

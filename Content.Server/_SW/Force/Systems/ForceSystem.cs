@@ -1,15 +1,18 @@
 ﻿using Content.Server._SW.Force.Components;
 using Content.Server.Beam;
 using Content.Server.Hands.Systems;
+using Content.Server.Item;
 using Content.Server.Lightning;
 using Content.Server.Popups;
 using Content.Shared.Actions;
 using Content.Shared.Alert;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Prototypes;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Store.Components;
 using Content.Shared.Tag;
+using Content.Shared.Throwing;
 using Robust.Server.Containers;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
@@ -22,7 +25,8 @@ public sealed partial class ForceSystem : EntitySystem
 {
     [Dependency] private readonly SharedActionsSystem _action = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly TransformSystem _transform = default!;
+    [Dependency] private readonly ItemToggleSystem _toggleSystem = default!;
+    [Dependency] private readonly TransformSystem _transformSystem = default!;
     [Dependency] private readonly IEntityManager _entManager = default!;
     [Dependency] private readonly PullingSystem _pullingSystem = default!;
     [Dependency] private readonly ContainerSystem _containerSystem = default!;
@@ -34,6 +38,8 @@ public sealed partial class ForceSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly BeamSystem _beam = default!;
     [Dependency] private readonly AlertsSystem _alertsSystem = default!;
+    [Dependency] private readonly ThrowingSystem _throwingSystem = default!;
+    [Dependency] private readonly DamageableSystem _damageableSystem = default!;
     [Dependency] private readonly PhysicsSystem _physicsSystem = default!;
 
     public override void Initialize()
@@ -66,6 +72,48 @@ public sealed partial class ForceSystem : EntitySystem
             {
                 _physicsSystem.SetBodyStatus(target, physicsComponent, BodyStatus.OnGround);
                 RemComp<InDashingComponent>(target);
+            }
+        }
+
+        var query2 = EntityQueryEnumerator<ForcePulledComponent>();
+        while (query2.MoveNext(out var saber, out var comp))
+        {
+            var target = comp.TargetUser;
+
+            if (target == null)
+                continue;
+
+            if(!TryComp<SaberComponent>(saber, out var saberComponent))
+                continue;
+
+            comp.ActiveCooldown -= frameTime;
+
+            if (comp.TargetUser != null)
+            {
+                if(!TryComp<TransformComponent>(target, out var targetTransformComponent))
+                    continue;
+
+                if (_transformSystem.GetGridTilePositionOrDefault(saber) != _transformSystem.GetGridTilePositionOrDefault(((EntityUid) target, targetTransformComponent)) && comp.ActiveCooldown <= 0F)
+                {
+                    if (comp.Attempts >= comp.MaxAttemptsOnTarget)
+                    {
+                        RemCompDeferred<ForcePulledComponent>(saber);
+                        continue;
+                    }
+
+                    comp.ActiveCooldown = comp.Cooldown;
+                    comp.Attempts += 1;
+                    _throwingSystem.TryThrow(saber, targetTransformComponent.Coordinates, comp.ThrowForce);
+                }
+                else if (_transformSystem.GetGridTilePositionOrDefault(saber) == _transformSystem.GetGridTilePositionOrDefault(((EntityUid) target, targetTransformComponent)))
+                {
+                    var burnDamageGroup = _prototypeManager.Index<DamageGroupPrototype>("Burn");
+                    DamageSpecifier damage = new(burnDamageGroup, comp.DamageFromSaber);
+
+                    _damageableSystem.TryChangeDamage(target, damage, true);
+                    comp.TargetUser = null;
+                    comp.ForceUser = saberComponent.Owner;
+                }
             }
         }
     }

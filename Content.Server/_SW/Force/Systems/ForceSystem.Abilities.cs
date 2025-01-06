@@ -10,6 +10,7 @@ using Content.Shared.Mobs;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Popups;
 using Content.Shared.Toggleable;
+using JetBrains.HabitatDetector;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Components;
 using static Robust.Shared.Maths.Color;
@@ -141,11 +142,17 @@ public sealed partial class ForceSystem
         var user = args.Performer;
         var target = args.Target;
 
+        if(!TryComp<ForceComponent>(user, out var forceComponent))
+            return;
+
         var query = EntityQueryEnumerator<SaberComponent>();
 
         while (query.MoveNext(out var uid, out var saberComponent))
         {
             if (saberComponent.Owner == null || saberComponent.Owner != user)
+                continue;
+
+            if(!forceComponent.OwnedSabers.Contains(uid))
                 continue;
 
             if (_containerSystem.IsEntityInContainer(uid) && !_containerSystem.TryRemoveFromContainer(uid))
@@ -158,16 +165,20 @@ public sealed partial class ForceSystem
 
             _handsSystem.TryDrop(jedi, uid, jedi.ToCoordinates());
 
-            SetSaberVelocity(uid, target, jedi);
+            if (!SetSaberVelocity(uid, target, jedi))
+                continue;
 
             args.Handled = true;
+            return;
         }
+
+        args.Handled = false;
     }
 
-    private void SetSaberVelocity(EntityUid saber, EntityUid target, EntityUid user)
+    private bool SetSaberVelocity(EntityUid saber, EntityUid target, EntityUid user)
     {
         if (!TryComp<PhysicsComponent>(saber, out var physics))
-            return;
+            return false;
 
         _physicsSystem.SetLinearVelocity(saber, Vector2.Zero, false, body: physics);
         _physicsSystem.SetAngularVelocity(saber, 0, false, body: physics);
@@ -176,6 +187,8 @@ public sealed partial class ForceSystem
         forcePulledComponent.TargetUser = target;
 
         _popupSystem.PopupEntity("Расслабляет руку, меч направляется в неизвестную сторону.", user, PopupType.Medium);
+
+        return true;
     }
     #endregion
 
@@ -230,6 +243,9 @@ public sealed partial class ForceSystem
             return;
         }
 
+        if(!TryComp<ForceComponent>(args.User, out var forceComponent))
+            return;
+
         var target = args.Target.Value;
 
         if(!_tagSystem.HasTag(target, component.SaberFragmentTag))
@@ -251,6 +267,7 @@ public sealed partial class ForceSystem
         _appearance.SetData(saber, ToggleableLightVisuals.Color, _colors[component.HexColor], appearanceComponent);
 
         saberComponent.Owner = component.Owner;
+        forceComponent.OwnedSabers.Add(saber);
 
         _handsSystem.TryForcePickupAnyHand(args.User, saber);
 
@@ -265,7 +282,7 @@ public sealed partial class ForceSystem
     {
         var target = args.Target;
 
-        if(!TryComp<ForceComponent>(target, out _))
+        if(!TryComp<ForceComponent>(target, out var forceComponent))
             return;
 
         var query = EntityQueryEnumerator<SaberComponent>();
@@ -283,6 +300,7 @@ public sealed partial class ForceSystem
 
             _action.RemoveAction(saberComponent.CallSaberActionEntity);
             saberComponent.Owner = null;
+            forceComponent.OwnedSabers.Clear();
         }
 
         if(args.Origin == null)

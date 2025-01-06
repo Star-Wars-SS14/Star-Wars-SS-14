@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Numerics;
+﻿using System.Numerics;
 using Content.Server._SW.Force.Components;
 using Content.Server.Actions;
 using Content.Server.Hands.Systems;
@@ -7,10 +6,7 @@ using Content.Server.Popups;
 using Content.Shared._SW;
 using Content.Shared.Actions;
 using Content.Shared.Damage;
-using Content.Shared.Damage.Prototypes;
-using Content.Shared.FixedPoint;
 using Content.Shared.Item;
-using Content.Shared.Mobs.Systems;
 using Content.Shared.Popups;
 using Content.Shared.Throwing;
 using Robust.Server.Containers;
@@ -144,12 +140,15 @@ public sealed class SaberSystem : EntitySystem
         if (component.Owner == args.Performer || component.Owner != null)
             return;
 
+        if(!TryComp<ForceComponent>(args.Performer, out var forceComponent))
+            return;
+
         component.Owner = args.Performer;
         _popupSystem.PopupEntity("Вы успешно подчинили меч!", args.Performer, PopupType.Medium);
-
         _actionsSystem.RemoveAction(component.PrivateSaberActionEntity);
-
         _actionsSystem.AddAction(args.Performer, component.CallSaberAction);
+        forceComponent.OwnedSabers.Add(saber);
+
         args.Handled = true;
     }
 

@@ -23,6 +23,9 @@ public partial class ForceComponent : Component
     [DataField("addExpCritOrDead")]
     public int AddExperienceCriticalOrDead = 10;
 
+    [DataField]
+    public List<EntityUid> OwnedSabers = [];
+
     // Dash
     [DataField]
     public SoundSpecifier DashSound = new SoundPathSpecifier("/Audio/_SW/Abilities/dash.ogg");

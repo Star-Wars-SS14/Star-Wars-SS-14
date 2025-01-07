@@ -26,12 +26,15 @@ public sealed class ArtillerySystem : EntitySystem
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
-
-        var query = EntityQueryEnumerator<ArtilleryOnTriggerComponent>(); // чекаем все сущности с указанным компонентом AutoSpeakPostingChatComponent если он у них есть, мы к ним можем обратиться 
+        var query = EntityQueryEnumerator<ArtilleryOnTriggerComponent>();
         while (query.MoveNext(out var uid, out var comp))
         {
-            if (_time.CurTime >= comp.NextTime && comp.Enabled && comp.TimesLeft > 0)
+            if (_time.CurTime >= comp.NextTime && _time.CurTime > comp.TimeStartBombing && comp.TimesLeft > 0)
             {
+                if (comp.PlayingBombSoundInfo != null && _audioSystem.IsPlaying(comp.PlayingBombSoundInfo.Value.Entity))
+                {
+                    _audioSystem.Stop(comp.PlayingBombSoundInfo.Value.Entity, comp.PlayingBombSoundInfo.Value.Component);
+                }
                 comp.TimesLeft--;
                 for (int i = 0; i < comp.CountPerTime; i++)
                 {
@@ -55,16 +58,9 @@ public sealed class ArtillerySystem : EntitySystem
 
     private void HandleTriggerArtillery(Entity<ArtilleryOnTriggerComponent> ent, ref TriggerEvent args)
     {
-        var playedInfo = _audioSystem.PlayPvs(ent.Comp.BombSound, ent.Owner.ToCoordinates());
-        Timer.Spawn(TimeSpan.FromSeconds(ent.Comp.DelayInSeconds), () =>
-        {
-            ent.Comp.Enabled = true;
-            ent.Comp.TimesLeft = ent.Comp.TimesCount;
-            if (playedInfo != null)
-            {
-                _audioSystem.Stop(playedInfo.Value.Entity);
-            }
-        });
+        ent.Comp.PlayingBombSoundInfo = _audioSystem.PlayPvs(ent.Comp.BombSound, ent.Owner.ToCoordinates());
+        ent.Comp.TimesLeft = ent.Comp.TimesCount;
+        ent.Comp.TimeStartBombing = _time.CurTime + TimeSpan.FromSeconds(ent.Comp.DelayInSeconds);
     }
 
     private EntityCoordinates? SelectRandomTileInRange(EntityUid uid, TransformComponent userXform, int radius)

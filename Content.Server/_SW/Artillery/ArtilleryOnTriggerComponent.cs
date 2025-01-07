@@ -1,5 +1,4 @@
-using Content.Shared.Explosion;
-using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype;
+using Robust.Shared.Audio.Components;
 namespace Content.Server._SW.Artillery;
 
 /// <summary>
@@ -39,9 +38,13 @@ public sealed partial class ArtilleryOnTriggerComponent : Component
     public float DelayBetweenTimes = 2f;
 
     public TimeSpan NextTime = default!;
+    public TimeSpan TimeStartBombing = default!;
 
     public bool Enabled = false;
 
+    /// <summary>
+    /// Время, через которое начнут падать бомбы.
+    /// </summary>
     [ViewVariables(VVAccess.ReadWrite)]
     [DataField("delay")]
     public float DelayInSeconds = 10f;
@@ -49,4 +52,6 @@ public sealed partial class ArtilleryOnTriggerComponent : Component
     [ViewVariables(VVAccess.ReadWrite)]
     [DataField("bombSound", required: true)]
     public string? BombSound = null;
+
+    public (EntityUid Entity, AudioComponent Component)? PlayingBombSoundInfo = default!;
 }

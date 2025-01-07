@@ -1,4 +1,4 @@
-Entries:
+﻿Entries:
 - author: Reebe-k
   changes:
   - message: "\u0414\u043E\u0431\u0430\u0432\u043B\u0435\u043D\u044B \u043D\u043E\u0432\
@@ -56,3 +56,12 @@ Entries:
   id: 152
   time: '2024-12-29T22:11:36.0000000+00:00'
   url: https://github.com/Star-Wars-SS14/Star-Wars-SS-14/pull/75
+- author: kalane15
+  changes:
+  - message: "\u041F\u043E\u0444\u0438\u043A\u0448\u0435\u043D\u0430 \u043E\u0448\u0438\
+      \u0431\u043A\u0430 \u0441 \u0447\u0435\u043D\u0436\u043B\u043E\u0433\u043E\u043C\
+      ."
+    type: Tweak
+  id: 153
+  time: '2025-01-07T12:26:39.0000000+00:00'
+  url: https://github.com/Star-Wars-SS14/Star-Wars-SS-14/pull/86

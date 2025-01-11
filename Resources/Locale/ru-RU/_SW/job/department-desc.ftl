@@ -1,7 +1,7 @@
 department-SW_Rebel-Alliance-description = сила сопротивления, созданной, для того, чтобы противостоять Галактической Империи.
 department-SW_Empire-description = Империя
 department-SW_Pepublic-description = Республика
-department-SW_Sobri-descriptionk = Имперский Гарнизон
+department-SW_Sobri-descriptionk = Имперский Корпус
 department-SW_Mandalorians-description = Мандалорцы
 department-SW_Exchange-description = Обмен
 department-SW_RP_Intelligence-description = Имперский разведывательный отряд

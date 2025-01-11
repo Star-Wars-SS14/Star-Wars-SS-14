@@ -1,0 +1,13 @@
+- type: job
+  id: SW_Republic_General
+  name: Генерал Сил Республики
+  playTimeTracker: Job_Republic_General
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 108000 # 30h
+  - !type:RoleTimeRequirement
+    role: JobRepublicCaptain
+    time: 18000 # 5h
+  startingGear: RepublicGeneralGear
+  icon: "JobIconRepublicGeneral"
+  supervisors: job-supervisors-grand-marshal

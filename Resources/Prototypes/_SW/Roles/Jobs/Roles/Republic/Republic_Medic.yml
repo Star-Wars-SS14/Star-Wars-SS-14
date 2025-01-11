@@ -1,0 +1,11 @@
+- type: job
+  id: SW_Republic_Medic
+  name: Медик Сил Республики
+  playTimeTracker: Job_Republic_Medic
+  requirements:
+  - !type:RoleTimeRequirement
+    role: JobRepublicSoldier
+    time: 18000 # 5h
+  startingGear: RepublicMedicGear
+  icon: "JobIconRepublicMedic"
+  supervisors: job-supervisors-leit-rep

@@ -1,0 +1,14 @@
+###Havok
+- type: job
+  id: SW_Republic_Commander_Sniper
+  name: Снайпер-Коммандос
+  playTimeTracker: Job_Republic_Commander_Sniper
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 72000 # 20h
+  - !type:DepartmentTimeRequirement
+    department: SW_Pepublic
+    time: 36000 # 10h
+  startingGear: RepublicCommanderSniperGear
+  icon: "JobIconHavokSniper"
+  supervisors: job-supervisors-havok-cap

@@ -1,0 +1,11 @@
+- type: job
+  id: SW_Sobrik_Medic
+  name: Медик Корпуса
+  playTimeTracker: Job_Sobrik_Medic
+  requirements:
+  - !type:RoleTimeRequirement
+    role: JobSobrikOfficer
+    time: 7200 # 2h
+  startingGear: SobrikMedicGear
+  icon: "JobIconSobrikMedic"
+  supervisors: job-supervisors-sobrik-captain

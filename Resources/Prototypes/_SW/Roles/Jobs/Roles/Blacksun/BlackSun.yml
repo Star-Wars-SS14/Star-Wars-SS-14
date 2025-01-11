@@ -1,0 +1,11 @@
+- type: job
+  id: SW_BlackSun
+  name: Капитан черного солнца
+  playTimeTracker: Job_BlackSun
+  requirements:
+  - !type:RoleTimeRequirement
+    role: JobBlackSunMercenary
+    time: 18000 # 5h
+  startingGear: BlackSunGear
+  icon: "JobIconBlackSun"
+  supervisors: job-supervisors-reg-blacksun

@@ -1,0 +1,11 @@
+- type: job
+  id: SW_Mandalorian_Leader
+  name: Лидер Мандалорцев
+  playTimeTracker: Job_Mandalorian_Leader
+  requirements:
+  - !type:RoleTimeRequirement
+    role: JobMandalorianVeteran
+    time: 18000 # 5h
+  startingGear: MandalorianLeaderGear
+  icon: "JobIconMandalorianLeader"
+  supervisors: job-supervisors-mando-led

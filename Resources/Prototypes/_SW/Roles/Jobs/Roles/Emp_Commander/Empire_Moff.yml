@@ -1,0 +1,13 @@
+- type: job
+  id: SW_Empire_Moff
+  name: МОФФ Сил Империи
+  playTimeTracker: Job_Empire_Moff
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 144000 # 40h
+  - !type:RoleTimeRequirement
+    role: JobEmpireMajor
+    time: 36000 # 10h
+  startingGear: EmpireMoffGear
+  icon: "JobIconEmpireMoff"
+  supervisors: job-supervisors-min-war

@@ -1,0 +1,10 @@
+- type: job
+  id: SW_Empire_Soldier
+  name: Солдат Сил Империи
+  playTimeTracker: Job_Empire_Soldier
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 0h
+  startingGear: EmpireSoldierGear
+  icon: "JobIconEmpireSoldier"
+  supervisors: job-supervisors-leit-emp

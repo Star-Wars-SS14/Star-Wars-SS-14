@@ -1,7 +1,7 @@
 department-SW_RebelAlliance = Альянс Повстанцев
 department-SW_Empire = Империя
 department-SW_Pepublic = Республика
-department-SW_Sobrik = Имперский Гарнизон
+department-SW_Sobrik = Имперский Корпус
 department-SW_Mandalorians = Мандалорцы
 department-SW_Exchange = Обмен
 department-SW_RP_Intelligence = Имперский разведывательный отряд

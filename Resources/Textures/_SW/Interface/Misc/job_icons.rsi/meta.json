@@ -15,7 +15,7 @@
             "name": "BlackSunMercenary"
         },
         {
-            "name": "Civialian"
+            "name": "Civilian"
         },
         {
             "name": "EmpireLieutenant"
@@ -91,6 +91,12 @@
         },
         {
             "name": "ExchangeCaptain"
+        },
+        {
+            "name": "HavokLieutenant"
+        },
+        {
+            "name": "RepublicCapitan"
         },
         {
             "name": "ExchangeOperative"

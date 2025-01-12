@@ -361,7 +361,6 @@
 - type: startingGear
   id: ExchangeCaptainGear
   equipment:
-    jumpsuit: SW_ClothingUniformJumpsuitFleece
     outerClothing: SW_ExchangeSuit
     belt: ClothingBeltAssault
     shoes: SW_ClothingShoesBootsExchange
@@ -372,7 +371,6 @@
 - type: startingGear
   id: ExchangeOperativeGear
   equipment:
-    jumpsuit: SW_ClothingUniformJumpsuitFleece
     outerClothing: SW_ExchangeSuit
     belt: ClothingBeltSalvageWebbing
     gloves: ClothingHandsGlovesColorBlack

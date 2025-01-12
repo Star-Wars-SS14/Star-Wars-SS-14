@@ -621,3 +621,17 @@
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
     state: ExchangeOperative
+
+- type: statusIcon
+  parent: JobIcon
+  id: JobIconHavokLieutenant
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: HavokLieutenant
+
+- type: statusIcon
+  parent: JobIcon
+  id: JobIconRepublicCapitan
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: RepublicCapitan

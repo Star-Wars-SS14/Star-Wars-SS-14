@@ -1,0 +1,13 @@
+- type: job
+  id: SW_Empire_Medic
+  name: Медик Сил Империи
+  playTimeTracker: Job_Empire_Medic
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 36000 # 10h
+  - !type:RoleTimeRequirement
+    role: JobEmpireSoldier
+    time: 18000 # 5h
+  startingGear: EmpireMedicalGear
+  icon: "JobIconEmpireMedic"
+  supervisors: job-supervisors-leit-emp

@@ -13,3 +13,27 @@ job-supervisors-security = security officers, the warden, and the head of securi
 job-supervisors-science = scientists, and the research director
 job-supervisors-hire = whoever hires you
 job-supervisors-everyone = absolutely everyone
+
+
+job-supervisors-MOFF = be cool
+job-supervisors-leit-emp = be cool
+job-supervisors-major-emp = be cool
+job-supervisors-cap-sob = be cool
+job-supervisors-keeper = be coll
+job-supervisors-watcher-intelligence = be cool
+job-supervisors-min-war = be cool
+job-supervisors-grand-marshal = be cool
+job-supervisors-general-gaza = be cool
+job-supervisors-rep-cap = be cool
+job-supervisors-leit-rep = be cool
+job-supervisors-havok-cap = be cool
+job-supervisors-blacksun-cap = be cool
+job-supervisors-nobody = be cool
+job-supervisors-reg-blacksun = be cool
+job-supervisors-empire = be cool
+job-supervisors-exchange = be cool
+job-supervisors-exchange-cap = be cool
+job-supervisors-mando = be cool
+job-supervisors-mando-led = be cool
+job-supervisors-gen-rep = be cool
+job-supervisors-sobrik-captain = be cool

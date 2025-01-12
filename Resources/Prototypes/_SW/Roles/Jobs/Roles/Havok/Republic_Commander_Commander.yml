@@ -1,0 +1,14 @@
+###Havok
+- type: job
+  id: SW_Republic_Commander_Commander
+  name: Командир-Коммандос
+  playTimeTracker: Job_Republic_Commander_Commander
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 144000 # 40h
+  - !type:RoleTimeRequirement
+    role: JobRepublicCommanderLieutenant
+    time: 18000 # 5h
+  startingGear: RepublicCommanderCommanderGear
+  icon: "JobIconHavokCommander"
+  supervisors: job-supervisors-general-gaza

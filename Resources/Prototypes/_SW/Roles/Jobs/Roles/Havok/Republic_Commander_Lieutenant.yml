@@ -1,0 +1,14 @@
+###Havok
+- type: job
+  id: SW_Republic_Commander_Lieutenant
+  name: Лейтенант-Коммандос
+  playTimeTracker: Job_Republic_Commander_Lieutenant
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 108000 # 30h
+  - !type:DepartmentTimeRequirement
+    department: SW_RP_Commander
+    time: 18000 # 5h
+  startingGear: RepublicCommanderLieutenantGear
+  icon: "JobIconHavokStormtrooper"
+  supervisors: job-supervisors-havok-cap

@@ -1,0 +1,10 @@
+- type: job
+  id: SW_Civialian
+  name: Житель
+  playTimeTracker: Job_Civilian
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 0 h
+  startingGear: CitizenGear
+  icon: "JobIconCivilian"
+  supervisors: job-supervisors-empire

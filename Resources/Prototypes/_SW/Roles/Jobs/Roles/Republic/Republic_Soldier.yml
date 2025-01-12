@@ -1,0 +1,11 @@
+- type: job
+  id: SW_Republic_Soldier
+  name: Солдат Сил Республики
+  playTimeTracker: Job_Republic_Soldier
+  requirements:
+  - !type:RoleTimeRequirement
+    role: JobRepublicRecruit
+    time: 18000 # 5h
+  startingGear: RepublicSoldierGear
+  icon: "JobIconRepublicSoldier"
+  supervisors: job-supervisors-leit-rep

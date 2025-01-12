@@ -96,3 +96,11 @@
   id: 157
   time: '2025-01-08T01:26:44.0000000+00:00'
   url: https://github.com/Star-Wars-SS14/Star-Wars-SS-14/pull/91
+- author: p0etus
+  changes:
+  - message: "\u0424\u0438\u043A\u0441 \u0448\u043B\u0435\u043C\u0430 \u043C\u0435\
+      \u0434\u0438\u043A\u0430 \u0445\u0430\u0432\u043E\u043A\u0430"
+    type: Fix
+  id: 158
+  time: '2025-01-12T13:37:47.0000000+00:00'
+  url: https://github.com/Star-Wars-SS14/Star-Wars-SS-14/pull/85

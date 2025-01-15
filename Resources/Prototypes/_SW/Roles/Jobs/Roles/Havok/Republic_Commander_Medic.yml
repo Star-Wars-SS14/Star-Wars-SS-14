@@ -7,7 +7,7 @@
   - !type:OverallPlaytimeRequirement
     time: 72000 # 20h
   - !type:DepartmentTimeRequirement
-    department: SW_Pepublic
+    department: SWPepublic
     time: 36000 # 10h
   startingGear: RepublicCommanderMedicGear
   icon: "JobIconHavokMedic"

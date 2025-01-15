@@ -1,5 +1,5 @@
 - type: job
-  id: SWMandalorianVeteran
+  id: SW_Mandalorian_Veteran
   name: Ветеран Мандалорцев
   playTimeTracker: Job_Mandalorian_Veteran
   requirements:

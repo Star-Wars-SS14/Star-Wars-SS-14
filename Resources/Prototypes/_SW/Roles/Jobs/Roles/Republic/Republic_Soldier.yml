@@ -1,5 +1,5 @@
 - type: job
-  id: SWRepublicSoldier
+  id: SW_Republic_Soldier
   name: Солдат Сил Республики
   playTimeTracker: Job_Republic_Soldier
   requirements:

@@ -1,5 +1,5 @@
 - type: job
-  id: SWEmpireMedic
+  id: SW_Empire_Medic
   name: Медик Сил Империи
   playTimeTracker: Job_Empire_Medic
   requirements:

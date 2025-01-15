@@ -1,5 +1,5 @@
 - type: job
-  id: SWCivialian
+  id: SW_Civialian
   name: Житель
   playTimeTracker: Job_Civilian
   requirements:

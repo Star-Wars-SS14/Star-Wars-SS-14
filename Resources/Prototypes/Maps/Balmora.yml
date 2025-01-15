@@ -18,7 +18,7 @@
         maxStationOffset: null
       - type: StationJobs
         overflowJobs:
-        - SWCivialian
+        - SW_Civialian
         availableJobs:
           SW_Sobrik_Captain: [ 1, 1 ]
           SW_Sobrik_Officer: [ 6, 6 ]

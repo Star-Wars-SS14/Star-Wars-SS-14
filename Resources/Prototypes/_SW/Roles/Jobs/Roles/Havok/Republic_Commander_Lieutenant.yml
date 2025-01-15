@@ -7,7 +7,7 @@
   - !type:OverallPlaytimeRequirement
     time: 108000 # 30h
   - !type:DepartmentTimeRequirement
-    department: SW_RP_Commander
+    department: SWRPCommander
     time: 18000 # 5h
   startingGear: RepublicCommanderLieutenantGear
   icon: "JobIconHavokStormtrooper"

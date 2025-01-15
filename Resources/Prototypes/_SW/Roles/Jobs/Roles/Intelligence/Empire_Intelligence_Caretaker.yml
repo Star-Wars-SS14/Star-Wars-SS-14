@@ -6,7 +6,7 @@
   - !type:OverallPlaytimeRequirement
     time: 54000 # 15h
   - !type:RoleTimeRequirement
-    role: JobEmpireIntelligenceAgent
+    role: Job_Empire_Intelligence_Agent
     time: 18000 # 5h
   startingGear: EmpireIntelligenceCaretakerGear
   icon: "JobIconImperialIntelligenceCaretaker"

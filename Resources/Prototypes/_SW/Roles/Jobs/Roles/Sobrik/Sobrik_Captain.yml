@@ -6,7 +6,7 @@
   - !type:OverallPlaytimeRequirement
     time: 72000 # 20h
   - !type:RoleTimeRequirement
-    role: JobSobrikOfficer
+    role: Job_Sobrik_Officer
     time: 36000 # 10h
   startingGear: SobrikCaptainGear
   icon: "JobIconSobrikComendant"

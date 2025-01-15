@@ -4,7 +4,7 @@
   playTimeTracker: Job_Sobrik_Medic
   requirements:
   - !type:RoleTimeRequirement
-    role: JobSobrikOfficer
+    role: Job_Sobrik_Officer
     time: 7200 # 2h
   startingGear: SobrikMedicGear
   icon: "JobIconSobrikMedic"

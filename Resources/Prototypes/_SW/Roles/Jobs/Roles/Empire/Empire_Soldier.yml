@@ -1,5 +1,5 @@
 - type: job
-  id: SWEmpireSoldier
+  id: SW_Empire_Soldier
   name: Солдат Сил Империи
   playTimeTracker: Job_Empire_Soldier
   requirements:

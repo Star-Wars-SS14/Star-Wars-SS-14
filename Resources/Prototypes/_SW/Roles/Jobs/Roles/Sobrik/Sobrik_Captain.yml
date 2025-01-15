@@ -1,5 +1,5 @@
 - type: job
-  id: SWSobrikCaptain
+  id: SW_Sobrik_Captain
   name: Комендант Корпуса
   playTimeTracker: Job_Sobrik_Captain
   requirements:

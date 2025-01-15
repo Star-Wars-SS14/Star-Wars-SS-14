@@ -1,5 +1,5 @@
 - type: job
-  id: SWEmpireMajor
+  id: SW_Empire_Major
   name: Майор Сил Империи
   playTimeTracker: Job_Empire_Major
   requirements:

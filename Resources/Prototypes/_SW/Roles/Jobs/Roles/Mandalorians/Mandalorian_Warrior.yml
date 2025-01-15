@@ -1,5 +1,5 @@
 - type: job
-  id: SWMandalorianWarrior
+  id: SW_Mandalorian_Warrior
   name: Воин Мандалорцев
   playTimeTracker: Job_Mandalorian_Warrior
   requirements:

@@ -1,5 +1,5 @@
 - type: job
-  id: SWEmpireMoff
+  id: SW_Empire_Moff
   name: МОФФ Сил Империи
   playTimeTracker: Job_Empire_Moff
   requirements:

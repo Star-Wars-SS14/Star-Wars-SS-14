@@ -6,7 +6,7 @@
   - !type:OverallPlaytimeRequirement
     time: 144000 # 40h
   - !type:RoleTimeRequirement
-    role: JobEmpireMajor
+    role: Job_Empire_Major
     time: 36000 # 10h
   startingGear: EmpireMoffGear
   icon: "JobIconEmpireMoff"

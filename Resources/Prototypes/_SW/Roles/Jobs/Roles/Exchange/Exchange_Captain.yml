@@ -6,7 +6,7 @@
   - !type:OverallPlaytimeRequirement
     time: 36000 # 10h
   - !type:RoleTimeRequirement
-    role: JobExchangeOperative
+    role: Job_Exchange_Operative
     time: 18000 # 5h
   startingGear: ExchangeCaptainGear
   icon: "JobIconExchangeCaptain"

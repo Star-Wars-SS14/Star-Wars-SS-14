@@ -1,5 +1,5 @@
 - type: job
-  id: SW_Republic_Medic
+  id: SWRepublicMedic
   name: Медик Сил Республики
   playTimeTracker: Job_Republic_Medic
   requirements:

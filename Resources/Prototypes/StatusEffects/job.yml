@@ -424,7 +424,7 @@
   id: JobIconBlackSun
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
-    state: BlackSun
+    state: Blacksun
 
 - type: statusIcon
   parent: JobIcon

@@ -1,5 +1,5 @@
 - type: job
-  id: SW_Sobrik_Medic
+  id: SWSobrikMedic
   name: Медик Корпуса
   playTimeTracker: Job_Sobrik_Medic
   requirements:

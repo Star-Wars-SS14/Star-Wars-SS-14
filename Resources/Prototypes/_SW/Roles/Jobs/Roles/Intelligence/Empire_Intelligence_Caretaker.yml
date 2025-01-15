@@ -1,5 +1,5 @@
 - type: job
-  id: SW_Empire_Intelligence_Caretaker
+  id: SWEmpireIntelligenceCaretaker
   name: Смотритель Имперской Разведки
   playTimeTracker: Job_Empire_Intelligence_Caretaker
   requirements:

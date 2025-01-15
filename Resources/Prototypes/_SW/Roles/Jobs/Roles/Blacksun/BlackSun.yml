@@ -1,5 +1,5 @@
 - type: job
-  id: SW_BlackSun
+  id: SWBlackSun
   name: Капитан черного солнца
   playTimeTracker: Job_BlackSun
   requirements:

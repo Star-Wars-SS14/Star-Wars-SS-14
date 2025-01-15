@@ -1,5 +1,5 @@
 - type: job
-  id: SW_Republic_Captain
+  id: SWRepublicCaptain
   name: Капитан Сил Республики
   playTimeTracker: Job_Republic_Captain
   requirements:

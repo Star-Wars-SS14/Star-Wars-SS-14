@@ -1,5 +1,5 @@
 - type: job
-  id: SW_Republic_Recruit
+  id: SWRepublicRecruit
   name: Рекрут Сил Республики
   playTimeTracker: Job_Republic_Recruit
   requirements:

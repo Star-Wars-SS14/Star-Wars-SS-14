@@ -1,6 +1,6 @@
 ###Havok
 - type: job
-  id: SW_Republic_Commander_Sniper
+  id: SWRepublicCommanderSniper
   name: Снайпер-Коммандос
   playTimeTracker: Job_Republic_Commander_Sniper
   requirements:

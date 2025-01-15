@@ -1,6 +1,6 @@
 ###Havok
 - type: job
-  id: SW_Republic_Commander_Commander
+  id: SWRepublicCommanderCommander
   name: Командир-Коммандос
   playTimeTracker: Job_Republic_Commander_Commander
   requirements:

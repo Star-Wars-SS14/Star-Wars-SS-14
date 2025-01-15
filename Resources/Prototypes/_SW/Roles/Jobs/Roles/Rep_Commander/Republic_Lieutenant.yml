@@ -1,5 +1,5 @@
 - type: job
-  id: SW_Republic_Lieutenant
+  id: SWRepublicLieutenant
   name: Лейтенант Сил Республики
   playTimeTracker: Job_Republic_Lieutenant
   requirements:

@@ -390,7 +390,7 @@
   name: Civilian (Житель)
   components:
   - type: SpawnPoint
-    job_id: SW_Civialian
+    job_id: SWCivialian
   - type: Sprite
     layers:
     - state: green

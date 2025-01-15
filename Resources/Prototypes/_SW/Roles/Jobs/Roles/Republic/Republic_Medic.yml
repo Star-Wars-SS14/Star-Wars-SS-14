@@ -4,7 +4,7 @@
   playTimeTracker: Job_Republic_Medic
   requirements:
   - !type:RoleTimeRequirement
-    role: Job_Republic_Soldier
+    role: JobRepublicSoldier
     time: 18000 # 5h
   startingGear: RepublicMedicGear
   icon: "JobIconRepublicMedic"

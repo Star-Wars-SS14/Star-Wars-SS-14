@@ -7,7 +7,7 @@
   - !type:OverallPlaytimeRequirement
     time: 144000 # 40h
   - !type:RoleTimeRequirement
-    role: Job_Republic_Commander_Lieutenant
+    role: JobRepublicCommanderLieutenant
     time: 18000 # 5h
   startingGear: RepublicCommanderCommanderGear
   icon: "JobIconHavokCommander"

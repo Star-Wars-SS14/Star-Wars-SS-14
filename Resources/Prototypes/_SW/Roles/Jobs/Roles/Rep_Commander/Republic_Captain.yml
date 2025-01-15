@@ -6,7 +6,7 @@
   - !type:OverallPlaytimeRequirement
     time: 72000 # 20h
   - !type:RoleTimeRequirement
-    role: Job_Republic_Lieutenant
+    role: JobRepublicLieutenant
     time: 18000 # 5h
   startingGear: RepublicCaptainGear
   icon: "JobIconHavokLieutenant"

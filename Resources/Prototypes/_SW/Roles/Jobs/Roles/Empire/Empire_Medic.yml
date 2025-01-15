@@ -6,7 +6,7 @@
   - !type:OverallPlaytimeRequirement
     time: 36000 # 10h
   - !type:RoleTimeRequirement
-    role: Job_Empire_Soldier
+    role: JobEmpireSoldier
     time: 18000 # 5h
   startingGear: EmpireMedicalGear
   icon: "JobIconEmpireMedic"

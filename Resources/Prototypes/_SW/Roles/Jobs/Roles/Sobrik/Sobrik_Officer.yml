@@ -4,7 +4,7 @@
   playTimeTracker: Job_Sobrik_Officer
   requirements:
   - !type:RoleTimeRequirement
-    role: Job_Empire_Soldier
+    role: JobEmpireSoldier
     time: 18000 # 5h
   startingGear: SobrikOfficerGear
   icon: "JobIconSobrikOfficer"

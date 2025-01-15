@@ -6,7 +6,7 @@
   - !type:OverallPlaytimeRequirement
     time: 108000 # 30h
   - !type:RoleTimeRequirement
-    role: Job_Empire_Lieutenant
+    role: JobEmpireLieutenant
     time: 18000 # 5h
   startingGear: EmpireMajorGear
   icon: "JobIconEmpireMajor"

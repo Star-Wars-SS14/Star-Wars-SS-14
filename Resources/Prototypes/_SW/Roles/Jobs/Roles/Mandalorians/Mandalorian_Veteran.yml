@@ -4,7 +4,7 @@
   playTimeTracker: Job_Mandalorian_Veteran
   requirements:
   - !type:RoleTimeRequirement
-    role: Job_Mandalorian_Warrior
+    role: JobMandalorianWarrior
     time: 18000 # 5h
   startingGear: MandalorianVeteranGear
   icon: "JobIconMandalorianVeteran"

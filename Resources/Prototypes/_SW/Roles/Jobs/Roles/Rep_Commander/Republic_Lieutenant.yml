@@ -6,7 +6,7 @@
   - !type:OverallPlaytimeRequirement
     time: 54000 # 15h
   - !type:RoleTimeRequirement
-    role: Job_Republic_Soldier
+    role: JobRepublicSoldier
     time: 18000 # 5h
   startingGear: RepublicLieutenantGear
   icon: "JobIconRepublicLieutenant"

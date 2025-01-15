@@ -6,7 +6,7 @@
   - !type:OverallPlaytimeRequirement
     time: 108000 # 30h
   - !type:RoleTimeRequirement
-    role: Job_Republic_Captain
+    role: JobRepublicCaptain
     time: 18000 # 5h
   startingGear: RepublicGeneralGear
   icon: "JobIconRepublicGeneral"

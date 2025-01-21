@@ -5,7 +5,6 @@ using Content.Server.Radio.Components;
 using Content.Server.Radio.EntitySystems;
 using Content.Shared.Chat;
 using Content.Shared.Examine;
-using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
 using Content.Shared.Radio;
 using Robust.Shared.Network;
@@ -17,8 +16,8 @@ namespace Content.Server._SW.Force.Systems;
 public sealed class StarHelmetSystem : EntitySystem
 {
     [Dependency] private readonly INetManager _netMan = default!;
-    [Dependency] private readonly RadioSystem _radio = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private readonly RadioSystem _radio = default!;
     [Dependency] private readonly RadioDeviceSystem _radioDevice = default!;
 
     public override void Initialize()
@@ -39,7 +38,7 @@ public sealed class StarHelmetSystem : EntitySystem
         if (!args.IsInDetailsRange)
             return;
 
-        if(component.Channels.Count == 0)
+        if (component.Channels.Count == 0)
             return;
 
         if (component.Channels.Count > 0)
@@ -81,12 +80,12 @@ public sealed class StarHelmetSystem : EntitySystem
     private void OnGotEquipped(EntityUid helmet, StarHelmetComponent component, GotEquippedEvent args)
     {
         EnsureComp<WearingStarHelmetComponent>(args.Equipee).Helmet = helmet;
-        EnsureComp<ActiveRadioComponent>(helmet).Channels = new(component.Channels);
+        EnsureComp<ActiveRadioComponent>(helmet).Channels = new HashSet<string>(component.Channels);
 
-        if(!TryComp<RadioSpeakerComponent>(helmet, out var radioSpeakerComponent))
+        if (!TryComp<RadioSpeakerComponent>(helmet, out var radioSpeakerComponent))
             return;
 
-        if(radioSpeakerComponent.Enabled)
+        if (radioSpeakerComponent.Enabled)
             _radioDevice.ToggleRadioSpeaker(helmet, helmet);
     }
 
@@ -95,10 +94,10 @@ public sealed class StarHelmetSystem : EntitySystem
         RemComp<ActiveRadioComponent>(helmet);
         RemComp<WearingStarHelmetComponent>(args.Equipee);
 
-        if(!TryComp<RadioSpeakerComponent>(helmet, out var radioSpeakerComponent))
+        if (!TryComp<RadioSpeakerComponent>(helmet, out var radioSpeakerComponent))
             return;
 
-        if(radioSpeakerComponent.Enabled == false)
+        if (radioSpeakerComponent.Enabled == false)
             _radioDevice.ToggleRadioSpeaker(helmet, helmet);
     }
 }

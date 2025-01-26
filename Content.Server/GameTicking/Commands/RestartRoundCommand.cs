@@ -3,7 +3,6 @@ using Content.Server.RoundEnd;
 using Content.Shared.Administration;
 using Robust.Shared.Console;
 using Content.Server._SW.EndRound;
-using Content.Server.Chat.Managers;
 
 namespace Content.Server.GameTicking.Commands
 {
@@ -11,7 +10,6 @@ namespace Content.Server.GameTicking.Commands
     public sealed class RestartRoundCommand : IConsoleCommand
     {
         [Dependency] private readonly IEntityManager _e = default!;
-        [Dependency] private readonly IChatManager _chatManager = default!;
         public string Command => "restartround";
         public string Description => "Ends the current round and starts the countdown for the next lobby.";
         public string Help => string.Empty;

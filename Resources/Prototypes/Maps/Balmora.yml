@@ -56,5 +56,11 @@
 
           SW_Exchange_Captain: [ 1, 1 ]
           SW_Exchange_Operative: [ 4, 4 ]
+      - type: EndRoundByTimer
+        DelayBeforeEndInSeconds: 20
+        sound:
+          path: /Audio/Misc/siren.ogg
+          params:
+            volume: -4
 
 

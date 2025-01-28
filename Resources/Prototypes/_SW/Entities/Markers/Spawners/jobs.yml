@@ -5,7 +5,7 @@
   name: Sobrik Captain
   components:
   - type: SpawnPoint
-    job_id: SW_Sobrik_Captain
+    job_id: SWSobrikCaptain
   - type: Sprite
     layers:
     - state: green
@@ -17,7 +17,7 @@
   name: Sobrik Officer
   components:
   - type: SpawnPoint
-    job_id: SW_Sobrik_Officer
+    job_id: SWSobrikOfficer
   - type: Sprite
     layers:
     - state: green
@@ -29,7 +29,7 @@
   name: Sobrik Medic
   components:
   - type: SpawnPoint
-    job_id: SW_Sobrik_Medic
+    job_id: SWSobrikMedic
   - type: Sprite
     layers:
     - state: green
@@ -42,7 +42,7 @@
   name: Empire Moff
   components:
   - type: SpawnPoint
-    job_id: SW_Empire_Moff
+    job_id: SWEmpireMoff
   - type: Sprite
     layers:
     - state: green
@@ -53,7 +53,7 @@
   name: Empire Major
   components:
   - type: SpawnPoint
-    job_id: SW_Empire_Major
+    job_id: SWEmpireMajor
   - type: Sprite
     layers:
     - state: green
@@ -64,7 +64,7 @@
   name: Empire Lieutenant
   components:
   - type: SpawnPoint
-    job_id: SW_Empire_Lieutenant
+    job_id: SWEmpireLieutenant
   - type: Sprite
     layers:
     - state: green
@@ -75,7 +75,7 @@
   name: Empire Soldier
   components:
   - type: SpawnPoint
-    job_id: SW_Empire_Soldier
+    job_id: SWEmpireSoldier
   - type: Sprite
     layers:
     - state: green
@@ -86,7 +86,7 @@
   name: Empire Medic
   components:
   - type: SpawnPoint
-    job_id: SW_Empire_Medic
+    job_id: SWEmpireMedic
   - type: Sprite
     layers:
     - state: green
@@ -98,7 +98,7 @@
   name: Mandalorian Leader
   components:
   - type: SpawnPoint
-    job_id: SW_Mandalorian_Leader
+    job_id: SWMandalorianLeader
   - type: Sprite
     layers:
     - state: green
@@ -109,7 +109,7 @@
   name: Mandalorian Veteran
   components:
   - type: SpawnPoint
-    job_id: SW_Mandalorian_Veteran
+    job_id: SWMandalorianVeteran
   - type: Sprite
     layers:
     - state: green
@@ -120,7 +120,7 @@
   name: Mandalorian Warrior
   components:
   - type: SpawnPoint
-    job_id: SW_Mandalorian_Warrior
+    job_id: SWMandalorianWarrior
   - type: Sprite
     layers:
     - state: green
@@ -131,7 +131,7 @@
   name: Mandalorian Recruit
   components:
   - type: SpawnPoint
-    job_id: SW_Mandalorian_Recruit
+    job_id: SWMandalorianRecruit
   - type: Sprite
     layers:
     - state: green
@@ -143,7 +143,7 @@
   name: Republic General
   components:
   - type: SpawnPoint
-    job_id: SW_Republic_General
+    job_id: SWRepublicGeneral
   - type: Sprite
     layers:
     - state: green
@@ -154,7 +154,7 @@
   name: Republic Captain
   components:
   - type: SpawnPoint
-    job_id: SW_Republic_Captain
+    job_id: SWRepublicCaptain
   - type: Sprite
     layers:
     - state: green
@@ -165,7 +165,7 @@
   name: Republic Lieutenant
   components:
   - type: SpawnPoint
-    job_id: SW_Republic_Lieutenant
+    job_id: SWRepublicLieutenant
   - type: Sprite
     layers:
     - state: green
@@ -176,7 +176,7 @@
   name: Republic Soldier
   components:
   - type: SpawnPoint
-    job_id: SW_Republic_Soldier
+    job_id: SWRepublicSoldier
   - type: Sprite
     layers:
     - state: green
@@ -187,7 +187,7 @@
   name: Republic Medic
   components:
   - type: SpawnPoint
-    job_id: SW_Republic_Medic
+    job_id: SWRepublicMedic
   - type: Sprite
     layers:
     - state: green
@@ -198,7 +198,7 @@
   name: Republic Recruit
   components:
   - type: SpawnPoint
-    job_id: SW_Republic_Recruit
+    job_id: SWRepublicRecruit
   - type: Sprite
     layers:
     - state: green
@@ -210,7 +210,7 @@
   name: Balmorran Leader
   components:
   - type: SpawnPoint
-    job_id: SW_Balmorran_Leader
+    job_id: SWBalmorranLeader
   - type: Sprite
     layers:
     - state: green
@@ -221,7 +221,7 @@
   name: Balmorran Officer
   components:
   - type: SpawnPoint
-    job_id: SW_Balmorran_Officer
+    job_id: SWBalmorranOfficer
   - type: Sprite
     layers:
     - state: green
@@ -232,7 +232,7 @@
   name: Balmorran Medic
   components:
   - type: SpawnPoint
-    job_id: SW_Balmorran_Medic
+    job_id: SWBalmorranMedic
   - type: Sprite
     layers:
     - state: green
@@ -243,7 +243,7 @@
   name: Balmorran Soldier
   components:
   - type: SpawnPoint
-    job_id: SW_Balmorran_Soldier
+    job_id: SWBalmorranSoldier
   - type: Sprite
     layers:
     - state: green
@@ -254,7 +254,7 @@
   name: Balmorran Recruit
   components:
   - type: SpawnPoint
-    job_id: SW_Balmorran_Recruit
+    job_id: SWBalmorranRecruit
   - type: Sprite
     layers:
     - state: green
@@ -266,7 +266,7 @@
   name: Empire Intelligence Caretaker
   components:
   - type: SpawnPoint
-    job_id: SW_Empire_Intelligence_Caretaker
+    job_id: SWEmpireIntelligenceCaretaker
   - type: Sprite
     layers:
     - state: green
@@ -277,7 +277,7 @@
   name: Empire Intelligence Agent
   components:
   - type: SpawnPoint
-    job_id: SW_Empire_Intelligence_Agent
+    job_id: SWEmpireIntelligenceAgent
   - type: Sprite
     layers:
     - state: green
@@ -289,7 +289,7 @@
   name: Republic Commander Commander
   components:
   - type: SpawnPoint
-    job_id: SW_Republic_Commander_Commander
+    job_id: SWRepublicCommanderCommander
   - type: Sprite
     layers:
     - state: green
@@ -300,7 +300,7 @@
   name: Republic Commander Lieutenant
   components:
   - type: SpawnPoint
-    job_id: SW_Republic_Commander_Lieutenant
+    job_id: SWRepublicCommanderLieutenant
   - type: Sprite
     layers:
     - state: green
@@ -311,7 +311,7 @@
   name: Republic Commander Medic
   components:
   - type: SpawnPoint
-    job_id: SW_Republic_Commander_Medic
+    job_id: SWRepublicCommanderMedic
   - type: Sprite
     layers:
     - state: green
@@ -322,7 +322,7 @@
   name: Republic Commander Stormtrooper
   components:
   - type: SpawnPoint
-    job_id: SW_Republic_Commander_Stormtrooper
+    job_id: SWRepublicCommanderStormtrooper
   - type: Sprite
     layers:
     - state: green
@@ -333,7 +333,7 @@
   name: Republic Commander Sniper
   components:
   - type: SpawnPoint
-    job_id: SW_Republic_Commander_Sniper
+    job_id: SWRepublicCommanderSniper
   - type: Sprite
     layers:
     - state: green
@@ -345,7 +345,7 @@
   name: Black Sun
   components:
   - type: SpawnPoint
-    job_id: SW_BlackSun
+    job_id: SWBlackSun
   - type: Sprite
     layers:
     - state: green
@@ -356,7 +356,7 @@
   name: Black Sun Mercenary
   components:
   - type: SpawnPoint
-    job_id: SW_BlackSun_Mercenary
+    job_id: SWBlackSunMercenary
   - type: Sprite
     layers:
     - state: green
@@ -368,7 +368,7 @@
   name: Exchange Captain
   components:
   - type: SpawnPoint
-    job_id: SW_Exchange_Captain
+    job_id: SWExchangeCaptain
   - type: Sprite
     layers:
     - state: green
@@ -379,7 +379,7 @@
   name: Exchange Operative
   components:
   - type: SpawnPoint
-    job_id: SW_Exchange_Operative
+    job_id: SWExchangeOperative
   - type: Sprite
     layers:
     - state: green

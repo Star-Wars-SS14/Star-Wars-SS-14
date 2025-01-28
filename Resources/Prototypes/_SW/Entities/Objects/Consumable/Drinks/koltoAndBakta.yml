@@ -1,0 +1,62 @@
+- type: entity
+  name: Мензурка кольто
+  parent: BaseBeaker
+  description: Used to contain a moderate amount of chemicals and solutions.
+  id: koltoBeaker
+  components:
+  - type: Spillable
+    solution: beaker
+  - type: StaticPrice
+    price: 10
+  - type: PhysicalComposition
+    materialComposition:
+      Glass: 50
+  - type: SolutionContainerVisuals
+    maxFillLevels: 2
+    fillBaseName: koltobeaker
+    changeColor: false
+  - type: Sprite
+    sprite: _SW/Objects/Chemistry/kolto_beaker.rsi
+    layers:
+      - state: koltobeaker
+      - state: koltobeaker1
+        map: ["enum.SolutionContainerLayers.Fill"]
+        visible: false
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 5
+      behaviors:  
+      - !type:SpillBehavior
+        solution: beaker      
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: DamageOnLand
+    damage:
+      types:
+        Blunt: 0
+  - type: DamageOnHighSpeedImpact
+    minimumSpeed: 2
+    damage:
+      types:
+        Blunt: 0
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 30
+
+- type: entity
+  name: Мензурка кольто
+  parent: koltoBeaker
+  suffix: ПОЛНАЯ
+  description: Used to contain a moderate amount of chemicals and solutions.
+  id: koltoBeakerFull
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 30
+        reagents:
+        - ReagentId: Kolto
+          Quantity: 30

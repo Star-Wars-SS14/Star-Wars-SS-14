@@ -1,0 +1,37 @@
+- type: reagent
+  id: Kolto
+  name: reagent-name-kolto
+  group: Medicine
+  desc: reagent-desc-kolto
+  physicalDesc: reagent-physical-desc-translucent
+  flavor: medicine
+  color: "#e8e9ff"
+  metabolisms:
+    Medicine:
+      effects:
+      - !type:HealthChange
+        damage:
+          groups:
+            Burn: -8
+            Toxin: -8
+            Airloss: -8
+            Brute: -8
+
+- type: reagent
+  id: Bacta
+  name: reagent-name-bacta
+  group: Medicine
+  desc: reagent-desc-bacta
+  physicalDesc: reagent-physical-desc-thick 
+  flavor: medicine
+  color: "#a3f3f7"
+  metabolisms:
+    Medicine:
+      effects:
+      - !type:HealthChange
+        damage:
+          groups:
+            Burn: -16
+            Toxin: -16
+            Airloss: -16
+            Brute: -16

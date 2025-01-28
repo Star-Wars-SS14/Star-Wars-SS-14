@@ -1,4 +1,4 @@
-﻿using Content.Server.Administration;
+using Content.Server.Administration;
 using Content.Server.Body.Systems;
 using Content.Server.Cargo.Components;
 using Content.Server.Chemistry.Containers.EntitySystems;
@@ -403,7 +403,7 @@ public record struct PriceCalculationEvent()
 [ByRefEvent]
 public record struct EstimatedPriceCalculationEvent()
 {
-    public EntityPrototype Prototype;
+    public required EntityPrototype Prototype;
 
     /// <summary>
     /// The total price of the entity.

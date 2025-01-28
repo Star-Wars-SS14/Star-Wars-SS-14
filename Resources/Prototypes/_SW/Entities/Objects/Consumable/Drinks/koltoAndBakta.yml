@@ -60,3 +60,67 @@
         reagents:
         - ReagentId: Kolto
           Quantity: 30
+
+- type: entity
+  name: Мензурка бакты
+  parent: BaseBeaker
+  description: Used to contain a moderate amount of chemicals and solutions.
+  id: bactaBeaker
+  components:
+  - type: Spillable
+    solution: beaker
+  - type: StaticPrice
+    price: 10
+  - type: PhysicalComposition
+    materialComposition:
+      Glass: 50
+  - type: SolutionContainerVisuals
+    maxFillLevels: 2
+    fillBaseName: bactabeaker
+    changeColor: false
+  - type: Sprite
+    sprite: _SW/Objects/Chemistry/bacta_beaker.rsi
+    layers:
+      - state: bactabeaker
+      - state: bactabeaker1
+        map: ["enum.SolutionContainerLayers.Fill"]
+        visible: false
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 5
+      behaviors:  
+      - !type:SpillBehavior
+        solution: beaker      
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: DamageOnLand
+    damage:
+      types:
+        Blunt: 0
+  - type: DamageOnHighSpeedImpact
+    minimumSpeed: 2
+    damage:
+      types:
+        Blunt: 0
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 30
+
+- type: entity
+  name: Мензурка бакты
+  parent: bactaBeaker
+  suffix: ПОЛНАЯ
+  description: Used to contain a moderate amount of chemicals and solutions.
+  id: bactaBeakerFull
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      beaker:
+        maxVol: 30
+        reagents:
+        - ReagentId: Bacta
+          Quantity: 30
+

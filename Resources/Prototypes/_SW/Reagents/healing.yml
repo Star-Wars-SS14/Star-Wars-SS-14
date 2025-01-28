@@ -31,7 +31,7 @@
       - !type:HealthChange
         damage:
           groups:
-            Burn: -16
-            Toxin: -16
-            Airloss: -16
-            Brute: -16
+            Burn: -14
+            Toxin: -14
+            Airloss: -14
+            Brute: -14

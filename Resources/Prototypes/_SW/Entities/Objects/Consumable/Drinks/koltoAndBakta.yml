@@ -12,9 +12,8 @@
     materialComposition:
       Glass: 50
   - type: SolutionContainerVisuals
-    maxFillLevels: 2
+    maxFillLevels: 3
     fillBaseName: koltobeaker
-    changeColor: false
   - type: Sprite
     sprite: _SW/Objects/Chemistry/kolto_beaker.rsi
     layers:
@@ -75,9 +74,8 @@
     materialComposition:
       Glass: 50
   - type: SolutionContainerVisuals
-    maxFillLevels: 2
+    maxFillLevels: 3
     fillBaseName: bactabeaker
-    changeColor: false
   - type: Sprite
     sprite: _SW/Objects/Chemistry/bacta_beaker.rsi
     layers:

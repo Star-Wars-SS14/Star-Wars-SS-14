@@ -5,7 +5,7 @@
   desc: reagent-desc-kolto
   physicalDesc: reagent-physical-desc-translucent
   flavor: medicine
-  color: "#e8e9ff"
+  color: "#d7fcfc"
   metabolisms:
     Medicine:
       effects:
@@ -24,7 +24,7 @@
   desc: reagent-desc-bacta
   physicalDesc: reagent-physical-desc-thick 
   flavor: medicine
-  color: "#a3f3f7"
+  color: "#12ebff"
   metabolisms:
     Medicine:
       effects:

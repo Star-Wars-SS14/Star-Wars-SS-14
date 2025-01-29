@@ -383,7 +383,7 @@
     - state: image15
   - type: PresetIdCard
     job: SW_BlackSun_Mercenary
-
+# Exchange ID cards
 - type: entity
   parent: SW_IDCardStandard
   id: SW_IDCardExchangeCaptain

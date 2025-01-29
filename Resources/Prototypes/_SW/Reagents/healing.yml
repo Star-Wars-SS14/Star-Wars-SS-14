@@ -12,10 +12,10 @@
       - !type:HealthChange
         damage:
           groups:
-            Burn: -8
-            Toxin: -8
-            Airloss: -8
-            Brute: -8
+            Burn: -6
+            Toxin: -6
+            Airloss: -6
+            Brute: -6
 
 - type: reagent
   id: Bacta
@@ -31,7 +31,7 @@
       - !type:HealthChange
         damage:
           groups:
-            Burn: -14
-            Toxin: -14
-            Airloss: -14
-            Brute: -14
+            Burn: -12
+            Toxin: -12
+            Airloss: -12
+            Brute: -12

@@ -1,6 +1,7 @@
 - type: entity
   id: BaseWeaponBlaster
   parent: [BaseItem, BaseGunWieldable]
+  suffix: [ОРУЖИЕ SW]
   abstract: true
   components:
   - type: Clothing

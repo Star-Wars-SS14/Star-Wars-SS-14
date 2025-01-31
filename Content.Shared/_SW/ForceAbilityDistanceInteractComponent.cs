@@ -16,7 +16,7 @@ public sealed partial class ForceAbilityDistanceInteractComponent : Component
     public bool IsAttracting = false;
 
     [DataField]
-    public float MoveByForceImpulseMultiplayer = 100f;
+    public float MoveByForceImpulseMultiplayer = 10f;
     public EntityUid? CurrentMovingItem;
     public bool IsMoving = false;
 }

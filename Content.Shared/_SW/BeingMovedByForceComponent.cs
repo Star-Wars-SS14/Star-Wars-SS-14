@@ -1,3 +1,4 @@
+using Robust.Shared.Map;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,4 +12,5 @@ public sealed partial class BeingMovedByForceComponent : Component
 {
     public EntityUid? ForceUserMover = default!;
     public bool IsMoving = false;
+    public MapCoordinates MovingTo = default!;
 }

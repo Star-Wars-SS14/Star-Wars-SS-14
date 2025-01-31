@@ -1,3 +1,4 @@
+using Content.Shared._SW;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Hands.Components;
 using Content.Shared.Interaction;
@@ -138,6 +139,15 @@ namespace Content.Shared.Verbs
             {
                 var access = canAccess || _interactionSystem.CanAccessEquipment(user, target);
                 var verbEvent = new GetVerbsEvent<EquipmentVerb>(user, target, @using, hands, canInteract, access, extraCategories);
+                RaiseLocalEvent(target, verbEvent);
+                verbs.UnionWith(verbEvent.Verbs);
+            }
+
+            if (types.Contains(typeof(PullByForceVerb)))
+            {
+                ISawmill _s = Logger.GetSawmill("verbs");
+                _s.Debug("requested");
+                var verbEvent = new GetVerbsEvent<PullByForceVerb>(user, target, @using, hands, canInteract, true, extraCategories);
                 RaiseLocalEvent(target, verbEvent);
                 verbs.UnionWith(verbEvent.Verbs);
             }

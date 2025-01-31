@@ -37,7 +37,8 @@ using Robust.Shared.Random;
 using Robust.Shared.Serialization;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
-
+using Content.Shared._SW;
+using Content.Shared.Movement.Pulling.Events;
 #pragma warning disable 618
 
 namespace Content.Shared.Interaction
@@ -65,6 +66,7 @@ namespace Content.Shared.Interaction
         [Dependency] private readonly IRobustRandom _random = default!;
         [Dependency] private readonly TagSystem _tagSystem = default!;
         [Dependency] private readonly SharedUserInterfaceSystem _ui = default!;
+        [Dependency] private readonly ForceAbilityDistanceInteractSystem _forceAbilityDistanceInteractSystem = default!;
 
         private EntityQuery<IgnoreUIRangeComponent> _ignoreUiRangeQuery;
         private EntityQuery<FixturesComponent> _fixtureQuery;
@@ -240,6 +242,10 @@ namespace Content.Shared.Interaction
             if (Deleted(uid))
                 return false;
 
+            //SW start
+            RaiseLocalEvent(userEntity.Value, new RequestPullEvent(userEntity.Value, uid));
+            //SW end
+
             if (!InRangeUnobstructed(userEntity.Value, uid, popup: true))
                 return false;
 
@@ -297,7 +303,7 @@ namespace Content.Shared.Interaction
                 Log.Info($"Use input validation failed");
                 return true;
             }
-
+           
             UserInteraction(userEntity.Value, coords, !Deleted(uid) ? uid : null, checkAccess: ShouldCheckAccess(userEntity.Value));
 
             return false;
@@ -357,6 +363,7 @@ namespace Content.Shared.Interaction
             bool checkAccess = true,
             bool checkCanUse = true)
         {
+            
             if (_relayQuery.TryComp(user, out var relay) && relay.RelayEntity is not null)
             {
                 // TODO this needs to be handled better. This probably bypasses many complex can-interact checks in weird roundabout ways.
@@ -401,6 +408,8 @@ namespace Content.Shared.Interaction
             if (checkAccess && target != null && !IsAccessible(user, target.Value))
                 return;
 
+           
+
             var inRangeUnobstructed = target == null
                 ? !checkAccess || InRangeUnobstructed(user, coordinates)
                 : !checkAccess || InRangeUnobstructed(user, target.Value); // permits interactions with wall mounted entities
@@ -412,7 +421,7 @@ namespace Content.Shared.Interaction
             {
                 if (inRangeUnobstructed && target != null)
                     InteractHand(user, target.Value);
-
+                //_forceAbilityDistanceInteractSystem.HandleUserInteract(user, coordinates, target, altInteract);
                 return;
             }
 
@@ -421,7 +430,7 @@ namespace Content.Shared.Interaction
                 UseInHandInteraction(user, target.Value, checkCanUse: false, checkCanInteract: false);
                 return;
             }
-
+            
             if (inRangeUnobstructed && target != null)
             {
                 InteractUsing(
@@ -1198,7 +1207,7 @@ namespace Content.Shared.Interaction
             return InRangeUnobstructed(user, wearer) && _containerSystem.IsInSameOrParentContainer(user, wearer);
         }
 
-        protected bool ValidateClientInput(ICommonSession? session, EntityCoordinates coords,
+        public bool ValidateClientInput(ICommonSession? session, EntityCoordinates coords,
             EntityUid uid, [NotNullWhen(true)] out EntityUid? userEntity)
         {
             userEntity = null;

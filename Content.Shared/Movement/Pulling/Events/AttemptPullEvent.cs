@@ -1,4 +1,4 @@
-﻿using Robust.Shared.Physics.Components;
+using Robust.Shared.Physics.Components;
 
 namespace Content.Shared.Movement.Pulling.Events;
 
@@ -10,4 +10,13 @@ public sealed class PullAttemptEvent : PullMessage
     public PullAttemptEvent(EntityUid pullerUid, EntityUid pullableUid) : base(pullerUid, pullableUid) { }
 
     public bool Cancelled { get; set; }
+}
+
+//corvax SW
+/// <summary>
+/// Raised when user requested pull by input (cntrl + mouse click)
+/// </summary>
+public sealed class RequestPullEvent : PullMessage
+{
+    public RequestPullEvent(EntityUid pullerUid, EntityUid pullableUid) : base(pullerUid, pullableUid) { }
 }

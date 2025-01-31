@@ -20,6 +20,7 @@ using Robust.Shared.Physics.Systems;
 using Content.Server.Movement.Components;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Events;
+using Robust.Shared.Physics.Components;
 
 namespace Content.Server._SW.Force;
 
@@ -75,9 +76,14 @@ public sealed partial class MoveByForceController : VirtualController
             return;
         }
 
+        if (!TryComp<PhysicsComponent>(forceComp.CurrentMovingItem.Value, out var physComp))
+        {
+            return;
+        }
         _s.Debug("Release");
         forceComp.IsMoving = false;
         RemComp<BeingMovedByForceComponent>(forceComp.CurrentMovingItem.Value);
+        _physicsSystem.SetBodyStatus(forceComp.CurrentMovingItem.Value, physComp, BodyStatus.OnGround);
         forceComp.CurrentMovingItem = null;
     }
 
@@ -105,6 +111,11 @@ public sealed partial class MoveByForceController : VirtualController
             return false;
         }
 
+        if (!TryComp<PhysicsComponent>(forceComp.CurrentMovingItem.Value, out var physComp))
+        {
+            return false;
+        }
+
         if (forceComp.IsMoving && comp.ForceUserMover == player)
         {
 
@@ -112,6 +123,7 @@ public sealed partial class MoveByForceController : VirtualController
             MapCoordinates placecoords = _transformSystem.ToMapCoordinates(coords);
             comp.MovingTo = placecoords;
             comp.IsMoving = true;
+            //_physicsSystem.SetBodyStatus(forceComp.CurrentMovingItem.Value, physComp, BodyStatus.InAir);
             //_s.Debug($"{forceComp.CurrentMovingItem.Value}");
             //_s.Debug($"{player}");
             //var direction = (placecoords.Position - objectcords.Position).Normalized();
@@ -146,6 +158,11 @@ public sealed partial class MoveByForceController : VirtualController
             return false;
         }
 
+        if (!TryComp<PhysicsComponent>(uid, out var physComp))
+        {
+            return false;
+        }
+
         var comp = EnsureComp<BeingMovedByForceComponent>(uid);
         if (forceComp.CurrentMovingItem == uid && forceComp.IsMoving)
         {
@@ -162,6 +179,8 @@ public sealed partial class MoveByForceController : VirtualController
         forceComp.IsMoving = true;
         forceComp.CurrentMovingItem = uid;
         comp.ForceUserMover = userEntity.Value;
+        _physicsSystem.SetBodyStatus(uid, physComp, BodyStatus.InAir);
+
         return false;
     }
 
@@ -171,17 +190,34 @@ public sealed partial class MoveByForceController : VirtualController
 
         while (movingQuery.MoveNext(out var ent, out var comp))
         {
+            if (comp.ForceUserMover == null || !TryComp<PhysicsComponent>(ent, out var physComp))
+            {
+                continue;
+            }
+
             MapCoordinates coords = _transformSystem.GetMapCoordinates(ent);
-            if (comp.IsMoving && (comp.MovingTo.Position - coords.Position).Length() > 0.1f
-                && TryComp<ForceAbilityDistanceInteractComponent>(comp.ForceUserMover, out var forceComp))
+            MapCoordinates fUserCoords = _transformSystem.GetMapCoordinates(comp.ForceUserMover.Value);
+
+            if (!_interactionSystem.InRangeUnobstructed(fUserCoords, ent, range: 100f))
+            {
+                StopMoving(comp.ForceUserMover.Value);
+            }
+
+            if (comp.IsMoving && (comp.MovingTo.Position - coords.Position).Length() > 0.1f &&
+                     TryComp<ForceAbilityDistanceInteractComponent>(comp.ForceUserMover, out var forceComp))
             {
                 var direction = comp.MovingTo.Position - coords.Position;
-                _physicsSystem.ApplyLinearImpulse(ent, direction.Normalized() * forceComp.MoveByForceImpulseMultiplayer);
+                float modifier = float.Min(2.0f, direction.Length()) / float.Max(physComp.LinearVelocity.Length(), 1.0f);
+                _physicsSystem.ApplyLinearImpulse(ent, direction.Normalized() * forceComp.MoveByForceImpulseMultiplayer * modifier);
             }
             else
             {
                 comp.IsMoving = false;
-                _physicsSystem.SetLinearVelocity(ent, Vector2.Zero);
+                //_physicsSystem.SetBodyStatus(ent, physComp, BodyStatus.OnGround);
+                //_physicsSystem.SetInertia(ent, physComp, 0f);
+                //_physicsSystem.SetLinearVelocity(ent, Vector2.Zero);                
+                //_physicsSystem.SetAngularVelocity(ent, 0f, body: physComp);
+                _physicsSystem.ResetDynamics(ent, physComp);
             }
         }
     }

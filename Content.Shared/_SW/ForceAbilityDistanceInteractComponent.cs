@@ -11,12 +11,14 @@ namespace Content.Shared._SW.Force.Components;
 public sealed partial class ForceAbilityDistanceInteractComponent : Component
 {
     [DataField]
+    [ViewVariables(VVAccess.ReadWrite)]
     public float AttractByForceSpeed = 12f;
     public EntityUid? CurrentAttractingItem;
     public bool IsAttracting = false;
 
     [DataField]
-    public float MoveByForceImpulseMultiplayer = 10f;
+    [ViewVariables(VVAccess.ReadWrite)]
+    public float MoveByForceImpulseMultiplayer = 2f;
     public EntityUid? CurrentMovingItem;
     public bool IsMoving = false;
 }

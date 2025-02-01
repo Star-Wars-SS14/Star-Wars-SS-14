@@ -18,7 +18,7 @@ public sealed partial class ForceAbilityDistanceInteractComponent : Component
 
     [DataField]
     [ViewVariables(VVAccess.ReadWrite)]
-    public float MoveByForceImpulseMultiplayer = 2f;
+    public float MoveByForceImpulseMultiplayer = 60f;
     public EntityUid? CurrentMovingItem;
     public bool IsMoving = false;
 }

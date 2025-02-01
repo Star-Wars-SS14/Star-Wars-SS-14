@@ -146,6 +146,11 @@ public sealed partial class MoveByForceController : VirtualController
 
         if (Deleted(uid))
             return false;
+
+        if (!uid.Valid)
+        {
+            return false;
+        }
         _s.Debug($"{uid}");
         _s.Debug($"{userEntity.Value}");
         if (!TryComp<ForceAbilityDistanceInteractComponent>(userEntity.Value, out var forceComp))
@@ -172,7 +177,7 @@ public sealed partial class MoveByForceController : VirtualController
 
         if (forceComp.IsMoving)
         {
-            return false;
+            StopMoving(userEntity.Value);
         }
 
         _s.Debug("started");
@@ -184,7 +189,7 @@ public sealed partial class MoveByForceController : VirtualController
         return false;
     }
 
-    public override void UpdateBeforeSolve(bool prediction, float frameTime)
+    public override void UpdateAfterSolve(bool prediction, float frameTime)
     {
         var movingQuery = EntityQueryEnumerator<BeingMovedByForceComponent>();
 
@@ -207,16 +212,13 @@ public sealed partial class MoveByForceController : VirtualController
                      TryComp<ForceAbilityDistanceInteractComponent>(comp.ForceUserMover, out var forceComp))
             {
                 var direction = comp.MovingTo.Position - coords.Position;
-                float modifier = float.Min(2.0f, direction.Length()) / float.Max(physComp.LinearVelocity.Length(), 1.0f);
-                _physicsSystem.ApplyLinearImpulse(ent, direction.Normalized() * forceComp.MoveByForceImpulseMultiplayer * modifier);
+                _physicsSystem.SetLinearVelocity(ent, direction.Normalized() * forceComp.MoveByForceImpulseMultiplayer / physComp.Mass);
+
+
             }
             else
             {
                 comp.IsMoving = false;
-                //_physicsSystem.SetBodyStatus(ent, physComp, BodyStatus.OnGround);
-                //_physicsSystem.SetInertia(ent, physComp, 0f);
-                //_physicsSystem.SetLinearVelocity(ent, Vector2.Zero);                
-                //_physicsSystem.SetAngularVelocity(ent, 0f, body: physComp);
                 _physicsSystem.ResetDynamics(ent, physComp);
             }
         }

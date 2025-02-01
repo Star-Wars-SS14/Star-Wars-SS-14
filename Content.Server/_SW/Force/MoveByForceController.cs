@@ -200,18 +200,21 @@ public sealed partial class MoveByForceController : VirtualController
                 continue;
             }
 
-            MapCoordinates coords = _transformSystem.GetMapCoordinates(ent);
-            MapCoordinates fUserCoords = _transformSystem.GetMapCoordinates(comp.ForceUserMover.Value);
+            if (!TryComp<ForceAbilityDistanceInteractComponent>(comp.ForceUserMover, out var forceComp))
+            {
+                continue;
+            }
 
-            if (!_interactionSystem.InRangeUnobstructed(fUserCoords, ent, range: 100f))
+            MapCoordinates objCoords = _transformSystem.GetMapCoordinates(ent);
+            MapCoordinates fUserCoords = _transformSystem.GetMapCoordinates(comp.ForceUserMover.Value);
+            if (!_interactionSystem.InRangeUnobstructed(fUserCoords, ent, range: forceComp.Range))
             {
                 StopMoving(comp.ForceUserMover.Value);
             }
 
-            if (comp.IsMoving && (comp.MovingTo.Position - coords.Position).Length() > 0.1f &&
-                     TryComp<ForceAbilityDistanceInteractComponent>(comp.ForceUserMover, out var forceComp))
+            if (comp.IsMoving && (comp.MovingTo.Position - objCoords.Position).Length() > 0.1f)
             {
-                var direction = comp.MovingTo.Position - coords.Position;
+                var direction = comp.MovingTo.Position - objCoords.Position;
                 _physicsSystem.SetLinearVelocity(ent, direction.Normalized() * forceComp.MoveByForceImpulseMultiplayer / physComp.Mass);
 
 

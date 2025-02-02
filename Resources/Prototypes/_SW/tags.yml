@@ -2,3 +2,5 @@
   id: KyberCrystalTag
 - type: Tag
   id: SaberFragmentTag
+- type: Tag
+  id: ForceUser

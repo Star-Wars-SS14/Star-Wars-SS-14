@@ -21,6 +21,7 @@ using Content.Server.Movement.Components;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Events;
 using Robust.Shared.Physics.Components;
+using JetBrains.FormatRipper.Elf;
 
 namespace Content.Server._SW.Force;
 
@@ -40,6 +41,17 @@ public sealed partial class MoveByForceController : VirtualController
            .Bind(ContentKeyFunctions.ReleasePulledObject, new PointerInputCmdHandler(OnReleaseObject))
            .Register<ForceAbilityDistanceInteractSystem>();
         SubscribeLocalEvent<BeingMovedByForceComponent, PullStartedMessage>(OnPullStarted);
+        SubscribeLocalEvent<BeingMovedByForceComponent, StopMovingByForceEvent>(OnStopPullRequested);
+    }
+
+    private void OnStopPullRequested(Entity<BeingMovedByForceComponent> ent, ref StopMovingByForceEvent args)
+    {
+        if (ent.Comp.ForceUserMover == null)
+        {
+            return;
+        }
+
+        StopMoving(ent.Comp.ForceUserMover.Value);
     }
 
     private void OnPullStarted(Entity<BeingMovedByForceComponent> ent, ref PullStartedMessage args)
@@ -84,6 +96,7 @@ public sealed partial class MoveByForceController : VirtualController
         forceComp.IsMoving = false;
         RemComp<BeingMovedByForceComponent>(forceComp.CurrentMovingItem.Value);
         _physicsSystem.SetBodyStatus(forceComp.CurrentMovingItem.Value, physComp, BodyStatus.OnGround);
+        _physicsSystem.ResetDynamics(forceComp.CurrentMovingItem.Value, physComp);
         forceComp.CurrentMovingItem = null;
     }
 

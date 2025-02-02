@@ -1,4 +1,4 @@
-﻿- type: entity
+- type: entity
   name: saber
   parent: EnergySword
   id: Lightsaber
@@ -37,6 +37,12 @@
       types:
         Slash: 6
         Heat: 4
+  - type: SWForceUserReflection
+  - type: Reflect
+    enabled: false
+    reflectProb: 1.0
+    minReflectProb: 1.0
+  
 
 - type: entity
   name: double-bladed energy sword
@@ -70,3 +76,15 @@
       path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsabermiss.ogg
       params:
         variation: 0.125
+
+- type: entity
+  name: Энергетический меч
+  parent: EnergySword
+  id: SWEnergySwordBase
+  description: A very loud & dangerous sword with a beam made of pure, concentrated plasma. Cuts through unarmored targets like butter.
+  components:
+  - type: SWForceUserReflection
+  - type: Reflect
+    enabled: false
+    reflectProb: 1.0
+    minReflectProb: 1.0

@@ -1,0 +1,12 @@
+- type: startingGear
+  id: ForceUserBaseGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBlack
+    gloves: ClothingHandsGlovesColorBlack
+    shoes: ClothingShoesSwat
+    ears: ClothingHeadsetRegular
+    neck: SW_ClothingNeckCloakSithCloak
+    pocket1: SWEnergySwordBase
+
+
+

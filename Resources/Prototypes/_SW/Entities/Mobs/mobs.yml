@@ -35,6 +35,9 @@
   - type: NpcFactionMember
     factions:
     - NanoTrasen
+  - type: Tag
+    tags:
+      - ForceUser
 
 - type: entity
   name: Republic Lieutenant

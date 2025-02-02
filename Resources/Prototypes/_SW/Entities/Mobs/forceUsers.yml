@@ -1,0 +1,12 @@
+- type: entity
+  name: ForceUser
+  parent: BaseMobHuman
+  id: ForceUserBase
+  description: A miserable pile of secrets.
+  components:
+  - type: Loadout
+    prototypes: [ForceUserBaseGear]
+  - type: Tag
+    tags:
+      - ForceUser
+  - type: ForceAbilityDistanceInteract

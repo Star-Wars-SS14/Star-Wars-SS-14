@@ -29,11 +29,15 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
         _s = Logger.GetSawmill("sad");
         //SubscribeLocalEvent<BeingPulledByForceComponent, InteractHandEvent>(OnInteractWithPulledObject);
         SubscribeLocalEvent<ItemComponent, GetVerbsEvent<PullByForceVerb>>(OnVerbsRequested);
-        SubscribeLocalEvent<BeingAttractedByForceComponent, EntGotInsertedIntoContainerMessage>(OnPulledObjectGetInserted);
-        SubscribeLocalEvent<ForceAbilityDistanceInteractComponent, RequestPullEvent>(OnPullRequested);
+        SubscribeLocalEvent<BeingAttractedByForceComponent, EntGotInsertedIntoContainerMessage>(OnAttractedObjectGetInserted);
+        SubscribeLocalEvent<BeingMovedByForceComponent, EntGotInsertedIntoContainerMessage>(OnMovedObjectGetInserted);
+        //SubscribeLocalEvent<ForceAbilityDistanceInteractComponent, RequestPullEvent>(OnPullRequested);
     }
 
-
+    private void OnMovedObjectGetInserted(Entity<BeingMovedByForceComponent> ent, ref EntGotInsertedIntoContainerMessage args)
+    {
+        StopMovingObjectByForce(ent.Owner);
+    }
 
     private void OnPullRequested(Entity<ForceAbilityDistanceInteractComponent> ent, ref RequestPullEvent args)
     {
@@ -53,7 +57,12 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
 
     private void StopMovingObjectByForce(EntityUid objectToMove)
     {
-        RemComp<BeingMovedByForceComponent>(objectToMove);
+        if (!TryComp<BeingMovedByForceComponent>(objectToMove, out var comp) || comp.ForceUserMover == null)
+        {
+            return;
+        }
+
+        RaiseLocalEvent(objectToMove, new StopMovingByForceEvent(comp.ForceUserMover.Value));
     }
 
     private void OnVerbsRequested(Entity<ItemComponent> ent, ref GetVerbsEvent<PullByForceVerb> args)
@@ -75,7 +84,7 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
         args.Verbs.Add(verb);
     }
 
-    private void OnPulledObjectGetInserted(Entity<BeingAttractedByForceComponent> ent, ref EntGotInsertedIntoContainerMessage args)
+    private void OnAttractedObjectGetInserted(Entity<BeingAttractedByForceComponent> ent, ref EntGotInsertedIntoContainerMessage args)
     {
         _s.Debug("stopped");
         if (ent.Comp.User == null)
@@ -184,4 +193,13 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
 public sealed class PullByForceVerb : Verb
 {
     public override int TypePriority => 0;
+}
+
+public sealed class StopMovingByForceEvent : EntityEventArgs
+{
+    public EntityUid MoverId;
+    public StopMovingByForceEvent(EntityUid moverId)
+    {
+        MoverId = moverId;
+    }
 }

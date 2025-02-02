@@ -1,10 +1,12 @@
 using System.Linq;
 using Content.Client.Gameplay;
+using Content.Shared._SW;
 using Content.Shared.CombatMode;
 using Content.Shared.Effects;
 using Content.Shared.Hands.Components;
 using Content.Shared.Mobs.Components;
 using Content.Shared.StatusEffect;
+using Content.Shared.Tag;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Melee.Events;
 using Content.Shared.Weapons.Ranged.Components;
@@ -16,6 +18,7 @@ using Robust.Client.State;
 using Robust.Shared.Input;
 using Robust.Shared.Map;
 using Robust.Shared.Player;
+using YamlDotNet.Core.Tokens;
 
 namespace Content.Client.Weapons.Melee;
 
@@ -28,6 +31,7 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
     [Dependency] private readonly AnimationPlayerSystem _animation = default!;
     [Dependency] private readonly InputSystem _inputSystem = default!;
     [Dependency] private readonly SharedColorFlashEffectSystem _color = default!;
+    [Dependency] private readonly TagSystem _tag = default!;
 
     private EntityQuery<TransformComponent> _xformQuery;
 
@@ -119,6 +123,13 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
         // Heavy attack.
         if (altDown == BoundKeyState.Down)
         {
+            if(_tag.HasTag(entity, "ForceUser"))
+            {
+                ISawmill _s = Logger.GetSawmill("heavy");
+                _s.Debug("asd");
+                RaisePredictiveEvent(new SWTryReflectEvent(GetNetEntity(weaponUid)));
+                return;
+            }
             // If it's an unarmed attack then do a disarm
             if (weapon.AltDisarm && weaponUid == entity)
             {
@@ -132,8 +143,7 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
                 EntityManager.RaisePredictiveEvent(new DisarmAttackEvent(GetNetEntity(target), GetNetCoordinates(coordinates)));
                 return;
             }
-
-            ClientHeavyAttack(entity, coordinates, weaponUid, weapon);
+            ClientHeavyAttack(entity, coordinates, weaponUid, weapon);            
             return;
         }
 
@@ -141,6 +151,13 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
         if (useDown == BoundKeyState.Down)
         {
             var attackerPos = TransformSystem.GetMapCoordinates(entity);
+
+            //SW. if is force user, use custom logic
+            if (_tag.HasTag(entity, "ForceUser"))
+            {
+                ClientHeavyAttack(entity, coordinates, weaponUid, weapon);
+                return;
+            }
 
             if (mousePos.MapId != attackerPos.MapId ||
                 (attackerPos.Position - mousePos.Position).Length() > weapon.Range)
@@ -159,7 +176,7 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
             if (Interaction.CombatModeCanHandInteract(entity, target))
                 return;
 
-            RaisePredictiveEvent(new LightAttackEvent(GetNetEntity(target), GetNetEntity(weaponUid), GetNetCoordinates(coordinates)));
+            RaisePredictiveEvent(new LightAttackEvent(GetNetEntity(target), GetNetEntity(weaponUid), GetNetCoordinates(coordinates)));            
         }
     }
 

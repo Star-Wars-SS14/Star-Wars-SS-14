@@ -10,3 +10,9 @@
     tags:
       - ForceUser
   - type: ForceAbilityDistanceInteract
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      300: Critical
+      400: Dead
+  - type: SWForceUserBlock

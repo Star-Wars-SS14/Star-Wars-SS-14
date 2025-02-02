@@ -21,7 +21,6 @@ using Content.Server.Movement.Components;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Events;
 using Robust.Shared.Physics.Components;
-using JetBrains.FormatRipper.Elf;
 
 namespace Content.Server._SW.Force;
 

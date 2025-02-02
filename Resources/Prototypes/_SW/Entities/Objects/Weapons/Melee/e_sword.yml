@@ -37,11 +37,6 @@
       types:
         Slash: 6
         Heat: 4
-  - type: SWForceUserReflection
-  - type: Reflect
-    enabled: false
-    reflectProb: 1.0
-    minReflectProb: 1.0
   
 
 - type: entity
@@ -83,8 +78,11 @@
   id: SWEnergySwordBase
   description: A very loud & dangerous sword with a beam made of pure, concentrated plasma. Cuts through unarmored targets like butter.
   components:
-  - type: SWForceUserReflection
+  - type: SWWeaponBlock
   - type: Reflect
     enabled: false
     reflectProb: 1.0
     minReflectProb: 1.0
+  - type: Tag
+    tags:
+      - ForceUserWeapon

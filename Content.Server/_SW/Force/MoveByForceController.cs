@@ -21,6 +21,8 @@ using Content.Server.Movement.Components;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Events;
 using Robust.Shared.Physics.Components;
+using Content.Shared.Movement.Components;
+using Robust.Shared.Physics.Events;
 
 namespace Content.Server._SW.Force;
 
@@ -41,6 +43,16 @@ public sealed partial class MoveByForceController : VirtualController
            .Register<ForceAbilityDistanceInteractSystem>();
         SubscribeLocalEvent<BeingMovedByForceComponent, PullStartedMessage>(OnPullStarted);
         SubscribeLocalEvent<BeingMovedByForceComponent, StopMovingByForceEvent>(OnStopPullRequested);
+        SubscribeLocalEvent<BeingMovedByForceComponent, StartCollideEvent>(OnCollide);
+    }
+
+    private void OnCollide(Entity<BeingMovedByForceComponent> ent, ref StartCollideEvent args)
+    {
+        if (ent.Comp.ForceUserMover == null)
+        {
+            return;
+        }
+        StopMoving(ent.Comp.ForceUserMover.Value);
     }
 
     private void OnStopPullRequested(Entity<BeingMovedByForceComponent> ent, ref StopMovingByForceEvent args)
@@ -50,12 +62,12 @@ public sealed partial class MoveByForceController : VirtualController
             return;
         }
 
-        StopMoving(ent.Comp.ForceUserMover.Value);
+        StopMovingAndReset(ent.Comp.ForceUserMover.Value);
     }
 
     private void OnPullStarted(Entity<BeingMovedByForceComponent> ent, ref PullStartedMessage args)
     {
-        StopMoving(args.PullerUid);
+        StopMovingAndReset(args.PullerUid);
     }
 
     private bool OnReleaseObject(ICommonSession? session, EntityCoordinates coords, EntityUid uid)
@@ -72,7 +84,7 @@ public sealed partial class MoveByForceController : VirtualController
             return false;
         }
 
-        StopMoving(player);
+        StopMovingAndReset(player);
         return false;
     }
 
@@ -91,11 +103,30 @@ public sealed partial class MoveByForceController : VirtualController
         {
             return;
         }
-        _s.Debug("Release");
+
         forceComp.IsMoving = false;
         RemComp<BeingMovedByForceComponent>(forceComp.CurrentMovingItem.Value);
         _physicsSystem.SetBodyStatus(forceComp.CurrentMovingItem.Value, physComp, BodyStatus.OnGround);
+    }
+
+    private void StopMovingAndReset(EntityUid mover, ForceAbilityDistanceInteractComponent? forceComp = null)
+    {
+        if (forceComp == null && !TryComp(mover, out forceComp))
+        {
+            return;
+        }
+        if (forceComp.CurrentMovingItem == null || !forceComp.IsMoving)
+        {
+            return;
+        }
+
+        if (!TryComp<PhysicsComponent>(forceComp.CurrentMovingItem.Value, out var physComp))
+        {
+            return;
+        }
+        StopMoving(mover, forceComp);
         _physicsSystem.ResetDynamics(forceComp.CurrentMovingItem.Value, physComp);
+        _s.Debug("Release");
         forceComp.CurrentMovingItem = null;
     }
 
@@ -131,8 +162,13 @@ public sealed partial class MoveByForceController : VirtualController
         if (forceComp.IsMoving && comp.ForceUserMover == player)
         {
 
-            //MapCoordinates objectcords = _transformSystem.GetMapCoordinates(forceComp.CurrentMovingItem.Value);
+            MapCoordinates objectcords = _transformSystem.GetMapCoordinates(forceComp.CurrentMovingItem.Value);
             MapCoordinates placecoords = _transformSystem.ToMapCoordinates(coords);
+            if (!_interactionSystem.InRangeUnobstructed(objectcords, placecoords, range: 100f))
+            {
+                return false;
+            }
+
             comp.MovingTo = placecoords;
             comp.IsMoving = true;
             //_physicsSystem.SetBodyStatus(forceComp.CurrentMovingItem.Value, physComp, BodyStatus.InAir);
@@ -155,6 +191,12 @@ public sealed partial class MoveByForceController : VirtualController
 
         if (userEntity.Value == uid)
             return false;
+
+        //Check if entity is mob. Mobs cant be moved by force.
+        if (HasComp<MobMoverComponent>(uid))
+        {
+            return false;
+        }
 
         if (Deleted(uid))
             return false;
@@ -189,7 +231,7 @@ public sealed partial class MoveByForceController : VirtualController
 
         if (forceComp.IsMoving)
         {
-            StopMoving(userEntity.Value);
+            StopMovingAndReset(userEntity.Value);
         }
 
         _s.Debug("started");
@@ -221,7 +263,7 @@ public sealed partial class MoveByForceController : VirtualController
             MapCoordinates fUserCoords = _transformSystem.GetMapCoordinates(comp.ForceUserMover.Value);
             if (!_interactionSystem.InRangeUnobstructed(fUserCoords, ent, range: forceComp.Range))
             {
-                StopMoving(comp.ForceUserMover.Value);
+                StopMovingAndReset(comp.ForceUserMover.Value);
             }
 
             if (comp.IsMoving && (comp.MovingTo.Position - objCoords.Position).Length() > 0.1f)

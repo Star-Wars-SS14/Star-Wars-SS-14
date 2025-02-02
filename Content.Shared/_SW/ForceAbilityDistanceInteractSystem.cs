@@ -15,6 +15,7 @@ using Content.Shared.Movement.Pulling.Systems;
 using Robust.Shared.Input.Binding;
 using Content.Shared.Input;
 using Robust.Shared.Player;
+using Content.Shared.Stunnable;
 
 namespace Content.Shared._SW;
 public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
@@ -130,6 +131,12 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
         var query = EntityQueryEnumerator<ForceAbilityDistanceInteractComponent>();
         while (query.MoveNext(out var uid, out var comp))
         {
+            if (HasComp<KnockedDownComponent>(uid))
+            {
+                StopAttractingByForce(uid, comp);
+                continue;
+            }
+
             if (comp.IsAttracting && comp.CurrentAttractingItem != null)
             {
                 MapCoordinates usercords = _transformSystem.GetMapCoordinates(uid);
@@ -161,6 +168,11 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
                 return;
             }
         }
+
+        if (HasComp<KnockedDownComponent>(forceUser)) {
+            return;
+        }
+
         comp.IsAttracting = true;
         comp.CurrentAttractingItem = target;
         EnsureComp<BeingAttractedByForceComponent>(target).User = forceUser;

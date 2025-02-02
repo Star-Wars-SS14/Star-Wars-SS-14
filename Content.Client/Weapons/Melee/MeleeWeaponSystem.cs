@@ -85,7 +85,26 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
             }
         }
 
-        if (weapon.Attacking || weapon.NextAttack > Timing.CurTime)
+        if (weapon.Attacking)
+        {
+            return;
+        }
+        //SW start
+        if (altDown == BoundKeyState.Down)
+        {
+            if (_tag.HasTag(entity, "ForceUser") && _tag.HasTag(weaponUid, "ForceUserWeapon"))
+            {
+                ISawmill _s = Logger.GetSawmill("heavy");
+                _s.Debug("asd");
+                RaisePredictiveEvent(new SWTryReflectEvent(GetNetEntity(weaponUid)));
+
+                //Лютый костыль. Вручную меняем состояние кнопки, чтобы этот код не выполнялся постоянно пока кнопка нажата.
+                _inputSystem.CmdStates.SetState(EngineKeyFunctions.UseSecondary, BoundKeyState.Up);
+                return;
+            }
+        }
+        //SW end
+        if (weapon.NextAttack > Timing.CurTime)
         {
             return;
         }
@@ -118,18 +137,11 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
         else
         {
             coordinates = EntityCoordinates.FromMap(MapManager.GetMapEntityId(mousePos.MapId), mousePos, TransformSystem, EntityManager);
-        }
+        }        
 
         // Heavy attack.
         if (altDown == BoundKeyState.Down)
         {
-            if(_tag.HasTag(entity, "ForceUser"))
-            {
-                ISawmill _s = Logger.GetSawmill("heavy");
-                _s.Debug("asd");
-                RaisePredictiveEvent(new SWTryReflectEvent(GetNetEntity(weaponUid)));
-                return;
-            }
             // If it's an unarmed attack then do a disarm
             if (weapon.AltDisarm && weaponUid == entity)
             {
@@ -152,13 +164,13 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
         {
             var attackerPos = TransformSystem.GetMapCoordinates(entity);
 
-            //SW. if is force user, use custom logic
-            if (_tag.HasTag(entity, "ForceUser"))
+            //SW start. if is force user, use custom logic
+            if (_tag.HasTag(entity, "ForceUser") && _tag.HasTag(weaponUid, "ForceUserWeapon"))
             {
                 ClientHeavyAttack(entity, coordinates, weaponUid, weapon);
                 return;
             }
-
+            //SW end
             if (mousePos.MapId != attackerPos.MapId ||
                 (attackerPos.Position - mousePos.Position).Length() > weapon.Range)
             {

@@ -39,9 +39,24 @@ public sealed class SWMeleeWeaponSystem : EntitySystem
 
     private void OnAttemptMelee(Entity<SWWeaponBlockComponent> ent, ref AttemptMeleeEvent args)
     {
-        args.Cancelled = ent.Comp.IsBlocking;        
+        if (ent.Comp.IsBlocking)
+        {
+            DisableBlock(ent.Owner);
+        }
     }
 
+    private void DisableBlock(EntityUid weapon)
+    {
+        if (!TryComp<ReflectComponent>(weapon, out var reflComp) || !TryComp<SWWeaponBlockComponent>(weapon, out var comp))
+        {
+            return;
+        }
+
+        _popupSystem.PopupPredicted("Вы убираете блок!", weapon, null, PopupType.Medium);
+        _s.Debug("stopped");
+        reflComp.Enabled = false;
+        comp.IsBlocking = false;
+    }
     private void OnMeleeHit(Entity<SWForceUserBlockComponent> ent, ref TargetMeleeHitEvent args)
     {
         _s.Debug($"{ent.Comp.CurrentForceWeapon}");
@@ -50,6 +65,7 @@ public sealed class SWMeleeWeaponSystem : EntitySystem
             if (weaponComp.IsBlocking) {
                 args.Handled = true;
                 _popupSystem.PopupPredicted("Удар отражен!", ent.Owner, null, PopupType.Medium);
+                DisableBlock(ent.Comp.CurrentForceWeapon.Value);
             }
         }
     }
@@ -87,7 +103,7 @@ public sealed class SWMeleeWeaponSystem : EntitySystem
         }
 
         _s.Debug("got");
-        if (_gameTiming.CurTime >= forceComp.NextReflectionAvailable)
+        if (_gameTiming.CurTime >= forceComp.NextReflectionAvailable && !forceComp.IsBlocking)
         {
             _s.Debug("start");
             _popupSystem.PopupPredicted("Вы ставите блок!", GetEntity(ev.Weapon), null, PopupType.Medium);
@@ -95,9 +111,12 @@ public sealed class SWMeleeWeaponSystem : EntitySystem
             forceComp.IsBlocking = true;
             forceComp.ReflectionEndTime = _gameTiming.CurTime + TimeSpan.FromSeconds(forceComp.ReflectionDuration);
             forceComp.NextReflectionAvailable = _gameTiming.CurTime + TimeSpan.FromSeconds(forceComp.ReflectionDuration) + TimeSpan.FromSeconds(forceComp.DelayBetweenReflections);
-        } else
+        } else if (forceComp.IsBlocking)  
         {
-            //_popupSystem.PopupPredicted("Вы не можете ставить блок так часто!", GetEntity(ev.Weapon), null, PopupType.Medium);
+            _popupSystem.PopupPredicted("Вы уже выставили блок!", GetEntity(ev.Weapon), null, PopupType.Medium);           
+        } else if (_gameTiming.CurTime < forceComp.NextReflectionAvailable)
+        {
+            _popupSystem.PopupPredicted("Вы не можете ставить блок так часто!", GetEntity(ev.Weapon), null, PopupType.Medium);
         }
     }
 
@@ -112,10 +131,7 @@ public sealed class SWMeleeWeaponSystem : EntitySystem
             {
                 if (comp.ReflectionEndTime <= _gameTiming.CurTime && reflComp.Enabled)
                 {
-                    _popupSystem.PopupPredicted("Вы убираете блок!", ent, null, PopupType.Medium);
-                    _s.Debug("stopped");
-                    reflComp.Enabled = false;
-                    comp.IsBlocking = false;
+                    DisableBlock(ent);
                 }
             }
         }

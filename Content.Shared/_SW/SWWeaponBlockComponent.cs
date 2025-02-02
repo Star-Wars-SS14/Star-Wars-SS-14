@@ -14,7 +14,7 @@ public sealed partial class SWWeaponBlockComponent : Component
     public float ReflectionDuration = 2f;
     public TimeSpan ReflectionEndTime;
     [DataField]
-    public float DelayBetweenReflections = 0.7f;
+    public float DelayBetweenReflections = 1f;
     public TimeSpan NextReflectionAvailable;
 
     [ViewVariables]

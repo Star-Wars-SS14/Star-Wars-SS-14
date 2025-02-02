@@ -13,6 +13,6 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      300: Critical
-      400: Dead
+      200: Critical
+      300: Dead
   - type: SWForceUserBlock

@@ -18,6 +18,12 @@
         },
         {
             "name": "bactabeaker3"
+        },
+        {
+            "name": "inhand-right"
+        },
+        {
+            "name": "inhand-left"
         }
     ]
 }

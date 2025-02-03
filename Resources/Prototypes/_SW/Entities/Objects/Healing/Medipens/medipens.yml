@@ -1,0 +1,38 @@
+- type: entity
+  name: Медипен с кольто
+  parent: ChemicalMedipen
+  id: KoltoMedipen
+  description: Medipen with kolto.
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Chemistry/kolto_medipen.rsi
+    layers:
+    - state: icon
+      map: ["enum.SolutionContainerLayers.Fill"]
+  - type: SolutionContainerManager
+    solutions:
+      pen:
+        maxVol: 15
+        reagents:
+        - ReagentId: Kolto
+          Quantity: 15
+
+
+- type: entity
+  name: Медипен с бактой
+  parent: ChemicalMedipen
+  id: BactaMedipen
+  description: Medipen with bacta.
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Chemistry/bacta_medipen.rsi
+    layers:
+    - state: icon
+      map: ["enum.SolutionContainerLayers.Fill"]
+  - type: SolutionContainerManager
+    solutions:
+      pen:
+        maxVol: 10
+        reagents:
+        - ReagentId: Bacta
+          Quantity: 10

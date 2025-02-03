@@ -23,6 +23,11 @@ using Content.Shared.Movement.Pulling.Events;
 using Robust.Shared.Physics.Components;
 using Content.Shared.Movement.Components;
 using Robust.Shared.Physics.Events;
+using Content.Server.Popups;
+using Content.Shared.IdentityManagement;
+using Content.Shared.Mobs.Components;
+using Content.Shared.Mobs;
+using JetBrains.FormatRipper.Elf;
 
 namespace Content.Server._SW.Force;
 
@@ -31,6 +36,7 @@ public sealed partial class MoveByForceController : VirtualController
     [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
     [Dependency] private readonly SharedInteractionSystem _interactionSystem = default!;
     [Dependency] private readonly SharedPhysicsSystem _physicsSystem = default!;
+    [Dependency] private readonly PopupSystem _popupSystem = default!;
     ISawmill _s = default!;
     public override void Initialize()
     {
@@ -49,6 +55,11 @@ public sealed partial class MoveByForceController : VirtualController
     private void OnCollide(Entity<BeingMovedByForceComponent> ent, ref StartCollideEvent args)
     {
         if (ent.Comp.ForceUserMover == null)
+        {
+            return;
+        }
+
+        if (!args.OurFixture.Hard || !args.OtherFixture.Hard)
         {
             return;
         }
@@ -94,7 +105,7 @@ public sealed partial class MoveByForceController : VirtualController
         {
             return;
         }
-        if (forceComp.CurrentMovingItem == null || !forceComp.IsMoving)
+        if (forceComp.CurrentMovingItem == null || !forceComp.IsUsingForceToMoveObject)
         {
             return;
         }
@@ -104,9 +115,12 @@ public sealed partial class MoveByForceController : VirtualController
             return;
         }
 
-        forceComp.IsMoving = false;
+        forceComp.IsUsingForceToMoveObject = false;
         RemComp<BeingMovedByForceComponent>(forceComp.CurrentMovingItem.Value);
         _physicsSystem.SetBodyStatus(forceComp.CurrentMovingItem.Value, physComp, BodyStatus.OnGround);
+        var name = Identity.Name(forceComp.CurrentMovingItem.Value, EntityManager);
+        var message = Loc.GetString("force-user-object-stop-flying", ("other", name));
+        _popupSystem.PopupEntity(message, forceComp.CurrentMovingItem.Value);
     }
 
     private void StopMovingAndReset(EntityUid mover, ForceAbilityDistanceInteractComponent? forceComp = null)
@@ -115,7 +129,7 @@ public sealed partial class MoveByForceController : VirtualController
         {
             return;
         }
-        if (forceComp.CurrentMovingItem == null || !forceComp.IsMoving)
+        if (forceComp.CurrentMovingItem == null || !forceComp.IsUsingForceToMoveObject)
         {
             return;
         }
@@ -159,7 +173,7 @@ public sealed partial class MoveByForceController : VirtualController
             return false;
         }
 
-        if (forceComp.IsMoving && comp.ForceUserMover == player)
+        if (forceComp.IsUsingForceToMoveObject && comp.ForceUserMover == player)
         {
 
             MapCoordinates objectcords = _transformSystem.GetMapCoordinates(forceComp.CurrentMovingItem.Value);
@@ -181,6 +195,39 @@ public sealed partial class MoveByForceController : VirtualController
         return false;
     }
 
+    private bool CanBeMoved(EntityUid obj, EntityUid mover)
+    {
+        //Check if entity is mob. Alive mobs cant be moved by force.
+        if (TryComp<MobThresholdsComponent>(obj, out var tComp))
+        {
+            if (tComp.CurrentThresholdState == MobState.Alive || tComp.CurrentThresholdState == MobState.Invalid)
+            {
+                return false;
+            }
+        }
+
+        if (TryComp<PullerComponent>(mover, out var tmpComp) && tmpComp.Pulling != null)
+        {
+            return false;
+        }
+
+        if (!TryComp<ForceAbilityDistanceInteractComponent>(mover, out var forceComp))
+        {
+            return false;
+        }
+
+        MapCoordinates objCoords = _transformSystem.GetMapCoordinates(obj);
+        MapCoordinates fUserCoords = _transformSystem.GetMapCoordinates(mover);
+
+        if (!_interactionSystem.InRangeUnobstructed(fUserCoords, obj, range: forceComp.Range))
+        {
+            _s.Debug("obstructed");
+            StopMovingAndReset(mover);
+            return false;
+        }
+        return true;
+    }
+
     private bool OnTryStartMove(ICommonSession? session, EntityCoordinates coords, EntityUid uid)
     {
         if (!_interactionSystem.ValidateClientInput(session, coords, uid, out var userEntity))
@@ -190,13 +237,7 @@ public sealed partial class MoveByForceController : VirtualController
         }
 
         if (userEntity.Value == uid)
-            return false;
-
-        //Check if entity is mob. Mobs cant be moved by force.
-        if (HasComp<MobMoverComponent>(uid))
-        {
-            return false;
-        }
+            return false;        
 
         if (Deleted(uid))
             return false;
@@ -212,34 +253,36 @@ public sealed partial class MoveByForceController : VirtualController
             return false;
         }
 
-        if (TryComp<PullerComponent>(userEntity.Value, out var tmpComp) && tmpComp.Pulling != null)
-        {
-            return false;
-        }
-
         if (!TryComp<PhysicsComponent>(uid, out var physComp))
         {
             return false;
         }
 
         var comp = EnsureComp<BeingMovedByForceComponent>(uid);
-        if (forceComp.CurrentMovingItem == uid && forceComp.IsMoving)
+        if (forceComp.CurrentMovingItem == uid && forceComp.IsUsingForceToMoveObject)
         {
             OnReleaseObject(session, coords, uid);
             return false;
         }
 
-        if (forceComp.IsMoving)
+        if (!CanBeMoved(uid, userEntity.Value))
+        {
+            return false;
+        }
+
+        if (forceComp.IsUsingForceToMoveObject)
         {
             StopMovingAndReset(userEntity.Value);
         }
 
         _s.Debug("started");
-        forceComp.IsMoving = true;
+        forceComp.IsUsingForceToMoveObject = true;
         forceComp.CurrentMovingItem = uid;
         comp.ForceUserMover = userEntity.Value;
         _physicsSystem.SetBodyStatus(uid, physComp, BodyStatus.InAir);
-
+        var name = Identity.Name(uid, EntityManager);
+        var message = Loc.GetString("force-user-object-start-flying", ("other", name));
+        _popupSystem.PopupEntity(message, uid);
         return false;
     }
 
@@ -261,9 +304,10 @@ public sealed partial class MoveByForceController : VirtualController
 
             MapCoordinates objCoords = _transformSystem.GetMapCoordinates(ent);
             MapCoordinates fUserCoords = _transformSystem.GetMapCoordinates(comp.ForceUserMover.Value);
-            if (!_interactionSystem.InRangeUnobstructed(fUserCoords, ent, range: forceComp.Range))
+            if (!CanBeMoved(ent, comp.ForceUserMover.Value))
             {
                 StopMovingAndReset(comp.ForceUserMover.Value);
+                continue;
             }
 
             if (comp.IsMoving && (comp.MovingTo.Position - objCoords.Position).Length() > 0.1f)

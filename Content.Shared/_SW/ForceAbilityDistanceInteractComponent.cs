@@ -24,5 +24,5 @@ public sealed partial class ForceAbilityDistanceInteractComponent : Component
     [ViewVariables(VVAccess.ReadWrite)]
     public float Range = 11f;
     public EntityUid? CurrentMovingItem;
-    public bool IsMoving = false;
+    public bool IsUsingForceToMoveObject = false;
 }

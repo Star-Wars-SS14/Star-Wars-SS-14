@@ -85,26 +85,7 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
             }
         }
 
-        if (weapon.Attacking)
-        {
-            return;
-        }
-        //SW start
-        if (altDown == BoundKeyState.Down)
-        {
-            if (_tag.HasTag(entity, "ForceUser") && _tag.HasTag(weaponUid, "ForceUserWeapon"))
-            {
-                ISawmill _s = Logger.GetSawmill("heavy");
-                _s.Debug("asd");
-                RaisePredictiveEvent(new SWTryReflectEvent(GetNetEntity(weaponUid)));
-
-                //Лютый костыль. Вручную меняем состояние кнопки, чтобы этот код не выполнялся постоянно пока кнопка нажата.
-                _inputSystem.CmdStates.SetState(EngineKeyFunctions.UseSecondary, BoundKeyState.Up);
-                return;
-            }
-        }
-        //SW end
-        if (weapon.NextAttack > Timing.CurTime)
+        if (weapon.Attacking || (weapon.NextAttack > Timing.CurTime))
         {
             return;
         }
@@ -137,7 +118,24 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
         else
         {
             coordinates = EntityCoordinates.FromMap(MapManager.GetMapEntityId(mousePos.MapId), mousePos, TransformSystem, EntityManager);
-        }        
+        }
+
+
+        //SW start
+        if (altDown == BoundKeyState.Down)
+        {
+            if (_tag.HasTag(entity, "ForceUser") && _tag.HasTag(weaponUid, "ForceUserWeapon"))
+            {
+                ISawmill _s = Logger.GetSawmill("heavy");
+                _s.Debug("asd");
+                RaisePredictiveEvent(new SWTryReflectEvent(GetNetEntity(weaponUid)));
+
+                //Лютый костыль. Вручную меняем состояние кнопки, чтобы этот код не выполнялся постоянно пока кнопка нажата.
+                _inputSystem.CmdStates.SetState(EngineKeyFunctions.UseSecondary, BoundKeyState.Up);
+                return;
+            }
+        }
+        //SW end
 
         // Heavy attack.
         if (altDown == BoundKeyState.Down)

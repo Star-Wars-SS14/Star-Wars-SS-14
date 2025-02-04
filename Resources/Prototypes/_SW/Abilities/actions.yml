@@ -1,4 +1,4 @@
-﻿- type: entity
+- type: entity
   id: ActionJediDash
   name: Прыжок
   description: Это буквально телепортирует вас!
@@ -65,3 +65,14 @@
     icon: Interface/Actions/subdue.png
     event: !type:SaberPrivateAbilityEvent
     useDelay: 1
+
+
+- type: entity
+  id: SWDashAction
+  name: Прыжок
+  description: Это буквально телепортирует вас!
+  components:
+  - type: InstantAction
+    icon: Interface/Actions/dash.png
+    event: !type:DashRequestedEvent
+    useDelay: 3

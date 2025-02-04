@@ -78,9 +78,6 @@
   id: SWEnergySwordBase
   description: A very loud & dangerous sword with a beam made of pure, concentrated plasma. Cuts through unarmored targets like butter.
   components:
-  - type: EnergySword
-    colorOptions:
-      - Red
   - type: SWWeaponBlock
   - type: Reflect
     enabled: false
@@ -89,3 +86,24 @@
   - type: Tag
     tags:
       - ForceUserWeapon
+
+- type: entity
+  name: Энергетический меч
+  parent: SWEnergySwordBase
+  id: SWEnergySwordSith
+  description: A very loud & dangerous sword with a beam made of pure, concentrated plasma. Cuts through unarmored targets like butter.
+  components:
+  - type: EnergySword
+    colorOptions:
+      - Red
+
+- type: entity
+  name: Энергетический меч
+  parent: SWEnergySwordBase
+  id: SWEnergySwordJedi
+  description: A very loud & dangerous sword with a beam made of pure, concentrated plasma. Cuts through unarmored targets like butter.
+  components:
+  - type: EnergySword
+    colorOptions:
+      - Blue
+      - Green

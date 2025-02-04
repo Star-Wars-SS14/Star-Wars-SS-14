@@ -28,6 +28,7 @@ using Content.Shared.IdentityManagement;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs;
 using JetBrains.FormatRipper.Elf;
+using Content.Server.Examine;
 
 namespace Content.Server._SW.Force;
 
@@ -37,6 +38,7 @@ public sealed partial class MoveByForceController : VirtualController
     [Dependency] private readonly SharedInteractionSystem _interactionSystem = default!;
     [Dependency] private readonly SharedPhysicsSystem _physicsSystem = default!;
     [Dependency] private readonly PopupSystem _popupSystem = default!;
+    [Dependency] private readonly ExamineSystem _examineSystem = default!;
     ISawmill _s = default!;
     public override void Initialize()
     {
@@ -219,10 +221,15 @@ public sealed partial class MoveByForceController : VirtualController
         MapCoordinates objCoords = _transformSystem.GetMapCoordinates(obj);
         MapCoordinates fUserCoords = _transformSystem.GetMapCoordinates(mover);
 
-        if (!_interactionSystem.InRangeUnobstructed(fUserCoords, obj, range: forceComp.Range))
+        //Ессли мы находимся достаточно близко для обычного взаимодейтсвия,
+        //то не будем начинать двигать объект при помощи силы, чтобы не мешать обычному взаимодействию
+        if ((fUserCoords.Position - objCoords.Position).Length() <= SharedInteractionSystem.InteractionRange && !forceComp.IsUsingForceToMoveObject)
         {
-            _s.Debug("obstructed");
-            StopMovingAndReset(mover);
+            return false;
+        }
+
+        if (!_examineSystem.InRangeUnOccluded(fUserCoords, objCoords, SharedInteractionSystem.MaxRaycastRange, null))
+        {
             return false;
         }
         return true;

@@ -4,8 +4,6 @@
   id: ForceUserBase
   description: A miserable pile of secrets.
   components:
-  - type: Loadout
-    prototypes: [ForceUserBaseGear]
   - type: Tag
     tags:
       - ForceUser
@@ -16,3 +14,24 @@
       200: Critical
       300: Dead
   - type: SWForceUserBlock
+  - type: SWDashAbility
+
+
+
+- type: entity
+  name: Sith
+  parent: ForceUserBase
+  id: ForceUserDark
+  description: A miserable pile of secrets.
+  components:
+  - type: Loadout
+    prototypes: [ForceUserSithGear]
+
+- type: entity
+  name: Jedi
+  parent: ForceUserBase
+  id: ForceUserLight
+  description: A miserable pile of secrets.
+  components:
+  - type: Loadout
+    prototypes: [ForceUserJediGear]

@@ -1,8 +1,8 @@
 - type: entity
   id: BaseWeaponBlaster
   parent: [BaseItem, BaseGunWieldable]
-  suffix: [ОРУЖИЕ SW]
   abstract: true
+  suffix: Оружие SW
   components:
   - type: Clothing
     sprite: Objects/Weapons/Guns/Rifles/ak.rsi

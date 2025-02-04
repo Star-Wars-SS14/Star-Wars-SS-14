@@ -1,4 +1,5 @@
 using Content.Shared.Actions;
+using Content.Shared.Damage.Components;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Popups;
@@ -44,7 +45,7 @@ public sealed class SWDashAbilitySystem : EntitySystem
             StartDash(ent);
         } else
         {
-            _popupSystem.PopupEntity("Способность на перезарядке!", ent.Owner);
+            //_popupSystem.PopupEntity("Способность на перезарядке!", ent.Owner);
         }
         args.Handled = true;
     }
@@ -74,6 +75,10 @@ public sealed class SWDashAbilitySystem : EntitySystem
         ent.Comp.DashEndTime = _gameTiming.CurTime + TimeSpan.FromSeconds(ent.Comp.DashDuration);
         ent.Comp.NextDashAvailable = ent.Comp.DashEndTime + TimeSpan.FromSeconds(ent.Comp.DelayBetweenDashes);
         _movementSpeedModifierSystem.RefreshMovementSpeedModifiers(ent.Owner);
+        if (TryComp<SlowOnDamageComponent>(ent.Owner, out var comp))
+        {
+            
+        }
     }
 
     private void OnCompInit(Entity<SWDashAbilityComponent> ent, ref ComponentInit args)

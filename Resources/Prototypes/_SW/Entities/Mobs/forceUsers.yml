@@ -15,6 +15,9 @@
       300: Dead
   - type: SWForceUserBlock
   - type: SWDashAbility
+  - type: SlowOnDamage
+    speedModifierThresholds:
+      190: 0.8
 
 
 

@@ -65,7 +65,7 @@ public sealed partial class MoveByForceController : VirtualController
         {
             return;
         }
-        StopMoving(ent.Comp.ForceUserMover.Value);
+        ent.Comp.IsMoving = false;
     }
 
     private void OnStopPullRequested(Entity<BeingMovedByForceComponent> ent, ref StopMovingByForceEvent args)
@@ -174,13 +174,12 @@ public sealed partial class MoveByForceController : VirtualController
         {
             return false;
         }
-
+        _s.Debug("check");
         if (forceComp.IsUsingForceToMoveObject && comp.ForceUserMover == player)
         {
-
-            MapCoordinates objectcords = _transformSystem.GetMapCoordinates(forceComp.CurrentMovingItem.Value);
+            _s.Debug("check1");
             MapCoordinates placecoords = _transformSystem.ToMapCoordinates(coords);
-            if (!_interactionSystem.InRangeUnobstructed(objectcords, placecoords, range: 100f))
+            if (!CanBeMovedToCoords(forceComp.CurrentMovingItem.Value, player, placecoords))
             {
                 return false;
             }
@@ -196,6 +195,21 @@ public sealed partial class MoveByForceController : VirtualController
         }
         return false;
     }
+
+    private bool CanBeMovedToCoords(EntityUid obj, EntityUid mover, MapCoordinates coords)
+    {
+       if (!CanBeMoved(obj, mover))
+        {
+            return false;
+        }
+
+        if (!_examineSystem.InRangeUnOccluded(obj, coords, SharedInteractionSystem.MaxRaycastRange))
+        {
+            return false;
+        }
+        return true;
+    }
+
 
     private bool CanBeMoved(EntityUid obj, EntityUid mover)
     {
@@ -228,7 +242,7 @@ public sealed partial class MoveByForceController : VirtualController
             return false;
         }
 
-        if (!_examineSystem.InRangeUnOccluded(fUserCoords, objCoords, SharedInteractionSystem.MaxRaycastRange, null))
+        if (!_examineSystem.InRangeUnOccluded(mover, obj, SharedInteractionSystem.MaxRaycastRange))
         {
             return false;
         }
@@ -244,7 +258,7 @@ public sealed partial class MoveByForceController : VirtualController
         }
 
         if (userEntity.Value == uid)
-            return false;        
+            return false;
 
         if (Deleted(uid))
             return false;

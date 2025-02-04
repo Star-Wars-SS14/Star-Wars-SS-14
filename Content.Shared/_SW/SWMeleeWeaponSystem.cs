@@ -109,8 +109,8 @@ public sealed class SWMeleeWeaponSystem : EntitySystem
             _popupSystem.PopupPredicted("Вы ставите блок!", GetEntity(ev.Weapon), null, PopupType.Medium);
             reflectComp.Enabled = true;
             forceComp.IsBlocking = true;
-            forceComp.ReflectionEndTime = _gameTiming.CurTime + TimeSpan.FromSeconds(forceComp.ReflectionDuration);
-            forceComp.NextReflectionAvailable = _gameTiming.CurTime + TimeSpan.FromSeconds(forceComp.ReflectionDuration) + TimeSpan.FromSeconds(forceComp.DelayBetweenReflections);
+            forceComp.BlockEndTime = _gameTiming.CurTime + TimeSpan.FromSeconds(forceComp.BlockDuration);
+            forceComp.NextReflectionAvailable = _gameTiming.CurTime + TimeSpan.FromSeconds(forceComp.BlockDuration) + TimeSpan.FromSeconds(forceComp.DelayBetweenBlocks);
         } else if (forceComp.IsBlocking)  
         {
             _popupSystem.PopupPredicted("Вы уже выставили блок!", GetEntity(ev.Weapon), null, PopupType.Medium);           
@@ -129,7 +129,7 @@ public sealed class SWMeleeWeaponSystem : EntitySystem
         {
             if (TryComp<ReflectComponent>(ent, out var reflComp))
             {
-                if (comp.ReflectionEndTime <= _gameTiming.CurTime && reflComp.Enabled)
+                if (comp.BlockEndTime <= _gameTiming.CurTime && reflComp.Enabled)
                 {
                     DisableBlock(ent);
                 }

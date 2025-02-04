@@ -11,10 +11,10 @@ namespace Content.Shared._SW;
 public sealed partial class SWWeaponBlockComponent : Component
 {
     [DataField]
-    public float ReflectionDuration = 2f;
-    public TimeSpan ReflectionEndTime;
+    public float BlockDuration = 5f;
+    public TimeSpan BlockEndTime;
     [DataField]
-    public float DelayBetweenReflections = 1f;
+    public float DelayBetweenBlocks = 1f;
     public TimeSpan NextReflectionAvailable;
 
     [ViewVariables]

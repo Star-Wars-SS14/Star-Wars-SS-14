@@ -1,14 +1,11 @@
 ﻿using Content.Server._SW.Force.Components;
 using Content.Server.Beam;
 using Content.Server.Hands.Systems;
-using Content.Server.Lightning;
 using Content.Server.Popups;
 using Content.Shared.Actions;
 using Content.Shared.Alert;
 using Content.Shared.Damage;
-using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Pulling.Systems;
-using Content.Shared.Store.Components;
 using Content.Shared.Tag;
 using Robust.Server.Containers;
 using Robust.Server.GameObjects;
@@ -21,20 +18,19 @@ namespace Content.Server._SW.Force.Systems;
 public sealed partial class ForceSystem : EntitySystem
 {
     [Dependency] private readonly SharedActionsSystem _action = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
-    [Dependency] private readonly TransformSystem _transform = default!;
-    [Dependency] private readonly IEntityManager _entManager = default!;
-    [Dependency] private readonly PullingSystem _pullingSystem = default!;
-    [Dependency] private readonly ContainerSystem _containerSystem = default!;
-    [Dependency] private readonly HandsSystem _handsSystem = default!;
-    [Dependency] private readonly PopupSystem _popupSystem = default!;
-    [Dependency] private readonly TagSystem _tagSystem = default!;
-    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
-    [Dependency] private readonly DamageableSystem _damageable = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly BeamSystem _beam = default!;
     [Dependency] private readonly AlertsSystem _alertsSystem = default!;
+    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
+    [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly BeamSystem _beam = default!;
+    [Dependency] private readonly ContainerSystem _containerSystem = default!;
+    [Dependency] private readonly DamageableSystem _damageable = default!;
+    [Dependency] private readonly IEntityManager _entManager = default!;
+    [Dependency] private readonly HandsSystem _handsSystem = default!;
     [Dependency] private readonly PhysicsSystem _physicsSystem = default!;
+    [Dependency] private readonly PopupSystem _popupSystem = default!;
+    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private readonly PullingSystem _pullingSystem = default!;
+    [Dependency] private readonly TagSystem _tagSystem = default!;
 
     public override void Initialize()
     {
@@ -54,10 +50,10 @@ public sealed partial class ForceSystem : EntitySystem
         var query = EntityQueryEnumerator<InDashingComponent>();
         while (query.MoveNext(out var target, out var comp))
         {
-            if(!TryComp<TransformComponent>(target, out var transformComponent))
+            if (!TryComp<TransformComponent>(target, out var transformComponent))
                 break;
 
-            if(!TryComp<PhysicsComponent>(target, out var physicsComponent))
+            if (!TryComp<PhysicsComponent>(target, out var physicsComponent))
                 break;
 
             comp.ActiveCooldown -= frameTime;
@@ -76,7 +72,7 @@ public sealed partial class ForceSystem : EntitySystem
 
         if (TryComp<DarkForceComponent>(uid, out var darkForceComponent))
         {
-            if(_alertsSystem.IsShowingAlert(uid, darkForceComponent.SithMasteryAlerts[darkForceComponent.Mastery]))
+            if (_alertsSystem.IsShowingAlert(uid, darkForceComponent.SithMasteryAlerts[darkForceComponent.Mastery]))
                 return;
 
             _alertsSystem.ShowAlert(uid, darkForceComponent.SithMasteryAlerts[darkForceComponent.Mastery]);
@@ -84,7 +80,7 @@ public sealed partial class ForceSystem : EntitySystem
 
         if (TryComp<LightForceComponent>(uid, out var lightForceComponent))
         {
-            if(_alertsSystem.IsShowingAlert(uid, lightForceComponent.JediMasteryAlerts[lightForceComponent.Mastery]))
+            if (_alertsSystem.IsShowingAlert(uid, lightForceComponent.JediMasteryAlerts[lightForceComponent.Mastery]))
                 return;
 
             _alertsSystem.ShowAlert(uid, lightForceComponent.JediMasteryAlerts[lightForceComponent.Mastery]);
@@ -92,23 +88,28 @@ public sealed partial class ForceSystem : EntitySystem
     }
 
     #region darkForce
+
     private void OnInitDark(EntityUid uid, DarkForceComponent comp, ComponentInit args)
     {
         SetupActions(uid, comp.AbilitiesDarkPrototypes);
     }
+
     #endregion
 
     #region lightForce
+
     private void OnInitLight(EntityUid uid, LightForceComponent comp, ComponentInit args)
     {
         SetupActions(uid, comp.AbilitiesLightPrototypes);
     }
+
     #endregion
 
     #region Helpers
+
     private void SetupActions(EntityUid uid, List<string> actionsPrototype)
     {
-        if(actionsPrototype.Count <= 0)
+        if (actionsPrototype.Count <= 0)
             return;
 
         foreach (var action in actionsPrototype)
@@ -116,5 +117,6 @@ public sealed partial class ForceSystem : EntitySystem
             _action.AddAction(uid, action);
         }
     }
+
     #endregion
 }

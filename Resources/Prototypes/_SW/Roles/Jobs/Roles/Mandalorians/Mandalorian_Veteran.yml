@@ -1,0 +1,11 @@
+- type: job
+  id: SWMandalorianVeteran
+  name: Ветеран Мандалорцев
+  playTimeTracker: Job_Mandalorian_Veteran
+  requirements:
+  - !type:RoleTimeRequirement
+    role: Job_Mandalorian_Warrior
+    time: 18000 # 5h
+  startingGear: MandalorianVeteranGear
+  icon: "JobIconMandalorianVeteran"
+  supervisors: job-supervisors-mando

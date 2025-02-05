@@ -123,10 +123,7 @@
   - type: Gun
     fireRate: 5.5
     soundGunshot:
-      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
-  - type: ChamberMagazineAmmoProvider
-    soundRack:
-      path: /Audio/Weapons/Guns/Cock/ltrifle_cock.ogg
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg  
   - type: ItemSlots
     slots:
       gun_magazine:

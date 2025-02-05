@@ -1,0 +1,11 @@
+- type: job
+  id: SWSobrikOfficer
+  name: Офицер Корпуса
+  playTimeTracker: Job_Sobrik_Officer
+  requirements:
+  - !type:RoleTimeRequirement
+    role: Job_Empire_Soldier
+    time: 18000 # 5h
+  startingGear: SobrikOfficerGear
+  icon: "JobIconSobrikOfficer"
+  supervisors: job-supervisors-sobrik-captain

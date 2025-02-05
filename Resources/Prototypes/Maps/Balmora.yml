@@ -6,7 +6,7 @@
   maxPlayers: 200
   stations:
     SWBalmora:
-      stationProto: StandardNanotrasenStation
+      stationProto: StandardSWStation
       components:
       - type: StationNameSetup
         mapNameTemplate: '{0} Балламора {1}'
@@ -18,7 +18,7 @@
         maxStationOffset: null
       - type: StationJobs
         overflowJobs:
-        - SW_Civialian
+        - SWCivialian
         availableJobs:
           SW_Sobrik_Captain: [ 1, 1 ]
           SW_Sobrik_Officer: [ 6, 6 ]
@@ -56,5 +56,6 @@
 
           SW_Exchange_Captain: [ 1, 1 ]
           SW_Exchange_Operative: [ 4, 4 ]
+      - type: EndRoundByTimer
 
 

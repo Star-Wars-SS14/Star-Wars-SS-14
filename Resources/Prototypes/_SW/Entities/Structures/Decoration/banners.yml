@@ -24,8 +24,8 @@
     fixtures:
       fix1:
         shape:
-          !type:PhysShapeCircle
-          radius: 0.2
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.7,0.45,0.6"
         density: 190
         mask:
         - TableMask
@@ -76,7 +76,7 @@
   description: Мандалорцы, также называющие себя мандо'аде или «дети Мандалора» — воинственный, преимущественно кочевой народ состоявший из разумных существ вне зависимости от расы или пола, объединённых общей культурой.
   components:
   - type: Sprite
-    sprite: _SW/Structures/Decoration/bannermandalorian.rsi
+    sprite: _SW/Structures/Decoration/bannerMandalorian.rsi
     state: banner
 
 - type: entity

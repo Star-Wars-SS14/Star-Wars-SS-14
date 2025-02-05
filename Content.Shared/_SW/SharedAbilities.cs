@@ -27,16 +27,16 @@ public sealed partial class CallSaberAbilityEvent : InstantActionEvent
 {
 }
 
-public sealed partial class RemoveWizardChargeEvent : EntityEventArgs
+public sealed class RemoveWizardChargeEvent : EntityEventArgs
 {
 }
 
 [Serializable, NetSerializable]
-public sealed partial class MasteryUpEvent : EntityEventArgs
+public sealed class MasteryUpEvent : EntityEventArgs
 {
 }
 
 [Serializable, NetSerializable]
-public sealed partial class MasteryLightingUpgradeEvent : EntityEventArgs
+public sealed class MasteryLightingUpgradeEvent : EntityEventArgs
 {
 }

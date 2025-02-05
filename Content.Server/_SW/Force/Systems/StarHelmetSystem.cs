@@ -5,7 +5,6 @@ using Content.Server.Radio.Components;
 using Content.Server.Radio.EntitySystems;
 using Content.Shared.Chat;
 using Content.Shared.Examine;
-using Content.Shared.Inventory;
 using Content.Shared.Inventory.Events;
 using Content.Shared.Radio;
 using Content.Shared.Shuttles.Components;
@@ -18,8 +17,8 @@ namespace Content.Server._SW.Force.Systems;
 public sealed class StarHelmetSystem : EntitySystem
 {
     [Dependency] private readonly INetManager _netMan = default!;
-    [Dependency] private readonly RadioSystem _radio = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private readonly RadioSystem _radio = default!;
     [Dependency] private readonly RadioDeviceSystem _radioDevice = default!;
     public override void Initialize()
     {
@@ -88,6 +87,7 @@ public sealed class StarHelmetSystem : EntitySystem
 
     private void OnGotEquipped(EntityUid helmet, StarHelmetComponent component, GotEquippedEvent args)
     {
+
         if (!StarHelmetComponent.AllowedSlots.Contains(args.SlotFlags))
         {
             return;
@@ -98,6 +98,9 @@ public sealed class StarHelmetSystem : EntitySystem
             comp.ObjectsWithStarComponent.Add(helmet);
         }
         EnsureComp<ActiveRadioComponent>(helmet).Channels = new(component.Channels);
+
+        EnsureComp<WearingStarHelmetComponent>(args.Equipee).Helmet = helmet;
+        EnsureComp<ActiveRadioComponent>(helmet).Channels = new HashSet<string>(component.Channels);
 
 
         if (!TryComp<RadioSpeakerComponent>(helmet, out var radioSpeakerComponent))

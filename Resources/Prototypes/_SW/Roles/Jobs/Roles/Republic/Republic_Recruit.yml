@@ -1,0 +1,10 @@
+- type: job
+  id: SWRepublicRecruit
+  name: Рекрут Сил Республики
+  playTimeTracker: Job_Republic_Recruit
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 0h
+  startingGear: RepublicRecruitGear
+  icon: "JobIconRepublicRecruit"
+  supervisors: job-supervisors-leit-rep

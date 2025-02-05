@@ -2,6 +2,7 @@ using Content.Server.Administration;
 using Content.Server.RoundEnd;
 using Content.Shared.Administration;
 using Robust.Shared.Console;
+using Content.Server._SW.EndRound;
 
 namespace Content.Server.GameTicking.Commands
 {
@@ -9,7 +10,6 @@ namespace Content.Server.GameTicking.Commands
     public sealed class RestartRoundCommand : IConsoleCommand
     {
         [Dependency] private readonly IEntityManager _e = default!;
-
         public string Command => "restartround";
         public string Description => "Ends the current round and starts the countdown for the next lobby.";
         public string Help => string.Empty;
@@ -23,7 +23,7 @@ namespace Content.Server.GameTicking.Commands
                 shell.WriteLine("This can only be executed while the game is in a round - try restartroundnow");
                 return;
             }
-
+            _e.System<SWEndRoundSystem>().DispatchEndByCommandMessage();
             _e.System<RoundEndSystem>().EndRound();
         }
     }

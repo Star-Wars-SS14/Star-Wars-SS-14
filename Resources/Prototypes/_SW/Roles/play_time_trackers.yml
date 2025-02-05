@@ -89,7 +89,7 @@
   id: Job_Republic_Commander_Sniper
 
 - type: playTimeTracker
-  id: Job_BlackSun
+  id: Job_BlackSun_Sniper
 
 - type: playTimeTracker
   id: Job_BlackSun_Mercenary

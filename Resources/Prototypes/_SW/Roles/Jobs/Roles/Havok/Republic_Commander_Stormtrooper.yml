@@ -1,0 +1,14 @@
+###Havok
+- type: job
+  id: SWRepublicCommanderStormtrooper
+  name: Штурмовик-Коммандос
+  playTimeTracker: Job_Republic_Commander_Stormtrooper
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 72000 # 20h
+  - !type:DepartmentTimeRequirement
+    department: SWPepublic
+    time: 36000 # 10h
+  startingGear: RepublicCommanderStormtrooperGear
+  icon: "JobIconHavokStormtrooper"
+  supervisors: job-supervisors-havok-cap

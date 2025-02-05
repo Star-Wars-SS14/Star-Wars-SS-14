@@ -4,6 +4,7 @@ on:
 
 concurrency: benchmarks
 
+
 jobs:
   benchmark:
     name: Run Benchmarks

@@ -1,0 +1,13 @@
+- type: job
+  id: SWSobrikCaptain
+  name: Комендант Корпуса
+  playTimeTracker: Job_Sobrik_Captain
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 72000 # 20h
+  - !type:RoleTimeRequirement
+    role: Job_Sobrik_Officer
+    time: 36000 # 10h
+  startingGear: SobrikCaptainGear
+  icon: "JobIconSobrikComendant"
+  supervisors: job-supervisors-MOFF

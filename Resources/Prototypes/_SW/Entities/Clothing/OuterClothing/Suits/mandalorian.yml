@@ -1,4 +1,4 @@
-﻿- type: entity
+- type: entity
   parent: [ClothingOuterBase, AllowSuitStorageClothing]
   id: SW_MandalorianRecruitSuit
   name: recruit mandalorian suit
@@ -29,9 +29,9 @@
   name: mandalorian suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/mandalorian.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/Mandalorian.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/mandalorian.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/Mandalorian.rsi
 
 - type: entity
   parent: SW_MandalorianRecruitSuit

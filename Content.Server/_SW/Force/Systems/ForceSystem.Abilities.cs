@@ -33,34 +33,35 @@ public sealed partial class ForceSystem
 
     private readonly Dictionary<string, Color> _colors = new()
     {
-        {"White", White},
-        {"Black", Black},
-        {"Blue",  Blue},
-        {"White-blue", LightBlue},
-        {"Green", Green},
-        {"Indigo", Indigo},
-        {"Orange", Orange},
-        {"Pink", Pink},
-        {"Purple", Purple},
-        {"Red", Red},
-        {"Red-orange", OrangeRed},
-        {"Yellow", Yellow},
-        {"Yellow-green", YellowGreen}
+        { "White", White },
+        { "Black", Black },
+        { "Blue", Blue },
+        { "White-blue", LightBlue },
+        { "Green", Green },
+        { "Indigo", Indigo },
+        { "Orange", Orange },
+        { "Pink", Pink },
+        { "Purple", Purple },
+        { "Red", Red },
+        { "Red-orange", OrangeRed },
+        { "Yellow", Yellow },
+        { "Yellow-green", YellowGreen }
     };
 
     #region Dash
+
     private void DashAbility(Entity<ForceComponent> ent, ref DashAbilityEvent args)
     {
         var (_, component) = ent;
         var user = args.Performer;
 
-        if(!TryComp<PhysicsComponent>(user, out var physicsComponent))
+        if (!TryComp<PhysicsComponent>(user, out var physicsComponent))
             return;
 
         if (!TryComp<TransformComponent>(user, out var xform))
             return;
 
-        if(physicsComponent.BodyStatus != BodyStatus.OnGround)
+        if (physicsComponent.BodyStatus != BodyStatus.OnGround)
             return;
 
         if (TryComp<PullableComponent>(user, out var pullable) && pullable.BeingPulled)
@@ -77,7 +78,7 @@ public sealed partial class ForceSystem
 
         if (_containerSystem.IsEntityInContainer(user))
         {
-            if(!_containerSystem.TryRemoveFromContainer(user))
+            if (!_containerSystem.TryRemoveFromContainer(user))
                 return;
         }
 
@@ -102,8 +103,12 @@ public sealed partial class ForceSystem
         PlaySoundAndApplyEffects(component, oldCoords);
         _physicsSystem.SetBodyStatus(uid, physicsComponent, BodyStatus.InAir);
 
-        _physicsSystem.SetLinearVelocity(uid, physicsComponent.LinearVelocity * component.DashSpeed, body: physicsComponent);
-        _physicsSystem.ApplyLinearImpulse(uid, physicsComponent.LinearVelocity * component.DashDistance, body: physicsComponent);
+        _physicsSystem.SetLinearVelocity(uid,
+            physicsComponent.LinearVelocity * component.DashSpeed,
+            body: physicsComponent);
+        _physicsSystem.ApplyLinearImpulse(uid,
+            physicsComponent.LinearVelocity * component.DashDistance,
+            body: physicsComponent);
 
         var inDashingComponent = EnsureComp<InDashingComponent>(uid);
         inDashingComponent.ActiveCooldown = inDashingComponent.Cooldown;
@@ -114,27 +119,36 @@ public sealed partial class ForceSystem
         _audio.PlayPvs(component.DashSound, oldCoords);
         _entManager.SpawnEntity(component.DashEffectEnd, oldCoords);
     }
+
     #endregion
 
     #region Lighting
+
     private void LightingAbility(Entity<DarkForceComponent> ent, ref ForceLightningAbilityEvent args)
     {
         var user = args.Performer;
         var lightningAbility = ent.Comp;
 
-        DamageSpecifier damage = new(_prototypeManager.Index<DamageTypePrototype>("Heat"), lightningAbility.DamageLighting);
+        DamageSpecifier damage = new(_prototypeManager.Index<DamageTypePrototype>("Heat"),
+            lightningAbility.DamageLighting);
 
         for (var i = 0; i < lightningAbility.BoltCount; i++)
         {
-            _beam.TryCreateBeam(user, args.Target, (lightningAbility.DamageLighting == lightningAbility.BaseLightingDamage) ? "BlueSWLightning" : "RedSWLightning");
+            _beam.TryCreateBeam(user,
+                args.Target,
+                (lightningAbility.DamageLighting == lightningAbility.BaseLightingDamage)
+                    ? "BlueSWLightning"
+                    : "RedSWLightning");
             _damageable.TryChangeDamage(args.Target, damage, true);
         }
 
         args.Handled = true;
     }
+
     #endregion
 
     #region Kyber
+
     private void OnKyberMapInit(EntityUid uid, KyberCrystalComponent component, MapInitEvent args)
     {
         _action.AddAction(uid, ref component.KyberActionEntity, component.KyberActionPrototype);
@@ -142,10 +156,10 @@ public sealed partial class ForceSystem
 
     private void OnGetKyber(EntityUid uid, KyberCrystalComponent component, GetItemActionsEvent args)
     {
-        if(!HasComp<ForceComponent>(args.User))
+        if (!HasComp<ForceComponent>(args.User))
             return;
 
-        if(component.Owner != null)
+        if (component.Owner != null)
             return;
 
         args.AddAction(ref component.KyberActionEntity, component.KyberActionPrototype);
@@ -156,12 +170,14 @@ public sealed partial class ForceSystem
         var user = args.Performer;
         var kyber = _handsSystem.GetActiveItem(user);
 
-        if(!TryComp<KyberCrystalComponent>(kyber, out var kyberComp))
+        if (!TryComp<KyberCrystalComponent>(kyber, out var kyberComp))
             return;
 
         if (kyberComp.Owner != null)
         {
-            _popupSystem.PopupEntity("Камень не может установить связь.. Его сила привязана к другому существу..", user, PopupType.Medium);
+            _popupSystem.PopupEntity("Камень не может установить связь.. Его сила привязана к другому существу..",
+                user,
+                PopupType.Medium);
             args.Handled = true;
             return;
         }
@@ -187,14 +203,16 @@ public sealed partial class ForceSystem
 
         var target = args.Target.Value;
 
-        if(!_tagSystem.HasTag(target, component.SaberFragmentTag))
+        if (!_tagSystem.HasTag(target, component.SaberFragmentTag))
             return;
 
-        _popupSystem.PopupEntity("В мгновение, камень летит в фрагмент меча.. Меч исправен..", args.User, PopupType.Medium);
+        _popupSystem.PopupEntity("В мгновение, камень летит в фрагмент меча.. Меч исправен..",
+            args.User,
+            PopupType.Medium);
 
         var saber = Spawn(component.SaberPrototype, target.ToCoordinates());
 
-        if(!TryComp<SaberComponent>(saber, out var saberComponent))
+        if (!TryComp<SaberComponent>(saber, out var saberComponent))
             return;
 
         if (!TryComp(saber, out AppearanceComponent? appearanceComponent))
@@ -220,7 +238,7 @@ public sealed partial class ForceSystem
     {
         var target = args.Target;
 
-        if(!TryComp<ForceComponent>(target, out _))
+        if (!TryComp<ForceComponent>(target, out _))
             return;
 
         var query = EntityQueryEnumerator<SaberComponent>();
@@ -233,25 +251,27 @@ public sealed partial class ForceSystem
             if (args.NewMobState != MobState.Dead)
                 continue;
 
-            if(saberComponent.CallSaberActionEntity == null)
+            if (saberComponent.CallSaberActionEntity == null)
                 continue;
 
             _action.RemoveAction(saberComponent.CallSaberActionEntity);
             saberComponent.Owner = null;
         }
 
-        if(args.Origin == null)
+        if (args.Origin == null)
             return;
 
         var user = args.Origin;
 
-        if(!TryComp<ForceComponent>(user, out var userForceComponent))
+        if (!TryComp<ForceComponent>(user, out var userForceComponent))
             return;
 
-        if(args is not ({ OldMobState: MobState.Critical, NewMobState: MobState.Dead } or {OldMobState: MobState.Alive, NewMobState: MobState.Critical}))
+        if (args is not ({ OldMobState: MobState.Critical, NewMobState: MobState.Dead }
+            or { OldMobState: MobState.Alive, NewMobState: MobState.Critical }))
             return;
 
         userForceComponent.Experience += userForceComponent.AddExperienceCriticalOrDead;
     }
+
     #endregion
 }

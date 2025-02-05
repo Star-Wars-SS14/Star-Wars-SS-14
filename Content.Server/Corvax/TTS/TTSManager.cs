@@ -39,7 +39,7 @@ public sealed class TTSManager
     private ISawmill _sawmill = default!;
     private readonly Dictionary<string, byte[]> _cache = new();
     private readonly List<string> _cacheKeysSeq = new();
-    private int _maxCachedCount = 200;
+    private int _maxCachedCount = 8000;
     private string _apiUrl = string.Empty;
     private string _apiToken = string.Empty;
 
@@ -64,14 +64,6 @@ public sealed class TTSManager
     public async Task<byte[]?> ConvertTextToSpeech(string speaker, string text)
     {
         WantedCount.Inc();
-        var cacheKey = GenerateCacheKey(speaker, text);
-        if (_cache.TryGetValue(cacheKey, out var data))
-        {
-            ReusedCount.Inc();
-            _sawmill.Verbose($"Use cached sound for '{text}' speech by '{speaker}' speaker");
-            return data;
-        }
-
         _sawmill.Verbose($"Generate new audio for '{text}' speech by '{speaker}' speaker");
 
         var body = new GenerateVoiceRequest
@@ -102,13 +94,9 @@ public sealed class TTSManager
             var json = await response.Content.ReadFromJsonAsync<GenerateVoiceResponse>(cancellationToken: cts.Token);
             var soundData = Convert.FromBase64String(json.Results.First().Audio);
 
-            _cache.Add(cacheKey, soundData);
-            _cacheKeysSeq.Add(cacheKey);
-            if (_cache.Count > _maxCachedCount)
+            if (json.Cached)
             {
-                var firstKey = _cacheKeysSeq.First();
-                _cache.Remove(firstKey);
-                _cacheKeysSeq.Remove(firstKey);
+                ReusedCount.Inc();
             }
 
             _sawmill.Debug($"Generated new audio for '{text}' speech by '{speaker}' speaker ({soundData.Length} bytes)");
@@ -138,7 +126,7 @@ public sealed class TTSManager
 
     private string GenerateCacheKey(string speaker, string text)
     {
-        var key = $"{speaker}/{text}";
+        var key = $"{speaker}{text}";
         byte[] keyData = Encoding.UTF8.GetBytes(key);
         var sha256 = System.Security.Cryptography.SHA256.Create();
         var bytes = sha256.ComputeHash(keyData);
@@ -161,7 +149,7 @@ public sealed class TTSManager
         public string Speaker { get; set; } = "";
 
         [JsonPropertyName("ssml")]
-        public bool SSML { get; private set; } = true;
+        public bool SSML { get; private set; } = false;
 
         [JsonPropertyName("word_ts")]
         public bool WordTS { get; private set; } = false;
@@ -184,8 +172,8 @@ public sealed class TTSManager
         [JsonPropertyName("results")]
         public List<VoiceResult> Results { get; set; }
 
-        [JsonPropertyName("original_sha1")]
-        public string Hash { get; set; }
+        [JsonPropertyName("cached")]
+        public bool Cached { get; set; }
     }
 
     private struct VoiceResult

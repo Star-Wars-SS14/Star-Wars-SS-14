@@ -5,6 +5,6 @@ ent-SW_ClothingShoesBootsOfficers = офицерские сапоги
 ent-SW_ClothingShoesBootsImperialOfficers = имперские офицерские сапоги
   .desc = Блестящие черные сапоги. Верх милитаристского стиля.
 ent-SW_ClothingShoesBootsExchange = сапоги "Обмена"
-  .desc = Слегка поношенные, но легкие, подходят для быстрого бега.
+  .desc = Слегка поношенные, но легкие. Подходят для быстрого бега.
 ent-ClothingShoesBootsCitizen = обычные сапоги
   .desc = Качественная недорогая обувь. То что надо простому гражданину.

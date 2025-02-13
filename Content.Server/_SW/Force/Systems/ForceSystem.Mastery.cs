@@ -89,7 +89,7 @@ public sealed partial class ForceSystem
 
 [UsedImplicitly]
 [DataDefinition]
-public sealed partial class OpenMasteryShop : IAlertClick
+public sealed partial class OpenMasteryShop
 {
     public void AlertClicked(EntityUid uid)
     {

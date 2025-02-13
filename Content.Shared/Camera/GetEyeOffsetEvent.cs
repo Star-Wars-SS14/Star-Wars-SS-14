@@ -16,4 +16,4 @@ namespace Content.Shared.Camera;
 ///     Otherwise, any offsets applied by previous subscribing systems will be overridden.
 /// </remarks>
 [ByRefEvent]
-public record struct GetEyeOffsetEvent(Vector2 Offset);
+public partial record struct GetEyeOffsetEvent(Vector2 Offset);

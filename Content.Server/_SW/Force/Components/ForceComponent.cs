@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Content.Shared.Alert;
 using Content.Shared.Store;
 using Content.Shared.Store.Components;
 using Robust.Shared.Audio;
@@ -36,6 +37,8 @@ public partial class ForceComponent : Component
     public string? DashEffectEnd = "DashEffectEnd";
 }
 
+public sealed partial class OpenMasteryShopAlertEvent : BaseAlertEvent;
+
 public sealed partial class MasteryTypeCondition : ListingCondition
 {
     [DataField("masteryType", required: true)]
@@ -50,5 +53,6 @@ public sealed partial class MasteryTypeCondition : ListingCondition
             return false;
 
         return true;
+
     }
 }

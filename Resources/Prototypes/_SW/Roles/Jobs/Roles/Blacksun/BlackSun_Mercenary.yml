@@ -6,5 +6,5 @@
   - !type:OverallPlaytimeRequirement
     time: 36000 # 10h
   startingGear: BlackSunMercenaryGear
-  icon: "JobIconBlackSunMercenary"
+#  icon: "JobIconBlackSunMercenary"
   supervisors: job-supervisors-blacksun-cap

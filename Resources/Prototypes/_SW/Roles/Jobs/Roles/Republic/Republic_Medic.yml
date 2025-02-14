@@ -7,5 +7,5 @@
     role: Job_Republic_Soldier
     time: 18000 # 5h
   startingGear: RepublicMedicGear
-  icon: "JobIconRepublicMedic"
+  #  icon: "JobIconRepublicMedic"
   supervisors: job-supervisors-leit-rep

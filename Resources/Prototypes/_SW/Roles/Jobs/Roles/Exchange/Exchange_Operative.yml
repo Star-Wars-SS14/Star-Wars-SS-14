@@ -6,5 +6,5 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 0h
   startingGear: ExchangeOperativeGear
-  icon: "JobIconExchangeOperative"
+  #  icon: "JobIconExchangeOperative"
   supervisors: job-supervisors-exchange-cap

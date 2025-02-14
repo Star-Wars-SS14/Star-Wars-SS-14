@@ -9,5 +9,5 @@
     role: Job_Empire_Soldier
     time: 7200 # 2h
   startingGear: EmpireIntelligenceAgentGear
-  icon: "JobIconImperialIntelligenceAgent"
+  #  icon: "JobIconImperialIntelligenceAgent"
   supervisors: job-supervisors-watcher-intelligence

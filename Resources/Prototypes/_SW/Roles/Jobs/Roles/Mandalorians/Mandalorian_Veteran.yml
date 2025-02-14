@@ -7,5 +7,5 @@
     role: Job_Mandalorian_Warrior
     time: 18000 # 5h
   startingGear: MandalorianVeteranGear
-  icon: "JobIconMandalorianVeteran"
+  #  icon: "JobIconMandalorianVeteran"
   supervisors: job-supervisors-mando

@@ -9,5 +9,5 @@
     role: Job_Empire_Major
     time: 36000 # 10h
   startingGear: EmpireMoffGear
-  icon: "JobIconEmpireMoff"
+  #  icon: "JobIconEmpireMoff"
   supervisors: job-supervisors-min-war

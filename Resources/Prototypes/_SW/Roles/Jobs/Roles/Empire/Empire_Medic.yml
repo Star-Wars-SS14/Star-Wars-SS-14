@@ -9,5 +9,5 @@
     role: Job_Empire_Soldier
     time: 18000 # 5h
   startingGear: EmpireMedicalGear
-  icon: "JobIconEmpireMedic"
+  #  icon: "JobIconEmpireMedic"
   supervisors: job-supervisors-leit-emp

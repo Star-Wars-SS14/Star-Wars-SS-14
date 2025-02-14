@@ -21,6 +21,7 @@ namespace Content.Client.Communications.UI
         public bool CanCall;
         public bool AlertLevelSelectable;
         public bool CountdownStarted;
+        public bool CanReinforcements;
         public string CurrentLevel = string.Empty;
         public TimeSpan? CountdownEnd;
 
@@ -28,6 +29,8 @@ namespace Content.Client.Communications.UI
         public event Action<string>? OnAlertLevel;
         public event Action<string>? OnAnnounce;
         public event Action<string>? OnBroadcast;
+        public event Action<string?>? OnReinforcement;
+
 
         public CommunicationsConsoleMenu()
         {
@@ -72,6 +75,10 @@ namespace Content.Client.Communications.UI
 
             EmergencyShuttleButton.OnPressed += _ => OnEmergencyLevel?.Invoke();
             EmergencyShuttleButton.Disabled = !CanCall;
+
+            ReinforcementsShuttleButton.OnPressed += _ => OnReinforcement?.Invoke(null);
+            ReinforcementsShuttleButton.Disabled = !CanReinforcements;
+            ReinforcementsShuttleButton.Modulate = CanReinforcements ? Color.DarkRed : Color.Red;
         }
 
         protected override void FrameUpdate(FrameEventArgs args)

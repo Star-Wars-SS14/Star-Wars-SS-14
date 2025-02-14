@@ -37,7 +37,8 @@
                     Access="Public"
                     Text="{Loc 'comms-console-menu-broadcast-button'}"
                     ToolTip="{Loc 'comms-console-menu-broadcast-button-tooltip'}"
-                    StyleClasses="OpenBoth"/>
+                    StyleClasses="OpenBoth"
+                    Visible="False"/>
 
                 <OptionButton Name="AlertLevelButton"
                     Access="Public"
@@ -50,12 +51,19 @@
             <BoxContainer Orientation="Vertical"
                 SeparationOverride="6">
 
-                <RichTextLabel Name="CountdownLabel"/>
+                <RichTextLabel Name="CountdownLabel"
+                               Visible="False"/>
 
                 <Button Name="EmergencyShuttleButton"
-                    Access="Public" 
+                    Access="Public"
                     Text="Placeholder Text"
-                    ToolTip="{Loc 'comms-console-menu-emergency-shuttle-button-tooltip'}"/>
+                    ToolTip="{Loc 'comms-console-menu-emergency-shuttle-button-tooltip'}"
+                    Visible="False"/>
+
+                <Button Name="ReinforcementsShuttleButton"
+                        Text="Запросить подкрепление"
+                        Access="Public"/>
+
             </BoxContainer>
         </BoxContainer>
     </BoxContainer>

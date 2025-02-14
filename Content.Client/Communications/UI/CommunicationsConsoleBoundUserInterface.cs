@@ -28,6 +28,7 @@ namespace Content.Client.Communications.UI
             _menu.OnBroadcast += BroadcastButtonPressed;
             _menu.OnAlertLevel += AlertLevelSelected;
             _menu.OnEmergencyLevel += EmergencyShuttleButtonPressed;
+            _menu.OnReinforcement += ReinforcementsButtonPressed;
         }
 
         public void AlertLevelSelected(string level)
@@ -47,7 +48,7 @@ namespace Content.Client.Communications.UI
                 CallShuttle();
         }
 
-        public void ReinforcementsButtonPressed()
+        public void ReinforcementsButtonPressed(string? parameter)
         {
             CallReinforcements();
         }
@@ -95,6 +96,7 @@ namespace Content.Client.Communications.UI
                 _menu.AlertLevelSelectable = commsState.AlertLevels != null && !float.IsNaN(commsState.CurrentAlertDelay) && commsState.CurrentAlertDelay <= 0;
                 _menu.CurrentLevel = commsState.CurrentAlert;
                 _menu.CountdownEnd = commsState.ExpectedCountdownEnd;
+                _menu.CanReinforcements = commsState.CanReinforcements;
 
                 _menu.UpdateCountdown();
                 _menu.UpdateAlertLevels(commsState.AlertLevels, _menu.CurrentLevel);

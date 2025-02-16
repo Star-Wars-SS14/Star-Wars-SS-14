@@ -10,5 +10,5 @@
     role: Job_Republic_Commander_Lieutenant
     time: 18000 # 5h
   startingGear: RepublicCommanderCommanderGear
-  #  icon: "JobIconHavokCommander"
+  icon: "JobIconHavokCommander"
   supervisors: job-supervisors-general-gaza

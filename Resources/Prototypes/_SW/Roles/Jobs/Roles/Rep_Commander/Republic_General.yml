@@ -9,5 +9,5 @@
     role: Job_Republic_Captain
     time: 18000 # 5h
   startingGear: RepublicGeneralGear
-  #  icon: "JobIconRepublicGeneral"
+  icon: "JobIconRepublicGeneral"
   supervisors: job-supervisors-grand-marshal

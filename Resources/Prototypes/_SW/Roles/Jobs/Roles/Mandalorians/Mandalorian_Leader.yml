@@ -7,5 +7,5 @@
     role: Job_Mandalorian_Veteran
     time: 18000 # 5h
   startingGear: MandalorianLeaderGear
-  #  icon: "JobIconMandalorianLeader"
+  icon: "JobIconMandalorianLeader"
   supervisors: job-supervisors-mando-led

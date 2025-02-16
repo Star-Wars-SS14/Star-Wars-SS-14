@@ -9,5 +9,5 @@
     role: Job_Exchange_Operative
     time: 18000 # 5h
   startingGear: ExchangeCaptainGear
-  #  icon: "JobIconExchangeCaptain"
+  icon: "JobIconExchangeCaptain"
   supervisors: job-supervisors-exchange

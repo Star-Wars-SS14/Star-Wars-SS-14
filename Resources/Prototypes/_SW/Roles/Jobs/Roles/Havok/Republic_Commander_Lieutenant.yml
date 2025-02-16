@@ -10,5 +10,5 @@
     department: SWRPCommander
     time: 18000 # 5h
   startingGear: RepublicCommanderLieutenantGear
-  #  icon: "JobIconHavokStormtrooper"
+  icon: "JobIconHavokStormtrooper"
   supervisors: job-supervisors-havok-cap

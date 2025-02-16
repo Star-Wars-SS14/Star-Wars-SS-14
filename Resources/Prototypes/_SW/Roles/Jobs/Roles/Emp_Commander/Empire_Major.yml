@@ -9,5 +9,5 @@
     role: Job_Empire_Lieutenant
     time: 18000 # 5h
   startingGear: EmpireMajorGear
-  #  icon: "JobIconEmpireMajor"
+  icon: "JobIconEmpireMajor"
   supervisors: job-supervisors-MOFF

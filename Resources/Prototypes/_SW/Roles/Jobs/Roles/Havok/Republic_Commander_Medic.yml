@@ -10,5 +10,5 @@
     department: SWPepublic
     time: 36000 # 10h
   startingGear: RepublicCommanderMedicGear
-  #  icon: "JobIconHavokMedic"
+  icon: "JobIconHavokMedic"
   supervisors: job-supervisors-havok-cap

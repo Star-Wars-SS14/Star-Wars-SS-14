@@ -9,5 +9,5 @@
     role: Job_Empire_Soldier
     time: 36000 # 10h
   startingGear: EmpireLieutenantGear
-#  icon: "JobIconEmpireLieutenant"
+  icon: "JobIconEmpireLieutenant"
   supervisors: job-supervisors-major-emp

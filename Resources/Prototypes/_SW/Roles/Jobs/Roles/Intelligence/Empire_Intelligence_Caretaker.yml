@@ -9,4 +9,5 @@
     role: Job_Empire_Intelligence_Agent
     time: 18000 # 5h
   startingGear: EmpireIntelligenceCaretakerGear
-#  supervisors: job-supervisors-keeper
+  icon: "JobIconImperialIntelligenceCaretaker"
+  supervisors: job-supervisors-keeper

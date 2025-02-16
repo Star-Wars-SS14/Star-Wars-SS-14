@@ -7,5 +7,5 @@
     role: Job_Empire_Soldier
     time: 18000 # 5h
   startingGear: SobrikOfficerGear
-  #  icon: "JobIconSobrikOfficer"
+  icon: "JobIconSobrikOfficer"
   supervisors: job-supervisors-sobrik-captain

@@ -9,5 +9,5 @@
     role: Job_Republic_Lieutenant
     time: 18000 # 5h
   startingGear: RepublicCaptainGear
-  #  icon: "JobIconHavokLieutenant"
+  icon: "JobIconHavokLieutenant"
   supervisors: job-supervisors-gen-rep

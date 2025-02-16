@@ -7,5 +7,5 @@
     role: Job_Sobrik_Officer
     time: 7200 # 2h
   startingGear: SobrikMedicGear
-  #  icon: "JobIconSobrikMedic"
+  icon: "JobIconSobrikMedic"
   supervisors: job-supervisors-sobrik-captain

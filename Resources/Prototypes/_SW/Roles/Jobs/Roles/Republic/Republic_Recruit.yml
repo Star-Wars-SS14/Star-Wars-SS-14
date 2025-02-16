@@ -6,5 +6,5 @@
   - !type:OverallPlaytimeRequirement
     time: 0 # 0h
   startingGear: RepublicRecruitGear
-  #  icon: "JobIconRepublicRecruit"
+  icon: "JobIconRepublicRecruit"
   supervisors: job-supervisors-leit-rep

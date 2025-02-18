@@ -1,7 +1,8 @@
 - type: job
   id: Chaplain
   name: job-name-chaplain
-  description: job-description-chaplain
+  description: job-description-
+  setPreference: false
   playTimeTracker: JobChaplain
   startingGear: ChaplainGear
   icon: "JobIconChaplain"
@@ -20,3 +21,7 @@
     shoes: ClothingShoesColorBlack
     id: ChaplainPDA
     ears: ClothingHeadsetService
+  storage:
+    back:
+    - Bible
+    - RubberStampChaplain

@@ -51,7 +51,7 @@ public abstract partial class SharedGunSystem
     /// </summary>
     private void OnChamberActivate(EntityUid uid, ChamberMagazineAmmoProviderComponent component, ActivateInWorldEvent args)
     {
-        if (args.Handled)
+        if (args.Handled || !args.Complex)
             return;
 
         args.Handled = true;
@@ -67,13 +67,10 @@ public abstract partial class SharedGunSystem
             return;
 
         args.Handled = true;
-
-        if (component.BoltClosed == false)
-        {
+        if (component.CanRack)
+            UseChambered(uid, component, args.User);
+        else
             ToggleBolt(uid, component, args.User);
-            return;
-        }
-        //UseChambered(uid, component, args.User);
     }
 
     /// <summary>
@@ -81,17 +78,17 @@ public abstract partial class SharedGunSystem
     /// </summary>
     private void OnChamberActivationVerb(EntityUid uid, ChamberMagazineAmmoProviderComponent component, GetVerbsEvent<ActivationVerb> args)
     {
-        if (!args.CanAccess || !args.CanInteract || component.BoltClosed == null)
+        if (!args.CanAccess || !args.CanInteract || component.BoltClosed == null || !component.CanRack)
             return;
 
-        /*args.Verbs.Add(new ActivationVerb()
+        args.Verbs.Add(new ActivationVerb()
         {
             Text = Loc.GetString("gun-chamber-rack"),
             Act = () =>
             {
                 UseChambered(uid, component, args.User);
             }
-        });*/
+        });
     }
 
     /// <summary>
@@ -114,7 +111,7 @@ public abstract partial class SharedGunSystem
             else
             {
                 // Similar to below just due to prediction.
-                TransformSystem.DetachParentToNull(chamberEnt.Value, Transform(chamberEnt.Value));
+                TransformSystem.DetachEntity(chamberEnt.Value, Transform(chamberEnt.Value));
             }
         }
 
@@ -137,7 +134,7 @@ public abstract partial class SharedGunSystem
         if (!args.CanAccess || !args.CanInteract || component.BoltClosed == null)
             return;
 
-        /*args.Verbs.Add(new InteractionVerb()
+        args.Verbs.Add(new InteractionVerb()
         {
             Text = component.BoltClosed.Value ? Loc.GetString("gun-chamber-bolt-open") : Loc.GetString("gun-chamber-bolt-close"),
             Act = () =>
@@ -145,7 +142,7 @@ public abstract partial class SharedGunSystem
                 // Just toggling might be more user friendly instead of trying to set to whatever they think?
                 ToggleBolt(uid, component, args.User);
             }
-        });*/
+        });
     }
 
     /// <summary>

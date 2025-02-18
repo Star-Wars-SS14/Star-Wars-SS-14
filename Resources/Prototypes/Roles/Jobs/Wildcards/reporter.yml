@@ -2,6 +2,7 @@
   id: Reporter
   name: job-name-reporter
   description: job-description-reporter
+  setPreference: false
   playTimeTracker: JobReporter
   startingGear: ReporterGear
   icon: "JobIconReporter"
@@ -16,3 +17,6 @@
     shoes: ClothingShoesColorWhite
     id: ReporterPDA
     ears: ClothingHeadsetService
+  #storage:
+    #back:
+    #- Stuff

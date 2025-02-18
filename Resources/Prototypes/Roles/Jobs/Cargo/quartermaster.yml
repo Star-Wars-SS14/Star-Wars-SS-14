@@ -2,6 +2,7 @@
   id: Quartermaster
   name: job-name-qm
   description: job-description-qm
+  setPreference: false
   playTimeTracker: JobQuartermaster
   requirements:
 #    - !type:RoleTimeRequirement
@@ -12,9 +13,9 @@
       time: 36000 #10 hrs # Corvax-RoleTime
     - !type:DepartmentTimeRequirement
       department: Cargo
-      time: 54000 #15 hrs # Corvax-RoleTime
-#    - !type:OverallPlaytimeRequirement
-#      time: 144000 #40 hrs
+      time: 36000 #10 hours
+    - !type:OverallPlaytimeRequirement
+      time: 144000 #40 hrs
   weight: 10
   startingGear: QuartermasterGear
   icon: "JobIconQuarterMaster"
@@ -25,6 +26,7 @@
   - Salvage
   - Quartermaster
   - Maintenance
+  - External
   - Command
   - Brig
   - Cryogenics
@@ -42,3 +44,6 @@
     ears: ClothingHeadsetQM
     belt: BoxFolderClipboard
     pocket1: AppraisalTool
+  storage:
+    back:
+    - Flash

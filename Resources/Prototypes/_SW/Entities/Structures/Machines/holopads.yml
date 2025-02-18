@@ -1,0 +1,7 @@
+- type: entity
+  id: HolopadAdmin
+  parent: Holopad
+  components:
+    - type: Tag
+      tags:
+        - HolopadAdmin

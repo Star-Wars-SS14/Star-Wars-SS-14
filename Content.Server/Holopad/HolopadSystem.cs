@@ -1,3 +1,4 @@
+using Content.Server.Chat.Managers;
 using Content.Server.Chat.Systems;
 using Content.Server.Popups;
 using Content.Server.Power.EntitySystems;
@@ -11,6 +12,7 @@ using Content.Shared.IdentityManagement;
 using Content.Shared.Labels.Components;
 using Content.Shared.Silicons.StationAi;
 using Content.Shared.Speech;
+using Content.Shared.Tag;
 using Content.Shared.Telephone;
 using Content.Shared.UserInterface;
 using Content.Shared.Verbs;
@@ -35,6 +37,10 @@ public sealed class HolopadSystem : SharedHolopadSystem
     [Dependency] private readonly ChatSystem _chatSystem = default!;
     [Dependency] private readonly PopupSystem _popupSystem = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+    //SW start
+    [Dependency] private readonly TagSystem _tagSystem = default!;
+    [Dependency] private readonly IChatManager _chatManager = default!;
+    //SW end
 
     private float _updateTimer = 1.0f;
 
@@ -104,6 +110,12 @@ public sealed class HolopadSystem : SharedHolopadSystem
             return;
 
         LinkHolopadToUser(source, args.Actor);
+        //SW start
+        if (_tagSystem.HasTag(receiver, "HolopadAdmin"))
+        {
+            _chatManager.SendAdminAnnouncement("Holopad started call!", null, null);
+        }
+        //SW end
         _telephoneSystem.CallTelephone((source, sourceTelephone), (receiver, receiverTelephone), args.Actor);
     }
 

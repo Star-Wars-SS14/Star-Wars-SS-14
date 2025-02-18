@@ -1,2 +1,10 @@
-department-Empire-description =  Галактическое государство, созданное Верховным канцлером Палпатином взамен Галактической Республики.
-department-Rebel-Alliance-description = сила сопротивления, созданной, для того, чтобы противостоять Галактической Империи.
+department-SWRebel-Alliance-description = сила сопротивления, созданной, для того, чтобы противостоять Галактической Империи.
+department-SWEmpire-description = Империя
+department-SWPepublic-description = Республика
+department-SWSobri-descriptionk = Имперский Корпус
+department-SWMandalorians-description = Мандалорцы
+department-SWExchange-description = Обмен
+department-SWRP_ntelligence-description = Имперский разведывательный отряд
+department-SWRPCommander-description = Республиканский командный отряд
+department-SWBlacksun-description = Черное Солнце
+department-SWCivilian-description = Обычные жители

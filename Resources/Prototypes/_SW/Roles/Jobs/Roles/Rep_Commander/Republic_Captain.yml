@@ -1,0 +1,13 @@
+- type: job
+  id: SWRepublicCaptain
+  name: Капитан Сил Республики
+  playTimeTracker: Job_Republic_Captain
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 72000 # 20h
+  - !type:RoleTimeRequirement
+    role: Job_Republic_Lieutenant
+    time: 18000 # 5h
+  startingGear: RepublicCaptainGear
+  icon: "JobIconHavokLieutenant"
+  supervisors: job-supervisors-gen-rep

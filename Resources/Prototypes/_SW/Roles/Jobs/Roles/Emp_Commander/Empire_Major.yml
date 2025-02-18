@@ -1,0 +1,13 @@
+- type: job
+  id: SWEmpireMajor
+  name: Майор Сил Империи
+  playTimeTracker: Job_Empire_Major
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 108000 # 30h
+  - !type:RoleTimeRequirement
+    role: Job_Empire_Lieutenant
+    time: 18000 # 5h
+  startingGear: EmpireMajorGear
+  icon: "JobIconEmpireMajor"
+  supervisors: job-supervisors-MOFF

@@ -1,0 +1,13 @@
+- type: job
+  id: SWRepublicLieutenant
+  name: Лейтенант Сил Республики
+  playTimeTracker: Job_Republic_Lieutenant
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 54000 # 15h
+  - !type:RoleTimeRequirement
+    role: Job_Republic_Soldier
+    time: 18000 # 5h
+  startingGear: RepublicLieutenantGear
+  icon: "JobIconRepublicLieutenant"
+  supervisors: job-supervisors-rep-cap

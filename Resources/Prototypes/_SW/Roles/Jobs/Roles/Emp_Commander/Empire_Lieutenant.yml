@@ -1,0 +1,13 @@
+- type: job
+  id: SWEmpireLieutenant
+  name: Лейтенант Сил Империи
+  playTimeTracker: Job_Empire_Lieutenant
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 72000 # 20h
+  - !type:RoleTimeRequirement
+    role: Job_Empire_Soldier
+    time: 36000 # 10h
+  startingGear: EmpireLieutenantGear
+  icon: "JobIconEmpireLieutenant"
+  supervisors: job-supervisors-major-emp

@@ -2,6 +2,7 @@
   id: Boxer
   name: job-name-boxer
   description: job-description-boxer
+  setPreference: false
   playTimeTracker: JobBoxer
   startingGear: BoxerGear
   icon: "JobIconBoxer"
@@ -17,3 +18,6 @@
     ears: ClothingHeadsetService
     shoes: ClothingShoesColorRed
     belt: ClothingBeltChampion
+  #storage:
+    #back:
+    #- Stuff

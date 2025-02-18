@@ -10,53 +10,64 @@ using LogMessage = Discord.LogMessage;
 namespace Content.Server.Discord;
 
 /// <summary>
-/// Represents the arguments for the <see cref="DiscordLink.OnCommandReceived"/> event.
+///     Represents the arguments for the <see cref="DiscordLink.OnCommandReceived" /> event.
 /// </summary>
 public record CommandReceivedEventArgs
 {
     /// <summary>
-    /// The command that was received. This is the first word in the message, after the bot prefix.
+    ///     The command that was received. This is the first word in the message, after the bot prefix.
     /// </summary>
     public string Command { get; init; } = string.Empty;
+
     /// <summary>
-    /// The arguments to the command. This is everything after the command, split by spaces.
+    ///     The arguments to the command. This is everything after the command, split by spaces.
     /// </summary>
     public string[] Arguments { get; init; } = Array.Empty<string>();
+
     /// <summary>
-    /// Information about the message that the command was received from. This includes the message content, author, etc.
-    /// Use this to reply to the message, delete it, etc.
+    ///     Information about the message that the command was received from. This includes the message content, author, etc.
+    ///     Use this to reply to the message, delete it, etc.
     /// </summary>
     public SocketMessage Message { get; init; } = default!;
 }
 
 public sealed class DiscordLink : IPostInjectInit
 {
-    [Dependency] private readonly ILogManager _logManager = default!;
     [Dependency] private readonly IConfigurationManager _configuration = default!;
+    [Dependency] private readonly ILogManager _logManager = default!;
+    private string _botToken = string.Empty;
 
     /// <summary>
-    ///    The Discord client. This is null if the bot is not connected.
+    ///     The Discord client. This is null if the bot is not connected.
     /// </summary>
     /// <remarks>
-    ///     This should not be used directly outside of DiscordLink. So please do not make it public. Use the methods in this class instead.
+    ///     This should not be used directly outside of DiscordLink. So please do not make it public. Use the methods in this
+    ///     class instead.
     /// </remarks>
     private DiscordSocketClient? _client;
+
+    private ulong _guildId;
     private ISawmill _sawmill = default!;
     private ISawmill _sawmillNet = default!;
 
-    private ulong _guildId;
-    private string _botToken = string.Empty;
-
     public string BotPrefix = default!;
+
     /// <summary>
-    /// If the bot is currently connected to Discord.
+    ///     If the bot is currently connected to Discord.
     /// </summary>
     public bool IsConnected => _client != null;
+
+    public void PostInject()
+    {
+        _sawmill = _logManager.GetSawmill("discord.link");
+        _sawmillNet = _logManager.GetSawmill("discord.link.log");
+    }
 
     /// <summary>
     ///     Event that is raised when a command is received from Discord.
     /// </summary>
     public event Action<CommandReceivedEventArgs>? OnCommandReceived;
+
     /// <summary>
     ///     Event that is raised when a message is received from Discord. This is raised for every message, including commands.
     /// </summary>
@@ -64,16 +75,16 @@ public sealed class DiscordLink : IPostInjectInit
 
     public void Initialize()
     {
-        _configuration.OnValueChanged(CCVars.DiscordGuildId, OnGuildIdChanged, true);
-        _configuration.OnValueChanged(CCVars.DiscordPrefix, OnPrefixChanged, true);
-        _client = new DiscordSocketClient(new DiscordSocketConfig()
+        _configuration.OnValueChanged(SWVars.DiscordGuildId, OnGuildIdChanged, true);
+        _configuration.OnValueChanged(SWVars.DiscordPrefix, OnPrefixChanged, true);
+        _client = new DiscordSocketClient(new DiscordSocketConfig
         {
             GatewayIntents = GatewayIntents.All
         });
         _client.Log += Log;
         _client.MessageReceived += OnCommandReceivedInternal;
         _client.MessageReceived += OnMessageReceivedInternal;
-        if (_configuration.GetCVar(CCVars.DiscordToken) is not { } token || token == string.Empty)
+        if (_configuration.GetCVar(SWVars.DiscordToken) is not { } token || token == string.Empty)
         {
             _sawmill.Info("No Discord token specified, not connecting.");
             // The Bot is not connected, so we need to set the client to null, because some methods check if the bot is connected using a null check on the client.
@@ -82,7 +93,8 @@ public sealed class DiscordLink : IPostInjectInit
         }
 
         // If the Guild ID is empty OR the prefix is empty, we don't want to connect to Discord.
-        if (_configuration.GetCVar(CCVars.DiscordGuildId) == string.Empty || _configuration.GetCVar(CCVars.DiscordPrefix) == string.Empty)
+        if (_configuration.GetCVar(SWVars.DiscordGuildId) == string.Empty ||
+            _configuration.GetCVar(SWVars.DiscordPrefix) == string.Empty)
         {
             // This is a warning, not info, because it's a configuration error.
             // It is valid to not have a Discord token set which is why the above check is an info.
@@ -106,7 +118,7 @@ public sealed class DiscordLink : IPostInjectInit
         {
             try
             {
-                LoginAsync(token);
+                _ = LoginAsync(token);
             }
             catch (Exception e)
             {
@@ -130,14 +142,8 @@ public sealed class DiscordLink : IPostInjectInit
             _client = null;
         }
 
-        _configuration.UnsubValueChanged(CCVars.DiscordGuildId, OnGuildIdChanged);
-        _configuration.UnsubValueChanged(CCVars.DiscordPrefix, OnPrefixChanged);
-    }
-
-    public void PostInject()
-    {
-        _sawmill = _logManager.GetSawmill("discord.link");
-        _sawmillNet = _logManager.GetSawmill("discord.link.log");
+        _configuration.UnsubValueChanged(SWVars.DiscordGuildId, OnGuildIdChanged);
+        _configuration.UnsubValueChanged(SWVars.DiscordPrefix, OnPrefixChanged);
     }
 
     private Task OnMessageReceivedInternal(SocketMessage message)
@@ -156,7 +162,7 @@ public sealed class DiscordLink : IPostInjectInit
         // Split the message into the command and the arguments.
         var split = content[BotPrefix.Length..].Split(' ', StringSplitOptions.RemoveEmptyEntries);
         if (split.Length == 0)
-            return Task.CompletedTask;  // No command.
+            return Task.CompletedTask; // No command.
 
         // Raise the event!
         OnCommandReceived?.Invoke(new CommandReceivedEventArgs
@@ -189,7 +195,7 @@ public sealed class DiscordLink : IPostInjectInit
         _sawmill.Info("Connected to Discord.");
     }
 
-    private string FormatLog(LogMessage msg)
+    private static string FormatLog(LogMessage msg)
     {
         return msg.Exception is null ? $"{msg.Source}: {msg.Message}" : $"{msg.Source}: {msg.Exception}\n{msg.Message}";
     }
@@ -208,16 +214,18 @@ public sealed class DiscordLink : IPostInjectInit
         return Task.CompletedTask;
     }
 
-    public void SendMessage(string message, ulong channel, bool isTTS = false, Embed? embed = null, AllowedMentions? allowedMentions = null)
+    public void SendMessage(string message,
+        ulong channel,
+        bool isTTS = false,
+        Embed? embed = null,
+        AllowedMentions? allowedMentions = null)
     {
         // Default to none to avoid lazy programmers forgetting to set it. Wouldn't want to ping everyone by accident.
         allowedMentions ??= AllowedMentions.None;
 
         var guild = GetGuild();
         if (guild is null)
-        {
             return;
-        }
 
         var textChannel = guild.GetTextChannel(channel);
         if (textChannel is null)
@@ -225,6 +233,7 @@ public sealed class DiscordLink : IPostInjectInit
             _sawmill.Error("Tried to send a message to a channel that doesn't exist!");
             return;
         }
+
         textChannel.SendMessageAsync(message, isTTS, embed, null, allowedMentions);
     }
 
@@ -234,7 +243,11 @@ public sealed class DiscordLink : IPostInjectInit
         if (_client is null)
         {
             if (_botToken == string.Empty)
-                return null; // If the bot is turned off, don't send a warning. It's totally valid for servers to run without the Discord link set up.
+            {
+                return
+                    null; // If the bot is turned off, don't send a warning. It's totally valid for servers to run without the Discord link set up.
+            }
+
             _sawmill.Error("Tried to get a Discord guild but the client is null! Is the token not set?");
             return null;
         }

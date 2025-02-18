@@ -1,2 +1,10 @@
-department-Empire = Галактическая Империя
-department-RebelAlliance = Альянс Повстанцев
+department-SWRebelAlliance = Альянс Повстанцев
+department-SWEmpire = Империя
+department-SWPepublic = Республика
+department-SWSobrik = Имперский Корпус
+department-SWMandalorians = Мандалорцы
+department-SWExchange = Обмен
+department-SWRPIntelligence = Имперский разведывательный отряд
+department-SWRPCommander = Республиканский командный отряд
+department-SWBlacksun = Черное Солнце
+department-SWCivilian = Обычные жители

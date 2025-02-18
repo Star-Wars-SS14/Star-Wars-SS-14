@@ -2,6 +2,7 @@
   id: BaseWeaponBlaster
   parent: [BaseItem, BaseGunWieldable]
   abstract: true
+  suffix: Оружие SW
   components:
   - type: Clothing
     sprite: Objects/Weapons/Guns/Rifles/ak.rsi

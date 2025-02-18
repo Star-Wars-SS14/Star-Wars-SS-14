@@ -8,6 +8,7 @@
         <LineEdit Name="CoordsY" HorizontalExpand="True" MinHeight="5" MinWidth="10" MaxHeight="50" MaxWidth="100"/>
         <Button Name="ArtilleryButton" Text="{Loc 'comms-console-menu-call-artillery'}" StyleClasses="OpenLeft" Access="Public" />
         </BoxContainer>        
-        <RichTextLabel Name="CountdownLabel" HorizontalExpand="True" MinHeight="5" MinWidth="10"/>               
+        <RichTextLabel Name="CountdownLabel" HorizontalExpand="True" MinHeight="5" MinWidth="10"/>
+        <RichTextLabel Name="AttacksLeft" HorizontalExpand="True" MinHeight="5" MinWidth="10"/>
     </BoxContainer>
 </controls:FancyWindow>

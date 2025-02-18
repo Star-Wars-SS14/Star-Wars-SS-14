@@ -7,11 +7,11 @@ namespace Content.Server._SW.Artillery
     [RegisterComponent]
     public sealed partial class ArtilleryConsoleComponent : SharedCommunicationsConsoleComponent
     {
-        [ViewVariables]
+        [ViewVariables(VVAccess.ReadWrite)]
         [DataField("artileryCalledProto")]
         public string? ArtilleryProto = default!;
 
-        [ViewVariables]
+        [ViewVariables(VVAccess.ReadWrite)]
         [DataField("delayBetweenCallsInSeconds")]
         public float DelayBetweenCalls = 600;
 
@@ -34,6 +34,14 @@ namespace Content.Server._SW.Artillery
         [DataField]
         public LocId AnnouncementText = "artillery-console-announcement-text";
 
+        /// <summary>
+        ///  Показывает, сколько ударов артилерии осталось (то есть сколько раз еще ее можно вызвать)
+        /// </summary>
+        [ViewVariables(VVAccess.ReadWrite)]
+        [DataField]
+        public int AttacksLeft = 8;
+
+        [ViewVariables(VVAccess.ReadWrite)]
         public float CurrentDelay = 0f;
     }
 }

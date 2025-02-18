@@ -24,10 +24,12 @@ public sealed class ArtilleryConsoleInterfaceState : BoundUserInterfaceState
 {
     public bool CanCall;
     public TimeSpan? CountDownLeft;
-    public ArtilleryConsoleInterfaceState(bool can, TimeSpan? countDownLeft)
+    public int AttackLeft;
+    public ArtilleryConsoleInterfaceState(bool can, TimeSpan? countDownLeft, int attackLeft)
     {
         CanCall = can;
         CountDownLeft = countDownLeft;
+        AttackLeft = attackLeft;
     }
 }
 

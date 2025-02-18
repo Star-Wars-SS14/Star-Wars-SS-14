@@ -43,6 +43,7 @@ namespace Content.Client._SW.Artillery.UI
             {
                 CountdownLabel.SetMessage($"{Loc.GetString("artillery-time-remaining")}\n{count}s");
             }
+            AttacksLeft.SetMessage($"Осталось ударов: {Owner.AttackLeft}");
         }
 
         public override void Close()

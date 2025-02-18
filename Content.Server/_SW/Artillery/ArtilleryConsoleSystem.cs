@@ -56,16 +56,21 @@ namespace Content.Server._SW.Artillery
             _chatSystem.DispatchGlobalAnnouncement(msg, title, announcementSound: ent.Comp.Sound, colorOverride: ent.Comp.Color);
             Spawn(ent.Comp.ArtilleryProto, new MapCoordinates(new System.Numerics.Vector2(args.x, args.y), id));
             ent.Comp.CurrentDelay = ent.Comp.DelayBetweenCalls;
+            ent.Comp.AttacksLeft--;
         }
         public void UpdateArtilleryConsoleInterface(EntityUid uid, ArtilleryConsoleComponent comp)
         {
-            _uiSystem.SetUiState(uid, ArtilleryConsoleUiKey.Key, new ArtilleryConsoleInterfaceState(CanCall(comp),
-                                                                                                    TimeSpan.FromSeconds(comp.CurrentDelay)));
+            _uiSystem.SetUiState(uid, ArtilleryConsoleUiKey.Key, new ArtilleryConsoleInterfaceState
+                (
+                CanCall(comp),
+                TimeSpan.FromSeconds(comp.CurrentDelay),
+                comp.AttacksLeft)
+                );
         }
 
         public bool CanCall(ArtilleryConsoleComponent comp)
         {
-            return comp.CurrentDelay <= 0f;
+            return comp.CurrentDelay <= 0f && comp.AttacksLeft > 0;
         }
 
         public override void Update(float frameTime)

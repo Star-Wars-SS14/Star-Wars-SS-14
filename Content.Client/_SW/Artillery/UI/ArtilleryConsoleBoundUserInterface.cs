@@ -17,6 +17,8 @@ namespace Content.Client._SW.Artillery.UI
 
         public TimeSpan? CountDownLeft;
 
+        public int AttackLeft;
+
         public ArtilleryConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
         {
            
@@ -29,6 +31,7 @@ namespace Content.Client._SW.Artillery.UI
             if (state is not ArtilleryConsoleInterfaceState artState)
                 return;
             CountDownLeft = artState.CountDownLeft;
+            AttackLeft = artState.AttackLeft;
             if (_menu != null)
             {
                 _menu.UpdateCountdown();

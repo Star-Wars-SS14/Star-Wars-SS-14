@@ -1,1 +1,2 @@
-ent-SW_ClothingHeadCapOfficers = Офицерская кепка
+ent-SW_ClothingHeadCapOfficers = офицерская кепка
+  .desc = Легкий головной убор. Не так надежно как шлем, но куда более статусно.

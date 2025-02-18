@@ -1,0 +1,14 @@
+ent-SW_IDCardEmpireMoff = ID карта моффа Империи
+  .desc = {ent-SW_IDCardSobrikCaptain.desc}
+ent-SW_IDCardEmpireMajor = ID карта майора Империи
+  .desc = {ent-SW_IDCardSobrikCaptain.desc}
+ent-SW_IDCardEmpireLieutenant = ID карта лейтенанта Империи
+  .desc = {ent-SW_IDCardSobrikCaptain.desc}
+ent-SW_IDCardEmpireSoldier = ID карта солдата Империи
+  .desc = {ent-SW_IDCardSobrikCaptain.desc}
+ent-SW_IDCardEmpireMedic = ID карта медика Империи
+  .desc = {ent-SW_IDCardSobrikCaptain.desc} 
+ent-SW_IDCardEmpireIntelligenceCaretaker = ID карта смотрителя имперской разведки
+  .desc = {ent-SW_IDCardSobrikCaptain.desc} 
+ent-SW_IDCardEmpireIntelligenceAgent = ID карта агента имперской разведки
+  .desc = {ent-SW_IDCardSobrikCaptain.desc} 

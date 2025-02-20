@@ -113,10 +113,10 @@ public sealed class HolopadSystem : SharedHolopadSystem
         //SW start
         if (_tagSystem.HasTag(receiver, "HolopadAdmin"))
         {
-            _chatManager.SendAdminAnnouncement("Holopad started call!", null, null);
+            _chatManager.SendAdminAnnouncement(Loc.GetString("admin-holopad-is-called"), null, null);
+            //SW end
+            _telephoneSystem.CallTelephone((source, sourceTelephone), (receiver, receiverTelephone), args.Actor);
         }
-        //SW end
-        _telephoneSystem.CallTelephone((source, sourceTelephone), (receiver, receiverTelephone), args.Actor);
     }
 
     private void OnHolopadAnswerCall(Entity<HolopadComponent> receiver, ref HolopadAnswerCallMessage args)

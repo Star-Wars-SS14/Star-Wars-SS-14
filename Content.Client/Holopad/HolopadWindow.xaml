@@ -94,10 +94,10 @@
                     </PanelContainer>
                 </BoxContainer>
 
-                <!-- Button to start an emergency broadcast (the user requires a certain level of access to interact with it) -->
+                <!-- Button to start an emergency broadcast (the user requires a certain level of access to interact with it) --><!--
                 <BoxContainer Name="StartBroadcastContainer" Orientation="Vertical" ReservesSpace="False" Visible="False">
                     <Button Name="StartBroadcastButton" Text="{Loc 'holopad-window-emergency-broadcast'}" Margin="10 0 10 5" Disabled="False" ReservesSpace="False"/>
-                </BoxContainer>
+                </BoxContainer>-->
 
             </BoxContainer>
         </BoxContainer>

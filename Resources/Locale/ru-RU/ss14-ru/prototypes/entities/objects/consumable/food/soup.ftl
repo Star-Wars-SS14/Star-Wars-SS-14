@@ -1,5 +1,5 @@
-ent-FoodBowlBase = { ent-BaseItem }
-    .desc = { ent-BaseItem.desc }
+ent-FoodBowlBase = { ent-FoodBase }
+    .desc = { ent-FoodBase.desc }
 ent-FoodSoupPea = гороховый суп
     .desc = Простой гороховый суп.
 ent-FoodSaladAesir = божественный салат
@@ -86,3 +86,5 @@ ent-FoodSoupElectron = суп электрон
     .desc = Гастрономическая диковинка неземного происхождения.
 ent-FoodSoupBungo = карри бунго
     .desc = Острый овощной карри, приготовленный с использованием скромного фрукта бунго. Экзотика!
+ent-FoodSoupEscargot = эскарго
+    .desc = Сытное сливочное блюдо с улитками, бон апетит!

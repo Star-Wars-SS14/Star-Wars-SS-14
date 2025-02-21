@@ -2,6 +2,7 @@
   id: Librarian
   name: job-name-librarian
   description: job-description-librarian
+  setPreference: false
   playTimeTracker: JobLibrarian
   startingGear: LibrarianGear
   icon: "JobIconLibrarian"
@@ -16,5 +17,8 @@
     shoes: ClothingShoesBootsLaceup
     id: LibrarianPDA
     ears: ClothingHeadsetService
-    pocket1: d10Dice
+    pocket1: d20Dice
     pocket2: HandLabeler # for making named bestsellers
+  storage:
+    back:
+    - BookRandom

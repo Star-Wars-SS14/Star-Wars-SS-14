@@ -2,6 +2,7 @@
   id: Botanist
   name: job-name-botanist
   description: job-description-botanist
+  setPreference: false
   playTimeTracker: JobBotanist
   startingGear: BotanistGear
   icon: "JobIconBotanist"
@@ -21,3 +22,6 @@
     id: BotanistPDA
     ears: ClothingHeadsetService
     belt: ClothingBeltPlantFilled
+  #storage:
+    #back:
+    #- Stuff

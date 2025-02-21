@@ -7,5 +7,4 @@
     role: Job_BlackSun_Mercenary
     time: 18000 # 5h
   startingGear: BlackSunGear
-  icon: "JobIconBlackSun"
   supervisors: job-supervisors-reg-blacksun

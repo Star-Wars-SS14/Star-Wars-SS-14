@@ -16,6 +16,7 @@ public sealed partial class ForceSystem
     {
         SubscribeLocalEvent<StoreComponent, MasteryUpEvent>(OnMasteryUpBought);
         SubscribeLocalEvent<StoreComponent, MasteryLightingUpgradeEvent>(OnMasteryLightingUpgrade);
+        SubscribeLocalEvent<ForceComponent, OpenMasteryShopAlertEvent>(OnOpenMasteryShopAlert);
     }
 
     private void OnMasteryUpBought(EntityUid player, StoreComponent storeComponent, MasteryUpEvent args)
@@ -85,13 +86,8 @@ public sealed partial class ForceSystem
                 lightForceComponent.JediMasteryAlerts[lightForceComponent.Mastery]);
         }
     }
-}
 
-[UsedImplicitly]
-[DataDefinition]
-public sealed partial class OpenMasteryShop : IAlertClick
-{
-    public void AlertClicked(EntityUid uid)
+    private void OnOpenMasteryShopAlert(EntityUid uid, ForceComponent component, OpenMasteryShopAlertEvent args)
     {
         var entityManager = IoCManager.Resolve<IEntityManager>();
 

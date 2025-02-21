@@ -149,7 +149,7 @@ namespace Content.Shared.Verbs
             {
                 ISawmill _s = Logger.GetSawmill("verbs");
                 _s.Debug("requested");
-                var verbEvent = new GetVerbsEvent<PullByForceVerb>(user, target, @using, hands, canInteract, true, extraCategories);
+                var verbEvent = new GetVerbsEvent<PullByForceVerb>(user, target, @using, hands, canInteract, true, true, extraCategories);
                 RaiseLocalEvent(target, verbEvent);
                 verbs.UnionWith(verbEvent.Verbs);
             }

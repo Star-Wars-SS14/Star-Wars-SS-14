@@ -29,75 +29,87 @@ public sealed class SWMeleeWeaponSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeAllEvent<SWTryReflectEvent>(OnMakeAttack);
-        SubscribeLocalEvent<SWForceUserBlockComponent, DidEquipHandEvent>(OnEquipHand);
-        SubscribeLocalEvent<SWForceUserBlockComponent, DidUnequipHandEvent>(OnUnequipHand);
+        SubscribeAllEvent<SWTryReflectEvent>(OnTryBlock);
+        SubscribeLocalEvent<SWWeaponBlockComponent, HandSelectedEvent>(OnSelectInHand);
+        SubscribeLocalEvent<SWWeaponBlockComponent, HandDeselectedEvent>(OnDeselectInHand);
         SubscribeLocalEvent<SWForceUserBlockComponent, TargetMeleeHitEvent>(OnMeleeHit);
         SubscribeLocalEvent<SWWeaponBlockComponent, AttemptMeleeEvent>(OnAttemptMelee);
         _s = Logger.GetSawmill("swmeleeee");
     }
 
-    private void OnAttemptMelee(Entity<SWWeaponBlockComponent> ent, ref AttemptMeleeEvent args)
+    private void OnDeselectInHand(Entity<SWWeaponBlockComponent> ent, ref HandDeselectedEvent args)
     {
-        if (ent.Comp.IsBlocking)
+        if (!TryComp<SWForceUserBlockComponent>(args.User, out var comp))
         {
-            DisableBlock(ent.Owner);
+            return;
+        }        
+        DisableBlock(args.User);
+        comp.CurrentForceWeapon = null;
+        ent.Comp.CurrentUser = null;
+    }
+
+    private void OnSelectInHand(Entity<SWWeaponBlockComponent> ent, ref HandSelectedEvent args)
+    {
+        if (TryComp<SWForceUserBlockComponent>(args.User, out var comp))
+        {
+            ent.Comp.CurrentUser = args.User;
+            comp.CurrentForceWeapon = ent.Owner;
         }
     }
 
-    private void DisableBlock(EntityUid weapon)
+    private void OnAttemptMelee(Entity<SWWeaponBlockComponent> ent, ref AttemptMeleeEvent args)
     {
-        if (!TryComp<ReflectComponent>(weapon, out var reflComp) || !TryComp<SWWeaponBlockComponent>(weapon, out var comp))
+        if (!TryComp<SWForceUserBlockComponent>(ent.Comp.CurrentUser, out var userComp))
+        {
+            return;
+        }
+        if (userComp.IsBlocking)
+        {
+            DisableBlock(ent.Comp.CurrentUser.Value);
+        }
+    }
+
+    private void DisableBlock(EntityUid user)
+    {
+        if (!TryComp<SWForceUserBlockComponent>(user, out var userComp)
+            || !TryComp<ReflectComponent>(userComp.CurrentForceWeapon, out var reflComp))
         {
             return;
         }
 
-        _popupSystem.PopupPredicted("Вы убираете блок!", weapon, null, PopupType.Medium);
+        _popupSystem.PopupPredicted("Вы убираете блок!", user, null, PopupType.Medium);
         _s.Debug("stopped");
-        reflComp.Enabled = false;
-        comp.IsBlocking = false;
+        reflComp.ReflectProb = 0.0f;
+
+        userComp.IsBlocking = false;
     }
+
     private void OnMeleeHit(Entity<SWForceUserBlockComponent> ent, ref TargetMeleeHitEvent args)
     {
         _s.Debug($"{ent.Comp.CurrentForceWeapon}");
-        if (ent.Comp.CurrentForceWeapon != null && TryComp<SWWeaponBlockComponent>(ent.Comp.CurrentForceWeapon, out var weaponComp))
+        if (ent.Comp.CurrentForceWeapon != null)
         {
-            if (weaponComp.IsBlocking) {
+            if (ent.Comp.IsBlocking)
+            {
                 args.Handled = true;
                 _popupSystem.PopupPredicted("Удар отражен!", ent.Owner, null, PopupType.Medium);
                 DisableBlock(ent.Comp.CurrentForceWeapon.Value);
             }
         }
     }
-
-    private void OnUnequipHand(Entity<SWForceUserBlockComponent> ent, ref DidUnequipHandEvent args)
-    {
-        if (!TryComp<SWForceUserBlockComponent>(ent.Owner, out var comp))
-        {
-            return;
-        }
-        if (comp.CurrentForceWeapon == args.Unequipped)
-        {
-            comp.CurrentForceWeapon = null;
-        }
-    }
-
-    private void OnEquipHand(Entity<SWForceUserBlockComponent> ent, ref DidEquipHandEvent args)
-    {
-        if (_tagSystem.HasTag(args.Equipped, "ForceUserWeapon") && HasComp<SWWeaponBlockComponent>(args.Equipped))
-        {
-            ent.Comp.CurrentForceWeapon = args.Equipped;
-        }
-    }
-
-    private void OnMakeAttack(SWTryReflectEvent ev)
+    private void OnTryBlock(SWTryReflectEvent ev)
     {
         if (!TryComp<ReflectComponent>(GetEntity(ev.Weapon), out var reflectComp))
         {
             return;
         }
 
-        if (!TryComp<SWWeaponBlockComponent>(GetEntity(ev.Weapon), out var forceComp))
+        if (!TryComp<SWWeaponBlockComponent>(GetEntity(ev.Weapon), out var comp))
+        {
+            return;
+        }
+
+        if (!TryComp<SWForceUserBlockComponent>(comp.CurrentUser, out var forceComp))
         {
             return;
         }
@@ -107,29 +119,30 @@ public sealed class SWMeleeWeaponSystem : EntitySystem
         {
             _s.Debug("start");
             _popupSystem.PopupPredicted("Вы ставите блок!", GetEntity(ev.Weapon), null, PopupType.Medium);
-            reflectComp.Enabled = true;
+            reflectComp.ReflectProb = 1f;
             forceComp.IsBlocking = true;
             forceComp.BlockEndTime = _gameTiming.CurTime + TimeSpan.FromSeconds(forceComp.BlockDuration);
             forceComp.NextReflectionAvailable = _gameTiming.CurTime + TimeSpan.FromSeconds(forceComp.BlockDuration) + TimeSpan.FromSeconds(forceComp.DelayBetweenBlocks);
-        } else if (forceComp.IsBlocking)  
+        }
+        else if (forceComp.IsBlocking)
         {
-            _popupSystem.PopupPredicted("Вы уже выставили блок!", GetEntity(ev.Weapon), null, PopupType.Medium);           
-        } else if (_gameTiming.CurTime < forceComp.NextReflectionAvailable)
+            _popupSystem.PopupPredicted("Вы уже выставили блок!", GetEntity(ev.Weapon), null, PopupType.Medium);
+        }
+        else if (_gameTiming.CurTime < forceComp.NextReflectionAvailable)
         {
             _popupSystem.PopupPredicted("Вы не можете ставить блок так часто!", GetEntity(ev.Weapon), null, PopupType.Medium);
         }
     }
 
-
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
-        var query = EntityQueryEnumerator<SWWeaponBlockComponent>();
+        var query = EntityQueryEnumerator<SWForceUserBlockComponent>();
         while (query.MoveNext(out var ent, out var comp))
         {
             if (TryComp<ReflectComponent>(ent, out var reflComp))
             {
-                if (comp.BlockEndTime <= _gameTiming.CurTime && reflComp.Enabled)
+                if (comp.BlockEndTime <= _gameTiming.CurTime && reflComp.ReflectProb == 1f)
                 {
                     DisableBlock(ent);
                 }

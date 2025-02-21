@@ -38,6 +38,8 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
 
     private const string MeleeLungeKey = "melee-lunge";
 
+    private BoundKeyState _altStatePrev = BoundKeyState.Up; //SW
+
     public override void Initialize()
     {
         base.Initialize();
@@ -122,25 +124,23 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
         }
 
 
-        //SW start
-        if (altDown == BoundKeyState.Down)
-        {
-            if (_tag.HasTag(entity, "ForceUser") && _tag.HasTag(weaponUid, "ForceUserWeapon"))
-            {
-                ISawmill _s = Logger.GetSawmill("heavy");
-                _s.Debug("asd");
-                RaisePredictiveEvent(new SWTryReflectEvent(GetNetEntity(weaponUid)));
-
-                //Лютый костыль. Вручную меняем состояние кнопки, чтобы этот код не выполнялся постоянно пока кнопка нажата.
-                _inputSystem.CmdStates.SetState(EngineKeyFunctions.UseSecondary, BoundKeyState.Up);
-                return;
-            }
-        }
-        //SW end
-
         // Heavy attack.
         if (altDown == BoundKeyState.Down)
         {
+            //SW start
+            if (_tag.HasTag(entity, "ForceUser") && _tag.HasTag(weaponUid, "ForceUserWeapon"))
+            {
+                //Нам нужно регистрировать только одиночное нажатие на клавишу, поэтому
+                //проверяем, каким была ли отжата клаваиша в предыдущий тик или нет.
+                if (altDown == BoundKeyState.Down && _altStatePrev == BoundKeyState.Up)
+                {
+                    RaisePredictiveEvent(new SWTryReflectEvent(GetNetEntity(weaponUid)));
+                    _altStatePrev = altDown;
+                }
+                return;
+            }
+            //SW end
+
             // If it's an unarmed attack then do a disarm
             if (weapon.AltDisarm && weaponUid == entity)
             {
@@ -189,6 +189,8 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
 
             RaisePredictiveEvent(new LightAttackEvent(GetNetEntity(target), GetNetEntity(weaponUid), GetNetCoordinates(coordinates)));            
         }
+
+        _altStatePrev = altDown;
     }
 
     protected override bool InRange(EntityUid user, EntityUid target, float range, ICommonSession? session)

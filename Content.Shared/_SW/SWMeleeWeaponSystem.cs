@@ -42,7 +42,7 @@ public sealed class SWMeleeWeaponSystem : EntitySystem
         if (!TryComp<SWForceUserBlockComponent>(args.User, out var comp))
         {
             return;
-        }        
+        }
         DisableBlock(args.User);
         comp.CurrentForceWeapon = null;
         ent.Comp.CurrentUser = null;

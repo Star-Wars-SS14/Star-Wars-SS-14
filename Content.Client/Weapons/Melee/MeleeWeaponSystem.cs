@@ -31,7 +31,6 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
     [Dependency] private readonly AnimationPlayerSystem _animation = default!;
     [Dependency] private readonly InputSystem _inputSystem = default!;
     [Dependency] private readonly SharedColorFlashEffectSystem _color = default!;
-    [Dependency] private readonly TagSystem _tag = default!;
     [Dependency] private readonly MapSystem _map = default!;
 
     private EntityQuery<TransformComponent> _xformQuery;
@@ -128,7 +127,7 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
         if (altDown == BoundKeyState.Down)
         {
             //SW start
-            if (_tag.HasTag(entity, "ForceUser") && _tag.HasTag(weaponUid, "ForceUserWeapon"))
+            if (HasComp<SWForceUserBlockComponent>(entity) && HasComp<SWWeaponBlockComponent>(weaponUid))
             {
                 //Нам нужно регистрировать только одиночное нажатие на клавишу, поэтому
                 //проверяем, каким была ли отжата клаваиша в предыдущий тик или нет.
@@ -164,7 +163,7 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
             var attackerPos = TransformSystem.GetMapCoordinates(entity);
 
             //SW start. if is force user, use custom logic
-            if (_tag.HasTag(entity, "ForceUser") && _tag.HasTag(weaponUid, "ForceUserWeapon"))
+            if (HasComp<SWForceUserBlockComponent>(entity) && HasComp<SWWeaponBlockComponent>(weaponUid))
             {
                 ClientHeavyAttack(entity, coordinates, weaponUid, weapon);
                 return;

@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+using System.Numerics;
 using Content.Server._SW.Force.Components;
 using Content.Shared._SW;
 using Content.Shared.Actions;
@@ -126,6 +126,8 @@ public sealed partial class ForceSystem
 
     private void LightingAbility(Entity<DarkForceComponent> ent, ref ForceLightningAbilityEvent args)
     {
+        ISawmill _s = Logger.GetSawmill("asd");
+        _s.Debug("here");
         var user = args.Performer;
         var lightningAbility = ent.Comp;
 

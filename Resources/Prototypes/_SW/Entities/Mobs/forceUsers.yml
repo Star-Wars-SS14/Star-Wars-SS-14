@@ -4,9 +4,6 @@
   id: ForceUserBase
   description: A miserable pile of secrets.
   components:
-  - type: Tag
-    tags:
-      - ForceUser
   - type: ForceAbilityDistanceInteract
   - type: MobThresholds
     thresholds:
@@ -29,6 +26,10 @@
   components:
   - type: Loadout
     prototypes: [ForceUserSithGear]
+  - type: SWLightningAbility
+    damage:
+      types:
+        Heat: 10
 
 - type: entity
   name: Jedi

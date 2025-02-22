@@ -126,8 +126,6 @@ public sealed partial class ForceSystem
 
     private void LightingAbility(Entity<DarkForceComponent> ent, ref ForceLightningAbilityEvent args)
     {
-        ISawmill _s = Logger.GetSawmill("asd");
-        _s.Debug("here");
         var user = args.Performer;
         var lightningAbility = ent.Comp;
 

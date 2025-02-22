@@ -83,9 +83,6 @@
     enabled: false
     reflectProb: 1.0
     minReflectProb: 1.0
-  - type: Tag
-    tags:
-      - ForceUserWeapon
   - type: ItemToggleMeleeWeapon
     activatedSoundOnHit:
       path: /Audio/Weapons/eblade1.ogg

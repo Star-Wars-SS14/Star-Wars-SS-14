@@ -20,6 +20,7 @@
     event: !type:ForceLightningAbilityEvent
     canTargetSelf: false
     interactOnMiss: false
+    range: 7
     useDelay: 6
 
 - type: entity

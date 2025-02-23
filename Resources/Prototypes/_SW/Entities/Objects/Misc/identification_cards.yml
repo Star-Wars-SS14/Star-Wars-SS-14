@@ -1,4 +1,4 @@
-﻿- type: entity
+- type: entity
   parent: Clothing
   id: SW_IDCardStandard
   name: identification card
@@ -383,6 +383,8 @@
     - state: image15
   - type: PresetIdCard
     job: SW_BlackSun_Mercenary
+
+#Exchange ID cards
 
 - type: entity
   parent: SW_IDCardStandard

@@ -1,0 +1,19 @@
+- type: accessLevel
+  id: EmpireMoff
+  name:  Мофф
+
+- type: accessLevel
+  id: EmpireMajor
+  name: Майор
+
+- type: accessLevel
+  id: EmpireLieutenant
+  name: Лейтенант
+
+- type: accessLevel
+  id: EmpireMedic
+  name: Имперский Медик
+
+- type: accessLevel
+  id: EmpireGeneral
+  name: id-card-access-level-cargo

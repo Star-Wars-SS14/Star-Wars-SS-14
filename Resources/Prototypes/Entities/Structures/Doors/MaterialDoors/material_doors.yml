@@ -76,6 +76,8 @@
   - type: Construction
     graph: DoorGraph
     node: metalDoor
+  - type: AccessReader
+    access: [["EmpireGeneral"]]
 
 - type: entity
   id: WoodDoor

@@ -7,6 +7,8 @@
   - CargoTechnician
   - Quartermaster
   - SalvageSpecialist
+  editorHidden: true
+
 
 - type: department
   id: Civilian
@@ -32,6 +34,7 @@
   - Visitor
   - Zookeeper
   - ServiceWorker
+  editorHidden: true
 
 - type: department
   id: CentralCommand
@@ -76,6 +79,7 @@
   - DeathSquad
   primary: false
   weight: 100
+  editorHidden: true
 
 - type: department
   id: Engineering
@@ -87,6 +91,8 @@
   - ChiefEngineer
   - StationEngineer
   - TechnicalAssistant
+  editorHidden: true
+
 
 - type: department
   id: Medical
@@ -100,6 +106,8 @@
   - MedicalIntern
   - Psychologist
   - Paramedic
+  editorHidden: true
+
 
 - type: department
   id: Security
@@ -114,6 +122,7 @@
   - Pilot # Corvax-Pilot
   - Detective
   - Warden
+  editorHidden: true
 
 - type: department
   id: Science
@@ -125,6 +134,7 @@
   - Scientist
   - ResearchAssistant
 
+
 # - type: department
 #   id: Silicon
 #   name: department-Silicon
@@ -133,6 +143,17 @@
 #   roles:
 #   - Borg
 #   - StationAi
+#  editorHidden: true
+#- type: department
+#  id: Silicon
+#  name: department-Silicon
+#  description: department-Silicon-description
+#  color: "#D381C9"
+#  roles:
+#  - Borg
+#  - StationAi
+#  editorHidden: true
+
 
 - type: department
   id: Specific
@@ -147,3 +168,4 @@
   - Psychologist
   - Pilot # Corvax-Pilot
   primary: false
+  editorHidden: true

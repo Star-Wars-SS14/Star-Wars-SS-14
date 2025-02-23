@@ -2,6 +2,7 @@
   id: SecurityOfficer
   name: job-name-security
   description: job-description-security
+  setPreference: false
   playTimeTracker: JobSecurityOfficer
   requirements:
     - !type:DepartmentTimeRequirement
@@ -28,3 +29,7 @@
     eyes: ClothingEyesGlassesSecurity
     ears: ClothingHeadsetSecurity
     pocket1: WeaponPistolMk58
+  storage:
+    back:
+    - Flash
+    - MagazinePistol

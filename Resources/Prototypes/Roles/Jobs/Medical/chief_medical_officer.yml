@@ -4,6 +4,7 @@
   id: ChiefMedicalOfficer
   name: job-name-cmo
   description: job-description-cmo
+  setPreference: false
   playTimeTracker: JobChiefMedicalOfficer
   requirements:
     - !type:RoleTimeRequirement
@@ -20,7 +21,6 @@
   weight: 10
   startingGear: CMOGear
   icon: "JobIconChiefMedicalOfficer"
-  requireAdminNotify: true
   supervisors: job-supervisors-captain
   canBeAntag: false
   access:
@@ -44,3 +44,6 @@
     id: CMOPDA
     ears: ClothingHeadsetCMO
     belt: ClothingBeltMedicalFilled
+  storage:
+    back:
+    - Flash

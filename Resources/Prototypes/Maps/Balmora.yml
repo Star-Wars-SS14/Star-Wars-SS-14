@@ -13,9 +13,6 @@
         nameGenerator:
           !type:NanotrasenNameGenerator
           prefixCreator: 'MT'
-      - type: StationRandomTransform
-        enableStationRotation: false
-        maxStationOffset: null
       - type: StationJobs
         overflowJobs:
         - SWCivialian

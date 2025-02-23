@@ -15,6 +15,9 @@
   - type: SlowOnDamage
     speedModifierThresholds:
       190: 0.8
+  - type: Tag
+    tags:
+      - ForceUser
 
 
 
@@ -39,3 +42,4 @@
   components:
   - type: Loadout
     prototypes: [ForceUserJediGear]
+  - type: SWPushAbility

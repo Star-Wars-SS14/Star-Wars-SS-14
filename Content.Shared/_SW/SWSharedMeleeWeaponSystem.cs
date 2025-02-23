@@ -1,4 +1,5 @@
 using Content.Shared._SW.Force.Components;
+using Content.Shared.Damage;
 using Content.Shared.Hands;
 using Content.Shared.Popups;
 using Content.Shared.Tag;
@@ -17,14 +18,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Content.Server;
 
 namespace Content.Shared._SW;
 
-public sealed class SWMeleeWeaponSystem : EntitySystem
+public abstract class SWSharedMeleeWeaponSystem : EntitySystem
 {
     ISawmill _s = default!;
     [Dependency] IGameTiming _gameTiming = default!;
-    [Dependency] SharedPopupSystem _popupSystem = default!;
+    [Dependency] protected SharedPopupSystem PopupSystem = default!;
     [Dependency] TagSystem _tagSystem = default!;
     public override void Initialize()
     {
@@ -77,7 +79,7 @@ public sealed class SWMeleeWeaponSystem : EntitySystem
             return;
         }
 
-        _popupSystem.PopupPredicted("Вы убираете блок!", user, null, PopupType.Medium);
+        PopupSystem.PopupPredicted("Вы убираете блок!", user, null, PopupType.Medium);
         _s.Debug("stopped");
         reflComp.ReflectProb = 0.0f;
 
@@ -92,7 +94,7 @@ public sealed class SWMeleeWeaponSystem : EntitySystem
             if (ent.Comp.IsBlocking)
             {
                 args.Handled = true;
-                _popupSystem.PopupPredicted("Удар отражен!", ent.Owner, null, PopupType.Medium);
+                PopupSystem.PopupPredicted("Удар отражен!", ent.Owner, null, PopupType.Medium);
                 DisableBlock(ent.Comp.CurrentForceWeapon.Value);
             }
         }
@@ -118,7 +120,7 @@ public sealed class SWMeleeWeaponSystem : EntitySystem
         if (_gameTiming.CurTime >= forceComp.NextReflectionAvailable && !forceComp.IsBlocking)
         {
             _s.Debug("start");
-            _popupSystem.PopupPredicted("Вы ставите блок!", GetEntity(ev.Weapon), null, PopupType.Medium);
+            PopupSystem.PopupPredicted("Вы ставите блок!", GetEntity(ev.Weapon), null, PopupType.Medium);
             reflectComp.ReflectProb = 1f;
             forceComp.IsBlocking = true;
             forceComp.BlockEndTime = _gameTiming.CurTime + TimeSpan.FromSeconds(forceComp.BlockDuration);
@@ -126,11 +128,11 @@ public sealed class SWMeleeWeaponSystem : EntitySystem
         }
         else if (forceComp.IsBlocking)
         {
-            _popupSystem.PopupPredicted("Вы уже выставили блок!", GetEntity(ev.Weapon), null, PopupType.Medium);
+            PopupSystem.PopupPredicted("Вы уже выставили блок!", GetEntity(ev.Weapon), null, PopupType.Medium);
         }
         else if (_gameTiming.CurTime < forceComp.NextReflectionAvailable)
         {
-            _popupSystem.PopupPredicted("Вы не можете ставить блок так часто!", GetEntity(ev.Weapon), null, PopupType.Medium);
+            PopupSystem.PopupPredicted("Вы не можете ставить блок так часто!", GetEntity(ev.Weapon), null, PopupType.Medium);
         }
     }
 

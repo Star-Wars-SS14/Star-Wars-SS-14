@@ -24,7 +24,7 @@ public sealed class SWLightningAbilitySystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<SWLightningAbilityComponent, ComponentInit>(OnCompInit);
-        SubscribeLocalEvent<SWLightningAbilityComponent, ForceLightningAbilityEvent>(OnLightning);
+        SubscribeLocalEvent<SWLightningAbilityComponent, ForceLightningAbilityEvent>(OnLightning);        
     }
 
     private void OnCompInit(Entity<SWLightningAbilityComponent> ent, ref ComponentInit args)
@@ -42,9 +42,20 @@ public sealed class SWLightningAbilitySystem : EntitySystem
             _beam.TryCreateBeam(user,
                 args.Target,
                 "BlueSWLightning");
-            _damageable.TryChangeDamage(args.Target, ent.Comp.Damage, true);
+            var ev = new HitByLightningEvent();
+            RaiseLocalEvent(args.Target, ev);
+            if (!ev.Cancelled)
+            {
+                _damageable.TryChangeDamage(args.Target, ent.Comp.Damage, true);
+            }
+            
         }
-        _stunSystem.TryStun(args.Target, TimeSpan.FromSeconds(5f), false);
+        _stunSystem.TryStun(args.Target, TimeSpan.FromSeconds(ent.Comp.StunTimeInSeconds), false);
         args.Handled = true;
     }
+}
+
+public sealed class HitByLightningEvent : CancellableEntityEventArgs
+{
+
 }

@@ -17,3 +17,8 @@
 - type: accessLevel
   id: EmpireSoldier
   name: Имперский солдат
+
+
+- type: accessLevel
+  id: Sobrik
+  name: Гарнизон Собрика

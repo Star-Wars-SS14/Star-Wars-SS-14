@@ -21,3 +21,7 @@
 - type: accessLevel
   id: RepublicMedic
   name: Медик Республики
+
+- type: accessLevel
+  id: HavokRepublic
+  name: Хавок

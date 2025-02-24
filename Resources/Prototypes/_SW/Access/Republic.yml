@@ -1,0 +1,23 @@
+- type: accessLevel
+  id: RepublicGeneral
+  name:  Генерал Республики
+
+- type: accessLevel
+  id: RepublicCaptain
+  name:  Капитан республики
+
+- type: accessLevel
+  id: RepublicLieutenant
+  name:  Лейтенант Республики
+
+- type: accessLevel
+  id: RepublicSoldier
+  name:  Солдат Республики
+
+- type: accessLevel
+  id: RepublicRecruit
+  name: Рекрут Республики
+
+- type: accessLevel
+  id: RepublicMedic
+  name: Медик Республики

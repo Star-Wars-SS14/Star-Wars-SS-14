@@ -1,0 +1,24 @@
+- type: entity
+  parent: AccessConfiguratorUniversal
+  id: AccessConfiguratorUniversalSW
+  name: SW универсальный конфигуратор доступа 
+  suffix: DEBUG
+  components:
+  - type: AccessOverrider
+    accessLevels:
+    - EmpireSoldier
+    - EmpireMedic
+    - EmpireLieutenant
+    - EmpireMajor
+    - EmpireMoff
+    - RepublicGeneral
+    - RepublicCaptain
+    - RepublicLieutenant
+    - RepublicSoldier
+    - RepublicRecruit
+    - RepublicMedic
+    - MandalorianLeader
+    - MandalorianVeteran
+    - MandalorianWarrior
+    - MandalorianRecruit
+

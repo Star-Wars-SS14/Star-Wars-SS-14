@@ -1,0 +1,15 @@
+- type: accessLevel
+  id: MandalorianLeader
+  name:  Лидер мандалорцев
+
+- type: accessLevel
+  id: MandalorianVeteran
+  name:  Ветеран мандалорцев
+
+- type: accessLevel
+  id: MandalorianWarrior
+  name:  Воин мандалорцев
+
+- type: accessLevel
+  id: MandalorianRecruit
+  name:  Рекрут мандалорцев

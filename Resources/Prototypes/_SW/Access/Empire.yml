@@ -15,5 +15,5 @@
   name: Имперский Медик
 
 - type: accessLevel
-  id: EmpireGeneral
-  name: id-card-access-level-cargo
+  id: EmpireSoldier
+  name: Имперский солдат

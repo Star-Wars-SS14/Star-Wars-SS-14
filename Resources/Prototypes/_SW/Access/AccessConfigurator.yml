@@ -6,17 +6,20 @@
   components:
   - type: AccessOverrider
     accessLevels:
-    - EmpireSoldier
-    - EmpireMedic
-    - EmpireLieutenant
-    - EmpireMajor
     - EmpireMoff
+    - EmpireCommander
+    - EmpireBase
+    - EmpireArsenal
+    - EmpireIntelligence
+    - EmpireIntelligenceCareTaker
+    - EmpireSobrik
+    - EmpireMedic
     - RepublicGeneral
-    - RepublicCaptain
-    - RepublicLieutenant
-    - RepublicSoldier
-    - RepublicRecruit
+    - RepublicCommander
+    - RepublicBase
+    - RepublicArsenal
+    - RepublicHavok
     - RepublicMedic
     - Mandalorian
-    - Sobrik
-    - HavokRepublic
+    - BlackSun
+    - Exchange

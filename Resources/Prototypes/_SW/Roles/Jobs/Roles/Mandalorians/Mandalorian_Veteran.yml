@@ -9,3 +9,5 @@
   startingGear: MandalorianVeteranGear
   icon: "JobIconMandalorianVeteran"
   supervisors: job-supervisors-mando
+  access:
+  - Mandalorian

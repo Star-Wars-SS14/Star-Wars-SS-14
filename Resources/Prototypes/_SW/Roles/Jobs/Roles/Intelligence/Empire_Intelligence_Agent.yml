@@ -11,3 +11,6 @@
   startingGear: EmpireIntelligenceAgentGear
   icon: "JobIconImperialIntelligenceAgent"
   supervisors: job-supervisors-watcher-intelligence
+  access:
+  - EmpireIntelligence  
+  - EmpireBase

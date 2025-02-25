@@ -11,3 +11,7 @@
   startingGear: SobrikCaptainGear
   icon: "JobIconSobrikComendant"
   supervisors: job-supervisors-MOFF
+  access:
+  - EmpireBase
+  - EmpireSobrik
+  - EmpireCommander

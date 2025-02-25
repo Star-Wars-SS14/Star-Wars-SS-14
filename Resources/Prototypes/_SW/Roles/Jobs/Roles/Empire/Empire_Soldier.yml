@@ -9,4 +9,4 @@
   icon: "JobIconEmpireSoldier"
   supervisors: job-supervisors-leit-emp
   access:
-  - EmpireSoldier
+  - EmpireBase

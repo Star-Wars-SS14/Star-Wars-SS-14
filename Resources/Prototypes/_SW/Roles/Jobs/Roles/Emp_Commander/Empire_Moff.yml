@@ -11,3 +11,7 @@
   startingGear: EmpireMoffGear
   icon: "JobIconEmpireMoff"
   supervisors: job-supervisors-min-war
+  access:
+  - EmpireCommander
+  - EmpireBase
+  - EmpireMoff

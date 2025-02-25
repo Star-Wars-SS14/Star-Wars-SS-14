@@ -11,3 +11,6 @@
   startingGear: EmpireLieutenantGear
   icon: "JobIconEmpireLieutenant"
   supervisors: job-supervisors-major-emp
+  access:
+  - EmpireCommander
+  - EmpireBase

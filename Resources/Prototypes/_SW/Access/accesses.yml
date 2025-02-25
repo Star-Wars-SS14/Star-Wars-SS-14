@@ -68,3 +68,24 @@
 - type: accessLevel
   id: Exchange
   name:  Обмен
+
+- type: accessGroup
+  id: SWAllAccess
+  tags:
+  - EmpireMoff
+  - EmpireCommander
+  - EmpireBase
+  - EmpireArsenal
+  - EmpireIntelligence
+  - EmpireIntelligenceCareTaker
+  - EmpireSobrik
+  - EmpireMedic
+  - RepublicGeneral
+  - RepublicCommander
+  - RepublicBase
+  - RepublicArsenal
+  - RepublicHavok
+  - RepublicMedic
+  - Mandalorian
+  - BlackSun
+  - Exchange

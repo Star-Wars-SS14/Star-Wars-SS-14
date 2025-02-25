@@ -23,3 +23,26 @@
     - Mandalorian
     - BlackSun
     - Exchange
+
+
+- type: entity
+  parent: IDCardStandard
+  id: SWUniversalIDCard
+  name: SW универсальная id карта
+  suffix: Admin
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/id_cards.rsi
+    layers:
+    - state: admin
+    - state: idadmin
+  - type: Clothing
+    sprite: Objects/Misc/id_cards.rsi
+  - type: Item
+    heldPrefix: green
+  - type: IdCard
+    jobTitle: job-title-universal
+    jobIcon: JobIconAdmin
+  - type: Access
+    groups:
+    - SWAllAccess

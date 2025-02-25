@@ -39,23 +39,6 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
     {
         StopMovingObjectByForce(ent.Owner);
     }
-
-    private void OnPullRequested(Entity<ForceAbilityDistanceInteractComponent> ent, ref RequestPullEvent args)
-    {
-        //StartMovingObjectByForce(args.PulledUid, args.PullerUid);
-    }
-
-    //private void StartMovingObjectByForce(EntityUid objectToMove, EntityUid mover)
-    //{
-    //    var comp = EnsureComp<BeingMovedByForceComponent>(objectToMove);
-    //    if (comp.IsMoving)
-    //    {
-    //        return;
-    //    }
-    //    comp.IsMoving = true;
-    //    comp.ForceUserMover = mover;
-    //}
-
     private void StopMovingObjectByForce(EntityUid objectToMove)
     {
         if (!TryComp<BeingMovedByForceComponent>(objectToMove, out var comp) || comp.ForceUserMover == null)
@@ -94,37 +77,6 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
         }
         StopAttractingByForce(ent.Comp.User.Value);
     }
-
-    private void OnInteractWithPulledObject(Entity<BeingAttractedByForceComponent> ent, ref InteractHandEvent args)
-    {
-        _s.Debug("stopped");
-        if (ent.Comp.User == null)
-        {
-            return;
-        }
-       StopAttractingByForce(ent.Comp.User.Value);
-    }
-
-    public void HandleUserInteract(
-        EntityUid user,
-        EntityCoordinates coordinates,
-        EntityUid? target,
-        bool altInteract)
-    {
-        if (target == null || !TryComp<ForceAbilityDistanceInteractComponent>(user, out var comp))
-        {
-            return;
-        }
-        _s.Debug("called");
-        if (HasComp<ItemComponent>(target.Value) && !comp.IsAttracting)
-        {
-            _s.Debug("called1");
-
-            StartAttractingByForce(user, target.Value, comp);
-            //_handsSystem.TryPickup(user, target.Value);
-        }
-    }
-
     public override void Update(float frameTime)
     {
         base.Update(frameTime);

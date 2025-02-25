@@ -83,6 +83,12 @@
     enabled: false
     reflectProb: 1.0
     minReflectProb: 1.0
+  - type: SWSwordThrowable
+  - type: DamageOtherOnHit
+    damage:
+      types:
+        Slash: 8
+        Heat: 12
   - type: ItemToggleMeleeWeapon
     activatedSoundOnHit:
       path: /Audio/Weapons/eblade1.ogg
@@ -102,6 +108,7 @@
             Slash: 25
             Heat: 35
             Structural: 20
+    
 
 - type: entity
   name: Энергетический меч

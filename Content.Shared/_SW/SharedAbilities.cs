@@ -45,3 +45,8 @@ public sealed class MasteryUpEvent : EntityEventArgs
 public sealed class MasteryLightingUpgradeEvent : EntityEventArgs
 {
 }
+
+public sealed partial class ThrowRequestedActionEvent : WorldTargetActionEvent
+{
+
+}

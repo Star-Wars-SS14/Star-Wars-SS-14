@@ -64,6 +64,9 @@
     thresholds:
       0: Alive
       400: Dead
+  - type: SlowOnDamage
+    speedModifierThresholds:
+      300: 0.7
 
 - type: entity
   name: Спавнер Борму

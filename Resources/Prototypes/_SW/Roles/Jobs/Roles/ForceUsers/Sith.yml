@@ -1,0 +1,35 @@
+- type: job
+  id: SWSith
+  name: Ситх
+  playTimeTracker: Job_Sith
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 72000 # 20h
+  - !type:DepartmentTimeRequirement
+    department: SWPepublic
+    time: 36000 # 10h
+  startingGear: ForceUserSithGear
+  icon: "JobIconHavokMedic"
+  supervisors: job-supervisors-havok-cap
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: ForceAbilityDistanceInteract
+    - type: MobThresholds
+      thresholds:
+        0: Alive
+        200: Critical
+        300: Dead
+    - type: SWForceUserBlock
+    - type: SWDashAbility
+    - type: SlowOnDamage
+      speedModifierThresholds:
+        190: 0.8
+    - type: Tag
+      tags:
+        - ForceUser
+    - type: SWAbilityThrowSword
+    - type: SWLightningAbility
+      damage:
+        types:
+          Heat: 10

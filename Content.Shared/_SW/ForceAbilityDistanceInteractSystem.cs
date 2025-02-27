@@ -24,10 +24,8 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
     [Dependency] private readonly SharedInteractionSystem _interactionSystem = default!;
     [Dependency] private readonly SharedPhysicsSystem _physicsSystem = default!;
     [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
-    ISawmill _s = default!;
     public override void Initialize()
     {
-        _s = Logger.GetSawmill("sad");
         //SubscribeLocalEvent<BeingPulledByForceComponent, InteractHandEvent>(OnInteractWithPulledObject);
         SubscribeLocalEvent<ItemComponent, GetVerbsEvent<PullByForceVerb>>(OnVerbsRequested);
         SubscribeLocalEvent<BeingAttractedByForceComponent, EntGotInsertedIntoContainerMessage>(OnAttractedObjectGetInserted);
@@ -51,7 +49,6 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
 
     private void OnVerbsRequested(Entity<ItemComponent> ent, ref GetVerbsEvent<PullByForceVerb> args)
     {
-        _s.Debug("verbs");
         if (!HasComp<ForceAbilityDistanceInteractComponent>(args.User))
         {
             return;
@@ -70,7 +67,6 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
 
     private void OnAttractedObjectGetInserted(Entity<BeingAttractedByForceComponent> ent, ref EntGotInsertedIntoContainerMessage args)
     {
-        _s.Debug("stopped");
         if (ent.Comp.User == null)
         {
             return;

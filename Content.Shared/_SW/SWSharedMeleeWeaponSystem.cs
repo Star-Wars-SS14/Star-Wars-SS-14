@@ -24,7 +24,6 @@ namespace Content.Shared._SW;
 
 public abstract class SWSharedMeleeWeaponSystem : EntitySystem
 {
-    ISawmill _s = default!;
     [Dependency] IGameTiming _gameTiming = default!;
     [Dependency] protected SharedPopupSystem PopupSystem = default!;
     [Dependency] TagSystem _tagSystem = default!;
@@ -36,7 +35,6 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
         SubscribeLocalEvent<SWWeaponBlockComponent, HandDeselectedEvent>(OnDeselectInHand);
         SubscribeLocalEvent<SWForceUserBlockComponent, TargetMeleeHitEvent>(OnMeleeHit);
         SubscribeLocalEvent<SWWeaponBlockComponent, AttemptMeleeEvent>(OnAttemptMelee);
-        _s = Logger.GetSawmill("swmeleeee");
     }
 
     private void OnDeselectInHand(Entity<SWWeaponBlockComponent> ent, ref HandDeselectedEvent args)
@@ -80,7 +78,6 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
         }
 
         PopupSystem.PopupPredicted("Вы убираете блок!", user, null, PopupType.Medium);
-        _s.Debug("stopped");
         reflComp.ReflectProb = 0.0f;
 
         userComp.IsBlocking = false;
@@ -88,7 +85,6 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
 
     private void OnMeleeHit(Entity<SWForceUserBlockComponent> ent, ref TargetMeleeHitEvent args)
     {
-        _s.Debug($"{ent.Comp.CurrentForceWeapon}");
         if (ent.Comp.CurrentForceWeapon != null)
         {
             if (ent.Comp.IsBlocking)
@@ -116,10 +112,8 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
             return;
         }
 
-        _s.Debug("got");
         if (_gameTiming.CurTime >= forceComp.NextReflectionAvailable && !forceComp.IsBlocking)
         {
-            _s.Debug("start");
             PopupSystem.PopupPredicted("Вы ставите блок!", GetEntity(ev.Weapon), null, PopupType.Medium);
             reflectComp.ReflectProb = 1f;
             forceComp.IsBlocking = true;

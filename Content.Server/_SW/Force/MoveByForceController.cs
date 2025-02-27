@@ -39,11 +39,9 @@ public sealed partial class MoveByForceController : VirtualController
     [Dependency] private readonly SharedPhysicsSystem _physicsSystem = default!;
     [Dependency] private readonly PopupSystem _popupSystem = default!;
     [Dependency] private readonly ExamineSystem _examineSystem = default!;
-    ISawmill _s = default!;
     public override void Initialize()
     {
         base.Initialize();
-        _s = Logger.GetSawmill("controller");
         CommandBinds.Builder
            .Bind(ContentKeyFunctions.TryPullObject, new PointerInputCmdHandler(OnTryStartMove))
            .Bind(ContentKeyFunctions.MovePulledObject, new PointerInputCmdHandler(OnRequestMovePulledObject))
@@ -85,7 +83,6 @@ public sealed partial class MoveByForceController : VirtualController
 
     private bool OnReleaseObject(ICommonSession? session, EntityCoordinates coords, EntityUid uid)
     {
-        _s.Debug("Releases");
         if (session?.AttachedEntity is not { } player ||
             !player.IsValid())
         {
@@ -142,7 +139,6 @@ public sealed partial class MoveByForceController : VirtualController
         }
         StopMoving(mover, forceComp);
         _physicsSystem.ResetDynamics(forceComp.CurrentMovingItem.Value, physComp);
-        _s.Debug("Release");
         forceComp.CurrentMovingItem = null;
     }
 
@@ -174,10 +170,8 @@ public sealed partial class MoveByForceController : VirtualController
         {
             return false;
         }
-        _s.Debug("check");
         if (forceComp.IsUsingForceToMoveObject && comp.ForceUserMover == player)
         {
-            _s.Debug("check1");
             MapCoordinates placecoords = _transformSystem.ToMapCoordinates(coords);
             if (!CanBeMovedToCoords(forceComp.CurrentMovingItem.Value, player, placecoords))
             {
@@ -267,8 +261,6 @@ public sealed partial class MoveByForceController : VirtualController
         {
             return false;
         }
-        _s.Debug($"{uid}");
-        _s.Debug($"{userEntity.Value}");
         if (!TryComp<ForceAbilityDistanceInteractComponent>(userEntity.Value, out var forceComp))
         {
             return false;
@@ -296,7 +288,6 @@ public sealed partial class MoveByForceController : VirtualController
             StopMovingAndReset(userEntity.Value);
         }
 
-        _s.Debug("started");
         forceComp.IsUsingForceToMoveObject = true;
         forceComp.CurrentMovingItem = uid;
         comp.ForceUserMover = userEntity.Value;

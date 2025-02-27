@@ -75,10 +75,6 @@ public sealed class SWDashAbilitySystem : EntitySystem
         ent.Comp.DashEndTime = _gameTiming.CurTime + TimeSpan.FromSeconds(ent.Comp.DashDuration);
         ent.Comp.NextDashAvailable = ent.Comp.DashEndTime + TimeSpan.FromSeconds(ent.Comp.DelayBetweenDashes);
         _movementSpeedModifierSystem.RefreshMovementSpeedModifiers(ent.Owner);
-        if (TryComp<SlowOnDamageComponent>(ent.Owner, out var comp))
-        {
-            
-        }
     }
 
     private void OnCompInit(Entity<SWDashAbilityComponent> ent, ref ComponentInit args)

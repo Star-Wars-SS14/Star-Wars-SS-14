@@ -76,7 +76,9 @@
   - type: Sprite
     layers:
       - sprite: _SW/Mobs/Animals/bormu.rsi
-        state: bormu
+        state: bormuicon
+      - sprite: Markers/cross.rsi
+        state: green
   - type: ConditionalSpawner
     prototypes:
       - MobBormu
@@ -89,7 +91,9 @@
     - type: Sprite
       layers:
         - sprite: _SW/Mobs/Animals/bormu.rsi
-          state: dead
+          state: bormuicon
+        - sprite: Markers/cross.rsi
+          state: blue
     - type: Timer
     - type: TimedSpawner
       prototypes:
@@ -97,4 +101,4 @@
       chance: 0.25
       intervalSeconds: 450
       minimumEntitiesSpawned: 1
-      maximumEntitiesSpawned: 3
+      maximumEntitiesSpawned: 2

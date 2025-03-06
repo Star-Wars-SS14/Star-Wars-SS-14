@@ -5,7 +5,7 @@
   - type: Clickable
   - type: InteractionOutline
   - type: Item
-    size: Normal
+    size: Huge
   - type: MovedByPressure
   - type: Physics
     bodyType: Dynamic

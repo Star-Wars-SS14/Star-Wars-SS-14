@@ -49,7 +49,7 @@
           SWRepublicCommanderSniper: [ 1, 1 ]
 
           SWBlackSun: [ 1, 1 ]
-          SWBlackSun_Mercenary: [ 4, 4 ]
+          SWBlackSunMercenary: [ 4, 4 ]
 
           SWExchangeCaptain: [ 1, 1 ]
           SWExchangeOperative: [ 4, 4 ]

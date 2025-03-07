@@ -1,7 +1,7 @@
 - type: gameMap
-  id: Balmora
+  id: OldBalmora
   mapName: 'Balmora Planet'
-  mapPath: /Maps/Balmora.yml
+  mapPath: /Maps/OldBalmora.yml
   minPlayers: 0
   maxPlayers: 200
   stations:

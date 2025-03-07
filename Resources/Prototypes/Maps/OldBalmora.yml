@@ -14,8 +14,6 @@
           !type:NanotrasenNameGenerator
           prefixCreator: 'MT'
       - type: StationJobs
-        overflowJobs:
-        - SWCivialian
         availableJobs:
           SWSobrikCaptain: [ 1, 1 ]
           SWSobrikOfficer: [ 6, 6 ]
@@ -53,6 +51,8 @@
 
           SWExchangeCaptain: [ 1, 1 ]
           SWExchangeOperative: [ 4, 4 ]
+
+          SWCivialian: [-1, -1]
       - type: EndRoundByTimer
 
 

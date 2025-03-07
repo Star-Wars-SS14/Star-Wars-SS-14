@@ -1,0 +1,49 @@
+- type: radioChannel
+  id: EmpireGarnison
+  name: Имперский Гарнизон
+  keycode: 'г' # Corvax-Localization
+  frequency: 2024
+  color: "#ffa500"
+  longRange: true
+
+- type: radioChannel
+  id: EmpireRegular
+  name: Регулярные Силы Империи
+  keycode: 'т' # Corvax-Localization
+  frequency: 2025
+  color: "#b22222"
+  longRange: true
+
+- type: radioChannel
+  id: EmpireSobrik
+  name: Имперская Разведка
+  keycode: 'и' # Corvax-Localization
+  frequency: 2026
+  color: "#800080"
+  longRange: true
+
+- type: radioChannel
+  id: Republic
+  name: Республика
+  keycode: 'р' # Corvax-Localization
+  frequency: 2027
+  color: "#20b2aa"
+
+  longRange: true
+
+- type: radioChannel
+  id: RepublicHavok
+  name: Хавок
+  keycode: 'х' # Corvax-Localization
+  frequency: 2028
+  color: "#dc143c"
+
+  longRange: true
+
+- type: radioChannel
+  id: Mandalorian
+  name: Мандалориан
+  keycode: 'м' # Corvax-Localization
+  frequency: 2039
+  color: "#ff6347"
+  longRange: true

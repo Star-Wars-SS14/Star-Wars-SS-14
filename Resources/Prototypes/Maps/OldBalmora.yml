@@ -14,45 +14,45 @@
           !type:NanotrasenNameGenerator
           prefixCreator: 'MT'
       - type: StationJobs
-        overflowJobs:
-        - SWCivialian
         availableJobs:
-          SW_Sobrik_Captain: [ 1, 1 ]
-          SW_Sobrik_Officer: [ 6, 6 ]
-          SW_Sobrik_Medic: [ 1, 1 ]
+          SWSobrikCaptain: [ 1, 1 ]
+          SWSobrikOfficer: [ 6, 6 ]
+          SWSobrikMedic: [ 1, 1 ]
 
-          SW_Empire_Moff: [ 1, 1 ]
-          SW_Empire_Major: [ 1, 1 ]
-          SW_Empire_Lieutenant: [ 2, 2 ]
-          SW_Empire_Soldier: [ 8, 8 ]
-          SW_Empire_Medic: [ 2, 2 ]
+          SWEmpireMoff: [ 1, 1 ]
+          SWEmpireMajor: [ 1, 1 ]
+          SWEmpireLieutenant: [ 2, 2 ]
+          SWEmpireSoldier: [ 8, 8 ]
+          SWEmpireMedic: [ 2, 2 ]
 
-          SW_Mandalorian_Leader: [ 1, 1 ]
-          SW_Mandalorian_Veteran: [ 2, 2 ]
-          SW_Mandalorian_Warrior: [ 3, 3 ]
-          SW_Mandalorian_Recruit: [ 3, 3 ]
+          SWMandalorianLeader: [ 1, 1 ]
+          SWMandalorianVeteran: [ 2, 2 ]
+          SWMandalorianWarrior: [ 3, 3 ]
+          SWMandalorianRecruit: [ 3, 3 ]
 
-          SW_Republic_General: [ 1, 1 ]
-          SW_Republic_Captain: [ 1, 1 ]
-          SW_Republic_Lieutenant: [ 2, 2 ]
-          SW_Republic_Soldier: [ 6, 6 ]
-          SW_Republic_Medic: [ 2, 2 ]
-          SW_Republic_Recruit: [ 4, 4 ]
+          SWRepublicGeneral: [ 1, 1 ]
+          SWRepublicCaptain: [ 1, 1 ]
+          SWRepublicLieutenant: [ 2, 2 ]
+          SWRepublicSoldier: [ 6, 6 ]
+          SWRepublicMedic: [ 2, 2 ]
+          SWRepublicRecruit: [ 4, 4 ]
 
-          SW_Empire_Intelligence_Caretaker: [ 1, 1 ]
-          SW_Empire_Intelligence_Agent: [ 3, 3 ]
+          SWEmpireIntelligenceCaretaker: [ 1, 1 ]
+          SWEmpireIntelligenceAgent: [ 3, 3 ]
 
-          SW_Republic_Commander_Commander: [ 1, 1 ]
-          SW_Republic_Commander_Lieutenant: [ 1, 1 ]
-          SW_Republic_Commander_Medic: [ 1, 1 ]
-          SW_Republic_Commander_Stormtrooper: [ 1, 1 ]
-          SW_Republic_Commander_Sniper: [ 1, 1 ]
+          SWRepublicCommanderCommander: [ 1, 1 ]
+          SWRepublicCommanderLieutenant: [ 1, 1 ]
+          SWRepublicCommanderMedic: [ 1, 1 ]
+          SWRepublicCommanderStormtrooper: [ 1, 1 ]
+          SWRepublicCommanderSniper: [ 1, 1 ]
 
-          SW_BlackSun: [ 1, 1 ]
-          SW_BlackSun_Mercenary: [ 4, 4 ]
+          SWBlackSun: [ 1, 1 ]
+          SWBlackSunMercenary: [ 4, 4 ]
 
-          SW_Exchange_Captain: [ 1, 1 ]
-          SW_Exchange_Operative: [ 4, 4 ]
+          SWExchangeCaptain: [ 1, 1 ]
+          SWExchangeOperative: [ 4, 4 ]
+
+          SWCivialian: [-1, -1]
       - type: EndRoundByTimer
 
 

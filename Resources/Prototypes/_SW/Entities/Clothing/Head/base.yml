@@ -1,0 +1,30 @@
+- type: entity
+  parent: ClothingHeadBase
+  id: SW_BaseHelmet
+  abstract: true
+  name: Stormtrooper helmet
+  description: Helmet with automatic polarized lenses and communication unit.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/stormtrooper_helmet.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/stormtrooper_helmet.rsi
+  - type: Item
+    size: Normal
+  - type: BreathMask
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
+    - FacialHair
+  - type: PressureProtection
+    highPressureMultiplier: 0.02
+    lowPressureMultiplier: 1000
+  - type: TemperatureProtection
+    coefficient: 0.01
+  - type: IngestionBlocker
+  - type: IdentityBlocker
+  - type: Tag
+    tags:
+    - HidesHair
+    - HidesNose

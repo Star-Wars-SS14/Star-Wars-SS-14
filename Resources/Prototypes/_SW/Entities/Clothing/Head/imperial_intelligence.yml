@@ -1,9 +1,8 @@
 - type: entity
-  parent: ClothingHeadBase
+  parent: SW_BaseHelmet
   id: SW_ClothingHeadImperialIntelligenceHelmet
   name: imperial intelligence helmet
   components:
-  - type: BreathMask
   - type: Sprite
     sprite: _SW/Clothing/Head/Helmets/imperialintelligencehelmet.rsi
   - type: Clothing
@@ -11,7 +10,3 @@
   - type: PressureProtection
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000
-  - type: HideLayerClothing
-    slots:
-    - Hair
-    - Snout

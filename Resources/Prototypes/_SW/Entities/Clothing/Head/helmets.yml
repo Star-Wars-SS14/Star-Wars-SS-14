@@ -1,40 +1,22 @@
 - type: entity
   parent: ClothingHeadBase
-  id: SW_StormtrooperHelmet
+  id: SW_BaseHelmet
   name: Stormtrooper helmet
   description: Helmet with automatic polarized lenses and communication unit.
   components:
   - type: Sprite
     sprite: _SW/Clothing/Head/Helmets/stormtrooper_helmet.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/stormtrooper_helmet.rsi
-  - type: Item
-    size: Normal
-  - type: BreathMask
-  - type: HideLayerClothing
-    slots:
-    - Hair
-    - Snout
-  - type: PressureProtection
-    highPressureMultiplier: 0.02
-    lowPressureMultiplier: 1000
-  - type: TemperatureProtection
-    coefficient: 0.01
-  - type: IngestionBlocker
-  - type: IdentityBlocker
+    sprite: _SW/Clothing/Head/Helmets/stormtrooper_helmet.rsi  
   - type: Armor
     modifiers:
         coefficients:
           Slash: 0.5
           Heat: 0.5
           Cold: 0.5
-  - type: Tag
-    tags:
-    - HidesHair
-    - HidesNose
 
 - type: entity
-  parent: ClothingHeadBase
+  parent: SW_BaseHelmet
   id: SW_HelmetSunSquad
   name: Helmet Sun Squad
   components:
@@ -42,30 +24,12 @@
     sprite: _SW/Clothing/Head/Helmets/helmet_sun_squad.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/helmet_sun_squad.rsi
-  - type: Item
-    size: Normal
-  - type: BreathMask
-  - type: HideLayerClothing
-    slots:
-    - Hair
-    - Snout
-  - type: PressureProtection
-    highPressureMultiplier: 0.02
-    lowPressureMultiplier: 1000
-  - type: TemperatureProtection
-    coefficient: 0.01
-  - type: IngestionBlocker
-  - type: IdentityBlocker
   - type: Armor
     modifiers:
       coefficients:
         Slash: 0.5
         Heat: 0.5
-        Cold: 0.5
-  - type: Tag
-    tags:
-    - HidesHair
-    - HidesNose
+        Cold: 0.5 
 
 - type: entity
   parent: [ClothingHeadBase, RepublicRadioHelmet]

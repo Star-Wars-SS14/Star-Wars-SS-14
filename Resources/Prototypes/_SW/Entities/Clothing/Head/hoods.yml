@@ -29,6 +29,16 @@
   - type: Tag
     tags:
     - HidesHair
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
+    - FacialHair
+    - HeadTop
+    - HeadSide
+    - Head
+    hideOnToggle: true
+
 
 - type: entity
   parent: ClothingHeadBase
@@ -42,4 +52,13 @@
   - type: Tag
     tags:
     - HidesHair
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
+    - FacialHair
+    - HeadTop
+    - HeadSide
+    - Head
+    hideOnToggle: true
 

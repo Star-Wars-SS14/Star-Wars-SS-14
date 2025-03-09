@@ -74,7 +74,7 @@
       visible: false
 
 - type: entity
-  name: Красный датапад
+  name: НЕ МАППИТЬ
   parent: BaseDatapad
   id: RedDatapad
   description: Я не придумал шутку для описания этого датапада.

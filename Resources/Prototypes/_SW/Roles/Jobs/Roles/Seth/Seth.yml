@@ -271,7 +271,7 @@
     id: SW_IDCardEmpireIntelligenceCaretaker
     shoes: ClothingShoesBootsCombatFilled
     gloves: ClothingHandsGlovesCombat
-    ears: ClothingHeadsetSobrik
+    ears: ClothingHeadsetAllEmpire
 
 - type: startingGear
   id: EmpireIntelligenceAgentGear

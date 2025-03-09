@@ -1,7 +1,7 @@
 - type: gameMap
-  id: Balmora
+  id: OldBalmora
   mapName: 'Balmora Planet'
-  mapPath: /Maps/Balmora.yml
+  mapPath: /Maps/OldBalmora.yml
   minPlayers: 0
   maxPlayers: 200
   stations:
@@ -14,8 +14,6 @@
           !type:NanotrasenNameGenerator
           prefixCreator: 'MT'
       - type: StationJobs
-        overflowJobs:
-        - SWCivialian
         availableJobs:
           SWSobrikCaptain: [ 1, 1 ]
           SWSobrikOfficer: [ 6, 6 ]
@@ -49,10 +47,12 @@
           SWRepublicCommanderSniper: [ 1, 1 ]
 
           SWBlackSun: [ 1, 1 ]
-          SWBlackSun_Mercenary: [ 4, 4 ]
+          SWBlackSunMercenary: [ 4, 4 ]
 
           SWExchangeCaptain: [ 1, 1 ]
           SWExchangeOperative: [ 4, 4 ]
+
+          SWCivialian: [-1, -1]
       - type: EndRoundByTimer
 
 

@@ -19,8 +19,6 @@
     department: Engineering
   - type: Wires
     layoutId: AirlockEngineering
-  - type: AccessReader
-    access: [["EmpireGeneral"]]
 
 - type: entity
   parent: AirlockEngineering

@@ -57,8 +57,6 @@
     sprite: _RMC14/Structures/Doors/Airlocks/sec_door.rsi
   - type: PaintableAirlock
     department: Command
-  - type: AccessReader
-    access: [["EmpireGeneral"]]
 
 - type: entity
   parent: CMAirlock

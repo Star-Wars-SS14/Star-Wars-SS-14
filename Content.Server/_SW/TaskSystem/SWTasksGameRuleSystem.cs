@@ -31,6 +31,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             var factionUid = Spawn(protoId);
             var comp = EnsureComp<SWFactionComponent>(uid);
             component.InGameFactions.Add(new Entity<SWFactionComponent>(factionUid, comp));
+            comp.CurrentScore = comp.StartScore;
         }
 
         TryAddRandomTaskAllFactions(component.InGameFactions);
@@ -59,7 +60,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                 //RaiseLocalEvent(task, ref ev);
                 if (task.Comp.Completeness >= 1)
                 {
-                    _sawmill.Debug("task completed");
+                    comp.CurrentScore += task.Comp.Score;
                 }
             }
         }

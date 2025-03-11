@@ -1,0 +1,6 @@
+- type: entity
+  parent: BaseGameRule
+  id: TaskGamerule
+  components:
+  - type: SWTaskGamerule
+  

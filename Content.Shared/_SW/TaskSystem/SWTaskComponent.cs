@@ -13,5 +13,8 @@ public sealed partial class SWTaskComponent : Component
     public FixedPoint2 Completeness = 0.0;
 
     [DataField]
+    public int Score = 1;
+
+    [DataField]
     public string RoundEndText = string.Empty;
 }

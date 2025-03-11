@@ -11,7 +11,7 @@ namespace Content.Shared._SW.TaskSystem;
 [RegisterComponent]
 public sealed partial class SWFactionComponent : Component
 {
-    [DataField]
+    [DataField(required: true)]
     public WeightedRandomPrototype AvailableTasks;
 
     public List<Entity<SWTaskComponent>> CurrentTasks;
@@ -19,4 +19,9 @@ public sealed partial class SWFactionComponent : Component
     public float AddIntervalInSeconds = 60 * 20;
 
     public TimeSpan NextAddTime;
+
+    [DataField]
+    public int StartScore = 0;
+
+    public int CurrentScore = 0;
 }

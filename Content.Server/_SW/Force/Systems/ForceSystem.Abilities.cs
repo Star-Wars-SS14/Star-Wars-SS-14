@@ -10,7 +10,6 @@ using Content.Shared.Mobs;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Popups;
 using Content.Shared.Toggleable;
-using JetBrains.HabitatDetector;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Components;
 using static Robust.Shared.Maths.Color;
@@ -24,6 +23,7 @@ public sealed partial class ForceSystem
         SubscribeLocalEvent<ForceComponent, DashAbilityEvent>(DashAbility);
         SubscribeLocalEvent<DarkForceComponent, ForceLightningAbilityEvent>(LightingAbility);
         SubscribeLocalEvent<LightForceComponent, JediForceSaberAttackEvent>(OnForceAttack);
+        SubscribeLocalEvent<DarkForceComponent, SithGaspAbilityEvent>(OnGasp);
         // kyber
         SubscribeLocalEvent<KyberCrystalComponent, MapInitEvent>(OnKyberMapInit);
         SubscribeLocalEvent<KyberCrystalComponent, GetItemActionsEvent>(OnGetKyber);
@@ -190,6 +190,23 @@ public sealed partial class ForceSystem
         _popupSystem.PopupEntity("Расслабляет руку, меч направляется в неизвестную сторону.", user, PopupType.Medium);
 
         return true;
+    }
+    #endregion
+
+    #region SithGasp
+    private void OnGasp(EntityUid uid, DarkForceComponent component, SithGaspAbilityEvent args)
+    {
+        var target = args.Target;
+
+        _blindableSystem.SetMinDamage(target, component.EyeDamage);
+        var isSithGasp = EnsureComp<IsSithGaspingComponent>(target);
+        isSithGasp.ActiveCooldown = isSithGasp.Cooldown;
+
+        _stunSystem.TryStun(target, component.StunTime, true);
+
+        _popupSystem.PopupEntity("Направляет руку на жертву, напряжение в воздухе усиливается..", uid, PopupType.MediumCaution);
+
+        args.Handled = true;
     }
     #endregion
 

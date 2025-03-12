@@ -60,3 +60,18 @@
   - !type:MasteryTypeCondition
     masteryType: "light"
   productAction: ActionJediForceSaberAttack
+
+- type: listing
+  id: MasteryShopSithGasp
+  name: Способность - удушение!
+  description: Попробуйте себя в роли бога.
+  cost:
+    MasteryExperience: 30
+  categories:
+  - MasteryAbilities
+  conditions:
+  - !type:ListingLimitedStockCondition
+    stock: 1
+  - !type:MasteryTypeCondition
+    masteryType: "dark"
+  productAction: ActionSithGasp

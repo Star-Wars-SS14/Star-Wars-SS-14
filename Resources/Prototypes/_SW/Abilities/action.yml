@@ -79,3 +79,17 @@
     range: 8
     interactOnMiss: false
     useDelay: 30
+
+- type: entity
+  id: ActionSithGasp
+  name: Удушение
+  description: Перекройте врагу дыхательные пути. Почувствуйте себя Дарт Ве.. Что?..
+  noSpawn: true
+  components:
+  - type: EntityTargetAction
+    icon: Interface/Actions/sithgasp.png
+    event: !type:SithGaspAbilityEvent
+    canTargetSelf: false
+    range: 10
+    interactOnMiss: false
+    useDelay: 120

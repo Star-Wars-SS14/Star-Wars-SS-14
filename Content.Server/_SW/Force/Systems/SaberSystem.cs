@@ -104,28 +104,23 @@ public sealed class SaberSystem : EntitySystem
     private void OnCallSaber(CallSaberAbilityEvent args)
     {
         var user = args.Performer;
-        var activeHand = _handsSystem.GetActiveHand(user);
 
         var query = EntityQueryEnumerator<SaberComponent>();
-
         while (query.MoveNext(out var uid, out var saberComponent))
         {
             if (saberComponent.Owner == null || saberComponent.Owner != user)
                 continue;
 
-            if (activeHand is { Container: not null })
+            if (_handsSystem.IsHolding(user, uid))
             {
-                if (activeHand.Container.ContainedEntity == uid)
-                {
-                    _popupSystem.PopupEntity("Вы не можете призвать меч, который и так у вас в руке!", user, user, PopupType.MediumCaution);
-                    continue;
-                }
+                _popupSystem.PopupEntity("Вы не можете призвать меч, который и так у вас в руке!", user, user, PopupType.MediumCaution);
+                continue;
             }
 
             if (_containerSystem.IsEntityInContainer(uid) && !_containerSystem.TryRemoveFromContainer(uid))
                 continue;
 
-            PullSaber(uid, user, saberComponent.Duration);
+            PullSaber(uid, user);
 
             _popupSystem.PopupEntity("Под воздействием силы, меч возвращается вам в руки...", user, user, PopupType.Medium);
         }
@@ -133,7 +128,7 @@ public sealed class SaberSystem : EntitySystem
         args.Handled = true;
     }
 
-    private void PullSaber(EntityUid saber, EntityUid forceUser, TimeSpan duration)
+    private void PullSaber(EntityUid saber, EntityUid forceUser)
     {
         if (!TryComp<PhysicsComponent>(saber, out var physics))
             return;

@@ -27,6 +27,13 @@ public sealed partial class DarkForceComponent : ForceComponent
     [DataField]
     public FixedPoint2 BaseLightingDamage = 5;
 
+    // SithGasp
+    [DataField]
+    public int EyeDamage = 6;
+
+    [DataField]
+    public TimeSpan StunTime = TimeSpan.FromSeconds(5);
+
     // Mastery
     [DataField]
     public SithMasteryLevel Mastery = SithMasteryLevel.SithMasteryLevel1;

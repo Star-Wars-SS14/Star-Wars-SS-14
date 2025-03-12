@@ -31,6 +31,10 @@ public sealed partial class JediForceSaberAttackEvent : EntityTargetActionEvent
 {
 }
 
+public sealed partial class SithGaspAbilityEvent : EntityTargetActionEvent
+{
+}
+
 [Serializable, NetSerializable]
 public sealed partial class MasteryUpEvent : EntityEventArgs
 {

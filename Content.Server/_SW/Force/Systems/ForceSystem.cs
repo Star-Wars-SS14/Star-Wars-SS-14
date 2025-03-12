@@ -2,15 +2,16 @@
 using Content.Server.Beam;
 using Content.Server.Hands.Systems;
 using Content.Server.Item;
-using Content.Server.Lightning;
 using Content.Server.Popups;
+using Content.Server.Stunnable;
 using Content.Shared.Actions;
 using Content.Shared.Alert;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
-using Content.Shared.Mobs.Systems;
+using Content.Shared.Eye.Blinding.Components;
+using Content.Shared.Eye.Blinding.Systems;
 using Content.Shared.Movement.Pulling.Systems;
-using Content.Shared.Store.Components;
+using Content.Shared.Popups;
 using Content.Shared.Tag;
 using Content.Shared.Throwing;
 using Robust.Server.Containers;
@@ -41,6 +42,10 @@ public sealed partial class ForceSystem : EntitySystem
     [Dependency] private readonly ThrowingSystem _throwingSystem = default!;
     [Dependency] private readonly DamageableSystem _damageableSystem = default!;
     [Dependency] private readonly PhysicsSystem _physicsSystem = default!;
+    [Dependency] private readonly BlindableSystem _blindableSystem = default!;
+    [Dependency] private readonly BlurryVisionSystem _blurryVisionSystem = default!;
+    [Dependency] private readonly EyeClosingSystem _eyelids = default!;
+    [Dependency] private readonly StunSystem _stunSystem = default!;
 
     public override void Initialize()
     {
@@ -60,7 +65,7 @@ public sealed partial class ForceSystem : EntitySystem
         var query = EntityQueryEnumerator<InDashingComponent>();
         while (query.MoveNext(out var target, out var comp))
         {
-            if(!TryComp<TransformComponent>(target, out var transformComponent))
+            if(!TryComp<TransformComponent>(target, out _))
                 break;
 
             if(!TryComp<PhysicsComponent>(target, out var physicsComponent))
@@ -114,6 +119,29 @@ public sealed partial class ForceSystem : EntitySystem
                     comp.TargetUser = null;
                     comp.ForceUser = saberComponent.Owner;
                 }
+            }
+        }
+
+        var query3 = EntityQueryEnumerator<IsSithGaspingComponent>();
+        while (query3.MoveNext(out var target, out var comp))
+        {
+            if(!TryComp<BlindableComponent>(target, out var blindableComponent))
+                return;
+
+            comp.ActiveCooldown -= frameTime;
+
+            if (comp.ActiveCooldown <= 0F)
+            {
+                _blindableSystem.SetMinDamage(target, comp.MinEyeDamage);
+
+                _blindableSystem.AdjustEyeDamage(target, -blindableComponent.EyeDamage);
+
+                _blurryVisionSystem.UpdateBlurMagnitude(target);
+                _eyelids.UpdateEyesClosable(target);
+                RemComp<IsSithGaspingComponent>(target);
+
+                _popupSystem.PopupEntity("Падает на землю, еле дыша..", target, PopupType.MediumCaution);
+                _stunSystem.TryParalyze(target, comp.StunTime, true);
             }
         }
     }

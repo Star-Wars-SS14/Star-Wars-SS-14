@@ -52,7 +52,7 @@
   - type: MultiHandedItem
   - type: Explosive
     explosionType: Default
-    maxIntensity: 10
+    maxIntensity: 20
     intensitySlope: 3
-    totalIntensity: 240 # Бабах на -+ 8 тайлов
+    totalIntensity: 480 # Бабах на -+ 16 тайлов
     canCreateVacuum: false

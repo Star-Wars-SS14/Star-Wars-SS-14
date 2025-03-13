@@ -87,15 +87,19 @@ public sealed partial class ForceSystem
         }
     }
 
-    private void OnOpenMasteryShopAlert(EntityUid uid, ForceComponent component, OpenMasteryShopAlertEvent args)
+    private void OnOpenMasteryShopAlert(EntityUid uid, ForceComponent component, ref OpenMasteryShopAlertEvent args)
     {
-        var entityManager = IoCManager.Resolve<IEntityManager>();
-
-        if (!entityManager.TryGetComponent<StoreComponent>(uid, out var storeComponent))
+        if (!TryComp<StoreComponent>(uid, out var storeComponent))
+        {
+            args.Handled = false;
             return;
+        }
 
-        if (!entityManager.TryGetComponent<ForceComponent>(uid, out var forceComponent))
+        if (!TryComp<ForceComponent>(uid, out var forceComponent))
+        {
+            args.Handled = false;
             return;
+        }
 
         Dictionary<ProtoId<CurrencyPrototype>, FixedPoint2> newBalance = new()
         {
@@ -103,6 +107,8 @@ public sealed partial class ForceSystem
         };
 
         storeComponent.Balance = newBalance;
-        entityManager.EntitySysManager.GetEntitySystem<StoreSystem>().ToggleUi(uid, uid, storeComponent);
+        _storeSystem.ToggleUi(uid, uid, storeComponent);
+
+        args.Handled = true;
     }
 }

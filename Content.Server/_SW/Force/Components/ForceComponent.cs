@@ -37,8 +37,6 @@ public partial class ForceComponent : Component
     public string? DashEffectEnd = "DashEffectEnd";
 }
 
-public sealed partial class OpenMasteryShopAlertEvent : BaseAlertEvent;
-
 public sealed partial class MasteryTypeCondition : ListingCondition
 {
     [DataField("masteryType", required: true)]

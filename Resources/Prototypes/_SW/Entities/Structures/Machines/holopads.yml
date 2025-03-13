@@ -5,3 +5,89 @@
     - type: Tag
       tags:
         - HolopadAdmin
+    - type: Telephone
+      ringTone: /Audio/Machines/double_ring.ogg
+      listeningRange: 2.5
+      speakerVolume: Speak
+      transmissionRange: Unlimited
+      compatibleRanges:
+      - Grid
+      - Map
+      - Unlimited
+
+- type: entity
+  id: HolopadEmpire
+  suffix: Империя
+  parent: Holopad
+  name: голопад
+  components:
+    - type: Tag
+      tags:
+        - HolopadEmpire
+    - type: Label
+      currentLabel: империя
+    - type: Telephone
+      ringTone: /Audio/Machines/double_ring.ogg
+      listeningRange: 2.5
+      speakerVolume: Speak
+      transmissionRange: Unlimited
+      compatibleRanges:
+      - Grid
+      - Map
+      - Unlimited
+      blacklist:
+        tags:
+          - HolopadRepublic
+
+
+- type: entity
+  id: HolopadRepublic
+  suffix: Республика
+  parent: Holopad
+  name: голопад
+  components:
+    - type: Tag
+      tags:
+        - HolopadRepublic
+    - type: Label
+      currentLabel: республика
+    - type: Telephone
+      ringTone: /Audio/Machines/double_ring.ogg
+      listeningRange: 2.5
+      speakerVolume: Speak
+      transmissionRange: Unlimited
+      compatibleRanges:
+      - Grid
+      - Map
+      - Unlimited
+      blacklist:
+        tags:
+          - HolopadEmpire
+
+
+- type: entity
+  id: HolopadRepublicAdmin
+  suffix: Республика админ командование
+  parent: HolopadRepublic
+  name: голопад
+  components:
+    - type: Label
+      currentLabel: Генеральный Штаб Республиканской Армии
+    - type: Tag
+      tags:
+        - HolopadAdmin
+        - HolopadRepublic
+
+
+- type: entity
+  id: HolopadEmpireAdmin
+  suffix: Империя админ командование
+  parent: HolopadEmpire
+  name: голопад
+  components:
+    - type: Label
+      currentLabel: Министерство войны
+    - type: Tag
+      tags:
+        - HolopadAdmin
+        - HolopadEmpire

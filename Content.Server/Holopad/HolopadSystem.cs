@@ -16,6 +16,8 @@ using Content.Shared.Tag;
 using Content.Shared.Telephone;
 using Content.Shared.UserInterface;
 using Content.Shared.Verbs;
+using Content.Shared.Whistle;
+using Content.Shared.Whitelist;
 using Robust.Server.GameObjects;
 using Robust.Shared.Containers;
 using Robust.Shared.Timing;
@@ -40,6 +42,7 @@ public sealed class HolopadSystem : SharedHolopadSystem
     //SW start
     [Dependency] private readonly TagSystem _tagSystem = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
+    [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
     //SW end
 
     private float _updateTimer = 1.0f;
@@ -115,8 +118,8 @@ public sealed class HolopadSystem : SharedHolopadSystem
         {
             _chatManager.SendAdminAnnouncement(Loc.GetString("admin-holopad-is-called"), null, null);
             //SW end
-            _telephoneSystem.CallTelephone((source, sourceTelephone), (receiver, receiverTelephone), args.Actor);
         }
+        _telephoneSystem.CallTelephone((source, sourceTelephone), (receiver, receiverTelephone), args.Actor);
     }
 
     private void OnHolopadAnswerCall(Entity<HolopadComponent> receiver, ref HolopadAnswerCallMessage args)
@@ -516,7 +519,15 @@ public sealed class HolopadSystem : SharedHolopadSystem
 
             if (receiverTelephone.UnlistedNumber)
                 continue;
-
+            //SW start
+            ISawmill _s = Logger.GetSawmill("sdfghj");
+            _s.Debug("before");
+            if (_whitelistSystem.IsBlacklistPass(source.Comp.Blacklist, receiver))
+            {
+                continue;
+            }
+            _s.Debug("after");
+            //SW end
             if (source == receiver)
                 continue;
 

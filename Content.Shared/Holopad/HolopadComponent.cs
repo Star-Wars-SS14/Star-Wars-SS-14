@@ -56,6 +56,11 @@ public sealed partial class HolopadComponent : Component
     /// </summary>
     [DataField]
     public float ControlLockoutCoolDown { get; private set; } = 180f;
+
+    /// <summary>
+    /// Blacklist чтобы избежать ситуаций когда с имперского голопада можно позвонить на республиканский.
+    /// </summary>
+    [DataField]
 }
 
 #region: Event messages

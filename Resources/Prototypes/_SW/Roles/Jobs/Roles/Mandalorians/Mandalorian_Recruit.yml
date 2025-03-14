@@ -1,6 +1,7 @@
 - type: job
   id: SWMandalorianRecruit
   name: Рекрут Мандалорцев
+  description: job-description-mandalorian-recruit
   playTimeTracker: Job_Mandalorian_Recruit
   requirements:
   - !type:OverallPlaytimeRequirement

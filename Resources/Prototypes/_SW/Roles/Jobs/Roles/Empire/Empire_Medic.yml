@@ -1,6 +1,7 @@
 - type: job
   id: SWEmpireMedic
   name: Медик Сил Империи
+  description: job-description-empire-medic
   playTimeTracker: Job_Empire_Medic
   requirements:
   - !type:OverallPlaytimeRequirement

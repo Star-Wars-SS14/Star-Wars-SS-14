@@ -1,6 +1,7 @@
 - type: job
   id: SWEmpireLieutenant
   name: Лейтенант Сил Империи
+  description: job-description-empire-lieutenant
   playTimeTracker: Job_Empire_Lieutenant
   requirements:
   - !type:OverallPlaytimeRequirement

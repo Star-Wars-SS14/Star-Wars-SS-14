@@ -1,6 +1,7 @@
 - type: job
   id: SWRepublicGeneral
   name: Генерал Сил Республики
+  description: job-description-republic-general
   playTimeTracker: Job_Republic_General
   requirements:
   - !type:OverallPlaytimeRequirement

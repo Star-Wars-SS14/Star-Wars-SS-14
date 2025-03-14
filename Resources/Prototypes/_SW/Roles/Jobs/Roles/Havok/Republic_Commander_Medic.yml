@@ -2,6 +2,7 @@
 - type: job
   id: SWRepublicCommanderMedic
   name: Медик-Коммандос
+  description: job-description-commander-medic
   playTimeTracker: Job_Republic_Commander_Medic
   requirements:
   - !type:OverallPlaytimeRequirement

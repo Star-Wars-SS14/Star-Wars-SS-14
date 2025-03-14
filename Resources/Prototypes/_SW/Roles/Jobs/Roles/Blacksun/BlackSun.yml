@@ -1,6 +1,7 @@
 - type: job
   id: SWBlackSun
   name: Капитан черного солнца
+  description: job-description-blacksun-captain
   playTimeTracker: Job_BlackSun
   requirements:
   - !type:RoleTimeRequirement

@@ -2,6 +2,7 @@
 - type: job
   id: SWRepublicCommanderLieutenant
   name: Лейтенант-Коммандос
+  description: job-description-commander-lieutenant
   playTimeTracker: Job_Republic_Commander_Lieutenant
   requirements:
   - !type:OverallPlaytimeRequirement

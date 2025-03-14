@@ -1,6 +1,7 @@
 - type: job
   id: SWSobrikMedic
   name: Медик Корпуса
+  description: job-description-sobrik-medic
   playTimeTracker: Job_Sobrik_Medic
   requirements:
   - !type:RoleTimeRequirement

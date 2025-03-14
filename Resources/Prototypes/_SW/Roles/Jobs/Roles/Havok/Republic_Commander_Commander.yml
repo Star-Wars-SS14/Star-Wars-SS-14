@@ -2,6 +2,7 @@
 - type: job
   id: SWRepublicCommanderCommander
   name: Командир-Коммандос
+  description: job-description-commander-commander
   playTimeTracker: Job_Republic_Commander_Commander
   requirements:
   - !type:OverallPlaytimeRequirement

@@ -1,6 +1,7 @@
 - type: job
   id: SWExchangeOperative
   name: Оперативник обмена
+  description: job-description-exchange-operative
   playTimeTracker: Job_Exchange_Operative
   requirements:
   - !type:OverallPlaytimeRequirement

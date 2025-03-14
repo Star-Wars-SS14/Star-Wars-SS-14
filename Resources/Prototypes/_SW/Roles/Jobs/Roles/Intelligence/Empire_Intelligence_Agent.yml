@@ -1,6 +1,7 @@
 - type: job
   id: SWEmpireIntelligenceAgent
   name: Агент Имперской Разведки
+  description: job-description-empire-intelligence-agent
   playTimeTracker: Job_Empire_Intelligence_Agent
   requirements:
   - !type:OverallPlaytimeRequirement

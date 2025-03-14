@@ -1,6 +1,7 @@
 - type: job
   id: SWRepublicCaptain
   name: Капитан Сил Республики
+  description: job-description-republic-captain
   playTimeTracker: Job_Republic_Captain
   requirements:
   - !type:OverallPlaytimeRequirement

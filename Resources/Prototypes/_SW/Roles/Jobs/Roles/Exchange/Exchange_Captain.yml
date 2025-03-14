@@ -1,6 +1,7 @@
 - type: job
   id: SWExchangeCaptain
   name: Капитан обмена
+  description: job-description-exchange-captian
   playTimeTracker: Job_Exchange_Captain
   requirements:
   - !type:OverallPlaytimeRequirement

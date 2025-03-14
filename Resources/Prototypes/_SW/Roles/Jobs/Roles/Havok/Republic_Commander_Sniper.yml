@@ -2,6 +2,7 @@
 - type: job
   id: SWRepublicCommanderSniper
   name: Снайпер-Коммандос
+  description: job-description-commander-sniper
   playTimeTracker: Job_Republic_Commander_Sniper
   requirements:
   - !type:OverallPlaytimeRequirement

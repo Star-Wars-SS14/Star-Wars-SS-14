@@ -56,19 +56,20 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
         _window = UIManager.CreateWindow<CharacterWindow>();
         LayoutContainer.SetAnchorPreset(_window, LayoutContainer.LayoutPreset.CenterTop);
 
-
+        _window.OnClose += DeactivateButton;
+        _window.OnOpen += ActivateButton;
 
         CommandBinds.Builder
             .Bind(ContentKeyFunctions.OpenCharacterMenu,
-                 InputCmdHandler.FromDelegate(_ => ToggleWindow()))
-             .Register<CharacterUIController>();
+                InputCmdHandler.FromDelegate(_ => ToggleWindow()))
+            .Register<CharacterUIController>();
     }
 
     public void OnStateExited(GameplayState state)
     {
         if (_window != null)
         {
-            _window.Dispose();
+            _window.Close();
             _window = null;
         }
 
@@ -105,94 +106,164 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
         }
 
         CharacterButton.OnPressed += CharacterButtonPressed;
-
-        if (_window == null)
-        {
-            return;
-        }
-
-        _window.OnClose += DeactivateButton;
-        _window.OnOpen += ActivateButton;
     }
 
-    private void DeactivateButton() => CharacterButton!.Pressed = false;
-    private void ActivateButton() => CharacterButton!.Pressed = true;
-
-    private void CharacterUpdated(CharacterData data)
+    private void DeactivateButton()
     {
-        if (_window == null)
+        if (CharacterButton == null)
         {
             return;
         }
 
-        var (entity, job, objectives, briefing, entityName) = data;
-
-        _window.SpriteView.SetEntity(entity);
-
-        UpdateRoleType();
-
-        _window.NameLabel.Text = entityName;
-        _window.SubText.Text = job;
-        _window.Objectives.RemoveAllChildren();
-        _window.ObjectivesLabel.Visible = objectives.Any();
-
-        foreach (var (groupId, conditions) in objectives)
-        {
-            var objectiveControl = new CharacterObjectiveControl
-            {
-                Orientation = BoxContainer.LayoutOrientation.Vertical,
-                Modulate = Color.Gray
-            };
-
-
-            var objectiveText = new FormattedMessage();
-            objectiveText.TryAddMarkup(groupId, out _);
-
-            var objectiveLabel = new RichTextLabel
-            {
-                StyleClasses = {StyleNano.StyleClassTooltipActionTitle}
-            };
-            objectiveLabel.SetMessage(objectiveText);
-
-            objectiveControl.AddChild(objectiveLabel);
-
-            foreach (var condition in conditions)
-            {
-                var conditionControl = new ObjectiveConditionsControl();
-                conditionControl.ProgressTexture.Texture = _sprite.Frame0(condition.Icon);
-                conditionControl.ProgressTexture.Progress = condition.Progress;
-                var titleMessage = new FormattedMessage();
-                var descriptionMessage = new FormattedMessage();
-                titleMessage.AddText(condition.Title);
-                descriptionMessage.AddText(condition.Description);
-
-                conditionControl.Title.SetMessage(titleMessage);
-                conditionControl.Description.SetMessage(descriptionMessage);
-
-                objectiveControl.AddChild(conditionControl);
-            }
-
-            _window.Objectives.AddChild(objectiveControl);
-        }
-
-        if (briefing != null)
-        {
-            var briefingControl = new ObjectiveBriefingControl();
-            var text = new FormattedMessage();
-            text.PushColor(Color.Yellow);
-            text.AddText(briefing);
-            briefingControl.Label.SetMessage(text);
-            _window.Objectives.AddChild(briefingControl);
-        }
-
-        var controls = _characterInfo.GetCharacterInfoControls(entity);
-        foreach (var control in controls)
-        {
-            _window.Objectives.AddChild(control);
-        }
-
-        _window.RolePlaceholder.Visible = briefing == null && !controls.Any() && !objectives.Any();
+        CharacterButton.Pressed = false;
     }
+
+    private void ActivateButton()
+    {
+        if (CharacterButton == null)
+        {
+            return;
+        }
+
+        CharacterButton.Pressed = true;
+    }
+
+private static readonly Dictionary<string, string> JobIdMapping = new Dictionary<string, string>
+{
+    { "лейтенант сил империи", "SWEmpireLieutenant" },
+    { "майор сил империи", "SWEmpireMajor" },
+    { "медик сил империи", "SWEmpireMedic" },
+    { "мофф сил империи", "SWEmpireMoff" },
+    { "солдат сил империи", "SWEmpireSoldier" },
+    { "капитан сил республики", "SWRepublicCaptain" },
+    { "генерал сил республики", "SWRepublicGeneral" },
+    { "лейтенант сил республики", "SWRepublicLieutenant" },
+    { "медик сил республики", "SWRepublicMedic" },
+    { "рекрут сил республики", "SWRepublicRecruit" },
+    { "солдат сил республики", "SWRepublicSoldier" },
+    { "комендант корпуса", "SWSobrikCaptain" },
+    { "офицер корпуса", "SWSobrikOfficer" },
+    { "медик корпуса", "SWSobrikMedic" },
+    { "лидер мандалорцев", "SWMandalorianLeader" },
+    { "рекрут мандалорцев", "SWMandalorianRecruit" },
+    { "ветеран мандалорцев", "SWMandalorianVeteran" },
+    { "воин мандалорцев", "SWMandalorianWarrior" },
+    { "агент имперской разведки", "SWEmpireIntelligenceAgent" },
+    { "смотритель имперской разведки", "SWEmpireIntelligenceCaretaker" },
+    { "командир-коммандос", "SWRepublicCommanderCommander" },
+    { "лейтенант-коммандос", "SWRepublicCommanderLieutenant" },
+    { "медик-коммандос", "SWRepublicCommanderMedic" },
+    { "штурмовик-коммандос", "SWRepublicCommanderStormtrooper" },
+    { "снайпер-коммандос", "SWRepublicCommanderSniper" },
+    { "капитан черного солнца", "SWBlackSun" },
+    { "наемник черного солнца", "SWBlackSunMercenary" },
+    { "житель", "SWCivialian" },
+    { "капитан обмена", "SWExchangeCaptain" },
+    { "оперативник обмена", "SWExchangeOperative" },
+};
+
+private void CharacterUpdated(CharacterData data)
+{
+    if (_window == null)
+    {
+        return;
+    }
+
+    var (entity, job, objectives, briefing, entityName) = data;
+
+    _window.SpriteView.SetEntity(entity);
+
+    UpdateRoleType();
+
+    _window.NameLabel.Text = entityName;
+    _window.SubText.Text = job;
+    _window.Objectives.RemoveAllChildren();
+    _window.ObjectivesLabel.Visible = objectives.Any();
+
+    string jobId = job.ToLower();
+
+    if (JobIdMapping.TryGetValue(jobId, out var englishJobId))
+    {
+        jobId = englishJobId;
+    }
+
+    string jobDescriptionKey = "job-description-default";
+
+    if (_prototypeManager.TryIndex<JobPrototype>(jobId, out var jobProto)) 
+    {
+        jobDescriptionKey = jobProto.Description ?? "job-description-default"; 
+    }
+
+    var jobDescription = Loc.GetString(jobDescriptionKey);
+
+    var jobDescriptionLabel = new RichTextLabel
+    {
+        StyleClasses = { StyleNano.StyleClassTooltipActionTitle }
+    };
+
+    var formattedMessage = new FormattedMessage();
+    formattedMessage.AddText(jobDescription); 
+
+    jobDescriptionLabel.SetMessage(formattedMessage);
+
+    _window.Objectives.AddChild(jobDescriptionLabel);
+
+    foreach (var (groupId, conditions) in objectives)
+    {
+        var objectiveControl = new CharacterObjectiveControl
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            Modulate = Color.Gray
+        };
+
+        var objectiveText = new FormattedMessage();
+        objectiveText.TryAddMarkup(groupId, out _);
+
+        var objectiveLabel = new RichTextLabel
+        {
+            StyleClasses = { StyleNano.StyleClassTooltipActionTitle }
+        };
+        objectiveLabel.SetMessage(objectiveText);
+
+        objectiveControl.AddChild(objectiveLabel);
+
+        foreach (var condition in conditions)
+        {
+            var conditionControl = new ObjectiveConditionsControl();
+            conditionControl.ProgressTexture.Texture = _sprite.Frame0(condition.Icon);
+            conditionControl.ProgressTexture.Progress = condition.Progress;
+            var titleMessage = new FormattedMessage();
+            var descriptionMessage = new FormattedMessage();
+            titleMessage.AddText(condition.Title);
+            descriptionMessage.AddText(condition.Description);
+
+            conditionControl.Title.SetMessage(titleMessage);
+            conditionControl.Description.SetMessage(descriptionMessage);
+
+            objectiveControl.AddChild(conditionControl);
+        }
+
+        _window.Objectives.AddChild(objectiveControl);
+    }
+
+    if (briefing != null)
+    {
+        var briefingControl = new ObjectiveBriefingControl();
+        var text = new FormattedMessage();
+        text.PushColor(Color.Yellow);
+        text.AddText(briefing);
+        briefingControl.Label.SetMessage(text);
+        _window.Objectives.AddChild(briefingControl);
+    }
+
+    var controls = _characterInfo.GetCharacterInfoControls(entity);
+    foreach (var control in controls)
+    {
+        _window.Objectives.AddChild(control);
+    }
+
+    _window.RolePlaceholder.Visible = briefing == null && !controls.Any() && !objectives.Any();
+}
 
     private void OnRoleTypeChanged(MindRoleTypeChangedEvent ev, EntitySessionEventArgs _)
     {
@@ -218,8 +289,6 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
             roleText = Loc.GetString(proto.Name);
             color = proto.Color;
         }
-        else
-            _sawmill.Error($"{_player.LocalEntity} has invalid Role Type '{mind.RoleType}'. Displaying '{roleText}' instead");
 
         _window.RoleType.Text = roleText;
         _window.RoleType.FontColorOverride = color;
@@ -245,10 +314,7 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
         if (_window == null)
             return;
 
-        if (CharacterButton != null)
-        {
-            CharacterButton.SetClickPressed(!_window.IsOpen);
-        }
+        CharacterButton?.SetClickPressed(!_window.IsOpen);
 
         if (_window.IsOpen)
         {

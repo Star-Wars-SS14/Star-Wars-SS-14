@@ -1,6 +1,6 @@
 - type: entity
   parent: ClothingHeadBase
-  id: SW_BaseHelmet
+  id: SW_StromtrooperHelmet
   name: Stormtrooper helmet
   description: Helmet with automatic polarized lenses and communication unit.
   components:

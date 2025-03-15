@@ -21,7 +21,7 @@
     - CMInaprovalineAutoInjector
     - AloeCream
     - BoxMRE
-    - RMCBinoculars
+    - SWBinoculars
 
 # Soldier
 - type: startingGear
@@ -45,7 +45,7 @@
     - CMInaprovalineAutoInjector
     - PillKelotane
     - BoxMRE
-    - RMCBinoculars
+    - SWBinoculars
 
 # Medic
 - type: startingGear
@@ -67,7 +67,7 @@
     back:
     - Defibrillator
     - BoxMRE
-    - RMCBinoculars
+    - SWBinoculars
     - SW_YellowMagazineBlastRifle
     belt:
     - CMInaprovalineAutoInjector
@@ -99,7 +99,7 @@
     - CMInaprovalineAutoInjector
     - AloeCream
     - BoxMRE
-    - RMCBinoculars
+    - SWBinoculars
 
 # Soldier
 - type: startingGear
@@ -123,7 +123,7 @@
     - CMInaprovalineAutoInjector
     - AloeCream
     - BoxMRE
-    - RMCBinoculars
+    - SWBinoculars
 
 # Medic
 - type: startingGear
@@ -145,7 +145,7 @@
     back:
     - Defibrillator
     - BoxMRE
-    - RMCBinoculars
+    - SWBinoculars
     - SW_H206GreenMagazineBlastRifle
     belt:
     - CMInaprovalineAutoInjector

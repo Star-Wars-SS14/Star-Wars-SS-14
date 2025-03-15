@@ -2,7 +2,6 @@
 using Content.Server.Beam;
 using Content.Server.Hands.Systems;
 using Content.Server.Popups;
-using Content.Server.Store.Systems;
 using Content.Shared.Actions;
 using Content.Shared.Alert;
 using Content.Shared.Damage;
@@ -18,7 +17,6 @@ namespace Content.Server._SW.Force.Systems;
 
 public sealed partial class ForceSystem : EntitySystem
 {
-    [Dependency] private readonly StoreSystem _storeSystem = default!;
     [Dependency] private readonly SharedActionsSystem _action = default!;
     [Dependency] private readonly AlertsSystem _alertsSystem = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;

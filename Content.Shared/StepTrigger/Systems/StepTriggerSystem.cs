@@ -115,6 +115,9 @@ public sealed class StepTriggerSystem : EntitySystem
             return;
         }
 
+        if (TryComp<PhysicsComponent>(uid, out var selfPhysics) && selfPhysics.LinearVelocity.Length() > 0.001f)
+            return;
+
         if (component.StepOn)
         {
             var evStep = new StepTriggeredOnEvent(uid, otherUid);

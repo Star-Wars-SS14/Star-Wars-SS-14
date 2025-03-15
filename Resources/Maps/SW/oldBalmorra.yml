@@ -243444,7 +243444,7 @@ entities:
       rot: 3.141592653589793 rad
       pos: -86.12286,-126.38119
       parent: 2
-- proto: RMCBinoculars
+- proto: SWBinoculars
   entities:
   - uid: 4213
     components:

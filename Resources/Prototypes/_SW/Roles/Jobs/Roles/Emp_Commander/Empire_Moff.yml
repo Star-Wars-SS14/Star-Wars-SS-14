@@ -11,3 +11,12 @@
   startingGear: EmpireMoffGear
   icon: "JobIconEmpireMoff"
   supervisors: job-supervisors-min-war
+  access:
+  - EmpireCommander
+  - EmpireBase
+  - EmpireMoff
+  - EmpireArsenal
+  - EmpireMedic
+  - EmpireIntelligenceCareTaker
+  - EmpireIntelligence
+  - EmpireSobrik

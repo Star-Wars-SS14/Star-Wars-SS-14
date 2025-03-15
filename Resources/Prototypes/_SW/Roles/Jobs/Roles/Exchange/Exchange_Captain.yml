@@ -11,3 +11,5 @@
   startingGear: ExchangeCaptainGear
   icon: "JobIconExchangeCaptain"
   supervisors: job-supervisors-exchange
+  access:
+  - Exchange

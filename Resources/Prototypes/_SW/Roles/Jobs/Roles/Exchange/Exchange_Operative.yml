@@ -8,3 +8,5 @@
   startingGear: ExchangeOperativeGear
   icon: "JobIconExchangeOperative"
   supervisors: job-supervisors-exchange-cap
+  access:
+  - Exchange

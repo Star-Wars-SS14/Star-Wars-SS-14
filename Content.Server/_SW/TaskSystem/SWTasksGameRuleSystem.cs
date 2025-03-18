@@ -24,7 +24,22 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     {
         base.Initialize();
         _sawmill = Logger.GetSawmill("taskSystem");
+        SubscribeLocalEvent<SWTaskGameruleComponent, SWTaskProgressUpdateEvent>(OnTaskComplete);
     }
+
+    private void OnTaskComplete(Entity<SWTaskGameruleComponent> ent, ref SWTaskProgressUpdateEvent args)
+    {
+        if (!TryComp<SWTaskComponent>(ent.Owner, out var comp))
+        {
+            return;
+        }
+        comp.Completeness = args.NewProgress;
+        if (comp.Completeness == 1.0)
+        {
+            RaiseLocalEvent(ent.Owner, new SWOnTaskCompleteEvent());
+        }
+    }
+
     protected override void Started(EntityUid uid, SWTaskGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
         TryAddRandomTaskAllFactions();
@@ -85,3 +100,13 @@ public sealed partial class SWOnTaskCompleteEvent : EntityEventArgs
 
 }
 
+public sealed partial class SWTaskProgressUpdateEvent : EntityEventArgs
+{
+    public EntityUid Task;
+    public FixedPoint2 NewProgress;
+    public SWTaskProgressUpdateEvent(EntityUid task, FixedPoint2 prog)
+    {
+        Task = task;
+        NewProgress = prog;
+    }
+}

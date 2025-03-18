@@ -17,6 +17,7 @@ namespace Content.Server._SW.TaskSystem;
 public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGameruleComponent>
 {
     [Dependency] IGameTiming _timing = default!;
+    [Dependency] SWFactionGameruleSystem _swFaction = default!;
     ISawmill _sawmill = default!;
 
     public override void Initialize()
@@ -26,20 +27,12 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     }
     protected override void Started(EntityUid uid, SWTaskGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
-        foreach (var protoId in component.Factions)
-        {
-            var factionUid = Spawn(protoId);
-            var comp = EnsureComp<SWFactionComponent>(uid);
-            component.InGameFactions.Add(new Entity<SWFactionComponent>(factionUid, comp));
-            comp.CurrentScore = comp.StartScore;
-        }
-
-        TryAddRandomTaskAllFactions(component.InGameFactions);
+        TryAddRandomTaskAllFactions();
     }
 
     protected override void AppendRoundEndText(EntityUid uid, SWTaskGameruleComponent component, GameRuleComponent gameRule, ref RoundEndTextAppendEvent args)
     {
-        
+
     }
     protected override void ActiveTick(EntityUid uid, SWTaskGameruleComponent component, GameRuleComponent gameRule, float frameTime)
     {
@@ -52,22 +45,20 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             }
         }
 
-        while (query.MoveNext(out var factionUid, out var comp))
+        var taskQuery = EntityQueryEnumerator<SWTaskComponent>();
+        while (taskQuery.MoveNext(out var taskUid, out var taskComp))
         {
-            //var ev = new SWGetProgressEvent();
-            foreach (var task in comp.CurrentTasks)
+            var ev = new SWGetProgressEvent();
+            RaiseLocalEvent(taskUid, ref ev);
+            if (ev.Progress == 1.0)
             {
-                //RaiseLocalEvent(task, ref ev);
-                if (task.Comp.Completeness >= 1)
-                {
-                    comp.CurrentScore += task.Comp.Score;
-                }
+                RaiseLocalEvent(taskUid, new SWOnTaskCompleteEvent());
             }
         }
-
     }
-    public void TryAddRandomTaskAllFactions(List<Entity<SWFactionComponent>> factions)
+    public void TryAddRandomTaskAllFactions()
     {
+        var factions = _swFaction.GetFactionsEntities();
         foreach (var faction in factions)
         {
             TryAddRandomTask(faction);
@@ -84,4 +75,13 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 }
 
 [ByRefEvent]
-public record struct SWGetProgressEvent(FixedPoint2 Progress);
+public sealed partial class SWGetProgressEvent : EntityEventArgs
+{
+    public FixedPoint2 Progress = 0.0;
+}
+
+public sealed partial class SWOnTaskCompleteEvent : EntityEventArgs
+{
+
+}
+

@@ -520,13 +520,10 @@ public sealed class HolopadSystem : SharedHolopadSystem
             if (receiverTelephone.UnlistedNumber)
                 continue;
             //SW start
-            ISawmill _s = Logger.GetSawmill("sdfghj");
-            _s.Debug("before");
             if (_whitelistSystem.IsBlacklistPass(source.Comp.Blacklist, receiver))
             {
                 continue;
             }
-            _s.Debug("after");
             //SW end
             if (source == receiver)
                 continue;

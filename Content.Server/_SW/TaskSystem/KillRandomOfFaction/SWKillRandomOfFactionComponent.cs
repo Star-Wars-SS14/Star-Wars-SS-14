@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Content.Server._SW.TaskSystem.KillRandomOfFaction;
 
+[RegisterComponent]
 public sealed partial class SWKillRandomOfFactionComponent : Component
 {
     [DataField(required: true)]

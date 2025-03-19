@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Content.Shared._SW.TaskSystem;
 
-public sealed partial class SWFactionMember : Component
+[RegisterComponent]
+public sealed partial class SWFactionMemberComponent : Component
 {
     [DataField(required: true)]
     public string Faction;

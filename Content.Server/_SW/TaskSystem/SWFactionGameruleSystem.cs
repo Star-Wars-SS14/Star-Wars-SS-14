@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Content.Server._SW.TaskSystem;
 
-public sealed class SWFactionGameruleSystem : GameRuleSystem<SWFactionGameRuleComponent>
+public sealed class SWFactionGameruleSystem : GameRuleSystem<SWFactionGameruleComponent>
 {
 
     public override void Initialize()
@@ -21,7 +21,7 @@ public sealed class SWFactionGameruleSystem : GameRuleSystem<SWFactionGameRuleCo
         base.Initialize();
     }
 
-    protected override void Started(EntityUid uid, SWFactionGameRuleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
+    protected override void Started(EntityUid uid, SWFactionGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
         base.Started(uid, component, gameRule, args);
         foreach (string proto in component.FactionsPrototypes)
@@ -35,7 +35,7 @@ public sealed class SWFactionGameruleSystem : GameRuleSystem<SWFactionGameRuleCo
 
     public Dictionary<string, Entity<SWFactionComponent>?> GetFactions()
     {
-        var query = EntityQueryEnumerator<SWFactionGameRuleComponent>();
+        var query = EntityQueryEnumerator<SWFactionGameruleComponent>();
         query.MoveNext(out var _, out var comp);
         if (comp != null)
         {

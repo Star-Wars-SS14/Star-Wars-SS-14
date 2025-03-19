@@ -3,4 +3,14 @@
   id: TaskGamerule
   components:
   - type: SWTaskGamerule
-  
+  - type: SWFactionGamerule
+    factionsPrototypes:
+    - RepublicFaction
+    - EmpireFaction
+
+- type: gamePreset
+  id: SWMainPreset
+  name: aboba
+  description: aboba
+  rules:
+    - TaskGamerule

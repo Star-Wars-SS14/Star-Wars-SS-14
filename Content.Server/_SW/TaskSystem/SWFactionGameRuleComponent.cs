@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 
 namespace Content.Server._SW.TaskSystem;
 
-public sealed partial class SWFactionGameRuleComponent : Component
+[RegisterComponent]
+public sealed partial class SWFactionGameruleComponent : Component
 {
     [DataField(required: true)]
     public List<string> FactionsPrototypes = new();

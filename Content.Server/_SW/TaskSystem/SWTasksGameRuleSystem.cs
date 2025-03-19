@@ -4,6 +4,7 @@ using Content.Shared._SW.TaskSystem;
 using Content.Shared.FixedPoint;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Random.Helpers;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using System;
@@ -18,6 +19,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 {
     [Dependency] IGameTiming _timing = default!;
     [Dependency] SWFactionGameruleSystem _swFaction = default!;
+    [Dependency] IPrototypeManager _prototypeManager = default!;
     ISawmill _sawmill = default!;
 
     public override void Initialize()
@@ -29,14 +31,15 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 
     private void OnTaskComplete(Entity<SWTaskGameruleComponent> ent, ref SWTaskProgressUpdateEvent args)
     {
-        if (!TryComp<SWTaskComponent>(ent.Owner, out var comp))
+        if (!TryComp<SWTaskComponent>(args.Task, out var comp))
         {
             return;
         }
         comp.Completeness = args.NewProgress;
         if (comp.Completeness == 1.0)
         {
-            RaiseLocalEvent(ent.Owner, new SWOnTaskCompleteEvent());
+            RaiseLocalEvent(args.Task, new SWOnTaskCompleteEvent());
+            QueueDel(args.Task);
         }
     }
 
@@ -68,6 +71,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             if (ev.Progress == 1.0)
             {
                 RaiseLocalEvent(taskUid, new SWOnTaskCompleteEvent());
+                QueueDel(taskUid);
             }
         }
     }
@@ -81,7 +85,12 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     }
     public void TryAddRandomTask(Entity<SWFactionComponent> faction)
     {
-        var taskProto = faction.Comp.AvailableTasks.Pick();
+        _prototypeManager.TryIndex(faction.Comp.AvailableTasks, out var proto);
+        if (proto == null)
+        {
+            return;
+        }
+        var taskProto = proto.Pick();
         var task = Spawn(taskProto);
         var comp = EnsureComp<SWTaskComponent>(task);
         faction.Comp.CurrentTasks.Add(new Entity<SWTaskComponent>(task, comp));
@@ -89,24 +98,4 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     }
 }
 
-[ByRefEvent]
-public sealed partial class SWGetProgressEvent : EntityEventArgs
-{
-    public FixedPoint2 Progress = 0.0;
-}
 
-public sealed partial class SWOnTaskCompleteEvent : EntityEventArgs
-{
-
-}
-
-public sealed partial class SWTaskProgressUpdateEvent : EntityEventArgs
-{
-    public EntityUid Task;
-    public FixedPoint2 NewProgress;
-    public SWTaskProgressUpdateEvent(EntityUid task, FixedPoint2 prog)
-    {
-        Task = task;
-        NewProgress = prog;
-    }
-}

@@ -20,6 +20,8 @@
   components:
   - type: Loadout
     prototypes: [RepublicGeneralGear]
+  - type: SWFactionMember
+    faction: RepublicFaction
   - type: NpcFactionMember
     factions:
     - NanoTrasen

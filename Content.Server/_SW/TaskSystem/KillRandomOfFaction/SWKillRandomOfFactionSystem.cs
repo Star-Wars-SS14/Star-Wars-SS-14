@@ -11,12 +11,30 @@ namespace Content.Server._SW.TaskSystem.KillRandomOfFaction;
 
 public sealed partial class SWKillRandomOfFactionSystem : EntitySystem
 {
+    ISawmill _s = default!;
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<SWKillRandomOfFactionComponent, ComponentInit>(OnCompInit);
         SubscribeLocalEvent<DamageableComponent, MobStateChangedEvent>(OnMobStateChanged);
+        _s = Logger.GetSawmill("killrandom");
     }
+
+    private void OnCompInit(Entity<SWKillRandomOfFactionComponent> ent, ref ComponentInit args)
+    {
+        _s.Debug("initted");
+        var query = EntityQueryEnumerator<SWFactionMemberComponent>();
+        while(query.MoveNext(out var uid, out var comp))
+        {
+            if (comp.Faction == ent.Comp.Faction)
+            {
+                _s.Debug("given");
+                ent.Comp.PersonToKill = uid;
+                break;
+            }
+        }
+    }
+
     private void OnMobStateChanged(Entity<DamageableComponent> ent, ref MobStateChangedEvent args)
     {
         if (args.NewMobState == MobState.Dead)
@@ -27,11 +45,8 @@ public sealed partial class SWKillRandomOfFactionSystem : EntitySystem
             {
                 if (comp.PersonToKill == ent.Owner)
                 {
-                    if (!TryComp<SWTaskComponent>(uid, out var taskComp))
-                    {
-                        return;
-                    }
-                    taskComp.Completeness = 1;
+                    _s.Debug("Killed");
+                    RaiseLocalEvent(uid, new SWTaskProgressUpdateEvent(uid, 1.0));
                 }
             }
         }

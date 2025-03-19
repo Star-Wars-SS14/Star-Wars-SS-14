@@ -1,4 +1,5 @@
-﻿using Robust.Shared.Serialization;
+﻿using Content.Shared.Alert;
+using Robust.Shared.Serialization;
 
 namespace Content.Shared._SW;
 
@@ -6,6 +7,8 @@ namespace Content.Shared._SW;
 public sealed class ReinforcementsBroadcastMessage : BoundUserInterfaceMessage
 {
 }
+
+public sealed partial class OpenMasteryShopAlertEvent : BaseAlertEvent;
 
 public enum StarWarsFractionType : byte
 {

@@ -8,3 +8,5 @@
   startingGear: RepublicRecruitGear
   icon: "JobIconRepublicRecruit"
   supervisors: job-supervisors-leit-rep
+  access:
+  - RepublicBase

@@ -11,3 +11,8 @@
   startingGear: EmpireMajorGear
   icon: "JobIconEmpireMajor"
   supervisors: job-supervisors-MOFF
+  access:
+  - EmpireCommander
+  - EmpireBase
+  - EmpireArsenal
+  - EmpireSobrik

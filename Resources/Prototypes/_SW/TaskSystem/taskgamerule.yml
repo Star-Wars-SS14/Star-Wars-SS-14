@@ -2,6 +2,8 @@
   parent: BaseGameRule
   id: TaskGamerule
   components:
+  - type: GameRule
+    minPlayers: 0
   - type: SWTaskGamerule
   - type: SWFactionGamerule
     factionsPrototypes:

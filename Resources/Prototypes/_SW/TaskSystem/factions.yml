@@ -8,18 +8,19 @@
   id: EmpireFaction
   components:
   - type: SWFaction
-    availableTasks: EmpieTasksSet
+    availableTasks: EmpireTasksSet
     addIntervalInSeconds: 10
 
+   
 
 - type: weightedRandom
-  id: EmpieTasksSet
+  id: EmpireTasksSet
   weights:
-    KillRAndomOfFactionTask : 1
+    KillRandomOfFactionTask : 1
 
 - type: entity
-  id: KillRAndomOfFactionTask
+  id: KillRandomOfFactionTask
   components:
   - type: SWTask
   - type: SWKillRandomOfFaction
-    faction: Republic  
+    faction: RepublicFaction  

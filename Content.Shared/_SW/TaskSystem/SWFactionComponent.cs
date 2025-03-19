@@ -12,9 +12,9 @@ namespace Content.Shared._SW.TaskSystem;
 public sealed partial class SWFactionComponent : Component
 {
     [DataField]
-    public ProtoId<WeightedRandomPrototype> AvailableTasks;
+    public ProtoId<WeightedRandomPrototype>? AvailableTasks = null;
 
-    public List<Entity<SWTaskComponent>> CurrentTasks;
+    public List<Entity<SWTaskComponent>> CurrentTasks = new();
 
     [DataField]
     public float AddIntervalInSeconds = 60 * 20;

@@ -85,6 +85,10 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     }
     public void TryAddRandomTask(Entity<SWFactionComponent> faction)
     {
+        if (faction.Comp.AvailableTasks == null)
+        {
+            return;
+        }
         _prototypeManager.TryIndex(faction.Comp.AvailableTasks, out var proto);
         if (proto == null)
         {

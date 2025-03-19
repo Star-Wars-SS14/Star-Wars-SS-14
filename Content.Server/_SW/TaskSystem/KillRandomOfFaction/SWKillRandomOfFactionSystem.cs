@@ -28,7 +28,7 @@ public sealed partial class SWKillRandomOfFactionSystem : EntitySystem
         {
             if (comp.Faction == ent.Comp.Faction)
             {
-                _s.Debug("given");
+                _s.Debug($"given {uid}");
                 ent.Comp.PersonToKill = uid;
                 break;
             }

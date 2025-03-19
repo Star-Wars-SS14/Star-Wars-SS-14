@@ -15,12 +15,37 @@ public sealed partial class SWKillRandomOfFactionSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<SWKillRandomOfFactionComponent, ComponentInit>(OnCompInit);
+        SubscribeLocalEvent<SWKillRandomOfFactionComponent, SWTaskCheckRequirementsEvent>(OnCheckRequirements);
+        SubscribeLocalEvent<SWKillRandomOfFactionComponent, SWOnTaskInitEvent>(OnTaskInit);
         SubscribeLocalEvent<DamageableComponent, MobStateChangedEvent>(OnMobStateChanged);
         _s = Logger.GetSawmill("killrandom");
     }
 
-    private void OnCompInit(Entity<SWKillRandomOfFactionComponent> ent, ref ComponentInit args)
+    private void OnCheckRequirements(Entity<SWKillRandomOfFactionComponent> ent, ref SWTaskCheckRequirementsEvent args)
+    {
+        var query = EntityQueryEnumerator<SWKillRandomOfFactionComponent>();
+        List<EntityUid?> targets = new();
+        while (query.MoveNext(out var uid, out var comp))
+        {
+            if (comp.PersonToKill != null)
+            {
+                targets.Add(comp.PersonToKill);
+            }
+        }
+
+        var query2 = EntityQueryEnumerator<SWFactionMemberComponent>();
+        while (query2.MoveNext(out var uid, out var comp))
+        {
+            if (comp.Faction == ent.Comp.Faction && !targets.Contains(uid))
+            {
+                return;
+            }
+        }
+        _s.Debug("cancelled");
+        args.Cancel();
+    }
+
+    private void OnTaskInit(Entity<SWKillRandomOfFactionComponent> ent, ref SWOnTaskInitEvent args)
     {
         _s.Debug("initted");
         var query = EntityQueryEnumerator<SWFactionMemberComponent>();

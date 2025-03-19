@@ -3,6 +3,7 @@ using Content.Server.GameTicking.Rules;
 using Content.Shared._SW.TaskSystem;
 using Content.Shared.FixedPoint;
 using Content.Shared.GameTicking.Components;
+using Content.Shared.Random;
 using Content.Shared.Random.Helpers;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -20,6 +21,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     [Dependency] IGameTiming _timing = default!;
     [Dependency] SWFactionGameruleSystem _swFaction = default!;
     [Dependency] IPrototypeManager _prototypeManager = default!;
+    [Dependency] IRobustRandom _random = default!;
     ISawmill _sawmill = default!;
 
     public override void Initialize()
@@ -83,6 +85,27 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             TryAddRandomTask(faction);
         }
     }
+
+    public WeightedRandomPrototype FilterAvailableTasks(WeightedRandomPrototype proto)
+    {
+        var keys = proto.Weights.Keys;
+        WeightedRandomPrototype weightedProto = new();
+        EntityUid uid;
+        foreach (var (key, value) in proto.Weights)
+        {
+            uid = Spawn(key);
+            var ev = new SWTaskCheckRequirementsEvent();
+            RaiseLocalEvent(uid, ref ev);
+            if (ev.Cancelled)
+            {
+                Del(uid);
+            } else
+            {
+                weightedProto.Weights.Add(key, value);
+            }
+        }
+        return weightedProto;
+    }
     public void TryAddRandomTask(Entity<SWFactionComponent> faction)
     {
         if (faction.Comp.AvailableTasks == null)
@@ -94,10 +117,18 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         {
             return;
         }
-        var taskProto = proto.Pick();
-        var task = Spawn(taskProto);
-        var comp = EnsureComp<SWTaskComponent>(task);
-        faction.Comp.CurrentTasks.Add(new Entity<SWTaskComponent>(task, comp));
+
+
+        var protoFiltered = FilterAvailableTasks(proto);
+        //Если доступных заданий не окажется, то мы просто попробуем в следующий раз
+        if (protoFiltered.Weights.Count != 0)
+        {
+            var taskProto = protoFiltered.Pick();
+            var task = Spawn(taskProto);
+            var comp = EnsureComp<SWTaskComponent>(task);
+            RaiseLocalEvent(task, new SWOnTaskInitEvent());
+            faction.Comp.CurrentTasks.Add(new Entity<SWTaskComponent>(task, comp));
+        } 
         faction.Comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(faction.Comp.AddIntervalInSeconds);
     }
 }

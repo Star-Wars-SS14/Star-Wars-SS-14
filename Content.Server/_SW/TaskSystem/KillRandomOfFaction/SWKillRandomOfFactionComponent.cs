@@ -13,5 +13,5 @@ public sealed partial class SWKillRandomOfFactionComponent : Component
     [DataField(required: true)]
     public string Faction;
 
-    public EntityUid PersonToKill;
+    public EntityUid? PersonToKill = null;
 }

@@ -18,6 +18,16 @@ public sealed partial class SWOnTaskCompleteEvent : EntityEventArgs
 
 }
 
+[ByRefEvent]
+public sealed partial class SWTaskCheckRequirementsEvent : CancellableEntityEventArgs
+{
+
+}
+
+public sealed partial class SWOnTaskInitEvent : EntityEventArgs
+{
+
+}
 public sealed partial class SWTaskProgressUpdateEvent : EntityEventArgs
 {
     public EntityUid Task;

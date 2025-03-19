@@ -11,3 +11,9 @@
   startingGear: RepublicGeneralGear
   icon: "JobIconRepublicGeneral"
   supervisors: job-supervisors-grand-marshal
+  access:
+  - RepublicBase
+  - RepublicCommander
+  - RepublicArsenal
+  - RepublicGeneral
+

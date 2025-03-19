@@ -1,20 +1,12 @@
 - type: entity
-  parent: ClothingHeadBase
+  parent: SW_BaseHelmet
   id: SW_ClothingHeadRecruitMandalorianHelmet
   name: recruit mandalorian helmet
   components:
-  - type: HideLayerClothing
-    slots:
-    - Hair
-    - Snout
-  - type: BreathMask
   - type: Sprite
     sprite: _SW/Clothing/Head/Helmets/HeadMandalorianRecruit.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/HeadMandalorianRecruit.rsi
-  - type: PressureProtection
-    highPressureMultiplier: 0.3
-    lowPressureMultiplier: 1000
 
 - type: entity
   parent: SW_ClothingHeadRecruitMandalorianHelmet

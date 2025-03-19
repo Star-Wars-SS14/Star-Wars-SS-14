@@ -15,7 +15,6 @@ public sealed class LandMineSystem : EntitySystem
     public override void Initialize()
     {
         SubscribeLocalEvent<LandMineComponent, StepTriggeredOnEvent>(HandleStepOnTriggered);
-        SubscribeLocalEvent<LandMineComponent, StepTriggeredOffEvent>(HandleStepOffTriggered);
 
         SubscribeLocalEvent<LandMineComponent, StepTriggerAttemptEvent>(HandleStepTriggerAttempt);
     }
@@ -29,10 +28,7 @@ public sealed class LandMineSystem : EntitySystem
             PopupType.LargeCaution);
 
         _audioSystem.PlayPvs(component.Sound, uid);
-    }
 
-    private void HandleStepOffTriggered(EntityUid uid, LandMineComponent component, ref StepTriggeredOffEvent args)
-    {
         _trigger.Trigger(uid, args.Tripper);
     }
 

@@ -23,12 +23,12 @@
   randomizeName: false
   components:
     - type: GhostRole
-      name: ghost-role-information-empire-lieutenant-name
-      description: ghost-role-information-empire-lieutenant-description
-      rules: ghost-role-information-empire-lieutenant-rules
+      name: Имперский лейтенант подкрепления.
+      description: Вас вызвали в качестве подкрепления. Помогите основным силам на планете.
+      rules: Не убивайте союзников. Серьёзно, это не круто.
       raffle:
         settings: short
-      job: EmpireLieutenant
+      job: SWEmpireLieutenant
     - type: Loadout
       prototypes: [EmpireLieutenantBaseGear]
     - type: RandomMetadata
@@ -55,12 +55,12 @@
   randomizeName: false
   components:
     - type: GhostRole
-      name: ghost-role-information-empire-soldier-name
-      description: ghost-role-information-empire-soldier-description
-      rules: ghost-role-information-empire-soldier-rules
+      name: Имперский солдат подкрепления
+      description: Вас вызвали в качестве подкрепления. Помогите основным силам на планете.
+      rules: Не убивайте союзников. Серьёзно, это не круто.
       raffle:
         settings: short
-      job: EmpireSoldier
+      job: SWEmpireSoldier
     - type: Loadout
       prototypes: [EmpireSoldierBaseGear]
     - type: RandomMetadata
@@ -87,12 +87,12 @@
   randomizeName: false
   components:
     - type: GhostRole
-      name: ghost-role-information-empire-medic-name
-      description: ghost-role-information-empire-medic-description
-      rules: ghost-role-information-empire-medic-rules
+      name: Имперский медик подкрепления
+      description: Вас вызвали в качестве подкрепления. Помогите основным силам на планете.
+      rules: Не убивайте союзников. Серьёзно, это не круто.
       raffle:
         settings: short
-      job: EmpireMedic
+      job: SWEmpireMedic
     - type: Loadout
       prototypes: [EmpireMedicBaseGear]
     - type: RandomMetadata
@@ -120,12 +120,12 @@
   randomizeName: false
   components:
     - type: GhostRole
-      name: ghost-role-information-republic-lieutenant-name
-      description: ghost-role-information-republic-lieutenant-description
-      rules: ghost-role-information-republic-lieutenant-rules
+      name: Республиканский лейтенант подкрепления.
+      description: Вас вызвали в качестве подкрепления. Помогите основным силам на планете.
+      rules: Не убивайте союзников. Серьёзно, это не круто.
       raffle:
         settings: short
-      job: RepublicLieutenant
+      job: SWRepublicLieutenant
     - type: Loadout
       prototypes: [RepublicLieutenantBaseGear]
     - type: RandomMetadata
@@ -152,12 +152,12 @@
   randomizeName: false
   components:
     - type: GhostRole
-      name: ghost-role-information-republic-soldier-name
-      description: ghost-role-information-republic-soldier-description
-      rules: ghost-role-information-republic-soldier-rules
+      name: Республиканский солдат подкрепления.
+      description: Вас вызвали в качестве подкрепления. Помогите основным силам на планете.
+      rules: Не убивайте союзников. Серьёзно, это не круто.
       raffle:
         settings: short
-      job: RepublicSoldier
+      job: SWRepublicSoldier
     - type: Loadout
       prototypes: [RepublicSoldierBaseGear]
     - type: RandomMetadata
@@ -184,12 +184,12 @@
   randomizeName: false
   components:
     - type: GhostRole
-      name: ghost-role-information-republic-medic-name
-      description: ghost-role-information-republic-medic-description
-      rules: ghost-role-information-republic-medic-rules
+      name: Республиканский медик подкрепления
+      description: Вас вызвали в качестве подкрепления. Помогите основным силам на планете.
+      rules: Не убивайте союзников. Серьёзно, это не круто.
       raffle:
         settings: short
-      job: RepublicMedic
+      job: SWRepublicMedic
     - type: Loadout
       prototypes: [RepublicMedicBaseGear]
     - type: RandomMetadata

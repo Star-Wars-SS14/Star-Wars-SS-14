@@ -5,7 +5,7 @@
   id: AlertJediLevel1
   icons: [ /Textures/Interface/Alerts/_SW/Mastery/jedi1mastery.png ]
   category: Mastery
-  clickEvent: !type:OnOpenMasteryShopAlert { }
+  clickEvent: !type:OpenMasteryShopAlertEvent
   name: alerts-jedilevel1
   description: alerts-jedilevel1-desc
 
@@ -13,7 +13,7 @@
   id: AlertJediLevel2
   icons: [ /Textures/Interface/Alerts/_SW/Mastery/jedi2mastery.png ]
   category: Mastery
-  clickEvent: !type:OnOpenMasteryShopAlert { }
+  clickEvent: !type:OpenMasteryShopAlertEvent
   name: alerts-jedilevel2
   description: alerts-jedilevel2-desc
 
@@ -21,7 +21,7 @@
   id: AlertJediLevel3
   icons: [ /Textures/Interface/Alerts/_SW/Mastery/jedi3mastery.png ]
   category: Mastery
-  clickEvent: !type:OpenMasteryShopAlertEvent { }
+  clickEvent: !type:OpenMasteryShopAlertEvent
   name: alerts-jedilevel3
   description: alerts-jedilevel3=desc
 
@@ -29,7 +29,7 @@
   id: AlertSithLevel1
   icons: [ /Textures/Interface/Alerts/_SW/Mastery/sith1mastery.png ]
   category: Mastery
-  clickEvent: !type:OpenMasteryShopAlertEvent { }
+  clickEvent: !type:OpenMasteryShopAlertEvent
   name: alerts-sithlevel1
   description: alerts-sithlevel1-desc
 
@@ -37,7 +37,7 @@
   id: AlertSithLevel2
   icons: [ /Textures/Interface/Alerts/_SW/Mastery/sith2mastery.png ]
   category: Mastery
-  clickEvent: !type:OpenMasteryShopAlertEvent { }
+  clickEvent: !type:OpenMasteryShopAlertEvent
   name: alerts-sithlevel2
   description: alerts-sithlevel2-desc
 
@@ -45,6 +45,6 @@
   id: AlertSithLevel3
   icons: [ /Textures/Interface/Alerts/_SW/Mastery/sith3mastery.png ]
   category: Mastery
-  clickEvent: !type:OpenMasteryShopAlertEvent { }
+  clickEvent: !type:OpenMasteryShopAlertEvent
   name: alerts-sithlevel3
   description: alerts-sithlevel3-desc

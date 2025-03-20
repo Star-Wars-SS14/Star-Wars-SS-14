@@ -194865,7 +194865,7 @@ entities:
     - type: Transform
       pos: -20.691914,-78.90433
       parent: 2
-- proto: RMCBinoculars
+- proto: SWBinoculars
   entities:
   - uid: 3926
     components:

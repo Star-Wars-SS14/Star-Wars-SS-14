@@ -1,0 +1,21 @@
+- type: entity
+  parent: BaseComputer
+  id: SWTaskConsole
+  name: Консоль заданий
+  components:
+  - type: ActivatableUI
+    key: enum.TaskConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.TaskConsoleUiKey.Key:
+        type: TaskConsoleBoundUserInterface
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: comm
+    - map: ["computerLayerKeys"]
+      state: generic_keys

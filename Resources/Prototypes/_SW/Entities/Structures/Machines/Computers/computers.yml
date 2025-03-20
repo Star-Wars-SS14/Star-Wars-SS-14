@@ -11,4 +11,6 @@
       sound:
         path: /Audio/Misc/siren.ogg
         params:
-          volume: -4
+          volume: -4 
+    - type: AccessReader
+      access: [[ "EmpireCommander" ]]

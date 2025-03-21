@@ -8,7 +8,6 @@
       color: "#f0f0f0"
       fractionType: 0
       canShuttle: false
-      global: true
       sound:
         path: /Audio/Misc/siren.ogg
         params:

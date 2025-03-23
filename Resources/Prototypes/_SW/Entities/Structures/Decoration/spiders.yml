@@ -13,7 +13,7 @@
       fix1:
         shape:
           !type:PhysShapeAabb
-          bounds: "-0.85,0.5,1,-0.4"
+          bounds: "-0.85,0.2,1,-0.4"
         density: 1000
         layer:
         - MachineLayer

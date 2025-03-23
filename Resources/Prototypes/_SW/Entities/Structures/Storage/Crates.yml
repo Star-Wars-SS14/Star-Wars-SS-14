@@ -4,6 +4,7 @@
   parent: CrateBaseWeldable
   id: SW_CrateWood
   name: Деревянный ящик
+  description: Ящик для хранения ваших предметов
   components:
   - type: Icon
     sprite: _SW/Structures/Storage/Crates/wood_crate.rsi
@@ -14,6 +15,7 @@
   parent: CrateBaseWeldable
   id: SW_CrateMedical
   name: Медицинский ящик
+  description: Медицинский ящик для хранения ваших медикоментов. 
   components:
   - type: Icon
     sprite: _SW/Structures/Storage/Crates/medical_crate.rsi

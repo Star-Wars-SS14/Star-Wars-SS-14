@@ -2,9 +2,18 @@
 
 - type: entity
   parent: CrateBaseWeldable
+  id: SW_CrateWood
+  name: Деревянный ящик
+  components:
+  - type: Icon
+    sprite: _SW/Structures/Storage/Crates/wood_crate.rsi
+  - type: Sprite
+    sprite: _SW/Structures/Storage/Crates/wood_crate.rsi
+
+- type: entity
+  parent: CrateBaseWeldable
   id: SW_CrateMedical
   name: Медицинский ящик
-
   components:
   - type: Icon
     sprite: _SW/Structures/Storage/Crates/medical_crate.rsi

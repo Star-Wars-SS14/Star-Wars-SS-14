@@ -44,6 +44,9 @@
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
 
 - type: entity
   parent: CrateBaseWeldable
@@ -67,4 +70,6 @@
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
-
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak

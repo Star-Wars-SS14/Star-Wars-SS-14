@@ -12,3 +12,6 @@
   startingGear: RepublicCommanderLieutenantGear
   icon: "JobIconHavokStormtrooper"
   supervisors: job-supervisors-havok-cap
+  access:
+  - RepublicHavok
+  - RepublicCommander

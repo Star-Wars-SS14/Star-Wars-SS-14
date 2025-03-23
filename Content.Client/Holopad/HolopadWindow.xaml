@@ -58,14 +58,14 @@
                     </PanelContainer>
                 </controls:StripeBack>
 
-                <!-- Request the station AI or activate the holopad projector (only one of these should be active at a time) -->
+                <!-- Request the station AI or activate the holopad projector (only one of these should be active at a time) --><!--
                 <BoxContainer Name="RequestStationAiContainer" Orientation="Vertical" ReservesSpace="False" Visible="False">
                     <Button Name="RequestStationAiButton" Text="{Loc 'holopad-window-request-station-ai'}" Margin="10 5 10 5" Disabled="False"/>
                 </BoxContainer>
 
                 <BoxContainer Name="ActivateProjectorContainer" Orientation="Vertical" ReservesSpace="False" Visible="False">
                     <Button Name="ActivateProjectorButton" Text="{Loc 'holopad-window-activate-projector'}" Margin="10 5 10 5" Disabled="False"/>
-                </BoxContainer>
+                </BoxContainer>-->
 
                 <!-- List of contactable holopads (the list is created in C#) -->
                 <BoxContainer Name="HolopadContactListContainer" Orientation="Vertical" Margin="10 0 10 5" ReservesSpace="False" Visible="False">
@@ -94,25 +94,25 @@
                     </PanelContainer>
                 </BoxContainer>
 
-                <!-- Button to start an emergency broadcast (the user requires a certain level of access to interact with it) -->
+                <!-- Button to start an emergency broadcast (the user requires a certain level of access to interact with it) --><!--
                 <BoxContainer Name="StartBroadcastContainer" Orientation="Vertical" ReservesSpace="False" Visible="False">
                     <Button Name="StartBroadcastButton" Text="{Loc 'holopad-window-emergency-broadcast'}" Margin="10 0 10 5" Disabled="False" ReservesSpace="False"/>
-                </BoxContainer>
+                </BoxContainer>-->
 
             </BoxContainer>
         </BoxContainer>
 
-        <!-- Footer -->
+        <!-- Footer --><!--
         <BoxContainer Orientation="Vertical">
             <PanelContainer StyleClasses="LowDivider" />
             <BoxContainer Orientation="Horizontal" Margin="10 2 5 0" VerticalAlignment="Bottom">
                 <Label Text="{Loc 'holopad-window-flavor-left'}" StyleClasses="WindowFooterText" />
                 <Label Text="{Loc 'holopad-window-flavor-right'}" StyleClasses="WindowFooterText"
                         HorizontalAlignment="Right" HorizontalExpand="True"  Margin="0 0 5 0" />
-                <TextureRect StyleClasses="NTLogoDark" Stretch="KeepAspectCentered"
-                        VerticalAlignment="Center" HorizontalAlignment="Right" SetSize="19 19"/>
+                --><!--<TextureRect StyleClasses="NTLogoDark" Stretch="KeepAspectCentered"
+                        VerticalAlignment="Center" HorizontalAlignment="Right" SetSize="19 19"/>--><!--
             </BoxContainer>
-        </BoxContainer>
+        </BoxContainer>-->
     </BoxContainer>
 
 </controls:FancyWindow>

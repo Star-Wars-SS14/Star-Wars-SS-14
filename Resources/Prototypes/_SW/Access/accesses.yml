@@ -1,0 +1,91 @@
+#Империя
+- type: accessLevel
+  id: EmpireMoff
+  name:  Мофф
+
+- type: accessLevel
+  id: EmpireCommander
+  name:  Имперское командование
+
+- type: accessLevel
+  id: EmpireBase
+  name:  Имперский базовый
+
+- type: accessLevel
+  id: EmpireArsenal
+  name:  Имперский арсенал
+
+- type: accessLevel
+  id: EmpireIntelligence
+  name:  Агент имперской разведки
+
+- type: accessLevel
+  id: EmpireIntelligenceCareTaker
+  name:  Смотритель имперской разведки
+
+- type: accessLevel
+  id: EmpireSobrik
+  name:  Гарнизон Собрика
+
+- type: accessLevel
+  id: EmpireMedic
+  name:  Имперский медик
+
+#Республика
+- type: accessLevel
+  id: RepublicGeneral
+  name:  Республиканский генерал
+
+- type: accessLevel
+  id: RepublicCommander
+  name:  Республиканское командование
+
+- type: accessLevel
+  id: RepublicBase
+  name:  Республика базовый
+
+- type: accessLevel
+  id: RepublicArsenal
+  name:  Республиканский арсенал
+
+- type: accessLevel
+  id: RepublicHavok
+  name:  Республика хавок
+
+- type: accessLevel
+  id: RepublicMedic
+  name:  Республиканский медик
+
+#Нейтралы 
+- type: accessLevel
+  id: Mandalorian
+  name:  Мандалорцы
+
+- type: accessLevel
+  id: BlackSun
+  name:  Черное солнце
+
+- type: accessLevel
+  id: Exchange
+  name:  Обмен
+
+- type: accessGroup
+  id: SWAllAccess
+  tags:
+  - EmpireMoff
+  - EmpireCommander
+  - EmpireBase
+  - EmpireArsenal
+  - EmpireIntelligence
+  - EmpireIntelligenceCareTaker
+  - EmpireSobrik
+  - EmpireMedic
+  - RepublicGeneral
+  - RepublicCommander
+  - RepublicBase
+  - RepublicArsenal
+  - RepublicHavok
+  - RepublicMedic
+  - Mandalorian
+  - BlackSun
+  - Exchange

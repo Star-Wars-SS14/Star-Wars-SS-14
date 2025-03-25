@@ -280,3 +280,12 @@
   id: 171
   time: '2025-03-24T19:45:34.0000000+00:00'
   url: https://github.com/Star-Wars-SS14/Star-Wars-SS-14/pull/135
+- author: Golub
+  changes:
+  - message: "\u0414\u043E\u0431\u0430\u0432\u043B\u0435\u043D \u0444\u0443\u043D\u043A\
+      \u0446\u0438\u043E\u043D\u0430\u043B \u043A\u043E\u0440\u043E\u0431\u043A\u0430\
+      \u043C"
+    type: Add
+  id: 172
+  time: '2025-03-25T18:14:03.0000000+00:00'
+  url: https://github.com/Star-Wars-SS14/Star-Wars-SS-14/pull/137

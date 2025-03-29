@@ -19,3 +19,5 @@
       state: comm
     - map: ["computerLayerKeys"]
       state: generic_keys
+  - type: TaskConsole
+    faction: EmpireFaction

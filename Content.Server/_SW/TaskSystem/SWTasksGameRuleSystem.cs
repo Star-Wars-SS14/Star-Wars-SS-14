@@ -5,9 +5,11 @@ using Content.Shared.FixedPoint;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Random;
 using Content.Shared.Random.Helpers;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
+using Robust.Shared.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -130,6 +132,24 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             faction.Comp.CurrentTasks.Add(new Entity<SWTaskComponent>(task, comp));
         } 
         faction.Comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(faction.Comp.AddIntervalInSeconds);
+    }
+
+    public List<Entity<SWTaskComponent>> GetFactionTasks(string? faction)
+    {
+        var res = new List<Entity<SWTaskComponent>>();
+        if (faction == null)
+        {
+            return res;
+        }
+
+        Entity<SWFactionComponent>? ent = _swFaction.GetFactionEntity(faction);
+        if (ent == null)
+        {
+            return res;
+        }
+
+        res = ent.Value.Comp.CurrentTasks;
+        return res;
     }
 }
 

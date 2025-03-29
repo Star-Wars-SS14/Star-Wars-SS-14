@@ -57,4 +57,15 @@ public sealed class SWFactionGameruleSystem : GameRuleSystem<SWFactionGameruleCo
         }
         return res;
     }
+
+    public Entity<SWFactionComponent>? GetFactionEntity(string protoid)
+    {
+        Dictionary<string, Entity<SWFactionComponent>?> dict = GetFactions();
+
+        if (dict.TryGetValue(protoid, out var ent))
+        {
+            return ent;
+        }
+        return null;
+    }
 }

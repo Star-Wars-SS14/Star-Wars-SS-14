@@ -2,7 +2,6 @@ using Content.Client.Lathe.UI;
 using Content.Shared._SW;
 using Content.Shared.Lathe;
 using Content.Shared.Research.Components;
-using JetBrains.Annotations;
 using Robust.Client.UserInterface;
 namespace Content.Client._SW.TaskSystem.UI;
 
@@ -20,7 +19,6 @@ public sealed partial class TaskConsoleBoundUserInterface : BoundUserInterface
         _menu = this.CreateWindow<TaskConsoleMenu>();
         //_menu.SetEntity(Owner);
         _menu.OpenCenteredRight();
-        _menu.PopulateTasks();
         //_menu.OnServerListButtonPressed += _ =>
         //{
         //    SendMessage(new ConsoleServerSelectionMessage());
@@ -38,11 +36,11 @@ public sealed partial class TaskConsoleBoundUserInterface : BoundUserInterface
 
         switch (state)
         {
-            case TaskConsoleUpdateState msg:
-                
+            case TaskConsoleBounderUserInterfaceState msg:
+
                 //if (_menu != null)
                 //    _menu.Recipes = msg.Recipes;
-                //_menu?.PopulateRecipes();
+                _menu?.PopulateTasks(msg.Tasklist);
                 //_menu?.UpdateCategories();
                 //_menu?.PopulateQueueList(msg.Queue);
                 //_menu?.SetQueueInfo(msg.CurrentlyProducing);

@@ -15,6 +15,43 @@
           prefixCreator: 'MT'
       - type: StationJobs
         availableJobs:
+          SWSobrikCaptain: [ 1, 1 ]
+          SWSobrikOfficer: [ 6, 6 ]
+          SWSobrikMedic: [ 1, 1 ]
+
+          SWEmpireMoff: [ 1, 1 ]
+          SWEmpireMajor: [ 1, 1 ]
+          SWEmpireLieutenant: [ 2, 2 ]
+          SWEmpireSoldier: [ 8, 8 ]
+          SWEmpireMedic: [ 2, 2 ]
+
+          SWMandalorianLeader: [ 1, 1 ]
+          SWMandalorianVeteran: [ 2, 2 ]
+          SWMandalorianWarrior: [ 3, 3 ]
+          SWMandalorianRecruit: [ 3, 3 ]
+
+          SWRepublicGeneral: [ 1, 1 ]
+          SWRepublicCaptain: [ 1, 1 ]
+          SWRepublicLieutenant: [ 2, 2 ]
+          SWRepublicSoldier: [ 6, 6 ]
+          SWRepublicMedic: [ 2, 2 ]
+          SWRepublicRecruit: [ 4, 4 ]
+
+          SWEmpireIntelligenceCaretaker: [ 1, 1 ]
+          SWEmpireIntelligenceAgent: [ 3, 3 ]
+
+          SWRepublicCommanderCommander: [ 1, 1 ]
+          SWRepublicCommanderLieutenant: [ 1, 1 ]
+          SWRepublicCommanderMedic: [ 1, 1 ]
+          SWRepublicCommanderStormtrooper: [ 1, 1 ]
+          SWRepublicCommanderSniper: [ 1, 1 ]
+
+          SWBlackSun: [ 1, 1 ]
+          SWBlackSunMercenary: [ 4, 4 ]
+
+          SWExchangeCaptain: [ 1, 1 ]
+          SWExchangeOperative: [ 4, 4 ]
+
           SWCivialian: [-1, -1]
       - type: EndRoundByTimer
 

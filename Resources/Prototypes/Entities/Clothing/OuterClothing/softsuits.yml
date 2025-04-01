@@ -127,25 +127,3 @@
   - type: ContainerContainer
     containers:
       toggleable-clothing: !type:ContainerSlot {}
-
-- type: entity
-  parent: [ ClothingOuterEVASuitBase, BaseSyndicateContraband ]
-  id: SWHuinuskakakaytoMiliceyskaya
-  name: Милицейская форма
-  description: "Самому жирному кабану в учебке!"
-  components:
-  - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/miliciya.rsi
-  - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/miliciya.rsi
-
-- type: entity
-  parent: [ ClothingOuterEVASuitBase, BaseSyndicateContraband ]
-  id: SWHuinuskakakaytoCubaka
-  name: Чубака
-  description: "Бака-бака"
-  components:
-  - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/cubaka.rsi
-  - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/cubaka.rsi

@@ -1,2 +1,2 @@
-ent-SW_EmpireFlag = Флаг Одессы.
-ent-SW_EmpireFlagRed = Другой флаг Одессы.
+ent-SW_EmpireFlag = Флаг Галактической Империи
+ent-SW_EmpireFlagRed = Флаг Галактической Империи (Красный)

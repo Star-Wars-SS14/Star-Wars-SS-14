@@ -12,8 +12,8 @@
 - type: entity
   parent: SW_BaseFlag
   id: SW_EmpireFlag
-  name: Флаг Одессы.
-  description: Крутой.
+  name: имперский флаг
+  description: "Определенно не флаг Республики."
   components:
   - type: Sprite
     state: empire_flag
@@ -21,8 +21,8 @@
 - type: entity
   parent: SW_BaseFlag
   id: SW_EmpireFlagRed
-  name: Другой флаг Одессы.
-  description: Ваще крутой.
+  name: имперский флаг
+  description: "Определенно не флаг Республики."
   components:
   - type: Sprite
     state: empire_flag_red

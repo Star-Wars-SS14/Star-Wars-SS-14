@@ -12,13 +12,13 @@ namespace Content.Server._SW.TaskSystem.KillRandomOfFaction;
 public sealed partial class SWKillRandomOfFactionSystem : EntitySystem
 {
     ISawmill _s = default!;
+    [Dependency] private readonly SWTasksGameRuleSystem _sWTasks = default!;
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<SWKillRandomOfFactionComponent, SWTaskCheckRequirementsEvent>(OnCheckRequirements);
         SubscribeLocalEvent<SWKillRandomOfFactionComponent, SWOnTaskInitEvent>(OnTaskInit);
         SubscribeLocalEvent<DamageableComponent, MobStateChangedEvent>(OnMobStateChanged);
-        _s = Logger.GetSawmill("killrandom");
     }
 
     private void OnCheckRequirements(Entity<SWKillRandomOfFactionComponent> ent, ref SWTaskCheckRequirementsEvent args)
@@ -41,13 +41,11 @@ public sealed partial class SWKillRandomOfFactionSystem : EntitySystem
                 return;
             }
         }
-        _s.Debug("cancelled");
         args.Cancel();
     }
 
     private void OnTaskInit(Entity<SWKillRandomOfFactionComponent> ent, ref SWOnTaskInitEvent args)
     {
-        _s.Debug("initted");
         var query2 = EntityQueryEnumerator<SWKillRandomOfFactionComponent>();
         List<EntityUid?> targets = new();
         while (query2.MoveNext(out var uid, out var comp))
@@ -63,7 +61,6 @@ public sealed partial class SWKillRandomOfFactionSystem : EntitySystem
         {
             if (comp.Faction == ent.Comp.Faction && !targets.Contains(uid))
             {
-                _s.Debug($"given {uid}");
                 ent.Comp.PersonToKill = uid;
                 break;
             }
@@ -75,14 +72,12 @@ public sealed partial class SWKillRandomOfFactionSystem : EntitySystem
         if (args.NewMobState == MobState.Dead)
         {
             var query = EntityQueryEnumerator<SWKillRandomOfFactionComponent>();
-            var query1 = EntityQueryEnumerator<SWTaskGameruleComponent>();
-            query1.MoveNext(out var taskGameruleUid, out var _);
+           
             while (query.MoveNext(out var uid, out var comp))
             {
                 if (comp.PersonToKill == ent.Owner)
                 {
-                    _s.Debug("Killed");
-                    RaiseLocalEvent(taskGameruleUid, new SWTaskProgressUpdateEvent(uid, 1.0));
+                    _sWTasks.UpdateTaskProgress(uid, 1.0);
                 }
             }
         }

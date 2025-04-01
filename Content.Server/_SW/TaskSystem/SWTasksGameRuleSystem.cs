@@ -75,6 +75,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         {
             var ev = new SWGetProgressEvent();
             RaiseLocalEvent(taskUid, ref ev);
+            taskComp.Completeness = ev.Progress;
             if (ev.Progress == 1.0)
             {
                 RaiseLocalEvent(taskUid, new SWOnTaskCompleteEvent());
@@ -153,6 +154,13 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 
         res = ent.Value.Comp.CurrentTasks;
         return res;
+    }
+
+    public void UpdateTaskProgress(EntityUid task, FixedPoint2 progress)
+    {
+        var query1 = EntityQueryEnumerator<SWTaskGameruleComponent>();
+        query1.MoveNext(out var taskGameruleUid, out var _);
+        RaiseLocalEvent(taskGameruleUid, new SWTaskProgressUpdateEvent(task, progress));
     }
 }
 

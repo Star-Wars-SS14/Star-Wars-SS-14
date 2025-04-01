@@ -24,8 +24,6 @@ public sealed partial class TaskConsoleSystem : EntitySystem
 
     private void OnUpdateTasks(Entity<TaskConsoleComponent> ent, ref UpdateTasksMessage args)
     {
-        ISawmill _s = Logger.GetSawmill("asfhyu");
-        _s.Debug("sad");
         UpdateTaskConsoleInterface(ent.Owner, ent.Comp);
     }
 
@@ -51,8 +49,6 @@ public sealed partial class TaskConsoleSystem : EntitySystem
         {
             listComp.Add(new TaskInfo(task.Comp.Name, task.Comp.Description, task.Comp.Completeness));
         }
-        ISawmill _s = Logger.GetSawmill("gafd");
-        _s.Debug($"{listComp.Count}");
         var state = new TaskConsoleBounderUserInterfaceState(listComp);
 
         _uiSystem.SetUiState(uid, TaskConsoleUiKey.Key, state);

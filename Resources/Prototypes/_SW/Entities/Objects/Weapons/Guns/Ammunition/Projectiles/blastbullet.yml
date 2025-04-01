@@ -7,7 +7,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 38
+        Heat: 1
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
     layers:
@@ -25,7 +25,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 70
+        Heat: 1
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
     layers:
@@ -33,7 +33,7 @@
       shader: unshaded
   - type: PointLight
     color: Red
-  
+
 - type: entity
   id: GreenBulletBlast
   name: Blast
@@ -43,7 +43,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 21
+        Heat: 1
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/green_ammo_casing.rsi
     layers:
@@ -51,7 +51,7 @@
       shader: unshaded
   - type: PointLight
     color: Green
-  
+
 - type: entity
   id: H206GreenBulletBlast
   name: Blast
@@ -61,7 +61,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 32
+        Heat: 1
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/green_ammo_casing.rsi
     layers:
@@ -69,7 +69,7 @@
       shader: unshaded
   - type: PointLight
     color: Green
-  
+
 - type: entity
   id: BlueBulletBlast
   name: Blast
@@ -79,7 +79,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 28
+        Heat: 1
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
     layers:
@@ -87,7 +87,7 @@
       shader: unshaded
   - type: PointLight
     color: Blue
-  
+
 - type: entity
   id: CannonBlueBulletBlast
   name: Blast
@@ -97,7 +97,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 24
+        Heat: 1
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
     layers:
@@ -105,7 +105,7 @@
       shader: unshaded
   - type: PointLight
     color: Blue
-  
+
 - type: entity
   id: SniperRifleBlueBulletBlast
   name: Blast
@@ -115,7 +115,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 75
+        Heat: 1
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
     layers:
@@ -123,7 +123,7 @@
       shader: unshaded
   - type: PointLight
     color: Blue
-  
+
 - type: entity
   id: YellowBulletBlast
   name: Blast
@@ -133,7 +133,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 28
+        Heat: 1
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
     layers:
@@ -141,7 +141,7 @@
       shader: unshaded
   - type: PointLight
     color: Yellow
-  
+
 - type: entity
   id: CannonYellowBulletBlast
   name: Blast
@@ -151,7 +151,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 20
+        Heat: 1
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
     layers:
@@ -159,7 +159,7 @@
       shader: unshaded
   - type: PointLight
     color: Yellow
-  
+
 - type: entity
   id: SniperRifleYellowBulletBlast
   name: Blast
@@ -169,7 +169,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 60
+        Heat: 1
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
     layers:

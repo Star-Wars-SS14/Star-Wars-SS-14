@@ -8,3 +8,15 @@
     sprite: _SW/Clothing/Head/Hats/officer.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Hats/officer.rsi
+
+
+- type: entity
+  parent: ClothingHeadBase
+  id: SWMentShapka
+  name: Шапка мента
+  description: Самой жирной твари на сервере.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Hats/officer.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Hats/officer.rsi

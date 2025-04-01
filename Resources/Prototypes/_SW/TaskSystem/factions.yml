@@ -22,5 +22,7 @@
   id: KillRandomOfFactionTask
   components:
   - type: SWTask
+    name: Убейте республиканского генерала
+    description: Ваша цель - республиканский генерал. Его убийство оставит республику без командования и деморализует республиканские силы.
   - type: SWKillRandomOfFaction
     faction: RepublicFaction  

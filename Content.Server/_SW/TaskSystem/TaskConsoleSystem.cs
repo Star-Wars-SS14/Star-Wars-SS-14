@@ -15,18 +15,32 @@ public sealed partial class TaskConsoleSystem : EntitySystem
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly SWTasksGameRuleSystem _sWTasks = default!;
 
+
+    public override void Initialize()
+    {
+        base.Initialize();
+        SubscribeLocalEvent<TaskConsoleComponent, UpdateTasksMessage>(OnUpdateTasks);
+    }
+
+    private void OnUpdateTasks(Entity<TaskConsoleComponent> ent, ref UpdateTasksMessage args)
+    {
+        ISawmill _s = Logger.GetSawmill("asfhyu");
+        _s.Debug("sad");
+        UpdateTaskConsoleInterface(ent.Owner, ent.Comp);
+    }
+
     public override void Update(float frameTime)
     {
-        var query = EntityQueryEnumerator<TaskConsoleComponent>();
-        while (query.MoveNext(out var uid, out var comp))
-        {
-            // TODO refresh the UI in a less horrible way
+        //var query = EntityQueryEnumerator<TaskConsoleComponent>();
+        //while (query.MoveNext(out var uid, out var comp))
+        //{
+        //    // TODO refresh the UI in a less horrible way
             
-            if (_uiSystem.IsUiOpen(uid, TaskConsoleUiKey.Key))
-                UpdateTaskConsoleInterface(uid, comp);
-        }
+        //    if (_uiSystem.IsUiOpen(uid, TaskConsoleUiKey.Key))
+        //        UpdateTaskConsoleInterface(uid, comp);
+        //}
 
-        base.Update(frameTime);
+        //base.Update(frameTime);
     }
 
     private void UpdateTaskConsoleInterface(EntityUid uid, TaskConsoleComponent comp)
@@ -35,7 +49,7 @@ public sealed partial class TaskConsoleSystem : EntitySystem
         List<TaskInfo> listComp = new();
         foreach(var task in list)
         {
-            listComp.Add(new TaskInfo(task.Comp.TaskName, task.Comp.TaskDesc, task.Comp.Completeness));
+            listComp.Add(new TaskInfo(task.Comp.Name, task.Comp.Description, task.Comp.Completeness));
         }
         ISawmill _s = Logger.GetSawmill("gafd");
         _s.Debug($"{listComp.Count}");

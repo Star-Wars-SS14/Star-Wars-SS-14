@@ -39,3 +39,9 @@ public sealed class TaskInfo
         Status = s;
     }
 }
+
+[Serializable, NetSerializable]
+public sealed class UpdateTasksMessage : BoundUserInterfaceMessage
+{
+
+}

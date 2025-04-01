@@ -6,7 +6,17 @@
     MinSize="550 450"
     SetSize="750 500">
     <BoxContainer Orientation="Vertical">
-        <Label Text="tasвфыарkname" Name="TaskfName" HorizontalExpand="True" />
+        <BoxContainer Orientation="Horizontal">
+            <Label Text="taskname" HorizontalExpand="True" />
+            <Label Text="taskdesc" HorizontalExpand="True" />
+            <Label Text="taskstatus" HorizontalExpand="True" />
+            <Button
+                        Name="UpdateTasksButton"
+                        Text="Update"
+                        TextAlign="Center">
+            </Button>
+        </BoxContainer>
+
         <PanelContainer VerticalExpand="True">
             <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
                 <BoxContainer
@@ -16,25 +26,7 @@
                     VerticalExpand="True"
                     RectClipContent="True"
                     MinHeight="50">
-                        <Control>
-                            <BoxContainer
-                                Name="TaskContainer"
-                                Margin="0 0 4 0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                MinSize="32 32"
-                                MinHeight="50"/>
-                            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="10">
-                                <Label Text="taskname" Name="TaskName" HorizontalExpand="True" />
-                            </BoxContainer>
-                            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="10">
-                                <Label Text="TaskDescription" Name="TaskDescription" HorizontalExpand="True" />
-                            </BoxContainer>
-                            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" MinHeight="10">
-                                <Label Text="TaskStatus" Name="TaskStatus" HorizontalExpand="True" />
-                            </BoxContainer>
-                        </Control>
-                    </BoxContainer>
+                </BoxContainer>
             </ScrollContainer>
         </PanelContainer>
     </BoxContainer>

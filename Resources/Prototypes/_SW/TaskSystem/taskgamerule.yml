@@ -12,7 +12,7 @@
 
 - type: gamePreset
   id: SWMainPreset
-  name: aboba
-  description: aboba
+  name: Обычный день
+  description: Обычный день. Выполняйте регулярные задания от своего командования.
   rules:
     - TaskGamerule

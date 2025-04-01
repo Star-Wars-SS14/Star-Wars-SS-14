@@ -1,20 +1,20 @@
 <Control xmlns="https://spacestation14.io">
-    <Button
-        Name="Button"
-        HorizontalExpand="True"
-        Margin="0"
-        StyleClasses="ButtonSquare">
-        <BoxContainer Orientation="Horizontal">
-            <BoxContainer
-                Name="TaskContainer"
-                Margin="0 0 4 0"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                MinSize="32 32"
+    <BoxContainer Orientation="Horizontal">
+        <BoxContainer
+            Name="TaskContainer"
+            Margin="0 0 4 0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            MinSize="32 32"
                 />
-            <Label Name="TaskName" HorizontalExpand="True" />
-            <Label Name="TaskDescription" HorizontalExpand="True" />
-            <Label Name="TaskStatus" HorizontalExpand="True" />
+        <BoxContainer VerticalExpand="True" HorizontalExpand="True" Margin="20 20 20 20">
+            <RichTextLabel Name="TaskName"></RichTextLabel>
         </BoxContainer>
-    </Button>
+        <BoxContainer VerticalExpand="True" HorizontalExpand="True" Margin="20 20 20 20">
+            <RichTextLabel Name="TaskDescription" > </RichTextLabel>
+        </BoxContainer>
+        <BoxContainer Margin="20 20 20 20" HorizontalExpand="True" MinWidth="200">
+            <RichTextLabel Name="TaskStatus"> </RichTextLabel>
+        </BoxContainer>
+    </BoxContainer>
 </Control>

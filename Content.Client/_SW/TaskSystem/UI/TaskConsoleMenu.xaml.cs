@@ -11,10 +11,12 @@ namespace Content.Client._SW.TaskSystem.UI;
 [GenerateTypedNameReferences]
 public sealed partial class TaskConsoleMenu : DefaultWindow
 {
+    public event Action<BaseButton.ButtonEventArgs>? UpdateTasksEvent;
     public TaskConsoleMenu()
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
+        UpdateTasksButton.OnPressed += a => UpdateTasksEvent?.Invoke(a);
     }
 
     public void PopulateTasks(List<TaskInfo> list)

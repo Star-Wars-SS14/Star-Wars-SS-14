@@ -14,10 +14,10 @@ public sealed partial class SWTaskComponent : Component
     public FixedPoint2 Completeness = 0.0;
 
     [DataField]
-    public string TaskName = "task";
+    public string Name = "task";
 
     [DataField]
-    public string TaskDesc = "desc";
+    public string Description = "desc";
 
     [DataField]
     public int Score = 1;

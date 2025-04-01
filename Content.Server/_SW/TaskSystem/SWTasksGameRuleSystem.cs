@@ -35,16 +35,19 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 
     private void OnTaskComplete(Entity<SWTaskGameruleComponent> ent, ref SWTaskProgressUpdateEvent args)
     {
+        _sawmill.Debug("got");
         if (!TryComp<SWTaskComponent>(args.Task, out var comp))
         {
             return;
         }
+        _sawmill.Debug("updated");
         comp.Completeness = args.NewProgress;
         if (comp.Completeness == 1.0)
         {
             RaiseLocalEvent(args.Task, new SWOnTaskCompleteEvent());
-            QueueDel(args.Task);
+            //QueueDel(args.Task);
         }
+        _sawmill.Debug("updated2");
     }
 
     protected override void Started(EntityUid uid, SWTaskGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
@@ -75,7 +78,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             if (ev.Progress == 1.0)
             {
                 RaiseLocalEvent(taskUid, new SWOnTaskCompleteEvent());
-                QueueDel(taskUid);
+                //QueueDel(taskUid);
             }
         }
     }

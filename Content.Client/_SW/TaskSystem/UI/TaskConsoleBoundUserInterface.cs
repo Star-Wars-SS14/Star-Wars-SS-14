@@ -13,12 +13,20 @@ public sealed partial class TaskConsoleBoundUserInterface : BoundUserInterface
     {
        
     }
+     private void RequestUpdateTasks()
+    {
+        ISawmill _s = Logger.GetSawmill("asdfgg");
+        _s.Debug("sent");
+        SendMessage(new UpdateTasksMessage());
+    }
     protected override void Open()
     {
         base.Open();
         _menu = this.CreateWindow<TaskConsoleMenu>();
-        //_menu.SetEntity(Owner);
+        _menu.UpdateTasksEvent += _ => { RequestUpdateTasks(); };
+
         _menu.OpenCenteredRight();
+        
         //_menu.OnServerListButtonPressed += _ =>
         //{
         //    SendMessage(new ConsoleServerSelectionMessage());
@@ -29,6 +37,8 @@ public sealed partial class TaskConsoleBoundUserInterface : BoundUserInterface
         //    SendMessage(new LatheQueueRecipeMessage(recipe, amount));
         //};
     }
+
+   
 
     protected override void UpdateState(BoundUserInterfaceState state)
     {

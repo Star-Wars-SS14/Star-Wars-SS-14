@@ -7,7 +7,7 @@
   - type: Projectile
     damage:
       types:
-        Piercing: 16
+        Piercing: 1
 
 - type: entity
   id: BulletPistolPractice
@@ -18,7 +18,7 @@
   - type: Projectile
     damage:
       types:
-        Blunt: 2
+        Blunt: 1
 
 - type: entity
   id: BulletPistolIncendiary
@@ -29,8 +29,7 @@
   - type: Projectile
     damage:
       types:
-        Blunt: 2
-        Heat: 14
+        Blunt: 1
 
 - type: entity
   id: BulletPistolUranium

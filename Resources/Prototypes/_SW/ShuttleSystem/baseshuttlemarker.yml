@@ -1,0 +1,7 @@
+- type: entity
+  id: SWTradeMarkerBase
+  parent: MarkerBase
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: SWTradeShuttleMarker

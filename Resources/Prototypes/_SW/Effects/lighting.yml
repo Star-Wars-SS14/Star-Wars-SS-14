@@ -1,6 +1,6 @@
 - type: entity
   name: молния
-  id: RedSWLightning
+  id: SWRedLightning
   components:
   - type: Sprite
     sprite: /Textures/Effects/lightning.rsi
@@ -27,7 +27,7 @@
 
 - type: entity
   name: молния
-  id: BlueSWLightning
+  id: SWBlueLightning
   components:
   - type: Sprite
     sprite: /Textures/Effects/lightning.rsi

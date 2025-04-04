@@ -1,6 +1,6 @@
 - type: entity
   parent: SW_BaseHelmet
-  id: SW_ClothingHeadExchangeHelmet
+  id: SWClothingHeadExchangeHelmet
   name: exchange helmet
   components:
   - type: Sprite

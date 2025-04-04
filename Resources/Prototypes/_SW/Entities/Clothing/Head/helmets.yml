@@ -1,6 +1,6 @@
 - type: entity
   parent: ClothingHeadBase
-  id: SW_StromtrooperHelmet
+  id: SWStromtrooperHelmet
   name: Stormtrooper helmet
   description: Helmet with automatic polarized lenses and communication unit.
   components:
@@ -16,8 +16,8 @@
           Cold: 0.5
 
 - type: entity
-  parent: SW_BaseHelmet
-  id: SW_HelmetSunSquad
+  parent: SWBaseHelmet
+  id: SWHelmetSunSquad
   name: Helmet Sun Squad
   components:
   - type: Sprite
@@ -33,7 +33,7 @@
 
 - type: entity
   parent: [ClothingHeadBase, RepublicRadioHelmet]
-  id: SW_RebelHelmet
+  id: SWRebelHelmet
   name: Rebel helmet
   description: Helmet with automatic polarized lenses and communication unit.
   components:

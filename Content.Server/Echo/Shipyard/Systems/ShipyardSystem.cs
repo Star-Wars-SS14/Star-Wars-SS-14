@@ -16,6 +16,7 @@ using Robust.Server.Maps;
 using Robust.Shared.Configuration;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
+using Robust.Shared.Map.Components;
 
 namespace Content.Server.Echo.Shipyard.Systems;
 
@@ -136,7 +137,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             return false;
         };
 
-        _shuttleIndex += _mapManager.GetGrid(gridList[0]).LocalAABB.Width + ShuttleSpawnBuffer;
+        _shuttleIndex += EnsureComp<MapGridComponent>(gridList[0]).LocalAABB.Width + ShuttleSpawnBuffer;
 
         //only dealing with 1 grid at a time for now, until more is known about multi-grid drifting
         if (gridList.Count != 1)

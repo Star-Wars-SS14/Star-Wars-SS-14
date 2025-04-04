@@ -1,6 +1,6 @@
 - type: entity
   parent: ClothingHeadBase
-  id: SW_ClothingHeadCapOfficers
+  id: SWClothingHeadCapOfficers
   name: Officer cap
   description: A beret, an artists favorite headwear.
   components:

@@ -1,5 +1,5 @@
 - type: entity
-  parent: SW_BaseHelmet
+  parent: SWBaseHelmet
   id: SWClothingHeadExchangeHelmet
   name: exchange helmet
   components:

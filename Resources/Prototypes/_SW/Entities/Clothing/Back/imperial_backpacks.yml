@@ -1,6 +1,6 @@
 - type: entity
   parent: ClothingBackpack
-  id: ImperialBackpack
+  id: SWImperialBackpack
   name: imperial backpack
   components:
   - type: Sprite
@@ -11,7 +11,7 @@
 
 - type: entity
   parent: ImperialBackpack
-  id: ImperialBackpackCamo
+  id: SWImperialBackpackCamo
   name: imperial backpack camo
   components:
   - type: Sprite

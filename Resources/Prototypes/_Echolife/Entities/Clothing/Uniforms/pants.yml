@@ -1,0 +1,32 @@
+- type: entity
+  parent: ClothingUniformBase
+  id: EchoClothingPantsCombineSoldier
+  name: штаны солдата Альянса
+  description: Название говорит само за себя.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Uniforms/Pants/Combine/soldier.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Uniforms/Pants/Combine/soldier.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: EchoClothingPantsCombineSniper
+  name: штаны снайпера Альянса
+  description: Название говорит само за себя.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Uniforms/Pants/Combine/sniper.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Uniforms/Pants/Combine/sniper.rsi
+
+- type: entity
+  parent: ClothingUniformBase
+  id: EchoClothingPantsCombineSpecops
+  name: штаны спецназа Альянса
+  description: Название говорит само за себя.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Uniforms/Pants/Combine/specops.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Uniforms/Pants/Combine/specops.rsi

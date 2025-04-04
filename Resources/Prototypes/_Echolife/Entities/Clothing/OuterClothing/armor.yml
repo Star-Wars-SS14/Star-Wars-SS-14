@@ -1,0 +1,96 @@
+- type: entity
+  parent: ClothingOuterArmorBasic
+  id: EchoClothingOuterArmorResistance
+  name: бронежилет
+  description: Стандартный бронежилет, используемый чаще всего бойцами Сопротивления.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/OuterClothing/Armor/resistance.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/OuterClothing/Armor/resistance.rsi
+
+- type: entity
+  parent: ClothingOuterArmorBasic
+  id: EchoClothingOuterArmorCombineSoldier
+  name: усиленная униформа Альянса
+  description: Усиленная униформа, защищающая от большинства видов повреждений. Данный экземпляр используется солдатами Альянса.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/OuterClothing/Armor/Combine/soldier.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/OuterClothing/Armor/Combine/soldier.rsi
+
+- type: entity
+  parent: ClothingOuterArmorBasic
+  id: EchoClothingOuterArmorCombineOfficer
+  name: усиленная офицерская униформа Альянса
+  description: Усиленная униформа, защищающая от большинства видов повреждений. Данный экземпляр используется офицерами Альянса.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/OuterClothing/Armor/Combine/officer.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/OuterClothing/Armor/Combine/officer.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.65
+        Slash: 0.65
+        Piercing: 0.60
+        Heat: 0.75
+
+- type: entity
+  parent: ClothingOuterArmorBasic
+  id: EchoClothingOuterArmorCombineSniper
+  name: камуфлированная усиленная униформа Альянса
+  description: Усиленная униформа, защищающая от большинства видов повреждений. Данный экземпляр используется снайперами Альянса.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/OuterClothing/Armor/Combine/sniper.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/OuterClothing/Armor/Combine/sniper.rsi
+
+- type: entity
+  parent: ClothingOuterArmorBasic
+  id: EchoClothingOuterArmorCombineSpecops
+  name: усиленная униформа спецназа Альянса
+  description: Усиленная униформа, защищающая от большинства видов повреждений. Данный экземпляр используется бойцами спецназа Альянса.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/OuterClothing/Armor/Combine/specops.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/OuterClothing/Armor/Combine/specops.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.3
+        Slash: 0.3
+        Piercing: 0.3
+        Heat: 0.3
+        Caustic: 0.5
+  - type: ClothingSpeedModifier
+    walkModifier: 0.8
+    sprintModifier: 0.8
+  - type: HeldSpeedModifier
+  - type: ExplosionResistance
+    damageCoefficient: 0.5
+
+- type: entity
+  parent: EchoClothingOuterArmorCombineSpecops
+  id: EchoClothingOuterArmorCombineStormtrooper
+  name: усиленная униформа штурмовика Альянса
+  description: Усиленная униформа, защищающая от большинства видов повреждений. Данный экземпляр используется штурмовика Альянса. Бегите.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/OuterClothing/Armor/Combine/stormtrooper.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/OuterClothing/Armor/Combine/stormtrooper.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.2
+        Slash: 0.2
+        Piercing: 0.2
+        Heat: 0.2
+        Caustic: 0.3
+  - type: ExplosionResistance
+    damageCoefficient: 0.5

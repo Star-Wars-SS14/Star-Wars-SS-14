@@ -1,0 +1,31 @@
+- type: job
+  id: Agent
+  name: Агент Повстанцев
+  description: Информаторы и шпионы, собирающие данные о врагах и передающие важную информацию. Используют навыки скрытности и манипуляции.
+  playTimeTracker: JobAgent
+  requirements:
+  - !type:DepartmentTimeRequirement
+      department: AllResistance
+      time: 12000
+  startingGear: AgentGear
+  icon: "JobIconSecurityOfficer"
+  supervisors: job-supervisors-hos
+  canBeAntag: false
+  access:
+  - Security
+  - Brig
+  - Maintenance
+  - Service
+  - External
+  - Cryogenics
+
+- type: startingGear
+  id: AgentGear
+  equipment:
+    eyes: ClothingEyesGlassesSecurity
+    ears: ClothingHeadsetSecurity
+    pocket1: WeaponPistolMk58
+  storage:
+    back:
+    - Flash
+    - MagazinePistol

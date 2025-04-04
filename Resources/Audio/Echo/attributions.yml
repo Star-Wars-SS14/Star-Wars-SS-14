@@ -1,0 +1,24 @@
+- files: ["alliance_won.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "unknown"
+  source: "https://example.com"
+
+- files: ["capture.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "unknown"
+  source: "https://example.com"
+
+- files: ["lobby.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "unknown"
+  source: "https://example.com"
+
+- files: ["resistance_won.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "unknown"
+  source: "https://example.com"
+
+- files: ["time_alert.ogg"]
+  license: "CC-BY-3.0"
+  copyright: "unknown"
+  source: "https://example.com"

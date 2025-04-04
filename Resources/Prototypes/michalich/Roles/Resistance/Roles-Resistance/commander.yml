@@ -1,0 +1,42 @@
+- type: job
+  id: Commander
+  name: Командир Повстанцев
+  description: Офицеры, которые организуют и ведут бойцов Сопротивления в сражениях. Ответственны за распределение задач и руководство подчинёнными.
+  playTimeTracker: JobCommander
+  requirements:
+    - !type:DepartmentTimeRequirement
+      department: AllResistance
+      time: 600000 # 10000 минут
+    - !type:RoleTimeRequirement
+      role: JobInfantrym
+      time: 30000 #500 минут
+      requiredAge: 21
+  weight: 10
+  startingGear: CommanderGear
+  icon: "JobIconHeadOfSecurity"
+  requireAdminNotify: true
+  supervisors: job-supervisors-captain
+  canBeAntag: false
+  access:
+  - HeadOfSecurity
+  - Command
+  - Brig
+  - Security
+  - Armory
+  - Maintenance
+  - Service
+  - External
+  - Detective
+  - Cryogenics
+- type: startingGear
+  id: CommanderGear
+  equipment:
+    eyes: ClothingEyesGlassesSecurity
+    id: HoSPDA
+    gloves: ClothingHandsGlovesCombat
+    ears: ClothingHeadsetAltSecurity
+    pocket1: WeaponPistolMk58
+  storage:
+    back:
+    - Flash
+    - MagazinePistol

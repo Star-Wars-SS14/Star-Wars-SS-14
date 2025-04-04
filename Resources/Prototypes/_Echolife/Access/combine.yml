@@ -1,0 +1,15 @@
+- type: accessLevel
+  id: CombineShared
+  name: Альянс
+
+- type: accessLevel
+  id: CivilDefense
+  name: Гражданская оборона
+
+- type: accessLevel
+  id: CombineRegular
+  name: Комбайн
+
+- type: accessLevel
+  id: CombineElite
+  name: Элитный комбайн

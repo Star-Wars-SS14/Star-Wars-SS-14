@@ -1,0 +1,37 @@
+- type: vendingMachineInventory
+  id: AllEchoClothingInventory # No updates planned!
+  startingInventory:
+    EchoClothingHeadHatGray: 4
+    EchoClothingHeadHatGreen: 4
+    EchoClothingHeadHelmetCombineSoldier: 4
+    EchoClothingHeadHelmetCombineOfficer: 4
+    EchoClothingHeadHelmetCombineSniper: 4
+    EchoClothingHeadHelmetCombineSpecops: 4
+    EchoClothingHeadHelmetCombineStormtrooper: 4
+    EchoClothingShoesBootsResistance: 4
+    EchoClothingShoesBootsCombineSoldier: 4
+    EchoClothingShoesBootsCombineSniper: 4
+    EchoClothingShoesBootsCombineSpecops: 4
+    EchoClothingShoesBootsCombineStormtrooper: 4
+    EchoClothingPantsCombineSoldier: 4
+    EchoClothingPantsCombineSniper: 4
+    EchoClothingPantsCombineSpecops: 4
+    EchoClothingRegularGreenShirtBlueJeans: 4
+    EchoClothingRegularGreenShirtBlueJeansBelt: 4
+    EchoClothingRegularGreenShirtGrayJeans: 4
+    EchoClothingRegularGreenShirtGrayJeansBelt: 4
+    EchoClothingRegularBeigeShirtBlueJeans: 4
+    EchoClothingRegularBeigeShirtBlueJeansBelt: 4
+    EchoClothingRegularBeigeShirtGrayJeans: 4
+    EchoClothingRegularBeigeShirtGrayJeansBelt: 4
+    EchoClothingOuterArmorResistance: 4
+    EchoClothingOuterArmorCombineSoldier: 4
+    EchoClothingOuterArmorCombineOfficer: 4
+    EchoClothingOuterArmorCombineSniper: 4
+    EchoClothingOuterArmorCombineSpecops: 4
+    EchoClothingOuterArmorCombineStormtrooper: 4
+
+- type: vendingMachineInventory
+  id: Placeholder
+  startingInventory:
+    EchoClothingHeadHatGray: 1

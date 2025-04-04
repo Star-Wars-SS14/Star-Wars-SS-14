@@ -1,0 +1,49 @@
+- type: playTimeTracker
+  id: JobAdministrator
+  
+- type: playTimeTracker
+  id: JobCombineElite
+
+- type: playTimeTracker
+  id: JobCombineEngineer
+
+- type: playTimeTracker
+  id: JobCombineMedic
+
+- type: playTimeTracker
+  id: JobCombineOrdinal
+
+- type: playTimeTracker
+  id: JobMetroKop
+
+- type: playTimeTracker
+  id: JobSniperAlliance
+
+- type: playTimeTracker
+  id: JobSoldier
+
+## -------------------------------------------------------------------   
+
+- type: playTimeTracker
+  id: JobLeader
+
+- type: playTimeTracker
+  id: JobAgent
+
+- type: playTimeTracker
+  id: JobCommander
+
+- type: playTimeTracker
+  id: JobInfantrym
+
+- type: playTimeTracker
+  id: JobSniperResistance
+
+- type: playTimeTracker
+  id: JobMedicResistance
+
+- type: playTimeTracker
+  id: JobTechnician
+
+- type: playTimeTracker
+  id: JobMilitiaman

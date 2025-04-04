@@ -1,0 +1,77 @@
+- type: entity
+  parent: ClothingHeadHelmetBasic
+  id: EchoClothingHeadHelmetCombineSoldier
+  name: шлем солдата Альянса
+  description: Название говорит само за себя.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Head/Helmets/Combine/soldier.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Head/Helmets/Combine/soldier.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.8
+        Slash: 0.8
+        Piercing: 0.8
+        Heat: 0.8
+
+- type: entity
+  parent: EchoClothingHeadHelmetCombineSoldier
+  id: EchoClothingHeadHelmetCombineOfficer
+  name: шлем офицера Альянса
+  description: Название говорит само за себя.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Head/Helmets/Combine/officer.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Head/Helmets/Combine/officer.rsi
+
+- type: entity
+  parent: EchoClothingHeadHelmetCombineSoldier
+  id: EchoClothingHeadHelmetCombineSniper
+  name: шлем снайпера Альянса
+  description: Название говорит само за себя.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Head/Helmets/Combine/sniper.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Head/Helmets/Combine/sniper.rsi
+
+- type: entity
+  parent: EchoClothingHeadHelmetCombineSoldier
+  id: EchoClothingHeadHelmetCombineSpecops
+  name: шлем спецназа Альянса
+  description: Название говорит само за себя.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Head/Helmets/Combine/specops.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Head/Helmets/Combine/specops.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.75
+        Slash: 0.75
+        Piercing: 0.75
+        Heat: 0.75
+
+- type: entity
+  parent: EchoClothingHeadHelmetCombineSoldier
+  id: EchoClothingHeadHelmetCombineStormtrooper
+  name: шлем штурмовика Альянса
+  description: Бегите.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Head/Helmets/Combine/stormtrooper.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Head/Helmets/Combine/stormtrooper.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.7
+        Slash: 0.7
+        Piercing: 0.7
+        Heat: 0.7
+  - type: PointLight
+    color: red

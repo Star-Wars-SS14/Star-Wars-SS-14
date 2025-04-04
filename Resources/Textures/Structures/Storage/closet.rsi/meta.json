@@ -561,6 +561,15 @@
     },
     {
       "name": "representative_door"
+    },
+    {
+        "name": "combine_secure"
+    },
+    {
+        "name": "combine_secure_door"
+    },
+    {
+        "name": "combine_secure_icon"
     }
   ]
 }

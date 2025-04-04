@@ -34,3 +34,7 @@ alert-level-delta-instructions = Crewmembers are advised to listen to heads of s
 alert-level-epsilon = Epsilon
 alert-level-epsilon-announcement = Central Command has ordered the Epsilon security level on the station. Consider all contracts terminated.
 alert-level-epsilon-instructions = Consider all contracts terminated.
+
+alert-level-evac = placeholder
+alert-level-evac-announcement = no en/us translation planned
+alert-level-evan-instructions = made for avoid possible problems with new code

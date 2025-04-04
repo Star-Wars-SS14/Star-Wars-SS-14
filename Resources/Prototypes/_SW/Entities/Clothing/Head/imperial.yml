@@ -1,6 +1,6 @@
 - type: entity
-  parent: SW_BaseHelmet
-  id: SW_ClothingHeadImperialHelmet
+  parent: SWBaseHelmet
+  id: SWClothingHeadImperialHelmet
   name: imperial helmet
   components:
   - type: Sprite
@@ -9,8 +9,8 @@
     sprite: _SW/Clothing/Head/Helmets/imperialhelmet.rsi
 
 - type: entity
-  parent: SW_ClothingHeadImperialHelmet
-  id: SW_ClothingHeadLieutenantImperialHelmet
+  parent: SWClothingHeadImperialHelmet
+  id: SWClothingHeadLieutenantImperialHelmet
   name: lieutenant imperial helmet
   components:
   - type: Sprite
@@ -19,8 +19,8 @@
     sprite: _SW/Clothing/Head/Helmets/ltimperialhelmet.rsi
 
 - type: entity
-  parent: SW_ClothingHeadImperialHelmet
-  id: SW_ClothingHeadMajorImperialHelmet
+  parent: SWClothingHeadImperialHelmet
+  id: SWClothingHeadMajorImperialHelmet
   name: major imperial helmet
   components:
   - type: Sprite
@@ -29,8 +29,8 @@
     sprite: _SW/Clothing/Head/Helmets/mrimperialhelmet.rsi
 
 - type: entity
-  parent: SW_ClothingHeadImperialHelmet
-  id: SW_ClothingHeadMedicImperialHelmet
+  parent: SWClothingHeadImperialHelmet
+  id: SWClothingHeadMedicImperialHelmet
   name: medic imperial helmet
   components:
   - type: Sprite

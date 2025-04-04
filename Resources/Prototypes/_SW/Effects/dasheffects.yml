@@ -1,5 +1,5 @@
 - type: entity
-  id: SWDashEffectStart
+  id: DashEffectStart
   name: эффект телепортации
   components:
     - type: TimedDespawn
@@ -19,7 +19,7 @@
       color: "#828274"
 
 - type: entity
-  id: SWDashEffectEnd
+  id: DashEffectEnd
   name: эффект телепортации
   components:
     - type: TimedDespawn

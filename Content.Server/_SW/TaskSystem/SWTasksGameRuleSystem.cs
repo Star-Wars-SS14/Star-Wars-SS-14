@@ -134,6 +134,9 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             var comp = EnsureComp<SWTaskComponent>(task);
             RaiseLocalEvent(task, new SWOnTaskInitEvent());
             faction.Comp.CurrentTasks.Add(new Entity<SWTaskComponent>(task, comp));
+            var ev = new SWTaskAddAdditionalDescEvent();
+            RaiseLocalEvent(task, ref ev);
+            comp.Description += ev.Description;
         } 
         faction.Comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(faction.Comp.AddIntervalInSeconds);
     }

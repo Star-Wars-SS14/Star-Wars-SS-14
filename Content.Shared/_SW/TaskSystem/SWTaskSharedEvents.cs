@@ -24,6 +24,13 @@ public sealed partial class SWTaskCheckRequirementsEvent : CancellableEntityEven
 
 }
 
+[ByRefEvent]
+//<summary>
+public sealed partial class SWTaskAddAdditionalDescEvent : EntityEventArgs
+{
+    public string Description = "";
+}
+
 public sealed partial class SWOnTaskInitEvent : EntityEventArgs
 {
 

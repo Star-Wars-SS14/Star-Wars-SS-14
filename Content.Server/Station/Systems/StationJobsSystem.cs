@@ -56,9 +56,11 @@ public sealed partial class StationJobsSystem : EntitySystem
 
     public override void Update(float _)
     {
-        if (_availableJobsDirty)
+        if (_availableJobsDirty || true)
         {
             _cachedAvailableJobs = GenerateJobsAvailableEvent();
+            ISawmill _s = Logger.GetSawmill("asff");
+            _s.Debug($"{_cachedAvailableJobs.StationJobList.Count()}");
             RaiseNetworkEvent(_cachedAvailableJobs, Filter.Empty().AddPlayers(_player.Sessions));
             _availableJobsDirty = false;
         }
@@ -502,7 +504,8 @@ public sealed partial class StationJobsSystem : EntitySystem
         {
             var stationNetEntity = GetNetEntity(station);
             var list = comp.JobList.ToDictionary(x => x.Key, x => x.Value);
-
+            ISawmill _s = Logger.GetSawmill("shit");
+            _s.Debug($"{list.Count()}");
             // Frontier addition
             // Every station can have ExtraStationInformation, which can contain a subtext, description, and icon.
             // Typically shown for major stations, and not ships.
@@ -512,7 +515,6 @@ public sealed partial class StationJobsSystem : EntitySystem
             ResPath? stationIcon = null;
             var lobbySortOrder = 0;
             var isLateJoinStation = false;
-
             // Frontier addition
             if (EntityManager.TryGetComponent<ExtraStationInformationComponent>(station, out var extraStationInformation))
             {

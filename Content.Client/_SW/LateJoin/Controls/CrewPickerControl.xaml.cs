@@ -38,7 +38,7 @@ public sealed partial class CrewPickerControl : PickerControl
     {
         _lobbyJobs = new Dictionary<NetEntity, StationJobInformation>(obj);
         StationItemList.RemoveAllChildren();
-
+        
         foreach (var stationViewState in BuildStationViewStateList(_lobbyJobs))
         {
             var item = new CrewListItem(stationViewState);
@@ -118,11 +118,14 @@ public sealed partial class CrewPickerControl : PickerControl
     private List<CrewListItem.ViewState> BuildStationViewStateList(
         IReadOnlyDictionary<NetEntity, StationJobInformation> obj)
     {
+        ISawmill _s = Logger.GetSawmill("crew");
+        _s.Debug($"count : {obj.Count()}");
         var stationList = obj.Where(kvp => !kvp.Value.IsLateJoinStation).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
         var viewStateList = new List<CrewListItem.ViewState>();
-
+        
         foreach (var (stationEntity, stationJobInformation) in stationList)
         {
+            _s.Debug($"{stationEntity}");
             var viewState = new CrewListItem.ViewState(
                 stationEntity,
                 stationJobInformation.GetStationNameWithJobCount(),

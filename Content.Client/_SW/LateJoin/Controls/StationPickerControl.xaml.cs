@@ -38,6 +38,7 @@ public sealed partial class StationPickerControl : PickerControl
     {
         _lobbyJobs = new Dictionary<NetEntity, StationJobInformation>(obj);
         StationItemList.RemoveAllChildren();
+        
 
         foreach (var stationViewState in BuildStationViewStateList(_lobbyJobs))
         {
@@ -123,6 +124,8 @@ public sealed partial class StationPickerControl : PickerControl
 
         foreach (var (stationEntity, stationJobInformation) in stationList)
         {
+            ISawmill _s = Logger.GetSawmill("ui");
+            _s.Debug($"rebuild : {stationEntity}");
             var viewState = new StationListItem.ViewState(
                 stationEntity,
                 stationJobInformation.GetStationNameWithJobCount(),

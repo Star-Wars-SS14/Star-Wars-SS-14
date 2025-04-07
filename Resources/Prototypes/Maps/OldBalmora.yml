@@ -13,6 +13,7 @@
         nameGenerator:
           !type:NanotrasenNameGenerator
           prefixCreator: 'MT'
+      - type: ExtraStationInformation
       - type: StationJobs
         availableJobs:
           SWSobrikCaptain: [ 1, 1 ]

@@ -81,12 +81,13 @@ namespace Content.Client.LateJoin
             _jobLists.Clear();
             _jobButtons.Clear();
             _jobCategories.Clear();
-
+            ISawmill _s = Logger.GetSawmill("rebuild");
             if (!_gameTicker.DisallowedLateJoin && _gameTicker.StationNames.Count == 0)
                 Logger.Warning("No stations exist, nothing to display in late-join GUI");
 
             foreach (var (id, name) in _gameTicker.StationNames)
             {
+                _s.Debug(name);
                 var jobList = new BoxContainer
                 {
                     Orientation = LayoutOrientation.Vertical,

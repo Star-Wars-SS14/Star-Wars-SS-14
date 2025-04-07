@@ -1,11 +1,8 @@
-﻿using Content.Server.Access.Systems;
-using Content.Server.DetailExaminable;
+using Content.Server.Access.Systems;
 using Content.Server.Humanoid;
 using Content.Server.IdentityManagement;
 using Content.Server.Mind.Commands;
 using Content.Server.PDA;
-using Content.Server.Shuttles.Systems;
-using Content.Server.Spawners.EntitySystems;
 using Content.Server.Station.Components;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
@@ -27,6 +24,10 @@ using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Utility;
+using Content.Server.Spawners.Components;
+using Content.Server.Preferences.Managers; // Frontier
+using System.Linq;
+using Content.Shared.NameIdentifier; // Frontier
 
 namespace Content.Server.Station.Systems;
 
@@ -39,16 +40,16 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
 {
     [Dependency] private readonly SharedAccessSystem _accessSystem = default!;
     [Dependency] private readonly ActorSystem _actors = default!;
-    [Dependency] private readonly ArrivalsSystem _arrivalsSystem = default!;
     [Dependency] private readonly IdCardSystem _cardSystem = default!;
     [Dependency] private readonly IConfigurationManager _configurationManager = default!;
-    [Dependency] private readonly ContainerSpawnPointSystem _containerSpawnPointSystem = default!;
     [Dependency] private readonly HumanoidAppearanceSystem _humanoidSystem = default!;
     [Dependency] private readonly IdentitySystem _identity = default!;
     [Dependency] private readonly MetaDataSystem _metaSystem = default!;
     [Dependency] private readonly PdaSystem _pdaSystem = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private readonly IDependencyCollection _dependencyCollection = default!; // Frontier
+    [Dependency] private readonly IServerPreferencesManager _preferences = default!; // Frontier
 
     private bool _randomizeCharacters;
 
@@ -66,17 +67,21 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
     /// <param name="job">The job to assign, if any.</param>
     /// <param name="profile">The character profile to use, if any.</param>
     /// <param name="stationSpawning">Resolve pattern, the station spawning component for the station.</param>
+    /// <param name="spawnPointType">Delta-V: Set desired spawn point type.</param>
+    /// <param name="session">Frontier: The session associated with the character, if any.</param>
     /// <returns>The resulting player character, if any.</returns>
     /// <exception cref="ArgumentException">Thrown when the given station is not a station.</exception>
     /// <remarks>
     /// This only spawns the character, and does none of the mind-related setup you'd need for it to be playable.
     /// </remarks>
-    public EntityUid? SpawnPlayerCharacterOnStation(EntityUid? station, ProtoId<JobPrototype>? job, HumanoidCharacterProfile? profile, StationSpawningComponent? stationSpawning = null)
+    public EntityUid? SpawnPlayerCharacterOnStation(EntityUid? station, ProtoId<JobPrototype>? job, HumanoidCharacterProfile? profile, StationSpawningComponent? stationSpawning = null, SpawnPointType spawnPointType = SpawnPointType.Unset, ICommonSession? session = null) // Frontier: add session
     {
         if (station != null && !Resolve(station.Value, ref stationSpawning))
             throw new ArgumentException("Tried to use a non-station entity as a station!", nameof(station));
 
-        var ev = new PlayerSpawningEvent(job, profile, station);
+        // Delta-V: Set desired spawn point type.
+        // Frontier: add session
+        var ev = new PlayerSpawningEvent(job, profile, station, spawnPointType, session);
 
         RaiseLocalEvent(ev);
         DebugTools.Assert(ev.SpawnResult is { Valid: true } or null);
@@ -96,13 +101,15 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
     /// <param name="profile">Appearance profile to use for the character.</param>
     /// <param name="station">The station this player is being spawned on.</param>
     /// <param name="entity">The entity to use, if one already exists.</param>
+    /// <param name="session">Frontier: The session associated with the entity, if one exists.</param>
     /// <returns>The spawned entity</returns>
     public EntityUid SpawnPlayerMob(
         EntityCoordinates coordinates,
         ProtoId<JobPrototype>? job,
         HumanoidCharacterProfile? profile,
         EntityUid? station,
-        EntityUid? entity = null)
+        EntityUid? entity = null,
+        ICommonSession? session = null) // Frontier
     {
         _prototypeManager.TryIndex(job ?? string.Empty, out var prototype);
         RoleLoadout? loadout = null;
@@ -115,10 +122,11 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
             profile?.Loadouts.TryGetValue(jobLoadout, out loadout);
 
             // Set to default if not present
-            if (loadout == null)
+            if (loadout == null && session != null)
             {
                 loadout = new RoleLoadout(jobLoadout);
                 loadout.SetDefault(profile, _actors.GetSession(entity), _prototypeManager);
+                loadout.EnsureValid(profile!, session, _dependencyCollection); // Frontier - profile must not be null, but if it was, TryGetValue above should fail
             }
         }
 
@@ -168,13 +176,92 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
 
         if (loadout != null)
         {
+            /// Frontier: overwriting EquipRoleLoadout
             EquipRoleLoadout(entity.Value, loadout, roleProto!);
-        }
+            //var initialBankBalance = profile!.BankBalance; //Frontier
+            //var bankBalance = profile!.BankBalance; //Frontier
+            //bool hasBalance = false; // Frontier
 
-        if (prototype?.StartingGear != null)
-        {
-            var startingGear = _prototypeManager.Index<StartingGearPrototype>(prototype.StartingGear);
-            EquipStartingGear(entity.Value, startingGear, raiseEvent: false);
+            //// Note: since this is stored per character, we don't have a cached
+            ////       reference for randomly generated characters.
+            //PlayerPreferences? prefs = null;
+            //if (session != null &&
+            //    _preferences.TryGetCachedPreferences(session.UserId, out prefs) &&
+            //    prefs.IndexOfCharacter(profile) != -1)
+            //{
+            //    hasBalance = true;
+            //}
+
+            //// Order loadout selections by the order they appear on the prototype.
+            //foreach (var group in loadout.SelectedLoadouts.OrderBy(x => roleProto!.Groups.FindIndex(e => e == x.Key)))
+            //{
+            //    List<ProtoId<LoadoutPrototype>> equippedItems = new(); //Frontier - track purchased items (list: few items)
+            //    foreach (var items in group.Value)
+            //    {
+            //        if (!_prototypeManager.TryIndex(items.Prototype, out var loadoutProto))
+            //        {
+            //            Log.Error($"Unable to find loadout prototype for {items.Prototype}");
+            //            continue;
+            //        }
+
+            //        // Handle any extra data here.
+
+            //        //Frontier - we handle bank stuff so we are wrapping each item spawn inside our own cached check.
+            //        //If the user's preferences haven't been loaded, only give them free items or fallbacks.
+            //        //This way, we will spawn every item we can afford in the order that they were originally sorted.
+            //        if (loadoutProto.Price <= bankBalance && (loadoutProto.Price <= 0 || hasBalance))
+            //        {
+            //            bankBalance -= int.Max(0, loadoutProto.Price); // Treat negatives as zero.
+            //            EquipStartingGear(entity.Value, loadoutProto, raiseEvent: false);
+            //            equippedItems.Add(loadoutProto.ID);
+            //        }
+            //    }
+
+            //    // If a character cannot afford their current job loadout, ensure they have fallback items for mandatory categories.
+            //    if (_prototypeManager.TryIndex(group.Key, out var groupPrototype) &&
+            //        equippedItems.Count < groupPrototype.MinLimit)
+            //    {
+            //        foreach (var fallback in groupPrototype.Fallbacks)
+            //        {
+            //            // Do not duplicate items in loadout
+            //            if (equippedItems.Contains(fallback))
+            //            {
+            //                continue;
+            //            }
+
+            //            if (!_prototypeManager.TryIndex(fallback, out var loadoutProto))
+            //            {
+            //                Log.Error($"Unable to find loadout prototype for fallback {fallback}");
+            //                continue;
+            //            }
+
+            //            // Validate effects against the current character.
+            //            if (!loadout.IsValid(profile!, _actors.GetSession(entity!), fallback, _dependencyCollection, out var _))
+            //            {
+            //                continue;
+            //            }
+
+            //            EquipStartingGear(entity.Value, loadoutProto, raiseEvent: false);
+            //            equippedItems.Add(fallback);
+            //            // Minimum number of items equipped, no need to load more prototypes.
+            //            if (equippedItems.Count >= groupPrototype.MinLimit)
+            //                break;
+            //        }
+            //    }
+            //}
+
+            //// Frontier: do not re-equip roleLoadout, make sure we equip job startingGear,
+            //// and deduct loadout costs from a bank account if we have one.
+            //if (prototype?.StartingGear is not null)
+            //    EquipStartingGear(entity.Value, prototype.StartingGear, raiseEvent: false);
+
+            //var bankComp = EnsureComp<BankAccountComponent>(entity.Value);
+
+            //if (hasBalance)
+            //{
+            //    _bank.TryBankWithdraw(session!, prefs!, profile!, initialBankBalance - bankBalance, out var newBalance);
+            //}
+            ///// End Frontier: overwriting EquipRoleLoadout
         }
 
         var gearEquippedEv = new StartingGearEquippedEvent(entity.Value);
@@ -183,13 +270,13 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
         if (profile != null)
         {
             if (prototype != null)
-                SetPdaAndIdCardData(entity.Value, profile.Name, prototype, station);
+                SetPdaAndIdCardData(entity.Value, profile.Name, prototype, station); // Frontier: profile.Name<name
 
             _humanoidSystem.LoadProfile(entity.Value, profile);
-            _metaSystem.SetEntityName(entity.Value, profile.Name);
+            _metaSystem.SetEntityName(entity.Value, profile.Name); // Frontier: profile.Name<name
             if (profile.FlavorText != "" && _configurationManager.GetCVar(CCVars.FlavorText))
             {
-                AddComp<DetailExaminableComponent>(entity.Value).Content = profile.FlavorText;
+                //AddComp<DetailExaminableComponent>(entity.Value).Content = profile.FlavorText;
             }
         }
 
@@ -276,11 +363,21 @@ public sealed class PlayerSpawningEvent : EntityEventArgs
     /// The target station, if any.
     /// </summary>
     public readonly EntityUid? Station;
+    /// <summary>
+    /// Delta-V: Desired SpawnPointType, if any.
+    /// </summary>
+    public readonly SpawnPointType DesiredSpawnPointType;
+    /// <summary>
+    /// Frontier: The session associated with the entity, if any.
+    /// </summary>
+    public readonly ICommonSession? Session;
 
-    public PlayerSpawningEvent(ProtoId<JobPrototype>? job, HumanoidCharacterProfile? humanoidCharacterProfile, EntityUid? station)
+    public PlayerSpawningEvent(ProtoId<JobPrototype>? job, HumanoidCharacterProfile? humanoidCharacterProfile, EntityUid? station, SpawnPointType spawnPointType = SpawnPointType.Unset, ICommonSession? session = null) // Frontier: added session
     {
         Job = job;
         HumanoidCharacterProfile = humanoidCharacterProfile;
         Station = station;
+        DesiredSpawnPointType = spawnPointType;
+        Session = session; // Frontier
     }
 }

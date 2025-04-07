@@ -50,6 +50,9 @@ namespace Content.Shared.Roles
         [DataField, Access(typeof(SharedRoleSystem), Other = AccessPermissions.None)]
         public HashSet<JobRequirement>? Requirements;
 
+        [DataField, Access(typeof(SharedRoleSystem), Other = AccessPermissions.None)] // Frontier
+        public Dictionary<string, HashSet<JobRequirement>>? AlternateRequirementSets; // Frontier: sets of requirements - one must be matched in order to
+
         /// <summary>
         ///     When true - the station will have anouncement about arrival of this player.
         /// </summary>
@@ -69,6 +72,13 @@ namespace Content.Shared.Roles
         public bool SetPreference { get; private set; } = true;
 
         /// <summary>
+        ///     Frontier - Whether this job should show in the ID Card Console.
+        ///     If set to null, it will default to false.
+        /// </summary>
+        [DataField]
+        public bool HideConsoleVisibility { get; private set; } = false;
+
+        /// <summary>
         ///     Should the selected traits be applied for this job?
         /// </summary>
         [DataField]
@@ -83,6 +93,12 @@ namespace Content.Shared.Roles
 
         [DataField("canBeAntag")]
         public bool CanBeAntag { get; private set; } = true;
+
+        /// <summary>
+        /// Nyano/DV: For e.g. prisoners, they'll never use their latejoin spawner.
+        /// </summary>
+        [DataField("alwaysUseSpawner")]
+        public bool AlwaysUseSpawner { get; } = true;
 
         /// <summary>
         ///     The "weight" or importance of this job. If this number is large, the job system will assign this job

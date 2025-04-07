@@ -12,6 +12,8 @@ namespace Content.Shared._SW.TaskSystem;
 public sealed partial class SWFactionComponent : Component
 {
     [DataField]
+    public string Name;
+    [DataField]
     public ProtoId<WeightedRandomPrototype>? AvailableTasks = null;
 
     public List<Entity<SWTaskComponent>> CurrentTasks = new();

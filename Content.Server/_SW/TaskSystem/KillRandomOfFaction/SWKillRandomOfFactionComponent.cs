@@ -16,7 +16,9 @@ public sealed partial class SWKillRandomOfFactionComponent : Component
     public List<string> Factions = new();
 
     [DataField]
-    public List<string> Jobs = new();
+    public Dictionary<string, int> JobsToScores = new();
 
     public EntityUid? PersonToKill = null;
+
+    public string? JobOfTarget = null;
 }

@@ -2,11 +2,13 @@
   id: RepublicFaction
   components:
   - type: SWFaction
+    name: Республки
     addIntervalInSeconds: 10
 
 - type: entity
   id: EmpireFaction
   components:
   - type: SWFaction
+    name: Империя
     availableTasks: EmpireTasksSet
     addIntervalInSeconds: 10

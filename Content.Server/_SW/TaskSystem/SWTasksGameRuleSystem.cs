@@ -57,6 +57,28 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 
     protected override void AppendRoundEndText(EntityUid uid, SWTaskGameruleComponent component, GameRuleComponent gameRule, ref RoundEndTextAppendEvent args)
     {
+        var query = EntityQueryEnumerator<SWFactionComponent>();
+        while (query.MoveNext(out var fuid, out var factionComp))
+        {
+            args.AddLine($"Фракция {factionComp.Name}:");
+            foreach (var task in factionComp.CurrentTasks)
+            {
+                string text = $"""- Задание "{task.Comp.Name}": """;
+                _sawmill.Debug($"{task.Comp.Completeness}");
+                if (task.Comp.Completeness == 1.0)
+                {
+                    var ev = new SWTaskGetScoreEvent();
+                    RaiseLocalEvent(task.Owner, ref ev);
+                    factionComp.CurrentScore += ev.Score;
+                    text += $"Выполнено. Очков Получено: {ev.Score}.";
+                }
+                else
+                {
+                    text += "Не выполнено.";
+                }
+                args.AddLine(text);
+            }
+        }
 
     }
     protected override void ActiveTick(EntityUid uid, SWTaskGameruleComponent component, GameRuleComponent gameRule, float frameTime)
@@ -75,7 +97,10 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         {
             var ev = new SWGetProgressEvent();
             RaiseLocalEvent(taskUid, ref ev);
-            taskComp.Completeness = ev.Progress;
+            if (ev.Handled)
+            {
+                taskComp.Completeness = ev.Progress;
+            }
             if (ev.Progress == 1.0)
             {
                 RaiseLocalEvent(taskUid, new SWOnTaskCompleteEvent());
@@ -105,7 +130,8 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             if (ev.Cancelled)
             {
                 Del(uid);
-            } else
+            }
+            else
             {
                 weightedProto.Weights.Add(key, value);
             }
@@ -137,7 +163,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             var ev = new SWTaskAddAdditionalDescEvent();
             RaiseLocalEvent(task, ref ev);
             comp.Description += ev.Description;
-        } 
+        }
         faction.Comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(faction.Comp.AddIntervalInSeconds);
     }
 

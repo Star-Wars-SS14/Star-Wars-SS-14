@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Content.Shared._SW.TaskSystem;
 
 [ByRefEvent]
-public sealed partial class SWGetProgressEvent : EntityEventArgs
+public sealed partial class SWGetProgressEvent : HandledEntityEventArgs
 {
     public FixedPoint2 Progress = 0.0;
 }
@@ -25,12 +25,16 @@ public sealed partial class SWTaskCheckRequirementsEvent : CancellableEntityEven
 }
 
 [ByRefEvent]
-//<summary>
 public sealed partial class SWTaskAddAdditionalDescEvent : EntityEventArgs
 {
     public string Description = "";
 }
 
+[ByRefEvent]
+public sealed partial class SWTaskGetScoreEvent : EntityEventArgs
+{
+    public int Score = 0;
+}
 public sealed partial class SWOnTaskInitEvent : EntityEventArgs
 {
 

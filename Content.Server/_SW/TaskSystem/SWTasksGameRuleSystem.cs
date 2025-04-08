@@ -1,6 +1,7 @@
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
 using Content.Shared._SW.TaskSystem;
+using Content.Shared.Atmos.Components;
 using Content.Shared.FixedPoint;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Random;
@@ -52,7 +53,19 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 
     protected override void Started(EntityUid uid, SWTaskGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
-        TryAddRandomTaskAllFactions();
+        var factions = _swFaction.GetFactions();
+        foreach (var (faction, factionEntity) in factions)
+        {
+            if (factionEntity != null)
+            {
+                var comp = EnsureComp<SWFactionComponent>(factionEntity.Value);
+                for (int i = 0; i < comp.StartAmountOfTasks; i++)
+                {
+                    AddRandomTask(factionEntity.Value, faction);
+                }
+                comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(comp.AddIntervalInSeconds);
+            }
+        }
     }
 
     protected override void AppendRoundEndText(EntityUid uid, SWTaskGameruleComponent component, GameRuleComponent gameRule, ref RoundEndTextAppendEvent args)
@@ -80,6 +93,100 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             }
         }
 
+        
+        query = EntityQueryEnumerator<SWFactionComponent>(); //reset query
+        List<Entity<SWFactionComponent>> res = CalculateWinner(query);
+        if (res.Count() != 0)
+        {
+            args.AddLine("Победа присуждена следующим фракциям:");
+            foreach (var fact in res)
+            {
+                args.AddLine($"- {fact.Comp.Name}");
+            }
+        } else
+        {
+            args.AddLine("Ничья");
+        }
+    }
+
+    private List<Entity<SWFactionComponent>> CalculateWinner(EntityQueryEnumerator<SWFactionComponent> query)
+    {
+        ISawmill _s = Logger.GetSawmill("winner");
+        List<Entity<SWFactionComponent>> majorFactions = new();
+        List<Entity<SWFactionComponent>> minorFactions = new();
+        List<Entity<SWFactionComponent>> majorCompletedAllTasks = new();
+        List<Entity<SWFactionComponent>> minorCompletedAllTasks = new();
+        _s.Debug("-1");
+        while (query.MoveNext(out var fuid, out var fComp))
+        {
+            if (fComp.IsMajor)
+            {
+                majorFactions.Add(new Entity<SWFactionComponent>(fuid, fComp));
+                if (FactionCompletedAllTasks(fuid, fComp) && fComp.CurrentTasks.Count() != 0)
+                {
+
+                    majorCompletedAllTasks.Add(new Entity<SWFactionComponent>(fuid, fComp));
+                }
+            }
+            else
+            {
+                minorFactions.Add(new Entity<SWFactionComponent>(fuid, fComp));
+                if (FactionCompletedAllTasks(fuid, fComp) && fComp.CurrentTasks.Count() != 0)
+                {
+
+                    minorCompletedAllTasks.Add(new Entity<SWFactionComponent>(fuid, fComp));
+                }
+            }
+        }
+
+        if (majorFactions.Count() == majorCompletedAllTasks.Count())
+        {
+            _s.Debug("0");
+            return new List<Entity<SWFactionComponent>>(); // пустой список, то есть победителей нет, то бишь ничья
+        }
+
+        if (majorCompletedAllTasks.Count() > 0)
+        {
+            _s.Debug("1");
+            return majorCompletedAllTasks;
+        }
+
+        if (majorCompletedAllTasks.Count() == 0 && minorCompletedAllTasks.Count() == 0)
+        {
+            List<Entity<SWFactionComponent>> res = new();
+            int maxScoreAmongMajors = 0;
+
+            foreach (var fact in majorFactions)
+            {
+                maxScoreAmongMajors = Math.Max(fact.Comp.CurrentScore, maxScoreAmongMajors);
+            }
+
+            foreach (var fact in majorFactions)
+            {
+                if (fact.Comp.CurrentScore == maxScoreAmongMajors)
+                {
+                    res.Add(fact);
+                }
+            }
+            _s.Debug("2");
+            return res;
+        } else
+        {
+            _s.Debug("3");
+            return minorCompletedAllTasks;
+        }
+    }
+
+    private bool FactionCompletedAllTasks(EntityUid factionUid, SWFactionComponent comp)
+    {
+        foreach (var task in comp.CurrentTasks)
+        {
+            if (task.Comp.Completeness != 1.0)
+            {
+                return false;
+            }
+        }
+        return true;
     }
     protected override void ActiveTick(EntityUid uid, SWTaskGameruleComponent component, GameRuleComponent gameRule, float frameTime)
     {
@@ -89,8 +196,10 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             if (comp.NextAddTime <= _timing.CurTime)
             {
                 TryPrototype(factionUid, out var proto);
-                if (proto != null) {
-                    TryAddRandomTask(new Entity<SWFactionComponent>(factionUid, comp), proto.ID);
+                if (proto != null)
+                {
+                    AddRandomTask(new Entity<SWFactionComponent>(factionUid, comp), proto.ID);
+                    comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(comp.AddIntervalInSeconds);
                 }
             }
         }
@@ -111,25 +220,26 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             }
         }
     }
-    public void TryAddRandomTaskAllFactions()
-    {
-        var factions = _swFaction.GetFactions();
-        foreach (var (faction, factionEntity) in factions)
-        {
-            if (factionEntity != null)
-            {
-                TryAddRandomTask(factionEntity.Value, faction);
-            }
-        }
-    }
-
-    public WeightedRandomPrototype FilterAvailableTasks(WeightedRandomPrototype proto)
+    public WeightedRandomPrototype FilterAvailableTasks(WeightedRandomPrototype proto, Entity<SWFactionComponent> faction)
     {
         var keys = proto.Weights.Keys;
         WeightedRandomPrototype weightedProto = new();
         EntityUid uid;
+        var currentTasksProtolist = new List<string>();
+        foreach (var task in faction.Comp.CurrentTasks)
+        {
+            TryPrototype(task.Owner, out var taskProto);
+            if (taskProto != null)
+            {
+                currentTasksProtolist.Add(taskProto.ID);
+            }
+        }
         foreach (var (key, value) in proto.Weights)
         {
+            if (currentTasksProtolist.Contains(key))
+            {
+                continue;
+            }
             uid = Spawn(key);
             var ev = new SWTaskCheckRequirementsEvent();
             RaiseLocalEvent(uid, ref ev);
@@ -144,20 +254,25 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         }
         return weightedProto;
     }
-    public void TryAddRandomTask(Entity<SWFactionComponent> faction, string factionId)
+    public void AddRandomTask(Entity<SWFactionComponent> faction, string factionId)
     {
         if (faction.Comp.AvailableTasks == null)
         {
             return;
         }
+
+        //if (faction.Comp.CurrentTasks.Count() == faction.Comp.MaxAmountOfTasks)
+        //{
+        //    return;
+        //}
+
         _prototypeManager.TryIndex(faction.Comp.AvailableTasks, out var proto);
         if (proto == null)
         {
             return;
         }
 
-
-        var protoFiltered = FilterAvailableTasks(proto);
+        var protoFiltered = FilterAvailableTasks(proto, faction);
         //Если доступных заданий не окажется, то мы просто попробуем в следующий раз
         if (protoFiltered.Weights.Count != 0)
         {
@@ -171,7 +286,6 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             RaiseLocalEvent(task, ref ev);
             comp.Description += ev.Description;
         }
-        faction.Comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(faction.Comp.AddIntervalInSeconds);
     }
 
     public List<Entity<SWTaskComponent>> GetFactionTasks(string? faction)

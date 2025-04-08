@@ -27,4 +27,13 @@ public sealed partial class SWFactionComponent : Component
     public int StartScore = 0;
 
     public int CurrentScore = 0;
+
+    [DataField]
+    public bool IsMajor = false;
+
+    [DataField]
+    public int StartAmountOfTasks = 0;
+
+    [DataField]
+    public int MaxAmountOfTasks = 0;
 }

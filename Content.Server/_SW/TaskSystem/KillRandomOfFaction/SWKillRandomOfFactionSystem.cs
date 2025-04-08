@@ -33,6 +33,7 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         SubscribeLocalEvent<SWKillRandomByNameComponent, SWTaskGetScoreEvent>(GetScoreByName);
 
         SubscribeLocalEvent<SWKillRandomByJobComponent, SWTaskCheckRequirementsEvent>(OnCheckRequirementsByJob);
+        SubscribeLocalEvent<SWKillRandomByJobComponent, SWOnTaskInitEvent>(OnTaskInitByJob);
         SubscribeLocalEvent<SWKillRandomByJobComponent, SWTaskAddAdditionalDescEvent>(OnDescUpdatedByJob);
         SubscribeLocalEvent<SWKillRandomByJobComponent, SWTaskGetScoreEvent>(GetScoreByJob);
 
@@ -40,14 +41,25 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         _s = Logger.GetSawmill("asgh");
     }
 
+    private void OnTaskInitByJob(Entity<SWKillRandomByJobComponent> ent, ref SWOnTaskInitEvent args)
+    {
+        var query = EntityQueryEnumerator<SWFactionMemberComponent>();
+        List<EntityUid> possible_targets = new();
+        while (query.MoveNext(out var uid, out var comp))
+        {
+            if (ent.Comp.Factions.Contains(comp.Faction) && CheckJob(ent.Comp.JobsToScores.Keys.ToList(), uid))
+            {
+                possible_targets.Add(uid);
+            }
+        }
+        var tuid = _random.Pick(possible_targets);
+        ent.Comp.JobProtoOfKilled = GetJob(tuid);
+        _s.Debug($"сщ : {ent.Comp.JobsToScores.Keys.Count}");
+    }
+
     private void OnDescUpdatedByJob(Entity<SWKillRandomByJobComponent> ent, ref SWTaskAddAdditionalDescEvent args)
     {
-        args.Description += $"Целевые должности:\n";
-        foreach (var job in ent.Comp.JobsToScores.Keys)
-        {
-            var jobProto = _prototypeManager.Index<JobPrototype>(job);
-            args.Description += $"- {jobProto.Name}\n";
-        }
+        args.Description += $"\nЦелевая должность: {ent.Comp.JobProtoOfKilled}\n";
     }
     private void GetScoreByJob(Entity<SWKillRandomByJobComponent> ent, ref SWTaskGetScoreEvent args)
     {
@@ -89,8 +101,7 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         {
             return;
         }
-        args.Description += $"Ваша цель: {Name(ent.Comp.PersonToKill.Value)}. Должнсть цели: {GetJobName(ent.Comp.PersonToKill.Value)}\n";
-        args.Description += $"Ваша цель: {Name(ent.Comp.PersonToKill.Value)}. Должнсть цели: {GetJobName(ent.Comp.PersonToKill.Value)}\n";
+        args.Description += $"\nВаша цель: {Name(ent.Comp.PersonToKill.Value)}.\n";
     }
 
     private void OnCheckRequirementsByName(Entity<SWKillRandomByNameComponent> ent, ref SWTaskCheckRequirementsEvent args)
@@ -161,8 +172,8 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
             var query2 = EntityQueryEnumerator<SWKillRandomByJobComponent>();
             while (query2.MoveNext(out var uid, out var comp))
             {
-                if (comp.Factions.Contains(ent.Comp.Faction) && CheckJob(comp.JobsToScores.Keys.ToList(), ent.Owner)){
-                    comp.JobProtoOfKilled = GetJob(ent.Owner);
+                if (comp.Factions.Contains(ent.Comp.Faction) && comp.JobProtoOfKilled == GetJob(ent.Owner))
+                {
                     _sWTasks.UpdateTaskProgress(uid, 1.0);
                 }
             }

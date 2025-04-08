@@ -26,13 +26,11 @@ public sealed partial class TaskConsoleMenu : DefaultWindow
             var cntrl = new SWTaskControl(task.TaskName, task.TaskDesc, CreateTaskStatusString(task.Status));
             TaskList.AddChild(cntrl);
         }
-        ISawmill _s = Logger.GetSawmill("afsgdfhj");
-        _s.Debug("added");
     }
 
     private string CreateTaskStatusString(FixedPoint2 value)
     {
-        string res = $"Completed by {value * 100}%";
+        string res = $"Выполнено на {value * 100}%";
         return res;
     }
 }

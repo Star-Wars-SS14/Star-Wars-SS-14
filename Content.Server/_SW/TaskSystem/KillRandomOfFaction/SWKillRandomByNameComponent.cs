@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Content.Server._SW.TaskSystem.KillRandomOfFaction;
 
 [RegisterComponent]
-public sealed partial class SWKillRandomOfFactionComponent : Component
+public sealed partial class SWKillRandomByNameComponent : Component
 {
     [DataField]
     public List<string> Factions = new();

@@ -1,7 +1,7 @@
 - type: weightedRandom
   id: EmpireTasksSet
   weights:
-    KillRandomOfFactionTask : 1
+    KillByJobTask : 1
 
 - type: entity
   id: KillRandomOfFactionTask
@@ -9,7 +9,7 @@
   - type: SWTask
     name: Убейте республиканского генерала
     description: Ваша цель - республиканский генерал. Его убийство оставит республику без командования и деморализует республиканские силы.
-  - type: SWKillRandomOfFaction
+  - type: SWKillRandomByName
     factions: [RepublicFaction]
     jobsToScores:
       SWRepublicGeneral : 15
@@ -24,3 +24,24 @@
   - type: DestroyObjectsTask
     objects:
       [VendingMachinePride]: 3
+
+- type: entity
+  id: CollectObjectsTask
+  components:
+  - type: SWTask
+    name: Украдите три плюшевых пчелы. 
+    description: Главное спиздить, а пригодится или нет решать потом.
+  - type: CollectObjectTask
+    objects:
+      [PlushieBee] : 3
+
+- type: entity
+  id: KillByJobTask
+  components:
+  - type: SWTask
+    name: убейте кого нибудь в должности имперский солдат.
+    description: гол
+  - type: SWKillRandomByJob
+    factions: [RepublicFaction]
+    jobsToScores:
+      SWRepublicGeneral : 15

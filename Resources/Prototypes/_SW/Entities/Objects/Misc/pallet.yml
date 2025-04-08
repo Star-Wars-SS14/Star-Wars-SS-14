@@ -1,0 +1,6 @@
+- type: entity
+  id: SWCargoPallet
+  parent: CargoPallet
+  components:
+  - type: SWTransferPallet
+    ownerFaction: EmpireFaction

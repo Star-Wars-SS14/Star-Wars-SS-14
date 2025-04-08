@@ -24,4 +24,6 @@ public sealed partial class SWTaskComponent : Component
 
     [DataField]
     public string RoundEndText = string.Empty;
+
+    public string OwnerFaction = string.Empty;
 }

@@ -88,7 +88,10 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         {
             if (comp.NextAddTime <= _timing.CurTime)
             {
-                TryAddRandomTask(new Entity<SWFactionComponent>(factionUid, comp));
+                TryPrototype(factionUid, out var proto);
+                if (proto != null) {
+                    TryAddRandomTask(new Entity<SWFactionComponent>(factionUid, comp), proto.ID);
+                }
             }
         }
 
@@ -110,10 +113,13 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     }
     public void TryAddRandomTaskAllFactions()
     {
-        var factions = _swFaction.GetFactionsEntities();
-        foreach (var faction in factions)
+        var factions = _swFaction.GetFactions();
+        foreach (var (faction, factionEntity) in factions)
         {
-            TryAddRandomTask(faction);
+            if (factionEntity != null)
+            {
+                TryAddRandomTask(factionEntity.Value, faction);
+            }
         }
     }
 
@@ -138,7 +144,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         }
         return weightedProto;
     }
-    public void TryAddRandomTask(Entity<SWFactionComponent> faction)
+    public void TryAddRandomTask(Entity<SWFactionComponent> faction, string factionId)
     {
         if (faction.Comp.AvailableTasks == null)
         {
@@ -160,6 +166,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             var comp = EnsureComp<SWTaskComponent>(task);
             RaiseLocalEvent(task, new SWOnTaskInitEvent());
             faction.Comp.CurrentTasks.Add(new Entity<SWTaskComponent>(task, comp));
+            comp.OwnerFaction = factionId;
             var ev = new SWTaskAddAdditionalDescEvent();
             RaiseLocalEvent(task, ref ev);
             comp.Description += ev.Description;

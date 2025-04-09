@@ -20,15 +20,15 @@
     startAmountOfTasks : 2
     maxAmountOfTasks: 4
 
-# - type: entity
-#   id: MandalorianFaction
-#   components:
-#   - type: SWFaction
-#     name: Анклав мандалорцев
-#     availableTasks: MandalorianTasksSet
-#     addIntervalInSeconds: 1800 //30 min
-#     startAmountOfTasks : 1
-#     maxAmountOfTasks: 3
+- type: entity
+  id: MandalorianFaction
+  components:
+  - type: SWFaction
+    name: Анклав мандалорцев
+    availableTasks: MandalorianTasksSet
+    addIntervalInSeconds: 1800 //30 min
+    startAmountOfTasks : 2
+    maxAmountOfTasks: 3
 
 - type: entity
   id: BlackSunFaction
@@ -40,12 +40,12 @@
     startAmountOfTasks : 2
     maxAmountOfTasks: 3
 
-# - type: entity
-#   id: ExchangeFaction
-#   components:
-#   - type: SWFaction
-#     name: Синдикат "Обмен"
-#     availableTasks: ExchangeTasksSet
-#     addIntervalInSeconds: 1800 //30 min
-#     startAmountOfTasks : 2
-#     maxAmountOfTasks: 3
+- type: entity
+  id: ExchangeFaction
+  components:
+  - type: SWFaction
+    name: Синдикат "Обмен"
+    availableTasks: ExchangeTasksSet
+    addIntervalInSeconds: 1800 //30 min
+    startAmountOfTasks : 2
+    maxAmountOfTasks: 3

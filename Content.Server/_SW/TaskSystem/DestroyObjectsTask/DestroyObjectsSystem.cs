@@ -26,18 +26,15 @@ public sealed partial class DestroyObjectsSystem : EntitySystem
         SubscribeLocalEvent<DestroyObjectsTaskComponent, SWOnTaskInitEvent>(OnTaskInit);
         SubscribeLocalEvent<DestroyObjectsTaskComponent, SWGetProgressEvent>(OnGetProgress);
         SubscribeLocalEvent<MetaDataComponent, DestructionEventArgs>(OnDestruct);
+        SubscribeLocalEvent<MetaDataComponent, BreakageEventArgs>(OnBreak);
     }
 
-    private void OnTaskInit(Entity<DestroyObjectsTaskComponent> ent, ref SWOnTaskInitEvent args)
+    private void OnBreak(Entity<MetaDataComponent> ent, ref BreakageEventArgs args)
     {
-        //инициализируем количество разрушенных объектов нулями
-        foreach (var protolist in ent.Comp.ObjectsToDestroy.Keys)
-        {
-            ent.Comp.ObjectsDestroyed[protolist] = 0;
-        }
+        UpdateTask(ent);
     }
 
-    private void OnDestruct(Entity<MetaDataComponent> ent, ref DestructionEventArgs args)
+    private void UpdateTask(Entity<MetaDataComponent> ent)
     {
         var queryTasks = EntityQueryEnumerator<DestroyObjectsTaskComponent>();
         while (queryTasks.MoveNext(out var uid, out var comp))
@@ -54,6 +51,19 @@ public sealed partial class DestroyObjectsSystem : EntitySystem
                 }
             }
         }
+    }
+    private void OnTaskInit(Entity<DestroyObjectsTaskComponent> ent, ref SWOnTaskInitEvent args)
+    {
+        //инициализируем количество разрушенных объектов нулями
+        foreach (var protolist in ent.Comp.ObjectsToDestroy.Keys)
+        {
+            ent.Comp.ObjectsDestroyed[protolist] = 0;
+        }
+    }
+
+    private void OnDestruct(Entity<MetaDataComponent> ent, ref DestructionEventArgs args)
+    {
+        UpdateTask(ent);
     }
 
     private void OnGetProgress(Entity<DestroyObjectsTaskComponent> ent, ref SWGetProgressEvent args)

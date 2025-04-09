@@ -66,7 +66,9 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         if (ent.Comp.JobProtoOfKilled != null)
         {
             args.Score = ent.Comp.JobsToScores[ent.Comp.JobProtoOfKilled];
+            args.Handled = true;
         }
+        
     }
 
     private void OnCheckRequirementsByJob(Entity<SWKillRandomByJobComponent> ent, ref SWTaskCheckRequirementsEvent args)
@@ -91,6 +93,7 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
                 _s.Debug($"{ent.Comp.JobsToScores.Keys.Count()}");
                 _s.Debug($"{ent.Comp.JobsToScores.Keys.ToArray()[0]}");
                 args.Score = ent.Comp.JobsToScores[ent.Comp.JobOfTarget];
+                args.Handled = true;
             }
         }
     }

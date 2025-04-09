@@ -82,8 +82,13 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                 {
                     var ev = new SWTaskGetScoreEvent();
                     RaiseLocalEvent(task.Owner, ref ev);
-                    factionComp.CurrentScore += ev.Score;
-                    text += $"Выполнено. Очков Получено: {ev.Score}.";
+                    int score = task.Comp.Score;
+                    if (ev.Handled)
+                    {
+                        score = ev.Score;
+                    }
+                    factionComp.CurrentScore += score;
+                    text += $"Выполнено. Очков Получено: {score}.";
                 }
                 else
                 {

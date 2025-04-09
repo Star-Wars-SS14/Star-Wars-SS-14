@@ -31,7 +31,7 @@ public sealed partial class SWTaskAddAdditionalDescEvent : EntityEventArgs
 }
 
 [ByRefEvent]
-public sealed partial class SWTaskGetScoreEvent : EntityEventArgs
+public sealed partial class SWTaskGetScoreEvent : HandledEntityEventArgs
 {
     public int Score = 0;
 }

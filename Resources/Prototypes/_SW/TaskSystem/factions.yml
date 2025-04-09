@@ -30,15 +30,15 @@
 #     startAmountOfTasks : 1
 #     maxAmountOfTasks: 3
 
-# - type: entity
-#   id: BlackSunFaction
-#   components:
-#   - type: SWFaction
-#     name: Синдикат "Черное солнце"
-#     availableTasks: BlackSunTasksSet
-#     addIntervalInSeconds: 1800 //30 min
-#     startAmountOfTasks : 2
-#     maxAmountOfTasks: 3
+- type: entity
+  id: BlackSunFaction
+  components:
+  - type: SWFaction
+    name: Синдикат "Черное солнце"
+    availableTasks: BlackSunTasksSet
+    addIntervalInSeconds: 1800 //30 min
+    startAmountOfTasks : 2
+    maxAmountOfTasks: 3
 
 # - type: entity
 #   id: ExchangeFaction

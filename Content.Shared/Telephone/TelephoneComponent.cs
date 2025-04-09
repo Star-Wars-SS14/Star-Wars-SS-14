@@ -1,5 +1,6 @@
 using Content.Shared.Chat;
 using Content.Shared.Speech;
+using Content.Shared.Whitelist;
 using Robust.Shared.Audio;
 using Robust.Shared.GameStates;
 using Robust.Shared.Serialization;
@@ -138,6 +139,14 @@ public sealed partial class TelephoneComponent : Component
     /// </summary>
     [ViewVariables, AutoNetworkedField]
     public (string?, string?, string?) LastCallerId;
+
+    //SW start
+    /// <summary>
+    /// Blacklist чтобы избежать ситуаций когда с имперского голопада можно позвонить на республиканский.
+    /// </summary>
+    [DataField]
+    public EntityWhitelist? Blacklist;
+    //SW end
 }
 
 #region: Telephone events

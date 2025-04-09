@@ -34,12 +34,15 @@
       ]
     },
     {
-      "name": "gib",
-      "delays": [
-        [
-          1
+        "name": "gib",
+        "delays": [
+            [
+                1
+            ]
         ]
-      ]
+    },
+    {
+        "name": "bormuicon"
     }
   ]
 }

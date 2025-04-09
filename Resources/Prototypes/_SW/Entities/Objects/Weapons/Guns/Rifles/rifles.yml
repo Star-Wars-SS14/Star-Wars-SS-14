@@ -122,7 +122,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/j111.rsi
   - type: Gun
-    fireRate: 5.5
+    fireRate: 3.5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg  
   - type: ItemSlots
@@ -179,7 +179,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
   - type: Gun
-    fireRate: 7
+    fireRate: 3.5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ItemSlots
@@ -262,7 +262,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
   - type: Gun
-    fireRate: 7
+    fireRate: 3.5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: ItemSlots
@@ -318,12 +318,9 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
   - type: Gun
-    fireRate: 7
+    fireRate: 3.5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
-  - type: ChamberMagazineAmmoProvider
-    soundRack:
-      path: /Audio/Weapons/Guns/Cock/ltrifle_cock.ogg
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -349,12 +346,9 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
   - type: Gun
-    fireRate: 7
+    fireRate: 3.5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
-  - type: ChamberMagazineAmmoProvider
-    soundRack:
-      path: /Audio/Weapons/Guns/Cock/ltrifle_cock.ogg
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -380,12 +374,9 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
   - type: Gun
-    fireRate: 7
+    fireRate: 3.5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
-  - type: ChamberMagazineAmmoProvider
-    soundRack:
-      path: /Audio/Weapons/Guns/Cock/ltrifle_cock.ogg
   - type: ItemSlots
     slots:
       gun_magazine:

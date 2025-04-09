@@ -1,20 +1,12 @@
-﻿- type: entity
-  parent: ClothingHeadBase
+- type: entity
+  parent: SW_BaseHelmet
   id: SW_ClothingHeadRepublicHelmet
   name: republic helmet
   components:
-  - type: HideLayerClothing
-    slots:
-    - Hair
-    - Snout
-  - type: BreathMask
   - type: Sprite
     sprite: _SW/Clothing/Head/Helmets/republichelmet.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/republichelmet.rsi
-  - type: PressureProtection
-    highPressureMultiplier: 0.3
-    lowPressureMultiplier: 1000
 
 - type: entity
   parent: SW_ClothingHeadRepublicHelmet

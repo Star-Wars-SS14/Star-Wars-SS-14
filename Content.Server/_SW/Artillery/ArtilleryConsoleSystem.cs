@@ -26,6 +26,7 @@ using Robust.Server.GameObjects;
 using Robust.Shared.Configuration;
 using Robust.Shared.Map;
 using Content.Shared._SW.Artillery;
+using static Content.Shared.Administration.Notes.AdminMessageEuiState;
 
 namespace Content.Server._SW.Artillery
 {
@@ -34,6 +35,8 @@ namespace Content.Server._SW.Artillery
         [Dependency] private readonly SharedTransformSystem _sharedTransformSystem = default!;
         [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
         [Dependency] private readonly ChatSystem _chatSystem = default!;
+        [Dependency] private readonly AccessReaderSystem _accessReaderSystem = default!;
+        [Dependency] private readonly PopupSystem _popupSystem = default!;
 
         private const float UIUpdateInterval = 5.0f;
 
@@ -46,6 +49,11 @@ namespace Content.Server._SW.Artillery
 
         private void OnCallArtillery(Entity<ArtilleryConsoleComponent> ent, ref ArtilleryConsoleCallArtileryMessage args)
         {
+            if (!CanUse(args.Actor, ent.Owner))
+            {
+                _popupSystem.PopupCursor(Loc.GetString("comms-console-permission-denied"), args.Actor, PopupType.Medium);
+                return;
+            }
             if (!CanCall(ent.Comp))
             {
                 return;
@@ -89,7 +97,14 @@ namespace Content.Server._SW.Artillery
 
             base.Update(frameTime);
         }
-
+        private bool CanUse(EntityUid user, EntityUid console)
+        {
+            if (TryComp<AccessReaderComponent>(console, out var accessReaderComponent) && !HasComp<EmaggedComponent>(console))
+            {
+                return _accessReaderSystem.IsAllowed(user, console, accessReaderComponent);
+            }
+            return true;
+        }
         public void OnCommunicationsConsoleMapInit(EntityUid uid, ArtilleryConsoleComponent comp, MapInitEvent args)
         {
             comp.CurrentDelay = comp.DelayBetweenCalls;

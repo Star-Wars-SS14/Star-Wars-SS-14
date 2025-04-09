@@ -40,4 +40,6 @@
       state: comm
     - map: ["computerLayerKeys"]
       state: generic_keys
+  - type: AccessReader
+    access: [[ "EmpireMoff" ]]
 

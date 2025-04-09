@@ -3,11 +3,6 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared._SW.Artillery;
 
-public sealed class SharedArtillerySystem : EntitySystem
-{
-
-}
-
 [Serializable, NetSerializable]
 public sealed class ArtilleryConsoleCallArtileryMessage : BoundUserInterfaceMessage
 {

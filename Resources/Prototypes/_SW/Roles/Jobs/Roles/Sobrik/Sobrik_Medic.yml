@@ -13,3 +13,8 @@
   - EmpireBase
   - EmpireSobrik
   - EmpireMedic
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: SWFactionMember
+        faction: EmpireFaction

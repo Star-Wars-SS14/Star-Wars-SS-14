@@ -9,6 +9,9 @@
     factionsPrototypes:
     - RepublicFaction
     - EmpireFaction
+    - MandalorianFaction
+    - BlackSunFaction
+    - ExchangeFaction
 
 - type: gamePreset
   id: SWMainPreset

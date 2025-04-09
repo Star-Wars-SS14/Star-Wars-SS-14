@@ -18,7 +18,6 @@ namespace Content.Server._SW.TaskSystem.KillRandomOfFaction;
 
 public sealed partial class SWKillRandomJobSystem : EntitySystem
 {
-    ISawmill _s = default!;
     [Dependency] private readonly SWTasksGameRuleSystem _sWTasks = default!;
     [Dependency] private readonly SharedMindSystem _mindSystem = default!;
     [Dependency] private readonly SharedJobSystem _jobSystem = default!;
@@ -38,7 +37,6 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         SubscribeLocalEvent<SWKillRandomByJobComponent, SWTaskGetScoreEvent>(GetScoreByJob);
 
         SubscribeLocalEvent<SWFactionMemberComponent, MobStateChangedEvent>(OnMobStateChanged);
-        _s = Logger.GetSawmill("asgh");
     }
 
     private void OnTaskInitByJob(Entity<SWKillRandomByJobComponent> ent, ref SWOnTaskInitEvent args)
@@ -54,12 +52,19 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         }
         var tuid = _random.Pick(possible_targets);
         ent.Comp.JobProtoOfKilled = GetJob(tuid);
-        _s.Debug($"сщ : {ent.Comp.JobsToScores.Keys.Count}");
     }
 
     private void OnDescUpdatedByJob(Entity<SWKillRandomByJobComponent> ent, ref SWTaskAddAdditionalDescEvent args)
     {
-        args.Description += $"\nЦелевая должность: {ent.Comp.JobProtoOfKilled}\n";
+        if (ent.Comp.JobProtoOfKilled == null)
+        {
+            return;
+        }
+        _prototypeManager.TryIndex(ent.Comp.JobProtoOfKilled, out JobPrototype? proto);
+        if (proto != null)
+        {
+            args.Description += $"\nЦелевая должность: {proto.Name}\n";
+        }
     }
     private void GetScoreByJob(Entity<SWKillRandomByJobComponent> ent, ref SWTaskGetScoreEvent args)
     {
@@ -90,8 +95,6 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         {
             if (ent.Comp.JobOfTarget != null)
             {
-                _s.Debug($"{ent.Comp.JobsToScores.Keys.Count()}");
-                _s.Debug($"{ent.Comp.JobsToScores.Keys.ToArray()[0]}");
                 args.Score = ent.Comp.JobsToScores[ent.Comp.JobOfTarget];
                 args.Handled = true;
             }
@@ -122,13 +125,11 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         var query2 = EntityQueryEnumerator<SWFactionMemberComponent>();
         while (query2.MoveNext(out var uid, out var comp))
         {
-            _s.Debug($"{CheckJob(ent.Comp.JobsToScores.Keys.ToList(), uid)} {ent.Comp.Factions.Contains(comp.Faction)} {!targets.Contains(uid)}");
             if (ent.Comp.Factions.Contains(comp.Faction) && !targets.Contains(uid) && CheckJob(ent.Comp.JobsToScores.Keys.ToList(), uid))
             {
                 return;
             }
         }
-        _s.Debug("cancelled");
         args.Cancel();
     }
 
@@ -143,7 +144,6 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
                 chosen_targets.Add(comp.PersonToKill);
             }
         }
-        _s.Debug("initted");
         var query = EntityQueryEnumerator<SWFactionMemberComponent>();
         List<EntityUid> possible_targets = new();
         while (query.MoveNext(out var uid, out var comp))
@@ -155,7 +155,6 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         }
         ent.Comp.PersonToKill = _random.Pick(possible_targets);
         ent.Comp.JobOfTarget = GetJob(ent.Comp.PersonToKill.Value);
-        _s.Debug($"сщ : {ent.Comp.JobsToScores.Keys.Count}");
     }
 
     private void OnMobStateChanged(Entity<SWFactionMemberComponent> ent, ref MobStateChangedEvent args)
@@ -167,7 +166,6 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
             {
                 if (comp.PersonToKill == ent.Owner)
                 {
-                    _s.Debug("killed");
                     _sWTasks.UpdateTaskProgress(uid, 1.0);
                 }
             }

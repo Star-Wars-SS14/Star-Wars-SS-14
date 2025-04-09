@@ -4,10 +4,10 @@
   - type: SWFaction
     name: Республика
     availableTasks: RepublicTasksSet
-    addIntervalInSeconds: 1800 #30 min
+    addIntervalInSeconds: 1 #30 min
     isMajor: true
     startAmountOfTasks : 3
-    maxAmountOfTasks: 5
+    maxAmountOfTasks: 500
 
 - type: entity
   id: EmpireFaction
@@ -18,7 +18,7 @@
     addIntervalInSeconds: 1 #30 min
     isMajor: true
     startAmountOfTasks : 2
-    maxAmountOfTasks: 4
+    maxAmountOfTasks: 400
 
 - type: entity
   id: MandalorianFaction
@@ -26,9 +26,9 @@
   - type: SWFaction
     name: Анклав мандалорцев
     availableTasks: MandalorianTasksSet
-    addIntervalInSeconds: 1800 //30 min
+    addIntervalInSeconds: 1 #30 min
     startAmountOfTasks : 2
-    maxAmountOfTasks: 3
+    maxAmountOfTasks: 300
 
 - type: entity
   id: BlackSunFaction
@@ -36,9 +36,9 @@
   - type: SWFaction
     name: Синдикат "Черное солнце"
     availableTasks: BlackSunTasksSet
-    addIntervalInSeconds: 1800 //30 min
+    addIntervalInSeconds: 1 #30 min
     startAmountOfTasks : 2
-    maxAmountOfTasks: 3
+    maxAmountOfTasks: 300
 
 - type: entity
   id: ExchangeFaction
@@ -46,6 +46,6 @@
   - type: SWFaction
     name: Синдикат "Обмен"
     availableTasks: ExchangeTasksSet
-    addIntervalInSeconds: 1800 //30 min
+    addIntervalInSeconds: 1 #30 min
     startAmountOfTasks : 2
-    maxAmountOfTasks: 3
+    maxAmountOfTasks: 300

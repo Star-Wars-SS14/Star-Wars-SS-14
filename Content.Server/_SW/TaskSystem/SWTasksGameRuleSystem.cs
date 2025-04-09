@@ -36,19 +36,16 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 
     private void OnTaskComplete(Entity<SWTaskGameruleComponent> ent, ref SWTaskProgressUpdateEvent args)
     {
-        _sawmill.Debug("got");
         if (!TryComp<SWTaskComponent>(args.Task, out var comp))
         {
             return;
         }
-        _sawmill.Debug("updated");
         comp.Completeness = args.NewProgress;
         if (comp.Completeness == 1.0)
         {
             RaiseLocalEvent(args.Task, new SWOnTaskCompleteEvent());
             //QueueDel(args.Task);
         }
-        _sawmill.Debug("updated2");
     }
 
     protected override void Started(EntityUid uid, SWTaskGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
@@ -77,7 +74,6 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             foreach (var task in factionComp.CurrentTasks)
             {
                 string text = $"""- Задание "{task.Comp.Name}": """;
-                _sawmill.Debug($"{task.Comp.Completeness}");
                 if (task.Comp.Completeness == 1.0)
                 {
                     var ev = new SWTaskGetScoreEvent();
@@ -116,12 +112,10 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 
     private List<Entity<SWFactionComponent>> CalculateWinner(EntityQueryEnumerator<SWFactionComponent> query)
     {
-        ISawmill _s = Logger.GetSawmill("winner");
         List<Entity<SWFactionComponent>> majorFactions = new();
         List<Entity<SWFactionComponent>> minorFactions = new();
         List<Entity<SWFactionComponent>> majorCompletedAllTasks = new();
         List<Entity<SWFactionComponent>> minorCompletedAllTasks = new();
-        _s.Debug("-1");
         while (query.MoveNext(out var fuid, out var fComp))
         {
             if (fComp.IsMajor)
@@ -146,13 +140,11 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 
         if (majorFactions.Count() == majorCompletedAllTasks.Count())
         {
-            _s.Debug("0");
             return new List<Entity<SWFactionComponent>>(); // пустой список, то есть победителей нет, то бишь ничья
         }
 
         if (majorCompletedAllTasks.Count() > 0)
         {
-            _s.Debug("1");
             return majorCompletedAllTasks;
         }
 
@@ -173,11 +165,9 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                     res.Add(fact);
                 }
             }
-            _s.Debug("2");
             return res;
         } else
         {
-            _s.Debug("3");
             return minorCompletedAllTasks;
         }
     }
@@ -241,10 +231,10 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         }
         foreach (var (key, value) in proto.Weights)
         {
-            if (currentTasksProtolist.Contains(key))
-            {
-                continue;
-            }
+            //if (currentTasksProtolist.Contains(key))
+            //{
+            //    continue;
+            //}
             uid = Spawn(key);
             var ev = new SWTaskCheckRequirementsEvent();
             RaiseLocalEvent(uid, ref ev);
@@ -261,22 +251,24 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     }
     public void AddRandomTask(Entity<SWFactionComponent> faction, string factionId)
     {
+        ISawmill _s = Logger.GetSawmill("add");
+        _s.Debug(faction.Comp.Name);
         if (faction.Comp.AvailableTasks == null)
         {
             return;
         }
-
-        //if (faction.Comp.CurrentTasks.Count() == faction.Comp.MaxAmountOfTasks)
-        //{
-        //    return;
-        //}
-
+        _s.Debug("0");
+        if (faction.Comp.CurrentTasks.Count() == faction.Comp.MaxAmountOfTasks)
+        {
+            return;
+        }
+        _s.Debug("1");
         _prototypeManager.TryIndex(faction.Comp.AvailableTasks, out var proto);
         if (proto == null)
         {
             return;
         }
-
+        _s.Debug("2");
         var protoFiltered = FilterAvailableTasks(proto, faction);
         //Если доступных заданий не окажется, то мы просто попробуем в следующий раз
         if (protoFiltered.Weights.Count != 0)
@@ -290,6 +282,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             var ev = new SWTaskAddAdditionalDescEvent();
             RaiseLocalEvent(task, ref ev);
             comp.Description += ev.Description;
+            _s.Debug("3");
         }
     }
 

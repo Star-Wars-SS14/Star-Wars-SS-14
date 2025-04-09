@@ -1,7 +1,8 @@
 - type: entity
   parent: BaseComputer
-  id: SWTaskConsole
+  id: SWTaskConsoleEmpire
   name: Консоль заданий
+  suffix: Империя
   components:
   - type: ActivatableUI
     key: enum.TaskConsoleUiKey.Key
@@ -21,3 +22,39 @@
       state: generic_keys
   - type: TaskConsole
     faction: EmpireFaction
+
+- type: entity
+  parent: SWTaskConsoleEmpire
+  id: SWTaskConsoleRepublic
+  name: Консоль заданий
+  suffix: Республика
+  components:
+  - type: TaskConsole
+    faction: RepublicFaction
+
+- type: entity
+  parent: SWTaskConsoleEmpire
+  id: SWTaskConsoleBlackSun
+  name: Консоль заданий
+  suffix: Черное солнце
+  components:
+  - type: TaskConsole
+    faction: BlackSunFaction
+
+- type: entity
+  parent: SWTaskConsoleEmpire
+  id: SWTaskConsoleExchange
+  name: Консоль заданий
+  suffix: Обмен
+  components:
+  - type: TaskConsole
+    faction: ExchangeFaction
+
+- type: entity
+  parent: SWTaskConsoleEmpire
+  id: SWTaskConsoleMandalorian
+  name: Консоль заданий
+  suffix: Мандалорцы
+  components:
+  - type: TaskConsole
+    faction: MandalorianFaction

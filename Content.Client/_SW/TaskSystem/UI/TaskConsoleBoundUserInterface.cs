@@ -45,13 +45,7 @@ public sealed partial class TaskConsoleBoundUserInterface : BoundUserInterface
         switch (state)
         {
             case TaskConsoleBounderUserInterfaceState msg:
-
-                //if (_menu != null)
-                //    _menu.Recipes = msg.Recipes;
                 _menu?.PopulateTasks(msg.Tasklist);
-                //_menu?.UpdateCategories();
-                //_menu?.PopulateQueueList(msg.Queue);
-                //_menu?.SetQueueInfo(msg.CurrentlyProducing);
                 break;
         }
     }

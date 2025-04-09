@@ -16,3 +16,8 @@
   - RepublicHavok
   - RepublicBase
   - RepublicMedic
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: SWFactionMember
+        faction: RepublicFaction

@@ -11,7 +11,9 @@
       sound:
         path: /Audio/Misc/siren.ogg
         params:
-          volume: -4
+          volume: -4 
+    - type: AccessReader
+      access: [[ "EmpireCommander" ]]
 
 - type: entity
   parent: BaseComputer
@@ -42,4 +44,3 @@
       state: generic_keys
   - type: AccessReader
     access: [[ "EmpireMoff" ]]
-

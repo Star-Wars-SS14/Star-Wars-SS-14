@@ -20,5 +20,5 @@ public sealed partial class SWKillRandomByNameComponent : Component
 
     public EntityUid? PersonToKill = null;
 
-    public string? JobOfTarget = null;
+    public string? JobOfTarget = null;   
 }

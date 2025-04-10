@@ -47,6 +47,7 @@
     description: В последнее время выскочки из Черного Солнца ведут себя все более нагло. Поставьте их на место. Убейте кого-нибудь из них. Чем выше должность, тем лучше.
   - type: SWKillRandomByJob
     factions: [BlackSunFaction]
+    killAny: true
     jobsToScores:
       SWBlackSunMercenary: 4
       SWBlackSun: 6
@@ -60,6 +61,7 @@
     description: Обменовцы совсем распоясались. Убейте кого-нибудь из них. Чем выше должность, тем лучше.
   - type: SWKillRandomByJob
     factions: [ExchangeFaction]
+    killAny: true
     jobsToScores:
       SWExchangeCaptain: 6
       SWExchangeOperative: 4
@@ -73,6 +75,7 @@
     description: Эти высокомерные засранцы мандалорцы ведут себя так, как будто они лучше нас! Завалите кого-нибудь из них, желательно кого-нибудь крутого.
   - type: SWKillRandomByJob
     factions: [MandalorianFaction]
+    killAny: true
     jobsToScores:
       SWMandalorianLeader: 8
       SWMandalorianVeteran: 6

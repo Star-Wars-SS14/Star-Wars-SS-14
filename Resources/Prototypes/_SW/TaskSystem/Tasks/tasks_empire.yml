@@ -16,7 +16,6 @@
   - type: SWKillRandomByJob
     factions: [RepublicFaction]
     jobsToScores:
-      SWRepublicGeneral : 15
       SWRepublicCaptain : 10
       SWRepublicLieutenant : 10
 

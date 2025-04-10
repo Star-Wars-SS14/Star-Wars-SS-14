@@ -16,10 +16,8 @@
   - type: SWKillRandomByJob
     factions: [EmpireFaction]
     jobsToScores:
-      SWEmpireMoff : 15
       SWEmpireMajor : 10
       SWEmpireLieutenant : 8
-      SWEmpireMedic : 5
       SWEmpireIntelligenceCaretaker: 10
       SWEmpireIntelligenceAgent: 7     
 
@@ -60,4 +58,4 @@
     score: 7
   - type: CollectObjectTask
     objects:
-      [SW_IDCardEmpireMoff, SW_IDCardEmpireMajor, SW_IDCardEmpireLieutenant, SW_IDCardEmpireSoldier, SW_IDCardEmpireMedic] : 3
+      [SW_IDCardSobrikCaptain, SW_IDCardSobrikOfficer, SW_IDCardSobrikMedic, SW_IDCardEmpireMoff, SW_IDCardEmpireMajor, SW_IDCardEmpireLieutenant, SW_IDCardEmpireSoldier, SW_IDCardEmpireMedic] : 3

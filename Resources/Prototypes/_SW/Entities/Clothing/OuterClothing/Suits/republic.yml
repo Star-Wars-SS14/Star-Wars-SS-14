@@ -1,4 +1,4 @@
-﻿- type: entity
+- type: entity
   parent: [ClothingOuterBase, AllowSuitStorageClothing]
   id: SW_RepublicSuit
   name: republic suit
@@ -53,3 +53,12 @@
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Republic/GEN_republic.rsi
 
+- type: entity
+  parent: SW_RepublicSuit
+  id: SW_MedicRepublicSuit
+  name: Medic republic suit
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Republic/MED_republic.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Republic/MED_republic.rsi

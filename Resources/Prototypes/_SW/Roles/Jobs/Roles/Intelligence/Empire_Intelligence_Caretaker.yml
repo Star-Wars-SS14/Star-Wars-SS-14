@@ -15,6 +15,7 @@
   - EmpireIntelligence  
   - EmpireBase
   - EmpireIntelligenceCareTaker
+  - EmpireCommander
   special:
   - !type:AddComponentSpecial
     components:

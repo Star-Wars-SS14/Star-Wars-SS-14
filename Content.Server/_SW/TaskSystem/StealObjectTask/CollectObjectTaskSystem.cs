@@ -3,7 +3,6 @@ using Content.Server._SW.TransferSystem;
 using Content.Shared._SW.TaskSystem;
 using Content.Shared.Destructible;
 using Content.Shared.FixedPoint;
-using JetBrains.FormatRipper.Elf;
 using Robust.Shared.Prototypes;
 using System;
 using System.Collections.Generic;

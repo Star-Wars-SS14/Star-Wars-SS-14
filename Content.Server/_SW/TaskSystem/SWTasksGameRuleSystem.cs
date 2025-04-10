@@ -251,24 +251,19 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     }
     public void AddRandomTask(Entity<SWFactionComponent> faction, string factionId)
     {
-        ISawmill _s = Logger.GetSawmill("add");
-        _s.Debug(faction.Comp.Name);
         if (faction.Comp.AvailableTasks == null)
         {
             return;
         }
-        _s.Debug("0");
         if (faction.Comp.CurrentTasks.Count() == faction.Comp.MaxAmountOfTasks)
         {
             return;
         }
-        _s.Debug("1");
         _prototypeManager.TryIndex(faction.Comp.AvailableTasks, out var proto);
         if (proto == null)
         {
             return;
         }
-        _s.Debug("2");
         var protoFiltered = FilterAvailableTasks(proto, faction);
         //Если доступных заданий не окажется, то мы просто попробуем в следующий раз
         if (protoFiltered.Weights.Count != 0)
@@ -282,7 +277,6 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             var ev = new SWTaskAddAdditionalDescEvent();
             RaiseLocalEvent(task, ref ev);
             comp.Description += ev.Description;
-            _s.Debug("3");
         }
     }
 

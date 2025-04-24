@@ -1,7 +1,7 @@
 - type: entity
   name: Мензурка кольто
   parent: BaseBeaker
-  id: koltoBeaker
+  id: SWkoltoBeaker
   components:
   - type: Spillable
     solution: beaker
@@ -46,9 +46,9 @@
 
 - type: entity
   name: Мензурка кольто
-  parent: koltoBeaker
+  parent: SWkoltoBeaker
   suffix: ПОЛНАЯ
-  id: koltoBeakerFull
+  id: SWkoltoBeakerFull
   components:
   - type: SolutionContainerManager
     solutions:
@@ -62,7 +62,7 @@
   name: Мензурка бакты
   parent: BaseBeaker
   description: Used to contain a moderate amount of chemicals and solutions.
-  id: bactaBeaker
+  id: SWbactaBeaker
   components:
   - type: Spillable
     solution: beaker
@@ -107,9 +107,9 @@
 
 - type: entity
   name: Мензурка бакты
-  parent: bactaBeaker
+  parent: SWbactaBeaker
   suffix: ПОЛНАЯ
-  id: bactaBeakerFull
+  id: SWbactaBeakerFull
   components:
   - type: SolutionContainerManager
     solutions:

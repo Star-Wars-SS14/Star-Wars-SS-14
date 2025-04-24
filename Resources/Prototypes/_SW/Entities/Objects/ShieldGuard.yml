@@ -1,5 +1,5 @@
 - type: entity
-  id: ShieldGuard
+  id: SWShieldGuard
   parent: TableGlass
   name: "Shield Guard"
   components:

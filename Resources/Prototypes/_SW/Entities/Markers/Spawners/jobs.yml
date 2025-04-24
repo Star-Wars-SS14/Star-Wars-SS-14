@@ -1,6 +1,6 @@
 ###Sobrik
 - type: entity
-  id: SW_SpawnPointSobrikCaptain
+  id: SWSpawnPointSobrikCaptain
   parent: SpawnPointJobBase
   name: Sobrik Captain
   components:
@@ -12,7 +12,7 @@
     - state: SW_stormtrooper
 
 - type: entity
-  id: SW_SpawnPointSobrikOfficer
+  id: SWSpawnPointSobrikOfficer
   parent: SpawnPointJobBase
   name: Sobrik Officer
   components:
@@ -24,7 +24,7 @@
     - state: SW_stormtrooper
 
 - type: entity
-  id: SW_SpawnPointSobrikMedic
+  id: SWSpawnPointSobrikMedic
   parent: SpawnPointJobBase
   name: Sobrik Medic
   components:
@@ -37,7 +37,7 @@
 
 ###Empire
 - type: entity
-  id: SW_SpawnPointEmpireMoff
+  id: SWSpawnPointEmpireMoff
   parent: SpawnPointJobBase
   name: Empire Moff
   components:
@@ -48,7 +48,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointEmpireMajor
+  id: SWSpawnPointEmpireMajor
   parent: SpawnPointJobBase
   name: Empire Major
   components:
@@ -59,7 +59,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointEmpireLieutenant
+  id: SWSpawnPointEmpireLieutenant
   parent: SpawnPointJobBase
   name: Empire Lieutenant
   components:
@@ -70,7 +70,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointEmpireSoldier
+  id: SWSpawnPointEmpireSoldier
   parent: SpawnPointJobBase
   name: Empire Soldier
   components:
@@ -81,7 +81,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointEmpireMedic
+  id: SWSpawnPointEmpireMedic
   parent: SpawnPointJobBase
   name: Empire Medic
   components:
@@ -93,7 +93,7 @@
 
 ###Mandalorians
 - type: entity
-  id: SW_SpawnPointMandalorianLeader
+  id: SWSpawnPointMandalorianLeader
   parent: SpawnPointJobBase
   name: Mandalorian Leader
   components:
@@ -104,7 +104,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointMandalorianVeteran
+  id: SWSpawnPointMandalorianVeteran
   parent: SpawnPointJobBase
   name: Mandalorian Veteran
   components:
@@ -115,7 +115,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointMandalorianWarrior
+  id: SWSpawnPointMandalorianWarrior
   parent: SpawnPointJobBase
   name: Mandalorian Warrior
   components:
@@ -126,7 +126,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointMandalorianRecruit
+  id: SWSpawnPointMandalorianRecruit
   parent: SpawnPointJobBase
   name: Mandalorian Recruit
   components:
@@ -138,7 +138,7 @@
 
 ###Republic
 - type: entity
-  id: SW_SpawnPointRepublicGeneral
+  id: SWSpawnPointRepublicGeneral
   parent: SpawnPointJobBase
   name: Republic General
   components:
@@ -149,7 +149,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicCaptain
+  id: SWSpawnPointRepublicCaptain
   parent: SpawnPointJobBase
   name: Republic Captain
   components:
@@ -160,7 +160,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicLieutenant
+  id: SWSpawnPointRepublicLieutenant
   parent: SpawnPointJobBase
   name: Republic Lieutenant
   components:
@@ -171,7 +171,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicSoldiers
+  id: SWSpawnPointRepublicSoldiers
   parent: SpawnPointJobBase
   name: Republic Soldier
   components:
@@ -182,7 +182,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicMedic
+  id: SWSpawnPointRepublicMedic
   parent: SpawnPointJobBase
   name: Republic Medic
   components:
@@ -193,7 +193,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicRecruit
+  id: SWSpawnPointRepublicRecruit
   parent: SpawnPointJobBase
   name: Republic Recruit
   components:
@@ -205,7 +205,7 @@
 
 ###Balmorran resistance
 - type: entity
-  id: SW_SpawnPointBalmorranLeader
+  id: SWSpawnPointBalmorranLeader
   parent: SpawnPointJobBase
   name: Balmorran Leader
   components:
@@ -216,7 +216,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointBalmorranOfficer
+  id: SWSpawnPointBalmorranOfficer
   parent: SpawnPointJobBase
   name: Balmorran Officer
   components:
@@ -227,7 +227,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointBalmorranMedic
+  id: SWSpawnPointBalmorranMedic
   parent: SpawnPointJobBase
   name: Balmorran Medic
   components:
@@ -238,7 +238,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointBalmorranSoldier
+  id: SWSpawnPointBalmorranSoldier
   parent: SpawnPointJobBase
   name: Balmorran Soldier
   components:
@@ -249,7 +249,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointBalmorranRecruit
+  id: SWSpawnPointBalmorranRecruit
   parent: SpawnPointJobBase
   name: Balmorran Recruit
   components:
@@ -261,7 +261,7 @@
 
 ###Imperial Intelligence
 - type: entity
-  id: SW_SpawnPointEmpireIntelligenceCaretaker
+  id: SWSpawnPointEmpireIntelligenceCaretaker
   parent: SpawnPointJobBase
   name: Empire Intelligence Caretaker
   components:
@@ -272,7 +272,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointEmpireIntelligenceAgent
+  id: SWSpawnPointEmpireIntelligenceAgent
   parent: SpawnPointJobBase
   name: Empire Intelligence Agent
   components:
@@ -284,7 +284,7 @@
 
 ###Commander elite Republic
 - type: entity
-  id: SW_SpawnPointRepublicCommanderCommander
+  id: SWSpawnPointRepublicCommanderCommander
   parent: SpawnPointJobBase
   name: Republic Commander Commander
   components:
@@ -295,7 +295,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicCommanderLieutenant
+  id: SWSpawnPointRepublicCommanderLieutenant
   parent: SpawnPointJobBase
   name: Republic Commander Lieutenant
   components:
@@ -306,7 +306,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicCommanderMedic
+  id: SWSpawnPointRepublicCommanderMedic
   parent: SpawnPointJobBase
   name: Republic Commander Medic
   components:
@@ -317,7 +317,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicCommanderStormtrooper
+  id: SWSpawnPointRepublicCommanderStormtrooper
   parent: SpawnPointJobBase
   name: Republic Commander Stormtrooper
   components:
@@ -328,7 +328,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicCommanderSniper
+  id: SWSpawnPointRepublicCommanderSniper
   parent: SpawnPointJobBase
   name: Republic Commander Sniper
   components:
@@ -340,7 +340,7 @@
 
 ###Black Sun
 - type: entity
-  id: SW_SpawnPointBlackSun
+  id: SWSpawnPointBlackSun
   parent: SpawnPointJobBase
   name: Black Sun
   components:
@@ -351,7 +351,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointBlackSunMercenary
+  id: SWSpawnPointBlackSunMercenary
   parent: SpawnPointJobBase
   name: Black Sun Mercenary
   components:
@@ -363,7 +363,7 @@
 
 ###Exchange
 - type: entity
-  id: SW_SpawnPointExchangeCaptain
+  id: SWSpawnPointExchangeCaptain
   parent: SpawnPointJobBase
   name: Exchange Captain
   components:
@@ -374,7 +374,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointExchangeOperative
+  id: SWSpawnPointExchangeOperative
   parent: SpawnPointJobBase
   name: Exchange Operative
   components:
@@ -385,7 +385,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointCivialian
+  id: SWSpawnPointCivialian
   parent: SpawnPointJobBase
   name: Civilian (Житель)
   components:

@@ -1,6 +1,6 @@
 - type: entity
   parent: [ClothingOuterBase, AllowSuitStorageClothing]
-  id: SW_ImperialIntelligenceSuit
+  id: SWImperialIntelligenceSuit
   name: imperial intelligence suit
   components:
   - type: Sprite

@@ -1,6 +1,6 @@
-﻿- type: entity
+- type: entity
   parent: [ClothingOuterBase, AllowSuitStorageClothing]
-  id: SW_RepublicSuit
+  id: SWRepublicSuit
   name: republic suit
   components:
   - type: Sprite
@@ -24,8 +24,8 @@
   - type: HeldSpeedModifier
 
 - type: entity
-  parent: SW_RepublicSuit
-  id: SW_LieutenantRepublicSuit
+  parent: SWRepublicSuit
+  id: SWLieutenantRepublicSuit
   name: Republic suit lieutenant
   components:
   - type: Sprite
@@ -34,8 +34,8 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Republic/LT_republic.rsi
 
 - type: entity
-  parent: SW_RepublicSuit
-  id: SW_CaptainRepublicSuit
+  parent: SWRepublicSuit
+  id: SWCaptainRepublicSuit
   name: Republic suit captain
   components:
   - type: Sprite
@@ -44,8 +44,8 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Republic/CAP_republic.rsi
 
 - type: entity
-  parent: SW_RepublicSuit
-  id: SW_GeneralRepublicSuit
+  parent: SWRepublicSuit
+  id: SWGeneralRepublicSuit
   name: Republic suit general
   components:
   - type: Sprite

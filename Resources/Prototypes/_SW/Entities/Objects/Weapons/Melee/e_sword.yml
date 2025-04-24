@@ -1,7 +1,7 @@
-﻿- type: entity
+- type: entity
   name: saber
   parent: EnergySword
-  id: Lightsaber
+  id: SWLightsaber
   description: A very loud & dangerous sword with a beam made of pure, concentrated plasma. Cuts through unarmored targets like butter.
   components:
   - type: ItemToggle
@@ -41,7 +41,7 @@
 - type: entity
   name: double-bladed energy sword
   parent: EnergySwordDouble
-  id: LightsaberDouble
+  id: SWLightsaberDouble
   description: Syndicate Command Interns thought that having one blade on the energy sword was not enough. This can be stored in pockets.
   components:
   - type: ItemToggle

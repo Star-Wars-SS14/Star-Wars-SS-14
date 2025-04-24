@@ -1,5 +1,5 @@
 - type: entity
-  id: BaseCartridgeBlaster
+  id: SWSWBaseCartridge
   name: blast
   parent: BaseCartridge
   abstract: true
@@ -22,7 +22,7 @@
 - type: entity
   id: RedCartridgeBlast
   name: cartridge (Blast)
-  parent: BaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: RedBulletBlast
@@ -32,9 +32,9 @@
       map: [ "enum.AmmoVisualLayers.Base" ]
 
 - type: entity
-  id: Z1RedCartridgeBlast
+  id: SWZ1RedCartridgeBlast
   name: cartridge (Blast)
-  parent: BaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: Z1RedBulletBlast
@@ -44,9 +44,9 @@
       map: [ "enum.AmmoVisualLayers.Base" ]
 
 - type: entity
-  id: GreenCartridgeBlast
+  id: SWGreenCartridgeBlast
   name: green cartridge (Blast)
-  parent: BaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: GreenBulletBlast
@@ -56,9 +56,9 @@
       map: [ "enum.AmmoVisualLayers.Base" ]
 
 - type: entity
-  id: H206GreenCartridgeBlast
+  id: SWH206GreenCartridgeBlast
   name: green cartridge (Blast)
-  parent: BaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: H206GreenBulletBlast
@@ -69,9 +69,9 @@
 
 
 - type: entity
-  id: BlueCartridgeBlast
+  id: SWBlueCartridgeBlast
   name: blue cartridge (Blast)
-  parent: BaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: BlueBulletBlast
@@ -81,9 +81,9 @@
       map: [ "enum.AmmoVisualLayers.Base" ]
 
 - type: entity
-  id: CannonBlueCartridgeBlast
+  id: SWCannonBlueCartridgeBlast
   name: blue cartridge (Blast)
-  parent: BaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: CannonBlueBulletBlast
@@ -93,9 +93,9 @@
       map: [ "enum.AmmoVisualLayers.Base" ]
 
 - type: entity
-  id: SniperRifleBlueCartridgeBlast
+  id: SWSniperRifleBlueCartridgeBlast
   name: blue cartridge (Blast)
-  parent: BaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: SniperRifleBlueBulletBlast
@@ -105,9 +105,9 @@
       map: [ "enum.AmmoVisualLayers.Base" ]
 
 - type: entity
-  id: YellowCartridgeBlast
+  id: SWYellowCartridgeBlast
   name: yellow cartridge (Blast)
-  parent: BaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: YellowBulletBlast
@@ -117,9 +117,9 @@
       map: [ "enum.AmmoVisualLayers.Base" ]
 
 - type: entity
-  id: CannonYellowCartridgeBlast
+  id: SWCannonYellowCartridgeBlast
   name: yellow cartridge (Blast)
-  parent: BaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: CannonYellowBulletBlast
@@ -129,9 +129,9 @@
       map: [ "enum.AmmoVisualLayers.Base" ]
 
 - type: entity
-  id: SniperRifleYellowCartridgeBlast
+  id: SWSniperRifleYellowCartridgeBlast
   name: yellow cartridge (Blast)
-  parent: BaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: SniperRifleYellowBulletBlast

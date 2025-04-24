@@ -1,6 +1,6 @@
 - type: entity
   parent: BaseItem
-  id: ReinforcementsCard
+  id: SWReinforcementsCard
   name: карта активации (подкрепление)
   description: Приложите это к консоли.
   components:
@@ -14,8 +14,8 @@
     size: Tiny
 
 - type: entity
-  parent: ReinforcementsCard
-  id: EmpireReinforcementsCard
+  parent: SWReinforcementsCard
+  id: SWEmpireReinforcementsCard
   name: карта активации империи (подкрепление)
   description: Приложите это к консоли.
   components:

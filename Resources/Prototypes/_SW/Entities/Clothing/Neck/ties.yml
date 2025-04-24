@@ -1,6 +1,6 @@
 - type: entity
   parent: ClothingNeckBase
-  id: ClothingNeckHavok
+  id: SWClothingNeckHavok
   name: havok neck
   components:
   - type: Sprite

@@ -1,8 +1,9 @@
-﻿using System.Linq;
+using System.Linq;
 using Content.Server.Chat.Systems;
 using Content.Server.Echo.GameTicking.Rules.Components;
 using Content.Server.Station.Systems;
 using Content.Server.Xenoarchaeology.XenoArtifacts;
+using Content.Shared.Access.Systems;
 using Content.Shared.Audio;
 using Content.Shared.Echo.CaptureConsole;
 using Content.Shared.Echo.GameTicking.Components;
@@ -24,6 +25,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
+    [Dependency] private readonly AccessReaderSystem _accessReader = default!;
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -168,6 +170,10 @@ public sealed class CaptureConsoleSystem : EntitySystem
 
         SectorFractions? fraction;
 
+        var accesses = _accessReader.FindAccessTags(args.Actor);
+
+        if (accesse)
+
         if (HasComp<AllianceStaffComponent>(args.Actor))
         {
             fraction = SectorFractions.Alliance;
@@ -189,30 +195,29 @@ public sealed class CaptureConsoleSystem : EntitySystem
                 null,
                 false,
                 colorOverride: Color.Yellow);
-            goto x;
         }
-
-        component.Capturing = true;
-        component.CapturingFraction = fraction.Value;
-
-        component.StartTime = _timing.CurTime;
-        _chat.DispatchGlobalAnnouncement(
-            Loc.GetString("station-capture-start-announcement", ("name", name ?? "Unknown")),
-            null,
-            false,
-            colorOverride: Color.Yellow);
-        var query = EntityQueryEnumerator<SectorWarRuleComponent>();
-        while (query.MoveNext(out var rule))
+        else
         {
-            var captureSound = rule.CaptureSound;
+            component.Capturing = true;
+            component.CapturingFraction = fraction.Value;
 
-            if (rule.CurrentAudio == null || Deleted(rule.CurrentAudio.Value.Entity))
+            component.StartTime = _timing.CurTime;
+            _chat.DispatchGlobalAnnouncement(
+                Loc.GetString("station-capture-start-announcement", ("name", name ?? "Unknown")),
+                null,
+                false,
+                colorOverride: Color.Yellow);
+            var query = EntityQueryEnumerator<SectorWarRuleComponent>();
+            while (query.MoveNext(out var rule))
             {
-                rule.CurrentAudio = _audio.PlayGlobal(captureSound, Filter.Broadcast(), true);
+                var captureSound = rule.CaptureSound;
+
+                if (rule.CurrentAudio == null || Deleted(rule.CurrentAudio.Value.Entity))
+                {
+                    rule.CurrentAudio = _audio.PlayGlobal(captureSound, Filter.Broadcast(), true);
+                }
             }
         }
-
-        x:
 
         UpdateUserInterface(uid);
     }

@@ -1,0 +1,41 @@
+- type: entity
+  id: SWCargoPalletEmpire
+  parent: CargoPallet
+  name: грузовой поддон для взаимодействия с командованием
+  description: Используется для выполнения заданий. Положите предмет для отправки его командованию
+  suffx: Империя
+  components:
+  - type: SWTransferPallet
+    ownerFaction: EmpireFaction
+
+- type: entity
+  id: SWCargoPalletRepublic
+  parent: SWCargoPalletEmpire
+  suffx: Республика
+  components:
+  - type: SWTransferPallet
+    ownerFaction: RepublicFaction
+
+- type: entity
+  id: SWCargoPalletExchange
+  parent: SWCargoPalletEmpire
+  suffx: Обмен
+  components:
+  - type: SWTransferPallet
+    ownerFaction: ExchangeFaction
+
+- type: entity
+  id: SWCargoPalletBlackSun
+  parent: SWCargoPalletEmpire
+  suffx: Черное солнце
+  components:
+  - type: SWTransferPallet
+    ownerFaction: BlackSunFaction
+
+- type: entity
+  id: SWCargoPalletMandalorian
+  parent: SWCargoPalletEmpire
+  suffx: Мандалорцы
+  components:
+  - type: SWTransferPallet
+    ownerFaction: MandalorianFaction

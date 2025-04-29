@@ -1,0 +1,21 @@
+- type: entity
+  parent: BaseGameRule
+  id: TaskGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWTaskGamerule
+  - type: SWFactionGamerule
+    factionsPrototypes:
+    - RepublicFaction
+    - EmpireFaction
+    - MandalorianFaction
+    - BlackSunFaction
+    - ExchangeFaction
+
+- type: gamePreset
+  id: SWMainPreset
+  name: Обычный день
+  description: Обычный день. Выполняйте регулярные задания от своего командования.
+  rules:
+    - TaskGamerule

@@ -20,3 +20,8 @@
   - EmpireIntelligenceCareTaker
   - EmpireIntelligence
   - EmpireSobrik
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: SWFactionMember
+        faction: EmpireFaction

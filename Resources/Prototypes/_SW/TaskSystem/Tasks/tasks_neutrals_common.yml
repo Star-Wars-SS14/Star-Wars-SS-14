@@ -1,0 +1,83 @@
+- type: entity
+  id: SmallHeadHunter
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Малая охота за головами
+    description: Нам поступил заказ на убийство. Какой-то военный небольшого ранга, так что сложностей возникнуть не должно. Сделайте все чисто, нам ни к чему лишние проблемы.
+  - type: SWKillRandomByName
+    factions: [RepublicFaction, EmpireFaction]
+    jobsToScores:
+      SWEmpireSoldier: 3
+      SWEmpireMedic: 3
+      SWSobrikOfficer: 3
+      SWSobrikMedic: 3
+      SWRepublicSoldier: 3
+      SWRepublicRecruit: 3
+      SWRepublicMedic: 3
+
+- type: entity
+  id: BigHeadHunter
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Крупная охота за головами
+    description: Нам поступил особй заказ на ликвидацию высокопоставленного офицера. Его устранение принесет нам не только деньги, но и славу.
+  - type: SWKillRandomByName
+    factions: [RepublicFaction, EmpireFaction]
+    jobsToScores:
+      SWEmpireMajor: 10
+      SWEmpireLieutenant: 8
+      SWRepublicCaptain: 10
+      SWRepublicLieutenant: 8
+      SWRepublicCommanderCommander: 12
+      SWRepublicCommanderLieutenant: 7
+      SWRepublicCommanderMedic: 7
+      SWRepublicCommanderStormtrooper: 7
+      SWRepublicCommanderSniper: 7
+      SWEmpireIntelligenceCaretaker: 12
+      SWEmpireIntelligenceAgent: 8
+
+- type: entity
+  id: KillConcurentBlackSun
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Борьба с конкруентами
+    description: В последнее время выскочки из Черного Солнца ведут себя все более нагло. Поставьте их на место. Убейте кого-нибудь из них. Чем выше должность, тем лучше.
+  - type: SWKillRandomByJob
+    factions: [BlackSunFaction]
+    killAny: true
+    jobsToScores:
+      SWBlackSunMercenary: 4
+      SWBlackSun: 6
+
+- type: entity
+  id: KillConcurenExchange
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Борьба с конкруентами
+    description: Обменовцы совсем распоясались. Убейте кого-нибудь из них. Чем выше должность, тем лучше.
+  - type: SWKillRandomByJob
+    factions: [ExchangeFaction]
+    killAny: true
+    jobsToScores:
+      SWExchangeCaptain: 6
+      SWExchangeOperative: 4
+
+- type: entity
+  id: KillConcurenMandalorian
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Борьба с конкурентами
+    description: Эти высокомерные засранцы мандалорцы ведут себя так, как будто они лучше нас! Завалите кого-нибудь из них, желательно кого-нибудь крутого.
+  - type: SWKillRandomByJob
+    factions: [MandalorianFaction]
+    killAny: true
+    jobsToScores:
+      SWMandalorianLeader: 8
+      SWMandalorianVeteran: 6
+      SWMandalorianWarrior: 4
+      SWMandalorianRecruit: 3

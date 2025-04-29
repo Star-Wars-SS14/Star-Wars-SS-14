@@ -1,0 +1,9 @@
+- type: weightedRandom
+  id: MandalorianTasksSet
+  weights:
+    SmallHeadHunter: 4
+    BigHeadHunter: 1
+    KillConcurentBlackSun: 3
+    KillConcurenExchange: 3
+
+

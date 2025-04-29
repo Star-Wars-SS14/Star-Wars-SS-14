@@ -16,4 +16,9 @@
   - RepublicCommander
   - RepublicArsenal
   - RepublicGeneral
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: SWFactionMember
+        faction: RepublicFaction
 

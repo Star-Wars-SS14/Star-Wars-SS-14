@@ -17,7 +17,7 @@
       pen:
         maxVol: 15
         reagents:
-        - ReagentId: Kolto
+        - ReagentId: SWKolto
           Quantity: 15
   - type: SolutionContainerVisuals
     maxFillLevels: 1
@@ -44,7 +44,7 @@
       pen:
         maxVol: 10
         reagents:
-        - ReagentId: Bacta
+        - ReagentId: SWBacta
           Quantity: 10
   - type: SolutionContainerVisuals
     maxFillLevels: 1

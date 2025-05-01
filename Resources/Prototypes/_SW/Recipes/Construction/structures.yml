@@ -1,6 +1,6 @@
 - type: construction
   name: Airlock
-  id: SW_Airlock
+  id: SWAirlock
   graph: Airlock
   startNode: start
   targetNode: airlock

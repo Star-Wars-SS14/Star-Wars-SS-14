@@ -55,7 +55,7 @@
       beaker:
         maxVol: 30
         reagents:
-        - ReagentId: Kolto
+        - ReagentId: SWKolto
           Quantity: 30
 
 - type: entity
@@ -116,6 +116,6 @@
       beaker:
         maxVol: 30
         reagents:
-        - ReagentId: Bacta
+        - ReagentId: SWBacta
           Quantity: 30
 

@@ -1,58 +1,58 @@
 - type: entity
   abstract: true
-  id: EmpireGarnisonRadioHelmet
+  id: SWEmpireGarnisonRadioHelmet
   components:
   - type: StarHelmet
     channels:
-    - EmpireGarnison
+    - SWEmpireGarnison
 
 - type: entity
   abstract: true
-  id: EmpireRegularRadioHelmet
+  id: SWEmpireRegularRadioHelmet
   components:
   - type: StarHelmet
     channels:
-    - EmpireRegular
+    - SWEmpireRegular
 
 - type: entity
   abstract: true
-  id: EmpireSobrikRadioHelmet
+  id: SWEmpireSobrikRadioHelmet
   components:
   - type: StarHelmet
     channels:
+    - SWEmpireSobrik
+
+- type: entity
+  abstract: true
+  id: SWEmpireAllRadioHelmet
+  components:
+  - type: StarHelmet
+    channels:
+    - SWEmpireGarnison
+    - SWEmpireRegular
     - EmpireSobrik
 
 - type: entity
   abstract: true
-  id: EmpireAllRadioHelmet
+  id: SWRepublicRadioHelmet
   components:
   - type: StarHelmet
     channels:
-    - EmpireGarnison
-    - EmpireRegular
-    - EmpireSobrik
+    - SWRepublic
 
 - type: entity
   abstract: true
-  id: RepublicRadioHelmet
+  id: SWRepublicHavokRadioHelmet
   components:
   - type: StarHelmet
     channels:
-    - Republic
+    - SWRepublic
+    - SWRepublicHavok
 
 - type: entity
   abstract: true
-  id: RepublicHavokRadioHelmet
+  id: SWMandalorianRadioHelmet
   components:
   - type: StarHelmet
     channels:
-    - Republic
-    - RepublicHavok
-
-- type: entity
-  abstract: true
-  id: MandalorianRadioHelmet
-  components:
-  - type: StarHelmet
-    channels:
-    - Mandalorian
+    - SWMandalorian

@@ -1,5 +1,5 @@
 - type: entity
-  id: SW_AirlockGlass
+  id: SWAirlockGlass
   parent: Airlock
   name: Glass airlock
   components:

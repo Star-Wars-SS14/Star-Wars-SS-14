@@ -1,6 +1,6 @@
 - type: entity
   parent: AccessConfiguratorUniversal
-  id: AccessConfiguratorUniversalSW
+  id: SWAccessConfiguratorUniversal
   name: SW универсальный конфигуратор доступа 
   suffix: DEBUG
   components:

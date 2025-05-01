@@ -1,6 +1,6 @@
 # Random humanoid
 - type: randomHumanoidSettings
-  id: EventHumanoidReinforcement
+  id: SWEventHumanoidReinforcement
   components:
     - type: RandomHumanoidAppearance
       randomizeName: false
@@ -10,7 +10,7 @@
 # Lieutenant
 - type: entity
   parent: BaseMobHuman
-  id: RandomHumanoidSpawnerEmpireLieutenant
+  id: SWRandomHumanoidSpawnerEmpireLieutenant
   name: Empire Lieutenant
   suffix: GhostRole
   components:
@@ -18,8 +18,8 @@
       settings: EmpireLieutenant
 
 - type: randomHumanoidSettings
-  id: EmpireLieutenant
-  parent: EventHumanoidReinforcement
+  id: SWEmpireLieutenant
+  parent: SWEventHumanoidReinforcement
   randomizeName: false
   components:
     - type: GhostRole
@@ -42,7 +42,7 @@
 # Soldier
 - type: entity
   parent: BaseMobHuman
-  id: RandomHumanoidSpawnerEmpireSoldier
+  id: SWRandomHumanoidSpawnerEmpireSoldier
   name: Empire Soldier
   suffix: GhostRole
   components:
@@ -50,8 +50,8 @@
       settings: EmpireSoldier
 
 - type: randomHumanoidSettings
-  id: EmpireSoldier
-  parent: EventHumanoidReinforcement
+  id: SWEmpireSoldier
+  parent: SWEventHumanoidReinforcement
   randomizeName: false
   components:
     - type: GhostRole
@@ -74,7 +74,7 @@
 # Medic
 - type: entity
   parent: BaseMobHuman
-  id: RandomHumanoidSpawnerEmpireMedic
+  id: SWRandomHumanoidSpawnerEmpireMedic
   name: Empire Medic
   suffix: GhostRole
   components:
@@ -82,8 +82,8 @@
       settings: EmpireMedic
 
 - type: randomHumanoidSettings
-  id: EmpireMedic
-  parent: EventHumanoidReinforcement
+  id: SWEmpireMedic
+  parent: SWEventHumanoidReinforcement
   randomizeName: false
   components:
     - type: GhostRole
@@ -107,7 +107,7 @@
 # Lieutenant
 - type: entity
   parent: BaseMobHuman
-  id: RandomHumanoidSpawnerRepublicLieutenant
+  id: SWRandomHumanoidSpawnerRepublicLieutenant
   name: Republic Lieutenant
   suffix: GhostRole
   components:
@@ -115,8 +115,8 @@
       settings: RepublicLieutenant
 
 - type: randomHumanoidSettings
-  id: RepublicLieutenant
-  parent: EventHumanoidReinforcement
+  id: SWRepublicLieutenant
+  parent: SWEventHumanoidReinforcement
   randomizeName: false
   components:
     - type: GhostRole
@@ -139,7 +139,7 @@
 # Soldier
 - type: entity
   parent: BaseMobHuman
-  id: RandomHumanoidSpawnerRepublicSoldier
+  id: SWRandomHumanoidSpawnerRepublicSoldier
   name: Republic Soldier
   suffix: GhostRole
   components:
@@ -147,8 +147,8 @@
       settings: RepublicSoldier
 
 - type: randomHumanoidSettings
-  id: RepublicSoldier
-  parent: EventHumanoidReinforcement
+  id: SWRepublicSoldier
+  parent: SWEventHumanoidReinforcement
   randomizeName: false
   components:
     - type: GhostRole
@@ -171,7 +171,7 @@
 # Medic
 - type: entity
   parent: BaseMobHuman
-  id: RandomHumanoidSpawnerRepublicMedic
+  id: SWRandomHumanoidSpawnerRepublicMedic
   name: Republic Medic
   suffix: GhostRole
   components:
@@ -179,8 +179,8 @@
       settings: RepublicMedic
 
 - type: randomHumanoidSettings
-  id: RepublicMedic
-  parent: EventHumanoidReinforcement
+  id: SWRepublicMedic
+  parent: SWEventHumanoidReinforcement
   randomizeName: false
   components:
     - type: GhostRole

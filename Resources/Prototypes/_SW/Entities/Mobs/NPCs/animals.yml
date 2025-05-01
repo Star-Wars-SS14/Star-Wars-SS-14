@@ -1,7 +1,7 @@
 - type: entity
   name: Борму
   parent: SimpleMobBase
-  id: MobBormu
+  id: SWMobBormu
   description: Огромное травоядное существо, населявшее зелёные равнины Балморры.
   components:
   - type: Sprite
@@ -70,7 +70,7 @@
 
 - type: entity
   name: Спавнер Борму
-  id: SpawnMobBormu
+  id: SWSpawnMobBormu
   parent: MarkerBase
   components:
   - type: Sprite
@@ -85,7 +85,7 @@
 
 - type: entity
   name: Спавнер Борму периодический (~каждые полчаса)
-  id: BormuTimerSpawned
+  id: SWBormuTimerSpawned
   parent: MarkerBase
   components:
     - type: Sprite

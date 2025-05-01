@@ -1,5 +1,5 @@
 - type: entity
-  id: HolopadAdmin
+  id: SWHolopadAdmin
   parent: Holopad
   components:
     - type: Tag
@@ -16,7 +16,7 @@
       - Unlimited
 
 - type: entity
-  id: HolopadEmpire
+  id: SWHolopadEmpire
   suffix: Империя
   parent: Holopad
   name: голопад
@@ -41,7 +41,7 @@
 
 
 - type: entity
-  id: HolopadRepublic
+  id: SWHolopadRepublic
   suffix: Республика
   parent: Holopad
   name: голопад
@@ -66,9 +66,9 @@
 
 
 - type: entity
-  id: HolopadRepublicAdmin
+  id: SWHolopadRepublicAdmin
   suffix: Республика админ командование
-  parent: HolopadRepublic
+  parent: SWHolopadRepublic
   name: голопад
   components:
     - type: Label
@@ -80,9 +80,9 @@
 
 
 - type: entity
-  id: HolopadEmpireAdmin
+  id: SWHolopadEmpireAdmin
   suffix: Империя админ командование
-  parent: HolopadEmpire
+  parent: SWHolopadEmpire
   name: голопад
   components:
     - type: Label

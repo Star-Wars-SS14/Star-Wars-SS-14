@@ -4,7 +4,7 @@
    description: A mobile reporting studio fit for broadcasting the news.
    price: 37500 # 15% markup +4890
    category: Small
-   fraction: Alliance
+   fraction: RepublicFaction
    shuttlePath: /Maps/Shuttles/dart.yml
 
  - type: gameMap

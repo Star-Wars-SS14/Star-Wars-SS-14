@@ -1,4 +1,6 @@
-﻿using System.Text;
+using System.Linq;
+using System.Text;
+using Content.Server._SW.TaskSystem;
 using Content.Server.Chat.Systems;
 using Content.Server.Echo.Bank;
 using Content.Server.Echo.GameTicking.Rules.Components;
@@ -13,6 +15,7 @@ using Robust.Server.Audio;
 using Robust.Server.GameObjects;
 using Robust.Server.Maps;
 using Robust.Shared.Audio.Components;
+using Robust.Shared.Configuration;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
@@ -26,6 +29,7 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
     [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly AudioSystem _audio = default!;
     [Dependency] private readonly IGameTiming _gameTiming = default!;
+    [Dependency] private readonly SWFactionGameruleSystem _sWFaction = default!;
 
     private SectorWarRuleComponent? _gameRule;
 
@@ -38,41 +42,27 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
         if (_gameRule == null)
             return;
         var query = EntityQueryEnumerator<CapturableStationComponent>();
-        var allianceCap = 0;
-        var resistanceCap = 0;
-        while (query.MoveNext(out var station))
-        {
-            switch (station.Fraction)
-            {
-                case SectorFractions.Alliance:
-                    allianceCap++;
-                    break;
-                case SectorFractions.Resistance:
-                    resistanceCap++;
-                    break;
-            }
-        }
+
+        var maxScoreFaction = component.FactionsScore.Aggregate((x, y) => x.Value > y.Value ? x : y);
 
         var message = new StringBuilder();
-
-        message.AppendLine(allianceCap > resistanceCap
-            ? Loc.GetString("round-end-alliance-won")
-            : allianceCap < resistanceCap
-                ? Loc.GetString("round-end-resistance-won")
-                : Loc.GetString("round-end-wtf-draw"));
+        var faction = _sWFaction.GetFactionEntity(maxScoreFaction.Key);
+        if (faction == null)
+        {
+            return;
+        }
+        message.AppendLine($"win : {faction.Value.Comp.Name}");
         message.AppendLine();
-        message.AppendLine(Loc.GetString("round-end-alliance-credits", ("credits", _gameRule.AllianceCredits)));
-        message.AppendLine(Loc.GetString("round-end-resistance-credits", ("credits", _gameRule.ResistanceCredits)));
         args.AddLine(message.AppendLine().ToString());
         if (_gameRule.CurrentAudio != null && !Deleted(_gameRule.CurrentAudio.Value.Entity))
         {
             _audio.Stop(_gameRule.CurrentAudio?.Entity);
         }
-        _gameRule.CurrentAudio = _audio.PlayGlobal(allianceCap > resistanceCap
-                ? _gameRule.AllianceWinSound
-                : _gameRule.ResistanceWinSound,
-            Filter.Broadcast(),
-            true);
+        //_gameRule.CurrentAudio = _audio.PlayGlobal(allianceCap > resistanceCap
+        //        ? _gameRule.AllianceWinSound
+        //        : _gameRule.ResistanceWinSound,
+            //Filter.Broadcast(),
+            //true);
     }
 
     public override void Update(float frameTime)

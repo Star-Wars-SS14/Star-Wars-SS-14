@@ -17,7 +17,7 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
     public event Action? OnCaptureButtonPressed;
 
     private CaptureConsoleUpdateState? _lastState;
-    private SectorFractions? _lastUserFraction;
+    private string? _lastUserFraction;
 
     public CaptureConsoleMenu()
     {
@@ -73,10 +73,7 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
         message.PushNewline();
         message.PushNewline();
         message.TryAddMarkup(
-            $"[color=white]{Loc.GetString("capture-console-message-station-fraction",
-                ("stationFraction", state.StationFraction == SectorFractions.Alliance ?
-                    Loc.GetString("capture-console-message-fraction-alliance") :
-                    Loc.GetString("capture-console-message-fraction-resistance")))}[/color]",
+            $"[color=white]{state.StationFraction}[/color]",
             out _);
         message.PushNewline();
         message.PushNewline();
@@ -97,14 +94,8 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
         var leftInfoMessage = new FormattedMessage();
 
         leftInfoMessage.TryAddMarkup(
-            $"[color=white]{Loc.GetString("capture-console-message-user-fraction", ("fraction",
-                state.UserFraction switch
-                {
-                    SectorFractions.Alliance => Loc.GetString("capture-console-message-fraction-alliance"),
-                    SectorFractions.Resistance => Loc.GetString("capture-console-message-fraction-resistance"),
-                    _ => Loc.GetString("capture-console-message-user-no-fraction"),
-                }))}[/color]",
-            out _);
+            $"[color=white]{Loc.GetString("capture-console-message-user-fraction",
+            ("fraction", state.UserFraction == null ? "unknown" : state.UserFraction))}[/color]", out _);
         leftInfoMessage.PushNewline();
         leftInfoMessage.PushNewline();
         leftInfoMessage.TryAddMarkup(

@@ -38,35 +38,35 @@ public sealed partial class BankSystem : EntitySystem
         while (query.MoveNext(out _, out var rule))
         {
             ruleActive = true;
-            switch (capturableStationComponent.Fraction)
-            {
-                case SectorFractions.Alliance:
-                {
-                    if (rule.AllianceCredits < amount)
-                    {
-                        return false;
-                    }
+            //switch (capturableStationComponent.Fraction)
+            //{
+                //case SectorFractions.Alliance:
+                //{
+                //    if (rule.AllianceCredits < amount)
+                //    {
+                //        return false;
+                //    }
 
-                    rule.AllianceCredits -= amount;
-                    break;
-                }
-                case SectorFractions.Resistance:
-                {
-                    if (rule.ResistanceCredits < amount)
-                    {
-                        return false;
-                    }
+                //    rule.AllianceCredits -= amount;
+                //        break;
+                //    }
+                //    case SectorFractions.Resistance:
+                //    {
+                //        if (rule.ResistanceCredits < amount)
+                //        {
+                //            return false;
+                //        }
 
-                    rule.ResistanceCredits -= amount;
-                    break;
-                }
-                default:
-                    _log.Error("Unknown fraction!");
-                    break;
+                //        rule.ResistanceCredits -= amount;
+                //        break;
+                //    }
+                //    default:
+                //        _log.Error("Unknown fraction!");
+                //        break;
+                //}
             }
-        }
 
 
-        return ruleActive;
+            return ruleActive;
     }
 }

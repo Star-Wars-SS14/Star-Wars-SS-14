@@ -1,8 +1,10 @@
 using System.Linq;
+using Content.Server._SW.TaskSystem;
 using Content.Server.Chat.Systems;
 using Content.Server.Echo.GameTicking.Rules.Components;
 using Content.Server.Station.Systems;
 using Content.Server.Xenoarchaeology.XenoArtifacts;
+using Content.Shared._SW.TaskSystem;
 using Content.Shared.Access.Systems;
 using Content.Shared.Audio;
 using Content.Shared.Echo.CaptureConsole;
@@ -15,7 +17,7 @@ using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
-
+using Robust.Shared.Map;
 namespace Content.Server.Echo.Capture;
 
 public sealed class CaptureConsoleSystem : EntitySystem
@@ -26,6 +28,8 @@ public sealed class CaptureConsoleSystem : EntitySystem
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly AccessReaderSystem _accessReader = default!;
+    [Dependency] private readonly SWFactionGameruleSystem _sWFaction = default!;
+    [Dependency] private readonly SharedTransformSystem _transform = default!;
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -77,13 +81,12 @@ public sealed class CaptureConsoleSystem : EntitySystem
         EnsureComp<CapturableStationComponent>(station.Value, out var capturable);
 
         capturable.Fraction = console.CapturingFraction;
+        var fractionText = "";
+        var faction = _sWFaction.GetFactionEntity(console.CapturingFraction);
 
-        var fractionText = capturable.Fraction switch
-        {
-            SectorFractions.Alliance => Loc.GetString("capture-console-message-fraction-alliance"),
-            SectorFractions.Resistance => Loc.GetString("capture-console-message-fraction-resistance"),
-            _ => Loc.GetString("capture-console-message-user-no-fraction"),
-        };
+        if (faction != null) {
+            fractionText = faction.Value.Comp.Name;
+        }
 
 
         _chat.DispatchGlobalAnnouncement(Loc.GetString("station-capture-finish-announcement",
@@ -95,15 +98,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
         var query = EntityQueryEnumerator<SectorWarRuleComponent>();
         while (query.MoveNext(out var rule))
         {
-            switch (capturable.Fraction)
-            {
-                case SectorFractions.Alliance:
-                    rule.AllianceCredits += rule.CaptureReward;
-                    break;
-                case SectorFractions.Resistance:
-                    rule.ResistanceCredits += rule.CaptureReward;
-                    break;
-            }
+            rule.FactionsScore[console.CapturingFraction]++;
         }
 
         UpdateUserInterface(uid);
@@ -116,48 +111,57 @@ public sealed class CaptureConsoleSystem : EntitySystem
         if (!Resolve(uid, ref component, false))
             return;
 
-        var currentFraction = SectorFractions.Alliance;
+        var currentFraction = "";
         var hasAccess = true;
-        if (TryComp<CapturableStationComponent>(_station.GetOwningStation(uid), out var capturableStationComponent))
+        EntityUid? owningMap = null;
+        
+        if (TryComp(uid, out TransformComponent? transformComp))
+        {
+            owningMap = transformComp.MapUid;
+        }
+        
+        if (owningMap != null
+            && TryComp<CapturableStationComponent>(owningMap, out var capturableStationComponent))
             currentFraction = capturableStationComponent.Fraction;
 
         TimeSpan? totalTime = component.CaptureDuration - (_timing.CurTime - component.StartTime);
 
-        SectorFractions? userFraction = null;
+        string? userFraction = null;
         if (args != null)
         {
-            if (HasComp<AllianceStaffComponent>(args.User))
+            if (TryComp<SWFactionMemberComponent>(args.User, out var comp))
             {
-                userFraction = SectorFractions.Alliance;
-            }
-            else if (HasComp<ResistanceStaffComponent>(args.User))
-            {
-                userFraction = SectorFractions.Resistance;
-            }
-            else
-            {
-                hasAccess = false;
+                userFraction = comp.Faction;
             }
         }
 
 
         var station = GetNetEntity(_station.GetOwningStation(uid));
         var name = _station.GetStationNames().FirstOrNull(x => x.Entity == station)?.Name;
+        ISawmill _s = Logger.GetSawmill("sdfg");
+        _s.Debug($"cf : {currentFraction}");
+        var faction = _sWFaction.GetFactionEntity(currentFraction);
+        string stationFactionName = faction != null ? faction.Value.Comp.Name : "uknownstation";
+
+        
+
+        faction = userFraction != null ? _sWFaction.GetFactionEntity(userFraction) : null;
+        string userFactionName = faction != null ? faction.Value.Comp.Name : "uknown";
+
         var state = new CaptureConsoleUpdateState(
             component.Capturing,
             component.StartTime,
             component.Capturing ? totalTime ?? TimeSpan.Zero : TimeSpan.Zero,
             component.CaptureDuration,
-            currentFraction,
-            userFraction,
+            stationFactionName,
+            userFactionName,
             name ?? "Unknown",
             hasAccess,
-            component.IsTimeout
-        );
+            component.IsTimeout);
 
         _ui.SetUiState(uid, CaptureConsoleUi.Key, state);
     }
-
+    
     private void OnCaptureButton(EntityUid uid,
         CaptureConsoleComponent component,
         CaptureConsoleButtonPressedMessage args)
@@ -168,21 +172,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
         var station = GetNetEntity(_station.GetOwningStation(uid));
         var name = _station.GetStationNames().FirstOrNull(x => x.Entity == station)?.Name;
 
-        SectorFractions? fraction;
-
-        var accesses = _accessReader.FindAccessTags(args.Actor);
-
-        if (accesse)
-
-        if (HasComp<AllianceStaffComponent>(args.Actor))
-        {
-            fraction = SectorFractions.Alliance;
-        }
-        else if (HasComp<ResistanceStaffComponent>(args.Actor))
-        {
-            fraction = SectorFractions.Resistance;
-        }
-        else
+        if (!TryComp<SWFactionMemberComponent>(args.Actor, out var factionComp))
         {
             return;
         }
@@ -199,7 +189,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
         else
         {
             component.Capturing = true;
-            component.CapturingFraction = fraction.Value;
+            component.CapturingFraction = factionComp.Faction;
 
             component.StartTime = _timing.CurTime;
             _chat.DispatchGlobalAnnouncement(

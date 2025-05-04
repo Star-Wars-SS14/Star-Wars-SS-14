@@ -1,17 +1,14 @@
-﻿using Content.Server.Maps;
+using Content.Server.Maps;
 using Robust.Shared.Audio.Components;
 using Robust.Shared.Prototypes;
+using System.Numerics;
 
 namespace Content.Server.Echo.GameTicking.Rules.Components;
 
 [RegisterComponent]
 public sealed partial class SectorWarRuleComponent : Component
 {
-    [DataField]
-    public int AllianceCredits = 100000;
-
-    [DataField]
-    public int ResistanceCredits = 100000;
+    public Dictionary<string, uint> FactionsScore = new();
 
     [DataField]
     public ProtoId<GameMapPrototype>[] Maps;

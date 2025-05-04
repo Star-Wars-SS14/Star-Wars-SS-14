@@ -5,3 +5,10 @@
   - type: SectorWarRule
     maps:
       - Box
+  - type: SWFactionGamerule
+    factionsPrototypes:
+    - RepublicFaction
+    - EmpireFaction
+    - MandalorianFaction
+    - BlackSunFaction
+    - ExchangeFaction

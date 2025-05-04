@@ -293,12 +293,13 @@ public sealed partial class ShipyardSystem
         var query = EntityQueryEnumerator<SectorWarRuleComponent>();
         while (query.MoveNext(out _, out var rule))
         {
-            balance = capturableStationComponent.Fraction switch
-            {
-                SectorFractions.Alliance => rule.AllianceCredits,
-                SectorFractions.Resistance => rule.ResistanceCredits,
-                _ => balance,
-            };
+            balance = 1984;
+            //balance = capturableStationComponent.Fraction switch
+            //{
+            //    SectorFractions.Alliance => rule.AllianceCredits,
+            //    SectorFractions.Resistance => rule.ResistanceCredits,
+            //    _ => balance,
+            //};
         }
 
         var newState = new ShipyardConsoleInterfaceState(

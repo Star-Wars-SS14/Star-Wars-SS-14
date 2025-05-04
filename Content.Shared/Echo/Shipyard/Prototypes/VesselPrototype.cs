@@ -36,7 +36,7 @@ public sealed class VesselPrototype : IPrototype
     ///     The group of the product. (e.g. Civilian, Syndicate, Contraband etc.)
     /// </summary>
     [DataField("fraction")]
-    public SectorFractions Fraction = SectorFractions.Alliance;
+    public string Fraction = "";
 
     /// <summary>
     ///     Relative directory path to the given shuttle, i.e. `/Maps/Shuttles/yourshittle.yml`

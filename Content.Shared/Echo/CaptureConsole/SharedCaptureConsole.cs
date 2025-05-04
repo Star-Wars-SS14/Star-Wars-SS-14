@@ -1,4 +1,4 @@
-﻿using Content.Shared.Echo.GameTicking.Components;
+using Content.Shared.Echo.GameTicking.Components;
 using Robust.Shared.Serialization;
 using Robust.Shared.Serialization.TypeSerializers.Implementations;
 
@@ -16,8 +16,8 @@ public sealed class CaptureConsoleUpdateState(
     TimeSpan? startTime,
     TimeSpan timeRemain,
     TimeSpan captureDuration,
-    SectorFractions fraction,
-    SectorFractions? userFraction,
+    string fraction,
+    string userFraction,
     string stationName,
     bool hasAccess,
     bool isTimeout)
@@ -27,8 +27,8 @@ public sealed class CaptureConsoleUpdateState(
     public TimeSpan? StartTime = startTime;
     public TimeSpan TimeRemain = timeRemain;
     public TimeSpan CaptureDuration = captureDuration;
-    public SectorFractions StationFraction = fraction;
-    public SectorFractions? UserFraction = userFraction;
+    public string StationFraction = fraction;
+    public string? UserFraction = userFraction;
     public string StationName = stationName;
     public bool HasAccess = hasAccess;
     public bool IsTimeout = isTimeout;
@@ -59,7 +59,7 @@ public sealed partial class CaptureConsoleComponent : Component
     public TimeSpan TimeoutStart = TimeSpan.Zero;
 
     [DataField]
-    public SectorFractions CapturingFraction = SectorFractions.Alliance;
+    public string CapturingFraction = "";
 }
 
 [Serializable, NetSerializable]

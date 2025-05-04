@@ -12,3 +12,6 @@
   startingGear: RepublicCommanderSniperGear
   icon: "JobIconHavokSniper"
   supervisors: job-supervisors-havok-cap
+  access:
+  - RepublicHavok
+  - RepublicBase

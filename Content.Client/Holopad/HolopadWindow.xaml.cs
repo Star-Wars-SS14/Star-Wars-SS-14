@@ -58,14 +58,14 @@ public sealed partial class HolopadWindow : FancyWindow
         // Assign button actions
         AnswerCallButton.OnPressed += args => { OnHolopadAnswerCallMessage(); };
         EndCallButton.OnPressed += args => { OnHolopadEndCallMessage(); };
-        StartBroadcastButton.OnPressed += args => { OnHolopadStartBroadcastMessage(); };
-        ActivateProjectorButton.OnPressed += args => { OnHolopadActivateProjectorMessage(); };
-        RequestStationAiButton.OnPressed += args => { OnHolopadRequestStationAiMessage(); };
+        //StartBroadcastButton.OnPressed += args => { OnHolopadStartBroadcastMessage(); };
+        //ActivateProjectorButton.OnPressed += args => { OnHolopadActivateProjectorMessage(); };
+        //RequestStationAiButton.OnPressed += args => { OnHolopadRequestStationAiMessage(); };
 
         // XML formatting
         AnswerCallButton.AddStyleClass("ButtonAccept");
         EndCallButton.AddStyleClass("Caution");
-        StartBroadcastButton.AddStyleClass("Caution");
+        //StartBroadcastButton.AddStyleClass("Caution");
 
         HolopadContactListPanel.PanelOverride = new StyleBoxFlat
         {
@@ -144,19 +144,19 @@ public sealed partial class HolopadWindow : FancyWindow
         switch (uiKey)
         {
             case HolopadUiKey.InteractionWindow:
-                RequestStationAiContainer.Visible = true;
+                //RequestStationAiContainer.Visible = true;
                 HolopadContactListContainer.Visible = true;
-                StartBroadcastContainer.Visible = true;
+                //StartBroadcastContainer.Visible = true;
                 break;
 
             case HolopadUiKey.InteractionWindowForAi:
-                ActivateProjectorContainer.Visible = true;
-                StartBroadcastContainer.Visible = true;
+                //ActivateProjectorContainer.Visible = true;
+                //StartBroadcastContainer.Visible = true;
                 break;
 
             case HolopadUiKey.AiActionWindow:
                 HolopadContactListContainer.Visible = true;
-                StartBroadcastContainer.Visible = true;
+                //StartBroadcastContainer.Visible = true;
                 break;
 
             case HolopadUiKey.AiRequestWindow:
@@ -252,9 +252,9 @@ public sealed partial class HolopadWindow : FancyWindow
         var cooldown = _holopadSystem.GetHolopadBroadcastCoolDown((_owner.Value, holopad));
         var cooldownString = $"{cooldown.Minutes:00}:{cooldown.Seconds:00}";
 
-        StartBroadcastButton.Text = _holopadSystem.IsHolopadBroadcastOnCoolDown((_owner.Value, holopad)) ?
-            Loc.GetString("holopad-window-emergency-broadcast-with-countdown", ("countdown", cooldownString)) :
-            Loc.GetString("holopad-window-emergency-broadcast");
+        //StartBroadcastButton.Text = _holopadSystem.IsHolopadBroadcastOnCoolDown((_owner.Value, holopad)) ?
+        //    Loc.GetString("holopad-window-emergency-broadcast-with-countdown", ("countdown", cooldownString)) :
+        //    Loc.GetString("holopad-window-emergency-broadcast");
 
         var lockout = _holopadSystem.GetHolopadControlLockedPeriod((_owner.Value, holopad));
         var lockoutString = $"{lockout.Minutes:00}:{lockout.Seconds:00}";
@@ -287,9 +287,9 @@ public sealed partial class HolopadWindow : FancyWindow
         // Update control disability
         AnswerCallButton.Disabled = (_currentState != TelephoneState.Ringing || lockButtons);
         EndCallButton.Disabled = (_currentState == TelephoneState.Idle || _currentState == TelephoneState.EndingCall || lockButtons);
-        StartBroadcastButton.Disabled = (_currentState != TelephoneState.Idle || !hasBroadcastAccess || lockButtons);
-        RequestStationAiButton.Disabled = (_currentState != TelephoneState.Idle || lockButtons);
-        ActivateProjectorButton.Disabled = (_currentState != TelephoneState.Idle || lockButtons);
+        //StartBroadcastButton.Disabled = (_currentState != TelephoneState.Idle || !hasBroadcastAccess || lockButtons);
+        //RequestStationAiButton.Disabled = (_currentState != TelephoneState.Idle || lockButtons);
+        //ActivateProjectorButton.Disabled = (_currentState != TelephoneState.Idle || lockButtons);
 
         // Update control visibility
         FetchingAvailableHolopadsContainer.Visible = (ContactsList.ChildCount == 0);

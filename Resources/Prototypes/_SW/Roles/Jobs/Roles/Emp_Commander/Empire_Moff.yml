@@ -1,6 +1,6 @@
 - type: job
   id: SWEmpireMoff
-  name: МОФФ Сил Империи
+  name: Мофф Сил Империи
   playTimeTracker: Job_Empire_Moff
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -11,3 +11,12 @@
   startingGear: EmpireMoffGear
   icon: "JobIconEmpireMoff"
   supervisors: job-supervisors-min-war
+  access:
+  - EmpireCommander
+  - EmpireBase
+  - EmpireMoff
+  - EmpireArsenal
+  - EmpireMedic
+  - EmpireIntelligenceCareTaker
+  - EmpireIntelligence
+  - EmpireSobrik

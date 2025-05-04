@@ -12,3 +12,7 @@
   startingGear: RepublicCommanderMedicGear
   icon: "JobIconHavokMedic"
   supervisors: job-supervisors-havok-cap
+  access:
+  - RepublicHavok
+  - RepublicBase
+  - RepublicMedic

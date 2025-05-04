@@ -1,9 +1,8 @@
-﻿- type: entity
-  parent: ClothingHeadBase
+- type: entity
+  parent: SW_BaseHelmet
   id: SW_ClothingHeadExchangeHelmet
   name: exchange helmet
   components:
-  - type: BreathMask
   - type: Sprite
     sprite: _SW/Clothing/Head/Helmets/Exchange/Helmet.rsi
   - type: Clothing
@@ -11,7 +10,3 @@
   - type: PressureProtection
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000
-  - type: HideLayerClothing
-    slots:
-    - Hair
-    - Snout

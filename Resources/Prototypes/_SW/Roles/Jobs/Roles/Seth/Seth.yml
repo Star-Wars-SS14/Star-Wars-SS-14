@@ -184,7 +184,7 @@
   id: RepublicMedicGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitFleece
-    outerClothing: SW_RepublicSuit
+    outerClothing: SW_MedicRepublicSuit
     shoes: ClothingShoesBootsJack
     head: SW_ClothingHeadRepublicHelmet
     id: SW_IDCardRepublicMedic
@@ -271,7 +271,7 @@
     id: SW_IDCardEmpireIntelligenceCaretaker
     shoes: ClothingShoesBootsCombatFilled
     gloves: ClothingHandsGlovesCombat
-    ears: ClothingHeadsetSobrik
+    ears: ClothingHeadsetAllEmpire
 
 - type: startingGear
   id: EmpireIntelligenceAgentGear

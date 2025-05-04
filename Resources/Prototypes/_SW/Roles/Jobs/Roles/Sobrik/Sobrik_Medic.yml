@@ -9,3 +9,7 @@
   startingGear: SobrikMedicGear
   icon: "JobIconSobrikMedic"
   supervisors: job-supervisors-sobrik-captain
+  access:
+  - EmpireBase
+  - EmpireSobrik
+  - EmpireMedic

@@ -415,7 +415,7 @@
   name: Jedi (Джедай)
   components:
   - type: SpawnPoint
-    job_id: SWJefi
+    job_id: SWJedi
   - type: Sprite
     layers:
     - state: green

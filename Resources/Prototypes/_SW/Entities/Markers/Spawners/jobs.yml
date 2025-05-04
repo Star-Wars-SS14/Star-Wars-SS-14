@@ -394,3 +394,28 @@
   - type: Sprite
     layers:
     - state: green
+
+#Force users
+
+- type: entity
+  id: SW_SpawnPointSith
+  parent: SpawnPointJobBase
+  name: Sith (Ситх)
+  components:
+  - type: SpawnPoint
+    job_id: SWSith
+  - type: Sprite
+    layers:
+    - state: green
+
+
+- type: entity
+  id: SW_SpawnPointJedi
+  parent: SpawnPointJobBase
+  name: Jedi (Джедай)
+  components:
+  - type: SpawnPoint
+    job_id: SWJefi
+  - type: Sprite
+    layers:
+    - state: green

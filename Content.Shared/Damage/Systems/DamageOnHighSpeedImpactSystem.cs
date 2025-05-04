@@ -27,8 +27,6 @@ public sealed class DamageOnHighSpeedImpactSystem : EntitySystem
 
     private void HandleCollide(EntityUid uid, DamageOnHighSpeedImpactComponent component, ref StartCollideEvent args)
     {
-        ISawmill _s = Logger.GetSawmill("temp");
-        _s.Debug($"Hit {args.OurBody.LinearVelocity.Length()}");
         if (!args.OurFixture.Hard || !args.OtherFixture.Hard)
             return;
 

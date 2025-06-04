@@ -2,7 +2,7 @@
 
 - type: entity
   parent: CrateBaseWeldable
-  id: SW_CrateWood
+  id: SWCrateWood
   name: Деревянный ящик
   description: Ящик для хранения ваших предметов
   components:
@@ -13,7 +13,7 @@
 
 - type: entity
   parent: CrateBaseWeldable
-  id: SW_CrateMedical
+  id: SWCrateMedical
   name: Медицинский ящик
   description: Медицинский ящик для хранения ваших медикоментов. 
   components:
@@ -26,7 +26,7 @@
 
 - type: entity
   parent: CrateBaseWeldable
-  id: SW_CrateEmpireLock
+  id: SWCrateEmpireLock
   name: ящик Империи
   suffix: С доступом
   description: Защищенный ящик Империи. Для разблокировки нужен ранг майора и выше
@@ -52,7 +52,7 @@
 
 - type: entity
   parent: CrateBaseWeldable
-  id: SW_CrateRepublicLock
+  id: SWCrateRepublicLock
   name: ящик Республики
   description: Защищенный ящик Республики. Для разблокировки нужен ранг Лейтенанта и выше
   suffix: С доступом
@@ -75,3 +75,57 @@
       - !type:PlaySoundBehavior
         sound:
           collection: MetalBreak
+
+
+# Ящики с лутом малый сложности
+
+
+- type: entityTable
+  id: FillSWCrateWoodLootEasy
+  table: !type:AllSelector
+    children:
+  - type: StorageFill
+    contents:
+    - id: FoodBreadPlainSlice
+      prob: 0.40
+      maxAmount: 3
+    - id: FoodCorn
+      prob: 0.40
+      maxAmount: 3
+    - id: DrinkWaterBottleFull
+      prob: 0.40
+      maxAmount: 3
+    - id: FoodPotato
+      prob: 0.40
+      maxAmount: 3
+    - id: FoodSnackChocolate
+      prob: 0.40
+      maxAmount: 3
+    - id: FoodApple
+      prob: 0.40
+      maxAmount: 3
+    - id: FoodOrange
+      prob: 0.50
+      maxAmount: 3
+    - id: SheetGlass10
+      prob: 0.20
+      maxAmount: 2
+    - id: SheetSteel10
+      prob: 0.20
+      maxAmount: 2
+    - id: CombatKnife
+      prob: 0.10
+      maxAmount: 1
+    #Нужно сюда ещё добавить пистолет, когда такие будут
+
+- type: entity
+  parent: SWCrateWood
+  id: SWCrateWoodLootEasy
+  name: Деревянный ящик
+  suffix: Лёгкий лут
+  description: Ящик для хранения ваших предметов
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:NestedSelector
+        tableId: FillSWCrateWoodLootEasy

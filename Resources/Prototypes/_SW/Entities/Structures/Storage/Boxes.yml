@@ -1,5 +1,5 @@
 ﻿- type: entity
-  id: SW_StorageBoxBase
+  id: SWStorageBoxBase
   name: ящик
   description: Нужен для хранения предметов
   parent: BaseStructureDynamic
@@ -22,7 +22,7 @@
         ents: [ ]
 
 - type: entity
-  id: SW_BoxBase
+  id: SWBoxBase
   parent: BaseStructureDynamic
   abstract: true
   components:
@@ -40,9 +40,9 @@
 # Ящики для хранения
 
 - type: entity
-  id: SW_BoxWood
+  id: SWBoxWood
   name: деревянный ящик
-  parent: [ SW_BoxBase, SW_StorageBoxBase ]
+  parent: [ SWBoxBase, SWStorageBoxBase ]
   components:
   - type: Sprite
     layers:
@@ -75,9 +75,9 @@
           box2: ""
 
 - type: entity
-  id: SW_BoxPlastic
+  id: SWBoxPlastic
   name: большой ящик
-  parent: SW_BoxWood
+  parent: SWBoxWood
   components:
   - type: Sprite
     sprite: _SW/Structures/Storage/Boxes/plastic_boxes.rsi
@@ -106,9 +106,9 @@
           collection: MetalBreak
 
 - type: entity
-  id: SW_BoxSteel
+  id: SWBoxSteel
   name: стальной ящик
-  parent: [ SW_BoxBase, SW_StorageBoxBase ]
+  parent: [ SWBoxBase, SWStorageBoxBase ]
   components:
   - type: Sprite
     sprite: _SW/Structures/Storage/Boxes/steel_boxes.rsi
@@ -134,9 +134,9 @@
           collection: MetalBreak
 
 - type: entity
-  id: SW_BoxSteeldouble
+  id: SWBoxSteeldouble
   name: стальные ящики
-  parent: SW_BoxSteel
+  parent: SWBoxSteel
   components:
   - type: Sprite
     layers:
@@ -146,14 +146,14 @@
     - 0,0,6,4
     - 0,6,6,9
 
-# Ящики с лутом, которые надо разрушать (Пустые)
+# Ящики, которые надо разрушать
 
 - type: entity
-  id: SW_BoxSteelSmall
+  id: SWBoxSteelSmall
   name: маленький стальной ящик
   description: В такие ящики обычно кладут много полезных вещей. Нельзя открыть, но можно разрушить
   suffix: Пустой
-  parent: SW_BoxBase
+  parent: SWBoxBase
   components:
   - type: Sprite
     sprite: _SW/Structures/Storage/Boxes/steel_boxes_small.rsi
@@ -188,10 +188,10 @@
           box4: ""
 
 - type: entity
-  id: SW_BoxWoodSmall
+  id: SWBoxWoodSmall
   name: маленький деревянный ящик
   description: Нельзя открыть, но можно разрушить. Возможно внутри что-то есть...
-  parent: SW_BoxBase
+  parent: SWBoxBase
   suffix: Пустой
   components:
   - type: Sprite
@@ -220,3 +220,78 @@
       - random:
           box1: ""
           box2: ""
+
+# Ящики с лутом малый сложности
+
+- type: entity
+  id: SWBoxWoodLootEasy
+  name: деревянный ящик
+  parent: SWBoxWood
+  suffix: Лёгкий лут
+  components:
+  - type: StorageFill
+    contents:
+    - id: FoodBreadPlainSlice
+      prob: 0.50
+      maxAmount: 3
+    - id: FoodCorn
+      prob: 0.50
+      maxAmount: 3
+    - id: DrinkWaterBottleFull
+      prob: 0.50
+      maxAmount: 3
+    - id: FoodPotato
+      prob: 0.50
+      maxAmount: 3
+    - id: FoodSnackChocolate
+      prob: 0.50
+      maxAmount: 3
+    - id: FoodApple
+      prob: 0.50
+      maxAmount: 3
+    - id: FoodOrange
+      prob: 0.50
+      maxAmount: 3
+    - id: SheetGlass10
+      prob: 0.30
+      maxAmount: 2
+    - id: SheetSteel10
+      prob: 0.30
+      maxAmount: 2
+    - id: CombatKnife
+      prob: 0.20
+      maxAmount: 1
+    #Нужно сюда ещё добавить пистолет, когда такие будут
+
+- type: entity
+  id: SWBoxWoodSmallLootEasy
+  name: маленький деревянный ящик
+  description: Нельзя открыть, но можно разрушить. Возможно внутри что-то есть...
+  parent: SWBoxWoodSmall
+  suffix: Лёгкий лут
+  components:
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 60
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          MaterialWoodPlank1:
+            min: 1
+            max: 2
+          SWRandomFood:
+            min: 1
+            max: 8
+          SheetGlass1:            
+            min: 0
+            max: 3
+          SheetSteel1:            
+            min: 0
+            max: 3
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: WoodDestroy

@@ -37,6 +37,8 @@
   - type: NpcFactionMember
     factions:
     - NanoTrasen
+  - type: SWFactionMember
+    faction: RepublicFaction
 
 - type: entity
   name: Republic Lieutenant

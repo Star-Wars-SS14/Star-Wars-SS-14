@@ -128,8 +128,8 @@ public sealed partial class ShipyardSystem
         }
 
         _records.Synchronize(station);
-
-        SendPurchaseMessage(uid, player, name, component.ShipyardChannel, secret: false);
+        if (component.ShipyardChannel is { } channel)
+            SendPurchaseMessage(uid, player, name, channel, secret: false);
         if (component.SecretShipyardChannel is { } secretChannel)
             SendPurchaseMessage(uid, player, name, secretChannel, secret: true);
 

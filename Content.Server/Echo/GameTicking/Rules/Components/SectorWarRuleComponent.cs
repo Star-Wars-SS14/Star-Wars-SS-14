@@ -29,7 +29,7 @@ public sealed partial class SectorWarRuleComponent : Component
     public string ResistanceWinSound = "/Audio/Echo/resistance_won.ogg";
 
     [DataField]
-    public string CaptureSound = "/Audio/Echo/capture.ogg";
+    public string? CaptureSound = null; //"/Audio/Echo/capture.ogg";
 
     [DataField]
     public int CaptureReward = 45000;

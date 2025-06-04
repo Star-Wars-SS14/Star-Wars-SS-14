@@ -18,6 +18,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 using Robust.Shared.Map;
+using Microsoft.CodeAnalysis.Elfie.Model;
 namespace Content.Server.Echo.Capture;
 
 public sealed class CaptureConsoleSystem : EntitySystem
@@ -57,7 +58,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
                 UpdateUserInterface(uid);
             }
 
-            y:
+        y:
             if (!console.Capturing)
                 continue;
 
@@ -84,10 +85,10 @@ public sealed class CaptureConsoleSystem : EntitySystem
         var fractionText = "";
         var faction = _sWFaction.GetFactionEntity(console.CapturingFraction);
 
-        if (faction != null) {
+        if (faction != null)
+        {
             fractionText = faction.Value.Comp.Name;
         }
-
 
         _chat.DispatchGlobalAnnouncement(Loc.GetString("station-capture-finish-announcement",
                 ("name", name ?? "Unknown"),
@@ -98,7 +99,14 @@ public sealed class CaptureConsoleSystem : EntitySystem
         var query = EntityQueryEnumerator<SectorWarRuleComponent>();
         while (query.MoveNext(out var rule))
         {
-            rule.FactionsScore[console.CapturingFraction]++;
+            if (rule.FactionsScore.ContainsKey(console.CapturingFraction))
+            {
+                rule.FactionsScore[console.CapturingFraction]++;
+            }
+            else
+            {
+                rule.FactionsScore[console.CapturingFraction] = 1;
+            }
         }
 
         UpdateUserInterface(uid);
@@ -113,15 +121,10 @@ public sealed class CaptureConsoleSystem : EntitySystem
 
         var currentFraction = "";
         var hasAccess = true;
-        EntityUid? owningMap = null;
-        
-        if (TryComp(uid, out TransformComponent? transformComp))
-        {
-            owningMap = transformComp.MapUid;
-        }
-        
-        if (owningMap != null
-            && TryComp<CapturableStationComponent>(owningMap, out var capturableStationComponent))
+        var station = _station.GetOwningStation(uid);
+
+        if (station != null
+            && TryComp<CapturableStationComponent>(station, out var capturableStationComponent))
             currentFraction = capturableStationComponent.Fraction;
 
         TimeSpan? totalTime = component.CaptureDuration - (_timing.CurTime - component.StartTime);
@@ -136,14 +139,14 @@ public sealed class CaptureConsoleSystem : EntitySystem
         }
 
 
-        var station = GetNetEntity(_station.GetOwningStation(uid));
-        var name = _station.GetStationNames().FirstOrNull(x => x.Entity == station)?.Name;
+        var stationNet = GetNetEntity(_station.GetOwningStation(uid));
+        var name = _station.GetStationNames().FirstOrNull(x => x.Entity == stationNet)?.Name;
         ISawmill _s = Logger.GetSawmill("sdfg");
         _s.Debug($"cf : {currentFraction}");
         var faction = _sWFaction.GetFactionEntity(currentFraction);
         string stationFactionName = faction != null ? faction.Value.Comp.Name : "uknownstation";
 
-        
+
 
         faction = userFraction != null ? _sWFaction.GetFactionEntity(userFraction) : null;
         string userFactionName = faction != null ? faction.Value.Comp.Name : "uknown";
@@ -161,7 +164,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
 
         _ui.SetUiState(uid, CaptureConsoleUi.Key, state);
     }
-    
+
     private void OnCaptureButton(EntityUid uid,
         CaptureConsoleComponent component,
         CaptureConsoleButtonPressedMessage args)
@@ -200,6 +203,9 @@ public sealed class CaptureConsoleSystem : EntitySystem
             var query = EntityQueryEnumerator<SectorWarRuleComponent>();
             while (query.MoveNext(out var rule))
             {
+                if (rule.CaptureSound == null) {
+                    continue;
+                }
                 var captureSound = rule.CaptureSound;
 
                 if (rule.CurrentAudio == null || Deleted(rule.CurrentAudio.Value.Entity))

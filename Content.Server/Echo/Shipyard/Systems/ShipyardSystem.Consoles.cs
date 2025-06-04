@@ -49,14 +49,6 @@ public sealed partial class ShipyardSystem
         if (args.Actor is not { Valid: true } player)
             return;
 
-        if (!HasComp<ResistanceStaffComponent>(args.Actor))
-        {
-            if (!HasComp<AllianceStaffComponent>(args.Actor))
-            {
-                return;
-            }
-        }
-
         if (!_prototypeManager.TryIndex<VesselPrototype>(args.Vessel, out var vessel))
         {
             ConsolePopup(args.Actor, Loc.GetString("shipyard-console-invalid-vessel", ("vessel", args.Vessel)));
@@ -257,10 +249,10 @@ public sealed partial class ShipyardSystem
         if (listing is null)
             TryComp(uid, out listing);
 
+        var station = _station.GetOwningStation(uid);
+
         foreach (var vessel in _prototypeManager.EnumeratePrototypes<VesselPrototype>())
         {
-            var station = _station.GetOwningStation(uid);
-
             if (station == null)
                 continue;
 
@@ -270,8 +262,7 @@ public sealed partial class ShipyardSystem
                 // if the listing contains the shuttle, add it to the list or
 
                 // if the shuttle is in the group that the console is looking for
-                key != null && key != ShipyardConsoleUiKey.Custom &&
-                ShipyardGroupMapping.TryGetValue(key.Value, out _) && vessel.Fraction == capturableStationComponent.Fraction)
+                vessel.Fraction == capturableStationComponent.Fraction)
             {
                 availableShuttles.Add(vessel.ID);
             }
@@ -293,7 +284,7 @@ public sealed partial class ShipyardSystem
         var query = EntityQueryEnumerator<SectorWarRuleComponent>();
         while (query.MoveNext(out _, out var rule))
         {
-            balance = 1984;
+            balance = 10000000;
             //balance = capturableStationComponent.Fraction switch
             //{
             //    SectorFractions.Alliance => rule.AllianceCredits,

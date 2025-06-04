@@ -9,6 +9,7 @@ using Content.Server.GameTicking.Rules;
 using Content.Server.GameTicking.Rules.Components;
 using Content.Server.GridPreloader;
 using Content.Server.Maps;
+using Content.Server.Station.Systems;
 using Content.Shared.Echo.GameTicking.Components;
 using Content.Shared.GameTicking.Components;
 using Robust.Server.Audio;
@@ -30,6 +31,7 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
     [Dependency] private readonly AudioSystem _audio = default!;
     [Dependency] private readonly IGameTiming _gameTiming = default!;
     [Dependency] private readonly SWFactionGameruleSystem _sWFaction = default!;
+    [Dependency] private readonly StationSystem _stationSystem = default!;
 
     private SectorWarRuleComponent? _gameRule;
 
@@ -116,7 +118,11 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
             }
             */
             //_map.SetPaused(mapId, false);
-            EnsureComp<CapturableStationComponent>(_map.GetMap(mapId));
+            var station = _stationSystem.GetStationInMap(mapId);
+            if (station != null)
+            {
+                EnsureComp<CapturableStationComponent>(station.Value);
+            }
             var ev = new LoadingMapsEvent(maps);
             RaiseLocalEvent(uid, ev);
         }

@@ -2,12 +2,14 @@ using Content.Server.Administration.Logs;
 using Content.Server.Chat.Systems;
 using Content.Server.Echo.Bank;
 using Content.Server.Echo.GameTicking.Rules.Components;
+using Content.Server.Echo.GameTicking.Systems;
 using Content.Server.Maps;
 using Content.Server.Mind;
 using Content.Server.Popups;
 using Content.Server.Radio.EntitySystems;
 using Content.Server.StationRecords;
 using Content.Server.StationRecords.Systems;
+using Content.Shared._SW.TaskSystem;
 using Content.Shared.Database;
 using Content.Shared.Echo.CaptureConsole;
 using Content.Shared.Echo.GameTicking.Components;
@@ -85,10 +87,30 @@ public sealed partial class ShipyardSystem
         }
 
 
-        if (!TryPurchaseShuttle(station, vessel.ShuttlePath.ToString(), out var shuttle))
+        if (!TryPurchaseShuttle(station, vessel.ShuttlePath.ToString(), out var shuttle, out int price))
         {
             PlayDenySound(args.Actor, uid, component);
             return;
+        }
+
+        if (!TryComp<SWFactionMemberComponent>(args.Actor, out var comp))
+        {
+            PlayDenySound(args.Actor, uid, component);
+            return;
+        }
+
+        var query = EntityQueryEnumerator<SectorWarRuleComponent>();
+        while (query.MoveNext(out _, out var rule))
+        {
+            if (rule.FactionMoney[comp.Faction] < price)
+            {
+                PlayDenySound(args.Actor, uid, component);
+                return;
+            }
+            else
+            {
+                rule.FactionMoney[comp.Faction] -= price;
+            }
         }
 
         EntityUid? shuttleStation = null;
@@ -139,7 +161,7 @@ public sealed partial class ShipyardSystem
             LogImpact.Low,
             $"{ToPrettyString(player):actor} purchased shuttle {ToPrettyString(shuttle.Owner)} for {vessel.Price} credits via {ToPrettyString(component.Owner)}");
 
-        RefreshState(uid, 0, (ShipyardConsoleUiKey)args.UiKey);
+        RefreshState(uid, (ShipyardConsoleUiKey)args.UiKey);
     }
 
     private void OnConsoleUIOpened(EntityUid uid, ShipyardConsoleComponent component, BoundUIOpenedEvent args)
@@ -147,7 +169,7 @@ public sealed partial class ShipyardSystem
         if (!component.Initialized)
             return;
 
-        RefreshState(uid, 0, (ShipyardConsoleUiKey)args.UiKey);
+        RefreshState(uid, (ShipyardConsoleUiKey)args.UiKey);
     }
 
     private void ConsolePopup(EntityUid uid, string text)
@@ -272,9 +294,9 @@ public sealed partial class ShipyardSystem
     }
 
     private void RefreshState(EntityUid uid,
-        int balance,
         ShipyardConsoleUiKey uiKey)
     {
+        int balance = 0;
         var station = _station.GetOwningStation(uid);
         if (station == null)
             return;
@@ -284,7 +306,11 @@ public sealed partial class ShipyardSystem
         var query = EntityQueryEnumerator<SectorWarRuleComponent>();
         while (query.MoveNext(out _, out var rule))
         {
-            balance = 10000000;
+            if (capturableStationComponent.Fraction == null)
+            {
+                continue;
+            }
+            balance = rule.FactionMoney[capturableStationComponent.Fraction];
             //balance = capturableStationComponent.Fraction switch
             //{
             //    SectorFractions.Alliance => rule.AllianceCredits,

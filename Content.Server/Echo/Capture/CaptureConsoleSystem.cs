@@ -143,13 +143,11 @@ public sealed class CaptureConsoleSystem : EntitySystem
         var name = _station.GetStationNames().FirstOrNull(x => x.Entity == stationNet)?.Name;
         ISawmill _s = Logger.GetSawmill("sdfg");
         _s.Debug($"cf : {currentFraction}");
-        var faction = _sWFaction.GetFactionEntity(currentFraction);
-        string stationFactionName = faction != null ? faction.Value.Comp.Name : "uknownstation";
+        var tmp_faction = currentFraction != null ? _sWFaction.GetFactionEntity(currentFraction) : null;
+        string stationFactionName = tmp_faction != null ? tmp_faction.Value.Comp.Name : "Нет фракции";
 
-
-
-        faction = userFraction != null ? _sWFaction.GetFactionEntity(userFraction) : null;
-        string userFactionName = faction != null ? faction.Value.Comp.Name : "uknown";
+        tmp_faction = userFraction != null ? _sWFaction.GetFactionEntity(userFraction) : null;
+        string userFactionName = tmp_faction != null ? tmp_faction.Value.Comp.Name : "uknown";
 
         var state = new CaptureConsoleUpdateState(
             component.Capturing,

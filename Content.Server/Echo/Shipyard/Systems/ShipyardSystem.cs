@@ -2,10 +2,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
 using Content.Server.Cargo.Systems;
+using Content.Server.Echo.GameTicking.Rules.Components;
+using Content.Server.Echo.GameTicking.Systems;
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Systems;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
+using Content.Shared.Echo.GameTicking.Components;
 using Content.Shared.GameTicking;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Shipyard;
@@ -31,6 +34,7 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     [Dependency] private readonly StationSystem _station = default!;
     [Dependency] private readonly MapLoaderSystem _map = default!;
     [Dependency] private readonly MetaDataSystem _metaData = default!;
+    [Dependency] private readonly SectorWarRuleSystem _sectorWarRuleSystem = default!;
 
     public MapId? ShipyardMap { get; private set; }
     private float _shuttleIndex;
@@ -89,15 +93,16 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     /// </summary>
     /// <param name="stationUid">The ID of the station to dock the shuttle to</param>
     /// <param name="shuttlePath">The path to the shuttle file to load. Must be a grid file!</param>
-    public bool TryPurchaseShuttle(EntityUid stationUid, string shuttlePath, [NotNullWhen(true)] out ShuttleComponent? shuttle)
+    public bool TryPurchaseShuttle(EntityUid stationUid, string shuttlePath, [NotNullWhen(true)] out ShuttleComponent? shuttle, out int price)
     {
         if (!TryComp<StationDataComponent>(stationUid, out var stationData) || !TryAddShuttle(shuttlePath, out var shuttleGrid) || !TryComp<ShuttleComponent>(shuttleGrid, out shuttle))
         {
             shuttle = null;
+            price = 0;
             return false;
         }
 
-        var price = _pricing.AppraiseGrid((EntityUid) shuttleGrid, null);
+        price = (int)_pricing.AppraiseGrid((EntityUid) shuttleGrid, null);
         var targetGrid = _station.GetLargestGrid(stationData);
 
 

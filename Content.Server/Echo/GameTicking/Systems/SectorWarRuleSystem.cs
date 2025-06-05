@@ -126,5 +126,9 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
             var ev = new LoadingMapsEvent(maps);
             RaiseLocalEvent(uid, ev);
         }
+        var factions = _sWFaction.GetFactions();
+        foreach (var faction in factions.Keys) {
+            component.FactionMoney[faction] = component.StartBalance;
+        }
     }
 }

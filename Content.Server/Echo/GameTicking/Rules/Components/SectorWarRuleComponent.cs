@@ -13,6 +13,8 @@ public sealed partial class SectorWarRuleComponent : Component
     [DataField]
     public ProtoId<GameMapPrototype>[] Maps;
 
+    public Dictionary<string, int> FactionMoney = new();
+
     [DataField]
     public List<int> AlertDelays = [90,30,15,5]; //In minutes. Left -> Right order.
 
@@ -33,6 +35,9 @@ public sealed partial class SectorWarRuleComponent : Component
 
     [DataField]
     public int CaptureReward = 45000;
+
+    [DataField]
+    public int StartBalance = 100000;
 
     [DataField]
     public (EntityUid Entity, AudioComponent Component)? CurrentAudio;

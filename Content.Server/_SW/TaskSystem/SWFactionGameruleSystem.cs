@@ -21,9 +21,9 @@ public sealed class SWFactionGameruleSystem : GameRuleSystem<SWFactionGameruleCo
         base.Initialize();
     }
 
-    protected override void Started(EntityUid uid, SWFactionGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
+    protected override void Added(EntityUid uid, SWFactionGameruleComponent component, GameRuleComponent gameRule, GameRuleAddedEvent args)
     {
-        base.Started(uid, component, gameRule, args);
+        base.Added(uid, component, gameRule, args);
         foreach (string proto in component.FactionsPrototypes)
         {
             EntityUid factionUid = Spawn(proto);

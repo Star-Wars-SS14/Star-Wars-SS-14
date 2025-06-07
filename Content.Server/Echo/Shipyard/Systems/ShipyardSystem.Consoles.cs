@@ -87,11 +87,7 @@ public sealed partial class ShipyardSystem
         }
 
 
-        if (!TryPurchaseShuttle(station, vessel.ShuttlePath.ToString(), out var shuttle, out int price))
-        {
-            PlayDenySound(args.Actor, uid, component);
-            return;
-        }
+       
 
         if (!TryComp<SWFactionMemberComponent>(args.Actor, out var comp))
         {
@@ -100,6 +96,7 @@ public sealed partial class ShipyardSystem
         }
 
         var query = EntityQueryEnumerator<SectorWarRuleComponent>();
+        var price = vessel.Price;
         while (query.MoveNext(out _, out var rule))
         {
             if (rule.FactionMoney[comp.Faction] < price)
@@ -111,6 +108,12 @@ public sealed partial class ShipyardSystem
             {
                 rule.FactionMoney[comp.Faction] -= price;
             }
+        }
+
+        if (!TryPurchaseShuttle(station, vessel.ShuttlePath.ToString(), out var shuttle))
+        {
+            PlayDenySound(args.Actor, uid, component);
+            return;
         }
 
         EntityUid? shuttleStation = null;

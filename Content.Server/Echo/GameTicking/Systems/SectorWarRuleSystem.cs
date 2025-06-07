@@ -126,8 +126,14 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
             var ev = new LoadingMapsEvent(maps);
             RaiseLocalEvent(uid, ev);
         }
+    }
+
+    protected override void Started(EntityUid uid, SectorWarRuleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
+    {
+        base.Started(uid, component, gameRule, args);
         var factions = _sWFaction.GetFactions();
-        foreach (var faction in factions.Keys) {
+        foreach (var faction in factions.Keys)
+        {
             component.FactionMoney[faction] = component.StartBalance;
         }
     }

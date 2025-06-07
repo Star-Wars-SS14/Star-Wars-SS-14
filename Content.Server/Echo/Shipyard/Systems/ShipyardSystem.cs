@@ -93,16 +93,15 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
     /// </summary>
     /// <param name="stationUid">The ID of the station to dock the shuttle to</param>
     /// <param name="shuttlePath">The path to the shuttle file to load. Must be a grid file!</param>
-    public bool TryPurchaseShuttle(EntityUid stationUid, string shuttlePath, [NotNullWhen(true)] out ShuttleComponent? shuttle, out int price)
+    public bool TryPurchaseShuttle(EntityUid stationUid, string shuttlePath, [NotNullWhen(true)] out ShuttleComponent? shuttle)
     {
         if (!TryComp<StationDataComponent>(stationUid, out var stationData) || !TryAddShuttle(shuttlePath, out var shuttleGrid) || !TryComp<ShuttleComponent>(shuttleGrid, out shuttle))
         {
             shuttle = null;
-            price = 0;
             return false;
         }
 
-        price = (int)_pricing.AppraiseGrid((EntityUid) shuttleGrid, null);
+        var price = (int)_pricing.AppraiseGrid((EntityUid) shuttleGrid, null);
         var targetGrid = _station.GetLargestGrid(stationData);
 
 

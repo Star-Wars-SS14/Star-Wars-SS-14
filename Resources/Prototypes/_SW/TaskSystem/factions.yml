@@ -3,9 +3,10 @@
   components:
   - type: SWFaction
     name: Республика
-    availableTasks: RepublicTasksSet
-    addIntervalInSeconds: 1200 #20 min
     isMajor: true
+  - type: SWTaskContainer
+    availableTasks: RepublicTasksSet
+    addIntervalInSeconds: 1200 #20 min    
     startAmountOfTasks : 3
     maxAmountOfTasks: 5
 
@@ -14,9 +15,10 @@
   components:
   - type: SWFaction
     name: Империя
-    availableTasks: EmpireTasksSet
-    addIntervalInSeconds: 1200 #20 min
     isMajor: true
+  - type: SWTaskContainer
+    availableTasks: EmpireTasksSet
+    addIntervalInSeconds: 1200 #20 min   
     startAmountOfTasks : 2
     maxAmountOfTasks: 4
 
@@ -25,6 +27,7 @@
   components:
   - type: SWFaction
     name: Анклав мандалорцев
+  - type: SWTaskContainer
     availableTasks: MandalorianTasksSet
     addIntervalInSeconds: 1200 #20 min
     startAmountOfTasks : 2
@@ -35,6 +38,7 @@
   components:
   - type: SWFaction
     name: Синдикат "Черное солнце"
+  - type: SWTaskContainer
     availableTasks: BlackSunTasksSet
     addIntervalInSeconds: 1200 #20 min
     startAmountOfTasks : 2
@@ -45,6 +49,7 @@
   components:
   - type: SWFaction
     name: Синдикат "Обмен"
+  - type: SWTaskContainer
     availableTasks: ExchangeTasksSet
     addIntervalInSeconds: 1200 #20 min
     startAmountOfTasks : 2

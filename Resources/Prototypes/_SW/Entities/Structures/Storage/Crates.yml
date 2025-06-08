@@ -108,15 +108,50 @@
       prob: 0.50
       maxAmount: 3
     - id: SheetGlass10
-      prob: 0.20
+      prob: 0.30
       maxAmount: 2
     - id: SheetSteel10
-      prob: 0.20
+      prob: 0.30
       maxAmount: 2
-    - id: CombatKnife
+    - id: SWj111rancor
+      prob: 0.30
+      maxAmount: 1
+      orGroup: Weapon
+    - id: SWz1blastercarbine
+      prob: 0.30
+      maxAmount: 1
+      orGroup: Weapon
+    - id: SWgrantekf11d
+      prob: 0.30
+      maxAmount: 1
+      orGroup: Weapon
+    - id: SWGrantekF11D
+      prob: 0.30
+      maxAmount: 1
+      orGroup: Weapon
+    - id: SWGT-13ST
+      prob: 0.30
+      maxAmount: 1
+      orGroup: Weapon
+    - id: SWMK1
+      prob: 0.30
+      maxAmount: 1
+      orGroup: Weapon
+    - id: SWCannonYellowMagazine
       prob: 0.10
       maxAmount: 1
-    #Нужно сюда ещё добавить пистолет, когда такие будут
+    - id: SWF-11DCannonMagazine
+      prob: 0.10
+      maxAmount: 1
+    - id: SWF-11DSniperMagazine
+      prob: 0.10
+      maxAmount: 1
+    - id: SWZ-1Magazine
+      prob: 0.10
+      maxAmount: 1
+    - id: SWJ-111Magazine
+      prob: 0.10
+      maxAmount: 1
 
 - type: entity
   parent: SWCrateWood

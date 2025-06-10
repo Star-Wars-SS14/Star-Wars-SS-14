@@ -11,4 +11,36 @@
       sound:
         path: /Audio/Misc/siren.ogg
         params:
+          volume: -4 
+    - type: AccessReader
+      access: [[ "EmpireCommander" ]]
+
+- type: entity
+  parent: BaseComputer
+  id: SWArtilleryConsole
+  name: Консоль артилерии
+  components:
+  - type: ArtilleryConsole
+    artileryCalledProto: ArtilleryOnSpawnInstantEffect
+    sound:
+        path: /Audio/Misc/siren.ogg
+        params:
           volume: -4
+  - type: ActivatableUI
+    key: enum.ArtilleryConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.ArtilleryConsoleUiKey.Key:
+        type: ArtilleryConsoleBoundUserInterface
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: comm
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+  - type: AccessReader
+    access: [[ "EmpireMoff" ]]

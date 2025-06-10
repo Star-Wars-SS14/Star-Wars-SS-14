@@ -184,7 +184,7 @@
   id: RepublicMedicGear
   equipment:
     jumpsuit: SWClothingUniformJumpsuitFleece
-    outerClothing: SWRepublicSuit
+    outerClothing: SWMedicRepublicSuit
     shoes: ClothingShoesBootsJack
     head: SWClothingHeadRepublicHelmet
     id: SWIDCardRepublicMedic

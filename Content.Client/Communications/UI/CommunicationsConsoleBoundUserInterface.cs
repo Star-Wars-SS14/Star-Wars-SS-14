@@ -1,4 +1,4 @@
-﻿using Content.Shared._SW;
+using Content.Shared._SW;
 using Content.Shared.CCVar;
 using Content.Shared.Chat;
 using Content.Shared.Communications;

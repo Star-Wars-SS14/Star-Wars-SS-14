@@ -32,7 +32,7 @@
         Cold: 0.5 
 
 - type: entity
-  parent: [ClothingHeadBase, RepublicRadioHelmet]
+  parent: [ClothingHeadBase, SWRepublicRadioHelmet]
   id: SWRebelHelmet
   name: Rebel helmet
   description: Helmet with automatic polarized lenses and communication unit.

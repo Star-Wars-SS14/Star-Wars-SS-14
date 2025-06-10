@@ -10,7 +10,7 @@
     - 0,0,8,3
 
 - type: entity
-  parent: ImperialBackpack
+  parent: SWImperialBackpack
   id: SWImperialBackpackCamo
   name: imperial backpack camo
   components:

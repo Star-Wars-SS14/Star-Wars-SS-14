@@ -54,8 +54,8 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Republic/GEN_republic.rsi
 
 - type: entity
-  parent: SW_RepublicSuit
-  id: SW_MedicRepublicSuit
+  parent: SWRepublicSuit
+  id: SWMedicRepublicSuit
   name: Medic republic suit
   components:
   - type: Sprite

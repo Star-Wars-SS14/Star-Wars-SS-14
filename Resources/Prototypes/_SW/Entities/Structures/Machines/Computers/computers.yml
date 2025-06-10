@@ -21,7 +21,7 @@
   name: Консоль артилерии
   components:
   - type: ArtilleryConsole
-    artileryCalledProto: ArtilleryOnSpawnInstantEffect
+    artileryCalledProto: SWArtilleryOnSpawnInstantEffect
     sound:
         path: /Audio/Misc/siren.ogg
         params:

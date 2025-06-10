@@ -107,7 +107,7 @@
 - type: entity
   name: Вингмоу
   parent: [SimpleMobBase, FlyingMobBase]
-  id: MobWingmaw
+  id: SWMobWingmaw
   description: Летающая тварь, населяющая Балмору.
   components:
   - type: Sprite
@@ -171,7 +171,7 @@
 
 - type: entity
   name: Спавнер вингмоу
-  id: SpawnMobWingmaw
+  id: SWSpawnMobWingmaw
   parent: MarkerBase
   components:
   - type: Sprite

@@ -1,5 +1,5 @@
 - type: entity
-  id: SWSWBaseCartridge
+  id: SWBaseCartridge
   name: blast
   parent: BaseCartridge
   abstract: true

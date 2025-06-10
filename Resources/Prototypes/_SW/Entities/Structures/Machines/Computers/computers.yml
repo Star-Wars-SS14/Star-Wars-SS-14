@@ -13,7 +13,7 @@
         params:
           volume: -4 
     - type: AccessReader
-      access: [[ "EmpireCommander" ]]
+      access: [[ "SWEmpireCommander" ]]
 
 - type: entity
   parent: BaseComputer
@@ -43,4 +43,4 @@
     - map: ["computerLayerKeys"]
       state: generic_keys
   - type: AccessReader
-    access: [[ "EmpireMoff" ]]
+    access: [[ "SWEmpireMoff" ]]

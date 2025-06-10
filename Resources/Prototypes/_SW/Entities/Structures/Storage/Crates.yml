@@ -37,7 +37,7 @@
   - type: Sprite
     sprite: _SW/Structures/Storage/Crates/empire_crate.rsi
   - type: AccessReader
-    access: [["EmpireArsenal"]]
+    access: [["SWEmpireArsenal"]]
   - type: Destructible
     thresholds:
     - trigger:
@@ -63,7 +63,7 @@
   - type: Sprite
     sprite: _SW/Structures/Storage/Crates/republic_crate.rsi
   - type: AccessReader
-    access: [["RepublicArsenal"]]
+    access: [["SWRepublicArsenal"]]
   - type: Destructible
     thresholds:
     - trigger:

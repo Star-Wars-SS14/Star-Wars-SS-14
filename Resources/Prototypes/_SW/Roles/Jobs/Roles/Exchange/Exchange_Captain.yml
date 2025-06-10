@@ -12,4 +12,4 @@
   icon: "JobIconExchangeCaptain"
   supervisors: job-supervisors-exchange
   access:
-  - Exchange
+  - SWExchange

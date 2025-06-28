@@ -8,9 +8,9 @@ namespace Content.Server._SW.TaskSystem.ParrallelTask;
 [RegisterComponent]
 public sealed partial class SWParallelTaskComponent : Component
 {
-    [DataField]
-    public EntProtoId Task = default;
+    [DataField(required: true)]
+    public EntProtoId Task;
 
-    [DataField]
-    public string Faction = default;
+    [DataField(required: true)]
+    public string Faction;
 }

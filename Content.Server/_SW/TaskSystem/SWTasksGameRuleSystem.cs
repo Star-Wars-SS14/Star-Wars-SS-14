@@ -85,6 +85,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             args.AddLine($"Фракция {factionComp.Name}:");
             foreach (var task in taskComp.CurrentTasks)
             {
+                UpdateTaskProgress(task.Owner, task.Comp);
                 string text = $"""- Задание "{task.Comp.Name}": """;
                 if (task.Comp.Completeness == 1.0)
                 {
@@ -228,17 +229,30 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         var taskQuery = EntityQueryEnumerator<SWTaskComponent>();
         while (taskQuery.MoveNext(out var taskUid, out var taskComp))
         {
-            var ev = new SWGetProgressEvent();
-            RaiseLocalEvent(taskUid, ref ev);
-            if (ev.Handled)
-            {
-                taskComp.Completeness = ev.Progress;
-            }
-            if (ev.Progress == 1.0)
+            UpdateTaskProgress(taskUid, taskComp);
+            if (taskComp.Completeness == 1.0)
             {
                 RaiseLocalEvent(taskUid, new SWOnTaskCompleteEvent());
                 //QueueDel(taskUid);
             }
+        }
+    }
+
+    private void UpdateTaskProgress(EntityUid taskUid, SWTaskComponent? comp = null)
+    {
+        if (comp == null)
+        {
+            if (!TryComp(taskUid, out comp))
+            {
+                _sawmill.Error("Tried to update task progress on object that doesn't semm to be a task");
+                return;
+            }
+        }
+        var ev = new SWGetProgressEvent();
+        RaiseLocalEvent(taskUid, ref ev);
+        if (ev.Handled)
+        {
+            comp.Completeness = ev.Progress;
         }
     }
     public WeightedRandomPrototype FilterAvailableTasks(WeightedRandomPrototype proto, Entity<SWTaskContainerComponent> faction)
@@ -305,20 +319,20 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         }
     }
 
-    public void AddTask(string factionId, string taskProto)
+    public Entity<SWTaskComponent>? AddTask(string factionId, string taskProto)
     {
-        var tmp = _swFaction.GetFactionEntity(taskProto);
+        var tmp = _swFaction.GetFactionEntity(factionId);
 
         if (tmp == null)
         {
             _sawmill.Error($"Attempted to add task to unknown faction : {factionId}");
-            return;
+            return null;
         }
 
         if (!TryComp<SWTaskContainerComponent>(tmp.Value.Owner, out var taskComp))
         {
             _sawmill.Error($"Attempted to add task to faction without TaskContainerComponent: {factionId}");
-            return;
+            return null;
         }
         Entity<SWTaskContainerComponent> faction = new(tmp.Value.Owner, taskComp);
         var task = Spawn(taskProto);
@@ -329,6 +343,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         var ev = new SWTaskAddAdditionalDescEvent();
         RaiseLocalEvent(task, ref ev);
         comp.Description += ev.Description;
+        return new Entity<SWTaskComponent>(task, comp);
     }
     public List<Entity<SWTaskComponent>> GetFactionTasks(string? faction)
     {

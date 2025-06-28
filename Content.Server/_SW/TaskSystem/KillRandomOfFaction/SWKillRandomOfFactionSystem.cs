@@ -1,3 +1,4 @@
+using Content.Server._SW.TaskSystem.ParallelTask;
 using Content.Server.Administration.Commands;
 using Content.Shared._SW.TaskSystem;
 using Content.Shared.Damage;
@@ -27,12 +28,12 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<SWKillRandomByNameComponent, SWTaskCheckRequirementsEvent>(OnCheckRequirementsByName);
-        SubscribeLocalEvent<SWKillRandomByNameComponent, SWOnTaskInitEvent>(OnTaskInitByName);
+        SubscribeLocalEvent<SWKillRandomByNameComponent, SWOnTaskInitEvent>(OnTaskInitByName, before: [typeof(SWParallelTaskSystem)]);
         SubscribeLocalEvent<SWKillRandomByNameComponent, SWTaskAddAdditionalDescEvent>(OnDescUpdatedByName);
         SubscribeLocalEvent<SWKillRandomByNameComponent, SWTaskGetScoreEvent>(GetScoreByName);
 
         SubscribeLocalEvent<SWKillRandomByJobComponent, SWTaskCheckRequirementsEvent>(OnCheckRequirementsByJob);
-        SubscribeLocalEvent<SWKillRandomByJobComponent, SWOnTaskInitEvent>(OnTaskInitByJob);
+        SubscribeLocalEvent<SWKillRandomByJobComponent, SWOnTaskInitEvent>(OnTaskInitByJob, before: [typeof(SWParallelTaskSystem)]);
         SubscribeLocalEvent<SWKillRandomByJobComponent, SWTaskAddAdditionalDescEvent>(OnDescUpdatedByJob);
         SubscribeLocalEvent<SWKillRandomByJobComponent, SWTaskGetScoreEvent>(GetScoreByJob);
 

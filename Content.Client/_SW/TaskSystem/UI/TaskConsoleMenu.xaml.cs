@@ -22,7 +22,8 @@ public sealed partial class TaskConsoleMenu : DefaultWindow
     public void PopulateTasks(List<TaskInfo> list)
     {
         TaskList.Children.Clear();
-        foreach (var task in list){
+        foreach (var task in list)
+        {
             var cntrl = new SWTaskControl(task.TaskName, task.TaskDesc, CreateTaskStatusString(task.Status));
             TaskList.AddChild(cntrl);
         }

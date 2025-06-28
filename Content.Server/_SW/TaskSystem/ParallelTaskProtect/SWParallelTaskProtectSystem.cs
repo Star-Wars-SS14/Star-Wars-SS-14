@@ -1,0 +1,50 @@
+using Content.Server._SW.TaskSystem.KillRandomOfFaction;
+using Content.Server._SW.TaskSystem.ParallelTask;
+using Content.Shared._SW.TaskSystem;
+using Content.Shared.Mobs.Components;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Content.Server._SW.TaskSystem.ParallelTaskProtect;
+
+public sealed class SWParallelTaskProtectSystem : EntitySystem
+{
+    public override void Initialize()
+    {
+        base.Initialize();
+        SubscribeLocalEvent<SWKillRandomByNameComponent, AfterParallelTaskSpawnedEvent>(OnSpawned);
+        SubscribeLocalEvent<SWParallelTaskProtectComponent, SWGetProgressEvent>(OnGetProgress);
+    }
+    private void OnSpawned(Entity<SWKillRandomByNameComponent> ent, ref AfterParallelTaskSpawnedEvent args)
+    {
+        if (TryComp<SWParallelTaskProtectComponent>(args.SpawnedTask, out var comp))
+        {
+            comp.PersonToProtect = ent.Comp.PersonToKill;
+            var taskcomp = EnsureComp<SWTaskComponent>(args.SpawnedTask);
+            if (ent.Comp.PersonToKill != null)
+            {
+                taskcomp.Description += $"\nИмя того, кого вы должны защитить: {Name(ent.Comp.PersonToKill.Value)}\n";
+            }
+        }
+    }
+    private void OnGetProgress(Entity<SWParallelTaskProtectComponent> ent, ref SWGetProgressEvent args)
+    {
+        if (!TryComp<MobStateComponent>(ent.Comp.PersonToProtect, out var comp))
+        {
+            return;
+        }
+
+        if (comp.CurrentState == Shared.Mobs.MobState.Dead)
+        {
+            args.Progress = 0.0f;
+        }
+        else
+        {
+            args.Progress = 1.0f;
+        }
+        args.Handled = true;
+    }
+}

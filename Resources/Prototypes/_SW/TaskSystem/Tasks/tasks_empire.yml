@@ -1,10 +1,7 @@
 - type: weightedRandom
   id: EmpireTasksSet
   weights:
-    KillByJobTaskEmpire: 4
-    KillCriminalTaskEmpire: 7
     KillByNameTaskEmpire: 5
-    KillGeneralEmpire: 1
 
 - type: entity
   id: KillByJobTaskEmpire
@@ -60,6 +57,10 @@
       SWRepublicCaptain : 10
       SWRepublicLieutenant : 10
       SWRepublicMedic : 5
+  - type: SWParallelTask
+    task: ProtectTaskRepublic
+    faction: RepublicFaction
+
 
 - type: entity
   id: KillGeneralEmpire

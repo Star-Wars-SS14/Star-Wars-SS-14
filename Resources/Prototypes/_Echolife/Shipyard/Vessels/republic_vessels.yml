@@ -1,0 +1,31 @@
+ - type: vessel
+   id: RepublicCruiserBig
+   name: Republic Cruiser Mk. 2
+   description: Cruiser
+   price: 37500 # 15% markup +4890
+   category: Small
+   fraction: RepublicFaction
+   shuttlePath: /Maps/SW/Vessels/Republic/resistanceCruiser.yml
+
+ - type: gameMap
+   id: RepublicCruiserBig
+   mapName: 'Republic Cruiser Mk. 2'
+   mapPath: /Maps/SW/Vessels/Republic/resistanceCruiser.yml
+   minPlayers: 0
+   stations:
+     RepublicCruiserBig:
+       stationProto: StandardVessel
+       components:
+         - type: StationNameSetup
+           mapNameTemplate: 'Republic Cruiser Mk. 2 {1}'
+           nameGenerator:
+             !type:NanotrasenNameGenerator
+             prefixCreator: '14'
+         - type: StationJobs
+           availableJobs:
+            SWRepublicGeneral: [ 1, 1 ]
+            SWRepublicCaptain: [ 1, 1 ]
+            SWRepublicLieutenant: [ 2, 2 ]
+            SWRepublicSoldier: [ 6, 6 ]
+            SWRepublicMedic: [ 2, 2 ]
+            SWRepublicRecruit: [ 4, 4 ]

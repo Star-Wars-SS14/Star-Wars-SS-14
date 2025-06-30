@@ -86,9 +86,6 @@ public sealed partial class ShipyardSystem
             return;
         }
 
-
-       
-
         if (!TryComp<SWFactionMemberComponent>(args.Actor, out var comp))
         {
             PlayDenySound(args.Actor, uid, component);
@@ -97,25 +94,23 @@ public sealed partial class ShipyardSystem
 
         var query = EntityQueryEnumerator<SectorWarRuleComponent>();
         var price = vessel.Price;
-        while (query.MoveNext(out _, out var rule))
-        {
-            if (rule.FactionMoney[comp.Faction] < price)
-            {
-                PlayDenySound(args.Actor, uid, component);
-                return;
-            }
-            else
-            {
-                rule.FactionMoney[comp.Faction] -= price;
-            }
-        }
 
+        //we assume that there is only one rule sectorwar
+        query.MoveNext(out _, out var rule);
+        if (rule == null || rule.FactionMoney[comp.Faction] < price)
+        {
+            PlayDenySound(args.Actor, uid, component);
+            return;
+        }
+        ISawmill _s = Logger.GetSawmill("adsfg");
+        _s.Debug("1");
         if (!TryPurchaseShuttle(station, vessel.ShuttlePath.ToString(), out var shuttle))
         {
             PlayDenySound(args.Actor, uid, component);
             return;
         }
-
+        _s.Debug("2");
+        rule.FactionMoney[comp.Faction] -= price;
         EntityUid? shuttleStation = null;
         // setting up any stations if we have a matching game map prototype to allow late joins directly onto the vessel
         if (_prototypeManager.TryIndex<GameMapPrototype>(vessel.ID, out var stationProto))

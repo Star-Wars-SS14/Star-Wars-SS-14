@@ -1,0 +1,72 @@
+###Republic
+- type: entity
+  id: SW_SpawnPointRepublicGeneralLJ
+  parent: SpawnPointJobBase
+  name: Republic General LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWRepublicGeneral
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointRepublicCaptainLJ
+  parent: SpawnPointJobBase
+  name: Republic Captain LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWRepublicCaptain
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointRepublicLieutenantLJ
+  parent: SpawnPointJobBase
+  name: Republic Lieutenant LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWRepublicLieutenant
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointRepublicSoldiersLJ
+  parent: SpawnPointJobBase
+  name: Republic Soldier LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWRepublicSoldier
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointRepublicMedicLJ
+  parent: SpawnPointJobBase
+  name: Republic Medic LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWRepublicMedic
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointRepublicRecruitLJ
+  parent: SpawnPointJobBase
+  name: Republic Recruit LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWRepublicRecruit
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green

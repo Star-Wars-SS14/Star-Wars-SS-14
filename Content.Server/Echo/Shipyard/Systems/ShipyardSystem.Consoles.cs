@@ -102,14 +102,11 @@ public sealed partial class ShipyardSystem
             PlayDenySound(args.Actor, uid, component);
             return;
         }
-        ISawmill _s = Logger.GetSawmill("adsfg");
-        _s.Debug("1");
         if (!TryPurchaseShuttle(station, vessel.ShuttlePath.ToString(), out var shuttle))
         {
             PlayDenySound(args.Actor, uid, component);
             return;
         }
-        _s.Debug("2");
         rule.FactionMoney[comp.Faction] -= price;
         EntityUid? shuttleStation = null;
         // setting up any stations if we have a matching game map prototype to allow late joins directly onto the vessel

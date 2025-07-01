@@ -70,3 +70,64 @@
   - type: Sprite
     layers:
     - state: green
+
+#Empire
+- type: entity
+  id: SW_SpawnPointEmpireMoffLJ
+  parent: SpawnPointJobBase
+  name: Empire Moff LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWEmpireMoff
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointEmpireMajorLJ
+  parent: SpawnPointJobBase
+  name: Empire Major LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWEmpireMajor
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointEmpireLieutenantLJ
+  parent: SpawnPointJobBase
+  name: Empire Lieutenant LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWEmpireLieutenant
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointEmpireSoldierLJ
+  parent: SpawnPointJobBase
+  name: Empire Soldier LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWEmpireSoldier
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointEmpireMedicLJ
+  parent: SpawnPointJobBase
+  name: Empire Medic LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWEmpireMedic
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green

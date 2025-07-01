@@ -25,6 +25,7 @@ public enum SpawnPointType
 {
     Unset = 0,
     LateJoin,
+    LateJoinByJob, //SW
     Job,
     Observer,
 }

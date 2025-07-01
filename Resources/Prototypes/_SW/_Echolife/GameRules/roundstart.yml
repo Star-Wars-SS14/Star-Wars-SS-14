@@ -5,6 +5,8 @@
   - type: SectorWarRule
     maps:
       - Box
+      - Box
+      - Box
     startBalance: 10000000
   - type: SWFactionGamerule
     factionsPrototypes:

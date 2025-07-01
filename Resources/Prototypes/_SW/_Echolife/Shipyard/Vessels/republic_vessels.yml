@@ -2,8 +2,8 @@
    id: RepublicCruiserBig
    name: Republic Cruiser Mk. 2
    description: Cruiser
-   price: 37500 # 15% markup +4890
-   category: Small
+   price: 70000 # 15% markup +4890
+   category: Large
    fraction: RepublicFaction
    shuttlePath: /Maps/SW/Vessels/Republic/resistanceCruiser.yml
 
@@ -34,14 +34,14 @@
    id: RepublicCruiserSmall
    name: Republic Cruiser Mk. 1
    description: Cruiser
-   price: 37500 # 15% markup +4890
-   category: Small
+   price: 40000 # 15% markup +4890
+   category: Medium
    fraction: RepublicFaction
    shuttlePath: /Maps/SW/Vessels/Republic/resistanceCruisersmall.yml
 
  - type: gameMap
-   id: RepublicCruiserBig
-   mapName: 'Republic Cruiser Mk. 2'
+   id: RepublicCruiserSmall
+   mapName: 'Republic Cruiser Mk. 1'
    mapPath: /Maps/SW/Vessels/Republic/resistanceCruisersmall.yml
    minPlayers: 0
    stations:
@@ -49,7 +49,7 @@
        stationProto: StandardVessel
        components:
          - type: StationNameSetup
-           mapNameTemplate: 'Republic Cruiser Mk. 2 {1}'
+           mapNameTemplate: 'Republic Cruiser Mk. 1 {1}'
            nameGenerator:
              !type:NanotrasenNameGenerator
              prefixCreator: '14'

@@ -5,6 +5,7 @@
   - type: SectorWarRule
     maps:
       - Box
+    startBalance: 10000000
   - type: SWFactionGamerule
     factionsPrototypes:
     - RepublicFaction

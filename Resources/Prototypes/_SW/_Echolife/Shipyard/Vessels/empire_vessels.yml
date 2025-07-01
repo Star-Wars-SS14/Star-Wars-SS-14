@@ -1,0 +1,89 @@
+ - type: vessel
+   id: EmpireCruiser
+   name: Imperial Cruiser
+   description: Imperial Cruiser
+   price: 70000 # 15% markup +4890
+   category: Large
+   fraction: EmpireFaction
+   shuttlePath: /Maps/SW/Vessels/Empire/imperialcruiser.yml
+
+ - type: gameMap
+   id: EmpireCruiser
+   mapName: 'Imperial Cruiser'
+   mapPath: /Maps/SW/Vessels/Empire/imperialcruiser.yml
+   minPlayers: 0
+   stations:
+     EmpireCruiser:
+       stationProto: StandardVessel
+       components:
+         - type: StationNameSetup
+           mapNameTemplate: 'Imperial Cruiser {1}'
+           nameGenerator:
+             !type:NanotrasenNameGenerator
+             prefixCreator: '14'
+         - type: StationJobs
+           availableJobs:
+            SWEmpireMoff: [ 1, 1 ]
+            SWEmpireMajor: [ 1, 1 ]
+            SWEmpireLieutenant: [ 2, 2 ]
+            SWEmpireSoldier: [ 8, 8 ]
+            SWEmpireMedic: [ 2, 2 ]
+
+
+
+ - type: vessel
+   id: EmpireISI
+   name: ISI
+   description: Imperial Cruiser
+   price: 40000 # 15% markup +4890
+   category: Medium
+   fraction: EmpireFaction
+   shuttlePath: /Maps/SW/Vessels/Empire/ISI.yml
+
+ - type: gameMap
+   id: EmpireISI
+   mapName: 'Imperial Cruiser'
+   mapPath: /Maps/SW/Vessels/Empire/ISI.yml
+   minPlayers: 0
+   stations:
+     EmpireISI:
+       stationProto: StandardVessel
+       components:
+         - type: StationNameSetup
+           mapNameTemplate: 'ISI {1}'
+           nameGenerator:
+             !type:NanotrasenNameGenerator
+             prefixCreator: '14'
+         - type: StationJobs
+           availableJobs:
+            SWEmpireLieutenant: [ 1, 1 ]
+            SWEmpireSoldier: [ 4, 4 ]
+            SWEmpireMedic: [ 1, 1 ]
+
+
+ - type: vessel
+   id: EmpireMk6
+   name: Mk6
+   description: Small imperial vessel
+   price: 40000 # 15% markup +4890
+   category: Small
+   fraction: EmpireFaction
+   shuttlePath: /Maps/SW/Vessels/Empire/Mk6.yml
+
+ - type: gameMap
+   id: EmpireMk6
+   mapName: 'Imperial Cruiser'
+   mapPath: /Maps/SW/Vessels/Empire/Mk6.yml
+   minPlayers: 0
+   stations:
+     EmpireMk6:
+       stationProto: StandardVessel
+       components:
+         - type: StationNameSetup
+           mapNameTemplate: 'Mk6 {1}'
+           nameGenerator:
+             !type:NanotrasenNameGenerator
+             prefixCreator: '14'
+         - type: StationJobs
+           availableJobs:
+            SWEmpireSoldier: [ 1, 1 ]

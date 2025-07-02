@@ -1,0 +1,37 @@
+- type: gameMap
+  id: SpaceWarRoundstart
+  mapName: 'Space War'
+  mapPath: /Maps/SW/spaceWaRoundstart.yml
+  minPlayers: 10
+  stations:
+    RepublicCruiser:
+       stationProto: StandardVessel
+       components:
+         - type: StationNameSetup
+           mapNameTemplate: 'Republic Cruiser Mk. 2 {1}'
+           nameGenerator:
+             !type:NanotrasenNameGenerator
+             prefixCreator: '14'
+         - type: StationJobs
+           availableJobs:
+            SWRepublicGeneral: [ 1, 1 ]
+            SWRepublicCaptain: [ 1, 1 ]
+            SWRepublicLieutenant: [ 2, 2 ]
+            SWRepublicSoldier: [ 6, 6 ]
+            SWRepublicMedic: [ 2, 2 ]
+            SWRepublicRecruit: [ 4, 4 ]
+    ImperialCruiser:
+       stationProto: StandardVessel
+       components:
+         - type: StationNameSetup
+           mapNameTemplate: 'Imperial Cruiser {1}'
+           nameGenerator:
+             !type:NanotrasenNameGenerator
+             prefixCreator: '14'
+         - type: StationJobs
+           availableJobs:
+            SWEmpireMoff: [ 1, 1 ]
+            SWEmpireMajor: [ 1, 1 ]
+            SWEmpireLieutenant: [ 2, 2 ]
+            SWEmpireSoldier: [ 8, 8 ]
+            SWEmpireMedic: [ 2, 2 ]

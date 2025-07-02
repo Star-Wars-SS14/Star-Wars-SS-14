@@ -7,6 +7,19 @@
     RepublicCruiser:
        stationProto: StandardVessel
        components:
+         - type: GridSpawn
+           groups:
+             ast1: !type:GridSpawnGroup
+               addComponents:
+                - type: BecomesStation
+                  id: ast
+                - type: StationData
+               paths:
+                - /Maps/SW/asteroid.yml
+               minimumDistance: 120
+               maximumDistance: 150
+               minCount: 1
+               maxCount: 1
          - type: StationNameSetup
            mapNameTemplate: 'Republic Cruiser Mk. 2 {1}'
            nameGenerator:
@@ -23,6 +36,19 @@
     ImperialCruiser:
        stationProto: StandardVessel
        components:
+         - type: GridSpawn
+           groups:
+             ast1: !type:GridSpawnGroup
+               addComponents:
+                - type: BecomesStation
+                  id: asts
+                - type: StationData
+               paths:
+                - /Maps/SW/asteroid.yml
+               minimumDistance: 120
+               maximumDistance: 150
+               minCount: 1
+               maxCount: 1
          - type: StationNameSetup
            mapNameTemplate: 'Imperial Cruiser {1}'
            nameGenerator:

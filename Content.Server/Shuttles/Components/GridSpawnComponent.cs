@@ -70,9 +70,9 @@ public sealed class DungeonSpawnGroup : IGridSpawnGroup
     public List<ProtoId<DungeonConfigPrototype>> Protos = new();
 
     /// <inheritdoc />
-    public float MinimumDistance { get; }
+    public float MinimumDistance { get; set; }
 
-    public float MaximumDistance { get; }
+    public float MaximumDistance { get; set; }
 
     /// <inheritdoc />
     public ProtoId<LocalizedDatasetPrototype>? NameDataset { get; }
@@ -102,10 +102,10 @@ public sealed class GridSpawnGroup : IGridSpawnGroup
     public List<ResPath> Paths = new();
 
     /// <inheritdoc />
-    public float MinimumDistance { get; }
+    public float MinimumDistance { get; set; }
 
     /// <inheritdoc />
-    public float MaximumDistance { get; }
+    public float MaximumDistance { get; set; }
     public ProtoId<LocalizedDatasetPrototype>? NameDataset { get; }
     public int MinCount { get; set; } = 1;
     public int MaxCount { get; set; } = 1;

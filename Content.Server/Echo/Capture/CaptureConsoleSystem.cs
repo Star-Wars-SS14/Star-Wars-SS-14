@@ -99,14 +99,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
         var query = EntityQueryEnumerator<SectorWarRuleComponent>();
         while (query.MoveNext(out var rule))
         {
-            if (rule.FactionsScore.ContainsKey(console.CapturingFraction))
-            {
-                rule.FactionsScore[console.CapturingFraction]++;
-            }
-            else
-            {
-                rule.FactionsScore[console.CapturingFraction] = 1;
-            }
+            rule.FactionsScore[console.CapturingFraction]++;
         }
 
         UpdateUserInterface(uid);

@@ -10,9 +10,6 @@ public sealed partial class SectorWarRuleComponent : Component
 {
     public Dictionary<string, uint> FactionsScore = new();
 
-    [DataField]
-    public ProtoId<GameMapPrototype>[] Maps;
-
     public Dictionary<string, int> FactionMoney = new();
 
     [DataField]

@@ -10,6 +10,7 @@ using Content.Server.GameTicking.Rules.Components;
 using Content.Server.GridPreloader;
 using Content.Server.Maps;
 using Content.Server.Station.Systems;
+using Content.Shared._SW.TaskSystem;
 using Content.Shared.Echo.GameTicking.Components;
 using Content.Shared.GameTicking.Components;
 using Robust.Server.Audio;
@@ -43,28 +44,19 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
         base.AppendRoundEndText(uid, component, gameRule, ref args);
         if (_gameRule == null)
             return;
-        var query = EntityQueryEnumerator<CapturableStationComponent>();
-
-        var maxScoreFaction = component.FactionsScore.Aggregate((x, y) => x.Value > y.Value ? x : y);
 
         var message = new StringBuilder();
-        var faction = _sWFaction.GetFactionEntity(maxScoreFaction.Key);
-        if (faction == null)
+        message.AppendLine("Очки фракций:");
+        foreach (var (faction, score) in component.FactionsScore)
         {
-            return;
+            var entfact = _sWFaction.GetFactionEntity(faction);
+            if (entfact == null)
+            {
+                continue;
+            }
+            message.AppendLine($"{entfact.Value.Comp.Name} : {score} очков");
         }
-        message.AppendLine($"win : {faction.Value.Comp.Name}");
-        message.AppendLine();
         args.AddLine(message.AppendLine().ToString());
-        if (_gameRule.CurrentAudio != null && !Deleted(_gameRule.CurrentAudio.Value.Entity))
-        {
-            _audio.Stop(_gameRule.CurrentAudio?.Entity);
-        }
-        //_gameRule.CurrentAudio = _audio.PlayGlobal(allianceCap > resistanceCap
-        //        ? _gameRule.AllianceWinSound
-        //        : _gameRule.ResistanceWinSound,
-            //Filter.Broadcast(),
-            //true);
     }
 
     public override void Update(float frameTime)
@@ -92,40 +84,42 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
     {
         _gameRule = component;
         var maps = new List<GameMapPrototype>();
-        foreach (var map in component.Maps)
-        {
-            var gameMap = _prototypeManager.Index(map);
-            maps.Add(gameMap);
-            _map.CreateMap(out var mapId);
-            GameTicker.LoadGameMap(gameMap, mapId, new MapLoadOptions { LoadMap = true, DoMapInit = true });
-            //_map.InitializeMap(mapId);
-            //_gameTicker.LoadGameMap(_prototype.Index<GameMapPrototype>(map.Id), mapId, null);
-            _map.SetPaused(mapId, false);
-            Log.Info($"Created map {mapId} for {ToPrettyString(uid):rule}");
-            /*
-            if (gameMap.MapPath is var path)
-            {
-                var options = new MapLoadOptions { LoadMap = true };
-                if (!_mapLoader.TryLoad(mapId, path.ToString(), out var roots, options))
-                {
-                    Log.Error($"Failed to load map from {path}!");
-                    Del(mapUid);
-                    ForceEndSelf(uid, gameRule);
-                    return;
-                }
 
-                grids = roots;
-            }
-            */
-            //_map.SetPaused(mapId, false);
-            var station = _stationSystem.GetStationInMap(mapId);
-            if (station != null)
-            {
-                EnsureComp<CapturableStationComponent>(station.Value);
-            }
-            var ev = new LoadingMapsEvent(maps);
-            RaiseLocalEvent(uid, ev);
-        }
+
+        //foreach (var map in component.Maps)
+        //{
+        //    var gameMap = _prototypeManager.Index(map);
+        //    maps.Add(gameMap);
+        //    _map.CreateMap(out var mapId);
+        //    GameTicker.LoadGameMap(gameMap, mapId, new MapLoadOptions { LoadMap = true, DoMapInit = true });
+        //    //_map.InitializeMap(mapId);
+        //    //_gameTicker.LoadGameMap(_prototype.Index<GameMapPrototype>(map.Id), mapId, null);
+        //    _map.SetPaused(mapId, false);
+        //    Log.Info($"Created map {mapId} for {ToPrettyString(uid):rule}");
+        //    /*
+        //    if (gameMap.MapPath is var path)
+        //    {
+        //        var options = new MapLoadOptions { LoadMap = true };
+        //        if (!_mapLoader.TryLoad(mapId, path.ToString(), out var roots, options))
+        //        {
+        //            Log.Error($"Failed to load map from {path}!");
+        //            Del(mapUid);
+        //            ForceEndSelf(uid, gameRule);
+        //            return;
+        //        }
+
+        //        grids = roots;
+        //    }
+        //    */
+        //    //_map.SetPaused(mapId, false);
+        //    var station = _stationSystem.GetStationInMap(mapId);
+        //    if (station != null)
+        //    {
+        //        EnsureComp<CapturableStationComponent>(station.Value);
+        //    }
+        //    var ev = new LoadingMapsEvent(maps);
+        //    RaiseLocalEvent(uid, ev);
+        //}
     }
 
     protected override void Started(EntityUid uid, SectorWarRuleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
@@ -135,6 +129,11 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
         foreach (var faction in factions.Keys)
         {
             component.FactionMoney[faction] = component.StartBalance;
+        }
+
+        foreach (var (factionid, _) in factions)
+        {
+            component.FactionsScore[factionid] = 0;
         }
     }
 }

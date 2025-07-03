@@ -157,11 +157,6 @@ public sealed partial class ShuttleSystem
             }
 
             spawned = ent[0];
-            var spawnCoords = _transform.GetMapCoordinates(targetGrid);
-            spawnCoords = spawnCoords.Offset(_random.NextVector2(group.MinimumDistance, group.MaximumDistance));
-            TryFTLProximity(spawned, _transform.ToCoordinates(spawned, spawnCoords)); //we use it to avoid overlapping grids because FTL has check for it
-            //_transform.SetMapCoordinates(spawned, spawnCoords);
-
             return true;
         }
 

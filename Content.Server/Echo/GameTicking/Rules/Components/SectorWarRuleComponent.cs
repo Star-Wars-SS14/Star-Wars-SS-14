@@ -31,9 +31,6 @@ public sealed partial class SectorWarRuleComponent : Component
     public string? CaptureSound = null; //"/Audio/Echo/capture.ogg";
 
     [DataField]
-    public int CaptureReward = 45000;
-
-    [DataField]
     public int StartBalance = 100000;
 
     [DataField]

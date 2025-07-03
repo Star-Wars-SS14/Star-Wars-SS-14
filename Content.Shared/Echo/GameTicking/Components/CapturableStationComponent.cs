@@ -5,4 +5,7 @@ public sealed partial class CapturableStationComponent : Component
 {
     [DataField]
     public string? Fraction = null;
+
+    [DataField]
+    public int CaptureReward = 45000;
 }

@@ -81,7 +81,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
 
         EnsureComp<CapturableStationComponent>(station.Value, out var capturable);
 
-        capturable.Fraction = console.CapturingFraction;
+        
         var fractionText = "";
         var faction = _sWFaction.GetFactionEntity(console.CapturingFraction);
 
@@ -95,11 +95,15 @@ public sealed class CaptureConsoleSystem : EntitySystem
                 ("fraction", fractionText)),
             playSound: false,
             colorOverride: Color.Yellow);
-
         var query = EntityQueryEnumerator<SectorWarRuleComponent>();
         while (query.MoveNext(out var rule))
         {
+            if (capturable.Fraction != null) {
+                rule.FactionsScore[capturable.Fraction]--;
+            }
             rule.FactionsScore[console.CapturingFraction]++;
+            capturable.Fraction = console.CapturingFraction;
+            rule.FactionMoney[console.CapturingFraction] += capturable.CaptureReward;
         }
 
         UpdateUserInterface(uid);

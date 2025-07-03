@@ -31,13 +31,11 @@ public sealed class SpawnPointSystem : EntitySystem
         {
             if (args.Station != null && _stationSystem.GetOwningStation(uid, xform) != args.Station)
                 continue;
-            ISawmill _s = Logger.GetSawmill("asfgh");
-            _s.Debug("1");
+
             //SW start
             if (_gameTicker.RunLevel == GameRunLevel.InRound && spawnPoint.SpawnType == SpawnPointType.LateJoinByJob &&
                  (args.Job == null || spawnPoint.Job == args.Job))
             {
-                _s.Debug("2");
                 possiblePositions.Add(xform.Coordinates);
             }
             //SW end

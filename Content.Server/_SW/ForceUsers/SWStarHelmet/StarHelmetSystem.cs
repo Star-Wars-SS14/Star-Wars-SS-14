@@ -1,4 +1,4 @@
-﻿using Content.Server._SW.Force.Components;
+using Content.Server._SW.Force.Components;
 using Content.Server.Chat.Systems;
 using Content.Server.Radio;
 using Content.Server.Radio.Components;
@@ -7,6 +7,7 @@ using Content.Shared.Chat;
 using Content.Shared.Examine;
 using Content.Shared.Inventory.Events;
 using Content.Shared.Radio;
+using Content.Shared.Shuttles.Components;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
@@ -19,7 +20,6 @@ public sealed class StarHelmetSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly RadioSystem _radio = default!;
     [Dependency] private readonly RadioDeviceSystem _radioDevice = default!;
-
     public override void Initialize()
     {
         base.Initialize();
@@ -62,19 +62,40 @@ public sealed class StarHelmetSystem : EntitySystem
             _netMan.ServerSendMessage(args.ChatMsg, actor.PlayerSession.Channel);
     }
 
-    private void OnSpeak(EntityUid helmet, WearingStarHelmetComponent component, EntitySpokeEvent args)
+    private void OnSpeak(EntityUid messageSource, WearingStarHelmetComponent component, EntitySpokeEvent args)
     {
-        if (args.Channel != null)
+        if (component.ObjectsWithStarComponent.Count == 0)
         {
-            _radio.SendRadioMessage(helmet, args.Message, args.Channel, component.Helmet);
-            args.Channel = null;
+            return;
+        }
+
+        foreach (EntityUid helmet in component.ObjectsWithStarComponent)
+        {
+            if (args.Channel != null && HasComp<ActiveRadioComponent>(helmet))
+            {
+                _radio.SendRadioMessage(messageSource, args.Message, args.Channel, helmet);
+                args.Channel = null;
+            }
         }
     }
 
     private void OnGotEquipped(EntityUid helmet, StarHelmetComponent component, GotEquippedEvent args)
     {
+
+        if (!StarHelmetComponent.AllowedSlots.Contains(args.SlotFlags))
+        {
+            return;
+        }
+        WearingStarHelmetComponent comp = EnsureComp<WearingStarHelmetComponent>(args.Equipee);
+        if (!comp.ObjectsWithStarComponent.Contains(helmet))
+        {
+            comp.ObjectsWithStarComponent.Add(helmet);
+        }
+        EnsureComp<ActiveRadioComponent>(helmet).Channels = new(component.Channels);
+
         EnsureComp<WearingStarHelmetComponent>(args.Equipee).Helmet = helmet;
         EnsureComp<ActiveRadioComponent>(helmet).Channels = new HashSet<string>(component.Channels);
+
 
         if (!TryComp<RadioSpeakerComponent>(helmet, out var radioSpeakerComponent))
             return;
@@ -86,7 +107,16 @@ public sealed class StarHelmetSystem : EntitySystem
     private void OnGotUnequipped(EntityUid helmet, StarHelmetComponent component, GotUnequippedEvent args)
     {
         RemComp<ActiveRadioComponent>(helmet);
-        RemComp<WearingStarHelmetComponent>(args.Equipee);
+        if (!TryComp<WearingStarHelmetComponent>(args.Equipee, out var wearingComponent))
+        {
+            return;
+        }
+
+        wearingComponent.ObjectsWithStarComponent.Remove(helmet);
+        if (wearingComponent.ObjectsWithStarComponent.Count == 0)
+        {
+            RemComp<WearingStarHelmetComponent>(args.Equipee);
+        }
 
         if (!TryComp<RadioSpeakerComponent>(helmet, out var radioSpeakerComponent))
             return;

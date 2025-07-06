@@ -1,8 +1,9 @@
-﻿namespace Content.Server._SW.Force.Components;
+namespace Content.Server._SW.Force.Components;
 
 [RegisterComponent]
 public sealed partial class WearingStarHelmetComponent : Component
 {
-    [DataField("helmet")]
-    public EntityUid Helmet;
+    //так как на одной сущности может быть несколько предметов, через которые можно говорить по радио, то храним список
+    [ViewVariables]
+    public List<EntityUid> ObjectsWithStarComponent = new();
 }

@@ -16,8 +16,10 @@ public static class SkinColor
     public const float MaxFeathersSaturation = 88f / 100;
     public const float MinFeathersValue = 36f / 100;
     public const float MaxFeathersValue = 55f / 100;
-
+    public const float MinShadesOfBlueTone = 0f;
+    public const float MaxShadesOfBlueTone = 25f;
     public static Color ValidHumanSkinTone => Color.FromHsv(new Vector4(0.07f, 0.2f, 1f, 1f));
+    public static Color ValidChissSkinTone => new Color(104, 125, 182);
 
     /// <summary>
     ///     Turn a color into a valid tinted hue skin tone.
@@ -234,10 +236,10 @@ public static class SkinColor
             HumanoidSkinColor.TintedHues => VerifyTintedHues(color),
             HumanoidSkinColor.Hues => VerifyHues(color),
             HumanoidSkinColor.VoxFeathers => VerifyVoxFeathers(color),
+            HumanoidSkinColor.ShadesOfBlue => VerifyChissSkinTone(color), //SW
             _ => false,
         };
     }
-
     public static Color ValidSkinTone(HumanoidSkinColor type, Color color)
     {
         return type switch
@@ -246,9 +248,25 @@ public static class SkinColor
             HumanoidSkinColor.TintedHues => ValidTintedHuesSkinTone(color),
             HumanoidSkinColor.Hues => MakeHueValid(color),
             HumanoidSkinColor.VoxFeathers => ClosestVoxColor(color),
+            HumanoidSkinColor.ShadesOfBlue => ValidChissSkinTone, // SW. We use human because humanValidSkin is also valid for chiss
             _ => color
         };
     }
+
+    //SW start
+    private static bool VerifyChissSkinTone(Color color)
+    {
+        //TO DO: add additional logic to check if tone is in acceptable range. 
+        return VerifyHumanSkinTone(color);
+    }
+    public static Color ShadesOfBlueClosest(float color)
+    {
+        color /= 100; //normalize it to be in [0, 1], 100 - max human tone
+        var new_tone = (int)float.Lerp(MinShadesOfBlueTone, MaxShadesOfBlueTone, color);
+        return HumanSkinTone(new_tone);
+    }
+
+    //SW end
 }
 
 public enum HumanoidSkinColor : byte
@@ -257,4 +275,5 @@ public enum HumanoidSkinColor : byte
     Hues,
     VoxFeathers, // Vox feathers are limited to a specific color range
     TintedHues, //This gives a color tint to a humanoid's skin (10% saturation with full hue range).
+    ShadesOfBlue //SW
 }

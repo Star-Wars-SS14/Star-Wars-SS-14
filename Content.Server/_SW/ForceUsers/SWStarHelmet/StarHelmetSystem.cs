@@ -35,30 +35,24 @@ public sealed class StarHelmetSystem : EntitySystem
 
     private void OnExamined(EntityUid helmet, StarHelmetComponent component, ExaminedEvent args)
     {
-        if (!args.IsInDetailsRange)
+        if (!args.IsInDetailsRange || component.Channels.Count == 0)
             return;
 
-        if (component.Channels.Count == 0)
-            return;
+        args.PushMarkup("Доступные каналы связи:");
 
-        if (component.Channels.Count > 0)
+        foreach (var id in component.Channels)
         {
-            args.PushMarkup("Доступные каналы связи:");
-            RadioChannelPrototype? proto;
-            foreach (var id in component.Channels)
-            {
-                proto = _prototypeManager.Index<RadioChannelPrototype>(id);
+            var proto = _prototypeManager.Index<RadioChannelPrototype>(id);
 
-                var key = id == SharedChatSystem.CommonChannel
-                    ? SharedChatSystem.RadioCommonPrefix.ToString()
-                    : $"{SharedChatSystem.RadioChannelPrefix}{proto.KeyCode}";
+            var key = id == SharedChatSystem.CommonChannel
+                ? SharedChatSystem.RadioCommonPrefix.ToString()
+                : $"{SharedChatSystem.RadioChannelPrefix}{proto.KeyCode}";
 
-                args.PushMarkup(Loc.GetString("examine-starhelmet",
-                    ("color", proto.Color),
-                    ("key", key),
-                    ("id", proto.LocalizedName),
-                    ("freq", proto.Frequency)));
-            }
+            args.PushMarkup(Loc.GetString("examine-starhelmet",
+                ("color", proto.Color),
+                ("key", key),
+                ("id", proto.LocalizedName),
+                ("freq", proto.Frequency)));
         }
     }
 
@@ -97,7 +91,7 @@ public sealed class StarHelmetSystem : EntitySystem
         if (!TryComp<RadioSpeakerComponent>(helmet, out var radioSpeakerComponent))
             return;
 
-        if (radioSpeakerComponent.Enabled == false)
+        if (!radioSpeakerComponent.Enabled)
             _radioDevice.ToggleRadioSpeaker(helmet, helmet);
     }
 }

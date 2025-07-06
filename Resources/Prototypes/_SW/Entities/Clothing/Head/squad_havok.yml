@@ -1,20 +1,12 @@
-﻿- type: entity
-  parent: ClothingHeadBase
+- type: entity
+  parent: SW_BaseHelmet
   id: SW_ClothingHeadHavokHelmet
   name: Havok helmet
   components:
-  - type: BreathMask
   - type: Sprite
     sprite: _SW/Clothing/Head/Helmets/Havok/helmetrepublicgunner.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/Havok/helmetrepublicgunner.rsi
-  - type: PressureProtection
-    highPressureMultiplier: 0.3
-    lowPressureMultiplier: 1000
-  - type: HideLayerClothing
-    slots:
-    - Hair
-    - Snout
 
 - type: entity
   parent: SW_ClothingHeadHavokHelmet

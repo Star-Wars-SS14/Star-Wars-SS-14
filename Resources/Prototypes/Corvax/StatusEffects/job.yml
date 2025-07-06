@@ -1,13 +1,234 @@
-- type: statusIcon
+- type: jobIcon
   parent: JobIcon
   id: JobIconIAA
   icon:
     sprite: /Textures/Interface/Misc/job_icons.rsi
     state: IAA
+  jobName: job-name-iaa
 
-- type: statusIcon
+- type: jobIcon
   parent: JobIcon
   id: JobIconPilot
   icon:
     sprite: /Textures/Interface/Misc/job_icons.rsi
     state: Pilot
+  jobName: job-name-pilot
+
+# Star Wars SW momento
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconBlackSun
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: Blacksun
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconBlackSunMercenary
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: BlackSunMercenary
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconCivilian
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: Civilian
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconEmpireLieutenant
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: EmpireLieutenant
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconEmpireMajor
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: EmpireMajor
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconEmpireMedic
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: EmpireMedic
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconEmpireMoff
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: EmpireMoff
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconEmpireSoldier
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: EmpireSoldier
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconHavokCommander
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: HavokCommander
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconHavokMedic
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: HavokMedic
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconHavokSniper
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: HavokSniper
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconHavokStormtrooper
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: HavokStormtrooper
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconImperialIntelligenceAgent
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: ImperialIntelligenceAgent
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconImperialIntelligenceCaretaker
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: ImperialIntelligenceCaretaker
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconMandalorianLeader
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: MandalorianLeader
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconMandalorianRecruit
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: MandalorianRecruit
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconMandalorianVeteran
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: MandalorianVeteran
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconMandalorianWarrior
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: MandalorianWarrior
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconRepublicGeneral
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: RepublicGeneral
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconRepublicLieutenant
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: RepublicLieutenant
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconRepublicMedic
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: RepublicMedic
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconRepublicRecruit
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: RepublicRecruit
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconRepublicSoldier
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: RepublicSoldier
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSobrikCaptain
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: SobrikCaptain
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSobrikMedic
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: SobrikMedic
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSobrikComendant
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: SobrikComendant
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSobrikOfficer
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: SobrikOfficer
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconExchangeCaptain
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: ExchangeCaptain
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconExchangeOperative
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: ExchangeOperative
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconHavokLieutenant
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: HavokLieutenant
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconRepublicCapitan
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: RepublicCapitan

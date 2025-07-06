@@ -11,3 +11,6 @@
   startingGear: EmpireMedicalGear
   icon: "JobIconEmpireMedic"
   supervisors: job-supervisors-leit-emp
+  access:
+  - EmpireBase
+  - EmpireMedic

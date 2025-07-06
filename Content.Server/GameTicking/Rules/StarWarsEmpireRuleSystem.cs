@@ -1,10 +1,10 @@
 using Content.Server.Chat.Systems;
-using Content.Server.GameTicking.Components;
 using Content.Server.GameTicking.Rules.Components;
 using Content.Server.Nuke;
 using Content.Server.RoundEnd;
 using Content.Server.Station.Systems;
 using Content.Shared.Destructible;
+using Content.Shared.GameTicking.Components;
 using Robust.Shared.Timing;
 
 namespace Content.Server.GameTicking.Rules;

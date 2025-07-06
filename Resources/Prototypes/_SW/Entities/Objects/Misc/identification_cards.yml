@@ -1,4 +1,4 @@
-﻿- type: entity
+- type: entity
   parent: Clothing
   id: SW_IDCardStandard
   name: identification card
@@ -34,7 +34,7 @@
     layers:
     - state: image22
   - type: PresetIdCard
-    job: SW_Sobrik_Captain
+    job: SWSobrikCaptain
 
 - type: entity
   parent: SW_IDCardStandard
@@ -45,7 +45,7 @@
     layers:
     - state: image23
   - type: PresetIdCard
-    job: SW_Sobrik_Officer
+    job: SWSobrikOfficer
 
 - type: entity
   parent: SW_IDCardStandard
@@ -56,7 +56,7 @@
     layers:
     - state: image24
   - type: PresetIdCard
-    job: SW_Sobrik_Medic
+    job: SWSobrikMedic
 
 #Empire ID cards
 - type: entity
@@ -68,7 +68,7 @@
     layers:
     - state: image17
   - type: PresetIdCard
-    job: SW_Empire_Moff
+    job: SWEmpireMoff
 
 - type: entity
   parent: SW_IDCardStandard
@@ -79,7 +79,7 @@
     layers:
     - state: image18
   - type: PresetIdCard
-    job: SW_Empire_Major
+    job: SWEmpireMajor
 
 - type: entity
   parent: SW_IDCardStandard
@@ -90,7 +90,7 @@
     layers:
     - state: image19
   - type: PresetIdCard
-    job: SW_Empire_Lieutenant
+    job: SWEmpireLieutenant
 
 - type: entity
   parent: SW_IDCardStandard
@@ -101,7 +101,7 @@
     layers:
     - state: image20
   - type: PresetIdCard
-    job: SW_Empire_Soldier
+    job: SWEmpireSoldier
 
 - type: entity
   parent: SW_IDCardStandard
@@ -112,7 +112,7 @@
     layers:
     - state: image21
   - type: PresetIdCard
-    job: SW_Empire_Medic
+    job: SWEmpireMedic
 
 #Mandalorian ID cards
 - type: entity
@@ -124,7 +124,7 @@
     layers:
     - state: image13
   - type: PresetIdCard
-    job: SW_Mandalorian_Leader
+    job: SWMandalorianLeader
 
 - type: entity
   parent: SW_IDCardStandard
@@ -135,7 +135,7 @@
     layers:
     - state: image14
   - type: PresetIdCard
-    job: SW_Mandalorian_Veteran
+    job: SWMandalorianVeteran
 
 - type: entity
   parent: SW_IDCardStandard
@@ -146,7 +146,7 @@
     layers:
     - state: image15
   - type: PresetIdCard
-    job: SW_Mandalorian_Warrior
+    job: SWMandalorianWarrior
 
 - type: entity
   parent: SW_IDCardStandard
@@ -157,7 +157,7 @@
     layers:
     - state: image16
   - type: PresetIdCard
-    job: SW_Mandalorian_Recruit
+    job: SWMandalorianRecruit
 
 #Republic ID cards
 - type: entity
@@ -169,7 +169,7 @@
     layers:
     - state: image1
   - type: PresetIdCard
-    job: SW_Republic_General
+    job: SWRepublicGeneral
 
 - type: entity
   parent: SW_IDCardStandard
@@ -180,7 +180,7 @@
     layers:
     - state: image2
   - type: PresetIdCard
-    job: SW_Republic_Captain
+    job: SWRepublicCaptain
 
 - type: entity
   parent: SW_IDCardStandard
@@ -191,7 +191,7 @@
     layers:
     - state: image3
   - type: PresetIdCard
-    job: SW_Republic_Lieutenant
+    job: SWRepublicLieutenant
 
 - type: entity
   parent: SW_IDCardStandard
@@ -202,7 +202,7 @@
     layers:
     - state: image4
   - type: PresetIdCard
-    job: SW_Republic_Soldier
+    job: SWRepublicSoldier
 
 - type: entity
   parent: SW_IDCardStandard
@@ -213,7 +213,7 @@
     layers:
     - state: image5
   - type: PresetIdCard
-    job: SW_Republic_Medic
+    job: SWRepublicMedic
 
 - type: entity
   parent: SW_IDCardStandard
@@ -224,7 +224,7 @@
     layers:
     - state: image6
   - type: PresetIdCard
-    job: SW_Republic_Recruit
+    job: SWRepublicRecruit
 
 #Balmorran ID cards
 - type: entity
@@ -236,7 +236,7 @@
     layers:
     - state: image4
   - type: PresetIdCard
-    job: SW_Balmorran_Leader
+    job: SWBalmorranLeader
 
 - type: entity
   parent: SW_IDCardStandard
@@ -247,7 +247,7 @@
     layers:
     - state: image5
   - type: PresetIdCard
-    job: SW_Balmorran_Officer
+    job: SWBalmorranOfficer
 
 - type: entity
   parent: SW_IDCardStandard
@@ -258,7 +258,7 @@
     layers:
     - state: image6
   - type: PresetIdCard
-    job: SW_Balmorran_Medic
+    job: SWBalmorranMedic
 
 - type: entity
   parent: SW_IDCardStandard
@@ -269,7 +269,7 @@
     layers:
     - state: image7
   - type: PresetIdCard
-    job: SW_Balmorran_Soldier
+    job: SWBalmorranSoldier
 
 - type: entity
   parent: SW_IDCardStandard
@@ -280,7 +280,7 @@
     layers:
     - state: image8
   - type: PresetIdCard
-    job: SW_Balmorran_Recruit
+    job: SWBalmorranRecruit
 
 #Empire Intelligence ID cards
 - type: entity
@@ -292,7 +292,7 @@
     layers:
     - state: image25
   - type: PresetIdCard
-    job: SW_Empire_Intelligence_Caretaker
+    job: SWEmpireIntelligenceCaretaker
 
 - type: entity
   parent: SW_IDCardStandard
@@ -303,7 +303,7 @@
     layers:
     - state: image26
   - type: PresetIdCard
-    job: SW_Empire_Intelligence_Agent
+    job: SWEmpireIntelligenceAgent
 
 #Republic Havok squad ID cards
 - type: entity
@@ -315,7 +315,7 @@
     layers:
     - state: image12
   - type: PresetIdCard
-    job: SW_Republic_Commander_Commander
+    job: SWRepublicCommanderCommander
 
 - type: entity
   parent: SW_IDCardStandard
@@ -326,7 +326,7 @@
     layers:
     - state: image11
   - type: PresetIdCard
-    job: SW_Republic_Commander_Lieutenant
+    job: SWRepublicCommanderLieutenant
 
 - type: entity
   parent: SW_IDCardStandard
@@ -337,7 +337,7 @@
     layers:
     - state: image10
   - type: PresetIdCard
-    job: SW_Republic_Commander_Medic
+    job: SWRepublicCommanderMedic
 
 - type: entity
   parent: SW_IDCardStandard
@@ -348,7 +348,7 @@
     layers:
     - state: image9
   - type: PresetIdCard
-    job: SW_Republic_Commander_Stormtrooper
+    job: SWRepublicCommanderStormtrooper
 
 - type: entity
   parent: SW_IDCardStandard
@@ -359,7 +359,7 @@
     layers:
     - state: image8
   - type: PresetIdCard
-    job: SW_Republic_Commander_Sniper
+    job: SWRepublicCommanderSniper
 
 #Black Sun ID cards
 - type: entity
@@ -371,7 +371,7 @@
     layers:
     - state: image16
   - type: PresetIdCard
-    job: SW_BlackSun
+    job: SWBlackSun
 
 - type: entity
   parent: SW_IDCardStandard
@@ -382,7 +382,9 @@
     layers:
     - state: image15
   - type: PresetIdCard
-    job: SW_BlackSun_Mercenary
+    job: SWBlackSunMercenary
+
+#Exchange ID cards
 
 - type: entity
   parent: SW_IDCardStandard
@@ -393,7 +395,7 @@
     layers:
     - state: image14
   - type: PresetIdCard
-    job: SW_Exchange_Captain
+    job: SWExchangeCaptain
 
 - type: entity
   parent: SW_IDCardStandard
@@ -404,4 +406,4 @@
     layers:
     - state: image13
   - type: PresetIdCard
-    job: SW_Exchange_Operative
+    job: SWExchangeOperative

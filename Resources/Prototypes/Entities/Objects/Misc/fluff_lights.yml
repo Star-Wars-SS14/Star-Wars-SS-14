@@ -123,19 +123,19 @@
       enum.HolidayVisuals.Holiday:
         base:
           festive:
-            sprite: Objects/Misc/Lights/lamp.rsi
             state: christmaslamp
         light:
           festive:
-            sprite: Objects/Misc/Lights/lamp.rsi
             state: christmaslamp-on
-  - type: Rotatable # Corvax-Resprite
+  - type: Rotatable # Corvax-Resprite-start
+  - type: PointLight
+    color: "#F0FFA0FF" # Corvax-Resprite-end
 
 - type: entity
   name: interrogator lamp
   id: LampInterrogator
   parent: BaseLamp
-  description: Ultra-bright lamp for the bad cop
+  description: Ultra-bright lamp for the bad cop.
   components:
   - type: Sprite
     sprite: Objects/Misc/Lights/lampint.rsi
@@ -184,6 +184,7 @@
         enum.FlashVisuals.LightLayer:
           True: {visible: true}
           False: {visible: false}
+  - type: Rotatable # Corvax-Resprite
 
 - type: entity
   name: floodlight
@@ -222,7 +223,7 @@
         startingItem: PowerCellMedium
   - type: Anchorable
   - type: Damageable
-    damageContainer: Inorganic
+    damageContainer: StructuralInorganic
     damageModifierSet: Metallic
   - type: Destructible
     thresholds:
@@ -252,7 +253,7 @@
     state: floodlight_broken
   - type: Anchorable
   - type: Damageable
-    damageContainer: Inorganic
+    damageContainer: StructuralInorganic
     damageModifierSet: Metallic
   - type: Destructible
     thresholds:

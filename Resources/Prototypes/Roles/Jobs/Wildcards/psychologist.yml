@@ -2,6 +2,7 @@
   id: Psychologist
   name: job-name-psychologist
   description: job-description-psychologist
+  setPreference: false
   playTimeTracker: JobPsychologist
   startingGear: PsychologistGear
   icon: "JobIconPsychologist"
@@ -15,7 +16,9 @@
 - type: startingGear
   id: PsychologistGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitPsychologist
     shoes: ClothingShoesLeather
     id: PsychologistPDA
     ears: ClothingHeadsetMedical
+  storage:
+    back:
+    - RubberStampPsychologist

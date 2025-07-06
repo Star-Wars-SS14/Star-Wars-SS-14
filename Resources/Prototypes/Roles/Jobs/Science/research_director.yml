@@ -2,6 +2,7 @@
   id: ResearchDirector
   name: job-name-rd
   description: job-description-rd
+  setPreference: false
   playTimeTracker: JobResearchDirector
   requirements:
     - !type:DepartmentTimeRequirement
@@ -12,7 +13,6 @@
   weight: 10
   startingGear: ResearchDirectorGear
   icon: "JobIconResearchDirector"
-  requireAdminNotify: true
   supervisors: job-supervisors-captain
   canBeAntag: false
   access:
@@ -34,3 +34,6 @@
   equipment:
     id: RnDPDA
     ears: ClothingHeadsetRD
+  storage:
+    back:
+    - Flash

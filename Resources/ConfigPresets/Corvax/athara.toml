@@ -1,16 +1,18 @@
 ﻿[game]
-hostname = "🛰️ Corvax — Атара 🌌 [TTS]"
-desc = "Корвакс — первый русскоязычный проект в Space Station 14.\nНа этом сервере средние требования к RP.\n[Имеется интеграция TTS (Text-To-Speech)]"
-map_pool = "CorvaxDefaultMapPool"
+hostname = "🛰️ Corvax — Атара 🌌⚡[TTS][NEXT]"
+desc = "Корвакс — первый русскоязычный проект в Space Station 14.\n⚡ На этом сервере используется сборка Corvax Next. Больше контента, возможностей и взаимодействия!\nНа этом сервере средние требования к RP.\nИмеется интеграция TTS (Text-To-Speech)"
 maxplayers = 150
 soft_max_players = 70
 map_rotation = true
+
+[server]
+lobby_name = "🛰️ Corvax — Атара 🌌⚡"
 
 [game.panic_bunker]
 enabled = true
 show_reason = true
 min_account_age = 0
-min_overall_hours = 0
+min_overall_minutes = 0
 deny_vpn = true
 enable_without_admins = true
 disable_with_admins = true

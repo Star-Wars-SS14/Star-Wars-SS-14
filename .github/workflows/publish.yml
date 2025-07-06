@@ -5,8 +5,6 @@ concurrency:
 
 on:
   workflow_dispatch:
-  # schedule:
-  # - cron: '0 1 * * *' no thanks you
 
 jobs:
   build:
@@ -20,28 +18,28 @@ jobs:
       with:
         submodules: 'recursive'
 
-    # Corvax-Secrets-Start 
-    # - name: Setup secrets FUCK SECRETS
-    #   env:
-    #     SSH_KEY: ${{ secrets.SECRETS_PRIVATE_KEY }}
-    #   if: ${{ env.SSH_KEY != '' }}
-    #   run: |
-    #     mkdir ~/.ssh
-    #     echo "${{ secrets.SECRETS_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-    #     chmod 600 ~/.ssh/id_rsa
-    #     echo "HOST *" > ~/.ssh/config
-    #     echo "StrictHostKeyChecking no" >> ~/.ssh/config
-    #     git clone git@github.com:corvax-nexus/secrets.git Secrets
-    #     cp -R Secrets/Resources/Prototypes Resources/Prototypes/CorvaxSecrets
-    #     cp -R Secrets/Resources/ServerPrototypes Resources/Prototypes/CorvaxSecretsServer
-    #     cp -R Secrets/Resources/Locale Resources/Locale/ru-RU/corvax-secrets
-    #     cp -R Secrets/Resources/Textures Resources/Textures/CorvaxSecrets
-    # Corvax-Secrets-End 
+    # Corvax-Secrets-Start
+    - name: Setup secrets
+      env:
+        SSH_KEY: ${{ secrets.SECRETS_PRIVATE_KEY }}
+      if: ${{ env.SSH_KEY != '' }}
+      run: |
+        mkdir ~/.ssh
+        echo "${{ secrets.SECRETS_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        echo "HOST *" > ~/.ssh/config
+        echo "StrictHostKeyChecking no" >> ~/.ssh/config
+        git clone git@github.com:corvax-nexus/secrets.git Secrets
+        cp -R Secrets/Resources/Prototypes Resources/Prototypes/CorvaxSecrets
+        cp -R Secrets/Resources/ServerPrototypes Resources/Prototypes/CorvaxSecretsServer
+        cp -R Secrets/Resources/Locale Resources/Locale/ru-RU/corvax-secrets
+        cp -R Secrets/Resources/Textures Resources/Textures/CorvaxSecrets
+    # Corvax-Secrets-End
 
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3.2.0
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 9.0.x
 
     - name: Get Engine Tag
       run: |
@@ -67,11 +65,11 @@ jobs:
         GITHUB_REPOSITORY: ${{ vars.GITHUB_REPOSITORY }}
         FORK_ID: ${{ vars.FORK_ID }}
 
-    # - name: Publish changelog (Discord)
-    #   run: Tools/actions_changelogs_since_last_run.py
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #     DISCORD_WEBHOOK_URL: ${{ secrets.CHANGELOG_DISCORD_WEBHOOK }}
+    #    - name: Publish changelog (Discord)
+    #      run: Tools/actions_changelogs_since_last_run.py
+    #      env:
+    #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #        DISCORD_WEBHOOK_URL: ${{ secrets.CHANGELOG_DISCORD_WEBHOOK }}
 
     #    - name: Publish changelog (RSS)
     #      run: Tools/actions_changelog_rss.py

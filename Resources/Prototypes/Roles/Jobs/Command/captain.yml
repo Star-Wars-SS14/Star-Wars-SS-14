@@ -2,6 +2,7 @@
   id: Captain
   name: job-name-captain
   description: job-description-captain
+  setPreference: false
   playTimeTracker: JobCaptain
   requirements:
     - !type:DepartmentTimeRequirement
@@ -21,7 +22,6 @@
   weight: 20
   startingGear: CaptainGear
   icon: "JobIconCaptain"
-  requireAdminNotify: true
   joinNotifyCrew: true
   supervisors: job-supervisors-centcom
   canBeAntag: false
@@ -42,3 +42,7 @@
     gloves: ClothingHandsGlovesCaptain
     id: CaptainPDA
     ears: ClothingHeadsetAltCommand
+  storage:
+    back:
+    - Flash
+    # - StationCharter

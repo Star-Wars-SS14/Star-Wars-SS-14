@@ -1,0 +1,39 @@
+- type: entity
+  id: SWPalkaNoname
+  parent: BaseStructure
+  name: Могила неизвестного
+  description: Неизвестно кто тут похоронен, но он явно был героем!
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Decoration/palki.rsi
+    state: noname_mogilka
+
+- type: entity
+  id: SWPalkaMedic
+  parent: BaseStructure
+  name: Могила медика
+  description: Могила республиканского медика. Он лечил их до последнего вздоха..
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Decoration/palki.rsi
+    state: medic_mogilka
+
+- type: entity
+  id: SWPalkaSturm
+  parent: BaseStructure
+  name: Могила штурмовика
+  description: Он был не самым лучшим штурмовиком, но лучшим солдатом уж точно!
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Decoration/palki.rsi
+    state: red_mogilka
+
+- type: entity
+  id: SWPalkaLeit
+  parent: BaseStructure
+  name: Могила лейтента
+  description: Спас своих людей, но себя не смог..
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Decoration/palki.rsi
+    state: yellow_mogilka

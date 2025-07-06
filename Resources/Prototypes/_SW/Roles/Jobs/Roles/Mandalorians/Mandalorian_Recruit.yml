@@ -8,3 +8,5 @@
   startingGear: MandalorianRecruitGear
   icon: "JobIconMandalorianRecruit"
   supervisors: job-supervisors-mando
+  access:
+  - Mandalorian

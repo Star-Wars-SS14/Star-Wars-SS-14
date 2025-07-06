@@ -1,54 +1,97 @@
-- type: radioChannel
-  id: Common
-  name: chat-radio-common
-  keycode: ";"
-  frequency: 1459
-  color: "#32cd32"
+ - type: radioChannel
+   id: Common
+   name: chat-radio-common
+   keycode: ";"
+   frequency: 1459
+   color: "#2cdb2c"
 
-- type: radioChannel
-  id: EmpireGarnison
-  name: Имперский Гарнизон
-  keycode: 'г' # Corvax-Localization
-  frequency: 2024
-  color: "#ffa500"
-  longRange: true
+# - type: radioChannel
+#   id: CentCom
+#   name: chat-radio-centcom
+#   keycode: 'ц' # Corvax-Localization
+#   frequency: 1337
+#   color: "#2681a5"
+#   longRange: true
 
-- type: radioChannel
-  id: EmpireRegular
-  name: Регулярные Силы Империи
-  keycode: 'т' # Corvax-Localization
-  frequency: 2025
-  color: "#b22222"
-  longRange: true
+# - type: radioChannel
+#   id: Command
+#   name: chat-radio-command
+#   keycode: 'к' # Corvax-Localization
+#   frequency: 1353
+#   color: "#fcdf03"
 
-- type: radioChannel
-  id: EmpireSobrik
-  name: Имперская Разведка
-  keycode: 'и' # Corvax-Localization
-  frequency: 2026
-  color: "#800080"
-  longRange: true
+# - type: radioChannel
+#   id: Engineering
+#   name: chat-radio-engineering
+#   keycode: 'и' # Corvax-Localization
+#   frequency: 1357
+#   color: "#ff733c"
 
-- type: radioChannel
-  id: Republic
-  name: Республика
-  keycode: 'р' # Corvax-Localization
-  frequency: 2027
-  color: "#20b2aa"
-  longRange: true
+# - type: radioChannel
+#   id: Medical
+#   name: chat-radio-medical
+#   keycode: 'м' # Corvax-Localization
+#   frequency: 1355
+#   color: "#57b8f0"
 
-- type: radioChannel
-  id: RepublicHavok
-  name: Хавок
-  keycode: 'х' # Corvax-Localization
-  frequency: 2028
-  color: "#dc143c"
-  longRange: true
+# - type: radioChannel
+#   id: Science
+#   name: chat-radio-science
+#   keycode: 'н' # Corvax-Localization
+#   frequency: 1351
+#   color: "#cd7ccd"
 
-- type: radioChannel
-  id: Mandalorian
-  name: Мандалориан
-  keycode: 'м' # Corvax-Localization
-  frequency: 2039
-  color: "#ff6347"
-  longRange: true
+# - type: radioChannel
+#   id: Security
+#   name: chat-radio-security
+#   keycode: 'о' # Corvax-Localization
+#   frequency: 1359
+#   color: "#ff4242"
+
+# - type: radioChannel
+#   id: Service
+#   name: chat-radio-service
+#   keycode: 'с' # Corvax-Localization
+#   frequency: 1349
+#   color: "#539c00"
+
+# - type: radioChannel
+#   id: Supply
+#   name: chat-radio-supply
+#   keycode: 'п' # Corvax-Localization
+#   frequency: 1347
+#   color: "#b48b57"
+
+# - type: radioChannel
+#   id: Syndicate
+#   name: chat-radio-syndicate
+#   keycode: 'т' # Corvax-Localization
+#   frequency: 1213
+#   color: "#8f4a4b"
+#   longRange: true
+
+# - type: radioChannel
+#   id: Handheld
+#   name: chat-radio-handheld
+#   frequency: 1330
+#   color: "#967101"
+#   # long range since otherwise it'd defeat the point of a handheld radio independent of telecomms
+#   longRange: true
+
+# - type: radioChannel
+#   id: Binary
+#   name: chat-radio-binary
+#   keycode: 'д' # Corvax-Localization
+#   frequency: 1001
+#   color: "#5ed7aa"
+#   # long range since otherwise it'd defeat the point of a handheld radio independent of telecomms
+#   longRange: true
+
+# - type: radioChannel
+#   id: Freelance
+#   name: chat-radio-freelance
+#   keycode: 'ф' # Corvax-Localization
+#   frequency: 1984
+#   color: "#f6ce64"
+#   # long range since otherwise it'd defeat the point of a handheld radio independent of telecomms
+#   longRange: true

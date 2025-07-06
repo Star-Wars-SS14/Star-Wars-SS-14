@@ -66,7 +66,7 @@
   id: EmpireMajorGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitOfficers
-    back: ClothingBackpackFilled
+    back: ClothingBackpack
     gloves: ClothingHandsGlovesColorBlack
     shoes: SW_ClothingShoesBootsOfficers
     head: SW_ClothingHeadCapOfficers
@@ -78,7 +78,7 @@
   id: EmpireLieutenantGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitOfficers
-    back: ClothingBackpackFilled
+    back: ClothingBackpack
     gloves: ClothingHandsGlovesColorBlack
     shoes: SW_ClothingShoesBootsOfficers
     head: SW_ClothingHeadCapOfficers
@@ -184,7 +184,7 @@
   id: RepublicMedicGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitFleece
-    outerClothing: SW_RepublicSuit
+    outerClothing: SW_MedicRepublicSuit
     shoes: ClothingShoesBootsJack
     head: SW_ClothingHeadRepublicHelmet
     id: SW_IDCardRepublicMedic
@@ -205,7 +205,7 @@
   id: BalmorranLeaderGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitRebel
-    back: ClothingBackpackFilled
+    back: ClothingBackpack
     gloves: SW_ClothingHandsGlovesRebel
     shoes: ClothingShoesCult
     ears: ClothingHeadsetGrey
@@ -217,7 +217,7 @@
   id: BalmorranOfficerGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitRebel
-    back: ClothingBackpackFilled
+    back: ClothingBackpack
     gloves: SW_ClothingHandsGlovesRebel
     shoes: ClothingShoesCult
     ears: ClothingHeadsetGrey
@@ -229,7 +229,7 @@
   id: BalmorranMedicGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitRebel
-    back: ClothingBackpackFilled
+    back: ClothingBackpack
     gloves: SW_ClothingHandsGlovesRebel
     shoes: ClothingShoesCult
     ears: ClothingHeadsetGrey
@@ -241,7 +241,7 @@
   id: BalmorranSoldierGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitRebel
-    back: ClothingBackpackFilled
+    back: ClothingBackpack
     gloves: SW_ClothingHandsGlovesRebel
     shoes: ClothingShoesCult
     ears: ClothingHeadsetGrey
@@ -253,7 +253,7 @@
   id: BalmorranRecruitGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitRebel
-    back: ClothingBackpackFilled
+    back: ClothingBackpack
     gloves: SW_ClothingHandsGlovesRebel
     shoes: ClothingShoesCult
     ears: ClothingHeadsetGrey
@@ -271,7 +271,7 @@
     id: SW_IDCardEmpireIntelligenceCaretaker
     shoes: ClothingShoesBootsCombatFilled
     gloves: ClothingHandsGlovesCombat
-    ears: ClothingHeadsetSobrik
+    ears: ClothingHeadsetAllEmpire
 
 - type: startingGear
   id: EmpireIntelligenceAgentGear
@@ -409,7 +409,7 @@
   id: OldRepublicSoldierGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitRebel
-    back: ClothingBackpackFilled
+    back: ClothingBackpack
     gloves: SW_ClothingHandsGlovesRebel
     shoes: ClothingShoesCult
     ears: ClothingHeadsetGrey
@@ -435,7 +435,7 @@
   id: StormtrooperGear
   equipment:
     jumpsuit: ClothingUniformJumpsuitColorBlack
-    back: ClothingBackpackFilled
+    back: ClothingBackpack
     gloves: ClothingHandsGlovesColorBlack
     shoes: ClothingShoesSwat
     ears: ClothingHeadsetGrey
@@ -453,7 +453,7 @@
   id: ImperialOfficersGear
   equipment:
     jumpsuit: SW_ClothingUniformJumpsuitOfficers
-    back: ClothingBackpackFilled
+    back: ClothingBackpack
     gloves: ClothingHandsGlovesColorBlack
     shoes: SW_ClothingShoesBootsOfficers
     ears: ClothingHeadsetGrey

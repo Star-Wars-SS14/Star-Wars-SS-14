@@ -53,7 +53,7 @@ namespace Content.Shared.Communications
         {
             Message = message;
         }
-    }
+    } 
 
     [Serializable, NetSerializable]
     public sealed class CommunicationsConsoleBroadcastMessage : BoundUserInterfaceMessage

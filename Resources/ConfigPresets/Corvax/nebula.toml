@@ -1,16 +1,18 @@
 ﻿[game]
-hostname = "🛰️ Corvax — Небула ✨ [ДЛЯ НОВИЧКОВ]"
+hostname = "🛰️ Corvax — Небула ✨[ДЛЯ НОВИЧКОВ]"
 desc = "Корвакс — первый русскоязычный проект в Space Station 14.\nЗдесь помогут новичкам!\nНа этом сервере пониженные требования к RP."
-map_pool = "CorvaxDefaultMapPool"
 maxplayers = 130
 soft_max_players = 50
 map_rotation = true
+
+[server]
+lobby_name = "️🛰️ Corvax — Небула ✨"
 
 [game.panic_bunker]
 enabled = true
 show_reason = true
 min_account_age = 0
-min_overall_hours = 0
+min_overall_minutes = 0
 deny_vpn = true
 enable_without_admins = true
 disable_with_admins = true

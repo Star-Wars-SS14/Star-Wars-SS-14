@@ -9,6 +9,7 @@ using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Utility;
 using Robust.Client.UserInterface.RichText;
+using Content.Client.UserInterface.RichText;
 using Robust.Shared.Input;
 
 namespace Content.Client.Paper.UI
@@ -17,6 +18,7 @@ namespace Content.Client.Paper.UI
     public sealed partial class PaperWindow : BaseWindow
     {
         [Dependency] private readonly IInputManager _inputManager = default!;
+        [Dependency] private readonly IResourceCache _resCache = default!;
 
         private static Color DefaultTextColor = new(25, 25, 25);
 
@@ -42,10 +44,25 @@ namespace Content.Client.Paper.UI
             typeof(BulletTag),
             typeof(ColorTag),
             typeof(HeadingTag),
-            typeof(ItalicTag)
+            typeof(ItalicTag),
+            typeof(MonoTag)
         };
 
         public event Action<string>? OnSaved;
+
+        private int _MaxInputLength = -1;
+        public int MaxInputLength
+        {
+            get
+            {
+                return _MaxInputLength;
+            }
+            set
+            {
+                _MaxInputLength = value;
+                UpdateFillState();
+            }
+        }
 
         public PaperWindow()
         {
@@ -53,6 +70,8 @@ namespace Content.Client.Paper.UI
             RobustXamlLoader.Load(this);
 
             // We can't configure the RichTextLabel contents from xaml, so do it here:
+            PisatButton.Visible = true;
+
             BlankPaperIndicator.SetMessage(Loc.GetString("paper-ui-blank-page-message"), null, DefaultTextColor);
 
             // Hook up the close button:
@@ -62,9 +81,19 @@ namespace Content.Client.Paper.UI
             {
                 if (args.Function == EngineKeyFunctions.MultilineTextSubmit)
                 {
-                    RunOnSaved();
-                    args.Handle();
+                    // SaveButton is disabled when we hit the max input limit. Just check
+                    // that flag instead of trying to calculate the input length again
+                    if (!SaveButton.Disabled)
+                    {
+                        RunOnSaved();
+                        args.Handle();
+                    }
                 }
+            };
+
+            Input.OnTextChanged += args =>
+            {
+                UpdateFillState();
             };
 
             SaveButton.OnPressed += _ =>
@@ -74,22 +103,45 @@ namespace Content.Client.Paper.UI
 
             SaveButton.Text = Loc.GetString("paper-ui-save-button",
                 ("keybind", _inputManager.GetKeyFunctionButtonString(EngineKeyFunctions.MultilineTextSubmit)));
+
+            PisatButton.OnPressed += _ =>
+            {
+                RunOnWrite();
+            };
+
+            Input.OnKeyBindDown += args =>
+            {
+                if (args.Function == EngineKeyFunctions.Use)
+                {
+                    RunOnWrite();
+                    args.Handle();
+                }
+            };
         }
 
         /// <summary>
         ///     Initialize this UI according to <code>visuals</code> Initializes
         ///     textures, recalculates sizes, and applies some layout rules.
         /// </summary>
+        private void RunOnWrite()
+        {
+            InputContainer.Visible = true;
+            SaveButton.Visible = true;
+            WrittenTextLabel.Visible = false;
+            BlankPaperIndicator.Visible = false;
+
+            Input.GrabKeyboardFocus();
+        }
+
         public void InitVisuals(EntityUid entity, PaperVisualsComponent visuals)
         {
             // Randomize the placement of any stamps based on the entity UID
             // so that there's some variety in different papers.
             StampDisplay.PlacementSeed = (int)entity;
-            var resCache = IoCManager.Resolve<IResourceCache>();
 
             // Initialize the background:
             PaperBackground.ModulateSelfOverride = visuals.BackgroundModulate;
-            var backgroundImage = visuals.BackgroundImagePath != null? resCache.GetResource<TextureResource>(visuals.BackgroundImagePath) : null;
+            var backgroundImage = visuals.BackgroundImagePath != null? _resCache.GetResource<TextureResource>(visuals.BackgroundImagePath) : null;
             if (backgroundImage != null)
             {
                 var backgroundImageMode = visuals.BackgroundImageTile ? StyleBoxTexture.StretchMode.Tile : StyleBoxTexture.StretchMode.Stretch;
@@ -126,8 +178,9 @@ namespace Content.Client.Paper.UI
 
             PaperContent.ModulateSelfOverride = visuals.ContentImageModulate;
             WrittenTextLabel.ModulateSelfOverride = visuals.FontAccentColor;
+            FillStatus.ModulateSelfOverride = visuals.FontAccentColor;
 
-            var contentImage = visuals.ContentImagePath != null ? resCache.GetResource<TextureResource>(visuals.ContentImagePath) : null;
+            var contentImage = visuals.ContentImagePath != null ? _resCache.GetResource<TextureResource>(visuals.ContentImagePath) : null;
             if (contentImage != null)
             {
                 // Setup the paper content texture, but keep a reference to it, as we can't set
@@ -215,12 +268,13 @@ namespace Content.Client.Paper.UI
         ///     Initialize the paper contents, i.e. the text typed by the
         ///     user and any stamps that have peen put on the page.
         /// </summary>
-        public void Populate(SharedPaperComponent.PaperBoundUserInterfaceState state)
+        public void Populate(PaperComponent.PaperBoundUserInterfaceState state)
         {
-            bool isEditing = state.Mode == SharedPaperComponent.PaperAction.Write;
-            bool wasEditing = InputContainer.Visible;
+            bool isEditing = state.Mode == PaperComponent.PaperAction.Write;
             InputContainer.Visible = isEditing;
-            EditButtons.Visible = isEditing;
+            SaveButton.Visible = isEditing;
+            PisatButton.Visible = true;
+            EditButtons.Visible = true;
 
             var msg = new FormattedMessage();
             msg.AddMarkupPermissive(state.Text);
@@ -228,7 +282,7 @@ namespace Content.Client.Paper.UI
             // For premade documents, we want to be able to edit them rather than
             // replace them.
             var shouldCopyText = 0 == Input.TextLength && 0 != state.Text.Length;
-            if (!wasEditing || shouldCopyText)
+            if (!InputContainer.Visible || shouldCopyText)
             {
                 // We can get repeated messages with state.Mode == Write if another
                 // player opens the UI for reading. In this case, don't update the
@@ -294,7 +348,29 @@ namespace Content.Client.Paper.UI
 
         private void RunOnSaved()
         {
+            // Prevent further saving while text processing still in
+            SaveButton.Disabled = true;
             OnSaved?.Invoke(Rope.Collapse(Input.TextRope));
+        }
+
+        private void UpdateFillState()
+        {
+            if (MaxInputLength != -1)
+            {
+                var inputLength = Input.TextLength;
+
+                FillStatus.Text = Loc.GetString("paper-ui-fill-level",
+                    ("currentLength", inputLength),
+                    ("maxLength", MaxInputLength));
+
+                // Disable the save button if we've gone over the limit
+                SaveButton.Disabled = inputLength > MaxInputLength;
+            }
+            else
+            {
+                FillStatus.Text = "";
+                SaveButton.Disabled = false;
+            }
         }
     }
 }

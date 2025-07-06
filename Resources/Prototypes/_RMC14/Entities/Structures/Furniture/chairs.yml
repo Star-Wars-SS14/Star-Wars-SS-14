@@ -16,7 +16,7 @@
   description: Прямоугольный металлический каркас на четырех ножках с задней панелью. Предназначен для более или менее удобного сидения.
   components:
   - type: Transform
-    anchored: false
+    anchored: true
   - type: Physics
     bodyType: Static
   - type: Anchorable

@@ -1,2 +1,2 @@
 ent-SW_ClothingHeadHatBunny = кроличьи ушки?
-  .desc = Зачем?...
+  .desc = Это отвратительно

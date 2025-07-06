@@ -1,12 +1,12 @@
-﻿- type: job
+- type: job
   id: ServiceWorker
   name: job-name-serviceworker
   description: job-description-serviceworker
+  setPreference: false
   playTimeTracker: JobServiceWorker
   startingGear: ServiceWorkerGear
   icon: "JobIconServiceWorker"
   supervisors: job-supervisors-service
-  canBeAntag: true # Corvax-MRP: Available not only for newbies
   access:
   - Service
   - Maintenance
@@ -21,3 +21,6 @@
     shoes: ClothingShoesColorBlack
     id: ServiceWorkerPDA
     ears: ClothingHeadsetService
+  #storage:
+    #back:
+    #- Stuff

@@ -1,0 +1,31 @@
+{
+    "version": 1,
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "license": "CC-BY-SA-3.0",
+    "copyright": "discord: londorondondon",
+    "states": [
+        {
+            "name": "base",
+            "delays": [
+                [
+                    0.2,
+                    0.2,
+                    0.2,
+                    0.2,
+                    0.2,
+                    0.2
+
+                ]
+            ]
+        },
+        {
+            "name": "dead"
+        },
+        {
+            "name": "wingmawicon"
+        }
+    ]
+}

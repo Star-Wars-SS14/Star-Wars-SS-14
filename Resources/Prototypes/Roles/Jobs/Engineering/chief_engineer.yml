@@ -2,6 +2,7 @@
   id: ChiefEngineer
   name: job-name-ce
   description: job-description-ce
+  setPreference: false
   playTimeTracker: JobChiefEngineer
   requirements:
     - !type:RoleTimeRequirement
@@ -18,7 +19,6 @@
   weight: 10
   startingGear: ChiefEngineerGear
   icon: "JobIconChiefEngineer"
-  requireAdminNotify: true
   supervisors: job-supervisors-captain
   canBeAntag: false
   access:
@@ -44,3 +44,6 @@
     eyes: ClothingEyesGlassesMeson
     ears: ClothingHeadsetCE
     belt: ClothingBeltUtilityEngineering
+  storage:
+    back:
+    - Flash

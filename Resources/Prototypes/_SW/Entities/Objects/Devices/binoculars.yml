@@ -1,0 +1,28 @@
+﻿- type: entity
+  parent: BaseItem
+  id: SWBinoculars
+  name: биноклЫ
+  description: Военный бинокль.
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _SW/Objects/Devices/binoculars.rsi
+    state: binoculars
+  - type: MultiHandedItem
+  - type: Scope
+    useInHand: true
+    allowMovement: true
+    delay: 0
+    zoom: 1.6 # same stats of 4x telescopic scope
+    offset: 14
+  - type: Clothing
+    quickEquip: true
+    slots:
+    - neck
+  - type: Tag
+    tags:
+    - Binoculars
+
+- type: Tag
+  id: Binoculars

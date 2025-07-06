@@ -16,6 +16,7 @@ public sealed partial class ForceSystem
     {
         SubscribeLocalEvent<StoreComponent, MasteryUpEvent>(OnMasteryUpBought);
         SubscribeLocalEvent<StoreComponent, MasteryLightingUpgradeEvent>(OnMasteryLightingUpgrade);
+        SubscribeLocalEvent<ForceComponent, OpenMasteryShopAlertEvent>(OnOpenMasteryShopAlert);
     }
 
     private void OnMasteryUpBought(EntityUid player, StoreComponent storeComponent, MasteryUpEvent args)
@@ -85,21 +86,20 @@ public sealed partial class ForceSystem
                 lightForceComponent.JediMasteryAlerts[lightForceComponent.Mastery]);
         }
     }
-}
 
-[UsedImplicitly]
-[DataDefinition]
-public sealed partial class OpenMasteryShop : IAlertClick
-{
-    public void AlertClicked(EntityUid uid)
+    private void OnOpenMasteryShopAlert(EntityUid uid, ForceComponent component, ref OpenMasteryShopAlertEvent args)
     {
-        var entityManager = IoCManager.Resolve<IEntityManager>();
-
-        if (!entityManager.TryGetComponent<StoreComponent>(uid, out var storeComponent))
+        if (!TryComp<StoreComponent>(uid, out var storeComponent))
+        {
+            args.Handled = false;
             return;
+        }
 
-        if (!entityManager.TryGetComponent<ForceComponent>(uid, out var forceComponent))
+        if (!TryComp<ForceComponent>(uid, out var forceComponent))
+        {
+            args.Handled = false;
             return;
+        }
 
         Dictionary<ProtoId<CurrencyPrototype>, FixedPoint2> newBalance = new()
         {
@@ -107,6 +107,8 @@ public sealed partial class OpenMasteryShop : IAlertClick
         };
 
         storeComponent.Balance = newBalance;
-        entityManager.EntitySysManager.GetEntitySystem<StoreSystem>().ToggleUi(uid, uid, storeComponent);
+        _storeSystem.ToggleUi(uid, uid, storeComponent);
+
+        args.Handled = true;
     }
 }

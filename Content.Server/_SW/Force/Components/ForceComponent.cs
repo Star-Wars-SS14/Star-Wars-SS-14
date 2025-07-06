@@ -1,4 +1,5 @@
 ﻿using System.Numerics;
+using Content.Shared.Alert;
 using Content.Shared.Store;
 using Content.Shared.Store.Components;
 using Robust.Shared.Audio;
@@ -50,5 +51,6 @@ public sealed partial class MasteryTypeCondition : ListingCondition
             return false;
 
         return true;
+
     }
 }

@@ -1,16 +1,18 @@
 ﻿[game]
-hostname = "🛰️ Corvax — Солярис 🌕 [TTS]"
-desc = "[Корвакс — первый русскоязычный проект в Space Station 14.\nНа этом сервере средние требования к RP.\nИмеется интеграция TTS (Text-To-Speech)."
-map_pool = "CorvaxDefaultMapPool"
+hostname = "🛰️ Corvax — Солярис 🌕[TTS]"
+desc = "Корвакс — первый русскоязычный проект в Space Station 14.\nНа этом сервере средние требования к RP.\nИмеется интеграция TTS (Text-To-Speech)."
 maxplayers = 160
 soft_max_players = 80
 map_rotation = true
+
+[server]
+lobby_name = "️🛰️ Corvax — Солярис 🌕"
 
 [game.panic_bunker]
 enabled = true
 show_reason = true
 min_account_age = 0
-min_overall_hours = 0
+min_overall_minutes = 0
 deny_vpn = true
 enable_without_admins = true
 disable_with_admins = true

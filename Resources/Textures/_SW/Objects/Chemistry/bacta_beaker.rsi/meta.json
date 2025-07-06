@@ -1,0 +1,29 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Zgal",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+        {
+            "name": "bactabeaker"
+        },
+        {
+            "name": "bactabeaker1"
+        },
+        {
+            "name": "bactabeaker2"
+        },
+        {
+            "name": "bactabeaker3"
+        },
+        {
+            "name": "inhand-right"
+        },
+        {
+            "name": "inhand-left"
+        }
+    ]
+}

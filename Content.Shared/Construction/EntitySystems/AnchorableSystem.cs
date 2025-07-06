@@ -31,6 +31,7 @@ public sealed partial class AnchorableSystem : EntitySystem
     [Dependency] private readonly SharedToolSystem _tool = default!;
     [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
     [Dependency] private   readonly TagSystem _tagSystem = default!;
+    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
 
     private EntityQuery<PhysicsComponent> _physicsQuery;
 
@@ -47,6 +48,18 @@ public sealed partial class AnchorableSystem : EntitySystem
         SubscribeLocalEvent<AnchorableComponent, TryAnchorCompletedEvent>(OnAnchorComplete);
         SubscribeLocalEvent<AnchorableComponent, TryUnanchorCompletedEvent>(OnUnanchorComplete);
         SubscribeLocalEvent<AnchorableComponent, ExaminedEvent>(OnAnchoredExamine);
+        SubscribeLocalEvent<AnchorableComponent, ComponentStartup>(OnAnchorStartup);
+        SubscribeLocalEvent<AnchorableComponent, AnchorStateChangedEvent>(OnAnchorStateChange);
+    }
+
+    private void OnAnchorStartup(EntityUid uid, AnchorableComponent comp, ComponentStartup args)
+    {
+        _appearance.SetData(uid, AnchorVisuals.Anchored, Transform(uid).Anchored);
+    }
+
+    private void OnAnchorStateChange(EntityUid uid, AnchorableComponent comp, AnchorStateChangedEvent args)
+    {
+        _appearance.SetData(uid, AnchorVisuals.Anchored, args.Anchored);
     }
 
     /// <summary>
@@ -79,7 +92,7 @@ public sealed partial class AnchorableSystem : EntitySystem
             return;
 
         // If the used entity doesn't have a tool, return early.
-        if (!TryComp(args.Used, out ToolComponent? usedTool) || !usedTool.Qualities.Contains(anchorable.Tool))
+        if (!TryComp(args.Used, out ToolComponent? usedTool) || !_tool.HasQuality(args.Used, anchorable.Tool, usedTool))
             return;
 
         args.Handled = true;
@@ -342,4 +355,10 @@ public sealed partial class AnchorableSystem : EntitySystem
     private sealed partial class TryAnchorCompletedEvent : SimpleDoAfterEvent
     {
     }
+}
+
+[Serializable, NetSerializable]
+public enum AnchorVisuals : byte
+{
+    Anchored
 }

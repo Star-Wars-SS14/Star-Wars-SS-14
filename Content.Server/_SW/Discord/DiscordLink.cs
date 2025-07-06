@@ -75,8 +75,8 @@ public sealed class DiscordLink : IPostInjectInit
 
     public void Initialize()
     {
-        _configuration.OnValueChanged(CCVars.DiscordGuildId, OnGuildIdChanged, true);
-        _configuration.OnValueChanged(CCVars.DiscordPrefix, OnPrefixChanged, true);
+        _configuration.OnValueChanged(SWVars.DiscordGuildId, OnGuildIdChanged, true);
+        _configuration.OnValueChanged(SWVars.DiscordPrefix, OnPrefixChanged, true);
         _client = new DiscordSocketClient(new DiscordSocketConfig
         {
             GatewayIntents = GatewayIntents.All
@@ -84,7 +84,7 @@ public sealed class DiscordLink : IPostInjectInit
         _client.Log += Log;
         _client.MessageReceived += OnCommandReceivedInternal;
         _client.MessageReceived += OnMessageReceivedInternal;
-        if (_configuration.GetCVar(CCVars.DiscordToken) is not { } token || token == string.Empty)
+        if (_configuration.GetCVar(SWVars.DiscordToken) is not { } token || token == string.Empty)
         {
             _sawmill.Info("No Discord token specified, not connecting.");
             // The Bot is not connected, so we need to set the client to null, because some methods check if the bot is connected using a null check on the client.
@@ -93,8 +93,8 @@ public sealed class DiscordLink : IPostInjectInit
         }
 
         // If the Guild ID is empty OR the prefix is empty, we don't want to connect to Discord.
-        if (_configuration.GetCVar(CCVars.DiscordGuildId) == string.Empty ||
-            _configuration.GetCVar(CCVars.DiscordPrefix) == string.Empty)
+        if (_configuration.GetCVar(SWVars.DiscordGuildId) == string.Empty ||
+            _configuration.GetCVar(SWVars.DiscordPrefix) == string.Empty)
         {
             // This is a warning, not info, because it's a configuration error.
             // It is valid to not have a Discord token set which is why the above check is an info.
@@ -142,8 +142,8 @@ public sealed class DiscordLink : IPostInjectInit
             _client = null;
         }
 
-        _configuration.UnsubValueChanged(CCVars.DiscordGuildId, OnGuildIdChanged);
-        _configuration.UnsubValueChanged(CCVars.DiscordPrefix, OnPrefixChanged);
+        _configuration.UnsubValueChanged(SWVars.DiscordGuildId, OnGuildIdChanged);
+        _configuration.UnsubValueChanged(SWVars.DiscordPrefix, OnPrefixChanged);
     }
 
     private Task OnMessageReceivedInternal(SocketMessage message)

@@ -20,11 +20,9 @@ public sealed class StorageSystem : SharedStorageSystem
 
     public event Action<Entity<StorageComponent>>? StorageUpdated;
     public event Action<Entity<StorageComponent>?>? StorageOrderChanged;
-    ISawmill _s = default!;
     public override void Initialize()
     {
         base.Initialize();
-        _s = Logger.GetSawmill("again");
         SubscribeLocalEvent<StorageComponent, ComponentShutdown>(OnShutdown);
         SubscribeNetworkEvent<PickupAnimationEvent>(HandlePickupAnimation);
         SubscribeAllEvent<AnimateInsertingEntitiesEvent>(HandleAnimatingInsertingEntities);
@@ -127,10 +125,8 @@ public sealed class StorageSystem : SharedStorageSystem
     public override void PlayPickupAnimation(EntityUid uid, EntityCoordinates initialCoordinates, EntityCoordinates finalCoordinates,
         Angle initialRotation, EntityUid? user = null)
     {
-        _s.Debug("here0");
         if (!_timing.IsFirstTimePredicted)
             return;
-        _s.Debug("here1");
         PickupAnimation(uid, initialCoordinates, finalCoordinates, initialRotation);
     }
 

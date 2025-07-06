@@ -1,5 +1,4 @@
-using Content.Shared._SW.Force.Components;
-using Content.Shared.Coordinates;
+using Content.Shared._SW;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Item;
@@ -9,28 +8,36 @@ using System.Numerics;
 using Robust.Shared.Containers;
 using Content.Shared.Verbs;
 using Robust.Shared.Utility;
-using Robust.Shared.Serialization;
-using Content.Shared.Movement.Pulling.Events;
-using Content.Shared.Movement.Pulling.Systems;
-using Robust.Shared.Input.Binding;
-using Content.Shared.Input;
-using Robust.Shared.Player;
 using Content.Shared.Stunnable;
+using Content.Server.Actions;
 
-namespace Content.Shared._SW;
+namespace Content.Server._SW;
 public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
 {
     [Dependency] private readonly SharedHandsSystem _handsSystem = default!;
     [Dependency] private readonly SharedInteractionSystem _interactionSystem = default!;
     [Dependency] private readonly SharedPhysicsSystem _physicsSystem = default!;
     [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
+    [Dependency] private readonly ActionsSystem _actionsSystem = default!;
     public override void Initialize()
     {
         //SubscribeLocalEvent<BeingPulledByForceComponent, InteractHandEvent>(OnInteractWithPulledObject);
+        SubscribeLocalEvent<ForceAbilityDistanceInteractComponent, ComponentInit>(OnCompInit);
         SubscribeLocalEvent<ItemComponent, GetVerbsEvent<PullByForceVerb>>(OnVerbsRequested);
         SubscribeLocalEvent<BeingAttractedByForceComponent, EntGotInsertedIntoContainerMessage>(OnAttractedObjectGetInserted);
         SubscribeLocalEvent<BeingMovedByForceComponent, EntGotInsertedIntoContainerMessage>(OnMovedObjectGetInserted);
-        //SubscribeLocalEvent<ForceAbilityDistanceInteractComponent, RequestPullEvent>(OnPullRequested);
+        SubscribeLocalEvent<ForceAbilityDistanceInteractComponent, AttractByForceRequestedEvent>(OnAttractRequested);
+    }
+
+    private void OnCompInit(Entity<ForceAbilityDistanceInteractComponent> ent, ref ComponentInit args)
+    {
+        _actionsSystem.AddAction(ent.Owner, ent.Comp.ActionAttractPrototype);
+    }
+
+    private void OnAttractRequested(Entity<ForceAbilityDistanceInteractComponent> ent, ref AttractByForceRequestedEvent args)
+    {
+        StartAttractingByForce(args.Performer, args.Target, ent.Comp);
+        args.Handled = true;
     }
 
     private void OnMovedObjectGetInserted(Entity<BeingMovedByForceComponent> ent, ref EntGotInsertedIntoContainerMessage args)
@@ -146,20 +153,5 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
         comp.IsAttracting = false;
         RemComp<BeingAttractedByForceComponent>(comp.CurrentAttractingItem.Value);
         comp.CurrentAttractingItem = null;
-    }
-}
-
-[Serializable, NetSerializable]
-public sealed class PullByForceVerb : Verb
-{
-    public override int TypePriority => 0;
-}
-
-public sealed class StopMovingByForceEvent : EntityEventArgs
-{
-    public EntityUid MoverId;
-    public StopMovingByForceEvent(EntityUid moverId)
-    {
-        MoverId = moverId;
     }
 }

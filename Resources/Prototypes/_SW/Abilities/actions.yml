@@ -38,6 +38,20 @@
     useDelay: 6
 
 - type: entity
+  id: ActionForceAttract
+  name: Притянуть предмет
+  description: Притяние объект!
+  noSpawn: true
+  components:
+  - type: EntityTargetAction
+    icon: Interface/VerbIcons/pickup.svg.192dpi.png
+    event: !type:AttractByForceRequestedEvent
+    canTargetSelf: false
+    interactOnMiss: false
+    range: 20
+    useDelay: 2
+
+- type: entity
   id: ActionSubdueKyber
   name: Подчинить кайбер кристалл
   description: Держа кайбер кристалл в руке, попробуйте его подчинить.

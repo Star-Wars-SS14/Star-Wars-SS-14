@@ -4,6 +4,7 @@ using Content.Shared.Throwing;
 using Robust.Shared.Physics.Systems;
 using Content.Shared._SW;
 using Content.Server.Hands.Systems;
+using Robust.Shared.Toolshed.TypeParsers;
 
 namespace Content.Server._SW;
 
@@ -23,8 +24,15 @@ public sealed partial class SWAbilityThrowSwordSystem : EntitySystem
 
     private void OnThrowRequested(Entity<SWSwordThrowableComponent> ent, ref ThrowRequestedActionEvent args)
     {
-        ISawmill _s = Logger.GetSawmill("asdff");
-        _s.Debug($"0 {args.Performer}");
+        var comp = _hands.GetActiveHand(args.Performer);
+        if (comp == null)
+        {
+            return;
+        }
+        if (comp.HeldEntity == null || !HasComp<SWSwordThrowableComponent>(comp.HeldEntity))
+        {
+            return;
+        }
         _hands.ThrowHeldItem(args.Performer, args.Target);
         args.Handled = true;
     }

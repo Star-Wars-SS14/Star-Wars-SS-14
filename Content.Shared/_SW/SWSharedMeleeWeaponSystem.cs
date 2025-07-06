@@ -1,24 +1,11 @@
-using Content.Shared._SW.Force.Components;
-using Content.Shared.Damage;
 using Content.Shared.Hands;
+using Content.Shared.Item.ItemToggle;
 using Content.Shared.Popups;
 using Content.Shared.Tag;
-using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Melee.Events;
 using Content.Shared.Weapons.Reflect;
-using Linguini.Bundle.Errors;
-using Microsoft.VisualBasic;
-using Robust.Shared.Map;
-using Robust.Shared.Player;
 using Robust.Shared.Serialization;
 using Robust.Shared.Timing;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Content.Server;
 
 namespace Content.Shared._SW;
 
@@ -26,7 +13,7 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
 {
     [Dependency] IGameTiming _gameTiming = default!;
     [Dependency] protected SharedPopupSystem PopupSystem = default!;
-    [Dependency] TagSystem _tagSystem = default!;
+    [Dependency] private readonly ItemToggleSystem _toggle = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -112,6 +99,11 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
             return;
         }
 
+        if (!_toggle.IsActivated(GetEntity(ev.Weapon)))
+        {
+            return;
+        }
+
         if (_gameTiming.CurTime >= forceComp.NextReflectionAvailable && !forceComp.IsBlocking)
         {
             PopupSystem.PopupPredicted("Вы ставите блок!", GetEntity(ev.Weapon), null, PopupType.Medium);
@@ -136,12 +128,9 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
         var query = EntityQueryEnumerator<SWForceUserBlockComponent>();
         while (query.MoveNext(out var ent, out var comp))
         {
-            if (TryComp<ReflectComponent>(ent, out var reflComp))
+            if (comp.BlockEndTime <= _gameTiming.CurTime && comp.IsBlocking)
             {
-                if (comp.BlockEndTime <= _gameTiming.CurTime && reflComp.ReflectProb == 1f)
-                {
-                    DisableBlock(ent);
-                }
+                DisableBlock(ent);
             }
         }
     }

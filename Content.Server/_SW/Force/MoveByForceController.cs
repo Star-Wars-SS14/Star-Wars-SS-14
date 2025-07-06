@@ -14,7 +14,6 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using Content.Shared._SW.Force.Components;
 using Content.Shared.Interaction;
 using Robust.Shared.Physics.Systems;
 using Content.Server.Movement.Components;
@@ -29,6 +28,7 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs;
 using JetBrains.FormatRipper.Elf;
 using Content.Server.Examine;
+using Content.Server._SW.Force.Components;
 
 namespace Content.Server._SW.Force;
 

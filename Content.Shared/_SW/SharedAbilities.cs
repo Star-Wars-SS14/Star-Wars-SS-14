@@ -53,12 +53,6 @@ public sealed partial class ThrowRequestedActionEvent : WorldTargetActionEvent
 
 }
 
-[Serializable, NetSerializable]
-public sealed class PullByForceVerb : Verb
-{
-    public override int TypePriority => 0;
-}
-
 public sealed class StopMovingByForceEvent : EntityEventArgs
 {
     public EntityUid MoverId;

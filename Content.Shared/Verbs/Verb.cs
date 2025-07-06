@@ -224,8 +224,7 @@ namespace Content.Shared.Verbs
             typeof(AlternativeVerb),
             typeof(ActivationVerb),
             typeof(ExamineVerb),
-            typeof(EquipmentVerb),
-            typeof(PullByForceVerb)
+            typeof(EquipmentVerb)
         };
     }
 

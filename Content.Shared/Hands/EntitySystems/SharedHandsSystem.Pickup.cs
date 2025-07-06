@@ -110,15 +110,10 @@ public abstract partial class SharedHandsSystem : EntitySystem
             var coordinateEntity = xform.ParentUid.IsValid() ? xform.ParentUid : uid;
             var itemXform = Transform(entity);
             var itemPos = TransformSystem.GetMapCoordinates(entity, xform: itemXform);
-            ISawmill _s = Logger.GetSawmill("pickup");
-            _s.Debug($"bool1 {itemPos.MapId == xform.MapID}");
-            _s.Debug($"bool2 {MetaData(entity).VisibilityMask == MetaData(uid).VisibilityMask}");
             if (itemPos.MapId == xform.MapID
                 && (itemPos.Position - TransformSystem.GetMapCoordinates(uid, xform: xform).Position).Length() <= MaxAnimationRange
                 && MetaData(entity).VisibilityMask == MetaData(uid).VisibilityMask) // Don't animate aghost pickups.
-            {                
-                _s.Debug("played");
-                
+            {
                 var initialPosition = EntityCoordinates.FromMap(coordinateEntity, itemPos, TransformSystem, EntityManager);
                 _storage.PlayPickupAnimation(entity, initialPosition, xform.Coordinates, itemXform.LocalRotation, uid);
             }

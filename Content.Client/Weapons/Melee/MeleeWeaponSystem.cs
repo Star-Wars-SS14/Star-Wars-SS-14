@@ -6,7 +6,6 @@ using Content.Shared.Effects;
 using Content.Shared.Hands.Components;
 using Content.Shared.Mobs.Components;
 using Content.Shared.StatusEffect;
-using Content.Shared.Tag;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Melee.Events;
 using Content.Shared.Weapons.Ranged.Components;
@@ -18,7 +17,6 @@ using Robust.Client.State;
 using Robust.Shared.Input;
 using Robust.Shared.Map;
 using Robust.Shared.Player;
-using YamlDotNet.Core.Tokens;
 
 namespace Content.Client.Weapons.Melee;
 
@@ -130,7 +128,7 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
             if (HasComp<SWForceUserBlockComponent>(entity) && HasComp<SWWeaponBlockComponent>(weaponUid))
             {
                 //Нам нужно регистрировать только одиночное нажатие на клавишу, поэтому
-                //проверяем, каким была ли отжата клаваиша в предыдущий тик или нет.
+                //проверяем, была ли отжата клаваиша в предыдущий тик или нет.
                 if (altDown == BoundKeyState.Down && _altStatePrev == BoundKeyState.Up)
                 {
                     RaisePredictiveEvent(new SWTryReflectEvent(GetNetEntity(weaponUid)));

@@ -21,9 +21,7 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
     [Dependency] private readonly ActionsSystem _actionsSystem = default!;
     public override void Initialize()
     {
-        //SubscribeLocalEvent<BeingPulledByForceComponent, InteractHandEvent>(OnInteractWithPulledObject);
         SubscribeLocalEvent<ForceAbilityDistanceInteractComponent, ComponentInit>(OnCompInit);
-        SubscribeLocalEvent<ItemComponent, GetVerbsEvent<PullByForceVerb>>(OnVerbsRequested);
         SubscribeLocalEvent<BeingAttractedByForceComponent, EntGotInsertedIntoContainerMessage>(OnAttractedObjectGetInserted);
         SubscribeLocalEvent<BeingMovedByForceComponent, EntGotInsertedIntoContainerMessage>(OnMovedObjectGetInserted);
         SubscribeLocalEvent<ForceAbilityDistanceInteractComponent, AttractByForceRequestedEvent>(OnAttractRequested);
@@ -53,25 +51,6 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
 
         RaiseLocalEvent(objectToMove, new StopMovingByForceEvent(comp.ForceUserMover.Value));
     }
-
-    private void OnVerbsRequested(Entity<ItemComponent> ent, ref GetVerbsEvent<PullByForceVerb> args)
-    {
-        if (!HasComp<ForceAbilityDistanceInteractComponent>(args.User))
-        {
-            return;
-        }
-        // Basic examine verb.
-        PullByForceVerb verb = new();
-        verb.Priority = 10;
-        // Center it on the entity if they use the verb instead.
-        EntityUid user = args.User;
-        EntityUid target = args.Target;
-        verb.Act = () => StartAttractingByForce(user, target);
-        verb.Text = "Притянуть силой";
-        verb.Icon = new SpriteSpecifier.Texture(new("/Textures/Interface/VerbIcons/drop.svg.192dpi.png"));
-        args.Verbs.Add(verb);
-    }
-
     private void OnAttractedObjectGetInserted(Entity<BeingAttractedByForceComponent> ent, ref EntGotInsertedIntoContainerMessage args)
     {
         if (ent.Comp.User == null)

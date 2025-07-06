@@ -437,7 +437,6 @@ namespace Content.Shared.Interaction
             {
                 if (inRangeUnobstructed && target != null)
                     InteractHand(user, target.Value);
-                //_forceAbilityDistanceInteractSystem.HandleUserInteract(user, coordinates, target, altInteract);
                 return;
             }
 

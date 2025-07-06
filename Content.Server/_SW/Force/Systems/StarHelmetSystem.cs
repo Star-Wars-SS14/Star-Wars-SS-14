@@ -88,7 +88,7 @@ public sealed class StarHelmetSystem : EntitySystem
     private void OnGotEquipped(EntityUid helmet, StarHelmetComponent component, GotEquippedEvent args)
     {
 
-        if (!StarHelmetComponent.AllowedSlots.Contains(args.SlotFlags))
+        if (component.RequiredSlot != args.SlotFlags)
         {
             return;
         }
@@ -99,7 +99,6 @@ public sealed class StarHelmetSystem : EntitySystem
         }
         EnsureComp<ActiveRadioComponent>(helmet).Channels = new(component.Channels);
 
-        EnsureComp<WearingStarHelmetComponent>(args.Equipee).Helmet = helmet;
         EnsureComp<ActiveRadioComponent>(helmet).Channels = new HashSet<string>(component.Channels);
 
 

@@ -10,8 +10,8 @@ public sealed partial class StarHelmetComponent : Component
     [DataField("channels", customTypeSerializer: typeof(PrototypeIdHashSetSerializer<RadioChannelPrototype>))]
     public HashSet<string> Channels;
 
-    //список слотов, в которые можно поместить предметы с этим компонентом
-    //(не конкретно этот предмет, а вообще любые предметы с этим компонентом)
+    //shows in whicht inventory slot radio shuold be enabled.
+    //If object with this component is equipped in any other slot, speaking through radio will be disabled
     [DataField("requiredSlot")]
-    public static List<SlotFlags> AllowedSlots = new() { SlotFlags.EARS, SlotFlags.HEAD };
+    public SlotFlags RequiredSlot = SlotFlags.EARS;
 }

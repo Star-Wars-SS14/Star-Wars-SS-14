@@ -291,7 +291,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             case TaskSpawnRestrictions.NoRestrictions:
                 return true;
             case TaskSpawnRestrictions.OnePerFaction:
-                return existingTasksPrototypes.Contains(taskProtoToCheck);
+                return !existingTasksPrototypes.Contains(taskProtoToCheck);
             case TaskSpawnRestrictions.OnePerAllFactions:
                 var factions = _swFaction.GetFactionsEntities();
                 foreach (var faction in factions)

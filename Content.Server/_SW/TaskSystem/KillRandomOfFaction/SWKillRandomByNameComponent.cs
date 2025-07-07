@@ -22,6 +22,6 @@ public sealed partial class SWKillRandomByNameComponent : Component
 
     public string? JobOfTarget = null;
 
-    [DataField]
+    [DataField(required: true)]
     public LocId DescriptionId;
 }

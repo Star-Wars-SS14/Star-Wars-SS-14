@@ -14,7 +14,7 @@
   - type: SWTask
     name: Украдите три плюшевых пчелы. 
     description: Главное спиздить, а пригодится или нет решать потом.
-  - type: CollectObjectTask
+  - type: SWCollectObjectTask
     objects:
       [PlushieBee] : 3
 

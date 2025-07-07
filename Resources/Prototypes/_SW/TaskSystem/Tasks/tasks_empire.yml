@@ -36,10 +36,11 @@
   - type: SWKillRandomByName
     factions: [ExchangeFaction, BlackSunFaction]
     jobsToScores:
-      SWBlackSunMercenary : 5
-      SWBlackSun : 7
-      SWExchangeCaptain : 7
-      SWExchangeOperative : 5 
+      SWBlackSunMercenary : 8
+      SWBlackSun : 10
+      SWExchangeCaptain : 10
+      SWExchangeOperative : 8
+    descriptionId: kill-criminal
 
 - type: entity
   id: KillByNameTaskEmpire
@@ -59,7 +60,7 @@
       SWRepublicCommanderMedic: 15
       SWRepublicCommanderStormtrooper: 15
       SWRepublicCommanderSniper: 15
-    description: kill-republic-by-name
+    descriptionId: kill-republic-by-name
   - type: SWParallelTask
     task: ProtectTaskRepublic
     faction: RepublicFaction

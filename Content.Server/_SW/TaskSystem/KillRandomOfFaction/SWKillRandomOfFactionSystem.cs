@@ -4,6 +4,7 @@ using Content.Shared._SW.TaskSystem;
 using Content.Shared.Damage;
 using Content.Shared.Gibbing.Events;
 using Content.Shared.Mind;
+using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Roles;
 using Content.Shared.Roles.Jobs;
@@ -40,8 +41,12 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         SubscribeLocalEvent<SWKillRandomByJobComponent, SWTaskGetScoreEvent>(GetScoreByJob);
 
         SubscribeLocalEvent<SWFactionMemberComponent, MobStateChangedEvent>(OnMobStateChanged);
-        SubscribeLocalEvent<SWFactionMemberComponent, AttemptEntityGibEvent>(OnGib);
+        SubscribeLocalEvent<SWFactionMemberComponent, MindRemovedMessage>(OnMindRemoved);
+        //SubscribeLocalEvent<SWFactionMemberComponent, AttemptEntityGibEvent>(OnGib);
     }
+
+    
+
     private void OnCheckRequirementsByName(Entity<SWKillRandomByNameComponent> ent, ref SWTaskCheckRequirementsEvent args)
     {
         var query = EntityQueryEnumerator<SWKillRandomByNameComponent>();
@@ -204,12 +209,14 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
             UpdateProgress(ent);
         }
     }
-    private void OnGib(Entity<SWFactionMemberComponent> ent, ref AttemptEntityGibEvent args)
-    {
-        UpdateProgress(ent);
-    }
 
-    private void UpdateProgress(Entity<SWFactionMemberComponent> ent)
+    private void OnMindRemoved(Entity<SWFactionMemberComponent> ent, ref MindRemovedMessage args)
+    {
+        //when entity is gibbbed mind is transfered to brain, and we cant use getmind on entity, because we will get the wrong mind
+        //so we pass mind to updateProgess manually
+        UpdateProgress(ent, args.Mind);
+    }
+    private void UpdateProgress(Entity<SWFactionMemberComponent> ent, EntityUid? mind = null)
     {
         var query = EntityQueryEnumerator<SWKillRandomByNameComponent>();
         while (query.MoveNext(out var uid, out var comp))
@@ -223,10 +230,8 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         var query2 = EntityQueryEnumerator<SWKillRandomByJobComponent>();
         while (query2.MoveNext(out var uid, out var comp))
         {
-            var job = GetJob(ent.Owner);
+            var job = GetJob(ent.Owner, mind);
             var taskComp = EnsureComp<SWTaskComponent>(uid);
-            ISawmill _s = Logger.GetSawmill("sdfghj");
-            _s.Debug($"{job}");
             if (taskComp.Completeness < 1.0
                 && job != null && comp.JobsToScores.ContainsKey(job)
                    && (comp.JobProtoToKill == job || comp.KillAny))
@@ -252,9 +257,13 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         return res;
     }
 
-    public string? GetJob(EntityUid ent)
+    public string? GetJob(EntityUid ent, EntityUid? mind = null)
     {
-        var mind = _mindSystem.GetMind(ent);
+        if (mind == null)
+        {
+            mind = _mindSystem.GetMind(ent);
+        }
+
         if (mind == null)
         {
             return null;
@@ -266,13 +275,5 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         }
         return null;
     }
-    private string GetJobName(EntityUid ent)
-    {
-        var mind = _mindSystem.GetMind(ent);
-        if (mind == null)
-        {
-            return "-";
-        }
-        return _jobSystem.MindTryGetJobName(mind);
-    }
+ 
 }

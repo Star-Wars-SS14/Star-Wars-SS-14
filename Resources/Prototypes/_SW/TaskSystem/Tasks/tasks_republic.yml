@@ -54,7 +54,7 @@
     name: Ключ карта от всех дверей
     description: Добыча имперских айди карт. Для проведения более эффективных диверсий необходимо захватить три любые айди карты, позволяющие получать доступы на базы империи. Айди карты обычных солдат бесполезны, на них это задание не распространяется.
     score: 15
-  - type: CollectObjectTask
+  - type: SWCollectObjectTask
     objects:
       [SW_IDCardSobrikCaptain, SW_IDCardSobrikOfficer, SW_IDCardSobrikMedic, SW_IDCardEmpireMoff, SW_IDCardEmpireMajor, SW_IDCardEmpireLieutenant, SW_IDCardEmpireMedic] : 3
 

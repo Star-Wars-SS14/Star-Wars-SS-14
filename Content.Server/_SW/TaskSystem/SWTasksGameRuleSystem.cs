@@ -270,16 +270,53 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         }
         foreach (var (key, value) in proto.Weights)
         {
-            //if (currentTasksProtolist.Contains(key))
-            //{
-            //    continue;
-            //}
+            if (!CheckRestrictions(currentTasksProtolist, key))
+            {
+                continue;
+            }
             if (CheckTask(key))
             {
                 weightedProto.Weights.Add(key, value);
             }
         }
         return weightedProto;
+    }
+
+    private bool CheckRestrictions(List<string> existingTasksPrototypes, string taskProtoToCheck)
+    {
+        var taskProto = _prototypeManager.Index(taskProtoToCheck);
+        var comp = (SWTaskComponent)taskProto.Components["SWTask"].Component;
+        switch (comp.Restrictions)
+        {
+            case TaskSpawnRestrictions.NoRestrictions:
+                return true;
+            case TaskSpawnRestrictions.OnePerFaction:
+                return existingTasksPrototypes.Contains(taskProtoToCheck);
+            case TaskSpawnRestrictions.OnePerAllFactions:
+                var factions = _swFaction.GetFactionsEntities();
+                foreach (var faction in factions)
+                {
+                    if (!TryComp<SWTaskContainerComponent>(faction, out var taskContainer))
+                    {
+                        continue;
+                    }
+
+                    foreach (var task in taskContainer.CurrentTasks)
+                    {
+                        TryPrototype(task.Owner, out var proto);
+                        if (proto != null)
+                        {
+                            if (proto == taskProto)
+                            {
+                                return false;
+                            }
+                        }
+                    }
+                }
+                return true;
+            default:
+                throw new NotImplementedException();
+        }
     }
 
     /// <summary>

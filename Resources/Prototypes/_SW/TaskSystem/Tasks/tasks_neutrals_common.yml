@@ -8,13 +8,13 @@
   - type: SWKillRandomByName
     factions: [RepublicFaction, EmpireFaction]
     jobsToScores:
-      SWEmpireSoldier: 3
-      SWEmpireMedic: 3
-      SWSobrikOfficer: 3
-      SWSobrikMedic: 3
-      SWRepublicSoldier: 3
-      SWRepublicRecruit: 3
-      SWRepublicMedic: 3
+      SWEmpireSoldier: 15
+      SWEmpireMedic: 15
+      SWSobrikOfficer: 15
+      SWSobrikMedic: 15
+      SWRepublicSoldier: 15
+      SWRepublicRecruit: 15
+      SWRepublicMedic: 15
     descriptionId: small-headhunt
 
 - type: entity
@@ -27,17 +27,15 @@
   - type: SWKillRandomByName
     factions: [RepublicFaction, EmpireFaction]
     jobsToScores:
-      SWEmpireMajor: 10
-      SWEmpireLieutenant: 8
-      SWRepublicCaptain: 10
-      SWRepublicLieutenant: 8
-      SWRepublicCommanderCommander: 12
-      SWRepublicCommanderLieutenant: 7
-      SWRepublicCommanderMedic: 7
-      SWRepublicCommanderStormtrooper: 7
-      SWRepublicCommanderSniper: 7
-      SWEmpireIntelligenceCaretaker: 12
-      SWEmpireIntelligenceAgent: 8
+      SWEmpireMajor: 25
+      SWEmpireLieutenant: 25
+      SWRepublicCaptain: 25
+      SWRepublicLieutenant: 25
+      SWRepublicCommanderCommander: 25
+      SWRepublicCommanderLieutenant: 25
+      SWRepublicCommanderMedic: 25
+      SWRepublicCommanderStormtrooper: 25
+      SWRepublicCommanderSniper: 25
     descriptionId: big-headhunt-mandalorian
 
 - type: entity

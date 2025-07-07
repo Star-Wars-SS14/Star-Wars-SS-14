@@ -10,4 +10,7 @@ namespace Content.Server._SW.TaskSystem.ParallelTaskProtect;
 public sealed partial class SWParallelTaskProtectComponent : Component
 {
     public EntityUid? PersonToProtect = default;
+
+    [DataField]
+    public LocId DescriptionId = default;
 }

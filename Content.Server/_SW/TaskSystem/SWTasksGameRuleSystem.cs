@@ -321,6 +321,17 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 
     public Entity<SWTaskComponent>? AddTask(string factionId, string taskProto)
     {
+        var task = AddTaskNoInit(factionId, taskProto);
+        if (task == null)
+        {
+            return null;
+        }
+        InitTask(task.Value);
+        return task;
+    }
+
+    public Entity<SWTaskComponent>? AddTaskNoInit(string factionId, string taskProto)
+    {
         var tmp = _swFaction.GetFactionEntity(factionId);
 
         if (tmp == null)
@@ -337,13 +348,17 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         Entity<SWTaskContainerComponent> faction = new(tmp.Value.Owner, taskComp);
         var task = Spawn(taskProto);
         var comp = EnsureComp<SWTaskComponent>(task);
-        RaiseLocalEvent(task, new SWOnTaskInitEvent());
         comp.OwnerFaction = factionId;
         faction.Comp.CurrentTasks.Add(new Entity<SWTaskComponent>(task, comp));
-        var ev = new SWTaskAddAdditionalDescEvent();
-        RaiseLocalEvent(task, ref ev);
-        comp.Description += ev.Description;
         return new Entity<SWTaskComponent>(task, comp);
+    }
+
+    public Entity<SWTaskComponent>? InitTask(Entity<SWTaskComponent> task)
+    {
+        RaiseLocalEvent(task.Owner, new SWOnTaskInitEvent());
+        var ev = new SWTaskProvideDescriptionEvent();
+        RaiseLocalEvent(task.Owner, ref ev);
+        return task;
     }
     public List<Entity<SWTaskComponent>> GetFactionTasks(string? faction)
     {

@@ -3,35 +3,30 @@
   weights:
     KillByJobTaskRepublic: 5
     KillRandomEmpireByName: 5
-    KillMoff: 1
-    StealIdCardsEmpire: 7
 
 - type: entity
   id: KillByJobTaskRepublic
   parent: SWTaskBase
   components:
   - type: SWTask
-    name: Убийство члена командования
+    name: Ликвидация
     description: Люди в указанной должности причиняют значительные неудобства нашим войскам. Убейте любого из них.
   - type: SWKillRandomByJob
     factions: [EmpireFaction]
     jobsToScores:
-      SWEmpireMajor : 10
-      SWEmpireLieutenant : 8
-      SWEmpireIntelligenceCaretaker: 10
-      SWEmpireIntelligenceAgent: 7     
-
-- type: entity
-  id: KillMoff
-  parent: SWTaskBase
-  components:
-  - type: SWTask
-    name: Обезглавливание
-    description: Необходимо обезглавить местное командование. Устраните секторального моффа, это внесет хаос в ряды империи.
-  - type: SWKillRandomByName
-    factions: [EmpireFaction]
-    jobsToScores:
-      SWEmpireMoff : 15
+      SWEmpireMajor : 20
+      SWEmpireLieutenant : 15
+      SWEmpireIntelligenceCaretaker: 20
+      SWEmpireIntelligenceAgent: 15
+      SWSobrikCaptain: 20
+      SWEmpireMoff: 25
+    jobsToDescriptions:
+      SWEmpireMajor : SWEmpireMajor-killByJobRepublic
+      SWEmpireLieutenant : SWEmpireLieutenant-killByJobRepublic
+      SWEmpireIntelligenceCaretaker: SWEmpireIntelligenceCaretaker-killByJobRepublic
+      SWEmpireIntelligenceAgent: SWEmpireIntelligenceAgent-killByJobRepublic
+      SWSobrikCaptain: SWSobrikCaptain-killByJobRepublic
+      SWEmpireMoff: SWEmpireMoff-killByJobRepublic
 
 - type: entity
   id: KillRandomEmpireByName
@@ -43,22 +38,25 @@
   - type: SWKillRandomByName
     factions: [EmpireFaction]
     jobsToScores:
-      SWEmpireMajor: 10
-      SWEmpireLieutenant: 8
-      SWEmpireSoldier: 3
-      SWEmpireMedic: 5
-
+      SWEmpireMajor: 20
+      SWEmpireLieutenant: 15
+      SWEmpireMoff: 25
+      SWSobrikCaptain: 20
+    description: kill-empire-by-name
+  - type: SWParallelTask
+    task: ProtectTaskEmpire
+    faction: EmpireFaction
 - type: entity
   id: StealIdCardsEmpire
   parent: SWTaskBase
   components:
   - type: SWTask
-    name: Кража имперских id карт
-    description: Для ведения подрывной деятельности нам необходима маскировка. Добудьте 3 id карты имперских сил. Подойдут любые.
-    score: 7
+    name: Ключ карта от всех дверей
+    description: Добыча имперских айди карт. Для проведения более эффективных диверсий необходимо захватить три любые айди карты, позволяющие получать доступы на базы империи. Айди карты обычных солдат бесполезны, на них это задание не распространяется.
+    score: 15
   - type: CollectObjectTask
     objects:
-      [SW_IDCardSobrikCaptain, SW_IDCardSobrikOfficer, SW_IDCardSobrikMedic, SW_IDCardEmpireMoff, SW_IDCardEmpireMajor, SW_IDCardEmpireLieutenant, SW_IDCardEmpireSoldier, SW_IDCardEmpireMedic] : 3
+      [SW_IDCardSobrikCaptain, SW_IDCardSobrikOfficer, SW_IDCardSobrikMedic, SW_IDCardEmpireMoff, SW_IDCardEmpireMajor, SW_IDCardEmpireLieutenant, SW_IDCardEmpireMedic] : 3
 
 
 - type: entity
@@ -67,5 +65,6 @@
   components:
   - type: SWTask
     name: Защита
-    description: Мы получили информацию, что на этого человека готовится покушение. Защитите его.
+    description: Тут ничего нет.
   - type: SWParallelTaskProtect
+    descriptionId: protect-republic

@@ -16,6 +16,7 @@ public sealed class SWParallelTaskProtectSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<SWKillRandomByNameComponent, AfterParallelTaskSpawnedEvent>(OnSpawned);
+        SubscribeLocalEvent<SWParallelTaskProtectComponent, SWTaskProvideDescriptionEvent>(OnDescriptionRequested);
         SubscribeLocalEvent<SWParallelTaskProtectComponent, SWGetProgressEvent>(OnGetProgress);
     }
     private void OnSpawned(Entity<SWKillRandomByNameComponent> ent, ref AfterParallelTaskSpawnedEvent args)
@@ -23,21 +24,28 @@ public sealed class SWParallelTaskProtectSystem : EntitySystem
         if (TryComp<SWParallelTaskProtectComponent>(args.SpawnedTask, out var comp))
         {
             comp.PersonToProtect = ent.Comp.PersonToKill;
-            var taskcomp = EnsureComp<SWTaskComponent>(args.SpawnedTask);
-            if (ent.Comp.PersonToKill != null)
-            {
-                taskcomp.Description += $"\nИмя того, кого вы должны защитить: {Name(ent.Comp.PersonToKill.Value)}\n";
-            }
         }
+    }
+    private void OnDescriptionRequested(Entity<SWParallelTaskProtectComponent> ent, ref SWTaskProvideDescriptionEvent args)
+    {
+        if (ent.Comp.PersonToProtect == null)
+        {
+            return;
+        }
+        var comp = EnsureComp<SWTaskComponent>(ent.Owner);
+        comp.Description = Loc.GetString(ent.Comp.DescriptionId, ("name", Name(ent.Comp.PersonToProtect.Value)));
     }
     private void OnGetProgress(Entity<SWParallelTaskProtectComponent> ent, ref SWGetProgressEvent args)
     {
         if (!TryComp<MobStateComponent>(ent.Comp.PersonToProtect, out var comp))
         {
+            //If we cant get comp it means that person is gibbed, or deleted, or smth else which means that person is dead
+            args.Progress = 0.0f;
+            args.Handled = true;
             return;
         }
 
-        if (comp.CurrentState == Shared.Mobs.MobState.Dead)
+        if (comp.CurrentState == Shared.Mobs.MobState.Dead || comp.CurrentState == Shared.Mobs.MobState.Invalid)
         {
             args.Progress = 0.0f;
         }

@@ -22,10 +22,11 @@ public sealed partial class SWParallelTaskSystem : EntitySystem
     }
     private void OnTaskInit(Entity<SWParallelTaskComponent> ent, ref SWOnTaskInitEvent args)
     {
-        var spawnedTask = _sWTasks.AddTask(ent.Comp.Faction, ent.Comp.Task);
+        var spawnedTask = _sWTasks.AddTaskNoInit(ent.Comp.Faction, ent.Comp.Task);
         if (spawnedTask != null)
         {
             RaiseLocalEvent(ent.Owner, new AfterParallelTaskSpawnedEvent(spawnedTask.Value));
+            _sWTasks.InitTask(spawnedTask.Value);
         }
     }
 }

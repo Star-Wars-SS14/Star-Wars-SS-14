@@ -15,9 +15,10 @@
       SWRepublicSoldier: 3
       SWRepublicRecruit: 3
       SWRepublicMedic: 3
+    descriptionId: small-headhunt
 
 - type: entity
-  id: BigHeadHunter
+  id: BigHeadHunterMandalorian
   parent: SWTaskBase
   components:
   - type: SWTask
@@ -37,6 +38,7 @@
       SWRepublicCommanderSniper: 7
       SWEmpireIntelligenceCaretaker: 12
       SWEmpireIntelligenceAgent: 8
+    descriptionId: big-headhunt-mandalorian
 
 - type: entity
   id: KillConcurentBlackSun

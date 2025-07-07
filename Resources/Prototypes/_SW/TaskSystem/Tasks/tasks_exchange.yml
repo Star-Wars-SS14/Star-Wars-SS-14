@@ -2,6 +2,4 @@
   id: ExchangeTasksSet
   weights:
     SmallHeadHunter: 4
-    BigHeadHunter: 1
     KillConcurentBlackSun: 3
-    KillConcurenMandalorian: 3

@@ -101,7 +101,7 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
             return;
         }
         var comp = EnsureComp<SWTaskComponent>(ent.Owner);
-        comp.Description = Loc.GetString(ent.Comp.Description, ("name", Name(ent.Comp.PersonToKill.Value)));
+        comp.Description = Loc.GetString(ent.Comp.DescriptionId, ("name", Name(ent.Comp.PersonToKill.Value)));
     }
 
     private void GetScoreByName(Entity<SWKillRandomByNameComponent> ent, ref SWTaskGetScoreEvent args)

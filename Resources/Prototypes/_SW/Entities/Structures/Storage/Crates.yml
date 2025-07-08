@@ -1,0 +1,77 @@
+# Без доступа
+
+- type: entity
+  parent: CrateBaseWeldable
+  id: SW_CrateWood
+  name: Деревянный ящик
+  description: Ящик для хранения ваших предметов
+  components:
+  - type: Icon
+    sprite: _SW/Structures/Storage/Crates/wood_crate.rsi
+  - type: Sprite
+    sprite: _SW/Structures/Storage/Crates/wood_crate.rsi
+
+- type: entity
+  parent: CrateBaseWeldable
+  id: SW_CrateMedical
+  name: Медицинский ящик
+  description: Медицинский ящик для хранения ваших медикоментов. 
+  components:
+  - type: Icon
+    sprite: _SW/Structures/Storage/Crates/medical_crate.rsi
+  - type: Sprite
+    sprite: _SW/Structures/Storage/Crates/medical_crate.rsi
+
+# С доступом
+
+- type: entity
+  parent: CrateBaseWeldable
+  id: SW_CrateEmpireLock
+  name: ящик Империи
+  suffix: С доступом
+  description: Защищенный ящик Империи. Для разблокировки нужен ранг майора и выше
+  components:
+  - type: Lock
+  - type: Icon
+    sprite: _SW/Structures/Storage/Crates/empire_crate.rsi
+  - type: Sprite
+    sprite: _SW/Structures/Storage/Crates/empire_crate.rsi
+  - type: AccessReader
+    access: [["EmpireArsenal"]]
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 120
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+
+- type: entity
+  parent: CrateBaseWeldable
+  id: SW_CrateRepublicLock
+  name: ящик Республики
+  description: Защищенный ящик Республики. Для разблокировки нужен ранг Лейтенанта и выше
+  suffix: С доступом
+  components:
+  - type: Lock
+  - type: Icon
+    sprite: _SW/Structures/Storage/Crates/republic_crate.rsi
+  - type: Sprite
+    sprite: _SW/Structures/Storage/Crates/republic_crate.rsi
+  - type: AccessReader
+    access: [["RepublicArsenal"]]
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 120
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak

@@ -30,7 +30,7 @@
   noSpawn: true
   components:
   - type: EntityTargetAction
-    icon: Interface/Actions/lighting.png
+    icon: Interface/Actions/disarm.png
     event: !type:ForceTryPushAbilityEvent
     canTargetSelf: false
     interactOnMiss: false

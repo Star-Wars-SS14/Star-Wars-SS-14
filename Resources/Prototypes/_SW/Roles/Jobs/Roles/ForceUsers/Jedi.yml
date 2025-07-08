@@ -10,7 +10,7 @@
     time: 36000 # 10h
   startingGear: ForceUserJediGear
   icon: "JobIconHavokMedic"
-  supervisors: job-supervisors-havok-cap
+  supervisors: job-supervisors-jedi-council
   special:
   - !type:AddComponentSpecial
     components:

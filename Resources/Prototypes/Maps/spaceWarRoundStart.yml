@@ -20,6 +20,8 @@
             SWRepublicSoldier: [ 6, 6 ]
             SWRepublicMedic: [ 2, 2 ]
             SWRepublicRecruit: [ 4, 4 ]
+         - type: CapturableStation
+           fraction: RepublicFaction
     ImperialCruiser:
        stationProto: StandardVessel
        components:
@@ -35,3 +37,15 @@
             SWEmpireLieutenant: [ 2, 2 ]
             SWEmpireSoldier: [ 8, 8 ]
             SWEmpireMedic: [ 2, 2 ]
+         - type: CapturableStation
+           fraction: EmpireFaction
+    ast1:
+       stationProto: StandardVessel
+       components:
+       - type: StationNameSetup
+         mapNameTemplate: 'PSSA "Space Protector" {1}'
+         nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'          
+       - type: CapturableStation
+

@@ -2,7 +2,7 @@
    id: RepublicCruiserBig
    name: Republic Cruiser Mk. 2
    description: Cruiser
-   price: 70000 # 15% markup +4890
+   price: 1000000 # 15% markup +4890
    category: Large
    fraction: RepublicFaction
    shuttlePath: /Maps/SW/Vessels/Republic/resistanceCruiser.yml
@@ -53,9 +53,3 @@
            nameGenerator:
              !type:NanotrasenNameGenerator
              prefixCreator: '14'
-         - type: StationJobs
-           availableJobs:
-            SWRepublicLieutenant: [ 1, 1 ]
-            SWRepublicSoldier: [ 2, 2 ]
-            SWRepublicMedic: [ 1, 1 ]
-            SWRepublicRecruit: [ 2, 2 ]

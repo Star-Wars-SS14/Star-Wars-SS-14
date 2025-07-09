@@ -59,23 +59,23 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
         args.AddLine(message.AppendLine().ToString());
     }
 
-    public override void Update(float frameTime)
-    {
-        base.Update(frameTime);
+    //public override void Update(float frameTime)
+    //{
+        //base.Update(frameTime);
 
-        if (_gameRule == null || _gameRule.AlertDelays.Count == 0)
-            return;
+        //if (_gameRule == null || _gameRule.AlertDelays.Count == 0)
+        //    return;
 
-        if (_gameTiming.CurTime - _gameRule.LastAlertTime <= TimeSpan.FromMinutes(_gameRule.AlertDelays[0]))
-            return;
+        //if (_gameTiming.CurTime - _gameRule.LastAlertTime <= TimeSpan.FromMinutes(_gameRule.AlertDelays[0]))
+        //    return;
 
-        _gameRule.LastAlertTime = _gameTiming.CurTime;
-        _gameRule.AlertDelays.RemoveAt(0);
+        //_gameRule.LastAlertTime = _gameTiming.CurTime;
+        //_gameRule.AlertDelays.RemoveAt(0);
 
-        _audio.PlayGlobal(_gameRule.AlertSound, Filter.Broadcast(), true);
-        _chat.DispatchGlobalAnnouncement(Loc.GetString("sector-war-round-end-alert",
-            ("time", (TimeSpan.FromHours(3) - _gameTiming.CurTime).ToString())));
-    }
+        //_audio.PlayGlobal(_gameRule.AlertSound, Filter.Broadcast(), true);
+        //_chat.DispatchGlobalAnnouncement(Loc.GetString("sector-war-round-end-alert",
+        //    ("time", (TimeSpan.FromHours(3) - _gameTiming.CurTime).ToString())));
+    //}
 
     protected override void Added(EntityUid uid,
         SectorWarRuleComponent component,

@@ -8,7 +8,6 @@ using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Roles;
 using Content.Shared.Roles.Jobs;
-using JetBrains.FormatRipper.Elf;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using SixLabors.ImageSharp.ColorSpaces;

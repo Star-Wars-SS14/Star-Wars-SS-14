@@ -1,7 +1,7 @@
-- type: lobbyBackground
-  id: lb1
-  background: /Textures/LobbyScreens/EchoLife-1.webp
+# - type: lobbyBackground
+#   id: lb1
+#   background: /Textures/LobbyScreens/EchoLife-1.webp
 
-- type: lobbyBackground
-  id: lb2
-  background: /Textures/LobbyScreens/EchoLife-2.webp
+# - type: lobbyBackground
+#   id: lb2
+#   background: /Textures/LobbyScreens/EchoLife-2.webp

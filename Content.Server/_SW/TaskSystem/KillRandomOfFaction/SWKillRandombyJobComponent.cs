@@ -14,6 +14,9 @@ public sealed partial class SWKillRandomByJobComponent : Component
     [DataField]
     public Dictionary<string, int> JobsToScores = new();
 
+    [DataField]
+    public Dictionary<string, LocId> JobsToDescriptions = new();
+
     public string? JobProtoToKill = null;
 
     public string? JobProtoOfKilled = null;

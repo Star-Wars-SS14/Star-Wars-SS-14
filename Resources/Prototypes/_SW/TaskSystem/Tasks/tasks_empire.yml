@@ -1,35 +1,30 @@
 - type: weightedRandom
   id: EmpireTasksSet
   weights:
-    KillByJobTaskEmpire: 4
-    KillCriminalTaskEmpire: 7
-    KillByNameTaskEmpire: 5
-    KillGeneralEmpire: 1
+    KillByNameTaskEmpire: 3
+    KillRepublicByJobEmpire: 3
+    KillCriminalTaskEmpire: 2
 
 - type: entity
-  id: KillByJobTaskEmpire
+  id: KillRepublicByJobEmpire
   parent: SWTaskBase
   components:
   - type: SWTask
-    name: Убийство члена командования
-    description: Люди в указанной должности причиняют значительные неудобства нашим войскам. Убейте любого из них.
+    name: Ликвидация
+    description: Тут ничего нет.
   - type: SWKillRandomByJob
     factions: [RepublicFaction]
     jobsToScores:
-      SWRepublicCaptain : 10
-      SWRepublicLieutenant : 10
+      SWRepublicLieutenant: 15
+      SWRepublicCaptain: 20
+      SWRepublicGeneral: 25
+      SWRepublicCommanderCommander: 20
+    jobsToDescriptions:
+      SWRepublicLieutenant: SWRepublicLieutenant-killByJob
+      SWRepublicCaptain: SWRepublicCaptain-killByJob
+      SWRepublicGeneral: SWRepublicGeneral-killByJob
+      SWRepublicCommanderCommander: SWRepublicCommanderCommander-killByJob
 
-- type: entity
-  id: KillMedicEmpire
-  parent: SWTaskBase
-  components:
-  - type: SWTask
-    name: Ликвидация медика республики
-    description: Согласно нашей информации, медик республики обладает важной информацией касательно разработки новейших препаратов. Ликвидируйте его, допрос желателен, но необязателен.
-  - type: SWKillRandomByJob
-    factions: [RepublicFaction]
-    jobsToScores:
-      SWRepublicMedic: 5
 
 - type: entity
   id: KillCriminalTaskEmpire
@@ -41,34 +36,41 @@
   - type: SWKillRandomByName
     factions: [ExchangeFaction, BlackSunFaction]
     jobsToScores:
-      SWBlackSunMercenary : 5
-      SWBlackSun : 7
-      SWExchangeCaptain : 7
-      SWExchangeOperative : 5 
+      SWBlackSunMercenary : 8
+      SWBlackSun : 10
+      SWExchangeCaptain : 10
+      SWExchangeOperative : 8
+    descriptionId: kill-criminal
 
 - type: entity
   id: KillByNameTaskEmpire
   parent: SWTaskBase
   components:
   - type: SWTask
-    name: Убийство члена командования
-    description: Нам поступила информация о присутствии в регионе военнослужащего республиканских сил. Его должность в рядах сепаратистов остается неизвестной, однако он представляет большую опасность. Необходимо немедленно его ликвидировать.
+    name: Таргетированное убийство
+    description: Тут ничего нет.
   - type: SWKillRandomByName
     factions: [RepublicFaction]
     jobsToScores:
-      SWRepublicGeneral : 15
-      SWRepublicCaptain : 10
-      SWRepublicLieutenant : 10
-      SWRepublicMedic : 5
+      SWRepublicGeneral : 25
+      SWRepublicCaptain : 20 
+      SWRepublicLieutenant : 15
+      SWRepublicCommanderCommander: 20
+      SWRepublicCommanderLieutenant: 15
+      SWRepublicCommanderMedic: 15
+      SWRepublicCommanderStormtrooper: 15
+      SWRepublicCommanderSniper: 15
+    descriptionId: kill-republic-by-name
+  - type: SWParallelTask
+    task: ProtectTaskRepublic
+    faction: RepublicFaction
 
 - type: entity
-  id: KillGeneralEmpire
+  id: ProtectTaskEmpire
   parent: SWTaskBase
   components:
   - type: SWTask
-    name: Убейте республиканского генерала
-    description: Ваша цель - республиканский генерал. Его убийство оставит республику без командования и деморализует республиканские силы.
-  - type: SWKillRandomByName
-    factions: [RepublicFaction]
-    jobsToScores:
-      SWRepublicGeneral : 15
+    name: Защита
+    description: Тут ничего нет.
+  - type: SWParallelTaskProtect
+    descriptionId: protect-empire

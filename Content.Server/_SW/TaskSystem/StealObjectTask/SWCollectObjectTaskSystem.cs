@@ -1,18 +1,12 @@
-using Content.Server._SW.TaskSystem.DestroyObjectsTask;
 using Content.Server._SW.TransferSystem;
 using Content.Shared._SW.TaskSystem;
-using Content.Shared.Destructible;
 using Content.Shared.FixedPoint;
 using Robust.Shared.Prototypes;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Content.Server._SW.TaskSystem.StealObjectTask;
 
-public sealed partial class CollectObjectTaskSystem : EntitySystem
+public sealed partial class SWCollectObjectTaskSystem : EntitySystem
 {
     [Dependency] private readonly SWTasksGameRuleSystem _sWTasks = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
@@ -21,14 +15,14 @@ public sealed partial class CollectObjectTaskSystem : EntitySystem
     {
         base.Initialize();
         //SubscribeLocalEvent<SWKillRandomOfFactionComponent, SWTaskCheckRequirementsEvent>(OnCheckRequirements);
-        SubscribeLocalEvent<CollectObjectTaskComponent, SWOnTaskInitEvent>(OnTaskInit);
-        SubscribeLocalEvent<CollectObjectTaskComponent, SWGetProgressEvent>(OnGetProgress);
+        SubscribeLocalEvent<SWCollectObjectTaskComponent, SWOnTaskInitEvent>(OnTaskInit);
+        SubscribeLocalEvent<SWCollectObjectTaskComponent, SWGetProgressEvent>(OnGetProgress);
         SubscribeLocalEvent<TryTransferObject>(OnTransfer);
     }
 
     private void OnTransfer(ref TryTransferObject ev)
     {
-        var queryTasks = EntityQueryEnumerator<CollectObjectTaskComponent>();
+        var queryTasks = EntityQueryEnumerator<SWCollectObjectTaskComponent>();
         while (queryTasks.MoveNext(out var uid, out var comp))
         {
             foreach (var protolist in comp.ObjectsCollected.Keys)
@@ -50,7 +44,7 @@ public sealed partial class CollectObjectTaskSystem : EntitySystem
         }
     }
 
-    private void OnTaskInit(Entity<CollectObjectTaskComponent> ent, ref SWOnTaskInitEvent args)
+    private void OnTaskInit(Entity<SWCollectObjectTaskComponent> ent, ref SWOnTaskInitEvent args)
     {
         //инициализируем количество собранных объектов нулями
         foreach (var protolist in ent.Comp.ObjectsToCollect.Keys)
@@ -59,11 +53,11 @@ public sealed partial class CollectObjectTaskSystem : EntitySystem
         }
     }
 
-    private void OnGetProgress(Entity<CollectObjectTaskComponent> ent, ref SWGetProgressEvent args)
+    private void OnGetProgress(Entity<SWCollectObjectTaskComponent> ent, ref SWGetProgressEvent args)
     {
         FixedPoint2 countAll = ent.Comp.ObjectsToCollect.Values.Sum();
-        FixedPoint2 destroyed = ent.Comp.ObjectsCollected.Values.Sum();
-        var p = destroyed / countAll;
+        FixedPoint2 collected = ent.Comp.ObjectsCollected.Values.Sum();
+        var p = collected / countAll;
         args.Progress = p > 1.0 ? 1.0 : p;
         args.Handled = true;
     }

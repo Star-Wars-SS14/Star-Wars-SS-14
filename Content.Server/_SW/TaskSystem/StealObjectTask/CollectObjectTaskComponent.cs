@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Content.Server._SW.TaskSystem.StealObjectTask;
 [RegisterComponent]
-public sealed partial class CollectObjectTaskComponent : Component
+public sealed partial class SWCollectObjectTaskComponent : Component
 {
     [DataField("objects", required: true)]
     public Dictionary<List<string>, int> ObjectsToCollect;

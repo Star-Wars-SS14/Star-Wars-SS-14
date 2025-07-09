@@ -2,6 +2,4 @@
   id: BlackSunTasksSet
   weights:
     SmallHeadHunter: 4
-    BigHeadHunter: 1
     KillConcurenExchange: 3
-    KillConcurenMandalorian: 3

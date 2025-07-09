@@ -13,15 +13,6 @@ public sealed partial class SWFactionComponent : Component
 {
     [DataField]
     public string Name;
-    [DataField]
-    public ProtoId<WeightedRandomPrototype>? AvailableTasks = null;
-
-    public List<Entity<SWTaskComponent>> CurrentTasks = new();
-
-    [DataField]
-    public float AddIntervalInSeconds = 60 * 20;
-
-    public TimeSpan NextAddTime;
 
     [DataField]
     public int StartScore = 0;
@@ -30,10 +21,4 @@ public sealed partial class SWFactionComponent : Component
 
     [DataField]
     public bool IsMajor = false;
-
-    [DataField]
-    public int StartAmountOfTasks = 0;
-
-    [DataField]
-    public int MaxAmountOfTasks = 0;
 }

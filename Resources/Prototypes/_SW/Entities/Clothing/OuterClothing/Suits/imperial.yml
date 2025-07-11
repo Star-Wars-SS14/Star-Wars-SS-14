@@ -7,9 +7,6 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/imperial.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/imperial.rsi
-  - type: PressureProtection
-    highPressureMultiplier: 0.3
-    lowPressureMultiplier: 1000
   - type: Armor
     modifiers:
       coefficients:
@@ -18,6 +15,12 @@
         Blunt: 0.6
         Slash: 0.5
         Piercing: 0.5
+  - type: TemperatureProtection
+    heatingCoefficient: 0.1
+    coolingCoefficient: 0.1
+  - type: PressureProtection
+    highPressureMultiplier: 0.01
+    lowPressureMultiplier: 1000
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.95

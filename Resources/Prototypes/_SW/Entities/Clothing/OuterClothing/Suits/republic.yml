@@ -7,9 +7,6 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Republic/republic.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Republic/republic.rsi
-  - type: PressureProtection
-    highPressureMultiplier: 0.3
-    lowPressureMultiplier: 1000
   - type: Armor
     modifiers:
       coefficients:
@@ -22,6 +19,12 @@
     walkModifier: 0.9
     sprintModifier: 0.95
   - type: HeldSpeedModifier
+  - type: TemperatureProtection
+    heatingCoefficient: 0.001
+    coolingCoefficient: 0.001
+  - type: PressureProtection
+    highPressureMultiplier: 0.01
+    lowPressureMultiplier: 1000
 
 - type: entity
   parent: SW_RepublicSuit

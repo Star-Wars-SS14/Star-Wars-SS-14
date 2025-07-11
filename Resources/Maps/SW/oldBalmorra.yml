@@ -236213,7 +236213,7 @@ entities:
     - type: Transform
       pos: -140.62202,-84.3119
       parent: 2
-- proto: ImperialBackpack
+- proto: SWImperialBackpack
   entities:
   - uid: 3853
     components:
@@ -236359,7 +236359,7 @@ entities:
           component: Armor
         title: null
     - type: InsideEntityStorage
-- proto: ImperialBackpackCamo
+- proto: SWImperialBackpackCamo
   entities:
   - uid: 166
     components:

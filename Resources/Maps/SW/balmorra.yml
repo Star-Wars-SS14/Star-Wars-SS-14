@@ -183400,7 +183400,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: ImperialBackpack
+- proto: SWImperialBackpack
   entities:
   - uid: 22387
     components:
@@ -183558,7 +183558,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: ImperialBackpackCamo
+- proto: SWImperialBackpackCamo
   entities:
   - uid: 24129
     components:

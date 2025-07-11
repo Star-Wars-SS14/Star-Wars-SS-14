@@ -713,9 +713,9 @@
   - type: ExplodeOnTrigger
   - type: Explosive
     explosionType: Default
-    totalIntensity: 1500 # a ~2 tile radius
-    intensitySlope: 50
-    maxIntensity: 100
+    totalIntensity: 800 # a ~2 tile radius
+    intensitySlope: 35
+    maxIntensity: 75
 
 - type: entity
   id: BulletGrenadeFlash

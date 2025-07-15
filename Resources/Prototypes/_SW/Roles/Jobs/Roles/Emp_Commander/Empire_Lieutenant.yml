@@ -15,6 +15,7 @@
   - EmpireCommander
   - EmpireBase
   - EmpireSobrik
+  - EmpireArsenal
   special:
   - !type:AddComponentSpecial
     components:

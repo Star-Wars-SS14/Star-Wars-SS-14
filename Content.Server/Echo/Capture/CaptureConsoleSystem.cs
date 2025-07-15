@@ -19,6 +19,8 @@ using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 using Robust.Shared.Map;
 using Microsoft.CodeAnalysis.Elfie.Model;
+using System;
+using Content.Server.Echo.GameTicking.Systems;
 namespace Content.Server.Echo.Capture;
 
 public sealed class CaptureConsoleSystem : EntitySystem
@@ -31,6 +33,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
     [Dependency] private readonly AccessReaderSystem _accessReader = default!;
     [Dependency] private readonly SWFactionGameruleSystem _sWFaction = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly SectorWarRuleSystem _sectorWarRule = default!;
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -67,7 +70,19 @@ public sealed class CaptureConsoleSystem : EntitySystem
 
             FinishCapturing(uid, ref console);
         }
-    }
+        var query2 = EntityQueryEnumerator<CapturableStationComponent>();
+        while (query2.MoveNext(out var _, out var comp))
+        {
+            if (comp.Fraction != null && _sectorWarRule.GameRuleSingleton != null)
+            {
+                if (comp.TimeOfNextPayment <= _timing.CurTime)
+                {
+                    _sectorWarRule.GameRuleSingleton.FactionMoney[comp.Fraction] += comp.CaprureRewardPerMinuteControlling;
+                    comp.TimeOfNextPayment += TimeSpan.FromMinutes(1);
+                }
+            }
+        }
+}
 
     private void FinishCapturing(EntityUid uid, ref CaptureConsoleComponent console)
     {
@@ -104,6 +119,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
             rule.FactionsScore[console.CapturingFraction]++;
             capturable.Fraction = console.CapturingFraction;
             rule.FactionMoney[console.CapturingFraction] += capturable.CaptureReward;
+            capturable.TimeOfNextPayment = _timing.CurTime + TimeSpan.FromMinutes(1);
         }
 
         UpdateUserInterface(uid);

@@ -34,7 +34,7 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
     [Dependency] private readonly SWFactionGameruleSystem _sWFaction = default!;
     [Dependency] private readonly StationSystem _stationSystem = default!;
 
-    private SectorWarRuleComponent? _gameRule;
+    public SectorWarRuleComponent? GameRuleSingleton;
 
     protected override void AppendRoundEndText(EntityUid uid,
         SectorWarRuleComponent component,
@@ -42,7 +42,7 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
         ref RoundEndTextAppendEvent args)
     {
         base.AppendRoundEndText(uid, component, gameRule, ref args);
-        if (_gameRule == null)
+        if (GameRuleSingleton == null)
             return;
 
         var message = new StringBuilder();
@@ -82,7 +82,7 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
         GameRuleComponent gameRule,
         GameRuleAddedEvent args)
     {
-        _gameRule = component;
+        GameRuleSingleton = component;
         var maps = new List<GameMapPrototype>();
 
 

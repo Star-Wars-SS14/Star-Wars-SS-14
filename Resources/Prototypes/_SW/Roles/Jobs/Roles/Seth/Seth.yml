@@ -98,6 +98,7 @@
     gloves: ClothingHandsGlovesCombat
     head: SW_ClothingHeadMandalorianVeteranHelmet
     id: SW_IDCardMandalorianLeader
+    back: ClothingBackpackMilitarySatchel
     ears: ClothingHeadsetMandalorian
 
 - type: startingGear
@@ -110,6 +111,7 @@
     gloves: ClothingHandsGlovesCombat
     head: SW_ClothingHeadMandalorianVeteranHelmet
     id: SW_IDCardMandalorianVeteran
+    back: ClothingBackpackMilitarySatchel
     ears: ClothingHeadsetMandalorian
 
 - type: startingGear
@@ -122,6 +124,7 @@
     gloves: ClothingHandsGlovesCombat
     head: SW_ClothingHeadMandalorianHelmet
     id: SW_IDCardMandalorianWarrior
+    back: ClothingBackpackMilitarySatchel
     ears: ClothingHeadsetMandalorian
 
 - type: startingGear

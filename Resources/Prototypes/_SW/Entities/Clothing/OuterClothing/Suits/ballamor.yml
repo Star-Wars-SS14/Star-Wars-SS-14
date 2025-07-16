@@ -1,6 +1,6 @@
 - type: entity
   parent: [ClothingOuterBase, AllowSuitStorageClothing]
-  id: SWBallamorSuit
+  id: SW_BallamorSuit
   name: ballamor suit
   components:
   - type: Item

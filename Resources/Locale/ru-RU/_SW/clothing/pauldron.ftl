@@ -1,2 +1,2 @@
-ent-SW_ClothingNeckOrangePauldronStormtrooper = оранжевый наплечник
+ent-SWClothingNeckOrangePauldronStormtrooper = оранжевый наплечник
   .desc = Оранжевый наплечник для обозначения звания у штурмовиков.

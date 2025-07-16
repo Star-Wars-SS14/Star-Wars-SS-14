@@ -1,6 +1,6 @@
 - type: entity
   parent: ClothingHandsBase
-  id: SWClothingHandsGlovesRebel
+  id: SW_ClothingHandsGlovesRebel
   name: rebel gloves
   description: Regal blue gloves, with a nice gold trim. Swanky.
   components:

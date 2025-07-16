@@ -11,11 +11,11 @@
     ownerOnly: true
 
 ###The old republic
-##Republic
+##SWRepublic
 - type: entity
-  name: Republic General
+  name: SWRepublic General
   parent: BaseMobHuman
-  id: SWMobRepublic_General
+  id: SWMobRepublicGeneral
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -25,9 +25,9 @@
     - NanoTrasen
 
 - type: entity
-  name: Republic Captain
+  name: SWRepublic Captain
   parent: BaseMobHuman
-  id: SWMobRepublic_Captain
+  id: SWMobRepublicCaptain
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -37,9 +37,9 @@
     - NanoTrasen
 
 - type: entity
-  name: Republic Lieutenant
+  name: SWRepublic Lieutenant
   parent: BaseMobHuman
-  id: SWMobRepublic_Lieutenant
+  id: SWMobRepublicLieutenant
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -50,9 +50,9 @@
 
 
 - type: entity
-  name: Republic soldier
+  name: SWRepublic soldier
   parent: BaseMobHuman
-  id: SWMobRepublic_Soldier
+  id: SWMobRepublicSoldier
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -62,9 +62,9 @@
     - NanoTrasen
 
 - type: entity
-  name: Republic Recruit
+  name: SWRepublic Recruit
   parent: BaseMobHuman
-  id: SWMobRepublic_Recruit
+  id: SWMobRepublicRecruit
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -74,9 +74,9 @@
     - NanoTrasen
 
 - type: entity
-  name: Republic Medic
+  name: SWRepublic Medic
   parent: BaseMobHuman
-  id: SWMobRepublic_Medic
+  id: SWMobRepublicMedic
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -87,9 +87,9 @@
 
 ##Republic_Commander
 - type: entity
-  name: Republic Commander Commander
+  name: SWRepublic Commander Commander
   parent: BaseMobHuman
-  id: SWMobRepublic_Commander_Commander
+  id: SWMobRepublicCommanderCommander
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -99,9 +99,9 @@
     - NanoTrasen
 
 - type: entity
-  name: Republic Commander Lieutenant
+  name: SWRepublic Commander Lieutenant
   parent: BaseMobHuman
-  id: SWMobRepublic_Commander_Lieutenant
+  id: SWMobRepublicCommanderLieutenant
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -111,9 +111,9 @@
     - NanoTrasen
 
 - type: entity
-  name: Republic Commander Medic
+  name: SWRepublic Commander Medic
   parent: BaseMobHuman
-  id: SWMobRepublic_Commander_Medic
+  id: SWMobRepublicCommanderMedic
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -123,9 +123,9 @@
     - NanoTrasen
 
 - type: entity
-  name: Republic Commander Stormtrooper
+  name: SWRepublic Commander Stormtrooper
   parent: BaseMobHuman
-  id: SWMobRepublic_Commander_Stormtrooper
+  id: SWMobRepublicCommanderStormtrooper
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -135,9 +135,9 @@
     - NanoTrasen
 
 - type: entity
-  name: Republic Commander Sniper
+  name: SWRepublic Commander Sniper
   parent: BaseMobHuman
-  id: SWMobRepublic_Commander_Sniper
+  id: SWMobRepublicCommanderSniper
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -150,7 +150,7 @@
 - type: entity
   name: Empire Moff
   parent: BaseMobHuman
-  id: SWMobEmpire_Moff
+  id: SWMobEmpireMoff
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -162,7 +162,7 @@
 - type: entity
   name: Empire Major
   parent: BaseMobHuman
-  id: SWMobEmpire_Major
+  id: SWMobEmpireMajor
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -174,7 +174,7 @@
 - type: entity
   name: Empire Lieutenant
   parent: BaseMobHuman
-  id: SWMobEmpire_Lieutenant
+  id: SWMobEmpireLieutenant
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -186,7 +186,7 @@
 - type: entity
   name: Empire Soldier
   parent: BaseMobHuman
-  id: SWMobEmpire_Soldier
+  id: SWMobEmpireSoldier
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -198,7 +198,7 @@
 - type: entity
   name: Empire Medic
   parent: BaseMobHuman
-  id: SWMobEmpire_Medic
+  id: SWMobEmpireMedic
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -211,7 +211,7 @@
 - type: entity
   name: Sobrik Captain
   parent: BaseMobHuman
-  id: SWMobSobrik_Captain
+  id: SWMobSobrikCaptain
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -223,7 +223,7 @@
 - type: entity
   name: Sobrik Officer
   parent: BaseMobHuman
-  id: SWMobSobrik_Officer
+  id: SWMobSobrikOfficer
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -235,7 +235,7 @@
 - type: entity
   name: Sobrik Medic
   parent: BaseMobHuman
-  id: SWMobSobrik_Medic
+  id: SWMobSobrikMedic
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -246,9 +246,9 @@
 
 ##Mandalorians
 - type: entity
-  name: Mandalorian Leader
+  name: SWMandalorian Leader
   parent: BaseMobHuman
-  id: SWMobMandalorian_Leader
+  id: SWMobMandalorianLeader
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -258,9 +258,9 @@
     - Syndicate
 
 - type: entity
-  name: Mandalorian Veteran
+  name: SWMandalorian Veteran
   parent: BaseMobHuman
-  id: SWMobMandalorian_Veteran
+  id: SWMobMandalorianVeteran
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -270,9 +270,9 @@
     - Syndicate
 
 - type: entity
-  name: Mandalorian Warrior
+  name: SWMandalorian Warrior
   parent: BaseMobHuman
-  id: SWMobMandalorian_Warrior
+  id: SWMobMandalorianWarrior
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -282,9 +282,9 @@
     - Syndicate
 
 - type: entity
-  name: Mandalorian Recruit
+  name: SWMandalorian Recruit
   parent: BaseMobHuman
-  id: SWMobMandalorian_Recruit
+  id: SWMobMandalorianRecruit
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -297,7 +297,7 @@
 - type: entity
   name: Balmorran Leader
   parent: BaseMobHuman
-  id: SWMobBalmorran_Leader
+  id: SWMobBalmorranLeader
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -309,7 +309,7 @@
 - type: entity
   name: Balmorran Officer
   parent: BaseMobHuman
-  id: SWMobBalmorran_Officer
+  id: SWMobBalmorranOfficer
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -321,7 +321,7 @@
 - type: entity
   name: Balmorran Soldier
   parent: BaseMobHuman
-  id: SWMobBalmorran_Soldier
+  id: SWMobBalmorranSoldier
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -333,7 +333,7 @@
 - type: entity
   name: Balmorran Recruit
   parent: BaseMobHuman
-  id: SWMobBalmorran_Recruit
+  id: SWMobBalmorranRecruit
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -345,7 +345,7 @@
 - type: entity
   name: Balmorran Medic
   parent: BaseMobHuman
-  id: SWMobBalmorran_Medic
+  id: SWMobBalmorranMedic
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -358,7 +358,7 @@
 - type: entity
   name: Empire Intelligence Caretaker
   parent: BaseMobHuman
-  id: SWMobEmpire_Intelligence_Caretaker
+  id: SWMobEmpireIntelligenceCaretaker
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -370,7 +370,7 @@
 - type: entity
   name: Intelligence Agent
   parent: BaseMobHuman
-  id: SWMobEmpire_Intelligence_Agent
+  id: SWMobEmpiдтнааreIntelligenceAgent
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -381,9 +381,9 @@
 
 ##Roles_Black_Sun
 - type: entity
-  name: BlackSun
+  name: SWBlackSun
   parent: BaseMobHuman
-  id: SWMobBlackSun_Sniper
+  id: SWMobBlackSunSniper
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -393,9 +393,9 @@
     - Syndicate
 
 - type: entity
-  name: BlackSun Mercenary
+  name: SWBlackSun Mercenary
   parent: BaseMobHuman
-  id: SWMobBlackSun_Mercenary
+  id: SWMobBlackSunMercenary
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -404,11 +404,11 @@
     factions:
     - Syndicate
 
-##Exchange
+##SWExchange
 - type: entity
-  name: Exchange Captain
+  name: SWExchange Captain
   parent: BaseMobHuman
-  id: SWMobExchange_Captain
+  id: SWMobExchangeCaptain
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -418,9 +418,9 @@
     - Syndicate
 
 - type: entity
-  name: Exchange Operative
+  name: SWExchange Operative
   parent: BaseMobHuman
-  id: SWMobExchange_Operative
+  id: SWMobExchangeOperative
   description: A miserable pile of secrets.
   components:
   - type: Loadout
@@ -453,7 +453,7 @@
     - NanoTrasen
 
 - type: entity
-  name: Republic soldier
+  name: SWRepublic soldier
   parent: BaseMobHuman
   id: SWMobRebelsoldier
   description: A miserable pile of secrets.

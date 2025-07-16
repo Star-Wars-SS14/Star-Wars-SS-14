@@ -3,11 +3,11 @@
 - type: Tag
   id: SaberFragmentTag
 - type: Tag
-  id: HolopadAdmin
+  id: SWHolopadAdmin
 - type: Tag
-  id: HolopadEmpire
+  id: SWHolopadEmpire
 - type: Tag
-  id: HolopadRepublic
+  id: SWHolopadRepublic
 - type: Tag
   id: HolopadBlackSun
 - type: Tag

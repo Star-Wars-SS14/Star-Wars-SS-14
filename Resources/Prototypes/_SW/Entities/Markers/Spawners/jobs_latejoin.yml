@@ -1,8 +1,8 @@
-###Republic
+###SWRepublic
 - type: entity
   id: SW_SpawnPointRepublicGeneralLJ
   parent: SpawnPointJobBase
-  name: Republic General LJ
+  name: SWRepublic General LJ
   components:
   - type: SpawnPoint
     job_id: SWRepublicGeneral
@@ -14,7 +14,7 @@
 - type: entity
   id: SW_SpawnPointRepublicCaptainLJ
   parent: SpawnPointJobBase
-  name: Republic Captain LJ
+  name: SWRepublic Captain LJ
   components:
   - type: SpawnPoint
     job_id: SWRepublicCaptain
@@ -26,7 +26,7 @@
 - type: entity
   id: SW_SpawnPointRepublicLieutenantLJ
   parent: SpawnPointJobBase
-  name: Republic Lieutenant LJ
+  name: SWRepublic Lieutenant LJ
   components:
   - type: SpawnPoint
     job_id: SWRepublicLieutenant
@@ -38,7 +38,7 @@
 - type: entity
   id: SW_SpawnPointRepublicSoldiersLJ
   parent: SpawnPointJobBase
-  name: Republic Soldier LJ
+  name: SWRepublic Soldier LJ
   components:
   - type: SpawnPoint
     job_id: SWRepublicSoldier
@@ -50,7 +50,7 @@
 - type: entity
   id: SW_SpawnPointRepublicMedicLJ
   parent: SpawnPointJobBase
-  name: Republic Medic LJ
+  name: SWRepublic Medic LJ
   components:
   - type: SpawnPoint
     job_id: SWRepublicMedic
@@ -62,7 +62,7 @@
 - type: entity
   id: SW_SpawnPointRepublicRecruitLJ
   parent: SpawnPointJobBase
-  name: Republic Recruit LJ
+  name: SWRepublic Recruit LJ
   components:
   - type: SpawnPoint
     job_id: SWRepublicRecruit

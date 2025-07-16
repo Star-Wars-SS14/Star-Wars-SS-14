@@ -7,7 +7,7 @@
   - type: Sprite
     sprite: _SW/Clothing/Neck/Cloaks/sith.rsi
   - type: ToggleableClothing
-    clothingPrototype: SW_ClothingHeadHatHoodSithCloak
+    clothingPrototype: SWClothingHeadHatHoodSithCloak
     requiredSlot:
     - neck
     slot: head
@@ -24,7 +24,7 @@
   - type: Sprite
     sprite: _SW/Clothing/Neck/Cloaks/jedi.rsi
   - type: ToggleableClothing
-    clothingPrototype: SW_ClothingHeadHatHoodJediCloak
+    clothingPrototype: SWClothingHeadHatHoodJediCloak
     requiredSlot:
     - neck
     slot: head
@@ -35,7 +35,7 @@
 - type: entity
   parent: ClothingNeckBase
   id: SWClothingNeckCloakMandalorianCloak
-  name: Mandalorian cloak
+  name: SWMandalorian cloak
   components:
   - type: Sprite
     sprite: _SW/Clothing/Neck/Cloaks/mandalorian.rsi

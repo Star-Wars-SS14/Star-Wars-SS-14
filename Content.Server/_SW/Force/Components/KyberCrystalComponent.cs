@@ -1,7 +1,7 @@
-﻿namespace Content.Server._SW.Force.Components;
+namespace Content.Server._SW.Force.Components;
 
 [RegisterComponent]
-public sealed partial class KyberCrystalComponent : Component
+public sealed partial class SWKyberCrystalComponent : Component
 {
     [DataField, AutoNetworkedField]
     public EntityUid? Owner;
@@ -15,7 +15,7 @@ public sealed partial class KyberCrystalComponent : Component
 
     public string SWSaberFragmentTag = "SWSaberFragmentTag";
 
-    public string SaberPrototype = "Lightsaber";
+    public string SaberPrototype = "SWLightsaber";
 
     [DataField, AutoNetworkedField]
     public EntityUid? KyberActionEntity;

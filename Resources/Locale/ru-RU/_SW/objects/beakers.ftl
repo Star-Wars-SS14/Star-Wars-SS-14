@@ -1,8 +1,8 @@
-ent-koltoBeaker = Мензурка кольто
+ent-SWkoltoBeaker = Мензурка кольто
     .desc = Мензурка, которая должна содержать кольто - передовой препарат для лечения самых разных травм.
-ent-koltoBeakerFull = {ent-koltoBeaker}
-    .desc = {ent-koltoBeaker.desc}
-ent-bactaBeaker = Мензурка бакты
+ent-SWkoltoBeakerFull = {ent-SWkoltoBeaker}
+    .desc = {ent-SWkoltoBeaker.desc}
+ent-SWbactaBeaker = Мензурка бакты
     .desc = Мензурка, которая должна содержать бакту - передовой препарат для лечения самых разных травм, еще лучше, чем кольто.
-ent-bactaBeakerFull = {ent-bactaBeaker}
-    .desc = {ent-bactaBeaker.desc}
+ent-SWbactaBeakerFull = {ent-SWbactaBeaker}
+    .desc = {ent-SWbactaBeaker.desc}

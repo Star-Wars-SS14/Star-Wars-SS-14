@@ -1,5 +1,5 @@
 - type: entity
-  name: BaseDatapad
+  name: SWBaseDatapad
   parent: BaseItem
   id: SWBaseDatapad
   description: 'A piece of white paper.'

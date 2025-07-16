@@ -95,7 +95,7 @@
 - type: entity
   id: SWSpawnPointMandalorianLeader
   parent: SpawnPointJobBase
-  name: Mandalorian Leader
+  name: SWMandalorian Leader
   components:
   - type: SpawnPoint
     job_id: SWMandalorianLeader
@@ -106,7 +106,7 @@
 - type: entity
   id: SWSpawnPointMandalorianVeteran
   parent: SpawnPointJobBase
-  name: Mandalorian Veteran
+  name: SWMandalorian Veteran
   components:
   - type: SpawnPoint
     job_id: SWMandalorianVeteran
@@ -117,7 +117,7 @@
 - type: entity
   id: SWSpawnPointMandalorianWarrior
   parent: SpawnPointJobBase
-  name: Mandalorian Warrior
+  name: SWMandalorian Warrior
   components:
   - type: SpawnPoint
     job_id: SWMandalorianWarrior
@@ -128,7 +128,7 @@
 - type: entity
   id: SWSpawnPointMandalorianRecruit
   parent: SpawnPointJobBase
-  name: Mandalorian Recruit
+  name: SWMandalorian Recruit
   components:
   - type: SpawnPoint
     job_id: SWMandalorianRecruit
@@ -136,11 +136,11 @@
     layers:
     - state: green
 
-###Republic
+###SWRepublic
 - type: entity
   id: SWSpawnPointRepublicGeneral
   parent: SpawnPointJobBase
-  name: Republic General
+  name: SWRepublic General
   components:
   - type: SpawnPoint
     job_id: SWRepublicGeneral
@@ -151,7 +151,7 @@
 - type: entity
   id: SWSpawnPointRepublicCaptain
   parent: SpawnPointJobBase
-  name: Republic Captain
+  name: SWRepublic Captain
   components:
   - type: SpawnPoint
     job_id: SWRepublicCaptain
@@ -162,7 +162,7 @@
 - type: entity
   id: SWSpawnPointRepublicLieutenant
   parent: SpawnPointJobBase
-  name: Republic Lieutenant
+  name: SWRepublic Lieutenant
   components:
   - type: SpawnPoint
     job_id: SWRepublicLieutenant
@@ -173,7 +173,7 @@
 - type: entity
   id: SWSpawnPointRepublicSoldiers
   parent: SpawnPointJobBase
-  name: Republic Soldier
+  name: SWRepublic Soldier
   components:
   - type: SpawnPoint
     job_id: SWRepublicSoldier
@@ -184,7 +184,7 @@
 - type: entity
   id: SWSpawnPointRepublicMedic
   parent: SpawnPointJobBase
-  name: Republic Medic
+  name: SWRepublic Medic
   components:
   - type: SpawnPoint
     job_id: SWRepublicMedic
@@ -195,7 +195,7 @@
 - type: entity
   id: SWSpawnPointRepublicRecruit
   parent: SpawnPointJobBase
-  name: Republic Recruit
+  name: SWRepublic Recruit
   components:
   - type: SpawnPoint
     job_id: SWRepublicRecruit
@@ -282,11 +282,11 @@
     layers:
     - state: green
 
-###Commander elite Republic
+###Commander elite SWRepublic
 - type: entity
   id: SWSpawnPointRepublicCommanderCommander
   parent: SpawnPointJobBase
-  name: Republic Commander Commander
+  name: SWRepublic Commander Commander
   components:
   - type: SpawnPoint
     job_id: SWRepublicCommanderCommander
@@ -297,7 +297,7 @@
 - type: entity
   id: SWSpawnPointRepublicCommanderLieutenant
   parent: SpawnPointJobBase
-  name: Republic Commander Lieutenant
+  name: SWRepublic Commander Lieutenant
   components:
   - type: SpawnPoint
     job_id: SWRepublicCommanderLieutenant
@@ -308,7 +308,7 @@
 - type: entity
   id: SWSpawnPointRepublicCommanderMedic
   parent: SpawnPointJobBase
-  name: Republic Commander Medic
+  name: SWRepublic Commander Medic
   components:
   - type: SpawnPoint
     job_id: SWRepublicCommanderMedic
@@ -319,7 +319,7 @@
 - type: entity
   id: SWSpawnPointRepublicCommanderStormtrooper
   parent: SpawnPointJobBase
-  name: Republic Commander Stormtrooper
+  name: SWRepublic Commander Stormtrooper
   components:
   - type: SpawnPoint
     job_id: SWRepublicCommanderStormtrooper
@@ -330,7 +330,7 @@
 - type: entity
   id: SWSpawnPointRepublicCommanderSniper
   parent: SpawnPointJobBase
-  name: Republic Commander Sniper
+  name: SWRepublic Commander Sniper
   components:
   - type: SpawnPoint
     job_id: SWRepublicCommanderSniper
@@ -361,11 +361,11 @@
     layers:
     - state: green
 
-###Exchange
+###SWExchange
 - type: entity
   id: SWSpawnPointExchangeCaptain
   parent: SpawnPointJobBase
-  name: Exchange Captain
+  name: SWExchange Captain
   components:
   - type: SpawnPoint
     job_id: SWExchangeCaptain
@@ -376,7 +376,7 @@
 - type: entity
   id: SWSpawnPointExchangeOperative
   parent: SpawnPointJobBase
-  name: Exchange Operative
+  name: SWExchange Operative
   components:
   - type: SpawnPoint
     job_id: SWExchangeOperative

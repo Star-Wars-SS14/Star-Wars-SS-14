@@ -1,6 +1,6 @@
 - type: entity
   parent: SWBaseHelmet
-  id: SWClothingHeadHavokHelmet
+  id: SW_ClothingHeadHavokHelmet
   name: Havok helmet
   components:
   - type: Sprite
@@ -9,8 +9,8 @@
     sprite: _SW/Clothing/Head/Helmets/Havok/helmetrepublicgunner.rsi
 
 - type: entity
-  parent: SWClothingHeadHavokHelmet
-  id: SWClothingHeadMedicalHavokHelmet
+  parent: SW_ClothingHeadHavokHelmet
+  id: SW_ClothingHeadMedicalHavokHelmet
   name: medical havok helmet
   components:
   - type: Sprite
@@ -23,7 +23,7 @@
     - Snout
 
 - type: entity
-  parent: SWClothingHeadHavokHelmet
+  parent: SW_ClothingHeadHavokHelmet
   id: SWClothingHeadSniperHavokHelmet
   name: sniper havok helmet
   components:
@@ -37,8 +37,8 @@
     - Snout
 
 - type: entity
-  parent: SWClothingHeadHavokHelmet
-  id: SWClothingHeadLieutenantHavokHelmet
+  parent: SW_ClothingHeadHavokHelmet
+  id: SW_ClothingHeadLieutenantHavokHelmet
   name: lieutenant havok helmet
   components:
   - type: Sprite
@@ -51,8 +51,8 @@
     - Snout
 
 - type: entity
-  parent: SWClothingHeadHavokHelmet
-  id: SWClothingHeadCommanderHavokHelmet
+  parent: SW_ClothingHeadHavokHelmet
+  id: SW_ClothingHeadCommanderHavokHelmet
   name: commander havok helmet
   components:
   - type: Sprite

@@ -4,7 +4,7 @@
   name: imperial backpack
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Back/Backpacks/SWImperialBackpack.rsi
+    sprite: _SW/Clothing/Back/Backpacks/ImperialBackpack.rsi
   - type: Storage
     grid:
     - 0,0,8,3
@@ -15,4 +15,4 @@
   name: imperial backpack camo
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Back/Backpacks/SWImperialBackpackcamo.rsi
+    sprite: _SW/Clothing/Back/Backpacks/ImperialBackpackcamo.rsi

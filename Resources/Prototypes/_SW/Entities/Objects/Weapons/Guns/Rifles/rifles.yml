@@ -48,7 +48,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SW_YellowMagazineBlastRifle
+        startingItem: SWYellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -139,7 +139,7 @@
 - type: entity
   name: Z-1 Huntsman Carbine
   parent: SWBaseWeaponBlaster
-  id: SWz1blastercarbine
+  id: SWZ1BlasterCarbine
   components:
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Rifles/z1.rsi
@@ -196,7 +196,7 @@
 - type: entity
   name: Grantek F-11D Sniper Rifle
   parent: SWBaseWeaponBlaster
-  id: SWgrantekf11d
+  id: SWGrantekF11D1
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
@@ -279,7 +279,7 @@
 - type: entity
   name: Grantek F-11D Assault Cannon
   parent: SWBaseWeaponBlaster
-  id: SWGrantekF11D
+  id: SWGrantekF11D2
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite

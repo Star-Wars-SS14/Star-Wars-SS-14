@@ -6,28 +6,28 @@
   components:
   - type: ItemToggle
     soundActivate:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberon.ogg
+      path: /Audio/_SW/Weapons/Melee/SWLightsaber/lightsaberon.ogg
       params:
         volume: -5
     soundDeactivate:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberoff.ogg
+      path: /Audio/_SW/Weapons/Melee/SWLightsaber/lightsaberoff.ogg
   - type: ItemToggleActiveSound
     activeSound:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberhum.ogg
+      path: /Audio/_SW/Weapons/Melee/SWLightsaber/lightsaberhum.ogg
       params:
         volume: -10
   - type: ItemToggleMeleeWeapon
     activatedSoundOnHit:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaber1.ogg
+      path: /Audio/_SW/Weapons/Melee/SWLightsaber/lightsaber1.ogg
       params:
         variation: 0.250
     activatedSoundOnHitNoDamage:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaber1.ogg
+      path: /Audio/_SW/Weapons/Melee/SWLightsaber/lightsaber1.ogg
       params:
         variation: 0.250
         volume: -10
     activatedSoundOnSwing:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsabermiss.ogg
+      path: /Audio/_SW/Weapons/Melee/SWLightsaber/lightsabermiss.ogg
       params:
         variation: 0.125
   - type: Block
@@ -46,27 +46,27 @@
   components:
   - type: ItemToggle
     soundActivate:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberon.ogg
+      path: /Audio/_SW/Weapons/Melee/SWLightsaber/lightsaberon.ogg
       params:
         volume: -5
     soundDeactivate:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberoff.ogg
+      path: /Audio/_SW/Weapons/Melee/SWLightsaber/lightsaberoff.ogg
   - type: ItemToggleActiveSound
     activeSound:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberhum.ogg
+      path: /Audio/_SW/Weapons/Melee/SWLightsaber/lightsaberhum.ogg
       params:
         volume: -10
   - type: ItemToggleMeleeWeapon
     activatedSoundOnHit:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaber1.ogg
+      path: /Audio/_SW/Weapons/Melee/SWLightsaber/lightsaber1.ogg
       params:
         variation: 0.250
     activatedSoundOnHitNoDamage:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaber1.ogg
+      path: /Audio/_SW/Weapons/Melee/SWLightsaber/lightsaber1.ogg
       params:
         variation: 0.250
         volume: -10
     activatedSoundOnSwing:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsabermiss.ogg
+      path: /Audio/_SW/Weapons/Melee/SWLightsaber/lightsabermiss.ogg
       params:
         variation: 0.125

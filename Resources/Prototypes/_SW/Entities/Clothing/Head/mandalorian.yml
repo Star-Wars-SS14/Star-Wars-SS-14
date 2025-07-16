@@ -1,6 +1,6 @@
 - type: entity
   parent: SWBaseHelmet
-  id: SWClothingHeadRecruitMandalorianHelmet
+  id: SW_ClothingHeadRecruitMandalorianHelmet
   name: recruit mandalorian helmet
   components:
   - type: Sprite
@@ -9,8 +9,8 @@
     sprite: _SW/Clothing/Head/Helmets/HeadMandalorianRecruit.rsi
 
 - type: entity
-  parent: SWClothingHeadRecruitMandalorianHelmet
-  id: SWClothingHeadMandalorianHelmet
+  parent: SW_ClothingHeadRecruitMandalorianHelmet
+  id: SW_ClothingHeadMandalorianHelmet
   name: recruit mandalorian helmet
   components:
   - type: Sprite
@@ -19,8 +19,8 @@
     sprite: _SW/Clothing/Head/Helmets/Mandalorian.rsi
 
 - type: entity
-  parent: SWClothingHeadRecruitMandalorianHelmet
-  id: SWClothingHeadMandalorianVeteranHelmet
+  parent: SW_ClothingHeadRecruitMandalorianHelmet
+  id: SW_ClothingHeadMandalorianVeteranHelmet
   name: veteran mandalorian helmet
   components:
   - type: Sprite

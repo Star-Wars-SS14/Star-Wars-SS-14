@@ -4,7 +4,7 @@
   components:
     - type: Tag
       tags:
-        - HolopadAdmin
+        - SWHolopadAdmin
     - type: Telephone
       ringTone: /Audio/Machines/double_ring.ogg
       listeningRange: 2.5
@@ -23,7 +23,7 @@
   components:
     - type: Tag
       tags:
-        - HolopadEmpire
+        - SWHolopadEmpire
     - type: Label
       currentLabel: империя
     - type: Telephone
@@ -37,7 +37,7 @@
       - Unlimited
       blacklist:
         tags:
-          - HolopadRepublic
+          - SWHolopadRepublic
 
 
 - type: entity
@@ -48,7 +48,7 @@
   components:
     - type: Tag
       tags:
-        - HolopadRepublic
+        - SWHolopadRepublic
     - type: Label
       currentLabel: республика
     - type: Telephone
@@ -62,7 +62,7 @@
       - Unlimited
       blacklist:
         tags:
-          - HolopadEmpire
+          - SWHolopadEmpire
 
 
 - type: entity
@@ -75,8 +75,8 @@
       currentLabel: Генеральный Штаб Республиканской Армии
     - type: Tag
       tags:
-        - HolopadAdmin
-        - HolopadRepublic
+        - SWHolopadAdmin
+        - SWHolopadRepublic
 
 
 - type: entity
@@ -89,5 +89,5 @@
       currentLabel: Министерство войны
     - type: Tag
       tags:
-        - HolopadAdmin
-        - HolopadEmpire
+        - SWHolopadAdmin
+        - SWHolopadEmpire

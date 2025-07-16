@@ -30,7 +30,7 @@
     channels:
     - SWEmpireGarnison
     - SWEmpireRegular
-    - EmpireSobrik
+    - SWEmpireSobrik
 
 - type: entity
   abstract: true

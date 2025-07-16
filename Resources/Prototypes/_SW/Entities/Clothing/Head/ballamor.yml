@@ -1,6 +1,6 @@
 - type: entity
   parent: ClothingHeadBase
-  id: SWClothingHeadBallamor
+  id: SW_ClothingHeadBallamor
   name: ballamor helmet
   components:
   - type: Sprite

@@ -25,7 +25,7 @@
   parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
-    proto: RedBulletBlast
+    proto: SWRedBulletBlast
   - type: Sprite
     layers:
     - state: base
@@ -49,7 +49,7 @@
   parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
-    proto: GreenBulletBlast
+    proto: SWGreenBulletBlast
   - type: Sprite
     layers:
     - state: base
@@ -74,7 +74,7 @@
   parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
-    proto: BlueBulletBlast
+    proto: SWBlueBulletBlast
   - type: Sprite
     layers:
     - state: base
@@ -86,7 +86,7 @@
   parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
-    proto: CannonBlueBulletBlast
+    proto: SWCannonBlueBulletBlast
   - type: Sprite
     layers:
     - state: base
@@ -98,7 +98,7 @@
   parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
-    proto: SniperRifleBlueBulletBlast
+    proto: SWSniperRifleBlueBulletBlast
   - type: Sprite
     layers:
     - state: base
@@ -110,7 +110,7 @@
   parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
-    proto: YellowBulletBlast
+    proto: SWYellowBulletBlast
   - type: Sprite
     layers:
     - state: base
@@ -122,7 +122,7 @@
   parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
-    proto: CannonYellowBulletBlast
+    proto: SWCannonYellowBulletBlast
   - type: Sprite
     layers:
     - state: base
@@ -134,7 +134,7 @@
   parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
-    proto: SniperRifleYellowBulletBlast
+    proto: SWSniperRifleYellowBulletBlast
   - type: Sprite
     layers:
     - state: base

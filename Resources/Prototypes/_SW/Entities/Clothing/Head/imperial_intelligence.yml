@@ -1,6 +1,6 @@
 - type: entity
   parent: SWBaseHelmet
-  id: SWClothingHeadImperialIntelligenceHelmet
+  id: SW_ClothingHeadImperialIntelligenceHelmet
   name: imperial intelligence helmet
   components:
   - type: Sprite

@@ -1,6 +1,6 @@
 - type: entity
   parent: SWBaseHelmet
-  id: SWClothingHeadRepublicHelmet
+  id: SW_ClothingHeadRepublicHelmet
   name: republic helmet
   components:
   - type: Sprite
@@ -9,8 +9,8 @@
     sprite: _SW/Clothing/Head/Helmets/republichelmet.rsi
 
 - type: entity
-  parent: SWClothingHeadRepublicHelmet
-  id: SWClothingHeadLieutenantRepublicHelmet
+  parent: SW_ClothingHeadRepublicHelmet
+  id: SW_ClothingHeadLieutenantRepublicHelmet
   name: lieutenant republic helmet
   components:
   - type: Sprite
@@ -19,7 +19,7 @@
     sprite: _SW/Clothing/Head/Helmets/ltrepublichelmet.rsi
 
 - type: entity
-  parent: SWClothingHeadRepublicHelmet
+  parent: SW_ClothingHeadRepublicHelmet
   id: SWClothingHeadСaptainRepublicHelmet
   name: captain republic helmet
   components:
@@ -29,8 +29,8 @@
     sprite: _SW/Clothing/Head/Helmets/caprepublichelmet.rsi
 
 - type: entity
-  parent: SWClothingHeadRepublicHelmet
-  id: SWClothingHeadGeneralRepublicHelmet
+  parent: SW_ClothingHeadRepublicHelmet
+  id: SW_ClothingHeadGeneralRepublicHelmet
   name: general republic helmet
   components:
   - type: Sprite

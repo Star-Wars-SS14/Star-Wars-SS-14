@@ -81,7 +81,7 @@
         state: green
   - type: ConditionalSpawner
     prototypes:
-      - MobBormu
+      - SWMobBormu
 
 - type: entity
   name: Спавнер Борму периодический (~каждые полчаса)
@@ -97,7 +97,7 @@
     - type: Timer
     - type: TimedSpawner
       prototypes:
-        - MobBormu
+        - SWMobBormu
       chance: 0.25
       intervalSeconds: 450
       minimumEntitiesSpawned: 1
@@ -182,4 +182,4 @@
         state: green
   - type: ConditionalSpawner
     prototypes:
-      - MobWingmaw
+      - SWMobWingmaw

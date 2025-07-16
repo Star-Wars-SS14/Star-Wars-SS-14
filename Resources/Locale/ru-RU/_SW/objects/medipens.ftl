@@ -1,4 +1,4 @@
-ent-KoltoMedipen = Медипен с кольто
+ent-SWKoltoMedipen = Медипен с кольто
   .desc = Медипен, который содержит 15 единиц кольто.
-ent-BactaMedipen = Медипен с бактой
+ent-SWBactaMedipen = Медипен с бактой
   .desc = Медипен, который содержит 10 кдиниц бакты.

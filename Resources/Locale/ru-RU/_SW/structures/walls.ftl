@@ -1,3 +1,3 @@
-ent-SW_WallReinforced = Усиленная стена
-ent-SW_WallSolid = Прочная стена
-ent-SW_WallLight = Световая стена
+ent-SWWallReinforced = Усиленная стена
+ent-SWWallSolid = Прочная стена
+ent-SWWallLight = Световая стена

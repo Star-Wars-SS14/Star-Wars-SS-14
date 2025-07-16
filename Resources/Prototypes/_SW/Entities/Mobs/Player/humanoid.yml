@@ -15,7 +15,7 @@
   suffix: GhostRole
   components:
     - type: RandomHumanoidSpawner
-      settings: EmpireLieutenant
+      settings: SWEmpireLieutenant
 
 - type: randomHumanoidSettings
   id: SWEmpireLieutenant
@@ -47,7 +47,7 @@
   suffix: GhostRole
   components:
     - type: RandomHumanoidSpawner
-      settings: EmpireSoldier
+      settings: SWEmpireSoldier
 
 - type: randomHumanoidSettings
   id: SWEmpireSoldier
@@ -79,7 +79,7 @@
   suffix: GhostRole
   components:
     - type: RandomHumanoidSpawner
-      settings: EmpireMedic
+      settings: SWEmpireMedic
 
 - type: randomHumanoidSettings
   id: SWEmpireMedic
@@ -103,16 +103,16 @@
       factions:
       - Syndicate
 
-# Republic
+# SWRepublic
 # Lieutenant
 - type: entity
   parent: BaseMobHuman
   id: SWRandomHumanoidSpawnerRepublicLieutenant
-  name: Republic Lieutenant
+  name: SWRepublic Lieutenant
   suffix: GhostRole
   components:
     - type: RandomHumanoidSpawner
-      settings: RepublicLieutenant
+      settings: SWRepublicLieutenant
 
 - type: randomHumanoidSettings
   id: SWRepublicLieutenant
@@ -140,11 +140,11 @@
 - type: entity
   parent: BaseMobHuman
   id: SWRandomHumanoidSpawnerRepublicSoldier
-  name: Republic Soldier
+  name: SWRepublic Soldier
   suffix: GhostRole
   components:
     - type: RandomHumanoidSpawner
-      settings: RepublicSoldier
+      settings: SWRepublicSoldier
 
 - type: randomHumanoidSettings
   id: SWRepublicSoldier
@@ -172,11 +172,11 @@
 - type: entity
   parent: BaseMobHuman
   id: SWRandomHumanoidSpawnerRepublicMedic
-  name: Republic Medic
+  name: SWRepublic Medic
   suffix: GhostRole
   components:
     - type: RandomHumanoidSpawner
-      settings: RepublicMedic
+      settings: SWRepublicMedic
 
 - type: randomHumanoidSettings
   id: SWRepublicMedic

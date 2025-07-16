@@ -1,2 +1,2 @@
-ent-SW_ClothingHeadHatBunny = кроличьи ушки?
+ent-SWClothingHeadHatBunny = кроличьи ушки?
   .desc = Это отвратительно

@@ -1,3 +1,3 @@
-ent-SW_AlwaysPoweredWallLight = светильник
-ent-SW_PoweredlightEmpty = светильник
-ent-SW_Poweredlight = светильник
+ent-SWAlwaysPoweredWallLight = светильник
+ent-SWPoweredlightEmpty = светильник
+ent-SWPoweredlight = светильник

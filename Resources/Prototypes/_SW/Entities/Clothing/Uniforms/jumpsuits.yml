@@ -1,6 +1,6 @@
 - type: entity
   parent: ClothingUniformBase
-  id: SW_ClothingUniformJumpsuitRebel
+  id: SWClothingUniformJumpsuitRebel
   name: Rebel uniform
   components:
   - type: Sprite
@@ -10,7 +10,7 @@
 
 - type: entity
   parent: ClothingUniformBase
-  id: SW_ClothingUniformJumpsuitJedi
+  id: SWClothingUniformJumpsuitJedi
   name: Jedi robe
   components:
   - type: Sprite
@@ -20,7 +20,7 @@
 
 - type: entity
   parent: ClothingUniformBase
-  id: SW_ClothingUniformJumpsuitOfficers
+  id: SWClothingUniformJumpsuitOfficers
   name: officer uniform
   components:
   - type: Sprite
@@ -30,7 +30,7 @@
 
 - type: entity
   parent: ClothingUniformBase
-  id: SW_ClothingUniformJumpsuitImperialGeneral
+  id: SWClothingUniformJumpsuitImperialGeneral
   name: imperial general uniform
   components:
   - type: Sprite
@@ -40,7 +40,7 @@
 
 - type: entity
   parent: ClothingUniformBase
-  id: SW_ClothingUniformJumpsuitImperialOfficers
+  id: SWClothingUniformJumpsuitImperialOfficers
   name: imperial officer uniform
   components:
   - type: Sprite
@@ -50,7 +50,7 @@
 
 - type: entity
   parent: ClothingUniformBase
-  id: SW_ClothingUniformJumpsuitFleece
+  id: SWClothingUniformJumpsuitFleece
   name: fleece uniform
   components:
   - type: Sprite
@@ -60,7 +60,7 @@
 
 - type: entity
   parent: ClothingUniformBase
-  id: SW_ClothingUniformJumpsuitImperialIntelligence
+  id: SWClothingUniformJumpsuitImperialIntelligence
   name: imperial intelligence uniform
   components:
   - type: Sprite

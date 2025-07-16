@@ -1,5 +1,5 @@
 - type: entity
-  id: SW_AlwaysPoweredWallLight
+  id: SWAlwaysPoweredWallLight
   name: лампа
   description: "Постоянно работающий светильник."
   suffix: Always powered
@@ -68,7 +68,7 @@
 - type: entity
   name: лампа
   description: "Осветительный прибор. Потребляет энергию и излучает свет, если оснащен лампой.."
-  id: SW_PoweredlightEmpty
+  id: SWPoweredlightEmpty
   suffix: Empty
   parent: AlwaysPoweredWallLight
   components:
@@ -109,10 +109,10 @@
       burned: burned
 
 - type: entity
-  id: SW_Poweredlight
+  id: SWPoweredlight
   description: "Осветительный прибор. Потребляет энергию и излучает свет, если оснащен лампой."
   suffix: ""
-  parent: SW_PoweredlightEmpty
+  parent: SWPoweredlightEmpty
   components:
   - type: Sprite
     state: base

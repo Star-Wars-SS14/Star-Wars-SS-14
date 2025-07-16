@@ -1,6 +1,6 @@
 - type: entity
   parent: [ClothingOuterBase, AllowSuitStorageClothing]
-  id: SW_MandalorianRecruitSuit
+  id: SWMandalorianRecruitSuit
   name: recruit mandalorian suit
   components:
   - type: Sprite
@@ -24,8 +24,8 @@
   - type: HeldSpeedModifier
 
 - type: entity
-  parent: SW_MandalorianRecruitSuit
-  id: SW_MandalorianSuit
+  parent: SWMandalorianRecruitSuit
+  id: SWMandalorianSuit
   name: mandalorian suit
   components:
   - type: Sprite
@@ -34,8 +34,8 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/Mandalorian.rsi
 
 - type: entity
-  parent: SW_MandalorianRecruitSuit
-  id: SW_MandalorianVeteranSuit
+  parent: SWMandalorianRecruitSuit
+  id: SWMandalorianVeteranSuit
   name: veteran mandalorian suit
   components:
   - type: Sprite

@@ -11,7 +11,7 @@
 
 - type: entity
   parent: ClothingHandsBase
-  id: SW_ClothingHandsGlovesСitizen
+  id: SWClothingHandsGlovesСitizen
   name: citizen gloves
   components:
   - type: Sprite

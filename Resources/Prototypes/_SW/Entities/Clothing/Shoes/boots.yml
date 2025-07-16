@@ -1,6 +1,6 @@
 - type: entity
   parent: ClothingShoesBaseButcherable
-  id: SW_ClothingShoesBootsJedi
+  id: SWClothingShoesBootsJedi
   name: Jedi boots
   components:
   - type: Sprite
@@ -10,7 +10,7 @@
 
 - type: entity
   parent: ClothingShoesBaseButcherable
-  id: SW_ClothingShoesBootsOfficers
+  id: SWClothingShoesBootsOfficers
   name: Officer boots
   components:
   - type: Sprite
@@ -20,7 +20,7 @@
 
 - type: entity
   parent: ClothingShoesBaseButcherable
-  id: SW_ClothingShoesBootsImperialOfficers
+  id: SWClothingShoesBootsImperialOfficers
   name: Imperial Officer boots
   components:
   - type: Sprite
@@ -30,7 +30,7 @@
 
 - type: entity
   parent: ClothingShoesBaseButcherable
-  id: SW_ClothingShoesBootsballamor
+  id: SWClothingShoesBootsballamor
   name: ballamor boots
   components:
   - type: Sprite
@@ -40,7 +40,7 @@
 
 - type: entity
   parent: ClothingShoesBaseButcherable
-  id: SW_ClothingShoesBootsSobrik
+  id: SWClothingShoesBootsSobrik
   name: sobrik boots
   components:
   - type: Sprite
@@ -50,7 +50,7 @@
 
 - type: entity
   parent: ClothingShoesBaseButcherable
-  id: SW_ClothingShoesBootsExchange
+  id: SWClothingShoesBootsExchange
   name: exchange boots
   components:
   - type: Sprite
@@ -60,7 +60,7 @@
 
 - type: entity
   parent: ClothingShoesBaseButcherable
-  id: SW_ClothingShoesBootsCitizen
+  id: SWClothingShoesBootsCitizen
   name: citizen boots
   components:
   - type: Sprite

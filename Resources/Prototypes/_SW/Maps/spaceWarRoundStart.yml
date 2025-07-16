@@ -8,7 +8,7 @@
        stationProto: StandardVessel
        components:
          - type: StationNameSetup
-           mapNameTemplate: 'SWRepublic Cruiser Mk. 2 {1}'
+           mapNameTemplate: 'Valor-Class cruiser {1}'
            nameGenerator:
              !type:NanotrasenNameGenerator
              prefixCreator: '14'
@@ -26,7 +26,7 @@
        stationProto: StandardVessel
        components:
          - type: StationNameSetup
-           mapNameTemplate: 'Imperial Cruiser {1}'
+           mapNameTemplate: 'Dreadnought "Cleaver"'
            nameGenerator:
              !type:NanotrasenNameGenerator
              prefixCreator: '14'

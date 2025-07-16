@@ -192,6 +192,8 @@ entities:
       rot: 0.4363323129985824 rad
       pos: -1500.2767,-0.6635088
       parent: 1
+    - type: BecomesStation
+      id: RepublicCruiser
     - type: MapGrid
       chunks:
         0,0:
@@ -3286,6 +3288,8 @@ entities:
     - type: Transform
       pos: -0.4375,-0.421875
       parent: 1
+    - type: BecomesStation
+      id: ast1
     - type: MapGrid
       chunks:
         0,0:
@@ -4344,6 +4348,8 @@ entities:
       rot: -0.4363323129985824 rad
       pos: 999.3242,-0.21069804
       parent: 1
+    - type: BecomesStation
+      id: ImperialCruiser
     - type: MapGrid
       chunks:
         0,0:
@@ -11644,8 +11650,6 @@ entities:
       bodyType: Dynamic
     - type: Fixtures
       fixtures: {}
-    - type: BecomesStation
-      id: Empty
     - type: OccluderTree
     - type: Shuttle
     - type: GridPathfinding

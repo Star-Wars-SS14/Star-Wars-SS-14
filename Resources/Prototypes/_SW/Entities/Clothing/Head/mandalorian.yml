@@ -14,9 +14,9 @@
   name: recruit mandalorian helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/SWMandalorian.rsi
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/SWMandalorian.rsi
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian.rsi
 
 - type: entity
   parent: SW_ClothingHeadRecruitMandalorianHelmet

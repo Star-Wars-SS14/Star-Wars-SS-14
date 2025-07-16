@@ -166,7 +166,7 @@
 - type: entity
   name: Beryar's MK-3 Sniper Rifle
   parent: SWBaseWeaponBlaster
-  id: SWberyaramk3
+  id: SWBeryaramk3
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite

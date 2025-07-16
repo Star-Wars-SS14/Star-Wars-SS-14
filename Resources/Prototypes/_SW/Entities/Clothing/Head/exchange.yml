@@ -4,9 +4,9 @@
   name: exchange helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/SWExchange/Helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/Exchange/Helmet.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/SWExchange/Helmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/Exchange/Helmet.rsi
   - type: PressureProtection
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000

@@ -4,9 +4,9 @@
   name: recruit mandalorian suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/SWMandalorian/MandalorianRecruit.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianRecruit.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/SWMandalorian/MandalorianRecruit.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianRecruit.rsi
   - type: PressureProtection
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000
@@ -29,9 +29,9 @@
   name: mandalorian suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/SWMandalorian/SWMandalorian.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/Mandalorian.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/SWMandalorian/SWMandalorian.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/Mandalorian.rsi
 
 - type: entity
   parent: SWMandalorianRecruitSuit
@@ -39,9 +39,9 @@
   name: veteran mandalorian suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/SWMandalorian/mandalorianveteran.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/mandalorianveteran.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/SWMandalorian/mandalorianveteran.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/mandalorianveteran.rsi
   - type: Armor
     modifiers:
       coefficients:

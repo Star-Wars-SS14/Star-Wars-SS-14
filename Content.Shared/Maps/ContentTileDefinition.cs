@@ -111,7 +111,7 @@ namespace Content.Shared.Maps
         /// <summary>
         /// Is this tile immune to RCD deconstruct.
         /// </summary>
-        [DataField("indestructible")] public bool Indestructible = true;
+        [DataField("indestructible")] public bool Indestructible = false;
 
         public void AssignTileId(ushort id)
         {

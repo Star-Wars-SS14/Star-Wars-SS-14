@@ -707,9 +707,11 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
-    sprite: Objects/Weapons/Guns/Projectiles/projectiles2.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/green_ammo_casing.rsi
     layers:
-      - state: grenade
+    - state: base
+      shader: unshaded
+    scale: 2.5, 2.5
   - type: ExplodeOnTrigger
   - type: Explosive
     explosionType: Default

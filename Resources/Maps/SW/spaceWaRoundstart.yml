@@ -3290,6 +3290,7 @@ entities:
       parent: 1
     - type: BecomesStation
       id: ast1
+    - type: SWMakeTilesOfGridIndestructible
     - type: MapGrid
       chunks:
         0,0:

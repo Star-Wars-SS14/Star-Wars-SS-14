@@ -1,5 +1,5 @@
 - type: entity
-  parent: SW_BaseHelmet
+  parent: SWBaseHelmet
   id: SW_ClothingHeadImperialIntelligenceHelmet
   name: imperial intelligence helmet
   components:

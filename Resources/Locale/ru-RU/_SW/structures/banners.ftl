@@ -1,5 +1,5 @@
-ent-SW_BannerEmpire = Маленький баннер Галактической Империи (Белый)
-ent-SW_BannerEmpireRed = Маленький баннер Галактической Империи (Красный)
-ent-SW_BannerEmpireSith =  Баннер Галактической Империи
-ent-SW_BannerMandalorian = Баннер Мандалорцев
-ent-SW_BannerRepublic = Баннер Республики
+ent-SWBannerEmpire = Маленький баннер Галактической Империи (Белый)
+ent-SWBannerEmpireRed = Маленький баннер Галактической Империи (Красный)
+ent-SWBannerEmpireSith =  Баннер Галактической Империи
+ent-SWBannerMandalorian = Баннер Мандалорцев
+ent-SWBannerRepublic = Баннер Республики

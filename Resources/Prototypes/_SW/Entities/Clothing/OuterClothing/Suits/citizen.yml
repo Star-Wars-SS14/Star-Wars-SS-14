@@ -1,6 +1,6 @@
-﻿- type: entity
+- type: entity
   parent: [ClothingOuterBase, AllowSuitStorageClothing]
-  id: SW_CitizenClothing
+  id: SWCitizenClothing
   name: Citizen's clothing
   components:
   - type: Item

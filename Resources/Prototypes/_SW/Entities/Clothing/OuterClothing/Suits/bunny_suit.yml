@@ -1,6 +1,6 @@
 - type: entity
   parent: [ClothingOuterBase, AllowSuitStorageClothing]
-  id: SW_BunnySuit
+  id: SWBunnySuit
   name: Bunny Suit
   description: Bunny Suit.
   components:

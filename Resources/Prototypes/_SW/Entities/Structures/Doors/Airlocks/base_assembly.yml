@@ -1,6 +1,6 @@
 #Base
 - type: entity
-  id: SW_AirlockAssembly
+  id: SWAirlockAssembly
   name: Аirlock assembly
   description: It opens, it closes, and maybe crushes you.
   components:

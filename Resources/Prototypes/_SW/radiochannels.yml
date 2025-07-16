@@ -1,5 +1,5 @@
 - type: radioChannel
-  id: EmpireGarnison
+  id: SWEmpireGarnison
   name: Имперский Гарнизон
   keycode: 'г' # Corvax-Localization
   frequency: 2024
@@ -7,7 +7,7 @@
   longRange: true
 
 - type: radioChannel
-  id: EmpireRegular
+  id: SWEmpireRegular
   name: Регулярные Силы Империи
   keycode: 'т' # Corvax-Localization
   frequency: 2025
@@ -15,7 +15,7 @@
   longRange: true
 
 - type: radioChannel
-  id: EmpireSobrik
+  id: SWEmpireSobrik
   name: Имперская Разведка
   keycode: 'и' # Corvax-Localization
   frequency: 2026
@@ -23,7 +23,7 @@
   longRange: true
 
 - type: radioChannel
-  id: Republic
+  id: SWRepublic
   name: Республика
   keycode: 'р' # Corvax-Localization
   frequency: 2027
@@ -32,7 +32,7 @@
   longRange: true
 
 - type: radioChannel
-  id: RepublicHavok
+  id: SWRepublicHavok
   name: Хавок
   keycode: 'х' # Corvax-Localization
   frequency: 2028
@@ -41,7 +41,7 @@
   longRange: true
 
 - type: radioChannel
-  id: Mandalorian
+  id: SWMandalorian
   name: Мандалориан
   keycode: 'м' # Corvax-Localization
   frequency: 2039

@@ -1,6 +1,6 @@
 - type: entity
   parent: ClothingOuterStorageBase
-  id: SW_ClothingOuterVestRebel
+  id: SWClothingOuterVestRebel
   name: rebel vest
   components:
   - type: Sprite
@@ -19,7 +19,7 @@
 
 - type: entity
   parent: ClothingOuterStorageBase
-  id: SW_ClothingOuterImperialOfficerVest
+  id: SWClothingOuterImperialOfficerVest
   name: imperial officer vest
   components:
   - type: Sprite

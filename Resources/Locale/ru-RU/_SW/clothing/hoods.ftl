@@ -1,3 +1,3 @@
-ent-SW_ClothingHeadHatHoodSithCloak = капюшон плаща ситхов
-ent-SW_ClothingHeadHatHoodJediCloak = капюшон плаща джедаев
-ent-SW_ClothingHeadHatHoodBallamor = капюшон
+ent-SWClothingHeadHatHoodSithCloak = капюшон плаща ситхов
+ent-SWClothingHeadHatHoodJediCloak = капюшон плаща джедаев
+ent-SWClothingHeadHatHoodBallamor = капюшон

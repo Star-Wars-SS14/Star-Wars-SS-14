@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+using System.Numerics;
 using Content.Server._SW.Force.Components;
 using Content.Shared._SW;
 using Content.Shared.Actions;
@@ -23,10 +23,10 @@ public sealed partial class ForceSystem
         SubscribeLocalEvent<ForceComponent, DashAbilityEvent>(DashAbility);
         SubscribeLocalEvent<DarkForceComponent, ForceLightningAbilityEvent>(LightingAbility);
         // kyber
-        SubscribeLocalEvent<KyberCrystalComponent, MapInitEvent>(OnKyberMapInit);
-        SubscribeLocalEvent<KyberCrystalComponent, GetItemActionsEvent>(OnGetKyber);
+        SubscribeLocalEvent<SWKyberCrystalComponent, MapInitEvent>(OnKyberMapInit);
+        SubscribeLocalEvent<SWKyberCrystalComponent, GetItemActionsEvent>(OnGetKyber);
         SubscribeLocalEvent<SubdueAbilityEvent>(OnSubdueAction);
-        SubscribeLocalEvent<KyberCrystalComponent, AfterInteractEvent>(KyberAfterInteract);
+        SubscribeLocalEvent<SWKyberCrystalComponent, AfterInteractEvent>(KyberAfterInteract);
         // saber
         SubscribeLocalEvent<MobStateChangedEvent>(OnMobStateChange);
     }
@@ -149,12 +149,12 @@ public sealed partial class ForceSystem
 
     #region Kyber
 
-    private void OnKyberMapInit(EntityUid uid, KyberCrystalComponent component, MapInitEvent args)
+    private void OnKyberMapInit(EntityUid uid, SWKyberCrystalComponent component, MapInitEvent args)
     {
         _action.AddAction(uid, ref component.KyberActionEntity, component.KyberActionPrototype);
     }
 
-    private void OnGetKyber(EntityUid uid, KyberCrystalComponent component, GetItemActionsEvent args)
+    private void OnGetKyber(EntityUid uid, SWKyberCrystalComponent component, GetItemActionsEvent args)
     {
         if (!HasComp<ForceComponent>(args.User))
             return;
@@ -170,7 +170,7 @@ public sealed partial class ForceSystem
         var user = args.Performer;
         var kyber = _handsSystem.GetActiveItem(user);
 
-        if (!TryComp<KyberCrystalComponent>(kyber, out var kyberComp))
+        if (!TryComp<SWKyberCrystalComponent>(kyber, out var kyberComp))
             return;
 
         if (kyberComp.Owner != null)
@@ -190,7 +190,7 @@ public sealed partial class ForceSystem
         args.Handled = true;
     }
 
-    private void KyberAfterInteract(EntityUid uid, KyberCrystalComponent component, AfterInteractEvent args)
+    private void KyberAfterInteract(EntityUid uid, SWKyberCrystalComponent component, AfterInteractEvent args)
     {
         if (args.Target == null || !args.CanReach || args.Handled)
             return;
@@ -203,7 +203,7 @@ public sealed partial class ForceSystem
 
         var target = args.Target.Value;
 
-        if (!_tagSystem.HasTag(target, component.SaberFragmentTag))
+        if (!_tagSystem.HasTag(target, component.SWSaberFragmentTag))
             return;
 
         _popupSystem.PopupEntity("В мгновение, камень летит в фрагмент меча.. Меч исправен..",

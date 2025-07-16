@@ -1,6 +1,6 @@
 - type: entity
   parent: BaseWall
-  id: SW_WallReinforced
+  id: SWWallReinforced
   name: бронированная стена
   components:
   - type: Sprite
@@ -59,7 +59,7 @@
 
 - type: entity
   parent: BaseWall
-  id: SW_WallSolid
+  id: SWWallSolid
   name: стена
   components:
   - type: Tag
@@ -101,7 +101,7 @@
 
 - type: entity
   parent: BaseWall
-  id: SW_WallLight
+  id: SWWallLight
   name: стена света
   description: "Wall light."
   components:
@@ -183,7 +183,7 @@
       on: glow
 
 - type: entity
-  id: SW_WallBasaultRock
+  id: SWWallBasaultRock
   parent: BaseWall
   name: базальт
   description: Рок энд Стоун!
@@ -214,7 +214,7 @@
             volume: -6
 
 - type: entity
-  id: SW_WallBasaultSnowRock
+  id: SWWallBasaultSnowRock
   parent: BaseWall
   name: снежный базальт
   description: Рок энд- что то тут холодновато!

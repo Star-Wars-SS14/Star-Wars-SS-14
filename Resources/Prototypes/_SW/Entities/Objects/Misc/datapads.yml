@@ -1,7 +1,7 @@
-﻿- type: entity
-  name: BaseDatapad
+- type: entity
+  name: SWBaseDatapad
   parent: BaseItem
-  id: BaseDatapad
+  id: SWBaseDatapad
   description: 'A piece of white paper.'
   components:
   - type: Paper
@@ -22,8 +22,8 @@
 
 - type: entity
   name: Синий датапад
-  parent: BaseDatapad
-  id: BlueDatapad
+  parent: SWBaseDatapad
+  id: SWBlueDatapad
   description: Аахахах, синий датапад.
   components:
   - type: PaperVisuals
@@ -39,8 +39,8 @@
 
 - type: entity
   name: Зелёный датапад
-  parent: BaseDatapad
-  id: GreenDatapad
+  parent: SWBaseDatapad
+  id: SWGreenDatapad
   description: Кваднратный датапад, прямо как з игры Корвакс-Крафт!
   components:
   - type: PaperVisuals
@@ -57,8 +57,8 @@
 
 - type: entity
   name: Фиолетовый датапад
-  parent: BaseDatapad
-  id: PinkDatapad
+  parent: SWBaseDatapad
+  id: SWPinkDatapad
   description: Глупые имперцы сделали из игровой приставки - блокнотик. Глупые имперцы..
   components:
   - type: PaperVisuals
@@ -75,8 +75,8 @@
 
 - type: entity
   name: Красный датапад
-  parent: BaseDatapad
-  id: RedDatapad
+  parent: SWBaseDatapad
+  id: SWRedDatapad
   description: Я не придумал шутку для описания этого датапада.
   components:
   - type: PaperVisuals
@@ -93,8 +93,8 @@
 
 - type: entity
   name: Жёлтый датапад
-  parent: BaseDatapad
-  id: YellowDatapad
+  parent: SWBaseDatapad
+  id: SWYellowDatapad
   description: Поможет выбрать покупки даже самому тупому клону.
   components:
   - type: PaperVisuals
@@ -111,8 +111,8 @@
 
 - type: entity
   name: Голубой датапад
-  parent: BaseDatapad
-  id: ЕurquoiseDatapad
+  parent: SWBaseDatapad
+  id: SWЕurquoiseDatapad
   description: Что-же ты такое, что с твоим дизайном?..
   components:
   - type: PaperVisuals
@@ -129,8 +129,8 @@
 
 - type: entity
   name: Оранжевый датапад
-  parent: BaseDatapad
-  id: OrangeDatapad
+  parent: SWBaseDatapad
+  id: SWOrangeDatapad
   description: Я не знаю что писать, он урод.
   components:
   - type: PaperVisuals

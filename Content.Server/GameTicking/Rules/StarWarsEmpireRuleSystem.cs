@@ -23,7 +23,7 @@ public sealed class StarWarsEmpireRuleSystem : GameRuleSystem<StarWarsEmpireRule
 
     public override void Initialize()
     {
-        SubscribeLocalEvent<ShieldGuardComponent, DestructionEventArgs>(OnDestructuion);
+        SubscribeLocalEvent<SWShieldGuardComponent, DestructionEventArgs>(OnDestructuion);
         SubscribeLocalEvent<NukeExplodedEvent>(OnExploded);
     }
 
@@ -64,9 +64,9 @@ public sealed class StarWarsEmpireRuleSystem : GameRuleSystem<StarWarsEmpireRule
         }
     }
 
-    private void OnDestructuion(EntityUid uid, ShieldGuardComponent component, DestructionEventArgs args)
+    private void OnDestructuion(EntityUid uid, SWShieldGuardComponent component, DestructionEventArgs args)
     {
-        if (EntityManager.HasComponent<ShieldGuardComponent>(uid))
+        if (EntityManager.HasComponent<SWShieldGuardComponent>(uid))
         {
             _roundEnd.EndRound();
         }

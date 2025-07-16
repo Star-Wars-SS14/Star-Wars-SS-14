@@ -1,7 +1,7 @@
 - type: entity
   abstract: true
   parent: Clothing
-  id: ClothingHeadsetSW
+  id: SWClothingHeadset
   name: headset
   description: Communications!
   components:
@@ -15,56 +15,56 @@
     sprite: Clothing/Ears/Headsets/base.rsi
 
 - type: entity
-  parent: [ClothingHeadsetSW, EmpireGarnisonRadioHelmet]
-  id: ClothingHeadsetGarnison
+  parent: [SWClothingHeadset, SWEmpireGarnisonRadioHelmet]
+  id: SWClothingHeadsetGarnison
   name: garnison headset
   components:
   - type: Sprite
     sprite: Clothing/Ears/Headsets/base.rsi
 
 - type: entity
-  parent: [ClothingHeadsetSW, EmpireRegularRadioHelmet]
-  id: ClothingHeadsetRegular
+  parent: [SWClothingHeadset, SWEmpireRegularRadioHelmet]
+  id: SWClothingHeadsetRegular
   name: regular headset
   components:
   - type: Sprite
     sprite: Clothing/Ears/Headsets/base.rsi
 
 - type: entity
-  parent: [ClothingHeadsetSW, EmpireSobrikRadioHelmet]
-  id: ClothingHeadsetSobrik
+  parent: [SWClothingHeadset, SWEmpireSobrikRadioHelmet]
+  id: SWClothingHeadsetSobrik
   name: sobrik headset
   components:
   - type: Sprite
     sprite: Clothing/Ears/Headsets/base.rsi
 
 - type: entity
-  parent: [ClothingHeadsetSW, EmpireAllRadioHelmet]
-  id: ClothingHeadsetAllEmpire
+  parent: [SWClothingHeadset, SWEmpireAllRadioHelmet]
+  id: SWClothingHeadsetAllEmpire
   name: empire officer headset
   components:
   - type: Sprite
     sprite: Clothing/Ears/Headsets/base.rsi
 
 - type: entity
-  parent: [ClothingHeadsetSW, RepublicRadioHelmet]
-  id: ClothingHeadsetRepublic
+  parent: [SWClothingHeadset, SWRepublicRadioHelmet]
+  id: SWClothingHeadsetRepublic
   name: republic headset
   components:
   - type: Sprite
     sprite: Clothing/Ears/Headsets/base.rsi
 
 - type: entity
-  parent: [ClothingHeadsetSW, RepublicHavokRadioHelmet]
-  id: ClothingHeadsetHavok
+  parent: [SWClothingHeadset, SWRepublicHavokRadioHelmet]
+  id: SWClothingHeadsetHavok
   name: havok headset
   components:
   - type: Sprite
     sprite: Clothing/Ears/Headsets/base.rsi
 
 - type: entity
-  parent: [ClothingHeadsetSW, MandalorianRadioHelmet]
-  id: ClothingHeadsetMandalorian
+  parent: [SWClothingHeadset, SWMandalorianRadioHelmet]
+  id: SWClothingHeadsetMandalorian
   name: mandalorian headset
   components:
   - type: Sprite

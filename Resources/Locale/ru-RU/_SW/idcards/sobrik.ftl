@@ -1,6 +1,6 @@
-ent-SW_IDCardSobrikCaptain = ID карта коменданта ИКЗТ
+ent-SWIDCardSobrikCaptain = ID карта коменданта ИКЗТ
   .desc = ID карта, необходимая для доступа в определенные здания и комнаты.
-ent-SW_IDCardSobrikOfficer = ID карта офицера ИКЗТ
-  .desc = {ent-SW_IDCardSobrikCaptain.desc}
-ent-SW_IDCardSobrikMedic = ID карта медика ИКЗТ
-   .desc = {ent-SW_IDCardSobrikCaptain.desc}
+ent-SWIDCardSobrikOfficer = ID карта офицера ИКЗТ
+  .desc = {ent-SWIDCardSobrikCaptain.desc}
+ent-SWIDCardSobrikMedic = ID карта медика ИКЗТ
+   .desc = {ent-SWIDCardSobrikCaptain.desc}

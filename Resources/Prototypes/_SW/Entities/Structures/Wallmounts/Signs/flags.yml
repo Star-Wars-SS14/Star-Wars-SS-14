@@ -1,6 +1,6 @@
 - type: entity
   parent: BaseSign
-  id: SW_BaseFlag
+  id: SWBaseFlag
   abstract: true
   components:
   - type: WallMount
@@ -10,8 +10,8 @@
     sprite: _SW/Structures/Wallmounts/Flags/flags.rsi
 
 - type: entity
-  parent: SW_BaseFlag
-  id: SW_EmpireFlag
+  parent: SWBaseFlag
+  id: SWEmpireFlag
   name: имперский флаг
   description: "Определенно не флаг Республики."
   components:
@@ -19,8 +19,8 @@
     state: empire_flag
 
 - type: entity
-  parent: SW_BaseFlag
-  id: SW_EmpireFlagRed
+  parent: SWBaseFlag
+  id: SWEmpireFlagRed
   name: имперский флаг
   description: "Определенно не флаг Республики."
   components:

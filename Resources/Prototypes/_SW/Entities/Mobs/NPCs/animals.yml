@@ -1,7 +1,7 @@
 - type: entity
   name: Борму
   parent: SimpleMobBase
-  id: MobBormu
+  id: SWMobBormu
   description: Огромное травоядное существо, населявшее зелёные равнины Балморры.
   components:
   - type: Sprite
@@ -70,7 +70,7 @@
 
 - type: entity
   name: Спавнер Борму
-  id: SpawnMobBormu
+  id: SWSpawnMobBormu
   parent: MarkerBase
   components:
   - type: Sprite
@@ -81,11 +81,11 @@
         state: green
   - type: ConditionalSpawner
     prototypes:
-      - MobBormu
+      - SWMobBormu
 
 - type: entity
   name: Спавнер Борму периодический (~каждые полчаса)
-  id: BormuTimerSpawned
+  id: SWBormuTimerSpawned
   parent: MarkerBase
   components:
     - type: Sprite
@@ -97,7 +97,7 @@
     - type: Timer
     - type: TimedSpawner
       prototypes:
-        - MobBormu
+        - SWMobBormu
       chance: 0.25
       intervalSeconds: 450
       minimumEntitiesSpawned: 1
@@ -107,7 +107,7 @@
 - type: entity
   name: Вингмоу
   parent: [SimpleMobBase, FlyingMobBase]
-  id: MobWingmaw
+  id: SWMobWingmaw
   description: Летающая тварь, населяющая Балмору.
   components:
   - type: Sprite
@@ -171,7 +171,7 @@
 
 - type: entity
   name: Спавнер вингмоу
-  id: SpawnMobWingmaw
+  id: SWSpawnMobWingmaw
   parent: MarkerBase
   components:
   - type: Sprite
@@ -182,4 +182,4 @@
         state: green
   - type: ConditionalSpawner
     prototypes:
-      - MobWingmaw
+      - SWMobWingmaw

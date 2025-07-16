@@ -1,6 +1,6 @@
 - type: entity
   parent: [ClothingOuterBase, AllowSuitStorageClothing]
-  id: SW_StormtrooperArmor
+  id: SWStormtrooperArmor
   name: Stormtrooper armor
   description: A protective suit that was standard equipment for soldiers of the Galactic Empire's Stormtroopers.
   components:

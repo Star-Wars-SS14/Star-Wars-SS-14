@@ -1,41 +1,39 @@
- - type: vessel
-   id: EmpireCruiser
-   name: Imperial Cruiser
-   description: Imperial Cruiser
-   price: 1000000 # 15% markup +4890
-   category: Large
-   fraction: EmpireFaction
-   shuttlePath: /Maps/SW/Vessels/Empire/imperialcruiser.yml
+ # - type: vessel
+ #   id: EmpireCruiser
+ #   name: Imperial Cruiser
+ #   description: Imperial Cruiser
+ #   price: 1000000 # 15% markup +4890
+ #   category: Large
+ #   fraction: EmpireFaction
+ #   shuttlePath: /Maps/SW/Vessels/Empire/imperialcruiser.yml
 
- - type: gameMap
-   id: EmpireCruiser
-   mapName: 'Imperial Cruiser'
-   mapPath: /Maps/SW/Vessels/Empire/imperialcruiser.yml
-   minPlayers: 0
-   stations:
-     EmpireCruiser:
-       stationProto: StandardVessel
-       components:
-         - type: StationNameSetup
-           mapNameTemplate: 'Imperial Cruiser {1}'
-           nameGenerator:
-             !type:NanotrasenNameGenerator
-             prefixCreator: '14'
-         - type: StationJobs
-           availableJobs:
-            SWEmpireMoff: [ 1, 1 ]
-            SWEmpireMajor: [ 1, 1 ]
-            SWEmpireLieutenant: [ 2, 2 ]
-            SWEmpireSoldier: [ 8, 8 ]
-            SWEmpireMedic: [ 2, 2 ]
-
-
+ # - type: gameMap
+ #   id: EmpireCruiser
+ #   mapName: 'Imperial Cruiser'
+ #   mapPath: /Maps/SW/Vessels/Empire/imperialcruiser.yml
+ #   minPlayers: 0
+ #   stations:
+ #     EmpireCruiser:
+ #       stationProto: StandardVessel
+ #       components:
+ #         - type: StationNameSetup
+ #           mapNameTemplate: 'Imperial Cruiser {1}'
+ #           nameGenerator:
+ #             !type:NanotrasenNameGenerator
+ #             prefixCreator: '14'
+ #         - type: StationJobs
+ #           availableJobs:
+ #            SWEmpireMoff: [ 1, 1 ]
+ #            SWEmpireMajor: [ 1, 1 ]
+ #            SWEmpireLieutenant: [ 2, 2 ]
+ #            SWEmpireSoldier: [ 8, 8 ]
+ #            SWEmpireMedic: [ 2, 2 ]
 
  - type: vessel
    id: EmpireISI
-   name: ISI
+   name: Fury-class imperial interceptor
    description: Small ship
-   price: 40000 # 15% markup +4890
+   price: 50000
    category: Medium
    fraction: EmpireFaction
    shuttlePath: /Maps/SW/Vessels/Empire/ISI.yml
@@ -50,7 +48,7 @@
        stationProto: StandardVessel
        components:
          - type: StationNameSetup
-           mapNameTemplate: 'ISI {1}'
+           mapNameTemplate: 'Fury-class imperial interceptor {1}'
            nameGenerator:
              !type:NanotrasenNameGenerator
              prefixCreator: '14'
@@ -60,14 +58,14 @@
    id: EmpireMk6
    name: Mk6
    description: Small imperial vessel
-   price: 10000 # 15% markup +4890
+   price: 15000
    category: Small
    fraction: EmpireFaction
    shuttlePath: /Maps/SW/Vessels/Empire/Mk6.yml
 
  - type: gameMap
    id: EmpireMk6
-   mapName: 'Imperial Cruiser'
+   mapName: 'Mk6'
    mapPath: /Maps/SW/Vessels/Empire/Mk6.yml
    minPlayers: 0
    stations:
@@ -75,7 +73,55 @@
        stationProto: StandardVessel
        components:
          - type: StationNameSetup
-           mapNameTemplate: 'Mk6 {1}'
+           mapNameTemplate: 'Mark VI Supremacy-class starfighter {1}'
+           nameGenerator:
+             !type:NanotrasenNameGenerator
+             prefixCreator: '14'
+
+ - type: vessel
+   id: EmpireTransport
+   name:  Imperial military transport
+   description: Small imperial vessel
+   price: 5000
+   category: Small
+   fraction: EmpireFaction
+   shuttlePath: /Maps/SW/Vessels/Empire/Imperialmilitarytransport.yml
+
+ - type: gameMap
+   id: EmpireTransport
+   mapName: 'EmpireTransport'
+   mapPath: /Maps/SW/Vessels/Empire/Imperialmilitarytransport.yml
+   minPlayers: 0
+   stations:
+     EmpireTransport:
+       stationProto: StandardVessel
+       components:
+         - type: StationNameSetup
+           mapNameTemplate: 'EmpireTransport {1}'
+           nameGenerator:
+             !type:NanotrasenNameGenerator
+             prefixCreator: '14'
+
+ - type: vessel
+   id: EmpireBomber
+   name: GSS5CDustmaker
+   description: Small imperial vessel
+   price: 20000
+   category: Small
+   fraction: EmpireFaction
+   shuttlePath: /Maps/SW/Vessels/Empire/specshipGSS5CDustmaker.yml
+
+ - type: gameMap
+   id: EmpireBomber
+   mapName: 'GSS5CDustmaker'
+   mapPath: /Maps/SW/Vessels/Empire/specshipGSS5CDustmaker.yml
+   minPlayers: 0
+   stations:
+     EmpireBomber:
+       stationProto: StandardVessel
+       components:
+         - type: StationNameSetup
+           mapNameTemplate: 'GSS5CDustmaker {1}'
            nameGenerator:
              !type:NanotrasenNameGenerator
              prefixCreator: '14'

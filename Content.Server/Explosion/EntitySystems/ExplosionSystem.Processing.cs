@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Numerics;
+using Content.Server._SW.MakeGridIndestructible;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Explosion.Components;
 using Content.Shared.CCVar;
@@ -28,6 +29,7 @@ namespace Content.Server.Explosion.EntitySystems;
 public sealed partial class ExplosionSystem
 {
     [Dependency] private readonly FlammableSystem _flammableSystem = default!;
+    [Dependency] private readonly SharedMapSystem _mapSystem = default!;
 
     /// <summary>
     ///     Used to limit explosion processing time. See <see cref="MaxProcessingTime"/>.
@@ -513,7 +515,7 @@ public sealed partial class ExplosionSystem
         ExplosionPrototype type)
     {
         if (_tileDefinitionManager[tileRef.Tile.TypeId] is not ContentTileDefinition tileDef
-            || tileDef.Indestructible)
+            || tileDef.Indestructible || HasComp<SWMakeTilesOfGridIndestructibleComponent>(tileRef.GridUid)) //SW
             return;
 
         if (!CanCreateVacuum)

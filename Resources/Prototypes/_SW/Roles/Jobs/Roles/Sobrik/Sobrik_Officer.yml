@@ -10,8 +10,8 @@
   icon: "JobIconSobrikOfficer"
   supervisors: job-supervisors-sobrik-captain
   access:
-  - EmpireBase
-  - EmpireSobrik
+  - SWEmpireBase
+  - SWEmpireSobrik
   special:
   - !type:AddComponentSpecial
     components:

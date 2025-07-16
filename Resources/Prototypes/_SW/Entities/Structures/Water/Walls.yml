@@ -1,5 +1,5 @@
 ﻿- type: entity
-  id: SW_FloorWaterEntity
+  id: SWFloorWaterEntity
   name: вода
   description: Как глубоко...
   suffix: Wall

@@ -1,5 +1,5 @@
 - type: reagent
-  id: Kolto
+  id: SWKolto
   name: reagent-name-kolto
   group: Medicine
   desc: reagent-desc-kolto
@@ -18,7 +18,7 @@
             Brute: -6
 
 - type: reagent
-  id: Bacta
+  id: SWBacta
   name: reagent-name-bacta
   group: Medicine
   desc: reagent-desc-bacta

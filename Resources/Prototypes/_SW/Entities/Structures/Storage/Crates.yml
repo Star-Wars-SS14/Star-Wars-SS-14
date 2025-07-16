@@ -2,7 +2,7 @@
 
 - type: entity
   parent: CrateBaseWeldable
-  id: SW_CrateWood
+  id: SWCrateWood
   name: Деревянный ящик
   description: Ящик для хранения ваших предметов
   components:
@@ -13,7 +13,7 @@
 
 - type: entity
   parent: CrateBaseWeldable
-  id: SW_CrateMedical
+  id: SWCrateMedical
   name: Медицинский ящик
   description: Медицинский ящик для хранения ваших медикоментов. 
   components:
@@ -26,7 +26,7 @@
 
 - type: entity
   parent: CrateBaseWeldable
-  id: SW_CrateEmpireLock
+  id: SWCrateEmpireLock
   name: ящик Империи
   suffix: С доступом
   description: Защищенный ящик Империи. Для разблокировки нужен ранг лейтенанта и выше
@@ -37,7 +37,7 @@
   - type: Sprite
     sprite: _SW/Structures/Storage/Crates/empire_crate.rsi
   - type: AccessReader
-    access: [["EmpireArsenal"]]
+    access: [["SWEmpireArsenal"]]
   - type: Destructible
     thresholds:
     - trigger:
@@ -52,7 +52,7 @@
 
 - type: entity
   parent: CrateBaseWeldable
-  id: SW_CrateRepublicLock
+  id: SWCrateRepublicLock
   name: ящик Республики
   description: Защищенный ящик Республики. Для разблокировки нужен ранг Лейтенанта и выше
   suffix: С доступом
@@ -63,7 +63,7 @@
   - type: Sprite
     sprite: _SW/Structures/Storage/Crates/republic_crate.rsi
   - type: AccessReader
-    access: [["RepublicArsenal"]]
+    access: [["SWRepublicArsenal"]]
   - type: Destructible
     thresholds:
     - trigger:

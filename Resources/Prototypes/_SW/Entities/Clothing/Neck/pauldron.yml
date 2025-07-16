@@ -1,6 +1,6 @@
 - type: entity
   parent: ClothingNeckBase
-  id: SW_ClothingNeckOrangePauldronStormtrooper
+  id: SWClothingNeckOrangePauldronStormtrooper
   name: Orange pauldron
   description: A cloak made from the hide of resilient fauna from a distant planet, though its protective value has faded with its age.
   components:

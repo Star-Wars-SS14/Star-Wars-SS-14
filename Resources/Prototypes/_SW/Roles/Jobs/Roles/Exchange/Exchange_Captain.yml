@@ -12,7 +12,7 @@
   icon: "JobIconExchangeCaptain"
   supervisors: job-supervisors-exchange
   access:
-  - Exchange
+  - SWExchange
   special:
   - !type:AddComponentSpecial
     components:

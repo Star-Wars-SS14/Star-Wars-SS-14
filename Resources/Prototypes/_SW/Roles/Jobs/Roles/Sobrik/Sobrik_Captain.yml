@@ -12,9 +12,9 @@
   icon: "JobIconSobrikComendant"
   supervisors: job-supervisors-MOFF
   access:
-  - EmpireBase
-  - EmpireSobrik
-  - EmpireCommander
+  - SWEmpireBase
+  - SWEmpireSobrik
+  - SWEmpireCommander
   special:
   - !type:AddComponentSpecial
     components:

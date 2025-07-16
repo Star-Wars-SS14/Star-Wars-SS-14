@@ -8,7 +8,7 @@ tilemap:
   109: CMFloorSteelShivaPlate
   428: FloorRGlass
   494: Plating
-  526: SW_FloorCorridor
+  526: SWFloorCorridor
 entities:
 - proto: ""
   entities:
@@ -1343,7 +1343,7 @@ entities:
     - type: Transform
       pos: 3.5,0.5
       parent: 1
-- proto: SW_CrateWood
+- proto: SWCrateWood
   entities:
   - uid: 500
     components:
@@ -1379,7 +1379,7 @@ entities:
           ent: null
     - type: Pullable
       prevFixedRotation: True
-- proto: SW_E1BlasterRifle
+- proto: SWE1BlasterRifle
   entities:
   - uid: 510
     components:
@@ -1395,7 +1395,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_P301Destroyer
+- proto: SWP301Destroyer
   entities:
   - uid: 513
     components:
@@ -1404,7 +1404,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_Poweredlight
+- proto: SWPoweredlight
   entities:
   - uid: 196
     components:
@@ -1412,7 +1412,7 @@ entities:
       rot: 3.141592653589793 rad
       pos: -0.5,0.5
       parent: 1
-- proto: SW_RedMagazineBlastRifle
+- proto: SWRedMagazineBlastRifle
   entities:
   - uid: 511
     components:
@@ -1421,7 +1421,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_YellowMagazineBlastRifle
+- proto: SWYellowMagazineBlastRifle
   entities:
   - uid: 501
     components:

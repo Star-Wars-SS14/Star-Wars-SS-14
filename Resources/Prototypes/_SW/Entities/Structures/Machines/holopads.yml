@@ -1,10 +1,10 @@
 - type: entity
-  id: HolopadAdmin
+  id: SWHolopadAdmin
   parent: Holopad
   components:
     - type: Tag
       tags:
-        - HolopadAdmin
+        - SWHolopadAdmin
     - type: Telephone
       ringTone: /Audio/Machines/double_ring.ogg
       listeningRange: 2.5
@@ -16,14 +16,14 @@
       - Unlimited
 
 - type: entity
-  id: HolopadEmpire
+  id: SWHolopadEmpire
   suffix: Империя
   parent: Holopad
   name: голопад
   components:
     - type: Tag
       tags:
-        - HolopadEmpire
+        - SWHolopadEmpire
     - type: Label
       currentLabel: империя
     - type: Telephone
@@ -37,18 +37,18 @@
       - Unlimited
       blacklist:
         tags:
-          - HolopadRepublic
+          - SWHolopadRepublic
 
 
 - type: entity
-  id: HolopadRepublic
+  id: SWHolopadRepublic
   suffix: Республика
   parent: Holopad
   name: голопад
   components:
     - type: Tag
       tags:
-        - HolopadRepublic
+        - SWHolopadRepublic
     - type: Label
       currentLabel: республика
     - type: Telephone
@@ -62,32 +62,32 @@
       - Unlimited
       blacklist:
         tags:
-          - HolopadEmpire
+          - SWHolopadEmpire
 
 
 - type: entity
-  id: HolopadRepublicAdmin
+  id: SWHolopadRepublicAdmin
   suffix: Республика админ командование
-  parent: HolopadRepublic
+  parent: SWHolopadRepublic
   name: голопад
   components:
     - type: Label
       currentLabel: Генеральный Штаб Республиканской Армии
     - type: Tag
       tags:
-        - HolopadAdmin
-        - HolopadRepublic
+        - SWHolopadAdmin
+        - SWHolopadRepublic
 
 
 - type: entity
-  id: HolopadEmpireAdmin
+  id: SWHolopadEmpireAdmin
   suffix: Империя админ командование
-  parent: HolopadEmpire
+  parent: SWHolopadEmpire
   name: голопад
   components:
     - type: Label
       currentLabel: Министерство войны
     - type: Tag
       tags:
-        - HolopadAdmin
-        - HolopadEmpire
+        - SWHolopadAdmin
+        - SWHolopadEmpire

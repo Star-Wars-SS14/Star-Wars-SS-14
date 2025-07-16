@@ -10,7 +10,7 @@
   icon: JobIconBlackSun
   supervisors: job-supervisors-reg-blacksun
   access:
-  - BlackSun
+  - SWBlackSun
   special:
   - !type:AddComponentSpecial
     components:

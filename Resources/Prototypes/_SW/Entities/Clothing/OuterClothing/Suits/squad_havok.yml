@@ -1,6 +1,6 @@
 ﻿- type: entity
   parent: [ClothingOuterBase, AllowSuitStorageClothing]
-  id: SW_HavokSuit
+  id: SWHavokSuit
   name: havok suit
   components:
   - type: Sprite
@@ -24,8 +24,8 @@
   - type: HeldSpeedModifier
 
 - type: entity
-  parent: SW_HavokSuit
-  id: SW_MedicalHavokSuit
+  parent: SWHavokSuit
+  id: SWMedicalHavokSuit
   name: havok suit medical
   components:
   - type: Sprite
@@ -34,8 +34,8 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Havok/medical_republic_gunner.rsi
 
 - type: entity
-  parent: SW_HavokSuit
-  id: SW_SniperHavokSuit
+  parent: SWHavokSuit
+  id: SWSniperHavokSuit
   name: havok suit Sniper
   components:
   - type: Sprite
@@ -44,8 +44,8 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Havok/sniper_republic_gunner.rsi
 
 - type: entity
-  parent: SW_HavokSuit
-  id: SW_LieutenantHavokSuit
+  parent: SWHavokSuit
+  id: SWLieutenantHavokSuit
   name: havok suit lieutenant
   components:
   - type: Sprite
@@ -54,8 +54,8 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Havok/LT_republic_gunner.rsi
 
 - type: entity
-  parent: SW_HavokSuit
-  id: SW_CommanderHavokSuit
+  parent: SWHavokSuit
+  id: SWCommanderHavokSuit
   name: havok suit commander
   components:
   - type: Sprite

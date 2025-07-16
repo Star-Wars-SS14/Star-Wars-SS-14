@@ -42,7 +42,7 @@
   id: JobIconEmpireLieutenant
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
-    state: EmpireLieutenant
+    state: SWEmpireLieutenant
 
 - type: jobIcon
   parent: JobIcon
@@ -56,21 +56,21 @@
   id: JobIconEmpireMedic
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
-    state: EmpireMedic
+    state: SWEmpireMedic
 
 - type: jobIcon
   parent: JobIcon
   id: JobIconEmpireMoff
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
-    state: EmpireMoff
+    state: SWEmpireMoff
 
 - type: jobIcon
   parent: JobIcon
   id: JobIconEmpireSoldier
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
-    state: EmpireSoldier
+    state: SWEmpireSoldier
 
 - type: jobIcon
   parent: JobIcon
@@ -147,21 +147,21 @@
   id: JobIconRepublicGeneral
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
-    state: RepublicGeneral
+    state: SWRepublicGeneral
 
 - type: jobIcon
   parent: JobIcon
   id: JobIconRepublicLieutenant
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
-    state: RepublicLieutenant
+    state: SWRepublicLieutenant
 
 - type: jobIcon
   parent: JobIcon
   id: JobIconRepublicMedic
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
-    state: RepublicMedic
+    state: SWRepublicMedic
 
 - type: jobIcon
   parent: JobIcon
@@ -175,7 +175,7 @@
   id: JobIconRepublicSoldier
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
-    state: RepublicSoldier
+    state: SWRepublicSoldier
 
 - type: jobIcon
   parent: JobIcon

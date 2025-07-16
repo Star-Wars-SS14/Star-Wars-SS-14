@@ -1,12 +1,12 @@
 ﻿- type: entity
   parent: [ClothingOuterBase, AllowSuitStorageClothing]
-  id: SW_ExchangeSuit
+  id: SWExchangeSuit
   name: exchange suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/Exchange/Exchange.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/SWExchange/SWExchange.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/Exchange/Exchange.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/SWExchange/SWExchange.rsi
   - type: PressureProtection
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000

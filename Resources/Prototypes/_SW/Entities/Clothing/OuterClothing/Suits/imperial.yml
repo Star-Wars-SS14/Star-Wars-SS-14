@@ -1,6 +1,6 @@
 - type: entity
   parent: [ClothingOuterBase, AllowSuitStorageClothing]
-  id: SW_ImperialSuit
+  id: SWImperialSuit
   name: imperial suit
   components:
   - type: Sprite
@@ -32,8 +32,8 @@
     size: Ginormous
 
 - type: entity
-  parent: SW_ImperialSuit
-  id: SW_LieutenantImperialSuit
+  parent: SWImperialSuit
+  id: SWLieutenantImperialSuit
   name: imperial suit lieutenant
   components:
   - type: Sprite
@@ -42,8 +42,8 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/LT_imperial.rsi
 
 - type: entity
-  parent: SW_ImperialSuit
-  id: SW_MajorImperialSuit
+  parent: SWImperialSuit
+  id: SWMajorImperialSuit
   name: imperial suit major
   components:
   - type: Sprite
@@ -52,8 +52,8 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/MR_imperial.rsi
 
 - type: entity
-  parent: SW_ImperialSuit
-  id: SW_MoffImperialSuit
+  parent: SWImperialSuit
+  id: SWMoffImperialSuit
   name: imperial suit moff
   components:
   - type: Sprite
@@ -62,8 +62,8 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/MOFF_imperial.rsi
 
 - type: entity
-  parent: SW_ImperialSuit
-  id: SW_MedicImperialSuit
+  parent: SWImperialSuit
+  id: SWMedicImperialSuit
   name: imperial suit medic
   components:
   - type: Sprite

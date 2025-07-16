@@ -8,7 +8,7 @@
        stationProto: StandardVessel
        components:
          - type: StationNameSetup
-           mapNameTemplate: 'Republic Cruiser Mk. 2 {1}'
+           mapNameTemplate: 'SWRepublic Cruiser Mk. 2 {1}'
            nameGenerator:
              !type:NanotrasenNameGenerator
              prefixCreator: '14'

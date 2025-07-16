@@ -10,7 +10,7 @@
   icon: "JobIconRepublicSoldier"
   supervisors: job-supervisors-leit-rep
   access:
-  - RepublicBase
+  - SWRepublicBase
   special:
   - !type:AddComponentSpecial
     components:

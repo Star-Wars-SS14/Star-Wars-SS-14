@@ -744,7 +744,7 @@ entities:
       rot: 3.141592653589793 rad
       pos: 1.5,3.5
       parent: 1
-- proto: SW_CrateWood
+- proto: SWCrateWood
   entities:
   - uid: 74
     components:
@@ -780,7 +780,7 @@ entities:
           showEnts: False
           occludes: True
           ent: null
-- proto: SW_H206GreenMagazineBlastRifle
+- proto: SWH206GreenMagazineBlastRifle
   entities:
   - uid: 80
     components:
@@ -796,7 +796,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_h206renegade
+- proto: SWH206Renegade
   entities:
   - uid: 78
     components:
@@ -812,7 +812,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_Poweredlight
+- proto: SWPoweredlight
   entities:
   - uid: 97
     components:
@@ -820,7 +820,7 @@ entities:
       rot: 3.141592653589793 rad
       pos: 0.5,2.5
       parent: 1
-- proto: SW_WindowReinforcedDirectional
+- proto: SWWindowReinforcedDirectional
   entities:
   - uid: 98
     components:

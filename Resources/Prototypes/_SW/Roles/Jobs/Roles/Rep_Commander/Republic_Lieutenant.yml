@@ -12,9 +12,9 @@
   icon: "JobIconRepublicLieutenant"
   supervisors: job-supervisors-rep-cap
   access:
-  - RepublicBase
-  - RepublicCommander
-  - RepublicArsenal
+  - SWRepublicBase
+  - SWRepublicCommander
+  - SWRepublicArsenal
   special:
   - !type:AddComponentSpecial
     components:

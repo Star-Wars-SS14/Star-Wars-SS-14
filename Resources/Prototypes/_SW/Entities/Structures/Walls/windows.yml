@@ -1,5 +1,5 @@
 - type: entity
-  id: SW_ReinforcedWindow
+  id: SWReinforcedWindow
   name: бронированное стекло
   parent: Window
   components:

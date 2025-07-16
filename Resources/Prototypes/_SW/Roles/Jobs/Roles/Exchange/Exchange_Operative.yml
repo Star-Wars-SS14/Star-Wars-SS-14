@@ -9,7 +9,7 @@
   icon: "JobIconExchangeOperative"
   supervisors: job-supervisors-exchange-cap
   access:
-  - Exchange
+  - SWExchange
   special:
   - !type:AddComponentSpecial
     components:

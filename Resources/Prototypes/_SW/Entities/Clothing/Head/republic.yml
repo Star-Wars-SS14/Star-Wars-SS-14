@@ -1,5 +1,5 @@
 - type: entity
-  parent: SW_BaseHelmet
+  parent: SWBaseHelmet
   id: SW_ClothingHeadRepublicHelmet
   name: republic helmet
   components:
@@ -20,7 +20,7 @@
 
 - type: entity
   parent: SW_ClothingHeadRepublicHelmet
-  id: SW_ClothingHeadСaptainRepublicHelmet
+  id: SWClothingHeadСaptainRepublicHelmet
   name: captain republic helmet
   components:
   - type: Sprite

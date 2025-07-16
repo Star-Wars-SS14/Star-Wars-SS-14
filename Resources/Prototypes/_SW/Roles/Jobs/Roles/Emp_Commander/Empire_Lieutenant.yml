@@ -12,10 +12,10 @@
   icon: "JobIconEmpireLieutenant"
   supervisors: job-supervisors-major-emp
   access:
-  - EmpireCommander
-  - EmpireBase
-  - EmpireSobrik
-  - EmpireArsenal
+  - SWEmpireCommander
+  - SWEmpireBase
+  - SWEmpireSobrik
+  - SWEmpireArsenal
   special:
   - !type:AddComponentSpecial
     components:

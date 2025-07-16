@@ -13,9 +13,9 @@
   icon: "JobIconHavokMedic"
   supervisors: job-supervisors-havok-cap
   access:
-  - RepublicHavok
-  - RepublicBase
-  - RepublicMedic
+  - SWRepublicHavok
+  - SWRepublicBase
+  - SWRepublicMedic
   special:
   - !type:AddComponentSpecial
     components:

@@ -106,8 +106,8 @@ tilemap:
   43: Lattice
   494: Plating
   36: RMCFloorUnderplatingNoWeeds
-  2: SW_FloorCorridor
-  3: SW_FloorSteeltile
+  2: SWFloorCorridor
+  3: SWFloorSteeltile
 entities:
 - proto: ""
   entities:
@@ -3204,7 +3204,7 @@ entities:
     - type: RadiationGridResistance
     - type: IFF
       color: '#4169E1FF'
-- proto: ЕurquoiseDatapad
+- proto: SWЕurquoiseDatapad
   entities:
   - uid: 4000
     components:
@@ -3875,7 +3875,7 @@ entities:
     - type: Transform
       pos: 10.5,-40.5
       parent: 2
-- proto: BactaMedipen
+- proto: SWBactaMedipen
   entities:
   - uid: 3591
     components:
@@ -4220,7 +4220,7 @@ entities:
     - type: Transform
       pos: 3.5,-18.5
       parent: 2
-- proto: BlueDatapad
+- proto: SWBlueDatapad
   entities:
   - uid: 3489
     components:
@@ -20930,7 +20930,7 @@ entities:
     - type: Transform
       pos: 11.581573,-105.5685
       parent: 2
-- proto: ClothingHeadsetRepublic
+- proto: SWClothingHeadsetRepublic
   entities:
   - uid: 12479
     components:
@@ -62494,7 +62494,7 @@ entities:
     - type: Transform
       pos: 15.5,-113.5
       parent: 2
-- proto: GreenDatapad
+- proto: SWGreenDatapad
   entities:
   - uid: 2316
     components:
@@ -63869,7 +63869,7 @@ entities:
       parent: 2
     - type: AtmosPipeColor
       color: '#FEF101FF'
-- proto: HolopadRepublic
+- proto: SWHolopadRepublic
   entities:
   - uid: 10198
     components:
@@ -64160,7 +64160,7 @@ entities:
     - type: Transform
       pos: 17.5,-101.5
       parent: 2
-- proto: koltoBeakerFull
+- proto: SWkoltoBeakerFull
   entities:
   - uid: 3362
     components:
@@ -64204,7 +64204,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: KoltoMedipen
+- proto: SWKoltoMedipen
   entities:
   - uid: 2787
     components:
@@ -72634,7 +72634,7 @@ entities:
     - type: Transform
       pos: 29.5,-40.5
       parent: 2
-- proto: OrangeDatapad
+- proto: SWOrangeDatapad
   entities:
   - uid: 1591
     components:
@@ -74671,7 +74671,7 @@ entities:
       rot: 3.141592653589793 rad
       pos: 11.5,-101.5
       parent: 2
-- proto: RedDatapad
+- proto: SWRedDatapad
   entities:
   - uid: 3486
     components:
@@ -78633,7 +78633,7 @@ entities:
     - type: Transform
       pos: 21.5,-107.5
       parent: 2
-- proto: SW_BannerRepublic
+- proto: SWBannerRepublic
   entities:
   - uid: 880
     components:
@@ -78690,7 +78690,7 @@ entities:
     - type: Transform
       pos: 29.5,-35.5
       parent: 2
-- proto: SW_beryaramk3
+- proto: SWBeryaramk3
   entities:
   - uid: 9567
     components:
@@ -78707,7 +78707,7 @@ entities:
     - type: Transform
       pos: 5.46897,-74.708206
       parent: 2
-- proto: SW_BlueMagazineBlastRifle
+- proto: SWBlueMagazineBlastRifle
   entities:
   - uid: 12468
     components:
@@ -78729,7 +78729,7 @@ entities:
     - type: Transform
       pos: 4.2710605,-74.397606
       parent: 2
-- proto: SW_BoxPlastic
+- proto: SWBoxPlastic
   entities:
   - uid: 4165
     components:
@@ -78737,7 +78737,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -22.5,-30.5
       parent: 2
-- proto: SW_BoxSteel
+- proto: SWBoxSteel
   entities:
   - uid: 2472
     components:
@@ -78749,7 +78749,7 @@ entities:
     - type: Transform
       pos: -6.5,-47.5
       parent: 2
-- proto: SW_BoxSteeldouble
+- proto: SWBoxSteeldouble
   entities:
   - uid: 1724
     components:
@@ -78761,7 +78761,7 @@ entities:
     - type: Transform
       pos: -6.5,-46.5
       parent: 2
-- proto: SW_BoxSteelSmall
+- proto: SWBoxSteelSmall
   entities:
   - uid: 2469
     components:
@@ -78773,7 +78773,7 @@ entities:
     - type: Transform
       pos: -2.5,-53.5
       parent: 2
-- proto: SW_BoxWood
+- proto: SWBoxWood
   entities:
   - uid: 1719
     components:
@@ -78785,7 +78785,7 @@ entities:
     - type: Transform
       pos: -4.5,-44.5
       parent: 2
-- proto: SW_CannonYellowMagazineBlastRifle
+- proto: SWCannonYellowMagazineBlastRifle
   entities:
   - uid: 9496
     components:
@@ -79005,7 +79005,7 @@ entities:
     - type: Transform
       pos: 18.670193,-22.77254
       parent: 2
-- proto: SW_CrateRepublicLock
+- proto: SWCrateRepublicLock
   entities:
   - uid: 444
     components:
@@ -81367,7 +81367,7 @@ entities:
           showEnts: False
           occludes: True
           ent: null
-- proto: SW_CrateWood
+- proto: SWCrateWood
   entities:
   - uid: 12565
     components:
@@ -81477,7 +81477,7 @@ entities:
           showEnts: False
           occludes: True
           ent: null
-- proto: SW_EL34
+- proto: SWEL34
   entities:
   - uid: 1715
     components:
@@ -81532,7 +81532,7 @@ entities:
     - type: Transform
       pos: 7.453155,-68.45389
       parent: 2
-- proto: SW_H206GreenMagazineBlastRifle
+- proto: SWH206GreenMagazineBlastRifle
   entities:
   - uid: 771
     components:
@@ -82189,7 +82189,7 @@ entities:
     - type: Transform
       pos: -4.351646,-22.785528
       parent: 2
-- proto: SW_h206renegade
+- proto: SWH206Renegade
   entities:
   - uid: 3608
     components:
@@ -82311,7 +82311,7 @@ entities:
     - type: Transform
       pos: -4.570396,-22.394903
       parent: 2
-- proto: SW_j111rancor
+- proto: SWJ111Rancor
   entities:
   - uid: 12466
     components:
@@ -82323,7 +82323,7 @@ entities:
     - type: Transform
       pos: 4.5366855,-74.69448
       parent: 2
-- proto: SW_Poweredlight
+- proto: SWPoweredlight
   entities:
   - uid: 57
     components:
@@ -84427,7 +84427,7 @@ entities:
     - type: Transform
       pos: -12.5,-91.5
       parent: 2
-- proto: SW_WindowReinforcedDirectional
+- proto: SWWindowReinforcedDirectional
   entities:
   - uid: 2701
     components:
@@ -85500,7 +85500,7 @@ entities:
       parent: 2791
     - type: Physics
       canCollide: False
-- proto: YellowDatapad
+- proto: SWYellowDatapad
   entities:
   - uid: 4001
     components:

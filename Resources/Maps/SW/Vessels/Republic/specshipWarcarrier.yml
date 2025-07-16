@@ -8,7 +8,7 @@ tilemap:
   188: CMFloorSteelWhiteFull
   493: Lattice
   494: Plating
-  526: SW_FloorCorridor
+  526: SWFloorCorridor
 entities:
 - proto: ""
   entities:
@@ -1355,7 +1355,7 @@ entities:
     - type: Transform
       pos: 4.5,1.5
       parent: 1
-- proto: SW_CrateWood
+- proto: SWCrateWood
   entities:
   - uid: 68
     components:
@@ -1402,7 +1402,7 @@ entities:
           showEnts: False
           occludes: True
           ent: null
-- proto: SW_H206GreenMagazineBlastRifle
+- proto: SWH206GreenMagazineBlastRifle
   entities:
   - uid: 134
     components:
@@ -1432,7 +1432,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_h206renegade
+- proto: SWH206Renegade
   entities:
   - uid: 135
     components:
@@ -1448,7 +1448,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_Poweredlight
+- proto: SWPoweredlight
   entities:
   - uid: 200
     components:

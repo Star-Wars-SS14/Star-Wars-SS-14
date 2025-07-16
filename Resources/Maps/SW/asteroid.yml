@@ -35,8 +35,8 @@ tilemap:
   494: Plating
   495: PlatingAsteroid
   524: RMCFloorUnderplatingNoWeeds
-  526: SW_FloorCorridor
-  529: SW_FloorSteeltile
+  526: SWFloorCorridor
+  529: SWFloorSteeltile
   530: TrainLattice
 entities:
 - proto: ""
@@ -11179,7 +11179,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -10.659439,19.994366
       parent: 1
-- proto: OrangeDatapad
+- proto: SWOrangeDatapad
   entities:
   - uid: 1871
     components:
@@ -11191,7 +11191,7 @@ entities:
     - type: Transform
       pos: 8.534972,22.664446
       parent: 1
-- proto: PosterAgt
+- proto: SWPosterAgt
   entities:
   - uid: 1909
     components:
@@ -11245,7 +11245,7 @@ entities:
       rot: 3.141592653589793 rad
       pos: 4.5,-10.5
       parent: 1
-- proto: PosterEmp
+- proto: SWPosterEmp
   entities:
   - uid: 1912
     components:
@@ -11866,7 +11866,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: RedDatapad
+- proto: SWRedDatapad
   entities:
   - uid: 1814
     components:
@@ -12772,7 +12772,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -2.5,-8.5
       parent: 1
-- proto: SW_BoxSteel
+- proto: SWBoxSteel
   entities:
   - uid: 1935
     components:
@@ -12785,7 +12785,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -25.5,8.5
       parent: 1
-- proto: SW_BoxSteeldouble
+- proto: SWBoxSteeldouble
   entities:
   - uid: 1936
     components:
@@ -12804,7 +12804,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -26.5,8.5
       parent: 1
-- proto: SW_BoxSteelSmall
+- proto: SWBoxSteelSmall
   entities:
   - uid: 1933
     components:
@@ -12816,7 +12816,7 @@ entities:
     - type: Transform
       pos: 11.5,16.5
       parent: 1
-- proto: SW_BoxWood
+- proto: SWBoxWood
   entities:
   - uid: 1932
     components:
@@ -12829,7 +12829,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -26.5,-14.5
       parent: 1
-- proto: SW_CannonYellowMagazineBlastRifle
+- proto: SWCannonYellowMagazineBlastRifle
   entities:
   - uid: 1764
     components:
@@ -12950,7 +12950,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_CrateWood
+- proto: SWCrateWood
   entities:
   - uid: 1763
     components:
@@ -13083,7 +13083,7 @@ entities:
     - type: Transform
       pos: 10.5,19.5
       parent: 1
-- proto: SW_EL34
+- proto: SWEL34
   entities:
   - uid: 1768
     components:
@@ -13148,7 +13148,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_Poweredlight
+- proto: SWPoweredlight
   entities:
   - uid: 1270
     components:
@@ -13491,14 +13491,14 @@ entities:
       rot: 3.141592653589793 rad
       pos: 1.5,19.5
       parent: 1
-- proto: SW_SpawnPointBalmorranLeader
+- proto: SWSpawnPointBalmorranLeader
   entities:
   - uid: 2453
     components:
     - type: Transform
       pos: 0.5,-13.5
       parent: 1
-- proto: SW_SpawnPointBalmorranOfficer
+- proto: SWSpawnPointBalmorranOfficer
   entities:
   - uid: 2454
     components:
@@ -13515,7 +13515,7 @@ entities:
     - type: Transform
       pos: -2.5,-12.5
       parent: 1
-- proto: SW_SpawnPointBalmorranRecruit
+- proto: SWSpawnPointBalmorranRecruit
   entities:
   - uid: 2460
     components:
@@ -13527,7 +13527,7 @@ entities:
     - type: Transform
       pos: -10.5,21.5
       parent: 1
-- proto: SW_SpawnPointBalmorranSoldier
+- proto: SWSpawnPointBalmorranSoldier
   entities:
   - uid: 1762
     components:

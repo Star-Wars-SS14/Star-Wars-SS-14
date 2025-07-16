@@ -1,12 +1,12 @@
 - type: entity
   parent: [ClothingOuterBase, AllowSuitStorageClothing]
-  id: SW_MandalorianRecruitSuit
+  id: SWMandalorianRecruitSuit
   name: recruit mandalorian suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianRecruit.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/SWMandalorian/MandalorianRecruit.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianRecruit.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/SWMandalorian/MandalorianRecruit.rsi
   - type: PressureProtection
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000
@@ -24,24 +24,24 @@
   - type: HeldSpeedModifier
 
 - type: entity
-  parent: SW_MandalorianRecruitSuit
-  id: SW_MandalorianSuit
+  parent: SWMandalorianRecruitSuit
+  id: SWMandalorianSuit
   name: mandalorian suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/Mandalorian.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/SWMandalorian/SWMandalorian.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/Mandalorian.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/SWMandalorian/SWMandalorian.rsi
 
 - type: entity
-  parent: SW_MandalorianRecruitSuit
-  id: SW_MandalorianVeteranSuit
+  parent: SWMandalorianRecruitSuit
+  id: SWMandalorianVeteranSuit
   name: veteran mandalorian suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/mandalorianveteran.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/SWMandalorian/mandalorianveteran.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/mandalorianveteran.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/SWMandalorian/mandalorianveteran.rsi
   - type: Armor
     modifiers:
       coefficients:

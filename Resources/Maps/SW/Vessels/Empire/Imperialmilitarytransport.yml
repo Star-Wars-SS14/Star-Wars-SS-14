@@ -1504,7 +1504,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 2.5,2.5
       parent: 1
-- proto: SW_E1BlasterRifle
+- proto: SWE1BlasterRifle
   entities:
   - uid: 252
     components:
@@ -1520,7 +1520,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_Poweredlight
+- proto: SWPoweredlight
   entities:
   - uid: 193
     components:
@@ -1562,7 +1562,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 1.5,10.5
       parent: 1
-- proto: SW_YellowMagazineBlastRifle
+- proto: SWYellowMagazineBlastRifle
   entities:
   - uid: 250
     components:

@@ -10,7 +10,7 @@
   icon: "JobIconMandalorianVeteran"
   supervisors: job-supervisors-mando
   access:
-  - Mandalorian
+  - SWMandalorian
   special:
   - !type:AddComponentSpecial
     components:

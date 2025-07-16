@@ -162,9 +162,9 @@ tilemap:
   76: PlatingAsteroid
   23: PlatingDamaged
   61: RMCFloorUnderplatingNoWeeds
-  29: SW_FloorCorridor
-  32: SW_FloorSmallBlackTiles
-  51: SW_FloorSteeltile
+  29: SWFloorCorridor
+  32: SWFloorSmallBlackTiles
+  51: SWFloorSteeltile
   81: TrainLattice
 entities:
 - proto: ""
@@ -14114,7 +14114,7 @@ entities:
     - type: IFF
       color: '#C0C0C0FF'
       flags: HideLabel
-- proto: ЕurquoiseDatapad
+- proto: SWЕurquoiseDatapad
   entities:
   - uid: 3
     components:
@@ -19193,7 +19193,7 @@ entities:
     - type: Transform
       pos: 28.487469,-1.586237
       parent: 16221
-- proto: BactaMedipen
+- proto: SWBactaMedipen
   entities:
   - uid: 130
     components:
@@ -20424,7 +20424,7 @@ entities:
     - type: Transform
       pos: -7.5,7.5
       parent: 33623
-- proto: BlueDatapad
+- proto: SWBlueDatapad
   entities:
   - uid: 187
     components:
@@ -61804,7 +61804,7 @@ entities:
       - 16265
     - type: AttachedClothing
       attachedUid: 16262
-- proto: ClothingHeadsetRegular
+- proto: SWClothingHeadsetRegular
   entities:
   - uid: 19699
     components:
@@ -62646,7 +62646,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: ClothingHeadsetRepublic
+- proto: SWClothingHeadsetRepublic
   entities:
   - uid: 3437
     components:
@@ -150105,7 +150105,7 @@ entities:
     - type: Transform
       pos: 1.5,1.5
       parent: 34884
-- proto: GreenDatapad
+- proto: SWGreenDatapad
   entities:
   - uid: 10146
     components:
@@ -156040,7 +156040,7 @@ entities:
           ent: 16249
     - type: Physics
       canCollide: False
-- proto: HolopadEmpire
+- proto: SWHolopadEmpire
   entities:
   - uid: 25603
     components:
@@ -156105,7 +156105,7 @@ entities:
       parent: 16221
     - type: Label
       currentLabel: штаб (мостик)
-- proto: HolopadRepublic
+- proto: SWHolopadRepublic
   entities:
   - uid: 10348
     components:
@@ -156284,7 +156284,7 @@ entities:
     - type: Transform
       pos: 68.567215,11.439332
       parent: 16221
-- proto: ImperialBackpack
+- proto: SWImperialBackpack
   entities:
   - uid: 19691
     components:
@@ -157167,7 +157167,7 @@ entities:
     - type: Transform
       pos: 40.5,30.5
       parent: 16221
-- proto: koltoBeakerFull
+- proto: SWkoltoBeakerFull
   entities:
   - uid: 4434
     components:
@@ -157211,7 +157211,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: KoltoMedipen
+- proto: SWKoltoMedipen
   entities:
   - uid: 4440
     components:
@@ -177459,7 +177459,7 @@ entities:
     - type: Transform
       pos: 27.5,-34.5
       parent: 16221
-- proto: OrangeDatapad
+- proto: SWOrangeDatapad
   entities:
   - uid: 218
     components:
@@ -177955,7 +177955,7 @@ entities:
     - type: Transform
       pos: 18.622446,-3.4383194
       parent: 16221
-- proto: PinkDatapad
+- proto: SWPinkDatapad
   entities:
   - uid: 27303
     components:
@@ -178406,7 +178406,7 @@ entities:
     - type: Transform
       pos: -6.5,-3.5
       parent: 32612
-- proto: PosterAgt
+- proto: SWPosterAgt
   entities:
   - uid: 14868
     components:
@@ -178589,7 +178589,7 @@ entities:
       rot: 3.141592653589793 rad
       pos: -3.5,-3.5
       parent: 33623
-- proto: PosterEmp
+- proto: SWPosterEmp
   entities:
   - uid: 14875
     components:
@@ -183532,7 +183532,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 6.5,20.5
       parent: 16221
-- proto: RedDatapad
+- proto: SWRedDatapad
   entities:
   - uid: 191
     components:
@@ -193484,7 +193484,7 @@ entities:
     - type: Transform
       pos: 2.940535,0.08145177
       parent: 33996
-- proto: SW_BannerEmpire
+- proto: SWBannerEmpire
   entities:
   - uid: 27956
     components:
@@ -193506,7 +193506,7 @@ entities:
     - type: Transform
       pos: 32.5,25.5
       parent: 16221
-- proto: SW_BannerEmpireRed
+- proto: SWBannerEmpireRed
   entities:
   - uid: 27960
     components:
@@ -193568,7 +193568,7 @@ entities:
     - type: Transform
       pos: 59.5,12.5
       parent: 16221
-- proto: SW_BannerEmpireSith
+- proto: SWBannerEmpireSith
   entities:
   - uid: 27972
     components:
@@ -193655,7 +193655,7 @@ entities:
     - type: Transform
       pos: 17.5,1.5
       parent: 16221
-- proto: SW_BannerRepublic
+- proto: SWBannerRepublic
   entities:
   - uid: 12432
     components:
@@ -193712,7 +193712,7 @@ entities:
     - type: Transform
       pos: 29.5,-35.5
       parent: 2
-- proto: SW_beryaramk3
+- proto: SWBeryaramk3
   entities:
   - uid: 15538
     components:
@@ -193729,7 +193729,7 @@ entities:
     - type: Transform
       pos: 5.46897,-74.708206
       parent: 2
-- proto: SW_BlueMagazineBlastRifle
+- proto: SWBlueMagazineBlastRifle
   entities:
   - uid: 15541
     components:
@@ -193835,7 +193835,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_BoxPlastic
+- proto: SWBoxPlastic
   entities:
   - uid: 15545
     components:
@@ -193888,7 +193888,7 @@ entities:
     - type: Transform
       pos: 16.5,-9.5
       parent: 16221
-- proto: SW_BoxSteel
+- proto: SWBoxSteel
   entities:
   - uid: 15106
     components:
@@ -193942,7 +193942,7 @@ entities:
     - type: Transform
       pos: 61.5,-0.5
       parent: 16221
-- proto: SW_BoxSteeldouble
+- proto: SWBoxSteeldouble
   entities:
   - uid: 15108
     components:
@@ -194013,7 +194013,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -19.5,-14.5
       parent: 16221
-- proto: SW_BoxSteelSmall
+- proto: SWBoxSteelSmall
   entities:
   - uid: 15111
     components:
@@ -194052,7 +194052,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -11.5,-14.5
       parent: 16221
-- proto: SW_BoxWood
+- proto: SWBoxWood
   entities:
   - uid: 15113
     components:
@@ -194087,7 +194087,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -10.5,-14.5
       parent: 16221
-- proto: SW_BoxWoodSmall
+- proto: SWBoxWoodSmall
   entities:
   - uid: 28017
     components:
@@ -194095,7 +194095,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -10.5,-13.5
       parent: 16221
-- proto: SW_CannonYellowMagazineBlastRifle
+- proto: SWCannonYellowMagazineBlastRifle
   entities:
   - uid: 13347
     components:
@@ -194879,7 +194879,7 @@ entities:
     - type: Transform
       pos: 15.572411,8.6096115
       parent: 16221
-- proto: SW_ClothingHeadLieutenantImperialHelmet
+- proto: SWClothingHeadLieutenantImperialHelmet
   entities:
   - uid: 20385
     components:
@@ -194895,7 +194895,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_ClothingHeadMajorImperialHelmet
+- proto: SWClothingHeadMajorImperialHelmet
   entities:
   - uid: 20390
     components:
@@ -194904,7 +194904,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_ClothingOuterImperialOfficerVest
+- proto: SWClothingOuterImperialOfficerVest
   entities:
   - uid: 19693
     components:
@@ -194912,7 +194912,7 @@ entities:
       parent: 19689
     - type: Physics
       canCollide: False
-- proto: SW_ClothingUniformJumpsuitImperialGeneral
+- proto: SWClothingUniformJumpsuitImperialGeneral
   entities:
   - uid: 19694
     components:
@@ -194920,7 +194920,7 @@ entities:
       parent: 19689
     - type: Physics
       canCollide: False
-- proto: SW_CrateEmpireLock
+- proto: SWCrateEmpireLock
   entities:
   - uid: 16495
     components:
@@ -198377,7 +198377,7 @@ entities:
           showEnts: False
           occludes: True
           ent: null
-- proto: SW_CrateRepublicLock
+- proto: SWCrateRepublicLock
   entities:
   - uid: 10148
     components:
@@ -200739,7 +200739,7 @@ entities:
           showEnts: False
           occludes: True
           ent: null
-- proto: SW_CrateWood
+- proto: SWCrateWood
   entities:
   - uid: 3483
     components:
@@ -201810,7 +201810,7 @@ entities:
           showEnts: False
           occludes: True
           ent: null
-- proto: SW_E1BlasterRifle
+- proto: SWE1BlasterRifle
   entities:
   - uid: 28086
     components:
@@ -202112,7 +202112,7 @@ entities:
     - type: Transform
       pos: 15.691109,26.375872
       parent: 16221
-- proto: SW_EL34
+- proto: SWEL34
   entities:
   - uid: 9
     components:
@@ -202376,14 +202376,14 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -6.3899817,-16.914827
       parent: 16221
-- proto: SW_EmpireFlagRed
+- proto: SWEmpireFlagRed
   entities:
   - uid: 28224
     components:
     - type: Transform
       pos: 17.5,29.5
       parent: 16221
-- proto: SW_H206GreenMagazineBlastRifle
+- proto: SWH206GreenMagazineBlastRifle
   entities:
   - uid: 15590
     components:
@@ -203040,7 +203040,7 @@ entities:
     - type: Transform
       pos: -4.351646,-22.785528
       parent: 2
-- proto: SW_h206renegade
+- proto: SWH206Renegade
   entities:
   - uid: 15692
     components:
@@ -203162,7 +203162,7 @@ entities:
     - type: Transform
       pos: -4.570396,-22.394903
       parent: 2
-- proto: SW_j111rancor
+- proto: SWJ111Rancor
   entities:
   - uid: 15716
     components:
@@ -203184,7 +203184,7 @@ entities:
     - type: Transform
       pos: 68.615326,-24.490898
       parent: 16221
-- proto: SW_LieutenantImperialSuit
+- proto: SWLieutenantImperialSuit
   entities:
   - uid: 20387
     components:
@@ -203200,7 +203200,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_MajorImperialSuit
+- proto: SWMajorImperialSuit
   entities:
   - uid: 20391
     components:
@@ -203209,7 +203209,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_Poweredlight
+- proto: SWPoweredlight
   entities:
   - uid: 15143
     components:
@@ -206836,7 +206836,7 @@ entities:
       rot: 3.141592653589793 rad
       pos: 0.5,8.5
       parent: 34884
-- proto: SW_SpawnPointBalmorranLeader
+- proto: SWSpawnPointBalmorranLeader
   entities:
   - uid: 15219
     components:
@@ -206844,7 +206844,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 0.5,-10.5
       parent: 12439
-- proto: SW_SpawnPointBalmorranOfficer
+- proto: SWSpawnPointBalmorranOfficer
   entities:
   - uid: 15220
     components:
@@ -206861,7 +206861,7 @@ entities:
     - type: Transform
       pos: -2.5,-12.5
       parent: 12439
-- proto: SW_SpawnPointBalmorranRecruit
+- proto: SWSpawnPointBalmorranRecruit
   entities:
   - uid: 15223
     components:
@@ -206873,7 +206873,7 @@ entities:
     - type: Transform
       pos: -10.5,21.5
       parent: 12439
-- proto: SW_SpawnPointBalmorranSoldier
+- proto: SWSpawnPointBalmorranSoldier
   entities:
   - uid: 15225
     components:
@@ -207252,7 +207252,7 @@ entities:
     - type: Transform
       pos: -12.5,-91.5
       parent: 2
-- proto: SW_WindowDirectional
+- proto: SWWindowDirectional
   entities:
   - uid: 28466
     components:
@@ -207321,7 +207321,7 @@ entities:
       rot: 3.141592653589793 rad
       pos: -16.5,4.5
       parent: 16221
-- proto: SW_WindowFrostedDirectional
+- proto: SWWindowFrostedDirectional
   entities:
   - uid: 28478
     components:
@@ -207367,7 +207367,7 @@ entities:
     - type: Transform
       pos: 62.5,19.5
       parent: 16221
-- proto: SW_WindowReinforcedDirectional
+- proto: SWWindowReinforcedDirectional
   entities:
   - uid: 16085
     components:
@@ -207598,7 +207598,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 5.5,8.5
       parent: 34884
-- proto: SW_YellowMagazineBlastRifle
+- proto: SWYellowMagazineBlastRifle
   entities:
   - uid: 16498
     components:
@@ -227767,7 +227767,7 @@ entities:
     - type: Transform
       pos: 20.404228,3.3027656
       parent: 33996
-- proto: YellowDatapad
+- proto: SWYellowDatapad
   entities:
   - uid: 16218
     components:

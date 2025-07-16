@@ -12,10 +12,10 @@
   icon: "JobIconImperialIntelligenceCaretaker"
   supervisors: job-supervisors-keeper
   access:
-  - EmpireIntelligence  
-  - EmpireBase
-  - EmpireIntelligenceCareTaker
-  - EmpireCommander
+  - SWEmpireIntelligence  
+  - SWEmpireBase
+  - SWEmpireIntelligenceCareTaker
+  - SWEmpireCommander
   special:
   - !type:AddComponentSpecial
     components:

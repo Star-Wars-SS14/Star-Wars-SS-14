@@ -1,6 +1,6 @@
 ﻿- type: entity
   parent: [ClothingOuterBase, AllowSuitStorageClothing]
-  id: SW_SobrikSuit
+  id: SWSobrikSuit
   name: Sobrik Suit
   components:
   - type: Item
@@ -22,7 +22,7 @@
         Cold: 0.6
   - type: GroupExamine
   - type: ToggleableClothing
-    clothingPrototype: SW_ClothingHeadHatHoodBallamor
+    clothingPrototype: SWClothingHeadHatHoodBallamor
     requiredSlot:
     - outerClothing
     slot: head

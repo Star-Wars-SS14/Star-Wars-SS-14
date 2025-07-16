@@ -1,2 +1,2 @@
-ent-SW_EmpireFlag = Флаг Галактической Империи
-ent-SW_EmpireFlagRed = Флаг Галактической Империи (Красный)
+ent-SWEmpireFlag = Флаг Галактической Империи
+ent-SWEmpireFlagRed = Флаг Галактической Империи (Красный)

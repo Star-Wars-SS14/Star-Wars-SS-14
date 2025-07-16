@@ -18,15 +18,15 @@ tilemap:
   161: CMFloorSteelSilverFull
   493: Lattice
   494: Plating
-  526: SW_FloorCorridor
-  529: SW_FloorSteeltile
+  526: SWFloorCorridor
+  529: SWFloorSteeltile
 entities:
 - proto: ""
   entities:
   - uid: 1
     components:
     - type: MetaData
-      name: Republic transport ship
+      name: SWRepublic transport ship
     - type: Transform
       pos: -0.46875,-0.578125
       parent: invalid
@@ -2439,7 +2439,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 2.5,-6.5
       parent: 1
-- proto: SW_Poweredlight
+- proto: SWPoweredlight
   entities:
   - uid: 275
     components:

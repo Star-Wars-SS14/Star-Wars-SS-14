@@ -1,7 +1,7 @@
 - type: entity
   name: saber fragment
   parent: BaseItem
-  id: SaberFragment
+  id: SWSaberFragment
   description: Фрагмент старого меча..
   components:
   - type: Sprite

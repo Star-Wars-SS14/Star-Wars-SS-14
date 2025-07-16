@@ -13,8 +13,8 @@
   icon: "JobIconHavokStormtrooper"
   supervisors: job-supervisors-havok-cap
   access:
-  - RepublicHavok
-  - RepublicCommander
+  - SWRepublicHavok
+  - SWRepublicCommander
   special:
   - !type:AddComponentSpecial
     components:

@@ -1,13 +1,13 @@
 - type: entity
   parent: BaseItem
-  id: KyberCrystal
+  id: SWKyberCrystal
   name: kyber crystal (white)
   description: Это.. это нечто..
   components:
   - type: Sprite
     sprite: _SW/Objects/KyberCrystals/kybercrystal.rsi
     state: whitecr
-  - type: KyberCrystal
+  - type: SWKyberCrystal
     hexcolor: "White"
   - type: Item
     sprite: _SW/Objects/KyberCrystals/kybercrystal.rsi
@@ -17,121 +17,121 @@
     - KyberCrystalTag
 
 - type: entity
-  parent: KyberCrystal
-  id: KyberCrystalBlack
+  parent: SWKyberCrystal
+  id: SWKyberCrystalBlack
   name: kyber crystal (black)
   components:
-  - type: KyberCrystal
+  - type: SWKyberCrystal
     hexcolor: "Black"
   - type: Sprite
     state: blackcr
 
 - type: entity
-  parent: KyberCrystal
-  id: KyberCrystalBlue
+  parent: SWKyberCrystal
+  id: SWKyberCrystalBlue
   name: kyber crystal (blue)
   components:
-  - type: KyberCrystal
+  - type: SWKyberCrystal
     hexcolor: "Blue"
   - type: Sprite
     state: bluecr
 
 - type: entity
-  parent: KyberCrystal
-  id: KyberCrystalWhiteBlue
+  parent: SWKyberCrystal
+  id: SWKyberCrystalWhiteBlue
   name: kyber crystal (white-blue)
   components:
-  - type: KyberCrystal
+  - type: SWKyberCrystal
     hexcolor: "White-blue"
   - type: Sprite
     state: golubcr
 
 - type: entity
-  parent: KyberCrystal
-  id: KyberCrystalGreen
+  parent: SWKyberCrystal
+  id: SWKyberCrystalGreen
   name: kyber crystal (green)
   components:
-  - type: KyberCrystal
+  - type: SWKyberCrystal
     hexcolor: "Green"
   - type: Sprite
     state: greencr
 
 - type: entity
-  parent: KyberCrystal
-  id: KyberCrystalIndigo
+  parent: SWKyberCrystal
+  id: SWKyberCrystalIndigo
   name: kyber crystal (indigo)
   components:
-  - type: KyberCrystal
+  - type: SWKyberCrystal
     hexcolor: "Indigo"
   - type: Sprite
     state: indigocr
 
 - type: entity
-  parent: KyberCrystal
-  id: KyberCrystalOrange
+  parent: SWKyberCrystal
+  id: SWKyberCrystalOrange
   name: kyber crystal (orange)
   components:
-  - type: KyberCrystal
+  - type: SWKyberCrystal
     hexcolor: "Orange"
   - type: Sprite
     state: orangecr
 
 - type: entity
-  parent: KyberCrystal
-  id: KyberCrystalPink
+  parent: SWKyberCrystal
+  id: SWKyberCrystalPink
   name: kyber crystal (pink)
   components:
-  - type: KyberCrystal
+  - type: SWKyberCrystal
     hexcolor: "Pink"
   - type: Sprite
     state: pinkcr
 
 - type: entity
-  parent: KyberCrystal
-  id: KyberCrystalPurple
+  parent: SWKyberCrystal
+  id: SWKyberCrystalPurple
   name: kyber crystal (purple)
   components:
-  - type: KyberCrystal
+  - type: SWKyberCrystal
     hexcolor: "Purple"
   - type: Sprite
     state: purplecr
 
 - type: entity
-  parent: KyberCrystal
-  id: KyberCrystalRed
+  parent: SWKyberCrystal
+  id: SWKyberCrystalRed
   name: kyber crystal (red)
   components:
-  - type: KyberCrystal
+  - type: SWKyberCrystal
     hexcolor: "Red"
   - type: Sprite
     state: redcr
 
 - type: entity
-  parent: KyberCrystal
-  id: KyberCrystalRedOrange
+  parent: SWKyberCrystal
+  id: SWKyberCrystalRedOrange
   name: kyber crystal (red-orange)
   components:
-  - type: KyberCrystal
+  - type: SWKyberCrystal
     hexcolor: "Red-orange"
   - type: Sprite
     state: redorangecr
 
 - type: entity
-  parent: KyberCrystal
-  id: KyberCrystalYellow
+  parent: SWKyberCrystal
+  id: SWKyberCrystalYellow
   name: kyber crystal (yellow)
   components:
-  - type: KyberCrystal
+  - type: SWKyberCrystal
     hexcolor: "Yellow"
   - type: Sprite
     state: yellowcr
 
 - type: entity
-  parent: KyberCrystal
-  id: KyberCrystalYellowGreen
+  parent: SWKyberCrystal
+  id: SWKyberCrystalYellowGreen
   name: kyber crystal (yellow-green)
   components:
-  - type: KyberCrystal
+  - type: SWKyberCrystal
     hexcolor: "Yellow-green"
   - type: Sprite
     state: yellowgreencr

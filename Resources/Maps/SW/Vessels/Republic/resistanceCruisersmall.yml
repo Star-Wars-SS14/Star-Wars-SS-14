@@ -24,7 +24,7 @@ tilemap:
   493: Lattice
   494: Plating
   524: RMCFloorUnderplatingNoWeeds
-  529: SW_FloorSteeltile
+  529: SWFloorSteeltile
 entities:
 - proto: ""
   entities:
@@ -4566,7 +4566,7 @@ entities:
     - type: Transform
       pos: -1.5,-2.5
       parent: 1
-- proto: KoltoMedipen
+- proto: SWKoltoMedipen
   entities:
   - uid: 631
     components:
@@ -5079,14 +5079,14 @@ entities:
     - type: Transform
       pos: -2.5,-10.5
       parent: 1
-- proto: SW_BannerRepublic
+- proto: SWBannerRepublic
   entities:
   - uid: 739
     components:
     - type: Transform
       pos: 2.5,-3.5
       parent: 1
-- proto: SW_CrateMedical
+- proto: SWCrateMedical
   entities:
   - uid: 630
     components:
@@ -5151,7 +5151,7 @@ entities:
           showEnts: False
           occludes: True
           ent: null
-- proto: SW_CrateRepublicLock
+- proto: SWCrateRepublicLock
   entities:
   - uid: 7
     components:
@@ -5273,7 +5273,7 @@ entities:
           showEnts: False
           occludes: True
           ent: null
-- proto: SW_CrateWood
+- proto: SWCrateWood
   entities:
   - uid: 672
     components:
@@ -5375,14 +5375,14 @@ entities:
           showEnts: False
           occludes: True
           ent: null
-- proto: SW_EL34
+- proto: SWEL34
   entities:
   - uid: 877
     components:
     - type: Transform
       pos: 3.4498403,2.5172715
       parent: 1
-- proto: SW_H206GreenMagazineBlastRifle
+- proto: SWH206GreenMagazineBlastRifle
   entities:
   - uid: 679
     components:
@@ -5468,7 +5468,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_h206renegade
+- proto: SWH206Renegade
   entities:
   - uid: 674
     components:
@@ -5498,7 +5498,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_Poweredlight
+- proto: SWPoweredlight
   entities:
   - uid: 286
     components:

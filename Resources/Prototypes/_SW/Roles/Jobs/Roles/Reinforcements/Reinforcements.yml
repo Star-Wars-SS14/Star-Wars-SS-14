@@ -3,21 +3,21 @@
 - type: startingGear
   id: EmpireLieutenantBaseGear
   equipment:
-    jumpsuit: SW_ClothingUniformJumpsuitOfficers
+    jumpsuit: SWClothingUniformJumpsuitOfficers
     back: ClothingBackpackMilitarySatchel
     shoes: ClothingShoesBootsJackSecFilled
     gloves: ClothingHandsGlovesColorBlack
-    head: SW_ClothingHeadLieutenantImperialHelmet
-    outerClothing: SW_LieutenantImperialSuit
-    suitstorage: SW_E1BlasterRifle
-    id: SW_IDCardEmpireLieutenant
-    ears: ClothingHeadsetRegular
+    head: SWClothingHeadLieutenantImperialHelmet
+    outerClothing: SWLieutenantImperialSuit
+    suitstorage: SWE1BlasterRifle
+    id: SWIDCardEmpireLieutenant
+    ears: SWClothingHeadsetRegular
     belt: ClothingBeltAssault
-    pocket1: SW_YellowMagazineBlastRifle
-    pocket2: SW_YellowMagazineBlastRifle
+    pocket1: SWYellowMagazineBlastRifle
+    pocket2: SWYellowMagazineBlastRifle
   storage:
     back:
-    - SW_YellowMagazineBlastRifle
+    - SWYellowMagazineBlastRifle
     - CMInaprovalineAutoInjector
     - AloeCream
     - BoxMRE
@@ -27,21 +27,21 @@
 - type: startingGear
   id: EmpireSoldierBaseGear
   equipment:
-    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    jumpsuit: SWClothingUniformJumpsuitFleece
     back: ClothingBackpackMilitarySatchel
     shoes: ClothingShoesBootsCombatFilled
     gloves: ClothingHandsGlovesColorBlack
     head: SW_ClothingHeadImperialHelmet
-    outerClothing: SW_ImperialSuit
-    suitstorage: SW_E1BlasterRifle
-    id: SW_IDCardEmpireSoldier
-    ears: ClothingHeadsetRegular
+    outerClothing: SWImperialSuit
+    suitstorage: SWE1BlasterRifle
+    id: SWIDCardEmpireSoldier
+    ears: SWClothingHeadsetRegular
     belt: ClothingBeltAssault
-    pocket1: SW_YellowMagazineBlastRifle
-    pocket2: SW_YellowMagazineBlastRifle
+    pocket1: SWYellowMagazineBlastRifle
+    pocket2: SWYellowMagazineBlastRifle
   storage:
     back:
-    - SW_YellowMagazineBlastRifle
+    - SWYellowMagazineBlastRifle
     - CMInaprovalineAutoInjector
     - PillKelotane
     - BoxMRE
@@ -51,24 +51,24 @@
 - type: startingGear
   id: EmpireMedicBaseGear
   equipment:
-    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    jumpsuit: SWClothingUniformJumpsuitFleece
     back: ClothingBackpackSatchel
     shoes: ClothingShoesBootsCombatFilled
     gloves: ClothingHandsGlovesColorBlack
     head: SW_ClothingHeadMedicImperialHelmet
-    outerClothing: SW_MedicImperialSuit
-    suitstorage: SW_E1BlasterRifle
-    id: SW_IDCardEmpireMedic
-    ears: ClothingHeadsetRegular
+    outerClothing: SWMedicImperialSuit
+    suitstorage: SWE1BlasterRifle
+    id: SWIDCardEmpireMedic
+    ears: SWClothingHeadsetRegular
     belt: ClothingBeltMilitaryWebbingMed
-    pocket1: SW_YellowMagazineBlastRifle
-    pocket2: SW_YellowMagazineBlastRifle
+    pocket1: SWYellowMagazineBlastRifle
+    pocket2: SWYellowMagazineBlastRifle
   storage:
     back:
     - Defibrillator
     - BoxMRE
     - SWBinoculars
-    - SW_YellowMagazineBlastRifle
+    - SWYellowMagazineBlastRifle
     belt:
     - CMInaprovalineAutoInjector
     - CMInaprovalineAutoInjector
@@ -76,26 +76,26 @@
     - CMKelotaneAutoInjector
     - AloeCream
 
-# Republic
+# SWRepublic
 # Lieutenant
 - type: startingGear
   id: RepublicLieutenantBaseGear
   equipment:
-    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    jumpsuit: SWClothingUniformJumpsuitFleece
     back: ClothingBackpackMilitarySatchel
     shoes: ClothingShoesBootsJackSecFilled
     gloves: ClothingHandsGlovesColorBlack
     head: SW_ClothingHeadLieutenantRepublicHelmet
-    outerClothing: SW_LieutenantRepublicSuit
-    suitstorage: SW_j111rancor
-    id: SW_IDCardRepublicLieutenant
-    ears: ClothingHeadsetRepublic
+    outerClothing: SWLieutenantRepublicSuit
+    suitstorage: SWJ111Rancor
+    id: SWIDCardRepublicLieutenant
+    ears: SWClothingHeadsetRepublic
     belt: ClothingBeltAssault
-    pocket1: SW_BlueMagazineBlastRifle
-    pocket2: SW_BlueMagazineBlastRifle
+    pocket1: SWBlueMagazineBlastRifle
+    pocket2: SWBlueMagazineBlastRifle
   storage:
     back:
-    - SW_BlueMagazineBlastRifle
+    - SWBlueMagazineBlastRifle
     - CMInaprovalineAutoInjector
     - AloeCream
     - BoxMRE
@@ -105,21 +105,21 @@
 - type: startingGear
   id: RepublicSoldierBaseGear
   equipment:
-    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    jumpsuit: SWClothingUniformJumpsuitFleece
     back: ClothingBackpackMilitarySatchel
     shoes: ClothingShoesBootsJackSecFilled
     gloves: ClothingHandsGlovesColorBlack
     head: SW_ClothingHeadRepublicHelmet
-    outerClothing: SW_RepublicSuit
-    suitstorage: SW_h206renegade
-    id: SW_IDCardRepublicSoldier
-    ears: ClothingHeadsetRepublic
+    outerClothing: SWRepublicSuit
+    suitstorage: SWH206Renegade
+    id: SWIDCardRepublicSoldier
+    ears: SWClothingHeadsetRepublic
     belt: ClothingBeltAssault
-    pocket1: SW_H206GreenMagazineBlastRifle
-    pocket2: SW_H206GreenMagazineBlastRifle
+    pocket1: SWH206GreenMagazineBlastRifle
+    pocket2: SWH206GreenMagazineBlastRifle
   storage:
     back:
-    - SW_H206GreenMagazineBlastRifle
+    - SWH206GreenMagazineBlastRifle
     - CMInaprovalineAutoInjector
     - AloeCream
     - BoxMRE
@@ -129,24 +129,24 @@
 - type: startingGear
   id: RepublicMedicBaseGear
   equipment:
-    jumpsuit: SW_ClothingUniformJumpsuitFleece
+    jumpsuit: SWClothingUniformJumpsuitFleece
     back: ClothingBackpackSatchel
     shoes: ClothingShoesBootsJackSecFilled
     gloves: ClothingHandsGlovesColorBlack
     head: SW_ClothingHeadRepublicHelmet
-    outerClothing: SW_RepublicSuit
-    suitstorage: SW_h206renegade
-    id: SW_IDCardRepublicMedic
-    ears: ClothingHeadsetRepublic
+    outerClothing: SWRepublicSuit
+    suitstorage: SWH206Renegade
+    id: SWIDCardRepublicMedic
+    ears: SWClothingHeadsetRepublic
     belt: ClothingBeltMilitaryWebbingMed
-    pocket1: SW_H206GreenMagazineBlastRifle
-    pocket2: SW_H206GreenMagazineBlastRifle
+    pocket1: SWH206GreenMagazineBlastRifle
+    pocket2: SWH206GreenMagazineBlastRifle
   storage:
     back:
     - Defibrillator
     - BoxMRE
     - SWBinoculars
-    - SW_H206GreenMagazineBlastRifle
+    - SWH206GreenMagazineBlastRifle
     belt:
     - CMInaprovalineAutoInjector
     - CMInaprovalineAutoInjector

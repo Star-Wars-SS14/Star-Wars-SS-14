@@ -166,7 +166,7 @@
 - type: entity
   name: Beryar's MK-3 Sniper Rifle
   parent: SWBaseWeaponBlaster
-  id: SWBeryaramk3
+  id: SWberyaramk3
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
@@ -307,7 +307,7 @@
 - type: entity
   name: GT-13 ST Assault Cannon
   parent: SWBaseWeaponBlaster
-  id: SWGT13ST
+  id: SWGT-13ST
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite

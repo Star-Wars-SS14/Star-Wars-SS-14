@@ -13,6 +13,6 @@ public sealed partial class OpenMasteryShopAlertEvent : BaseAlertEvent;
 public enum StarWarsFractionType : byte
 {
     Empire = 0,
-    Republic = 1,
-    Mandalorian = 2
+    SWRepublic = 1,
+    SWMandalorian = 2
 }

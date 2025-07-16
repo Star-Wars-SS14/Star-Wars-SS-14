@@ -4,9 +4,12 @@
   name: republic suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/SWRepublic/republic.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Republic/republic.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/SWRepublic/republic.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Republic/republic.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.3
+    lowPressureMultiplier: 1000
   - type: Armor
     modifiers:
       coefficients:
@@ -19,42 +22,36 @@
     walkModifier: 0.9
     sprintModifier: 0.95
   - type: HeldSpeedModifier
-  - type: TemperatureProtection
-    heatingCoefficient: 0.001
-    coolingCoefficient: 0.001
-  - type: PressureProtection
-    highPressureMultiplier: 0.01
-    lowPressureMultiplier: 1000
 
 - type: entity
   parent: SWRepublicSuit
   id: SWLieutenantRepublicSuit
-  name: SWRepublic suit lieutenant
+  name: Republic suit lieutenant
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/SWRepublic/LT_republic.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Republic/LT_republic.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/SWRepublic/LT_republic.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Republic/LT_republic.rsi
 
 - type: entity
   parent: SWRepublicSuit
-  id: SW_CaptainRepublicSuit
-  name: SWRepublic suit captain
+  id: SWCaptainRepublicSuit
+  name: Republic suit captain
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/SWRepublic/CAP_republic.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Republic/CAP_republic.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/SWRepublic/CAP_republic.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Republic/CAP_republic.rsi
 
 - type: entity
   parent: SWRepublicSuit
   id: SWGeneralRepublicSuit
-  name: SWRepublic suit general
+  name: Republic suit general
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/SWRepublic/GEN_republic.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Republic/GEN_republic.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/SWRepublic/GEN_republic.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Republic/GEN_republic.rsi
 
 - type: entity
   parent: SWRepublicSuit
@@ -62,6 +59,6 @@
   name: Medic republic suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/SWRepublic/MED_republic.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Republic/MED_republic.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/SWRepublic/MED_republic.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Republic/MED_republic.rsi

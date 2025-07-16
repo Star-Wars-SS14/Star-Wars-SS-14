@@ -1,5 +1,5 @@
 - type: entity
-  id: SWBaseCartridgeBlaster
+  id: SWBaseCartridge
   name: blast
   parent: BaseCartridge
   abstract: true
@@ -22,7 +22,7 @@
 - type: entity
   id: RedCartridgeBlast
   name: cartridge (Blast)
-  parent: SWBaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: SWRedBulletBlast
@@ -34,7 +34,7 @@
 - type: entity
   id: SWZ1RedCartridgeBlast
   name: cartridge (Blast)
-  parent: SWBaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: Z1RedBulletBlast
@@ -46,7 +46,7 @@
 - type: entity
   id: SWGreenCartridgeBlast
   name: green cartridge (Blast)
-  parent: SWBaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: SWGreenBulletBlast
@@ -58,7 +58,7 @@
 - type: entity
   id: SWH206GreenCartridgeBlast
   name: green cartridge (Blast)
-  parent: SWBaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: H206GreenBulletBlast
@@ -71,7 +71,7 @@
 - type: entity
   id: SWBlueCartridgeBlast
   name: blue cartridge (Blast)
-  parent: SWBaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: SWBlueBulletBlast
@@ -83,7 +83,7 @@
 - type: entity
   id: SWCannonBlueCartridgeBlast
   name: blue cartridge (Blast)
-  parent: SWBaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: SWCannonBlueBulletBlast
@@ -95,7 +95,7 @@
 - type: entity
   id: SWSniperRifleBlueCartridgeBlast
   name: blue cartridge (Blast)
-  parent: SWBaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: SWSniperRifleBlueBulletBlast
@@ -107,7 +107,7 @@
 - type: entity
   id: SWYellowCartridgeBlast
   name: yellow cartridge (Blast)
-  parent: SWBaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: SWYellowBulletBlast
@@ -119,7 +119,7 @@
 - type: entity
   id: SWCannonYellowCartridgeBlast
   name: yellow cartridge (Blast)
-  parent: SWBaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: SWCannonYellowBulletBlast
@@ -131,7 +131,7 @@
 - type: entity
   id: SWSniperRifleYellowCartridgeBlast
   name: yellow cartridge (Blast)
-  parent: SWBaseCartridgeBlaster
+  parent: SWBaseCartridge
   components:
   - type: CartridgeAmmo
     proto: SWSniperRifleYellowBulletBlast

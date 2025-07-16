@@ -6,7 +6,7 @@
   maxPlayers: 200
   stations:
     SWBalmora:
-      stationProto: SWStandardSWStation
+      stationProto: SWStandardStation
       components:
       - type: StationNameSetup
         mapNameTemplate: '{0} Балламора {1}'

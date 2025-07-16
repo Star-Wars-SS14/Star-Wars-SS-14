@@ -114,7 +114,7 @@ public sealed class HolopadSystem : SharedHolopadSystem
 
         LinkHolopadToUser(source, args.Actor);
         //SW start
-        if (_tagSystem.HasTag(receiver, "HolopadAdmin"))
+        if (_tagSystem.HasTag(receiver, "SWHolopadAdmin"))
         {
             _chatManager.SendAdminAnnouncement(Loc.GetString("admin-holopad-is-called"), null, null);
             //SW end

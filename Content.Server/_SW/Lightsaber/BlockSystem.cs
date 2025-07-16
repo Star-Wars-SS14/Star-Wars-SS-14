@@ -7,7 +7,7 @@ using Content.Shared.Popups;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Timing;
 
-namespace Content.Server._SW.Lightsaber;
+namespace Content.Server._SW.SWLightsaber;
 
 /// <inheritdoc/>
 public sealed class BlockSystem : EntitySystem

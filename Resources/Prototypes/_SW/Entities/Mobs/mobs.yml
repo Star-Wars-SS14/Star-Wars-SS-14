@@ -20,8 +20,9 @@
   components:
   - type: Loadout
     prototypes: [RepublicGeneralGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 - type: entity
   name: SWRepublic Captain
@@ -31,8 +32,9 @@
   components:
   - type: Loadout
     prototypes: [RepublicCaptainGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 - type: entity
   name: SWRepublic Lieutenant
@@ -42,8 +44,10 @@
   components:
   - type: Loadout
     prototypes: [RepublicLieutenantGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
+
 
 - type: entity
   name: SWRepublic soldier
@@ -53,8 +57,9 @@
   components:
   - type: Loadout
     prototypes: [RepublicSoldierGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 - type: entity
   name: SWRepublic Recruit
@@ -64,8 +69,9 @@
   components:
   - type: Loadout
     prototypes: [RepublicRecruitGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 - type: entity
   name: SWRepublic Medic
@@ -75,8 +81,9 @@
   components:
   - type: Loadout
     prototypes: [RepublicMedicGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 ##Republic_Commander
 - type: entity
@@ -87,8 +94,9 @@
   components:
   - type: Loadout
     prototypes: [RepublicCommanderCommanderGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 - type: entity
   name: SWRepublic Commander Lieutenant
@@ -98,8 +106,9 @@
   components:
   - type: Loadout
     prototypes: [RepublicCommanderLieutenantGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 - type: entity
   name: SWRepublic Commander Medic
@@ -109,8 +118,9 @@
   components:
   - type: Loadout
     prototypes: [RepublicCommanderMedicGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 - type: entity
   name: SWRepublic Commander Stormtrooper
@@ -120,8 +130,9 @@
   components:
   - type: Loadout
     prototypes: [RepublicCommanderStormtrooperGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 - type: entity
   name: SWRepublic Commander Sniper
@@ -131,8 +142,9 @@
   components:
   - type: Loadout
     prototypes: [RepublicCommanderSniperGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 ##Empire
 - type: entity
@@ -143,8 +155,9 @@
   components:
   - type: Loadout
     prototypes: [EmpireMoffGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: Empire Major
@@ -154,8 +167,9 @@
   components:
   - type: Loadout
     prototypes: [EmpireMajorGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: Empire Lieutenant
@@ -165,8 +179,9 @@
   components:
   - type: Loadout
     prototypes: [EmpireLieutenantGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: Empire Soldier
@@ -176,8 +191,9 @@
   components:
   - type: Loadout
     prototypes: [EmpireSoldierGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: Empire Medic
@@ -187,8 +203,9 @@
   components:
   - type: Loadout
     prototypes: [EmpireMedicalGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 ##Sobrik
 - type: entity
@@ -199,8 +216,9 @@
   components:
   - type: Loadout
     prototypes: [SobrikCaptainGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: Sobrik Officer
@@ -210,8 +228,9 @@
   components:
   - type: Loadout
     prototypes: [SobrikOfficerGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: Sobrik Medic
@@ -221,8 +240,9 @@
   components:
   - type: Loadout
     prototypes: [SobrikMedicGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 ##Mandalorians
 - type: entity
@@ -233,9 +253,10 @@
   components:
   - type: Loadout
     prototypes: [MandalorianLeaderGear]
-  - type: SWFactionMember
-    faction: MandalorianFaction
-    
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
+
 - type: entity
   name: SWMandalorian Veteran
   parent: BaseMobHuman
@@ -244,8 +265,9 @@
   components:
   - type: Loadout
     prototypes: [MandalorianVeteranGear]
-  - type: SWFactionMember
-    faction: MandalorianFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: SWMandalorian Warrior
@@ -255,8 +277,9 @@
   components:
   - type: Loadout
     prototypes: [MandalorianWarriorGear]
-  - type: SWFactionMember
-    faction: MandalorianFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: SWMandalorian Recruit
@@ -266,8 +289,9 @@
   components:
   - type: Loadout
     prototypes: [MandalorianRecruitGear]
-  - type: SWFactionMember
-    faction: MandalorianFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 ##Balmorran
 - type: entity
@@ -339,19 +363,21 @@
   components:
   - type: Loadout
     prototypes: [EmpireIntelligenceCaretakerGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: Intelligence Agent
   parent: BaseMobHuman
-  id: SWMobEmpireIntelligenceAgent
+  id: SWMobEmpiдтнааreIntelligenceAgent
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [EmpireIntelligenceAgentGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 ##Roles_Black_Sun
 - type: entity
@@ -362,8 +388,9 @@
   components:
   - type: Loadout
     prototypes: [BlackSunGear]
-  - type: SWFactionMember
-    faction: BlackSunFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: SWBlackSun Mercenary
@@ -373,8 +400,9 @@
   components:
   - type: Loadout
     prototypes: [BlackSunMercenaryGear]
-  - type: SWFactionMember
-    faction: BlackSunFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 ##SWExchange
 - type: entity
@@ -385,8 +413,9 @@
   components:
   - type: Loadout
     prototypes: [ExchangeCaptainGear]
-  - type: SWFactionMember
-    faction: ExchangeFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: SWExchange Operative
@@ -396,8 +425,32 @@
   components:
   - type: Loadout
     prototypes: [ExchangeOperativeGear]
-  - type: SWFactionMember
-    faction: ExchangeFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
+
+###The Age of Rebellion
+#NanoTrasen
+- type: entity
+  name: Jedi
+  parent: [BaseMobHuman, ForceUser]
+  id: SWMobJedi
+  description: A miserable pile of secrets.
+  components:
+  - type: Loadout
+    prototypes: [JediGear]
+  - type: LightForce
+    thresholds:
+      0: Alive
+      300: Critical
+      400: Dead
+  - type: UserInterface
+    interfaces:
+      enum.StoreUiKey.Key:
+        type: StoreBoundUserInterface
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 - type: entity
   name: SWRepublic soldier
@@ -407,9 +460,11 @@
   components:
   - type: Loadout
     prototypes: [RepublicSoldierGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
+#Syndicate
 - type: entity
   name: imperial officers
   parent: BaseMobHuman
@@ -418,8 +473,31 @@
   components:
   - type: Loadout
     prototypes: [ImperialOfficersGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
+
+- type: entity
+  name: Sith
+  parent: [BaseMobHuman, ForceUser]
+  id: SWMobSith
+  description: A miserable pile of secrets.
+  components:
+  - type: Loadout
+    prototypes: [SithGear]
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      300: Critical
+      400: Dead
+  - type: DarkForce
+  - type: UserInterface
+    interfaces:
+      enum.StoreUiKey.Key:
+        type: StoreBoundUserInterface
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: Stormtrooper
@@ -429,8 +507,9 @@
   components:
   - type: Loadout
     prototypes: [StormtrooperGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: imperial general
@@ -439,7 +518,8 @@
   components:
   - type: Loadout
     prototypes: [ImperialGeneralGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 

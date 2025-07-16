@@ -30,13 +30,14 @@
         settings: short
       job: SWEmpireLieutenant
     - type: Loadout
-      prototypes: [EmpireLieutenantBaseGear]
+      prototypes: [EmpireLieutenantGear]
     - type: RandomMetadata
       nameSegments:
       - NamesFirstMilitaryLieutenant
       - NamesLastMilitary
-    - type: SWFactionMember
-      faction: EmpireFaction
+    - type: NpcFactionMember
+      factions:
+      - Syndicate
 
 # Soldier
 - type: entity
@@ -61,13 +62,14 @@
         settings: short
       job: SWEmpireSoldier
     - type: Loadout
-      prototypes: [EmpireSoldierBaseGear]
+      prototypes: [EmpireSoldierGear]
     - type: RandomMetadata
       nameSegments:
       - NamesFirstMilitarySoldier
       - NamesLastMilitary
-    - type: SWFactionMember
-      faction: EmpireFaction
+    - type: NpcFactionMember
+      factions:
+      - Syndicate
 
 # Medic
 - type: entity
@@ -92,20 +94,21 @@
         settings: short
       job: SWEmpireMedic
     - type: Loadout
-      prototypes: [EmpireMedicBaseGear]
+      prototypes: [EmpireMedicalGear]
     - type: RandomMetadata
       nameSegments:
       - NamesFirstMilitaryMedic
       - NamesLastMilitary
-    - type: SWFactionMember
-      faction: EmpireFaction
+    - type: NpcFactionMember
+      factions:
+      - Syndicate
 
 # SWRepublic
 # Lieutenant
 - type: entity
   parent: BaseMobHuman
   id: SWRandomHumanoidSpawnerRepublicLieutenant
-  name: SWRepublic Lieutenant
+  name: Republic Lieutenant
   suffix: GhostRole
   components:
     - type: RandomHumanoidSpawner
@@ -124,19 +127,20 @@
         settings: short
       job: SWRepublicLieutenant
     - type: Loadout
-      prototypes: [RepublicLieutenantBaseGear]
+      prototypes: [RepublicLieutenantGear]
     - type: RandomMetadata
       nameSegments:
       - NamesFirstMilitaryLieutenant
       - NamesLastMilitary
-    - type: SWFactionMember
-      faction: RepublicFaction
+    - type: NpcFactionMember
+      factions:
+      - Syndicate
 
 # Soldier
 - type: entity
   parent: BaseMobHuman
   id: SWRandomHumanoidSpawnerRepublicSoldier
-  name: SWRepublic Soldier
+  name: Republic Soldier
   suffix: GhostRole
   components:
     - type: RandomHumanoidSpawner
@@ -155,19 +159,20 @@
         settings: short
       job: SWRepublicSoldier
     - type: Loadout
-      prototypes: [RepublicSoldierBaseGear]
+      prototypes: [RepublicSoldierGear]
     - type: RandomMetadata
       nameSegments:
       - NamesFirstMilitarySoldier
       - NamesLastMilitary
-    - type: SWFactionMember
-      faction: RepublicFaction
+    - type: NpcFactionMember
+      factions:
+      - Syndicate
 
 # Medic
 - type: entity
   parent: BaseMobHuman
   id: SWRandomHumanoidSpawnerRepublicMedic
-  name: SWRepublic Medic
+  name: Republic Medic
   suffix: GhostRole
   components:
     - type: RandomHumanoidSpawner
@@ -186,10 +191,11 @@
         settings: short
       job: SWRepublicMedic
     - type: Loadout
-      prototypes: [RepublicMedicBaseGear]
+      prototypes: [RepublicMedicGear]
     - type: RandomMetadata
       nameSegments:
       - NamesFirstMilitaryMedic
       - NamesLastMilitary
-    - type: SWFactionMember
-      faction: RepublicFaction
+    - type: NpcFactionMember
+      factions:
+      - Syndicate

@@ -1,5 +1,5 @@
 - type: entity
-  id: SWStandardSWStation
+  id: SWStandardStation
   parent:
     - BaseStation
     - BaseStationJobsSpawning

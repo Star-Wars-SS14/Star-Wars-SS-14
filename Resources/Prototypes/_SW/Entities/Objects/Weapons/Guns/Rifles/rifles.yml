@@ -85,7 +85,7 @@
 - type: entity
   name: H-206 Renegade Blaster Rifle
   parent: SWBaseWeaponBlaster
-  id: SWh206renegade
+  id: SWH206Renegade
   components:
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Rifles/h206.rsi
@@ -112,7 +112,7 @@
 - type: entity
   name: J-111 Rancor Enforcer
   parent: SWBaseWeaponBlaster
-  id: SWj111rancor
+  id: SWJ111Rancor
   components:
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Rifles/j111.rsi
@@ -224,7 +224,7 @@
 - type: entity
   name: K-406 Combat Ripper
   parent: SWBaseWeaponBlaster
-  id: SWk406ripper
+  id: SWK406Ripper
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite

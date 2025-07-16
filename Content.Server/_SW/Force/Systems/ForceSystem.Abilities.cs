@@ -203,7 +203,7 @@ public sealed partial class ForceSystem
 
         var target = args.Target.Value;
 
-        if (!_tagSystem.HasTag(target, component.SaberFragmentTag))
+        if (!_tagSystem.HasTag(target, component.SWSaberFragmentTag))
             return;
 
         _popupSystem.PopupEntity("В мгновение, камень летит в фрагмент меча.. Меч исправен..",

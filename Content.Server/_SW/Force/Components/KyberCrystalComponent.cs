@@ -13,7 +13,7 @@ public sealed partial class KyberCrystalComponent : Component
 
     public string KyberActionPrototype = "ActionSubdueKyber";
 
-    public string SaberFragmentTag = "SaberFragmentTag";
+    public string SWSaberFragmentTag = "SWSaberFragmentTag";
 
     public string SaberPrototype = "Lightsaber";
 

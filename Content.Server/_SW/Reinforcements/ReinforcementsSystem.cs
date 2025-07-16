@@ -18,11 +18,11 @@ public sealed class ReinforcementsSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<ReinforcementsCardComponent, AfterInteractEvent>(AfterInteract);
+        SubscribeLocalEvent<SWReinforcementsCardComponent, AfterInteractEvent>(AfterInteract);
         SubscribeLocalEvent<CommunicationsConsoleComponent, ReinforcementsBroadcastMessage>(OnReinforcementsCall);
     }
 
-    private void AfterInteract(EntityUid card, ReinforcementsCardComponent component, AfterInteractEvent args)
+    private void AfterInteract(EntityUid card, SWReinforcementsCardComponent component, AfterInteractEvent args)
     {
         if(!args.Target.HasValue)
             return;
@@ -64,15 +64,15 @@ public sealed class ReinforcementsSystem : EntitySystem
     }
 
     private Dictionary<string, string> GetLocInfo(CommunicationsConsoleComponent communicationsConsoleComponent,
-        ReinforcementsCardComponent? component = null)
+        SWReinforcementsCardComponent? component = null)
 
     {
         var status = communicationsConsoleComponent.CanReinforcements ? "активации" : "деактивации";
         Dictionary<StarWarsFractionType, string> fractionLoc = new()
         {
             { StarWarsFractionType.Empire, "Империи" },
-            { StarWarsFractionType.Republic, "Республики" },
-            { StarWarsFractionType.Mandalorian, "Мандалорцев" }
+            { StarWarsFractionType.SWRepublic, "Республики" },
+            { StarWarsFractionType.SWMandalorian, "Мандалорцев" }
         };
 
         return new Dictionary<string, string>

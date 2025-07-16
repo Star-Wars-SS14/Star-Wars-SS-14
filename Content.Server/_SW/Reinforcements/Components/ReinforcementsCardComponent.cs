@@ -4,7 +4,7 @@ using Robust.Shared.Audio;
 namespace Content.Server._SW.Reinforcements.Components;
 
 [RegisterComponent]
-public sealed partial class ReinforcementsCardComponent : Component
+public sealed partial class SWReinforcementsCardComponent : Component
 {
     [DataField("fraction")]
     public StarWarsFractionType FractionType = StarWarsFractionType.Empire;

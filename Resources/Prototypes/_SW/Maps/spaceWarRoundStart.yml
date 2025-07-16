@@ -16,10 +16,10 @@
            availableJobs:
             SWRepublicGeneral: [ 1, 1 ]
             SWRepublicCaptain: [ 1, 1 ]
-            SWRepublicLieutenant: [ 2, 2 ]
-            SWRepublicSoldier: [ 6, 6 ]
-            SWRepublicMedic: [ 2, 2 ]
-            SWRepublicRecruit: [ 4, 4 ]
+            SWRepublicLieutenant: [ 3, 3 ]
+            SWRepublicSoldier: [ 9, 9 ]
+            SWRepublicMedic: [ 3, 3 ]
+            SWRepublicEngineer: [2, 2]
          - type: CapturableStation
            fraction: RepublicFaction
     ImperialCruiser:
@@ -34,9 +34,10 @@
            availableJobs:
             SWEmpireMoff: [ 1, 1 ]
             SWEmpireMajor: [ 1, 1 ]
-            SWEmpireLieutenant: [ 2, 2 ]
-            SWEmpireSoldier: [ 8, 8 ]
-            SWEmpireMedic: [ 2, 2 ]
+            SWEmpireLieutenant: [ 3, 3 ]
+            SWEmpireSoldier: [ 9, 9 ]
+            SWEmpireMedic: [ 3, 3 ]
+            SWEmpireEngineer: [2, 2]
          - type: CapturableStation
            fraction: EmpireFaction
     ast1:

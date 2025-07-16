@@ -1,0 +1,17 @@
+- type: job
+  id: SWEmpireEngineer
+  name: Инженер Сил Империи
+  playTimeTracker: Job_Empire_Engineer
+  requirements:
+    - !type:OverallPlaytimeRequirement
+      time: 9000
+  startingGear: EmpireEngineerGear
+  icon: "JobIconEmpireSoldier"
+  supervisors: job-supervisors-leit-emp
+  access:
+  - SWEmpireBase
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: SWFactionMember
+        faction: EmpireFaction

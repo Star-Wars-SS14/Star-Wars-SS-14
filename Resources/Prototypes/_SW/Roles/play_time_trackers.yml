@@ -20,6 +20,9 @@
   id: Job_Empire_Soldier
 
 - type: playTimeTracker
+  id: Job_Empire_Engineer
+
+- type: playTimeTracker
   id: Job_Empire_Medic
 
 - type: playTimeTracker
@@ -45,6 +48,9 @@
 
 - type: playTimeTracker
   id: Job_Republic_Soldier
+
+- type: playTimeTracker
+  id: Job_Republic_Engineer
 
 - type: playTimeTracker
   id: Job_Republic_Medic

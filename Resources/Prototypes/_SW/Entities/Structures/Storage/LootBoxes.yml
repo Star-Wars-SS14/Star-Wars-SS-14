@@ -28,10 +28,16 @@
     - id: FoodOrange
       prob: 0.50
       maxAmount: 3
-    - id: SheetGlass10
+    - id: SheetGlass1
       prob: 0.30
-      maxAmount: 2
-    - id: SheetSteel10
+      maxAmount: 5
+    - id: SheetSteel1
+      prob: 0.30
+      maxAmount: 5
+    - id: MaterialWoodPlank1
+      prob: 0.30
+      maxAmount: 5
+    - id: MaterialCloth10
       prob: 0.30
       maxAmount: 2
     - id: SWj111rancor
@@ -112,11 +118,17 @@
     - id: FoodOrange
       prob: 0.50
       maxAmount: 3
-    - id: SheetGlass10
+    - id: SheetGlass1
       prob: 0.20
-      maxAmount: 2
-    - id: SheetSteel10
+      maxAmount: 5
+    - id: SheetSteel1
       prob: 0.20
+      maxAmount: 5
+    - id: MaterialWoodPlank1
+      prob: 0.30
+      maxAmount: 5
+    - id: MaterialCloth10
+      prob: 0.30
       maxAmount: 2
     - id: SWj111rancor
       prob: 0.30
@@ -168,6 +180,8 @@
       - FoodMeat
       - SheetSteel1
       - SheetGlass1
+      - MaterialCloth1
+      - MaterialWoodPlank1
     chance: 0.6
     rarePrototypes:
     - SWj111rancor
@@ -242,10 +256,22 @@
       maxAmount: 4
     - id: SheetGlass10
       prob: 0.40
-      maxAmount: 3
+      maxAmount: 2
     - id: SheetSteel10
       prob: 0.40
-      maxAmount: 3
+      maxAmount: 2
+    - id: SheetRGlass1
+      prob: 0.40
+      maxAmount: 5
+    - id: SheetPGlass1
+      prob: 0.40
+      maxAmount: 5
+    - id: SheetPlasteel1
+      prob: 0.40
+      maxAmount: 5
+    - id: SheetPlasma1
+      prob: 0.40
+      maxAmount: 5
     - id: SWE1BlasterRifle
       prob: 0.30
       maxAmount: 1
@@ -301,6 +327,10 @@
       - FoodApple
       - FoodOrange
       - FoodMeat
+      - SheetPlasteel1
+      - SheetRGlass1
+      - SheetPGlass1
+      - SheetPlasma1
     chance: 0.7
     rarePrototypes:
     - SWE1BlasterRifle
@@ -344,3 +374,116 @@
       - !type:PlaySoundBehavior
         sound:
           collection: MetalBreak
+
+
+# Ящики с лутом высокой сложности
+
+- type: entity
+  id: SWBoxSteeldoubleHard
+  name: стальной ящик
+  parent: SWBoxSteel
+  suffix: Средний лут
+  components:
+  - type: StorageFill
+    contents:
+    - id: SheetGlass30
+      prob: 0.50
+      maxAmount: 1
+    - id: SheetSteel30
+      prob: 0.50
+      maxAmount: 1
+    - id: SheetRGlass10
+      prob: 0.50
+      maxAmount: 2
+    - id: SheetPGlass10
+      prob: 0.50
+      maxAmount: 2
+    - id: SheetPlasteel10
+      prob: 0.50
+      maxAmount: 2
+    - id: SheetPlasma10
+      prob: 0.50
+      maxAmount: 2
+    - id: SheetRPGlass1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetUGlass1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetRUGlass1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetPlastic1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetPlasma1
+      prob: 0.50
+      maxAmount: 6
+    - id: SWP301Destroyer
+      prob: 0.40
+      maxAmount: 1
+      orGroup: Weapon
+    - id: CannonYellowMagazine
+      prob: 0.40
+      maxAmount: 1
+    - id: CannonYellowMagazine
+      prob: 0.30
+      maxAmount: 3
+    - id: SWRedMagazineBlastRifle
+      prob: 0.30
+      maxAmount: 3
+
+- type: entity
+  id: SWBoxPlasticHard
+  name: стальной ящик
+  parent: SWBoxSteel
+  suffix: Средний лут
+  components:
+  - type: StorageFill
+    contents:
+    - id: SheetGlass30
+      prob: 0.50
+      maxAmount: 1
+    - id: SheetSteel30
+      prob: 0.50
+      maxAmount: 1
+    - id: SheetRGlass10
+      prob: 0.50
+      maxAmount: 2
+    - id: SheetPGlass10
+      prob: 0.50
+      maxAmount: 2
+    - id: SheetPlasteel10
+      prob: 0.50
+      maxAmount: 2
+    - id: SheetPlasma10
+      prob: 0.50
+      maxAmount: 2
+    - id: SheetRPGlass1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetUGlass1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetRUGlass1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetPlastic1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetUranium1
+      prob: 0.50
+      maxAmount: 6
+    - id: SWP301Destroyer
+      prob: 0.40
+      maxAmount: 1
+      orGroup: Weapon
+    - id: SWGallantry
+      prob: 0.40
+      maxAmount: 1
+    - id: CannonYellowMagazine
+      prob: 0.30
+      maxAmount: 3
+    - id: SWRedMagazineBlastRifle
+      prob: 0.30
+      maxAmount: 3

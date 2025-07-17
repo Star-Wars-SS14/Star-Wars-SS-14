@@ -5,8 +5,6 @@
   id: FillSWCrateWoodLootEasy
   table: !type:AllSelector
     children:
-  - type: StorageFill
-    contents:
     - id: FoodBreadPlainSlice
       prob: 0.40
       maxAmount: 3

@@ -7,7 +7,7 @@
     belt: ClothingBeltAssault
     shoes: SWClothingShoesBootsballamor
     id: SWIDCardSobrikCaptain
-    ears: SWClothingHeadsetGarnison
+    ears: SWClothingHeadsetGarnisonCaptain
     back: SWImperialBackpackCamo
 
 - type: startingGear

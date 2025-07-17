@@ -26,6 +26,17 @@
 
 - type: entity
   parent: SWClothingHeadset
+  id: SWClothingHeadsetGarnisonCaptain
+  name: garnison captain headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - EncryptionKeyGarnison
+      - EncryptionKeyComEmpire
+
+- type: entity
+  parent: SWClothingHeadset
   id: SWClothingHeadsetRegular
   name: regular headset
   components:
@@ -54,6 +65,7 @@
     containers:
       key_slots:
       - EncryptionKeyIntelligence
+      - EncryptionKeyRegular
 
 - type: entity
   parent: SWClothingHeadset

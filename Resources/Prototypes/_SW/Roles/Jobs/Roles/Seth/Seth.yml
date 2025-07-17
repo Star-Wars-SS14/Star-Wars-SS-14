@@ -39,6 +39,7 @@
     outerClothing: SWImperialSuit
     jumpsuit: SWClothingUniformJumpsuitFleece
     head: SW_ClothingHeadImperialHelmet
+    belt: ClothingBeltAssault
     id: SWIDCardEmpireSoldier
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetRegular
@@ -47,11 +48,11 @@
 - type: startingGear
   id: EmpireEngineerGear
   equipment:
-    eyes: ClothingEyesGlassesMeson
-    belt: ClothingBeltUtilityEngineering
+    eyes: ClothingEyesGlassesMeson    
     outerClothing: SWImperialSuit
     jumpsuit: SWClothingUniformJumpsuitFleece
     head: SW_ClothingHeadImperialHelmet
+    belt: ClothingBeltUtilityEngineering
     id: SWIDCardEmpireEngineer
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetRegular
@@ -63,6 +64,7 @@
     outerClothing: SWMedicImperialSuit
     jumpsuit: SWClothingUniformJumpsuitFleece
     head: SW_ClothingHeadMedicImperialHelmet
+    belt: ClothingBeltAssault
     id: SWIDCardEmpireMedic
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetRegular
@@ -169,6 +171,7 @@
     outerClothing: SWGeneralRepublicSuit
     shoes: ClothingShoesBootsJack
     head: SW_ClothingHeadGeneralRepublicHelmet
+    belt: ClothingBeltAssault
     id: SWIDCardRepublicGeneral
     ears: SWClothingHeadsetRepublic
     back: ClothingBackpackMilitarySatchel
@@ -180,6 +183,7 @@
     outerClothing: SW_CaptainRepublicSuit
     shoes: ClothingShoesBootsJack
     head: SWClothingHeadСaptainRepublicHelmet
+    belt: ClothingBeltAssault
     id: SWIDCardRepublicCaptain
     ears: SWClothingHeadsetRepublic
     back: ClothingBackpackMilitarySatchel
@@ -191,6 +195,7 @@
     outerClothing: SWLieutenantRepublicSuit
     shoes: ClothingShoesBootsJack
     head: SW_ClothingHeadLieutenantRepublicHelmet
+    belt: ClothingBeltAssault
     id: SWIDCardRepublicLieutenant
     ears: SWClothingHeadsetRepublic
     back: ClothingBackpackMilitarySatchel
@@ -203,6 +208,7 @@
     outerClothing: SWRepublicSuit
     shoes: ClothingShoesBootsJack
     head: SW_ClothingHeadRepublicHelmet
+    belt: ClothingBeltAssault
     id: SWIDCardRepublicSoldier
     ears: SWClothingHeadsetRepublic
     back: ClothingBackpackMilitarySatchel
@@ -214,11 +220,11 @@
     outerClothing: SWRepublicSuit
     shoes: ClothingShoesBootsJack
     head: SW_ClothingHeadRepublicHelmet
+    belt: ClothingBeltUtilityEngineering
     id: SWIDCardRepublicEngineer
     ears: SWClothingHeadsetRepublic
     back: ClothingBackpackMilitarySatchel
-    eyes: ClothingEyesGlassesMeson
-    belt: ClothingBeltUtilityEngineering
+    eyes: ClothingEyesGlassesMeson    
 
 - type: startingGear
   id: RepublicMedicGear
@@ -227,6 +233,7 @@
     outerClothing: SWMedicRepublicSuit
     shoes: ClothingShoesBootsJack
     head: SW_ClothingHeadRepublicHelmet
+    belt: ClothingBeltAssault
     id: SWIDCardRepublicMedic
     ears: SWClothingHeadsetRepublic
     back: ClothingBackpackMilitarySatchel
@@ -239,6 +246,7 @@
     back: ClothingBackpackMilitarySatchel
     shoes: ClothingShoesBootsJack
     head: SW_ClothingHeadRepublicHelmet
+    belt: ClothingBeltAssault
     id: SWIDCardRepublicRecruit
     ears: SWClothingHeadsetRepublic
 
@@ -310,6 +318,7 @@
     outerClothing: SWImperialIntelligenceSuit
     jumpsuit: SWClothingUniformJumpsuitImperialIntelligence
     head: SW_ClothingHeadImperialIntelligenceHelmet
+    belt: ClothingBeltAssault
     id: SWIDCardEmpireIntelligenceCaretaker
     shoes: ClothingShoesBootsCombatFilled
     gloves: ClothingHandsGlovesCombat
@@ -323,6 +332,7 @@
     jumpsuit: SWClothingUniformJumpsuitImperialIntelligence
     back: SWImperialBackpackCamo
     head: SW_ClothingHeadImperialIntelligenceHelmet
+    belt: ClothingBeltAssault
     id: SWIDCardEmpireIntelligenceAgent
     shoes: ClothingShoesBootsCombatFilled
     gloves: ClothingHandsGlovesCombat
@@ -336,6 +346,7 @@
     jumpsuit: SWClothingUniformJumpsuitFleece
     back: ClothingBackpackMilitarySatchel
     head: SW_ClothingHeadCommanderHavokHelmet
+    belt: ClothingBeltAssault
     id: SWIDCardHavokCommander
     neck: SWClothingNeckHavok
     shoes: ClothingShoesBootsCombatFilled
@@ -348,6 +359,7 @@
     jumpsuit: SWClothingUniformJumpsuitFleece
     back: ClothingBackpackMilitarySatchel
     head: SW_ClothingHeadLieutenantHavokHelmet
+    belt: ClothingBeltAssault
     id: SWIDCardHavokLieutenant
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok
@@ -359,6 +371,7 @@
     jumpsuit: SWClothingUniformJumpsuitFleece
     back: ClothingBackpackMilitarySatchel
     head: SW_ClothingHeadMedicalHavokHelmet
+    belt: ClothingBeltAssault
     id: SWIDCardHavokMedic
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok
@@ -370,6 +383,7 @@
     jumpsuit: SWClothingUniformJumpsuitFleece
     back: ClothingBackpackMilitarySatchel
     head: SW_ClothingHeadHavokHelmet
+    belt: ClothingBeltAssault
     id: SWIDCardHavokStormtrooper
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok
@@ -381,6 +395,7 @@
     jumpsuit: SWClothingUniformJumpsuitFleece
     back: ClothingBackpackMilitarySatchel
     head: SWClothingHeadSniperHavokHelmet
+    belt: ClothingBeltAssault
     id: SWIDCardHavokSniper
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok

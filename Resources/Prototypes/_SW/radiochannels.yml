@@ -15,7 +15,7 @@
   longRange: true
 
 - type: radioChannel
-  id: SWEmpireSobrik
+  id: SWEmpireIntelligence
   name: Имперская Разведка
   keycode: 'и' # Corvax-Localization
   frequency: 2026

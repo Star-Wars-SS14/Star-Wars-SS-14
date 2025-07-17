@@ -311,7 +311,7 @@
     id: SWIDCardEmpireIntelligenceAgent
     shoes: ClothingShoesBootsCombatFilled
     gloves: ClothingHandsGlovesCombat
-    ears: SWClothingHeadsetSobrik
+    ears: SWClothingHeadsetIntelligence
 
 ###Commander elite SWRepublic
 - type: startingGear

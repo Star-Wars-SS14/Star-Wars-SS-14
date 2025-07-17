@@ -1,0 +1,95 @@
+- type: entity
+  abstract: true
+  parent: EncryptionKey
+  id: SWEncryptionKeyBase
+  name: sw base key
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Devices/encryption_keys.rsi
+
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: EncryptionKeyRegular
+  name: regular encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWEmpireRegular
+    defaultChannel: SWEmpireRegular
+  - type: Sprite
+    layers:
+    - state: crypt_red
+    - state: empire_soldier
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: EncryptionKeyGarnison
+  name: garnison encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWEmpireGarnison
+    defaultChannel: SWEmpireGarnison
+  - type: Sprite
+    layers:
+    - state: crypt_red
+    - state: sobrik_comendant
+
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: EncryptionKeyIntelligence
+  name: intelligence encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWEmpireIntelligence
+    defaultChannel: SWEmpireIntelligence
+  - type: Sprite
+    layers:
+    - state: crypt_red
+    - state: intellignece
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: EncryptionKeyRepublic
+  name: republic encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWRepublic
+    defaultChannel: SWRepublic
+  - type: Sprite
+    layers:
+    - state: crypt_blue
+    - state: republic
+
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: EncryptionKeyHavok
+  name: havok encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWRepublicHavok
+    defaultChannel: SWRepublicHavok
+  - type: Sprite
+    layers:
+    - state: crypt_blue
+    - state: havok
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: EncryptionKeyMandalorian
+  name: mandalorian encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWMandalorian
+    defaultChannel: SWMandalorian
+  - type: Sprite
+    layers:
+    - state: crypt_gray
+    - state: mandalorian

@@ -1,0 +1,88 @@
+- type: entity
+  abstract: true
+  parent: ClothingHeadset
+  id: SWClothingHeadset
+  name: headset
+  description: Communications!
+  components:
+  - type: Sprite
+    sprite: Clothing/Ears/Headsets/base.rsi
+  - type: Item
+    size: Small
+  - type: Clothing
+    slots:
+    - ears
+    sprite: Clothing/Ears/Headsets/base.rsi
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetGarnison
+  name: garnison headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - EncryptionKeyGarnison
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetRegular
+  name: regular headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - EncryptionKeyRegular
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetIntelligence
+  name: intelligence headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - EncryptionKeyIntelligence
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetAllEmpire
+  name: empire officer headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - EncryptionKeyIntelligence
+      - EncryptionKeyGarnison
+      - EncryptionKeyRegular
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetRepublic
+  name: republic headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - EncryptionKeyRepublic
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetHavok
+  name: havok headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - EncryptionKeyRepublic
+      - EncryptionKeyHavok
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetMandalorian
+  name: mandalorian headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - EncryptionKeyMandalorian

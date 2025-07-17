@@ -81,7 +81,7 @@
     head: SWClothingHeadMajorImperialHelmet
     belt: ClothingBeltAssault
     id: SWIDCardEmpireMajor
-    ears: SWClothingHeadsetRegular
+    ears: SWClothingHeadsetRegularCom
 
 - type: startingGear
   id: EmpireLieutenantGear
@@ -93,7 +93,7 @@
     head: SWClothingHeadLieutenantImperialHelmet
     belt: ClothingBeltAssault
     id: SWIDCardEmpireLieutenant
-    ears: SWClothingHeadsetRegular
+    ears: SWClothingHeadsetRegularCom
     back: SWImperialBackpack
 
 ###Mandalorians
@@ -161,7 +161,7 @@
     head: SW_ClothingHeadGeneralRepublicHelmet
     belt: ClothingBeltAssault
     id: SWIDCardRepublicGeneral
-    ears: SWClothingHeadsetRepublic
+    ears: SWClothingHeadsetRepublicAll
     back: ClothingBackpackMilitarySatchel
 
 - type: startingGear
@@ -173,7 +173,7 @@
     head: SWClothingHeadСaptainRepublicHelmet
     belt: ClothingBeltAssault
     id: SWIDCardRepublicCaptain
-    ears: SWClothingHeadsetRepublic
+    ears: SWClothingHeadsetRepublicCom
     back: ClothingBackpackMilitarySatchel
 
 - type: startingGear
@@ -185,7 +185,7 @@
     head: SW_ClothingHeadLieutenantRepublicHelmet
     belt: ClothingBeltAssault
     id: SWIDCardRepublicLieutenant
-    ears: SWClothingHeadsetRepublic
+    ears: SWClothingHeadsetRepublicCom
     back: ClothingBackpackMilitarySatchel
 
 #Soldiers

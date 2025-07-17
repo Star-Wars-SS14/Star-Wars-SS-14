@@ -36,6 +36,17 @@
 
 - type: entity
   parent: SWClothingHeadset
+  id: SWClothingHeadsetRegularCom
+  name: regular headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - EncryptionKeyRegular
+      - EncryptionKeyComEmpire
+
+- type: entity
+  parent: SWClothingHeadset
   id: SWClothingHeadsetIntelligence
   name: intelligence headset
   components:
@@ -55,6 +66,7 @@
       - EncryptionKeyIntelligence
       - EncryptionKeyGarnison
       - EncryptionKeyRegular
+      - EncryptionKeyComEmpire
 
 - type: entity
   parent: SWClothingHeadset
@@ -65,6 +77,29 @@
     containers:
       key_slots:
       - EncryptionKeyRepublic
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetRepublicCom
+  name: republic headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - EncryptionKeyRepublic
+      - EncryptionKeyComRepublic
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetRepublicAll
+  name: republic headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - EncryptionKeyRepublic
+      - EncryptionKeyComRepublic
+      - EncryptionKeyHavok
 
 - type: entity
   parent: SWClothingHeadset

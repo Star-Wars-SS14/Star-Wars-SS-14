@@ -93,3 +93,31 @@
     layers:
     - state: crypt_gray
     - state: mandalorian
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: EncryptionKeyComEmpire
+  name: empire commander encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWEmpireCommander
+    defaultChannel: SWEmpireCommander
+  - type: Sprite
+    layers:
+    - state: crypt_red
+    - state: commander_empire
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: EncryptionKeyComRepublic
+  name: republic commander encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWRepublicCommander
+    defaultChannel: SWRepublicCommander
+  - type: Sprite
+    layers:
+    - state: crypt_blue
+    - state: commander_republic

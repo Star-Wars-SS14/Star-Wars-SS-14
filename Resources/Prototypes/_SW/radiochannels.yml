@@ -57,7 +57,23 @@
 - type: radioChannel
   id: SWRepublicCommander
   name: Командование Республики
-  keycode: 'п'
+  keycode: 'д'
   frequency: 2041
   color: "#17827c"
+  longRange: true
+
+- type: radioChannel
+  id: SWRepublicPilots
+  name: Пилоты Республики
+  keycode: 'ш'
+  frequency: 2041
+  color: "#20b08e"
+  longRange: true
+
+- type: radioChannel
+  id: SWEmpirePilots
+  name: Пилоты Империи
+  keycode: 'щ'
+  frequency: 2042
+  color: "#991900"
   longRange: true

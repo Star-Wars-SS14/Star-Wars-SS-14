@@ -15,6 +15,8 @@
         { "name": "havok" },
         { "name": "republic" },
         { "name": "mandalorian" },
-        { "name": "crypt_gray" }
+        { "name": "crypt_gray" },
+        { "name": "republic_pilot" },
+        { "name": "empire_pilot" }
     ]
 }

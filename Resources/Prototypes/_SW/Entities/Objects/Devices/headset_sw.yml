@@ -72,6 +72,8 @@
   id: SWClothingHeadsetAllEmpire
   name: empire officer headset
   components:
+  - type: EncryptionKeyHolder
+    keySlots: 5
   - type: ContainerFill
     containers:
       key_slots:
@@ -79,6 +81,7 @@
       - EncryptionKeyGarnison
       - EncryptionKeyRegular
       - EncryptionKeyComEmpire
+      - EncryptionKeyEmpirePilots
 
 - type: entity
   parent: SWClothingHeadset
@@ -112,6 +115,7 @@
       - EncryptionKeyRepublic
       - EncryptionKeyComRepublic
       - EncryptionKeyHavok
+      - EncryptionKeyRepublicPilots
 
 - type: entity
   parent: SWClothingHeadset

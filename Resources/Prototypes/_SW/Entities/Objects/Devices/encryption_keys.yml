@@ -10,7 +10,7 @@
 
 - type: entity
   parent: SWEncryptionKeyBase
-  id: EncryptionKeyRegular
+  id: SWEncryptionKeyRegular
   name: regular encryption key
   components:
   - type: EncryptionKey
@@ -24,7 +24,7 @@
 
 - type: entity
   parent: SWEncryptionKeyBase
-  id: EncryptionKeyGarnison
+  id: SWEncryptionKeyGarnison
   name: garnison encryption key
   components:
   - type: EncryptionKey
@@ -39,7 +39,7 @@
 
 - type: entity
   parent: SWEncryptionKeyBase
-  id: EncryptionKeyIntelligence
+  id: SWEncryptionKeyIntelligence
   name: intelligence encryption key
   components:
   - type: EncryptionKey
@@ -53,7 +53,7 @@
 
 - type: entity
   parent: SWEncryptionKeyBase
-  id: EncryptionKeyRepublic
+  id: SWEncryptionKeyRepublic
   name: republic encryption key
   components:
   - type: EncryptionKey
@@ -68,7 +68,7 @@
 
 - type: entity
   parent: SWEncryptionKeyBase
-  id: EncryptionKeyHavok
+  id: SWEncryptionKeyHavok
   name: havok encryption key
   components:
   - type: EncryptionKey
@@ -82,7 +82,7 @@
 
 - type: entity
   parent: SWEncryptionKeyBase
-  id: EncryptionKeyMandalorian
+  id: SWEncryptionKeyMandalorian
   name: mandalorian encryption key
   components:
   - type: EncryptionKey
@@ -96,7 +96,7 @@
 
 - type: entity
   parent: SWEncryptionKeyBase
-  id: EncryptionKeyComEmpire
+  id: SWEncryptionKeyComEmpire
   name: empire commander encryption key
   components:
   - type: EncryptionKey
@@ -110,7 +110,7 @@
 
 - type: entity
   parent: SWEncryptionKeyBase
-  id: EncryptionKeyComRepublic
+  id: SWEncryptionKeyComRepublic
   name: republic commander encryption key
   components:
   - type: EncryptionKey
@@ -124,7 +124,7 @@
 
 - type: entity
   parent: SWEncryptionKeyBase
-  id: EncryptionKeyRepublicPilots
+  id: SWEncryptionKeyRepublicPilots
   name: republic pilots encryption key
   components:
   - type: EncryptionKey
@@ -138,7 +138,7 @@
 
 - type: entity
   parent: SWEncryptionKeyBase
-  id: EncryptionKeyEmpirePilots
+  id: SWEncryptionKeyEmpirePilots
   name: empire pilots encryption key
   components:
   - type: EncryptionKey

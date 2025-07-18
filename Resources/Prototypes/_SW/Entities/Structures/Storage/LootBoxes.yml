@@ -6,31 +6,31 @@
   table: !type:AllSelector
     children:
     - id: FoodBreadPlainSlice
-      prob: 0.40
+      prob: 0.50
       maxAmount: 3
     - id: FoodCorn
-      prob: 0.40
+      prob: 0.50
       maxAmount: 3
     - id: DrinkWaterBottleFull
-      prob: 0.40
+      prob: 0.50
       maxAmount: 3
     - id: FoodPotato
-      prob: 0.40
+      prob: 0.50
       maxAmount: 3
     - id: FoodSnackChocolate
-      prob: 0.40
+      prob: 0.50
       maxAmount: 3
     - id: FoodApple
-      prob: 0.40
+      prob: 0.50
       maxAmount: 3
     - id: FoodOrange
       prob: 0.50
       maxAmount: 3
     - id: SheetGlass1
-      prob: 0.30
+      prob: 0.20
       maxAmount: 5
     - id: SheetSteel1
-      prob: 0.30
+      prob: 0.20
       maxAmount: 5
     - id: MaterialWoodPlank1
       prob: 0.30
@@ -38,40 +38,31 @@
     - id: MaterialCloth10
       prob: 0.30
       maxAmount: 2
-    - id: SWj111rancor
-      prob: 0.30
+    - id: SWJ111Rancor
+      prob: 0.05
       maxAmount: 1
-      orGroup: Weapon
-    - id: SWz1blastercarbine
-      prob: 0.30
+    - id: SWZ1BlasterCarbine
+      prob: 0.05
       maxAmount: 1
-      orGroup: Weapon
-    - id: SWgrantekf11d
-      prob: 0.30
-      maxAmount: 1
-      orGroup: Weapon
     - id: SWGrantekF11D1
-      prob: 0.30
+      prob: 0.05
       maxAmount: 1
-      orGroup: Weapon
     - id: SWGT-13ST
-      prob: 0.30
+      prob: 0.05
       maxAmount: 1
-      orGroup: Weapon
     - id: SWMK1
-      prob: 0.30
+      prob: 0.05
       maxAmount: 1
-      orGroup: Weapon
-    - id: SWCannonYellowMagazine
+    - id: SWCannonYellowMagazineBlastRifle
       prob: 0.10
       maxAmount: 1
-    - id: SWF-11DSniperMagazine
+    - id: SWCannonBlueMagazineBlastRifle
       prob: 0.10
       maxAmount: 1
-    - id: SWZ-1Magazine
+    - id: SWZ1RedMagazineBlastRifle
       prob: 0.10
       maxAmount: 1
-    - id: SWJ-111Magazine
+    - id: SWBlueMagazineBlastRifle
       prob: 0.10
       maxAmount: 1
 
@@ -128,36 +119,31 @@
     - id: MaterialCloth10
       prob: 0.30
       maxAmount: 2
-    - id: SWj111rancor
-      prob: 0.30
+    - id: SWJ111Rancor
+      prob: 0.05
       maxAmount: 1
-      orGroup: Weapon
-    - id: SWz1blastercarbine
-      prob: 0.30
+    - id: SWZ1BlasterCarbine
+      prob: 0.05
       maxAmount: 1
-      orGroup: Weapon
     - id: SWGrantekF11D1
-      prob: 0.30
+      prob: 0.05
       maxAmount: 1
-      orGroup: Weapon
     - id: SWGT-13ST
-      prob: 0.30
+      prob: 0.05
       maxAmount: 1
-      orGroup: Weapon
     - id: SWMK1
-      prob: 0.30
+      prob: 0.05
       maxAmount: 1
-      orGroup: Weapon
-    - id: SWCannonYellowMagazine
+    - id: SWCannonYellowMagazineBlastRifle
       prob: 0.10
       maxAmount: 1
-    - id: SWF-11DSniperMagazine
+    - id: SWCannonBlueMagazineBlastRifle
       prob: 0.10
       maxAmount: 1
-    - id: SWZ-1Magazine
+    - id: SWZ1RedMagazineBlastRifle
       prob: 0.10
       maxAmount: 1
-    - id: SWJ-111Magazine
+    - id: SWBlueMagazineBlastRifle
       prob: 0.10
       maxAmount: 1
 
@@ -182,16 +168,11 @@
       - MaterialWoodPlank1
     chance: 0.6
     rarePrototypes:
-    - SWj111rancor
-    - SWz1blastercarbine
-    - SWGrantekF11D1
-    - SWGT-13ST
-    - SWMK1
-    - SWJ-111Magazine
-    - SWZ-1Magazine
-    - SWF-11DSniperMagazine
-    - SWCannonYellowMagazine
-    rarechance: 0.2
+    - SWCannonYellowMagazineBlastRifle
+    - SWCannonBlueMagazineBlastRifle
+    - SWZ1RedMagazineBlastRifle
+    - SWBlueMagazineBlastRifle
+    rarechance: 0.3
 
 
 - type: entity
@@ -271,42 +252,33 @@
       prob: 0.40
       maxAmount: 5
     - id: SWE1BlasterRifle
-      prob: 0.30
+      prob: 0.05
       maxAmount: 1
-      orGroup: Weapon
     - id: SWH206Renegade
-      prob: 0.30
+      prob: 0.05
       maxAmount: 1
-      orGroup: Weapon
     - id: SWEL34
-      prob: 0.30
+      prob: 0.05
       maxAmount: 1
-      orGroup: Weapon
     - id: SWGrantekF11D2
-      prob: 0.30
+      prob: 0.05
       maxAmount: 1
-      orGroup: Weapon
     - id: SWK406Ripper
-      prob: 0.30
+      prob: 0.05
       maxAmount: 1
-      orGroup: Weapon
     - id: SWberyaramk3
-      prob: 0.30
+      prob: 0.05
       maxAmount: 1
-      orGroup: Weapon
-    - id: E-1Magazine
+    - id: SWSniperRifleYellowMagazineBlastRifle
       prob: 0.10
       maxAmount: 1
-    - id: SWF-11DCannonMagazine
+    - id: SWCannonYellowMagazineBlastRifle
       prob: 0.10
       maxAmount: 1
-    - id: H-206Magazine
+    - id: SWH206GreenMagazineBlastRifle
       prob: 0.10
       maxAmount: 1
-    - id: CannonYellowMagazine
-      prob: 0.10
-      maxAmount: 1
-    - id: SniperRifleYellowMagazine
+    - id: SWYellowMagazineBlastRifle
       prob: 0.10
       maxAmount: 1
 
@@ -331,17 +303,10 @@
       - SheetPlasma1
     chance: 0.7
     rarePrototypes:
-    - SWE1BlasterRifle
-    - SWH206Renegade
-    - SWEL34
-    - SWGrantekF11D2
-    - SWK406Ripper
-    - SWberyaramk3
-    - E-1Magazine
-    - SWF-11DCannonMagazine
-    - H-206Magazine
-    - CannonYellowMagazine
-    - SniperRifleYellowMagazine
+    - SWSniperRifleYellowMagazineBlastRifle
+    - SWCannonYellowMagazineBlastRifle
+    - SWH206GreenMagazineBlastRifle
+    - SWYellowMagazineBlastRifle
     - SheetSteel10
     - SheetGlass10
     rarechance: 0.3
@@ -378,79 +343,24 @@
 
 - type: entity
   id: SWBoxSteeldoubleHard
-  name: стальной ящик
-  parent: SWBoxSteel
-  suffix: Средний лут
+  name: стальные ящики
+  parent: SWBoxSteeldouble
+  suffix: тяжёлый лут
   components:
   - type: StorageFill
     contents:
-    - id: SheetGlass30
+    - id: SheetGlass
       prob: 0.50
       maxAmount: 1
-    - id: SheetSteel30
+    - id: SheetSteel
       prob: 0.50
       maxAmount: 1
-    - id: SheetRGlass10
+    - id: SheetRGlass1
       prob: 0.50
-      maxAmount: 2
-    - id: SheetPGlass10
+      maxAmount: 20
+    - id: SheetPGlass1
       prob: 0.50
-      maxAmount: 2
-    - id: SheetPlasteel10
-      prob: 0.50
-      maxAmount: 2
-    - id: SheetPlasma10
-      prob: 0.50
-      maxAmount: 2
-    - id: SheetRPGlass1
-      prob: 0.50
-      maxAmount: 6
-    - id: SheetUGlass1
-      prob: 0.50
-      maxAmount: 6
-    - id: SheetRUGlass1
-      prob: 0.50
-      maxAmount: 6
-    - id: SheetPlastic1
-      prob: 0.50
-      maxAmount: 6
-    - id: SheetPlasma1
-      prob: 0.50
-      maxAmount: 6
-    - id: SWP301Destroyer
-      prob: 0.40
-      maxAmount: 1
-      orGroup: Weapon
-    - id: CannonYellowMagazine
-      prob: 0.40
-      maxAmount: 1
-    - id: CannonYellowMagazine
-      prob: 0.30
-      maxAmount: 3
-    - id: SWRedMagazineBlastRifle
-      prob: 0.30
-      maxAmount: 3
-
-- type: entity
-  id: SWBoxPlasticHard
-  name: стальной ящик
-  parent: SWBoxSteel
-  suffix: Средний лут
-  components:
-  - type: StorageFill
-    contents:
-    - id: SheetGlass30
-      prob: 0.50
-      maxAmount: 1
-    - id: SheetSteel30
-      prob: 0.50
-      maxAmount: 1
-    - id: SheetRGlass10
-      prob: 0.50
-      maxAmount: 2
-    - id: SheetPGlass10
-      prob: 0.50
-      maxAmount: 2
+      maxAmount: 20
     - id: SheetPlasteel10
       prob: 0.50
       maxAmount: 2
@@ -475,11 +385,64 @@
     - id: SWP301Destroyer
       prob: 0.40
       maxAmount: 1
-      orGroup: Weapon
     - id: SWGallantry
       prob: 0.40
       maxAmount: 1
-    - id: CannonYellowMagazine
+    - id: SWCannonYellowMagazineBlastRifle
+      prob: 0.30
+      maxAmount: 3
+    - id: SWRedMagazineBlastRifle
+      prob: 0.30
+      maxAmount: 3
+
+- type: entity
+  id: SWBoxPlasticHard
+  name: большой ящик
+  parent: SWBoxPlastic
+  suffix: Тяжелый лут
+  components:
+  - type: StorageFill
+    contents:
+    - id: SheetGlass
+      prob: 0.50
+      maxAmount: 1
+    - id: SheetSteel
+      prob: 0.50
+      maxAmount: 1
+    - id: SheetRGlass1
+      prob: 0.50
+      maxAmount: 20
+    - id: SheetPGlass1
+      prob: 0.50
+      maxAmount: 20
+    - id: SheetPlasteel10
+      prob: 0.50
+      maxAmount: 2
+    - id: SheetPlasma10
+      prob: 0.50
+      maxAmount: 2
+    - id: SheetRPGlass1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetUGlass1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetRUGlass1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetPlastic1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetUranium1
+      prob: 0.50
+      maxAmount: 6
+    - id: SWP301Destroyer
+      prob: 0.40
+      maxAmount: 1
+    - id: SWGallantry
+      prob: 0.40
+      maxAmount: 1
+    - id: SWCannonYellowMagazineBlastRifle
       prob: 0.30
       maxAmount: 3
     - id: SWRedMagazineBlastRifle

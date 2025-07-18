@@ -47,6 +47,17 @@
 
 - type: entity
   parent: SWClothingHeadset
+  id: SWClothingHeadsetEmpirePilot
+  name: regular headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyRegular
+      - SWEncryptionKeyEmpirePilots
+
+- type: entity
+  parent: SWClothingHeadset
   id: SWClothingHeadsetRegularCom
   name: commander headset
   components:
@@ -93,6 +104,17 @@
     containers:
       key_slots:
       - SWEncryptionKeyRepublic
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetRepublicPilot
+  name: republic pilot headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyRepublic
+      - SWEncryptionKeyRepublicPilots
 
 - type: entity
   parent: SWClothingHeadset

@@ -10,6 +10,7 @@
   - SWEmpireSoldier
   - SWEmpireMedic
   - SWEmpireEngineer
+  - SWEmpirePilot
   weight: 1900
 
 - type: department
@@ -25,6 +26,7 @@
   - SWRepublicRecruit
   - SWRepublicMedic
   - SWRepublicEngineer
+  - SWRepublicPilot
   weight: 1800
 
 - type: department

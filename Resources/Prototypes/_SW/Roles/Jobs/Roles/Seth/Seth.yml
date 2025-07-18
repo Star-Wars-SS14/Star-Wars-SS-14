@@ -46,6 +46,19 @@
     back: SWImperialBackpack
 
 - type: startingGear
+  id: EmpirePilotGear
+  equipment:
+    outerClothing: SWImperialSuit
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    head: SW_ClothingHeadImperialHelmet
+    belt: ClothingBeltAssault
+    id: SWIDCardEmpirePilot
+    shoes: ClothingShoesBootsCombatFilled
+    ears: SWClothingHeadsetEmpirePilot
+    back: SWImperialBackpack
+    pocket1: HandHeldMassScanner
+
+- type: startingGear
   id: EmpireEngineerGear
   equipment:
     eyes: ClothingEyesGlassesMeson    
@@ -212,6 +225,19 @@
     id: SWIDCardRepublicSoldier
     ears: SWClothingHeadsetRepublic
     back: ClothingBackpackMilitarySatchel
+
+- type: startingGear
+  id: RepublicPilotGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    outerClothing: SWRepublicSuit
+    shoes: ClothingShoesBootsJack
+    head: SW_ClothingHeadRepublicHelmet
+    belt: ClothingBeltAssault
+    id: SWIDCardRepublicPilot
+    ears: SWClothingHeadsetRepublicPilot
+    back: ClothingBackpackMilitarySatchel
+    pocket1: HandHeldMassScanner
 
 - type: startingGear
   id: RepublicEngineerGear

@@ -19,7 +19,8 @@
             SWRepublicLieutenant: [ 3, 3 ]
             SWRepublicSoldier: [ 9, 9 ]
             SWRepublicMedic: [ 3, 3 ]
-            SWRepublicEngineer: [2, 2]
+            SWRepublicEngineer: [ 2, 2 ]
+            SWRepublicPilot: [ 4, 4 ]
          - type: CapturableStation
            fraction: RepublicFaction
     ImperialCruiser:
@@ -38,6 +39,7 @@
             SWEmpireSoldier: [ 9, 9 ]
             SWEmpireMedic: [ 3, 3 ]
             SWEmpireEngineer: [2, 2]
+            SWEmpirePilot: [ 4, 4 ]
          - type: CapturableStation
            fraction: EmpireFaction
     ast1:

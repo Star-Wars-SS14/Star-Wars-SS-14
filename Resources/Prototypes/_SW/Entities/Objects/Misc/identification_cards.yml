@@ -117,6 +117,17 @@
 
 - type: entity
   parent: SWIDCardStandard
+  id: SWIDCardEmpirePilot
+  name: Empire Pilot ID card
+  components:
+  - type: Sprite
+    layers:
+    - state: image20
+  - type: PresetIdCard
+    job: SWEmpirePilot
+
+- type: entity
+  parent: SWIDCardStandard
   id: SWIDCardEmpireMedic
   name: Empire Medic ID card
   components:
@@ -208,13 +219,24 @@
 - type: entity
   parent: SWIDCardStandard
   id: SWIDCardRepublicSoldier
-  name: SWRepublic Soldier ID card
+  name: Republic Soldier ID card
   components:
   - type: Sprite
     layers:
     - state: image4
   - type: PresetIdCard
     job: SWRepublicSoldier
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWIDCardRepublicPilot
+  name: Republic Pilot ID card
+  components:
+  - type: Sprite
+    layers:
+    - state: image4
+  - type: PresetIdCard
+    job: SWRepublicPilot
 
 - type: entity
   parent: SWIDCardStandard

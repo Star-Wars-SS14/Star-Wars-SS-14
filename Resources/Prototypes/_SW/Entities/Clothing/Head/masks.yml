@@ -1,6 +1,6 @@
 - type: entity
   parent: ClothingMaskBase
-  id: SW_ClothingMaskBallamor
+  id: SWClothingMaskBallamor
   name: ballamor mask
   components:
   - type: Sprite

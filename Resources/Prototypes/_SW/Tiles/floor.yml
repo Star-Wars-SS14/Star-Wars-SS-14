@@ -1,5 +1,5 @@
 ﻿- type: tile
-  id: SW_FloorCorridor
+  id: SWFloorCorridor
   name: стальная плитка
   sprite: /Textures/_SW/Tiles/corridor.png
   baseTurf: Plating
@@ -11,7 +11,7 @@
   heatCapacity: 10000
 
 - type: tile
-  id: SW_FloorSmallBlackTiles
+  id: SWFloorSmallBlackTiles
   name: чёрная стальная плитка
   sprite: /Textures/_SW/Tiles/small_black_tiles.png
   baseTurf: Plating
@@ -23,7 +23,7 @@
   heatCapacity: 10000
 
 - type: tile
-  id: SW_FloorSteeltile
+  id: SWFloorSteeltile
   name: стальная плитка
   sprite: /Textures/_SW/Tiles/steeltile.png
   baseTurf: Plating
@@ -35,7 +35,7 @@
   heatCapacity: 10000
 
 - type: tile
-  id: SW_FloorSnow
+  id: SWFloorSnow
   name: снег
   sprite: /Textures/_SW/Tiles/snow.png
   variants: 13
@@ -67,7 +67,7 @@
   indestructible: true
 
 - type: tile
-  id: SW_FloorAsphalt
+  id: SWFloorAsphalt
   name: асфальт
   sprite: /Textures/_SW/Tiles/asphalt.png
   variants: 10

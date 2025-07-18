@@ -1,5 +1,5 @@
 - type: entity
-  parent: SW_BaseHelmet
+  parent: SWBaseHelmet
   id: SW_ClothingHeadImperialHelmet
   name: imperial helmet
   components:
@@ -10,7 +10,7 @@
 
 - type: entity
   parent: SW_ClothingHeadImperialHelmet
-  id: SW_ClothingHeadLieutenantImperialHelmet
+  id: SWClothingHeadLieutenantImperialHelmet
   name: lieutenant imperial helmet
   components:
   - type: Sprite
@@ -20,7 +20,7 @@
 
 - type: entity
   parent: SW_ClothingHeadImperialHelmet
-  id: SW_ClothingHeadMajorImperialHelmet
+  id: SWClothingHeadMajorImperialHelmet
   name: major imperial helmet
   components:
   - type: Sprite

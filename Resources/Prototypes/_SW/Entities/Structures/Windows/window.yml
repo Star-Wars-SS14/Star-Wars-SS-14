@@ -1,5 +1,5 @@
 - type: entity
-  id: SW_WindowDirectional
+  id: SWWindowDirectional
   parent: BaseStructure
   name: направленное окно
   description: Не испачкайте.
@@ -90,7 +90,7 @@
     price: 10
 
 - type: entity
-  id: SW_WindowFrostedDirectional
+  id: SWWindowFrostedDirectional
   parent: WindowDirectional
   name: Directional frosted window
   description: Don't smudge up the glass down there.

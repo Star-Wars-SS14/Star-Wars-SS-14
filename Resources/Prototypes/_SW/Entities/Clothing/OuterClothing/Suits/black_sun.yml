@@ -1,6 +1,6 @@
-﻿- type: entity
+- type: entity
   parent: [ClothingOuterBase, AllowSuitStorageClothing]
-  id: SW_BlackSunArmor
+  id: SWBlackSunArmor
   name: Black Sun Armor
   components:
   - type: Item

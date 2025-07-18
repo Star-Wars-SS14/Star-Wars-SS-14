@@ -10,4 +10,4 @@
   icon: JobIconBlackSun
   supervisors: job-supervisors-reg-blacksun
   access:
-  - BlackSun
+  - SWBlackSun

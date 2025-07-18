@@ -2,7 +2,7 @@
   name: artillery call grenade
   description: Grenade that calls artillery.
   parent: BaseItem
-  id: ArtGrenade
+  id: SWArtGrenade
   components:
   - type: Item
     size: Small
@@ -24,7 +24,7 @@
           Primed: { state: primed }
           Unprimed: { state: icon }
   - type: ArtilleryOnTrigger
-    instantEffectToSpawn: ExplodeOnSpawnInstantEffect
+    instantEffectToSpawn: SWExplodeOnSpawnInstantEffect
     tilesRange: 10
     bombSound: /Audio/_SW/bombsound.ogg
   - type: OnUseTimerTrigger

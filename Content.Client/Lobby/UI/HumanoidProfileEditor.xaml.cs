@@ -1130,7 +1130,7 @@ namespace Content.Client.Lobby.UI
                 {
                     if (!RgbSkinColorContainer.Visible)
                     {
-                        Skin.Visible = false;
+                        Skin.Visible = true;
                         RgbSkinColorContainer.Visible = true;
                     }
 
@@ -1140,6 +1140,22 @@ namespace Content.Client.Lobby.UI
                     Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
                     break;
                 }
+                //SW start
+                case HumanoidSkinColor.ShadesOfBlue:
+                {
+                    if (!Skin.Visible)
+                    {
+                        Skin.Visible = true;
+                        RgbSkinColorContainer.Visible = false;
+                    }
+
+                    var color = SkinColor.ShadesOfBlueClosest(Skin.Value);
+
+                    Markings.CurrentSkinColor = color;
+                    Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
+                    break;
+                }
+                //SW end
             }
 
             ReloadProfilePreview();

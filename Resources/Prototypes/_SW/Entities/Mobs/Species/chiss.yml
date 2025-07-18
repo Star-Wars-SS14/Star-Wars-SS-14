@@ -1,0 +1,34 @@
+- type: entity
+  parent: BaseMobSpeciesOrganic
+  id: BaseMobChiss
+  name: Urist McChiss
+  abstract: true
+  components:
+  - type: Hunger
+  - type: Icon # It will not have an icon in the adminspawn menu without this. Body parts seem fine for whatever reason.
+    sprite: _SW/Mobs/Species/Chiss/parts.rsi
+    state: full
+  - type: Thirst
+  - type: Butcherable
+    butcheringType: Spike
+    spawned:
+    - id: FoodMeatHuman
+      amount: 5
+  - type: HumanoidAppearance
+    species: Human
+    hideLayersOnEquip:
+    - Hair
+    - Snout
+  - type: Inventory
+    femaleDisplacements:
+      jumpsuit:
+        sizeMaps:
+          32:
+            sprite: _SW/Mobs/Species/Chiss/displacement.rsi
+            state: jumpsuit-female
+
+- type: entity
+  save: false
+  name: Urist McChiss
+  parent: BaseMobChiss
+  id: MobChiss

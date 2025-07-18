@@ -1,6 +1,6 @@
 - type: entity
   parent: ClothingHeadBase
-  id: SW_ClothingHeadHatHoodSithCloak
+  id: SWClothingHeadHatHoodSithCloak
   name: sith cloak hood
   description: A hood of a goliath cloak, it is made from the hide of resilient fauna from a distant planet.
   components:
@@ -18,7 +18,7 @@
 
 - type: entity
   parent: ClothingHeadBase
-  id: SW_ClothingHeadHatHoodJediCloak
+  id: SWClothingHeadHatHoodJediCloak
   name: jedi cloak hood
   description: A hood of a goliath cloak, it is made from the hide of resilient fauna from a distant planet.
   components:
@@ -42,7 +42,7 @@
 
 - type: entity
   parent: ClothingHeadBase
-  id: SW_ClothingHeadHatHoodBallamor
+  id: SWClothingHeadHatHoodBallamor
   name: ballamor hood
   components:
   - type: Sprite

@@ -1,6 +1,6 @@
 - type: entity
   parent: PosterBase
-  id: PosterAgt
+  id: SWPosterAgt
   name: "Вступай!"
   description: "Империя ждёт именно тебя!"
   components:
@@ -10,7 +10,7 @@
 
 - type: entity
   parent: PosterBase
-  id: PosterEmp
+  id: SWPosterEmp
   name: "Могучая Империя"
   description: "Во Славу Великой Империи!"
   components:

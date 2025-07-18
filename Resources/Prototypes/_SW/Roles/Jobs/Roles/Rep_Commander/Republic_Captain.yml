@@ -12,6 +12,6 @@
   icon: "JobIconHavokLieutenant"
   supervisors: job-supervisors-gen-rep
   access:
-  - RepublicBase
-  - RepublicCommander
-  - RepublicArsenal
+  - SWRepublicBase
+  - SWRepublicCommander
+  - SWRepublicArsenal

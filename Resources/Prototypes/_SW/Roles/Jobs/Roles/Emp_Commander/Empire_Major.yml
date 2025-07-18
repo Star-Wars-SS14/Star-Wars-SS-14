@@ -12,7 +12,7 @@
   icon: "JobIconEmpireMajor"
   supervisors: job-supervisors-MOFF
   access:
-  - EmpireCommander
-  - EmpireBase
-  - EmpireArsenal
-  - EmpireSobrik
+  - SWEmpireCommander
+  - SWEmpireBase
+  - SWEmpireArsenal
+  - SWEmpireSobrik

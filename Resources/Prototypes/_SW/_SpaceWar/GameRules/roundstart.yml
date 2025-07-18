@@ -3,6 +3,13 @@
   id: SectorWar
   components:
   - type: SectorWarRule
+    announcementTimeHold: 12
+    announcementTimeAttackPartially: 90
+    announcementTimeAttackFull: 120
+    announcementSoundHold:
+      path: /Audio/_SW/_spaceWar/radar.ogg
+      params:
+          volume: -4
   - type: SWFactionGamerule
     factionsPrototypes:
     - RepublicFaction

@@ -12,10 +12,12 @@ using Content.Server.Maps;
 using Content.Server.Station.Systems;
 using Content.Shared._SW.TaskSystem;
 using Content.Shared.Echo.GameTicking.Components;
+using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Components;
 using Robust.Server.Audio;
 using Robust.Server.GameObjects;
 using Robust.Server.Maps;
+using Robust.Shared.Audio;
 using Robust.Shared.Audio.Components;
 using Robust.Shared.Configuration;
 using Robust.Shared.Player;
@@ -31,6 +33,7 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
     [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly AudioSystem _audio = default!;
     [Dependency] private readonly IGameTiming _gameTiming = default!;
+    [Dependency] private readonly SharedGameTicker _sharedGameTicker = default!;
     [Dependency] private readonly SWFactionGameruleSystem _sWFaction = default!;
     [Dependency] private readonly StationSystem _stationSystem = default!;
 
@@ -58,25 +61,72 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
         }
         args.AddLine(message.AppendLine().ToString());
     }
+    protected override void ActiveTick(EntityUid uid, SectorWarRuleComponent component, GameRuleComponent gameRule, float frameTime)
+    {
+        base.ActiveTick(uid, component, gameRule, frameTime);
+        List<EntityUid> republicStations = new();
+        List<EntityUid> empireStations = new();
+        var query = EntityQueryEnumerator<CapturableStationComponent>();
 
-    //public override void Update(float frameTime)
-    //{
-        //base.Update(frameTime);
+        ISawmill _s = Logger.GetSawmill("asdsfgh");
+        while (query.MoveNext(out var stationUid, out var comp))
+        {
+            if (comp.Fraction != null && comp.Fraction == "RepublicFaction")
+            {
+                republicStations.Add(stationUid);
+            }
 
-        //if (_gameRule == null || _gameRule.AlertDelays.Count == 0)
-        //    return;
+            if (comp.Fraction != null && comp.Fraction == "EmpireFaction")
+            {
+                _s.Debug("0");
+                empireStations.Add(stationUid);
+            }
+        }
+        _s.Fatal($"{_gameTiming.CurTime} && {_sharedGameTicker.RoundStartTimeSpan + TimeSpan.FromSeconds(component.AnnouncementTimeHold)}");
+        //There must be a better way to do it but i am too lazy
+        if (_gameTiming.CurTime >= _sharedGameTicker.RoundStartTimeSpan
+                                    + TimeSpan.FromSeconds(component.AnnouncementTimeAttackFull))
+        {
+            //_chat.DispatchFilteredAnnouncement(republicFilter,
+            //                         Loc.GetString(component.AnnouncementTextAttackFullRepublic),
+            //                         announcementSound: component.AnnouncementSoundAttackFull, sender: "a");
+            //_chat.DispatchFilteredAnnouncement(empireFilter,
+            //             Loc.GetString(component.AnnouncementTextAttackFullEmpire),
+            //             announcementSound: component.AnnouncementSoundAttackFull, sender: "a");
+        }
+        else if (_gameTiming.CurTime >= _sharedGameTicker.RoundStartTimeSpan
+                                    + TimeSpan.FromSeconds(component.AnnouncementTimeAttackPartially))
+        {
+            //_chat.DispatchFilteredAnnouncement(republicFilter,
+            //             Loc.GetString(component.AnnouncementTextAttackPartiallyRepublic),
+            //             announcementSound: component.AnnouncementSoundAttackPartially);
+            //_chat.DispatchFilteredAnnouncement(empireFilter,
+            //             Loc.GetString(component.AnnouncementTextAttackPartiallyEmpire),
+            //             announcementSound: component.AnnouncementSoundAttackPartially,
+            //             sender: "a");
+        }
+        else if (_gameTiming.CurTime >= _sharedGameTicker.RoundStartTimeSpan
+                                    + TimeSpan.FromSeconds(component.AnnouncementTimeHold))
+        {
+            _s.Fatal("1");
+            _s.Fatal($"{component.AnnouncementSoundHold}");
+            foreach (var station in republicStations)
+            {
+                _chat.DispatchStationAnnouncement(station,
+                             Loc.GetString(component.AnnouncementTextHoldRepublic),
+                             announcementSound: component.AnnouncementSoundHold,
+                             sender: "a");
+            }
 
-        //if (_gameTiming.CurTime - _gameRule.LastAlertTime <= TimeSpan.FromMinutes(_gameRule.AlertDelays[0]))
-        //    return;
-
-        //_gameRule.LastAlertTime = _gameTiming.CurTime;
-        //_gameRule.AlertDelays.RemoveAt(0);
-
-        //_audio.PlayGlobal(_gameRule.AlertSound, Filter.Broadcast(), true);
-        //_chat.DispatchGlobalAnnouncement(Loc.GetString("sector-war-round-end-alert",
-        //    ("time", (TimeSpan.FromHours(3) - _gameTiming.CurTime).ToString())));
-    //}
-
+            foreach (var station in empireStations)
+            {
+                _chat.DispatchStationAnnouncement(station,
+                         Loc.GetString(component.AnnouncementTextAttackFullEmpire),
+                         announcementSound: component.AnnouncementSoundHold,
+                         sender: "a");
+            }
+        }
+    }
     protected override void Added(EntityUid uid,
         SectorWarRuleComponent component,
         GameRuleComponent gameRule,

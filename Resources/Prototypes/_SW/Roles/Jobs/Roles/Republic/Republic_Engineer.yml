@@ -6,7 +6,7 @@
     - !type:OverallPlaytimeRequirement
       time: 9000
   startingGear: RepublicEngineerGear
-  icon: "JobIconRepublicSoldier"
+  icon: "JobIconStationEngineer"
   supervisors: job-supervisors-leit-rep
   access:
   - SWRepublicBase

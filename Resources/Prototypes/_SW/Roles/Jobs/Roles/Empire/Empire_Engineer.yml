@@ -6,7 +6,7 @@
     - !type:OverallPlaytimeRequirement
       time: 9000
   startingGear: EmpireEngineerGear
-  icon: "JobIconEmpireSoldier"
+  icon: "JobIconStationEngineer"
   supervisors: job-supervisors-leit-emp
   access:
   - SWEmpireBase

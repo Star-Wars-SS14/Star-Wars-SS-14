@@ -51,7 +51,7 @@
   name: Командование Империи
   keycode: 'к'
   frequency: 2040
-  color: "#941e1e"
+  color: "#f5f531"
   longRange: true
 
 - type: radioChannel
@@ -59,7 +59,7 @@
   name: Командование Республики
   keycode: 'н'
   frequency: 2041
-  color: "#17827c"
+  color: "#70fafa"
   longRange: true
 
 - type: radioChannel
@@ -67,7 +67,7 @@
   name: Пилоты Республики
   keycode: 'л'
   frequency: 2041
-  color: "#20b08e"
+  color: "#4955fc"
   longRange: true
 
 - type: radioChannel
@@ -75,5 +75,5 @@
   name: Пилоты Империи
   keycode: 'п'
   frequency: 2042
-  color: "#991900"
+  color: "#2a0dd1"
   longRange: true

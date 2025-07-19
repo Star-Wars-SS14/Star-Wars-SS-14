@@ -633,6 +633,22 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
         if (hitEvent.Handled)
             return true;
 
+        ISawmill _s = Logger.GetSawmill("Sharedmelee");
+        //SW start
+        List<EntityUid> tempTargets = new(targets);
+        foreach (var target in tempTargets)
+        {
+            TargetMeleeHitEvent targetHitEvent = new TargetMeleeHitEvent(user, meleeUid);
+            RaiseLocalEvent(target, targetHitEvent);
+            _s.Debug("Raised");
+            if (targetHitEvent.Handled)
+            {
+                _s.Debug("Removed");
+                targets.Remove(target);
+            }
+        }
+        //SW end
+
         var weapon = GetEntity(ev.Weapon);
 
         Interaction.DoContactInteraction(user, weapon);

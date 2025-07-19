@@ -3,6 +3,10 @@
 - type: Tag
   id: SaberFragmentTag
 - type: Tag
+  id: ForceUser
+- type: Tag
+  id: HolopadAdmin
+- type: Tag
   id: SWHolopadAdmin
 - type: Tag
   id: SWHolopadEmpire

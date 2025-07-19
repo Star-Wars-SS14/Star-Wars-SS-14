@@ -1,4 +1,4 @@
-﻿using Content.Server._SW.Force.Components;
+using Content.Server._SW.Force.Components;
 using Content.Server.Beam;
 using Content.Server.Hands.Systems;
 using Content.Server.Popups;

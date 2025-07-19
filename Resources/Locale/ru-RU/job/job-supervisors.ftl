@@ -20,7 +20,7 @@ job-supervisors-major-emp = майору регулярных силл импе�
 job-supervisors-cap-sob = капитану гарнизона Собрика
 job-supervisors-keeper = хранителю
 job-supervisors-watcher-intelligence = смотрителю разведки
-job-supervisors-min-war = министерству войны и тёмному совету
+job-supervisors-min-war = Министерству Войны и Темному Совету
 job-supervisors-grand-marshal = гарнд-маршалу
 job-supervisors-general-gaza = генералу Гарзу
 job-supervisors-rep-cap = капитану сил республики
@@ -36,3 +36,6 @@ job-supervisors-mando = лидеру анклава "Мандалорцев"
 job-supervisors-mando-led = Мандолору Доказавшему
 job-supervisors-gen-rep = генералу сил республики
 job-supervisors-sobrik-captain = капитану корпуса
+job-supervisors-black-council = Темному Совету
+job-supervisors-jedi-council = Совету Джедаев
+

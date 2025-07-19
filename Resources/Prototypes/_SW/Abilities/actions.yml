@@ -1,4 +1,4 @@
-﻿- type: entity
+- type: entity
   id: ActionJediDash
   name: Прыжок
   description: Это буквально телепортирует вас!
@@ -20,7 +20,36 @@
     event: !type:ForceLightningAbilityEvent
     canTargetSelf: false
     interactOnMiss: false
+    range: 7
     useDelay: 6
+
+- type: entity
+  id: ActionForcePush
+  name: Толчок
+  description: Уроните вашего врага на землю!
+  noSpawn: true
+  components:
+  - type: EntityTargetAction
+    icon: Interface/Actions/disarm.png
+    event: !type:ForceTryPushAbilityEvent
+    canTargetSelf: false
+    interactOnMiss: false
+    range: 7
+    useDelay: 6
+
+- type: entity
+  id: ActionForceAttract
+  name: Притянуть предмет
+  description: Притяние объект!
+  noSpawn: true
+  components:
+  - type: EntityTargetAction
+    icon: Interface/VerbIcons/pickup.svg.192dpi.png
+    event: !type:AttractByForceRequestedEvent
+    canTargetSelf: false
+    interactOnMiss: false
+    range: 20
+    useDelay: 2
 
 - type: entity
   id: ActionSubdueKyber
@@ -65,3 +94,30 @@
     icon: Interface/Actions/subdue.png
     event: !type:SaberPrivateAbilityEvent
     useDelay: 1
+
+
+- type: entity
+  id: SWDashAction
+  name: Прыжок
+  description: Это буквально телепортирует вас!
+  components:
+  - type: InstantAction
+    icon: Interface/Actions/dash.png
+    event: !type:DashRequestedEvent
+    useDelay: 3
+
+- type: entity
+  id: SWActionThrowSword
+  name: Бросок светового меча
+  description: Бросьте свой световой меч во врага!
+  components:
+  - type: WorldTargetAction
+    icon: Interface/Actions/dash.png
+    event: !type:ThrowRequestedActionEvent
+    canTargetSelf: false
+    interactOnMiss: true
+    range: 7
+    useDelay: 6
+    checkCanInteract: false
+    сheckConsciousness: false
+    checkCanAccess: false

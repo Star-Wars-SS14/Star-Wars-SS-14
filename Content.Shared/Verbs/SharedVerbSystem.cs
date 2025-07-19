@@ -1,3 +1,4 @@
+using Content.Shared._SW;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Hands.Components;
 using Content.Shared.Interaction;

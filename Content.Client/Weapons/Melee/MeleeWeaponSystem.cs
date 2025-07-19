@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Client.Gameplay;
+using Content.Shared._SW;
 using Content.Shared.CombatMode;
 using Content.Shared.Effects;
 using Content.Shared.Hands.Components;
@@ -33,6 +34,8 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
     private EntityQuery<TransformComponent> _xformQuery;
 
     private const string MeleeLungeKey = "melee-lunge";
+
+    private BoundKeyState _altStatePrev = BoundKeyState.Up; //SW
 
     public override void Initialize()
     {
@@ -82,7 +85,7 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
             }
         }
 
-        if (weapon.Attacking || weapon.NextAttack > Timing.CurTime)
+        if (weapon.Attacking || (weapon.NextAttack > Timing.CurTime))
         {
             return;
         }
@@ -117,9 +120,24 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
             coordinates = TransformSystem.ToCoordinates(_map.GetMap(mousePos.MapId), mousePos);
         }
 
+
         // Heavy attack.
         if (altDown == BoundKeyState.Down)
         {
+            //SW start
+            if (HasComp<SWForceUserBlockComponent>(entity) && HasComp<SWWeaponBlockComponent>(weaponUid))
+            {
+                //Нам нужно регистрировать только одиночное нажатие на клавишу, поэтому
+                //проверяем, была ли отжата клаваиша в предыдущий тик или нет.
+                if (altDown == BoundKeyState.Down && _altStatePrev == BoundKeyState.Up)
+                {
+                    RaisePredictiveEvent(new SWTryReflectEvent(GetNetEntity(weaponUid)));
+                    _altStatePrev = altDown;
+                }
+                return;
+            }
+            //SW end
+
             // If it's an unarmed attack then do a disarm
             if (weapon.AltDisarm && weaponUid == entity)
             {
@@ -133,8 +151,7 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
                 EntityManager.RaisePredictiveEvent(new DisarmAttackEvent(GetNetEntity(target), GetNetCoordinates(coordinates)));
                 return;
             }
-
-            ClientHeavyAttack(entity, coordinates, weaponUid, weapon);
+            ClientHeavyAttack(entity, coordinates, weaponUid, weapon);            
             return;
         }
 
@@ -143,6 +160,13 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
         {
             var attackerPos = TransformSystem.GetMapCoordinates(entity);
 
+            //SW start. if is force user, use custom logic
+            if (HasComp<SWForceUserBlockComponent>(entity) && HasComp<SWWeaponBlockComponent>(weaponUid))
+            {
+                ClientHeavyAttack(entity, coordinates, weaponUid, weapon);
+                return;
+            }
+            //SW end
             if (mousePos.MapId != attackerPos.MapId ||
                 (attackerPos.Position - mousePos.Position).Length() > weapon.Range)
             {
@@ -160,8 +184,10 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
             if (Interaction.CombatModeCanHandInteract(entity, target))
                 return;
 
-            RaisePredictiveEvent(new LightAttackEvent(GetNetEntity(target), GetNetEntity(weaponUid), GetNetCoordinates(coordinates)));
+            RaisePredictiveEvent(new LightAttackEvent(GetNetEntity(target), GetNetEntity(weaponUid), GetNetCoordinates(coordinates)));            
         }
+
+        _altStatePrev = altDown;
     }
 
     protected override bool InRange(EntityUid user, EntityUid target, float range, ICommonSession? session)

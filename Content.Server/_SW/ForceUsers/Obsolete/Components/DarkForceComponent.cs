@@ -1,4 +1,4 @@
-﻿using Content.Shared.Alert;
+using Content.Shared.Alert;
 using Content.Shared.FixedPoint;
 using Robust.Shared.Prototypes;
 
@@ -8,7 +8,10 @@ namespace Content.Server._SW.Force.Components;
 public sealed partial class DarkForceComponent : ForceComponent
 {
     public List<string> AbilitiesDarkPrototypes =
-    [];
+    [
+        "ActionJediDash",
+        "ActionSithForceLightning"
+    ];
 
     // Lighting
 

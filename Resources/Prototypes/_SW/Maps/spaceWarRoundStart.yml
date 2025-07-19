@@ -21,6 +21,7 @@
             SWRepublicMedic: [ 3, 3 ]
             SWRepublicEngineer: [ 2, 2 ]
             SWRepublicPilot: [ 4, 4 ]
+            SWJedi: [1, 1]
          - type: CapturableStation
            fraction: RepublicFaction
     ImperialCruiser:
@@ -40,6 +41,7 @@
             SWEmpireMedic: [ 3, 3 ]
             SWEmpireEngineer: [2, 2]
             SWEmpirePilot: [ 4, 4 ]
+            SWSith: [1, 1]
          - type: CapturableStation
            fraction: EmpireFaction
     ast1:

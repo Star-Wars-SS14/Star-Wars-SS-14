@@ -83,6 +83,17 @@
 
 - type: entity
   parent: SWIDCardStandard
+  id: SWIDCardSith
+  name: Sith ID card
+  components:
+  - type: Sprite
+    layers:
+    - state: image17
+  - type: PresetIdCard
+    job: SWSith
+
+- type: entity
+  parent: SWIDCardStandard
   id: SWIDCardEmpireLieutenant
   name: Empire Lieutenant ID card
   components:
@@ -170,6 +181,17 @@
     - state: image1
   - type: PresetIdCard
     job: SWRepublicGeneral
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWIDCardJedi
+  name: Jedi ID card
+  components:
+  - type: Sprite
+    layers:
+    - state: image17
+  - type: PresetIdCard
+    job: SWJedi
 
 - type: entity
   parent: SWIDCardStandard

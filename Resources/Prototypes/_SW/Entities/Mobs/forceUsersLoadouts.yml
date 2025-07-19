@@ -5,15 +5,15 @@
     gloves: ClothingHandsGlovesColorBlack
     shoes: ClothingShoesSwat
     ears: ClothingHeadsetRegular
-    neck: SW_ClothingNeckCloakSithCloak
+    neck: SWClothingNeckCloakSithCloak
     pocket1: SWEnergySwordSith
 
 
 - type: startingGear
   id: ForceUserJediGear
   equipment:
-    jumpsuit: SW_ClothingUniformJumpsuitJedi
-    shoes: SW_ClothingShoesBootsJedi
+    jumpsuit: SWClothingUniformJumpsuitJedi
+    shoes: SWClothingShoesBootsJedi
     ears: ClothingHeadsetRepublic
-    neck: SW_ClothingNeckCloakJediCloak
+    neck: SWClothingNeckCloakJediCloak
     pocket1: SWEnergySwordJedi

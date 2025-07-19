@@ -61,69 +61,50 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
         }
         args.AddLine(message.AppendLine().ToString());
     }
-    protected override void ActiveTick(EntityUid uid, SectorWarRuleComponent component, GameRuleComponent gameRule, float frameTime)
+    protected override void ActiveTick(EntityUid uid, SectorWarRuleComponent comp, GameRuleComponent gameRule, float frameTime)
     {
-        base.ActiveTick(uid, component, gameRule, frameTime);
+        base.ActiveTick(uid, comp, gameRule, frameTime);
         List<EntityUid> republicStations = new();
         List<EntityUid> empireStations = new();
         var query = EntityQueryEnumerator<CapturableStationComponent>();
 
         ISawmill _s = Logger.GetSawmill("asdsfgh");
-        while (query.MoveNext(out var stationUid, out var comp))
+        while (query.MoveNext(out var stationUid, out var fact))
         {
-            if (comp.Fraction != null && comp.Fraction == "RepublicFaction")
+            if (fact.Fraction != null && fact.Fraction == "RepublicFaction")
             {
                 republicStations.Add(stationUid);
             }
 
-            if (comp.Fraction != null && comp.Fraction == "EmpireFaction")
+            if (fact.Fraction != null && fact.Fraction == "EmpireFaction")
             {
                 _s.Debug("0");
                 empireStations.Add(stationUid);
             }
         }
-        _s.Fatal($"{_gameTiming.CurTime} && {_sharedGameTicker.RoundStartTimeSpan + TimeSpan.FromSeconds(component.AnnouncementTimeHold)}");
+        _s.Fatal($"{_gameTiming.CurTime} && {_sharedGameTicker.RoundStartTimeSpan + TimeSpan.FromSeconds(comp.StatesEndTimes[comp.CurState])}");
         //There must be a better way to do it but i am too lazy
         if (_gameTiming.CurTime >= _sharedGameTicker.RoundStartTimeSpan
-                                    + TimeSpan.FromSeconds(component.AnnouncementTimeAttackFull))
-        {
-            //_chat.DispatchFilteredAnnouncement(republicFilter,
-            //                         Loc.GetString(component.AnnouncementTextAttackFullRepublic),
-            //                         announcementSound: component.AnnouncementSoundAttackFull, sender: "a");
-            //_chat.DispatchFilteredAnnouncement(empireFilter,
-            //             Loc.GetString(component.AnnouncementTextAttackFullEmpire),
-            //             announcementSound: component.AnnouncementSoundAttackFull, sender: "a");
-        }
-        else if (_gameTiming.CurTime >= _sharedGameTicker.RoundStartTimeSpan
-                                    + TimeSpan.FromSeconds(component.AnnouncementTimeAttackPartially))
-        {
-            //_chat.DispatchFilteredAnnouncement(republicFilter,
-            //             Loc.GetString(component.AnnouncementTextAttackPartiallyRepublic),
-            //             announcementSound: component.AnnouncementSoundAttackPartially);
-            //_chat.DispatchFilteredAnnouncement(empireFilter,
-            //             Loc.GetString(component.AnnouncementTextAttackPartiallyEmpire),
-            //             announcementSound: component.AnnouncementSoundAttackPartially,
-            //             sender: "a");
-        }
-        else if (_gameTiming.CurTime >= _sharedGameTicker.RoundStartTimeSpan
-                                    + TimeSpan.FromSeconds(component.AnnouncementTimeHold))
-        {
+                                    + TimeSpan.FromSeconds(comp.StatesEndTimes[comp.CurState])
+                                    && comp.CurState != SWSpaceWarGameState.AttachingFull) {
             _s.Fatal("1");
-            _s.Fatal($"{component.AnnouncementSoundHold}");
+            comp.CurState++;
             foreach (var station in republicStations)
             {
                 _chat.DispatchStationAnnouncement(station,
-                             Loc.GetString(component.AnnouncementTextHoldRepublic),
-                             announcementSound: component.AnnouncementSoundHold,
-                             sender: "a");
+                             Loc.GetString(comp.RepublicAnnouncementTexts[comp.CurState]),
+                             announcementSound: comp.AnnouncementSounds[comp.CurState],
+                             sender: Loc.GetString(comp.RepublicSender),
+                             colorOverride: comp.RepublicAnnouncementColor);
             }
 
             foreach (var station in empireStations)
             {
                 _chat.DispatchStationAnnouncement(station,
-                         Loc.GetString(component.AnnouncementTextAttackFullEmpire),
-                         announcementSound: component.AnnouncementSoundHold,
-                         sender: "a");
+                         Loc.GetString(comp.EmpireAnnouncementTexts[comp.CurState]),
+                         announcementSound: comp.AnnouncementSounds[comp.CurState],
+                         sender: Loc.GetString(comp.EmpireSender),
+                         colorOverride: comp.EmpireAnnouncementColor);
             }
         }
     }

@@ -3,6 +3,7 @@ using Robust.Shared.Audio;
 using Robust.Shared.Audio.Components;
 using Robust.Shared.Prototypes;
 using System.Numerics;
+using static Content.Shared.Administration.AdminAnnounceEuiMsg;
 
 namespace Content.Server.Echo.GameTicking.Rules.Components;
 
@@ -23,12 +24,6 @@ public sealed partial class SectorWarRuleComponent : Component
     public string AlertSound = "/Audio/Echo/time_alert.ogg";
 
     [DataField]
-    public string AllianceWinSound = "/Audio/Echo/alliance_won.ogg";
-
-    [DataField]
-    public string ResistanceWinSound = "/Audio/Echo/resistance_won.ogg";
-
-    [DataField]
     public string? CaptureSound = null; //"/Audio/Echo/capture.ogg";
 
     [DataField]
@@ -38,39 +33,60 @@ public sealed partial class SectorWarRuleComponent : Component
     public (EntityUid Entity, AudioComponent Component)? CurrentAudio;
 
     [DataField]
-    public LocId AnnouncementTextHoldRepublic = "announce-hold-republic";
+    public Dictionary<SWSpaceWarGameState, LocId> RepublicAnnouncementTexts = new Dictionary<SWSpaceWarGameState, LocId>()
+    {
+        { SWSpaceWarGameState.Holding, "announce-hold-republic" },
+        { SWSpaceWarGameState.AttackingPartially, "announce-partially-republic"},
+        { SWSpaceWarGameState.AttachingFull, "announce-full-republic"}
+    };
 
     [DataField]
-    public LocId AnnouncementTextHoldEmpire = "announce-hold-empire";
+    public Dictionary<SWSpaceWarGameState, LocId> EmpireAnnouncementTexts = new Dictionary<SWSpaceWarGameState, LocId>()
+    {
+        {SWSpaceWarGameState.Holding, "announce-hold-empire"},
+        {SWSpaceWarGameState.AttackingPartially, "announce-partially-empire" },
+        {SWSpaceWarGameState.AttachingFull,  "announce-full-empire"}
+    };
 
     [DataField]
-    public SoundSpecifier AnnouncementSoundHold = default!;
+    public Dictionary<SWSpaceWarGameState, SoundSpecifier?> AnnouncementSounds = new Dictionary<SWSpaceWarGameState, SoundSpecifier?>()
+    {
+        {SWSpaceWarGameState.Holding, new SoundPathSpecifier("/Audio/_SW/_spaceWar/radar.ogg") },
+        {SWSpaceWarGameState.AttackingPartially, new SoundPathSpecifier("/Audio/_SW/_spaceWar/start_mission.ogg")},
+        {SWSpaceWarGameState.AttachingFull, new SoundPathSpecifier("/Audio/_SW/_spaceWar/start_engine.ogg")}
+    };
+
+    public SWSpaceWarGameState CurState = SWSpaceWarGameState.Preholding;
 
     [DataField]
-    public float AnnouncementTimeHold = 120;
+    //Shows when the staet ENDS,
+    //so if StatesEndTimes[<state>] = <number>, it means that when <number> of seconds passed from roundstart
+    //state <state> should end and we go to the next state
+    public Dictionary<SWSpaceWarGameState, float> StatesEndTimes = new Dictionary<SWSpaceWarGameState, float>(){
+        {SWSpaceWarGameState.Preholding, 15},
+        {SWSpaceWarGameState.Holding, 25}, //120
+        {SWSpaceWarGameState.AttackingPartially,  35}, //18 * 60 + 120
+        {SWSpaceWarGameState.AttachingFull,  float.PositiveInfinity}
+        //18 * 60 + 120 + 25 * 60
+    };
 
     [DataField]
-    public LocId AnnouncementTextAttackPartiallyRepublic = "announce-partially-republic";
+    public LocId RepublicSender = "republic-spacewar-sender";
 
     [DataField]
-    public LocId AnnouncementTextAttackPartiallyEmpire = "announce-partially-empire";
+    public LocId EmpireSender = "empire-spacewar-sender";
 
     [DataField]
-    public SoundSpecifier? AnnouncementSoundAttackPartially;
+    public Color EmpireAnnouncementColor = Color.DarkRed;
 
     [DataField]
-    public float AnnouncementTimeAttackPartially = 18 * 60 + 120;
+    public Color RepublicAnnouncementColor = Color.Aqua;
+}
 
-    [DataField]
-    public LocId AnnouncementTextAttackFullRepublic = "announce-full-republic";
-
-    [DataField]
-    public LocId AnnouncementTextAttackFullEmpire = "announce-full-empire";
-
-    [DataField]
-    public SoundSpecifier? AnnouncementSoundAttackFull;
-
-    [DataField]
-    public float AnnouncementTimeAttackFull = 18 * 60 + 120 + 25 * 60;
-
+public enum SWSpaceWarGameState : byte
+{
+    Preholding,
+    Holding,
+    AttackingPartially,
+    AttachingFull
 }

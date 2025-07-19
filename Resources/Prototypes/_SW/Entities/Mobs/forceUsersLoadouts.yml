@@ -4,7 +4,7 @@
     jumpsuit: ClothingUniformJumpsuitColorBlack
     gloves: ClothingHandsGlovesColorBlack
     shoes: ClothingShoesSwat
-    ears: ClothingHeadsetRegular
+    ears: SWClothingHeadsetAllEmpire
     neck: SWClothingNeckCloakSithCloak
     pocket1: SWEnergySwordSith
 
@@ -14,6 +14,6 @@
   equipment:
     jumpsuit: SWClothingUniformJumpsuitJedi
     shoes: SWClothingShoesBootsJedi
-    ears: ClothingHeadsetRepublic
+    ears: SWClothingHeadsetRepublicAll
     neck: SWClothingNeckCloakJediCloak
     pocket1: SWEnergySwordJedi

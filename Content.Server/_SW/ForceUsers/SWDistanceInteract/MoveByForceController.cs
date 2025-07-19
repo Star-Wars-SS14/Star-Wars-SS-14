@@ -26,7 +26,6 @@ using Content.Server.Popups;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs;
-using JetBrains.FormatRipper.Elf;
 using Content.Server.Examine;
 using Content.Server._SW.Force.Components;
 

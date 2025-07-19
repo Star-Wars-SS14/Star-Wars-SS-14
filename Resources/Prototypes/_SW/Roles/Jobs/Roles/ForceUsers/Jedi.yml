@@ -11,6 +11,10 @@
   startingGear: ForceUserJediGear
   icon: "JobIconHavokMedic"
   supervisors: job-supervisors-jedi-council
+  access:
+  - SWRepublicBase
+  - SWRepublicCommander
+  - SWRepublicArsenal
   special:
   - !type:AddComponentSpecial
     components:

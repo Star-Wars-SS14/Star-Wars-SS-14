@@ -5,6 +5,7 @@
     gloves: ClothingHandsGlovesColorBlack
     shoes: ClothingShoesSwat
     ears: SWClothingHeadsetAllEmpire
+    id: SWIDCardSith
     neck: SWClothingNeckCloakSithCloak
     pocket1: SWEnergySwordSith
 
@@ -15,5 +16,6 @@
     jumpsuit: SWClothingUniformJumpsuitJedi
     shoes: SWClothingShoesBootsJedi
     ears: SWClothingHeadsetRepublicAll
+    id: SWIDCardJedi
     neck: SWClothingNeckCloakJediCloak
     pocket1: SWEnergySwordJedi

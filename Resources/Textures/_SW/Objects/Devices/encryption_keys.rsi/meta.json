@@ -17,6 +17,8 @@
         { "name": "mandalorian" },
         { "name": "crypt_gray" },
         { "name": "republic_pilot" },
-        { "name": "empire_pilot" }
+        { "name": "empire_pilot" },
+        { "name": "commander_empire" },
+        { "name": "commander_republic" }
     ]
 }

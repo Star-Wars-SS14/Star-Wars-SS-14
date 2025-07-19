@@ -68,7 +68,6 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
         List<EntityUid> empireStations = new();
         var query = EntityQueryEnumerator<CapturableStationComponent>();
 
-        ISawmill _s = Logger.GetSawmill("asdsfgh");
         while (query.MoveNext(out var stationUid, out var fact))
         {
             if (fact.Fraction != null && fact.Fraction == "RepublicFaction")
@@ -78,16 +77,13 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
 
             if (fact.Fraction != null && fact.Fraction == "EmpireFaction")
             {
-                _s.Debug("0");
                 empireStations.Add(stationUid);
             }
         }
-        _s.Fatal($"{_gameTiming.CurTime} && {_sharedGameTicker.RoundStartTimeSpan + TimeSpan.FromSeconds(comp.StatesEndTimes[comp.CurState])}");
         //There must be a better way to do it but i am too lazy
         if (_gameTiming.CurTime >= _sharedGameTicker.RoundStartTimeSpan
                                     + TimeSpan.FromSeconds(comp.StatesEndTimes[comp.CurState])
                                     && comp.CurState != SWSpaceWarGameState.AttachingFull) {
-            _s.Fatal("1");
             comp.CurState++;
             foreach (var station in republicStations)
             {

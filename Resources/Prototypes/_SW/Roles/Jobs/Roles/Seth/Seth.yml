@@ -87,6 +87,8 @@
 - type: startingGear
   id: EmpireMoffGear
   equipment:
+    outerClothing: SWMoffImperialSuit
+    head: SWClothingHeadMajorImperialHelmet
     jumpsuit: SWClothingUniformJumpsuitImperialGeneral
     gloves: ClothingHandsGlovesColorBlack
     back: SWImperialBackpackCamo
@@ -194,7 +196,7 @@
   id: RepublicCaptainGear
   equipment:
     jumpsuit: SWClothingUniformJumpsuitFleece
-    outerClothing: SW_CaptainRepublicSuit
+    outerClothing: SWCaptainRepublicSuit
     shoes: ClothingShoesBootsJack
     head: SWClothingHeadСaptainRepublicHelmet
     belt: ClothingBeltAssault

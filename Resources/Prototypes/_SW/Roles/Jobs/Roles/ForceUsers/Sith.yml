@@ -35,6 +35,7 @@
     - type: Tag
       tags:
         - ForceUser
+        - DoorBumpOpener
     - type: SWAbilityThrowSword
     - type: SWLightningAbility
       damage:

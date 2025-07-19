@@ -420,27 +420,6 @@
 ###The Age of Rebellion
 #NanoTrasen
 - type: entity
-  name: Jedi
-  parent: [BaseMobHuman, ForceUser]
-  id: SWMobJedi
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [JediGear]
-  - type: LightForce
-    thresholds:
-      0: Alive
-      300: Critical
-      400: Dead
-  - type: UserInterface
-    interfaces:
-      enum.StoreUiKey.Key:
-        type: StoreBoundUserInterface
-  - type: NpcFactionMember
-    factions:
-    - NanoTrasen
-
-- type: entity
   name: SWRepublic soldier
   parent: BaseMobHuman
   id: SWMobRebelsoldier
@@ -460,28 +439,6 @@
   components:
   - type: Loadout
     prototypes: [ImperialOfficersGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
-
-- type: entity
-  name: Sith
-  parent: [BaseMobHuman, ForceUser]
-  id: SWMobSith
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [SithGear]
-  - type: MobThresholds
-    thresholds:
-      0: Alive
-      300: Critical
-      400: Dead
-  - type: DarkForce
-  - type: UserInterface
-    interfaces:
-      enum.StoreUiKey.Key:
-        type: StoreBoundUserInterface
   - type: NpcFactionMember
     factions:
     - Syndicate

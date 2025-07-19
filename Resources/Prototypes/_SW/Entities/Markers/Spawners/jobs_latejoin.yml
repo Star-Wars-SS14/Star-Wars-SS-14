@@ -216,3 +216,52 @@
   - type: Sprite
     layers:
     - state: green
+ 
+- type: entity
+  id: SW_SpawnPointRepublicPilot
+  parent: SpawnPointJobBase
+  name: SWRepublic pilot LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWRepublicPilot
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointRepublicEngineeer
+  parent: SpawnPointJobBase
+  name: SWRepublic engineer LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWRepublicEngineer
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+
+- type: entity
+  id: SW_SpawnPointEmpirePilot
+  parent: SpawnPointJobBase
+  name: empire pilot LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWEmpirePilot
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SW_SpawnPointEmpireEngineer
+  parent: SpawnPointJobBase
+  name: empire engineer LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWEmpireEngineer
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green

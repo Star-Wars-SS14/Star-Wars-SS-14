@@ -1,3 +1,3 @@
 admin-holopad-is-called = Начат звонок на админский голопад!
-ent-HolopadAdmin = Админский голопад
+ent-SWHolopadAdmin = Админский голопад
   .desc = Голопад для админов

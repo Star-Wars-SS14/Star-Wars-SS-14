@@ -1,28 +1,28 @@
 - type: entity
   parent: AccessConfiguratorUniversal
-  id: AccessConfiguratorUniversalSW
+  id: SWAccessConfiguratorUniversal
   name: SW универсальный конфигуратор доступа 
   suffix: DEBUG
   components:
   - type: AccessOverrider
     accessLevels:
-    - EmpireMoff
-    - EmpireCommander
-    - EmpireBase
-    - EmpireArsenal
-    - EmpireIntelligence
-    - EmpireIntelligenceCareTaker
-    - EmpireSobrik
-    - EmpireMedic
-    - RepublicGeneral
-    - RepublicCommander
-    - RepublicBase
-    - RepublicArsenal
-    - RepublicHavok
-    - RepublicMedic
-    - Mandalorian
-    - BlackSun
-    - Exchange
+    - SWEmpireMoff
+    - SWEmpireCommander
+    - SWEmpireBase
+    - SWEmpireArsenal
+    - SWEmpireIntelligence
+    - SWEmpireIntelligenceCareTaker
+    - SWEmpireSobrik
+    - SWEmpireMedic
+    - SWRepublicGeneral
+    - SWRepublicCommander
+    - SWRepublicBase
+    - SWRepublicArsenal
+    - SWRepublicHavok
+    - SWRepublicMedic
+    - SWMandalorian
+    - SWBlackSun
+    - SWExchange
 
 
 - type: entity

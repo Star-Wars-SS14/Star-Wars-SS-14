@@ -10,5 +10,5 @@
   icon: "JobIconRepublicMedic"
   supervisors: job-supervisors-leit-rep
   access:
-  - RepublicMedic
-  - RepublicBase
+  - SWRepublicMedic
+  - SWRepublicBase

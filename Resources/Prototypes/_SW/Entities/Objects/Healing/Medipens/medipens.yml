@@ -1,7 +1,7 @@
 - type: entity
   name: Медипен с кольто
   parent: ChemicalMedipen
-  id: KoltoMedipen
+  id: SWKoltoMedipen
   description: Medipen with kolto.
   components:
   - type: Item
@@ -17,7 +17,7 @@
       pen:
         maxVol: 15
         reagents:
-        - ReagentId: Kolto
+        - ReagentId: SWKolto
           Quantity: 15
   - type: SolutionContainerVisuals
     maxFillLevels: 1
@@ -28,7 +28,7 @@
 - type: entity
   name: Медипен с бактой
   parent: ChemicalMedipen
-  id: BactaMedipen
+  id: SWBactaMedipen
   description: Medipen with bacta.
   components:
   - type: Item
@@ -44,7 +44,7 @@
       pen:
         maxVol: 10
         reagents:
-        - ReagentId: Bacta
+        - ReagentId: SWBacta
           Quantity: 10
   - type: SolutionContainerVisuals
     maxFillLevels: 1

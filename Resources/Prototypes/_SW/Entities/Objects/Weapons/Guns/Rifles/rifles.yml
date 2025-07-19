@@ -1,5 +1,5 @@
 - type: entity
-  id: BaseWeaponBlaster
+  id: SWBaseWeaponBlaster
   parent: [BaseItem, BaseGunWieldable]
   abstract: true
   suffix: Оружие SW
@@ -32,8 +32,8 @@
 
 - type: entity
   name: Imperial E-1 Enforcer Blaster Rifle
-  parent: BaseWeaponBlaster
-  id: SW_E1BlasterRifle
+  parent: SWBaseWeaponBlaster
+  id: SWE1BlasterRifle
   components:
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
@@ -48,7 +48,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SW_YellowMagazineBlastRifle
+        startingItem: SWYellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -57,8 +57,8 @@
 
 - type: entity
   name: P-301 Assault Disruptor
-  parent: BaseWeaponBlaster
-  id: SW_P301Destroyer
+  parent: SWBaseWeaponBlaster
+  id: SWP301Destroyer
   components:
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Rifles/p301.rsi
@@ -75,7 +75,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SW_RedMagazineBlastRifle
+        startingItem: SWRedMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -84,8 +84,8 @@
 
 - type: entity
   name: H-206 Renegade Blaster Rifle
-  parent: BaseWeaponBlaster
-  id: SW_h206renegade
+  parent: SWBaseWeaponBlaster
+  id: SWH206Renegade
   components:
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Rifles/h206.rsi
@@ -102,7 +102,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SW_H206GreenMagazineBlastRifle
+        startingItem: SWH206GreenMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -111,8 +111,8 @@
 
 - type: entity
   name: J-111 Rancor Enforcer
-  parent: BaseWeaponBlaster
-  id: SW_j111rancor
+  parent: SWBaseWeaponBlaster
+  id: SWJ111Rancor
   components:
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Rifles/j111.rsi
@@ -129,7 +129,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SW_BlueMagazineBlastRifle
+        startingItem: SWBlueMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -138,8 +138,8 @@
 
 - type: entity
   name: Z-1 Huntsman Carbine
-  parent: BaseWeaponBlaster
-  id: SW_z1blastercarbine
+  parent: SWBaseWeaponBlaster
+  id: SWZ1BlasterCarbine
   components:
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Rifles/z1.rsi
@@ -156,7 +156,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SW_Z1RedMagazineBlastRifle
+        startingItem: SWZ1RedMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -165,8 +165,8 @@
 
 - type: entity
   name: Beryar's MK-3 Sniper Rifle
-  parent: BaseWeaponBlaster
-  id: SW_beryaramk3
+  parent: SWBaseWeaponBlaster
+  id: SWberyaramk3
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
@@ -186,7 +186,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SW_SniperRifleYellowMagazineBlastRifle
+        startingItem: SWSniperRifleYellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -195,8 +195,8 @@
 
 - type: entity
   name: Grantek F-11D Sniper Rifle
-  parent: BaseWeaponBlaster
-  id: SW_grantekf11d
+  parent: SWBaseWeaponBlaster
+  id: SWGrantekF11D1
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
@@ -214,7 +214,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem:  SW_SniperRifleBlueMagazineBlastRifle
+        startingItem:  SWSniperRifleBlueMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -223,8 +223,8 @@
 
 - type: entity
   name: K-406 Combat Ripper
-  parent: BaseWeaponBlaster
-  id: SW_k406ripper
+  parent: SWBaseWeaponBlaster
+  id: SWK406Ripper
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
@@ -242,7 +242,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SW_SniperRifleYellowMagazineBlastRifle
+        startingItem: SWSniperRifleYellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -251,8 +251,8 @@
 
 - type: entity
   name: EL-34 Rotary Plasma Cannon
-  parent: BaseWeaponBlaster
-  id: SW_EL34
+  parent: SWBaseWeaponBlaster
+  id: SWEL34
   components:
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
@@ -269,7 +269,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SW_CannonYellowMagazineBlastRifle
+        startingItem: SWCannonYellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -278,8 +278,8 @@
 
 - type: entity
   name: Grantek F-11D Assault Cannon
-  parent: BaseWeaponBlaster
-  id: SW_GrantekF11D
+  parent: SWBaseWeaponBlaster
+  id: SWGrantekF11D2
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
@@ -297,7 +297,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SW_CannonBlueMagazineBlastRifle
+        startingItem: SWCannonBlueMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -306,8 +306,8 @@
 
 - type: entity
   name: GT-13 ST Assault Cannon
-  parent: BaseWeaponBlaster
-  id: SW_GT-13ST
+  parent: SWBaseWeaponBlaster
+  id: SWGT-13ST
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
@@ -325,7 +325,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SW_CannonYellowMagazineBlastRifle
+        startingItem: SWCannonYellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -334,8 +334,8 @@
 
 - type: entity
   name: Gallantry
-  parent: BaseWeaponBlaster
-  id: SW_Gallantry
+  parent: SWBaseWeaponBlaster
+  id: SWGallantry
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
@@ -353,7 +353,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SW_CannonYellowMagazineBlastRifle
+        startingItem: SWCannonYellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -362,8 +362,8 @@
 
 - type: entity
   name: MK-1 Assault Cannon
-  parent: BaseWeaponBlaster
-  id: SW_MK1
+  parent: SWBaseWeaponBlaster
+  id: SWMK1
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
@@ -381,7 +381,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SW_CannonYellowMagazineBlastRifle
+        startingItem: SWCannonYellowMagazineBlastRifle
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:

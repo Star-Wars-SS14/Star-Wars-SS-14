@@ -9,4 +9,4 @@
   icon: "JobIconBlackSunMercenary"
   supervisors: job-supervisors-blacksun-cap
   access:
-  - BlackSun
+  - SWBlackSun

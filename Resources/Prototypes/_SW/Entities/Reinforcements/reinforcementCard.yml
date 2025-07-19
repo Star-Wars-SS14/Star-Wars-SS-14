@@ -1,23 +1,23 @@
 - type: entity
   parent: BaseItem
-  id: ReinforcementsCard
+  id: SWReinforcementsCard
   name: карта активации (подкрепление)
   description: Приложите это к консоли.
   components:
   - type: Sprite
     sprite: _SW/Objects/Reinforcements/reinforcements.rsi
     state: card
-  - type: ReinforcementsCard
+  - type: SWReinforcementsCard
   - type: Item
     sprite: _SW/Objects/Reinforcements/reinforcements.rsi
     state: icon
     size: Tiny
 
 - type: entity
-  parent: ReinforcementsCard
-  id: EmpireReinforcementsCard
+  parent: SWReinforcementsCard
+  id: SWEmpireReinforcementsCard
   name: карта активации империи (подкрепление)
   description: Приложите это к консоли.
   components:
-  - type: ReinforcementsCard
+  - type: SWReinforcementsCard
     fraction: 0

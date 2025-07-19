@@ -1,5 +1,5 @@
 - type: entity
-  id: SW_BannerBase
+  id: SWBannerBase
   parent: BannerBase
   components:
   - type: Destructible
@@ -31,8 +31,8 @@
         - TableMask
 
 - type: entity
-  id: SW_BannerEmpire
-  parent: SW_BannerBase
+  id: SWBannerEmpire
+  parent: SWBannerBase
   name: имперский баннер
   description:  Имперский символ представлял собой изменённый галактический медальон Бенду, использовавшийся в Галактической Республике в свои последние дни, как герб.
   components:
@@ -41,8 +41,8 @@
     state: empire_banner
 
 - type: entity
-  id: SW_BannerEmpireRed
-  parent: SW_BannerBase
+  id: SWBannerEmpireRed
+  parent: SWBannerBase
   name: имперский баннер
   description:  Имперский символ представлял собой изменённый галактический медальон Бенду, использовавшийся в Галактической Республике в свои последние дни, как герб.
   components:
@@ -51,8 +51,8 @@
     state: empire_banner_red
 
 - type: entity
-  id: SW_bannerguild
-  parent: SW_BannerBase
+  id: SWBannerGuild
+  parent: SWBannerBase
   name: Alderaanxi banners
   components:
   - type: Sprite
@@ -60,8 +60,8 @@
     state: banner.guild
 
 - type: entity
-  id: SW_BannerEmpireSith
-  parent: SW_BannerBase
+  id: SWBannerEmpireSith
+  parent: SWBannerBase
   name: имперский баннер
   description: Имперский символ представлял собой изменённый галактический медальон Бенду, использовавшийся в Галактической Республике в свои последние дни, как герб.
   components:
@@ -70,8 +70,8 @@
     state: banner
 
 - type: entity
-  id: SW_BannerMandalorian
-  parent: SW_BannerBase
+  id: SWBannerMandalorian
+  parent: SWBannerBase
   name: мандалорский баннер
   description: Мандалорцы, также называющие себя мандо'аде или «дети Мандалора» — воинственный, преимущественно кочевой народ состоявший из разумных существ вне зависимости от расы или пола, объединённых общей культурой.
   components:
@@ -80,8 +80,8 @@
     state: banner
 
 - type: entity
-  id: SW_BannerRepublic
-  parent: SW_BannerBase
+  id: SWBannerRepublic
+  parent: SWBannerBase
   name: баннер республики
   description: Галактическая Республика, или просто Республика — наименование галактического государства, возглавляемая Верховным канцлером, имела ярко выраженное демократическое управление.
   components:

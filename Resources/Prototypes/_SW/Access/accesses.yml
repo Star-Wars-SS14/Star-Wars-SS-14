@@ -1,91 +1,91 @@
 #Империя
 - type: accessLevel
-  id: EmpireMoff
+  id: SWEmpireMoff
   name:  Мофф
 
 - type: accessLevel
-  id: EmpireCommander
+  id: SWEmpireCommander
   name:  Имперское командование
 
 - type: accessLevel
-  id: EmpireBase
+  id: SWEmpireBase
   name:  Имперский базовый
 
 - type: accessLevel
-  id: EmpireArsenal
+  id: SWEmpireArsenal
   name:  Имперский арсенал
 
 - type: accessLevel
-  id: EmpireIntelligence
+  id: SWEmpireIntelligence
   name:  Агент имперской разведки
 
 - type: accessLevel
-  id: EmpireIntelligenceCareTaker
+  id: SWEmpireIntelligenceCareTaker
   name:  Смотритель имперской разведки
 
 - type: accessLevel
-  id: EmpireSobrik
+  id: SWEmpireSobrik
   name:  Гарнизон Собрика
 
 - type: accessLevel
-  id: EmpireMedic
+  id: SWEmpireMedic
   name:  Имперский медик
 
 #Республика
 - type: accessLevel
-  id: RepublicGeneral
+  id: SWRepublicGeneral
   name:  Республиканский генерал
 
 - type: accessLevel
-  id: RepublicCommander
+  id: SWRepublicCommander
   name:  Республиканское командование
 
 - type: accessLevel
-  id: RepublicBase
+  id: SWRepublicBase
   name:  Республика базовый
 
 - type: accessLevel
-  id: RepublicArsenal
+  id: SWRepublicArsenal
   name:  Республиканский арсенал
 
 - type: accessLevel
-  id: RepublicHavok
+  id: SWRepublicHavok
   name:  Республика хавок
 
 - type: accessLevel
-  id: RepublicMedic
+  id: SWRepublicMedic
   name:  Республиканский медик
 
 #Нейтралы 
 - type: accessLevel
-  id: Mandalorian
+  id: SWMandalorian
   name:  Мандалорцы
 
 - type: accessLevel
-  id: BlackSun
+  id: SWBlackSun
   name:  Черное солнце
 
 - type: accessLevel
-  id: Exchange
+  id: SWExchange
   name:  Обмен
 
 - type: accessGroup
   id: SWAllAccess
   tags:
-  - EmpireMoff
-  - EmpireCommander
-  - EmpireBase
-  - EmpireArsenal
-  - EmpireIntelligence
-  - EmpireIntelligenceCareTaker
-  - EmpireSobrik
-  - EmpireMedic
-  - RepublicGeneral
-  - RepublicCommander
-  - RepublicBase
-  - RepublicArsenal
-  - RepublicHavok
-  - RepublicMedic
-  - Mandalorian
-  - BlackSun
-  - Exchange
+  - SWEmpireMoff
+  - SWEmpireCommander
+  - SWEmpireBase
+  - SWEmpireArsenal
+  - SWEmpireIntelligence
+  - SWEmpireIntelligenceCareTaker
+  - SWEmpireSobrik
+  - SWEmpireMedic
+  - SWRepublicGeneral
+  - SWRepublicCommander
+  - SWRepublicBase
+  - SWRepublicArsenal
+  - SWRepublicHavok
+  - SWRepublicMedic
+  - SWMandalorian
+  - SWBlackSun
+  - SWExchange

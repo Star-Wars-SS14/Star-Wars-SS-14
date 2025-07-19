@@ -19,7 +19,7 @@ public sealed partial class StarWarsEmpireRuleComponent : Component
 }
 
 [RegisterComponent, Access(typeof(StarWarsEmpireRuleSystem))]
-public sealed partial class ShieldGuardComponent : Component
+public sealed partial class SWShieldGuardComponent : Component
 {
 
 }

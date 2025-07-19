@@ -1,0 +1,151 @@
+- type: entity
+  abstract: true
+  parent: EncryptionKey
+  id: SWEncryptionKeyBase
+  name: sw base key
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Devices/encryption_keys.rsi
+
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeyRegular
+  name: regular encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWEmpireRegular
+    defaultChannel: SWEmpireRegular
+  - type: Sprite
+    layers:
+    - state: crypt_red
+    - state: empire_soldier
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeyGarnison
+  name: garnison encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWEmpireGarnison
+    defaultChannel: SWEmpireGarnison
+  - type: Sprite
+    layers:
+    - state: crypt_red
+    - state: sobrik_comendant
+
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeyIntelligence
+  name: intelligence encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWEmpireIntelligence
+    defaultChannel: SWEmpireIntelligence
+  - type: Sprite
+    layers:
+    - state: crypt_red
+    - state: intellignece
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeyRepublic
+  name: republic encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWRepublic
+    defaultChannel: SWRepublic
+  - type: Sprite
+    layers:
+    - state: crypt_blue
+    - state: republic
+
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeyHavok
+  name: havok encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWRepublicHavok
+    defaultChannel: SWRepublicHavok
+  - type: Sprite
+    layers:
+    - state: crypt_blue
+    - state: havok
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeyMandalorian
+  name: mandalorian encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWMandalorian
+    defaultChannel: SWMandalorian
+  - type: Sprite
+    layers:
+    - state: crypt_gray
+    - state: mandalorian
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeyComEmpire
+  name: empire commander encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWEmpireCommander
+    defaultChannel: SWEmpireCommander
+  - type: Sprite
+    layers:
+    - state: crypt_red
+    - state: commander_empire
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeyComRepublic
+  name: republic commander encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWRepublicCommander
+    defaultChannel: SWRepublicCommander
+  - type: Sprite
+    layers:
+    - state: crypt_blue
+    - state: commander_republic
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeyRepublicPilots
+  name: republic pilots encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWRepublicPilots
+    defaultChannel: SWRepublicPilots
+  - type: Sprite
+    layers:
+    - state: crypt_blue
+    - state: republic_pilot
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeyEmpirePilots
+  name: empire pilots encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWEmpirePilots
+    defaultChannel: SWRepublicPilots
+  - type: Sprite
+    layers:
+    - state: crypt_blue
+    - state: republic_pilot

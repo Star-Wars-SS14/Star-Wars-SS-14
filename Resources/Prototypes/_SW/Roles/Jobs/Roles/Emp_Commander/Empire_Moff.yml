@@ -12,11 +12,11 @@
   icon: "JobIconEmpireMoff"
   supervisors: job-supervisors-min-war
   access:
-  - EmpireCommander
-  - EmpireBase
-  - EmpireMoff
-  - EmpireArsenal
-  - EmpireMedic
-  - EmpireIntelligenceCareTaker
-  - EmpireIntelligence
-  - EmpireSobrik
+  - SWEmpireCommander
+  - SWEmpireBase
+  - SWEmpireMoff
+  - SWEmpireArsenal
+  - SWEmpireMedic
+  - SWEmpireIntelligenceCareTaker
+  - SWEmpireIntelligence
+  - SWEmpireSobrik

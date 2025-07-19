@@ -1,5 +1,5 @@
 - type: entity
-  parent: SW_BaseHelmet
+  parent: SWBaseHelmet
   id: SW_ClothingHeadHavokHelmet
   name: Havok helmet
   components:
@@ -24,7 +24,7 @@
 
 - type: entity
   parent: SW_ClothingHeadHavokHelmet
-  id: SW_ClothingHeadSniperHavokHelmet
+  id: SWClothingHeadSniperHavokHelmet
   name: sniper havok helmet
   components:
   - type: Sprite

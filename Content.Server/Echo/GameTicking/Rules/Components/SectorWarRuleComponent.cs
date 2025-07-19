@@ -66,7 +66,7 @@ public sealed partial class SectorWarRuleComponent : Component
         {SWSpaceWarGameState.Preholding, 15},
         {SWSpaceWarGameState.Holding, 25}, //120
         {SWSpaceWarGameState.AttackingPartially,  35}, //18 * 60 + 120
-        {SWSpaceWarGameState.AttachingFull,  float.PositiveInfinity}
+        {SWSpaceWarGameState.AttachingFull,  1}
         //18 * 60 + 120 + 25 * 60
     };
 

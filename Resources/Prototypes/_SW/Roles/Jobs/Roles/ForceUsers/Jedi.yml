@@ -34,3 +34,5 @@
         - ForceUser
     - type: SWAbilityThrowSword
     - type: SWPushAbility
+    - type: SWFactionMember
+      faction: RepublicFaction

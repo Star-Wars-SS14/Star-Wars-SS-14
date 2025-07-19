@@ -40,3 +40,5 @@
       damage:
         types:
           Heat: 10
+    - type: SWFactionMember
+      faction: EmpireFaction

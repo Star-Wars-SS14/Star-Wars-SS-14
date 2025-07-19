@@ -113,4 +113,11 @@
   id: Job_Exchange_Operative
 
 - type: playTimeTracker
+  id: Job_Jedi
+
+- type: playTimeTracker
+  id: Job_Sith
+
+- type: playTimeTracker
   id: Job_Civilian
+

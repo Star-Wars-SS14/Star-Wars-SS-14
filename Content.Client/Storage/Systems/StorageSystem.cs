@@ -20,11 +20,9 @@ public sealed class StorageSystem : SharedStorageSystem
 
     public event Action<Entity<StorageComponent>>? StorageUpdated;
     public event Action<Entity<StorageComponent>?>? StorageOrderChanged;
-
     public override void Initialize()
     {
         base.Initialize();
-
         SubscribeLocalEvent<StorageComponent, ComponentShutdown>(OnShutdown);
         SubscribeNetworkEvent<PickupAnimationEvent>(HandlePickupAnimation);
         SubscribeAllEvent<AnimateInsertingEntitiesEvent>(HandleAnimatingInsertingEntities);
@@ -129,7 +127,6 @@ public sealed class StorageSystem : SharedStorageSystem
     {
         if (!_timing.IsFirstTimePredicted)
             return;
-
         PickupAnimation(uid, initialCoordinates, finalCoordinates, initialRotation);
     }
 

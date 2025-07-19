@@ -1,0 +1,48 @@
+- type: entity
+  name: ForceUser
+  parent: BaseMobHuman
+  id: ForceUserBase
+  description: A miserable pile of secrets.
+  components:
+  - type: ForceAbilityDistanceInteract
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      200: Critical
+      300: Dead
+  - type: SWForceUserBlock
+  - type: SWDashAbility
+  - type: SlowOnDamage
+    speedModifierThresholds:
+      190: 0.8
+  - type: Tag
+    tags:
+      - ForceUser
+  - type: SWAbilityThrowSword
+  - type: Inventory
+    templateId: forceUserTemplate
+
+
+
+- type: entity
+  name: Sith
+  parent: ForceUserBase
+  id: ForceUserDark
+  description: A miserable pile of secrets.
+  components:
+  - type: Loadout
+    prototypes: [ForceUserSithGear]
+  - type: SWLightningAbility
+    damage:
+      types:
+        Heat: 10
+
+- type: entity
+  name: Jedi
+  parent: ForceUserBase
+  id: ForceUserLight
+  description: A miserable pile of secrets.
+  components:
+  - type: Loadout
+    prototypes: [ForceUserJediGear]
+  - type: SWPushAbility

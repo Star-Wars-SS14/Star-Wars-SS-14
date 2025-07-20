@@ -345,7 +345,7 @@
   id: SWBoxSteeldoubleHard
   name: стальные ящики
   parent: SWBoxSteeldouble
-  suffix: тяжёлый лут
+  suffix: Тяжёлый лут
   components:
   - type: StorageFill
     contents:

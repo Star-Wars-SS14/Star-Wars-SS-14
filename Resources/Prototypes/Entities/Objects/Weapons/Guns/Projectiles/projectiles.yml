@@ -7,7 +7,7 @@
   - type: Sprite
     drawdepth: BelowMobs
     layers:
-    - shader: unshaded
+    - shader: unshadedgre
       map: ["enum.EffectLayers.Unshaded"]
       sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
       state: muzzle_bullet
@@ -715,7 +715,7 @@
   - type: ExplodeOnTrigger
   - type: Explosive
     explosionType: Default
-    totalIntensity: 870 # a ~2 tile radius
+    totalIntensity: 850 # a ~2 tile radius
     intensitySlope: 40
     maxIntensity: 80
 

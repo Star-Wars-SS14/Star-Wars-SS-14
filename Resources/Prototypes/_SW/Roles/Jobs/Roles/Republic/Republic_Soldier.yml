@@ -3,9 +3,8 @@
   name: Солдат Сил Республики
   playTimeTracker: Job_Republic_Soldier
   requirements:
-  - !type:RoleTimeRequirement
-    role: Job_Republic_Recruit
-    time: 18000 # 5h
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 0h
   startingGear: RepublicSoldierGear
   icon: "JobIconRepublicSoldier"
   supervisors: job-supervisors-leit-rep

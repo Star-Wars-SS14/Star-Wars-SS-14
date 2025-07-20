@@ -1,0 +1,450 @@
+# Ящики с лутом малый сложности
+
+
+- type: entityTable
+  id: FillSWCrateWoodLootEasy
+  table: !type:AllSelector
+    children:
+    - id: FoodBreadPlainSlice
+      prob: 0.50
+      maxAmount: 3
+    - id: FoodCorn
+      prob: 0.50
+      maxAmount: 3
+    - id: DrinkWaterBottleFull
+      prob: 0.50
+      maxAmount: 3
+    - id: FoodPotato
+      prob: 0.50
+      maxAmount: 3
+    - id: FoodSnackChocolate
+      prob: 0.50
+      maxAmount: 3
+    - id: FoodApple
+      prob: 0.50
+      maxAmount: 3
+    - id: FoodOrange
+      prob: 0.50
+      maxAmount: 3
+    - id: SheetGlass1
+      prob: 0.20
+      maxAmount: 5
+    - id: SheetSteel1
+      prob: 0.20
+      maxAmount: 5
+    - id: MaterialWoodPlank1
+      prob: 0.30
+      maxAmount: 5
+    - id: MaterialCloth10
+      prob: 0.30
+      maxAmount: 2
+    - id: SWJ111Rancor
+      prob: 0.05
+      maxAmount: 1
+    - id: SWZ1BlasterCarbine
+      prob: 0.05
+      maxAmount: 1
+    - id: SWGrantekF11D1
+      prob: 0.05
+      maxAmount: 1
+    - id: SWGT-13ST
+      prob: 0.05
+      maxAmount: 1
+    - id: SWMK1
+      prob: 0.05
+      maxAmount: 1
+    - id: SWCannonYellowMagazineBlastRifle
+      prob: 0.10
+      maxAmount: 1
+    - id: SWCannonBlueMagazineBlastRifle
+      prob: 0.10
+      maxAmount: 1
+    - id: SWZ1RedMagazineBlastRifle
+      prob: 0.10
+      maxAmount: 1
+    - id: SWBlueMagazineBlastRifle
+      prob: 0.10
+      maxAmount: 1
+
+- type: entity
+  parent: SWCrateWood
+  id: SWCrateWoodLootEasy
+  name: Деревянный ящик
+  suffix: Лёгкий лут
+  description: Ящик для хранения ваших предметов
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:NestedSelector
+        tableId: FillSWCrateWoodLootEasy
+
+- type: entity
+  id: SWBoxWoodLootEasy
+  name: деревянный ящик
+  parent: SWBoxWood
+  suffix: Лёгкий лут
+  components:
+  - type: StorageFill
+    contents:
+    - id: FoodBreadPlainSlice
+      prob: 0.50
+      maxAmount: 3
+    - id: FoodCorn
+      prob: 0.50
+      maxAmount: 3
+    - id: DrinkWaterBottleFull
+      prob: 0.50
+      maxAmount: 3
+    - id: FoodPotato
+      prob: 0.50
+      maxAmount: 3
+    - id: FoodSnackChocolate
+      prob: 0.50
+      maxAmount: 3
+    - id: FoodApple
+      prob: 0.50
+      maxAmount: 3
+    - id: FoodOrange
+      prob: 0.50
+      maxAmount: 3
+    - id: SheetGlass1
+      prob: 0.20
+      maxAmount: 5
+    - id: SheetSteel1
+      prob: 0.20
+      maxAmount: 5
+    - id: MaterialWoodPlank1
+      prob: 0.30
+      maxAmount: 5
+    - id: MaterialCloth10
+      prob: 0.30
+      maxAmount: 2
+    - id: SWJ111Rancor
+      prob: 0.05
+      maxAmount: 1
+    - id: SWZ1BlasterCarbine
+      prob: 0.05
+      maxAmount: 1
+    - id: SWGrantekF11D1
+      prob: 0.05
+      maxAmount: 1
+    - id: SWGT-13ST
+      prob: 0.05
+      maxAmount: 1
+    - id: SWMK1
+      prob: 0.05
+      maxAmount: 1
+    - id: SWCannonYellowMagazineBlastRifle
+      prob: 0.10
+      maxAmount: 1
+    - id: SWCannonBlueMagazineBlastRifle
+      prob: 0.10
+      maxAmount: 1
+    - id: SWZ1RedMagazineBlastRifle
+      prob: 0.10
+      maxAmount: 1
+    - id: SWBlueMagazineBlastRifle
+      prob: 0.10
+      maxAmount: 1
+
+- type: entity
+  id: SWRandomLootEasy
+  name: спавнер лут маленький ящик (Простой)
+  parent: MarkerBase
+  components:
+  - type: RandomSpawner
+    prototypes:
+      - FoodBreadPlainSlice
+      - FoodCorn
+      - DrinkWaterBottleFull
+      - FoodPotato
+      - FoodSnackChocolate
+      - FoodApple
+      - FoodOrange
+      - FoodMeat
+      - SheetSteel1
+      - SheetGlass1
+      - MaterialCloth1
+      - MaterialWoodPlank1
+    chance: 0.6
+    rarePrototypes:
+    - SWCannonYellowMagazineBlastRifle
+    - SWCannonBlueMagazineBlastRifle
+    - SWZ1RedMagazineBlastRifle
+    - SWBlueMagazineBlastRifle
+    rarechance: 0.3
+
+
+- type: entity
+  id: SWBoxWoodSmallLootEasy
+  name: маленький деревянный ящик
+  description: Нельзя открыть, но можно разрушить. Возможно внутри что-то есть...
+  parent: SWBoxWoodSmall
+  suffix: Лёгкий лут
+  components:
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 60
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          MaterialWoodPlank1:
+            min: 1
+            max: 2
+          SWRandomLootEasy:
+            min: 3
+            max: 8
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: WoodDestroy
+
+# Ящики с лутом средней сложности
+
+- type: entity
+  id: SWBoxSteelMedium
+  name: стальной ящик
+  parent: SWBoxSteel
+  suffix: Средний лут
+  components:
+  - type: StorageFill
+    contents:
+    - id: FoodBreadPlainSlice
+      prob: 0.40
+      maxAmount: 4
+    - id: FoodCorn
+      prob: 0.40
+      maxAmount: 4
+    - id: DrinkWaterBottleFull
+      prob: 0.40
+      maxAmount: 4
+    - id: FoodPotato
+      prob: 0.40
+      maxAmount: 4
+    - id: FoodSnackChocolate
+      prob: 0.40
+      maxAmount: 4
+    - id: FoodApple
+      prob: 0.40
+      maxAmount: 4
+    - id: FoodOrange
+      prob: 0.50
+      maxAmount: 4
+    - id: SheetGlass10
+      prob: 0.40
+      maxAmount: 2
+    - id: SheetSteel10
+      prob: 0.40
+      maxAmount: 2
+    - id: SheetRGlass1
+      prob: 0.40
+      maxAmount: 5
+    - id: SheetPGlass1
+      prob: 0.40
+      maxAmount: 5
+    - id: SheetPlasteel1
+      prob: 0.40
+      maxAmount: 5
+    - id: SheetPlasma1
+      prob: 0.40
+      maxAmount: 5
+    - id: SWE1BlasterRifle
+      prob: 0.05
+      maxAmount: 1
+    - id: SWH206Renegade
+      prob: 0.05
+      maxAmount: 1
+    - id: SWEL34
+      prob: 0.05
+      maxAmount: 1
+    - id: SWGrantekF11D2
+      prob: 0.05
+      maxAmount: 1
+    - id: SWK406Ripper
+      prob: 0.05
+      maxAmount: 1
+    - id: SWberyaramk3
+      prob: 0.05
+      maxAmount: 1
+    - id: SWSniperRifleYellowMagazineBlastRifle
+      prob: 0.10
+      maxAmount: 1
+    - id: SWCannonYellowMagazineBlastRifle
+      prob: 0.10
+      maxAmount: 1
+    - id: SWH206GreenMagazineBlastRifle
+      prob: 0.10
+      maxAmount: 1
+    - id: SWYellowMagazineBlastRifle
+      prob: 0.10
+      maxAmount: 1
+
+- type: entity
+  id: SWRandomLootMedium
+  name: спавнер лут маленький ящик (Средний)
+  parent: MarkerBase
+  components:
+  - type: RandomSpawner
+    prototypes:
+      - FoodBreadPlainSlice
+      - FoodCorn
+      - DrinkWaterBottleFull
+      - FoodPotato
+      - FoodSnackChocolate
+      - FoodApple
+      - FoodOrange
+      - FoodMeat
+      - SheetPlasteel1
+      - SheetRGlass1
+      - SheetPGlass1
+      - SheetPlasma1
+    chance: 0.7
+    rarePrototypes:
+    - SWSniperRifleYellowMagazineBlastRifle
+    - SWCannonYellowMagazineBlastRifle
+    - SWH206GreenMagazineBlastRifle
+    - SWYellowMagazineBlastRifle
+    - SheetSteel10
+    - SheetGlass10
+    rarechance: 0.3
+
+- type: entity
+  parent: SWBoxSteelSmall
+  id: SWBoxSteelSmallLootMedium
+  name: маленький стальной ящик
+  description: В такие ящики обычно кладут много полезных вещей. Нельзя открыть, но можно разрушить. Возможно внутри что-то есть...
+  suffix: Средний лут
+  components:
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 70
+      behaviors:
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 1
+            max: 2
+          SWRandomLootMedium:
+            min: 4
+            max: 9
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+
+
+# Ящики с лутом высокой сложности
+
+- type: entity
+  id: SWBoxSteeldoubleHard
+  name: стальные ящики
+  parent: SWBoxSteeldouble
+  suffix: Тяжёлый лут
+  components:
+  - type: StorageFill
+    contents:
+    - id: SheetGlass
+      prob: 0.50
+      maxAmount: 1
+    - id: SheetSteel
+      prob: 0.50
+      maxAmount: 1
+    - id: SheetRGlass1
+      prob: 0.50
+      maxAmount: 20
+    - id: SheetPGlass1
+      prob: 0.50
+      maxAmount: 20
+    - id: SheetPlasteel10
+      prob: 0.50
+      maxAmount: 2
+    - id: SheetPlasma10
+      prob: 0.50
+      maxAmount: 2
+    - id: SheetRPGlass1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetUGlass1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetRUGlass1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetPlastic1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetUranium1
+      prob: 0.50
+      maxAmount: 6
+    - id: SWP301Destroyer
+      prob: 0.40
+      maxAmount: 1
+    - id: SWGallantry
+      prob: 0.40
+      maxAmount: 1
+    - id: SWCannonYellowMagazineBlastRifle
+      prob: 0.30
+      maxAmount: 3
+    - id: SWRedMagazineBlastRifle
+      prob: 0.30
+      maxAmount: 3
+
+- type: entity
+  id: SWBoxPlasticHard
+  name: большой ящик
+  parent: SWBoxPlastic
+  suffix: Тяжелый лут
+  components:
+  - type: StorageFill
+    contents:
+    - id: SheetGlass
+      prob: 0.50
+      maxAmount: 1
+    - id: SheetSteel
+      prob: 0.50
+      maxAmount: 1
+    - id: SheetRGlass1
+      prob: 0.50
+      maxAmount: 20
+    - id: SheetPGlass1
+      prob: 0.50
+      maxAmount: 20
+    - id: SheetPlasteel10
+      prob: 0.50
+      maxAmount: 2
+    - id: SheetPlasma10
+      prob: 0.50
+      maxAmount: 2
+    - id: SheetRPGlass1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetUGlass1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetRUGlass1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetPlastic1
+      prob: 0.50
+      maxAmount: 6
+    - id: SheetUranium1
+      prob: 0.50
+      maxAmount: 6
+    - id: SWP301Destroyer
+      prob: 0.40
+      maxAmount: 1
+    - id: SWGallantry
+      prob: 0.40
+      maxAmount: 1
+    - id: SWCannonYellowMagazineBlastRifle
+      prob: 0.30
+      maxAmount: 3
+    - id: SWRedMagazineBlastRifle
+      prob: 0.30
+      maxAmount: 3

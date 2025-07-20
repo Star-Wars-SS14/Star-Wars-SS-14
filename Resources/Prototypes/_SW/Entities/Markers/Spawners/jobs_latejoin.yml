@@ -71,6 +71,18 @@
     layers:
     - state: green
 
+- type: entity
+  id: SW_SpawnPointJediLJ
+  parent: SpawnPointJobBase
+  name: Jedi LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWJedi
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
 #Empire
 - type: entity
   id: SW_SpawnPointEmpireMoffLJ
@@ -261,6 +273,17 @@
   components:
   - type: SpawnPoint
     job_id: SWEmpireEngineer
+  - type: Sprite
+    layers:
+    - state: green
+  
+- type: entity
+  id: SW_SpawnPointSithLJ
+  parent: SpawnPointJobBase
+  name: Sith LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWSith
     spawn_type: LateJoinByJob
   - type: Sprite
     layers:

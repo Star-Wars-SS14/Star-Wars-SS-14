@@ -23,7 +23,7 @@ public sealed partial class DestroyObjectsSystem : EntitySystem
     {
         base.Initialize();
         //SubscribeLocalEvent<SWKillRandomOfFactionComponent, SWTaskCheckRequirementsEvent>(OnCheckRequirements);
-        SubscribeLocalEvent<DestroyObjectsTaskComponent, SWOnTaskInitEvent>(OnTaskInit);
+        SubscribeLocalEvent<DestroyObjectsTaskComponent, SWTaskInitEvent>(OnTaskInit);
         SubscribeLocalEvent<DestroyObjectsTaskComponent, SWGetProgressEvent>(OnGetProgress);
         SubscribeLocalEvent<MetaDataComponent, DestructionEventArgs>(OnDestruct);
         SubscribeLocalEvent<MetaDataComponent, BreakageEventArgs>(OnBreak);
@@ -52,7 +52,7 @@ public sealed partial class DestroyObjectsSystem : EntitySystem
             }
         }
     }
-    private void OnTaskInit(Entity<DestroyObjectsTaskComponent> ent, ref SWOnTaskInitEvent args)
+    private void OnTaskInit(Entity<DestroyObjectsTaskComponent> ent, ref SWTaskInitEvent args)
     {
         //инициализируем количество разрушенных объектов нулями
         foreach (var protolist in ent.Comp.ObjectsToDestroy.Keys)

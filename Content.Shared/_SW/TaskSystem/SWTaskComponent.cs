@@ -28,7 +28,7 @@ public sealed partial class SWTaskComponent : Component
     [DataField]
     public TaskSpawnRestrictions Restrictions = TaskSpawnRestrictions.NoRestrictions;
 
-    public string OwnerFaction = string.Empty;
+    public string OwningFaction = string.Empty;
 }
 
 public enum TaskSpawnRestrictions

@@ -35,7 +35,7 @@ public sealed partial class SWTaskGetScoreEvent : HandledEntityEventArgs
 {
     public int Score = 0;
 }
-public sealed partial class SWOnTaskInitEvent : EntityEventArgs
+public sealed partial class SWTaskInitEvent : EntityEventArgs
 {
 
 }

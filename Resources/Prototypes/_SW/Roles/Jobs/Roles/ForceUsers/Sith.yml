@@ -11,6 +11,13 @@
   startingGear: ForceUserSithGear
   icon: "JobIconHavokMedic"
   supervisors: job-supervisors-black-council
+  access:
+  - SWEmpireCommander
+  - SWEmpireBase
+  - SWEmpireArsenal
+  - SWEmpireMedic
+  - SWEmpireIntelligence
+  - SWEmpireSobrik
   special:
   - !type:AddComponentSpecial
     components:

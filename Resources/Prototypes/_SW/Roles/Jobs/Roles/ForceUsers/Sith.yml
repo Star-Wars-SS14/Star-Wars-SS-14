@@ -9,7 +9,7 @@
     department: SWPepublic
     time: 36000 # 10h
   startingGear: ForceUserSithGear
-  icon: "JobIconHavokMedic"
+  icon: "JobIconSith"
   supervisors: job-supervisors-black-council
   access:
   - SWEmpireCommander
@@ -36,6 +36,7 @@
       tags:
         - ForceUser
         - DoorBumpOpener
+        - CanPilot
     - type: SWAbilityThrowSword
     - type: SWLightningAbility
       damage:
@@ -43,3 +44,6 @@
           Heat: 10
     - type: SWFactionMember
       faction: EmpireFaction
+    - type: Inventory
+      templateId: forceUserTemplate
+    - type: NoSlip

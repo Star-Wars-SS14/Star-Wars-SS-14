@@ -15,12 +15,15 @@
   - type: SlowOnDamage
     speedModifierThresholds:
       190: 0.8
-  - type: Tag
-    tags:
-      - ForceUser
   - type: SWAbilityThrowSword
   - type: Inventory
     templateId: forceUserTemplate
+  - type: Tag
+    tags:
+      - ForceUser
+      - DoorBumpOpener
+      - CanPilot
+  - type: NoSlip
 
 
 

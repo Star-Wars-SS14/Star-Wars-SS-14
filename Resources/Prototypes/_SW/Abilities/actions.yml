@@ -1,7 +1,7 @@
 - type: entity
   id: ActionJediDash
-  name: Прыжок
-  description: Это буквально телепортирует вас!
+  name: Быстрый бег
+  description: Ускорьтесь на короткое время
   noSpawn: true
   components:
   - type: InstantAction

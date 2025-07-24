@@ -9360,6 +9360,41 @@ entities:
     - type: Transform
       pos: 4.5,-17.5
       parent: 1
+  - uid: 5703
+    components:
+    - type: Transform
+      pos: -13.5,16.5
+      parent: 1
+  - uid: 5704
+    components:
+    - type: Transform
+      pos: -17.5,16.5
+      parent: 1
+  - uid: 5771
+    components:
+    - type: Transform
+      pos: -39.5,7.5
+      parent: 1
+  - uid: 5772
+    components:
+    - type: Transform
+      pos: -13.5,-15.5
+      parent: 1
+  - uid: 5774
+    components:
+    - type: Transform
+      pos: -17.5,-15.5
+      parent: 1
+  - uid: 5775
+    components:
+    - type: Transform
+      pos: 23.5,15.5
+      parent: 1
+  - uid: 5821
+    components:
+    - type: Transform
+      pos: -39.5,-6.5
+      parent: 1
   - uid: 5845
     components:
     - type: Transform
@@ -23437,7 +23472,7 @@ entities:
       pos: -33.5,-5.5
       parent: 1
     - type: Door
-      secondsUntilStateChange: -96368.19
+      secondsUntilStateChange: -96985.36
       state: Opening
     - type: DeviceLinkSource
       lastSignals:
@@ -73629,36 +73664,60 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 48.5,-25.5
       parent: 1
+    - type: DeviceLinkSource
+      linkedPorts:
+        4474:
+        - Pressed: Toggle
   - uid: 6825
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: 48.5,-25.5
       parent: 1
+    - type: DeviceLinkSource
+      linkedPorts:
+        4454:
+        - Pressed: Trigger
   - uid: 6826
     components:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: 54.5,-26.5
       parent: 1
+    - type: DeviceLinkSource
+      linkedPorts:
+        4470:
+        - Pressed: Toggle
   - uid: 6827
     components:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: 56.5,-26.5
       parent: 1
+    - type: DeviceLinkSource
+      linkedPorts:
+        4455:
+        - Pressed: Trigger
   - uid: 6828
     components:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: 60.5,-26.5
       parent: 1
+    - type: DeviceLinkSource
+      linkedPorts:
+        4473:
+        - Pressed: Toggle
   - uid: 6829
     components:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: 62.5,-26.5
       parent: 1
+    - type: DeviceLinkSource
+      linkedPorts:
+        4456:
+        - Pressed: Trigger
   - uid: 7245
     components:
     - type: Transform
@@ -73674,32 +73733,56 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 48.5,26.5
       parent: 1
+    - type: DeviceLinkSource
+      linkedPorts:
+        4459:
+        - Pressed: Trigger
   - uid: 7265
     components:
     - type: Transform
       rot: 1.5707963267948966 rad
       pos: 48.5,26.5
       parent: 1
+    - type: DeviceLinkSource
+      linkedPorts:
+        4476:
+        - Pressed: Toggle
   - uid: 7266
     components:
     - type: Transform
       pos: 56.5,27.5
       parent: 1
+    - type: DeviceLinkSource
+      linkedPorts:
+        4477:
+        - Pressed: Toggle
   - uid: 7267
     components:
     - type: Transform
       pos: 54.5,27.5
       parent: 1
+    - type: DeviceLinkSource
+      linkedPorts:
+        4457:
+        - Pressed: Trigger
   - uid: 7268
     components:
     - type: Transform
       pos: 60.5,27.5
       parent: 1
+    - type: DeviceLinkSource
+      linkedPorts:
+        4458:
+        - Pressed: Trigger
   - uid: 7269
     components:
     - type: Transform
       pos: 62.5,27.5
       parent: 1
+    - type: DeviceLinkSource
+      linkedPorts:
+        4478:
+        - Pressed: Toggle
   - uid: 11930
     components:
     - type: Transform

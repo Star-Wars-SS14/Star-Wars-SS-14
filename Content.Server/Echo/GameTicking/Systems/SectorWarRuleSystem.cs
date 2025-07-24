@@ -83,7 +83,7 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
         //There must be a better way to do it but i am too lazy
         if (_gameTiming.CurTime >= _sharedGameTicker.RoundStartTimeSpan
                                     + TimeSpan.FromSeconds(comp.StatesEndTimes[comp.CurState])
-                                    && comp.CurState != SWSpaceWarGameState.AttachingFull) {
+                                    && comp.CurState != SWSpaceWarGameState.AttackingFull) {
             comp.CurState++;
             foreach (var station in republicStations)
             {

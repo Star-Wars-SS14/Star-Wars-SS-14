@@ -37,7 +37,7 @@ public sealed partial class SectorWarRuleComponent : Component
     {
         { SWSpaceWarGameState.Holding, "announce-hold-republic" },
         { SWSpaceWarGameState.AttackingPartially, "announce-partially-republic"},
-        { SWSpaceWarGameState.AttachingFull, "announce-full-republic"}
+        { SWSpaceWarGameState.AttackingFull, "announce-full-republic"}
     };
 
     [DataField]
@@ -45,7 +45,7 @@ public sealed partial class SectorWarRuleComponent : Component
     {
         {SWSpaceWarGameState.Holding, "announce-hold-empire"},
         {SWSpaceWarGameState.AttackingPartially, "announce-partially-empire" },
-        {SWSpaceWarGameState.AttachingFull,  "announce-full-empire"}
+        {SWSpaceWarGameState.AttackingFull,  "announce-full-empire"}
     };
 
     [DataField]
@@ -53,7 +53,7 @@ public sealed partial class SectorWarRuleComponent : Component
     {
         {SWSpaceWarGameState.Holding, new SoundPathSpecifier("/Audio/_SW/_spaceWar/radar.ogg") },
         {SWSpaceWarGameState.AttackingPartially, new SoundPathSpecifier("/Audio/_SW/_spaceWar/start_mission.ogg")},
-        {SWSpaceWarGameState.AttachingFull, new SoundPathSpecifier("/Audio/_SW/_spaceWar/start_engine.ogg")}
+        {SWSpaceWarGameState.AttackingFull, new SoundPathSpecifier("/Audio/_SW/_spaceWar/start_engine.ogg")}
     };
 
     public SWSpaceWarGameState CurState = SWSpaceWarGameState.Preholding;
@@ -63,10 +63,10 @@ public sealed partial class SectorWarRuleComponent : Component
     //so if StatesEndTimes[<state>] = <number>, it means that when <number> of seconds passed from roundstart
     //state <state> should end and we go to the next state
     public Dictionary<SWSpaceWarGameState, float> StatesEndTimes = new Dictionary<SWSpaceWarGameState, float>(){
-        {SWSpaceWarGameState.Preholding, 15},
-        {SWSpaceWarGameState.Holding, 25}, //120
-        {SWSpaceWarGameState.AttackingPartially,  35}, //18 * 60 + 120
-        {SWSpaceWarGameState.AttachingFull,  1}
+        {SWSpaceWarGameState.Preholding, 120},
+        {SWSpaceWarGameState.Holding, 18*60 + 120}, //120
+        {SWSpaceWarGameState.AttackingPartially,  18*60 + 120 + 25*60}, //18 * 60 + 120
+        {SWSpaceWarGameState.AttackingFull,  1}
         //18 * 60 + 120 + 25 * 60
     };
 
@@ -88,5 +88,5 @@ public enum SWSpaceWarGameState : byte
     Preholding,
     Holding,
     AttackingPartially,
-    AttachingFull
+    AttackingFull
 }

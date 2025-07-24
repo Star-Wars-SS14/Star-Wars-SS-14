@@ -273,6 +273,7 @@
   components:
   - type: SpawnPoint
     job_id: SWEmpireEngineer
+    spawn_type: LateJoinByJob
   - type: Sprite
     layers:
     - state: green

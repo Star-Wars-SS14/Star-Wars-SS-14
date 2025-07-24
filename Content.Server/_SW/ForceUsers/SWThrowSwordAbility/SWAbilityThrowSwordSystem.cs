@@ -15,33 +15,7 @@ public sealed partial class SWAbilityThrowSwordSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<SWSwordThrowableComponent, LandEvent>(OnLand);
-        SubscribeLocalEvent<SWSwordThrowableComponent, ThrowRequestedActionEvent>(OnThrowRequested);
-        SubscribeLocalEvent<SWSwordThrowableComponent, GetItemActionsEvent>(OnGetActions);
     }
-
-    private void OnThrowRequested(Entity<SWSwordThrowableComponent> ent, ref ThrowRequestedActionEvent args)
-    {
-        var comp = _hands.GetActiveHand(args.Performer);
-        if (comp == null)
-        {
-            return;
-        }
-        if (comp.HeldEntity == null || !HasComp<SWSwordThrowableComponent>(comp.HeldEntity))
-        {
-            return;
-        }
-        _hands.ThrowHeldItem(args.Performer, args.Target);
-        args.Handled = true;
-    }
-
-    private void OnGetActions(Entity<SWSwordThrowableComponent> ent, ref GetItemActionsEvent args)
-    {
-        if (HasComp<SWAbilityThrowSwordComponent>(args.User))
-        {
-            args.AddAction(ref ent.Comp.ThrowActionEntity, "SWActionThrowSword");
-        }
-    }
-
 
     private void OnLand(Entity<SWSwordThrowableComponent> ent, ref LandEvent args)
     {

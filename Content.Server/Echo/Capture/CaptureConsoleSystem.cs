@@ -78,7 +78,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
                 if (comp.TimeOfNextPayment <= _timing.CurTime)
                 {
                     _sectorWarRule.GameRuleSingleton.FactionMoney[comp.Fraction] += comp.CaprureRewardPerMinuteControlling;
-                    comp.TimeOfNextPayment += TimeSpan.FromMinutes(1);
+                    comp.TimeOfNextPayment = _timing.CurTime + TimeSpan.FromMinutes(1);
                 }
             }
         }

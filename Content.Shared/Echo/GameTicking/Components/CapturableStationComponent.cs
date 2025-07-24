@@ -13,5 +13,5 @@ public sealed partial class CapturableStationComponent : Component
     public int CaprureRewardPerMinuteControlling = 1000;
 
     [DataField]
-    public TimeSpan TimeOfNextPayment;
+    public TimeSpan TimeOfNextPayment = TimeSpan.FromSeconds(0);
 }

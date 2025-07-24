@@ -54,6 +54,9 @@
   id: ComputerCapture
   description: Used to controll the station's fraction
   components:
+  - type: ApcPowerReceiver
+    powerLoad: 200
+    needsPower: false
   - type: CaptureConsole
   - type: Sprite
     sprite: _NF/Structures/Machines/computers.rsi
@@ -73,3 +76,16 @@
     interfaces:
       enum.CaptureConsoleUi.Key:
         type: CaptureConsoleBoundUserInterface
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 10000000 #make it really big to make the console indestructible
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: GlassBreak
+      - !type:ChangeConstructionNodeBehavior
+        node: monitorBroken
+      - !type:DoActsBehavior
+        acts: ["Destruction"]

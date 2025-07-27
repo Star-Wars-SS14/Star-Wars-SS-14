@@ -14,17 +14,5 @@ public sealed partial class SWKillRandomByJobComponent : Component
     [DataField]
     public Dictionary<string, int> JobsToScores = new();
 
-    [DataField]
-    public Dictionary<string, LocId> JobsToDescriptions = new();
-
-    public string? JobProtoToKill = null;
-
     public string? JobProtoOfKilled = null;
-
-    ///<summary>
-    ///Если true, то для выполнения задания достаточно убить игрока, у которой есть любая из должностей JobToScores.
-    ///Иначе выбирается одна конкретная должность из списка JobToScores, и нужно убить игрока именно с этой должностью
-    /// </summary>
-    [DataField]
-    public bool KillAny = false;
 }

@@ -1,7 +1,7 @@
 - type: weightedRandom
   id: RepublicTasksSet
   weights:
-    StealIdCardsEmpire: 10
+    KillByJobTaskRepublic: 10
 
 - type: entity
   id: KillByJobTaskRepublic
@@ -9,7 +9,16 @@
   components:
   - type: SWTask
     name: Ликвидация
-    description: Люди в указанной должности причиняют значительные неудобства нашим войскам. Убейте любого из них.
+    description: Тут ничего нет.
+  - type: SWTargetSelector
+    factions: [EmpireFaction]
+    jobs:
+    - SWEmpireMajor
+    - SWEmpireLieutenant
+    - SWEmpireIntelligenceCaretaker
+    - SWEmpireIntelligenceAgent
+    - SWEmpireMoff
+    - SWSobrikCaptain
   - type: SWKillRandomByJob
     factions: [EmpireFaction]
     jobsToScores:
@@ -19,6 +28,7 @@
       SWEmpireIntelligenceAgent: 15
       SWSobrikCaptain: 20
       SWEmpireMoff: 25
+  - type: SWDescriptionBasedOnJobOfTarget
     jobsToDescriptions:
       SWEmpireMajor : SWEmpireMajor-killByJobRepublic
       SWEmpireLieutenant : SWEmpireLieutenant-killByJobRepublic
@@ -33,7 +43,14 @@
   components:
   - type: SWTask
     name: Ликвидация
-    description:  Нам поступила информация о присутствии в регионе военнослужащего Имперских сил. Его должность в рядах империи остается неизвестной, однако он представляет большую опасность. Генштаб требует его немедленной ликвидации.
+    description:  Тут ничего нет.
+  - type: SWTargetSelector
+    factions: [EmpireFaction]
+    jobs:
+    - SWEmpireMajor
+    - SWEmpireLieutenant
+    - SWSobrikCaptain
+    - SWEmpireMoff
   - type: SWKillRandomByName
     factions: [EmpireFaction]
     jobsToScores:

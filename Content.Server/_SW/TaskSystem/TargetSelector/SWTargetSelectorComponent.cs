@@ -16,7 +16,7 @@ public sealed partial class SWTargetSelectorComponent : Component
     [DataField]
     public List<string> Jobs = new();
 
-    public EntityUid? PersonToKill = null;
+    public EntityUid? Target = null;
 
     public string? JobOfTarget = null;
 }

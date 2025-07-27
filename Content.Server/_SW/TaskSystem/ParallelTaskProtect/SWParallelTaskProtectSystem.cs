@@ -24,7 +24,7 @@ public sealed class SWParallelTaskProtectSystem : EntitySystem
     {
         if (TryComp<SWParallelTaskProtectComponent>(args.SpawnedTask, out var comp))
         {
-            comp.PersonToProtect = EnsureComp<SWTargetSelectorComponent>(ent.Owner).PersonToKill;
+            comp.PersonToProtect = EnsureComp<SWTargetSelectorComponent>(ent.Owner).Target;
         }
     }
     private void OnDescriptionRequested(Entity<SWParallelTaskProtectComponent> ent, ref SWTaskProvideDescriptionEvent args)

@@ -1,4 +1,5 @@
 using Content.Server._SW.TaskSystem.KillRandomOfFaction;
+using Content.Server._SW.TaskSystem.ParallelTask;
 using Content.Shared._SW.TaskSystem;
 using Content.Shared.Mind;
 using Content.Shared.Objectives.Components;
@@ -26,7 +27,7 @@ public sealed class SWTargetSelectorSystem : EntitySystem
 
     //Мне лень писать это на английском, напишу так
     //Для одной фракции мы выбираем цели с разными именами, то есть для убийства по работе и убийства по имени будут выбраны разные сущности
-    //Таки образом, с другими фракциями цели заданий могут пересекаться. Фактически, оба раза мы выбираем по имени.
+    //Таки образом, с другими фракциями цели заданий могут пересекаться.
     //Таким образом, SWTargetSelector выбирает цели, уникальыне в рамках заданий фракции, то есть для любого задания фракции,
     //цели во всех этих компонентых будут разные
     private void OnCheckRequirements(Entity<SWTargetSelectorComponent> ent, ref SWTaskCheckRequirementsEvent args)
@@ -36,9 +37,9 @@ public sealed class SWTargetSelectorSystem : EntitySystem
         string thisTaskOwningfaction = EnsureComp<SWTaskComponent>(ent.Owner).OwningFaction;
         while (query.MoveNext(out var uid, out var targetComp, out var taskComp))
         {
-            if (targetComp.PersonToKill != null && thisTaskOwningfaction == taskComp.OwningFaction)
+            if (targetComp.Target != null && thisTaskOwningfaction == taskComp.OwningFaction)
             {
-                targets.Add(targetComp.PersonToKill);
+                targets.Add(targetComp.Target);
             }
         }
 
@@ -59,9 +60,9 @@ public sealed class SWTargetSelectorSystem : EntitySystem
         string thisTaskOwningfaction = EnsureComp<SWTaskComponent>(ent.Owner).OwningFaction;
         while (query.MoveNext(out var uid, out var targetComp, out var taskComp))
         {
-            if (targetComp.PersonToKill != null && thisTaskOwningfaction == taskComp.OwningFaction)
+            if (targetComp.Target != null && thisTaskOwningfaction == taskComp.OwningFaction)
             {
-                chosen_targets.Add(targetComp.PersonToKill);
+                chosen_targets.Add(targetComp.Target);
             }
         }
 
@@ -74,8 +75,8 @@ public sealed class SWTargetSelectorSystem : EntitySystem
                 possible_targets.Add(uid);
             }
         }
-        ent.Comp.PersonToKill = _random.Pick(possible_targets);
-        ent.Comp.JobOfTarget = GetJob(ent.Comp.PersonToKill.Value);
+        ent.Comp.Target = _random.Pick(possible_targets);
+        ent.Comp.JobOfTarget = GetJob(ent.Comp.Target.Value);
     }
 
     public string? GetJob(EntityUid ent, EntityUid? mind = null)

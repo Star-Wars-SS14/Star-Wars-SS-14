@@ -320207,7 +320207,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SW_BlackSunArmor
+- proto: SWBlackSunArmor
   entities:
   - uid: 6428
     components:

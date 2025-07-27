@@ -10,4 +10,6 @@ namespace Content.Server._SW.TaskSystem.CapturePerson;
 public sealed partial class SWCapturePersonComponent : Component
 {
     public HashSet<EntityUid> CuffedTargets = new HashSet<EntityUid>();
+
+    public Dictionary<string, int> JobsToScore = new Dictionary<string, int>();
 }

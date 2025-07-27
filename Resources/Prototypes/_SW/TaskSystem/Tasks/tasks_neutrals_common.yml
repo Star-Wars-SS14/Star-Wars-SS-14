@@ -16,7 +16,8 @@
     - SWRepublicRecruit
     - SWRepublicMedic
   - type: SWKillRandomByName
-    factions: [RepublicFaction, EmpireFaction]
+    descriptionId: small-headhunt
+  - type: SWGetScoreByTargetJob
     jobsToScores:
       SWEmpireSoldier: 15
       SWEmpireMedic: 15
@@ -25,7 +26,6 @@
       SWRepublicSoldier: 15
       SWRepublicRecruit: 15
       SWRepublicMedic: 15
-    descriptionId: small-headhunt
 
 - type: entity
   id: BigHeadHunterMandalorian
@@ -47,7 +47,8 @@
     - SWRepublicCommanderStormtrooper
     - SWRepublicCommanderSniper
   - type: SWKillRandomByName
-    factions: [RepublicFaction, EmpireFaction]
+    descriptionId: big-headhunt-mandalorian
+  - type: SWGetScoreByTargetJob
     jobsToScores:
       SWEmpireMajor: 25
       SWEmpireLieutenant: 25
@@ -58,7 +59,6 @@
       SWRepublicCommanderMedic: 25
       SWRepublicCommanderStormtrooper: 25
       SWRepublicCommanderSniper: 25
-    descriptionId: big-headhunt-mandalorian
 
 # - type: entity
 #   id: KillConcurentBlackSun

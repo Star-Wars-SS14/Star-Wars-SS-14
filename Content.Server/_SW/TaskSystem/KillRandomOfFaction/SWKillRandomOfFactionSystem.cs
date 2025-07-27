@@ -38,14 +38,11 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
                                                                                             before: [typeof(SWParallelTaskSystem)]);
         SubscribeLocalEvent<SWKillRandomByNameComponent, SWTaskProvideDescriptionEvent>(OnDescUpdatedByName, after: [typeof(SWTargetSelectorSystem)],
                                                                                                              before: [typeof(SWParallelTaskSystem)]);
-        SubscribeLocalEvent<SWKillRandomByNameComponent, SWTaskGetScoreEvent>(GetScoreByName);
 
         SubscribeLocalEvent<SWKillRandomByJobComponent, SWTaskCheckRequirementsEvent>(OnCheckRequirementsByJob, after: [typeof(SWTargetSelectorSystem)],
                                                                                                                 before: [typeof(SWParallelTaskSystem)]);
         SubscribeLocalEvent<SWKillRandomByJobComponent, SWTaskInitEvent>(OnTaskInitByJob, after: [typeof(SWTargetSelectorSystem)],
                                                                                           before: [typeof(SWParallelTaskSystem)]);
-
-        SubscribeLocalEvent<SWKillRandomByJobComponent, SWTaskGetScoreEvent>(GetScoreByJob);
 
         SubscribeLocalEvent<SWFactionMemberComponent, MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<SWFactionMemberComponent, MindRemovedMessage>(OnMindRemoved);
@@ -79,18 +76,6 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         comp.Description = Loc.GetString(ent.Comp.DescriptionId, ("name", Name(targetComp.Target.Value)));
     }
 
-    private void GetScoreByName(Entity<SWKillRandomByNameComponent> ent, ref SWTaskGetScoreEvent args)
-    {
-        var targetComp = EnsureComp<SWTargetSelectorComponent>(ent.Owner);
-        if (targetComp.Target != null)
-        {
-            if (targetComp.JobOfTarget != null)
-            {
-                args.Score = ent.Comp.JobsToScores[targetComp.JobOfTarget];
-                args.Handled = true;
-            }
-        }
-    }
     private void OnCheckRequirementsByJob(Entity<SWKillRandomByJobComponent> ent, ref SWTaskCheckRequirementsEvent args)
     {
         //handled in SWTargetselector
@@ -102,18 +87,7 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
             _s.Error($"Task {Prototype(ent.Owner)} has component which needs a target selector, but doesnt have a target seleector!");
         }
     }
-    private void GetScoreByJob(Entity<SWKillRandomByJobComponent> ent, ref SWTaskGetScoreEvent args)
-    {
-        if (ent.Comp.JobProtoOfKilled != null)
-        {
-            var targetComp = EnsureComp<SWTargetSelectorComponent>(ent.Owner);
-            if (targetComp.JobOfTarget == ent.Comp.JobProtoOfKilled)
-            {
-                args.Score = ent.Comp.JobsToScores[ent.Comp.JobProtoOfKilled];
-                args.Handled = true;
-            }
-        }
-    }
+
     private void OnMobStateChanged(Entity<SWFactionMemberComponent> ent, ref MobStateChangedEvent args)
     {
         UpdateProgress(ent, args.NewMobState);
@@ -150,18 +124,15 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
             var job = _swTargetSelector.GetJob(ent.Owner, mind);
             var taskComp = EnsureComp<SWTaskComponent>(uid);
             if (taskComp.Completeness < 1.0
-                && job != null && comp.JobsToScores.ContainsKey(job)
-                   && (targetComp.JobOfTarget == job))
+                && job != null && (targetComp.JobOfTarget == job))
             {
                 if (newState == MobState.Dead || newState == MobState.Invalid)
                 {
                     _sWTasks.UpdateTaskProgress(uid, 1.0);
-                    comp.JobProtoOfKilled = job;
                 }
                 else
                 {
                     _sWTasks.UpdateTaskProgress(uid, 0.0);
-                    comp.JobProtoOfKilled = null;
                 }
             }
         }

@@ -367,9 +367,6 @@ namespace Content.Shared.Cuffs
                     _adminLog.Add(LogType.Action, LogImpact.Medium,
                         $"{ToPrettyString(user):player} has cuffed {ToPrettyString(target):player}");
                 }
-                ISawmill _s = Logger.GetSawmill("sdfghj");
-                _s.Fatal("-1");
-                _s.Fatal($"{target}");
                 RaiseLocalEvent(target, new OnTargetGetCuffed(target, user)); //SW
             }
             else

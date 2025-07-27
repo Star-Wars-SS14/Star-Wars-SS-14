@@ -8,22 +8,49 @@
   parent: SWTaskBase
   components:
   - type: SWTask
-    name: Захват
+    name: Захват военнопленных
     description: Тут ничего нет.
   - type: SWTargetSelector
     factions: [RepublicFaction]
     jobs:
+    - SWRepublicRecruit
+    - SWRepublicSoldier
+    - SWRepublicMedic
     - SWRepublicLieutenant
     - SWRepublicCaptain
     - SWRepublicGeneral
     - SWRepublicCommanderCommander
+    - SWRepublicCommanderStormtrooper
+    - SWRepublicCommanderSniper
+    - SWRepublicCommanderLieutenant
+    - SWRepublicCommanderMediс
   - type: SWCapturePerson
+  - type: SWGetScoreByTargetJob
+    jobsToScores:
+      SWRepublicRecruit: 10
+      SWRepublicSoldier: 10
+      SWRepublicMedic: 15
+      SWRepublicLieutenant: 15
+      SWRepublicCaptain: 20
+      SWRepublicGeneral: 25
+      SWRepublicCommanderCommander: 15
+      SWRepublicCommanderStormtrooper: 20
+      SWRepublicCommanderSniper: 20
+      SWRepublicCommanderLieutenant: 20
+      SWRepublicCommanderMedic: 20
   - type: SWDescriptionBasedOnJobOfTarget
     jobsToDescriptions:
-      SWRepublicLieutenant: SWRepublicLieutenant-killByJob
-      SWRepublicCaptain: SWRepublicCaptain-killByJob
-      SWRepublicGeneral: SWRepublicGeneral-killByJob
-      SWRepublicCommanderCommander: SWRepublicCommanderCommander-killByJob
+      SWRepublicRecruit: SWRepublicRecruit-capture
+      SWRepublicSoldier: SWRepublicSoldier-capture
+      SWRepublicMedic: SWRepublicMedic-capture      
+      SWRepublicLieutenant: SWRepublicLieutenant-capture
+      SWRepublicCaptain: SWRepublicCaptain-capture
+      SWRepublicGeneral: SWRepublicGeneral-capture
+      SWRepublicCommanderCommander: SWRepublicCommanderCommander-capture
+      SWRepublicCommanderStormtrooper: SWRepublicHavokNotCommander-capture
+      SWRepublicCommanderSniper: SWRepublicHavokNotCommander-capture
+      SWRepublicCommanderLieutenant: SWRepublicHavokNotCommander-capture
+      SWRepublicCommanderMedic: SWRepublicHavokNotCommander-capture
 
 - type: entity
   id: KillRepublicByJobEmpire
@@ -40,7 +67,7 @@
     - SWRepublicGeneral
     - SWRepublicCommanderCommander
   - type: SWKillRandomByJob
-    factions: [RepublicFaction]
+  - type: SWGetScoreByTargetJob
     jobsToScores:
       SWRepublicLieutenant: 15
       SWRepublicCaptain: 20
@@ -69,13 +96,13 @@
     - SWExchangeCaptain
     - SWExchangeOperative
   - type: SWKillRandomByName
-    factions: [ExchangeFaction, BlackSunFaction]
+    descriptionId: kill-criminal
+  - type: SWGetScoreByTargetJob
     jobsToScores:
       SWBlackSunMercenary : 8
       SWBlackSun : 10
       SWExchangeCaptain : 10
       SWExchangeOperative : 8
-    descriptionId: kill-criminal
 
 - type: entity
   id: KillByNameTaskEmpire
@@ -96,7 +123,8 @@
     - SWRepublicCommanderStormtrooper
     - SWRepublicCommanderSniper
   - type: SWKillRandomByName
-    factions: [RepublicFaction]
+    descriptionId: kill-republic-by-name
+  - type: SWGetScoreByTargetJob
     jobsToScores:
       SWRepublicGeneral : 25
       SWRepublicCaptain : 20 
@@ -106,7 +134,7 @@
       SWRepublicCommanderMedic: 15
       SWRepublicCommanderStormtrooper: 15
       SWRepublicCommanderSniper: 15
-    descriptionId: kill-republic-by-name
+
   - type: SWParallelTask
     task: ProtectTaskRepublic
     faction: RepublicFaction

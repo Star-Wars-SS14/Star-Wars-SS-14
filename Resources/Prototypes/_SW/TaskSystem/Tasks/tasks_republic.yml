@@ -8,20 +8,28 @@
   parent: SWTaskBase
   components:
   - type: SWTask
-    name: Ликвидация
+    name: Захват военнопленных
     description: Тут ничего нет.
   - type: SWTargetSelector
     factions: [EmpireFaction]
     jobs:
+    - SWSobrikOfficer
+    - SWEmpireSoldier
+    - SWEmpireMedic
+    - SWSobrikMedic
     - SWEmpireMajor
     - SWEmpireLieutenant
     - SWEmpireIntelligenceCaretaker
     - SWEmpireIntelligenceAgent
-    - SWEmpireMoff
     - SWSobrikCaptain
+    - SWEmpireMoff
   - type: SWKillRandomByJob
-    factions: [EmpireFaction]
+  - type: SWGetScoreByTargetJob
     jobsToScores:
+      SWSobrikOfficer: 10
+      SWEmpireSoldier: 10
+      SWEmpireMedic: 15
+      SWSobrikMedic: 15
       SWEmpireMajor : 20
       SWEmpireLieutenant : 15
       SWEmpireIntelligenceCaretaker: 20
@@ -30,12 +38,16 @@
       SWEmpireMoff: 25
   - type: SWDescriptionBasedOnJobOfTarget
     jobsToDescriptions:
-      SWEmpireMajor : SWEmpireMajor-killByJobRepublic
-      SWEmpireLieutenant : SWEmpireLieutenant-killByJobRepublic
-      SWEmpireIntelligenceCaretaker: SWEmpireIntelligenceCaretaker-killByJobRepublic
-      SWEmpireIntelligenceAgent: SWEmpireIntelligenceAgent-killByJobRepublic
-      SWSobrikCaptain: SWSobrikCaptain-killByJobRepublic
-      SWEmpireMoff: SWEmpireMoff-killByJobRepublic
+      SWSobrikOfficer: SWSobrikOfficer-capture
+      SWEmpireSoldier: SWEmpireSoldier-capture
+      SWEmpireMedic: SWEmpireMedic-capture
+      SWSobrikMedic: SWSobrikMedic-capture
+      SWEmpireMajor : SWEmpireMajor-capture
+      SWEmpireLieutenant : SWEmpireLieutenant-capture
+      SWEmpireIntelligenceCaretaker: SWEmpireIntelligenceCaretaker-capture
+      SWEmpireIntelligenceAgent: SWEmpireIntelligenceAgent-capture
+      SWSobrikCaptain: SWSobrikCaptain-capture
+      SWEmpireMoff: SWEmpireMoff-capture
 
 - type: entity
   id: KillRandomEmpireByName
@@ -52,13 +64,13 @@
     - SWSobrikCaptain
     - SWEmpireMoff
   - type: SWKillRandomByName
-    factions: [EmpireFaction]
+    descriptionId: kill-empire-by-name
+  - type: SWGetScoreByTargetJob
     jobsToScores:
       SWEmpireMajor: 20
       SWEmpireLieutenant: 15
       SWEmpireMoff: 25
       SWSobrikCaptain: 20
-    descriptionId: kill-empire-by-name
   - type: SWParallelTask
     task: ProtectTaskEmpire
     faction: EmpireFaction

@@ -4,6 +4,7 @@
   id: CMWallMetal
   name: стена
   description: Огромный кусок металла, используемый для разделения комнат.
+  suffix: 3к
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/metal.rsi
@@ -32,6 +33,7 @@
   id: CMWallMetalAlmayer
   name: стена
   description: Огромный кусок металла, используемый для разделения комнат.
+  suffix: 3к
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/almayer_black.rsi
@@ -47,6 +49,7 @@
   id: CMWallMetalAlmayerWhite
   name: стена
   description: Огромный кусок металла, используемый для разделения комнат.
+  suffix: 3к
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/almayer_white.rsi
@@ -57,12 +60,97 @@
     key: walls
     base: wall
 
-# Reinforced
+# Reinforced 6k
+- type: entity
+  parent: BaseWall
+  id: CMWallReinforcedLight
+  name: усиленная стена
+  description: Огромный кусок армированного металла, используемый для разделения комнат.
+  suffix: 6к
+  components:
+  - type: Sprite
+    sprite: _RMC14/Structures/Walls/rwall.rsi
+  - type: Icon
+    sprite: _RMC14/Structures/Walls/rwall.rsi
+  - type: Tag
+    tags:
+    - Wall
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 6000
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: IconSmooth
+    key: walls
+    base: rwall
+  - type: Construction
+    graph: CMGirder
+    node: reinforcedWall
+  - type: StaticPrice
+    price: 150
+
+- type: entity
+  parent: BaseWall
+  id: CMWallSuperReinforcedLight
+  suffix: 6к
+  components:
+  - type: Sprite
+    sprite: _RMC14/Structures/Walls/rwall.rsi
+  - type: Icon
+    sprite: _RMC14/Structures/Walls/rwall.rsi
+  - type: Tag
+    tags:
+    - Wall
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 6000
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: IconSmooth
+    key: walls
+    base: rwall
+
+- type: entity
+  parent: CMWallReinforcedLight
+  id: CMWallReinforcedAlmayerLight
+  suffix: 6к
+  components:
+  - type: Sprite
+    sprite: _RMC14/Structures/Walls/almayer_black.rsi
+  - type: Icon
+    sprite: _RMC14/Structures/Walls/almayer_black.rsi
+    state: reinforced
+  - type: IconSmooth
+    key: walls
+    base: wall
+
+- type: entity
+  parent: CMWallReinforcedLight
+  id: CMWallReinforcedAlmayerWhiteLight
+  suffix: 6к
+  components:
+  - type: Sprite
+    sprite: _RMC14/Structures/Walls/almayer_white.rsi
+  - type: Icon
+    sprite: _RMC14/Structures/Walls/almayer_white.rsi
+    state: reinforced
+  - type: IconSmooth
+    key: walls
+    base: wall
+
+# Reinforced 9k
 - type: entity
   parent: BaseWall
   id: CMWallReinforced
   name: усиленная стена
   description: Огромный кусок армированного металла, используемый для разделения комнат.
+  suffix: 9к
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/rwall.rsi
@@ -91,6 +179,7 @@
 - type: entity
   parent: BaseWall
   id: CMWallSuperReinforced
+  suffix: 9к
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/rwall.rsi
@@ -114,6 +203,7 @@
 - type: entity
   parent: CMWallReinforced
   id: CMWallReinforcedAlmayer
+  suffix: 9к
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/almayer_black.rsi
@@ -127,6 +217,7 @@
 - type: entity
   parent: CMWallReinforced
   id: CMWallReinforcedAlmayerWhite
+  suffix: 9к
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Walls/almayer_white.rsi
@@ -136,53 +227,6 @@
   - type: IconSmooth
     key: walls
     base: wall
-
-# Indestructible
-- type: entity
-  parent: BaseWall
-  id: CMWallReinforcedHeavy
-  name: тяжелая армированная стена
-  description: Огромный кусок сверхпрочного металла, используемый для разделения комнат. Выглядит практически неразрушимым.
-  components:
-  - type: Sprite
-    sprite: _RMC14/Structures/Walls/rwall.rsi
-  - type: Icon
-    sprite: _RMC14/Structures/Walls/rwall.rsi
-  - type: Tag
-    tags:
-      - Wall
-  - type: IconSmooth
-    key: walls
-    base: rwall
-
-- type: entity
-  parent: CMWallReinforcedHeavy
-  id: CMWallReinforcedHeavyAlmayer
-  components:
-  - type: Sprite
-    sprite: _RMC14/Structures/Walls/almayer_black.rsi
-  - type: Icon
-    sprite: _RMC14/Structures/Walls/almayer_black.rsi
-    state: hull
-  - type: IconSmooth
-    key: walls
-    base: wall
-
-- type: entity
-  parent: CMWallReinforcedHeavy
-  id: CMWallReinforcedHeavyAlmayerWhite
-  name: ultra reinforced hull
-  components:
-  - type: Sprite
-    sprite: _RMC14/Structures/Walls/almayer_white.rsi
-  - type: Icon
-    sprite: _RMC14/Structures/Walls/almayer_white.rsi
-    state: hull
-  - type: IconSmooth
-    key: walls
-    base: wall
-
-# TODO RMC14 temp hull, breakable only after hijack
 
 # Shuttle
 - type: entity
@@ -213,6 +257,57 @@
     state: wall1
   - type: Icon
     state: wall1
+
+
+# Indestructible
+- type: entity
+  parent: BaseWall
+  id: CMWallReinforcedHeavy
+  name: тяжелая армированная стена
+  suffix: Неразрушимый
+  description: Огромный кусок сверхпрочного металла, используемый для разделения комнат. Выглядит практически неразрушимым.
+  components:
+  - type: Sprite
+    sprite: _RMC14/Structures/Walls/rwall.rsi
+  - type: Icon
+    sprite: _RMC14/Structures/Walls/rwall.rsi
+  - type: Tag
+    tags:
+      - Wall
+  - type: IconSmooth
+    key: walls
+    base: rwall
+
+- type: entity
+  parent: CMWallReinforcedHeavy
+  id: CMWallReinforcedHeavyAlmayer
+  suffix: Неразрушимый
+  components:
+  - type: Sprite
+    sprite: _RMC14/Structures/Walls/almayer_black.rsi
+  - type: Icon
+    sprite: _RMC14/Structures/Walls/almayer_black.rsi
+    state: hull
+  - type: IconSmooth
+    key: walls
+    base: wall
+
+- type: entity
+  parent: CMWallReinforcedHeavy
+  id: CMWallReinforcedHeavyAlmayerWhite
+  name: ultra reinforced hull
+  suffix: Неразрушимый
+  components:
+  - type: Sprite
+    sprite: _RMC14/Structures/Walls/almayer_white.rsi
+  - type: Icon
+    sprite: _RMC14/Structures/Walls/almayer_white.rsi
+    state: hull
+  - type: IconSmooth
+    key: walls
+    base: wall
+
+# TODO RMC14 temp hull, breakable only after hijack
 
 # Cave
 - type: entity

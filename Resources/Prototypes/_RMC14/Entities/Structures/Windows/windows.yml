@@ -1,11 +1,11 @@
-﻿- type: entity
+- type: entity
   abstract: true
-  parent: BaseWall
+  parent: Window
   id: CMBaseWindow # TODO RMC14 this needs to be 2 separate entities eventually
   placement:
     mode: SnapgridCenter
     snap:
-    - Wall
+    - Window
   components:
   - type: Transform
     anchored: true
@@ -14,8 +14,8 @@
   - type: PlacementReplacement
     key: walls
   - type: Damageable
-    damageContainer: Inorganic
-    damageModifierSet: Metallic
+    damageContainer:  StructuralInorganic
+    damageModifierSet: Glass
   - type: Airtight
   - type: RadiationBlocker
     resistance: 2
@@ -27,13 +27,36 @@
     fixtures:
       fix1:
         shape:
-          !type:PhysShapeAabb
-          bounds: "-0.5,-0.5,0.5,0.5"
+          !type:PhysShapeAabb {}
         mask:
         - FullTileMask
         layer:
-        - WallLayer
-        density: 1000
+        - GlassLayer
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 3000
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: WindowShatter
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+    - trigger:
+        !type:DamageTrigger
+        damage: 3000
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: WindowShatter
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          ShardGlass:
+            min: 1
+            max: 2
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
 
 - type: entity
   parent: CMBaseWindow

@@ -51,9 +51,9 @@ public sealed partial class SectorWarRuleComponent : Component
     [DataField]
     public Dictionary<SWSpaceWarGameState, SoundSpecifier?> AnnouncementSounds = new Dictionary<SWSpaceWarGameState, SoundSpecifier?>()
     {
-        {SWSpaceWarGameState.Holding, new SoundPathSpecifier("/Audio/_SW/_spaceWar/radar.ogg") },
-        {SWSpaceWarGameState.AttackingPartially, new SoundPathSpecifier("/Audio/_SW/_spaceWar/start_mission.ogg")},
-        {SWSpaceWarGameState.AttackingFull, new SoundPathSpecifier("/Audio/_SW/_spaceWar/start_engine.ogg")}
+        {SWSpaceWarGameState.Holding, new SoundPathSpecifier("/Audio/_SW/_spaceWar/1.ogg") },
+        {SWSpaceWarGameState.AttackingPartially, new SoundPathSpecifier("/Audio/_SW/_spaceWar/2.ogg")},
+        {SWSpaceWarGameState.AttackingFull, new SoundPathSpecifier("/Audio/_SW/_spaceWar/3.ogg")}
     };
 
     public SWSpaceWarGameState CurState = SWSpaceWarGameState.Preholding;

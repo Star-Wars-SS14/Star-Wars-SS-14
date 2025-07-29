@@ -35,9 +35,8 @@
       nameSegments:
       - NamesFirstMilitaryLieutenant
       - NamesLastMilitary
-    - type: NpcFactionMember
-      factions:
-      - Syndicate
+    - type: SWFactionMember
+      faction: EmpireFaction
 
 # Soldier
 - type: entity
@@ -67,9 +66,8 @@
       nameSegments:
       - NamesFirstMilitarySoldier
       - NamesLastMilitary
-    - type: NpcFactionMember
-      factions:
-      - Syndicate
+    - type: SWFactionMember
+      faction: EmpireFaction
 
 # Medic
 - type: entity
@@ -99,9 +97,8 @@
       nameSegments:
       - NamesFirstMilitaryMedic
       - NamesLastMilitary
-    - type: NpcFactionMember
-      factions:
-      - Syndicate
+    - type: SWFactionMember
+      faction: EmpireFaction
 
 # SWRepublic
 # Lieutenant
@@ -132,9 +129,8 @@
       nameSegments:
       - NamesFirstMilitaryLieutenant
       - NamesLastMilitary
-    - type: NpcFactionMember
-      factions:
-      - Syndicate
+    - type: SWFactionMember
+      faction: RepublicFaction
 
 # Soldier
 - type: entity
@@ -164,9 +160,8 @@
       nameSegments:
       - NamesFirstMilitarySoldier
       - NamesLastMilitary
-    - type: NpcFactionMember
-      factions:
-      - Syndicate
+    - type: SWFactionMember
+      faction: RepublicFaction
 
 # Medic
 - type: entity
@@ -196,6 +191,5 @@
       nameSegments:
       - NamesFirstMilitaryMedic
       - NamesLastMilitary
-    - type: NpcFactionMember
-      factions:
-      - Syndicate
+    - type: SWFactionMember
+      faction: RepublicFaction

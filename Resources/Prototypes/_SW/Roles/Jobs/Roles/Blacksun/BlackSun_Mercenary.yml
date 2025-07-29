@@ -10,3 +10,8 @@
   supervisors: job-supervisors-blacksun-cap
   access:
   - SWBlackSun
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: SWFactionMember
+        faction: BlackSunFaction

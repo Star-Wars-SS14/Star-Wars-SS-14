@@ -1,0 +1,91 @@
+- type: entity
+  name: shipyard console
+  parent: [BaseComputer]
+  id: ComputerShipyardBase
+  description: Used to purchase and sell shuttles
+  abstract: true
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: shipyard
+    - map: ["computerLayerKeys"]
+      state: telesci_key
+  - type: ShipyardConsole
+    targetIdSlot:
+      name: id-card-console-target-id
+      ejectSound: /Audio/Machines/id_swipe.ogg
+      insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+      ejectOnBreak: true
+      swap: true
+      whitelist:
+        components:
+        - IdCard
+        - ShipyardVoucher
+    newAccessLevels: [Captain]
+  - type: ActivatableUI
+    singleUser: true
+    key: enum.ShipyardConsoleUiKey.Shipyard
+  - type: UserInterface
+    interfaces:
+      enum.ShipyardConsoleUiKey.Shipyard:
+        type: ShipyardConsoleBoundUserInterface
+  - type: ItemSlots
+  - type: ContainerContainer
+    containers:
+      ShipyardConsole-targetId: !type:ContainerSlot {}
+
+# Hardcoded consoles
+- type: entity
+  parent: ComputerShipyardBase
+  id: ComputerShipyard
+  components:
+  - type: ShipyardConsole
+    newJobTitle: Captain
+
+- type: entity
+  name: capture console
+  parent: [BaseComputer]
+  id: ComputerCapture
+  description: Used to controll the station's fraction
+  components:
+  - type: ApcPowerReceiver
+    powerLoad: 200
+    needsPower: false
+  - type: CaptureConsole
+  - type: Sprite
+    sprite: _SW/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: shipyard
+    - map: ["computerLayerKeys"]
+      state: telesci_key
+  - type: ActivatableUI
+    singleUser: true
+    key: enum.CaptureConsoleUi.Key
+  - type: UserInterface
+    interfaces:
+      enum.CaptureConsoleUi.Key:
+        type: CaptureConsoleBoundUserInterface
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 10000000 #make it really big to make the console indestructible
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: GlassBreak
+      - !type:ChangeConstructionNodeBehavior
+        node: monitorBroken
+      - !type:DoActsBehavior
+        acts: ["Destruction"]

@@ -9,6 +9,8 @@
   - SWEmpireLieutenant
   - SWEmpireSoldier
   - SWEmpireMedic
+  - SWEmpireEngineer
+  - SWEmpirePilot
   - SWSith
   weight: 1900
 
@@ -24,6 +26,8 @@
   - SWRepublicSoldier
   - SWRepublicRecruit
   - SWRepublicMedic
+  - SWRepublicEngineer
+  - SWRepublicPilot
   - SWJedi
   weight: 1800
 

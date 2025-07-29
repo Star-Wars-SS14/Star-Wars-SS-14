@@ -1,0 +1,15 @@
+- type: vendingMachineInventory
+  id: EchoСombineClothingInventory
+  startingInventory:
+    EchoClothingShoesBootsCombineSoldier: 4
+    EchoClothingShoesBootsCombineSniper: 4
+    EchoClothingShoesBootsCombineSpecops: 4
+    EchoClothingShoesBootsCombineStormtrooper: 4
+    EchoClothingPantsCombineSoldier: 4
+    EchoClothingPantsCombineSniper: 4
+    EchoClothingPantsCombineSpecops: 4
+    EchoClothingOuterArmorCombineSoldier: 4
+    EchoClothingOuterArmorCombineOfficer: 4
+    EchoClothingOuterArmorCombineSniper: 4
+    EchoClothingOuterArmorCombineSpecops: 4
+    EchoClothingOuterArmorCombineStormtrooper: 4

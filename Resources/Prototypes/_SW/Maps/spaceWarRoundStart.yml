@@ -1,0 +1,56 @@
+- type: gameMap
+  id: SpaceWarRoundstart
+  mapName: 'Space War'
+  mapPath: /Maps/SW/spaceWaRoundstart.yml
+  minPlayers: 10
+  stations:
+    RepublicCruiser:
+       stationProto: StandardVessel
+       components:
+         - type: StationNameSetup
+           mapNameTemplate: 'Valor-Class cruiser {1}'
+           nameGenerator:
+             !type:NanotrasenNameGenerator
+             prefixCreator: '14'
+         - type: StationJobs
+           availableJobs:
+            SWRepublicGeneral: [ 1, 1 ]
+            SWRepublicCaptain: [ 1, 1 ]
+            SWRepublicLieutenant: [ 3, 3 ]
+            SWRepublicSoldier: [ 9, 9 ]
+            SWRepublicMedic: [ 3, 3 ]
+            SWRepublicEngineer: [ 2, 2 ]
+            SWRepublicPilot: [ 4, 4 ]
+            SWJedi: [1, 1]
+         - type: CapturableStation
+           fraction: RepublicFaction
+    ImperialCruiser:
+       stationProto: StandardVessel
+       components:
+         - type: StationNameSetup
+           mapNameTemplate: 'Dreadnought "Cleaver"'
+           nameGenerator:
+             !type:NanotrasenNameGenerator
+             prefixCreator: '14'
+         - type: StationJobs
+           availableJobs:
+            SWEmpireMoff: [ 1, 1 ]
+            SWEmpireMajor: [ 1, 1 ]
+            SWEmpireLieutenant: [ 3, 3 ]
+            SWEmpireSoldier: [ 9, 9 ]
+            SWEmpireMedic: [ 3, 3 ]
+            SWEmpireEngineer: [2, 2]
+            SWEmpirePilot: [ 4, 4 ]
+            SWSith: [1, 1]
+         - type: CapturableStation
+           fraction: EmpireFaction
+    ast1:
+       stationProto: StandardVessel
+       components:
+       - type: StationNameSetup
+         mapNameTemplate: 'PSSA "Space Protector" {1}'
+         nameGenerator:
+          !type:NanotrasenNameGenerator
+          prefixCreator: '14'          
+       - type: CapturableStation
+

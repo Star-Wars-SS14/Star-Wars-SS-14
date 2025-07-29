@@ -9,7 +9,7 @@
     department: SWPepublic
     time: 36000 # 10h
   startingGear: ForceUserJediGear
-  icon: "JobIconHavokMedic"
+  icon: "JobIconJedi"
   supervisors: job-supervisors-jedi-council
   access:
   - SWRepublicBase
@@ -32,5 +32,12 @@
     - type: Tag
       tags:
         - ForceUser
+        - DoorBumpOpener
+        - CanPilot
     - type: SWAbilityThrowSword
     - type: SWPushAbility
+    - type: SWFactionMember
+      faction: RepublicFaction
+    - type: Inventory
+      templateId: forceUserTemplate
+    - type: NoSlip

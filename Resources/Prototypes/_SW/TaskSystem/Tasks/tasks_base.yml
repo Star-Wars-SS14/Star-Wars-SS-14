@@ -1,0 +1,27 @@
+- type: entity
+  id: DestroyObjectExampleFactionTask
+  components:
+  - type: SWTask
+    name: Уничтожьте 3 прайдомата. 
+    description: ЛГБТ - экстремистская организация.
+  - type: DestroyObjectsTask
+    objects:
+      [VendingMachinePride]: 3
+
+- type: entity
+  id: CollectObjectsTaskExample
+  components:
+  - type: SWTask
+    name: Украдите три плюшевых пчелы. 
+    description: Главное спиздить, а пригодится или нет решать потом.
+  - type: SWCollectObjectTask
+    objects:
+      [PlushieBee] : 3
+
+- type: entity
+  id: SWTaskBase
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: SWTask
+    name: Basetask name
+    description: Basetask desc

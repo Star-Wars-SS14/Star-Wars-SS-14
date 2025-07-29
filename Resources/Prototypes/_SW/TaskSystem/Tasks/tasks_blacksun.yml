@@ -1,0 +1,5 @@
+- type: weightedRandom
+  id: BlackSunTasksSet
+  weights:
+    SmallHeadHunter: 4
+    KillConcurenExchange: 3

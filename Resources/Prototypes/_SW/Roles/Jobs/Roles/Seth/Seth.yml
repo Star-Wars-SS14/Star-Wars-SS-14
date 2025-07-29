@@ -47,6 +47,32 @@
 
 
 - type: startingGear
+  id: EmpirePilotGear
+  equipment:
+    outerClothing: SWImperialSuit
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    head: SW_ClothingHeadImperialHelmet
+    belt: ClothingBeltAssault
+    id: SWIDCardEmpirePilot
+    shoes: ClothingShoesBootsCombatFilled
+    ears: SWClothingHeadsetEmpirePilot
+    back: SWImperialBackpack
+    pocket1: HandHeldMassScanner
+
+- type: startingGear
+  id: EmpireEngineerGear
+  equipment:
+    eyes: ClothingEyesGlassesMeson    
+    outerClothing: SWImperialSuit
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    head: SW_ClothingHeadImperialHelmet
+    belt: ClothingBeltUtilityEngineering
+    id: SWIDCardEmpireEngineer
+    shoes: ClothingShoesBootsCombatFilled
+    ears: SWClothingHeadsetRegular
+    back: SWImperialBackpack
+
+- type: startingGear
   id: EmpireMedicalGear
   equipment:
     outerClothing: SWMedicImperialSuit
@@ -61,6 +87,8 @@
 - type: startingGear
   id: EmpireMoffGear
   equipment:
+    outerClothing: SWMoffImperialSuit
+    head: SWClothingHeadMajorImperialHelmet
     jumpsuit: SWClothingUniformJumpsuitImperialGeneral
     gloves: ClothingHandsGlovesColorBlack
     back: SWImperialBackpackCamo
@@ -168,7 +196,7 @@
   id: RepublicCaptainGear
   equipment:
     jumpsuit: SWClothingUniformJumpsuitFleece
-    outerClothing: SW_CaptainRepublicSuit
+    outerClothing: SWCaptainRepublicSuit
     shoes: ClothingShoesBootsJack
     head: SWClothingHeadСaptainRepublicHelmet
     belt: ClothingBeltAssault
@@ -200,6 +228,32 @@
     id: SWIDCardRepublicSoldier
     ears: SWClothingHeadsetRepublic
     back: ClothingBackpackMilitarySatchel
+
+- type: startingGear
+  id: RepublicPilotGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    outerClothing: SWRepublicSuit
+    shoes: ClothingShoesBootsJack
+    head: SW_ClothingHeadRepublicHelmet
+    belt: ClothingBeltAssault
+    id: SWIDCardRepublicPilot
+    ears: SWClothingHeadsetRepublicPilot
+    back: ClothingBackpackMilitarySatchel
+    pocket1: HandHeldMassScanner
+
+- type: startingGear
+  id: RepublicEngineerGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    outerClothing: SWRepublicSuit
+    shoes: ClothingShoesBootsJack
+    head: SW_ClothingHeadRepublicHelmet
+    belt: ClothingBeltUtilityEngineering
+    id: SWIDCardRepublicEngineer
+    ears: SWClothingHeadsetRepublic
+    back: ClothingBackpackMilitarySatchel
+    eyes: ClothingEyesGlassesMeson    
 
 - type: startingGear
   id: RepublicMedicGear

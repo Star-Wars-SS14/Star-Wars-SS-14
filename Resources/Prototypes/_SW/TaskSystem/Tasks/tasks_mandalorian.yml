@@ -1,0 +1,7 @@
+- type: weightedRandom
+  id: MandalorianTasksSet
+  weights:
+    SmallHeadHunter: 4
+    BigHeadHunterMandalorian: 1
+
+

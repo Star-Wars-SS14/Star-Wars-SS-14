@@ -27,6 +27,9 @@
       toggleable-clothing: !type:ContainerSlot { }
   - type: Item
     size: Ginormous
+  - type: TemperatureProtection
+    heatingCoefficient: 0.01
+    coolingCoefficient: 0.01
 
 - type: entity
   parent: SWImperialSuit

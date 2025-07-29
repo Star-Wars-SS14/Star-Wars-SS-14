@@ -1,0 +1,54 @@
+- type: entity
+  parent: ClothingShoesBaseButcherable
+  id: EchoClothingShoesBootsResistance
+  name: ботинки
+  description: Самые обычные ботинки.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Shoes/Boots/resistance.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Shoes/Boots/resistance.rsi
+
+- type: entity
+  parent: ClothingShoesBaseButcherable
+  id: EchoClothingShoesBootsCombineSoldier
+  name: ботинки солдата Альянса
+  description: Таких ботинок много, но эти - мои!
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Shoes/Boots/Combine/soldier.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Shoes/Boots/Combine/soldier.rsi
+
+- type: entity
+  parent: ClothingShoesBaseButcherable
+  id: EchoClothingShoesBootsCombineSniper
+  name: ботинки спайпера Альянса
+  description: Название говорит само за себя.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Shoes/Boots/Combine/sniper.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Shoes/Boots/Combine/sniper.rsi
+
+- type: entity
+  parent: ClothingShoesBaseButcherable
+  id: EchoClothingShoesBootsCombineSpecops
+  name: ботинки спецназа Альянса
+  description: Название говорит само за себя.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Shoes/Boots/Combine/specops.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Shoes/Boots/Combine/specops.rsi
+
+- type: entity
+  parent: ClothingShoesBaseButcherable
+  id: EchoClothingShoesBootsCombineStormtrooper
+  name: ботинки штурмовика Альянса
+  description: Название говорит само за себя.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Clothing/Shoes/Boots/Combine/stormtrooper.rsi
+  - type: Clothing
+    sprite: _Echolife/Clothing/Shoes/Boots/Combine/stormtrooper.rsi

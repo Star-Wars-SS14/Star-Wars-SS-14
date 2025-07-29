@@ -10,3 +10,8 @@
   supervisors: job-supervisors-mando
   access:
   - SWMandalorian
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: SWFactionMember
+        faction: MandalorianFaction

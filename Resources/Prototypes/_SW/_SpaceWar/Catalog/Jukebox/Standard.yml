@@ -1,0 +1,41 @@
+- type: jukebox
+  id: music1
+  name: Radio 100.1 FM
+  path:
+    path: /Audio/Jukebox/music_1.ogg
+
+- type: jukebox
+  id: music2
+  name: Radio 92.9 FM
+  path:
+    path: /Audio/Jukebox/music_2.ogg
+
+- type: jukebox
+  id: music3
+  name: Radio 94.3 FM
+  path:
+    path: /Audio/Jukebox/music_3.ogg
+
+- type: jukebox
+  id: music4
+  name: Radio 122.4 FM
+  path:
+    path: /Audio/Jukebox/music_4.ogg
+
+- type: jukebox
+  id: music5
+  name: Radio 148.8 FM
+  path:
+    path: /Audio/Jukebox/music_5.ogg
+
+- type: jukebox
+  id: music7
+  name: Radio 119.7 FM
+  path:
+    path: /Audio/Jukebox/music_7.ogg
+
+- type: jukebox
+  id: music8
+  name: Radio 99.7 FM
+  path:
+    path: /Audio/Jukebox/music_8.ogg

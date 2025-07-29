@@ -1,0 +1,19 @@
+- type: job
+  id: SWRepublicPilot
+  name: Пилот Сил Республики
+  playTimeTracker: Job_Republic_Pilot
+  requirements:
+  - !type:RoleTimeRequirement
+    role: Job_Republic_Recruit
+    time: 18000 # 5h
+  startingGear: RepublicPilotGear
+  icon: "JobIconRepublicSoldier"
+  supervisors: job-supervisors-leit-rep
+  access:
+  - SWRepublicBase
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: SWFactionMember
+        faction: RepublicFaction
+  

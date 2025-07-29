@@ -1,7 +1,7 @@
 - type: entity
   id: ActionJediDash
-  name: Прыжок
-  description: Это буквально телепортирует вас!
+  name: Быстрый бег
+  description: Ускорьтесь на короткое время
   noSpawn: true
   components:
   - type: InstantAction
@@ -105,19 +105,3 @@
     icon: Interface/Actions/dash.png
     event: !type:DashRequestedEvent
     useDelay: 3
-
-- type: entity
-  id: SWActionThrowSword
-  name: Бросок светового меча
-  description: Бросьте свой световой меч во врага!
-  components:
-  - type: WorldTargetAction
-    icon: Interface/Actions/dash.png
-    event: !type:ThrowRequestedActionEvent
-    canTargetSelf: false
-    interactOnMiss: true
-    range: 7
-    useDelay: 6
-    checkCanInteract: false
-    сheckConsciousness: false
-    checkCanAccess: false

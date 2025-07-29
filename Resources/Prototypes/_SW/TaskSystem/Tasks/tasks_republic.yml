@@ -1,0 +1,71 @@
+- type: weightedRandom
+  id: RepublicTasksSet
+  weights:
+    StealIdCardsEmpire: 10
+
+- type: entity
+  id: KillByJobTaskRepublic
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Ликвидация
+    description: Люди в указанной должности причиняют значительные неудобства нашим войскам. Убейте любого из них.
+  - type: SWKillRandomByJob
+    factions: [EmpireFaction]
+    jobsToScores:
+      SWEmpireMajor : 20
+      SWEmpireLieutenant : 15
+      SWEmpireIntelligenceCaretaker: 20
+      SWEmpireIntelligenceAgent: 15
+      SWSobrikCaptain: 20
+      SWEmpireMoff: 25
+    jobsToDescriptions:
+      SWEmpireMajor : SWEmpireMajor-killByJobRepublic
+      SWEmpireLieutenant : SWEmpireLieutenant-killByJobRepublic
+      SWEmpireIntelligenceCaretaker: SWEmpireIntelligenceCaretaker-killByJobRepublic
+      SWEmpireIntelligenceAgent: SWEmpireIntelligenceAgent-killByJobRepublic
+      SWSobrikCaptain: SWSobrikCaptain-killByJobRepublic
+      SWEmpireMoff: SWEmpireMoff-killByJobRepublic
+
+- type: entity
+  id: KillRandomEmpireByName
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Ликвидация
+    description:  Нам поступила информация о присутствии в регионе военнослужащего Имперских сил. Его должность в рядах империи остается неизвестной, однако он представляет большую опасность. Генштаб требует его немедленной ликвидации.
+  - type: SWKillRandomByName
+    factions: [EmpireFaction]
+    jobsToScores:
+      SWEmpireMajor: 20
+      SWEmpireLieutenant: 15
+      SWEmpireMoff: 25
+      SWSobrikCaptain: 20
+    descriptionId: kill-empire-by-name
+  - type: SWParallelTask
+    task: ProtectTaskEmpire
+    faction: EmpireFaction
+
+- type: entity
+  id: StealIdCardsEmpire
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Ключ карта от всех дверей
+    description: Добыча имперских айди карт. Для проведения более эффективных диверсий необходимо захватить три любые айди карты, позволяющие получать доступы на базы империи. Айди карты обычных солдат бесполезны, на них это задание не распространяется.
+    score: 15
+    restrictions: OnePerFaction
+  - type: SWCollectObjectTask
+    objects:
+      [SWIDCardSobrikCaptain, SWIDCardSobrikOfficer, SWIDCardSobrikMedic, SWIDCardEmpireMoff, SWIDCardEmpireMajor, SWIDCardEmpireLieutenant, SWIDCardEmpireMedic] : 3
+
+
+- type: entity
+  id: ProtectTaskRepublic
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Защита
+    description: Тут ничего нет.
+  - type: SWParallelTaskProtect
+    descriptionId: protect-republic

@@ -1,0 +1,11 @@
+- type: entity
+  id: StandardVessel
+  parent:
+    - BaseStation
+    - BaseStationJobsSpawning
+    - BaseStationRecords
+    - BaseStationAlertLevels
+    - BaseStationAllEventsEligible
+  noSpawn: true
+  components:
+    - type: Transform

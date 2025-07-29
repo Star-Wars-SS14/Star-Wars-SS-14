@@ -1,0 +1,76 @@
+- type: weightedRandom
+  id: EmpireTasksSet
+  weights:
+    KillByNameTaskEmpire: 3
+    KillRepublicByJobEmpire: 3
+    KillCriminalTaskEmpire: 2
+
+- type: entity
+  id: KillRepublicByJobEmpire
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Ликвидация
+    description: Тут ничего нет.
+  - type: SWKillRandomByJob
+    factions: [RepublicFaction]
+    jobsToScores:
+      SWRepublicLieutenant: 15
+      SWRepublicCaptain: 20
+      SWRepublicGeneral: 25
+      SWRepublicCommanderCommander: 20
+    jobsToDescriptions:
+      SWRepublicLieutenant: SWRepublicLieutenant-killByJob
+      SWRepublicCaptain: SWRepublicCaptain-killByJob
+      SWRepublicGeneral: SWRepublicGeneral-killByJob
+      SWRepublicCommanderCommander: SWRepublicCommanderCommander-killByJob
+
+
+- type: entity
+  id: KillCriminalTaskEmpire
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Ликвидация преступности
+    description: На балморру прибыл известный криминальный элемент. За свои многочисленные преступления против Империи Ситхов Министерство закона и правосудия приговорило данное лицо к казни, но ему удалось ускользнуть. Приведите приговор в исполнение.
+  - type: SWKillRandomByName
+    factions: [ExchangeFaction, BlackSunFaction]
+    jobsToScores:
+      SWBlackSunMercenary : 8
+      SWBlackSun : 10
+      SWExchangeCaptain : 10
+      SWExchangeOperative : 8
+    descriptionId: kill-criminal
+
+- type: entity
+  id: KillByNameTaskEmpire
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Таргетированное убийство
+    description: Тут ничего нет.
+  - type: SWKillRandomByName
+    factions: [RepublicFaction]
+    jobsToScores:
+      SWRepublicGeneral : 25
+      SWRepublicCaptain : 20 
+      SWRepublicLieutenant : 15
+      SWRepublicCommanderCommander: 20
+      SWRepublicCommanderLieutenant: 15
+      SWRepublicCommanderMedic: 15
+      SWRepublicCommanderStormtrooper: 15
+      SWRepublicCommanderSniper: 15
+    descriptionId: kill-republic-by-name
+  - type: SWParallelTask
+    task: ProtectTaskRepublic
+    faction: RepublicFaction
+
+- type: entity
+  id: ProtectTaskEmpire
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Защита
+    description: Тут ничего нет.
+  - type: SWParallelTaskProtect
+    descriptionId: protect-empire

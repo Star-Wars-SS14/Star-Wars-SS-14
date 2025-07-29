@@ -1,0 +1,23 @@
+- type: accessLevel
+  id: ResistanceShared
+  name: Сопротивление
+
+- type: accessLevel
+  id: ResistanceOfficer
+  name: Офицер сопротивления
+
+- type: accessLevel
+  id: ResistanceFighter
+  name: Боец сопротивления
+
+- type: accessLevel
+  id: ResistanceSpecialist
+  name: Специалист сопротивления
+
+- type: accessLevel
+  id: ResistanceAgent
+  name: Агент внедрения
+
+- type: accessLevel
+  id: ResistanceMilitia
+  name: Ополчение

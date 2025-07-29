@@ -25,6 +25,7 @@
     - type: StealTarget
       stealGroup: IDCard
 
+#Sobrik
 - type: entity
   parent: SWIDCardStandard
   id: SWIDCardSobrikCaptain
@@ -113,6 +114,28 @@
     - state: image20
   - type: PresetIdCard
     job: SWEmpireSoldier
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWIDCardEmpireEngineer
+  name: Empire Soldier ID card
+  components:
+  - type: Sprite
+    layers:
+    - state: image20
+  - type: PresetIdCard
+    job: SWEmpireEngineer
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWIDCardEmpirePilot
+  name: Empire Pilot ID card
+  components:
+  - type: Sprite
+    layers:
+    - state: image20
+  - type: PresetIdCard
+    job: SWEmpirePilot
 
 - type: entity
   parent: SWIDCardStandard
@@ -218,13 +241,35 @@
 - type: entity
   parent: SWIDCardStandard
   id: SWIDCardRepublicSoldier
-  name: SWRepublic Soldier ID card
+  name: Republic Soldier ID card
   components:
   - type: Sprite
     layers:
     - state: image4
   - type: PresetIdCard
     job: SWRepublicSoldier
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWIDCardRepublicPilot
+  name: Republic Pilot ID card
+  components:
+  - type: Sprite
+    layers:
+    - state: image4
+  - type: PresetIdCard
+    job: SWRepublicPilot
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWIDCardRepublicEngineer
+  name: ID карта инеженера республики
+  components:
+  - type: Sprite
+    layers:
+    - state: image4
+  - type: PresetIdCard
+    job: SWRepublicEngineer
 
 - type: entity
   parent: SWIDCardStandard

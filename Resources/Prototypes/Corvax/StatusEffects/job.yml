@@ -232,3 +232,17 @@
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
     state: RepublicCapitan
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconJedi
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: Jedi
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSith
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: Sith

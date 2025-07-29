@@ -433,7 +433,7 @@
 - type: startingGear
   id: BlackSunGear
   equipment:
-    outerClothing: SW_BlackSunArmor
+    outerClothing: SWBlackSunArmor
     jumpsuit: SWClothingUniformJumpsuitFleece
     back: ClothingBackpackMilitarySatchel
     head: SWHelmetSunSquad
@@ -444,7 +444,7 @@
 - type: startingGear
   id: BlackSunMercenaryGear
   equipment:
-    outerClothing: SW_BlackSunArmor
+    outerClothing: SWBlackSunArmor
     jumpsuit: SWClothingUniformJumpsuitFleece
     back: ClothingBackpackMilitarySatchel
     head: SWHelmetSunSquad

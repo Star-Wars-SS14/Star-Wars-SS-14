@@ -9,6 +9,7 @@ using Content.Server.GameTicking.Rules;
 using Content.Server.GameTicking.Rules.Components;
 using Content.Server.GridPreloader;
 using Content.Server.Maps;
+using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
 using Content.Shared._SW.TaskSystem;
 using Content.Shared.Echo.GameTicking.Components;
@@ -23,6 +24,7 @@ using Robust.Shared.Configuration;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
+using static System.Collections.Specialized.BitVector32;
 
 namespace Content.Server.Echo.GameTicking.Systems;
 
@@ -64,10 +66,22 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
     protected override void ActiveTick(EntityUid uid, SectorWarRuleComponent comp, GameRuleComponent gameRule, float frameTime)
     {
         base.ActiveTick(uid, comp, gameRule, frameTime);
+        
+        if (_gameTiming.CurTime >= _sharedGameTicker.RoundStartTimeSpan
+                                    + TimeSpan.FromSeconds(comp.StatesEndTimes[comp.CurState])
+                                    && comp.CurState != SWSpaceWarGameState.AttackingFull) {
+            comp.CurState++;
+            DispatchAnnouncements(comp);
+        }
+    }
+
+    private void DispatchAnnouncements(SectorWarRuleComponent comp)
+    {
         List<EntityUid> republicStations = new();
         List<EntityUid> empireStations = new();
+        Filter empireFilter = Filter.Empty();
+        Filter republicFilter = Filter.Empty();
         var query = EntityQueryEnumerator<CapturableStationComponent>();
-
         while (query.MoveNext(out var stationUid, out var fact))
         {
             if (fact.Fraction != null && fact.Fraction == "RepublicFaction")
@@ -80,30 +94,46 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
                 empireStations.Add(stationUid);
             }
         }
-        //There must be a better way to do it but i am too lazy
-        if (_gameTiming.CurTime >= _sharedGameTicker.RoundStartTimeSpan
-                                    + TimeSpan.FromSeconds(comp.StatesEndTimes[comp.CurState])
-                                    && comp.CurState != SWSpaceWarGameState.AttackingFull) {
-            comp.CurState++;
-            foreach (var station in republicStations)
+
+        foreach (var station in republicStations)
+        {
+            if (!TryComp<StationDataComponent>(station, out var dataComp))
             {
-                _chat.DispatchStationAnnouncement(station,
-                             Loc.GetString(comp.RepublicAnnouncementTexts[comp.CurState]),
-                             announcementSound: comp.AnnouncementSounds[comp.CurState],
-                             sender: Loc.GetString(comp.RepublicSender),
-                             colorOverride: comp.RepublicAnnouncementColor);
+                continue;
             }
 
-            foreach (var station in empireStations)
+            foreach (var grid in dataComp.Grids)
             {
-                _chat.DispatchStationAnnouncement(station,
-                         Loc.GetString(comp.EmpireAnnouncementTexts[comp.CurState]),
-                         announcementSound: comp.AnnouncementSounds[comp.CurState],
-                         sender: Loc.GetString(comp.EmpireSender),
-                         colorOverride: comp.EmpireAnnouncementColor);
+                republicFilter.AddInGrid(grid);
             }
         }
+
+        _chat.DispatchFilteredAnnouncement(republicFilter,
+                         Loc.GetString(comp.RepublicAnnouncementTexts[comp.CurState]),
+                         announcementSound: comp.AnnouncementSounds[comp.CurState],
+                         sender: Loc.GetString(comp.RepublicSender),
+                         colorOverride: comp.RepublicAnnouncementColor);
+
+        foreach (var station in empireStations)
+        {
+            if (!TryComp<StationDataComponent>(station, out var dataComp))
+            {
+                continue;
+            }
+
+            foreach (var grid in dataComp.Grids)
+            {
+                empireFilter.AddInGrid(grid);
+            }
+        }
+
+        _chat.DispatchFilteredAnnouncement(empireFilter,
+                    Loc.GetString(comp.EmpireAnnouncementTexts[comp.CurState]),
+                    announcementSound: comp.AnnouncementSounds[comp.CurState],
+                    sender: Loc.GetString(comp.EmpireSender),
+                    colorOverride: comp.EmpireAnnouncementColor);
     }
+
     protected override void Added(EntityUid uid,
         SectorWarRuleComponent component,
         GameRuleComponent gameRule,

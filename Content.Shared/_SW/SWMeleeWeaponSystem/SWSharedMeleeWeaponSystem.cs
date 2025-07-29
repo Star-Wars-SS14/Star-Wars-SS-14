@@ -78,7 +78,7 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
             {
                 args.Handled = true;
                 PopupSystem.PopupPredicted("Удар отражен!", ent.Owner, null, PopupType.Medium);
-                DisableBlock(ent.Comp.CurrentForceWeapon.Value);
+                DisableBlock(ent.Owner);
             }
         }
     }

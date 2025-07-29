@@ -1,0 +1,17 @@
+ent-ComputerCapture = консоль управления станцией
+    .desc = При помощи этой консоли можно произвести захват станции.
+capture-console-message-station-active = Состояние станции: Активна
+capture-console-message-station-fraction = Фракция станции: { $stationFraction }
+capture-console-capturing-status = Состояние захвата: { $state }
+capture-console-capturing-status-true = Идёт захват
+capture-console-capturing-status-false = Захват не идёт
+capture-console-eta = Приблизительное время: { $time }
+capture-console-message-user-fraction = Ваша фракция: { $fraction }
+capture-console-message-user-no-fraction = Нет фракции
+capture-console-message-fraction-alliance = Альянс
+capture-console-message-fraction-resistance = Сопротивление
+capture-console-message-current-station = Текущая станция: { $name }
+capture-console-title = Интерфейс управления станцией
+capture-console-capture-button = Захватить
+capture-console-cancel-button = Отмена
+capture-console-no-access = Нет доступа

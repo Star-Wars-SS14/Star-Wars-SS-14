@@ -1,0 +1,11 @@
+sector-war-title = Космические бои
+sector-war-description = Война Республики и Империи затрагивает не только планеты, но и космос. Захватите все точки для победы вашей фракции.
+sector-war-round-end-alert = Внимание! Осталось времени: { $time }
+station-capture-start-announcement = Внимание! Захват станции { $name } начат!
+station-capture-cancel-announcement = Внимание! Захват станции { $name } был отменён.
+station-capture-finish-announcement = Внимание! Захват станции { $name } был завершён. Контроллирующая фракция: { $fraction }
+round-end-alliance-won = Победа Альянса!
+round-end-resistance-won = Победа Сопротивления!
+round-end-wtf-draw = Ничья?
+round-end-alliance-credits = Остаток кредитов альянса: { $credits }
+round-end-resistance-credits = Остаток кредитов сопротивления: { $credits }

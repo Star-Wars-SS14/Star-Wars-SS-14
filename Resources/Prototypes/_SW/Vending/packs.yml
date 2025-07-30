@@ -1,0 +1,6 @@
+- type: vendingMachineInventory
+  id: SWRepublicInventory
+  startingInventory:
+    OxygenTankFilled: 100
+    CombatKnife: 100
+    ClothingBeltAssault: 100

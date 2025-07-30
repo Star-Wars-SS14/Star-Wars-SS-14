@@ -1,0 +1,43 @@
+- type: entity
+  parent: VendingMachine
+  id: SWVendingMachineRepublic
+  name: Вендомат Республики
+  description: Слава Республике!!
+  components:
+  - type: Sprite
+    sprite: _Echolife/Structures/Machines/VendingMachines/combine_dispenser_3.rsi
+    layers:
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.Base"]
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
+      shader: unshaded
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+  - type: VendingMachine
+    pack: Placeholder
+    offState: off
+    brokenState: broken
+    normalState: off
+
+- type: entity
+  parent: VendingMachine
+  id: SWVendingMachineEmpire
+  name: Вендомат Империи
+  description: Слава Империи!!
+  components:
+  - type: Sprite
+    sprite: _Echolife/Structures/Machines/VendingMachines/resistance_dispenser_2.rsi
+    layers:
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.Base"]
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
+      shader: unshaded
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+  - type: VendingMachine
+    pack: Placeholder
+    offState: off
+    brokenState: broken
+    normalState: off

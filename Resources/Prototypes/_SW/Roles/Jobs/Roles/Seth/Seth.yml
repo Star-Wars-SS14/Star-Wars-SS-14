@@ -225,66 +225,66 @@
     id: SWIDCardRepublicRecruit
     ears: SWClothingHeadsetRepublic
 
-###Balmorran resistance
-- type: startingGear
-  id: BalmorranLeaderGear
-  equipment:
-    jumpsuit: SWClothingUniformJumpsuitRebel
-    back: ClothingBackpack
-    gloves: SW_ClothingHandsGlovesRebel
-    shoes: ClothingShoesCult
-    ears: SWClothingHeadsetGrey
-    outerClothing: SWClothingOuterVestRebel
-    head: SWRebelHelmet
-    id: SWIDCardBalmorranLeader
+# ###Balmorran resistance
+# - type: startingGear
+#   id: BalmorranLeaderGear
+#   equipment:
+#     jumpsuit: SWClothingUniformJumpsuitRebel
+#     back: ClothingBackpack
+#     gloves: SW_ClothingHandsGlovesRebel
+#     shoes: ClothingShoesCult
+#     ears: SWClothingHeadsetGrey
+#     outerClothing: SWClothingOuterVestRebel
+#     head: SWRebelHelmet
+#     id: SWIDCardBalmorranLeader
 
-- type: startingGear
-  id: BalmorranOfficerGear
-  equipment:
-    jumpsuit: SWClothingUniformJumpsuitRebel
-    back: ClothingBackpack
-    gloves: SW_ClothingHandsGlovesRebel
-    shoes: ClothingShoesCult
-    ears: SWClothingHeadsetGrey
-    outerClothing: SWClothingOuterVestRebel
-    head: SWRebelHelmet
-    id: SWIDCardBalmorranOfficer
+# - type: startingGear
+#   id: BalmorranOfficerGear
+#   equipment:
+#     jumpsuit: SWClothingUniformJumpsuitRebel
+#     back: ClothingBackpack
+#     gloves: SW_ClothingHandsGlovesRebel
+#     shoes: ClothingShoesCult
+#     ears: SWClothingHeadsetGrey
+#     outerClothing: SWClothingOuterVestRebel
+#     head: SWRebelHelmet
+#     id: SWIDCardBalmorranOfficer
 
-- type: startingGear
-  id: BalmorranMedicGear
-  equipment:
-    jumpsuit: SWClothingUniformJumpsuitRebel
-    back: ClothingBackpack
-    gloves: SW_ClothingHandsGlovesRebel
-    shoes: ClothingShoesCult
-    ears: SWClothingHeadsetGrey
-    outerClothing: SWClothingOuterVestRebel
-    head: SWRebelHelmet
-    id: SWIDCardBalmorranMedic
+# - type: startingGear
+#   id: BalmorranMedicGear
+#   equipment:
+#     jumpsuit: SWClothingUniformJumpsuitRebel
+#     back: ClothingBackpack
+#     gloves: SW_ClothingHandsGlovesRebel
+#     shoes: ClothingShoesCult
+#     ears: SWClothingHeadsetGrey
+#     outerClothing: SWClothingOuterVestRebel
+#     head: SWRebelHelmet
+#     id: SWIDCardBalmorranMedic
 
-- type: startingGear
-  id: BalmorranSoldierGear
-  equipment:
-    jumpsuit: SWClothingUniformJumpsuitRebel
-    back: ClothingBackpack
-    gloves: SW_ClothingHandsGlovesRebel
-    shoes: ClothingShoesCult
-    ears: SWClothingHeadsetGrey
-    outerClothing: SWClothingOuterVestRebel
-    head: SWRebelHelmet
-    id: SWIDCardBalmorranSoldier
+# - type: startingGear
+#   id: BalmorranSoldierGear
+#   equipment:
+#     jumpsuit: SWClothingUniformJumpsuitRebel
+#     back: ClothingBackpack
+#     gloves: SW_ClothingHandsGlovesRebel
+#     shoes: ClothingShoesCult
+#     ears: SWClothingHeadsetGrey
+#     outerClothing: SWClothingOuterVestRebel
+#     head: SWRebelHelmet
+#     id: SWIDCardBalmorranSoldier
 
-- type: startingGear
-  id: BalmorranRecruitGear
-  equipment:
-    jumpsuit: SWClothingUniformJumpsuitRebel
-    back: ClothingBackpack
-    gloves: SW_ClothingHandsGlovesRebel
-    shoes: ClothingShoesCult
-    ears: SWClothingHeadsetGrey
-    outerClothing: SWClothingOuterVestRebel
-    head: SWRebelHelmet
-    id: SWIDCardBalmorranRecruit
+# - type: startingGear
+#   id: BalmorranRecruitGear
+#   equipment:
+#     jumpsuit: SWClothingUniformJumpsuitRebel
+#     back: ClothingBackpack
+#     gloves: SW_ClothingHandsGlovesRebel
+#     shoes: ClothingShoesCult
+#     ears: SWClothingHeadsetGrey
+#     outerClothing: SWClothingOuterVestRebel
+#     head: SWRebelHelmet
+#     id: SWIDCardBalmorranRecruit
 
 ###Imperial Intelligence
 - type: startingGear

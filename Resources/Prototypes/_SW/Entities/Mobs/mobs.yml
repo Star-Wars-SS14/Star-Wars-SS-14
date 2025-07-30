@@ -281,66 +281,66 @@
     factions:
     - Syndicate
 
-##Balmorran
-- type: entity
-  name: Balmorran Leader
-  parent: BaseMobHuman
-  id: SWMobBalmorranLeader
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [BalmorranLeaderGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+# ##Balmorran
+# - type: entity
+#   name: Balmorran Leader
+#   parent: BaseMobHuman
+#   id: SWMobBalmorranLeader
+#   description: A miserable pile of secrets.
+#   components:
+#   - type: Loadout
+#     prototypes: [BalmorranLeaderGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - Syndicate
 
-- type: entity
-  name: Balmorran Officer
-  parent: BaseMobHuman
-  id: SWMobBalmorranOfficer
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [BalmorranOfficerGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+# - type: entity
+#   name: Balmorran Officer
+#   parent: BaseMobHuman
+#   id: SWMobBalmorranOfficer
+#   description: A miserable pile of secrets.
+#   components:
+#   - type: Loadout
+#     prototypes: [BalmorranOfficerGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - Syndicate
 
-- type: entity
-  name: Balmorran Soldier
-  parent: BaseMobHuman
-  id: SWMobBalmorranSoldier
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [BalmorranSoldierGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+# - type: entity
+#   name: Balmorran Soldier
+#   parent: BaseMobHuman
+#   id: SWMobBalmorranSoldier
+#   description: A miserable pile of secrets.
+#   components:
+#   - type: Loadout
+#     prototypes: [BalmorranSoldierGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - Syndicate
 
-- type: entity
-  name: Balmorran Recruit
-  parent: BaseMobHuman
-  id: SWMobBalmorranRecruit
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [RepublicSoldierGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+# - type: entity
+#   name: Balmorran Recruit
+#   parent: BaseMobHuman
+#   id: SWMobBalmorranRecruit
+#   description: A miserable pile of secrets.
+#   components:
+#   - type: Loadout
+#     prototypes: [RepublicSoldierGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - Syndicate
 
-- type: entity
-  name: Balmorran Medic
-  parent: BaseMobHuman
-  id: SWMobBalmorranMedic
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [BalmorranRecruitGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+# - type: entity
+#   name: Balmorran Medic
+#   parent: BaseMobHuman
+#   id: SWMobBalmorranMedic
+#   description: A miserable pile of secrets.
+#   components:
+#   - type: Loadout
+#     prototypes: [BalmorranRecruitGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - Syndicate
 
 ##Empire_Intelligence
 - type: entity
@@ -417,53 +417,53 @@
     factions:
     - Syndicate
 
-###The Age of Rebellion
-#NanoTrasen
-- type: entity
-  name: SWRepublic soldier
-  parent: BaseMobHuman
-  id: SWMobRebelsoldier
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [RepublicSoldierGear]
-  - type: NpcFactionMember
-    factions:
-    - NanoTrasen
+# ###The Age of Rebellion
+# #NanoTrasen
+# - type: entity
+#   name: SWRepublic soldier
+#   parent: BaseMobHuman
+#   id: SWMobRebelsoldier
+#   description: A miserable pile of secrets.
+#   components:
+#   - type: Loadout
+#     prototypes: [RepublicSoldierGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - NanoTrasen
 
-- type: entity
-  name: imperial officers
-  parent: BaseMobHuman
-  id: SWMobImperialOfficers
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [ImperialOfficersGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+# - type: entity
+#   name: imperial officers
+#   parent: BaseMobHuman
+#   id: SWMobImperialOfficers
+#   description: A miserable pile of secrets.
+#   components:
+#   - type: Loadout
+#     prototypes: [ImperialOfficersGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - Syndicate
 
-- type: entity
-  name: Stormtrooper
-  parent: BaseMobHuman
-  id: SWMobStormtrooper
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [StormtrooperGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+# - type: entity
+#   name: Stormtrooper
+#   parent: BaseMobHuman
+#   id: SWMobStormtrooper
+#   description: A miserable pile of secrets.
+#   components:
+#   - type: Loadout
+#     prototypes: [StormtrooperGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - Syndicate
 
-- type: entity
-  name: imperial general
-  parent: BaseMobHuman
-  id: SWMobImperialGeneral
-  components:
-  - type: Loadout
-    prototypes: [ImperialGeneralGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+# - type: entity
+#   name: imperial general
+#   parent: BaseMobHuman
+#   id: SWMobImperialGeneral
+#   components:
+#   - type: Loadout
+#     prototypes: [ImperialGeneralGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - Syndicate
 
 

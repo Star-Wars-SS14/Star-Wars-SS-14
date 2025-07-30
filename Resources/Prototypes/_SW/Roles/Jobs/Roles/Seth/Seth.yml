@@ -93,7 +93,7 @@
     gloves: ClothingHandsGlovesColorBlack
     back: SWImperialBackpackCamo
     belt: ClothingBeltAssault
-    shoes: ClothingShoesBootsJack
+    shoes: ClothingShoesBootsJackFilled
     eyes: ClothingEyesGlassesSunglasses
     id: SWIDCardEmpireMoff
     ears: SWClothingHeadsetAllEmpire    
@@ -132,7 +132,7 @@
     outerClothing: SWMandalorianVeteranSuit
     neck: SWClothingNeckCloakMandalorianCloak
     belt: ClothingBeltSalvageWebbing
-    shoes: ClothingShoesBootsJack
+    shoes: ClothingShoesBootsJackFilled
     gloves: ClothingHandsGlovesCombat
     head: SW_ClothingHeadMandalorianVeteranHelmet
     back: ClothingBackpackMilitarySatchel
@@ -145,7 +145,7 @@
     jumpsuit: SWClothingUniformJumpsuitFleece
     outerClothing: SWMandalorianVeteranSuit
     belt: ClothingBeltSalvageWebbing
-    shoes: ClothingShoesBootsJack
+    shoes: ClothingShoesBootsJackFilled
     gloves: ClothingHandsGlovesCombat
     head: SW_ClothingHeadMandalorianVeteranHelmet
     back: ClothingBackpackMilitarySatchel
@@ -158,7 +158,7 @@
     jumpsuit: SWClothingUniformJumpsuitFleece
     outerClothing: SWMandalorianSuit
     belt: ClothingBeltSalvageWebbing
-    shoes: ClothingShoesBootsJack
+    shoes: ClothingShoesBootsJackFilled
     gloves: ClothingHandsGlovesCombat
     head: SW_ClothingHeadMandalorianHelmet
     back: ClothingBackpackMilitarySatchel
@@ -172,7 +172,7 @@
     outerClothing: SWMandalorianRecruitSuit
     belt: ClothingBeltMilitaryWebbing
     back: ClothingBackpackMilitarySatchel
-    shoes: ClothingShoesBootsJack
+    shoes: ClothingShoesBootsJackFilled
     gloves: ClothingHandsGlovesCombat
     head: SW_ClothingHeadRecruitMandalorianHelmet
     id: SWIDCardMandalorianRecruit
@@ -185,7 +185,7 @@
   equipment:
     jumpsuit: SWClothingUniformJumpsuitFleece
     outerClothing: SWGeneralRepublicSuit
-    shoes: ClothingShoesBootsJack
+    shoes: ClothingShoesBootsJackFilled
     head: SW_ClothingHeadGeneralRepublicHelmet
     belt: ClothingBeltAssault
     id: SWIDCardRepublicGeneral
@@ -197,7 +197,7 @@
   equipment:
     jumpsuit: SWClothingUniformJumpsuitFleece
     outerClothing: SWCaptainRepublicSuit
-    shoes: ClothingShoesBootsJack
+    shoes: ClothingShoesBootsJackFilled
     head: SWClothingHeadСaptainRepublicHelmet
     belt: ClothingBeltAssault
     id: SWIDCardRepublicCaptain
@@ -209,7 +209,7 @@
   equipment:
     jumpsuit: SWClothingUniformJumpsuitFleece
     outerClothing: SWLieutenantRepublicSuit
-    shoes: ClothingShoesBootsJack
+    shoes: ClothingShoesBootsJackFilled
     head: SW_ClothingHeadLieutenantRepublicHelmet
     belt: ClothingBeltAssault
     id: SWIDCardRepublicLieutenant
@@ -222,7 +222,7 @@
   equipment:
     jumpsuit: SWClothingUniformJumpsuitFleece
     outerClothing: SWRepublicSuit
-    shoes: ClothingShoesBootsJack
+    shoes: ClothingShoesBootsJackFilled
     head: SW_ClothingHeadRepublicHelmet
     belt: ClothingBeltAssault
     id: SWIDCardRepublicSoldier
@@ -234,7 +234,7 @@
   equipment:
     jumpsuit: SWClothingUniformJumpsuitFleece
     outerClothing: SWRepublicSuit
-    shoes: ClothingShoesBootsJack
+    shoes: ClothingShoesBootsJackFilled
     head: SW_ClothingHeadRepublicHelmet
     belt: ClothingBeltAssault
     id: SWIDCardRepublicPilot
@@ -247,7 +247,7 @@
   equipment:
     jumpsuit: SWClothingUniformJumpsuitFleece
     outerClothing: SWRepublicSuit
-    shoes: ClothingShoesBootsJack
+    shoes: ClothingShoesBootsJackFilled
     head: SW_ClothingHeadRepublicHelmet
     belt: ClothingBeltUtilityEngineering
     id: SWIDCardRepublicEngineer
@@ -260,7 +260,7 @@
   equipment:
     jumpsuit: SWClothingUniformJumpsuitFleece
     outerClothing: SWMedicRepublicSuit
-    shoes: ClothingShoesBootsJack
+    shoes: ClothingShoesBootsJackFilled
     head: SW_ClothingHeadRepublicHelmet
     belt: ClothingBeltAssault
     id: SWIDCardRepublicMedic
@@ -273,7 +273,7 @@
     jumpsuit: SWClothingUniformJumpsuitFleece
     outerClothing: SWRepublicSuit
     back: ClothingBackpackMilitarySatchel
-    shoes: ClothingShoesBootsJack
+    shoes: ClothingShoesBootsJackFilled
     head: SW_ClothingHeadRepublicHelmet
     belt: ClothingBeltAssault
     id: SWIDCardRepublicRecruit

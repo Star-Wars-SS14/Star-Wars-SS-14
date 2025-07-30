@@ -1,4 +1,4 @@
 - type: weightedRandom
   id: BlackSunTasksSet
   weights:
-    SmallHeadHunter: 4
+    SmallHeadHunter: 1

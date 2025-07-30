@@ -1,4 +1,4 @@
 - type: weightedRandom
   id: ExchangeTasksSet
   weights:
-    SmallHeadHunter: 4
+    SmallHeadHunter: 1

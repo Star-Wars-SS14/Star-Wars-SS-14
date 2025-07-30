@@ -1,7 +1,10 @@
 - type: weightedRandom
   id: EmpireTasksSet
   weights:
-    CaptureRepublic: 3
+    CaptureRepublic: 1
+    KillRepublicByJobEmpire: 1
+    KillCriminalTaskEmpire: 1
+    KillByNameTaskEmpire: 1
 
 - type: entity
   id: CaptureRepublic
@@ -134,7 +137,6 @@
       SWRepublicCommanderMedic: 15
       SWRepublicCommanderStormtrooper: 15
       SWRepublicCommanderSniper: 15
-
   - type: SWParallelTask
     task: ProtectTaskRepublic
     faction: RepublicFaction

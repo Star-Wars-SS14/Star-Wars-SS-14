@@ -1,10 +1,47 @@
 - type: weightedRandom
   id: RepublicTasksSet
   weights:
-    KillByJobTaskRepublic: 10
+    KillByJobRepublic: 1
+    KillRandomEmpireByName: 1
+    StealIdCardsEmpire: 1
+    CaptureEmpire: 1
 
 - type: entity
-  id: KillByJobTaskRepublic
+  id: KillByJobRepublic
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name:  Ликвидация
+    description: Тут ничего нет.
+  - type: SWTargetSelector
+    factions: [EmpireFaction]
+    jobs:
+    - SWEmpireMajor
+    - SWEmpireLieutenant
+    - SWEmpireIntelligenceCaretaker
+    - SWEmpireIntelligenceAgent
+    - SWSobrikCaptain
+    - SWEmpireMoff
+  - type: SWCapturePerson
+  - type: SWGetScoreByTargetJob
+    jobsToScores:
+      SWEmpireMajor : 20
+      SWEmpireLieutenant : 15
+      SWEmpireIntelligenceCaretaker: 20
+      SWEmpireIntelligenceAgent: 15
+      SWSobrikCaptain: 20
+      SWEmpireMoff: 25
+  - type: SWDescriptionBasedOnJobOfTarget
+    jobsToDescriptions:
+      SWEmpireMajor : SWEmpireMajor-killByJobRepublic
+      SWEmpireLieutenant : SWEmpireLieutenant-killByJobRepublic
+      SWEmpireIntelligenceCaretaker: SWEmpireIntelligenceCaretaker-killByJobRepublic
+      SWEmpireIntelligenceAgent: SWEmpireIntelligenceAgent-killByJobRepublic
+      SWSobrikCaptain: SWSobrikCaptain-killByJobRepublic
+      SWEmpireMoff: SWEmpireMoff-killByJobRepublic
+
+- type: entity
+  id: CaptureEmpire
   parent: SWTaskBase
   components:
   - type: SWTask
@@ -23,7 +60,7 @@
     - SWEmpireIntelligenceAgent
     - SWSobrikCaptain
     - SWEmpireMoff
-  - type: SWKillRandomByJob
+  - type: SWCapturePerson
   - type: SWGetScoreByTargetJob
     jobsToScores:
       SWSobrikOfficer: 10

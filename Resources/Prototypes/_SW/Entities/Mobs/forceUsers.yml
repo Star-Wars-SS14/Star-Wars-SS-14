@@ -8,13 +8,13 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      200: Critical
-      300: Dead
+      400: Critical
+      500: Dead
   - type: SWForceUserBlock
   - type: SWDashAbility
   - type: SlowOnDamage
     speedModifierThresholds:
-      190: 0.8
+      360: 0.8
   - type: SWAbilityThrowSword
   - type: Inventory
     templateId: forceUserTemplate
@@ -24,6 +24,29 @@
       - DoorBumpOpener
       - CanPilot
   - type: NoSlip
+  - type: Barotrauma
+    damage:
+      types:
+        Blunt: 0.05
+  - type: Temperature
+    heatDamageThreshold: 340
+    coldDamageThreshold: 230
+    currentTemperature: 310.15
+    specificHeat: 42
+    coldDamage:
+      types:
+        Cold: 0.2
+    heatDamage:
+      types:
+        Heat: 0.3
+  - type: Respirator
+    damage:
+      types:
+        Asphyxiation: 0.5
+    damageRecovery:
+      types:
+        Asphyxiation: -5.0
+
 
 
 

@@ -60,7 +60,7 @@
   - type: SWLightningAbility
     damage:
       types:
-        Heat: 50
+        Heat: 40
 
 - type: entity
   name: Jedi

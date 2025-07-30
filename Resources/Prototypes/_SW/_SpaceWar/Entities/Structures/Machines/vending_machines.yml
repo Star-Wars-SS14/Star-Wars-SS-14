@@ -13,28 +13,6 @@
 
 - type: entity
   parent: VendingMachine
-  id: VendingMachineCombineA
-  name: Раздатчик одежды
-  description: Выдает одежду
-  components:
-  - type: Sprite
-    sprite: _Echolife/Structures/Machines/VendingMachines/combine_dispenser_1.rsi
-    layers:
-    - state: "off"
-      map: ["enum.VendingMachineVisualLayers.Base"]
-    - state: "off"
-      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
-      shader: unshaded
-    - state: panel
-      map: ["enum.WiresVisualLayers.MaintenancePanel"]
-  - type: VendingMachine
-    pack: Placeholder
-    offState: off
-    brokenState: broken
-    normalState: off
-
-- type: entity
-  parent: VendingMachine
   id: VendingMachineCombineB
   name: Раздатчик одежды
   description: Выдает одежду
@@ -121,25 +99,5 @@
     brokenState: broken
     normalState: off
 
-- type: entity
-  parent: VendingMachine
-  id: VendingMachineResistanceC
-  name: Раздатчик одежды
-  description: Выдает одежду
-  components:
-  - type: Sprite
-    sprite: _Echolife/Structures/Machines/VendingMachines/resistance_dispenser_3.rsi
-    layers:
-    - state: "off"
-      map: ["enum.VendingMachineVisualLayers.Base"]
-    - state: "off"
-      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
-      shader: unshaded
-    - state: panel
-      map: ["enum.WiresVisualLayers.MaintenancePanel"]
-  - type: VendingMachine
-    pack: Placeholder
-    offState: off
-    brokenState: broken
-    normalState: off
+
 

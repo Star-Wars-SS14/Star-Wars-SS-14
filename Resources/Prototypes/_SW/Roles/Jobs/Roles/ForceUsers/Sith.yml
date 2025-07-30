@@ -66,4 +66,4 @@
     - type: SWLightningAbility
       damage:
         types:
-          Heat: 50
+          Heat: 40

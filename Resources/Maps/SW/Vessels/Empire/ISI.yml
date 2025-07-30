@@ -25,6 +25,7 @@ entities:
     - type: Transform
       pos: 1.1750519,-1.0822471
       parent: invalid
+    - type: SWForbidFTL
     - type: MapGrid
       chunks:
         0,0:

@@ -4,6 +4,6 @@
     - sector
   name: sector-war-title
   description: sector-war-description
-  showInVote: false
+  showInVote: true
   rules:
     - SectorWar

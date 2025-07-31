@@ -2,7 +2,7 @@
   id: SpaceWarRoundstart
   mapName: 'Space War'
   mapPath: /Maps/SW/spaceWaRoundstart.yml
-  minPlayers: 10
+  minPlayers: 0
   stations:
     RepublicCruiser:
        stationProto: StandardVessel

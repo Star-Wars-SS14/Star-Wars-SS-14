@@ -1,0 +1,49 @@
+- type: job
+  id: SWSith
+  name: Ситх
+  playTimeTracker: Job_Sith
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 72000 # 20h
+  - !type:DepartmentTimeRequirement
+    department: SWPepublic
+    time: 36000 # 10h
+  startingGear: ForceUserSithGear
+  icon: "JobIconSith"
+  supervisors: job-supervisors-black-council
+  access:
+  - SWEmpireCommander
+  - SWEmpireBase
+  - SWEmpireArsenal
+  - SWEmpireMedic
+  - SWEmpireIntelligence
+  - SWEmpireSobrik
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: ForceAbilityDistanceInteract
+    - type: MobThresholds
+      thresholds:
+        0: Alive
+        200: Critical
+        300: Dead
+    - type: SWForceUserBlock
+    - type: SWDashAbility
+    - type: SlowOnDamage
+      speedModifierThresholds:
+        190: 0.8
+    - type: Tag
+      tags:
+        - ForceUser
+        - DoorBumpOpener
+        - CanPilot
+    - type: SWAbilityThrowSword
+    - type: SWLightningAbility
+      damage:
+        types:
+          Heat: 10
+    - type: SWFactionMember
+      faction: EmpireFaction
+    - type: Inventory
+      templateId: forceUserTemplate
+    - type: NoSlip

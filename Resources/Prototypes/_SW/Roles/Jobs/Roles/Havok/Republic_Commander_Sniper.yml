@@ -13,10 +13,5 @@
   icon: "JobIconHavokSniper"
   supervisors: job-supervisors-havok-cap
   access:
-  - RepublicHavok
-  - RepublicBase
-  special:
-  - !type:AddComponentSpecial
-    components:
-      - type: SWFactionMember
-        faction: RepublicFaction
+  - SWRepublicHavok
+  - SWRepublicBase

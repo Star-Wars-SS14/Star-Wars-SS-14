@@ -1,6 +1,6 @@
 - type: entity
   parent: Clothing
-  id: SW_IDCardStandard
+  id: SWIDCardStandard
   name: identification card
   description: A card necessary to access various areas aboard the station.
   abstract: true
@@ -27,8 +27,8 @@
 
 #Sobrik
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardSobrikCaptain
+  parent: SWIDCardStandard
+  id: SWIDCardSobrikCaptain
   name: Sobrik Captain ID card
   components:
   - type: Sprite
@@ -38,8 +38,8 @@
     job: SWSobrikCaptain
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardSobrikOfficer
+  parent: SWIDCardStandard
+  id: SWIDCardSobrikOfficer
   name: Sobrik Officer ID card
   components:
   - type: Sprite
@@ -49,8 +49,8 @@
     job: SWSobrikOfficer
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardSobrikMedic
+  parent: SWIDCardStandard
+  id: SWIDCardSobrikMedic
   name: Sobrik Medic ID card
   components:
   - type: Sprite
@@ -61,8 +61,8 @@
 
 #Empire ID cards
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardEmpireMoff
+  parent: SWIDCardStandard
+  id: SWIDCardEmpireMoff
   name: Empire Moff ID card
   components:
   - type: Sprite
@@ -72,8 +72,8 @@
     job: SWEmpireMoff
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardEmpireMajor
+  parent: SWIDCardStandard
+  id: SWIDCardEmpireMajor
   name: Empire Major ID card
   components:
   - type: Sprite
@@ -83,8 +83,19 @@
     job: SWEmpireMajor
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardEmpireLieutenant
+  parent: SWIDCardStandard
+  id: SWIDCardSith
+  name: Sith ID card
+  components:
+  - type: Sprite
+    layers:
+    - state: image17
+  - type: PresetIdCard
+    job: SWSith
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWIDCardEmpireLieutenant
   name: Empire Lieutenant ID card
   components:
   - type: Sprite
@@ -94,8 +105,8 @@
     job: SWEmpireLieutenant
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardEmpireSoldier
+  parent: SWIDCardStandard
+  id: SWIDCardEmpireSoldier
   name: Empire Soldier ID card
   components:
   - type: Sprite
@@ -105,8 +116,8 @@
     job: SWEmpireSoldier
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardEmpireMedic
+  parent: SWIDCardStandard
+  id: SWIDCardEmpireMedic
   name: Empire Medic ID card
   components:
   - type: Sprite
@@ -115,11 +126,11 @@
   - type: PresetIdCard
     job: SWEmpireMedic
 
-#Mandalorian ID cards
+#SWMandalorian ID cards
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardMandalorianLeader
-  name: Mandalorian Leader ID card
+  parent: SWIDCardStandard
+  id: SWIDCardMandalorianLeader
+  name: SWMandalorian Leader ID card
   components:
   - type: Sprite
     layers:
@@ -128,9 +139,9 @@
     job: SWMandalorianLeader
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardMandalorianVeteran
-  name: Mandalorian Veteran ID card
+  parent: SWIDCardStandard
+  id: SWIDCardMandalorianVeteran
+  name: SWMandalorian Veteran ID card
   components:
   - type: Sprite
     layers:
@@ -139,9 +150,9 @@
     job: SWMandalorianVeteran
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardMandalorianWarrior
-  name: Mandalorian Warrior ID card
+  parent: SWIDCardStandard
+  id: SWIDCardMandalorianWarrior
+  name: SWMandalorian Warrior ID card
   components:
   - type: Sprite
     layers:
@@ -150,9 +161,9 @@
     job: SWMandalorianWarrior
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardMandalorianRecruit
-  name: Mandalorian Recruit ID card
+  parent: SWIDCardStandard
+  id: SWIDCardMandalorianRecruit
+  name: SWMandalorian Recruit ID card
   components:
   - type: Sprite
     layers:
@@ -160,11 +171,11 @@
   - type: PresetIdCard
     job: SWMandalorianRecruit
 
-#Republic ID cards
+#SWRepublic ID cards
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardRepublicGeneral
-  name: Republic General ID card
+  parent: SWIDCardStandard
+  id: SWIDCardRepublicGeneral
+  name: SWRepublic General ID card
   components:
   - type: Sprite
     layers:
@@ -173,9 +184,20 @@
     job: SWRepublicGeneral
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardRepublicCaptain
-  name: Republic Captain ID card
+  parent: SWIDCardStandard
+  id: SWIDCardJedi
+  name: Jedi ID card
+  components:
+  - type: Sprite
+    layers:
+    - state: image17
+  - type: PresetIdCard
+    job: SWJedi
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWIDCardRepublicCaptain
+  name: SWRepublic Captain ID card
   components:
   - type: Sprite
     layers:
@@ -184,9 +206,9 @@
     job: SWRepublicCaptain
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardRepublicLieutenant
-  name: Republic Lieutenant ID card
+  parent: SWIDCardStandard
+  id: SWIDCardRepublicLieutenant
+  name: SWRepublic Lieutenant ID card
   components:
   - type: Sprite
     layers:
@@ -195,9 +217,9 @@
     job: SWRepublicLieutenant
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardRepublicSoldier
-  name: Republic Soldier ID card
+  parent: SWIDCardStandard
+  id: SWIDCardRepublicSoldier
+  name: SWRepublic Soldier ID card
   components:
   - type: Sprite
     layers:
@@ -206,9 +228,9 @@
     job: SWRepublicSoldier
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardRepublicMedic
-  name: Republic Medic ID card
+  parent: SWIDCardStandard
+  id: SWIDCardRepublicMedic
+  name: SWRepublic Medic ID card
   components:
   - type: Sprite
     layers:
@@ -217,9 +239,9 @@
     job: SWRepublicMedic
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardRepublicRecruit
-  name: Republic Recruit ID card
+  parent: SWIDCardStandard
+  id: SWIDCardRepublicRecruit
+  name: SWRepublic Recruit ID card
   components:
   - type: Sprite
     layers:
@@ -229,8 +251,8 @@
 
 #Balmorran ID cards
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardBalmorranLeader
+  parent: SWIDCardStandard
+  id: SWIDCardBalmorranLeader
   name: Balmorran Leader ID card
   components:
   - type: Sprite
@@ -240,8 +262,8 @@
     job: SWBalmorranLeader
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardBalmorranOfficer
+  parent: SWIDCardStandard
+  id: SWIDCardBalmorranOfficer
   name: Balmorran Officer ID card
   components:
   - type: Sprite
@@ -251,8 +273,8 @@
     job: SWBalmorranOfficer
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardBalmorranMedic
+  parent: SWIDCardStandard
+  id: SWIDCardBalmorranMedic
   name: Balmorran Medic ID card
   components:
   - type: Sprite
@@ -262,8 +284,8 @@
     job: SWBalmorranMedic
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardBalmorranSoldier
+  parent: SWIDCardStandard
+  id: SWIDCardBalmorranSoldier
   name: Balmorran Soldier ID card
   components:
   - type: Sprite
@@ -273,8 +295,8 @@
     job: SWBalmorranSoldier
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardBalmorranRecruit
+  parent: SWIDCardStandard
+  id: SWIDCardBalmorranRecruit
   name: Balmorran Recruit ID card
   components:
   - type: Sprite
@@ -285,8 +307,8 @@
 
 #Empire Intelligence ID cards
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardEmpireIntelligenceCaretaker
+  parent: SWIDCardStandard
+  id: SWIDCardEmpireIntelligenceCaretaker
   name: Empire Intelligence Caretaker ID card
   components:
   - type: Sprite
@@ -296,8 +318,8 @@
     job: SWEmpireIntelligenceCaretaker
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardEmpireIntelligenceAgent
+  parent: SWIDCardStandard
+  id: SWIDCardEmpireIntelligenceAgent
   name: Empire Intelligence Agent ID card
   components:
   - type: Sprite
@@ -306,10 +328,10 @@
   - type: PresetIdCard
     job: SWEmpireIntelligenceAgent
 
-#Republic Havok squad ID cards
+#SWRepublic Havok squad ID cards
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardHavokCommander
+  parent: SWIDCardStandard
+  id: SWIDCardHavokCommander
   name: Havok Commander ID card
   components:
   - type: Sprite
@@ -319,8 +341,8 @@
     job: SWRepublicCommanderCommander
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardHavokLieutenant
+  parent: SWIDCardStandard
+  id: SWIDCardHavokLieutenant
   name: Havok Lieutenant ID card
   components:
   - type: Sprite
@@ -330,8 +352,8 @@
     job: SWRepublicCommanderLieutenant
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardHavokMedic
+  parent: SWIDCardStandard
+  id: SWIDCardHavokMedic
   name: Havok Medic ID card
   components:
   - type: Sprite
@@ -341,8 +363,8 @@
     job: SWRepublicCommanderMedic
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardHavokStormtrooper
+  parent: SWIDCardStandard
+  id: SWIDCardHavokStormtrooper
   name: Havok Stormtrooper ID card
   components:
   - type: Sprite
@@ -352,8 +374,8 @@
     job: SWRepublicCommanderStormtrooper
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardHavokSniper
+  parent: SWIDCardStandard
+  id: SWIDCardHavokSniper
   name: Havok Sniper ID card
   components:
   - type: Sprite
@@ -364,8 +386,8 @@
 
 #Black Sun ID cards
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardBlackSun
+  parent: SWIDCardStandard
+  id: SWIDCardBlackSun
   name: Black Sun ID card
   components:
   - type: Sprite
@@ -375,8 +397,8 @@
     job: SWBlackSun
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardBlackSunMercenary
+  parent: SWIDCardStandard
+  id: SWIDCardBlackSunMercenary
   name: Black Sun Mercenary ID card
   components:
   - type: Sprite
@@ -385,12 +407,12 @@
   - type: PresetIdCard
     job: SWBlackSunMercenary
 
-#Exchange ID cards
+#SWExchange ID cards
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardExchangeCaptain
-  name: Exchange Captain ID card
+  parent: SWIDCardStandard
+  id: SWIDCardExchangeCaptain
+  name: SWExchange Captain ID card
   components:
   - type: Sprite
     layers:
@@ -399,9 +421,9 @@
     job: SWExchangeCaptain
 
 - type: entity
-  parent: SW_IDCardStandard
-  id: SW_IDCardExchangeOperative
-  name: Exchange Operative ID card
+  parent: SWIDCardStandard
+  id: SWIDCardExchangeOperative
+  name: SWExchange Operative ID card
   components:
   - type: Sprite
     layers:

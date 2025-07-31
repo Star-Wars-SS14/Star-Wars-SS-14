@@ -6,7 +6,7 @@
   maxPlayers: 200
   stations:
     SWBalmora:
-      stationProto: StandardSWStation
+      stationProto: SWStandardStation
       components:
       - type: StationNameSetup
         mapNameTemplate: '{0} Балламора {1}'
@@ -53,6 +53,8 @@
           SWExchangeOperative: [ 4, 4 ]
 
           SWCivialian: [-1, -1]
+          SWJedi: [ 4, 4 ]
+          SWSith: [ 4, 4 ]
       - type: EndRoundByTimer
 
 

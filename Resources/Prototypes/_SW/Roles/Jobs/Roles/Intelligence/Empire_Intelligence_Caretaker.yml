@@ -12,12 +12,7 @@
   icon: "JobIconImperialIntelligenceCaretaker"
   supervisors: job-supervisors-keeper
   access:
-  - EmpireIntelligence  
-  - EmpireBase
-  - EmpireIntelligenceCareTaker
-  - EmpireCommander
-  special:
-  - !type:AddComponentSpecial
-    components:
-      - type: SWFactionMember
-        faction: EmpireFaction
+  - SWEmpireIntelligence  
+  - SWEmpireBase
+  - SWEmpireIntelligenceCareTaker
+  - SWEmpireCommander

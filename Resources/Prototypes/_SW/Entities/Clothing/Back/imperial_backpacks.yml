@@ -1,18 +1,18 @@
 - type: entity
   parent: ClothingBackpack
-  id: ImperialBackpack
+  id: SWImperialBackpack
   name: imperial backpack
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Back/Backpacks/imperialbackpack.rsi
+    sprite: _SW/Clothing/Back/Backpacks/imperialBackpack.rsi
   - type: Storage
     grid:
     - 0,0,8,3
 
 - type: entity
-  parent: ImperialBackpack
-  id: ImperialBackpackCamo
+  parent: SWImperialBackpack
+  id: SWImperialBackpackCamo
   name: imperial backpack camo
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Back/Backpacks/imperialbackpackcamo.rsi
+    sprite: _SW/Clothing/Back/Backpacks/imperialBackpackcamo.rsi

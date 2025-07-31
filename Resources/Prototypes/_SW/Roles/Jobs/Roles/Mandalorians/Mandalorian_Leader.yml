@@ -10,9 +10,4 @@
   icon: "JobIconMandalorianLeader"
   supervisors: job-supervisors-mando-led
   access:
-  - Mandalorian
-  special:
-  - !type:AddComponentSpecial
-    components:
-      - type: SWFactionMember
-        faction: MandalorianFaction
+  - SWMandalorian

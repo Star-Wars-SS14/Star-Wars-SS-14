@@ -10,10 +10,5 @@
   icon: "JobIconRepublicMedic"
   supervisors: job-supervisors-leit-rep
   access:
-  - RepublicMedic
-  - RepublicBase
-  special:
-  - !type:AddComponentSpecial
-    components:
-      - type: SWFactionMember
-        faction: RepublicFaction
+  - SWRepublicMedic
+  - SWRepublicBase

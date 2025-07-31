@@ -1,72 +1,57 @@
-﻿- type: entity
-  name: saber
+- type: entity
+  name: Энергетический меч
   parent: EnergySword
-  id: Lightsaber
+  id: SWEnergySwordBase
   description: A very loud & dangerous sword with a beam made of pure, concentrated plasma. Cuts through unarmored targets like butter.
   components:
-  - type: ItemToggle
-    soundActivate:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberon.ogg
-      params:
-        volume: -5
-    soundDeactivate:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberoff.ogg
-  - type: ItemToggleActiveSound
-    activeSound:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberhum.ogg
-      params:
-        volume: -10
-  - type: ItemToggleMeleeWeapon
-    activatedSoundOnHit:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaber1.ogg
-      params:
-        variation: 0.250
-    activatedSoundOnHitNoDamage:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaber1.ogg
-      params:
-        variation: 0.250
-        volume: -10
-    activatedSoundOnSwing:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsabermiss.ogg
-      params:
-        variation: 0.125
-  - type: Block
-  - type: Saber
+  - type: SWWeaponBlock
+  - type: Reflect
+    enabled: false
+    reflectProb: 1.0
+    minReflectProb: 1.0
+  - type: SWSwordThrowable
   - type: DamageOtherOnHit
     damage:
       types:
-        Slash: 6
-        Heat: 4
-
-- type: entity
-  name: double-bladed energy sword
-  parent: EnergySwordDouble
-  id: LightsaberDouble
-  description: Syndicate Command Interns thought that having one blade on the energy sword was not enough. This can be stored in pockets.
-  components:
-  - type: ItemToggle
-    soundActivate:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberon.ogg
-      params:
-        volume: -5
-    soundDeactivate:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberoff.ogg
-  - type: ItemToggleActiveSound
-    activeSound:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberhum.ogg
-      params:
-        volume: -10
+        Slash: 8
+        Heat: 12
   - type: ItemToggleMeleeWeapon
     activatedSoundOnHit:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaber1.ogg
+      path: /Audio/Weapons/eblade1.ogg
       params:
         variation: 0.250
     activatedSoundOnHitNoDamage:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaber1.ogg
+      path: /Audio/Weapons/eblade1.ogg
       params:
         variation: 0.250
         volume: -10
     activatedSoundOnSwing:
-      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsabermiss.ogg
+      path: /Audio/Weapons/eblademiss.ogg
       params:
         variation: 0.125
+    activatedDamage:
+        types:
+            Slash: 25
+            Heat: 35
+            Structural: 20    
+
+- type: entity
+  name: Энергетический меч
+  parent: SWEnergySwordBase
+  id: SWEnergySwordSith
+  description: A very loud & dangerous sword with a beam made of pure, concentrated plasma. Cuts through unarmored targets like butter.
+  components:
+  - type: EnergySword
+    colorOptions:
+      - Red
+
+- type: entity
+  name: Энергетический меч
+  parent: SWEnergySwordBase
+  id: SWEnergySwordJedi
+  description: A very loud & dangerous sword with a beam made of pure, concentrated plasma. Cuts through unarmored targets like butter.
+  components:
+  - type: EnergySword
+    colorOptions:
+      - Blue
+      - Green

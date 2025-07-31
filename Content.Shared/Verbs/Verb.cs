@@ -1,3 +1,4 @@
+using Content.Shared._SW;
 using Content.Shared.Database;
 using Content.Shared.Interaction.Events;
 using Content.Shared.Inventory;

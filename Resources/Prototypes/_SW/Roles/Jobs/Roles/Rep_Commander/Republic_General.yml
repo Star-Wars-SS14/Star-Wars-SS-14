@@ -12,13 +12,8 @@
   icon: "JobIconRepublicGeneral"
   supervisors: job-supervisors-grand-marshal
   access:
-  - RepublicBase
-  - RepublicCommander
-  - RepublicArsenal
-  - RepublicGeneral
-  special:
-  - !type:AddComponentSpecial
-    components:
-      - type: SWFactionMember
-        faction: RepublicFaction
+  - SWRepublicBase
+  - SWRepublicCommander
+  - SWRepublicArsenal
+  - SWRepublicGeneral
 

@@ -1,445 +1,469 @@
-- type: entity
-  id: ForceUser
-  components:
-  - type: Force
-  - type: Store
-    categories:
-    - MasteryLevels
-    - MasteryAbilities
-    currencyWhitelist:
-    - MasteryExperience
-    ownerOnly: true
-
 ###The old republic
-##Republic
+##SWRepublic
 - type: entity
-  name: Republic General
+  name: SWRepublic General
   parent: BaseMobHuman
-  id: SW_MobRepublic_General
+  id: SWMobRepublicGeneral
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [RepublicGeneralGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 - type: entity
-  name: Republic Captain
+  name: SWRepublic Captain
   parent: BaseMobHuman
-  id: SW_MobRepublic_Captain
+  id: SWMobRepublicCaptain
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [RepublicCaptainGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 - type: entity
-  name: Republic Lieutenant
+  name: SWRepublic Lieutenant
   parent: BaseMobHuman
-  id: SW_MobRepublic_Lieutenant
+  id: SWMobRepublicLieutenant
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [RepublicLieutenantGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
+
 
 - type: entity
-  name: Republic soldier
+  name: SWRepublic soldier
   parent: BaseMobHuman
-  id: SW_MobRepublic_Soldier
+  id: SWMobRepublicSoldier
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [RepublicSoldierGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 - type: entity
-  name: Republic Recruit
+  name: SWRepublic Recruit
   parent: BaseMobHuman
-  id: SW_MobRepublic_Recruit
+  id: SWMobRepublicRecruit
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [RepublicRecruitGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 - type: entity
-  name: Republic Medic
+  name: SWRepublic Medic
   parent: BaseMobHuman
-  id: SW_MobRepublic_Medic
+  id: SWMobRepublicMedic
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [RepublicMedicGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 ##Republic_Commander
 - type: entity
-  name: Republic Commander Commander
+  name: SWRepublic Commander Commander
   parent: BaseMobHuman
-  id: SW_MobRepublic_Commander_Commander
+  id: SWMobRepublicCommanderCommander
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [RepublicCommanderCommanderGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 - type: entity
-  name: Republic Commander Lieutenant
+  name: SWRepublic Commander Lieutenant
   parent: BaseMobHuman
-  id: SW_MobRepublic_Commander_Lieutenant
+  id: SWMobRepublicCommanderLieutenant
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [RepublicCommanderLieutenantGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 - type: entity
-  name: Republic Commander Medic
+  name: SWRepublic Commander Medic
   parent: BaseMobHuman
-  id: SW_MobRepublic_Commander_Medic
+  id: SWMobRepublicCommanderMedic
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [RepublicCommanderMedicGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 - type: entity
-  name: Republic Commander Stormtrooper
+  name: SWRepublic Commander Stormtrooper
   parent: BaseMobHuman
-  id: SW_MobRepublic_Commander_Stormtrooper
+  id: SWMobRepublicCommanderStormtrooper
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [RepublicCommanderStormtrooperGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 - type: entity
-  name: Republic Commander Sniper
+  name: SWRepublic Commander Sniper
   parent: BaseMobHuman
-  id: SW_MobRepublic_Commander_Sniper
+  id: SWMobRepublicCommanderSniper
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [RepublicCommanderSniperGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+  - type: NpcFactionMember
+    factions:
+    - NanoTrasen
 
 ##Empire
 - type: entity
   name: Empire Moff
   parent: BaseMobHuman
-  id: SW_MobEmpire_Moff
+  id: SWMobEmpireMoff
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [EmpireMoffGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: Empire Major
   parent: BaseMobHuman
-  id: SW_MobEmpire_Major
+  id: SWMobEmpireMajor
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [EmpireMajorGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: Empire Lieutenant
   parent: BaseMobHuman
-  id: SW_MobEmpire_Lieutenant
+  id: SWMobEmpireLieutenant
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [EmpireLieutenantGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: Empire Soldier
   parent: BaseMobHuman
-  id: SW_MobEmpire_Soldier
+  id: SWMobEmpireSoldier
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [EmpireSoldierGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: Empire Medic
   parent: BaseMobHuman
-  id: SW_MobEmpire_Medic
+  id: SWMobEmpireMedic
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [EmpireMedicalGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 ##Sobrik
 - type: entity
   name: Sobrik Captain
   parent: BaseMobHuman
-  id: SW_MobSobrik_Captain
+  id: SWMobSobrikCaptain
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [SobrikCaptainGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: Sobrik Officer
   parent: BaseMobHuman
-  id: SW_MobSobrik_Officer
+  id: SWMobSobrikOfficer
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [SobrikOfficerGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: Sobrik Medic
   parent: BaseMobHuman
-  id: SW_MobSobrik_Medic
+  id: SWMobSobrikMedic
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [SobrikMedicGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 ##Mandalorians
 - type: entity
-  name: Mandalorian Leader
+  name: SWMandalorian Leader
   parent: BaseMobHuman
-  id: SW_MobMandalorian_Leader
+  id: SWMobMandalorianLeader
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [MandalorianLeaderGear]
-  - type: SWFactionMember
-    faction: MandalorianFaction
-    
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
+
 - type: entity
-  name: Mandalorian Veteran
+  name: SWMandalorian Veteran
   parent: BaseMobHuman
-  id: SW_MobMandalorian_Veteran
+  id: SWMobMandalorianVeteran
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [MandalorianVeteranGear]
-  - type: SWFactionMember
-    faction: MandalorianFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
-  name: Mandalorian Warrior
+  name: SWMandalorian Warrior
   parent: BaseMobHuman
-  id: SW_MobMandalorian_Warrior
+  id: SWMobMandalorianWarrior
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [MandalorianWarriorGear]
-  - type: SWFactionMember
-    faction: MandalorianFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
-  name: Mandalorian Recruit
+  name: SWMandalorian Recruit
   parent: BaseMobHuman
-  id: SW_MobMandalorian_Recruit
+  id: SWMobMandalorianRecruit
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [MandalorianRecruitGear]
-  - type: SWFactionMember
-    faction: MandalorianFaction
-
-##Balmorran
-- type: entity
-  name: Balmorran Leader
-  parent: BaseMobHuman
-  id: SW_MobBalmorran_Leader
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [BalmorranLeaderGear]
   - type: NpcFactionMember
     factions:
     - Syndicate
 
-- type: entity
-  name: Balmorran Officer
-  parent: BaseMobHuman
-  id: SW_MobBalmorran_Officer
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [BalmorranOfficerGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+# ##Balmorran
+# - type: entity
+#   name: Balmorran Leader
+#   parent: BaseMobHuman
+#   id: SWMobBalmorranLeader
+#   description: A miserable pile of secrets.
+#   components:
+#   - type: Loadout
+#     prototypes: [BalmorranLeaderGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - Syndicate
 
-- type: entity
-  name: Balmorran Soldier
-  parent: BaseMobHuman
-  id: SW_MobBalmorran_Soldier
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [BalmorranSoldierGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+# - type: entity
+#   name: Balmorran Officer
+#   parent: BaseMobHuman
+#   id: SWMobBalmorranOfficer
+#   description: A miserable pile of secrets.
+#   components:
+#   - type: Loadout
+#     prototypes: [BalmorranOfficerGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - Syndicate
 
-- type: entity
-  name: Balmorran Recruit
-  parent: BaseMobHuman
-  id: SW_MobBalmorran_Recruit
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [RepublicSoldierGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+# - type: entity
+#   name: Balmorran Soldier
+#   parent: BaseMobHuman
+#   id: SWMobBalmorranSoldier
+#   description: A miserable pile of secrets.
+#   components:
+#   - type: Loadout
+#     prototypes: [BalmorranSoldierGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - Syndicate
 
-- type: entity
-  name: Balmorran Medic
-  parent: BaseMobHuman
-  id: SW_MobBalmorran_Medic
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [BalmorranRecruitGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+# - type: entity
+#   name: Balmorran Recruit
+#   parent: BaseMobHuman
+#   id: SWMobBalmorranRecruit
+#   description: A miserable pile of secrets.
+#   components:
+#   - type: Loadout
+#     prototypes: [RepublicSoldierGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - Syndicate
+
+# - type: entity
+#   name: Balmorran Medic
+#   parent: BaseMobHuman
+#   id: SWMobBalmorranMedic
+#   description: A miserable pile of secrets.
+#   components:
+#   - type: Loadout
+#     prototypes: [BalmorranRecruitGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - Syndicate
 
 ##Empire_Intelligence
 - type: entity
   name: Empire Intelligence Caretaker
   parent: BaseMobHuman
-  id: SW_MobEmpire_Intelligence_Caretaker
+  id: SWMobEmpireIntelligenceCaretaker
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [EmpireIntelligenceCaretakerGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
   name: Intelligence Agent
   parent: BaseMobHuman
-  id: SW_MobEmpire_Intelligence_Agent
+  id: SWMobEmpiдтнааreIntelligenceAgent
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [EmpireIntelligenceAgentGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 ##Roles_Black_Sun
 - type: entity
-  name: BlackSun
+  name: SWBlackSun
   parent: BaseMobHuman
-  id: SW_MobBlackSun_Sniper
+  id: SWMobBlackSunSniper
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [BlackSunGear]
-  - type: SWFactionMember
-    faction: BlackSunFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
-  name: BlackSun Mercenary
+  name: SWBlackSun Mercenary
   parent: BaseMobHuman
-  id: SW_MobBlackSun_Mercenary
+  id: SWMobBlackSunMercenary
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [BlackSunMercenaryGear]
-  - type: SWFactionMember
-    faction: BlackSunFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
-##Exchange
+##SWExchange
 - type: entity
-  name: Exchange Captain
+  name: SWExchange Captain
   parent: BaseMobHuman
-  id: SW_MobExchange_Captain
+  id: SWMobExchangeCaptain
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [ExchangeCaptainGear]
-  - type: SWFactionMember
-    faction: ExchangeFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
 - type: entity
-  name: Exchange Operative
+  name: SWExchange Operative
   parent: BaseMobHuman
-  id: SW_MobExchange_Operative
+  id: SWMobExchangeOperative
   description: A miserable pile of secrets.
   components:
   - type: Loadout
     prototypes: [ExchangeOperativeGear]
-  - type: SWFactionMember
-    faction: ExchangeFaction
+  - type: NpcFactionMember
+    factions:
+    - Syndicate
 
-- type: entity
-  name: Republic soldier
-  parent: BaseMobHuman
-  id: SW_MobRebelsoldier
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [RepublicSoldierGear]
-  - type: SWFactionMember
-    faction: RepublicFaction
+# ###The Age of Rebellion
+# #NanoTrasen
+# - type: entity
+#   name: SWRepublic soldier
+#   parent: BaseMobHuman
+#   id: SWMobRebelsoldier
+#   description: A miserable pile of secrets.
+#   components:
+#   - type: Loadout
+#     prototypes: [RepublicSoldierGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - NanoTrasen
 
-- type: entity
-  name: imperial officers
-  parent: BaseMobHuman
-  id: SW_MobImperialOfficers
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [ImperialOfficersGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+# - type: entity
+#   name: imperial officers
+#   parent: BaseMobHuman
+#   id: SWMobImperialOfficers
+#   description: A miserable pile of secrets.
+#   components:
+#   - type: Loadout
+#     prototypes: [ImperialOfficersGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - Syndicate
 
-- type: entity
-  name: Stormtrooper
-  parent: BaseMobHuman
-  id: SW_MobStormtrooper
-  description: A miserable pile of secrets.
-  components:
-  - type: Loadout
-    prototypes: [StormtrooperGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+# - type: entity
+#   name: Stormtrooper
+#   parent: BaseMobHuman
+#   id: SWMobStormtrooper
+#   description: A miserable pile of secrets.
+#   components:
+#   - type: Loadout
+#     prototypes: [StormtrooperGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - Syndicate
 
-- type: entity
-  name: imperial general
-  parent: BaseMobHuman
-  id: SW_MobImperialGeneral
-  components:
-  - type: Loadout
-    prototypes: [ImperialGeneralGear]
-  - type: SWFactionMember
-    faction: EmpireFaction
+# - type: entity
+#   name: imperial general
+#   parent: BaseMobHuman
+#   id: SWMobImperialGeneral
+#   components:
+#   - type: Loadout
+#     prototypes: [ImperialGeneralGear]
+#   - type: NpcFactionMember
+#     factions:
+#     - Syndicate
 
 

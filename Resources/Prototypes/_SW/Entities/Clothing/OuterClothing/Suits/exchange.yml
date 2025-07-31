@@ -1,6 +1,6 @@
-﻿- type: entity
+- type: entity
   parent: [ClothingOuterBase, AllowSuitStorageClothing]
-  id: SW_ExchangeSuit
+  id: SWExchangeSuit
   name: exchange suit
   components:
   - type: Sprite

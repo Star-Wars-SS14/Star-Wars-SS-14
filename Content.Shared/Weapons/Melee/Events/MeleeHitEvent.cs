@@ -5,11 +5,38 @@ using Robust.Shared.Audio;
 
 namespace Content.Shared.Weapons.Melee.Events;
 
+
+//SW start
+/// <summary>
+///     Raised directly on the entity which was attacked
+/// </summary>
+
+public sealed class TargetMeleeHitEvent : HandledEntityEventArgs
+{
+    /// <summary>
+    /// The user who attacked with the melee weapon.
+    /// </summary>
+    public readonly EntityUid User;
+
+    /// <summary>
+    /// The melee weapon used.
+    /// </summary>
+    public readonly EntityUid Weapon;
+    public TargetMeleeHitEvent(EntityUid user, EntityUid weapon)
+    {
+        User = user;
+        Weapon = weapon;
+    } 
+}
+
+//SW end
+
+
 /// <summary>
 ///     Raised directed on the melee weapon entity used to attack something in combat mode,
 ///     whether through a click attack or wide attack.
 /// </summary>
-public sealed class MeleeHitEvent : HandledEntityEventArgs
+public class MeleeHitEvent : HandledEntityEventArgs
 {
     /// <summary>
     ///     The base amount of damage dealt by the melee hit.

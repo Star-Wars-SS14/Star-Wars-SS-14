@@ -10,11 +10,6 @@
   icon: "JobIconSobrikMedic"
   supervisors: job-supervisors-sobrik-captain
   access:
-  - EmpireBase
-  - EmpireSobrik
-  - EmpireMedic
-  special:
-  - !type:AddComponentSpecial
-    components:
-      - type: SWFactionMember
-        faction: EmpireFaction
+  - SWEmpireBase
+  - SWEmpireSobrik
+  - SWEmpireMedic

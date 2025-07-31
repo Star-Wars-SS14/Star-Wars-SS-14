@@ -1,5 +1,5 @@
 - type: entity
-  id: SW_AdminInstantEffectBase
+  id: SWAdminInstantEffectBase
   abstract: true
   name: instant effect sw
   components:
@@ -10,20 +10,20 @@
   - type: TriggerOnSpawn   
 
 - type: entity
-  id: ArtilleryOnSpawnInstantEffect
+  id: SWArtilleryOnSpawnInstantEffect
   suffix: Artillery
-  parent: SW_AdminInstantEffectBase
+  parent: SWAdminInstantEffectBase
   components:
   - type: ArtilleryOnTrigger
-    instantEffectToSpawn: ExplodeOnSpawnInstantEffect
+    instantEffectToSpawn: SWExplodeOnSpawnInstantEffect
     tilesRange: 15
     countPerTime: 6
     bombSound: /Audio/_SW/bombsound.ogg
 
 - type: entity
-  id: ExplodeOnSpawnInstantEffect
+  id: SWExplodeOnSpawnInstantEffect
   suffix: Explode
-  parent: SW_AdminInstantEffectBase
+  parent: SWAdminInstantEffectBase
   components:
   - type: ExplodeOnTrigger
   - type: Explosive

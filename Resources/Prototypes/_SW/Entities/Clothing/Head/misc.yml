@@ -1,6 +1,6 @@
 - type: entity
   parent: ClothingHeadBase
-  id: SW_ClothingHeadHatBunny
+  id: SWClothingHeadHatBunny
   name: bunny ears
   description: Cute bunny ears.
   components:

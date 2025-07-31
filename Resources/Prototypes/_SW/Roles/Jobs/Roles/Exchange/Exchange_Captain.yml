@@ -12,9 +12,4 @@
   icon: "JobIconExchangeCaptain"
   supervisors: job-supervisors-exchange
   access:
-  - Exchange
-  special:
-  - !type:AddComponentSpecial
-    components:
-      - type: SWFactionMember
-        faction: ExchangeFaction
+  - SWExchange

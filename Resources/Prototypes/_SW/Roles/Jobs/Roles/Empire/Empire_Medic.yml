@@ -12,10 +12,5 @@
   icon: "JobIconEmpireMedic"
   supervisors: job-supervisors-leit-emp
   access:
-  - EmpireBase
-  - EmpireMedic
-  special:
-  - !type:AddComponentSpecial
-    components:
-      - type: SWFactionMember
-        faction: EmpireFaction
+  - SWEmpireBase
+  - SWEmpireMedic

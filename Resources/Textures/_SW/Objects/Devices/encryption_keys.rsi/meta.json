@@ -1,0 +1,24 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "see source sprites copyright",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+        { "name": "crypt_red" },
+        { "name": "crypt_blue" },
+        { "name": "intellignece" },
+        { "name": "empire_soldier" },
+        { "name": "sobrik_comendant" },
+        { "name": "havok" },
+        { "name": "republic" },
+        { "name": "mandalorian" },
+        { "name": "crypt_gray" },
+        { "name": "republic_pilot" },
+        { "name": "empire_pilot" },
+        { "name": "commander_empire" },
+        { "name": "commander_republic" }
+    ]
+}

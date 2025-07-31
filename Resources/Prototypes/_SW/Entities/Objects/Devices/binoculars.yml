@@ -1,7 +1,7 @@
 ﻿- type: entity
   parent: BaseItem
   id: SWBinoculars
-  name: биноклЫ
+  name: бинокль
   description: Военный бинокль.
   components:
   - type: Item

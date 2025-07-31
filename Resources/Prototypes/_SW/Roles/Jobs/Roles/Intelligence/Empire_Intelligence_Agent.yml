@@ -12,10 +12,5 @@
   icon: "JobIconImperialIntelligenceAgent"
   supervisors: job-supervisors-watcher-intelligence
   access:
-  - EmpireIntelligence  
-  - EmpireBase
-  special:
-  - !type:AddComponentSpecial
-    components:
-      - type: SWFactionMember
-        faction: EmpireFaction
+  - SWEmpireIntelligence  
+  - SWEmpireBase

@@ -13,11 +13,6 @@
   icon: "JobIconHavokMedic"
   supervisors: job-supervisors-havok-cap
   access:
-  - RepublicHavok
-  - RepublicBase
-  - RepublicMedic
-  special:
-  - !type:AddComponentSpecial
-    components:
-      - type: SWFactionMember
-        faction: RepublicFaction
+  - SWRepublicHavok
+  - SWRepublicBase
+  - SWRepublicMedic

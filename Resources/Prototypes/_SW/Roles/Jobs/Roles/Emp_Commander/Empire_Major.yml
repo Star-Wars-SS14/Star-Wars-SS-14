@@ -12,12 +12,7 @@
   icon: "JobIconEmpireMajor"
   supervisors: job-supervisors-MOFF
   access:
-  - EmpireCommander
-  - EmpireBase
-  - EmpireArsenal
-  - EmpireSobrik
-  special:
-  - !type:AddComponentSpecial
-    components:
-      - type: SWFactionMember
-        faction: EmpireFaction
+  - SWEmpireCommander
+  - SWEmpireBase
+  - SWEmpireArsenal
+  - SWEmpireSobrik

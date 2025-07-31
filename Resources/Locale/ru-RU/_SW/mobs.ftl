@@ -1,5 +1,5 @@
-ent-SW_MobJedi = джедай
+ent-SWMobJedi = джедай
 ent-SW_MobRebelSoldier = повстанец
-ent-SW_MobSith = ситх
-ent-SW_MobStormtrooper = штурмовик
-ent-SW_MobImperialOfficers = имперский офицер
+ent-SWMobSith = ситх
+ent-SWMobStormtrooper = штурмовик
+ent-SWMobImperialOfficers = имперский офицер

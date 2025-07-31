@@ -110,7 +110,6 @@ public abstract partial class SharedHandsSystem : EntitySystem
             var coordinateEntity = xform.ParentUid.IsValid() ? xform.ParentUid : uid;
             var itemXform = Transform(entity);
             var itemPos = TransformSystem.GetMapCoordinates(entity, xform: itemXform);
-
             if (itemPos.MapId == xform.MapID
                 && (itemPos.Position - TransformSystem.GetMapCoordinates(uid, xform: xform).Position).Length() <= MaxAnimationRange
                 && MetaData(entity).VisibilityMask == MetaData(uid).VisibilityMask) // Don't animate aghost pickups.

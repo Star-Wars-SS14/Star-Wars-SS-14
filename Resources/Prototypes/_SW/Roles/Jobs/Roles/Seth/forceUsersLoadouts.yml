@@ -1,0 +1,21 @@
+- type: startingGear
+  id: ForceUserSithGear
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitColorBlack
+    gloves: ClothingHandsGlovesColorBlack
+    shoes: ClothingShoesSwat
+    ears: SWClothingHeadsetAllEmpire
+    id: SWIDCardSith
+    neck: SWClothingNeckCloakSithCloak
+    pocket1: SWEnergySwordSith
+
+
+- type: startingGear
+  id: ForceUserJediGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitJedi
+    shoes: SWClothingShoesBootsJedi
+    ears: SWClothingHeadsetRepublicAll
+    id: SWIDCardJedi
+    neck: SWClothingNeckCloakJediCloak
+    pocket1: SWEnergySwordJedi

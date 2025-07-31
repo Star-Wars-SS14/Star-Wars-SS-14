@@ -13,11 +13,6 @@
   icon: "JobIconHavokCommander"
   supervisors: job-supervisors-general-gaza
   access:
-  - RepublicHavok
-  - RepublicCommander
-  - RepublicArsenal
-  special:
-  - !type:AddComponentSpecial
-    components:
-      - type: SWFactionMember
-        faction: RepublicFaction
+  - SWRepublicHavok
+  - SWRepublicCommander
+  - SWRepublicArsenal

@@ -1,5 +1,5 @@
 - type: entity
-  id: SW_WindowReinforcedDirectional
+  id: SWWindowReinforcedDirectional
   parent: WindowDirectional
   name: направленное бронеокно
   description: Не испачкайте.

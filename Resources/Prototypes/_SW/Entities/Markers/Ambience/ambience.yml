@@ -2,7 +2,7 @@
   abstract: true
   suffix: BattleAmbient
   parent: MarkerBase
-  id: SW_BaseAmbientMarker
+  id: SWBaseAmbientMarker
   name: BaseAmbientMarker
   components:
   - type: Sprite
@@ -16,8 +16,8 @@
       path: /Audio/_SW/Ambience/Marker/BattleAmbient.ogg
 
 - type: entity
-  parent: SW_BaseAmbientMarker
-  id: SW_AmbientMarker_1
+  parent: SWBaseAmbientMarker
+  id: SWAmbientMarker_1
   name: BattleAmbient
   components:
   - type: AmbientSound
@@ -25,8 +25,8 @@
       path: /Audio/_SW/Ambience/Marker/BattleAmbient.ogg
 
 - type: entity
-  parent: SW_BaseAmbientMarker
-  id: SW_AmbientMarker_2
+  parent: SWBaseAmbientMarker
+  id: SWAmbientMarker_2
   name: BattleAmbientReverb
   components:
   - type: AmbientSound
@@ -34,8 +34,8 @@
       path: /Audio/_SW/Ambience/Marker/BattleAmbientReverb.ogg
 
 - type: entity
-  parent: SW_BaseAmbientMarker
-  id: SW_AmbientMarker_3
+  parent: SWBaseAmbientMarker
+  id: SWAmbientMarker_3
   name: MassiveBattleAmbient
   components:
   - type: AmbientSound
@@ -43,8 +43,8 @@
       path: /Audio/_SW/Ambience/Marker/MassiveBattleAmbient.ogg
 
 - type: entity
-  parent: SW_BaseAmbientMarker
-  id: SW_AmbientMarker_4
+  parent: SWBaseAmbientMarker
+  id: SWAmbientMarker_4
   name: MassiveBattleAmbientReberb
   components:
   - type: AmbientSound

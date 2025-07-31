@@ -10,9 +10,4 @@
   icon: JobIconBlackSun
   supervisors: job-supervisors-reg-blacksun
   access:
-  - BlackSun
-  special:
-  - !type:AddComponentSpecial
-    components:
-      - type: SWFactionMember
-        faction: BlackSunFaction
+  - SWBlackSun

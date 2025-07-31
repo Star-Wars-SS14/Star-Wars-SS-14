@@ -9,9 +9,4 @@
   icon: "JobIconEmpireSoldier"
   supervisors: job-supervisors-leit-emp
   access:
-  - EmpireBase
-  special:
-  - !type:AddComponentSpecial
-    components:
-      - type: SWFactionMember
-        faction: EmpireFaction
+  - SWEmpireBase

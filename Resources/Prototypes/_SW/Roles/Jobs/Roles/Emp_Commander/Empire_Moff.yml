@@ -12,16 +12,11 @@
   icon: "JobIconEmpireMoff"
   supervisors: job-supervisors-min-war
   access:
-  - EmpireCommander
-  - EmpireBase
-  - EmpireMoff
-  - EmpireArsenal
-  - EmpireMedic
-  - EmpireIntelligenceCareTaker
-  - EmpireIntelligence
-  - EmpireSobrik
-  special:
-  - !type:AddComponentSpecial
-    components:
-      - type: SWFactionMember
-        faction: EmpireFaction
+  - SWEmpireCommander
+  - SWEmpireBase
+  - SWEmpireMoff
+  - SWEmpireArsenal
+  - SWEmpireMedic
+  - SWEmpireIntelligenceCareTaker
+  - SWEmpireIntelligence
+  - SWEmpireSobrik

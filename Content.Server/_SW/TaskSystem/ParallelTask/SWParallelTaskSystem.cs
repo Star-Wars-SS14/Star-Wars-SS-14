@@ -11,16 +11,16 @@ public sealed partial class SWParallelTaskSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<SWParallelTaskComponent, SWTaskCheckRequirementsEvent>(OnCheckRequirements);
-        SubscribeLocalEvent<SWParallelTaskComponent, SWOnTaskInitEvent>(OnTaskInit);
+        SubscribeLocalEvent<SWParallelTaskComponent, SWTaskInitEvent>(OnTaskInit);
     }
     private void OnCheckRequirements(Entity<SWParallelTaskComponent> ent, ref SWTaskCheckRequirementsEvent args)
     {
-        if (!_sWTasks.CheckTask(ent.Comp.Task))
+        if (!_sWTasks.CheckTask(ent.Comp.Task, ent.Comp.Faction))
         {
             args.Cancel();
         }
     }
-    private void OnTaskInit(Entity<SWParallelTaskComponent> ent, ref SWOnTaskInitEvent args)
+    private void OnTaskInit(Entity<SWParallelTaskComponent> ent, ref SWTaskInitEvent args)
     {
         var spawnedTask = _sWTasks.AddTaskNoInit(ent.Comp.Faction, ent.Comp.Task);
         if (spawnedTask != null)

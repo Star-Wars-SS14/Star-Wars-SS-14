@@ -274,9 +274,13 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             {
                 continue;
             }
-            if (CheckTask(key))
+            var factionEntityProto = Prototype(faction.Owner);
+            if (factionEntityProto != null)
             {
-                weightedProto.Weights.Add(key, value);
+                if (CheckTask(key, factionEntityProto.ID))
+                {
+                    weightedProto.Weights.Add(key, value);
+                }
             }
         }
         return weightedProto;
@@ -324,9 +328,10 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     /// </summary>
     /// <param name="taskProto">Прототип задания</param>
     /// <returns></returns>
-    public bool CheckTask(string taskProto)
+    public bool CheckTask(string taskProto, string faction)
     {
         var uid = Spawn(taskProto);
+        EnsureComp<SWTaskComponent>(uid).OwningFaction = faction;
         var ev = new SWTaskCheckRequirementsEvent();
         RaiseLocalEvent(uid, ref ev);
         Del(uid);
@@ -385,14 +390,14 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         Entity<SWTaskContainerComponent> faction = new(tmp.Value.Owner, taskComp);
         var task = Spawn(taskProto);
         var comp = EnsureComp<SWTaskComponent>(task);
-        comp.OwnerFaction = factionId;
+        comp.OwningFaction = factionId;
         faction.Comp.CurrentTasks.Add(new Entity<SWTaskComponent>(task, comp));
         return new Entity<SWTaskComponent>(task, comp);
     }
 
     public Entity<SWTaskComponent>? InitTask(Entity<SWTaskComponent> task)
     {
-        RaiseLocalEvent(task.Owner, new SWOnTaskInitEvent());
+        RaiseLocalEvent(task.Owner, new SWTaskInitEvent());
         var ev = new SWTaskProvideDescriptionEvent();
         RaiseLocalEvent(task.Owner, ref ev);
         return task;

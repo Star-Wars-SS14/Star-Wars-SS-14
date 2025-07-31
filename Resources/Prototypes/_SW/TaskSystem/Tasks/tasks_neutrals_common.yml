@@ -4,9 +4,20 @@
   components:
   - type: SWTask
     name: Малая охота за головами
-    description: Нам поступил заказ на убийство. Какой-то военный небольшого ранга, так что сложностей возникнуть не должно. Сделайте все чисто, нам ни к чему лишние проблемы.
-  - type: SWKillRandomByName
+    description: Тут ничего нет.
+  - type: SWTargetSelector
     factions: [RepublicFaction, EmpireFaction]
+    jobs:
+    - SWEmpireSoldier
+    - SWEmpireMedic
+    - SWSobrikOfficer
+    - SWSobrikMedic
+    - SWRepublicSoldier
+    - SWRepublicRecruit
+    - SWRepublicMedic
+  - type: SWKillRandomByName
+    descriptionId: small-headhunt
+  - type: SWGetScoreByTargetJob
     jobsToScores:
       SWEmpireSoldier: 15
       SWEmpireMedic: 15
@@ -15,7 +26,6 @@
       SWRepublicSoldier: 15
       SWRepublicRecruit: 15
       SWRepublicMedic: 15
-    descriptionId: small-headhunt
 
 - type: entity
   id: BigHeadHunterMandalorian
@@ -23,9 +33,22 @@
   components:
   - type: SWTask
     name: Крупная охота за головами
-    description: Нам поступил особй заказ на ликвидацию высокопоставленного офицера. Его устранение принесет нам не только деньги, но и славу.
-  - type: SWKillRandomByName
+    description: Тут ничего нет.
+  - type: SWTargetSelector
     factions: [RepublicFaction, EmpireFaction]
+    jobs:
+    - SWEmpireMajor
+    - SWEmpireLieutenant
+    - SWRepublicCaptain
+    - SWRepublicLieutenant
+    - SWRepublicCommanderCommander
+    - SWRepublicCommanderLieutenant
+    - SWRepublicCommanderMedic
+    - SWRepublicCommanderStormtrooper
+    - SWRepublicCommanderSniper
+  - type: SWKillRandomByName
+    descriptionId: big-headhunt-mandalorian
+  - type: SWGetScoreByTargetJob
     jobsToScores:
       SWEmpireMajor: 25
       SWEmpireLieutenant: 25
@@ -36,48 +59,47 @@
       SWRepublicCommanderMedic: 25
       SWRepublicCommanderStormtrooper: 25
       SWRepublicCommanderSniper: 25
-    descriptionId: big-headhunt-mandalorian
 
-- type: entity
-  id: KillConcurentBlackSun
-  parent: SWTaskBase
-  components:
-  - type: SWTask
-    name: Борьба с конкруентами
-    description: В последнее время выскочки из Черного Солнца ведут себя все более нагло. Поставьте их на место. Убейте кого-нибудь из них. Чем выше должность, тем лучше.
-  - type: SWKillRandomByJob
-    factions: [BlackSunFaction]
-    killAny: true
-    jobsToScores:
-      SWBlackSunMercenary: 4
-      SWBlackSun: 6
+# - type: entity
+#   id: KillConcurentBlackSun
+#   parent: SWTaskBase
+#   components:
+#   - type: SWTask
+#     name: Борьба с конкруентами
+#     description: В последнее время выскочки из Черного Солнца ведут себя все более нагло. Поставьте их на место. Убейте кого-нибудь из них. Чем выше должность, тем лучше.
+#   - type: SWKillRandomByJob
+#     factions: [BlackSunFaction]
+#     killAny: true
+#     jobsToScores:
+#       SWBlackSunMercenary: 4
+#       SWBlackSun: 6
 
-- type: entity
-  id: KillConcurenExchange
-  parent: SWTaskBase
-  components:
-  - type: SWTask
-    name: Борьба с конкруентами
-    description: Обменовцы совсем распоясались. Убейте кого-нибудь из них. Чем выше должность, тем лучше.
-  - type: SWKillRandomByJob
-    factions: [ExchangeFaction]
-    killAny: true
-    jobsToScores:
-      SWExchangeCaptain: 6
-      SWExchangeOperative: 4
+# - type: entity
+#   id: KillConcurenExchange
+#   parent: SWTaskBase
+#   components:
+#   - type: SWTask
+#     name: Борьба с конкруентами
+#     description: Обменовцы совсем распоясались. Убейте кого-нибудь из них. Чем выше должность, тем лучше.
+#   - type: SWKillRandomByJob
+#     factions: [ExchangeFaction]
+#     killAny: true
+#     jobsToScores:
+#       SWExchangeCaptain: 6
+#       SWExchangeOperative: 4
 
-- type: entity
-  id: KillConcurenMandalorian
-  parent: SWTaskBase
-  components:
-  - type: SWTask
-    name: Борьба с конкурентами
-    description: Эти высокомерные засранцы мандалорцы ведут себя так, как будто они лучше нас! Завалите кого-нибудь из них, желательно кого-нибудь крутого.
-  - type: SWKillRandomByJob
-    factions: [MandalorianFaction]
-    killAny: true
-    jobsToScores:
-      SWMandalorianLeader: 8
-      SWMandalorianVeteran: 6
-      SWMandalorianWarrior: 4
-      SWMandalorianRecruit: 3
+# - type: entity
+#   id: KillConcurenMandalorian
+#   parent: SWTaskBase
+#   components:
+#   - type: SWTask
+#     name: Борьба с конкурентами
+#     description: Эти высокомерные засранцы мандалорцы ведут себя так, как будто они лучше нас! Завалите кого-нибудь из них, желательно кого-нибудь крутого.
+#   - type: SWKillRandomByJob
+#     factions: [MandalorianFaction]
+#     killAny: true
+#     jobsToScores:
+#       SWMandalorianLeader: 8
+#       SWMandalorianVeteran: 6
+#       SWMandalorianWarrior: 4
+#       SWMandalorianRecruit: 3

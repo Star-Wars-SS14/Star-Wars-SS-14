@@ -1,5 +1,6 @@
 using Content.Server._SW.TaskSystem.KillRandomOfFaction;
 using Content.Server._SW.TaskSystem.ParallelTask;
+using Content.Server._SW.TaskSystem.TargetSelector;
 using Content.Shared._SW.TaskSystem;
 using Content.Shared.Mobs.Components;
 using System;
@@ -23,7 +24,7 @@ public sealed class SWParallelTaskProtectSystem : EntitySystem
     {
         if (TryComp<SWParallelTaskProtectComponent>(args.SpawnedTask, out var comp))
         {
-            comp.PersonToProtect = ent.Comp.PersonToKill;
+            comp.PersonToProtect = EnsureComp<SWTargetSelectorComponent>(ent.Owner).Target;
         }
     }
     private void OnDescriptionRequested(Entity<SWParallelTaskProtectComponent> ent, ref SWTaskProvideDescriptionEvent args)

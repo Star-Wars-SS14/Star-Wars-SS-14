@@ -15,7 +15,7 @@ public sealed partial class SWCollectObjectTaskSystem : EntitySystem
     {
         base.Initialize();
         //SubscribeLocalEvent<SWKillRandomOfFactionComponent, SWTaskCheckRequirementsEvent>(OnCheckRequirements);
-        SubscribeLocalEvent<SWCollectObjectTaskComponent, SWOnTaskInitEvent>(OnTaskInit);
+        SubscribeLocalEvent<SWCollectObjectTaskComponent, SWTaskInitEvent>(OnTaskInit);
         SubscribeLocalEvent<SWCollectObjectTaskComponent, SWGetProgressEvent>(OnGetProgress);
         SubscribeLocalEvent<TryTransferObject>(OnTransfer);
     }
@@ -34,7 +34,7 @@ public sealed partial class SWCollectObjectTaskSystem : EntitySystem
                 }
                 var taskComp = EnsureComp<SWTaskComponent>(uid);
                 if (protolist.Contains(proto.ID)
-                    && ev.OwnerFaction == taskComp.OwnerFaction
+                    && ev.OwnerFaction == taskComp.OwningFaction
                     && comp.ObjectsCollected[protolist] < comp.ObjectsToCollect[protolist])
                 {
                     comp.ObjectsCollected[protolist]++;
@@ -44,7 +44,7 @@ public sealed partial class SWCollectObjectTaskSystem : EntitySystem
         }
     }
 
-    private void OnTaskInit(Entity<SWCollectObjectTaskComponent> ent, ref SWOnTaskInitEvent args)
+    private void OnTaskInit(Entity<SWCollectObjectTaskComponent> ent, ref SWTaskInitEvent args)
     {
         //инициализируем количество собранных объектов нулями
         foreach (var protolist in ent.Comp.ObjectsToCollect.Keys)

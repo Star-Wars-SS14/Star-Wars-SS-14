@@ -1,17 +1,29 @@
 - type: weightedRandom
   id: RepublicTasksSet
   weights:
-    StealIdCardsEmpire: 10
+    KillByJobRepublic: 1
+    KillRandomEmpireByName: 1
+    StealIdCardsEmpire: 1
+    CaptureEmpire: 1
 
 - type: entity
-  id: KillByJobTaskRepublic
+  id: KillByJobRepublic
   parent: SWTaskBase
   components:
   - type: SWTask
-    name: Ликвидация
-    description: Люди в указанной должности причиняют значительные неудобства нашим войскам. Убейте любого из них.
-  - type: SWKillRandomByJob
+    name:  Ликвидация
+    description: Тут ничего нет.
+  - type: SWTargetSelector
     factions: [EmpireFaction]
+    jobs:
+    - SWEmpireMajor
+    - SWEmpireLieutenant
+    - SWEmpireIntelligenceCaretaker
+    - SWEmpireIntelligenceAgent
+    - SWSobrikCaptain
+    - SWEmpireMoff
+  - type: SWCapturePerson
+  - type: SWGetScoreByTargetJob
     jobsToScores:
       SWEmpireMajor : 20
       SWEmpireLieutenant : 15
@@ -19,6 +31,7 @@
       SWEmpireIntelligenceAgent: 15
       SWSobrikCaptain: 20
       SWEmpireMoff: 25
+  - type: SWDescriptionBasedOnJobOfTarget
     jobsToDescriptions:
       SWEmpireMajor : SWEmpireMajor-killByJobRepublic
       SWEmpireLieutenant : SWEmpireLieutenant-killByJobRepublic
@@ -28,20 +41,73 @@
       SWEmpireMoff: SWEmpireMoff-killByJobRepublic
 
 - type: entity
+  id: CaptureEmpire
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Захват военнопленных
+    description: Тут ничего нет.
+  - type: SWTargetSelector
+    factions: [EmpireFaction]
+    jobs:
+    - SWSobrikOfficer
+    - SWEmpireSoldier
+    - SWEmpireMedic
+    - SWSobrikMedic
+    - SWEmpireMajor
+    - SWEmpireLieutenant
+    - SWEmpireIntelligenceCaretaker
+    - SWEmpireIntelligenceAgent
+    - SWSobrikCaptain
+    - SWEmpireMoff
+  - type: SWCapturePerson
+  - type: SWGetScoreByTargetJob
+    jobsToScores:
+      SWSobrikOfficer: 10
+      SWEmpireSoldier: 10
+      SWEmpireMedic: 15
+      SWSobrikMedic: 15
+      SWEmpireMajor : 20
+      SWEmpireLieutenant : 15
+      SWEmpireIntelligenceCaretaker: 20
+      SWEmpireIntelligenceAgent: 15
+      SWSobrikCaptain: 20
+      SWEmpireMoff: 25
+  - type: SWDescriptionBasedOnJobOfTarget
+    jobsToDescriptions:
+      SWSobrikOfficer: SWSobrikOfficer-capture
+      SWEmpireSoldier: SWEmpireSoldier-capture
+      SWEmpireMedic: SWEmpireMedic-capture
+      SWSobrikMedic: SWSobrikMedic-capture
+      SWEmpireMajor : SWEmpireMajor-capture
+      SWEmpireLieutenant : SWEmpireLieutenant-capture
+      SWEmpireIntelligenceCaretaker: SWEmpireIntelligenceCaretaker-capture
+      SWEmpireIntelligenceAgent: SWEmpireIntelligenceAgent-capture
+      SWSobrikCaptain: SWSobrikCaptain-capture
+      SWEmpireMoff: SWEmpireMoff-capture
+
+- type: entity
   id: KillRandomEmpireByName
   parent: SWTaskBase
   components:
   - type: SWTask
     name: Ликвидация
-    description:  Нам поступила информация о присутствии в регионе военнослужащего Имперских сил. Его должность в рядах империи остается неизвестной, однако он представляет большую опасность. Генштаб требует его немедленной ликвидации.
-  - type: SWKillRandomByName
+    description:  Тут ничего нет.
+  - type: SWTargetSelector
     factions: [EmpireFaction]
+    jobs:
+    - SWEmpireMajor
+    - SWEmpireLieutenant
+    - SWSobrikCaptain
+    - SWEmpireMoff
+  - type: SWKillRandomByName
+    descriptionId: kill-empire-by-name
+  - type: SWGetScoreByTargetJob
     jobsToScores:
       SWEmpireMajor: 20
       SWEmpireLieutenant: 15
       SWEmpireMoff: 25
       SWSobrikCaptain: 20
-    descriptionId: kill-empire-by-name
   - type: SWParallelTask
     task: ProtectTaskEmpire
     faction: EmpireFaction
@@ -57,7 +123,7 @@
     restrictions: OnePerFaction
   - type: SWCollectObjectTask
     objects:
-      [SWIDCardSobrikCaptain, SWIDCardSobrikOfficer, SWIDCardSobrikMedic, SWIDCardEmpireMoff, SWIDCardEmpireMajor, SWIDCardEmpireLieutenant, SWIDCardEmpireMedic] : 3
+      [SW_IDCardSobrikCaptain, SW_IDCardSobrikOfficer, SW_IDCardSobrikMedic, SW_IDCardEmpireMoff, SW_IDCardEmpireMajor, SW_IDCardEmpireLieutenant, SW_IDCardEmpireMedic] : 3
 
 
 - type: entity

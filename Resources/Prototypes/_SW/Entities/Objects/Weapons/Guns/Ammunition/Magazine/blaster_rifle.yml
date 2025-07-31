@@ -101,7 +101,7 @@
       sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
   - type: entity
-    id: SWF11DCannonMagazine
+    id: SWF-11DCannonMagazine
     name: "F-11D Magazine blast"
     parent: SWBaseBlasterMagazine
     components:

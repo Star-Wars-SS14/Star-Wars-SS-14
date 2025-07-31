@@ -25,6 +25,7 @@
     - type: StealTarget
       stealGroup: IDCard
 
+#Sobrik
 - type: entity
   parent: SWIDCardStandard
   id: SWIDCardSobrikCaptain

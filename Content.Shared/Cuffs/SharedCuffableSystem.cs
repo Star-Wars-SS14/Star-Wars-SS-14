@@ -292,6 +292,12 @@ namespace Content.Shared.Cuffs
             if (!args.Cancelled)
             {
                 Uncuff(target, user, used, component);
+                //SW start
+                if (component.CuffedHandCount == 0)
+                {
+                    RaiseLocalEvent(target, new OnTargetGetFullyUnCuffed(target, args.User)); 
+                }
+                //SW end
             }
             else
             {
@@ -361,6 +367,7 @@ namespace Content.Shared.Cuffs
                     _adminLog.Add(LogType.Action, LogImpact.Medium,
                         $"{ToPrettyString(user):player} has cuffed {ToPrettyString(target):player}");
                 }
+                RaiseLocalEvent(target, new OnTargetGetCuffed(target, user)); //SW
             }
             else
             {
@@ -785,4 +792,28 @@ namespace Content.Shared.Cuffs
         {
         }
     }
+
+    //SW start
+    public sealed partial class OnTargetGetCuffed : EntityEventArgs
+    {
+        public EntityUid Target;
+        public EntityUid User;
+        public OnTargetGetCuffed(EntityUid target, EntityUid user)
+        {
+            Target = target;
+            User = user;
+        }
+    }
+    public sealed partial class OnTargetGetFullyUnCuffed : EntityEventArgs
+    {
+        public EntityUid Target;
+        public EntityUid User;
+        public OnTargetGetFullyUnCuffed(EntityUid target, EntityUid user)
+        {
+            Target = target;
+            User = user;
+        }
+    }
+
+    //SW end
 }

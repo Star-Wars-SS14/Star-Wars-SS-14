@@ -1,0 +1,137 @@
+- type: weightedRandom
+  id: RepublicTasksSet
+  weights:
+    KillByJobRepublic: 1
+    KillRandomEmpireByName: 1
+    StealIdCardsEmpire: 1
+    CaptureEmpire: 1
+
+- type: entity
+  id: KillByJobRepublic
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name:  Ликвидация
+    description: Тут ничего нет.
+  - type: SWTargetSelector
+    factions: [EmpireFaction]
+    jobs:
+    - SWEmpireMajor
+    - SWEmpireLieutenant
+    - SWEmpireIntelligenceCaretaker
+    - SWEmpireIntelligenceAgent
+    - SWSobrikCaptain
+    - SWEmpireMoff
+  - type: SWCapturePerson
+  - type: SWGetScoreByTargetJob
+    jobsToScores:
+      SWEmpireMajor : 20
+      SWEmpireLieutenant : 15
+      SWEmpireIntelligenceCaretaker: 20
+      SWEmpireIntelligenceAgent: 15
+      SWSobrikCaptain: 20
+      SWEmpireMoff: 25
+  - type: SWDescriptionBasedOnJobOfTarget
+    jobsToDescriptions:
+      SWEmpireMajor : SWEmpireMajor-killByJobRepublic
+      SWEmpireLieutenant : SWEmpireLieutenant-killByJobRepublic
+      SWEmpireIntelligenceCaretaker: SWEmpireIntelligenceCaretaker-killByJobRepublic
+      SWEmpireIntelligenceAgent: SWEmpireIntelligenceAgent-killByJobRepublic
+      SWSobrikCaptain: SWSobrikCaptain-killByJobRepublic
+      SWEmpireMoff: SWEmpireMoff-killByJobRepublic
+
+- type: entity
+  id: CaptureEmpire
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Захват военнопленных
+    description: Тут ничего нет.
+  - type: SWTargetSelector
+    factions: [EmpireFaction]
+    jobs:
+    - SWSobrikOfficer
+    - SWEmpireSoldier
+    - SWEmpireMedic
+    - SWSobrikMedic
+    - SWEmpireMajor
+    - SWEmpireLieutenant
+    - SWEmpireIntelligenceCaretaker
+    - SWEmpireIntelligenceAgent
+    - SWSobrikCaptain
+    - SWEmpireMoff
+  - type: SWCapturePerson
+  - type: SWGetScoreByTargetJob
+    jobsToScores:
+      SWSobrikOfficer: 10
+      SWEmpireSoldier: 10
+      SWEmpireMedic: 15
+      SWSobrikMedic: 15
+      SWEmpireMajor : 20
+      SWEmpireLieutenant : 15
+      SWEmpireIntelligenceCaretaker: 20
+      SWEmpireIntelligenceAgent: 15
+      SWSobrikCaptain: 20
+      SWEmpireMoff: 25
+  - type: SWDescriptionBasedOnJobOfTarget
+    jobsToDescriptions:
+      SWSobrikOfficer: SWSobrikOfficer-capture
+      SWEmpireSoldier: SWEmpireSoldier-capture
+      SWEmpireMedic: SWEmpireMedic-capture
+      SWSobrikMedic: SWSobrikMedic-capture
+      SWEmpireMajor : SWEmpireMajor-capture
+      SWEmpireLieutenant : SWEmpireLieutenant-capture
+      SWEmpireIntelligenceCaretaker: SWEmpireIntelligenceCaretaker-capture
+      SWEmpireIntelligenceAgent: SWEmpireIntelligenceAgent-capture
+      SWSobrikCaptain: SWSobrikCaptain-capture
+      SWEmpireMoff: SWEmpireMoff-capture
+
+- type: entity
+  id: KillRandomEmpireByName
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Ликвидация
+    description:  Тут ничего нет.
+  - type: SWTargetSelector
+    factions: [EmpireFaction]
+    jobs:
+    - SWEmpireMajor
+    - SWEmpireLieutenant
+    - SWSobrikCaptain
+    - SWEmpireMoff
+  - type: SWKillRandomByName
+    descriptionId: kill-empire-by-name
+  - type: SWGetScoreByTargetJob
+    jobsToScores:
+      SWEmpireMajor: 20
+      SWEmpireLieutenant: 15
+      SWEmpireMoff: 25
+      SWSobrikCaptain: 20
+  - type: SWParallelTask
+    task: ProtectTaskEmpire
+    faction: EmpireFaction
+
+- type: entity
+  id: StealIdCardsEmpire
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Ключ карта от всех дверей
+    description: Добыча имперских айди карт. Для проведения более эффективных диверсий необходимо захватить три любые айди карты, позволяющие получать доступы на базы империи. Айди карты обычных солдат бесполезны, на них это задание не распространяется.
+    score: 15
+    restrictions: OnePerFaction
+  - type: SWCollectObjectTask
+    objects:
+      [SW_IDCardSobrikCaptain, SW_IDCardSobrikOfficer, SW_IDCardSobrikMedic, SW_IDCardEmpireMoff, SW_IDCardEmpireMajor, SW_IDCardEmpireLieutenant, SW_IDCardEmpireMedic] : 3
+
+
+- type: entity
+  id: ProtectTaskRepublic
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Защита
+    description: Тут ничего нет.
+  - type: SWParallelTaskProtect
+    descriptionId: protect-republic

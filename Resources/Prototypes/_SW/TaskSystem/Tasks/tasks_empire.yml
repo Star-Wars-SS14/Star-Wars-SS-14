@@ -1,0 +1,152 @@
+- type: weightedRandom
+  id: EmpireTasksSet
+  weights:
+    CaptureRepublic: 1
+    KillRepublicByJobEmpire: 1
+    KillCriminalTaskEmpire: 1
+    KillByNameTaskEmpire: 1
+
+- type: entity
+  id: CaptureRepublic
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Захват военнопленных
+    description: Тут ничего нет.
+  - type: SWTargetSelector
+    factions: [RepublicFaction]
+    jobs:
+    - SWRepublicRecruit
+    - SWRepublicSoldier
+    - SWRepublicMedic
+    - SWRepublicLieutenant
+    - SWRepublicCaptain
+    - SWRepublicGeneral
+    - SWRepublicCommanderCommander
+    - SWRepublicCommanderStormtrooper
+    - SWRepublicCommanderSniper
+    - SWRepublicCommanderLieutenant
+    - SWRepublicCommanderMediс
+  - type: SWCapturePerson
+  - type: SWGetScoreByTargetJob
+    jobsToScores:
+      SWRepublicRecruit: 10
+      SWRepublicSoldier: 10
+      SWRepublicMedic: 15
+      SWRepublicLieutenant: 15
+      SWRepublicCaptain: 20
+      SWRepublicGeneral: 25
+      SWRepublicCommanderCommander: 15
+      SWRepublicCommanderStormtrooper: 20
+      SWRepublicCommanderSniper: 20
+      SWRepublicCommanderLieutenant: 20
+      SWRepublicCommanderMedic: 20
+  - type: SWDescriptionBasedOnJobOfTarget
+    jobsToDescriptions:
+      SWRepublicRecruit: SWRepublicRecruit-capture
+      SWRepublicSoldier: SWRepublicSoldier-capture
+      SWRepublicMedic: SWRepublicMedic-capture      
+      SWRepublicLieutenant: SWRepublicLieutenant-capture
+      SWRepublicCaptain: SWRepublicCaptain-capture
+      SWRepublicGeneral: SWRepublicGeneral-capture
+      SWRepublicCommanderCommander: SWRepublicCommanderCommander-capture
+      SWRepublicCommanderStormtrooper: SWRepublicHavokNotCommander-capture
+      SWRepublicCommanderSniper: SWRepublicHavokNotCommander-capture
+      SWRepublicCommanderLieutenant: SWRepublicHavokNotCommander-capture
+      SWRepublicCommanderMedic: SWRepublicHavokNotCommander-capture
+
+- type: entity
+  id: KillRepublicByJobEmpire
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Ликвидация
+    description: Тут ничего нет.
+  - type: SWTargetSelector
+    factions: [RepublicFaction]
+    jobs:
+    - SWRepublicLieutenant
+    - SWRepublicCaptain
+    - SWRepublicGeneral
+    - SWRepublicCommanderCommander
+  - type: SWKillRandomByJob
+  - type: SWGetScoreByTargetJob
+    jobsToScores:
+      SWRepublicLieutenant: 15
+      SWRepublicCaptain: 20
+      SWRepublicGeneral: 25
+      SWRepublicCommanderCommander: 20
+  - type: SWDescriptionBasedOnJobOfTarget
+    jobsToDescriptions:
+      SWRepublicLieutenant: SWRepublicLieutenant-killByJob
+      SWRepublicCaptain: SWRepublicCaptain-killByJob
+      SWRepublicGeneral: SWRepublicGeneral-killByJob
+      SWRepublicCommanderCommander: SWRepublicCommanderCommander-killByJob
+
+
+- type: entity
+  id: KillCriminalTaskEmpire
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Ликвидация преступности
+    description: На балморру прибыл известный криминальный элемент. За свои многочисленные преступления против Империи Ситхов Министерство закона и правосудия приговорило данное лицо к казни, но ему удалось ускользнуть. Приведите приговор в исполнение.
+  - type: SWTargetSelector
+    factions: [ExchangeFaction, BlackSunFaction]
+    jobs:
+    - SWBlackSunMercenary
+    - SWBlackSun
+    - SWExchangeCaptain
+    - SWExchangeOperative
+  - type: SWKillRandomByName
+    descriptionId: kill-criminal
+  - type: SWGetScoreByTargetJob
+    jobsToScores:
+      SWBlackSunMercenary : 8
+      SWBlackSun : 10
+      SWExchangeCaptain : 10
+      SWExchangeOperative : 8
+
+- type: entity
+  id: KillByNameTaskEmpire
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Таргетированное убийство
+    description: Тут ничего нет.
+  - type: SWTargetSelector
+    factions: [RepublicFaction]
+    jobs:
+    - SWRepublicGeneral
+    - SWRepublicCaptain
+    - SSWRepublicLieutenant
+    - SWRepublicCommanderCommander
+    - SWRepublicCommanderLieutenant
+    - SWRepublicCommanderMedic
+    - SWRepublicCommanderStormtrooper
+    - SWRepublicCommanderSniper
+  - type: SWKillRandomByName
+    descriptionId: kill-republic-by-name
+  - type: SWGetScoreByTargetJob
+    jobsToScores:
+      SWRepublicGeneral : 25
+      SWRepublicCaptain : 20 
+      SWRepublicLieutenant : 15
+      SWRepublicCommanderCommander: 20
+      SWRepublicCommanderLieutenant: 15
+      SWRepublicCommanderMedic: 15
+      SWRepublicCommanderStormtrooper: 15
+      SWRepublicCommanderSniper: 15
+  - type: SWParallelTask
+    task: ProtectTaskRepublic
+    faction: RepublicFaction
+
+- type: entity
+  id: ProtectTaskEmpire
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Защита
+    description: Тут ничего нет.
+  - type: SWParallelTaskProtect
+    descriptionId: protect-empire

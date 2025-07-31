@@ -18,5 +18,6 @@
   id: SWMainPreset
   name: Обычный день
   description: Обычный день. Выполняйте регулярные задания от своего командования.
+  showInVote: true
   rules:
     - TaskGamerule

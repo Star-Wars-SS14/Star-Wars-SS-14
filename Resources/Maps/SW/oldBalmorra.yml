@@ -249929,7 +249929,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SWBlueMagazineBlastRifle
+- proto: SWJ111Magazine
   entities:
   - uid: 3728
     components:
@@ -250061,7 +250061,7 @@ entities:
       parent: 3670
     - type: Physics
       canCollide: False
-- proto: SWCannonBlueMagazineBlastRifle
+- proto: SWF11DCannonMagazine
   entities:
   - uid: 5011
     components:
@@ -250117,7 +250117,7 @@ entities:
       rot: 3.141592653589793 rad
       pos: 31.218754,-344.64603
       parent: 2
-- proto: SWCannonYellowMagazineBlastRifle
+- proto: SWEL34Magazine
   entities:
   - uid: 39353
     components:
@@ -278977,7 +278977,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SWH206GreenMagazineBlastRifle
+- proto: SWH206Magazine
   entities:
   - uid: 185
     components:
@@ -280909,7 +280909,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SWRedMagazineBlastRifle
+- proto: SWP301Magazine
   entities:
   - uid: 3679
     components:
@@ -281320,7 +281320,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 28.5,-292.5
       parent: 2
-- proto: SWSniperRifleBlueMagazineBlastRifle
+- proto: SWF11DSniperRifleMagazine
   entities:
   - uid: 164
     components:
@@ -281392,7 +281392,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SWSniperRifleYellowMagazineBlastRifle
+- proto: SWBeryarMK3Magazine
   entities:
   - uid: 3710
     components:
@@ -282667,7 +282667,7 @@ entities:
       rot: 3.141592653589793 rad
       pos: 137.5,-118.5
       parent: 2
-- proto: SWYellowMagazineBlastRifle
+- proto: SWE1Magazine
   entities:
   - uid: 3801
     components:
@@ -283050,7 +283050,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SWZ1RedMagazineBlastRifle
+- proto: SWZ1Magazine
   entities:
   - uid: 3895
     components:

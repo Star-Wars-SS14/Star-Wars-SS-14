@@ -871,7 +871,7 @@ entities:
           showEnts: False
           occludes: True
           ent: null
-- proto: SWH206GreenMagazineBlastRifle
+- proto: SWH206Magazine
   entities:
   - uid: 80
     components:

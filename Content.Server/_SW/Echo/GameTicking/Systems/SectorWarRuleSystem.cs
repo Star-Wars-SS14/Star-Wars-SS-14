@@ -2,7 +2,6 @@ using System.Linq;
 using System.Text;
 using Content.Server._SW.TaskSystem;
 using Content.Server.Chat.Systems;
-using Content.Server.Echo.Bank;
 using Content.Server.Echo.GameTicking.Rules.Components;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;

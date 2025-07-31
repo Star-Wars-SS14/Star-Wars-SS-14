@@ -1,6 +1,5 @@
 using Content.Server.Administration.Logs;
 using Content.Server.Chat.Systems;
-using Content.Server.Echo.Bank;
 using Content.Server.Echo.GameTicking.Rules.Components;
 using Content.Server.Echo.GameTicking.Systems;
 using Content.Server.Maps;
@@ -42,7 +41,6 @@ public sealed partial class ShipyardSystem
     [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly IAdminLogManager _adminLogger = default!;
     [Dependency] private readonly MindSystem _mind = default!;
-    [Dependency] private readonly BankSystem _bank = default!;
 
     private void OnPurchaseMessage(EntityUid uid,
         ShipyardConsoleComponent component,
@@ -74,14 +72,6 @@ public sealed partial class ShipyardSystem
         if (_station.GetOwningStation(uid) is not { Valid: true } station)
         {
             ConsolePopup(args.Actor, Loc.GetString("shipyard-console-invalid-station"));
-            PlayDenySound(args.Actor, uid, component);
-            return;
-        }
-
-
-        if (!_bank.TryWithdraw(player, vessel.Price))
-        {
-            ConsolePopup(args.Actor, Loc.GetString("cargo-console-insufficient-funds", ("cost", vessel.Price)));
             PlayDenySound(args.Actor, uid, component);
             return;
         }

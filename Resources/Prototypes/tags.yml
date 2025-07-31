@@ -1369,40 +1369,6 @@
 - type: Tag
   id: WriteIgnoreStamps
 
-# ALPHABETICAL
-
-- type: Tag
-  id: MagazineBlast
-
-- type: Tag
-  id: E-1Magazine
-
-- type: Tag
-  id: P-301Magazine
-
-- type: Tag
-  id: H-206Magazine
-
-- type: Tag
-  id: J-111Magazine
-
-- type: Tag
-  id: Z-1Magazine
-
-- type: Tag
-  id: SniperRifleYellowMagazine
-- type: Tag
-  id: F-11DSniperMagazine
-
-- type: Tag
-  id: CannonYellowMagazine
-
-- type: Tag
-  id: F-11DCannonMagazine
-
-- type: Tag
-  id: CartridgeBlast
-  
 #CM
 
 - type: Tag

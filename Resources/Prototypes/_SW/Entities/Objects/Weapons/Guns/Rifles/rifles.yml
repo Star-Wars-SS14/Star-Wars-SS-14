@@ -48,7 +48,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SWYellowMagazineBlastRifle
+        startingItem: SWE1Magazine
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -75,7 +75,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SWRedMagazineBlastRifle
+        startingItem: SWP301Magazine
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -102,7 +102,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SWH206GreenMagazineBlastRifle
+        startingItem: SWH206Magazine
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -129,7 +129,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SWBlueMagazineBlastRifle
+        startingItem: SWJ111Magazine
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -156,7 +156,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SWZ1RedMagazineBlastRifle
+        startingItem: SWZ1Magazine
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -186,12 +186,12 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SWSniperRifleYellowMagazineBlastRifle
+        startingItem: SWBeryarMK3Magazine
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
           tags:
-          - SniperRifleYellowMagazine
+          - SWBeryarMK3MagazineTag
 
 - type: entity
   name: Grantek F-11D Sniper Rifle
@@ -214,7 +214,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem:  SWSniperRifleBlueMagazineBlastRifle
+        startingItem:  SWF11DSniperRifleMagazine
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -242,12 +242,12 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SWSniperRifleYellowMagazineBlastRifle
+        startingItem: SWK406RipperMagazine
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
           tags:
-          - SniperRifleYellowMagazine
+          - SWK406RipperMagazineTag
 
 - type: entity
   name: EL-34 Rotary Plasma Cannon
@@ -269,12 +269,12 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SWCannonYellowMagazineBlastRifle
+        startingItem: SWEL34Magazine
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
           tags:
-          - CannonYellowMagazine
+          - SWEL34MagazineTag
 
 - type: entity
   name: Grantek F-11D Assault Cannon
@@ -297,7 +297,7 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SWCannonBlueMagazineBlastRifle
+        startingItem: SWF11DCannonMagazine
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
@@ -325,12 +325,12 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SWCannonYellowMagazineBlastRifle
+        startingItem: SWGT13Magazine
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
           tags:
-          - CannonYellowMagazine
+          - SWGT13MagazineTag
 
 - type: entity
   name: Gallantry
@@ -353,12 +353,12 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SWCannonYellowMagazineBlastRifle
+        startingItem: SWGallantryMagazine
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
           tags:
-          - CannonYellowMagazine
+          - SWGallantryMagazineTag
 
 - type: entity
   name: MK-1 Assault Cannon
@@ -381,9 +381,9 @@
     slots:
       gun_magazine:
         name: Magazine
-        startingItem: SWCannonYellowMagazineBlastRifle
+        startingItem: SWMK1Magazine
         insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
         ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
         whitelist:
           tags:
-          - CannonYellowMagazine
+          - SWMK1MagazineTag

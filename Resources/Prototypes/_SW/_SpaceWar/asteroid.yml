@@ -1,0 +1,15 @@
+- type: gameMap
+  id: Asteroid
+  mapName: 'Asteroid'
+  mapPath: /Maps/SW/asteroid.yml
+  minPlayers: 35
+  maxPlayers: 70
+  stations:
+    Asteroid:
+      stationProto: BaseStation
+      components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Asteroid {1}'
+          nameGenerator:
+            !type:NanotrasenNameGenerator
+            prefixCreator: '14'

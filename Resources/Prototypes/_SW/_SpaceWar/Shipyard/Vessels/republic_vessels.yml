@@ -1,0 +1,129 @@
+ # - type: vessel
+ #   id: RepublicCruiserBig
+ #   name: SWRepublic Cruiser Mk. 2
+ #   description: Cruiser
+ #   price: 1000000 # 15% markup +4890
+ #   category: Large
+ #   fraction: RepublicFaction
+ #   shuttlePath: /Maps/SW/Vessels/Republic/resistanceCruiser.yml
+
+ # - type: gameMap
+ #   id: RepublicCruiserBig
+ #   mapName: 'SWRepublic Cruiser Mk. 2'
+ #   mapPath: /Maps/SW/Vessels/Republic/resistanceCruiser.yml
+ #   minPlayers: 0
+ #   stations:
+ #     RepublicCruiserBig:
+ #       stationProto: StandardVessel
+ #       components:
+ #         - type: StationNameSetup
+ #           mapNameTemplate: 'SWRepublic Cruiser Mk. 2 {1}'
+ #           nameGenerator:
+ #             !type:NanotrasenNameGenerator
+ #             prefixCreator: '14'
+ #         - type: StationJobs
+ #           availableJobs:
+ #            SWRepublicGeneral: [ 1, 1 ]
+ #            SWRepublicCaptain: [ 1, 1 ]
+ #            SWRepublicLieutenant: [ 2, 2 ]
+ #            SWRepublicSoldier: [ 6, 6 ]
+ #            SWRepublicMedic: [ 2, 2 ]
+ #            SWRepublicRecruit: [ 4, 4 ]
+
+ - type: vessel
+   id: RepublicCruiserSmall
+   name: Defender-class light corvette
+   description: Cruiser
+   price: 50000
+   category: Medium
+   fraction: RepublicFaction
+   shuttlePath: /Maps/SW/Vessels/Republic/resistanceCruisersmall.yml
+
+ - type: gameMap
+   id: RepublicCruiserSmall
+   mapName: 'SWRepublic Cruiser Mk. 1'
+   mapPath: /Maps/SW/Vessels/Republic/resistanceCruisersmall.yml
+   minPlayers: 0
+   stations:
+     RepublicCruiserSmall:
+       stationProto: StandardVessel
+       components:
+         - type: StationNameSetup
+           mapNameTemplate: 'Defender-class light corvette {1}'
+           nameGenerator:
+             !type:NanotrasenNameGenerator
+             prefixCreator: '14'
+
+ - type: vessel
+   id: RepublicTransport
+   name: Republic transport ship
+   description: Cruiser
+   price: 5000
+   category: Small
+   fraction: RepublicFaction
+   shuttlePath: /Maps/SW/Vessels/Republic/transship.yml
+
+ - type: gameMap
+   id: RepublicTransport
+   mapName: 'Republic transport ship'
+   mapPath: /Maps/SW/Vessels/Republic/transship.yml
+   minPlayers: 0
+   stations:
+     RepublicTransport:
+       stationProto: StandardVessel
+       components:
+         - type: StationNameSetup
+           mapNameTemplate: 'Republic transport ship {1}'
+           nameGenerator:
+             !type:NanotrasenNameGenerator
+             prefixCreator: '14'
+
+
+ - type: vessel
+   id: RepublicFighter
+   name: Flashfire
+   description: Cruiser
+   price: 15000
+   category: Small
+   fraction: RepublicFaction
+   shuttlePath: /Maps/SW/Vessels/Republic/FlashfireRepublicFighter.yml
+
+ - type: gameMap
+   id: RepublicFighter
+   mapName: 'Flashfire'
+   mapPath: /Maps/SW/Vessels/Republic/FlashfireRepublicFighter.yml
+   minPlayers: 0
+   stations:
+     RepublicFighter:
+       stationProto: StandardVessel
+       components:
+         - type: StationNameSetup
+           mapNameTemplate: 'Flashfire {1}'
+           nameGenerator:
+             !type:NanotrasenNameGenerator
+             prefixCreator: '14'
+
+ - type: vessel
+   id: RepublicBomber
+   name: Warcarrier
+   description: Cruiser
+   price: 20000
+   category: Small
+   fraction: RepublicFaction
+   shuttlePath: /Maps/SW/Vessels/Republic/specshipWarcarrier.yml
+
+ - type: gameMap
+   id: RepublicBomber
+   mapName: 'Warcarrier'
+   mapPath: /Maps/SW/Vessels/Republic/specshipWarcarrier.yml
+   minPlayers: 0
+   stations:
+     RepublicBomber:
+       stationProto: StandardVessel
+       components:
+         - type: StationNameSetup
+           mapNameTemplate: 'Warcarrier {1}'
+           nameGenerator:
+             !type:NanotrasenNameGenerator
+             prefixCreator: '14'
+

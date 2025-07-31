@@ -1,0 +1,9 @@
+- type: entity
+  parent: BaseGameRule
+  id: SectorWar
+  components:
+  - type: SectorWarRule
+  - type: SWFactionGamerule
+    factionsPrototypes:
+    - RepublicFaction
+    - EmpireFaction

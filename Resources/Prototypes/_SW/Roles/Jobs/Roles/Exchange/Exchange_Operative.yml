@@ -10,3 +10,8 @@
   supervisors: job-supervisors-exchange-cap
   access:
   - SWExchange
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: SWFactionMember
+        faction: ExchangeFaction

@@ -10,3 +10,8 @@
   supervisors: job-supervisors-leit-rep
   access:
   - SWRepublicBase
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: SWFactionMember
+        faction: RepublicFaction

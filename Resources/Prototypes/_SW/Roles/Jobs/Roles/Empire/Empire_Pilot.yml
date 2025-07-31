@@ -1,0 +1,18 @@
+- type: job
+  id: SWEmpirePilot
+  name: Пилот Сил Империи
+  playTimeTracker: Job_Empire_Pilot
+  requirements:
+  - !type:RoleTimeRequirement
+    role: Job_Empire_Soldier
+    time: 18000 # 5h
+  startingGear: EmpirePilotGear
+  icon: "JobIconEmpireSoldier"
+  supervisors: job-supervisors-leit-emp
+  access:
+  - SWEmpireBase
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: SWFactionMember
+        faction: EmpireFaction

@@ -29,7 +29,7 @@
   id: SWCrateEmpireLock
   name: ящик Империи
   suffix: С доступом
-  description: Защищенный ящик Империи. Для разблокировки нужен ранг майора и выше
+  description: Защищенный ящик Империи. Для разблокировки нужен ранг лейтенанта и выше
   components:
   - type: Lock
   - type: Icon

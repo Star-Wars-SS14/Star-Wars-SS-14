@@ -1,0 +1,14 @@
+- type: entity
+  parent: filingCabinet
+  id: EchoCombineCabinet
+  name: шкафчик
+  description: Для удовлетворения всех ваших бюрократических причуд.
+  components:
+  - type: Sprite
+    sprite: _Echolife/Structures/cabinets.rsi
+    state: cabinet
+    noRot: true
+    layers:
+    - state: cabinet
+    - state: cabinet
+      map: ["openLayer"]

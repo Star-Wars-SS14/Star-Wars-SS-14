@@ -1,0 +1,14 @@
+- type: vendingMachineInventory
+  id: EchoCivilianClothingInventory
+  startingInventory:
+    EchoClothingHeadHatGray: 4
+    EchoClothingHeadHatGreen: 4
+    EchoClothingShoesBootsResistance: 4
+    EchoClothingRegularGreenShirtBlueJeans: 4
+    EchoClothingRegularGreenShirtBlueJeansBelt: 4
+    EchoClothingRegularGreenShirtGrayJeans: 4
+    EchoClothingRegularGreenShirtGrayJeansBelt: 4
+    EchoClothingRegularBeigeShirtBlueJeans: 4
+    EchoClothingRegularBeigeShirtBlueJeansBelt: 4
+    EchoClothingRegularBeigeShirtGrayJeans: 4
+    EchoClothingRegularBeigeShirtGrayJeansBelt: 4

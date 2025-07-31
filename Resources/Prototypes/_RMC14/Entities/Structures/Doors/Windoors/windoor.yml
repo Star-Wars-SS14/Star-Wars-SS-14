@@ -1,4 +1,4 @@
-﻿- type: entity
+- type: entity
   parent: BaseWindoor
   id: CMWindoor
   name: раздвижное окно
@@ -34,7 +34,7 @@
     closingSpriteState: closed_unlit
 
 - type: entity
-  parent: BaseSecureWindoor
+  parent: BaseWindoor
   id: CMWindoorSecure
   name: раздвижное бронеокно
   description: Это и прочное окно, и раздвижная дверь. Вот это да!

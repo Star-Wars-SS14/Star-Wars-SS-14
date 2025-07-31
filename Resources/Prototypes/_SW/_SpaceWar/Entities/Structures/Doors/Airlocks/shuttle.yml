@@ -1,0 +1,19 @@
+- type: entity
+  parent: AirlockShuttle
+  id: EchoAirlockShuttle
+  suffix: Стыковка
+  name: стыковочный шлюз
+  description: Необходим для стыковки двух космических кораблей
+  components:
+  - type: Sprite
+    sprite: _Echolife/Structures/Doors/Airlocks/Standard/shuttle.rsi
+
+- type: entity
+  parent: AirlockShuttle
+  id: EchoGlassAirlockShuttle
+  suffix: Стыковка, Стекло
+  name: стыковочный шлюз
+  description: Необходим для стыковки двух космических кораблей
+  components:
+  - type: Sprite
+    sprite: _Echolife/Structures/Doors/Airlocks/Glass/shuttle.rsi

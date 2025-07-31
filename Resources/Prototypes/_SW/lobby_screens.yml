@@ -1,0 +1,3 @@
+- type: lobbyBackground
+  id: SpaceWar
+  background: /Textures/_SW/LobbyScreens/spacewar.webp

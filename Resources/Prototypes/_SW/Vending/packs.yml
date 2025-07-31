@@ -1,0 +1,48 @@
+- type: vendingMachineInventory
+  id: SWEmpireInventoryBase
+  startingInventory:
+    OxygenTankFilled: 100
+    CombatKnife: 100
+    ClothingBeltAssault: 100
+    SWImperialBackpackCamo: 50
+    SWImperialBackpack: 50
+    Handcuffs: 50
+    ClothingMaskBreath: 100
+    ClothingBeltMilitaryWebbing: 100
+    ClothingBeltMilitaryWebbingMed: 20
+    SWKoltoMedipen: 200
+    SWBactaMedipen: 20
+
+- type: vendingMachineInventory
+  id: SWEmpireInventoryWeapon
+  startingInventory:
+    SWE1BlasterRifle: 100
+    SWGrantekF11D2: 10
+    SWK406Ripper: 10
+    SWSniperRifleYellowMagazineBlastRifle: 20
+    SWCannonBlueMagazineBlastRifle: 35
+    SWYellowMagazineBlastRifle: 300
+
+- type: vendingMachineInventory
+  id: SWRepublicInventoryBase
+  startingInventory:
+    OxygenTankFilled: 100
+    CombatKnife: 100
+    ClothingBeltAssault: 100
+    ClothingBackpackMilitarySatchel: 100
+    Handcuffs: 50
+    ClothingMaskBreath: 100
+    ClothingBeltMilitaryWebbing: 100
+    ClothingBeltMilitaryWebbingMed: 20
+    SWKoltoMedipen: 200
+    SWBactaMedipen: 20
+
+- type: vendingMachineInventory
+  id: SWRepublicInventoryWeapon
+  startingInventory:
+    SWH206Renegade: 100
+    SWEL34: 10
+    SWBeryaramk3: 10
+    SWSniperRifleYellowMagazineBlastRifle: 20
+    SWCannonYellowMagazineBlastRifle: 35
+    SWH206GreenMagazineBlastRifle: 300

@@ -11,3 +11,8 @@
   supervisors: job-supervisors-reg-blacksun
   access:
   - SWBlackSun
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: SWFactionMember
+        faction: BlackSunFaction

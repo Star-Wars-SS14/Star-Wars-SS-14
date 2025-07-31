@@ -12,3 +12,8 @@
   access:
   - SWEmpireBase
   - SWEmpireSobrik
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: SWFactionMember
+        faction: EmpireFaction

@@ -14,5 +14,5 @@ ent-SWSniperRifleBlueMagazineBlastRifle = Магазин для снайперс
   .desc = {ent-SWYellowMagazineBlastRifle.desc}
 ent-SWCannonYellowMagazineBlastRifle = Магазин для EL-34
   .desc = {ent-SWYellowMagazineBlastRifle.desc}
-ent-SWSniperRifleYellowMagazineBlastRifle = Магазин для  К406
+ent-SWSniperRifleYellowMagazineBlastRifle = Магазин для  К406 и MK-3
   .desc = {ent-SWYellowMagazineBlastRifle.desc}

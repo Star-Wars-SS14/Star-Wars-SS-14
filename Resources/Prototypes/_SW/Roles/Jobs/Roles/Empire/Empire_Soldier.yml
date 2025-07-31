@@ -10,3 +10,8 @@
   supervisors: job-supervisors-leit-emp
   access:
   - SWEmpireBase
+  special:
+  - !type:AddComponentSpecial
+    components:
+      - type: SWFactionMember
+        faction: EmpireFaction

@@ -8,9 +8,8 @@
   components:
   - type: Loadout
     prototypes: [RepublicGeneralGear]
-  - type: NpcFactionMember
-    factions:
-    - NanoTrasen
+  - type: SWFactionMember
+    faction: RepublicFaction
 
 - type: entity
   name: SWRepublic Captain
@@ -20,9 +19,8 @@
   components:
   - type: Loadout
     prototypes: [RepublicCaptainGear]
-  - type: NpcFactionMember
-    factions:
-    - NanoTrasen
+  - type: SWFactionMember
+    faction: RepublicFaction
 
 - type: entity
   name: SWRepublic Lieutenant
@@ -32,9 +30,8 @@
   components:
   - type: Loadout
     prototypes: [RepublicLieutenantGear]
-  - type: NpcFactionMember
-    factions:
-    - NanoTrasen
+  - type: SWFactionMember
+    faction: RepublicFaction
 
 
 - type: entity
@@ -45,9 +42,8 @@
   components:
   - type: Loadout
     prototypes: [RepublicSoldierGear]
-  - type: NpcFactionMember
-    factions:
-    - NanoTrasen
+  - type: SWFactionMember
+    faction: RepublicFaction
 
 - type: entity
   name: SWRepublic Recruit
@@ -57,9 +53,8 @@
   components:
   - type: Loadout
     prototypes: [RepublicRecruitGear]
-  - type: NpcFactionMember
-    factions:
-    - NanoTrasen
+  - type: SWFactionMember
+    faction: RepublicFaction
 
 - type: entity
   name: SWRepublic Medic
@@ -69,9 +64,8 @@
   components:
   - type: Loadout
     prototypes: [RepublicMedicGear]
-  - type: NpcFactionMember
-    factions:
-    - NanoTrasen
+  - type: SWFactionMember
+    faction: RepublicFaction
 
 ##Republic_Commander
 - type: entity
@@ -82,9 +76,8 @@
   components:
   - type: Loadout
     prototypes: [RepublicCommanderCommanderGear]
-  - type: NpcFactionMember
-    factions:
-    - NanoTrasen
+  - type: SWFactionMember
+    faction: RepublicFaction
 
 - type: entity
   name: SWRepublic Commander Lieutenant
@@ -94,9 +87,8 @@
   components:
   - type: Loadout
     prototypes: [RepublicCommanderLieutenantGear]
-  - type: NpcFactionMember
-    factions:
-    - NanoTrasen
+  - type: SWFactionMember
+    faction: RepublicFaction
 
 - type: entity
   name: SWRepublic Commander Medic
@@ -106,9 +98,8 @@
   components:
   - type: Loadout
     prototypes: [RepublicCommanderMedicGear]
-  - type: NpcFactionMember
-    factions:
-    - NanoTrasen
+  - type: SWFactionMember
+    faction: RepublicFaction
 
 - type: entity
   name: SWRepublic Commander Stormtrooper
@@ -118,9 +109,8 @@
   components:
   - type: Loadout
     prototypes: [RepublicCommanderStormtrooperGear]
-  - type: NpcFactionMember
-    factions:
-    - NanoTrasen
+  - type: SWFactionMember
+    faction: RepublicFaction
 
 - type: entity
   name: SWRepublic Commander Sniper
@@ -130,9 +120,8 @@
   components:
   - type: Loadout
     prototypes: [RepublicCommanderSniperGear]
-  - type: NpcFactionMember
-    factions:
-    - NanoTrasen
+  - type: SWFactionMember
+    faction: RepublicFaction
 
 ##Empire
 - type: entity
@@ -143,9 +132,8 @@
   components:
   - type: Loadout
     prototypes: [EmpireMoffGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: EmpireFaction
 
 - type: entity
   name: Empire Major
@@ -155,9 +143,8 @@
   components:
   - type: Loadout
     prototypes: [EmpireMajorGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: EmpireFaction
 
 - type: entity
   name: Empire Lieutenant
@@ -167,9 +154,8 @@
   components:
   - type: Loadout
     prototypes: [EmpireLieutenantGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: EmpireFaction
 
 - type: entity
   name: Empire Soldier
@@ -179,9 +165,8 @@
   components:
   - type: Loadout
     prototypes: [EmpireSoldierGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: EmpireFaction
 
 - type: entity
   name: Empire Medic
@@ -191,9 +176,8 @@
   components:
   - type: Loadout
     prototypes: [EmpireMedicalGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: EmpireFaction
 
 ##Sobrik
 - type: entity
@@ -204,9 +188,8 @@
   components:
   - type: Loadout
     prototypes: [SobrikCaptainGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: EmpireFaction
 
 - type: entity
   name: Sobrik Officer
@@ -216,9 +199,8 @@
   components:
   - type: Loadout
     prototypes: [SobrikOfficerGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: EmpireFaction
 
 - type: entity
   name: Sobrik Medic
@@ -228,9 +210,8 @@
   components:
   - type: Loadout
     prototypes: [SobrikMedicGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: EmpireFaction
 
 ##Mandalorians
 - type: entity
@@ -241,9 +222,8 @@
   components:
   - type: Loadout
     prototypes: [MandalorianLeaderGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: MandalorinFaction
 
 - type: entity
   name: SWMandalorian Veteran
@@ -253,9 +233,8 @@
   components:
   - type: Loadout
     prototypes: [MandalorianVeteranGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: MandalorinFaction
 
 - type: entity
   name: SWMandalorian Warrior
@@ -265,9 +244,8 @@
   components:
   - type: Loadout
     prototypes: [MandalorianWarriorGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: MandalorinFaction
 
 - type: entity
   name: SWMandalorian Recruit
@@ -277,9 +255,8 @@
   components:
   - type: Loadout
     prototypes: [MandalorianRecruitGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: MandalorinFaction
 
 # ##Balmorran
 # - type: entity
@@ -351,9 +328,8 @@
   components:
   - type: Loadout
     prototypes: [EmpireIntelligenceCaretakerGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: EmpireFaction
 
 - type: entity
   name: Intelligence Agent
@@ -363,9 +339,8 @@
   components:
   - type: Loadout
     prototypes: [EmpireIntelligenceAgentGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: EmpireFaction
 
 ##Roles_Black_Sun
 - type: entity
@@ -376,9 +351,8 @@
   components:
   - type: Loadout
     prototypes: [BlackSunGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: BlackSunFaction
 
 - type: entity
   name: SWBlackSun Mercenary
@@ -388,9 +362,8 @@
   components:
   - type: Loadout
     prototypes: [BlackSunMercenaryGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: BlackSunFaction
 
 ##SWExchange
 - type: entity
@@ -401,9 +374,8 @@
   components:
   - type: Loadout
     prototypes: [ExchangeCaptainGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: ExchangeFaction
 
 - type: entity
   name: SWExchange Operative
@@ -413,9 +385,8 @@
   components:
   - type: Loadout
     prototypes: [ExchangeOperativeGear]
-  - type: NpcFactionMember
-    factions:
-    - Syndicate
+  - type: SWFactionMember
+    faction: ExchangeFaction
 
 # ###The Age of Rebellion
 # #NanoTrasen

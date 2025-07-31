@@ -1,0 +1,85 @@
+- type: entity
+  parent: VendingMachine
+  id: SWVendingMachineRepublic
+  name: Вендомат снаряжения Республики
+  description: Слава Республике!!
+  components:
+  - type: Sprite
+    sprite: _Echolife/Structures/Machines/VendingMachines/combine_dispenser_3.rsi
+    layers:
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.Base"]
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
+      shader: unshaded
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+  - type: VendingMachine
+    pack: SWRepublicInventoryBase
+    offState: off
+    brokenState: broken
+    normalState: off
+
+- type: entity
+  parent: VendingMachine
+  id: SWVendingMachineEmpire
+  name: Вендомат снаряжения Империи
+  description: Слава Империи!!
+  components:
+  - type: Sprite
+    sprite: _Echolife/Structures/Machines/VendingMachines/resistance_dispenser_2.rsi
+    layers:
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.Base"]
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
+      shader: unshaded
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+  - type: VendingMachine
+    pack: SWEmpireInventoryBase
+    offState: off
+    brokenState: broken
+    normalState: off
+
+- type: entity
+  parent: VendingMachine
+  id: SWVendingMachineEmpireWeapon
+  name: Вендомат оружия Империи
+  components:
+  - type: Sprite
+    sprite: _Echolife/Structures/Machines/VendingMachines/resistance_dispenser_3.rsi
+    layers:
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.Base"]
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
+      shader: unshaded
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+  - type: VendingMachine
+    pack: SWEmpireInventoryWeapon
+    offState: off
+    brokenState: broken
+    normalState: off
+
+- type: entity
+  parent: VendingMachine
+  id: VendingMachineCombineA
+  name: Вендомат оружия  Республики
+  components:
+  - type: Sprite
+    sprite: _Echolife/Structures/Machines/VendingMachines/combine_dispenser_1.rsi
+    layers:
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.Base"]
+    - state: "off"
+      map: ["enum.VendingMachineVisualLayers.BaseUnshaded"]
+      shader: unshaded
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+  - type: VendingMachine
+    pack: SWRepublicInventoryWeapon
+    offState: off
+    brokenState: broken
+    normalState: off

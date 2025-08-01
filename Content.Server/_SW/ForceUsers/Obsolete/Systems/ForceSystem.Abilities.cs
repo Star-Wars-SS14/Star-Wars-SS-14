@@ -221,7 +221,7 @@ public sealed partial class ForceSystem
         if (component.HexColor == null)
             return;
 
-        _appearance.SetData(saber, ToggleableLightVisuals.Color, _colors[component.HexColor], appearanceComponent);
+        //_appearance.SetData(saber, ToggleableLightVisuals.Color, _colors[component.HexColor], appearanceComponent);
 
         saberComponent.Owner = component.Owner;
 

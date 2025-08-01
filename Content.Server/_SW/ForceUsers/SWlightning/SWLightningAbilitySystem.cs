@@ -50,7 +50,7 @@ public sealed class SWLightningAbilitySystem : EntitySystem
             }
             
         }
-        _stunSystem.TryStun(args.Target, TimeSpan.FromSeconds(ent.Comp.StunTimeInSeconds), false);
+        _stunSystem.TryAddStunDuration(args.Target, TimeSpan.FromSeconds(ent.Comp.StunTimeInSeconds));
         args.Handled = true;
     }
 }

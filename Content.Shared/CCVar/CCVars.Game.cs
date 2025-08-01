@@ -5,10 +5,16 @@ namespace Content.Shared.CCVar;
 
 public sealed partial class CCVars
 {
-        /// <summary>
-        ///     Disables most functionality in the GameTicker.
-        /// </summary>
-        public static readonly CVarDef<bool>
+    /// <summary>
+    ///     If true, contraband examination is only possible while wearing an item with `ShowContrabandDetailsComponent`. Requires `ContrabandExamine` to be true as well.
+    /// </summary>
+    public static readonly CVarDef<bool> ContrabandExamineOnlyInHUD =
+        CVarDef.Create("game.contraband_examine_only_in_hud", false, CVar.SERVER | CVar.REPLICATED);
+
+    /// <summary>
+    ///     Disables most functionality in the GameTicker.
+    /// </summary>
+    public static readonly CVarDef<bool>
             GameDummyTicker = CVarDef.Create("game.dummyticker", false, CVar.ARCHIVE | CVar.SERVERONLY);
 
         /// <summary>

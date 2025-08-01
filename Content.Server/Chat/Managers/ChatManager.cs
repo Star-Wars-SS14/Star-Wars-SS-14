@@ -45,7 +45,7 @@ internal sealed partial class ChatManager : IChatManager
     [Dependency] private readonly IEntityManager _entityManager = default!;
     [Dependency] private readonly PlayerRateLimitManager _rateLimitManager = default!;
     [Dependency] private readonly ISharedPlayerManager _player = default!;
-    [Dependency] private readonly DiscordChatLink _discordLink = default!;
+    [Dependency] private readonly Discord.DiscordLink.DiscordChatLink _discordLink = default!;
     private ISharedSponsorsManager? _sponsorsManager; // Corvax-Sponsors
 
     /// <summary>

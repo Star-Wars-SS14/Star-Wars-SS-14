@@ -122,7 +122,7 @@
   - type: IconSmooth
     key: walls
     mode: NoSprite
-  - type: PaintableAirlock
+  - type: Paintable
     group: Standard
     department: Command
   - type: AccessReader

@@ -53,8 +53,8 @@
           SWExchangeOperative: [ 4, 4 ]
 
           SWCivialian: [-1, -1]
-          SWJedi: [ 4, 4 ]
-          SWSith: [ 4, 4 ]
+          SWJedi: [ 2, 2 ]
+          SWSith: [ 2, 2 ]
       - type: EndRoundByTimer
 
 

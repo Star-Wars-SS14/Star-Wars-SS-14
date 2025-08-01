@@ -15,7 +15,7 @@
       coefficients:
         Caustic: 0.5
         Heat: 0.5
-        Blunt: 0.6
+        Blunt: 0.5
         Slash: 0.5
         Piercing: 0.5
   - type: ClothingSpeedModifier
@@ -40,9 +40,17 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/LT_imperial.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/LT_imperial.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Caustic: 0.4
+        Heat: 0.4
+        Blunt: 0.4
+        Slash: 0.4
+        Piercing: 0.4
 
 - type: entity
-  parent: SWImperialSuit
+  parent: SWLieutenantImperialSuit
   id: SWMajorImperialSuit
   name: imperial suit major
   components:
@@ -52,7 +60,7 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/MR_imperial.rsi
 
 - type: entity
-  parent: SWImperialSuit
+  parent: SWLieutenantImperialSuit
   id: SWMoffImperialSuit
   name: imperial suit moff
   components:
@@ -60,6 +68,7 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/MOFF_imperial.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Imperial/MOFF_imperial.rsi
+
 
 - type: entity
   parent: SWImperialSuit

@@ -13,11 +13,11 @@
   - type: Armor
     modifiers:
       coefficients:
-        Caustic: 0.2
-        Heat: 0.4
+        Caustic: 0.4
+        Heat: 0.35
         Blunt: 0.4
-        Slash: 0.3
-        Piercing: 0.5
+        Slash: 0.4
+        Piercing: 0.3
   - type: ClothingSpeedModifier
     walkModifier: 0.9
     sprintModifier: 0.95

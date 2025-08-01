@@ -92,7 +92,20 @@ public sealed class TTSManager
             }
 
             var json = await response.Content.ReadFromJsonAsync<GenerateVoiceResponse>(cancellationToken: cts.Token);
-            var soundData = Convert.FromBase64String(json.Results.First().Audio);
+            if (json.Results == null || json.Results.Count == 0)
+            {
+                _sawmill.Error($"TTS API returned empty results for '{text}'");
+                return null;
+            }
+
+            var firstResult = json.Results[0];
+            if (string.IsNullOrEmpty(firstResult.Audio))
+            {
+                _sawmill.Error($"TTS API returned empty audio data for '{text}'");
+                return null;
+            }
+
+            var soundData = Convert.FromBase64String(firstResult.Audio);
 
             if (json.Cached)
             {

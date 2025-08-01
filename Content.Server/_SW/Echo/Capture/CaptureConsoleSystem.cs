@@ -3,7 +3,6 @@ using Content.Server._SW.TaskSystem;
 using Content.Server.Chat.Systems;
 using Content.Server.Echo.GameTicking.Rules.Components;
 using Content.Server.Station.Systems;
-using Content.Server.Xenoarchaeology.XenoArtifacts;
 using Content.Shared._SW.TaskSystem;
 using Content.Shared.Access.Systems;
 using Content.Shared.Audio;

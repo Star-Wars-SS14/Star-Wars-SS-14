@@ -22,7 +22,7 @@
     - SWEmpireIntelligenceAgent
     - SWSobrikCaptain
     - SWEmpireMoff
-  - type: SWCapturePerson
+  - type: SWKillRandomByJob
   - type: SWGetScoreByTargetJob
     jobsToScores:
       SWEmpireMajor : 20

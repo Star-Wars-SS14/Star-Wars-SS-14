@@ -97,7 +97,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                         score = ev.Score;
                     }
                     factionComp.CurrentScore += score;
-                    text += $"Выполнено. Очков Получено: {score}.";
+                    text += $"Выполнено. Очков получено: {score}.";
                 }
                 else
                 {

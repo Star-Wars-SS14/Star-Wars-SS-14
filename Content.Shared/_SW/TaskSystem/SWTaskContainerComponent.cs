@@ -19,7 +19,7 @@ public sealed partial class SWTaskContainerComponent : Component
     [DataField]
     public float AddIntervalInSeconds = 60 * 20;
 
-    public TimeSpan NextAddTime;
+    public TimeSpan NextAddTime = TimeSpan.FromSeconds(0);
 
     [DataField]
     public int StartAmountOfTasks = 0;

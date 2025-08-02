@@ -21,7 +21,7 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
         SubscribeLocalEvent<SWWeaponBlockComponent, HandSelectedEvent>(OnSelectInHand);
         SubscribeLocalEvent<SWWeaponBlockComponent, HandDeselectedEvent>(OnDeselectInHand);
         SubscribeLocalEvent<SWForceUserBlockComponent, TargetMeleeHitEvent>(OnMeleeHit);
-        SubscribeLocalEvent<SWWeaponBlockComponent, AttemptMeleeEvent>(OnAttemptMelee);
+        //SubscribeLocalEvent<SWWeaponBlockComponent, AttemptMeleeEvent>(OnAttemptMelee);
     }
 
     private void OnDeselectInHand(Entity<SWWeaponBlockComponent> ent, ref HandDeselectedEvent args)
@@ -44,17 +44,17 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
         }
     }
 
-    private void OnAttemptMelee(Entity<SWWeaponBlockComponent> ent, ref AttemptMeleeEvent args)
-    {
-        if (!TryComp<SWForceUserBlockComponent>(ent.Comp.CurrentUser, out var userComp))
-        {
-            return;
-        }
-        if (userComp.IsBlocking)
-        {
-            DisableBlock(ent.Comp.CurrentUser.Value);
-        }
-    }
+    //private void OnAttemptMelee(Entity<SWWeaponBlockComponent> ent, ref AttemptMeleeEvent args)
+    //{
+    //    if (!TryComp<SWForceUserBlockComponent>(ent.Comp.CurrentUser, out var userComp))
+    //    {
+    //        return;
+    //    }
+    //    if (userComp.IsBlocking && args.)
+    //    {
+    //        DisableBlock(ent.Comp.CurrentUser.Value);
+    //    }
+    //}
 
     private void DisableBlock(EntityUid user)
     {
@@ -78,7 +78,10 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
             {
                 args.Handled = true;
                 PopupSystem.PopupPredicted("Удар отражен!", ent.Owner, null, PopupType.Medium);
-                DisableBlock(ent.Owner);
+                if (HasComp<SWWeaponBlockComponent>(args.Weapon))
+                {
+                    DisableBlock(ent.Owner);
+                }
             }
         }
     }

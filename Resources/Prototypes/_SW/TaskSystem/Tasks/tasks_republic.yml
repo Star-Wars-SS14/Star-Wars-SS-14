@@ -123,7 +123,7 @@
     restrictions: OnePerFaction
   - type: SWCollectObjectTask
     objects:
-      [SWIDCardSobrikCaptain, SWIDCardSobrikOfficer, SWIDCardSobrikMedic, SW_IDCardEmpireMoff, SW_IDCardEmpireMajor, SW_IDCardEmpireLieutenant, SWIDCardEmpireMedic] : 3
+      [SWIDCardEmpireIntelligenceAgent, SWIDCardEmpireIntelligenceCaretaker, SWIDCardSobrikCaptain, SWIDCardSobrikOfficer, SWIDCardSobrikMedic, SWIDCardEmpireMoff, SWIDCardEmpireMajor, SWIDCardEmpireLieutenant, SWIDCardEmpireMedic] : 3
 
 
 - type: entity

@@ -11,7 +11,7 @@ namespace Content.Server._SW.TaskSystem;
 [RegisterComponent]
 public sealed partial class SWTaskGameruleComponent : Component
 {
-    [DataField]
+    [DataField("delay")]
     public float DelayBeforeAddingStartTasksInSeconds = 60 * 3;
 
     public TimeSpan TimeToAddStartTasks;

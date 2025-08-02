@@ -14,7 +14,7 @@
     modifiers:
       coefficients:
         Caustic: 0.3
-        Heat: 0.2
+        Heat: 0.35
         Blunt: 0.4
         Slash: 0.4
         Piercing: 0.4

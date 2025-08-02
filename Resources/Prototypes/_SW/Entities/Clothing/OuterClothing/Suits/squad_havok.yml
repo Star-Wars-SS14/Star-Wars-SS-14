@@ -14,7 +14,7 @@
     modifiers:
       coefficients:
         Caustic: 0.4
-        Heat: 0.35
+        Heat: 0.4
         Blunt: 0.4
         Slash: 0.4
         Piercing: 0.3
@@ -42,6 +42,14 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Havok/sniper_republic_gunner.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Havok/sniper_republic_gunner.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Caustic: 0.4
+        Heat: 0.35
+        Blunt: 0.4
+        Slash: 0.4
+        Piercing: 0.3
 
 - type: entity
   parent: SWHavokSuit
@@ -52,6 +60,14 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Havok/LT_republic_gunner.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Havok/LT_republic_gunner.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Caustic: 0.4
+        Heat: 0.35
+        Blunt: 0.4
+        Slash: 0.4
+        Piercing: 0.3
 
 - type: entity
   parent: SWHavokSuit
@@ -62,3 +78,11 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Havok/commander_republic_gunner.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Havok/commander_republic_gunner.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Caustic: 0.4
+        Heat: 0.35
+        Blunt: 0.4
+        Slash: 0.4
+        Piercing: 0.3

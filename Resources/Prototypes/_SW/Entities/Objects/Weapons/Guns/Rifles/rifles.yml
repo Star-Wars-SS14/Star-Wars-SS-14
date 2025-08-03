@@ -1,6 +1,6 @@
 - type: entity
   id: SWBaseWeaponBlaster
-  parent: [BaseItem, BaseGunWieldable]
+  parent: BaseItem
   abstract: true
   suffix: Оружие SW
   components:
@@ -28,7 +28,10 @@
   - type: ContainerContainer
     containers:
       gun_magazine: !type:ContainerSlot
+  - type: Wieldable
+    unwieldOnUse: false
 
+#Rifles
 
 - type: entity
   name: Imperial E-1 Enforcer Blaster Rifle
@@ -43,7 +46,16 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
   - type: Gun
+    soundGunshot:
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
     fireRate: 3
+    angleIncrease: 0.5
+    minAngle: 15
+    maxAngle: 25    
+    angleDecay: 4
+  - type: GunWieldBonus
+    minAngle: -13
+    maxAngle: -22
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -68,9 +80,16 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/p301.rsi
   - type: Gun
-    fireRate: 2.5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+    fireRate: 4
+    angleIncrease: 0.5
+    minAngle: 10
+    maxAngle: 15    
+    angleDecay: 4
+  - type: GunWieldBonus
+    minAngle: -10
+    maxAngle: -13
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -95,9 +114,16 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/h206.rsi
   - type: Gun
-    fireRate: 3.5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+    fireRate: 3.2
+    angleIncrease: 0.5
+    minAngle: 15
+    maxAngle: 20 
+    angleDecay: 4
+  - type: GunWieldBonus
+    minAngle: -14
+    maxAngle: -18
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -122,9 +148,16 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/j111.rsi
   - type: Gun
-    fireRate: 3.5
     soundGunshot:
-      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg  
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+    fireRate: 3
+    angleIncrease: 0.5
+    minAngle: 15
+    maxAngle: 25    
+    angleDecay: 4
+  - type: GunWieldBonus
+    minAngle: -13
+    maxAngle: -22
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -149,9 +182,16 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/z1.rsi
   - type: Gun
-    fireRate: 1.5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+    fireRate: 3
+    angleIncrease: 0.5
+    minAngle: 15
+    maxAngle: 25    
+    angleDecay: 4
+  - type: GunWieldBonus
+    minAngle: -13
+    maxAngle: -22
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -162,6 +202,193 @@
         whitelist:
           tags:
           - Z-1Magazine
+
+#Machine guns
+
+- type: entity
+  name: EL-34 Rotary Plasma Cannon
+  parent: SWBaseWeaponBlaster
+  id: SWEL34
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    layers:
+    - state: base
+      map: [ "enum.GunVisualLayers.Base" ]
+  - type: HeldSpeedModifier
+    walkModifier: 0.6
+    sprintModifier: 0.6
+  - type: Clothing
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+  - type: Gun
+    soundGunshot:
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+    fireRate: 7.5
+    angleIncrease: 0.2
+    minAngle: 3
+    maxAngle: 10    
+    angleDecay: 4
+  - type: GunRequiresWield
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: SWEL34Magazine
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        whitelist:
+          tags:
+          - SWEL34MagazineTag
+
+- type: entity
+  name: Grantek F-11D Assault Cannon
+  parent: SWBaseWeaponBlaster
+  id: SWGrantekF11D2
+  description: An iconic weapon of war. Uses .30 rifle ammo.
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    layers:
+    - state: base
+      map: [ "enum.GunVisualLayers.Base" ]
+  - type: Clothing
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+  - type: HeldSpeedModifier
+    walkModifier: 0.6
+    sprintModifier: 0.6
+  - type: Gun
+    soundGunshot:
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+    fireRate: 8.2
+    angleIncrease: 0.2
+    minAngle: 3
+    maxAngle: 10    
+    angleDecay: 4
+  - type: GunRequiresWield
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: SWF11DCannonMagazine
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        whitelist:
+          tags:
+          - F-11DCannonMagazine
+
+- type: entity
+  name: GT-13 ST Assault Cannon
+  parent: SWBaseWeaponBlaster
+  id: SWGT-13ST
+  description: An iconic weapon of war. Uses .30 rifle ammo.
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    layers:
+    - state: base
+      map: [ "enum.GunVisualLayers.Base" ]
+  - type: Clothing
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+  - type: HeldSpeedModifier
+    walkModifier: 0.8
+    sprintModifier: 0.8
+  - type: Gun
+    soundGunshot:
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+    fireRate: 7
+    angleIncrease: 0.2
+    minAngle: 20
+    maxAngle: 40    
+    angleDecay: 4
+  - type: GunWieldBonus
+    minAngle: -15
+    maxAngle: -30
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: SWGT13Magazine
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        whitelist:
+          tags:
+          - SWGT13MagazineTag
+
+- type: entity
+  name: Gallantry
+  parent: SWBaseWeaponBlaster
+  id: SWGallantry
+  description: An iconic weapon of war. Uses .30 rifle ammo.
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    layers:
+    - state: base
+      map: [ "enum.GunVisualLayers.Base" ]
+  - type: HeldSpeedModifier
+    walkModifier: 0.6
+    sprintModifier: 0.6
+  - type: Clothing
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+  - type: Gun
+    soundGunshot:
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+    fireRate: 8.7
+    angleIncrease: 0.2
+    minAngle: 0
+    maxAngle: 10  
+    angleDecay: 4
+  - type: GunRequiresWield
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: SWGallantryMagazine
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        whitelist:
+          tags:
+          - SWGallantryMagazineTag
+
+- type: entity
+  name: MK-1 Assault Cannon
+  parent: SWBaseWeaponBlaster
+  id: SWMK1
+  description: An iconic weapon of war. Uses .30 rifle ammo.
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    layers:
+    - state: base
+      map: [ "enum.GunVisualLayers.Base" ]
+  - type: Clothing
+    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+  - type: HeldSpeedModifier
+    walkModifier: 0.8
+    sprintModifier: 0.8
+  - type: Gun
+    soundGunshot:
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+    fireRate: 7
+    angleIncrease: 0.2
+    minAngle: 20
+    maxAngle: 40    
+    angleDecay: 4
+  - type: GunWieldBonus
+    minAngle: -15
+    maxAngle: -30
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: SWMK1Magazine
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        whitelist:
+          tags:
+          - SWMK1MagazineTag
+
+#Sniper rifles
 
 - type: entity
   name: Beryar's MK-3 Sniper Rifle
@@ -179,9 +406,16 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
   - type: Gun
-    fireRate: 3.5
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+    fireRate: 0.8
+    angleIncrease: 0.0
+    minAngle: 10
+    maxAngle: 10    
+    angleDecay: 4
+  - type: GunWieldBonus
+    minAngle: -10
+    maxAngle: -10
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -207,9 +441,16 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Snipers/f11d.rsi
   - type: Gun
-    fireRate: 0.6
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+    fireRate: 0.5
+    angleIncrease: 0.0
+    minAngle: 10
+    maxAngle: 10    
+    angleDecay: 4
+  - type: GunWieldBonus
+    minAngle: -10
+    maxAngle: -10
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -232,12 +473,19 @@
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
-  - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Snipers/k406.rsi
   - type: Gun
-    fireRate: 1
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+    fireRate: 0.8
+    angleIncrease: 0.0
+    minAngle: 10
+    maxAngle: 10    
+    angleDecay: 4
+  - type: GunWieldBonus
+    minAngle: -10
+    maxAngle: -10
+  - type: Clothing
+    sprite: _SW/Objects/Weapons/Guns/Snipers/k406.rsi
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -249,141 +497,3 @@
           tags:
           - SWK406RipperMagazineTag
 
-- type: entity
-  name: EL-34 Rotary Plasma Cannon
-  parent: SWBaseWeaponBlaster
-  id: SWEL34
-  components:
-  - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
-    layers:
-    - state: base
-      map: [ "enum.GunVisualLayers.Base" ]
-  - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
-  - type: Gun
-    fireRate: 3.5
-    soundGunshot:
-      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
-  - type: ItemSlots
-    slots:
-      gun_magazine:
-        name: Magazine
-        startingItem: SWEL34Magazine
-        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
-        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
-        whitelist:
-          tags:
-          - SWEL34MagazineTag
-
-- type: entity
-  name: Grantek F-11D Assault Cannon
-  parent: SWBaseWeaponBlaster
-  id: SWGrantekF11D2
-  description: An iconic weapon of war. Uses .30 rifle ammo.
-  components:
-  - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
-    layers:
-    - state: base
-      map: [ "enum.GunVisualLayers.Base" ]
-  - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
-  - type: Gun
-    fireRate: 0.75
-    soundGunshot:
-      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
-  - type: ItemSlots
-    slots:
-      gun_magazine:
-        name: Magazine
-        startingItem: SWF11DCannonMagazine
-        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
-        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
-        whitelist:
-          tags:
-          - F-11DCannonMagazine
-
-- type: entity
-  name: GT-13 ST Assault Cannon
-  parent: SWBaseWeaponBlaster
-  id: SWGT-13ST
-  description: An iconic weapon of war. Uses .30 rifle ammo.
-  components:
-  - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
-    layers:
-    - state: base
-      map: [ "enum.GunVisualLayers.Base" ]
-  - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
-  - type: Gun
-    fireRate: 3.5
-    soundGunshot:
-      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
-  - type: ItemSlots
-    slots:
-      gun_magazine:
-        name: Magazine
-        startingItem: SWGT13Magazine
-        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
-        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
-        whitelist:
-          tags:
-          - SWGT13MagazineTag
-
-- type: entity
-  name: Gallantry
-  parent: SWBaseWeaponBlaster
-  id: SWGallantry
-  description: An iconic weapon of war. Uses .30 rifle ammo.
-  components:
-  - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
-    layers:
-    - state: base
-      map: [ "enum.GunVisualLayers.Base" ]
-  - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
-  - type: Gun
-    fireRate: 3.5
-    soundGunshot:
-      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
-  - type: ItemSlots
-    slots:
-      gun_magazine:
-        name: Magazine
-        startingItem: SWGallantryMagazine
-        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
-        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
-        whitelist:
-          tags:
-          - SWGallantryMagazineTag
-
-- type: entity
-  name: MK-1 Assault Cannon
-  parent: SWBaseWeaponBlaster
-  id: SWMK1
-  description: An iconic weapon of war. Uses .30 rifle ammo.
-  components:
-  - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
-    layers:
-    - state: base
-      map: [ "enum.GunVisualLayers.Base" ]
-  - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
-  - type: Gun
-    fireRate: 3.5
-    soundGunshot:
-      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
-  - type: ItemSlots
-    slots:
-      gun_magazine:
-        name: Magazine
-        startingItem: SWMK1Magazine
-        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
-        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
-        whitelist:
-          tags:
-          - SWMK1MagazineTag

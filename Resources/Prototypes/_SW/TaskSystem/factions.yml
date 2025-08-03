@@ -7,7 +7,7 @@
   - type: SWTaskContainer
     availableTasks: RepublicTasksSet
     addIntervalInSeconds: 1200 #20 min    
-    startAmountOfTasks : 3
+    startAmountOfTasks : 4
     maxAmountOfTasks: 5
 
 - type: entity
@@ -19,8 +19,8 @@
   - type: SWTaskContainer
     availableTasks: EmpireTasksSet
     addIntervalInSeconds: 1200 #20 min   
-    startAmountOfTasks : 2
-    maxAmountOfTasks: 4
+    startAmountOfTasks : 4
+    maxAmountOfTasks: 5
 
 - type: entity
   id: MandalorianFaction

@@ -11,7 +11,7 @@
       types:
         Heat: 35
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/red_ammo_casing.rsi
     layers:
     - state: base
       shader: unshaded
@@ -29,12 +29,12 @@
       types:
         Heat: 25
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
     layers:
     - state: base
       shader: unshaded
   - type: PointLight
-    color: Red
+    color: Yellow
   
 - type: entity
   id: SWH206Bullet
@@ -65,12 +65,12 @@
       types:
         Heat: 25
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
     layers:
     - state: base
       shader: unshaded
   - type: PointLight
-    color: Blue
+    color: Yellow
 
 - type: entity
   id: SWE-1Bullet
@@ -83,12 +83,12 @@
       types:
         Heat: 30
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/red_ammo_casing.rsi
     layers:
     - state: base
       shader: unshaded
   - type: PointLight
-    color: Yellow
+    color: Red
   
 
 #Machine guns

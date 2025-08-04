@@ -1,0 +1,33 @@
+- type: entity
+  parent: MonkeyCube
+  id: SWDustBread
+  name: dust bread
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Consumable/Food/dust-bread.rsi
+    state: icon-dust
+  - type: Rehydratable
+    possibleSpawns:
+    - SWDustBreadRehydrated
+
+- type: entity
+  id: SWDustBreadRehydrated
+  parent: FoodSnackBase
+  name: dust bread
+  components:
+  - type: FlavorProfile
+    flavors:
+      - nutribrick
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _SW/Objects/Consumable/Food/dust-bread.rsi
+    state: icon
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 50
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 45
+  - type: Food

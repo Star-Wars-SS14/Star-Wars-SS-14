@@ -1,0 +1,24 @@
+- type: entity
+  name: M.R.E.
+  parent: [BoxCardboard, BaseStorageItem]
+  id: SWBoxMRE
+  description: A box of decades old military surplus rations. It is surprisingly not rotten.
+  components:
+  - type: StorageFill
+    contents:
+      - id: DrinkMREFlask
+      - id: SWDustBread
+      - id: SWGorntSausage
+      - id: SWCannedGorntMeat
+      - id: SWProteinBar
+  - type: Sprite
+    sprite: _SW/Objects/Consumable/Food/mre.rsi
+    layers:
+      - map: [ base ]
+        state: icon
+  - type: GenericVisualizer
+    visuals:
+      enum.StorageVisuals.Open:
+        base:
+          True: { state: icon-open }
+          False: { state: icon }

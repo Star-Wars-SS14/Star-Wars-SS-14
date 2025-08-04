@@ -1,0 +1,21 @@
+- type: entity
+  id: SWGorntDriedMeat
+  parent: FoodSnackBase
+  name: gornt dried meat
+  components:
+  - type: FlavorProfile
+    flavors:
+      - nutribrick
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _SW/Objects/Consumable/Food/gornt-dried-meat.rsi
+    state: icon
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 25
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 10
+  - type: Food

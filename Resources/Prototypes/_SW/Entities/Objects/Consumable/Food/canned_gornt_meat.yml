@@ -1,0 +1,29 @@
+- type: entity
+  parent: FoodTinBase
+  id: SWCannedGorntMeat
+  name: canned gornt meat
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Consumable/Food/canned-gornt-meat.rsi
+    state: icon
+  - type: FlavorProfile
+    flavors:
+    - savory
+    - salty
+    - cheap
+  - type: Food
+    trash: 
+    - SWCannedGorntMeatEmpty
+  - type: Item
+    size: Small
+
+- type: entity
+  id: SWCannedGorntMeatEmpty
+  parent: BaseItem
+  name: canned gornt meat
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _SW/Objects/Consumable/Food/canned-gornt-meat.rsi
+    state: icon-empty

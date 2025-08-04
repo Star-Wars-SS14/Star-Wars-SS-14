@@ -707,15 +707,16 @@
   categories: [ HideSpawnMenu ]
   components:
   - type: Sprite
-    sprite: Objects/Weapons/Guns/Projectiles/projectiles2.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/cannon_projectiles.rsi
     layers:
-      - state: grenade
+    - state: projectile_green
+    scale: 2.2, 2.2
   - type: ExplodeOnTrigger
   - type: Explosive
     explosionType: Default
-    totalIntensity: 150 # a ~2 tile radius
-    intensitySlope: 5
-    maxIntensity: 10
+    totalIntensity: 890 # a ~2 tile radius #SW
+    intensitySlope: 40  #SW
+    maxIntensity: 90  #SW
 
 - type: entity
   id: BulletGrenadeFlash

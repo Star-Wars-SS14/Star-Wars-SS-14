@@ -1,0 +1,23 @@
+{
+    "version": 1,
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "license": "CC-BY-SA-3.0",
+    "copyright": "@londorondondon (discord)",
+    "states": [
+        {
+            "name": "projectile_blue"
+        },
+        {
+            "name": "projectile_green"
+        },
+        {
+            "name": "projectile_red"
+        },
+        {
+            "name": "projectile_yellow"
+        }
+    ]
+}

@@ -12829,7 +12829,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -26.5,-14.5
       parent: 1
-- proto: SWCannonYellowMagazineBlastRifle
+- proto: SWEL34Magazine
   entities:
   - uid: 1764
     components:

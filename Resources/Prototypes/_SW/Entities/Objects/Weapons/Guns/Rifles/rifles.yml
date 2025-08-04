@@ -396,6 +396,8 @@
   id: SWBeryaramk3
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
+  - type: Scope
+    zoom: 1.6
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
     layers:
@@ -433,6 +435,8 @@
   id: SWGrantekF11D1
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
+  - type: Scope
+    zoom: 1.6
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Snipers/f11d.rsi
     layers:
@@ -468,6 +472,8 @@
   id: SWK406Ripper
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
+  - type: Scope
+    zoom: 1.6
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Snipers/k406.rsi
     layers:

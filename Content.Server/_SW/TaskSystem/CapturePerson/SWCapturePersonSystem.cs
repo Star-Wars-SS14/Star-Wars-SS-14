@@ -34,9 +34,9 @@ public sealed partial class SWCapturePersonSystem : EntitySystem
             var taskComp = EnsureComp<SWTaskComponent>(uid);
             if (_sWTarget.GetJob(ent.Owner) == targetComp.JobOfTarget && factionComp.Faction == taskComp.OwningFaction)
             {
-                captureComp.CuffedTargets.Add(uid);
+                captureComp.CuffedTargets.Add(ent.Owner);
+                _sWTasks.UpdateTaskProgress(uid, 1.0);
             }
-            _sWTasks.UpdateTaskProgress(uid, 1.0);
         }
     }
 

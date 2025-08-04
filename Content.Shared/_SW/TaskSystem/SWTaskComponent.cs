@@ -26,7 +26,7 @@ public sealed partial class SWTaskComponent : Component
     public string RoundEndText = string.Empty;
 
     [DataField]
-    public TaskSpawnRestrictions Restrictions = TaskSpawnRestrictions.NoRestrictions;
+    public TaskSpawnRestrictions Restrictions = TaskSpawnRestrictions.OnePerFaction;
 
     public string OwningFaction = string.Empty;
 }

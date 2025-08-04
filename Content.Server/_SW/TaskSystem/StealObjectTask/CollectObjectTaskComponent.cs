@@ -23,8 +23,7 @@ public sealed partial class ObjectRequirement
 
     [DataField("objects")]
     public List<string> ObjectsPrototypes = new List<string>();
-
-    public ObjectRequirement()
+        public ObjectRequirement()
     {
     }
 }

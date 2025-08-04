@@ -44,7 +44,6 @@ public sealed partial class SWCollectObjectTaskSystem : EntitySystem
                     {
                         tmp.Number++;
                     }
-                    
                     ev.Handled = true;
                 }
             }

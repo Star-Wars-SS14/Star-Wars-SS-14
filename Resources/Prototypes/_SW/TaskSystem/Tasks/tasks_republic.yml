@@ -122,8 +122,16 @@
     score: 15
     restrictions: OnePerFaction
   - type: SWCollectObjectTask
-    objects:
-      [SW_IDCardSobrikCaptain, SW_IDCardSobrikOfficer, SW_IDCardSobrikMedic, SW_IDCardEmpireMoff, SW_IDCardEmpireMajor, SW_IDCardEmpireLieutenant, SW_IDCardEmpireMedic] : 3
+    requirements:
+    - number: 3
+      objects:
+      - SWIDCardSobrikCaptain
+      - SWIDCardSobrikOfficer
+      - SWIDCardSobrikMedic
+      - SWIDCardEmpireMoff
+      - SWIDCardEmpireMajor
+      - SWIDCardEmpireLieutenant
+      - SWIDCardEmpireMedic
 
 
 - type: entity

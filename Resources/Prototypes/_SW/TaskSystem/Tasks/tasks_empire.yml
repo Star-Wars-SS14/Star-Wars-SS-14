@@ -1,10 +1,10 @@
 - type: weightedRandom
   id: EmpireTasksSet
   weights:
+    KillByNameTaskEmpire: 1
     CaptureRepublic: 1
     KillRepublicByJobEmpire: 1
     KillCriminalTaskEmpire: 1
-    KillByNameTaskEmpire: 1
 
 - type: entity
   id: CaptureRepublic
@@ -61,7 +61,6 @@
   components:
   - type: SWTask
     name: Ликвидация
-    description: Тут ничего нет.
   - type: SWTargetSelector
     factions: [RepublicFaction]
     jobs:
@@ -90,7 +89,6 @@
   components:
   - type: SWTask
     name: Ликвидация преступности
-    description: На балморру прибыл известный криминальный элемент. За свои многочисленные преступления против Империи Ситхов Министерство закона и правосудия приговорило данное лицо к казни, но ему удалось ускользнуть. Приведите приговор в исполнение.
   - type: SWTargetSelector
     factions: [ExchangeFaction, BlackSunFaction]
     jobs:
@@ -119,7 +117,7 @@
     jobs:
     - SWRepublicGeneral
     - SWRepublicCaptain
-    - SSWRepublicLieutenant
+    - SWRepublicLieutenant
     - SWRepublicCommanderCommander
     - SWRepublicCommanderLieutenant
     - SWRepublicCommanderMedic

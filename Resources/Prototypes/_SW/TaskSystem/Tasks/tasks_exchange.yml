@@ -1,4 +1,38 @@
 - type: weightedRandom
   id: ExchangeTasksSet
   weights:
-    SmallHeadHunter: 1
+    SmallHeadHunter: 4
+    KillConcurentBlackSun: 1
+    CaptureHeadBlackSun: 1
+
+- type: entity
+  id: KillConcurentBlackSun
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name:  Ликвидация
+    description: Черное солнце доставляет нам слишком много проблем. Необходимо избавиться от конкуренции. Ликвидируйте их главу.
+  - type: SWTargetSelector
+    factions: [BlackSunFaction]
+    jobs:
+    - SWBlackSun
+  - type: SWKillRandomByJob
+  - type: SWGetScoreByTargetJob
+    jobsToScores:
+      SWBlackSun: 15
+
+- type: entity
+  id: CaptureHeadBlackSun
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Обезглавливание (захват)
+    description: Черное солнце доставляет нам слишком много проблем. Необходимо избавиться от конкуренции. Захватите их главу
+  - type: SWTargetSelector
+    factions: [BlackSunFaction]
+    jobs:
+    - SWBlackSun
+  - type: SWCapturePerson
+  - type: SWGetScoreByTargetJob
+    jobsToScores:
+      SWBlackSun: 15

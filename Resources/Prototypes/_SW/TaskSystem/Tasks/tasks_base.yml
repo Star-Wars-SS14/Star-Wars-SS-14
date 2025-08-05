@@ -1,12 +1,14 @@
-# - type: entity
-#   id: DestroyObjectExampleFactionTask
-#   components:
-#   - type: SWTask
-#     name: Уничтожьте 3 прайдомата. 
-#     description: ЛГБТ - экстремистская организация.
-#   - type: DestroyObjectsTask
-#     objects:
-#       VendingMachinePride: 3
+- type: entity
+  id: DestroyObjectExampleFactionTask
+  components:
+  - type: SWTask
+    name: Уничтожьте 3 прайдомата. 
+    description: ЛГБТ - экстремистская организация.
+  - type: DestroyObjectsTask
+    requirements:
+    - number: 3
+      objects:
+      - VendingMachinePride
 
 - type: entity
   id: CollectObjectsTaskExample

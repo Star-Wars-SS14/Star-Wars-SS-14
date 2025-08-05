@@ -55,7 +55,7 @@ public sealed partial class SWCollectObjectTaskSystem : EntitySystem
         //инициализируем количество собранных объектов нулями
         foreach (var req in ent.Comp.ObjectsToCollect)
         {
-            req.Number = 0;
+            ent.Comp.ObjectsCollected.Add(new ObjectRequirement(0, req.ObjectsPrototypes));
         }
     }
 

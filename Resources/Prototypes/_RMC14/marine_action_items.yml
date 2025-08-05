@@ -4,9 +4,12 @@
   name: Переключить оптику
   description: Присмотреться с помощью бинокля...
   components:
-  - type: InstantAction
+  - type: Action
+    startDelay: false
+    useDelay: 0.25
     icon:
       sprite: _RMC14/Actions/scope_actions.rsi
       state: sniperscope
+  - type: InstantAction    
     event: !type:ToggleActionEvent
-    useDelay: 0.25
+    

@@ -15,15 +15,4 @@ public sealed partial class SWCollectObjectTaskComponent : Component
     public List<ObjectRequirement> ObjectsCollected = new();
 }
 
-[Serializable, DataDefinition]
-public sealed partial class ObjectRequirement
-{
-    [DataField]
-    public int Number = 0;
 
-    [DataField("objects")]
-    public List<string> ObjectsPrototypes = new List<string>();
-        public ObjectRequirement()
-    {
-    }
-}

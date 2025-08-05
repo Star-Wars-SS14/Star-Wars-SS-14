@@ -12,7 +12,7 @@
     proto: BulletBlast
     deleteOnSpawn: true
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/red_ammo_casing.rsi
     layers:
     - state: base
       map: ["enum.AmmoVisualLayers.Base"]

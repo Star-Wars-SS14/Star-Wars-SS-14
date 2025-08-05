@@ -50,25 +50,43 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 
     protected override void Started(EntityUid uid, SWTaskGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
-        var factions = _swFaction.GetFactions();
         component.TimeToAddStartTasks = _timing.CurTime + TimeSpan.FromSeconds(component.DelayBeforeAddingStartTasksInSeconds);
+        var factions = _swFaction.GetFactions();
+        foreach (var (_, factionEntity) in factions)
+        {
+            if (!TryComp<SWTaskContainerComponent>(factionEntity, out var comp))
+            {
+                continue;
+            }
+            comp.NextAddTime = TimeSpan.FromSeconds(component.DelayBeforeAddingStartTasksInSeconds + comp.AddIntervalInSeconds);
+        }
     }
     public void AddStartTasks()
     {
-        var factions = _swFaction.GetFactions();
-        foreach (var (faction, factionEntity) in factions)
+        var notFilledFactions = _swFaction.GetFactions();
+        ISawmill _s = Logger.GetSawmill("dfg");
+        bool anyTaskAdded = true;
+        while (anyTaskAdded && notFilledFactions.Count() > 0)
         {
-            if (factionEntity != null)
+            anyTaskAdded = false;
+            var factions = notFilledFactions;
+            foreach (var (faction, factionEntity) in factions)
             {
-                if (!TryComp<SWTaskContainerComponent>(factionEntity.Value, out var comp))
+                if (factionEntity == null)
                 {
                     continue;
                 }
-                for (int i = 0; i < comp.StartAmountOfTasks; i++)
+                if (!TryComp<SWTaskContainerComponent>(factionEntity.Value.Owner, out var comp))
                 {
-                    AddRandomTask(new Entity<SWTaskContainerComponent>(factionEntity.Value.Owner, comp), faction);
+                    continue;
                 }
-                comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(comp.AddIntervalInSeconds);
+                if (comp.CurrentTasks.Count() < comp.StartAmountOfTasks)
+                {
+                    var factionWithComp = new Entity<SWTaskContainerComponent>(factionEntity.Value.Owner, comp);
+                    anyTaskAdded = anyTaskAdded || AddRandomTask(factionWithComp, faction);
+                    _s.Fatal($"{faction} added: {anyTaskAdded}");
+                    comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(comp.AddIntervalInSeconds);
+                }
             }
         }
         _sawmill.Debug("added start tasks");
@@ -97,7 +115,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                         score = ev.Score;
                     }
                     factionComp.CurrentScore += score;
-                    text += $"Выполнено. Очков Получено: {score}.";
+                    text += $"Выполнено. Очков получено: {score}.";
                 }
                 else
                 {
@@ -337,28 +355,32 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         Del(uid);
         return !ev.Cancelled;
     }
-    public void AddRandomTask(Entity<SWTaskContainerComponent> faction, string factionId)
+    public bool AddRandomTask(Entity<SWTaskContainerComponent> faction, string factionId)
     {
         if (faction.Comp.AvailableTasks == null)
         {
-            return;
+            return false;
         }
         if (faction.Comp.CurrentTasks.Count() == faction.Comp.MaxAmountOfTasks)
         {
-            return;
+            return false;
         }
         _prototypeManager.TryIndex(faction.Comp.AvailableTasks, out var proto);
         if (proto == null)
         {
-            return;
+            return false;
         }
         var protoFiltered = FilterAvailableTasks(proto, faction);
         //Если доступных заданий не окажется, то мы просто попробуем в следующий раз
         if (protoFiltered.Weights.Count != 0)
         {
             string taskProto = protoFiltered.Pick();
-            AddTask(factionId, taskProto);
+            ISawmill s = Logger.GetSawmill("asdfghj");
+            s.Fatal($"{taskProto}");
+            var task = AddTask(factionId, taskProto);
+            return task != null;
         }
+        return false;
     }
 
     public Entity<SWTaskComponent>? AddTask(string factionId, string taskProto)

@@ -5,7 +5,6 @@
   - type: GameRule
     minPlayers: 0
   - type: SWTaskGamerule
-    delayBeforeAddingStartTasksInSeconds: 10
   - type: SWFactionGamerule
     factionsPrototypes:
     - RepublicFaction

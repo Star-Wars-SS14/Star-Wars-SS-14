@@ -650,18 +650,18 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
         if (hitEvent.Handled)
             return true;
 
-        //SW start
-        List<EntityUid> tempTargets = new(targets);
-        foreach (var target in tempTargets)
-        {
-            TargetMeleeHitEvent targetHitEvent = new TargetMeleeHitEvent(user, meleeUid);
-            RaiseLocalEvent(target, targetHitEvent);
-            if (targetHitEvent.Handled)
-            {
-                targets.Remove(target);
-            }
-        }
-        //SW end
+        ////SW start
+        //List<EntityUid> tempTargets = new(targets);
+        //foreach (var target in tempTargets)
+        //{
+        //    TargetMeleeHitEvent targetHitEvent = new TargetMeleeHitEvent(user, meleeUid);
+        //    RaiseLocalEvent(target, targetHitEvent);
+        //    if (targetHitEvent.Handled)
+        //    {
+        //        targets.Remove(target);
+        //    }
+        //}
+        ////SW end
 
         var weapon = GetEntity(ev.Weapon);
 

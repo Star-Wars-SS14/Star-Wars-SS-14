@@ -1,5 +1,7 @@
+#Rifles
+
 - type: entity
-  id: SWRedBulletBlast
+  id: SWP301Bullet
   name: Blast
   parent: BaseBullet
   noSpawn: true
@@ -7,9 +9,9 @@
   - type: Projectile
     damage:
       types:
-        Heat: 38
+        Heat: 35
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/red_ammo_casing.rsi
     layers:
     - state: base
       shader: unshaded
@@ -17,7 +19,7 @@
     color: Red
 
 - type: entity
-  id: SWZ1RedBulletBlast
+  id: SWZ1Bullet
   name: Blast
   parent: BaseBullet
   noSpawn: true
@@ -25,17 +27,74 @@
   - type: Projectile
     damage:
       types:
-        Heat: 70
+        Heat: 25
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/ammo_casing.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+  - type: PointLight
+    color: Yellow
+  
+- type: entity
+  id: SWH206Bullet
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 30
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/green_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+  - type: PointLight
+    color: Green
+  
+- type: entity
+  id: SWJ111Bullet
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 25
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+  - type: PointLight
+    color: Yellow
+
+- type: entity
+  id: SWE-1Bullet
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 30
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/red_ammo_casing.rsi
     layers:
     - state: base
       shader: unshaded
   - type: PointLight
     color: Red
   
+
+#Machine guns
+
 - type: entity
-  id: SWGreenBulletBlast
+  id: SWF11DCannonBullet
   name: Blast
   parent: BaseBullet
   noSpawn: true
@@ -43,43 +102,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 21
-  - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/green_ammo_casing.rsi
-    layers:
-    - state: base
-      shader: unshaded
-  - type: PointLight
-    color: Green
-  
-- type: entity
-  id: SWH206GreenBulletBlast
-  name: Blast
-  parent: BaseBullet
-  noSpawn: true
-  components:
-  - type: Projectile
-    damage:
-      types:
-        Heat: 32
-  - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/green_ammo_casing.rsi
-    layers:
-    - state: base
-      shader: unshaded
-  - type: PointLight
-    color: Green
-  
-- type: entity
-  id: SWBlueBulletBlast
-  name: Blast
-  parent: BaseBullet
-  noSpawn: true
-  components:
-  - type: Projectile
-    damage:
-      types:
-        Heat: 28
+        Heat: 27
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
     layers:
@@ -87,9 +110,9 @@
       shader: unshaded
   - type: PointLight
     color: Blue
-  
+
 - type: entity
-  id: SWCannonBlueBulletBlast
+  id: SWEL34Bullet
   name: Blast
   parent: BaseBullet
   noSpawn: true
@@ -97,43 +120,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 24
-  - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
-    layers:
-    - state: base
-      shader: unshaded
-  - type: PointLight
-    color: Blue
-  
-- type: entity
-  id: SWSniperRifleBlueBulletBlast
-  name: Blast
-  parent: BaseBullet
-  noSpawn: true
-  components:
-  - type: Projectile
-    damage:
-      types:
-        Heat: 75
-  - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
-    layers:
-    - state: base
-      shader: unshaded
-  - type: PointLight
-    color: Blue
-  
-- type: entity
-  id: SWYellowBulletBlast
-  name: Blast
-  parent: BaseBullet
-  noSpawn: true
-  components:
-  - type: Projectile
-    damage:
-      types:
-        Heat: 28
+        Heat: 30
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
     layers:
@@ -141,9 +128,9 @@
       shader: unshaded
   - type: PointLight
     color: Yellow
-  
+
 - type: entity
-  id: SWCannonYellowBulletBlast
+  id: SWGT13Bullet
   name: Blast
   parent: BaseBullet
   noSpawn: true
@@ -151,7 +138,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 20
+        Heat: 25
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
     layers:
@@ -159,9 +146,9 @@
       shader: unshaded
   - type: PointLight
     color: Yellow
-  
+
 - type: entity
-  id: SWSniperRifleYellowBulletBlast
+  id: SWGallantryBullet
   name: Blast
   parent: BaseBullet
   noSpawn: true
@@ -169,7 +156,82 @@
   - type: Projectile
     damage:
       types:
-        Heat: 60
+        Heat: 30
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+  - type: PointLight
+    color: Yellow
+
+- type: entity
+  id: SWMK1Bullet
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 25
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+  - type: PointLight
+    color: Yellow
+
+
+#Sniper rifles
+
+- type: entity
+  id: SWF11DSniperRifleBullet
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 150
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+  - type: PointLight
+    color: Blue
+
+- type: entity
+  id: SWBeryarMK3Bullet
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 250
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+  - type: PointLight
+    color: Yellow
+
+- type: entity
+  id: SWK406RipperBullet
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 250
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
     layers:

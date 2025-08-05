@@ -2,6 +2,7 @@ using Content.Shared.Hands;
 using Content.Shared.Item.ItemToggle;
 using Content.Shared.Popups;
 using Content.Shared.Tag;
+using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Melee.Events;
 using Content.Shared.Weapons.Reflect;
 using Robust.Shared.Serialization;
@@ -20,8 +21,45 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
         SubscribeAllEvent<SWTryReflectEvent>(OnTryBlock);
         SubscribeLocalEvent<SWWeaponBlockComponent, HandSelectedEvent>(OnSelectInHand);
         SubscribeLocalEvent<SWWeaponBlockComponent, HandDeselectedEvent>(OnDeselectInHand);
-        SubscribeLocalEvent<SWForceUserBlockComponent, TargetMeleeHitEvent>(OnMeleeHit);
-        SubscribeLocalEvent<SWWeaponBlockComponent, AttemptMeleeEvent>(OnAttemptMelee);
+        //SubscribeLocalEvent<SWForceUserBlockComponent, TargetMeleeHitEvent>(OnMeleeHit);
+        SubscribeLocalEvent<MeleeWeaponComponent, MeleeHitEvent>(OnMeleeHit);
+        //SubscribeLocalEvent<SWWeaponBlockComponent, AttemptMeleeEvent>(OnAttemptMelee);
+    }
+
+    private void OnMeleeHit(Entity<MeleeWeaponComponent> ent, ref MeleeHitEvent args)
+    {
+        if (!args.IsHit)
+        {
+            return;
+        }
+
+        EntityUid? target = null;
+        //From all hit entities we choose one forceuser, if there are any
+        foreach (EntityUid entity in args.HitEntities)
+        {
+            if (HasComp<SWForceUserBlockComponent>(entity))
+            {
+                target = entity;
+                break;
+            }
+        }
+
+        if (target == null || !TryComp<SWForceUserBlockComponent>(target, out var userBlockComp))
+        {
+            return;
+        }
+
+        //We disable block only if forceuser is being attacked by forceuser with an energetic sword
+        if (userBlockComp.IsBlocking)
+        {
+            args.Handled = true;
+            PopupSystem.PopupPredicted("Удар отражен!", ent.Owner, null, PopupType.Medium);
+            if (HasComp<SWWeaponBlockComponent>(args.Weapon)
+                && HasComp<SWForceUserBlockComponent>(args.User))
+            {
+                DisableBlock(target.Value);
+            }
+        }
     }
 
     private void OnDeselectInHand(Entity<SWWeaponBlockComponent> ent, ref HandDeselectedEvent args)
@@ -44,17 +82,17 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
         }
     }
 
-    private void OnAttemptMelee(Entity<SWWeaponBlockComponent> ent, ref AttemptMeleeEvent args)
-    {
-        if (!TryComp<SWForceUserBlockComponent>(ent.Comp.CurrentUser, out var userComp))
-        {
-            return;
-        }
-        if (userComp.IsBlocking)
-        {
-            DisableBlock(ent.Comp.CurrentUser.Value);
-        }
-    }
+    //private void OnAttemptMelee(Entity<SWWeaponBlockComponent> ent, ref AttemptMeleeEvent args)
+    //{
+    //    if (!TryComp<SWForceUserBlockComponent>(ent.Comp.CurrentUser, out var userComp))
+    //    {
+    //        return;
+    //    }
+    //    if (userComp.IsBlocking && args.)
+    //    {
+    //        DisableBlock(ent.Comp.CurrentUser.Value);
+    //    }
+    //}
 
     private void DisableBlock(EntityUid user)
     {
@@ -66,6 +104,8 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
 
         PopupSystem.PopupPredicted("Вы убираете блок!", user, null, PopupType.Medium);
         reflComp.ReflectProb = 0.0f;
+        userComp.NextReflectionAvailable = _gameTiming.CurTime + TimeSpan.FromSeconds(userComp.DelayBetweenBlocks);
+
 
         userComp.IsBlocking = false;
     }
@@ -78,7 +118,10 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
             {
                 args.Handled = true;
                 PopupSystem.PopupPredicted("Удар отражен!", ent.Owner, null, PopupType.Medium);
-                DisableBlock(ent.Owner);
+                if (HasComp<SWWeaponBlockComponent>(args.Weapon))
+                {
+                    DisableBlock(ent.Owner);
+                }
             }
         }
     }
@@ -110,7 +153,6 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
             reflectComp.ReflectProb = 1f;
             forceComp.IsBlocking = true;
             forceComp.BlockEndTime = _gameTiming.CurTime + TimeSpan.FromSeconds(forceComp.BlockDuration);
-            forceComp.NextReflectionAvailable = _gameTiming.CurTime + TimeSpan.FromSeconds(forceComp.BlockDuration) + TimeSpan.FromSeconds(forceComp.DelayBetweenBlocks);
         }
         else if (forceComp.IsBlocking)
         {

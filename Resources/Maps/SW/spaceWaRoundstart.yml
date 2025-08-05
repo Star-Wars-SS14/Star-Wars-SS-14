@@ -194153,7 +194153,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -5.36358,-29.648115
       parent: 12546
-- proto: SWBlueMagazineBlastRifle
+- proto: SWJ111Magazine
   entities:
   - uid: 9279
     components:
@@ -194687,7 +194687,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -10.5,-13.5
       parent: 2
-- proto: SWCannonYellowMagazineBlastRifle
+- proto: SWEL34Magazine
   entities:
   - uid: 11665
     components:
@@ -204016,7 +204016,7 @@ entities:
       rot: 3.141592653589793 rad
       pos: 23.388708,-40.52011
       parent: 12546
-- proto: SWH206GreenMagazineBlastRifle
+- proto: SWH206Magazine
   entities:
   - uid: 25239
     components:
@@ -210256,7 +210256,7 @@ entities:
     - type: Transform
       pos: 3.5235682,-108.218765
       parent: 12546
-- proto: SWYellowMagazineBlastRifle
+- proto: SWE1Magazine
   entities:
   - uid: 213
     components:

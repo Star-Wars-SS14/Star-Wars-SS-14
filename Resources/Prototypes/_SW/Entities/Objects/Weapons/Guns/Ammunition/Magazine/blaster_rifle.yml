@@ -1,174 +1,257 @@
-  - type: entity
-    id: SWBaseBlasterMagazine
-    name: "magazine (.30 rifle)"
-    parent: BaseItem
-    abstract: true    
-    components:
-    - type: Battery
-      maxCharge: 10000
-      startingCharge: 10000
-    - type: Item
-      size: Small
-    - type: Sprite
-      sprite: Objects/Weapons/Guns/Ammunition/Magazine/LightRifle/light_rifle_mag.rsi
-      layers:
-      - state: base
-        map: ["enum.GunVisualLayers.Base"]
-      - state: mag-1
-        map: ["enum.GunVisualLayers.Mag"]
-    - type: Tag
-      tags:
-      - MagazineBlast
-    - type: Appearance
-    - type: ProjectileBatteryAmmoProvider
-      proto: SWYellowBulletBlast
-      fireCost: 100
-    - type: MagazineVisuals
-      magState: mag
-      steps: 8
-      zeroVisible: false
+- type: entity
+  id: SWBaseBlasterMagazine
+  name: "magazine (.30 rifle)"
+  parent: BaseItem
+  abstract: true    
+  components:
+  - type: Battery
+    maxCharge: 10000
+    startingCharge: 10000
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Magazine/LightRifle/light_rifle_mag.rsi
+    layers:
+    - state: base
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Tag
+    tags:
+    - MagazineBlast
+  - type: Appearance
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWYellowBulletBlast
+  - type: MagazineVisuals
+    magState: mag
+    steps: 8
+    zeroVisible: false
+
+#Rifles
+
+- type: entity
+  id: SWE1Magazine
+  name: "E-1 Magazine blast"
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - E-1Magazine
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWE-1Bullet
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
 
-  - type: entity
-    id: SWYellowMagazineBlastRifle
-    name: "E-1 Magazine blast"
-    parent: SWBaseBlasterMagazine
-    components:
-    - type: Tag
-      tags:
-      - MagazineBlast
-      - E-1Magazine
-    - type: ProjectileBatteryAmmoProvider
-      proto: SWYellowBulletBlast
-    - type: Sprite
-      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+- type: entity
+  id: SWP301Magazine
+  name: "P-301 Magazine blast"
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 12500
+    startingCharge: 12500
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - P-301Magazine
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWP301Bullet
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+
+- type: entity
+  id: SWZ1Magazine
+  name: "Z1 Magazine blast"
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 8000
+    startingCharge: 8000
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - Z-1Magazine
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWZ1Bullet
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+
+- type: entity
+  id: SWH206Magazine
+  name: "H206 Magazine blast"
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 11000
+    startingCharge: 11000
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - H-206Magazine
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWH206Bullet
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+
+- type: entity
+  id: SWJ111Magazine
+  name: "J-111 Magazine blast"
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 8000
+    startingCharge: 8000
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - J-111Magazine
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWJ111Bullet
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+
+#Machine guns
+
+- type: entity
+  id: SWF11DCannonMagazine
+  name: "F-11D Magazine blast"
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 44000
+    startingCharge: 44000
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - F-11DCannonMagazine
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWF11DCannonBullet
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
 
-  - type: entity
-    id: SWRedMagazineBlastRifle
-    name: "P-301 Magazine blast"
-    parent: SWBaseBlasterMagazine
-    components:
-    - type: Tag
-      tags:
-      - MagazineBlast
-      - P-301Magazine
-    - type: ProjectileBatteryAmmoProvider
-      proto: SWRedBulletBlast
-    - type: Sprite
-      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+- type: entity
+  id: SWEL34Magazine
+  name: "EL-34 Magazine blast"
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 40000
+    startingCharge: 40000
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - SWEL34MagazineTag
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWEL34Bullet 
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+  
+- type: entity
+  id: SWGT13Magazine
+  name: GT-13 Magazine
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 30000
+    startingCharge: 30000
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - SWGT13MagazineTag
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWGT13Bullet
+    fireCost: 100
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
-  - type: entity
-    id: SWZ1RedMagazineBlastRifle
-    name: "Z1 Magazine blast"
-    parent: SWBaseBlasterMagazine
-    components:
-    - type: Tag
-      tags:
-      - MagazineBlast
-      - Z-1Magazine
-    - type: ProjectileBatteryAmmoProvider
-      proto: SWRedBulletBlast
-    - type: Sprite
-      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+- type: entity
+  id: SWGallantryMagazine
+  name: Gallantry Magazine
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 60000
+    startingCharge: 60000
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - SWGallantryMagazineTag
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWGallantryBullet
+    fireCost: 100
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
-  # - type: entity
-  #   id: SWGreenMagazineBlastRifle
-  #   name: "Green Magazine blast"
-  #   parent: SWBaseBlasterMagazine
-  #   components:
-  #   - type: Tag
-  #     tags:
-  #     - MagazineBlast
-  #     -
-  #   - type: ProjectileBatteryAmmoProvider
-  #     proto: SWGreenCartridgeBlast
-  #   - type: Sprite
-  #     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
- 
-  - type: entity
-    id: SWH206GreenMagazineBlastRifle
-    name: "H206 Magazine blast"
-    parent: SWBaseBlasterMagazine
-    components:
-    - type: Tag
-      tags:
-      - MagazineBlast
-      - H-206Magazine
-    - type: ProjectileBatteryAmmoProvider
-      proto: SWGreenBulletBlast
-    - type: Sprite
-      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+- type: entity
+  id: SWMK1Magazine
+  name: MK-1 Magazine
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 30000
+    startingCharge: 30000
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - SWMK1MagazineTag
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWMK1Bullet
+    fireCost: 100
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
-  - type: entity
-    id: SWBlueMagazineBlastRifle
-    name: "J-111 Magazine blast"
-    parent: SWBaseBlasterMagazine
-    components:
-    - type: Tag
-      tags:
-      - MagazineBlast
-      - J-111Magazine
-    - type: ProjectileBatteryAmmoProvider
-      proto: SWBlueBulletBlast
-    - type: Sprite
-      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+#Sniper rifles
 
-  - type: entity
-    id: SWCannonBlueMagazineBlastRifle
-    name: "F-11D Magazine blast"
-    parent: SWBaseBlasterMagazine
-    components:
-    - type: Tag
-      tags:
-      - MagazineBlast
-      - F-11DCannonMagazine
-    - type: ProjectileBatteryAmmoProvider
-      proto: SWCannonBlueBulletBlast
-    - type: Sprite
-      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+- type: entity
+  id: SWF11DSniperRifleMagazine
+  name: "Grantek F-11D Magazine blast"
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 3000
+    startingCharge: 3000
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - F-11DSniperMagazine
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWF11DSniperRifleBullet
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
-  - type: entity
-    id: SWSniperRifleBlueMagazineBlastRifle
-    name: "Grantek F-11D Magazine blast"
-    parent: SWBaseBlasterMagazine
-    components:
-    - type: Tag
-      tags:
-      - MagazineBlast
-      - F-11DSniperMagazine
-    - type: ProjectileBatteryAmmoProvider
-      proto: SWSniperRifleBlueBulletBlast
-      fireCost: 300
-    - type: Sprite
-      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+- type: entity
+  id: SWBeryarMK3Magazine
+  name: MK-3 Magazine blast
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 5000
+    startingCharge: 5000
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - SWBeryarMK3MagazineTag
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWBeryarMK3Bullet
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
-  - type: entity
-    id: SWCannonYellowMagazineBlastRifle
-    name: "EL-34 Magazine blast"
-    parent: SWBaseBlasterMagazine
-    components:
-    - type: Tag
-      tags:
-      - MagazineBlast
-      - CannonYellowMagazine
-    - type: ProjectileBatteryAmmoProvider
-      proto: SWCannonYellowBulletBlast
-    - type: Sprite
-      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
-
-  - type: entity
-    id: SWSniperRifleYellowMagazineBlastRifle
-    name: "K406 Ripper, MK-3 Magazine blast"
-    parent: SWBaseBlasterMagazine
-    components:
-    - type: Tag
-      tags:
-      - MagazineBlast
-      - SniperRifleYellowMagazine
-    - type: ProjectileBatteryAmmoProvider
-      proto: SWSniperRifleYellowBulletBlast
-      fireCost: 300
-    - type: Sprite
-      sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
-
+- type: entity
+  id: SWK406RipperMagazine
+  name: K406 Ripper Magazine
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 5000
+    startingCharge: 5000
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - SWK406RipperMagazineTag
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWK406RipperBullet
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi

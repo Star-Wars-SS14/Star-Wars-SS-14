@@ -1,0 +1,54 @@
+- type: entity
+  id: SWGorntSausage
+  parent: BaseItem
+  name: gornt sausage
+  components:
+  - type: Item
+    size: Small
+  - type: Tag
+    tags:
+      - FoodSnack
+  - type: Sprite
+    sprite: _SW/Objects/Consumable/Food/gornt-sausage.rsi
+    state: icon
+  - type: SpawnItemsOnUse
+    items:
+      - id: SWGorntSausageOpened
+    sound:
+      path: /Audio/Effects/unwrap.ogg
+
+- type: entity
+  id: SWGorntSausageOpened
+  parent: FoodSnackBase
+  categories: [ HideSpawnMenu ]
+  name: gornt sausage
+  components:
+  - type: FlavorProfile
+    flavors:
+      - nutribrick
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _SW/Objects/Consumable/Food/gornt-sausage.rsi
+    state: icon-open
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 25
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 20
+  - type: Food
+    trash:
+    - SWGorntSausageEmpty
+
+- type: entity
+  id: SWGorntSausageEmpty
+  parent: BaseItem
+  name: gornt sausage empty
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _SW/Objects/Consumable/Food/gornt-sausage.rsi
+    state: icon-empty

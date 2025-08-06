@@ -1,0 +1,41 @@
+- type: entity
+  id: SWProteinBar
+  parent: BaseItem
+  name: ProteinBar
+  components:
+  - type: Item
+    size: Small
+  - type: Tag
+    tags:
+      - FoodSnack
+  - type: Sprite
+    sprite: _SW/Objects/Consumable/Food/protein-bar.rsi
+    state: icon
+  - type: SpawnItemsOnUse
+    items:
+      - id: SWProteinBarOpened
+    sound:
+      path: /Audio/Effects/unwrap.ogg
+
+- type: entity
+  id: SWProteinBarOpened
+  parent: FoodSnackBase
+  name: ProteinBar
+  components:
+  - type: FlavorProfile
+    flavors:
+      - nutribrick
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: _SW/Objects/Consumable/Food/protein-bar.rsi
+    state: icon-opened
+  - type: Food
+  - type: SolutionContainerManager
+    solutions:
+      food:
+        maxVol: 25
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 20
+

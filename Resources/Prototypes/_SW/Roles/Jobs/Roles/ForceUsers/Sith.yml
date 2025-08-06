@@ -5,9 +5,6 @@
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 72000 # 20h
-  - !type:DepartmentTimeRequirement
-    department: SWPepublic
-    time: 36000 # 10h
   startingGear: ForceUserSithGear
   icon: "JobIconSith"
   supervisors: job-supervisors-black-council
@@ -21,6 +18,8 @@
   special:
   - !type:AddComponentSpecial
     components:
+    - type: SWFactionMember
+      faction: EmpireFaction
     - type: ForceAbilityDistanceInteract
     - type: MobThresholds
       thresholds:

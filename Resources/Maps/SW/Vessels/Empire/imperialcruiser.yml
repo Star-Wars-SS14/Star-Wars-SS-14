@@ -77221,7 +77221,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 28.475798,28.613895
       parent: 1
-- proto: SWBlueMagazineBlastRifle
+- proto: SWJ111Magazine
   entities:
   - uid: 7574
     components:
@@ -77460,7 +77460,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -10.5,-13.5
       parent: 1
-- proto: SWCannonYellowMagazineBlastRifle
+- proto: SWEL34Magazine
   entities:
   - uid: 2151
     components:
@@ -85954,7 +85954,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 61.56364,-7.3964815
       parent: 1
-- proto: SWYellowMagazineBlastRifle
+- proto: SWE1Magazine
   entities:
   - uid: 4110
     components:

@@ -5434,7 +5434,7 @@ entities:
       rot: 1.117010721276371 rad
       pos: -1499.7975,-0.68982035
       parent: 1
-    - type: RepublicCruiser
+    - type: BecomesStation
       id: RepublicCruiser
     - type: MapGrid
       chunks:
@@ -10185,8 +10185,6 @@ entities:
       bodyType: Dynamic
     - type: Fixtures
       fixtures: {}
-    - type: BecomesStation
-      id: Empty
     - type: OccluderTree
     - type: Shuttle
     - type: GridPathfinding
@@ -11380,8 +11378,6 @@ entities:
       bodyType: Dynamic
     - type: Fixtures
       fixtures: {}
-    - type: BecomesStation
-      id: Empty
     - type: OccluderTree
     - type: Shuttle
     - type: GridPathfinding
@@ -194010,7 +194006,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -5.36358,-29.648115
       parent: 12514
-- proto: SWBlueMagazineBlastRifle
+- proto: SWJ111Magazine
   entities:
   - uid: 9279
     components:
@@ -194544,7 +194540,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -10.5,-13.5
       parent: 2
-- proto: SWCannonYellowMagazineBlastRifle
+- proto: SWEL34Magazine
   entities:
   - uid: 11665
     components:
@@ -203873,7 +203869,7 @@ entities:
       rot: 3.141592653589793 rad
       pos: 23.388708,-40.52011
       parent: 12514
-- proto: SWH206GreenMagazineBlastRifle
+- proto: SWH206Magazine
   entities:
   - uid: 28303
     components:
@@ -210113,7 +210109,7 @@ entities:
     - type: Transform
       pos: 3.5235682,-108.218765
       parent: 12514
-- proto: SWYellowMagazineBlastRifle
+- proto: SWE1Magazine
   entities:
   - uid: 213
     components:

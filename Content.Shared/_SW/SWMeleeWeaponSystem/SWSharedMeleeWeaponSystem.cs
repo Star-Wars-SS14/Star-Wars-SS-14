@@ -23,7 +23,7 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
         SubscribeLocalEvent<SWWeaponBlockComponent, HandDeselectedEvent>(OnDeselectInHand);
         //SubscribeLocalEvent<SWForceUserBlockComponent, TargetMeleeHitEvent>(OnMeleeHit);
         SubscribeLocalEvent<MeleeWeaponComponent, MeleeHitEvent>(OnMeleeHit);
-        //SubscribeLocalEvent<SWWeaponBlockComponent, AttemptMeleeEvent>(OnAttemptMelee);
+        SubscribeLocalEvent<SWWeaponBlockComponent, AttemptMeleeEvent>(OnAttemptMelee);
     }
 
     private void OnMeleeHit(Entity<MeleeWeaponComponent> ent, ref MeleeHitEvent args)
@@ -82,17 +82,17 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
         }
     }
 
-    //private void OnAttemptMelee(Entity<SWWeaponBlockComponent> ent, ref AttemptMeleeEvent args)
-    //{
-    //    if (!TryComp<SWForceUserBlockComponent>(ent.Comp.CurrentUser, out var userComp))
-    //    {
-    //        return;
-    //    }
-    //    if (userComp.IsBlocking && args.)
-    //    {
-    //        DisableBlock(ent.Comp.CurrentUser.Value);
-    //    }
-    //}
+    private void OnAttemptMelee(Entity<SWWeaponBlockComponent> ent, ref AttemptMeleeEvent args)
+    {
+        if (!TryComp<SWForceUserBlockComponent>(ent.Comp.CurrentUser, out var userComp))
+        {
+            return;
+        }
+        if (userComp.IsBlocking)
+        {
+            DisableBlock(ent.Comp.CurrentUser.Value);
+        }
+    }
 
     private void DisableBlock(EntityUid user)
     {

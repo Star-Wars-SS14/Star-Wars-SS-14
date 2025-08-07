@@ -4795,7 +4795,7 @@ entities:
     - type: Transform
       pos: -1.5,2.5
       parent: 1
-- proto: SWRedMagazineBlastRifle
+- proto: SWP301Magazine
   entities:
   - uid: 511
     components:
@@ -4804,7 +4804,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SWYellowMagazineBlastRifle
+- proto: SWE1Magazine
   entities:
   - uid: 501
     components:

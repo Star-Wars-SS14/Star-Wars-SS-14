@@ -215,7 +215,7 @@ entities:
     - type: Broadphase
     - type: OccluderTree
     - type: MapLight
-      ambientLightColor: '#3D342CFF'
+      ambientLightColor: '#D8B059FF'
     - type: Parallax
       parallax: Sky
   - uid: 2
@@ -29829,7 +29829,6 @@ entities:
     - type: RadiationGridResistance
     - type: BecomesStation
       id: SWBalmora
-    - type: ImplicitRoof
   - uid: 5
     components:
     - type: MetaData

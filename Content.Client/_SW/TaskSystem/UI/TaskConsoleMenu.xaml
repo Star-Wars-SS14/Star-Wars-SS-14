@@ -12,11 +12,16 @@
                         TextAlign="Center">
         </Button>
         <BoxContainer Orientation="Horizontal">
-            <Label Text="Название" HorizontalExpand="True" Margin="20 20 20 20" HorizontalAlignment="Center"/>
-            <Label Text="Описание" HorizontalExpand="True" Margin="20 20 20 20" HorizontalAlignment="Center"/>
-            <Label Text="Статус" HorizontalExpand="True" Margin="20 20 20 20" MinWidth="200" HorizontalAlignment="Center"/>            
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                <Label Text="Название" HorizontalExpand="True" Margin="20 20 20 20" HorizontalAlignment="Center"/>
+            </BoxContainer>
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                <Label Text="Описание" HorizontalExpand="True" Margin="20 20 20 20" HorizontalAlignment="Center"/>
+            </BoxContainer>
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                <Label Text="Статус" HorizontalExpand="True" Margin="20 20 20 20" MinWidth="200" HorizontalAlignment="Center"/>
+            </BoxContainer>
         </BoxContainer>
-
         <PanelContainer VerticalExpand="True">
             <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
                 <BoxContainer

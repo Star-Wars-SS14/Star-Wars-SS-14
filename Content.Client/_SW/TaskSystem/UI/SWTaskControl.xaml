@@ -11,10 +11,10 @@
             <RichTextLabel Name="TaskName"></RichTextLabel>
         </BoxContainer>
         <BoxContainer VerticalExpand="True" HorizontalExpand="True" Margin="20 20 20 20">
-            <RichTextLabel Name="TaskDescription" > </RichTextLabel>
+            <RichTextLabel Name="TaskDescription"></RichTextLabel>
         </BoxContainer>
         <BoxContainer Margin="20 20 20 20" HorizontalExpand="True" MinWidth="200">
-            <RichTextLabel Name="TaskStatus"> </RichTextLabel>
+            <RichTextLabel Name="TaskStatus"></RichTextLabel>
         </BoxContainer>
     </BoxContainer>
 </Control>

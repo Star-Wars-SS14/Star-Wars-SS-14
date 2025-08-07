@@ -53,16 +53,16 @@
     - id: SWMK1
       prob: 0.05
       maxAmount: 1
-    - id: SWCannonYellowMagazineBlastRifle
+    - id: SWEL34Magazine
       prob: 0.10
       maxAmount: 1
-    - id: SWCannonBlueMagazineBlastRifle
+    - id: SWF11DCannonMagazine
       prob: 0.10
       maxAmount: 1
-    - id: SWZ1RedMagazineBlastRifle
+    - id: SWZ1Magazine
       prob: 0.10
       maxAmount: 1
-    - id: SWBlueMagazineBlastRifle
+    - id: SWJ111Magazine
       prob: 0.10
       maxAmount: 1
 
@@ -134,16 +134,16 @@
     - id: SWMK1
       prob: 0.05
       maxAmount: 1
-    - id: SWCannonYellowMagazineBlastRifle
+    - id: SWEL34Magazine
       prob: 0.10
       maxAmount: 1
-    - id: SWCannonBlueMagazineBlastRifle
+    - id: SWF11DCannonMagazine
       prob: 0.10
       maxAmount: 1
-    - id: SWZ1RedMagazineBlastRifle
+    - id: SWZ1Magazine
       prob: 0.10
       maxAmount: 1
-    - id: SWBlueMagazineBlastRifle
+    - id: SWJ111Magazine
       prob: 0.10
       maxAmount: 1
 
@@ -168,10 +168,10 @@
       - MaterialWoodPlank1
     chance: 0.6
     rarePrototypes:
-    - SWCannonYellowMagazineBlastRifle
-    - SWCannonBlueMagazineBlastRifle
-    - SWZ1RedMagazineBlastRifle
-    - SWBlueMagazineBlastRifle
+    - SWEL34Magazine
+    - SWF11DCannonMagazine
+    - SWZ1Magazine
+    - SWJ111Magazine
     rarechance: 0.3
 
 
@@ -269,16 +269,16 @@
     - id: SWberyaramk3
       prob: 0.05
       maxAmount: 1
-    - id: SWSniperRifleYellowMagazineBlastRifle
+    - id: SWBeryarMK3Magazine
       prob: 0.10
       maxAmount: 1
-    - id: SWCannonYellowMagazineBlastRifle
+    - id: SWEL34Magazine
       prob: 0.10
       maxAmount: 1
-    - id: SWH206GreenMagazineBlastRifle
+    - id: SWH206Magazine
       prob: 0.10
       maxAmount: 1
-    - id: SWYellowMagazineBlastRifle
+    - id: SWE1Magazine
       prob: 0.10
       maxAmount: 1
 
@@ -303,10 +303,10 @@
       - SheetPlasma1
     chance: 0.7
     rarePrototypes:
-    - SWSniperRifleYellowMagazineBlastRifle
-    - SWCannonYellowMagazineBlastRifle
-    - SWH206GreenMagazineBlastRifle
-    - SWYellowMagazineBlastRifle
+    - SWBeryarMK3Magazine
+    - SWEL34Magazine
+    - SWH206Magazine
+    - SWE1Magazine
     - SheetSteel10
     - SheetGlass10
     rarechance: 0.3
@@ -388,10 +388,10 @@
     - id: SWGallantry
       prob: 0.40
       maxAmount: 1
-    - id: SWCannonYellowMagazineBlastRifle
+    - id: SWEL34Magazine
       prob: 0.30
       maxAmount: 3
-    - id: SWRedMagazineBlastRifle
+    - id: SWP301Magazine
       prob: 0.30
       maxAmount: 3
 
@@ -442,9 +442,9 @@
     - id: SWGallantry
       prob: 0.40
       maxAmount: 1
-    - id: SWCannonYellowMagazineBlastRifle
+    - id: SWEL34Magazine
       prob: 0.30
       maxAmount: 3
-    - id: SWRedMagazineBlastRifle
+    - id: SWP301Magazine
       prob: 0.30
       maxAmount: 3

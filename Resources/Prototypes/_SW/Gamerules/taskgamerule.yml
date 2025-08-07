@@ -18,7 +18,7 @@
   parent: BaseGameRule
   components:
   - type: BasicStationEventScheduler
-    minimumTimeUntilFirstEvent: 30
+    minimumTimeUntilFirstEvent: 0
     scheduledGameRules: !type:NestedSelector
       tableId: SWRulesTable
   - type: GameRule
@@ -42,8 +42,8 @@
     duration: 60
   - type: GameRule
     minPlayers: 0
-  - type: RandomSpawnRule
-    prototype: MobRevenant
+  - type: AnomalySpawnRule
+    anomalySpawnerPrototype: SWParazitSpawner
 
 - type: gamePreset
   id: SWMainPreset

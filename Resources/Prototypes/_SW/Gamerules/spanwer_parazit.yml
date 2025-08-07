@@ -1,0 +1,12 @@
+- type: entity
+  parent: MarkerBase
+  id: SWParazitSpawner
+  name: Metall parazirs spawner  
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+  - type: ConditionalSpawner
+    chance: 1
+    prototypes:
+    - MobRevenant

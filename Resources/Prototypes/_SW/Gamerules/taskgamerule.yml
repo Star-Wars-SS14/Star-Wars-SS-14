@@ -1,0 +1,55 @@
+- type: entity
+  parent: BaseGameRule
+  id: TaskGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWTaskGamerule
+  - type: SWFactionGamerule
+    factionsPrototypes:
+    - RepublicFaction
+    - EmpireFaction
+    - MandalorianFaction
+    - BlackSunFaction
+    - ExchangeFaction
+
+- type: entity
+  id: SWEventScheduler
+  parent: BaseGameRule
+  components:
+  - type: BasicStationEventScheduler
+    minimumTimeUntilFirstEvent: 30
+    scheduledGameRules: !type:NestedSelector
+      tableId: SWRulesTable
+  - type: GameRule
+    minPlayers: 0
+
+- type: entityTable
+  id: SWRulesTable
+  table: !type:AllSelector
+    children:
+    - id: SWParasitesRule
+
+
+- type: entity
+  parent: BaseGameRule
+  id: SWParasitesRule
+  components:
+  - type: StationEvent
+    earliestStart: 0
+    minimumPlayers: 0
+    weight: 1000
+    duration: 60
+  - type: GameRule
+    minPlayers: 0
+  - type: RandomSpawnRule
+    prototype: MobRevenant
+
+- type: gamePreset
+  id: SWMainPreset
+  name: Обычный день
+  description: Обычный день. Выполняйте регулярные задания от своего командования.
+  showInVote: true
+  rules:
+    - TaskGamerule
+    - SWEventScheduler

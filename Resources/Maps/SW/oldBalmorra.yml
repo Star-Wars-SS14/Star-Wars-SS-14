@@ -4,7 +4,7 @@ meta:
   engineVersion: 264.0.0
   forkId: ""
   forkVersion: ""
-  time: 08/05/2025 15:48:38
+  time: 08/07/2025 17:38:02
   entityCount: 47199
 maps:
 - 1
@@ -218,6 +218,8 @@ entities:
       ambientLightColor: '#D8B059FF'
     - type: Parallax
       parallax: Sky
+    - type: LightCycle
+      duration: 2880
   - uid: 2
     components:
     - type: MetaData
@@ -192468,7 +192470,7 @@ entities:
       pos: 0.5,-185.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -30629.977
+      secondsUntilStateChange: -30675.506
       state: Closing
   - uid: 30150
     components:
@@ -192477,7 +192479,7 @@ entities:
       pos: -5.5,-185.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -30631.342
+      secondsUntilStateChange: -30676.871
       state: Closing
   - uid: 30151
     components:
@@ -192486,7 +192488,7 @@ entities:
       pos: -2.5,-183.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -30630.643
+      secondsUntilStateChange: -30676.172
       state: Closing
   - uid: 30152
     components:
@@ -192619,7 +192621,7 @@ entities:
       pos: -41.5,-18.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -44298.1
+      secondsUntilStateChange: -44343.633
       state: Opening
   - uid: 30175
     components:
@@ -192753,7 +192755,7 @@ entities:
       pos: -156.5,-80.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -36295.34
+      secondsUntilStateChange: -36340.87
       state: Closing
 - proto: d20Dice
   entities:
@@ -196419,7 +196421,7 @@ entities:
       pos: -14.5,-163.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -33117.15
+      secondsUntilStateChange: -33162.68
       state: Closing
 - proto: FirelockFrame
   entities:

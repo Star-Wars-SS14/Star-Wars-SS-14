@@ -18,7 +18,7 @@
   special:
   - !type:AddComponentSpecial
     components:
-    - type: SWFactionMemeber
+    - type: SWFactionMember
       faction: RepublicFaction
     - type: ForceAbilityDistanceInteract
     - type: MobThresholds

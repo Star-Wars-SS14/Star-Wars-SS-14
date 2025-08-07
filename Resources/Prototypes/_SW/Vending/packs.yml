@@ -19,9 +19,9 @@
     SWE1BlasterRifle: 100
     SWGrantekF11D2: 10
     SWK406Ripper: 10
-    SWSniperRifleYellowMagazineBlastRifle: 20
-    SWCannonBlueMagazineBlastRifle: 35
-    SWYellowMagazineBlastRifle: 300
+    SWBeryarMK3Magazine: 20
+    SWF11DCannonMagazine: 35
+    SWE1Magazine: 300
 
 - type: vendingMachineInventory
   id: SWRepublicInventoryBase
@@ -43,6 +43,6 @@
     SWH206Renegade: 100
     SWEL34: 10
     SWBeryaramk3: 10
-    SWSniperRifleYellowMagazineBlastRifle: 20
-    SWCannonYellowMagazineBlastRifle: 35
-    SWH206GreenMagazineBlastRifle: 300
+    SWBeryarMK3Magazine: 20
+    SWEL34Magazine: 35
+    SWH206Magazine: 300

@@ -25,7 +25,6 @@ entities:
     - type: Transform
       pos: 1.1750519,-1.0822471
       parent: invalid
-    - type: SWForbidFTL
     - type: MapGrid
       chunks:
         0,0:
@@ -4796,7 +4795,7 @@ entities:
     - type: Transform
       pos: -1.5,2.5
       parent: 1
-- proto: SWP301Magazine
+- proto: SWRedMagazineBlastRifle
   entities:
   - uid: 511
     components:
@@ -4805,7 +4804,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SWE1Magazine
+- proto: SWYellowMagazineBlastRifle
   entities:
   - uid: 501
     components:

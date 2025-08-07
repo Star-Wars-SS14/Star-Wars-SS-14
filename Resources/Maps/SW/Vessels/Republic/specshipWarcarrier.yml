@@ -19,7 +19,6 @@ entities:
     - type: Transform
       pos: -0.6875,-0.421875
       parent: invalid
-    - type: SWForbidFTL
     - type: MapGrid
       chunks:
         0,0:
@@ -1405,7 +1404,7 @@ entities:
           showEnts: False
           occludes: True
           ent: null
-- proto: SWH206Magazine
+- proto: SWH206GreenMagazineBlastRifle
   entities:
   - uid: 134
     components:

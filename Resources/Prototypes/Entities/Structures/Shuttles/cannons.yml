@@ -148,6 +148,10 @@
         whitelist:
           tags:
             - PowerCage
+  - type: ContainerFill #SW
+    containers: #SW
+      cell_slot: #SW
+      - PowerCageHigh #SW
   - type: HitscanBatteryAmmoProvider
     proto: RedShuttleLaser
     fireCost: 150

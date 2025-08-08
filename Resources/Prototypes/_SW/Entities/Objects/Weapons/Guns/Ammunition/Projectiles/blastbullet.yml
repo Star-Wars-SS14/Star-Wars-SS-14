@@ -45,7 +45,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 30
+        Heat: 28
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/green_ammo_casing.rsi
     layers:

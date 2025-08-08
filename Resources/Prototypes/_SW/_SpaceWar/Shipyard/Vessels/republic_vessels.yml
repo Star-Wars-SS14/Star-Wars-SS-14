@@ -34,7 +34,7 @@
    id: RepublicCruiserSmall
    name: Defender-class light corvette
    description: Cruiser
-   price: 50000
+   price: 25500
    category: Medium
    fraction: RepublicFaction
    shuttlePath: /Maps/SW/Vessels/Republic/resistanceCruisersmall.yml
@@ -58,7 +58,7 @@
    id: RepublicTransport
    name: Republic transport ship
    description: Cruiser
-   price: 5000
+   price: 8000
    category: Small
    fraction: RepublicFaction
    shuttlePath: /Maps/SW/Vessels/Republic/transship.yml
@@ -83,7 +83,7 @@
    id: RepublicFighter
    name: Flashfire
    description: Cruiser
-   price: 15000
+   price: 9500
    category: Small
    fraction: RepublicFaction
    shuttlePath: /Maps/SW/Vessels/Republic/FlashfireRepublicFighter.yml
@@ -107,7 +107,7 @@
    id: RepublicBomber
    name: Warcarrier
    description: Cruiser
-   price: 20000
+   price: 23000
    category: Small
    fraction: RepublicFaction
    shuttlePath: /Maps/SW/Vessels/Republic/specshipWarcarrier.yml

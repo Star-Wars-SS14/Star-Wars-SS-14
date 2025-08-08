@@ -219,7 +219,11 @@ entities:
     - type: Parallax
       parallax: Sky
     - type: LightCycle
-      duration: 2880
+      duration: 10 #2880
+    - type: SunShadowCycle
+      duration: 10 #2880
+    - type: SunShadow
+    - type: MapGrid
   - uid: 2
     components:
     - type: MetaData

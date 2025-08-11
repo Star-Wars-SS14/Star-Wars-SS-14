@@ -440,6 +440,7 @@
     belt: ClothingBeltSalvageWebbing
     id: SWIDCardBlackSun
     shoes: ClothingShoesBootsCombatFilled
+    ears: SWClothingHeadsetBlackSun
 
 - type: startingGear
   id: BlackSunMercenaryGear
@@ -451,6 +452,7 @@
     belt: ClothingBeltSalvageWebbing
     id: SWIDCardBlackSunMercenary
     shoes: ClothingShoesBootsCombatFilled
+    ears: SWClothingHeadsetBlackSun
 
 ###SWExchange
 - type: startingGear
@@ -463,6 +465,7 @@
     gloves: ClothingHandsGlovesCombat
     head: SW_ClothingHeadExchangeHelmet
     id: SWIDCardExchangeCaptain
+    ears: SWClothingHeadsetExchange
 
 - type: startingGear
   id: ExchangeOperativeGear
@@ -475,6 +478,7 @@
     shoes: SWClothingShoesBootsExchange
     head: SW_ClothingHeadExchangeHelmet
     id: SWIDCardExchangeOperative
+    ears: SWClothingHeadsetExchange
 
 ##citizen
 - type: startingGear

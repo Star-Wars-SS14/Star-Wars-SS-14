@@ -162,3 +162,23 @@
     containers:
       key_slots:
       - SWEncryptionKeyMandalorian
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetExchange
+  name: exchange headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyBlackSun
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetBlackSun
+  name: black sun headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyExchange

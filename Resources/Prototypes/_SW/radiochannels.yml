@@ -75,5 +75,21 @@
   name: Пилоты Империи
   keycode: 'п'
   frequency: 2042
-  color: "#2a0dd1"
+  color: "#8c7ce6"
+  longRange: true
+
+- type: radioChannel
+  id: SWExchange
+  name: Обмен
+  keycode: 'о'
+  frequency: 2043
+  color: "#8c0e0e"
+  longRange: true
+
+- type: radioChannel
+  id: SWBlackSun
+  name: Черное Солнце
+  keycode: 'ч'
+  frequency: 2044
+  color: "#420808"
   longRange: true

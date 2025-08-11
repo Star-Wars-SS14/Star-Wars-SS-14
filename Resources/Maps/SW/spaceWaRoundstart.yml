@@ -115944,7 +115944,6 @@ entities:
       pos: 6.8693285,-17.361965
       parent: 2
     - type: HandheldLight
-      toggleActionEntity: 6
     - type: ContainerContainer
       containers:
         cell_slot: !type:ContainerSlot
@@ -148388,7 +148387,6 @@ entities:
       pos: 18.552702,3.7403798
       parent: 2
     - type: HandheldLight
-      toggleActionEntity: 4
     - type: ContainerContainer
       containers:
         cell_slot: !type:ContainerSlot
@@ -173780,7 +173778,6 @@ entities:
     - type: Transform
       parent: 12704
     - type: Blocking
-      blockingToggleActionEntity: 12706
     - type: Physics
       canCollide: False
     - type: ActionsContainer
@@ -173795,7 +173792,6 @@ entities:
     - type: Transform
       parent: 12709
     - type: Blocking
-      blockingToggleActionEntity: 12711
     - type: Physics
       canCollide: False
     - type: ActionsContainer
@@ -173811,7 +173807,6 @@ entities:
       pos: 3.2217124,-80.37383
       parent: 12703
     - type: Blocking
-      blockingToggleActionEntity: 12723
     - type: ActionsContainer
     - type: ContainerContainer
       containers:
@@ -202255,7 +202250,6 @@ entities:
     - type: Transform
       parent: 12714
     - type: Blocking
-      blockingToggleActionEntity: 12716
     - type: Physics
       canCollide: False
     - type: ActionsContainer
@@ -202269,7 +202263,6 @@ entities:
     - type: Transform
       parent: 12714
     - type: Blocking
-      blockingToggleActionEntity: 12718
     - type: Physics
       canCollide: False
     - type: ActionsContainer

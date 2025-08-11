@@ -1,5 +1,6 @@
 using Content.Server.Actions;
 using Content.Server.Popups;
+using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Server.PowerCell;
 using Content.Shared.Actions;
@@ -198,8 +199,8 @@ namespace Content.Server.Light.EntitySystems
             {
                 return false;
             }
-
-            if (!_powerCell.TryGetBatteryFromSlot(uid, out var battery) &&
+            BatteryComponent? battery = null; //SW
+            if (component.NeedsBattery && !_powerCell.TryGetBatteryFromSlot(uid, out battery) && //SW
                 !TryComp(uid, out battery))
             {
                 _audio.PlayPvs(_audio.ResolveSound(component.TurnOnFailSound), uid);
@@ -210,7 +211,7 @@ namespace Content.Server.Light.EntitySystems
             // To prevent having to worry about frame time in here.
             // Let's just say you need a whole second of charge before you can turn it on.
             // Simple enough.
-            if (component.Wattage > battery.CurrentCharge)
+            if (battery != null && component.Wattage > battery.CurrentCharge) //SW
             {
                 _audio.PlayPvs(_audio.ResolveSound(component.TurnOnFailSound), uid);
                 _popup.PopupEntity(Loc.GetString("handheld-light-component-cell-dead-message"), uid, user);

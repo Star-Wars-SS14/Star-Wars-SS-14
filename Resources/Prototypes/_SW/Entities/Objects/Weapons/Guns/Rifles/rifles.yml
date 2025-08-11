@@ -32,9 +32,11 @@
     unwieldOnUse: false
   - type: HandheldLight
     addPrefix: false
+    toggleOnInteract: false
     wattage: 0
     blinkingBehaviourId: blinking
     radiatingBehaviourId: radiating
+    needsBattery: false
   - type: LightBehaviour
     behaviours:
       - !type:FadeBehaviour
@@ -67,10 +69,10 @@
     spriteLayer: light
     inhandVisuals:
       left:
-      - state: inhand-left-light
+      - state: inhand-left
         shader: unshaded
       right:
-      - state: inhand-right-light
+      - state: inhand-right
         shader: unshaded
 
 #Rifles

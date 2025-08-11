@@ -53,7 +53,7 @@
         startValue: 0.1
         endValue: 2.0
         isLooped: true
-  - type: Battery
+  - type: Battery  #I dont fucking know why it needs battery comp, because I have changed code so it shouldn't need it.
     maxCharge: 1
     startingCharge: 1
   - type: PointLight

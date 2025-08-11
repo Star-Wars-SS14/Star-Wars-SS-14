@@ -8,24 +8,6 @@
     },
     "states": [
         {
-            "name": "base-colorA-inhand-left"
-        },
-        {
-            "name": "base-colorA-inhand-right"
-        },
-        {
-            "name": "base-colorB-inhand-left"
-        },
-        {
-            "name": "base-colorB-inhand-right"
-        },
-        {
-            "name": "base-needle-inhand-left"
-        },
-        {
-            "name": "base-needle-inhand-right"
-        },
-        {
             "name": "icon"
         },
         {

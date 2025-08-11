@@ -6,7 +6,11 @@
   components:
   - type: Item
     sprite:  _SW/Objects/Chemistry/bacta_medipen.rsi
-    heldPrefix: medipen
+    inhandVisuals:
+      left:
+      - state: medipen-inhand-left
+      right:
+      - state: medipen-inhand-right
   - type: Sprite
     sprite: _SW/Objects/Chemistry/kolto_medipen.rsi
     layers:
@@ -33,7 +37,11 @@
   components:
   - type: Item
     sprite:  _SW/Objects/Chemistry/bacta_medipen.rsi
-    heldPrefix: medipen
+    inhandVisuals:
+      left:
+      - state: medipen-inhand-left
+      right:
+      - state: medipen-inhand-right
   - type: Sprite
     sprite: _SW/Objects/Chemistry/bacta_medipen.rsi
     layers:

@@ -111,7 +111,7 @@ namespace Content.Client.LateJoin
                     }
                 };
 
-                _base.AddChild(new StripeBack()
+                var stripe = new StripeBack()
                 {
                     Children =
                     {
@@ -129,8 +129,8 @@ namespace Content.Client.LateJoin
                             }
                         }
                     }
-                });
-
+                };
+                _base.AddChild(stripe);
                 if (_configManager.GetCVar(CCVars.CrewManifestWithoutEntity))
                 {
                     var crewManifestButton = new Button()
@@ -226,7 +226,10 @@ namespace Content.Client.LateJoin
 
                     _jobCategories[id][department.ID] = category;
                     jobList.AddChild(category);
-
+                    if (jobsAvailable.Count == 0)
+                    {
+                        stripe.Visible = false;
+                    }
                     foreach (var prototype in jobsAvailable)
                     {
                         var value = stationAvailable[prototype.ID];

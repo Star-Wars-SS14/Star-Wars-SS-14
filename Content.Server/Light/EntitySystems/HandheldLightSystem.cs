@@ -184,7 +184,6 @@ namespace Content.Server.Light.EntitySystems
             {
                 return false;
             }
-
             _lights.SetEnabled(ent, false, pointLightComponent);
             SetActivated(ent, false, ent, makeNoise);
             ent.Comp.Level = null;
@@ -217,7 +216,6 @@ namespace Content.Server.Light.EntitySystems
                 _popup.PopupEntity(Loc.GetString("handheld-light-component-cell-dead-message"), uid, user);
                 return false;
             }
-
             _lights.SetEnabled(uid, true, pointLightComponent);
             SetActivated(uid, true, component, true);
             _activeLights.Add(uid);
@@ -231,7 +229,10 @@ namespace Content.Server.Light.EntitySystems
             if (!_powerCell.TryGetBatteryFromSlot(uid, out var batteryUid, out var battery, null) &&
                 !TryComp(uid, out battery))
             {
-                TurnOff(uid, false);
+                if (uid.Comp.NeedsBattery) //SW
+                {
+                    TurnOff(uid, false); //SW
+                } //SW
                 return;
             }
 

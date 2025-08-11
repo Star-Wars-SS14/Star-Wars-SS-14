@@ -1,0 +1,20 @@
+# SW
+- type: localizedDataset
+  id: NamesFirstMilitaryLieutenant
+  values:
+    prefix: names-sw-first-lieutenant-
+    count: 1
+
+# SW
+- type: localizedDataset
+  id: NamesFirstMilitarySoldier
+  values:
+    prefix: names-sw-first-soldier-
+    count: 1
+
+# SW
+- type: localizedDataset
+  id: NamesFirstMilitaryMedic
+  values:
+    prefix: name-sw-first-medic-
+    count: 1

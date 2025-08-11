@@ -34,7 +34,8 @@
     - type: RandomMetadata
       nameSegments:
       - NamesFirstMilitaryLieutenant
-      - NamesLastMilitary
+      - NamesMilitaryLast
+      nameFormat: name-format-ert
     - type: SWFactionMember
       faction: EmpireFaction
 
@@ -65,7 +66,8 @@
     - type: RandomMetadata
       nameSegments:
       - NamesFirstMilitarySoldier
-      - NamesLastMilitary
+      - NamesMilitaryLast
+      nameFormat: name-format-ert
     - type: SWFactionMember
       faction: EmpireFaction
 
@@ -96,7 +98,8 @@
     - type: RandomMetadata
       nameSegments:
       - NamesFirstMilitaryMedic
-      - NamesLastMilitary
+      - NamesMilitaryLast
+      nameFormat: name-format-ert
     - type: SWFactionMember
       faction: EmpireFaction
 
@@ -128,7 +131,8 @@
     - type: RandomMetadata
       nameSegments:
       - NamesFirstMilitaryLieutenant
-      - NamesLastMilitary
+      - NamesMilitaryLast
+      nameFormat: name-format-ert
     - type: SWFactionMember
       faction: RepublicFaction
 
@@ -159,7 +163,8 @@
     - type: RandomMetadata
       nameSegments:
       - NamesFirstMilitarySoldier
-      - NamesLastMilitary
+      - NamesMilitaryLast
+      nameFormat: name-format-ert
     - type: SWFactionMember
       faction: RepublicFaction
 
@@ -190,6 +195,7 @@
     - type: RandomMetadata
       nameSegments:
       - NamesFirstMilitaryMedic
-      - NamesLastMilitary
+      - NamesMilitaryLast
+      nameFormat: name-format-ert
     - type: SWFactionMember
       faction: RepublicFaction

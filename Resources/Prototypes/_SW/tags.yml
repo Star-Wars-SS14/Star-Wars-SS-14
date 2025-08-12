@@ -72,3 +72,6 @@
 
 - type: Tag
   id: SWMK1MagazineTag
+
+- type: Tag
+  id: SWScoutBlasterMagazine

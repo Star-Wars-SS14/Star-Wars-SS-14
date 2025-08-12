@@ -255,3 +255,27 @@
     proto: SWK406RipperBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+
+#Pistols
+
+- type: entity
+  id: SWScoutBlasterMagazine
+  name: Магазин для пистолета разведчика
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 1000
+    startingCharge: 1000
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - SWScoutBlasterMagazine
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWE-1Bullet
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
+    state: mag
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: false

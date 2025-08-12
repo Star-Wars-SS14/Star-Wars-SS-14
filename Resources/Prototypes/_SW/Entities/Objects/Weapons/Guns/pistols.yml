@@ -1,0 +1,37 @@
+- type: entity
+  parent: SWBaseWeaponBlaster
+  suffix: Оружие SW
+  id: SWBaseWeaponBlasterSmall
+  name: Пистолет разведчика
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Pistols/scout_blaster.rsi
+    layers:
+    - state: base
+      map: [ "enum.GunVisualLayers.Base" ]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Item
+    size: Small
+  - type: Gun
+    soundGunshot:
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+    availableModes:
+    - SemiAuto
+    fireRate: 5
+    selectedMode: SemiAuto
+  - type: ItemSlots 
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: SWScoutBlasterMagazine
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        whitelist:
+          tags:
+          - SWScoutBlasterMagazine
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+  - type: Appearance

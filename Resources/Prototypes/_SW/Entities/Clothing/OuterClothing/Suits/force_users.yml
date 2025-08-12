@@ -1,0 +1,55 @@
+- type: entity
+  parent: ClothingOuterHardsuitBase
+  id: SWSithSuit1
+  name: Броня ситха
+  description: Броня для любителей темной стороны
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/ForceUsers/sith1.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/ForceUsers/sith1.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.02
+    lowPressureMultiplier: 1000
+  - type: ClothingSpeedModifier
+    walkModifier: 1.0
+    sprintModifier: 1.0
+  - type: TemperatureProtection
+    heatingCoefficient: 0.001
+    coolingCoefficient: 0.001
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.9
+        Slash: 0.9
+        Piercing: 0.9
+        Heat: 0.9
+        Cold: 0.9
+        Shock: 0.9
+        Radiation: 0.9
+  - type: ToggleableClothing
+    clothingPrototype: SWSithSuit1Helmet
+
+- type: entity
+  parent: SWSithSuit1
+  id: SWSithSuit2
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/ForceUsers/sith2.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/ForceUsers/sith2.rsi
+  - type: ToggleableClothing
+    clothingPrototype: SWSithSuit2Helmet
+
+- type: entity
+  parent: SWSithSuit1
+  id: SWJediSuit1
+  name: Броня джедая
+  description: Броня для любителей светлой стороны
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/ForceUsers/jedi1.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/ForceUsers/jedi1.rsi
+  - type: ToggleableClothing
+    clothingPrototype: SWJediSuit1Helmet

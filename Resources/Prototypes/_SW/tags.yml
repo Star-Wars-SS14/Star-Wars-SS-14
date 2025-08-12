@@ -75,3 +75,6 @@
 
 - type: Tag
   id: SWScoutBlasterMagazine
+
+- type: Tag
+  id: SWBalmorraCannonMagazineTag

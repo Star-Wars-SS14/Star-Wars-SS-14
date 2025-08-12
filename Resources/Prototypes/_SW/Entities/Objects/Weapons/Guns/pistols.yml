@@ -1,9 +1,21 @@
 - type: entity
-  parent: SWBaseWeaponBlaster
+  parent: BaseItem
   suffix: Оружие SW
   id: SWBaseWeaponBlasterSmall
   name: Пистолет разведчика
   components:
+  - type: PointLight
+    enabled: false
+    mask: /Textures/Effects/LightMasks/cone.png
+    autoRot: true
+    radius: 6
+  - type: HandheldLight
+    toggleOnInteract: false
+    needsBattery: false
+  - type: ContainerContainer
+    containers:
+      gun_magazine: !type:ContainerSlot
+  - type: AmmoCounter
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Pistols/scout_blaster.rsi
     layers:
@@ -35,3 +47,28 @@
     steps: 1
     zeroVisible: true
   - type: Appearance
+  - type: MagazineAmmoProvider
+
+- type: entity
+  parent: SWBaseWeaponBlasterSmall
+  suffix: Оружие SW
+  id: SWBalmorraHandCannon
+  name: Ручная пушка балморы
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Pistols/handheld_balmorra_cannon.rsi
+    layers:
+    - state: base
+      map: [ "enum.GunVisualLayers.Base" ]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: ItemSlots 
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: SWBalmorraCannonMagazine
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        whitelist:
+          tags:
+          - SWBalmorraCannonMagazineTag

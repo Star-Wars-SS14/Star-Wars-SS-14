@@ -19,7 +19,7 @@
     node: windowReinforcedDirectional
   - type: Appearance
   - type: DamageVisuals
-    thresholds: [4, 8, 12]
+    thresholds: [5, 10, 20]
     damageDivisor: 10
     trackAllDamage: true
     damageOverlay:

@@ -9,6 +9,7 @@ using Content.Server._SW.SWTriggerOnSay;
 using Content.Server.Sound.Components;
 using Content.Shared.Mobs;
 using Content.Server.Popups;
+using Content.Server._SW.SWDottyAccent;
 
 namespace Content.Server._SW.SWStrangulateAbility;
 
@@ -69,6 +70,7 @@ public sealed partial class SWStrangulateAbilitySystem : EntitySystem
         emitComp.Sound = ent.Comp.GaspSound;
         var message = Loc.GetString(ent.Comp.StartStrangulateMessage, ("name", Name(target)));
         _popup.PopupEntity(message, target);
+        AddComp<SWDottyAccentComponent>(target);
         return true;
     }
 
@@ -92,6 +94,7 @@ public sealed partial class SWStrangulateAbilitySystem : EntitySystem
         RemComp<SWTriggerOnSayComponent>(target);
         var message = Loc.GetString(ent.Comp.StopStrangulateMessage, ("name", Name(target)));
         _popup.PopupEntity(message, target);
+        RemComp<SWDottyAccentComponent>(target);
     }
 }
 

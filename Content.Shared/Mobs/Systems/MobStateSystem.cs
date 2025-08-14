@@ -5,6 +5,7 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Standing;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Timing;
+using Content.Shared._SW; //SW
 
 namespace Content.Shared.Mobs.Systems;
 
@@ -79,6 +80,12 @@ public partial class MobStateSystem : EntitySystem
     /// <returns>If the entity is Critical or Dead</returns>
     public bool IsIncapacitated(EntityUid target, MobStateComponent? component = null)
     {
+        var ev = new SWCheckIfCanBreatheEvent();
+        RaiseLocalEvent(target, ref ev);
+        if (ev.Handled)
+        {
+            return !ev.CanBreathe;
+        }
         if (!_mobStateQuery.Resolve(target, ref component, false))
             return false;
         return component.CurrentState is MobState.Critical or MobState.Dead;

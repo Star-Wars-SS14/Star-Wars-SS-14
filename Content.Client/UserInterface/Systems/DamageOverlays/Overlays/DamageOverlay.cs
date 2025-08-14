@@ -204,14 +204,18 @@ public sealed class DamageOverlay : Overlay
             {
                 outerDarkness = MathF.Min(0.98f, 0.3f * MathF.Log(level) + 1f);
             }
-
+            ISawmill _s = Logger.GetSawmill("sadfg");
             _oxygenShader.SetParameter("time", 0.0f);
-            _oxygenShader.SetParameter("color", new Vector3(0f, 0f, 0f));
-            _oxygenShader.SetParameter("darknessAlphaOuter", outerDarkness);
+            _oxygenShader.SetParameter("color", new Vector3(0f, 0f, 0f));           
+            _oxygenShader.SetParameter("darknessAlphaOuter", outerDarkness*10);
             _oxygenShader.SetParameter("innerCircleRadius", innerRadius);
             _oxygenShader.SetParameter("innerCircleMaxRadius", innerRadius);
             _oxygenShader.SetParameter("outerCircleRadius", outerRadius);
             _oxygenShader.SetParameter("outerCircleMaxRadius", outerRadius + 0.2f * distance);
+            _s.Fatal($"dark: {outerDarkness}");
+            _s.Fatal($"innerCircleRadius: {innerRadius}");
+            _s.Fatal($"outerCircleRadius: {outerRadius}");
+            _s.Fatal($"outerCircleMaxRadius: {outerRadius + 0.2f * distance}");
             handle.UseShader(_oxygenShader);
             handle.DrawRect(viewport, Color.White);
         }

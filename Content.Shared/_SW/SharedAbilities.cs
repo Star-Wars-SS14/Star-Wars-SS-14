@@ -60,3 +60,19 @@ public sealed partial class AttractByForceRequestedEvent : EntityTargetActionEve
 {
 
 }
+
+public sealed partial class SWRequestStrangulateEvent : EntityTargetActionEvent
+{
+
+}
+
+public record struct SWUpdateStrangulateEvent
+{
+    public EntityUid Entity;
+    public bool IsStrangulated;
+    public SWUpdateStrangulateEvent(EntityUid entity, bool isStrangulated)
+    {
+        Entity = entity;
+        IsStrangulated = isStrangulated;
+    }
+}

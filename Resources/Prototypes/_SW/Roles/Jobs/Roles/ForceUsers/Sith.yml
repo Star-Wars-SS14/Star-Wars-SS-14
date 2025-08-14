@@ -66,3 +66,4 @@
       damage:
         types:
           Heat: 50
+    - type: SWStrangulateAbility

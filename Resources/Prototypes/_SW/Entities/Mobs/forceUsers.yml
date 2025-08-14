@@ -47,8 +47,6 @@
       types:
         Asphyxiation: -5.0
 
-
-
 - type: entity
   name: Sith
   parent: ForceUserBase

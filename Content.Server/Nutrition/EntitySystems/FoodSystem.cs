@@ -105,6 +105,8 @@ public sealed class FoodSystem : EntitySystem
     /// </summary>
     public (bool Success, bool Handled) TryFeed(EntityUid user, EntityUid target, EntityUid food, FoodComponent foodComp)
     {
+        ISawmill _s = Logger.GetSawmill("sdf");
+        _s.Fatal("1");
         //Suppresses eating yourself and alive mobs
         if (food == user || (_mobState.IsAlive(food) && foodComp.RequireDead))
             return (false, false);
@@ -112,26 +114,26 @@ public sealed class FoodSystem : EntitySystem
         // Target can't be fed or they're already eating
         if (!TryComp<BodyComponent>(target, out var body))
             return (false, false);
-
+        _s.Fatal("12");
         if (HasComp<UnremoveableComponent>(food))
             return (false, false);
-
+        _s.Fatal("13");
         if (_openable.IsClosed(food, user))
             return (false, true);
 
         if (!_solutionContainer.TryGetSolution(food, foodComp.Solution, out _, out var foodSolution))
             return (false, false);
-
+        _s.Fatal("14");
         if (!_body.TryGetBodyOrganEntityComps<StomachComponent>((target, body), out var stomachs))
             return (false, false);
 
         // Check for special digestibles
         if (!IsDigestibleBy(food, foodComp, stomachs))
             return (false, false);
-
+        _s.Fatal("2");
         if (!TryGetRequiredUtensils(user, foodComp, out _))
             return (false, false);
-
+        _s.Fatal("3");
         // Check for used storage on the food item
         if (TryComp<StorageComponent>(food, out var storageState) && storageState.Container.ContainedEntities.Any())
         {

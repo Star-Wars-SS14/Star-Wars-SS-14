@@ -1,0 +1,42 @@
+- type: body
+  id: SWParazitBody
+  name: "parazit"
+  root: torso
+  slots:
+    torso:
+      part: TorsoRat
+      connections:
+      - legs
+      organs:
+        lungs: OrganRatLungs
+        stomach: SWOrganParazitStomach
+        liver: OrganAnimalLiver
+        heart: OrganAnimalHeart
+        kidneys: OrganAnimalKidneys
+    legs:
+      part: LegsAnimal
+      connections:
+      - feet
+    feet:
+      part: FeetAnimal
+
+- type: entity
+  id: SWOrganParazitStomach
+  parent: OrganAnimalStomach
+  suffix: "parasit"
+  components:
+  - type: Stomach
+    specialDigestible:
+      tags:
+      - Metal
+  - type: SolutionContainerManager
+    solutions:
+      stomach:
+        maxVol: 50
+      food:
+        maxVol: 5
+        reagents:
+        - ReagentId: UncookedAnimalProteins
+          Quantity: 5
+  - type: Sprite
+    state: stomach

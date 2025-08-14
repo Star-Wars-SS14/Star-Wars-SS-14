@@ -4,6 +4,7 @@
   id: SheetMetalBase
   description: A sheet of metal, used often on the station in various applications.
   components:
+  - type: Food
   - type: Sprite
     sprite: Objects/Materials/Sheets/metal.rsi
   - type: Item
@@ -30,6 +31,11 @@
     solutions:
       steel:
         canReact: false
+      food:
+        maxVol: 30 
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 30
 
 - type: entity
   parent: SheetMetalBase
@@ -69,6 +75,11 @@
           Quantity: 9
         - ReagentId: Carbon
           Quantity: 1
+      food:
+        maxVol: 30 
+        reagents:
+        - ReagentId: Nutriment
+          Quantity: 30
 
 - type: entity
   parent: SheetSteel

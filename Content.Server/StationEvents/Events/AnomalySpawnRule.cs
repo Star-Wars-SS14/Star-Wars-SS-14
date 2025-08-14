@@ -1,4 +1,4 @@
-﻿using Content.Server.Anomaly;
+using Content.Server.Anomaly;
 using Content.Server.Station.Components;
 using Content.Server.StationEvents.Components;
 ﻿using Content.Shared.GameTicking.Components;
@@ -23,23 +23,26 @@ public sealed class AnomalySpawnRule : StationEventSystem<AnomalySpawnRuleCompon
 
     protected override void Started(EntityUid uid, AnomalySpawnRuleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
+        ISawmill _s = Logger.GetSawmill(" asdfghjk");
+        _s.Fatal("1");
         base.Started(uid, component, gameRule, args);
 
         if (!TryGetRandomStation(out var chosenStation))
             return;
-
+        _s.Fatal("2");
         if (!TryComp<StationDataComponent>(chosenStation, out var stationData))
             return;
-
+        _s.Fatal("3");
         var grid = StationSystem.GetLargestGrid(stationData);
 
         if (grid is null)
             return;
-
+        _s.Fatal("4");
         var amountToSpawn = 1;
         for (var i = 0; i < amountToSpawn; i++)
         {
             _anomaly.SpawnOnRandomGridLocation(grid.Value, component.AnomalySpawnerPrototype);
+            _s.Fatal("5");
         }
     }
 }

@@ -42,8 +42,9 @@
     duration: 60
   - type: GameRule
     minPlayers: 0
-  - type: AnomalySpawnRule
-    anomalySpawnerPrototype: SWParazitSpawner
+  - type: SWSpawnRandomGamerule
+    spawner: SWParazitSpawner
+    count: 3
 
 - type: gamePreset
   id: SWMainPreset

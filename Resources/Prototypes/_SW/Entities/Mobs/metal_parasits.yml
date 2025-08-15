@@ -4,16 +4,16 @@
   id: SWMobParasit
   components:
   - type: Body
-    prototype: SWParazitBody
+    prototype: SWParasit
   - type: GhostRole
-    makeSentient: true
-    allowSpeech: true
+    makeSentient: false
+    allowSpeech: false
     allowMovement: true
-    name: ghost-role-information-mouse-name
-    description: ghost-role-information-mouse-description
-    rules: ghost-role-information-freeagent-rules
-    mindRoles:
-    - MindRoleGhostRoleFreeAgentHarmless
+    name: ghost-role-information-parasit-name
+    description: ghost-role-information-parasit-description
+    rules: ghost-role-information-parasit-rules
+    raffle:
+      settings: short
   - type: GhostTakeoverAvailable
   - type: Sprite
     drawdepth: SmallMobs
@@ -30,17 +30,14 @@
           radius: 0.2
         density: 100
         mask:
-        - SmallMobMask
+        - MobMask
         layer:
-        - SmallMobLayer
+        - MobLayer
   - type: MobState
-  - type: Deathgasp
   - type: MobStateActions
     actions:
       Critical:
       - ActionCritSuccumb
-      - ActionCritFakeDeath
-      - ActionCritLastWords
   - type: MobThresholds
     thresholds:
       0: Alive
@@ -73,7 +70,7 @@
       Peckish: 15
       Starving: 10
       Dead: 0
-    baseDecayRate: 10 # I'm very hungry! Give me. The cheese.
+    baseDecayRate: 1
   - type: Respirator
     damage:
       types:
@@ -95,15 +92,10 @@
       types:
         Piercing: 75
         Structural: 30
+    altDisarm: false
   - type: Bloodstream
     bloodMaxVolume: 50
   - type: NonSpreaderZombie
   - type: FireVisuals
     sprite: Mobs/Effects/onfire.rsi
     normalState: Generic_mob_burning
-  - type: SolutionContainerManager
-    solutions:
-      food:
-        reagents:
-        - ReagentId: UncookedAnimalProteins
-          Quantity: 3

@@ -1,5 +1,5 @@
 - type: body
-  id: SWParazitBody
+  id: SWParasit
   name: "parazit"
   root: torso
   slots:
@@ -9,7 +9,7 @@
       - legs
       organs:
         lungs: OrganRatLungs
-        stomach: SWOrganParazitStomach
+        stomach: SWOrganParasitStomach
         liver: OrganAnimalLiver
         heart: OrganAnimalHeart
         kidneys: OrganAnimalKidneys
@@ -21,7 +21,7 @@
       part: FeetAnimal
 
 - type: entity
-  id: SWOrganParazitStomach
+  id: SWOrganParasitStomach
   parent: OrganAnimalStomach
   suffix: "parasit"
   components:
@@ -40,3 +40,10 @@
           Quantity: 5
   - type: Sprite
     state: stomach
+  - type: Metabolizer
+    maxReagents: 3
+    metabolizerTypes: [ SWParasit ]
+    removeEmpty: true
+    groups:
+      - id: Food
+      - id: Drink

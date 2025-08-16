@@ -16,16 +16,18 @@ using System.Text;
 using System.Threading.Tasks;
 using Robust.Shared.Random;
 using Content.Server.Atmos.EntitySystems;
+using Content.Server.StationEvents.Events;
 
 namespace Content.Server._SW.SWSpawnRandomRule;
 
-public sealed partial class SWSpawnRandomGameruleSystem : GameRuleSystem<SWSpawnRandomGameruleComponent>
+public sealed partial class SWSpawnRandomGameruleSystem : StationEventSystem<SWSpawnRandomGameruleComponent>
 {
     [Dependency] private readonly StationSystem _stationSystem = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly AtmosphereSystem _atmosphere = default!;
     [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly EntityLookupSystem _lookupSystem = default!;
     protected override void Started(EntityUid uid, SWSpawnRandomGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
         base.Started(uid, component, gameRule, args);
@@ -41,9 +43,9 @@ public sealed partial class SWSpawnRandomGameruleSystem : GameRuleSystem<SWSpawn
         if (grid is null)
             return;
 
-        
+
         SpawnOnRandomLocatin(grid.Value, component.Spawner, component.Count);
-        
+
     }
 
     private void SpawnOnRandomLocatin(EntityUid grid, string toSpawn, int count = 1)
@@ -61,11 +63,11 @@ public sealed partial class SWSpawnRandomGameruleSystem : GameRuleSystem<SWSpawn
             var randomX = _random.Next((int)gridBounds.Left, (int)gridBounds.Right);
             var randomY = _random.Next((int)gridBounds.Bottom, (int)gridBounds.Top);
 
-            var tile = new Vector2i(randomX, randomY);
+            var tileCoordinates = new Vector2i(randomX, randomY);
 
             // no air-blocked areas.
-            if (_atmosphere.IsTileSpace(grid, xform.MapUid, tile) ||
-                _atmosphere.IsTileAirBlocked(grid, tile, mapGridComp: gridComp))
+            if (_atmosphere.IsTileSpace(grid, xform.MapUid, tileCoordinates) ||
+                _atmosphere.IsTileAirBlocked(grid, tileCoordinates, mapGridComp: gridComp))
             {
                 continue;
             }
@@ -74,7 +76,7 @@ public sealed partial class SWSpawnRandomGameruleSystem : GameRuleSystem<SWSpawn
             var physQuery = GetEntityQuery<PhysicsComponent>();
             var valid = true;
 
-            foreach (var ent in _mapSystem.GetAnchoredEntities(grid, gridComp, tile))
+            foreach (var ent in _mapSystem.GetAnchoredEntities(grid, gridComp, tileCoordinates))
             {
                 if (!physQuery.TryGetComponent(ent, out var body))
                     continue;
@@ -89,14 +91,27 @@ public sealed partial class SWSpawnRandomGameruleSystem : GameRuleSystem<SWSpawn
             if (!valid)
                 continue;
 
-            var pos = _mapSystem.GridTileToLocal(grid, gridComp, tile);
+            var pos = _mapSystem.GridTileToLocal(grid, gridComp, tileCoordinates);
+            var entities = _lookupSystem.GetLocalEntitiesIntersecting(grid, tileCoordinates);
 
+            foreach (var entity in entities)
+            {
+                if (TryComp<PhysicsComponent>(entity, out var comp))
+                {
+                    if (comp.Hard || (comp.CollisionLayer & (int)CollisionGroup.Impassable) != 0)
+                    {
+                        valid = false;
+                        break;
+                    }
+                }
+            }
             if (!valid)
                 continue;
 
             targetCoords = pos;
             break;
         }
+
         for (var i = 0; i < count; i++)
         {
             Spawn(toSpawn, targetCoords);

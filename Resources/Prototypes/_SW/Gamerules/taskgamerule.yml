@@ -18,8 +18,7 @@
   parent: BaseGameRule
   components:
   - type: BasicStationEventScheduler
-    maxOccurrences: 4
-    maxDuration: 1
+    minimumTimeUntilFirstEvent: 0
     scheduledGameRules: !type:NestedSelector
       tableId: SWRulesTable
   - type: GameRule
@@ -37,10 +36,11 @@
   id: SWParasitesRule
   components:
   - type: StationEvent
-    earliestStart: 0
+    reoccurrenceDelay: 20
+    maxOccurrences: 4
     minimumPlayers: 0
     weight: 1000
-    duration: 60
+    duration: 1
   - type: GameRule
     minPlayers: 0
   - type: SWSpawnRandomGamerule

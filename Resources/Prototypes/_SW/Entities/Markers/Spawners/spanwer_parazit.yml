@@ -1,6 +1,6 @@
 - type: entity
   parent: MarkerBase
-  id: SWParazitSpawner
+  id: SWParasitSpawner
   name: Metall parazirs spawner  
   components:
   - type: Sprite

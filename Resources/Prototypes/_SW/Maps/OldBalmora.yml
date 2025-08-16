@@ -8,6 +8,7 @@
     SWBalmora:
       stationProto: SWStandardStation
       components:
+      - type: StationEventEligible
       - type: StationNameSetup
         mapNameTemplate: '{0} Балламора {1}'
         nameGenerator:

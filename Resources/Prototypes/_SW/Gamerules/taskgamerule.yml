@@ -18,7 +18,8 @@
   parent: BaseGameRule
   components:
   - type: BasicStationEventScheduler
-    minimumTimeUntilFirstEvent: 0
+    maxOccurrences: 4
+    maxDuration: 1
     scheduledGameRules: !type:NestedSelector
       tableId: SWRulesTable
   - type: GameRule
@@ -43,7 +44,7 @@
   - type: GameRule
     minPlayers: 0
   - type: SWSpawnRandomGamerule
-    spawner: SWParazitSpawner
+    spawner: SWParasitSpawner
     count: 3
 
 - type: gamePreset

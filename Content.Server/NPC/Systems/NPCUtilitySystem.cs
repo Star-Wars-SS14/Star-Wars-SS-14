@@ -1,3 +1,5 @@
+using Content.Server._SW.NPC;
+using Content.Server.Access.Components;
 using Content.Server.Atmos.Components;
 using Content.Server.Fluids.EntitySystems;
 using Content.Server.Hands.Systems;
@@ -385,6 +387,20 @@ public sealed class NPCUtilitySystem : EntitySystem
                         return 0f;
 
                     return temperature.CurrentTemperature <= con.MinTemp ? 1f : 0f;
+                }
+            case SWHasIdCardCon con:
+                {
+                    if (_inventory.TryGetSlotEntity(targetUid, "id", out var idcard))
+                    {
+                        if (TryComp<PresetIdCardComponent>(idcard, out var comp) && comp.JobName != null)
+                        {
+                            if (con.AllowedJobs.Contains(comp.JobName.Value))
+                            {
+                                return 1f;
+                            }
+                        }
+                    }
+                    return 0f;
                 }
             default:
                 throw new NotImplementedException();

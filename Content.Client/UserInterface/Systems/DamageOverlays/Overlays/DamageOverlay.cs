@@ -207,7 +207,7 @@ public sealed class DamageOverlay : Overlay
             ISawmill _s = Logger.GetSawmill("sadfg");
             _oxygenShader.SetParameter("time", 0.0f);
             _oxygenShader.SetParameter("color", new Vector3(0f, 0f, 0f));           
-            _oxygenShader.SetParameter("darknessAlphaOuter", outerDarkness*10);
+            _oxygenShader.SetParameter("darknessAlphaOuter", outerDarkness);
             _oxygenShader.SetParameter("innerCircleRadius", innerRadius);
             _oxygenShader.SetParameter("innerCircleMaxRadius", innerRadius);
             _oxygenShader.SetParameter("outerCircleRadius", outerRadius);

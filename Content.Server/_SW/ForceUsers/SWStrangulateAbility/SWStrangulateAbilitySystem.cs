@@ -10,6 +10,7 @@ using Content.Server.Sound.Components;
 using Content.Shared.Mobs;
 using Content.Server.Popups;
 using Content.Server._SW.SWDottyAccent;
+using Content.Server.Examine;
 
 namespace Content.Server._SW.SWStrangulateAbility;
 
@@ -18,6 +19,7 @@ public sealed partial class SWStrangulateAbilitySystem : EntitySystem
     [Dependency] SharedActionsSystem _actions = default!;
     [Dependency] SharedPhysicsSystem _physicsSystem = default!;
     [Dependency] PopupSystem _popup = default!;
+    [Dependency] private readonly ExamineSystem _examineSystem = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -43,7 +45,7 @@ public sealed partial class SWStrangulateAbilitySystem : EntitySystem
         {
             StopStrangulating(ent, ent.Comp.CurrentTarget.Value);
         }
-        if (args.Target != oldTarget)
+        if (args.Target != oldTarget && CheckIfAbleToStrangulate(ent, args.Target))
         {
             StartStrangulating(ent, args.Target);
         }
@@ -95,6 +97,51 @@ public sealed partial class SWStrangulateAbilitySystem : EntitySystem
         var message = Loc.GetString(ent.Comp.StopStrangulateMessage, ("name", Name(target)));
         _popup.PopupEntity(message, target);
         RemComp<SWDottyAccentComponent>(target);
+    }
+
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+
+        var query = EntityQueryEnumerator<SWStrangulateAbilityComponent>();
+
+        while (query.MoveNext(out var uid, out var comp))
+        {
+            if (comp.CurrentTarget != null)
+            {
+                var ent = new Entity<SWStrangulateAbilityComponent>(uid, comp);
+                if (!CheckIfAbleToStrangulate(ent, comp.CurrentTarget.Value))
+                {
+                    StopStrangulating(ent, comp.CurrentTarget.Value);
+                }
+            }
+        }
+    }
+
+    private bool CheckIfAbleToStrangulate(Entity<SWStrangulateAbilityComponent> ent, EntityUid target)
+    {
+        {
+            if (TryComp<MobStateComponent>(target, out var comp)
+                && comp.CurrentState != MobState.Alive)
+            {
+                return false;
+            }
+        }
+
+        {
+            if (TryComp<MobStateComponent>(ent.Owner, out var comp)
+                && comp.CurrentState != MobState.Alive)
+            {
+                return false;
+            }
+        }
+
+        if (!_examineSystem.InRangeUnOccluded(ent.Owner, target, ent.Comp.Radius))
+        {
+            return false;
+        }
+
+        return true;
     }
 }
 

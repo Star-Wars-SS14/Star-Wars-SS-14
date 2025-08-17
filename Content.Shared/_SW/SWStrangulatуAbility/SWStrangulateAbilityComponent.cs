@@ -24,4 +24,7 @@ public sealed partial class SWStrangulateAbilityComponent : Component
 
     [DataField]
     public LocId StopStrangulateMessage = "sw-stop-strangulate";
+
+    [DataField]
+    public float Radius = 8f;
 }

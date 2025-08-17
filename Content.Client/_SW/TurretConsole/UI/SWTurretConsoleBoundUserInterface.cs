@@ -3,7 +3,7 @@ using Content.Shared._SW;
 using Content.Shared.Lathe;
 using Content.Shared.Research.Components;
 using Robust.Client.UserInterface;
-namespace Content.Client._SW.TurretConsole;
+namespace Content.Client._SW.TurretConsole.UI;
 
 public sealed partial class SWTurretConsoleBoundUserInterface : BoundUserInterface
 {

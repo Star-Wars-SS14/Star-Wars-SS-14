@@ -31,12 +31,12 @@
     <EmbeddedResource Remove="_SW\TurretConsole\SWTurretConsoleMenu.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <AdditionalFiles Update="_SW\TurretConsole\SWTurretConsoleMenu.xaml">
+    <AdditionalFiles Update="_SW\TurretConsole\UI\SWTurretConsoleMenu.xaml">
       <Generator>MSBuild:Compile</Generator>
     </AdditionalFiles>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="_SW\TurretConsole\SWTurretConsoleMenu.xaml.cs">
+    <Compile Update="_SW\TurretConsole\UI\SWTurretConsoleMenu.xaml.cs">
       <DependentUpon>SWTurretConsoleMenu.xaml</DependentUpon>
     </Compile>
   </ItemGroup>

@@ -15,32 +15,19 @@
                     HorizontalExpand="True"
                     VerticalExpand="True"
                     RectClipContent="True"
-                    MinHeight="50">
-                    <Control>
-                        <BoxContainer VerticalExpand="True" HorizontalExpand="True" MaxWidth="100" HorizontalAlignment="Center"
-                                VerticalAlignment="Center" Margin="20 20 20 20">
-                            <RichTextLabel Text="aboba"></RichTextLabel>
-                        </BoxContainer>
-                    </Control>
-                    
+                    MinHeight="50">                    
                 </BoxContainer>
             </ScrollContainer>
         </PanelContainer>
         <PanelContainer VerticalExpand="True">
             <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
                 <BoxContainer
-                    Name="DeniedJobsList"
+                    Name="DisallowedJobsList"
                     Orientation="Vertical"
                     HorizontalExpand="True"
                     VerticalExpand="True"
                     RectClipContent="True"
                     MinHeight="50">
-                    <Control>
-                        <BoxContainer VerticalExpand="True" HorizontalExpand="True" MaxWidth="100" HorizontalAlignment="Center"
-            VerticalAlignment="Center" Margin="20 20 20 20">
-                            <RichTextLabel Text="aboba"></RichTextLabel>
-                        </BoxContainer>
-                    </Control>
                 </BoxContainer>
             </ScrollContainer>
         </PanelContainer>

@@ -17,14 +17,17 @@ public enum SWTurretConsoleUiKey
 [Serializable, NetSerializable]
 public sealed class SWTurretConsoleBounderUserInterfaceState : BoundUserInterfaceState
 {
-    public SWTurretConsoleBounderUserInterfaceState()
-    {
-    }
+    public Dictionary<string, bool> JobsAllowed = new Dictionary<string, bool>();
 }
 
-//[Serializable, NetSerializable]
-//public sealed class UpdateTasksMessage : BoundUserInterfaceMessage
-//{
+[Serializable, NetSerializable]
+public sealed class ToggleMessage : BoundUserInterfaceMessage
+{
+    public string Job;
 
-//}
+    public ToggleMessage(string job)
+    {
+        Job = job;
+    }
+}
 

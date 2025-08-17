@@ -18,7 +18,7 @@ public sealed partial class SWTurretConsoleBoundUserInterface : BoundUserInterfa
     {
         base.Open();
         _menu = this.CreateWindow<SWTurretConsoleMenu>();
-
+        _menu.OnJobButtonPressed += SendToggleMessage;
         _menu.OpenCenteredRight();
 
         //_menu.OnServerListButtonPressed += _ =>
@@ -32,7 +32,10 @@ public sealed partial class SWTurretConsoleBoundUserInterface : BoundUserInterfa
         //};
     }
 
-
+    public void SendToggleMessage(string job)
+    {
+        SendMessage(new ToggleMessage(job));
+    }
 
     protected override void UpdateState(BoundUserInterfaceState state)
     {
@@ -41,6 +44,7 @@ public sealed partial class SWTurretConsoleBoundUserInterface : BoundUserInterfa
         switch (state)
         {
             case SWTurretConsoleBounderUserInterfaceState msg:
+                _menu?.UpdateJobs(msg.JobsAllowed);
                 break;
         }
     }

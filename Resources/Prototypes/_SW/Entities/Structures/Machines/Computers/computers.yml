@@ -44,3 +44,25 @@
       state: generic_keys
   - type: AccessReader
     access: [[ "SWEmpireMoff" ]]
+
+- type: entity
+  parent: BaseComputer
+  id: SWTurretConsole
+  name: Консоль упарвления турелями
+  components:
+  - type: ActivatableUI
+    key: enum.SWTurretConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWTurretConsoleUiKey.Key:
+        type: SWTurretConsoleBoundUserInterface
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: comm
+    - map: ["computerLayerKeys"]
+      state: generic_keys

@@ -1,36 +1,50 @@
 <DefaultWindow
     xmlns="https://spacestation14.io"
     xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
-    xmlns:ui="clr-namespace:Content.Client.Materials.UI"
-    Title="turret"
+    xmlns:ui="clr-namespace:Content.Client.Voting.UI"
+    Title="Консоль управления турелями"
     MinSize="550 450"
-    SetSize="750 500">
-    <BoxContainer Orientation="Horizontal">
+    SetSize="1000 750">
+    <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+       
+        
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+            <Label Text="Разрешенные должности" HorizontalAlignment="Center"/>
+            <BoxContainer Orientation="Vertical" SeparationOverride="4" Margin="20 20 20 20" Name="AllowFactionsList" HorizontalExpand="True">
+                <ui:VoteCallMenuButton />
+            </BoxContainer>
+            <PanelContainer VerticalExpand="True" HorizontalExpand="True">
+                <ScrollContainer MinSize="200 100" VerticalExpand="True"
+                              VScrollEnabled="True" HScrollEnabled="False">
+                    <BoxContainer
+                        Name="AllowedJobsList"
+                        Orientation="Vertical"
+                        HorizontalExpand="True"
+                        RectClipContent="True"
+                        MinHeight="50">
+                    </BoxContainer>
+                </ScrollContainer>
+            </PanelContainer>
+        </BoxContainer>
 
-        <PanelContainer VerticalExpand="True" HorizontalExpand="True">
-            <ScrollContainer MinSize="200 100" VerticalExpand="True"
-                          VScrollEnabled="True" HScrollEnabled="False">
-                <BoxContainer
-                    Name="AllowedJobsList"
-                    Orientation="Vertical"
-                    HorizontalExpand="True"
-                    RectClipContent="True"
-                    MinHeight="50">
-                </BoxContainer>
-            </ScrollContainer>
-        </PanelContainer>
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+            <Label Text="Запрещенные должности" HorizontalAlignment="Center"/>
+            <BoxContainer Orientation="Vertical" SeparationOverride="4" Margin="20 20 20 20" Name="DisallowFactionsList" HorizontalExpand="True">
+                <ui:VoteCallMenuButton />
+            </BoxContainer>
+            <PanelContainer VerticalExpand="True" HorizontalExpand="True">
+                <ScrollContainer MinSize="200 100" VerticalExpand="True"
+                              VScrollEnabled="True" HScrollEnabled="False">
+                    <BoxContainer
+                        Name="DisallowedJobsList"
+                        Orientation="Vertical"
+                        HorizontalExpand="True"
+                        RectClipContent="True"
+                        MinHeight="50">
+                    </BoxContainer>
+                </ScrollContainer>
+            </PanelContainer>
+        </BoxContainer>
 
-        <PanelContainer VerticalExpand="True" HorizontalExpand="True">
-            <ScrollContainer MinSize="200 100" VerticalExpand="True"
-                          VScrollEnabled="True" HScrollEnabled="False">
-                <BoxContainer
-                    Name="DisallowedJobsList"
-                    Orientation="Vertical"
-                    HorizontalExpand="True"
-                    RectClipContent="True"
-                    MinHeight="50">
-                </BoxContainer>
-            </ScrollContainer>
-        </PanelContainer>
     </BoxContainer>
 </DefaultWindow>

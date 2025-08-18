@@ -1,4 +1,5 @@
 using Content.Server._SW.NPC;
+using Content.Server._SW.TurretConsole;
 using Content.Server.Access.Components;
 using Content.Server.Atmos.Components;
 using Content.Server.Fluids.EntitySystems;
@@ -34,6 +35,7 @@ using Robust.Server.Containers;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 using System.Linq;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Content.Server.NPC.Systems;
 
@@ -390,15 +392,16 @@ public sealed class NPCUtilitySystem : EntitySystem
                 }
             case SWHasIdCardCon con:
                 {
+                    if (!TryComp<SWTurretConfigComponent>(owner, out var config)) {
+                        return 1f;
+                    }
                     if (_inventory.TryGetSlotEntity(targetUid, "id", out var idcard))
                     {
                         if (TryComp<PresetIdCardComponent>(idcard, out var comp) && comp.JobName != null)
-                        {
-                            if (con.AllowedJobs.Contains(comp.JobName.Value))
+                            if (config.AllowedJobs.TryGetValue(comp.JobName, out var allowed))
                             {
-                                return 1f;
+                                return allowed ? 1f : 0f;
                             }
-                        }
                     }
                     return 0f;
                 }

@@ -18,10 +18,11 @@ public enum SWTurretConsoleUiKey
 public sealed class SWTurretConsoleBounderUserInterfaceState : BoundUserInterfaceState
 {
     public Dictionary<string, bool> JobsAllowed = new Dictionary<string, bool>();
-
-    public SWTurretConsoleBounderUserInterfaceState(Dictionary<string, bool> dict)
+    public Dictionary<string, string> AvailableFactions = new Dictionary<string, string>();
+    public SWTurretConsoleBounderUserInterfaceState(Dictionary<string, bool> dict, Dictionary<string, string> availableFactions)
     {
         JobsAllowed = dict;
+        AvailableFactions = availableFactions;
     }
 }
 
@@ -33,6 +34,26 @@ public sealed class SWTurretJobToggleMessage : BoundUserInterfaceMessage
     public SWTurretJobToggleMessage(string job)
     {
         Job = job;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDisallowFaction : BoundUserInterfaceMessage
+{
+    public string Faction;
+    public SWDisallowFaction(string faction)
+    {
+        Faction = faction;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWAllowFaction : BoundUserInterfaceMessage
+{
+    public string Faction;
+    public SWAllowFaction(string faction)
+    {
+        Faction = faction;
     }
 }
 

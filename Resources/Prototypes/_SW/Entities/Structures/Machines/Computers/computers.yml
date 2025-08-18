@@ -67,3 +67,10 @@
       state: comm
     - map: ["computerLayerKeys"]
       state: generic_keys
+  - type: DeviceList
+  - type: DeviceLinkSink
+    ports:
+      - SWTurretConsoleReceiver
+  - type: DeviceNetwork
+    deviceNetId: Wired
+    receiveFrequencyId: BasicDevice

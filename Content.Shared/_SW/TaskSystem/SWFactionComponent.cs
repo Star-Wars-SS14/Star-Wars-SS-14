@@ -1,4 +1,5 @@
 using Content.Shared.Random;
+using Content.Shared.Roles;
 using Robust.Shared.Prototypes;
 using System;
 using System.Collections.Generic;
@@ -21,4 +22,7 @@ public sealed partial class SWFactionComponent : Component
 
     [DataField]
     public bool IsMajor = false;
+
+    [DataField]
+    public List<ProtoId<JobPrototype>> RelatedJobs = new List<ProtoId<JobPrototype>>(); 
 }

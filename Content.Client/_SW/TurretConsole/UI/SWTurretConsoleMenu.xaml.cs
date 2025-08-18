@@ -14,7 +14,10 @@ namespace Content.Client._SW.TurretConsole.UI;
 public sealed partial class SWTurretConsoleMenu : DefaultWindow
 {
     [Dependency] private readonly IPrototypeManager _prototype = default!;
-    public event Action<string>? OnJobButtonPressed; 
+    public event Action<string>? OnJobButtonPressed;
+
+    public event Action<string>? OnFactionAllowBtnPressed;
+    public event Action<string>? OnFactionDisallowBtnPressed;
     public SWTurretConsoleMenu()
     {
         RobustXamlLoader.Load(this);
@@ -28,8 +31,7 @@ public sealed partial class SWTurretConsoleMenu : DefaultWindow
         foreach (var (job, isAllowed) in jobs)
         {
             var proto = _prototype.Index<JobPrototype>(job);
-
-            var cntrl = new SWTurretConsoleControl(proto.Name);
+            var cntrl = new SWTurretConsoleControl(job, proto.LocalizedName);
             cntrl.SendJob += (s) => OnJobButtonPressed?.Invoke(s);
             if (isAllowed)
             {
@@ -39,6 +41,27 @@ public sealed partial class SWTurretConsoleMenu : DefaultWindow
             {
                 DisallowedJobsList.AddChild(cntrl);
             }
+        }
+    }
+
+    public void UpdateFactions(Dictionary<string, string> factions)
+    {
+        AllowFactionsList.Children.Clear();
+        DisallowFactionsList.Children.Clear();
+        foreach (var (id, name) in factions)
+        {
+            var btn = new Button();
+            btn.Text = "Разрешить полностью " + name;
+            btn.OnPressed += (_) => OnFactionAllowBtnPressed?.Invoke(id);
+            AllowFactionsList.AddChild(btn);
+        }
+
+        foreach (var (id, name) in factions)
+        {
+            var btn = new Button();
+            btn.Text = "Запретить полностью " + name;
+            btn.OnPressed += (_) => OnFactionDisallowBtnPressed?.Invoke(id);
+            DisallowFactionsList.AddChild(btn);
         }
     }
 }

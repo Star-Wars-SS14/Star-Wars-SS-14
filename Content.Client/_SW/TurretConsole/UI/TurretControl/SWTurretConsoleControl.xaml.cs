@@ -15,11 +15,11 @@ namespace Content.Client._SW.TurretConsole.UI.TurretControl;
 public sealed partial class SWTurretConsoleControl : Control
 {
     public event Action<string>? SendJob;
-    public SWTurretConsoleControl(string job)
+    public SWTurretConsoleControl(string job, string text)
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
-        JobName.Text = job;
+        JobName.Text = text;
         Toggle.OnPressed += (_) => SendJob?.Invoke(job);
     }
 }

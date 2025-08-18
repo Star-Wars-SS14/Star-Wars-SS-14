@@ -34,7 +34,7 @@ public sealed partial class SWTurretConsoleBoundUserInterface : BoundUserInterfa
 
     public void SendToggleMessage(string job)
     {
-        SendMessage(new ToggleMessage(job));
+        SendMessage(new SWTurretJobToggleMessage(job));
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

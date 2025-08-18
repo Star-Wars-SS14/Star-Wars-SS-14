@@ -13,6 +13,11 @@
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="_SW\TurretConsole\UI\Новая папка1\**" />
+    <EmbeddedResource Remove="_SW\TurretConsole\UI\Новая папка1\**" />
+    <None Remove="_SW\TurretConsole\UI\Новая папка1\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Nett" />
     <PackageReference Include="JetBrains.Annotations" PrivateAssets="All" />
   </ItemGroup>
@@ -28,11 +33,14 @@
   <Import Project="..\RobustToolbox\MSBuild\Robust.Properties.targets" />
   <Import Project="..\RobustToolbox\MSBuild\XamlIL.targets" />
   <ItemGroup>
+    <AdditionalFiles Remove="_SW\TurretConsole\UI\Новая папка1\**" />
+  </ItemGroup>
+  <ItemGroup>
     <EmbeddedResource Remove="_SW\TurretConsole\SWTurretConsoleMenu.xaml" />
     <EmbeddedResource Remove="_SW\TurretConsole\UI\SWTurretConsoleControl.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <AdditionalFiles Update="_SW\TurretConsole\UI\SWTurretConsoleControl.xaml">
+    <AdditionalFiles Update="_SW\TurretConsole\UI\TurretControl\SWTurretConsoleControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </AdditionalFiles>
     <AdditionalFiles Update="_SW\TurretConsole\UI\SWTurretConsoleMenu.xaml">

@@ -48,8 +48,9 @@
 - type: entity
   parent: BaseComputer
   id: SWTurretConsole
-  name: Консоль упарвления турелями
+  name: Консоль управления турелями
   components:
+  - type: SWTurretConsole
   - type: ActivatableUI
     key: enum.SWTurretConsoleUiKey.Key
   - type: UserInterface

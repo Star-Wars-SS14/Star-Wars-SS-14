@@ -6,26 +6,27 @@
     MinSize="550 450"
     SetSize="750 500">
     <BoxContainer Orientation="Horizontal">
-        <RichTextLabel Text="aboba"></RichTextLabel>
-        <PanelContainer VerticalExpand="True">
-            <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+
+        <PanelContainer VerticalExpand="True" HorizontalExpand="True">
+            <ScrollContainer MinSize="200 100" VerticalExpand="True"
+                          VScrollEnabled="True" HScrollEnabled="False">
                 <BoxContainer
                     Name="AllowedJobsList"
                     Orientation="Vertical"
                     HorizontalExpand="True"
-                    VerticalExpand="True"
                     RectClipContent="True"
-                    MinHeight="50">                    
+                    MinHeight="50">
                 </BoxContainer>
             </ScrollContainer>
         </PanelContainer>
-        <PanelContainer VerticalExpand="True">
-            <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+
+        <PanelContainer VerticalExpand="True" HorizontalExpand="True">
+            <ScrollContainer MinSize="200 100" VerticalExpand="True"
+                          VScrollEnabled="True" HScrollEnabled="False">
                 <BoxContainer
                     Name="DisallowedJobsList"
                     Orientation="Vertical"
                     HorizontalExpand="True"
-                    VerticalExpand="True"
                     RectClipContent="True"
                     MinHeight="50">
                 </BoxContainer>

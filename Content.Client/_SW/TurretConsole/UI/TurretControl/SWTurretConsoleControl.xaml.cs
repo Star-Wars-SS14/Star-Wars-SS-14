@@ -9,7 +9,7 @@ using Robust.Client.UserInterface.XAML;
 using YamlDotNet.Core;
 using Robust.Client.UserInterface.Controls;
 
-namespace Content.Client._SW.TurretConsole.UI;
+namespace Content.Client._SW.TurretConsole.UI.TurretControl;
 
 [GenerateTypedNameReferences]
 public sealed partial class SWTurretConsoleControl : Control
@@ -18,6 +18,7 @@ public sealed partial class SWTurretConsoleControl : Control
     public SWTurretConsoleControl(string job)
     {
         RobustXamlLoader.Load(this);
+        IoCManager.InjectDependencies(this);
         JobName.Text = job;
         Toggle.OnPressed += (_) => SendJob?.Invoke(job);
     }

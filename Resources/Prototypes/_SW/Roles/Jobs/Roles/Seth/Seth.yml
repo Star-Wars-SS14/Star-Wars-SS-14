@@ -484,6 +484,7 @@
 - type: startingGear
   id: CitizenGear
   equipment:
+    id: SWIDCardCivilian
     outerClothing: SWCitizenClothing
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen

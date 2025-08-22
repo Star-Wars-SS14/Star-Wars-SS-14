@@ -4,6 +4,19 @@
   - type: SWFaction
     name: Республика
     isMajor: true
+    relatedJobs:
+    - SWRepublicCommanderCommander
+    - SWRepublicCommanderLieutenant
+    - SWRepublicCommanderMedic
+    - SWRepublicCommanderStormtrooper
+    - SWRepublicCommanderSniper
+    - SWRepublicGeneral
+    - SWRepublicCaptain
+    - SWRepublicLieutenant
+    - SWRepublicSoldier
+    - SWRepublicMedic
+    - SWRepublicRecruit
+    - SWJedi
   - type: SWTaskContainer
     availableTasks: RepublicTasksSet
     addIntervalInSeconds: 1200 #20 min    
@@ -16,6 +29,18 @@
   - type: SWFaction
     name: Империя
     isMajor: true
+    relatedJobs:
+    - SWSobrikCaptain
+    - SWSobrikOfficer
+    - SWSobrikMedic
+    - SWEmpireMoff
+    - SWEmpireMajor
+    - SWEmpireLieutenant
+    - SWEmpireSoldier
+    - SWEmpireMedic
+    - SWEmpireIntelligenceCaretaker
+    - SWEmpireIntelligenceAgent
+    - SWSith
   - type: SWTaskContainer
     availableTasks: EmpireTasksSet
     addIntervalInSeconds: 1200 #20 min   
@@ -27,6 +52,11 @@
   components:
   - type: SWFaction
     name: Анклав мандалорцев
+    relatedJobs:
+    - SWMandalorianLeader
+    - SWMandalorianVeteran
+    - SWMandalorianWarrior
+    - SWMandalorianRecruit
   - type: SWTaskContainer
     availableTasks: MandalorianTasksSet
     addIntervalInSeconds: 1200 #20 min
@@ -38,6 +68,9 @@
   components:
   - type: SWFaction
     name: Синдикат "Черное солнце"
+    relatedJobs:
+    - SWBlackSun
+    - SWBlackSunMercenary
   - type: SWTaskContainer
     availableTasks: BlackSunTasksSet
     addIntervalInSeconds: 1200 #20 min
@@ -49,6 +82,9 @@
   components:
   - type: SWFaction
     name: Синдикат "Обмен"
+    relatedJobs:
+    - SWExchangeCaptain
+    - SWExchangeOperative
   - type: SWTaskContainer
     availableTasks: ExchangeTasksSet
     addIntervalInSeconds: 1200 #20 min

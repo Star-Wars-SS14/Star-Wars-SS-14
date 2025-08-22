@@ -44,3 +44,33 @@
       state: generic_keys
   - type: AccessReader
     access: [[ "SWEmpireMoff" ]]
+
+- type: entity
+  parent: BaseComputer
+  id: SWTurretConsole
+  name: Консоль управления турелями
+  components:
+  - type: SWTurretConsole
+  - type: ActivatableUI
+    key: enum.SWTurretConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWTurretConsoleUiKey.Key:
+        type: SWTurretConsoleBoundUserInterface
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: comm
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+  - type: DeviceList
+  - type: DeviceLinkSink
+    ports:
+      - SWTurretConsoleReceiver
+  - type: DeviceNetwork
+    deviceNetId: Wired
+    receiveFrequencyId: BasicDevice

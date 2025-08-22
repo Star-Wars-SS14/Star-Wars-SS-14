@@ -168,6 +168,12 @@
           type: Arachnid
           shouldHave: false
         amount: 0.4
+    Food:
+      effects:
+      - !type:SatiateHunger
+        conditions:
+        - !type:OrganType
+          type: SWParasit
 
 - type: reagent
   id: Lithium

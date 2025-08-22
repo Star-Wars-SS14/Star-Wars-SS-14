@@ -4,9 +4,7 @@
     - !type:ComponentQuery
       components:
         - type: HumanoidAppearance
-          species: Human
-        - type: HumanoidAppearance
-          species: Chiss
+          species: randomshit
   considerations:
     - !type:TargetIsAliveCon
       curve: !type:BoolCurve

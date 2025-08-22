@@ -13,7 +13,7 @@
     description: ghost-role-information-parasit-description
     rules: ghost-role-information-parasit-rules
     raffle:
-      settings: short
+      settings: default
   - type: GhostTakeoverAvailable
   - type: Sprite
     drawdepth: SmallMobs

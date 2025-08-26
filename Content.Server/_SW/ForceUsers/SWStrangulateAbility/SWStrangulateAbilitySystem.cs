@@ -11,6 +11,7 @@ using Content.Shared.Mobs;
 using Content.Server.Popups;
 using Content.Server._SW.SWDottyAccent;
 using Content.Server.Examine;
+using Content.Shared.Tag;
 
 namespace Content.Server._SW.SWStrangulateAbility;
 
@@ -20,6 +21,7 @@ public sealed partial class SWStrangulateAbilitySystem : EntitySystem
     [Dependency] SharedPhysicsSystem _physicsSystem = default!;
     [Dependency] PopupSystem _popup = default!;
     [Dependency] private readonly ExamineSystem _examineSystem = default!;
+    [Dependency] private readonly TagSystem _tag = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -59,6 +61,12 @@ public sealed partial class SWStrangulateAbilitySystem : EntitySystem
         {
             return false;
         }
+
+        if (_tag.HasTag(target, "ForceUser"))
+        {
+            return false;
+        }
+
         ent.Comp.CurrentTarget = target;
         var targetComp = AddComp<SWBeingStrangulatedComponent>(target);
         var ev = new SWUpdateStrangulateEvent(target, true);

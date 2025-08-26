@@ -2,6 +2,7 @@
 - type: startingGear
   id: SobrikCaptainGear
   equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
     outerClothing: SW_BallamorSuit
     head: SW_ClothingHeadBallamor
     belt: ClothingBeltAssault
@@ -13,6 +14,7 @@
 - type: startingGear
   id: SobrikOfficerGear
   equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
     outerClothing: SWSobrikSuit
     mask: SWClothingMaskBallamor
     belt: ClothingBeltAssault
@@ -24,6 +26,7 @@
 - type: startingGear
   id: SobrikMedicGear
   equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
     outerClothing: SWSobrikSuit
     mask: SWClothingMaskBallamor
     belt: ClothingBeltAssault
@@ -484,9 +487,11 @@
 - type: startingGear
   id: CitizenGear
   equipment:
+    id: SWIDCardCivilian
     outerClothing: SWCitizenClothing
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen
+    jumpsuit: SWClothingUniformJumpsuitFleece
 
 ######old
 - type: startingGear

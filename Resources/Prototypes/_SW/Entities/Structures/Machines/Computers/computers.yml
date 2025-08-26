@@ -74,3 +74,50 @@
   - type: DeviceNetwork
     deviceNetId: Wired
     receiveFrequencyId: BasicDevice
+
+
+- type: entity
+  parent: SWTurretConsole
+  id: SWTurretConsoleEmpire
+  name: Консоль управления турелями
+  suffix: Империя
+  components:
+  - type: SWTurretConsole
+    jobsAllowed:
+      SWEmpireMoff: true
+      SWEmpireMajor: true
+      SWEmpireLieutenant: true
+      SWEmpireSoldier: true
+      SWEmpireMedic: true
+      SWSobrikCaptain: true
+      SWSobrikOfficer: true
+      SWSobrikMedic: true
+      SWEmpireIntelligenceCaretaker: true
+      SWEmpireIntelligenceAgent: true
+      SWCivialian: true
+      SWSith: true
+  - type: AccessReader
+    access: [[ "SWEmpireCommander" ]]
+
+- type: entity
+  parent: SWTurretConsole
+  id: SWTurretConsoleRepublic
+  name: Консоль управления турелями
+  suffix: Республика
+  components:
+  - type: SWTurretConsole
+    jobsAllowed:
+      SWRepublicGeneral: true
+      SWRepublicCaptain: true
+      SWRepublicLieutenant: true
+      SWRepublicSoldier: true
+      SWRepublicMedic: true
+      SWRepublicRecruit: true
+      SWRepublicCommanderCommander: true
+      SWRepublicCommanderLieutenant: true
+      SWRepublicCommanderMedic: true
+      SWRepublicCommanderStormtrooper: true
+      SWRepublicCommanderSniper: true
+      SWJedi: true
+  - type: AccessReader
+    access: [[ "SWRepublicCommander" ]]

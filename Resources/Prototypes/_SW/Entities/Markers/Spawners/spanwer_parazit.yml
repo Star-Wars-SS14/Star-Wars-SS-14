@@ -1,0 +1,12 @@
+- type: entity
+  parent: MarkerBase
+  id: SWParasitSpawner
+  name: Metall parazirs spawner  
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+  - type: RandomSpawner
+    chance: 1
+    prototypes:
+    - SWMobParasit

@@ -1,4 +1,4 @@
-﻿using Content.Server.Anomaly;
+using Content.Server.Anomaly;
 using Content.Server.Station.Components;
 using Content.Server.StationEvents.Components;
 ﻿using Content.Shared.GameTicking.Components;
@@ -27,15 +27,12 @@ public sealed class AnomalySpawnRule : StationEventSystem<AnomalySpawnRuleCompon
 
         if (!TryGetRandomStation(out var chosenStation))
             return;
-
         if (!TryComp<StationDataComponent>(chosenStation, out var stationData))
             return;
-
         var grid = StationSystem.GetLargestGrid(stationData);
 
         if (grid is null)
             return;
-
         var amountToSpawn = 1;
         for (var i = 0; i < amountToSpawn; i++)
         {

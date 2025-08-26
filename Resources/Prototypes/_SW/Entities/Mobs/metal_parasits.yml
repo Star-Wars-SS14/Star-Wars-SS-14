@@ -101,4 +101,4 @@
     normalState: Generic_mob_burning
   - type: SWToggleableNightVision
   - type: NightVisionItem
-    colorOverride: "#87008a"
+    colorOverride: "#7a717a"

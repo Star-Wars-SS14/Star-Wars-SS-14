@@ -27,3 +27,5 @@
     sprite: _SW/Clothing/Head/Helmets/MandalorianVeteran.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/MandalorianVeteran.rsi
+  - type: NightVisionItem
+    slotFlags: HEAD

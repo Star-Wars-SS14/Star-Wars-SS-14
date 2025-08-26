@@ -16,8 +16,8 @@
 - type: entity
   parent: ActionMarineBase
   id: CMActionToggleScoutVision
-  name: Toggle the M42 scout sight
-  description: Allows you to see even in complete darkness.
+  name: Переключить ночное зрение
+  description: Позволяет видеть в полной темноте
   components:
   - type: Action
     icon:

@@ -15,29 +15,6 @@ public sealed partial class SWVars : CVars
     /*
      * DISCORD
      */
-
-
-    /// <summary>
-    ///     The token used to authenticate with Discord. For the Bot to function set: discord.token, discord.guild_id, and discord.prefix.
-    ///     If this is empty, the bot will not connect.
-    /// </summary>
-    public static readonly CVarDef<string> DiscordToken =
-        CVarDef.Create("discord.token", string.Empty, CVar.SERVERONLY | CVar.CONFIDENTIAL);
-
-    /// <summary>
-    ///     The Discord guild ID to use for commands as well as for several other features, like the ahelp relay.
-    ///     If this is empty, the bot will not connect.
-    /// </summary>
-    public static readonly CVarDef<string> DiscordGuildId =
-        CVarDef.Create("discord.guild_id", string.Empty, CVar.SERVERONLY);
-
-    /// <summary>
-    ///     Prefix used for commands for the Discord bot.
-    ///     If this is empty, the bot will not connect.
-    /// </summary>
-    public static readonly CVarDef<string> DiscordPrefix =
-        CVarDef.Create("discord.prefix", "!", CVar.SERVERONLY);
-
     /// <summary>
     ///     The discord **FORUM** channel id that admin messages are sent to. If it's not a forum channel, everything will explode.
     /// </summary>

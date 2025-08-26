@@ -22,7 +22,7 @@
     - SWEmpireIntelligenceAgent
     - SWSobrikCaptain
     - SWEmpireMoff
-  - type: SWKillRandomByJob
+  - type: SWCapturePerson
   - type: SWGetScoreByTargetJob
     jobsToScores:
       SWEmpireMajor : 20
@@ -122,8 +122,16 @@
     score: 15
     restrictions: OnePerFaction
   - type: SWCollectObjectTask
-    objects:
-      [SWIDCardEmpireIntelligenceAgent, SWIDCardEmpireIntelligenceCaretaker, SWIDCardSobrikCaptain, SWIDCardSobrikOfficer, SWIDCardSobrikMedic, SWIDCardEmpireMoff, SWIDCardEmpireMajor, SWIDCardEmpireLieutenant, SWIDCardEmpireMedic] : 3
+    requirements:
+    - number: 3
+      objects:
+      - SWIDCardSobrikCaptain
+      - SWIDCardSobrikOfficer
+      - SWIDCardSobrikMedic
+      - SWIDCardEmpireMoff
+      - SWIDCardEmpireMajor
+      - SWIDCardEmpireLieutenant
+      - SWIDCardEmpireMedic
 
 
 - type: entity

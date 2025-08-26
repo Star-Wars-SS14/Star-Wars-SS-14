@@ -15,7 +15,7 @@
     containers:
     - board
   - type: Occluder
-  - type: PaintableAirlock
+  - type: Paintable
     department: Command
 
 - type: entity
@@ -25,7 +25,7 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/com_door.rsi
-  - type: PaintableAirlock
+  - type: Paintable
     department: Command
 
 - type: entity
@@ -35,7 +35,7 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/engi_door.rsi
-  - type: PaintableAirlock
+  - type: Paintable
     department: Engineering
 
 - type: entity
@@ -45,7 +45,7 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/medi_door.rsi
-  - type: PaintableAirlock
+  - type: Paintable
     department: Command
 
 - type: entity
@@ -55,7 +55,7 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/sec_door.rsi
-  - type: PaintableAirlock
+  - type: Paintable
     department: Command
 
 - type: entity
@@ -101,7 +101,7 @@
   - type: Construction
     graph: CMAirlock
     node: glassAirlock
-  - type: PaintableAirlock
+  - type: Paintable
     group: Glass
   - type: Tag
     tags:
@@ -114,7 +114,7 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/engi_door_glass.rsi
-  - type: PaintableAirlock
+  - type: Paintable
     department: Engineering
 
 - type: entity
@@ -124,7 +124,7 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/medi_door_glass.rsi
-  - type: PaintableAirlock
+  - type: Paintable
     department: Command
 
 - type: entity
@@ -134,7 +134,7 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/sec_door_glass.rsi
-  - type: PaintableAirlock
+  - type: Paintable
     department: Command
 
 # Prep

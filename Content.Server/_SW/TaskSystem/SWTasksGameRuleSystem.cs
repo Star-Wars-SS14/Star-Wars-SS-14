@@ -64,7 +64,6 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     public void AddStartTasks()
     {
         var notFilledFactions = _swFaction.GetFactions();
-        ISawmill _s = Logger.GetSawmill("dfg");
         bool anyTaskAdded = true;
         while (anyTaskAdded && notFilledFactions.Count() > 0)
         {
@@ -84,7 +83,6 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                 {
                     var factionWithComp = new Entity<SWTaskContainerComponent>(factionEntity.Value.Owner, comp);
                     anyTaskAdded = anyTaskAdded || AddRandomTask(factionWithComp, faction);
-                    _s.Fatal($"{faction} added: {anyTaskAdded}");
                     comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(comp.AddIntervalInSeconds);
                 }
             }
@@ -375,8 +373,6 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         if (protoFiltered.Weights.Count != 0)
         {
             string taskProto = protoFiltered.Pick();
-            ISawmill s = Logger.GetSawmill("asdfghj");
-            s.Fatal($"{taskProto}");
             var task = AddTask(factionId, taskProto);
             return task != null;
         }

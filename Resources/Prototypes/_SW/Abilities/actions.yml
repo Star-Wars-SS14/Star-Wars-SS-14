@@ -4,10 +4,12 @@
   description: Ускорьтесь на короткое время
   noSpawn: true
   components:
-  - type: InstantAction
+  - type: Action
     icon: Interface/Actions/dash.png
-    event: !type:DashAbilityEvent
     useDelay: 8
+  - type: InstantAction    
+    event: !type:DashAbilityEvent
+    
 
 - type: entity
   id: ActionSithForceLightning
@@ -15,13 +17,15 @@
   description: Используя тёмную силу вы испускаете разряд!
   noSpawn: true
   components:
-  - type: EntityTargetAction
+  - type: Action
     icon: Interface/Actions/lighting.png
-    event: !type:ForceLightningAbilityEvent
-    canTargetSelf: false
+    useDelay: 6
+  - type: TargetAction
     interactOnMiss: false
     range: 7
-    useDelay: 6
+  - type: EntityTargetAction   
+    event: !type:ForceLightningAbilityEvent
+    canTargetSelf: false
 
 - type: entity
   id: ActionForcePush
@@ -29,13 +33,15 @@
   description: Уроните вашего врага на землю!
   noSpawn: true
   components:
-  - type: EntityTargetAction
+  - type: Action
     icon: Interface/Actions/disarm.png
-    event: !type:ForceTryPushAbilityEvent
-    canTargetSelf: false
+    useDelay: 6
+  - type: TargetAction
     interactOnMiss: false
     range: 7
-    useDelay: 6
+  - type: EntityTargetAction    
+    event: !type:ForceTryPushAbilityEvent
+    canTargetSelf: false
 
 - type: entity
   id: ActionForceAttract
@@ -43,65 +49,71 @@
   description: Притяние объект!
   noSpawn: true
   components:
-  - type: EntityTargetAction
+  - type: Action
     icon: Interface/VerbIcons/pickup.svg.192dpi.png
-    event: !type:AttractByForceRequestedEvent
-    canTargetSelf: false
+    useDelay: 2
+  - type: TargetAction
     interactOnMiss: false
     range: 20
-    useDelay: 2
-
-- type: entity
-  id: ActionSubdueKyber
-  name: Подчинить кайбер кристалл
-  description: Держа кайбер кристалл в руке, попробуйте его подчинить.
-  noSpawn: true
-  components:
-  - type: InstantAction
-    icon: Interface/Actions/subdue.png
-    event: !type:SubdueAbilityEvent
-    useDelay: 1
-
-- type: entity
-  id: CallSaberAction
-  name: Призвать световой меч
-  description: Пользуясь силой, призовите световой меч.
-  noSpawn: true
-  components:
-  - type: InstantAction
-    icon: Interface/Actions/subdue.png
-    event: !type:CallSaberAbilityEvent
-    useDelay: 30
-
-- type: entity
-  id: ActionBlockLightSaber
-  name: lightning
-  description: ActionBlockLightSaber. #TODO: add description
-  noSpawn: true
-  components:
-  - type: InstantAction
-    icon: Interface/Actions/block.png
-    event: !type:BlockEvent
-    useDelay: 1
-
-- type: entity
-  id: ActionSaberPrivate
-  name: Привязать световой меч
-  description: Держа световой меч в руках, подчините его.
-  noSpawn: true
-  components:
-  - type: InstantAction
-    icon: Interface/Actions/subdue.png
-    event: !type:SaberPrivateAbilityEvent
-    useDelay: 1
-
+  - type: EntityTargetAction    
+    event: !type:AttractByForceRequestedEvent
+    canTargetSelf: false
 
 - type: entity
   id: SWDashAction
-  name: Прыжок
-  description: Это буквально телепортирует вас!
+  name: Быстрый бег
+  description: Ускорьтесь на короткое время
   components:
-  - type: InstantAction
+  - type: Action
     icon: Interface/Actions/dash.png
-    event: !type:DashRequestedEvent
     useDelay: 3
+  - type: InstantAction    
+    event: !type:DashRequestedEvent
+
+# - type: entity
+#   id: ActionSubdueKyber
+#   name: Подчинить кайбер кристалл
+#   description: Держа кайбер кристалл в руке, попробуйте его подчинить.
+#   noSpawn: true
+#   components:
+#   - type: InstantAction
+#     icon: Interface/Actions/subdue.png
+#     event: !type:SubdueAbilityEvent
+#     useDelay: 1
+
+# - type: entity
+#   id: CallSaberAction
+#   name: Призвать световой меч
+#   description: Пользуясь силой, призовите световой меч.
+#   noSpawn: true
+#   components:
+#   - type: InstantAction
+#     icon: Interface/Actions/subdue.png
+#     event: !type:CallSaberAbilityEvent
+#     useDelay: 30
+
+# - type: entity
+#   id: ActionBlockLightSaber
+#   name: lightning
+#   description: ActionBlockLightSaber. #TODO: add description
+#   noSpawn: true
+#   components:
+#   - type: InstantAction
+#     icon: Interface/Actions/block.png
+#     event: !type:BlockEvent
+#     useDelay: 1
+
+# - type: entity
+#   id: ActionSaberPrivate
+#   name: Привязать световой меч
+#   description: Держа световой меч в руках, подчините его.
+#   noSpawn: true
+#   components:
+#   - type: InstantAction
+#     icon: Interface/Actions/subdue.png
+#     event: !type:SaberPrivateAbilityEvent
+#     useDelay: 1
+
+
+
+    

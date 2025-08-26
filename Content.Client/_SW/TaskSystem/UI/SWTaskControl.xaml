@@ -2,19 +2,19 @@
     <BoxContainer Orientation="Horizontal">
         <BoxContainer
             Name="TaskContainer"
-            Margin="0 0 4 0"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            MinSize="32 32"
-                />
-        <BoxContainer VerticalExpand="True" HorizontalExpand="True" Margin="20 20 20 20">
+            HorizontalExpand="True"
+            Margin="0"/>
+        <BoxContainer VerticalExpand="True" HorizontalExpand="True" MaxWidth="100" HorizontalAlignment="Center"
+                VerticalAlignment="Center" Margin="20 20 20 20">
             <RichTextLabel Name="TaskName"></RichTextLabel>
         </BoxContainer>
-        <BoxContainer VerticalExpand="True" HorizontalExpand="True" Margin="20 20 20 20">
-            <RichTextLabel Name="TaskDescription" > </RichTextLabel>
+        <BoxContainer VerticalExpand="True" HorizontalExpand="False" MaxWidth="300" HorizontalAlignment="Center"
+                VerticalAlignment="Center" Margin="20 20 20 20">
+            <RichTextLabel Name="TaskDescription"></RichTextLabel>
         </BoxContainer>
-        <BoxContainer Margin="20 20 20 20" HorizontalExpand="True" MinWidth="200">
-            <RichTextLabel Name="TaskStatus"> </RichTextLabel>
+        <BoxContainer VerticalExpand="False" HorizontalExpand="False" Margin="20 20 20 20" HorizontalAlignment="Center"
+                VerticalAlignment="Center" MinWidth="100" MaxWidth="200">
+            <RichTextLabel Name="TaskStatus"></RichTextLabel>
         </BoxContainer>
     </BoxContainer>
 </Control>

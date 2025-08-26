@@ -39,15 +39,20 @@ public sealed partial class DestroyObjectsSystem : EntitySystem
         var queryTasks = EntityQueryEnumerator<DestroyObjectsTaskComponent>();
         while (queryTasks.MoveNext(out var uid, out var comp))
         {
-            foreach (var protolist in comp.ObjectsDestroyed.Keys)
+            foreach (var req in comp.ObjectsDestroyed)
             {
+                var protolist = req.ObjectsPrototypes;
                 if (ent.Comp.EntityPrototype == null)
                 {
                     continue;
                 }
                 if (protolist.Contains(ent.Comp.EntityPrototype.ID))
                 {
-                    comp.ObjectsDestroyed[protolist]++;
+                    var satisfied_req = comp.ObjectsDestroyed.Find(x => x.ObjectsPrototypes == protolist);
+                    if (satisfied_req != null)
+                    {
+                        satisfied_req.Number++;
+                    }
                 }
             }
         }
@@ -55,9 +60,9 @@ public sealed partial class DestroyObjectsSystem : EntitySystem
     private void OnTaskInit(Entity<DestroyObjectsTaskComponent> ent, ref SWTaskInitEvent args)
     {
         //инициализируем количество разрушенных объектов нулями
-        foreach (var protolist in ent.Comp.ObjectsToDestroy.Keys)
+        foreach (var req in ent.Comp.ObjectsToDestroy)
         {
-            ent.Comp.ObjectsDestroyed[protolist] = 0;
+            ent.Comp.ObjectsDestroyed.Add(new ObjectRequirement(0, req.ObjectsPrototypes));
         }
     }
 
@@ -68,8 +73,8 @@ public sealed partial class DestroyObjectsSystem : EntitySystem
 
     private void OnGetProgress(Entity<DestroyObjectsTaskComponent> ent, ref SWGetProgressEvent args)
     {
-        FixedPoint2 countAll = ent.Comp.ObjectsToDestroy.Values.Sum();
-        FixedPoint2 destroyed = ent.Comp.ObjectsDestroyed.Values.Sum();
+        FixedPoint2 countAll = ent.Comp.ObjectsToDestroy.Sum(x => x.Number);
+        FixedPoint2 destroyed = ent.Comp.ObjectsDestroyed.Sum(x => x.Number);
         var p = destroyed / countAll;
         args.Progress = p > 1.0 ? 1.0 : p;
     }

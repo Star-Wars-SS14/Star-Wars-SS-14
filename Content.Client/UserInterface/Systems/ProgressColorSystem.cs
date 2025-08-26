@@ -1,5 +1,6 @@
 using Content.Shared.CCVar;
 using Robust.Shared.Configuration;
+using Vector4 = Robust.Shared.Maths.Vector4d;
 
 namespace Content.Client.UserInterface.Systems;
 

@@ -9,8 +9,8 @@ namespace Content.Server._SW.TaskSystem.DestroyObjectsTask;
 [RegisterComponent]
 public sealed partial class DestroyObjectsTaskComponent : Component
 {
-    [DataField("objects", required: true)]
-    public Dictionary<List<string>, int> ObjectsToDestroy;
+    [DataField("requirements", required: true)]
+    public List<ObjectRequirement> ObjectsToDestroy;
 
-    public Dictionary<List<string>, int> ObjectsDestroyed = new ();
+    public List<ObjectRequirement> ObjectsDestroyed = new ();
 }

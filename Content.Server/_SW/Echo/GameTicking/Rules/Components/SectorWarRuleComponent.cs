@@ -51,9 +51,27 @@ public sealed partial class SectorWarRuleComponent : Component
     [DataField]
     public Dictionary<SWSpaceWarGameState, SoundSpecifier?> AnnouncementSounds = new Dictionary<SWSpaceWarGameState, SoundSpecifier?>()
     {
-        {SWSpaceWarGameState.Holding, new SoundPathSpecifier("/Audio/_SW/_spaceWar/1.ogg") },
-        {SWSpaceWarGameState.AttackingPartially, new SoundPathSpecifier("/Audio/_SW/_spaceWar/2.ogg")},
-        {SWSpaceWarGameState.AttackingFull, new SoundPathSpecifier("/Audio/_SW/_spaceWar/3.ogg")}
+        {SWSpaceWarGameState.Holding, new SoundPathSpecifier("/Audio/_SW/_spaceWar/1.ogg",
+                 new AudioParams(-6,
+                     AudioParams.Default.Pitch,
+                     AudioParams.Default.MaxDistance,
+                     AudioParams.Default.ReferenceDistance,
+                     AudioParams.Default.Loop,
+                     AudioParams.Default.PlayOffsetSeconds))},
+        {SWSpaceWarGameState.AttackingPartially, new SoundPathSpecifier("/Audio/_SW/_spaceWar/2.ogg",
+                  new AudioParams(-6,
+                     AudioParams.Default.Pitch,
+                     AudioParams.Default.MaxDistance,
+                     AudioParams.Default.ReferenceDistance,
+                     AudioParams.Default.Loop,
+                     AudioParams.Default.PlayOffsetSeconds))},
+        {SWSpaceWarGameState.AttackingFull, new SoundPathSpecifier("/Audio/_SW/_spaceWar/3.ogg",
+                  new AudioParams(-6,
+                     AudioParams.Default.Pitch,
+                     AudioParams.Default.MaxDistance,
+                     AudioParams.Default.ReferenceDistance,
+                     AudioParams.Default.Loop,
+                     AudioParams.Default.PlayOffsetSeconds))},
     };
 
     public SWSpaceWarGameState CurState = SWSpaceWarGameState.Preholding;

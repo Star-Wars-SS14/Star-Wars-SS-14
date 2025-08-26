@@ -34,7 +34,7 @@ public sealed class SWPushAbilitySystem : EntitySystem
             return;
         }
 
-        _stun.TryParalyze(args.Target, TimeSpan.FromSeconds(ent.Comp.KnockedDownDuration), false);
+        _stun.TryAddParalyzeDuration(args.Target, TimeSpan.FromSeconds(ent.Comp.KnockedDownDuration));
         args.Handled = true;
     }
 

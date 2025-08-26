@@ -10,7 +10,7 @@ void fragment() {
     // color.rgb += noise * 0.05; // Adjust intensity of the grain
 
     // Apply the night vision green tint
-    color.rgb *= vec3(0.1, 0.75, 0.1);
+    //color.rgb *= vec3(0.1, 0.75, 0.1); SW
 
     COLOR = vec4(clamp(color.rgb, 0.0, 1.0), color.a);
 }

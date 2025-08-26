@@ -1,4 +1,4 @@
-﻿using Content.Shared.Alert;
+using Content.Shared.Alert;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
@@ -25,10 +25,10 @@ public sealed partial class NightVisionComponent : Component
     public bool SeeThroughContainers;
 
     [DataField, AutoNetworkedField]
-    public bool Green;
+    public bool BlockScopes;
 
     [DataField, AutoNetworkedField]
-    public bool BlockScopes;
+    public Color ColorOverride = new Color(0.1f, 0.75f, 0.1f);
 }
 
 [Serializable, NetSerializable]

@@ -26,6 +26,8 @@ public abstract class SharedNightVisionSystem : EntitySystem
 
     public override void Initialize()
     {
+        SubscribeLocalEvent<SWToggleableNightVisionComponent, ComponentInit>(OnInit); //SW
+
         SubscribeLocalEvent<NightVisionComponent, ComponentStartup>(OnNightVisionStartup);
         SubscribeLocalEvent<NightVisionComponent, MapInitEvent>(OnNightVisionMapInit);
         SubscribeLocalEvent<NightVisionComponent, AfterAutoHandleStateEvent>(OnNightVisionAfterHandle);
@@ -47,6 +49,10 @@ public abstract class SharedNightVisionSystem : EntitySystem
         SubscribeLocalEvent<RMCNightVisionVisibleOnIgniteComponent, IgnitionEvent>(OnNightVisionVisibleIgnition);
     }
 
+    private void OnInit(Entity<SWToggleableNightVisionComponent> ent, ref ComponentInit args)
+    {
+        _actions.AddAction(ent.Owner, ent.Comp.ActionId);
+    }
     private void OnNightVisionStartup(Entity<NightVisionComponent> ent, ref ComponentStartup args)
     {
         NightVisionChanged(ent);
@@ -148,7 +154,6 @@ public abstract class SharedNightVisionSystem : EntitySystem
         {
             ActionId = null,
             SlotFlags = SlotFlags.HEAD,
-            Green = true,
             BlockScopes = true,
         };
         AddComp(args.CycleableVisor, comp, true);
@@ -252,7 +257,7 @@ public abstract class SharedNightVisionSystem : EntitySystem
             {
                 nightVision = EnsureComp<NightVisionComponent>(user);
                 nightVision.State = NightVisionState.Full;
-                nightVision.Green = item.Comp.Green;
+                nightVision.ColorOverride = item.Comp.ColorOverride;
                 nightVision.BlockScopes = item.Comp.BlockScopes;
                 Dirty(user, nightVision);
             }
@@ -261,7 +266,7 @@ public abstract class SharedNightVisionSystem : EntitySystem
                 nightVision = new NightVisionComponent()
                 {
                     State = NightVisionState.Full,
-                    Green = item.Comp.Green,
+                    ColorOverride = item.Comp.ColorOverride,
                     BlockScopes = item.Comp.BlockScopes,
                 };
 

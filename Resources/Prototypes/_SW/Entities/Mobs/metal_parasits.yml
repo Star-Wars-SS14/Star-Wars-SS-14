@@ -99,3 +99,6 @@
   - type: FireVisuals
     sprite: Mobs/Effects/onfire.rsi
     normalState: Generic_mob_burning
+  - type: SWToggleableNightVision
+  - type: NightVisionItem
+    colorOverride: "#87008a"

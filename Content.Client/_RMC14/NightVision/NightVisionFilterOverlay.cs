@@ -1,4 +1,4 @@
-﻿using Content.Shared._RMC14.NightVision;
+using Content.Shared._RMC14.NightVision;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
 using Robust.Shared.Enums;
@@ -34,11 +34,11 @@ public sealed class NightVisionFilterOverlay : Overlay
         }
 
         var handle = args.WorldHandle;
-        if (nightVision.Green && ScreenTexture != null)
+        if (ScreenTexture != null)
         {
             _shader.SetParameter("SCREEN_TEXTURE", ScreenTexture);
             handle.UseShader(_shader);
-            handle.DrawRect(args.WorldBounds, Color.White);
+            handle.DrawRect(args.WorldBounds, nightVision.ColorOverride);
             handle.UseShader(null);
         }
     }

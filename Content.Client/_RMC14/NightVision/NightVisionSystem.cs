@@ -1,4 +1,4 @@
-﻿using Content.Shared._RMC14.NightVision;
+using Content.Shared._RMC14.NightVision;
 using Robust.Client.Graphics;
 using Robust.Client.Player;
 using Robust.Shared.Player;
@@ -70,7 +70,7 @@ public sealed class NightVisionSystem : SharedNightVisionSystem
         if (ent.Comp.Overlay)
             _overlay.AddOverlay(new NightVisionOverlay());
 
-        if (ent.Comp.Green)
+        if (ent.Comp.ColorOverride != Color.White)
             _overlay.AddOverlay(new NightVisionFilterOverlay());
 
         _light.DrawLighting = true;
@@ -81,7 +81,7 @@ public sealed class NightVisionSystem : SharedNightVisionSystem
         if (ent.Comp.Overlay)
             _overlay.AddOverlay(new NightVisionOverlay());
 
-        if (ent.Comp.Green)
+        if (ent.Comp.ColorOverride != Color.White)
             _overlay.AddOverlay(new NightVisionFilterOverlay());
 
         _light.DrawLighting = false;

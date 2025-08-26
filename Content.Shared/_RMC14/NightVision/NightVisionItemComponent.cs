@@ -28,7 +28,7 @@ public sealed partial class NightVisionItemComponent : Component
     //public Dictionary<EntProtoId<SkillDefinitionComponent>, int>? Skills;
 
     [DataField, AutoNetworkedField]
-    public bool Green;
+    public Color ColorOverride = new Color(0.1f, 0.75f, 0.1f);
 
     [DataField, AutoNetworkedField]
     public bool BlockScopes;

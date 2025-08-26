@@ -7,7 +7,7 @@
     prototype: SWParasit
   - type: GhostRole
     makeSentient: false
-    allowSpeech: false
+    allowSpeech: true
     allowMovement: true
     name: ghost-role-information-parasit-name
     description: ghost-role-information-parasit-description
@@ -41,8 +41,8 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      200: Critical
-      220: Dead
+      300: Critical
+      320: Dead
   - type: DamageStateVisuals
     states:
       Alive:
@@ -93,7 +93,7 @@
     animation: WeaponArcBite
     damage:
       types:
-        Piercing: 100
+        Piercing: 70
         Structural: 30
     altDisarm: false
   - type: Bloodstream
@@ -131,3 +131,5 @@
         Brute: -0.15
         Burn: -0.3
         Airloss: -0.15
+  - type: ReplacementAccent
+    accent: SWMetallParasit

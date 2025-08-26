@@ -18,6 +18,7 @@ using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 using static Robust.Client.UserInterface.Controls.BoxContainer;
+using System.Collections.Generic;
 
 namespace Content.Client.LateJoin
 {
@@ -29,12 +30,14 @@ namespace Content.Client.LateJoin
         [Dependency] private readonly IEntitySystemManager _entitySystem = default!;
         [Dependency] private readonly JobRequirementsManager _jobRequirements = default!;
         [Dependency] private readonly IClientPreferencesManager _preferencesManager = default!;
+        [Dependency] private readonly ILogManager _logManager = default!;
 
         public event Action<(NetEntity, string)> SelectedId;
 
         private readonly ClientGameTicker _gameTicker;
         private readonly SpriteSystem _sprites;
         private readonly CrewManifestSystem _crewManifest;
+        private readonly ISawmill _sawmill;
 
         private readonly Dictionary<NetEntity, Dictionary<string, List<JobButton>>> _jobButtons = new();
         private readonly Dictionary<NetEntity, Dictionary<string, BoxContainer>> _jobCategories = new();
@@ -49,6 +52,7 @@ namespace Content.Client.LateJoin
             _sprites = _entitySystem.GetEntitySystem<SpriteSystem>();
             _crewManifest = _entitySystem.GetEntitySystem<CrewManifestSystem>();
             _gameTicker = _entitySystem.GetEntitySystem<ClientGameTicker>();
+            _sawmill = _logManager.GetSawmill("latejoin.panel");
 
             Title = Loc.GetString("late-join-gui-title");
 
@@ -66,7 +70,7 @@ namespace Content.Client.LateJoin
             SelectedId += x =>
             {
                 var (station, jobId) = x;
-                Logger.InfoS("latejoin", $"Late joining as ID: {jobId}");
+                _sawmill.Info($"Late joining as ID: {jobId}");
                 _consoleHost.ExecuteCommand($"joingame {CommandParsing.Escape(jobId)} {station}");
                 Close();
             };
@@ -82,7 +86,7 @@ namespace Content.Client.LateJoin
             _jobCategories.Clear();
 
             if (!_gameTicker.DisallowedLateJoin && _gameTicker.StationNames.Count == 0)
-                Logger.Warning("No stations exist, nothing to display in late-join GUI");
+                _sawmill.Warning("No stations exist, nothing to display in late-join GUI");
 
             foreach (var (id, name) in _gameTicker.StationNames)
             {
@@ -108,7 +112,7 @@ namespace Content.Client.LateJoin
                     }
                 };
 
-                _base.AddChild(new StripeBack()
+                var stripe = new StripeBack() //SW
                 {
                     Children =
                     {
@@ -126,14 +130,16 @@ namespace Content.Client.LateJoin
                             }
                         }
                     }
-                });
-
+                };
+                _base.AddChild(stripe);
+                //SW start
+                var crewManifestButton = new Button()
+                {
+                    Text = Loc.GetString("crew-manifest-button-label")
+                };
+                //SW end
                 if (_configManager.GetCVar(CCVars.CrewManifestWithoutEntity))
                 {
-                    var crewManifestButton = new Button()
-                    {
-                        Text = Loc.GetString("crew-manifest-button-label")
-                    };
                     crewManifestButton.OnPressed += _ => _crewManifest.RequestCrewManifest(id);
 
                     _base.AddChild(crewManifestButton);
@@ -170,7 +176,7 @@ namespace Content.Client.LateJoin
 
                 foreach (var department in departments)
                 {
-                    var departmentName = Loc.GetString($"department-{department.ID}");
+                    var departmentName = Loc.GetString(department.Name);
                     _jobCategories[id] = new Dictionary<string, BoxContainer>();
                     var stationAvailable = _gameTicker.JobsAvailable[id];
                     var jobsAvailable = new List<JobPrototype>();
@@ -223,7 +229,6 @@ namespace Content.Client.LateJoin
 
                     _jobCategories[id][department.ID] = category;
                     jobList.AddChild(category);
-
                     foreach (var prototype in jobsAvailable)
                     {
                         var value = stationAvailable[prototype.ID];
@@ -290,6 +295,13 @@ namespace Content.Client.LateJoin
                         _jobButtons[id][prototype.ID].Add(jobButton);
                     }
                 }
+                //SW start
+                if (_jobButtons[id].Count == 0)
+                {
+                    stripe.Visible = false;
+                    crewManifestButton.Visible = false;
+                }
+                //SW end
             }
         }
 

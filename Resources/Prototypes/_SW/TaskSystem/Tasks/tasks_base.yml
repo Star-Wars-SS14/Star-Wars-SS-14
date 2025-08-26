@@ -5,8 +5,10 @@
     name: Уничтожьте 3 прайдомата. 
     description: ЛГБТ - экстремистская организация.
   - type: DestroyObjectsTask
-    objects:
-      [VendingMachinePride]: 3
+    requirements:
+    - number: 3
+      objects:
+      - VendingMachinePride
 
 - type: entity
   id: CollectObjectsTaskExample
@@ -15,13 +17,12 @@
     name: Украдите три плюшевых пчелы. 
     description: Главное спиздить, а пригодится или нет решать потом.
   - type: SWCollectObjectTask
-    objects:
-      [PlushieBee] : 3
+    requirements:
+    - number: 3
+      objects:
+      - PlushiBee
 
 - type: entity
   id: SWTaskBase
-  categories: [ HideSpawnMenu ]
   components:
   - type: SWTask
-    name: Basetask name
-    description: Basetask desc

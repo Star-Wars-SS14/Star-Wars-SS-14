@@ -1,4 +1,4 @@
-﻿- type: entity
+- type: entity
   parent: BaseItem
   id: SWBinoculars
   name: бинокль
@@ -9,17 +9,17 @@
   - type: Sprite
     sprite: _SW/Objects/Devices/binoculars.rsi
     state: binoculars
-  - type: MultiHandedItem
-  - type: Scope
-    useInHand: true
-    allowMovement: true
-    delay: 0
-    zoom: 1.6 # same stats of 4x telescopic scope
-    offset: 14
+  - type: EyeCursorOffset
+    maxOffset: 15
+    pvsIncrease: 1.5
+  - type: UseDelay
+    delay: 1.0
+  - type: CursorOffsetRequiresWield
+  - type: Wieldable
   - type: Clothing
-    quickEquip: true
+    quickEquip: false
     slots:
-    - neck
+    - Neck
   - type: Tag
     tags:
     - Binoculars

@@ -25,8 +25,9 @@ public sealed partial class SWCollectObjectTaskSystem : EntitySystem
         var queryTasks = EntityQueryEnumerator<SWCollectObjectTaskComponent>();
         while (queryTasks.MoveNext(out var uid, out var comp))
         {
-            foreach (var protolist in comp.ObjectsCollected.Keys)
+            foreach (var requirement in comp.ObjectsCollected)
             {
+                var protolist = requirement.ObjectsPrototypes;
                 TryPrototype(ev.PlacedUid, out var proto);
                 if (proto == null)
                 {
@@ -35,9 +36,14 @@ public sealed partial class SWCollectObjectTaskSystem : EntitySystem
                 var taskComp = EnsureComp<SWTaskComponent>(uid);
                 if (protolist.Contains(proto.ID)
                     && ev.OwnerFaction == taskComp.OwningFaction
-                    && comp.ObjectsCollected[protolist] < comp.ObjectsToCollect[protolist])
+                    && comp.ObjectsCollected.Find(x => x.ObjectsPrototypes == protolist)?.Number
+                    < comp.ObjectsToCollect.Find(x => x.ObjectsPrototypes == protolist)?.Number)
                 {
-                    comp.ObjectsCollected[protolist]++;
+                    var tmp = comp.ObjectsCollected.Find(x => x.ObjectsPrototypes == protolist);
+                    if (tmp != null)
+                    {
+                        tmp.Number++;
+                    }
                     ev.Handled = true;
                 }
             }
@@ -47,16 +53,16 @@ public sealed partial class SWCollectObjectTaskSystem : EntitySystem
     private void OnTaskInit(Entity<SWCollectObjectTaskComponent> ent, ref SWTaskInitEvent args)
     {
         //инициализируем количество собранных объектов нулями
-        foreach (var protolist in ent.Comp.ObjectsToCollect.Keys)
+        foreach (var req in ent.Comp.ObjectsToCollect)
         {
-            ent.Comp.ObjectsCollected[protolist] = 0;
+            ent.Comp.ObjectsCollected.Add(new ObjectRequirement(0, req.ObjectsPrototypes));
         }
     }
 
     private void OnGetProgress(Entity<SWCollectObjectTaskComponent> ent, ref SWGetProgressEvent args)
     {
-        FixedPoint2 countAll = ent.Comp.ObjectsToCollect.Values.Sum();
-        FixedPoint2 collected = ent.Comp.ObjectsCollected.Values.Sum();
+        FixedPoint2 countAll = ent.Comp.ObjectsToCollect.Sum(item => item.Number);
+        FixedPoint2 collected = ent.Comp.ObjectsCollected.Sum(item => item.Number);
         var p = collected / countAll;
         args.Progress = p > 1.0 ? 1.0 : p;
         args.Handled = true;

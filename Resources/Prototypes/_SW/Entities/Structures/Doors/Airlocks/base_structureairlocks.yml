@@ -31,7 +31,7 @@
   - type: Construction
     graph: Airlock
     node: glassAirlock
-  - type: PaintableAirlock
+  - type: Paintable
     group: Glass
   - type: RadiationBlocker
     resistance: 2

@@ -18,7 +18,7 @@ public sealed partial class SWLightningAbilityComponent : Component
     public string LigtningActionPrototype = "ActionSithForceLightning";
 
     [DataField, ViewVariables(VVAccess.ReadWrite)]
-    public int BoltCount = 2;
+    public int BoltCount = 1;
 
     [DataField(required: true), ViewVariables(VVAccess.ReadWrite)]
     public DamageSpecifier Damage;

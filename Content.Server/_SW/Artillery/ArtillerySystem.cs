@@ -8,6 +8,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.Timing;
 using Robust.Server.Audio;
 using Content.Shared.Coordinates;
+using Robust.Shared.Audio;
 namespace Content.Server._SW.Artillery;
 public sealed class ArtillerySystem : EntitySystem
 {
@@ -58,7 +59,10 @@ public sealed class ArtillerySystem : EntitySystem
 
     private void HandleTriggerArtillery(Entity<ArtilleryOnTriggerComponent> ent, ref TriggerEvent args)
     {
-        ent.Comp.PlayingBombSoundInfo = _audioSystem.PlayPvs(ent.Comp.BombSound, ent.Owner.ToCoordinates());
+        if (ent.Comp.BombSound != null)
+        {
+            ent.Comp.PlayingBombSoundInfo = _audioSystem.PlayPvs(new SoundPathSpecifier(ent.Comp.BombSound), ent.Owner.ToCoordinates());
+        }
         ent.Comp.TimesLeft = ent.Comp.TimesCount;
         ent.Comp.TimeStartBombing = _time.CurTime + TimeSpan.FromSeconds(ent.Comp.DelayInSeconds);
     }

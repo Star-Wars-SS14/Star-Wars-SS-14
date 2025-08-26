@@ -13,11 +13,11 @@
     id: SWIDCardEmpireLieutenant
     ears: SWClothingHeadsetRegular
     belt: ClothingBeltAssault
-    pocket1: SWYellowMagazineBlastRifle
-    pocket2: SWYellowMagazineBlastRifle
+    pocket1: SWE1Magazine
+    pocket2: SWE1Magazine
   storage:
     back:
-    - SWYellowMagazineBlastRifle
+    - SWE1Magazine
     - CMInaprovalineAutoInjector
     - AloeCream
     - BoxMRE
@@ -37,11 +37,11 @@
     id: SWIDCardEmpireSoldier
     ears: SWClothingHeadsetRegular
     belt: ClothingBeltAssault
-    pocket1: SWYellowMagazineBlastRifle
-    pocket2: SWYellowMagazineBlastRifle
+    pocket1: SWE1Magazine
+    pocket2: SWE1Magazine
   storage:
     back:
-    - SWYellowMagazineBlastRifle
+    - SWE1Magazine
     - CMInaprovalineAutoInjector
     - PillKelotane
     - BoxMRE
@@ -61,14 +61,14 @@
     id: SWIDCardEmpireMedic
     ears: SWClothingHeadsetRegular
     belt: ClothingBeltMilitaryWebbingMed
-    pocket1: SWYellowMagazineBlastRifle
-    pocket2: SWYellowMagazineBlastRifle
+    pocket1: SWE1Magazine
+    pocket2: SWE1Magazine
   storage:
     back:
     - Defibrillator
     - BoxMRE
     - SWBinoculars
-    - SWYellowMagazineBlastRifle
+    - SWE1Magazine
     belt:
     - CMInaprovalineAutoInjector
     - CMInaprovalineAutoInjector
@@ -91,11 +91,11 @@
     id: SWIDCardRepublicLieutenant
     ears: SWClothingHeadsetRepublic
     belt: ClothingBeltAssault
-    pocket1: SWBlueMagazineBlastRifle
-    pocket2: SWBlueMagazineBlastRifle
+    pocket1: SWJ111Magazine
+    pocket2: SWJ111Magazine
   storage:
     back:
-    - SWBlueMagazineBlastRifle
+    - SWJ111Magazine
     - CMInaprovalineAutoInjector
     - AloeCream
     - BoxMRE
@@ -115,11 +115,11 @@
     id: SWIDCardRepublicSoldier
     ears: SWClothingHeadsetRepublic
     belt: ClothingBeltAssault
-    pocket1: SWH206GreenMagazineBlastRifle
-    pocket2: SWH206GreenMagazineBlastRifle
+    pocket1: SWH206Magazine
+    pocket2: SWH206Magazine
   storage:
     back:
-    - SWH206GreenMagazineBlastRifle
+    - SWH206Magazine
     - CMInaprovalineAutoInjector
     - AloeCream
     - BoxMRE
@@ -139,14 +139,14 @@
     id: SWIDCardRepublicMedic
     ears: SWClothingHeadsetRepublic
     belt: ClothingBeltMilitaryWebbingMed
-    pocket1: SWH206GreenMagazineBlastRifle
-    pocket2: SWH206GreenMagazineBlastRifle
+    pocket1: SWH206Magazine
+    pocket2: SWH206Magazine
   storage:
     back:
     - Defibrillator
     - BoxMRE
     - SWBinoculars
-    - SWH206GreenMagazineBlastRifle
+    - SWH206Magazine
     belt:
     - CMInaprovalineAutoInjector
     - CMInaprovalineAutoInjector

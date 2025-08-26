@@ -1,74 +1,74 @@
-- type: entity
-  id: CMDefibrillator
-  parent: [Defibrillator, RMCPowerCellSlot]
-  suffix: RMC14
-  components:
-  - type: PowerCellDraw
-    useRate: 100
-  - type: Sprite
-    sprite: _RMC14/Objects/Medical/defib.rsi
-    layers:
-    - state: defib
-    - state: defib_on
-      map: [ "enum.ToggleVisuals.Layer" ]
-      visible: false
-  - type: Appearance
-  - type: GenericVisualizer
-    visuals:
-      enum.ToggleVisuals.Toggled:
-        enum.ToggleVisuals.Layer:
-          True: { visible: true }
-          False: { visible: false }
-  - type: Item
-    size: Normal
-    sprite: Objects/Specific/Medical/defib.rsi
-  - type: Speech
-    speechVerb: Robotic
-  - type: ItemToggle
-    soundActivate:
-      path: /Audio/_RMC14/Medical/defib_SafetyOn.ogg
-    soundDeactivate:
-      path: /Audio/_RMC14/Medical/defib_safetyOff.ogg
-  - type: Defibrillator
-    doAfterDuration: 6.25
-    allowDoAfterMovement: false
-    canDefibCrit: false
-    zapHeal:
-      types:
-        Asphyxiation: -200
-    zapSound:
-      path: /Audio/_RMC14/Medical/defib_release.ogg
-      params:
-        volume: -6
-    chargeSound:
-      path: /Audio/_RMC14/Medical/defib_charge.ogg
-      params:
-        volume: -8
-    failureSound:
-      path: /Audio/_RMC14/Medical/defib_failed.ogg
-      params:
-        volume: -6
-    successSound:
-      path: /Audio/_RMC14/Medical/defib_success.ogg
-      params:
-        volume: -6
-    readySound:
-      path: /Audio/_RMC14/Medical/defib_ready.ogg
-      params:
-        volume: -6
-    zapDamage: 0
+# - type: entity
+#   id: CMDefibrillator
+#   parent: [Defibrillator, RMCPowerCellSlot]
+#   suffix: RMC14
+#   components:
+#   - type: PowerCellDraw
+#     useRate: 100
+#   - type: Sprite
+#     sprite: _RMC14/Objects/Medical/defib.rsi
+#     layers:
+#     - state: defib
+#     - state: defib_on
+#       map: [ "enum.ToggleVisuals.Layer" ]
+#       visible: false
+#   - type: Appearance
+#   - type: GenericVisualizer
+#     visuals:
+#       enum.ToggleVisuals.Toggled:
+#         enum.ToggleVisuals.Layer:
+#           True: { visible: true }
+#           False: { visible: false }
+#   - type: Item
+#     size: Normal
+#     sprite: Objects/Specific/Medical/defib.rsi
+#   - type: Speech
+#     speechVerb: Robotic
+#   - type: ItemToggle
+#     soundActivate:
+#       path: /Audio/_RMC14/Medical/defib_SafetyOn.ogg
+#     soundDeactivate:
+#       path: /Audio/_RMC14/Medical/defib_safetyOff.ogg
+#   - type: Defibrillator
+#     doAfterDuration: 6.25
+#     allowDoAfterMovement: false
+#     canDefibCrit: false
+#     zapHeal:
+#       types:
+#         Asphyxiation: -200
+#     zapSound:
+#       path: /Audio/_RMC14/Medical/defib_release.ogg
+#       params:
+#         volume: -6
+#     chargeSound:
+#       path: /Audio/_RMC14/Medical/defib_charge.ogg
+#       params:
+#         volume: -8
+#     failureSound:
+#       path: /Audio/_RMC14/Medical/defib_failed.ogg
+#       params:
+#         volume: -6
+#     successSound:
+#       path: /Audio/_RMC14/Medical/defib_success.ogg
+#       params:
+#         volume: -6
+#     readySound:
+#       path: /Audio/_RMC14/Medical/defib_ready.ogg
+#       params:
+#         volume: -6
+#     zapDamage: 0
 
-- type: entity
-  id: CMDefibrillatorEmpty
-  parent: CMDefibrillator
-  suffix: RMC14, Empty
-  components:
-  - type: ItemSlots
-    slots:
-      cell_slot:
-        name: power-cell-slot-component-slot-name-default
+# - type: entity
+#   id: CMDefibrillatorEmpty
+#   parent: CMDefibrillator
+#   suffix: RMC14, Empty
+#   components:
+#   - type: ItemSlots
+#     slots:
+#       cell_slot:
+#         name: power-cell-slot-component-slot-name-default
 
-- type: entity
-  parent: CMDefibrillator
-  id: CMDefibrillatorInfinite
-  suffix: RMC14, Infinite
+# - type: entity
+#   parent: CMDefibrillator
+#   id: CMDefibrillatorInfinite
+#   suffix: RMC14, Infinite

@@ -164,7 +164,7 @@ public sealed partial class PowerMonitoringWindow
             if (child is not PowerMonitoringWindowSubEntry)
                 continue;
 
-            var castChild = (PowerMonitoringWindowSubEntry) child;
+            var castChild = (PowerMonitoringWindowSubEntry)child;
 
             if (castChild == null)
                 continue;
@@ -257,7 +257,7 @@ public sealed partial class PowerMonitoringWindow
             if (control == null || control is not PowerMonitoringWindowEntry)
                 continue;
 
-            if (((PowerMonitoringWindowEntry) control).NetEntity == _focusEntity)
+            if (((PowerMonitoringWindowEntry)control).NetEntity == _focusEntity)
                 return true;
 
             nextScrollPosition += control.Height;
@@ -265,27 +265,6 @@ public sealed partial class PowerMonitoringWindow
 
         // Failed to find control
         nextScrollPosition = null;
-
-        return false;
-    }
-
-    private bool TryGetVerticalScrollbar(ScrollContainer scroll, [NotNullWhen(true)] out VScrollBar? vScrollBar)
-    {
-        vScrollBar = null;
-
-        foreach (var child in scroll.Children)
-        {
-            if (child is not VScrollBar)
-                continue;
-
-            var castChild = child as VScrollBar;
-
-            if (castChild != null)
-            {
-                vScrollBar = castChild;
-                return true;
-            }
-        }
 
         return false;
     }
@@ -299,15 +278,12 @@ public sealed partial class PowerMonitoringWindow
         if (scroll == null)
             return;
 
-        if (!TryGetVerticalScrollbar(scroll, out var vScrollbar))
-            return;
-
         if (!TryGetNextScrollPosition(out float? nextScrollPosition))
             return;
 
-        vScrollbar.ValueTarget = nextScrollPosition.Value;
+        scroll.VScrollTarget = nextScrollPosition.Value;
 
-        if (MathHelper.CloseToPercent(vScrollbar.Value, vScrollbar.ValueTarget))
+        if (MathHelper.CloseToPercent(scroll.VScroll, scroll.VScrollTarget))
             _autoScrollActive = false;
     }
 
@@ -367,7 +343,7 @@ public sealed partial class PowerMonitoringWindow
 
     private PowerMonitoringConsoleGroup GetCurrentPowerMonitoringConsoleGroup()
     {
-        return (PowerMonitoringConsoleGroup) MasterTabContainer.CurrentTab;
+        return (PowerMonitoringConsoleGroup)MasterTabContainer.CurrentTab;
     }
 }
 

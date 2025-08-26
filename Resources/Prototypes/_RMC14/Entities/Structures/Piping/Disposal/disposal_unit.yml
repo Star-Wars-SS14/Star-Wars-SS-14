@@ -1,4 +1,4 @@
-﻿- type: entity
+- type: entity
   id: CMDisposalUnit
   parent: DisposalUnit
   name: мусорка
@@ -11,6 +11,8 @@
       map: [ "enum.DisposalUnitVisualLayers.Unanchored" ]
     - state: disposal
       map: [ "enum.DisposalUnitVisualLayers.Base" ]
+    - state: disposal-charging
+      map: [ "enum.DisposalUnitVisualLayers.BaseCharging" ]
     - state: disposal-flush
       map: [ "enum.DisposalUnitVisualLayers.OverlayFlush" ]
     - state: dispover-charge

@@ -15,27 +15,27 @@
     ears: ClothingHeadsetGrey
 
 
-#Space Ninja Outfit
-- type: startingGear
-  id: SpaceNinjaGear
-  equipment:
-    jumpsuit: ClothingUniformJumpsuitNinja
-    # belt holds katana so satchel has the tools for sabotaging things
-    back: ClothingBackpackSatchelTools
-    mask: ClothingMaskNinja
-    head: ClothingHeadHelmetSpaceNinja
-    eyes: ClothingEyesVisorNinja
-    gloves: ClothingHandsGlovesSpaceNinja
-    outerClothing: ClothingOuterSuitSpaceNinja
-    shoes: ClothingShoesSpaceNinja
-    id: AgentIDCard
-    ears: ClothingHeadsetGrey
-    pocket1: SpiderCharge
-    pocket2: PinpointerStation
-    belt: EnergyKatana
-    suitstorage: OxygenTankFilled
-  inhand:
-    - JetpackBlackFilled
+# #Space Ninja Outfit
+# - type: startingGear
+#   id: SpaceNinjaGear
+#   equipment:
+#     jumpsuit: ClothingUniformJumpsuitNinja
+#     # belt holds katana so satchel has the tools for sabotaging things
+#     back: ClothingBackpackSatchelTools
+#     mask: ClothingMaskNinja
+#     head: ClothingHeadHelmetSpaceNinja
+#     eyes: ClothingEyesVisorNinja
+#     gloves: ClothingHandsGlovesSpaceNinja
+#     outerClothing: ClothingOuterSuitSpaceNinja
+#     shoes: ClothingShoesSpaceNinja
+#     id: AgentIDCard
+#     ears: ClothingHeadsetGrey
+#     pocket1: SpiderCharge
+#     pocket2: PinpointerStation
+#     belt: EnergyKatana
+#     suitstorage: OxygenTankFilled
+#   inhand:
+#     - JetpackBlackFilled
 
 # #Deathsquad Outfit
 # - type: startingGear
@@ -56,24 +56,24 @@
 #     belt: ClothingBeltMilitaryWebbingMedFilled
 
 # Syndicate Operative Outfit - Monkey
-- type: startingGear
-  id: SyndicateOperativeGearMonkey
-  equipment:
-    head: ClothingHeadHatOutlawHat
-    jumpsuit: ClothingUniformJumpsuitOperative
-    mask: CigaretteSyndicate
+# - type: startingGear
+#   id: SyndicateOperativeGearMonkey
+#   equipment:
+#     head: ClothingHeadHatOutlawHat
+#     jumpsuit: ClothingUniformJumpsuitOperative
+#     mask: CigaretteSyndicate
 
-# Syndicate Operative Outfit - Barratry
-- type: startingGear
-  id: SyndicateOperativeGearExtremelyBasic
-  equipment:
-    jumpsuit: ClothingUniformJumpsuitOperative
-    back: ClothingBackpackDuffelSyndicateOperative
-    shoes: ClothingShoesBootsCombatFilled
-    gloves: ClothingHandsGlovesColorBlack
-  storage:
-    back:
-    - BoxSurvival
+# # Syndicate Operative Outfit - Barratry
+# - type: startingGear
+#   id: SyndicateOperativeGearExtremelyBasic
+#   equipment:
+#     jumpsuit: ClothingUniformJumpsuitOperative
+#     back: ClothingBackpackDuffelSyndicateOperative
+#     shoes: ClothingShoesBootsCombatFilled
+#     gloves: ClothingHandsGlovesColorBlack
+#   storage:
+#     back:
+#     - BoxSurvival
 
 
 # Syndicate Operative Outfit - Civilian
@@ -181,6 +181,18 @@
     jumpsuit: ClothingUniformJumpsuitJacketMonkey
     id: PunPunIDCard
 
+- type: startingGear
+  id: MobPollyGear
+  equipment:
+    ears: ClothingHeadsetEngineering
+
+# Emotional Support Scurret
+
+- type: startingGear
+  id: EmotionalSupportScurretGear
+  equipment:
+    id: ScurretPDA
+
 # DeathMatch Gear
 
 - type: startingGear
@@ -195,26 +207,27 @@
 
 #Brigmedic
 
-- type: startingGear
-  id: BrigmedicGear
-  equipment:
-    jumpsuit: ClothingUniformJumpsuitBrigmedic
-    outerClothing: ClothingOuterCoatAMG
-    back: ClothingBackpackBrigmedic
-    shoes: ClothingShoesColorRed
-    gloves: ClothingHandsGlovesNitrile
-    eyes: ClothingEyesHudMedical
-    head: ClothingHeadHatBeretBrigmedic
-    id: BrigmedicPDA
-    ears: ClothingHeadsetBrigmedic
-    mask: ClothingMaskBreathMedicalSecurity
-    belt: ClothingBeltMedicalFilled
+# Reason: Add Corvax-Brigmedic
+#- type: startingGear
+#  id: BrigmedicGear
+#  equipment:
+#    jumpsuit: ClothingUniformJumpsuitBrigmedic
+#    outerClothing: ClothingOuterCoatAMG
+#    back: ClothingBackpackBrigmedic
+#    shoes: ClothingShoesColorRed
+#    gloves: ClothingHandsGlovesNitrile
+#    eyes: ClothingEyesHudMedical
+#    head: ClothingHeadHatBeretBrigmedic
+#    id: BrigmedicPDA
+#    ears: ClothingHeadsetBrigmedic
+#    mask: ClothingMaskBreathMedicalSecurity
+#    belt: ClothingBeltMedicalFilled
 
 # Aghost
 - type: startingGear
   id: MobAghostGear
   equipment:
-    back: ClothingBackpackSatchelHolding
+    back: ClothingBackpackSatchelAdmin
     id: AdminPDA
   storage:
     back:

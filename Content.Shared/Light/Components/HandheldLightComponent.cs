@@ -9,6 +9,11 @@ namespace Content.Shared.Light.Components;
 [RegisterComponent, NetworkedComponent, Access(typeof(SharedHandheldLightSystem))]
 public sealed partial class HandheldLightComponent : Component
 {
+    //SW start
+    [DataField]
+    public bool NeedsBattery = true;
+    //SW end
+
     public byte? Level;
     public bool Activated;
 

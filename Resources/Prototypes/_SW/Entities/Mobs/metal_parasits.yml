@@ -41,11 +41,8 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      100: Critical
-      120: Dead
-  - type: MovementSpeedModifier
-    baseWalkSpeed : 2.5
-    baseSprintSpeed : 5
+      200: Critical
+      220: Dead
   - type: DamageStateVisuals
     states:
       Alive:
@@ -71,6 +68,12 @@
       Starving: 10
       Dead: 0
     baseDecayRate: 1
+    hungerThresholdDecayModifiers:
+      Overfed: 1.5
+      Okay: 1.0
+      Peckish: 1.0
+      Starving: 0.95
+      Dead: 0.9
   - type: Respirator
     damage:
       types:
@@ -90,7 +93,7 @@
     animation: WeaponArcBite
     damage:
       types:
-        Piercing: 75
+        Piercing: 100
         Structural: 30
     altDisarm: false
   - type: Bloodstream
@@ -110,3 +113,9 @@
       Male: MaleReptilian
       Female: MaleReptilian
       Unsexed: MaleReptilian
+  - type: SlowOnDamage
+    speedModifierThresholds:
+      190: 0.9
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3.5
+    baseSprintSpeed: 6.0

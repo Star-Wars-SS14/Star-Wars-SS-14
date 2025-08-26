@@ -47,8 +47,6 @@
       types:
         Asphyxiation: -5.0
 
-
-
 - type: entity
   name: Sith
   parent: ForceUserBase
@@ -61,6 +59,7 @@
     damage:
       types:
         Heat: 50
+  - type: SWStrangulateAbility
 
 - type: entity
   name: Jedi

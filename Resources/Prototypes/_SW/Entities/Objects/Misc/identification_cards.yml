@@ -474,3 +474,14 @@
     - state: image13
   - type: PresetIdCard
     job: SWExchangeOperative
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWIDCardCivilian
+  name: Civilian ID card
+  components:
+  - type: Sprite
+    layers:
+    - state: image3
+  - type: PresetIdCard
+    job: SWCivilian

@@ -31,6 +31,11 @@ public sealed class HandheldLightStatus : Control
     public HandheldLightStatus(HandheldLightComponent parent)
     {
         _parent = parent;
+        if (!parent.NeedsBattery)
+        {
+            _sections = new PanelContainer[0];
+            return;
+        }
 
         var wrapper = new BoxContainer
         {

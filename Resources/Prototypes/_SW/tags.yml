@@ -72,3 +72,9 @@
 
 - type: Tag
   id: SWMK1MagazineTag
+
+- type: Tag
+  id: SWScoutBlasterMagazine
+
+- type: Tag
+  id: SWBalmorraCannonMagazineTag

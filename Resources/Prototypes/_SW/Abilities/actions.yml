@@ -60,6 +60,22 @@
     canTargetSelf: false
 
 - type: entity
+  id: ActionStrangulate
+  name: Задушить
+  description: Задушите кого-нибудь
+  noSpawn: true
+  components:
+  - type: Action
+    icon: Interface/VerbIcons/pickup.svg.192dpi.png
+    useDelay: 2
+  - type: TargetAction
+    interactOnMiss: false
+    range: 8
+  - type: EntityTargetAction    
+    event: !type:SWRequestStrangulateEvent
+    canTargetSelf: false
+
+- type: entity
   id: SWDashAction
   name: Быстрый бег
   description: Ускорьтесь на короткое время

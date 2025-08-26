@@ -204,7 +204,6 @@ public sealed class DamageOverlay : Overlay
             {
                 outerDarkness = MathF.Min(0.98f, 0.3f * MathF.Log(level) + 1f);
             }
-
             _oxygenShader.SetParameter("time", 0.0f);
             _oxygenShader.SetParameter("color", new Vector3(0f, 0f, 0f));
             _oxygenShader.SetParameter("darknessAlphaOuter", outerDarkness);

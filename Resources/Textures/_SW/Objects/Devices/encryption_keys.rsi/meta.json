@@ -7,18 +7,50 @@
         "y": 32
     },
     "states": [
-        { "name": "crypt_red" },
-        { "name": "crypt_blue" },
-        { "name": "intellignece" },
-        { "name": "empire_soldier" },
-        { "name": "sobrik_comendant" },
-        { "name": "havok" },
-        { "name": "republic" },
-        { "name": "mandalorian" },
-        { "name": "crypt_gray" },
-        { "name": "republic_pilot" },
-        { "name": "empire_pilot" },
-        { "name": "commander_empire" },
-        { "name": "commander_republic" }
+        {
+            "name": "black_sun"
+        },
+        {
+            "name": "commander_empire"
+        },
+        {
+            "name": "commander_republic"
+        },
+        {
+            "name": "crypt_blue"
+        },
+        {
+            "name": "crypt_gray"
+        },
+        {
+            "name": "crypt_red"
+        },
+        {
+            "name": "empire_pilot"
+        },
+        {
+            "name": "empire_soldier"
+        },
+        {
+            "name": "exchange"
+        },
+        {
+            "name": "havok"
+        },
+        {
+            "name": "intellignece"
+        },
+        {
+            "name": "mandalorian"
+        },
+        {
+            "name": "republic"
+        },
+        {
+            "name": "republic_pilot"
+        },
+        {
+            "name": "sobrik_comendant"
+        }
     ]
 }

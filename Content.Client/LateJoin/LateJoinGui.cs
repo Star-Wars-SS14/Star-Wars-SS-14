@@ -18,6 +18,7 @@ using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 using static Robust.Client.UserInterface.Controls.BoxContainer;
+using System.Collections.Generic;
 
 namespace Content.Client.LateJoin
 {
@@ -111,7 +112,7 @@ namespace Content.Client.LateJoin
                     }
                 };
 
-                _base.AddChild(new StripeBack()
+                var stripe = new StripeBack() //SW
                 {
                     Children =
                     {
@@ -129,14 +130,16 @@ namespace Content.Client.LateJoin
                             }
                         }
                     }
-                });
-
+                };
+                _base.AddChild(stripe);
+                //SW start
+                var crewManifestButton = new Button()
+                {
+                    Text = Loc.GetString("crew-manifest-button-label")
+                };
+                //SW end
                 if (_configManager.GetCVar(CCVars.CrewManifestWithoutEntity))
                 {
-                    var crewManifestButton = new Button()
-                    {
-                        Text = Loc.GetString("crew-manifest-button-label")
-                    };
                     crewManifestButton.OnPressed += _ => _crewManifest.RequestCrewManifest(id);
 
                     _base.AddChild(crewManifestButton);
@@ -226,7 +229,6 @@ namespace Content.Client.LateJoin
 
                     _jobCategories[id][department.ID] = category;
                     jobList.AddChild(category);
-
                     foreach (var prototype in jobsAvailable)
                     {
                         var value = stationAvailable[prototype.ID];
@@ -293,6 +295,13 @@ namespace Content.Client.LateJoin
                         _jobButtons[id][prototype.ID].Add(jobButton);
                     }
                 }
+                //SW start
+                if (_jobButtons[id].Count == 0)
+                {
+                    stripe.Visible = false;
+                    crewManifestButton.Visible = false;
+                }
+                //SW end
             }
         }
 

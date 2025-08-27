@@ -4,8 +4,9 @@
   id: SheetMetalBase
   description: A sheet of metal, used often on the station in various applications.
   components:
-  - type: Food
-    solution: steel
+  - type: Food #SW
+    solution: steel #SW
+    requiresSpecialDigestion: true #SW
   - type: Sprite
     sprite: Objects/Materials/Sheets/metal.rsi
   - type: Item

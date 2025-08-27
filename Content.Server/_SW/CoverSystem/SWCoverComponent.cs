@@ -18,6 +18,9 @@ public sealed partial class SWCoverComponent : Component
     public float Step = 1f;
 
     [DataField]
+    public float MinChance = 0.1f;
+
+    [DataField]
     public float ChanceDecreasePerStep = 0.5f;
 
     public Dictionary<EntityUid, bool> HandledProjectiles = new Dictionary<EntityUid, bool>();

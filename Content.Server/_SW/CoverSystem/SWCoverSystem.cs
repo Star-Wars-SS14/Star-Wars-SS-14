@@ -25,6 +25,10 @@ public sealed partial class SWCoverSystem : EntitySystem
 
     private void OnCollide(Entity<SWCoverComponent> ent, ref PreventCollideEvent args)
     {
+        if (!args.OurFixture.Hard)
+        {
+            return;
+        }
         if (ent.Comp.HandledProjectiles.ContainsKey(args.OtherEntity))
         {
             args.Cancelled = ent.Comp.HandledProjectiles[args.OtherEntity];
@@ -43,7 +47,7 @@ public sealed partial class SWCoverSystem : EntitySystem
 
         float chanceToPassCollision = 1.0f - (distance / ent.Comp.Step) * ent.Comp.ChanceDecreasePerStep;
 
-        chanceToPassCollision = chanceToPassCollision > 0f ? chanceToPassCollision : 0f;
+        chanceToPassCollision = chanceToPassCollision > ent.Comp.MinChance ? chanceToPassCollision : ent.Comp.MinChance;
 
         _s.Fatal($"distance: {distance}, chance{chanceToPassCollision}");
         if (distance <= ent.Comp.DistanceGuaranteedPass || _random.Prob(chanceToPassCollision))

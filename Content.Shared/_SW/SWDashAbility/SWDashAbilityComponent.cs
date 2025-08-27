@@ -23,9 +23,5 @@ public sealed partial class SWDashAbilityComponent : Component
     public float DashDuration = 5f;
     public TimeSpan DashEndTime;
 
-    [DataField("delay"), ViewVariables(VVAccess.ReadWrite)]
-    public float DelayBetweenDashes = 7f;
-    public TimeSpan NextDashAvailable;
-
     public bool IsDashing = false;
 }

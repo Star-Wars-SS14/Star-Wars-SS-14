@@ -40,13 +40,7 @@ public sealed class SWDashAbilitySystem : EntitySystem
         {
             return;
         }
-        if (_gameTiming.CurTime >= ent.Comp.NextDashAvailable)
-        {
-            StartDash(ent);
-        } else
-        {
-            //_popupSystem.PopupEntity("Способность на перезарядке!", ent.Owner);
-        }
+        StartDash(ent);
         args.Handled = true;
     }
 
@@ -73,7 +67,6 @@ public sealed class SWDashAbilitySystem : EntitySystem
     {
         ent.Comp.IsDashing = true;
         ent.Comp.DashEndTime = _gameTiming.CurTime + TimeSpan.FromSeconds(ent.Comp.DashDuration);
-        ent.Comp.NextDashAvailable = ent.Comp.DashEndTime + TimeSpan.FromSeconds(ent.Comp.DelayBetweenDashes);
         _movementSpeedModifierSystem.RefreshMovementSpeedModifiers(ent.Owner);
     }
 

@@ -82,7 +82,7 @@
   components:
   - type: Action
     icon: Interface/Actions/dash.png
-    useDelay: 3
+    useDelay: 6
   - type: InstantAction    
     event: !type:DashRequestedEvent
 

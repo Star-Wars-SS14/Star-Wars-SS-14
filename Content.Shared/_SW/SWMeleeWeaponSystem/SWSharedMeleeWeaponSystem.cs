@@ -7,7 +7,7 @@ using Content.Shared.Weapons.Melee.Events;
 using Content.Shared.Weapons.Reflect;
 using Robust.Shared.Serialization;
 using Robust.Shared.Timing;
-
+using Robust.Shared.Utility;
 namespace Content.Shared._SW;
 
 public abstract class SWSharedMeleeWeaponSystem : EntitySystem
@@ -24,6 +24,7 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
         //SubscribeLocalEvent<SWForceUserBlockComponent, TargetMeleeHitEvent>(OnMeleeHit);
         SubscribeLocalEvent<MeleeWeaponComponent, MeleeHitEvent>(OnMeleeHit);
         SubscribeLocalEvent<SWWeaponBlockComponent, AttemptMeleeEvent>(OnAttemptMelee);
+        SubscribeLocalEvent<SWForceUserBlockComponent, HitByLightningEvent>(OnLightningHit);
     }
 
     private void OnMeleeHit(Entity<MeleeWeaponComponent> ent, ref MeleeHitEvent args)
@@ -110,28 +111,8 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
         userComp.IsBlocking = false;
     }
 
-    private void OnMeleeHit(Entity<SWForceUserBlockComponent> ent, ref TargetMeleeHitEvent args)
-    {
-        if (ent.Comp.CurrentForceWeapon != null)
-        {
-            if (ent.Comp.IsBlocking)
-            {
-                args.Handled = true;
-                PopupSystem.PopupPredicted("Удар отражен!", ent.Owner, null, PopupType.Medium);
-                if (HasComp<SWWeaponBlockComponent>(args.Weapon))
-                {
-                    DisableBlock(ent.Owner);
-                }
-            }
-        }
-    }
     private void OnTryBlock(SWTryReflectEvent ev)
     {
-        if (!TryComp<ReflectComponent>(GetEntity(ev.Weapon), out var reflectComp))
-        {
-            return;
-        }
-
         if (!TryComp<SWWeaponBlockComponent>(GetEntity(ev.Weapon), out var comp))
         {
             return;
@@ -147,13 +128,10 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
             return;
         }
 
-        if (_gameTiming.CurTime >= forceComp.NextReflectionAvailable && !forceComp.IsBlocking)
+        if (CanBlock(comp.CurrentUser.Value, forceComp))
         {
-            PopupSystem.PopupPredicted("Вы ставите блок!", GetEntity(ev.Weapon), null, PopupType.Medium);
-            reflectComp.ReflectProb = 1f;
-            forceComp.IsBlocking = true;
-            forceComp.BlockEndTime = _gameTiming.CurTime + TimeSpan.FromSeconds(forceComp.BlockDuration);
-        }
+            EnableBlock(GetEntity(ev.Weapon), comp.CurrentUser.Value);
+        } 
         else if (forceComp.IsBlocking)
         {
             PopupSystem.PopupPredicted("Вы уже выставили блок!", GetEntity(ev.Weapon), null, PopupType.Medium);
@@ -175,6 +153,49 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
                 DisableBlock(ent);
             }
         }
+    }
+
+    private void EnableBlock(EntityUid weapon, EntityUid forceUser)
+    {
+        var reflectComp = Comp<ReflectComponent>(weapon);
+        var forceComp = Comp<SWForceUserBlockComponent>(forceUser);
+        PopupSystem.PopupPredicted("Вы ставите блок!", weapon, null, PopupType.Medium);
+        reflectComp.ReflectProb = 1f;
+        forceComp.IsBlocking = true;
+        forceComp.BlockEndTime = _gameTiming.CurTime + TimeSpan.FromSeconds(forceComp.BlockDuration);
+    }
+    private void OnLightningHit(Entity<SWForceUserBlockComponent> ent, ref HitByLightningEvent args)
+    {
+        if (CanBlock(ent.Owner, ent.Comp))
+        {
+            DebugTools.Assert(ent.Comp.CurrentForceWeapon != null);
+            EnableBlock(ent.Comp.CurrentForceWeapon.Value, ent.Owner);
+        }
+        if (ent.Comp.IsBlocking)
+        {
+            args.Cancel();
+            PopupSystem.PopupPredicted("Удар отражен!", ent.Owner, null, PopupType.Medium);
+        }
+    }
+
+    public bool CanBlock(EntityUid forceUser, SWForceUserBlockComponent? forceComp = null)
+    {
+        if (forceComp == null)
+        {
+            forceComp = Comp<SWForceUserBlockComponent>(forceUser);
+        }
+
+        if (forceComp.CurrentForceWeapon == null)
+        {
+            return false;
+        }
+
+        if (_gameTiming.CurTime >= forceComp.NextReflectionAvailable && !forceComp.IsBlocking)
+        {
+            return true;
+        }
+
+        return false;
     }
 }
 

@@ -24,5 +24,5 @@ public sealed partial class SWLightningAbilityComponent : Component
     public DamageSpecifier Damage;
 
     [DataField, ViewVariables(VVAccess.ReadWrite)]
-    public float StunTimeInSeconds = 5f;
+    public float StunTimeInSeconds = 3f;
 }

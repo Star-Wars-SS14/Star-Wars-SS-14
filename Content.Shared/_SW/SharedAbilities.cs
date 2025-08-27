@@ -76,3 +76,8 @@ public record struct SWUpdateStrangulateEvent
         IsStrangulated = isStrangulated;
     }
 }
+
+public sealed class HitByLightningEvent : CancellableEntityEventArgs
+{
+
+}

@@ -403,6 +403,8 @@
     pvsIncrease: 1.5
   - type: UseDelay
     delay: 1.0
+  - type: CursorOffsetRequiresWield
+  - type: GunRequiresWield
 
 - type: entity
   name: Beryar's MK-3 Sniper Rifle
@@ -410,16 +412,13 @@
   id: SWBeryaramk3
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
-  - type: MultiHandedItem
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Snipres/MK3.rsi
+    sprite: _SW/Objects/Weapons/Guns/Snipers/MK3.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
-    - state: mag-0
-      map: [ "enum.GunVisualLayers.Mag" ]
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Snipres/MK3.rsi
+    sprite: _SW/Objects/Weapons/Guns/Snipers/MK3.rsi
   - type: Gun
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
@@ -445,7 +444,6 @@
   id: SWGrantekF11D1
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
-  - type: MultiHandedItem
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Snipers/f11d.rsi
     layers:
@@ -478,7 +476,6 @@
   id: SWK406Ripper
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
-  - type: MultiHandedItem
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Snipers/k406.rsi
     layers:

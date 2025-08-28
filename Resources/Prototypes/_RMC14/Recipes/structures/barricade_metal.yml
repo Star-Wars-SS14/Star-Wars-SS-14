@@ -33,13 +33,13 @@
       - tool: Prying
         doAfter: 2
 
-    - to: nodeBurnUpgrade
-      completed:
-      - !type:SnapToGrid
-      steps:
-      - material: MetalRod
-        amount: 6
-        doAfter: 6
+    # - to: nodeBurnUpgrade
+    #   completed:
+    #   - !type:SnapToGrid
+    #   steps:
+    #   - material: MetalRod
+    #     amount: 6
+    #     doAfter: 6
 
     - to: nodeBruteUpgrade
       completed:

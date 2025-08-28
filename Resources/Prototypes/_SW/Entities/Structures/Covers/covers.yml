@@ -1,0 +1,15 @@
+- type: entity
+  id: TestCover
+  parent: SWWindowDirectional
+  name: test cover
+  components:
+  - type: SWCover
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 6000000
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam

@@ -23,6 +23,7 @@
     damageContainer: Inorganic
     damageModifierSet: CMBarricade
   - type: InteractionOutline
+  - type: SWCover
 
 # Metal Barricade Tree
 - type: entity
@@ -45,7 +46,7 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 450
+        damage: 1500
       behaviors:
       - !type:SpawnEntitiesBehavior
         spawn:
@@ -68,29 +69,45 @@
     node: nodeMetal
 
 # Metal Barricade Upgrades
-- type: entity
-  parent: CMBarricadeMetal
-  id: CMBarricadeBurn
-  name: anti-biohazard barricade
-  description: A barricade incredibly resistant to corrosive and fire damage but breaks easier. Repair with a welder.
-  components:
-    - type: Sprite
-      sprite: _RMC14/Structures/Walls/Barricades/barricade.rsi
-      layers:
-      - state: metal
-      - state: burn_upgrade
-    - type: Damageable
-      damageContainer: Inorganic
-      damageModifierSet: CMBurnBarricade
-    - type: DamageVisuals
-      thresholds: [4, 8, 12]
-      damageDivisor: 2
-      trackAllDamage: true
-      damageOverlay:
-        sprite: _RMC14/Structures/Walls/Barricades/burn_barricade_cracks.rsi
-    - type: Construction
-      graph: BarricadeMetalGraph
-      node: nodeBurnUpgrade
+# - type: entity
+#   parent: CMBarricadeMetal
+#   id: CMBarricadeBurn
+#   name: anti-biohazard barricade
+#   description: A barricade incredibly resistant to corrosive and fire damage but breaks easier. Repair with a welder.
+#   components:
+#     - type: Destructible
+#       thresholds:
+#       - trigger:
+#           !type:DamageTrigger
+#           damage: 2500
+#         behaviors:
+#         - !type:SpawnEntitiesBehavior
+#           spawn:
+#             CMSheetMetal1:
+#               min: 2
+#               max: 2
+#         - !type:PlaySoundBehavior
+#           sound:
+#             collection: MetalBreak
+#         - !type:DoActsBehavior
+#           acts: [ "Destruction" ]
+#     - type: Sprite
+#       sprite: _RMC14/Structures/Walls/Barricades/barricade.rsi
+#       layers:
+#       - state: metal
+#       - state: burn_upgrade
+#     - type: Damageable
+#       damageContainer: Inorganic
+#       damageModifierSet: CMBurnBarricade
+#     - type: DamageVisuals
+#       thresholds: [4, 8, 12]
+#       damageDivisor: 2
+#       trackAllDamage: true
+#       damageOverlay:
+#         sprite: _RMC14/Structures/Walls/Barricades/burn_barricade_cracks.rsi
+#     - type: Construction
+#       graph: BarricadeMetalGraph
+#       node: nodeBurnUpgrade
 
 - type: entity
   parent: CMBarricadeMetal
@@ -98,6 +115,22 @@
   name: укреплённая баррикада
   description: Сверхпрочная баррикада, усиленная металлом и устойчивая к ударам. Ремонт с помощью сварочного аппарата.
   components:
+    - type: Destructible
+      thresholds:
+      - trigger:
+          !type:DamageTrigger
+          damage: 2000
+        behaviors:
+        - !type:SpawnEntitiesBehavior
+          spawn:
+            CMSheetMetal1:
+              min: 2
+              max: 2
+        - !type:PlaySoundBehavior
+          sound:
+            collection: MetalBreak
+        - !type:DoActsBehavior
+          acts: [ "Destruction" ]
     - type: Sprite
       sprite: _RMC14/Structures/Walls/Barricades/barricade.rsi
       layers:
@@ -105,7 +138,7 @@
       - state: brute_upgrade
     - type: Damageable
       damageContainer: Inorganic
-      damageModifierSet: CMBruteBarricade
+      damageModifierSet: CMBurnBarricade
     - type: DamageVisuals
       thresholds: [4, 8, 12]
       damageDivisor: 2
@@ -122,6 +155,22 @@
   name: blast-resistant barricade
   description: An blast-resistant barricade made out of the same stuff in EODs. Repair with a welder.
   components:
+    - type: Destructible
+      thresholds:
+      - trigger:
+          !type:DamageTrigger
+          damage: 2500
+        behaviors:
+        - !type:SpawnEntitiesBehavior
+          spawn:
+            CMSheetMetal1:
+              min: 2
+              max: 2
+        - !type:PlaySoundBehavior
+          sound:
+            collection: MetalBreak
+        - !type:DoActsBehavior
+          acts: [ "Destruction" ]
     - type: Sprite
       sprite: _RMC14/Structures/Walls/Barricades/barricade.rsi
       layers:
@@ -205,13 +254,13 @@
     thresholds:
     - trigger:
         !type:DamageTrigger
-        damage: 400
+        damage: 600
       behaviors:
       - !type:SpawnEntitiesBehavior
         spawn:
           CMSheetMetal1:
-            min: 3
-            max: 3
+            min: 2
+            max: 2
       - !type:PlaySoundBehavior
         sound:
           collection: MetalBreak

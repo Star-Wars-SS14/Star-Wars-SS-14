@@ -68,6 +68,7 @@ public sealed class SWGunPreparationSystem : EntitySystem
             BreakOnMove = true
         };
         _doAfterSystem.TryStartDoAfter(doafterArgs);
+        args.Handled = true;
     }
     private void OnFinish(Entity<SWGunPreparationComponent> ent, ref SWPreparationFinishedDoAfterEvent args)
     {

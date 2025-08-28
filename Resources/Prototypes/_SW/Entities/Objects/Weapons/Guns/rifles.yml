@@ -405,8 +405,7 @@
     delay: 1.0
   - type: CursorOffsetRequiresWield
   - type: GunRequiresWield
-  - type: SWGunPreparation
-  - type: SWGunRequiresPreparation
+  - type: SWGunWieldPreparation
 
 - type: entity
   name: Beryar's MK-3 Sniper Rifle

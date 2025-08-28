@@ -96,7 +96,7 @@ public sealed class SWGunWieldPreparationSystem : EntitySystem
     {
         ent.Comp.Prepared = false;
         _wieldableSystem.TryUnwield(ent.Owner, Comp<WieldableComponent>(ent), user);
-        _popupSystem.PopupPredicted(Loc.GetString("sw-preparation-on-move"), ent.Owner, null);
+        _popupSystem.PopupPredicted(Loc.GetString("sw-preparation-break"), ent.Owner, null);
     }
 }
 

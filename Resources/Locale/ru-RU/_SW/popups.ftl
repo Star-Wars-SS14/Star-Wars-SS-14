@@ -1,1 +1,1 @@
-sw-preparation-on-move = Ваш прицел сбился
+sw-preparation-break = Ваш прицел сбился

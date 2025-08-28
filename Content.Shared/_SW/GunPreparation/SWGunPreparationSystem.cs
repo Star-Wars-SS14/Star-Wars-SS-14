@@ -40,7 +40,7 @@ public sealed class SWGunPreparationSystem : EntitySystem
         {
             if (TryComp<SWGunPreparationComponent>(item, out var comp) && comp.Prepared){
                 comp.Prepared = false;
-                _popupSystem.PopupEntity(Loc.GetString("sw-preparation-on-move"), ent.Owner);
+                _popupSystem.PopupPredicted(Loc.GetString("sw-preparation-on-move"), ent.Owner, null);
             }
         }
     }

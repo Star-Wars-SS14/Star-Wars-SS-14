@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Content.Shared._SW.GunPreparation;
 [RegisterComponent]
-public sealed partial class SWPreparationGunUserComponent : Component
+public sealed partial class SWPreparationWieldGunUserComponent : Component
 {
     public Entity<SWGunWieldPreparationComponent>? Gun = null;
 }

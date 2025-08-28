@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Content.Server._SW.GunPreparation;
 [RegisterComponent]
-public sealed partial class SWGunPreparationComponent : Component
+public sealed partial class SWGunWieldPreparationComponent : Component
 {
     [DataField]
     public string Action = "SWPrepareGun";

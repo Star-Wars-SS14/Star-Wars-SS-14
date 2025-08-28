@@ -67,7 +67,9 @@ public sealed class SWGunWieldPreparationSystem : EntitySystem
     }
     private void OnMove(Entity<SWPreparationWieldGunUserComponent> ent, ref MoveEvent args)
     {
-        if (ent.Comp.Gun == null)
+        bool positionChanged = args.NewPosition != args.OldPosition;
+
+        if (ent.Comp.Gun == null || !ent.Comp.Gun.Value.Comp.Prepared || !positionChanged)
         {
             return;
         }

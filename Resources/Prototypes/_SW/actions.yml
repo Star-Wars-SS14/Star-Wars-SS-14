@@ -1,0 +1,10 @@
+- type: entity
+  id: SWPrepareGun
+  name: Подготовиться к стрельбе
+  description: Подготовьтесь к ведению огня
+  components:
+  - type: Action
+    icon: Interface/VerbIcons/refresh.svg.192dpi.png
+    useDelay: 5
+  - type: InstantAction    
+    event: !type:SWRequestPreparationEvent

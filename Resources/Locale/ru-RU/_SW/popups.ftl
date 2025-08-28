@@ -1,0 +1,1 @@
+sw-preparation-on-move = Ваша подготовка сбросилась

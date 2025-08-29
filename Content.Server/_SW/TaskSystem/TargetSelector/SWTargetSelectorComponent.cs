@@ -19,7 +19,7 @@ public sealed partial class SWTargetSelectorComponent : Component
     /// <summary>
     /// Should system select target when task init, or target will be selected by something else?
     /// </summary>
-    [DataField]
+    [DataField("select")]
     public bool SelectTargetOnInit = true;
 
     public EntityUid? Target = null;

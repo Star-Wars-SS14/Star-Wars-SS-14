@@ -2,10 +2,9 @@
   id: RepublicTasksSet
   weights:
     KillRandomEmpireByName: 1
-    # KillByJobRepublic: 1
-    
-    # StealIdCardsEmpire: 1
-    # CaptureEmpire: 1
+    KillByJobRepublic: 1
+    StealIdCardsEmpire: 1
+    CaptureEmpire: 1
 
 - type: entity
   id: KillByJobRepublic
@@ -142,5 +141,13 @@
   - type: SWTask
     name: Защита
     description: Тут ничего нет.
+  - type: SWTargetSelector
+    select: false
   - type: SWParallelTaskProtect
     descriptionId: protect-republic
+  - type: SWGetScoreByTargetJob
+    jobsToScores:
+      SWEmpireMajor : 15
+      SWEmpireLieutenant : 10
+      SWSobrikCaptain: 15
+      SWEmpireMoff: 20

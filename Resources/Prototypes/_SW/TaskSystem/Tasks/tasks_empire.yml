@@ -147,11 +147,16 @@
     name: Защита
     description: Тут ничего нет.
   - type: SWTargetSelector
+    select: false
   - type: SWParallelTaskProtect
     descriptionId: protect-empire
   - type: SWGetScoreByTargetJob
     jobsToScores:
-      SWEmpireMajor : 15
-      SWEmpireLieutenant : 10
-      SWSobrikCaptain: 15
-      SWEmpireMoff: 20
+      SWRepublicGeneral : 20
+      SWRepublicCaptain : 15 
+      SWRepublicLieutenant : 10
+      SWRepublicCommanderCommander: 15
+      SWRepublicCommanderLieutenant: 10
+      SWRepublicCommanderMedic: 10
+      SWRepublicCommanderStormtrooper: 10
+      SWRepublicCommanderSniper: 10

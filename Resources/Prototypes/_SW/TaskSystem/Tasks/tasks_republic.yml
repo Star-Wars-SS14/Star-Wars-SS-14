@@ -1,10 +1,11 @@
 - type: weightedRandom
   id: RepublicTasksSet
   weights:
-    KillByJobRepublic: 1
     KillRandomEmpireByName: 1
-    StealIdCardsEmpire: 1
-    CaptureEmpire: 1
+    # KillByJobRepublic: 1
+    
+    # StealIdCardsEmpire: 1
+    # CaptureEmpire: 1
 
 - type: entity
   id: KillByJobRepublic

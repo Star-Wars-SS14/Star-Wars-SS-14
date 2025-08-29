@@ -31,7 +31,11 @@ public sealed class SWTargetSelectorSystem : EntitySystem
     //Таким образом, SWTargetSelector выбирает цели, уникальыне в рамках заданий фракции, то есть для любого задания фракции,
     //цели во всех этих компонентых будут разные
     private void OnCheckRequirements(Entity<SWTargetSelectorComponent> ent, ref SWTaskCheckRequirementsEvent args)
-    { 
+    {
+        if (!ent.Comp.SelectTargetOnInit)
+        {
+            return;
+        }
         var query = EntityQueryEnumerator<SWTargetSelectorComponent, SWTaskComponent>();
         List<EntityUid?> targets = new();
         string thisTaskOwningfaction = EnsureComp<SWTaskComponent>(ent.Owner).OwningFaction;
@@ -55,6 +59,10 @@ public sealed class SWTargetSelectorSystem : EntitySystem
     }
     private void OnTaskInit(Entity<SWTargetSelectorComponent> ent, ref SWTaskInitEvent args)
     {
+        if (!ent.Comp.SelectTargetOnInit)
+        {
+            return;
+        }
         var query = EntityQueryEnumerator<SWTargetSelectorComponent, SWTaskComponent>();
         List<EntityUid?> chosen_targets = new();
         string thisTaskOwningfaction = EnsureComp<SWTaskComponent>(ent.Owner).OwningFaction;

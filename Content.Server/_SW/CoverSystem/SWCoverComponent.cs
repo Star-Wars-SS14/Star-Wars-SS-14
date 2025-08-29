@@ -12,7 +12,7 @@ public sealed partial class SWCoverComponent : Component
     /// if distaance to cover is <= then this, then projectile will always pass cover
     /// </summary>
     [DataField]
-    public float DistanceGuaranteedPass = 0.2f;
+    public float DistanceGuaranteedPass = 1.0f;
 
     [DataField]
     public float Step = 1f;

@@ -28,8 +28,6 @@
   - type: ContainerContainer
     containers:
       gun_magazine: !type:ContainerSlot
-  - type: Wieldable
-    unwieldOnUse: false
   - type: PointLight
     enabled: false
     mask: /Textures/Effects/LightMasks/cone.png
@@ -39,11 +37,20 @@
     toggleOnInteract: false
     needsBattery: false
 
+- type: entity
+  id: SWBaseWeaponBlasterWieldable
+  parent: SWBaseWeaponBlaster
+  abstract: true
+  suffix: Оружие SW
+  components:
+  - type: Wieldable
+  unwieldOnUse: false
+
 #Rifles
 
 - type: entity
   name: Imperial E-1 Enforcer Blaster Rifle
-  parent: SWBaseWeaponBlaster
+  parent: SWBaseWeaponBlasterWieldable
   id: SWE1BlasterRifle
   components:
   - type: Sprite
@@ -76,7 +83,7 @@
 
 - type: entity
   name: P-301 Assault Disruptor
-  parent: SWBaseWeaponBlaster
+  parent: SWBaseWeaponBlasterWieldable
   id: SWP301Destroyer
   components:
   - type: Sprite
@@ -110,7 +117,7 @@
 
 - type: entity
   name: H-206 Renegade Blaster Rifle
-  parent: SWBaseWeaponBlaster
+  parent: SWBaseWeaponBlasterWieldable
   id: SWH206Renegade
   components:
   - type: Sprite
@@ -144,7 +151,7 @@
 
 - type: entity
   name: J-111 Rancor Enforcer
-  parent: SWBaseWeaponBlaster
+  parent: SWBaseWeaponBlasterWieldable
   id: SWJ111Rancor
   components:
   - type: Sprite
@@ -178,7 +185,7 @@
 
 - type: entity
   name: Z-1 Huntsman Carbine
-  parent: SWBaseWeaponBlaster
+  parent: SWBaseWeaponBlasterWieldable
   id: SWZ1BlasterCarbine
   components:
   - type: Sprite
@@ -395,7 +402,7 @@
 
 - type: entity
   abstract: true
-  parent: SWBaseWeaponBlaster
+  parent: SWBaseWeaponBlasterWieldable
   id: SWBaseSniperRifle
   components:
   - type: EyeCursorOffset
@@ -422,7 +429,7 @@
   - type: Gun
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
-    fireRate: 0.4
+    fireRate: 0.6
     angleIncrease: 0.0
     minAngle: 0
     maxAngle: 0 
@@ -454,7 +461,7 @@
   - type: Gun
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
-    fireRate: 0.4
+    fireRate: 0.6
     angleIncrease: 0.0
     minAngle: 0
     maxAngle: 0   
@@ -484,7 +491,7 @@
   - type: Gun
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
-    fireRate: 0.4
+    fireRate: 0.6
     angleIncrease: 0.0
     minAngle: 0
     maxAngle: 0  

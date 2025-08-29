@@ -9,6 +9,7 @@ using Content.Shared.Random.Helpers;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
+using Robust.Shared.Serialization.TypeSerializers.Implementations.Generic;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 using System;
@@ -111,6 +112,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                     if (ev.Handled)
                     {
                         score = ev.Score;
+                        task.Comp.Score = ev.Score;
                     }
                     factionComp.CurrentScore += score;
                     text += $"Выполнено. Очков получено: {score}.";
@@ -125,7 +127,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 
 
         query = EntityQueryEnumerator<SWFactionComponent>(); //reset query
-        List<Entity<SWFactionComponent>> res = CalculateWinner(query);
+        HashSet<Entity<SWFactionComponent>> res = CalculateWinner(query);
         if (res.Count() != 0)
         {
             args.AddLine("Победа присуждена следующим фракциям:");
@@ -140,12 +142,12 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         }
     }
 
-    private List<Entity<SWFactionComponent>> CalculateWinner(EntityQueryEnumerator<SWFactionComponent> query)
+    private HashSet<Entity<SWFactionComponent>> CalculateWinner(EntityQueryEnumerator<SWFactionComponent> query)
     {
-        List<Entity<SWFactionComponent>> majorFactions = new();
-        List<Entity<SWFactionComponent>> minorFactions = new();
-        List<Entity<SWFactionComponent>> majorCompletedAllTasks = new();
-        List<Entity<SWFactionComponent>> minorCompletedAllTasks = new();
+        HashSet<Entity<SWFactionComponent>> majorFactions = new();
+        HashSet<Entity<SWFactionComponent>> minorFactions = new();
+        HashSet<Entity<SWFactionComponent>> majorCompletedAllTasks = new();
+        HashSet<Entity<SWFactionComponent>> minorCompletedAllTasks = new();
         while (query.MoveNext(out var fuid, out var fComp))
         {
             if (!TryComp<SWTaskContainerComponent>(fuid, out var taskComp))
@@ -172,37 +174,65 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 
         if (majorFactions.Count() == majorCompletedAllTasks.Count())
         {
-            return new List<Entity<SWFactionComponent>>(); // пустой список, то есть победителей нет, то бишь ничья
+            return new HashSet<Entity<SWFactionComponent>>(); // пустой список, то есть победителей нет, то бишь ничья
         }
 
         if (majorCompletedAllTasks.Count() > 0)
         {
             return majorCompletedAllTasks;
         }
+        int maxScoreAmongMajors = 0;
 
-        if (majorCompletedAllTasks.Count() == 0 && minorCompletedAllTasks.Count() == 0)
+        foreach (var fact in majorFactions)
         {
-            List<Entity<SWFactionComponent>> res = new();
-            int maxScoreAmongMajors = 0;
+            maxScoreAmongMajors = Math.Max(fact.Comp.CurrentScore, maxScoreAmongMajors);
+        }
 
-            foreach (var fact in majorFactions)
+        HashSet<Entity<SWFactionComponent>> majorsWithMaxScore = new();
+        foreach (var fact in majorFactions)
+        {
+            if (fact.Comp.CurrentScore == maxScoreAmongMajors)
             {
-                maxScoreAmongMajors = Math.Max(fact.Comp.CurrentScore, maxScoreAmongMajors);
+                majorsWithMaxScore.Add(fact);
             }
+        }
 
-            foreach (var fact in majorFactions)
+        HashSet<Entity<SWFactionComponent>> minorScoreMoreMajors = new ();
+
+        foreach (var fact in minorFactions)
+        {
+            if (GetTotalScore(fact) > maxScoreAmongMajors)
             {
-                if (fact.Comp.CurrentScore == maxScoreAmongMajors)
-                {
-                    res.Add(fact);
-                }
+                minorScoreMoreMajors.Add(fact);
             }
-            return res;
+        }
+
+        if (majorCompletedAllTasks.Count() == 0
+            && minorCompletedAllTasks.Count() != 0
+            && minorScoreMoreMajors.Count() > 0
+            && minorScoreMoreMajors.Intersect(minorCompletedAllTasks).Count() > 0)
+        {
+            return minorScoreMoreMajors.Intersect(minorCompletedAllTasks).ToHashSet();
         }
         else
         {
-            return minorCompletedAllTasks;
+            return majorsWithMaxScore;
         }
+    }
+
+    private int GetTotalScore(Entity<SWFactionComponent> ent)
+    {
+        if (!TryComp<SWTaskContainerComponent>(ent, out var taskComp))
+        {
+            return 0;
+        }
+
+        int res = 0;
+        foreach (var task in taskComp.CurrentTasks)
+        {
+            res += task.Comp.Score;
+        }
+        return res;
     }
 
     private bool FactionCompletedAllTasks(EntityUid factionUid, SWFactionComponent comp)

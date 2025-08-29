@@ -6,9 +6,7 @@
   components:
   - type: SWWeaponBlock
   - type: Reflect
-    enabled: false
-    reflectProb: 1.0
-    minReflectProb: 1.0
+    reflectProb: 0.0
   - type: SWSwordThrowable
   - type: DamageOtherOnHit
     damage:

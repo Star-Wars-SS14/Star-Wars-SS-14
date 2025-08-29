@@ -1,3 +1,12 @@
 - type: lobbyBackground
   id: SpaceWar
   background: /Textures/_SW/LobbyScreens/spacewar.webp
+
+- type: lobbyBackground
+  id: NoWord
+  background: /Textures/_SW/LobbyScreens/no_word.png
+
+- type: lobbyBackground
+  id: Caricature
+  background: /Textures/_SW/LobbyScreens/caricature.jpg
+

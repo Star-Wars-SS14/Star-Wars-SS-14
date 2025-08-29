@@ -7,7 +7,7 @@
     prototype: SWParasit
   - type: GhostRole
     makeSentient: false
-    allowSpeech: false
+    allowSpeech: true
     allowMovement: true
     name: ghost-role-information-parasit-name
     description: ghost-role-information-parasit-description
@@ -41,11 +41,8 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      100: Critical
-      120: Dead
-  - type: MovementSpeedModifier
-    baseWalkSpeed : 2.5
-    baseSprintSpeed : 5
+      300: Critical
+      320: Dead
   - type: DamageStateVisuals
     states:
       Alive:
@@ -55,6 +52,7 @@
       Dead:
         Base: parasit-0
   - type: Thirst
+    baseDecayRate: 0 #disable thirst
     startingThirst: 25
     thresholds:
       OverHydrated: 35
@@ -62,7 +60,6 @@
       Thirsty: 15
       Parched: 10
       Dead: 0
-    baseDecayRate: 0.04
   - type: Hunger
     thresholds:
       Overfed: 35
@@ -71,6 +68,12 @@
       Starving: 10
       Dead: 0
     baseDecayRate: 1
+    hungerThresholdDecayModifiers:
+      Overfed: 1.5
+      Okay: 1.0
+      Peckish: 1.0
+      Starving: 0.95
+      Dead: 0.9
   - type: Respirator
     damage:
       types:
@@ -90,7 +93,7 @@
     animation: WeaponArcBite
     damage:
       types:
-        Piercing: 75
+        Piercing: 70
         Structural: 30
     altDisarm: false
   - type: Bloodstream
@@ -102,3 +105,31 @@
   - type: SWToggleableNightVision
   - type: NightVisionItem
     colorOverride: "#7a717a"
+  - type: Puller
+    needsHands: false
+  - type: Emoting
+  - type: Vocal
+    sounds:
+      Male: MaleReptilian
+      Female: MaleReptilian
+      Unsexed: MaleReptilian
+  - type: SlowOnDamage
+    speedModifierThresholds:
+      280: 0.9
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3.5
+    baseSprintSpeed: 6.0
+  - type: PassiveDamage
+    allowedStates:
+    - Alive
+    damageCap: 199
+    damage:
+      types:
+        Poison: -0.15
+        Bloodloss: -0.15
+      groups:
+        Brute: -0.15
+        Burn: -0.3
+        Airloss: -0.15
+  - type: ReplacementAccent
+    accent: SWMetallParasit

@@ -98,7 +98,8 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
     private void DisableBlock(EntityUid user)
     {
         if (!TryComp<SWForceUserBlockComponent>(user, out var userComp)
-            || !TryComp<ReflectComponent>(userComp.CurrentForceWeapon, out var reflComp))
+            || !TryComp<ReflectComponent>(userComp.CurrentForceWeapon, out var reflComp)
+            || !userComp.IsBlocking)
         {
             return;
         }
@@ -106,7 +107,6 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
         PopupSystem.PopupPredicted("Вы убираете блок!", user, null, PopupType.Medium);
         reflComp.ReflectProb = 0.0f;
         userComp.NextReflectionAvailable = _gameTiming.CurTime + TimeSpan.FromSeconds(userComp.DelayBetweenBlocks);
-
 
         userComp.IsBlocking = false;
     }
@@ -168,7 +168,7 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
     {
         if (CanBlock(ent.Owner, ent.Comp))
         {
-            DebugTools.Assert(ent.Comp.CurrentForceWeapon != null);
+            DebugTools.Assert(ent.Comp.CurrentForceWeapon != null); //actually this is checked in CanBlock, so we can be sure
             EnableBlock(ent.Comp.CurrentForceWeapon.Value, ent.Owner);
         }
         if (ent.Comp.IsBlocking)

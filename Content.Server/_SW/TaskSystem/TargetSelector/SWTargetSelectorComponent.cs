@@ -16,6 +16,12 @@ public sealed partial class SWTargetSelectorComponent : Component
     [DataField]
     public List<string> Jobs = new();
 
+    /// <summary>
+    /// Should system select target when task init, or target will be selected by something else?
+    /// </summary>
+    [DataField("select")]
+    public bool SelectTargetOnInit = true;
+
     public EntityUid? Target = null;
 
     public string? JobOfTarget = null;

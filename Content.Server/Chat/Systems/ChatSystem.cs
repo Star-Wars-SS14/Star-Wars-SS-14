@@ -65,8 +65,8 @@ public sealed partial class ChatSystem : SharedChatSystem
     // public const int WhisperClearRange = 2; // how far whisper goes while still being understandable, in world units
     // public const int WhisperMuffledRange = 5; // how far whisper goes at all, in world units
     // Corvax-TTS-End
-    public const string DefaultAnnouncementSound = "/Audio/Corvax/Announcements/announce.ogg"; // Corvax-Announcements
-    public const string CentComAnnouncementSound = "/Audio/Corvax/Announcements/centcomm.ogg"; // Corvax-Announcements
+    public const string DefaultAnnouncementSound = "/Audio/Misc/siren.ogg"; //SW
+    public const string CentComAnnouncementSound = "/Audio/Misc/siren.ogg"; // SW
 
     private bool _loocEnabled = true;
     private bool _deadLoocEnabled;

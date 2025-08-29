@@ -22,23 +22,25 @@ public sealed class SWParallelTaskProtectSystem : EntitySystem
     }
     private void OnSpawned(Entity<SWKillRandomByNameComponent> ent, ref AfterParallelTaskSpawnedEvent args)
     {
-        if (TryComp<SWParallelTaskProtectComponent>(args.SpawnedTask, out var comp))
+        if (TryComp<SWTargetSelectorComponent>(args.SpawnedTask, out var comp))
         {
-            comp.PersonToProtect = EnsureComp<SWTargetSelectorComponent>(ent.Owner).Target;
+            comp.Target = Comp<SWTargetSelectorComponent>(ent.Owner).Target;
+            comp.JobOfTarget = Comp<SWTargetSelectorComponent>(ent.Owner).JobOfTarget;
         }
     }
     private void OnDescriptionRequested(Entity<SWParallelTaskProtectComponent> ent, ref SWTaskProvideDescriptionEvent args)
     {
-        if (ent.Comp.PersonToProtect == null)
+        var target = Comp<SWTargetSelectorComponent>(ent.Owner).Target;
+        if (target == null)
         {
             return;
         }
         var comp = EnsureComp<SWTaskComponent>(ent.Owner);
-        comp.Description = Loc.GetString(ent.Comp.DescriptionId, ("name", Name(ent.Comp.PersonToProtect.Value)));
+        comp.Description = Loc.GetString(ent.Comp.DescriptionId, ("name", Name(target.Value)));
     }
     private void OnGetProgress(Entity<SWParallelTaskProtectComponent> ent, ref SWGetProgressEvent args)
     {
-        if (!TryComp<MobStateComponent>(ent.Comp.PersonToProtect, out var comp))
+        if (!TryComp<MobStateComponent>(Comp<SWTargetSelectorComponent>(ent.Owner).Target, out var comp))
         {
             //If we cant get comp it means that person is gibbed, or deleted, or smth else which means that person is dead
             args.Progress = 0.0f;

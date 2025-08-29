@@ -13,6 +13,10 @@ using Content.Shared.DeviceLinking.Events;
 using Content.Shared.Xenoarchaeology.Equipment.Components;
 using Content.Server._SW.TaskSystem;
 using Content.Server._SW.TaskSystem.TargetSelector;
+using Content.Shared.Popups;
+using Content.Shared.Access.Components;
+using Content.Shared.Access.Systems;
+using Content.Server.Popups;
 
 namespace Content.Server._SW.TurretConsole;
 
@@ -21,6 +25,8 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly SWFactionGameruleSystem _sWFaction = default!;
+    [Dependency] private readonly AccessReaderSystem _accessReaderSystem = default!;
+    [Dependency] private readonly PopupSystem _popupSystem = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -34,6 +40,14 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
 
     private void OnDisAllow(Entity<SWTurretConsoleComponent> ent, ref SWDisallowFaction args)
     {
+        if (args.Actor is not { Valid: true } user)
+            return;
+
+        if (!CanUse(user, ent.Owner))
+        {
+            _popupSystem.PopupCursor(Loc.GetString("comms-console-permission-denied"), user, PopupType.Medium);
+            return;
+        }
         var faction = _sWFaction.GetFactionEntity(args.Faction);
         if (faction == null)
         {
@@ -52,6 +66,14 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
 
     private void OnAllow(Entity<SWTurretConsoleComponent> ent, ref SWAllowFaction args)
     {
+        if (args.Actor is not { Valid: true } user)
+            return;
+
+        if (!CanUse(user, ent.Owner))
+        {
+            _popupSystem.PopupCursor(Loc.GetString("comms-console-permission-denied"), user, PopupType.Medium);
+            return;
+        }
         var faction = _sWFaction.GetFactionEntity(args.Faction);
         if (faction == null)
         {
@@ -82,6 +104,14 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
 
     private void OnToggle(Entity<SWTurretConsoleComponent> ent, ref SWTurretJobToggleMessage args)
     {
+        if (args.Actor is not { Valid: true } user)
+            return;
+
+        if (!CanUse(user, ent.Owner))
+        {
+            _popupSystem.PopupCursor(Loc.GetString("comms-console-permission-denied"), user, PopupType.Medium);
+            return;
+        }
         ent.Comp.JobsAllowed[args.Job] = !ent.Comp.JobsAllowed[args.Job];
         UpdateInterface(ent.Owner, ent.Comp);
     }
@@ -116,5 +146,14 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
         }
         var state = new SWTurretConsoleBounderUserInterfaceState(comp.JobsAllowed, res);
         _uiSystem.SetUiState(uid, SWTurretConsoleUiKey.Key, state);
+    }
+
+    private bool CanUse(EntityUid user, EntityUid console)
+    {
+        if (TryComp<AccessReaderComponent>(console, out var accessReaderComponent))
+        {
+            return _accessReaderSystem.IsAllowed(user, console, accessReaderComponent);
+        }
+        return true;
     }
 }

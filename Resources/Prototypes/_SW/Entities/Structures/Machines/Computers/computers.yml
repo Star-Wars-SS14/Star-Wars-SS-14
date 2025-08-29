@@ -96,6 +96,14 @@
       SWEmpireIntelligenceAgent: true
       SWCivialian: true
       SWSith: true
+      SWMandalorianLeader: true
+      SWMandalorianVeteran: true  
+      SWMandalorianWarrior: true
+      SWMandalorianRecruit: true
+      SWBlackSun: true
+      SWBlackSunMercenary: true
+      SWExchangeCaptain: true
+      SWExchangeOperative: true
   - type: AccessReader
     access: [[ "SWEmpireCommander" ]]
 
@@ -119,5 +127,13 @@
       SWRepublicCommanderStormtrooper: true
       SWRepublicCommanderSniper: true
       SWJedi: true
+      SWMandalorianLeader: true
+      SWMandalorianVeteran: true  
+      SWMandalorianWarrior: true
+      SWMandalorianRecruit: true
+      SWBlackSun: true
+      SWBlackSunMercenary: true
+      SWExchangeCaptain: true
+      SWExchangeOperative: true
   - type: AccessReader
     access: [[ "SWRepublicCommander" ]]

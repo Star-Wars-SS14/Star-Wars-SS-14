@@ -32,6 +32,7 @@ public sealed partial class SWCoverSystem : EntitySystem
         if (ent.Comp.HandledProjectiles.ContainsKey(args.OtherEntity))
         {
             args.Cancelled = ent.Comp.HandledProjectiles[args.OtherEntity];
+            return;
         }
 
         ISawmill _s = Logger.GetSawmill("cover");

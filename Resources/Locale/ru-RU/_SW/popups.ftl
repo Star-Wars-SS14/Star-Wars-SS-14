@@ -1,0 +1,1 @@
+sw-preparation-break = Ваш прицел сбился

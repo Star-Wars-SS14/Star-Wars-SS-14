@@ -25,8 +25,11 @@
     - cash_100
     - cash_500
     - cash_1000
+    layerFunction: Threshold
+  - type: StackLayerThreshold
+    thresholds: [10, 50, 100, 500, 1000]
   - type: Sprite
-    sprite: /Textures/_SW/Economy/cash.rsi
+    sprite: _SW/Economy/cash.rsi
     state: cash
     layers:
     - state: cash
@@ -48,14 +51,14 @@
   id: SWCreditStack
   name: имперский кредит
   unit: materials-unit-bill
-  stackEntity: SpaceCash
-  icon: { sprite: /Textures/_SW/Economy/cash.rsi, state: cash }
+  stackEntity: SWCredits
+  icon: { sprite: _SW/Economy/cash.rsi, state: cash }
   price: 1
 
 - type: stack
   id: SWCreditStack
   name: имперский кредит
-  icon: { sprite: /Textures/_SW/Economy/cash.rsi, state: cash }
+  icon: { sprite: _SW/Economy/cash.rsi, state: cash }
   spawn: SWCredits
 
 - type: entity
@@ -64,7 +67,7 @@
   suffix: 10
   components:
   - type: Icon
-    sprite: /Textures/_SW/Economy/cash.rsi
+    sprite: _SW/Economy/cash.rsi
     state: cash_10
   - type: Stack
     count: 10
@@ -75,7 +78,7 @@
   suffix: 50
   components:
   - type: Icon
-    sprite: /Textures/_SW/Economy/cash.rsi
+    sprite: _SW/Economy/cash.rsi
     state: cash_50
   - type: Stack
     count: 50
@@ -86,7 +89,7 @@
   suffix: 100
   components:
   - type: Icon
-    sprite: /Textures/_SW/Economy/cash.rsi
+    sprite: _SW/Economy/cash.rsi
     state: cash_100
   - type: Stack
     count: 100
@@ -97,7 +100,7 @@
   suffix: 500
   components:
   - type: Icon
-    sprite: /Textures/_SW/Economy/cash.rsi
+    sprite: _SW/Economy/cash.rsi
     state: cash_500
   - type: Stack
     count: 500
@@ -108,7 +111,7 @@
   suffix: 1000
   components:
   - type: Icon
-    sprite: /Textures/_SW/Economy/cash.rsi
+    sprite: _SW/Economy/cash.rsi
     state: cash_1000
   - type: Stack
     count: 1000

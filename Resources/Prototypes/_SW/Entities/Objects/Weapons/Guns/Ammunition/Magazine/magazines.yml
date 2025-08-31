@@ -264,14 +264,14 @@
   parent: SWBaseBlasterMagazine
   components:
   - type: Battery
-    maxCharge: 1000
-    startingCharge: 1000
+    maxCharge: 7500
+    startingCharge: 7500
   - type: Tag
     tags:
     - MagazineBlast
     - SWScoutBlasterMagazine
   - type: ProjectileBatteryAmmoProvider
-    proto: SWE-1Bullet
+    proto: SWScoutBlasterBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
     state: mag
@@ -286,14 +286,14 @@
   parent: SWBaseBlasterMagazine
   components:
   - type: Battery
-    maxCharge: 1000
-    startingCharge: 1000
+    maxCharge: 5000
+    startingCharge: 5000
   - type: Tag
     tags:
     - MagazineBlast
     - SWBalmorraCannonMagazineTag
   - type: ProjectileBatteryAmmoProvider
-    proto: SWE-1Bullet
+    proto: SWBalmorraHandGunBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/balmorra_cannon_mag.rsi
     state: mag

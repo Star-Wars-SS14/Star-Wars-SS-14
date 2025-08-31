@@ -30,7 +30,7 @@
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
     availableModes:
     - SemiAuto
-    fireRate: 5
+    fireRate: 3.7
     selectedMode: SemiAuto
   - type: ItemSlots 
     slots:
@@ -55,6 +55,9 @@
   id: SWBalmorraHandCannon
   name: Ручная пушка балморы
   components:
+  - type: Gun
+    fireRate: 2
+    selectedMode: SemiAuto
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Pistols/handheld_balmorra_cannon.rsi
     layers:

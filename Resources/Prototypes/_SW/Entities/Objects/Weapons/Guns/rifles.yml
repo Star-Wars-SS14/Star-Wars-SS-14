@@ -28,8 +28,6 @@
   - type: ContainerContainer
     containers:
       gun_magazine: !type:ContainerSlot
-  - type: Wieldable
-    unwieldOnUse: false
   - type: PointLight
     enabled: false
     mask: /Textures/Effects/LightMasks/cone.png
@@ -39,11 +37,20 @@
     toggleOnInteract: false
     needsBattery: false
 
+- type: entity
+  id: SWBaseWeaponBlasterWieldable
+  parent: SWBaseWeaponBlaster
+  abstract: true
+  suffix: Оружие SW
+  components:
+  - type: Wieldable
+  unwieldOnUse: false
+
 #Rifles
 
 - type: entity
   name: Imperial E-1 Enforcer Blaster Rifle
-  parent: SWBaseWeaponBlaster
+  parent: SWBaseWeaponBlasterWieldable
   id: SWE1BlasterRifle
   components:
   - type: Sprite
@@ -76,7 +83,7 @@
 
 - type: entity
   name: P-301 Assault Disruptor
-  parent: SWBaseWeaponBlaster
+  parent: SWBaseWeaponBlasterWieldable
   id: SWP301Destroyer
   components:
   - type: Sprite
@@ -110,7 +117,7 @@
 
 - type: entity
   name: H-206 Renegade Blaster Rifle
-  parent: SWBaseWeaponBlaster
+  parent: SWBaseWeaponBlasterWieldable
   id: SWH206Renegade
   components:
   - type: Sprite
@@ -144,7 +151,7 @@
 
 - type: entity
   name: J-111 Rancor Enforcer
-  parent: SWBaseWeaponBlaster
+  parent: SWBaseWeaponBlasterWieldable
   id: SWJ111Rancor
   components:
   - type: Sprite
@@ -178,7 +185,7 @@
 
 - type: entity
   name: Z-1 Huntsman Carbine
-  parent: SWBaseWeaponBlaster
+  parent: SWBaseWeaponBlasterWieldable
   id: SWZ1BlasterCarbine
   components:
   - type: Sprite
@@ -218,7 +225,7 @@
   id: SWEL34
   components:
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/MachineGuns/EL34.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
@@ -226,7 +233,7 @@
     walkModifier: 0.6
     sprintModifier: 0.6
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/MachineGuns/EL34.rsi
   - type: Gun
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
@@ -235,7 +242,7 @@
     minAngle: 3
     maxAngle: 10    
     angleDecay: 4
-  - type: GunRequiresWield
+  - type: MultiHandedItem
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -254,12 +261,13 @@
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/MachineGuns/grantekF11D.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/MachineGuns/grantekF11D.rsi
+  - type: MultiHandedItem
   - type: HeldSpeedModifier
     walkModifier: 0.6
     sprintModifier: 0.6
@@ -271,7 +279,6 @@
     minAngle: 3
     maxAngle: 10    
     angleDecay: 4
-  - type: GunRequiresWield
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -289,13 +296,14 @@
   id: SWGT-13ST
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
+  - type: MultiHandedItem
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/MachineGuns/GT13ST.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/MachineGuns/GT13ST.rsi
   - type: HeldSpeedModifier
     walkModifier: 0.8
     sprintModifier: 0.8
@@ -304,12 +312,9 @@
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
     fireRate: 7
     angleIncrease: 0.2
-    minAngle: 20
-    maxAngle: 40    
+    minAngle: 5
+    maxAngle: 10    
     angleDecay: 4
-  - type: GunWieldBonus
-    minAngle: -15
-    maxAngle: -30
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -328,7 +333,7 @@
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/MachineGuns/gallantry.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
@@ -336,7 +341,7 @@
     walkModifier: 0.6
     sprintModifier: 0.6
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/MachineGuns/gallantry.rsi
   - type: Gun
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
@@ -345,7 +350,7 @@
     minAngle: 0
     maxAngle: 10  
     angleDecay: 4
-  - type: GunRequiresWield
+  - type: MultiHandedItem
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -363,13 +368,14 @@
   id: SWMK1
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
+  - type: MultiHandedItem
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/MachineGuns/MK1.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/MachineGuns/MK1.rsi
   - type: HeldSpeedModifier
     walkModifier: 0.8
     sprintModifier: 0.8
@@ -378,12 +384,9 @@
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
     fireRate: 7
     angleIncrease: 0.2
-    minAngle: 20
-    maxAngle: 40    
+    minAngle: 5
+    maxAngle: 10  
     angleDecay: 4
-  - type: GunWieldBonus
-    minAngle: -15
-    maxAngle: -30
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -399,7 +402,7 @@
 
 - type: entity
   abstract: true
-  parent: SWBaseWeaponBlaster
+  parent: SWBaseWeaponBlasterWieldable
   id: SWBaseSniperRifle
   components:
   - type: EyeCursorOffset
@@ -409,6 +412,7 @@
     delay: 1.0
   - type: CursorOffsetRequiresWield
   - type: GunRequiresWield
+  - type: SWGunWieldPreparation
 
 - type: entity
   name: Beryar's MK-3 Sniper Rifle
@@ -417,25 +421,20 @@
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/Snipers/MK3.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
-    - state: mag-0
-      map: [ "enum.GunVisualLayers.Mag" ]
   - type: Clothing
-    sprite: _SW/Objects/Weapons/Guns/Rifles/laser_gun.rsi
+    sprite: _SW/Objects/Weapons/Guns/Snipers/MK3.rsi
   - type: Gun
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
-    fireRate: 0.4
+    fireRate: 0.6
     angleIncrease: 0.0
-    minAngle: 10
-    maxAngle: 10    
+    minAngle: 0
+    maxAngle: 0 
     angleDecay: 4
-  - type: GunWieldBonus
-    minAngle: -10
-    maxAngle: -10
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -463,14 +462,11 @@
   - type: Gun
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
-    fireRate: 0.4
+    fireRate: 0.6
     angleIncrease: 0.0
-    minAngle: 10
-    maxAngle: 10    
+    minAngle: 0
+    maxAngle: 0   
     angleDecay: 4
-  - type: GunWieldBonus
-    minAngle: -10
-    maxAngle: -10
   - type: ItemSlots
     slots:
       gun_magazine:
@@ -496,14 +492,11 @@
   - type: Gun
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
-    fireRate: 0.4
+    fireRate: 0.6
     angleIncrease: 0.0
-    minAngle: 10
-    maxAngle: 10    
+    minAngle: 0
+    maxAngle: 0  
     angleDecay: 4
-  - type: GunWieldBonus
-    minAngle: -10
-    maxAngle: -10
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/Snipers/k406.rsi
   - type: ItemSlots

@@ -3,6 +3,7 @@
   id: SW_ClothingHeadImperialIntelligenceHelmet
   name: imperial intelligence helmet
   components:
+  - type: VoiceMask
   - type: Sprite
     sprite: _SW/Clothing/Head/Helmets/imperialintelligencehelmet.rsi
   - type: Clothing
@@ -11,3 +12,7 @@
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000
   - type: ShowJobIcons
+  - type: UserInterface
+    interfaces:
+      enum.VoiceMaskUIKey.Key:
+        type: VoiceMaskBoundUserInterface

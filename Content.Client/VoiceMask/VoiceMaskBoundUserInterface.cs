@@ -21,7 +21,7 @@ public sealed class VoiceMaskBoundUserInterface : BoundUserInterface
         base.Open();
 
         _window = this.CreateWindow<VoiceMaskNameChangeWindow>();
-        _window.ReloadVerbs(_protomanager);
+        //_window.ReloadVerbs(_protomanager); SW we dont need vanilla verbs to show
         _window.AddVerbs();
 
         _window.OnNameChange += OnNameSelected;

@@ -133,7 +133,6 @@
   equipment:
     jumpsuit: SWClothingUniformJumpsuitFleece
     outerClothing: SWMandalorianLeaderSuit
-    neck: SWClothingNeckCloakMandalorianCloak
     belt: ClothingBeltSalvageWebbing
     shoes: ClothingShoesBootsJackFilled
     gloves: ClothingHandsGlovesCombat
@@ -147,6 +146,7 @@
   equipment:
     jumpsuit: SWClothingUniformJumpsuitFleece
     outerClothing: SWMandalorianVeteranSuit
+    neck: SWClothingNeckCloakMandalorianVeteranCloak
     belt: ClothingBeltSalvageWebbing
     shoes: ClothingShoesBootsJackFilled
     gloves: ClothingHandsGlovesCombat

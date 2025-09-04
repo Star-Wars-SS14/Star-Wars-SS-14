@@ -35,8 +35,31 @@
 - type: entity
   parent: ClothingNeckBase
   id: SWClothingNeckCloakMandalorianCloak
-  name: SWMandalorian cloak
+  name: Mandalorian cloak
   components:
   - type: Sprite
     sprite: _SW/Clothing/Neck/Cloaks/mandalorian.rsi
+  - type: ToggleableClothing
+    clothingPrototype: SWClothingHeadHatHoodMandalorianCloak
+    requiredSlot:
+    - neck
+    slot: head
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:ContainerSlot {}
 
+- type: entity
+  parent: ClothingNeckBase
+  id: SWClothingNeckCloakMandalorianVeteranCloak
+  name: Mandalorian veteran cloak
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/Cloaks/mandalorian_veteran_cloak.rsi
+  - type: ToggleableClothing
+    clothingPrototype: SWClothingHeadHatHoodMandalorianVeteranCloak
+    requiredSlot:
+    - neck
+    slot: head
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:ContainerSlot {}

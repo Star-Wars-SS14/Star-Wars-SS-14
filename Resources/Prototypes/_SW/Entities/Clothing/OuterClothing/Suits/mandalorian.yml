@@ -57,7 +57,7 @@
   name: leader mandalorian suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/mandalorianveteran.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianLeader.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianLeader.rsi
   - type: Armor

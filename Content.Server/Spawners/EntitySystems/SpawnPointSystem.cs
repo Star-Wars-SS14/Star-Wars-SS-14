@@ -32,7 +32,7 @@ public sealed class SpawnPointSystem : EntitySystem
             if (args.Station != null && _stationSystem.GetOwningStation(uid, xform) != args.Station)
                 continue;
             //SW start
-            if (_gameTicker.RunLevel == GameRunLevel.InRound && spawnPoint.SpawnType == SpawnPointType.LateJoinByJob &&
+            if (spawnPoint.SpawnType == SpawnPointType.LateJoinByJob &&
                  (args.Job == null || spawnPoint.Job == args.Job))
             {
                 possiblePositions.Add(xform.Coordinates);

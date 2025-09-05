@@ -144,30 +144,6 @@
     layers:
     - state: green
 
-- type: entity
-  id: SWSpawnPointEmpireIntelligenceCaretakerLJ
-  parent: SpawnPointJobBase
-  name: Empire Intelligence Caretaker LJ
-  components:
-  - type: SpawnPoint
-    job_id: SWEmpireIntelligenceCaretaker
-    spawn_type: LateJoinByJob
-  - type: Sprite
-    layers:
-    - state: green
-
-- type: entity
-  id: SWSpawnPointEmpireIntelligenceAgentLJ
-  parent: SpawnPointJobBase
-  name: Empire Intelligence Agent LJ
-  components:
-  - type: SpawnPoint
-    job_id: SWEmpireIntelligenceAgent
-    spawn_type: LateJoinByJob
-  - type: Sprite
-    layers:
-    - state: green
-
 ###Sobrik
 - type: entity
   id: SWSpawnPointSobrikCaptainLJ
@@ -180,7 +156,6 @@
   - type: Sprite
     layers:
     - state: green
-    - state: SWstormtrooper
 
 - type: entity
   id: SWSpawnPointSobrikOfficerLJ
@@ -193,7 +168,6 @@
   - type: Sprite
     layers:
     - state: green
-    - state: SWstormtrooper
 
 - type: entity
   id: SWSpawnPointSobrikMedicLJ
@@ -206,7 +180,6 @@
   - type: Sprite
     layers:
     - state: green
-    - state: SWstormtrooper
 
 
 ###Commander elite SWRepublic
@@ -399,67 +372,6 @@
   components:
   - type: SpawnPoint
     job_id: SWEmpireIntelligenceAgent
-    spawn_type: LateJoinByJob
-  - type: Sprite
-    layers:
-    - state: green
-
-###Commander elite SWRepublic
-- type: entity
-  id: SWSpawnPointRepublicCommanderCommanderLJ
-  parent: SpawnPointJobBase
-  name: SWRepublic Commander Commander LJ
-  components:
-  - type: SpawnPoint
-    job_id: SWRepublicCommanderCommander
-    spawn_type: LateJoinByJob
-  - type: Sprite
-    layers:
-    - state: green
-
-- type: entity
-  id: SWSpawnPointRepublicCommanderLieutenantLJ
-  parent: SpawnPointJobBase
-  name: SWRepublic Commander Lieutenant LJ
-  components:
-  - type: SpawnPoint
-    job_id: SWRepublicCommanderLieutenant
-    spawn_type: LateJoinByJob
-  - type: Sprite
-    layers:
-    - state: green
-
-- type: entity
-  id: SWSpawnPointRepublicCommanderMedicLJ
-  parent: SpawnPointJobBase
-  name: SWRepublic Commander Medic LJ
-  components:
-  - type: SpawnPoint
-    job_id: SWRepublicCommanderMedic
-    spawn_type: LateJoinByJob
-  - type: Sprite
-    layers:
-    - state: green
-
-- type: entity
-  id: SWSpawnPointRepublicCommanderStormtrooperLJ
-  parent: SpawnPointJobBase
-  name: SWRepublic Commander Stormtrooper LJ
-  components:
-  - type: SpawnPoint
-    job_id: SWRepublicCommanderStormtrooper
-    spawn_type: LateJoinByJob
-  - type: Sprite
-    layers:
-    - state: green
-
-- type: entity
-  id: SWSpawnPointRepublicCommanderSniperLJ
-  parent: SpawnPointJobBase
-  name: SWRepublic Commander Sniper LJ
-  components:
-  - type: SpawnPoint
-    job_id: SWRepublicCommanderSniper
     spawn_type: LateJoinByJob
   - type: Sprite
     layers:

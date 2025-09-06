@@ -32,8 +32,8 @@
   - type: Sprite
     sprite: _SW/Objects/Misc/Datapads/BlueDatapad.rsi
     layers:
-    - state: icon
     - state: icon_empty
+    - state: icon
       map: ["enum.PaperVisualLayers.Writing"]
       visible: false
 
@@ -50,8 +50,8 @@
   - type: Sprite
     sprite: _SW/Objects/Misc/Datapads/GreenDatapad.rsi
     layers:
-    - state: icon
     - state: icon_empty
+    - state: icon
       map: ["enum.PaperVisualLayers.Writing"]
       visible: false
 
@@ -68,8 +68,8 @@
   - type: Sprite
     sprite: _SW/Objects/Misc/Datapads/PinkDatapad.rsi
     layers:
-    - state: icon
     - state: icon_empty
+    - state: icon
       map: ["enum.PaperVisualLayers.Writing"]
       visible: false
 
@@ -86,8 +86,8 @@
   - type: Sprite
     sprite: _SW/Objects/Misc/Datapads/RedDatapad.rsi
     layers:
-    - state: icon
     - state: icon_empty
+    - state: icon
       map: ["enum.PaperVisualLayers.Writing"]
       visible: false
 
@@ -104,8 +104,8 @@
   - type: Sprite
     sprite: _SW/Objects/Misc/Datapads/YellowDatapad.rsi
     layers:
-    - state: icon
     - state: icon_empty
+    - state: icon
       map: ["enum.PaperVisualLayers.Writing"]
       visible: false
 
@@ -122,8 +122,8 @@
   - type: Sprite
     sprite: _SW/Objects/Misc/Datapads/ЕurquoiseDatapad.rsi
     layers:
-    - state: icon
     - state: icon_empty
+    - state: icon
       map: ["enum.PaperVisualLayers.Writing"]
       visible: false
 
@@ -140,7 +140,7 @@
   - type: Sprite
     sprite: _SW/Objects/Misc/Datapads/OrangeDatapad.rsi
     layers:
-    - state: icon
     - state: icon_empty
+    - state: icon
       map: ["enum.PaperVisualLayers.Writing"]
       visible: false

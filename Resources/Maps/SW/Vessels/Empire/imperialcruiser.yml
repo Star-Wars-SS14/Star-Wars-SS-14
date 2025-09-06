@@ -76732,7 +76732,7 @@ entities:
     - type: Transform
       pos: 15.572411,8.6096115
       parent: 1
-- proto: SW_SpawnPointEmpireEngineer
+- proto: SWSpawnPointEmpireEngineer
   entities:
   - uid: 12030
     components:
@@ -76776,7 +76776,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 50.5,6.5
       parent: 1
-- proto: SW_SpawnPointEmpireIntelligenceAgentLJ
+- proto: SWSpawnPointEmpireIntelligenceAgentLJ
   entities:
   - uid: 12439
     components:
@@ -76808,14 +76808,14 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 20.5,-5.5
       parent: 1
-- proto: SW_SpawnPointEmpireIntelligenceCaretakerLJ
+- proto: SWSpawnPointEmpireIntelligenceCaretakerLJ
   entities:
   - uid: 12448
     components:
     - type: Transform
       pos: 17.5,-4.5
       parent: 1
-- proto: SW_SpawnPointEmpireLieutenantLJ
+- proto: SWSpawnPointEmpireLieutenantLJ
   entities:
   - uid: 2044
     components:
@@ -76835,7 +76835,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 53.5,-19.5
       parent: 1
-- proto: SW_SpawnPointEmpireMajorLJ
+- proto: SWSpawnPointEmpireMajorLJ
   entities:
   - uid: 2841
     components:
@@ -76843,7 +76843,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 11.5,6.5
       parent: 1
-- proto: SW_SpawnPointEmpireMedicLJ
+- proto: SWSpawnPointEmpireMedicLJ
   entities:
   - uid: 7169
     components:
@@ -76869,7 +76869,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 22.5,-32.5
       parent: 1
-- proto: SW_SpawnPointEmpireMoffLJ
+- proto: SWSpawnPointEmpireMoffLJ
   entities:
   - uid: 7202
     components:
@@ -76877,7 +76877,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 11.5,-5.5
       parent: 1
-- proto: SW_SpawnPointEmpirePilot
+- proto: SWSpawnPointEmpirePilot
   entities:
   - uid: 9721
     components:
@@ -76951,7 +76951,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 30.5,32.5
       parent: 1
-- proto: SW_SpawnPointEmpireSoldierLJ
+- proto: SWSpawnPointEmpireSoldierLJ
   entities:
   - uid: 7156
     components:
@@ -77025,7 +77025,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 54.5,-15.5
       parent: 1
-- proto: SW_SpawnPointSithLJ
+- proto: SWSpawnPointSithLJ
   entities:
   - uid: 11960
     components:

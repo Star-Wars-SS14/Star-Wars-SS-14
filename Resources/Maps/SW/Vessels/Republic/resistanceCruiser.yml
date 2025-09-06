@@ -80611,7 +80611,7 @@ entities:
     - type: Transform
       pos: 21.5,-107.5
       parent: 2
-- proto: SW_SpawnPointJediLJ
+- proto: SWSpawnPointJediLJ
   entities:
   - uid: 9628
     components:
@@ -80619,14 +80619,14 @@ entities:
       rot: 3.141592653589793 rad
       pos: 26.5,-26.5
       parent: 2
-- proto: SW_SpawnPointRepublicCaptainLJ
+- proto: SWSpawnPointRepublicCaptainLJ
   entities:
   - uid: 12375
     components:
     - type: Transform
       pos: 6.5,-71.5
       parent: 2
-- proto: SW_SpawnPointRepublicCommanderCommanderLJ
+- proto: SWSpawnPointRepublicCommanderCommanderLJ
   entities:
   - uid: 13266
     components:
@@ -80634,7 +80634,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -6.5,-65.5
       parent: 2
-- proto: SW_SpawnPointRepublicCommanderLieutenantLJ
+- proto: SWSpawnPointRepublicCommanderLieutenantLJ
   entities:
   - uid: 13262
     components:
@@ -80648,7 +80648,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -4.5,-67.5
       parent: 2
-- proto: SW_SpawnPointRepublicCommanderMedicLJ
+- proto: SWSpawnPointRepublicCommanderMedicLJ
   entities:
   - uid: 13261
     components:
@@ -80662,7 +80662,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -7.5,-67.5
       parent: 2
-- proto: SW_SpawnPointRepublicCommanderSniperLJ
+- proto: SWSpawnPointRepublicCommanderSniperLJ
   entities:
   - uid: 13260
     components:
@@ -80676,7 +80676,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -5.5,-67.5
       parent: 2
-- proto: SW_SpawnPointRepublicCommanderStormtrooperLJ
+- proto: SWSpawnPointRepublicCommanderStormtrooperLJ
   entities:
   - uid: 13268
     components:
@@ -80714,7 +80714,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -3.5,-68.5
       parent: 2
-- proto: SW_SpawnPointRepublicEngineeer
+- proto: SWSpawnPointRepublicEngineeer
   entities:
   - uid: 12374
     components:
@@ -80751,14 +80751,14 @@ entities:
       rot: -1.5707963267948966 rad
       pos: -7.5,-106.5
       parent: 2
-- proto: SW_SpawnPointRepublicGeneralLJ
+- proto: SWSpawnPointRepublicGeneralLJ
   entities:
   - uid: 3292
     components:
     - type: Transform
       pos: 0.5,-83.5
       parent: 2
-- proto: SW_SpawnPointRepublicLieutenantLJ
+- proto: SWSpawnPointRepublicLieutenantLJ
   entities:
   - uid: 12368
     components:
@@ -80775,7 +80775,7 @@ entities:
     - type: Transform
       pos: -10.5,-87.5
       parent: 2
-- proto: SW_SpawnPointRepublicMedicLJ
+- proto: SWSpawnPointRepublicMedicLJ
   entities:
   - uid: 12419
     components:
@@ -80833,7 +80833,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 25.5,-49.5
       parent: 2
-- proto: SW_SpawnPointRepublicPilot
+- proto: SWSpawnPointRepublicPilot
   entities:
   - uid: 12427
     components:
@@ -80883,7 +80883,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 19.5,-67.5
       parent: 2
-- proto: SW_SpawnPointRepublicRecruitLJ
+- proto: SWSpawnPointRepublicRecruitLJ
   entities:
   - uid: 12410
     components:
@@ -80915,7 +80915,7 @@ entities:
     - type: Transform
       pos: -5.5,-100.5
       parent: 2
-- proto: SW_SpawnPointRepublicSoldiersLJ
+- proto: SWSpawnPointRepublicSoldiersLJ
   entities:
   - uid: 12403
     components:

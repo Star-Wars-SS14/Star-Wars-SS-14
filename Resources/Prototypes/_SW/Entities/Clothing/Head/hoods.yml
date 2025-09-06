@@ -62,3 +62,46 @@
     - Head
     hideOnToggle: true
 
+- type: entity
+  parent: ClothingHeadBase
+  id: SWClothingHeadHatHoodMandalorianCloak
+  name: mandalorian hood
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Hoods/mandalorian.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Hoods/mandalorian.rsi
+  - type: Tag
+    tags:
+    - HidesHair
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
+    - FacialHair
+    - HeadTop
+    - HeadSide
+    - Head
+    hideOnToggle: true
+
+- type: entity
+  parent: ClothingHeadBase
+  id: SWClothingHeadHatHoodMandalorianVeteranCloak
+  name: mandalorian veteran hood
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Hoods/mandalorian_veteran.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Hoods/mandalorian_veteran.rsi
+  - type: Tag
+    tags:
+    - HidesHair
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
+    - FacialHair
+    - HeadTop
+    - HeadSide
+    - Head
+    hideOnToggle: true

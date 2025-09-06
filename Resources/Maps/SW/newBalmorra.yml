@@ -428786,7 +428786,7 @@ entities:
       rot: 12.566370614359172 rad
       pos: -19.508652,-14.103878
       parent: 2
-- proto: SW_ClothingHeadMandalorianHelmet
+- proto: SW_ClothingHeadMandalorianWarriorHelmet
   entities:
   - uid: 53731
     components:

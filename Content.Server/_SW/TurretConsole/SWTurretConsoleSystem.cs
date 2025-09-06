@@ -19,7 +19,6 @@ using Content.Shared.Access.Systems;
 using Content.Server.Popups;
 using Content.Server.DeviceLinking.Systems;
 using Content.Shared.DeviceLinking;
-using JetBrains.FormatRipper.Elf;
 
 namespace Content.Server._SW.TurretConsole;
 

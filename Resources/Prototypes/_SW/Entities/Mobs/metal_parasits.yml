@@ -3,6 +3,7 @@
   parent: SimpleMobBase
   id: SWMobParasit
   components:
+  - type: Speech
   - type: Body
     prototype: SWParasit
   - type: GhostRole
@@ -110,9 +111,9 @@
   - type: Emoting
   - type: Vocal
     sounds:
-      Male: MaleReptilian
-      Female: MaleReptilian
-      Unsexed: MaleReptilian
+      Male: SWParasitSounds
+      Female: SWParasitSounds
+      Unsexed: SWParasitSounds
   - type: SlowOnDamage
     speedModifierThresholds:
       280: 0.9

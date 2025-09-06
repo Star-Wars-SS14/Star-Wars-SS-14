@@ -58,6 +58,8 @@
       rootTask:
         task: SWTurretCompound
       blackboard:
+        RangedRange: !type:Single
+          13
         RotateSpeed: !type:Single
           3.141
         SoundTargetInLOS: !type:SoundPathSpecifier

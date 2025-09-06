@@ -4,4 +4,4 @@
     variation: 0.125
   sounds:
     Scream:
-      path: /Audio/_SW/Voice/parasit.ogg
+      collection: SWParasitScreams

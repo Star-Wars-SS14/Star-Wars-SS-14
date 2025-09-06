@@ -1,0 +1,7 @@
+- type: soundCollection
+  id: SWParasitScreams
+  files:
+    - /Audio/_SW/Voice/parasit.ogg
+    - /Audio/_SW/Voice/parasit2.ogg
+    - /Audio/_SW/Voice/parasit3.ogg
+

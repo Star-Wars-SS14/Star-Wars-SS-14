@@ -286055,15 +286055,15 @@ entities:
         SWEmpireIntelligenceAgent: True
         SWCivialian: True
         SWSith: True
-        SWBlackSun: False
-        SWBlackSunMercenary: False
-        SWExchangeCaptain: False
-        SWExchangeOperative: False
+        SWBlackSun: True
+        SWBlackSunMercenary: True
+        SWExchangeCaptain: True
+        SWExchangeOperative: True
         SWJedi: False
-        SWMandalorianLeader: False
-        SWMandalorianRecruit: False
-        SWMandalorianVeteran: False
-        SWMandalorianWarrior: False
+        SWMandalorianLeader: True
+        SWMandalorianRecruit: True
+        SWMandalorianVeteran: True
+        SWMandalorianWarrior: True
         SWRepublicCaptain: False
         SWRepublicCommanderCommander: False
         SWRepublicCommanderLieutenant: False

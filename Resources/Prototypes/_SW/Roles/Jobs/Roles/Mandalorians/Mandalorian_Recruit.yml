@@ -15,3 +15,5 @@
     components:
       - type: SWFactionMember
         faction: MandalorianFaction
+      - type: ReplacementAccent
+        accent: SWMandalorian

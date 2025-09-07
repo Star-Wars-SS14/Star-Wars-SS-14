@@ -1,6 +1,6 @@
 ###SWRepublic
 - type: entity
-  id: SW_SpawnPointRepublicGeneralLJ
+  id: SWSpawnPointRepublicGeneralLJ
   parent: SpawnPointJobBase
   name: SWRepublic General LJ
   components:
@@ -12,7 +12,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicCaptainLJ
+  id: SWSpawnPointRepublicCaptainLJ
   parent: SpawnPointJobBase
   name: SWRepublic Captain LJ
   components:
@@ -24,7 +24,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicLieutenantLJ
+  id: SWSpawnPointRepublicLieutenantLJ
   parent: SpawnPointJobBase
   name: SWRepublic Lieutenant LJ
   components:
@@ -36,7 +36,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicSoldiersLJ
+  id: SWSpawnPointRepublicSoldiersLJ
   parent: SpawnPointJobBase
   name: SWRepublic Soldier LJ
   components:
@@ -48,7 +48,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicMedicLJ
+  id: SWSpawnPointRepublicMedicLJ
   parent: SpawnPointJobBase
   name: SWRepublic Medic LJ
   components:
@@ -60,7 +60,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicRecruitLJ
+  id: SWSpawnPointRepublicRecruitLJ
   parent: SpawnPointJobBase
   name: SWRepublic Recruit LJ
   components:
@@ -72,7 +72,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointJediLJ
+  id: SWSpawnPointJediLJ
   parent: SpawnPointJobBase
   name: Jedi LJ
   components:
@@ -85,7 +85,7 @@
 
 #Empire
 - type: entity
-  id: SW_SpawnPointEmpireMoffLJ
+  id: SWSpawnPointEmpireMoffLJ
   parent: SpawnPointJobBase
   name: Empire Moff LJ
   components:
@@ -97,7 +97,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointEmpireMajorLJ
+  id: SWSpawnPointEmpireMajorLJ
   parent: SpawnPointJobBase
   name: Empire Major LJ
   components:
@@ -109,7 +109,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointEmpireLieutenantLJ
+  id: SWSpawnPointEmpireLieutenantLJ
   parent: SpawnPointJobBase
   name: Empire Lieutenant LJ
   components:
@@ -121,7 +121,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointEmpireSoldierLJ
+  id: SWSpawnPointEmpireSoldierLJ
   parent: SpawnPointJobBase
   name: Empire Soldier LJ
   components:
@@ -133,7 +133,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointEmpireMedicLJ
+  id: SWSpawnPointEmpireMedicLJ
   parent: SpawnPointJobBase
   name: Empire Medic LJ
   components:
@@ -144,33 +144,47 @@
     layers:
     - state: green
 
+###Sobrik
 - type: entity
-  id: SW_SpawnPointEmpireIntelligenceCaretakerLJ
+  id: SWSpawnPointSobrikCaptainLJ
   parent: SpawnPointJobBase
-  name: Empire Intelligence Caretaker LJ
+  name: Sobrik Captain LJ
   components:
   - type: SpawnPoint
-    job_id: SWEmpireIntelligenceCaretaker
+    job_id: SWSobrikCaptain
     spawn_type: LateJoinByJob
   - type: Sprite
     layers:
     - state: green
 
 - type: entity
-  id: SW_SpawnPointEmpireIntelligenceAgentLJ
+  id: SWSpawnPointSobrikOfficerLJ
   parent: SpawnPointJobBase
-  name: Empire Intelligence Agent LJ
+  name: Sobrik Officer LJ
   components:
   - type: SpawnPoint
-    job_id: SWEmpireIntelligenceAgent
+    job_id: SWSobrikOfficer
     spawn_type: LateJoinByJob
   - type: Sprite
     layers:
     - state: green
+
+- type: entity
+  id: SWSpawnPointSobrikMedicLJ
+  parent: SpawnPointJobBase
+  name: Sobrik Medic LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWSobrikMedic
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
 
 ###Commander elite SWRepublic
 - type: entity
-  id: SW_SpawnPointRepublicCommanderCommanderLJ
+  id: SWSpawnPointRepublicCommanderCommanderLJ
   parent: SpawnPointJobBase
   name: SWRepublic Commander Commander LJ
   components:
@@ -182,7 +196,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicCommanderLieutenantLJ
+  id: SWSpawnPointRepublicCommanderLieutenantLJ
   parent: SpawnPointJobBase
   name: SWRepublic Commander Lieutenant LJ
   components:
@@ -194,7 +208,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicCommanderMedicLJ
+  id: SWSpawnPointRepublicCommanderMedicLJ
   parent: SpawnPointJobBase
   name: SWRepublic Commander Medic LJ
   components:
@@ -206,7 +220,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicCommanderStormtrooperLJ
+  id: SWSpawnPointRepublicCommanderStormtrooperLJ
   parent: SpawnPointJobBase
   name: SWRepublic Commander Stormtrooper LJ
   components:
@@ -218,7 +232,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicCommanderSniperLJ
+  id: SWSpawnPointRepublicCommanderSniperLJ
   parent: SpawnPointJobBase
   name: SWRepublic Commander Sniper LJ
   components:
@@ -230,7 +244,7 @@
     - state: green
  
 - type: entity
-  id: SW_SpawnPointRepublicPilot
+  id: SWSpawnPointRepublicPilot
   parent: SpawnPointJobBase
   name: SWRepublic pilot LJ
   components:
@@ -242,7 +256,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointRepublicEngineeer
+  id: SWSpawnPointRepublicEngineeer
   parent: SpawnPointJobBase
   name: SWRepublic engineer LJ
   components:
@@ -253,9 +267,8 @@
     layers:
     - state: green
 
-
 - type: entity
-  id: SW_SpawnPointEmpirePilot
+  id: SWSpawnPointEmpirePilot
   parent: SpawnPointJobBase
   name: empire pilot LJ
   components:
@@ -267,7 +280,7 @@
     - state: green
 
 - type: entity
-  id: SW_SpawnPointEmpireEngineer
+  id: SWSpawnPointEmpireEngineer
   parent: SpawnPointJobBase
   name: empire engineer LJ
   components:
@@ -279,12 +292,148 @@
     - state: green
   
 - type: entity
-  id: SW_SpawnPointSithLJ
+  id: SWSpawnPointSithLJ
   parent: SpawnPointJobBase
   name: Sith LJ
   components:
   - type: SpawnPoint
     job_id: SWSith
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+###Mandalorians
+- type: entity
+  id: SWSpawnPointMandalorianLeaderLJ
+  parent: SpawnPointJobBase
+  name: SWMandalorian Leader LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWMandalorianLeader
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointMandalorianVeteranLJ
+  parent: SpawnPointJobBase
+  name: SWMandalorian Veteran LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWMandalorianVeteran
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointMandalorianWarriorLJ
+  parent: SpawnPointJobBase
+  name: SWMandalorian Warrior LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWMandalorianWarrior
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointMandalorianRecruitLJ
+  parent: SpawnPointJobBase
+  name: SWMandalorian Recruit LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWMandalorianRecruit
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+###Imperial Intelligence
+- type: entity
+  id: SWSpawnPointEmpireIntelligenceCaretakerLJ
+  parent: SpawnPointJobBase
+  name: Empire Intelligence Caretaker LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWEmpireIntelligenceCaretaker
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointEmpireIntelligenceAgentLJ
+  parent: SpawnPointJobBase
+  name: Empire Intelligence Agent LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWEmpireIntelligenceAgent
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+###Black Sun
+- type: entity
+  id: SWSpawnPointBlackSunLJ
+  parent: SpawnPointJobBase
+  name: Black Sun LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWBlackSun
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointBlackSunMercenaryLJ
+  parent: SpawnPointJobBase
+  name: Black Sun Mercenary LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWBlackSunMercenary
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+###SWExchange
+- type: entity
+  id: SWSpawnPointExchangeCaptainLJ
+  parent: SpawnPointJobBase
+  name: SWExchange Captain LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWExchangeCaptain
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointExchangeOperativeLJ
+  parent: SpawnPointJobBase
+  name: SWExchange Operative LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWExchangeOperative
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointCivialianLJ
+  parent: SpawnPointJobBase
+  name: Civilian (Житель) LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWCivialian
     spawn_type: LateJoinByJob
   - type: Sprite
     layers:

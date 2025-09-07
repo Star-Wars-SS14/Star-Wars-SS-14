@@ -1,26 +1,30 @@
 {
     "version": 1,
     "license": "CC-BY-SA-3.0",
-    "copyright": "STAR WARS SS 14",
-  "size": {
-    "x": 32,
-    "y": 32
-  },
-  "states": [
-    {
-      "name": "icon"
+    "copyright": "@baohe (discord)",
+    "size": {
+        "x": 32,
+        "y": 32
     },
-    {
-     "name": "equipped-NECK",
-      "directions": 4
-    },
-    {
-      "name": "inhand-left",
-      "directions": 4
-    },
-    {
-      "name": "inhand-right",
-      "directions": 4
-    }
-  ]
+    "states": [
+        {
+            "name": "equipped-NECK",
+            "directions": 4
+        },
+        {
+            "name": "icon"
+        },
+        {
+            "name": "inhand-left",
+            "directions": 4
+        },
+        {
+            "name": "inhand-right",
+            "directions": 4
+        },
+        {
+            "name": "\u043a\u0430\u043f\u044e\u0448\u043e\u043d-equipped-NECKpng",
+            "directions": 4
+        }
+    ]
 }

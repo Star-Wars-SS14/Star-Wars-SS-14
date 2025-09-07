@@ -11,7 +11,7 @@
         fix1:
           shape:
             !type:PhysShapeAabb
-            bounds: "-0.45,-0.45,0.45,0.45"
+            bounds: "-0.2,-0.2,0.2,0.2"
           density: 60
           mask:
             - MachineMask
@@ -58,6 +58,8 @@
       rootTask:
         task: SWTurretCompound
       blackboard:
+        RangedRange: !type:Single
+          13
         RotateSpeed: !type:Single
           3.141
         SoundTargetInLOS: !type:SoundPathSpecifier

@@ -17,6 +17,8 @@ using Content.Shared.Popups;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Server.Popups;
+using Content.Server.DeviceLinking.Systems;
+using Content.Shared.DeviceLinking;
 
 namespace Content.Server._SW.TurretConsole;
 
@@ -27,15 +29,26 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
     [Dependency] private readonly SWFactionGameruleSystem _sWFaction = default!;
     [Dependency] private readonly AccessReaderSystem _accessReaderSystem = default!;
     [Dependency] private readonly PopupSystem _popupSystem = default!;
+    [Dependency] private readonly DeviceLinkSystem _signalSystem = default!;
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<SWTurretConsoleComponent, ComponentStartup>(OnStartup);
+        SubscribeLocalEvent<SWTurretConsoleComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SWTurretConsoleComponent, SWTurretJobToggleMessage>(OnToggle);
         SubscribeLocalEvent<SWTurretConsoleComponent, SWAllowFaction>(OnAllow);
         SubscribeLocalEvent<SWTurretConsoleComponent, SWDisallowFaction>(OnDisAllow);
         SubscribeLocalEvent<SWTurretConsoleComponent, NewLinkEvent>(OnNewLink);
-        SubscribeLocalEvent<SWTurretConsoleComponent, PortDisconnectedEvent>(OnPortDisconnected);
+        SubscribeLocalEvent<SWTurretConfigComponent, PortDisconnectedEvent>(OnPortDisconnected);
+    }
+
+    private void OnMapInit(Entity<SWTurretConsoleComponent> ent, ref MapInitEvent args)
+    {
+        var comp = Comp<DeviceLinkSinkComponent>(ent.Owner);
+        foreach (var source in comp.LinkedSources)
+        {
+            EnsureTurretConfig(ent, source);
+        }
     }
 
     private void OnDisAllow(Entity<SWTurretConsoleComponent> ent, ref SWDisallowFaction args)
@@ -90,16 +103,15 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
         UpdateInterface(ent.Owner, ent.Comp);
     }
 
-    private void OnPortDisconnected(Entity<SWTurretConsoleComponent> ent, ref PortDisconnectedEvent args)
+    private void OnPortDisconnected(Entity<SWTurretConfigComponent> ent, ref PortDisconnectedEvent args)
     {
         //if port is disconnected remove config then
-        RemComp<SWTurretConfigComponent>(ent.Owner);
+        RemoveTurretConfig(ent.Owner);
     }
 
     private void OnNewLink(Entity<SWTurretConsoleComponent> ent, ref NewLinkEvent args)
     {
-        var comp = AddComp<SWTurretConfigComponent>(args.Source);
-        comp.AllowedJobs = ent.Comp.JobsAllowed;
+        EnsureTurretConfig(ent, args.Source);
     }
 
     private void OnToggle(Entity<SWTurretConsoleComponent> ent, ref SWTurretJobToggleMessage args)
@@ -147,7 +159,6 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
         var state = new SWTurretConsoleBounderUserInterfaceState(comp.JobsAllowed, res);
         _uiSystem.SetUiState(uid, SWTurretConsoleUiKey.Key, state);
     }
-
     private bool CanUse(EntityUid user, EntityUid console)
     {
         if (TryComp<AccessReaderComponent>(console, out var accessReaderComponent))
@@ -155,5 +166,16 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
             return _accessReaderSystem.IsAllowed(user, console, accessReaderComponent);
         }
         return true;
+    }
+
+    private void EnsureTurretConfig(Entity<SWTurretConsoleComponent> console, EntityUid turret)
+    {
+        var comp = EnsureComp<SWTurretConfigComponent>(turret);
+        comp.AllowedJobs = console.Comp.JobsAllowed;
+    }
+
+    private void RemoveTurretConfig(EntityUid turret)
+    {
+        RemComp<SWTurretConfigComponent>(turret);
     }
 }

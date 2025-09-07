@@ -132,12 +132,11 @@
   id: MandalorianLeaderGear
   equipment:
     jumpsuit: SWClothingUniformJumpsuitFleece
-    outerClothing: SWMandalorianVeteranSuit
-    neck: SWClothingNeckCloakMandalorianCloak
+    outerClothing: SWMandalorianLeaderSuit
     belt: ClothingBeltSalvageWebbing
     shoes: ClothingShoesBootsJackFilled
     gloves: ClothingHandsGlovesCombat
-    head: SW_ClothingHeadMandalorianVeteranHelmet
+    head: SW_ClothingHeadMandalorianLeaderHelmet
     back: ClothingBackpackMilitarySatchel
     id: SWIDCardMandalorianLeader
     ears: SWClothingHeadsetMandalorian
@@ -147,6 +146,7 @@
   equipment:
     jumpsuit: SWClothingUniformJumpsuitFleece
     outerClothing: SWMandalorianVeteranSuit
+    neck: SWClothingNeckCloakMandalorianVeteranCloak
     belt: ClothingBeltSalvageWebbing
     shoes: ClothingShoesBootsJackFilled
     gloves: ClothingHandsGlovesCombat
@@ -159,11 +159,11 @@
   id: MandalorianWarriorGear
   equipment:
     jumpsuit: SWClothingUniformJumpsuitFleece
-    outerClothing: SWMandalorianSuit
+    outerClothing: SWMandalorianWarriorSuit
     belt: ClothingBeltSalvageWebbing
     shoes: ClothingShoesBootsJackFilled
     gloves: ClothingHandsGlovesCombat
-    head: SW_ClothingHeadMandalorianHelmet
+    head: SW_ClothingHeadMandalorianWarriorHelmet
     back: ClothingBackpackMilitarySatchel
     id: SWIDCardMandalorianWarrior
     ears: SWClothingHeadsetMandalorian

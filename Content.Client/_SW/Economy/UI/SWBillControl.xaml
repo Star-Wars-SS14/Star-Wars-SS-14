@@ -6,8 +6,7 @@
             VerticalAlignment="Center"
             MinSize="32 32"
             />
-        <Label Name="BillName" HorizontalExpand="True" />
-        <BoxContainer Orientation="Vertical" Name="CurrencyRequestsContainer">
-        </BoxContainer>
+        <Label Name="CurrencyName" HorizontalExpand="True" />
+        <Label Name="CurrencyAmount" HorizontalExpand="True" />
     </BoxContainer>
 </Control>

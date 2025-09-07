@@ -1,0 +1,28 @@
+<Control xmlns="https://spacestation14.io">
+    <BoxContainer Orientation="Horizontal">
+        <BoxContainer
+            Margin="0 0 4 0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            MinSize="32 32"
+            />
+        <Label Name="BillName" HorizontalExpand="True" />
+        <BoxContainer Orientation="Vertical" Name="CurrencyRequestsContainer">
+        </BoxContainer>
+        <Button
+        Name="PayButton"
+        HorizontalExpand="True"
+        Margin="0"
+        StyleClasses="ButtonSquare">
+            <BoxContainer Orientation="Horizontal">
+                <BoxContainer
+                    Margin="0 0 4 0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    MinSize="32 32"
+                />
+                <Label Text="Оплатить" HorizontalExpand="True" />
+            </BoxContainer>
+        </Button>
+    </BoxContainer>
+</Control>

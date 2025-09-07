@@ -149,7 +149,7 @@
   - type: UserInterface
     interfaces:
       enum.SWFinanceConsoleUIKey.Key:
-        type: SWFinanceConsoleBoundUserInterface
+        type: SWFinanceConsoleBoundUserInterface 
   - type: Sprite
     layers:
     - map: ["computerLayerBody"]

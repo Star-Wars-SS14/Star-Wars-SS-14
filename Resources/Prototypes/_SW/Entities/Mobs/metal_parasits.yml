@@ -42,8 +42,8 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      300: Critical
-      320: Dead
+      240: Critical
+      250: Dead
   - type: DamageStateVisuals
     states:
       Alive:
@@ -94,8 +94,8 @@
     animation: WeaponArcBite
     damage:
       types:
-        Piercing: 70
-        Structural: 30
+        Piercing: 40
+        Structural: 40
     altDisarm: false
   - type: Bloodstream
     bloodMaxVolume: 50
@@ -118,8 +118,8 @@
     speedModifierThresholds:
       280: 0.9
   - type: MovementSpeedModifier
-    baseWalkSpeed: 3.5
-    baseSprintSpeed: 6.0
+    baseWalkSpeed: 5.5
+    baseSprintSpeed: 8.0
   - type: PassiveDamage
     allowedStates:
     - Alive

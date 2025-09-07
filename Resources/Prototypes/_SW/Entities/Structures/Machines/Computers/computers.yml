@@ -137,3 +137,26 @@
       SWExchangeOperative: true
   - type: AccessReader
     access: [[ "SWRepublicCommander" ]]
+
+
+- type: entity
+  parent: BaseComputer
+  id: SWFinanceConsole
+  name: Консоль финансов
+  components:
+  - type: ActivatableUI
+    key: enum.SWFinanceConsoleUIKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWFinanceConsoleUIKey.Key:
+        type: SWFinanceConsoleBoundUserInterface
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: comm
+    - map: ["computerLayerKeys"]
+      state: generic_keys

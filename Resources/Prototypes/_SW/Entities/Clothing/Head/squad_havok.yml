@@ -35,6 +35,8 @@
     slots:
     - Hair
     - Snout
+  - type: NightVisionItem
+    slotFlags: HEAD
 
 - type: entity
   parent: SW_ClothingHeadHavokHelmet
@@ -63,4 +65,6 @@
     slots:
     - Hair
     - Snout
+  - type: NightVisionItem
+    slotFlags: HEAD
 

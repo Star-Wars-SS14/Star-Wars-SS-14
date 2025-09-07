@@ -1,3 +1,4 @@
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using System;
 using System.Collections.Generic;
@@ -16,7 +17,7 @@ public enum SWFinanceConsoleUIKey
 [Serializable, NetSerializable]
 public sealed class SWFinanceConsoleBounderUserInterfaceState : BoundUserInterfaceState
 {
-    public SWFinanceConsoleBounderUserInterfaceState()
-    {
-    }
+    public List<SWBill> Bills = new ();
+
+    public Dictionary<ProtoId<SWCurrencyPrototype>, float> CurrentAmount = new ();
 }

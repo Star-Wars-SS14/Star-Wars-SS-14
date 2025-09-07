@@ -31,6 +31,8 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : BoundUserInterf
         switch (state)
         {
             case SWFinanceConsoleBounderUserInterfaceState msg:
+                _menu?.PopulateBills(msg.Bills);
+                _menu?.PopulateBalance(msg.CurrentAmount);
                 break;
         }
     }

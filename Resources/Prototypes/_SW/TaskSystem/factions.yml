@@ -46,6 +46,12 @@
     addIntervalInSeconds: 1200 #20 min   
     startAmountOfTasks : 4
     maxAmountOfTasks: 5
+  - type: SWBillContainer
+    bills:
+    - name: Счет
+      currencyRequests:
+        SWEmpireCreditCurrency : 10.0
+  - type: SWBankAccountContainer
 
 - type: entity
   id: MandalorianFaction

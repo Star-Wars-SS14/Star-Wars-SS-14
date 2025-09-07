@@ -6,7 +6,20 @@
             VerticalAlignment="Center"
             MinSize="32 32"
             />
-        <Label Name="CurrencyName" HorizontalExpand="True" />
-        <Label Name="CurrencyAmount" HorizontalExpand="True" />
+        <BoxContainer Orientation="Vertical" Margin="4 4 4 4" MaxWidth="100">
+            <Label Name="BillName" HorizontalExpand="True" />
+        </BoxContainer>
+
+        <BoxContainer Orientation="Vertical" Name="CurrencyRequestsContainer">
+        </BoxContainer>
+        
+        <BoxContainer Orientation="Vertical" Margin="4 4 4 4">
+            <Button
+            Name="PayButton"
+            HorizontalExpand="True"
+            Margin="0">
+                <Label Text="Оплатить" HorizontalExpand="True" />
+            </Button>
+        </BoxContainer>
     </BoxContainer>
 </Control>

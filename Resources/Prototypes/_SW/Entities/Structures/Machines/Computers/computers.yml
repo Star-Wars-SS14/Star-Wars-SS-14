@@ -144,6 +144,8 @@
   id: SWFinanceConsole
   name: Консоль финансов
   components:
+  - type: SWFinanceConsole
+    faction: EmpireFaction
   - type: ActivatableUI
     key: enum.SWFinanceConsoleUIKey.Key
   - type: UserInterface

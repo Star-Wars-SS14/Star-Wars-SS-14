@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Content.Server._SW.Economy;
-
+[RegisterComponent]
 public sealed partial class SWBankAccountAccessorComponent : Component
 {
 }

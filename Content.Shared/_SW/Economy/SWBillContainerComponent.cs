@@ -6,17 +6,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Server._SW.Economy;
-
-public sealed partial class SWBillContainer : Component
+namespace Content.Shared._SW.Economy;
+[RegisterComponent]
+public sealed partial class SWBillContainerComponent : Component
 {
     [DataField]
-    public List<SWBill> CurrentBills = new List<SWBill>();
+    public List<SWBill> Bills = new List<SWBill>();
 }
 
-[DataDefinition]
+[DataDefinition, Serializable]
 public sealed partial class SWBill
 {
+    [DataField]
+    public string Name = "";
+
     [DataField]
     public Dictionary<ProtoId<SWCurrencyPrototype>, float> CurrencyRequests = new Dictionary<ProtoId<SWCurrencyPrototype>, float>();
 

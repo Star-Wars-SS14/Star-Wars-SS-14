@@ -51,7 +51,13 @@ public sealed partial class SWWithdrawalWindow : DefaultWindow
 
     public override void Close()
     {
-        base.Close();
+        if (Parent == null)
+        {
+            return;
+        }
 
+        Parent.RemoveChild(this);
+
+        //Dont Invoke OnClosed To Avoid Closing FinanceConsoleMenuWindow
     }
 }

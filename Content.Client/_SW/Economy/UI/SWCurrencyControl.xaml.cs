@@ -15,12 +15,18 @@ namespace Content.Client._SW.Economy.UI;
 public sealed partial class SWCurrencyControl : Control
 {
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    public SWCurrencyControl(ProtoId<SWCurrencyPrototype> currency, float amount)
+    public SWCurrencyControl(ProtoId<SWCurrencyPrototype> currency, float amount, bool useShortName)
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
         var proto = _prototypeManager.Index(currency);
-        CurrencyName.Text = Loc.GetString(proto.LocalizedName);
+        if (useShortName)
+        {
+            CurrencyName.Text = Loc.GetString(proto.ShortName);
+        } else
+        {
+            CurrencyName.Text = Loc.GetString(proto.LocalizedName);
+        }
         CurrencyAmount.Text = amount.ToString();
     }
 }

@@ -6,7 +6,7 @@
             VerticalAlignment="Center"
             MinSize="32 32"
             />
-        <BoxContainer Orientation="Vertical" Margin="4 4 4 4" MaxWidth="100">
+        <BoxContainer Orientation="Vertical" Margin="4 4 4 4" MaxWidth="400">
             <Label Name="BillName" HorizontalExpand="True" />
         </BoxContainer>
 

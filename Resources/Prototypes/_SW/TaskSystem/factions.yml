@@ -48,10 +48,14 @@
     maxAmountOfTasks: 5
   - type: SWBillContainer
     bills:
-    - name: Счет
+    - name: Счет за оплату электричества
       currencyRequests:
         SWEmpireCreditCurrency : 10.0
+        SWRepublicCreditCurrency: 15.0
   - type: SWBankAccountContainer
+    currentAmount:
+      SWEmpireCreditCurrency: 50.0
+      SWRepublicCreditCurrency: 100.0
 
 - type: entity
   id: MandalorianFaction

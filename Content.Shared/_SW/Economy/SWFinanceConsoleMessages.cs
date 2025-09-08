@@ -21,3 +21,14 @@ public sealed class SWFinanceConsoleBounderUserInterfaceState : BoundUserInterfa
 
     public Dictionary<ProtoId<SWCurrencyPrototype>, float> CurrentAmount = new ();
 }
+
+[Serializable, NetSerializable]
+public sealed class SWTryPayBillMessage : BoundUserInterfaceMessage
+{
+    public SWBill Bill;
+
+    public SWTryPayBillMessage(SWBill num)
+    {
+        Bill = num;
+    }
+}

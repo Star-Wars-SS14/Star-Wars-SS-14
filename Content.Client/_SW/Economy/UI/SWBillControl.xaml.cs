@@ -13,14 +13,15 @@ namespace Content.Client._SW.Economy.UI;
 [GenerateTypedNameReferences]
 public sealed partial class SWBillControl : Control
 {
-    public SWBillControl(SWBill bill)
+    public SWBillControl(SWBill bill, Action<SWBill>? action)
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
         CurrencyRequestsContainer.Children.Clear();
+        PayButton.OnPressed += (_) => { action?.Invoke(bill); };
         foreach (var (currency, amount) in bill.CurrencyRequests)
         {
-            var cntrl = new SWCurrencyControl(currency, amount);
+            var cntrl = new SWCurrencyControl(currency, amount, true);
             BillName.Text = bill.Name;
             CurrencyRequestsContainer.AddChild(cntrl);
         }

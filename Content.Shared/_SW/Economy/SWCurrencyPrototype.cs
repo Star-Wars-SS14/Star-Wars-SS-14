@@ -19,5 +19,8 @@ public sealed partial class SWCurrencyPrototype : IPrototype
     public Dictionary<ProtoId<SWCurrencyPrototype>, float> ExchangeRates = new Dictionary<ProtoId<SWCurrencyPrototype>, float>();
 
     [DataField]
-    public LocId LocalizedName = "dengi";
+    public LocId LocalizedName = "money";
+
+    [DataField]
+    public LocId ShortName = "$";
 }

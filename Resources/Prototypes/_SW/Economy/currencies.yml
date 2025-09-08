@@ -1,3 +1,9 @@
 - type: swcurrency
   id : SWEmpireCreditCurrency
-  localizedName: aboba
+  localizedName: Имперский кредит
+  shortName: ИК
+
+- type: swcurrency
+  id : SWRepublicCreditCurrency
+  localizedName: Республиканский кредит
+  shortName: РК

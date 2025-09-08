@@ -22,6 +22,12 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : BoundUserInterf
         base.Open();
         _menu = this.CreateWindow<SWFinanceConsoleMenu>();
         _menu.OpenCenteredRight();
+        _menu.OnPaynButtonPressed += SendPayBillMessage;
+    }
+
+    public void SendPayBillMessage(SWBill bill)
+    {
+        SendMessage(new SWTryPayBillMessage(bill));
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

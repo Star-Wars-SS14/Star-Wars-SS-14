@@ -12,5 +12,5 @@ public sealed partial class SWFinanceConsoleComponent : Component
     [DataField(required: true)]
     public string Faction = "";
 
-    public Entity<SWBankAccountContainerComponent>? LinkedBankAccount = null;
+    public Entity<SWBankAccountContainerComponent>? Account = null;
 }

@@ -11,5 +11,6 @@ namespace Content.Server._SW.Economy;
 [RegisterComponent]
 public sealed partial class SWBankAccountContainerComponent : Component
 {
+    [DataField]
     public Dictionary<ProtoId<SWCurrencyPrototype>, float> CurrentAmount = new Dictionary<ProtoId<SWCurrencyPrototype>, float>();
 }

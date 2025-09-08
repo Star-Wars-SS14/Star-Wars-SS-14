@@ -10,6 +10,7 @@ namespace Content.Client._SW.Economy.UI;
 [GenerateTypedNameReferences]
 public sealed partial class SWFinanceConsoleMenu : DefaultWindow
 {
+    public event Action<SWBill>? OnPaynButtonPressed;
     public SWFinanceConsoleMenu()
     {
         RobustXamlLoader.Load(this);
@@ -17,19 +18,22 @@ public sealed partial class SWFinanceConsoleMenu : DefaultWindow
 
     public void PopulateBills(List<SWBill> bills)
     {
-        ISawmill _s = Logger.GetSawmill("sadfg");
-        _s.Fatal("bill");
         BillList.Children.Clear();
-        foreach (var bill in bills)
+        for(int i = 0; i < bills.Count; i++)
         {
-            _s.Fatal("1");
-            var cntrl = new SWBillControl(bill);
+            var bill = bills[i];
+            var cntrl = new SWBillControl(bill, OnPaynButtonPressed);
             BillList.AddChild(cntrl);
         }
     }
 
     public void PopulateBalance(Dictionary<ProtoId<SWCurrencyPrototype>, float> balance)
     {
-
+        BalanceContainer.Children.Clear();
+        foreach (var (currency, amount) in balance)
+        {
+            var cntrl = new SWCurrencyControl(currency, amount, false);
+            BalanceContainer.AddChild(cntrl);
+        }
     }
 }

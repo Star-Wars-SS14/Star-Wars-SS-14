@@ -48,12 +48,12 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         }
         var bankComp = EnsureComp<SWBankAccountContainerComponent>(ent.Comp.Account.Value);
         var billComp = EnsureComp<SWBillContainerComponent>(ent.Comp.Account.Value);
-        SWBill bill = args.Bill;
-        if (TryPay(bill.CurrencyRequests, bankComp.CurrentAmount))
+        if (TryPay(args.Bill.CurrencyRequests, bankComp.CurrentAmount))
         {
-            var a = billComp.Bills.Remove(bill);
+            var a = billComp.Bills.Remove(args.Bill);
             ISawmill _s = Logger.GetSawmill("sdfgh");
             _s.Fatal(a.ToString());
+            _s.Fatal((billComp.Bills.Contains(args.Bill)).ToString());
         }
         UpdateInterface(ent);
     }

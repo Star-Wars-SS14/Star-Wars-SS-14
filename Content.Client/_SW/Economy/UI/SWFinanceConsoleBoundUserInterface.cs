@@ -13,6 +13,7 @@ namespace Content.Client._SW.Economy.UI;
 public sealed partial class SWFinanceConsoleBoundUserInterface : BoundUserInterface
 {
     private SWFinanceConsoleMenu? _menu = null;
+    private SWWithdrawalWindow? _withdrawal = null;
     public SWFinanceConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
     }
@@ -22,7 +23,19 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : BoundUserInterf
         base.Open();
         _menu = this.CreateWindow<SWFinanceConsoleMenu>();
         _menu.OpenCenteredRight();
-        _menu.OnPaynButtonPressed += SendPayBillMessage;
+        _menu.OnPayButtonPressed += SendPayBillMessage;
+        _menu.OnWithdrawalButtonPressed += OpenWitdrawal;
+    }
+
+    private void OpenWitdrawal()
+    {
+        if (_menu == null)
+        {
+            return;
+        }
+        _withdrawal = this.CreateWindow<SWWithdrawalWindow>();
+        _withdrawal.PopulateCurrencies(_menu.Balance.Keys.ToList());
+        _withdrawal.OpenCenteredRight();
     }
 
     public void SendPayBillMessage(SWBill bill)
@@ -37,8 +50,13 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : BoundUserInterf
         switch (state)
         {
             case SWFinanceConsoleBounderUserInterfaceState msg:
-                _menu?.PopulateBills(msg.Bills);
-                _menu?.PopulateBalance(msg.CurrentAmount);
+                if (_menu == null)
+                {
+                    break;
+                }
+                _menu.PopulateBills(msg.Bills);
+                _menu.Balance = msg.CurrentAmount;
+                _menu.PopulateBalance();
                 break;
         }
     }

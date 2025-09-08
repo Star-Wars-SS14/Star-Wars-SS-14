@@ -32,3 +32,13 @@ public sealed class SWTryPayBillMessage : BoundUserInterfaceMessage
         Bill = num;
     }
 }
+
+[Serializable, NetSerializable]
+public sealed class SWTryPayoutMessage : BoundUserInterfaceMessage
+{
+    public Dictionary<ProtoId<SWCurrencyPrototype>, float> Requests = new ();
+    public SWTryPayoutMessage (Dictionary<ProtoId<SWCurrencyPrototype>, float> dict)
+    {
+        Requests = dict;
+    }
+}

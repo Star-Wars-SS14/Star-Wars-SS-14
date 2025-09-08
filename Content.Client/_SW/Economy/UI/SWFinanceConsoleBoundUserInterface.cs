@@ -8,6 +8,7 @@ using static Robust.Client.UserInterface.Controls.MenuBar;
 using Robust.Client.UserInterface;
 using Content.Shared._SW;
 using Content.Shared._SW.Economy;
+using Robust.Shared.Prototypes;
 namespace Content.Client._SW.Economy.UI;
 
 public sealed partial class SWFinanceConsoleBoundUserInterface : BoundUserInterface
@@ -36,11 +37,19 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : BoundUserInterf
         _withdrawal = this.CreateWindow<SWWithdrawalWindow>();
         _withdrawal.PopulateCurrencies(_menu.Balance.Keys.ToList());
         _withdrawal.OpenCenteredRight();
+        _withdrawal.OnConfirmButtonPressedAction += OnConfirmButtonPressed;
+        _withdrawal.OnCloseButtonPressed += _withdrawal.Close;
     }
 
     public void SendPayBillMessage(SWBill bill)
     {
         SendMessage(new SWTryPayBillMessage(bill));
+    }
+
+    public void OnConfirmButtonPressed(Dictionary<ProtoId<SWCurrencyPrototype>, float> dict)
+    {
+        SendMessage(new SWTryPayoutMessage(dict));
+        _withdrawal?.Close();
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

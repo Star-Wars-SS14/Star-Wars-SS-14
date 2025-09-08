@@ -2,8 +2,10 @@
   id : SWEmpireCreditCurrency
   localizedName: Имперский кредит
   shortName: ИК
+  cashEntity: SWCredits
 
 - type: swcurrency
   id : SWRepublicCreditCurrency
   localizedName: Республиканский кредит
   shortName: РК
+  cashEntity: SWCredits

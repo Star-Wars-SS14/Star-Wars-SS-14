@@ -15,11 +15,22 @@ namespace Content.Client._SW.Economy.UI;
 public sealed partial class SWWithdrawalControl : Control
 {
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    public ProtoId<SWCurrencyPrototype> Currency;
     public SWWithdrawalControl(ProtoId<SWCurrencyPrototype> currency)
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
         var proto = _prototypeManager.Index(currency);
         CurrencyName.Text = proto.ShortName;
+        Currency = currency;
+    }
+
+    public int GetAmount()
+    {
+        if (!int.TryParse(AmountEdit.Text, out var quantity) || quantity <= 0)
+        {
+            quantity = 0;
+        }
+        return quantity;
     }
 }

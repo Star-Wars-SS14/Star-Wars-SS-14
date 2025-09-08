@@ -23,4 +23,7 @@ public sealed partial class SWCurrencyPrototype : IPrototype
 
     [DataField]
     public LocId ShortName = "$";
+
+    [DataField]
+    public EntProtoId CashEntity = default!;
 }

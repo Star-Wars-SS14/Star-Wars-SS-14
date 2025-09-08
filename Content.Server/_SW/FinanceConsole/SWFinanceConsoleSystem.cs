@@ -3,6 +3,7 @@ using Content.Server._SW.TaskSystem;
 using Content.Server._SW.TurretConsole;
 using Content.Shared._SW;
 using Content.Shared._SW.Economy;
+using Content.Shared.Stacks;
 using Robust.Server.GameObjects;
 using Robust.Shared.Prototypes;
 using System;
@@ -16,14 +17,20 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
 {
     [Dependency] SWFactionGameruleSystem _faction = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
+    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] SharedStackSystem _stackSystem = default!;
     ISawmill _s = default!;
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<SWFinanceConsoleComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SWFinanceConsoleComponent, SWTryPayBillMessage>(OnTryPay);
+        SubscribeLocalEvent<SWFinanceConsoleComponent, SWTryPayoutMessage>(OnTryPayout);
         _s = Logger.GetSawmill("SWFinanceConsole");
     }
+
+
+
     private void OnMapInit(Entity<SWFinanceConsoleComponent> ent, ref MapInitEvent args)
     {
         var factEnt = _faction.GetFactionEntity(ent.Comp.Faction);
@@ -58,6 +65,22 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         UpdateInterface(ent);
     }
 
+    private void OnTryPayout(Entity<SWFinanceConsoleComponent> ent, ref SWTryPayoutMessage args)
+    {
+        if (ent.Comp.Account == null){
+            return;
+        }
+        if (TryPay(args.Requests, ent.Comp.Account.Value.Comp.CurrentAmount))
+        {
+            foreach (var (currency, amount) in args.Requests)
+            {
+                var proto = _prototypeManager.Index(currency);
+                var spawnedCash = Spawn(proto.CashEntity, Transform(ent).Coordinates);
+                _stackSystem.SetCount(spawnedCash, (int)amount);
+            }
+        }
+        UpdateInterface(ent);
+    }
     private bool TryPay(Dictionary<ProtoId<SWCurrencyPrototype>, float> requests,
                         Dictionary<ProtoId<SWCurrencyPrototype>, float> balance)
     {

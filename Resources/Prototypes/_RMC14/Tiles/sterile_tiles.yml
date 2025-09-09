@@ -4,7 +4,7 @@
   parent: CMTileBase
   id: CMFloorSteelSterileGreenBase
   name: трава
-  itemDrop: CMSheetMetal1 # TODO RMC14
+  itemDrop: SheetSteel1 # TODO RMC14
 
 - type: tile
   parent: CMFloorSteelSterileGreenBase

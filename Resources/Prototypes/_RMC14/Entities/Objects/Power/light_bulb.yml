@@ -46,7 +46,7 @@
       Glass: 25
   - type: ToolRefinable
     refineResult:
-    - id: CMSheetGlass1
+    - id: SheetGlass1
 
 - type: entity
   parent: CMLightBulbBase

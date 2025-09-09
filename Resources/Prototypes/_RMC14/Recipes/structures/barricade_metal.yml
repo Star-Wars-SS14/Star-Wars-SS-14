@@ -21,7 +21,7 @@
     - to: start
       completed:
       - !type:SpawnPrototype
-        prototype: CMSheetMetal1
+        prototype: SheetSteel1
         amount: 4
       - !type:DeleteEntity
       conditions:
@@ -63,7 +63,7 @@
     - to: start
       completed:
         - !type:SpawnPrototype
-          prototype: CMSheetMetal1
+          prototype: SheetSteel1
           amount: 4
         - !type:DeleteEntity
       conditions:
@@ -81,7 +81,7 @@
     - to: start
       completed:
       - !type:SpawnPrototype
-        prototype: CMSheetMetal1
+        prototype: SheetSteel1
         amount: 4
       - !type:DeleteEntity
       conditions:
@@ -99,7 +99,7 @@
     - to: start
       completed:
       - !type:SpawnPrototype
-        prototype: CMSheetMetal1
+        prototype: SheetSteel1
         amount: 4
       - !type:DeleteEntity
       conditions:

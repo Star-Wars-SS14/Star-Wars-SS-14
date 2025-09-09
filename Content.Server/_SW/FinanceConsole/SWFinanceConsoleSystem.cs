@@ -57,10 +57,7 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         var billComp = EnsureComp<SWBillContainerComponent>(ent.Comp.Account.Value);
         if (TryPay(args.Bill.CurrencyRequests, bankComp.CurrentAmount))
         {
-            var a = billComp.Bills.Remove(args.Bill);
-            ISawmill _s = Logger.GetSawmill("sdfgh");
-            _s.Fatal(a.ToString());
-            _s.Fatal((billComp.Bills.Contains(args.Bill)).ToString());
+            billComp.Bills.Remove(args.Bill);
         }
         UpdateInterface(ent);
     }
@@ -84,24 +81,21 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
 
     private void OnAddMoney(Entity<SWFinanceConsoleComponent> ent, ref SWTryAddMoneyMessage args)
     {
-        _s.Fatal("0");
         if (ent.Comp.Account == null)
         {
             return;
         }
-        _s.Fatal("01");
+
         if (args.Actor is not { Valid: true } user)
             return;
-        _s.Fatal("1");
+
         foreach (var entity in _handsSystem.EnumerateHeld(user))
         {
             if (!TryComp<StackComponent>(entity, out var comp))
             {
                 continue;
             }
-            _s.Fatal("2");
             var proto = GetCurrencyProto(entity);
-            _s.Fatal($"{proto}");
             if (proto != null)
             {
                 ent.Comp.Account.Value.Comp.CurrentAmount[proto] += comp.Count;
@@ -143,7 +137,6 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         var currencies = _prototypeManager.EnumeratePrototypes <SWCurrencyPrototype>();        
         foreach (var currency in currencies)
         {
-            _s.Fatal($"{currency.CashEntity} == {proto.ID}");
             if (currency.CashEntity == proto.ID)
             {
                 return currency;
@@ -157,7 +150,6 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         if (TryComp<SWBillContainerComponent>(ent.Comp.Account, out var comp))
         {
             state.Bills = comp.Bills;
-            _s.Fatal(comp.Bills.Count.ToString());
         }
         if (ent.Comp.Account != null)
         {

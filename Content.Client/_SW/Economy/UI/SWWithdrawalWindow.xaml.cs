@@ -14,13 +14,11 @@ namespace Content.Client._SW.Economy.UI;
 [GenerateTypedNameReferences]
 public sealed partial class SWWithdrawalWindow : DefaultWindow
 {
-    public event Action? OnCloseButtonPressed;
     public event Action<Dictionary<ProtoId<SWCurrencyPrototype>, float>>? OnConfirmButtonPressedAction;
     public SWWithdrawalWindow()
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
-        CloseWithdrawalButton.OnPressed += (_) => OnCloseButtonPressed?.Invoke();
         ConfirmButton.OnPressed += OnConfirmButtonPressed;
     }
     private void OnConfirmButtonPressed(BaseButton.ButtonEventArgs args)

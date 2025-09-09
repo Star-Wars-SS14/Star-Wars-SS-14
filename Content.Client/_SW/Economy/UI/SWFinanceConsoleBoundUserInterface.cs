@@ -26,6 +26,7 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : BoundUserInterf
         _menu.OpenCenteredRight();
         _menu.OnPayButtonPressed += SendPayBillMessage;
         _menu.OnWithdrawalButtonPressed += OpenWitdrawal;
+        _menu.OnAddMoneyButtonPressed += SendTryAddMoneyMessage;
     }
 
     private void OpenWitdrawal()
@@ -38,7 +39,6 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : BoundUserInterf
         _withdrawal.PopulateCurrencies(_menu.Balance.Keys.ToList());
         _withdrawal.OpenCenteredRight();
         _withdrawal.OnConfirmButtonPressedAction += OnConfirmButtonPressed;
-        _withdrawal.OnCloseButtonPressed += _withdrawal.Close;
     }
 
     public void SendPayBillMessage(SWBill bill)
@@ -50,6 +50,11 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : BoundUserInterf
     {
         SendMessage(new SWTryPayoutMessage(dict));
         _withdrawal?.Close();
+    }
+
+    public void SendTryAddMoneyMessage()
+    {
+        SendMessage(new SWTryAddMoneyMessage());
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

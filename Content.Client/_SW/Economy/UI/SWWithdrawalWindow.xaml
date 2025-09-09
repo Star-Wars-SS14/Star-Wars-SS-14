@@ -9,13 +9,6 @@
                       VerticalExpand="True"
                       Name="RequestsList">
         </BoxContainer>
-
-        <Button
-        Name="CloseWithdrawalButton"
-        HorizontalExpand="True"
-        Margin="0">
-            <Label Text="Закрыть" HorizontalExpand="True" />
-        </Button>
         
         <Button
         Name="ConfirmButton"

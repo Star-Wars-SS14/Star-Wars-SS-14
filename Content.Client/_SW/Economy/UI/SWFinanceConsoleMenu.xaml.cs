@@ -12,11 +12,13 @@ public sealed partial class SWFinanceConsoleMenu : DefaultWindow
 {
     public event Action<SWBill>? OnPayButtonPressed;
     public event Action? OnWithdrawalButtonPressed;
+    public event Action? OnAddMoneyButtonPressed;
     public Dictionary<ProtoId<SWCurrencyPrototype>, float> Balance = new ();
     public SWFinanceConsoleMenu()
     {
         RobustXamlLoader.Load(this);
         MoneyOutButton.OnPressed += (_) => OnWithdrawalButtonPressed?.Invoke();
+        MoneyInButton.OnPressed += (_) => OnAddMoneyButtonPressed?.Invoke();
     }
 
     public void PopulateBills(List<SWBill> bills)

@@ -3,6 +3,7 @@ using Content.Server._SW.TaskSystem;
 using Content.Server._SW.TurretConsole;
 using Content.Shared._SW;
 using Content.Shared._SW.Economy;
+using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Stacks;
 using Robust.Server.GameObjects;
 using Robust.Shared.Prototypes;
@@ -19,6 +20,7 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] SharedStackSystem _stackSystem = default!;
+    [Dependency] SharedHandsSystem _handsSystem = default!;
     ISawmill _s = default!;
     public override void Initialize()
     {
@@ -26,11 +28,9 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWFinanceConsoleComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SWFinanceConsoleComponent, SWTryPayBillMessage>(OnTryPay);
         SubscribeLocalEvent<SWFinanceConsoleComponent, SWTryPayoutMessage>(OnTryPayout);
+        SubscribeLocalEvent<SWFinanceConsoleComponent, SWTryAddMoneyMessage>(OnAddMoney);
         _s = Logger.GetSawmill("SWFinanceConsole");
     }
-
-
-
     private void OnMapInit(Entity<SWFinanceConsoleComponent> ent, ref MapInitEvent args)
     {
         var factEnt = _faction.GetFactionEntity(ent.Comp.Faction);
@@ -81,6 +81,35 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         }
         UpdateInterface(ent);
     }
+
+    private void OnAddMoney(Entity<SWFinanceConsoleComponent> ent, ref SWTryAddMoneyMessage args)
+    {
+        _s.Fatal("0");
+        if (ent.Comp.Account == null)
+        {
+            return;
+        }
+        _s.Fatal("01");
+        if (args.Actor is not { Valid: true } user)
+            return;
+        _s.Fatal("1");
+        foreach (var entity in _handsSystem.EnumerateHeld(user))
+        {
+            if (!TryComp<StackComponent>(entity, out var comp))
+            {
+                continue;
+            }
+            _s.Fatal("2");
+            var proto = GetCurrencyProto(entity);
+            _s.Fatal($"{proto}");
+            if (proto != null)
+            {
+                ent.Comp.Account.Value.Comp.CurrentAmount[proto] += comp.Count;
+                QueueDel(entity);
+            }
+        }
+        UpdateInterface(ent);
+    }
     private bool TryPay(Dictionary<ProtoId<SWCurrencyPrototype>, float> requests,
                         Dictionary<ProtoId<SWCurrencyPrototype>, float> balance)
     {
@@ -104,6 +133,24 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         }
     }
 
+    private SWCurrencyPrototype? GetCurrencyProto(EntityUid cashEntity)
+    {
+        var proto = Prototype(cashEntity);
+        if (proto == null)
+        {
+            return null;
+        }
+        var currencies = _prototypeManager.EnumeratePrototypes <SWCurrencyPrototype>();        
+        foreach (var currency in currencies)
+        {
+            _s.Fatal($"{currency.CashEntity} == {proto.ID}");
+            if (currency.CashEntity == proto.ID)
+            {
+                return currency;
+            }
+        }
+        return null;
+    }
     private void UpdateInterface(Entity<SWFinanceConsoleComponent> ent)
     {
         var state = new SWFinanceConsoleBounderUserInterfaceState();

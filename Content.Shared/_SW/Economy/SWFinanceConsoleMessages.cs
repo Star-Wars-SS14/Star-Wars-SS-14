@@ -42,3 +42,11 @@ public sealed class SWTryPayoutMessage : BoundUserInterfaceMessage
         Requests = dict;
     }
 }
+
+
+[Serializable, NetSerializable]
+public sealed class SWTryAddMoneyMessage : BoundUserInterfaceMessage
+{
+
+}
+

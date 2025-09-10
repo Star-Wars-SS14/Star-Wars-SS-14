@@ -42,7 +42,7 @@
     - to: start
       completed:
       - !type:SpawnPrototype
-        prototype: CMSheetMetal1
+        prototype: SheetSteel1
         amount: 5
       - !type:DeleteEntity {}
       steps:
@@ -137,10 +137,10 @@
     - to: start
       completed:
       - !type:SpawnPrototype
-        prototype: CMSheetMetal1
+        prototype: SheetSteel1
         amount: 5
       - !type:SpawnPrototype
-        prototype: CMSheetGlass1
+        prototype: SheetGlass1
         amount: 5
       - !type:DeleteEntity {}
       steps:
@@ -152,7 +152,7 @@
       - !type:EntityAnchored {}
       completed:
       - !type:SpawnPrototype
-        prototype: CMSheetGlass1
+        prototype: SheetGlass1
         amount: 5
       steps:
       - tool: Screwing

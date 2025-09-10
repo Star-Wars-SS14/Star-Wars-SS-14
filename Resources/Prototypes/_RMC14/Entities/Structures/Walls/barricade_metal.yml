@@ -50,7 +50,7 @@
       behaviors:
       - !type:SpawnEntitiesBehavior
         spawn:
-          CMSheetMetal1:
+          SheetSteel1:
             min: 2
             max: 2
       - !type:PlaySoundBehavior
@@ -123,7 +123,7 @@
         behaviors:
         - !type:SpawnEntitiesBehavior
           spawn:
-            CMSheetMetal1:
+            SheetPlasteel1:
               min: 2
               max: 2
         - !type:PlaySoundBehavior
@@ -163,7 +163,7 @@
         behaviors:
         - !type:SpawnEntitiesBehavior
           spawn:
-            CMSheetMetal1:
+            SheetSteel1:
               min: 2
               max: 2
         - !type:PlaySoundBehavior
@@ -258,7 +258,7 @@
       behaviors:
       - !type:SpawnEntitiesBehavior
         spawn:
-          CMSheetMetal1:
+          SheetSteel1:
             min: 2
             max: 2
       - !type:PlaySoundBehavior

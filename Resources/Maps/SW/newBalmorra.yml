@@ -180144,8 +180144,6 @@ entities:
         entity_storage: !type:Container
           showEnts: False
           occludes: True
-          ents:
-          - invalid
   - uid: 8698
     components:
     - type: Transform
@@ -408835,7 +408833,6 @@ entities:
     - type: ItemToggle
       activated: True
     - type: ItemToggleActiveSound
-      playingStream: invalid
 - proto: NoticeBoard
   entities:
   - uid: 50596
@@ -423470,9 +423467,6 @@ entities:
         51348:
           position: 0,3
           _rotation: East
-        invalid:
-          position: 3,1
-          _rotation: South
     - type: ContainerContainer
       containers:
         storagebase: !type:Container
@@ -423482,7 +423476,6 @@ entities:
           - 51349
           - 51347
           - 51348
-          - invalid
   - uid: 52937
     components:
     - type: Transform

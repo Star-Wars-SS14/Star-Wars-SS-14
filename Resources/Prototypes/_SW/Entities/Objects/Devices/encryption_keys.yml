@@ -157,8 +157,8 @@
   components:
   - type: EncryptionKey
     channels:
-    - SWExchange
-    defaultChannel: SWExchange
+    - SWBlackSun
+    defaultChannel: SWBlackSun
   - type: Sprite
     layers:
     - state: crypt_gray
@@ -171,8 +171,8 @@
   components:
   - type: EncryptionKey
     channels:
-    - SWBlackSun
-    defaultChannel: SWBlackSun
+    - SWExchange
+    defaultChannel: SWExchange
   - type: Sprite
     layers:
     - state: crypt_gray

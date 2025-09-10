@@ -166805,9 +166805,6 @@ entities:
           - 82
           - 83
     - type: UserInterface
-      actors:
-        enum.StorageUiKey.Key:
-        - invalid
     - type: Physics
       canCollide: False
     - type: ActiveUserInterface

@@ -1,3 +1,4 @@
+using Content.Shared._SW.Economy;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Stacks;
 using Robust.Shared.Prototypes;
@@ -14,15 +15,23 @@ public sealed class SWSharedBankSystem : EntitySystem
     ISawmill _s = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] SharedStackSystem _stackSystem = default!;
+    [Dependency] private readonly SharedUserInterfaceSystem _uiSystem = default!;
     [Dependency] SharedHandsSystem _handsSystem = default!;
     public override void Initialize()
     {
         base.Initialize();
         _s = Logger.GetSawmill("SWBank");
+        SubscribeLocalEvent<SWBankAccountAccessorComponent, ComponentStartup>(OnStartup);
         SubscribeLocalEvent<SWBankAccountAccessorComponent, SWTryPayoutMessage>(OnTryPayout);
         SubscribeLocalEvent<SWBankAccountAccessorComponent, SWTryAddMoneyMessage>(OnAddMoney);
 
     }
+
+    private void OnStartup(Entity<SWBankAccountAccessorComponent> ent, ref ComponentStartup args)
+    {
+        UpdateInterface(ent);
+    }
+
     private void OnTryPayout(Entity<SWBankAccountAccessorComponent> ent, ref SWTryPayoutMessage args)
     {
         if (ent.Comp.Account == null)
@@ -37,8 +46,8 @@ public sealed class SWSharedBankSystem : EntitySystem
                 var spawnedCash = Spawn(proto.CashEntity, Transform(ent).Coordinates);
                 _stackSystem.SetCount(spawnedCash, (int)amount);
             }
-            ent.Comp.AccountInterfaceRequiresUpdate = true;
         }
+        UpdateInterface(ent);
     }
     private void OnAddMoney(Entity<SWBankAccountAccessorComponent> ent, ref SWTryAddMoneyMessage args)
     {
@@ -63,7 +72,7 @@ public sealed class SWSharedBankSystem : EntitySystem
                 QueueDel(entity);
             }
         }
-        ent.Comp.AccountInterfaceRequiresUpdate = true;
+        UpdateInterface(ent);
     }
     public float TransferCurrency(float amount, SWCurrencyPrototype from, SWCurrencyPrototype to)
     {
@@ -114,5 +123,16 @@ public sealed class SWSharedBankSystem : EntitySystem
             }
         }
         return null;
+    }
+
+    private void UpdateInterface(Entity<SWBankAccountAccessorComponent> ent)
+    {
+        if (ent.Comp.Account == null)
+        {
+            return;
+        }
+        var state = new SWBasePayableBounderUserInterfaceState();
+        state.CurrentAmount = ent.Comp.Account.Value.Comp.CurrentAmount;
+        _uiSystem.SetUiState(ent.Owner, SWBasePayableConsoleUIKey.Key, state);
     }
 }

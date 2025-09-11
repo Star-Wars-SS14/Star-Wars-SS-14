@@ -15,11 +15,9 @@ public enum SWFinanceConsoleUIKey
 }
 
 [Serializable, NetSerializable]
-public sealed class SWFinanceConsoleBounderUserInterfaceState : BoundUserInterfaceState
+public sealed class SWFinanceConsoleBounderUserInterfaceState : SWBasePayableBounderUserInterfaceState
 {
     public List<SWBill> Bills = new ();
-
-    public Dictionary<ProtoId<SWCurrencyPrototype>, float> CurrentAmount = new ();
 }
 
 [Serializable, NetSerializable]
@@ -31,22 +29,5 @@ public sealed class SWTryPayBillMessage : BoundUserInterfaceMessage
     {
         Bill = num;
     }
-}
-
-[Serializable, NetSerializable]
-public sealed class SWTryPayoutMessage : BoundUserInterfaceMessage
-{
-    public Dictionary<ProtoId<SWCurrencyPrototype>, float> Requests = new ();
-    public SWTryPayoutMessage (Dictionary<ProtoId<SWCurrencyPrototype>, float> dict)
-    {
-        Requests = dict;
-    }
-}
-
-
-[Serializable, NetSerializable]
-public sealed class SWTryAddMoneyMessage : BoundUserInterfaceMessage
-{
-
 }
 

@@ -9,9 +9,11 @@ using Robust.Client.UserInterface;
 using Content.Shared._SW;
 using Content.Shared._SW.Economy;
 using Robust.Shared.Prototypes;
+using Content.Client._SW.Economy.UI.BasePayAble;
+using Robust.Client.UserInterface.CustomControls;
 namespace Content.Client._SW.Economy.UI.FinanceConsole;
 
-public sealed partial class SWFinanceConsoleBoundUserInterface : BoundUserInterface
+public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBoundUserInterface
 {
     private SWFinanceConsoleMenu? _menu = null;
     private SWWithdrawalWindow? _withdrawal = null;
@@ -19,6 +21,12 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : BoundUserInterf
     {
     }
 
+    public override void PopulateBalance(Dictionary<ProtoId<SWCurrencyPrototype>, float> amount)
+    {
+        ISawmill _s = Logger.GetSawmill("asdf");
+        _s.Fatal("aboba");
+        _menu?.PopulateBalance(amount);
+    }
     protected override void Open()
     {
         base.Open();
@@ -69,7 +77,6 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : BoundUserInterf
                     break;
                 }
                 _menu.PopulateBills(msg.Bills);
-                _menu.PopulateBalance(msg.CurrentAmount);
                 break;
         }
     }

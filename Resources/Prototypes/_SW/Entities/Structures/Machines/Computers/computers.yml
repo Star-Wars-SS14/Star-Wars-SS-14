@@ -151,7 +151,9 @@
   - type: UserInterface
     interfaces:
       enum.SWFinanceConsoleUIKey.Key:
-        type: SWFinanceConsoleBoundUserInterface 
+        type: SWFinanceConsoleBoundUserInterface
+      enum.SWBasePayableConsoleUIKey.Key:
+        type: SWFinanceConsoleBoundUserInterface
   - type: Sprite
     layers:
     - map: ["computerLayerBody"]

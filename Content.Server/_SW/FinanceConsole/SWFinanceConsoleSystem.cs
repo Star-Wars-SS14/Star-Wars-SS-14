@@ -1,3 +1,4 @@
+using Content.Server._SW.Economy;
 using Content.Server._SW.TaskSystem;
 using Content.Server._SW.TurretConsole;
 using Content.Shared._SW;
@@ -45,16 +46,16 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
-        base.Update(frameTime);
-        var query = EntityQueryEnumerator<SWBankAccountAccessorComponent>();
-        while(query.MoveNext(out var uid, out var comp))
-        {
-            if (comp.AccountInterfaceRequiresUpdate)
-            {
-                UpdateInterface(new Entity<SWBankAccountAccessorComponent>(uid, comp));
-                comp.AccountInterfaceRequiresUpdate = false;
-            }
-        }
+        //base.Update(frameTime);
+        //var query = EntityQueryEnumerator<SWBankAccountAccessorComponent>();
+        //while(query.MoveNext(out var uid, out var comp))
+        //{
+        //    if (comp.AccountInterfaceRequiresUpdate)
+        //    {
+        //        UpdateInterface(new Entity<SWBankAccountAccessorComponent>(uid, comp));
+        //        comp.AccountInterfaceRequiresUpdate = false;
+        //    }
+        //}
     }
 
     private void OnTryPay(Entity<SWBankAccountAccessorComponent> ent, ref SWTryPayBillMessage args)
@@ -82,9 +83,6 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         {
             state.Bills = comp.Bills;
         }
-
-        state.CurrentAmount = ent.Comp.Account.Value.Comp.CurrentAmount;
-
         _uiSystem.SetUiState(ent.Owner, SWFinanceConsoleUIKey.Key, state);
     }
 }

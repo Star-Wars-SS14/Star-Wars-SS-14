@@ -37,7 +37,7 @@ public sealed class SWSharedBankSystem : EntitySystem
                 var spawnedCash = Spawn(proto.CashEntity, Transform(ent).Coordinates);
                 _stackSystem.SetCount(spawnedCash, (int)amount);
             }
-            ent.Comp.AccountInterfacrRequiresUpdate = true;
+            ent.Comp.AccountInterfaceRequiresUpdate = true;
         }
     }
     private void OnAddMoney(Entity<SWBankAccountAccessorComponent> ent, ref SWTryAddMoneyMessage args)
@@ -63,7 +63,7 @@ public sealed class SWSharedBankSystem : EntitySystem
                 QueueDel(entity);
             }
         }
-        ent.Comp.AccountInterfacrRequiresUpdate = true;
+        ent.Comp.AccountInterfaceRequiresUpdate = true;
     }
     public float TransferCurrency(float amount, SWCurrencyPrototype from, SWCurrencyPrototype to)
     {

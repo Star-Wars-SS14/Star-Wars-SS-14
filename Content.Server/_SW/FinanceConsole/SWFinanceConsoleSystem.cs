@@ -49,10 +49,10 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         var query = EntityQueryEnumerator<SWBankAccountAccessorComponent>();
         while(query.MoveNext(out var uid, out var comp))
         {
-            if (comp.AccountInterfacrRequiresUpdate)
+            if (comp.AccountInterfaceRequiresUpdate)
             {
                 UpdateInterface(new Entity<SWBankAccountAccessorComponent>(uid, comp));
-                comp.AccountInterfacrRequiresUpdate = false;
+                comp.AccountInterfaceRequiresUpdate = false;
             }
         }
     }

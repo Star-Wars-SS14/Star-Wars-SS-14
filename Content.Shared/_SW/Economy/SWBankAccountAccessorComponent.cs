@@ -10,5 +10,5 @@ public sealed partial class SWBankAccountAccessorComponent : Component
 {
     public Entity<SWBankAccountContainerComponent>? Account = null;
 
-    public bool AccountInterfacrRequiresUpdate = false;
+    public bool AccountInterfaceRequiresUpdate = false;
 }

@@ -29,7 +29,6 @@
   - type: Food #SW
     solution: rod #SW
     requiresSpecialDigestion: true #SW
-  - type: Tag
   - type: PhysicalComposition
     materialComposition:
       Steel: 50 #Half of a regular steel sheet to reflect the crafting recipe

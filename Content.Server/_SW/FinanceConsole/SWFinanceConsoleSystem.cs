@@ -19,31 +19,41 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
     [Dependency] SWFactionGameruleSystem _faction = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] SWSharedBankSystem _bankSystem = default!;
-    ISawmill _s = default!;
+    
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<SWFinanceConsoleComponent, MapInitEvent>(OnMapInit);
+        SubscribeLocalEvent<SWFinanceConsoleComponent, SWGetAccountEvent>(OnGetAccount);
         SubscribeLocalEvent<SWBankAccountAccessorComponent, SWTryPayBillMessage>(OnTryPay);
-        _s = Logger.GetSawmill("SWFinanceConsole");
     }
-    private void OnMapInit(Entity<SWFinanceConsoleComponent> ent, ref MapInitEvent args)
+    private void OnGetAccount(Entity<SWFinanceConsoleComponent> ent, ref SWGetAccountEvent args)
     {
         var factEnt = _faction.GetFactionEntity(ent.Comp.Faction);
         if (factEnt == null)
         {
-            _s.Error($"{ent.Owner} Finance console doesn't have LinkedBankAccount");
             return;
         }
 
         var bankComp = EnsureComp<SWBankAccountContainerComponent>(factEnt.Value.Owner);
 
         var comp = EnsureComp<SWBankAccountAccessorComponent>(ent);
-        comp.Account =
+        args.Account =
             new Entity<SWBankAccountContainerComponent>(factEnt.Value, bankComp);
-        comp.UIKey = SWFinanceConsoleUIKey.Key;
+        comp.Account = new Entity<SWBankAccountContainerComponent>(factEnt.Value, bankComp);
         UpdateInterface(new Entity<SWBankAccountAccessorComponent>(ent, comp));
+        args.Handled = true;
     }
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+        var query = EntityQueryEnumerator<SWBankAccountAccessorComponent>();
+        while (query.MoveNext(out var uid, out var comp))
+        {
+            UpdateInterface(new Entity<SWBankAccountAccessorComponent>(uid, comp));
+            comp.AccountInterfaceRequiresUpdate = false;
+        }
+    }
+
     private void OnTryPay(Entity<SWBankAccountAccessorComponent> ent, ref SWTryPayBillMessage args)
     {
         if (ent.Comp.Account == null)
@@ -69,6 +79,8 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         {
             state.Bills = comp.Bills;
         }
+        ISawmill _s = Logger.GetSawmill("sdf");
+        _s.Fatal(state.Bills.Count.ToString());
         _uiSystem.SetUiState(ent.Owner, SWFinanceConsoleUIKey.Key, state);
     }
 }

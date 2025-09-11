@@ -23,9 +23,6 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
 
     public override void PopulateBalance(Dictionary<ProtoId<SWCurrencyPrototype>, float> amount)
     {
-        ISawmill _s = Logger.GetSawmill("asdf");
-        _s.Fatal("aboba");
-        _s.Fatal(amount.Keys.Count.ToString());
         _menu?.PopulateBalance(amount);
     }
     protected override void Open()
@@ -69,7 +66,9 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);
-
+        ISawmill _s = Logger.GetSawmill("jjjjj");
+        
+        _s.Fatal("here");
         switch (state)
         {
             case SWFinanceConsoleBounderUserInterfaceState msg:
@@ -77,6 +76,7 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
                 {
                     break;
                 }
+                _s.Fatal(msg.Bills.Count.ToString());
                 _menu.PopulateBills(msg.Bills);
                 break;
         }

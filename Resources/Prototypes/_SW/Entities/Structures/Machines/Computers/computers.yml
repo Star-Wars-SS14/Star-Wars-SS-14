@@ -162,6 +162,8 @@
       state: comm
     - map: ["computerLayerKeys"]
       state: generic_keys
+  - type: SWBankAccountAccessor
+    uiKey: enum.SWFinanceConsoleUIKey.Key
 
 - type: entity
   parent: BaseComputer

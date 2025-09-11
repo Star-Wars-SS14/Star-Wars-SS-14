@@ -12,5 +12,6 @@ public sealed partial class SWBankAccountAccessorComponent : Component
 
     public bool AccountInterfaceRequiresUpdate = false;
 
-    public Enum UIKey = SWBasePayableConsoleUIKey.Key;
+    [DataField(required: true)]
+    public Enum UiKey = SWBasePayableConsoleUIKey.Key;
 }

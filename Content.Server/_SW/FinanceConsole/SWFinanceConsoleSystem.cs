@@ -1,4 +1,3 @@
-using Content.Server._SW.Economy;
 using Content.Server._SW.TaskSystem;
 using Content.Server._SW.TurretConsole;
 using Content.Shared._SW;
@@ -18,17 +17,13 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
 {
     [Dependency] SWFactionGameruleSystem _faction = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] SharedStackSystem _stackSystem = default!;
-    [Dependency] SharedHandsSystem _handsSystem = default!;
+    [Dependency] SWSharedBankSystem _bankSystem = default!;
     ISawmill _s = default!;
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<SWFinanceConsoleComponent, MapInitEvent>(OnMapInit);
-        SubscribeLocalEvent<SWFinanceConsoleComponent, SWTryPayBillMessage>(OnTryPay);
-        SubscribeLocalEvent<SWFinanceConsoleComponent, SWTryPayoutMessage>(OnTryPayout);
-        SubscribeLocalEvent<SWFinanceConsoleComponent, SWTryAddMoneyMessage>(OnAddMoney);
+        SubscribeLocalEvent<SWBankAccountAccessorComponent, SWTryPayBillMessage>(OnTryPay);
         _s = Logger.GetSawmill("SWFinanceConsole");
     }
     private void OnMapInit(Entity<SWFinanceConsoleComponent> ent, ref MapInitEvent args)
@@ -42,12 +37,27 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
 
         var bankComp = EnsureComp<SWBankAccountContainerComponent>(factEnt.Value.Owner);
 
-        ent.Comp.Account =
+        var comp = EnsureComp<SWBankAccountAccessorComponent>(ent);
+        comp.Account =
             new Entity<SWBankAccountContainerComponent>(factEnt.Value, bankComp);
-        UpdateInterface(ent);
+        UpdateInterface(new Entity<SWBankAccountAccessorComponent>(ent, comp));
     }
 
-    private void OnTryPay(Entity<SWFinanceConsoleComponent> ent, ref SWTryPayBillMessage args)
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+        var query = EntityQueryEnumerator<SWBankAccountAccessorComponent>();
+        while(query.MoveNext(out var uid, out var comp))
+        {
+            if (comp.AccountInterfacrRequiresUpdate)
+            {
+                UpdateInterface(new Entity<SWBankAccountAccessorComponent>(uid, comp));
+                comp.AccountInterfacrRequiresUpdate = false;
+            }
+        }
+    }
+
+    private void OnTryPay(Entity<SWBankAccountAccessorComponent> ent, ref SWTryPayBillMessage args)
     {
         if (ent.Comp.Account == null)
         {
@@ -55,106 +65,25 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         }
         var bankComp = EnsureComp<SWBankAccountContainerComponent>(ent.Comp.Account.Value);
         var billComp = EnsureComp<SWBillContainerComponent>(ent.Comp.Account.Value);
-        if (TryPay(args.Bill.CurrencyRequests, bankComp.CurrentAmount))
+        if (_bankSystem.TryPay(args.Bill.CurrencyRequests, bankComp.CurrentAmount))
         {
             billComp.Bills.Remove(args.Bill);
         }
         UpdateInterface(ent);
     }
-
-    private void OnTryPayout(Entity<SWFinanceConsoleComponent> ent, ref SWTryPayoutMessage args)
-    {
-        if (ent.Comp.Account == null){
-            return;
-        }
-        if (TryPay(args.Requests, ent.Comp.Account.Value.Comp.CurrentAmount))
-        {
-            foreach (var (currency, amount) in args.Requests)
-            {
-                var proto = _prototypeManager.Index(currency);
-                var spawnedCash = Spawn(proto.CashEntity, Transform(ent).Coordinates);
-                _stackSystem.SetCount(spawnedCash, (int)amount);
-            }
-        }
-        UpdateInterface(ent);
-    }
-
-    private void OnAddMoney(Entity<SWFinanceConsoleComponent> ent, ref SWTryAddMoneyMessage args)
+    private void UpdateInterface(Entity<SWBankAccountAccessorComponent> ent)
     {
         if (ent.Comp.Account == null)
         {
             return;
         }
-
-        if (args.Actor is not { Valid: true } user)
-            return;
-
-        foreach (var entity in _handsSystem.EnumerateHeld(user))
-        {
-            if (!TryComp<StackComponent>(entity, out var comp))
-            {
-                continue;
-            }
-            var proto = GetCurrencyProto(entity);
-            if (proto != null)
-            {
-                ent.Comp.Account.Value.Comp.CurrentAmount[proto] += comp.Count;
-                QueueDel(entity);
-            }
-        }
-        UpdateInterface(ent);
-    }
-    private bool TryPay(Dictionary<ProtoId<SWCurrencyPrototype>, float> requests,
-                        Dictionary<ProtoId<SWCurrencyPrototype>, float> balance)
-    {
-        foreach (var (currency, amount) in requests)
-        {
-            if (amount > balance[currency])
-            {
-                return false;
-            }
-        }
-        ReduceBalanceAmount(requests, balance);
-        return true;
-    }
-
-    private void ReduceBalanceAmount(Dictionary<ProtoId<SWCurrencyPrototype>, float> requests,
-                                     Dictionary<ProtoId<SWCurrencyPrototype>, float> balance)
-    {
-        foreach (var (currency, amount) in requests)
-        {
-            balance[currency] -= amount;
-        }
-    }
-
-    private SWCurrencyPrototype? GetCurrencyProto(EntityUid cashEntity)
-    {
-        var proto = Prototype(cashEntity);
-        if (proto == null)
-        {
-            return null;
-        }
-        var currencies = _prototypeManager.EnumeratePrototypes <SWCurrencyPrototype>();        
-        foreach (var currency in currencies)
-        {
-            if (currency.CashEntity == proto.ID)
-            {
-                return currency;
-            }
-        }
-        return null;
-    }
-    private void UpdateInterface(Entity<SWFinanceConsoleComponent> ent)
-    {
         var state = new SWFinanceConsoleBounderUserInterfaceState();
         if (TryComp<SWBillContainerComponent>(ent.Comp.Account, out var comp))
         {
             state.Bills = comp.Bills;
         }
-        if (ent.Comp.Account != null)
-        {
-            state.CurrentAmount = ent.Comp.Account.Value.Comp.CurrentAmount;
-        }
+
+        state.CurrentAmount = ent.Comp.Account.Value.Comp.CurrentAmount;
 
         _uiSystem.SetUiState(ent.Owner, SWFinanceConsoleUIKey.Key, state);
     }

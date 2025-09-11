@@ -13,7 +13,8 @@ public sealed partial class SWFinanceConsoleMenu : DefaultWindow
     public event Action<SWBill>? OnPayButtonPressed;
     public event Action? OnWithdrawalButtonPressed;
     public event Action? OnAddMoneyButtonPressed;
-    public Dictionary<ProtoId<SWCurrencyPrototype>, float> Balance = new ();
+    public Dictionary<ProtoId<SWCurrencyPrototype>, float> Balance = new();
+
     public SWFinanceConsoleMenu()
     {
         RobustXamlLoader.Load(this);
@@ -32,8 +33,9 @@ public sealed partial class SWFinanceConsoleMenu : DefaultWindow
         }
     }
 
-    public void PopulateBalance()
+    public void PopulateBalance(Dictionary<ProtoId<SWCurrencyPrototype>, float> balance)
     {
+        Balance = balance;
         BalanceContainer.Children.Clear();
         foreach (var (currency, amount) in Balance)
         {

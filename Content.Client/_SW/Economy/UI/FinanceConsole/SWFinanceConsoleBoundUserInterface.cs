@@ -69,8 +69,7 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : BoundUserInterf
                     break;
                 }
                 _menu.PopulateBills(msg.Bills);
-                _menu.Balance = msg.CurrentAmount;
-                _menu.PopulateBalance();
+                _menu.PopulateBalance(msg.CurrentAmount);
                 break;
         }
     }

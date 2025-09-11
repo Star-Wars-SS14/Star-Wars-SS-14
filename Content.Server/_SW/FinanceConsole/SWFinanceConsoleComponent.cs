@@ -1,4 +1,3 @@
-using Content.Server._SW.Economy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +9,5 @@ namespace Content.Server._SW.FinanceConsole;
 public sealed partial class SWFinanceConsoleComponent : Component
 {
     [DataField(required: true)]
-    public string Faction = "";
-
-    public Entity<SWBankAccountContainerComponent>? Account = null;
+    public string Faction = "";    
 }

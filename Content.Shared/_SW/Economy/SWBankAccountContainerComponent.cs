@@ -1,4 +1,5 @@
 using Content.Shared._SW.Economy;
+using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 using System;
 using System.Collections.Generic;
@@ -6,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Server._SW.Economy;
+namespace Content.Shared._SW.Economy;
 
-[RegisterComponent]
+[RegisterComponent, NetworkedComponent]
 public sealed partial class SWBankAccountContainerComponent : Component
 {
     [DataField]

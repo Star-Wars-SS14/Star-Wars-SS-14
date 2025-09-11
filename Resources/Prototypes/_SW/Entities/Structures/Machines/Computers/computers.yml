@@ -162,3 +162,25 @@
       state: comm
     - map: ["computerLayerKeys"]
       state: generic_keys
+
+- type: entity
+  parent: BaseComputer
+  id: SWBuyConsole
+  name: Консоль покупки
+  components:
+  - type: ActivatableUI
+    key: enum.SWBuyConsoleUIKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWBuyConsoleUIKey.Key:
+        type: SWCargoOrderConsoleBoundUserInterface
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: comm
+    - map: ["computerLayerKeys"]
+      state: generic_keys

@@ -9,7 +9,7 @@ using Robust.Client.UserInterface;
 using Content.Shared._SW;
 using Content.Shared._SW.Economy;
 using Robust.Shared.Prototypes;
-namespace Content.Client._SW.Economy.UI;
+namespace Content.Client._SW.Economy.UI.FinanceConsole;
 
 public sealed partial class SWFinanceConsoleBoundUserInterface : BoundUserInterface
 {

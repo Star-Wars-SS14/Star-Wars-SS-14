@@ -5,7 +5,7 @@ using Robust.Client.UserInterface.CustomControls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Prototypes;
 
-namespace Content.Client._SW.Economy.UI;
+namespace Content.Client._SW.Economy.UI.FinanceConsole;
 
 [GenerateTypedNameReferences]
 public sealed partial class SWFinanceConsoleMenu : DefaultWindow

@@ -12,68 +12,13 @@ namespace Content.Shared._SW.Economy;
 
 public sealed class SWSharedBankSystem : EntitySystem
 {
-    ISawmill _s = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] SharedStackSystem _stackSystem = default!;
-    [Dependency] private readonly SharedUserInterfaceSystem _uiSystem = default!;
-    [Dependency] SharedHandsSystem _handsSystem = default!;
+    ISawmill _s = default!;
     public override void Initialize()
     {
         base.Initialize();
         _s = Logger.GetSawmill("SWBank");
-        SubscribeLocalEvent<SWBankAccountAccessorComponent, ComponentStartup>(OnStartup);
-        SubscribeLocalEvent<SWBankAccountAccessorComponent, SWTryPayoutMessage>(OnTryPayout);
-        SubscribeLocalEvent<SWBankAccountAccessorComponent, SWTryAddMoneyMessage>(OnAddMoney);
-
-    }
-
-    private void OnStartup(Entity<SWBankAccountAccessorComponent> ent, ref ComponentStartup args)
-    {
-        UpdateInterface(ent);
-    }
-
-    private void OnTryPayout(Entity<SWBankAccountAccessorComponent> ent, ref SWTryPayoutMessage args)
-    {
-        if (ent.Comp.Account == null)
-        {
-            return;
-        }
-        if (TryPay(args.Requests, ent.Comp.Account.Value.Comp.CurrentAmount))
-        {
-            foreach (var (currency, amount) in args.Requests)
-            {
-                var proto = _prototypeManager.Index(currency);
-                var spawnedCash = Spawn(proto.CashEntity, Transform(ent).Coordinates);
-                _stackSystem.SetCount(spawnedCash, (int)amount);
-            }
-        }
-        UpdateInterface(ent);
-    }
-    private void OnAddMoney(Entity<SWBankAccountAccessorComponent> ent, ref SWTryAddMoneyMessage args)
-    {
-        if (ent.Comp.Account == null)
-        {
-            return;
-        }
-
-        if (args.Actor is not { Valid: true } user)
-            return;
-
-        foreach (var entity in _handsSystem.EnumerateHeld(user))
-        {
-            if (!TryComp<StackComponent>(entity, out var comp))
-            {
-                continue;
-            }
-            var proto = GetCurrencyProto(entity);
-            if (proto != null)
-            {
-                ent.Comp.Account.Value.Comp.CurrentAmount[proto] += comp.Count;
-                QueueDel(entity);
-            }
-        }
-        UpdateInterface(ent);
-    }
+    }    
     public float TransferCurrency(float amount, SWCurrencyPrototype from, SWCurrencyPrototype to)
     {
         if (from.ExchangeRates.TryGetValue(to.ID, out var rate))
@@ -106,8 +51,7 @@ public sealed class SWSharedBankSystem : EntitySystem
         ReduceBalanceAmount(requests, balance);
         return true;
     }
-
-    private SWCurrencyPrototype? GetCurrencyProto(EntityUid cashEntity)
+    public SWCurrencyPrototype? GetCurrencyProto(EntityUid cashEntity)
     {
         var proto = Prototype(cashEntity);
         if (proto == null)
@@ -123,16 +67,5 @@ public sealed class SWSharedBankSystem : EntitySystem
             }
         }
         return null;
-    }
-
-    private void UpdateInterface(Entity<SWBankAccountAccessorComponent> ent)
-    {
-        if (ent.Comp.Account == null)
-        {
-            return;
-        }
-        var state = new SWBasePayableBounderUserInterfaceState();
-        state.CurrentAmount = ent.Comp.Account.Value.Comp.CurrentAmount;
-        _uiSystem.SetUiState(ent.Owner, SWBasePayableConsoleUIKey.Key, state);
     }
 }

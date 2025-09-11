@@ -41,23 +41,9 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         var comp = EnsureComp<SWBankAccountAccessorComponent>(ent);
         comp.Account =
             new Entity<SWBankAccountContainerComponent>(factEnt.Value, bankComp);
+        comp.UIKey = SWFinanceConsoleUIKey.Key;
         UpdateInterface(new Entity<SWBankAccountAccessorComponent>(ent, comp));
     }
-
-    public override void Update(float frameTime)
-    {
-        //base.Update(frameTime);
-        //var query = EntityQueryEnumerator<SWBankAccountAccessorComponent>();
-        //while(query.MoveNext(out var uid, out var comp))
-        //{
-        //    if (comp.AccountInterfaceRequiresUpdate)
-        //    {
-        //        UpdateInterface(new Entity<SWBankAccountAccessorComponent>(uid, comp));
-        //        comp.AccountInterfaceRequiresUpdate = false;
-        //    }
-        //}
-    }
-
     private void OnTryPay(Entity<SWBankAccountAccessorComponent> ent, ref SWTryPayBillMessage args)
     {
         if (ent.Comp.Account == null)

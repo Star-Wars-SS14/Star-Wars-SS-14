@@ -11,4 +11,6 @@ public sealed partial class SWBankAccountAccessorComponent : Component
     public Entity<SWBankAccountContainerComponent>? Account = null;
 
     public bool AccountInterfaceRequiresUpdate = false;
+
+    public Enum UIKey = SWBasePayableConsoleUIKey.Key;
 }

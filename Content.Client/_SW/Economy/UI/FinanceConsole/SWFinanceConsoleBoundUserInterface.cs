@@ -25,6 +25,7 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
     {
         ISawmill _s = Logger.GetSawmill("asdf");
         _s.Fatal("aboba");
+        _s.Fatal(amount.Keys.Count.ToString());
         _menu?.PopulateBalance(amount);
     }
     protected override void Open()

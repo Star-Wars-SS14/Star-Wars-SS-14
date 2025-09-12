@@ -29,6 +29,7 @@
     specialDigestible:
       tags:
       - Metal
+      - RodMetal1
   - type: SolutionContainerManager
     solutions:
       stomach:

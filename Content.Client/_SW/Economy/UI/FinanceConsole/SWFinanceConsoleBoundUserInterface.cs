@@ -23,6 +23,10 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
 
     public override void PopulateBalance(Dictionary<ProtoId<SWCurrencyPrototype>, float> amount)
     {
+        //if (amount.Keys.Count == 0)
+        //{
+        //    return;
+        //}
         _menu?.PopulateBalance(amount);
     }
     protected override void Open()
@@ -31,11 +35,11 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
         _menu = this.CreateWindow<SWFinanceConsoleMenu>();
         _menu.OpenCenteredRight();
         _menu.OnPayButtonPressed += SendPayBillMessage;
-        _menu.OnWithdrawalButtonPressed += OpenWitdrawal;
-        _menu.OnAddMoneyButtonPressed += SendTryAddMoneyMessage;
+        _menu.OnWithdrawalButtonPressed += OpenWithdrawal;
+        _menu.OnAddMoneyButtonPressed += OnAddMoney;
     }
 
-    private void OpenWitdrawal()
+    private void OpenWithdrawal()
     {
         if (_menu == null)
         {
@@ -44,7 +48,7 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
         _withdrawal = this.CreateWindow<SWWithdrawalWindow>();
         _withdrawal.PopulateCurrencies(_menu.Balance.Keys.ToList());
         _withdrawal.OpenCenteredRight();
-        _withdrawal.OnConfirmButtonPressedAction += OnConfirmButtonPressed;
+        _withdrawal.OnConfirmButtonPressedAction += OnWithdrawal;
     }
 
     public void SendPayBillMessage(SWBill bill)
@@ -52,22 +56,15 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
         SendMessage(new SWTryPayBillMessage(bill));
     }
 
-    public void OnConfirmButtonPressed(Dictionary<ProtoId<SWCurrencyPrototype>, float> dict)
+    protected override void OnWithdrawal(Dictionary<ProtoId<SWCurrencyPrototype>, float> dict)
     {
-        SendMessage(new SWTryPayoutMessage(dict));
+        base.OnWithdrawal(dict);
         _withdrawal?.Close();
     }
-
-    public void SendTryAddMoneyMessage()
-    {
-        SendMessage(new SWTryAddMoneyMessage());
-    }
-
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);
         ISawmill _s = Logger.GetSawmill("jjjjj");
-        
         _s.Fatal("here");
         switch (state)
         {

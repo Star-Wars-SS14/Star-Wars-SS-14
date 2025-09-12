@@ -5,6 +5,7 @@ using Content.Shared._SW;
 using Content.Shared._SW.Economy;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Stacks;
+using Content.Shared.UserInterface;
 using Robust.Server.GameObjects;
 using Robust.Shared.Prototypes;
 using System;
@@ -19,11 +20,13 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
     [Dependency] SWFactionGameruleSystem _faction = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] SWSharedBankSystem _bankSystem = default!;
+    [Dependency] SWBasePayableConsoleSystem _swPayable = default!;
     
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<SWFinanceConsoleComponent, SWGetAccountEvent>(OnGetAccount);
+        SubscribeLocalEvent<SWFinanceConsoleComponent, BeforeActivatableUIOpenEvent>(OnOpen);
         SubscribeLocalEvent<SWBankAccountAccessorComponent, SWTryPayBillMessage>(OnTryPay);
     }
     private void OnGetAccount(Entity<SWFinanceConsoleComponent> ent, ref SWGetAccountEvent args)
@@ -39,9 +42,16 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         var comp = EnsureComp<SWBankAccountAccessorComponent>(ent);
         args.Account =
             new Entity<SWBankAccountContainerComponent>(factEnt.Value, bankComp);
-        comp.Account = new Entity<SWBankAccountContainerComponent>(factEnt.Value, bankComp);
-        UpdateInterface(new Entity<SWBankAccountAccessorComponent>(ent, comp));
         args.Handled = true;
+    }
+
+    private void OnOpen(Entity<SWFinanceConsoleComponent> ent, ref BeforeActivatableUIOpenEvent args)
+    {
+        if (!TryComp<SWBankAccountAccessorComponent>(ent, out var comp) || comp.Account == null)
+        {
+            return;
+        }
+        UpdateInterface(ent, comp.Account.Value);
     }
     public override void Update(float frameTime)
     {
@@ -49,8 +59,11 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         var query = EntityQueryEnumerator<SWBankAccountAccessorComponent>();
         while (query.MoveNext(out var uid, out var comp))
         {
-            UpdateInterface(new Entity<SWBankAccountAccessorComponent>(uid, comp));
-            comp.AccountInterfaceRequiresUpdate = false;
+            if (comp.AccountInterfaceRequiresUpdate && comp.Account != null)
+            {
+                UpdateInterface(uid, comp.Account.Value);
+                comp.AccountInterfaceRequiresUpdate = false;
+            }
         }
     }
 
@@ -66,21 +79,18 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         {
             billComp.Bills.Remove(args.Bill);
         }
-        UpdateInterface(ent);
+        UpdateInterface(ent, ent.Comp.Account.Value);
     }
-    private void UpdateInterface(Entity<SWBankAccountAccessorComponent> ent)
+    private void UpdateInterface(EntityUid console, Entity<SWBankAccountContainerComponent> account)
     {
-        if (ent.Comp.Account == null)
-        {
-            return;
-        }
         var state = new SWFinanceConsoleBounderUserInterfaceState();
-        if (TryComp<SWBillContainerComponent>(ent.Comp.Account, out var comp))
+        if (TryComp<SWBillContainerComponent>(account, out var comp))
         {
             state.Bills = comp.Bills;
         }
         ISawmill _s = Logger.GetSawmill("sdf");
         _s.Fatal(state.Bills.Count.ToString());
-        _uiSystem.SetUiState(ent.Owner, SWFinanceConsoleUIKey.Key, state);
+        _swPayable.GetBalance(console, state);
+        _uiSystem.SetUiState(console, SWFinanceConsoleUIKey.Key, state);
     }
 }

@@ -1,7 +1,9 @@
+using Content.Server._SW.FinanceConsole;
 using Content.Shared._SW.Economy;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Random.Rules;
 using Content.Shared.Stacks;
+using Content.Shared.UserInterface;
 using Robust.Server.GameObjects;
 using Robust.Shared.Prototypes;
 using System;
@@ -11,8 +13,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Content.Server._SW.Economy;
-[Virtual]
-public class SWBasePayableConsoleSystem : EntitySystem
+
+public sealed class SWBasePayableConsoleSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] SharedStackSystem _stackSystem = default!;
@@ -26,9 +28,10 @@ public class SWBasePayableConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWBankAccountAccessorComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SWBankAccountAccessorComponent, SWTryPayoutMessage>(OnTryPayout);
         SubscribeLocalEvent<SWBankAccountAccessorComponent, SWTryAddMoneyMessage>(OnAddMoney);
+        //SubscribeLocalEvent<SWBankAccountAccessorComponent, BeforeActivatableUIOpenEvent>(OnOpen);
         _s = Logger.GetSawmill("SWPayable");
     }
-    protected void OnMapInit(Entity<SWBankAccountAccessorComponent> ent, ref MapInitEvent args)
+    private void OnMapInit(Entity<SWBankAccountAccessorComponent> ent, ref MapInitEvent args)
     {
         var ev = new SWGetAccountEvent();
         RaiseLocalEvent(ent, ref ev);
@@ -37,19 +40,9 @@ public class SWBasePayableConsoleSystem : EntitySystem
             _s.Error($"{ent.Owner} account is not set");
         }
         ent.Comp.Account = ev.Account;
-        UpdateInterface(ent);
+        //UpdateInterface(ent);
     }
-    //public override void Update(float frameTime)
-    //{
-    //    base.Update(frameTime);
-    //    var query = EntityQueryEnumerator<SWBankAccountAccessorComponent>();
-    //    while (query.MoveNext(out var uid, out var comp))
-    //    {
-    //        UpdateInterface(new Entity<SWBankAccountAccessorComponent>(uid, comp));
-    //        comp.AccountInterfaceRequiresUpdate = false;
-    //    }
-    //}
-    protected void OnTryPayout(Entity<SWBankAccountAccessorComponent> ent, ref SWTryPayoutMessage args)
+    private void OnTryPayout(Entity<SWBankAccountAccessorComponent> ent, ref SWTryPayoutMessage args)
     {
         if (ent.Comp.Account == null)
         {
@@ -64,9 +57,9 @@ public class SWBasePayableConsoleSystem : EntitySystem
                 _stackSystem.SetCount(spawnedCash, (int)amount);
             }
         }
-        UpdateInterface(ent);
+        ent.Comp.AccountInterfaceRequiresUpdate = true;
     }
-    protected void OnAddMoney(Entity<SWBankAccountAccessorComponent> ent, ref SWTryAddMoneyMessage args)
+    private void OnAddMoney(Entity<SWBankAccountAccessorComponent> ent, ref SWTryAddMoneyMessage args)
     {
         if (ent.Comp.Account == null)
         {
@@ -89,22 +82,30 @@ public class SWBasePayableConsoleSystem : EntitySystem
                 QueueDel(entity);
             }
         }
-        UpdateInterface(ent);
+        ent.Comp.AccountInterfaceRequiresUpdate = true;
     }
-    protected void UpdateInterface(Entity<SWBankAccountAccessorComponent> ent)
+    //protected void UpdateInterface(Entity<SWBankAccountAccessorComponent> ent)
+    //{
+    //    if (ent.Comp.Account == null)
+    //    {
+    //        return;
+    //    }
+
+    //    var state = new SWBasePayableBounderUserInterfaceState();
+    //    state.CurrentAmount = ent.Comp.Account.Value.Comp.CurrentAmount;
+    //    _s.Fatal(state.CurrentAmount.Keys.Count.ToString());
+    //    _s.Fatal(ent.Comp.UiKey.ToString());
+    //    _uiSystem.SetUiState(ent.Owner, ent.Comp.UiKey, state);
+    //}
+
+    public void GetBalance(Entity<SWBankAccountAccessorComponent?> console, SWBasePayableBounderUserInterfaceState state)
     {
-        ISawmill _s = Logger.GetSawmill("asa");
-        _s.Fatal("1");
-        if (ent.Comp.Account == null)
+        console.Comp = Comp<SWBankAccountAccessorComponent>(console);
+        if (console.Comp.Account == null)
         {
             return;
         }
-        _s.Fatal("2");
-        var state = new SWBasePayableBounderUserInterfaceState();
-        state.CurrentAmount = ent.Comp.Account.Value.Comp.CurrentAmount;
-        _s.Fatal(state.CurrentAmount.Keys.Count.ToString());
-        _s.Fatal(ent.Comp.UiKey.ToString());
-        _uiSystem.SetUiState(ent.Owner, ent.Comp.UiKey, state);
+        state.CurrentAmount = console.Comp.Account.Value.Comp.CurrentAmount;
     }
 }
 

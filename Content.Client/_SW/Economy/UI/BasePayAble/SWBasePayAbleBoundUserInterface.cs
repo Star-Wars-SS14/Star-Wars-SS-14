@@ -13,7 +13,15 @@ public abstract partial class SWBasePayAbleBoundUserInterface : BoundUserInterfa
     public SWBasePayAbleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
     }
+    protected virtual void OnWithdrawal(Dictionary<ProtoId<SWCurrencyPrototype>, float> dict)
+    {
+        SendMessage(new SWTryPayoutMessage(dict));
+    }
 
+    protected virtual void OnAddMoney()
+    {
+        SendMessage(new SWTryAddMoneyMessage());
+    }
     public abstract void PopulateBalance(Dictionary<ProtoId<SWCurrencyPrototype>, float> amount);
     protected override void UpdateState(BoundUserInterfaceState state)
     {
@@ -23,10 +31,7 @@ public abstract partial class SWBasePayAbleBoundUserInterface : BoundUserInterfa
         switch (state)
         {
             case SWBasePayableBounderUserInterfaceState msg:
-                if (msg.CurrentAmount.Keys.Count != 0)
-                {
-                    PopulateBalance(msg.CurrentAmount);
-                }
+                PopulateBalance(msg.CurrentAmount);
                 _s.Fatal("done");
                 break;
         }

@@ -1,0 +1,33 @@
+- type: entityTable
+  id: SWDatapadTrashItems
+  table: !type:GroupSelector
+    children:
+    - !type:GroupSelector
+      weight: 95
+      children:
+      - id: SWBlueDatapadTrash
+      - id: SWRedDatapadTrash
+      - id: SWYellowDatapadTrash
+      - id: SWЕurquoiseDatapadTrash
+      - id: SWPinkDatapadTrash
+      - id: SWGreenDatapadTrash
+      - id: SWOrangeDatapadTrash
+
+- type: entity
+  name: Datapad Trash Spawner
+  id: SWRandomDatapadSpawner
+  parent: MarkerBase
+  components:
+  - type: Sprite
+    layers:
+      - sprite: Markers/cross.rsi
+        state: green
+      - sprite: _SW/Objects/Misc/Datapads/BlueDatapad.rsi
+        state: icon_broken
+  - type: EntityTableSpawner
+    offset: 0.2
+    table: !type:NestedSelector
+      tableId: SWDatapadTrashItems
+      prob: 1.0
+  placement:
+    mode: AlignTileAny

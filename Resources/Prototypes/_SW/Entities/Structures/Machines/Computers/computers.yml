@@ -163,7 +163,6 @@
     - map: ["computerLayerKeys"]
       state: generic_keys
   - type: SWBankAccountAccessor
-    uiKey: enum.SWFinanceConsoleUIKey.Key
 
 - type: entity
   parent: BaseComputer
@@ -186,3 +185,9 @@
       state: comm
     - map: ["computerLayerKeys"]
       state: generic_keys
+  - type: SWBankAccountContainer
+  - type: SWBankAccountAccessor
+  - type: SWBuyConsole
+    allowed:
+    - SWEmpireCreditCurrency
+    - SWRepublicCreditCurrency

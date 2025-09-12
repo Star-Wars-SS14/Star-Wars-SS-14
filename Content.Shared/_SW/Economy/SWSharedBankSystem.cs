@@ -61,7 +61,9 @@ public sealed class SWSharedBankSystem : EntitySystem
         var currencies = _prototypeManager.EnumeratePrototypes<SWCurrencyPrototype>();
         foreach (var currency in currencies)
         {
-            if (currency.CashEntity == proto.ID)
+            //we use contains because there can be entities like
+            //credits, credits10, credits100 e.t.c.
+            if (proto.ID.Contains(currency.CashEntity)) 
             {
                 return currency;
             }

@@ -1,4 +1,5 @@
 using Content.Server._SW.Economy;
+using Content.Server._SW.FinanceConsole;
 using Content.Server._SW.TaskSystem;
 using Content.Server._SW.TurretConsole;
 using Content.Shared._SW;
@@ -13,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace Content.Server._SW.FinanceConsole;
+namespace Content.Server._SW.Economy.FinanceConsole;
 
 public sealed class SWFinanceConsoleSystem : EntitySystem
 {
@@ -56,8 +57,8 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
-        var query = EntityQueryEnumerator<SWBankAccountAccessorComponent>();
-        while (query.MoveNext(out var uid, out var comp))
+        var query = EntityQueryEnumerator<SWFinanceConsoleComponent, SWBankAccountAccessorComponent>();
+        while (query.MoveNext(out var uid, out var _, out var comp))
         {
             if (comp.AccountInterfaceRequiresUpdate && comp.Account != null)
             {
@@ -88,7 +89,7 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         {
             state.Bills = comp.Bills;
         }
-        ISawmill _s = Logger.GetSawmill("sdf");
+        var _s = Logger.GetSawmill("sdf");
         _s.Fatal(state.Bills.Count.ToString());
         _swPayable.GetBalance(console, state);
         _uiSystem.SetUiState(console, SWFinanceConsoleUIKey.Key, state);

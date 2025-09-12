@@ -12,15 +12,20 @@ using Robust.Shared.Utility;
 using Robust.Shared.Prototypes;
 using Content.Client._SW.Economy.UI.BuyConsole;
 using static Robust.Client.UserInterface.Controls.BaseButton;
+using Content.Client._SW.Economy.UI.BasePayAble;
+using Content.Client._SW.Economy.UI;
+using Robust.Client.UserInterface;
+using System.Linq;
 
 namespace Content.Client.Cargo.BUI
 {
-    public sealed class SWCargoOrderConsoleBoundUserInterface : BoundUserInterface
+    public sealed class SWCargoOrderConsoleBoundUserInterface : SWBasePayAbleBoundUserInterface
     {
         private readonly SharedCargoSystem _cargoSystem;
 
         [ViewVariables]
         private SWCargoConsoleMenu? _menu;
+        private SWWithdrawalWindow? _withdrawal = null;
 
         /// <summary>
         /// This is the separate popup window for individual orders.
@@ -100,9 +105,22 @@ namespace Content.Client.Cargo.BUI
                     _orderMenu.Close();
                 }
             };
+            _menu.OnWithdrawalButtonPressed += OpenWithdrawal;
+            _menu.OnAddMoneyButtonPressed += OnAddMoney;
             _menu.OpenCentered();
         }
 
+        private void OpenWithdrawal()
+        {
+            if (_menu == null)
+            {
+                return;
+            }
+            _withdrawal = this.CreateWindow<SWWithdrawalWindow>();
+            _withdrawal.PopulateCurrencies(_menu.Balance.Keys.ToList());
+            _withdrawal.OpenCenteredRight();
+            _withdrawal.OnConfirmButtonPressedAction += OnWithdrawal;
+        }
         private void Populate(List<CargoOrderData> orders)
         {
             if (_menu == null)
@@ -113,7 +131,20 @@ namespace Content.Client.Cargo.BUI
             _menu.PopulateOrders(orders);
             _menu.PopulateAccountActions();
         }
+        protected override void OnWithdrawal(Dictionary<ProtoId<SWCurrencyPrototype>, float> dict)
+        {
+            base.OnWithdrawal(dict);
+            _withdrawal?.Close();
+        }
 
+        public override void PopulateBalance(Dictionary<ProtoId<SWCurrencyPrototype>, float> amount)
+        {
+            //if (amount.Keys.Count == 0)
+            //{
+            //    return;
+            //}
+            _menu?.PopulateBalance(amount);
+        }
         protected override void UpdateState(BoundUserInterfaceState state)
         {
             base.UpdateState(state);

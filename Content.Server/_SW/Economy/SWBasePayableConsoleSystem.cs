@@ -37,7 +37,15 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
         RaiseLocalEvent(ent, ref ev);
         if (!ev.Handled)
         {
-            _s.Error($"{ent.Owner} account is not set");
+            if (TryComp<SWBankAccountContainerComponent>(ent, out var comp))
+            {
+                ev.Account = new Entity<SWBankAccountContainerComponent>(ent, comp);
+                ev.Handled = true;
+            }
+            else
+            {
+                _s.Error($"{ent.Owner} account is not set");
+            }
         }
         ent.Comp.Account = ev.Account;
         //UpdateInterface(ent);
@@ -61,14 +69,16 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
     }
     private void OnAddMoney(Entity<SWBankAccountAccessorComponent> ent, ref SWTryAddMoneyMessage args)
     {
+        ISawmill _s = Logger.GetSawmill("dsfg");
+        _s.Fatal("111");
         if (ent.Comp.Account == null)
         {
             return;
         }
-
+        _s.Fatal("1112");
         if (args.Actor is not { Valid: true } user)
             return;
-
+        _s.Fatal("1113");
         foreach (var entity in _handsSystem.EnumerateHeld(user))
         {
             if (!TryComp<StackComponent>(entity, out var comp))
@@ -76,6 +86,7 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
                 continue;
             }
             var proto = _bankSystem.GetCurrencyProto(entity);
+            _s.Fatal((proto==null).ToString());
             if (proto != null)
             {
                 ent.Comp.Account.Value.Comp.CurrentAmount[proto] += comp.Count;

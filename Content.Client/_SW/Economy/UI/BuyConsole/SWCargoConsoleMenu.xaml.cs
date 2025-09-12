@@ -37,6 +37,9 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
     public Dictionary<ProtoId<SWCurrencyPrototype>, float> Balance = new();
     public List<ProtoId<SWCargoProductPrototype>> ProductCatalogue = new();
 
+    public event Action? OnWithdrawalButtonPressed;
+    public event Action? OnAddMoneyButtonPressed;
+
     public SWCargoConsoleMenu(EntityUid owner, IEntityManager entMan, IPrototypeManager protoManager, SpriteSystem spriteSystem)
     {
         RobustXamlLoader.Load(this);
@@ -65,6 +68,9 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
 
         TabContainer.SetTabTitle(0, Loc.GetString("cargo-console-menu-tab-title-orders"));
         TabContainer.SetTabTitle(1, Loc.GetString("cargo-console-menu-tab-title-funds"));
+
+        MoneyOutButton.OnPressed += (_) => OnWithdrawalButtonPressed?.Invoke();
+        MoneyInButton.OnPressed += (_) => OnAddMoneyButtonPressed?.Invoke();
     }
 
     private void OnCategoryItemSelected(OptionButton.ItemSelectedEventArgs args)
@@ -84,6 +90,16 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
         Categories.SelectId(id);
     }
 
+    public void PopulateBalance(Dictionary<ProtoId<SWCurrencyPrototype>, float> balance)
+    {
+        Balance = balance;
+        BalanceContainer.Children.Clear();
+        foreach (var (currency, amount) in Balance)
+        {
+            var cntrl = new SWCurrencyControl(currency, amount, false);
+            BalanceContainer.AddChild(cntrl);
+        }
+    }
     private IEnumerable<SWCargoProductPrototype> ProductPrototypes
     {
         get

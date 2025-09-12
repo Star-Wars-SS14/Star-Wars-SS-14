@@ -18,13 +18,17 @@ public enum SWBuyConsoleUIKey
 }
 
 [Serializable, NetSerializable]
-public sealed class SWBuyConsoleBounderUserInterfaceState : BoundUserInterfaceState
+public sealed class SWBuyConsoleBounderUserInterfaceState : SWBasePayableBounderUserInterfaceState
 {
     public string Name = "";
     public int Count;
     public List<CargoOrderData> Orders = new();
     public List<ProtoId<SWCargoProductPrototype>> Products = new();
 
+    public SWBuyConsoleBounderUserInterfaceState()
+    {
+
+    }
     public SWBuyConsoleBounderUserInterfaceState(string name, int count, List<CargoOrderData> orders, List<ProtoId<SWCargoProductPrototype>> products)
     {
         Name = name;

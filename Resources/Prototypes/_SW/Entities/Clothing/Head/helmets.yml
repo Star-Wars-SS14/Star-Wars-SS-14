@@ -24,12 +24,6 @@
     sprite: _SW/Clothing/Head/Helmets/helmet_sun_squad.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/helmet_sun_squad.rsi
-  - type: Armor
-    modifiers:
-      coefficients:
-        Slash: 0.5
-        Heat: 0.5
-        Cold: 0.5 
 
 - type: entity
   parent: [ClothingHeadBase, SWRepublicRadioHelmet]

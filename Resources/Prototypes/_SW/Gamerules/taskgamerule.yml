@@ -14,6 +14,21 @@
     - ExchangeFaction
 
 - type: entity
+  parent: BaseGameRule
+  id: FactionsOnlyGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWFactionGamerule
+    factionsPrototypes:
+    - RepublicFaction
+    - EmpireFaction
+    - MandalorianFaction
+    - BlackSunFaction
+    - ExchangeFaction
+
+
+- type: entity
   id: SWEventScheduler
   parent: BaseGameRule
   components:
@@ -54,4 +69,13 @@
   showInVote: true
   rules:
     - TaskGamerule
+    - SWEventScheduler
+
+- type: gamePreset
+  id: SWMainPresetNoTasks
+  name: Необычный день
+  description: В связи с особыми событиями командование приостановило выполнение заданий. Следуйте особым инструкциям командования
+  showInVote: false
+  rules:
+    - FactionsOnlyGamerule
     - SWEventScheduler

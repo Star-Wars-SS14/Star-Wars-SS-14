@@ -4,9 +4,9 @@
   name: recruit mandalorian suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianRecruit.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar1/MandalorianRecruit.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianRecruit.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar1/MandalorianRecruit.rsi
   - type: PressureProtection
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000
@@ -25,13 +25,53 @@
 
 - type: entity
   parent: SWMandalorianRecruitSuit
+  id: SWMandalorianRecruitSuit2
+  name: mandalorian recruit suit2
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar2/MandalorianWarrior.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar2/MandalorianWarrior.rsi
+
+- type: entity
+  parent: SWMandalorianRecruitSuit
+  id: SWMandalorianRecruitSuit3
+  name: mandalorian recruit suit3
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar3/MandalorianWarrior.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar3/MandalorianWarrior.rsi
+
+- type: entity
+  parent: SWMandalorianRecruitSuit
   id: SWMandalorianWarriorSuit
   name: mandalorian warrior suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianWarrior.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar1/MandalorianWarrior.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianWarrior.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar1/MandalorianWarrior.rsi
+
+- type: entity
+  parent: SWMandalorianWarriorSuit
+  id: SWMandalorianWarriorSuit2
+  name: mandalorian warrior suit2
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar2/MandalorianWarrior.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar2/MandalorianWarrior.rsi
+
+- type: entity
+  parent: SWMandalorianWarriorSuit
+  id: SWMandalorianWarriorSuit3
+  name: mandalorian warrior suit3
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar3/MandalorianWarrior.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar3/MandalorianWarrior.rsi
 
 - type: entity
   parent: SWMandalorianRecruitSuit
@@ -39,9 +79,9 @@
   name: veteran mandalorian suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/mandalorianveteran.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar1/MandalorianVeteran.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/mandalorianveteran.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar1/MandalorianVeteran.rsi
   - type: Armor
     modifiers:
       coefficients:
@@ -52,14 +92,34 @@
         Piercing: 0.4
 
 - type: entity
+  parent: SWMandalorianVeteranSuit
+  id: SWMandalorianVeteranSuit2
+  name: veteran mandalorian suit2
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar2/MandalorianVeteran.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar2/MandalorianVeteran.rsi
+
+- type: entity
+  parent: SWMandalorianVeteranSuit
+  id: SWMandalorianVeteranSuit3
+  name: veteran mandalorian suit3
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar3/MandalorianVeteran.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar3/MandalorianVeteran.rsi
+
+- type: entity
   parent: SWMandalorianRecruitSuit
   id: SWMandalorianLeaderSuit
   name: leader mandalorian suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianLeader.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar1/MandalorianLeader.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianLeader.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar1/MandalorianLeader.rsi
   - type: Armor
     modifiers:
       coefficients:
@@ -68,3 +128,24 @@
         Blunt: 0.4
         Slash: 0.8
         Piercing: 0.4
+
+- type: entity
+  parent: SWMandalorianLeaderSuit
+  id: SWMandalorianLeaderSuit2
+  name: leader mandalorian suit2
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar2/MandalorianLeader.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar2/MandalorianLeader.rsi
+
+- type: entity
+  parent: SWMandalorianLeaderSuit
+  id: SWMandalorianLeaderSuit3
+  name: leader mandalorian suit3
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar3/MandalorianLeader.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar3/MandalorianLeader.rsi
+

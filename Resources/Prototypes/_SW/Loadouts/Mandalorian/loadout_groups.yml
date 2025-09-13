@@ -1,0 +1,31 @@
+- type: loadoutGroup
+  id: SWMandoRecruit
+  name: sw-mando-recruit-loadout
+  loadouts:
+  - SWMandRecruit1
+  - SWMandRecruit2
+  - SWMandRecruit3
+
+- type: loadoutGroup
+  id: SWMandoWarrior
+  name: sw-mando-warrior-loadout
+  loadouts:
+  - SWMandWarrior1
+  - SWMandWarrior2
+  - SWMandWarrior3
+
+- type: loadoutGroup
+  id: SWMandoVeteran
+  name: sw-mando-veteran-loadout
+  loadouts:
+  - SWMandVeteran1
+  - SWMandVeteran2
+  - SWMandVeteran3
+
+- type: loadoutGroup
+  id: SWMandoLeader
+  name: sw-mando-leader-loadout
+  loadouts:
+  - SWMandLeader1
+  - SWMandLeader2
+  - SWMandLeader3

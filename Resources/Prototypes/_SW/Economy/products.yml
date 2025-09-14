@@ -7,4 +7,5 @@
   cost:
     SWEmpireCreditCurrency: 100
   category: sw
+  group: SWBaseMarket
 

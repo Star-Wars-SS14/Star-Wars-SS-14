@@ -58,17 +58,8 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
         SearchBar.OnTextChanged += OnSearchBarTextChanged;
         Categories.OnItemSelected += OnCategoryItemSelected;
 
-        if (entMan.TryGetComponent<CargoOrderConsoleComponent>(owner, out var orderConsole))
-        {
-            var accountProto = _protoManager.Index(orderConsole.Account);
-            AccountNameLabel.Text = Loc.GetString("cargo-console-menu-account-name-format",
-                ("color", accountProto.Color),
-                ("name", Loc.GetString(accountProto.Name)),
-                ("code", Loc.GetString(accountProto.Code)));
-        }
-
         TabContainer.SetTabTitle(0, Loc.GetString("cargo-console-menu-tab-title-orders"));
-        TabContainer.SetTabTitle(1, Loc.GetString("cargo-console-menu-tab-title-funds"));
+        TabContainer.SetTabTitle(1, Loc.GetString("cargo-console-menu-tab-title-pay"));
 
         MoneyOutButton.OnPressed += (_) => OnWithdrawalButtonPressed?.Invoke();
         MoneyInButton.OnPressed += (_) => OnAddMoneyButtonPressed?.Invoke();
@@ -126,14 +117,11 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
         var search = SearchBar.Text.Trim().ToLowerInvariant();
         foreach (var prototype in products)
         {
-            // if no search or category
-            // else if search
-            // else if category and not search
-            //if (search.Length == 0 && _category == null ||
-            //    search.Length != 0 && prototype.Name.ToLowerInvariant().Contains(search) ||
-            //    search.Length != 0 && prototype.Description.ToLowerInvariant().Contains(search) ||
-            //    search.Length == 0 && _category != null && Loc.GetString(prototype.Category).Equals(_category))
-            //{
+            if (search.Length == 0 && _category == null ||
+                search.Length != 0 && prototype.Name.ToLowerInvariant().Contains(search) ||
+                search.Length != 0 && prototype.Description.ToLowerInvariant().Contains(search) ||
+                search.Length == 0 && _category != null && Loc.GetString(prototype.Category).Equals(_category))
+            {
                 var button = new SWProductRow
                 {
                     Product = prototype,
@@ -147,7 +135,7 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
                     OnItemSelected?.Invoke(args);
                 };
                 Products.AddChild(button);
-            //}
+            }
         }
     }
 
@@ -190,76 +178,6 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
         {
             Categories.AddItem(str);
         }
-    }
-
-    /// <summary>
-    ///     Populates the list of orders and requests.
-    /// </summary>
-    public void PopulateOrders(IEnumerable<CargoOrderData> orders)
-    {
-        //Requests.DisposeAllChildren();
-
-        //foreach (var order in orders)
-        //{
-        //    if (order.Approved)
-        //        continue;
-
-        //    var product = _protoManager.Index<EntityPrototype>(order.ProductId);
-        //    var productName = product.Name;
-        //    var account = _protoManager.Index(order.Account);
-
-        //    var row = new SWCargoOrderRow
-        //    {
-        //        Order = order,
-        //        Icon = { Texture = _spriteSystem.Frame0(product) },
-        //        ProductName =
-        //        {
-        //            Text = Loc.GetString(
-        //                "cargo-console-menu-populate-orders-cargo-order-row-product-name-text",
-        //                ("productName", productName),
-        //                ("orderAmount", order.OrderQuantity),
-        //                ("orderRequester", order.Requester),
-        //                ("accountColor", account.Color),
-        //                ("account", Loc.GetString(account.Code)))
-        //        },
-        //        Description =
-        //        {
-        //            Text = Loc.GetString("cargo-console-menu-order-reason-description",
-        //                                            ("reason", order.Reason))
-        //        }
-        //    };
-
-        //    // TODO: Disable based on access.
-        //    Requests.AddChild(row);
-        //}
-    }
-
-    public void PopulateAccountActions()
-    {
-        //if (!_entityManager.TryGetComponent<StationBankAccountComponent>(_station, out var bank) ||
-        //    !_entityManager.TryGetComponent<CargoOrderConsoleComponent>(_owner, out var console))
-        //    return;
-
-        //var i = 0;
-        //ActionOptions.Clear();
-        //ActionOptions.AddItem(Loc.GetString("cargo-console-menu-account-action-option-withdraw"), i);
-        //i++;
-        //foreach (var account in bank.Accounts.Keys)
-        //{
-        //    if (account == console.Account)
-        //        continue;
-        //    var accountProto = _protoManager.Index(account);
-        //    ActionOptions.AddItem(Loc.GetString("cargo-console-menu-account-action-option-transfer",
-        //        ("code", Loc.GetString(accountProto.Code))),
-        //        i);
-        //    ActionOptions.SetItemMetadata(i, account);
-        //    i++;
-        //}
-    }
-
-    public void UpdateStation(EntityUid station)
-    {
-        
     }
 
     protected override void FrameUpdate(FrameEventArgs args)

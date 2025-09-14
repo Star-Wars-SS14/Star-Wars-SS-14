@@ -8,3 +8,14 @@
   name: Турель
   description: Турель. Что непонятного?
   defaultLinks: [ SWTurretConsoleReceiver ]
+
+- type: sinkPort
+  id: SWCargoPalletReceiver
+  name: Поддон
+  description: Используется для транспортировки
+
+- type: sourcePort
+  id: SWBuyConsoleSender
+  name: Покупающая консоль
+  description: На ней можно что-то купить
+  defaultLinks: [ SWCargoPalletReceiver ]

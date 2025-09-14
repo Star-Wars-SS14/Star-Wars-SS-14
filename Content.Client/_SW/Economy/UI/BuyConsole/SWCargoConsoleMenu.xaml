@@ -5,12 +5,6 @@
                            MinSize="600 600">
     <BoxContainer Orientation="Vertical" Margin="15 5 15 10">
         <BoxContainer Orientation="Horizontal">
-            <Label Text="{Loc 'cargo-console-menu-account-name-label'}"
-                   StyleClasses="LabelKeyText" />
-            <RichTextLabel Name="AccountNameLabel"
-                   Text="{Loc 'cargo-console-menu-account-name-none-text'}" />
-        </BoxContainer>
-        <BoxContainer Orientation="Horizontal">
             <Label Text="{Loc 'cargo-console-menu-points-label'}"
                    StyleClasses="LabelKeyText" />
             <BoxContainer Name="BalanceContainer" Orientation="Vertical">

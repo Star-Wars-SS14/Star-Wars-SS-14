@@ -1,0 +1,1 @@
+cargo-console-menu-tab-title-pay = Ввод/вывод

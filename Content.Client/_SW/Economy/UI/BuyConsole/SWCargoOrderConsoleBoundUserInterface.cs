@@ -21,8 +21,6 @@ namespace Content.Client.Cargo.BUI
 {
     public sealed class SWCargoOrderConsoleBoundUserInterface : SWBasePayAbleBoundUserInterface
     {
-        private readonly SharedCargoSystem _cargoSystem;
-
         [ViewVariables]
         private SWCargoConsoleMenu? _menu;
         private SWWithdrawalWindow? _withdrawal = null;
@@ -50,7 +48,6 @@ namespace Content.Client.Cargo.BUI
 
         public SWCargoOrderConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
         {
-            _cargoSystem = EntMan.System<SharedCargoSystem>();
         }
 
         protected override void Open()
@@ -125,7 +122,6 @@ namespace Content.Client.Cargo.BUI
 
             _menu.PopulateProducts();
             _menu.PopulateCategories();
-            _menu.PopulateAccountActions();
         }
         protected override void OnWithdrawal(Dictionary<ProtoId<SWCurrencyPrototype>, float> dict)
         {

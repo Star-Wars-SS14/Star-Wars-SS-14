@@ -1,3 +1,4 @@
+using Content.Shared.Cargo.Prototypes;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.TypeSerializers.Implementations.Custom.Prototype.Array;
 using Robust.Shared.Utility;
@@ -92,5 +93,8 @@ namespace Content.Shared._SW.Economy
         /// </summary>
         [DataField]
         public string Category { get; private set; } = string.Empty;
+
+        [DataField]
+        public ProtoId<CargoMarketPrototype> Group = default!;
     }
 }

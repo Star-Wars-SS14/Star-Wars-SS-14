@@ -1,9 +1,16 @@
 using Content.Server._SW.FinanceConsole;
+using Content.Server._SW.TurretConsole;
+using Content.Server.Cargo.Components;
 using Content.Shared._SW.Economy;
+using Content.Shared.Cargo.Prototypes;
 using Content.Shared.Coordinates;
+using Content.Shared.DeviceLinking;
+using Content.Shared.DeviceLinking.Events;
 using Content.Shared.UserInterface;
+using JetBrains.FormatRipper.Elf;
 using Robust.Server.GameObjects;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,9 +31,10 @@ public sealed class SWBuyConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWBuyConsoleComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SWBuyConsoleComponent, BeforeActivatableUIOpenEvent>(OnOpen);
         SubscribeLocalEvent<SWBuyConsoleComponent, SWTryPurchaseMessage>(OnTryPurchase);
+        SubscribeLocalEvent<CargoPalletComponent, NewLinkEvent>(OnNewLink);
+        SubscribeLocalEvent<CargoPalletComponent, PortDisconnectedEvent>(OnPortDisconnected);
+        SubscribeLocalEvent<CargoPalletComponent, MapInitEvent>(OnPalletMapinit);
     }
-
-
 
     private void OnMapInit(Entity<SWBuyConsoleComponent> ent, ref MapInitEvent args)
     {
@@ -35,6 +43,16 @@ public sealed class SWBuyConsoleSystem : EntitySystem
         {
             comp.CurrentAmount[id] = 0f;
         }
+        var markets = ent.Comp.AllowedMarkets;
+        var products = ent.Comp.ExtraProducts.ToHashSet();
+        foreach (var product in _prototypeManager.EnumeratePrototypes<SWCargoProductPrototype>())
+        {
+            if (!markets.Contains(product.Group))
+                continue;
+
+            products.Add(product.ID);
+        }
+        ent.Comp.AvailableProducts = products;
     }
 
     private void OnOpen(Entity<SWBuyConsoleComponent> ent, ref BeforeActivatableUIOpenEvent args)
@@ -59,12 +77,12 @@ public sealed class SWBuyConsoleSystem : EntitySystem
             }
         }
     }
-    private void UpdateInterface(Entity<SWBuyConsoleComponent> console, Entity<SWBankAccountContainerComponent> account)
+    private void UpdateInterface(Entity<SWBuyConsoleComponent> ent, Entity<SWBankAccountContainerComponent> account)
     {
         var state = new SWBuyConsoleBounderUserInterfaceState();
-        _swPayable.GetBalance(console.Owner, state);
-        state.Products = console.Comp.Products;
-        _uiSystem.SetUiState(console.Owner, SWBuyConsoleUIKey.Key, state);
+        _swPayable.GetBalance(ent.Owner, state);
+        state.Products = ent.Comp.AvailableProducts.ToList();
+        _uiSystem.SetUiState(ent.Owner, SWBuyConsoleUIKey.Key, state);
     }
 
     private void OnTryPurchase(Entity<SWBuyConsoleComponent> ent, ref SWTryPurchaseMessage args)
@@ -87,11 +105,62 @@ public sealed class SWBuyConsoleSystem : EntitySystem
         _sWSharedBankSystem.FillCurrencies(ent.Comp.AllowedCurrencies, ref totalCost);
         if (_sWSharedBankSystem.TryPayAny(totalCost, account.Comp.CurrentAmount))
         {
-            for (int i = 0; i < args.Amount; i++) {
-                Spawn(proto.Product, ent.Owner.ToCoordinates());
+            if (ent.Comp.ConnectedPallets.Count > 0)
+            {
+                SpawnEntities(ent, proto.Product, args.Amount);
+            }
+            else
+            {
+                for (int _ = 0; _ < args.Amount; _++)
+                {
+                    Spawn(proto.Product, ent.Owner.ToCoordinates());
+                }
             }
         }
 
         UpdateInterface(ent, account);
+    }
+
+    private void OnNewLink(Entity<CargoPalletComponent> ent, ref NewLinkEvent args)
+    {
+        UpdateConnectedPallets(ent, true);
+    }
+    private void OnPortDisconnected(Entity<CargoPalletComponent> ent, ref PortDisconnectedEvent args)
+    {
+        UpdateConnectedPallets(ent, false);
+    }
+
+    private void OnPalletMapinit(Entity<CargoPalletComponent> ent, ref MapInitEvent args)
+    {
+        UpdateConnectedPallets(ent, true);
+    }
+    private void UpdateConnectedPallets(Entity<CargoPalletComponent> ent, bool add)
+    {
+        var comp = Comp<DeviceLinkSinkComponent>(ent.Owner);
+        foreach (var source in comp.LinkedSources)
+        {
+            if (TryComp<SWBuyConsoleComponent>(source, out var consoleComp))
+            {
+                if (add)
+                {
+                    consoleComp.ConnectedPallets.Add(ent.Owner);
+                }
+                else {
+                    consoleComp.ConnectedPallets.Remove(ent.Owner);
+                }
+            }
+        }
+    }
+
+    private void SpawnEntities(Entity<SWBuyConsoleComponent> ent, string proto, int amount)
+    {
+        var pallets = ent.Comp.ConnectedPallets.ToArray();
+        var size = pallets.Length;
+
+        for (int i = 0; i < amount; i++)
+        {
+            var coords = pallets[i % size].ToCoordinates();
+            Spawn(proto, coords);
+        }
     }
 }

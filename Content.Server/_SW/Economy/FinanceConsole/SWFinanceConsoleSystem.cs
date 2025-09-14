@@ -76,7 +76,7 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         }
         var bankComp = EnsureComp<SWBankAccountContainerComponent>(ent.Comp.Account.Value);
         var billComp = EnsureComp<SWBillContainerComponent>(ent.Comp.Account.Value);
-        if (_bankSystem.TryPay(args.Bill.CurrencyRequests, bankComp.CurrentAmount))
+        if (_bankSystem.TryPayAll(args.Bill.CurrencyRequests, bankComp.CurrentAmount))
         {
             billComp.Bills.Remove(args.Bill);
         }

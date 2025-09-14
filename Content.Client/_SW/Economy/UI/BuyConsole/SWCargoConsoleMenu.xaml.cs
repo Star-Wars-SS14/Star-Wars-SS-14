@@ -29,6 +29,7 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
     private EntityUid _owner;
 
     private List<SWCurrencyPrototype> _currencyPrototypes = new();
+    private List<string> _currencyPrototypeIds = new();
 
     public event Action<ButtonEventArgs>? OnItemSelected;
 
@@ -51,7 +52,7 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
         _owner = owner;
 
         _currencyPrototypes = _protoManager.EnumeratePrototypes<SWCurrencyPrototype>().ToList();
-
+        _currencyPrototypeIds = _currencyPrototypes.Select(c => c.ID).ToList();
         Title = entMan.GetComponent<MetaDataComponent>(owner).EntityName;
 
         SearchBar.OnTextChanged += OnSearchBarTextChanged;
@@ -119,8 +120,6 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
     {
         Products.RemoveAllChildren();
         var products = ProductPrototypes.ToList();
-        ISawmill _s = Logger.GetSawmill("asd");
-        _s.Fatal($"{products.Count}");
         products.Sort((x, y) =>
             string.Compare(x.Name, y.Name, StringComparison.CurrentCultureIgnoreCase));
 
@@ -154,38 +153,15 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
 
     private string GetCostText(SWCargoProductPrototype prototype)
     {
+        var costs = prototype.Cost;
+        _swBankSystem.FillCurrencies(_currencyPrototypeIds, ref costs);
         string res = "";
-        SWCurrencyPrototype? currencyWithKnownAmount = null;
-        int currencyKnownAmount = 0;
-        List<SWCurrencyPrototype> unspecifiedCurrencies = new List<SWCurrencyPrototype>();
-        foreach (var curPrototype in _currencyPrototypes)
+        foreach (var (curProtoId, amount) in costs)
         {
-            if (prototype.Cost.TryGetValue(prototype.ID, out var cost))
-            {
-                res += $"{cost} {curPrototype.ShortName}/";
-                currencyWithKnownAmount = curPrototype;
-                currencyKnownAmount = cost;
-            }
-            else
-            {
-                unspecifiedCurrencies.Add(curPrototype);
-            }
+            var curProto = _protoManager.Index(curProtoId);
+            res += $"{curProto.ShortName} {amount}/";
         }
-
-        if (currencyWithKnownAmount == null)
-        {
-            return "";
-        }
-
-        foreach (var curPrototype in unspecifiedCurrencies)
-        {
-            float cost = _swBankSystem.TransferCurrency(currencyKnownAmount,
-                                                      currencyWithKnownAmount,
-                                                      curPrototype);
-            res += $"{(int)Math.Truncate(cost)} {curPrototype.ShortName}/";
-        }
-
-        res = res.Remove(res.Length - 1); //remove last '/'
+        res = res.Remove(res.Length - 1);
         return res;
     }
 
@@ -221,41 +197,41 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
     /// </summary>
     public void PopulateOrders(IEnumerable<CargoOrderData> orders)
     {
-        Requests.DisposeAllChildren();
+        //Requests.DisposeAllChildren();
 
-        foreach (var order in orders)
-        {
-            if (order.Approved)
-                continue;
+        //foreach (var order in orders)
+        //{
+        //    if (order.Approved)
+        //        continue;
 
-            var product = _protoManager.Index<EntityPrototype>(order.ProductId);
-            var productName = product.Name;
-            var account = _protoManager.Index(order.Account);
+        //    var product = _protoManager.Index<EntityPrototype>(order.ProductId);
+        //    var productName = product.Name;
+        //    var account = _protoManager.Index(order.Account);
 
-            var row = new SWCargoOrderRow
-            {
-                Order = order,
-                Icon = { Texture = _spriteSystem.Frame0(product) },
-                ProductName =
-                {
-                    Text = Loc.GetString(
-                        "cargo-console-menu-populate-orders-cargo-order-row-product-name-text",
-                        ("productName", productName),
-                        ("orderAmount", order.OrderQuantity),
-                        ("orderRequester", order.Requester),
-                        ("accountColor", account.Color),
-                        ("account", Loc.GetString(account.Code)))
-                },
-                Description =
-                {
-                    Text = Loc.GetString("cargo-console-menu-order-reason-description",
-                                                    ("reason", order.Reason))
-                }
-            };
+        //    var row = new SWCargoOrderRow
+        //    {
+        //        Order = order,
+        //        Icon = { Texture = _spriteSystem.Frame0(product) },
+        //        ProductName =
+        //        {
+        //            Text = Loc.GetString(
+        //                "cargo-console-menu-populate-orders-cargo-order-row-product-name-text",
+        //                ("productName", productName),
+        //                ("orderAmount", order.OrderQuantity),
+        //                ("orderRequester", order.Requester),
+        //                ("accountColor", account.Color),
+        //                ("account", Loc.GetString(account.Code)))
+        //        },
+        //        Description =
+        //        {
+        //            Text = Loc.GetString("cargo-console-menu-order-reason-description",
+        //                                            ("reason", order.Reason))
+        //        }
+        //    };
 
-            // TODO: Disable based on access.
-            Requests.AddChild(row);
-        }
+        //    // TODO: Disable based on access.
+        //    Requests.AddChild(row);
+        //}
     }
 
     public void PopulateAccountActions()
@@ -295,7 +271,5 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
             var cntrl = new SWCurrencyControl(currency, amount, false);
             BalanceContainer.AddChild(cntrl);
         }
-        OrdersSpacer.Visible = true;
-        Orders.Visible = true;
     }
 }

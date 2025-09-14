@@ -1,7 +1,9 @@
 using Content.Server._SW.FinanceConsole;
 using Content.Shared._SW.Economy;
+using Content.Shared.Coordinates;
 using Content.Shared.UserInterface;
 using Robust.Server.GameObjects;
+using Robust.Shared.Prototypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +15,19 @@ namespace Content.Server._SW.Economy.BuyConsole;
 public sealed class SWBuyConsoleSystem : EntitySystem
 {
     [Dependency] SWBasePayableConsoleSystem _swPayable = default!;
+    [Dependency] SWSharedBankSystem _sWSharedBankSystem = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
+    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<SWBuyConsoleComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SWBuyConsoleComponent, BeforeActivatableUIOpenEvent>(OnOpen);
+        SubscribeLocalEvent<SWBuyConsoleComponent, SWTryPurchaseMessage>(OnTryPurchase);
     }
+
+
+
     private void OnMapInit(Entity<SWBuyConsoleComponent> ent, ref MapInitEvent args)
     {
         var comp = EnsureComp<SWBankAccountContainerComponent>(ent);
@@ -57,5 +65,33 @@ public sealed class SWBuyConsoleSystem : EntitySystem
         _swPayable.GetBalance(console.Owner, state);
         state.Products = console.Comp.Products;
         _uiSystem.SetUiState(console.Owner, SWBuyConsoleUIKey.Key, state);
+    }
+
+    private void OnTryPurchase(Entity<SWBuyConsoleComponent> ent, ref SWTryPurchaseMessage args)
+    {
+        if (!TryComp<SWBankAccountAccessorComponent>(ent, out var accComp))
+        {
+            return;
+        }
+        if (accComp.Account == null)
+        {
+            return;
+        }
+        var account = accComp.Account.Value;
+        var proto = _prototypeManager.Index(args.CargoProductId);
+        Dictionary<ProtoId<SWCurrencyPrototype>, float> totalCost = new Dictionary<ProtoId<SWCurrencyPrototype>, float>();
+        foreach (var (currency, cost) in proto.Cost)
+        {
+            totalCost[currency] = cost * args.Amount;
+        }
+        _sWSharedBankSystem.FillCurrencies(ent.Comp.AllowedCurrencies, ref totalCost);
+        if (_sWSharedBankSystem.TryPayAny(totalCost, account.Comp.CurrentAmount))
+        {
+            for (int i = 0; i < args.Amount; i++) {
+                Spawn(proto.Product, ent.Owner.ToCoordinates());
+            }
+        }
+
+        UpdateInterface(ent, account);
     }
 }

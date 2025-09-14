@@ -56,7 +56,7 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
         {
             return;
         }
-        if (_bankSystem.TryPay(args.Requests, ent.Comp.Account.Value.Comp.CurrentAmount))
+        if (_bankSystem.TryPayAll(args.Requests, ent.Comp.Account.Value.Comp.CurrentAmount))
         {
             foreach (var (currency, amount) in args.Requests)
             {

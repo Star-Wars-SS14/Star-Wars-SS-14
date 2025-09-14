@@ -20,9 +20,6 @@ public enum SWBuyConsoleUIKey
 [Serializable, NetSerializable]
 public sealed class SWBuyConsoleBounderUserInterfaceState : SWBasePayableBounderUserInterfaceState
 {
-    public string Name = "";
-    public int Count;
-    public List<CargoOrderData> Orders = new();
     public List<ProtoId<SWCargoProductPrototype>> Products = new();
 
     public SWBuyConsoleBounderUserInterfaceState()
@@ -31,26 +28,19 @@ public sealed class SWBuyConsoleBounderUserInterfaceState : SWBasePayableBounder
     }
     public SWBuyConsoleBounderUserInterfaceState(string name, int count, List<CargoOrderData> orders, List<ProtoId<SWCargoProductPrototype>> products)
     {
-        Name = name;
-        Count = count;
-        Orders = orders;
         Products = products;
     }
 }
 
 [Serializable, NetSerializable]
-public sealed class SWTryAddOrderMessage : BoundUserInterfaceMessage
+public sealed class SWTryPurchaseMessage : BoundUserInterfaceMessage
 {
-    public string Requester;
-    public string Reason;
-    public string CargoProductId;
+    public ProtoId<SWCargoProductPrototype> CargoProductId;
     public int Amount;
 
-    public SWTryAddOrderMessage(string requester, string reason, string cargoProductId, int amount)
+    public SWTryPurchaseMessage(ProtoId<SWCargoProductPrototype> cargoProduct, int amount)
     {
-        Requester = requester;
-        Reason = reason;
-        CargoProductId = cargoProductId;
+        CargoProductId = cargoProduct;
         Amount = amount;
     }
 }

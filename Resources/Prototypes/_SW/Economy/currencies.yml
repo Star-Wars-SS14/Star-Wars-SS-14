@@ -3,9 +3,13 @@
   localizedName: Имперский кредит
   shortName: ИК
   cashEntity: SWCredits
+  exchangeRates:
+    SWRepublicCreditCurrency: 1.5
 
 - type: swcurrency
   id : SWRepublicCreditCurrency
   localizedName: Республиканский кредит
   shortName: РК
   cashEntity: SWCredits
+  exchangeRates:
+    SWEmpireCreditCurrency: 0.66666667

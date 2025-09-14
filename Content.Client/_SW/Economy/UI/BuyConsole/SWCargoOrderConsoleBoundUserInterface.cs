@@ -40,9 +40,6 @@ namespace Content.Client.Cargo.BUI
         public int BankBalance { get; private set; }
 
         [ViewVariables]
-        public int OrderCapacity { get; private set; }
-
-        [ViewVariables]
         public int OrderCount { get; private set; }
 
         /// <summary>
@@ -100,7 +97,7 @@ namespace Content.Client.Cargo.BUI
 
             _orderMenu.SubmitButton.OnPressed += (_) =>
             {
-                if (AddOrder())
+                if (TryPurchase())
                 {
                     _orderMenu.Close();
                 }
@@ -121,14 +118,13 @@ namespace Content.Client.Cargo.BUI
             _withdrawal.OpenCenteredRight();
             _withdrawal.OnConfirmButtonPressedAction += OnWithdrawal;
         }
-        private void Populate(List<CargoOrderData> orders)
+        private void Populate()
         {
             if (_menu == null)
                 return;
 
             _menu.PopulateProducts();
             _menu.PopulateCategories();
-            _menu.PopulateOrders(orders);
             _menu.PopulateAccountActions();
         }
         protected override void OnWithdrawal(Dictionary<ProtoId<SWCurrencyPrototype>, float> dict)
@@ -161,7 +157,7 @@ namespace Content.Client.Cargo.BUI
 
             _menu.ProductCatalogue = cState.Products;
 
-            Populate(cState.Orders);
+            Populate();
         }
 
         protected override void Dispose(bool disposing)
@@ -175,20 +171,18 @@ namespace Content.Client.Cargo.BUI
             _orderMenu?.Dispose();
         }
 
-        private bool AddOrder()
+        private bool TryPurchase()
         {
             var orderAmt = _orderMenu?.Amount.Value ?? 0;
-            if (orderAmt < 1 || orderAmt > OrderCapacity)
+            if (orderAmt < 1)
             {
                 return false;
             }
-
-            SendMessage(new SWTryAddOrderMessage(
-                _orderMenu?.Requester.Text ?? "",
-                _orderMenu?.Reason.Text ?? "",
-                _product?.ID ?? "",
-                orderAmt));
-
+            if (_product != null)
+            {
+                SendMessage(new SWTryPurchaseMessage(_product.ID,
+                    orderAmt));
+            }
             return true;
         }
     }

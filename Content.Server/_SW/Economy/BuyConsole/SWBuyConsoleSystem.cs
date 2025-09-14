@@ -42,21 +42,20 @@ public sealed class SWBuyConsoleSystem : EntitySystem
     {
         base.Update(frameTime);
         var query = EntityQueryEnumerator<SWBuyConsoleComponent, SWBankAccountAccessorComponent>();
-        while (query.MoveNext(out var uid, out var _, out var comp))
+        while (query.MoveNext(out var uid, out var buyComp, out var comp))
         {
             if (comp.AccountInterfaceRequiresUpdate && comp.Account != null)
             {
-                UpdateInterface(uid, comp.Account.Value);
+                UpdateInterface(new Entity<SWBuyConsoleComponent>(uid, buyComp), comp.Account.Value);
                 comp.AccountInterfaceRequiresUpdate = false;
             }
         }
     }
-    private void UpdateInterface(EntityUid console, Entity<SWBankAccountContainerComponent> account)
+    private void UpdateInterface(Entity<SWBuyConsoleComponent> console, Entity<SWBankAccountContainerComponent> account)
     {
         var state = new SWBuyConsoleBounderUserInterfaceState();
-        ISawmill _s = Logger.GetSawmill("fuck");
-        _s.Fatal("abbbbb");
-        _swPayable.GetBalance(console, state);
-        _uiSystem.SetUiState(console, SWBuyConsoleUIKey.Key, state);
+        _swPayable.GetBalance(console.Owner, state);
+        state.Products = console.Comp.Products;
+        _uiSystem.SetUiState(console.Owner, SWBuyConsoleUIKey.Key, state);
     }
 }

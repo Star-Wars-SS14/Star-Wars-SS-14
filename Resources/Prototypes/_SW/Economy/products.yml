@@ -1,0 +1,10 @@
+- type: swCargoProduct
+  id: SWFoodMRE
+  icon:
+    sprite: _SW/Objects/Consumable/Food/mre.rsi
+    state: icon
+  product: SWBoxMRE
+  cost:
+    SWEmpireCreditCurrency: 100
+  category: sw
+

@@ -79,7 +79,7 @@ namespace Content.Client.Cargo.BUI
 
             _menu.OnItemSelected += (args) =>
             {
-                if (args.Button.Parent is not SWCargoProductRow row)
+                if (args.Button.Parent is not SWProductRow row)
                     return;
 
                 description.Clear();
@@ -149,7 +149,7 @@ namespace Content.Client.Cargo.BUI
         {
             base.UpdateState(state);
 
-            if (state is not SWBuyConsoleBounderUserInterfaceState cState || !EntMan.TryGetComponent<CargoOrderConsoleComponent>(Owner, out var orderConsole))
+            if (state is not SWBuyConsoleBounderUserInterfaceState cState)
                 return;
 
             //OrderCount = cState.Count;

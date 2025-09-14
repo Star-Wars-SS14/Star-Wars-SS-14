@@ -12,4 +12,7 @@ public sealed partial class SWBuyConsoleComponent : Component
 {
     [DataField("allowed")]
     public List<ProtoId<SWCurrencyPrototype>> AllowedCurrencies = new();
+
+    [DataField]
+    public List<ProtoId<SWCargoProductPrototype>> Products = new();
 }

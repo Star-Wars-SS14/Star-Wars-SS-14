@@ -119,6 +119,8 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
     {
         Products.RemoveAllChildren();
         var products = ProductPrototypes.ToList();
+        ISawmill _s = Logger.GetSawmill("asd");
+        _s.Fatal($"{products.Count}");
         products.Sort((x, y) =>
             string.Compare(x.Name, y.Name, StringComparison.CurrentCultureIgnoreCase));
 
@@ -128,12 +130,12 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
             // if no search or category
             // else if search
             // else if category and not search
-            if (search.Length == 0 && _category == null ||
-                search.Length != 0 && prototype.Name.ToLowerInvariant().Contains(search) ||
-                search.Length != 0 && prototype.Description.ToLowerInvariant().Contains(search) ||
-                search.Length == 0 && _category != null && Loc.GetString(prototype.Category).Equals(_category))
-            {
-                var button = new SWCargoProductRow
+            //if (search.Length == 0 && _category == null ||
+            //    search.Length != 0 && prototype.Name.ToLowerInvariant().Contains(search) ||
+            //    search.Length != 0 && prototype.Description.ToLowerInvariant().Contains(search) ||
+            //    search.Length == 0 && _category != null && Loc.GetString(prototype.Category).Equals(_category))
+            //{
+                var button = new SWProductRow
                 {
                     Product = prototype,
                     ProductName = { Text = prototype.Name },
@@ -146,7 +148,7 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
                     OnItemSelected?.Invoke(args);
                 };
                 Products.AddChild(button);
-            }
+            //}
         }
     }
 

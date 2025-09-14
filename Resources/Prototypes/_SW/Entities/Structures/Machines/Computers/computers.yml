@@ -191,3 +191,5 @@
     allowed:
     - SWEmpireCreditCurrency
     - SWRepublicCreditCurrency
+    products:
+    - SWFoodMRE

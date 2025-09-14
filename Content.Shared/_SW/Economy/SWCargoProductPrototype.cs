@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Content.Shared._SW.Economy
 {
-    [Prototype]
+    [Prototype("swCargoProduct")]
     public sealed partial class SWCargoProductPrototype : IPrototype, IInheritingPrototype
     {
         /// <inheritdoc />

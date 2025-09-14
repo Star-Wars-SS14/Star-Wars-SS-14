@@ -26,13 +26,13 @@ public abstract partial class SWBasePayAbleBoundUserInterface : BoundUserInterfa
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);
-        ISawmill _s = Logger.GetSawmill("sadf");
-        _s.Fatal("dsfg");
+        //ISawmill _s = Logger.GetSawmill("sadf");
+        //_s.Fatal("dsfg");
         switch (state)
         {
             case SWBasePayableBounderUserInterfaceState msg:
                 PopulateBalance(msg.CurrentAmount);
-                _s.Fatal("done");
+                //_s.Fatal("done");
                 break;
         }
     }

@@ -41,7 +41,7 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
 
     private void OpenWithdrawal()
     {
-        if (_menu == null)
+        if (_menu == null || _withdrawal != null)
         {
             return;
         }
@@ -77,5 +77,6 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
                 _menu.PopulateBills(msg.Bills);
                 break;
         }
+        _s.Fatal("move forward fin");
     }
 }

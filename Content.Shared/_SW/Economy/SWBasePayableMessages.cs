@@ -14,7 +14,6 @@ public enum SWBasePayableConsoleUIKey
     Key,
 }
 
-[Virtual]
 [Serializable, NetSerializable]
 public class SWBasePayableBounderUserInterfaceState : BoundUserInterfaceState
 {

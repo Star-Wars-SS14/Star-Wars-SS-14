@@ -22,7 +22,8 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] SWSharedBankSystem _bankSystem = default!;
     [Dependency] SWBasePayableConsoleSystem _swPayable = default!;
-    
+    [Dependency] SWSetUiStateConflictsResolver _resolver = default!;
+
     public override void Initialize()
     {
         base.Initialize();
@@ -54,19 +55,19 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         }
         UpdateInterface(ent, comp.Account.Value);
     }
-    public override void Update(float frameTime)
-    {
-        base.Update(frameTime);
-        var query = EntityQueryEnumerator<SWFinanceConsoleComponent, SWBankAccountAccessorComponent>();
-        while (query.MoveNext(out var uid, out var _, out var comp))
-        {
-            if (comp.AccountInterfaceRequiresUpdate && comp.Account != null)
-            {
-                UpdateInterface(uid, comp.Account.Value);
-                comp.AccountInterfaceRequiresUpdate = false;
-            }
-        }
-    }
+    //public override void Update(float frameTime)
+    //{
+    //    base.Update(frameTime);
+    //    var query = EntityQueryEnumerator<SWFinanceConsoleComponent, SWBankAccountAccessorComponent>();
+    //    while (query.MoveNext(out var uid, out var _, out var comp))
+    //    {
+    //        if (comp.Account != null)
+    //        {
+    //            UpdateInterface(uid, comp.Account.Value);
+    //            comp.AccountInterfaceRequiresUpdate = false;
+    //        }
+    //    }
+    //}
 
     private void OnTryPay(Entity<SWBankAccountAccessorComponent> ent, ref SWTryPayBillMessage args)
     {
@@ -91,7 +92,7 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         }
         var _s = Logger.GetSawmill("sdf");
         _s.Fatal(state.Bills.Count.ToString());
-        _swPayable.GetBalance(console, state);
-        _uiSystem.SetUiState(console, SWFinanceConsoleUIKey.Key, state);
+        //_uiSystem.SetUiState(console, SWFinanceConsoleUIKey.Key, state);
+        _resolver.RequestUiUpdate(console, SWFinanceConsoleUIKey.Key, state);
     }
 }

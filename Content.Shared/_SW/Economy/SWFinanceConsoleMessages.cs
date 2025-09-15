@@ -15,7 +15,7 @@ public enum SWFinanceConsoleUIKey
 }
 
 [Serializable, NetSerializable]
-public sealed class SWFinanceConsoleBounderUserInterfaceState : SWBasePayableBounderUserInterfaceState
+public sealed class SWFinanceConsoleBounderUserInterfaceState : BoundUserInterfaceState
 {
     public List<SWBill> Bills = new ();
 }

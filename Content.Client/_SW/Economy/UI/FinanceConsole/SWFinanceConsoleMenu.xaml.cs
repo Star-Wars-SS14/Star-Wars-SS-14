@@ -19,6 +19,7 @@ public sealed partial class SWFinanceConsoleMenu : DefaultWindow
     public SWFinanceConsoleMenu()
     {
         RobustXamlLoader.Load(this);
+        IoCManager.InjectDependencies(this);
         MoneyOutButton.OnPressed += (_) => OnWithdrawalButtonPressed?.Invoke();
         MoneyInButton.OnPressed += (_) => OnAddMoneyButtonPressed?.Invoke();
     }

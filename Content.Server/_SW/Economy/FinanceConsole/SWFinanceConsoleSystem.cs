@@ -22,13 +22,13 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] SWSharedBankSystem _bankSystem = default!;
     [Dependency] SWBasePayableConsoleSystem _swPayable = default!;
-    [Dependency] SWSetUiStateConflictsResolver _resolver = default!;
+    //[Dependency] SWSetUiStateConflictsResolver _resolver = default!;
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<SWFinanceConsoleComponent, SWGetAccountEvent>(OnGetAccount);
-        SubscribeLocalEvent<SWFinanceConsoleComponent, BeforeActivatableUIOpenEvent>(OnOpen);
+        //SubscribeLocalEvent<SWFinanceConsoleComponent, BeforeActivatableUIOpenEvent>(OnOpen);
         SubscribeLocalEvent<SWBankAccountAccessorComponent, SWTryPayBillMessage>(OnTryPay);
     }
     private void OnGetAccount(Entity<SWFinanceConsoleComponent> ent, ref SWGetAccountEvent args)
@@ -45,6 +45,7 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         args.Account =
             new Entity<SWBankAccountContainerComponent>(factEnt.Value, bankComp);
         args.Handled = true;
+        UpdateInterface(ent, args.Account);
     }
 
     private void OnOpen(Entity<SWFinanceConsoleComponent> ent, ref BeforeActivatableUIOpenEvent args)
@@ -93,6 +94,6 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         var _s = Logger.GetSawmill("sdf");
         _s.Fatal(state.Bills.Count.ToString());
         //_uiSystem.SetUiState(console, SWFinanceConsoleUIKey.Key, state);
-        _resolver.RequestUiUpdate(console, SWFinanceConsoleUIKey.Key, state);
+        //_resolver.RequestUiUpdate(console, SWFinanceConsoleUIKey.Key, state);
     }
 }

@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Robust.Server.GameObjects;
 namespace Content.Server._SW.Economy;
 
 public sealed class SWBasePayableConsoleSystem : EntitySystem
@@ -23,7 +23,7 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] SharedHandsSystem _handsSystem = default!;
     [Dependency] SWSharedBankSystem _bankSystem = default!;
-    [Dependency] SWSetUiStateConflictsResolver _resolver = default!;
+    //[Dependency] SWSetUiStateConflictsResolver _resolver = default!;
     ISawmill _s = default!;
     public override void Initialize()
     {
@@ -31,7 +31,7 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWBankAccountAccessorComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SWBankAccountAccessorComponent, SWTryPayoutMessage>(OnTryPayout);
         SubscribeLocalEvent<SWBankAccountAccessorComponent, SWTryAddMoneyMessage>(OnAddMoney);
-        SubscribeLocalEvent<SWBankAccountAccessorComponent, BeforeActivatableUIOpenEvent>(OnOpen, before: [typeof(SWFinanceConsoleSystem)]);
+        //SubscribeLocalEvent<SWBankAccountAccessorComponent, BeforeActivatableUIOpenEvent>(OnOpen, before: [typeof(SWFinanceConsoleSystem)]);
         _s = Logger.GetSawmill("SWPayable");
     }
 
@@ -68,7 +68,10 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
                 _s.Error($"{ent.Owner} account is not set");
             }
         }
-        ent.Comp.Account = ev.Account;
+        if (ev.Handled)
+        {
+            ent.Comp.Account = ev.Account;
+        }
         UpdateInterface(ent);
     }
     private void OnTryPayout(Entity<SWBankAccountAccessorComponent> ent, ref SWTryPayoutMessage args)
@@ -87,6 +90,7 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
             }
         }
         ent.Comp.AccountInterfaceRequiresUpdate = true;
+        UpdateInterface(ent);
     }
     private void OnAddMoney(Entity<SWBankAccountAccessorComponent> ent, ref SWTryAddMoneyMessage args)
     {
@@ -111,6 +115,7 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
             }
         }
         ent.Comp.AccountInterfaceRequiresUpdate = true;
+        UpdateInterface(ent);
     }
     private void UpdateInterface(Entity<SWBankAccountAccessorComponent> ent)
     {
@@ -124,7 +129,7 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
         _s.Fatal(state.CurrentAmount.Keys.Count.ToString());
         //_s.Fatal(ent.Comp.UiKey.ToString());
         //_uiSystem.SetUiState(ent.Owner, SWFinanceConsoleUIKey.Key, state);
-        _resolver.RequestUiUpdate(ent.Owner, SWFinanceConsoleUIKey.Key, state);
+        //_resolver.RequestUiUpdate(ent.Owner, SWFinanceConsoleUIKey.Key, state);
     }
 
     public void GetBalance(Entity<SWBankAccountAccessorComponent?> console, SWBasePayableBounderUserInterfaceState state)

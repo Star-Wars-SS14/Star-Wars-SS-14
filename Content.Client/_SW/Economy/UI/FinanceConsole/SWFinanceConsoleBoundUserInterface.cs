@@ -32,6 +32,8 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
     protected override void Open()
     {
         base.Open();
+        ISawmill _s = Logger.GetSawmill("asdf");
+        _s.Fatal("asdfgh");
         _menu = new SWFinanceConsoleMenu();
         _menu.OpenCenteredRight();
         _menu.OnPayButtonPressed += SendPayBillMessage;
@@ -41,7 +43,7 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
 
     private void OpenWithdrawal()
     {
-        if (_menu == null || _withdrawal != null)
+        if (_menu == null)
         {
             return;
         }
@@ -60,6 +62,17 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
     {
         base.OnWithdrawal(dict);
         _withdrawal?.Close();
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+
+        if (!disposing)
+            return;
+
+        _menu?.Orphan();
+        _withdrawal?.Orphan();
     }
     protected override void UpdateState(BoundUserInterfaceState state)
     {

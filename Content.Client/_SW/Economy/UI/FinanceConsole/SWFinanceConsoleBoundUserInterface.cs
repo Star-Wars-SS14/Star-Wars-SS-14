@@ -32,7 +32,7 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
     protected override void Open()
     {
         base.Open();
-        _menu = this.CreateWindow<SWFinanceConsoleMenu>();
+        _menu = new SWFinanceConsoleMenu();
         _menu.OpenCenteredRight();
         _menu.OnPayButtonPressed += SendPayBillMessage;
         _menu.OnWithdrawalButtonPressed += OpenWithdrawal;
@@ -45,7 +45,7 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
         {
             return;
         }
-        _withdrawal = this.CreateWindow<SWWithdrawalWindow>();
+        _withdrawal = new SWWithdrawalWindow();
         _withdrawal.PopulateCurrencies(_menu.Balance.Keys.ToList());
         _withdrawal.OpenCenteredRight();
         _withdrawal.OnConfirmButtonPressedAction += OnWithdrawal;

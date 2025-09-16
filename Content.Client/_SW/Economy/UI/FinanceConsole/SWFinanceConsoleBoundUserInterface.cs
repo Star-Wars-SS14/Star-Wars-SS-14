@@ -34,7 +34,7 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
         base.Open();
         ISawmill _s = Logger.GetSawmill("asdf");
         _s.Fatal("asdfgh");
-        _menu = new SWFinanceConsoleMenu();
+        _menu = this.CreateWindow<SWFinanceConsoleMenu>();
         _menu.OpenCenteredRight();
         _menu.OnPayButtonPressed += SendPayBillMessage;
         _menu.OnWithdrawalButtonPressed += OpenWithdrawal;

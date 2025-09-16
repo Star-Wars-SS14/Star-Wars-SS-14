@@ -128,7 +128,7 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
         state.CurrentAmount = ent.Comp.Account.Value.Comp.CurrentAmount;
         _s.Fatal(state.CurrentAmount.Keys.Count.ToString());
         //_s.Fatal(ent.Comp.UiKey.ToString());
-        //_uiSystem.SetUiState(ent.Owner, SWFinanceConsoleUIKey.Key, state);
+        _uiSystem.SetUiState(ent.Owner, SWFinanceConsoleUIKey.Key, state);
         //_resolver.RequestUiUpdate(ent.Owner, SWFinanceConsoleUIKey.Key, state);
     }
 

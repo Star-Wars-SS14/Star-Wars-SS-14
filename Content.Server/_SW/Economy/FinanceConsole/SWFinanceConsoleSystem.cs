@@ -93,7 +93,7 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         }
         var _s = Logger.GetSawmill("sdf");
         _s.Fatal(state.Bills.Count.ToString());
-        //_uiSystem.SetUiState(console, SWFinanceConsoleUIKey.Key, state);
+        _uiSystem.SetUiState(console, SWFinanceConsoleUIKey.Key, state);
         //_resolver.RequestUiUpdate(console, SWFinanceConsoleUIKey.Key, state);
     }
 }

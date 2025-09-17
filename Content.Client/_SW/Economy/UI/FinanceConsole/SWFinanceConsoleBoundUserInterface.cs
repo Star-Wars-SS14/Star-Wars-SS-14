@@ -64,16 +64,16 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
         _withdrawal?.Close();
     }
 
-    protected override void Dispose(bool disposing)
-    {
-        base.Dispose(disposing);
+    //protected override void Dispose(bool disposing)
+    //{
+    //    base.Dispose(disposing);
 
-        if (!disposing)
-            return;
+    //    if (!disposing)
+    //        return;
 
-        _menu?.Orphan();
-        _withdrawal?.Orphan();
-    }
+    //    _menu?.Orphan();
+    //    _withdrawal?.Orphan();
+    //}
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);

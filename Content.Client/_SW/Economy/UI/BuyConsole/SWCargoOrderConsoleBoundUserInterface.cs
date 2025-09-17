@@ -29,7 +29,7 @@ namespace Content.Client.Cargo.BUI
         /// This is the separate popup window for individual orders.
         /// </summary>
         [ViewVariables]
-        private CargoConsoleOrderMenu? _orderMenu;
+        private SWCargoConsoleOrderMenu? _orderMenu;
 
         [ViewVariables]
         public string? AccountName { get; private set; }
@@ -67,7 +67,7 @@ namespace Content.Client.Cargo.BUI
             else
                 orderRequester = string.Empty;
 
-            _orderMenu = new CargoConsoleOrderMenu();
+            _orderMenu = new SWCargoConsoleOrderMenu();
 
             _menu.OnClose += Close;
 
@@ -85,8 +85,6 @@ namespace Content.Client.Cargo.BUI
                 _product = row.Product;
                 _orderMenu.ProductName.Text = row.ProductName.Text;
                 _orderMenu.PointCost.Text = row.PointCost.Text;
-                _orderMenu.Requester.Text = orderRequester;
-                _orderMenu.Reason.Text = "";
                 _orderMenu.Amount.Value = 1;
 
                 _orderMenu.OpenCentered();

@@ -22,7 +22,6 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] SWSharedBankSystem _bankSystem = default!;
     [Dependency] SWBasePayableConsoleSystem _swPayable = default!;
-    //[Dependency] SWSetUiStateConflictsResolver _resolver = default!;
 
     public override void Initialize()
     {
@@ -47,28 +46,19 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         args.Handled = true;
         UpdateInterface(ent, args.Account);
     }
-
-    private void OnOpen(Entity<SWFinanceConsoleComponent> ent, ref BeforeActivatableUIOpenEvent args)
+    public override void Update(float frameTime)
     {
-        if (!TryComp<SWBankAccountAccessorComponent>(ent, out var comp) || comp.Account == null)
+        base.Update(frameTime);
+        var query = EntityQueryEnumerator<SWFinanceConsoleComponent, SWBankAccountAccessorComponent>();
+        while (query.MoveNext(out var uid, out var _, out var comp))
         {
-            return;
+            if (comp.AccountInterfaceRequiresUpdate && comp.Account != null)
+            {
+                UpdateInterface(uid, comp.Account.Value);
+                comp.AccountInterfaceRequiresUpdate = false;
+            }
         }
-        UpdateInterface(ent, comp.Account.Value);
     }
-    //public override void Update(float frameTime)
-    //{
-    //    base.Update(frameTime);
-    //    var query = EntityQueryEnumerator<SWFinanceConsoleComponent, SWBankAccountAccessorComponent>();
-    //    while (query.MoveNext(out var uid, out var _, out var comp))
-    //    {
-    //        if (comp.Account != null)
-    //        {
-    //            UpdateInterface(uid, comp.Account.Value);
-    //            comp.AccountInterfaceRequiresUpdate = false;
-    //        }
-    //    }
-    //}
 
     private void OnTryPay(Entity<SWBankAccountAccessorComponent> ent, ref SWTryPayBillMessage args)
     {
@@ -92,8 +82,8 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
             state.Bills = comp.Bills;
         }
         var _s = Logger.GetSawmill("sdf");
+        state.CurrentAmount = _swPayable.GetBalance(console);
         _s.Fatal(state.Bills.Count.ToString());
         _uiSystem.SetUiState(console, SWFinanceConsoleUIKey.Key, state);
-        //_resolver.RequestUiUpdate(console, SWFinanceConsoleUIKey.Key, state);
     }
 }

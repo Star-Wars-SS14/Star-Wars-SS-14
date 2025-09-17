@@ -29,7 +29,7 @@ public sealed class SWBuyConsoleSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<SWBuyConsoleComponent, MapInitEvent>(OnMapInit);
-        SubscribeLocalEvent<SWBuyConsoleComponent, BeforeActivatableUIOpenEvent>(OnOpen);
+        //SubscribeLocalEvent<SWBuyConsoleComponent, BeforeActivatableUIOpenEvent>(OnOpen);
         SubscribeLocalEvent<SWBuyConsoleComponent, SWTryPurchaseMessage>(OnTryPurchase);
         SubscribeLocalEvent<CargoPalletComponent, NewLinkEvent>(OnNewLink);
         SubscribeLocalEvent<CargoPalletComponent, PortDisconnectedEvent>(OnPortDisconnected);
@@ -61,7 +61,7 @@ public sealed class SWBuyConsoleSystem : EntitySystem
         {
             return;
         }
-        UpdateInterface(ent, comp.Account.Value);
+        UpdateInterface(ent);
     }
 
     public override void Update(float frameTime)
@@ -72,15 +72,15 @@ public sealed class SWBuyConsoleSystem : EntitySystem
         {
             if (comp.AccountInterfaceRequiresUpdate && comp.Account != null)
             {
-                UpdateInterface(new Entity<SWBuyConsoleComponent>(uid, buyComp), comp.Account.Value);
+                UpdateInterface(new Entity<SWBuyConsoleComponent>(uid, buyComp));
                 comp.AccountInterfaceRequiresUpdate = false;
             }
         }
     }
-    private void UpdateInterface(Entity<SWBuyConsoleComponent> ent, Entity<SWBankAccountContainerComponent> account)
+    private void UpdateInterface(Entity<SWBuyConsoleComponent> ent)
     {
         var state = new SWBuyConsoleBounderUserInterfaceState();
-        _swPayable.GetBalance(ent.Owner, state);
+        state.CurrentAmount = _swPayable.GetBalance(ent.Owner);
         state.Products = ent.Comp.AvailableProducts.ToList();
         _uiSystem.SetUiState(ent.Owner, SWBuyConsoleUIKey.Key, state);
     }
@@ -118,7 +118,7 @@ public sealed class SWBuyConsoleSystem : EntitySystem
             }
         }
 
-        UpdateInterface(ent, account);
+        UpdateInterface(ent);
     }
 
     private void OnNewLink(Entity<CargoPalletComponent> ent, ref NewLinkEvent args)

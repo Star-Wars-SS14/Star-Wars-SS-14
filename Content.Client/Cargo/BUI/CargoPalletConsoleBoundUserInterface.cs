@@ -6,12 +6,12 @@ using Robust.Client.UserInterface;
 
 namespace Content.Client.Cargo.BUI;
 
-public sealed class CargoPalletConsoleBoundUserInterface : BoundUserInterface
+public sealed class SWCargoPalletConsoleBoundUserInterface : BoundUserInterface
 {
     [ViewVariables]
     private CargoPalletMenu? _menu;
 
-    public CargoPalletConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
+    public SWCargoPalletConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
     }
 

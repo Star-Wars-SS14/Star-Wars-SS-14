@@ -54,16 +54,6 @@ public sealed class SWBuyConsoleSystem : EntitySystem
         }
         ent.Comp.AvailableProducts = products;
     }
-
-    private void OnOpen(Entity<SWBuyConsoleComponent> ent, ref BeforeActivatableUIOpenEvent args)
-    {
-        if (!TryComp<SWBankAccountAccessorComponent>(ent, out var comp) || comp.Account == null)
-        {
-            return;
-        }
-        UpdateInterface(ent);
-    }
-
     public override void Update(float frameTime)
     {
         base.Update(frameTime);

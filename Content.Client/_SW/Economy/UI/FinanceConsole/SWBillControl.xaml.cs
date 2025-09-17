@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Client._SW.Economy.UI;
+namespace Content.Client._SW.Economy.UI.FinanceConsole;
 
 [GenerateTypedNameReferences]
 public sealed partial class SWBillControl : Control

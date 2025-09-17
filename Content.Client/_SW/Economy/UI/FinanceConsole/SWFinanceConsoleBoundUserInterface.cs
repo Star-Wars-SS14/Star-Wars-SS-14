@@ -63,22 +63,9 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
         base.OnWithdrawal(dict);
         _withdrawal?.Close();
     }
-
-    //protected override void Dispose(bool disposing)
-    //{
-    //    base.Dispose(disposing);
-
-    //    if (!disposing)
-    //        return;
-
-    //    _menu?.Orphan();
-    //    _withdrawal?.Orphan();
-    //}
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);
-        ISawmill _s = Logger.GetSawmill("jjjjj");
-        _s.Fatal("here");
         switch (state)
         {
             case SWFinanceConsoleBounderUserInterfaceState msg:
@@ -86,10 +73,8 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
                 {
                     break;
                 }
-                _s.Fatal(msg.Bills.Count.ToString());
                 _menu.PopulateBills(msg.Bills);
                 break;
         }
-        _s.Fatal("move forward fin");
     }
 }

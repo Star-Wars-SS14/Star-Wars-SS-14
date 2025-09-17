@@ -27,7 +27,6 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<SWFinanceConsoleComponent, SWGetAccountEvent>(OnGetAccount);
-        //SubscribeLocalEvent<SWFinanceConsoleComponent, BeforeActivatableUIOpenEvent>(OnOpen);
         SubscribeLocalEvent<SWBankAccountAccessorComponent, SWTryPayBillMessage>(OnTryPay);
     }
     private void OnGetAccount(Entity<SWFinanceConsoleComponent> ent, ref SWGetAccountEvent args)
@@ -81,9 +80,7 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         {
             state.Bills = comp.Bills;
         }
-        var _s = Logger.GetSawmill("sdf");
         state.CurrentAmount = _swPayable.GetBalance(console);
-        _s.Fatal(state.Bills.Count.ToString());
         _uiSystem.SetUiState(console, SWFinanceConsoleUIKey.Key, state);
     }
 }

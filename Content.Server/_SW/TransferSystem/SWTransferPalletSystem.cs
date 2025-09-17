@@ -10,17 +10,16 @@ namespace Content.Server._SW.TransferSystem;
 public sealed partial class SWTransferPalletSystem : EntitySystem
 {
     [Dependency] private readonly EntityLookupSystem _lookupSystem = default!;
-    ISawmill _s = default!;
+
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<SWTransferPalletComponent, StartCollideEvent>(OnStartCollide);
-        _s = Logger.GetSawmill("transfer");
     }
 
     private void OnStartCollide(Entity<SWTransferPalletComponent> ent, ref StartCollideEvent args)
     {
-         _s.Debug("collided");
+        
     }
 
     public override void Update(float frameTime)

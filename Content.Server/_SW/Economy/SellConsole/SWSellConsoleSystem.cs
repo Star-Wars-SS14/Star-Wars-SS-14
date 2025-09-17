@@ -72,7 +72,7 @@ public sealed class SWSellConsoleSystem : EntitySystem
     private void OnPalletSale(Entity<SWSellConsoleComponent> ent, ref CargoPalletSellMessage args)
     {
         GetPalletGoods(ent, out var toSell, out var goods);
-        var totalAmount = goods.Sum(t => t.Item3);
+        var totalAmount = (float) goods.Sum(t => t.Item3);
         var transferredAmount = _bankSystem.TransferCurrency(totalAmount,
                                                              ent.Comp.StaticPriceCurrency,
                                                              ent.Comp.OutputCurrency);
@@ -93,17 +93,14 @@ public sealed class SWSellConsoleSystem : EntitySystem
         goods = new HashSet<(EntityUid, OverrideSellComponent?, double)>();
         toSell = new HashSet<EntityUid>();
         HashSet<EntityUid> setEnts = new();
-
         foreach (var palletUid in GetCargoPallets(ent))
         {
             // Containers should already get the sell price of their children so can skip those.
             setEnts.Clear();
-
             _lookup.GetEntitiesIntersecting(
                 palletUid,
                 setEnts,
                 LookupFlags.Dynamic | LookupFlags.Sundries);
-
             foreach (var e in setEnts)
             {
                 // Dont sell:
@@ -111,20 +108,21 @@ public sealed class SWSellConsoleSystem : EntitySystem
                 // - anything anchored (e.g. light fixtures)
                 // - anything blacklisted (e.g. players).
                 if (toSell.Contains(e) ||
-                    _xformQuery.TryGetComponent(ent, out var xform) &&
-                    (xform.Anchored || !CanSell(ent, xform)))
+                    _xformQuery.TryGetComponent(e, out var xform) &&
+                    (xform.Anchored || !CanSell(e, xform)))
                 {
                     continue;
                 }
 
-                if (_blacklistQuery.HasComponent(ent))
+                if (_blacklistQuery.HasComponent(e))
                     continue;
 
-                var price = _pricing.GetPrice(ent);
+                var price = _pricing.GetPrice(e);
                 if (price == 0)
                     continue;
-                toSell.Add(ent);
-                goods.Add((ent, CompOrNull<OverrideSellComponent>(ent), price));
+
+                toSell.Add(e);
+                goods.Add((e, CompOrNull<OverrideSellComponent>(e), price));
             }
         }
     }
@@ -147,13 +145,16 @@ public sealed class SWSellConsoleSystem : EntitySystem
     }
     private List<EntityUid> GetCargoPallets(Entity<SWSellConsoleComponent> ent)
     {
-        List<EntityUid> res = new();
         var comp = Comp<DeviceLinkSourceComponent>(ent);
-        foreach (var uid in comp.Outputs[ent.Comp.Port])
+
+        var outputs = comp.Outputs;
+
+        if (outputs.TryGetValue(ent.Comp.Port, out var pallets))
         {
-            res.Add(uid);
+            return pallets.ToList();
         }
-        return res;
+
+        return new List<EntityUid>();
     }
 
 }

@@ -23,6 +23,11 @@ public sealed class SWSharedBankSystem : EntitySystem
     }    
     public float TransferCurrency(float amount, SWCurrencyPrototype from, SWCurrencyPrototype to)
     {
+        if (from == to)
+        {
+            return amount;
+        }
+
         if (from.ExchangeRates.TryGetValue(to.ID, out var rate))
         {
             return amount * rate;
@@ -31,7 +36,7 @@ public sealed class SWSharedBankSystem : EntitySystem
         return amount;
     }
 
-    public double TransferCurrency(double amount, ProtoId<SWCurrencyPrototype> from, ProtoId<SWCurrencyPrototype> to)
+    public float TransferCurrency(float amount, ProtoId<SWCurrencyPrototype> from, ProtoId<SWCurrencyPrototype> to)
     {
         var fromProto = _prototypeManager.Index(from);
         var toProto = _prototypeManager.Index(to);

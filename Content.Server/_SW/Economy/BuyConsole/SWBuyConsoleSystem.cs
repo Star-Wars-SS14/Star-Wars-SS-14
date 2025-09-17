@@ -126,7 +126,11 @@ public sealed class SWBuyConsoleSystem : EntitySystem
     }
     private void UpdateConnectedPallets(Entity<CargoPalletComponent> ent, bool add)
     {
-        var comp = Comp<DeviceLinkSinkComponent>(ent.Owner);
+        if (!TryComp<DeviceLinkSinkComponent>(ent.Owner, out var comp))
+        {
+            return;
+        }
+
         foreach (var source in comp.LinkedSources)
         {
             if (TryComp<SWBuyConsoleComponent>(source, out var consoleComp))

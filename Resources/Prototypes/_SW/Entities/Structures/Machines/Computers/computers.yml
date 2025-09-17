@@ -203,7 +203,7 @@
 
 - type: entity
   parent: BaseComputer
-  id: SWBuyConsole
+  id: SWSellConsole
   name: Консоль продажи
   components:
   - type: ActivatableUI

@@ -16,7 +16,7 @@ public sealed partial class SWCurrencyPrototype : IPrototype
     /// How much 1 unit of this currency is in other currencies
     /// </summary>
     [DataField]
-    public Dictionary<ProtoId<SWCurrencyPrototype>, double> ExchangeRates = new Dictionary<ProtoId<SWCurrencyPrototype>, double>();
+    public Dictionary<ProtoId<SWCurrencyPrototype>, float> ExchangeRates = new Dictionary<ProtoId<SWCurrencyPrototype>, float>();
 
     [DataField]
     public LocId LocalizedName = "money";

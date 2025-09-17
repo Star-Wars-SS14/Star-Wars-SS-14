@@ -12,18 +12,16 @@ public sealed partial class CargoPalletMenu : FancyWindow
 {
     public Action? SellRequested;
     public Action? AppraiseRequested;
-    public SWCurrencyPrototype CurrencyProto;
-    public CargoPalletMenu(SWCurrencyPrototype pr)
+    public CargoPalletMenu()
     {
         RobustXamlLoader.Load(this);
         SellButton.OnPressed += OnSellPressed;
         AppraiseButton.OnPressed += OnAppraisePressed;
-        CurrencyProto = pr;
     }
 
     public void SetAppraisal(int amount)
     {
-        AppraisalLabel.Text = $"{amount} {CurrencyProto.ShortName}";
+        AppraisalLabel.Text = Loc.GetString("cargo-console-menu-points-amount", ("amount", amount.ToString()));
     }
 
     public void SetCount(int count)

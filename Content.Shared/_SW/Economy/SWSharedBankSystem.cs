@@ -21,7 +21,7 @@ public sealed class SWSharedBankSystem : EntitySystem
         base.Initialize();
         _s = Logger.GetSawmill("SWBank");
     }    
-    public double TransferCurrency(double amount, SWCurrencyPrototype from, SWCurrencyPrototype to)
+    public float TransferCurrency(float amount, SWCurrencyPrototype from, SWCurrencyPrototype to)
     {
         if (from.ExchangeRates.TryGetValue(to.ID, out var rate))
         {

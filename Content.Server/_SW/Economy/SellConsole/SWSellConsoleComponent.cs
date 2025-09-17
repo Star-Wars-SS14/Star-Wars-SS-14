@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Content.Server.Cargo.Components;
+using Content.Shared.DeviceLinking;
 
 namespace Content.Server._SW.Economy.SellConsole;
 
@@ -22,5 +23,6 @@ public sealed partial class SWSellConsoleComponent : Component
     [DataField]
     public ProtoId<SWCurrencyPrototype> StaticPriceCurrency;
 
-    public List<EntityUid> LinkedPallets = new List<EntityUid>();
+    [DataField]
+    public ProtoId<SourcePortPrototype> Port;
 }

@@ -200,3 +200,36 @@
     - SWRepublicCreditCurrency
     allowedMarkets:
     - SWBaseMarket
+
+- type: entity
+  parent: BaseComputer
+  id: SWBuyConsole
+  name: Консоль продажи
+  components:
+  - type: ActivatableUI
+    key: enum.SWSellConsoleUIKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWSellConsoleUIKey.Key:
+        type: SWSellConsoleBoundUserInterface
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: comm
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+  - type: DeviceList
+  - type: DeviceNetwork
+    deviceNetId: Wired
+  - type: DeviceLinkSource
+    range: 30
+    ports:
+      - SWSellConsoleSender
+  - type: SWSellConsole
+    outputCurrency: SWEmpireCreditCurrency
+    staticPriceCurrency: SWEmpireCreditCurrency
+    port: SWSellConsoleSender

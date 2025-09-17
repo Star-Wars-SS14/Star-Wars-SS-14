@@ -19,3 +19,9 @@
   name: Покупающая консоль
   description: На ней можно что-то купить
   defaultLinks: [ SWCargoPalletReceiver ]
+
+- type: sourcePort
+  id: SWSellConsoleSender
+  name: Продающая консоль
+  description: На ней можно что-то продать
+  defaultLinks: [ SWCargoPalletReceiver ]

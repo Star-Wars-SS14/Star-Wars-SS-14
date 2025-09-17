@@ -4,15 +4,18 @@ using Content.Shared.Cargo.Events;
 using Robust.Client.GameObjects;
 using Robust.Client.UserInterface;
 using Content.Shared._SW.Economy;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client._SW.Economy.UI.SellConsole;
 
-public sealed class SWCargoPalletConsoleBoundUserInterface : BoundUserInterface
+public sealed class SWSellConsoleBoundUserInterface : BoundUserInterface
 {
+    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+
     [ViewVariables]
     private SWCargoPalletMenu? _menu;
 
-    public SWCargoPalletConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
+    public SWSellConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
     }
 
@@ -42,8 +45,12 @@ public sealed class SWCargoPalletConsoleBoundUserInterface : BoundUserInterface
         if (state is not SWCargoPalletConsoleInterfaceState palletState)
             return;
 
-        _menu?.SetEnabled(palletState.Enabled);
-        _menu?.SetAppraisal(palletState.Appraisal);
-        _menu?.SetCount(palletState.Count);
+        if (_menu != null)
+        {
+            _menu.CurrencyProto = _prototypeManager.Index(palletState.OutputCurId);
+            _menu.SetEnabled(palletState.Enabled);
+            _menu.SetAppraisal(palletState.Appraisal);
+            _menu.SetCount(palletState.Count);
+        }
     }
 }

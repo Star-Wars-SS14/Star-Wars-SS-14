@@ -17,6 +17,7 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Coordinates;
 using System.ComponentModel;
 using Content.Server.Stack;
+using Content.Shared.DeviceLinking;
 
 namespace Content.Server._SW.Economy.SellConsole;
 
@@ -146,7 +147,13 @@ public sealed class SWSellConsoleSystem : EntitySystem
     }
     private List<EntityUid> GetCargoPallets(Entity<SWSellConsoleComponent> ent)
     {
-        return ent.Comp.LinkedPallets;
+        List<EntityUid> res = new();
+        var comp = Comp<DeviceLinkSourceComponent>(ent);
+        foreach (var uid in comp.Outputs[ent.Comp.Port])
+        {
+            res.Add(uid);
+        }
+        return res;
     }
 
 }

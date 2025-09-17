@@ -36,14 +36,10 @@
     <AdditionalFiles Remove="_SW\TurretConsole\UI\Новая папка1\**" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Remove="_SW\Economy\UI\SellConsole\SWCargoPalletMenu.xaml" />
     <EmbeddedResource Remove="_SW\TurretConsole\SWTurretConsoleMenu.xaml" />
     <EmbeddedResource Remove="_SW\TurretConsole\UI\SWTurretConsoleControl.xaml" />
   </ItemGroup>
   <ItemGroup>
-    <AdditionalFiles Update="_SW\Economy\UI\SellConsole\SWCargoPalletMenu.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </AdditionalFiles>
     <AdditionalFiles Update="_SW\TurretConsole\UI\TurretControl\SWTurretConsoleControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </AdditionalFiles>

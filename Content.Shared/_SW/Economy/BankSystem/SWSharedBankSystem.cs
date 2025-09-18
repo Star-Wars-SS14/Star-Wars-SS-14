@@ -145,6 +145,10 @@ public sealed class SWSharedBankSystem : EntitySystem
     {
         foreach (var (currency, amount) in requests)
         {
+            if (!balance.ContainsKey(currency))
+            {
+                return false;
+            }
             if (amount > balance[currency])
             {
                 return false;

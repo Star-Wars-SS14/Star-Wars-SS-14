@@ -106,13 +106,19 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
             }
             var proto = _bankSystem.GetCurrencyProto(entity);
             _s.Fatal((proto==null).ToString());
+
+            var bankComp = ent.Comp.Account.Value.Comp;
             if (proto != null)
             {
-                if (!ent.Comp.Account.Value.Comp.CurrentAmount.ContainsKey(proto))
+                if (!bankComp.AllowedCurrencies.Contains(proto))
                 {
-                    ent.Comp.Account.Value.Comp.CurrentAmount[proto] = 0;
+                    continue;
                 }
-                ent.Comp.Account.Value.Comp.CurrentAmount[proto] += comp.Count;
+                if (!bankComp.CurrentAmount.ContainsKey(proto))
+                {
+                    bankComp.CurrentAmount[proto] = 0;
+                }
+                bankComp.CurrentAmount[proto] += comp.Count;
                 QueueDel(entity);
             }
         }

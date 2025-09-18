@@ -14,4 +14,9 @@ public sealed partial class SWBankAccountContainerComponent : Component
 {
     [DataField]
     public Dictionary<ProtoId<SWCurrencyPrototype>, float> CurrentAmount = new Dictionary<ProtoId<SWCurrencyPrototype>, float>();
+
+    [DataField]
+    public List<ProtoId<SWCurrencyPrototype>> AllowedCurrencies = new List<ProtoId<SWCurrencyPrototype>>() {
+        "SWRepublicCreditCurrency",
+        "SWEmpireCreditCurrency"};
 }

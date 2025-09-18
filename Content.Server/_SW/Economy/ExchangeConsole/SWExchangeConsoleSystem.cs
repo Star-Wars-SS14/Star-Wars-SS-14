@@ -2,7 +2,9 @@ using Content.Server._SW.FinanceConsole;
 using Content.Shared._SW.Economy;
 using Content.Shared._SW.Economy.BankSystem;
 using Content.Shared._SW.Economy.Messages;
+using Content.Shared._SW.Economy.Prototypes;
 using Robust.Server.GameObjects;
+using Robust.Shared.Prototypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,8 +52,14 @@ public sealed class SWExchangeConsoleSystem : EntitySystem
             return;
         }
         int resultAmount = _bankSystem.TransferCurrency(args.Amount, args.CurrencyFrom, args.CurrencyTo);
-        accComp.Account.Value.Comp.CurrentAmount[args.CurrencyFrom] -= args.Amount;
-        accComp.Account.Value.Comp.CurrentAmount[args.CurrencyTo] += resultAmount;
+        var request = new Dictionary<ProtoId<SWCurrencyPrototype>, float>();
+        request[args.CurrencyFrom] = args.Amount;
+
+        if (_bankSystem.TryPayAll(request, accComp.Account.Value.Comp.CurrentAmount))
+        {
+            accComp.Account.Value.Comp.CurrentAmount[args.CurrencyTo] += resultAmount;
+        }
+
         UpdateInterface(ent);
     }
 

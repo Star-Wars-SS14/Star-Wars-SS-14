@@ -1,7 +1,7 @@
 - type: entity
   parent: BaseItem
-  id: SWCredits
-  name: имперские кредиты
+  id: SWRepublicCredits
+  name: республиканские кредиты
   components:
   - type: Cash
   - type: Item
@@ -15,7 +15,7 @@
   - type: StaticPrice
     price: 0
   - type: Stack
-    stackType: SWCreditStack
+    stackType: SWRepublicCreditsStack
     count: 1
     baseLayer: base
     layerStates:
@@ -29,7 +29,7 @@
   - type: StackLayerThreshold
     thresholds: [10, 50, 100, 500, 1000]
   - type: Sprite
-    sprite: _SW/Economy/cash.rsi
+    sprite: _SW/Economy/republic_cash.rsi
     state: cash
     layers:
     - state: cash
@@ -48,70 +48,70 @@
   - type: Appearance
 
 - type: material
-  id: SWCreditStack
+  id: SWRepublicCreditsStack
   name: имперский кредит
   unit: materials-unit-bill
   stackEntity: SWCredits
-  icon: { sprite: _SW/Economy/cash.rsi, state: cash }
+  icon: { sprite: _SW/Economy/republic_cash.rsi, state: cash }
   price: 1
 
 - type: stack
-  id: SWCreditStack
+  id: SWRepublicCreditsStack
   name: имперский кредит
-  icon: { sprite: _SW/Economy/cash.rsi, state: cash }
-  spawn: SWCredits
+  icon: { sprite: _SW/Economy/republic_cash.rsi, state: cash }
+  spawn: SWRepublicCredits
 
 - type: entity
-  parent: SWCredits
-  id: SWCredits10
+  parent: SWRepublicCredits
+  id: SWRepublicCredits10
   suffix: 10
   components:
   - type: Icon
-    sprite: _SW/Economy/cash.rsi
+    sprite: _SW/Economy/republic_cash.rsi
     state: cash_10
   - type: Stack
     count: 10
 
 - type: entity
-  parent: SWCredits
-  id: SWCredits50
+  parent: SWRepublicCredits
+  id: SWRepublicCredits50
   suffix: 50
   components:
   - type: Icon
-    sprite: _SW/Economy/cash.rsi
+    sprite: _SW/Economy/republic_cash.rsi
     state: cash_50
   - type: Stack
     count: 50
 
 - type: entity
-  parent: SWCredits
-  id: SWCredits100
+  parent: SWRepublicCredits
+  id: SWRepublicCredits100
   suffix: 100
   components:
   - type: Icon
-    sprite: _SW/Economy/cash.rsi
+    sprite: _SW/Economy/republic_cash.rsi
     state: cash_100
   - type: Stack
     count: 100
 
 - type: entity
-  parent: SWCredits
-  id: SWCredits500
+  parent: SWRepublicCredits
+  id: SWRepublicCredits500
   suffix: 500
   components:
   - type: Icon
-    sprite: _SW/Economy/cash.rsi
+    sprite: _SW/Economy/republic_cash.rsi
     state: cash_500
   - type: Stack
     count: 500
 
 - type: entity
-  parent: SWCredits
-  id: SWCredits1000
+  parent: SWRepublicCredits
+  id: SWRepublicCredits1000
   suffix: 1000
   components:
   - type: Icon
-    sprite: _SW/Economy/cash.rsi
+    sprite: _SW/Economy/republic_cash.rsi
     state: cash_1000
   - type: Stack
     count: 1000

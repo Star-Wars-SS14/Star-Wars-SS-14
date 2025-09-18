@@ -251541,14 +251541,14 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: SWCredits10
+- proto: SWEmpireCredits10
   entities:
   - uid: 40727
     components:
     - type: Transform
       pos: 104.444695,-157.54314
       parent: 2
-- proto: SWCredits100
+- proto: SWEmpireCredits100
   entities:
   - uid: 40728
     components:
@@ -251565,7 +251565,7 @@ entities:
     - type: Transform
       pos: 116.26702,-162.49478
       parent: 2
-- proto: SWCredits1000
+- proto: SWEmpireCredits1000
   entities:
   - uid: 38548
     components:

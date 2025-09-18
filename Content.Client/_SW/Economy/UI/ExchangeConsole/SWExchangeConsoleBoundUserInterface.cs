@@ -1,0 +1,72 @@
+using Content.Client._SW.Economy.UI.BasePayAble;
+using Content.Client._SW.Economy.UI.FinanceConsole;
+using Content.Shared._SW.Economy.BankSystem;
+using Content.Shared._SW.Economy.Messages;
+using Content.Shared._SW.Economy.Prototypes;
+using Robust.Client.UserInterface;
+using Robust.Shared.Prototypes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Content.Client._SW.Economy.UI.ExchangeConsole;
+public sealed class SWExchangeConsoleBoundUserInterface : SWBasePayableBoundUserInterface
+{
+    [Dependency] IPrototypeManager _prototypeManager = default!;
+    private SWExchangeMenu? _menu;
+    private SWWithdrawalWindow? _withdrawal = null;
+
+    public SWExchangeConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
+    {
+    }
+
+    public override void PopulateBalance(Dictionary<ProtoId<SWCurrencyPrototype>, float> amount)
+    {
+        //if (amount.Keys.Count == 0)
+        //{
+        //    return;
+        //}
+        _menu?.PopulateBalance(amount);
+    }
+    protected override void Open()
+    {
+        base.Open();
+        _menu = this.CreateWindow<SWExchangeMenu>();
+        _menu.SharedBankSystem = EntMan.System<SWSharedBankSystem>();
+        _menu.OpenCenteredRight();
+        _menu.OnWithdrawalButtonPressed += OpenWithdrawal;
+        _menu.OnAddMoneyButtonPressed += OnAddMoney;
+    }
+
+    private void OpenWithdrawal()
+    {
+        if (_menu == null)
+        {
+            return;
+        }
+        _withdrawal = new SWWithdrawalWindow();
+        _withdrawal.PopulateCurrencies(_menu.Balance.Keys.ToList());
+        _withdrawal.OpenCenteredRight();
+        _withdrawal.OnConfirmButtonPressedAction += OnWithdrawal;
+    }
+
+    protected override void OnWithdrawal(Dictionary<ProtoId<SWCurrencyPrototype>, float> dict)
+    {
+        base.OnWithdrawal(dict);
+        _withdrawal?.Close();
+    }
+
+    protected override void UpdateState(BoundUserInterfaceState state)
+    {
+        base.UpdateState(state);
+        if (state is SWExchangeConsoleState msg)
+        {
+            var curs = msg.AvailableCurrencies.Select
+                (c => _prototypeManager.Index(c)).ToList();
+            _menu?.PopulateCurrencies(curs);
+            _menu?.UpdateExchange();
+        }
+    }
+}

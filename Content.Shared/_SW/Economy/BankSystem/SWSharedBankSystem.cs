@@ -1,4 +1,4 @@
-using Content.Shared._SW.Economy;
+using Content.Shared._SW.Economy.Prototypes;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Stacks;
 using Content.Shared.Store;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Shared._SW.Economy;
+namespace Content.Shared._SW.Economy.BankSystem;
 
 public sealed class SWSharedBankSystem : EntitySystem
 {
@@ -36,6 +36,11 @@ public sealed class SWSharedBankSystem : EntitySystem
         return amount;
     }
 
+    public int TransferCurrency(int amount, SWCurrencyPrototype from, SWCurrencyPrototype to)
+    {
+        return (int)TransferCurrency((float)amount, from, to);
+    }
+
     public float TransferCurrency(float amount, ProtoId<SWCurrencyPrototype> from, ProtoId<SWCurrencyPrototype> to)
     {
         var fromProto = _prototypeManager.Index(from);
@@ -55,7 +60,7 @@ public sealed class SWSharedBankSystem : EntitySystem
 
         SWCurrencyPrototype? currencyWithKnownAmount = null;
         float currencyKnownAmount = 0;
-        List<ProtoId<SWCurrencyPrototype>> unspecifiedCurrencies
+        var unspecifiedCurrencies
                     = new List<ProtoId<SWCurrencyPrototype>>();
         foreach (var curPrototypeId in allowedCurrencies)
         {
@@ -79,7 +84,7 @@ public sealed class SWSharedBankSystem : EntitySystem
         foreach (var curPrototypeId in unspecifiedCurrencies)
         {
             var proto = _prototypeManager.Index(curPrototypeId);
-            float cost = TransferCurrency(currencyKnownAmount,
+            var cost = TransferCurrency(currencyKnownAmount,
                                           currencyWithKnownAmount,
                                           proto);
             costs[curPrototypeId] = cost;
@@ -147,7 +152,7 @@ public sealed class SWSharedBankSystem : EntitySystem
     {
         foreach (var (currency, amount) in requests)
         {
-            ISawmill _s = Logger.GetSawmill("asdfghj");
+            var _s = Logger.GetSawmill("asdfghj");
             _s.Fatal($"{amount} <= {balance[currency]}");
             if (amount <= balance[currency])
             {

@@ -1,4 +1,4 @@
-using Content.Shared._SW.Economy;
+using Content.Shared._SW.Economy.Prototypes;
 using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Shared._SW.Economy;
+namespace Content.Shared._SW.Economy.BankSystem;
 
 [RegisterComponent, NetworkedComponent]
 public sealed partial class SWBankAccountContainerComponent : Component

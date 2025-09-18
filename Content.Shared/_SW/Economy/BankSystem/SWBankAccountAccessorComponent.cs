@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Shared._SW.Economy;
+namespace Content.Shared._SW.Economy.BankSystem;
 [RegisterComponent]
 public sealed partial class SWBankAccountAccessorComponent : Component
 {

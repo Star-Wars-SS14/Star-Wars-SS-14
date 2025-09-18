@@ -3,7 +3,6 @@ using Content.Client.Cargo.UI;
 using Content.Shared.Cargo.BUI;
 using Content.Shared.Cargo.Components;
 using Content.Shared.Cargo.Events;
-using Content.Shared._SW.Economy;
 using Content.Shared.Cargo.Prototypes;
 using Content.Shared.IdentityManagement;
 using Robust.Client.GameObjects;
@@ -16,10 +15,12 @@ using Content.Client._SW.Economy.UI.BasePayAble;
 using Content.Client._SW.Economy.UI;
 using Robust.Client.UserInterface;
 using System.Linq;
+using Content.Shared._SW.Economy.Messages;
+using Content.Shared._SW.Economy.Prototypes;
 
 namespace Content.Client.Cargo.BUI
 {
-    public sealed class SWCargoOrderConsoleBoundUserInterface : SWBasePayAbleBoundUserInterface
+    public sealed class SWCargoOrderConsoleBoundUserInterface : SWBasePayableBoundUserInterface
     {
         [ViewVariables]
         private SWCargoConsoleMenu? _menu;

@@ -1,4 +1,3 @@
-using Content.Shared._SW.Economy;
 using Robust.Shared.Prototypes;
 using System;
 using System.Collections.Generic;
@@ -7,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Content.Server.Cargo.Components;
 using Content.Shared.DeviceLinking;
+using Content.Shared._SW.Economy.Prototypes;
 
 namespace Content.Server._SW.Economy.SellConsole;
 

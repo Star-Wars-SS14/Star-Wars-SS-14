@@ -1,4 +1,4 @@
-using Content.Shared._SW.Economy;
+using Content.Shared._SW.Economy.Prototypes;
 using Content.Shared.Cargo.Prototypes;
 using Robust.Shared.Prototypes;
 using System;

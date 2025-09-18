@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Shared._SW.Economy
+namespace Content.Shared._SW.Economy.Prototypes
 {
     [Prototype("swCargoProduct")]
     public sealed partial class SWCargoProductPrototype : IPrototype, IInheritingPrototype
@@ -41,7 +41,7 @@ namespace Content.Shared._SW.Economy
                 if (_name.Trim().Length != 0)
                     return _name;
 
-                if (IoCManager.Resolve<IPrototypeManager>().TryIndex(Product, out EntityPrototype? prototype))
+                if (IoCManager.Resolve<IPrototypeManager>().TryIndex(Product, out var prototype))
                 {
                     _name = prototype.Name;
                 }
@@ -61,7 +61,7 @@ namespace Content.Shared._SW.Economy
                 if (_description.Trim().Length != 0)
                     return _description;
 
-                if (IoCManager.Resolve<IPrototypeManager>().TryIndex(Product, out EntityPrototype? prototype))
+                if (IoCManager.Resolve<IPrototypeManager>().TryIndex(Product, out var prototype))
                 {
                     _description = prototype.Description;
                 }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Shared._SW.Economy;
+namespace Content.Shared._SW.Economy.Prototypes;
 [Prototype("swcurrency")]
 public sealed partial class SWCurrencyPrototype : IPrototype
 {

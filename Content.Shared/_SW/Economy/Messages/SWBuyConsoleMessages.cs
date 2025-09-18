@@ -7,8 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Content.Shared._SW.Economy.Prototypes;
 
-namespace Content.Shared._SW.Economy;
+namespace Content.Shared._SW.Economy.Messages;
 
 
 [NetSerializable, Serializable]

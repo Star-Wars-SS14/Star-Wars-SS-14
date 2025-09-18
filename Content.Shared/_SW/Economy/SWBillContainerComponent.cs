@@ -1,4 +1,4 @@
-using Content.Shared._SW.Economy;
+using Content.Shared._SW.Economy.Prototypes;
 using Robust.Shared.Prototypes;
 using System;
 using System.Collections.Generic;

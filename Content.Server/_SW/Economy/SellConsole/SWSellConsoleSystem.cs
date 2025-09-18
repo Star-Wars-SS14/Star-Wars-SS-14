@@ -11,13 +11,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Robust.Server.GameObjects;
-using Content.Shared._SW.Economy;
 using Content.Server.Cargo.Systems;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Coordinates;
 using System.ComponentModel;
 using Content.Server.Stack;
 using Content.Shared.DeviceLinking;
+using Content.Shared._SW.Economy.BankSystem;
+using Content.Shared._SW.Economy.Messages;
 
 namespace Content.Server._SW.Economy.SellConsole;
 

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Shared._SW.Economy;
+namespace Content.Shared._SW.Economy.Messages;
 
 [NetSerializable, Serializable]
 public enum SWFinanceConsoleUIKey

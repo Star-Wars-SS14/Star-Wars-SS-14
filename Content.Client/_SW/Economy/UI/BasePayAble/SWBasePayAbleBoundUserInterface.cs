@@ -1,4 +1,5 @@
-using Content.Shared._SW.Economy;
+using Content.Shared._SW.Economy.Messages;
+using Content.Shared._SW.Economy.Prototypes;
 using Robust.Shared.Prototypes;
 using System;
 using System.Collections.Generic;
@@ -8,9 +9,9 @@ using System.Threading.Tasks;
 using static Robust.Client.UserInterface.Controls.MenuBar;
 
 namespace Content.Client._SW.Economy.UI.BasePayAble;
-public abstract partial class SWBasePayAbleBoundUserInterface : BoundUserInterface
+public abstract partial class SWBasePayableBoundUserInterface : BoundUserInterface
 {
-    public SWBasePayAbleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
+    public SWBasePayableBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
     }
     protected virtual void OnWithdrawal(Dictionary<ProtoId<SWCurrencyPrototype>, float> dict)

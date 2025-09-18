@@ -1,7 +1,6 @@
 using Content.Server._SW.Economy.FinanceConsole;
 using Content.Server._SW.FinanceConsole;
 using Content.Shared._SW;
-using Content.Shared._SW.Economy;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Random.Rules;
 using Content.Shared.Stacks;
@@ -14,6 +13,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Robust.Server.GameObjects;
+using Content.Shared._SW.Economy.BankSystem;
+using Content.Shared._SW.Economy.Messages;
+using Content.Shared._SW.Economy.Prototypes;
 namespace Content.Server._SW.Economy;
 
 public sealed class SWBasePayableConsoleSystem : EntitySystem

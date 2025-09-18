@@ -1,4 +1,3 @@
-using Content.Shared._SW.Economy;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Prototypes;
@@ -8,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Content.Shared._SW.Economy.Prototypes;
 
 namespace Content.Client._SW.Economy.UI;
 

@@ -11,9 +11,11 @@ using Content.Shared._SW.Economy;
 using Robust.Shared.Prototypes;
 using Content.Client._SW.Economy.UI.BasePayAble;
 using Robust.Client.UserInterface.CustomControls;
+using Content.Shared._SW.Economy.Messages;
+using Content.Shared._SW.Economy.Prototypes;
 namespace Content.Client._SW.Economy.UI.FinanceConsole;
 
-public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBoundUserInterface
+public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayableBoundUserInterface
 {
     private SWFinanceConsoleMenu? _menu = null;
     private SWWithdrawalWindow? _withdrawal = null;
@@ -53,16 +55,17 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayAbleBo
         _withdrawal.OnConfirmButtonPressedAction += OnWithdrawal;
     }
 
-    public void SendPayBillMessage(SWBill bill)
-    {
-        SendMessage(new SWTryPayBillMessage(bill));
-    }
-
     protected override void OnWithdrawal(Dictionary<ProtoId<SWCurrencyPrototype>, float> dict)
     {
         base.OnWithdrawal(dict);
         _withdrawal?.Close();
     }
+
+    public void SendPayBillMessage(SWBill bill)
+    {
+        SendMessage(new SWTryPayBillMessage(bill));
+    }
+
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);

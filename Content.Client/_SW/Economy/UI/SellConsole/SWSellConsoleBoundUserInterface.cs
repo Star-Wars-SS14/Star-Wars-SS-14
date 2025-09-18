@@ -3,8 +3,8 @@ using Content.Shared.Cargo.BUI;
 using Content.Shared.Cargo.Events;
 using Robust.Client.GameObjects;
 using Robust.Client.UserInterface;
-using Content.Shared._SW.Economy;
 using Robust.Shared.Prototypes;
+using Content.Shared._SW.Economy.Messages;
 
 namespace Content.Client._SW.Economy.UI.SellConsole;
 

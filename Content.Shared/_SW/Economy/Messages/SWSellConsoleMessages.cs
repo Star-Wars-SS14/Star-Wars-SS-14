@@ -1,3 +1,4 @@
+using Content.Shared._SW.Economy.Prototypes;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using System;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Shared._SW.Economy;
+namespace Content.Shared._SW.Economy.Messages;
 
 [NetSerializable, Serializable]
 public enum SWSellConsoleUIKey

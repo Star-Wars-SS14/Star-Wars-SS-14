@@ -1,7 +1,9 @@
 using Content.Server._SW.FinanceConsole;
 using Content.Server._SW.TurretConsole;
 using Content.Server.Cargo.Components;
-using Content.Shared._SW.Economy;
+using Content.Shared._SW.Economy.BankSystem;
+using Content.Shared._SW.Economy.Messages;
+using Content.Shared._SW.Economy.Prototypes;
 using Content.Shared.Cargo.Prototypes;
 using Content.Shared.Coordinates;
 using Content.Shared.DeviceLinking;

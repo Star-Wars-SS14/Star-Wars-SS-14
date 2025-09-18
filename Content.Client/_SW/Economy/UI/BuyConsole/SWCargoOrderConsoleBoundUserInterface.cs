@@ -149,7 +149,7 @@ namespace Content.Client.Cargo.BUI
 
             if (_menu == null)
                 return;
-
+            _menu.CurrencyPrototypeIds = cState.Currencies;
             _menu.ProductCatalogue = cState.Products;
 
             Populate();

@@ -22,14 +22,17 @@ public enum SWBuyConsoleUIKey
 public sealed class SWBuyConsoleBounderUserInterfaceState : SWBasePayableBounderUserInterfaceState
 {
     public List<ProtoId<SWCargoProductPrototype>> Products = new();
-
+    public List<ProtoId<SWCurrencyPrototype>> Currencies = new();
     public SWBuyConsoleBounderUserInterfaceState()
     {
 
     }
-    public SWBuyConsoleBounderUserInterfaceState(string name, int count, List<CargoOrderData> orders, List<ProtoId<SWCargoProductPrototype>> products)
+    public SWBuyConsoleBounderUserInterfaceState
+        (List<ProtoId<SWCurrencyPrototype>> curs,
+        List<ProtoId<SWCargoProductPrototype>> products)
     {
         Products = products;
+        Currencies = curs;
     }
 }
 

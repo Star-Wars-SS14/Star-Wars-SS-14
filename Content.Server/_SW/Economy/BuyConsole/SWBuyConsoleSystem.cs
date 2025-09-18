@@ -74,6 +74,7 @@ public sealed class SWBuyConsoleSystem : EntitySystem
         var state = new SWBuyConsoleBounderUserInterfaceState();
         state.CurrentAmount = _swPayable.GetBalance(ent.Owner);
         state.Products = ent.Comp.AvailableProducts.ToList();
+        state.Currencies = ent.Comp.AllowedCurrencies.ToList();
         _uiSystem.SetUiState(ent.Owner, SWBuyConsoleUIKey.Key, state);
     }
 

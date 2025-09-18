@@ -112,6 +112,13 @@ public sealed class SWSharedBankSystem : EntitySystem
     }
 
     public void FillCurrencies(List<ProtoId<SWCurrencyPrototype>> allowedCurrencies,
+                    ref Dictionary<ProtoId<SWCurrencyPrototype>, int> costs)
+    {
+        var newList = allowedCurrencies.Select(c => c.Id).ToList();
+        FillCurrencies(newList, ref costs);
+    }
+
+    public void FillCurrencies(List<ProtoId<SWCurrencyPrototype>> allowedCurrencies,
                     ref Dictionary<ProtoId<SWCurrencyPrototype>, float> costs)
     {
         var newList = allowedCurrencies.Select(c => c.Id).ToList();

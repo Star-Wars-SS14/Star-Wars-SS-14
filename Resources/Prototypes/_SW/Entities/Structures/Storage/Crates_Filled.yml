@@ -1,0 +1,12 @@
+- type: entity
+  id: SWCrateE1
+  parent: CrateGenericSteel
+  name: ящик винтовок e1 
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWE1BlasterRifle
+          amount: !type:ConstantNumberSelector
+            value: 5

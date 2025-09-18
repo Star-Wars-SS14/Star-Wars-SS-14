@@ -24,13 +24,10 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
     [Dependency] private readonly IGameTiming _timing = default!;
     private readonly SWSharedBankSystem _swBankSystem = default!;
 
-    private readonly IEntityManager _entityManager;
     private readonly IPrototypeManager _protoManager;
     private readonly SpriteSystem _spriteSystem;
-    private EntityUid _owner;
 
-    private List<SWCurrencyPrototype> _currencyPrototypes = new();
-    private List<string> _currencyPrototypeIds = new();
+    public List<ProtoId<SWCurrencyPrototype>> CurrencyPrototypeIds = new();
 
     public event Action<ButtonEventArgs>? OnItemSelected;
 
@@ -46,14 +43,10 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
-        _entityManager = entMan;
         _protoManager = protoManager;
         _spriteSystem = spriteSystem;
         _swBankSystem = entMan.System<SWSharedBankSystem>();
-        _owner = owner;
 
-        _currencyPrototypes = _protoManager.EnumeratePrototypes<SWCurrencyPrototype>().ToList();
-        _currencyPrototypeIds = _currencyPrototypes.Select(c => c.ID).ToList();
         Title = entMan.GetComponent<MetaDataComponent>(owner).EntityName;
 
         SearchBar.OnTextChanged += OnSearchBarTextChanged;
@@ -143,7 +136,7 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
     private string GetCostText(SWCargoProductPrototype prototype)
     {
         var costs = prototype.Cost;
-        _swBankSystem.FillCurrencies(_currencyPrototypeIds, ref costs);
+        _swBankSystem.FillCurrencies(CurrencyPrototypeIds, ref costs);
         string res = "";
         foreach (var (curProtoId, amount) in costs)
         {

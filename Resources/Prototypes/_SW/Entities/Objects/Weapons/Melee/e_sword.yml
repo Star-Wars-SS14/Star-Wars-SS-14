@@ -31,7 +31,9 @@
         types:
             Slash: 25
             Heat: 35
-            Structural: 20    
+            Structural: 20
+  - type: ItemToggle
+    onActivate: false
 
 - type: entity
   name: Энергетический меч

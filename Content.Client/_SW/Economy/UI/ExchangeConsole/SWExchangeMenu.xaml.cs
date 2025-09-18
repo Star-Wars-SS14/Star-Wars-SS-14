@@ -19,7 +19,7 @@ public sealed partial class SWExchangeMenu : FancyWindow
 
     public event Action? OnWithdrawalButtonPressed;
     public event Action? OnAddMoneyButtonPressed;
-    public event Action<SWCurrencyPrototype, SWCurrencyPrototype, int>? OnConfirmButtonPressed?
+    public event Action<SWCurrencyPrototype, SWCurrencyPrototype, int>? OnConfirmButtonPressed;
 
     public Dictionary<ProtoId<SWCurrencyPrototype>, float> Balance = new();
     public List<SWCurrencyPrototype> Currencies = new();
@@ -32,6 +32,7 @@ public sealed partial class SWExchangeMenu : FancyWindow
         CurrencyExchangeFrom.OnItemSelected += OnFromSelected;
         CurrencyExchangeTo.OnItemSelected += OnToSelected;
         ConfirmButton.OnPressed += (_) => OnExchange();
+        AmountEdit.OnTextChanged += (_) => UpdateExchange();
     }
 
     public void OnExchange()
@@ -87,11 +88,11 @@ public sealed partial class SWExchangeMenu : FancyWindow
     public void PopulateCurrencies(List<SWCurrencyPrototype> currencies)
     {
         Currencies = currencies;
+        CurrencyExchangeFrom.Clear();
+        CurrencyExchangeTo.Clear();
         for (int i = 0; i < Currencies.Count; i++) {
             CurrencyExchangeFrom.AddItem(Currencies[i].LocalizedName, i);
             CurrencyExchangeTo.AddItem(Currencies[i].LocalizedName, i);
         }
-        CurrencyExchangeFrom.SelectId(0);
-        CurrencyExchangeTo.SelectId(0);
     }
 }

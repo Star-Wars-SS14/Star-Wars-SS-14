@@ -38,8 +38,14 @@ public sealed class SWExchangeConsoleBoundUserInterface : SWBasePayableBoundUser
         _menu.OpenCenteredRight();
         _menu.OnWithdrawalButtonPressed += OpenWithdrawal;
         _menu.OnAddMoneyButtonPressed += OnAddMoney;
+        _menu.OnConfirmButtonPressed += OnTryExchange;
     }
-
+    private void OnTryExchange(SWCurrencyPrototype from,
+                               SWCurrencyPrototype to,
+                               int amount)
+    {
+        SendMessage(new SWTryExchangeMessage(from, to, amount));
+    }
     private void OpenWithdrawal()
     {
         if (_menu == null)

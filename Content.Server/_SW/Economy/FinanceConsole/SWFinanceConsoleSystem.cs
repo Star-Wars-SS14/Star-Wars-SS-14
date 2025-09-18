@@ -20,9 +20,9 @@ namespace Content.Server._SW.Economy.FinanceConsole;
 
 public sealed class SWFinanceConsoleSystem : EntitySystem
 {
-    [Dependency] SWFactionGameruleSystem _faction = default!;
-    [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
+    [Dependency] SWFactionGameruleSystem _faction = default!;    
     [Dependency] SWSharedBankSystem _bankSystem = default!;
+    [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] SWBasePayableConsoleSystem _swPayable = default!;
 
     public override void Initialize()

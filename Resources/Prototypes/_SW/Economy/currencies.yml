@@ -20,7 +20,6 @@
   id : SWVanillaCurrency
   localizedName: Местный кредит
   shortName: МК
-  cashEntity: Credit
   exchangeRates:
     SWEmpireCreditCurrency: 2
     SWRepublicCreditCurrency: 3

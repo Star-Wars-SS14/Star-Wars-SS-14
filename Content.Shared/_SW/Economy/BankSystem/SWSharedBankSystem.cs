@@ -41,6 +41,11 @@ public sealed class SWSharedBankSystem : EntitySystem
         return (int)TransferCurrency((float)amount, from, to);
     }
 
+    public int TransferCurrency(int amount, ProtoId<SWCurrencyPrototype> from, ProtoId<SWCurrencyPrototype> to)
+    {
+        return (int)TransferCurrency((float)amount, from, to);
+    }
+
     public float TransferCurrency(float amount, ProtoId<SWCurrencyPrototype> from, ProtoId<SWCurrencyPrototype> to)
     {
         var fromProto = _prototypeManager.Index(from);

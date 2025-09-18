@@ -233,3 +233,31 @@
     outputCurrency: SWEmpireCreditCurrency
     staticPriceCurrency: SWEmpireCreditCurrency
     port: SWSellConsoleSender
+
+- type: entity
+  parent: BaseComputer
+  id: SWExchangeConsole
+  name: Обменный автомат
+  components:
+  - type: ActivatableUI
+    key: enum.SWExchangeConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWExchangeConsoleUiKey.Key:
+        type: SWExchangeConsoleBoundUserInterface
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: comm
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+  - type: SWBankAccountContainer
+  - type: SWBankAccountAccessor
+  - type: SWExchangeConsole
+    allowedCurrencies:
+    - SWEmpireCreditCurrency
+    - SWRepublicCreditCurrency

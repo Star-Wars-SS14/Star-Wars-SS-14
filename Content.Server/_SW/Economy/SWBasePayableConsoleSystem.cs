@@ -108,6 +108,10 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
             _s.Fatal((proto==null).ToString());
             if (proto != null)
             {
+                if (!ent.Comp.Account.Value.Comp.CurrentAmount.ContainsKey(proto))
+                {
+                    ent.Comp.Account.Value.Comp.CurrentAmount[proto] = 0;
+                }
                 ent.Comp.Account.Value.Comp.CurrentAmount[proto] += comp.Count;
                 QueueDel(entity);
             }

@@ -21,7 +21,7 @@
   #-  backgroundPatchMargin: 32.0, 32.0, 32.0, сверху 32.0
 
 - type: entity
-  name: Синий датапад
+  name: синий датапад
   parent: SWBaseDatapad
   id: SWBlueDatapad
   description: Аахахах, синий датапад.
@@ -38,7 +38,7 @@
       visible: false
 
 - type: entity
-  name: Зелёный датапад
+  name: зелёный датапад
   parent: SWBaseDatapad
   id: SWGreenDatapad
   description: Кваднратный датапад, прямо как з игры Корвакс-Крафт!
@@ -56,7 +56,7 @@
       visible: false
 
 - type: entity
-  name: Фиолетовый датапад
+  name: фиолетовый датапад
   parent: SWBaseDatapad
   id: SWPinkDatapad
   description: Глупые имперцы сделали из игровой приставки - блокнотик. Глупые имперцы..
@@ -74,7 +74,7 @@
       visible: false
 
 - type: entity
-  name: Красный датапад
+  name: красный датапад
   parent: SWBaseDatapad
   id: SWRedDatapad
   description: Я не придумал шутку для описания этого датапада.
@@ -92,7 +92,7 @@
       visible: false
 
 - type: entity
-  name: Жёлтый датапад
+  name: жёлтый датапад
   parent: SWBaseDatapad
   id: SWYellowDatapad
   description: Поможет выбрать покупки даже самому тупому клону.
@@ -110,7 +110,7 @@
       visible: false
 
 - type: entity
-  name: Голубой датапад
+  name: голубой датапад
   parent: SWBaseDatapad
   id: SWЕurquoiseDatapad
   description: Что-же ты такое, что с твоим дизайном?..
@@ -128,7 +128,7 @@
       visible: false
 
 - type: entity
-  name: Оранжевый датапад
+  name: оранжевый датапад
   parent: SWBaseDatapad
   id: SWOrangeDatapad
   description: Я не знаю что писать, он урод.
@@ -160,7 +160,7 @@
     - Trash
 
 - type: entity
-  name: Сломанный синий датапад
+  name: сломанный синий датапад
   parent: SWBaseDatapadTrash
   id: SWBlueDatapadTrash
   description: 'Сломанный датапад. Увы.'
@@ -171,7 +171,7 @@
     - state: icon_broken
 
 - type: entity
-  name: Сломанный красный датапад
+  name: сломанный красный датапад
   parent: SWBaseDatapadTrash
   id: SWRedDatapadTrash
   description: 'Сломанный датапад. Увы.'
@@ -182,7 +182,7 @@
     - state: icon_broken
 
 - type: entity
-  name: Сломанный жёлтый датапад
+  name: сломанный жёлтый датапад
   parent: SWBaseDatapadTrash
   id: SWYellowDatapadTrash
   description: 'Сломанный датапад. Увы.'
@@ -193,7 +193,7 @@
     - state: icon_broken
 
 - type: entity
-  name: Сломанный голубой датапад
+  name: сломанный голубой датапад
   parent: SWBaseDatapadTrash
   id: SWЕurquoiseDatapadTrash
   description: 'Сломанный датапад. Увы.'
@@ -204,7 +204,7 @@
     - state: icon_broken
 
 - type: entity
-  name: Сломанный фиолетовый датапад
+  name: сломанный фиолетовый датапад
   parent: SWBaseDatapadTrash
   id: SWPinkDatapadTrash
   description: 'Сломанный датапад. Увы.'
@@ -215,7 +215,7 @@
     - state: icon_broken
 
 - type: entity
-  name: Сломанный зелёный датапад
+  name: сломанный зелёный датапад
   parent: SWBaseDatapadTrash
   id: SWGreenDatapadTrash
   description: 'Сломанный датапад. Увы.'
@@ -226,7 +226,7 @@
     - state: icon_broken
 
 - type: entity
-  name: Сломанный оранжевый датапад
+  name: сломанный оранжевый датапад
   parent: SWBaseDatapadTrash
   id: SWOrangeDatapadTrash
   description: 'Сломанный датапад. Увы.'

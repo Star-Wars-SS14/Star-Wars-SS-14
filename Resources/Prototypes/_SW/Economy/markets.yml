@@ -1,2 +1,30 @@
 - type: cargoMarket
   id: SWBaseMarket
+
+- type: cargoMarket
+  id: SWT1WeaponMarket
+
+- type: cargoMarket
+  id: SWT2WeaponMarket
+
+- type: cargoMarket
+  id: SWT3WeaponMarket
+
+- type: cargoMarket
+  id: SWT1MedicineMarket
+
+- type: cargoMarket
+  id: SWT2MedicineMarket
+
+- type: cargoMarket
+  id: SWT3MedicineMarket
+
+- type: cargoMarket
+  id: SWMaterialsMarket
+
+- type: cargoMarket
+  id: SWExplosiveMarket
+
+- type: cargoMarket
+  id: SWAdditionalAmunitionMarket
+

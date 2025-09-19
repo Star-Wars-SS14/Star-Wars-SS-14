@@ -92,7 +92,7 @@ namespace Content.Shared._SW.Economy.Prototypes
         ///     The prototype category of the product. (e.g. Engineering, Medical)
         /// </summary>
         [DataField]
-        public string Category { get; private set; } = string.Empty;
+        public LocId Category { get; private set; } = string.Empty;
 
         [DataField]
         public ProtoId<CargoMarketPrototype> Group = default!;

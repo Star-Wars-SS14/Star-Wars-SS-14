@@ -1,0 +1,155 @@
+- type: entity
+  id: SWCrateZ1Magazines
+  parent: CrateGenericSteel
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWZ1Magazine
+          amount: !type:ConstantNumberSelector
+            value: 10
+
+- type: entity
+  id: SWCrateJ111Magazines
+  parent: CrateGenericSteel
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWJ111Magazine
+          amount: !type:ConstantNumberSelector
+            value: 10
+
+- type: entity
+  id: SWCrateGT13Magazines
+  parent: CrateGenericSteel
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWGT13Magazine
+          amount: !type:ConstantNumberSelector
+            value: 5
+
+- type: entity
+  id: SWCrateSWMK1Magazine
+  parent: CrateGenericSteel
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWMK1Magazine
+          amount: !type:ConstantNumberSelector
+            value: 5
+
+- type: entity
+  id: SWCrateSWF11DSniperRifleMagazine
+  parent: CrateGenericSteel
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWF11DSniperRifleMagazine
+          amount: !type:ConstantNumberSelector
+            value: 7
+
+- type: entity
+  id: SWCrateSWE1Magazine
+  parent: CrateGenericSteel
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWE1Magazine
+          amount: !type:ConstantNumberSelector
+            value: 10
+
+- type: entity
+  id: SWCrateSWH206Magazine
+  parent: CrateGenericSteel
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWH206Magazine
+          amount: !type:ConstantNumberSelector
+            value: 10
+
+- type: entity
+  id: SWCrateSWP301Magazine
+  parent: CrateGenericSteel
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWP301Magazine
+          amount: !type:ConstantNumberSelector
+            value: 10
+
+- type: entity
+  id: SWCrateSWF11DCannonMagazine
+  parent: CrateGenericSteel
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWF11DCannonMagazine
+          amount: !type:ConstantNumberSelector
+            value: 5
+
+- type: entity
+  id: SWCrateSWEL34Magazine
+  parent: CrateGenericSteel
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWEL34Magazine
+          amount: !type:ConstantNumberSelector
+            value: 5
+
+- type: entity
+  id: SWCrateSWGallantryMagazine
+  parent: CrateGenericSteel
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWGallantryMagazine
+          amount: !type:ConstantNumberSelector
+            value: 5
+
+- type: entity
+  id: SWCrateSWBeryarMK3Magazine
+  parent: CrateGenericSteel
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWBeryarMK3Magazine
+          amount: !type:ConstantNumberSelector
+            value: 7
+
+- type: entity
+  id: SWCrateSWK406RipperMagazine
+  parent: CrateGenericSteel
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      entity_storage: !type:AllSelector
+        children:
+        - id: SWK406RipperMagazine
+          amount: !type:ConstantNumberSelector
+            value: 7

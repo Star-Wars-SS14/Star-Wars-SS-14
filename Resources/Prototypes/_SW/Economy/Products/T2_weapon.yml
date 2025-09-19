@@ -1,0 +1,154 @@
+- type: swCargoProduct
+  id: SWE1BlasterRifleCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Rifles/e1.rsi
+    state: base
+  product: SWE1BlasterRifle
+  cost:
+    SWEmpireCreditCurrency: 500
+  category: sw-category-rifles
+  group: SWT2WeaponMarket
+
+- type: swCargoProduct
+  id: SWH206RenegadeCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Rifles/h206.rsi
+    state: base
+  product: SWH206Renegade
+  cost:
+    SWEmpireCreditCurrency: 500
+  category: sw-category-rifles
+  group: SWT2WeaponMarket
+
+- type: swCargoProduct
+  id: SWEL34CP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/MachineGuns/EL34.rsi
+    state: base
+  product: SWEL34
+  cost:
+    SWEmpireCreditCurrency: 1500
+  category: sw-category-machine-guns
+  group: SWT2WeaponMarket
+
+- type: swCargoProduct
+  id: SWGrantekF11D2CP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/MachineGuns/grantekF11D.rsi
+    state: base
+  product: SWGrantekF11D2
+  cost:
+    SWEmpireCreditCurrency: 1500
+  category: sw-category-machins-guns
+  group: SWT2WeaponMarket
+
+- type: swCargoProduct
+  id: SWBeryaramk3CP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Snipers/MK3.rsi
+    state: base
+  product: SWBeryaramk3
+  cost:
+    SWEmpireCreditCurrency: 1000
+  category: sw-category-sniper-rifles
+  group: SWT2WeaponMarket
+
+- type: swCargoProduct
+  id: SWK406RipperCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Snipers/k406.rsi
+    state: base
+  product: SWK406Ripper
+  cost:
+    SWEmpireCreditCurrency: 1000
+  category: sw-category-sniper-rifles
+  group: SWT2WeaponMarket
+
+
+- type: swCargoProduct
+  id: SWE1MagazineCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateSWE1Magazine
+  cost:
+    SWEmpireCreditCurrency: 110
+  category: sw-category-sniper-magazines
+  group: SWT2WeaponMarket
+
+- type: swCargoProduct
+  id: SWH206MagazineCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateSWH206Magazine
+  cost:
+    SWEmpireCreditCurrency: 110
+  category: sw-category-sniper-magazines
+  group: SWT2WeaponMarket
+
+- type: swCargoProduct
+  id: SWEL34MagazineCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateSWEL34Magazine
+  cost:
+    SWEmpireCreditCurrency: 500
+  category: sw-category-sniper-magazines
+  group: SWT2WeaponMarket
+
+- type: swCargoProduct
+  id: SWGrantekF11D2MagazineCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateSWF11DCannonMagazine
+  cost:
+    SWEmpireCreditCurrency: 500
+  category: sw-category-sniper-magazines
+  group: SWT2WeaponMarket
+
+- type: swCargoProduct
+  id: SWBeryaramk3MagazineCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateSWBeryarMK3Magazine
+  cost:
+    SWEmpireCreditCurrency: 200
+  category: sw-category-sniper-magazines
+  group: SWT2WeaponMarket
+
+- type: swCargoProduct
+  id: SWK406MagazineCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateSWK406RipperMagazine
+  cost:
+    SWEmpireCreditCurrency: 200
+  category: sw-category-sniper-magazines
+  group: SWT2WeaponMarket
+
+- type: swCargoProduct
+  id: SWBaseWeaponBlasterSmallCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Pistols/scout_blaster.rsi
+    state: base
+  product: SWBaseWeaponBlasterSmall
+  cost:
+    SWEmpireCreditCurrency: 400
+  category: sw-category-pistols
+  group: SWT2WeaponMarket
+
+- type: swCargoProduct
+  id: SWScoutBlasterMagazineCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
+    state: mag
+  product: SWScoutBlasterMagazine
+  cost:
+    SWEmpireCreditCurrency: 25
+  category: sw-category-pistols
+  group: SWT2WeaponMarket

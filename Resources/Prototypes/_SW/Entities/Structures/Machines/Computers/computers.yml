@@ -199,7 +199,8 @@
     - SWEmpireCreditCurrency
     - SWRepublicCreditCurrency
     allowedMarkets:
-    - SWBaseMarket
+    - SWT1WeaponMarket
+    - SWT2WeaponMarket
 
 - type: entity
   parent: BaseComputer

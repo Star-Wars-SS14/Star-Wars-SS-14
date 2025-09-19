@@ -1,0 +1,54 @@
+- type: swCargoProduct
+  id: SWSteelCP
+  icon:
+    sprite: /Textures/Objects/Materials/Sheets/metal.rsi
+    state: metal
+  product: SheetSteel30
+  cost:
+    SWEmpireCreditCurrency: 75
+  category: sw-category-materials
+  group: SWMaterialsMarket
+
+- type: swCargoProduct
+  id: SWCrateSteelCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateSteel
+  cost:
+    SWEmpireCreditCurrency: 500
+  category: sw-category-materials
+  group: SWMaterialsMarket
+
+- type: swCargoProduct
+  id: SWLVCablesCP
+  icon:
+    sprite: Objects/Tools/cable-coils.rsi
+    state: coillv-30
+  product: CableApcStack
+  cost:
+    SWEmpireCreditCurrency: 50
+  category: sw-category-materials
+  group: SWMaterialsMarket
+
+- type: swCargoProduct
+  id: SWMVCablesCP
+  icon:
+    sprite: Objects/Tools/cable-coils.rsi
+    state: coilmv-30
+  product: CableMVStack
+  cost:
+    SWEmpireCreditCurrency: 50
+  category: sw-category-materials
+  group: SWMaterialsMarket
+
+- type: swCargoProduct
+  id: SWHVCablesCP
+  icon:
+    sprite: Objects/Tools/cable-coils.rsi
+    state: coilhv-30
+  product: CableHVStack
+  cost:
+    SWEmpireCreditCurrency: 50
+  category: sw-category-materials
+  group: SWMaterialsMarket

@@ -52,9 +52,4 @@
       <DependentUpon>SWTurretConsoleMenu.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Update="_SW\Economy\UI\ExchangeConsole\SWExchangeMenu.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
 </Project>

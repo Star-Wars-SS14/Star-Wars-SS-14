@@ -168,8 +168,6 @@ public sealed class SWSharedBankSystem : EntitySystem
     {
         foreach (var (currency, amount) in requests)
         {
-            var _s = Logger.GetSawmill("asdfghj");
-            _s.Fatal($"{amount} <= {balance[currency]}");
             if (amount <= balance[currency])
             {
                 var newCost = new Dictionary<ProtoId<SWCurrencyPrototype>, float>();

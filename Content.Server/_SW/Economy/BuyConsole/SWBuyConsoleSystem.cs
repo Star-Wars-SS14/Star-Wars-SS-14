@@ -31,7 +31,6 @@ public sealed class SWBuyConsoleSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<SWBuyConsoleComponent, MapInitEvent>(OnMapInit);
-        //SubscribeLocalEvent<SWBuyConsoleComponent, BeforeActivatableUIOpenEvent>(OnOpen);
         SubscribeLocalEvent<SWBuyConsoleComponent, SWTryPurchaseMessage>(OnTryPurchase);
         SubscribeLocalEvent<CargoPalletComponent, NewLinkEvent>(OnNewLink);
         SubscribeLocalEvent<CargoPalletComponent, PortDisconnectedEvent>(OnPortDisconnected);

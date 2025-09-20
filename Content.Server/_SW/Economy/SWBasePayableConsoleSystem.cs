@@ -105,7 +105,6 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
                 continue;
             }
             var proto = _bankSystem.GetCurrencyProto(entity);
-            _s.Fatal((proto==null).ToString());
 
             var bankComp = ent.Comp.Account.Value.Comp;
             if (proto != null)

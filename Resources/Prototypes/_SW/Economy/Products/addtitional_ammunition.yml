@@ -1,0 +1,55 @@
+- type: swCargoProduct
+  id: SWNightVisionCP
+  icon:
+    sprite: _RMC14/Objects/Clothing/Eyes/Glasses/m42_scoutsight.rsi
+    state: icon
+  product: CMGlassesM42ScoutSight
+  cost:
+    SWEmpireCreditCurrency: 400
+  category: sw-category-additional-ammunition
+  group: SWAdditionalAmunitionMarket
+
+- type: swCargoProduct
+  id: SWSignallerCP
+  icon:
+    sprite: Objects/Devices/signaller.rsi
+    state: signaller
+  product: RemoteSignaller
+  cost:
+    SWEmpireCreditCurrency: 400
+  category: sw-category-additional-ammunition
+  group: SWAdditionalAmunitionMarket
+
+
+- type: swCargoProduct
+  id: SWToolsCP
+  icon:
+    sprite: Objects/Tools/Toolboxes/toolbox_blue.rsi
+    state: icon
+  product: ToolboxMechanicalFilledAllTools
+  cost:
+    SWEmpireCreditCurrency: 80
+  category: sw-category-tools
+  group: SWToolsMarket
+
+- type: swCargoProduct
+  id: SWHandcuffsCP
+  icon:
+    sprite: Objects/Misc/handcuffs.rsi
+    state: handcuff
+  product: Handcuffs
+  cost:
+    SWEmpireCreditCurrency: 30
+  category: sw-category-additional-ammunition
+  group: SWAdditionalAmunitionMarket
+
+- type: swCargoProduct
+  id: SWStunbatonCP
+  icon:
+    sprite: Objects/Weapons/Melee/stunbaton.rsi
+    state: stunbaton_off
+  product: Stunbaton
+  cost:
+    SWEmpireCreditCurrency: 150
+  category: sw-category-additional-ammunition
+  group: SWAdditionalAmunitionMarket

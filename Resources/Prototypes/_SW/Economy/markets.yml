@@ -28,3 +28,6 @@
 - type: cargoMarket
   id: SWAdditionalAmunitionMarket
 
+- type: cargoMarket
+  id: SWToolsMarket
+

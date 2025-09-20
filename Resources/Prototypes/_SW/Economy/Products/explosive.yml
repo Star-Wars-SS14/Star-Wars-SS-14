@@ -43,7 +43,7 @@
   group: SWExplosiveMarket
 
 - type: swCargoProduct
-  id: SWSmokeGrenadeCP
+  id: SWC4CP
   icon:
     sprite: Objects/Weapons/Bombs/c4.rsi
     state: icon

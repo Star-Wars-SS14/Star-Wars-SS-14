@@ -1,5 +1,5 @@
 - type: entity
-  name: Световой меч
+  name: Энергетический меч
   parent: EnergySword
   id: SWEnergySwordBase
   description: A very loud & dangerous sword with a beam made of pure, concentrated plasma. Cuts through unarmored targets like butter.
@@ -31,11 +31,10 @@
         types:
             Slash: 25
             Heat: 35
-            Structural: 20
-  - type: ItemToggle
-    onActivate: false
+            Structural: 20    
 
 - type: entity
+  name: Энергетический меч
   parent: SWEnergySwordBase
   id: SWEnergySwordSith
   description: A very loud & dangerous sword with a beam made of pure, concentrated plasma. Cuts through unarmored targets like butter.
@@ -45,6 +44,7 @@
       - Red
 
 - type: entity
+  name: Энергетический меч
   parent: SWEnergySwordBase
   id: SWEnergySwordJedi
   description: A very loud & dangerous sword with a beam made of pure, concentrated plasma. Cuts through unarmored targets like butter.

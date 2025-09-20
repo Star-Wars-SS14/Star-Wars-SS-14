@@ -146,7 +146,7 @@
   id: SWScoutBlasterMagazineCP
   icon:
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
-    state: mag
+    state: base
   product: SWScoutBlasterMagazine
   cost:
     SWEmpireCreditCurrency: 25

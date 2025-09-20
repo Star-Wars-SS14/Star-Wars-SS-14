@@ -123,7 +123,7 @@
   id: SWBalmorraCannonMagazineCP
   icon:
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/balmorra_cannon_mag.rsi
-    state: mag
+    state: base
   product: SWBalmorraCannonMagazine
   cost:
     SWEmpireCreditCurrency: 10

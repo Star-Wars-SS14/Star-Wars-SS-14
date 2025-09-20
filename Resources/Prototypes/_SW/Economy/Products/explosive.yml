@@ -32,17 +32,6 @@
   group: SWExplosiveMarket
 
 - type: swCargoProduct
-  id: SWSmokeGrenadeCP
-  icon:
-    sprite: Objects/Weapons/Grenades/smoke.rsi
-    state: icon
-  product: SmokeGrenade
-  cost:
-    SWEmpireCreditCurrency: 50
-  category: sw-category-explosive
-  group: SWExplosiveMarket
-
-- type: swCargoProduct
   id: SWC4CP
   icon:
     sprite: Objects/Weapons/Bombs/c4.rsi

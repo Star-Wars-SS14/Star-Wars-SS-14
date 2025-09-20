@@ -1,9 +1,9 @@
 - type: swCargoProduct
   id: SWSteelCP
   icon:
-    sprite: /Textures/Objects/Materials/Sheets/metal.rsi
-    state: metal
-  product: SheetSteel30
+    sprite: Objects/Materials/Sheets/metal.rsi
+    state: steel_3
+  product: SheetSteel
   cost:
     SWEmpireCreditCurrency: 75
   category: sw-category-materials

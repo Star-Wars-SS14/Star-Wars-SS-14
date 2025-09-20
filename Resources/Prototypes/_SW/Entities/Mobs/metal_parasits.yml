@@ -3,6 +3,7 @@
   parent: SimpleMobBase
   id: SWMobParasit
   components:
+  - type: Speech
   - type: Body
     prototype: SWParasit
   - type: GhostRole
@@ -41,8 +42,8 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      300: Critical
-      320: Dead
+      180: Critical
+      200: Dead
   - type: DamageStateVisuals
     states:
       Alive:
@@ -110,12 +111,12 @@
   - type: Emoting
   - type: Vocal
     sounds:
-      Male: MaleReptilian
-      Female: MaleReptilian
-      Unsexed: MaleReptilian
+      Male: SWParasitSounds
+      Female: SWParasitSounds
+      Unsexed: SWParasitSounds
   - type: SlowOnDamage
     speedModifierThresholds:
-      280: 0.9
+      150: 0.9
   - type: MovementSpeedModifier
     baseWalkSpeed: 3.5
     baseSprintSpeed: 6.0

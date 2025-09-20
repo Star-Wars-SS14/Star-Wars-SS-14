@@ -11,7 +11,7 @@
         lungs: OrganRatLungs
         stomach: SWOrganParasitStomach
         liver: OrganAnimalLiver
-        heart: OrganAnimalHeart
+        heart: SWOrganParasitHeart
         kidneys: OrganAnimalKidneys
     legs:
       part: LegsAnimal
@@ -29,6 +29,7 @@
     specialDigestible:
       tags:
       - Metal
+      - RodMetal1
   - type: SolutionContainerManager
     solutions:
       stomach:
@@ -40,10 +41,24 @@
           Quantity: 5
   - type: Sprite
     state: stomach
+
+- type: entity
+  id: SWOrganParasitHeart
+  parent: BaseAnimalOrgan
+  name: heart
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    state: heart-on
+  - type: Organ
   - type: Metabolizer
-    maxReagents: 3
+    maxReagents: 2
     metabolizerTypes: [ SWParasit ]
-    removeEmpty: true
     groups:
-      - id: Food
-      - id: Drink
+    - id: Medicine
+    - id: Poison
+    - id: Narcotic
+    - id: Food
+  - type: Item
+    size: Small
+    heldPrefix: heart

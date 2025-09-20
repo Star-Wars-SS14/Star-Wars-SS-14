@@ -28,6 +28,8 @@
     sprite: _SW/Clothing/Head/Helmets/mrimperialhelmet.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/mrimperialhelmet.rsi
+  - type: NightVisionItem
+    slotFlags: HEAD
 
 - type: entity
   parent: SW_ClothingHeadImperialHelmet

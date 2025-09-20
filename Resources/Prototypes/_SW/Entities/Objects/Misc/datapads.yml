@@ -144,3 +144,94 @@
     - state: icon
       map: ["enum.PaperVisualLayers.Writing"]
       visible: false
+
+#- Broken
+
+- type: entity
+  name: SWBaseDatapadTrash
+  parent: BaseItem
+  id: SWBaseDatapadTrash
+  description: 'A piece of white paper.'
+  components:
+  - type: Item
+    size: Tiny
+  - type: Tag
+    tags:
+    - Trash
+
+- type: entity
+  name: Сломанный синий датапад
+  parent: SWBaseDatapadTrash
+  id: SWBlueDatapadTrash
+  description: 'Сломанный датапад. Увы.'
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Misc/Datapads/BlueDatapad.rsi
+    layers:
+    - state: icon_broken
+
+- type: entity
+  name: Сломанный красный датапад
+  parent: SWBaseDatapadTrash
+  id: SWRedDatapadTrash
+  description: 'Сломанный датапад. Увы.'
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Misc/Datapads/RedDatapad.rsi
+    layers:
+    - state: icon_broken
+
+- type: entity
+  name: Сломанный жёлтый датапад
+  parent: SWBaseDatapadTrash
+  id: SWYellowDatapadTrash
+  description: 'Сломанный датапад. Увы.'
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Misc/Datapads/YellowDatapad.rsi
+    layers:
+    - state: icon_broken
+
+- type: entity
+  name: Сломанный голубой датапад
+  parent: SWBaseDatapadTrash
+  id: SWЕurquoiseDatapadTrash
+  description: 'Сломанный датапад. Увы.'
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Misc/Datapads/ЕurquoiseDatapad.rsi
+    layers:
+    - state: icon_broken
+
+- type: entity
+  name: Сломанный фиолетовый датапад
+  parent: SWBaseDatapadTrash
+  id: SWPinkDatapadTrash
+  description: 'Сломанный датапад. Увы.'
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Misc/Datapads/PinkDatapad.rsi
+    layers:
+    - state: icon_broken
+
+- type: entity
+  name: Сломанный зелёный датапад
+  parent: SWBaseDatapadTrash
+  id: SWGreenDatapadTrash
+  description: 'Сломанный датапад. Увы.'
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Misc/Datapads/GreenDatapad.rsi
+    layers:
+    - state: icon_broken
+
+- type: entity
+  name: Сломанный оранжевый датапад
+  parent: SWBaseDatapadTrash
+  id: SWOrangeDatapadTrash
+  description: 'Сломанный датапад. Увы.'
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Misc/Datapads/OrangeDatapad.rsi
+    layers:
+    - state: icon_broken

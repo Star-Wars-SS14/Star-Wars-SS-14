@@ -1,0 +1,7 @@
+- type: emoteSounds
+  id: SWParasitSounds
+  params:
+    variation: 0.125
+  sounds:
+    Scream:
+      collection: SWParasitScreams

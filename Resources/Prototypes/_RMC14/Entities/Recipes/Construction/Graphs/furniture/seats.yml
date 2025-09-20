@@ -34,7 +34,7 @@
         - to: start
           completed:
             - !type:SpawnPrototype
-              prototype: CMSheetMetal1
+              prototype: SheetSteel1
           steps:
             - tool: Screwing
               doAfter: 1
@@ -45,7 +45,7 @@
         - to: start
           completed:
             - !type:SpawnPrototype
-              prototype: CMSheetMetal1
+              prototype: SheetSteel1
           steps:
             - tool: Screwing
               doAfter: 1
@@ -56,7 +56,7 @@
         - to: start
           completed:
             - !type:SpawnPrototype
-              prototype: CMSheetMetal1
+              prototype: SheetSteel1
           steps:
             - tool: Screwing
               doAfter: 1
@@ -67,7 +67,7 @@
         - to: start
           completed:
             - !type:SpawnPrototype
-              prototype: CMSheetMetal1
+              prototype: SheetSteel1
           steps:
             - tool: Screwing
               doAfter: 1

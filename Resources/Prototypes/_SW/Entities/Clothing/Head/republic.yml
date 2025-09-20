@@ -27,6 +27,8 @@
     sprite: _SW/Clothing/Head/Helmets/caprepublichelmet.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/caprepublichelmet.rsi
+  - type: NightVisionItem
+    slotFlags: HEAD
 
 - type: entity
   parent: SW_ClothingHeadRepublicHelmet
@@ -37,4 +39,15 @@
     sprite: _SW/Clothing/Head/Helmets/genrepublichelmet.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/genrepublichelmet.rsi
+  - type: NightVisionItem
+    slotFlags: HEAD
 
+- type: entity
+  parent: SW_ClothingHeadRepublicHelmet
+  id: SW_ClothingHeadMedicRepublicHelmet
+  name: medic republic helmet
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/republickmedichelmet.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/republickmedichelmet.rsi

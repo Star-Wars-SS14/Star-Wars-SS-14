@@ -29,7 +29,7 @@
 - type: entity
   parent: CMBarricadeBase
   id: CMBarricadeMetal
-  name: металическая баррикада
+  name: металлическая баррикада
   description: Металлическая баррикада, не позволяющая нежелательным лицам проникнуть внутрь. Модифицируется металлом, пластилином или металлическими прутьями для получения различных атрибутов. Ремонтируется с помощью сварочного аппарата.
   components:
   - type: MeleeSound
@@ -50,7 +50,7 @@
       behaviors:
       - !type:SpawnEntitiesBehavior
         spawn:
-          CMSheetMetal1:
+          SheetSteel1:
             min: 2
             max: 2
       - !type:PlaySoundBehavior
@@ -123,7 +123,7 @@
         behaviors:
         - !type:SpawnEntitiesBehavior
           spawn:
-            CMSheetMetal1:
+            SheetPlasteel1:
               min: 2
               max: 2
         - !type:PlaySoundBehavior
@@ -163,7 +163,7 @@
         behaviors:
         - !type:SpawnEntitiesBehavior
           spawn:
-            CMSheetMetal1:
+            SheetSteel1:
               min: 2
               max: 2
         - !type:PlaySoundBehavior
@@ -258,7 +258,7 @@
       behaviors:
       - !type:SpawnEntitiesBehavior
         spawn:
-          CMSheetMetal1:
+          SheetSteel1:
             min: 2
             max: 2
       - !type:PlaySoundBehavior

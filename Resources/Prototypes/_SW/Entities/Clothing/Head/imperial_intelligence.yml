@@ -16,3 +16,5 @@
     interfaces:
       enum.VoiceMaskUIKey.Key:
         type: VoiceMaskBoundUserInterface
+  - type: NightVisionItem
+    slotFlags: HEAD

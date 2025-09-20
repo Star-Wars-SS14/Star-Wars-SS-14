@@ -5,6 +5,7 @@ using Content.Shared.Mind;
 using Content.Shared.Objectives.Components;
 using Content.Shared.Roles.Jobs;
 using Robust.Shared.Random;
+using Robust.Shared.Timing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ public sealed class SWTargetSelectorSystem : EntitySystem
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SharedMindSystem _mindSystem = default!;
     [Dependency] private readonly SharedJobSystem _jobSystem = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -83,6 +85,7 @@ public sealed class SWTargetSelectorSystem : EntitySystem
                 possible_targets.Add(uid);
             }
         }
+        _random.SetSeed((int)_timing.CurTime.TotalMilliseconds);
         ent.Comp.Target = _random.Pick(possible_targets);
         ent.Comp.JobOfTarget = GetJob(ent.Comp.Target.Value);
     }

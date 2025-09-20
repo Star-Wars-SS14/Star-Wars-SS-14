@@ -10,6 +10,8 @@ using Content.Shared.Verbs;
 using Robust.Shared.Utility;
 using Content.Shared.Stunnable;
 using Content.Server.Actions;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
 
 namespace Content.Server._SW;
 public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
@@ -104,6 +106,11 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
         }
 
         if (HasComp<KnockedDownComponent>(forceUser)) {
+            return;
+        }
+
+        if (!HasComp<ItemComponent>(target))
+        {
             return;
         }
 

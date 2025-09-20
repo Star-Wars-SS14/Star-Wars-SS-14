@@ -65,7 +65,7 @@
 - type: startingGear
   id: EmpireEngineerGear
   equipment:
-    eyes: ClothingEyesGlassesMeson    
+    eyes: ClothingEyesGlassesMeson
     outerClothing: SWImperialSuit
     jumpsuit: SWClothingUniformJumpsuitFleece
     head: SW_ClothingHeadImperialHelmet
@@ -99,7 +99,7 @@
     shoes: ClothingShoesBootsJackFilled
     eyes: ClothingEyesGlassesSunglasses
     id: SWIDCardEmpireMoff
-    ears: SWClothingHeadsetAllEmpire    
+    ears: SWClothingHeadsetAllEmpire
 
 - type: startingGear
   id: EmpireMajorGear
@@ -256,7 +256,7 @@
     id: SWIDCardRepublicEngineer
     ears: SWClothingHeadsetRepublic
     back: ClothingBackpackMilitarySatchel
-    eyes: ClothingEyesGlassesMeson    
+    eyes: ClothingEyesGlassesMeson
 
 - type: startingGear
   id: RepublicMedicGear
@@ -264,7 +264,7 @@
     jumpsuit: SWClothingUniformJumpsuitFleece
     outerClothing: SWMedicRepublicSuit
     shoes: ClothingShoesBootsJackFilled
-    head: SW_ClothingHeadRepublicHelmet
+    head: SW_ClothingHeadMedicRepublicHelmet
     belt: ClothingBeltAssault
     id: SWIDCardRepublicMedic
     ears: SWClothingHeadsetRepublic

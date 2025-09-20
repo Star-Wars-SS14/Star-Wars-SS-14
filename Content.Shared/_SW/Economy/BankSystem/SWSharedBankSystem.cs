@@ -62,7 +62,8 @@ public sealed class SWSharedBankSystem : EntitySystem
         float currencyKnownAmount = 0;
         var unspecifiedCurrencies
                     = new List<ProtoId<SWCurrencyPrototype>>();
-        var allCurrencies = costs.Keys.Select(c => c.Id).Except(allowedCurrencies);
+        var allCurrencies = costs.Keys.Select(c => c.Id).Union(allowedCurrencies);
+
         foreach (var curPrototypeId in allCurrencies)
         {
             if (costs.TryGetValue(curPrototypeId, out var value)
@@ -71,21 +72,20 @@ public sealed class SWSharedBankSystem : EntitySystem
                 currencyWithKnownAmount = _prototypeManager.Index<SWCurrencyPrototype>(curPrototypeId);
                 currencyKnownAmount = value;
             }
-            else if (allowedCurrencies.Contains(curPrototypeId))
+            if (allowedCurrencies.Contains(curPrototypeId))
             {
                 unspecifiedCurrencies.Add(curPrototypeId);
-            } else
+            }
+            else
             {
                 costs.Remove(curPrototypeId);
             }
         }
-        ISawmill _s = Logger.GetSawmill("sdfs");
-        _s.Fatal("asf");
+
         if (currencyWithKnownAmount == null || unspecifiedCurrencies.Count == 0)
         {
             return;
         }
-        _s.Fatal($"{unspecifiedCurrencies[0]}");
 
         foreach (var curPrototypeId in unspecifiedCurrencies)
         {
@@ -106,6 +106,7 @@ public sealed class SWSharedBankSystem : EntitySystem
             dict[item.Key] = item.Value;
         }
         FillCurrencies(allowedCurrencies, ref dict);
+        costs.Clear();
         foreach (var item in dict)
         {
             costs[item.Key] = (int)item.Value;

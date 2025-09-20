@@ -132,6 +132,9 @@
       - SWIDCardEmpireMajor
       - SWIDCardEmpireLieutenant
       - SWIDCardEmpireMedic
+      - SWIDCardSith
+      - SWIDCardEmpireIntelligenceCaretaker
+      - SWIDCardEmpireIntelligenceAgent
 
 
 - type: entity

@@ -35,6 +35,8 @@
 
 - type: entity
   name: energy sword
+  - type: ItemToggle
+    onActivate: false
   parent: SWEnergySwordBase
   id: SWEnergySwordSith
   description: A very loud & dangerous sword with a beam made of pure, concentrated plasma. Cuts through unarmored targets like butter.

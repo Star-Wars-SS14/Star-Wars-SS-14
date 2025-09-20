@@ -29,9 +29,9 @@
   name: mandalorian recruit suit2
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar2/MandalorianWarrior.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar2/MandalorianRecruit.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar2/MandalorianWarrior.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar2/MandalorianRecruit.rsi
 
 - type: entity
   parent: SWMandalorianRecruitSuit
@@ -39,9 +39,9 @@
   name: mandalorian recruit suit3
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar3/MandalorianWarrior.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar3/MandalorianRecruit.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar3/MandalorianWarrior.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Mandalorian/MandalorianVar3/MandalorianRecruit.rsi
 
 - type: entity
   parent: SWMandalorianRecruitSuit

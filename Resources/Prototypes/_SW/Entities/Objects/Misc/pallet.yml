@@ -42,12 +42,10 @@
 
 - type: entity
   id: SWCargoPalletBuy
-  name: cargo buying pallet
-  description: Designates valid items to sell. Made of plastitanium to discourage pesky vandals.
+  name: транспортный поддон
+  description: Транспортирует. Подключите консоль покупки или продажи мультитулом.
   parent: BaseCargoPallet
   components:
-  - type: CargoPallet
-    palletType: buy
   - type: Sprite
     sprite: Structures/cargo_pallets.rsi
   - type: Icon

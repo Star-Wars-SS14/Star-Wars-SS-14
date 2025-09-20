@@ -166,8 +166,9 @@
 
 - type: entity
   parent: BaseComputer
-  id: SWBuyConsole
+  id: SWBuyConsoleEmpire
   name: Консоль покупки
+  suffix: Империя
   components:
   - type: ActivatableUI
     key: enum.SWBuyConsoleUIKey.Key
@@ -201,7 +202,7 @@
     allowedMarkets:
     - SWBaseMarket
     - SWT1WeaponMarket
-    - SWT2WeaponMarket
+    - SWT2EmpireWeaponMarket
     - SWT3WeaponMarket
     - SWT1MedicineMarket
     - SWT2MedicineMarket
@@ -210,6 +211,47 @@
     - SWExplosiveMarket
     - SWAdditionalAmunitionMarket
     - SWToolsMarket
+
+- type: entity
+  parent: SWBuyConsoleEmpire
+  id: SWBuyConsole
+  name: Консоль покупки
+  suffix: Республика
+  components:
+  - type: SWBankAccountContainer
+    allowedCurrencies:
+    - SWRepublicCreditCurrency
+  - type: SWBuyConsole
+    allowed:
+    - SWRepublicCreditCurrency
+    allowedMarkets:
+    - SWBaseMarket
+    - SWT1WeaponMarket
+    - SWT2RepublicWeaponMarket
+    - SWT3WeaponMarket
+    - SWT1MedicineMarket
+    - SWT2MedicineMarket
+    - SWT3MedicineMarket
+    - SWMaterialsMarket
+    - SWExplosiveMarket
+    - SWAdditionalAmunitionMarket
+    - SWToolsMarket
+
+- type: entity
+  parent: SWBuyConsoleEmpire
+  id: SWBuyConsoleNeutral
+  name: Урезанная консоль покупки
+  suffix: Нейтралы
+  components:
+  - type: SWBuyConsole
+    allowed:
+    - SWEmpireCreditCurrency
+    - SWRepublicCreditCurrency
+    allowedMarkets:
+    - SWBaseMarket
+    - SWT1WeaponMarket
+    - SWT1MedicineMarket
+    - SWT2MedicineMarket
 
 - type: entity
   parent: BaseComputer

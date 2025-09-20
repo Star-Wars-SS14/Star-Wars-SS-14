@@ -5,7 +5,10 @@
   id: SWT1WeaponMarket
 
 - type: cargoMarket
-  id: SWT2WeaponMarket
+  id: SWT2RepublicWeaponMarket
+
+- type: cargoMarket
+  id: SWT2EmpireWeaponMarket
 
 - type: cargoMarket
   id: SWT3WeaponMarket

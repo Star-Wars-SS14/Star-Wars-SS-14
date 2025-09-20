@@ -7,7 +7,7 @@
   cost:
     SWEmpireCreditCurrency: 500
   category: sw-category-rifles
-  group: SWT2WeaponMarket
+  group: SWT2EmpireWeaponMarket
 
 - type: swCargoProduct
   id: SWH206RenegadeCP
@@ -18,7 +18,7 @@
   cost:
     SWEmpireCreditCurrency: 500
   category: sw-category-rifles
-  group: SWT2WeaponMarket
+  group: SWT2RepublicWeaponMarket
 
 - type: swCargoProduct
   id: SWEL34CP
@@ -29,7 +29,7 @@
   cost:
     SWEmpireCreditCurrency: 1500
   category: sw-category-machine-guns
-  group: SWT2WeaponMarket
+  group: SWT2RepublicWeaponMarket
 
 - type: swCargoProduct
   id: SWGrantekF11D2CP
@@ -40,7 +40,7 @@
   cost:
     SWEmpireCreditCurrency: 1500
   category: sw-category-machins-guns
-  group: SWT2WeaponMarket
+  group: SWT2EmpireWeaponMarket
 
 - type: swCargoProduct
   id: SWBeryaramk3CP
@@ -51,7 +51,7 @@
   cost:
     SWEmpireCreditCurrency: 1000
   category: sw-category-sniper-rifles
-  group: SWT2WeaponMarket
+  group: SWT2RepublicWeaponMarket
 
 - type: swCargoProduct
   id: SWK406RipperCP
@@ -62,7 +62,7 @@
   cost:
     SWEmpireCreditCurrency: 1000
   category: sw-category-sniper-rifles
-  group: SWT2WeaponMarket
+  group: SWT2EmpireWeaponMarket
 
 
 - type: swCargoProduct
@@ -74,7 +74,7 @@
   cost:
     SWEmpireCreditCurrency: 110
   category: sw-category-sniper-magazines
-  group: SWT2WeaponMarket
+  group: SWT2EmpireWeaponMarket
 
 - type: swCargoProduct
   id: SWH206MagazineCP
@@ -85,7 +85,7 @@
   cost:
     SWEmpireCreditCurrency: 110
   category: sw-category-sniper-magazines
-  group: SWT2WeaponMarket
+  group: SWT2RepublicWeaponMarket
 
 - type: swCargoProduct
   id: SWEL34MagazineCP
@@ -96,7 +96,7 @@
   cost:
     SWEmpireCreditCurrency: 500
   category: sw-category-sniper-magazines
-  group: SWT2WeaponMarket
+  group: SWT2RepublicWeaponMarket
 
 - type: swCargoProduct
   id: SWGrantekF11D2MagazineCP
@@ -107,7 +107,7 @@
   cost:
     SWEmpireCreditCurrency: 500
   category: sw-category-sniper-magazines
-  group: SWT2WeaponMarket
+  group: SWT2EmpireWeaponMarket
 
 - type: swCargoProduct
   id: SWBeryaramk3MagazineCP
@@ -118,7 +118,7 @@
   cost:
     SWEmpireCreditCurrency: 200
   category: sw-category-sniper-magazines
-  group: SWT2WeaponMarket
+  group: SWT2RepublicWeaponMarket
 
 - type: swCargoProduct
   id: SWK406MagazineCP
@@ -129,10 +129,10 @@
   cost:
     SWEmpireCreditCurrency: 200
   category: sw-category-sniper-magazines
-  group: SWT2WeaponMarket
+  group: SWT2EmpireWeaponMarket
 
 - type: swCargoProduct
-  id: SWBaseWeaponBlasterSmallCP
+  id: SWBaseWeaponBlasterSmallEmpireCP
   icon:
     sprite: _SW/Objects/Weapons/Guns/Pistols/scout_blaster.rsi
     state: base
@@ -140,10 +140,10 @@
   cost:
     SWEmpireCreditCurrency: 400
   category: sw-category-pistols
-  group: SWT2WeaponMarket
+  group: SWT2EmpireWeaponMarket
 
 - type: swCargoProduct
-  id: SWScoutBlasterMagazineCP
+  id: SWScoutBlasterMagazineEmpireCP
   icon:
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
     state: base
@@ -151,4 +151,26 @@
   cost:
     SWEmpireCreditCurrency: 25
   category: sw-category-pistols
-  group: SWT2WeaponMarket
+  group: SWT2EmpireWeaponMarket
+
+- type: swCargoProduct
+  id: SWBaseWeaponBlasterSmallRepublicCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Pistols/scout_blaster.rsi
+    state: base
+  product: SWBaseWeaponBlasterSmall
+  cost:
+    SWEmpireCreditCurrency: 400
+  category: sw-category-pistols
+  group: SWT2RepublicWeaponMarket
+
+- type: swCargoProduct
+  id: SWScoutBlasterMagazineRepublicCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
+    state: base
+  product: SWScoutBlasterMagazine
+  cost:
+    SWEmpireCreditCurrency: 25
+  category: sw-category-pistols
+  group: SWT2RepublicWeaponMarket

@@ -54,6 +54,7 @@ public sealed class SWBuyConsoleSystem : EntitySystem
             products.Add(product.ID);
         }
         ent.Comp.AvailableProducts = products;
+        UpdateInterface(ent);
     }
     public override void Update(float frameTime)
     {

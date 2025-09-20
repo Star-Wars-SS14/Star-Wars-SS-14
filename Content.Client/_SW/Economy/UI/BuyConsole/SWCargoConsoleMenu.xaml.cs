@@ -34,7 +34,7 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
     private readonly List<string> _categoryStrings = new();
     private string? _category;
     public Dictionary<ProtoId<SWCurrencyPrototype>, float> Balance = new();
-    public List<ProtoId<SWCargoProductPrototype>> ProductCatalogue = new();
+    public HashSet<ProtoId<SWCargoProductPrototype>> ProductCatalogue = new();
 
     public event Action? OnWithdrawalButtonPressed;
     public event Action? OnAddMoneyButtonPressed;

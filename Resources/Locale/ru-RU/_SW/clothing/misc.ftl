@@ -1,2 +1,2 @@
 ent-SWClothingHeadHatBunny = кроличьи ушки?
-  .desc = Это отвратительно
+  .desc = Это отвратительно.

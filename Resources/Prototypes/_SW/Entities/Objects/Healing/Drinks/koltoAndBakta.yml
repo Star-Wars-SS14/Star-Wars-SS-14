@@ -1,5 +1,5 @@
 - type: entity
-  name: Мензурка кольто
+  name: мензурка кольто
   parent: BaseBeaker
   id: SWkoltoBeaker
   components:
@@ -25,9 +25,9 @@
     - trigger:
         !type:DamageTrigger
         damage: 5
-      behaviors:  
+      behaviors:
       - !type:SpillBehavior
-        solution: beaker      
+        solution: beaker
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
   - type: DamageOnLand
@@ -45,7 +45,7 @@
         maxVol: 30
 
 - type: entity
-  name: Мензурка кольто
+  name: мензурка кольто
   parent: SWkoltoBeaker
   suffix: ПОЛНАЯ
   id: SWkoltoBeakerFull
@@ -59,7 +59,7 @@
           Quantity: 30
 
 - type: entity
-  name: Мензурка бакты
+  name: мензурка бакты
   parent: BaseBeaker
   description: Used to contain a moderate amount of chemicals and solutions.
   id: SWbactaBeaker
@@ -86,9 +86,9 @@
     - trigger:
         !type:DamageTrigger
         damage: 5
-      behaviors:  
+      behaviors:
       - !type:SpillBehavior
-        solution: beaker      
+        solution: beaker
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
   - type: DamageOnLand
@@ -106,7 +106,7 @@
         maxVol: 30
 
 - type: entity
-  name: Мензурка бакты
+  name: мензурка бакты
   parent: SWbactaBeaker
   suffix: ПОЛНАЯ
   id: SWbactaBeakerFull

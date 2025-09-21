@@ -1,0 +1,83 @@
+- type: loadout
+  id: SWMandRecruit1
+  name: броня рекрута вариант 1
+  equipment:
+    outerClothing: SWMandalorianRecruitSuit
+    head: SW_ClothingHeadRecruitMandalorianHelmet
+
+- type: loadout
+  id: SWMandRecruit2
+  name: броня рекрута вариант 2
+  equipment:
+    outerClothing: SWMandalorianRecruitSuit2
+    head: SW_ClothingHeadRecruitMandalorianHelmet2
+
+- type: loadout
+  id: SWMandRecruit3
+  name: броня рекрута вариант 3
+  equipment:
+    outerClothing: SWMandalorianRecruitSuit3
+    head: SW_ClothingHeadRecruitMandalorianHelmet3
+
+- type: loadout
+  id: SWMandWarrior1
+  name: броня воина вариант 1
+  equipment:
+    outerClothing: SWMandalorianWarriorSuit
+    head: SW_ClothingHeadMandalorianWarriorHelmet
+
+- type: loadout
+  id: SWMandWarrior2
+  name: броня воина вариант 2
+  equipment:
+    outerClothing: SWMandalorianWarriorSuit2
+    head: SW_ClothingHeadMandalorianWarriorHelmet2
+
+- type: loadout
+  id: SWMandWarrior3
+  name: броня воина вариант 3
+  equipment:
+    outerClothing: SWMandalorianWarriorSuit3
+    head: SW_ClothingHeadMandalorianWarriorHelmet3
+
+- type: loadout
+  id: SWMandVeteran1
+  name: броня ветерана вариант 1
+  equipment:
+    outerClothing: SWMandalorianVeteranSuit
+    head: SW_ClothingHeadMandalorianVeteranHelmet
+
+- type: loadout
+  id: SWMandVeteran2
+  name: броня ветерана вариант 2
+  equipment:
+    outerClothing: SWMandalorianVeteranSuit2
+    head: SW_ClothingHeadMandalorianVeteranHelmet2
+
+- type: loadout
+  id: SWMandVeteran3
+  name: броня ветерана вариант 3
+  equipment:
+    outerClothing: SWMandalorianVeteranSuit3
+    head: SW_ClothingHeadMandalorianVeteranHelmet3
+
+- type: loadout
+  id: SWMandLeader1
+  name: броня лидера вариант 1
+  equipment:
+    outerClothing: SWMandalorianLeaderSuit
+    head: SW_ClothingHeadMandalorianLeaderHelmet
+
+- type: loadout
+  id: SWMandLeader2
+  name: броня лидера вариант 2
+  equipment:
+    outerClothing: SWMandalorianLeaderSuit2
+    head: SW_ClothingHeadMandalorianLeaderHelmet2
+
+- type: loadout
+  id: SWMandLeader3
+  name: броня лидера вариант 3
+  equipment:
+    outerClothing: SWMandalorianLeaderSuit3
+    head: SW_ClothingHeadMandalorianLeaderHelmet3

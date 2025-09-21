@@ -69,6 +69,7 @@
       Starving: 10
       Dead: 0
     baseDecayRate: 1
+    starvingSlowdownModifier: 1.0
     hungerThresholdDecayModifiers:
       Overfed: 1.5
       Okay: 1.0
@@ -94,8 +95,8 @@
     animation: WeaponArcBite
     damage:
       types:
-        Piercing: 70
-        Structural: 30
+        Piercing: 50
+        Structural: 40
     altDisarm: false
   - type: Bloodstream
     bloodMaxVolume: 50

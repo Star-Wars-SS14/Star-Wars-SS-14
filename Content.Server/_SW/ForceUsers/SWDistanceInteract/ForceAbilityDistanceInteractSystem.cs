@@ -12,7 +12,6 @@ using Content.Shared.Stunnable;
 using Content.Server.Actions;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
-using Content.Server._SW.Unpickuppable;
 
 namespace Content.Server._SW;
 public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
@@ -62,7 +61,6 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
         }
         StopAttractingByForce(ent.Comp.User.Value);
     }
-
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -86,12 +84,11 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
                 }
                 else
                 {
-                    var item = comp.CurrentAttractingItem.Value;
-                    StopAttractingByForce(uid, comp);
                     if ((usercords.Position - targetcords.Position).Length() < SharedInteractionSystem.InteractionRange)
                     {
-                        _handsSystem.TryPickup(uid, item);
+                        _handsSystem.TryPickup(uid, comp.CurrentAttractingItem.Value);
                     }
+                    StopAttractingByForce(uid, comp);
                 }
             }
         }
@@ -99,9 +96,13 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
 
     public void StartAttractingByForce(EntityUid forceUser, EntityUid target, ForceAbilityDistanceInteractComponent? comp = null)
     {
-        if (!TryComp(forceUser, out comp))
+        if (comp == null)
         {
-            return;
+            comp = CompOrNull<ForceAbilityDistanceInteractComponent>(forceUser);
+            if (comp == null)
+            {
+                return;
+            }
         }
 
         if (HasComp<KnockedDownComponent>(forceUser)) {
@@ -116,7 +117,6 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
         comp.IsAttracting = true;
         comp.CurrentAttractingItem = target;
         EnsureComp<BeingAttractedByForceComponent>(target).User = forceUser;
-        EnsureComp<SWUnpickuppableComponent>(target);
     }
 
     public void StopAttractingByForce(EntityUid user, ForceAbilityDistanceInteractComponent? comp = null)
@@ -138,7 +138,6 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
         _physicsSystem.SetLinearVelocity(comp.CurrentAttractingItem.Value, Vector2.Zero);
         comp.IsAttracting = false;
         RemComp<BeingAttractedByForceComponent>(comp.CurrentAttractingItem.Value);
-        RemComp<SWUnpickuppableComponent>(comp.CurrentAttractingItem.Value);
         comp.CurrentAttractingItem = null;
     }
 }

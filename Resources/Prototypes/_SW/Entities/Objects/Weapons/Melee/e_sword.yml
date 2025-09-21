@@ -32,11 +32,11 @@
             Slash: 25
             Heat: 35
             Structural: 20
-
-- type: entity
-  name: energy sword
   - type: ItemToggle
     onActivate: false
+    
+- type: entity
+  name: Энергетический меч
   parent: SWEnergySwordBase
   id: SWEnergySwordSith
   description: A very loud & dangerous sword with a beam made of pure, concentrated plasma. Cuts through unarmored targets like butter.

@@ -65,5 +65,5 @@
     - type: SWLightningAbility
       damage:
         types:
-          Heat: 25
+          Heat: 50
     - type: SWStrangulateAbility

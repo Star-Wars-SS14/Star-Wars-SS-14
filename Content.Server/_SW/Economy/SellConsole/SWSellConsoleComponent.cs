@@ -24,5 +24,5 @@ public sealed partial class SWSellConsoleComponent : Component
     public ProtoId<SWCurrencyPrototype> StaticPriceCurrency;
 
     [DataField]
-    public ProtoId<SourcePortPrototype> Port;
+    public ProtoId<SourcePortPrototype> Port = "SWSellConsoleSender";
 }

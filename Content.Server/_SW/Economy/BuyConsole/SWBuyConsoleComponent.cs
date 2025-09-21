@@ -1,5 +1,6 @@
 using Content.Shared._SW.Economy.Prototypes;
 using Content.Shared.Cargo.Prototypes;
+using Content.Shared.DeviceLinking;
 using Robust.Shared.Prototypes;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,8 @@ public sealed partial class SWBuyConsoleComponent : Component
     [DataField]
     public List<ProtoId<CargoMarketPrototype>> AllowedMarkets = new();
 
-    public HashSet<EntityUid> ConnectedPallets = new HashSet<EntityUid>();
+    [DataField]
+    public ProtoId<SourcePortPrototype> Port = "SWBuyConsoleSender";
 
     public HashSet<ProtoId<SWCargoProductPrototype>> AvailableProducts = new();
 }

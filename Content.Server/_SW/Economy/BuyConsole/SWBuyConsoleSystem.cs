@@ -31,9 +31,6 @@ public sealed class SWBuyConsoleSystem : EntitySystem
         base.Initialize();
         SubscribeLocalEvent<SWBuyConsoleComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SWBuyConsoleComponent, SWTryPurchaseMessage>(OnTryPurchase);
-        SubscribeLocalEvent<CargoPalletComponent, NewLinkEvent>(OnNewLink);
-        SubscribeLocalEvent<CargoPalletComponent, PortDisconnectedEvent>(OnPortDisconnected);
-        SubscribeLocalEvent<CargoPalletComponent, MapInitEvent>(OnPalletMapinit);
     }
 
     private void OnMapInit(Entity<SWBuyConsoleComponent> ent, ref MapInitEvent args)
@@ -54,6 +51,20 @@ public sealed class SWBuyConsoleSystem : EntitySystem
         }
         ent.Comp.AvailableProducts = products;
         UpdateInterface(ent);
+    }
+
+    public List<EntityUid> GetPallets(Entity<SWBuyConsoleComponent> ent)
+    {
+        var comp = Comp<DeviceLinkSourceComponent>(ent);
+
+        var outputs = comp.Outputs;
+
+        if (outputs.TryGetValue(ent.Comp.Port, out var pallets))
+        {
+            return pallets.ToList();
+        }
+
+        return new List<EntityUid>();
     }
     public override void Update(float frameTime)
     {
@@ -97,7 +108,7 @@ public sealed class SWBuyConsoleSystem : EntitySystem
         _sWSharedBankSystem.FillCurrencies(ent.Comp.AllowedCurrencies, ref totalCost);
         if (_sWSharedBankSystem.TryPayAny(totalCost, account.Comp.CurrentAmount))
         {
-            if (ent.Comp.ConnectedPallets.Count > 0)
+            if (GetPallets(ent).Count > 0)
             {
                 SpawnEntities(ent, proto.Product, args.Amount);
             }
@@ -113,45 +124,10 @@ public sealed class SWBuyConsoleSystem : EntitySystem
         UpdateInterface(ent);
     }
 
-    private void OnNewLink(Entity<CargoPalletComponent> ent, ref NewLinkEvent args)
-    {
-        UpdateConnectedPallets(ent, true);
-    }
-    private void OnPortDisconnected(Entity<CargoPalletComponent> ent, ref PortDisconnectedEvent args)
-    {
-        UpdateConnectedPallets(ent, false);
-    }
-
-    private void OnPalletMapinit(Entity<CargoPalletComponent> ent, ref MapInitEvent args)
-    {
-        UpdateConnectedPallets(ent, true);
-    }
-    private void UpdateConnectedPallets(Entity<CargoPalletComponent> ent, bool add)
-    {
-        if (!TryComp<DeviceLinkSinkComponent>(ent.Owner, out var comp))
-        {
-            return;
-        }
-
-        foreach (var source in comp.LinkedSources)
-        {
-            if (TryComp<SWBuyConsoleComponent>(source, out var consoleComp))
-            {
-                if (add)
-                {
-                    consoleComp.ConnectedPallets.Add(ent.Owner);
-                }
-                else {
-                    consoleComp.ConnectedPallets.Remove(ent.Owner);
-                }
-            }
-        }
-    }
-
     private void SpawnEntities(Entity<SWBuyConsoleComponent> ent, string proto, int amount)
     {
-        var pallets = ent.Comp.ConnectedPallets.ToArray();
-        var size = pallets.Length;
+        var pallets = GetPallets(ent);
+        var size = pallets.Count;
 
         for (int i = 0; i < amount; i++)
         {

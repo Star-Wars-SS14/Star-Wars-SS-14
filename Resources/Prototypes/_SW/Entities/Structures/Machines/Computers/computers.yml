@@ -284,7 +284,6 @@
   - type: SWSellConsole
     outputCurrency: SWEmpireCreditCurrency
     staticPriceCurrency: SWEmpireCreditCurrency
-    port: SWSellConsoleSender
 
 - type: entity
   parent: BaseComputer

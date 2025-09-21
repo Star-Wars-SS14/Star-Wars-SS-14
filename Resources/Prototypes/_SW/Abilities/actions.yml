@@ -1,17 +1,4 @@
 - type: entity
-  id: ActionJediDash
-  name: Быстрый бег
-  description: Ускорьтесь на короткое время
-  noSpawn: true
-  components:
-  - type: Action
-    icon: Interface/Actions/dash.png
-    useDelay: 8
-  - type: InstantAction    
-    event: !type:DashAbilityEvent
-    
-
-- type: entity
   id: ActionSithForceLightning
   name: Молния
   description: Используя тёмную силу вы испускаете разряд!
@@ -19,7 +6,7 @@
   components:
   - type: Action
     icon: Interface/Actions/lighting.png
-    useDelay: 6
+    useDelay: 12
   - type: TargetAction
     interactOnMiss: false
     range: 7
@@ -82,7 +69,7 @@
   components:
   - type: Action
     icon: Interface/Actions/dash.png
-    useDelay: 6
+    useDelay: 12
   - type: InstantAction    
     event: !type:DashRequestedEvent
 

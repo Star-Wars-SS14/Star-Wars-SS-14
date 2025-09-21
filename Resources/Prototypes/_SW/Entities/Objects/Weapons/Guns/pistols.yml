@@ -3,7 +3,7 @@
   suffix: Оружие SW
   abstract: true
   id: SWBaseWeaponBlasterSmall
-  name: Пистолет разведчика
+  name: пистолет разведчика
   components:
   - type: PointLight
     enabled: false
@@ -33,7 +33,7 @@
     - SemiAuto
     fireRate: 3.7
     selectedMode: SemiAuto
-  - type: ItemSlots 
+  - type: ItemSlots
     slots:
       gun_magazine:
         name: Magazine
@@ -68,7 +68,7 @@
   parent: SWScoutBlasterSmall
   suffix: Оружие SW
   id: SWBalmorraHandCannon
-  name: Ручная пушка балморы
+  name: ручная пушка балморы
   components:
   - type: Gun
     fireRate: 2
@@ -80,7 +80,7 @@
       map: [ "enum.GunVisualLayers.Base" ]
     - state: mag-0
       map: ["enum.GunVisualLayers.Mag"]
-  - type: ItemSlots 
+  - type: ItemSlots
     slots:
       gun_magazine:
         name: Magazine

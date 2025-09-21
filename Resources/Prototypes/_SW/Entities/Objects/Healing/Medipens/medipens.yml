@@ -1,5 +1,5 @@
 - type: entity
-  name: Медипен с кольто
+  name: медипен с кольто
   parent: ChemicalMedipen
   id: SWKoltoMedipen
   description: Medipen with kolto.
@@ -30,7 +30,7 @@
 
 
 - type: entity
-  name: Медипен с бактой
+  name: медипен с бактой
   parent: ChemicalMedipen
   id: SWBactaMedipen
   description: Medipen with bacta.

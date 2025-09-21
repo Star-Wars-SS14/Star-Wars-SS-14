@@ -131,7 +131,7 @@
 - type: entity
   parent: SWClothingHeadset
   id: SWClothingHeadsetRepublicAll
-  name: republic full headset 
+  name: republic full headset
   components:
   - type: ContainerFill
     containers:

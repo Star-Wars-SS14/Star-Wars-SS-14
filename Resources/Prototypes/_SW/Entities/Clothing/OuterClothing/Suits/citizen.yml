@@ -10,3 +10,22 @@
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/citizen.rsi
   - type: GroupExamine
+
+- type: entity
+  parent: ClothingOuterStorageBase
+  id: SWClothingOuterVestRebel
+  name: rebel vest
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Vests/rebel_vest.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Vests/rebel_vest.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Blunt: 0.6
+        Slash: 0.6
+        Piercing: 0.3
+        Heat: 0.9
+  - type: ExplosionResistance
+    damageCoefficient: 0.9

@@ -301,3 +301,45 @@
     magState: mag
     steps: 1
     zeroVisible: false
+
+- type: entity
+  id: SWAnarchyMagazine
+  name: Магазин для "Анархии"
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 7000
+    startingCharge: 7000
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - SWAnarchyMagazineTag
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWAnarchyBullet
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
+    state: mag
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: false
+
+- type: entity
+  id: SWMK3Magazine
+  name: Магазин для MK3
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 7000
+    startingCharge: 7000
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - SWMK3MagazineTag
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWMK3Bullet
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+    state: mag
+  - type: MagazineVisuals
+    magState: mag

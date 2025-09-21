@@ -102,7 +102,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 27
+        Heat: 22
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
     layers:
@@ -120,7 +120,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 30
+        Heat: 25
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
     layers:
@@ -138,7 +138,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 25
+        Heat: 20
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
     layers:
@@ -156,7 +156,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 30
+        Heat: 25
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
     layers:
@@ -174,7 +174,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 25
+        Heat: 20
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
     layers:
@@ -275,3 +275,39 @@
       shader: unshaded
   - type: PointLight
     color: Yellow
+
+- type: entity
+  id: SWMK3Bullet
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 28
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+  - type: PointLight
+    color: Yellow
+
+- type: entity
+  id: SWAnarchyBullet
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 25
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/blue_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+  - type: PointLight
+    color: Blue

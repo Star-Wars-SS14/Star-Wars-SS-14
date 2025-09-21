@@ -1,6 +1,7 @@
 - type: entity
   parent: BaseItem
   suffix: Оружие SW
+  abstract: true
   id: SWBaseWeaponBlasterSmall
   name: Пистолет разведчика
   components:
@@ -21,11 +22,11 @@
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
-    - state: mag-0
-      map: ["enum.GunVisualLayers.Mag"]
   - type: Item
     size: Small
   - type: Gun
+    maxAngle: 0
+    minAngle: 10
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
     availableModes:
@@ -42,15 +43,29 @@
         whitelist:
           tags:
           - SWScoutBlasterMagazine
-  - type: MagazineVisuals
-    magState: mag
-    steps: 1
-    zeroVisible: true
   - type: Appearance
   - type: MagazineAmmoProvider
 
 - type: entity
   parent: SWBaseWeaponBlasterSmall
+  suffix: Оружие SW
+  id: SWScoutBlasterSmall
+  name: Пистолет разведчика
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Pistols/scout_blaster.rsi
+    layers:
+    - state: base
+      map: [ "enum.GunVisualLayers.Base" ]
+    - state: mag-0
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: true
+
+- type: entity
+  parent: SWScoutBlasterSmall
   suffix: Оружие SW
   id: SWBalmorraHandCannon
   name: Ручная пушка балморы
@@ -75,3 +90,28 @@
         whitelist:
           tags:
           - SWBalmorraCannonMagazineTag
+
+- type: entity
+  parent: SWBaseWeaponBlasterSmall
+  suffix: Оружие SW
+  id: SWAnarchy
+  name: Anarchy
+  components:
+  - type: Gun
+    fireRate: 2.7
+    selectedMode: SemiAuto
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Pistols/anarchy.rsi
+    layers:
+    - state: base
+      map: [ "enum.GunVisualLayers.Base" ]
+  - type: ItemSlots 
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: SWAnarchyMagazine
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        whitelist:
+          tags:
+          - SWAnarchyMagazineTag

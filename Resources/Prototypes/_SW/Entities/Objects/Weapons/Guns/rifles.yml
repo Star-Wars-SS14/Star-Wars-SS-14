@@ -49,6 +49,39 @@
 #Rifles
 
 - type: entity
+  name:  MK3 rifle
+  parent: SWBaseWeaponBlasterWieldable
+  id: SWMK3BlasterRifle
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Rifles/MK3.rsi
+    layers:
+    - state: base
+  - type: Clothing
+    sprite: _SW/Objects/Weapons/Guns/Rifles/MK3.rsi
+  - type: Gun
+    soundGunshot:
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+    fireRate: 2.7
+    angleIncrease: 0.5
+    minAngle: 15
+    maxAngle: 25    
+    angleDecay: 4
+  - type: GunWieldBonus
+    minAngle: -13
+    maxAngle: -22
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: SWMK3Magazine
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        whitelist:
+          tags:
+          - SWMK3MagazineTag
+
+- type: entity
   name: Imperial E-1 Enforcer Blaster Rifle
   parent: SWBaseWeaponBlasterWieldable
   id: SWE1BlasterRifle
@@ -224,14 +257,17 @@
   parent: SWBaseWeaponBlaster
   id: SWEL34
   components:
+  - type: ClothingSpeedModifier
+    walkModifier: 0.7
+    sprintModifier: 0.7
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/MachineGuns/EL34.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
   - type: HeldSpeedModifier
-    walkModifier: 0.6
-    sprintModifier: 0.6
+    walkModifier: 0.4
+    sprintModifier: 0.4
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/MachineGuns/EL34.rsi
   - type: Gun
@@ -260,6 +296,9 @@
   id: SWGrantekF11D2
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
+  - type: ClothingSpeedModifier
+    walkModifier: 0.7
+    sprintModifier: 0.7
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/MachineGuns/grantekF11D.rsi
     layers:
@@ -269,8 +308,8 @@
     sprite: _SW/Objects/Weapons/Guns/MachineGuns/grantekF11D.rsi
   - type: MultiHandedItem
   - type: HeldSpeedModifier
-    walkModifier: 0.6
-    sprintModifier: 0.6
+    walkModifier: 0.4
+    sprintModifier: 0.4
   - type: Gun
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
@@ -296,6 +335,9 @@
   id: SWGT-13ST
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
+  - type: ClothingSpeedModifier
+    walkModifier: 0.8
+    sprintModifier: 0.8
   - type: MultiHandedItem
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/MachineGuns/GT13ST.rsi
@@ -305,8 +347,8 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/MachineGuns/GT13ST.rsi
   - type: HeldSpeedModifier
-    walkModifier: 0.8
-    sprintModifier: 0.8
+    walkModifier: 0.6
+    sprintModifier: 0.6
   - type: Gun
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
@@ -332,14 +374,17 @@
   id: SWGallantry
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
+  - type: ClothingSpeedModifier
+    walkModifier: 0.7
+    sprintModifier: 0.7
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/MachineGuns/gallantry.rsi
     layers:
     - state: base
       map: [ "enum.GunVisualLayers.Base" ]
   - type: HeldSpeedModifier
-    walkModifier: 0.6
-    sprintModifier: 0.6
+    walkModifier: 0.4
+    sprintModifier: 0.4
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/MachineGuns/gallantry.rsi
   - type: Gun
@@ -368,6 +413,9 @@
   id: SWMK1
   description: An iconic weapon of war. Uses .30 rifle ammo.
   components:
+  - type: ClothingSpeedModifier
+    walkModifier: 0.8
+    sprintModifier: 0.8
   - type: MultiHandedItem
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/MachineGuns/MK1.rsi
@@ -377,8 +425,8 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/MachineGuns/MK1.rsi
   - type: HeldSpeedModifier
-    walkModifier: 0.8
-    sprintModifier: 0.8
+    walkModifier: 0.6
+    sprintModifier: 0.6
   - type: Gun
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg

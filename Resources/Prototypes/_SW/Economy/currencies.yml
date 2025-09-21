@@ -5,7 +5,7 @@
   cashEntity: SWEmpireCredits
   exchangeRates:
     SWRepublicCreditCurrency: 1.5
-    SWVanillaCurrency: 0.5
+    SWVanillaCurrency: 2
 
 - type: swcurrency
   id : SWRepublicCreditCurrency
@@ -14,7 +14,7 @@
   cashEntity: SWRepublicCredits
   exchangeRates:
     SWEmpireCreditCurrency: 0.66666667
-    SWVanillaCurrency: 0.3333333334
+    SWVanillaCurrency: 1.3333333334
 
 - type: swcurrency
   id : SWVanillaCurrency
@@ -22,5 +22,5 @@
   shortName: МК
   cashEntity: SpaceCash
   exchangeRates:
-    SWEmpireCreditCurrency: 2
-    SWRepublicCreditCurrency: 3
+    SWEmpireCreditCurrency: 0.5
+    SWRepublicCreditCurrency: 0.75

@@ -45,4 +45,4 @@ ent-SW_ClothingHeadLieutenantHavokHelmet = шлем лейтенанта "Хав
 ent-SW_ClothingHeadCommanderHavokHelmet = шлем коммандира "Хавок"
   .desc = Шлем коммандира элитного подразделения сил Республики. Вот уж получили ответственность на свою голову...
 ent-SW_ClothingHeadMandalorianWarriorHelmet = шлем воина мандалорцев
-  .desc = Воюйте за Манадлор
+  .desc = Воюйте за Манадлор.

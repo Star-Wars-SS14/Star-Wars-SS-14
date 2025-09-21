@@ -10,6 +10,9 @@ namespace Content.Shared.Preferences.Loadouts;
 [Prototype]
 public sealed partial class LoadoutPrototype : IPrototype, IEquipmentLoadout
 {
+    [DataField]
+    public string Name = "";
+
     [IdDataField]
     public string ID { get; private set; } = string.Empty;
 

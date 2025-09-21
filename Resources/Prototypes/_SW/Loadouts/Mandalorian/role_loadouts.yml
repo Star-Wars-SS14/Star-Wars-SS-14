@@ -1,0 +1,19 @@
+- type: roleLoadout
+  id: JobSWMandalorianRecruit
+  groups:
+  - SWMandoRecruit
+
+- type: roleLoadout
+  id: JobSWMandalorianVeteran
+  groups:
+  - SWMandoVeteran
+
+- type: roleLoadout
+  id: JobSWMandalorianWarrior
+  groups:
+  - SWMandoWarrior
+
+- type: roleLoadout
+  id: JobSWMandalorianLeader
+  groups:
+  - SWMandoLeader

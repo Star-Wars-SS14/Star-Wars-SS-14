@@ -258068,7 +258068,7 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -106.5,-215.5
       parent: 2
-- proto: SWBaseWeaponBlasterSmall
+- proto: SWScoutBlasterSmall
   entities:
   - uid: 43
     components:

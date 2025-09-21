@@ -39,7 +39,7 @@
   product: SWGrantekF11D2
   cost:
     SWEmpireCreditCurrency: 1500
-  category: sw-category-machins-guns
+  category: sw-category-machine-guns
   group: SWT2EmpireWeaponMarket
 
 - type: swCargoProduct

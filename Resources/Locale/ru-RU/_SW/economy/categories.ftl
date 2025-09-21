@@ -1,0 +1,11 @@
+sw-category-additional-ammunition = Дополнительная аммуниция
+sw-category-tools = Инструменты
+sw-category-explosive = Взрывчатка
+sw-category-materials = Материалы
+sw-category-medicine = Медицина
+sw-category-rifles = Винтовки
+sw-category-machine-guns = Пулеметы
+sw-category-sniper-rifles = Снайперские винтовки
+sw-category-magazines = Патроны
+sw-category-pistols = Пистолеты
+sw-category-base = Базовое

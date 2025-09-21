@@ -143,6 +143,7 @@
   parent: BaseComputer
   id: SWFinanceConsole
   name: Консоль финансов
+  suffix: Империя
   components:
   - type: SWFinanceConsole
     faction: EmpireFaction
@@ -163,6 +164,15 @@
     - map: ["computerLayerKeys"]
       state: generic_keys
   - type: SWBankAccountAccessor
+
+- type: entity
+  parent: SWFinanceConsole
+  id: SWFinanceConsoleRepublic
+  name: Консоль финансов
+  suffix: Республика
+  components:
+  - type: SWFinanceConsole
+    faction: RepublicFaction
 
 - type: entity
   parent: BaseComputer

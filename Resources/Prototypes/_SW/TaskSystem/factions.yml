@@ -22,6 +22,9 @@
     addIntervalInSeconds: 1200 #20 min    
     startAmountOfTasks : 4
     maxAmountOfTasks: 5
+  - type: SWBankAccountContainer
+    currentAmount:
+      SWRepublicCreditCurrency: 10500.0
 
 - type: entity
   id: EmpireFaction
@@ -54,8 +57,7 @@
         SWRepublicCreditCurrency: 15.0
   - type: SWBankAccountContainer
     currentAmount:
-      SWEmpireCreditCurrency: 50.0
-      SWRepublicCreditCurrency: 100.0
+      SWEmpireCreditCurrency: 10000.0
 
 - type: entity
   id: MandalorianFaction

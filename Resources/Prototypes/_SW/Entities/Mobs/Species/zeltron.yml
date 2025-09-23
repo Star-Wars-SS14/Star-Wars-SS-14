@@ -1,0 +1,37 @@
+- type: entity
+  parent: BaseMobSpeciesOrganic
+  id: BaseMobZeltron
+  name: Urist McChiss
+  abstract: true
+  components:
+  - type: Body
+    prototype: Dwarf
+    requiredLegs: 2
+  - type: Hunger
+  - type: Icon # It will not have an icon in the adminspawn menu without this. Body parts seem fine for whatever reason.
+    sprite: _SW/Mobs/Species/Zeltron/parts.rsi
+    state: full
+  - type: Thirst
+  - type: Butcherable
+    butcheringType: Spike
+    spawned:
+    - id: FoodMeatHuman
+      amount: 5
+  - type: HumanoidAppearance
+    species: Zeltron
+    hideLayersOnEquip:
+    - Hair
+    - Snout
+  - type: Inventory
+    femaleDisplacements:
+      jumpsuit:
+        sizeMaps:
+          32:
+            sprite: _SW/Mobs/Species/Zeltron/displacement.rsi
+            state: jumpsuit-female
+
+- type: entity
+  save: false
+  name: Urist McChiss
+  parent: BaseMobZeltron
+  id: MobZeltron

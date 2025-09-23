@@ -1,0 +1,120 @@
+- type: species
+  id: Zeltron
+  name: species-name-zeltron
+  roundStart: true
+  prototype: MobZeltron
+  sprites: MobZeltronSprites
+  markingLimits: MobHumanMarkingLimits
+  dollPrototype: MobHumanDummy
+  skinColoration: HumanTonedReduced
+
+# The lack of a layer means that
+# this person cannot have round-start anything
+# applied to that layer. It has to instead
+# be defined as a 'custom base layer'
+# in either the mob's starting marking prototype,
+# or it has to be added in C#.
+- type: speciesBaseSprites
+  id: MobZeltronSprites
+  sprites:
+    Special: MobHumanoidAnyMarking
+    Head: MobZeltronHead
+    Hair: MobHumanoidAnyMarking
+    FacialHair: MobHumanoidAnyMarking
+    Snout: MobHumanoidAnyMarking
+    Chest: MobZeltronTorso
+    Tail: MobHumanoidAnyMarking # Corvax-Sponsors
+    Eyes: MobHumanoidEyes
+    HeadTop: MobHumanoidAnyMarking
+    LArm: MobZeltronLArm
+    RArm: MobZeltronRArm
+    LHand: MobZeltronLHand
+    RHand: MobZeltronRHand
+    LLeg: MobZeltronLLeg
+    RLeg: MobZeltronRLeg
+    LFoot: MobZeltronLFoot
+    RFoot: MobZeltronRFoot
+
+- type: humanoidBaseSprite
+  id: MobZeltronHead
+  baseSprite:
+    sprite: _SW/Mobs/Species/Zeltron/parts.rsi
+    state: head_m
+
+- type: humanoidBaseSprite
+  id: MobZeltronHeadMale
+  baseSprite:
+    sprite: _SW/Mobs/Species/Zeltron/parts.rsi
+    state: head_m
+
+- type: humanoidBaseSprite
+  id: MobZeltronHeadFemale
+  baseSprite:
+    sprite: _SW/Mobs/Species/Zeltron/parts.rsi
+    state: head_f
+
+- type: humanoidBaseSprite
+  id: MobZeltronTorso
+  baseSprite:
+    sprite: _SW/Mobs/Species/Zeltron/parts.rsi
+    state: torso_m
+
+- type: humanoidBaseSprite
+  id: MobZeltronTorsoMale
+  baseSprite:
+    sprite: _SW/Mobs/Species/Zeltron/parts.rsi
+    state: torso_m
+
+- type: humanoidBaseSprite
+  id: MobZeltronTorsoFemale
+  baseSprite:
+    sprite: _SW/Mobs/Species/Zeltron/parts.rsi
+    state: torso_f
+
+- type: humanoidBaseSprite
+  id: MobZeltronLLeg
+  baseSprite:
+    sprite: _SW/Mobs/Species/Zeltron/parts.rsi
+    state: l_leg
+
+- type: humanoidBaseSprite
+  id: MobZeltronLArm
+  baseSprite:
+    sprite: _SW/Mobs/Species/Zeltron/parts.rsi
+    state: l_arm
+
+- type: humanoidBaseSprite
+  id: MobZeltronLHand
+  baseSprite:
+    sprite: _SW/Mobs/Species/Zeltron/parts.rsi
+    state: l_hand
+
+- type: humanoidBaseSprite
+  id: MobZeltronLFoot
+  baseSprite:
+    sprite: _SW/Mobs/Species/Zeltron/parts.rsi
+    state: l_foot
+
+- type: humanoidBaseSprite
+  id: MobZeltronRLeg
+  baseSprite:
+    sprite: _SW/Mobs/Species/Zeltron/parts.rsi
+    state: r_leg
+
+- type: humanoidBaseSprite
+  id: MobZeltronRArm
+  baseSprite:
+    sprite: _SW/Mobs/Species/Zeltron/parts.rsi
+    state: r_arm
+
+- type: humanoidBaseSprite
+  id: MobZeltronRHand
+  baseSprite:
+    sprite: _SW/Mobs/Species/Zeltron/parts.rsi
+    state: r_hand
+
+- type: humanoidBaseSprite
+  id: MobZeltronRFoot
+  baseSprite:
+    sprite: _SW/Mobs/Species/Zeltron/parts.rsi
+    state: r_foot

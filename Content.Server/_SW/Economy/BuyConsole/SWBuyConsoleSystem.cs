@@ -12,6 +12,7 @@ using Content.Shared.UserInterface;
 using Robust.Server.GameObjects;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
+using Robust.Shared.Toolshed.Commands.Math;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,7 @@ public sealed class SWBuyConsoleSystem : EntitySystem
     [Dependency] SWSharedBankSystem _sWSharedBankSystem = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private readonly SharedTransformSystem _sharedTransform = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -108,19 +110,8 @@ public sealed class SWBuyConsoleSystem : EntitySystem
         _sWSharedBankSystem.FillCurrencies(ent.Comp.AllowedCurrencies, ref totalCost);
         if (_sWSharedBankSystem.TryPayAny(totalCost, account.Comp.CurrentAmount))
         {
-            if (GetPallets(ent).Count > 0)
-            {
-                SpawnEntities(ent, proto.Product, args.Amount);
-            }
-            else
-            {
-                for (int _ = 0; _ < args.Amount; _++)
-                {
-                    Spawn(proto.Product, ent.Owner.ToCoordinates());
-                }
-            }
+            SpawnEntities(ent, proto.Product, args.Amount);
         }
-
         UpdateInterface(ent);
     }
 
@@ -128,11 +119,21 @@ public sealed class SWBuyConsoleSystem : EntitySystem
     {
         var pallets = GetPallets(ent);
         var size = pallets.Count;
-
-        for (int i = 0; i < amount; i++)
+        if (size != 0)
         {
-            var coords = pallets[i % size].ToCoordinates();
-            Spawn(proto, coords);
+            for (int i = 0; i < amount; i++)
+            {
+                var coords = _sharedTransform.ToMapCoordinates(pallets[i % size].ToCoordinates());
+                Spawn(proto, coords);
+            }
+        }
+        else
+        {
+            for (int _ = 0; _ < amount; _++)
+            {
+                var coords = _sharedTransform.ToMapCoordinates(ent.Owner.ToCoordinates());
+                Spawn(proto, coords);
+            }
         }
     }
 }

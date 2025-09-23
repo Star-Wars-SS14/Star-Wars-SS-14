@@ -64,7 +64,6 @@
   category: sw-category-sniper-rifles
   group: SWT2EmpireWeaponMarket
 
-
 - type: swCargoProduct
   id: SWE1MagazineCP
   icon:
@@ -132,11 +131,11 @@
   group: SWT2EmpireWeaponMarket
 
 - type: swCargoProduct
-  id: SWBaseWeaponBlasterSmallEmpireCP
+  id: SWScoutBlasterSmallEmpireCP
   icon:
     sprite: _SW/Objects/Weapons/Guns/Pistols/scout_blaster.rsi
     state: base
-  product: SWBaseWeaponBlasterSmall
+  product: SWScoutBlasterSmall
   cost:
     SWEmpireCreditCurrency: 400
   category: sw-category-pistols
@@ -154,11 +153,11 @@
   group: SWT2EmpireWeaponMarket
 
 - type: swCargoProduct
-  id: SWBaseWeaponBlasterSmallRepublicCP
+  id: SWScoutBlasterSmallRepublicCP
   icon:
     sprite: _SW/Objects/Weapons/Guns/Pistols/scout_blaster.rsi
     state: base
-  product: SWBaseWeaponBlasterSmall
+  product: SWScoutBlasterSmall
   cost:
     SWEmpireCreditCurrency: 400
   category: sw-category-pistols

@@ -21,7 +21,7 @@ public sealed partial class SWSellConsoleComponent : Component
     /// will be considered as price in this currency
     /// </summary>
     [DataField]
-    public ProtoId<SWCurrencyPrototype> StaticPriceCurrency;
+    public ProtoId<SWCurrencyPrototype> StaticPriceCurrency = "SWVanillaCurrency";
 
     [DataField]
     public ProtoId<SourcePortPrototype> Port = "SWSellConsoleSender";

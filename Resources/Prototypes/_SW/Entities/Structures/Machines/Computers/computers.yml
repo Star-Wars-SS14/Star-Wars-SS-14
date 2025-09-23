@@ -293,7 +293,6 @@
       - SWSellConsoleSender
   - type: SWSellConsole
     outputCurrency: SWEmpireCreditCurrency
-    staticPriceCurrency: SWEmpireCreditCurrency
 
 - type: entity
   parent: BaseComputer

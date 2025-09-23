@@ -59,11 +59,6 @@
                     Text="Placeholder Text"
                     ToolTip="{Loc 'comms-console-menu-emergency-shuttle-button-tooltip'}"
                     Visible="False"/>
-
-                <Button Name="ReinforcementsShuttleButton"
-                        Text="Запросить подкрепление"
-                        Access="Public"/>
-
             </BoxContainer>
         </BoxContainer>
     </BoxContainer>

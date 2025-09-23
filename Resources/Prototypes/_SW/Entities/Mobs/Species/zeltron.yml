@@ -27,7 +27,7 @@
       jumpsuit:
         sizeMaps:
           32:
-            sprite: _SW/Mobs/Species/Zeltron/displacement.rsi
+            sprite: _SW/Mobs/Species/Human/displacement.rsi
             state: jumpsuit-female
 
 - type: entity

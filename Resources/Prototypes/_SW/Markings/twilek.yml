@@ -3,8 +3,6 @@
   bodyPart: Hair
   markingCategory: Hair
   speciesRestriction: [Twilek]
-  forcedColoring: true
-  followSkinColor: true
   sprites:
   - sprite: _SW/Mobs/Markings/twilek_hair.rsi
     state: hair_m

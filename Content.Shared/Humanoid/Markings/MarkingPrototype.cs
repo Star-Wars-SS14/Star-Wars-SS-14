@@ -49,7 +49,7 @@ namespace Content.Shared.Humanoid.Markings
 
         public Marking AsMarking()
         {
-            return new Marking(ID, Sprites.Count, FollowSkinColor);
+            return new Marking(ID, Sprites.Count);
         }
     }
 }

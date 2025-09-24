@@ -16,6 +16,8 @@
             Toxin: -6
             Airloss: -6
             Brute: -6
+      - !type:ModifyBleedAmount
+        amount: -1.5
 
 - type: reagent
   id: SWBacta
@@ -35,3 +37,5 @@
             Toxin: -12
             Airloss: -12
             Brute: -12
+      - !type:ModifyBleedAmount
+        amount: -2.0

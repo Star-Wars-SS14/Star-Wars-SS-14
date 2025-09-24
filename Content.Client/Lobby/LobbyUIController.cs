@@ -199,20 +199,83 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
         _profileEditor?.RefreshLoadouts();
     }
 
-    private void SaveProfile()
+    //bool shows if profile was succefully saved
+    private bool SaveProfile()
     {
         DebugTools.Assert(EditedProfile != null);
 
+        if (!CheckMarkings())
+        {
+            return false;
+        }
+
         if (EditedProfile == null || EditedSlot == null)
-            return;
+            return false;
 
         var selected = _preferencesManager.Preferences?.SelectedCharacterIndex;
 
         if (selected == null)
-            return;
+            return false;
 
         _preferencesManager.UpdateCharacter(EditedProfile, EditedSlot.Value);
         ReloadCharacterSetup();
+        return true;
+    }
+
+    private bool CheckMarkings()
+    {
+        if (EditedProfile == null)
+        {
+            return true;
+        }
+        var pointsId = _prototypeManager.Index(EditedProfile.Species).MarkingPoints;
+        var points = _prototypeManager.Index(pointsId).Points;
+        foreach (var (category, point) in points)
+        {
+            if (point.Required)
+            {
+                if (!ContainsMarkingOfCategory(EditedProfile.Appearance.Markings, category))
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private bool ContainsMarkingOfCategory(List<Marking> markings, MarkingCategories category)
+    {
+        if (EditedProfile == null)
+        {
+            return true;
+        }
+
+        ISawmill _s = Logger.GetSawmill("sadfghj");
+        _s.Fatal("0");
+
+        if (category == MarkingCategories.Hair)
+        {
+            return EditedProfile.Appearance.HairStyleId != HairStyles.DefaultHairStyle;
+        }
+
+        if (category == MarkingCategories.FacialHair)
+        {
+            return EditedProfile.Appearance.FacialHairStyleId != HairStyles.DefaultFacialHairStyle;
+        }
+
+        foreach (var marking in markings)
+        {
+            var markingProto = _prototypeManager.Index<MarkingPrototype>(marking.MarkingId);
+            _s.Fatal($"{markingProto.MarkingCategory} == {category}");
+            if (markingProto.MarkingCategory == category)
+            {
+                //Requirement satisfied
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void CloseProfileEditor()
@@ -238,11 +301,13 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
 
         _savePanel.SaveButton.OnPressed += _ =>
         {
-            SaveProfile();
+            var res = SaveProfile();
 
-            _savePanel.Close();
-
-            CloseProfileEditor();
+            if (res)
+            {
+                _savePanel.Close();
+                CloseProfileEditor();
+            }
         };
 
         _savePanel.NoSaveButton.OnPressed += _ =>
@@ -294,7 +359,7 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
             CloseProfileEditor();
         };
 
-        _profileEditor.Save += SaveProfile;
+        _profileEditor.Save += () => { SaveProfile(); };
 
         _characterSetup.SelectCharacter += args =>
         {

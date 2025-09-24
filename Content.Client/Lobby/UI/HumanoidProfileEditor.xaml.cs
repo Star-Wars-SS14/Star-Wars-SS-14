@@ -1411,6 +1411,18 @@ namespace Content.Client.Lobby.UI
 
                     break;
                 }
+                case HumanoidSkinColor.HumanTonedReduced:
+                    {
+                        if (!Skin.Visible)
+                        {
+                            Skin.Visible = true;
+                            RgbSkinColorContainer.Visible = false;
+                        }
+
+                        Skin.Value = SkinColor.GetSkinToneReducedClosest(Profile.Appearance.SkinColor);
+
+                        break;
+                    }
             }
 
         }

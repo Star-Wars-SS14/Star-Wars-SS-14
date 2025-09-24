@@ -1,6 +1,6 @@
 - type: body
   id: Zeltron
-  name: "human"
+  name: "zeltron"
   root: torso
   slots:
     head:

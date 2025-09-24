@@ -20,7 +20,7 @@ public static class SkinColor
     public const float MinShadesOfBlueTone = 0f;
     public const float MaxShadesOfBlueTone = 25f;
     public static Color ValidHumanSkinTone => Color.FromHsv(new Vector4(0.07f, 0.2f, 1f, 1f));
-    public static Color ValidChissSkinTone => new Color(104, 125, 182);
+    public static Color ValidChissSkinTone => new Color(255, 255, 255);
 
     /// <summary>
     ///     Turn a color into a valid tinted hue skin tone.
@@ -257,6 +257,7 @@ public static class SkinColor
     //SW start
     private static bool VerifyChissSkinTone(Color color)
     {
+        return true;
         //TO DO: add additional logic to check if tone is in acceptable range. 
         return VerifyHumanSkinTone(color);
     }
@@ -265,6 +266,11 @@ public static class SkinColor
         color /= 100; //normalize it to be in [0, 1], 100 - max human tone
         var new_tone = (int)float.Lerp(MinShadesOfBlueTone, MaxShadesOfBlueTone, color);
         return HumanSkinTone(new_tone);
+    }
+
+    public static float GetSkinToneReducedClosest(Color color)
+    {
+        return HumanSkinToneFromColor(color);
     }
 
     //SW end

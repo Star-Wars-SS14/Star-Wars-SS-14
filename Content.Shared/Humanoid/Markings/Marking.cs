@@ -38,16 +38,6 @@ namespace Content.Shared.Humanoid.Markings
             _markingColors = colors;
         }
 
-        public Marking(string markingId, int colorCount, bool followSkinColor)
-        {
-            MarkingId = markingId;
-            List<Color> colors = new();
-            for (int i = 0; i < colorCount; i++)
-                colors.Add(Color.White);
-            _markingColors = colors;
-            FollowSkinColor = followSkinColor;
-        }
-
         public Marking(Marking other)
         {
             MarkingId = other.MarkingId;
@@ -73,9 +63,6 @@ namespace Content.Shared.Humanoid.Markings
         /// </summary>
         [DataField("visible")]
         public bool Visible = true;
-
-        [DataField]
-        public bool FollowSkinColor = true;
 
         /// <summary>
         ///     If this marking should be forcefully applied, regardless of points.

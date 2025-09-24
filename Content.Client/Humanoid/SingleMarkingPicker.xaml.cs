@@ -231,11 +231,6 @@ public sealed partial class SingleMarkingPicker : BoxContainer
             marking = new Marking(marking.MarkingId, proto.Sprites.Count);
         }
 
-        if (marking.FollowSkinColor)
-        {
-            return;
-        }
-
         for (var i = 0; i < marking.MarkingColors.Count; i++)
         {
             var selector = new ColorSelectorSliders

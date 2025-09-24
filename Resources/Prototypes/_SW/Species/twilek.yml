@@ -56,7 +56,7 @@
   sprites:
     Special: MobHumanoidAnyMarking
     Head: MobTwilekHead
-    Hair: MobHumanoidAnyMarking
+    Hair: TwilekMarkingFollowSkin
     FacialHair: MobHumanoidAnyMarking
     Snout: MobHumanoidAnyMarking
     Chest: MobTwilekTorso
@@ -73,22 +73,24 @@
     RFoot: MobTwilekRFoot
 
 - type: humanoidBaseSprite
-  id: MobTwilekHead
+  id: TwilekMarkingFollowSkin
   markingsMatchSkin: true
+  layerAlpha: 0.72
+
+- type: humanoidBaseSprite
+  id: MobTwilekHead
   baseSprite:
     sprite: _SW/Mobs/Species/Twilek/parts.rsi
     state: head_m
 
 - type: humanoidBaseSprite
   id: MobTwilekHeadMale
-  markingsMatchSkin: true
   baseSprite:
     sprite: _SW/Mobs/Species/Twilek/parts.rsi
     state: head_m
 
 - type: humanoidBaseSprite
   id: MobTwilekHeadFemale
-  markingsMatchSkin: true
   baseSprite:
     sprite: _SW/Mobs/Species/Twilek/parts.rsi
     state: head_f

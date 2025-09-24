@@ -1,6 +1,7 @@
-using Robust.Shared.Maths;
-using System.Security.Cryptography;
 using Microsoft.VisualBasic.CompilerServices;
+using Robust.Shared.Maths;
+using System;
+using System.Security.Cryptography;
 
 namespace Content.Shared.Humanoid;
 
@@ -257,7 +258,6 @@ public static class SkinColor
     //SW start
     private static bool VerifyChissSkinTone(Color color)
     {
-        return true;
         //TO DO: add additional logic to check if tone is in acceptable range. 
         return VerifyHumanSkinTone(color);
     }
@@ -270,7 +270,9 @@ public static class SkinColor
 
     public static float GetSkinToneReducedClosest(Color color)
     {
-        return HumanSkinToneFromColor(color);
+        var c = HumanSkinToneFromColor(color) / 25;
+        var new_tone = (int)float.Lerp(0, 100, c);
+        return new_tone;
     }
 
     //SW end

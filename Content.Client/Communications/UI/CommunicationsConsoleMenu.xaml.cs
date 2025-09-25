@@ -76,9 +76,9 @@ namespace Content.Client.Communications.UI
             EmergencyShuttleButton.OnPressed += _ => OnEmergencyLevel?.Invoke();
             EmergencyShuttleButton.Disabled = !CanCall;
 
-            ReinforcementsShuttleButton.OnPressed += _ => OnReinforcement?.Invoke(null);
-            ReinforcementsShuttleButton.Disabled = !CanReinforcements;
-            ReinforcementsShuttleButton.Modulate = CanReinforcements ? Color.DarkRed : Color.Red;
+            //ReinforcementsShuttleButton.OnPressed += _ => OnReinforcement?.Invoke(null);
+            //ReinforcementsShuttleButton.Disabled = !CanReinforcements;
+            //ReinforcementsShuttleButton.Modulate = CanReinforcements ? Color.DarkRed : Color.Red;
         }
 
         protected override void FrameUpdate(FrameEventArgs args)

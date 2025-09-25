@@ -264,7 +264,7 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
         foreach (var marking in markings)
         {
             var markingProto = _prototypeManager.Index<MarkingPrototype>(marking.MarkingId);
-            _s.Fatal($"{markingProto.MarkingCategory} == {category}");
+
             if (markingProto.MarkingCategory == category)
             {
                 //Requirement satisfied

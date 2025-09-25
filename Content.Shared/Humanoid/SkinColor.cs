@@ -1,3 +1,5 @@
+using Content.Shared._SW.Species;
+using Content.Shared.Humanoid.Prototypes;
 using Microsoft.VisualBasic.CompilerServices;
 using Robust.Shared.Maths;
 using System;
@@ -275,6 +277,16 @@ public static class SkinColor
         return new_tone;
     }
 
+    public static bool FitLimits(SWColorLimitsPrototype limits, Color color)
+    {
+        var hsv = Color.ToHsv(color);
+        bool hFit = limits.HueLimit.Contains(hsv.X);
+        bool sFit = limits.SaturationLimit.Contains(hsv.Y);
+        bool vFit = limits.ValueLimit.Contains(hsv.Z);
+
+        return hFit && sFit && vFit;
+    }
+
     //SW end
 }
 
@@ -284,5 +296,6 @@ public enum HumanoidSkinColor : byte
     Hues,
     VoxFeathers, // Vox feathers are limited to a specific color range
     TintedHues, //This gives a color tint to a humanoid's skin (10% saturation with full hue range).
-    HumanTonedReduced //SW
+    HumanTonedReduced, //SW
+    ColorLimits
 }

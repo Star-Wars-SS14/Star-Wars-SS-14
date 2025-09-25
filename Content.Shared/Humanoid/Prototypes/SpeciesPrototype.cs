@@ -1,3 +1,4 @@
+using Content.Shared._SW.Species;
 using Content.Shared.Dataset;
 using Content.Shared.Humanoid.Markings;
 using Robust.Shared.Prototypes;
@@ -90,6 +91,9 @@ public sealed partial class SpeciesPrototype : IPrototype
     /// </summary>
     [DataField(required: true)]
     public HumanoidSkinColor SkinColoration { get; private set; }
+
+    [DataField] //SW
+    public ProtoId<SWColorLimitsPrototype>? SkinColorLimits; //SW
 
     [DataField]
     public ProtoId<LocalizedDatasetPrototype> MaleFirstNames { get; private set; } = "NamesFirstMale";

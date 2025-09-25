@@ -1162,17 +1162,37 @@ namespace Content.Client.Lobby.UI
                     }
                 //SW start
                 case HumanoidSkinColor.HumanTonedReduced:
-                {
-                    if (!Skin.Visible)
                     {
-                        Skin.Visible = true;
-                        RgbSkinColorContainer.Visible = false;
-                    }
+                        if (!Skin.Visible)
+                        {
+                            Skin.Visible = true;
+                            RgbSkinColorContainer.Visible = false;
+                        }
 
-                    var color = SkinColor.SkinToneReducedClosest(Skin.Value);
+                        var color = SkinColor.SkinToneReducedClosest(Skin.Value);
 
                         Markings.CurrentSkinColor = color;
                         Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
+                        break;
+                    }
+
+                case HumanoidSkinColor.ColorLimits:
+                    {
+                        if (!RgbSkinColorContainer.Visible)
+                        {
+                            Skin.Visible = false;
+                            RgbSkinColorContainer.Visible = true;
+                        }
+                        var color = _rgbSkinColorSelector.Color;
+                        var speciesProto = _prototypeManager.Index(Profile.Species);
+                        var limitsProto = _prototypeManager.Index(speciesProto.SkinColorLimits);
+
+                        if (limitsProto == null ||
+                                SkinColor.FitLimits(limitsProto, color))
+                        {
+                            Markings.CurrentSkinColor = color;
+                            Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
+                        }
                         break;
                     }
                     //SW end

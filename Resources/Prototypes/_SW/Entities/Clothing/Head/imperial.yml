@@ -7,7 +7,6 @@
     sprite: _SW/Clothing/Head/Helmets/imperialhelmet.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/imperialhelmet.rsi
-  - type: ShowJobIcons
 
 - type: entity
   parent: SW_ClothingHeadImperialHelmet

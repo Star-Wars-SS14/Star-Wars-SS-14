@@ -4,39 +4,12 @@
   roundStart: true
   prototype: MobChiss
   sprites: MobChissSprites
-  markingLimits: MobChissMarkingLimits
+  markingLimits: MobNoFacialMarkingLimits
   dollPrototype: MobHumanDummy
   skinColoration: HumanTonedReduced
 
-# The lack of a layer means that
-# this person cannot have round-start anything
-# applied to that layer. It has to instead
-# be defined as a 'custom base layer'
-# in either the mob's starting marking prototype,
-# or it has to be added in C#.
-- type: speciesBaseSprites
-  id: MobChissSprites
-  sprites:
-    Special: MobHumanoidAnyMarking
-    Head: MobChissHead
-    Hair: MobHumanoidAnyMarking
-    FacialHair: MobHumanoidAnyMarking
-    Snout: MobHumanoidAnyMarking
-    Chest: MobChissTorso
-    Tail: MobHumanoidAnyMarking # Corvax-Sponsors
-    Eyes: MobHumanoidEyes
-    HeadTop: MobHumanoidAnyMarking
-    LArm: MobChissLArm
-    RArm: MobChissRArm
-    LHand: MobChissLHand
-    RHand: MobChissRHand
-    LLeg: MobChissLLeg
-    RLeg: MobChissRLeg
-    LFoot: MobChissLFoot
-    RFoot: MobChissRFoot
-
 - type: markingPoints
-  id: MobChissMarkingLimits
+  id: MobNoFacialHairMarkingLimits
   points:
     Special: 
       points: 1 
@@ -71,6 +44,33 @@
     Arms:
       points: 2
       required: false
+
+# The lack of a layer means that
+# this person cannot have round-start anything
+# applied to that layer. It has to instead
+# be defined as a 'custom base layer'
+# in either the mob's starting marking prototype,
+# or it has to be added in C#.
+- type: speciesBaseSprites
+  id: MobChissSprites
+  sprites:
+    Special: MobHumanoidAnyMarking
+    Head: MobChissHead
+    Hair: MobHumanoidAnyMarking
+    FacialHair: MobHumanoidAnyMarking
+    Snout: MobHumanoidAnyMarking
+    Chest: MobChissTorso
+    Tail: MobHumanoidAnyMarking # Corvax-Sponsors
+    Eyes: MobHumanoidEyes
+    HeadTop: MobHumanoidAnyMarking
+    LArm: MobChissLArm
+    RArm: MobChissRArm
+    LHand: MobChissLHand
+    RHand: MobChissRHand
+    LLeg: MobChissLLeg
+    RLeg: MobChissRLeg
+    LFoot: MobChissLFoot
+    RFoot: MobChissRFoot
 
 - type: humanoidBaseSprite
   id: MobChissHead

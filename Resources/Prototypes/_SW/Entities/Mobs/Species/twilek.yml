@@ -20,6 +20,7 @@
     - Hair
     - Snout
   - type: Inventory
+    templateId: speciesNoHeadClothing
     femaleDisplacements:
       jumpsuit:
         sizeMaps:

@@ -251,9 +251,6 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
             return true;
         }
 
-        ISawmill _s = Logger.GetSawmill("sadfghj");
-        _s.Fatal("0");
-
         if (category == MarkingCategories.Hair)
         {
             return EditedProfile.Appearance.HairStyleId != HairStyles.DefaultHairStyle;

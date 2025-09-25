@@ -1,9 +1,18 @@
 - type: marking
-  id: SWTwilekHair
+  id: SWTwilekHairMale
   bodyPart: Hair
   markingCategory: Hair
   speciesRestriction: [Twilek]
   sprites:
   - sprite: _SW/Mobs/Markings/twilek_hair.rsi
     state: hair_m
+
+- type: marking
+  id: SWTwilekHairFemale
+  bodyPart: Hair
+  markingCategory: Hair
+  speciesRestriction: [Twilek]
+  sprites:
+  - sprite: _SW/Mobs/Markings/twilek_hair.rsi
+    state: hair_f
 

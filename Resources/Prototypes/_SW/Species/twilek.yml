@@ -4,7 +4,7 @@
   roundStart: true
   prototype: MobTwilek
   sprites: MobTwilekSprites
-  markingLimits: MobTwilekMarkingLimits
+  markingLimits: MobNoFacialHairRequiredMarkingLimits
   dollPrototype: MobHumanDummy
   skinColoration: ColorLimits
   skinColorLimits: TwilekColorLimits
@@ -13,7 +13,7 @@
   id: TwilekColorLimits
 
 - type: markingPoints
-  id: MobTwilekMarkingLimits
+  id: MobNoFacialHairRequiredMarkingLimits
   points:
     Special: 
       points: 1 

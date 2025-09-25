@@ -15,7 +15,7 @@
     - id: FoodMeatHuman
       amount: 5
   - type: HumanoidAppearance
-    species: Human
+    species: Chiss
     hideLayersOnEquip:
     - Hair
     - Snout

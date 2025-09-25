@@ -1161,15 +1161,15 @@ namespace Content.Client.Lobby.UI
                         break;
                     }
                 //SW start
-                case HumanoidSkinColor.ShadesOfBlue:
+                case HumanoidSkinColor.HumanTonedReduced:
+                {
+                    if (!Skin.Visible)
                     {
-                        if (!Skin.Visible)
-                        {
-                            Skin.Visible = true;
-                            RgbSkinColorContainer.Visible = false;
-                        }
+                        Skin.Visible = true;
+                        RgbSkinColorContainer.Visible = false;
+                    }
 
-                        var color = SkinColor.ShadesOfBlueClosest(Skin.Value);
+                    var color = SkinColor.SkinToneReducedClosest(Skin.Value);
 
                         Markings.CurrentSkinColor = color;
                         Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
@@ -1409,6 +1409,18 @@ namespace Content.Client.Lobby.UI
                         }
 
                         _rgbSkinColorSelector.Color = SkinColor.ClosestVoxColor(Profile.Appearance.SkinColor);
+
+                    break;
+                }
+                case HumanoidSkinColor.HumanTonedReduced:
+                    {
+                        if (!Skin.Visible)
+                        {
+                            Skin.Visible = true;
+                            RgbSkinColorContainer.Visible = false;
+                        }
+
+                        Skin.Value = SkinColor.GetSkinToneReducedClosest(Profile.Appearance.SkinColor);
 
                         break;
                     }

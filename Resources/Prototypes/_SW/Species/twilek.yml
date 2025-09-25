@@ -7,14 +7,10 @@
   markingLimits: MobTwilekMarkingLimits
   dollPrototype: MobHumanDummy
   skinColoration: ColorLimits
-  SkinColorLimits: TwilekColorLimits
+  skinColorLimits: TwilekColorLimits
 
 - type: swColorLimits
   id: TwilekColorLimits
-  hueLimit:
-    intervals:
-    - left: 0.3
-      right: 0.6
 
 - type: markingPoints
   id: MobTwilekMarkingLimits

@@ -9,27 +9,27 @@ using Robust.Shared.Serialization;
 namespace Content.Shared._SW.Species;
 
 [DataDefinition, Serializable]
-public sealed partial class SWNumberIntervalSet<T> where T : INumber<T>
+public sealed partial class SWNumberIntervalSet
 {
     [DataField]
-    public HashSet<SWNumberInterval<T>> Intervals;
+    public HashSet<SWNumberInterval> Intervals;
 
-    public SWNumberIntervalSet(T l, T r)
+    public SWNumberIntervalSet(float l, float r)
     {
-        Intervals = new() { new SWNumberInterval<T>(l, r) };
+        Intervals = new() { new SWNumberInterval (l, r) };
     }
 
     public SWNumberIntervalSet()
     {
-        Intervals = new HashSet<SWNumberInterval<T>>();
+        Intervals = new HashSet<SWNumberInterval>();
     }
 
-    public void Add(T l, T r)
+    public void Add(float l, float r)
     {
         Intervals.Add(new(l, r));
     }
 
-    public bool Contains(T value)
+    public bool Contains(float value)
     {
         if (Intervals.Count == 0) return false;
 
@@ -44,20 +44,20 @@ public sealed partial class SWNumberIntervalSet<T> where T : INumber<T>
 }
 
 [DataDefinition, Serializable]
- public sealed partial class SWNumberInterval<T> where T : INumber<T>
+ public sealed partial class SWNumberInterval
 {
     [DataField]
-    public T Left;
+    public float Left;
 
     [DataField]
-    public T Right;
+    public float Right;
 
-    public SWNumberInterval(T l, T r)
+    public SWNumberInterval(float l, float r)
     {
         Left = l;
         Right = r;
     }
-    public bool Contains(T num)
+    public bool Contains(float num)
     {
         return num >= Left && num <= Right;
     }

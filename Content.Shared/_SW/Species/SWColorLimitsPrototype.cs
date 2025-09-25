@@ -13,12 +13,12 @@ public sealed partial class SWColorLimitsPrototype : IPrototype
     public string ID { get; } = default!;
 
     [DataField]
-    public SWNumberIntervalSet<float> HueLimit = new SWNumberIntervalSet<float>(0, 100);
+    public SWNumberIntervalSet HueLimit = new SWNumberIntervalSet(0, 1);
 
     [DataField]
-    public SWNumberIntervalSet<float> SaturationLimit = new SWNumberIntervalSet<float>(0, 100);
+    public SWNumberIntervalSet SaturationLimit = new SWNumberIntervalSet(0, 1);
 
     [DataField]
-    public SWNumberIntervalSet<float> ValueLimit = new SWNumberIntervalSet<float>(0, 100);
+    public SWNumberIntervalSet ValueLimit = new SWNumberIntervalSet(0, 1);
 }
 

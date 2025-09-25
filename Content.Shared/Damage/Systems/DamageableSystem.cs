@@ -14,6 +14,7 @@ using Robust.Shared.GameStates;
 using Robust.Shared.Network;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
+using Content.Shared._SW; //SW
 
 namespace Content.Shared.Damage
 {
@@ -213,6 +214,12 @@ namespace Content.Shared.Damage
             }
 
             damage = ApplyUniversalAllModifiers(damage);
+
+            //SW start
+            var ev2 = new SWAfterAllModifiersAppliedDamageModifyEvent(damage, origin);
+            RaiseLocalEvent(uid.Value, ev2);
+            damage = ev2.Damage;
+            //SW end
 
             // TODO DAMAGE PERFORMANCE
             // Consider using a local private field instead of creating a new dictionary here.

@@ -3,8 +3,8 @@
     xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
     xmlns:ui="clr-namespace:Content.Client.Materials.UI"
     Title="task"
-    MinSize="550 450"
-    SetSize="750 500">
+    MinSize="800 500"
+    SetSize="800 500">
     <BoxContainer Orientation="Vertical">
         <Button
                         Name="UpdateTasksButton"

@@ -241,7 +241,9 @@ namespace Content.Client.Lobby.UI
                 SpeciesButton.SelectId(args.Id);
                 SetSpecies(_species[args.Id].ID);
                 UpdateHairPickers();
+                UpdateCMarkingsHair();              //SW  
                 OnSkinColorOnValueChanged();
+                ReloadPreview(); //SW
             };
 
             #region Skin
@@ -1512,33 +1514,6 @@ namespace Content.Client.Lobby.UI
             var facialHairMarking = Profile.Appearance.FacialHairStyleId == HairStyles.DefaultFacialHairStyle
                 ? new List<Marking>()
                 : new() { new(Profile.Appearance.FacialHairStyleId, new List<Color>() { Profile.Appearance.FacialHairColor }) };
-
-            bool valid = true;
-            if (hairMarking.Count > 0)
-            {
-                valid = _markingManager.IsValidMarking(hairMarking[0],
-                                                MarkingCategories.Hair,
-                                                Profile.Species,
-                                                Profile.Sex);
-            }
-
-            if (!valid)
-            {
-                Profile.Appearance.HairStyleId = HairStyles.DefaultHairStyle;
-            }
-
-            if (facialHairMarking.Count > 0)
-            {
-                valid = _markingManager.IsValidMarking(facialHairMarking[0],
-                                            MarkingCategories.Hair,
-                                            Profile.Species,
-                                            Profile.Sex);
-            }
-
-            if (!valid)
-            {
-                Profile.Appearance.HairStyleId = HairStyles.DefaultFacialHairStyle;
-            }
 
             HairStylePicker.UpdateData(
                 hairMarking,

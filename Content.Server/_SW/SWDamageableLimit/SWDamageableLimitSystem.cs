@@ -61,13 +61,8 @@ public sealed class SWDamageableLimitSystem : EntitySystem
 
         if (newDamageTotal > maxDamage)
         {
-            ISawmill _s = Logger.GetSawmill("asdfg");
-            _s.Fatal($"{newDamageTotal} > {maxDamage}");
             FixedPoint2 modifier = (maxDamage - curDamage) / total;
-            _s.Fatal($"{modifier} {curDamage} {total}");
-            _s.Fatal($"old: {args.Damage}");
             args.Damage = args.Damage * modifier;
-            _s.Fatal($"new: {args.Damage}");
         }
     }
 }

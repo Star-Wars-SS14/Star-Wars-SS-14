@@ -1528,9 +1528,37 @@ namespace Content.Client.Lobby.UI
                 ? new List<Marking>()
                 : new() { new(Profile.Appearance.FacialHairStyleId, new List<Color>() { Profile.Appearance.FacialHairColor }) };
 
-            Profile = Profile.WithCharacterAppearance(
-                    Profile.Appearance.WithHairStyleName(HairStyles.DefaultHairStyle)
+            bool valid = true;
+            if (hairMarking.Count > 0)
+            {
+                valid = _markingManager.IsValidMarking(hairMarking[0],
+                                                MarkingCategories.Hair,
+                                                Profile.Species,
+                                                Profile.Sex);
+            }
+
+            if (!valid)
+            {
+                Profile = Profile.WithCharacterAppearance(
+                     Profile.Appearance.WithHairStyleName(HairStyles.DefaultHairStyle)
+                 );
+            }
+
+            valid = true;
+            if (facialHairMarking.Count > 0)
+            {
+                valid = _markingManager.IsValidMarking(facialHairMarking[0],
+                                            MarkingCategories.FacialHair,
+                                            Profile.Species,
+                                            Profile.Sex);
+            }
+
+            if (!valid)
+            {
+                Profile = Profile.WithCharacterAppearance(
+                    Profile.Appearance.WithHairStyleName(HairStyles.DefaultFacialHairStyle)
                 );
+            }
 
             HairStylePicker.UpdateData(
                 hairMarking,

@@ -1,5 +1,5 @@
 - type: marking
-  id: SWTwilekHairMale
+  id: SWTwilekHair1
   bodyPart: Hair
   markingCategory: Hair
   speciesRestriction: [Twilek]
@@ -8,7 +8,7 @@
     state: hair_m
 
 - type: marking
-  id: SWTwilekHairFemale
+  id: SWTwilekHair2
   bodyPart: Hair
   markingCategory: Hair
   speciesRestriction: [Twilek]

@@ -6,7 +6,7 @@
   components:
   - type: Hunger
   - type: Icon # It will not have an icon in the adminspawn menu without this. Body parts seem fine for whatever reason.
-    sprite: _SW/Mobs/Species/Chiss/parts.rsi
+    sprite: _SW/Mobs/Species/Twilek/parts.rsi
     state: full
   - type: Thirst
   - type: Butcherable

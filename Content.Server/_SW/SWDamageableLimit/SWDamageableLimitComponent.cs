@@ -10,7 +10,7 @@ public sealed partial class SWDamageableLimitComponent : Component
 {
     /// <summary>
     /// Maximum damage is actually
-    /// damage on dead threshold + TotalDamageToCrit
+    /// damage on dead threshold + <see cref="TotalDamageToDeadAdd">
     /// </summary>
     [DataField]
     public float TotalDamageToDeadAdd = 100f;

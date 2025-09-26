@@ -4,7 +4,7 @@
   roundStart: true
   prototype: MobChiss
   sprites: MobChissSprites
-  markingLimits: MobNoFacialMarkingLimits
+  markingLimits: MobNoFacialHairMarkingLimits
   dollPrototype: MobHumanDummy
   skinColoration: HumanTonedReduced
 

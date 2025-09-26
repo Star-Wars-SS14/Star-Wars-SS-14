@@ -2,7 +2,7 @@
   id: HumanHairAfricanPigtails
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: africanpigtails
@@ -11,7 +11,7 @@
   id: HumanHairAfropuffdouble
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: afropuffdouble
@@ -20,7 +20,7 @@
   id: HumanHairAfropuffleft
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: afropuffleft
@@ -29,7 +29,7 @@
   id: HumanHairAfropuffright
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: afropuffright
@@ -38,7 +38,7 @@
   id: HumanHairAmazon
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: amazon
@@ -47,7 +47,7 @@
   id: HumanHairAstolfo
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: astolfo
@@ -56,7 +56,7 @@
   id: HumanHairBaum
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: baum
@@ -65,7 +65,7 @@
   id: HumanHairBeachwave
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: beachwave
@@ -74,7 +74,7 @@
   id: HumanHairBluntbangs
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: bluntbangs
@@ -83,7 +83,7 @@
   id: HumanHairBluntbangsAlt
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: bluntbangs_alt
@@ -92,7 +92,7 @@
   id: HumanHairBobcutAlt
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: bobcutalt
@@ -101,7 +101,7 @@
   id: HumanHairBunhead4
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: bunhead4
@@ -110,7 +110,7 @@
   id: HumanHairCombed
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: combed
@@ -119,7 +119,7 @@
   id: HumanHairCombedbob
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: combedbob
@@ -128,7 +128,7 @@
   id: HumanHairCotton
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: cotton
@@ -137,7 +137,7 @@
   id: HumanHairCurly
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: curly
@@ -146,7 +146,7 @@
   id: HumanHairDave
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: dave
@@ -155,7 +155,7 @@
   id: HumanHairDiagonalBangs
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: diagonal_bangs
@@ -164,7 +164,7 @@
   id: HumanHairEmoshort
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: emoshort
@@ -173,7 +173,7 @@
   id: HumanHairFingerwave
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: fingerwave
@@ -182,7 +182,7 @@
   id: HumanHairFluffyShort
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: fluffy_short
@@ -191,7 +191,7 @@
   id: HumanHairFortuneteller
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: fortuneteller
@@ -200,7 +200,7 @@
   id: HumanHairFortunetellerAlt
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: fortuneteller_alt
@@ -209,7 +209,7 @@
   id: HumanHairFroofylong
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: froofylong
@@ -218,7 +218,7 @@
   id: HumanHairGeisha
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: geisha
@@ -227,7 +227,7 @@
   id: HumanHairGentle21
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: gentle21
@@ -236,7 +236,7 @@
   id: HumanHairGlammetal
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: glammetal
@@ -245,7 +245,7 @@
   id: HumanHairGloomyLong
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: gloomy_long
@@ -254,7 +254,7 @@
   id: HumanHairGloomyMedium
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: gloomy_medium
@@ -263,7 +263,7 @@
   id: HumanHairGrande
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: grande
@@ -272,7 +272,7 @@
   id: HumanHairHalfshave
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: halfshave
@@ -281,7 +281,7 @@
   id: HumanHairHalfshaveglamorous
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: halfshave_glamorous
@@ -290,7 +290,7 @@
   id: HumanHairHalfshaveLong
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: halfshave_long
@@ -299,7 +299,7 @@
   id: HumanHairHalfshaveMessy
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: halfshave_messy
@@ -308,7 +308,7 @@
   id: HumanHairHalfshaveMessyLong
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: halfshave_messylong
@@ -317,7 +317,7 @@
   id: HumanHairHalfshaveSnout
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: halfshave_snout
@@ -326,7 +326,7 @@
   id: HumanHairHightight
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: hightight
@@ -335,7 +335,7 @@
   id: HumanHairHyenamane
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: hyenamane
@@ -344,7 +344,7 @@
   id: HumanHairJessica
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: jessica
@@ -353,7 +353,7 @@
   id: HumanHairLong4
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: long4
@@ -362,7 +362,7 @@
   id: HumanHairLongdtails
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: longdtails
@@ -371,7 +371,7 @@
   id: HumanHairLongerAlt
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: longeralt
@@ -380,7 +380,7 @@
   id: HumanHairLongovereyeAlt
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: longovereye_alt
@@ -389,7 +389,7 @@
   id: HumanHairLongsidepartstraight
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: longsidepartstraight
@@ -398,7 +398,7 @@
   id: HumanHairLooseSlicked
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: loose_slicked
@@ -407,7 +407,7 @@
   id: HumanHairMediumbraid
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: mediumbraid
@@ -416,7 +416,7 @@
   id: HumanHairNewyou
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: newyou
@@ -425,7 +425,7 @@
   id: HumanHairPonytailAlt
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: ponytailalt
@@ -434,7 +434,7 @@
   id: HumanHairPonytailF
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: ponytailf
@@ -443,7 +443,7 @@
   id: HumanHairPoofy2
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: poofy2
@@ -452,7 +452,7 @@
   id: HumanHairQuadcurls
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: quadcurls
@@ -461,7 +461,7 @@
   id: HumanHairSabitsuki
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: sabitsuki
@@ -470,7 +470,7 @@
   id: HumanHairScully
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: scully
@@ -479,7 +479,7 @@
   id: HumanHairShorthair4
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: shorthair4
@@ -488,7 +488,7 @@
   id: HumanHairShy
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: shy
@@ -497,7 +497,7 @@
   id: HumanHairSimplePonytail
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: simple_ponytail
@@ -506,7 +506,7 @@
   id: HumanHairSleaze
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: sleaze
@@ -515,7 +515,7 @@
   id: HumanHairSlightlyMessy
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: slightlymessy
@@ -524,7 +524,7 @@
   id: HumanHairSlimedroplet
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: slimedroplet
@@ -533,7 +533,7 @@
   id: HumanHairSlimedropletAlt
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: slimedroplet_alt
@@ -542,7 +542,7 @@
   id: HumanHairSlimespikes
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: slimespikes
@@ -551,7 +551,7 @@
   id: HumanHairSlimetendrils
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: slimetendrils
@@ -560,7 +560,7 @@
   id: HumanHairSlimetendrilsAlt
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: slimetendrils_alt
@@ -569,7 +569,7 @@
   id: HumanHairSpicy
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: spicy
@@ -578,7 +578,7 @@
   id: HumanHairTwintailFloor
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: twintail_floor
@@ -587,7 +587,7 @@
   id: HumanHairVeryshortovereye
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: veryshortovereye
@@ -596,7 +596,7 @@
   id: HumanHairVictory
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: victory
@@ -605,7 +605,7 @@
   id: HumanHairViper
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: viper
@@ -614,7 +614,7 @@
   id: HumanHairWife
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: wife
@@ -623,7 +623,7 @@
   id: HumanHairZiegler
   bodyPart: Hair
   markingCategory: Hair
-  speciesRestriction: ["Human", "Chiss"] #SW
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Corvax/Mobs/Customization/human_hair.rsi
       state: ziegler

@@ -36,7 +36,7 @@ public sealed partial class SWNumberIntervalSet
         bool res = Intervals.First().Contains(value);
         foreach (var interval in Intervals)
         {
-            res = res && interval.Contains(value);
+            res = res || interval.Contains(value);
         }
 
         return res;

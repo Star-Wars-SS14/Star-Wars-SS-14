@@ -297,9 +297,9 @@ public abstract class SharedHumanoidAppearanceSystem : EntitySystem
             return;
         }
 
-        if (verify && !SkinColor.VerifySkinColor(species.SkinColoration, skinColor))
+        if (verify && !SkinColor.VerifySkinColor(species.SkinColoration, skinColor, species)) //SW
         {
-            skinColor = SkinColor.ValidSkinTone(species.SkinColoration, skinColor);
+            skinColor = SkinColor.ValidSkinTone(species.SkinColoration, skinColor, species); //SW
         }
 
         humanoid.SkinColor = skinColor;

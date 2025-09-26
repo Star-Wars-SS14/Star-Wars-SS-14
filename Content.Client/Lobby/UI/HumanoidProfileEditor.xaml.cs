@@ -1434,7 +1434,7 @@ namespace Content.Client.Lobby.UI
 
                     break;
                 }
-                case HumanoidSkinColor.HumanTonedReduced:
+                case HumanoidSkinColor.HumanTonedReduced: //SW start
                     {
                         if (!Skin.Visible)
                         {
@@ -1446,6 +1446,19 @@ namespace Content.Client.Lobby.UI
 
                         break;
                     }
+                case HumanoidSkinColor.ColorLimits:
+                    {
+                        if (!RgbSkinColorContainer.Visible)
+                        {
+                            Skin.Visible = false;
+                            RgbSkinColorContainer.Visible = true;
+                        }
+
+                        // set the RGB values to the direct values otherwise
+                        _rgbSkinColorSelector.Color = Profile.Appearance.SkinColor;
+                        break;
+                    }
+                    //SW end
             }
 
         }
@@ -1514,6 +1527,10 @@ namespace Content.Client.Lobby.UI
             var facialHairMarking = Profile.Appearance.FacialHairStyleId == HairStyles.DefaultFacialHairStyle
                 ? new List<Marking>()
                 : new() { new(Profile.Appearance.FacialHairStyleId, new List<Color>() { Profile.Appearance.FacialHairColor }) };
+
+            Profile = Profile.WithCharacterAppearance(
+                    Profile.Appearance.WithHairStyleName(HairStyles.DefaultHairStyle)
+                );
 
             HairStylePicker.UpdateData(
                 hairMarking,

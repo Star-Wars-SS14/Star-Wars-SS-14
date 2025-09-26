@@ -2,7 +2,9 @@ using Content.Shared._SW.Species;
 using Content.Shared.Humanoid.Prototypes;
 using Microsoft.VisualBasic.CompilerServices;
 using Robust.Shared.Maths;
+using Robust.Shared.Prototypes;
 using System;
+using System.Linq;
 using System.Security.Cryptography;
 
 namespace Content.Shared.Humanoid;
@@ -232,7 +234,7 @@ public static class SkinColor
         return Color.ToHsv(color).Z >= MinHuesLightness;
     }
 
-    public static bool VerifySkinColor(HumanoidSkinColor type, Color color)
+    public static bool VerifySkinColor(HumanoidSkinColor type, Color color, SpeciesPrototype speciesProto)
     {
         return type switch
         {
@@ -241,10 +243,12 @@ public static class SkinColor
             HumanoidSkinColor.Hues => VerifyHues(color),
             HumanoidSkinColor.VoxFeathers => VerifyVoxFeathers(color),
             HumanoidSkinColor.HumanTonedReduced => VerifyChissSkinTone(color), //SW
+            HumanoidSkinColor.ColorLimits => VerifyColorLimits(color, speciesProto),
             _ => false,
         };
     }
-    public static Color ValidSkinTone(HumanoidSkinColor type, Color color)
+
+    public static Color ValidSkinTone(HumanoidSkinColor type, Color color, SpeciesPrototype species, SWColorLimitsPrototype? limits = null)
     {
         return type switch
         {
@@ -252,7 +256,8 @@ public static class SkinColor
             HumanoidSkinColor.TintedHues => ValidTintedHuesSkinTone(color),
             HumanoidSkinColor.Hues => MakeHueValid(color),
             HumanoidSkinColor.VoxFeathers => ClosestVoxColor(color),
-            HumanoidSkinColor.HumanTonedReduced => ValidChissSkinTone, // SW. We use human because humanValidSkin is also valid for chiss
+            HumanoidSkinColor.HumanTonedReduced => ValidChissSkinTone, // SW
+            HumanoidSkinColor.ColorLimits => GenerateValidColorLimits(species),
             _ => color
         };
     }
@@ -277,6 +282,19 @@ public static class SkinColor
         return new_tone;
     }
 
+    private static bool VerifyColorLimits(Color color, SpeciesPrototype speciesProto)
+    {
+        if (speciesProto.SkinColorLimits == null)
+        {
+            return true;
+        }
+        var proto = IoCManager.Resolve<IPrototypeManager>();
+
+        var limitsProto = proto.Index(speciesProto.SkinColorLimits);
+
+        return FitLimits(limitsProto, color);
+    }
+
     public static bool FitLimits(SWColorLimitsPrototype limits, Color color)
     {
         var hsv = Color.ToHsv(color);
@@ -285,6 +303,23 @@ public static class SkinColor
         bool vFit = limits.ValueLimit.Contains(hsv.Z);
 
         return hFit && sFit && vFit;
+    }
+
+    private static Color GenerateValidColorLimits(SpeciesPrototype species)
+    {
+        if (species.SkinColorLimits == null)
+        {
+            return Color.White;
+        }
+        var proto = IoCManager.Resolve<IPrototypeManager>();
+
+        var limitsProto = proto.Index(species.SkinColorLimits);
+
+        var h = limitsProto.HueLimit.Intervals.First().Left;
+        var s = limitsProto.SaturationLimit.Intervals.First().Left;
+        var v = limitsProto.ValueLimit.Intervals.First().Left;
+
+        return Color.FromHsv(new Vector4(h, s, v, 1.0f));
     }
 
     //SW end

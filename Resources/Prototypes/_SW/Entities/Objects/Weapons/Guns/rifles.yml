@@ -21,6 +21,7 @@
     - FullAuto
     soundGunshot:
       path: /Audio/Weapons/Guns/Gunshots/laser.ogg
+    projectileSpeed: 40
   - type: MagazineAmmoProvider
   - type: Appearance
   - type: StaticPrice

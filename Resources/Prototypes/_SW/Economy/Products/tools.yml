@@ -16,7 +16,7 @@
     state: beakerlarge
   product: LargeBeaker
   cost:
-    SWEmpireCreditCurrency: 80
+    SWEmpireCreditCurrency: 40
   category: sw-category-tools
   group: SWToolsMarket
 
@@ -27,7 +27,7 @@
     state: beaker
   product: Beaker
   cost:
-    SWEmpireCreditCurrency: 40
+    SWEmpireCreditCurrency: 25
   category: sw-category-tools
   group: SWToolsMarket
 

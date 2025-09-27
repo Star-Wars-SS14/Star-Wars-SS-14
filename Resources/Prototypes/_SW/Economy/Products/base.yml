@@ -5,7 +5,7 @@
     state: flashlight
   product: FlashlightLantern
   cost:
-    SWEmpireCreditCurrency: 25
+    SWEmpireCreditCurrency: 50
   category: sw-category-tools
   group: SWBaseMarket
 
@@ -16,7 +16,7 @@
     state: icon
   product: SWCrateFlashlightLantern
   cost:
-    SWEmpireCreditCurrency: 125
+    SWEmpireCreditCurrency: 250
   category: sw-category-tools
   group: SWBaseMarket
 
@@ -38,7 +38,7 @@
     state: icon
   product: SWBoxMRE
   cost:
-    SWEmpireCreditCurrency: 40
+    SWEmpireCreditCurrency: 65
   category: sw-category-base
   group: SWBaseMarket
 
@@ -49,6 +49,6 @@
     state: icon
   product: SWCrateMRE
   cost:
-    SWEmpireCreditCurrency: 400
+    SWEmpireCreditCurrency: 650
   category: sw-category-base
   group: SWBaseMarket

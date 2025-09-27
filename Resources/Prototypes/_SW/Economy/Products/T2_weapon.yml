@@ -5,7 +5,7 @@
     state: base
   product: SWE1BlasterRifle
   cost:
-    SWEmpireCreditCurrency: 500
+    SWEmpireCreditCurrency: 750
   category: sw-category-rifles
   group: SWT2EmpireWeaponMarket
 
@@ -16,7 +16,7 @@
     state: base
   product: SWH206Renegade
   cost:
-    SWEmpireCreditCurrency: 500
+    SWEmpireCreditCurrency: 750
   category: sw-category-rifles
   group: SWT2RepublicWeaponMarket
 
@@ -27,7 +27,7 @@
     state: base
   product: SWEL34
   cost:
-    SWEmpireCreditCurrency: 1500
+    SWEmpireCreditCurrency: 3500
   category: sw-category-machine-guns
   group: SWT2RepublicWeaponMarket
 
@@ -38,7 +38,7 @@
     state: base
   product: SWGrantekF11D2
   cost:
-    SWEmpireCreditCurrency: 1500
+    SWEmpireCreditCurrency: 3500
   category: sw-category-machine-guns
   group: SWT2EmpireWeaponMarket
 
@@ -49,7 +49,7 @@
     state: base
   product: SWBeryaramk3
   cost:
-    SWEmpireCreditCurrency: 1000
+    SWEmpireCreditCurrency: 3000
   category: sw-category-sniper-rifles
   group: SWT2RepublicWeaponMarket
 
@@ -60,7 +60,7 @@
     state: base
   product: SWK406Ripper
   cost:
-    SWEmpireCreditCurrency: 1000
+    SWEmpireCreditCurrency: 3000
   category: sw-category-sniper-rifles
   group: SWT2EmpireWeaponMarket
 
@@ -71,7 +71,7 @@
     state: icon
   product: SWCrateSWE1Magazine
   cost:
-    SWEmpireCreditCurrency: 110
+    SWEmpireCreditCurrency: 166
   category: sw-category-sniper-magazines
   group: SWT2EmpireWeaponMarket
 
@@ -82,7 +82,7 @@
     state: icon
   product: SWCrateSWH206Magazine
   cost:
-    SWEmpireCreditCurrency: 110
+    SWEmpireCreditCurrency: 166
   category: sw-category-sniper-magazines
   group: SWT2RepublicWeaponMarket
 
@@ -93,7 +93,7 @@
     state: icon
   product: SWCrateSWEL34Magazine
   cost:
-    SWEmpireCreditCurrency: 500
+    SWEmpireCreditCurrency: 600
   category: sw-category-sniper-magazines
   group: SWT2RepublicWeaponMarket
 
@@ -104,7 +104,7 @@
     state: icon
   product: SWCrateSWF11DCannonMagazine
   cost:
-    SWEmpireCreditCurrency: 500
+    SWEmpireCreditCurrency: 600
   category: sw-category-sniper-magazines
   group: SWT2EmpireWeaponMarket
 
@@ -115,7 +115,7 @@
     state: icon
   product: SWCrateSWBeryarMK3Magazine
   cost:
-    SWEmpireCreditCurrency: 200
+    SWEmpireCreditCurrency: 300
   category: sw-category-sniper-magazines
   group: SWT2RepublicWeaponMarket
 
@@ -126,7 +126,7 @@
     state: icon
   product: SWCrateSWK406RipperMagazine
   cost:
-    SWEmpireCreditCurrency: 200
+    SWEmpireCreditCurrency: 300
   category: sw-category-sniper-magazines
   group: SWT2EmpireWeaponMarket
 
@@ -137,7 +137,7 @@
     state: base
   product: SWScoutBlasterSmall
   cost:
-    SWEmpireCreditCurrency: 400
+    SWEmpireCreditCurrency: 650
   category: sw-category-pistols
   group: SWT2EmpireWeaponMarket
 
@@ -148,7 +148,7 @@
     state: base
   product: SWScoutBlasterMagazine
   cost:
-    SWEmpireCreditCurrency: 25
+    SWEmpireCreditCurrency: 40
   category: sw-category-pistols
   group: SWT2EmpireWeaponMarket
 
@@ -159,7 +159,7 @@
     state: base
   product: SWScoutBlasterSmall
   cost:
-    SWEmpireCreditCurrency: 400
+    SWEmpireCreditCurrency: 650
   category: sw-category-pistols
   group: SWT2RepublicWeaponMarket
 
@@ -170,6 +170,6 @@
     state: base
   product: SWScoutBlasterMagazine
   cost:
-    SWEmpireCreditCurrency: 25
+    SWEmpireCreditCurrency: 40
   category: sw-category-pistols
   group: SWT2RepublicWeaponMarket

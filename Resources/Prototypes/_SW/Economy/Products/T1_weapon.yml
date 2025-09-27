@@ -25,7 +25,7 @@
   icon:
     sprite: _SW/Objects/Weapons/Guns/Rifles/MK3.rsi
     state: base
-  product: SWZ1BlasterCarbine
+  product: SWMK3BlasterRifle
   cost:
     SWEmpireCreditCurrency: 550
   category: sw-category-rifles
@@ -71,7 +71,7 @@
     state: icon
   product: SWCrateZ1Magazines
   cost:
-    SWEmpireCreditCurrency: 80
+    SWEmpireCreditCurrency: 120
   category: sw-category-magazines
   group: SWT1WeaponMarket
 
@@ -82,7 +82,7 @@
     state: icon
   product: SWCrateJ111Magazines
   cost:
-    SWEmpireCreditCurrency: 80
+    SWEmpireCreditCurrency: 120
   category: sw-category-magazines
   group: SWT1WeaponMarket
 
@@ -93,7 +93,7 @@
     state: icon
   product: SWCrateGT13Magazines
   cost:
-    SWEmpireCreditCurrency: 300
+    SWEmpireCreditCurrency: 450
   category: sw-category-magazines
   group: SWT1WeaponMarket
 
@@ -104,7 +104,7 @@
     state: icon
   product: SWCrateSWMK1Magazine
   cost:
-    SWEmpireCreditCurrency: 300
+    SWEmpireCreditCurrency: 450
   category: sw-category-magazines
   group: SWT1WeaponMarket
 
@@ -115,7 +115,18 @@
     state: icon
   product: SWCrateSWF11DSniperRifleMagazine
   cost:
-    SWEmpireCreditCurrency: 100
+    SWEmpireCreditCurrency: 150
+  category: sw-category-magazines
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWMK3MagazineCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateMK3Magazines
+  cost:
+    SWEmpireCreditCurrency: 120
   category: sw-category-magazines
   group: SWT1WeaponMarket
 
@@ -126,7 +137,7 @@
     state: base
   product: SWBalmorraHandCannon
   cost:
-    SWEmpireCreditCurrency: 200
+    SWEmpireCreditCurrency: 250
   category: sw-category-pistols
   group: SWT1WeaponMarket
 
@@ -137,6 +148,28 @@
     state: base
   product: SWBalmorraCannonMagazine
   cost:
-    SWEmpireCreditCurrency: 10
+    SWEmpireCreditCurrency: 15
+  category: sw-category-magazines
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWAnarchyCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Pistols/anarchy.rsi
+    state: base
+  product: SWAnarchy
+  cost:
+    SWEmpireCreditCurrency: 350
+  category: sw-category-pistols
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWBalmorraCannonMagazineCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/balmorra_cannon_mag.rsi
+    state: base
+  product: SWAnarchyMagazine
+  cost:
+    SWEmpireCreditCurrency: 15
   category: sw-category-magazines
   group: SWT1WeaponMarket

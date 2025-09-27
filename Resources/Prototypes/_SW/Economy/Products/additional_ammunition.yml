@@ -5,7 +5,7 @@
     state: icon
   product: CMGlassesM42ScoutSight
   cost:
-    SWEmpireCreditCurrency: 400
+    SWEmpireCreditCurrency: 800
   category: sw-category-additional-ammunition
   group: SWAdditionalAmunitionMarket
 
@@ -16,7 +16,7 @@
     state: signaller
   product: RemoteSignaller
   cost:
-    SWEmpireCreditCurrency: 400
+    SWEmpireCreditCurrency: 150
   category: sw-category-additional-ammunition
   group: SWAdditionalAmunitionMarket
 

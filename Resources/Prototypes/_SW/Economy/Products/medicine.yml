@@ -93,7 +93,7 @@
     state: icon
   product: SWKoltoMedipen
   cost:
-    SWEmpireCreditCurrency: 25
+    SWEmpireCreditCurrency: 50
   category: sw-category-medicine
   group: SWT2MedicineMarket
 
@@ -104,7 +104,7 @@
     state: icon
   product: SWCrateKolto
   cost:
-    SWEmpireCreditCurrency: 250
+    SWEmpireCreditCurrency: 500
   category: sw-category-medicine
   group: SWT2MedicineMarket
 
@@ -115,7 +115,7 @@
     state: icon
   product: SWBactaMedipen
   cost:
-    SWEmpireCreditCurrency: 50
+    SWEmpireCreditCurrency: 100
   category: sw-category-medicine
   group: SWT3MedicineMarket
 
@@ -126,6 +126,6 @@
     state: icon
   product: SWCrateBacta
   cost:
-    SWEmpireCreditCurrency: 500
+    SWEmpireCreditCurrency: 1000
   category: sw-category-medicine
   group: SWT3MedicineMarket

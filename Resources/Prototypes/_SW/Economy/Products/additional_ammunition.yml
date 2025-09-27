@@ -1,15 +1,4 @@
 - type: swCargoProduct
-  id: SWNightVisionCP
-  icon:
-    sprite: _RMC14/Objects/Clothing/Eyes/Glasses/m42_scoutsight.rsi
-    state: icon
-  product: CMGlassesM42ScoutSight
-  cost:
-    SWEmpireCreditCurrency: 800
-  category: sw-category-additional-ammunition
-  group: SWAdditionalAmunitionMarket
-
-- type: swCargoProduct
   id: SWSignallerCP
   icon:
     sprite: Objects/Devices/signaller.rsi

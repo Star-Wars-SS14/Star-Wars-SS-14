@@ -207,6 +207,7 @@
     - FootstepSound
     - DoorBumpOpener
     - AnomalyHost
+  - type: SWDamageableLimit
 
 - type: entity
   save: false

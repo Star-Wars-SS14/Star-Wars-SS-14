@@ -166,7 +166,7 @@
 - type: swCargoProduct
   id: SWAnarchyMagazineCP
   icon:
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/balmorra_cannon_mag.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
     state: base
   product: SWAnarchyMagazine
   cost:

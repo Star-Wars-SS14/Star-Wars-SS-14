@@ -149,7 +149,7 @@
   product: SWScoutBlasterMagazine
   cost:
     SWEmpireCreditCurrency: 40
-  category: sw-category-pistols
+  category: sw-category-magazines
   group: SWT2EmpireWeaponMarket
 
 - type: swCargoProduct
@@ -171,5 +171,5 @@
   product: SWScoutBlasterMagazine
   cost:
     SWEmpireCreditCurrency: 40
-  category: sw-category-pistols
+  category: sw-category-magazines
   group: SWT2RepublicWeaponMarket

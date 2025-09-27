@@ -72,7 +72,7 @@
   product: SWCrateSWE1Magazine
   cost:
     SWEmpireCreditCurrency: 166
-  category: sw-category-sniper-magazines
+  category: sw-category-magazines
   group: SWT2EmpireWeaponMarket
 
 - type: swCargoProduct
@@ -83,7 +83,7 @@
   product: SWCrateSWH206Magazine
   cost:
     SWEmpireCreditCurrency: 166
-  category: sw-category-sniper-magazines
+  category: sw-category-magazines
   group: SWT2RepublicWeaponMarket
 
 - type: swCargoProduct
@@ -94,7 +94,7 @@
   product: SWCrateSWEL34Magazine
   cost:
     SWEmpireCreditCurrency: 600
-  category: sw-category-sniper-magazines
+  category: sw-category-magazines
   group: SWT2RepublicWeaponMarket
 
 - type: swCargoProduct
@@ -105,7 +105,7 @@
   product: SWCrateSWF11DCannonMagazine
   cost:
     SWEmpireCreditCurrency: 600
-  category: sw-category-sniper-magazines
+  category: sw-category-magazines
   group: SWT2EmpireWeaponMarket
 
 - type: swCargoProduct
@@ -116,7 +116,7 @@
   product: SWCrateSWBeryarMK3Magazine
   cost:
     SWEmpireCreditCurrency: 300
-  category: sw-category-sniper-magazines
+  category: sw-category-magazines
   group: SWT2RepublicWeaponMarket
 
 - type: swCargoProduct
@@ -127,7 +127,7 @@
   product: SWCrateSWK406RipperMagazine
   cost:
     SWEmpireCreditCurrency: 300
-  category: sw-category-sniper-magazines
+  category: sw-category-magazines
   group: SWT2EmpireWeaponMarket
 
 - type: swCargoProduct

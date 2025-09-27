@@ -4,9 +4,29 @@
   name: recruit mandalorian helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianRecruit.rsi
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar1/MandalorianRecruit.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianRecruit.rsi
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar1/MandalorianRecruit.rsi
+
+- type: entity
+  parent: SW_ClothingHeadRecruitMandalorianHelmet
+  id: SW_ClothingHeadRecruitMandalorianHelmet2
+  name: recruit mandalorian helmet2
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar2/MandalorianRecruit.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar2/MandalorianRecruit.rsi
+
+- type: entity
+  parent: SW_ClothingHeadRecruitMandalorianHelmet
+  id: SW_ClothingHeadRecruitMandalorianHelmet3
+  name: recruit mandalorian helmet3
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar3/MandalorianRecruit.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar3/MandalorianRecruit.rsi
 
 - type: entity
   parent: SW_ClothingHeadRecruitMandalorianHelmet
@@ -14,9 +34,29 @@
   name: warrior mandalorian helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianWarrior.rsi
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar1/MandalorianWarrior.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianWarrior.rsi
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar1/MandalorianWarrior.rsi
+
+- type: entity
+  parent: SW_ClothingHeadMandalorianWarriorHelmet
+  id: SW_ClothingHeadMandalorianWarriorHelmet2
+  name: warrior mandalorian helmet2
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar2/MandalorianWarrior.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar2/MandalorianWarrior.rsi
+
+- type: entity
+  parent: SW_ClothingHeadRecruitMandalorianHelmet
+  id: SW_ClothingHeadMandalorianWarriorHelmet3
+  name: warrior mandalorian helmet3
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar3/MandalorianWarrior.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar3/MandalorianWarrior.rsi
 
 - type: entity
   parent: SW_ClothingHeadRecruitMandalorianHelmet
@@ -24,11 +64,31 @@
   name: veteran mandalorian helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVeteran.rsi
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar1/MandalorianVeteran.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVeteran.rsi
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar1/MandalorianVeteran.rsi
   - type: NightVisionItem
     slotFlags: HEAD
+
+- type: entity
+  parent: SW_ClothingHeadMandalorianVeteranHelmet
+  id: SW_ClothingHeadMandalorianVeteranHelmet2
+  name: veteran mandalorian helmet2
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar2/MandalorianVeteran.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar2/MandalorianVeteran.rsi
+
+- type: entity
+  parent: SW_ClothingHeadMandalorianVeteranHelmet
+  id: SW_ClothingHeadMandalorianVeteranHelmet3
+  name: veteran mandalorian helmet3
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar3/MandalorianVeteran.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar3/MandalorianVeteran.rsi
 
 - type: entity
   parent: SW_ClothingHeadMandalorianVeteranHelmet
@@ -36,9 +96,33 @@
   name: mandalorian leader helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianLeader.rsi
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar1/MandalorianLeader.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianLeader.rsi
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar1/MandalorianLeader.rsi
+  - type: NightVisionItem
+    slotFlags: HEAD
+
+- type: entity
+  parent: SW_ClothingHeadMandalorianLeaderHelmet
+  id: SW_ClothingHeadMandalorianLeaderHelmet2
+  name: mandalorian leader helmet2
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar2/MandalorianLeader.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar2/MandalorianLeader.rsi
+  - type: NightVisionItem
+    slotFlags: HEAD
+
+- type: entity
+  parent: SW_ClothingHeadMandalorianLeaderHelmet
+  id: SW_ClothingHeadMandalorianLeaderHelmet3
+  name: mandalorian leader helmet3
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar3/MandalorianLeader.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/Mandalorian/MandalorianVar3/MandalorianLeader.rsi
   - type: NightVisionItem
     slotFlags: HEAD
 

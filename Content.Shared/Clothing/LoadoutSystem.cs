@@ -136,8 +136,14 @@ public sealed class LoadoutSystem : EntitySystem
                 break;
             }
         }
-
-        return Loc.GetString($"unknown");
+        if (gear is LoadoutPrototype lp)
+        {
+            return Loc.GetString(lp.Name);
+        }
+        else
+        {
+            return Loc.GetString($"unknown");
+        }
     }
 
     private void OnMapInit(EntityUid uid, LoadoutComponent component, MapInitEvent args)

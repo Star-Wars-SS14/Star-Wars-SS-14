@@ -1,20 +1,24 @@
 <Control xmlns="https://spacestation14.io">
-    <BoxContainer Orientation="Horizontal">
-        <BoxContainer
-            Name="TaskContainer"
-            HorizontalExpand="True"
-            Margin="0"/>
-        <BoxContainer VerticalExpand="True" HorizontalExpand="True" MaxWidth="100" HorizontalAlignment="Center"
-                VerticalAlignment="Center" Margin="20 20 20 20">
-            <RichTextLabel Name="TaskName"></RichTextLabel>
+    <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+        <BoxContainer Name="TaskContainer" HorizontalExpand="True" Margin="0"/>
+
+        <BoxContainer VerticalExpand="True" HorizontalExpand="False"
+                     HorizontalAlignment="Center" VerticalAlignment="Center"
+                     Margin="20 20 10 20">
+            
+            <RichTextLabel Name="TaskName" HorizontalExpand="False"/>
         </BoxContainer>
-        <BoxContainer VerticalExpand="True" HorizontalExpand="False" MaxWidth="300" HorizontalAlignment="Center"
-                VerticalAlignment="Center" Margin="20 20 20 20">
-            <RichTextLabel Name="TaskDescription"></RichTextLabel>
+
+        <BoxContainer VerticalExpand="True" HorizontalExpand="False"
+                     HorizontalAlignment="Left" VerticalAlignment="Center"
+                     Margin="10 20 10 20" MinWidth="200" MaxWidth="300">
+            <RichTextLabel Name="TaskDescription" HorizontalExpand="False"/>
         </BoxContainer>
-        <BoxContainer VerticalExpand="False" HorizontalExpand="False" Margin="20 20 20 20" HorizontalAlignment="Center"
-                VerticalAlignment="Center" MinWidth="100" MaxWidth="200">
-            <RichTextLabel Name="TaskStatus"></RichTextLabel>
+
+        <BoxContainer VerticalExpand="False" HorizontalExpand="False"
+                     Margin="10 20 20 20" HorizontalAlignment="Right"
+                     VerticalAlignment="Center" MinWidth="150" MaxWidth="200">
+            <RichTextLabel Name="TaskStatus" HorizontalExpand="False"/>
         </BoxContainer>
     </BoxContainer>
 </Control>

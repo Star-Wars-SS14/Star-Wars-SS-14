@@ -1,6 +1,7 @@
-using Robust.Shared.Maths;
-using System.Security.Cryptography;
 using Microsoft.VisualBasic.CompilerServices;
+using Robust.Shared.Maths;
+using System;
+using System.Security.Cryptography;
 
 namespace Content.Shared.Humanoid;
 
@@ -20,7 +21,7 @@ public static class SkinColor
     public const float MinShadesOfBlueTone = 0f;
     public const float MaxShadesOfBlueTone = 25f;
     public static Color ValidHumanSkinTone => Color.FromHsv(new Vector4(0.07f, 0.2f, 1f, 1f));
-    public static Color ValidChissSkinTone => new Color(104, 125, 182);
+    public static Color ValidChissSkinTone => new Color(255, 255, 255);
 
     /// <summary>
     ///     Turn a color into a valid tinted hue skin tone.
@@ -237,7 +238,7 @@ public static class SkinColor
             HumanoidSkinColor.TintedHues => VerifyTintedHues(color),
             HumanoidSkinColor.Hues => VerifyHues(color),
             HumanoidSkinColor.VoxFeathers => VerifyVoxFeathers(color),
-            HumanoidSkinColor.ShadesOfBlue => VerifyChissSkinTone(color), //SW
+            HumanoidSkinColor.HumanTonedReduced => VerifyChissSkinTone(color), //SW
             _ => false,
         };
     }
@@ -249,7 +250,7 @@ public static class SkinColor
             HumanoidSkinColor.TintedHues => ValidTintedHuesSkinTone(color),
             HumanoidSkinColor.Hues => MakeHueValid(color),
             HumanoidSkinColor.VoxFeathers => ClosestVoxColor(color),
-            HumanoidSkinColor.ShadesOfBlue => ValidChissSkinTone, // SW. We use human because humanValidSkin is also valid for chiss
+            HumanoidSkinColor.HumanTonedReduced => ValidChissSkinTone, // SW. We use human because humanValidSkin is also valid for chiss
             _ => color
         };
     }
@@ -260,11 +261,18 @@ public static class SkinColor
         //TO DO: add additional logic to check if tone is in acceptable range. 
         return VerifyHumanSkinTone(color);
     }
-    public static Color ShadesOfBlueClosest(float color)
+    public static Color SkinToneReducedClosest(float color)
     {
         color /= 100; //normalize it to be in [0, 1], 100 - max human tone
         var new_tone = (int)float.Lerp(MinShadesOfBlueTone, MaxShadesOfBlueTone, color);
         return HumanSkinTone(new_tone);
+    }
+
+    public static float GetSkinToneReducedClosest(Color color)
+    {
+        var c = HumanSkinToneFromColor(color) / 25;
+        var new_tone = (int)float.Lerp(0, 100, c);
+        return new_tone;
     }
 
     //SW end
@@ -276,5 +284,5 @@ public enum HumanoidSkinColor : byte
     Hues,
     VoxFeathers, // Vox feathers are limited to a specific color range
     TintedHues, //This gives a color tint to a humanoid's skin (10% saturation with full hue range).
-    ShadesOfBlue //SW
+    HumanTonedReduced //SW
 }

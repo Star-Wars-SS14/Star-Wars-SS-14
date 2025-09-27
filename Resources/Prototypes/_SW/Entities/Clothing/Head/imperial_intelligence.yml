@@ -11,7 +11,6 @@
   - type: PressureProtection
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000
-  - type: ShowJobIcons
   - type: UserInterface
     interfaces:
       enum.VoiceMaskUIKey.Key:

@@ -28,6 +28,9 @@
         Cold: 0.95
         Shock: 0.95
         Radiation: 0.8
+  - type: Tag
+    tags:
+    - SWForceUserArmor
 
 - type: entity
   parent: SWSithSuit1Helmet

@@ -17,6 +17,9 @@
     sprite: _SW/Clothing/Uniforms/Jumpsuit/jedi.rsi
   - type: Clothing
     sprite: _SW/Clothing/Uniforms/Jumpsuit/jedi.rsi
+  - type: Tag
+    tags:
+    - SWForceUserArmor
 
 - type: entity
   parent: ClothingUniformBase
@@ -57,6 +60,9 @@
     sprite: _SW/Clothing/Uniforms/Jumpsuit/fleece.rsi
   - type: Clothing
     sprite: _SW/Clothing/Uniforms/Jumpsuit/fleece.rsi
+  - type: Tag
+    tags:
+    - SWForceUserArmor
 
 - type: entity
   parent: ClothingUniformBase

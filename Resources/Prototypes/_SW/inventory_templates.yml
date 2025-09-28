@@ -28,9 +28,9 @@
       uiWindowPos: 1,1
       strippingWindowPos: 1,2
       displayName: Suit
-      blacklist:
-        components:
-        - Armor
+      whitelist:
+        tags:
+        - SWForceUserArmor
     - name: gloves
       slotTexture: gloves
       slotFlags: GLOVES
@@ -69,9 +69,9 @@
       uiWindowPos: 1,3
       strippingWindowPos: 1,0
       displayName: Head
-      blacklist:
-        components:
-        - Armor
+      whitelist:
+        tags:
+        - SWForceUserArmor
     - name: pocket1
       slotTexture: pocket
       fullTextureName: template_small
@@ -105,9 +105,9 @@
       dependsOnComponents:
       - type: AllowSuitStorage
       displayName: Suit Storage
-      blacklist:
-        components:
-        - Armor
+      whitelist:
+        tags:
+        - SWForceUserArmor
     - name: id
       slotTexture: id
       fullTextureName: template_small
@@ -136,9 +136,9 @@
       uiWindowPos: 3,0
       strippingWindowPos: 0,5
       displayName: Back
-      blacklist:
-        components:
-        - Armor
+      whitelist:
+        tags:
+        - SWForceUserArmor
 
 - type: inventoryTemplate
   id: speciesNoHeadClothing

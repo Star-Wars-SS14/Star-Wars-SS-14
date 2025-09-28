@@ -205,6 +205,8 @@ entities:
     - type: Transform
       pos: 999.47656,-0.4765625
       parent: 1
+    - type: BecomesStation
+      id: ImperialCruiser
     - type: MapGrid
       chunks:
         0,0:
@@ -5554,6 +5556,8 @@ entities:
     - type: Transform
       pos: -1000.53125,-0.484375
       parent: 1
+    - type: BecomesStation
+      id: RepublicCruiser
     - type: MapGrid
       chunks:
         0,0:
@@ -179684,9 +179688,6 @@ entities:
           position: 3,3
           _rotation: South
     - type: UserInterface
-      actors:
-        enum.StorageUiKey.Key:
-        - invalid
     - type: ContainerContainer
       containers:
         storagebase: !type:Container

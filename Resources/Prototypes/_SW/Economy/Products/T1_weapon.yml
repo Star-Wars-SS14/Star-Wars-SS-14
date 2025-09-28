@@ -1,0 +1,175 @@
+- type: swCargoProduct
+  id: SWJ111CP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Rifles/j111.rsi
+    state: base
+  product: SWJ111Rancor
+  cost:
+    SWEmpireCreditCurrency: 500
+  category: sw-category-rifles
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWZ1CP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Rifles/z1.rsi
+    state: base
+  product: SWZ1BlasterCarbine
+  cost:
+    SWEmpireCreditCurrency: 500
+  category: sw-category-rifles
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWMK3RifleCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Rifles/MK3.rsi
+    state: base
+  product: SWMK3BlasterRifle
+  cost:
+    SWEmpireCreditCurrency: 550
+  category: sw-category-rifles
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWGT13STCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/MachineGuns/GT13ST.rsi
+    state: base
+  product: SWGT-13ST
+  cost:
+    SWEmpireCreditCurrency: 3000
+  category: sw-category-machine-guns
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWSWMK1CP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/MachineGuns/MK1.rsi
+    state: base
+  product: SWMK1
+  cost:
+    SWEmpireCreditCurrency: 3000
+  category: sw-category-machine-guns
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWGrantekF11D1CP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Snipers/f11d.rsi
+    state: base
+  product: SWGrantekF11D1
+  cost:
+    SWEmpireCreditCurrency: 1750
+  category: sw-category-sniper-rifles
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWZ1MagazineCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateZ1Magazines
+  cost:
+    SWEmpireCreditCurrency: 120
+  category: sw-category-magazines
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWJ111MagazineCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateJ111Magazines
+  cost:
+    SWEmpireCreditCurrency: 120
+  category: sw-category-magazines
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWGT13MagazineCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateGT13Magazines
+  cost:
+    SWEmpireCreditCurrency: 450
+  category: sw-category-magazines
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWMK1MagazineCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateSWMK1Magazine
+  cost:
+    SWEmpireCreditCurrency: 450
+  category: sw-category-magazines
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWF11DSniperRifleMagazineCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateSWF11DSniperRifleMagazine
+  cost:
+    SWEmpireCreditCurrency: 150
+  category: sw-category-magazines
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWMK3MagazineCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateMK3Magazines
+  cost:
+    SWEmpireCreditCurrency: 120
+  category: sw-category-magazines
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWBalmorraHandCannonCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Pistols/handheld_balmorra_cannon.rsi
+    state: base
+  product: SWBalmorraHandCannon
+  cost:
+    SWEmpireCreditCurrency: 250
+  category: sw-category-pistols
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWBalmorraCannonMagazineCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/balmorra_cannon_mag.rsi
+    state: base
+  product: SWBalmorraCannonMagazine
+  cost:
+    SWEmpireCreditCurrency: 15
+  category: sw-category-magazines
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWAnarchyCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Pistols/anarchy.rsi
+    state: base
+  product: SWAnarchy
+  cost:
+    SWEmpireCreditCurrency: 350
+  category: sw-category-pistols
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWAnarchyMagazineCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
+    state: base
+  product: SWAnarchyMagazine
+  cost:
+    SWEmpireCreditCurrency: 15
+  category: sw-category-magazines
+  group: SWT1WeaponMarket

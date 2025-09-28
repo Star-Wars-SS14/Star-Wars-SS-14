@@ -1,0 +1,43 @@
+- type: swCargoProduct
+  id: SWToolsCP
+  icon:
+    sprite: Objects/Tools/Toolboxes/toolbox_blue.rsi
+    state: icon
+  product: ToolboxMechanicalFilledAllTools
+  cost:
+    SWEmpireCreditCurrency: 80
+  category: sw-category-tools
+  group: SWToolsMarket
+
+- type: swCargoProduct
+  id: SWLargeBeakerCP
+  icon:
+    sprite: Objects/Specific/Chemistry/beaker_large.rsi
+    state: beakerlarge
+  product: LargeBeaker
+  cost:
+    SWEmpireCreditCurrency: 40
+  category: sw-category-tools
+  group: SWToolsMarket
+
+- type: swCargoProduct
+  id: SWBeakerCP
+  icon:
+    sprite: Objects/Specific/Chemistry/beaker.rsi
+    state: beaker
+  product: Beaker
+  cost:
+    SWEmpireCreditCurrency: 25
+  category: sw-category-tools
+  group: SWToolsMarket
+
+- type: swCargoProduct
+  id: SWSyringeCP
+  icon:
+    sprite: Objects/Specific/Chemistry/syringe.rsi
+    state: syringe1
+  product: Syringe
+  cost:
+    SWEmpireCreditCurrency: 25
+  category: sw-category-tools
+  group: SWToolsMarket

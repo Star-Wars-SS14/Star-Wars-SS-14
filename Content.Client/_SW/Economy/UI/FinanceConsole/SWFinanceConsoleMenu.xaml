@@ -1,0 +1,48 @@
+<DefaultWindow
+    xmlns="https://spacestation14.io"
+    xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+    xmlns:ui="clr-namespace:Content.Client.Voting.UI"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    Title="Консоль финансов"
+    MinSize="550 450"
+    SetSize="700 450">
+    <BoxContainer Orientation="Vertical">        
+            <Label Text="Баланс" HorizontalAlignment="Center"/>
+        <BoxContainer Orientation="Horizontal"
+                      SeparationOverride="4"
+                      Margin="20 20 20 20"
+                      HorizontalExpand="True">
+            <BoxContainer Name="BalanceContainer" Orientation="Vertical" Margin="0">                
+            </BoxContainer>
+            <BoxContainer Orientation="Vertical" Margin="0">
+                <Button
+                    Name="MoneyInButton"
+                    HorizontalExpand="True"
+                    Margin="0">
+                    <Label Text="Внести" HorizontalExpand="True" />
+                </Button>
+                <Button
+                    Name="MoneyOutButton"
+                    HorizontalExpand="True"
+                    Margin="0">
+                    <Label Text="Вывести" HorizontalExpand="True" />
+                </Button>
+            </BoxContainer>
+        </BoxContainer>
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+            <Label Text="Счета" HorizontalAlignment="Center"/>
+            <PanelContainer VerticalExpand="True" HorizontalExpand="True">
+                <ScrollContainer MinSize="200 100" VerticalExpand="True"
+                              VScrollEnabled="True" HScrollEnabled="False">
+                    <BoxContainer
+                        Name="BillList"
+                        Orientation="Vertical"
+                        HorizontalExpand="True"
+                        RectClipContent="True"
+                        MinHeight="50">
+                    </BoxContainer>
+                </ScrollContainer>
+            </PanelContainer>
+        </BoxContainer>
+    </BoxContainer>
+</DefaultWindow>

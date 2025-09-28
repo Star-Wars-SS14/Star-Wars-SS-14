@@ -1,0 +1,43 @@
+- type: swCargoProduct
+  id: SWP301DestroyerCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Rifles/p301.rsi
+    state: base
+  product: SWP301Destroyer
+  cost:
+    SWEmpireCreditCurrency: 1250
+  category: sw-category-rifles
+  group: SWT3WeaponMarket
+
+- type: swCargoProduct
+  id: SWGallantryCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/MachineGuns/gallantry.rsi
+    state: base
+  product: SWGallantry
+  cost:
+    SWEmpireCreditCurrency: 4500
+  category: sw-category-machine-guns
+  group: SWT3WeaponMarket
+
+- type: swCargoProduct
+  id: SWP301MagazineCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateSWP301Magazine
+  cost:
+    SWEmpireCreditCurrency: 188
+  category: sw-category-magazines
+  group: SWT3WeaponMarket
+
+- type: swCargoProduct
+  id: SWGallantryMagazineCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateSWGallantryMagazine
+  cost:
+    SWEmpireCreditCurrency: 750
+  category: sw-category-magazines
+  group: SWT3WeaponMarket

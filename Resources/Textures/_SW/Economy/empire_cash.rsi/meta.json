@@ -1,0 +1,29 @@
+{
+    "version": 1,
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "license": "CC-BY-NC-SA-3.0",
+    "copyright": "@baohe (discord)",
+    "states": [
+        {
+            "name": "cash"
+        },
+        {
+            "name": "cash_10"
+        },
+        {
+            "name": "cash_50"
+        },
+        {
+            "name": "cash_100"
+        },
+        {
+            "name": "cash_500"
+        },
+        {
+            "name": "cash_1000"
+        }
+    ]
+}

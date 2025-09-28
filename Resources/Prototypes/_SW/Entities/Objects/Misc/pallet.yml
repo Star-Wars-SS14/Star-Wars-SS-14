@@ -39,3 +39,25 @@
   components:
   - type: SWTransferPallet
     ownerFaction: MandalorianFaction
+
+- type: entity
+  id: SWCargoPalletBuy
+  name: транспортный поддон
+  description: Транспортирует. Подключите консоль покупки или продажи мультитулом.
+  parent: BaseCargoPallet
+  components:
+  - type: Sprite
+    sprite: Structures/cargo_pallets.rsi
+  - type: Icon
+    sprite: Structures/cargo_pallets.rsi
+    state: cargo_pallet_sell
+  - type: IconSmooth
+    key: cargo_pallet_sell
+    base: cargo_pallet_sell_
+  - type: DeviceList
+  - type: DeviceLinkSink
+    ports:
+      - SWCargoPalletReceiver
+  - type: DeviceNetwork
+    deviceNetId: Wired
+    receiveFrequencyId: BasicDevice

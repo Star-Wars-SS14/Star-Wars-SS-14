@@ -1,0 +1,54 @@
+- type: swCargoProduct
+  id: SWFlashlightCP
+  icon:
+    sprite: Objects/Tools/flashlight.rsi
+    state: flashlight
+  product: FlashlightLantern
+  cost:
+    SWEmpireCreditCurrency: 50
+  category: sw-category-tools
+  group: SWBaseMarket
+
+- type: swCargoProduct
+  id: SWCrateFlashlightCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateFlashlightLantern
+  cost:
+    SWEmpireCreditCurrency: 250
+  category: sw-category-tools
+  group: SWBaseMarket
+
+- type: swCargoProduct
+  id: SWFloodlightCP
+  icon:
+    sprite: Objects/Misc/Lights/lights.rsi
+    state: floodlight
+  product: Floodlight
+  cost:
+    SWEmpireCreditCurrency: 50
+  category: sw-category-tools
+  group: SWBaseMarket
+
+- type: swCargoProduct
+  id: SWMreCP
+  icon:
+    sprite: _SW/Objects/Consumable/Food/mre.rsi
+    state: icon
+  product: SWBoxMRE
+  cost:
+    SWEmpireCreditCurrency: 65
+  category: sw-category-base
+  group: SWBaseMarket
+
+- type: swCargoProduct
+  id: SWCrateMRECP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateMRE
+  cost:
+    SWEmpireCreditCurrency: 650
+  category: sw-category-base
+  group: SWBaseMarket

@@ -1,0 +1,131 @@
+- type: swCargoProduct
+  id: SWOintmentCP
+  icon:
+    sprite: Objects/Specific/Medical/medical.rsi
+    state: ointment
+  product: Ointment
+  cost:
+    SWEmpireCreditCurrency: 25
+  category: sw-category-medicine
+  group: SWT1MedicineMarket
+
+- type: swCargoProduct
+  id: SWCrateOintmentCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateOintment
+  cost:
+    SWEmpireCreditCurrency: 250
+  category: sw-category-medicine
+  group: SWT1MedicineMarket
+
+- type: swCargoProduct
+  id: SWBrutepackCP
+  icon:
+    sprite: Objects/Specific/Medical/medical.rsi
+    state: brutepack
+  product: Brutepack
+  cost:
+    SWEmpireCreditCurrency: 20
+  category: sw-category-medicine
+  group: SWT1MedicineMarket
+
+- type: swCargoProduct
+  id: SWCrateBrutepackCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateBrutepack
+  cost:
+    SWEmpireCreditCurrency: 200
+  category: sw-category-medicine
+  group: SWT1MedicineMarket
+
+- type: swCargoProduct
+  id: SWTourniquetCP
+  icon:
+    sprite: Objects/Specific/Medical/medical.rsi
+    state: tourniquet
+  product: Tourniquet
+  cost:
+    SWEmpireCreditCurrency: 15
+  category: sw-category-medicine
+  group: SWT1MedicineMarket
+
+- type: swCargoProduct
+  id: SWCrateTourniquetCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateTourniquet
+  cost:
+    SWEmpireCreditCurrency: 150
+  category: sw-category-medicine
+  group: SWT1MedicineMarket
+
+- type: swCargoProduct
+  id: SWBloodpackCP
+  icon:
+    sprite: Objects/Specific/Medical/medical.rsi
+    state: bloodpack
+  product: Bloodpack
+  cost:
+    SWEmpireCreditCurrency: 20
+  category: sw-category-medicine
+  group: SWT1MedicineMarket
+
+- type: swCargoProduct
+  id: SWCrateBloodpackCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateBloodpack
+  cost:
+    SWEmpireCreditCurrency: 200
+  category: sw-category-medicine
+  group: SWT1MedicineMarket
+
+- type: swCargoProduct
+  id: SWKoltoMedipenCP
+  icon:
+    sprite: _SW/Objects/Chemistry/kolto_medipen.rsi
+    state: icon
+  product: SWKoltoMedipen
+  cost:
+    SWEmpireCreditCurrency: 50
+  category: sw-category-medicine
+  group: SWT2MedicineMarket
+
+- type: swCargoProduct
+  id: SWCrateKoltoCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateKolto
+  cost:
+    SWEmpireCreditCurrency: 500
+  category: sw-category-medicine
+  group: SWT2MedicineMarket
+
+- type: swCargoProduct
+  id: SWBactaMedipenCP
+  icon:
+    sprite: _SW/Objects/Chemistry/bacta_medipen.rsi
+    state: icon
+  product: SWBactaMedipen
+  cost:
+    SWEmpireCreditCurrency: 100
+  category: sw-category-medicine
+  group: SWT3MedicineMarket
+
+- type: swCargoProduct
+  id: SWCrateBactaCP
+  icon:
+    sprite: _SW/Objects/Chemistry/kolto_medipen.rsi
+    state: icon
+  product: SWCrateBacta
+  cost:
+    SWEmpireCreditCurrency: 1000
+  category: sw-category-medicine
+  group: SWT3MedicineMarket

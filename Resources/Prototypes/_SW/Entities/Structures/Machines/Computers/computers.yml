@@ -137,3 +137,187 @@
       SWExchangeOperative: true
   - type: AccessReader
     access: [[ "SWRepublicCommander" ]]
+
+
+- type: entity
+  parent: BaseComputer
+  id: SWFinanceConsole
+  name: Консоль финансов
+  suffix: Империя
+  components:
+  - type: SWFinanceConsole
+    faction: EmpireFaction
+  - type: ActivatableUI
+    key: enum.SWFinanceConsoleUIKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWFinanceConsoleUIKey.Key:
+        type: SWFinanceConsoleBoundUserInterface
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: comm
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+  - type: SWBankAccountAccessor
+
+- type: entity
+  parent: SWFinanceConsole
+  id: SWFinanceConsoleRepublic
+  name: Консоль финансов
+  suffix: Республика
+  components:
+  - type: SWFinanceConsole
+    faction: RepublicFaction
+
+- type: entity
+  parent: BaseComputer
+  id: SWBuyConsoleEmpire
+  name: Консоль покупки
+  suffix: Империя
+  components:
+  - type: ActivatableUI
+    key: enum.SWBuyConsoleUIKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWBuyConsoleUIKey.Key:
+        type: SWCargoOrderConsoleBoundUserInterface
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: comm
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+  - type: SWBankAccountContainer
+  - type: SWBankAccountAccessor
+  - type: DeviceList
+  - type: DeviceNetwork
+    deviceNetId: Wired
+  - type: DeviceLinkSource
+    range: 30
+    ports:
+      - SWBuyConsoleSender
+  - type: SWBuyConsole
+    allowed:
+    - SWEmpireCreditCurrency
+    - SWRepublicCreditCurrency
+    allowedMarkets:
+    - SWBaseMarket
+    - SWT1WeaponMarket
+    - SWT2EmpireWeaponMarket
+    - SWT3WeaponMarket
+    - SWT1MedicineMarket
+    - SWT2MedicineMarket
+    - SWT3MedicineMarket
+    - SWMaterialsMarket
+    - SWExplosiveMarket
+    - SWAdditionalAmunitionMarket
+    - SWToolsMarket
+
+- type: entity
+  parent: SWBuyConsoleEmpire
+  id: SWBuyConsole
+  name: Консоль покупки
+  suffix: Республика
+  components:
+  - type: SWBankAccountContainer
+    allowedCurrencies:
+    - SWRepublicCreditCurrency
+  - type: SWBuyConsole
+    allowed:
+    - SWRepublicCreditCurrency
+    allowedMarkets:
+    - SWBaseMarket
+    - SWT1WeaponMarket
+    - SWT2RepublicWeaponMarket
+    - SWT3WeaponMarket
+    - SWT1MedicineMarket
+    - SWT2MedicineMarket
+    - SWT3MedicineMarket
+    - SWMaterialsMarket
+    - SWExplosiveMarket
+    - SWAdditionalAmunitionMarket
+    - SWToolsMarket
+
+- type: entity
+  parent: SWBuyConsoleEmpire
+  id: SWBuyConsoleNeutral
+  name: Урезанная консоль покупки
+  suffix: Нейтралы
+  components:
+  - type: SWBuyConsole
+    allowed:
+    - SWEmpireCreditCurrency
+    - SWRepublicCreditCurrency
+    allowedMarkets:
+    - SWBaseMarket
+    - SWT1WeaponMarket
+    - SWT1MedicineMarket
+    - SWT2MedicineMarket
+
+- type: entity
+  parent: BaseComputer
+  id: SWSellConsole
+  name: Консоль продажи
+  components:
+  - type: ActivatableUI
+    key: enum.SWSellConsoleUIKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWSellConsoleUIKey.Key:
+        type: SWSellConsoleBoundUserInterface
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: comm
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+  - type: DeviceList
+  - type: DeviceNetwork
+    deviceNetId: Wired
+  - type: DeviceLinkSource
+    range: 30
+    ports:
+      - SWSellConsoleSender
+  - type: SWSellConsole
+    outputCurrency: SWEmpireCreditCurrency
+
+- type: entity
+  parent: BaseComputer
+  id: SWExchangeConsole
+  name: Обменный автомат
+  components:
+  - type: ActivatableUI
+    key: enum.SWExchangeConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWExchangeConsoleUiKey.Key:
+        type: SWExchangeConsoleBoundUserInterface
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: comm
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+  - type: SWBankAccountContainer
+  - type: SWBankAccountAccessor
+  - type: SWExchangeConsole
+    allowedCurrencies:
+    - SWEmpireCreditCurrency
+    - SWRepublicCreditCurrency

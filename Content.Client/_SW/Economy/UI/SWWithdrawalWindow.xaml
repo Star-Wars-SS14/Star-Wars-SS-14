@@ -1,0 +1,21 @@
+<DefaultWindow
+    xmlns="https://spacestation14.io"
+    Title="Окно вывода"
+    MinSize="300 200"
+    SetSize="300 400">
+    <BoxContainer Orientation="Vertical">
+        
+        <BoxContainer Orientation="Vertical"
+                      VerticalExpand="True"
+                      Name="RequestsList">
+        </BoxContainer>
+        
+        <Button
+        Name="ConfirmButton"
+        HorizontalExpand="True"
+        Margin="0">
+            <Label Text="Ок" HorizontalExpand="True" />
+        </Button>
+        
+    </BoxContainer>
+</DefaultWindow>

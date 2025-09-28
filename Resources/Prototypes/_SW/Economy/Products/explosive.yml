@@ -1,0 +1,43 @@
+- type: swCargoProduct
+  id: SWGrenadeShrapnelCP
+  icon:
+    sprite: Objects/Weapons/Grenades/shrapnelgrenade.rsi
+    state: icon
+  product: GrenadeShrapnel
+  cost:
+    SWEmpireCreditCurrency: 95
+  category: sw-category-explosive
+  group: SWExplosiveMarket
+
+- type: swCargoProduct
+  id: SWGrenadeFlashBangCP
+  icon:
+    sprite: Objects/Weapons/Grenades/flashbang.rsi
+    state: icon
+  product: GrenadeFlashBang
+  cost:
+    SWEmpireCreditCurrency: 75
+  category: sw-category-explosive
+  group: SWExplosiveMarket
+
+- type: swCargoProduct
+  id: SWSmokeGrenadeCP
+  icon:
+    sprite: Objects/Weapons/Grenades/smoke.rsi
+    state: icon
+  product: SmokeGrenade
+  cost:
+    SWEmpireCreditCurrency: 50
+  category: sw-category-explosive
+  group: SWExplosiveMarket
+
+- type: swCargoProduct
+  id: SWC4CP
+  icon:
+    sprite: Objects/Weapons/Bombs/c4.rsi
+    state: icon
+  product: C4
+  cost:
+    SWEmpireCreditCurrency: 100
+  category: sw-category-explosive
+  group: SWExplosiveMarket

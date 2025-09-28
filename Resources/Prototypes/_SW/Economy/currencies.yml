@@ -1,0 +1,26 @@
+- type: swcurrency
+  id : SWEmpireCreditCurrency
+  localizedName: Имперский кредит
+  shortName: ИК
+  cashEntity: SWEmpireCredits
+  exchangeRates:
+    SWRepublicCreditCurrency: 1.5
+    SWVanillaCurrency: 4
+
+- type: swcurrency
+  id : SWRepublicCreditCurrency
+  localizedName: Республиканский кредит
+  shortName: РК
+  cashEntity: SWRepublicCredits
+  exchangeRates:
+    SWEmpireCreditCurrency: 0.66666667
+    SWVanillaCurrency: 6
+
+- type: swcurrency
+  id : SWVanillaCurrency
+  localizedName: Местный кредит
+  shortName: МК
+  cashEntity: SpaceCash
+  exchangeRates:
+    SWEmpireCreditCurrency: 0.25
+    SWRepublicCreditCurrency: 0.166667

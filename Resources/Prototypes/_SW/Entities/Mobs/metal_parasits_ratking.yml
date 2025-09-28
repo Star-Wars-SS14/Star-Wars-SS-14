@@ -1,0 +1,173 @@
+- type: entity
+  name: parasit
+  parent: SimpleMobBase
+  suffix: Не спавнить
+  id: SWMobParasitServant
+  components:
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: HTN
+    rootTask:
+      task: RatServantCompound
+    blackboard:
+      IdleRange: !type:Single
+        3.5
+      FollowCloseRange: !type:Single
+        2.0
+      FollowRange: !type:Single
+        3.0
+  - type: Speech
+  - type: Body
+    prototype: SWParasit
+  - type: Sprite
+    drawdepth: SmallMobs
+    sprite: _SW/Mobs/Animals/parasits.rsi
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base", "movement"]
+      state: parasit-0
+  - type: Physics
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.2
+        density: 100
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: MobState
+  - type: MobStateActions
+    actions:
+      Critical:
+      - ActionCritSuccumb
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      180: Critical
+      200: Dead
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: parasit-0
+      Critical:
+        Base: parasit-0
+      Dead:
+        Base: parasit-0
+  - type: Thirst
+    baseDecayRate: 0 #disable thirst
+    startingThirst: 25
+    thresholds:
+      OverHydrated: 35
+      Okay: 25
+      Thirsty: 15
+      Parched: 10
+      Dead: 0
+  - type: Hunger
+    thresholds:
+      Overfed: 35
+      Okay: 25
+      Peckish: 15
+      Starving: 10
+      Dead: 0
+    baseDecayRate: 1
+    starvingSlowdownModifier: 1.0
+    hungerThresholdDecayModifiers:
+      Overfed: 1.5
+      Okay: 1.0
+      Peckish: 1.0
+      Starving: 0.95
+      Dead: 0.9
+  - type: Respirator
+    damage:
+      types:
+        Asphyxiation: 0.25
+    damageRecovery:
+      types:
+        Asphyxiation: -0.25
+  - type: Barotrauma
+    damage:
+      types:
+        Blunt: 0.1
+  - type: CombatMode
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/Effects/bite.ogg
+    angle: 0
+    animation: WeaponArcBite
+    damage:
+      types:
+        Piercing: 50
+        Structural: 40
+    altDisarm: false
+  - type: Bloodstream
+    bloodMaxVolume: 50
+  - type: NonSpreaderZombie
+  - type: FireVisuals
+    sprite: Mobs/Effects/onfire.rsi
+    normalState: Generic_mob_burning
+  - type: SWToggleableNightVision
+  - type: NightVisionItem
+    colorOverride: "#7a717a"
+  - type: Puller
+    needsHands: false
+  - type: Emoting
+  - type: Vocal
+    sounds:
+      Male: SWParasitSounds
+      Female: SWParasitSounds
+      Unsexed: SWParasitSounds
+  - type: SlowOnDamage
+    speedModifierThresholds:
+      150: 0.9
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 3.5
+    baseSprintSpeed: 6.0
+  - type: PassiveDamage
+    allowedStates:
+    - Alive
+    damageCap: 199
+    damage:
+      types:
+        Poison: -0.15
+        Bloodloss: -0.15
+      groups:
+        Brute: -0.15
+        Burn: -0.3
+        Airloss: -0.15
+  - type: ReplacementAccent
+    accent: SWMetallParasit
+
+- type: entity
+  name: parasit king
+  parent: SWMobParasit
+  suffix: Не спавнить
+  id: SWMobParasitKing
+  components:
+  - type: RatKing
+    hungerPerArmyUse: 0
+    hungerPerDomainUse: 0
+    armyMobSpawnId: SWMobParasitServant
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      390: Critical
+      400: Dead
+  - type: Sprite
+    drawdepth: SmallMobs
+    sprite: _SW/Mobs/Animals/parasits.rsi
+    scale: 2.0, 2.0
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base", "movement"]
+      state: parasit-0
+  - type: MeleeWeapon
+    soundHit:
+      path: /Audio/Effects/bite.ogg
+    angle: 0
+    animation: WeaponArcBite
+    damage:
+      types:
+        Piercing: 50
+        Structural: 500

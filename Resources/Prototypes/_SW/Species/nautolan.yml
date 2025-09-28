@@ -1,0 +1,142 @@
+- type: species
+  id: Nautolan
+  name: species-name-nautolan
+  roundStart: true
+  prototype: MobNautolan
+  sprites: MobNautolanSprites
+  markingLimits: MobNoFacialHairRequiredMarkingLimits
+  dollPrototype: MobHumanDummy
+  skinColoration: ColorLimits
+  skinColorLimits: NautolanColorLimits
+
+- type: swColorLimits
+  id: NautolanColorLimits
+  hueLimit:
+    intervals:
+    - left: 0.378
+      right: 0.611
+    - left: 0.169
+      right: 0.222
+  saturationLimit:
+    intervals:
+    - left: 0.25
+      right: 1.00
+  valueLimit:
+    intervals:
+    - left: 0.5
+      right: 1.00
+
+# The lack of a layer means that
+# this person cannot have round-start anything
+# applied to that layer. It has to instead
+# be defined as a 'custom base layer'
+# in either the mob's starting marking prototype,
+# or it has to be added in C#.
+- type: speciesBaseSprites
+  id: MobNautolanSprites
+  sprites:
+    Special: MobHumanoidAnyMarking
+    Head: MobNautolanHead
+    Hair: NautolanMarkingFollowSkin
+    FacialHair: MobHumanoidAnyMarking
+    Snout: MobHumanoidAnyMarking
+    Chest: MobNautolanTorso
+    Tail: MobHumanoidAnyMarking # Corvax-Sponsors
+    Eyes: MobHumanoidEyes
+    HeadTop: MobHumanoidAnyMarking
+    LArm: MobNautolanLArm
+    RArm: MobNautolanRArm
+    LHand: MobNautolanLHand
+    RHand: MobNautolanRHand
+    LLeg: MobNautolanLLeg
+    RLeg: MobNautolanRLeg
+    LFoot: MobNautolanLFoot
+    RFoot: MobNautolanRFoot
+
+- type: humanoidBaseSprite
+  id: NautolanMarkingFollowSkin
+  markingsMatchSkin: true
+
+- type: humanoidBaseSprite
+  id: MobNautolanHead
+  baseSprite:
+    sprite: _SW/Mobs/Species/Nautolan/parts.rsi
+    state: head_m
+
+- type: humanoidBaseSprite
+  id: MobNautolanHeadMale
+  baseSprite:
+    sprite: _SW/Mobs/Species/Nautolan/parts.rsi
+    state: head_m
+
+- type: humanoidBaseSprite
+  id: MobNautolanHeadFemale
+  baseSprite:
+    sprite: _SW/Mobs/Species/Nautolan/parts.rsi
+    state: head_f
+
+- type: humanoidBaseSprite
+  id: MobNautolanTorso
+  baseSprite:
+    sprite: _SW/Mobs/Species/Nautolan/parts.rsi
+    state: torso_m
+
+- type: humanoidBaseSprite
+  id: MobNautolanTorsoMale
+  baseSprite:
+    sprite: _SW/Mobs/Species/Nautolan/parts.rsi
+    state: torso_m
+
+- type: humanoidBaseSprite
+  id: MobNautolanTorsoFemale
+  baseSprite:
+    sprite: _SW/Mobs/Species/Nautolan/parts.rsi
+    state: torso_f
+
+- type: humanoidBaseSprite
+  id: MobNautolanLLeg
+  baseSprite:
+    sprite: _SW/Mobs/Species/Nautolan/parts.rsi
+    state: l_leg
+
+- type: humanoidBaseSprite
+  id: MobNautolanLArm
+  baseSprite:
+    sprite: _SW/Mobs/Species/Nautolan/parts.rsi
+    state: l_arm
+
+- type: humanoidBaseSprite
+  id: MobNautolanLHand
+  baseSprite:
+    sprite: _SW/Mobs/Species/Nautolan/parts.rsi
+    state: l_hand
+
+- type: humanoidBaseSprite
+  id: MobNautolanLFoot
+  baseSprite:
+    sprite: _SW/Mobs/Species/Nautolan/parts.rsi
+    state: l_foot
+
+- type: humanoidBaseSprite
+  id: MobNautolanRLeg
+  baseSprite:
+    sprite: _SW/Mobs/Species/Nautolan/parts.rsi
+    state: r_leg
+
+- type: humanoidBaseSprite
+  id: MobNautolanRArm
+  baseSprite:
+    sprite: _SW/Mobs/Species/Nautolan/parts.rsi
+    state: r_arm
+
+- type: humanoidBaseSprite
+  id: MobNautolanRHand
+  baseSprite:
+    sprite: _SW/Mobs/Species/Nautolan/parts.rsi
+    state: r_hand
+
+- type: humanoidBaseSprite
+  id: MobNautolanRFoot
+  baseSprite:
+    sprite: _SW/Mobs/Species/Nautolan/parts.rsi
+    state: r_foot

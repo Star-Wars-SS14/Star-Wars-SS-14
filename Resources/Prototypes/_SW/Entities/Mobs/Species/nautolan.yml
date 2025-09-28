@@ -1,0 +1,20 @@
+- type: entity
+  parent: BaseMobTwilek
+  id: BaseMobNautolan
+  name: Urist McNautolan
+  abstract: true
+  components:
+  - type: Icon 
+    sprite: _SW/Mobs/Species/Nautolan/parts.rsi
+    state: full
+  - type: HumanoidAppearance
+    species: Nautolan
+    hideLayersOnEquip:
+    - Hair
+    - Snout
+
+- type: entity
+  save: false
+  name: Urist McNautolan
+  parent: BaseMobNautolan
+  id: MobNautolan

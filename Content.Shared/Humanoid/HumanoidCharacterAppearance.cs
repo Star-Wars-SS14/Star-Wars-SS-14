@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Content.Shared.Humanoid.Markings;
 using Content.Shared.Humanoid.Prototypes;
 using Robust.Shared.Prototypes;
@@ -224,10 +224,10 @@ public sealed partial class HumanoidCharacterAppearance : ICharacterAppearance, 
         {
             markingSet = new MarkingSet(appearance.Markings, speciesProto.MarkingPoints, markingManager, proto);
             markingSet.EnsureValid(markingManager);
-
-            if (!Humanoid.SkinColor.VerifySkinColor(speciesProto.SkinColoration, skinColor))
+            
+            if (!Humanoid.SkinColor.VerifySkinColor(speciesProto.SkinColoration, skinColor, speciesProto)) //SW
             {
-                skinColor = Humanoid.SkinColor.ValidSkinTone(speciesProto.SkinColoration, skinColor);
+                skinColor = Humanoid.SkinColor.ValidSkinTone(speciesProto.SkinColoration, skinColor, speciesProto); //SW
             }
 
             markingSet.EnsureSpecies(species, skinColor, markingManager);

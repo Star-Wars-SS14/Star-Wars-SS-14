@@ -128,7 +128,7 @@ public abstract class SharedStationSpawningSystem : EntitySystem
                 if (!string.IsNullOrEmpty(equipmentStr))
                 {
                     var equipmentEntity = Spawn(equipmentStr, xform.Coordinates);
-                    InventorySystem.TryEquip(entity, equipmentEntity, slot.Name, silent: true, force: true);
+                    InventorySystem.TryEquip(entity, equipmentEntity, slot.Name, silent: true, force: false); //SW
                 }
             }
         }

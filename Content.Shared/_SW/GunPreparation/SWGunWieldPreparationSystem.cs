@@ -53,6 +53,7 @@ public sealed class SWGunWieldPreparationSystem : EntitySystem
     private void OnInsert(Entity<SWGunWieldPreparationComponent> ent, ref EntGotInsertedIntoContainerMessage args)
     {
         DisablePreparation(ent);
+        ent.Comp.Prepared = false;
     }
 
     private void OnFinish(Entity<SWGunWieldPreparationComponent> ent, ref SWPreparationFinishedDoAfterEvent args)

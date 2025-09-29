@@ -48,6 +48,7 @@ public sealed class SubdermalImplantSystem : SharedSubdermalImplantSystem
     [Dependency] private readonly EntityLookupSystem _lookupSystem = default!;
     [Dependency] private readonly SharedMapSystem _mapSystem = default!;
     [Dependency] private readonly IMapManager _mapManager = default!;
+    [Dependency] private readonly IdentitySystem _identity = default!;
     private EntityQuery<PhysicsComponent> _physicsQuery;
     private HashSet<Entity<MapGridComponent>> _targetGrids = [];
 
@@ -119,7 +120,7 @@ public sealed class SubdermalImplantSystem : SharedSubdermalImplantSystem
             _pullingSystem.TryStopPull(puller.Pulling.Value, pullable);
 
         var xform = Transform(ent);
-        var targetCoords = SelectRandomTileInRange(uid, xform, implant.TeleportRadius);
+        var targetCoords = SelectRandomTileInRange(uid, xform, implant.TeleportMinRadius, implant.TeleportMaxRadius);
         if (targetCoords != null)
         {
             _xform.SetCoordinates(ent, targetCoords.Value);
@@ -128,7 +129,9 @@ public sealed class SubdermalImplantSystem : SharedSubdermalImplantSystem
         }
     }
 
-    private EntityCoordinates? SelectRandomTileInRange(EntityUid uid, TransformComponent userXform, float radius)
+    private EntityCoordinates? SelectRandomTileInRange(EntityUid uid, TransformComponent userXform,
+                                    float minRadius,
+                                    float maxRadius)
     {
         if (userXform.GridUid == null)
         {
@@ -138,9 +141,15 @@ public sealed class SubdermalImplantSystem : SharedSubdermalImplantSystem
         EntityUid gridUid = userXform.GridUid.Value;
         if (!TryComp<MapGridComponent>(userXform.GridUid, out var grid))
             return null;
-        Vector2 tmp = new Vector2(radius, radius);
-        var shape = new Box2(userXform.LocalPosition - tmp, userXform.LocalPosition + tmp);
-        IEnumerable<TileRef> tilesInRange = _mapSystem.GetLocalTilesIntersecting(uid, grid, shape, false);
+        Vector2 tmp = new Vector2(maxRadius, maxRadius);
+        Vector2 tmp2 = new Vector2(minRadius, minRadius);
+        var shapeMin = new Box2(userXform.LocalPosition - tmp, userXform.LocalPosition + tmp);
+        IEnumerable<TileRef> tilesInMaxRange = _mapSystem.GetLocalTilesIntersecting(uid, grid, shapeMin, false);
+
+        var shapeMax = new Box2(userXform.LocalPosition - tmp2, userXform.LocalPosition + tmp2);
+        IEnumerable<TileRef> tilesInMinRange = _mapSystem.GetLocalTilesIntersecting(uid, grid, shapeMax, false);
+
+        IEnumerable <TileRef> tilesInRange = tilesInMaxRange.Except(tilesInMinRange);
 
         if (tilesInRange.Count() == 0)
         {

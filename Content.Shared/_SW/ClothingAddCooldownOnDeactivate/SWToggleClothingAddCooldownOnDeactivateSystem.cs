@@ -26,10 +26,10 @@ public sealed class SWToggleClothingAddCooldownOnDeactivateSystem : EntitySystem
 
         if (args.Activated == false)
         {
-            var cooldown = TimeSpan.FromSeconds(ent.Comp.CoolDown);
+            var cooldown = TimeSpan.FromSeconds(ent.Comp.UseDelay);
             ISawmill _s = Logger.GetSawmill("asdfgh");
             _s.Fatal("sadfghjkl");
-            _actionsSystem.SetCooldown(comp.ActionEntity, cooldown);
+            _actionsSystem.SetUseDelay(comp.ActionEntity, cooldown);
         }
     }
 }

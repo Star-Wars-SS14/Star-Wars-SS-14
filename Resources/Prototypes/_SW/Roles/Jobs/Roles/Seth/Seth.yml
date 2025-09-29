@@ -454,6 +454,7 @@
   id: ExchangeCaptainGear
   equipment:
     outerClothing: SWExchangeSuit
+    jumpsuit: SWClothingUniformJumpsuitFleece
     belt: ClothingBeltAssault
     back: ClothingBackpackMilitarySatchel
     shoes: SWClothingShoesBootsExchange
@@ -466,6 +467,7 @@
   id: ExchangeOperativeGear
   equipment:
     outerClothing: SWExchangeSuit
+    jumpsuit: SWClothingUniformJumpsuitFleece
     belt: ClothingBeltSalvageWebbing
     back: ClothingBackpackMilitarySatchel
     gloves: ClothingHandsGlovesColorBlack
@@ -484,6 +486,7 @@
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen
     jumpsuit: SWClothingUniformJumpsuitFleece
+    pocket1: FlashlightLantern
 
 ######old
 - type: startingGear

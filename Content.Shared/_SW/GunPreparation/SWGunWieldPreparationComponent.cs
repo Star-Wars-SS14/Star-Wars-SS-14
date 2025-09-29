@@ -18,4 +18,5 @@ public sealed partial class SWGunWieldPreparationComponent : Component
 
     public EntityUid? ActionEntity = null;
     public EntityUid? SelfActionEntity = null;
+    public EntityUid? CurrentUser = null;
 }

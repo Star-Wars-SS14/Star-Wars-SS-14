@@ -10,6 +10,7 @@ using Content.Shared.Popups;
 using Content.Shared.Weapons.Ranged.Events;
 using Content.Shared.Wieldable;
 using Content.Shared.Wieldable.Components;
+using Robust.Shared.Containers;
 using Robust.Shared.Serialization;
 using System;
 using System.Collections.Generic;
@@ -30,28 +31,53 @@ public sealed class SWGunWieldPreparationSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        
         SubscribeLocalEvent<SWGunWieldPreparationComponent, HandSelectedEvent>(OnSelect);
         SubscribeLocalEvent<SWGunWieldPreparationComponent, HandDeselectedEvent>(OnDeselect);
+        SubscribeLocalEvent<SWGunWieldPreparationComponent, EntGotInsertedIntoContainerMessage>(OnInsert);
         SubscribeLocalEvent<SWGunWieldPreparationComponent, SWPreparationFinishedDoAfterEvent>(OnFinish);
 
         SubscribeLocalEvent<SWPreparationWieldGunUserComponent, WieldAttemptEvent>(OnAttemptWield);
         SubscribeLocalEvent<SWPreparationWieldGunUserComponent, MoveEvent>(OnMove);
     }
+
     private void OnSelect(Entity<SWGunWieldPreparationComponent> ent, ref HandSelectedEvent args)
     {
-        var comp = EnsureComp<SWPreparationWieldGunUserComponent>(args.User);
-        comp.Gun = ent;
+        EnablePreparation(ent, args.User);
     }
+
     private void OnDeselect(Entity<SWGunWieldPreparationComponent> ent, ref HandDeselectedEvent args)
     {
-        RemComp<SWPreparationWieldGunUserComponent>(args.User);
+        DisablePreparation(ent);
     }
+
+    private void OnInsert(Entity<SWGunWieldPreparationComponent> ent, ref EntGotInsertedIntoContainerMessage args)
+    {
+        DisablePreparation(ent);
+    }
+
     private void OnFinish(Entity<SWGunWieldPreparationComponent> ent, ref SWPreparationFinishedDoAfterEvent args)
     {
         ent.Comp.Prepared = true;
         _wieldableSystem.TryWield(ent.Owner, Comp<WieldableComponent>(ent), args.User);
     }
+
+    private void DisablePreparation(Entity<SWGunWieldPreparationComponent> ent)
+    {
+        if (ent.Comp.CurrentUser == null)
+        {
+            return;
+        }
+
+        RemComp<SWPreparationWieldGunUserComponent>(ent.Comp.CurrentUser.Value);
+    }
+
+    private void EnablePreparation(Entity<SWGunWieldPreparationComponent> ent, EntityUid user)
+    {
+        var comp = EnsureComp<SWPreparationWieldGunUserComponent>(user);
+        comp.Gun = ent;
+        ent.Comp.CurrentUser = user;
+    }
+
     private void OnAttemptWield(Entity<SWPreparationWieldGunUserComponent> ent, ref WieldAttemptEvent args)
     {
         if (ent.Comp.Gun == null)

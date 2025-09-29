@@ -6,8 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Content.Shared._SW.DeactivateOnShoot;
-[RegisterComponent,  NetworkedComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class SWDeactivateOnShootUserComponent : Component
 {
+    [AutoNetworkedField]
     public EntityUid? Item = null;
 }

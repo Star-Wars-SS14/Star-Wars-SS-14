@@ -15,10 +15,10 @@
       lastVisibility: 0.1
   - type: ItemToggle
   - type: ToggleClothing
-    action: ActionToggleMagboots
+    action: ActionToggleInvis
     disableOnUnequip: true
   - type: SWToggleClothingAddCooldownOnDeactivate
-  # - type: SWDeactivateClothingOnShoot
+  - type: SWDeactivateClothingOnShoot
   - type: PressureProtection
     highPressureMultiplier: 0.3
     lowPressureMultiplier: 1000

@@ -19,17 +19,20 @@ public sealed class SWToggleClothingAddCooldownOnDeactivateSystem : EntitySystem
 
     private void OnToggled(Entity<SWToggleClothingAddCooldownOnDeactivateComponent> ent, ref ItemToggledEvent args)
     {
+        ISawmill _s = Logger.GetSawmill("asdfgh");
+        _s.Fatal("s00");
         if (!TryComp<ToggleClothingComponent>(ent, out var comp) || comp.ActionEntity == null)
         {
             return;
         }
-
+        _s.Fatal("s01");
         if (args.Activated == false)
         {
             var cooldown = TimeSpan.FromSeconds(ent.Comp.UseDelay);
-            ISawmill _s = Logger.GetSawmill("asdfgh");
+            
             _s.Fatal("sadfghjkl");
             _actionsSystem.SetUseDelay(comp.ActionEntity, cooldown);
+            _actionsSystem.SetCooldown(comp.ActionEntity, cooldown);
         }
     }
 }

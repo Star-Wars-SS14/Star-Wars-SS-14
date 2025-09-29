@@ -10,6 +10,7 @@
     id: SWIDCardSobrikCaptain
     ears: SWClothingHeadsetGarnisonCaptain
     back: SWImperialBackpackCamo
+    suitstorage: SWE1BlasterRifle
 
 - type: startingGear
   id: SobrikOfficerGear
@@ -22,6 +23,7 @@
     id: SWIDCardSobrikOfficer
     ears: SWClothingHeadsetGarnison
     back: SWImperialBackpackCamo
+    suitstorage: SWE1BlasterRifle
 
 - type: startingGear
   id: SobrikMedicGear
@@ -34,6 +36,7 @@
     id: SWIDCardSobrikMedic
     ears: SWClothingHeadsetGarnison
     back: SWImperialBackpack
+    suitstorage: SWE1BlasterRifle
 
 ###Empire
 - type: startingGear
@@ -47,6 +50,7 @@
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetRegular
     back: SWImperialBackpack
+    suitstorage: SWE1BlasterRifle
 
 
 - type: startingGear
@@ -61,6 +65,7 @@
     ears: SWClothingHeadsetEmpirePilot
     back: SWImperialBackpack
     pocket1: HandHeldMassScanner
+    suitstorage: SWE1BlasterRifle
 
 - type: startingGear
   id: EmpireEngineerGear
@@ -74,6 +79,7 @@
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetRegular
     back: SWImperialBackpack
+    suitstorage: SWE1BlasterRifle
 
 - type: startingGear
   id: EmpireMedicalGear
@@ -86,6 +92,7 @@
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetRegular
     back: SWImperialBackpack
+    suitstorage: SWE1BlasterRifle
 
 - type: startingGear
   id: EmpireMoffGear
@@ -100,6 +107,7 @@
     eyes: ClothingEyesGlassesSunglasses
     id: SWIDCardEmpireMoff
     ears: SWClothingHeadsetAllEmpire
+    suitstorage: SWE1BlasterRifle
 
 - type: startingGear
   id: EmpireMajorGear
@@ -113,6 +121,7 @@
     belt: ClothingBeltAssault
     id: SWIDCardEmpireMajor
     ears: SWClothingHeadsetRegularCom
+    suitstorage: SWE1BlasterRifle
 
 - type: startingGear
   id: EmpireLieutenantGear
@@ -126,6 +135,7 @@
     id: SWIDCardEmpireLieutenant
     ears: SWClothingHeadsetRegularCom
     back: SWImperialBackpack
+    suitstorage: SWE1BlasterRifle
 
 ###Mandalorians
 - type: startingGear
@@ -138,6 +148,7 @@
     back: ClothingBackpackMilitarySatchel
     id: SWIDCardMandalorianLeader
     ears: SWClothingHeadsetMandalorian
+    suitstorage: SWJ111Rancor
 
 - type: startingGear
   id: MandalorianVeteranGear
@@ -150,6 +161,7 @@
     back: ClothingBackpackMilitarySatchel
     id: SWIDCardMandalorianVeteran
     ears: SWClothingHeadsetMandalorian
+    suitstorage: SWJ111Rancor
 
 - type: startingGear
   id: MandalorianWarriorGear
@@ -161,6 +173,7 @@
     back: ClothingBackpackMilitarySatchel
     id: SWIDCardMandalorianWarrior
     ears: SWClothingHeadsetMandalorian
+    suitstorage: SWJ111Rancor
 
 - type: startingGear
   id: MandalorianRecruitGear
@@ -172,6 +185,7 @@
     gloves: ClothingHandsGlovesCombat
     id: SWIDCardMandalorianRecruit
     ears: SWClothingHeadsetMandalorian
+    suitstorage: SWJ111Rancor
 
 ###SWRepublic
 #Command
@@ -186,6 +200,7 @@
     id: SWIDCardRepublicGeneral
     ears: SWClothingHeadsetRepublicAll
     back: ClothingBackpackMilitarySatchel
+    suitstorage: SWH206Renegade
 
 - type: startingGear
   id: RepublicCaptainGear
@@ -198,6 +213,7 @@
     id: SWIDCardRepublicCaptain
     ears: SWClothingHeadsetRepublicCom
     back: ClothingBackpackMilitarySatchel
+    suitstorage: SWH206Renegade
 
 - type: startingGear
   id: RepublicLieutenantGear
@@ -210,6 +226,7 @@
     id: SWIDCardRepublicLieutenant
     ears: SWClothingHeadsetRepublicCom
     back: ClothingBackpackMilitarySatchel
+    suitstorage: SWH206Renegade
 
 #Soldiers
 - type: startingGear
@@ -223,6 +240,7 @@
     id: SWIDCardRepublicSoldier
     ears: SWClothingHeadsetRepublic
     back: ClothingBackpackMilitarySatchel
+    suitstorage: SWH206Renegade
 
 - type: startingGear
   id: RepublicPilotGear
@@ -236,6 +254,7 @@
     ears: SWClothingHeadsetRepublicPilot
     back: ClothingBackpackMilitarySatchel
     pocket1: HandHeldMassScanner
+    suitstorage: SWH206Renegade
 
 - type: startingGear
   id: RepublicEngineerGear
@@ -249,6 +268,7 @@
     ears: SWClothingHeadsetRepublic
     back: ClothingBackpackMilitarySatchel
     eyes: ClothingEyesGlassesMeson
+    suitstorage: SWH206Renegade
 
 - type: startingGear
   id: RepublicMedicGear
@@ -261,6 +281,7 @@
     id: SWIDCardRepublicMedic
     ears: SWClothingHeadsetRepublic
     back: ClothingBackpackMilitarySatchel
+    suitstorage: SWH206Renegade
 
 - type: startingGear
   id: RepublicRecruitGear
@@ -273,6 +294,7 @@
     belt: ClothingBeltAssault
     id: SWIDCardRepublicRecruit
     ears: SWClothingHeadsetRepublic
+    suitstorage: SWH206Renegade
 
 # ###Balmorran resistance
 # - type: startingGear
@@ -348,6 +370,7 @@
     gloves: ClothingHandsGlovesCombat
     ears: SWClothingHeadsetAllEmpire
     back: SWImperialBackpackCamo
+    suitstorage: SWP301Destroyer
 
 - type: startingGear
   id: EmpireIntelligenceAgentGear
@@ -361,6 +384,7 @@
     shoes: ClothingShoesBootsCombatFilled
     gloves: ClothingHandsGlovesCombat
     ears: SWClothingHeadsetIntelligence
+    suitstorage: SWK406Ripper
 
 ###Commander elite SWRepublic
 - type: startingGear
@@ -375,6 +399,7 @@
     neck: SWClothingNeckHavok
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok
+    suitstorage: SWEL34
 
 - type: startingGear
   id: RepublicCommanderLieutenantGear
@@ -386,7 +411,7 @@
     belt: ClothingBeltAssault
     id: SWIDCardHavokLieutenant
     shoes: ClothingShoesBootsCombatFilled
-    ears: SWClothingHeadsetHavok
+    suitstorage: SWP301Destroyer
 
 - type: startingGear
   id: RepublicCommanderMedicGear
@@ -399,6 +424,7 @@
     id: SWIDCardHavokMedic
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok
+    suitstorage: SWH206Renegade
 
 - type: startingGear
   id: RepublicCommanderStormtrooperGear
@@ -411,6 +437,7 @@
     id: SWIDCardHavokStormtrooper
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok
+    suitstorage: SWH206Renegade
 
 - type: startingGear
   id: RepublicCommanderSniperGear
@@ -423,6 +450,7 @@
     id: SWIDCardHavokSniper
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok
+    suitstorage: SWBeryaramk3
 
 ###Black Sun
 - type: startingGear
@@ -436,6 +464,7 @@
     id: SWIDCardBlackSun
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetBlackSun
+    suitstorage: SWZ1BlasterCarbine
 
 - type: startingGear
   id: BlackSunMercenaryGear
@@ -448,6 +477,7 @@
     id: SWIDCardBlackSunMercenary
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetBlackSun
+    suitstorage: SWZ1BlasterCarbine
 
 ###SWExchange
 - type: startingGear
@@ -462,6 +492,7 @@
     head: SW_ClothingHeadExchangeHelmet
     id: SWIDCardExchangeCaptain
     ears: SWClothingHeadsetExchange
+    suitstorage: SWMK3BlasterRifle
 
 - type: startingGear
   id: ExchangeOperativeGear
@@ -476,6 +507,7 @@
     head: SW_ClothingHeadExchangeHelmet
     id: SWIDCardExchangeOperative
     ears: SWClothingHeadsetExchange
+    suitstorage: SWMK3BlasterRifle
 
 ##citizen
 - type: startingGear

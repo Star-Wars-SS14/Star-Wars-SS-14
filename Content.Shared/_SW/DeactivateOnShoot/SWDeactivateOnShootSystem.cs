@@ -34,15 +34,11 @@ public sealed class SWDeactivateOnShootSystem : EntitySystem
 
     private void OnShoot(Entity<SWDeactivateOnShootUserComponent> ent, ref ShooterImpulseEvent args)
     {
-        ISawmill _s = Logger.GetSawmill("sadfghjk");
-        _s.Fatal("ss1");
-        _s.Fatal($"{ent.Comp.Item == null}");
         if (ent.Comp.Item == null
             || !TryComp <ToggleClothingComponent>(ent.Comp.Item, out var comp))
         {
             return;
         }
-        _s.Fatal("ss2");
         _toggle.TryDeactivate(ent.Comp.Item.Value);
     }
 }

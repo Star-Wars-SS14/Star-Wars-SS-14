@@ -11,8 +11,8 @@
     parent: true
     components:
     - type: Stealth
-      minVisibility: 0.1
-      lastVisibility: 0.1
+      minVisibility: 0.0
+      lastVisibility: 0.0
   - type: ItemToggle
   - type: ToggleClothing
     action: ActionToggleInvis

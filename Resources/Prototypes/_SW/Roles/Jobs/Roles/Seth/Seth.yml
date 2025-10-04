@@ -411,6 +411,7 @@
     belt: ClothingBeltAssault
     id: SWIDCardHavokLieutenant
     shoes: ClothingShoesBootsCombatFilled
+    ears: SWClothingHeadsetHavok
     suitstorage: SWP301Destroyer
 
 - type: startingGear

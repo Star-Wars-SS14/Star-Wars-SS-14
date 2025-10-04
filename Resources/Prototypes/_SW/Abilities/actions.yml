@@ -73,6 +73,18 @@
   - type: InstantAction    
     event: !type:DashRequestedEvent
 
+- type: entity
+  parent: BaseAction
+  id: ActionToggleInvis
+  name: Активировать генератор невидимости
+  description: Включает и выключает генератор невидимости
+  components:
+  - type: Action
+    itemIconStyle: BigItem
+    useDelay: 1
+  - type: InstantAction
+    event: !type:ToggleActionEvent
+
 # - type: entity
 #   id: ActionSubdueKyber
 #   name: Подчинить кайбер кристалл

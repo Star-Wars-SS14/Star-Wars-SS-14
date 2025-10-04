@@ -258,7 +258,6 @@ public sealed class ItemToggleSystem : EntitySystem
         comp.Activated = false;
         UpdateVisuals((uid, comp));
         Dirty(uid, comp);
-
         var toggleUsed = new ItemToggledEvent(predicted, Activated: false, user);
         RaiseLocalEvent(uid, ref toggleUsed);
     }

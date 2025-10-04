@@ -76,8 +76,8 @@
 - type: entity
   parent: BaseAction
   id: ActionToggleInvis
-  name: Toggle Magboots
-  description: Toggles the magboots on and off.
+  name: Активировать генератор невидимости
+  description: Включает и выключает генератор невидимости
   components:
   - type: Action
     itemIconStyle: BigItem

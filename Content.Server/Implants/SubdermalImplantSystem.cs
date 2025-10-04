@@ -27,7 +27,10 @@ using Content.Shared.DetailExaminable;
 using Content.Shared.Store.Components;
 using Robust.Shared.Collections;
 using Robust.Shared.Map.Components;
-
+using Robust.Shared.Physics.Collision.Shapes;
+using System.Linq;
+using System.Collections.Generic;
+using Content.Server.Construction.Commands;
 namespace Content.Server.Implants;
 
 public sealed class SubdermalImplantSystem : SharedSubdermalImplantSystem
@@ -44,8 +47,8 @@ public sealed class SubdermalImplantSystem : SharedSubdermalImplantSystem
     [Dependency] private readonly PullingSystem _pullingSystem = default!;
     [Dependency] private readonly EntityLookupSystem _lookupSystem = default!;
     [Dependency] private readonly SharedMapSystem _mapSystem = default!;
+    [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly IdentitySystem _identity = default!;
-
     private EntityQuery<PhysicsComponent> _physicsQuery;
     private HashSet<Entity<MapGridComponent>> _targetGrids = [];
 
@@ -99,7 +102,6 @@ public sealed class SubdermalImplantSystem : SharedSubdermalImplantSystem
     {
         args.Handled = true;
     }
-
     private void OnScramImplant(EntityUid uid, SubdermalImplantComponent component, UseScramImplantEvent args)
     {
         if (component.ImplantedEntity is not { } ent)
@@ -118,8 +120,7 @@ public sealed class SubdermalImplantSystem : SharedSubdermalImplantSystem
             _pullingSystem.TryStopPull(puller.Pulling.Value, pullable);
 
         var xform = Transform(ent);
-        var targetCoords = SelectRandomTileInRange(xform, implant.TeleportRadius);
-
+        var targetCoords = SelectRandomTileInRange(uid, xform, implant.TeleportMinRadius, implant.TeleportMaxRadius);
         if (targetCoords != null)
         {
             _xform.SetCoordinates(ent, targetCoords.Value);
@@ -128,81 +129,93 @@ public sealed class SubdermalImplantSystem : SharedSubdermalImplantSystem
         }
     }
 
-    private EntityCoordinates? SelectRandomTileInRange(TransformComponent userXform, float radius)
+    private EntityCoordinates? SelectRandomTileInRange(EntityUid uid, TransformComponent userXform,
+                                    float minRadius,
+                                    float maxRadius)
     {
-        var userCoords = _xform.ToMapCoordinates(userXform.Coordinates);
-        _targetGrids.Clear();
-        _lookupSystem.GetEntitiesInRange(userCoords, radius, _targetGrids);
-        Entity<MapGridComponent>? targetGrid = null;
-
-        if (_targetGrids.Count == 0)
+        if (userXform.GridUid == null)
+        {
             return null;
+        }
+        _targetGrids.Clear();
+        EntityUid gridUid = userXform.GridUid.Value;
+        if (!TryComp<MapGridComponent>(userXform.GridUid, out var grid))
+            return null;
+        Vector2 tmp = new Vector2(maxRadius, maxRadius);
+        Vector2 tmp2 = new Vector2(minRadius, minRadius);
+        var shapeMin = new Box2(userXform.LocalPosition - tmp, userXform.LocalPosition + tmp);
+        IEnumerable<TileRef> tilesInMaxRange = _mapSystem.GetLocalTilesIntersecting(uid, grid, shapeMin, false);
+
+        var shapeMax = new Box2(userXform.LocalPosition - tmp2, userXform.LocalPosition + tmp2);
+        IEnumerable<TileRef> tilesInMinRange = _mapSystem.GetLocalTilesIntersecting(uid, grid, shapeMax, false);
+
+        IEnumerable <TileRef> tilesInRange = tilesInMaxRange.Except(tilesInMinRange);
+
+        if (tilesInRange.Count() == 0)
+        {
+            return null;
+        }
 
         // Give preference to the grid the entity is currently on.
         // This does not guarantee that if the probability fails that the owner's grid won't be picked.
         // In reality the probability is higher and depends on the number of grids.
-        if (userXform.GridUid != null && TryComp<MapGridComponent>(userXform.GridUid, out var gridComp))
-        {
-            var userGrid = new Entity<MapGridComponent>(userXform.GridUid.Value, gridComp);
-            if (_random.Prob(0.5f))
-            {
-                _targetGrids.Remove(userGrid);
-                targetGrid = userGrid;
-            }
-        }
+        //if (userXform.GridUid != null && TryComp<MapGridComponent>(userXform.GridUid, out var gridComp))
+        //{
+        //    var userGrid = new Entity<MapGridComponent>(userXform.GridUid.Value, gridComp);
+        //    if (_random.Prob(0.5f))
+        //    {
+        //        _targetGrids.Remove(userGrid);
+        //        targetGrid = userGrid;
+        //    }
+        //}
 
-        if (targetGrid == null)
-            targetGrid = _random.GetRandom().PickAndTake(_targetGrids);
+        //if (targetGrid == null)
+        //    targetGrid = _random.GetRandom().PickAndTake(_targetGrids);
 
+        //do
+        //{
+        //    var valid = false;
+
+        //    var range = (float) Math.Sqrt(radius);
+        //    var box = Box2.CenteredAround(userCoords.Position, new Vector2(range, range));
+        //    var tilesInRange = _mapSystem.GetTilesEnumerator(targetGrid.Value.Owner, targetGrid.Value.Comp, box, false);
+        var tileList = new ValueList<Vector2i>();
         EntityCoordinates? targetCoords = null;
 
-        do
+        foreach (TileRef tile in tilesInRange)
         {
-            var valid = false;
-
-            var range = (float) Math.Sqrt(radius);
-            var box = Box2.CenteredAround(userCoords.Position, new Vector2(range, range));
-            var tilesInRange = _mapSystem.GetTilesEnumerator(targetGrid.Value.Owner, targetGrid.Value.Comp, box, false);
-            var tileList = new ValueList<Vector2i>();
-
-            while (tilesInRange.MoveNext(out var tile))
+            if (!tile.Tile.IsEmpty)
             {
                 tileList.Add(tile.GridIndices);
             }
-
-            while (tileList.Count != 0)
+        }
+        bool valid = false;
+        while (tileList.Count != 0)
+        {
+            var tile = tileList.RemoveSwap(_random.Next(tileList.Count));
+            valid = true;
+            foreach (var entity in _mapSystem.GetAnchoredEntities(gridUid, grid,
+                         tile))
             {
-                var tile = tileList.RemoveSwap(_random.Next(tileList.Count));
-                valid = true;
-                foreach (var entity in _mapSystem.GetAnchoredEntities(targetGrid.Value.Owner, targetGrid.Value.Comp,
-                             tile))
-                {
-                    if (!_physicsQuery.TryGetComponent(entity, out var body))
-                        continue;
+                if (!_physicsQuery.TryGetComponent(entity, out var body))
+                    continue;
 
-                    if (body.BodyType != BodyType.Static ||
-                        !body.Hard ||
-                        (body.CollisionLayer & (int) CollisionGroup.MobMask) == 0)
-                        continue;
+                if (body.BodyType != BodyType.Static ||
+                    !body.Hard ||
+                    (body.CollisionLayer & (int) CollisionGroup.MobMask) == 0)
+                    continue;
 
-                    valid = false;
-                    break;
-                }
-
-                if (valid)
-                {
-                    targetCoords = new EntityCoordinates(targetGrid.Value.Owner,
-                        _mapSystem.TileCenterToVector(targetGrid.Value, tile));
-                    break;
-                }
+                valid = false;
+                break;
             }
 
-            if (valid || _targetGrids.Count == 0) // if we don't do the check here then PickAndTake will blow up on an empty set.
+            if (valid)
+            {
+                targetCoords = new EntityCoordinates(gridUid,
+                    _mapSystem.TileCenterToVector(gridUid, grid, tile));
                 break;
-
-            targetGrid = _random.GetRandom().PickAndTake(_targetGrids);
-        } while (true);
-
+            }
+        }
         return targetCoords;
     }
 

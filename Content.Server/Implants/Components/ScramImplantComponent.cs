@@ -13,7 +13,10 @@ public sealed partial class ScramImplantComponent : Component
     /// Up to how far to teleport the user
     /// </summary>
     [DataField, ViewVariables(VVAccess.ReadWrite)]
-    public float TeleportRadius = 20f;
+    public float TeleportMaxRadius = 30f;
+
+    [DataField, ViewVariables(VVAccess.ReadWrite)]
+    public float TeleportMinRadius = 25f;
 
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public SoundSpecifier TeleportSound = new SoundPathSpecifier("/Audio/Effects/teleport_arrival.ogg");

@@ -186,6 +186,7 @@
       tags:
         - CigPack
         - Taser
+        - HandGrenade # SW-Change
       components:
         - Stunbaton
         - FlashOnTrigger

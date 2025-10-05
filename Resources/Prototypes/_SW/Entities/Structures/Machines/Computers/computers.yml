@@ -23,7 +23,7 @@
   - type: ArtilleryConsole
     artileryCalledProto: SWArtilleryOnSpawnInstantEffect
     sound:
-        path: /Audio/_SW/siren.ogg
+        path: /Audio/Misc/siren.ogg
         params:
           volume: -4
   - type: ActivatableUI

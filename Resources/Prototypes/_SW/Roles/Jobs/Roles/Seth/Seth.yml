@@ -399,7 +399,7 @@
     neck: SWClothingNeckHavok
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok
-    suitstorage: SWEL34
+    suitstorage: SWP301Destroyer
 
 - type: startingGear
   id: RepublicCommanderLieutenantGear
@@ -412,7 +412,7 @@
     id: SWIDCardHavokLieutenant
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok
-    suitstorage: SWP301Destroyer
+    suitstorage: SWH206Renegade
 
 - type: startingGear
   id: RepublicCommanderMedicGear
@@ -438,7 +438,7 @@
     id: SWIDCardHavokStormtrooper
     shoes: ClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok
-    suitstorage: SWH206Renegade
+    suitstorage: SWEL34
 
 - type: startingGear
   id: RepublicCommanderSniperGear

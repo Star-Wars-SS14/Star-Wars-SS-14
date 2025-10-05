@@ -9,7 +9,7 @@
       fractionType: 0
       canShuttle: false
       sound:
-        path: /Audio/_SW/Alerts/_Notification.ogg
+        path: /Audio/_SW/Alerts/Notification.ogg
         params:
           volume: -4 
     - type: AccessReader

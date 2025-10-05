@@ -4,20 +4,20 @@
   levels:
     aurek:
       announcement: alert-level-green-announcement
-      sound: /Audio/_SW/Alerts/_Aurek.ogg
+      sound: /Audio/_SW/Alerts/Aurek.ogg
       color: Green
       emergencyLightColor: LawnGreen
       shuttleTime: 600
     besh:
       announcement: alert-level-blue-announcement
-      sound: /Audio/_SW/Alerts/_Besh.ogg
+      sound: /Audio/_SW/Alerts/Besh.ogg
       color: DodgerBlue
       forceEnableEmergencyLights: true
       emergencyLightColor: DodgerBlue
       shuttleTime: 600
     kresh:
       announcement: alert-level-red-announcement
-      sound: /Audio/_SW/Alerts/_Kresh.ogg
+      sound: /Audio/_SW/Alerts/Kresh.ogg
       color: Red
       emergencyLightColor: Red
       forceEnableEmergencyLights: true
@@ -26,7 +26,7 @@
       announcement: alert-level-gamma-announcement
       selectable: true
       sound:
-        path: /Audio/_SW/Alerts/_Onit.ogg
+        path: /Audio/_SW/Alerts/Onit.ogg
       disableSelection: true
       color: PaleVioletRed
       emergencyLightColor: PaleVioletRed
@@ -35,7 +35,7 @@
       announcement: alert-level-delta-announcement
       selectable: false
       sound:
-        path: /Audio/_SW/Alerts/_Dorn.ogg
+        path: /Audio/_SW/Alerts/Dorn.ogg
         #params:
           #volume: -6 # Corvax: Reduce sound volume
       disableSelection: true
@@ -47,7 +47,7 @@
       announcement: alert-level-epsilon-announcement
       selectable: false
       sound:
-        path: /Audio/_SW/Alerts/_Esk.ogg
+        path: /Audio/_SW/Alerts/Esk.ogg
         #params:
           #volume: -2
       disableSelection: true

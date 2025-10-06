@@ -35,13 +35,13 @@ public sealed partial class SWCoverSystem : EntitySystem
             return;
         }
 
-        ISawmill _s = Logger.GetSawmill("cover");
-        _s.Fatal("1");
+        //ISawmill _s = Logger.GetSawmill("cover");
+        //_s.Fatal("1");
         if (!TryComp<ProjectileComponent>(args.OtherEntity, out var comp) || comp.Shooter == null)
         {
             return;
         }
-        _s.Fatal("2");
+        //_s.Fatal("2");
         var pos_shooter = _transformSystem.GetWorldPosition(comp.Shooter.Value);
         var pos_our = _transformSystem.GetWorldPosition(args.OurEntity);
         var distance = (pos_shooter - pos_our).Length();
@@ -50,12 +50,12 @@ public sealed partial class SWCoverSystem : EntitySystem
 
         chanceToPassCollision = chanceToPassCollision > ent.Comp.MinChance ? chanceToPassCollision : ent.Comp.MinChance;
 
-        _s.Fatal($"distance: {distance}, chance{chanceToPassCollision}");
+        //_s.Fatal($"distance: {distance}, chance{chanceToPassCollision}");
         if (distance <= ent.Comp.DistanceGuaranteedPass || _random.Prob(chanceToPassCollision))
         {
             args.Cancelled = true;
             ent.Comp.HandledProjectiles[args.OtherEntity] = true;
-            _s.Fatal("passed");
+            //_s.Fatal("passed");
         }
         else
         {

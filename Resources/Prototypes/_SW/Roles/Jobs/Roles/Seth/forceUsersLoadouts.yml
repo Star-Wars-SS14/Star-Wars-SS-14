@@ -3,7 +3,7 @@
   equipment:
     jumpsuit: ClothingUniformJumpsuitColorBlack
     gloves: ClothingHandsGlovesColorBlack
-    shoes: ClothingShoesSwat
+    shoes: EchoClothingShoesBootsResistance
     ears: SWClothingHeadsetAllEmpire
     id: SWIDCardSith
     neck: SWClothingNeckCloakSithCloak
@@ -14,7 +14,7 @@
   id: ForceUserJediGear
   equipment:
     jumpsuit: SWClothingUniformJumpsuitJedi
-    shoes: SWClothingShoesBootsJedi
+    shoes: EchoClothingShoesBootsResistance
     ears: SWClothingHeadsetRepublicAll
     id: SWIDCardJedi
     neck: SWClothingNeckCloakJediCloak

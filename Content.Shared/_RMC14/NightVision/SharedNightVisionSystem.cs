@@ -109,7 +109,8 @@ public abstract class SharedNightVisionSystem : EntitySystem
         if (ent.Comp.SlotFlags != args.SlotFlags)
             return;
 
-        EnableNightVisionItem(ent, args.Equipee);
+        if (ent.Comp.AutoEnable)
+            EnableNightVisionItem(ent, args.Equipee);
     }
 
     private void OnNightVisionItemGotUnequipped(Entity<NightVisionItemComponent> ent, ref GotUnequippedEvent args)

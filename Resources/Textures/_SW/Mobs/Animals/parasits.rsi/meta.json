@@ -10,6 +10,22 @@
         {
             "name": "parasit-0",
             "directions": 4
+        },
+        {
+            "name": "dead",
+            "delays": [
+                [
+                    1
+                ]
+            ]
+        },
+        {
+            "name": "crit",
+            "delays": [
+                [
+                    1
+                ]
+            ]
         }
     ]
 }

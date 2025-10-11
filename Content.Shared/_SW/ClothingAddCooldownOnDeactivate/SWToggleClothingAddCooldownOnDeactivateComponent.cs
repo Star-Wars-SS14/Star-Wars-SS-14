@@ -10,5 +10,5 @@ namespace Content.Shared._SW.ClothingAddCooldownOnDeactivate;
 public sealed partial class SWToggleClothingAddCooldownOnDeactivateComponent : Component
 {
     [DataField]
-    public float UseDelay = 300f;
+    public float UseDelay = 180f;
 }

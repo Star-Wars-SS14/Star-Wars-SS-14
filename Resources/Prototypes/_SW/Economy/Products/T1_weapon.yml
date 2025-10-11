@@ -5,7 +5,7 @@
     state: base
   product: SWJ111Rancor
   cost:
-    SWEmpireCreditCurrency: 500
+    SWEmpireCreditCurrency: 400
   category: sw-category-rifles
   group: SWT1WeaponMarket
 
@@ -16,7 +16,7 @@
     state: base
   product: SWZ1BlasterCarbine
   cost:
-    SWEmpireCreditCurrency: 500
+    SWEmpireCreditCurrency: 400
   category: sw-category-rifles
   group: SWT1WeaponMarket
 
@@ -27,7 +27,7 @@
     state: base
   product: SWMK3BlasterRifle
   cost:
-    SWEmpireCreditCurrency: 550
+    SWEmpireCreditCurrency: 450
   category: sw-category-rifles
   group: SWT1WeaponMarket
 
@@ -38,7 +38,7 @@
     state: base
   product: SWGT-13ST
   cost:
-    SWEmpireCreditCurrency: 3000
+    SWEmpireCreditCurrency: 2500
   category: sw-category-machine-guns
   group: SWT1WeaponMarket
 
@@ -49,7 +49,7 @@
     state: base
   product: SWMK1
   cost:
-    SWEmpireCreditCurrency: 3000
+    SWEmpireCreditCurrency: 2500
   category: sw-category-machine-guns
   group: SWT1WeaponMarket
 
@@ -60,7 +60,7 @@
     state: base
   product: SWGrantekF11D1
   cost:
-    SWEmpireCreditCurrency: 1750
+    SWEmpireCreditCurrency: 1250
   category: sw-category-sniper-rifles
   group: SWT1WeaponMarket
 

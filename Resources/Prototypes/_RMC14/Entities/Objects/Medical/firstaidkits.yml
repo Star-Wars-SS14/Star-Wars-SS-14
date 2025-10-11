@@ -67,8 +67,8 @@
     - id: CMTricordrazineAutoInjectorNoSkill
 #    - id: CMPainStopAutoInjectorNoSkill
     - id: CMInaprovalineAutoInjector
-    - id: CMGauze10
-    - id: CMOintment10
+    - id: Gauze # SW-Change
+    - id: Ointment # SW-Change
 #    - id: CMMedicalSplint5
 
 - type: entity

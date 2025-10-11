@@ -16,6 +16,11 @@
   - type: Item
     size: Small
     sprite: _RMC14/Objects/Medical/auto_injectors.rsi
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
   - type: Hypospray
     solutionName: pen
     injectSound: /Audio/_RMC14/Medical/hypospray.ogg
@@ -51,7 +56,12 @@
       map: ["enum.SolutionContainerLayers.Fill"]
       visible: false
   - type: Item
-    sprite: null
+    sprite: _RMC14/Objects/Medical/auto_injectors.rsi
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
   - type: Hypospray
     transferAmount: 58 # TODO RMC14 77
   - type: SolutionContainerManager

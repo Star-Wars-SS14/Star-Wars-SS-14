@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Content.Shared._SW.DeactivateOnShoot;
-[RegisterComponent, NetworkedComponent]
+[RegisterComponent]
 public sealed partial class SWDeactivateClothingOnShootComponent : Component
 {
 }

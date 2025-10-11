@@ -11,8 +11,8 @@
     parent: true
     components:
     - type: Stealth
-      minVisibility: 0.0
-      lastVisibility: 0.0
+      minVisibility: -0.5
+      lastVisibility: -0.5
   - type: ItemToggle
     onUse: false
     onActivate: false

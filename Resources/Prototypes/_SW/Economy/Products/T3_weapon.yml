@@ -5,7 +5,7 @@
     state: base
   product: SWP301Destroyer
   cost:
-    SWEmpireCreditCurrency: 1250
+    SWEmpireCreditCurrency: 1000
   category: sw-category-rifles
   group: SWT3WeaponMarket
 
@@ -16,7 +16,7 @@
     state: base
   product: SWGallantry
   cost:
-    SWEmpireCreditCurrency: 4500
+    SWEmpireCreditCurrency: 3500
   category: sw-category-machine-guns
   group: SWT3WeaponMarket
 

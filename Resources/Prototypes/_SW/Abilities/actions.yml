@@ -5,7 +5,7 @@
   noSpawn: true
   components:
   - type: Action
-    icon: Interface/Actions/lighting.png
+    icon: _SW/Interface/Actions/lighting.png
     useDelay: 12
   - type: TargetAction
     interactOnMiss: false
@@ -37,7 +37,7 @@
   noSpawn: true
   components:
   - type: Action
-    icon: Interface/VerbIcons/pickup.svg.192dpi.png
+    icon: _SW/Interface/Actions/force_attract.png
     useDelay: 2
   - type: TargetAction
     interactOnMiss: false
@@ -53,7 +53,7 @@
   noSpawn: true
   components:
   - type: Action
-    icon: Interface/VerbIcons/pickup.svg.192dpi.png
+    icon: _SW/Interface/Actions/strangulate.png
     useDelay: 2
   - type: TargetAction
     interactOnMiss: false
@@ -68,7 +68,7 @@
   description: Ускорьтесь на короткое время
   components:
   - type: Action
-    icon: Interface/Actions/dash.png
+    icon: _SW/Interface/Actions/dash.png
     useDelay: 12
   - type: InstantAction    
     event: !type:DashRequestedEvent

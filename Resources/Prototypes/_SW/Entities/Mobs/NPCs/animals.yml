@@ -1,5 +1,5 @@
 - type: entity
-  name: Борму
+  name: борму
   parent: SimpleMobBase
   id: SWMobBormu
   description: Огромное травоядное существо, населявшее зелёные равнины Балморры.

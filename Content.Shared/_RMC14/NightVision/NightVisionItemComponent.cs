@@ -32,4 +32,7 @@ public sealed partial class NightVisionItemComponent : Component
 
     [DataField, AutoNetworkedField]
     public bool BlockScopes;
+
+    [DataField, AutoNetworkedField]
+    public bool AutoEnable = false;
 }

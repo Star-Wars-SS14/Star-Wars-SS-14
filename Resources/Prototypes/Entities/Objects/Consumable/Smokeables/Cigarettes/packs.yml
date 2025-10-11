@@ -50,9 +50,11 @@
   - type: Storage
     grid:
     - 0,0,4,1
-    whitelist:    #SW
-      tags:       #SW
-      - Cigarette #SW
+  #SW_Start
+    whitelist:
+      tags:
+      - Cigarette
+  #SW_End
   - type: StorageFill
     contents:
     - id: Cigarette

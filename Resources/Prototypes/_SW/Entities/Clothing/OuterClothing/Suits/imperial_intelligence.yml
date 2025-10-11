@@ -14,6 +14,8 @@
       minVisibility: 0.0
       lastVisibility: 0.0
   - type: ItemToggle
+    onUse: false
+    onActivate: false
   - type: ToggleClothing
     action: ActionToggleInvis
     disableOnUnequip: true

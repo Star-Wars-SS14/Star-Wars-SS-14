@@ -21,4 +21,5 @@
           Slash: 0.5
           Heat: 0.5
           Cold: 0.5
+          Piercing: 0.5
     - type: GroupExamine

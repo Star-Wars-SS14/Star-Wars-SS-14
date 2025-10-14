@@ -499,12 +499,12 @@
     layers:
     - state: image3
   - type: ActivatableUI
-    key: enum.SWAgentIDCardConsoleUIKey.Key
+    key: enum.SWAgentIDCardUIKey.Key
     inHandsOnly: true
   - type: Tag
     tags:
     - DoorBumpOpener
   - type: UserInterface
     interfaces:
-      enum.SWAgentIDCardConsoleUIKey.Key:
+      enum.SWAgentIDCardUIKey.Key:
         type: SWAgentIDCardBoundUserInterface

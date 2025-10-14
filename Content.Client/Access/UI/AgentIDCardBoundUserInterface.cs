@@ -15,12 +15,13 @@ namespace Content.Client.Access.UI
 
         public AgentIDCardBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
         {
+            ISawmill _s = Logger.GetSawmill("sdfgh");
+            _s.Fatal($"{uiKey}");
         }
 
         protected override void Open()
         {
             base.Open();
-
             _window = this.CreateWindow<AgentIDCardWindow>();
 
             _window.OnNameChanged += OnNameChanged;

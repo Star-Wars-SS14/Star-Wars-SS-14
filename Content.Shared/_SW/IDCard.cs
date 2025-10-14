@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace Content.Shared._SW;
 
 [Serializable, NetSerializable]
-public enum SWAgentIDCardConsoleUIKey : byte
+public enum SWAgentIDCardUIKey
 {
     Key,
 }

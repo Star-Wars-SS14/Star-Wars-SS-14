@@ -485,3 +485,26 @@
     - state: image3
   - type: PresetIdCard
     job: SWCivialian
+
+- type: entity
+  name: civilian id card
+  parent: IDCardStandard
+  id: SWCivilianIdCard
+  suffix: Agent
+  components:
+  - type: PresetIdCard
+    job: SWCivialian
+  - type: Sprite
+    sprite: _SW/Objects/Misc/id_cards.rsi
+    layers:
+    - state: image3
+  - type: ActivatableUI
+    key: enum.SWAgentIDCardConsoleUIKey.Key
+    inHandsOnly: true
+  - type: Tag
+    tags:
+    - DoorBumpOpener
+  - type: UserInterface
+    interfaces:
+      enum.SWAgentIDCardConsoleUIKey.Key:
+        type: SWAgentIDCardBoundUserInterface

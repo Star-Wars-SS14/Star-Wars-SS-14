@@ -18,6 +18,8 @@
   special:
   - !type:AddComponentSpecial
     components:
+    - type: Stamina
+      critThreshold: 300
     - type: SWFactionMember
       faction: EmpireFaction
     - type: ForceAbilityDistanceInteract

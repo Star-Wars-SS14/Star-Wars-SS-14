@@ -20,7 +20,6 @@ namespace Content.Client.Access.UI
         protected override void Open()
         {
             base.Open();
-
             _window = this.CreateWindow<AgentIDCardWindow>();
 
             _window.OnNameChanged += OnNameChanged;

@@ -6,14 +6,11 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Client._SW.IDCard
 {
-    /// <summary>
-    /// Initializes a <see cref="AgentIDCardWindow"/> and updates it when new server messages are received.
-    /// </summary>
-    public sealed class SWAgentIDCardBoundUserInterface : BoundUserInterface
+    public sealed class SWCivilianIDCardBoundUserInterface : BoundUserInterface
     {
         private SWAgentIDCardWindow? _window;
 
-        public SWAgentIDCardBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
+        public SWCivilianIDCardBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
         {
         }
 

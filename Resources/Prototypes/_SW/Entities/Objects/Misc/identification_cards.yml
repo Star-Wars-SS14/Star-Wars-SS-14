@@ -487,10 +487,10 @@
     job: SWCivialian
 
 - type: entity
-  name: civilian id card
+  name: Civilian ID card
   parent: IDCardStandard
-  id: SWCivilianIdCard
-  suffix: Agent
+  id: SWCivilianIdCardEditable
+  suffix: Can change name
   components:
   - type: PresetIdCard
     job: SWCivialian
@@ -498,6 +498,8 @@
     sprite: _SW/Objects/Misc/id_cards.rsi
     layers:
     - state: image3
+  - type: AgentIDCard
+    canCopy: false
   - type: ActivatableUI
     key: enum.SWAgentIDCardUIKey.Key
     inHandsOnly: true
@@ -507,4 +509,4 @@
   - type: UserInterface
     interfaces:
       enum.SWAgentIDCardUIKey.Key:
-        type: SWAgentIDCardBoundUserInterface
+        type: SWCivilianIDCardBoundUserInterface

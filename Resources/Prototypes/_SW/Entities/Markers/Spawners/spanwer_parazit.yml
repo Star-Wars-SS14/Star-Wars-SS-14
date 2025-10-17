@@ -10,3 +10,16 @@
     chance: 1
     prototypes:
     - SWMobParasit
+
+- type: entity
+  parent: MarkerBase
+  id: SWAgressiveParasitSpawner
+  name: Metall aggressive parasits spawner  
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+  - type: RandomSpawner
+    chance: 1
+    prototypes:
+    - SWMobParasitAggressiveAi

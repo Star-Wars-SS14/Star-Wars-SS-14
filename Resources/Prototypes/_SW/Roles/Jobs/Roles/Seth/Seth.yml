@@ -65,7 +65,7 @@
     ears: SWClothingHeadsetEmpirePilot
     back: SWImperialBackpack
     pocket1: HandHeldMassScanner
-    suitstorage: SWE1BlasterRifle
+    suitstorage: JetpackMiniFilled
 
 - type: startingGear
   id: EmpireEngineerGear
@@ -254,7 +254,7 @@
     ears: SWClothingHeadsetRepublicPilot
     back: ClothingBackpackMilitarySatchel
     pocket1: HandHeldMassScanner
-    suitstorage: SWH206Renegade
+    suitstorage: JetpackMiniFilled
 
 - type: startingGear
   id: RepublicEngineerGear

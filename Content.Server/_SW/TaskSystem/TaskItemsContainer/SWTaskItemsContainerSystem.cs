@@ -22,8 +22,6 @@ public sealed class SWTaskItemsContainerSystem : EntitySystem
     private void OnEntityRemoved(Entity<SWTaskItemsContainerComponent> ent, ref EntRemovedFromContainerMessage args)
     {
         UpdateTasks(ent, args.Entity, false);
-        ISawmill _s = Logger.GetSawmill("dsfg");
-        _s.Fatal("df");
     }
 
     private void OnEntityInserted(Entity<SWTaskItemsContainerComponent> ent, ref EntInsertedIntoContainerMessage args)

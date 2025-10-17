@@ -79,3 +79,20 @@
       range: 30
       ports:
         - SWTurretSender
+
+- type: entity
+  parent: WeaponTurretAllHostile
+  id: SWWeaponTurretAllHostile
+  name: турель
+  suffix: Враждебна всем SW
+  components:
+  - type: BallisticAmmoProvider
+    proto: SWE-1Bullet
+    capacity: 1000000
+  - type: Gun
+    fireRate: 5
+    selectedMode: FullAuto
+    availableModes:
+      - FullAuto
+    soundGunshot: /Audio/Weapons/Guns/Gunshots/gun_sentry.ogg
+

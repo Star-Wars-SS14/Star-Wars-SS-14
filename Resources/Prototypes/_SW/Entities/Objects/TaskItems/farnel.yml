@@ -1,0 +1,17 @@
+- type: entity
+  name: датапад с документами исследовательского комплекса "Фарнел"
+  parent: SWRedDatapad
+  id: SWFarnelDatapad
+  description: Содержит информацю о биологическом оружии
+  components:
+  - type: PaperVisuals
+    backgroundImagePath: "/Textures/_SW/Interface/Paper/background_red.svg.96dpi.png"
+    backgroundPatchMargin: 32.0, 32.0, 32.0, 32.0
+    maxWritableArea: 500.0, 600.0
+  - type: Sprite
+    sprite: _SW/Objects/Misc/Datapads/RedDatapad.rsi
+    layers:
+    - state: icon_empty
+    - state: icon
+      map: ["enum.PaperVisualLayers.Writing"]
+      visible: false

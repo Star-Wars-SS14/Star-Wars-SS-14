@@ -1,0 +1,14 @@
+- type: entity
+  id: GetFarnellDocuments
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Добыча документов
+    description: На территории Исследовательского центра Фарнелл находятся несколько датападов с информацией касательно биологического оружия. Есть вероятность того что эти документы попадут в руки империи, поэтому добудьте эту документацию и поместите в ячейки хранения. Нам не известно начал ли охоту за этой документацией кто либо ещё. 
+    score: 15
+    restrictions: OnePerFaction
+  - type: SWCollectObjectTask
+    requirements:
+    - number: 3
+      objects:
+      - SWFarnelDatapad

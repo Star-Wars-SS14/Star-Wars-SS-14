@@ -143,3 +143,16 @@
     - Passive
   - type: NPCRetaliation
     attackMemoryLength: 20
+
+- type: entity
+  name: parasit
+  parent: SWMobParasit
+  id: SWMobParasitAggressiveAi
+  suffix: Агрессивный ИИ
+  components:
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound
+  - type: NpcFactionMember
+    factions:
+    - AllHostile

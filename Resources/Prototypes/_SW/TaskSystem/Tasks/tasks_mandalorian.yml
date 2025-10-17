@@ -3,7 +3,8 @@
   weights:
     KillBormu: 2
     SmallHeadHunter: 3
-    BigHeadHunterMandalorian: 1    
+    BigHeadHunterMandalorian: 1
+    GetFarnellDocuments: 2
 
 - type: entity
   id: KillBormu

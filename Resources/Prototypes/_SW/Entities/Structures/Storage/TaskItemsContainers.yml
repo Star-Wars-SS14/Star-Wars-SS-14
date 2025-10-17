@@ -1,0 +1,68 @@
+- type: entity
+  id: SWBaseTaskObjectsContainer
+  parent: LockerBaseSecure
+  name: sw task objects container
+  abstract: true
+  components:
+  - type: Appearance
+  - type: EntityStorageVisuals
+    stateBaseClosed: shotguncase
+    stateDoorOpen: shotguncase_open
+    stateDoorClosed: shotguncase_door
+  - type: AccessReader
+  - type: SWTaskItemsContainer
+
+- type: entity
+  id: SWTaskObjectsSafeEmpire
+  parent: SWBaseTaskObjectsContainer
+  name: sw task objects container
+  suffix: Империя
+  components:
+  - type: AccessReader
+    access: [["SWEmpireCommander"]]
+  - type: SWTaskItemsContainer
+    faction: EmpireFaction
+
+- type: entity
+  id: SWTaskObjectsSafeRepublic
+  parent: SWBaseTaskObjectsContainer
+  name: sw task objects container
+  suffix: Республика
+  components:
+  - type: AccessReader
+    access: [["SWRepublicCommander"]]
+  - type: SWTaskItemsContainer
+    faction: RepublicFaction
+
+- type: entity
+  id: SWTaskObjectsSafeExchange
+  parent: SWBaseTaskObjectsContainer
+  name: sw task objects container
+  suffix: Обмен
+  components:
+  - type: AccessReader
+    access: [["SWExchange"]]
+  - type: SWTaskItemsContainer
+    faction: ExchangeFaction
+
+- type: entity
+  id: SWTaskObjectsSafeMandalorians
+  parent: SWBaseTaskObjectsContainer
+  name: sw task objects container
+  suffix: Мандалорцы
+  components:
+  - type: AccessReader
+    access: [["SWMandalorian"]]
+  - type: SWTaskItemsContainer
+    faction: MandalorianFaction
+
+- type: entity
+  id: SWTaskObjectsSafeBlackSun
+  parent: SWBaseTaskObjectsContainer
+  name: sw task objects container
+  suffix: Черное Солнце
+  components:
+  - type: AccessReader
+    access: [["SWBlackSun"]]
+  - type: SWTaskItemsContainer
+    faction: BlackSunFaction

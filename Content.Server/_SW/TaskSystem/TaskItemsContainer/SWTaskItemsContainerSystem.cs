@@ -1,6 +1,5 @@
 using Content.Server._SW.TaskSystem.StealObjectTask;
 using Content.Shared._SW.TaskSystem;
-using JetBrains.FormatRipper.Elf;
 using Robust.Shared.Containers;
 using System;
 using System.Collections.Generic;

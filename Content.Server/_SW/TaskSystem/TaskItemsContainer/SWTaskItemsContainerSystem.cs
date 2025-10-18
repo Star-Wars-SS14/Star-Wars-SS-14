@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 namespace Content.Server._SW.TaskSystem.TaskItemsContainer;
 public sealed class SWTaskItemsContainerSystem : EntitySystem
 {
-    [Dependency] SharedContainerSystem _containerSystem = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -37,8 +36,7 @@ public sealed class SWTaskItemsContainerSystem : EntitySystem
             {
                 continue;
             }
-
-            foreach (var requirement in comp.ObjectsCollected)
+            foreach (var requirement in comp.ObjectsToCollect)
             {
                 var protolist = requirement.ObjectsPrototypes;
                 TryPrototype(affectedObject, out var proto);
@@ -46,21 +44,19 @@ public sealed class SWTaskItemsContainerSystem : EntitySystem
                 {
                     return;
                 }
-
-                if (protolist.Contains(proto.ID)
-                    && comp.ObjectsCollected.Find(x => x.ObjectsPrototypes == protolist)?.Number
-                    < comp.ObjectsToCollect.Find(x => x.ObjectsPrototypes == protolist)?.Number)
+                if (protolist.Contains(proto.ID))
                 {
-                    var tmp = comp.ObjectsCollected.Find(x => x.ObjectsPrototypes == protolist);
-                    if (tmp != null)
+                    var collected = comp.ObjectsCollected.Find(x => x.ObjectsPrototypes == protolist);
+                    var toCollect = comp.ObjectsToCollect.Find(x => x.ObjectsPrototypes == protolist);
+                    if (collected != null && toCollect != null)
                     {
-                        if (inserted)
+                        if (inserted && collected.Number < toCollect.Number)
                         {
-                            tmp.Number++;
+                            collected.Number++;
                         }
-                        else
+                        else if (collected.Number > 0)
                         {
-                            tmp.Number--;
+                            collected.Number--;
                         }
                     }
                 }

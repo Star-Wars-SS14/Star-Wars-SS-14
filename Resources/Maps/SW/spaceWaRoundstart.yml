@@ -3,16 +3,18 @@ meta:
   category: Map
   engineVersion: 264.0.0
   forkId: CorvaxStarWars
-  forkVersion: 775e6c2fdad3a01f4270d4a2d78c87e9cde5a24f
-  time: 08/23/2025 10:53:32
-  entityCount: 31641
+  forkVersion: dda2a964227d7efc3b849af8bcda779d254a91c2
+  time: 10/05/2025 06:06:24
+  entityCount: 31646
 maps:
 - 1
 grids:
 - 2
 - 12317
 - 13123
+- 28620
 - 28673
+- 29735
 - 32465
 - 32622
 - 33629
@@ -22,8 +24,6 @@ grids:
 - 35193
 - 35203
 - 35219
-- 28620
-- 29735
 orphans: []
 nullspace: []
 tilemap:
@@ -9849,11 +9849,11 @@ entities:
       chunks:
         0,0:
           ind: 0,0
-          tiles: LgAAAAAAAC4AAAAAAAAuAAAAAAAALgAAAAAAAD0AAAAAAABAAAAAAAAAQAAAAAAAAD0AAAAAAABAAAAAAAAAQAAAAAAAAD0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEIAAAAAAABCAAAAAAAALgAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAuAAAAAAAALgAAAAAAAC4AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPQAAAAAAAD0AAAAAAAAuAAAAAAAAPQAAAAAAAD0AAAAAAAALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAACwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAApAAAAAAAAPQAAAAAAAIsAAAAAAACLAAAAAAAAiwAAAAAAAAsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPQAAAAAAAD0AAAAAAACLAAAAAAAAiwAAAAAAAIsAAAAAAAALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9AAAAAAAAiwAAAAAAAIsAAAAAAAA9AAAAAAAACwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAAAAsAAAAAAAALAAAAAAAACwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+          tiles: LgAAAAAAAC4AAAAAAAAuAAAAAAAALgAAAAAAAD0AAAAAAABAAAAAAAAAQAAAAAAAAD0AAAAAAABAAAAAAAAAQAAAAAAAAD0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD0AAAAAAAA9AAAAAAAALgAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAuAAAAAAAALgAAAAAAAC4AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPQAAAAAAAD0AAAAAAAAuAAAAAAAAPQAAAAAAAD0AAAAAAAALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAACwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAApAAAAAAAAPQAAAAAAAIsAAAAAAACLAAAAAAAAiwAAAAAAAAsAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPQAAAAAAAD0AAAAAAACLAAAAAAAAiwAAAAAAAIsAAAAAAAALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA9AAAAAAAAiwAAAAAAAIsAAAAAAAA9AAAAAAAACwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAAAAsAAAAAAAALAAAAAAAACwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
           version: 7
         -1,0:
           ind: -1,0
-          tiles: PQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAAuAAAAAAAALgAAAAAAAD0AAAAAAAALAAAAAAAACwAAAAAAAAsAAAAAAAALAAAAAAAACwAAAAAAAAsAAAAAAAALAAAAAAAACwAAAAAAAAsAAAAAAAALAAAAAAAACwAAAAAAAD0AAAAAAAAuAAAAAAAALgAAAAAAAEIAAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAC4AAAAAAAAuAAAAAAAAPQAAAAAAAEAAAAAAAABAAAAAAAAAQQAAAAAAAEAAAAAAAABAAAAAAAAAmgAAAAAAAEAAAAAAAABAAAAAAAAAQQAAAAAAAEAAAAAAAABAAAAAAAAAPQAAAAAAAD0AAAAAAAAuAAAAAAAAPQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAsAAAAAAACLAAAAAAAAiwAAAAAAAIsAAAAAAAA9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALAAAAAAAAiwAAAAAAAIsAAAAAAACLAAAAAAAAPQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAAAD0AAAAAAACLAAAAAAAAiwAAAAAAAD0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALAAAAAAAACwAAAAAAAAsAAAAAAAALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
+          tiles: PQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAAuAAAAAAAALgAAAAAAAD0AAAAAAAALAAAAAAAACwAAAAAAAAsAAAAAAAALAAAAAAAACwAAAAAAAAsAAAAAAAALAAAAAAAACwAAAAAAAAsAAAAAAAALAAAAAAAACwAAAAAAAD0AAAAAAAAuAAAAAAAALgAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAC4AAAAAAAAuAAAAAAAAPQAAAAAAAEAAAAAAAABAAAAAAAAAQQAAAAAAAEAAAAAAAABAAAAAAAAAmgAAAAAAAEAAAAAAAABAAAAAAAAAQQAAAAAAAEAAAAAAAABAAAAAAAAAPQAAAAAAAD0AAAAAAAAuAAAAAAAAPQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAAAD0AAAAAAAA9AAAAAAAAPQAAAAAAAD0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAsAAAAAAACLAAAAAAAAiwAAAAAAAIsAAAAAAAA9AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALAAAAAAAAiwAAAAAAAIsAAAAAAACLAAAAAAAAPQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAAAD0AAAAAAACLAAAAAAAAiwAAAAAAAD0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALAAAAAAAACwAAAAAAAAsAAAAAAAALAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
           version: 7
         0,-1:
           ind: 0,-1
@@ -9889,23 +9889,25 @@ entities:
       data:
         tiles:
           0,0:
-            0: 65535
+            0: 65487
+            1: 48
           0,-1:
             0: 62207
           -1,0:
-            0: 61182
+            0: 61054
+            1: 128
           0,1:
             0: 52436
           0,2:
-            1: 14
+            2: 14
           1,0:
             0: 239
-            1: 8192
+            2: 8192
           1,1:
             0: 4368
-            1: 8738
+            2: 8738
           1,2:
-            1: 1
+            2: 1
           1,-1:
             0: 57583
           2,0:
@@ -9914,45 +9916,60 @@ entities:
             0: 28723
           -4,0:
             0: 61215
-            1: 224
+            2: 224
           -4,-1:
             0: 57344
           -3,0:
             0: 65295
-            1: 240
+            2: 240
           -3,-1:
             0: 61440
           -2,0:
             0: 65295
-            1: 240
+            2: 240
           -2,-1:
             0: 61440
           -2,1:
-            1: 34952
+            2: 34952
           -1,1:
             0: 30580
           -1,2:
-            1: 15
+            2: 15
           -1,-1:
             0: 57591
           0,-3:
-            1: 4096
+            2: 4096
             0: 57344
           0,-2:
             0: 62719
           -1,-2:
-            1: 136
+            2: 136
             0: 8192
           1,-3:
-            1: 4096
+            2: 4096
           1,-2:
             0: 57361
-            1: 34
+            2: 34
           2,-2:
             0: 12288
         uniqueMixes:
         - volume: 2500
           temperature: 293.15
+          moles:
+          - 21.824879
+          - 82.10312
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+        - volume: 2500
+          temperature: 293.14975
           moles:
           - 21.824879
           - 82.10312
@@ -14811,12 +14828,6 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 20.5,-102.5
       parent: 12317
-  - uid: 13171
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -1.5,-14.5
-      parent: 13123
   - uid: 13172
     components:
     - type: Transform
@@ -14835,17 +14846,17 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 2.5,-9.5
       parent: 13123
-  - uid: 13175
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -0.5,-11.5
-      parent: 13123
   - uid: 13176
     components:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: 1.5,-11.5
+      parent: 13123
+  - uid: 29643
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -1.5,-14.5
       parent: 13123
   - uid: 34019
     components:
@@ -54719,6 +54730,13 @@ entities:
     - type: Transform
       pos: 35.57878,28.35561
       parent: 2
+- proto: ClothingBeltSalvageWebbing
+  entities:
+  - uid: 13171
+    components:
+    - type: Transform
+      pos: 25.508118,-27.088587
+      parent: 12317
 - proto: ClothingBeltSecurityWebbingFilled
   entities:
   - uid: 14017
@@ -56973,7 +56991,7 @@ entities:
       pos: -33.5,-5.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -142607.7
+      secondsUntilStateChange: -150160.44
       state: Opening
     - type: DeviceLinkSource
       lastSignals:
@@ -70217,6 +70235,11 @@ entities:
     - type: Transform
       pos: 8.5,-115.5
       parent: 12317
+  - uid: 30053
+    components:
+    - type: Transform
+      pos: 3.5,-4.5
+      parent: 28620
 - proto: CMSandbagFull50
   entities:
   - uid: 14239
@@ -101644,12 +101667,6 @@ entities:
     - type: Transform
       pos: -15.5,3.5
       parent: 28620
-  - uid: 29643
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: -1.5,-1.5
-      parent: 28620
   - uid: 29644
     components:
     - type: Transform
@@ -101691,6 +101708,12 @@ entities:
     components:
     - type: Transform
       pos: 10.5,-2.5
+      parent: 28620
+  - uid: 29658
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -1.5,-1.5
       parent: 28620
 - proto: CMWallReinforcedHeavyAlmayer
   entities:
@@ -105766,23 +105789,6 @@ entities:
       rot: 1.5707963267948966 rad
       pos: 21.5,-29.5
       parent: 12317
-  - uid: 29658
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -1.5,-0.5
-      parent: 28620
-  - uid: 30052
-    components:
-    - type: Transform
-      pos: -0.5,1.5
-      parent: 29735
-  - uid: 30053
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: 1.5,-0.5
-      parent: 29735
 - proto: ComputerShipyard
   entities:
   - uid: 6913
@@ -105878,25 +105884,6 @@ entities:
           ents: []
     - type: ApcPowerReceiver
       needsPower: False
-    - type: Godmode
-      oldDamage: {}
-    missingComponents:
-    - Anchorable
-  - uid: 30054
-    components:
-    - type: Transform
-      pos: 0.5,1.5
-      parent: 29735
-    - type: ContainerContainer
-      containers:
-        ShipyardConsole-targetId: !type:ContainerSlot
-          showEnts: False
-          occludes: True
-          ent: null
-        board: !type:Container
-          showEnts: False
-          occludes: True
-          ents: []
     - type: Godmode
       oldDamage: {}
     missingComponents:
@@ -118268,7 +118255,6 @@ entities:
       pos: 6.8693285,-17.361965
       parent: 2
     - type: HandheldLight
-      toggleActionEntity: 6
     - type: ContainerContainer
       containers:
         cell_slot: !type:ContainerSlot
@@ -151339,7 +151325,6 @@ entities:
       pos: 18.552702,3.7403798
       parent: 2
     - type: HandheldLight
-      toggleActionEntity: 4
     - type: ContainerContainer
       containers:
         cell_slot: !type:ContainerSlot
@@ -176648,7 +176633,6 @@ entities:
     - type: Transform
       parent: 12318
     - type: Blocking
-      blockingToggleActionEntity: 12320
     - type: Physics
       canCollide: False
     - type: ActionsContainer
@@ -176663,7 +176647,6 @@ entities:
     - type: Transform
       parent: 12323
     - type: Blocking
-      blockingToggleActionEntity: 12325
     - type: Physics
       canCollide: False
     - type: ActionsContainer
@@ -176679,7 +176662,6 @@ entities:
       pos: 3.2217124,-80.37383
       parent: 12317
     - type: Blocking
-      blockingToggleActionEntity: 12337
     - type: ActionsContainer
     - type: ContainerContainer
       containers:
@@ -179687,7 +179669,6 @@ entities:
         27544:
           position: 3,3
           _rotation: South
-    - type: UserInterface
     - type: ContainerContainer
       containers:
         storagebase: !type:Container
@@ -186129,633 +186110,6 @@ entities:
     - type: Transform
       pos: 15.572411,8.6096115
       parent: 2
-- proto: SWSpawnPointEmpireEngineer
-  entities:
-  - uid: 11666
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 64.5,3.5
-      parent: 2
-  - uid: 11667
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 64.5,1.5
-      parent: 2
-  - uid: 11668
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 49.5,0.5
-      parent: 2
-  - uid: 11669
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 50.5,4.5
-      parent: 2
-  - uid: 11670
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 48.5,4.5
-      parent: 2
-  - uid: 11671
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 50.5,7.5
-      parent: 2
-  - uid: 11672
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 50.5,6.5
-      parent: 2
-- proto: SWSpawnPointEmpireIntelligenceAgentLJ
-  entities:
-  - uid: 11673
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 18.5,-2.5
-      parent: 2
-  - uid: 11674
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 19.5,-2.5
-      parent: 2
-  - uid: 11675
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 20.5,-3.5
-      parent: 2
-  - uid: 11676
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 20.5,-4.5
-      parent: 2
-  - uid: 11677
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 20.5,-5.5
-      parent: 2
-- proto: SWSpawnPointEmpireIntelligenceCaretakerLJ
-  entities:
-  - uid: 11678
-    components:
-    - type: Transform
-      pos: 17.5,-4.5
-      parent: 2
-- proto: SWSpawnPointEmpireLieutenantLJ
-  entities:
-  - uid: 11679
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 19.5,4.5
-      parent: 2
-  - uid: 11680
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 19.5,30.5
-      parent: 2
-  - uid: 11681
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 53.5,-19.5
-      parent: 2
-- proto: SWSpawnPointEmpireMajorLJ
-  entities:
-  - uid: 11682
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 11.5,6.5
-      parent: 2
-- proto: SWSpawnPointEmpireMedicLJ
-  entities:
-  - uid: 11683
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 16.5,-29.5
-      parent: 2
-  - uid: 11684
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 19.5,-32.5
-      parent: 2
-  - uid: 11685
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 27.5,-33.5
-      parent: 2
-  - uid: 11686
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 22.5,-32.5
-      parent: 2
-- proto: SWSpawnPointEmpireMoffLJ
-  entities:
-  - uid: 11687
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 11.5,-5.5
-      parent: 2
-- proto: SWSpawnPointEmpirePilot
-  entities:
-  - uid: 11688
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 31.5,32.5
-      parent: 2
-  - uid: 11689
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 31.5,31.5
-      parent: 2
-  - uid: 11690
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 31.5,26.5
-      parent: 2
-  - uid: 11691
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 31.5,27.5
-      parent: 2
-  - uid: 11692
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 31.5,28.5
-      parent: 2
-  - uid: 11693
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 31.5,30.5
-      parent: 2
-  - uid: 11694
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 30.5,28.5
-      parent: 2
-  - uid: 11695
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 30.5,27.5
-      parent: 2
-  - uid: 11696
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 30.5,26.5
-      parent: 2
-  - uid: 11697
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 30.5,30.5
-      parent: 2
-  - uid: 11698
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 30.5,31.5
-      parent: 2
-  - uid: 11699
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 30.5,32.5
-      parent: 2
-- proto: SWSpawnPointEmpireSoldierLJ
-  entities:
-  - uid: 11700
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 54.5,-16.5
-      parent: 2
-  - uid: 11701
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 32.5,19.5
-      parent: 2
-  - uid: 11702
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 26.5,19.5
-      parent: 2
-  - uid: 11703
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 26.5,15.5
-      parent: 2
-  - uid: 11704
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 32.5,15.5
-      parent: 2
-  - uid: 11705
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 20.5,15.5
-      parent: 2
-  - uid: 11706
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 14.5,15.5
-      parent: 2
-  - uid: 11707
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 14.5,19.5
-      parent: 2
-  - uid: 11708
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 52.5,-16.5
-      parent: 2
-  - uid: 11709
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 52.5,-15.5
-      parent: 2
-  - uid: 11710
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 20.5,19.5
-      parent: 2
-  - uid: 11711
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 54.5,-15.5
-      parent: 2
-- proto: SWSpawnPointJediLJ
-  entities:
-  - uid: 28052
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: 26.5,-26.5
-      parent: 12317
-- proto: SWSpawnPointRepublicCaptainLJ
-  entities:
-  - uid: 28053
-    components:
-    - type: Transform
-      pos: 6.5,-71.5
-      parent: 12317
-- proto: SWSpawnPointRepublicCommanderCommanderLJ
-  entities:
-  - uid: 28054
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -6.5,-65.5
-      parent: 12317
-- proto: SWSpawnPointRepublicCommanderLieutenantLJ
-  entities:
-  - uid: 28055
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -8.5,-67.5
-      parent: 12317
-  - uid: 28056
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -4.5,-67.5
-      parent: 12317
-- proto: SWSpawnPointRepublicCommanderMedicLJ
-  entities:
-  - uid: 28057
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -3.5,-67.5
-      parent: 12317
-  - uid: 28058
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -7.5,-67.5
-      parent: 12317
-- proto: SWSpawnPointRepublicCommanderSniperLJ
-  entities:
-  - uid: 28059
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -9.5,-67.5
-      parent: 12317
-  - uid: 28060
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -5.5,-67.5
-      parent: 12317
-- proto: SWSpawnPointRepublicCommanderStormtrooperLJ
-  entities:
-  - uid: 28061
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -7.5,-68.5
-      parent: 12317
-  - uid: 28062
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -9.5,-68.5
-      parent: 12317
-  - uid: 28063
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -8.5,-68.5
-      parent: 12317
-  - uid: 28064
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -5.5,-68.5
-      parent: 12317
-  - uid: 28065
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -4.5,-68.5
-      parent: 12317
-  - uid: 28066
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -3.5,-68.5
-      parent: 12317
-- proto: SWSpawnPointRepublicEngineeer
-  entities:
-  - uid: 28067
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -8.5,-106.5
-      parent: 12317
-  - uid: 28068
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 9.5,-107.5
-      parent: 12317
-  - uid: 28069
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 11.5,-107.5
-      parent: 12317
-  - uid: 28070
-    components:
-    - type: Transform
-      pos: 10.5,-112.5
-      parent: 12317
-  - uid: 28071
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 10.5,-107.5
-      parent: 12317
-  - uid: 28072
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -7.5,-106.5
-      parent: 12317
-- proto: SWSpawnPointRepublicGeneralLJ
-  entities:
-  - uid: 28073
-    components:
-    - type: Transform
-      pos: 0.5,-83.5
-      parent: 12317
-- proto: SWSpawnPointRepublicLieutenantLJ
-  entities:
-  - uid: 28074
-    components:
-    - type: Transform
-      pos: -12.5,-84.5
-      parent: 12317
-  - uid: 28075
-    components:
-    - type: Transform
-      pos: -12.5,-87.5
-      parent: 12317
-  - uid: 28076
-    components:
-    - type: Transform
-      pos: -10.5,-87.5
-      parent: 12317
-- proto: SWSpawnPointRepublicMedicLJ
-  entities:
-  - uid: 28077
-    components:
-    - type: Transform
-      pos: -6.5,-94.5
-      parent: 12317
-  - uid: 28078
-    components:
-    - type: Transform
-      pos: -5.5,-97.5
-      parent: 12317
-  - uid: 28079
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 23.5,-57.5
-      parent: 12317
-  - uid: 28080
-    components:
-    - type: Transform
-      pos: -6.5,-97.5
-      parent: 12317
-  - uid: 28081
-    components:
-    - type: Transform
-      pos: -5.5,-94.5
-      parent: 12317
-  - uid: 28082
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: 30.5,-56.5
-      parent: 12317
-  - uid: 28083
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 25.5,-52.5
-      parent: 12317
-  - uid: 28084
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 28.5,-49.5
-      parent: 12317
-  - uid: 28085
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 23.5,-39.5
-      parent: 12317
-  - uid: 28086
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 25.5,-49.5
-      parent: 12317
-- proto: SWSpawnPointRepublicPilot
-  entities:
-  - uid: 28087
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 16.5,-66.5
-      parent: 12317
-  - uid: 28088
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 16.5,-67.5
-      parent: 12317
-  - uid: 28089
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 17.5,-66.5
-      parent: 12317
-  - uid: 28090
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 17.5,-67.5
-      parent: 12317
-  - uid: 28091
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 18.5,-66.5
-      parent: 12317
-  - uid: 28092
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 18.5,-67.5
-      parent: 12317
-  - uid: 28093
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 19.5,-66.5
-      parent: 12317
-  - uid: 28094
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: 19.5,-67.5
-      parent: 12317
-- proto: SWSpawnPointRepublicRecruitLJ
-  entities:
-  - uid: 28095
-    components:
-    - type: Transform
-      pos: -5.5,-99.5
-      parent: 12317
-  - uid: 28096
-    components:
-    - type: Transform
-      pos: -5.5,-103.5
-      parent: 12317
-  - uid: 28097
-    components:
-    - type: Transform
-      pos: -6.5,-99.5
-      parent: 12317
-  - uid: 28098
-    components:
-    - type: Transform
-      pos: -5.5,-102.5
-      parent: 12317
-  - uid: 28099
-    components:
-    - type: Transform
-      pos: -6.5,-103.5
-      parent: 12317
-  - uid: 28100
-    components:
-    - type: Transform
-      pos: -5.5,-100.5
-      parent: 12317
-- proto: SWSpawnPointRepublicSoldiersLJ
-  entities:
-  - uid: 28101
-    components:
-    - type: Transform
-      pos: -6.5,-91.5
-      parent: 12317
-  - uid: 28102
-    components:
-    - type: Transform
-      pos: -12.5,-90.5
-      parent: 12317
-  - uid: 28103
-    components:
-    - type: Transform
-      pos: -6.5,-90.5
-      parent: 12317
-  - uid: 28104
-    components:
-    - type: Transform
-      pos: -12.5,-91.5
-      parent: 12317
-- proto: SWSpawnPointSithLJ
-  entities:
-  - uid: 11712
-    components:
-    - type: Transform
-      rot: -1.5707963267948966 rad
-      pos: -6.5,0.5
-      parent: 2
 - proto: SWBannerEmpire
   entities:
   - uid: 11713
@@ -187312,6 +186666,86 @@ entities:
       rot: 1.5707963267948966 rad
       pos: -10.5,-13.5
       parent: 2
+- proto: SWBuyConsole
+  entities:
+  - uid: 29707
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -1.5,-0.5
+      parent: 28620
+    - type: DeviceLinkSource
+      linkedPorts:
+        29709:
+        - - SWBuyConsoleSender
+          - SWCargoPalletReceiver
+        29732:
+        - - SWBuyConsoleSender
+          - SWCargoPalletReceiver
+        29708:
+        - - SWBuyConsoleSender
+          - SWCargoPalletReceiver
+- proto: SWBuyConsoleEmpire
+  entities:
+  - uid: 30143
+    components:
+    - type: Transform
+      pos: 0.5,1.5
+      parent: 29735
+    - type: DeviceLinkSource
+      linkedPorts:
+        30167:
+        - - SWBuyConsoleSender
+          - SWCargoPalletReceiver
+        30164:
+        - - SWBuyConsoleSender
+          - SWCargoPalletReceiver
+        30166:
+        - - SWBuyConsoleSender
+          - SWCargoPalletReceiver
+        30165:
+        - - SWBuyConsoleSender
+          - SWCargoPalletReceiver
+- proto: SWCargoPalletBuy
+  entities:
+  - uid: 29708
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 1.5,1.5
+      parent: 28620
+  - uid: 29709
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 0.5,1.5
+      parent: 28620
+  - uid: 29732
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -0.5,1.5
+      parent: 28620
+  - uid: 30164
+    components:
+    - type: Transform
+      pos: 4.5,3.5
+      parent: 29735
+  - uid: 30165
+    components:
+    - type: Transform
+      pos: -3.5,-2.5
+      parent: 29735
+  - uid: 30166
+    components:
+    - type: Transform
+      pos: 4.5,-2.5
+      parent: 29735
+  - uid: 30167
+    components:
+    - type: Transform
+      pos: -3.5,3.5
+      parent: 29735
 - proto: SWClothingHeadLieutenantImperialHelmet
   entities:
   - uid: 3993
@@ -193979,43 +193413,6 @@ entities:
           showEnts: False
           occludes: True
           ent: null
-- proto: SWCrateWoodLootEasy
-  entities:
-  - uid: 29707
-    components:
-    - type: Transform
-      pos: -0.5,1.5
-      parent: 28620
-  - uid: 29708
-    components:
-    - type: Transform
-      pos: 0.5,1.5
-      parent: 28620
-  - uid: 29709
-    components:
-    - type: Transform
-      pos: 1.5,1.5
-      parent: 28620
-  - uid: 30140
-    components:
-    - type: Transform
-      pos: -3.5,-2.5
-      parent: 29735
-  - uid: 30141
-    components:
-    - type: Transform
-      pos: -3.5,3.5
-      parent: 29735
-  - uid: 30142
-    components:
-    - type: Transform
-      pos: 4.5,3.5
-      parent: 29735
-  - uid: 30143
-    components:
-    - type: Transform
-      pos: 4.5,-2.5
-      parent: 29735
 - proto: SWE1BlasterRifle
   entities:
   - uid: 6733
@@ -200104,6 +199501,905 @@ entities:
     - type: Transform
       pos: -11.5,20.5
       parent: 13123
+- proto: SWSpawnPointEmpireEngineer
+  entities:
+  - uid: 11666
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 64.5,3.5
+      parent: 2
+  - uid: 11667
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 64.5,1.5
+      parent: 2
+  - uid: 11668
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 49.5,0.5
+      parent: 2
+  - uid: 11669
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 50.5,4.5
+      parent: 2
+  - uid: 11670
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 48.5,4.5
+      parent: 2
+  - uid: 11671
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 50.5,7.5
+      parent: 2
+  - uid: 11672
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 50.5,6.5
+      parent: 2
+- proto: SWSpawnPointEmpireIntelligenceAgentLJ
+  entities:
+  - uid: 11673
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 18.5,-2.5
+      parent: 2
+  - uid: 11674
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 19.5,-2.5
+      parent: 2
+  - uid: 11675
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 20.5,-3.5
+      parent: 2
+  - uid: 11676
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 20.5,-4.5
+      parent: 2
+  - uid: 11677
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 20.5,-5.5
+      parent: 2
+- proto: SWSpawnPointEmpireIntelligenceCaretakerLJ
+  entities:
+  - uid: 11678
+    components:
+    - type: Transform
+      pos: 17.5,-4.5
+      parent: 2
+- proto: SWSpawnPointEmpireLieutenantLJ
+  entities:
+  - uid: 11679
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 19.5,4.5
+      parent: 2
+  - uid: 11680
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 19.5,30.5
+      parent: 2
+  - uid: 11681
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 53.5,-19.5
+      parent: 2
+- proto: SWSpawnPointEmpireMajorLJ
+  entities:
+  - uid: 11682
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 11.5,6.5
+      parent: 2
+- proto: SWSpawnPointEmpireMedicLJ
+  entities:
+  - uid: 11683
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 16.5,-29.5
+      parent: 2
+  - uid: 11684
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 19.5,-32.5
+      parent: 2
+  - uid: 11685
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 27.5,-33.5
+      parent: 2
+  - uid: 11686
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 22.5,-32.5
+      parent: 2
+- proto: SWSpawnPointEmpireMoffLJ
+  entities:
+  - uid: 11687
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 11.5,-5.5
+      parent: 2
+- proto: SWSpawnPointEmpirePilot
+  entities:
+  - uid: 11688
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 31.5,32.5
+      parent: 2
+  - uid: 11689
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 31.5,31.5
+      parent: 2
+  - uid: 11690
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 31.5,26.5
+      parent: 2
+  - uid: 11691
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 31.5,27.5
+      parent: 2
+  - uid: 11692
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 31.5,28.5
+      parent: 2
+  - uid: 11693
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 31.5,30.5
+      parent: 2
+  - uid: 11694
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 30.5,28.5
+      parent: 2
+  - uid: 11695
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 30.5,27.5
+      parent: 2
+  - uid: 11696
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 30.5,26.5
+      parent: 2
+  - uid: 11697
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 30.5,30.5
+      parent: 2
+  - uid: 11698
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 30.5,31.5
+      parent: 2
+  - uid: 11699
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 30.5,32.5
+      parent: 2
+- proto: SWSpawnPointEmpireSoldierLJ
+  entities:
+  - uid: 11700
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 54.5,-16.5
+      parent: 2
+  - uid: 11701
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 32.5,19.5
+      parent: 2
+  - uid: 11702
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 26.5,19.5
+      parent: 2
+  - uid: 11703
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 26.5,15.5
+      parent: 2
+  - uid: 11704
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 32.5,15.5
+      parent: 2
+  - uid: 11705
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 20.5,15.5
+      parent: 2
+  - uid: 11706
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 14.5,15.5
+      parent: 2
+  - uid: 11707
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 14.5,19.5
+      parent: 2
+  - uid: 11708
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 52.5,-16.5
+      parent: 2
+  - uid: 11709
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 52.5,-15.5
+      parent: 2
+  - uid: 11710
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 20.5,19.5
+      parent: 2
+  - uid: 11711
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 54.5,-15.5
+      parent: 2
+- proto: SWSpawnPointJediLJ
+  entities:
+  - uid: 28052
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 26.5,-26.5
+      parent: 12317
+- proto: SWSpawnPointRepublicCaptainLJ
+  entities:
+  - uid: 28053
+    components:
+    - type: Transform
+      pos: 6.5,-71.5
+      parent: 12317
+- proto: SWSpawnPointRepublicCommanderCommanderLJ
+  entities:
+  - uid: 28054
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -6.5,-65.5
+      parent: 12317
+- proto: SWSpawnPointRepublicCommanderLieutenantLJ
+  entities:
+  - uid: 28055
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -8.5,-67.5
+      parent: 12317
+  - uid: 28056
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -4.5,-67.5
+      parent: 12317
+- proto: SWSpawnPointRepublicCommanderMedicLJ
+  entities:
+  - uid: 28057
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -3.5,-67.5
+      parent: 12317
+  - uid: 28058
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -7.5,-67.5
+      parent: 12317
+- proto: SWSpawnPointRepublicCommanderSniperLJ
+  entities:
+  - uid: 28059
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -9.5,-67.5
+      parent: 12317
+  - uid: 28060
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -5.5,-67.5
+      parent: 12317
+- proto: SWSpawnPointRepublicCommanderStormtrooperLJ
+  entities:
+  - uid: 28061
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -7.5,-68.5
+      parent: 12317
+  - uid: 28062
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -9.5,-68.5
+      parent: 12317
+  - uid: 28063
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -8.5,-68.5
+      parent: 12317
+  - uid: 28064
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -5.5,-68.5
+      parent: 12317
+  - uid: 28065
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -4.5,-68.5
+      parent: 12317
+  - uid: 28066
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -3.5,-68.5
+      parent: 12317
+- proto: SWSpawnPointRepublicEngineeer
+  entities:
+  - uid: 28067
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -8.5,-106.5
+      parent: 12317
+  - uid: 28068
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 9.5,-107.5
+      parent: 12317
+  - uid: 28069
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 11.5,-107.5
+      parent: 12317
+  - uid: 28070
+    components:
+    - type: Transform
+      pos: 10.5,-112.5
+      parent: 12317
+  - uid: 28071
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 10.5,-107.5
+      parent: 12317
+  - uid: 28072
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -7.5,-106.5
+      parent: 12317
+- proto: SWSpawnPointRepublicGeneralLJ
+  entities:
+  - uid: 28073
+    components:
+    - type: Transform
+      pos: 0.5,-83.5
+      parent: 12317
+- proto: SWSpawnPointRepublicLieutenantLJ
+  entities:
+  - uid: 28074
+    components:
+    - type: Transform
+      pos: -12.5,-84.5
+      parent: 12317
+  - uid: 28075
+    components:
+    - type: Transform
+      pos: -12.5,-87.5
+      parent: 12317
+  - uid: 28076
+    components:
+    - type: Transform
+      pos: -10.5,-87.5
+      parent: 12317
+- proto: SWSpawnPointRepublicMedicLJ
+  entities:
+  - uid: 28077
+    components:
+    - type: Transform
+      pos: -6.5,-94.5
+      parent: 12317
+  - uid: 28078
+    components:
+    - type: Transform
+      pos: -5.5,-97.5
+      parent: 12317
+  - uid: 28079
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 23.5,-57.5
+      parent: 12317
+  - uid: 28080
+    components:
+    - type: Transform
+      pos: -6.5,-97.5
+      parent: 12317
+  - uid: 28081
+    components:
+    - type: Transform
+      pos: -5.5,-94.5
+      parent: 12317
+  - uid: 28082
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: 30.5,-56.5
+      parent: 12317
+  - uid: 28083
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 25.5,-52.5
+      parent: 12317
+  - uid: 28084
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 28.5,-49.5
+      parent: 12317
+  - uid: 28085
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 23.5,-39.5
+      parent: 12317
+  - uid: 28086
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 25.5,-49.5
+      parent: 12317
+- proto: SWSpawnPointRepublicPilot
+  entities:
+  - uid: 28087
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 16.5,-66.5
+      parent: 12317
+  - uid: 28088
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 16.5,-67.5
+      parent: 12317
+  - uid: 28089
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 17.5,-66.5
+      parent: 12317
+  - uid: 28090
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 17.5,-67.5
+      parent: 12317
+  - uid: 28091
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 18.5,-66.5
+      parent: 12317
+  - uid: 28092
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 18.5,-67.5
+      parent: 12317
+  - uid: 28093
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 19.5,-66.5
+      parent: 12317
+  - uid: 28094
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 19.5,-67.5
+      parent: 12317
+- proto: SWSpawnPointRepublicRecruitLJ
+  entities:
+  - uid: 28095
+    components:
+    - type: Transform
+      pos: -5.5,-99.5
+      parent: 12317
+  - uid: 28096
+    components:
+    - type: Transform
+      pos: -5.5,-103.5
+      parent: 12317
+  - uid: 28097
+    components:
+    - type: Transform
+      pos: -6.5,-99.5
+      parent: 12317
+  - uid: 28098
+    components:
+    - type: Transform
+      pos: -5.5,-102.5
+      parent: 12317
+  - uid: 28099
+    components:
+    - type: Transform
+      pos: -6.5,-103.5
+      parent: 12317
+  - uid: 28100
+    components:
+    - type: Transform
+      pos: -5.5,-100.5
+      parent: 12317
+- proto: SWSpawnPointRepublicSoldiersLJ
+  entities:
+  - uid: 28101
+    components:
+    - type: Transform
+      pos: -6.5,-91.5
+      parent: 12317
+  - uid: 28102
+    components:
+    - type: Transform
+      pos: -12.5,-90.5
+      parent: 12317
+  - uid: 28103
+    components:
+    - type: Transform
+      pos: -6.5,-90.5
+      parent: 12317
+  - uid: 28104
+    components:
+    - type: Transform
+      pos: -12.5,-91.5
+      parent: 12317
+- proto: SWSpawnPointSithLJ
+  entities:
+  - uid: 11712
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: -6.5,0.5
+      parent: 2
+- proto: SWTurret
+  entities:
+  - uid: 13175
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 6.5,-4.5
+      parent: 13123
+    - type: DeviceLinkSource
+      linkedPorts:
+        16208:
+        - - SWTurretSender
+          - SWTurretConsoleReceiver
+    - type: SWTurretConfig
+  - uid: 16209
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -5.5,-4.5
+      parent: 13123
+    - type: DeviceLinkSource
+      linkedPorts:
+        16208:
+        - - SWTurretSender
+          - SWTurretConsoleReceiver
+    - type: SWTurretConfig
+  - uid: 16210
+    components:
+    - type: Transform
+      rot: 1.5707963267948966 rad
+      pos: -5.5,6.5
+      parent: 13123
+    - type: DeviceLinkSource
+      linkedPorts:
+        16208:
+        - - SWTurretSender
+          - SWTurretConsoleReceiver
+    - type: SWTurretConfig
+  - uid: 16211
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 6.5,6.5
+      parent: 13123
+    - type: DeviceLinkSource
+      linkedPorts:
+        16208:
+        - - SWTurretSender
+          - SWTurretConsoleReceiver
+    - type: SWTurretConfig
+  - uid: 29733
+    components:
+    - type: Transform
+      pos: 2.5,-7.5
+      parent: 28620
+    - type: DeviceLinkSource
+      linkedPorts:
+        30140:
+        - - SWTurretSender
+          - SWTurretConsoleReceiver
+    - type: SWTurretConfig
+  - uid: 29734
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -2.5,6.5
+      parent: 28620
+    - type: DeviceLinkSource
+      linkedPorts:
+        30140:
+        - - SWTurretSender
+          - SWTurretConsoleReceiver
+    - type: SWTurretConfig
+  - uid: 30052
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 3.5,6.5
+      parent: 28620
+    - type: DeviceLinkSource
+      linkedPorts:
+        30140:
+        - - SWTurretSender
+          - SWTurretConsoleReceiver
+    - type: SWTurretConfig
+  - uid: 30168
+    components:
+    - type: Transform
+      pos: -3.5,-8.5
+      parent: 29735
+  - uid: 30169
+    components:
+    - type: Transform
+      pos: 4.5,-8.5
+      parent: 29735
+  - uid: 30170
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 4.5,9.5
+      parent: 29735
+  - uid: 30171
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -3.5,9.5
+      parent: 29735
+- proto: SWTurretConsole
+  entities:
+  - uid: 16208
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -0.5,-11.5
+      parent: 13123
+    - type: SWTurretConsole
+      jobsAllowed:
+        SWBlackSun: False
+        SWBlackSunMercenary: False
+        SWCivialian: False
+        SWEmpireIntelligenceAgent: False
+        SWEmpireIntelligenceCaretaker: False
+        SWEmpireLieutenant: False
+        SWEmpireMajor: False
+        SWEmpireMedic: False
+        SWEmpireMoff: False
+        SWEmpireSoldier: False
+        SWExchangeCaptain: False
+        SWExchangeOperative: False
+        SWJedi: False
+        SWMandalorianLeader: False
+        SWMandalorianRecruit: False
+        SWMandalorianVeteran: False
+        SWMandalorianWarrior: False
+        SWRepublicCaptain: False
+        SWRepublicCommanderCommander: False
+        SWRepublicCommanderLieutenant: False
+        SWRepublicCommanderMedic: False
+        SWRepublicCommanderSniper: False
+        SWRepublicCommanderStormtrooper: False
+        SWRepublicGeneral: False
+        SWRepublicLieutenant: False
+        SWRepublicMedic: False
+        SWRepublicRecruit: False
+        SWRepublicSoldier: False
+        SWSith: False
+        SWSobrikCaptain: False
+        SWSobrikMedic: False
+        SWSobrikOfficer: False
+- proto: SWTurretConsoleEmpire
+  entities:
+  - uid: 30141
+    components:
+    - type: Transform
+      pos: -0.5,1.5
+      parent: 29735
+    - type: SWTurretConsole
+      jobsAllowed:
+        SWEmpireMoff: True
+        SWEmpireMajor: True
+        SWEmpireLieutenant: True
+        SWEmpireSoldier: True
+        SWEmpireMedic: True
+        SWSobrikCaptain: True
+        SWSobrikOfficer: True
+        SWSobrikMedic: True
+        SWEmpireIntelligenceCaretaker: True
+        SWEmpireIntelligenceAgent: True
+        SWCivialian: True
+        SWSith: True
+        SWMandalorianLeader: True
+        SWMandalorianVeteran: True
+        SWMandalorianWarrior: True
+        SWMandalorianRecruit: True
+        SWBlackSun: True
+        SWBlackSunMercenary: True
+        SWExchangeCaptain: True
+        SWExchangeOperative: True
+        SWJedi: False
+        SWRepublicCaptain: False
+        SWRepublicCommanderCommander: False
+        SWRepublicCommanderLieutenant: False
+        SWRepublicCommanderMedic: False
+        SWRepublicCommanderSniper: False
+        SWRepublicCommanderStormtrooper: False
+        SWRepublicGeneral: False
+        SWRepublicLieutenant: False
+        SWRepublicMedic: False
+        SWRepublicRecruit: False
+        SWRepublicSoldier: False
+  - uid: 30142
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 1.5,-0.5
+      parent: 29735
+    - type: SWTurretConsole
+      jobsAllowed:
+        SWEmpireMoff: True
+        SWEmpireMajor: True
+        SWEmpireLieutenant: True
+        SWEmpireSoldier: True
+        SWEmpireMedic: True
+        SWSobrikCaptain: True
+        SWSobrikOfficer: True
+        SWSobrikMedic: True
+        SWEmpireIntelligenceCaretaker: True
+        SWEmpireIntelligenceAgent: True
+        SWCivialian: True
+        SWSith: True
+        SWMandalorianLeader: True
+        SWMandalorianVeteran: True
+        SWMandalorianWarrior: True
+        SWMandalorianRecruit: True
+        SWBlackSun: True
+        SWBlackSunMercenary: True
+        SWExchangeCaptain: True
+        SWExchangeOperative: True
+        SWJedi: False
+        SWRepublicCaptain: False
+        SWRepublicCommanderCommander: False
+        SWRepublicCommanderLieutenant: False
+        SWRepublicCommanderMedic: False
+        SWRepublicCommanderSniper: False
+        SWRepublicCommanderStormtrooper: False
+        SWRepublicGeneral: False
+        SWRepublicLieutenant: False
+        SWRepublicMedic: False
+        SWRepublicRecruit: False
+        SWRepublicSoldier: False
+- proto: SWTurretConsoleRepublic
+  entities:
+  - uid: 30140
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: 6.5,-4.5
+      parent: 28620
+    - type: SWTurretConsole
+      jobsAllowed:
+        SWRepublicGeneral: True
+        SWRepublicCaptain: True
+        SWRepublicLieutenant: True
+        SWRepublicSoldier: True
+        SWRepublicMedic: True
+        SWRepublicRecruit: True
+        SWRepublicCommanderCommander: True
+        SWRepublicCommanderLieutenant: True
+        SWRepublicCommanderMedic: True
+        SWRepublicCommanderStormtrooper: True
+        SWRepublicCommanderSniper: True
+        SWJedi: True
+        SWMandalorianLeader: True
+        SWMandalorianVeteran: True
+        SWMandalorianWarrior: True
+        SWMandalorianRecruit: True
+        SWBlackSun: True
+        SWBlackSunMercenary: True
+        SWExchangeCaptain: True
+        SWExchangeOperative: True
+        SWCivialian: False
+        SWEmpireIntelligenceAgent: False
+        SWEmpireIntelligenceCaretaker: False
+        SWEmpireLieutenant: False
+        SWEmpireMajor: False
+        SWEmpireMedic: False
+        SWEmpireMoff: False
+        SWEmpireSoldier: False
+        SWSith: False
+        SWSobrikCaptain: False
+        SWSobrikMedic: False
+        SWSobrikOfficer: False
 - proto: SWVendingMachineEmpire
   entities:
   - uid: 12129
@@ -200904,7 +201200,6 @@ entities:
     - type: Transform
       parent: 12328
     - type: Blocking
-      blockingToggleActionEntity: 12330
     - type: Physics
       canCollide: False
     - type: ActionsContainer
@@ -200918,7 +201213,6 @@ entities:
     - type: Transform
       parent: 12328
     - type: Blocking
-      blockingToggleActionEntity: 12332
     - type: Physics
       canCollide: False
     - type: ActionsContainer
@@ -201383,7 +201677,7 @@ entities:
   - uid: 29729
     components:
     - type: Transform
-      pos: 6.387351,-4.6485367
+      pos: 3.425293,-4.6188364
       parent: 28620
   - uid: 30161
     components:
@@ -201422,7 +201716,7 @@ entities:
   - uid: 29730
     components:
     - type: Transform
-      pos: 6.387351,-4.2735367
+      pos: 3.4572754,-4.1813364
       parent: 28620
   - uid: 30162
     components:
@@ -201456,7 +201750,7 @@ entities:
   - uid: 29731
     components:
     - type: Transform
-      pos: 6.387351,-4.4610367
+      pos: 3.4260254,-4.3844614
       parent: 28620
   - uid: 30163
     components:
@@ -207749,7 +208043,7 @@ entities:
       pos: 7.5,0.5
       parent: 2
     - type: WarpPoint
-      location: Имперский Крейсер
+      location: Dreadnought "Cleaver"
   - uid: 16207
     components:
     - type: Transform
@@ -207757,14 +208051,30 @@ entities:
       pos: 0.5,0.5
       parent: 13123
     - type: WarpPoint
-      location: Орбитальная станция
+      location: PSSA "Space Protector"
   - uid: 28610
     components:
     - type: Transform
       pos: 5.5,-23.5
       parent: 12317
     - type: WarpPoint
-      location: Республиканский Крейсер
+      location: Valor-Class cruiser
+  - uid: 30054
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 0.5,2.5
+      parent: 28620
+    - type: WarpPoint
+      location: RLS type "touchable"
+  - uid: 30172
+    components:
+    - type: Transform
+      rot: -1.5707963267948966 rad
+      pos: 0.5,0.5
+      parent: 29735
+    - type: WarpPoint
+      location: tSE "beacon"
 - proto: WaterCooler
   entities:
   - uid: 12301
@@ -207826,26 +208136,6 @@ entities:
       parent: 32465
 - proto: WeaponTurretSyndicateBroken
   entities:
-  - uid: 16208
-    components:
-    - type: Transform
-      pos: -5.5,6.5
-      parent: 13123
-  - uid: 16209
-    components:
-    - type: Transform
-      pos: 6.5,6.5
-      parent: 13123
-  - uid: 16210
-    components:
-    - type: Transform
-      pos: 6.5,-4.5
-      parent: 13123
-  - uid: 16211
-    components:
-    - type: Transform
-      pos: -5.5,-4.5
-      parent: 13123
   - uid: 16212
     components:
     - type: Transform
@@ -207856,41 +208146,6 @@ entities:
     - type: Transform
       pos: -19.5,-3.5
       parent: 13123
-  - uid: 29732
-    components:
-    - type: Transform
-      pos: 2.5,-7.5
-      parent: 28620
-  - uid: 29733
-    components:
-    - type: Transform
-      pos: -2.5,6.5
-      parent: 28620
-  - uid: 29734
-    components:
-    - type: Transform
-      pos: 3.5,6.5
-      parent: 28620
-  - uid: 30164
-    components:
-    - type: Transform
-      pos: -3.5,-8.5
-      parent: 29735
-  - uid: 30165
-    components:
-    - type: Transform
-      pos: 4.5,-8.5
-      parent: 29735
-  - uid: 30166
-    components:
-    - type: Transform
-      pos: -3.5,9.5
-      parent: 29735
-  - uid: 30167
-    components:
-    - type: Transform
-      pos: 4.5,9.5
-      parent: 29735
 - proto: Welder
   entities:
   - uid: 12304

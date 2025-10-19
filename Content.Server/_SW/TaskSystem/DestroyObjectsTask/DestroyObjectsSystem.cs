@@ -46,6 +46,7 @@ public sealed partial class DestroyObjectsSystem : EntitySystem
                 {
                     continue;
                 }
+
                 if (protolist.Contains(ent.Comp.EntityPrototype.ID))
                 {
                     var satisfied_req = comp.ObjectsDestroyed.Find(x => x.ObjectsPrototypes == protolist);
@@ -77,5 +78,6 @@ public sealed partial class DestroyObjectsSystem : EntitySystem
         FixedPoint2 destroyed = ent.Comp.ObjectsDestroyed.Sum(x => x.Number);
         var p = destroyed / countAll;
         args.Progress = p > 1.0 ? 1.0 : p;
+        args.Handled = true;
     }
 }

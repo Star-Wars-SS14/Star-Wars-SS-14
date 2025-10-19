@@ -6,6 +6,7 @@
     StealIdCardsEmpire: 1
     CaptureEmpire: 1
     GetFarnellDocuments: 1
+    DestroyCommTowerRepublic: 1000
 
 - type: entity
   id: KillByJobRepublic
@@ -159,3 +160,15 @@
       SWRepublicCommanderMedic: 10
       SWRepublicCommanderStormtrooper: 10
       SWRepublicCommanderSniper: 10
+
+- type: entity
+  id: DestroyCommTowerRepublic
+  components:
+  - type: SWTask
+    name: Уничтожьте три вышки связи
+    description: Лишите империю связи
+  - type: DestroyObjectsTask
+    requirements:
+    - number: 3
+      objects:
+      - SWCommunicationTower

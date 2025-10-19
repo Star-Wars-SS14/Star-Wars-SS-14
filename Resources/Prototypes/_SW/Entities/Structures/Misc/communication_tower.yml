@@ -22,7 +22,7 @@
     damageModifierSet: Metallic
   - type: Construction
     graph: SWCommTowerGraph
-    node: swCommTower
+    node: sWCommunicationTower
   - type: Destructible
     thresholds:
     - trigger:
@@ -32,8 +32,13 @@
       - !type:PlaySoundBehavior
         sound:
           collection: MetalSlam
-      - !type:ChangeConstructionNodeBehavior
-        node: swBrokenTower
+      - !type:SpawnEntitiesBehavior
+            spawn:
+              SWCommunicationTowerBroken:
+                min: 1
+                max: 1
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
   - type: Physics
   - type: Repairable
   - type: Fixtures

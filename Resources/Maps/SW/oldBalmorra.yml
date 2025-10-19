@@ -4,8 +4,8 @@ meta:
   engineVersion: 264.0.0
   forkId: ""
   forkVersion: ""
-  time: 10/18/2025 09:41:54
-  entityCount: 48509
+  time: 10/19/2025 10:27:49
+  entityCount: 48528
 maps:
 - 1
 grids:
@@ -27369,7 +27369,8 @@ entities:
           -12,-66:
             0: 9
           -11,-64:
-            0: 65534
+            0: 36862
+            1: 28672
           -11,-62:
             0: 20480
           -11,-61:
@@ -28667,10 +28668,10 @@ entities:
           22,-28:
             0: 65535
           23,-32:
-            1: 30576
+            2: 30576
             0: 2048
           23,-31:
-            1: 119
+            2: 119
             0: 28672
           23,-30:
             0: 30503
@@ -28928,10 +28929,10 @@ entities:
             0: 30503
           32,-30:
             0: 20599
-            2: 8192
+            3: 8192
           32,-29:
             0: 2039
-            3: 28672
+            4: 28672
           32,-47:
             0: 61166
           32,-46:
@@ -30108,18 +30109,18 @@ entities:
             0: 52428
           -44,-17:
             0: 204
-            1: 49152
+            2: 49152
           -44,-16:
-            1: 204
+            2: 204
           -43,-19:
             0: 37183
           -43,-18:
             0: 48059
           -43,-17:
             0: 32955
-            1: 12288
+            2: 12288
           -43,-16:
-            1: 51
+            2: 51
             0: 140
           -42,-19:
             0: 54527
@@ -30494,6 +30495,21 @@ entities:
         uniqueMixes:
         - volume: 2500
           temperature: 293.15
+          moles:
+          - 21.824879
+          - 82.10312
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+          - 0
+        - volume: 2500
+          temperature: 293.14975
           moles:
           - 21.824879
           - 82.10312
@@ -54188,6 +54204,21 @@ entities:
       rot: -12.566370614359172 rad
       pos: -182.35255,-69.63979
       parent: 2
+  - uid: 48511
+    components:
+    - type: Transform
+      pos: -43.57124,-252.5734
+      parent: 2
+  - uid: 48512
+    components:
+    - type: Transform
+      pos: -42.568176,-252.54767
+      parent: 2
+  - uid: 48513
+    components:
+    - type: Transform
+      pos: -41.475094,-252.53479
+      parent: 2
 - proto: ClothingBeltUtilityFilled
   entities:
   - uid: 4862
@@ -55040,6 +55071,21 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
+  - uid: 48514
+    components:
+    - type: Transform
+      pos: -43.48122,-252.50906
+      parent: 2
+  - uid: 48515
+    components:
+    - type: Transform
+      pos: -42.581036,-252.52193
+      parent: 2
+  - uid: 48516
+    components:
+    - type: Transform
+      pos: -41.500816,-252.53479
+      parent: 2
 - proto: ClothingHeadHatHoodBioGeneral
   entities:
   - uid: 5017
@@ -55970,6 +56016,23 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
+- proto: ClothingUniformJumpsuitEngineering
+  entities:
+  - uid: 48517
+    components:
+    - type: Transform
+      pos: -43.5198,-252.5734
+      parent: 2
+  - uid: 48518
+    components:
+    - type: Transform
+      pos: -42.465298,-252.5734
+      parent: 2
+  - uid: 48519
+    components:
+    - type: Transform
+      pos: -41.552254,-252.48334
+      parent: 2
 - proto: ClothingUniformJumpsuitLoungewear
   entities:
   - uid: 5089
@@ -56336,7 +56399,7 @@ entities:
       pos: 92.5,-105.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -8753.063
+      secondsUntilStateChange: -8908.431
       state: Opening
     - type: DeviceLinkSource
       lastSignals:
@@ -56539,7 +56602,7 @@ entities:
       pos: -145.5,-100.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -47367.902
+      secondsUntilStateChange: -47523.27
       state: Opening
     - type: DeviceLinkSource
       lastSignals:
@@ -56790,7 +56853,7 @@ entities:
       access:
       - - SWEmpireArsenal
     - type: Door
-      secondsUntilStateChange: -49246.125
+      secondsUntilStateChange: -49401.492
       state: Opening
     - type: DeviceLinkSource
       lastSignals:
@@ -56897,7 +56960,7 @@ entities:
       pos: 172.5,-145.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -28011.68
+      secondsUntilStateChange: -28167.047
       state: Opening
     - type: DeviceLinkSource
       lastSignals:
@@ -189414,7 +189477,7 @@ entities:
       pos: 0.5,-185.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -80624.03
+      secondsUntilStateChange: -80779.4
       state: Closing
   - uid: 29711
     components:
@@ -189423,7 +189486,7 @@ entities:
       pos: -5.5,-185.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -80625.4
+      secondsUntilStateChange: -80780.766
       state: Closing
   - uid: 29712
     components:
@@ -189432,7 +189495,7 @@ entities:
       pos: -2.5,-183.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -80624.7
+      secondsUntilStateChange: -80780.07
       state: Closing
   - uid: 29713
     components:
@@ -189565,7 +189628,7 @@ entities:
       pos: -41.5,-18.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -94292.17
+      secondsUntilStateChange: -94447.54
       state: Opening
   - uid: 29736
     components:
@@ -189699,7 +189762,7 @@ entities:
       pos: -156.5,-80.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -86289.41
+      secondsUntilStateChange: -86444.77
       state: Closing
 - proto: d20Dice
   entities:
@@ -193494,7 +193557,7 @@ entities:
       pos: -14.5,-163.5
       parent: 2
     - type: Door
-      secondsUntilStateChange: -83111.22
+      secondsUntilStateChange: -83266.586
       state: Closing
 - proto: FirelockFrame
   entities:
@@ -234347,7 +234410,7 @@ entities:
           showEnts: False
           occludes: True
           ent: null
-- proto: LockerEngineerFilled
+- proto: LockerEngineer
   entities:
   - uid: 38112
     components:
@@ -234356,6 +234419,32 @@ entities:
       parent: 2
     - type: Lock
       locked: False
+    - type: Fixtures
+      fixtures:
+        fix1:
+          shape: !type:PolygonShape
+            radius: 0.01
+            vertices:
+            - -0.25,-0.48
+            - 0.25,-0.48
+            - 0.25,0.48
+            - -0.25,0.48
+          mask:
+          - Impassable
+          - TableLayer
+          - LowImpassable
+          layer:
+          - BulletImpassable
+          - Opaque
+          density: 75
+          hard: True
+          restitution: 0
+          friction: 0.4
+    - type: EntityStorage
+      open: True
+      removedMasks: 20
+    - type: PlaceableSurface
+      isPlaceable: True
   - uid: 38113
     components:
     - type: Transform
@@ -234363,6 +234452,32 @@ entities:
       parent: 2
     - type: Lock
       locked: False
+    - type: Fixtures
+      fixtures:
+        fix1:
+          shape: !type:PolygonShape
+            radius: 0.01
+            vertices:
+            - -0.25,-0.48
+            - 0.25,-0.48
+            - 0.25,0.48
+            - -0.25,0.48
+          mask:
+          - Impassable
+          - TableLayer
+          - LowImpassable
+          layer:
+          - BulletImpassable
+          - Opaque
+          density: 75
+          hard: True
+          restitution: 0
+          friction: 0.4
+    - type: EntityStorage
+      open: True
+      removedMasks: 20
+    - type: PlaceableSurface
+      isPlaceable: True
   - uid: 38114
     components:
     - type: Transform
@@ -234370,6 +234485,49 @@ entities:
       parent: 2
     - type: Lock
       locked: False
+    - type: Fixtures
+      fixtures:
+        fix1:
+          shape: !type:PolygonShape
+            radius: 0.01
+            vertices:
+            - -0.25,-0.48
+            - 0.25,-0.48
+            - 0.25,0.48
+            - -0.25,0.48
+          mask:
+          - Impassable
+          - TableLayer
+          - LowImpassable
+          layer:
+          - BulletImpassable
+          - Opaque
+          density: 75
+          hard: True
+          restitution: 0
+          friction: 0.4
+    - type: EntityStorage
+      air:
+        volume: 200
+        immutable: False
+        temperature: 293.14673
+        moles:
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+      open: True
+      removedMasks: 20
+    - type: PlaceableSurface
+      isPlaceable: True
 - proto: LockerHeadOfSecurity
   entities:
   - uid: 30351
@@ -238621,6 +238779,51 @@ entities:
     - type: Transform
       rot: 3.141592653589793 rad
       pos: -60.5,-253.5
+      parent: 2
+  - uid: 48520
+    components:
+    - type: Transform
+      pos: -57.5,-253.5
+      parent: 2
+  - uid: 48521
+    components:
+    - type: Transform
+      pos: -55.5,-252.5
+      parent: 2
+  - uid: 48522
+    components:
+    - type: Transform
+      pos: -65.5,-242.5
+      parent: 2
+  - uid: 48523
+    components:
+    - type: Transform
+      pos: -69.5,-221.5
+      parent: 2
+  - uid: 48524
+    components:
+    - type: Transform
+      pos: -71.5,-225.5
+      parent: 2
+  - uid: 48525
+    components:
+    - type: Transform
+      pos: -51.5,-239.5
+      parent: 2
+  - uid: 48526
+    components:
+    - type: Transform
+      pos: -47.5,-233.5
+      parent: 2
+  - uid: 48527
+    components:
+    - type: Transform
+      pos: -48.5,-240.5
+      parent: 2
+  - uid: 48528
+    components:
+    - type: Transform
+      pos: -44.5,-243.5
       parent: 2
 - proto: PuddleBloodSmall
   entities:
@@ -294592,6 +294795,13 @@ entities:
     - type: Transform
       rot: -1.5707963267948966 rad
       pos: -64.5,-271.5
+      parent: 2
+  - uid: 48510
+    components:
+    - type: MetaData
+      name: Ислледовательский комплекс "Фарнелл"
+    - type: Transform
+      pos: -55.5,-253.5
       parent: 2
 - proto: WaterCooler
   entities:

@@ -7,6 +7,9 @@
   - type: HTN
     rootTask:
       task: SimpleHostileCompound
+    blackboard:
+      AggroVisionRadius: !type:Single
+          25.0
   - type: NpcFactionMember
     factions:
     - AllHostile
@@ -25,7 +28,7 @@
       fix1:
         shape:
           !type:PhysShapeCircle
-          radius: 0.5
+          radius: 0.4
         density: 100
         mask:
         - MobMask

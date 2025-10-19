@@ -26,6 +26,16 @@
     sprite: _SW/Clothing/Head/Helmets/helmet_sun_squad.rsi
 
 - type: entity
+  parent: SWBaseHelmet
+  id: SWHelmetSunSquadLeader
+  name: Helmet Sun Squad Leader
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/helmet_sun_leader.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/helmet_sun_leader.rsi
+
+- type: entity
   parent: [ClothingHeadBase, SWRepublicRadioHelmet]
   id: SWRebelHelmet
   name: Rebel helmet

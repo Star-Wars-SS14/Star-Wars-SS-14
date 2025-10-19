@@ -22,3 +22,13 @@
         Cold: 0.5 
         Piercing: 0.5
   - type: GroupExamine
+
+- type: entity
+  parent: SWBlackSunArmor
+  id: SWBlackSunArmorLeader
+  name: Black Sun Armor Leader
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Black_Sun/sun_squad_leader.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Black_Sun/sun_squad_leader.rsi

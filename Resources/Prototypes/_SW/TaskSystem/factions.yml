@@ -72,8 +72,8 @@
   - type: SWTaskContainer
     availableTasks: MandalorianTasksSet
     addIntervalInSeconds: 1200 #20 min
-    startAmountOfTasks : 2
-    maxAmountOfTasks: 3
+    startAmountOfTasks : 3
+    maxAmountOfTasks: 4
 
 - type: entity
   id: BlackSunFaction

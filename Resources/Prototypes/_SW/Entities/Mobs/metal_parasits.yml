@@ -1,21 +1,18 @@
 - type: entity
   name: parasit
   parent: SimpleMobBase
-  id: SWMobParasit
+  id: SWMobParasitAggressiveAi
+  suffix: Агрессивный ИИ
   components:
+  - type: HTN
+    rootTask:
+      task: SimpleHostileCompound
+  - type: NpcFactionMember
+    factions:
+    - AllHostile
   - type: Speech
   - type: Body
     prototype: SWParasit
-  - type: GhostRole
-    makeSentient: false
-    allowSpeech: true
-    allowMovement: true
-    name: ghost-role-information-parasit-name
-    description: ghost-role-information-parasit-description
-    rules: ghost-role-information-parasit-rules
-    raffle:
-      settings: default
-  - type: GhostTakeoverAvailable
   - type: Sprite
     drawdepth: SmallMobs
     sprite: _SW/Mobs/Animals/parasits.rsi
@@ -28,7 +25,7 @@
       fix1:
         shape:
           !type:PhysShapeCircle
-          radius: 0.2
+          radius: 0.5
         density: 100
         mask:
         - MobMask
@@ -135,6 +132,25 @@
         Airloss: -0.15
   - type: ReplacementAccent
     accent: SWMetallParasit
+  - type: NPCRetaliation
+    attackMemoryLength: 20
+
+- type: entity
+  name: parasit
+  parent: SWMobParasitAggressiveAi
+  id: SWMobParasit
+  suffix: GhostRole
+  components:
+  - type: GhostRole
+    makeSentient: false
+    allowSpeech: true
+    allowMovement: true
+    name: ghost-role-information-parasit-name
+    description: ghost-role-information-parasit-description
+    rules: ghost-role-information-parasit-rules
+    raffle:
+      settings: default
+  - type: GhostTakeoverAvailable
   - type: HTN
     rootTask:
       task: RuminantHostileCompound
@@ -143,3 +159,4 @@
     - Passive
   - type: NPCRetaliation
     attackMemoryLength: 20
+

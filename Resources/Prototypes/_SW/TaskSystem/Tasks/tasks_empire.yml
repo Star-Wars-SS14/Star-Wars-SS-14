@@ -5,6 +5,7 @@
     CaptureRepublic: 1
     KillRepublicByJobEmpire: 1
     KillCriminalTaskEmpire: 1
+    GetFarnellDocuments: 1
 
 - type: entity
   id: CaptureRepublic

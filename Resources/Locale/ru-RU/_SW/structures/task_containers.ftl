@@ -1,0 +1,12 @@
+ent-SWBaseTaskObjectsContainer = ячейка хранения
+  .desc = Положите предметы в нее для хранения и дальнейшей передачи высшему командованию
+ent-SWTaskObjectsSafeEmpire = {ent-SWBaseTaskObjectsContainer}
+  .desc = {ent-SWBaseTaskObjectsContainer.desc}
+ent-SWTaskObjectsSafeRepublic = {ent-SWBaseTaskObjectsContainer}
+  .desc = {ent-SWBaseTaskObjectsContainer.desc}
+ent-SWTaskObjectsSafeExchange = {ent-SWBaseTaskObjectsContainer}
+  .desc = {ent-SWBaseTaskObjectsContainer.desc}
+ent-SWTaskObjectsSafeMandalorians = {ent-SWBaseTaskObjectsContainer}
+  .desc = {ent-SWBaseTaskObjectsContainer.desc}
+ent-SWTaskObjectsSafeBlackSun = {ent-SWBaseTaskObjectsContainer}
+  .desc = {ent-SWBaseTaskObjectsContainer.desc}

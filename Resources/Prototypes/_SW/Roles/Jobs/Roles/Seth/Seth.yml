@@ -364,7 +364,7 @@
     outerClothing: SWImperialIntelligenceSuit
     jumpsuit: SWClothingUniformJumpsuitImperialIntelligence
     head: SW_ClothingHeadImperialIntelligenceHelmet
-    belt: ClothingBeltAssault
+    belt: SWInvisGeneratorBelt
     id: SWIDCardEmpireIntelligenceCaretaker
     shoes: ClothingShoesBootsCombatFilled
     gloves: ClothingHandsGlovesCombat
@@ -379,7 +379,7 @@
     jumpsuit: SWClothingUniformJumpsuitImperialIntelligence
     back: SWImperialBackpackCamo
     head: SW_ClothingHeadImperialIntelligenceHelmet
-    belt: ClothingBeltAssault
+    belt: SWInvisGeneratorBelt
     id: SWIDCardEmpireIntelligenceAgent
     shoes: ClothingShoesBootsCombatFilled
     gloves: ClothingHandsGlovesCombat

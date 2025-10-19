@@ -1,0 +1,25 @@
+- type: entity
+  parent: ClothingBeltBase
+  id: SWInvisGeneratorBelt
+  name: invis gen belt
+  description: A belt used to hold most janitorial supplies.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Belt/invis_gen.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Belt/invis_gen.rsi 
+  - type: Appearance
+  - type: ComponentToggler
+    parent: true
+    components:
+    - type: Stealth
+      minVisibility: -0.5
+      lastVisibility: -0.5
+  - type: ItemToggle
+    onUse: false
+    onActivate: false
+  - type: ToggleClothing
+    action: ActionToggleInvis
+    disableOnUnequip: true
+  - type: SWToggleClothingAddCooldownOnDeactivate
+  - type: SWDeactivateClothingOnShoot

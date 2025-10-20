@@ -1,3 +1,4 @@
+using Content.Server._SW.Economy.BankSystem;
 using Content.Shared._SW.Economy.BankSystem;
 using Content.Shared._SW.TaskSystem;
 using Robust.Shared.Utility;
@@ -9,8 +10,8 @@ using System.Threading.Tasks;
 
 namespace Content.Server._SW.TaskSystem.AcquireMoneyAmount;
 public sealed class SWAcquireMoneyAmountSystem : EntitySystem
-{
-    [Dependency] private readonly SWFactionGameruleSystem _factionSystem = default!;
+{    
+    [Dependency] private readonly SWBankSystem _bankSystem = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -22,26 +23,16 @@ public sealed class SWAcquireMoneyAmountSystem : EntitySystem
     private void OnCheck(Entity<SWAcquireMoneyAmountComponent> ent, ref SWTaskCheckRequirementsEvent args)
     {
         var taskComp = EnsureComp<SWTaskComponent>(ent);
-        var factEnt = _factionSystem.GetFactionEntity(taskComp.OwningFaction);
-        if (factEnt == null) {
-            args.Cancel();
-            return;
-        }
-        if (!TryComp<SWBankAccountContainerComponent>(factEnt, out var comp))
+        if (!_bankSystem.CanGetFactionAccount(taskComp.OwningFaction))
         {
             args.Cancel();
-            return;
         }
     }
 
     private void OnInit(Entity<SWAcquireMoneyAmountComponent> ent, ref SWTaskInitEvent args)
     {
         var taskComp = EnsureComp<SWTaskComponent>(ent);
-        var factEnt = _factionSystem.GetFactionEntity(taskComp.OwningFaction);
-        DebugTools.Assert(factEnt != null);
-        var comp = Comp<SWBankAccountContainerComponent>(factEnt.Value.Owner);
-
-        ent.Comp.Account = new Entity<SWBankAccountContainerComponent>(factEnt.Value, comp);
+        ent.Comp.Account = _bankSystem.GetFactionAccount(taskComp.OwningFaction);
     }
 
     private void OnGetProgress(Entity<SWAcquireMoneyAmountComponent> ent, ref SWGetProgressEvent args)

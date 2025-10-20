@@ -4,6 +4,7 @@
     SmallHeadHunter: 4
     KillConcurentBlackSun: 1
     CaptureHeadBlackSun: 1
+    GetMoney: 6
 
 - type: entity
   id: KillConcurentBlackSun

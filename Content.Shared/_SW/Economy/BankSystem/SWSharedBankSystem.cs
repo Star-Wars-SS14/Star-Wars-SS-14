@@ -136,13 +136,7 @@ public sealed class SWSharedBankSystem : EntitySystem
         }
     }
 
-    /// <summary>
-    /// Tries to pay all requests
-    /// </summary>
-    /// <param name="requests"></param>
-    /// <param name="balance"></param>
-    /// <returns></returns>
-    public bool TryPayAll(Dictionary<ProtoId<SWCurrencyPrototype>, float> requests,
+    public bool CheckIfCanPayAll(Dictionary<ProtoId<SWCurrencyPrototype>, float> requests,
                         Dictionary<ProtoId<SWCurrencyPrototype>, float> balance)
     {
         foreach (var (currency, amount) in requests)
@@ -155,6 +149,23 @@ public sealed class SWSharedBankSystem : EntitySystem
             {
                 return false;
             }
+        }
+        return true;
+    }
+
+    /// <summary>
+    /// Tries to pay all requests
+    /// </summary>
+    /// <param name="requests"></param>
+    /// <param name="balance"></param>
+    /// <returns></returns>
+    public bool TryPayAll(Dictionary<ProtoId<SWCurrencyPrototype>, float> requests,
+                        Dictionary<ProtoId<SWCurrencyPrototype>, float> balance)
+    {
+        bool can = CheckIfCanPayAll(requests, balance);
+        if (!can)
+        {
+            return false;
         }
         ReduceBalanceAmount(requests, balance);
         return true;

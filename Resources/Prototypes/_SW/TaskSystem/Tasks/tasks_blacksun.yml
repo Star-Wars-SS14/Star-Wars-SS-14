@@ -3,6 +3,7 @@
   weights:
     SmallHeadHunter: 4
     KillOrCapture: 1
+    GetMoney: 6
 
 - type: entity
   id: KillOrCapture

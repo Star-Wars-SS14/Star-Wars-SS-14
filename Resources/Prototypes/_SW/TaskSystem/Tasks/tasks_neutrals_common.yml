@@ -60,45 +60,14 @@
       SWRepublicCommanderStormtrooper: 25
       SWRepublicCommanderSniper: 25
 
-# - type: entity
-#   id: KillConcurentBlackSun
-#   parent: SWTaskBase
-#   components:
-#   - type: SWTask
-#     name: Борьба с конкруентами
-#     description: В последнее время выскочки из Черного Солнца ведут себя все более нагло. Поставьте их на место. Убейте кого-нибудь из них. Чем выше должность, тем лучше.
-#   - type: SWKillRandomByJob
-#     factions: [BlackSunFaction]
-#     jobsToScores:
-#       SWBlackSunMercenary: 4
-#       SWBlackSun: 6
-
-# - type: entity
-#   id: KillConcurenExchange
-#   parent: SWTaskBase
-#   components:
-#   - type: SWTask
-#     name: Борьба с конкруентами
-#     description: Обменовцы совсем распоясались. Убейте кого-нибудь из них. Чем выше должность, тем лучше.
-#   - type: SWKillRandomByJob
-#     factions: [ExchangeFaction]
-#     killAny: true
-#     jobsToScores:
-#       SWExchangeCaptain: 6
-#       SWExchangeOperative: 4
-
-# - type: entity
-#   id: KillConcurenMandalorian
-#   parent: SWTaskBase
-#   components:
-#   - type: SWTask
-#     name: Борьба с конкурентами
-#     description: Эти высокомерные засранцы мандалорцы ведут себя так, как будто они лучше нас! Завалите кого-нибудь из них, желательно кого-нибудь крутого.
-#   - type: SWKillRandomByJob
-#     factions: [MandalorianFaction]
-#     killAny: true
-#     jobsToScores:
-#       SWMandalorianLeader: 8
-#       SWMandalorianVeteran: 6
-#       SWMandalorianWarrior: 4
-#       SWMandalorianRecruit: 3
+- type: entity
+  id: GetMoney
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name:  Финансовая подушка
+    score: 10
+    description: Заработайте 5000 имперских кредитов. Не забудьте поместить их в финансовую консоль для отчетности
+  - type: SWAcquireMoneyAmount
+    amount:
+      SWEmpireCreditCurrency: 5000

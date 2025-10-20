@@ -102,6 +102,11 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             args.AddLine($"Фракция {factionComp.Name}:");
             foreach (var task in taskComp.CurrentTasks)
             {
+                //Subtasks are managed by other system
+                if (task.Comp.ParentTask != null)
+                {
+                    continue;
+                }
                 UpdateTaskProgress(task.Owner, task.Comp);
                 string text = $"""- Задание "{task.Comp.Name}": """;
                 if (task.Comp.Completeness == 1.0)
@@ -197,7 +202,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             }
         }
 
-        HashSet<Entity<SWFactionComponent>> minorScoreMoreMajors = new ();
+        HashSet<Entity<SWFactionComponent>> minorScoreMoreMajors = new();
 
         foreach (var fact in minorFactions)
         {
@@ -235,7 +240,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         return res;
     }
 
-    private bool FactionCompletedAllTasks(EntityUid factionUid, SWFactionComponent comp)
+    private bool FactionCompletedAllTasks(EntityUid factionUid, SWFactionComponent comp, bool ignoreSubTasks = true)
     {
         if (!TryComp<SWTaskContainerComponent>(factionUid, out var taskComp))
         {
@@ -243,6 +248,9 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         }
         foreach (var task in taskComp.CurrentTasks)
         {
+            if (ignoreSubTasks && task.Comp.ParentTask != null) {
+                continue;
+            }
             if (task.Comp.Completeness != 1.0)
             {
                 return false;
@@ -374,10 +382,11 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     /// </summary>
     /// <param name="taskProto">Прототип задания</param>
     /// <returns></returns>
-    public bool CheckTask(string taskProto, string faction)
+    public bool CheckTask(string taskProto, string faction, EntityUid? parent = null)
     {
         var uid = Spawn(taskProto);
         EnsureComp<SWTaskComponent>(uid).OwningFaction = faction;
+        EnsureComp<SWTaskComponent>(uid).ParentTask = parent;
         var ev = new SWTaskCheckRequirementsEvent();
         RaiseLocalEvent(uid, ref ev);
         Del(uid);
@@ -412,32 +421,35 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     public Entity<SWTaskComponent>? AddTask(string factionId, string taskProto)
     {
         var task = AddTaskNoInit(factionId, taskProto);
-        if (task == null)
-        {
-            return null;
-        }
-        InitTask(task.Value);
+        InitTask(task);
         return task;
     }
 
-    public Entity<SWTaskComponent>? AddTaskNoInit(string factionId, string taskProto)
+    public Entity<SWTaskComponent> AddTaskNoInit(string? factionId, string taskProto)
     {
+        var task = Spawn(taskProto);
+        var comp = EnsureComp<SWTaskComponent>(task);
+
+        if (factionId == null)
+        {
+            return new Entity<SWTaskComponent>(task, comp);
+        }
+
         var tmp = _swFaction.GetFactionEntity(factionId);
 
         if (tmp == null)
         {
             _sawmill.Error($"Attempted to add task to unknown faction : {factionId}");
-            return null;
+            return new Entity<SWTaskComponent>(task, comp);
         }
 
         if (!TryComp<SWTaskContainerComponent>(tmp.Value.Owner, out var taskComp))
         {
             _sawmill.Error($"Attempted to add task to faction without TaskContainerComponent: {factionId}");
-            return null;
+            return new Entity<SWTaskComponent>(task, comp);
         }
         Entity<SWTaskContainerComponent> faction = new(tmp.Value.Owner, taskComp);
-        var task = Spawn(taskProto);
-        var comp = EnsureComp<SWTaskComponent>(task);
+
         comp.OwningFaction = factionId;
         faction.Comp.CurrentTasks.Add(new Entity<SWTaskComponent>(task, comp));
         return new Entity<SWTaskComponent>(task, comp);
@@ -450,7 +462,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         RaiseLocalEvent(task.Owner, ref ev);
         return task;
     }
-    public List<Entity<SWTaskComponent>> GetFactionTasks(string? faction)
+    public List<Entity<SWTaskComponent>> GetFactionTasks(string? faction, bool hideSubtasks = true)
     {
         var res = new List<Entity<SWTaskComponent>>();
         if (faction == null)
@@ -463,8 +475,14 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             return res;
         }
 
-
-        res = taskComp.CurrentTasks;
+        if (hideSubtasks)
+        {
+            res = taskComp.CurrentTasks.Where((x) => x.Comp.ParentTask == null).ToList();
+        }
+        else
+        {
+            res = taskComp.CurrentTasks;
+        }
         return res;
     }
 

@@ -23,10 +23,6 @@ namespace Content.Server._SW.TaskSystem.KillRandomOfFaction;
 public sealed partial class SWKillRandomJobSystem : EntitySystem
 {
     [Dependency] private readonly SWTasksGameRuleSystem _sWTasks = default!;
-    [Dependency] private readonly SharedMindSystem _mindSystem = default!;
-    [Dependency] private readonly SharedJobSystem _jobSystem = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly SWTargetSelectorSystem _swTargetSelector = default!;
     ISawmill _s = default!;
     public override void Initialize()

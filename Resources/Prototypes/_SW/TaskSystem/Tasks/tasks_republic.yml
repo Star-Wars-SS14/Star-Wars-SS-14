@@ -102,6 +102,7 @@
     - SWSobrikCaptain
     - SWEmpireMoff
   - type: SWKillRandomByName
+  - type: SWDescByName
     descriptionId: kill-empire-by-name
   - type: SWGetScoreByTargetJob
     jobsToScores:

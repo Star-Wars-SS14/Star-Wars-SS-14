@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Server._SW.TaskSystem.DynamicDescription;
+namespace Content.Server._SW.TaskSystem.DynamicDescription.BasedOnJob;
 
 [RegisterComponent]
 public sealed partial class SWDescriptionBasedOnJobOfTargetComponent : Component

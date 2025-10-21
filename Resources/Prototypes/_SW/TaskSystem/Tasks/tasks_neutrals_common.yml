@@ -17,6 +17,7 @@
     - SWRepublicMedic
     - SWCivialian
   - type: SWKillRandomByName
+  - type: SWDescByName
     descriptionId: small-headhunt
   - type: SWGetScoreByTargetJob
     jobsToScores:
@@ -49,6 +50,7 @@
     - SWRepublicCommanderStormtrooper
     - SWRepublicCommanderSniper
   - type: SWKillRandomByName
+  - type: SWDescByName
     descriptionId: big-headhunt-mandalorian
   - type: SWGetScoreByTargetJob
     jobsToScores:
@@ -75,13 +77,60 @@
       SWEmpireCreditCurrency: 5000
 
 - type: entity
-  id: SWBillExample
+  id: PayOrCapture
   parent: SWTaskBase
   components:
   - type: SWTask
-    name:  Долг
-    score: 10
-    description: Верни деньги сука
+    name:  Обезглавливание (выбор)
+    description: Убейте или захватите
+  - type: SWTargetSelector
+    factions: [ExchangeFaction]
+    jobs:
+    - SWExchangeCaptain
+  - type: SWSubtaskContainer
+    subtasks:
+      - taskProto: KillConcurentExchange
+      - taskProto: CaptureHeadExchange
+
+- type: entity
+  id: SlaveTime
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Время работорговли
+    description: Тут ничего нет.
+  - type: SWTargetSelector
+    factions: [RepublicFaction, EmpireFaction]
+    jobs:
+    - SWEmpireSoldier
+    - SWEmpireMedic
+    - SWSobrikMedic
+    - SWRepublicSoldier
+    - SWRepublicRecruit
+    - SWRepublicMedic
+    - SWCivialian
+  - type: SWDescByName
+    descriptionId: slave-hunt
+  - type: SWSubtaskContainer
+    subtasks:
+      - taskProto: CaptureSubTask
+      - taskProto: BillSubtask
+
+- type: entity
+  id: CaptureSubTask
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    score: 15
+  - type: SWTargetSelector
+  - type: SWCapturePerson
+
+- type: entity
+  id: BillSubtask
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    score: 15
   - type: SWPayBillTask
     bill:
       name: Долг

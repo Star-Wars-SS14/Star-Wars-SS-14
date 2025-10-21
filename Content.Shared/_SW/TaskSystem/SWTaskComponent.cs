@@ -16,10 +16,10 @@ public sealed partial class SWTaskComponent : Component
     public EntityUid? ParentTask = null;
 
     [DataField]
-    public string Name = "task";
+    public string Name = "Тут ничего нет";
 
     [DataField]
-    public string Description = "desc";
+    public string Description = "Тут ничего нет";
 
     [DataField]
     public int Score = 1;

@@ -32,8 +32,6 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
                                                                                                                   before: [typeof(SWParallelTaskSystem)]);
         SubscribeLocalEvent<SWKillRandomByNameComponent, SWTaskInitEvent>(OnTaskInitByName, after: [typeof(SWTargetSelectorSystem)],
                                                                                             before: [typeof(SWParallelTaskSystem)]);
-        SubscribeLocalEvent<SWKillRandomByNameComponent, SWTaskProvideDescriptionEvent>(OnDescUpdatedByName, after: [typeof(SWTargetSelectorSystem)],
-                                                                                                             before: [typeof(SWParallelTaskSystem)]);
 
         SubscribeLocalEvent<SWKillRandomByJobComponent, SWTaskCheckRequirementsEvent>(OnCheckRequirementsByJob, after: [typeof(SWTargetSelectorSystem)],
                                                                                                                 before: [typeof(SWParallelTaskSystem)]);
@@ -59,17 +57,6 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         {
             _s.Error($"Task {Prototype(ent.Owner)} has component which needs a target selector, but doesnt have a target seleector!");
         }
-    }
-
-    private void OnDescUpdatedByName(Entity<SWKillRandomByNameComponent> ent, ref SWTaskProvideDescriptionEvent args)
-    {
-        var targetComp = EnsureComp<SWTargetSelectorComponent>(ent.Owner);
-        if (targetComp.Target == null)
-        {
-            return;
-        }
-        var comp = EnsureComp<SWTaskComponent>(ent.Owner);
-        comp.Description = Loc.GetString(ent.Comp.DescriptionId, ("name", Name(targetComp.Target.Value)));
     }
 
     private void OnCheckRequirementsByJob(Entity<SWKillRandomByJobComponent> ent, ref SWTaskCheckRequirementsEvent args)

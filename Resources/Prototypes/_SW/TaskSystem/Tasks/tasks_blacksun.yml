@@ -4,7 +4,7 @@
     SmallHeadHunter: 4
     KillOrCapture: 1
     GetMoney: 6
-    SWBillExample: 6
+    SlaveTime: 4
 
 - type: entity
   id: KillOrCapture

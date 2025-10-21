@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Server._SW.TaskSystem.DynamicDescription;
+namespace Content.Server._SW.TaskSystem.DynamicDescription.BasedOnJob;
 
 public sealed partial class SWDescriptionBasedOnJobOfTargetSystem : EntitySystem
 {

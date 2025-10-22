@@ -19,14 +19,7 @@
     hideLayersOnEquip:
     - Hair
     - Snout
-  - type: Inventory
-    templateId: speciesNoHeadClothing
-    femaleDisplacements:
-      jumpsuit:
-        sizeMaps:
-          32:
-            sprite: _SW/Mobs/Species/Chiss/displacement.rsi
-            state: jumpsuit-female
+  - type: SWDisableSlot
 
 - type: entity
   save: false

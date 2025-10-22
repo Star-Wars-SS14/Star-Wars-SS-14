@@ -457,10 +457,10 @@
 - type: startingGear
   id: BlackSunGear
   equipment:
-    outerClothing: SWBlackSunArmor
+    outerClothing: SWBlackSunArmorLeader
     jumpsuit: SWClothingUniformJumpsuitFleece
     back: ClothingBackpackMilitarySatchel
-    head: SWHelmetSunSquad
+    head: SWHelmetSunSquadLeader
     belt: ClothingBeltSalvageWebbing
     id: SWIDCardBlackSun
     shoes: ClothingShoesBootsCombatFilled

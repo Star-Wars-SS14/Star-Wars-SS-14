@@ -4836,7 +4836,7 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 3.5,3.5
       parent: 1
-- proto: ShuttleGunDuster
+- proto: SWShuttleGunDuster
   entities:
   - uid: 612
     components:
@@ -4878,7 +4878,7 @@ entities:
           showEnts: False
           occludes: True
           ent: 731
-- proto: ShuttleGunPerforator
+- proto: SWShuttleGunPerforator
   entities:
   - uid: 324
     components:

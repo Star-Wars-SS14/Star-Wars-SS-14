@@ -74899,7 +74899,7 @@ entities:
     - type: Transform
       pos: 42.5,13.5
       parent: 1
-- proto: ShuttleGunDuster
+- proto: SWShuttleGunDuster
   entities:
   - uid: 1161
     components:

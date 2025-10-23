@@ -84,3 +84,6 @@
 
 - type: Tag
   id: SWMK3MagazineTag
+
+- type: Tag
+  id: SWEquipmentForceBan

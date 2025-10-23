@@ -11,6 +11,8 @@
       blacklist:
         components:
         - Armor
+        tags:
+        - SWEquipmentForceBan
     - name: jumpsuit
       slotTexture: uniform
       slotFlags: INNERCLOTHING
@@ -21,6 +23,8 @@
       blacklist:
         components:
         - Armor
+        tags:
+        - SWEquipmentForceBan
     - name: outerClothing
       slotTexture: suit
       slotFlags: OUTERCLOTHING
@@ -31,24 +35,35 @@
       blacklist:
         components:
         - Armor
+        tags:
+        - SWEquipmentForceBan
     - name: gloves
       slotTexture: gloves
       slotFlags: GLOVES
       uiWindowPos: 2,1
       strippingWindowPos: 2,2
       displayName: Gloves
+      blacklist:
+        tags:
+        - SWEquipmentForceBan
     - name: neck
       slotTexture: neck
       slotFlags: NECK
       uiWindowPos: 0,2
       strippingWindowPos: 0,1
       displayName: Neck
+      blacklist:
+        tags:
+        - SWEquipmentForceBan
     - name: mask
       slotTexture: mask
       slotFlags: MASK
       uiWindowPos: 1,2
       strippingWindowPos: 1,1
       displayName: Mask
+      blacklist:
+        tags:
+        - SWEquipmentForceBan
     - name: eyes
       slotTexture: glasses
       slotFlags: EYES
@@ -56,6 +71,9 @@
       uiWindowPos: 0,3
       strippingWindowPos: 0,0
       displayName: Eyes
+      blacklist:
+        tags:
+        - SWEquipmentForceBan
     - name: ears
       slotTexture: ears
       slotFlags: EARS
@@ -63,6 +81,9 @@
       uiWindowPos: 2,2
       strippingWindowPos: 2,0
       displayName: Ears
+      blacklist:
+        tags:
+        - SWEquipmentForceBan
     - name: head
       slotTexture: head
       slotFlags: HEAD
@@ -72,6 +93,8 @@
       blacklist:
         components:
         - Armor
+        tags:
+        - SWEquipmentForceBan
     - name: pocket1
       slotTexture: pocket
       fullTextureName: template_small
@@ -108,6 +131,8 @@
       blacklist:
         components:
         - Armor
+        tags:
+        - SWEquipmentForceBan
     - name: id
       slotTexture: id
       fullTextureName: template_small
@@ -127,6 +152,9 @@
       uiWindowPos: 3,1
       strippingWindowPos: 1,5
       displayName: Belt
+      blacklist:
+        tags:
+        - SWEquipmentForceBan
     - name: back
       slotTexture: back
       fullTextureName: template_small
@@ -139,130 +167,5 @@
       blacklist:
         components:
         - Armor
-
-- type: inventoryTemplate
-  id: speciesNoHeadClothing
-  slots:
-    - name: shoes
-      slotTexture: shoes
-      slotFlags: FEET
-      stripTime: 3
-      uiWindowPos: 1,0
-      strippingWindowPos: 1,3
-      displayName: Shoes
-    - name: jumpsuit
-      slotTexture: uniform
-      slotFlags: INNERCLOTHING
-      stripTime: 6
-      uiWindowPos: 0,1
-      strippingWindowPos: 0,2
-      displayName: Jumpsuit
-    - name: outerClothing
-      slotTexture: suit
-      slotFlags: OUTERCLOTHING
-      stripTime: 6
-      uiWindowPos: 1,1
-      strippingWindowPos: 1,2
-      displayName: Suit
-    - name: gloves
-      slotTexture: gloves
-      slotFlags: GLOVES
-      uiWindowPos: 2,1
-      strippingWindowPos: 2,2
-      displayName: Gloves
-    - name: neck
-      slotTexture: neck
-      slotFlags: NECK
-      uiWindowPos: 0,2
-      strippingWindowPos: 0,1
-      displayName: Neck
-    - name: mask
-      slotTexture: mask
-      slotFlags: MASK
-      uiWindowPos: 1,2
-      strippingWindowPos: 1,1
-      displayName: Mask
-    - name: eyes
-      slotTexture: glasses
-      slotFlags: EYES
-      stripTime: 3
-      uiWindowPos: 0,3
-      strippingWindowPos: 0,0
-      displayName: Eyes
-    - name: ears
-      slotTexture: ears
-      slotFlags: EARS
-      stripTime: 3
-      uiWindowPos: 2,2
-      strippingWindowPos: 2,0
-      displayName: Ears
-    - name: head
-      slotTexture: head
-      slotFlags: HEAD
-      uiWindowPos: 1,3
-      strippingWindowPos: 1,0
-      displayName: Head
-      blacklist:
-        components:
-        - Clothing
-    - name: pocket1
-      slotTexture: pocket
-      fullTextureName: template_small
-      slotFlags: POCKET
-      slotGroup: MainHotbar
-      stripTime: 3
-      uiWindowPos: 0,3
-      strippingWindowPos: 0,4
-      dependsOn: jumpsuit
-      displayName: Pocket 1
-      stripHidden: true
-    - name: pocket2
-      slotTexture: pocket
-      fullTextureName: template_small
-      slotFlags: POCKET
-      slotGroup: MainHotbar
-      stripTime: 3
-      uiWindowPos: 2,3
-      strippingWindowPos: 1,4
-      dependsOn: jumpsuit
-      displayName: Pocket 2
-      stripHidden: true
-    - name: suitstorage
-      slotTexture: suit_storage
-      slotFlags:   SUITSTORAGE
-      slotGroup: MainHotbar
-      stripTime: 3
-      uiWindowPos: 2,0
-      strippingWindowPos: 2,5
-      dependsOn: outerClothing
-      dependsOnComponents:
-      - type: AllowSuitStorage
-      displayName: Suit Storage
-    - name: id
-      slotTexture: id
-      fullTextureName: template_small
-      slotFlags: IDCARD
-      slotGroup: SecondHotbar
-      stripTime: 6
-      uiWindowPos: 2,1
-      strippingWindowPos: 2,4
-      dependsOn: jumpsuit
-      displayName: ID
-    - name: belt
-      slotTexture: belt
-      fullTextureName: template_small
-      slotFlags: BELT
-      slotGroup: SecondHotbar
-      stripTime: 6
-      uiWindowPos: 3,1
-      strippingWindowPos: 1,5
-      displayName: Belt
-    - name: back
-      slotTexture: back
-      fullTextureName: template_small
-      slotFlags: BACK
-      slotGroup: SecondHotbar
-      stripTime: 6
-      uiWindowPos: 3,0
-      strippingWindowPos: 0,5
-      displayName: Back
+        tags:
+        - SWEquipmentForceBan

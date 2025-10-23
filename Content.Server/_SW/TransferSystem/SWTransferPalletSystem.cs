@@ -31,11 +31,16 @@ public sealed partial class SWTransferPalletSystem : EntitySystem
             HashSet<EntityUid> res = _lookupSystem.GetEntitiesIntersecting(uid, LookupFlags.Dynamic | LookupFlags.Sundries);
             foreach (var obj in res)
             {
+                if (HasComp<SWCantBeTransferredComponent>(obj))
+                {
+                    continue;
+                }
+
                 var ev = new TryTransferObject(obj, comp.OwnerFaction);
                 RaiseLocalEvent(ref ev);
                 if (ev.Handled)
                 {
-                    QueueDel(obj);
+                    Del(obj);
                 }
             }
         }

@@ -4,6 +4,7 @@
   id: SWFarnelDatapad
   description: Содержит информацю о биологическом оружии
   components:
+  - type: SWCantBeTransferred
   - type: PaperVisuals
     backgroundImagePath: "/Textures/_SW/Interface/Paper/background_red.svg.96dpi.png"
     backgroundPatchMargin: 32.0, 32.0, 32.0, 32.0

@@ -50,27 +50,30 @@ namespace Content.Server.GameTicking
 
             var playerCount = $"{_playerManager.PlayerCount}";
             var readyCount = _playerGameStatuses.Values.Count(x => x == PlayerGameStatus.ReadyToPlay);
+            //SW start
+            //var stationNames = new StringBuilder();
+            //var query =
+                //EntityQueryEnumerator<StationJobsComponent, StationSpawningComponent, MetaDataComponent>();
+            
+            //var foundOne = false;
 
-            var stationNames = new StringBuilder();
-            var query =
-                EntityQueryEnumerator<StationJobsComponent, StationSpawningComponent, MetaDataComponent>();
+            //while (query.MoveNext(out _, out _, out var meta))
+            //{
+            //    foundOne = true;
+            //    if (stationNames.Length > 0)
+            //            stationNames.Append('\n');
 
-            var foundOne = false;
+            //    stationNames.Append(meta.EntityName);
+            //}
 
-            while (query.MoveNext(out _, out _, out var meta))
-            {
-                foundOne = true;
-                if (stationNames.Length > 0)
-                        stationNames.Append('\n');
+            //if (!foundOne)
+            //{
+            //    stationNames.Append(_gameMapManager.GetSelectedMap()?.MapName ??
+            //                        Loc.GetString("game-ticker-no-map-selected"));
+            //}
 
-                stationNames.Append(meta.EntityName);
-            }
-
-            if (!foundOne)
-            {
-                stationNames.Append(_gameMapManager.GetSelectedMap()?.MapName ??
-                                    Loc.GetString("game-ticker-no-map-selected"));
-            }
+            string mapName = _gameMapManager.GetSelectedMap()?.MapName ??
+                                    Loc.GetString("game-ticker-no-map-selected");
 
             var gmTitle = Loc.GetString(preset.ModeTitle);
             var desc = Loc.GetString(preset.Description);
@@ -81,7 +84,7 @@ namespace Content.Server.GameTicking
                 ("roundId", RoundId),
                 ("playerCount", playerCount),
                 ("readyCount", readyCount),
-                ("mapName", stationNames.ToString()),
+                ("mapName", mapName),
                 ("gmTitle", gmTitle),
                 ("desc", desc));
         }

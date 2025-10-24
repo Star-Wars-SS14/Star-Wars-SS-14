@@ -26,6 +26,8 @@ public sealed partial class SWBill : IEquatable<SWBill>
     [DataField]
     public string Name = "";
 
+    public bool Paid = false;
+
     [DataField]
     public Dictionary<ProtoId<SWCurrencyPrototype>, float> CurrencyRequests = new Dictionary<ProtoId<SWCurrencyPrototype>, float>();
     public SWBill()

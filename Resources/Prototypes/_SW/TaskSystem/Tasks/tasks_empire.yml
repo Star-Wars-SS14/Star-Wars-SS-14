@@ -98,6 +98,7 @@
     - SWExchangeCaptain
     - SWExchangeOperative
   - type: SWKillRandomByName
+  - type: SWDescByName
     descriptionId: kill-criminal
   - type: SWGetScoreByTargetJob
     jobsToScores:
@@ -125,6 +126,7 @@
     - SWRepublicCommanderStormtrooper
     - SWRepublicCommanderSniper
   - type: SWKillRandomByName
+  - type: SWDescByName
     descriptionId: kill-republic-by-name
   - type: SWGetScoreByTargetJob
     jobsToScores:

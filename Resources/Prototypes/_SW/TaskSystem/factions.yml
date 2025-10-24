@@ -25,6 +25,7 @@
   - type: SWBankAccountContainer
     currentAmount:
       SWRepublicCreditCurrency: 10500.0
+  - type: SWBillContainer
 
 - type: entity
   id: EmpireFaction
@@ -74,6 +75,11 @@
     addIntervalInSeconds: 1200 #20 min
     startAmountOfTasks : 3
     maxAmountOfTasks: 4
+  - type: SWBankAccountContainer
+    currentAmount:
+      SWRepublicCreditCurrency: 0.0
+      SWEmpireCreditCurrency: 0.0
+  - type: SWBillContainer
 
 - type: entity
   id: BlackSunFaction
@@ -88,6 +94,11 @@
     addIntervalInSeconds: 1200 #20 min
     startAmountOfTasks : 2
     maxAmountOfTasks: 3
+  - type: SWBankAccountContainer
+    currentAmount:
+      SWRepublicCreditCurrency: 0.0
+      SWEmpireCreditCurrency: 0.0
+  - type: SWBillContainer
 
 - type: entity
   id: ExchangeFaction
@@ -102,3 +113,8 @@
     addIntervalInSeconds: 1200 #20 min
     startAmountOfTasks : 2
     maxAmountOfTasks: 3
+  - type: SWBankAccountContainer
+    currentAmount:
+      SWRepublicCreditCurrency: 0.0
+      SWEmpireCreditCurrency: 0.0
+  - type: SWBillContainer

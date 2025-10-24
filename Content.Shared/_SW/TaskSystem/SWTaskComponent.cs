@@ -13,11 +13,13 @@ public sealed partial class SWTaskComponent : Component
 {
     public FixedPoint2 Completeness = 0.0;
 
-    [DataField]
-    public string Name = "task";
+    public EntityUid? ParentTask = null;
 
     [DataField]
-    public string Description = "desc";
+    public string Name = "Тут ничего нет";
+
+    [DataField]
+    public string Description = "Тут ничего нет";
 
     [DataField]
     public int Score = 1;

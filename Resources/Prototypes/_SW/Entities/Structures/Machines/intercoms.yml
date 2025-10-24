@@ -1,0 +1,12 @@
+- type: entity
+  id: SWIntercomEmpire
+  parent: Intercom
+  name: интерком Империи
+  suffix: Империя
+  components:
+  - type: ContainerFill
+    containers:
+      board:
+      - IntercomElectronics
+      key_slots:
+      - SWEncryptionKeyRegular

@@ -1,8 +1,8 @@
 - type: entity
   parent: ClothingBeltBase
   id: SWInvisGeneratorBelt
-  name: invis gen belt
-  description: A belt used to hold most janitorial supplies.
+  name: генератор невидимости
+  description: Позволяет скрыться от посторонних глаз.
   components:
   - type: Sprite
     sprite: _SW/Clothing/Belt/invis_gen.rsi
@@ -23,3 +23,6 @@
     disableOnUnequip: true
   - type: SWToggleClothingAddCooldownOnDeactivate
   - type: SWDeactivateClothingOnShoot
+  - type: Tag
+    tags:
+    - SWEquipmentForceBan

@@ -760,7 +760,7 @@ entities:
     - type: BatterySelfRecharger
       autoRechargeRate: 6200
       autoRecharge: True
-- proto: ShuttleGunPerforator
+- proto: SWShuttleGunPerforator
   entities:
   - uid: 38
     components:

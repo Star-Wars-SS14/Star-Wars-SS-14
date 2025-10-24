@@ -5,7 +5,6 @@
   description: 'A piece of white paper.'
   components:
   - type: Paper
-  - type: PaperLabelType
   - type: ActivatableUI
     key: enum.PaperUiKey.Key
     requireHands: false
@@ -16,6 +15,9 @@
   - type: Item
     size: Tiny
   - type: Appearance
+  - type: Tag
+    tags:
+    - Book #We use it to avoid labelling. I know, its bad
   #- - type: PaperVisuals
   #-  maxWritableArea: 999.0, 256.0  Первое ширина, второе высота
   #-  backgroundPatchMargin: 32.0, 32.0, 32.0, сверху 32.0

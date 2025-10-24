@@ -39,6 +39,9 @@
   - type: ContainerContainer
     containers:
       ShipyardConsole-targetId: !type:ContainerSlot {}
+  - type: Godmode
+  - type: ApcPowerReceiver
+    needsPower: false
 
 # Hardcoded consoles
 - type: entity
@@ -76,16 +79,4 @@
     interfaces:
       enum.CaptureConsoleUi.Key:
         type: CaptureConsoleBoundUserInterface
-  - type: Destructible
-    thresholds:
-    - trigger:
-        !type:DamageTrigger
-        damage: 10000000 #make it really big to make the console indestructible
-      behaviors:
-      - !type:PlaySoundBehavior
-        sound:
-          collection: GlassBreak
-      - !type:ChangeConstructionNodeBehavior
-        node: monitorBroken
-      - !type:DoActsBehavior
-        acts: ["Destruction"]
+  - type: Godmode

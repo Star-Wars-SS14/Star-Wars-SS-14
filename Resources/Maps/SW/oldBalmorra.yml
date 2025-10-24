@@ -244247,7 +244247,7 @@ entities:
     - type: Transform
       pos: 136.5,-122.5
       parent: 2
-- proto: ShuttleGunPerforator
+- proto: SWShuttleGunPerforator
   entities:
   - uid: 38490
     components:
@@ -244357,7 +244357,7 @@ entities:
           showEnts: False
           occludes: True
           ent: null
-- proto: ShuttleGunSvalinnMachineGun
+- proto: SWShuttleGunSvalinnMachineGun
   entities:
   - uid: 38500
     components:

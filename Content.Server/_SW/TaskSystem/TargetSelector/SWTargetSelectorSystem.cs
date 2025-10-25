@@ -2,6 +2,7 @@ using Content.Server._SW.TaskSystem.KillRandomOfFaction;
 using Content.Server._SW.TaskSystem.ParallelTask;
 using Content.Shared._SW.TaskSystem;
 using Content.Shared.Mind;
+using Content.Shared.Mind.Components;
 using Content.Shared.Objectives.Components;
 using Content.Shared.Roles.Jobs;
 using Robust.Shared.Random;
@@ -51,10 +52,10 @@ public sealed class SWTargetSelectorSystem : EntitySystem
             }
         }
 
-        var query2 = EntityQueryEnumerator<SWFactionMemberComponent>();
-        while (query2.MoveNext(out var uid, out var comp))
+        var query2 = EntityQueryEnumerator<MindContainerComponent>();
+        while (query2.MoveNext(out var uid, out var _))
         {
-            if (ent.Comp.Factions.Contains(comp.Faction) && !targets.Contains(uid) && CheckJob(ent.Comp.Jobs, uid))
+            if (!targets.Contains(uid) && CheckJob(ent.Comp.Jobs, uid))
             {
                 return;
             }
@@ -89,11 +90,11 @@ public sealed class SWTargetSelectorSystem : EntitySystem
             }
         }
 
-        var query2 = EntityQueryEnumerator<SWFactionMemberComponent>();
+        var query2 = EntityQueryEnumerator<MindContainerComponent>();
         List<EntityUid> possible_targets = new();
-        while (query2.MoveNext(out var uid, out var comp))
+        while (query2.MoveNext(out var uid, out var _))
         {
-            if (ent.Comp.Factions.Contains(comp.Faction) && !chosen_targets.Contains(uid) && CheckJob(ent.Comp.Jobs, uid))
+            if (!chosen_targets.Contains(uid) && CheckJob(ent.Comp.Jobs, uid))
             {
                 possible_targets.Add(uid);
             }

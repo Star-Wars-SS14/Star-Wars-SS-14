@@ -15,7 +15,6 @@
     name:  Ликвидация
     description: Черное солнце доставляет нам слишком много проблем. Необходимо избавиться от конкуренции. Ликвидируйте их главу.
   - type: SWTargetSelector
-    factions: [BlackSunFaction]
     jobs:
     - SWBlackSun
   - type: SWKillRandomByJob
@@ -31,7 +30,6 @@
     name: Обезглавливание (захват)
     description: Черное солнце доставляет нам слишком много проблем. Необходимо избавиться от конкуренции. Захватите их главу
   - type: SWTargetSelector
-    factions: [BlackSunFaction]
     jobs:
     - SWBlackSun
   - type: SWCapturePerson

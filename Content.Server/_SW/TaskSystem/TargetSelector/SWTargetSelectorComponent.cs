@@ -11,9 +11,6 @@ namespace Content.Server._SW.TaskSystem.TargetSelector;
 public sealed partial class SWTargetSelectorComponent : Component
 {
     [DataField]
-    public List<string> Factions = new();
-
-    [DataField]
     public List<string> Jobs = new();
 
     /// <summary>

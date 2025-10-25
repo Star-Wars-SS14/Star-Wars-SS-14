@@ -3,17 +3,21 @@
   id: SWEmpireComputerComms
   name: Имперская Консоль связи
   components:
-    - type: CommunicationsConsole
-      title: Имперский Гарнизон
-      color: "#f0f0f0"
-      fractionType: 0
-      canShuttle: false
-      sound:
-        path: /Audio/_SW/Alerts/Notification.ogg
-        params:
-          volume: -4 
-    - type: AccessReader
-      access: [[ "SWEmpireCommander" ]]
+  - type: CommunicationsConsole
+    title: Имперский Гарнизон
+    color: "#f0f0f0"
+    fractionType: 0
+    canShuttle: false
+    sound:
+      path: /Audio/_SW/Alerts/Notification.ogg
+      params:
+        volume: -4 
+  - type: AccessReader
+    access: [[ "SWEmpireCommander" ]]
+  - type: Godmode
+  - type: ApcPowerReceiver
+    needsPower: false
+  
 
 - type: entity
   parent: BaseComputer
@@ -44,6 +48,9 @@
       state: generic_keys
   - type: AccessReader
     access: [[ "SWEmpireMoff" ]]
+  - type: Godmode
+  - type: ApcPowerReceiver
+    needsPower: false
 
 - type: entity
   parent: BaseComputer
@@ -74,6 +81,9 @@
   - type: DeviceNetwork
     deviceNetId: Wired
     receiveFrequencyId: BasicDevice
+  - type: Godmode
+  - type: ApcPowerReceiver
+    needsPower: false
 
 
 - type: entity
@@ -164,6 +174,9 @@
     - map: ["computerLayerKeys"]
       state: generic_keys
   - type: SWBankAccountAccessor
+  - type: Godmode
+  - type: ApcPowerReceiver
+    needsPower: false
 
 - type: entity
   parent: SWFinanceConsole
@@ -248,6 +261,9 @@
     - SWExplosiveMarket
     - SWAdditionalAmunitionMarket
     - SWToolsMarket
+  - type: Godmode
+  - type: ApcPowerReceiver
+    needsPower: false
 
 - type: entity
   parent: SWBuyConsoleEmpire
@@ -320,6 +336,9 @@
       - SWSellConsoleSender
   - type: SWSellConsole
     outputCurrency: SWEmpireCreditCurrency
+  - type: Godmode
+  - type: ApcPowerReceiver
+    needsPower: false
 
 - type: entity
   parent: BaseComputer
@@ -348,3 +367,6 @@
     allowedCurrencies:
     - SWEmpireCreditCurrency
     - SWRepublicCreditCurrency
+  - type: Godmode
+  - type: ApcPowerReceiver
+    needsPower: false

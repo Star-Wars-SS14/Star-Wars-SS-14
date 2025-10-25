@@ -22,6 +22,9 @@
       state: generic_keys
   - type: TaskConsole
     faction: EmpireFaction
+  - type: Godmode
+  - type: ApcPowerReceiver
+    needsPower: false
 
 - type: entity
   parent: SWTaskConsoleEmpire

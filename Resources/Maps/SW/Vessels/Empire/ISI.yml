@@ -4030,7 +4030,7 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: ShuttleGunDuster
+- proto: SWShuttleGunDuster
   entities:
   - uid: 619
     components:
@@ -4072,7 +4072,7 @@ entities:
           showEnts: False
           occludes: True
           ent: 622
-- proto: ShuttleGunPerforator
+- proto: SWShuttleGunPerforator
   entities:
   - uid: 701
     components:

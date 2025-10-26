@@ -8,3 +8,15 @@
     useDelay: 3
   - type: InstantAction    
     event: !type:SWRequestPreparationEvent
+
+- type: entity
+  id: SWRespawnAction
+  name: Вернуться в лобби
+  description: "[color=red]СТРОГО ЗАПРЕЩАЕТСЯ[/color] заходить за персонажей, которые уже были в раунде. Нарушители понесут наказание."
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Action
+    icon: Interface/eject.png
+    checkCanInteract: false
+  - type: InstantAction
+    event: !type:SWRequestRespawnActionEvent

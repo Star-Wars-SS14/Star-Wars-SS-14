@@ -81,3 +81,5 @@ public sealed class HitByLightningEvent : CancellableEntityEventArgs
 {
 
 }
+
+public sealed partial class SWRequestRespawnActionEvent : InstantActionEvent { }

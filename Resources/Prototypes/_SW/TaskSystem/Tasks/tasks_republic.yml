@@ -15,7 +15,6 @@
     name:  Ликвидация
     description: Тут ничего нет.
   - type: SWTargetSelector
-    factions: [EmpireFaction]
     jobs:
     - SWEmpireMajor
     - SWEmpireLieutenant
@@ -49,7 +48,6 @@
     name: Захват военнопленных
     description: Тут ничего нет.
   - type: SWTargetSelector
-    factions: [EmpireFaction]
     jobs:
     - SWSobrikOfficer
     - SWEmpireSoldier
@@ -95,7 +93,6 @@
     name: Ликвидация
     description:  Тут ничего нет.
   - type: SWTargetSelector
-    factions: [EmpireFaction]
     jobs:
     - SWEmpireMajor
     - SWEmpireLieutenant

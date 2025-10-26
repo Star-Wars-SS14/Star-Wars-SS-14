@@ -15,7 +15,6 @@
     name: Захват военнопленных
     description: Тут ничего нет.
   - type: SWTargetSelector
-    factions: [RepublicFaction]
     jobs:
     - SWRepublicRecruit
     - SWRepublicSoldier
@@ -63,7 +62,6 @@
   - type: SWTask
     name: Ликвидация
   - type: SWTargetSelector
-    factions: [RepublicFaction]
     jobs:
     - SWRepublicLieutenant
     - SWRepublicCaptain
@@ -91,7 +89,6 @@
   - type: SWTask
     name: Ликвидация преступности
   - type: SWTargetSelector
-    factions: [ExchangeFaction, BlackSunFaction]
     jobs:
     - SWBlackSunMercenary
     - SWBlackSun
@@ -115,7 +112,6 @@
     name: Таргетированное убийство
     description: Тут ничего нет.
   - type: SWTargetSelector
-    factions: [RepublicFaction]
     jobs:
     - SWRepublicGeneral
     - SWRepublicCaptain

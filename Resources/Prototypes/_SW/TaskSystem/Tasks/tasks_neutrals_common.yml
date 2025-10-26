@@ -84,6 +84,7 @@
     name:  Обезглавливание (выбор)
     description: Убейте или захватите
   - type: SWTargetSelector
+    factions: [ExchangeFaction]
     jobs:
     - SWExchangeCaptain
   - type: SWSubtaskContainer
@@ -99,6 +100,7 @@
     name: Время работорговли
     description: Тут ничего нет.
   - type: SWTargetSelector
+    factions: [RepublicFaction, EmpireFaction]
     jobs:
     - SWEmpireSoldier
     - SWEmpireMedic

@@ -1,9 +1,11 @@
 using Content.Shared._SW.Economy.Prototypes;
+using Content.Shared._SW.TaskSystem;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Stacks;
 using Content.Shared.Store;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Toolshed.TypeParsers;
+using Robust.Shared.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +14,8 @@ using System.Threading.Tasks;
 
 namespace Content.Shared._SW.Economy.BankSystem;
 
-public sealed class SWSharedBankSystem : EntitySystem
+[Virtual]
+public class SWSharedBankSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     ISawmill _s = default!;
@@ -136,13 +139,7 @@ public sealed class SWSharedBankSystem : EntitySystem
         }
     }
 
-    /// <summary>
-    /// Tries to pay all requests
-    /// </summary>
-    /// <param name="requests"></param>
-    /// <param name="balance"></param>
-    /// <returns></returns>
-    public bool TryPayAll(Dictionary<ProtoId<SWCurrencyPrototype>, float> requests,
+    public bool CheckIfCanPayAll(Dictionary<ProtoId<SWCurrencyPrototype>, float> requests,
                         Dictionary<ProtoId<SWCurrencyPrototype>, float> balance)
     {
         foreach (var (currency, amount) in requests)
@@ -155,6 +152,59 @@ public sealed class SWSharedBankSystem : EntitySystem
             {
                 return false;
             }
+        }
+        return true;
+    }
+
+    public void SendBill(Entity<SWBillContainerComponent?> account, ref SWBill bill)
+    {
+        if (!Resolve(account, ref account.Comp))
+        {
+            return;
+        }
+
+        account.Comp.Bills.Add(bill);
+    }
+    public bool TryPayBill(Entity<SWBankAccountContainerComponent?> ent, SWBill bill)
+    {
+        if (!Resolve(ent, ref ent.Comp))
+        {
+            return false;
+        }
+
+        var billComp = EnsureComp<SWBillContainerComponent>(ent);
+        if (TryPayAll(bill.CurrencyRequests, ent.Comp.CurrentAmount))
+        {
+            bill.Paid = true;
+            billComp.Bills.Remove(bill);
+        }
+
+        return bill.Paid;
+    }
+
+    public bool BillIsPaid(Entity<SWBillContainerComponent?> ent, SWBill bill)
+    {
+        if (!Resolve(ent, ref ent.Comp))
+        {
+            return false;
+        }
+
+        return !ent.Comp.Bills.Contains(bill);
+    }
+
+    /// <summary>
+    /// Tries to pay all requests
+    /// </summary>
+    /// <param name="requests"></param>
+    /// <param name="balance"></param>
+    /// <returns></returns>
+    public bool TryPayAll(Dictionary<ProtoId<SWCurrencyPrototype>, float> requests,
+                        Dictionary<ProtoId<SWCurrencyPrototype>, float> balance)
+    {
+        bool can = CheckIfCanPayAll(requests, balance);
+        if (!can)
+        {
+            return false;
         }
         ReduceBalanceAmount(requests, balance);
         return true;

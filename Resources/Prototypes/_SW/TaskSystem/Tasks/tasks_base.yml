@@ -26,3 +26,17 @@
   id: SWTaskBase
   components:
   - type: SWTask
+
+- type: entity
+  id: SWBillExample
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name:  Долг
+    score: 10
+    description: Верни деньги сука
+  - type: SWPayBillTask
+    bill:
+      name: Долг
+      currencyRequests:
+        SWEmpireCreditCurrency : 1000.0

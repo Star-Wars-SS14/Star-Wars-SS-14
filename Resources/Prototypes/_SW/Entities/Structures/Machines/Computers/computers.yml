@@ -188,6 +188,33 @@
     faction: RepublicFaction
 
 - type: entity
+  parent: SWFinanceConsole
+  id: SWFinanceConsoleMandalorian
+  name: Консоль финансов
+  suffix: Мандалорцы
+  components:
+  - type: SWFinanceConsole
+    faction: MandalorianFaction
+
+- type: entity
+  parent: SWFinanceConsole
+  id: SWFinanceConsoleExchange
+  name: Консоль финансов
+  suffix: Обмен
+  components:
+  - type: SWFinanceConsole
+    faction: ExchangeFaction
+
+- type: entity
+  parent: SWFinanceConsole
+  id: SWFinanceConsoleBlackSun
+  name: Консоль финансов
+  suffix: Черное солнце
+  components:
+  - type: SWFinanceConsole
+    faction: BlackSunFaction
+
+- type: entity
   parent: BaseComputer
   id: SWBuyConsoleEmpire
   name: Консоль покупки

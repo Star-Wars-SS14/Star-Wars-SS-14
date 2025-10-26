@@ -1,10 +1,12 @@
 - type: weightedRandom
   id: MandalorianTasksSet
   weights:
-    KillBormu: 2
+    KillBormu: 4
+    KillParasits: 4
     SmallHeadHunter: 3
     BigHeadHunterMandalorian: 1
     GetFarnellDocuments: 2
+    GetMoney: 6
 
 - type: entity
   id: KillBormu
@@ -13,11 +15,27 @@
   - type: SWTask
     name: Добыча трофеев
     description: Анклав мандалорцев на Балморре должен покрыть себя славой. Подобно древним войнам мы должны убить 5 Борму, и собрать их тела в качестве трофеев.
-    score: 15
+    score: 10
     restrictions: OnePerFaction
   - type: SWCollectObjectTask
     requirements:
     - number: 5
       objects:
       - SWMobBormu
+
+- type: entity
+  id: KillParasits
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Добыча трофеев
+    description: Анклав мандалорцев на Балморре должен покрыть себя славой. Подобно древним войнам мы должны убить 5 металлических паразитов, и собрать их тела в качестве трофеев.
+    score: 15
+    restrictions: OnePerFaction
+  - type: SWCollectObjectTask
+    requirements:
+    - number: 5
+      objects:
+      - SWMobParasitAggressiveAi
+      - SWMobParasit
 

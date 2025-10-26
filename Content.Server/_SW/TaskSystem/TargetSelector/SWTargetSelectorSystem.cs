@@ -34,7 +34,9 @@ public sealed class SWTargetSelectorSystem : EntitySystem
     //цели во всех этих компонентых будут разные
     private void OnCheckRequirements(Entity<SWTargetSelectorComponent> ent, ref SWTaskCheckRequirementsEvent args)
     {
-        if (!ent.Comp.SelectTargetOnInit)
+        var taskCompThis = EnsureComp<SWTaskComponent>(ent);
+        if (!ent.Comp.SelectTargetOnInit ||
+            ent.Comp.InheritTargetFromParent && taskCompThis.ParentTask != null)
         {
             return;
         }
@@ -65,6 +67,17 @@ public sealed class SWTargetSelectorSystem : EntitySystem
         {
             return;
         }
+
+        var taskCompThis = EnsureComp<SWTaskComponent>(ent);
+        if (ent.Comp.InheritTargetFromParent &&
+            taskCompThis.ParentTask != null &&
+            TryComp<SWTargetSelectorComponent>(taskCompThis.ParentTask.Value, out var parentComp))
+        {
+            ent.Comp.Target = parentComp.Target;
+            ent.Comp.JobOfTarget = parentComp.JobOfTarget;
+            return;
+        }
+
         var query = EntityQueryEnumerator<SWTargetSelectorComponent, SWTaskComponent>();
         List<EntityUid?> chosen_targets = new();
         string thisTaskOwningfaction = EnsureComp<SWTaskComponent>(ent.Owner).OwningFaction;

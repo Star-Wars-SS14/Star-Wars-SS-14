@@ -2,8 +2,25 @@
   id: BlackSunTasksSet
   weights:
     SmallHeadHunter: 4
-    KillConcurentExchange: 1
-    CaptureHeadExchange: 1
+    KillOrCapture: 1
+    GetMoney: 6
+    SlaveTime: 4
+
+- type: entity
+  id: KillOrCapture
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name:  Обезглавливание (выбор)
+    description: Убейте или захватите
+  - type: SWTargetSelector
+    factions: [ExchangeFaction]
+    jobs:
+    - SWExchangeCaptain
+  - type: SWSubtaskContainer
+    subtasks:
+      - taskProto: KillConcurentExchange
+      - taskProto: CaptureHeadExchange
 
 - type: entity
   id: KillConcurentExchange
@@ -13,9 +30,6 @@
     name:  Обезглавливание (убийство)
     description: Обмен доставляет нам слишком много проблем. Необходимо избавиться от конкуренции. Ликвидируйте их главу.
   - type: SWTargetSelector
-    factions: [ExchangeFaction]
-    jobs:
-    - SWExchangeCaptain
   - type: SWKillRandomByJob
   - type: SWGetScoreByTargetJob
     jobsToScores:
@@ -29,10 +43,7 @@
     name: Обезглавливание (захват)
     description: Обмен доставляет нам слишком много проблем. Необходимо избавиться от конкуренции. Захватите их главу
   - type: SWTargetSelector
-    factions: [ExchangeFaction]
-    jobs:
-    - SWExchangeCaptain
   - type: SWCapturePerson
   - type: SWGetScoreByTargetJob
     jobsToScores:
-      SWExchangeCaptain: 15
+      SWExchangeCaptain: 20

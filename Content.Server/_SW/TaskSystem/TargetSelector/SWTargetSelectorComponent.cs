@@ -22,6 +22,9 @@ public sealed partial class SWTargetSelectorComponent : Component
     [DataField("select")]
     public bool SelectTargetOnInit = true;
 
+    [DataField("inherit")]
+    public bool InheritTargetFromParent = true;
+
     public EntityUid? Target = null;
 
     public string? JobOfTarget = null;

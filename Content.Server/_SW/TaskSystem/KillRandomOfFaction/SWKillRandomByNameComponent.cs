@@ -12,6 +12,4 @@ namespace Content.Server._SW.TaskSystem.KillRandomOfFaction;
 [RegisterComponent]
 public sealed partial class SWKillRandomByNameComponent : Component
 {
-    [DataField(required: true)]
-    public LocId DescriptionId;
 }

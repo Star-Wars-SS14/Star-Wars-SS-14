@@ -15,6 +15,14 @@
 
 - type: entity
   parent: BaseGameRule
+  id: SWRespawnGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWRespawnGamerule
+
+- type: entity
+  parent: BaseGameRule
   id: FactionsOnlyGamerule
   components:
   - type: GameRule
@@ -70,6 +78,7 @@
   rules:
     - TaskGamerule
     - SWEventScheduler
+    - SWRespawnGamerule
 
 - type: gamePreset
   id: SWMainPresetNoTasks
@@ -79,3 +88,4 @@
   rules:
     - FactionsOnlyGamerule
     - SWEventScheduler
+    - SWRespawnGamerule

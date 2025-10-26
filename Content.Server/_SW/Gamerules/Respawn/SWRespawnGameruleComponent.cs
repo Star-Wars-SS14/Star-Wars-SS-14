@@ -10,7 +10,7 @@ namespace Content.Server._SW.Gamerules.Respawn;
 public sealed partial class SWRespawnGameruleComponent : Component
 {
     [DataField("delay")]
-    public float DelayBeforeCanRespawn = 30f;
+    public float DelayBeforeCanRespawn = 300f;
 
     [DataField]
     public LocId WaitMessage = "sw-wait-respawn";

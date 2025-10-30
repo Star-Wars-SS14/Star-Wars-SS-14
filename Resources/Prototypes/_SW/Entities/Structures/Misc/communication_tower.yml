@@ -1,44 +1,16 @@
 - type: entity
-  parent: BaseStructure
-  id: SWCommunicationTower
+  parent: BaseMachinePowered
+  id: SWCommunicationTowerBase
   name: вышка связи
-  description: хуй
+  description: Вышка связи. Используется для связи между подразделениями.
+  abstract: true
   components:
-  - type: Sprite
-    noRot: true
-    sprite: _RMC14/Objects/Misc/Lights/floodlightbig.rsi
-    layers:
-      - state: bigfloodon # Temporary until power works.
-      - state: bigflood
-        visible: false
-        map: [ "light" ]
-    offset: "0.0,0.5"
-    drawdepth: Mobs
   - type: Transform
     anchored: true
   - type: InteractionOutline
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Metallic
-  - type: Construction
-    graph: SWCommTowerGraph
-    node: sWCommunicationTower
-  - type: Destructible
-    thresholds:
-    - trigger:
-        !type:DamageTrigger
-        damage: 1000
-      behaviors:
-      - !type:PlaySoundBehavior
-        sound:
-          collection: MetalSlam
-      - !type:SpawnEntitiesBehavior
-            spawn:
-              SWCommunicationTowerBroken:
-                min: 1
-                max: 1
-      - !type:DoActsBehavior
-        acts: [ "Destruction" ]
   - type: Physics
   - type: Repairable
   - type: Fixtures
@@ -55,11 +27,70 @@
   - type: Appearance
 
 - type: entity
-  parent: SWCommunicationTower
-  id: SWCommunicationTowerBroken
-  name: вышка связи сломанна  
-  description: хуй
+  parent: SWCommunicationTowerBase
+  id: SWCommunicationTower
+  name: вышка связи
+  description: Вышка связи. Используется для связи между подразделениями.
   components:
+  - type: ApcPowerReceiver
+    powerLoad: 1000
+    needsPower: false
+  - type: Sprite
+    noRot: true
+    sprite: _SW/Structures/Machines/comm_tower.rsi
+    layers:
+    - state: comm_tower 
+  - type: Construction
+    graph: SWCommTowerGraph
+    node: sWCommunicationTower
+    deconstructionTarget: null
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 700
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalSlam
+      - !type:SpawnEntitiesBehavior
+            spawn:
+              SWCommunicationTowerBroken:
+                min: 1
+                max: 1
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyRegular
+  - type: Machine
+    board: TelecomServerCircuitboard
+  - type: WiresPanel
+  - type: Pullable
+  - type: EncryptionKeyHolder
+    keysExtractionMethod: Prying
+    keySlots: 10
+  - type: TelecomServer
+  - type: ContainerContainer
+    containers:
+      key_slots: !type:Container
+      machine_board: !type:Container
+      machine_parts: !type:Container
+
+- type: entity
+  parent: SWCommunicationTowerBase
+  id: SWCommunicationTowerBroken
+  name: сломанная вышка связи 
+  description: Может быть починена при помощи стали и прочих материалов
+  components:
+  - type: Sprite
+    noRot: true
+    sprite: _SW/Structures/Machines/comm_tower.rsi
+    layers:
+    - state: comm_tower_broken
   - type: Construction
     graph: SWCommTowerGraph
     node: swbrokenTower
+    deconstructionTarget: null
+  - type: Godmode

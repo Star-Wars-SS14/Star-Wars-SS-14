@@ -1,0 +1,29 @@
+- type: entity
+  parent: SurveillanceCameraBase
+  id: SWSurveillanceCameraSecurity
+  name: camera
+  suffix: SW
+  components:
+  - type: DeviceNetwork
+    deviceNetId: Wired
+    receiveFrequencyId: SWSurveillanceCameraSecurity
+    transmitFrequencyId: SurveillanceCamera
+  - type: SurveillanceCamera
+    networkSet: true
+    setupAvailableNetworks:
+      - SurveillanceCamera
+      - SurveillanceCameraEngineering
+      - SurveillanceCameraSecurity
+      - SurveillanceCameraService
+      - SurveillanceCameraSupply
+      - SurveillanceCameraScience
+      - SurveillanceCameraGeneral
+      - SurveillanceCameraMedical
+      - SurveillanceCameraCommand
+      - SWSurveillanceCameraSecurity
+
+
+- type: deviceFrequency
+  id: SWSurveillanceCameraSecurity
+  name: aboba
+  frequency: 9938

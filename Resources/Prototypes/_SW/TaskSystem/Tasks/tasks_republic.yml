@@ -6,6 +6,7 @@
     StealIdCardsEmpire: 1
     CaptureEmpire: 1
     GetFarnellDocuments: 1
+    DestroyCommTowerRepublic: 1000
 
 - type: entity
   id: KillByJobRepublic
@@ -157,3 +158,16 @@
       SWRepublicCommanderMedic: 10
       SWRepublicCommanderStormtrooper: 10
       SWRepublicCommanderSniper: 10
+
+- type: entity
+  id: DestroyCommTowerRepublic
+  score: 15
+  components:
+  - type: SWTask
+    name: Тушите связь
+    description: Уничтожьте 3 вышки связи Империи. Лишив противника связи, мы внесем хаос и дезорганизацию в его ряды, что облегчит ведение подрывной деятельности в дальнейшем.
+  - type: DestroyObjectsTask
+    requirements:
+    - number: 3
+      objects:
+      - SWCommunicationTower

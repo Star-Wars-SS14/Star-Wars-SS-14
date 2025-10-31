@@ -136,3 +136,16 @@
       name: Долг
       currencyRequests:
         SWEmpireCreditCurrency : 1000.0
+
+- type: entity
+  id: DestroyCameras
+  components:
+  - type: SWTask
+    restrictions: OnePerAllFactions
+    name: Мелкое хулиганство
+    description: Империя установила в городе большое количество камер. Лучше от них избавиться, пока они не начнут приносить проблемы. Уничтожьте 5 камер видеонаблюдения на территории Собрика
+  - type: DestroyObjectsTask
+    requirements:
+    - number: 5
+      objects:
+      - SurveillanceCameraSecurity

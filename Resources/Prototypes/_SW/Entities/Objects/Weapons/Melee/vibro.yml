@@ -1,10 +1,20 @@
 - type: entity
-  id: SWVibroDagger
+  id: SWVibroSword
   parent: [BaseItem, BaseSword]
-  name: vibro dagger
+  name: vibro sword
   components:
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Melee/vibro_dagger.rsi
+    sprite: _SW/Objects/Weapons/Melee/vibro_sword.rsi
+  - type: Clothing
+    sprite: _SW/Objects/Weapons/Melee/vibro_sword.rsi
+    slots:
+    - Back
+    - SuitStorage
+  - type: MeleeWeapon
+    attackRate: 1
+    damage:
+      types:
+        Slash: 15
   - type: ComponentToggler
     components:
     - type: Sharp
@@ -12,9 +22,46 @@
       malus: 0.6
     - type: Execution
       doAfterDuration: 4.0
+  - type: ItemToggleMeleeWeapon
+    activatedSoundOnHit:
+      path: /Audio/Weapons/bladeslice.ogg
+      params:
+        variation: 0.250
+    activatedSoundOnHitNoDamage:
+      path: /Audio/Weapons/bladeslice.ogg
+      params:
+        variation: 0.250
+        volume: -10
+    deactivatedSoundOnHit:
+      path: /Audio/Weapons/bladeslice.ogg
+      params:
+        variation: 0.250
+    deactivatedSoundOnHitNoDamage:
+      path: /Audio/Weapons/bladeslice.ogg
+      params:
+        variation: 0.250
+    activatedDamage:
+        types:
+            Slash: 30
+  - type: Item
+    size: Normal
+    shape:
+    - 0,0,1,3
   - type: ItemToggle
     soundActivate:
       path: /Audio/_SW/Weapons/Melee/vibro.ogg
+  - type: UseDelay
+    delay: 1.0
+  - type: Appearance
+
+
+- type: entity
+  id: SWVibroDagger
+  parent: SWVibroSword
+  name: vibro dagger
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Melee/vibro_dagger.rsi  
   - type: ItemToggleMeleeWeapon
     activatedSoundOnHit:
       path: /Audio/Weapons/bladeslice.ogg
@@ -45,50 +92,8 @@
         path: /Audio/Weapons/bladeslice.ogg
   - type: Item
     size: Small
-  - type: UseDelay
-    delay: 1.0
-  - type: Appearance
+  - type: Tag
+    tags:
+    - Sidearm
 
 
-- type: entity
-  id: SWVibroSword
-  parent: SWVibroDagger
-  name: vibro sword
-  components:
-  - type: Sprite
-    sprite: _SW/Objects/Weapons/Melee/vibro_sword.rsi
-  - type: Clothing
-    sprite: _SW/Objects/Weapons/Melee/vibro_sword.rsi
-    slots:
-    - Back
-    - SuitStorage
-  - type: MeleeWeapon
-    attackRate: 1
-    damage:
-      types:
-        Slash: 15
-  - type: ItemToggleMeleeWeapon
-    activatedSoundOnHit:
-      path: /Audio/Weapons/bladeslice.ogg
-      params:
-        variation: 0.250
-    activatedSoundOnHitNoDamage:
-      path: /Audio/Weapons/bladeslice.ogg
-      params:
-        variation: 0.250
-        volume: -10
-    deactivatedSoundOnHit:
-      path: /Audio/Weapons/bladeslice.ogg
-      params:
-        variation: 0.250
-    deactivatedSoundOnHitNoDamage:
-      path: /Audio/Weapons/bladeslice.ogg
-      params:
-        variation: 0.250
-    activatedDamage:
-        types:
-            Slash: 30
-  - type: Item
-    size: Normal
-    shape:
-    - 0,0,1,3

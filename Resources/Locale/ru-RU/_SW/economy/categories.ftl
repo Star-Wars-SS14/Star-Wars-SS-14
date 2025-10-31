@@ -9,3 +9,4 @@ sw-category-sniper-rifles = Снайперские винтовки
 sw-category-magazines = Патроны
 sw-category-pistols = Пистолеты
 sw-category-base = Базовое
+sw-category-melee = Оружие ближнего боя

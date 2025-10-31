@@ -173,3 +173,25 @@
     SWEmpireCreditCurrency: 15
   category: sw-category-magazines
   group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWVibroDaggerCP
+  icon:
+    sprite: _SW/Objects/Weapons/Melee/vibro_dagger.rsi
+    state: icon
+  product: SWVibroDagger
+  cost:
+    SWEmpireCreditCurrency: 250
+  category: sw-category-melee
+  group: SWT1WeaponMarket
+
+- type: swCargoProduct
+  id: SWVibroSwordCP
+  icon:
+    sprite: _SW/Objects/Weapons/Melee/vibro_sword.rsi
+    state: icon
+  product: SWVibroSword
+  cost:
+    SWEmpireCreditCurrency: 450
+  category: sw-category-melee
+  group: SWT1WeaponMarket

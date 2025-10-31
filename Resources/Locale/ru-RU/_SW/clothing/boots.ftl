@@ -8,3 +8,6 @@ ent-SWClothingShoesBootsExchange = сапоги "Обмена"
   .desc = Слегка поношенные, но легкие. Подходят для быстрого бега.
 ent-ClothingShoesBootsCitizen = обычные сапоги
   .desc = Качественная недорогая обувь. То что надо простому гражданину.
+ent-SWClothingShoesBootsCombatFilled = { ent-ClothingShoesBootsCombat }
+    .suffix = Заполненный (вибро клинок)
+    .desc = { ent-ClothingShoesBootsCombat.desc }

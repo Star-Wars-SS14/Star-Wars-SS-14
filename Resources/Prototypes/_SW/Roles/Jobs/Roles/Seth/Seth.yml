@@ -47,7 +47,7 @@
     head: SW_ClothingHeadImperialHelmet
     belt: ClothingBeltAssault
     id: SWIDCardEmpireSoldier
-    shoes: ClothingShoesBootsCombatFilled
+    shoes: SWClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetRegular
     back: SWImperialBackpack
     suitstorage: SWE1BlasterRifle
@@ -61,7 +61,7 @@
     head: SW_ClothingHeadImperialHelmet
     belt: ClothingBeltAssault
     id: SWIDCardEmpirePilot
-    shoes: ClothingShoesBootsCombatFilled
+    shoes: SWClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetEmpirePilot
     back: SWImperialBackpack
     pocket1: HandHeldMassScanner
@@ -76,7 +76,7 @@
     head: SW_ClothingHeadImperialHelmet
     belt: ClothingBeltUtilityEngineering
     id: SWIDCardEmpireEngineer
-    shoes: ClothingShoesBootsCombatFilled
+    shoes: SWClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetRegular
     back: SWImperialBackpack
     suitstorage: SWE1BlasterRifle
@@ -89,7 +89,7 @@
     head: SW_ClothingHeadMedicImperialHelmet
     belt: ClothingBeltAssault
     id: SWIDCardEmpireMedic
-    shoes: ClothingShoesBootsCombatFilled
+    shoes: SWClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetRegular
     back: SWImperialBackpack
     suitstorage: SWE1BlasterRifle
@@ -366,7 +366,7 @@
     head: SW_ClothingHeadImperialIntelligenceHelmet
     belt: SWInvisGeneratorBelt
     id: SWIDCardEmpireIntelligenceCaretaker
-    shoes: ClothingShoesBootsCombatFilled
+    shoes: SWClothingShoesBootsCombatFilled
     gloves: ClothingHandsGlovesCombat
     ears: SWClothingHeadsetAllEmpire
     back: SWImperialBackpackCamo
@@ -381,7 +381,7 @@
     head: SW_ClothingHeadImperialIntelligenceHelmet
     belt: SWInvisGeneratorBelt
     id: SWIDCardEmpireIntelligenceAgent
-    shoes: ClothingShoesBootsCombatFilled
+    shoes: SWClothingShoesBootsCombatFilled
     gloves: ClothingHandsGlovesCombat
     ears: SWClothingHeadsetIntelligence
     suitstorage: SWK406Ripper
@@ -397,7 +397,7 @@
     belt: ClothingBeltAssault
     id: SWIDCardHavokCommander
     neck: SWClothingNeckHavok
-    shoes: ClothingShoesBootsCombatFilled
+    shoes: SWClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok
     suitstorage: SWP301Destroyer
 
@@ -410,7 +410,7 @@
     head: SW_ClothingHeadLieutenantHavokHelmet
     belt: ClothingBeltAssault
     id: SWIDCardHavokLieutenant
-    shoes: ClothingShoesBootsCombatFilled
+    shoes: SWClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok
     suitstorage: SWH206Renegade
 
@@ -423,7 +423,7 @@
     head: SW_ClothingHeadMedicalHavokHelmet
     belt: ClothingBeltAssault
     id: SWIDCardHavokMedic
-    shoes: ClothingShoesBootsCombatFilled
+    shoes: SWClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok
     suitstorage: SWH206Renegade
 
@@ -436,7 +436,7 @@
     head: SW_ClothingHeadHavokHelmet
     belt: ClothingBeltAssault
     id: SWIDCardHavokStormtrooper
-    shoes: ClothingShoesBootsCombatFilled
+    shoes: SWClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok
     suitstorage: SWEL34
 
@@ -449,7 +449,7 @@
     head: SWClothingHeadSniperHavokHelmet
     belt: ClothingBeltAssault
     id: SWIDCardHavokSniper
-    shoes: ClothingShoesBootsCombatFilled
+    shoes: SWClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok
     suitstorage: SWBeryaramk3
 
@@ -463,7 +463,7 @@
     head: SWHelmetSunSquadLeader
     belt: ClothingBeltSalvageWebbing
     id: SWIDCardBlackSun
-    shoes: ClothingShoesBootsCombatFilled
+    shoes: SWClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetBlackSun
     suitstorage: SWZ1BlasterCarbine
 
@@ -476,7 +476,7 @@
     head: SWHelmetSunSquad
     belt: ClothingBeltSalvageWebbing
     id: SWIDCardBlackSunMercenary
-    shoes: ClothingShoesBootsCombatFilled
+    shoes: SWClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetBlackSun
     suitstorage: SWZ1BlasterCarbine
 

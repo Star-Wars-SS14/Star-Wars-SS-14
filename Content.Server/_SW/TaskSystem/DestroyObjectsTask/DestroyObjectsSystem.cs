@@ -46,6 +46,7 @@ public sealed partial class DestroyObjectsSystem : EntitySystem
                 {
                     continue;
                 }
+
                 if (protolist.Contains(ent.Comp.EntityPrototype.ID))
                 {
                     var satisfied_req = comp.ObjectsDestroyed.Find(x => x.ObjectsPrototypes == protolist);

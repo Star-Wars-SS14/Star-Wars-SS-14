@@ -12,7 +12,7 @@
   keycode: 'т'
   frequency: 2025
   color: "#b22222"
-  longRange: true
+  longRange: false
 
 - type: radioChannel
   id: SWEmpireIntelligence

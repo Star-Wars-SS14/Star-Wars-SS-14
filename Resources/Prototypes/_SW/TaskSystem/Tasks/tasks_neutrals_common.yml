@@ -71,10 +71,10 @@
   - type: SWTask
     name:  Финансовая подушка
     score: 10
-    description: Время - деньги, патроны - деньги, в общем, все что угодно - деньги. Заработайте 5000 имперских кредитов. Не забудьте поместить их в финансовую консоль для отчетности
+    description: Время - деньги, патроны - деньги, в общем, все что угодно - деньги. Заработайте 1500 имперских кредитов. Не забудьте поместить их в финансовую консоль для отчетности
   - type: SWAcquireMoneyAmount
     amount:
-      SWEmpireCreditCurrency: 5000
+      SWEmpireCreditCurrency: 1500
 
 - type: entity
   id: PayOrCapture
@@ -135,7 +135,7 @@
     bill:
       name: Долг
       currencyRequests:
-        SWEmpireCreditCurrency : 1000.0
+        SWEmpireCreditCurrency : 700.0
 
 - type: entity
   id: DestroyCameras

@@ -11,3 +11,6 @@ ent-ClothingShoesBootsCitizen = обычные сапоги
 ent-SWClothingShoesBootsCombatFilled = { ent-ClothingShoesBootsCombat }
     .suffix = Заполненный (вибро клинок)
     .desc = { ent-ClothingShoesBootsCombat.desc }
+ent-SWClothingShoesBootsJackFilled = { ent-ClothingShoesBootsJack }
+    .desc = { ent-ClothingShoesBootsJack.desc }
+    .suffix = { ent-SWClothingShoesBootsCombatFilled.desc }

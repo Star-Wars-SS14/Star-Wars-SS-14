@@ -71,8 +71,17 @@
 - type: entity
   id: SWClothingShoesBootsCombatFilled
   suffix: Filled, Vibro Knife
-  parent:
-  - ClothingShoesBootsCombat
+  parent: ClothingShoesBootsCombat
+  components:
+  - type: ContainerFill
+    containers:
+      item:
+      - SWVibroDagger
+
+- type: entity
+  id: SWClothingShoesBootsJackFilled
+  suffix: Filled, Vibro Knife
+  parent: ClothingShoesBootsJackFilled
   components:
   - type: ContainerFill
     containers:

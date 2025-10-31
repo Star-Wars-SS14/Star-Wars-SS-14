@@ -5,6 +5,7 @@
     KillConcurentBlackSun: 1
     CaptureHeadBlackSun: 1
     GetMoney: 6
+    DestroyCameras: 4
     SlaveTime: 4
 
 - type: entity

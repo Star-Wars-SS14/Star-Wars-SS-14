@@ -42,7 +42,7 @@
     - state: comm_tower 
   - type: Construction
     graph: SWCommTowerGraph
-    node: sWCommunicationTower
+    node: sWCommunicationTower 
     deconstructionTarget: null
   - type: Destructible
     thresholds:
@@ -91,6 +91,6 @@
     - state: comm_tower_broken
   - type: Construction
     graph: SWCommTowerGraph
-    node: swbrokenTower
+    node: swBrokenTower
     deconstructionTarget: null
   - type: Godmode

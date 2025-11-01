@@ -5,7 +5,7 @@
     KillOrCapture: 1
     GetMoney: 6
     SlaveTime: 4
-    DestroyCameras: 4000000
+    DestroyCameras: 4
 
 - type: entity
   id: KillOrCapture

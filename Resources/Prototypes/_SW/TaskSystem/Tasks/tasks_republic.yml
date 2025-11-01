@@ -6,7 +6,7 @@
     StealIdCardsEmpire: 1
     CaptureEmpire: 1
     GetFarnellDocuments: 1
-    DestroyCommTowerRepublic: 1000
+    DestroyCommTowerRepublic: 1
 
 - type: entity
   id: KillByJobRepublic

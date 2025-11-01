@@ -1,5 +1,5 @@
 - type: entity
-  parent: BaseMachinePowered
+  parent: BaseStructure
   id: SWCommunicationTowerBase
   name: вышка связи
   description: Вышка связи. Используется для связи между подразделениями.
@@ -7,11 +7,7 @@
   components:
   - type: Transform
     anchored: true
-  - type: InteractionOutline
-  - type: Damageable
-    damageContainer: Inorganic
-    damageModifierSet: Metallic
-  - type: Physics
+    noRot: true
   - type: Repairable
   - type: Fixtures
     fixtures:
@@ -25,6 +21,14 @@
         layer:
         - WallLayer
   - type: Appearance
+  - type: ExtensionCableReceiver
+  - type: Animateable
+  - type: InteractionOutline
+  - type: Physics
+    bodyType: Static    
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StructuralMetallic
 
 - type: entity
   parent: SWCommunicationTowerBase

@@ -42,7 +42,7 @@
         variation: 0.250
     activatedDamage:
         types:
-            Slash: 30
+            Slash: 50
   - type: Item
     size: Normal
     shape:
@@ -82,7 +82,7 @@
         variation: 0.250
     activatedDamage:
         types:
-            Slash: 20
+            Slash: 30
   - type: MeleeWeapon
     attackRate: 1
     damage:

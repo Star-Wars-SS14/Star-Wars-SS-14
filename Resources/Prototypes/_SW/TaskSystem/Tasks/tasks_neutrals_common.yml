@@ -71,10 +71,10 @@
   - type: SWTask
     name:  Финансовая подушка
     score: 10
-    description: Время - деньги, патроны - деньги, в общем, все что угодно - деньги. Заработайте 5000 имперских кредитов. Не забудьте поместить их в финансовую консоль для отчетности
+    description: Время - деньги, патроны - деньги, в общем, все что угодно - деньги. Заработайте 1500 имперских кредитов. Не забудьте поместить их в финансовую консоль для отчетности
   - type: SWAcquireMoneyAmount
     amount:
-      SWEmpireCreditCurrency: 5000
+      SWEmpireCreditCurrency: 1500
 
 - type: entity
   id: PayOrCapture
@@ -135,4 +135,17 @@
     bill:
       name: Долг
       currencyRequests:
-        SWEmpireCreditCurrency : 1000.0
+        SWEmpireCreditCurrency : 700.0
+
+- type: entity
+  id: DestroyCameras
+  components:
+  - type: SWTask
+    restrictions: OnePerAllFactions
+    name: Мелкое хулиганство
+    description: Империя установила в городе большое количество камер. Лучше от них избавиться, пока они не начнут приносить проблемы. Уничтожьте 5 камер видеонаблюдения на территории Собрика
+  - type: DestroyObjectsTask
+    requirements:
+    - number: 5
+      objects:
+      - SurveillanceCameraSecurity

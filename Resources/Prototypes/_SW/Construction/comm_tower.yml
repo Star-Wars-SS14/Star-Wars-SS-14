@@ -1,0 +1,36 @@
+- type: constructionGraph
+  id: SWCommTowerGraph
+  start: swBrokenTower
+  graph:
+  - node: swBrokenTower
+    entity: SWCommunicationTowerBroken
+    edges:
+    - to: sWCommunicationTower     
+      steps:
+      - material: Steel
+        amount: 20
+        doAfter: 10
+      - material: Cable
+        amount: 30
+        doAfter: 5
+      - material: Steel
+        amount: 20
+        doAfter: 10
+      - tool: Welding
+        doAfter: 5
+      - material: CableMV
+        amount: 30
+        doAfter: 5
+      - material: Steel
+        amount: 20
+        doAfter: 10
+      - material: CableHV
+        amount: 30
+        doAfter: 5
+      - tool: Welding
+        doAfter: 5
+      completed:
+        - !type:SnapToGrid
+          southRotation: true
+  - node: sWCommunicationTower 
+    entity: SWCommunicationTower

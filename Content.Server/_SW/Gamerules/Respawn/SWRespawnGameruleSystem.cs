@@ -12,7 +12,6 @@ using Content.Shared.GameTicking.Components;
 using Content.Shared.Ghost;
 using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
-using JetBrains.FormatRipper.Elf;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
 using System;

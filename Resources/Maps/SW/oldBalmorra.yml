@@ -237,7 +237,7 @@ entities:
       gravityShakeSound: !type:SoundPathSpecifier
         path: /Audio/Effects/alert.ogg
     - type: LightCycle
-      duration: 30
+      duration: 2880
     - type: DecalGrid
       chunkCollection:
         version: 2
@@ -256,7 +256,7 @@ entities:
       - alpha: 0.5
         direction: 3,-0.1
         ratio: 0.75
-      duration: 30
+      duration: 2880
     - type: SunShadow
     - type: MetaData
       name: Old Balmora

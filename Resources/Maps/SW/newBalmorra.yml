@@ -355,7 +355,7 @@ entities:
     - type: MapLight
       ambientLightColor: '#D8B059FF'
     - type: LightCycle
-      duration: 30
+      duration: 2880
   - uid: 2
     components:
     - type: MetaData
@@ -375,7 +375,7 @@ entities:
       - alpha: 0.5
         direction: 3,-0.1
         ratio: 0.75
-      duration: 30
+      duration: 2880
     - type: SunShadow
     - type: MapGrid
       chunks:

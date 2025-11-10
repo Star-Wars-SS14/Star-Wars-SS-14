@@ -356,20 +356,6 @@ entities:
       ambientLightColor: '#D8B059FF'
     - type: LightCycle
       duration: 30
-    - type: SunShadowCycle
-      directions:
-      - direction: 0,3
-      - alpha: 0.5
-        direction: -3,-0.1
-        ratio: 0.25
-      - alpha: 0.8
-        direction: 0,-3
-        ratio: 0.5
-      - alpha: 0.5
-        direction: 3,-0.1
-        ratio: 0.75
-      duration: 30
-    - type: SunShadow
   - uid: 2
     components:
     - type: MetaData

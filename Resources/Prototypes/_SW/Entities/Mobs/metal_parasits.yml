@@ -137,6 +137,7 @@
     accent: SWMetallParasit
   - type: NPCRetaliation
     attackMemoryLength: 20
+  - type: Climbing
 
 - type: entity
   name: parasit

@@ -23,7 +23,8 @@
     damageContainer: Inorganic
     damageModifierSet: CMBarricade
   - type: InteractionOutline
-  - type: SWCover
+  - type: SWCover   #SW
+  - type: Climbable #SW
 
 # Metal Barricade Tree
 - type: entity

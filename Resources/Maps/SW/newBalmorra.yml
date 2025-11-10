@@ -354,13 +354,8 @@ entities:
       parallax: Sky
     - type: MapLight
       ambientLightColor: '#D8B059FF'
-    - type: Gravity
-      gravityShakeSound: !type:SoundPathSpecifier
-        path: /Audio/Effects/alert.ogg
-      enabled: true
-      inherent: true
     - type: LightCycle
-      duration: 2880
+      duration: 30
     - type: SunShadowCycle
       directions:
       - direction: 0,3
@@ -373,7 +368,7 @@ entities:
       - alpha: 0.5
         direction: 3,-0.1
         ratio: 0.75
-      duration: 2880
+      duration: 30
     - type: SunShadow
   - uid: 2
     components:
@@ -382,6 +377,20 @@ entities:
     - type: Transform
       pos: -0.5,-0.5
       parent: 1
+    - type: SunShadowCycle
+      directions:
+      - direction: 0,3
+      - alpha: 0.5
+        direction: -3,-0.1
+        ratio: 0.25
+      - alpha: 0.8
+        direction: 0,-3
+        ratio: 0.5
+      - alpha: 0.5
+        direction: 3,-0.1
+        ratio: 0.75
+      duration: 30
+    - type: SunShadow
     - type: MapGrid
       chunks:
         0,0:

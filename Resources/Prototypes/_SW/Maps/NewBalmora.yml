@@ -1,11 +1,11 @@
 - type: gameMap
-  id: oldBalmora
+  id: newBalmora
   mapName: 'Нью Балмора блять!!1!1!'
   mapPath: /Maps/SW/newBalmorra.yml
   minPlayers: 0
   maxPlayers: 200
   stations:
-    SWBalmora:
+    newBalmorra:
       stationProto: SWStandardStation
       components:
       - type: StationEventEligible

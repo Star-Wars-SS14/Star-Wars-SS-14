@@ -377,6 +377,8 @@ entities:
         ratio: 0.75
       duration: 2880
     - type: SunShadow
+    - type: BecomesStation
+      id: newBalmorra
     - type: MapGrid
       chunks:
         0,0:

@@ -8,19 +8,22 @@ using Content.Shared.Cuffs;
 using Content.Shared._SW.TaskSystem;
 using Content.Server._SW.TaskSystem.TargetSelector;
 using Content.Shared.Roles;
+using Content.Shared.Mobs.Systems;
 
 namespace Content.Server._SW.TaskSystem.CapturePerson;
 
 public sealed partial class SWCapturePersonSystem : EntitySystem
 {
-    [Dependency] private readonly SWTasksGameRuleSystem _sWTasks = default!;
+    [Dependency] private readonly MobStateSystem _mobStateSystem = default!;
     [Dependency] private readonly SWTargetSelectorSystem _sWTarget = default!;
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<CuffableComponent, OnTargetGetCuffed>(OnCuffed);
         SubscribeLocalEvent<CuffableComponent, OnTargetGetFullyUnCuffed>(OnUnCuffed);
+        SubscribeLocalEvent<SWCapturePersonComponent, SWGetProgressEvent>(OnGetProgress);
     }
+
     private void OnCuffed(Entity<CuffableComponent> ent, ref OnTargetGetCuffed args)
     {
         if (!TryComp<SWFactionMemberComponent>(args.User, out var factionComp))
@@ -35,7 +38,6 @@ public sealed partial class SWCapturePersonSystem : EntitySystem
             if (_sWTarget.GetJob(ent.Owner) == targetComp.JobOfTarget && factionComp.Faction == taskComp.OwningFaction)
             {
                 captureComp.CuffedTargets.Add(ent.Owner);
-                _sWTasks.UpdateTaskProgress(uid, 1.0);
             }
         }
     }
@@ -49,10 +51,21 @@ public sealed partial class SWCapturePersonSystem : EntitySystem
             {
                 captureComp.CuffedTargets.Remove(uid);
             }
-            if (captureComp.CuffedTargets.Count == 0)
+        }
+    }
+
+    private void OnGetProgress(Entity<SWCapturePersonComponent> ent, ref SWGetProgressEvent args)
+    {
+        foreach (var target in ent.Comp.CuffedTargets)
+        {
+            if (_mobStateSystem.IsAlive(target))
             {
-                _sWTasks.UpdateTaskProgress(uid, 0.0);
+                args.Progress = 1;
+                args.Handled = true;
+                return;
             }
         }
+        args.Progress = 0;
+        args.Handled = true;
     }
 }

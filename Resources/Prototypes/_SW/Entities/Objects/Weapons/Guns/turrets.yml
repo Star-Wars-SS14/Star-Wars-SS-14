@@ -2,6 +2,7 @@
   parent: BaseStructure
   id: SWTurret
   name: укрепленная турель
+  suffix: Империя
   components:
   - type: Clickable
   - type: InteractionOutline
@@ -100,6 +101,23 @@
     containers:
       key_slots:
       - SWEncryptionKeyRegular
+  - type: SWReportOnDamaged
+    channelId: SWEmpireRegular
+  - type: SWTurretSayOnTargetLos
+
+- type: entity
+  parent: SWTurret
+  id: SWTurretRepublic
+  suffix: Республика
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyRepublic
+  - type: SWTurretSayOnTargetLos
+    messageId: sw-turret-say-republic
+  - type: SWReportOnDamaged
+    channelId: SWRepublic
 
 - type: entity
   parent: WeaponTurretAllHostile

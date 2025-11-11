@@ -1,3 +1,4 @@
+using Content.Server._SW.Turrets;
 using Content.Server.Chat.Systems;
 using Content.Server.NPC.Components;
 using Content.Server.Radio.EntitySystems;
@@ -16,7 +17,6 @@ public sealed partial class NPCCombatSystem
     [Dependency] private readonly SharedCombatModeSystem _combat = default!;
     [Dependency] private readonly RotateToFaceSystem _rotate = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
-    [Dependency] private readonly RadioSystem _radio = default!;
 
     private EntityQuery<CombatModeComponent> _combatQuery;
     private EntityQuery<NPCSteeringComponent> _steeringQuery;
@@ -159,8 +159,15 @@ public sealed partial class NPCCombatSystem
             if (!oldInLos && comp.SoundTargetInLOS != null)
             {
                 _audio.PlayPvs(comp.SoundTargetInLOS, uid);
-                //_chat.TrySendInGameICMessage(uid, ":и Пиздец", InGameICChatType.Speak, true, ignoreActionBlocker: true);
-                _radio.SendRadioMessage(uid, "adsad", "SWEmpireRegular", uid);
+
+                //SW start
+                if (TryComp<SWTurretSayOnTargetLosComponent>(uid, out var sayComp))
+                {
+                    var message = Loc.GetString(sayComp.MessageId);
+                    _chat.TrySendInGameICMessage(uid, message, InGameICChatType.Speak, true, ignoreActionBlocker: true);
+                }
+
+                //SW end
             }
 
             comp.ShootAccumulator += frameTime;

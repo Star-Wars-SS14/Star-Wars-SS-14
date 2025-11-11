@@ -1,4 +1,6 @@
+using Content.Server.Chat.Systems;
 using Content.Server.NPC.Components;
+using Content.Server.Radio.EntitySystems;
 using Content.Shared.CombatMode;
 using Content.Shared.Interaction;
 using Content.Shared.Physics;
@@ -13,6 +15,8 @@ public sealed partial class NPCCombatSystem
 {
     [Dependency] private readonly SharedCombatModeSystem _combat = default!;
     [Dependency] private readonly RotateToFaceSystem _rotate = default!;
+    [Dependency] private readonly ChatSystem _chat = default!;
+    [Dependency] private readonly RadioSystem _radio = default!;
 
     private EntityQuery<CombatModeComponent> _combatQuery;
     private EntityQuery<NPCSteeringComponent> _steeringQuery;
@@ -155,6 +159,8 @@ public sealed partial class NPCCombatSystem
             if (!oldInLos && comp.SoundTargetInLOS != null)
             {
                 _audio.PlayPvs(comp.SoundTargetInLOS, uid);
+                //_chat.TrySendInGameICMessage(uid, ":и Пиздец", InGameICChatType.Speak, true, ignoreActionBlocker: true);
+                _radio.SendRadioMessage(uid, "adsad", "SWEmpireRegular", uid);
             }
 
             comp.ShootAccumulator += frameTime;

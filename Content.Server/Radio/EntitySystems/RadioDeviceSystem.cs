@@ -223,12 +223,20 @@ public sealed class RadioDeviceSystem : EntitySystem
 
     private void OnIntercomEncryptionChannelsChanged(Entity<IntercomComponent> ent, ref EncryptionChannelsChangedEvent args)
     {
+        if (!(ent.Comp.LifeStage >= ComponentLifeStage.Running))
+        {
+            return;
+        }
+
+
         ent.Comp.SupportedChannels = args.Component.Channels.Select(p => new ProtoId<RadioChannelPrototype>(p)).ToList();
 
         var channel = args.Component.DefaultChannel;
         if (ent.Comp.CurrentChannel != null && ent.Comp.SupportedChannels.Contains(ent.Comp.CurrentChannel.Value))
             channel = ent.Comp.CurrentChannel;
-
+        ISawmill _s = Logger.GetSawmill($"asdfghj");
+        //_s.Fatal($"{ent.Comp.SupportedChannels.ElementAt(0)}");
+        _s.Fatal($"{ent.Comp.CurrentChannel}");
         SetIntercomChannel(ent, channel);
     }
 
@@ -273,6 +281,8 @@ public sealed class RadioDeviceSystem : EntitySystem
             SetMicrophoneEnabled(ent, null, false);
             ent.Comp.MicrophoneEnabled = false;
             ent.Comp.SpeakerEnabled = false;
+            ISawmill _s = Logger.GetSawmill("dfgh");
+            _s.Fatal("suka");
             Dirty(ent);
             return;
         }

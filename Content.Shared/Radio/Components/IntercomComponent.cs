@@ -1,4 +1,4 @@
-﻿using Robust.Shared.GameStates;
+using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared.Radio.Components;
@@ -16,10 +16,10 @@ public sealed partial class IntercomComponent : Component
     public bool RequiresPower = true;
 
     [DataField, AutoNetworkedField]
-    public bool SpeakerEnabled;
+    public bool SpeakerEnabled = true;
 
     [DataField, AutoNetworkedField]
-    public bool MicrophoneEnabled;
+    public bool MicrophoneEnabled = true;
 
     [DataField, AutoNetworkedField]
     public ProtoId<RadioChannelPrototype>? CurrentChannel;

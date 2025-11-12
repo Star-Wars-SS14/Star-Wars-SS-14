@@ -10,3 +10,10 @@
       - IntercomElectronics
       key_slots:
       - SWEncryptionKeyRegular
+  - type: Intercom
+    speakerEnabled: true
+    microphoneEnabled: true
+    currentChannel: SWEmpireRegular
+    supportedChannels: [SWEmpireRegular]
+  - type: EncryptionKeyHolder
+    defaultChannel: SWEmpireRegular

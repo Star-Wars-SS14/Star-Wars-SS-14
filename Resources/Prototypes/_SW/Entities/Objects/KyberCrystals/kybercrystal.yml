@@ -7,6 +7,8 @@
   - type: Sprite
     sprite: _SW/Objects/KyberCrystals/kybercrystal.rsi
     state: whitecr
+  - type: SWKyberCrystal
+    hexcolor: "White"
   - type: Item
     sprite: _SW/Objects/KyberCrystals/kybercrystal.rsi
     size: Tiny
@@ -19,6 +21,8 @@
   id: SWKyberCrystalBlack
   name: kyber crystal (black)
   components:
+  - type: SWKyberCrystal
+    hexcolor: "Black"
   - type: Sprite
     state: blackcr
 
@@ -27,6 +31,8 @@
   id: SWKyberCrystalBlue
   name: kyber crystal (blue)
   components:
+  - type: SWKyberCrystal
+    hexcolor: "Blue"
   - type: Sprite
     state: bluecr
 
@@ -35,6 +41,8 @@
   id: SWKyberCrystalWhiteBlue
   name: kyber crystal (white-blue)
   components:
+  - type: SWKyberCrystal
+    hexcolor: "White-blue"
   - type: Sprite
     state: golubcr
 
@@ -43,6 +51,8 @@
   id: SWKyberCrystalGreen
   name: kyber crystal (green)
   components:
+  - type: SWKyberCrystal
+    hexcolor: "Green"
   - type: Sprite
     state: greencr
 
@@ -51,6 +61,8 @@
   id: SWKyberCrystalIndigo
   name: kyber crystal (indigo)
   components:
+  - type: SWKyberCrystal
+    hexcolor: "Indigo"
   - type: Sprite
     state: indigocr
 
@@ -59,6 +71,8 @@
   id: SWKyberCrystalOrange
   name: kyber crystal (orange)
   components:
+  - type: SWKyberCrystal
+    hexcolor: "Orange"
   - type: Sprite
     state: orangecr
 
@@ -67,6 +81,8 @@
   id: SWKyberCrystalPink
   name: kyber crystal (pink)
   components:
+  - type: SWKyberCrystal
+    hexcolor: "Pink"
   - type: Sprite
     state: pinkcr
 
@@ -75,6 +91,8 @@
   id: SWKyberCrystalPurple
   name: kyber crystal (purple)
   components:
+  - type: SWKyberCrystal
+    hexcolor: "Purple"
   - type: Sprite
     state: purplecr
 
@@ -83,6 +101,8 @@
   id: SWKyberCrystalRed
   name: kyber crystal (red)
   components:
+  - type: SWKyberCrystal
+    hexcolor: "Red"
   - type: Sprite
     state: redcr
 
@@ -91,6 +111,8 @@
   id: SWKyberCrystalRedOrange
   name: kyber crystal (red-orange)
   components:
+  - type: SWKyberCrystal
+    hexcolor: "Red-orange"
   - type: Sprite
     state: redorangecr
 
@@ -99,6 +121,8 @@
   id: SWKyberCrystalYellow
   name: kyber crystal (yellow)
   components:
+  - type: SWKyberCrystal
+    hexcolor: "Yellow"
   - type: Sprite
     state: yellowcr
 
@@ -107,5 +131,7 @@
   id: SWKyberCrystalYellowGreen
   name: kyber crystal (yellow-green)
   components:
+  - type: SWKyberCrystal
+    hexcolor: "Yellow-green"
   - type: Sprite
     state: yellowgreencr

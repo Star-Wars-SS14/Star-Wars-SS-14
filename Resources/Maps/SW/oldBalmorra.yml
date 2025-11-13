@@ -9,6 +9,7 @@ meta:
 maps:
 - 1
 grids:
+- 1
 - 2
 orphans: []
 nullspace: []
@@ -231,19 +232,8 @@ entities:
       ambientLightColor: '#D8B059FF'
     - type: Parallax
       parallax: Sky
-    - type: SpreaderGrid
-    - type: GridPathfinding
-    - type: Gravity
-      gravityShakeSound: !type:SoundPathSpecifier
-        path: /Audio/Effects/alert.ogg
     - type: LightCycle
       duration: 2880
-    - type: DecalGrid
-      chunkCollection:
-        version: 2
-        nodes: []
-  - uid: 2
-    components:
     - type: SunShadowCycle
       directions:
       - direction: 0,3
@@ -258,6 +248,19 @@ entities:
         ratio: 0.75
       duration: 2880
     - type: SunShadow
+    - type: MapGrid
+      chunks: {}
+    - type: SpreaderGrid
+    - type: GridPathfinding
+    - type: Gravity
+      gravityShakeSound: !type:SoundPathSpecifier
+        path: /Audio/Effects/alert.ogg
+    - type: DecalGrid
+      chunkCollection:
+        version: 2
+        nodes: []
+  - uid: 2
+    components:
     - type: MetaData
       name: Old Balmora
     - type: Transform

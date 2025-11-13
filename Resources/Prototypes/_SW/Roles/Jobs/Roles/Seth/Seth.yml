@@ -519,7 +519,19 @@
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen
     jumpsuit: SWClothingUniformJumpsuitFleece
+    pocket1: FlashlightLantern    
+
+- type: startingGear
+  id: NeutralBarmenGear
+  equipment:
+    id: SWIDCardNeutralBartender
+    outerClothing: ClothingOuterWinterBar
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    jumpsuit: ClothingUniformJumpsuitBartender
     pocket1: FlashlightLantern
+    head: ClothingHeadHatBowlerHat
+    suitstorage: SWMK3BlasterRifle
 
 ######old
 - type: startingGear

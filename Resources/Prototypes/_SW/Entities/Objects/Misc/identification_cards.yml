@@ -495,7 +495,7 @@
     layers:
     - state: image3
   - type: PresetIdCard
-    job: SWNeutralBarmen
+    job: SWNeutralBartender
 
 - type: entity
   name: Civilian ID card

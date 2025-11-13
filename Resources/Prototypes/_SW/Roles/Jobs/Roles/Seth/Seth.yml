@@ -530,8 +530,8 @@
     gloves: SWClothingHandsGlovesСitizen
     jumpsuit: ClothingUniformJumpsuitBartender
     pocket1: FlashlightLantern
+    pocket2: SWScoutBlasterSmall
     head: ClothingHeadHatBowlerHat
-    suitstorage: SWMK3BlasterRifle
 
 ######old
 - type: startingGear

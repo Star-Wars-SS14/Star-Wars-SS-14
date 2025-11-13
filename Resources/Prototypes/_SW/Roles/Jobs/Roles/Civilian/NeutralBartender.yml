@@ -1,6 +1,6 @@
 - type: job
   id: SWNeutralBartender
-  name: Житель
+  name: Бармен нейтральной кантины
   playTimeTracker: Job_NeutralBartender
   requirements:
   - !type:OverallPlaytimeRequirement

@@ -25,8 +25,8 @@
   - type: Item
     size: Small
   - type: Gun
-    maxAngle: 0
-    minAngle: 10
+    maxAngle: 10
+    minAngle: 0
     soundGunshot:
       path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
     availableModes:

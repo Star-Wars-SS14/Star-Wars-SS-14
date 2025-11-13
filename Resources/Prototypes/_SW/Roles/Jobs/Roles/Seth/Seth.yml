@@ -522,7 +522,7 @@
     pocket1: FlashlightLantern    
 
 - type: startingGear
-  id: NeutralBarmenGear
+  id: NeutralBartenderGear
   equipment:
     id: SWIDCardNeutralBartender
     outerClothing: ClothingOuterWinterBar

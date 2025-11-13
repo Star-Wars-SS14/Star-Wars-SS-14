@@ -121,3 +121,5 @@
 - type: playTimeTracker
   id: Job_Civilian
 
+- type: playTimeTracker
+  id: Job_NeutralBartender

@@ -487,6 +487,17 @@
     job: SWCivialian
 
 - type: entity
+  parent: SWIDCardStandard
+  id: SWIDCardNeutralBartender
+  name: Neutral barmen ID card
+  components:
+  - type: Sprite
+    layers:
+    - state: image3
+  - type: PresetIdCard
+    job: SWNeutralBartender
+
+- type: entity
   name: Civilian ID card
   parent: IDCardStandard
   id: SWCivilianIdCardEditable

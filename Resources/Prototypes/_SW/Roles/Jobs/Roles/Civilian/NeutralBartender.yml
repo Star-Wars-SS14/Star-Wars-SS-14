@@ -1,0 +1,10 @@
+- type: job
+  id: SWNeutralBartender
+  name: Бармен нейтральной кантины
+  playTimeTracker: Job_NeutralBartender
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 18000 # 0 h
+  startingGear: NeutralBartenderGear
+  icon: "JobIconCivilian"
+  supervisors: job-supervisors-empire

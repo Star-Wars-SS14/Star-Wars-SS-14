@@ -438,3 +438,15 @@
   - type: Sprite
     layers:
     - state: green
+
+- type: entity
+  id: SWSpawnPointNeutralBartenderLJ
+  parent: SpawnPointJobBase
+  name: Neutral Bartender LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWNeutralBartender
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green

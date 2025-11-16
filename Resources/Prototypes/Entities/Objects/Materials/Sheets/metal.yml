@@ -27,6 +27,9 @@
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
+  - type: Edible #SW
+    solution: steel #SW
+    requiresSpecialDigestion: true #SW
   - type: SolutionContainerManager
     solutions:
       steel:
@@ -184,6 +187,9 @@
   - type: Item
     heldPrefix: plasteel
   - type: Appearance
+  - type: Edible #SW
+    solution: plasteel #SW
+    requiresSpecialDigestion: true #SW
   - type: Extractable
     grindableSolutionName: plasteel
   - type: SolutionContainerManager

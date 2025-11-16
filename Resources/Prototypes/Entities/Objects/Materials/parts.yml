@@ -63,6 +63,9 @@
     price: 7.5
   - type: Extractable
     grindableSolutionName: rod
+  - type: Edible #SW
+    solution: rod #SW
+    requiresSpecialDigestion: true #SW
   - type: SolutionContainerManager
     solutions:
       rod:

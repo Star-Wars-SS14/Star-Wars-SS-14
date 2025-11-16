@@ -1,54 +1,25 @@
-using Content.Server.Cuffs;
-using Content.Server.Forensics;
-using Content.Server.Humanoid;
-using Content.Server.Implants.Components;
 using Content.Server.Store.Components;
 using Content.Server.Store.Systems;
-using Content.Shared.Cuffs.Components;
-using Content.Shared.Forensics;
-using Content.Shared.Forensics.Components;
-using Content.Shared.Humanoid;
 using Content.Shared.Implants;
-using Content.Shared.Implants.Components;
 using Content.Shared.Interaction;
-using Content.Shared.Physics;
 using Content.Shared.Popups;
-using Content.Shared.Preferences;
-using Robust.Shared.Audio.Systems;
-using Robust.Shared.Map;
-using Robust.Shared.Physics;
-using Robust.Shared.Physics.Components;
-using Robust.Shared.Random;
-using System.Numerics;
-using Content.Shared.Movement.Pulling.Components;
-using Content.Shared.Movement.Pulling.Systems;
-using Content.Server.IdentityManagement;
-using Content.Shared.DetailExaminable;
 using Content.Shared.Store.Components;
 using Robust.Shared.Collections;
 using Robust.Shared.Map.Components;
-using Robust.Shared.Physics.Collision.Shapes;
-using System.Linq;
-using System.Collections.Generic;
-using Content.Server.Construction.Commands;
+
 namespace Content.Server.Implants;
 
 public sealed class SubdermalImplantSystem : SharedSubdermalImplantSystem
 {
-    [Dependency] private readonly CuffableSystem _cuffable = default!;
-    [Dependency] private readonly HumanoidAppearanceSystem _humanoidAppearance = default!;
-    [Dependency] private readonly IRobustRandom _random = default!;
-    [Dependency] private readonly MetaDataSystem _metaData = default!;
     [Dependency] private readonly StoreSystem _store = default!;
-    [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedTransformSystem _xform = default!;
     [Dependency] private readonly ForensicsSystem _forensicsSystem = default!;
     [Dependency] private readonly PullingSystem _pullingSystem = default!;
     [Dependency] private readonly EntityLookupSystem _lookupSystem = default!;
     [Dependency] private readonly SharedMapSystem _mapSystem = default!;
-    [Dependency] private readonly IMapManager _mapManager = default!;
     [Dependency] private readonly IdentitySystem _identity = default!;
+
     private EntityQuery<PhysicsComponent> _physicsQuery;
     private HashSet<Entity<MapGridComponent>> _targetGrids = [];
 
@@ -56,16 +27,10 @@ public sealed class SubdermalImplantSystem : SharedSubdermalImplantSystem
     {
         base.Initialize();
 
-        _physicsQuery = GetEntityQuery<PhysicsComponent>();
-
-        SubscribeLocalEvent<SubdermalImplantComponent, UseFreedomImplantEvent>(OnFreedomImplant);
         SubscribeLocalEvent<StoreComponent, ImplantRelayEvent<AfterInteractUsingEvent>>(OnStoreRelay);
-        SubscribeLocalEvent<SubdermalImplantComponent, ActivateImplantEvent>(OnActivateImplantEvent);
-        SubscribeLocalEvent<SubdermalImplantComponent, UseScramImplantEvent>(OnScramImplant);
-        SubscribeLocalEvent<SubdermalImplantComponent, UseDnaScramblerImplantEvent>(OnDnaScramblerImplant);
-
     }
 
+    // TODO: This shouldn't be in the SubdermalImplantSystem
     private void OnStoreRelay(EntityUid uid, StoreComponent store, ImplantRelayEvent<AfterInteractUsingEvent> implantRelay)
     {
         var args = implantRelay.Event;
@@ -87,159 +52,5 @@ public sealed class SubdermalImplantSystem : SharedSubdermalImplantSystem
         args.Handled = true;
         var msg = Loc.GetString("store-currency-inserted-implant", ("used", args.Used));
         _popup.PopupEntity(msg, args.User, args.User);
-    }
-
-    private void OnFreedomImplant(EntityUid uid, SubdermalImplantComponent component, UseFreedomImplantEvent args)
-    {
-        if (!TryComp<CuffableComponent>(component.ImplantedEntity, out var cuffs) || cuffs.Container.ContainedEntities.Count < 1)
-            return;
-
-        _cuffable.Uncuff(component.ImplantedEntity.Value, cuffs.LastAddedCuffs, cuffs.LastAddedCuffs);
-        args.Handled = true;
-    }
-
-    private void OnActivateImplantEvent(EntityUid uid, SubdermalImplantComponent component, ActivateImplantEvent args)
-    {
-        args.Handled = true;
-    }
-    private void OnScramImplant(EntityUid uid, SubdermalImplantComponent component, UseScramImplantEvent args)
-    {
-        if (component.ImplantedEntity is not { } ent)
-            return;
-
-        if (!TryComp<ScramImplantComponent>(uid, out var implant))
-            return;
-
-        // We need stop the user from being pulled so they don't just get "attached" with whoever is pulling them.
-        // This can for example happen when the user is cuffed and being pulled.
-        if (TryComp<PullableComponent>(ent, out var pull) && _pullingSystem.IsPulled(ent, pull))
-            _pullingSystem.TryStopPull(ent, pull);
-
-        // Check if the user is pulling anything, and drop it if so
-        if (TryComp<PullerComponent>(ent, out var puller) && TryComp<PullableComponent>(puller.Pulling, out var pullable))
-            _pullingSystem.TryStopPull(puller.Pulling.Value, pullable);
-
-        var xform = Transform(ent);
-        var targetCoords = SelectRandomTileInRange(uid, xform, implant.TeleportMinRadius, implant.TeleportMaxRadius);
-        if (targetCoords != null)
-        {
-            _xform.SetCoordinates(ent, targetCoords.Value);
-            _audio.PlayPvs(implant.TeleportSound, ent);
-            args.Handled = true;
-        }
-    }
-
-    private EntityCoordinates? SelectRandomTileInRange(EntityUid uid, TransformComponent userXform,
-                                    float minRadius,
-                                    float maxRadius)
-    {
-        if (userXform.GridUid == null)
-        {
-            return null;
-        }
-        _targetGrids.Clear();
-        EntityUid gridUid = userXform.GridUid.Value;
-        if (!TryComp<MapGridComponent>(userXform.GridUid, out var grid))
-            return null;
-        Vector2 tmp = new Vector2(maxRadius, maxRadius);
-        Vector2 tmp2 = new Vector2(minRadius, minRadius);
-        var shapeMin = new Box2(userXform.LocalPosition - tmp, userXform.LocalPosition + tmp);
-        IEnumerable<TileRef> tilesInMaxRange = _mapSystem.GetLocalTilesIntersecting(uid, grid, shapeMin, false);
-
-        var shapeMax = new Box2(userXform.LocalPosition - tmp2, userXform.LocalPosition + tmp2);
-        IEnumerable<TileRef> tilesInMinRange = _mapSystem.GetLocalTilesIntersecting(uid, grid, shapeMax, false);
-
-        IEnumerable <TileRef> tilesInRange = tilesInMaxRange.Except(tilesInMinRange);
-
-        if (tilesInRange.Count() == 0)
-        {
-            return null;
-        }
-
-        // Give preference to the grid the entity is currently on.
-        // This does not guarantee that if the probability fails that the owner's grid won't be picked.
-        // In reality the probability is higher and depends on the number of grids.
-        //if (userXform.GridUid != null && TryComp<MapGridComponent>(userXform.GridUid, out var gridComp))
-        //{
-        //    var userGrid = new Entity<MapGridComponent>(userXform.GridUid.Value, gridComp);
-        //    if (_random.Prob(0.5f))
-        //    {
-        //        _targetGrids.Remove(userGrid);
-        //        targetGrid = userGrid;
-        //    }
-        //}
-
-        //if (targetGrid == null)
-        //    targetGrid = _random.GetRandom().PickAndTake(_targetGrids);
-
-        //do
-        //{
-        //    var valid = false;
-
-        //    var range = (float) Math.Sqrt(radius);
-        //    var box = Box2.CenteredAround(userCoords.Position, new Vector2(range, range));
-        //    var tilesInRange = _mapSystem.GetTilesEnumerator(targetGrid.Value.Owner, targetGrid.Value.Comp, box, false);
-        var tileList = new ValueList<Vector2i>();
-        EntityCoordinates? targetCoords = null;
-
-        foreach (TileRef tile in tilesInRange)
-        {
-            if (!tile.Tile.IsEmpty)
-            {
-                tileList.Add(tile.GridIndices);
-            }
-        }
-        bool valid = false;
-        while (tileList.Count != 0)
-        {
-            var tile = tileList.RemoveSwap(_random.Next(tileList.Count));
-            valid = true;
-            foreach (var entity in _mapSystem.GetAnchoredEntities(gridUid, grid,
-                         tile))
-            {
-                if (!_physicsQuery.TryGetComponent(entity, out var body))
-                    continue;
-
-                if (body.BodyType != BodyType.Static ||
-                    !body.Hard ||
-                    (body.CollisionLayer & (int) CollisionGroup.MobMask) == 0)
-                    continue;
-
-                valid = false;
-                break;
-            }
-
-            if (valid)
-            {
-                targetCoords = new EntityCoordinates(gridUid,
-                    _mapSystem.TileCenterToVector(gridUid, grid, tile));
-                break;
-            }
-        }
-        return targetCoords;
-    }
-
-    private void OnDnaScramblerImplant(EntityUid uid, SubdermalImplantComponent component, UseDnaScramblerImplantEvent args)
-    {
-        if (component.ImplantedEntity is not { } ent)
-            return;
-
-        if (TryComp<HumanoidAppearanceComponent>(ent, out var humanoid))
-        {
-            var newProfile = HumanoidCharacterProfile.RandomWithSpecies(humanoid.Species);
-            _humanoidAppearance.LoadProfile(ent, newProfile, humanoid);
-            _metaData.SetEntityName(ent, newProfile.Name, raiseEvents: false); // raising events would update ID card, station record, etc.
-
-            // If the entity has the respecive components, then scramble the dna and fingerprint strings
-            _forensicsSystem.RandomizeDNA(ent);
-            _forensicsSystem.RandomizeFingerprint(ent);
-
-            RemComp<DetailExaminableComponent>(ent); // remove MRP+ custom description if one exists
-            _identity.QueueIdentityUpdate(ent); // manually queue identity update since we don't raise the event
-            _popup.PopupEntity(Loc.GetString("scramble-implant-activated-popup"), ent, ent);
-        }
-
-        args.Handled = true;
-        QueueDel(uid);
     }
 }

@@ -6,17 +6,17 @@
     requirement:
       !type:RoleTimeRequirement
       role: JobChemist
-      time: 72000 #20 hrs # Corvax-RoleTime
+      time: 20h # Corvax-RoleTime
   - !type:JobRequirementLoadoutEffect
     requirement:
       !type:RoleTimeRequirement
       role: JobMedicalDoctor
-      time: 72000 #20 hrs # Corvax-RoleTime
+      time: 20h # Corvax-RoleTime
   - !type:JobRequirementLoadoutEffect
     requirement:
       !type:DepartmentTimeRequirement
       department: Medical
-      time: 216000 # 60 hrs
+      time: 60h
 
 # Other Timers
 
@@ -27,15 +27,15 @@
     requirement:
       !type:RoleTimeRequirement
       role: JobMedicalDoctor
-      time: 108000 #30 hrs
+      time: 30h
 
 # Head
 
 - type: loadout
   id: SeniorPhysicianBeret
-  effects:
-  - !type:GroupLoadoutEffect
-    proto: SeniorPhysician
+  # effects: Corvax-MentorRoles
+  # - !type:GroupLoadoutEffect
+  #   proto: SeniorPhysician
   equipment:
     head: ClothingHeadHatBeretSeniorPhysician
 
@@ -85,17 +85,17 @@
 
 - type: loadout
   id: SeniorPhysicianJumpsuit
-  effects:
-  - !type:GroupLoadoutEffect
-    proto: SeniorPhysician
+  # effects: Corvax-MentorRoles
+  # - !type:GroupLoadoutEffect
+  #   proto: SeniorPhysician
   equipment:
     jumpsuit: ClothingUniformJumpsuitSeniorPhysician
 
 - type: loadout
   id: SeniorPhysicianJumpskirt
-  effects:
-  - !type:GroupLoadoutEffect
-    proto: SeniorPhysician
+  # effects: Corvax-MentorRoles
+  # - !type:GroupLoadoutEffect
+  #   proto: SeniorPhysician
   equipment:
     jumpsuit: ClothingUniformJumpskirtSeniorPhysician
 
@@ -138,9 +138,9 @@
 
 - type: loadout
   id: SeniorPhysicianLabCoat
-  effects:
-  - !type:GroupLoadoutEffect
-    proto: SeniorPhysician
+  # effects: Corvax-MentorRoles
+  # - !type:GroupLoadoutEffect
+  #   proto: SeniorPhysician
   equipment:
     outerClothing: ClothingOuterCoatLabSeniorPhysician
 
@@ -158,9 +158,9 @@
 
 - type: loadout
   id: SeniorPhysicianPDA
-  effects:
-  - !type:GroupLoadoutEffect
-    proto: SeniorPhysician
+  # effects: Corvax-MentorRoles
+  # - !type:GroupLoadoutEffect
+  #   proto: SeniorPhysician
   equipment:
     id: SeniorPhysicianPDA
 

@@ -114,9 +114,18 @@
 #   id: ClownSpider
 #   background: /Textures/Corvax/LobbyScreens/clownspider.png
 
+
 # - type: lobbyBackground
 #   id: AIMia
 #   background: /Textures/Corvax/LobbyScreens/ai-mia.png
+
+# - type: lobbyBackground
+#   id: AIMia
+#   background: /Textures/Corvax/LobbyScreens/ai-mia.webp
+
+# - type: lobbyBackground
+#   id: XenoAttack
+#   background: /Textures/Corvax/LobbyScreens/xenosattack.webp
 
 # - type: lobbyBackground
 #   id: XenoAttack
@@ -182,6 +191,7 @@
 #   id: MimesInTechs
 #   background: /Textures/Corvax/LobbyScreens/mimes-in-techs.png
 
+<<<<<<< HEAD
 # - type: lobbyBackground
 #   id: NukieWar
 #   background: /Textures/Corvax/LobbyScreens/nukie-war.png
@@ -193,6 +203,15 @@
 # - type: lobbyBackground
 #   id: SillyIsland
 #   background: /Textures/Corvax/LobbyScreens/silly-island.png
+=======
+- type: lobbyBackground
+  id: EngineersVsZombies
+  background: /Textures/Corvax/LobbyScreens/engineers-vs-zombies.webp
+
+- type: lobbyBackground
+  id: SillyIsland
+  background: /Textures/Corvax/LobbyScreens/silly-island.webp
+>>>>>>> 0e52cbd07ad835f77b195c79c37e8abe15bfe776
 
 # - type: lobbyBackground
 #   id: EchoTeam

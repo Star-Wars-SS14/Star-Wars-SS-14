@@ -1,8 +1,8 @@
 - type: species
   id: Ipc
   name: species-name-Ipc
-  roundStart: false #SW
-  sponsorOnly: true # Corvax-Sponsors
+  roundStart: false
+  sponsorOnly: false # Corvax-Sponsors
   prototype: MobIpc
   sprites: MobIpcSprites
   defaultSkinTone: "#eb943d"
@@ -51,7 +51,7 @@
     Snout:
       points: 1
       required: false
-      defaultMarkings: [ OrangeS ]
+      defaultMarkings: [ IpcOrangeS ]
     HeadTop:
       points: 2
       required: true

@@ -4,9 +4,6 @@
   id: SheetMetalBase
   description: A sheet of metal, used often on the station in various applications.
   components:
-  - type: Food #SW
-    solution: steel #SW
-    requiresSpecialDigestion: true #SW
   - type: Sprite
     sprite: Objects/Materials/Sheets/metal.rsi
   - type: Item
@@ -168,9 +165,6 @@
   name: plasteel
   suffix: Full
   components:
-  - type: Food #SW
-    solution: plasteel #SW
-    requiresSpecialDigestion: true #SW
   - type: Material
   - type: PhysicalComposition
     materialComposition:

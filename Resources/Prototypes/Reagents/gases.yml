@@ -89,9 +89,9 @@
       effects:
       - !type:HealthChange
         conditions:
-        - !type:OrganType
-          type: SWParasit
-          shouldHave: false
+        - !type:MetabolizerTypeCondition
+          type: [ SWParasit ]
+          inverted: true
         damage:
           types:
             Poison: 1.5
@@ -102,9 +102,9 @@
       effects:
       - !type:HealthChange
         conditions:
-        - !type:OrganType
-          type: SWParasit
-          shouldHave: false
+        - !type:MetabolizerTypeCondition
+          type: [ SWParasit ]
+          inverted: true
         scaleByQuantity: true
         ignoreResistances: true
         damage:

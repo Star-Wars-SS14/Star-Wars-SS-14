@@ -29,9 +29,6 @@
   name: metal rod
   suffix: Full
   components:
-  - type: Food #SW
-    solution: rod #SW
-    requiresSpecialDigestion: true #SW
   - type: PhysicalComposition
     materialComposition:
       Steel: 50 #Half of a regular steel sheet to reflect the crafting recipe

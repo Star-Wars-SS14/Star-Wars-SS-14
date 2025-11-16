@@ -27,7 +27,7 @@
     instantEffectToSpawn: SWExplodeOnSpawnInstantEffect
     tilesRange: 10
     bombSound: /Audio/_SW/bombsound.ogg
-  - type: OnUseTimerTrigger
+  - type: TriggerOnUse
     beepSound:
       path: "/Audio/Effects/beep1.ogg"
       params:

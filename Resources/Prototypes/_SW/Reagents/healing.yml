@@ -16,7 +16,7 @@
             Toxin: -6
             Airloss: -6
             Brute: -6
-      - !type:ModifyBleedAmount
+      - !type:ModifyBleed
         amount: -1.5
 
 - type: reagent
@@ -37,5 +37,5 @@
             Toxin: -12
             Airloss: -12
             Brute: -12
-      - !type:ModifyBleedAmount
+      - !type:ModifyBleed
         amount: -2.0

@@ -38,9 +38,6 @@
         reagents:
         - ReagentId: Nutriment
           Quantity: 20
-  - type: Food
-    trash:
-    - SWGorntSausageEmpty
 
 - type: entity
   id: SWGorntSausageEmpty

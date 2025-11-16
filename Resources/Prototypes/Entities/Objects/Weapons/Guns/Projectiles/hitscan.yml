@@ -38,27 +38,22 @@
 - type: entity
   parent: BasicHitscan
   id: RedLightLaser
-<<<<<<< HEAD
-  damage:
-    types:
-      Heat: 150 #SW
-  muzzleFlash:
-    sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
-    state: muzzle_laser
-  travelFlash:
-    sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
-    state: beam
-  impactFlash:
-    sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
-    state: impact_laser
-=======
   categories: [ HideSpawnMenu ]
   components:
+  - type: HitscanBasicVisuals
+    muzzleFlash:
+      sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
+      state: muzzle_laser
+    travelFlash:
+      sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
+      state: beam
+    impactFlash:
+      sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
+      state: impact_laser
   - type: HitscanBasicDamage
     damage:
       types:
-        Heat: 7
->>>>>>> 0e52cbd07ad835f77b195c79c37e8abe15bfe776
+        Heat: 150 #SW
 
 - type: entity
   parent: BasicHitscan
@@ -154,22 +149,6 @@
 - type: entity
   parent: BasicHitscan
   id: RedShuttleLaser
-<<<<<<< HEAD
-  maxLength: 60
-  damage:
-    types:
-      Heat: 300
-      Structural: 1000
-  muzzleFlash:
-    sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
-    state: muzzle_beam_heavy2
-  travelFlash:
-    sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
-    state: beam_heavy2
-  impactFlash:
-    sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
-    state: impact_beam_heavy2
-=======
   categories: [ HideSpawnMenu ]
   components:
   - type: HitscanBasicRaycast
@@ -177,8 +156,8 @@
   - type: HitscanBasicDamage
     damage:
       types:
-        Heat: 45
-        Structural: 10
+        Heat: 300
+        Structural: 1000
   - type: HitscanBasicVisuals
     muzzleFlash:
       sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
@@ -189,4 +168,3 @@
     impactFlash:
       sprite: Objects/Weapons/Guns/Projectiles/projectiles.rsi
       state: impact_beam_heavy2
->>>>>>> 0e52cbd07ad835f77b195c79c37e8abe15bfe776

@@ -30,4 +30,3 @@
         reagents:
         - ReagentId: Nutriment
           Quantity: 45
-  - type: Food

@@ -170,8 +170,8 @@
       effects:
       - !type:SatiateHunger
         conditions:
-        - !type:OrganType
-          type: SWParasit
+        - !type:MetabolizerTypeCondition
+          type: [ SWParasit ]
 
 - type: reagent
   id: Lithium

@@ -21,14 +21,7 @@
             "name": "Borg"
         },
         {
-<<<<<<< HEAD
-            "name": "HeadPrisioner"
-        },
-        {
-            "name": "Janitor"
-=======
             "name": "Botanist"
->>>>>>> 0e52cbd07ad835f77b195c79c37e8abe15bfe776
         },
         {
             "name": "Boxer"
@@ -211,9 +204,6 @@
             "name": "Syndicate"
         },
         {
-<<<<<<< HEAD
-            "name": "HeadSyndicate"
-=======
             "name": "SyndicateCommander"
         },
         {
@@ -230,7 +220,6 @@
         },
         {
             "name": "Virologist"
->>>>>>> 0e52cbd07ad835f77b195c79c37e8abe15bfe776
         },
         {
             "name": "Visitor"

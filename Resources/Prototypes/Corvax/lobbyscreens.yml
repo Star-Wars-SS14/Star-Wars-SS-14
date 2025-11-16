@@ -203,15 +203,13 @@
 # - type: lobbyBackground
 #   id: SillyIsland
 #   background: /Textures/Corvax/LobbyScreens/silly-island.png
-=======
-- type: lobbyBackground
-  id: EngineersVsZombies
-  background: /Textures/Corvax/LobbyScreens/engineers-vs-zombies.webp
+# - type: lobbyBackground
+#   id: EngineersVsZombies
+#   background: /Textures/Corvax/LobbyScreens/engineers-vs-zombies.webp
 
-- type: lobbyBackground
-  id: SillyIsland
-  background: /Textures/Corvax/LobbyScreens/silly-island.webp
->>>>>>> 0e52cbd07ad835f77b195c79c37e8abe15bfe776
+# - type: lobbyBackground
+#   id: SillyIsland
+#   background: /Textures/Corvax/LobbyScreens/silly-island.webp
 
 # - type: lobbyBackground
 #   id: EchoTeam

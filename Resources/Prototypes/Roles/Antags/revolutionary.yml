@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 #- type: antag
 #  id: HeadRev
 #  name: roles-antag-rev-head-name
@@ -24,30 +23,29 @@
 #    back:
 #    - Flash
 #    - ClothingEyesGlassesSunglasses
-=======
-- type: antag
-  id: HeadRev
-  name: roles-antag-rev-head-name
-  antagonist: true
-  setPreference: true
-  objective: roles-antag-rev-head-objective
-  guides: [ Revolutionaries ]
-  requirements:
-  - !type:OverallPlaytimeRequirement
-    time: 30h # Corvax-RoleTime 1
 
-- type: antag
-  id: Rev
-  name: roles-antag-rev-name
-  antagonist: true
-  setPreference: false
-  objective: roles-antag-rev-objective
-  guides: [ Revolutionaries ]
+# - type: antag
+#   id: HeadRev
+#   name: roles-antag-rev-head-name
+#   antagonist: true
+#   setPreference: true
+#   objective: roles-antag-rev-head-objective
+#   guides: [ Revolutionaries ]
+#   requirements:
+#   - !type:OverallPlaytimeRequirement
+#     time: 30h # Corvax-RoleTime 1
 
-- type: startingGear
-  id: HeadRevGear
-  storage:
-    back:
-    - Flash
-    - ClothingEyesGlassesSunglasses
->>>>>>> 0e52cbd07ad835f77b195c79c37e8abe15bfe776
+# - type: antag
+#   id: Rev
+#   name: roles-antag-rev-name
+#   antagonist: true
+#   setPreference: false
+#   objective: roles-antag-rev-objective
+#   guides: [ Revolutionaries ]
+
+# - type: startingGear
+#   id: HeadRevGear
+#   storage:
+#     back:
+#     - Flash
+#     - ClothingEyesGlassesSunglasses

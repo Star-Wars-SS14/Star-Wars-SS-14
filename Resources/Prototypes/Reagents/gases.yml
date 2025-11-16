@@ -101,14 +101,11 @@
     Gas:
       effects:
       - !type:HealthChange
-<<<<<<< HEAD
         conditions:
         - !type:OrganType
           type: SWParasit
           shouldHave: false
         scaleByQuantity: true
-=======
->>>>>>> 0e52cbd07ad835f77b195c79c37e8abe15bfe776
         ignoreResistances: true
         damage:
           types:

@@ -8,7 +8,7 @@ namespace Content.Server._SW.Force.Components;
 [RegisterComponent]
 public sealed partial class StarHelmetComponent : Component
 {
-    [DataField("channels", customTypeSerializer: typeof(PrototypeIdHashSetSerializer<RadioChannelPrototype>))]
+    [DataField("channels")]
     public HashSet<ProtoId<RadioChannelPrototype>> Channels;
 
     //shows in whicht inventory slot radio shuold be enabled.

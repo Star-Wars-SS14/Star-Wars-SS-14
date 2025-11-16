@@ -11,6 +11,7 @@ using Content.Shared._SW;
 using Robust.Shared.Prototypes;
 using Content.Server.Stunnable;
 using Content.Server.Actions;
+using Content.Shared.Damage.Systems;
 
 namespace Content.Server._SW;
 

@@ -466,7 +466,7 @@ namespace Content.Client.Lobby.UI
             IsDirty = false;
         }
 
-       
+
         /// <summary>
         /// Refreshes the flavor text editor status.
         /// </summary>
@@ -1163,39 +1163,6 @@ namespace Content.Client.Lobby.UI
             switch (strategy.InputType)
             {
                 case SkinColorationStrategyInput.Unary:
-                {
-                    if (!Skin.Visible)
-                    {
-                        Skin.Visible = true;
-                        RgbSkinColorContainer.Visible = false;
-                    }
-
-                    var color = strategy.FromUnary(Skin.Value);
-
-                    Markings.CurrentSkinColor = color;
-                    Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
-
-                    break;
-                }
-                case SkinColorationStrategyInput.Color:
-                {
-                    if (!RgbSkinColorContainer.Visible)
-                    {
-                        Skin.Visible = false;
-                        RgbSkinColorContainer.Visible = true;
-                    }
-
-                    var color = strategy.ClosestSkinColor(_rgbSkinColorSelector.Color);
-
-                    Markings.CurrentSkinColor = color;
-                    Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
-
-                        Markings.CurrentSkinColor = color;
-                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
-                        break;
-                    }
-                //SW start
-                case HumanoidSkinColor.HumanTonedReduced:
                     {
                         if (!Skin.Visible)
                         {
@@ -1203,33 +1170,30 @@ namespace Content.Client.Lobby.UI
                             RgbSkinColorContainer.Visible = false;
                         }
 
-                        var color = SkinColor.SkinToneReducedClosest(Skin.Value);
+                        var color = strategy.FromUnary(Skin.Value);
 
                         Markings.CurrentSkinColor = color;
                         Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
+
                         break;
                     }
-
-                case HumanoidSkinColor.ColorLimits:
+                case SkinColorationStrategyInput.Color:
                     {
                         if (!RgbSkinColorContainer.Visible)
                         {
                             Skin.Visible = false;
                             RgbSkinColorContainer.Visible = true;
                         }
-                        var color = _rgbSkinColorSelector.Color;
-                        var speciesProto = _prototypeManager.Index(Profile.Species);
-                        var limitsProto = _prototypeManager.Index(speciesProto.SkinColorLimits);
 
-                        if (limitsProto == null ||
-                                SkinColor.FitLimits(limitsProto, color))
-                        {
-                            Markings.CurrentSkinColor = color;
-                            Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
-                        }
+                        var color = strategy.ClosestSkinColor(_rgbSkinColorSelector.Color);
+
+                        Markings.CurrentSkinColor = color;
+                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
+
+                        Markings.CurrentSkinColor = color;
+                        Profile = Profile.WithCharacterAppearance(Profile.Appearance.WithSkinColor(color));
                         break;
                     }
-                    //SW end
             }
 
             ReloadProfilePreview();
@@ -1420,30 +1384,6 @@ namespace Content.Client.Lobby.UI
             switch (strategy.InputType)
             {
                 case SkinColorationStrategyInput.Unary:
-                {
-                    if (!Skin.Visible)
-                    {
-                        Skin.Visible = true;
-                        RgbSkinColorContainer.Visible = false;
-                    }
-
-                    Skin.Value = strategy.ToUnary(Profile.Appearance.SkinColor);
-
-                    break;
-                }
-                case SkinColorationStrategyInput.Color:
-                {
-                    if (!RgbSkinColorContainer.Visible)
-                    {
-                        Skin.Visible = false;
-                        RgbSkinColorContainer.Visible = true;
-                    }
-
-                    _rgbSkinColorSelector.Color = strategy.ClosestSkinColor(Profile.Appearance.SkinColor);
-
-                    break;
-                }
-                case HumanoidSkinColor.HumanTonedReduced: //SW start
                     {
                         if (!Skin.Visible)
                         {
@@ -1451,11 +1391,11 @@ namespace Content.Client.Lobby.UI
                             RgbSkinColorContainer.Visible = false;
                         }
 
-                        Skin.Value = SkinColor.GetSkinToneReducedClosest(Profile.Appearance.SkinColor);
+                        Skin.Value = strategy.ToUnary(Profile.Appearance.SkinColor);
 
                         break;
                     }
-                case HumanoidSkinColor.ColorLimits:
+                case SkinColorationStrategyInput.Color:
                     {
                         if (!RgbSkinColorContainer.Visible)
                         {
@@ -1463,11 +1403,10 @@ namespace Content.Client.Lobby.UI
                             RgbSkinColorContainer.Visible = true;
                         }
 
-                        // set the RGB values to the direct values otherwise
-                        _rgbSkinColorSelector.Color = Profile.Appearance.SkinColor;
+                        _rgbSkinColorSelector.Color = strategy.ClosestSkinColor(Profile.Appearance.SkinColor);
+
                         break;
                     }
-                    //SW end
             }
 
         }

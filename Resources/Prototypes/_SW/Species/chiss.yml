@@ -6,7 +6,7 @@
   sprites: MobChissSprites
   markingLimits: MobNoFacialHairMarkingLimits
   dollPrototype: MobHumanDummy
-  skinColoration: HumanTonedReduced
+  skinColoration: HumanToneReducedChiss
 
 - type: markingPoints
   id: MobNoFacialHairMarkingLimits

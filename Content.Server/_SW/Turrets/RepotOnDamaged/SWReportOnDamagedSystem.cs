@@ -1,5 +1,6 @@
 using Content.Server.Radio.EntitySystems;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Robust.Shared.Timing;
 using System;
 using System.Collections.Generic;

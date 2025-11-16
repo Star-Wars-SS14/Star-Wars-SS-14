@@ -22,6 +22,7 @@ using Robust.Shared.Map.Components;
 using Robust.Shared.EntitySerialization.Systems;
 using Robust.Shared.EntitySerialization;
 using Robust.Shared.Utility;
+using Content.Shared.Station.Components;
 
 namespace Content.Server.Echo.Shipyard.Systems;
 
@@ -103,8 +104,9 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             return false;
         }
 
-        var price = (int)_pricing.AppraiseGrid((EntityUid) shuttleGrid, null);
-        var targetGrid = _station.GetLargestGrid(stationData);
+        var price = (int)_pricing.AppraiseGrid((EntityUid)shuttleGrid, null);
+        var targetGrid = _station.GetLargestGrid(new Entity<StationDataComponent?>
+            (stationUid, stationData));
 
 
         if (targetGrid == null) //how are we even here with no station grid
@@ -160,7 +162,8 @@ public sealed partial class ShipyardSystem : SharedShipyardSystem
             return result;
         }
 
-        var targetGrid = _station.GetLargestGrid(stationGrid);
+        var targetGrid = _station.GetLargestGrid(new Entity<StationDataComponent?>
+            (stationUid, stationGrid));
 
         if (targetGrid == null)
         {

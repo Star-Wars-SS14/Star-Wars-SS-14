@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Content.Server.Chat.Systems;
 using Content.Server.Explosion.EntitySystems;
+using Content.Shared.Trigger.Systems;
+using Content.Shared.Chat;
 
 namespace Content.Server._SW.SWTriggerOnSay;
 

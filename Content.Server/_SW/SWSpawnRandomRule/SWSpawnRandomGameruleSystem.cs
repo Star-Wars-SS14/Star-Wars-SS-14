@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using Robust.Shared.Random;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.StationEvents.Events;
+using Content.Shared.Station.Components;
 
 namespace Content.Server._SW.SWSpawnRandomRule;
 
@@ -38,7 +39,8 @@ public sealed partial class SWSpawnRandomGameruleSystem : StationEventSystem<SWS
         if (!TryComp<StationDataComponent>(chosenStation, out var stationData))
             return;
 
-        var grid = _stationSystem.GetLargestGrid(stationData);
+        var grid = _stationSystem.GetLargestGrid(new Entity<StationDataComponent?>(
+            chosenStation.Value, stationData));
 
         if (grid is null)
             return;

@@ -6,12 +6,12 @@ using Robust.Shared.Physics.Components;
 using Content.Shared._SW.SWStrangulateAbility;
 using Content.Shared._SW;
 using Content.Server._SW.SWTriggerOnSay;
-using Content.Server.Sound.Components;
 using Content.Shared.Mobs;
 using Content.Server.Popups;
 using Content.Server._SW.SWDottyAccent;
 using Content.Server.Examine;
 using Content.Shared.Tag;
+using Content.Shared.Trigger.Components.Effects;
 
 namespace Content.Server._SW.SWStrangulateAbility;
 

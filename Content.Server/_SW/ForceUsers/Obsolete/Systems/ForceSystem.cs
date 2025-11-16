@@ -6,6 +6,7 @@ using Content.Server.Store.Systems;
 using Content.Shared.Actions;
 using Content.Shared.Alert;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Tag;
 using Robust.Server.Containers;

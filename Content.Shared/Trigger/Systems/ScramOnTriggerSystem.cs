@@ -1,16 +1,17 @@
-using System.Numerics;
 using Content.Shared.Movement.Pulling.Components;
 using Content.Shared.Movement.Pulling.Systems;
 using Content.Shared.Physics;
 using Content.Shared.Trigger.Components.Effects;
+using Robust.Shared.Audio.Systems;
+using Robust.Shared.Collections;
 using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Network;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
-using Robust.Shared.Audio.Systems;
-using Robust.Shared.Collections;
 using Robust.Shared.Random;
+using System.Linq;
+using System.Numerics;
 
 namespace Content.Shared.Trigger.Systems;
 
@@ -52,7 +53,7 @@ public sealed class ScramOnTriggerSystem : XOnTriggerSystem<ScramOnTriggerCompon
             return;
 
         var xform = Transform(target);
-        var targetCoords = SelectRandomTileInRange(xform, ent.Comp.TeleportRadius);
+        var targetCoords = SelectRandomTileInRange(target, xform, ent.Comp.TeleportRadius); //SW
 
         if (targetCoords != null)
         {
@@ -60,82 +61,75 @@ public sealed class ScramOnTriggerSystem : XOnTriggerSystem<ScramOnTriggerCompon
             args.Handled = true;
         }
     }
-
-    private EntityCoordinates? SelectRandomTileInRange(TransformComponent userXform, float radius)
+    //SW start
+    private EntityCoordinates? SelectRandomTileInRange(EntityUid uid, TransformComponent userXform, float radius)
     {
-        var userCoords = _transform.ToMapCoordinates(userXform.Coordinates);
-        _targetGrids.Clear();
-        _lookup.GetEntitiesInRange(userCoords, radius, _targetGrids);
-        Entity<MapGridComponent>? targetGrid = null;
-
-        if (_targetGrids.Count == 0)
-            return null;
-
-        // Give preference to the grid the entity is currently on.
-        // This does not guarantee that if the probability fails that the owner's grid won't be picked.
-        // In reality the probability is higher and depends on the number of grids.
-        if (userXform.GridUid != null && TryComp<MapGridComponent>(userXform.GridUid, out var gridComp))
+        if (userXform.GridUid == null)
         {
-            var userGrid = new Entity<MapGridComponent>(userXform.GridUid.Value, gridComp);
-            if (_random.Prob(0.5f))
-            {
-                _targetGrids.Remove(userGrid);
-                targetGrid = userGrid;
-            }
+            return null;
+        }
+        _targetGrids.Clear();
+
+        float maxRadius = radius;
+        float minRadius = radius - 1.0f;
+
+        EntityUid gridUid = userXform.GridUid.Value;
+        if (!TryComp<MapGridComponent>(userXform.GridUid, out var grid))
+            return null;
+        Vector2 tmp = new Vector2(maxRadius, maxRadius);
+        Vector2 tmp2 = new Vector2(minRadius, minRadius);
+        var shapeMin = new Box2(userXform.LocalPosition - tmp, userXform.LocalPosition + tmp);
+        IEnumerable<TileRef> tilesInMaxRange = _map.GetLocalTilesIntersecting(uid, grid, shapeMin, false);
+
+        var shapeMax = new Box2(userXform.LocalPosition - tmp2, userXform.LocalPosition + tmp2);
+        IEnumerable<TileRef> tilesInMinRange = _map.GetLocalTilesIntersecting(uid, grid, shapeMax, false);
+
+        IEnumerable<TileRef> tilesInRange = tilesInMaxRange.Except(tilesInMinRange);
+
+        if (tilesInRange.Count() == 0)
+        {
+            return null;
         }
 
-        if (targetGrid == null)
-            targetGrid = _random.GetRandom().PickAndTake(_targetGrids);
-
+        var tileList = new ValueList<Vector2i>();
         EntityCoordinates? targetCoords = null;
 
-        do
+        foreach (TileRef tile in tilesInRange)
         {
-            var valid = false;
-
-            var range = (float)Math.Sqrt(radius);
-            var box = Box2.CenteredAround(userCoords.Position, new Vector2(range, range));
-            var tilesInRange = _map.GetTilesEnumerator(targetGrid.Value.Owner, targetGrid.Value.Comp, box, false);
-            var tileList = new ValueList<Vector2i>();
-
-            while (tilesInRange.MoveNext(out var tile))
+            if (!tile.Tile.IsEmpty)
             {
                 tileList.Add(tile.GridIndices);
             }
-
-            while (tileList.Count != 0)
+        }
+        bool valid = false;
+        while (tileList.Count != 0)
+        {
+            var tile = tileList.RemoveSwap(_random.Next(tileList.Count));
+            valid = true;
+            foreach (var entity in _map.GetAnchoredEntities(gridUid, grid,
+                         tile))
             {
-                var tile = tileList.RemoveSwap(_random.Next(tileList.Count));
-                valid = true;
-                foreach (var entity in _map.GetAnchoredEntities(targetGrid.Value.Owner, targetGrid.Value.Comp,
-                             tile))
-                {
-                    if (!_physicsQuery.TryGetComponent(entity, out var body))
-                        continue;
+                if (!_physicsQuery.TryGetComponent(entity, out var body))
+                    continue;
 
-                    if (body.BodyType != BodyType.Static ||
-                        !body.Hard ||
-                        (body.CollisionLayer & (int)CollisionGroup.MobMask) == 0)
-                        continue;
+                if (body.BodyType != BodyType.Static ||
+                    !body.Hard ||
+                    (body.CollisionLayer & (int)CollisionGroup.MobMask) == 0)
+                    continue;
 
-                    valid = false;
-                    break;
-                }
-
-                if (valid)
-                {
-                    targetCoords = new EntityCoordinates(targetGrid.Value.Owner,
-                        _map.TileCenterToVector(targetGrid.Value, tile));
-                    break;
-                }
+                valid = false;
+                break;
             }
 
-            if (valid || _targetGrids.Count == 0) // if we don't do the check here then PickAndTake will blow up on an empty set.
+            if (valid)
+            {
+                targetCoords = new EntityCoordinates(gridUid,
+                    _map.TileCenterToVector(gridUid, grid, tile));
                 break;
-
-            targetGrid = _random.GetRandom().PickAndTake(_targetGrids);
-        } while (true);
-
+            }
+        }
         return targetCoords;
     }
+    //SW end
 }
+

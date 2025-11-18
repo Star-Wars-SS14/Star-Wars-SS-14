@@ -11,10 +11,12 @@ using Content.Shared.Roles;
 using Content.Shared.Roles.Jobs;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
+using Robust.Shared.Serialization;
 using SixLabors.ImageSharp.ColorSpaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -38,8 +40,8 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         SubscribeLocalEvent<SWKillRandomByJobComponent, SWTaskInitEvent>(OnTaskInitByJob, after: [typeof(SWTargetSelectorSystem)],
                                                                                           before: [typeof(SWParallelTaskSystem)]);
 
-        SubscribeLocalEvent<SWFactionMemberComponent, MobStateChangedEvent>(OnMobStateChanged);
-        SubscribeLocalEvent<SWFactionMemberComponent, MindRemovedMessage>(OnMindRemoved);
+        SubscribeLocalEvent<MindContainerComponent, MobStateChangedEvent>(OnMobStateChanged);
+        SubscribeLocalEvent<MindContainerComponent, MindRemovedMessage>(OnMindRemoved);
         //SubscribeLocalEvent<SWFactionMemberComponent, AttemptEntityGibEvent>(OnGib);
         _s = Logger.GetSawmill("killOfFactionSystem");
     }
@@ -71,18 +73,18 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         }
     }
 
-    private void OnMobStateChanged(Entity<SWFactionMemberComponent> ent, ref MobStateChangedEvent args)
+    private void OnMobStateChanged(Entity<MindContainerComponent> ent, ref MobStateChangedEvent args)
     {
         UpdateProgress(ent, args.NewMobState);
     }
 
-    private void OnMindRemoved(Entity<SWFactionMemberComponent> ent, ref MindRemovedMessage args)
+    private void OnMindRemoved(Entity<MindContainerComponent> ent, ref MindRemovedMessage args)
     {
         //when entity is gibbbed mind is transfered to brain, and we cant use getmind on entity, because we will get the wrong mind
         //so we pass mind to updateProgess manually
         UpdateProgress(ent, mind: args.Mind);
     }
-    private void UpdateProgress(Entity<SWFactionMemberComponent> ent, MobState newState = MobState.Invalid, EntityUid? mind = null)
+    private void UpdateProgress(Entity<MindContainerComponent> ent, MobState newState = MobState.Invalid, EntityUid? mind = null)
     {
         var query = EntityQueryEnumerator<SWKillRandomByNameComponent>();
         while (query.MoveNext(out var uid, out var _))

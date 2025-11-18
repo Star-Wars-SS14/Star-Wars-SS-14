@@ -42,3 +42,5 @@ ent-SWCrateMRE = ящик ИРП
   .desc = {ent-SWCrateFlashlightLantern.desc}
 ent-SWCrateSteel = ящик стали
   .desc = {ent-SWCrateFlashlightLantern.desc}
+ent-SWCrateMK3Magazines =  ящик магазинов MK3
+  .desc = {ent-SWCrateFlashlightLantern.desc}

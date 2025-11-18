@@ -62,8 +62,15 @@ public sealed class SWDamageableLimitSystem : EntitySystem
 
         if (newDamageTotal > maxDamage)
         {
-            FixedPoint2 modifier = (maxDamage - curDamage) / total;
-            args.Damage = args.Damage * modifier;
+            if (total >= 1f)
+            {
+                FixedPoint2 modifier = (maxDamage - curDamage) / total;
+                args.Damage = args.Damage * modifier;
+            }
+            else
+            {
+                args.Damage = args.Damage * 0.0f;
+            }
         }
     }
 }

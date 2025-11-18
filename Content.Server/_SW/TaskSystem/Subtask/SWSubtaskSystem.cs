@@ -43,7 +43,7 @@ public sealed class SWSubtaskSystem : EntitySystem
         var comp = EnsureComp<SWTaskComponent>(ent);
         foreach (var task in ent.Comp.Subtasks)
         {
-            task.SpawnedEntity = _taskSystem.AddTaskNoInit(comp.OwningFaction, task.TaskProto);
+            task.SpawnedEntity = _taskSystem.AddTaskNoInit(comp.OwningFaction, task.TaskProto, false);
             task.SpawnedEntity.Comp.ParentTask = ent.Owner;
             _taskSystem.InitTask(task.SpawnedEntity);
         }

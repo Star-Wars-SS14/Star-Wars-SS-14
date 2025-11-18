@@ -14,7 +14,7 @@
     attackRate: 1
     damage:
       types:
-        Slash: 15
+        Slash: 0.01
   - type: ComponentToggler
     components:
     - type: Sharp

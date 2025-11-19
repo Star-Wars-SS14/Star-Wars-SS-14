@@ -35,3 +35,29 @@
     initialBeepDelay: 0
     beepInterval: 2 # 2 beeps total (at 0 and 2)
     delay: 3.0
+
+- type: entity
+  name: Termal Detonater
+  description: BOOM
+  parent: [GrenadeBase]
+  id: Tdetonater
+  components:
+  - type: ExplodeOnTrigger
+    keysIn:
+    - timer
+  - type: Explosive
+    explosionType: Default
+    maxIntensity: 5
+    intensitySlope: 3
+    totalIntensity: 30 # about a ~4 tile radius
+    canCreateVacuum: false
+  - type: TimerTrigger
+    beepSound:
+      path: "/Audio/Effects/beep1.ogg"
+      params:
+        volume: 5
+    initialBeepDelay: 0
+    beepInterval: 2 # 2 beeps total (at 0 and 2)
+  - type: ProjectileGrenade
+    fillPrototype: PelletClusterIncendiary
+    capacity: 20

@@ -196986,13 +196986,6 @@ entities:
     - type: Transform
       pos: -151.5,-138.5
       parent: 2
-- proto: BorgBeaker
-  entities:
-  - uid: 1225
-    components:
-    - type: Transform
-      pos: -163.19113,-147.32901
-      parent: 2
 - proto: BorgCharger
   entities:
   - uid: 1226

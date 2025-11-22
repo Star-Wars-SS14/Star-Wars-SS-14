@@ -352,6 +352,10 @@ entities:
     - type: OccluderTree
     - type: Parallax
       parallax: Sky
+    - type: MapLight
+      ambientLightColor: '#D8B059FF'
+    - type: LightCycle
+      duration: 2880
   - uid: 2
     components:
     - type: MetaData
@@ -359,6 +363,22 @@ entities:
     - type: Transform
       pos: -0.5,-0.5
       parent: 1
+    - type: SunShadowCycle
+      directions:
+      - direction: 0,3
+      - alpha: 0.5
+        direction: -3,-0.1
+        ratio: 0.25
+      - alpha: 0.8
+        direction: 0,-3
+        ratio: 0.5
+      - alpha: 0.5
+        direction: 3,-0.1
+        ratio: 0.75
+      duration: 2880
+    - type: SunShadow
+    - type: BecomesStation
+      id: newBalmorra
     - type: MapGrid
       chunks:
         0,0:
@@ -2894,6 +2914,8 @@ entities:
     - type: Gravity
       gravityShakeSound: !type:SoundPathSpecifier
         path: /Audio/Effects/alert.ogg
+      inherent: True
+      enabled: True
     - type: DecalGrid
       chunkCollection:
         version: 2
@@ -195339,13 +195361,6 @@ entities:
     components:
     - type: Transform
       pos: -151.5,-138.5
-      parent: 2
-- proto: BorgBeaker
-  entities:
-  - uid: 1234
-    components:
-    - type: Transform
-      pos: -163.19113,-147.32901
       parent: 2
 - proto: BorgCharger
   entities:

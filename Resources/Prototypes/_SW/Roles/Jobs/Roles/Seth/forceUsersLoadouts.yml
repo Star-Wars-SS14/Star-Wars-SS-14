@@ -1,11 +1,13 @@
 - type: startingGear
   id: ForceUserSithGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitColorBlack
+    belt: SWSithBelt
+    jumpsuit: SWClothingUniformJumpsuitSith
     gloves: ClothingHandsGlovesColorBlack
-    shoes: EchoClothingShoesBootsResistance
+    shoes: SWClothingShoesBootsSith
     ears: SWClothingHeadsetAllEmpire
     id: SWIDCardSith
+    outerClothing: SWSithCoat
     neck: SWClothingNeckCloakSithCloak
     pocket1: SWEnergySwordSith
 
@@ -13,9 +15,11 @@
 - type: startingGear
   id: ForceUserJediGear
   equipment:
+    belt: SWJediBelt
     jumpsuit: SWClothingUniformJumpsuitJedi
-    shoes: EchoClothingShoesBootsResistance
+    shoes: SWClothingShoesBootsJedi
     ears: SWClothingHeadsetRepublicAll
     id: SWIDCardJedi
+    outerClothing: SWJediCoat
     neck: SWClothingNeckCloakJediCloak
     pocket1: SWEnergySwordJedi

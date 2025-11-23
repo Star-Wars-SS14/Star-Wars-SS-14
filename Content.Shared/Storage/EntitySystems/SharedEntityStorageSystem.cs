@@ -467,6 +467,9 @@ public abstract class SharedEntityStorageSystem : EntitySystem
             }
         }
 
+        ISawmill _s = Logger.GetSawmill("dsfgh");
+        _s.Fatal($"s: {component.Contents.ContainedEntities.Count > 0}");
+
         _appearance.SetData(uid, StorageVisuals.Open, component.Open);
         _appearance.SetData(uid, StorageVisuals.HasContents, component.Contents.ContainedEntities.Count > 0);
     }

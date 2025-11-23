@@ -1,5 +1,7 @@
 ent-SWClothingShoesBootsJedi = кожаные сапоги
   .desc = Обычные кожаные сапоги.
+ent-SWClothingShoesBootsSith = темные сапоги
+  .desc = Сапоги, навевающие нехорошие мысли...
 ent-SWClothingShoesBootsOfficers = офицерские сапоги
   .desc = Черные сапоги, символ строгости и армейской дисциплины.
 ent-SWClothingShoesBootsImperialOfficers = имперские офицерские сапоги

@@ -10,6 +10,16 @@
 
 - type: entity
   parent: ClothingShoesBaseButcherable
+  id: SWClothingShoesBootsSith
+  name: Sith boots
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Shoes/Boots/sith.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Shoes/Boots/sith.rsi
+
+- type: entity
+  parent: ClothingShoesBaseButcherable
   id: SWClothingShoesBootsOfficers
   name: Officer boots
   components:

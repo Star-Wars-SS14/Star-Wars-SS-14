@@ -1,5 +1,7 @@
 ent-SWClothingUniformJumpsuitJedi = роба джедая
   .desc = Роба адептов светлой стороны Силы. Было бы ошибкой спутать с робой нищего...
+ent-SWClothingUniformJumpsuitSith = роба ситха
+  .desc = Роба адептов темной стороны Силы.
 ent-SWClothingUniformJumpsuitRebel = униформа повстанца
   .desc = Свободная, разношёрстная одежда, в зелёных тонах для смешивания в окружающей среде. 
 ent-SWClothingUniformJumpsuitOfficers = форма офицера

@@ -90,3 +90,6 @@
 
 - type: Tag
   id: SWEquipmentForceWL
+
+- type: Tag
+  id: SWEnergySwordTag

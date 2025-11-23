@@ -359,6 +359,8 @@ entities:
     - type: Transform
       pos: -0.5,-0.5
       parent: 1
+    - type: BecomesStation
+      id: newBalmorra
     - type: MapGrid
       chunks:
         0,0:

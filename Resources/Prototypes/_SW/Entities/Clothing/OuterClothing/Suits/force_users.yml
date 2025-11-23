@@ -29,6 +29,9 @@
         Radiation: 0.9
   - type: ToggleableClothing
     clothingPrototype: SWSithSuit1Helmet
+  - type: Tag
+    tags:
+    - SWEquipmentForceWL
 
 - type: entity
   parent: SWSithSuit1

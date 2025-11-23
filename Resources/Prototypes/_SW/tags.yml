@@ -87,3 +87,6 @@
 
 - type: Tag
   id: SWEquipmentForceBan
+
+- type: Tag
+  id: SWEquipmentForceWL

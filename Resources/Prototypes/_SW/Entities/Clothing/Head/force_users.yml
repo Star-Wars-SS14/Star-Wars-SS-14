@@ -52,3 +52,13 @@
     sprite: _SW/Clothing/Head/Helmets/ForceUsers/jedi1_helmet.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/ForceUsers/jedi1_helmet.rsi
+
+- type: entity
+  parent: SWJediSuit1Helmet
+  id: SWJediSuit2Helmet
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/ForceUsers/jedi2_helmet.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/ForceUsers/jedi2_helmet.rsi

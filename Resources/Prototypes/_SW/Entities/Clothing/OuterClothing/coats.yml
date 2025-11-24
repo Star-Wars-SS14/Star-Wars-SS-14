@@ -1,0 +1,31 @@
+- type: entity
+  parent: ClothingOuterBase
+  id: SWSithCoat
+  name: sith coat
+  description: A comfy coat.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Vests/sith_coat.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Vests/sith_coat.rsi
+  - type: TemperatureProtection
+    heatingCoefficient: 0.1
+    coolingCoefficient: 0.1
+  - type: Armor
+    modifiers:
+      coefficients:
+        Slash: 0.95
+  - type: Tag
+    tags:
+    - SWEquipmentForceWL
+
+- type: entity
+  parent: SWSithCoat
+  id: SWJediCoat
+  name: jedi coat
+  description: A comfy coat.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Vests/jedi_coat.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Vests/jedi_coat.rsi

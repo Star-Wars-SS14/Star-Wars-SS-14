@@ -148,7 +148,6 @@
 - type: entity
   parent: CMSeatBase
   id: CMChairOfficeDark
-  name: dark office chair
   components:
   - type: Sprite
     state: officechair_dark
@@ -161,7 +160,6 @@
 - type: entity
   parent: CMChairOfficeDark
   id: CMChairOfficeWhite
-  name: white office chair
   components:
   - type: Sprite
     state: officechair_white

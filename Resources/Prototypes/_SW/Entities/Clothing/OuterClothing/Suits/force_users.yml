@@ -29,6 +29,9 @@
         Radiation: 0.9
   - type: ToggleableClothing
     clothingPrototype: SWSithSuit1Helmet
+  - type: Tag
+    tags:
+    - SWEquipmentForceWL
 
 - type: entity
   parent: SWSithSuit1
@@ -53,3 +56,14 @@
     sprite: _SW/Clothing/OuterClothing/Suits/ForceUsers/jedi1.rsi
   - type: ToggleableClothing
     clothingPrototype: SWJediSuit1Helmet
+
+- type: entity
+  parent: SWJediSuit1
+  id: SWJediSuit2
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/ForceUsers/jedi2.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/ForceUsers/jedi2.rsi
+  - type: ToggleableClothing
+    clothingPrototype: SWJediSuit2Helmet

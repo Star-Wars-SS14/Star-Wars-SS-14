@@ -18,6 +18,7 @@
   id: HumanHairBaby
   bodyPart: Hair
   markingCategory: Hair
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Mobs/Customization/human_hair.rsi
       state: baby
@@ -73,6 +74,7 @@
   id: HumanHairCube
   bodyPart: Hair
   markingCategory: Hair
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
     - sprite: Mobs/Customization/human_hair.rsi
       state: cube
@@ -1608,6 +1610,7 @@
   id: HumanHairOverEyePigtail
   bodyPart: Hair
   markingCategory: Hair
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
   sprites:
   - sprite: Mobs/Customization/human_hair.rsi
     state: overeyepigtail

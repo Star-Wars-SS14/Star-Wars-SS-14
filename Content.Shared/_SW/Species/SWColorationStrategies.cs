@@ -13,7 +13,7 @@ using YamlDotNet.Core.Tokens;
 public sealed partial class SWHumanTonedReducedSkinColoration : ISkinColorationStrategy
 {
     [DataField]
-    public Color ValidHumanSkinTone = Color.FromHsv(new Vector4(0.07f, 0.2f, 1f, 1f));
+    public Color ValidSkinColor = Color.FromHsv(new Vector4(0.07f, 0.2f, 1f, 1f));
 
     [DataField]
     public float MinTone = 0f;
@@ -26,13 +26,14 @@ public sealed partial class SWHumanTonedReducedSkinColoration : ISkinColorationS
     {
         var tmp = new HumanTonedSkinColoration();
         var tone = tmp.ToUnary(color);
-
         return MinTone <= tone && tone <= MaxTone;
     }
 
     public Color ClosestSkinColor(Color color)
     {
-        return ValidHumanSkinTone;
+        float unary = ToUnary(color);
+
+        return FromUnary(unary);
     }
 
     public Color FromUnary(float color)
@@ -41,7 +42,7 @@ public sealed partial class SWHumanTonedReducedSkinColoration : ISkinColorationS
         var new_tone = (int)float.Lerp(MinTone, MaxTone, color);
 
         var tmp = new HumanTonedSkinColoration();
-        return tmp.FromUnary(color);
+        return tmp.FromUnary(new_tone);
     }
 
     public float ToUnary(Color color)
@@ -56,7 +57,7 @@ public sealed partial class SWHumanTonedReducedSkinColoration : ISkinColorationS
 
 [DataDefinition]
 [Serializable, NetSerializable]
-public sealed partial class ColorLimitsSkinColoration : ISkinColorationStrategy
+public sealed partial class SWColorLimitsSkinColoration : ISkinColorationStrategy
 {
     [DataField]
     public SWNumberIntervalSet HueLimit = new SWNumberIntervalSet(0, 1);
@@ -76,8 +77,45 @@ public sealed partial class ColorLimitsSkinColoration : ISkinColorationStrategy
 
     public Color ClosestSkinColor(Color color)
     {
-        return GenerateValidColorLimits();
+        var hsv = Color.ToHsv(color);
+        var h = hsv.X;
+        var s = hsv.Y;
+        var v = hsv.Z;
+
+        var hLimits = HueLimit;
+        var sLimits = SaturationLimit;
+        var vLimits = ValueLimit;
+
+        float closestH = ClosestValueInIntervalSet(h, hLimits);
+        float closestS = ClosestValueInIntervalSet(s, sLimits);
+        float closestV = ClosestValueInIntervalSet(v, vLimits);
+
+        return Color.FromHsv(new Vector4(closestH, closestS, closestV, 1.0f));
     }
+
+    private float ClosestValueInIntervalSet(float value, SWNumberIntervalSet intervalSet)
+    {
+        if (intervalSet == null || intervalSet.Intervals.Count == 0)
+            return value;
+
+        float closestValue = value;
+        float minDistance = float.MaxValue;
+
+        foreach (var interval in intervalSet.Intervals)
+        {
+            float clampedValue = Math.Clamp(value, interval.Left, interval.Right);
+            float distance = Math.Abs(value - clampedValue);
+
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closestValue = clampedValue;
+            }
+        }
+
+        return closestValue;
+    }
+
     public Color GenerateValidColorLimits()
     {
 

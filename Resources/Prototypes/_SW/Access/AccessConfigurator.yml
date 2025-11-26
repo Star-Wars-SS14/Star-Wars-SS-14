@@ -35,7 +35,6 @@
     sprite: Objects/Misc/id_cards.rsi
     layers:
     - state: admin
-    - state: idadmin
   - type: Clothing
     sprite: Objects/Misc/id_cards.rsi
   - type: Item

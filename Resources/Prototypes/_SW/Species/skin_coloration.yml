@@ -3,6 +3,10 @@
   strategy: !type:SWHumanTonedReducedSkinColoration {}
 
 - type: skinColoration
+  id: ZabrakColorLimits
+  strategy: !type:SWColorLimitsSkinColoration
+
+- type: skinColoration
   id: ColorLimitsNautolan
   strategy: !type:SWColorLimitsSkinColoration
     hueLimit:

@@ -15,6 +15,14 @@
     - sprite: Mobs/Customization/human_hair.rsi
       state: afro2
 - type: marking
+  id: HumanHairBaby
+  bodyPart: Hair
+  markingCategory: Hair
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
+  sprites:
+    - sprite: Mobs/Customization/human_hair.rsi
+      state: baby
+- type: marking
   id: HumanHairBigafro
   bodyPart: Hair
   markingCategory: Hair
@@ -62,6 +70,14 @@
   sprites:
     - sprite: Mobs/Customization/human_hair.rsi
       state: bedheadv3
+- type: marking
+  id: HumanHairCube
+  bodyPart: Hair
+  markingCategory: Hair
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
+  sprites:
+    - sprite: Mobs/Customization/human_hair.rsi
+      state: cube
 - type: marking
   id: HumanHairPulato
   bodyPart: Hair
@@ -1590,3 +1606,11 @@
   sprites:
   - sprite: Mobs/Customization/human_hair.rsi
     state: longwithbangs
+- type: marking
+  id: HumanHairOverEyePigtail
+  bodyPart: Hair
+  markingCategory: Hair
+  speciesRestriction: ["Human", "Chiss", "Zeltron"] #SW
+  sprites:
+  - sprite: Mobs/Customization/human_hair.rsi
+    state: overeyepigtail

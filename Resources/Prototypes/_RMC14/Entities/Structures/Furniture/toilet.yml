@@ -34,7 +34,6 @@
     autoDrain: false
   - type: StaticPrice
     price: 25
-  - type: RatKingRummageable
   - type: SolutionContainerManager
     solutions:
       drainBuffer:

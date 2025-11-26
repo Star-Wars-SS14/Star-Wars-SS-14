@@ -1,8 +1,8 @@
 - type: species
   id: Tajaran
   name: species-name-tajaran
-  roundStart: false #SW
-  sponsorOnly: true # Corvax-Sponsors
+  roundStart: false
+  sponsorOnly: false # Corvax-Sponsors
   prototype: MobTajaran
   sprites: MobTajaranSprites
   defaultSkinTone: "#eb943d"
@@ -47,7 +47,7 @@
     Tail:
       points: 1
       required: false
-      defaultMarkings: [ TailM ]
+      defaultMarkings: [ TajaranTailM ]
     Head:
       points: 1
       required: false

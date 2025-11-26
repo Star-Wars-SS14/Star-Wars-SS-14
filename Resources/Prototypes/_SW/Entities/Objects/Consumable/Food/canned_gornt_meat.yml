@@ -11,9 +11,6 @@
     - savory
     - salty
     - cheap
-  - type: Food
-    trash:
-    - SWCannedGorntMeatEmpty
   - type: Item
     size: Small
 

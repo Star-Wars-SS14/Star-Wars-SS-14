@@ -6,11 +6,7 @@
   sprites: MobTwilekSprites
   markingLimits: MobNoFacialHairRequiredMarkingLimits
   dollPrototype: MobHumanDummy
-  skinColoration: ColorLimits
-  skinColorLimits: TwilekColorLimits
-
-- type: swColorLimits
-  id: TwilekColorLimits
+  skinColoration: Hues
 
 - type: markingPoints
   id: MobNoFacialHairRequiredMarkingLimits

@@ -1,12 +1,12 @@
 using Content.Server._SW.Force.Components;
 using Content.Server.Chat.Systems;
 using Content.Server.Radio;
-using Content.Server.Radio.Components;
 using Content.Server.Radio.EntitySystems;
 using Content.Shared.Chat;
 using Content.Shared.Examine;
 using Content.Shared.Inventory.Events;
 using Content.Shared.Radio;
+using Content.Shared.Radio.Components;
 using Content.Shared.Shuttles.Components;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
@@ -93,7 +93,7 @@ public sealed class StarHelmetSystem : EntitySystem
         }
         EnsureComp<ActiveRadioComponent>(helmet).Channels = new(component.Channels);
 
-        EnsureComp<ActiveRadioComponent>(helmet).Channels = new HashSet<string>(component.Channels);
+        EnsureComp<ActiveRadioComponent>(helmet).Channels = new HashSet<ProtoId<RadioChannelPrototype>>(component.Channels);
 
 
         if (!TryComp<RadioSpeakerComponent>(helmet, out var radioSpeakerComponent))

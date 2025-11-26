@@ -6,25 +6,7 @@
   sprites: MobNautolanSprites
   markingLimits: MobNoFacialHairRequiredMarkingLimits
   dollPrototype: MobHumanDummy
-  skinColoration: ColorLimits
-  skinColorLimits: NautolanColorLimits
-
-- type: swColorLimits
-  id: NautolanColorLimits
-  hueLimit:
-    intervals:
-    - left: 0.378
-      right: 0.611
-    - left: 0.169
-      right: 0.222
-  saturationLimit:
-    intervals:
-    - left: 0.25
-      right: 1.00
-  valueLimit:
-    intervals:
-    - left: 0.5
-      right: 1.00
+  skinColoration: ColorLimitsNautolan
 
 # The lack of a layer means that
 # this person cannot have round-start anything

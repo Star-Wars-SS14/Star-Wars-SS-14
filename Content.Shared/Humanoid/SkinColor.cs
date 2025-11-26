@@ -5,6 +5,7 @@ using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
 using System;
 using System.Linq;
+using System.Numerics;
 using System.Security.Cryptography;
 
 namespace Content.Shared.Humanoid;

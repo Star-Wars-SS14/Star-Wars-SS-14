@@ -2,6 +2,7 @@ using Content.Server._SW.Turrets;
 using Content.Server.Chat.Systems;
 using Content.Server.NPC.Components;
 using Content.Server.Radio.EntitySystems;
+using Content.Shared.Chat;
 using Content.Shared.CombatMode;
 using Content.Shared.Interaction;
 using Content.Shared.Physics;

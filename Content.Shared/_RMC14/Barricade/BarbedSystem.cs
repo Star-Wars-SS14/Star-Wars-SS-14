@@ -1,6 +1,7 @@
 using Content.Shared._RMC14.Barricade.Components;
 using Content.Shared.Climbing.Events;
 using Content.Shared.Damage;
+using Content.Shared.Damage.Systems;
 using Content.Shared.DoAfter;
 using Content.Shared.Doors;
 using Content.Shared.Doors.Components;
@@ -90,7 +91,7 @@ public sealed class BarbedSystem : EntitySystem
 
         if (TryComp<StackComponent>(args.Used.Value, out var stackComp))
         {
-            _stacks.Use(args.Used.Value, 1, stackComp);
+            _stacks.TryUse(args.Used.Value, 1);
         }
 
         barbed.Comp.IsBarbed = true;

@@ -1,9 +1,9 @@
+﻿using System.Numerics;
 using Content.Shared.Disposal;
 using Content.Shared.Disposal.Unit;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Timing;
-using Robust.Shared.Maths;
 
 namespace Content.Client.Disposal;
 

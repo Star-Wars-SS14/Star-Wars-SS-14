@@ -30,7 +30,6 @@
   - type: Sprite
     sprite: _SW/Objects/Consumable/Food/protein-bar.rsi
     state: icon-opened
-  - type: Food
   - type: SolutionContainerManager
     solutions:
       food:

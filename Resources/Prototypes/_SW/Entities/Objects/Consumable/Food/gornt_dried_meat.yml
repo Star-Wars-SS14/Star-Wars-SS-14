@@ -18,4 +18,3 @@
         reagents:
         - ReagentId: Nutriment
           Quantity: 10
-  - type: Food

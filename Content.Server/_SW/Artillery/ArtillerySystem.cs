@@ -9,6 +9,7 @@ using Robust.Shared.Timing;
 using Robust.Server.Audio;
 using Content.Shared.Coordinates;
 using Robust.Shared.Audio;
+using Content.Shared.Trigger;
 namespace Content.Server._SW.Artillery;
 public sealed class ArtillerySystem : EntitySystem
 {

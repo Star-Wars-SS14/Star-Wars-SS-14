@@ -6,7 +6,7 @@
   sprites: MobZeltronSprites
   markingLimits: MobHumanMarkingLimits
   dollPrototype: MobHumanDummy
-  skinColoration: HumanToneReducedZeltron
+  skinColoration: HumanToneReduced
 
 # The lack of a layer means that
 # this person cannot have round-start anything

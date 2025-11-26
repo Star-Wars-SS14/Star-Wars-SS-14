@@ -1,9 +1,5 @@
 - type: skinColoration
-  id: HumanToneReducedChiss
-  strategy: !type:SWHumanTonedReducedSkinColoration {}
-
-- type: skinColoration
-  id: HumanToneReducedZeltron
+  id: HumanToneReduced
   strategy: !type:SWHumanTonedReducedSkinColoration {}
 
 - type: skinColoration

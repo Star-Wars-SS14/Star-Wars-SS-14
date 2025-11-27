@@ -114,6 +114,7 @@
       SWBlackSunMercenary: true
       SWExchangeCaptain: true
       SWExchangeOperative: true
+      SWNeutralBartender: true
   - type: AccessReader
     access: [[ "SWEmpireCommander" ]]
 
@@ -145,6 +146,7 @@
       SWBlackSunMercenary: true
       SWExchangeCaptain: true
       SWExchangeOperative: true
+      SWNeutralBartender: true
   - type: AccessReader
     access: [[ "SWRepublicCommander" ]]
 

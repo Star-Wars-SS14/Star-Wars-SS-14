@@ -1,16 +1,9 @@
 using Content.Shared._SW;
 using Content.Shared.Armor;
-using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
 using Content.Shared.FixedPoint;
-using Content.Shared.Inventory;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Content.Server._SW.SWDamageableLimit;
 public sealed class SWDamageableLimitSystem : EntitySystem

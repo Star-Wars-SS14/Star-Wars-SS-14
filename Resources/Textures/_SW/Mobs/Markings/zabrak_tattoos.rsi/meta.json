@@ -1,0 +1,51 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "@baohe (discord)",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+        {
+            "name": "tattoo_zabrak_1",
+            "directions": 4
+        },
+        {
+            "name": "tattoo_zabrak_10",
+            "directions": 4
+        },
+        {
+            "name": "tattoo_zabrak_2",
+            "directions": 4
+        },
+        {
+            "name": "tattoo_zabrak_3",
+            "directions": 4
+        },
+        {
+            "name": "tattoo_zabrak_4",
+            "directions": 4
+        },
+        {
+            "name": "tattoo_zabrak_5",
+            "directions": 4
+        },
+        {
+            "name": "tattoo_zabrak_6",
+            "directions": 4
+        },
+        {
+            "name": "tattoo_zabrak_7",
+            "directions": 4
+        },
+        {
+            "name": "tattoo_zabrak_8",
+            "directions": 4
+        },
+        {
+            "name": "tattoo_zabrak_9",
+            "directions": 4
+        }
+    ]
+}

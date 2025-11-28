@@ -1,0 +1,108 @@
+- type: marking
+  id: SWZabrakScar1
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  forcedColoring: true
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_scars.rsi
+    state: scar_zabrak_1
+
+- type: marking
+  id: SWZabrakScar2
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  followSkinColor: true
+  forcedColoring: true
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_scars.rsi
+    state: scar_zabrak_2
+
+- type: marking
+  id: SWZabrakScar3
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  followSkinColor: true
+  forcedColoring: true
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_scars.rsi
+    state: scar_zabrak_3
+
+- type: marking
+  id: SWZabrakScar4
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  followSkinColor: true
+  forcedColoring: true
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_scars.rsi
+    state: scar_zabrak_4
+
+- type: marking
+  id: SWZabrakScar5
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  followSkinColor: true
+  forcedColoring: true
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_scars.rsi
+    state: scar_zabrak_5
+
+- type: marking
+  id: SWZabrakScar6
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  followSkinColor: true
+  forcedColoring: true
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_scars.rsi
+    state: scar_zabrak_6
+
+- type: marking
+  id: SWZabrakScar7
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  followSkinColor: true
+  forcedColoring: true
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_scars.rsi
+    state: scar_zabrak_7
+
+- type: marking
+  id: SWZabrakScar8
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  followSkinColor: true
+  forcedColoring: true
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_scars.rsi
+    state: scar_zabrak_8
+
+- type: marking
+  id: SWZabrakScar9
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  followSkinColor: true
+  forcedColoring: true
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_scars.rsi
+    state: scar_zabrak_9
+
+- type: marking
+  id: SWZabrakScar10
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  followSkinColor: true
+  forcedColoring: true
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_scars.rsi
+    state: scar_zabrak_10

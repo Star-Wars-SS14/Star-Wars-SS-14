@@ -1,0 +1,139 @@
+- type: marking
+  id: SWZabrakTattoo1
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  coloring:
+    default:
+      type:
+        !type:TattooColoring
+      fallbackColor: "#666666"
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_tattoos.rsi
+    state: tattoo_zabrak_1
+
+- type: marking
+  id: SWZabrakTattoo2
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  coloring:
+    default:
+      type:
+        !type:TattooColoring
+      fallbackColor: "#666666"
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_tattoos.rsi
+    state: tattoo_zabrak_2
+
+- type: marking
+  id: SWZabrakTattoo3
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  coloring:
+    default:
+      type:
+        !type:TattooColoring
+      fallbackColor: "#666666"
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_tattoos.rsi
+    state: tattoo_zabrak_3
+
+- type: marking
+  id: SWZabrakTattoo4
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  coloring:
+    default:
+      type:
+        !type:TattooColoring
+      fallbackColor: "#666666"
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_tattoos.rsi
+    state: tattoo_zabrak_4
+
+- type: marking
+  id: SWZabrakTattoo5
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  coloring:
+    default:
+      type:
+        !type:TattooColoring
+      fallbackColor: "#666666"
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_tattoos.rsi
+    state: tattoo_zabrak_5
+
+- type: marking
+  id: SWZabrakTattoo6
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  coloring:
+    default:
+      type:
+        !type:TattooColoring
+      fallbackColor: "#666666"
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_tattoos.rsi
+    state: tattoo_zabrak_6
+
+- type: marking
+  id: SWZabrakTattoo7
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  coloring:
+    default:
+      type:
+        !type:TattooColoring
+      fallbackColor: "#666666"
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_tattoos.rsi
+    state: tattoo_zabrak_7
+
+- type: marking
+  id: SWZabrakTattoo8
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  coloring:
+    default:
+      type:
+        !type:TattooColoring
+      fallbackColor: "#666666"
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_tattoos.rsi
+    state: tattoo_zabrak_8
+
+- type: marking
+  id: SWZabrakTattoo9
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  coloring:
+    default:
+      type:
+        !type:TattooColoring
+      fallbackColor: "#666666"
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_tattoos.rsi
+    state: tattoo_zabrak_9
+
+- type: marking
+  id: SWZabrakTattoo10
+  bodyPart: Head
+  markingCategory: Head
+  speciesRestriction: [Zabrak]
+  coloring:
+    default:
+      type:
+        !type:TattooColoring
+      fallbackColor: "#666666"
+  sprites:
+  - sprite: _SW/Mobs/Markings/zabrak_tattoos.rsi
+    state: tattoo_zabrak_10

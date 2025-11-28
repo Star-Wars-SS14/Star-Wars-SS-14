@@ -1,0 +1,8 @@
+- type: marking
+  id: SWZabrakHorns1
+  markingCategory: HeadTop
+  bodyPart: HeadTop
+  speciesRestriction: [Zabrak]
+  sprites:
+    - sprite: _SW/Mobs/Markings/zabrak_horns.rsi
+      state: horns_1

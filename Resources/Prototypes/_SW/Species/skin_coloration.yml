@@ -3,6 +3,22 @@
   strategy: !type:SWHumanTonedReducedSkinColoration {}
 
 - type: skinColoration
+  id: ZabrakColorLimits
+  strategy: !type:SWColorLimitsSkinColoration
+    hueLimit:
+    intervals:
+    - left: 0.3
+      right: 0.35
+  saturationLimit:
+    intervals:
+    - left: 0.5
+      right: 1.00
+  valueLimit:
+    intervals:
+    - left: 0.5
+      right: 0.8
+
+- type: skinColoration
   id: ColorLimitsNautolan
   strategy: !type:SWColorLimitsSkinColoration
     hueLimit:

@@ -27,7 +27,7 @@
   components:
   - type: ExplodeOnTrigger
   - type: Explosive
-    explosionType: Default
+    explosionType: SWDefaultGreen
     maxIntensity: 5
     intensitySlope: 3
     totalIntensity: 60

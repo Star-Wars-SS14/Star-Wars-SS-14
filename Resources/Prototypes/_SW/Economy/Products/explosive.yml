@@ -41,3 +41,14 @@
     SWEmpireCreditCurrency: 100
   category: sw-category-explosive
   group: SWExplosiveMarket
+
+- type: swCargoProduct
+  id: SWTermalDetonaterCP
+  icon:
+    sprite: _SW/Objects/Weapons/Grenades/termal_grenade.rsi
+    state: icon
+  product: SWTermaldetonater
+  cost:
+    SWEmpireCreditCurrency: 100
+  category: sw-category-explosive
+  group: SWExplosiveMarket

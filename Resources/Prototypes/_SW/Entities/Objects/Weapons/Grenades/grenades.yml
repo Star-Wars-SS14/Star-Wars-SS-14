@@ -42,6 +42,8 @@
   parent: [GrenadeBase]
   id: Tdetonater
   components:
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Grenades/termal_grenade.rsi
   - type: ExplodeOnTrigger
     keysIn:
     - timer

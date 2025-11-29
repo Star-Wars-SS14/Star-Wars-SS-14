@@ -7,15 +7,15 @@
   strategy: !type:SWColorLimitsSkinColoration
     hueLimit:
       intervals:
-      - left: 0.3
-        right: 0.35
+      - left: 0.0
+        right: 0.11
     saturationLimit:
       intervals:
       - left: 0.5
         right: 1.00
     valueLimit:
       intervals:
-      - left: 0.5
+      - left: 0.6
         right: 0.8
 
 - type: skinColoration

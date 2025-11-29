@@ -27,12 +27,6 @@
             sprite: _SW/Mobs/Species/Chiss/displacement.rsi
             state: jumpsuit-female
     templateId: colicoidTemplate
-  - type: Armor
-    modifiers:
-      coefficients:
-        Slash: 0.5
-        Heat: 0.5
-        Piercing: 0.5
   - type: MeleeWeapon
     wideAnimationRotation: -135
     damage:
@@ -40,6 +34,8 @@
         Slash: 20
     soundHit:
       path: /Audio/Weapons/bladeslice.ogg
+  - type: Damageable
+    damageModifierSet: SWColicoid
 
 
 - type: entity

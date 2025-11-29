@@ -1,3 +1,4 @@
+using Content.Shared._SW;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.FixedPoint;
@@ -132,6 +133,9 @@ public sealed partial class DamageableSystem
         if (!ignoreGlobalModifiers)
             damage = ApplyUniversalAllModifiers(damage);
 
+        var evv = new SWAfterAllModifiersAppliedDamageModifyEvent(damage); //SW
+        RaiseLocalEvent(ent, evv); //SW
+        damage = evv.Damage;  //SW
 
         damageDone.DamageDict.EnsureCapacity(damage.DamageDict.Count);
 

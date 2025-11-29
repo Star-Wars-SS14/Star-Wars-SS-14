@@ -20,6 +20,16 @@
 
 - type: entity
   parent: ClothingUniformBase
+  id: SWClothingUniformJumpsuitSith
+  name: Sith robe
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Uniforms/Jumpsuit/sith.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Uniforms/Jumpsuit/sith.rsi
+
+- type: entity
+  parent: ClothingUniformBase
   id: SWClothingUniformJumpsuitOfficers
   name: officer uniform
   components:

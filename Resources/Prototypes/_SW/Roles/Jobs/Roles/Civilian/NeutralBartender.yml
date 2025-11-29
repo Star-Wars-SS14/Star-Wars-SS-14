@@ -1,6 +1,6 @@
 - type: job
   id: SWNeutralBartender
-  name: Бармен нейтральной кантины
+  name: Бармен "Фарса"
   playTimeTracker: Job_NeutralBartender
   requirements:
   - !type:OverallPlaytimeRequirement

@@ -211,7 +211,18 @@ public sealed partial class StationJobsSystem
                 // We do this by simply selecting a station randomly and giving it the remaining share(s).
                 if (distributed < candidates.Count)
                 {
-                    var choice = _random.Pick(stations);
+                    List<EntityUid> stationsAvailable = new List<EntityUid>();
+
+                    foreach (var st in stations)
+                    {
+                        var jobs = GetRoundStartJobs(st).Keys;
+                        if (jobPlayerOptions.Keys.Intersect(jobs).Count() > 0)
+                        {
+                            stationsAvailable.Add(st);
+                        }
+                    }
+
+                    var choice = _random.Pick(stationsAvailable);
                     stationShares[choice] += candidates.Count - distributed;
                 }
 

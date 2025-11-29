@@ -1,12 +1,24 @@
 - type: entity
-  parent: ClothingHeadHardsuitBase
+  parent: ClothingHeadBase
   id: SWSithSuit1Helmet
   name: Шлем брони ситха
-  categories: [ HideSpawnMenu ]
   description: Броня для любителей темной стороны
   components:
+  - type: GroupExamine
+  - type: IngestionBlocker
+  - type: IdentityBlocker
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
+    - HeadTop
+    - HeadSide
+  - type: BreathMask
+  - type: Clickable
+  - type: InteractionOutline
   - type: Sprite
     sprite: _SW/Clothing/Head/Helmets/ForceUsers/sith1_helmet.rsi
+    state: icon # default state used by most inheritors
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/ForceUsers/sith1_helmet.rsi
   - type: PressureProtection
@@ -18,16 +30,6 @@
   - type: ClothingSpeedModifier
     walkModifier: 1.0
     sprintModifier: 1.0
-  - type: Armor
-    modifiers:
-      coefficients:
-        Blunt: 0.95
-        Slash: 0.95
-        Piercing: 0.95
-        Heat: 0.95
-        Cold: 0.95
-        Shock: 0.95
-        Radiation: 0.8
 
 - type: entity
   parent: SWSithSuit1Helmet
@@ -50,3 +52,13 @@
     sprite: _SW/Clothing/Head/Helmets/ForceUsers/jedi1_helmet.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/ForceUsers/jedi1_helmet.rsi
+
+- type: entity
+  parent: SWJediSuit1Helmet
+  id: SWJediSuit2Helmet
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/ForceUsers/jedi2_helmet.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/ForceUsers/jedi2_helmet.rsi

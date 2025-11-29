@@ -1,0 +1,44 @@
+- type: marking
+  id: SWZabrakHorns1
+  markingCategory: HeadTop
+  bodyPart: HeadTop
+  speciesRestriction: [Zabrak]
+  sprites:
+    - sprite: _SW/Mobs/Markings/zabrak_horns.rsi
+      state: horns_1
+
+- type: marking
+  id: SWZabrakHorns2
+  markingCategory: HeadTop
+  bodyPart: HeadTop
+  speciesRestriction: [Zabrak]
+  sprites:
+    - sprite: _SW/Mobs/Markings/zabrak_horns.rsi
+      state: horns_2
+
+- type: marking
+  id: SWZabrakHorns3
+  markingCategory: HeadTop
+  bodyPart: HeadTop
+  speciesRestriction: [Zabrak]
+  sprites:
+    - sprite: _SW/Mobs/Markings/zabrak_horns.rsi
+      state: horns_3
+
+- type: marking
+  id: SWZabrakHorns4
+  markingCategory: HeadTop
+  bodyPart: HeadTop
+  speciesRestriction: [Zabrak]
+  sprites:
+    - sprite: _SW/Mobs/Markings/zabrak_horns.rsi
+      state: horns_4
+
+- type: marking
+  id: SWZabrakHorns5
+  markingCategory: HeadTop
+  bodyPart: HeadTop
+  speciesRestriction: [Zabrak]
+  sprites:
+    - sprite: _SW/Mobs/Markings/zabrak_horns.rsi
+      state: horns_5

@@ -1,0 +1,49 @@
+- type: entity
+  parent: BaseMobSpeciesOrganic
+  id: BaseMobColicoid
+  name: Urist McColicoid
+  abstract: true
+  components:
+  - type: Hunger
+  - type: Icon # It will not have an icon in the adminspawn menu without this. Body parts seem fine for whatever reason.
+    sprite: _SW/Mobs/Species/Colicoid/parts.rsi
+    state: full
+  - type: Thirst
+  - type: Butcherable
+    butcheringType: Spike
+    spawned:
+    - id: FoodMeatHuman
+      amount: 5
+  - type: HumanoidAppearance
+    species: Colicoid
+    hideLayersOnEquip:
+    - Hair
+    - Snout
+  - type: Inventory
+    femaleDisplacements:
+      jumpsuit:
+        sizeMaps:
+          32:
+            sprite: _SW/Mobs/Species/Chiss/displacement.rsi
+            state: jumpsuit-female
+    templateId: colicoidTemplate
+  - type: Armor
+    modifiers:
+      coefficients:
+        Slash: 0.6
+        Heat: 0.6
+        Cold: 0.6
+        Piercing: 0.6
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    damage:
+      types:
+        Slash: 20
+    soundHit:
+      path: /Audio/Weapons/bladeslice.ogg
+
+
+- type: entity
+  save: false
+  parent: BaseMobColicoid
+  id: MobColicoid

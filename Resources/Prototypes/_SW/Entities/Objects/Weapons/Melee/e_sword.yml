@@ -34,6 +34,9 @@
             Structural: 20
   - type: ItemToggle
     onActivate: false
+  - type: Tag
+    tags:
+    - SWEnergySwordTag
 
 - type: entity
   parent: SWEnergySwordBase

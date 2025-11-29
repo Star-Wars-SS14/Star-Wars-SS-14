@@ -1,0 +1,10 @@
+marking-SWZabrakScar1 = Шрамирование забрака 1
+marking-SWZabrakScar2 = Шрамирование забрака 2
+marking-SWZabrakScar3 = Шрамирование забрака 3
+marking-SWZabrakScar4 = Шрамирование забрака 4
+marking-SWZabrakScar5 = Шрамирование забрака 5
+marking-SWZabrakScar6 = Шрамирование забрака 6
+marking-SWZabrakScar7 = Шрамирование забрака 7
+marking-SWZabrakScar8 = Шрамирование забрака 8
+marking-SWZabrakScar9 = Шрамирование забрака 9
+marking-SWZabrakScar10 = Шрамирование забрака 10

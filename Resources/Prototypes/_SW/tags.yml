@@ -87,3 +87,15 @@
 
 - type: Tag
   id: SWEquipmentForceBan
+
+- type: Tag
+  id: SWEquipmentForceWL
+
+- type: Tag
+  id: SWEnergySwordTag
+
+- type: Tag
+  id: RodMetal1
+
+- type: Tag
+  id: HidesNose

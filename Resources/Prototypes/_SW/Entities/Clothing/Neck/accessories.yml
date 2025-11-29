@@ -1,0 +1,69 @@
+- type: entity
+  parent: ClothingNeckBase
+  id: SWCapeForest
+  name: cape forest  
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/Accessories/cape_forest.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Neck/Accessories/cape_forest.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: SWCapeWhite
+  name: cape white
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/Accessories/cape_white.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Neck/Accessories/cape_white.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: SWKamaBlack
+  name: kama black
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/Accessories/kama_black.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Neck/Accessories/kama_black.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: SWKamaBrown
+  name: kama brown
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/Accessories/kama_brown.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Neck/Accessories/kama_brown.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: SWKamaForest
+  name: kama forest
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/Accessories/kama_forest.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Neck/Accessories/kama_forest.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: SWKamaWhite
+  name: kama white
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/Accessories/kama_white.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Neck/Accessories/kama_white.rsi
+
+- type: entity
+  parent: ClothingNeckBase
+  id: SWCapeBlack
+  name: cape black
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/Accessories/сape_black.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Neck/Accessories/сape_black.rsi

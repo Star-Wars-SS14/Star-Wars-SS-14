@@ -1,0 +1,10 @@
+marking-SWZabrakTattoo1 = Татуировка забраков 1
+marking-SWZabrakTattoo2 = Татуировка забраков 2
+marking-SWZabrakTattoo3 = Татуировка забраков 3
+marking-SWZabrakTattoo4 = Татуировка забраков 4
+marking-SWZabrakTattoo5 = Татуировка забраков 5
+marking-SWZabrakTattoo6 = Татуировка забраков 6
+marking-SWZabrakTattoo7 = Татуировка забраков 7
+marking-SWZabrakTattoo8 = Татуировка забраков 8
+marking-SWZabrakTattoo9 = Татуировка забраков 9
+marking-SWZabrakTattoo10 = Татуировка забраков 10

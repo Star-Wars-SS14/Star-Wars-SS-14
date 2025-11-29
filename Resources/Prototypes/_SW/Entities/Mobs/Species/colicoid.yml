@@ -30,10 +30,9 @@
   - type: Armor
     modifiers:
       coefficients:
-        Slash: 0.6
-        Heat: 0.6
-        Cold: 0.6
-        Piercing: 0.6
+        Slash: 0.5
+        Heat: 0.5
+        Piercing: 0.5
   - type: MeleeWeapon
     wideAnimationRotation: -135
     damage:

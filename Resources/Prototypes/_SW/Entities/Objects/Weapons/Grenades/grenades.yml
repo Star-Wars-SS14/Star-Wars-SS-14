@@ -40,7 +40,7 @@
   name: Termal Detonater
   description: BOOM
   parent: [GrenadeBase]
-  id: Tdetonater
+  id: SWTermaldetonater
   components:
   - type: Sprite
     sprite: _SW/Objects/Weapons/Grenades/termal_grenade.rsi
@@ -49,8 +49,8 @@
     - timer
   - type: Explosive
     explosionType: Default
-    maxIntensity: 5
-    intensitySlope: 3
+    maxIntensity: 10
+    intensitySlope: 4
     totalIntensity: 30 # about a ~4 tile radius
     canCreateVacuum: false
   - type: TimerTrigger
@@ -62,4 +62,4 @@
     beepInterval: 2 # 2 beeps total (at 0 and 2)
   - type: ProjectileGrenade
     fillPrototype: PelletClusterIncendiary
-    capacity: 20
+    capacity: 25

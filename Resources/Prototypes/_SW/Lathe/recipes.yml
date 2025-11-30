@@ -1,0 +1,6 @@
+- type: swLatheRecipe
+  id: SWOreToSteel
+  materials:
+    SteelOre1: 1
+  result:
+    SheetSteel1: 1

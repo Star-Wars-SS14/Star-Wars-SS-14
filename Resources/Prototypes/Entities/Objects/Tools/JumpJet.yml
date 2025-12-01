@@ -1,0 +1,26 @@
+- type: entity
+  id: JumpPack
+  parent: BaseJetpack
+  name: JumpPack
+  description: It's a JumpPack.
+  components:
+    - type: Item
+      sprite: Objects/Tanks/Jetpacks/mini.rsi
+    - type: Sprite
+      sprite: Objects/Tanks/Jetpacks/mini.rsi
+    - type: Clothing
+      sprite: Objects/Tanks/Jetpacks/mini.rsi
+      slots:
+        - Back
+        - suitStorage
+        - Belt
+    - type: JumpAbility
+      jumpDistance: 10
+      jumpSound: /Audio/Effects/stealthoff.ogg
+    - type: ActionGrant
+      actions:
+      - ActionGravityJump1
+    - type: ItemActionGrant
+      actions:
+      - ActionGravityJump1
+      activeIfWorn: true

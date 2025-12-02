@@ -11,11 +11,7 @@
     size: Small
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Magazine/LightRifle/light_rifle_mag.rsi
-    layers:
-    - state: base
-      map: ["enum.GunVisualLayers.Base"]
-    - state: mag-1
-      map: ["enum.GunVisualLayers.Mag"]
+    state: icon
   - type: Tag
     tags:
     - MagazineBlast
@@ -147,7 +143,7 @@
   - type: ProjectileBatteryAmmoProvider
     proto: SWEL34Bullet 
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/Rifles/el34_ammo.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/MachineGuns/el34_ammo.rsi
   
 - type: entity
   id: SWGT13Magazine
@@ -274,11 +270,6 @@
     proto: SWScoutBlasterBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
-    state: mag
-  - type: MagazineVisuals
-    magState: mag
-    steps: 1
-    zeroVisible: false
 
 - type: entity
   id: SWBalmorraCannonMagazine
@@ -296,11 +287,6 @@
     proto: SWBalmorraHandGunBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/balmorra_cannon_mag.rsi
-    state: mag
-  - type: MagazineVisuals
-    magState: mag
-    steps: 1
-    zeroVisible: false
 
 - type: entity
   id: SWAnarchyMagazine
@@ -318,11 +304,6 @@
     proto: SWAnarchyBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
-    state: mag
-  - type: MagazineVisuals
-    magState: mag
-    steps: 1
-    zeroVisible: false
 
 - type: entity
   id: SWMK3Magazine
@@ -340,6 +321,3 @@
     proto: SWMK3Bullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
-    state: mag
-  - type: MagazineVisuals
-    magState: mag

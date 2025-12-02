@@ -85,6 +85,20 @@
   - type: InstantAction
     event: !type:ToggleActionEvent
 
+- type: entity
+  parent: BaseAction
+  id: ActionGravityJump1
+  name: Jump1
+  description: Activating the advanced propulsion system, you propel yourself a short distance in the direction of your gaze.
+  components:
+  - type: Action
+    useDelay: 60
+    icon:
+      sprite: Interface/Actions/jump.rsi
+      state: icon
+  - type: InstantAction
+    event: !type:GravityJumpEvent {}
+
 # - type: entity
 #   id: ActionSubdueKyber
 #   name: Подчинить кайбер кристалл

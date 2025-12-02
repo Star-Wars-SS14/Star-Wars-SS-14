@@ -22,7 +22,7 @@ public sealed partial class SWLatheComponent : Component
     public string FixtureOutPrefix = "out";
 
     [DataField]
-    public Vector2 SpawnPointOut = new Vector2(0.5f, 0.2f); 
+    public Vector2 SpawnPointOut = new Vector2(0.0f, 0.7f); 
 
     /// <summary>
     /// Maximum amount per ONE material

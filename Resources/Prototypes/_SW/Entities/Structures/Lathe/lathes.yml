@@ -12,6 +12,35 @@
       in1:
         shape:
           !type:PhysShapeAabb
+          bounds: "0.6, 0.0, -0.6, -0.6"
+        density: 190
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+  - type: Sprite
+    sprite: Structures/Machines/recycling.rsi
+    layers:
+      - state: grinder-o1
+  - type: SWLathe
+    recipes:
+    - SWOreToSteel
+
+
+- type: entity
+  id: SWOreDispenser
+  parent: BaseStructure
+  name: sw ore dispenser
+  description: debug
+  components:
+  - type: Physics
+    bodyType: Static
+  - type: Appearance
+  - type: Fixtures
+    fixtures:
+      in1:
+        shape:
+          !type:PhysShapeAabb
           bounds: "-0.4,-0.4,0.4,0.4"
         density: 190
         mask:
@@ -31,6 +60,25 @@
       map: ["enum.MaterialStorageVisualLayers.Inserting"]
     - state: panel
       map: ["enum.WiresVisualLayers.MaintenancePanel"]
-  - type: SWLathe
-    recipes:
-    - SWOreToSteel
+  - type: SWMagnetPickup
+  - type: Storage
+    maxItemSize: Normal
+    grid:
+    - 0,0,9,3
+    quickInsert: true
+    areaInsert: true
+    whitelist:
+      tags:
+        - Ore
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+  - type: ContainerContainer
+    containers:
+      storagebase: !type:Container
+        ents: []
+  - type: SWOreDispenser
+    dispenseWhitelist:
+      tags:
+        - Ore

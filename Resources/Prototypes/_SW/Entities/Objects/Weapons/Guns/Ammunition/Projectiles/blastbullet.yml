@@ -35,7 +35,7 @@
       shader: unshaded
   - type: PointLight
     color: Yellow
-  
+
 - type: entity
   id: SWH206Bullet
   name: Blast

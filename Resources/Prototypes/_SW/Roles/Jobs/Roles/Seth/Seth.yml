@@ -361,7 +361,7 @@
 - type: startingGear
   id: EmpireIntelligenceCaretakerGear
   equipment:
-    outerClothing: SWImperialIntelligenceSuit
+    outerClothing: SWImperialIntelligenceSuitWarden
     jumpsuit: SWClothingUniformJumpsuitImperialIntelligence
     head: SW_ClothingHeadImperialIntelligenceHelmet
     belt: SWInvisGeneratorBelt

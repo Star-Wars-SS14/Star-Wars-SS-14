@@ -311,3 +311,21 @@
       shader: unshaded
   - type: PointLight
     color: Blue
+
+- type: entity
+  id: SWM44Bullet
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 50
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/red_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+  - type: PointLight
+    color: Red

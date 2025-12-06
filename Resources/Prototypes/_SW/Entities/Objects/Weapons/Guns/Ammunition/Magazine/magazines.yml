@@ -325,6 +325,28 @@
     zeroVisible: false
 
 - type: entity
+  id: SWM44Magazine
+  name: Магазин для M44
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 3000
+    startingCharge: 3000
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - SWM44MagazineTag
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWM44Bullet
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
+    state: mag
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: false
+
+- type: entity
   id: SWMK3Magazine
   name: Магазин для MK3
   parent: SWBaseBlasterMagazine

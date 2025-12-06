@@ -115,3 +115,29 @@
         whitelist:
           tags:
           - SWAnarchyMagazineTag
+
+- type: entity
+  parent: SWBaseWeaponBlasterSmall
+  suffix: Оружие SW
+  id: SWM44
+  name: Пистолет M44
+  components:
+  - type: Gun
+    fireRate: 2.7
+    selectedMode: SemiAuto
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Pistols/M44_blaster.rsi
+    layers:
+    - state: base
+      map: [ "enum.GunVisualLayers.Base" ]
+  - type: ItemSlots 
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: SWM44Magazine
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        whitelist:
+          tags:
+          - SWM44MagazineTag
+

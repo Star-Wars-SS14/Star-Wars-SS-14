@@ -24,3 +24,8 @@ ent-SWGallantryMagazine = магазин для "Галантности"
   .desc = {ent-SWE1Magazine .desc}
 ent-SWMK1Magazine = магазин для MK-1
   .desc = {ent-SWE1Magazine .desc}
+ent-SWM44Magazine = магазин для M44
+  .desc = {ent-SWE1Magazine .desc}
+ent-SWUIHBPMagazine = магазин для UIHBP
+  .desc = {ent-SWE1Magazine .desc}
+

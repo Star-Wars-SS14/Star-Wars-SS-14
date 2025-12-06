@@ -339,7 +339,7 @@
   - type: ProjectileBatteryAmmoProvider
     proto: SWM44Bullet
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/M44_pistol_mag.rsi
     state: mag
   - type: MagazineVisuals
     magState: mag
@@ -365,3 +365,25 @@
     state: mag
   - type: MagazineVisuals
     magState: mag
+
+- type: entity
+  id: SWUIHBPMagazine
+  name: Магазин для UIHBP
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 6500
+    startingCharge: 6500
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - SWUIHBPMagazineTag
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWUIHBPBullet
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/UIHBP_pistol_mag.rsi
+    state: mag
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: false

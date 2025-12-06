@@ -329,3 +329,21 @@
       shader: unshaded
   - type: PointLight
     color: Red
+
+- type: entity
+  id: SWUIHBPBullet
+  name: Blast
+  parent: BaseBullet
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 30
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/yellow_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+  - type: PointLight
+    color: Yellow

@@ -339,7 +339,7 @@
   - type: ProjectileBatteryAmmoProvider
     proto: SWM44Bullet
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/M44_pistol_mag.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/M-44Ammo.rsi
     state: mag
   - type: MagazineVisuals
     magState: mag

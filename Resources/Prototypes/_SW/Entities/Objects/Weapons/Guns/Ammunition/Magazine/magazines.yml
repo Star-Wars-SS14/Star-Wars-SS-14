@@ -326,7 +326,7 @@
 
 - type: entity
   id: SWM44Magazine
-  name: Магазин для M44
+  name: M44 magazine
   parent: SWBaseBlasterMagazine
   components:
   - type: Battery
@@ -368,7 +368,7 @@
 
 - type: entity
   id: SWUIHBPMagazine
-  name: Магазин для UIHBP
+  name: UIHBP magazine
   parent: SWBaseBlasterMagazine
   components:
   - type: Battery

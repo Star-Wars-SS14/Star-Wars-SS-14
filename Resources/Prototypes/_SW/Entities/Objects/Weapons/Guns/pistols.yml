@@ -120,7 +120,7 @@
   parent: SWBaseWeaponBlasterSmall
   suffix: Оружие SW
   id: SWM44
-  name: Пистолет M44
+  name: Pistol M44
   components:
   - type: Gun
     fireRate: 2
@@ -145,7 +145,7 @@
   parent: SWBaseWeaponBlasterSmall
   suffix: Оружие SW
   id: SWUIHBP
-  name: Пистолет UIHBP
+  name: Pistol UIHBP
   components:
   - type: Gun
     fireRate: 2.8

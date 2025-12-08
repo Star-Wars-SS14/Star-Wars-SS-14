@@ -15,7 +15,7 @@
     holiday: MonkeyDay
     prototype: MonkeyCubeBox
 
-- type: startingGear
+- type: 
   id: ZookeeperGear
   equipment:
     jumpsuit: ClothingUniformJumpsuitSafari

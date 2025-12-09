@@ -2,6 +2,7 @@
   parent: [ClothingOuterBase, AllowSuitStorageClothing]
   id: SWImperialIntelligenceSuitWarden
   name: imperial intelligence warden suit
+  description: Imperial Intelligence warden Armor. Allows you to blend in and display your status. Provides protection if detected.
   components:
   - type: Sprite
     sprite: _SW/Clothing/OuterClothing/Suits/imperial_intelligenceWarden/armor.rsi

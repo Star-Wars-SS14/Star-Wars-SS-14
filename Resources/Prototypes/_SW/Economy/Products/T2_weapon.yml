@@ -175,7 +175,7 @@
   group: SWT2RepublicWeaponMarket
 
 - type: swCargoProduct
-  id: SWScoutBlasterSmallRepublicCP
+  id: SWM44RepublicCP
   icon:
     sprite: _SW/Objects/Weapons/Guns/Pistols/M44_blaster.rsi
     state: base
@@ -186,7 +186,7 @@
   group: SWT2RepublicWeaponMarket
 
 - type: swCargoProduct
-  id: SWScoutBlasterMagazineRepublicCP
+  id: SWM44MagazineRepublicCP
   icon:
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/M-44Ammo.rsi
     state: base
@@ -197,7 +197,7 @@
   group: SWT2RepublicWeaponMarket
 
 - type: swCargoProduct
-  id: SWScoutBlasterSmallEmpireCP
+  id: SWM44EmpireCP
   icon:
     sprite: _SW/Objects/Weapons/Guns/Pistols/M44_blaster.rsi
     state: base
@@ -208,7 +208,7 @@
   group: SWT2EmpireWeaponMarket
 
 - type: swCargoProduct
-  id: SWScoutBlasterMagazineEmpireCP
+  id: SWM44MagazineEmpireCP
   icon:
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/M-44Ammo.rsi
     state: base

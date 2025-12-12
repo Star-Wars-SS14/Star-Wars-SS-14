@@ -153,50 +153,6 @@
   group: SWT2EmpireWeaponMarket
 
 - type: swCargoProduct
-  id: SWScoutBlasterSmallEmpireCP
-  icon:
-    sprite: _SW/Objects/Weapons/Guns/Pistols/M44_blaster.rsi
-    state: base
-  product: SWM44
-  cost:
-    SWEmpireCreditCurrency: 850
-  category: sw-category-pistols
-  group: SWT2EmpireWeaponMarket
-
-- type: swCargoProduct
-  id: SWScoutBlasterMagazineEmpireCP
-  icon:
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/M-44Ammo.rsi
-    state: base
-  product: SWM44Magazine
-  cost:
-    SWEmpireCreditCurrency: 100
-  category: sw-category-magazines
-  group: SWT2EmpireWeaponMarket
-
-- type: swCargoProduct
-  id: SWScoutBlasterSmallEmpireCP
-  icon:
-    sprite: _SW/Objects/Weapons/Guns/Pistols/UIHBP.rsi
-    state: base
-  product: SWUIHBP
-  cost:
-    SWEmpireCreditCurrency: 750
-  category: sw-category-pistols
-  group: SWT2EmpireWeaponMarket
-
-- type: swCargoProduct
-  id: SWScoutBlasterMagazineEmpireCP
-  icon:
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/UIHBP_pistol_mag.rsi
-    state: base
-  product: SWUIHBPMagazine
-  cost:
-    SWEmpireCreditCurrency: 75
-  category: sw-category-magazines
-  group: SWT2EmpireWeaponMarket
-
-- type: swCargoProduct
   id: SWScoutBlasterSmallRepublicCP
   icon:
     sprite: _SW/Objects/Weapons/Guns/Pistols/scout_blaster.rsi
@@ -217,3 +173,47 @@
     SWEmpireCreditCurrency: 40
   category: sw-category-magazines
   group: SWT2RepublicWeaponMarket
+
+- type: swCargoProduct
+  id: SWScoutBlasterSmallRepublicCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Pistols/M44_blaster.rsi
+    state: base
+  product: SWM44
+  cost:
+    SWEmpireCreditCurrency: 550
+  category: sw-category-pistols
+  group: SWT2RepublicWeaponMarket
+
+- type: swCargoProduct
+  id: SWScoutBlasterMagazineRepublicCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/M-44Ammo.rsi
+    state: base
+  product: SWM44Magazine
+  cost:
+    SWEmpireCreditCurrency: 40
+  category: sw-category-magazines
+  group: SWT2RepublicWeaponMarket
+
+- type: swCargoProduct
+  id: SWScoutBlasterSmallEmpireCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Pistols/M44_blaster.rsi
+    state: base
+  product: SWM44
+  cost:
+    SWEmpireCreditCurrency: 550
+  category: sw-category-pistols
+  group: SWT2EmpireWeaponMarket
+
+- type: swCargoProduct
+  id: SWScoutBlasterMagazineEmpireCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/M-44Ammo.rsi
+    state: base
+  product: SWM44Magazine
+  cost:
+    SWEmpireCreditCurrency: 40
+  category: sw-category-magazines
+  group: SWT2EmpireWeaponMarket

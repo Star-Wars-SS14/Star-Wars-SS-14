@@ -23,9 +23,9 @@ jobs:
         submodules: 'recursive'
 
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v4.1.0
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 9.0.10
+        dotnet-version: 9.0.112
 
     - name: Get Engine Tag
       run: |

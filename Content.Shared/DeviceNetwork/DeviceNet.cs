@@ -224,6 +224,8 @@ public sealed class DeviceNet
     /// </summary>
     private string GenerateValidAddress(string? prefix)
     {
+        ISawmill _s = Logger.GetSawmill("asdf");
+        _s.Fatal($"string in valid address is: {prefix}");
         prefix = string.IsNullOrWhiteSpace(prefix) ? null : Loc.GetString(prefix);
         string address;
         do

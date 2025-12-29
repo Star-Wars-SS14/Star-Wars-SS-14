@@ -73,3 +73,22 @@
     sprite: _SW/Clothing/OuterClothing/Suits/Republic/MED_republic.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/Republic/MED_republic.rsi
+
+- type: entity
+  parent: SWRepublicSuit
+  id: SWPilotRepublicSuit
+  name: Republic suit pilot
+  description: Republican Army pilot armor. Tank not included.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Republic/rep-pilotsuit.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Republic/rep-pilotsuit.rsi
+  - type: Armor
+    modifiers:
+      coefficients:
+        Caustic: 0.5
+        Heat: 0.5
+        Blunt: 0.5
+        Slash: 0.5
+        Piercing: 0.5

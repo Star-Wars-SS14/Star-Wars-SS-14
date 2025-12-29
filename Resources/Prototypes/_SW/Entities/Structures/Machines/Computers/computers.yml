@@ -354,6 +354,7 @@
       enum.SWExchangeConsoleUiKey.Key:
         type: SWExchangeConsoleBoundUserInterface
   - type: Sprite
+    sprite: _SW/Structures/Machines/Bankomat.rsi
     layers:
     - map: ["computerLayerBody"]
       state: computer

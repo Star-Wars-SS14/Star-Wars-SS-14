@@ -98,3 +98,21 @@
         Heat: 0.9
   - type: ExplosionResistance
     damageCoefficient: 0.9
+
+- type: entity
+  parent: SWImperialSuit
+  id: SWPilotImperialSuit
+  name: imperial pilot suit
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Imperial/imp-pilotsuit.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Imperial/imp-pilotsuit.rsi 
+  - type: Armor
+    modifiers:
+      coefficients:
+        Caustic: 0.5
+        Heat: 0.5
+        Blunt: 0.5
+        Slash: 0.5
+        Piercing: 0.5

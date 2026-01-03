@@ -190,19 +190,18 @@ namespace Content.Server.Light.EntitySystems
             {
                 return false;
             }
-            BatteryComponent? battery = null; //SW
-            if (component.NeedsBattery && !_powerCell.TryGetBatteryFromSlot(uid, out battery) && //SW
-                !TryComp(uid, out battery))
+            Entity<PredictedBatteryComponent>? battery = null; //SW
+            if (component.NeedsBattery && !_powerCell.TryGetBatteryFromSlot(uid.Owner, out battery)) //SW
             {
                 _audio.PlayPvs(_audio.ResolveSound(component.TurnOnFailSound), uid);
                 _popup.PopupEntity(Loc.GetString("handheld-light-component-cell-missing-message"), uid, user);
                 return false;
             }
-
             // To prevent having to worry about frame time in here.
             // Let's just say you need a whole second of charge before you can turn it on.
             // Simple enough.
-            if (battery != null && component.Wattage > battery.CurrentCharge) //SW
+            if (battery != null && TryComp<BatteryComponent>(battery, out var batComp)
+                && component.Wattage > batComp.CurrentCharge) //SW
             {
                 _audio.PlayPvs(_audio.ResolveSound(component.TurnOnFailSound), uid);
                 _popup.PopupEntity(Loc.GetString("handheld-light-component-cell-dead-message"), uid, user);

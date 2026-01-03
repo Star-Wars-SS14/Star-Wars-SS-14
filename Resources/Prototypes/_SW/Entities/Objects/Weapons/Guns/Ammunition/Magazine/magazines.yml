@@ -20,7 +20,7 @@
     tags:
     - MagazineBlast
   - type: Appearance
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWYellowBulletBlast
   - type: MagazineVisuals
     magState: mag
@@ -38,7 +38,7 @@
     tags:
     - MagazineBlast
     - E-1Magazine
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWE-1Bullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
@@ -56,7 +56,7 @@
     tags:
     - MagazineBlast
     - P-301Magazine
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWP301Bullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
@@ -73,7 +73,7 @@
     tags:
     - MagazineBlast
     - Z-1Magazine
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWZ1Bullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
@@ -90,7 +90,7 @@
     tags:
     - MagazineBlast
     - H-206Magazine
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWH206Bullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
@@ -107,7 +107,7 @@
     tags:
     - MagazineBlast
     - J-111Magazine
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWJ111Bullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
@@ -126,7 +126,7 @@
     tags:
     - MagazineBlast
     - F-11DCannonMagazine
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWF11DCannonBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
@@ -144,7 +144,7 @@
     tags:
     - MagazineBlast
     - SWEL34MagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWEL34Bullet 
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
@@ -161,7 +161,7 @@
     tags:
     - MagazineBlast
     - SWGT13MagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWGT13Bullet
     fireCost: 100
   - type: Sprite
@@ -179,7 +179,7 @@
     tags:
     - MagazineBlast
     - SWGallantryMagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWGallantryBullet
     fireCost: 100
   - type: Sprite
@@ -197,7 +197,7 @@
     tags:
     - MagazineBlast
     - SWMK1MagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWMK1Bullet
     fireCost: 100
   - type: Sprite
@@ -217,7 +217,7 @@
     tags:
     - MagazineBlast
     - F-11DSniperMagazine
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWF11DSniperRifleBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
@@ -234,7 +234,7 @@
     tags:
     - MagazineBlast
     - SWBeryarMK3MagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWBeryarMK3Bullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
@@ -251,7 +251,7 @@
     tags:
     - MagazineBlast
     - SWK406RipperMagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWK406RipperBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
@@ -270,7 +270,7 @@
     tags:
     - MagazineBlast
     - SWScoutBlasterMagazine
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWScoutBlasterBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
@@ -292,7 +292,7 @@
     tags:
     - MagazineBlast
     - SWBalmorraCannonMagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWBalmorraHandGunBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/balmorra_cannon_mag.rsi
@@ -314,7 +314,7 @@
     tags:
     - MagazineBlast
     - SWAnarchyMagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWAnarchyBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
@@ -336,7 +336,7 @@
     tags:
     - MagazineBlast
     - SWM44MagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWM44Bullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/M-44Ammo.rsi
@@ -358,7 +358,7 @@
     tags:
     - MagazineBlast
     - SWMK3MagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWMK3Bullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
@@ -378,7 +378,7 @@
     tags:
     - MagazineBlast
     - SWUIHBPMagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWUIHBPBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/UIHBP_pistol_mag.rsi

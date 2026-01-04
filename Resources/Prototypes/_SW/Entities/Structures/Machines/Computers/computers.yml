@@ -358,12 +358,8 @@
     layers:
     - map: ["computerLayerBody"]
       state: computer
-    - map: ["computerLayerKeyboard"]
-      state: generic_keyboard
     - map: ["computerLayerScreen"]
-      state: comm
-    - map: ["computerLayerKeys"]
-      state: generic_keys
+      state: bank_monitor
   - type: SWBankAccountContainer
   - type: SWBankAccountAccessor
   - type: SWExchangeConsole

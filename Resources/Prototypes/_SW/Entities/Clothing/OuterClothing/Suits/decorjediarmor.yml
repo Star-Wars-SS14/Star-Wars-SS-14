@@ -1,0 +1,29 @@
+- type: entity
+  parent: [ClothingOuterBase, AllowSuitStorageClothing]
+  id: SWjedidecorarmor
+  name: Лёгкая джедайская броня
+  description: Лёгкая броня джедая. Сделана из лёгкого полимера, что не сковывает движений, но защиту не даёт.
+  components:
+  - type: Item
+    size: Huge
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Jedi_decor_armor/jedi_armor.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Jedi_decor_armor/jedi_armor.rsi
+  - type: Tag
+    tags:
+    - SWEquipmentForceWL
+
+- type: entity
+  parent: SWBaseHelmet
+  id: SWJedidecorhelmet
+  name: Лёгкий джедайский шлем
+  description: Лёгкий шлем джедая, что не сковывает движений, не лишает поля зрения, но при всём при этом не защищает.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Jedi_decor_armor/jedi_helmet.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Jedi_decor_armor/jedi_helmet.rsi
+  - type: Tag
+    tags:
+    - SWEquipmentForceWL

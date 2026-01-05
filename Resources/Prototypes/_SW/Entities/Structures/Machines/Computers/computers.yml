@@ -17,6 +17,13 @@
   - type: Godmode
   - type: ApcPowerReceiver
     needsPower: false
+  - type: Sprite
+    sprite: _SW/Structures/Machines/ImperialComputerComms.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: reinforsments_monitor
   
 
 - type: entity
@@ -37,15 +44,12 @@
       enum.ArtilleryConsoleUiKey.Key:
         type: ArtilleryConsoleBoundUserInterface
   - type: Sprite
+    sprite: _SW/Structures/Machines/ArtilleryConsole.rsi
     layers:
     - map: ["computerLayerBody"]
       state: computer
-    - map: ["computerLayerKeyboard"]
-      state: generic_keyboard
     - map: ["computerLayerScreen"]
-      state: comm
-    - map: ["computerLayerKeys"]
-      state: generic_keys
+      state: artillery_monitor
   - type: AccessReader
     access: [[ "SWEmpireMoff" ]]
   - type: Godmode
@@ -115,6 +119,13 @@
       SWExchangeCaptain: true
       SWExchangeOperative: true
       SWNeutralBartender: true
+  - type: Sprite
+    sprite: _SW/Structures/Machines/ImperialTurretComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: turretcontrol_monitor
   - type: AccessReader
     access: [[ "SWEmpireCommander" ]]
 
@@ -147,6 +158,13 @@
       SWExchangeCaptain: true
       SWExchangeOperative: true
       SWNeutralBartender: true
+  - type: Sprite
+    sprite: _SW/Structures/Machines/RepublicTurretComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: turretcontrol_monitor
   - type: AccessReader
     access: [[ "SWRepublicCommander" ]]
 
@@ -166,15 +184,12 @@
       enum.SWFinanceConsoleUIKey.Key:
         type: SWFinanceConsoleBoundUserInterface
   - type: Sprite
+    sprite: _SW/Structures/Machines/ImperialFinanceComputer.rsi
     layers:
     - map: ["computerLayerBody"]
       state: computer
-    - map: ["computerLayerKeyboard"]
-      state: generic_keyboard
     - map: ["computerLayerScreen"]
-      state: comm
-    - map: ["computerLayerKeys"]
-      state: generic_keys
+      state: financialcontrol_monitor
   - type: SWBankAccountAccessor
   - type: Godmode
   - type: ApcPowerReceiver
@@ -188,6 +203,13 @@
   components:
   - type: SWFinanceConsole
     faction: RepublicFaction
+  - type: Sprite
+    sprite: _SW/Structures/Machines/RepublicFinanceComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: financialcontrol_monitor
 
 - type: entity
   parent: SWFinanceConsole
@@ -197,6 +219,13 @@
   components:
   - type: SWFinanceConsole
     faction: MandalorianFaction
+  - type: Sprite
+    sprite: _SW/Structures/Machines/MandolorianFinanceComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: financialcontrol_monitor
 
 - type: entity
   parent: SWFinanceConsole
@@ -206,6 +235,13 @@
   components:
   - type: SWFinanceConsole
     faction: ExchangeFaction
+  - type: Sprite
+    sprite: _SW/Structures/Machines/ExchangeFinanceComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: decorative_monitor
 
 - type: entity
   parent: SWFinanceConsole
@@ -215,6 +251,13 @@
   components:
   - type: SWFinanceConsole
     faction: BlackSunFaction
+  - type: Sprite
+    sprite: _SW/Structures/Machines/SunFinanceComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: decorative_monitor
 
 - type: entity
   parent: BaseComputer
@@ -229,15 +272,12 @@
       enum.SWBuyConsoleUIKey.Key:
         type: SWCargoOrderConsoleBoundUserInterface
   - type: Sprite
+    sprite: _SW/Structures/Machines/ImperialCargoComputer.rsi
     layers:
     - map: ["computerLayerBody"]
       state: computer
-    - map: ["computerLayerKeyboard"]
-      state: generic_keyboard
     - map: ["computerLayerScreen"]
-      state: comm
-    - map: ["computerLayerKeys"]
-      state: generic_keys
+      state: cargo_monitor
   - type: SWBankAccountContainer
   - type: SWBankAccountAccessor
   - type: DeviceList
@@ -291,6 +331,13 @@
     - SWExplosiveMarket
     - SWAdditionalAmunitionMarket
     - SWToolsMarket
+  - type: Sprite
+    sprite: _SW/Structures/Machines/RepublickCargoComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: cargo_monitor
 
 - type: entity
   parent: SWBuyConsoleEmpire
@@ -307,6 +354,13 @@
     - SWT1WeaponMarket
     - SWT1MedicineMarket
     - SWT2MedicineMarket
+  - type: Sprite
+    sprite: _SW/Structures/Machines/NeutralCargoComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: cargo_monitor
 
 - type: entity
   parent: BaseComputer

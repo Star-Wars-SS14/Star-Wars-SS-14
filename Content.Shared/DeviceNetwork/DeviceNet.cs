@@ -227,14 +227,17 @@ public sealed class DeviceNet
         ISawmill _s = Logger.GetSawmill("asdf");
         _s.Fatal($"string in valid address is: {prefix}");
         prefix = string.IsNullOrWhiteSpace(prefix) ? null : Loc.GetString(prefix);
+        _s.Fatal("0");
         string address;
         do
         {
             var num = _random.Next();
+            _s.Fatal($"Possible num: {num}");
             address = $"{prefix}{num >> 16:X4}-{num & 0xFFFF:X4}";
+            _s.Fatal($"possible address: {address}");
         }
         while (Devices.ContainsKey(address));
-
+        _s.Fatal("address found");
         return address;
     }
 }

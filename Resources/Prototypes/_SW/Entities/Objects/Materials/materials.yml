@@ -1,0 +1,41 @@
+- type: entity
+  parent: BaseItem
+  id: SWElectronics
+  name: electronics  
+  components:
+  - type: Sprite
+    sprite: Objects/Materials/Scrap/generic.rsi
+    state: glass-1
+  - type: Item
+
+- type: entity
+  parent: SWElectronics
+  id: SWBlasterBarrel
+  name: blaster barrel
+  components:
+  - type: Sprite
+    sprite: Objects/Misc/modular_receiver.rsi
+    state: icon
+
+- type: entity
+  parent: SWElectronics
+  id: SWAdvancedCables
+  name: advanced cables
+  components:
+  - type: Sprite
+    sprite: _RMC14/Objects/Power/coil.rsi
+    state: coil3
+    layers:
+    - map: ["base"]
+      state: coil3
+      color: "#FFD700"
+
+- type: entity
+  parent: SWElectronics
+  id: SWBlasterFrame
+  name: blaster frame
+  components:
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Shotguns/hm_pistol.rsi
+    state: icon
+

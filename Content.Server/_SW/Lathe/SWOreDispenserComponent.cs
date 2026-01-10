@@ -21,7 +21,7 @@ public sealed partial class SWOreDispenserComponent : Component
     public string ContainerName = "storagebase";
 
     [DataField]
-    public Vector2 SpawnPointOut = new Vector2(0.5f, 0.0f);
+    public Vector2 SpawnPointOut = new Vector2(0.0f, -0.5f);
 
     public TimeSpan NextDispense;
 }

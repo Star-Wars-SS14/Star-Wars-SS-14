@@ -24,7 +24,7 @@
       - state: grinder-o1
   - type: SWLathe
     recipes:
-    - SWOreToSteel
+    - SWOreToSteelSLR
 
 
 - type: entity
@@ -48,18 +48,9 @@
         layer:
         - WallLayer
   - type: Sprite
-    sprite: Structures/Machines/autolathe.rsi
-    snapCardinals: true
+    sprite: _SW/Structures/Machines/lathe.rsi
     layers:
-    - state: icon
-      map: ["enum.LatheVisualLayers.IsRunning"]
-    - state: unlit
-      shader: unshaded
-      map: ["enum.PowerDeviceVisualLayers.Powered"]
-    - state: inserting
-      map: ["enum.MaterialStorageVisualLayers.Inserting"]
-    - state: panel
-      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+      - state: lathe_base
   - type: SWMagnetPickup
   - type: Storage
     maxItemSize: Normal
@@ -95,7 +86,8 @@
       - state: electronics  
   - type: SWLathe
     recipes:
-    - SWOreToSteel
+    - SWAdvancedCableSLR
+    - SWElectronicsSLR
 
 - type: entity
   id: SWBlasterLathe
@@ -109,7 +101,9 @@
       - state: blaster  
   - type: SWLathe
     recipes:
-    - SWOreToSteel
+    - SWBarrelSLR
+    - SWBlasterFrameSLR
+    - SWT1WeaponSLR
 
 - type: entity
   id: SWSmeltLathe
@@ -123,4 +117,7 @@
       - state: fire  
   - type: SWLathe
     recipes:
-    - SWOreToSteel
+    - SWOreToSteelSLR
+    - SWLantanidAlloySLR
+    - SWOreToGoldSLR
+    - SWOreToLantanidSLR

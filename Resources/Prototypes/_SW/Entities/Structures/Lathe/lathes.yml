@@ -82,3 +82,45 @@
     dispenseWhitelist:
       tags:
         - Ore
+
+- type: entity
+  id: SWElectronicsLathe
+  parent: SWBaseLathe
+  name: electronics lathe
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: lathe_base
+      - state: electronics  
+  - type: SWLathe
+    recipes:
+    - SWOreToSteel
+
+- type: entity
+  id: SWBlasterLathe
+  parent: SWBaseLathe
+  name: blaster lathe
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: lathe_base
+      - state: blaster  
+  - type: SWLathe
+    recipes:
+    - SWOreToSteel
+
+- type: entity
+  id: SWSmeltLathe
+  parent: SWBaseLathe
+  name: smelt lathe
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: lathe_base
+      - state: fire  
+  - type: SWLathe
+    recipes:
+    - SWOreToSteel

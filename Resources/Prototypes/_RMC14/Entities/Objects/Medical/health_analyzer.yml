@@ -22,12 +22,6 @@
     tags:
       - DiscreteHealthAnalyzer
   - type: Appearance
-  - type: GenericVisualizer
-    visuals:
-      enum.PowerCellSlotVisuals.Enabled:
-        enum.PowerDeviceVisualLayers.Powered:
-          True: { visible: true }
-          False: { visible: false }
   - type: GuideHelp
     guides:
       - Medical Doctor

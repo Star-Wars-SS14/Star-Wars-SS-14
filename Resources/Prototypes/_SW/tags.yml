@@ -83,7 +83,13 @@
   id: SWAnarchyMagazineTag
 
 - type: Tag
+  id: SWM44MagazineTag
+
+- type: Tag
   id: SWMK3MagazineTag
+
+- type: Tag
+  id: SWUIHBPMagazineTag
 
 - type: Tag
   id: SWEquipmentForceBan

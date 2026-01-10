@@ -1,0 +1,30 @@
+- type: entity
+  parent: [ClothingOuterBase, AllowSuitStorageClothing]
+  id: SWImperialIntelligenceSuitWarden
+  name: imperial intelligence warden suit
+  description: Imperial Intelligence warden Armor. Allows you to blend in and display your status. Provides protection if detected.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/imperial_intelligenceWarden/armor.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/imperial_intelligenceWarden/armor.rsi
+  - type: PressureProtection
+    highPressureMultiplier: 0.3
+    lowPressureMultiplier: 1000
+  - type: Armor
+    modifiers:
+      coefficients:
+        Caustic: 0.3
+        Heat: 0.35
+        Blunt: 0.4
+        Slash: 0.4
+        Piercing: 0.35
+  - type: ClothingSpeedModifier
+    walkModifier: 0.9
+    sprintModifier: 0.95
+  - type: HeldSpeedModifier
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:ContainerSlot { }
+  - type: Item
+    size: Ginormous

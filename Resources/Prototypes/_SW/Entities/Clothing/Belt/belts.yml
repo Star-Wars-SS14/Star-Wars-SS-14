@@ -51,7 +51,7 @@
         - Handcuff
         - BallisticAmmoProvider
         - Ammo
-        - ProjectileBatteryAmmoProvider
+        - BatteryAmmoProvider
   - type: ItemMapper
     mapLayers:
       flashbang:

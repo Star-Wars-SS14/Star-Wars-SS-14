@@ -243,7 +243,7 @@
 - type: swCargoProduct
   id: SWUIHBPEmpireCP
   icon:
-    sprite: _SW/Objects/Weapons/Guns/Pistols/M44_blaster.rsi
+    sprite: _SW/Objects/Weapons/Guns/Pistols/UIHBP.rsi
     state: base
   product: SWUIHBP
   cost:
@@ -254,7 +254,7 @@
 - type: swCargoProduct
   id: SWUIHBPMagazineEmpireCP
   icon:
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/M-44Ammo.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/UIHBP_pistol_mag.rsi
     state: base
   product: SWUIHBPMagazine
   cost:

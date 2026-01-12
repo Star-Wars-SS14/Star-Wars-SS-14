@@ -1,0 +1,10 @@
+- type: entity
+  parent: MarkerBase
+  id: SWRockMineRespawnSpawner
+  name: Спавнер камня с рудой (обвалы)
+  components:
+  - type: SWRespawnGameruleSpawnpoint
+    respawnProto: SWWallRockMining
+  - type: Sprite
+    layers:
+    - state: green

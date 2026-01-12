@@ -52,8 +52,15 @@
   table: !type:AllSelector
     children:
     - id: SWParasitesRule
-
-
+    
+- type: entity
+  parent: BaseGameRule
+  id: SWMineCollapseGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWRespawnEntitiesGamerule
+  
 - type: entity
   parent: BaseGameRule
   id: SWParasitesRule
@@ -79,13 +86,15 @@
     - TaskGamerule
     - SWEventScheduler
     - SWRespawnGamerule
+    - SWMineCollapseGamerule
 
 - type: gamePreset
   id: SWMainPresetNoTasks
   name: Необычный день
-  description: В связи с особыми событиями командование приостановило выполнение заданий. Следуйте особым инструкциям командования
+  description: В связи с особыми событиями командование приостановило выполнение заданий. Следуйте особым инструкциям командования.
   showInVote: false
   rules:
     - FactionsOnlyGamerule
     - SWEventScheduler
     - SWRespawnGamerule
+    - SWMineCollapseGamerule

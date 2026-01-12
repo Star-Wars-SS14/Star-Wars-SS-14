@@ -1,0 +1,10 @@
+- type: entity
+  id: SWWallRockMining
+  parent: WallRock
+  name: wall rock
+  suffix: SW, lathe resources
+  description: A rock.
+  components:
+  - type: OreVein
+    oreChance: 0.33
+    oreRarityPrototypeId: SWRandomOreDistributionStandard

@@ -22,14 +22,15 @@
     sprite: Structures/Machines/recycling.rsi
     layers:
       - state: grinder-o1
-  - type: SWLathe
-    recipes:
-    - SWOreToSteelSLR
-
+  - type: ApcPowerReceiver
+    powerLoad: 1000
+  - type: ExtensionCableReceiver
+  - type: InteractionOutline
+  - type: Anchorable
 
 - type: entity
   id: SWOreDispenser
-  parent: BaseStructure
+  parent: SWBaseLathe
   name: sw ore dispenser
   description: debug
   components:
@@ -61,6 +62,8 @@
     whitelist:
       tags:
         - Ore
+  - type: ActivatableUI
+    key: enum.StorageUiKey.Key
   - type: UserInterface
     interfaces:
       enum.StorageUiKey.Key:

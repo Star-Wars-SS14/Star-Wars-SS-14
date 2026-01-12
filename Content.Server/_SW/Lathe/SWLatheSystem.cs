@@ -1,5 +1,8 @@
+using Content.Server.Power.Components;
+using Content.Server.Power.EntitySystems;
 using Content.Shared._SW.Lathe;
 using Content.Shared.Stacks;
+using JetBrains.FormatRipper.Elf;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Physics.Systems;
@@ -17,6 +20,7 @@ public sealed class SWLatheSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly PowerChargeSystem _chargeSystem = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -25,21 +29,23 @@ public sealed class SWLatheSystem : EntitySystem
 
     private void OnStartCollide(Entity<SWLatheComponent> ent, ref StartCollideEvent args)
     {
-        ISawmill _s = Logger.GetSawmill("asd");
-        _s.Fatal("1");
+        if (!_chargeSystem.IsPowered(ent, EntityManager))
+        {
+            return;
+        }
+
         if (!args.OurFixtureId.StartsWith(ent.Comp.FixtureInPrefix))
         {
             return;
         }
-        _s.Fatal("2");
+
         if (CanUseInAnyRecipe(ent.Comp, args.OtherEntity) == null)
         {
             return;
         }
-        _s.Fatal("3");
+
         if (TryAddMaterial(ent, args.OtherEntity))
         {
-            _s.Fatal("4");
             Del(args.OtherEntity);
         }
     }
@@ -63,6 +69,11 @@ public sealed class SWLatheSystem : EntitySystem
 
         while (query.MoveNext(out var uid, out var comp))
         {
+            if (!_chargeSystem.IsPowered(uid, EntityManager))
+            {
+                continue;
+            }
+
             if (comp.CurrentRecipeProducting != null
                 && comp.ProductionEndTime <= _timing.CurTime)
             {

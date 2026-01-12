@@ -1,4 +1,6 @@
+using Content.Server.Power.EntitySystems;
 using Content.Server.Stack;
+using Content.Server.Storage.EntitySystems;
 using Content.Shared.Stacks;
 using Content.Shared.Whitelist;
 using Robust.Server.Containers;
@@ -22,6 +24,7 @@ public sealed class SWOreDispenserSystem : EntitySystem
     [Dependency] private readonly TransformSystem _transformSystem = default!;
     [Dependency] private readonly StackSystem _stackSystem = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private readonly PowerChargeSystem _chargeSystem = default!;
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
@@ -29,6 +32,11 @@ public sealed class SWOreDispenserSystem : EntitySystem
         var query = EntityQueryEnumerator<SWOreDispenserComponent, ContainerManagerComponent>();
 
         while (query.MoveNext(out var uid, out var comp, out var containerComp)) {
+            if (!_chargeSystem.IsPowered(uid, EntityManager))
+            {
+                continue;
+            }
+
             if (_timing.CurTime > comp.NextDispense)
             {
                 var container = containerComp.Containers[comp.ContainerName];
@@ -62,7 +70,7 @@ public sealed class SWOreDispenserSystem : EntitySystem
         {
             StackPrototype stackTypeProto = _prototypeManager.Index(stackComp.StackTypeId);
             _stackSystem.ReduceCount(item, 1);
-            result = Spawn(stackTypeProto.Spawn, ent_coords);
+            result = Spawn(stackTypeProto.Spawn, _transformSystem.ToMapCoordinates(ent_coords));
         }
         var comp = AddComp<SWMagnetUnpickupableComponent>(result);
         comp.DespawnTime = _timing.CurTime + TimeSpan.FromSeconds(1);

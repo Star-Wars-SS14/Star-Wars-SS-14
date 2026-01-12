@@ -1,3 +1,4 @@
+using Content.Server.Power.EntitySystems;
 using Content.Server.Storage.EntitySystems;
 using Content.Shared.Inventory;
 using Content.Shared.Storage;
@@ -15,10 +16,10 @@ public sealed class SWMagnetPickupSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
-    [Dependency] private readonly InventorySystem _inventory = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly SharedStorageSystem _storage = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
+    [Dependency] private readonly PowerChargeSystem _chargeSystem = default!;
 
     private static readonly TimeSpan ScanDelay = TimeSpan.FromSeconds(1);
 
@@ -44,6 +45,9 @@ public sealed class SWMagnetPickupSystem : EntitySystem
 
         while (query.MoveNext(out var uid, out var comp, out var storage, out var xform, out var meta))
         {
+            if (!_chargeSystem.IsPowered(uid, EntityManager))
+                continue;
+
             if (comp.NextScan > currentTime)
                 continue;
 

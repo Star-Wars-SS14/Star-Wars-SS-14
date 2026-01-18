@@ -47,7 +47,7 @@
     - SWSith
   - type: SWTaskContainer
     availableTasks: EmpireTasksSet
-    addIntervalInSeconds: 1200 #20 min   
+    addIntervalInSeconds: 10 #20 min   
     startAmountOfTasks : 4
     maxAmountOfTasks: 5
   - type: SWBillContainer

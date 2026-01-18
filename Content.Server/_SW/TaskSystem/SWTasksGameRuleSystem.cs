@@ -77,6 +77,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     {
         var notFilledFactions = _swFaction.GetFactions();
         bool anyTaskAdded = true;
+        List<string> addedTasksProtos = new List<string>(); //we use it to avoid adding the same task multiple times 
         while (anyTaskAdded && notFilledFactions.Count() > 0)
         {
             anyTaskAdded = false;
@@ -94,7 +95,16 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                 if (comp.CurrentTasks.Count() < comp.StartAmountOfTasks)
                 {
                     var factionWithComp = new Entity<SWTaskContainerComponent>(factionEntity.Value.Owner, comp);
-                    anyTaskAdded = anyTaskAdded || AddRandomTask(factionWithComp, faction);
+                    var addedTask = AddRandomTask(factionWithComp, faction, addedTasksProtos);
+                    anyTaskAdded = anyTaskAdded || (addedTask != null);
+                    if (addedTask != null)
+                    {
+                        var proto = Prototype(addedTask.Value);
+                        if (proto != null)
+                        {
+                            addedTasksProtos.Add(proto.ID);
+                        }
+                    }
                     comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(comp.AddIntervalInSeconds);
                 }
             }
@@ -373,10 +383,11 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         {
             case TaskSpawnRestrictions.NoRestrictions:
                 return true;
-            case TaskSpawnRestrictions.OnePerFaction:
-                return !existingTasksPrototypes.Contains(taskProtoToCheck);
-            case TaskSpawnRestrictions.OnePerAllFactions:
+            case TaskSpawnRestrictions.PerFaction:
+                return existingTasksPrototypes.Count((x) => x == taskProtoToCheck) < comp.TasksCount;
+            case TaskSpawnRestrictions.PerAllFactions:
                 var factions = _swFaction.GetFactionsEntities();
+                int count = 0;
                 foreach (var faction in factions)
                 {
                     if (!TryComp<SWTaskContainerComponent>(faction, out var taskContainer))
@@ -391,12 +402,12 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                         {
                             if (proto == taskProto)
                             {
-                                return false;
+                                count++;
                             }
                         }
                     }
                 }
-                return true;
+                return count < comp.TasksCount;
             default:
                 throw new NotImplementedException();
         }
@@ -417,30 +428,43 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         Del(uid);
         return !ev.Cancelled;
     }
-    public bool AddRandomTask(Entity<SWTaskContainerComponent> faction, string factionId)
+    public Entity<SWTaskComponent>? AddRandomTask(Entity<SWTaskContainerComponent> faction, string factionId,
+                                                    List<string>? excludedTasks = null)
     {
         if (faction.Comp.AvailableTasks == null)
         {
-            return false;
+            return null;
         }
         if (faction.Comp.CurrentTasks.Count() == faction.Comp.MaxAmountOfTasks)
         {
-            return false;
+            return null;
         }
-        _prototypeManager.TryIndex(faction.Comp.AvailableTasks, out var proto);
-        if (proto == null)
+        _prototypeManager.TryIndex(faction.Comp.AvailableTasks, out var tasksSetProto);
+        if (tasksSetProto == null)
         {
-            return false;
+            return null;
         }
+        var proto = new WeightedRandomPrototype();
+
+        foreach (var (taskProto, count) in tasksSetProto.Weights)
+        {
+            if (excludedTasks != null && excludedTasks.Contains(taskProto))
+            {
+                continue;
+            }
+
+            proto.Weights.Add(taskProto, count);
+        }
+
         var protoFiltered = FilterAvailableTasks(proto, faction);
         //Если доступных заданий не окажется, то мы просто попробуем в следующий раз
         if (protoFiltered.Weights.Count != 0)
         {
             string taskProto = protoFiltered.Pick();
             var task = AddTask(factionId, taskProto);
-            return task != null;
+            return task;
         }
-        return false;
+        return null;
     }
 
     public Entity<SWTaskComponent>? AddTask(string factionId, string taskProto)

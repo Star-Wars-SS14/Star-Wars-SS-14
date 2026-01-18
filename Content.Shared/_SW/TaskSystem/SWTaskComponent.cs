@@ -28,7 +28,10 @@ public sealed partial class SWTaskComponent : Component
     public string RoundEndText = string.Empty;
 
     [DataField]
-    public TaskSpawnRestrictions Restrictions = TaskSpawnRestrictions.OnePerFaction;
+    public TaskSpawnRestrictions Restrictions = TaskSpawnRestrictions.PerFaction;
+
+    [DataField]
+    public int TasksCount = 1;
 
     [DataField]
     public TimeSpan? TimeLimit = null;
@@ -41,6 +44,6 @@ public sealed partial class SWTaskComponent : Component
 public enum TaskSpawnRestrictions
 {
     NoRestrictions,
-    OnePerFaction,
-    OnePerAllFactions,
+    PerFaction,
+    PerAllFactions,
 }

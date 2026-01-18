@@ -30,6 +30,11 @@ public sealed partial class SWTaskComponent : Component
     [DataField]
     public TaskSpawnRestrictions Restrictions = TaskSpawnRestrictions.OnePerFaction;
 
+    [DataField]
+    public TimeSpan? TimeLimit = null;
+
+    public TimeSpan? TimeOfBlocking = null;
+
     public string OwningFaction = string.Empty;
 }
 

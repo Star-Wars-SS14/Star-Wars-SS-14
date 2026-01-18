@@ -19,6 +19,14 @@ public sealed class SWRespawnEntitiesGameruleSystem : GameRuleSystem<SWRespawnEn
     [Dependency] private readonly EntityLookupSystem _entityLookupSystem = default!;
     [Dependency] private readonly SharedTransformSystem _sharedTransformSystem = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
+
+    protected override void Started(EntityUid uid, SWRespawnEntitiesGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
+    {
+        base.Started(uid, component, gameRule, args);
+        component.NextSpawn = _gameTiming.CurTime + component.Delay;
+        component.NextWarning = _gameTiming.CurTime + component.Delay - component.DelayBeforeSpawn;
+        component.WarningDispatched = false;
+    }
     protected override void ActiveTick(EntityUid uid, SWRespawnEntitiesGameruleComponent component, GameRuleComponent gameRule, float frameTime)
     {
         base.ActiveTick(uid, component, gameRule, frameTime);

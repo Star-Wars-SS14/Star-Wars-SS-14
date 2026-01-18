@@ -1,11 +1,12 @@
 - type: weightedRandom
   id: EmpireTasksSet
   weights:
-    KillByNameTaskEmpire: 1
-    CaptureRepublic: 1
-    KillRepublicByJobEmpire: 1
-    KillCriminalTaskEmpire: 1
-    GetFarnellDocuments: 1
+    SWCollectWeaponTaskEmpire: 100000000000
+    # KillByNameTaskEmpire: 1
+    # CaptureRepublic: 1
+    # KillRepublicByJobEmpire: 1
+    # KillCriminalTaskEmpire: 1
+    # GetFarnellDocuments: 1
 
 - type: entity
   id: CaptureRepublic
@@ -155,3 +156,18 @@
       SWEmpireLieutenant : 10
       SWSobrikCaptain: 15
       SWEmpireMoff: 20
+
+- type: entity
+  id: SWCollectWeaponTaskEmpire
+  parent: SWTaskBase  
+  components:
+  - type: SWTask
+    timeLimit: 1800
+    name: Рабочая квота
+    description: Произведите 100 единиц бластерных карабинов Z-1 "Охотник", используя оборудование "Балморра Армс". Сложите его на соответствующий поддон для отправки. 
+    score: 30
+  - type: SWCollectObjectTask
+    requirements:
+    - number: 100
+      objects:
+      - SWZ1BlasterCarbine

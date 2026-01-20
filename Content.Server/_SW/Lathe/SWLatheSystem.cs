@@ -2,7 +2,6 @@ using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Shared._SW.Lathe;
 using Content.Shared.Stacks;
-using JetBrains.FormatRipper.Elf;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Physics.Systems;

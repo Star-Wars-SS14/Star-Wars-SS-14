@@ -23,6 +23,7 @@ public sealed class SWRespawnEntitiesGameruleSystem : GameRuleSystem<SWRespawnEn
     protected override void Started(EntityUid uid, SWRespawnEntitiesGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
         base.Started(uid, component, gameRule, args);
+        Respawn();
         component.NextSpawn = _gameTiming.CurTime + component.Delay;
         component.NextWarning = _gameTiming.CurTime + component.Delay - component.DelayBeforeSpawn;
         component.WarningDispatched = false;
@@ -51,6 +52,14 @@ public sealed class SWRespawnEntitiesGameruleSystem : GameRuleSystem<SWRespawnEn
 
         _chatManager.DispatchServerAnnouncement(Loc.GetString(component.AnnouncementId),
                                                               component.AnnounceColor);
+        Respawn();
+        component.NextSpawn = _gameTiming.CurTime + component.Delay;
+        component.NextWarning = _gameTiming.CurTime + component.Delay - component.DelayBeforeSpawn;
+        component.WarningDispatched = false;
+    }
+
+    private void Respawn()
+    {
         var query = EntityQueryEnumerator<SWRespawnGameruleSpawnpointComponent>();
         while (query.MoveNext(out var owner, out var comp))
         {
@@ -59,9 +68,6 @@ public sealed class SWRespawnEntitiesGameruleSystem : GameRuleSystem<SWRespawnEn
                 Spawn(comp.RespawnProto, _sharedTransformSystem.GetMapCoordinates(owner));
             }
         }
-        component.NextSpawn = _gameTiming.CurTime + component.Delay;
-        component.NextWarning = _gameTiming.CurTime + component.Delay - component.DelayBeforeSpawn;
-        component.WarningDispatched = false;
     }
 
     private bool IsTheSameAlreadySpawned(EntityUid ent, SWRespawnGameruleSpawnpointComponent comp)

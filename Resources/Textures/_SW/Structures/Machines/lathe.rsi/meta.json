@@ -8,6 +8,12 @@
     },
     "states": [
         {
+            "name": "up_arrow"
+        },
+        {
+            "name": "down_arrow"
+        },
+        {
             "name": "blaster"
         },
         {

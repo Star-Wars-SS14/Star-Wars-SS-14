@@ -52,6 +52,8 @@
     sprite: _SW/Structures/Machines/lathe.rsi
     layers:
       - state: lathe_base
+      - state: up_arrow
+        rotation: 180
   - type: SWMagnetPickup
   - type: Storage
     maxItemSize: Normal
@@ -86,7 +88,9 @@
     sprite: _SW/Structures/Machines/lathe.rsi
     layers:
       - state: lathe_base
-      - state: electronics  
+      - state: electronics
+      - state: up_arrow
+      - state: down_arrow  
   - type: SWLathe
     recipes:
     - SWAdvancedCableSLR
@@ -101,7 +105,9 @@
     sprite: _SW/Structures/Machines/lathe.rsi
     layers:
       - state: lathe_base
-      - state: blaster  
+      - state: blaster
+      - state: up_arrow
+      - state: down_arrow   
   - type: SWLathe
     recipes:
     - SWBarrelSLR
@@ -117,7 +123,9 @@
     sprite: _SW/Structures/Machines/lathe.rsi
     layers:
       - state: lathe_base
-      - state: fire  
+      - state: fire
+      - state: up_arrow
+      - state: down_arrow   
   - type: SWLathe
     recipes:
     - SWOreToSteelSLR

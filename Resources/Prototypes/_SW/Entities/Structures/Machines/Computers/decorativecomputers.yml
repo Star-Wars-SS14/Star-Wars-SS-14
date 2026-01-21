@@ -1,7 +1,8 @@
 - type: entity
-  parent: BaseComputer
+  parent: BaseStructureComputer
   id: DecorativeRespublicComputer
   name: PersonalComputer
+  description: Just personal computer
   components:
   - type: Sprite
     sprite: _SW/Structures/Machines/decorative_republic_computer.rsi
@@ -19,23 +20,20 @@
       - !type:PlaySoundBehavior
         sound:
           collection: GlassBreak
-      - !type:SpawnEntitiesBehavior
-        spawn:
-          DecorativeRespublicComputerBroken:
-            min: 1
-            max: 1
+      - !type:ChangeConstructionNodeBehavior
+        node: DecorativeRespublicComputer
       - !type:DoActsBehavior
         acts: ["Destruction"]
 
 - type: entity
   parent: BaseStructureComputer
   id: DecorativeRespublicComputerBroken
-  name: broken personal computer
+  name: Broken personal computer
   description: This computer has seen better days.
   components:
   - type: Construction
     graph: Computer
-    node: monitorBroken
+    node: brokenPC
   - type: Sprite
     sprite: _SW/Structures/Machines/decorative_republic_computer_broken.rsi
     drawdepth: Objects
@@ -54,7 +52,7 @@
       - !type:SpawnEntitiesBehavior
         spawn:
           SheetSteel1:
-            min: 1
-            max: 1
+            min: 5
+            max: 8
       - !type:DoActsBehavior
         acts: [ "Destruction" ]

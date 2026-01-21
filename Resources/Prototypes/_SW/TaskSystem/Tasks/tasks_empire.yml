@@ -173,3 +173,6 @@
     - number: 100
       objects:
       - SWZ1BlasterCarbine
+  - type: SWParallelTask
+    task: SWSabotageQuotaRepublic 
+    faction: RepublicFaction

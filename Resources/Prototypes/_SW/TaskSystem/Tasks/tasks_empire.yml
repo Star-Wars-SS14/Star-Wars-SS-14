@@ -1,12 +1,12 @@
 - type: weightedRandom
   id: EmpireTasksSet
   weights:
-    SWCollectWeaponTaskEmpire: 100000000000
-    # KillByNameTaskEmpire: 1
-    # CaptureRepublic: 1
-    # KillRepublicByJobEmpire: 1
-    # KillCriminalTaskEmpire: 1
-    # GetFarnellDocuments: 1
+    SWCollectWeaponTaskEmpire: 10
+    KillByNameTaskEmpire: 1
+    CaptureRepublic: 1
+    KillRepublicByJobEmpire: 1
+    KillCriminalTaskEmpire: 1
+    GetFarnellDocuments: 1
 
 - type: entity
   id: CaptureRepublic

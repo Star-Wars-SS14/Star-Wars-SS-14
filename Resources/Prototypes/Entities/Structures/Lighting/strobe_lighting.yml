@@ -149,7 +149,7 @@
     volume: 0
     range: 10
     sound:
-      path: "/Audio/Misc/gamma.ogg"
+      path: "/Audio/Misc/siren.ogg" #SW
 
 - type: entity
   id: PoweredStrobeLightEpsilon

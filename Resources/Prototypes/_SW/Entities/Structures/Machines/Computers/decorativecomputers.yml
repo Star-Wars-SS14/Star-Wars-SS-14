@@ -1,6 +1,6 @@
 - type: entity
   parent: BaseStructureComputer
-  id: DecorativeRespublicComputer
+  id: SWDecorativeRespublicComputer
   name: PersonalComputer
   description: Just personal computer
   components:
@@ -21,13 +21,11 @@
         sound:
           collection: GlassBreak
       - !type:ChangeConstructionNodeBehavior
-        node: DecorativeRespublicComputer
-      - !type:DoActsBehavior
-        acts: ["Destruction"]
+        node: SWDecorativeRespublicComputer
 
 - type: entity
   parent: BaseStructureComputer
-  id: DecorativeRespublicComputerBroken
+  id: SWDecorativeRespublicComputerBroken
   name: Broken personal computer
   description: This computer has seen better days.
   components:

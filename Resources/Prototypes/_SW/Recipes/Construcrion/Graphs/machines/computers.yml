@@ -1,15 +1,14 @@
 - type: constructionGraph
-  id: SWDecorativeRespublicComputer
-  start: SWDecorativeRespublicComputer
+  id: SWDecorativeRespublicComputerGraph
+  start: SWDecorativeRespublicComputerNode
   graph:
-    - node: SWDecorativeRespublicComputer
-      entity: SWDecorativeRespublicComputer
-      edges:
-        - to: SWDecorativeRespublicComputerBroken
-          steps:
-            - tool: Screwing
-              doAfter: 5
-              completed:
-            - !type:SpawnPrototype
-              prototype: ShardGlass
-              amount: 10
+  - node: SWDecorativeRespublicComputerNode
+    entity: SWDecorativeRespublicComputer
+    edges:
+    - to: SWDecorativeRespublicComputerBrokenNode
+      steps:
+      - tool: Screwing
+        doAfter: 5
+  - node: SWDecorativeRespublicComputerBrokenNode
+    entity: SWDecorativeRespublicComputerBroken
+

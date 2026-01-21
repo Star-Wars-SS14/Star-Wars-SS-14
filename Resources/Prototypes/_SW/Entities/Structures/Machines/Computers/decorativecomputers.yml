@@ -4,6 +4,9 @@
   name: PersonalComputer
   description: Just personal computer
   components:
+  - type: Construction
+    graph: SWDecorativeRespublicComputerGraph
+    node: SWDecorativeRespublicComputerNode
   - type: Sprite
     sprite: _SW/Structures/Machines/decorative_republic_computer.rsi
     layers:
@@ -21,7 +24,7 @@
         sound:
           collection: GlassBreak
       - !type:ChangeConstructionNodeBehavior
-        node: SWDecorativeRespublicComputer
+        node: SWDecorativeRespublicComputerBrokenNode
 
 - type: entity
   parent: BaseStructureComputer
@@ -30,8 +33,8 @@
   description: This computer has seen better days.
   components:
   - type: Construction
-    graph: Computer
-    node: brokenPC
+    graph: SWDecorativeRespublicComputerGraph
+    node: SWDecorativeRespublicComputerBrokenNode
   - type: Sprite
     sprite: _SW/Structures/Machines/decorative_republic_computer_broken.rsi
     drawdepth: Objects

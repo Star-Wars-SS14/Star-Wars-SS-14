@@ -162,7 +162,7 @@
   parent: SWTaskBase  
   components:
   - type: SWTask
-    timeLimit: 1800
+    timeLimit: 2400
     name: Рабочая квота
     restrictions: PerFaction
     tasksCount: 3

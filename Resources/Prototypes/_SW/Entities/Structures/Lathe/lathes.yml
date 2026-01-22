@@ -39,10 +39,10 @@
   - type: Appearance
   - type: Fixtures
     fixtures:
-      ore_in:
+      in_ore:
         shape:
           !type:PhysShapeAabb
-          bounds: "0.5, 0.6, -0.5, 0.5"
+          bounds: "0.35, 0.85, -0.35, 0.5"
         density: 190
         mask:
         - FullTileMask
@@ -134,9 +134,9 @@
     - SWOreToLantanidSLR
 
 - type: entity
-  id: SWDistributorLathe
+  id: SWDistributorLeftLathe
   parent: SWBaseLathe
-  name: sw distributor lathe
+  name: sw distributor left lathe
   components:
   - type: Fixtures
     fixtures:
@@ -162,6 +162,37 @@
     - inputFixture: in
       outputPoints:
       - "-1.0, 0.0"
+      - "0.0, 1.0"
+
+- type: entity
+  id: SWDistributorRightLathe
+  parent: SWBaseLathe
+  name: sw distributor right lathe
+  components:
+  - type: Fixtures
+    fixtures:
+      in:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "0.6, -0.5, -0.6, -0.6"
+        density: 190
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: distributor
+      - state: down_arrow
+      - state: up_arrow
+      - state: up_arrow
+        rotation: -90  
+  - type: SWDistributor
+    redirectionInfo:
+    - inputFixture: in
+      outputPoints:
+      - "1.0, 0.0"
       - "0.0, 1.0"
 
 - type: entity

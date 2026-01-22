@@ -25,7 +25,7 @@
 - type: entity
   parent: MarkerBase
   id: SWRockWithOrWithoutOreRespawn
-  name: спавнер камня или камня с рудой (регенрируется)
+  name: спавнер камня или камня с рудой (регенерируется)
   suffix: SW
   components:
   - type: SWRespawnGameruleSpawnpoint

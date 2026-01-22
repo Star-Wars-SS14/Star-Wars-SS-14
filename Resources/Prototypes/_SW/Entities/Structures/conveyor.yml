@@ -6,6 +6,8 @@
   placement:
     mode: SnapgridCenter
   components:
+  - type: Pullable
+  - type: Anchorable
   - type: Rotatable
     rotateWhileAnchored: true
   - type: Clickable

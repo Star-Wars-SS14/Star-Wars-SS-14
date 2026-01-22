@@ -7,7 +7,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Server._SW.Lathe;
+namespace Content.Server._SW.Lathe.SWLathe;
 
 [RegisterComponent]
 public sealed partial class SWLatheComponent : Component

@@ -39,10 +39,10 @@
   - type: Appearance
   - type: Fixtures
     fixtures:
-      in1:
+      ore_in:
         shape:
           !type:PhysShapeAabb
-          bounds: "-0.4,-0.4,0.4,0.4"
+          bounds: "0.5, 0.6, -0.5, 0.5"
         density: 190
         mask:
         - FullTileMask
@@ -132,3 +132,102 @@
     - SWLantanidAlloySLR
     - SWOreToGoldSLR
     - SWOreToLantanidSLR
+
+- type: entity
+  id: SWDistributorLathe
+  parent: SWBaseLathe
+  name: sw distributor lathe
+  components:
+  - type: Fixtures
+    fixtures:
+      in:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "0.6, -0.5, -0.6, -0.6"
+        density: 190
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: distributor
+      - state: down_arrow
+      - state: up_arrow
+      - state: up_arrow
+        rotation: 90  
+  - type: SWDistributor
+    redirectionInfo:
+    - inputFixture: in
+      outputPoints:
+      - "-1.0, 0.0"
+      - "0.0, 1.0"
+
+- type: entity
+  id: SWIntersectionLathe
+  parent: SWBaseLathe
+  name: sw intersection lathe
+  components:
+  - type: Fixtures
+    fixtures:
+      in1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "0.5, -0.5, -0.5, -0.6"
+        density: 190
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+      in2:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4, 0.6, -0.5, -0.6"
+        density: 190
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+      in3:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "0.5, 0.6, 0.4, -0.6"
+        density: 190
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+      in4:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "0.5, 0.6, -0.5, 0.5"
+        density: 190
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: distributor
+      - state: down_arrow
+      - state: up_arrow
+        rotation: 90
+      - state: up_arrow
+      - state: up_arrow
+        rotation: -90  
+  - type: SWDistributor
+    redirectionInfo:
+    - inputFixture: in1
+      outputPoints:
+      - "0.0, 1.0"
+    - inputFixture: in2
+      outputPoints:
+      - "1.0, 0.0"
+    - inputFixture: in3
+      outputPoints:
+      - "-1.0, 0.0"
+    - inputFixture: in4
+      outputPoints:
+      - "0.0, -1.0"

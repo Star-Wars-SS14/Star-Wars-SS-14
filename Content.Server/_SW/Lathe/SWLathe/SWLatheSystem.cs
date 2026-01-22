@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Server._SW.Lathe;
+namespace Content.Server._SW.Lathe.SWLathe;
 public sealed class SWLatheSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _prototype = default!;
@@ -51,7 +51,7 @@ public sealed class SWLatheSystem : EntitySystem
 
     public List<SWLatheRecipePrototype> GetRecipes(SWLatheComponent comp)
     {
-        List<SWLatheRecipePrototype> protos = new List<SWLatheRecipePrototype>();
+        var protos = new List<SWLatheRecipePrototype>();
 
         foreach (var id in comp.Recipes)
         {
@@ -92,7 +92,7 @@ public sealed class SWLatheSystem : EntitySystem
         var coords = new EntityCoordinates(ent, ent.Comp.SpawnPointOut);
         foreach (var (id, amount) in ent.Comp.CurrentRecipeProducting.Result)
         {
-            for (int _ = 0; _ < amount; _++)
+            for (var _ = 0; _ < amount; _++)
             {
                 Spawn(id, coords);
             }

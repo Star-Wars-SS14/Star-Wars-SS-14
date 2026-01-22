@@ -1,3 +1,4 @@
+using Content.Server._SW.Lathe.MagnetPickup;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Stack;
 using Content.Server.Storage.EntitySystems;
@@ -15,7 +16,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Server._SW.Lathe;
+namespace Content.Server._SW.Lathe.OreDispenser;
 public sealed class SWOreDispenserSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!;
@@ -68,7 +69,7 @@ public sealed class SWOreDispenserSystem : EntitySystem
         }
         else
         {
-            StackPrototype stackTypeProto = _prototypeManager.Index(stackComp.StackTypeId);
+            var stackTypeProto = _prototypeManager.Index(stackComp.StackTypeId);
             _stackSystem.ReduceCount(item, 1);
             result = Spawn(stackTypeProto.Spawn, _transformSystem.ToMapCoordinates(ent_coords));
         }

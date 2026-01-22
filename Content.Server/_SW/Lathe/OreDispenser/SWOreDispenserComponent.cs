@@ -6,7 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Server._SW.Lathe;
+namespace Content.Server._SW.Lathe.OreDispenser;
 
 [RegisterComponent]
 public sealed partial class SWOreDispenserComponent : Component
@@ -22,6 +22,9 @@ public sealed partial class SWOreDispenserComponent : Component
 
     [DataField]
     public Vector2 SpawnPointOut = new Vector2(0.0f, -0.5f);
+
+    [DataField]
+    public string InputFixtureId = "ore_in";
 
     public TimeSpan NextDispense;
 }

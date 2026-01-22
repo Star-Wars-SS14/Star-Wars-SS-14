@@ -143,7 +143,7 @@
       in:
         shape:
           !type:PhysShapeAabb
-          bounds: "0.6, -0.5, -0.6, -0.6"
+          bounds: "0.5, -0.3, -0.5, -0.6"
         density: 190
         mask:
         - FullTileMask
@@ -161,8 +161,8 @@
     redirectionInfo:
     - inputFixture: in
       outputPoints:
-      - "-1.0, 0.0"
-      - "0.0, 1.0"
+      - "-0.6, 0.0"
+      - "0.0, 0.6"
 
 - type: entity
   id: SWDistributorRightLathe
@@ -174,7 +174,7 @@
       in:
         shape:
           !type:PhysShapeAabb
-          bounds: "0.6, -0.5, -0.6, -0.6"
+          bounds: "0.5, -0.3, -0.5, -0.6"
         density: 190
         mask:
         - FullTileMask
@@ -192,8 +192,8 @@
     redirectionInfo:
     - inputFixture: in
       outputPoints:
-      - "1.0, 0.0"
-      - "0.0, 1.0"
+      - "0.6, 0.0"
+      - "0.0, 0.6"
 
 - type: entity
   id: SWIntersectionLathe
@@ -202,37 +202,37 @@
   components:
   - type: Fixtures
     fixtures:
-      in1:
+      in1: #down
         shape:
           !type:PhysShapeAabb
-          bounds: "0.5, -0.5, -0.5, -0.6"
+          bounds: "0.4, -0.3, -0.4, -0.5"
         density: 190
         mask:
         - FullTileMask
         layer:
         - WallLayer
-      in2:
+      in4: #up
         shape:
           !type:PhysShapeAabb
-          bounds: "-0.4, 0.6, -0.5, -0.6"
+          bounds: "0.4, 0.5, -0.4, 0.3"
         density: 190
         mask:
         - FullTileMask
         layer:
         - WallLayer
-      in3:
+      in2: #left
         shape:
           !type:PhysShapeAabb
-          bounds: "0.5, 0.6, 0.4, -0.6"
+          bounds: "-0.3, 0.4, -0.5, -0.4" 
         density: 190
         mask:
         - FullTileMask
         layer:
         - WallLayer
-      in4:
+      in3: #right
         shape:
           !type:PhysShapeAabb
-          bounds: "0.5, 0.6, -0.5, 0.5"
+          bounds: "0.5, 0.4, 0.3, -0.4"
         density: 190
         mask:
         - FullTileMask
@@ -248,18 +248,25 @@
         rotation: 90
       - state: up_arrow
       - state: up_arrow
+        rotation: -90
+      - state: down_arrow
+        rotation: 180
+      - state: down_arrow
+        rotation: 90
+      - state: down_arrow
+      - state: down_arrow
         rotation: -90  
   - type: SWDistributor
     redirectionInfo:
     - inputFixture: in1
       outputPoints:
-      - "0.0, 1.0"
+      - "0.0, 0.9"
     - inputFixture: in2
       outputPoints:
-      - "1.0, 0.0"
+      - "0.9, 0.0"
     - inputFixture: in3
       outputPoints:
-      - "-1.0, 0.0"
+      - "-0.9, 0.0"
     - inputFixture: in4
       outputPoints:
-      - "0.0, -1.0"
+      - "0.0, -0.9"

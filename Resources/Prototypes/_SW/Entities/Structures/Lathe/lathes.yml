@@ -242,7 +242,8 @@
     sprite: _SW/Structures/Machines/lathe.rsi
     layers:
       - state: distributor
-      - state: down_arrow
+      - state: up_arrow
+        rotation: 180
       - state: up_arrow
         rotation: 90
       - state: up_arrow

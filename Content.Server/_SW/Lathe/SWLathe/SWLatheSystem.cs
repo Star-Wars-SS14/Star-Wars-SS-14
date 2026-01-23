@@ -1,8 +1,10 @@
 using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Shared._SW.Lathe;
+using Content.Shared.Lathe;
 using Content.Shared.Stacks;
 using Robust.Shared.Map;
+using Robust.Shared.Physics;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Prototypes;
@@ -20,34 +22,37 @@ public sealed class SWLatheSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly PowerChargeSystem _chargeSystem = default!;
+    [Dependency] private readonly EntityLookupSystem _entityLookupSystem = default!;
+    [Dependency] private readonly FixtureSystem _fixturesChangeSystem = default!;
+    [Dependency] private readonly SharedPhysicsSystem _physicsSystem = default!;
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<SWLatheComponent, StartCollideEvent>(OnStartCollide);
+        //SubscribeLocalEvent<SWLatheComponent, StartCollideEvent>(OnStartCollide);
     }
 
-    private void OnStartCollide(Entity<SWLatheComponent> ent, ref StartCollideEvent args)
-    {
-        if (!_chargeSystem.IsPowered(ent, EntityManager))
-        {
-            return;
-        }
+    //private void OnStartCollide(Entity<SWLatheComponent> ent, ref StartCollideEvent args)
+    //{
+    //    if (!_chargeSystem.IsPowered(ent, EntityManager))
+    //    {
+    //        return;
+    //    }
 
-        if (!args.OurFixtureId.StartsWith(ent.Comp.FixtureInPrefix))
-        {
-            return;
-        }
+    //    if (!args.OurFixtureId.StartsWith(ent.Comp.FixtureInPrefix))
+    //    {
+    //        return;
+    //    }
 
-        if (CanUseInAnyRecipe(ent.Comp, args.OtherEntity) == null)
-        {
-            return;
-        }
+    //    if (CanUseInAnyRecipe(ent.Comp, args.OtherEntity) == null)
+    //    {
+    //        return;
+    //    }
 
-        if (TryAddMaterial(ent, args.OtherEntity))
-        {
-            Del(args.OtherEntity);
-        }
-    }
+    //    if (TryAddMaterial(ent, args.OtherEntity))
+    //    {
+    //        Del(args.OtherEntity);
+    //    }
+    //}
 
     public List<SWLatheRecipePrototype> GetRecipes(SWLatheComponent comp)
     {
@@ -64,13 +69,28 @@ public sealed class SWLatheSystem : EntitySystem
     {
         base.Update(frameTime);
 
-        var query = EntityQueryEnumerator<SWLatheComponent>();
+        var query = EntityQueryEnumerator<SWLatheComponent, FixturesComponent>();
 
-        while (query.MoveNext(out var uid, out var comp))
+        while (query.MoveNext(out var uid, out var comp, out var fixComp))
         {
             if (!_chargeSystem.IsPowered(uid, EntityManager))
             {
                 continue;
+            }
+
+            //var fix = fixComp.
+
+            foreach (var otherEntity in GetEntitiesInInputFixtures(uid, comp, fixComp))
+            {
+                if (CanUseInAnyRecipe(comp, otherEntity) == null)
+                {
+                    return;
+                }
+
+                if (TryAddMaterial(new Entity<SWLatheComponent>(uid, comp), otherEntity))
+                {
+                    Del(otherEntity);
+                }
             }
 
             if (comp.CurrentRecipeProducting != null
@@ -84,6 +104,26 @@ public sealed class SWLatheSystem : EntitySystem
                 TryStartProducingAnything(new Entity<SWLatheComponent>(uid, comp));
             }
         }
+    }
+
+    private List<EntityUid> GetEntitiesInInputFixtures(EntityUid latheUid, SWLatheComponent comp, FixturesComponent fixComp)
+    {
+        var res = new List<EntityUid>();
+        var xform = Comp<TransformComponent>(latheUid);
+        foreach (var (fixtureId, fixture) in fixComp.Fixtures)
+        {
+            if (!fixtureId.StartsWith(comp.FixtureInPrefix))
+            {
+                continue;
+            }
+
+            foreach (var (_, contact) in fixture.Contacts)
+            {
+                res.Add(contact.OtherEnt(latheUid));
+            }
+        }
+
+        return res;
     }
 
     public void FinishProduction(Entity<SWLatheComponent> ent)

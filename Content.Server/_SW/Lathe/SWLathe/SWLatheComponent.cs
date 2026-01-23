@@ -18,9 +18,6 @@ public sealed partial class SWLatheComponent : Component
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public string FixtureInPrefix = "in";
 
-    [DataField, ViewVariables(VVAccess.ReadWrite)]
-    public string FixtureOutPrefix = "out";
-
     [DataField]
     public Vector2 SpawnPointOut = new Vector2(0.0f, 0.7f); 
 

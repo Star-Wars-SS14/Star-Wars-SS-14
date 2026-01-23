@@ -1,0 +1,43 @@
+- type: swCargoProduct
+  id: SWOreDispenserCP
+  icon:
+    sprite: _SW/Structures/Machines/lathe.rsi
+    state: lathe_base
+  product: SWOreDispenser
+  cost:
+    SWEmpireCreditCurrency: 200
+  category: sw-category-lathe
+  group: SWLatheMarket
+
+- type: swCargoProduct
+  id: SWElectronicsLatheCP
+  icon:
+    sprite: _SW/Structures/Machines/lathe.rsi
+    state: electronics
+  product: SWElectronicsLathe
+  cost:
+    SWEmpireCreditCurrency: 250
+  category: sw-category-lathe
+  group: SWLatheMarket
+
+- type: swCargoProduct
+  id: SWBlasterLatheCP
+  icon:
+    sprite: _SW/Structures/Machines/lathe.rsi
+    state: blaster
+  product: SWBlasterLathe
+  cost:
+    SWEmpireCreditCurrency: 300
+  category: sw-category-lathe
+  group: SWLatheMarket
+
+- type: swCargoProduct
+  id: SWSmeltLatheCP
+  icon:
+    sprite: _SW/Structures/Machines/lathe.rsi
+    state: fire
+  product: SWBlasterLathe
+  cost:
+    SWEmpireCreditCurrency: 210
+  category: sw-category-lathe
+  group: SWLatheMarket

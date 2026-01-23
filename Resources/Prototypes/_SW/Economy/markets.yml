@@ -34,3 +34,6 @@
 - type: cargoMarket
   id: SWToolsMarket
 
+- type: cargoMarket
+  id: SWLatheMarket
+

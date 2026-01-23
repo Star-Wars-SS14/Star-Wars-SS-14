@@ -263,6 +263,7 @@
     - SWExplosiveMarket
     - SWAdditionalAmunitionMarket
     - SWToolsMarket
+    - SWLatheMarket
   - type: Godmode
   - type: ApcPowerReceiver
     needsPower: false

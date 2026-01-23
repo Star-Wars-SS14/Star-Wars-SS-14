@@ -76,8 +76,11 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     public void AddStartTasks()
     {
         var notFilledFactions = _swFaction.GetFactions();
+        var factionsNames = notFilledFactions.Keys.ToList();
         bool anyTaskAdded = true;
-        List<string> addedTasksProtos = new List<string>(); //we use it to avoid adding the same task multiple times 
+        //we use it to avoid adding the same task multiple times 
+        Dictionary<string, List<string>> addedTasksProtos =
+            factionsNames.ToDictionary(key => key, key => new List<string>());
         while (anyTaskAdded && notFilledFactions.Count() > 0)
         {
             anyTaskAdded = false;
@@ -95,14 +98,14 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                 if (comp.CurrentTasks.Count() < comp.StartAmountOfTasks)
                 {
                     var factionWithComp = new Entity<SWTaskContainerComponent>(factionEntity.Value.Owner, comp);
-                    var addedTask = AddRandomTask(factionWithComp, faction, addedTasksProtos);
+                    var addedTask = AddRandomTask(factionWithComp, faction, addedTasksProtos[faction]);
                     anyTaskAdded = anyTaskAdded || (addedTask != null);
                     if (addedTask != null)
                     {
                         var proto = Prototype(addedTask.Value);
                         if (proto != null)
                         {
-                            addedTasksProtos.Add(proto.ID);
+                            addedTasksProtos[faction].Add(proto.ID);
                         }
                     }
                     comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(comp.AddIntervalInSeconds);
@@ -316,7 +319,8 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         }
         foreach (var task in taskComp.CurrentTasks)
         {
-            if (ignoreSubTasks && task.Comp.ParentTask != null) {
+            if (ignoreSubTasks && task.Comp.ParentTask != null)
+            {
                 continue;
             }
             if (task.Comp.Completeness != 1.0)

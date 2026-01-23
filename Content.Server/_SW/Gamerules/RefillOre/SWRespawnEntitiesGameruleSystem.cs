@@ -23,11 +23,10 @@ public sealed class SWRespawnEntitiesGameruleSystem : GameRuleSystem<SWRespawnEn
     protected override void Started(EntityUid uid, SWRespawnEntitiesGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
         base.Started(uid, component, gameRule, args);
-        Respawn();
-        component.NextSpawn = _gameTiming.CurTime + component.Delay;
-        component.NextWarning = _gameTiming.CurTime + component.Delay - component.DelayBeforeSpawn;
-        component.WarningDispatched = false;
+        component.NextSpawn = TimeSpan.FromSeconds(0);
+        component.WarningDispatched = true;
     }
+
     protected override void ActiveTick(EntityUid uid, SWRespawnEntitiesGameruleComponent component, GameRuleComponent gameRule, float frameTime)
     {
         base.ActiveTick(uid, component, gameRule, frameTime);
@@ -60,11 +59,14 @@ public sealed class SWRespawnEntitiesGameruleSystem : GameRuleSystem<SWRespawnEn
 
     private void Respawn()
     {
+        ISawmill _s = Logger.GetSawmill("asdfgh");
         var query = EntityQueryEnumerator<SWRespawnGameruleSpawnpointComponent>();
         while (query.MoveNext(out var owner, out var comp))
         {
+            _s.Fatal("0");
             if (!_entityLookupSystem.GetEntitiesIntersecting(owner).Any(x => IsTheSameAlreadySpawned(x, comp)))
             {
+                _s.Fatal("1");
                 Spawn(comp.RespawnProto, _sharedTransformSystem.GetMapCoordinates(owner));
             }
         }

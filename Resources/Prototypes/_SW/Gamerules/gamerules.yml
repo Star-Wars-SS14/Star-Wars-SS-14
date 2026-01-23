@@ -36,6 +36,34 @@
     - BlackSunFaction
     - ExchangeFaction
 
+- type: entity
+  parent: BaseGameRule
+  id: FactionsOnlyQuotaGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWFactionGamerule
+    factionsPrototypes:
+    - RepublicFactionQuotaOnly
+    - EmpireFactionQuotaOnly
+    - MandalorianFaction
+    - BlackSunFaction
+    - ExchangeFaction
+
+- type: entity
+  parent: BaseGameRule
+  id: FactionsOnlyNoQuotaGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWFactionGamerule
+    factionsPrototypes:
+    - RepublicFaction
+    - EmpireFactionNoQuota
+    - MandalorianFaction
+    - BlackSunFaction
+    - ExchangeFaction
+
 
 - type: entity
   id: SWEventScheduler
@@ -77,25 +105,3 @@
   - type: SWSpawnRandomGamerule
     spawner: SWParasitSpawner
     count: 3
-
-- type: gamePreset
-  id: SWMainPreset
-  name: Обычный день
-  description: Обычный день. Выполняйте регулярные задания от своего командования.
-  showInVote: true
-  rules:
-    - TaskGamerule
-    - SWEventScheduler
-    - SWRespawnGamerule
-    - SWMineCollapseGamerule
-
-- type: gamePreset
-  id: SWMainPresetNoTasks
-  name: Необычный день
-  description: В связи с особыми событиями командование приостановило выполнение заданий. Следуйте особым инструкциям командования.
-  showInVote: false
-  rules:
-    - FactionsOnlyGamerule
-    - SWEventScheduler
-    - SWRespawnGamerule
-    - SWMineCollapseGamerule

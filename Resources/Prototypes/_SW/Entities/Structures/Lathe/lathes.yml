@@ -156,7 +156,10 @@
       - state: down_arrow
       - state: up_arrow
       - state: up_arrow
-        rotation: 90  
+        rotation: 90
+  - type: Construction
+    graph: SWLatheGraph
+    node: distLeft
   - type: SWDistributor
     redirectionInfo:
     - inputFixture: in
@@ -187,7 +190,10 @@
       - state: down_arrow
       - state: up_arrow
       - state: up_arrow
-        rotation: -90  
+        rotation: -90
+  - type: Construction
+    graph: SWLatheGraph
+    node: distRight
   - type: SWDistributor
     redirectionInfo:
     - inputFixture: in
@@ -255,7 +261,10 @@
         rotation: 90
       - state: down_arrow
       - state: down_arrow
-        rotation: -90  
+        rotation: -90
+  - type: Construction
+    graph: SWLatheGraph
+    node: intersection
   - type: SWDistributor
     redirectionInfo:
     - inputFixture: in1

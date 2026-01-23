@@ -45,8 +45,8 @@
           Forward: { state: conveyor_started_cw }
           Reverse: { state: conveyor_started_cw_r }
   - type: Construction
-    graph: ConveyorGraph
-    node: entity
+    graph: SWLatheGraph
+    node: conveyor
   - type: Damageable
     damageContainer: StructuralInorganic
     damageModifierSet: Metallic

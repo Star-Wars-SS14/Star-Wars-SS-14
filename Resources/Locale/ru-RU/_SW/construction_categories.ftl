@@ -1,0 +1,1 @@
+sw-construction-category-lathe = Логистика завода

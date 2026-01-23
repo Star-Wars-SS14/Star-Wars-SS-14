@@ -1,0 +1,36 @@
+- type: construction
+  id: SWDistributorLeftCR
+  graph: SWLatheGraph
+  startNode: start
+  targetNode: distLeft
+  category: sw-construction-category-lathe
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+
+- type: construction
+  id: SWDistributorRightCR
+  graph: SWLatheGraph
+  startNode: start
+  targetNode: distRight
+  category: sw-construction-category-lathe
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+
+- type: construction
+  id: SWIntersectionCR
+  graph: SWLatheGraph
+  startNode: start
+  targetNode: intersection
+  category: sw-construction-category-lathe
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+
+- type: construction
+  id: SWConveyorBeltCR
+  graph: SWLatheGraph
+  startNode: start
+  targetNode: conveyor
+  category: sw-construction-category-lathe
+  placementMode: SnapgridCenter
+  canBuildInImpassable: false
+

@@ -166,11 +166,11 @@
     name: Рабочая квота
     restrictions: PerFaction
     tasksCount: 3
-    description: Произведите 100 единиц бластерных карабинов Z-1 "Охотник", используя оборудование "Балморра Армс". Сложите его на соответствующий поддон для отправки. 
+    description: Произведите 20 единиц бластерных карабинов Z-1 "Охотник", используя оборудование "Балморра Армс". Сложите его на соответствующий поддон для отправки. 
     score: 30
   - type: SWCollectObjectTask
     requirements:
-    - number: 100
+    - number: 20
       objects:
       - SWZ1BlasterCarbine
   - type: SWParallelTask

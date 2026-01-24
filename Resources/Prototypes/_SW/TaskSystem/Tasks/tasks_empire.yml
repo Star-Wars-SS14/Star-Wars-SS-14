@@ -162,15 +162,15 @@
   parent: SWTaskBase  
   components:
   - type: SWTask
-    timeLimit: 2400
+    timeLimit: 1200
     name: Рабочая квота
     restrictions: PerFaction
     tasksCount: 3
-    description: Произведите 20 единиц бластерных карабинов Z-1 "Охотник", используя оборудование "Балморра Армс". Сложите его на соответствующий поддон для отправки. 
+    description: Произведите 10 единиц бластерных карабинов Z-1 "Охотник", используя оборудование "Балморра Армс". Сложите его на соответствующий поддон для отправки. 
     score: 30
   - type: SWCollectObjectTask
     requirements:
-    - number: 20
+    - number: 10
       objects:
       - SWZ1BlasterCarbine
   - type: SWParallelTask

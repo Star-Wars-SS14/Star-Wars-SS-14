@@ -21,6 +21,7 @@
   - type: GameRule
     minPlayers: 0
   - type: SWRespawnGamerule
+    delay: 10
 
 - type: entity
   parent: BaseGameRule

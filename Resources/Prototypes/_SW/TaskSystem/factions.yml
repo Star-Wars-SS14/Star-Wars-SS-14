@@ -21,7 +21,7 @@
     availableTasks: RepublicTasksSet
     addIntervalInSeconds: 1200 #20 min    
     startAmountOfTasks : 4
-    maxAmountOfTasks: 5
+    maxAmountOfTasks: 10
   - type: SWBankAccountContainer
     currentAmount:
       SWRepublicCreditCurrency: 10500.0
@@ -49,7 +49,7 @@
     availableTasks: EmpireTasksSet
     addIntervalInSeconds: 1200 #20 min   
     startAmountOfTasks : 4
-    maxAmountOfTasks: 5
+    maxAmountOfTasks: 10
   - type: SWBillContainer
     bills:
     - name: Счет за оплату электричества

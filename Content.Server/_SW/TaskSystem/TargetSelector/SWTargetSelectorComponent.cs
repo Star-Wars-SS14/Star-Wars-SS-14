@@ -1,3 +1,4 @@
+using Content.Shared.Whitelist;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,9 @@ public sealed partial class SWTargetSelectorComponent : Component
 
     [DataField("inherit")]
     public bool InheritTargetFromParent = true;
+
+    [DataField]
+    public EntityWhitelist? Whitelist = null;
 
     public EntityUid? Target = null;
 

@@ -95,6 +95,8 @@
     - SWBlackSun
     - SWExchangeCaptain
     - SWExchangeOperative
+    whitelist:
+      components: [ SWWanted ]
   - type: SWKillRandomByName
   - type: SWDescByName
     descriptionId: kill-criminal

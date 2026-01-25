@@ -12,7 +12,7 @@
       in1:
         shape:
           !type:PhysShapeAabb
-          bounds: "0.6, 0.0, -0.6, -0.6"
+          bounds: "0.6, 0.0, -0.6, -0.8"
         density: 190
         mask:
         - FullTileMask

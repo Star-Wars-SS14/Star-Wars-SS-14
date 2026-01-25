@@ -1,0 +1,22 @@
+- type: swLatheRecipe
+  id: SWBarrelSLR
+  materials:
+    SWSheetLantanidAlloy1: 3
+  result:
+    SWBlasterBarrel: 1
+
+- type: swLatheRecipe
+  id: SWBlasterFrameSLR
+  materials:
+    SheetSteel1: 3
+  result:
+    SWBlasterFrame: 1
+
+- type: swLatheRecipe
+  id: SWT1WeaponSLR
+  materials:
+    SWElectronics: 1
+    SWBlasterBarrel: 1
+    SWBlasterFrame: 1
+  result:
+    SWZ1BlasterCarbine: 1

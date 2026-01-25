@@ -1,0 +1,54 @@
+- type: entity
+  parent: SheetMetalBase
+  id: SWSheetLantanid
+  name: lantanid
+  suffix: Full
+  components:
+  - type: Sprite
+    sprite: Objects/Materials/Sheets/glass.rsi
+    state: pglass_3
+    layers:
+    - state: pglass_3
+      map: ["base"]    
+  - type: Item
+    sprite: Objects/Materials/Sheets/glass.rsi
+    heldPrefix: pglass
+  - type: Stack
+    stackType: SWSheetLantanid
+    baseLayer: base
+    layerStates:
+    - pglass
+    - pglass_2
+    - pglass_3    
+  - type: Appearance
+
+- type: entity
+  parent: SWSheetLantanid
+  id: SWSheetLantanid10
+  name: lantanid
+  suffix: 10
+  components:
+  - type: Sprite
+    state: pglass
+  - type: Stack
+    stackType: SWSheetLantanid
+    count: 10
+
+- type: entity
+  parent: SWSheetLantanid
+  id: SWSheetLantanid1
+  name: lantanid
+  suffix: Single
+  components:
+  - type: Sprite
+    state: pglass
+  - type: Stack
+    stackType: SWSheetLantanid
+    count: 1
+
+- type: stack
+  parent: BaseSheetStack
+  id: SWSheetLantanid
+  name: stack-lantanid-sheet
+  icon: { sprite: /Textures/Objects/Materials/Sheets/glass.rsi, state: pglass }
+  spawn: SWSheetLantanid1

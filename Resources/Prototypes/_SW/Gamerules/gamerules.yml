@@ -20,6 +20,7 @@
   - type: GameRule
     minPlayers: 0
   - type: SWRespawnGamerule
+    delay: 10
 
 - type: entity
   parent: BaseGameRule
@@ -31,6 +32,34 @@
     factionsPrototypes:
     - RepublicFaction
     - EmpireFaction
+    - MandalorianFaction
+    - BlackSunFaction
+    - ExchangeFaction
+
+- type: entity
+  parent: BaseGameRule
+  id: FactionsOnlyQuotaGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWFactionGamerule
+    factionsPrototypes:
+    - RepublicFactionQuotaOnly
+    - EmpireFactionQuotaOnly
+    - MandalorianFaction
+    - BlackSunFaction
+    - ExchangeFaction
+
+- type: entity
+  parent: BaseGameRule
+  id: FactionsOnlyNoQuotaGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWFactionGamerule
+    factionsPrototypes:
+    - RepublicFaction
+    - EmpireFactionNoQuota
     - MandalorianFaction
     - BlackSunFaction
     - ExchangeFaction
@@ -52,8 +81,15 @@
   table: !type:AllSelector
     children:
     - id: SWParasitesRule
-
-
+    
+- type: entity
+  parent: BaseGameRule
+  id: SWMineCollapseGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWRespawnEntitiesGamerule
+  
 - type: entity
   parent: BaseGameRule
   id: SWParasitesRule
@@ -69,23 +105,3 @@
   - type: SWSpawnRandomGamerule
     spawner: SWParasitSpawner
     count: 3
-
-- type: gamePreset
-  id: SWMainPreset
-  name: Обычный день
-  description: Обычный день. Выполняйте регулярные задания от своего командования.
-  showInVote: true
-  rules:
-    - TaskGamerule
-    - SWEventScheduler
-    - SWRespawnGamerule
-
-- type: gamePreset
-  id: SWMainPresetNoTasks
-  name: Необычный день
-  description: В связи с особыми событиями командование приостановило выполнение заданий. Следуйте особым инструкциям командования
-  showInVote: false
-  rules:
-    - FactionsOnlyGamerule
-    - SWEventScheduler
-    - SWRespawnGamerule

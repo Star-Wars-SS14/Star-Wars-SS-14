@@ -1,0 +1,7 @@
+- type: swLatheRecipe
+  id: SWLantanidAlloySLR
+  materials:
+    SWSheetLantanid1: 2
+    SheetSteel1: 2
+  result:
+    SWSheetLantanidAlloy1: 3

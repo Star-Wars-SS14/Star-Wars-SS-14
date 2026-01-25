@@ -1,0 +1,14 @@
+- type: swLatheRecipe
+  id: SWAdvancedCableSLR
+  materials:
+    IngotGold1: 3
+  result:
+    SWAdvancedCables: 1
+
+- type: swLatheRecipe
+  id: SWElectronicsSLR
+  materials:
+    SWAdvancedCables: 2
+    SWSheetLantanid1: 1
+  result:
+    SWElectronics: 1

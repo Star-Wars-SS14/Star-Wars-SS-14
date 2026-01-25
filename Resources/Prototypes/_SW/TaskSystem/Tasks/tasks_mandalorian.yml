@@ -16,7 +16,6 @@
     name: Добыча трофеев
     description: Анклав мандалорцев на Балморре должен покрыть себя славой. Подобно древним войнам мы должны убить 5 Борму, и собрать их тела в качестве трофеев.
     score: 10
-    restrictions: OnePerFaction
   - type: SWCollectObjectTask
     requirements:
     - number: 5
@@ -31,7 +30,6 @@
     name: Добыча трофеев
     description: Анклав мандалорцев на Балморре должен покрыть себя славой. Подобно древним войнам мы должны убить 5 металлических паразитов, и собрать их тела в качестве трофеев.
     score: 15
-    restrictions: OnePerFaction
   - type: SWCollectObjectTask
     requirements:
     - number: 5

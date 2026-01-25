@@ -1,0 +1,59 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "https://www.flaticon.com/free-icon/electronic_2362409, https://www.freeiconspng.com/img/4861, https://www.clipartmax.com/middle/m2i8i8m2K9H7N4G6_blaster-star-wars-pistol-comments-star-wars-blaster-icon/, @kalane15",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+        {
+            "name": "up_arrow"
+        },
+        {
+            "name": "distributor"
+        },
+        {
+            "name": "down_arrow"
+        },
+        {
+            "name": "blaster"
+        },
+        {
+            "name": "electronics"
+        },
+        {
+            "name": "fire"
+        },
+        {
+            "name": "lathe_base",
+            "directions": 4,
+            "delays": [
+                [
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.1
+                ],
+                [
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.1
+                ],
+                [
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.1
+                ],
+                [
+                    0.1,
+                    0.1,
+                    0.1,
+                    0.1
+                ]
+            ]
+        }
+    ]
+}

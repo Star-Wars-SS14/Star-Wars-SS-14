@@ -94,7 +94,8 @@ public sealed class ConveyorController : SharedConveyorController
         }
     }
 
-    private void SetState(EntityUid uid, ConveyorState state, ConveyorComponent? component = null)
+    //SW private -> public
+    public void SetState(EntityUid uid, ConveyorState state, ConveyorComponent? component = null)
     {
         if (!Resolve(uid, ref component))
             return;

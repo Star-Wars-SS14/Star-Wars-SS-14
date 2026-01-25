@@ -1,0 +1,36 @@
+using Content.Shared._SW.Lathe;
+using Robust.Shared.Prototypes;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Content.Server._SW.Lathe.SWLathe;
+
+[RegisterComponent]
+public sealed partial class SWLatheComponent : Component
+{
+    [DataField, ViewVariables(VVAccess.ReadWrite)]
+    public List<ProtoId<SWLatheRecipePrototype>> Recipes = new List<ProtoId<SWLatheRecipePrototype>>();
+
+    [DataField, ViewVariables(VVAccess.ReadWrite)]
+    public string FixtureInPrefix = "in";
+
+    [DataField]
+    public Vector2 SpawnPointOut = new Vector2(0.0f, 0.7f); 
+
+    /// <summary>
+    /// Maximum amount per ONE material
+    /// </summary>
+    [DataField, ViewVariables(VVAccess.ReadWrite)]
+    public int MaxMaterialAmount = 3;
+
+    public Dictionary<EntProtoId, int> StashedMaterials = new Dictionary<EntProtoId, int>();
+
+    [ViewVariables(VVAccess.ReadOnly)]
+    public SWLatheRecipePrototype? CurrentRecipeProducting;
+
+    public TimeSpan ProductionEndTime;
+}

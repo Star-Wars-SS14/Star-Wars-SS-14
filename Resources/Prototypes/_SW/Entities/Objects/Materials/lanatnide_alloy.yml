@@ -1,0 +1,50 @@
+- type: entity
+  parent: SheetMetalBase
+  id: SWSheetLantanidAlloy
+  name: lantanid alloy
+  suffix: Full
+  components:
+  - type: Stack
+    stackType: SWSheetLantanidAlloy
+    baseLayer: base
+    layerStates:
+    - plasteel
+    - plasteel_2
+    - plasteel_3
+  - type: Sprite
+    state: plasteel_3
+    layers:
+    - state: plasteel_3
+      map: ["base"]
+  - type: Item
+    heldPrefix: plasteel
+  - type: Appearance
+
+- type: entity
+  parent: SWSheetLantanidAlloy
+  id: SWSheetLantanidAlloy10
+  suffix: 10
+  components:
+  - type: Sprite
+    state: plasteel
+  - type: Stack
+    stackType: SWSheetLantanidAlloy
+    count: 10
+
+- type: entity
+  parent: SWSheetLantanidAlloy
+  id: SWSheetLantanidAlloy1
+  suffix: Single
+  components:
+  - type: Sprite
+    state: plasteel
+  - type: Stack
+    stackType: SWSheetLantanidAlloy
+    count: 1
+
+- type: stack
+  parent: BaseSheetStack
+  id: SWSheetLantanidAlloy
+  name: stack-lantanid-alloy
+  icon: { sprite: /Textures/Objects/Materials/Sheets/metal.rsi, state: plasteel }
+  spawn: SWSheetLantanidAlloy1

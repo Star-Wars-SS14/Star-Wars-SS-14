@@ -1,0 +1,7 @@
+- type: weightedRandomOre
+  id: SWRandomOreDistributionStandard
+  weights:
+    OreSteel: 10
+    OreCoal: 10
+    OreGold: 5
+    SWOreLantanid: 7

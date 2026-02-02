@@ -72,8 +72,8 @@
 - type: entity
   parent: ClothingBeltStorageBase
   id: SWJediBelt
-  name: пояс джедая
-  description: Тактический пояс пользователей светлой стороны силы. Не сковывает движений и не мешает в бою.
+  name: jedi belt
+  description: A jedi tactical belt. Doesn't restrict movement or hinder combat.
   components:
   - type: Sprite
     sprite: _SW/Clothing/Belt/jedi_belt.rsi
@@ -84,7 +84,7 @@
   parent: ClothingBeltStorageBase
   id: SWSithBelt
   name: sith belt
-  description: Тактический пояс пользователей темной стороны силы. Не мешает в бою и не сковывает движений.
+  description: A sith tactical belt. Doesn't restrict movement or hinder combat.
   components:
   - type: Sprite
     sprite: _SW/Clothing/Belt/sith_belt.rsi

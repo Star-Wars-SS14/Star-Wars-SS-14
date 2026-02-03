@@ -68,3 +68,19 @@
   - type: NightVisionItem
     slotFlags: HEAD
 
+- type: entity
+  parent: SW_ClothingHeadHavokHelmet
+  id: SW_ClothingHeadStormtrooperHavokHelmet
+  name: stormtrooper havok helmet
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/Havok/stormtrooperhelmetrepublicgunner.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/Havok/stormtrooperhelmetrepublicgunner.rsi
+  - type: HideLayerClothing
+    slots:
+    - Hair
+    - Snout
+  - type: NightVisionItem
+    slotFlags: HEAD
+

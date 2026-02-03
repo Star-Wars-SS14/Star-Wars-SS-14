@@ -74,9 +74,9 @@
   name: stormtrooper havok helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/Havok/stormtrooperhelmetrepublicgunner.rsi
+    sprite: _SW/Clothing/Head/Helmets/Havok/helmetrepublicgunner.rsi
   - type: Clothing
-    sprite: _SW/Clothing/Head/Helmets/Havok/stormtrooperhelmetrepublicgunner.rsi
+    sprite: _SW/Clothing/Head/Helmets/Havok/helmetrepublicgunner.rsi
   - type: HideLayerClothing
     slots:
     - Hair

@@ -197,7 +197,7 @@
     proto: SWMK1Bullet
     fireCost: 100
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/MachineGuns/mk1_ammo.rsi
 
 #Sniper rifles
 
@@ -320,4 +320,4 @@
   - type: ProjectileBatteryAmmoProvider
     proto: SWMK3Bullet
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/Rifles/mk3_ammo.rsi

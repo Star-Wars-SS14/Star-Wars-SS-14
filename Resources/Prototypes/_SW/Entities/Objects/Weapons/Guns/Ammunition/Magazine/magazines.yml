@@ -11,6 +11,35 @@
     size: Small
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Magazine/LightRifle/light_rifle_mag.rsi
+    layers:
+    - state: icon
+      map: ["enum.GunVisualLayers.Base"]
+    - state: mag-1
+      map: ["enum.GunVisualLayers.Mag"]
+  - type: Tag
+    tags:
+    - MagazineBlast
+  - type: Appearance
+  - type: ProjectileBatteryAmmoProvider
+    proto: SWYellowBulletBlast
+  - type: MagazineVisuals
+    magState: mag
+    steps: 3
+    zeroVisible: false
+
+- type: entity
+  id: SWBaseBlasterPistolMagazine
+  name: "magazine"
+  parent: BaseItem
+  abstract: true    
+  components:
+  - type: Battery
+    maxCharge: 10000
+    startingCharge: 10000
+  - type: Item
+    size: Small
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Ammunition/Magazine/LightRifle/light_rifle_mag.rsi
     state: icon
   - type: Tag
     tags:
@@ -38,16 +67,6 @@
     proto: SWE-1Bullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/Rifles/e1_ammo.rsi
-    layers:
-    - state: icon
-      map: ["enum.GunVisualLayers.Base"]
-    - state: mag-1
-      map: ["enum.GunVisualLayers.Mag"]
-  - type: MagazineVisuals
-    magState: mag
-    steps: 3
-    zeroVisible: false
-  - type: Appearance
 
 - type: entity
   id: SWP301Magazine
@@ -65,16 +84,6 @@
     proto: SWP301Bullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/Rifles/p301_ammo.rsi
-    layers:
-    - state: icon
-      map: ["enum.GunVisualLayers.Base"]
-    - state: mag-1
-      map: ["enum.GunVisualLayers.Mag"]
-  - type: MagazineVisuals
-    magState: mag
-    steps: 3
-    zeroVisible: false
-  - type: Appearance
 
 - type: entity
   id: SWZ1Magazine
@@ -92,16 +101,6 @@
     proto: SWZ1Bullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/Rifles/z1_ammo.rsi
-    layers:
-    - state: icon
-      map: ["enum.GunVisualLayers.Base"]
-    - state: mag-1
-      map: ["enum.GunVisualLayers.Mag"]
-  - type: MagazineVisuals
-    magState: mag
-    steps: 3
-    zeroVisible: false
-  - type: Appearance
 
 - type: entity
   id: SWH206Magazine
@@ -119,16 +118,6 @@
     proto: SWH206Bullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/Rifles/h206_ammo.rsi
-    layers:
-    - state: icon
-      map: ["enum.GunVisualLayers.Base"]
-    - state: mag-1
-      map: ["enum.GunVisualLayers.Mag"]
-  - type: MagazineVisuals
-    magState: mag
-    steps: 3
-    zeroVisible: false
-  - type: Appearance
 
 - type: entity
   id: SWJ111Magazine
@@ -146,16 +135,6 @@
     proto: SWJ111Bullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/Rifles/j111_ammo.rsi
-    layers:
-    - state: icon
-      map: ["enum.GunVisualLayers.Base"]
-    - state: mag-1
-      map: ["enum.GunVisualLayers.Mag"]
-  - type: MagazineVisuals
-    magState: mag
-    steps: 3
-    zeroVisible: false
-  - type: Appearance
 
 #Machine guns
 
@@ -175,16 +154,6 @@
     proto: SWF11DCannonBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/MachineGuns/grantek_f11d_ammo.rsi
-    layers:
-    - state: icon
-      map: ["enum.GunVisualLayers.Base"]
-    - state: mag-1
-      map: ["enum.GunVisualLayers.Mag"]
-  - type: MagazineVisuals
-    magState: mag
-    steps: 3
-    zeroVisible: false
-  - type: Appearance
 
 - type: entity
   id: SWEL34Magazine
@@ -202,16 +171,6 @@
     proto: SWEL34Bullet 
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/MachineGuns/el34_ammo.rsi
-    layers:
-    - state: icon
-      map: ["enum.GunVisualLayers.Base"]
-    - state: mag-1
-      map: ["enum.GunVisualLayers.Mag"]
-  - type: MagazineVisuals
-    magState: mag
-    steps: 3
-    zeroVisible: false
-  - type: Appearance
 
 - type: entity
   id: SWGT13Magazine
@@ -230,16 +189,6 @@
     fireCost: 100
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/MachineGuns/gt13st_ammo.rsi
-    layers:
-    - state: icon
-      map: ["enum.GunVisualLayers.Base"]
-    - state: mag-1
-      map: ["enum.GunVisualLayers.Mag"]
-  - type: MagazineVisuals
-    magState: mag
-    steps: 3
-    zeroVisible: false
-  - type: Appearance
 
 - type: entity
   id: SWGallantryMagazine
@@ -258,16 +207,6 @@
     fireCost: 100
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/MachineGuns/gallantry_ammo.rsi
-    layers:
-    - state: icon
-      map: ["enum.GunVisualLayers.Base"]
-    - state: mag-1
-      map: ["enum.GunVisualLayers.Mag"]
-  - type: MagazineVisuals
-    magState: mag
-    steps: 3
-    zeroVisible: false
-  - type: Appearance
 
 - type: entity
   id: SWMK1Magazine
@@ -286,16 +225,6 @@
     fireCost: 100
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/MachineGuns/mk1_ammo.rsi
-    layers:
-    - state: icon
-      map: ["enum.GunVisualLayers.Base"]
-    - state: mag-1
-      map: ["enum.GunVisualLayers.Mag"]
-  - type: MagazineVisuals
-    magState: mag
-    steps: 3
-    zeroVisible: false
-  - type: Appearance
 
 #Sniper rifles
 
@@ -315,16 +244,6 @@
     proto: SWF11DSniperRifleBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/SniperRifles/f11d_ammo.rsi
-    layers:
-    - state: icon
-      map: ["enum.GunVisualLayers.Base"]
-    - state: mag-1
-      map: ["enum.GunVisualLayers.Mag"]
-  - type: MagazineVisuals
-    magState: mag
-    steps: 3
-    zeroVisible: false
-  - type: Appearance
 
 - type: entity
   id: SWBeryarMK3Magazine
@@ -342,16 +261,6 @@
     proto: SWBeryarMK3Bullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/SniperRifles/mk3_ammo.rsi
-    layers:
-    - state: icon
-      map: ["enum.GunVisualLayers.Base"]
-    - state: mag-1
-      map: ["enum.GunVisualLayers.Mag"]
-  - type: MagazineVisuals
-    magState: mag
-    steps: 3
-    zeroVisible: false
-  - type: Appearance
 
 - type: entity
   id: SWK406RipperMagazine
@@ -369,23 +278,13 @@
     proto: SWK406RipperBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/SniperRifles/k406_ammo.rsi
-    layers:
-    - state: icon
-      map: ["enum.GunVisualLayers.Base"]
-    - state: mag-1
-      map: ["enum.GunVisualLayers.Mag"]
-  - type: MagazineVisuals
-    magState: mag
-    steps: 3
-    zeroVisible: false
-  - type: Appearance
   
 #Pistols
 
 - type: entity
   id: SWScoutBlasterMagazine
   name: Магазин для пистолета разведчика
-  parent: SWBaseBlasterMagazine
+  parent: SWBaseBlasterPistolMagazine
   components:
   - type: Battery
     maxCharge: 7500
@@ -402,7 +301,7 @@
 - type: entity
   id: SWBalmorraCannonMagazine
   name: Магазин для пушки балморы
-  parent: SWBaseBlasterMagazine
+  parent: SWBaseBlasterPistolMagazine
   components:
   - type: Battery
     maxCharge: 5000
@@ -419,7 +318,7 @@
 - type: entity
   id: SWAnarchyMagazine
   name: Магазин для "Анархии"
-  parent: SWBaseBlasterMagazine
+  parent: SWBaseBlasterPistolMagazine
   components:
   - type: Battery
     maxCharge: 7000

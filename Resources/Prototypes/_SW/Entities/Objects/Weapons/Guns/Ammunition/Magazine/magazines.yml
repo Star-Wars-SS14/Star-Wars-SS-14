@@ -1,6 +1,6 @@
 - type: entity
   id: SWBaseBlasterMagazine
-  name: "magazine"
+  name: "magazine (.30 rifle)"
   parent: BaseItem
   abstract: true    
   components:
@@ -12,7 +12,7 @@
   - type: Sprite
     sprite: Objects/Weapons/Guns/Ammunition/Magazine/LightRifle/light_rifle_mag.rsi
     layers:
-    - state: icon
+    - state: base
       map: ["enum.GunVisualLayers.Base"]
     - state: mag-1
       map: ["enum.GunVisualLayers.Mag"]
@@ -20,36 +20,11 @@
     tags:
     - MagazineBlast
   - type: Appearance
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWYellowBulletBlast
   - type: MagazineVisuals
     magState: mag
-    steps: 3
-    zeroVisible: false
-
-- type: entity
-  id: SWBaseBlasterPistolMagazine
-  name: "magazine"
-  parent: BaseItem
-  abstract: true    
-  components:
-  - type: Battery
-    maxCharge: 10000
-    startingCharge: 10000
-  - type: Item
-    size: Small
-  - type: Sprite
-    sprite: Objects/Weapons/Guns/Ammunition/Magazine/LightRifle/light_rifle_mag.rsi
-    state: icon
-  - type: Tag
-    tags:
-    - MagazineBlast
-  - type: Appearance
-  - type: ProjectileBatteryAmmoProvider
-    proto: SWYellowBulletBlast
-  - type: MagazineVisuals
-    magState: mag
-    steps: 1
+    steps: 8
     zeroVisible: false
 
 #Rifles
@@ -63,10 +38,11 @@
     tags:
     - MagazineBlast
     - E-1Magazine
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWE-1Bullet
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/Rifles/e1_ammo.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+
 
 - type: entity
   id: SWP301Magazine
@@ -80,10 +56,10 @@
     tags:
     - MagazineBlast
     - P-301Magazine
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWP301Bullet
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/Rifles/p301_ammo.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
 - type: entity
   id: SWZ1Magazine
@@ -97,10 +73,10 @@
     tags:
     - MagazineBlast
     - Z-1Magazine
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWZ1Bullet
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/Rifles/z1_ammo.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
 - type: entity
   id: SWH206Magazine
@@ -114,10 +90,10 @@
     tags:
     - MagazineBlast
     - H-206Magazine
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWH206Bullet
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/Rifles/h206_ammo.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
 - type: entity
   id: SWJ111Magazine
@@ -131,10 +107,10 @@
     tags:
     - MagazineBlast
     - J-111Magazine
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWJ111Bullet
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/Rifles/j111_ammo.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
 #Machine guns
 
@@ -150,10 +126,11 @@
     tags:
     - MagazineBlast
     - F-11DCannonMagazine
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWF11DCannonBullet
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/MachineGuns/grantek_f11d_ammo.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+
 
 - type: entity
   id: SWEL34Magazine
@@ -167,11 +144,11 @@
     tags:
     - MagazineBlast
     - SWEL34MagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWEL34Bullet 
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/MachineGuns/el34_ammo.rsi
-
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+  
 - type: entity
   id: SWGT13Magazine
   name: GT-13 Magazine
@@ -184,11 +161,11 @@
     tags:
     - MagazineBlast
     - SWGT13MagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWGT13Bullet
     fireCost: 100
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/MachineGuns/gt13st_ammo.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
 - type: entity
   id: SWGallantryMagazine
@@ -202,11 +179,11 @@
     tags:
     - MagazineBlast
     - SWGallantryMagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWGallantryBullet
     fireCost: 100
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/MachineGuns/gallantry_ammo.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
 - type: entity
   id: SWMK1Magazine
@@ -220,11 +197,11 @@
     tags:
     - MagazineBlast
     - SWMK1MagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWMK1Bullet
     fireCost: 100
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/MachineGuns/mk1_ammo.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
 #Sniper rifles
 
@@ -240,10 +217,10 @@
     tags:
     - MagazineBlast
     - F-11DSniperMagazine
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWF11DSniperRifleBullet
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/SniperRifles/f11d_ammo.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
 - type: entity
   id: SWBeryarMK3Magazine
@@ -257,10 +234,10 @@
     tags:
     - MagazineBlast
     - SWBeryarMK3MagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWBeryarMK3Bullet
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/SniperRifles/mk3_ammo.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
 
 - type: entity
   id: SWK406RipperMagazine
@@ -274,17 +251,17 @@
     tags:
     - MagazineBlast
     - SWK406RipperMagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWK406RipperBullet
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/SniperRifles/k406_ammo.rsi
-  
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+
 #Pistols
 
 - type: entity
   id: SWScoutBlasterMagazine
   name: Магазин для пистолета разведчика
-  parent: SWBaseBlasterPistolMagazine
+  parent: SWBaseBlasterMagazine
   components:
   - type: Battery
     maxCharge: 7500
@@ -293,15 +270,20 @@
     tags:
     - MagazineBlast
     - SWScoutBlasterMagazine
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWScoutBlasterBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
+    state: mag
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: false
 
 - type: entity
   id: SWBalmorraCannonMagazine
   name: Магазин для пушки балморы
-  parent: SWBaseBlasterPistolMagazine
+  parent: SWBaseBlasterMagazine
   components:
   - type: Battery
     maxCharge: 5000
@@ -310,15 +292,20 @@
     tags:
     - MagazineBlast
     - SWBalmorraCannonMagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWBalmorraHandGunBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/balmorra_cannon_mag.rsi
+    state: mag
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: false
 
 - type: entity
   id: SWAnarchyMagazine
   name: Магазин для "Анархии"
-  parent: SWBaseBlasterPistolMagazine
+  parent: SWBaseBlasterMagazine
   components:
   - type: Battery
     maxCharge: 7000
@@ -327,10 +314,37 @@
     tags:
     - MagazineBlast
     - SWAnarchyMagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWAnarchyBullet
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
+    state: mag
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: false
+
+- type: entity
+  id: SWM44Magazine
+  name: M44 magazine
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 3000
+    startingCharge: 3000
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - SWM44MagazineTag
+  - type: BatteryAmmoProvider
+    proto: SWM44Bullet
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/M-44Ammo.rsi
+    state: mag
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: false
 
 - type: entity
   id: SWMK3Magazine
@@ -344,17 +358,32 @@
     tags:
     - MagazineBlast
     - SWMK3MagazineTag
-  - type: ProjectileBatteryAmmoProvider
+  - type: BatteryAmmoProvider
     proto: SWMK3Bullet
   - type: Sprite
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/Rifles/mk3_ammo.rsi
-    layers:
-    - state: icon
-      map: ["enum.GunVisualLayers.Base"]
-    - state: mag-1
-      map: ["enum.GunVisualLayers.Mag"]
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/blaster_rifle_mag.rsi
+    state: mag
   - type: MagazineVisuals
     magState: mag
-    steps: 3
+
+- type: entity
+  id: SWUIHBPMagazine
+  name: UIHBP magazine
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 6500
+    startingCharge: 6500
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - SWUIHBPMagazineTag
+  - type: BatteryAmmoProvider
+    proto: SWUIHBPBullet
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/UIHBP_pistol_mag.rsi
+    state: mag
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
     zeroVisible: false
-  - type: Appearance

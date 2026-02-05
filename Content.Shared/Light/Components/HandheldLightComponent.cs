@@ -15,6 +15,8 @@ public sealed partial class HandheldLightComponent : Component
     //SW end
 
     public byte? Level;
+
+    [DataField]
     public bool Activated;
 
     [ViewVariables(VVAccess.ReadWrite)]

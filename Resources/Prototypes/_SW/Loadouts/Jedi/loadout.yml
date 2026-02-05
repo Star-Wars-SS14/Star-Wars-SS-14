@@ -1,0 +1,6 @@
+- type: loadout
+  id: SWJedi
+  name: Лёгкая броня джедая
+  equipment:
+    outerClothing: SWjedidecorarmor
+    head: SWJedidecorhelmet

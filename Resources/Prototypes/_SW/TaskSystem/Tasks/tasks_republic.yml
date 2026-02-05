@@ -120,7 +120,6 @@
     name: Ключ карта от всех дверей
     description: Добыча имперских айди карт. Для проведения более эффективных диверсий необходимо захватить три любые айди карты, позволяющие получать доступы на базы империи. Айди карты обычных солдат бесполезны, на них это задание не распространяется.
     score: 15
-    restrictions: OnePerFaction
   - type: SWCollectObjectTask
     requirements:
     - number: 3
@@ -161,9 +160,10 @@
 
 - type: entity
   id: DestroyCommTowerRepublic
-  score: 15
+
   components:
   - type: SWTask
+    score: 15
     name: Тушите связь
     description: Уничтожьте 3 вышки связи Империи. Лишив противника связи, мы внесем хаос и дезорганизацию в его ряды, что облегчит ведение подрывной деятельности в дальнейшем.
   - type: DestroyObjectsTask
@@ -171,3 +171,12 @@
     - number: 3
       objects:
       - SWCommunicationTower
+
+- type: entity
+  id: SWSabotageQuotaRepublic 
+  components:
+  - type: SWTask
+    score: 30
+    name: Саботировать квоту
+    description: Империя получила крупный заказ на производство вооружения. Не дайте им произвести достаточное для его выполнения количество оружия.
+  - type: SWParallelTaskInvertStatus

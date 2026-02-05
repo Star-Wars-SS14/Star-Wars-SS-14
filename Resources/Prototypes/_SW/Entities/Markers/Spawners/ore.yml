@@ -1,0 +1,57 @@
+- type: entity
+  parent: MarkerBase
+  id: SWRockMineRespawnSpawner
+  name: спавнер камня с рудой (регенерируется)
+  suffix: SW
+  components:
+  - type: SWRespawnGameruleSpawnpoint
+    respawnProto: SWWallRockMining
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  parent: MarkerBase
+  id: SWRockRespawnSpawner
+  name: спавнер просто камня (регенрируется)
+  suffix: SW
+  components:
+  - type: SWRespawnGameruleSpawnpoint
+    respawnProto: WallRock
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  parent: MarkerBase
+  id: SWRockWithOrWithoutOreRespawn
+  name: спавнер камня или камня с рудой (регенерируется)
+  suffix: SW
+  components:
+  - type: SWRespawnGameruleSpawnpoint
+    respawnProto: SWRockWithOrWithoutOre
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  parent: MarkerBase
+  id: SWRockWithOrWithoutOre
+  name: спавнер камня или камня с рудой
+  suffix: SW
+  components:
+  - type: EntityTableSpawner
+    offset: 0.0
+    table: !type:GroupSelector
+      children:
+      - !type:AllSelector
+        weight: 45
+        children:
+        - id: SWWallRockMining
+      - !type:AllSelector
+        weight: 55
+        children:
+        - id: WallRock
+  - type: Sprite
+    layers:
+    - state: green

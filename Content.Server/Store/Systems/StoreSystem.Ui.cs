@@ -201,6 +201,7 @@ public sealed partial class StoreSystem
         {
             EntityUid? actionId;
             actionId = _actions.AddAction(buyer, listing.ProductAction); // SW edit
+
             // Add the newly bought action entity to the list of bought entities
             // And then add that action entity to the relevant product upgrade listing, if applicable
             if (actionId != null)

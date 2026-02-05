@@ -26,7 +26,7 @@ public sealed class VisorSystem : EntitySystem
     [Dependency] private readonly SharedContainerSystem _container = default!;
     [Dependency] private readonly InventorySystem _inventory = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
-    [Dependency] private readonly SharedPowerCellSystem _powerCell = default!;
+    [Dependency] private readonly PowerCellSystem _powerCell = default!;
     [Dependency] private readonly SharedToolSystem _tool = default!;
     [Dependency] private readonly SharedItemSystem _item = default!;
     //[Dependency] private readonly SkillsSystem _skills = default!;
@@ -47,7 +47,7 @@ public sealed class VisorSystem : EntitySystem
         SubscribeLocalEvent<VisorComponent, ActivateVisorAttemptEvent>(OnVisorAttemptActivate);
         SubscribeLocalEvent<VisorComponent, ActivateVisorEvent>(OnVisorActivate);
         SubscribeLocalEvent<VisorComponent, DeactivateVisorEvent>(OnVisorDeactivate);
-        SubscribeLocalEvent<VisorComponent, PowerCellChangedEvent>(OnCycleableVisorPowerCellChanged, after: [typeof(SharedPowerCellSystem)]);
+        SubscribeLocalEvent<VisorComponent, PowerCellChangedEvent>(OnCycleableVisorPowerCellChanged, after: [typeof(PowerCellSystem)]);
 
         SubscribeLocalEvent<ToggleVisorComponent, ActivateVisorAttemptEvent>(OnToggleVisorAttemptActivate);
         SubscribeLocalEvent<ToggleVisorComponent, ActivateVisorEvent>(OnToggleVisorActivate);
@@ -358,7 +358,7 @@ public sealed class VisorSystem : EntitySystem
 
     private void OnCycleableVisorPowerCellChanged(Entity<VisorComponent> ent, ref PowerCellChangedEvent args)
     {
-        if (!args.Ejected && _powerCell.HasDrawCharge(ent))
+        if (!args.Ejected && _powerCell.HasDrawCharge(ent.Owner))
             return;
 
         // power cell draw is completely broken upstream and does not work AT ALL if
@@ -371,11 +371,6 @@ public sealed class VisorSystem : EntitySystem
         // this is fucking dogshit thank you to whichever soldier did this personal shoutout
         if (TryComp(ent, out PowerCellDrawComponent? powerCellDraw))
         {
-            var canDraw = !args.Ejected && _powerCell.HasDrawCharge(ent, powerCellDraw);
-            var canUse = !args.Ejected && _powerCell.HasDrawCharge(ent, powerCellDraw);
-
-            powerCellDraw.CanDraw = canDraw;
-            powerCellDraw.CanUse = canUse;
             Dirty(ent, powerCellDraw);
         }
 

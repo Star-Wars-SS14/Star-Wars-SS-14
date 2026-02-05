@@ -99,7 +99,6 @@ public sealed class SWTargetSelectorSystem : EntitySystem
                 possible_targets.Add(uid);
             }
         }
-        _random.SetSeed((int)_timing.CurTime.TotalMilliseconds);
         ent.Comp.Target = _random.Pick(possible_targets);
         ent.Comp.JobOfTarget = GetJob(ent.Comp.Target.Value);
     }

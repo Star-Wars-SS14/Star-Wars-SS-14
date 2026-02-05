@@ -522,7 +522,7 @@ public sealed class HolopadSystem : SharedHolopadSystem
             if (receiverTelephone.UnlistedNumber)
                 continue;
             //SW start
-            if (_whitelistSystem.IsBlacklistPass(source.Comp.Blacklist, receiver))
+            if (_whitelistSystem.IsWhitelistPass(source.Comp.Blacklist, receiver))
             {
                 continue;
             }

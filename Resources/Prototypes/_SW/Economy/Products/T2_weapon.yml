@@ -173,3 +173,91 @@
     SWEmpireCreditCurrency: 40
   category: sw-category-magazines
   group: SWT2RepublicWeaponMarket
+
+- type: swCargoProduct
+  id: SWM44RepublicCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Pistols/M44_blaster.rsi
+    state: base
+  product: SWM44
+  cost:
+    SWEmpireCreditCurrency: 720
+  category: sw-category-pistols
+  group: SWT2RepublicWeaponMarket
+
+- type: swCargoProduct
+  id: SWM44MagazineRepublicCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/M-44Ammo.rsi
+    state: base
+  product: SWM44Magazine
+  cost:
+    SWEmpireCreditCurrency: 60
+  category: sw-category-magazines
+  group: SWT2RepublicWeaponMarket
+
+- type: swCargoProduct
+  id: SWM44EmpireCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Pistols/M44_blaster.rsi
+    state: base
+  product: SWM44
+  cost:
+    SWEmpireCreditCurrency: 720
+  category: sw-category-pistols
+  group: SWT2EmpireWeaponMarket
+
+- type: swCargoProduct
+  id: SWM44MagazineEmpireCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/M-44Ammo.rsi
+    state: base
+  product: SWM44Magazine
+  cost:
+    SWEmpireCreditCurrency: 60
+  category: sw-category-magazines
+  group: SWT2EmpireWeaponMarket
+
+- type: swCargoProduct
+  id: SWUIHBPRepublicCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Pistols/UIHBP.rsi
+    state: base
+  product: SWUIHBP
+  cost:
+    SWEmpireCreditCurrency: 620
+  category: sw-category-pistols
+  group: SWT2RepublicWeaponMarket
+
+- type: swCargoProduct
+  id: SWUIHBPMagazineRepublicCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/UIHBP_pistol_mag.rsi
+    state: base
+  product: SWUIHBPMagazine
+  cost:
+    SWEmpireCreditCurrency: 50
+  category: sw-category-magazines
+  group: SWT2RepublicWeaponMarket
+
+- type: swCargoProduct
+  id: SWUIHBPEmpireCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Pistols/UIHBP.rsi
+    state: base
+  product: SWUIHBP
+  cost:
+    SWEmpireCreditCurrency: 620
+  category: sw-category-pistols
+  group: SWT2EmpireWeaponMarket
+
+- type: swCargoProduct
+  id: SWUIHBPMagazineEmpireCP
+  icon:
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/UIHBP_pistol_mag.rsi
+    state: base
+  product: SWUIHBPMagazine
+  cost:
+    SWEmpireCreditCurrency: 50
+  category: sw-category-magazines
+  group: SWT2EmpireWeaponMarket

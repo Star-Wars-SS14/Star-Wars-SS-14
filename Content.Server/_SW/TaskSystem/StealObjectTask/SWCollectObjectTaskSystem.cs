@@ -14,7 +14,6 @@ public sealed partial class SWCollectObjectTaskSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        //SubscribeLocalEvent<SWKillRandomOfFactionComponent, SWTaskCheckRequirementsEvent>(OnCheckRequirements);
         SubscribeLocalEvent<SWCollectObjectTaskComponent, SWTaskInitEvent>(OnTaskInit);
         SubscribeLocalEvent<SWCollectObjectTaskComponent, SWGetProgressEvent>(OnGetProgress);
         SubscribeLocalEvent<TryTransferObject>(OnTransfer);
@@ -25,6 +24,11 @@ public sealed partial class SWCollectObjectTaskSystem : EntitySystem
         var queryTasks = EntityQueryEnumerator<SWCollectObjectTaskComponent>();
         while (queryTasks.MoveNext(out var uid, out var comp))
         {
+            if (!_sWTasks.IsTaskNotExpired(uid))
+            {
+                continue;
+            }
+
             foreach (var requirement in comp.ObjectsCollected)
             {
                 var protolist = requirement.ObjectsPrototypes;

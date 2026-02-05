@@ -1,0 +1,37 @@
+- type: ore
+  id: SWOreLantanid
+  oreEntity: SWLantanidOre1
+  minOreYield: 1
+  maxOreYield: 5
+
+- type: stack
+  parent: BaseMediumStack
+  id: SWLantanidOre
+  name: stack-lantanid-ore
+  icon: { sprite: /Textures/Objects/Materials/ore.rsi, state: plasma }
+  spawn: SWLantanidOre1
+
+- type: entity
+  parent: OreBase
+  id: SWLantanidOre
+  name: lantanid ore
+  suffix: Full
+  components:
+  - type: Stack
+    stackType: SWLantanidOre
+  - type: Sprite
+    state: plasma
+  - type: Material
+  - type: Item
+  - type: Tag
+    tags:
+    - Ore
+    - OrePlasma
+
+- type: entity
+  parent: SWLantanidOre
+  id: SWLantanidOre1
+  suffix: Single
+  components:
+    - type: Stack
+      count: 1

@@ -1,0 +1,21 @@
+- type: gamePreset
+  id: SWMainPreset
+  name: Обычный день
+  description: Обычный день. Выполняйте регулярные задания от своего командования.
+  showInVote: true
+  rules:
+    - TaskGamerule
+    - SWEventScheduler
+    - SWRespawnGamerule
+    - SWMineCollapseGamerule
+
+- type: gamePreset
+  id: SWMainPresetNoTasks
+  name: Необычный день
+  description: В связи с особыми событиями командование приостановило выполнение заданий. Следуйте особым инструкциям командования.
+  showInVote: false
+  rules:
+    - FactionsOnlyGamerule
+    - SWEventScheduler
+    - SWRespawnGamerule
+    - SWMineCollapseGamerule

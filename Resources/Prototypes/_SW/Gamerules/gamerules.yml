@@ -1,0 +1,107 @@
+- type: entity
+  parent: BaseGameRule
+  id: TaskGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWTaskGamerule
+  - type: SWFactionGamerule
+    factionsPrototypes:
+    - RepublicFaction
+    - EmpireFaction
+    - MandalorianFaction
+    - BlackSunFaction
+    - ExchangeFaction
+
+- type: entity
+  parent: BaseGameRule
+  id: SWRespawnGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWRespawnGamerule
+    delay: 10
+
+- type: entity
+  parent: BaseGameRule
+  id: FactionsOnlyGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWFactionGamerule
+    factionsPrototypes:
+    - RepublicFaction
+    - EmpireFaction
+    - MandalorianFaction
+    - BlackSunFaction
+    - ExchangeFaction
+
+- type: entity
+  parent: BaseGameRule
+  id: FactionsOnlyQuotaGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWFactionGamerule
+    factionsPrototypes:
+    - RepublicFactionQuotaOnly
+    - EmpireFactionQuotaOnly
+    - MandalorianFaction
+    - BlackSunFaction
+    - ExchangeFaction
+
+- type: entity
+  parent: BaseGameRule
+  id: FactionsOnlyNoQuotaGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWFactionGamerule
+    factionsPrototypes:
+    - RepublicFaction
+    - EmpireFactionNoQuota
+    - MandalorianFaction
+    - BlackSunFaction
+    - ExchangeFaction
+
+
+- type: entity
+  id: SWEventScheduler
+  parent: BaseGameRule
+  components:
+  - type: BasicStationEventScheduler
+    minimumTimeUntilFirstEvent: 0
+    scheduledGameRules: !type:NestedSelector
+      tableId: SWRulesTable
+  - type: GameRule
+    minPlayers: 0
+
+- type: entityTable
+  id: SWRulesTable
+  table: !type:AllSelector
+    children:
+    - id: SWParasitesRule
+    
+- type: entity
+  parent: BaseGameRule
+  id: SWMineCollapseGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWRespawnEntitiesGamerule
+  
+- type: entity
+  parent: BaseGameRule
+  id: SWParasitesRule
+  components:
+  - type: StationEvent
+    reoccurrenceDelay: 20
+    maxOccurrences: 4
+    minimumPlayers: 0
+    weight: 1000
+    duration: 1
+  - type: GameRule
+    minPlayers: 0
+  - type: SWSpawnRandomGamerule
+    spawner: SWParasitSpawner
+    count: 3

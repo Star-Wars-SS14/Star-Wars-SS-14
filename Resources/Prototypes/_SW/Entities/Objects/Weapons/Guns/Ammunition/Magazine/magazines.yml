@@ -387,3 +387,25 @@
     magState: mag
     steps: 1
     zeroVisible: false
+
+- type: entity
+  id: SWUIHBPMagazine
+  name: UIHBP magazine
+  parent: SWBaseBlasterMagazine
+  components:
+  - type: Battery
+    maxCharge: 6500
+    startingCharge: 6500
+  - type: Tag
+    tags:
+    - MagazineBlast
+    - SWUIHBPMagazineTag
+  - type: BatteryAmmoProvider
+    proto: SWUIHBPBullet
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/UIHBP_pistol_mag.rsi
+    state: mag
+  - type: MagazineVisuals
+    magState: mag
+    steps: 1
+    zeroVisible: false

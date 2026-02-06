@@ -1,0 +1,27 @@
+{
+    "version": 1,
+    "license": "@londorondondon",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+        {
+            "name": "icon"
+        },
+        {
+            "name": "inhand-left-mag",
+            "directions": 4
+        },
+        {
+            "name": "inhand-right-mag",
+            "directions": 4
+        },
+        {
+            "name": "mag-1"
+        },
+        {
+            "name": "mag-2"
+        }
+    ]
+}

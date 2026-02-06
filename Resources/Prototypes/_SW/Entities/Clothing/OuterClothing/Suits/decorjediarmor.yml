@@ -27,3 +27,17 @@
   - type: Tag
     tags:
     - SWEquipmentForceWL
+    
+- type: entity
+  parent: ClothingNeckBase
+  id: SWJediDecorCape
+  name: jedi cape
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Jedi_decor_armor/jedi_cape.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Jedi_decor_armor/jedi_cape.rsi
+  - type: Tag
+    tags:
+    - SWEquipmentForceWL
+   

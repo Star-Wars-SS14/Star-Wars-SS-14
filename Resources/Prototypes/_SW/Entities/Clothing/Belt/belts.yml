@@ -22,7 +22,7 @@
     action: ActionToggleInvis
     disableOnUnequip: true
   - type: SWToggleClothingAddCooldownOnDeactivate
-  - type: SWDeactivateClothingOnShoot
+  - type: SWDeactivateClothingOnAttack
   - type: Tag
     tags:
     - SWEquipmentForceBan

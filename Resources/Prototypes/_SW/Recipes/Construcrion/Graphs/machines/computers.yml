@@ -1,7 +1,8 @@
 - type: constructionGraph
   id: SWDecorativeRespublicComputerGraph
-  start: SWDecorativeRespublicComputerNode
+  start: start
   graph:
+  - node: start
   - node: SWDecorativeRespublicComputerNode
     entity: SWDecorativeRespublicComputer
     edges:

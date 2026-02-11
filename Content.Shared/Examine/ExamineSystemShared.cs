@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Shared._SW;
 using Content.Shared.Eye.Blinding.Components;
 using Content.Shared.Ghost;
 using Content.Shared.Interaction;
@@ -273,6 +274,15 @@ namespace Content.Shared.Examine
             }
 
             message.PushColor(Color.DarkGray);
+
+            //SW examine only base description changes start
+
+            if (HasComp<SWExamineOnlyBaseDescComponent>(entity))
+            {
+                return message;
+            }
+
+            //SW end
 
             // Raise the event and let things that subscribe to it change the message...
             var isInDetailsRange = IsInDetailsRange(examiner.Value, entity);

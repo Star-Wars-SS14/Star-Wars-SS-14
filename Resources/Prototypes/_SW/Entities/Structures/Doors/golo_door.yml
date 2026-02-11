@@ -1,0 +1,63 @@
+- type: entity
+  parent: BaseWall
+  id: SWHoloDoor
+  name: holo door
+  suffix: holo door
+  description: A door, where will it lead?
+  components:
+  - type: Anchorable
+    flags:
+    - Anchorable
+  - type: Rotatable
+  - type: Sprite
+    sprite: _RMC14/Structures/Walls/cave.rsi
+    color: "#826161"
+    state: cavewall
+  - type: Icon
+    sprite: _RMC14/Structures/Walls/cave.rsi
+    state: cavewall
+  - type: AnimationPlayer
+  - type: Physics
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.49,-0.49,0.49,0.49" # don't want this colliding with walls or they won't close
+        density: 100
+        mask:
+        - FullTileMask
+        layer:
+        - AirlockLayer
+  - type: Door
+    bumpOpen: false
+    clickOpen: true
+    canCrush: false
+    closeTimeOne: 0.1
+    closeTimeTwo: 0.1
+    openTimeOne: 0.1
+    openTimeTwo: 0.1
+    openingAnimationTime: 0.1
+    closingAnimationTime: 0.1
+    closedSpriteState: cavewall
+    openSpriteState: cavewall
+  - type: Airlock
+    openingSpriteState: cavewall
+    closingSpriteState: cavewall
+    openSpriteState: cavewall
+    closedSpriteState: cavewall
+    denySpriteState: cavewall
+    autoCloseDelay: 0.3
+  - type: NavMapDoor
+  - type: SWFactionNameVariance
+    factionsToName:
+      RepublicFaction: sw-holo-door-republic
+  - type: AccessReader
+    access: [["SWRepublicBase"]]
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: SWExamineOnlyBaseDesc
+  - type: Occluder
+  - type: IconSmooth
+    key: walls
+    base: cavewall

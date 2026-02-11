@@ -27,12 +27,23 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     [Dependency] SWFactionGameruleSystem _swFaction = default!;
     [Dependency] IPrototypeManager _prototypeManager = default!;
     ISawmill _sawmill = default!;
+    public static LocId TimeDescriptionId = "sw-time-limit-task";
 
     public override void Initialize()
     {
         base.Initialize();
         _sawmill = Logger.GetSawmill("taskSystem");
         SubscribeLocalEvent<SWTaskGameruleComponent, SWTaskProgressUpdateEvent>(OnTaskComplete);
+        SubscribeLocalEvent<SWTaskComponent, SWTaskProvideDescriptionEvent>(OnGetDescription);
+    }
+
+    private void OnGetDescription(Entity<SWTaskComponent> ent, ref SWTaskProvideDescriptionEvent args)
+    {
+        if (ent.Comp.TimeLimit == null)
+        {
+            return;
+        }
+        ent.Comp.Description += "\n" + Loc.GetString(TimeDescriptionId, ("time", ent.Comp.TimeLimit.Value));
     }
 
     private void OnTaskComplete(Entity<SWTaskGameruleComponent> ent, ref SWTaskProgressUpdateEvent args)
@@ -65,7 +76,11 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     public void AddStartTasks()
     {
         var notFilledFactions = _swFaction.GetFactions();
+        var factionsNames = notFilledFactions.Keys.ToList();
         bool anyTaskAdded = true;
+        //we use it to avoid adding the same task multiple times 
+        Dictionary<string, List<string>> addedTasksProtos =
+            factionsNames.ToDictionary(key => key, key => new List<string>());
         while (anyTaskAdded && notFilledFactions.Count() > 0)
         {
             anyTaskAdded = false;
@@ -83,13 +98,69 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                 if (comp.CurrentTasks.Count() < comp.StartAmountOfTasks)
                 {
                     var factionWithComp = new Entity<SWTaskContainerComponent>(factionEntity.Value.Owner, comp);
-                    anyTaskAdded = anyTaskAdded || AddRandomTask(factionWithComp, faction);
+                    var addedTask = AddRandomTask(factionWithComp, faction, addedTasksProtos[faction]);
+                    anyTaskAdded = anyTaskAdded || (addedTask != null);
+                    if (addedTask != null)
+                    {
+                        var proto = Prototype(addedTask.Value);
+                        if (proto != null)
+                        {
+                            addedTasksProtos[faction].Add(proto.ID);
+                        }
+                    }
                     comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(comp.AddIntervalInSeconds);
                 }
             }
         }
         _sawmill.Debug("added start tasks");
     }
+
+    protected override void ActiveTick(EntityUid uid, SWTaskGameruleComponent component, GameRuleComponent gameRule, float frameTime)
+    {
+        if (!component.StartTasksAdded && component.TimeToAddStartTasks <= _timing.CurTime)
+        {
+            AddStartTasks();
+            component.StartTasksAdded = true;
+        }
+
+        var query = EntityQueryEnumerator<SWTaskContainerComponent>();
+        while (query.MoveNext(out var factionUid, out var comp))
+        {
+            if (comp.NextAddTime <= _timing.CurTime)
+            {
+                TryPrototype(factionUid, out var proto);
+                if (proto != null)
+                {
+                    AddRandomTask(new Entity<SWTaskContainerComponent>(factionUid, comp), proto.ID);
+                    comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(comp.AddIntervalInSeconds);
+                }
+            }
+        }
+
+        var taskQuery = EntityQueryEnumerator<SWTaskComponent>();
+        while (taskQuery.MoveNext(out var taskUid, out var taskComp))
+        {
+            if (IsTaskNotExpired(taskUid, taskComp))
+            {
+                UpdateTaskProgress(taskUid, taskComp);
+                if (taskComp.Completeness == 1.0)
+                {
+                    RaiseLocalEvent(taskUid, new SWOnTaskCompleteEvent());
+                    //QueueDel(taskUid);
+                }
+            }
+        }
+    }
+
+    public bool IsTaskNotExpired(EntityUid taskUid, SWTaskComponent? taskComp = null)
+    {
+        if (!Resolve(taskUid, ref taskComp))
+        {
+            return false;
+        }
+        return taskComp.TimeOfBlocking == null || _timing.CurTime <= taskComp.TimeOfBlocking;
+    }
+
     protected override void AppendRoundEndText(EntityUid uid, SWTaskGameruleComponent component, GameRuleComponent gameRule, ref RoundEndTextAppendEvent args)
     {
         var query = EntityQueryEnumerator<SWFactionComponent>();
@@ -248,7 +319,8 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         }
         foreach (var task in taskComp.CurrentTasks)
         {
-            if (ignoreSubTasks && task.Comp.ParentTask != null) {
+            if (ignoreSubTasks && task.Comp.ParentTask != null)
+            {
                 continue;
             }
             if (task.Comp.Completeness != 1.0)
@@ -257,39 +329,6 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             }
         }
         return true;
-    }
-    protected override void ActiveTick(EntityUid uid, SWTaskGameruleComponent component, GameRuleComponent gameRule, float frameTime)
-    {
-        if (!component.StartTasksAdded && component.TimeToAddStartTasks <= _timing.CurTime)
-        {
-            AddStartTasks();
-            component.StartTasksAdded = true;
-        }
-
-        var query = EntityQueryEnumerator<SWTaskContainerComponent>();
-        while (query.MoveNext(out var factionUid, out var comp))
-        {
-            if (comp.NextAddTime <= _timing.CurTime)
-            {
-                TryPrototype(factionUid, out var proto);
-                if (proto != null)
-                {
-                    AddRandomTask(new Entity<SWTaskContainerComponent>(factionUid, comp), proto.ID);
-                    comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(comp.AddIntervalInSeconds);
-                }
-            }
-        }
-
-        var taskQuery = EntityQueryEnumerator<SWTaskComponent>();
-        while (taskQuery.MoveNext(out var taskUid, out var taskComp))
-        {
-            UpdateTaskProgress(taskUid, taskComp);
-            if (taskComp.Completeness == 1.0)
-            {
-                RaiseLocalEvent(taskUid, new SWOnTaskCompleteEvent());
-                //QueueDel(taskUid);
-            }
-        }
     }
 
     private void UpdateTaskProgress(EntityUid taskUid, SWTaskComponent? comp = null)
@@ -348,10 +387,11 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         {
             case TaskSpawnRestrictions.NoRestrictions:
                 return true;
-            case TaskSpawnRestrictions.OnePerFaction:
-                return !existingTasksPrototypes.Contains(taskProtoToCheck);
-            case TaskSpawnRestrictions.OnePerAllFactions:
+            case TaskSpawnRestrictions.PerFaction:
+                return existingTasksPrototypes.Count((x) => x == taskProtoToCheck) < comp.TasksCount;
+            case TaskSpawnRestrictions.PerAllFactions:
                 var factions = _swFaction.GetFactionsEntities();
+                int count = 0;
                 foreach (var faction in factions)
                 {
                     if (!TryComp<SWTaskContainerComponent>(faction, out var taskContainer))
@@ -366,12 +406,12 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                         {
                             if (proto == taskProto)
                             {
-                                return false;
+                                count++;
                             }
                         }
                     }
                 }
-                return true;
+                return count < comp.TasksCount;
             default:
                 throw new NotImplementedException();
         }
@@ -392,30 +432,43 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         Del(uid);
         return !ev.Cancelled;
     }
-    public bool AddRandomTask(Entity<SWTaskContainerComponent> faction, string factionId)
+    public Entity<SWTaskComponent>? AddRandomTask(Entity<SWTaskContainerComponent> faction, string factionId,
+                                                    List<string>? excludedTasks = null)
     {
         if (faction.Comp.AvailableTasks == null)
         {
-            return false;
+            return null;
         }
         if (faction.Comp.CurrentTasks.Count() == faction.Comp.MaxAmountOfTasks)
         {
-            return false;
+            return null;
         }
-        _prototypeManager.TryIndex(faction.Comp.AvailableTasks, out var proto);
-        if (proto == null)
+        _prototypeManager.TryIndex(faction.Comp.AvailableTasks, out var tasksSetProto);
+        if (tasksSetProto == null)
         {
-            return false;
+            return null;
         }
+        var proto = new WeightedRandomPrototype();
+
+        foreach (var (taskProto, count) in tasksSetProto.Weights)
+        {
+            if (excludedTasks != null && excludedTasks.Contains(taskProto))
+            {
+                continue;
+            }
+
+            proto.Weights.Add(taskProto, count);
+        }
+
         var protoFiltered = FilterAvailableTasks(proto, faction);
         //Если доступных заданий не окажется, то мы просто попробуем в следующий раз
         if (protoFiltered.Weights.Count != 0)
         {
             string taskProto = protoFiltered.Pick();
             var task = AddTask(factionId, taskProto);
-            return task != null;
+            return task;
         }
-        return false;
+        return null;
     }
 
     public Entity<SWTaskComponent>? AddTask(string factionId, string taskProto)
@@ -455,6 +508,11 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         {
             faction.Comp.CurrentTasks.Add(new Entity<SWTaskComponent>(task, comp));
         }
+        if (comp.TimeLimit != null)
+        {
+            comp.TimeOfBlocking = _timing.CurTime + comp.TimeLimit;
+        }
+
         return new Entity<SWTaskComponent>(task, comp);
     }
 

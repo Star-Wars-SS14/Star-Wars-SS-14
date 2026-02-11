@@ -433,7 +433,7 @@
     outerClothing: SWHavokSuit
     jumpsuit: SWClothingUniformJumpsuitFleece
     back: ClothingBackpackMilitarySatchel
-    head: SW_ClothingHeadHavokHelmet
+    head: SW_ClothingHeadStormtrooperHavokHelmet
     belt: ClothingBeltAssault
     id: SWIDCardHavokStormtrooper
     shoes: SWClothingShoesBootsCombatFilled

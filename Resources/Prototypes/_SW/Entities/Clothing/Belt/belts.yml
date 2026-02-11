@@ -51,7 +51,7 @@
         - Handcuff
         - BallisticAmmoProvider
         - Ammo
-        - ProjectileBatteryAmmoProvider
+        - BatteryAmmoProvider
   - type: ItemMapper
     mapLayers:
       flashbang:
@@ -73,38 +73,18 @@
   parent: ClothingBeltStorageBase
   id: SWJediBelt
   name: jedi belt
-  description: A tactical jedi belt.
+  description: A jedi tactical belt. Doesn't restrict movement or hinder combat.
   components:
   - type: Sprite
     sprite: _SW/Clothing/Belt/jedi_belt.rsi
   - type: Clothing
     sprite: _SW/Clothing/Belt/jedi_belt.rsi
-    clothingVisuals:
-      belt:
-      - state: equipped-BELT
-  - type: Storage
-    whitelist:
-      tags:
-        - SWEnergySwordTag
-        - HandGrenade
-        - MagazineBlast
-      components:
-        - Gun
-    grid:
-    - 0,0,1,1
-  - type: Appearance
-  # - type: GenericVisualizer
-  #   visuals:
-  #     enum.StorageVisuals.StorageUsed:
-  #       withSword:
-  #         2: { state: sword}
-  #         0: { state: equipped-BELT}
 
 - type: entity
   parent: ClothingBeltStorageBase
   id: SWSithBelt
   name: sith belt
-  description: A tactical sith belt.
+  description: A sith tactical belt. Doesn't restrict movement or hinder combat.
   components:
   - type: Sprite
     sprite: _SW/Clothing/Belt/sith_belt.rsi

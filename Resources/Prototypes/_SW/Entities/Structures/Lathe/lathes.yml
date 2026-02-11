@@ -1,0 +1,298 @@
+- type: entity
+  id: SWBaseLathe
+  parent: BaseStructure
+  name: sw test lathe
+  description: debug
+  components:
+  - type: Physics
+    bodyType: Static
+  - type: Appearance
+  - type: Fixtures
+    fixtures:
+      in1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "0.6, 0.0, -0.6, -0.8"
+        density: 190
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+  - type: Sprite
+    sprite: Structures/Machines/recycling.rsi
+    layers:
+      - state: grinder-o1
+  - type: ApcPowerReceiver
+    powerLoad: 1000
+  - type: ExtensionCableReceiver
+  - type: InteractionOutline
+  - type: Anchorable
+  - type: Rotatable
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 2
+            max: 5
+
+- type: entity
+  id: SWOreDispenser
+  parent: SWBaseLathe
+  name: sw ore dispenser
+  description: debug
+  components:
+  - type: Physics
+    bodyType: Static
+  - type: Appearance
+  - type: Fixtures
+    fixtures:
+      in_ore:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "0.35, 0.85, -0.35, 0.5"
+        density: 190
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: lathe_base
+      - state: up_arrow
+        rotation: 180
+  - type: SWMagnetPickup
+  - type: Storage
+    maxItemSize: Normal
+    grid:
+    - 0,0,9,3
+    quickInsert: true
+    areaInsert: true
+    whitelist:
+      tags:
+        - Ore
+  - type: ActivatableUI
+    key: enum.StorageUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+  - type: ContainerContainer
+    containers:
+      storagebase: !type:Container
+        ents: []
+  - type: SWOreDispenser
+    dispenseWhitelist:
+      tags:
+        - Ore
+
+- type: entity
+  id: SWElectronicsLathe
+  parent: SWBaseLathe
+  name: electronics lathe
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: lathe_base
+      - state: electronics
+      - state: up_arrow
+      - state: down_arrow  
+  - type: SWLathe
+    recipes:
+    - SWAdvancedCableSLR
+    - SWElectronicsSLR
+
+- type: entity
+  id: SWBlasterLathe
+  parent: SWBaseLathe
+  name: blaster lathe
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: lathe_base
+      - state: blaster
+      - state: up_arrow
+      - state: down_arrow   
+  - type: SWLathe
+    recipes:
+    - SWBarrelSLR
+    - SWBlasterFrameSLR
+    - SWT1WeaponSLR
+
+- type: entity
+  id: SWSmeltLathe
+  parent: SWBaseLathe
+  name: smelt lathe
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: lathe_base
+      - state: fire
+      - state: up_arrow
+      - state: down_arrow   
+  - type: SWLathe
+    recipes:
+    - SWOreToSteelSLR
+    - SWLantanidAlloySLR
+    - SWOreToGoldSLR
+    - SWOreToLantanidSLR
+
+- type: entity
+  id: SWDistributorLeftLathe
+  parent: SWBaseLathe
+  name: sw distributor left lathe
+  components:
+  - type: Fixtures
+    fixtures:
+      in:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "0.5, -0.3, -0.5, -0.6"
+        density: 190
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: distributor
+      - state: down_arrow
+      - state: up_arrow
+      - state: up_arrow
+        rotation: 90
+  - type: Construction
+    graph: SWLatheGraph
+    node: distLeft
+  - type: SWDistributor
+    redirectionInfo:
+    - inputFixture: in
+      outputPoints:
+      - "-0.8, 0.0"
+      - "0.0, 0.8"
+
+- type: entity
+  id: SWDistributorRightLathe
+  parent: SWBaseLathe
+  name: sw distributor right lathe
+  components:
+  - type: Fixtures
+    fixtures:
+      in:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "0.5, -0.3, -0.5, -0.6"
+        density: 190
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: distributor
+      - state: down_arrow
+      - state: up_arrow
+      - state: up_arrow
+        rotation: -90
+  - type: Construction
+    graph: SWLatheGraph
+    node: distRight
+  - type: SWDistributor
+    redirectionInfo:
+    - inputFixture: in
+      outputPoints:
+      - "0.8, 0.0"
+      - "0.0, 0.8"
+
+- type: entity
+  id: SWIntersectionLathe
+  parent: SWBaseLathe
+  name: sw intersection lathe
+  components:
+  - type: Fixtures
+    fixtures:
+      in1: #down
+        shape:
+          !type:PhysShapeAabb
+          bounds: "0.4, -0.3, -0.4, -0.5"
+        density: 190
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+      in4: #up
+        shape:
+          !type:PhysShapeAabb
+          bounds: "0.4, 0.5, -0.4, 0.3"
+        density: 190
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+      in2: #left
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.3, 0.4, -0.5, -0.4" 
+        density: 190
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+      in3: #right
+        shape:
+          !type:PhysShapeAabb
+          bounds: "0.5, 0.4, 0.3, -0.4"
+        density: 190
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: distributor
+      - state: up_arrow
+        rotation: 180
+      - state: up_arrow
+        rotation: 90
+      - state: up_arrow
+      - state: up_arrow
+        rotation: -90
+      - state: down_arrow
+        rotation: 180
+      - state: down_arrow
+        rotation: 90
+      - state: down_arrow
+      - state: down_arrow
+        rotation: -90
+  - type: Construction
+    graph: SWLatheGraph
+    node: intersection
+  - type: SWDistributor
+    redirectionInfo:
+    - inputFixture: in1
+      outputPoints:
+      - "0.0, 0.9"
+    - inputFixture: in2
+      outputPoints:
+      - "0.9, 0.0"
+    - inputFixture: in3
+      outputPoints:
+      - "-0.9, 0.0"
+    - inputFixture: in4
+      outputPoints:
+      - "0.0, -0.9"

@@ -15,6 +15,7 @@ using Content.Shared.Echo.CaptureConsole;
 using Content.Shared.Echo.GameTicking.Components;
 using Content.Shared.Echo.Shipyard.BUI;
 using Content.Shared.Echo.Shipyard.Prototypes;
+using Content.Shared.Maps;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Radio;

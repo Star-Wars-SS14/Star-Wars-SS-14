@@ -1,0 +1,38 @@
+- type: constructionGraph
+  id: SWLatheGraph
+  start: start
+  graph:
+    - node: start
+      edges:
+        - to: distLeft
+          completed:
+            - !type:SetAnchor
+              value: false
+          steps:
+            - material: Steel
+              amount: 11
+              doAfter: 2.5
+    - node: distLeft
+      entity: SWDistributorLeftLathe
+      edges:
+        - to: distRight
+          steps:
+            - tool: Screwing
+              doAfter: 1.0
+    - node: distRight
+      entity: SWDistributorRightLathe
+      edges:
+        - to: intersection
+          steps:
+            - tool: Screwing
+              doAfter: 1.0
+    - node: intersection
+      entity: SWIntersectionLathe
+      edges:
+        - to: conveyor
+          steps:
+            - tool: Screwing
+              doAfter: 1.0
+    - node: conveyor
+      entity: SWConveyorBelt
+

@@ -1,0 +1,11 @@
+- type: antag
+  id: SWWantedCriminal
+  name: sw-roles-antag-wanted
+  antagonist: true
+  setPreference: true
+  objective: sw-roles-antag-wanted-objective
+
+- type: startingGear
+  id: SWWantedStartingGear
+  equipment:
+    pocket1: SWEmpireCredits2500

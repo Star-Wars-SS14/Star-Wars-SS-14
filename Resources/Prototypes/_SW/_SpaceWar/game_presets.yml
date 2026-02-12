@@ -3,6 +3,7 @@
   alias:
     - sector
   name: sector-war-title
+  supportedMaps: SWSpaceWarMapPool
   description: sector-war-description
   showInVote: true
   rules:

@@ -1,6 +1,0 @@
-- type: gameMapPool
-  id: SWDefaultMapPool
-  maps:
-  - SpaceWarRoundstart
-  - oldBalmora
-  - newBalmora

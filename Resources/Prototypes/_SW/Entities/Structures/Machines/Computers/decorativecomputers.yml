@@ -1,12 +1,12 @@
 - type: entity
   parent: BaseStructureComputer
-  id: SWDecorativeRespublicComputer
+  id: SWDecorativeRepublicComputer
   name: PersonalComputer
   description: Just personal computer
   components:
   - type: Construction
-    graph: SWDecorativeRespublicComputerGraph
-    node: SWDecorativeRespublicComputerNode
+    graph: SWDecorativeRepublicComputerGraph
+    node: SWDecorativeRepublicComputerNode
   - type: Sprite
     sprite: _SW/Structures/Machines/decorative_republic_computer.rsi
     layers:
@@ -24,17 +24,17 @@
         sound:
           collection: GlassBreak
       - !type:ChangeConstructionNodeBehavior
-        node: SWDecorativeRespublicComputerBrokenNode
+        node: SWDecorativeRepublicComputerBrokenNode
 
 - type: entity
   parent: BaseStructureComputer
-  id: SWDecorativeRespublicComputerBroken
+  id: SWDecorativeRepublicComputerBroken
   name: Broken personal computer
   description: This computer has seen better days.
   components:
   - type: Construction
-    graph: SWDecorativeRespublicComputerGraph
-    node: SWDecorativeRespublicComputerBrokenNode
+    graph: SWDecorativeRepublicComputerGraph
+    node: SWDecorativeRepublicComputerBrokenNode
   - type: Sprite
     sprite: _SW/Structures/Machines/decorative_republic_computer_broken.rsi
     drawdepth: Objects

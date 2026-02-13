@@ -31,7 +31,8 @@ public sealed partial class BatterySystem : SharedBatterySystem
         SubscribeLocalEvent<PowerNetworkBatteryComponent, RejuvenateEvent>(OnNetBatteryRejuvenate);
         SubscribeLocalEvent<BatteryComponent, PriceCalculationEvent>(CalculateBatteryPrice);
         SubscribeLocalEvent<BatteryComponent, ChangeChargeEvent>(OnChangeCharge);
-        SubscribeLocalEvent<BatteryComponent, GetChargeEvent>(OnGetCharge);
+        //SW fix charge is not updated on client (moved to shared)
+        //SubscribeLocalEvent<BatteryComponent, GetChargeEvent>(OnGetCharge); 
 
         SubscribeLocalEvent<NetworkBatteryPreSync>(PreSync);
         SubscribeLocalEvent<NetworkBatteryPostSync>(PostSync);
@@ -109,11 +110,12 @@ public sealed partial class BatterySystem : SharedBatterySystem
         args.ResidualValue -= ChangeCharge(ent.AsNullable(), args.ResidualValue);
     }
 
-    private void OnGetCharge(Entity<BatteryComponent> entity, ref GetChargeEvent args)
-    {
-        args.CurrentCharge += entity.Comp.CurrentCharge;
-        args.MaxCharge += entity.Comp.MaxCharge;
-    }
+    //SW fix charge is not updated on client (moved to shared)
+    //private void OnGetCharge(Entity<BatteryComponent> entity, ref GetChargeEvent args)
+    //{
+    //    args.CurrentCharge += entity.Comp.CurrentCharge;
+    //    args.MaxCharge += entity.Comp.MaxCharge;
+    //}
 
     public override void Update(float frameTime)
     {

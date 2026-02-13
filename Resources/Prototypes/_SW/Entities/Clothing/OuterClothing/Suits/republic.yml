@@ -81,9 +81,9 @@
   description: Republican Army pilot armor. Tank not included.
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/Republic/rep-pilotsuit.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Republic/republic_pilotsuit.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/Republic/rep-pilotsuit.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Republic/republic_pilotsuit.rsi
   - type: Armor
     modifiers:
       coefficients:

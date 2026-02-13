@@ -14,7 +14,7 @@
   name: republic pilot helmet
   components:
   - type: Sprite
-    sprite: _SW/Clothing/Head/Helmets/rep-pilothelmet.rsi
+    sprite: _SW/Clothing/Head/Helmets/republic_pilothelmet.rsi
   - type: Clothing
     sprite: 
 

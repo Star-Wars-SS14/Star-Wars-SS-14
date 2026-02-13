@@ -105,9 +105,9 @@
   name: imperial pilot suit
   components:
   - type: Sprite
-    sprite: _SW/Clothing/OuterClothing/Suits/Imperial/imp-pilotsuit.rsi
+    sprite: _SW/Clothing/OuterClothing/Suits/Imperial/imperial_pilotsuit.rsi
   - type: Clothing
-    sprite: _SW/Clothing/OuterClothing/Suits/Imperial/imp-pilotsuit.rsi 
+    sprite: _SW/Clothing/OuterClothing/Suits/Imperial/imperial_pilotsuit.rsi 
   - type: Armor
     modifiers:
       coefficients:

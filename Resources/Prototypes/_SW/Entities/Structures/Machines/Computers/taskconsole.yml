@@ -11,15 +11,12 @@
       enum.TaskConsoleUiKey.Key:
         type: TaskConsoleBoundUserInterface
   - type: Sprite
+    sprite: _SW/Structures/Machines/ImperialTaskComputer.rsi
     layers:
     - map: ["computerLayerBody"]
       state: computer
-    - map: ["computerLayerKeyboard"]
-      state: generic_keyboard
     - map: ["computerLayerScreen"]
-      state: comm
-    - map: ["computerLayerKeys"]
-      state: generic_keys
+      state: task_monitor
   - type: TaskConsole
     faction: EmpireFaction
   - type: Godmode
@@ -34,6 +31,14 @@
   components:
   - type: TaskConsole
     faction: RepublicFaction
+  - type: Sprite
+    sprite: _SW/Structures/Machines/RepublicTaskComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: task_monitor
+  
 
 - type: entity
   parent: SWTaskConsoleEmpire
@@ -43,6 +48,13 @@
   components:
   - type: TaskConsole
     faction: BlackSunFaction
+  - type: Sprite
+    sprite: _SW/Structures/Machines/SunComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: task_monitor
 
 - type: entity
   parent: SWTaskConsoleEmpire
@@ -52,6 +64,13 @@
   components:
   - type: TaskConsole
     faction: ExchangeFaction
+  - type: Sprite
+    sprite: _SW/Structures/Machines/ExchangeComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: task_monitor
 
 - type: entity
   parent: SWTaskConsoleEmpire
@@ -61,3 +80,10 @@
   components:
   - type: TaskConsole
     faction: MandalorianFaction
+  - type: Sprite
+    sprite: _SW/Structures/Machines/MandolorianTaskComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: task_monitor

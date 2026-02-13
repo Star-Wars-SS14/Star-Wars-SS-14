@@ -40,3 +40,12 @@
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/medicimperialhelmet.rsi
 
+- type: entity
+  parent: SWBaseHelmet
+  id: SWClothingHeadImperialPilotHelmet
+  name: imperial pilot helmet
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/imperial_pilothelmet.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/imperial_pilothelmet.rsi

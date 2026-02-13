@@ -174,6 +174,7 @@ public abstract partial class SharedGunSystem
         }
 
         UpdateMagazineAppearance(uid, appearance, true, count, capacity);
+        UpdateAmmoCount(uid);
     }
 
     private void UpdateMagazineAppearance(EntityUid uid, AppearanceComponent? appearance, bool magLoaded, int count, int capacity)

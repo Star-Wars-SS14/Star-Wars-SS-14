@@ -1,0 +1,17 @@
+- type: gameMapPool
+  id: SWDefaultMapPool
+  maps:
+  - SpaceWarRoundstart
+  - oldBalmora
+  - newBalmora
+
+- type: gameMapPool
+  id: SWMainPresetMapPool
+  maps:
+  - oldBalmora
+  - newBalmora
+
+- type: gameMapPool
+  id: SWSpaceWarMapPool
+  maps:
+  - SpaceWarRoundstart

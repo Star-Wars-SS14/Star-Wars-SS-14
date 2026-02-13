@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Content.Shared._SW.DeactivateOnShoot;
 [RegisterComponent]
-public sealed partial class SWDeactivateOnShootUserComponent : Component
+public sealed partial class SWDeactivateOnAttackUserComponent : Component
 {
     public EntityUid? Item = null;
 }

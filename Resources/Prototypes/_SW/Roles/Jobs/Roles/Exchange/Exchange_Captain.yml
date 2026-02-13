@@ -18,3 +18,4 @@
     components:
       - type: SWFactionMember
         faction: ExchangeFaction
+      - type: SWPossibleCriminal

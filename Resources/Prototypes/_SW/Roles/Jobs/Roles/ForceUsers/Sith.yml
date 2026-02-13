@@ -32,7 +32,9 @@
     - type: SWDashAbility
     - type: SlowOnDamage
       speedModifierThresholds:
-        360: 0.8
+        100: 0.8
+        150: 0.6
+        200: 0.5
     - type: SWAbilityThrowSword
     - type: Inventory
       templateId: forceUserTemplate

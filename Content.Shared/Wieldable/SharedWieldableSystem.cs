@@ -295,7 +295,8 @@ public abstract class SharedWieldableSystem : EntitySystem
         if (attemptEv.Cancelled)
         {
             if (attemptEv.Message != null)
-                _popup.PopupClient(attemptEv.Message, user, user);
+                //SW hide popus to avoid invisibility revealing 
+                _popup.PopupEntity(attemptEv.Message, user, user);
             return false;
         }
 
@@ -356,7 +357,8 @@ public abstract class SharedWieldableSystem : EntitySystem
             if (attemptEv.Cancelled)
             {
                 if (attemptEv.Message != null)
-                    _popup.PopupClient(attemptEv.Message, user, user);
+                    //SW hide popus to avoid invisibility revealing 
+                    _popup.PopupEntity(attemptEv.Message, user, user); 
                 return false;
             }
         }

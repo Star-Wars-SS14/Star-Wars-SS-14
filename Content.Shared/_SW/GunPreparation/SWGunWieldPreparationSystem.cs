@@ -117,13 +117,14 @@ public sealed class SWGunWieldPreparationSystem : EntitySystem
             BreakOnHandChange = true,
             BreakOnMove = true
         };
+        doafterArgs.Hidden = true;
         _doAfterSystem.TryStartDoAfter(doafterArgs);
     }
     private void DisablePreparation(EntityUid user, Entity<SWGunWieldPreparationComponent> ent)
     {
         ent.Comp.Prepared = false;
         _wieldableSystem.TryUnwield(ent.Owner, Comp<WieldableComponent>(ent), user);
-        _popupSystem.PopupClient(Loc.GetString("sw-preparation-break"), ent.Owner, null);
+        _popupSystem.PopupEntity(Loc.GetString("sw-preparation-break"), ent.Owner, ent.Owner);
     }
 }
 

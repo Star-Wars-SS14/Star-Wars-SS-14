@@ -144,7 +144,7 @@
 - type: swCargoProduct
   id: SWScoutBlasterMagazineEmpireCP
   icon:
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/scout_pistol_mag.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/pistols/scout_pistol_mag.rsi
     state: base
   product: SWScoutBlasterMagazine
   cost:
@@ -210,7 +210,7 @@
 - type: swCargoProduct
   id: SWM44MagazineEmpireCP
   icon:
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/M-44Ammo.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/pistols/M-44Ammo.rsi
     state: base
   product: SWM44Magazine
   cost:
@@ -254,7 +254,7 @@
 - type: swCargoProduct
   id: SWUIHBPMagazineEmpireCP
   icon:
-    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/UIHBP_pistol_mag.rsi
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/pistols/UIHBP_pistol_mag.rsi
     state: base
   product: SWUIHBPMagazine
   cost:

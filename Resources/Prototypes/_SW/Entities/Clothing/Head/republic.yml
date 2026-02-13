@@ -10,7 +10,7 @@
   
 - type: entity
   parent: SWBaseHelmet
-  id: SW_ClothingHeadRepublicPilotHelmet
+  id: SWClothingHeadRepublicPilotHelmet
   name: republic pilot helmet
   components:
   - type: Sprite

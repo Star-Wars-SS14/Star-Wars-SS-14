@@ -5,6 +5,7 @@
   - type: GameRule
     minPlayers: 0
   - type: SWTaskGamerule
+    delay: 10
   - type: SWFactionGamerule
     factionsPrototypes:
     - RepublicFaction
@@ -105,3 +106,20 @@
   - type: SWSpawnRandomGamerule
     spawner: SWParasitSpawner
     count: 3
+
+- type: entity
+  parent: BaseGameRule
+  id: SWWantedSelectRule
+  components:
+  - type: AntagSelection
+    definitions:
+    - prefRoles: [ SWWantedCriminal ]
+      briefing:
+        text: sw-wanted-briefing
+        color: "#cf0e0e"
+        sound: "/Audio/Misc/thief_greeting.ogg"
+      startingGear: SWWantedStartingGear
+      components:
+      - type: SWWanted
+      whitelist:
+        components: [ SWPossibleCriminal ]

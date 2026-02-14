@@ -1,0 +1,59 @@
+- type: entity
+  parent: BaseStructureComputer
+  id: SWDecorativeRepublicComputer
+  name: PersonalComputer
+  description: Just personal computer
+  components:
+  - type: Construction
+    graph: SWDecorativeRepublicComputerGraph
+    node: SWDecorativeRepublicComputerNode
+  - type: Sprite
+    sprite: _SW/Structures/Machines/decorative_republic_computer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: Decorative_monitor
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 100
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: GlassBreak
+      - !type:ChangeConstructionNodeBehavior
+        node: SWDecorativeRepublicComputerBrokenNode
+
+- type: entity
+  parent: BaseStructureComputer
+  id: SWDecorativeRepublicComputerBroken
+  name: Broken personal computer
+  description: This computer has seen better days.
+  components:
+  - type: Construction
+    graph: SWDecorativeRepublicComputerGraph
+    node: SWDecorativeRepublicComputerBrokenNode
+  - type: Sprite
+    sprite: _SW/Structures/Machines/decorative_republic_computer_broken.rsi
+    drawdepth: Objects
+    state: computer-broken
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 100
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalGlassBreak
+          params:
+            volume: -6
+      - !type:SpawnEntitiesBehavior
+        spawn:
+          SheetSteel1:
+            min: 5
+            max: 8
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]

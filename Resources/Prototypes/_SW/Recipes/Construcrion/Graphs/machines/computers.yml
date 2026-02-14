@@ -1,0 +1,15 @@
+- type: constructionGraph
+  id: SWDecorativeRepublicComputerGraph
+  start: start
+  graph:
+  - node: start
+  - node: SWDecorativeRepublicComputerNode
+    entity: SWDecorativeRepublicComputer
+    edges:
+    - to: SWDecorativeRepublicComputerBrokenNode
+      steps:
+      - tool: Screwing
+        doAfter: 5
+  - node: SWDecorativeRepublicComputerBrokenNode
+    entity: SWDecorativeRepublicComputerBroken
+

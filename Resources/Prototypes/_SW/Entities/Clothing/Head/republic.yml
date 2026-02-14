@@ -7,6 +7,16 @@
     sprite: _SW/Clothing/Head/Helmets/republichelmet.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Helmets/republichelmet.rsi
+  
+- type: entity
+  parent: SWBaseHelmet
+  id: SWClothingHeadRepublicPilotHelmet
+  name: republic pilot helmet
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/republic_pilothelmet.rsi
+  - type: Clothing
+    sprite: 
 
 - type: entity
   parent: SW_ClothingHeadRepublicHelmet

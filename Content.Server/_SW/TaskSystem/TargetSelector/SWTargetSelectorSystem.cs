@@ -5,6 +5,7 @@ using Content.Shared.Mind;
 using Content.Shared.Mind.Components;
 using Content.Shared.Objectives.Components;
 using Content.Shared.Roles.Jobs;
+using Content.Shared.Whitelist;
 using Robust.Shared.Random;
 using Robust.Shared.Timing;
 using System;
@@ -21,6 +22,7 @@ public sealed class SWTargetSelectorSystem : EntitySystem
     [Dependency] private readonly SharedMindSystem _mindSystem = default!;
     [Dependency] private readonly SharedJobSystem _jobSystem = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -55,7 +57,8 @@ public sealed class SWTargetSelectorSystem : EntitySystem
         var query2 = EntityQueryEnumerator<MindContainerComponent>();
         while (query2.MoveNext(out var uid, out var _))
         {
-            if (!targets.Contains(uid) && CheckJob(ent.Comp.Jobs, uid))
+            if (!targets.Contains(uid) && CheckJob(ent.Comp.Jobs, uid)
+                && PassWhitelist(ent, uid))
             {
                 return;
             }
@@ -94,13 +97,23 @@ public sealed class SWTargetSelectorSystem : EntitySystem
         List<EntityUid> possible_targets = new();
         while (query2.MoveNext(out var uid, out var _))
         {
-            if (!chosen_targets.Contains(uid) && CheckJob(ent.Comp.Jobs, uid))
+            if (!chosen_targets.Contains(uid) && CheckJob(ent.Comp.Jobs, uid)
+                && PassWhitelist(ent, uid))
             {
                 possible_targets.Add(uid);
             }
         }
         ent.Comp.Target = _random.Pick(possible_targets);
         ent.Comp.JobOfTarget = GetJob(ent.Comp.Target.Value);
+    }
+
+    private bool PassWhitelist(Entity<SWTargetSelectorComponent> ent, EntityUid uid)
+    {
+        if (ent.Comp.Whitelist == null)
+        {
+            return true;
+        }
+        return  _whitelistSystem.IsWhitelistPass(ent.Comp.Whitelist, uid);
     }
 
     public string? GetJob(EntityUid ent, EntityUid? mind = null)

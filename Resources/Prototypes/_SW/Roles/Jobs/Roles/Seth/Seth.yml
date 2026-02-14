@@ -56,9 +56,9 @@
 - type: startingGear
   id: EmpirePilotGear
   equipment:
-    outerClothing: SWImperialSuit
+    outerClothing: SWPilotImperialSuit
     jumpsuit: SWClothingUniformJumpsuitFleece
-    head: SW_ClothingHeadImperialHelmet
+    head: SWClothingHeadImperialPilotHelmet
     belt: ClothingBeltAssault
     id: SWIDCardEmpirePilot
     shoes: SWClothingShoesBootsCombatFilled
@@ -246,9 +246,9 @@
   id: RepublicPilotGear
   equipment:
     jumpsuit: SWClothingUniformJumpsuitFleece
-    outerClothing: SWRepublicSuit
+    outerClothing: SWPilotRepublicSuit
     shoes: SWClothingShoesBootsJackFilled
-    head: SW_ClothingHeadRepublicHelmet
+    head: SWClothingHeadRepublicPilotHelmet
     belt: ClothingBeltAssault
     id: SWIDCardRepublicPilot
     ears: SWClothingHeadsetRepublicPilot

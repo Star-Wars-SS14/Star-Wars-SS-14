@@ -1,6 +1,7 @@
 using Content.Shared.Clothing.Components;
 using Content.Shared.Inventory.Events;
 using Content.Shared.Item.ItemToggle;
+using Content.Shared.Weapons.Melee.Events;
 using Content.Shared.Weapons.Ranged.Systems;
 using System;
 using System.Collections.Generic;
@@ -17,25 +18,35 @@ public sealed class SWDeactivateOnShootSystem : EntitySystem
         base.Initialize();
         ///we use <see cref="ShooterImpulseEvent"> here
         ///as event that raised on user after shooting
-        SubscribeLocalEvent<SWDeactivateClothingOnShootComponent, GotEquippedEvent>(OnEquip);
-        SubscribeLocalEvent<SWDeactivateClothingOnShootComponent, GotUnequippedEvent>(OnUnequip);
-        SubscribeLocalEvent<SWDeactivateOnShootUserComponent, ShooterImpulseEvent>(OnShoot);
+        SubscribeLocalEvent<SWDeactivateClothingOnAttackComponent, GotEquippedEvent>(OnEquip);
+        SubscribeLocalEvent<SWDeactivateClothingOnAttackComponent, GotUnequippedEvent>(OnUnequip);
+        SubscribeLocalEvent<SWDeactivateOnAttackUserComponent, ShooterImpulseEvent>(OnShoot);
+        SubscribeLocalEvent<SWDeactivateOnAttackUserComponent, MeleeAttackEvent>(OnMelee);
     }
 
-    private void OnEquip(Entity<SWDeactivateClothingOnShootComponent> ent, ref GotEquippedEvent args)
+    private void OnEquip(Entity<SWDeactivateClothingOnAttackComponent> ent, ref GotEquippedEvent args)
     {
-        EnsureComp<SWDeactivateOnShootUserComponent>(args.Equipee).Item = ent.Owner;
+        EnsureComp<SWDeactivateOnAttackUserComponent>(args.Equipee).Item = ent.Owner;
     }
 
-    private void OnUnequip(Entity<SWDeactivateClothingOnShootComponent> ent, ref GotUnequippedEvent args)
+    private void OnUnequip(Entity<SWDeactivateClothingOnAttackComponent> ent, ref GotUnequippedEvent args)
     {
-        RemComp<SWDeactivateOnShootUserComponent>(args.Equipee);
+        RemComp<SWDeactivateOnAttackUserComponent>(args.Equipee);
     }
 
-    private void OnShoot(Entity<SWDeactivateOnShootUserComponent> ent, ref ShooterImpulseEvent args)
+    private void OnShoot(Entity<SWDeactivateOnAttackUserComponent> ent, ref ShooterImpulseEvent args)
     {
         if (ent.Comp.Item == null
             || !TryComp <ToggleClothingComponent>(ent.Comp.Item, out var comp))
+        {
+            return;
+        }
+        _toggle.TryDeactivate(ent.Comp.Item.Value);
+    }
+    private void OnMelee(Entity<SWDeactivateOnAttackUserComponent> ent, ref MeleeAttackEvent args)
+    {
+        if (ent.Comp.Item == null
+            || !TryComp<ToggleClothingComponent>(ent.Comp.Item, out var comp))
         {
             return;
         }

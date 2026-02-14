@@ -11,7 +11,17 @@ public abstract class SharedBatterySystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<BatteryComponent, EmpPulseEvent>(OnEmpPulse);
+    //SW start
+    //SW fix charge is not updated on client
+        SubscribeLocalEvent<BatteryComponent, GetChargeEvent>(OnGetCharge);
     }
+
+    protected void OnGetCharge(Entity<BatteryComponent> entity, ref GetChargeEvent args)
+    {
+        args.CurrentCharge += entity.Comp.CurrentCharge;
+        args.MaxCharge += entity.Comp.MaxCharge;
+    }
+    //SW end
 
     private void OnEmpPulse(Entity<BatteryComponent> ent, ref EmpPulseEvent args)
     {

@@ -84,7 +84,7 @@ public sealed class SWLatheSystem : EntitySystem
             {
                 if (CanUseInAnyRecipe(comp, otherEntity) == null)
                 {
-                    return;
+                    continue;
                 }
 
                 if (TryAddMaterial(new Entity<SWLatheComponent>(uid, comp), otherEntity))

@@ -166,7 +166,7 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
     }
     private void OnLightningHit(Entity<SWForceUserBlockComponent> ent, ref HitByLightningEvent args)
     {
-        if (CanBlock(ent.Owner, ent.Comp))
+        if (BlockAvailable(ent.Owner, ent.Comp))
         {
             DebugTools.Assert(ent.Comp.CurrentForceWeapon != null); //actually this is checked in CanBlock, so we can be sure
             EnableBlock(ent.Comp.CurrentForceWeapon.Value, ent.Owner);
@@ -178,7 +178,7 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
         }
     }
 
-    public bool CanBlock(EntityUid forceUser, SWForceUserBlockComponent? forceComp = null)
+    public bool BlockAvailable(EntityUid forceUser, SWForceUserBlockComponent? forceComp = null)
     {
         if (forceComp == null)
         {
@@ -190,6 +190,20 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
             return false;
         }
 
+        return true;
+    }
+
+    public bool CanBlock(EntityUid forceUser, SWForceUserBlockComponent? forceComp = null)
+    {
+        if (forceComp == null)
+        {
+            forceComp = Comp<SWForceUserBlockComponent>(forceUser);
+        }
+
+        if (!BlockAvailable(forceUser, forceComp))
+        {
+            return false;
+        }
         if (_gameTiming.CurTime >= forceComp.NextReflectionAvailable && !forceComp.IsBlocking)
         {
             return true;

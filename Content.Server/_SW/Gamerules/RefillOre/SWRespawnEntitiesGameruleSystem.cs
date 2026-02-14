@@ -3,6 +3,7 @@ using Content.Server.Chat.Managers;
 using Content.Server.Chat.Systems;
 using Content.Server.GameTicking.Rules;
 using Content.Shared.GameTicking.Components;
+using Content.Shared.Whitelist;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Timing;
@@ -19,6 +20,7 @@ public sealed class SWRespawnEntitiesGameruleSystem : GameRuleSystem<SWRespawnEn
     [Dependency] private readonly EntityLookupSystem _entityLookupSystem = default!;
     [Dependency] private readonly SharedTransformSystem _sharedTransformSystem = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
+    [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
 
     protected override void Started(EntityUid uid, SWRespawnEntitiesGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
@@ -64,21 +66,22 @@ public sealed class SWRespawnEntitiesGameruleSystem : GameRuleSystem<SWRespawnEn
         while (query.MoveNext(out var owner, out var comp))
         {
             _s.Fatal("0");
-            if (!_entityLookupSystem.GetEntitiesIntersecting(owner).Any(x => IsTheSameAlreadySpawned(x, comp)))
+            _s.Fatal($"intersecting: {_entityLookupSystem.GetEntitiesIntersecting(owner).Count}");
+            if (_entityLookupSystem.GetEntitiesIntersecting(owner).All(x => _whitelistSystem.IsWhitelistFail(comp.Blacklist, x)))
             {
                 _s.Fatal("1");
-                Spawn(comp.RespawnProto, _sharedTransformSystem.GetMapCoordinates(owner));
+                var res = Spawn(comp.RespawnProto, _sharedTransformSystem.GetMapCoordinates(owner));
             }
         }
     }
 
-    private bool IsTheSameAlreadySpawned(EntityUid ent, SWRespawnGameruleSpawnpointComponent comp)
-    {
-        var proto = Prototype(ent);
-        if (proto == null)
-        {
-            return false;
-        }
-        return proto.ID == comp.RespawnProto;
-    }
+    //private bool IsTheSameAlreadySpawned(EntityUid ent, SWRespawnGameruleSpawnpointComponent comp)
+    //{
+    //    var proto = Prototype(ent);
+    //    if (proto == null)
+    //    {
+    //        return false;
+    //    }
+    //    return proto.ID == comp.RespawnProto;
+    //}
 }

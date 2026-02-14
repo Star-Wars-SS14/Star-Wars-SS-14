@@ -1,5 +1,7 @@
 - type: loadoutGroup
   id: SWJediloadout
   name: sw-jedi-loadout
+  minLimit: 0
+  maxLimit: 1
   loadouts:
   - SWJedi

@@ -13,6 +13,7 @@
   icon: "JobIconHavokCommander"
   supervisors: job-supervisors-general-gaza
   access:
+  - SWRepublicBase
   - SWRepublicHavok
   - SWRepublicCommander
   - SWRepublicArsenal

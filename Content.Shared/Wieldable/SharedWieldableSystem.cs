@@ -331,8 +331,8 @@ public abstract class SharedWieldableSystem : EntitySystem
         }
 
         var selfMessage = Loc.GetString("wieldable-component-successful-wield", ("item", used));
-        var othersMessage = Loc.GetString("wieldable-component-successful-wield-other", ("user", Identity.Entity(user, EntityManager)), ("item", used));
-        _popup.PopupPredicted(selfMessage, othersMessage, user, user);
+        //var othersMessage = Loc.GetString("wieldable-component-successful-wield-other", ("user", Identity.Entity(user, EntityManager)), ("item", used));
+        _popup.PopupPredicted(selfMessage, null, user, user);
 
         var ev = new ItemWieldedEvent(user);
         RaiseLocalEvent(used, ref ev);
@@ -406,8 +406,8 @@ public abstract class SharedWieldableSystem : EntitySystem
                 _audio.PlayPredicted(component.UnwieldSound, uid, user);
 
             var selfMessage = Loc.GetString("wieldable-component-failed-wield", ("item", uid));
-            var othersMessage = Loc.GetString("wieldable-component-failed-wield-other", ("user", Identity.Entity(args.User, EntityManager)), ("item", uid));
-            _popup.PopupPredicted(selfMessage, othersMessage, user, user);
+            //var othersMessage = Loc.GetString("wieldable-component-failed-wield-other", ("user", Identity.Entity(args.User, EntityManager)), ("item", uid)); SW
+            _popup.PopupPredicted(selfMessage, null, user, user);
         }
     }
 

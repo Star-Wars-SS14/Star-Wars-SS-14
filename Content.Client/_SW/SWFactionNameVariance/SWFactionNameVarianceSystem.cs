@@ -23,28 +23,28 @@ public sealed class SWFactionNameVarianceSystem : EntitySystem
         //SubscribeLocalEvent<SWFactionNameVarianceComponent, MapInitEvent>(OnInit);
     }
 
-    private void OnInit(Entity<SWFactionNameVarianceComponent> ent, ref MapInitEvent args)
-    {
-        ISawmill _s = Logger.GetSawmill("asffds");
-        _s.Fatal("0");
-        if (_player.LocalEntity == null) {
-            return;
-        }
-        var player = _player.LocalEntity.Value;
-        if (!TryComp<SWFactionMemberComponent>(player, out var comp))
-        {
-            return;
-        }
-        _s.Fatal("1");
-        var faction = comp.Faction;
-        _s.Fatal($"{faction}");
-        if (ent.Comp.FactionsToName.TryGetValue(faction, out var locId))
-        {
-            var entity = ent.Owner;
-            _metaSystem.SetEntityName(entity, "aboba");
-            _s.Fatal($"renmamed {entity}");
-        }
-    }
+    //private void OnInit(Entity<SWFactionNameVarianceComponent> ent, ref MapInitEvent args)
+    //{
+    //    ISawmill _s = Logger.GetSawmill("asffds");
+    //    _s.Fatal("0");
+    //    if (_player.LocalEntity == null) {
+    //        return;
+    //    }
+    //    var player = _player.LocalEntity.Value;
+    //    if (!TryComp<SWFactionMemberComponent>(player, out var comp))
+    //    {
+    //        return;
+    //    }
+    //    _s.Fatal("1");
+    //    var faction = comp.Faction;
+    //    _s.Fatal($"{faction}");
+    //    if (ent.Comp.FactionsToName.TryGetValue(faction, out var locId))
+    //    {
+    //        var entity = ent.Owner;
+    //        _metaSystem.SetEntityName(entity, "aboba");
+    //        _s.Fatal($"renmamed {entity}");
+    //    }
+    //}
 
     public override void Update(float frameTime)
     {
@@ -54,12 +54,12 @@ public sealed class SWFactionNameVarianceSystem : EntitySystem
         {
             if (_player.LocalEntity == null)
             {
-                return;
+                continue;
             }
             var player = _player.LocalEntity.Value;
             if (!TryComp<SWFactionMemberComponent>(player, out var factComp))
             {
-                return;
+                continue;
             }
             var faction = factComp.Faction;
             if (comp.FactionsToName.TryGetValue(faction, out var locId))

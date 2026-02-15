@@ -1,3 +1,4 @@
+using Robust.Shared.GameStates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace Content.Shared._SW.TaskSystem;
 
-[RegisterComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class SWFactionMemberComponent : Component
 {
-    [DataField(required: true)]
+    [DataField(required: true), AutoNetworkedField]
     public string Faction;
 
-    [DataField]
+    [DataField, AutoNetworkedField]
     public bool IsLeader = false;
 }

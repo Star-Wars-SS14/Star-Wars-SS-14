@@ -90,8 +90,6 @@
   - type: GameRule
     minPlayers: 0
   - type: SWRespawnEntitiesGamerule
-    delay: 3
-    delayBeforeSpawn: 1
   
 - type: entity
   parent: BaseGameRule

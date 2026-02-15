@@ -127,12 +127,14 @@ public abstract partial class SharedStunSystem : EntitySystem
     }
 
     // TODO STUN: Make events for different things. (Getting modifiers, attempt events, informative events...)
-    public bool TryAddStunDuration(EntityUid uid, TimeSpan duration)
+
+    //SW drop items
+    public bool TryAddStunDuration(EntityUid uid, TimeSpan duration, bool dropHeldIteems = true)
     {
         if (!_status.TryAddStatusEffectDuration(uid, StunId, duration))
             return false;
 
-        OnStunnedSuccessfully(uid, duration);
+        OnStunnedSuccessfully(uid, duration, dropHeldIteems);
         return true;
     }
 
@@ -145,13 +147,18 @@ public abstract partial class SharedStunSystem : EntitySystem
         return true;
     }
 
-    private void OnStunnedSuccessfully(EntityUid uid, TimeSpan? duration)
+    private void OnStunnedSuccessfully(EntityUid uid, TimeSpan? duration, bool dropHeldItems = true)
     {
         var ev = new StunnedEvent(); // todo: rename event or change how it is raised - this event is raised each time duration of stun was externally changed
         RaiseLocalEvent(uid, ref ev);
 
-        var evDropHands = new DropHandItemsEvent();
-        RaiseLocalEvent(uid, ref evDropHands);
+        //SW start
+        if (dropHeldItems)
+        {
+            var evDropHands = new DropHandItemsEvent();
+            RaiseLocalEvent(uid, ref evDropHands);
+        }
+        //SW end
 
         var timeForLogs = duration.HasValue
             ? duration.Value.Seconds.ToString()

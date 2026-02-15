@@ -1,5 +1,6 @@
 using Content.Shared.Hands;
 using Content.Shared.Item.ItemToggle;
+using Content.Shared.Item.ItemToggle.Components;
 using Content.Shared.Popups;
 using Content.Shared.Tag;
 using Content.Shared.Weapons.Melee;
@@ -188,6 +189,14 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
         if (forceComp.CurrentForceWeapon == null)
         {
             return false;
+        }
+
+        if (TryComp<ItemToggleComponent>(forceComp.CurrentForceWeapon, out var toggleComp))
+        {
+            if (!toggleComp.Activated)
+            {
+                return false;
+            }
         }
 
         return true;

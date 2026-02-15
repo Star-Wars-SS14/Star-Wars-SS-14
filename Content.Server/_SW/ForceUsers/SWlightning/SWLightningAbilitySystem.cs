@@ -48,7 +48,7 @@ public sealed class SWLightningAbilitySystem : EntitySystem
             if (!ev.Cancelled)
             {
                 _damageable.TryChangeDamage(args.Target, ent.Comp.Damage, true);
-                _stunSystem.TryAddStunDuration(args.Target, TimeSpan.FromSeconds(ent.Comp.StunTimeInSeconds));
+                _stunSystem.TryAddStunDuration(args.Target, TimeSpan.FromSeconds(ent.Comp.StunTimeInSeconds), false);
             }
         }
 

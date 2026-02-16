@@ -16,5 +16,6 @@
     components:
       - type: SWFactionMember
         faction: MandalorianFaction
+        job: SWMandalorianLeader
       - type: ReplacementAccent
         accent: SWMandalorian

@@ -15,4 +15,7 @@ public sealed partial class SWFactionMemberComponent : Component
 
     [DataField, AutoNetworkedField]
     public bool IsLeader = false;
+
+    [DataField, AutoNetworkedField]
+    public string? Job = null;
 }

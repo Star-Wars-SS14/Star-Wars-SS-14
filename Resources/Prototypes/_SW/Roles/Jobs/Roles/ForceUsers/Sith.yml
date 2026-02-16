@@ -22,6 +22,7 @@
       critThreshold: 300
     - type: SWFactionMember
       faction: EmpireFaction
+      job: SWSith
     - type: ForceAbilityDistanceInteract
     - type: MobThresholds
       thresholds:

@@ -21,4 +21,5 @@
     components:
       - type: SWFactionMember
         faction: RepublicFaction
+        job: SWRepublicGeneral
 

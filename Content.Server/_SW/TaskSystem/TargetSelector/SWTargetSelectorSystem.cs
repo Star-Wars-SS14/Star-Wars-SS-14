@@ -118,36 +118,31 @@ public sealed class SWTargetSelectorSystem : EntitySystem
 
     public string? GetJob(EntityUid ent, EntityUid? mind = null)
     {
-        if (mind == null)
-        {
-            mind = _mindSystem.GetMind(ent);
-        }
-
-        if (mind == null)
+        if (!TryComp<SWFactionMemberComponent>(ent, out var comp))
         {
             return null;
         }
-        _jobSystem.MindTryGetJob(mind, out var prototype);
-        if (prototype != null)
-        {
-            return prototype.ID;
-        }
-        return null;
+
+        return comp.Job;
     }
 
     public bool CheckJob(List<string> jobs, EntityUid ent)
     {
+        if (!TryComp<SWFactionMemberComponent>(ent, out var comp))
+        {
+            return false;
+        }
 
-        var mind = _mindSystem.GetMind(ent);
-        if (mind != null && jobs.Count() == 0)
+        if (jobs.Count() == 0)
         {
             return true; // Если jobs пустой, то мы считаем, что любая должность подходит
         }
-        bool res = false;
-        foreach (var job in jobs)
+
+        if (comp.Job == null)
         {
-            res = res || _jobSystem.MindHasJobWithId(mind, job);
+            return false;
         }
-        return res;
+
+        return jobs.Contains(comp.Job);
     }
 }

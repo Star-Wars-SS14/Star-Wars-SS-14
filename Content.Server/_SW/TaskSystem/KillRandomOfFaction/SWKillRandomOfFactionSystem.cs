@@ -40,8 +40,8 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         SubscribeLocalEvent<SWKillRandomByJobComponent, SWTaskInitEvent>(OnTaskInitByJob, after: [typeof(SWTargetSelectorSystem)],
                                                                                           before: [typeof(SWParallelTaskSystem)]);
 
-        SubscribeLocalEvent<MindContainerComponent, MobStateChangedEvent>(OnMobStateChanged);
-        SubscribeLocalEvent<MindContainerComponent, MindRemovedMessage>(OnMindRemoved);
+        SubscribeLocalEvent<SWFactionMemberComponent, MobStateChangedEvent>(OnMobStateChanged);
+        //SubscribeLocalEvent<MindContainerComponent, MindRemovedMessage>(OnMindRemoved);
         //SubscribeLocalEvent<SWFactionMemberComponent, AttemptEntityGibEvent>(OnGib);
         _s = Logger.GetSawmill("killOfFactionSystem");
     }
@@ -73,18 +73,18 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         }
     }
 
-    private void OnMobStateChanged(Entity<MindContainerComponent> ent, ref MobStateChangedEvent args)
+    private void OnMobStateChanged(Entity<SWFactionMemberComponent> ent, ref MobStateChangedEvent args)
     {
         UpdateProgress(ent, args.NewMobState);
     }
 
-    private void OnMindRemoved(Entity<MindContainerComponent> ent, ref MindRemovedMessage args)
-    {
-        //when entity is gibbbed mind is transfered to brain, and we cant use getmind on entity, because we will get the wrong mind
-        //so we pass mind to updateProgess manually
-        UpdateProgress(ent, mind: args.Mind);
-    }
-    private void UpdateProgress(Entity<MindContainerComponent> ent, MobState newState = MobState.Invalid, EntityUid? mind = null)
+    //private void OnMindRemoved(Entity<MindContainerComponent> ent, ref MindRemovedMessage args)
+    //{
+    //    //when entity is gibbbed mind is transfered to brain, and we cant use getmind on entity, because we will get the wrong mind
+    //    //so we pass mind to updateProgess manually
+    //    UpdateProgress(ent);
+    //}
+    private void UpdateProgress(Entity<SWFactionMemberComponent> ent, MobState newState = MobState.Invalid)
     {
         var query = EntityQueryEnumerator<SWKillRandomByNameComponent>();
         while (query.MoveNext(out var uid, out var _))
@@ -106,7 +106,7 @@ public sealed partial class SWKillRandomJobSystem : EntitySystem
         var query2 = EntityQueryEnumerator<SWKillRandomByJobComponent, SWTargetSelectorComponent>();
         while (query2.MoveNext(out var uid, out var comp, out var targetComp))
         {
-            var job = _swTargetSelector.GetJob(ent.Owner, mind);
+            var job = _swTargetSelector.GetJob(ent.Owner);
             var taskComp = EnsureComp<SWTaskComponent>(uid);
             if (taskComp.Completeness < 1.0
                 && job != null && (targetComp.JobOfTarget == job))

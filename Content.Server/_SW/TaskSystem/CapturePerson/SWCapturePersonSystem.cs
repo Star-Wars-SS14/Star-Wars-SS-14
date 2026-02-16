@@ -47,9 +47,9 @@ public sealed partial class SWCapturePersonSystem : EntitySystem
         var query = EntityQueryEnumerator<SWCapturePersonComponent, SWTargetSelectorComponent>();
         while (query.MoveNext(out var uid, out var captureComp, out var targetComp))
         {
-            if (_sWTarget.GetJob(ent.Owner) == targetComp.JobOfTarget)
+            if (captureComp.CuffedTargets.Contains(ent))
             {
-                captureComp.CuffedTargets.Remove(uid);
+                captureComp.CuffedTargets.Remove(ent);
             }
         }
     }

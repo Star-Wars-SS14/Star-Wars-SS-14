@@ -16,4 +16,5 @@
     components:
       - type: SWFactionMember
         faction: RepublicFaction
+        job: SWRepublicPilot
   

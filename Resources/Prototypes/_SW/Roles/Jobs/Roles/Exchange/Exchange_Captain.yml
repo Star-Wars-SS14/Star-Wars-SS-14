@@ -18,4 +18,5 @@
     components:
       - type: SWFactionMember
         faction: ExchangeFaction
+        job: SWExchangeCaptain
       - type: SWPossibleCriminal

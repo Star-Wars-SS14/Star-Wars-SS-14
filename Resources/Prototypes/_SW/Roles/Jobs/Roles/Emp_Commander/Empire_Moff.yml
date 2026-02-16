@@ -25,3 +25,4 @@
     components:
       - type: SWFactionMember
         faction: EmpireFaction
+        job: SWEmpireMoff

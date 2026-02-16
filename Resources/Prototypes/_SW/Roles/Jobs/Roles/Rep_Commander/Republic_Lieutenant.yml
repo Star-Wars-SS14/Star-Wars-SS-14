@@ -20,3 +20,4 @@
     components:
       - type: SWFactionMember
         faction: RepublicFaction
+        job: SWRepublicLieutenant

@@ -16,4 +16,5 @@
     components:
       - type: SWFactionMember
         faction: BlackSunFaction
+        job: SWBlackSun
       - type: SWPossibleCriminal

@@ -1,3 +1,4 @@
+using Content.Shared._SW.Economy.Prototypes;
 using Content.Shared.Echo.GameTicking.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
@@ -24,7 +25,7 @@ public sealed class VesselPrototype : IPrototype
     ///     The price of the vessel
     /// </summary>
     [DataField("price", required: true)]
-    public int Price;
+    public Dictionary<ProtoId<SWCurrencyPrototype>, float> Price = default!;
 
     /// <summary>
     ///     The category of the product. (e.g. Small, Medium, Large, Emergency, Special etc.)

@@ -1,0 +1,57 @@
+- type: entity
+  parent: ComputerComms
+  id: SWEmpireComputerComms
+  name: Имперская Консоль связи
+  components:
+  - type: CommunicationsConsole
+    title: Имперский Гарнизон
+    color: "#f0f0f0"
+    fractionType: 0
+    canShuttle: false
+    sound:
+      path: /Audio/_SW/Alerts/Notification.ogg
+      params:
+        volume: -4 
+  - type: AccessReader
+    access: [[ "SWEmpireCommander" ]]
+  - type: Godmode
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Sprite
+    sprite: _SW/Structures/Machines/ImperialComputerComms.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: reinforsments_monitor
+  
+
+- type: entity
+  parent: BaseComputer
+  id: SWArtilleryConsole
+  name: Консоль артилерии
+  components:
+  - type: ArtilleryConsole
+    artileryCalledProto: SWArtilleryOnSpawnInstantEffect
+    sound:
+        path: /Audio/Misc/siren.ogg
+        params:
+          volume: -4
+  - type: ActivatableUI
+    key: enum.ArtilleryConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.ArtilleryConsoleUiKey.Key:
+        type: ArtilleryConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/Structures/Machines/ArtilleryConsole.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: artillery_monitor
+  - type: AccessReader
+    access: [[ "SWEmpireMoff" ]]
+  - type: Godmode
+  - type: ApcPowerReceiver
+    needsPower: false

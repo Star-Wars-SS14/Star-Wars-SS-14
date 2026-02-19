@@ -24,3 +24,9 @@
   exchangeRates:
     SWEmpireCreditCurrency: 0.25
     SWRepublicCreditCurrency: 0.166667
+
+- type: swcurrency
+  id : SWReinforcementScore
+  localizedName: Очки подкреплений
+  shortName: ОП
+  cashEntity: SWReinfCredits

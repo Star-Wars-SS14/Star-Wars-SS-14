@@ -10,6 +10,7 @@ using Content.Server.GridPreloader;
 using Content.Server.Maps;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
+using Content.Shared._SW.Economy.BankSystem;
 using Content.Shared._SW.TaskSystem;
 using Content.Shared.Echo.GameTicking.Components;
 using Content.Shared.GameTicking;
@@ -183,9 +184,12 @@ public sealed class SectorWarRuleSystem : GameRuleSystem<SectorWarRuleComponent>
     {
         base.Started(uid, component, gameRule, args);
         var factions = _sWFaction.GetFactions();
-        foreach (var faction in factions.Keys)
+        foreach (var (id, faction) in factions)
         {
-            component.FactionMoney[faction] = component.StartBalance;
+            if (faction == null) continue;
+            if (!TryComp<SWBankAccountContainerComponent>(faction, out var comp)) continue;
+
+            comp.CurrentAmount = component.StartBalance;
         }
 
         foreach (var (factionid, _) in factions)

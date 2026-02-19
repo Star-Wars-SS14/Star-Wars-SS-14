@@ -8,3 +8,4 @@
   showInVote: true
   rules:
     - SectorWar
+    - FactionsOnlyGamerule

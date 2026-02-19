@@ -1,0 +1,12 @@
+ent-SWSpawnPointEmpireLieutenantReinforcement = лейтенант Империи
+  .desc = Подкрепление в пути...
+ent-SWSpawnPointEmpireSoldierReinforcement = солдат Империи
+  .desc = {ent-SWSpawnPointEmpireLieutenantReinforcement.desc}
+ent-SWSpawnPointEmpireMedicReinforcement = медик Империи
+  .desc = {ent-SWSpawnPointEmpireLieutenantReinforcement.desc}
+ent-SWSpawnPointRepublicLieutenantReinforcement = лейтенант Республики
+  .desc = {ent-SWSpawnPointEmpireLieutenantReinforcement.desc}
+ent-SWSpawnPointRepublicSoldierReinforcement = солдат Республики
+  .desc = {ent-SWSpawnPointEmpireLieutenantReinforcement.desc}
+ent-SWSpawnPointRepublicMedicReinforcement = медик Республики
+  .desc = {ent-SWSpawnPointEmpireLieutenantReinforcement.desc}

@@ -16,6 +16,7 @@ using Robust.Server.GameObjects;
 using Content.Shared._SW.Economy.BankSystem;
 using Content.Shared._SW.Economy.Messages;
 using Content.Shared._SW.Economy.Prototypes;
+using Content.Server._SW.Economy.BankSystem;
 namespace Content.Server._SW.Economy;
 
 public sealed class SWBasePayableConsoleSystem : EntitySystem
@@ -24,7 +25,7 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
     [Dependency] SharedStackSystem _stackSystem = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] SharedHandsSystem _handsSystem = default!;
-    [Dependency] SWSharedBankSystem _bankSystem = default!;
+    [Dependency] SWBankSystem _bankSystem = default!;
     ISawmill _s = default!;
     public override void Initialize()
     {
@@ -78,6 +79,12 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
         {
             return;
         }
+
+        if (!ent.Comp.CanPayOut)
+        {
+            return;
+        }
+
         if (_bankSystem.TryPayAll(args.Requests, ent.Comp.Account.Value.Comp.CurrentAmount))
         {
             foreach (var (currency, amount) in args.Requests)
@@ -96,27 +103,38 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
         {
             return;
         }
+
+
+        if (!ent.Comp.CanPayIn)
+        {
+            return;
+        }
+
         if (args.Actor is not { Valid: true } user)
             return;
+
         foreach (var entity in _handsSystem.EnumerateHeld(user))
         {
             if (!TryComp<StackComponent>(entity, out var comp))
             {
                 continue;
             }
+
             var proto = _bankSystem.GetCurrencyProto(entity);
 
             var bankComp = ent.Comp.Account.Value.Comp;
             if (proto != null)
             {
-                if (!bankComp.AllowedCurrencies.Contains(proto))
+                if (!bankComp.AllowedCurrencies.Contains(proto.ID))
                 {
                     continue;
                 }
+
                 if (!bankComp.CurrentAmount.ContainsKey(proto))
                 {
                     bankComp.CurrentAmount[proto] = 0;
                 }
+
                 bankComp.CurrentAmount[proto] += comp.Count;
                 QueueDel(entity);
             }

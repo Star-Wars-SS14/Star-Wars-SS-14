@@ -9,5 +9,11 @@ namespace Content.Server._SW.FinanceConsole;
 public sealed partial class SWFinanceConsoleComponent : Component
 {
     [DataField(required: true)]
-    public string Faction = "";    
+    public string Faction = "";
+
+    /// <summary>
+    /// In some cases we dont want this component to update ui, because we do it by other components
+    /// </summary>
+    [DataField]
+    public bool UpdateUI = true;
 }

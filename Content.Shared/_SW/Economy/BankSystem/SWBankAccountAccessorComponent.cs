@@ -8,6 +8,12 @@ namespace Content.Shared._SW.Economy.BankSystem;
 [RegisterComponent]
 public sealed partial class SWBankAccountAccessorComponent : Component
 {
+    [DataField]
+    public bool CanPayOut = true;
+
+    [DataField]
+    public bool CanPayIn = true;
+
     public Entity<SWBankAccountContainerComponent>? Account = null;
 
     public bool AccountInterfaceRequiresUpdate = false;

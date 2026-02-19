@@ -10,11 +10,33 @@
   group: SWEmpiteSpaceWarMarketReinforcement
 
 - type: swCargoProduct
+  id: SWEmpireMedicCP
+  icon:
+    sprite: _SW/Clothing/Head/Helmets/medicimperialhelmet.rsi
+    state: icon
+  product: SWSpawnPointEmpireMedicReinforcement
+  cost:
+    SWReinforcementScore: 1000
+  category: sw-category-reinforcements
+  group: SWEmpiteSpaceWarMarketReinforcement
+
+- type: swCargoProduct
   id: SWRepublicSoldierCP
   icon:
     sprite: _SW/Clothing/Head/Helmets/republichelmet.rsi
     state: icon
   product: SWSpawnPointRepublicSoldierReinforcement
+  cost:
+    SWReinforcementScore: 1000
+  category: sw-category-reinforcements
+  group: SWRepublicSpaceWarMarketReinforcement
+
+- type: swCargoProduct
+  id: SWRepublicMedicCP
+  icon:
+    sprite: _SW/Clothing/Head/Helmets/republickmedichelmet.rsi
+    state: icon
+  product: SWSpawnPointRepublicMedicReinforcement
   cost:
     SWReinforcementScore: 1000
   category: sw-category-reinforcements

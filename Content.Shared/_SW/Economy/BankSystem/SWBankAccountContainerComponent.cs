@@ -18,5 +18,6 @@ public sealed partial class SWBankAccountContainerComponent : Component
     [DataField]
     public List<ProtoId<SWCurrencyPrototype>> AllowedCurrencies = new List<ProtoId<SWCurrencyPrototype>>() {
         "SWRepublicCreditCurrency",
-        "SWEmpireCreditCurrency"};
+        "SWEmpireCreditCurrency",
+        "SWReinforcementScore"};
 }

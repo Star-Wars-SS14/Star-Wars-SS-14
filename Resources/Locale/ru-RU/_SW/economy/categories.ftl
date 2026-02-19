@@ -11,3 +11,4 @@ sw-category-pistols = Пистолеты
 sw-category-base = Базовое
 sw-category-melee = Оружие ближнего боя
 sw-category-lathe = Станки
+sw-category-reinforcements = Подкрепления

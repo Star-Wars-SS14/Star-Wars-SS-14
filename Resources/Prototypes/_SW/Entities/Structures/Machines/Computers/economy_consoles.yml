@@ -195,20 +195,38 @@
 
 - type: entity
   parent: SWBuyConsoleEmpire
-  id: SWBuyConsoleNeutral
-  name: Урезанная консоль покупки
+  id: SWEmpireReinforcementBuyConsole
+  name: консоль покупки подкреплений
   suffix: Космобои, Империя
   components:
   - type: SWBuyConsole
     allowed:
     - SWReinforcementScore
     allowedMarkets:
-    - SWBaseMarket
-    - SWT1WeaponMarket
-    - SWT1MedicineMarket
-    - SWT2MedicineMarket
+    - SWEmpiteSpaceWarMarketReinforcement
   - type: Sprite
-    sprite: _SW/Structures/Machines/NeutralCargoComputer.rsi
+    sprite: _SW/Structures/Machines/ImperialCargoComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: cargo_monitor
+  - type: SWFinanceConsole
+    faction: EmpireFaction
+
+- type: entity
+  parent: SWBuyConsoleEmpire
+  id: SWRepublicReinforcementBuyConsole
+  name: консоль покупки подкреплений
+  suffix: Космобои, Республика
+  components:
+  - type: SWBuyConsole
+    allowed:
+    - SWReinforcementScore
+    allowedMarkets:
+    - SWRepublicSpaceWarMarketReinforcement
+  - type: Sprite
+    sprite: _SW/Structures/Machines/RepublickCargoComputer.rsi
     layers:
     - map: ["computerLayerBody"]
       state: computer

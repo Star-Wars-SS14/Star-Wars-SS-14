@@ -1,0 +1,21 @@
+- type: swCargoProduct
+  id: SWEmpireSoldierCP
+  icon:
+    sprite: _SW/Clothing/Head/Helmets/imperialhelmet.rsi
+    state: icon
+  product: SWSpawnPointEmpireSoldierReinforcement
+  cost:
+    SWReinforcementScore: 1000
+  category: sw-category-reinforcements
+  group: SWEmpiteSpaceWarMarketReinforcement
+
+- type: swCargoProduct
+  id: SWRepublicSoldierCP
+  icon:
+    sprite: _SW/Clothing/Head/Helmets/republichelmet.rsi
+    state: icon
+  product: SWSpawnPointRepublicSoldierReinforcement
+  cost:
+    SWReinforcementScore: 1000
+  category: sw-category-reinforcements
+  group: SWRepublicSpaceWarMarketReinforcement

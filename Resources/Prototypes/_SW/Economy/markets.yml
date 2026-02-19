@@ -37,3 +37,9 @@
 - type: cargoMarket
   id: SWLatheMarket
 
+- type: cargoMarket
+  id: SWEmpiteSpaceWarMarketReinforcement
+
+- type: cargoMarket
+  id: SWRepublicSpaceWarMarketReinforcement
+

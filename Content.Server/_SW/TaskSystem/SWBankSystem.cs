@@ -51,4 +51,13 @@ public sealed partial class SWBankSystem : SWSharedBankSystem
         }
         return null;
     }
+
+    public void UpdateAllInterfaces()
+    {
+        var query = EntityQueryEnumerator<SWBankAccountAccessorComponent>();
+        while(query.MoveNext(out var _, out var comp))
+        {
+            comp.AccountInterfaceRequiresUpdate = true;
+        }
+    }
 }

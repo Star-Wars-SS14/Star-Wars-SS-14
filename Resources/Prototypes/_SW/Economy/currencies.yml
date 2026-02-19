@@ -29,4 +29,4 @@
   id : SWReinforcementScore
   localizedName: Очки подкреплений
   shortName: ОП
-  cashEntity: SWReinfCredits
+  cashEntity: SWReinforcementCredits

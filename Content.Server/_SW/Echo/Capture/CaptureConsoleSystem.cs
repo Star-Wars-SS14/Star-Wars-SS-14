@@ -80,11 +80,12 @@ public sealed class CaptureConsoleSystem : EntitySystem
                 {
                     var account = _sWBank.GetFactionAccount(comp.Fraction);
                     account.Comp.CurrentAmount = _sWBank.Sum(account.Comp.CurrentAmount, comp.CaprureRewardPerMinuteControlling);
+                    _sWBank.UpdateAllInterfaces();
                     comp.TimeOfNextPayment = _timing.CurTime + TimeSpan.FromMinutes(1);
                 }
             }
         }
-}
+    }
 
     private void FinishCapturing(EntityUid uid, ref CaptureConsoleComponent console)
     {
@@ -122,7 +123,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
             capturable.Fraction = console.CapturingFraction;
             var account = _sWBank.GetFactionAccount(capturable.Fraction);
             account.Comp.CurrentAmount = _sWBank.Sum(account.Comp.CurrentAmount, capturable.CaptureReward);
-
+            _sWBank.UpdateAllInterfaces();
             capturable.TimeOfNextPayment = _timing.CurTime + TimeSpan.FromMinutes(1);
         }
 

@@ -28,7 +28,6 @@ using Content.Shared.Shipyard.Events;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.StationRecords;
 using Content.Shared.UserInterface;
-using JetBrains.FormatRipper.Elf;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;

@@ -75,6 +75,24 @@
     job: SWEmpireMedic
 
 
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidEmpirePilot
+  name: Empire pilot
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [EmpirePilotGear]
+  - type: RandomMetadata
+    nameSegments:
+    - SWNamesFirstMilitaryPilot
+    - NamesMilitaryLast
+    nameFormat: name-format-ert
+  - type: SWFactionMember
+    faction: EmpireFaction
+    job: SWEmpirePilot
+
+
 # SWRepublic
 # Lieutenant
 - type: entity
@@ -130,3 +148,20 @@
   - type: SWFactionMember
     faction: RepublicFaction
     job: SWRepublicMedic
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidRepublicPilot
+  name: Republic Pilot
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [RepublicPilotGear]
+  - type: RandomMetadata
+    nameSegments:
+    - SWNamesFirstMilitaryPilot
+    - NamesMilitaryLast
+    nameFormat: name-format-ert
+  - type: SWFactionMember
+    faction: RepublicFaction
+    job: SWRepublicPilot

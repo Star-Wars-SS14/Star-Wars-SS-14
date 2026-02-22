@@ -47,6 +47,22 @@
   - type: GhostRoleMobSpawner
     prototype: SWRandomHumanoidEmpireMedic
 
+- type: entity
+  id: SWSpawnPointEmpirePilotReinforcement
+  name: empire pilot
+  suffix: reinforcement
+  parent: MarkerBase
+  components:
+  - type: GhostRole
+    name: Имперский пилот подкрепления
+    description: Вас вызвали в качестве подкрепления. Помогите основным силам на планете.
+    rules: Не убивайте союзников. Серьёзно, это не круто.
+    raffle:
+      settings: short
+    job: SWEmpirePilot
+  - type: GhostRoleMobSpawner
+    prototype: SWRandomHumanoidEmpirePilot
+
 #Republic
 - type: entity
   id: SWSpawnPointRepublicLieutenantReinforcement
@@ -95,3 +111,19 @@
     job: SWRepublicMedic
   - type: GhostRoleMobSpawner
     prototype: SWRandomHumanoidRepublicMedic
+
+- type: entity
+  id: SWSpawnPointRepublicPilotReinforcement
+  name: Republic pilot
+  suffix: reinforcement
+  parent: MarkerBase
+  components:
+  - type: GhostRole
+    name: Республиканский пилот подкрепления
+    description: Вас вызвали в качестве подкрепления. Помогите основным силам на планете.
+    rules: Не убивайте союзников. Серьёзно, это не круто.
+    raffle:
+      settings: short
+    job: SWRepublicPilot
+  - type: GhostRoleMobSpawner
+    prototype: SWRandomHumanoidRepublicPilot

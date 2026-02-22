@@ -14,5 +14,5 @@ ent-SWClothingUniformJumpsuitFleece = флисовая униформа
   .desc = Удобная функциональная униформа.
 ent-SWClothingUniformJumpsuitImperialIntelligence = униформа имперской разведки
   .desc = Форма имперского разведчика. Строгий, минималистичный и функциональный дизайн как будто призван не привлекать лишнее внимание к владельцу.
-ent-SWClothingUniformJumpsuitImperialHeadofficerv = униформа высокопосталвенного имперского офицера
+ent-SWClothingUniformJumpsuitImperialHeadOfficer = униформа высокопосталвенного имперского офицера
   .desc = Вы ОЧЕНЬ большая шишка.

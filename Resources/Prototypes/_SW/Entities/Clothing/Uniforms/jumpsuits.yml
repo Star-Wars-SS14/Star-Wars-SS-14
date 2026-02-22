@@ -78,3 +78,12 @@
   - type: Clothing
     sprite: _SW/Clothing/Uniforms/Jumpsuit/imperial_intelligence.rsi
 
+- type: entity
+  parent: ClothingUniformBase
+  id: SWClothingUniformJumpsuitImperialHeadOfficer
+  name: imperial oficer uniform
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Uniforms/Jumpsuit/impccuniform.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Uniforms/Jumpsuit/impccuniform.rsi

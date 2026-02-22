@@ -8,3 +8,14 @@
     sprite: _SW/Clothing/Head/Hats/officer.rsi
   - type: Clothing
     sprite: _SW/Clothing/Head/Hats/officer.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: SWClothingHeadCapOfficers
+  name: Officer cap
+  description: A beret, an artists favorite headwear.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Hats/impcccap.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Hats/impcccap.rsi

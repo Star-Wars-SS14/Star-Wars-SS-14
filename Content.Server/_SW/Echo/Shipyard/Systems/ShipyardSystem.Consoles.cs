@@ -1,3 +1,4 @@
+using Content.Server._SW.Economy.BankSystem;
 using Content.Server.Administration.Logs;
 using Content.Server.Chat.Systems;
 using Content.Server.Echo.GameTicking.Rules.Components;
@@ -8,6 +9,8 @@ using Content.Server.Popups;
 using Content.Server.Radio.EntitySystems;
 using Content.Server.StationRecords;
 using Content.Server.StationRecords.Systems;
+using Content.Shared._SW.Economy.BankSystem;
+using Content.Shared._SW.Economy.Prototypes;
 using Content.Shared._SW.TaskSystem;
 using Content.Shared.Chat;
 using Content.Shared.Database;
@@ -25,6 +28,7 @@ using Content.Shared.Shipyard.Events;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.StationRecords;
 using Content.Shared.UserInterface;
+using JetBrains.FormatRipper.Elf;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Containers;
@@ -44,6 +48,7 @@ public sealed partial class ShipyardSystem
     [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly IAdminLogManager _adminLogger = default!;
     [Dependency] private readonly MindSystem _mind = default!;
+    [Dependency] private readonly SWBankSystem _sWBank = default!;
 
     private void OnPurchaseMessage(EntityUid uid,
         ShipyardConsoleComponent component,
@@ -69,8 +74,6 @@ public sealed partial class ShipyardSystem
         }
 
         var name = vessel.Name;
-        if (vessel.Price <= 0)
-            return;
 
         if (_station.GetOwningStation(uid) is not { Valid: true } station)
         {
@@ -90,7 +93,11 @@ public sealed partial class ShipyardSystem
 
         //we assume that there is only one rule sectorwar
         query.MoveNext(out _, out var rule);
-        if (rule == null || rule.FactionMoney[comp.Faction] < price)
+
+
+        var account = _sWBank.GetFactionAccount(comp.Faction);
+
+        if (rule == null || !_sWBank.TryPayAll(price, account.Comp.CurrentAmount))
         {
             PlayDenySound(args.Actor, uid, component);
             return;
@@ -100,7 +107,7 @@ public sealed partial class ShipyardSystem
             PlayDenySound(args.Actor, uid, component);
             return;
         }
-        rule.FactionMoney[comp.Faction] -= price;
+
         EntityUid? shuttleStation = null;
         // setting up any stations if we have a matching game map prototype to allow late joins directly onto the vessel
         if (_prototypeManager.TryIndex<GameMapPrototype>(vessel.ID, out var stationProto))
@@ -147,7 +154,7 @@ public sealed partial class ShipyardSystem
 
         _adminLogger.Add(LogType.Action,
             LogImpact.Low,
-            $"{ToPrettyString(player):actor} purchased shuttle {ToPrettyString(shuttle.Owner)} for {vessel.Price} credits via {ToPrettyString(component.Owner)}");
+            $"{ToPrettyString(player):actor} purchased shuttle {ToPrettyString(shuttle.Owner)} via {ToPrettyString(component.Owner)}");
 
         RefreshState(uid, (ShipyardConsoleUiKey)args.UiKey);
     }
@@ -284,7 +291,7 @@ public sealed partial class ShipyardSystem
     private void RefreshState(EntityUid uid,
         ShipyardConsoleUiKey uiKey)
     {
-        int balance = 0;
+        Dictionary<ProtoId<SWCurrencyPrototype>, float> balance = new Dictionary<ProtoId<SWCurrencyPrototype>, float> ();
         var station = _station.GetOwningStation(uid);
         if (station == null)
             return;
@@ -298,7 +305,7 @@ public sealed partial class ShipyardSystem
             {
                 continue;
             }
-            balance = rule.FactionMoney[capturableStationComponent.Fraction];
+            balance = _sWBank.GetFactionAccount(capturableStationComponent.Fraction).Comp.CurrentAmount;
             //balance = capturableStationComponent.Fraction switch
             //{
             //    SectorFractions.Alliance => rule.AllianceCredits,

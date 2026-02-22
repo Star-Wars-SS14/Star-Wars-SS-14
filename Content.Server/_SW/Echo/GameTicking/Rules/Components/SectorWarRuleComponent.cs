@@ -1,4 +1,5 @@
 using Content.Server.Maps;
+using Content.Shared._SW.Economy.Prototypes;
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Components;
 using Robust.Shared.Prototypes;
@@ -12,7 +13,7 @@ public sealed partial class SectorWarRuleComponent : Component
 {
     public Dictionary<string, uint> FactionsScore = new();
 
-    public Dictionary<string, int> FactionMoney = new();
+    //public Dictionary<string, int> FactionMoney = new();
 
     [DataField]
     public List<int> AlertDelays = [90, 30, 15, 5]; //In minutes. Left -> Right order.
@@ -27,7 +28,10 @@ public sealed partial class SectorWarRuleComponent : Component
     public string? CaptureSound = null; //"/Audio/Echo/capture.ogg";
 
     [DataField]
-    public int StartBalance = 100000;
+    public Dictionary<ProtoId<SWCurrencyPrototype>, float> StartBalance = new Dictionary<ProtoId<SWCurrencyPrototype>, float>
+    {
+        ["SWReinforcementScore"] = 100000
+    };
 
     [DataField]
     public (EntityUid Entity, AudioComponent Component)? CurrentAudio;

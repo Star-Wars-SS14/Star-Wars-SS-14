@@ -33,7 +33,8 @@
    id: EmpireISI
    name: Fury-class imperial interceptor
    description: Small ship
-   price: 25000
+   price:
+    SWReinforcementScore: 25000
    category: Medium
    fraction: EmpireFaction
    shuttlePath: /Maps/SW/Vessels/Empire/ISI.yml
@@ -58,7 +59,8 @@
    id: EmpireMk6
    name: Mk6
    description: Small imperial vessel
-   price: 9500
+   price:
+    SWReinforcementScore: 9500
    category: Small
    fraction: EmpireFaction
    shuttlePath: /Maps/SW/Vessels/Empire/Mk6.yml
@@ -82,7 +84,8 @@
    id: EmpireTransport
    name:  Imperial military transport
    description: Small imperial vessel
-   price: 8000
+   price:
+    SWReinforcementScore: 8000
    category: Small
    fraction: EmpireFaction
    shuttlePath: /Maps/SW/Vessels/Empire/Imperialmilitarytransport.yml
@@ -106,7 +109,8 @@
    id: EmpireBomber
    name: GSS5CDustmaker
    description: Small imperial vessel
-   price: 19750
+   price:
+    SWReinforcementScore: 19750
    category: Small
    fraction: EmpireFaction
    shuttlePath: /Maps/SW/Vessels/Empire/specshipGSS5CDustmaker.yml

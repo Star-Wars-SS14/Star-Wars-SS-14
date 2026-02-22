@@ -6,61 +6,44 @@
       randomizeName: false
     - type: GhostTakeoverAvailable
 
+- type: entity
+  parent: BaseMobHuman
+  id: SWBaseRandomHumanoid
+  name: base
+  suffix: GhostRole
+  abstract: true
+  components:
+  - type: HumanoidAppearance
+    species: Human
+  - type: RandomHumanoidAppearance
+
 # Empire
 # Lieutenant
 - type: entity
-  parent: BaseMobHuman
-  id: SWRandomHumanoidSpawnerEmpireLieutenant
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidEmpireLieutenant
   name: Empire Lieutenant
   suffix: GhostRole
   components:
-    - type: RandomHumanoidSpawner
-      settings: SWEmpireLieutenant
+  - type: Loadout
+    prototypes: [EmpireLieutenantGear]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirstMilitaryLieutenant
+    - NamesMilitaryLast
+    nameFormat: name-format-ert
+  - type: SWFactionMember
+    faction: EmpireFaction
+    job: SWEmpireLieutenant
 
-- type: randomHumanoidSettings
-  id: SWEmpireLieutenant
-  parent: SWEventHumanoidReinforcement
-  randomizeName: false
-  components:
-    - type: GhostRole
-      name: Имперский лейтенант подкрепления.
-      description: Вас вызвали в качестве подкрепления. Помогите основным силам на планете.
-      rules: Не убивайте союзников. Серьёзно, это не круто.
-      raffle:
-        settings: short
-      job: SWEmpireLieutenant
-    - type: Loadout
-      prototypes: [EmpireLieutenantGear]
-    - type: RandomMetadata
-      nameSegments:
-      - NamesFirstMilitaryLieutenant
-      - NamesMilitaryLast
-      nameFormat: name-format-ert
-    - type: SWFactionMember
-      faction: EmpireFaction
 
 # Soldier
 - type: entity
-  parent: BaseMobHuman
-  id: SWRandomHumanoidSpawnerEmpireSoldier
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidEmpireSoldier
   name: Empire Soldier
   suffix: GhostRole
   components:
-    - type: RandomHumanoidSpawner
-      settings: SWEmpireSoldier
-
-- type: randomHumanoidSettings
-  id: SWEmpireSoldier
-  parent: SWEventHumanoidReinforcement
-  randomizeName: false
-  components:
-    - type: GhostRole
-      name: Имперский солдат подкрепления
-      description: Вас вызвали в качестве подкрепления. Помогите основным силам на планете.
-      rules: Не убивайте союзников. Серьёзно, это не круто.
-      raffle:
-        settings: short
-      job: SWEmpireSoldier
     - type: Loadout
       prototypes: [EmpireSoldierGear]
     - type: RandomMetadata
@@ -70,132 +53,115 @@
       nameFormat: name-format-ert
     - type: SWFactionMember
       faction: EmpireFaction
+      job: SWEmpireSoldier
+
 
 # Medic
 - type: entity
-  parent: BaseMobHuman
-  id: SWRandomHumanoidSpawnerEmpireMedic
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidEmpireMedic
   name: Empire Medic
   suffix: GhostRole
   components:
-    - type: RandomHumanoidSpawner
-      settings: SWEmpireMedic
+  - type: Loadout
+    prototypes: [EmpireMedicalGear]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirstMilitaryMedic
+    - NamesMilitaryLast
+    nameFormat: name-format-ert
+  - type: SWFactionMember
+    faction: EmpireFaction
+    job: SWEmpireMedic
 
-- type: randomHumanoidSettings
-  id: SWEmpireMedic
-  parent: SWEventHumanoidReinforcement
-  randomizeName: false
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidEmpirePilot
+  name: Empire pilot
+  suffix: GhostRole
   components:
-    - type: GhostRole
-      name: Имперский медик подкрепления
-      description: Вас вызвали в качестве подкрепления. Помогите основным силам на планете.
-      rules: Не убивайте союзников. Серьёзно, это не круто.
-      raffle:
-        settings: short
-      job: SWEmpireMedic
-    - type: Loadout
-      prototypes: [EmpireMedicalGear]
-    - type: RandomMetadata
-      nameSegments:
-      - NamesFirstMilitaryMedic
-      - NamesMilitaryLast
-      nameFormat: name-format-ert
-    - type: SWFactionMember
-      faction: EmpireFaction
+  - type: Loadout
+    prototypes: [EmpirePilotGear]
+  - type: RandomMetadata
+    nameSegments:
+    - SWNamesFirstMilitaryPilot
+    - NamesMilitaryLast
+    nameFormat: name-format-ert
+  - type: SWFactionMember
+    faction: EmpireFaction
+    job: SWEmpirePilot
+
 
 # SWRepublic
 # Lieutenant
 - type: entity
-  parent: BaseMobHuman
-  id: SWRandomHumanoidSpawnerRepublicLieutenant
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidRepublicLieutenant
   name: Republic Lieutenant
   suffix: GhostRole
   components:
-    - type: RandomHumanoidSpawner
-      settings: SWRepublicLieutenant
-
-- type: randomHumanoidSettings
-  id: SWRepublicLieutenant
-  parent: SWEventHumanoidReinforcement
-  randomizeName: false
-  components:
-    - type: GhostRole
-      name: Республиканский лейтенант подкрепления.
-      description: Вас вызвали в качестве подкрепления. Помогите основным силам на планете.
-      rules: Не убивайте союзников. Серьёзно, это не круто.
-      raffle:
-        settings: short
-      job: SWRepublicLieutenant
-    - type: Loadout
-      prototypes: [RepublicLieutenantGear]
-    - type: RandomMetadata
-      nameSegments:
-      - NamesFirstMilitaryLieutenant
-      - NamesMilitaryLast
-      nameFormat: name-format-ert
-    - type: SWFactionMember
-      faction: RepublicFaction
+  - type: Loadout
+    prototypes: [RepublicLieutenantGear]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirstMilitaryLieutenant
+    - NamesMilitaryLast
+    nameFormat: name-format-ert
+  - type: SWFactionMember
+    faction: RepublicFaction
+    job: SWRepublicLieutenant
 
 # Soldier
 - type: entity
-  parent: BaseMobHuman
-  id: SWRandomHumanoidSpawnerRepublicSoldier
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidRepublicSoldier
   name: Republic Soldier
   suffix: GhostRole
   components:
-    - type: RandomHumanoidSpawner
-      settings: SWRepublicSoldier
+  - type: Loadout
+    prototypes: [RepublicSoldierGear]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirstMilitarySoldier
+    - NamesMilitaryLast
+    nameFormat: name-format-ert
+  - type: SWFactionMember
+    faction: RepublicFaction
+    job: SWRepublicSoldier
 
-- type: randomHumanoidSettings
-  id: SWRepublicSoldier
-  parent: SWEventHumanoidReinforcement
-  randomizeName: false
-  components:
-    - type: GhostRole
-      name: Республиканский солдат подкрепления.
-      description: Вас вызвали в качестве подкрепления. Помогите основным силам на планете.
-      rules: Не убивайте союзников. Серьёзно, это не круто.
-      raffle:
-        settings: short
-      job: SWRepublicSoldier
-    - type: Loadout
-      prototypes: [RepublicSoldierGear]
-    - type: RandomMetadata
-      nameSegments:
-      - NamesFirstMilitarySoldier
-      - NamesMilitaryLast
-      nameFormat: name-format-ert
-    - type: SWFactionMember
-      faction: RepublicFaction
 
 # Medic
 - type: entity
-  parent: BaseMobHuman
-  id: SWRandomHumanoidSpawnerRepublicMedic
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidRepublicMedic
   name: Republic Medic
   suffix: GhostRole
   components:
-    - type: RandomHumanoidSpawner
-      settings: SWRepublicMedic
+  - type: Loadout
+    prototypes: [RepublicMedicGear]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirstMilitaryMedic
+    - NamesMilitaryLast
+    nameFormat: name-format-ert
+  - type: SWFactionMember
+    faction: RepublicFaction
+    job: SWRepublicMedic
 
-- type: randomHumanoidSettings
-  id: SWRepublicMedic
-  parent: SWEventHumanoidReinforcement
-  randomizeName: false
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidRepublicPilot
+  name: Republic Pilot
+  suffix: GhostRole
   components:
-    - type: GhostRole
-      name: Республиканский медик подкрепления
-      description: Вас вызвали в качестве подкрепления. Помогите основным силам на планете.
-      rules: Не убивайте союзников. Серьёзно, это не круто.
-      raffle:
-        settings: short
-      job: SWRepublicMedic
-    - type: Loadout
-      prototypes: [RepublicMedicGear]
-    - type: RandomMetadata
-      nameSegments:
-      - NamesFirstMilitaryMedic
-      - NamesMilitaryLast
-      nameFormat: name-format-ert
-    - type: SWFactionMember
-      faction: RepublicFaction
+  - type: Loadout
+    prototypes: [RepublicPilotGear]
+  - type: RandomMetadata
+    nameSegments:
+    - SWNamesFirstMilitaryPilot
+    - NamesMilitaryLast
+    nameFormat: name-format-ert
+  - type: SWFactionMember
+    faction: RepublicFaction
+    job: SWRepublicPilot

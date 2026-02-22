@@ -1,0 +1,65 @@
+- type: swCargoProduct
+  id: SWEmpireSoldierCP
+  icon:
+    sprite: _SW/Clothing/Head/Helmets/imperialhelmet.rsi
+    state: icon
+  product: SWSpawnPointEmpireSoldierReinforcement
+  cost:
+    SWReinforcementScore: 1000
+  category: sw-category-reinforcements
+  group: SWEmpiteSpaceWarMarketReinforcement
+
+- type: swCargoProduct
+  id: SWEmpireMedicCP
+  icon:
+    sprite: _SW/Clothing/Head/Helmets/medicimperialhelmet.rsi
+    state: icon
+  product: SWSpawnPointEmpireMedicReinforcement
+  cost:
+    SWReinforcementScore: 1000
+  category: sw-category-reinforcements
+  group: SWEmpiteSpaceWarMarketReinforcement
+
+- type: swCargoProduct
+  id: SWEmpirePilotCP
+  icon:
+    sprite: _SW/Clothing/Head/Helmets/imperial_pilothelmet.rsi
+    state: icon
+  product: SWSpawnPointEmpirePilotReinforcement
+  cost:
+    SWReinforcementScore: 1000
+  category: sw-category-reinforcements
+  group: SWEmpiteSpaceWarMarketReinforcement
+
+- type: swCargoProduct
+  id: SWRepublicSoldierCP
+  icon:
+    sprite: _SW/Clothing/Head/Helmets/republichelmet.rsi
+    state: icon
+  product: SWSpawnPointRepublicSoldierReinforcement
+  cost:
+    SWReinforcementScore: 1000
+  category: sw-category-reinforcements
+  group: SWRepublicSpaceWarMarketReinforcement
+
+- type: swCargoProduct
+  id: SWRepublicMedicCP
+  icon:
+    sprite: _SW/Clothing/Head/Helmets/republickmedichelmet.rsi
+    state: icon
+  product: SWSpawnPointRepublicMedicReinforcement
+  cost:
+    SWReinforcementScore: 1000
+  category: sw-category-reinforcements
+  group: SWRepublicSpaceWarMarketReinforcement
+
+- type: swCargoProduct
+  id: SWRepublicPilotCP
+  icon:
+    sprite: _SW/Clothing/Head/Helmets/republic_pilothelmet.rsi
+    state: icon
+  product: SWSpawnPointRepublicPilotReinforcement
+  cost:
+    SWReinforcementScore: 1000
+  category: sw-category-reinforcements
+  group: SWRepublicSpaceWarMarketReinforcement

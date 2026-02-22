@@ -1,7 +1,9 @@
+using Content.Shared._SW.Economy.Prototypes;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Echo.Shipyard.BUI;
 using Content.Shared.Shipyard;
 using Content.Shared.Shipyard.Events;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
 using static Robust.Client.UserInterface.Controls.BaseButton;
 using ShipyardConsoleMenu = Content.Client._SW.Echo.Shipyard.UI.ShipyardConsoleMenu;
@@ -14,7 +16,7 @@ public sealed class ShipyardConsoleBoundUserInterface : BoundUserInterface
 {
     private ShipyardConsoleMenu? _menu;
     private ShipyardRulesPopup? _rulesWindow;
-    public int Balance { get; private set; }
+    public Dictionary<ProtoId<SWCurrencyPrototype>, float> Balance = new Dictionary<ProtoId<SWCurrencyPrototype>, float>();
 
     public int? ShipSellValue { get; private set; }
 

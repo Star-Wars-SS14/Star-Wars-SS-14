@@ -51,9 +51,9 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
     {
         base.Update(frameTime);
         var query = EntityQueryEnumerator<SWFinanceConsoleComponent, SWBankAccountAccessorComponent>();
-        while (query.MoveNext(out var uid, out var _, out var comp))
+        while (query.MoveNext(out var uid, out var finComp, out var comp))
         {
-            if (comp.AccountInterfaceRequiresUpdate && comp.Account != null)
+            if (finComp.UpdateUI && comp.AccountInterfaceRequiresUpdate && comp.Account != null)
             {
                 UpdateInterface(uid, comp.Account.Value);
                 comp.AccountInterfaceRequiresUpdate = false;

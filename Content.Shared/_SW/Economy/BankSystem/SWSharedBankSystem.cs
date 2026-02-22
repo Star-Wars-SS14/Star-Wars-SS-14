@@ -1,5 +1,6 @@
 using Content.Shared._SW.Economy.Prototypes;
 using Content.Shared._SW.TaskSystem;
+using Content.Shared.EntityConditions.Conditions;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Stacks;
 using Content.Shared.Store;
@@ -37,6 +38,29 @@ public class SWSharedBankSystem : EntitySystem
         }
         _s.Error($"Unspecified exchange rate: from {from.ID} to {to.ID}");
         return amount;
+    }
+
+    public Dictionary<ProtoId<SWCurrencyPrototype>, float> Sum(Dictionary<ProtoId<SWCurrencyPrototype>, float> a, Dictionary<ProtoId<SWCurrencyPrototype>, float> b)
+    {
+        var res = new Dictionary<ProtoId<SWCurrencyPrototype>, float>();
+        foreach (var (currency, amount) in a)
+        {
+            res[currency] = amount;
+            if (b.TryGetValue(currency, out var b_amount))
+            {
+                res[currency] += b_amount;
+            }
+        }
+
+        foreach (var (currency, amount) in b)
+        {
+            if (!res.ContainsKey(currency))
+            {
+                res[currency] = amount;
+            }
+        }
+
+        return res;
     }
 
     public int TransferCurrency(int amount, SWCurrencyPrototype from, SWCurrencyPrototype to)

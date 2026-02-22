@@ -20,6 +20,7 @@ using Robust.Shared.Map;
 using Microsoft.CodeAnalysis.Elfie.Model;
 using System;
 using Content.Server.Echo.GameTicking.Systems;
+using Content.Server._SW.Economy.BankSystem;
 namespace Content.Server.Echo.Capture;
 
 public sealed class CaptureConsoleSystem : EntitySystem
@@ -33,6 +34,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
     [Dependency] private readonly SWFactionGameruleSystem _sWFaction = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly SectorWarRuleSystem _sectorWarRule = default!;
+    [Dependency] private readonly SWBankSystem _sWBank = default!;
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -76,12 +78,14 @@ public sealed class CaptureConsoleSystem : EntitySystem
             {
                 if (comp.TimeOfNextPayment <= _timing.CurTime)
                 {
-                    _sectorWarRule.GameRuleSingleton.FactionMoney[comp.Fraction] += comp.CaprureRewardPerMinuteControlling;
+                    var account = _sWBank.GetFactionAccount(comp.Fraction);
+                    account.Comp.CurrentAmount = _sWBank.Sum(account.Comp.CurrentAmount, comp.CaprureRewardPerMinuteControlling);
+                    _sWBank.UpdateAllInterfaces();
                     comp.TimeOfNextPayment = _timing.CurTime + TimeSpan.FromMinutes(1);
                 }
             }
         }
-}
+    }
 
     private void FinishCapturing(EntityUid uid, ref CaptureConsoleComponent console)
     {
@@ -117,7 +121,9 @@ public sealed class CaptureConsoleSystem : EntitySystem
             }
             rule.FactionsScore[console.CapturingFraction]++;
             capturable.Fraction = console.CapturingFraction;
-            rule.FactionMoney[console.CapturingFraction] += capturable.CaptureReward;
+            var account = _sWBank.GetFactionAccount(capturable.Fraction);
+            account.Comp.CurrentAmount = _sWBank.Sum(account.Comp.CurrentAmount, capturable.CaptureReward);
+            _sWBank.UpdateAllInterfaces();
             capturable.TimeOfNextPayment = _timing.CurTime + TimeSpan.FromMinutes(1);
         }
 

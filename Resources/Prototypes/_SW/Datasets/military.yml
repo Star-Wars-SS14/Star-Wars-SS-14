@@ -18,3 +18,9 @@
   values:
     prefix: name-sw-first-medic-
     count: 1
+
+- type: localizedDataset
+  id: SWNamesFirstMilitaryPilot
+  values:
+    prefix: name-sw-first-pilot-
+    count: 1

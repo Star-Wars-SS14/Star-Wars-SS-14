@@ -5,8 +5,8 @@
 - type: ore
   id: OreSteel
   oreEntity: SteelOre1
-  minOreYield: 1
-  maxOreYield: 5
+  minOreYield: 5
+  maxOreYield: 10
 
 - type: ore
   id: OreSpaceQuartz
@@ -17,15 +17,15 @@
 - type: ore
   id: OreCoal
   oreEntity: Coal1
-  minOreYield: 1
-  maxOreYield: 5
+  minOreYield: 5
+  maxOreYield: 10
 
 # Medium yields
 - type: ore
   id: OreGold
   oreEntity: GoldOre1
-  minOreYield: 1
-  maxOreYield: 3
+  minOreYield: 3
+  maxOreYield: 8
 
 - type: ore
   id: OreSilver

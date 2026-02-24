@@ -59,16 +59,9 @@
   components:
   - type: EntityTableSpawner
     offset: 0.0
-    table: !type:GroupSelector
+    table: !type:AllSelector
       children:
-      - !type:AllSelector
-        weight: 45
-        children:
-        - id: SWWallRockMining
-      - !type:AllSelector
-        weight: 55
-        children:
-        - id: WallRock
+      - id: SWWallRockMining
   - type: Sprite
     layers:
     - state: green

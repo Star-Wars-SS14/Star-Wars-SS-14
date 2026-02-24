@@ -1,8 +1,8 @@
 - type: ore
   id: SWOreLantanid
   oreEntity: SWLantanidOre1
-  minOreYield: 1
-  maxOreYield: 5
+  minOreYield: 5
+  maxOreYield: 8
 
 - type: stack
   parent: BaseMediumStack

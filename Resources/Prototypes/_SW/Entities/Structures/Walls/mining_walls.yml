@@ -6,5 +6,5 @@
   description: A rock.
   components:
   - type: OreVein
-    oreChance: 0.33
+    oreChance: 1.0
     oreRarityPrototypeId: SWRandomOreDistributionStandard

@@ -37,6 +37,8 @@
   - type: ProtectedFromStepTriggers
   - type: Damageable
     damageModifierSet: SWColicoid
+  - type: Body
+    prototype: SWColicoidBody
 
 
 - type: entity

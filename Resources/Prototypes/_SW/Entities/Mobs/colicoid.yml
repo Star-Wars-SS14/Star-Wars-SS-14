@@ -1,0 +1,36 @@
+- type: entity
+  name: colicoid
+  parent: SWMobParasitAggressiveAi
+  id: SWMobColicoidAggressive
+  components:
+  - type: Body
+    prototype: SWColicoidBody
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: colicoid-0
+      Critical:
+        Base: crit
+      Dead:
+        Base: dead
+  - type: Hunger
+    thresholds:
+      Overfed: 50
+      Okay: 35
+      Peckish: 20
+      Starving: 15
+      Dead: 0
+    baseDecayRate: 0.01666666666
+    starvingSlowdownModifier: 0.8
+    hungerThresholdDecayModifiers:
+      Overfed: 1.2
+      Okay: 1.0
+      Peckish: 0.8
+      Starving: 0.6
+      Dead: 0.6
+  - type: Sprite
+    drawdepth: SmallMobs
+    sprite: _SW/Mobs/Animals/colicoid.rsi
+    layers:
+    - map: ["enum.DamageStateVisualLayers.Base", "movement"]
+      state: colicoid-0

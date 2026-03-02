@@ -25,7 +25,7 @@ public sealed partial class SWLatheComponent : Component
     /// Maximum amount per ONE material
     /// </summary>
     [DataField, ViewVariables(VVAccess.ReadWrite)]
-    public int MaxMaterialAmount = 3;
+    public int MaxMaterialAmount = 100000;
 
     public Dictionary<EntProtoId, int> StashedMaterials = new Dictionary<EntProtoId, int>();
 

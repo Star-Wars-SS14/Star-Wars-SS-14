@@ -74,3 +74,15 @@
   - type: Loadout
     prototypes: [ForceUserJediGear]
   - type: SWPushAbility
+  - type: SWHealAbility
+    delay: 3
+    damage:
+      groups:
+        Burn: -15
+        Toxin: -15
+        Airloss: -15
+        Brute: -15
+    healingBeginSound:
+      path: "/Audio/Items/Medical/ointment_begin.ogg"
+    healingEndSound:
+      path: "/Audio/Items/Medical/ointment_end.ogg"

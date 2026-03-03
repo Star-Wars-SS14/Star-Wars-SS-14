@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Shared._SW.SWStrangulatуAbility;
+namespace Content.Shared._SW.ForceAbilities.SWStrangulatуAbility;
 
 [RegisterComponent, NetworkedComponent]
 public sealed partial class SWStrangulateAbilityComponent : Component

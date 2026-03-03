@@ -68,3 +68,16 @@
         types:
           Asphyxiation: -5.0
     - type: SWPushAbility
+    - type: Healing
+      damageContainers:
+        - Biological
+      damage:
+        types:
+          Heat: -5
+          Cold: -5
+          Shock: -5
+          Caustic: -1.5
+      healingBeginSound:
+        path: "/Audio/Items/Medical/ointment_begin.ogg"
+      healingEndSound:
+        path: "/Audio/Items/Medical/ointment_end.ogg"

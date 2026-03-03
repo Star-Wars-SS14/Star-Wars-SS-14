@@ -1,6 +1,8 @@
 using System.Linq;
 using Content.Client.Gameplay;
 using Content.Shared._SW;
+using Content.Shared._SW.ForceAbilities;
+using Content.Shared._SW.ForceAbilities.SWMeleeWeaponSystem;
 using Content.Shared.CombatMode;
 using Content.Shared.Effects;
 using Content.Shared.Hands.Components;

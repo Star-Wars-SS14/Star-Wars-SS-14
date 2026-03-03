@@ -1,9 +1,7 @@
-using Content.Shared._SW.SWStrangulatуAbility;
 using Content.Shared.Actions;
 using Content.Shared.Mobs.Components;
 using Robust.Shared.Physics.Systems;
 using Robust.Shared.Physics.Components;
-using Content.Shared._SW.SWStrangulateAbility;
 using Content.Shared._SW;
 using Content.Server._SW.SWTriggerOnSay;
 using Content.Shared.Mobs;
@@ -12,6 +10,8 @@ using Content.Server._SW.SWDottyAccent;
 using Content.Server.Examine;
 using Content.Shared.Tag;
 using Content.Shared.Trigger.Components.Effects;
+using Content.Shared._SW.ForceAbilities.SWStrangulatуAbility;
+using Content.Shared._SW.ForceAbilities.SWStrangulateAbility;
 
 namespace Content.Server._SW.SWStrangulateAbility;
 

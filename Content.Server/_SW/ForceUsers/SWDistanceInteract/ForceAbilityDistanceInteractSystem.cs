@@ -13,6 +13,7 @@ using Content.Server.Actions;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Server._SW.Unpickuppable;
+using Content.Shared._SW.ForceAbilities;
 
 namespace Content.Server._SW;
 public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem

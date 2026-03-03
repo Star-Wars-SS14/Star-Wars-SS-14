@@ -28,6 +28,7 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs;
 using Content.Server.Examine;
 using Content.Server._SW.Force.Components;
+using Content.Shared._SW.ForceAbilities;
 
 namespace Content.Server._SW.Force;
 

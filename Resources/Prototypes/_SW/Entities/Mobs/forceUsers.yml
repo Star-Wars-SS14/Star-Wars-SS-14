@@ -75,7 +75,10 @@
     prototypes: [ForceUserJediGear]
   - type: SWPushAbility
   - type: SWHealAbility
-    delay: 3
+    damageContainers:
+      - Biological
+    modifyBloodLevel: 30
+    delay: 1
     damage:
       groups:
         Burn: -15

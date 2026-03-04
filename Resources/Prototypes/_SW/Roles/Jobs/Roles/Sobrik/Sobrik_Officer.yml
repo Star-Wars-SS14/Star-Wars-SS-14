@@ -6,6 +6,8 @@
   - !type:RoleTimeRequirement
     role: Job_Empire_Soldier
     time: 18000 # 5h
+  - !type:SWSpeciesJobRequirement
+    allowedSpecies: [ Human, Chiss ]
   startingGear: SobrikOfficerGear
   icon: "JobIconSobrikOfficer"
   supervisors: job-supervisors-sobrik-captain

@@ -5,6 +5,8 @@
   requirements:
     - !type:OverallPlaytimeRequirement
       time: 9000
+    - !type:SWSpeciesJobRequirement
+      allowedSpecies: [ Human, Chiss ]
   startingGear: EmpireEngineerGear
   icon: "JobIconStationEngineer"
   supervisors: job-supervisors-leit-emp

@@ -5,6 +5,8 @@
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 72000 # 20h
+  - !type:SWSpeciesJobRequirement
+    disallowedSpecies: [ Colicoid ]
   startingGear: ForceUserSithGear
   icon: "JobIconSith"
   supervisors: job-supervisors-black-council

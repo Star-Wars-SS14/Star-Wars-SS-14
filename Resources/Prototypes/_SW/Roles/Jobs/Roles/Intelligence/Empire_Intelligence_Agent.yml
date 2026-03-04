@@ -8,6 +8,8 @@
   - !type:RoleTimeRequirement
     role: Job_Empire_Soldier
     time: 7200 # 2h
+  - !type:SWSpeciesJobRequirement
+    disallowedSpecies: [ Colicoid ]
   startingGear: EmpireIntelligenceAgentGear
   icon: "JobIconImperialIntelligenceAgent"
   supervisors: job-supervisors-watcher-intelligence

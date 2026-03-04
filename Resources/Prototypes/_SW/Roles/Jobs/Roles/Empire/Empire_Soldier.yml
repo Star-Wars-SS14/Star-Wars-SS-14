@@ -5,6 +5,8 @@
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 0 # 0h
+  - !type:SWSpeciesJobRequirement
+    allowedSpecies: [ Human, Chiss ]
   startingGear: EmpireSoldierGear
   icon: "JobIconEmpireSoldier"
   supervisors: job-supervisors-leit-emp

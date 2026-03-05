@@ -29,6 +29,9 @@
       SWRepublicRecruit: 15
       SWRepublicMedic: 15
       SWCivialian: 10
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWEmpireCreditCurrency: 900
 
 - type: entity
   id: BigHeadHunterMandalorian
@@ -63,6 +66,9 @@
       SWRepublicCommanderMedic: 25
       SWRepublicCommanderStormtrooper: 25
       SWRepublicCommanderSniper: 25
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWEmpireCreditCurrency: 1200
 
 - type: entity
   id: GetMoney

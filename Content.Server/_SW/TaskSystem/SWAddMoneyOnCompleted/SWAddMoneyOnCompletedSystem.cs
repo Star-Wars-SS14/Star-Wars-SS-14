@@ -31,5 +31,6 @@ public sealed class SWAddMoneyOnCompletedSystem : EntitySystem
         var account = _bankSystem.GetFactionAccount(taskComp.OwningFaction);
         account.Comp.CurrentAmount = _bankSystem.Sum(account.Comp.CurrentAmount, ent.Comp.Amount);
         ent.Comp.Added = true;
+        _bankSystem.UpdateAllInterfaces();
     }
 }

@@ -61,15 +61,11 @@ public sealed class SWRespawnEntitiesGameruleSystem : GameRuleSystem<SWRespawnEn
 
     private void Respawn()
     {
-        ISawmill _s = Logger.GetSawmill("asdfgh");
         var query = EntityQueryEnumerator<SWRespawnGameruleSpawnpointComponent>();
         while (query.MoveNext(out var owner, out var comp))
         {
-            _s.Fatal("0");
-            _s.Fatal($"intersecting: {_entityLookupSystem.GetEntitiesIntersecting(owner).Count}");
             if (_entityLookupSystem.GetEntitiesIntersecting(owner).All(x => _whitelistSystem.IsWhitelistFail(comp.Blacklist, x)))
             {
-                _s.Fatal("1");
                 var res = Spawn(comp.RespawnProto, _sharedTransformSystem.GetMapCoordinates(owner));
             }
         }

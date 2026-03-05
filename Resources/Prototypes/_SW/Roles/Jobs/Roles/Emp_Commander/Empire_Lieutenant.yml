@@ -8,6 +8,8 @@
   - !type:RoleTimeRequirement
     role: Job_Empire_Soldier
     time: 36000 # 10h
+  - !type:SWSpeciesJobRequirement
+    allowedSpecies: [ Human, Chiss ]
   startingGear: EmpireLieutenantGear
   icon: "JobIconEmpireLieutenant"
   supervisors: job-supervisors-major-emp

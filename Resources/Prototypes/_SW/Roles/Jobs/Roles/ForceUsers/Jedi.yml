@@ -8,6 +8,8 @@
   - !type:DepartmentTimeRequirement
     department: SWPepublic
     time: 36000 # 10h
+  - !type:SWSpeciesJobRequirement
+    disallowedSpecies: [ Colicoid ]
   startingGear: ForceUserJediGear
   icon: "JobIconJedi"
   supervisors: job-supervisors-jedi-council

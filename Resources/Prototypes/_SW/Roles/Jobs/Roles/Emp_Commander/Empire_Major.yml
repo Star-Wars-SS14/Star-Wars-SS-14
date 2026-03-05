@@ -8,6 +8,8 @@
   - !type:RoleTimeRequirement
     role: Job_Empire_Lieutenant
     time: 18000 # 5h
+  - !type:SWSpeciesJobRequirement
+    allowedSpecies: [ Human, Chiss ]
   startingGear: EmpireMajorGear
   icon: "JobIconEmpireMajor"
   supervisors: job-supervisors-MOFF

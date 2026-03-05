@@ -8,6 +8,8 @@
   - !type:RoleTimeRequirement
     role: Job_Empire_Intelligence_Agent
     time: 18000 # 5h
+  - !type:SWSpeciesJobRequirement
+    disallowedSpecies: [ Colicoid ]
   startingGear: EmpireIntelligenceCaretakerGear
   icon: "JobIconImperialIntelligenceCaretaker"
   supervisors: job-supervisors-keeper

@@ -8,6 +8,8 @@
   - !type:RoleTimeRequirement
     role: Job_Sobrik_Officer
     time: 36000 # 10h
+  - !type:SWSpeciesJobRequirement
+    allowedSpecies: [ Human, Chiss ]
   startingGear: SobrikCaptainGear
   icon: "JobIconSobrikComendant"
   supervisors: job-supervisors-MOFF

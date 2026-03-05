@@ -43,3 +43,6 @@
 - type: cargoMarket
   id: SWRepublicSpaceWarMarketReinforcement
 
+- type: cargoMarket
+  id: SWSpecialToolsMarket
+

@@ -234,15 +234,22 @@
   name: Урезанная консоль покупки
   suffix: Нейтралы
   components:
+  - type: SWBankAccountContainer
+    allowedCurrencies:
+    - SWEmpireCreditCurrency
+    - SWRepublicCreditCurrency
+    - SWBlackMarketSupplyScores
   - type: SWBuyConsole
     allowed:
     - SWEmpireCreditCurrency
     - SWRepublicCreditCurrency
+    - SWBlackMarketSupplyScores
     allowedMarkets:
     - SWBaseMarket
     - SWT1WeaponMarket
     - SWT1MedicineMarket
     - SWT2MedicineMarket
+    - SWSpecialToolsMarket
   - type: Sprite
     sprite: _SW/Structures/Machines/NeutralCargoComputer.rsi
     layers:

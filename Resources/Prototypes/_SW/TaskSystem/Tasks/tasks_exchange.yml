@@ -22,6 +22,9 @@
   - type: SWGetScoreByTargetJob
     jobsToScores:
       SWBlackSun: 15
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWBlackMarketSupplyScores: 300
 
 - type: entity
   id: CaptureHeadBlackSun
@@ -37,3 +40,6 @@
   - type: SWGetScoreByTargetJob
     jobsToScores:
       SWBlackSun: 15
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWBlackMarketSupplyScores: 300

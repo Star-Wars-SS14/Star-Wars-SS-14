@@ -23,7 +23,7 @@
       - SWMobBormu
   - type: SWAddMoneyOnCompleted
     amount:
-      SWEmpireCreditCurrency: 500
+      SWEmpireCreditCurrency: 300
 
 - type: entity
   id: KillParasits
@@ -41,5 +41,5 @@
       - SWMobParasit
   - type: SWAddMoneyOnCompleted
     amount:
-      SWEmpireCreditCurrency: 500
+      SWEmpireCreditCurrency: 300
 

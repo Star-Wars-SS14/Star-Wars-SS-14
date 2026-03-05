@@ -38,7 +38,7 @@ public class SWSharedBankSystem : EntitySystem
             result *= rate;
             return true;
         }
-        _s.Error($"Unspecified exchange rate: from {from.ID} to {to.ID}");
+        //_s.Error($"Unspecified exchange rate: from {from.ID} to {to.ID}");
         return false;
     }
 
@@ -125,10 +125,12 @@ public class SWSharedBankSystem : EntitySystem
         foreach (var curPrototypeId in unspecifiedCurrencies)
         {
             var proto = _prototypeManager.Index(curPrototypeId);
-            TransferCurrency(currencyKnownAmount,
+            if (TransferCurrency(currencyKnownAmount,
                                           currencyWithKnownAmount,
-                                          proto, out var cost);
-            costs[curPrototypeId] = cost;
+                                          proto, out var cost))
+            {
+                costs[curPrototypeId] = cost;
+            }
         }
     }
 

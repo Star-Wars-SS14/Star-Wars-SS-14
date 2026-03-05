@@ -115,7 +115,8 @@
     state: icon
   product: SWBactaMedipen
   cost:
-    SWEmpireCreditCurrency: 100
+    SWSupplyScoresEmpire: 100
+    SWSupplyScoresRepublic: 100
   category: sw-category-medicine
   group: SWT3MedicineMarket
 
@@ -126,6 +127,7 @@
     state: icon
   product: SWCrateBacta
   cost:
-    SWEmpireCreditCurrency: 1000
+    SWSupplyScoresEmpire: 1000
+    SWSupplyScoresRepublic: 1000
   category: sw-category-medicine
   group: SWT3MedicineMarket

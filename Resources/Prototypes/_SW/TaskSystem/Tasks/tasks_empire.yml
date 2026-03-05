@@ -178,3 +178,6 @@
   - type: SWParallelTask
     task: SWSabotageQuotaRepublic 
     faction: RepublicFaction
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWSupplyScoresEmpire: 5000

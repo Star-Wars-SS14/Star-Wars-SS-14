@@ -7,10 +7,10 @@
             MinSize="32 32"
             />
         <BoxContainer Margin="4 4 4 4" MaxWidth="200">
-            <Label Name="CurrencyName"/>
+            <RichTextLabel Name="CurrencyName"/>
         </BoxContainer>
         <BoxContainer Margin="4 4 4 4" MaxWidth="200">
-            <Label Name="CurrencyAmount"/>
+            <RichTextLabel Name="CurrencyAmount"/>
         </BoxContainer>
     </BoxContainer>
 </Control>

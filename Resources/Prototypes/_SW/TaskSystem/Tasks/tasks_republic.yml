@@ -180,3 +180,6 @@
     name: Саботировать квоту
     description: Империя получила крупный заказ на производство вооружения. Не дайте им произвести достаточное для его выполнения количество оружия.
   - type: SWParallelTaskInvertStatus
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWSupplyScoresRepublic: 5000

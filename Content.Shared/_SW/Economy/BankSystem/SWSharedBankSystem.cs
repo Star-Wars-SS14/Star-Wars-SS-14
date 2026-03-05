@@ -25,19 +25,21 @@ public class SWSharedBankSystem : EntitySystem
         base.Initialize();
         _s = Logger.GetSawmill("SWBank");
     }    
-    public float TransferCurrency(float amount, SWCurrencyPrototype from, SWCurrencyPrototype to)
+    public bool TryTransferCurrency(float amount, SWCurrencyPrototype from, SWCurrencyPrototype to, out float result)
     {
+        result = amount;
         if (from == to)
         {
-            return amount;
+            return true;
         }
 
         if (from.ExchangeRates.TryGetValue(to.ID, out var rate))
         {
-            return amount * rate;
+            result *= rate;
+            return true;
         }
         _s.Error($"Unspecified exchange rate: from {from.ID} to {to.ID}");
-        return amount;
+        return false;
     }
 
     public Dictionary<ProtoId<SWCurrencyPrototype>, float> Sum(Dictionary<ProtoId<SWCurrencyPrototype>, float> a, Dictionary<ProtoId<SWCurrencyPrototype>, float> b)
@@ -63,21 +65,27 @@ public class SWSharedBankSystem : EntitySystem
         return res;
     }
 
-    public int TransferCurrency(int amount, SWCurrencyPrototype from, SWCurrencyPrototype to)
+    public bool TransferCurrency(int amount, SWCurrencyPrototype from, SWCurrencyPrototype to, out int result)
     {
-        return (int)TransferCurrency((float)amount, from, to);
+        float res;
+        var status = TransferCurrency((float)amount, from, to, out res);
+        result = (int)res;
+        return status;
     }
 
-    public int TransferCurrency(int amount, ProtoId<SWCurrencyPrototype> from, ProtoId<SWCurrencyPrototype> to)
+    public bool TransferCurrency(int amount, ProtoId<SWCurrencyPrototype> from, ProtoId<SWCurrencyPrototype> to, out int result)
     {
-        return (int)TransferCurrency((float)amount, from, to);
+        float res;
+        var status = TransferCurrency((float)amount, from, to, out res);
+        result = (int)res;
+        return status;
     }
 
-    public float TransferCurrency(float amount, ProtoId<SWCurrencyPrototype> from, ProtoId<SWCurrencyPrototype> to)
+    public bool TransferCurrency(float amount, ProtoId<SWCurrencyPrototype> from, ProtoId<SWCurrencyPrototype> to, out float result)
     {
         var fromProto = _prototypeManager.Index(from);
         var toProto = _prototypeManager.Index(to);
-        return TransferCurrency(amount, fromProto, toProto);
+        return TryTransferCurrency(amount, fromProto, toProto, out result);
     }
     /// <summary>
     /// Fills costs in other currencies based on exchange rates
@@ -117,9 +125,9 @@ public class SWSharedBankSystem : EntitySystem
         foreach (var curPrototypeId in unspecifiedCurrencies)
         {
             var proto = _prototypeManager.Index(curPrototypeId);
-            var cost = TransferCurrency(currencyKnownAmount,
+            TransferCurrency(currencyKnownAmount,
                                           currencyWithKnownAmount,
-                                          proto);
+                                          proto, out var cost);
             costs[curPrototypeId] = cost;
         }
     }

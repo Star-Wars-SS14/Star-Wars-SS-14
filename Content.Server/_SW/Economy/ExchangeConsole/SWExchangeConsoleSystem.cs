@@ -51,7 +51,11 @@ public sealed class SWExchangeConsoleSystem : EntitySystem
         {
             return;
         }
-        int resultAmount = _bankSystem.TransferCurrency(args.Amount, args.CurrencyFrom, args.CurrencyTo);
+
+        if (!_bankSystem.TransferCurrency(args.Amount, args.CurrencyFrom, args.CurrencyTo, out var resultAmount)) {
+            return;
+        }
+
         var request = new Dictionary<ProtoId<SWCurrencyPrototype>, float>();
         request[args.CurrencyFrom] = args.Amount;
 

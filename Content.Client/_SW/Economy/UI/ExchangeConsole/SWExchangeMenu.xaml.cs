@@ -70,7 +70,7 @@ public sealed partial class SWExchangeMenu : FancyWindow
         {
             amount = quantity;
         }
-        int resultAmount = SharedBankSystem.TransferCurrency(amount, from, to);
+        SharedBankSystem.TransferCurrency(amount, from, to, out int resultAmount);
         ResultAmountLabel.Text = resultAmount.ToString();
     }
 

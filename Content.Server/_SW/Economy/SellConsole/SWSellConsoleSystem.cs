@@ -62,7 +62,7 @@ public sealed class SWSellConsoleSystem : EntitySystem
         }
         GetPalletGoods(ent, out var toSell, out var goods);
         var totalAmount = (float)goods.Sum(t => t.Item3);
-        totalAmount = _bankSystem.TransferCurrency(totalAmount, ent.Comp.StaticPriceCurrency, ent.Comp.OutputCurrency);
+        _bankSystem.TransferCurrency(totalAmount, ent.Comp.StaticPriceCurrency, ent.Comp.OutputCurrency, out totalAmount);
         _uiSystem.SetUiState(ent.Owner,
             SWSellConsoleUIKey.Key,
             new SWCargoPalletConsoleInterfaceState(
@@ -75,9 +75,10 @@ public sealed class SWSellConsoleSystem : EntitySystem
     {
         GetPalletGoods(ent, out var toSell, out var goods);
         var totalAmount = (float) goods.Sum(t => t.Item3);
-        var transferredAmount = _bankSystem.TransferCurrency(totalAmount,
-                                                             ent.Comp.StaticPriceCurrency,
-                                                             ent.Comp.OutputCurrency);
+        _bankSystem.TransferCurrency(totalAmount,
+                                    ent.Comp.StaticPriceCurrency,
+                                    ent.Comp.OutputCurrency,
+                                    out var transferredAmount);
 
         foreach (var entity in toSell)
         {

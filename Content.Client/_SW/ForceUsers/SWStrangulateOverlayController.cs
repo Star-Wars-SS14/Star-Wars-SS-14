@@ -10,7 +10,7 @@ using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs;
 using Robust.Shared.Player;
 using Content.Shared._SW;
-using Content.Shared._SW.SWStrangulateAbility;
+using Content.Shared._SW.ForceAbilities.SWStrangulateAbility;
 namespace Content.Client._SW.ForceUsers;
 
 public sealed partial class SWStrangulateOverlayController : EntitySystem

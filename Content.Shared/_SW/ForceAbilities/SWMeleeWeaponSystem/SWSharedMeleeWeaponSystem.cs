@@ -9,7 +9,7 @@ using Content.Shared.Weapons.Reflect;
 using Robust.Shared.Serialization;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
-namespace Content.Shared._SW;
+namespace Content.Shared._SW.ForceAbilities.SWMeleeWeaponSystem;
 
 public abstract class SWSharedMeleeWeaponSystem : EntitySystem
 {
@@ -37,7 +37,7 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
 
         EntityUid? target = null;
         //From all hit entities we choose one forceuser, if there are any
-        foreach (EntityUid entity in args.HitEntities)
+        foreach (var entity in args.HitEntities)
         {
             if (HasComp<SWForceUserBlockComponent>(entity))
             {

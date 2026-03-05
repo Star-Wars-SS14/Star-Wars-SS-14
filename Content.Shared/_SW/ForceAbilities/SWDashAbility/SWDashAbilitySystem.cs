@@ -10,13 +10,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Shared._SW;
+namespace Content.Shared._SW.ForceAbilities;
 
 public sealed class SWDashAbilitySystem : EntitySystem
 {
     [Dependency] SharedActionsSystem _actions = default!;
-    [Dependency] IGameTiming _gameTiming = default!;
-    [Dependency] SharedPopupSystem _popupSystem = default!;
+    [Dependency] IGameTiming _gameTiming = default!;    
     [Dependency] MovementSpeedModifierSystem _movementSpeedModifierSystem = default!;
 
     public override void Initialize()

@@ -99,50 +99,19 @@
   - type: InstantAction
     event: !type:GravityJumpEvent {}
 
-# - type: entity
-#   id: ActionSubdueKyber
-#   name: Подчинить кайбер кристалл
-#   description: Держа кайбер кристалл в руке, попробуйте его подчинить.
-#   noSpawn: true
-#   components:
-#   - type: InstantAction
-#     icon: Interface/Actions/subdue.png
-#     event: !type:SubdueAbilityEvent
-#     useDelay: 1
-
-# - type: entity
-#   id: CallSaberAction
-#   name: Призвать световой меч
-#   description: Пользуясь силой, призовите световой меч.
-#   noSpawn: true
-#   components:
-#   - type: InstantAction
-#     icon: Interface/Actions/subdue.png
-#     event: !type:CallSaberAbilityEvent
-#     useDelay: 30
-
-# - type: entity
-#   id: ActionBlockLightSaber
-#   name: lightning
-#   description: ActionBlockLightSaber. #TODO: add description
-#   noSpawn: true
-#   components:
-#   - type: InstantAction
-#     icon: Interface/Actions/block.png
-#     event: !type:BlockEvent
-#     useDelay: 1
-
-# - type: entity
-#   id: ActionSaberPrivate
-#   name: Привязать световой меч
-#   description: Держа световой меч в руках, подчините его.
-#   noSpawn: true
-#   components:
-#   - type: InstantAction
-#     icon: Interface/Actions/subdue.png
-#     event: !type:SaberPrivateAbilityEvent
-#     useDelay: 1
-
-
+- type: entity
+  id: SWHealAction
+  name: Лечение
+  description: Вылечите союзника. Возможно, мертвого.
+  components:
+  - type: Action
+    icon: _SW/Interface/Actions/heal.png
+    useDelay: 5
+  - type: TargetAction
+    interactOnMiss: false
+    range: 3
+  - type: EntityTargetAction    
+    event: !type:SWHealRequestedEvent
+    canTargetSelf: false
 
     

@@ -1,5 +1,5 @@
 using Content.Server.Weapons.Melee;
-using Content.Shared._SW;
+using Content.Shared._SW.ForceAbilities.SWMeleeWeaponSystem;
 using Content.Shared.Popups;
 using System;
 using System.Collections.Generic;

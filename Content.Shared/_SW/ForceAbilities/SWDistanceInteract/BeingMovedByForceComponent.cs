@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Shared._SW;
+namespace Content.Shared._SW.ForceAbilities;
 
 [RegisterComponent]
 public sealed partial class BeingMovedByForceComponent : Component

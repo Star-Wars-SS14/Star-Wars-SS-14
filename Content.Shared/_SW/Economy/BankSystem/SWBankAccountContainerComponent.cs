@@ -19,5 +19,7 @@ public sealed partial class SWBankAccountContainerComponent : Component
     public List<ProtoId<SWCurrencyPrototype>> AllowedCurrencies = new List<ProtoId<SWCurrencyPrototype>>() {
         "SWRepublicCreditCurrency",
         "SWEmpireCreditCurrency",
-        "SWReinforcementScore"};
+        "SWReinforcementScore",
+        "SWSupplyScoresRepublic",
+        "SWSupplyScoresEmpire"};
 }

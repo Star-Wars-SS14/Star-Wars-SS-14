@@ -13,7 +13,7 @@
   components:
   - type: SWTask
     name:  Обезглавливание (выбор)
-    description: Убейте или захватите
+    description: Убейте или захватите главу "Обмена".
   - type: SWTargetSelector
     factions: [ExchangeFaction]
     jobs:
@@ -22,6 +22,9 @@
     subtasks:
       - taskProto: KillConcurentExchange
       - taskProto: CaptureHeadExchange
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWBlackMarketSupplyScores: 300
 
 - type: entity
   id: KillConcurentExchange

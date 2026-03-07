@@ -30,3 +30,21 @@
   localizedName: Очки подкреплений
   shortName: ОП
   cashEntity: SWReinforcementCredits
+
+- type: swcurrency
+  id : SWSupplyScoresEmpire
+  localizedName: Очки специального снабжения Империи
+  shortName: ОСИ
+  cashEntity: SWSupplyScoresEmpireCredits
+
+- type: swcurrency
+  id : SWSupplyScoresRepublic
+  localizedName: Очки специального снабжения Республики
+  shortName: ОСР
+  cashEntity: SWSupplyScoresRepublicCredits
+
+- type: swcurrency
+  id : SWBlackMarketSupplyScores
+  localizedName: Очки снабжения чёрного рынка
+  shortName: ОСЧР
+  cashEntity: SWBlackMarketSupplyCredits

@@ -21,6 +21,9 @@
     - number: 5
       objects:
       - SWMobBormu
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWEmpireCreditCurrency: 300
 
 - type: entity
   id: KillParasits
@@ -36,4 +39,7 @@
       objects:
       - SWMobParasitAggressiveAi
       - SWMobParasit
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWEmpireCreditCurrency: 300
 

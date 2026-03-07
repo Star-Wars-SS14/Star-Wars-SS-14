@@ -5,7 +5,8 @@
     state: base
   product: SWP301Destroyer
   cost:
-    SWEmpireCreditCurrency: 1000
+    SWSupplyScoresEmpire: 1000
+    SWSupplyScoresRepublic: 1000
   category: sw-category-rifles
   group: SWT3WeaponMarket
 
@@ -16,7 +17,8 @@
     state: base
   product: SWGallantry
   cost:
-    SWEmpireCreditCurrency: 3500
+    SWSupplyScoresEmpire: 3500
+    SWSupplyScoresRepublic: 3500
   category: sw-category-machine-guns
   group: SWT3WeaponMarket
 
@@ -27,7 +29,8 @@
     state: icon
   product: SWCrateSWP301Magazine
   cost:
-    SWEmpireCreditCurrency: 188
+    SWSupplyScoresEmpire: 188
+    SWSupplyScoresRepublic: 188
   category: sw-category-magazines
   group: SWT3WeaponMarket
 
@@ -38,6 +41,7 @@
     state: icon
   product: SWCrateSWGallantryMagazine
   cost:
-    SWEmpireCreditCurrency: 750
+    SWSupplyScoresEmpire: 750
+    SWSupplyScoresRepublic: 750
   category: sw-category-magazines
   group: SWT3WeaponMarket

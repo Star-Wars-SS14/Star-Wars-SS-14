@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 namespace Content.Server._SW.TaskSystem.ParallelTaskInvertStatus;
 public sealed class SWParallelTaskInvertStatusSystem : EntitySystem
 {
+    [Dependency] private readonly SWTasksGameRuleSystem _taskSystem = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -28,6 +29,10 @@ public sealed class SWParallelTaskInvertStatusSystem : EntitySystem
 
     private void OnGetProgress(Entity<SWParallelTaskInvertStatusComponent> ent, ref SWGetProgressEvent args)
     {
+        if (_taskSystem.IsTaskNotExpired(ent.Comp.TaskToInvert))
+        {
+            return;
+        }
         args.Progress = ent.Comp.TaskToInvert.Comp.Completeness == 1.0 ? 0.0 : 1.0;
         args.Handled = true;
     }

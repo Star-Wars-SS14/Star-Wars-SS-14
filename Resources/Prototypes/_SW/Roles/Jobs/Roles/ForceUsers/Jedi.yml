@@ -70,15 +70,17 @@
         types:
           Asphyxiation: -5.0
     - type: SWPushAbility
-    - type: Healing
+    - type: SWHealAbility
       damageContainers:
         - Biological
+      modifyBloodLevel: 30
+      delay: 1
       damage:
-        types:
-          Heat: -5
-          Cold: -5
-          Shock: -5
-          Caustic: -1.5
+        groups:
+          Burn: -15
+          Toxin: -15
+          Airloss: -15
+          Brute: -15
       healingBeginSound:
         path: "/Audio/Items/Medical/ointment_begin.ogg"
       healingEndSound:

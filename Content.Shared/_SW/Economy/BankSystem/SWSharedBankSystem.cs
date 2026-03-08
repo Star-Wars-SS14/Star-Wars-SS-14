@@ -9,6 +9,7 @@ using Robust.Shared.Toolshed.TypeParsers;
 using Robust.Shared.Utility;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -88,48 +89,70 @@ public class SWSharedBankSystem : EntitySystem
         return TryTransferCurrency(amount, fromProto, toProto, out result);
     }
     /// <summary>
-    /// Fills costs in other currencies based on exchange rates
+    /// Fills costs in all allowed currencies.
+    /// - Keeps any explicitly specified amounts as-is.
+    /// - For any allowed currency without an amount, tries to infer it
+    ///   by converting from any other currency with a known amount.
     /// </summary>
     public void FillCurrencies(List<string> allowedCurrencies,
                         ref Dictionary<ProtoId<SWCurrencyPrototype>, float> costs)
     {
-        SWCurrencyPrototype? currencyWithKnownAmount = null;
-        float currencyKnownAmount = 0;
-        var unspecifiedCurrencies
-                    = new List<ProtoId<SWCurrencyPrototype>>();
-        var allCurrencies = costs.Keys.Select(c => c.Id).Union(allowedCurrencies);
-
-        foreach (var curPrototypeId in allCurrencies)
-        {
-            if (costs.TryGetValue(curPrototypeId, out var value)
-                && currencyWithKnownAmount == null)
-            {
-                currencyWithKnownAmount = _prototypeManager.Index<SWCurrencyPrototype>(curPrototypeId);
-                currencyKnownAmount = value;
-            }
-            if (allowedCurrencies.Contains(curPrototypeId))
-            {
-                unspecifiedCurrencies.Add(curPrototypeId);
-            }
-            else
-            {
-                costs.Remove(curPrototypeId);
-            }
-        }
-
-        if (currencyWithKnownAmount == null || unspecifiedCurrencies.Count == 0)
+        if (allowedCurrencies.Count == 0)
         {
             return;
         }
 
-        foreach (var curPrototypeId in unspecifiedCurrencies)
+        // Remember every currency that had an explicitly specified amount,
+        // even if it is not in the allowed list, so we can use it as a
+        // source for conversions.
+        var knownCurrencies = new List<(SWCurrencyPrototype Proto, float Amount)>();
+        foreach (var (currencyId, amount) in costs)
         {
-            var proto = _prototypeManager.Index(curPrototypeId);
-            if (TransferCurrency(currencyKnownAmount,
-                                          currencyWithKnownAmount,
-                                          proto, out var cost))
+            var proto = _prototypeManager.Index(currencyId);
+            knownCurrencies.Add((proto, amount));
+        }
+
+        if (knownCurrencies.Count == 0)
+        {
+            return;
+        }
+
+        var allowedSet = new HashSet<string>(allowedCurrencies);
+
+        // Remove currencies that are not allowed from the final result.
+        var keysToRemove = costs.Keys
+            .Where(id => !allowedSet.Contains(id.Id))
+            .ToList();
+        foreach (var key in keysToRemove)
+        {
+            costs.Remove(key);
+        }
+
+        // Ensure every allowed currency has an amount.
+        foreach (var currencyId in allowedCurrencies)
+        {
+            var protoId = new ProtoId<SWCurrencyPrototype>(currencyId);
+
+            // If an amount is already specified, do not change it.
+            if (costs.ContainsKey(protoId))
             {
-                costs[curPrototypeId] = cost;
+                continue;
+            }
+
+            if (!_prototypeManager.TryIndex(protoId, out SWCurrencyPrototype? targetProto)
+                || targetProto == null)
+            {
+                continue;
+            }
+
+            // Try to infer the amount by converting from any known currency.
+            foreach (var (sourceProto, sourceAmount) in knownCurrencies)
+            {
+                if (TryTransferCurrency(sourceAmount, sourceProto, targetProto, out var converted))
+                {
+                    costs[protoId] = converted;
+                    break;
+                }
             }
         }
     }

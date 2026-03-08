@@ -34,8 +34,6 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayableBo
     protected override void Open()
     {
         base.Open();
-        ISawmill _s = Logger.GetSawmill("asdf");
-        _s.Fatal("asdfgh");
         _menu = this.CreateWindow<SWFinanceConsoleMenu>();
         _menu.OpenCenteredRight();
         _menu.OnPayButtonPressed += SendPayBillMessage;

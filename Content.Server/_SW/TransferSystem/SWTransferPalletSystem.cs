@@ -1,3 +1,4 @@
+using Content.Shared.Mobs.Components;
 using Robust.Shared.Physics.Events;
 using System;
 using System.Collections.Generic;
@@ -34,6 +35,14 @@ public sealed partial class SWTransferPalletSystem : EntitySystem
                 if (HasComp<SWCantBeTransferredComponent>(obj))
                 {
                     continue;
+                }
+
+                if (TryComp<MobStateComponent>(obj, out var mobComp))
+                {
+                    if (mobComp.CurrentState == Shared.Mobs.MobState.Alive)
+                    {
+                        continue;
+                    }
                 }
 
                 var ev = new TryTransferObject(obj, comp.OwnerFaction);

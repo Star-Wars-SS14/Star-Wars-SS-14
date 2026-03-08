@@ -48,3 +48,9 @@
   localizedName: Очки снабжения чёрного рынка
   shortName: ОСЧР
   cashEntity: SWBlackMarketSupplyCredits
+
+- type: swcurrency
+  id : SWMandalorianSupplyScores
+  localizedName: Очки снабжения мандалора
+  shortName: ОСМ
+  cashEntity: SWMandalorianSupplyCredits

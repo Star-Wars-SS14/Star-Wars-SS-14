@@ -8,3 +8,14 @@
     SWBlackMarketSupplyScores: 500
   category: sw-category-tools
   group: SWSpecialToolsMarket
+
+- type: swCargoProduct
+  id: SWJetpackCP
+  icon:
+    sprite: Objects/Tanks/Jetpacks/mini.rsi
+    state: icon
+  product: JumpJetPack
+  cost:
+    SWMandalorianSupplyScores: 500
+  category: sw-category-tools
+  group: SWMandalorianToolsMarket

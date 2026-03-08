@@ -5,7 +5,7 @@
     KillParasits: 4
     SmallHeadHunter: 3
     BigHeadHunterMandalorian: 1
-    GetFarnellDocuments: 2
+    GetFarnellDocumentsMandalorian: 2
     GetMoney: 6
 
 - type: entity
@@ -23,7 +23,8 @@
       - SWMobBormu
   - type: SWAddMoneyOnCompleted
     amount:
-      SWEmpireCreditCurrency: 300
+      SWEmpireCreditCurrency: 200
+      SWMandalorianSupplyScores: 400
 
 - type: entity
   id: KillParasits
@@ -41,5 +42,6 @@
       - SWMobParasit
   - type: SWAddMoneyOnCompleted
     amount:
-      SWEmpireCreditCurrency: 300
+      SWEmpireCreditCurrency: 200
+      SWMandalorianSupplyScores: 400
 

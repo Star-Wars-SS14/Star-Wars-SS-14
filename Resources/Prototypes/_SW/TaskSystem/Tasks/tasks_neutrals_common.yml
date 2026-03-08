@@ -71,6 +71,7 @@
     amount:
       SWEmpireCreditCurrency: 1200
       SWBlackMarketSupplyScores: 300
+      SWMandalorianSupplyScores: 300
 
 - type: entity
   id: GetMoney

@@ -371,3 +371,134 @@
     state: cash_1000
   - type: Stack
     count: 2500
+
+- type: entity
+  parent: BaseItem
+  id: SWMandalorianSupplyCredits
+  name: очки снабжения мандалора
+  components:
+  - type: Cash
+  - type: Item
+    shape:
+    - 0,0,1,0
+    storedOffset: 0,-2
+  - type: Material
+  - type: PhysicalComposition
+    materialComposition:
+      Credit: 1
+  - type: StaticPrice
+    price: 0
+  - type: Stack
+    stackType: SWMandalorianSupplyStack
+    count: 1
+    baseLayer: base
+    layerStates:
+    - cash
+    - cash_10
+    - cash_50
+    - cash_100
+    - cash_500
+    - cash_1000
+    layerFunction: Threshold
+  - type: StackLayerThreshold
+    thresholds: [10, 50, 100, 500, 1000]
+  - type: Sprite
+    sprite: _SW/Economy/empire_cash.rsi
+    state: cash
+    layers:
+    - state: cash
+      map: ["base"]
+  - type: Physics
+    bodyType: Dynamic
+  - type: Fixtures
+    fixtures:
+      fix1:
+        density: 30
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.35,-0.2,0.25,0.1"
+        mask:
+        - ItemMask
+  - type: Appearance
+
+- type: material
+  id: SWMandalorianSupplyStack
+  name: очки снабжения мандалора
+  unit: materials-unit-bill
+  stackEntity: SWCredits
+  icon: { sprite: _SW/Economy/empire_cash.rsi, state: cash }
+  price: 1
+
+- type: stack
+  id: SWMandalorianSupplyStack
+  name: очки снабжения мандалора
+  icon: { sprite: _SW/Economy/empire_cash.rsi, state: cash }
+  spawn: SWMandalorianSupply
+
+- type: entity
+  parent: SWMandalorianSupplyCredits
+  id: SWMandalorianSupplyCredits10
+  suffix: 10
+  components:
+  - type: Icon
+    sprite: _SW/Economy/empire_cash.rsi
+    state: cash_10
+  - type: Stack
+    count: 10
+
+- type: entity
+  parent: SWMandalorianSupplyCredits
+  id: SWMandalorianSupplyCredits50
+  suffix: 50
+  components:
+  - type: Icon
+    sprite: _SW/Economy/empire_cash.rsi
+    state: cash_50
+  - type: Stack
+    count: 50
+
+- type: entity
+  parent: SWMandalorianSupplyCredits
+  id: SWMandalorianSupplyCredits100
+  suffix: 100
+  components:
+  - type: Icon
+    sprite: _SW/Economy/empire_cash.rsi
+    state: cash_100
+  - type: Stack
+    count: 100
+
+- type: entity
+  parent: SWMandalorianSupplyCredits
+  id: SWMandalorianSupplyCredits500
+  suffix: 500
+  components:
+  - type: Icon
+    sprite: _SW/Economy/empire_cash.rsi
+    state: cash_500
+  - type: Stack
+    count: 500
+
+- type: entity
+  parent: SWMandalorianSupplyCredits
+  id: SWMandalorianSupplyCredits1000
+  suffix: 1000
+  components:
+  - type: Icon
+    sprite: _SW/Economy/empire_cash.rsi
+    state: cash_1000
+  - type: Stack
+    count: 1000
+
+- type: entity
+  parent: SWMandalorianSupplyCredits
+  id: SWMandalorianSupplyCredits2500
+  suffix: 2500
+  components:
+  - type: Icon
+    sprite: _SW/Economy/empire_cash.rsi
+    state: cash_1000
+  - type: Stack
+    count: 2500
+
+

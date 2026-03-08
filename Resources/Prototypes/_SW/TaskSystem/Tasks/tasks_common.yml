@@ -11,3 +11,27 @@
     - number: 3
       objects:
       - SWFarnelDatapad
+
+- type: entity
+  id: GetFarnellDocumentsMandalorian
+  parent: GetFarnellDocuments
+  components:
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWMandalorianSupplyScores: 700
+
+- type: entity
+  id: GetFarnellDocumentsRepublic
+  parent: GetFarnellDocuments
+  components:
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWSupplyScoresRepublic: 700
+
+- type: entity
+  id: GetFarnellDocumentsEmpire
+  parent: GetFarnellDocuments
+  components:
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWSupplyScoresEmpire: 700

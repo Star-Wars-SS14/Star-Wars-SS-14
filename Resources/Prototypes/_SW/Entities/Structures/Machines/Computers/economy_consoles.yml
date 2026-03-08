@@ -120,6 +120,7 @@
     allowed:
     - SWEmpireCreditCurrency
     - SWRepublicCreditCurrency
+    - SWSupplyScoresEmpire
     allowedMarkets:
     - SWBaseMarket
     - SWT1WeaponMarket
@@ -131,49 +132,51 @@
     - SWAdditionalAmunitionMarket
     - SWToolsMarket
     - SWLatheMarket
-  - type: Godmode
-  - type: ApcPowerReceiver
-    needsPower: false
-
-- type: entity
-  parent: BaseComputer
-  id: SWBuyConsoleSupplyEmpire
-  name: Консоль покупки специального снабжения
-  suffix: Империя
-  components:
-  - type: ActivatableUI
-    key: enum.SWBuyConsoleUIKey.Key
-  - type: UserInterface
-    interfaces:
-      enum.SWBuyConsoleUIKey.Key:
-        type: SWCargoOrderConsoleBoundUserInterface
-  - type: Sprite
-    sprite: _SW/Structures/Machines/ImperialCargoComputer.rsi
-    layers:
-    - map: ["computerLayerBody"]
-      state: computer
-    - map: ["computerLayerScreen"]
-      state: cargo_monitor
-  - type: SWBankAccountContainer
-    allowedCurrencies:
-    - SWSupplyScoresEmpire
-  - type: SWBankAccountAccessor
-  - type: DeviceList
-  - type: DeviceNetwork
-    deviceNetId: Wired
-  - type: DeviceLinkSource
-    range: 30
-    ports:
-      - SWBuyConsoleSender
-  - type: SWBuyConsole
-    allowed:
-    - SWSupplyScoresEmpire
-    allowedMarkets:
     - SWT3WeaponMarket
     - SWT3MedicineMarket
   - type: Godmode
   - type: ApcPowerReceiver
     needsPower: false
+
+# - type: entity
+#   parent: BaseComputer
+#   id: SWBuyConsoleSupplyEmpire
+#   name: Консоль покупки специального снабжения
+#   suffix: Империя
+#   components:
+#   - type: ActivatableUI
+#     key: enum.SWBuyConsoleUIKey.Key
+#   - type: UserInterface
+#     interfaces:
+#       enum.SWBuyConsoleUIKey.Key:
+#         type: SWCargoOrderConsoleBoundUserInterface
+#   - type: Sprite
+#     sprite: _SW/Structures/Machines/ImperialCargoComputer.rsi
+#     layers:
+#     - map: ["computerLayerBody"]
+#       state: computer
+#     - map: ["computerLayerScreen"]
+#       state: cargo_monitor
+#   - type: SWBankAccountContainer
+#     allowedCurrencies:
+#     - SWSupplyScoresEmpire
+#   - type: SWBankAccountAccessor
+#   - type: DeviceList
+#   - type: DeviceNetwork
+#     deviceNetId: Wired
+#   - type: DeviceLinkSource
+#     range: 30
+#     ports:
+#       - SWBuyConsoleSender
+#   - type: SWBuyConsole
+#     allowed:
+#     - SWSupplyScoresEmpire
+#     allowedMarkets:
+#     - SWT3WeaponMarket
+#     - SWT3MedicineMarket
+#   - type: Godmode
+#   - type: ApcPowerReceiver
+#     needsPower: false
 
 - type: entity
   parent: SWBuyConsoleEmpire
@@ -184,9 +187,11 @@
   - type: SWBankAccountContainer
     allowedCurrencies:
     - SWRepublicCreditCurrency
+    - SWSupplyScoresRepublic
   - type: SWBuyConsole
     allowed:
     - SWRepublicCreditCurrency
+    - SWSupplyScoresRepublic
     allowedMarkets:
     - SWBaseMarket
     - SWT1WeaponMarket
@@ -197,27 +202,6 @@
     - SWExplosiveMarket
     - SWAdditionalAmunitionMarket
     - SWToolsMarket
-  - type: Sprite
-    sprite: _SW/Structures/Machines/RepublickCargoComputer.rsi
-    layers:
-    - map: ["computerLayerBody"]
-      state: computer
-    - map: ["computerLayerScreen"]
-      state: cargo_monitor
-
-- type: entity
-  parent: SWBuyConsoleEmpire
-  id: SWBuyRepublicSupplyConsole
-  name: Консоль покупки специального снабжения
-  suffix: Республика
-  components:
-  - type: SWBankAccountContainer
-    allowedCurrencies:
-    - SWSupplyScoresRepublic
-  - type: SWBuyConsole
-    allowed:
-    - SWSupplyScoresRepublic
-    allowedMarkets:
     - SWT3WeaponMarket
     - SWT3MedicineMarket
   - type: Sprite
@@ -227,6 +211,29 @@
       state: computer
     - map: ["computerLayerScreen"]
       state: cargo_monitor
+
+# - type: entity
+#   parent: SWBuyConsoleEmpire
+#   id: SWBuyRepublicSupplyConsole
+#   name: Консоль покупки специального снабжения
+#   suffix: Республика
+#   components:
+#   - type: SWBankAccountContainer
+#     allowedCurrencies:
+#     - SWSupplyScoresRepublic
+#   - type: SWBuyConsole
+#     allowed:
+#     - SWSupplyScoresRepublic
+#     allowedMarkets:
+#     - SWT3WeaponMarket
+#     - SWT3MedicineMarket
+#   - type: Sprite
+#     sprite: _SW/Structures/Machines/RepublickCargoComputer.rsi
+#     layers:
+#     - map: ["computerLayerBody"]
+#       state: computer
+#     - map: ["computerLayerScreen"]
+#       state: cargo_monitor
 
 - type: entity
   parent: SWBuyConsoleEmpire
@@ -239,17 +246,20 @@
     - SWEmpireCreditCurrency
     - SWRepublicCreditCurrency
     - SWBlackMarketSupplyScores
+    - SWMandalorianSupplyScores
   - type: SWBuyConsole
     allowed:
     - SWEmpireCreditCurrency
     - SWRepublicCreditCurrency
     - SWBlackMarketSupplyScores
+    - SWMandalorianSupplyScores
     allowedMarkets:
     - SWBaseMarket
     - SWT1WeaponMarket
     - SWT1MedicineMarket
     - SWT2MedicineMarket
     - SWSpecialToolsMarket
+    - SWMandalorianToolsMarket
   - type: Sprite
     sprite: _SW/Structures/Machines/NeutralCargoComputer.rsi
     layers:

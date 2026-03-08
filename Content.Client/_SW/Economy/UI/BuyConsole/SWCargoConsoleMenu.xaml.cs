@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Text;
 using Content.Client.Cargo.Systems;
 using Content.Client.Cargo.UI;
 using Content.Client.UserInterface.Controls;
@@ -135,16 +136,32 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
 
     private string GetCostText(SWCargoProductPrototype prototype)
     {
-        var costs = prototype.Cost;
+        // Work on a copy so we don't mutate the prototype's original costs.
+        var costs = prototype.Cost.ToDictionary(p => p.Key, p => p.Value);
         _swBankSystem.FillCurrencies(CurrencyPrototypeIds, ref costs);
-        string res = "";
+        // Build a human-readable cost string like "$ 10/€ 8".
+        // If there are no costs, return an empty string.
+        if (costs.Count == 0)
+        {
+            return string.Empty;
+        }
+
+        var builder = new StringBuilder();
         foreach (var (curProtoId, amount) in costs)
         {
             var curProto = _protoManager.Index(curProtoId);
-            res += $"{curProto.ShortName} {amount}/";
+            builder.Append(curProto.ShortName);
+            builder.Append(' ');
+            builder.Append(amount);
+            builder.Append('/');
         }
-        res = res.Remove(res.Length - 1);
-        return res;
+        // Remove the trailing '/'
+        if (builder.Length > 0 && builder[^1] == '/')
+        {
+            builder.Remove(builder.Length - 1, 1);
+        }
+
+        return builder.ToString();
     }
 
     /// <summary>

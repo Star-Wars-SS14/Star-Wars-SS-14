@@ -521,6 +521,8 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         RaiseLocalEvent(task.Owner, new SWTaskInitEvent());
         var ev = new SWTaskProvideDescriptionEvent();
         RaiseLocalEvent(task.Owner, ref ev);
+        var ev2 = new SWTaskProvideAdditionalDescriptionEvent(task);
+        RaiseLocalEvent(task.Owner, ref ev2);
         return task;
     }
     public List<Entity<SWTaskComponent>> GetFactionTasks(string? faction, bool hideSubtasks = true)

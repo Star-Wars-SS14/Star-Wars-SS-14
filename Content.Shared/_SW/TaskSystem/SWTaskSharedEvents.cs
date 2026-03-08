@@ -30,6 +30,17 @@ public sealed partial class SWTaskProvideDescriptionEvent : HandledEntityEventAr
 }
 
 [ByRefEvent]
+public sealed partial class SWTaskProvideAdditionalDescriptionEvent : EntityEventArgs
+{
+    public Entity<SWTaskComponent> Task;
+
+    public SWTaskProvideAdditionalDescriptionEvent(Entity<SWTaskComponent> task)
+    {
+        Task = task;
+    }
+}
+
+[ByRefEvent]
 public sealed partial class SWTaskGetScoreEvent : HandledEntityEventArgs
 {
     public int Score = 0;

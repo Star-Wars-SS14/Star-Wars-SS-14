@@ -21,5 +21,7 @@ public sealed partial class SWBankAccountContainerComponent : Component
         "SWEmpireCreditCurrency",
         "SWReinforcementScore",
         "SWSupplyScoresRepublic",
-        "SWSupplyScoresEmpire"};
+        "SWSupplyScoresEmpire",
+        "SWMandalorianSupplyScores",
+        "SWBlackMarketSupplyScores"};
 }

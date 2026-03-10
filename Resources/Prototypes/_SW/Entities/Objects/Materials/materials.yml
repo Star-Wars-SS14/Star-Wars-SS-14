@@ -4,8 +4,8 @@
   name: electronics  
   components:
   - type: Sprite
-    sprite: Objects/Materials/Scrap/generic.rsi
-    state: glass-1
+    sprite: _SW/Objects/lathe_materials.rsi
+    state: electronics
   - type: Item
 
 - type: entity
@@ -14,8 +14,8 @@
   name: blaster barrel
   components:
   - type: Sprite
-    sprite: Objects/Misc/modular_receiver.rsi
-    state: icon
+    sprite: _SW/Objects/lathe_materials.rsi
+    state: barrel
 
 - type: entity
   parent: SWElectronics
@@ -23,12 +23,8 @@
   name: advanced cables
   components:
   - type: Sprite
-    sprite: _RMC14/Objects/Power/coil.rsi
-    state: coil3
-    layers:
-    - map: ["base"]
-      state: coil3
-      color: "#FFD700"
+    sprite: _SW/Objects/lathe_materials.rsi
+    state: cables
 
 - type: entity
   parent: SWElectronics
@@ -36,6 +32,6 @@
   name: blaster frame
   components:
   - type: Sprite
-    sprite: Objects/Weapons/Guns/Shotguns/hm_pistol.rsi
-    state: icon
+    sprite: _SW/Objects/lathe_materials.rsi
+    state: frame
 

@@ -1,0 +1,44 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "by @baohe (discord)",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+        {
+            "name": "barrel"
+        },
+        {
+            "name": "cables"
+        },
+        {
+            "name": "electronics"
+        },
+        {
+            "name": "frame"
+        },
+        {
+            "name": "lantanid_alloy1"
+        },
+        {
+            "name": "lantanid_alloy2"
+        },
+        {
+            "name": "lantanid_alloy3"
+        },
+        {
+            "name": "lantanid_ore"
+        },
+        {
+            "name": "lantanid_sheet1"
+        },
+        {
+            "name": "lantanid_sheet2"
+        },
+        {
+            "name": "lantanid_sheet3"
+        }
+    ]
+}

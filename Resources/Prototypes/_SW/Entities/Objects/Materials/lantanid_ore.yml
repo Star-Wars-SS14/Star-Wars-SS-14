@@ -20,7 +20,8 @@
   - type: Stack
     stackType: SWLantanidOre
   - type: Sprite
-    state: plasma
+    sprite: _SW/Objects/lathe_materials.rsi
+    state: lantanid_ore
   - type: Material
   - type: Item
   - type: Tag

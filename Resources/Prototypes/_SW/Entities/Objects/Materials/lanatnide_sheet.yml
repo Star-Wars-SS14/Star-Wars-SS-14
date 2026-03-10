@@ -5,10 +5,10 @@
   suffix: Full
   components:
   - type: Sprite
-    sprite: Objects/Materials/Sheets/glass.rsi
-    state: pglass_3
+    sprite: _SW/Objects/lathe_materials.rsi
+    state: lantanid_sheet1
     layers:
-    - state: pglass_3
+    - state: lantanid_sheet3
       map: ["base"]    
   - type: Item
     sprite: Objects/Materials/Sheets/glass.rsi
@@ -17,9 +17,9 @@
     stackType: SWSheetLantanid
     baseLayer: base
     layerStates:
-    - pglass
-    - pglass_2
-    - pglass_3    
+    - lantanid_sheet1
+    - lantanid_sheet2
+    - lantanid_sheet3
   - type: Appearance
 
 - type: entity

@@ -8,13 +8,14 @@
     stackType: SWSheetLantanidAlloy
     baseLayer: base
     layerStates:
-    - plasteel
-    - plasteel_2
-    - plasteel_3
+    - lantanid_alloy1
+    - lantanid_alloy2
+    - lantanid_alloy3
   - type: Sprite
-    state: plasteel_3
+    sprite: _SW/Objects/lathe_materials.rsi
+    state: lantanid_alloy3
     layers:
-    - state: plasteel_3
+    - state: lantanid_alloy3
       map: ["base"]
   - type: Item
     heldPrefix: plasteel

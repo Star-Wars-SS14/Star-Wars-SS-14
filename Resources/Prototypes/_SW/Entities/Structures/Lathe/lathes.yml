@@ -78,7 +78,7 @@
   - type: Sprite
     sprite: _SW/Structures/Machines/lathe.rsi
     layers:
-      - state: lathe_base
+      - state: ore_dispenser
       - state: up_arrow
         rotation: 180
   - type: SWMagnetPickup
@@ -115,7 +115,9 @@
     sprite: _SW/Structures/Machines/lathe.rsi
     layers:
       - state: lathe_base
+        rotation: 90
       - state: electronics
+        rotation: 90
       - state: up_arrow
       - state: down_arrow  
   - type: SWLathe
@@ -132,7 +134,9 @@
     sprite: _SW/Structures/Machines/lathe.rsi
     layers:
       - state: lathe_base
+        rotation: 90
       - state: blaster
+        rotation: 90
       - state: up_arrow
       - state: down_arrow   
   - type: SWLathe
@@ -150,7 +154,9 @@
     sprite: _SW/Structures/Machines/lathe.rsi
     layers:
       - state: lathe_base
+        rotation: 90
       - state: fire
+        rotation: 90
       - state: up_arrow
       - state: down_arrow   
   - type: SWLathe
@@ -180,7 +186,7 @@
   - type: Sprite
     sprite: _SW/Structures/Machines/lathe.rsi
     layers:
-      - state: distributor
+      - state: distributor_l
       - state: down_arrow
       - state: up_arrow
       - state: up_arrow
@@ -215,7 +221,7 @@
   - type: Sprite
     sprite: _SW/Structures/Machines/lathe.rsi
     layers:
-      - state: distributor
+      - state: distributor_r
       - state: down_arrow
       - state: up_arrow
       - state: up_arrow
@@ -280,7 +286,7 @@
   - type: Sprite
     sprite: _SW/Structures/Machines/lathe.rsi
     layers:
-      - state: distributor
+      - state: intersection
       - state: up_arrow
         rotation: 180
       - state: up_arrow

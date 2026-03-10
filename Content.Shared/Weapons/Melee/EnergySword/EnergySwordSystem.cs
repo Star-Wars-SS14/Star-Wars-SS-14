@@ -1,3 +1,4 @@
+using Content.Shared._SW;
 using Content.Shared.Interaction;
 using Content.Shared.Light;
 using Content.Shared.Light.Components;
@@ -44,6 +45,11 @@ public sealed class EnergySwordSystem : EntitySystem
 
         if (!_toolSystem.HasQuality(args.Used, SharedToolSystem.PulseQuality))
             return;
+
+        //SW disable rgb start
+        if (HasComp<SWDisableRGBEnergySwordComponent>(entity))
+            return;
+        //SW end
 
         args.Handled = true;
         entity.Comp.Hacked = !entity.Comp.Hacked;

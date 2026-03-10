@@ -1,5 +1,4 @@
 using Content.Server.Communications;
-using Content.Shared._SW;
 using Content.Shared._SW.TaskSystem;
 using Content.Shared.Communications;
 using Robust.Server.GameObjects;

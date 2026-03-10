@@ -5,7 +5,6 @@ using Robust.Client.UserInterface.XAML;
 using Content.Client.Lathe.UI;
 using Content.Shared._SW.TaskSystem;
 using Content.Shared.FixedPoint;
-using Content.Shared._SW;
 namespace Content.Client._SW.TaskSystem.UI;
 
 [GenerateTypedNameReferences]

@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Content.Shared._SW.TaskSystem;
 using Content.Shared.FixedPoint;
 using Robust.Shared.Serialization;
 
-namespace Content.Shared._SW;
+namespace Content.Shared._SW.TaskSystem;
 
 [NetSerializable, Serializable]
 public enum TaskConsoleUiKey

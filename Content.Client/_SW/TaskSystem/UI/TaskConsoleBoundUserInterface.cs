@@ -1,5 +1,5 @@
 using Content.Client.Lathe.UI;
-using Content.Shared._SW;
+using Content.Shared._SW.TaskSystem;
 using Content.Shared.Lathe;
 using Content.Shared.Research.Components;
 using Robust.Client.UserInterface;

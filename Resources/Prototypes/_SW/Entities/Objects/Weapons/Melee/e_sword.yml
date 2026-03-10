@@ -37,6 +37,7 @@
   - type: Tag
     tags:
     - SWEnergySwordTag
+  - type: SWDisableRGBEnergySword
 
 - type: entity
   parent: SWEnergySwordBase

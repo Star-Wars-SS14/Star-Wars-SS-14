@@ -50,6 +50,14 @@
     addIntervalInSeconds: 1200 #20 min   
     startAmountOfTasks : 4
     maxAmountOfTasks: 10
+  - type: SWFactionSeparatedTaskPipeline
+    tasks:
+    - taskAddTime: 300
+      taskId: KillCriminalTaskEmpire
+    - taskAddTime: 600
+      taskId: SWCollectWeaponTaskEmpire
+    - taskAddTime: 3000
+      taskId: SWCollectWeaponTaskEmpire
   - type: SWBillContainer
     bills:
     - name: Счет за оплату электричества

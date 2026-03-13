@@ -432,6 +432,16 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         Del(uid);
         return !ev.Cancelled;
     }
+
+    public Entity<SWTaskComponent>? TryAddTask(string factionId, string taskProto)
+    {
+        if (!CheckTask(taskProto, factionId))
+        {
+            return null;
+        }
+
+        return AddTask(factionId, taskProto);
+    }
     public Entity<SWTaskComponent>? AddRandomTask(Entity<SWTaskContainerComponent> faction, string factionId,
                                                     List<string>? excludedTasks = null)
     {

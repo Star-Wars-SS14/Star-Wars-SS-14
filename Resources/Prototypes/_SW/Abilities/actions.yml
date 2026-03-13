@@ -114,4 +114,19 @@
     event: !type:SWHealRequestedEvent
     canTargetSelf: false
 
+- type: entity
+  id: SWForceInfluenceAction
+  name: Влияние силы
+  description: Заставьте другого гуманоида подчиниться вашей воле. Учтите, что если ему сообщат о влиянии, то он избавиться от него.
+  components:
+  - type: Action
+    icon: _SW/Interface/Actions/force_attract.png
+    useDelay: 20
+  - type: TargetAction
+    interactOnMiss: false
+    range: 3
+  - type: EntityTargetAction    
+    event: !type:SWRequestSendMessageEvent
+    canTargetSelf: false
+
     

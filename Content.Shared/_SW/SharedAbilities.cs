@@ -66,6 +66,11 @@ public sealed partial class SWRequestStrangulateEvent : EntityTargetActionEvent
 
 }
 
+public sealed partial class SWRequestSendMessageEvent : EntityTargetActionEvent
+{
+
+}
+
 public record struct SWUpdateStrangulateEvent
 {
     public EntityUid Entity;

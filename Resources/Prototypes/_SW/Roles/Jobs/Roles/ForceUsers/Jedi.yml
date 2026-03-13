@@ -85,3 +85,4 @@
         path: "/Audio/Items/Medical/ointment_begin.ogg"
       healingEndSound:
         path: "/Audio/Items/Medical/ointment_end.ogg"
+    - type: SWSendMessageAbility

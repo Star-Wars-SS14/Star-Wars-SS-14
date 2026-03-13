@@ -74,3 +74,4 @@
         types:
           Heat: 25
     - type: SWStrangulateAbility
+    - type: SWSendMessageAbility

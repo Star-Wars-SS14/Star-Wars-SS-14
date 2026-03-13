@@ -50,6 +50,7 @@
     damageRecovery:
       types:
         Asphyxiation: -5.0
+  - type: SWSendMessageAbility
 
 - type: entity
   name: Sith

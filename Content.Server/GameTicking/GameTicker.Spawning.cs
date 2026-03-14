@@ -1,13 +1,14 @@
-using System.Globalization;
-using System.Linq;
-using System.Numerics;
+using Content.Server._SW.Autobalance;
 using Content.Server.Administration.Managers;
 using Content.Server.Administration.Systems;
+using Content.Server.Database;
 using Content.Server.GameTicking.Events;
 using Content.Server.Ghost;
 using Content.Server.Spawners.Components;
 using Content.Server.Speech.Components;
 using Content.Server.Station.Components;
+using Content.Shared._SW;
+using Content.Shared.Atmos.Piping.Components;
 using Content.Shared.CCVar;
 using Content.Shared.Database;
 using Content.Shared.GameTicking;
@@ -27,6 +28,9 @@ using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Utility;
+using System.Globalization;
+using System.Linq;
+using System.Numerics;
 
 namespace Content.Server.GameTicking
 {
@@ -88,13 +92,20 @@ namespace Content.Server.GameTicking
                     profiles.Remove(player);
                 }
             }
+            Spawning(profiles, playerNetIds, force);
+        }
 
+        private void Spawning(Dictionary<NetUserId, HumanoidCharacterProfile> profiles,
+                                         HashSet<NetUserId> playerNetIds, bool force)
+        {
             var spawnableStations = GetSpawnableStations();
             var assignedJobs = _stationJobs.AssignJobs(profiles, spawnableStations);
 
             _stationJobs.AssignOverflowJobs(ref assignedJobs, playerNetIds, profiles, spawnableStations);
 
-            // Calculate extended access for stations.
+            var ev = new SWModifyAssignedJobsEvent(assignedJobs);
+            RaiseLocalEvent(ref ev);
+
             var stationJobCounts = spawnableStations.ToDictionary(e => e, _ => 0);
             foreach (var (netUser, (job, station)) in assignedJobs)
             {
@@ -146,7 +157,7 @@ namespace Content.Server.GameTicking
 
             if (jobId != null)
             {
-                var jobs = new List<ProtoId<JobPrototype>> {jobId};
+                var jobs = new List<ProtoId<JobPrototype>> { jobId };
                 var ev = new IsRoleAllowedEvent(player, jobs, null);
                 RaiseLocalEvent(ref ev);
                 if (ev.Cancelled)

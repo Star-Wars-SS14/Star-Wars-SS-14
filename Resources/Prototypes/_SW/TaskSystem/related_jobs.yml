@@ -1,0 +1,30 @@
+- type: swFactionRelatedJobs
+  id: SWRepublicRelatedJobs
+  jobs:
+  - SWRepublicCommanderCommander
+  - SWRepublicCommanderLieutenant
+  - SWRepublicCommanderMedic
+  - SWRepublicCommanderStormtrooper
+  - SWRepublicCommanderSniper
+  - SWRepublicGeneral
+  - SWRepublicCaptain
+  - SWRepublicLieutenant
+  - SWRepublicSoldier
+  - SWRepublicMedic
+  - SWRepublicRecruit
+  - SWJedi
+
+- type: swFactionRelatedJobs
+  id: SWEmpireRelatedJobs
+  jobs:
+  - SWSobrikCaptain
+  - SWSobrikOfficer
+  - SWSobrikMedic
+  - SWEmpireMoff
+  - SWEmpireMajor
+  - SWEmpireLieutenant
+  - SWEmpireSoldier
+  - SWEmpireMedic
+  - SWEmpireIntelligenceCaretaker
+  - SWEmpireIntelligenceAgent
+  - SWSith

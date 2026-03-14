@@ -41,8 +41,5 @@ namespace Content.Server.GameTicking.Presets
         /// </summary>
         [DataField("supportedMaps", customTypeSerializer: typeof(PrototypeIdSerializer<GameMapPoolPrototype>))]
         public string? MapPool;
-
-        [DataField]
-        public ProtoId<SWAutoBalancePrototype>? AutoBalanceId = null;
     }
 }

@@ -24,4 +24,9 @@ public sealed partial class SWAutoBalanceGameruleComponent : Component
     /// </summary>
     [DataField]
     public int Ratio = 2;
+
+    public int FirstFactionSpawned = 0;
+    public int SecondFactionSpawned = 0;
+
+    public Dictionary<string, int> JobsSpawned = new Dictionary<string, int>();
 }

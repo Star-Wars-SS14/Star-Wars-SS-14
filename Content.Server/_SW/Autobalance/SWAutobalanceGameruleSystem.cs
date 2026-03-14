@@ -1,6 +1,9 @@
+using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
+using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
 using Content.Shared._SW;
+using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Roles;
 using Robust.Shared.Network;
@@ -25,6 +28,8 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
     {
         base.Initialize();
         SubscribeLocalEvent<SWModifyAssignedJobsEvent>(OnModify);
+        SubscribeLocalEvent<RulePlayerJobsAssignedEvent>(OnPlayersAssigned);
+        SubscribeLocalEvent<PlayerBeforeSpawnEvent>(OnSpawn);
     }
 
     private void OnModify(ref SWModifyAssignedJobsEvent ev)
@@ -35,6 +40,114 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
         }
         BalanceJobs(ref ev.AssignedJobs, _gameruleSingleton.Value.Comp);
     }
+
+    private void OnPlayersAssigned(RulePlayerJobsAssignedEvent ev)
+    {
+        ChangeAvailableJobsToFitAutoBalance();
+    }
+
+    private void OnSpawn(PlayerBeforeSpawnEvent ev)
+    {
+        if (ev.JobId == null)
+        {
+            return;
+        }
+
+        if (_gameruleSingleton == null)
+        {
+            return;
+        }
+
+        var autobalance = _gameruleSingleton.Value.Comp;
+
+        var firstFactionProto = _prototypeManager.Index(autobalance.FirstFactionRelatedJobsId);
+        var secondFactionProto = _prototypeManager.Index(autobalance.SecondRelatedJobsId);
+
+        if (firstFactionProto.Jobs.Contains(ev.JobId))
+        {
+            autobalance.FirstFactionSpawned++;
+        }
+
+        if (secondFactionProto.Jobs.Contains(ev.JobId))
+        {
+            autobalance.SecondFactionSpawned++;
+        }
+        if (_gameruleSingleton.Value.Comp.JobsSpawned.ContainsKey(ev.JobId))
+        {
+            _gameruleSingleton.Value.Comp.JobsSpawned[ev.JobId]++;
+        }
+        else
+        {
+            _gameruleSingleton.Value.Comp.JobsSpawned[ev.JobId] = 1;
+        }
+
+        ChangeAvailableJobsToFitAutoBalance();
+    }
+
+    private void ChangeAvailableJobsToFitAutoBalance()
+    {
+        if (_gameruleSingleton == null)
+        {
+            return;
+        }
+        var autobalance = _gameruleSingleton.Value.Comp;
+
+        var firstFactionProto = _prototypeManager.Index(autobalance.FirstFactionRelatedJobsId);
+        var secondFactionProto = _prototypeManager.Index(autobalance.SecondRelatedJobsId);
+        var stations = GetSpawnableStations();
+        var jobs = new List<(EntityUid station, ProtoId<JobPrototype> jobId, int amount)>();
+        foreach (var station in stations)
+        {
+            var availableJobs = _stationJobsSystem.GetRoundStartJobs(station);
+            foreach (var (id, amount) in availableJobs)
+            {
+                if (amount == null)
+                {
+                    continue;
+                }
+
+                jobs.Add(new(station, id, amount.Value));
+
+                if (!firstFactionProto.Jobs.Contains(id))
+                {
+                    continue;
+                }
+                _stationJobsSystem.TrySetJobSlot(station, id, 0);
+            }
+        }
+
+        var availableOfFirstFaction = autobalance.SecondFactionSpawned / autobalance.Ratio - autobalance.FirstFactionSpawned;
+        foreach (var job in jobs)
+        {
+            if (firstFactionProto.Jobs.Contains(job.jobId))
+            {
+                int amount = 0;
+                if (autobalance.JobsSpawned.TryGetValue(job.jobId, out var value))
+                {
+                    amount = Math.Min(availableOfFirstFaction, job.amount - value);
+                }
+                else
+                {
+                    amount = Math.Min(availableOfFirstFaction, job.amount);
+                }
+
+                _stationJobsSystem.TryAdjustJobSlot(job.station, job.jobId, amount);
+            }
+        }
+    }
+
+    private List<EntityUid> GetSpawnableStations()
+    {
+        var spawnableStations = new List<EntityUid>();
+        var query = EntityQueryEnumerator<StationJobsComponent, StationSpawningComponent>();
+        while (query.MoveNext(out var uid, out _, out _))
+        {
+            spawnableStations.Add(uid);
+        }
+
+        return spawnableStations;
+    }
+
     private void BalanceJobs(ref Dictionary<NetUserId, (ProtoId<JobPrototype>?, EntityUid)> assignedJobs,
                                  SWAutoBalanceGameruleComponent autobalance)
     {
@@ -68,8 +181,7 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
         if (firstFactionCount * autobalance.Ratio <= secondFactionCount)
         {
             // No autobalance needed
-            s.Info($"{firstFactionCount} * {autobalance.Ratio} <= {secondFactionCount}; no balance needed");
-            return;
+            s.Info($"{firstFactionCount} * {autobalance.Ratio} <= {secondFactionCount}; no balance needed");            
         }
         else
         {
@@ -117,11 +229,6 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
     protected override void Started(EntityUid uid, SWAutoBalanceGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
         base.Started(uid, component, gameRule, args);
-    }
-
-    public void Balance()
-    {
-
     }
 
     public Entity<SWAutoBalanceGameruleComponent>? GetActiveRule()

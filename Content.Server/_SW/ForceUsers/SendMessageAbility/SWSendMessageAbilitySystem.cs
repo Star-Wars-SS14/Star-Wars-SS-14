@@ -2,6 +2,7 @@ using Content.Server.Actions;
 using Content.Server.Chat.Managers;
 using Content.Server.Players;
 using Content.Shared._SW;
+using Content.Shared.Tag;
 using Robust.Shared.Player;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ public sealed class SWSendMessageAbilitySystem : EntitySystem
     [Dependency] private readonly ActionsSystem _actionsSystem = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
     [Dependency] private readonly ISharedPlayerManager _player = default!;
+    [Dependency] private readonly TagSystem _tagSystem = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -30,6 +32,11 @@ public sealed class SWSendMessageAbilitySystem : EntitySystem
     private void OnRequest(Entity<SWSendMessageAbilityComponent> ent, ref SWRequestSendMessageEvent args)
     {
         if (!_player.TryGetSessionByEntity(args.Target, out var session))
+        {
+            return;
+        }
+
+        if (_tagSystem.HasTag(args.Target, "ForceUser"))
         {
             return;
         }

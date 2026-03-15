@@ -29,7 +29,7 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
         base.Initialize();
         SubscribeLocalEvent<SWModifyAssignedJobsEvent>(OnModify);
         SubscribeLocalEvent<RulePlayerJobsAssignedEvent>(OnPlayersAssigned);
-        SubscribeLocalEvent<PlayerBeforeSpawnEvent>(OnSpawn);
+        SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnSpawn);
     }
 
     private void OnModify(ref SWModifyAssignedJobsEvent ev)
@@ -46,7 +46,7 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
         ChangeAvailableJobsToFitAutoBalance();
     }
 
-    private void OnSpawn(PlayerBeforeSpawnEvent ev)
+    private void OnSpawn(PlayerSpawnCompleteEvent ev)
     {
         if (ev.JobId == null)
         {

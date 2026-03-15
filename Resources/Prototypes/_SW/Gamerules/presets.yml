@@ -2,7 +2,7 @@
   id: SWMainPreset
   name: Обычный день
   description: Обычный день. Выполняйте регулярные задания от своего командования.
-  showInVote: true
+  showInVote: true  
   supportedMaps: SWMainPresetMapPool
   rules:
     - TaskGamerule
@@ -10,6 +10,20 @@
     - SWRespawnGamerule
     - SWMineCollapseGamerule
     - SWWantedSelectRule
+
+- type: gamePreset
+  id: SWMainPresetAutoBalance
+  name: Обычный день (автобаланс тест)
+  description: Обычный день. Выполняйте регулярные задания от своего командования.
+  showInVote: false
+  supportedMaps: SWMainPresetMapPool
+  rules:
+    - TaskGamerule
+    - SWEventScheduler
+    - SWRespawnGamerule
+    - SWMineCollapseGamerule
+    - SWWantedSelectRule
+    - SWAutoBalanceGamerule
 
 - type: gamePreset
   id: SWMainPresetNoTasks

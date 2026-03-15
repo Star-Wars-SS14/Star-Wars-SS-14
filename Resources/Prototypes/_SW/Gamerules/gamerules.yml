@@ -24,6 +24,14 @@
 
 - type: entity
   parent: BaseGameRule
+  id: SWAutoBalanceGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWAutoBalanceGamerule
+
+- type: entity
+  parent: BaseGameRule
   id: FactionsOnlyGamerule
   components:
   - type: GameRule

@@ -501,7 +501,7 @@
   name: Civilian ID card
   parent: IDCardStandard
   id: SWCivilianIdCardEditable
-  suffix: Can change name
+  suffix: Only can change name
   components:
   - type: PresetIdCard
     job: SWCivialian
@@ -511,6 +511,31 @@
     - state: image3
   - type: AgentIDCard
     canCopy: false
+  - type: ActivatableUI
+    key: enum.SWAgentIDCardUIKey.Key
+    inHandsOnly: true
+  - type: Tag
+    tags:
+    - DoorBumpOpener
+  - type: UserInterface
+    interfaces:
+      enum.SWAgentIDCardUIKey.Key:
+        type: SWCivilianIDCardBoundUserInterface
+
+- type: entity
+  name: Civilian ID card
+  parent: IDCardStandard
+  id: SWCivilianIdCardEditableCopy
+  suffix: Can change name + copy
+  components:
+  - type: PresetIdCard
+    job: SWCivialian
+  - type: Sprite
+    sprite: _SW/Objects/Misc/id_cards.rsi
+    layers:
+    - state: image3
+  - type: AgentIDCard
+    canCopy: true
   - type: ActivatableUI
     key: enum.SWAgentIDCardUIKey.Key
     inHandsOnly: true

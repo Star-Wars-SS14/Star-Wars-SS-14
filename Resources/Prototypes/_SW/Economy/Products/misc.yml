@@ -3,9 +3,9 @@
   icon:
     sprite: _SW/Objects/Misc/id_cards.rsi
     state: image3
-  product: SWCivilianIdCardEditable
+  product: SWCivilianIdCardEditableCopy
   cost:
-    SWBlackMarketSupplyScores: 500
+    SWBlackMarketSupplyScores: 1000
   category: sw-category-tools
   group: SWSpecialToolsMarket
 
@@ -16,6 +16,6 @@
     state: icon
   product: JumpJetPack
   cost:
-    SWMandalorianSupplyScores: 500
+    SWMandalorianSupplyScores: 1500
   category: sw-category-tools
   group: SWMandalorianToolsMarket

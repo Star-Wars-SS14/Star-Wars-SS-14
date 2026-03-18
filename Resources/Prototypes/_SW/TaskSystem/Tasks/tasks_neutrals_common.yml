@@ -31,8 +31,7 @@
       SWCivialian: 10
   - type: SWAddMoneyOnCompleted
     amount:
-      SWEmpireCreditCurrency: 900
-      SWBlackMarketSupplyScores: 200
+      SWBlackMarketSupplyScores: 1000
 
 - type: entity
   id: BigHeadHunterMandalorian
@@ -69,9 +68,7 @@
       SWRepublicCommanderSniper: 25
   - type: SWAddMoneyOnCompleted
     amount:
-      SWEmpireCreditCurrency: 1200
-      SWBlackMarketSupplyScores: 300
-      SWMandalorianSupplyScores: 300
+      SWMandalorianSupplyScores: 2000
 
 - type: entity
   id: GetMoney
@@ -105,7 +102,7 @@
       - taskProto: CaptureHeadExchange
   - type: SWAddMoneyOnCompleted
     amount:
-      SWBlackMarketSupplyScores: 300
+      SWBlackMarketSupplyScores: 1500
 
 - type: entity
   id: SlaveTime
@@ -132,8 +129,7 @@
       - taskProto: BillSubtask
   - type: SWAddMoneyOnCompleted
     amount:
-      SWBlackMarketSupplyScores: 300
-      SWEmpireCreditCurrency: 500
+      SWBlackMarketSupplyScores: 1500 
 
 - type: entity
   id: CaptureSubTask
@@ -171,4 +167,4 @@
       - SurveillanceCameraSecurity
   - type: SWAddMoneyOnCompleted
     amount:
-      SWBlackMarketSupplyScores: 200
+      SWBlackMarketSupplyScores: 500

@@ -24,7 +24,7 @@
       SWBlackSun: 15
   - type: SWAddMoneyOnCompleted
     amount:
-      SWBlackMarketSupplyScores: 300
+      SWBlackMarketSupplyScores: 1500
 
 - type: entity
   id: CaptureHeadBlackSun
@@ -42,4 +42,4 @@
       SWBlackSun: 15
   - type: SWAddMoneyOnCompleted
     amount:
-      SWBlackMarketSupplyScores: 300
+      SWBlackMarketSupplyScores: 1500

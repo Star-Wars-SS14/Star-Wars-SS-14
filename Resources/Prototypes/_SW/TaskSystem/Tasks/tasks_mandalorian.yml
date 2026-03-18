@@ -23,8 +23,7 @@
       - SWMobBormu
   - type: SWAddMoneyOnCompleted
     amount:
-      SWEmpireCreditCurrency: 200
-      SWMandalorianSupplyScores: 400
+      SWMandalorianSupplyScores: 500
 
 - type: entity
   id: KillParasits
@@ -42,6 +41,5 @@
       - SWMobParasit
   - type: SWAddMoneyOnCompleted
     amount:
-      SWEmpireCreditCurrency: 200
-      SWMandalorianSupplyScores: 400
+      SWMandalorianSupplyScores: 500
 

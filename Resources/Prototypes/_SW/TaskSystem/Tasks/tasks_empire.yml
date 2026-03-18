@@ -104,6 +104,9 @@
       SWBlackSun : 10
       SWExchangeCaptain : 10
       SWExchangeOperative : 8
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWSupplyScoresEmpire: 1000
 
 - type: entity
   id: KillByNameTaskEmpire
@@ -178,4 +181,4 @@
     faction: RepublicFaction
   - type: SWAddMoneyOnCompleted
     amount:
-      SWSupplyScoresEmpire: 5000
+      SWSupplyScoresEmpire: 4000

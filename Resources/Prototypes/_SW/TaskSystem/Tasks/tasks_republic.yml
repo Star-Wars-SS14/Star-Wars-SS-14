@@ -134,6 +134,9 @@
       - SWIDCardSith
       - SWIDCardEmpireIntelligenceCaretaker
       - SWIDCardEmpireIntelligenceAgent
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWSupplyScoresRepublic: 1000
 
 
 - type: entity
@@ -171,6 +174,9 @@
     - number: 3
       objects:
       - SWCommunicationTower
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWSupplyScoresRepublic: 1000
 
 - type: entity
   id: SWSabotageQuotaRepublic 
@@ -182,4 +188,4 @@
   - type: SWParallelTaskInvertStatus
   - type: SWAddMoneyOnCompleted
     amount:
-      SWSupplyScoresRepublic: 5000
+      SWSupplyScoresRepublic: 4000

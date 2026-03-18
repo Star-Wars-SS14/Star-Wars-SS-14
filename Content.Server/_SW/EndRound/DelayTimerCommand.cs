@@ -37,7 +37,7 @@ namespace Content.Server._SW.EndRound
                 return;
             }
 
-            _e.System<SWEndRoundSystem>().DelayTimer(time);
+            //_e.System<SWEndRoundGameruleSystem>().DelayTimer(time);
         }
     }
 }

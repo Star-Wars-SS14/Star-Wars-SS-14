@@ -11,7 +11,7 @@ public sealed class RestartRoundCommand : LocalizedEntityCommands
 {
     [Dependency] private readonly GameTicker _gameTicker = default!;
     [Dependency] private readonly RoundEndSystem _roundEndSystem = default!;
-    [Dependency] private readonly SWEndRoundSystem _swEnd = default!;
+    [Dependency] private readonly SWEndRoundGameruleSystem _swEnd = default!;
 
     public override string Command => "restartround";
 

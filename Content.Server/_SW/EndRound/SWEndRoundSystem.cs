@@ -13,7 +13,6 @@ namespace Content.Server._SW.EndRound;
 public sealed class SWEndRoundGameruleSystem : GameRuleSystem<SWEndRoundGameruleComponent>
 {
     [Dependency] private readonly GameTicker _gameTicker = default!;
-    [Dependency] private readonly IEntityManager _e = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
     [Dependency] private readonly RoundEndSystem _roundEndSystem = default!;
     [Dependency] private readonly IVoteManager _voteManager = default!;

@@ -3,9 +3,9 @@
   icon:
     sprite: _SW/Objects/Misc/id_cards.rsi
     state: image3
-  product: SWCivilianIdCardEditable
+  product: SWCivilianIdCardEditableCopy
   cost:
-    SWBlackMarketSupplyScores: 500
+    SWBlackMarketSupplyScores: 1000
   category: sw-category-tools
   group: SWSpecialToolsMarket
 
@@ -16,6 +16,34 @@
     state: icon
   product: JumpJetPack
   cost:
-    SWMandalorianSupplyScores: 500
+    SWMandalorianSupplyScores: 1500
   category: sw-category-tools
   group: SWMandalorianToolsMarket
+
+- type: swCargoProduct
+  id: SWEmpireCreditsCP
+  icon:
+    sprite: _SW/Economy/empire_cash.rsi
+    state: cash_1000
+  product: SWEmpireCredits2000
+  cost:
+    SWMandalorianSupplyScores: 1500
+    SWBlackMarketSupplyScores: 1500
+    SWSupplyScoresEmpire: 1500
+    SWSupplyScoresRepublic: 1500
+  category: sw-category-misc
+  group: SWMiscMarket
+
+- type: swCargoProduct
+  id: SWRepublicCreditsCP
+  icon:
+    sprite: _SW/Economy/republic_cash.rsi
+    state: cash_1000
+  product: SWRepublicCredits2000
+  cost:
+    SWMandalorianSupplyScores: 1000
+    SWBlackMarketSupplyScores: 1000
+    SWSupplyScoresEmpire: 1000
+    SWSupplyScoresRepublic: 1000
+  category: sw-category-misc
+  group: SWMiscMarket

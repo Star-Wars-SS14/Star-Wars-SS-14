@@ -3,10 +3,97 @@
   weights:
     KillBormu: 4
     KillParasits: 4
-    SmallHeadHunter: 3
+    SmallHeadHunterMandalorian: 3
     BigHeadHunterMandalorian: 1
     GetFarnellDocumentsMandalorian: 2
-    GetMoney: 6
+    GetMoneyMandalorian: 6
+
+- type: entity
+  id: BigHeadHunterMandalorian
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Крупная охота за головами
+    description: Тут ничего нет.
+  - type: SWTargetSelector
+    factions: [RepublicFaction, EmpireFaction]
+    jobs:
+    - SWEmpireMajor
+    - SWEmpireLieutenant
+    - SWRepublicCaptain
+    - SWRepublicLieutenant
+    - SWRepublicCommanderCommander
+    - SWRepublicCommanderLieutenant
+    - SWRepublicCommanderMedic
+    - SWRepublicCommanderStormtrooper
+    - SWRepublicCommanderSniper
+  - type: SWKillRandomByName
+  - type: SWDescByName
+    descriptionId: big-headhunt-mandalorian
+  - type: SWGetScoreByTargetJob
+    jobsToScores:
+      SWEmpireMajor: 25
+      SWEmpireLieutenant: 25
+      SWRepublicCaptain: 25
+      SWRepublicLieutenant: 25
+      SWRepublicCommanderCommander: 25
+      SWRepublicCommanderLieutenant: 25
+      SWRepublicCommanderMedic: 25
+      SWRepublicCommanderStormtrooper: 25
+      SWRepublicCommanderSniper: 25
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWMandalorianSupplyScores: 2000
+
+- type: entity
+  id: SmallHeadHunterMandalorian
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name: Малая охота за головами
+    description: Тут ничего нет.
+  - type: SWTargetSelector
+    factions: [RepublicFaction, EmpireFaction]
+    jobs:
+    - SWEmpireSoldier
+    - SWEmpireMedic
+    - SWSobrikOfficer
+    - SWSobrikMedic
+    - SWRepublicSoldier
+    - SWRepublicRecruit
+    - SWRepublicMedic
+    - SWCivialian
+  - type: SWKillRandomByName
+  - type: SWDescByName
+    descriptionId: small-headhunt
+  - type: SWGetScoreByTargetJob
+    jobsToScores:
+      SWEmpireSoldier: 15
+      SWEmpireMedic: 15
+      SWSobrikOfficer: 15
+      SWSobrikMedic: 15
+      SWRepublicSoldier: 15
+      SWRepublicRecruit: 15
+      SWRepublicMedic: 15
+      SWCivialian: 10
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWMandalorianSupplyScores: 1000
+
+- type: entity
+  id: GetMoneyMandalorian
+  parent: SWTaskBase
+  components:
+  - type: SWTask
+    name:  Финансовая подушка
+    score: 10
+    description: Время - деньги, патроны - деньги, в общем, все что угодно - деньги. Заработайте 1500 имперских кредитов. Не забудьте поместить их в финансовую консоль для отчетности
+  - type: SWAcquireMoneyAmount
+    amount:
+      SWEmpireCreditCurrency: 1500
+  - type: SWAddMoneyOnCompleted
+    amount:
+      SWMandalorianSupplyScores: 1000
 
 - type: entity
   id: KillBormu
@@ -23,8 +110,7 @@
       - SWMobBormu
   - type: SWAddMoneyOnCompleted
     amount:
-      SWEmpireCreditCurrency: 200
-      SWMandalorianSupplyScores: 400
+      SWMandalorianSupplyScores: 500
 
 - type: entity
   id: KillParasits
@@ -42,6 +128,5 @@
       - SWMobParasit
   - type: SWAddMoneyOnCompleted
     amount:
-      SWEmpireCreditCurrency: 200
-      SWMandalorianSupplyScores: 400
+      SWMandalorianSupplyScores: 500
 

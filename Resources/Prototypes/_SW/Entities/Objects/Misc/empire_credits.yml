@@ -118,6 +118,17 @@
 
 - type: entity
   parent: SWEmpireCredits
+  id: SWEmpireCredits2000
+  suffix: 2000
+  components:
+  - type: Icon
+    sprite: _SW/Economy/empire_cash.rsi
+    state: cash_1000
+  - type: Stack
+    count: 2000
+
+- type: entity
+  parent: SWEmpireCredits
   id: SWEmpireCredits2500
   suffix: 2500
   components:

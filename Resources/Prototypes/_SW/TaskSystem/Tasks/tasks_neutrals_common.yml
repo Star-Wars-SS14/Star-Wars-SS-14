@@ -31,47 +31,7 @@
       SWCivialian: 10
   - type: SWAddMoneyOnCompleted
     amount:
-      SWEmpireCreditCurrency: 900
-      SWBlackMarketSupplyScores: 200
-
-- type: entity
-  id: BigHeadHunterMandalorian
-  parent: SWTaskBase
-  components:
-  - type: SWTask
-    name: Крупная охота за головами
-    description: Тут ничего нет.
-  - type: SWTargetSelector
-    factions: [RepublicFaction, EmpireFaction]
-    jobs:
-    - SWEmpireMajor
-    - SWEmpireLieutenant
-    - SWRepublicCaptain
-    - SWRepublicLieutenant
-    - SWRepublicCommanderCommander
-    - SWRepublicCommanderLieutenant
-    - SWRepublicCommanderMedic
-    - SWRepublicCommanderStormtrooper
-    - SWRepublicCommanderSniper
-  - type: SWKillRandomByName
-  - type: SWDescByName
-    descriptionId: big-headhunt-mandalorian
-  - type: SWGetScoreByTargetJob
-    jobsToScores:
-      SWEmpireMajor: 25
-      SWEmpireLieutenant: 25
-      SWRepublicCaptain: 25
-      SWRepublicLieutenant: 25
-      SWRepublicCommanderCommander: 25
-      SWRepublicCommanderLieutenant: 25
-      SWRepublicCommanderMedic: 25
-      SWRepublicCommanderStormtrooper: 25
-      SWRepublicCommanderSniper: 25
-  - type: SWAddMoneyOnCompleted
-    amount:
-      SWEmpireCreditCurrency: 1200
-      SWBlackMarketSupplyScores: 300
-      SWMandalorianSupplyScores: 300
+      SWBlackMarketSupplyScores: 1000
 
 - type: entity
   id: GetMoney
@@ -86,7 +46,7 @@
       SWEmpireCreditCurrency: 1500
   - type: SWAddMoneyOnCompleted
     amount:
-      SWBlackMarketSupplyScores: 200
+      SWBlackMarketSupplyScores: 1000
 
 - type: entity
   id: PayOrCapture
@@ -105,7 +65,7 @@
       - taskProto: CaptureHeadExchange
   - type: SWAddMoneyOnCompleted
     amount:
-      SWBlackMarketSupplyScores: 300
+      SWBlackMarketSupplyScores: 1500
 
 - type: entity
   id: SlaveTime
@@ -132,8 +92,7 @@
       - taskProto: BillSubtask
   - type: SWAddMoneyOnCompleted
     amount:
-      SWBlackMarketSupplyScores: 300
-      SWEmpireCreditCurrency: 500
+      SWBlackMarketSupplyScores: 1500 
 
 - type: entity
   id: CaptureSubTask
@@ -171,4 +130,4 @@
       - SurveillanceCameraSecurity
   - type: SWAddMoneyOnCompleted
     amount:
-      SWBlackMarketSupplyScores: 200
+      SWBlackMarketSupplyScores: 500

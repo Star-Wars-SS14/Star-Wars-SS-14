@@ -48,3 +48,6 @@
 
 - type: cargoMarket
   id: SWMandalorianToolsMarket
+
+- type: cargoMarket
+  id: SWMiscMarket

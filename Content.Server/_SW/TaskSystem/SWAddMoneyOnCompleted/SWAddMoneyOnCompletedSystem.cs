@@ -1,4 +1,6 @@
 using Content.Server._SW.Economy.BankSystem;
+using Content.Server._SW.TaskSystem.GetScoreByTargetJob;
+using Content.Server._SW.TaskSystem.TargetSelector;
 using Content.Shared._SW.TaskSystem;
 using Robust.Shared.Prototypes;
 using System;
@@ -17,6 +19,7 @@ public sealed class SWAddMoneyOnCompletedSystem : EntitySystem
         base.Initialize();
         SubscribeLocalEvent<SWAddMoneyOnCompletedComponent, SWTaskProvideAdditionalDescriptionEvent>(OnDescriptionProvided);
         SubscribeLocalEvent<SWAddMoneyOnCompletedComponent, SWOnTaskCompleteEvent>(OnComplete);
+        SubscribeLocalEvent<SWAddMoneyBasedOnTargetScoreComponent, SWOnTaskCompleteEvent>(OnCompleteBasedOnScore);
     }
 
     private void OnDescriptionProvided(Entity<SWAddMoneyOnCompletedComponent> ent, ref SWTaskProvideAdditionalDescriptionEvent args)
@@ -51,6 +54,33 @@ public sealed class SWAddMoneyOnCompletedSystem : EntitySystem
 
         var account = _bankSystem.GetFactionAccount(taskComp.OwningFaction);
         account.Comp.CurrentAmount = _bankSystem.Sum(account.Comp.CurrentAmount, ent.Comp.Amount);
+        ent.Comp.Added = true;
+        _bankSystem.UpdateAllInterfaces();
+    }
+
+    private void OnCompleteBasedOnScore(Entity<SWAddMoneyBasedOnTargetScoreComponent> ent, ref SWOnTaskCompleteEvent args)
+    {
+        if (ent.Comp.Added)
+            return;
+
+        if (!TryComp<SWTargetSelectorComponent>(ent, out var comp))
+            return;
+
+        if (!TryComp<SWTaskComponent>(ent, out var taskComp))
+            return;
+
+        if (!TryComp<SWGetScoreByTargetJobComponent>(ent, out var scoreComp))
+            return;
+
+        if (comp.JobOfTarget == null)
+            return;
+
+        var account = _bankSystem.GetFactionAccount(taskComp.OwningFaction);
+        int scores = scoreComp.JobsToScores[comp.JobOfTarget];
+
+        var amount = ent.Comp.MoneyPerScore.ToDictionary(kvp => kvp.Key, kvp => kvp.Value * scores);
+
+        account.Comp.CurrentAmount = _bankSystem.Sum(account.Comp.CurrentAmount, amount);
         ent.Comp.Added = true;
         _bankSystem.UpdateAllInterfaces();
     }

@@ -39,6 +39,9 @@
     damageModifierSet: SWColicoid
   - type: Body
     prototype: SWColicoidBody
+  - type: NpcFactionMember
+    factions:
+    - SWCollicoidSpeciesNPCFaction
 
 
 - type: entity

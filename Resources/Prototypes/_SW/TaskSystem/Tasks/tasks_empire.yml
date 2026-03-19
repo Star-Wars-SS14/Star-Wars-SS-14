@@ -53,6 +53,9 @@
       SWRepublicCommanderSniper: SWRepublicHavokNotCommander-capture
       SWRepublicCommanderLieutenant: SWRepublicHavokNotCommander-capture
       SWRepublicCommanderMedic: SWRepublicHavokNotCommander-capture
+  - type: SWAddMoneyBasedOnTargetScore
+    amount: 
+      SWSupplyScoresEmpire: 100
 
 - type: entity
   id: KillRepublicByJobEmpire
@@ -79,7 +82,9 @@
       SWRepublicCaptain: SWRepublicCaptain-killByJob
       SWRepublicGeneral: SWRepublicGeneral-killByJob
       SWRepublicCommanderCommander: SWRepublicCommanderCommander-killByJob
-
+  - type: SWAddMoneyBasedOnTargetScore
+    amount: 
+      SWSupplyScoresEmpire: 100
 
 - type: entity
   id: KillCriminalTaskEmpire
@@ -141,6 +146,9 @@
   - type: SWParallelTask
     task: ProtectTaskRepublic
     faction: RepublicFaction
+  - type: SWAddMoneyBasedOnTargetScore
+    amount: 
+      SWSupplyScoresEmpire: 100
 
 - type: entity
   id: ProtectTaskEmpire

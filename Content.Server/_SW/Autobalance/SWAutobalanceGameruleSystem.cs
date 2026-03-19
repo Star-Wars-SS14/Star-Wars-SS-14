@@ -22,8 +22,6 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
 
-
-    private Entity<SWAutoBalanceGameruleComponent>? _gameruleSingleton = null;
     public override void Initialize()
     {
         base.Initialize();
@@ -34,16 +32,22 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
 
     private void OnModify(ref SWModifyAssignedJobsEvent ev)
     {
-        if (_gameruleSingleton == null)
+        var rules = QueryActiveRules();
+
+        if (rules.MoveNext(out var uid, out var _, out var comp, out var _))
         {
-            return;
+            BalanceJobs(ref ev.AssignedJobs, comp);
         }
-        BalanceJobs(ref ev.AssignedJobs, _gameruleSingleton.Value.Comp);
     }
 
     private void OnPlayersAssigned(RulePlayerJobsAssignedEvent ev)
     {
-        ChangeAvailableJobsToFitAutoBalance();
+        var rules = QueryActiveRules();
+
+        if (rules.MoveNext(out var uid, out var _, out var comp, out var _))
+        {
+            ChangeAvailableJobsToFitAutoBalance();
+        }
     }
 
     private void OnSpawn(PlayerSpawnCompleteEvent ev)
@@ -53,12 +57,14 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
             return;
         }
 
-        if (_gameruleSingleton == null)
+        var rules = QueryActiveRules();
+
+        if (!rules.MoveNext(out var uid, out var _, out var comp, out var _))
         {
             return;
         }
 
-        var autobalance = _gameruleSingleton.Value.Comp;
+        var autobalance = comp;
 
         var firstFactionProto = _prototypeManager.Index(autobalance.FirstFactionRelatedJobsId);
         var secondFactionProto = _prototypeManager.Index(autobalance.SecondRelatedJobsId);
@@ -72,13 +78,13 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
         {
             autobalance.SecondFactionSpawned++;
         }
-        if (_gameruleSingleton.Value.Comp.JobsSpawned.ContainsKey(ev.JobId))
+        if (autobalance.JobsSpawned.ContainsKey(ev.JobId))
         {
-            _gameruleSingleton.Value.Comp.JobsSpawned[ev.JobId]++;
+            autobalance.JobsSpawned[ev.JobId]++;
         }
         else
         {
-            _gameruleSingleton.Value.Comp.JobsSpawned[ev.JobId] = 1;
+            autobalance.JobsSpawned[ev.JobId] = 1;
         }
 
         ChangeAvailableJobsToFitAutoBalance();
@@ -86,11 +92,13 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
 
     private void ChangeAvailableJobsToFitAutoBalance()
     {
-        if (_gameruleSingleton == null)
+        var rules = QueryActiveRules();
+
+        if (!rules.MoveNext(out var uid, out var _, out var comp, out var _))
         {
             return;
         }
-        var autobalance = _gameruleSingleton.Value.Comp;
+        var autobalance = comp;
 
         var firstFactionProto = _prototypeManager.Index(autobalance.FirstFactionRelatedJobsId);
         var secondFactionProto = _prototypeManager.Index(autobalance.SecondRelatedJobsId);
@@ -181,7 +189,7 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
         if (firstFactionCount * autobalance.Ratio <= secondFactionCount)
         {
             // No autobalance needed
-            s.Info($"{firstFactionCount} * {autobalance.Ratio} <= {secondFactionCount}; no balance needed");            
+            s.Info($"{firstFactionCount} * {autobalance.Ratio} <= {secondFactionCount}; no balance needed");
         }
         else
         {
@@ -214,25 +222,28 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
         }
     }
 
-    protected override void Added(EntityUid uid, SWAutoBalanceGameruleComponent component, GameRuleComponent gameRule, GameRuleAddedEvent args)
-    {
-        base.Added(uid, component, gameRule, args);
-        if (_gameruleSingleton == null)
-        {
-            _gameruleSingleton = new Entity<SWAutoBalanceGameruleComponent>(uid, component);
-        }
-        else
-        {
-            QueueDel(uid);
-        }
-    }
     protected override void Started(EntityUid uid, SWAutoBalanceGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
         base.Started(uid, component, gameRule, args);
+
+    }
+
+    protected override void Ended(EntityUid uid, SWAutoBalanceGameruleComponent component, GameRuleComponent gameRule, GameRuleEndedEvent args)
+    {
+
     }
 
     public Entity<SWAutoBalanceGameruleComponent>? GetActiveRule()
     {
-        return _gameruleSingleton;
+        var rules = QueryActiveRules();
+
+        if (!rules.MoveNext(out var uid, out var _, out var comp, out var _))
+        {
+            return null;
+        }
+        else
+        {
+            return new Entity<SWAutoBalanceGameruleComponent>(uid, comp);
+        }
     }
 }

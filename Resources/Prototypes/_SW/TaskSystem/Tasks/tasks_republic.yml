@@ -40,6 +40,9 @@
       SWEmpireIntelligenceAgent: SWEmpireIntelligenceAgent-killByJobRepublic
       SWSobrikCaptain: SWSobrikCaptain-killByJobRepublic
       SWEmpireMoff: SWEmpireMoff-killByJobRepublic
+  - type: SWAddMoneyBasedOnTargetScore
+    amount: 
+      SWSupplyScoresRepublic: 100
 
 - type: entity
   id: CaptureEmpire
@@ -85,6 +88,9 @@
       SWEmpireIntelligenceAgent: SWEmpireIntelligenceAgent-capture
       SWSobrikCaptain: SWSobrikCaptain-capture
       SWEmpireMoff: SWEmpireMoff-capture
+  - type: SWAddMoneyBasedOnTargetScore
+    amount: 
+      SWSupplyScoresRepublic: 100
 
 - type: entity
   id: KillRandomEmpireByName
@@ -111,6 +117,9 @@
   - type: SWParallelTask
     task: ProtectTaskEmpire
     faction: EmpireFaction
+  - type: SWAddMoneyBasedOnTargetScore
+    amount: 
+      SWSupplyScoresRepublic: 100
 
 - type: entity
   id: StealIdCardsEmpire
@@ -163,7 +172,6 @@
 
 - type: entity
   id: DestroyCommTowerRepublic
-
   components:
   - type: SWTask
     score: 15

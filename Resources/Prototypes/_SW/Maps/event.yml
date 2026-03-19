@@ -57,7 +57,7 @@
           SWCivialian: [-1, -1]
           SWJedi: [ 2, 2 ]
           SWSith: [ 2, 2 ]
-      - type: EndRoundByTimer
+      # - type: SWEndRound
 
 - type: gameMap
   id: oldBalmorraEventMagistr

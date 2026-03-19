@@ -32,6 +32,15 @@
 
 - type: entity
   parent: BaseGameRule
+  id: SWEndRoundGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWEndRoundGamerule
+
+
+- type: entity
+  parent: BaseGameRule
   id: FactionsOnlyGamerule
   components:
   - type: GameRule

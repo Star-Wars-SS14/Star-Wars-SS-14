@@ -10,6 +10,7 @@
     - SWRespawnGamerule
     - SWMineCollapseGamerule
     - SWWantedSelectRule
+    - SWEndRoundGamerule
 
 - type: gamePreset
   id: SWMainPresetAutoBalance
@@ -24,6 +25,7 @@
     - SWMineCollapseGamerule
     - SWWantedSelectRule
     - SWAutoBalanceGamerule
+    - SWEndRoundGamerule
 
 - type: gamePreset
   id: SWMainPresetNoTasks

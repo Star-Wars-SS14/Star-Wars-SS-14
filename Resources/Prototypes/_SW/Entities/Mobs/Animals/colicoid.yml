@@ -13,6 +13,9 @@
         Base: crit
       Dead:
         Base: dead
+  - type: NpcFactionMember
+    factions:
+    - SWCollicoidWildNPCFaction
   - type: Hunger
     thresholds:
       Overfed: 50
@@ -34,3 +37,5 @@
     layers:
     - map: ["enum.DamageStateVisualLayers.Base", "movement"]
       state: colicoid-0
+  - type: NPCRetaliation
+    attackMemoryLength: 20

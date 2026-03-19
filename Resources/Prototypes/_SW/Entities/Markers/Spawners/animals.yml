@@ -23,3 +23,16 @@
     chance: 1
     prototypes:
     - SWMobParasitAggressiveAi
+
+- type: entity
+  parent: MarkerBase
+  id: SWAgressiveColicoidSpawner
+  name: дикий коликоид спавнер
+  components:
+  - type: Sprite
+    layers:
+    - state: red
+  - type: RandomSpawner
+    chance: 1
+    prototypes:
+    - SWMobColicoidAggressive

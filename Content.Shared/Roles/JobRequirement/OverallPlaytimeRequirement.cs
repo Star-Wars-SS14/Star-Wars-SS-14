@@ -1,13 +1,11 @@
-using Content.Shared.CCVar;
+using System.Diagnostics.CodeAnalysis;
 using Content.Shared.Localizations;
 using Content.Shared.Players.PlayTimeTracking;
 using Content.Shared.Preferences;
 using JetBrains.Annotations;
-using Robust.Shared.Configuration;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using Robust.Shared.Utility;
-using System.Diagnostics.CodeAnalysis;
 
 namespace Content.Shared.Roles;
 
@@ -15,8 +13,6 @@ namespace Content.Shared.Roles;
 [Serializable, NetSerializable]
 public sealed partial class OverallPlaytimeRequirement : JobRequirement
 {
-    [Dependency] private readonly IConfigurationManager _cfg = default!;
-    private readonly IDependencyCollection _deps;
     /// <inheritdoc cref="DepartmentTimeRequirement.Time"/>
     [DataField(required: true)]
     public TimeSpan Time;
@@ -27,13 +23,7 @@ public sealed partial class OverallPlaytimeRequirement : JobRequirement
         IReadOnlyDictionary<string, TimeSpan> playTimes,
         [NotNullWhen(false)] out FormattedMessage? reason)
     {
-        _deps.InjectDependencies(this);
         reason = new FormattedMessage();
-
-        if (!_cfg.GetCVar(CCVars.GameRoleTimers))
-        {
-            return true;
-        }
 
         var overallTime = playTimes.GetValueOrDefault(PlayTimeTrackingShared.TrackerOverall);
         var overallDiffSpan = Time - overallTime;

@@ -1,0 +1,27 @@
+- type: reagent
+  id: SWRadioactiveWaste
+  name: sw-radioactive-waste-name
+  group: Others
+  desc: sw-radioactive-waste-name-desc
+  physicalDesc: reagent-physical-desc-metallic
+  flavor: metallic
+  color: "#00ff04"
+  meltingPoint: 1133.0
+  boilingPoint: 4131.0
+  plantMetabolism:
+  - !type:PlantAdjustMutationLevel
+    amount: 0.6
+  - !type:PlantAdjustToxins
+    amount: 4
+  - !type:PlantAdjustHealth
+    amount: -1.5
+  - !type:PlantAdjustMutationMod
+    probability: 0.2
+    amount: 0.1
+  metabolisms:
+    Poison:
+      effects:
+      - !type:HealthChange
+        damage:
+          types:
+            Radiation: 20

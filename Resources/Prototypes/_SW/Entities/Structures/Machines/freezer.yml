@@ -1,0 +1,18 @@
+
+- type: entity
+  parent: GasThermoMachineFreezer
+  id: SWFreezer
+  name: hellfire freezer
+  description: An advanced machine that cools gas in connected pipes. Has the side effect of chilling the surrounding area. Cold as Hell!
+  components:
+  - type: Sprite
+    sprite: Structures/Piping/Atmospherics/hellfirethermomachine.rsi
+  - type: GasThermoMachine
+    minTemperature: 0
+    heatCapacity: 100
+    energyLeakPercentage: 0.15
+    atmospheric: true
+    coefficientOfPerformance: -10000.0
+    targetTemperature: 0
+  - type: Machine
+    board: HellfireFreezerMachineCircuitBoard

@@ -40050,7 +40050,7 @@ entities:
     - type: Transform
       pos: 18.5,-65.5
       parent: 2
-- proto: BaseBarrelChemRadioactiveFilledRadium
+- proto: SWBarrelRadioactiveWaste
   entities:
   - uid: 619
     components:
@@ -40117,7 +40117,7 @@ entities:
     - type: Transform
       pos: 32.5,-61.5
       parent: 2
-- proto: BaseBarrelChemRadioactiveFilledUranium
+- proto: SWBarrelRadioactiveWaste
   entities:
   - uid: 620
     components:

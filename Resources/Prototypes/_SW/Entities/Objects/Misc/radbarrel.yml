@@ -1,0 +1,15 @@
+- type: entity
+  parent: BaseBarrelChemRadioactive
+  id: SWBarrelRadioactiveWaste
+  suffix: SW
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      tank:
+        maxVol: 100000
+        reagents:
+        - ReagentId: SWRadioactiveWaste
+          Quantity: 100000
+  - type: RadiationSource
+    intensity: 5.0
+    slope: 0.5

@@ -1,4 +1,6 @@
 using Content.Shared.Damage;
+using Content.Shared.Weather;
+using Robust.Shared.Prototypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +13,13 @@ namespace Content.Server._SW.Gamerules.RadioactiveStorm;
 public sealed partial class SWRadioactiveStormGameruleComponent : Component
 {
     [DataField]
-    public string WeatherId = default!;
+    public ProtoId<WeatherPrototype> WeatherId = "Fallout";
 
     [DataField]
     public DamageSpecifier Damage = default!;
 
     [DataField]
-    public TimeSpan Cooldown = TimeSpan.FromSeconds(1);
+    public TimeSpan Cooldown = TimeSpan.FromSeconds(2);
 
     [DataField]
     public TimeSpan Duration = TimeSpan.FromMinutes(10);

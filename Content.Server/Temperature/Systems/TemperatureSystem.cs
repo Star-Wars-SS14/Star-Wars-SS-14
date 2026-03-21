@@ -160,8 +160,7 @@ public sealed class TemperatureSystem : SharedTemperatureSystem
         var heatCapacity = GetHeatCapacity(uid, temperature);
         var heat = temperatureDelta * (airHeatCapacity * heatCapacity /
                                        (airHeatCapacity + heatCapacity));
-        ISawmill _s = Logger.GetSawmill("asdf");
-        _s.Fatal($"uid: {uid} heat: {heat}");
+
         ChangeHeat(uid, heat * temperature.AtmosTemperatureTransferEfficiency, temperature: temperature);
     }
 

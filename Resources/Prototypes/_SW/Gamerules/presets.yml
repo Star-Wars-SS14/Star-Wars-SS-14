@@ -11,6 +11,7 @@
     - SWMineCollapseGamerule
     - SWWantedSelectRule
     - SWEndRoundGamerule
+    - SWRadioactiveStromGamerule
 
 - type: gamePreset
   id: SWMainPresetAutoBalance
@@ -26,6 +27,7 @@
     - SWWantedSelectRule
     - SWAutoBalanceGamerule
     - SWEndRoundGamerule
+    - SWRadioactiveStromGamerule
 
 - type: gamePreset
   id: SWMainPresetNoTasks

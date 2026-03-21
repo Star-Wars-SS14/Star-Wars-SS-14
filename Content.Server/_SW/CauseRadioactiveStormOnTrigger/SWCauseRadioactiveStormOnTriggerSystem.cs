@@ -18,6 +18,6 @@ public sealed class SWCauseRadioactiveStormOnTriggerSystem : EntitySystem
 
     private void OnTrigger(Entity<SWCauseRadioactiveStormOnTriggerComponent> ent, ref TriggerEvent args)
     {
-        _sWRadioactiveStorm.StartStorm(ent.Owner);
+        _sWRadioactiveStorm.TriggerStorm(ent.Owner);
     }
 }

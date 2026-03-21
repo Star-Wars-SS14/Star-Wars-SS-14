@@ -13,6 +13,6 @@
     energyLeakPercentage: 0.15
     atmospheric: true
     coefficientOfPerformance: -10000.0
-    targetTemperature: 0
+    targetTemperature: 260
   - type: Machine
     board: HellfireFreezerMachineCircuitBoard

@@ -29,9 +29,11 @@
   - type: GameRule
     minPlayers: 0
   - type: SWRadioactiveStormGamerule
+    delayBetweenTriggerAndStarting: 30
+    duration: 60
     damage:
       types:
-        Radiation: 4
+        Radiation: 0.5
 
 - type: entity
   parent: BaseGameRule

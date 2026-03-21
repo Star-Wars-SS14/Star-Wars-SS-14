@@ -1,3 +1,4 @@
+using Content.Server.Chat.Managers;
 using Content.Server.GameTicking.Rules;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
@@ -25,27 +26,53 @@ public sealed class SWRadioactiveStormGameruleSystem : GameRuleSystem<SWRadioact
     [Dependency] private readonly SharedWeatherSystem _sharedWeatherSystem = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    public void StartStorm(EntityUid caller)
+    [Dependency] private readonly IChatManager _chatManager = default!;
+
+    public void TriggerStorm(EntityUid caller)
     {
         var query = QueryActiveRules();
         while (query.MoveNext(out var _, out var comp, out var _))
         {
-            if (comp.InProgress)
+            if (comp.IsTriggered)
             {
                 continue;
             }
 
-            comp.InProgress = true;
-            var proto = _prototypeManager.Index(comp.WeatherId);
-            //_sharedWeatherSystem.SetWeather(Transform(caller).MapID, proto, _timing.CurTime + comp.Duration);
+            comp.IsTriggered = true;
+            comp.AffectedMaps.Add(Transform(caller).MapID);
+            comp.TimeOfStart = _timing.CurTime + comp.DelayBetweenTriggerAndStarting;
+            comp.TimeOfEnd = comp.TimeOfStart + comp.Duration;
+            _chatManager.DispatchServerAnnouncement(Loc.GetString(comp.StartAnnouncementId), colorOverride: comp.Color);
+        }
+    }
+    public void StartStorm(SWRadioactiveStormGameruleComponent component)
+    {
+        if (component.InProgress)
+        {
+            return;
+        }
+
+        component.InProgress = true;
+        var proto = _prototypeManager.Index(component.WeatherId);
+        foreach (var map in component.AffectedMaps)
+        {
+            _sharedWeatherSystem.SetWeather(map, proto, _timing.CurTime + component.Duration);
         }
     }
 
     protected override void ActiveTick(EntityUid uid, SWRadioactiveStormGameruleComponent component, GameRuleComponent gameRule, float frameTime)
     {
-        var _s = Logger.GetSawmill("sadfg");
-        _s.Fatal("0");
         base.ActiveTick(uid, component, gameRule, frameTime);
+
+        if (component.TimeOfStart != null && _timing.CurTime >= component.TimeOfStart && !component.InProgress)
+        {
+            StartStorm(component);
+        }
+
+        if (component.TimeOfEnd != null && _timing.CurTime >= component.TimeOfEnd && component.InProgress)
+        {
+            EndStorm(component);
+        }
 
         if (!component.InProgress)
         {
@@ -57,42 +84,58 @@ public sealed class SWRadioactiveStormGameruleSystem : GameRuleSystem<SWRadioact
             return;
         }
 
-        _s.Fatal("1");
         var query = EntityQueryEnumerator<DamageableComponent, MobStateComponent>();
-        int count = 0;
-        while (query.MoveNext(out var entity, out var _, out var comp))
+
+        while (query.MoveNext(out var entity, out var _, out var _))
         {
-            count++;
             _transformSystem.TryGetGridTilePosition(entity, out var tilePosition);
             var grid = _transformSystem.GetGrid(entity);
-            //_s.Fatal($"{entity} 0");
+
             if (grid == null)
             {
                 continue;
             }
-            //_s.Fatal($"{entity} 1");
 
             if (!TryComp<MapGridComponent>(grid, out var gridComp))
             {
                 continue;
             }
-            //_s.Fatal($"{entity} 2");
-            if (!TryComp<RoofComponent>(grid, out var roofComp))
+
+            if (!component.AffectedMaps.Contains(Transform(entity).MapID))
             {
                 continue;
             }
-            //_s.Fatal($"{entity} 3");
-            var ent = new Entity<MapGridComponent, RoofComponent>(grid.Value, gridComp, roofComp);
 
-            //_s.Fatal($"{entity} pos: {tilePosition.X} {tilePosition.Y}");
-            //_s.Fatal($"{component.Damage.GetTotal()}");
-            if (/*!_roofSystem.IsRooved(ent, tilePosition) &&*/ _timing.CurTime >= component.NextTimeDamageApplied)
+            if (!TryComp<RoofComponent>(grid, out var roofComp))
             {
-                //_s.Fatal($"applied to {entity}");
+                _damageableSystem.TryChangeDamage(entity, component.Damage);
+                continue;
+            }
+
+            var ent = new Entity<MapGridComponent, RoofComponent>(grid.Value, gridComp, roofComp);
+            if (!_roofSystem.IsRooved(ent, tilePosition) && _timing.CurTime >= component.NextTimeDamageApplied)
+            {
                 _damageableSystem.TryChangeDamage(entity, component.Damage);
             }
         }
-        _s.Fatal($"count {count}");
         component.NextTimeDamageApplied = _timing.CurTime + component.Cooldown;
+    }
+
+    public void EndStorm(SWRadioactiveStormGameruleComponent component)
+    {
+        if (!component.InProgress)
+        {
+            return;
+        }
+        _chatManager.DispatchServerAnnouncement(Loc.GetString(component.EndAnnouncementId), colorOverride: component.Color);
+
+        component.InProgress = false;
+        component.IsTriggered = false;
+        component.TimeOfStart = null;
+        component.TimeOfEnd = null;
+        foreach (var map in component.AffectedMaps)
+        {
+            _sharedWeatherSystem.SetWeather(map, null, null);
+        }
     }
 }

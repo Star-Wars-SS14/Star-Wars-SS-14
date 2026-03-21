@@ -13,3 +13,16 @@
   - type: RadiationSource
     intensity: 5.0
     slope: 0.5
+  - type: SWTriggerOnHighTemperature
+  - type: ExplodeOnTrigger
+  - type: Explosive
+    explosionType: Default
+    maxIntensity: 10
+    intensitySlope: 3
+    totalIntensity: 120 # about a ~4 tile radius
+    canCreateVacuum: false
+  - type: Temperature
+    currentTemperature: 200 #start with temperature below threshold
+    atmosTemperatureTransferEfficiency: 0.1
+    damageCap: 0 #disable damage
+  - type: AtmosExposed

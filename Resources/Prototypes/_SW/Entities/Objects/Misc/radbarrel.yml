@@ -14,6 +14,7 @@
     intensity: 5.0
     slope: 0.5
   - type: SWTriggerOnHighTemperature
+    threshold: 270
   - type: ExplodeOnTrigger
   - type: Explosive
     explosionType: Default
@@ -25,6 +26,16 @@
     currentTemperature: 200 #start with temperature below threshold
     atmosTemperatureTransferEfficiency: 0.1
     damageCap: 0 #disable damage
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: GasThermoMachine
+    heatCapacity: 100
+    energyLeakPercentage: 0.15
+    atmospheric: true
+    coefficientOfPerformance: 1.0
+    targetTemperature: 280
+  - type: AtmosDevice
+    requireAnchored: false
   - type: AtmosExposed
   - type: SWCauseRadioactiveStormOnTrigger
   - type: Destructible

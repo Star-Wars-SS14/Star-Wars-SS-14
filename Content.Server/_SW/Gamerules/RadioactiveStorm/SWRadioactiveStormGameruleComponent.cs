@@ -29,7 +29,7 @@ public sealed partial class SWRadioactiveStormGameruleComponent : Component
     public TimeSpan Cooldown = TimeSpan.FromSeconds(1);
 
     [DataField]
-    public TimeSpan Duration = TimeSpan.FromMinutes(10);
+    public TimeSpan Duration = TimeSpan.FromMinutes(20);
 
     [DataField]
     public TimeSpan DelayBetweenTriggerAndStarting = TimeSpan.FromMinutes(3);

@@ -1,27 +1,10 @@
 - type: entity
   name: P.A.C.M.A.N.-type portable generator
   description: 
-  parent: PortableGeneratorSwitchableBase
+  parent: PortableGeneratorPacman
   id: SWGenerator
   suffix: Plasma, 30 kW
   components:
-    - type: Sprite
-      layers:
-        - state: portgen0
-          map: [ "enum.GeneratorVisualLayers.Body" ]
-        - state: portgen_on_unlit
-          map: [ "enum.GeneratorVisualLayers.Unlit" ]
-          shader: unshaded
-          visible: false
-    - type: GenericVisualizer
-      visuals:
-        enum.GeneratorVisuals.Running:
-          enum.GeneratorVisualLayers.Body:
-            True: { state: portgen0on }
-            False: { state: portgen0 }
-          enum.GeneratorVisualLayers.Unlit:
-            True: { visible: true }
-            False: { visible: false }
     - type: SolidFuelGeneratorAdapter
       fuelMaterial: Plasma
       multiplier: 0.03

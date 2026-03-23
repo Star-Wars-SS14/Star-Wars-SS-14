@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Content.Server.Audio;
 using Content.Server.Fluids.EntitySystems;
 using Content.Server.Materials;
@@ -50,7 +50,7 @@ public sealed class GeneratorSystem : SharedGeneratorSystem
         if (!component.On)
             return;
 
-        SetFuelGeneratorOn(uid, false, component);
+        SetFuelGeneratorOn(uid, args.Anchored, component);
     }
 
     private void OnEjectFuel(EntityUid uid, FuelGeneratorComponent component, PortableGeneratorEjectFuelMessage args)

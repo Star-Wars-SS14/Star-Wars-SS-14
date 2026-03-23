@@ -26,6 +26,7 @@
     currentTemperature: 200 #start with temperature below threshold
     atmosTemperatureTransferEfficiency: 0.1
     damageCap: 0 #disable damage
+    coldDamageThreshold: 0
   - type: ApcPowerReceiver
     needsPower: false
   - type: GasThermoMachine

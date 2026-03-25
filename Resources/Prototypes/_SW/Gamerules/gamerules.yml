@@ -15,6 +15,15 @@
 
 - type: entity
   parent: BaseGameRule
+  id: TaskGameruleManual
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWTaskGamerule
+    manualTasksOnly: true
+
+- type: entity
+  parent: BaseGameRule
   id: SWRespawnGamerule
   components:
   - type: GameRule

@@ -1,0 +1,144 @@
+- type: entity
+  parent: SWTaskBase
+  id: SWTaskManualBase
+  name: кастомное задание
+  suffix: SW
+  components:
+  - type: SWManualControlledTask
+    faction: RepublicFaction
+  - type: SWTask
+    name:  Здесь ничего нет
+    description: Здесь ничего нет.
+  - type: Transform
+    anchored: true
+  - type: Marker
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Tag
+    tags:
+    - ForceFixRotations
+  - type: Sprite
+    drawdepth: Overdoors
+    sprite: Markers/cross.rsi
+    layers:
+    - state: green
+
+- type: entity
+  parent: SWTaskManualBase
+  id: SWTaskPreserveCell
+  name: задание сохранить ячейку повстанцев
+  suffix: SW
+  components:
+  - type: SWManualControlledTask
+    faction: RepublicFaction
+  - type: SWTask
+    name: "Сохранить ячейку повстанцев"
+    description: "Важнейшее задание. Вы не должны быть уничтожены, а также не должны раскрыть, что вы — республиканцы, а не просто недовольные жители."
+
+- type: entity
+  parent: SWTaskManualBase
+  id: SWTaskSabotageFactory
+  name: задание саботаж на заводе
+  suffix: SW
+  components:
+  - type: SWManualControlledTask
+    faction: RepublicFaction
+  - type: SWTask
+    name: "Саботаж на имперском заводе"
+    description: "Вывести из строя оборудование, нарушить производственный цикл или уничтожить ключевые объекты на заводе."
+
+- type: entity
+  parent: SWTaskManualBase
+  id: SWTaskEliminateMoff
+  name: задание устранить моффа
+  suffix: SW
+  components:
+  - type: SWManualControlledTask
+    faction: RepublicFaction
+  - type: SWTask
+    name: "Устранить Моффа"
+    description: "Ликвидировать имперского Моффа, управляющего регионом."
+
+- type: entity
+  parent: SWTaskManualBase
+  id: SWTaskEliminateMajor
+  name: задание устранить майора
+  suffix: SW
+  components:
+  - type: SWManualControlledTask
+    faction: RepublicFaction
+  - type: SWTask
+    name: "Устранить Майора"
+    description: "Ликвидировать Майора, командующего гарнизоном."
+
+- type: entity
+  parent: SWTaskManualBase
+  id: SWTaskEliminateSith
+  name: задание устранить ситха
+  suffix: SW
+  components:
+  - type: SWManualControlledTask
+    faction: RepublicFaction
+  - type: SWTask
+    name: "Устранить Ситха"
+    description: "Ликвидировать Тёмного последователя или лорда ситхов, замешанного в управлении регионом."
+
+- type: entity
+  parent: SWTaskManualBase
+  id: SWTaskTerrorActs
+  name: задание серия терактов
+  suffix: SW
+  components:
+  - type: SWManualControlledTask
+    faction: RepublicFaction
+  - type: SWTask
+    name: "Серия терактов в городе"
+    description: "Устройте 4 теракта в городе для дестабилизации обстановки и подрыва доверия к имперской администрации."
+
+- type: entity
+  parent: SWTaskManualBase
+  id: SWTaskSabotagePower
+  name: задание диверсия электропитания
+  suffix: SW
+  components:
+  - type: SWManualControlledTask
+    faction: RepublicFaction
+  - type: SWTask
+    name: "Диверсия электропитания в Собрике"
+    description: "Обесточить или вывести из строя систему электропитания в районе Собрик, чтобы нарушить работу имперских объектов."
+
+- type: entity
+  parent: SWTaskManualBase
+  id: SWTaskGatherIntel
+  name: задание разведка планов империи
+  suffix: SW
+  components:
+  - type: SWManualControlledTask
+    faction: RepublicFaction
+  - type: SWTask
+    name: "Разведка планов Империи"
+    description: "Добыть информацию о дальнейших планах Империи на данный регион, включая военные операции и административные решения."
+
+- type: entity
+  parent: SWTaskManualBase
+  id: SWTaskFindPunish
+  name: задание выявление и наказание бунтовщиков
+  suffix: SW
+  components:
+  - type: SWManualControlledTask
+    faction: EmpireFaction
+  - type: SWTask
+    name: "Выявление и наказание бунтовщиков"
+    description: "Важнейшее задание. Найти недовольных жителей-бунтовщиков, выяснить причины бунтов и покарать согласно Общему Законодательству Военно-гражданской Администрации Балморры."
+
+- type: entity
+  parent: SWTaskManualBase
+  id: SWTaskCounterTerror
+  name: задание предотвратить теракты
+  suffix: SW
+  components:
+  - type: SWManualControlledTask
+    faction: EmpireFaction
+  - type: SWTask
+    name: "Предотвратить террористические акты"
+    description: "Предотвратить террористические действия бунтовщиков в городе и на критически важных объектах, включая завод и объекты инфраструктуры."

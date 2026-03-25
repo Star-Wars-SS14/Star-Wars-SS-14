@@ -11,14 +11,15 @@ namespace Content.Shared._SW.TaskSystem;
 [RegisterComponent]
 public sealed partial class SWTaskComponent : Component
 {
+    [ViewVariables(VVAccess.ReadWrite)]
     public FixedPoint2 Completeness = 0.0;
 
     public EntityUid? ParentTask = null;
 
-    [DataField]
+    [DataField, ViewVariables(VVAccess.ReadWrite)]
     public string Name = "Тут ничего нет";
 
-    [DataField]
+    [DataField, ViewVariables(VVAccess.ReadWrite)]
     public string Description = "Тут ничего нет";
 
     [DataField]

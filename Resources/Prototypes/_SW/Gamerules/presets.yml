@@ -47,10 +47,13 @@
 - type: gamePreset
   id: SWMainPresetNoTasks
   name: Необычный день
-  description: В связи с особыми событиями командование приостановило выполнение заданий. Следуйте особым инструкциям командования.
+  description: В связи с особыми событиями командование приостановило выполнение обычных заданий. Следуйте особым инструкциям командования.
   showInVote: false
   rules:
     - FactionsOnlyGamerule
     - SWEventScheduler
     - SWRespawnGamerule
     - SWMineCollapseGamerule
+    - TaskGameruleManual
+    - SWAutoBalanceGamerule
+    - SWRadioactiveStromGamerule

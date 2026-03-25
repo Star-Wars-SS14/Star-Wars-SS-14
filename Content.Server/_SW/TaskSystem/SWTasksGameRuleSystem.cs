@@ -35,6 +35,21 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         _sawmill = Logger.GetSawmill("taskSystem");
         SubscribeLocalEvent<SWTaskGameruleComponent, SWTaskProgressUpdateEvent>(OnTaskComplete);
         SubscribeLocalEvent<SWTaskComponent, SWTaskProvideDescriptionEvent>(OnGetDescription);
+        SubscribeLocalEvent<SWManualControlledTaskComponent, MapInitEvent>(OnMapInit);
+    }
+    private void OnMapInit(Entity<SWManualControlledTaskComponent> ent, ref MapInitEvent args)
+    {
+        var faction = _swFaction.GetFactionEntity(ent.Comp.Faction);
+        if (faction == null)
+        {
+            return;
+        }
+
+        var taskCont = EnsureComp<SWTaskContainerComponent>(faction.Value);
+        var taskComp = EnsureComp<SWTaskComponent>(ent);
+        var task = new Entity<SWTaskComponent>(ent, taskComp);
+        taskCont.CurrentTasks.Add(task);
+        InitTask(task);
     }
 
     private void OnGetDescription(Entity<SWTaskComponent> ent, ref SWTaskProvideDescriptionEvent args)
@@ -117,6 +132,11 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 
     protected override void ActiveTick(EntityUid uid, SWTaskGameruleComponent component, GameRuleComponent gameRule, float frameTime)
     {
+        if (component.ManualTasksOnly)
+        {
+            return;
+        }
+
         if (!component.StartTasksAdded && component.TimeToAddStartTasks <= _timing.CurTime)
         {
             AddStartTasks();

@@ -38,16 +38,14 @@ namespace Content.Server.Atmos.Piping.Unary.EntitySystems
 
         private void OnThermoMachineUpdated(EntityUid uid, GasThermoMachineComponent thermoMachine, ref AtmosDeviceUpdateEvent args)
         {
-            ISawmill _s = Logger.GetSawmill($"{uid} thermo");
-            _s.Fatal("0");
             thermoMachine.LastEnergyDelta = 0f;
             if (!(_power.IsPowered(uid) && TryComp<ApcPowerReceiverComponent>(uid, out var receiver)))
                 return;
-            _s.Fatal("1");
+
             GetHeatExchangeGasMixture(uid, thermoMachine, out var heatExchangeGasMixture);
             if (heatExchangeGasMixture == null)
                 return;
-            _s.Fatal("2");
+
             float sign = Math.Sign(thermoMachine.Cp); // 1 if heater, -1 if freezer
             float targetTemp = thermoMachine.TargetTemperature;
             float highTemp = targetTemp + sign * thermoMachine.TemperatureTolerance;
@@ -67,10 +65,10 @@ namespace Content.Server.Atmos.Piping.Unary.EntitySystems
                 //receiver.Load = 0f;
                 return;
             }
-            _s.Fatal("4");
+
             // Multiply power in by coefficient of performance, add that heat to gas
             float dQ = thermoMachine.HeatCapacity * thermoMachine.Cp * args.dt;
-            _s.Fatal($"dq: {dQ}");
+
             // Clamps the heat transferred to not overshoot
             float Cin = _atmosphereSystem.GetHeatCapacity(heatExchangeGasMixture, true);
             float dT = targetTemp - temp;
@@ -81,7 +79,7 @@ namespace Content.Server.Atmos.Piping.Unary.EntitySystems
                 scale = dQLim / dQ; // reduce power consumption
                 thermoMachine.HysteresisState = false; // turn off
             }
-            _s.Fatal($"5");
+
             float dQActual = dQ * scale;
             if (thermoMachine.Atmospheric)
             {

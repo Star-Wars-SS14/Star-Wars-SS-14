@@ -1,0 +1,49 @@
+- type: entity
+  name: P.A.C.M.A.N.-type portable generator
+  description: 
+  parent: PortableGeneratorPacman
+  id: SWGenerator
+  suffix: Plasma, 30 kW
+  components:
+  - type: NodeContainer
+    examinable: true
+    nodes:
+      output_mv:
+        !type:CableDeviceNode
+        nodeGroupID: MVPower
+        enabled: true
+  - type: Transform
+    anchored: true
+  - type: SolidFuelGeneratorAdapter
+    fuelMaterial: Plasma
+    multiplier: 0.03
+  - type: FuelGenerator
+    minTargetPower: 5000
+    maxTargetPower: 30000
+    targetPower: 30000
+    optimalPower: 30000
+    optimalBurnRate: 0.0333333
+    fuelEfficiencyConstant: 0.75
+    on: true
+  - type: PowerSupplier
+    voltage: Medium
+  - type: MaterialStorage
+    storageLimit: 3000
+    materialWhiteList: [Plasma]
+    storage:
+      Plasma: 3000
+  - type: PowerSwitchable
+    examineText: power-switchable-generator-examine
+    switchText: power-switchable-generator-switched
+    activeIndex: 0
+    cables:
+    - voltage: MV
+      node: output_mv
+  - type: PowerMonitoringDevice
+    group: Generator
+    loadNode: output_mv
+    loadNodes:
+      - output_hv
+      - output_mv
+    sprite: Structures/Power/Generation/portable_generator.rsi
+    state: portgen0

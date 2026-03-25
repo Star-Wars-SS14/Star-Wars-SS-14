@@ -160,6 +160,7 @@ public sealed class TemperatureSystem : SharedTemperatureSystem
         var heatCapacity = GetHeatCapacity(uid, temperature);
         var heat = temperatureDelta * (airHeatCapacity * heatCapacity /
                                        (airHeatCapacity + heatCapacity));
+
         ChangeHeat(uid, heat * temperature.AtmosTemperatureTransferEfficiency, temperature: temperature);
     }
 

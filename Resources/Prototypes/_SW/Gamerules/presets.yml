@@ -11,9 +11,26 @@
     - SWMineCollapseGamerule
     - SWWantedSelectRule
     - SWEndRoundGamerule
+    - SWRadioactiveStromGamerule
 
 - type: gamePreset
   id: SWMainPresetAutoBalance
+  name: Обычный день (автобаланс тест)
+  description: Обычный день. Выполняйте регулярные задания от своего командования.
+  showInVote: false
+  supportedMaps: SWMainPresetMapPool
+  rules:
+    - TaskGamerule
+    - SWEventScheduler
+    - SWRespawnGamerule
+    - SWMineCollapseGamerule
+    - SWWantedSelectRule
+    - SWAutoBalanceGamerule
+    - SWEndRoundGamerule
+    - SWRadioactiveStromGamerule
+
+- type: gamePreset
+  id: SWMainPresetAutoBalanceNoRadStorm
   name: Обычный день (автобаланс тест)
   description: Обычный день. Выполняйте регулярные задания от своего командования.
   showInVote: false

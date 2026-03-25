@@ -52,3 +52,14 @@
     SWEmpireCreditCurrency: 50
   category: sw-category-materials
   group: SWMaterialsMarket
+
+- type: swCargoProduct
+  id: SWPlasmaCP
+  icon:
+    sprite: Objects/Materials/Sheets/other.rsi
+    state: plasma_3
+  product: SheetPlasma
+  cost:
+    SWEmpireCreditCurrency: 100
+  category: sw-category-materials
+  group: SWMaterialsMarket

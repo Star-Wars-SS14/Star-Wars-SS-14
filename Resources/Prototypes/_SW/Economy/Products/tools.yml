@@ -41,3 +41,14 @@
     SWEmpireCreditCurrency: 25
   category: sw-category-tools
   group: SWToolsMarket
+
+- type: swCargoProduct
+  id: SWCrateEmergencyRadiationCP
+  icon:
+    sprite: Structures/Storage/Crates/radiation.rsi
+    state: icon
+  product: CrateEmergencyRadiation
+  cost:
+    SWEmpireCreditCurrency: 100
+  category: sw-category-tools
+  group: SWToolsMarket

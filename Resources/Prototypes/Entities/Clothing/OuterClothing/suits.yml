@@ -143,6 +143,9 @@
   - type: HideLayerClothing
     slots:
     - Tail
+  - type: Tag
+    tags:
+      - SWEquipmentForceWL
 
 - type: entity
   parent: [ClothingOuterBaseLarge, AllowSuitStorageClothing, BaseToggleClothing, BaseHighlyIllegalContraband]

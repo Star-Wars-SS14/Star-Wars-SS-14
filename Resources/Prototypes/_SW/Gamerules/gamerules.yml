@@ -24,6 +24,17 @@
 
 - type: entity
   parent: BaseGameRule
+  id: SWRadioactiveStromGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWRadioactiveStormGamerule
+    damage:
+      types:
+        Radiation: 0.5
+
+- type: entity
+  parent: BaseGameRule
   id: SWAutoBalanceGamerule
   components:
   - type: GameRule

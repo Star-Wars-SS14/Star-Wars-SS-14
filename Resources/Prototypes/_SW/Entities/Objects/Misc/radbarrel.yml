@@ -1,0 +1,58 @@
+- type: entity
+  parent: BaseBarrelChemRadioactive
+  id: SWBarrelRadioactiveWaste
+  suffix: SW
+  components:
+  - type: SolutionContainerManager
+    solutions:
+      tank:
+        maxVol: 100000
+        reagents:
+        - ReagentId: SWRadioactiveWaste
+          Quantity: 100000
+  - type: RadiationSource
+    intensity: 5.0
+    slope: 0.5
+  - type: SWTriggerOnHighTemperature
+    threshold: 270
+  - type: ExplodeOnTrigger
+  - type: Explosive
+    explosionType: Default
+    maxIntensity: 10
+    intensitySlope: 3
+    totalIntensity: 120 # about a ~4 tile radius
+    canCreateVacuum: false
+  - type: Temperature
+    currentTemperature: 200 #start with temperature below threshold
+    atmosTemperatureTransferEfficiency: 0.1
+    damageCap: 0 #disable damage
+    coldDamageThreshold: 0
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: GasThermoMachine
+    heatCapacity: 100
+    energyLeakPercentage: 0.15
+    atmospheric: true
+    coefficientOfPerformance: 1.0
+    targetTemperature: 280
+  - type: AtmosDevice
+    requireAnchored: false
+  - type: AtmosExposed
+  - type: SWCauseRadioactiveStormOnTrigger
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 5
+      behaviors:
+      - !type:TriggerBehavior
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:DoActsBehavior
+        acts: ["Destruction"]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+

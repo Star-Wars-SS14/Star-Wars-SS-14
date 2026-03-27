@@ -1,0 +1,573 @@
+# CMAirlockSecurity
+- type: entity
+  id: CMAirlockSecurityRepGeneral
+  parent: CMAirlockSecurity
+  suffix: RepGeneral
+  components:
+  - type: AccessReader
+    access: [["SWRepublicGeneral"]]
+
+- type: entity
+  id: CMAirlockSecurityRepBase
+  parent: CMAirlockSecurity
+  suffix: RepBase
+  components:
+  - type: AccessReader
+    access: [["SWRepublicBase"]]
+
+- type: entity
+  id: CMAirlockSecurityRepComm
+  parent: CMAirlockSecurity
+  suffix: RepComm
+  components:
+  - type: AccessReader
+    access: [["SWRepublicCommander"]]
+
+- type: entity
+  id: CMAirlockSecurityRepArsenal
+  parent: CMAirlockSecurity
+  suffix: RepArsenal
+  components:
+  - type: AccessReader
+    access: [["SWRepublicArsenal"]]
+
+- type: entity
+  id: CMAirlockSecurityRepHavok
+  parent: CMAirlockSecurity
+  suffix: RepHavok
+  components:
+  - type: AccessReader
+    access: [["SWRepublicHavok"]]
+
+# CMAirlockSecure
+- type: entity
+  id: CMAirlockSecureRepGeneral
+  parent: CMAirlockSecure
+  suffix: RepGeneral
+  components:
+  - type: AccessReader
+    access: [["SWRepublicGeneral"]]
+
+- type: entity
+  id: CMAirlockSecureRepBase
+  parent: CMAirlockSecure
+  suffix: RepBase
+  components:
+  - type: AccessReader
+    access: [["SWRepublicBase"]]
+
+- type: entity
+  id: CMAirlockSecureRepComm
+  parent: CMAirlockSecure
+  suffix: RepComm
+  components:
+  - type: AccessReader
+    access: [["SWRepublicCommander"]]
+
+- type: entity
+  id: CMAirlockSecureRepArsenal
+  parent: CMAirlockSecure
+  suffix: RepArsenal
+  components:
+  - type: AccessReader
+    access: [["SWRepublicArsenal"]]
+
+- type: entity
+  id: CMAirlockSecureRepHavok
+  parent: CMAirlockSecure
+  suffix: RepHavok
+  components:
+  - type: AccessReader
+    access: [["SWRepublicHavok"]]
+
+# CMAirlockGlassSecurity
+- type: entity
+  id: CMAirlockGlassSecurityRepGeneral
+  parent: CMAirlockGlassSecurity
+  suffix: RepGeneral
+  components:
+  - type: AccessReader
+    access: [["SWRepublicGeneral"]]
+
+- type: entity
+  id: CMAirlockGlassSecurityRepBase
+  parent: CMAirlockGlassSecurity
+  suffix: RepBase
+  components:
+  - type: AccessReader
+    access: [["SWRepublicBase"]]
+
+- type: entity
+  id: CMAirlockGlassSecurityRepComm
+  parent: CMAirlockGlassSecurity
+  suffix: RepComm
+  components:
+  - type: AccessReader
+    access: [["SWRepublicCommander"]]
+
+- type: entity
+  id: CMAirlockGlassSecurityRepArsenal
+  parent: CMAirlockGlassSecurity
+  suffix: RepArsenal
+  components:
+  - type: AccessReader
+    access: [["SWRepublicArsenal"]]
+
+- type: entity
+  id: CMAirlockGlassSecurityRepHavok
+  parent: CMAirlockGlassSecurity
+  suffix: RepHavok
+  components:
+  - type: AccessReader
+    access: [["SWRepublicHavok"]]
+
+# CMDoubleDoorSecuritySolid
+- type: entity
+  id: CMDoubleDoorSecuritySolidRepGeneral
+  parent: CMDoubleDoorSecuritySolid
+  suffix: RepGeneral
+  components:
+  - type: AccessReader
+    access: [["SWRepublicGeneral"]]
+
+- type: entity
+  id: CMDoubleDoorSecuritySolidRepBase
+  parent: CMDoubleDoorSecuritySolid
+  suffix: RepBase
+  components:
+  - type: AccessReader
+    access: [["SWRepublicBase"]]
+
+- type: entity
+  id: CMDoubleDoorSecuritySolidRepComm
+  parent: CMDoubleDoorSecuritySolid
+  suffix: RepComm
+  components:
+  - type: AccessReader
+    access: [["SWRepublicCommander"]]
+
+- type: entity
+  id: CMDoubleDoorSecuritySolidRepArsenal
+  parent: CMDoubleDoorSecuritySolid
+  suffix: RepArsenal
+  components:
+  - type: AccessReader
+    access: [["SWRepublicArsenal"]]
+
+- type: entity
+  id: CMDoubleDoorSecuritySolidRepHavok
+  parent: CMDoubleDoorSecuritySolid
+  suffix: RepHavok
+  components:
+  - type: AccessReader
+    access: [["SWRepublicHavok"]]
+
+# CMAirlockCommand
+- type: entity
+  id: CMAirlockCommandRepGeneral
+  parent: CMAirlockCommand
+  suffix: RepGeneral
+  components:
+  - type: AccessReader
+    access: [["SWRepublicGeneral"]]
+
+- type: entity
+  id: CMAirlockCommandRepBase
+  parent: CMAirlockCommand
+  suffix: RepBase
+  components:
+  - type: AccessReader
+    access: [["SWRepublicBase"]]
+
+- type: entity
+  id: CMAirlockCommandRepComm
+  parent: CMAirlockCommand
+  suffix: RepComm
+  components:
+  - type: AccessReader
+    access: [["SWRepublicCommander"]]
+
+- type: entity
+  id: CMAirlockCommandRepArsenal
+  parent: CMAirlockCommand
+  suffix: RepArsenal
+  components:
+  - type: AccessReader
+    access: [["SWRepublicArsenal"]]
+
+- type: entity
+  id: CMAirlockCommandRepHavok
+  parent: CMAirlockCommand
+  suffix: RepHavok
+  components:
+  - type: AccessReader
+    access: [["SWRepublicHavok"]]
+
+# CMDoubleDoorGenericGlass
+- type: entity
+  id: CMDoubleDoorGenericGlassRepGeneral
+  parent: CMDoubleDoorGenericGlass
+  suffix: RepGeneral
+  components:
+  - type: AccessReader
+    access: [["SWRepublicGeneral"]]
+
+- type: entity
+  id: CMDoubleDoorGenericGlassRepBase
+  parent: CMDoubleDoorGenericGlass
+  suffix: RepBase
+  components:
+  - type: AccessReader
+    access: [["SWRepublicBase"]]
+
+- type: entity
+  id: CMDoubleDoorGenericGlassRepComm
+  parent: CMDoubleDoorGenericGlass
+  suffix: RepComm
+  components:
+  - type: AccessReader
+    access: [["SWRepublicCommander"]]
+
+- type: entity
+  id: CMDoubleDoorGenericGlassRepArsenal
+  parent: CMDoubleDoorGenericGlass
+  suffix: RepArsenal
+  components:
+  - type: AccessReader
+    access: [["SWRepublicArsenal"]]
+
+- type: entity
+  id: CMDoubleDoorGenericGlassRepHavok
+  parent: CMDoubleDoorGenericGlass
+  suffix: RepHavok
+  components:
+  - type: AccessReader
+    access: [["SWRepublicHavok"]]
+
+# CMAirlockMedical
+- type: entity
+  id: CMAirlockMedicalRepGeneral
+  parent: CMAirlockMedical
+  suffix: RepGeneral
+  components:
+  - type: AccessReader
+    access: [["SWRepublicGeneral"]]
+
+- type: entity
+  id: CMAirlockMedicalRepBase
+  parent: CMAirlockMedical
+  suffix: RepBase
+  components:
+  - type: AccessReader
+    access: [["SWRepublicBase"]]
+
+- type: entity
+  id: CMAirlockMedicalRepComm
+  parent: CMAirlockMedical
+  suffix: RepComm
+  components:
+  - type: AccessReader
+    access: [["SWRepublicCommander"]]
+
+- type: entity
+  id: CMAirlockMedicalRepArsenal
+  parent: CMAirlockMedical
+  suffix: RepArsenal
+  components:
+  - type: AccessReader
+    access: [["SWRepublicArsenal"]]
+
+- type: entity
+  id: CMAirlockMedicalRepHavok
+  parent: CMAirlockMedical
+  suffix: RepHavok
+  components:
+  - type: AccessReader
+    access: [["SWRepublicHavok"]]
+
+# CMAirlockPrepAlpha
+- type: entity
+  id: CMAirlockPrepAlphaRepGeneral
+  parent: CMAirlockPrepAlpha
+  suffix: RepGeneral
+  components:
+  - type: AccessReader
+    access: [["SWRepublicGeneral"]]
+
+- type: entity
+  id: CMAirlockPrepAlphaRepBase
+  parent: CMAirlockPrepAlpha
+  suffix: RepBase
+  components:
+  - type: AccessReader
+    access: [["SWRepublicBase"]]
+
+- type: entity
+  id: CMAirlockPrepAlphaRepComm
+  parent: CMAirlockPrepAlpha
+  suffix: RepComm
+  components:
+  - type: AccessReader
+    access: [["SWRepublicCommander"]]
+
+- type: entity
+  id: CMAirlockPrepAlphaRepArsenal
+  parent: CMAirlockPrepAlpha
+  suffix: RepArsenal
+  components:
+  - type: AccessReader
+    access: [["SWRepublicArsenal"]]
+
+- type: entity
+  id: CMAirlockPrepAlphaRepHavok
+  parent: CMAirlockPrepAlpha
+  suffix: RepHavok
+  components:
+  - type: AccessReader
+    access: [["SWRepublicHavok"]]
+
+# CMAirlockGlass
+- type: entity
+  id: CMAirlockGlassRepGeneral
+  parent: CMAirlockGlass
+  suffix: RepGeneral
+  components:
+  - type: AccessReader
+    access: [["SWRepublicGeneral"]]
+
+- type: entity
+  id: CMAirlockGlassRepBase
+  parent: CMAirlockGlass
+  suffix: RepBase
+  components:
+  - type: AccessReader
+    access: [["SWRepublicBase"]]
+
+- type: entity
+  id: CMAirlockGlassRepComm
+  parent: CMAirlockGlass
+  suffix: RepComm
+  components:
+  - type: AccessReader
+    access: [["SWRepublicCommander"]]
+
+- type: entity
+  id: CMAirlockGlassRepArsenal
+  parent: CMAirlockGlass
+  suffix: RepArsenal
+  components:
+  - type: AccessReader
+    access: [["SWRepublicArsenal"]]
+
+- type: entity
+  id: CMAirlockGlassRepHavok
+  parent: CMAirlockGlass
+  suffix: RepHavok
+  components:
+  - type: AccessReader
+    access: [["SWRepublicHavok"]]
+
+# CMDoubleDoorAlmayerSolid
+- type: entity
+  id: CMDoubleDoorAlmayerSolidRepGeneral
+  parent: CMDoubleDoorAlmayerSolid
+  suffix: RepGeneral
+  components:
+  - type: AccessReader
+    access: [["SWRepublicGeneral"]]
+
+- type: entity
+  id: CMDoubleDoorAlmayerSolidRepBase
+  parent: CMDoubleDoorAlmayerSolid
+  suffix: RepBase
+  components:
+  - type: AccessReader
+    access: [["SWRepublicBase"]]
+
+- type: entity
+  id: CMDoubleDoorAlmayerSolidRepComm
+  parent: CMDoubleDoorAlmayerSolid
+  suffix: RepComm
+  components:
+  - type: AccessReader
+    access: [["SWRepublicCommander"]]
+
+- type: entity
+  id: CMDoubleDoorAlmayerSolidRepArsenal
+  parent: CMDoubleDoorAlmayerSolid
+  suffix: RepArsenal
+  components:
+  - type: AccessReader
+    access: [["SWRepublicArsenal"]]
+
+- type: entity
+  id: CMDoubleDoorAlmayerSolidRepHavok
+  parent: CMDoubleDoorAlmayerSolid
+  suffix: RepHavok
+  components:
+  - type: AccessReader
+    access: [["SWRepublicHavok"]]
+
+# CMAirlockGlassMedical
+- type: entity
+  id: CMAirlockGlassMedicalRepGeneral
+  parent: CMAirlockGlassMedical
+  suffix: RepGeneral
+  components:
+  - type: AccessReader
+    access: [["SWRepublicGeneral"]]
+
+- type: entity
+  id: CMAirlockGlassMedicalRepBase
+  parent: CMAirlockGlassMedical
+  suffix: RepBase
+  components:
+  - type: AccessReader
+    access: [["SWRepublicBase"]]
+
+- type: entity
+  id: CMAirlockGlassMedicalRepComm
+  parent: CMAirlockGlassMedical
+  suffix: RepComm
+  components:
+  - type: AccessReader
+    access: [["SWRepublicCommander"]]
+
+- type: entity
+  id: CMAirlockGlassMedicalRepArsenal
+  parent: CMAirlockGlassMedical
+  suffix: RepArsenal
+  components:
+  - type: AccessReader
+    access: [["SWRepublicArsenal"]]
+
+- type: entity
+  id: CMAirlockGlassMedicalRepHavok
+  parent: CMAirlockGlassMedical
+  suffix: RepHavok
+  components:
+  - type: AccessReader
+    access: [["SWRepublicHavok"]]
+
+# CMDoubleDoorPersonalSolid
+- type: entity
+  id: CMDoubleDoorPersonalSolidRepGeneral
+  parent: CMDoubleDoorPersonalSolid
+  suffix: RepGeneral
+  components:
+  - type: AccessReader
+    access: [["SWRepublicGeneral"]]
+
+- type: entity
+  id: CMDoubleDoorPersonalSolidRepBase
+  parent: CMDoubleDoorPersonalSolid
+  suffix: RepBase
+  components:
+  - type: AccessReader
+    access: [["SWRepublicBase"]]
+
+- type: entity
+  id: CMDoubleDoorPersonalSolidRepComm
+  parent: CMDoubleDoorPersonalSolid
+  suffix: RepComm
+  components:
+  - type: AccessReader
+    access: [["SWRepublicCommander"]]
+
+- type: entity
+  id: CMDoubleDoorPersonalSolidRepArsenal
+  parent: CMDoubleDoorPersonalSolid
+  suffix: RepArsenal
+  components:
+  - type: AccessReader
+    access: [["SWRepublicArsenal"]]
+
+- type: entity
+  id: CMDoubleDoorPersonalSolidRepHavok
+  parent: CMDoubleDoorPersonalSolid
+  suffix: RepHavok
+  components:
+  - type: AccessReader
+    access: [["SWRepublicHavok"]]
+
+# CMDoubleDoorMedicalSolid
+- type: entity
+  id: CMDoubleDoorMedicalSolidRepGeneral
+  parent: CMDoubleDoorMedicalSolid
+  suffix: RepGeneral
+  components:
+  - type: AccessReader
+    access: [["SWRepublicGeneral"]]
+
+- type: entity
+  id: CMDoubleDoorMedicalSolidRepBase
+  parent: CMDoubleDoorMedicalSolid
+  suffix: RepBase
+  components:
+  - type: AccessReader
+    access: [["SWRepublicBase"]]
+
+- type: entity
+  id: CMDoubleDoorMedicalSolidRepComm
+  parent: CMDoubleDoorMedicalSolid
+  suffix: RepComm
+  components:
+  - type: AccessReader
+    access: [["SWRepublicCommander"]]
+
+- type: entity
+  id: CMDoubleDoorMedicalSolidRepArsenal
+  parent: CMDoubleDoorMedicalSolid
+  suffix: RepArsenal
+  components:
+  - type: AccessReader
+    access: [["SWRepublicArsenal"]]
+
+- type: entity
+  id: CMDoubleDoorMedicalSolidRepHavok
+  parent: CMDoubleDoorMedicalSolid
+  suffix: RepHavok
+  components:
+  - type: AccessReader
+    access: [["SWRepublicHavok"]]
+
+# CMDoubleDoorEngineerGlass
+- type: entity
+  id: CMDoubleDoorEngineerGlassRepGeneral
+  parent: CMDoubleDoorEngineerGlass
+  suffix: RepGeneral
+  components:
+  - type: AccessReader
+    access: [["SWRepublicGeneral"]]
+
+- type: entity
+  id: CMDoubleDoorEngineerGlassRepBase
+  parent: CMDoubleDoorEngineerGlass
+  suffix: RepBase
+  components:
+  - type: AccessReader
+    access: [["SWRepublicBase"]]
+
+- type: entity
+  id: CMDoubleDoorEngineerGlassRepComm
+  parent: CMDoubleDoorEngineerGlass
+  suffix: RepComm
+  components:
+  - type: AccessReader
+    access: [["SWRepublicCommander"]]
+
+- type: entity
+  id: CMDoubleDoorEngineerGlassRepArsenal
+  parent: CMDoubleDoorEngineerGlass
+  suffix: RepArsenal
+  components:
+  - type: AccessReader
+    access: [["SWRepublicArsenal"]]
+
+- type: entity
+  id: CMDoubleDoorEngineerGlassRepHavok
+  parent: CMDoubleDoorEngineerGlass
+  suffix: RepHavok
+  components:
+  - type: AccessReader
+    access: [["SWRepublicHavok"]]

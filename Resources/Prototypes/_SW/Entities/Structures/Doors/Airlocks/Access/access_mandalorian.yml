@@ -1,0 +1,125 @@
+# CMAirlockSecurity
+- type: entity
+  id: CMAirlockSecurityMandalorian
+  parent: CMAirlockSecurity
+  suffix: Mandalorian
+  components:
+  - type: AccessReader
+    access: [["SWMandalorian"]]
+
+# CMAirlockSecure
+- type: entity
+  id: CMAirlockSecureMandalorian
+  parent: CMAirlockSecure
+  suffix: Mandalorian
+  components:
+  - type: AccessReader
+    access: [["SWMandalorian"]]
+
+# CMAirlockGlassSecurity
+- type: entity
+  id: CMAirlockGlassSecurityMandalorian
+  parent: CMAirlockGlassSecurity
+  suffix: Mandalorian
+  components:
+  - type: AccessReader
+    access: [["SWMandalorian"]]
+
+# CMDoubleDoorSecuritySolid
+- type: entity
+  id: CMDoubleDoorSecuritySolidMandalorian
+  parent: CMDoubleDoorSecuritySolid
+  suffix: Mandalorian
+  components:
+  - type: AccessReader
+    access: [["SWMandalorian"]]
+
+# CMAirlockCommand
+- type: entity
+  id: CMAirlockCommandMandalorian
+  parent: CMAirlockCommand
+  suffix: Mandalorian
+  components:
+  - type: AccessReader
+    access: [["SWMandalorian"]]
+
+# CMDoubleDoorGenericGlass
+- type: entity
+  id: CMDoubleDoorGenericGlassMandalorian
+  parent: CMDoubleDoorGenericGlass
+  suffix: Mandalorian
+  components:
+  - type: AccessReader
+    access: [["SWMandalorian"]]
+
+# CMAirlockMedical
+- type: entity
+  id: CMAirlockMedicalMandalorian
+  parent: CMAirlockMedical
+  suffix: Mandalorian
+  components:
+  - type: AccessReader
+    access: [["SWMandalorian"]]
+
+# CMAirlockPrepAlpha
+- type: entity
+  id: CMAirlockPrepAlphaMandalorian
+  parent: CMAirlockPrepAlpha
+  suffix: Mandalorian
+  components:
+  - type: AccessReader
+    access: [["SWMandalorian"]]
+
+# CMAirlockGlass
+- type: entity
+  id: CMAirlockGlassMandalorian
+  parent: CMAirlockGlass
+  suffix: Mandalorian
+  components:
+  - type: AccessReader
+    access: [["SWMandalorian"]]
+
+# CMDoubleDoorAlmayerSolid
+- type: entity
+  id: CMDoubleDoorAlmayerSolidMandalorian
+  parent: CMDoubleDoorAlmayerSolid
+  suffix: Mandalorian
+  components:
+  - type: AccessReader
+    access: [["SWMandalorian"]]
+
+# CMAirlockGlassMedical
+- type: entity
+  id: CMAirlockGlassMedicalMandalorian
+  parent: CMAirlockGlassMedical
+  suffix: Mandalorian
+  components:
+  - type: AccessReader
+    access: [["SWMandalorian"]]
+
+# CMDoubleDoorPersonalSolid
+- type: entity
+  id: CMDoubleDoorPersonalSolidMandalorian
+  parent: CMDoubleDoorPersonalSolid
+  suffix: Mandalorian
+  components:
+  - type: AccessReader
+    access: [["SWMandalorian"]]
+
+# CMDoubleDoorMedicalSolid
+- type: entity
+  id: CMDoubleDoorMedicalSolidMandalorian
+  parent: CMDoubleDoorMedicalSolid
+  suffix: Mandalorian
+  components:
+  - type: AccessReader
+    access: [["SWMandalorian"]]
+
+# CMDoubleDoorEngineerGlass
+- type: entity
+  id: CMDoubleDoorEngineerGlassMandalorian
+  parent: CMDoubleDoorEngineerGlass
+  suffix: Mandalorian
+  components:
+  - type: AccessReader
+    access: [["SWMandalorian"]]

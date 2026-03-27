@@ -1,0 +1,125 @@
+# CMAirlockSecurity
+- type: entity
+  id: CMAirlockSecurityBlackSun
+  parent: CMAirlockSecurity
+  suffix: BlackSun
+  components:
+  - type: AccessReader
+    access: [["SWBlackSun"]]
+
+# CMAirlockSecure
+- type: entity
+  id: CMAirlockSecureBlackSun
+  parent: CMAirlockSecure
+  suffix: BlackSun
+  components:
+  - type: AccessReader
+    access: [["SWBlackSun"]]
+
+# CMAirlockGlassSecurity
+- type: entity
+  id: CMAirlockGlassSecurityBlackSun
+  parent: CMAirlockGlassSecurity
+  suffix: BlackSun
+  components:
+  - type: AccessReader
+    access: [["SWBlackSun"]]
+
+# CMDoubleDoorSecuritySolid
+- type: entity
+  id: CMDoubleDoorSecuritySolidBlackSun
+  parent: CMDoubleDoorSecuritySolid
+  suffix: BlackSun
+  components:
+  - type: AccessReader
+    access: [["SWBlackSun"]]
+
+# CMAirlockCommand
+- type: entity
+  id: CMAirlockCommandBlackSun
+  parent: CMAirlockCommand
+  suffix: BlackSun
+  components:
+  - type: AccessReader
+    access: [["SWBlackSun"]]
+
+# CMDoubleDoorGenericGlass
+- type: entity
+  id: CMDoubleDoorGenericGlassBlackSun
+  parent: CMDoubleDoorGenericGlass
+  suffix: BlackSun
+  components:
+  - type: AccessReader
+    access: [["SWBlackSun"]]
+
+# CMAirlockMedical
+- type: entity
+  id: CMAirlockMedicalBlackSun
+  parent: CMAirlockMedical
+  suffix: BlackSun
+  components:
+  - type: AccessReader
+    access: [["SWBlackSun"]]
+
+# CMAirlockPrepAlpha
+- type: entity
+  id: CMAirlockPrepAlphaBlackSun
+  parent: CMAirlockPrepAlpha
+  suffix: BlackSun
+  components:
+  - type: AccessReader
+    access: [["SWBlackSun"]]
+
+# CMAirlockGlass
+- type: entity
+  id: CMAirlockGlassBlackSun
+  parent: CMAirlockGlass
+  suffix: BlackSun
+  components:
+  - type: AccessReader
+    access: [["SWBlackSun"]]
+
+# CMDoubleDoorAlmayerSolid
+- type: entity
+  id: CMDoubleDoorAlmayerSolidBlackSun
+  parent: CMDoubleDoorAlmayerSolid
+  suffix: BlackSun
+  components:
+  - type: AccessReader
+    access: [["SWBlackSun"]]
+
+# CMAirlockGlassMedical
+- type: entity
+  id: CMAirlockGlassMedicalBlackSun
+  parent: CMAirlockGlassMedical
+  suffix: BlackSun
+  components:
+  - type: AccessReader
+    access: [["SWBlackSun"]]
+
+# CMDoubleDoorPersonalSolid
+- type: entity
+  id: CMDoubleDoorPersonalSolidBlackSun
+  parent: CMDoubleDoorPersonalSolid
+  suffix: BlackSun
+  components:
+  - type: AccessReader
+    access: [["SWBlackSun"]]
+
+# CMDoubleDoorMedicalSolid
+- type: entity
+  id: CMDoubleDoorMedicalSolidBlackSun
+  parent: CMDoubleDoorMedicalSolid
+  suffix: BlackSun
+  components:
+  - type: AccessReader
+    access: [["SWBlackSun"]]
+
+# CMDoubleDoorEngineerGlass
+- type: entity
+  id: CMDoubleDoorEngineerGlassBlackSun
+  parent: CMDoubleDoorEngineerGlass
+  suffix: BlackSun
+  components:
+  - type: AccessReader
+    access: [["SWBlackSun"]]

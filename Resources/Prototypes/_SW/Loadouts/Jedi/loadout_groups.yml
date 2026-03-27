@@ -1,7 +1,10 @@
 - type: loadoutGroup
   id: SWJediloadout
   name: sw-jedi-loadout
-  minLimit: 0
+  minLimit: 1
   maxLimit: 1
   loadouts:
+  - SWJediCoat
+  - SWJediArmor1
+  - SWJediArmor2
   - SWJedi

@@ -1,0 +1,17 @@
+- type: loadout
+  id: SWSithArmor1
+  name: Броня ситха
+  equipment:
+    outerClothing: SWSithSuit1
+
+- type: loadout
+  id: SWSithArmor2
+  name: Броня ситха
+  equipment:
+    outerClothing: SWSithSuit2
+
+- type: loadout
+  id: SWSithCoat
+  name: Плащ ситха
+  equipment:
+    outerClothing: SWSithCoat

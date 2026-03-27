@@ -1,0 +1,9 @@
+- type: loadoutGroup
+  id: SWSithloadout
+  name: sw-jedi-loadout
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - SWSithCoat
+  - SWSithArmor1
+  - SWSithArmor2

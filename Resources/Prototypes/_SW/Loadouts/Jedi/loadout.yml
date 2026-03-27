@@ -5,3 +5,21 @@
     outerClothing: SWjedidecorarmor
     head: SWJedidecorhelmet
     neck: SWJediDecorCape
+
+- type: loadout
+  id: SWJediCoat
+  name: Плащ джедая
+  equipment:
+    outerClothing: SWJediCoat
+
+- type: loadout
+  id: SWJediArmor1
+  name: Броня джедая
+  equipment:
+    outerClothing: SWJediSuit1
+
+- type: loadout
+  id: SWJediArmor2
+  name: Броня джедая
+  equipment:
+    outerClothing: SWJediSuit2

@@ -7,7 +7,6 @@
     shoes: SWClothingShoesBootsSith
     ears: SWClothingHeadsetAllEmpire
     id: SWIDCardSith
-    outerClothing: SWSithCoat
     neck: SWClothingNeckCloakSithCloak
     pocket1: SWEnergySwordSith
 
@@ -20,6 +19,5 @@
     shoes: SWClothingShoesBootsJedi
     ears: SWClothingHeadsetRepublicAll
     id: SWIDCardJedi
-    outerClothing: SWJediCoat
     neck: SWClothingNeckCloakJediCloak
     pocket1: SWEnergySwordJedi

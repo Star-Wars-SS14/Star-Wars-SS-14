@@ -1,0 +1,6 @@
+- type: entity
+  id: CMAirlockSecurityMoff
+  parent: CMAirlockSecurity
+  components:
+  - type: AccessReader
+    access: [["Engineering"]]

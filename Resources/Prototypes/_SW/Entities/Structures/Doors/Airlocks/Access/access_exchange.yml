@@ -1,0 +1,125 @@
+# CMAirlockSecurity
+- type: entity
+  id: CMAirlockSecurityExchange
+  parent: CMAirlockSecurity
+  suffix: Exchange
+  components:
+  - type: AccessReader
+    access: [["SWExchange"]]
+
+# CMAirlockSecure
+- type: entity
+  id: CMAirlockSecureExchange
+  parent: CMAirlockSecure
+  suffix: Exchange
+  components:
+  - type: AccessReader
+    access: [["SWExchange"]]
+
+# CMAirlockGlassSecurity
+- type: entity
+  id: CMAirlockGlassSecurityExchange
+  parent: CMAirlockGlassSecurity
+  suffix: Exchange
+  components:
+  - type: AccessReader
+    access: [["SWExchange"]]
+
+# CMDoubleDoorSecuritySolid
+- type: entity
+  id: CMDoubleDoorSecuritySolidExchange
+  parent: CMDoubleDoorSecuritySolid
+  suffix: Exchange
+  components:
+  - type: AccessReader
+    access: [["SWExchange"]]
+
+# CMAirlockCommand
+- type: entity
+  id: CMAirlockCommandExchange
+  parent: CMAirlockCommand
+  suffix: Exchange
+  components:
+  - type: AccessReader
+    access: [["SWExchange"]]
+
+# CMDoubleDoorGenericGlass
+- type: entity
+  id: CMDoubleDoorGenericGlassExchange
+  parent: CMDoubleDoorGenericGlass
+  suffix: Exchange
+  components:
+  - type: AccessReader
+    access: [["SWExchange"]]
+
+# CMAirlockMedical
+- type: entity
+  id: CMAirlockMedicalExchange
+  parent: CMAirlockMedical
+  suffix: Exchange
+  components:
+  - type: AccessReader
+    access: [["SWExchange"]]
+
+# CMAirlockPrepAlpha
+- type: entity
+  id: CMAirlockPrepAlphaExchange
+  parent: CMAirlockPrepAlpha
+  suffix: Exchange
+  components:
+  - type: AccessReader
+    access: [["SWExchange"]]
+
+# CMAirlockGlass
+- type: entity
+  id: CMAirlockGlassExchange
+  parent: CMAirlockGlass
+  suffix: Exchange
+  components:
+  - type: AccessReader
+    access: [["SWExchange"]]
+
+# CMDoubleDoorAlmayerSolid
+- type: entity
+  id: CMDoubleDoorAlmayerSolidExchange
+  parent: CMDoubleDoorAlmayerSolid
+  suffix: Exchange
+  components:
+  - type: AccessReader
+    access: [["SWExchange"]]
+
+# CMAirlockGlassMedical
+- type: entity
+  id: CMAirlockGlassMedicalExchange
+  parent: CMAirlockGlassMedical
+  suffix: Exchange
+  components:
+  - type: AccessReader
+    access: [["SWExchange"]]
+
+# CMDoubleDoorPersonalSolid
+- type: entity
+  id: CMDoubleDoorPersonalSolidExchange
+  parent: CMDoubleDoorPersonalSolid
+  suffix: Exchange
+  components:
+  - type: AccessReader
+    access: [["SWExchange"]]
+
+# CMDoubleDoorMedicalSolid
+- type: entity
+  id: CMDoubleDoorMedicalSolidExchange
+  parent: CMDoubleDoorMedicalSolid
+  suffix: Exchange
+  components:
+  - type: AccessReader
+    access: [["SWExchange"]]
+
+# CMDoubleDoorEngineerGlass
+- type: entity
+  id: CMDoubleDoorEngineerGlassExchange
+  parent: CMDoubleDoorEngineerGlass
+  suffix: Exchange
+  components:
+  - type: AccessReader
+    access: [["SWExchange"]]

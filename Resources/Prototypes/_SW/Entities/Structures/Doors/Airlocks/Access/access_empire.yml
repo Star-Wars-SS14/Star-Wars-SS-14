@@ -1,6 +1,699 @@
+# CMAirlockSecurity
 - type: entity
-  id: CMAirlockSecurityMoff
+  id: CMAirlockSecurityEmpMoff
   parent: CMAirlockSecurity
+  suffix: EmpMoff
   components:
   - type: AccessReader
-    access: [["Engineering"]]
+    access: [["SWEmpireMoff"]]
+
+- type: entity
+  id: CMAirlockSecurityEmpComm
+  parent: CMAirlockSecurity
+  suffix: EmpComm
+  components:
+  - type: AccessReader
+    access: [["SWEmpireCommander"]]
+
+- type: entity
+  id: CMAirlockSecurityEmpBase
+  parent: CMAirlockSecurity
+  suffix: EmpBase
+  components:
+  - type: AccessReader
+    access: [["SWEmpireBase"]]
+
+- type: entity
+  id: CMAirlockSecurityEmpIntelligence
+  parent: CMAirlockSecurity
+  suffix: EmpIntelligence
+  components:
+  - type: AccessReader
+    access: [["SWEmpireIntelligence"]]
+
+- type: entity
+  id: CMAirlockSecurityEmpSobrik
+  parent: CMAirlockSecurity
+  suffix: EmpSobrik
+  components:
+  - type: AccessReader
+    access: [["SWEmpireSobrik"]]
+
+# CMAirlockSecure
+- type: entity
+  id: CMAirlockSecureEmpMoff
+  parent: CMAirlockSecure
+  suffix: EmpMoff
+  components:
+  - type: AccessReader
+    access: [["SWEmpireMoff"]]
+
+- type: entity
+  id: CMAirlockSecureEmpComm
+  parent: CMAirlockSecure
+  suffix: EmpComm
+  components:
+  - type: AccessReader
+    access: [["SWEmpireCommander"]]
+
+- type: entity
+  id: CMAirlockSecureEmpBase
+  parent: CMAirlockSecure
+  suffix: EmpBase
+  components:
+  - type: AccessReader
+    access: [["SWEmpireBase"]]
+
+- type: entity
+  id: CMAirlockSecureEmpIntelligence
+  parent: CMAirlockSecure
+  suffix: EmpIntelligence
+  components:
+  - type: AccessReader
+    access: [["SWEmpireIntelligence"]]
+
+- type: entity
+  id: CMAirlockSecureEmpSobrik
+  parent: CMAirlockSecure
+  suffix: EmpSobrik
+  components:
+  - type: AccessReader
+    access: [["SWEmpireSobrik"]]
+
+# CMAirlockGlassSecurity
+- type: entity
+  id: CMAirlockGlassSecurityEmpMoff
+  parent: CMAirlockGlassSecurity
+  suffix: EmpMoff
+  components:
+  - type: AccessReader
+    access: [["SWEmpireMoff"]]
+
+- type: entity
+  id: CMAirlockGlassSecurityEmpComm
+  parent: CMAirlockGlassSecurity
+  suffix: EmpComm
+  components:
+  - type: AccessReader
+    access: [["SWEmpireCommander"]]
+
+- type: entity
+  id: CMAirlockGlassSecurityEmpBase
+  parent: CMAirlockGlassSecurity
+  suffix: EmpBase
+  components:
+  - type: AccessReader
+    access: [["SWEmpireBase"]]
+
+- type: entity
+  id: CMAirlockGlassSecurityEmpIntelligence
+  parent: CMAirlockGlassSecurity
+  suffix: EmpIntelligence
+  components:
+  - type: AccessReader
+    access: [["SWEmpireIntelligence"]]
+
+- type: entity
+  id: CMAirlockGlassSecurityEmpSobrik
+  parent: CMAirlockGlassSecurity
+  suffix: EmpSobrik
+  components:
+  - type: AccessReader
+    access: [["SWEmpireSobrik"]]
+
+# CMDoubleDoorSecuritySolid
+- type: entity
+  id: CMDoubleDoorSecuritySolidEmpMoff
+  parent: CMDoubleDoorSecuritySolid
+  suffix: EmpMoff
+  components:
+  - type: AccessReader
+    access: [["SWEmpireMoff"]]
+
+- type: entity
+  id: CMDoubleDoorSecuritySolidEmpComm
+  parent: CMDoubleDoorSecuritySolid
+  suffix: EmpComm
+  components:
+  - type: AccessReader
+    access: [["SWEmpireCommander"]]
+
+- type: entity
+  id: CMDoubleDoorSecuritySolidEmpBase
+  parent: CMDoubleDoorSecuritySolid
+  suffix: EmpBase
+  components:
+  - type: AccessReader
+    access: [["SWEmpireBase"]]
+
+- type: entity
+  id: CMDoubleDoorSecuritySolidEmpIntelligence
+  parent: CMDoubleDoorSecuritySolid
+  suffix: EmpIntelligence
+  components:
+  - type: AccessReader
+    access: [["SWEmpireIntelligence"]]
+
+- type: entity
+  id: CMDoubleDoorSecuritySolidEmpSobrik
+  parent: CMDoubleDoorSecuritySolid
+  suffix: EmpSobrik
+  components:
+  - type: AccessReader
+    access: [["SWEmpireSobrik"]]
+
+# CMAirlockCommand
+- type: entity
+  id: CMAirlockCommandEmpMoff
+  parent: CMAirlockCommand
+  suffix: EmpMoff
+  components:
+  - type: AccessReader
+    access: [["SWEmpireMoff"]]
+
+- type: entity
+  id: CMAirlockCommandEmpComm
+  parent: CMAirlockCommand
+  suffix: EmpComm
+  components:
+  - type: AccessReader
+    access: [["SWEmpireCommander"]]
+
+- type: entity
+  id: CMAirlockCommandEmpBase
+  parent: CMAirlockCommand
+  suffix: EmpBase
+  components:
+  - type: AccessReader
+    access: [["SWEmpireBase"]]
+
+- type: entity
+  id: CMAirlockCommandEmpIntelligence
+  parent: CMAirlockCommand
+  suffix: EmpIntelligence
+  components:
+  - type: AccessReader
+    access: [["SWEmpireIntelligence"]]
+
+- type: entity
+  id: CMAirlockCommandEmpSobrik
+  parent: CMAirlockCommand
+  suffix: EmpSobrik
+  components:
+  - type: AccessReader
+    access: [["SWEmpireSobrik"]]
+
+# CMDoubleDoorGenericGlass
+- type: entity
+  id: CMDoubleDoorGenericGlassEmpMoff
+  parent: CMDoubleDoorGenericGlass
+  suffix: EmpMoff
+  components:
+  - type: AccessReader
+    access: [["SWEmpireMoff"]]
+
+- type: entity
+  id: CMDoubleDoorGenericGlassEmpComm
+  parent: CMDoubleDoorGenericGlass
+  suffix: EmpComm
+  components:
+  - type: AccessReader
+    access: [["SWEmpireCommander"]]
+
+- type: entity
+  id: CMDoubleDoorGenericGlassEmpBase
+  parent: CMDoubleDoorGenericGlass
+  suffix: EmpBase
+  components:
+  - type: AccessReader
+    access: [["SWEmpireBase"]]
+
+- type: entity
+  id: CMDoubleDoorGenericGlassEmpIntelligence
+  parent: CMDoubleDoorGenericGlass
+  suffix: EmpIntelligence
+  components:
+  - type: AccessReader
+    access: [["SWEmpireIntelligence"]]
+
+- type: entity
+  id: CMDoubleDoorGenericGlassEmpSobrik
+  parent: CMDoubleDoorGenericGlass
+  suffix: EmpSobrik
+  components:
+  - type: AccessReader
+    access: [["SWEmpireSobrik"]]
+
+# CMAirlockMedical
+- type: entity
+  id: CMAirlockMedicalEmpMoff
+  parent: CMAirlockMedical
+  suffix: EmpMoff
+  components:
+  - type: AccessReader
+    access: [["SWEmpireMoff"]]
+
+- type: entity
+  id: CMAirlockMedicalEmpComm
+  parent: CMAirlockMedical
+  suffix: EmpComm
+  components:
+  - type: AccessReader
+    access: [["SWEmpireCommander"]]
+
+- type: entity
+  id: CMAirlockMedicalEmpBase
+  parent: CMAirlockMedical
+  suffix: EmpBase
+  components:
+  - type: AccessReader
+    access: [["SWEmpireBase"]]
+
+- type: entity
+  id: CMAirlockMedicalEmpIntelligence
+  parent: CMAirlockMedical
+  suffix: EmpIntelligence
+  components:
+  - type: AccessReader
+    access: [["SWEmpireIntelligence"]]
+
+- type: entity
+  id: CMAirlockMedicalEmpSobrik
+  parent: CMAirlockMedical
+  suffix: EmpSobrik
+  components:
+  - type: AccessReader
+    access: [["SWEmpireSobrik"]]
+
+# CMAirlockPrepAlpha
+- type: entity
+  id: CMAirlockPrepAlphaEmpMoff
+  parent: CMAirlockPrepAlpha
+  suffix: EmpMoff
+  components:
+  - type: AccessReader
+    access: [["SWEmpireMoff"]]
+
+- type: entity
+  id: CMAirlockPrepAlphaEmpComm
+  parent: CMAirlockPrepAlpha
+  suffix: EmpComm
+  components:
+  - type: AccessReader
+    access: [["SWEmpireCommander"]]
+
+- type: entity
+  id: CMAirlockPrepAlphaEmpBase
+  parent: CMAirlockPrepAlpha
+  suffix: EmpBase
+  components:
+  - type: AccessReader
+    access: [["SWEmpireBase"]]
+
+- type: entity
+  id: CMAirlockPrepAlphaEmpIntelligence
+  parent: CMAirlockPrepAlpha
+  suffix: EmpIntelligence
+  components:
+  - type: AccessReader
+    access: [["SWEmpireIntelligence"]]
+
+- type: entity
+  id: CMAirlockPrepAlphaEmpSobrik
+  parent: CMAirlockPrepAlpha
+  suffix: EmpSobrik
+  components:
+  - type: AccessReader
+    access: [["SWEmpireSobrik"]]
+
+# CMAirlockGlass
+- type: entity
+  id: CMAirlockGlassEmpMoff
+  parent: CMAirlockGlass
+  suffix: EmpMoff
+  components:
+  - type: AccessReader
+    access: [["SWEmpireMoff"]]
+
+- type: entity
+  id: CMAirlockGlassEmpComm
+  parent: CMAirlockGlass
+  suffix: EmpComm
+  components:
+  - type: AccessReader
+    access: [["SWEmpireCommander"]]
+
+- type: entity
+  id: CMAirlockGlassEmpBase
+  parent: CMAirlockGlass
+  suffix: EmpBase
+  components:
+  - type: AccessReader
+    access: [["SWEmpireBase"]]
+
+- type: entity
+  id: CMAirlockGlassEmpIntelligence
+  parent: CMAirlockGlass
+  suffix: EmpIntelligence
+  components:
+  - type: AccessReader
+    access: [["SWEmpireIntelligence"]]
+
+- type: entity
+  id: CMAirlockGlassEmpSobrik
+  parent: CMAirlockGlass
+  suffix: EmpSobrik
+  components:
+  - type: AccessReader
+    access: [["SWEmpireSobrik"]]
+
+# CMDoubleDoorAlmayerSolid
+- type: entity
+  id: CMDoubleDoorAlmayerSolidEmpMoff
+  parent: CMDoubleDoorAlmayerSolid
+  suffix: EmpMoff
+  components:
+  - type: AccessReader
+    access: [["SWEmpireMoff"]]
+
+- type: entity
+  id: CMDoubleDoorAlmayerSolidEmpComm
+  parent: CMDoubleDoorAlmayerSolid
+  suffix: EmpComm
+  components:
+  - type: AccessReader
+    access: [["SWEmpireCommander"]]
+
+- type: entity
+  id: CMDoubleDoorAlmayerSolidEmpBase
+  parent: CMDoubleDoorAlmayerSolid
+  suffix: EmpBase
+  components:
+  - type: AccessReader
+    access: [["SWEmpireBase"]]
+
+- type: entity
+  id: CMDoubleDoorAlmayerSolidEmpIntelligence
+  parent: CMDoubleDoorAlmayerSolid
+  suffix: EmpIntelligence
+  components:
+  - type: AccessReader
+    access: [["SWEmpireIntelligence"]]
+
+- type: entity
+  id: CMDoubleDoorAlmayerSolidEmpSobrik
+  parent: CMDoubleDoorAlmayerSolid
+  suffix: EmpSobrik
+  components:
+  - type: AccessReader
+    access: [["SWEmpireSobrik"]]
+
+# CMAirlockGlassMedical
+- type: entity
+  id: CMAirlockGlassMedicalEmpMoff
+  parent: CMAirlockGlassMedical
+  suffix: EmpMoff
+  components:
+  - type: AccessReader
+    access: [["SWEmpireMoff"]]
+
+- type: entity
+  id: CMAirlockGlassMedicalEmpComm
+  parent: CMAirlockGlassMedical
+  suffix: EmpComm
+  components:
+  - type: AccessReader
+    access: [["SWEmpireCommander"]]
+
+- type: entity
+  id: CMAirlockGlassMedicalEmpBase
+  parent: CMAirlockGlassMedical
+  suffix: EmpBase
+  components:
+  - type: AccessReader
+    access: [["SWEmpireBase"]]
+
+- type: entity
+  id: CMAirlockGlassMedicalEmpIntelligence
+  parent: CMAirlockGlassMedical
+  suffix: EmpIntelligence
+  components:
+  - type: AccessReader
+    access: [["SWEmpireIntelligence"]]
+
+- type: entity
+  id: CMAirlockGlassMedicalEmpSobrik
+  parent: CMAirlockGlassMedical
+  suffix: EmpSobrik
+  components:
+  - type: AccessReader
+    access: [["SWEmpireSobrik"]]
+
+# CMDoubleDoorPersonalSolid
+- type: entity
+  id: CMDoubleDoorPersonalSolidEmpMoff
+  parent: CMDoubleDoorPersonalSolid
+  suffix: EmpMoff
+  components:
+  - type: AccessReader
+    access: [["SWEmpireMoff"]]
+
+- type: entity
+  id: CMDoubleDoorPersonalSolidEmpComm
+  parent: CMDoubleDoorPersonalSolid
+  suffix: EmpComm
+  components:
+  - type: AccessReader
+    access: [["SWEmpireCommander"]]
+
+- type: entity
+  id: CMDoubleDoorPersonalSolidEmpBase
+  parent: CMDoubleDoorPersonalSolid
+  suffix: EmpBase
+  components:
+  - type: AccessReader
+    access: [["SWEmpireBase"]]
+
+- type: entity
+  id: CMDoubleDoorPersonalSolidEmpIntelligence
+  parent: CMDoubleDoorPersonalSolid
+  suffix: EmpIntelligence
+  components:
+  - type: AccessReader
+    access: [["SWEmpireIntelligence"]]
+
+- type: entity
+  id: CMDoubleDoorPersonalSolidEmpSobrik
+  parent: CMDoubleDoorPersonalSolid
+  suffix: EmpSobrik
+  components:
+  - type: AccessReader
+    access: [["SWEmpireSobrik"]]
+
+# CMDoubleDoorMedicalSolid
+- type: entity
+  id: CMDoubleDoorMedicalSolidEmpMoff
+  parent: CMDoubleDoorMedicalSolid
+  suffix: EmpMoff
+  components:
+  - type: AccessReader
+    access: [["SWEmpireMoff"]]
+
+- type: entity
+  id: CMDoubleDoorMedicalSolidEmpComm
+  parent: CMDoubleDoorMedicalSolid
+  suffix: EmpComm
+  components:
+  - type: AccessReader
+    access: [["SWEmpireCommander"]]
+
+- type: entity
+  id: CMDoubleDoorMedicalSolidEmpBase
+  parent: CMDoubleDoorMedicalSolid
+  suffix: EmpBase
+  components:
+  - type: AccessReader
+    access: [["SWEmpireBase"]]
+
+- type: entity
+  id: CMDoubleDoorMedicalSolidEmpIntelligence
+  parent: CMDoubleDoorMedicalSolid
+  suffix: EmpIntelligence
+  components:
+  - type: AccessReader
+    access: [["SWEmpireIntelligence"]]
+
+- type: entity
+  id: CMDoubleDoorMedicalSolidEmpSobrik
+  parent: CMDoubleDoorMedicalSolid
+  suffix: EmpSobrik
+  components:
+  - type: AccessReader
+    access: [["SWEmpireSobrik"]]
+
+# CMDoubleDoorEngineerGlass
+- type: entity
+  id: CMDoubleDoorEngineerGlassEmpMoff
+  parent: CMDoubleDoorEngineerGlass
+  suffix: EmpMoff
+  components:
+  - type: AccessReader
+    access: [["SWEmpireMoff"]]
+
+- type: entity
+  id: CMDoubleDoorEngineerGlassEmpComm
+  parent: CMDoubleDoorEngineerGlass
+  suffix: EmpComm
+  components:
+  - type: AccessReader
+    access: [["SWEmpireCommander"]]
+
+- type: entity
+  id: CMDoubleDoorEngineerGlassEmpBase
+  parent: CMDoubleDoorEngineerGlass
+  suffix: EmpBase
+  components:
+  - type: AccessReader
+    access: [["SWEmpireBase"]]
+
+- type: entity
+  id: CMDoubleDoorEngineerGlassEmpIntelligence
+  parent: CMDoubleDoorEngineerGlass
+  suffix: EmpIntelligence
+  components:
+  - type: AccessReader
+    access: [["SWEmpireIntelligence"]]
+
+- type: entity
+  id: CMDoubleDoorEngineerGlassEmpSobrik
+  parent: CMDoubleDoorEngineerGlass
+  suffix: EmpSobrik
+  components:
+  - type: AccessReader
+    access: [["SWEmpireSobrik"]]
+
+# CMAirlockSecurity
+- type: entity
+  id: CMAirlockSecurityEmpArsenal
+  parent: CMAirlockSecurity
+  suffix: EmpArsenal
+  components:
+  - type: AccessReader
+    access: [["SWEmpireArsenal"]]
+
+# CMAirlockSecure
+- type: entity
+  id: CMAirlockSecureEmpArsenal
+  parent: CMAirlockSecure
+  suffix: EmpArsenal
+  components:
+  - type: AccessReader
+    access: [["SWEmpireArsenal"]]
+
+# CMAirlockGlassSecurity
+- type: entity
+  id: CMAirlockGlassSecurityEmpArsenal
+  parent: CMAirlockGlassSecurity
+  suffix: EmpArsenal
+  components:
+  - type: AccessReader
+    access: [["SWEmpireArsenal"]]
+
+# CMDoubleDoorSecuritySolid
+- type: entity
+  id: CMDoubleDoorSecuritySolidEmpArsenal
+  parent: CMDoubleDoorSecuritySolid
+  suffix: EmpArsenal
+  components:
+  - type: AccessReader
+    access: [["SWEmpireArsenal"]]
+
+# CMAirlockCommand
+- type: entity
+  id: CMAirlockCommandEmpArsenal
+  parent: CMAirlockCommand
+  suffix: EmpArsenal
+  components:
+  - type: AccessReader
+    access: [["SWEmpireArsenal"]]
+
+# CMDoubleDoorGenericGlass
+- type: entity
+  id: CMDoubleDoorGenericGlassEmpArsenal
+  parent: CMDoubleDoorGenericGlass
+  suffix: EmpArsenal
+  components:
+  - type: AccessReader
+    access: [["SWEmpireArsenal"]]
+
+# CMAirlockMedical
+- type: entity
+  id: CMAirlockMedicalEmpArsenal
+  parent: CMAirlockMedical
+  suffix: EmpArsenal
+  components:
+  - type: AccessReader
+    access: [["SWEmpireArsenal"]]
+
+# CMAirlockPrepAlpha
+- type: entity
+  id: CMAirlockPrepAlphaEmpArsenal
+  parent: CMAirlockPrepAlpha
+  suffix: EmpArsenal
+  components:
+  - type: AccessReader
+    access: [["SWEmpireArsenal"]]
+
+# CMAirlockGlass
+- type: entity
+  id: CMAirlockGlassEmpArsenal
+  parent: CMAirlockGlass
+  suffix: EmpArsenal
+  components:
+  - type: AccessReader
+    access: [["SWEmpireArsenal"]]
+
+# CMDoubleDoorAlmayerSolid
+- type: entity
+  id: CMDoubleDoorAlmayerSolidEmpArsenal
+  parent: CMDoubleDoorAlmayerSolid
+  suffix: EmpArsenal
+  components:
+  - type: AccessReader
+    access: [["SWEmpireArsenal"]]
+
+# CMAirlockGlassMedical
+- type: entity
+  id: CMAirlockGlassMedicalEmpArsenal
+  parent: CMAirlockGlassMedical
+  suffix: EmpArsenal
+  components:
+  - type: AccessReader
+    access: [["SWEmpireArsenal"]]
+
+# CMDoubleDoorPersonalSolid
+- type: entity
+  id: CMDoubleDoorPersonalSolidEmpArsenal
+  parent: CMDoubleDoorPersonalSolid
+  suffix: EmpArsenal
+  components:
+  - type: AccessReader
+    access: [["SWEmpireArsenal"]]
+
+# CMDoubleDoorMedicalSolid
+- type: entity
+  id: CMDoubleDoorMedicalSolidEmpArsenal
+  parent: CMDoubleDoorMedicalSolid
+  suffix: EmpArsenal
+  components:
+  - type: AccessReader
+    access: [["SWEmpireArsenal"]]
+
+# CMDoubleDoorEngineerGlass
+- type: entity
+  id: CMDoubleDoorEngineerGlassEmpArsenal
+  parent: CMDoubleDoorEngineerGlass
+  suffix: EmpArsenal
+  components:
+  - type: AccessReader
+    access: [["SWEmpireArsenal"]]

@@ -22,6 +22,8 @@
   - type: Godmode
   - type: ApcPowerReceiver
     needsPower: false
+  - type: AccessReader
+    access: [["SWEmpireBase"]]
 
 - type: entity
   parent: SWTaskConsoleEmpire
@@ -38,6 +40,8 @@
       state: computer
     - map: ["computerLayerScreen"]
       state: task_monitor
+  - type: AccessReader
+    access: [["SWRepublicBase"]]
   
 
 - type: entity
@@ -55,6 +59,8 @@
       state: computer
     - map: ["computerLayerScreen"]
       state: task_monitor
+  - type: AccessReader
+    access: [["SWBlackSun"]]
 
 - type: entity
   parent: SWTaskConsoleEmpire
@@ -71,6 +77,8 @@
       state: computer
     - map: ["computerLayerScreen"]
       state: task_monitor
+  - type: AccessReader
+    access: [["SWExchange"]]
 
 - type: entity
   parent: SWTaskConsoleEmpire
@@ -87,3 +95,5 @@
       state: computer
     - map: ["computerLayerScreen"]
       state: task_monitor
+  - type: AccessReader
+    access: [["SWMandalorian"]]

@@ -10,6 +10,9 @@
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Suits/citizen.rsi
   - type: GroupExamine
+  - type: Tag
+    tags:
+    - SWEquipmentForceWL
 
 - type: entity
   parent: ClothingOuterStorageBase

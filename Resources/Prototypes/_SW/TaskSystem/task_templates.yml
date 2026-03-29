@@ -1,0 +1,23 @@
+- type: entity
+  parent: SWTaskManualBase
+  id: SWTaskBlackSunBase
+  name: задание черное солнце
+  suffix: SW
+  components:
+  - type: SWManualControlledTask
+    faction: BlackSunFaction
+  - type: SWTask
+    name: "задание"
+    description: "Тут ничего нет, но, наверное, скоро появится"
+
+- type: entity
+  parent: SWTaskManualBase
+  id: SWTaskMandalorianBase
+  name: задание мандалор
+  suffix: SW
+  components:
+  - type: SWManualControlledTask
+    faction: MandalorianFaction
+  - type: SWTask
+    name: "задание"
+    description: "Тут ничего нет, но, наверное, скоро появится"

@@ -1,3 +1,4 @@
+using Content.Shared._SW.Vehicle;
 using Content.Shared.Actions;
 using Content.Shared.Damage.Components;
 using Content.Shared.Movement.Components;

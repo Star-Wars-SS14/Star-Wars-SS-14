@@ -49,4 +49,6 @@
 - type: swVehicleRole
   id: SWVehicleRoleDriver
   localizedName: driver
-        
+  components:
+  - type: SWCover
+    minChance: 0.5

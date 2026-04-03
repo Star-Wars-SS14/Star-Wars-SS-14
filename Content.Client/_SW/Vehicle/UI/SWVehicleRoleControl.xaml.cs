@@ -11,8 +11,7 @@ namespace Content.Client._SW.Vehicle.UI;
 [GenerateTypedNameReferences]
 public sealed partial class SWVehicleRoleControl : Control
 {
-
-    public SWVehicleRoleControl(string roleName, ProtoId<SWVehicleRolePrototype> roleId, Action<ProtoId<SWVehicleRolePrototype>> onTake, bool occupied)
+    public SWVehicleRoleControl(string roleName, ProtoId<SWVehicleRolePrototype> roleId, Action<string> onTake, bool occupied)
     {
         RobustXamlLoader.Load(this);
 

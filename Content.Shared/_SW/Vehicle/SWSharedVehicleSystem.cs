@@ -35,12 +35,7 @@ public sealed class SWSharedVehicleSystem : EntitySystem
 
     private void UpdateInterface(Entity<SWVehicleComponent> ent)
     {
-        var dict = new Dictionary<ProtoId<SWVehicleRolePrototype>, bool>();
-        foreach (var (id, roleInfo) in ent.Comp.RolesInfo)
-        {
-            dict[id] = roleInfo.Occupied;
-        }
-        var state = new SWVehicleMenuBUIState(dict);
+        var state = new SWVehicleMenuBoundUserInterfaceState(ent.Comp.RolesInfo);
         _uiSystem.SetUiState(ent.Owner, SWVehicleMenuUiKey.Key, state);
     }
 

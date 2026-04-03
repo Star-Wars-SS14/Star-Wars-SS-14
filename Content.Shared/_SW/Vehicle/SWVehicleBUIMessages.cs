@@ -8,20 +8,22 @@ using System.Threading.Tasks;
 
 namespace Content.Shared._SW.Vehicle;
 
-public sealed class SWVehicleMenuBUIState : BoundUserInterfaceState
+[NetSerializable, Serializable]
+public sealed class SWVehicleMenuBoundUserInterfaceState : BoundUserInterfaceState
 {
-    public readonly Dictionary<ProtoId<SWVehicleRolePrototype>, bool> RolesInfo = new();
+    public readonly Dictionary<string, SWVehicleRoleInfo> RolesInfo = new();
 
-    public SWVehicleMenuBUIState (Dictionary<ProtoId<SWVehicleRolePrototype>, bool> rolesInfo)
+    public SWVehicleMenuBoundUserInterfaceState(Dictionary<string, SWVehicleRoleInfo> rolesInfo)
     {
         RolesInfo = rolesInfo;
     }
 }
 
+[NetSerializable, Serializable]
 public sealed class SWOccupyRoleMessage : BoundUserInterfaceMessage
 {
-    public ProtoId<SWVehicleRolePrototype> Role;
-    public SWOccupyRoleMessage(ProtoId<SWVehicleRolePrototype> role)
+    public string Role;
+    public SWOccupyRoleMessage(string role)
     {
         Role = role;
     }

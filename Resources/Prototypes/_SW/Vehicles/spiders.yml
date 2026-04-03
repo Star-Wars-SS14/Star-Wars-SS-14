@@ -34,4 +34,19 @@
   - type: InteractionOutline
   - type: Rotatable
   - type: SWVehicle
-    RolesInfo
+    rolesInfo:
+      driver:
+        role: SWVehicleRoleDriver
+      driver2:
+        role: SWVehicleRoleDriver
+  - type: ActivatableUI
+    key: enum.SWVehicleMenuUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWVehicleMenuUiKey.Key:
+        type: SWVehicleBoundUserInterface
+
+- type: swVehicleRole
+  id: SWVehicleRoleDriver
+  localizedName: driver
+        

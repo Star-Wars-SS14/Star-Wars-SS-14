@@ -4,8 +4,8 @@
     xmlns:ui="clr-namespace:Content.Client.Voting.UI"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
     Title="Меню транспорта"
-    MinSize="550 450"
-    SetSize="1000 750">
+    MinSize="300 150"
+    SetSize="300 150">
 
     <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
 
@@ -16,13 +16,11 @@
         <ScrollContainer VerticalExpand="True"
                          VScrollEnabled="True"
                          HScrollEnabled="False"
-                         MinHeight="200">
+                         MinHeight="50">
             <BoxContainer Name="RolesContainer"
                           Orientation="Vertical"
                           HorizontalExpand="True"
-                          RectClipContent="True"
-                          SeparationOverride="4"
-                          Margin="10">
+                          RectClipContent="True">
             </BoxContainer>
         </ScrollContainer>
     </BoxContainer>

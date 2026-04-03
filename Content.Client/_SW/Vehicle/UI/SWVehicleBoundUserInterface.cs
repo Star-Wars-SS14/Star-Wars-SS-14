@@ -4,11 +4,11 @@ using Robust.Client.UserInterface;
 using Robust.Shared.Prototypes;
 
 namespace Content.Client._SW.Vehicle.UI;
-public sealed partial class SWVehicleBounduserInterface : BoundUserInterface
+public sealed partial class SWVehicleBoundUserInterface : BoundUserInterface
 {
     [ViewVariables]
     private SWVehicleMenu? _menu;
-    public SWVehicleBounduserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
+    public SWVehicleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
 
     }
@@ -19,7 +19,7 @@ public sealed partial class SWVehicleBounduserInterface : BoundUserInterface
         _menu.OnTake += SendTakeMessage;
     }
 
-    private void SendTakeMessage(ProtoId<SWVehicleRolePrototype> role)
+    private void SendTakeMessage(string role)
     {
         SendMessage(new SWOccupyRoleMessage(role));
     }
@@ -30,7 +30,7 @@ public sealed partial class SWVehicleBounduserInterface : BoundUserInterface
 
         switch (state)
         {
-            case SWVehicleMenuBUIState msg:
+            case SWVehicleMenuBoundUserInterfaceState msg:
                 _menu?.UpdateRoles(msg.RolesInfo);
                 break;
         }

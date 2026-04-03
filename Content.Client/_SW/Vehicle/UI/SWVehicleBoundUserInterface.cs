@@ -1,6 +1,7 @@
 using Content.Shared._SW;
 using Content.Shared._SW.Vehicle;
 using Robust.Client.UserInterface;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client._SW.Vehicle.UI;
 public sealed partial class SWVehicleBounduserInterface : BoundUserInterface
@@ -18,9 +19,9 @@ public sealed partial class SWVehicleBounduserInterface : BoundUserInterface
         _menu.OnTake += SendTakeMessage;
     }
 
-    private void SendTakeMessage(string role)
+    private void SendTakeMessage(ProtoId<SWVehicleRolePrototype> role)
     {
-
+        SendMessage(new SWOccupyRoleMessage(role));
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

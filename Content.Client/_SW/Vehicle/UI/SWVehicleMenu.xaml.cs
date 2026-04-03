@@ -17,7 +17,7 @@ public sealed partial class SWVehicleMenu : DefaultWindow
 {
     [Dependency] private readonly IPrototypeManager _prototype = default!;
 
-    public Action<string> OnTake = default!;
+    public Action<ProtoId<SWVehicleRolePrototype>> OnTake = default!;
 
     public SWVehicleMenu()
     {
@@ -30,7 +30,7 @@ public sealed partial class SWVehicleMenu : DefaultWindow
         foreach (var (protoId, occupied) in rolesInfo)
         {
             var proto = _prototype.Index(protoId);
-            var cntrl = new SWVehicleRoleControl(Loc.GetString(proto.LocalizedName), proto.ID, OnTake, occupied);
+            var cntrl = new SWVehicleRoleControl(Loc.GetString(proto.LocalizedName), protoId, OnTake, occupied);
             RolesContainer.AddChild(cntrl);
         }
     }

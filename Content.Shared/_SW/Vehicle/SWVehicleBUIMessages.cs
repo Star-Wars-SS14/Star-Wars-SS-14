@@ -1,4 +1,5 @@
 using Robust.Shared.Prototypes;
+using Robust.Shared.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,4 +16,19 @@ public sealed class SWVehicleMenuBUIState : BoundUserInterfaceState
     {
         RolesInfo = rolesInfo;
     }
+}
+
+public sealed class SWOccupyRoleMessage : BoundUserInterfaceMessage
+{
+    public ProtoId<SWVehicleRolePrototype> Role;
+    public SWOccupyRoleMessage(ProtoId<SWVehicleRolePrototype> role)
+    {
+        Role = role;
+    }
+}
+
+[NetSerializable, Serializable]
+public enum SWVehicleMenuUiKey
+{
+    Key,
 }

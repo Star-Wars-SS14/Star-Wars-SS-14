@@ -1,3 +1,4 @@
+using Content.Shared.ActionBlocker;
 using Content.Shared.Actions;
 using Content.Shared.Movement.Events;
 using Robust.Shared.Map;
@@ -17,6 +18,7 @@ public sealed class SWSharedVehicleSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly SharedActionsSystem _actions = default!;
     [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
+    [Dependency] private readonly ActionBlockerSystem _actionBlocker = default!;
 
     public const string ActionExitVehicle = "SWVehicleGetOffAction";
     public override void Initialize()
@@ -63,6 +65,8 @@ public sealed class SWSharedVehicleSystem : EntitySystem
 
     private void OnMoveInVehicle(Entity<SWInVehicleComponent> ent, ref UpdateCanMoveEvent args)
     {
+        ISawmill _s = Logger.GetSawmill("asdfghj");
+        _s.Fatal("cancelled");
         args.Cancel();
     }
 
@@ -83,6 +87,7 @@ public sealed class SWSharedVehicleSystem : EntitySystem
 
         var coords = new EntityCoordinates(ent, ent.Comp.RolesInfo[role].BuckleCoords);
         _transformSystem.SetCoordinates(user, coords);
+        _actionBlocker.UpdateCanMove(user);
     }
 
     private void OnExit(Entity<SWInVehicleComponent> ent, ref SWExitVehicleRequested args)
@@ -100,7 +105,7 @@ public sealed class SWSharedVehicleSystem : EntitySystem
         EntityManager.RemoveComponents(ent, proto.ComponentsAddToUser);
 
         args.Handled = true;
-
+        _actionBlocker.UpdateCanMove(ent);
         UpdateInterface(ent.Comp.Vehicle);
     }
 }

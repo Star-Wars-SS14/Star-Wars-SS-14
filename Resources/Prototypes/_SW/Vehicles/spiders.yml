@@ -45,6 +45,7 @@
     interfaces:
       enum.SWVehicleMenuUiKey.Key:
         type: SWVehicleBoundUserInterface
+  - type: InputMover
 
 - type: swVehicleRole
   id: SWVehicleRoleDriver

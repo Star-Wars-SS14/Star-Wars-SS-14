@@ -2,6 +2,7 @@ using Content.Shared.ActionBlocker;
 using Content.Shared.Actions;
 using Content.Shared.Movement.Events;
 using Robust.Shared.Map;
+using Robust.Shared.Physics.Events;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization.Manager;
 using System;
@@ -28,6 +29,7 @@ public sealed class SWSharedVehicleSystem : EntitySystem
         SubscribeLocalEvent<SWVehicleComponent, SWOccupyRoleMessage>(OnOccupy);
         SubscribeLocalEvent<SWInVehicleComponent, ComponentInit>(OnInitInVehicle);
         SubscribeLocalEvent<SWInVehicleComponent, UpdateCanMoveEvent>(OnMoveInVehicle);
+        SubscribeLocalEvent<SWInVehicleComponent, PreventCollideEvent>(OnPreventCollide);
         SubscribeLocalEvent<SWInVehicleComponent, SWExitVehicleRequested>(OnExit);
     }
 
@@ -65,9 +67,13 @@ public sealed class SWSharedVehicleSystem : EntitySystem
 
     private void OnMoveInVehicle(Entity<SWInVehicleComponent> ent, ref UpdateCanMoveEvent args)
     {
-        ISawmill _s = Logger.GetSawmill("asdfghj");
-        _s.Fatal("cancelled");
         args.Cancel();
+    }
+    private void OnPreventCollide(Entity<SWInVehicleComponent> ent, ref PreventCollideEvent args)
+    {
+        ISawmill _s = Logger.GetSawmill("asdfghj");
+        _s.Fatal($"cancelled {args.OtherEntity}");
+        args.Cancelled = true;
     }
 
     private void OccupyRole(Entity<SWVehicleComponent> ent, EntityUid user, string role)

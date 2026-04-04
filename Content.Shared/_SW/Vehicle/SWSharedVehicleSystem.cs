@@ -35,12 +35,12 @@ public sealed class SWSharedVehicleSystem : EntitySystem
     {
         foreach (var (part, info) in ent.Comp.VehicleParts)
         {
-            SpawnWithPlacementInfo(part, info, ent);
+            ent.Comp.VehicleParts[part].SpawnedPart = SpawnWithPlacementInfo(part, info, ent);
         }
         UpdateInterface(ent);
     }
 
-    private EntityUid SpawnWithPlacementInfo(ProtoId<EntityPrototype> proto, SWVehiclePlacementInfo info, EntityUid parent)
+    private EntityUid SpawnWithPlacementInfo(ProtoId<EntityPrototype> proto, SWVehiclePartInfo info, EntityUid parent)
     {
         var coords = new EntityCoordinates(parent, info.BuckleCoords);
         return Spawn(proto, coords);
@@ -87,6 +87,9 @@ public sealed class SWSharedVehicleSystem : EntitySystem
 
         var coords = new EntityCoordinates(ent, ent.Comp.RolesInfo[role].BuckleCoords);
         _transformSystem.SetCoordinates(user, coords);
+
+        var ev = new SWUserEnterVehicleEvent(ent);
+        RaiseLocalEvent(user, ev);
         _actionBlocker.UpdateCanMove(user);
     }
 
@@ -114,4 +117,13 @@ public sealed class SWSharedVehicleSystem : EntitySystem
 public sealed partial class SWExitVehicleRequested : InstantActionEvent
 {
 
+}
+
+public sealed class SWUserEnterVehicleEvent : EntityEventArgs
+{
+    public Entity<SWVehicleComponent> Vehicle;
+    public SWUserEnterVehicleEvent(Entity<SWVehicleComponent> vehicle)
+    {
+        Vehicle = vehicle;
+    }
 }

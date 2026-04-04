@@ -15,14 +15,16 @@ public sealed partial class SWVehicleComponent : Component
     public Dictionary<string, SWVehicleRoleInfo> RolesInfo = new();
 
     [DataField]
-    public Dictionary<ProtoId<EntityPrototype>, SWVehiclePlacementInfo> VehicleParts = new();
+    public Dictionary<ProtoId<EntityPrototype>, SWVehiclePartInfo> VehicleParts = new();
 }
 
 [DataDefinition, Serializable]
-public sealed partial class SWVehiclePlacementInfo
+public sealed partial class SWVehiclePartInfo
 {
     [DataField]
     public Vector2 BuckleCoords = new Vector2(0.0f, 0.0f);
+
+    public EntityUid SpawnedPart = default!;
 }
 
 [DataDefinition, Serializable]

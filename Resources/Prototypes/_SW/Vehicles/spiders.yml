@@ -37,8 +37,6 @@
     rolesInfo:
       driver:
         role: SWVehicleRoleDriver
-      driver2:
-        role: SWVehicleRoleDriver
   - type: ActivatableUI
     key: enum.SWVehicleMenuUiKey.Key
   - type: UserInterface
@@ -47,8 +45,8 @@
         type: SWVehicleBoundUserInterface
   - type: InputMover
   - type: MovementSpeedModifier
-    baseSprintSpeed: 5
-    baseWalkSpeed: 5
+    baseSprintSpeed: 10
+    baseWalkSpeed: 10
 
 - type: swVehicleRole
   id: SWVehicleRoleDriver

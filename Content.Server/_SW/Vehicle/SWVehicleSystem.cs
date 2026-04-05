@@ -118,6 +118,15 @@ public sealed class SWVehicleSystem : EntitySystem
 
         EntityManager.RemoveComponents(ent, proto.ComponentsAddToUser);
 
+        var grid = Transform(ent).GridUid;
+
+        if (grid == null)
+        {
+            return;
+        }
+
+        _transformSystem.SetParent(ent, grid.Value);
+
         args.Handled = true;
         _actionBlocker.UpdateCanMove(ent);
 

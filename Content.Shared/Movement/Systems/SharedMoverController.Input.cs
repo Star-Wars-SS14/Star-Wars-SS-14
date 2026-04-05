@@ -304,7 +304,7 @@ namespace Content.Shared.Movement.Systems
                 PhysicsSystem.SetBodyType(entity, BodyType.KinematicController);
         }
 
-        private void HandleDirChange(EntityUid entity, Direction dir, ushort subTick, bool state)
+        public void HandleDirChange(EntityUid entity, Direction dir, ushort subTick, bool state) //SW
         {
             // Relayed movement just uses the same keybinds given we're moving the relayed entity
             // the same as us.

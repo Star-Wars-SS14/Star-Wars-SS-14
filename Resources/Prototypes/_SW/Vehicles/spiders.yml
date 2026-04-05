@@ -46,9 +46,12 @@
       enum.SWVehicleMenuUiKey.Key:
         type: SWVehicleBoundUserInterface
   - type: InputMover
+  - type: MovementSpeedModifier
+    baseSprintSpeed: 5
+    baseWalkSpeed: 5
 
 - type: swVehicleRole
   id: SWVehicleRoleDriver
   localizedName: driver
   components:
-  - type: SWTransferMindToVehiclePart
+  - type: SWRedirectMovement

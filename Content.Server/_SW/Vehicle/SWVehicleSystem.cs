@@ -2,6 +2,7 @@ using Content.Shared._SW.Vehicle;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Actions;
 using Content.Shared.Movement.Events;
+using NetCord;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 using System;
@@ -26,7 +27,7 @@ public sealed class SWVehicleSystem : EntitySystem
         SubscribeLocalEvent<SWVehicleComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SWVehicleComponent, SWOccupyRoleMessage>(OnOccupy);
         SubscribeLocalEvent<SWInVehicleComponent, ComponentInit>(OnInitInVehicle);
-        SubscribeLocalEvent<SWInVehicleComponent, UpdateCanMoveEvent>(OnMoveInVehicle);
+        //SubscribeLocalEvent<SWInVehicleComponent, UpdateCanMoveEvent>(OnMoveInVehicle);
     }
 
     private void OnMapInit(Entity<SWVehicleComponent> ent, ref MapInitEvent args)
@@ -95,12 +96,12 @@ public sealed class SWVehicleSystem : EntitySystem
             return;
         }
 
-        if (!TryComp<SWVehicleComponent>(ent.Comp.Vehicle, out var comp))
+        if (!TryComp<SWVehicleComponent>(ent.Comp.Vehicle, out var vehicleComp))
         {
             return;
         }
 
-        var roleInfo = comp.RolesInfo[ent.Comp.OccupiedRole];
+        var roleInfo = vehicleComp.RolesInfo[ent.Comp.OccupiedRole];
         roleInfo.Occupied = false;
         RemComp<SWInVehicleComponent>(ent);
 
@@ -110,10 +111,18 @@ public sealed class SWVehicleSystem : EntitySystem
         }
 
         var proto = _prototype.Index(roleInfo.Role);
+
+        //Raise event before deletion to properly shutdown all components
+        var ev = new SWUserExitVehicleEvent(new Entity<SWVehicleComponent>(ent.Comp.Vehicle, vehicleComp));
+        RaiseLocalEvent(ent, ev);
+
         EntityManager.RemoveComponents(ent, proto.ComponentsAddToUser);
 
         args.Handled = true;
         _actionBlocker.UpdateCanMove(ent);
-        UpdateInterface(new Entity<SWVehicleComponent>(ent.Comp.Vehicle, comp));
+
+
+
+        UpdateInterface(new Entity<SWVehicleComponent>(ent.Comp.Vehicle, vehicleComp));
     }
 }

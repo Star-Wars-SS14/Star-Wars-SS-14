@@ -52,3 +52,12 @@ public sealed class SWUserEnterVehicleEvent : EntityEventArgs
         Vehicle = vehicle;
     }
 }
+
+public sealed class SWUserExitVehicleEvent : EntityEventArgs
+{
+    public Entity<SWVehicleComponent> Vehicle;
+    public SWUserExitVehicleEvent(Entity<SWVehicleComponent> vehicle)
+    {
+        Vehicle = vehicle;
+    }
+}

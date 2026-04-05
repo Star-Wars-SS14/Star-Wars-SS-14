@@ -1,3 +1,4 @@
+using Robust.Shared.GameStates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,12 +7,15 @@ using System.Threading.Tasks;
 
 namespace Content.Shared._SW.Vehicle;
 
-[RegisterComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class SWInVehicleComponent : Component
 {
-    public Entity<SWVehicleComponent> Vehicle = default!;
+    [AutoNetworkedField]
+    public EntityUid Vehicle = default!;
 
+    [AutoNetworkedField]
     public string OccupiedRole = default!;
 
+    [AutoNetworkedField]
     public EntityUid? ActionEntity = default!;
 }

@@ -32,8 +32,8 @@ public sealed class SWRedirectMovementSystem : EntitySystem
         EnsureComp<RelayInputMoverComponent>(ent);
         _mover.SetRelay(ent, args.Vehicle);
 
-        var comp2 = EnsureComp<InteractionRelayComponent>(ent);
-        _interaction.SetRelay(ent, args.Vehicle, comp2);
+        //var comp2 = EnsureComp<InteractionRelayComponent>(ent);
+        //_interaction.SetRelay(ent, args.Vehicle, comp2);
 
         _movementSpeedModifierSystem.RefreshWeightlessModifiers(args.Vehicle);
         _movementSpeedModifierSystem.RefreshWeightlessModifiers(ent);
@@ -43,7 +43,7 @@ public sealed class SWRedirectMovementSystem : EntitySystem
     private void OnExit(Entity<SWRedirectMovementComponent> ent, ref SWUserExitVehicleEvent args)
     {
         RemComp<RelayInputMoverComponent>(ent);
-        RemComp<InteractionRelayComponent>(ent);
+        //RemComp<InteractionRelayComponent>(ent);
         _movementSpeedModifierSystem.RefreshWeightlessModifiers(args.Vehicle);
         _movementSpeedModifierSystem.RefreshWeightlessModifiers(ent);
     }

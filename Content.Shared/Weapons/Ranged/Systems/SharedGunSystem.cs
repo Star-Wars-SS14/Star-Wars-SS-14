@@ -345,8 +345,18 @@ public abstract partial class SharedGunSystem : EntitySystem
             gun.NextFire = TimeSpan.FromSeconds(Math.Max(lastFire.TotalSeconds + SafetyNextFire, gun.NextFire.TotalSeconds));
             return false;
         }
-
         var fromCoordinates = Transform(user).Coordinates;
+
+        //SW start
+        var evGetCoords = new SWGetFromCoordsShootEvent(user, gunUid);
+        RaiseLocalEvent(user, ref evGetCoords);
+        if (evGetCoords.Handled)
+        {
+            fromCoordinates = evGetCoords.Coords;
+        }
+        
+        //SW end
+
         // Remove ammo
         var ev = new TakeAmmoEvent(shots, new List<(EntityUid? Entity, IShootable Shootable)>(), fromCoordinates, user);
 

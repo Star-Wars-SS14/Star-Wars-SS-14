@@ -1,3 +1,4 @@
+using Robust.Shared.Map;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,18 @@ public sealed class SWGetGunEvent : HandledEntityEventArgs
     public SWGetGunEvent(NetEntity user)
     {
         User = user;
+    }
+}
+
+[ByRefEvent]
+public sealed class SWGetFromCoordsShootEvent : HandledEntityEventArgs
+{
+    public EntityUid User;
+    public EntityUid Gun;
+    public EntityCoordinates Coords;
+    public SWGetFromCoordsShootEvent(EntityUid user, EntityUid gun)
+    {
+        User = user;
+        Gun = gun;
     }
 }

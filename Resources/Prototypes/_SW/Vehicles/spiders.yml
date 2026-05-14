@@ -41,7 +41,7 @@
     vehicleParts:
       cannon:
         entProto: WeaponPistolMk58
-        buckleCoords: "0.0, -1.0"
+        buckleCoords: "0.0, -2.0"
   - type: ActivatableUI
     key: enum.SWVehicleMenuUiKey.Key
   - type: UserInterface

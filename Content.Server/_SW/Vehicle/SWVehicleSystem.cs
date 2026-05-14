@@ -37,6 +37,7 @@ public sealed class SWVehicleSystem : EntitySystem
             ent.Comp.VehicleParts[part].SpawnedPart = GetNetEntity(SpawnWithPlacementInfo(info, ent));
         }
         UpdateInterface(ent);
+        Dirty(ent);
     }
 
     private void OnOccupy(Entity<SWVehicleComponent> ent, ref SWOccupyRoleMessage args)

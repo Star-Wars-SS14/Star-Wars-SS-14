@@ -16,6 +16,7 @@ public sealed class SWRedirectMovementSystem : EntitySystem
 {
     [Dependency] private readonly SharedMoverController _mover = default!;
     [Dependency] private readonly SharedInteractionSystem _interaction = default!;
+    [Dependency] private readonly MovementSpeedModifierSystem _movementSpeedModifierSystem = default!;
 
     public override void Initialize()
     {
@@ -27,8 +28,15 @@ public sealed class SWRedirectMovementSystem : EntitySystem
     {
         ISawmill _s = Logger.GetSawmill("asd");
         _s.Fatal("SADFG");
+
+        EnsureComp<RelayInputMoverComponent>(ent);
         _mover.SetRelay(ent, args.Vehicle);
-        _interaction.SetRelay(ent, args.Vehicle);
+
+        var comp2 = EnsureComp<InteractionRelayComponent>(ent);
+        _interaction.SetRelay(ent, args.Vehicle, comp2);
+
+        _movementSpeedModifierSystem.RefreshWeightlessModifiers(args.Vehicle);
+        _movementSpeedModifierSystem.RefreshWeightlessModifiers(ent);
     }
 
 
@@ -36,6 +44,8 @@ public sealed class SWRedirectMovementSystem : EntitySystem
     {
         RemComp<RelayInputMoverComponent>(ent);
         RemComp<InteractionRelayComponent>(ent);
+        _movementSpeedModifierSystem.RefreshWeightlessModifiers(args.Vehicle);
+        _movementSpeedModifierSystem.RefreshWeightlessModifiers(ent);
     }
 }
 

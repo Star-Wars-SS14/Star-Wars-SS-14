@@ -38,6 +38,10 @@
     rolesInfo:
       driver:
         role: SWVehicleRoleDriver
+    vehicleParts:
+      cannon:
+        entProto: WeaponPistolMk58
+        buckleCoords: "0.0, -1.0"
   - type: ActivatableUI
     key: enum.SWVehicleMenuUiKey.Key
   - type: UserInterface
@@ -54,3 +58,5 @@
   localizedName: driver
   components:
   - type: SWRedirectMovement
+  - type: SWShootByVehicleUser
+    part: cannon

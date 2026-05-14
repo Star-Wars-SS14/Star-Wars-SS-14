@@ -219,7 +219,7 @@ public abstract partial class SharedMoverController : VirtualController
 
         // Get current tile def for things like speed/friction mods
         ContentTileDefinition? tileDef = null;
-        ISawmill _s = Logger.GetSawmill("moveinput");
+        //ISawmill _s = Logger.GetSawmill("moveinput");
         var touching = false;
         // Whether we use tilefriction or not
         if (weightless || inAirHelpless)
@@ -269,10 +269,10 @@ public abstract partial class SharedMoverController : VirtualController
             var walkSpeed = moveSpeedComponent?.CurrentWalkSpeed ?? MovementSpeedModifierComponent.DefaultBaseWalkSpeed;
             var sprintSpeed = moveSpeedComponent?.CurrentSprintSpeed ?? MovementSpeedModifierComponent.DefaultBaseSprintSpeed;
 
-            _s.Fatal($"e: {entity.Owner}; w: {walkSpeed};r: {sprintSpeed}");
+            //_s.Fatal($"e: {entity.Owner}; w: {walkSpeed};r: {sprintSpeed}");
 
             wishDir = AssertValidWish(mover, walkSpeed, sprintSpeed);
-            _s.Fatal($"e {entity.Owner}; wishdir: {wishDir}");
+            //_s.Fatal($"e {entity.Owner}; wishdir: {wishDir}");
             if (wishDir != Vector2.Zero)
             {
                 friction = moveSpeedComponent?.Friction ?? MovementSpeedModifierComponent.DefaultFriction;
@@ -300,7 +300,7 @@ public abstract partial class SharedMoverController : VirtualController
             Accelerate(ref velocity, in wishDir, accel, frameTime);
 
         SetWishDir((uid, mover), wishDir);
-        _s.Fatal($"e {entity.Owner}; velocity: {velocity}");
+        //_s.Fatal($"e {entity.Owner}; velocity: {velocity}");
         /*
          * SNAKING!!! >-( 0 ================>
          * Snaking is a feature where you can move faster by strafing in a direction perpendicular to the

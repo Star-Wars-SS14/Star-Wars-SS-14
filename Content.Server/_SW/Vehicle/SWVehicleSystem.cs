@@ -34,7 +34,7 @@ public sealed class SWVehicleSystem : EntitySystem
     {
         foreach (var (part, info) in ent.Comp.VehicleParts)
         {
-            ent.Comp.VehicleParts[part].SpawnedPart = SpawnWithPlacementInfo(part, info, ent);
+            ent.Comp.VehicleParts[part].SpawnedPart = GetNetEntity(SpawnWithPlacementInfo(info, ent));
         }
         UpdateInterface(ent);
     }
@@ -77,10 +77,10 @@ public sealed class SWVehicleSystem : EntitySystem
         RaiseLocalEvent(user, ev);
         _actionBlocker.UpdateCanMove(user);
     }
-    private EntityUid SpawnWithPlacementInfo(ProtoId<EntityPrototype> proto, SWVehiclePartInfo info, EntityUid parent)
+    private EntityUid SpawnWithPlacementInfo(SWVehiclePartInfo info, EntityUid parent)
     {
         var coords = new EntityCoordinates(parent, info.BuckleCoords);
-        return Spawn(proto, coords);
+        return Spawn(info.EntProto, coords);
     }
 
     private void UpdateInterface(Entity<SWVehicleComponent> ent)

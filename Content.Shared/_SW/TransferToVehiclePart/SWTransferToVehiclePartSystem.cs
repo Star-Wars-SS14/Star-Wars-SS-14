@@ -34,7 +34,7 @@ public sealed class SWTransferToVehiclePartSystem : EntitySystem
         _s.Fatal($"{part}");
         if (ent.Comp.PartId != null)
         {
-            part = args.Vehicle.Comp.VehicleParts[ent.Comp.PartId.Value].SpawnedPart;
+            part = GetEntity(args.Vehicle.Comp.VehicleParts[ent.Comp.PartId].SpawnedPart);
         }
         _s.Fatal($"{part}");
         _sharedMindSystem.TransferTo(mind.Value, part);

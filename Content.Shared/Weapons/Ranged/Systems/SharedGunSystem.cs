@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using Content.Shared._SW.Vehicle;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Actions;
 using Content.Shared.Administration.Logs;
@@ -179,6 +180,22 @@ public abstract partial class SharedGunSystem : EntitySystem
     {
         gunEntity = default;
         gunComp = null;
+        ISawmill _s = Logger.GetSawmill("tgg");
+        _s.Fatal("aboba");
+        //SW start. For transport guns.
+        var ev = new SWGetGunEvent(GetNetEntity(entity));
+
+        RaiseLocalEvent(entity, ref ev);
+
+        if (ev.Handled)
+        {
+            _s.Fatal($"net: {ev.Gun}");
+            gunEntity = GetEntity(ev.Gun);
+            gunComp = Comp<GunComponent>(gunEntity);
+            return true;
+        }
+
+        //SW end.
 
         if (_hands.GetActiveItem(entity) is { } held &&
             TryComp(held, out GunComponent? gun))

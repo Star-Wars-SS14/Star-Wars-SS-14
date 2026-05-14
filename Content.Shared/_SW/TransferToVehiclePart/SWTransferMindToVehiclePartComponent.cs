@@ -11,5 +11,5 @@ namespace Content.Shared._SW.TransferToVehiclePart;
 public sealed partial class SWTransferMindToVehiclePartComponent : Component
 {
     [DataField]
-    public ProtoId<EntityPrototype>? PartId = null;
+    public string? PartId = null;
 }

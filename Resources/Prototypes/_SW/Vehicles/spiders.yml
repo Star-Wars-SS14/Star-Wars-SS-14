@@ -14,11 +14,11 @@
         shape:
           !type:PhysShapeAabb
           bounds: "-0.2,0.85,0.2,-0.85"
-        density: 50
+        density: 1000
         mask:
         - MobMask
         layer:
-        - MobLayer
+        - MachineLayer
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Metallic
@@ -40,8 +40,8 @@
         role: SWVehicleRoleDriver
     vehicleParts:
       cannon:
-        entProto: WeaponPistolMk58
-        buckleCoords: "0.0, -2.0"
+        entProto: SWSpiderCannon
+        buckleCoords: "0.0, -1.2"
   - type: ActivatableUI
     key: enum.SWVehicleMenuUiKey.Key
   - type: UserInterface
@@ -56,6 +56,14 @@
 - type: swVehicleRole
   id: SWVehicleRoleDriver
   localizedName: driver
+  components:
+  - type: SWRedirectMovement
+  - type: SWShootByVehicleUser
+    part: cannon
+
+- type: swVehicleRole
+  id: SWVehicleRolePassenger
+  localizedName: passenger
   components:
   - type: SWRedirectMovement
   - type: SWShootByVehicleUser

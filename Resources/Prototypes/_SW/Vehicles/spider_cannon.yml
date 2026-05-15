@@ -1,0 +1,35 @@
+- type: entity
+  name: spider cannon
+  id: SWSpiderCannon
+  suffix: НЕ МАППИТЬ
+  components:
+  - type: Item
+    size: Large
+  - type: Clothing
+    sprite: Objects/Weapons/Guns/Battery/laser_gun.rsi
+    quickEquip: false     
+    slots:                
+    - Back
+    - suitStorage
+  - type: AmmoCounter
+  - type: Gun
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+  - type: PredictedBattery 
+    maxCharge: 1000
+    startingCharge: 1000
+  - type: MagazineVisuals
+    magState: mag
+    steps: 5
+    zeroVisible: false
+  - type: Appearance
+  - type: BatteryAmmoProvider
+    proto: SWE-1Bullet
+    fireCost: 100
+  - type: PredictedBatterySelfRecharger
+    autoRechargeRate: 50
+  - type: SWShootByVehicleGun
+    forwardVector: "0.0, -1.0"
+    angle: 30
+

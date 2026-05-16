@@ -38,6 +38,10 @@
     rolesInfo:
       driver:
         role: SWVehicleRoleDriver
+        buckleCoords: "0.0, -0.35"
+      passenger1:
+        role: SWVehicleRolePassenger
+        buckleCoords: "0.0, 0.4"
     vehicleParts:
       cannon:
         entProto: SWSpiderCannon
@@ -53,6 +57,24 @@
     baseSprintSpeed: 10
     baseWalkSpeed: 10
 
+- type: entity
+  id: SWSpiderTwoRoles
+  parent: SWSpider
+  name: spider two roles
+  components:
+  - type: SWVehicle
+    rolesInfo:
+      driver:
+        role: SWVehicleRoleDriver
+        buckleCoords: "0.0, -0.35"
+      passenger1:
+        role: SWVehicleRolePassenger
+        buckleCoords: "0.0, 0.4"
+    vehicleParts:
+      cannon:
+        entProto: SWSpiderCannon
+        buckleCoords: "0.0, -1.2"
+
 - type: swVehicleRole
   id: SWVehicleRoleDriver
   localizedName: driver
@@ -66,6 +88,6 @@
   id: SWVehicleRolePassenger
   localizedName: passenger
   components:
-  - type: SWRedirectMovement
+  - type: RelayInputMover #we use this to block movement
   - type: SWVehicleRequiresHandsUser
     hands: 1

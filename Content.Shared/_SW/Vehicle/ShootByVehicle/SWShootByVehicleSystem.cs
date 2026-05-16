@@ -74,7 +74,7 @@ public sealed class SWShootByVehicleSystem : EntitySystem
         if (Math.Abs(angle.Degrees) > ent.Comp.AngleInDegrees / 2.0)
         {
             args.Cancelled = true;
-            args.Message = "Unavailable range";
+            args.Message = Loc.GetString("sw-vehicle-gun-unavailable-range");
         }
     }
     private NetEntity? GetGun(Entity<SWShootByVehicleUserComponent> ent, EntityUid user)

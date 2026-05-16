@@ -31,7 +31,7 @@ public sealed partial class SWVehicleMenu : DefaultWindow
         foreach (var (roleId, info) in rolesInfo)
         {
             var proto = _prototype.Index(info.Role);
-            var cntrl = new SWVehicleRoleControl(Loc.GetString(proto.LocalizedName), roleId, OnTake, info.Occupied);
+            var cntrl = new SWVehicleRoleControl(Loc.GetString(proto.LocalizedName), roleId, OnTake, info.Occupant != null);
             RolesContainer.AddChild(cntrl);
         }
     }

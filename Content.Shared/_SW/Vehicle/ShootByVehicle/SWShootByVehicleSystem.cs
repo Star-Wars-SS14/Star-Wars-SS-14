@@ -24,15 +24,8 @@ public sealed class SWShootByVehicleSystem : EntitySystem
         SubscribeLocalEvent<SWShootByVehicleGunComponent, AttemptShootEvent>(OnShoot);
     }
 
-
-
     private void OnGetGun(Entity<SWShootByVehicleUserComponent> ent, ref SWGetGunEvent args)
     {
-        if (!TryComp<SWInVehicleComponent>(GetEntity(args.User), out var inVehicle))
-        {
-            return;
-        }
-
         var gun = GetGun(ent, GetEntity(args.User));
         if (gun != null)
         {

@@ -41,5 +41,5 @@ public sealed partial class SWVehicleRoleInfo
     [DataField]
     public Vector2 BuckleCoords = new Vector2(0.0f, 0.0f);
 
-    public bool Occupied = false;
+    public NetEntity? Occupant = null;
 }

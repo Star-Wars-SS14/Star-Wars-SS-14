@@ -1,15 +1,10 @@
 using Content.Shared._SW.Vehicle;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Actions;
-using Content.Shared.Movement.Events;
-using NetCord;
+using Content.Shared.Destructible;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Content.Server._SW.Vehicle;
 public sealed class SWVehicleSystem : EntitySystem
@@ -28,6 +23,7 @@ public sealed class SWVehicleSystem : EntitySystem
         SubscribeLocalEvent<SWVehicleComponent, SWOccupyRoleMessage>(OnOccupy);
         SubscribeLocalEvent<SWInVehicleComponent, ComponentInit>(OnInitInVehicle);
         //SubscribeLocalEvent<SWInVehicleComponent, UpdateCanMoveEvent>(OnMoveInVehicle);
+        SubscribeLocalEvent<SWVehicleComponent, DestructionEventArgs>(OnDestroy);
     }
 
     private void OnMapInit(Entity<SWVehicleComponent> ent, ref MapInitEvent args)
@@ -51,10 +47,10 @@ public sealed class SWVehicleSystem : EntitySystem
         ent.Comp.ActionEntity = _actions.AddAction(ent.Owner, SWSharedVehicleSystem.ActionExitVehicle);
     }
 
-    private void OnMoveInVehicle(Entity<SWInVehicleComponent> ent, ref UpdateCanMoveEvent args)
-    {
-        args.Cancel();
-    }
+    //private void OnMoveInVehicle(Entity<SWInVehicleComponent> ent, ref UpdateCanMoveEvent args)
+    //{
+    //    args.Cancel();
+    //}
 
     private void OccupyRole(Entity<SWVehicleComponent> ent, EntityUid user, string role)
     {
@@ -63,14 +59,13 @@ public sealed class SWVehicleSystem : EntitySystem
             return;
         }
 
-        ent.Comp.RolesInfo[role].Occupied = true;
         var proto = _prototype.Index(ent.Comp.RolesInfo[role].Role);
         EntityManager.AddComponents(user, proto.ComponentsAddToUser);
 
         var comp = AddComp<SWInVehicleComponent>(user);
         comp.Vehicle = ent;
         comp.OccupiedRole = role;
-
+        ent.Comp.RolesInfo[role].Occupant = GetNetEntity(user);
         var coords = new EntityCoordinates(ent, ent.Comp.RolesInfo[role].BuckleCoords);
         _transformSystem.SetCoordinates(user, coords);
 
@@ -102,37 +97,49 @@ public sealed class SWVehicleSystem : EntitySystem
             return;
         }
 
-        var roleInfo = vehicleComp.RolesInfo[ent.Comp.OccupiedRole];
-        roleInfo.Occupied = false;
-        RemComp<SWInVehicleComponent>(ent);
+        DeoccupyRole(new Entity<SWVehicleComponent>(ent.Comp.Vehicle, vehicleComp), ent.Comp.OccupiedRole);
+        args.Handled = true;
+    }
 
-        if (ent.Comp.ActionEntity != null)
+    private void DeoccupyRole(Entity<SWVehicleComponent> vehicle, string occupiedRole)
+    {
+        var roleInfo = vehicle.Comp.RolesInfo[occupiedRole];
+
+        if (roleInfo.Occupant == null)
         {
-            _actions.RemoveAction(ent.Owner, ent.Comp.ActionEntity);
+            return;
+        }
+        var occupantEntity = GetEntity(roleInfo.Occupant.Value);
+        Entity<SWInVehicleComponent> occupant = new Entity<SWInVehicleComponent>(occupantEntity, Comp<SWInVehicleComponent>(occupantEntity));
+
+        if (occupant.Comp.ActionEntity != null)
+        {
+            _actions.RemoveAction(occupant.Owner, occupant.Comp.ActionEntity);
         }
 
         var proto = _prototype.Index(roleInfo.Role);
 
         //Raise event before deletion to properly shutdown all components
-        var ev = new SWUserExitVehicleEvent(new Entity<SWVehicleComponent>(ent.Comp.Vehicle, vehicleComp));
-        RaiseLocalEvent(ent, ev);
+        var ev = new SWUserExitVehicleEvent(vehicle);
+        RaiseLocalEvent(occupant, ev);
 
-        EntityManager.RemoveComponents(ent, proto.ComponentsAddToUser);
+        RemComp<SWInVehicleComponent>(occupant);
+        EntityManager.RemoveComponents(occupant, proto.ComponentsAddToUser);
+        var grid = Transform(occupant).GridUid;
 
-        var grid = Transform(ent).GridUid;
+        _actionBlocker.UpdateCanMove(occupant);
+        roleInfo.Occupant = null;
+        UpdateInterface(vehicle);
 
         if (grid == null)
         {
             return;
         }
+        _transformSystem.SetParent(occupant, grid.Value);
+    }
 
-        _transformSystem.SetParent(ent, grid.Value);
-
-        args.Handled = true;
-        _actionBlocker.UpdateCanMove(ent);
-
-
-
-        UpdateInterface(new Entity<SWVehicleComponent>(ent.Comp.Vehicle, vehicleComp));
+    private void OnDestroy(Entity<SWVehicleComponent> ent, ref DestructionEventArgs args)
+    {
+        ent.Comp.RolesInfo.Keys.ToList().ForEach(roleName => DeoccupyRole(ent, roleName));
     }
 }

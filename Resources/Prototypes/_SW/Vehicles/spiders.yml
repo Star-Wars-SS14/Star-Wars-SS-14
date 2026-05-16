@@ -30,7 +30,7 @@
         behaviors:
           - !type:DoActsBehavior
             acts: [ "Destruction" ]
-  - type: Pullable
+  # - type: Pullable
   - type: Clickable
   - type: InteractionOutline
   - type: Rotatable

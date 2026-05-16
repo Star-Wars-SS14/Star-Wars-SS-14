@@ -2,6 +2,7 @@ using Content.Shared._SW.Vehicle;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Actions;
 using Content.Shared.Destructible;
+using Content.Shared.Popups;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 using System.Linq;
@@ -14,6 +15,7 @@ public sealed class SWVehicleSystem : EntitySystem
     [Dependency] private readonly SharedActionsSystem _actions = default!;
     [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
     [Dependency] private readonly ActionBlockerSystem _actionBlocker = default!;
+    [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
 
     public override void Initialize()
     {
@@ -38,7 +40,7 @@ public sealed class SWVehicleSystem : EntitySystem
 
     private void OnOccupy(Entity<SWVehicleComponent> ent, ref SWOccupyRoleMessage args)
     {
-        OccupyRole(ent, args.Actor, args.Role);
+        TryOccupyRole(ent, args.Actor, args.Role);
         UpdateInterface(ent);
     }
 
@@ -51,16 +53,29 @@ public sealed class SWVehicleSystem : EntitySystem
     //{
     //    args.Cancel();
     //}
+    public void TryOccupyRole(Entity<SWVehicleComponent> ent, EntityUid user, string role)
+    {
+        var proto = _prototype.Index(ent.Comp.RolesInfo[role].Role);
 
-    private void OccupyRole(Entity<SWVehicleComponent> ent, EntityUid user, string role)
+        EntityManager.AddComponents(user, proto.ComponentsAddToUser);
+        var ev = new SWUserTryEnterVehicleEvent(ent);
+
+        RaiseLocalEvent(user, ref ev);
+        if (ev.Cancelled)
+        {
+            _popupSystem.PopupEntity(ev.Message, user);
+            return;
+        }
+        OccupyRoleInner(ent, user, role);
+    }
+
+
+    private void OccupyRoleInner(Entity<SWVehicleComponent> ent, EntityUid user, string role)
     {
         if (HasComp<SWInVehicleComponent>(user))
         {
             return;
         }
-
-        var proto = _prototype.Index(ent.Comp.RolesInfo[role].Role);
-        EntityManager.AddComponents(user, proto.ComponentsAddToUser);
 
         var comp = AddComp<SWInVehicleComponent>(user);
         comp.Vehicle = ent;
@@ -68,10 +83,12 @@ public sealed class SWVehicleSystem : EntitySystem
         ent.Comp.RolesInfo[role].Occupant = GetNetEntity(user);
         var coords = new EntityCoordinates(ent, ent.Comp.RolesInfo[role].BuckleCoords);
         _transformSystem.SetCoordinates(user, coords);
-
-        var ev = new SWUserEnterVehicleEvent(ent);
-        RaiseLocalEvent(user, ev);
         _actionBlocker.UpdateCanMove(user);
+
+        var evOnUser = new SWUserEnterVehicleEvent(ent);
+        RaiseLocalEvent(user, evOnUser);
+
+        var evOnVehicle = new SWVehicleIsEnteredEvent(user, comp);
     }
     private EntityUid SpawnWithPlacementInfo(SWVehiclePartInfo info, EntityUid parent)
     {
@@ -120,8 +137,10 @@ public sealed class SWVehicleSystem : EntitySystem
         var proto = _prototype.Index(roleInfo.Role);
 
         //Raise event before deletion to properly shutdown all components
-        var ev = new SWUserExitVehicleEvent(vehicle);
-        RaiseLocalEvent(occupant, ev);
+        var evOnUser = new SWUserExitVehicleEvent(vehicle);
+        RaiseLocalEvent(occupant, evOnUser);
+        var evOnVehicle = new SWVehicleIsExitedEvent(occupant);
+        RaiseLocalEvent(vehicle, evOnVehicle);
 
         RemComp<SWInVehicleComponent>(occupant);
         EntityManager.RemoveComponents(occupant, proto.ComponentsAddToUser);

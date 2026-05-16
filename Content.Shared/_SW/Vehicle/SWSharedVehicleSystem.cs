@@ -61,3 +61,32 @@ public sealed class SWUserExitVehicleEvent : EntityEventArgs
         Vehicle = vehicle;
     }
 }
+
+public sealed class SWVehicleIsExitedEvent : EntityEventArgs
+{
+    public EntityUid User;
+    public SWVehicleIsExitedEvent(EntityUid user)
+    {
+        User = user;
+    }
+}
+
+public sealed class SWVehicleIsEnteredEvent : EntityEventArgs
+{
+    public Entity<SWInVehicleComponent> User;
+    public SWVehicleIsEnteredEvent(EntityUid user, SWInVehicleComponent comp)
+    {
+        User = new Entity<SWInVehicleComponent>(user, comp);
+    }
+}
+
+[ByRefEvent]
+public sealed class SWUserTryEnterVehicleEvent : CancellableEntityEventArgs
+{
+    public Entity<SWVehicleComponent> Vehicle;
+    public string Message = Loc.GetString("sw-vehicle-unable-enter-default");
+    public SWUserTryEnterVehicleEvent(Entity<SWVehicleComponent> vehicle)
+    {
+        Vehicle = vehicle;
+    }
+}

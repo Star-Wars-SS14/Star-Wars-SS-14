@@ -26,9 +26,9 @@
   - type: Appearance
   - type: BatteryAmmoProvider
     proto: SWE-1Bullet
-    fireCost: 100
+    fireCost: 20
   - type: PredictedBatterySelfRecharger
-    autoRechargeRate: 50
+    autoRechargeRate: 20
   - type: SWShootByVehicleGun
     forwardVector: "0.0, -1.0"
     angle: 30

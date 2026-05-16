@@ -1,1 +1,0 @@
-sw-vehicle-gun-unavailable-range = Недоступное направление для стрельбы

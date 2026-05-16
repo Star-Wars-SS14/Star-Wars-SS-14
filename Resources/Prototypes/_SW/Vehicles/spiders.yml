@@ -38,10 +38,6 @@
     rolesInfo:
       driver:
         role: SWVehicleRoleDriver
-        buckleCoords: "0.0, -0.35"
-      passenger1:
-        role: SWVehicleRolePassenger
-        buckleCoords: "0.0, 0.4"
     vehicleParts:
       cannon:
         entProto: SWSpiderCannon

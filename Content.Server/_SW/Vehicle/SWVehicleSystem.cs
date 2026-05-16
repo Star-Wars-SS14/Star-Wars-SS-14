@@ -77,13 +77,13 @@ public sealed class SWVehicleSystem : EntitySystem
             return;
         }
 
+        _actionBlocker.UpdateCanMove(user);
         var comp = AddComp<SWInVehicleComponent>(user);
         comp.Vehicle = ent;
         comp.OccupiedRole = role;
         ent.Comp.RolesInfo[role].Occupant = GetNetEntity(user);
         var coords = new EntityCoordinates(ent, ent.Comp.RolesInfo[role].BuckleCoords);
         _transformSystem.SetCoordinates(user, coords);
-        _actionBlocker.UpdateCanMove(user);
 
         var evOnUser = new SWUserEnterVehicleEvent(ent);
         RaiseLocalEvent(user, evOnUser);

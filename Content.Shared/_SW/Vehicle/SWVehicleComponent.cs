@@ -38,8 +38,5 @@ public sealed partial class SWVehicleRoleInfo
     [DataField]
     public ProtoId<SWVehicleRolePrototype> Role = default!;
 
-    [DataField]
-    public Vector2 BuckleCoords = new Vector2(0.0f, 0.0f);
-
     public NetEntity? Occupant = null;
 }

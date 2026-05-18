@@ -15,6 +15,7 @@ namespace Content.Shared._SW.Vehicle.ShootInVehicle;
 public sealed class SWShootByVehicleSystem : EntitySystem
 {
     [Dependency] private readonly SharedTransformSystem _sharedTransformSystem = default!;
+    [Dependency] private readonly SWVehicleSystem _vehicleSystem = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -77,12 +78,6 @@ public sealed class SWShootByVehicleSystem : EntitySystem
             return null;
         }
 
-        var vehicleComp = Comp<SWVehicleComponent>(inVehicle.Vehicle);
-        if (vehicleComp.VehicleParts.TryGetValue(ent.Comp.GunVehiclePartId, out var part))
-        {
-            return part.SpawnedPart;
-        }
-
-        return null;
+        return _vehicleSystem.GetPart(inVehicle.Vehicle, ent.Comp.GunVehiclePartId);
     }
 }

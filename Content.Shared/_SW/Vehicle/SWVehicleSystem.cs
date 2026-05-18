@@ -7,7 +7,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 using System.Linq;
 
-namespace Content.Server._SW.Vehicle;
+namespace Content.Shared._SW.Vehicle;
 public sealed class SWVehicleSystem : EntitySystem
 {
     [Dependency] private readonly SharedUserInterfaceSystem _uiSystem = default!;
@@ -64,6 +64,7 @@ public sealed class SWVehicleSystem : EntitySystem
         if (ev.Cancelled)
         {
             _popupSystem.PopupEntity(ev.Message, user);
+            EntityManager.RemoveComponents(user, proto.ComponentsAddToUser);
             return;
         }
         OccupyRoleInner(ent, user, role);
@@ -82,8 +83,6 @@ public sealed class SWVehicleSystem : EntitySystem
         comp.Vehicle = ent;
         comp.OccupiedRole = role;
         ent.Comp.RolesInfo[role].Occupant = GetNetEntity(user);
-        var coords = new EntityCoordinates(ent, ent.Comp.RolesInfo[role].BuckleCoords);
-        _transformSystem.SetCoordinates(user, coords);
 
         var evOnUser = new SWUserEnterVehicleEvent(ent);
         RaiseLocalEvent(user, evOnUser);
@@ -144,21 +143,25 @@ public sealed class SWVehicleSystem : EntitySystem
 
         RemComp<SWInVehicleComponent>(occupant);
         EntityManager.RemoveComponents(occupant, proto.ComponentsAddToUser);
-        var grid = Transform(occupant).GridUid;
 
         _actionBlocker.UpdateCanMove(occupant);
         roleInfo.Occupant = null;
         UpdateInterface(vehicle);
-
-        if (grid == null)
-        {
-            return;
-        }
-        _transformSystem.SetParent(occupant, grid.Value);
     }
 
     private void OnDestroy(Entity<SWVehicleComponent> ent, ref DestructionEventArgs args)
     {
         ent.Comp.RolesInfo.Keys.ToList().ForEach(roleName => DeoccupyRole(ent, roleName));
+    }
+
+    public NetEntity? GetPart(EntityUid vehicle, string partId)
+    {
+        var vehicleComp = Comp<SWVehicleComponent>(vehicle);
+        if (vehicleComp.VehicleParts.TryGetValue(partId, out var part))
+        {
+            return part.SpawnedPart;
+        }
+
+        return null;
     }
 }

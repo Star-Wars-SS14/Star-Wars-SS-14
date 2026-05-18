@@ -42,6 +42,9 @@
       cannon:
         entProto: SWSpiderCannon
         buckleCoords: "0.0, -1.2"
+      driver_seat:
+        entProto: SWVehicleSeat
+        buckleCoords: "0.0, -0.35"
   - type: ActivatableUI
     key: enum.SWVehicleMenuUiKey.Key
   - type: UserInterface
@@ -62,14 +65,18 @@
     rolesInfo:
       driver:
         role: SWVehicleRoleDriver
-        buckleCoords: "0.0, -0.35"
       passenger1:
         role: SWVehicleRolePassenger
-        buckleCoords: "0.0, 0.4"
     vehicleParts:
       cannon:
         entProto: SWSpiderCannon
         buckleCoords: "0.0, -1.2"
+      driver_seat:
+        entProto: SWVehicleSeat
+        buckleCoords: "0.0, -0.35"
+      passenger1_seat:
+        entProto: SWVehicleSeat
+        buckleCoords: "0.0, 0.4"        
 
 - type: swVehicleRole
   id: SWVehicleRoleDriver
@@ -79,11 +86,14 @@
   - type: SWVehicleRequiresHandsUser
   - type: SWShootByVehicleUser
     part: cannon
+  - type: SWBuckleToVehiclePart
+    part: driver_seat
 
 - type: swVehicleRole
   id: SWVehicleRolePassenger
   localizedName: passenger
   components:
-  - type: RelayInputMover #we use this to block movement
   - type: SWVehicleRequiresHandsUser
     hands: 1
+  - type: SWBuckleToVehiclePart
+    part: passenger1_seat

@@ -75,32 +75,27 @@
 
 - type: entity
   parent: BaseGameRule
-  id: FactionsOnlyQuotaGamerule
+  id: SWFactionArrivalRadioGamerule
   components:
   - type: GameRule
     minPlayers: 0
-  - type: SWFactionGamerule
-    factionsPrototypes:
-    - RepublicFactionQuotaOnly
-    - EmpireFactionQuotaOnly
-    - MandalorianFaction
-    - BlackSunFaction
-    - ExchangeFaction
-
-- type: entity
-  parent: BaseGameRule
-  id: FactionsOnlyNoQuotaGamerule
-  components:
-  - type: GameRule
-    minPlayers: 0
-  - type: SWFactionGamerule
-    factionsPrototypes:
-    - RepublicFaction
-    - EmpireFactionNoQuota
-    - MandalorianFaction
-    - BlackSunFaction
-    - ExchangeFaction
-
+  - type: SWFactionArrivalRadioRule
+    announcements:
+    - faction: RepublicFaction
+      channel: SWRepublic
+      phrase: sw-faction-arrival-radio
+    - faction: EmpireFaction
+      channel: SWEmpireRegular
+      phrase: sw-faction-arrival-radio
+    - faction: MandalorianFaction
+      channel: SWMandalorian
+      phrase: sw-faction-arrival-radio
+    - faction: BlackSunFaction
+      channel: SWBlackSun
+      phrase: sw-faction-arrival-radio
+    - faction: ExchangeFaction
+      channel: SWExchange
+      phrase: sw-faction-arrival-radio
 
 - type: entity
   id: SWEventScheduler

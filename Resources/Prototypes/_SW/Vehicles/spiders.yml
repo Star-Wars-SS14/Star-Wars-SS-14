@@ -61,9 +61,9 @@
     maxReverseSpeed: 8
     turnAcceleration: 7
     maxAngularVelocity: 8
-    angularDamping: 8
+    angularDamping: 15
     rollingFriction: 5
-    sidewaysFriction: 8
+    sidewaysFriction: 15
     turnSpeedReference: 2.5
 
 - type: entity

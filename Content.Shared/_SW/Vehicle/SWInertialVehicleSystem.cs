@@ -72,7 +72,8 @@ public sealed partial class SWInertialVehicleSystem : VirtualController
         velocity = forward * forwardSpeed + right * sidewaysSpeed;
 
         var angularVelocity = physics.AngularVelocity;
-        if (!MathHelper.CloseTo(steering, 0f))
+        var canSteer = vehicle.CanTurnInPlace || MathF.Abs(forwardSpeed) >= vehicle.MinTurnSpeed;
+        if (!MathHelper.CloseTo(steering, 0f) && canSteer)
         {
             var speedFactor = vehicle.CanTurnInPlace
                 ? 1f

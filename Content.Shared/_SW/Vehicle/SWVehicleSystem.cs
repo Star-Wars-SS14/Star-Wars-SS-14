@@ -25,7 +25,8 @@ public sealed class SWVehicleSystem : EntitySystem
         SubscribeLocalEvent<SWVehicleComponent, SWOccupyRoleMessage>(OnOccupy);
         SubscribeLocalEvent<SWInVehicleComponent, ComponentInit>(OnInitInVehicle);
         //SubscribeLocalEvent<SWInVehicleComponent, UpdateCanMoveEvent>(OnMoveInVehicle);
-        SubscribeLocalEvent<SWVehicleComponent, DestructionEventArgs>(OnDestroy);
+        //SubscribeLocalEvent<SWVehicleComponent, DestructionEventArgs>(OnDestroy);
+        SubscribeLocalEvent<SWVehicleComponent, EntityTerminatingEvent>(OnTerminating);
     }
 
     private void OnMapInit(Entity<SWVehicleComponent> ent, ref MapInitEvent args)
@@ -126,6 +127,15 @@ public sealed class SWVehicleSystem : EntitySystem
             return;
         }
         var occupantEntity = GetEntity(roleInfo.Occupant.Value);
+
+        if (TerminatingOrDeleted(occupantEntity) ||
+            !TryComp<SWInVehicleComponent>(occupantEntity, out var inVehicle))
+        {
+            roleInfo.Occupant = null;
+            return;
+        }
+
+        var occupantCoordinates = _transformSystem.ToMapCoordinates(Transform(occupantEntity).Coordinates);
         Entity<SWInVehicleComponent> occupant = new Entity<SWInVehicleComponent>(occupantEntity, Comp<SWInVehicleComponent>(occupantEntity));
 
         if (occupant.Comp.ActionEntity != null)
@@ -143,15 +153,53 @@ public sealed class SWVehicleSystem : EntitySystem
 
         RemComp<SWInVehicleComponent>(occupant);
         EntityManager.RemoveComponents(occupant, proto.ComponentsAddToUser);
+        DetachOccupantFromVehicle((occupant.Owner, Transform(occupant.Owner)), vehicle, occupantCoordinates);
 
         _actionBlocker.UpdateCanMove(occupant);
         roleInfo.Occupant = null;
         UpdateInterface(vehicle);
     }
 
-    private void OnDestroy(Entity<SWVehicleComponent> ent, ref DestructionEventArgs args)
+    private void OnTerminating(Entity<SWVehicleComponent> ent, ref EntityTerminatingEvent args)
     {
-        ent.Comp.RolesInfo.Keys.ToList().ForEach(roleName => DeoccupyRole(ent, roleName));
+        DeoccupyAllRoles(ent);
+    }
+
+    private void DeoccupyAllRoles(Entity<SWVehicleComponent> vehicle)
+    {
+        vehicle.Comp.RolesInfo.Keys.ToList().ForEach(roleName => DeoccupyRole(vehicle, roleName));
+    }
+
+    private void DetachOccupantFromVehicle(
+        Entity<TransformComponent> occupant,
+        Entity<SWVehicleComponent> vehicle,
+        MapCoordinates fallbackCoordinates)
+    {
+        if (TerminatingOrDeleted(occupant.Owner))
+            return;
+
+        if (occupant.Comp.ParentUid == EntityUid.Invalid ||
+            IsAttachedToVehicle(occupant.Comp.ParentUid, vehicle))
+        {
+            _transformSystem.SetMapCoordinates(occupant, fallbackCoordinates);
+        }
+    }
+
+    private bool IsAttachedToVehicle(EntityUid entity, EntityUid vehicle)
+    {
+        var current = entity;
+        while (current.IsValid())
+        {
+            if (current == vehicle)
+                return true;
+
+            if (!TryComp(current, out TransformComponent? xform))
+                return false;
+
+            current = xform.ParentUid;
+        }
+
+        return false;
     }
 
     public NetEntity? GetPart(EntityUid vehicle, string partId)

@@ -1,0 +1,151 @@
+- type: entity
+  id: SWTank
+  name: tank
+  components:
+  - type: Transform
+  - type: Sprite
+    sprite: _SW/Vehicles/tank.rsi
+    state: vehicle
+  - type: Physics
+    bodyType: Dynamic
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.15,-1.55,1.15,1.55"
+        density: 2500
+        mask:
+        - MobMask
+        layer:
+        - MachineLayer
+  - type: Damageable
+    damageContainer: StructuralInorganic
+    damageModifierSet: StructuralMetallicStrong
+  - type: Destructible
+    thresholds:
+      - trigger:
+          !type:DamageTrigger
+          damage: 1800
+        behaviors:
+          - !type:DoActsBehavior
+            acts: [ "Destruction" ]
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Rotatable
+  - type: SWVehicle
+    rolesInfo:
+      driver:
+        role: SWVehicleRoleTankDriver
+      shooter:
+        role: SWVehicleRoleTankShooter
+    vehicleParts:
+      cannon:
+        entProto: SWTankCannon
+        buckleCoords: "0.0, 1.35"
+      driver_seat:
+        entProto: SWVehicleSeat
+        buckleCoords: "0.0, 0.25"
+      shooter_seat:
+        entProto: SWVehicleSeat
+        buckleCoords: "0.0, -0.55"
+  - type: ActivatableUI
+    key: enum.SWVehicleMenuUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWVehicleMenuUiKey.Key:
+        type: SWVehicleBoundUserInterface
+  - type: InputMover
+  - type: SWInertialVehicle
+    acceleration: 1.6
+    reverseAcceleration: 1.2
+    brakeAcceleration: 8
+    maxForwardSpeed: 4
+    maxReverseSpeed: 2
+    turnAcceleration: 1.8
+    maxAngularVelocity: 1.2
+    angularDamping: 8
+    rollingFriction: 3
+    sidewaysFriction: 20
+    turnSpeedReference: 2.5
+    minTurnSpeed: 1.2
+
+- type: swVehicleRole
+  id: SWVehicleRoleTankDriver
+  localizedName: sw-vehicle-role-driver
+  components:
+  - type: SWRedirectMovement
+  - type: SWVehicleDriverDrawDepth
+  - type: SWVehicleRequiresHandsUser
+  - type: SWBuckleToVehiclePart
+    part: driver_seat
+
+- type: swVehicleRole
+  id: SWVehicleRoleTankShooter
+  localizedName: sw-vehicle-role-shooter
+  components:
+  - type: SWVehicleRequiresHandsUser
+    hands: 1
+  - type: SWShootByVehicleUser
+    part: cannon
+  - type: SWBuckleToVehiclePart
+    part: shooter_seat
+  - type: SWVehicleProjectilePass
+
+
+- type: entity
+  id: SWTankCannon
+  parent: SWSpiderCannon
+  name: tank cannon
+  components:
+  - type: Gun
+    fireRate: 0.5
+    projectileSpeed: 55
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/ship_perforator.ogg
+      params:
+        variation: 0.05
+  - type: PredictedBattery
+    maxCharge: 2000
+    startingCharge: 2000
+  - type: BatteryAmmoProvider
+    proto: SWTankCannonBlast
+    fireCost: 250
+  - type: PredictedBatterySelfRecharger
+    autoRechargeRate: 35
+  - type: SWShootByVehicleGun
+    angle: 60
+
+- type: entity
+  id: SWTankCannonBlast
+  name: tank blast
+  parent: BaseBulletTrigger
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        Heat: 20
+        Structural: 20
+  - type: ExplodeOnTrigger
+  - type: Explosive
+    explosionType: Default
+    totalIntensity: 250
+    intensitySlope: 6
+    maxIntensity: 35
+    maxTileBreak: 1
+    canCreateVacuum: false
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/red_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+    scale: 1.5, 1.5
+  - type: PointLight
+    color: Red
+    radius: 3
+    energy: 2
+

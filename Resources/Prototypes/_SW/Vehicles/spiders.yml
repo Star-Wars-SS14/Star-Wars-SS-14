@@ -90,7 +90,7 @@
 
 - type: swVehicleRole
   id: SWVehicleRoleDriver
-  localizedName: driver
+  localizedName: sw-vehicle-role-driver
   components:
   - type: SWRedirectMovement
   - type: SWVehicleDriverDrawDepth
@@ -103,7 +103,7 @@
 
 - type: swVehicleRole
   id: SWVehicleRolePassenger
-  localizedName: passenger
+  localizedName: sw-vehicle-role-passenger
   components:
   - type: SWVehicleRequiresHandsUser
     hands: 1

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Content.Shared._SW.Vehicle;
 
-[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState(raiseAfterAutoHandleState: true)]
 public sealed partial class SWInVehicleComponent : Component
 {
     [AutoNetworkedField]

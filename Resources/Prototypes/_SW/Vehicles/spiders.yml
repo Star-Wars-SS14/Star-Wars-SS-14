@@ -93,6 +93,7 @@
   localizedName: driver
   components:
   - type: SWRedirectMovement
+  - type: SWVehicleDriverDrawDepth
   - type: SWVehicleRequiresHandsUser
   - type: SWShootByVehicleUser
     part: cannon

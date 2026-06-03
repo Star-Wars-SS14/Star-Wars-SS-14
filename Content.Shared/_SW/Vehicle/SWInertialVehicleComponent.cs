@@ -77,7 +77,7 @@ public sealed partial class SWInertialVehicleComponent : Component
     /// Minimum forward or reverse speed required before steering can add rotation when turning in place is disabled.
     /// </summary>
     [DataField, AutoNetworkedField, ViewVariables(VVAccess.ReadWrite)]
-    public float MinTurnSpeed = 0.35f;
+    public float MinTurnSpeed = 2f;
 
     /// <summary>
     /// Whether steering works at full strength even when the vehicle has no forward or reverse speed.

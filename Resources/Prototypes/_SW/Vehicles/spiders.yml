@@ -4,8 +4,7 @@
   components:
   - type: Transform
   - type: Sprite
-    rotation: 180
-    sprite: _SW/Structures/Decoration/spider.rsi
+    sprite: _SW/Vehicles/spider.rsi
     state: speedbike
   - type: Physics
     bodyType: Dynamic

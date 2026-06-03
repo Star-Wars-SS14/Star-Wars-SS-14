@@ -99,6 +99,7 @@
     part: cannon
   - type: SWBuckleToVehiclePart
     part: driver_seat
+  - type: SWVehicleProjectilePass
 
 - type: swVehicleRole
   id: SWVehicleRolePassenger
@@ -108,3 +109,4 @@
     hands: 1
   - type: SWBuckleToVehiclePart
     part: passenger1_seat
+  - type: SWVehicleProjectilePass

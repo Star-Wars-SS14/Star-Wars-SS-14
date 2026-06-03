@@ -30,6 +30,7 @@
     fireCost: 20
   - type: PredictedBatterySelfRecharger
     autoRechargeRate: 20
+  - type: SWVehicleProjectilePass
   - type: SWShootByVehicleGun
     forwardVector: "0.0, -1.0"
     angle: 30

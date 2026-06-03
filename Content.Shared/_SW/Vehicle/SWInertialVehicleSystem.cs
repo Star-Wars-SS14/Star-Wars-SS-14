@@ -78,7 +78,8 @@ public sealed partial class SWInertialVehicleSystem : VirtualController
                 ? 1f
                 : Math.Clamp(MathF.Abs(forwardSpeed) / MathF.Max(vehicle.TurnSpeedReference, 0.001f), 0f, 1f);
 
-            angularVelocity += -steering * vehicle.TurnAcceleration * speedFactor * frameTime;
+            var reverseSteering = forwardSpeed < 0f ? -1f : 1f;
+            angularVelocity += -steering * reverseSteering * vehicle.TurnAcceleration * speedFactor * frameTime;
             angularVelocity = Math.Clamp(angularVelocity, -vehicle.MaxAngularVelocity, vehicle.MaxAngularVelocity);
         }
         else

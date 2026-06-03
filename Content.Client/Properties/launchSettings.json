@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Content.Client": {
+      "commandName": "Project",
+      "workingDirectory": ".."
+    }
+  }
+}

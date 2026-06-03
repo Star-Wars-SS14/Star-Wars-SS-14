@@ -1,5 +1,7 @@
 defaultWindowTitle: Space Station 14 - Star Wars [RU]
 windowIconSet: /Textures/Logo/icon-ru # Corvax-Theme
 splashLogo: /Textures/Logo/logo-ru.png # Corvax-Theme
+modules:
+- Robust.Client.WebView
 
 # PJB PLEASE

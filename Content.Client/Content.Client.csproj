@@ -32,6 +32,21 @@
   </ItemGroup>
   <Import Project="..\RobustToolbox\MSBuild\Robust.Properties.targets" />
   <Import Project="..\RobustToolbox\MSBuild\XamlIL.targets" />
+  <PropertyGroup>
+    <SWWebViewModuleProject>..\RobustToolbox\Robust.Client.WebView\Robust.Client.WebView.csproj</SWWebViewModuleProject>
+    <SWWebViewModuleOutput>..\RobustToolbox\Robust.Client.WebView\bin\$(Configuration)\$(TargetFramework)\</SWWebViewModuleOutput>
+  </PropertyGroup>
+  <Target Name="SWBuildWebViewModule" AfterTargets="Build" Condition="'$(SWDisableWebViewModule)' != 'true' and '$(DesignTimeBuild)' != 'true' and '$(BuildingSWWebViewModule)' != 'true'">
+    <PropertyGroup>
+      <SWWebViewModuleTargetDir>$(TargetDir)Modules\Robust.Client.WebView\</SWWebViewModuleTargetDir>
+    </PropertyGroup>
+    <MSBuild Projects="$(SWWebViewModuleProject)" Targets="Build" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);BuildingSWWebViewModule=true" />
+    <ItemGroup>
+      <SWWebViewModuleFiles Include="$(SWWebViewModuleOutput)**\*.*" />
+    </ItemGroup>
+    <MakeDir Directories="$(SWWebViewModuleTargetDir)" />
+    <Copy SourceFiles="@(SWWebViewModuleFiles)" DestinationFiles="@(SWWebViewModuleFiles->'$(SWWebViewModuleTargetDir)%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
   <ItemGroup>
     <AdditionalFiles Remove="_SW\TurretConsole\UI\Новая папка1\**" />
   </ItemGroup>

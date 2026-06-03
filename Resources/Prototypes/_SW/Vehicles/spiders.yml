@@ -4,6 +4,7 @@
   components:
   - type: Transform
   - type: Sprite
+    rotation: 180
     sprite: _SW/Structures/Decoration/spider.rsi
     state: speedbike
   - type: Physics
@@ -41,10 +42,10 @@
     vehicleParts:
       cannon:
         entProto: SWSpiderCannon
-        buckleCoords: "0.0, -1.2"
+        buckleCoords: "0.0, 1.2"
       driver_seat:
         entProto: SWVehicleSeat
-        buckleCoords: "0.0, -0.35"
+        buckleCoords: "0.0, 0.35"
   - type: ActivatableUI
     key: enum.SWVehicleMenuUiKey.Key
   - type: UserInterface
@@ -52,9 +53,18 @@
       enum.SWVehicleMenuUiKey.Key:
         type: SWVehicleBoundUserInterface
   - type: InputMover
-  - type: MovementSpeedModifier
-    baseSprintSpeed: 10
-    baseWalkSpeed: 10
+  - type: SWInertialVehicle
+    acceleration: 4
+    reverseAcceleration: 4
+    brakeAcceleration: 18
+    maxForwardSpeed: 15
+    maxReverseSpeed: 8
+    turnAcceleration: 7
+    maxAngularVelocity: 8
+    angularDamping: 8
+    rollingFriction: 5
+    sidewaysFriction: 8
+    turnSpeedReference: 2.5
 
 - type: entity
   id: SWSpiderTwoRoles
@@ -70,13 +80,13 @@
     vehicleParts:
       cannon:
         entProto: SWSpiderCannon
-        buckleCoords: "0.0, -1.2"
+        buckleCoords: "0.0, 1.2"
       driver_seat:
         entProto: SWVehicleSeat
-        buckleCoords: "0.0, -0.35"
+        buckleCoords: "0.0, 0.35"
       passenger1_seat:
         entProto: SWVehicleSeat
-        buckleCoords: "0.0, 0.4"        
+        buckleCoords: "0.0, -0.4"        
 
 - type: swVehicleRole
   id: SWVehicleRoleDriver

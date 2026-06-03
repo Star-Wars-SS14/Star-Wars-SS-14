@@ -26,9 +26,6 @@ public sealed class SWRedirectMovementSystem : EntitySystem
 
     private void OnEnter(Entity<SWRedirectMovementComponent> ent, ref SWUserEnterVehicleEvent args)
     {
-        ISawmill _s = Logger.GetSawmill("asd");
-        _s.Fatal("SADFG");
-
         EnsureComp<RelayInputMoverComponent>(ent);
         _mover.SetRelay(ent, args.Vehicle);
 

@@ -10,6 +10,9 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Events;
 using Content.Shared.Tag;
+//SW transport start
+using Content.Shared._SW.Vehicle;
+//SW transport end
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
@@ -184,6 +187,14 @@ public abstract partial class SharedMoverController : VirtualController
 
             LerpRotation(uid, mover, frameTime);
         }
+
+        //SW transport start
+        if (HasComp<SWInertialVehicleComponent>(uid))
+        {
+            UsedMobMovement[uid] = true;
+            return;
+        }
+        //SW transport end
 
         // If we can't move then just use tile-friction / no movement handling.
         if (!mover.CanMove

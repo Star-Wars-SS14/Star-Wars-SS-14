@@ -1,5 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+//SW transport start
+using Content.Shared._SW.Vehicle;
+//SW transport end
 using Content.Shared.Alert;
 using Content.Shared.Buckle.Components;
 using Content.Shared.Cuffs.Components;
@@ -131,16 +134,49 @@ public abstract partial class SharedBuckleSystem
             return;
         }
 
-        if (xform.ParentUid != strapUid || _container.IsEntityInContainer(buckle))
+        if (_container.IsEntityInContainer(buckle))
         {
+            Unbuckle(buckle, (strapUid, strapComp), null);
+            return;
+        }
+
+        if (xform.ParentUid != strapUid)
+        {
+            if (TryResnapSWVehicleBuckle(buckle, (strapUid, strapComp), xform))
+                return;
+
             Unbuckle(buckle, (strapUid, strapComp), null);
             return;
         }
 
         var delta = (xform.LocalPosition - strapComp.BuckleOffset).LengthSquared();
         if (delta > 1e-5)
+        {
+            if (TryResnapSWVehicleBuckle(buckle, (strapUid, strapComp), xform))
+                return;
+
             Unbuckle(buckle, (strapUid, strapComp), null);
+        }
     }
+
+    //SW transport start
+    private bool TryResnapSWVehicleBuckle(
+        Entity<BuckleComponent> buckle,
+        Entity<StrapComponent> strap,
+        TransformComponent xform)
+    {
+        if (!TryComp<SWInVehicleComponent>(buckle, out var inVehicle) ||
+            !HasComp<SWVehicleComponent>(inVehicle.Vehicle) ||
+            Transform(strap.Owner).ParentUid != inVehicle.Vehicle)
+        {
+            return false;
+        }
+
+        var coords = new EntityCoordinates(strap, strap.Comp.BuckleOffset);
+        _transform.SetCoordinates(buckle.Owner, xform, coords, rotation: Angle.Zero);
+        return true;
+    }
+    //SW transport end
 
     #endregion
 

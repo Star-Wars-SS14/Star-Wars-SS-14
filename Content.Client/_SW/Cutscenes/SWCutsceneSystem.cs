@@ -1,19 +1,23 @@
 using System.Text;
-using System.Numerics;
 using Content.Shared._SW.Cutscenes;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.WebViewHook;
+using Robust.Shared.Asynchronous;
 using Robust.Shared.Utility;
 
 namespace Content.Client._SW.Cutscenes;
 
 public sealed class SWCutsceneSystem : EntitySystem
 {
+    private const string CutsceneFinishedUrl = "sw-cutscene://ended";
+
     [Dependency] private readonly IUserInterfaceManager _ui = default!;
+    [Dependency] private readonly ITaskManager _taskManager = default!;
     [Dependency] private readonly IWebViewControlFactory _webViewFactory = default!;
 
     private LayoutContainer? _root;
+    private int _activeCutsceneId;
 
     public override void Initialize()
     {
@@ -23,6 +27,7 @@ public sealed class SWCutsceneSystem : EntitySystem
     private void OnPlayCutscene(SWPlayCutsceneEvent ev)
     {
         CloseCurrent();
+        var cutsceneId = ++_activeCutsceneId;
 
         _root = new LayoutContainer
         {
@@ -30,28 +35,24 @@ public sealed class SWCutsceneSystem : EntitySystem
         };
         LayoutContainer.SetAnchorPreset(_root, LayoutContainer.LayoutPreset.Wide);
 
-        var player = CreateWebView(ev.Path);
+        var player = CreateWebView(ev.Path, cutsceneId);
         LayoutContainer.SetAnchorPreset(player, LayoutContainer.LayoutPreset.Wide);
         _root.AddChild(player);
-
-        var closeButton = new Button
-        {
-            Text = "Skip",
-            MinSize = new Vector2(90, 36),
-        };
-        closeButton.OnPressed += _ => CloseCurrent();
-        LayoutContainer.SetAnchorPreset(closeButton, LayoutContainer.LayoutPreset.TopRight);
-        LayoutContainer.SetMarginTop(closeButton, 12);
-        LayoutContainer.SetMarginRight(closeButton, 12);
-        _root.AddChild(closeButton);
 
         _ui.PopupRoot.AddChild(_root);
         _root.SetPositionLast();
     }
 
-    private Control CreateWebView(string path)
+    private Control CreateWebView(string path, int cutsceneId)
     {
-        return _webViewFactory.CreateWebViewControl(BuildVideoPageUrl(path), true);
+        return _webViewFactory.CreateWebViewControl(BuildVideoPageUrl(path), true, url =>
+        {
+            if (!url.StartsWith(CutsceneFinishedUrl, StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            _taskManager.RunOnMainThread(() => CloseCurrent(cutsceneId));
+            return true;
+        });
     }
 
     private static string BuildVideoPageUrl(string path)
@@ -81,12 +82,46 @@ public sealed class SWCutsceneSystem : EntitySystem
                 object-fit: contain;
                 background: black;
             }
+            video::-webkit-media-controls {
+                display: none !important;
+            }
+            .close-button {
+                position: fixed;
+                top: 16px;
+                right: 16px;
+                z-index: 10;
+                width: 42px;
+                height: 42px;
+                border: 1px solid rgba(255, 255, 255, 0.55);
+                border-radius: 21px;
+                background: rgba(0, 0, 0, 0.62);
+                color: white;
+                font: 28px/38px Arial, sans-serif;
+                text-align: center;
+                cursor: pointer;
+            }
+            .close-button:hover {
+                background: rgba(50, 50, 50, 0.8);
+            }
             </style>
             </head>
             <body>
-            <video autoplay playsinline controls>
+            <video id="cutscene" autoplay playsinline>
                 <source src="{{HtmlAttributeEncode(source)}}" type="{{sourceType}}">
             </video>
+            <button id="close" class="close-button" type="button">X</button>
+            <script>
+            const video = document.getElementById('cutscene');
+            const closeButton = document.getElementById('close');
+            video.controls = false;
+            video.disablePictureInPicture = true;
+            video.addEventListener('ended', () => {
+                window.location.href = '{{CutsceneFinishedUrl}}';
+            }, { once: true });
+            closeButton.addEventListener('click', () => {
+                window.location.href = '{{CutsceneFinishedUrl}}';
+            });
+            </script>
             </body>
             </html>
             """;
@@ -94,10 +129,17 @@ public sealed class SWCutsceneSystem : EntitySystem
         return $"data:text/html;charset=utf-8,{Uri.EscapeDataString(html)}";
     }
 
-    private void CloseCurrent()
+    private void CloseCurrent(int? cutsceneId = null)
     {
+        if (cutsceneId != null && cutsceneId.Value != _activeCutsceneId)
+            return;
+
+        if (_root == null)
+            return;
+
         _root?.Parent?.RemoveChild(_root);
         _root = null;
+        _activeCutsceneId++;
     }
 
     private static string HtmlAttributeEncode(string value)

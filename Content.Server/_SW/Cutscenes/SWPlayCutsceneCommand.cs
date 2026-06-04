@@ -1,5 +1,6 @@
 using Content.Server.Administration;
 using Content.Shared.Administration;
+using Robust.Shared.ContentPack;
 using Robust.Shared.Console;
 
 namespace Content.Server._SW.Cutscenes;
@@ -8,6 +9,7 @@ namespace Content.Server._SW.Cutscenes;
 public sealed class SWPlayCutsceneCommand : IConsoleCommand
 {
     [Dependency] private readonly IEntityManager _entityManager = default!;
+    [Dependency] private readonly IResourceManager _resourceManager = default!;
 
     public string Command => "playcutscene";
     public string Description => "Plays a WebM cutscene for all connected clients.";
@@ -22,6 +24,12 @@ public sealed class SWPlayCutsceneCommand : IConsoleCommand
         }
 
         var path = NormalizePath(args[0]);
+        if (!_resourceManager.ContentFileExists(path))
+        {
+            shell.WriteError($"Cutscene video not found: {path}");
+            return;
+        }
+
         _entityManager.System<SWCutsceneSystem>().PlayCutscene(path);
         shell.WriteLine($"Playing cutscene for all clients: {path}");
     }

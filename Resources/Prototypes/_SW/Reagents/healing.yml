@@ -18,6 +18,13 @@
             Brute: -6
       - !type:ModifyBleed
         amount: -1.5
+      - !type:SetReagent
+        conditions:
+        - !type:ReagentCondition
+          reagent: SWKolto
+          min: 15.01
+        reagent: SWKolto
+        amount: 15.5
 
 - type: reagent
   id: SWBacta
@@ -39,3 +46,10 @@
             Brute: -12
       - !type:ModifyBleed
         amount: -2.0
+      - !type:SetReagent
+        conditions:
+        - !type:ReagentCondition
+          reagent: SWBacta
+          min: 10.01
+        reagent: SWBacta
+        amount: 10.5

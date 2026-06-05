@@ -78,6 +78,7 @@
   components:
   - type: SWRedirectMovement
   - type: SWVehicleDriverDrawDepth
+  - type: SWInVehicleDamageProtection
   - type: SWVehicleRequiresHandsUser
   - type: SWBuckleToVehiclePart
     part: driver_seat
@@ -89,6 +90,7 @@
   id: SWVehicleRoleTankShooter
   localizedName: sw-vehicle-role-shooter
   components:
+  - type: SWInVehicleDamageProtection
   - type: SWVehicleRequiresHandsUser
     hands: 1
   - type: SWShootByVehicleUser

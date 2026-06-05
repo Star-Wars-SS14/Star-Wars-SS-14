@@ -69,6 +69,8 @@
     sidewaysFriction: 20
     turnSpeedReference: 2.5
     minTurnSpeed: 1.2
+  - type: SWExplosionThrowModifier
+    throwMultiplier: 0.0
 
 - type: swVehicleRole
   id: SWVehicleRoleTankDriver
@@ -79,6 +81,9 @@
   - type: SWVehicleRequiresHandsUser
   - type: SWBuckleToVehiclePart
     part: driver_seat
+  # - type: Stealth
+  #   minVisibility: -1
+  #   lastVisibility: -1
 
 - type: swVehicleRole
   id: SWVehicleRoleTankShooter
@@ -91,6 +96,9 @@
   - type: SWBuckleToVehiclePart
     part: shooter_seat
   - type: SWVehicleProjectilePass
+  # - type: Stealth
+  #   minVisibility: -1
+  #   lastVisibility: -1
 
 
 - type: entity

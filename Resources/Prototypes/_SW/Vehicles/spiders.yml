@@ -64,6 +64,8 @@
     rollingFriction: 5
     sidewaysFriction: 15
     turnSpeedReference: 2.5
+  - type: SWExplosionThrowModifier
+    throwMultiplier: 0.0
 
 - type: entity
   id: SWSpiderTwoRoles

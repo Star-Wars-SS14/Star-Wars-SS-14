@@ -78,6 +78,7 @@
   components:
   - type: SWRedirectMovement
   - type: SWVehicleDriverDrawDepth
+  - type: SWInVehicleVisibility
   - type: SWInVehicleDamageProtection
   - type: SWVehicleRequiresHandsUser
   - type: SWBuckleToVehiclePart
@@ -90,6 +91,7 @@
   id: SWVehicleRoleStormCallerShooter
   localizedName: sw-vehicle-role-shooter
   components:
+  - type: SWInVehicleVisibility
   - type: SWInVehicleDamageProtection
   - type: SWVehicleRequiresHandsUser
     hands: 1

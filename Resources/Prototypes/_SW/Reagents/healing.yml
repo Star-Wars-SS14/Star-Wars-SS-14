@@ -22,9 +22,9 @@
         conditions:
         - !type:ReagentCondition
           reagent: SWKolto
-          min: 15.01
+          min: 15.0
         reagent: SWKolto
-        amount: 15.5
+        amount: 15.0
 
 - type: reagent
   id: SWBacta
@@ -50,6 +50,6 @@
         conditions:
         - !type:ReagentCondition
           reagent: SWBacta
-          min: 10.01
+          min: 10.0
         reagent: SWBacta
-        amount: 10.5
+        amount: 10.0

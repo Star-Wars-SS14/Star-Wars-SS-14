@@ -1,10 +1,10 @@
 - type: entity
-  id: SWTank
-  name: tank
+  id: SWStormCaller
+  name: StormCaller
   components:
   - type: Transform
   - type: Sprite
-    sprite: _SW/Vehicles/tank.rsi
+    sprite: _SW/Vehicles/storm_caller.rsi
     state: vehicle
   - type: Physics
     bodyType: Dynamic
@@ -36,12 +36,12 @@
   - type: SWVehicle
     rolesInfo:
       driver:
-        role: SWVehicleRoleTankDriver
+        role: SWVehicleRoleStormCallerDriver
       shooter:
-        role: SWVehicleRoleTankShooter
+        role: SWVehicleRoleStormCallerShooter
     vehicleParts:
       cannon:
-        entProto: SWTankCannon
+        entProto: SWStormCallerCannon
         buckleCoords: "0.0, 1.35"
       driver_seat:
         entProto: SWVehicleSeat
@@ -73,7 +73,7 @@
     throwMultiplier: 0.0
 
 - type: swVehicleRole
-  id: SWVehicleRoleTankDriver
+  id: SWVehicleRoleStormCallerDriver
   localizedName: sw-vehicle-role-driver
   components:
   - type: SWRedirectMovement
@@ -87,7 +87,7 @@
   #   lastVisibility: -1
 
 - type: swVehicleRole
-  id: SWVehicleRoleTankShooter
+  id: SWVehicleRoleStormCallerShooter
   localizedName: sw-vehicle-role-shooter
   components:
   - type: SWInVehicleDamageProtection
@@ -104,9 +104,9 @@
 
 
 - type: entity
-  id: SWTankCannon
+  id: SWStormCallerCannon
   parent: SWSpiderCannon
-  name: tank cannon
+  name: StormCaller cannon
   components:
   - type: Gun
     fireRate: 0.5
@@ -122,7 +122,7 @@
     maxCharge: 2000
     startingCharge: 2000
   - type: BatteryAmmoProvider
-    proto: SWTankCannonBlast
+    proto: SWStormCallerCannonBlast
     fireCost: 250
   - type: PredictedBatterySelfRecharger
     autoRechargeRate: 35
@@ -130,8 +130,8 @@
     angle: 60
 
 - type: entity
-  id: SWTankCannonBlast
-  name: tank blast
+  id: SWStormCallerCannonBlast
+  name: StormCaller blast
   parent: BaseBulletTrigger
   noSpawn: true
   components:

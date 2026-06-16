@@ -91,6 +91,7 @@
   id: SWVehicleRoleStormCallerShooter
   localizedName: sw-vehicle-role-shooter
   components:
+  - type: SWInVehicleZoom
   - type: SWInVehicleVisibility
   - type: SWInVehicleDamageProtection
   - type: SWVehicleRequiresHandsUser

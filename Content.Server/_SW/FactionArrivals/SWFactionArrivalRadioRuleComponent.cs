@@ -22,6 +22,6 @@ public sealed partial class SWFactionArrivalRadioAnnouncement
     [DataField(required: true)]
     public ProtoId<RadioChannelPrototype> Channel;
 
-    [DataField(required: true)]
-    public LocId Phrase = string.Empty;
+    [DataField]
+    public LocId Phrase = "sw-faction-arrival-radio";
 }

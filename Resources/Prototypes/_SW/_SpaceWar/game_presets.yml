@@ -9,3 +9,4 @@
   rules:
     - SectorWar
     - FactionsOnlyGamerule
+    - SWFactionArrivalRadioGamerule

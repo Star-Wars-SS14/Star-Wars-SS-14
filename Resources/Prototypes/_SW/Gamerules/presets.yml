@@ -6,6 +6,7 @@
   supportedMaps: SWMainPresetMapPool
   rules:
     - TaskGamerule
+    - SWFactionArrivalRadioGamerule
     - SWEventScheduler
     - SWRespawnGamerule
     - SWMineCollapseGamerule
@@ -21,6 +22,7 @@
   supportedMaps: SWMainPresetMapPool
   rules:
     - TaskGamerule
+    - SWFactionArrivalRadioGamerule
     - SWEventScheduler
     - SWRespawnGamerule
     - SWMineCollapseGamerule
@@ -37,6 +39,7 @@
   supportedMaps: SWMainPresetMapPool
   rules:
     - TaskGamerule
+    - SWFactionArrivalRadioGamerule
     - SWEventScheduler
     - SWRespawnGamerule
     - SWMineCollapseGamerule
@@ -51,6 +54,7 @@
   showInVote: false
   rules:
     - FactionsOnlyGamerule
+    - SWFactionArrivalRadioGamerule
     - SWEventScheduler
     - SWRespawnGamerule
     - SWMineCollapseGamerule

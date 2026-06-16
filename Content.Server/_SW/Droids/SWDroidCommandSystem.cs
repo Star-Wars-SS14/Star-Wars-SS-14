@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Numerics;
 using Content.Server._SW.TaskSystem;
+using Content.Server.Chat.Systems;
 using Content.Server.NPC;
 using Content.Server.NPC.HTN;
 using Content.Server.NPC.Systems;
@@ -9,23 +10,31 @@ using Content.Shared._SW.Droids;
 using Content.Shared._SW.TaskSystem;
 using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
+using Content.Shared.Chat;
+using Content.Shared.Dataset;
 using Content.Shared.NPC;
+using Content.Shared.Random.Helpers;
 using Content.Shared.Roles;
 using Robust.Shared.Map;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 
 namespace Content.Server._SW.Droids;
 
 public sealed class SWDroidCommandSystem : EntitySystem
 {
     [Dependency] private readonly SharedActionsSystem _actions = default!;
+    [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly HTNSystem _htn = default!;
     [Dependency] private readonly NPCSystem _npc = default!;
+    [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SWFactionGameruleSystem _factions = default!;
 
     private const float UpdateDelay = 0.5f;
+    private const float StayTime = 999999f;
     private float _updateAccumulator;
 
     public override void Initialize()
@@ -55,14 +64,12 @@ public sealed class SWDroidCommandSystem : EntitySystem
                 continue;
 
             var commander = CompOrNull<SWDroidCommanderComponent>(uid);
-            var canTakeCommand = TryFindCommandableDroid(uid,
+            var hasNearbyDroid = TryFindNearbyDroidForAction(
                 factionMember,
                 transform,
-                out _,
-                out _,
                 out _);
 
-            if (canTakeCommand)
+            if (hasNearbyDroid)
             {
                 commander ??= EnsureComp<SWDroidCommanderComponent>(uid);
                 EnsureTakeCommandAction(uid, commander, actions);
@@ -94,7 +101,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
             !TryComp(uid, out TransformComponent? transform) ||
             !TryFindCommandableDroid(uid, factionMember, transform, out var droid, out var droidComp, out var rank))
         {
-            _popup.PopupEntity("No available droid nearby.", uid, uid);
+            _popup.PopupEntity(Loc.GetString("sw-droid-command-no-droids-nearby"), uid, uid);
             return;
         }
 
@@ -114,7 +121,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
         EnsureOrderActions(uid, component);
         SetOrder(droid, droidComp, uid, component.CurrentOrder);
 
-        _popup.PopupEntity("Droid command accepted.", uid, uid);
+        _popup.PopupEntity(Loc.GetString("sw-droid-command-accepted"), uid, uid);
     }
 
     private void OnOrder(EntityUid uid, SWDroidCommanderComponent component, SWDroidOrderActionEvent args)
@@ -124,6 +131,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
 
         args.Handled = true;
         component.CurrentOrder = args.Type;
+        DoCommandCallout(uid, component, args.Type);
 
         foreach (var droid in component.Droids.ToArray())
         {
@@ -209,6 +217,29 @@ public sealed class SWDroidCommandSystem : EntitySystem
         return droid != default;
     }
 
+    private bool TryFindNearbyDroidForAction(
+        SWFactionMemberComponent factionMember,
+        TransformComponent commanderTransform,
+        out int rank)
+    {
+        rank = 0;
+
+        var query = EntityQueryEnumerator<SWDroidCommandableComponent, TransformComponent>();
+        while (query.MoveNext(out _, out var commandable, out var droidTransform))
+        {
+            if (!TryGetCommandRank(factionMember, commandable.Faction, out rank) ||
+                !commanderTransform.Coordinates.TryDistance(EntityManager, droidTransform.Coordinates, out var distance) ||
+                distance > commandable.CommandRange)
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     private bool TryGetCommandRank(SWFactionMemberComponent factionMember, string factionId, out int rank)
     {
         rank = 0;
@@ -239,7 +270,6 @@ public sealed class SWDroidCommandSystem : EntitySystem
     private bool CanTakeCommand(EntityUid commander, SWDroidCommandableComponent droid, int rank)
     {
         if (droid.ActiveCommander == null ||
-            droid.ActiveCommander == commander ||
             TerminatingOrDeleted(droid.ActiveCommander.Value))
         {
             return true;
@@ -257,11 +287,29 @@ public sealed class SWDroidCommandSystem : EntitySystem
             _htn.ShutdownPlan(htn);
 
         if (order == SWDroidOrderType.Follow)
+        {
             _npc.SetBlackboard(droid, NPCBlackboard.FollowTarget, new EntityCoordinates(commander, Vector2.Zero));
+        }
+        else
+        {
+            _npc.SetBlackboard(droid, "DroidStayTime", StayTime);
+        }
 
         _npc.SetBlackboard(droid, NPCBlackboard.CurrentOrders, order);
         _htn.Replan(htn);
         _npc.WakeNPC(droid, htn);
+    }
+
+    private void DoCommandCallout(EntityUid uid, SWDroidCommanderComponent component, SWDroidOrderType order)
+    {
+        if (!component.OrderCallouts.TryGetValue(order, out var datasetId) ||
+            !_prototype.TryIndex<LocalizedDatasetPrototype>(datasetId, out var datasetPrototype))
+        {
+            return;
+        }
+
+        var message = _random.Pick(datasetPrototype);
+        _chat.TrySendInGameICMessage(uid, message, InGameICChatType.Speak, true);
     }
 
     private void EnsureTakeCommandAction(EntityUid uid, SWDroidCommanderComponent component, ActionsComponent actions)

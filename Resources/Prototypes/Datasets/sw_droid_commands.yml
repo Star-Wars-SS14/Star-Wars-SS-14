@@ -1,0 +1,11 @@
+- type: localizedDataset
+  id: SWDroidCommandStay
+  values:
+    prefix: sw-droid-command-stay-
+    count: 3
+
+- type: localizedDataset
+  id: SWDroidCommandFollow
+  values:
+    prefix: sw-droid-command-follow-
+    count: 3

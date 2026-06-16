@@ -6,7 +6,7 @@
       orders: enum.SWDroidOrderType.Stay
     tasks:
     - !type:HTNCompoundTask
-      task: IdleCompound
+      task: SWDroidStayCompound
   - preconditions:
     - !type:HasOrdersPrecondition
       orders: enum.SWDroidOrderType.Follow
@@ -15,4 +15,15 @@
       task: FollowCompound
   - tasks:
     - !type:HTNCompoundTask
-      task: IdleCompound
+      task: SWDroidStayCompound
+
+- type: htnCompound
+  id: SWDroidStayCompound
+  branches:
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:WaitOperator
+        key: DroidStayTime
+      preconditions:
+      - !type:KeyExistsPrecondition
+        key: DroidStayTime

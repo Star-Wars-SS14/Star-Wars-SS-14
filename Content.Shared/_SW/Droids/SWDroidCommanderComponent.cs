@@ -27,5 +27,12 @@ public sealed partial class SWDroidCommanderComponent : Component
     [DataField]
     public SWDroidOrderType CurrentOrder = SWDroidOrderType.Follow;
 
+    [DataField]
+    public Dictionary<SWDroidOrderType, string> OrderCallouts = new()
+    {
+        { SWDroidOrderType.Stay, "SWDroidCommandStay" },
+        { SWDroidOrderType.Follow, "SWDroidCommandFollow" }
+    };
+
     public readonly HashSet<EntityUid> Droids = new();
 }

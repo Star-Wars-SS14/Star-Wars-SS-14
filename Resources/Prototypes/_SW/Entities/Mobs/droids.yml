@@ -66,6 +66,8 @@
         1
       MaximumIdleTime: !type:Single
         2
+      DroidStayTime: !type:Single
+        999999
       NavSmash: !type:Bool
         true
   - type: SWDroidCommandable

@@ -1,0 +1,106 @@
+- type: entity
+  id: SWMobDroidBase
+  parent: [ MobRobotic, MobCombat ]
+  name: battle droid
+  description: A compact combat droid with an integrated blaster.
+  abstract: true
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _SW/Mobs/Droids/droid.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: base
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: base
+      Dead:
+        Base: broken
+  - type: DamageVisuals
+    thresholds: [ 30, 60, 90 ]
+    trackAllDamage: true
+    damageOverlay:
+      sprite: _SW/Mobs/Droids/droid.rsi
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Repairable
+    doAfterDelay: 8
+    fuelCost: 15
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      120: Dead
+    stateAlertDict:
+      Alive: BorgHealth
+      Dead: BorgDead
+    showOverlays: false
+  - type: SlowOnDamage
+    speedModifierThresholds:
+      70: 0.8
+      100: 0.6
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.4
+    baseSprintSpeed: 3.6
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.40
+        density: 100
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: HTN
+    rootTask:
+      task: SimpleRangedHostileCompound
+    blackboard:
+      VisionRadius: !type:Single
+        12
+      AggroVisionRadius: !type:Single
+        14
+      RangedRange: !type:Single
+        10
+      NavSmash: !type:Bool
+        true
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: BatteryAmmoProvider
+    proto: SWScoutBlasterBullet
+    fireCost: 50
+  - type: PredictedBattery
+    maxCharge: 500
+    startingCharge: 500
+  - type: PredictedBatterySelfRecharger
+    autoRechargeRate: 25
+    autoRechargePauseTime: 1
+  - type: Gun
+    fireRate: 1.5
+    useKey: false
+    selectedMode: FullAuto
+    availableModes:
+    - FullAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/laser.ogg
+  - type: MeleeWeapon
+    hidden: true
+    angle: 0
+    animation: WeaponArcPunch
+    soundHit:
+      collection: MetalThud
+    damage:
+      types:
+        Blunt: 5
+  - type: Speech
+    speechVerb: Robotic
+    speechSounds: Borg
+
+- type: entity
+  id: SWMobDroid
+  parent: SWMobDroidBase
+  name: battle droid
+  suffix: AI

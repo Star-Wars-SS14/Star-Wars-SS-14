@@ -1,0 +1,30 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "by @londorondondon (discord)",
+    "size": {
+        "x": 64,
+        "y": 64
+    },
+    "states": [
+        {
+            "name": "base",
+            "directions": 4
+        },
+        {
+            "name": "broken"
+        },
+        {
+            "name": "DamageOverlay_30",
+            "directions": 4
+        },
+        {
+            "name": "DamageOverlay_60",
+            "directions": 4
+        },
+        {
+            "name": "DamageOverlay_90",
+            "directions": 4
+        }
+    ]
+}

@@ -23,7 +23,6 @@ public sealed class SWVehicleSystem : EntitySystem
         SubscribeLocalEvent<SWInVehicleComponent, SWExitVehicleRequested>(OnExit);
         SubscribeLocalEvent<SWVehicleComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SWVehicleComponent, SWOccupyRoleMessage>(OnOccupy);
-        SubscribeLocalEvent<SWInVehicleComponent, ComponentInit>(OnInitInVehicle);
         //SubscribeLocalEvent<SWInVehicleComponent, UpdateCanMoveEvent>(OnMoveInVehicle);
         //SubscribeLocalEvent<SWVehicleComponent, DestructionEventArgs>(OnDestroy);
         SubscribeLocalEvent<SWVehicleComponent, EntityTerminatingEvent>(OnTerminating);
@@ -43,11 +42,6 @@ public sealed class SWVehicleSystem : EntitySystem
     {
         TryOccupyRole(ent, args.Actor, args.Role);
         UpdateInterface(ent);
-    }
-
-    private void OnInitInVehicle(Entity<SWInVehicleComponent> ent, ref ComponentInit args)
-    {
-        ent.Comp.ActionEntity = _actions.AddAction(ent.Owner, SWSharedVehicleSystem.ActionExitVehicle);
     }
 
     //private void OnMoveInVehicle(Entity<SWInVehicleComponent> ent, ref UpdateCanMoveEvent args)
@@ -83,12 +77,15 @@ public sealed class SWVehicleSystem : EntitySystem
         var comp = AddComp<SWInVehicleComponent>(user);
         comp.Vehicle = ent;
         comp.OccupiedRole = role;
+        _actions.AddAction(user, ref comp.ActionEntity, SWSharedVehicleSystem.ActionExitVehicle);
+        Dirty(user, comp);
         ent.Comp.RolesInfo[role].Occupant = GetNetEntity(user);
 
         var evOnUser = new SWUserEnterVehicleEvent(ent);
         RaiseLocalEvent(user, evOnUser);
 
         var evOnVehicle = new SWVehicleIsEnteredEvent(user, comp);
+        RaiseLocalEvent(ent, evOnVehicle);
     }
     private EntityUid SpawnWithPlacementInfo(SWVehiclePartInfo info, EntityUid parent)
     {

@@ -12,6 +12,9 @@ using Content.Shared.Actions;
 using Content.Shared.Actions.Components;
 using Content.Shared.Chat;
 using Content.Shared.Dataset;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.NPC;
 using Content.Shared.Random.Helpers;
 using Content.Shared.Roles;
@@ -27,6 +30,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
     [Dependency] private readonly SharedActionsSystem _actions = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
     [Dependency] private readonly HTNSystem _htn = default!;
+    [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly NPCSystem _npc = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
@@ -45,6 +49,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
         SubscribeLocalEvent<SWDroidCommanderComponent, SWDroidOrderActionEvent>(OnOrder);
         SubscribeLocalEvent<SWDroidCommanderComponent, ComponentShutdown>(OnCommanderShutdown);
         SubscribeLocalEvent<SWDroidCommandableComponent, ComponentShutdown>(OnDroidShutdown);
+        SubscribeLocalEvent<SWDroidCommandableComponent, MobStateChangedEvent>(OnDroidMobStateChanged);
     }
 
     public override void Update(float frameTime)
@@ -173,14 +178,34 @@ public sealed class SWDroidCommandSystem : EntitySystem
 
     private void OnDroidShutdown(EntityUid uid, SWDroidCommandableComponent component, ComponentShutdown args)
     {
-        if (component.ActiveCommander == null ||
-            !TryComp<SWDroidCommanderComponent>(component.ActiveCommander, out var commander))
-        {
+        ReleaseDroidCommand(uid, component, false);
+    }
+
+    private void OnDroidMobStateChanged(EntityUid uid, SWDroidCommandableComponent component, MobStateChangedEvent args)
+    {
+        if (args.NewMobState == MobState.Alive)
             return;
+
+        ReleaseDroidCommand(uid, component, true);
+    }
+
+    private void ReleaseDroidCommand(EntityUid uid, SWDroidCommandableComponent component, bool dirty)
+    {
+        if (component.ActiveCommander == null)
+            return;
+
+        var commanderUid = component.ActiveCommander.Value;
+        if (TryComp<SWDroidCommanderComponent>(commanderUid, out var commander))
+        {
+            commander.Droids.Remove(uid);
+            UpdateOrderActions(commanderUid, commander);
         }
 
-        commander.Droids.Remove(uid);
-        UpdateOrderActions(component.ActiveCommander.Value, commander);
+        component.ActiveCommander = null;
+        component.ActiveCommanderRank = 0;
+
+        if (dirty)
+            Dirty(uid, component);
     }
 
     private bool TryFindCommandableDroid(
@@ -199,7 +224,8 @@ public sealed class SWDroidCommandSystem : EntitySystem
         var query = EntityQueryEnumerator<SWDroidCommandableComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var commandable, out var droidTransform))
         {
-            if (!TryGetCommandRank(factionMember, commandable.Faction, out var candidateRank) ||
+            if (!IsAvailableDroid(uid) ||
+                !TryGetCommandRank(factionMember, commandable.Faction, out var candidateRank) ||
                 !CanTakeCommand(commander, commandable, candidateRank) ||
                 !commanderTransform.Coordinates.TryDistance(EntityManager, droidTransform.Coordinates, out var distance) ||
                 distance > commandable.CommandRange ||
@@ -225,9 +251,10 @@ public sealed class SWDroidCommandSystem : EntitySystem
         rank = 0;
 
         var query = EntityQueryEnumerator<SWDroidCommandableComponent, TransformComponent>();
-        while (query.MoveNext(out _, out var commandable, out var droidTransform))
+        while (query.MoveNext(out var uid, out var commandable, out var droidTransform))
         {
-            if (!TryGetCommandRank(factionMember, commandable.Faction, out rank) ||
+            if (!IsAvailableDroid(uid) ||
+                !TryGetCommandRank(factionMember, commandable.Faction, out rank) ||
                 !commanderTransform.Coordinates.TryDistance(EntityManager, droidTransform.Coordinates, out var distance) ||
                 distance > commandable.CommandRange)
             {
@@ -276,6 +303,11 @@ public sealed class SWDroidCommandSystem : EntitySystem
         }
 
         return rank > droid.ActiveCommanderRank;
+    }
+
+    private bool IsAvailableDroid(EntityUid uid)
+    {
+        return !TerminatingOrDeleted(uid) && _mobState.IsAlive(uid);
     }
 
     private void SetOrder(EntityUid droid, SWDroidCommandableComponent droidComp, EntityUid commander, SWDroidOrderType order)
@@ -364,7 +396,8 @@ public sealed class SWDroidCommandSystem : EntitySystem
         foreach (var droid in component.Droids.ToArray())
         {
             if (!TryComp<SWDroidCommandableComponent>(droid, out var droidComp) ||
-                droidComp.ActiveCommander != commanderUid)
+                droidComp.ActiveCommander != commanderUid ||
+                !IsAvailableDroid(droid))
             {
                 component.Droids.Remove(droid);
             }

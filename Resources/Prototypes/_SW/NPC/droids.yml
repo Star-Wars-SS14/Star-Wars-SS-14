@@ -1,0 +1,18 @@
+- type: htnCompound
+  id: SWDroidCommandedCompound
+  branches:
+  - preconditions:
+    - !type:HasOrdersPrecondition
+      orders: enum.SWDroidOrderType.Stay
+    tasks:
+    - !type:HTNCompoundTask
+      task: IdleCompound
+  - preconditions:
+    - !type:HasOrdersPrecondition
+      orders: enum.SWDroidOrderType.Follow
+    tasks:
+    - !type:HTNCompoundTask
+      task: FollowCompound
+  - tasks:
+    - !type:HTNCompoundTask
+      task: IdleCompound

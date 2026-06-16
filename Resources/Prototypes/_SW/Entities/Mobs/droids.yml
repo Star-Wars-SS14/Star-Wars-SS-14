@@ -56,16 +56,21 @@
         - MobLayer
   - type: HTN
     rootTask:
-      task: SimpleRangedHostileCompound
+      task: SWDroidCommandedCompound
     blackboard:
-      VisionRadius: !type:Single
-        12
-      AggroVisionRadius: !type:Single
-        14
-      RangedRange: !type:Single
-        10
+      FollowCloseRange: !type:Single
+        1.5
+      FollowRange: !type:Single
+        2.5
+      MinimumIdleTime: !type:Single
+        1
+      MaximumIdleTime: !type:Single
+        2
       NavSmash: !type:Bool
         true
+  - type: SWDroidCommandable
+    faction: RepublicFaction
+    commandRange: 3
   - type: NpcFactionMember
     factions:
     - SimpleHostile
@@ -104,3 +109,47 @@
   parent: SWMobDroidBase
   name: battle droid
   suffix: AI
+
+- type: entity
+  id: ActionSWDroidTakeCommand
+  parent: BaseAction
+  name: Take command
+  description: Assume command of a nearby allied droid.
+  components:
+  - type: Action
+    useDelay: 1
+    icon:
+      sprite: _SW/Mobs/Droids/droid.rsi
+      state: base
+  - type: InstantAction
+    event: !type:SWDroidTakeCommandActionEvent
+
+- type: entity
+  id: ActionSWDroidOrderFollow
+  parent: BaseAction
+  name: Follow
+  description: Ordered droids follow you.
+  components:
+  - type: Action
+    useDelay: 0.5
+    icon:
+      sprite: _SW/Mobs/Droids/droid.rsi
+      state: base
+  - type: InstantAction
+    event: !type:SWDroidOrderActionEvent
+      type: Follow
+
+- type: entity
+  id: ActionSWDroidOrderStay
+  parent: BaseAction
+  name: Stay
+  description: Ordered droids hold position.
+  components:
+  - type: Action
+    useDelay: 0.5
+    icon:
+      sprite: _SW/Mobs/Droids/droid.rsi
+      state: broken
+  - type: InstantAction
+    event: !type:SWDroidOrderActionEvent
+      type: Stay

@@ -24,5 +24,11 @@ public sealed partial class SWFactionComponent : Component
     public bool IsMajor = false;
 
     [DataField]
-    public List<ProtoId<JobPrototype>> RelatedJobs = new List<ProtoId<JobPrototype>>(); 
+    public List<ProtoId<JobPrototype>> RelatedJobs = new List<ProtoId<JobPrototype>>();
+
+    [DataField]
+    public int MinimumDroidCommandRank = 0;
+
+    [DataField]
+    public Dictionary<ProtoId<JobPrototype>, int> CommandRanks = new();
 }

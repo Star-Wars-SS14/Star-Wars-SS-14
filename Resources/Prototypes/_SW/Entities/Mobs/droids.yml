@@ -62,6 +62,8 @@
         1.5
       FollowRange: !type:Single
         2.5
+      RangedRange: !type:Single
+        10
       MinimumIdleTime: !type:Single
         1
       MaximumIdleTime: !type:Single
@@ -73,6 +75,8 @@
   - type: SWDroidCommandable
     faction: RepublicFaction
     commandRange: 3
+  - type: SWTurretConfig
+    targetUnconfiguredJobs: false
   - type: NpcFactionMember
     factions:
     - SimpleHostile

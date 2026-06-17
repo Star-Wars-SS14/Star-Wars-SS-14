@@ -1,6 +1,9 @@
 - type: htnCompound
   id: SWDroidCommandedCompound
   branches:
+  - tasks:
+    - !type:HTNCompoundTask
+      task: SWDroidRangedCombatCompound
   - preconditions:
     - !type:HasOrdersPrecondition
       orders: enum.SWDroidOrderType.Stay
@@ -27,3 +30,29 @@
       preconditions:
       - !type:KeyExistsPrecondition
         key: DroidStayTime
+
+- type: htnCompound
+  id: SWDroidRangedCombatCompound
+  branches:
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:UtilityOperator
+        proto: SWNearbyGunTargetsWithID
+    - !type:HTNPrimitiveTask
+      preconditions:
+      - !type:KeyExistsPrecondition
+        key: Target
+      - !type:TargetInRangePrecondition
+        targetKey: Target
+        rangeKey: RangedRange
+      - !type:TargetInLOSPrecondition
+        targetKey: Target
+        rangeKey: RangedRange
+      operator: !type:GunOperator
+        targetKey: Target
+        requireLOS: true
+      services:
+      - !type:UtilityService
+        id: RangedService
+        proto: SWNearbyGunTargetsWithID
+        key: Target

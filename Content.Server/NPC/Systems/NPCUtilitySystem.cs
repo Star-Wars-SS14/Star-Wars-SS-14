@@ -396,7 +396,7 @@ public sealed class NPCUtilitySystem : EntitySystem
                                 return allowed ? 1f : 0f;
                             }
                     }
-                    return 0f;
+                    return config.TargetUnconfiguredJobs ? 0f : 1f;
                 }
             default:
                 throw new NotImplementedException();

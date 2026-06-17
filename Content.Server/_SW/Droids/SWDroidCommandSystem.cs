@@ -36,6 +36,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SWFactionGameruleSystem _factions = default!;
+    [Dependency] private readonly SWDroidTargetingTabletSystem _targetingTablet = default!;
 
     private const float UpdateDelay = 0.5f;
     private const float StayTime = 999999f;
@@ -123,6 +124,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
         Dirty(droid, droidComp);
 
         component.Droids.Add(droid);
+        _targetingTablet.TryApplyHeldTabletConfig(uid, droid);
         EnsureOrderActions(uid, component);
         SetOrder(droid, droidComp, uid, component.CurrentOrder);
 

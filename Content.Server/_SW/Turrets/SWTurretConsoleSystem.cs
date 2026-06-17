@@ -19,6 +19,7 @@ using Content.Shared.Access.Systems;
 using Content.Server.Popups;
 using Content.Server.DeviceLinking.Systems;
 using Content.Shared.DeviceLinking;
+using Content.Server._SW.Droids;
 
 namespace Content.Server._SW.TurretConsole;
 
@@ -30,6 +31,7 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
     [Dependency] private readonly AccessReaderSystem _accessReaderSystem = default!;
     [Dependency] private readonly PopupSystem _popupSystem = default!;
     [Dependency] private readonly DeviceLinkSystem _signalSystem = default!;
+    [Dependency] private readonly SWDroidTargetingTabletSystem _droidTargetingTablet = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -75,6 +77,7 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
             }
         }
         UpdateInterface(ent.Owner, ent.Comp);
+        _droidTargetingTablet.ApplyConfigFromTablet(ent.Owner, ent.Comp, user);
     }
 
     private void OnAllow(Entity<SWTurretConsoleComponent> ent, ref SWAllowFaction args)
@@ -101,6 +104,7 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
             }
         }
         UpdateInterface(ent.Owner, ent.Comp);
+        _droidTargetingTablet.ApplyConfigFromTablet(ent.Owner, ent.Comp, user);
     }
 
     private void OnPortDisconnected(Entity<SWTurretConfigComponent> ent, ref PortDisconnectedEvent args)
@@ -126,11 +130,12 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
         }
         ent.Comp.JobsAllowed[args.Job] = !ent.Comp.JobsAllowed[args.Job];
         UpdateInterface(ent.Owner, ent.Comp);
+        _droidTargetingTablet.ApplyConfigFromTablet(ent.Owner, ent.Comp, user);
     }
 
     private void OnStartup(Entity<SWTurretConsoleComponent> ent, ref ComponentStartup args)
     {
-        var jobList = _prototype.EnumeratePrototypes<JobPrototype>().ToList();
+        var defaultAllowed = HasComp<SWDroidTargetingTabletComponent>(ent.Owner);
 
         foreach (var job in ent.Comp.Jobs)
         {
@@ -138,7 +143,7 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
             {
                 continue;
             }
-            ent.Comp.JobsAllowed[job] = false;
+            ent.Comp.JobsAllowed[job] = defaultAllowed;
         }
 
         UpdateInterface(ent.Owner, ent.Comp);
@@ -172,6 +177,7 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
     {
         var comp = EnsureComp<SWTurretConfigComponent>(turret);
         comp.AllowedJobs = console.Comp.JobsAllowed;
+        comp.TargetUnconfiguredJobs = true;
     }
 
     private void RemoveTurretConfig(EntityUid turret)

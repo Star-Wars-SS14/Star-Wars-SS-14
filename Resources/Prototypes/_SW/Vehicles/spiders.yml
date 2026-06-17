@@ -33,7 +33,6 @@
   # - type: Pullable
   - type: Clickable
   - type: InteractionOutline
-  - type: Rotatable
   - type: SWVehicle
     rolesInfo:
       driver:

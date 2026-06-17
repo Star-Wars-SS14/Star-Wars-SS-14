@@ -35,3 +35,46 @@
       behaviors:
       - !type:DoActsBehavior
         acts: [ "Destruction" ]
+
+- type: entity
+  parent: SWDroidTargetingTablet
+  id: SWDroidTargetingTabletRepublic
+  name: republic droid targeting tablet
+  description: A portable droid targeting configuration terminal preset to target Imperial personnel.
+  suffix: Republic
+  components:
+  - type: SWTurretConsole
+    jobsAllowed:
+      SWSobrikCaptain: false
+      SWSobrikOfficer: false
+      SWSobrikMedic: false
+      SWEmpireMoff: false
+      SWEmpireMajor: false
+      SWEmpireLieutenant: false
+      SWEmpireSoldier: false
+      SWEmpireMedic: false
+      SWEmpireIntelligenceCaretaker: false
+      SWEmpireIntelligenceAgent: false
+      SWSith: false
+
+- type: entity
+  parent: SWDroidTargetingTablet
+  id: SWDroidTargetingTabletEmpire
+  name: imperial droid targeting tablet
+  description: A portable droid targeting configuration terminal preset to target Republic personnel.
+  suffix: Empire
+  components:
+  - type: SWTurretConsole
+    jobsAllowed:
+      SWRepublicCommanderCommander: false
+      SWRepublicCommanderLieutenant: false
+      SWRepublicCommanderMedic: false
+      SWRepublicCommanderStormtrooper: false
+      SWRepublicCommanderSniper: false
+      SWRepublicGeneral: false
+      SWRepublicCaptain: false
+      SWRepublicLieutenant: false
+      SWRepublicSoldier: false
+      SWRepublicMedic: false
+      SWRepublicRecruit: false
+      SWJedi: false

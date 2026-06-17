@@ -5,6 +5,8 @@
   name: Консоль управления турелями
   components:
   - type: SWTurretConsole
+  - type: SWTargetingConfigTargets
+    targetUnconfiguredJobs: true
   - type: ActivatableUI
     key: enum.SWTurretConsoleUiKey.Key
   - type: UserInterface

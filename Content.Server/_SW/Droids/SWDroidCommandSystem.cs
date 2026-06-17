@@ -115,6 +115,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
             droidComp.ActiveCommander != uid &&
             TryComp<SWDroidCommanderComponent>(droidComp.ActiveCommander, out var previousCommander))
         {
+            _targetingTablet.UnregisterTargetFromUserTablets(droidComp.ActiveCommander.Value, droid);
             previousCommander.Droids.Remove(droid);
             UpdateOrderActions(droidComp.ActiveCommander.Value, previousCommander);
         }
@@ -124,7 +125,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
         Dirty(droid, droidComp);
 
         component.Droids.Add(droid);
-        _targetingTablet.TryApplyHeldTabletConfig(uid, droid);
+        _targetingTablet.TryRegisterHeldTabletTarget(uid, droid);
         EnsureOrderActions(uid, component);
         SetOrder(droid, droidComp, uid, component.CurrentOrder);
 
@@ -202,6 +203,8 @@ public sealed class SWDroidCommandSystem : EntitySystem
             commander.Droids.Remove(uid);
             UpdateOrderActions(commanderUid, commander);
         }
+
+        _targetingTablet.UnregisterTargetFromUserTablets(commanderUid, uid);
 
         component.ActiveCommander = null;
         component.ActiveCommanderRank = 0;
@@ -293,7 +296,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
             return false;
         }
 
-        return rank >= faction.MinimumDroidCommandRank;
+        return true;
     }
 
     private bool CanTakeCommand(EntityUid commander, SWDroidCommandableComponent droid, int rank)

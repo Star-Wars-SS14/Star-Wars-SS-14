@@ -75,7 +75,7 @@
   - type: SWDroidCommandable
     faction: RepublicFaction
     commandRange: 3
-  - type: SWTurretConfig
+  - type: SWTargetingConfig
     targetUnconfiguredJobs: false
   - type: NpcFactionMember
     factions:

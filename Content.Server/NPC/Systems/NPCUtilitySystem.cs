@@ -1,5 +1,5 @@
 using Content.Server._SW.NPC;
-using Content.Server._SW.TurretConsole;
+using Content.Server._SW.Targeting;
 using Content.Server.Access.Components;
 using Content.Server.Atmos.Components;
 using Content.Server.Fluids.EntitySystems;
@@ -385,7 +385,7 @@ public sealed class NPCUtilitySystem : EntitySystem
                 }
             case SWHasIdCardCon con:
                 {
-                    if (!TryComp<SWTurretConfigComponent>(owner, out var config)) {
+                    if (!TryComp<SWTargetingConfigComponent>(owner, out var config)) {
                         return 1f;
                     }
                     if (_inventory.TryGetSlotEntity(targetUid, "id", out var idcard))

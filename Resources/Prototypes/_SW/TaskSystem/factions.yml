@@ -17,7 +17,6 @@
     - SWRepublicMedic
     - SWRepublicRecruit
     - SWJedi
-    minimumDroidCommandRank: 10
     commandRanks:
       SWRepublicCommanderCommander: 90
       SWRepublicCommanderLieutenant: 70
@@ -59,7 +58,6 @@
     - SWEmpireIntelligenceCaretaker
     - SWEmpireIntelligenceAgent
     - SWSith
-    minimumDroidCommandRank: 10
     commandRanks:
       SWSobrikCaptain: 80
       SWSobrikOfficer: 50

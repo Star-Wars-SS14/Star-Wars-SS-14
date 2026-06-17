@@ -1,56 +1,28 @@
-using Content.Shared._SW.TaskSystem;
 using Content.Shared._SW;
-using Robust.Shared.Prototypes;
-using Robust.Shared.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Robust.Server.GameObjects;
-using Content.Shared.Roles;
-using Content.Shared.DeviceLinking.Events;
-using Content.Shared.Xenoarchaeology.Equipment.Components;
 using Content.Server._SW.TaskSystem;
-using Content.Server._SW.TaskSystem.TargetSelector;
+using Content.Server._SW.TurretConsole;
+using Robust.Server.GameObjects;
 using Content.Shared.Popups;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Server.Popups;
-using Content.Server.DeviceLinking.Systems;
-using Content.Shared.DeviceLinking;
-using Content.Server._SW.Droids;
 
-namespace Content.Server._SW.TurretConsole;
+namespace Content.Server._SW.Targeting;
 
-public sealed partial class SWTurretConsoleSystem : EntitySystem
+public sealed partial class SWTargetingConsoleSystem : EntitySystem
 {
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly SWFactionGameruleSystem _sWFaction = default!;
     [Dependency] private readonly AccessReaderSystem _accessReaderSystem = default!;
     [Dependency] private readonly PopupSystem _popupSystem = default!;
-    [Dependency] private readonly DeviceLinkSystem _signalSystem = default!;
-    [Dependency] private readonly SWDroidTargetingTabletSystem _droidTargetingTablet = default!;
+
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<SWTurretConsoleComponent, ComponentStartup>(OnStartup);
-        SubscribeLocalEvent<SWTurretConsoleComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SWTurretConsoleComponent, SWTurretJobToggleMessage>(OnToggle);
         SubscribeLocalEvent<SWTurretConsoleComponent, SWAllowFaction>(OnAllow);
         SubscribeLocalEvent<SWTurretConsoleComponent, SWDisallowFaction>(OnDisAllow);
-        SubscribeLocalEvent<SWTurretConsoleComponent, NewLinkEvent>(OnNewLink);
-        SubscribeLocalEvent<SWTurretConfigComponent, PortDisconnectedEvent>(OnPortDisconnected);
-    }
-
-    private void OnMapInit(Entity<SWTurretConsoleComponent> ent, ref MapInitEvent args)
-    {
-        var comp = Comp<DeviceLinkSinkComponent>(ent.Owner);
-        foreach (var source in comp.LinkedSources)
-        {
-            EnsureTurretConfig(ent, source);
-        }
     }
 
     private void OnDisAllow(Entity<SWTurretConsoleComponent> ent, ref SWDisallowFaction args)
@@ -77,7 +49,7 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
             }
         }
         UpdateInterface(ent.Owner, ent.Comp);
-        _droidTargetingTablet.ApplyConfigFromTablet(ent.Owner, ent.Comp, user);
+        RaiseSettingsChanged(ent.Owner, user);
     }
 
     private void OnAllow(Entity<SWTurretConsoleComponent> ent, ref SWAllowFaction args)
@@ -104,18 +76,7 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
             }
         }
         UpdateInterface(ent.Owner, ent.Comp);
-        _droidTargetingTablet.ApplyConfigFromTablet(ent.Owner, ent.Comp, user);
-    }
-
-    private void OnPortDisconnected(Entity<SWTurretConfigComponent> ent, ref PortDisconnectedEvent args)
-    {
-        //if port is disconnected remove config then
-        RemoveTurretConfig(ent.Owner);
-    }
-
-    private void OnNewLink(Entity<SWTurretConsoleComponent> ent, ref NewLinkEvent args)
-    {
-        EnsureTurretConfig(ent, args.Source);
+        RaiseSettingsChanged(ent.Owner, user);
     }
 
     private void OnToggle(Entity<SWTurretConsoleComponent> ent, ref SWTurretJobToggleMessage args)
@@ -130,12 +91,13 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
         }
         ent.Comp.JobsAllowed[args.Job] = !ent.Comp.JobsAllowed[args.Job];
         UpdateInterface(ent.Owner, ent.Comp);
-        _droidTargetingTablet.ApplyConfigFromTablet(ent.Owner, ent.Comp, user);
+        RaiseSettingsChanged(ent.Owner, user);
     }
 
     private void OnStartup(Entity<SWTurretConsoleComponent> ent, ref ComponentStartup args)
     {
-        var defaultAllowed = HasComp<SWDroidTargetingTabletComponent>(ent.Owner);
+        var defaultAllowed = TryComp<SWTargetingConfigTargetsComponent>(ent.Owner, out var targets) &&
+                             targets.DefaultAllowedJobs;
 
         foreach (var job in ent.Comp.Jobs)
         {
@@ -173,15 +135,8 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
         return true;
     }
 
-    private void EnsureTurretConfig(Entity<SWTurretConsoleComponent> console, EntityUid turret)
+    private void RaiseSettingsChanged(EntityUid uid, EntityUid user)
     {
-        var comp = EnsureComp<SWTurretConfigComponent>(turret);
-        comp.AllowedJobs = console.Comp.JobsAllowed;
-        comp.TargetUnconfiguredJobs = true;
-    }
-
-    private void RemoveTurretConfig(EntityUid turret)
-    {
-        RemComp<SWTurretConfigComponent>(turret);
+        RaiseLocalEvent(uid, new SWTargetingConsoleSettingsChangedEvent(user));
     }
 }

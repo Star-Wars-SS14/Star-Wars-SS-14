@@ -5,7 +5,7 @@ namespace Content.Shared._SW.Droids;
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class SWDroidCommandableComponent : Component
 {
-    [DataField(required: true), AutoNetworkedField]
+    [DataField, AutoNetworkedField]
     public string Faction = string.Empty;
 
     [DataField, AutoNetworkedField]

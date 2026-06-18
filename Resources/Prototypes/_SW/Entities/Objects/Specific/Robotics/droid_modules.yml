@@ -4,6 +4,8 @@
   name: droid blaster module
   description: A combat module that equips a battle droid with a compact scout blaster.
   components:
+  - type: SWDroidModuleCategory
+    category: Weapon
   - type: Sprite
     layers:
     - state: generic
@@ -13,6 +15,86 @@
     - item: SWGrantekF11D2
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: syndicate-weapon-module }
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-icon-inhand-left
+        color: "#C94C3F"
+      - state: base-module-inhand-left
+        color: "#5F6D73"
+      - state: base-part-inhand-left
+      - state: base-stripes-inhand-left
+        color: "#202629"
+      right:
+      - state: base-icon-inhand-right
+        color: "#C94C3F"
+      - state: base-module-inhand-right
+        color: "#5F6D73"
+      - state: base-part-inhand-right
+      - state: base-stripes-inhand-right
+        color: "#202629"
+  - type: Tag
+    tags:
+    - SWDroidModule
+
+- type: entity
+  parent: BaseBorgModule
+  id: SWDroidFactionChipRepublic
+  name: republic droid faction chip
+  description: A faction identity chip that makes a droid obey Republic personnel.
+  components:
+  - type: SWDroidModuleCategory
+    category: FactionChip
+  - type: SWDroidFactionModule
+    faction: RepublicFaction
+    lockAccess:
+    - SWRepublicBase
+    - SWRepublicCommander
+    - SWRepublicGeneral
+  - type: Sprite
+    layers:
+    - state: generic
+    - state: icon-template
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-icon-inhand-left
+        color: "#4D8FDB"
+      - state: base-module-inhand-left
+        color: "#5F6D73"
+      - state: base-part-inhand-left
+      - state: base-stripes-inhand-left
+        color: "#202629"
+      right:
+      - state: base-icon-inhand-right
+        color: "#4D8FDB"
+      - state: base-module-inhand-right
+        color: "#5F6D73"
+      - state: base-part-inhand-right
+      - state: base-stripes-inhand-right
+        color: "#202629"
+  - type: Tag
+    tags:
+    - SWDroidModule
+
+- type: entity
+  parent: BaseBorgModule
+  id: SWDroidFactionChipEmpire
+  name: imperial droid faction chip
+  description: A faction identity chip that makes a droid obey Imperial personnel.
+  components:
+  - type: SWDroidModuleCategory
+    category: FactionChip
+  - type: SWDroidFactionModule
+    faction: EmpireFaction
+    lockAccess:
+    - SWEmpireBase
+    - SWEmpireCommander
+    - SWEmpireMoff
+  - type: Sprite
+    layers:
+    - state: generic
+    - state: icon-template
   - type: Item
     inhandVisuals:
       left:

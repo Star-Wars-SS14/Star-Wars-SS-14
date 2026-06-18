@@ -73,7 +73,6 @@
       NavSmash: !type:Bool
         true
   - type: SWDroidCommandable
-    faction: RepublicFaction
     commandRange: 3
   - type: SWTargetingConfig
     targetUnconfiguredJobs: false
@@ -89,17 +88,22 @@
     canBeStripped: false
   - type: BorgChassis
     active: true
-    maxModules: 1
+    maxModules: 2
     moduleWhitelist:
       tags:
       - SWDroidModule
     brainWhitelist:
       components:
       - SWDroidCommandable
+  - type: SWDroidModuleLimits
+    limits:
+      Weapon: 1
+      FactionChip: 1
   - type: ContainerFill
     containers:
       borg_module:
       - SWDroidBlasterModule
+      - SWDroidFactionChipEmpire
   - type: LockingWhitelist
     blacklist:
       components:

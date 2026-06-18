@@ -1,45 +1,69 @@
-using System.Linq;
 using Content.Server._SW.Targeting;
 using Content.Server._SW.TurretConsole;
+using Content.Server.Popups;
 using Content.Shared._SW.Droids;
-using Content.Shared.Hands.Components;
-using Content.Shared.Inventory;
+using Content.Shared._SW.TaskSystem;
+using Content.Shared.Interaction;
+using Content.Shared.Lock;
+using Content.Shared.Popups;
+using Content.Shared.Silicons.Borgs.Components;
 
 namespace Content.Server._SW.Droids;
 
 public sealed class SWDroidTargetingTabletSystem : EntitySystem
 {
-    [Dependency] private readonly InventorySystem _inventory = default!;
+    [Dependency] private readonly LockSystem _lock = default!;
+    [Dependency] private readonly PopupSystem _popup = default!;
+    [Dependency] private readonly SWDroidModuleSystem _modules = default!;
     [Dependency] private readonly SWTargetingConfigTargetsSystem _targeting = default!;
 
-    public bool TryRegisterHeldTabletTarget(EntityUid user, EntityUid droid)
+    public override void Initialize()
     {
-        foreach (var item in _inventory.GetHandOrInventoryEntities((user, null, null)))
-        {
-            if (!TryComp<SWDroidTargetingTabletComponent>(item, out _) ||
-                !HasComp<SWTurretConsoleComponent>(item))
-            {
-                continue;
-            }
+        base.Initialize();
 
-            _targeting.RegisterTarget(item, droid);
-            return true;
-        }
-
-        return false;
+        SubscribeLocalEvent<SWDroidCommandableComponent, InteractUsingEvent>(OnDroidInteractUsing);
     }
 
-    public void UnregisterTargetFromUserTablets(EntityUid user, EntityUid droid)
+    private void OnDroidInteractUsing(Entity<SWDroidCommandableComponent> droid, ref InteractUsingEvent args)
     {
-        foreach (var item in _inventory.GetHandOrInventoryEntities((user, null, null)))
+        if (args.Handled ||
+            !TryComp<SWDroidTargetingTabletComponent>(args.Used, out var tablet) ||
+            !HasComp<SWTurretConsoleComponent>(args.Used))
         {
-            if (!TryComp<SWDroidTargetingTabletComponent>(item, out _) ||
-                !HasComp<SWTurretConsoleComponent>(item))
-            {
-                continue;
-            }
-
-            _targeting.UnregisterTarget(item, droid);
+            return;
         }
+
+        args.Handled = true;
+
+        if (_lock.IsLocked(droid.Owner))
+        {
+            _popup.PopupEntity(Loc.GetString("sw-droid-targeting-tablet-locked"), droid, args.User, PopupType.MediumCaution);
+            return;
+        }
+
+        if (TryComp<BorgChassisComponent>(droid, out var chassis))
+            _modules.RefreshFactionFromModules((droid.Owner, chassis));
+
+        if (!CanBindTablet(args.User, tablet, droid.Comp))
+        {
+            _popup.PopupEntity(Loc.GetString("sw-droid-targeting-tablet-wrong-faction"), droid, args.User, PopupType.MediumCaution);
+            return;
+        }
+
+        _targeting.UnregisterTargetFromAll(droid);
+        _targeting.RegisterTarget(args.Used, droid);
+        _popup.PopupEntity(Loc.GetString("sw-droid-targeting-tablet-linked"), droid, args.User);
     }
+
+    private bool CanBindTablet(EntityUid user, SWDroidTargetingTabletComponent tablet, SWDroidCommandableComponent droid)
+    {
+        if (string.IsNullOrWhiteSpace(droid.Faction) ||
+            tablet.Faction != droid.Faction)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
 }

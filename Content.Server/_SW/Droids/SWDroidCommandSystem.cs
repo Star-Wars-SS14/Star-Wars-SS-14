@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Numerics;
 using Content.Server._SW.TaskSystem;
+using Content.Server._SW.Targeting;
 using Content.Server.Chat.Systems;
 using Content.Server.NPC;
 using Content.Server.NPC.HTN;
@@ -36,8 +37,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SWFactionGameruleSystem _factions = default!;
-    [Dependency] private readonly SWDroidTargetingTabletSystem _targetingTablet = default!;
-
+    [Dependency] private readonly SWTargetingConfigTargetsSystem _targeting = default!;
     private const float UpdateDelay = 0.5f;
     private const float StayTime = 999999f;
     private float _updateAccumulator;
@@ -115,7 +115,6 @@ public sealed class SWDroidCommandSystem : EntitySystem
             droidComp.ActiveCommander != uid &&
             TryComp<SWDroidCommanderComponent>(droidComp.ActiveCommander, out var previousCommander))
         {
-            _targetingTablet.UnregisterTargetFromUserTablets(droidComp.ActiveCommander.Value, droid);
             previousCommander.Droids.Remove(droid);
             UpdateOrderActions(droidComp.ActiveCommander.Value, previousCommander);
         }
@@ -125,7 +124,6 @@ public sealed class SWDroidCommandSystem : EntitySystem
         Dirty(droid, droidComp);
 
         component.Droids.Add(droid);
-        _targetingTablet.TryRegisterHeldTabletTarget(uid, droid);
         EnsureOrderActions(uid, component);
         SetOrder(droid, droidComp, uid, component.CurrentOrder);
 
@@ -182,6 +180,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
     private void OnDroidShutdown(EntityUid uid, SWDroidCommandableComponent component, ComponentShutdown args)
     {
         ReleaseDroidCommand(uid, component, false);
+        _targeting.UnregisterTargetFromAll(uid);
     }
 
     private void OnDroidMobStateChanged(EntityUid uid, SWDroidCommandableComponent component, MobStateChangedEvent args)
@@ -203,8 +202,6 @@ public sealed class SWDroidCommandSystem : EntitySystem
             commander.Droids.Remove(uid);
             UpdateOrderActions(commanderUid, commander);
         }
-
-        _targetingTablet.UnregisterTargetFromUserTablets(commanderUid, uid);
 
         component.ActiveCommander = null;
         component.ActiveCommanderRank = 0;

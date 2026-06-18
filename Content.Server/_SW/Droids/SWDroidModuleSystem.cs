@@ -1,10 +1,12 @@
 using Content.Server.Popups;
+using Content.Server._SW.Targeting;
 using Content.Shared._SW.Droids;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
+using Content.Shared.Containers;
 using Content.Shared.Interaction;
-using Content.Shared.Silicons.Borgs;
 using Content.Shared.Silicons.Borgs.Components;
+using Content.Shared.Wires;
 using Robust.Shared.Containers;
 
 namespace Content.Server._SW.Droids;
@@ -13,29 +15,39 @@ public sealed class SWDroidModuleSystem : EntitySystem
 {
     [Dependency] private readonly AccessReaderSystem _accessReader = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
+    [Dependency] private readonly SWTargetingConfigTargetsSystem _targeting = default!;
 
     public override void Initialize()
     {
         base.Initialize();
 
-        SubscribeLocalEvent<BorgChassisComponent, AfterInteractUsingEvent>(
-            OnBeforeBorgModuleInsert,
-            before: [typeof(SharedBorgSystem)]);
+        SubscribeLocalEvent<BorgChassisComponent, InteractUsingEvent>(OnBeforeBorgModuleInsert);
+        SubscribeLocalEvent<SWDroidCommandableComponent, MapInitEvent>(OnDroidMapInit, after: [typeof(ContainerFillSystem)]);
 
         SubscribeLocalEvent<SWDroidFactionModuleComponent, EntGotInsertedIntoContainerMessage>(OnFactionModuleInserted);
         SubscribeLocalEvent<SWDroidFactionModuleComponent, EntGotRemovedFromContainerMessage>(OnFactionModuleRemoved);
     }
 
-    private void OnBeforeBorgModuleInsert(Entity<BorgChassisComponent> chassis, ref AfterInteractUsingEvent args)
+    private void OnDroidMapInit(Entity<SWDroidCommandableComponent> droid, ref MapInitEvent args)
     {
-        if (!args.CanReach ||
-            args.Handled ||
+        if (!TryComp<BorgChassisComponent>(droid, out var chassis))
+            return;
+
+        RefreshFactionFromModules((droid.Owner, chassis));
+    }
+
+    private void OnBeforeBorgModuleInsert(Entity<BorgChassisComponent> chassis, ref InteractUsingEvent args)
+    {
+        if (args.Handled ||
             !TryComp<BorgModuleComponent>(args.Used, out _) ||
             !TryComp<SWDroidModuleLimitsComponent>(chassis, out var limits) ||
             !TryComp<SWDroidModuleCategoryComponent>(args.Used, out var category))
         {
             return;
         }
+
+        if (TryComp<WiresPanelComponent>(chassis, out var panel) && !panel.Open)
+            return;
 
         if (CanInsertModuleCategory(chassis, limits, category.Category))
             return;
@@ -93,7 +105,7 @@ public sealed class SWDroidModuleSystem : EntitySystem
         return true;
     }
 
-    private void RefreshFactionFromModules(Entity<BorgChassisComponent> droid)
+    public void RefreshFactionFromModules(Entity<BorgChassisComponent> droid)
     {
         foreach (var module in droid.Comp.ModuleContainer.ContainedEntities)
         {
@@ -109,6 +121,8 @@ public sealed class SWDroidModuleSystem : EntitySystem
 
     private void ApplyFactionModule(Entity<BorgChassisComponent> droid, SWDroidFactionModuleComponent module)
     {
+        _targeting.UnregisterTargetFromAll(droid);
+
         if (TryComp<SWDroidCommandableComponent>(droid, out var commandable))
         {
             commandable.Faction = module.Faction;
@@ -125,6 +139,8 @@ public sealed class SWDroidModuleSystem : EntitySystem
 
     private void ClearFactionModule(Entity<BorgChassisComponent> droid)
     {
+        _targeting.UnregisterTargetFromAll(droid);
+
         if (TryComp<SWDroidCommandableComponent>(droid, out var commandable))
         {
             commandable.Faction = string.Empty;

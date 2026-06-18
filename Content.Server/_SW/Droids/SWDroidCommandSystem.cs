@@ -33,6 +33,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
     [Dependency] private readonly HTNSystem _htn = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
     [Dependency] private readonly NPCSystem _npc = default!;
+    [Dependency] private readonly NPCSteeringSystem _steering = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
@@ -326,12 +327,21 @@ public sealed class SWDroidCommandSystem : EntitySystem
         }
         else
         {
+            StopFollowingMovement(droid, htn);
             _npc.SetBlackboard(droid, "DroidStayTime", StayTime);
         }
 
         _npc.SetBlackboard(droid, NPCBlackboard.CurrentOrders, order);
         _htn.Replan(htn);
         _npc.WakeNPC(droid, htn);
+    }
+
+    private void StopFollowingMovement(EntityUid droid, HTNComponent htn)
+    {
+        _steering.Unregister(droid);
+        htn.Blackboard.Remove<EntityCoordinates>(NPCBlackboard.FollowTarget);
+        htn.Blackboard.Remove<EntityCoordinates>("FollowIdleTarget");
+        htn.Blackboard.Remove<float>("IdleTime");
     }
 
     private void DoCommandCallout(EntityUid uid, SWDroidCommanderComponent component, SWDroidOrderType order)

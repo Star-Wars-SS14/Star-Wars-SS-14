@@ -83,11 +83,41 @@
         type: BorgBoundUserInterface
   - type: ActivatableUI
     key: enum.BorgUiKey.Key
+  - type: Hands
+    showInHands: false
+    disableExplosionRecursion: true
+    canBeStripped: false
   - type: BorgChassis
-    maxModules: 0
+    active: true
+    maxModules: 1
+    moduleWhitelist:
+      tags:
+      - SWDroidModule
     brainWhitelist:
       components:
       - SWDroidCommandable
+  - type: ContainerFill
+    containers:
+      borg_module:
+      - SWDroidBlasterModule
+  - type: LockingWhitelist
+    blacklist:
+      components:
+      - BorgChassis
+      - RoboticsConsole
+  - type: WiresPanel
+    openingTool: Screwing
+  - type: ActivatableUIRequiresPanel
+  - type: Lock
+    locked: true
+    unlockOnClick: false
+  - type: UIRequiresLock
+    userInterfaceKeys:
+    - enum.BorgUiKey.Key
+  - type: LockedWiresPanel
+  - type: AccessReader
+    access:
+    - [SWEmpireBase]
   - type: PowerCellSlot
     cellSlotId: cell_slot
     fitsInCharger: true

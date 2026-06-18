@@ -142,14 +142,6 @@
   - type: PredictedBattery
     maxCharge: 500
     startingCharge: 500
-  - type: Gun
-    fireRate: 1.5
-    useKey: false
-    selectedMode: FullAuto
-    availableModes:
-    - FullAuto
-    soundGunshot:
-      path: /Audio/Weapons/Guns/Gunshots/laser.ogg
   - type: MeleeWeapon
     hidden: true
     angle: 0

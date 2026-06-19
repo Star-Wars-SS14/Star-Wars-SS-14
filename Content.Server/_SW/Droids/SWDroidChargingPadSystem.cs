@@ -93,8 +93,8 @@ public sealed class SWDroidChargingPadSystem : EntitySystem
 
         _lookup.GetEntitiesInRange(pad.Comp2.Coordinates, pad.Comp1.Range, _nearby, LookupFlags.Dynamic | LookupFlags.Approximate);
 
-        var hasFullBattery = false;
-        Entity<PredictedBatteryComponent> fullBattery = default;
+        var hasFound = false;
+        Entity<PredictedBatteryComponent> resultBattery = default;
         foreach (var target in _nearby)
         {
             if (target == pad.Owner ||
@@ -104,20 +104,21 @@ public sealed class SWDroidChargingPadSystem : EntitySystem
                 continue;
             }
 
-            if (!_battery.IsFull(candidate.Value.AsNullable()))
+            // Keep searching for a non-full battery, but remember any valid target for Charged status.
+
+            if (!hasFound)
             {
-                battery = candidate.Value;
-                return true;
+                resultBattery = candidate.Value;
+                hasFound = true;
             }
 
-            if (!hasFullBattery)
+            if (!_battery.IsFull(candidate.Value.AsNullable()))
             {
-                hasFullBattery = true;
-                fullBattery = candidate.Value;
+                break;
             }
         }
 
-        battery = fullBattery;
-        return hasFullBattery;
+        battery = resultBattery;
+        return hasFound;
     }
 }

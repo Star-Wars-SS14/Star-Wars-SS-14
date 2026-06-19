@@ -20,13 +20,13 @@
         layer:
         - MachineLayer
   - type: Damageable
-    damageContainer: StructuralInorganic
-    damageModifierSet: StructuralMetallicStrong
+    damageContainer: SWVehicleArmored
+    damageModifierSet: SWHeavyVehicle
   - type: Destructible
     thresholds:
       - trigger:
           !type:DamageTrigger
-          damage: 1800
+          damage: 1500
         behaviors:
           - !type:DoActsBehavior
             acts: [ "Destruction" ]
@@ -140,8 +140,7 @@
   - type: Projectile
     damage:
       types:
-        Heat: 20
-        Structural: 20
+        SWAntiVehicle: 100
   - type: ExplodeOnTrigger
   - type: Explosive
     explosionType: Default

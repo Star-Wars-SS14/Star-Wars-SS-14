@@ -32,8 +32,16 @@
           !type:DamageTrigger
           damage: 1500
         behaviors:
+          - !type:ExplodeBehavior
           - !type:ChangeConstructionNodeBehavior
             node: SWStormCallerDestroyedNode
+  - type: Explosive
+    explosionType: Default
+    maxIntensity: 50
+    intensitySlope: 20
+    totalIntensity: 500
+    maxTileBreak: 1
+    canCreateVacuum: false
   - type: Clickable
   - type: InteractionOutline
   - type: SWVehicle
@@ -78,7 +86,6 @@
 - type: entity
   id: SWStormCallerDestroyed
   name: destroyed StormCaller
-  categories: [ HideSpawnMenu ]
   components:
   - type: Transform
   - type: Sprite

@@ -10,6 +10,10 @@
         {
             "name": "vehicle",
             "directions": 4
+        },
+        {
+            "name": "destroyed",
+            "directions": 4
         }
     ]
 }

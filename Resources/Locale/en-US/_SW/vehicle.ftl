@@ -8,3 +8,5 @@ ent-SWSpiderTwoRoles = two-seat Spider
   .desc = A fast, lightly armored repulsor vehicle with an additional passenger seat.
 ent-SWStormCaller = StormCaller
   .desc = A heavily armed and well-armored repulsor tank of the Sith Empire from the Battle of Denova.
+ent-SWStormCallerDestroyed = destroyed StormCaller
+  .desc = The burnt-out wreck of a StormCaller repulsor tank.

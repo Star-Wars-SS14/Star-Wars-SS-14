@@ -143,9 +143,6 @@
   - type: BatteryAmmoProvider
     proto: SWScoutBlasterBullet
     fireCost: 50
-  - type: PredictedBattery
-    maxCharge: 500
-    startingCharge: 500
   - type: MeleeWeapon
     hidden: true
     angle: 0

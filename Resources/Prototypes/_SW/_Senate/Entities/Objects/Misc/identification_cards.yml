@@ -1,0 +1,35 @@
+- type: entity
+  parent: SWIDCardStandard
+  id: SWSenatorIDCard
+  name: ID-карта сенатора
+  description: Удостоверение члена Сената Республики.
+  components:
+  - type: Sprite
+    layers:
+    - state: image3
+  - type: PresetIdCard
+    job: SWSenator
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWChancellorIDCard
+  name: ID-карта Верховного Канцлера
+  description: Удостоверение главы исполнительной власти Республики.
+  components:
+  - type: Sprite
+    layers:
+    - state: image1
+  - type: PresetIdCard
+    job: SWChancellor
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWSpeakerIDCard
+  name: ID-карта Спикера Сената
+  description: Удостоверение председателя Сената Республики.
+  components:
+  - type: Sprite
+    layers:
+    - state: image2
+  - type: PresetIdCard
+    job: SWSpeaker

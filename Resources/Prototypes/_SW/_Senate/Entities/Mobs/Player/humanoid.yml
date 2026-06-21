@@ -1,0 +1,26 @@
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidSenator
+  name: Сенатор
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [SenatorGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidChancellor
+  name: Верховный Канцлер
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [ChancellorGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidSpeaker
+  name: Спикер Сената
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [SpeakerGear]

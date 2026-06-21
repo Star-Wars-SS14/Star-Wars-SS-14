@@ -1,0 +1,32 @@
+- type: entity
+  parent: BasePDA
+  id: SWSenatorPDA
+  name: КПК сенатора
+  description: Персональный датапад члена Сената Республики.
+  components:
+  - type: Pda
+    id: SWSenatorIDCard
+  - type: PdaBorderColor
+    borderColor: "#9B59B6"
+
+- type: entity
+  parent: BasePDA
+  id: SWChancellorPDA
+  name: КПК Верховного Канцлера
+  description: Персональный датапад главы исполнительной власти Республики.
+  components:
+  - type: Pda
+    id: SWChancellorIDCard
+  - type: PdaBorderColor
+    borderColor: "#C0392B"
+
+- type: entity
+  parent: BasePDA
+  id: SWSpeakerPDA
+  name: КПК Спикера Сената
+  description: Персональный датапад председателя Сената Республики.
+  components:
+  - type: Pda
+    id: SWSpeakerIDCard
+  - type: PdaBorderColor
+    borderColor: "#2980B9"

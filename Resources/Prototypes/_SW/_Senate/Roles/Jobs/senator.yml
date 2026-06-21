@@ -1,0 +1,124 @@
+- type: playTimeTracker
+  id: Job_Senator
+
+- type: playTimeTracker
+  id: Job_Chancellor
+
+- type: playTimeTracker
+  id: Job_Speaker
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSenator
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: Civilian
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconChancellor
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: Civilian
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSpeaker
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: Civilian
+
+- type: accessLevel
+  id: SWSenate
+  name: Сенат
+
+- type: accessGroup
+  id: SWSenateGroup
+  tags:
+  - SWSenate
+
+- type: department
+  id: SWSenate
+  name: Сенат
+  description: Законодательный орган Республики. Сенаторы вносят законопроекты, ведут дебаты и голосуют за принятие законов.
+  color: "#9B59B6"
+  roles:
+  - SWChancellor
+  - SWSpeaker
+  - SWSenator
+  weight: 2000
+
+- type: job
+  id: SWChancellor
+  name: Верховный Канцлер
+  playTimeTracker: Job_Chancellor
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0
+  startingGear: ChancellorGear
+  icon: "JobIconChancellor"
+  supervisors: job-supervisors-empire
+  access:
+  - SWSenate
+
+- type: job
+  id: SWSpeaker
+  name: Спикер Сената
+  playTimeTracker: Job_Speaker
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0
+  startingGear: SpeakerGear
+  icon: "JobIconSpeaker"
+  supervisors: job-supervisors-empire
+  access:
+  - SWSenate
+
+- type: job
+  id: SWSenator
+  name: Сенатор
+  playTimeTracker: Job_Senator
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0
+  startingGear: SenatorGear
+  icon: "JobIconSenator"
+  supervisors: job-supervisors-empire
+  access:
+  - SWSenate
+
+- type: startingGear
+  id: SenatorGear
+  equipment:
+    id: SWSenatorPDA
+    outerClothing: SWCitizenClothing
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    back: ClothingBackpack
+    belt: ClothingBeltUtility
+    pocket1: FlashlightLantern
+
+- type: startingGear
+  id: ChancellorGear
+  equipment:
+    id: SWChancellorPDA
+    outerClothing: SWCitizenClothing
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    back: ClothingBackpack
+    belt: ClothingBeltUtility
+    pocket1: FlashlightLantern
+
+- type: startingGear
+  id: SpeakerGear
+  equipment:
+    id: SWSpeakerPDA
+    outerClothing: SWCitizenClothing
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    back: ClothingBackpack
+    belt: ClothingBeltUtility
+    pocket1: FlashlightLantern

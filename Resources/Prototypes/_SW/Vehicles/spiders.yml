@@ -65,6 +65,10 @@
     turnSpeedReference: 2.5
   - type: SWExplosionThrowModifier
     throwMultiplier: 0.0
+  - type: SWVehicleExtractable
+    aliveDelay: 6
+    criticalDelay: 3
+    deadDelay: 1.5
 
 - type: entity
   id: SWSpiderTwoRoles

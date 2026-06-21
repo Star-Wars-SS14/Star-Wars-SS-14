@@ -82,6 +82,10 @@
     minTurnSpeed: 1.2
   - type: SWExplosionThrowModifier
     throwMultiplier: 0.0
+  - type: SWVehicleExtractable
+    aliveDelay: 8
+    criticalDelay: 4
+    deadDelay: 2
 
 - type: entity
   id: SWStormCallerDestroyed

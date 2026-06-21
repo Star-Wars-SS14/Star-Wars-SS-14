@@ -2,9 +2,15 @@ using Content.Shared._SW.Vehicle;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Actions;
 using Content.Shared.Destructible;
+using Content.Shared.DoAfter;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
+using Content.Shared.Verbs;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Serialization;
+using Robust.Shared.Utility;
 using System.Linq;
 
 namespace Content.Shared._SW.Vehicle;
@@ -16,6 +22,7 @@ public sealed class SWVehicleSystem : EntitySystem
     [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
     [Dependency] private readonly ActionBlockerSystem _actionBlocker = default!;
     [Dependency] private readonly SharedPopupSystem _popupSystem = default!;
+    [Dependency] private readonly SharedDoAfterSystem _doAfter = default!;
 
     public override void Initialize()
     {
@@ -23,6 +30,8 @@ public sealed class SWVehicleSystem : EntitySystem
         SubscribeLocalEvent<SWInVehicleComponent, SWExitVehicleRequested>(OnExit);
         SubscribeLocalEvent<SWVehicleComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SWVehicleComponent, SWOccupyRoleMessage>(OnOccupy);
+        SubscribeLocalEvent<SWVehicleExtractableComponent, GetVerbsEvent<AlternativeVerb>>(OnGetExtractVerbs);
+        SubscribeLocalEvent<SWVehicleExtractableComponent, SWVehicleExtractDoAfterEvent>(OnExtractDoAfter);
         //SubscribeLocalEvent<SWInVehicleComponent, UpdateCanMoveEvent>(OnMoveInVehicle);
         //SubscribeLocalEvent<SWVehicleComponent, DestructionEventArgs>(OnDestroy);
         SubscribeLocalEvent<SWVehicleComponent, EntityTerminatingEvent>(OnTerminating);
@@ -111,29 +120,36 @@ public sealed class SWVehicleSystem : EntitySystem
             return;
         }
 
-        DeoccupyRole(new Entity<SWVehicleComponent>(ent.Comp.Vehicle, vehicleComp), ent.Comp.OccupiedRole);
+        TryDeoccupyRole(new Entity<SWVehicleComponent>(ent.Comp.Vehicle, vehicleComp), ent.Comp.OccupiedRole);
         args.Handled = true;
     }
 
-    private void DeoccupyRole(Entity<SWVehicleComponent> vehicle, string occupiedRole)
+    public bool TryDeoccupyRole(Entity<SWVehicleComponent> vehicle, string occupiedRole)
     {
         var roleInfo = vehicle.Comp.RolesInfo[occupiedRole];
 
         if (roleInfo.Occupant == null)
         {
-            return;
+            return false;
         }
-        var occupantEntity = GetEntity(roleInfo.Occupant.Value);
 
-        if (TerminatingOrDeleted(occupantEntity) ||
-            !TryComp<SWInVehicleComponent>(occupantEntity, out var inVehicle))
+        if (!TryGetEntity(roleInfo.Occupant.Value, out var occupantEntity))
         {
             roleInfo.Occupant = null;
-            return;
+            return false;
         }
 
-        var occupantCoordinates = _transformSystem.ToMapCoordinates(Transform(occupantEntity).Coordinates);
-        Entity<SWInVehicleComponent> occupant = new Entity<SWInVehicleComponent>(occupantEntity, Comp<SWInVehicleComponent>(occupantEntity));
+        var occupantUid = occupantEntity.Value;
+
+        if (TerminatingOrDeleted(occupantUid) ||
+            !TryComp<SWInVehicleComponent>(occupantUid, out var inVehicle))
+        {
+            roleInfo.Occupant = null;
+            return false;
+        }
+
+        var occupantCoordinates = _transformSystem.ToMapCoordinates(Transform(occupantUid).Coordinates);
+        Entity<SWInVehicleComponent> occupant = new Entity<SWInVehicleComponent>(occupantUid, Comp<SWInVehicleComponent>(occupantUid));
 
         if (occupant.Comp.ActionEntity != null)
         {
@@ -155,6 +171,7 @@ public sealed class SWVehicleSystem : EntitySystem
         _actionBlocker.UpdateCanMove(occupant);
         roleInfo.Occupant = null;
         UpdateInterface(vehicle);
+        return true;
     }
 
     private void OnTerminating(Entity<SWVehicleComponent> ent, ref EntityTerminatingEvent args)
@@ -164,7 +181,7 @@ public sealed class SWVehicleSystem : EntitySystem
 
     private void DeoccupyAllRoles(Entity<SWVehicleComponent> vehicle)
     {
-        vehicle.Comp.RolesInfo.Keys.ToList().ForEach(roleName => DeoccupyRole(vehicle, roleName));
+        vehicle.Comp.RolesInfo.Keys.ToList().ForEach(roleName => TryDeoccupyRole(vehicle, roleName));
     }
 
     private void DetachOccupantFromVehicle(
@@ -208,5 +225,120 @@ public sealed class SWVehicleSystem : EntitySystem
         }
 
         return null;
+    }
+
+    private void OnGetExtractVerbs(Entity<SWVehicleExtractableComponent> ent, ref GetVerbsEvent<AlternativeVerb> args)
+    {
+        if (!args.CanAccess || !args.CanInteract ||
+            !TryComp<SWVehicleComponent>(ent, out var vehicle))
+        {
+            return;
+        }
+
+        foreach (var (roleId, roleInfo) in vehicle.RolesInfo)
+        {
+            if (roleInfo.Occupant == null ||
+                !TryGetEntity(roleInfo.Occupant.Value, out var occupant) ||
+                args.User == occupant.Value ||
+                TerminatingOrDeleted(occupant.Value))
+            {
+                continue;
+            }
+
+            var rolePrototype = _prototype.Index(roleInfo.Role);
+            var roleName = Loc.GetString(rolePrototype.LocalizedName);
+            var delay = GetExtractionDelay(occupant.Value, ent.Comp);
+            var occupantNet = roleInfo.Occupant.Value;
+            var user = args.User;
+
+            args.Verbs.Add(new AlternativeVerb
+            {
+                Text = Loc.GetString("sw-vehicle-extract-verb", ("role", roleName)),
+                Category = VerbCategory.Eject,
+                Icon = new SpriteSpecifier.Texture(new("/Textures/Interface/VerbIcons/unbuckle.svg.192dpi.png")),
+                Act = () => StartExtraction(ent, user, roleId, occupantNet, delay),
+            });
+        }
+    }
+
+    private void StartExtraction(
+        Entity<SWVehicleExtractableComponent> vehicle,
+        EntityUid user,
+        string role,
+        NetEntity occupant,
+        float delay)
+    {
+        if (!TryComp<SWVehicleComponent>(vehicle, out var vehicleComp) ||
+            !RoleHasOccupant(vehicleComp, role, occupant))
+        {
+            return;
+        }
+
+        var doAfterArgs = new DoAfterArgs(
+            EntityManager,
+            user,
+            delay,
+            new SWVehicleExtractDoAfterEvent(role, occupant),
+            vehicle,
+            target: vehicle)
+        {
+            BreakOnMove = true,
+            BreakOnDamage = true,
+            NeedHand = true,
+        };
+
+        _doAfter.TryStartDoAfter(doAfterArgs);
+    }
+
+    private void OnExtractDoAfter(Entity<SWVehicleExtractableComponent> ent, ref SWVehicleExtractDoAfterEvent args)
+    {
+        if (args.Cancelled || args.Handled ||
+            !TryComp<SWVehicleComponent>(ent, out var vehicle) ||
+            !RoleHasOccupant(vehicle, args.Role, args.Occupant))
+        {
+            return;
+        }
+
+        if (TryDeoccupyRole((ent.Owner, vehicle), args.Role))
+            _popupSystem.PopupEntity(Loc.GetString("sw-vehicle-extract-finished"), ent, args.User);
+
+        args.Handled = true;
+    }
+
+    private bool RoleHasOccupant(SWVehicleComponent vehicle, string role, NetEntity occupant)
+    {
+        return vehicle.RolesInfo.TryGetValue(role, out var roleInfo) &&
+               roleInfo.Occupant == occupant;
+    }
+
+    private float GetExtractionDelay(EntityUid occupant, SWVehicleExtractableComponent component)
+    {
+        if (!TryComp<MobStateComponent>(occupant, out var mobState))
+            return component.AliveDelay;
+
+        return mobState.CurrentState switch
+        {
+            MobState.Dead => component.DeadDelay,
+            MobState.Critical => component.CriticalDelay,
+            _ => component.AliveDelay,
+        };
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed partial class SWVehicleExtractDoAfterEvent : DoAfterEvent
+{
+    public string Role;
+    public NetEntity Occupant;
+
+    public SWVehicleExtractDoAfterEvent(string role, NetEntity occupant)
+    {
+        Role = role;
+        Occupant = occupant;
+    }
+
+    public override DoAfterEvent Clone()
+    {
+        return new SWVehicleExtractDoAfterEvent(Role, Occupant);
     }
 }

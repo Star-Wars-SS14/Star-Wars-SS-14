@@ -11,5 +11,11 @@
             <RichTextLabel Name="ChancellorLabel" Margin="0 2 0 2" />
             <RichTextLabel Name="SpeakerLabel" Margin="0 2 0 2" />
         </BoxContainer>
+        <ScrollContainer HorizontalExpand="True" VerticalExpand="True" Margin="8">
+            <BoxContainer Name="ScheduleGrid" Orientation="Vertical" />
+        </ScrollContainer>
+        <ScrollContainer HorizontalExpand="True" VerticalExpand="True" Margin="8">
+            <BoxContainer Name="ActiveLawsList" Orientation="Vertical" />
+        </ScrollContainer>
     </TabContainer>
 </controls:FancyWindow>

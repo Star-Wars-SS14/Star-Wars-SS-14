@@ -45,6 +45,31 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateSubmitBillMessage(name, description, effects));
     }
 
+    public void ScheduleSession(int billId, int startHour, int duration)
+    {
+        SendMessage(new SWSenateScheduleSessionMessage(billId, startHour, duration));
+    }
+
+    public void RemoveSession(int sessionId)
+    {
+        SendMessage(new SWSenateRemoveSessionMessage(sessionId));
+    }
+
+    public void ConfirmSession(int sessionId)
+    {
+        SendMessage(new SWSenateConfirmSessionMessage(sessionId));
+    }
+
+    public void RejectSession(int sessionId)
+    {
+        SendMessage(new SWSenateRejectSessionMessage(sessionId));
+    }
+
+    public void Announce(string text)
+    {
+        SendMessage(new SWSenateAnnounceMessage(text));
+    }
+
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);

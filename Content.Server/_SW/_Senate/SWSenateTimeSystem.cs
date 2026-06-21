@@ -1,0 +1,54 @@
+namespace Content.Server._SW._Senate;
+
+public sealed class SWSenateTimeSystem : EntitySystem
+{
+    public const int StartHour = 7;
+    public const int EndHour = 21;
+    public const float RealSecondsPerGameHour = 300f;
+    private const float DayGapRealSeconds = 60f;
+    private const int DayLengthMinutes = (EndHour - StartHour) * 60;
+
+    public int Day { get; private set; } = 1;
+    public bool DayActive { get; private set; } = true;
+
+    private float _gameMinutes;
+    private float _gapRemaining;
+
+    public int CurrentHour => StartHour + Math.Clamp((int)(_gameMinutes / 60f), 0, EndHour - StartHour);
+    public int CurrentMinute => (int)(_gameMinutes % 60f);
+
+    public override void Update(float frameTime)
+    {
+        if (!DayActive)
+        {
+            _gapRemaining -= frameTime;
+            if (_gapRemaining <= 0f)
+            {
+                DayActive = true;
+                Day++;
+                _gameMinutes = 0f;
+            }
+
+            return;
+        }
+
+        _gameMinutes += frameTime * (60f / RealSecondsPerGameHour);
+        if (_gameMinutes >= DayLengthMinutes)
+        {
+            _gameMinutes = DayLengthMinutes;
+            DayActive = false;
+            _gapRemaining = DayGapRealSeconds;
+        }
+    }
+
+    public string TimeString()
+    {
+        if (!DayActive)
+            return $"День {Day}: перерыв";
+
+        var totalMinutes = (int)_gameMinutes;
+        var hour = StartHour + totalMinutes / 60;
+        var minute = totalMinutes % 60;
+        return $"День {Day}, {hour:00}:{minute:00}";
+    }
+}

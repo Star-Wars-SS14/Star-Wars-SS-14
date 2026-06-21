@@ -14,13 +14,19 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 {
     private const int DraftTabIndex = 3;
     private const int AgendaTabIndex = 4;
-    private const float MaxEffect = 20f;
+    private const int ScheduleTabIndex = 5;
+    private const int AnnounceTabIndex = 6;
+    private const float MaxEffect = 10f;
 
     private readonly SWSenateWorkConsoleBoundUserInterface _owner;
     private readonly Dictionary<string, Slider> _draftSliders = new();
     private readonly Dictionary<string, Label> _draftValueLabels = new();
     private bool _draftBuilt;
     private int _draftBudget;
+
+    private int _selectedBillId = -1;
+    private int _selectedStartHour = -1;
+    private int _selectedDuration = 1;
 
     public SWSenateWorkConsoleMenu(SWSenateWorkConsoleBoundUserInterface owner)
     {
@@ -32,14 +38,54 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         Tabs.SetTabTitle(2, "Сводка");
         Tabs.SetTabTitle(DraftTabIndex, "Разработка");
         Tabs.SetTabTitle(AgendaTabIndex, "Повестка");
+        Tabs.SetTabTitle(ScheduleTabIndex, "Расписание");
+        Tabs.SetTabTitle(AnnounceTabIndex, "Объявление");
+
+        AnnounceButton.OnPressed += _ =>
+        {
+            if (!string.IsNullOrWhiteSpace(AnnounceEdit.Text))
+            {
+                _owner.Announce(AnnounceEdit.Text);
+                AnnounceEdit.Text = string.Empty;
+            }
+        };
 
         TakeButton.OnPressed += _ => _owner.TakeOffice();
         ResignButton.OnPressed += _ => _owner.Resign();
         SubmitBillButton.OnPressed += _ => OnSubmitPressed();
+
+        for (var d = 1; d <= 4; d++)
+            DurationOption.AddItem($"{d}ч", d);
+        DurationOption.SelectId(_selectedDuration);
+
+        BillOption.OnItemSelected += args =>
+        {
+            BillOption.SelectId(args.Id);
+            _selectedBillId = args.Id;
+        };
+        StartHourOption.OnItemSelected += args =>
+        {
+            StartHourOption.SelectId(args.Id);
+            _selectedStartHour = args.Id;
+        };
+        DurationOption.OnItemSelected += args =>
+        {
+            DurationOption.SelectId(args.Id);
+            _selectedDuration = args.Id;
+        };
+        ScheduleButton.OnPressed += _ =>
+        {
+            if (_selectedBillId >= 0 && _selectedStartHour >= 0)
+                _owner.ScheduleSession(_selectedBillId, _selectedStartHour, _selectedDuration);
+        };
     }
 
     public void SetState(SWSenateWorkConsoleState state)
     {
+        Title = string.IsNullOrEmpty(state.GameTime)
+            ? "Сенатская рабочая консоль"
+            : $"Сенатская рабочая консоль — {state.GameTime}";
+
         if (!state.HasCard)
             PositionLabel.SetMessage("Вставьте ID-карту в консоль.");
         else if (!state.IsSenateCard)
@@ -53,8 +99,12 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         ResignButton.Visible = state.CanResign;
 
         var isSenator = state.IsSenateCard && state.Position == SWSenatePosition.Senator;
+        var isLeader = state.IsSenateCard
+            && (state.Position == SWSenatePosition.Speaker || state.Position == SWSenatePosition.Chancellor);
         Tabs.SetTabVisible(DraftTabIndex, isSenator);
         Tabs.SetTabVisible(AgendaTabIndex, state.IsSenateCard);
+        Tabs.SetTabVisible(ScheduleTabIndex, state.IsSenateCard);
+        Tabs.SetTabVisible(AnnounceTabIndex, isLeader && state.InOffice);
 
         if (!_draftBuilt && state.RepublicStats.Count > 0)
             BuildDraft(state);
@@ -62,6 +112,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BuildRoster(state);
         BuildDashboard(state);
         BuildAgenda(state);
+        BuildSchedule(state);
     }
 
     private void BuildRoster(SWSenateWorkConsoleState state)
@@ -211,6 +262,129 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             box.AddChild(effectsRow);
             AgendaList.AddChild(box);
         }
+    }
+
+    private void BuildSchedule(SWSenateWorkConsoleState state)
+    {
+        ScheduleGrid.RemoveAllChildren();
+        foreach (var row in state.Schedule)
+        {
+            var rowBox = new BoxContainer
+            {
+                Orientation = BoxContainer.LayoutOrientation.Horizontal,
+                Margin = new Thickness(0, 1, 0, 1),
+            };
+
+            rowBox.AddChild(new Label
+            {
+                Text = row.IsNow ? $"> {row.TimeLabel}" : row.TimeLabel,
+                FontColorOverride = row.IsNow ? Color.White : Color.Gray,
+                MinWidth = 70,
+            });
+            rowBox.AddChild(new Label { Text = row.Text, FontColorOverride = row.Color });
+            ScheduleGrid.AddChild(rowBox);
+        }
+
+        var isSpeaker = state.IsSenateCard && state.Position == SWSenatePosition.Speaker && state.InOffice;
+        var isChancellor = state.IsSenateCard && state.Position == SWSenatePosition.Chancellor && state.InOffice;
+        SpeakerPanel.Visible = isSpeaker;
+        ChancellorPanel.Visible = isChancellor;
+
+        if (isSpeaker)
+        {
+            PopulateBillOption(state.SchedulableBills);
+            PopulateHourOption(state.FreeStartHours);
+            ScheduleButton.Disabled = state.SchedulableBills.Count == 0 || state.FreeStartHours.Count == 0;
+
+            SpeakerPendingList.RemoveAllChildren();
+            foreach (var session in state.PendingSessions)
+            {
+                var rowBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 1, 0, 1) };
+                rowBox.AddChild(new Label { Text = $"{session.TimeRange}  {session.BillName}", HorizontalExpand = true });
+                var remove = new Button { Text = "Удалить" };
+                var id = session.Id;
+                remove.OnPressed += _ => _owner.RemoveSession(id);
+                rowBox.AddChild(remove);
+                SpeakerPendingList.AddChild(rowBox);
+            }
+        }
+
+        if (isChancellor)
+        {
+            ChancellorPendingList.RemoveAllChildren();
+            if (state.PendingSessions.Count == 0)
+            {
+                ChancellorPendingList.AddChild(new Label { Text = "Нет заседаний на подтверждение." });
+            }
+            else
+            {
+                foreach (var session in state.PendingSessions)
+                {
+                    var rowBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 1, 0, 1) };
+                    rowBox.AddChild(new Label { Text = $"{session.TimeRange}  {session.BillName}", HorizontalExpand = true });
+
+                    var id = session.Id;
+                    var confirm = new Button { Text = "Подтвердить" };
+                    confirm.OnPressed += _ => _owner.ConfirmSession(id);
+                    var reject = new Button { Text = "Отклонить", Margin = new Thickness(6, 0, 0, 0) };
+                    reject.OnPressed += _ => _owner.RejectSession(id);
+
+                    rowBox.AddChild(confirm);
+                    rowBox.AddChild(reject);
+                    ChancellorPendingList.AddChild(rowBox);
+                }
+            }
+        }
+    }
+
+    private void PopulateBillOption(List<SWBillOption> bills)
+    {
+        BillOption.Clear();
+        var hasSelected = false;
+        var first = -1;
+        foreach (var bill in bills)
+        {
+            BillOption.AddItem(bill.Name, bill.Id);
+            if (first < 0)
+                first = bill.Id;
+            if (bill.Id == _selectedBillId)
+                hasSelected = true;
+        }
+
+        if (bills.Count == 0)
+        {
+            _selectedBillId = -1;
+            return;
+        }
+
+        if (!hasSelected)
+            _selectedBillId = first;
+        BillOption.SelectId(_selectedBillId);
+    }
+
+    private void PopulateHourOption(List<int> hours)
+    {
+        StartHourOption.Clear();
+        var hasSelected = false;
+        var first = -1;
+        foreach (var hour in hours)
+        {
+            StartHourOption.AddItem($"{hour:00}:00", hour);
+            if (first < 0)
+                first = hour;
+            if (hour == _selectedStartHour)
+                hasSelected = true;
+        }
+
+        if (hours.Count == 0)
+        {
+            _selectedStartHour = -1;
+            return;
+        }
+
+        if (!hasSelected)
+            _selectedStartHour = first;
+        StartHourOption.SelectId(_selectedStartHour);
     }
 
     private void BuildDashboard(SWSenateWorkConsoleState state)

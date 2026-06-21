@@ -35,6 +35,16 @@ public sealed class SWSenateVoteConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateCastVoteMessage(choice));
     }
 
+    public void EndVote()
+    {
+        SendMessage(new SWSenateEndVoteMessage());
+    }
+
+    public void Tiebreak(SWVoteChoice choice)
+    {
+        SendMessage(new SWSenateTiebreakMessage(choice));
+    }
+
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);

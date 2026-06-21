@@ -18,4 +18,5 @@ public sealed class SWSenateBill
     public Dictionary<string, float> Effects = new();
     public Dictionary<string, SWVoteChoice> Votes = new();
     public SWBillStage Stage = SWBillStage.Voting;
+    public bool AwaitingTiebreak;
 }

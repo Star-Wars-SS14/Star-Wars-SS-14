@@ -10,6 +10,7 @@ public sealed class SWSenateInfoConsoleSystem : EntitySystem
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private readonly SWSenateTimeSystem _time = default!;
 
     private const float UpdateInterval = 3f;
     private float _accumulator;
@@ -57,6 +58,6 @@ public sealed class SWSenateInfoConsoleSystem : EntitySystem
         sectors.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
 
         _ui.SetUiState(ent.Owner, SWSenateInfoConsoleUiKey.Key,
-            new SWSenateInfoConsoleState(sectors, _senate.Chancellor, _senate.Speaker));
+            new SWSenateInfoConsoleState(sectors, _senate.Chancellor, _senate.Speaker, _senate.BuildScheduleRows(), _time.TimeString(), _senate.BuildActiveLaws()));
     }
 }

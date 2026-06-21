@@ -8,6 +8,7 @@ using Content.Shared.Popups;
 using Robust.Server.GameObjects;
 using Robust.Shared.Containers;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
 
 namespace Content.Server._SW._Senate;
 
@@ -19,9 +20,13 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
+    [Dependency] private readonly SWSenateTimeSystem _time = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
 
     private const float UpdateInterval = 3f;
+    private static readonly TimeSpan AnnounceCooldown = TimeSpan.FromSeconds(12);
     private float _accumulator;
+    private TimeSpan _nextAnnounce;
 
     public override void Initialize()
     {
@@ -31,6 +36,126 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateTakeOfficeMessage>(OnTakeOffice);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateResignMessage>(OnResign);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSubmitBillMessage>(OnSubmitBill);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateScheduleSessionMessage>(OnScheduleSession);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRemoveSessionMessage>(OnRemoveSession);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateConfirmSessionMessage>(OnConfirmSession);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectSessionMessage>(OnRejectSession);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAnnounceMessage>(OnAnnounce);
+    }
+
+    private void OnAnnounce(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateAnnounceMessage args)
+    {
+        var position = GetCardPosition(ent);
+        if (position != SWSenatePosition.Speaker && position != SWSenatePosition.Chancellor)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-announce-only-leaders"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        var inOffice = position == SWSenatePosition.Speaker ? _senate.Speaker != null : _senate.Chancellor != null;
+        if (!inOffice)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-not-in-office"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_timing.CurTime < _nextAnnounce)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-announce-cooldown"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        var text = args.Text.Trim();
+        if (string.IsNullOrWhiteSpace(text))
+            return;
+
+        var sender = Loc.GetString(position == SWSenatePosition.Speaker
+            ? "sw-senate-work-position-speaker"
+            : "sw-senate-work-position-chancellor");
+
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent(sender, text));
+        _nextAnnounce = _timing.CurTime + AnnounceCooldown;
+        _popup.PopupCursor(Loc.GetString("sw-senate-announce-sent"), args.Actor, PopupType.Medium);
+    }
+
+    private SWSenatePosition? GetCardPosition(Entity<SWSenateWorkConsoleComponent> ent)
+    {
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null || !TryComp<SWSenatePositionCardComponent>(card, out var position))
+            return null;
+
+        return position.Position;
+    }
+
+    private void OnScheduleSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateScheduleSessionMessage args)
+    {
+        if (GetCardPosition(ent) != SWSenatePosition.Speaker)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-speaker"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.Speaker == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-not-in-office"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.TryScheduleSession(args.BillId, args.StartHour, args.Duration) == null)
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-invalid"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-added"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRemoveSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateRemoveSessionMessage args)
+    {
+        if (GetCardPosition(ent) != SWSenatePosition.Speaker || _senate.Speaker == null)
+            return;
+
+        _senate.RemoveSession(args.SessionId);
+        UpdateUi(ent);
+    }
+
+    private void OnConfirmSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateConfirmSessionMessage args)
+    {
+        if (GetCardPosition(ent) != SWSenatePosition.Chancellor)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.Chancellor == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-not-in-office"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.ConfirmSession(args.SessionId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-confirmed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRejectSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateRejectSessionMessage args)
+    {
+        if (GetCardPosition(ent) != SWSenatePosition.Chancellor)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.Chancellor == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-not-in-office"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.RejectSession(args.SessionId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-rejected"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
     }
 
     private void OnSubmitBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSubmitBillMessage args)
@@ -48,6 +173,12 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (string.IsNullOrWhiteSpace(name))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-bill-no-name"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.HasActiveBill(Name(args.Actor)))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-already-active"), args.Actor, PopupType.Medium);
             return;
         }
 
@@ -194,6 +325,11 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.Roster = BuildRoster();
         state.Bills = _senate.BuildBillEntries();
         state.DraftBudget = ent.Comp.DraftBudget;
+        state.GameTime = _time.TimeString();
+        state.Schedule = _senate.BuildScheduleRows();
+        state.SchedulableBills = _senate.BuildSchedulableBills();
+        state.FreeStartHours = _senate.BuildFreeStartHours();
+        state.PendingSessions = _senate.BuildPendingSessions();
 
         if (card != null && TryComp<SWSenatePositionCardComponent>(card, out var position))
         {

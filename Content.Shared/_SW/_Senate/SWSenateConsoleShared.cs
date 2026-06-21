@@ -101,12 +101,18 @@ public sealed class SWSenateInfoConsoleState : BoundUserInterfaceState
     public List<SWSectorOccupancy> Sectors;
     public string? Chancellor;
     public string? Speaker;
+    public List<SWScheduleRow> Schedule;
+    public string GameTime;
+    public List<SWBillEntry> ActiveLaws;
 
-    public SWSenateInfoConsoleState(List<SWSectorOccupancy> sectors, string? chancellor, string? speaker)
+    public SWSenateInfoConsoleState(List<SWSectorOccupancy> sectors, string? chancellor, string? speaker, List<SWScheduleRow> schedule, string gameTime, List<SWBillEntry> activeLaws)
     {
         Sectors = sectors;
         Chancellor = chancellor;
         Speaker = speaker;
+        Schedule = schedule;
+        GameTime = gameTime;
+        ActiveLaws = activeLaws;
     }
 }
 
@@ -141,6 +147,11 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public List<SWSenateRosterEntry> Roster = new();
     public List<SWBillEntry> Bills = new();
     public int DraftBudget;
+    public string GameTime = string.Empty;
+    public List<SWScheduleRow> Schedule = new();
+    public List<SWBillOption> SchedulableBills = new();
+    public List<int> FreeStartHours = new();
+    public List<SWSessionEntry> PendingSessions = new();
 }
 
 [Serializable, NetSerializable]
@@ -216,6 +227,11 @@ public sealed class SWSenateVoteConsoleState : BoundUserInterfaceState
     public bool CanVote;
     public bool HasVoted;
     public SWVoteChoice MyVote;
+    public string GameTime = string.Empty;
+    public bool AwaitingTiebreak;
+    public bool CanEndVote;
+    public bool CanTiebreak;
+    public string SessionInfo = string.Empty;
 }
 
 [Serializable, NetSerializable]
@@ -226,6 +242,107 @@ public sealed class SWSenateCastVoteMessage : BoundUserInterfaceMessage
     public SWSenateCastVoteMessage(SWVoteChoice choice)
     {
         Choice = choice;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateEndVoteMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateTiebreakMessage : BoundUserInterfaceMessage
+{
+    public SWVoteChoice Choice;
+
+    public SWSenateTiebreakMessage(SWVoteChoice choice)
+    {
+        Choice = choice;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWScheduleRow
+{
+    public int Hour;
+    public string TimeLabel = string.Empty;
+    public string Text = string.Empty;
+    public Color Color;
+    public bool IsNow;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBillOption
+{
+    public int Id;
+    public string Name = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSessionEntry
+{
+    public int Id;
+    public string BillName = string.Empty;
+    public string TimeRange = string.Empty;
+    public string Status = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateScheduleSessionMessage : BoundUserInterfaceMessage
+{
+    public int BillId;
+    public int StartHour;
+    public int Duration;
+
+    public SWSenateScheduleSessionMessage(int billId, int startHour, int duration)
+    {
+        BillId = billId;
+        StartHour = startHour;
+        Duration = duration;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateConfirmSessionMessage : BoundUserInterfaceMessage
+{
+    public int SessionId;
+
+    public SWSenateConfirmSessionMessage(int sessionId)
+    {
+        SessionId = sessionId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateRejectSessionMessage : BoundUserInterfaceMessage
+{
+    public int SessionId;
+
+    public SWSenateRejectSessionMessage(int sessionId)
+    {
+        SessionId = sessionId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateRemoveSessionMessage : BoundUserInterfaceMessage
+{
+    public int SessionId;
+
+    public SWSenateRemoveSessionMessage(int sessionId)
+    {
+        SessionId = sessionId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateAnnounceMessage : BoundUserInterfaceMessage
+{
+    public string Text;
+
+    public SWSenateAnnounceMessage(string text)
+    {
+        Text = text;
     }
 }
 

@@ -21,6 +21,10 @@ sw-senate-bill-no-name = Укажите название законопроек�
 sw-senate-bill-no-effect = Законопроект не вносит изменений.
 sw-senate-bill-over-budget = Не хватает очков: уменьшите изменения.
 sw-senate-bill-submitted = Законопроект внесён в повестку.
+sw-senate-bill-stage-awaiting = Ожидает распределения в повестку
+sw-senate-bill-stage-pending = Ожидает подтверждения Канцлера
+sw-senate-bill-stage-scheduled = Запланировано на {$time}
+sw-senate-bill-stage-tiebreak = Ничья: решающий голос Канцлера
 sw-senate-bill-stage-voting = На голосовании
 sw-senate-bill-stage-passed = Принят
 sw-senate-bill-stage-rejected = Отклонён
@@ -32,3 +36,26 @@ sw-senate-vote-for = За
 sw-senate-vote-against = Против
 sw-senate-vote-abstain = Воздержался
 sw-senate-vote-none = —
+
+sw-senate-schedule-only-speaker = Назначать заседания может только Спикер.
+sw-senate-schedule-only-chancellor = Подтверждать заседания может только Канцлер.
+sw-senate-schedule-invalid = Невозможно поставить заседание на это время.
+sw-senate-schedule-added = Заседание добавлено в расписание.
+sw-senate-schedule-confirmed = Заседание подтверждено.
+sw-senate-schedule-rejected = Заседание отклонено.
+
+sw-senate-vote-only-speaker = Завершить голосование может только Спикер.
+sw-senate-vote-only-chancellor = Решающий голос есть только у Канцлера.
+sw-senate-vote-ended = Голосование завершено.
+sw-senate-vote-cant-end = Завершить нельзя: нет решающего большинства и проголосовали не все.
+sw-senate-vote-tiebreak-done = Решающий голос учтён.
+
+sw-senate-announce-sender = Сенат Республики
+sw-senate-announce-session = Сенат собрался на заседание по законопроекту «{$bill}».
+sw-senate-announce-passed = Закон «{$bill}» принят Сенатом.
+sw-senate-announce-rejected = Законопроект «{$bill}» отклонён Сенатом.
+sw-senate-announce-only-leaders = Делать объявления могут только Спикер и Канцлер.
+sw-senate-announce-sent = Объявление отправлено.
+sw-senate-announce-cooldown = Подождите перед следующим объявлением.
+sw-senate-not-in-office = Сначала вступите в должность.
+sw-senate-bill-already-active = У вас уже есть законопроект на рассмотрении.

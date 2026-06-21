@@ -10,5 +10,5 @@ public sealed partial class SWSenateWorkConsoleComponent : Component
     public int DraftBudget;
 
     [DataField]
-    public float MaxEffect = 20f;
+    public float MaxEffect = 10f;
 }

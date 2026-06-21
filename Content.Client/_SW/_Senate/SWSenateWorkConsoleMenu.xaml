@@ -28,5 +28,29 @@
         <ScrollContainer HorizontalExpand="True" VerticalExpand="True" Margin="8">
             <BoxContainer Name="AgendaList" Orientation="Vertical" />
         </ScrollContainer>
+        <BoxContainer Name="ScheduleTab" Orientation="Vertical" Margin="12">
+            <ScrollContainer VerticalExpand="True" Margin="0 0 0 6">
+                <BoxContainer Name="ScheduleGrid" Orientation="Vertical" />
+            </ScrollContainer>
+            <BoxContainer Name="SpeakerPanel" Orientation="Vertical">
+                <Label Text="Назначить заседание" StyleClasses="LabelKeyText" />
+                <BoxContainer Orientation="Horizontal" Margin="0 2 0 0">
+                    <OptionButton Name="BillOption" HorizontalExpand="True" />
+                    <OptionButton Name="StartHourOption" Margin="6 0 6 0" />
+                    <OptionButton Name="DurationOption" />
+                </BoxContainer>
+                <Button Name="ScheduleButton" Text="Запланировать" Margin="0 4 0 6" />
+                <BoxContainer Name="SpeakerPendingList" Orientation="Vertical" />
+            </BoxContainer>
+            <BoxContainer Name="ChancellorPanel" Orientation="Vertical">
+                <Label Text="Подтверждение заседаний" StyleClasses="LabelKeyText" />
+                <BoxContainer Name="ChancellorPendingList" Orientation="Vertical" />
+            </BoxContainer>
+        </BoxContainer>
+        <BoxContainer Name="AnnounceTab" Orientation="Vertical" Margin="12">
+            <Label Text="Объявление Сената" StyleClasses="LabelKeyText" />
+            <LineEdit Name="AnnounceEdit" PlaceHolder="Текст объявления..." Margin="0 2 0 8" />
+            <Button Name="AnnounceButton" Text="Отправить объявление" />
+        </BoxContainer>
     </TabContainer>
 </controls:FancyWindow>

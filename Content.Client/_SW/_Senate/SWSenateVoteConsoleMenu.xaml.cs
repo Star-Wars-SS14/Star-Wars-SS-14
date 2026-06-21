@@ -23,10 +23,17 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
         VoteForButton.OnPressed += _ => _owner.Vote(SWVoteChoice.For);
         VoteAgainstButton.OnPressed += _ => _owner.Vote(SWVoteChoice.Against);
         VoteAbstainButton.OnPressed += _ => _owner.Vote(SWVoteChoice.Abstain);
+        EndVoteButton.OnPressed += _ => _owner.EndVote();
+        TiebreakForButton.OnPressed += _ => _owner.Tiebreak(SWVoteChoice.For);
+        TiebreakAgainstButton.OnPressed += _ => _owner.Tiebreak(SWVoteChoice.Against);
     }
 
     public void SetState(SWSenateVoteConsoleState state)
     {
+        Title = string.IsNullOrEmpty(state.GameTime)
+            ? "Консоль голосования Сената"
+            : $"Консоль голосования Сената — {state.GameTime}";
+
         BuildAgenda(state);
         BuildCurrent(state);
     }
@@ -71,10 +78,19 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
 
     private void BuildCurrent(SWSenateVoteConsoleState state)
     {
+        SessionLabel.SetMessage(string.IsNullOrEmpty(state.SessionInfo)
+            ? "Нет активного заседания."
+            : state.SessionInfo);
+
         var canVote = state.CanVote && state.HasCurrent;
         VoteForButton.Disabled = !canVote;
         VoteAgainstButton.Disabled = !canVote;
         VoteAbstainButton.Disabled = !canVote;
+
+        EndVoteButton.Visible = state.CanEndVote;
+        TiebreakPanel.Visible = state.CanTiebreak;
+        if (state.CanTiebreak)
+            TiebreakLabel.SetMessage("Ничья. Ваш решающий голос как Канцлера:");
 
         if (!state.HasCurrent)
         {
@@ -87,7 +103,9 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
             return;
         }
 
-        BillTitle.SetMessage($"#{state.CurrentId}  {state.CurrentName}");
+        BillTitle.SetMessage(state.AwaitingTiebreak
+            ? $"#{state.CurrentId}  {state.CurrentName}  — ничья, ожидание Канцлера"
+            : $"#{state.CurrentId}  {state.CurrentName}");
 
         var mine = state.HasVoted ? $"    Ваш голос: {VoteLabel(state.MyVote)}" : string.Empty;
         BillAuthor.SetMessage($"Автор: {state.CurrentAuthor}{mine}");

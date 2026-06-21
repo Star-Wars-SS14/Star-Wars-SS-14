@@ -7,6 +7,7 @@
             <BoxContainer Name="AgendaList" Orientation="Vertical" />
         </ScrollContainer>
         <BoxContainer Name="CurrentTab" Orientation="Vertical" Margin="12">
+            <RichTextLabel Name="SessionLabel" Margin="0 0 0 4" />
             <RichTextLabel Name="BillTitle" Margin="0 0 0 4" />
             <RichTextLabel Name="BillAuthor" Margin="0 0 0 6" />
             <RichTextLabel Name="BillDescription" Margin="0 0 0 6" />
@@ -15,6 +16,14 @@
                 <Button Name="VoteForButton" Text="За" HorizontalExpand="True" />
                 <Button Name="VoteAgainstButton" Text="Против" HorizontalExpand="True" Margin="6 0 6 0" />
                 <Button Name="VoteAbstainButton" Text="Воздержался" HorizontalExpand="True" />
+            </BoxContainer>
+            <Button Name="EndVoteButton" Text="Завершить голосование" Margin="0 0 0 6" />
+            <BoxContainer Name="TiebreakPanel" Orientation="Vertical" Margin="0 0 0 6">
+                <RichTextLabel Name="TiebreakLabel" Margin="0 0 0 4" />
+                <BoxContainer Orientation="Horizontal">
+                    <Button Name="TiebreakForButton" Text="Решающий голос: За" HorizontalExpand="True" />
+                    <Button Name="TiebreakAgainstButton" Text="Решающий голос: Против" HorizontalExpand="True" Margin="6 0 0 0" />
+                </BoxContainer>
             </BoxContainer>
             <RichTextLabel Name="TallyLabel" Margin="0 0 0 8" />
             <Label Text="Голоса секторов" StyleClasses="LabelKeyText" />

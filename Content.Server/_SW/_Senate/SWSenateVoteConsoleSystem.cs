@@ -17,6 +17,7 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
+    [Dependency] private readonly SWSenateTimeSystem _time = default!;
 
     private const float UpdateInterval = 3f;
     private float _accumulator;
@@ -27,6 +28,47 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, EntInsertedIntoContainerMessage>(OnInserted);
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, EntRemovedFromContainerMessage>(OnRemoved);
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateCastVoteMessage>(OnVote);
+        SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateEndVoteMessage>(OnEndVote);
+        SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateTiebreakMessage>(OnTiebreak);
+    }
+
+    private SWSenatePosition? GetCardPosition(Entity<SWSenateVoteConsoleComponent> ent)
+    {
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null || !TryComp<SWSenatePositionCardComponent>(card, out var position))
+            return null;
+
+        return position.Position;
+    }
+
+    private void OnEndVote(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateEndVoteMessage args)
+    {
+        if (GetCardPosition(ent) != SWSenatePosition.Speaker)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-vote-only-speaker"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.EndVoteBySpeaker())
+            _popup.PopupCursor(Loc.GetString("sw-senate-vote-ended"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-vote-cant-end"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnTiebreak(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateTiebreakMessage args)
+    {
+        if (GetCardPosition(ent) != SWSenatePosition.Chancellor)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-vote-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.Tiebreak(args.Choice))
+            _popup.PopupCursor(Loc.GetString("sw-senate-vote-tiebreak-done"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
     }
 
     private void OnOpened(EntityUid uid, SWSenateVoteConsoleComponent comp, BoundUIOpenedEvent args)
@@ -102,15 +144,24 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
         var state = new SWSenateVoteConsoleState
         {
             Bills = _senate.BuildBillEntries(),
+            GameTime = _time.TimeString(),
         };
 
         var voterSector = GetVoterSector(ent);
-        state.CanVote = voterSector != null;
+        var position = GetCardPosition(ent);
+
+        var activeSession = _senate.GetActiveSession();
+        if (activeSession != null)
+            state.SessionInfo = $"Заседание {activeSession.StartHour:00}:00–{activeSession.EndHour:00}:00";
 
         var bill = _senate.GetCurrentBill();
         if (bill != null)
         {
             state.HasCurrent = true;
+            state.AwaitingTiebreak = bill.AwaitingTiebreak;
+            state.CanVote = voterSector != null && !bill.AwaitingTiebreak;
+            state.CanEndVote = position == SWSenatePosition.Speaker && _senate.CanEndCurrentVote();
+            state.CanTiebreak = position == SWSenatePosition.Chancellor && bill.AwaitingTiebreak;
             state.CurrentId = bill.Id;
             state.CurrentName = bill.Name;
             state.CurrentAuthor = bill.Author;

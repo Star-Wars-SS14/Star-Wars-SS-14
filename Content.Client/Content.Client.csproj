@@ -35,11 +35,13 @@
   <PropertyGroup>
     <SWWebViewModuleProject>..\RobustToolbox\Robust.Client.WebView\Robust.Client.WebView.csproj</SWWebViewModuleProject>
     <SWWebViewModuleOutput>..\RobustToolbox\Robust.Client.WebView\bin\$(Configuration)\$(TargetFramework)\</SWWebViewModuleOutput>
+    <SWWebViewModuleAssets>..\RobustToolbox\Robust.Client.WebView\obj\project.assets.json</SWWebViewModuleAssets>
   </PropertyGroup>
   <Target Name="SWBuildWebViewModule" AfterTargets="Build" Condition="'$(SWDisableWebViewModule)' != 'true' and '$(DesignTimeBuild)' != 'true' and '$(BuildingSWWebViewModule)' != 'true'">
     <PropertyGroup>
       <SWWebViewModuleTargetDir>$(TargetDir)Modules\Robust.Client.WebView\</SWWebViewModuleTargetDir>
     </PropertyGroup>
+    <MSBuild Projects="$(SWWebViewModuleProject)" Targets="Restore" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);BuildingSWWebViewModule=true" Condition="!Exists('$(SWWebViewModuleAssets)')" />
     <MSBuild Projects="$(SWWebViewModuleProject)" Targets="Build" Properties="Configuration=$(Configuration);TargetFramework=$(TargetFramework);BuildingSWWebViewModule=true" />
     <ItemGroup>
       <SWWebViewModuleFiles Include="$(SWWebViewModuleOutput)**\*.*" />

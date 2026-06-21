@@ -97,6 +97,8 @@
   localizedName: sw-vehicle-role-driver
   components:
   - type: SWRedirectMovement
+  - type: SWVehicleFaceForward
+    rotationOffset: 180
   - type: SWVehicleDriverDrawDepth
   - type: SWVehicleRequiresHandsUser
   - type: SWShootByVehicleUser

@@ -63,6 +63,12 @@
     rollingFriction: 5
     sidewaysFriction: 15
     turnSpeedReference: 2.5
+  - type: SWVehicleMovementSound
+    sound:
+      path: /Audio/_SW/Vehicles/speeder.ogg
+      params:
+        volume: -6
+        maxDistance: 14
   - type: SWExplosionThrowModifier
     throwMultiplier: 0.0
   - type: SWVehicleExtractable

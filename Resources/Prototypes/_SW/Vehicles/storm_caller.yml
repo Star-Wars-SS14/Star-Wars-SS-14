@@ -80,6 +80,12 @@
     sidewaysFriction: 20
     turnSpeedReference: 2.5
     minTurnSpeed: 1.2
+  - type: SWVehicleMovementSound
+    sound:
+      path: /Audio/_SW/Vehicles/stormcaller.ogg
+      params:
+        volume: -2
+        maxDistance: 18
   - type: SWExplosionThrowModifier
     throwMultiplier: 0.0
   - type: SWVehicleExtractable

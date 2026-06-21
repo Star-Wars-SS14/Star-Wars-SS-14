@@ -180,8 +180,6 @@ public abstract partial class SharedGunSystem : EntitySystem
     {
         gunEntity = default;
         gunComp = null;
-        ISawmill _s = Logger.GetSawmill("tgg");
-        _s.Fatal("aboba");
         //SW start. For transport guns.
         var ev = new SWGetGunEvent(GetNetEntity(entity));
 
@@ -189,7 +187,6 @@ public abstract partial class SharedGunSystem : EntitySystem
 
         if (ev.Handled)
         {
-            _s.Fatal($"net: {ev.Gun}");
             gunEntity = GetEntity(ev.Gun);
             gunComp = Comp<GunComponent>(gunEntity);
             return true;

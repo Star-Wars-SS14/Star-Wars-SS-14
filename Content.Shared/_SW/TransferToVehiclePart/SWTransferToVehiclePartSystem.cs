@@ -22,21 +22,16 @@ public sealed class SWTransferToVehiclePartSystem : EntitySystem
 
     private void OnStartup(Entity<SWTransferMindToVehiclePartComponent> ent, ref SWUserEnterVehicleEvent args)
     {
-        ISawmill _s = Logger.GetSawmill("adfsg");
-        _s.Fatal("0");
         var mind = _sharedMindSystem.GetMind(ent);
         if (mind == null)
         {
             return;
         }
-        _s.Fatal("1");
         EntityUid part = args.Vehicle.Owner;
-        _s.Fatal($"{part}");
         if (ent.Comp.PartId != null)
         {
             part = GetEntity(args.Vehicle.Comp.VehicleParts[ent.Comp.PartId].SpawnedPart);
         }
-        _s.Fatal($"{part}");
         _sharedMindSystem.TransferTo(mind.Value, part);
         var comp = AddComp<SWMindTransferredToVehiclePartComponent>(part);
         comp.OriginalEntity = ent;

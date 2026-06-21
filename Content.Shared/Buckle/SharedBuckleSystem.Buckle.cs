@@ -1,5 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+//SW transport start
+using Content.Shared._SW.Vehicle;
+//SW transport end
 using Content.Shared.Alert;
 using Content.Shared.Buckle.Components;
 using Content.Shared.Cuffs.Components;
@@ -7,6 +10,7 @@ using Content.Shared.Database;
 using Content.Shared.DoAfter;
 using Content.Shared.Hands.Components;
 using Content.Shared.IdentityManagement;
+using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Events;
 using Content.Shared.Movement.Pulling.Events;
 using Content.Shared.Popups;
@@ -130,16 +134,49 @@ public abstract partial class SharedBuckleSystem
             return;
         }
 
-        if (xform.ParentUid != strapUid || _container.IsEntityInContainer(buckle))
+        if (_container.IsEntityInContainer(buckle))
         {
+            Unbuckle(buckle, (strapUid, strapComp), null);
+            return;
+        }
+
+        if (xform.ParentUid != strapUid)
+        {
+            if (TryResnapSWVehicleBuckle(buckle, (strapUid, strapComp), xform))
+                return;
+
             Unbuckle(buckle, (strapUid, strapComp), null);
             return;
         }
 
         var delta = (xform.LocalPosition - strapComp.BuckleOffset).LengthSquared();
         if (delta > 1e-5)
+        {
+            if (TryResnapSWVehicleBuckle(buckle, (strapUid, strapComp), xform))
+                return;
+
             Unbuckle(buckle, (strapUid, strapComp), null);
+        }
     }
+
+    //SW transport start
+    private bool TryResnapSWVehicleBuckle(
+        Entity<BuckleComponent> buckle,
+        Entity<StrapComponent> strap,
+        TransformComponent xform)
+    {
+        if (!TryComp<SWInVehicleComponent>(buckle, out var inVehicle) ||
+            !HasComp<SWVehicleComponent>(inVehicle.Vehicle) ||
+            Transform(strap.Owner).ParentUid != inVehicle.Vehicle)
+        {
+            return false;
+        }
+
+        var coords = new EntityCoordinates(strap, strap.Comp.BuckleOffset);
+        _transform.SetCoordinates(buckle.Owner, xform, coords, rotation: Angle.Zero);
+        return true;
+    }
+    //SW transport end
 
     #endregion
 
@@ -175,6 +212,12 @@ public abstract partial class SharedBuckleSystem
 
     private void OnBuckleUpdateCanMove(EntityUid uid, BuckleComponent component, UpdateCanMoveEvent args)
     {
+        //SW start. We use this for vehicles.
+        if (HasComp<RelayInputMoverComponent>(uid))
+        {
+            return;
+        }
+        //SW end
         if (component.Buckled)
             args.Cancel();
     }
@@ -222,12 +265,14 @@ public abstract partial class SharedBuckleSystem
     /// <param name="strapUid"> Uid of the owner of strap component </param>
     /// <param name="strapComp"></param>
     /// <param name="buckleComp"></param>
+    //Sw modified for vehicles (ignore range)
     private bool CanBuckle(EntityUid buckleUid,
         EntityUid? user,
         EntityUid strapUid,
         bool popup,
         [NotNullWhen(true)] out StrapComponent? strapComp,
-        BuckleComponent buckleComp)
+        BuckleComponent buckleComp,
+        float? override_range = null)
     {
         strapComp = null;
         if (!Resolve(strapUid, ref strapComp, false))
@@ -245,7 +290,7 @@ public abstract partial class SharedBuckleSystem
 
         if (!_interaction.InRangeUnobstructed(buckleUid,
                 strapUid,
-                buckleComp.Range,
+                override_range ?? buckleComp.Range,
                 predicate: entity => entity == buckleUid || entity == user || entity == strapUid,
                 popup: true))
         {
@@ -339,12 +384,13 @@ public abstract partial class SharedBuckleSystem
     /// Can equal buckleUid sometimes
     /// </param>
     /// <param name="strap"> Uid of the owner of strap component </param>
-    public bool TryBuckle(EntityUid buckle, EntityUid? user, EntityUid strap, BuckleComponent? buckleComp = null, bool popup = true)
+    //SW modified for vehicles
+    public bool TryBuckle(EntityUid buckle, EntityUid? user, EntityUid strap, BuckleComponent? buckleComp = null, bool popup = true, float? overrideRange = null)
     {
         if (!Resolve(buckle, ref buckleComp, false))
             return false;
 
-        if (!CanBuckle(buckle, user, strap, popup, out var strapComp, buckleComp))
+        if (!CanBuckle(buckle, user, strap, popup, out var strapComp, buckleComp, overrideRange))
             return false;
 
         Buckle((buckle, buckleComp), (strap, strapComp), user);

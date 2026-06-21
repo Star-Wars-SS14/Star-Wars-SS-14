@@ -1,0 +1,20 @@
+- type: entity
+  id: SWNagibator
+  parent: Throngler
+  name: SW nagibator
+  description: A debug anti-tank melee weapon.
+  suffix: DEBUG
+  components:
+  - type: MeleeWeapon
+    attackRate: 10
+    damage:
+      types:
+        Structural: 150
+        Slash: 20
+        Blunt: 20
+        Heat: 20
+        Piercing: 20
+        Radiation: 10
+        SWAntiVehicle: 1000
+    soundHit:
+      path: /Audio/Effects/explosion_small1.ogg

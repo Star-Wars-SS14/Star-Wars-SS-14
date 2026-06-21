@@ -1,0 +1,160 @@
+- type: entity
+  id: SWSpider
+  name: spider
+  components:
+  - type: Transform
+  - type: Sprite
+    sprite: _SW/Vehicles/spider.rsi
+    state: speedbike
+  - type: Physics
+    bodyType: Dynamic
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.2,0.85,0.2,-0.85"
+        density: 1000
+        mask:
+        - MobMask
+        layer:
+        - MachineLayer
+  - type: Damageable
+    damageContainer: SWVehicleArmored
+    damageModifierSet: SWLightVehicle
+  - type: Destructible
+    thresholds:
+      - trigger:
+          !type:DamageTrigger
+          damage: 500
+        behaviors:
+          - !type:DoActsBehavior
+            acts: [ "Destruction" ]
+  # - type: Pullable
+  - type: Clickable
+  - type: InteractionOutline
+  - type: SWVehicle
+    rolesInfo:
+      driver:
+        role: SWVehicleRoleDriver
+    vehicleParts:
+      cannon:
+        entProto: SWSpiderCannon
+        buckleCoords: "0.0, 1.2"
+      driver_seat:
+        entProto: SWVehicleSeat
+        buckleCoords: "0.0, 0.35"
+  - type: ActivatableUI
+    key: enum.SWVehicleMenuUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWVehicleMenuUiKey.Key:
+        type: SWVehicleBoundUserInterface
+  - type: InputMover
+  - type: SWInertialVehicle
+    acceleration: 4
+    reverseAcceleration: 4
+    brakeAcceleration: 18
+    maxForwardSpeed: 15
+    maxReverseSpeed: 8
+    turnAcceleration: 7
+    maxAngularVelocity: 8
+    angularDamping: 15
+    rollingFriction: 5
+    sidewaysFriction: 15
+    turnSpeedReference: 2.5
+  - type: SWVehicleMovementSound
+    sound:
+      path: /Audio/_SW/Vehicles/speeder.ogg
+      params:
+        volume: -6
+        maxDistance: 14
+  - type: SWExplosionThrowModifier
+    throwMultiplier: 0.0
+  - type: SWVehicleExtractable
+    aliveDelay: 6
+    criticalDelay: 3
+    deadDelay: 1.5
+
+- type: entity
+  id: SWSpiderTwoRoles
+  parent: SWSpider
+  name: spider two roles
+  components:
+  - type: SWVehicle
+    rolesInfo:
+      driver:
+        role: SWVehicleRoleDriver
+      passenger1:
+        role: SWVehicleRolePassenger
+    vehicleParts:
+      cannon:
+        entProto: SWSpiderCannon
+        buckleCoords: "0.0, 1.2"
+      driver_seat:
+        entProto: SWVehicleSeat
+        buckleCoords: "0.0, 0.35"
+      passenger1_seat:
+        entProto: SWVehicleSeat
+        buckleCoords: "0.0, -0.4"        
+
+- type: swVehicleRole
+  id: SWVehicleRoleDriver
+  localizedName: sw-vehicle-role-driver
+  components:
+  - type: SWRedirectMovement
+  - type: SWVehicleFaceForward
+    rotationOffset: 180
+  - type: SWVehicleDriverDrawDepth
+  - type: SWVehicleRequiresHandsUser
+  - type: SWShootByVehicleUser
+    part: cannon
+  - type: SWBuckleToVehiclePart
+    part: driver_seat
+  - type: SWVehicleProjectilePass
+
+- type: swVehicleRole
+  id: SWVehicleRolePassenger
+  localizedName: sw-vehicle-role-passenger
+  components:
+  - type: SWVehicleRequiresHandsUser
+    hands: 1
+  - type: SWBuckleToVehiclePart
+    part: passenger1_seat
+  - type: SWVehicleProjectilePass
+
+- type: entity
+  name: spider cannon
+  id: SWSpiderCannon
+  suffix: НЕ МАППИТЬ, SW
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Item
+    size: Large
+  - type: Clothing
+    sprite: Objects/Weapons/Guns/Battery/laser_gun.rsi
+    quickEquip: false     
+    slots:                
+    - Back
+    - suitStorage
+  - type: AmmoCounter
+  - type: Gun
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+  - type: PredictedBattery 
+    maxCharge: 1000
+    startingCharge: 1000
+  - type: MagazineVisuals
+    magState: mag
+    steps: 5
+    zeroVisible: false
+  - type: Appearance
+  - type: BatteryAmmoProvider
+    proto: SWE-1Bullet
+    fireCost: 20
+  - type: PredictedBatterySelfRecharger
+    autoRechargeRate: 20
+  - type: SWVehicleProjectilePass
+  - type: SWShootByVehicleGun
+    angle: 30

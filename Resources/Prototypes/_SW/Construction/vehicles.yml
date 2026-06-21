@@ -1,0 +1,8 @@
+- type: constructionGraph
+  id: SWStormCallerGraph
+  start: SWStormCallerDestroyedNode
+  graph:
+  - node: SWStormCallerNode
+    entity: SWStormCaller
+  - node: SWStormCallerDestroyedNode
+    entity: SWStormCallerDestroyed

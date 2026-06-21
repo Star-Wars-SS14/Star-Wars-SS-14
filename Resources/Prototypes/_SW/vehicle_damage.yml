@@ -1,0 +1,27 @@
+- type: damageType
+  id: SWAntiVehicle
+  name: damage-type-sw-anti-vehicle
+  armorCoefficientPrice: 1
+  armorFlatPrice: 1
+
+- type: damageContainer
+  id: SWVehicleArmored
+  supportedTypes:
+  - SWAntiVehicle
+  - Structural
+
+- type: damageModifierSet
+  id: SWLightVehicle
+  coefficients:
+    SWAntiVehicle: 1
+    Structural: 0.25
+  flatReductions:
+    Structural: 10
+
+- type: damageModifierSet
+  id: SWHeavyVehicle
+  coefficients:
+    SWAntiVehicle: 0.85
+    Structural: 0.15
+  flatReductions:
+    Structural: 20

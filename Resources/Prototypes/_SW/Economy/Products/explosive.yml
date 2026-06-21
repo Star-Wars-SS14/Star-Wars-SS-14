@@ -52,3 +52,25 @@
     SWEmpireCreditCurrency: 100
   category: sw-category-explosive
   group: SWExplosiveMarket
+
+- type: swCargoProduct
+  id: SWWeaponLauncherAntiVehicleRocketCP
+  icon:
+    sprite: Objects/Weapons/Guns/Launchers/rocket.rsi
+    state: base
+  product: SWWeaponLauncherAntiVehicleRocket
+  cost:
+    SWEmpireCreditCurrency: 500
+  category: sw-category-explosive
+  group: SWExplosiveMarket
+
+- type: swCargoProduct
+  id: SWCartridgeAntiVehicleRocketCP
+  icon:
+    sprite: Objects/Weapons/Guns/Ammunition/Explosives/explosives.rsi
+    state: rpg
+  product: SWCartridgeAntiVehicleRocket
+  cost:
+    SWEmpireCreditCurrency: 50
+  category: sw-category-magazines
+  group: SWExplosiveMarket

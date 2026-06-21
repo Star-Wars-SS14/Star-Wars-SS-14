@@ -2,6 +2,9 @@ using System.Numerics;
 using Content.Server._SW.MakeGridIndestructible;
 using Content.Server.Atmos.EntitySystems;
 using Content.Server.Explosion.Components;
+//SW transport start
+using Content.Shared._SW.Vehicle;
+//SW transport end
 using Content.Shared.CCVar;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
@@ -491,6 +494,12 @@ public sealed partial class ExplosionSystem
             var dir = pos - epicenter.Position;
             if (dir.IsLengthZero())
                 dir = _robustRandom.NextVector2().Normalized();
+
+            //SW transport start
+            if (TryComp<SWExplosionThrowModifierComponent>(uid, out var swExplosionThrowModifier))
+                throwForce *= MathF.Max(0f, swExplosionThrowModifier.ThrowMultiplier);
+            //SW transport end
+
             _throwingSystem.TryThrow(
                 uid,
                 dir,

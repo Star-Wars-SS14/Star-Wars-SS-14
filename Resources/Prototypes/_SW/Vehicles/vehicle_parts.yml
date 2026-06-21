@@ -1,0 +1,8 @@
+- type: entity
+  name: vehicle seat
+  id: SWVehicleSeat
+  suffix: НЕ МАППИТЬ, SW
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Strap
+    position: Stand

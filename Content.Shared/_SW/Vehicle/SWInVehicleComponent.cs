@@ -18,4 +18,7 @@ public sealed partial class SWInVehicleComponent : Component
 
     [AutoNetworkedField]
     public EntityUid? ActionEntity = default!;
+
+    [ViewVariables]
+    public bool Exiting;
 }

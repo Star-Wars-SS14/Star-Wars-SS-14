@@ -18,6 +18,7 @@ public sealed partial class SWBuckleToVehiclePartSystem : EntitySystem
         SubscribeLocalEvent<SWBuckleToVehiclePartComponent, SWUserEnterVehicleEvent>(OnUserEnter);
         SubscribeLocalEvent<SWBuckleToVehiclePartComponent, SWUserExitVehicleEvent>(OnUserExit);
         SubscribeLocalEvent<SWBuckleToVehiclePartComponent, UnbuckleAttemptEvent>(OnUnBuckle);
+        SubscribeLocalEvent<SWBuckleToVehiclePartComponent, UnbuckledEvent>(OnUnbuckled);
     }
 
     private void OnUserEnter(Entity<SWBuckleToVehiclePartComponent> ent, ref SWUserEnterVehicleEvent args)
@@ -45,5 +46,17 @@ public sealed partial class SWBuckleToVehiclePartSystem : EntitySystem
     private void OnUnBuckle(Entity<SWBuckleToVehiclePartComponent> ent, ref UnbuckleAttemptEvent args)
     {
         args.Cancelled = true;
+    }
+
+    private void OnUnbuckled(Entity<SWBuckleToVehiclePartComponent> ent, ref UnbuckledEvent args)
+    {
+        if (!TryComp<SWInVehicleComponent>(ent, out var inVehicle) ||
+            inVehicle.Exiting ||
+            !TryComp<SWVehicleComponent>(inVehicle.Vehicle, out var vehicle))
+        {
+            return;
+        }
+
+        _vehicleSystem.TryDeoccupyRole((inVehicle.Vehicle, vehicle), inVehicle.OccupiedRole);
     }
 }

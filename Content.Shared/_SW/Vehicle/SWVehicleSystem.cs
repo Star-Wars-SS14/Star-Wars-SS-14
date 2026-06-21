@@ -159,7 +159,6 @@ public sealed class SWVehicleSystem : EntitySystem
         var proto = _prototype.Index(roleInfo.Role);
 
         //Raise event before deletion to properly shutdown all components
-        occupant.Comp.Exiting = true;
         var evOnUser = new SWUserExitVehicleEvent(vehicle);
         RaiseLocalEvent(occupant, evOnUser);
         var evOnVehicle = new SWVehicleIsExitedEvent(occupant);

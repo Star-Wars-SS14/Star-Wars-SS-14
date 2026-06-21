@@ -59,7 +59,24 @@ public sealed class SWVehicleSystem : EntitySystem
     //}
     public void TryOccupyRole(Entity<SWVehicleComponent> ent, EntityUid user, string role)
     {
-        var proto = _prototype.Index(ent.Comp.RolesInfo[role].Role);
+        if (HasComp<SWInVehicleComponent>(user))
+        {
+            _popupSystem.PopupEntity(Loc.GetString("sw-vehicle-unable-enter-default"), user);
+            return;
+        }
+
+        if (!ent.Comp.RolesInfo.TryGetValue(role, out var roleInfo))
+            return;
+
+        if (roleInfo.Occupant != null &&
+            TryGetEntity(roleInfo.Occupant.Value, out var occupant) &&
+            !TerminatingOrDeleted(occupant.Value))
+        {
+            _popupSystem.PopupEntity(Loc.GetString("sw-vehicle-unable-enter-default"), user);
+            return;
+        }
+
+        var proto = _prototype.Index(roleInfo.Role);
 
         EntityManager.AddComponents(user, proto.ComponentsAddToUser);
         var ev = new SWUserTryEnterVehicleEvent(ent);

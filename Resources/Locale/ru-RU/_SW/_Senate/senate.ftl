@@ -24,3 +24,11 @@ sw-senate-bill-submitted = Законопроект внесён в повест
 sw-senate-bill-stage-voting = На голосовании
 sw-senate-bill-stage-passed = Принят
 sw-senate-bill-stage-rejected = Отклонён
+
+sw-senate-vote-cant-vote = Голосовать может только сенатор с закреплённым сектором.
+sw-senate-vote-no-bill = Сейчас нет активного голосования.
+sw-senate-vote-cast = Ваш голос учтён.
+sw-senate-vote-for = За
+sw-senate-vote-against = Против
+sw-senate-vote-abstain = Воздержался
+sw-senate-vote-none = —

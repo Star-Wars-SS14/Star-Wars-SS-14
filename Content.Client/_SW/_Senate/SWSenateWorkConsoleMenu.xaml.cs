@@ -190,6 +190,13 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                 FontColorOverride = Color.Gray,
             });
 
+            if (!string.IsNullOrWhiteSpace(bill.Description))
+            {
+                var desc = new RichTextLabel { Margin = new Thickness(0, 2, 0, 2) };
+                desc.SetMessage(bill.Description);
+                box.AddChild(desc);
+            }
+
             var effectsRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
             foreach (var effect in bill.Effects)
             {

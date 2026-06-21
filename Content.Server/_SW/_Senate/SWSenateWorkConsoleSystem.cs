@@ -192,7 +192,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.HasCard = card != null;
         state.RepublicStats = BuildStatEntries(_senate.GetRepublicStats());
         state.Roster = BuildRoster();
-        state.Bills = BuildBills();
+        state.Bills = _senate.BuildBillEntries();
         state.DraftBudget = ent.Comp.DraftBudget;
 
         if (card != null && TryComp<SWSenatePositionCardComponent>(card, out var position))
@@ -271,41 +271,6 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
         return roster;
     }
-
-    private List<SWBillEntry> BuildBills()
-    {
-        var bills = new List<SWBillEntry>();
-        foreach (var bill in _senate.Bills)
-        {
-            var effects = new List<SWBillEffectEntry>();
-            foreach (var proto in _proto.EnumeratePrototypes<SWStatPrototype>().OrderBy(s => s.Order))
-            {
-                if (!bill.Effects.TryGetValue(proto.ID, out var delta))
-                    continue;
-
-                effects.Add(new SWBillEffectEntry { StatName = proto.ShortName, Color = proto.Color, Delta = delta });
-            }
-
-            bills.Add(new SWBillEntry
-            {
-                Id = bill.Id,
-                Name = bill.Name,
-                Author = bill.Author,
-                Stage = Loc.GetString(StageLoc(bill.Stage)),
-                Effects = effects,
-            });
-        }
-
-        return bills;
-    }
-
-    private static string StageLoc(SWBillStage stage) => stage switch
-    {
-        SWBillStage.Voting => "sw-senate-bill-stage-voting",
-        SWBillStage.Passed => "sw-senate-bill-stage-passed",
-        SWBillStage.Rejected => "sw-senate-bill-stage-rejected",
-        _ => "sw-senate-bill-stage-voting",
-    };
 
     private List<SWStatEntry> BuildStatEntries(Dictionary<string, float> stats)
     {

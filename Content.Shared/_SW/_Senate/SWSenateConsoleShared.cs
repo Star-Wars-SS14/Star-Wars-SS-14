@@ -157,6 +157,7 @@ public sealed class SWBillEntry
     public int Id;
     public string Name = string.Empty;
     public string Author = string.Empty;
+    public string Description = string.Empty;
     public string Stage = string.Empty;
     public List<SWBillEffectEntry> Effects = new();
 }
@@ -173,6 +174,58 @@ public sealed class SWSenateSubmitBillMessage : BoundUserInterfaceMessage
         Name = name;
         Description = description;
         Effects = effects;
+    }
+}
+
+[Serializable, NetSerializable]
+public enum SWVoteChoice : byte
+{
+    For,
+    Against,
+    Abstain,
+}
+
+[Serializable, NetSerializable]
+public enum SWSenateVoteConsoleUiKey
+{
+    Key
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSectorVoteEntry
+{
+    public string Name = string.Empty;
+    public Color Color;
+    public string VoteLabel = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateVoteConsoleState : BoundUserInterfaceState
+{
+    public List<SWBillEntry> Bills = new();
+    public bool HasCurrent;
+    public int CurrentId;
+    public string CurrentName = string.Empty;
+    public string CurrentAuthor = string.Empty;
+    public string CurrentDescription = string.Empty;
+    public List<SWBillEffectEntry> CurrentEffects = new();
+    public int VotesFor;
+    public int VotesAgainst;
+    public int VotesAbstain;
+    public List<SWSectorVoteEntry> SectorVotes = new();
+    public bool CanVote;
+    public bool HasVoted;
+    public SWVoteChoice MyVote;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateCastVoteMessage : BoundUserInterfaceMessage
+{
+    public SWVoteChoice Choice;
+
+    public SWSenateCastVoteMessage(SWVoteChoice choice)
+    {
+        Choice = choice;
     }
 }
 

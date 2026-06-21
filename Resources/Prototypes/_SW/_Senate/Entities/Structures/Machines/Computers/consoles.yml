@@ -44,6 +44,33 @@
 
 - type: entity
   parent: BaseComputer
+  id: SWSenateVoteConsole
+  name: консоль голосования Сената
+  description: Голосование по текущему законопроекту.
+  components:
+  - type: SWSenateVoteConsole
+  - type: ActivatableUI
+    key: enum.SWSenateVoteConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWSenateVoteConsoleUiKey.Key:
+        type: SWSenateVoteConsoleBoundUserInterface
+  - type: ItemSlots
+    slots:
+      senate_id_slot:
+        name: ID-карта
+        whitelist:
+          components:
+          - IdCard
+  - type: ContainerContainer
+    containers:
+      senate_id_slot: !type:ContainerSlot {}
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Godmode
+
+- type: entity
+  parent: BaseComputer
   id: SWSenateInfoConsole
   name: информационная консоль Сената
   description: Отображает занятость секторов и руководство Республики.

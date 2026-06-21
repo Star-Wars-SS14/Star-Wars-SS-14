@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Sectors;
 using Robust.Shared.Prototypes;
 
@@ -23,6 +24,7 @@ public sealed class SWSenateStateSystem : EntitySystem
     public string? Speaker { get; private set; }
 
     public IReadOnlyDictionary<string, Dictionary<string, float>> SectorStats => _sectorStats;
+    public IReadOnlyDictionary<string, string> SectorHolders => _sectorHolders;
     public IReadOnlyList<SWSenateBill> Bills => _bills;
 
     public override void Initialize()
@@ -129,6 +131,111 @@ public sealed class SWSenateStateSystem : EntitySystem
 
         _bills.Add(bill);
         return bill;
+    }
+
+    public SWSenateBill? GetCurrentBill() => _bills.FirstOrDefault(b => b.Stage == SWBillStage.Voting);
+
+    public bool CastVote(string sectorId, SWVoteChoice choice)
+    {
+        var bill = GetCurrentBill();
+        if (bill == null || !_sectorHolders.ContainsKey(sectorId))
+            return false;
+
+        bill.Votes[sectorId] = choice;
+        TryResolve(bill);
+        return true;
+    }
+
+    private void TryResolve(SWSenateBill bill)
+    {
+        if (_sectorHolders.Count == 0)
+            return;
+
+        foreach (var sectorId in _sectorHolders.Keys)
+        {
+            if (!bill.Votes.ContainsKey(sectorId))
+                return;
+        }
+
+        var votesFor = bill.Votes.Values.Count(v => v == SWVoteChoice.For);
+        var votesAgainst = bill.Votes.Values.Count(v => v == SWVoteChoice.Against);
+
+        if (votesFor > votesAgainst)
+        {
+            bill.Stage = SWBillStage.Passed;
+            ApplyBill(bill);
+        }
+        else
+        {
+            bill.Stage = SWBillStage.Rejected;
+        }
+    }
+
+    public List<SWBillEntry> BuildBillEntries()
+    {
+        var bills = new List<SWBillEntry>();
+        foreach (var bill in _bills)
+        {
+            var effects = new List<SWBillEffectEntry>();
+            foreach (var proto in _proto.EnumeratePrototypes<SWStatPrototype>().OrderBy(s => s.Order))
+            {
+                if (!bill.Effects.TryGetValue(proto.ID, out var delta))
+                    continue;
+
+                effects.Add(new SWBillEffectEntry { StatName = proto.ShortName, Color = proto.Color, Delta = delta });
+            }
+
+            bills.Add(new SWBillEntry
+            {
+                Id = bill.Id,
+                Name = bill.Name,
+                Author = bill.Author,
+                Description = bill.Description,
+                Stage = Loc.GetString(StageLoc(bill.Stage)),
+                Effects = effects,
+            });
+        }
+
+        return bills;
+    }
+
+    public List<SWBillEffectEntry> BuildBillEffects(SWSenateBill bill)
+    {
+        var effects = new List<SWBillEffectEntry>();
+        foreach (var proto in _proto.EnumeratePrototypes<SWStatPrototype>().OrderBy(s => s.Order))
+        {
+            if (!bill.Effects.TryGetValue(proto.ID, out var delta))
+                continue;
+
+            effects.Add(new SWBillEffectEntry { StatName = proto.ShortName, Color = proto.Color, Delta = delta });
+        }
+
+        return effects;
+    }
+
+    public static string StageLoc(SWBillStage stage) => stage switch
+    {
+        SWBillStage.Voting => "sw-senate-bill-stage-voting",
+        SWBillStage.Passed => "sw-senate-bill-stage-passed",
+        SWBillStage.Rejected => "sw-senate-bill-stage-rejected",
+        _ => "sw-senate-bill-stage-voting",
+    };
+
+    private void ApplyBill(SWSenateBill bill)
+    {
+        foreach (var (statId, delta) in bill.Effects)
+        {
+            if (!_proto.TryIndex<SWStatPrototype>(statId, out var statProto))
+                continue;
+
+            foreach (var (_, stats) in _sectorStats)
+            {
+                if (!stats.TryGetValue(statId, out var value))
+                    continue;
+
+                stats[statId] = Math.Clamp(value + delta, statProto.Min, statProto.Max);
+            }
+        }
     }
 
     public override void Update(float frameTime)

@@ -1,3 +1,5 @@
+using Content.Shared._SW._Senate;
+
 namespace Content.Server._SW._Senate;
 
 public enum SWBillStage
@@ -14,5 +16,6 @@ public sealed class SWSenateBill
     public string Description = string.Empty;
     public string Author = string.Empty;
     public Dictionary<string, float> Effects = new();
+    public Dictionary<string, SWVoteChoice> Votes = new();
     public SWBillStage Stage = SWBillStage.Voting;
 }

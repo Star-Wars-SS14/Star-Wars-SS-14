@@ -43,7 +43,8 @@ public sealed class SWShootByVehicleSystem : EntitySystem
             return;
         }
         args.Handled = true;
-        args.Coords = Transform(GetEntity(gun.Value)).Coordinates;
+        var gunCoordinates = Transform(GetEntity(gun.Value)).Coordinates;
+        args.Coords = _sharedTransformSystem.ToCoordinates(_sharedTransformSystem.ToMapCoordinates(gunCoordinates));
     }
 
     private void OnShoot(Entity<SWShootByVehicleGunComponent> ent, ref AttemptShootEvent args)

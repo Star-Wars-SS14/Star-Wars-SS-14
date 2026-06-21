@@ -1,0 +1,359 @@
+- type: swSector
+  id: SWSectorCoruscant
+  name: Корускант
+  description: Столица Республики, сердце галактической политики.
+  color: "#F1C40F"
+  startingStats:
+    SWStatHealthcare: 70
+    SWStatSecurity: 75
+    SWStatEconomy: 90
+    SWStatIndustry: 65
+    SWStatLoyalty: 80
+
+- type: swSector
+  id: SWSectorTython
+  name: Тайтон
+  description: Древний мир Ордена джедаев.
+  color: "#3498DB"
+  startingStats:
+    SWStatHealthcare: 60
+    SWStatSecurity: 70
+    SWStatEconomy: 40
+    SWStatIndustry: 30
+    SWStatLoyalty: 90
+
+- type: swSector
+  id: SWSectorAlderaan
+  name: Альдераан
+  description: Мир дворянских домов, охваченный гражданской смутой.
+  color: "#AED6F1"
+  startingStats:
+    SWStatHealthcare: 65
+    SWStatSecurity: 45
+    SWStatEconomy: 70
+    SWStatIndustry: 50
+    SWStatLoyalty: 55
+
+- type: swSector
+  id: SWSectorCorellia
+  name: Кореллия
+  description: Колыбель верфей и вольных торговцев.
+  color: "#E67E22"
+  startingStats:
+    SWStatHealthcare: 60
+    SWStatSecurity: 60
+    SWStatEconomy: 80
+    SWStatIndustry: 85
+    SWStatLoyalty: 60
+
+- type: swSector
+  id: SWSectorBrentaal
+  name: Брентаал
+  description: Торговый узел Перлемианского пути.
+  color: "#D4AC0D"
+  startingStats:
+    SWStatHealthcare: 55
+    SWStatSecurity: 50
+    SWStatEconomy: 85
+    SWStatIndustry: 60
+    SWStatLoyalty: 65
+
+- type: swSector
+  id: SWSectorDenon
+  name: Денон
+  description: Плотно застроенный индустриальный мир.
+  color: "#95A5A6"
+  startingStats:
+    SWStatHealthcare: 50
+    SWStatSecurity: 55
+    SWStatEconomy: 75
+    SWStatIndustry: 80
+    SWStatLoyalty: 60
+
+- type: swSector
+  id: SWSectorChandrila
+  name: Чандрила
+  description: Спокойный мир, оплот республиканских идеалов.
+  color: "#82E0AA"
+  startingStats:
+    SWStatHealthcare: 75
+    SWStatSecurity: 50
+    SWStatEconomy: 65
+    SWStatIndustry: 40
+    SWStatLoyalty: 85
+
+- type: swSector
+  id: SWSectorCommenor
+  name: Коммендор
+  description: Крупный торговый перекрёсток у Ядра.
+  color: "#F5B041"
+  startingStats:
+    SWStatHealthcare: 60
+    SWStatSecurity: 55
+    SWStatEconomy: 80
+    SWStatIndustry: 55
+    SWStatLoyalty: 65
+
+- type: swSector
+  id: SWSectorCorulag
+  name: Корулаг
+  description: Мир Ядра с престижными академиями.
+  color: "#5DADE2"
+  startingStats:
+    SWStatHealthcare: 60
+    SWStatSecurity: 60
+    SWStatEconomy: 70
+    SWStatIndustry: 55
+    SWStatLoyalty: 75
+
+- type: swSector
+  id: SWSectorRalltiir
+  name: Ралльтиир
+  description: Финансовый центр Ядра.
+  color: "#F4D03F"
+  startingStats:
+    SWStatHealthcare: 55
+    SWStatSecurity: 50
+    SWStatEconomy: 85
+    SWStatIndustry: 50
+    SWStatLoyalty: 60
+
+- type: swSector
+  id: SWSectorKuat
+  name: Куат
+  description: Величайшие верфи Республики.
+  color: "#BDC3C7"
+  startingStats:
+    SWStatHealthcare: 60
+    SWStatSecurity: 70
+    SWStatEconomy: 80
+    SWStatIndustry: 95
+    SWStatLoyalty: 70
+
+- type: swSector
+  id: SWSectorFondor
+  name: Фондор
+  description: Орбитальные доки и тяжёлая промышленность.
+  color: "#A6ACAF"
+  startingStats:
+    SWStatHealthcare: 55
+    SWStatSecurity: 65
+    SWStatEconomy: 75
+    SWStatIndustry: 90
+    SWStatLoyalty: 65
+
+- type: swSector
+  id: SWSectorDuro
+  name: Дуро
+  description: Орбитальные города над опустошённой планетой.
+  color: "#7F8C8D"
+  startingStats:
+    SWStatHealthcare: 45
+    SWStatSecurity: 50
+    SWStatEconomy: 70
+    SWStatIndustry: 85
+    SWStatLoyalty: 55
+
+- type: swSector
+  id: SWSectorRendili
+  name: Рендили
+  description: Старинный мир кораблестроителей.
+  color: "#909497"
+  startingStats:
+    SWStatHealthcare: 50
+    SWStatSecurity: 60
+    SWStatEconomy: 65
+    SWStatIndustry: 80
+    SWStatLoyalty: 60
+
+- type: swSector
+  id: SWSectorAnaxes
+  name: Анаксес
+  description: Военно-морская крепость Республики.
+  color: "#566573"
+  startingStats:
+    SWStatHealthcare: 55
+    SWStatSecurity: 85
+    SWStatEconomy: 55
+    SWStatIndustry: 60
+    SWStatLoyalty: 75
+
+- type: swSector
+  id: SWSectorCarida
+  name: Карида
+  description: Главная военная академия Республики.
+  color: "#7B241C"
+  startingStats:
+    SWStatHealthcare: 50
+    SWStatSecurity: 90
+    SWStatEconomy: 50
+    SWStatIndustry: 55
+    SWStatLoyalty: 80
+
+- type: swSector
+  id: SWSectorSullust
+  name: Сулласт
+  description: Вулканический мир тяжёлой промышленности.
+  color: "#6E2C00"
+  startingStats:
+    SWStatHealthcare: 45
+    SWStatSecurity: 55
+    SWStatEconomy: 65
+    SWStatIndustry: 85
+    SWStatLoyalty: 60
+
+- type: swSector
+  id: SWSectorEriadu
+  name: Эриаду
+  description: Промышленная столица дальнего фронтира.
+  color: "#85929E"
+  startingStats:
+    SWStatHealthcare: 45
+    SWStatSecurity: 55
+    SWStatEconomy: 70
+    SWStatIndustry: 70
+    SWStatLoyalty: 50
+
+- type: swSector
+  id: SWSectorContruum
+  name: Контруум
+  description: Стратегический узел снабжения.
+  color: "#48C9B0"
+  startingStats:
+    SWStatHealthcare: 50
+    SWStatSecurity: 55
+    SWStatEconomy: 55
+    SWStatIndustry: 50
+    SWStatLoyalty: 60
+
+- type: swSector
+  id: SWSectorTelos
+  name: Телос
+  description: Мир, восстановленный после опустошения.
+  color: "#76D7C4"
+  startingStats:
+    SWStatHealthcare: 70
+    SWStatSecurity: 50
+    SWStatEconomy: 55
+    SWStatIndustry: 45
+    SWStatLoyalty: 65
+
+- type: swSector
+  id: SWSectorOrdMantell
+  name: Орд Мантелл
+  description: Фронтирный мир, охваченный сепаратистским мятежом.
+  color: "#A04000"
+  startingStats:
+    SWStatHealthcare: 40
+    SWStatSecurity: 35
+    SWStatEconomy: 50
+    SWStatIndustry: 55
+    SWStatLoyalty: 40
+
+- type: swSector
+  id: SWSectorDantooine
+  name: Дантуин
+  description: Тихий аграрный мир Внешнего кольца.
+  color: "#7DCEA0"
+  startingStats:
+    SWStatHealthcare: 45
+    SWStatSecurity: 40
+    SWStatEconomy: 45
+    SWStatIndustry: 30
+    SWStatLoyalty: 55
+
+- type: swSector
+  id: SWSectorDac
+  name: Дак (Мон-Каламари)
+  description: Океанический мир мон-каламари и квариев.
+  color: "#5499C7"
+  startingStats:
+    SWStatHealthcare: 70
+    SWStatSecurity: 60
+    SWStatEconomy: 75
+    SWStatIndustry: 80
+    SWStatLoyalty: 70
+
+- type: swSector
+  id: SWSectorTaris
+  name: Таврис
+  description: Руины разрушенного мира под медленным восстановлением.
+  color: "#566573"
+  startingStats:
+    SWStatHealthcare: 25
+    SWStatSecurity: 35
+    SWStatEconomy: 30
+    SWStatIndustry: 35
+    SWStatLoyalty: 50
+
+- type: swSector
+  id: SWSectorBothawui
+  name: Ботавуи
+  description: Центр шпионской сети ботанов.
+  color: "#B7950B"
+  startingStats:
+    SWStatHealthcare: 55
+    SWStatSecurity: 60
+    SWStatEconomy: 70
+    SWStatIndustry: 50
+    SWStatLoyalty: 50
+
+- type: swSector
+  id: SWSectorBelsavis
+  name: Бельсавис
+  description: Мир-тюрьма с древними секретами.
+  color: "#4A235A"
+  startingStats:
+    SWStatHealthcare: 40
+    SWStatSecurity: 80
+    SWStatEconomy: 35
+    SWStatIndustry: 40
+    SWStatLoyalty: 45
+
+- type: swSector
+  id: SWSectorKashyyyk
+  name: Кашиик
+  description: Родина вуки, живущая под постоянной угрозой.
+  color: "#6E2C00"
+  startingStats:
+    SWStatHealthcare: 50
+    SWStatSecurity: 45
+    SWStatEconomy: 55
+    SWStatIndustry: 65
+    SWStatLoyalty: 60
+
+- type: swSector
+  id: SWSectorRuusan
+  name: Руусан
+  description: Удалённый мир со скромным населением.
+  color: "#A2D9CE"
+  startingStats:
+    SWStatHealthcare: 45
+    SWStatSecurity: 45
+    SWStatEconomy: 40
+    SWStatIndustry: 35
+    SWStatLoyalty: 60
+
+- type: swSector
+  id: SWSectorBestine
+  name: Бестин
+  description: Спокойный мир средней руки.
+  color: "#73C6B6"
+  startingStats:
+    SWStatHealthcare: 50
+    SWStatSecurity: 50
+    SWStatEconomy: 55
+    SWStatIndustry: 50
+    SWStatLoyalty: 55
+
+- type: swSector
+  id: SWSectorIthor
+  name: Итор
+  description: Экологический рай иторианцев.
+  color: "#27AE60"
+  startingStats:
+    SWStatHealthcare: 80
+    SWStatSecurity: 40
+    SWStatEconomy: 60
+    SWStatIndustry: 35
+    SWStatLoyalty: 70

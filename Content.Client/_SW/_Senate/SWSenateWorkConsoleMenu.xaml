@@ -1,0 +1,32 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    Title="Сенатская рабочая консоль"
+    MinSize="580 560">
+    <TabContainer Name="Tabs" VerticalExpand="True" HorizontalExpand="True">
+        <BoxContainer Name="OfficeTab" Orientation="Vertical" Margin="12">
+            <RichTextLabel Name="PositionLabel" Margin="0 0 0 6" />
+            <RichTextLabel Name="StatusLabel" Margin="0 0 0 12" />
+            <Button Name="TakeButton" Text="Вступить в должность" />
+            <Button Name="ResignButton" Text="Сложить полномочия" Margin="0 6 0 0" />
+        </BoxContainer>
+        <ScrollContainer HorizontalExpand="True" VerticalExpand="True" Margin="8">
+            <BoxContainer Name="RosterList" Orientation="Vertical" />
+        </ScrollContainer>
+        <ScrollContainer HorizontalExpand="True" VerticalExpand="True" Margin="8">
+            <BoxContainer Name="Dashboard" Orientation="Vertical" />
+        </ScrollContainer>
+        <BoxContainer Name="DraftTab" Orientation="Vertical" Margin="12">
+            <Label Text="Название законопроекта" StyleClasses="LabelKeyText" />
+            <LineEdit Name="BillNameEdit" PlaceHolder="Название..." Margin="0 2 0 8" />
+            <Label Text="Изменения" StyleClasses="LabelKeyText" />
+            <BoxContainer Name="DraftStatList" Orientation="Vertical" Margin="0 2 0 4" />
+            <RichTextLabel Name="BudgetLabel" Margin="0 0 0 8" />
+            <Label Text="Описание" StyleClasses="LabelKeyText" />
+            <LineEdit Name="BillDescEdit" PlaceHolder="Описание..." Margin="0 2 0 8" />
+            <Button Name="SubmitBillButton" Text="Внести законопроект" />
+        </BoxContainer>
+        <ScrollContainer HorizontalExpand="True" VerticalExpand="True" Margin="8">
+            <BoxContainer Name="AgendaList" Orientation="Vertical" />
+        </ScrollContainer>
+    </TabContainer>
+</controls:FancyWindow>

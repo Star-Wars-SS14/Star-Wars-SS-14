@@ -4,6 +4,8 @@
   name: ID-карта сенатора
   description: Удостоверение члена Сената Республики.
   components:
+  - type: SWSenatePositionCard
+    position: Senator
   - type: Sprite
     layers:
     - state: image3
@@ -16,6 +18,8 @@
   name: ID-карта Верховного Канцлера
   description: Удостоверение главы исполнительной власти Республики.
   components:
+  - type: SWSenatePositionCard
+    position: Chancellor
   - type: Sprite
     layers:
     - state: image1
@@ -28,6 +32,8 @@
   name: ID-карта Спикера Сената
   description: Удостоверение председателя Сената Республики.
   components:
+  - type: SWSenatePositionCard
+    position: Speaker
   - type: Sprite
     layers:
     - state: image2

@@ -1,0 +1,34 @@
+- type: swStat
+  id: SWStatHealthcare
+  name: Здравоохранение
+  shortName: Здоровье
+  order: 0
+  color: "#2ECC71"
+
+- type: swStat
+  id: SWStatSecurity
+  name: Безопасность
+  shortName: Безоп.
+  order: 1
+  color: "#E74C3C"
+
+- type: swStat
+  id: SWStatEconomy
+  name: Экономика
+  shortName: Эконом.
+  order: 2
+  color: "#F1C40F"
+
+- type: swStat
+  id: SWStatIndustry
+  name: Промышленность
+  shortName: Пром.
+  order: 3
+  color: "#95A5A6"
+
+- type: swStat
+  id: SWStatLoyalty
+  name: Лояльность
+  shortName: Лояльн.
+  order: 4
+  color: "#9B59B6"

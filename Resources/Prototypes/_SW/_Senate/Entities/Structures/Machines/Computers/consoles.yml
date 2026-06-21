@@ -1,0 +1,90 @@
+- type: entity
+  parent: BaseComputer
+  id: SWStatisticsConsole
+  name: консоль статистики Республики
+  description: Отображает общую статистику Республики и её секторов.
+  components:
+  - type: SWStatisticsConsole
+  - type: ActivatableUI
+    key: enum.SWStatisticsConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWStatisticsConsoleUiKey.Key:
+        type: SWStatisticsConsoleBoundUserInterface
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Godmode
+
+- type: entity
+  parent: BaseComputer
+  id: SWSectorSelectConsole
+  name: консоль выбора сектора
+  description: Закрепляет сектор за ID-картой сенатора.
+  components:
+  - type: SWSectorSelectConsole
+  - type: ActivatableUI
+    key: enum.SWSectorSelectConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWSectorSelectConsoleUiKey.Key:
+        type: SWSectorSelectConsoleBoundUserInterface
+  - type: ItemSlots
+    slots:
+      senate_id_slot:
+        name: ID-карта
+        whitelist:
+          components:
+          - IdCard
+  - type: ContainerContainer
+    containers:
+      senate_id_slot: !type:ContainerSlot {}
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Godmode
+
+- type: entity
+  parent: BaseComputer
+  id: SWSenateInfoConsole
+  name: информационная консоль Сената
+  description: Отображает занятость секторов и руководство Республики.
+  components:
+  - type: SWSenateInfoConsole
+  - type: ActivatableUI
+    key: enum.SWSenateInfoConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWSenateInfoConsoleUiKey.Key:
+        type: SWSenateInfoConsoleBoundUserInterface
+  - type: ActivatableUIRequiresAccess
+  - type: AccessReader
+    access: [["SWSenate"]]
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Godmode
+
+- type: entity
+  parent: BaseComputer
+  id: SWSenateWorkConsole
+  name: сенатская рабочая консоль
+  description: "Рабочее место сенатских должностей: вступление в должность и сводка."
+  components:
+  - type: SWSenateWorkConsole
+  - type: ActivatableUI
+    key: enum.SWSenateWorkConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWSenateWorkConsoleUiKey.Key:
+        type: SWSenateWorkConsoleBoundUserInterface
+  - type: ItemSlots
+    slots:
+      senate_id_slot:
+        name: ID-карта
+        whitelist:
+          components:
+          - IdCard
+  - type: ContainerContainer
+    containers:
+      senate_id_slot: !type:ContainerSlot {}
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Godmode

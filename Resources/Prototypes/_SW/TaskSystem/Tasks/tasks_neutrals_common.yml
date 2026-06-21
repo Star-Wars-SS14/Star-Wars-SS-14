@@ -120,7 +120,7 @@
   components:
   - type: SWTask
     restrictions: PerAllFactions
-    scores: 15
+    score: 15
     name: Мелкое хулиганство
     description: Империя установила в городе большое количество камер. Лучше от них избавиться, пока они не начнут приносить проблемы. Уничтожьте 5 камер видеонаблюдения на территории Собрика
   - type: DestroyObjectsTask

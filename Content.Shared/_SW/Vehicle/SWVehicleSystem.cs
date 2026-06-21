@@ -120,8 +120,27 @@ public sealed class SWVehicleSystem : EntitySystem
             return;
         }
 
-        TryDeoccupyRole(new Entity<SWVehicleComponent>(ent.Comp.Vehicle, vehicleComp), ent.Comp.OccupiedRole);
-        args.Handled = true;
+        args.Handled = TryDeoccupy(ent, new Entity<SWVehicleComponent>(ent.Comp.Vehicle, vehicleComp));
+    }
+
+    public bool TryDeoccupy(Entity<SWInVehicleComponent> occupant)
+    {
+        if (!TryComp<SWVehicleComponent>(occupant.Comp.Vehicle, out var vehicleComp))
+            return false;
+
+        return TryDeoccupy(occupant, (occupant.Comp.Vehicle, vehicleComp));
+    }
+
+    public bool TryDeoccupy(Entity<SWInVehicleComponent> occupant, Entity<SWVehicleComponent> vehicle)
+    {
+        if (TerminatingOrDeleted(occupant.Owner) ||
+            occupant.Comp.Vehicle != vehicle.Owner ||
+            !vehicle.Comp.RolesInfo.TryGetValue(occupant.Comp.OccupiedRole, out var roleInfo))
+        {
+            return false;
+        }
+
+        return DeoccupyOccupant(occupant, vehicle, roleInfo);
     }
 
     public bool TryDeoccupyRole(Entity<SWVehicleComponent> vehicle, string occupiedRole)
@@ -141,15 +160,30 @@ public sealed class SWVehicleSystem : EntitySystem
 
         var occupantUid = occupantEntity.Value;
 
-        if (TerminatingOrDeleted(occupantUid) ||
-            !TryComp<SWInVehicleComponent>(occupantUid, out var inVehicle))
+        if (TerminatingOrDeleted(occupantUid))
         {
             roleInfo.Occupant = null;
             return false;
         }
 
-        var occupantCoordinates = _transformSystem.ToMapCoordinates(Transform(occupantUid).Coordinates);
-        Entity<SWInVehicleComponent> occupant = new Entity<SWInVehicleComponent>(occupantUid, Comp<SWInVehicleComponent>(occupantUid));
+        if (!TryComp<SWInVehicleComponent>(occupantUid, out var inVehicle))
+        {
+            roleInfo.Occupant = null;
+            return false;
+        }
+
+        return DeoccupyOccupant((occupantUid, inVehicle), vehicle, roleInfo);
+    }
+
+    private bool DeoccupyOccupant(
+        Entity<SWInVehicleComponent> occupant,
+        Entity<SWVehicleComponent> vehicle,
+        SWVehicleRoleInfo roleInfo)
+    {
+        if (TerminatingOrDeleted(occupant.Owner))
+            return false;
+
+        var occupantCoordinates = _transformSystem.ToMapCoordinates(Transform(occupant.Owner).Coordinates);
 
         if (occupant.Comp.ActionEntity != null)
         {
@@ -169,7 +203,15 @@ public sealed class SWVehicleSystem : EntitySystem
         DetachOccupantFromVehicle((occupant.Owner, Transform(occupant.Owner)), vehicle, occupantCoordinates);
 
         _actionBlocker.UpdateCanMove(occupant);
-        roleInfo.Occupant = null;
+
+        var occupantNet = GetNetEntity(occupant.Owner);
+        if (roleInfo.Occupant == null ||
+            roleInfo.Occupant == occupantNet ||
+            !TryGetEntity(roleInfo.Occupant.Value, out _))
+        {
+            roleInfo.Occupant = null;
+        }
+
         UpdateInterface(vehicle);
         return true;
     }

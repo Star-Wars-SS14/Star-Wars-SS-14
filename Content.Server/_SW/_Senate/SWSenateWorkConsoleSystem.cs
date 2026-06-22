@@ -331,7 +331,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         state.HasCard = card != null;
-        state.RepublicStats = BuildStatEntries(_senate.GetRepublicStats());
+        state.Globals = _senate.BuildGlobalEntries();
         state.Roster = BuildRoster();
         state.Bills = _senate.BuildBillEntries();
         state.DraftBudget = ent.Comp.DraftBudget;
@@ -360,10 +360,10 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
                         state.CanResign = true;
                         state.SectorName = sectorProto.Name;
 
-                        if (_senate.SectorStats.TryGetValue(sectorId, out var stats))
+                        if (_senate.SectorGlobals.ContainsKey(sectorId))
                         {
-                            state.SectorStats = BuildStatEntries(stats);
-                            var republic = _senate.GetRepublicStats();
+                            state.SectorStats = _senate.BuildSectorGlobals(sectorId);
+                            var republic = _senate.GetRepublicGlobals();
                             foreach (var stat in state.SectorStats)
                             {
                                 var target = republic.TryGetValue(stat.Id, out var r) ? r : stat.Value;
@@ -418,26 +418,4 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         return roster;
     }
 
-    private List<SWStatEntry> BuildStatEntries(Dictionary<string, float> stats)
-    {
-        var list = new List<SWStatEntry>();
-        foreach (var proto in _proto.EnumeratePrototypes<SWStatPrototype>().OrderBy(s => s.Order))
-        {
-            if (!stats.TryGetValue(proto.ID, out var value))
-                continue;
-
-            list.Add(new SWStatEntry
-            {
-                Id = proto.ID,
-                Name = proto.Name,
-                ShortName = proto.ShortName,
-                Color = proto.Color,
-                Value = value,
-                Min = proto.Min,
-                Max = proto.Max,
-            });
-        }
-
-        return list;
-    }
 }

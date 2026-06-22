@@ -43,12 +43,12 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
 
     private void UpdateUi(Entity<SWStatisticsConsoleComponent> ent)
     {
-        var republic = BuildStatEntries(_senate.GetRepublicStats());
+        var globals = _senate.BuildGlobalEntries();
 
         var sectors = new List<SWSectorEntry>();
         foreach (var proto in _proto.EnumeratePrototypes<SWSectorPrototype>())
         {
-            if (!_senate.SectorStats.TryGetValue(proto.ID, out var stats))
+            if (!_senate.SectorGlobals.ContainsKey(proto.ID))
                 continue;
 
             sectors.Add(new SWSectorEntry
@@ -57,35 +57,12 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
                 Name = proto.Name,
                 Color = proto.Color,
                 Claimed = _senate.IsClaimed(proto.ID),
-                Stats = BuildStatEntries(stats),
+                Stats = _senate.BuildSectorGlobals(proto.ID),
             });
         }
 
         sectors.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
 
-        _ui.SetUiState(ent.Owner, SWStatisticsConsoleUiKey.Key, new SWStatisticsConsoleState(republic, sectors));
-    }
-
-    private List<SWStatEntry> BuildStatEntries(Dictionary<string, float> stats)
-    {
-        var list = new List<SWStatEntry>();
-        foreach (var proto in _proto.EnumeratePrototypes<SWStatPrototype>().OrderBy(s => s.Order))
-        {
-            if (!stats.TryGetValue(proto.ID, out var value))
-                continue;
-
-            list.Add(new SWStatEntry
-            {
-                Id = proto.ID,
-                Name = proto.Name,
-                ShortName = proto.ShortName,
-                Color = proto.Color,
-                Value = value,
-                Min = proto.Min,
-                Max = proto.Max,
-            });
-        }
-
-        return list;
+        _ui.SetUiState(ent.Owner, SWStatisticsConsoleUiKey.Key, new SWStatisticsConsoleState(globals, sectors));
     }
 }

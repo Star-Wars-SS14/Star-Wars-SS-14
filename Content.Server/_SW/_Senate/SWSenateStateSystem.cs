@@ -10,7 +10,10 @@ public sealed class SWSenateStateSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
 
-    private readonly Dictionary<string, Dictionary<string, float>> _sectorStats = new();
+    private readonly Dictionary<string, float> _republicSubStats = new();
+    private readonly Dictionary<string, Dictionary<string, float>> _sectorGlobals = new();
+    private readonly Dictionary<string, Dictionary<string, float>> _sectorBias = new();
+    private readonly Dictionary<string, float> _sectorWeight = new();
     private readonly Dictionary<string, string> _sectorHolders = new();
     private readonly List<SWSenateBill> _bills = new();
     private readonly List<SWSenateSession> _sessions = new();
@@ -19,7 +22,7 @@ public sealed class SWSenateStateSystem : EntitySystem
     private int _nextSessionId = 1;
     private int _scheduleDay = 1;
 
-    private const float DefaultStat = 50f;
+    private const float NeutralStat = 50f;
     private const float DriftRate = 0.01f;
     private const float UpdateInterval = 5f;
 
@@ -28,7 +31,8 @@ public sealed class SWSenateStateSystem : EntitySystem
     public string? Chancellor { get; private set; }
     public string? Speaker { get; private set; }
 
-    public IReadOnlyDictionary<string, Dictionary<string, float>> SectorStats => _sectorStats;
+    public IReadOnlyDictionary<string, Dictionary<string, float>> SectorGlobals => _sectorGlobals;
+    public IReadOnlyDictionary<string, float> SubStats => _republicSubStats;
     public IReadOnlyDictionary<string, string> SectorHolders => _sectorHolders;
     public IReadOnlyList<SWSenateBill> Bills => _bills;
 
@@ -39,7 +43,10 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     private void InitState()
     {
-        _sectorStats.Clear();
+        _republicSubStats.Clear();
+        _sectorGlobals.Clear();
+        _sectorBias.Clear();
+        _sectorWeight.Clear();
         _sectorHolders.Clear();
         _bills.Clear();
         _sessions.Clear();
@@ -50,42 +57,144 @@ public sealed class SWSenateStateSystem : EntitySystem
         Chancellor = null;
         Speaker = null;
 
+        foreach (var sub in _proto.EnumeratePrototypes<SWStatPrototype>())
+            _republicSubStats[sub.ID] = Math.Clamp(sub.Default, sub.Min, sub.Max);
+
         foreach (var sector in _proto.EnumeratePrototypes<SWSectorPrototype>())
         {
-            var stats = new Dictionary<string, float>();
-            foreach (var stat in _proto.EnumeratePrototypes<SWStatPrototype>())
+            var globals = new Dictionary<string, float>();
+            var bias = new Dictionary<string, float>();
+            foreach (var global in _proto.EnumeratePrototypes<SWGlobalStatPrototype>())
             {
-                stats[stat.ID] = sector.StartingStats.TryGetValue(stat.ID, out var value)
-                    ? Math.Clamp(value, stat.Min, stat.Max)
-                    : DefaultStat;
+                var start = sector.StartingStats.TryGetValue(global.ID, out var value)
+                    ? Math.Clamp(value, global.Min, global.Max)
+                    : NeutralStat;
+                globals[global.ID] = start;
+                bias[global.ID] = start - NeutralStat;
             }
 
-            _sectorStats[sector.ID] = stats;
+            _sectorGlobals[sector.ID] = globals;
+            _sectorBias[sector.ID] = bias;
+            _sectorWeight[sector.ID] = sector.Weight > 0 ? sector.Weight : 1f;
         }
     }
 
-    public Dictionary<string, float> GetRepublicStats()
+    private IEnumerable<SWStatPrototype> SubsOf(string globalId) =>
+        _proto.EnumeratePrototypes<SWStatPrototype>().Where(s => s.Global == globalId);
+
+    private Color SubColor(SWStatPrototype sub) =>
+        _proto.TryIndex(sub.Global, out var global) ? global.Color : Color.White;
+
+    public float GetPolicyScore(string globalId)
+    {
+        var sum = 0f;
+        var weight = 0f;
+        foreach (var sub in SubsOf(globalId))
+        {
+            if (!_republicSubStats.TryGetValue(sub.ID, out var value))
+                continue;
+            sum += value * sub.Weight;
+            weight += sub.Weight;
+        }
+
+        return weight > 0 ? sum / weight : NeutralStat;
+    }
+
+    public Dictionary<string, float> GetPolicyScores()
     {
         var result = new Dictionary<string, float>();
-        if (_sectorStats.Count == 0)
-            return result;
+        foreach (var global in _proto.EnumeratePrototypes<SWGlobalStatPrototype>())
+            result[global.ID] = GetPolicyScore(global.ID);
 
-        foreach (var stat in _proto.EnumeratePrototypes<SWStatPrototype>())
+        return result;
+    }
+
+    public Dictionary<string, float> GetRepublicGlobals()
+    {
+        var result = new Dictionary<string, float>();
+        foreach (var global in _proto.EnumeratePrototypes<SWGlobalStatPrototype>())
         {
             var sum = 0f;
-            var count = 0;
-            foreach (var (_, stats) in _sectorStats)
+            var weight = 0f;
+            foreach (var (sectorId, globals) in _sectorGlobals)
             {
-                if (!stats.TryGetValue(stat.ID, out var value))
+                if (!globals.TryGetValue(global.ID, out var value))
                     continue;
-                sum += value;
-                count++;
+                var w = _sectorWeight.TryGetValue(sectorId, out var sw) ? sw : 1f;
+                sum += value * w;
+                weight += w;
             }
 
-            result[stat.ID] = count > 0 ? sum / count : 0f;
+            result[global.ID] = weight > 0 ? sum / weight : NeutralStat;
         }
 
         return result;
+    }
+
+    public List<SWGlobalStatEntry> BuildGlobalEntries()
+    {
+        var policy = GetPolicyScores();
+        var actual = GetRepublicGlobals();
+        var list = new List<SWGlobalStatEntry>();
+
+        foreach (var global in _proto.EnumeratePrototypes<SWGlobalStatPrototype>().OrderBy(g => g.Order))
+        {
+            var entry = new SWGlobalStatEntry
+            {
+                Id = global.ID,
+                Name = global.Name,
+                ShortName = global.ShortName,
+                Color = global.Color,
+                Policy = policy.TryGetValue(global.ID, out var p) ? p : NeutralStat,
+                Actual = actual.TryGetValue(global.ID, out var a) ? a : NeutralStat,
+                Min = global.Min,
+                Max = global.Max,
+            };
+
+            foreach (var sub in SubsOf(global.ID).OrderBy(s => s.Order))
+            {
+                entry.Subs.Add(new SWStatEntry
+                {
+                    Id = sub.ID,
+                    Name = sub.Name,
+                    ShortName = sub.ShortName,
+                    Color = global.Color,
+                    Value = _republicSubStats.TryGetValue(sub.ID, out var v) ? v : sub.Default,
+                    Min = sub.Min,
+                    Max = sub.Max,
+                });
+            }
+
+            list.Add(entry);
+        }
+
+        return list;
+    }
+
+    public List<SWStatEntry> BuildSectorGlobals(string sectorId)
+    {
+        var list = new List<SWStatEntry>();
+        if (!_sectorGlobals.TryGetValue(sectorId, out var globals))
+            return list;
+
+        foreach (var global in _proto.EnumeratePrototypes<SWGlobalStatPrototype>().OrderBy(g => g.Order))
+        {
+            if (!globals.TryGetValue(global.ID, out var value))
+                continue;
+
+            list.Add(new SWStatEntry
+            {
+                Id = global.ID,
+                Name = global.Name,
+                ShortName = global.ShortName,
+                Color = global.Color,
+                Value = value,
+                Min = global.Min,
+                Max = global.Max,
+            });
+        }
+
+        return list;
     }
 
     public bool IsClaimed(string sectorId) => _sectorHolders.ContainsKey(sectorId);
@@ -95,7 +204,7 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     public bool TryClaim(string sectorId, string holder)
     {
-        if (!_sectorStats.ContainsKey(sectorId) || _sectorHolders.ContainsKey(sectorId))
+        if (!_sectorGlobals.ContainsKey(sectorId) || _sectorHolders.ContainsKey(sectorId))
             return false;
 
         _sectorHolders[sectorId] = holder;
@@ -513,15 +622,6 @@ public sealed class SWSenateStateSystem : EntitySystem
         var bills = new List<SWBillEntry>();
         foreach (var bill in _bills)
         {
-            var effects = new List<SWBillEffectEntry>();
-            foreach (var proto in _proto.EnumeratePrototypes<SWStatPrototype>().OrderBy(s => s.Order))
-            {
-                if (!bill.Effects.TryGetValue(proto.ID, out var delta))
-                    continue;
-
-                effects.Add(new SWBillEffectEntry { StatName = proto.ShortName, Color = proto.Color, Delta = delta });
-            }
-
             bills.Add(new SWBillEntry
             {
                 Id = bill.Id,
@@ -529,7 +629,7 @@ public sealed class SWSenateStateSystem : EntitySystem
                 Author = bill.Author,
                 Description = bill.Description,
                 Stage = BillStageLabel(bill),
-                Effects = effects,
+                Effects = BuildBillEffects(bill),
             });
         }
 
@@ -539,12 +639,12 @@ public sealed class SWSenateStateSystem : EntitySystem
     public List<SWBillEffectEntry> BuildBillEffects(SWSenateBill bill)
     {
         var effects = new List<SWBillEffectEntry>();
-        foreach (var proto in _proto.EnumeratePrototypes<SWStatPrototype>().OrderBy(s => s.Order))
+        foreach (var sub in _proto.EnumeratePrototypes<SWStatPrototype>().OrderBy(s => s.Order))
         {
-            if (!bill.Effects.TryGetValue(proto.ID, out var delta))
+            if (!bill.Effects.TryGetValue(sub.ID, out var delta))
                 continue;
 
-            effects.Add(new SWBillEffectEntry { StatName = proto.ShortName, Color = proto.Color, Delta = delta });
+            effects.Add(new SWBillEffectEntry { StatName = sub.ShortName, Color = SubColor(sub), Delta = delta });
         }
 
         return effects;
@@ -573,18 +673,13 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     private void ApplyBill(SWSenateBill bill)
     {
-        foreach (var (statId, delta) in bill.Effects)
+        foreach (var (subId, delta) in bill.Effects)
         {
-            if (!_proto.TryIndex<SWStatPrototype>(statId, out var statProto))
+            if (!_proto.TryIndex<SWStatPrototype>(subId, out var sub))
                 continue;
 
-            foreach (var (_, stats) in _sectorStats)
-            {
-                if (!stats.TryGetValue(statId, out var value))
-                    continue;
-
-                stats[statId] = Math.Clamp(value + delta, statProto.Min, statProto.Max);
-            }
+            var value = _republicSubStats.TryGetValue(subId, out var current) ? current : sub.Default;
+            _republicSubStats[subId] = Math.Clamp(value + delta, sub.Min, sub.Max);
         }
     }
 
@@ -606,15 +701,21 @@ public sealed class SWSenateStateSystem : EntitySystem
 
         _accumulator = 0f;
 
-        var republic = GetRepublicStats();
-        foreach (var (_, stats) in _sectorStats)
+        var policy = GetPolicyScores();
+        foreach (var (sectorId, globals) in _sectorGlobals)
         {
-            foreach (var statId in stats.Keys.ToList())
+            if (!_sectorBias.TryGetValue(sectorId, out var bias))
+                continue;
+
+            foreach (var global in _proto.EnumeratePrototypes<SWGlobalStatPrototype>())
             {
-                if (!republic.TryGetValue(statId, out var target))
+                if (!globals.TryGetValue(global.ID, out var value))
                     continue;
 
-                stats[statId] += (target - stats[statId]) * DriftRate;
+                var policyScore = policy.TryGetValue(global.ID, out var p) ? p : NeutralStat;
+                var offset = bias.TryGetValue(global.ID, out var b) ? b : 0f;
+                var target = Math.Clamp(policyScore + offset, global.Min, global.Max);
+                globals[global.ID] = value + (target - value) * DriftRate;
             }
         }
     }

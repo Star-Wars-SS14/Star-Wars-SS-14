@@ -29,6 +29,20 @@ public sealed class SWStatEntry
 }
 
 [Serializable, NetSerializable]
+public sealed class SWGlobalStatEntry
+{
+    public string Id = string.Empty;
+    public string Name = string.Empty;
+    public string ShortName = string.Empty;
+    public Color Color;
+    public float Policy;
+    public float Actual;
+    public float Min;
+    public float Max;
+    public List<SWStatEntry> Subs = new();
+}
+
+[Serializable, NetSerializable]
 public sealed class SWSectorEntry
 {
     public string Id = string.Empty;
@@ -41,12 +55,12 @@ public sealed class SWSectorEntry
 [Serializable, NetSerializable]
 public sealed class SWStatisticsConsoleState : BoundUserInterfaceState
 {
-    public List<SWStatEntry> RepublicStats;
+    public List<SWGlobalStatEntry> Globals;
     public List<SWSectorEntry> Sectors;
 
-    public SWStatisticsConsoleState(List<SWStatEntry> republicStats, List<SWSectorEntry> sectors)
+    public SWStatisticsConsoleState(List<SWGlobalStatEntry> globals, List<SWSectorEntry> sectors)
     {
-        RepublicStats = republicStats;
+        Globals = globals;
         Sectors = sectors;
     }
 }
@@ -144,7 +158,7 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public string? SectorName;
     public List<SWStatEntry> SectorStats = new();
     public List<int> SectorTrends = new();
-    public List<SWStatEntry> RepublicStats = new();
+    public List<SWGlobalStatEntry> Globals = new();
     public List<SWSenateRosterEntry> Roster = new();
     public List<SWBillEntry> Bills = new();
     public int DraftBudget;

@@ -106,7 +106,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         Tabs.SetTabVisible(ScheduleTabIndex, state.IsSenateCard);
         Tabs.SetTabVisible(AnnounceTabIndex, isLeader && state.InOffice);
 
-        if (!_draftBuilt && state.RepublicStats.Count > 0)
+        if (!_draftBuilt && state.Globals.Count > 0)
             BuildDraft(state);
 
         BuildRoster(state);
@@ -142,40 +142,65 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         _draftSliders.Clear();
         _draftValueLabels.Clear();
 
-        foreach (var stat in state.RepublicStats)
+        foreach (var global in state.Globals)
         {
-            var row = new BoxContainer
+            var subPanel = new BoxContainer
             {
-                Orientation = BoxContainer.LayoutOrientation.Horizontal,
+                Orientation = BoxContainer.LayoutOrientation.Vertical,
+                Margin = new Thickness(16, 0, 0, 6),
+                Visible = false,
+            };
+
+            var header = new Button
+            {
+                Text = $"[+] {global.Name}",
                 HorizontalExpand = true,
-                Margin = new Thickness(0, 1, 0, 1),
+                Margin = new Thickness(0, 2, 0, 0),
             };
-
-            row.AddChild(new Label { Text = stat.Name, FontColorOverride = stat.Color, MinWidth = 160 });
-
-            var slider = new Slider
+            header.OnPressed += _ =>
             {
-                MinValue = -MaxEffect,
-                MaxValue = MaxEffect,
-                Value = 0,
-                HorizontalExpand = true,
-                MinWidth = 220,
+                subPanel.Visible = !subPanel.Visible;
+                header.Text = (subPanel.Visible ? "[-] " : "[+] ") + global.Name;
             };
+            DraftStatList.AddChild(header);
 
-            var valueLabel = new Label { Text = "0", MinWidth = 40, HorizontalAlignment = Control.HAlignment.Right };
-
-            slider.OnValueChanged += _ =>
+            foreach (var sub in global.Subs)
             {
-                valueLabel.Text = $"{MathF.Round(slider.Value):+0;-0;0}";
-                RecomputeBudget();
-            };
+                var row = new BoxContainer
+                {
+                    Orientation = BoxContainer.LayoutOrientation.Horizontal,
+                    HorizontalExpand = true,
+                    Margin = new Thickness(0, 1, 0, 1),
+                };
 
-            row.AddChild(slider);
-            row.AddChild(valueLabel);
-            DraftStatList.AddChild(row);
+                row.AddChild(new Label { Text = sub.Name, FontColorOverride = global.Color, MinWidth = 150 });
 
-            _draftSliders[stat.Id] = slider;
-            _draftValueLabels[stat.Id] = valueLabel;
+                var slider = new Slider
+                {
+                    MinValue = -MaxEffect,
+                    MaxValue = MaxEffect,
+                    Value = 0,
+                    HorizontalExpand = true,
+                    MinWidth = 180,
+                };
+
+                var valueLabel = new Label { Text = "0", MinWidth = 40, HorizontalAlignment = Control.HAlignment.Right };
+
+                slider.OnValueChanged += _ =>
+                {
+                    valueLabel.Text = $"{MathF.Round(slider.Value):+0;-0;0}";
+                    RecomputeBudget();
+                };
+
+                row.AddChild(slider);
+                row.AddChild(valueLabel);
+                subPanel.AddChild(row);
+
+                _draftSliders[sub.Id] = slider;
+                _draftValueLabels[sub.Id] = valueLabel;
+            }
+
+            DraftStatList.AddChild(subPanel);
         }
 
         RecomputeBudget();
@@ -424,34 +449,42 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             Dashboard.AddChild(new Control { MinHeight = 12 });
         }
 
-        Dashboard.AddChild(new Label { Text = "Республика", StyleClasses = { "LabelHeading" } });
-        foreach (var stat in state.RepublicStats)
+        Dashboard.AddChild(new Label { Text = "Республика (факт / политика)", StyleClasses = { "LabelHeading" } });
+        foreach (var global in state.Globals)
         {
-            Dashboard.AddChild(MakeStatBar(stat));
+            Dashboard.AddChild(MakeGlobalBar(global));
         }
     }
 
-    private static Control MakeStatBar(SWStatEntry stat)
+    private static Control MakeGlobalBar(SWGlobalStatEntry global)
     {
-        var row = new BoxContainer
+        var box = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            Margin = new Thickness(0, 1, 0, 4),
+        };
+
+        var head = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Horizontal,
             HorizontalExpand = true,
-            Margin = new Thickness(0, 1, 0, 1),
         };
+        head.AddChild(new Label { Text = global.Name, FontColorOverride = global.Color, HorizontalExpand = true });
+        head.AddChild(new Label { Text = $"{global.Actual:0}", MinWidth = 40, HorizontalAlignment = Control.HAlignment.Right });
+        head.AddChild(new Label { Text = $"/ {global.Policy:0}", MinWidth = 48, FontColorOverride = Color.Gray, HorizontalAlignment = Control.HAlignment.Right });
+        box.AddChild(head);
 
-        row.AddChild(new Label { Text = stat.Name, FontColorOverride = stat.Color, MinWidth = 170 });
-        row.AddChild(new ProgressBar
+        box.AddChild(new ProgressBar
         {
-            MinValue = stat.Min,
-            MaxValue = stat.Max <= stat.Min ? stat.Min + 1 : stat.Max,
-            Value = stat.Value,
+            MinValue = global.Min,
+            MaxValue = global.Max <= global.Min ? global.Min + 1 : global.Max,
+            Value = global.Actual,
             HorizontalExpand = true,
-            MinHeight = 16,
-            ForegroundStyleBoxOverride = new StyleBoxFlat { BackgroundColor = stat.Color },
+            MinHeight = 14,
+            Margin = new Thickness(0, 2, 0, 0),
+            ForegroundStyleBoxOverride = new StyleBoxFlat { BackgroundColor = global.Color },
         });
-        row.AddChild(new Label { Text = $"{stat.Value:0}", MinWidth = 44, HorizontalAlignment = Control.HAlignment.Right });
 
-        return row;
+        return box;
     }
 }

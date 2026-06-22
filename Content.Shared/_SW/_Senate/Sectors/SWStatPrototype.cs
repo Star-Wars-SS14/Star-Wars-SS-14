@@ -8,6 +8,9 @@ public sealed partial class SWStatPrototype : IPrototype
     [IdDataField]
     public string ID { get; } = default!;
 
+    [DataField(required: true)]
+    public ProtoId<SWGlobalStatPrototype> Global;
+
     [DataField]
     public string Name = string.Empty;
 
@@ -18,7 +21,10 @@ public sealed partial class SWStatPrototype : IPrototype
     public int Order;
 
     [DataField]
-    public Color Color = Color.White;
+    public float Weight = 1f;
+
+    [DataField]
+    public float Default = 50f;
 
     [DataField]
     public float Min = 0f;

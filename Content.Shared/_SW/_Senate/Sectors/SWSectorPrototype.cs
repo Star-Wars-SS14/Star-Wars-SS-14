@@ -18,5 +18,8 @@ public sealed partial class SWSectorPrototype : IPrototype
     public Color Color = Color.White;
 
     [DataField]
-    public Dictionary<ProtoId<SWStatPrototype>, float> StartingStats = new();
+    public float Weight = 1f;
+
+    [DataField]
+    public Dictionary<ProtoId<SWGlobalStatPrototype>, float> StartingStats = new();
 }

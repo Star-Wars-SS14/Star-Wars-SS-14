@@ -45,6 +45,11 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateSubmitBillMessage(name, description, effects));
     }
 
+    public void SubmitPreset(string presetId)
+    {
+        SendMessage(new SWSenateSubmitPresetMessage(presetId));
+    }
+
     public void ScheduleSession(int billId, int startHour, int duration)
     {
         SendMessage(new SWSenateScheduleSessionMessage(billId, startHour, duration));

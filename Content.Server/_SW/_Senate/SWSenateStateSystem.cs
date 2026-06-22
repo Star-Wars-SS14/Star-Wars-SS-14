@@ -650,6 +650,32 @@ public sealed class SWSenateStateSystem : EntitySystem
         return effects;
     }
 
+    public List<SWBillPresetEntry> BuildBillPresets()
+    {
+        var list = new List<SWBillPresetEntry>();
+        foreach (var preset in _proto.EnumeratePrototypes<SWBillPresetPrototype>().OrderBy(p => p.Order))
+        {
+            var effects = new List<SWBillEffectEntry>();
+            foreach (var sub in _proto.EnumeratePrototypes<SWStatPrototype>().OrderBy(s => s.Order))
+            {
+                if (!preset.Effects.TryGetValue(sub.ID, out var delta))
+                    continue;
+
+                effects.Add(new SWBillEffectEntry { StatName = sub.ShortName, Color = SubColor(sub), Delta = delta });
+            }
+
+            list.Add(new SWBillPresetEntry
+            {
+                Id = preset.ID,
+                Name = preset.Name,
+                Description = preset.Description,
+                Effects = effects,
+            });
+        }
+
+        return list;
+    }
+
     public string BillStageLabel(SWSenateBill bill)
     {
         if (bill.Stage == SWBillStage.Passed)

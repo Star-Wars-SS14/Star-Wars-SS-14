@@ -167,6 +167,27 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public List<SWBillOption> SchedulableBills = new();
     public List<int> FreeStartHours = new();
     public List<SWSessionEntry> PendingSessions = new();
+    public List<SWBillPresetEntry> Presets = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBillPresetEntry
+{
+    public string Id = string.Empty;
+    public string Name = string.Empty;
+    public string Description = string.Empty;
+    public List<SWBillEffectEntry> Effects = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateSubmitPresetMessage : BoundUserInterfaceMessage
+{
+    public string PresetId;
+
+    public SWSenateSubmitPresetMessage(string presetId)
+    {
+        PresetId = presetId;
+    }
 }
 
 [Serializable, NetSerializable]

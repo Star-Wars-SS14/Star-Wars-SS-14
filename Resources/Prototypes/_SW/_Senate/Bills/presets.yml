@@ -1,0 +1,373 @@
+- type: swBillPreset
+  id: SWBillVaccination
+  name: Программа всеобщей вакцинации
+  description: Финансирование массовой иммунизации на ключевых мирах Республики.
+  order: 0
+  effects:
+    SWStatEpidemic: 8
+    SWStatMedicine: 3
+    SWStatTreasury: -5
+
+- type: swBillPreset
+  id: SWBillRimHospitals
+  name: Госпитали Внешнего кольца
+  description: Строительство больниц в удалённых и заброшенных секторах.
+  order: 1
+  effects:
+    SWStatCoverage: 8
+    SWStatMedicine: 4
+    SWStatTreasury: -6
+
+- type: swBillPreset
+  id: SWBillWelfareReform
+  name: Реформа социального обеспечения
+  description: Расширение пособий и поддержки нуждающихся граждан.
+  order: 2
+  effects:
+    SWStatWelfare: 7
+    SWStatEmployment: 3
+    SWStatTreasury: -6
+
+- type: swBillPreset
+  id: SWBillBactaFront
+  name: Бакта для фронтовых миров
+  description: Приоритетные поставки бакты в приграничные системы.
+  order: 3
+  effects:
+    SWStatMedicine: 6
+    SWStatCoverage: 4
+    SWStatTrade: -3
+
+- type: swBillPreset
+  id: SWBillFleetRearm
+  name: Программа перевооружения флота
+  description: Закладка новых линкоров для восстановления мощи флота.
+  order: 4
+  effects:
+    SWStatFleet: 8
+    SWStatTreasury: -7
+
+- type: swBillPreset
+  id: SWBillArmyExpansion
+  name: Расширение армии
+  description: Набор и оснащение новых наземных дивизий.
+  order: 5
+  effects:
+    SWStatArmy: 7
+    SWStatReserve: 4
+    SWStatEmployment: 2
+    SWStatTreasury: -6
+
+- type: swBillPreset
+  id: SWBillMilitaryLogistics
+  name: Реформа военной логистики
+  description: Модернизация снабжения и тыловых линий вооружённых сил.
+  order: 6
+  effects:
+    SWStatLogistics: 8
+    SWStatManufacturing: -2
+
+- type: swBillPreset
+  id: SWBillConscription
+  name: Призывная кампания
+  description: Усиленный призыв и наращивание мобилизационного резерва.
+  order: 7
+  effects:
+    SWStatReserve: 8
+    SWStatMorale: -4
+    SWStatEmployment: -3
+
+- type: swBillPreset
+  id: SWBillBorderDefense
+  name: Укрепление границы
+  description: Размещение сил и фортификаций вдоль имперской границы.
+  order: 8
+  effects:
+    SWStatFleet: 5
+    SWStatArmy: 4
+    SWStatEmpireBorder: 3
+    SWStatTreasury: -6
+
+- type: swBillPreset
+  id: SWBillAcademyGrants
+  name: Стипендии для академий
+  description: Государственные гранты престижным академиям Ядра.
+  order: 9
+  effects:
+    SWStatAcademies: 8
+    SWStatTreasury: -5
+
+- type: swBillPreset
+  id: SWBillPublicSchools
+  name: Государственные школы
+  description: Расширение сети бесплатного начального образования.
+  order: 10
+  effects:
+    SWStatSchools: 9
+    SWStatTreasury: -5
+
+- type: swBillPreset
+  id: SWBillMilitaryResearch
+  name: Военные исследования
+  description: Финансирование оборонных научных программ.
+  order: 11
+  effects:
+    SWStatResearch: 7
+    SWStatTech: 4
+    SWStatTreasury: -6
+
+- type: swBillPreset
+  id: SWBillTechInitiative
+  name: Технологическая инициатива
+  description: Стимулирование гражданских технологий и производства.
+  order: 12
+  effects:
+    SWStatTech: 8
+    SWStatManufacturing: 3
+    SWStatTreasury: -5
+
+- type: swBillPreset
+  id: SWBillRaiseTaxes
+  name: Повышение налогов
+  description: Увеличение налогового бремени для пополнения казны.
+  order: 13
+  effects:
+    SWStatTaxes: 9
+    SWStatTreasury: 6
+    SWStatEmployment: -5
+    SWStatLiving: -4
+    SWStatMorale: -3
+
+- type: swBillPreset
+  id: SWBillCutTaxes
+  name: Снижение налогов
+  description: Облегчение налогов для оживления экономики.
+  order: 14
+  effects:
+    SWStatTaxes: -8
+    SWStatEmployment: 6
+    SWStatTrade: 5
+    SWStatTreasury: -6
+
+- type: swBillPreset
+  id: SWBillTradeStimulus
+  name: Стимулирование торговли
+  description: Субсидии торговым гильдиям и гиперпространственным маршрутам.
+  order: 15
+  effects:
+    SWStatTrade: 8
+    SWStatEmployment: 4
+    SWStatTaxes: -3
+
+- type: swBillPreset
+  id: SWBillEmploymentProgram
+  name: Программа занятости
+  description: Создание рабочих мест через общественные работы.
+  order: 16
+  effects:
+    SWStatEmployment: 9
+    SWStatManufacturing: 3
+    SWStatTreasury: -6
+
+- type: swBillPreset
+  id: SWBillAusterity
+  name: Жёсткая экономия
+  description: Резкое сокращение расходов ради спасения казны.
+  order: 17
+  effects:
+    SWStatTreasury: 9
+    SWStatWelfare: -5
+    SWStatSchools: -4
+    SWStatLiving: -4
+
+- type: swBillPreset
+  id: SWBillLaneProtection
+  name: Защита гиперпутей
+  description: Патрулирование торговых маршрутов от пиратов и каперов.
+  order: 18
+  effects:
+    SWStatTrade: 7
+    SWStatFleet: 3
+    SWStatTreasury: -5
+
+- type: swBillPreset
+  id: SWBillLawEnforcement
+  name: Усиление правопорядка
+  description: Расширение полномочий и штата правоохранительных сил.
+  order: 19
+  effects:
+    SWStatPolice: 8
+    SWStatCrime: 4
+    SWStatRights: -4
+
+- type: swBillPreset
+  id: SWBillCensorship
+  name: Закон о цензуре
+  description: Контроль над прессой и голонет-вещанием.
+  order: 20
+  effects:
+    SWStatCensorship: 9
+    SWStatMorale: 3
+    SWStatRights: -7
+
+- type: swBillPreset
+  id: SWBillSisFunding
+  name: Финансирование разведки
+  description: Расширение бюджета Стратегической информационной службы.
+  order: 21
+  effects:
+    SWStatIntel: 8
+    SWStatEmpireBorder: 3
+    SWStatTreasury: -6
+
+- type: swBillPreset
+  id: SWBillAntiSmuggling
+  name: Борьба с контрабандой
+  description: Усиление таможни и патрулей против контрабандистов.
+  order: 22
+  effects:
+    SWStatCounter: 8
+    SWStatCrime: 3
+    SWStatTrade: -4
+
+- type: swBillPreset
+  id: SWBillAntiCorruption
+  name: Антикоррупционная кампания
+  description: Чистка ведомств и борьба со взяточничеством.
+  order: 23
+  effects:
+    SWStatCrime: 7
+    SWStatPolice: 4
+    SWStatTaxes: -3
+
+- type: swBillPreset
+  id: SWBillNationalizeShipyards
+  name: Национализация верфей
+  description: Передача ключевых верфей под государственный контроль.
+  order: 24
+  effects:
+    SWStatManufacturing: 8
+    SWStatTreasury: -5
+    SWStatTrade: -3
+
+- type: swBillPreset
+  id: SWBillEnergyProgram
+  name: Энергетическая программа
+  description: Инвестиции в реакторы и энергосети промышленных миров.
+  order: 25
+  effects:
+    SWStatEnergy: 9
+    SWStatTreasury: -6
+
+- type: swBillPreset
+  id: SWBillMiningConcessions
+  name: Добывающие концессии
+  description: Выдача концессий на разработку ресурсных миров.
+  order: 26
+  effects:
+    SWStatMining: 8
+    SWStatTrade: 3
+    SWStatLiving: -3
+
+- type: swBillPreset
+  id: SWBillTransportUpgrade
+  name: Модернизация транспорта
+  description: Обновление орбитальных доков и транспортных сетей.
+  order: 27
+  effects:
+    SWStatTransport: 8
+    SWStatTrade: 4
+    SWStatTreasury: -6
+
+- type: swBillPreset
+  id: SWBillNeutralDiplomacy
+  name: Дипломатия с нейтралами
+  description: Налаживание отношений с независимыми и хаттскими мирами.
+  order: 28
+  effects:
+    SWStatNeutral: 8
+    SWStatTreaties: 4
+    SWStatTreasury: -4
+
+- type: swBillPreset
+  id: SWBillDetente
+  name: Разрядка с Империей
+  description: Уступки и переговоры ради ослабления напряжённости.
+  order: 29
+  effects:
+    SWStatEmpireBorder: 9
+    SWStatFleet: -4
+    SWStatMorale: -3
+
+- type: swBillPreset
+  id: SWBillBorderReadiness
+  name: Военная готовность на границе
+  description: Демонстрация силы и боевая готовность против Империи.
+  order: 30
+  effects:
+    SWStatEmpireBorder: 6
+    SWStatFleet: 4
+    SWStatArmy: 3
+    SWStatTreasury: -7
+
+- type: swBillPreset
+  id: SWBillMutualPacts
+  name: Пакты о взаимопомощи
+  description: Заключение оборонных и торговых союзов.
+  order: 31
+  effects:
+    SWStatTreaties: 8
+    SWStatNeutral: 4
+    SWStatTreasury: -4
+
+- type: swBillPreset
+  id: SWBillBillOfRights
+  name: Билль о правах
+  description: Закрепление гражданских свобод и защита от произвола.
+  order: 32
+  effects:
+    SWStatRights: 9
+    SWStatMorale: 4
+    SWStatPolice: -4
+    SWStatCensorship: -5
+
+- type: swBillPreset
+  id: SWBillNationalSpirit
+  name: Кампания национального духа
+  description: Патриотическая пропаганда для поднятия морали.
+  order: 33
+  effects:
+    SWStatMorale: 9
+    SWStatCensorship: 3
+    SWStatTreasury: -4
+
+- type: swBillPreset
+  id: SWBillLivingStandards
+  name: Повышение уровня жизни
+  description: Программы жилья, питания и услуг для граждан.
+  order: 34
+  effects:
+    SWStatLiving: 8
+    SWStatEmployment: 4
+    SWStatTreasury: -7
+
+- type: swBillPreset
+  id: SWBillCrimeCrackdown
+  name: Борьба с преступностью
+  description: Жёсткие меры против организованной преступности.
+  order: 35
+  effects:
+    SWStatCrime: 8
+    SWStatPolice: 5
+    SWStatRights: -4
+
+- type: swBillPreset
+  id: SWBillRefugeeSupport
+  name: Поддержка беженцев
+  description: Приём и обеспечение беженцев из приграничных миров.
+  order: 36
+  effects:
+    SWStatWelfare: 6
+    SWStatLiving: 4
+    SWStatCoverage: 3
+    SWStatTreasury: -7

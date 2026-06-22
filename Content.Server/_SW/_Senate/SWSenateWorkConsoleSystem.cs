@@ -37,6 +37,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateTakeOfficeMessage>(OnTakeOffice);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateResignMessage>(OnResign);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSubmitBillMessage>(OnSubmitBill);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSubmitPresetMessage>(OnSubmitPreset);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateScheduleSessionMessage>(OnScheduleSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRemoveSessionMessage>(OnRemoveSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateConfirmSessionMessage>(OnConfirmSession);
@@ -215,6 +216,47 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
+    private void OnSubmitPreset(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSubmitPresetMessage args)
+    {
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null
+            || !TryComp<SWSenatePositionCardComponent>(card, out var position)
+            || position.Position != SWSenatePosition.Senator)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-not-senator"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.HasActiveBill(Name(args.Actor)))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-already-active"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (!_proto.TryIndex<SWBillPresetPrototype>(args.PresetId, out var preset))
+            return;
+
+        var effects = new Dictionary<string, float>();
+        foreach (var (subId, rawDelta) in preset.Effects)
+        {
+            if (!_proto.HasIndex<SWStatPrototype>(subId))
+                continue;
+
+            var delta = Math.Clamp(rawDelta, -ent.Comp.MaxEffect, ent.Comp.MaxEffect);
+            if (delta == 0)
+                continue;
+
+            effects[subId] = delta;
+        }
+
+        if (effects.Count == 0)
+            return;
+
+        _senate.SubmitBill(preset.Name, preset.Description, Name(args.Actor), effects);
+        _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
     private void OnOpened(EntityUid uid, SWSenateWorkConsoleComponent comp, BoundUIOpenedEvent args)
     {
         UpdateUi((uid, comp));
@@ -334,6 +376,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.Globals = _senate.BuildGlobalEntries();
         state.Roster = BuildRoster();
         state.Bills = _senate.BuildBillEntries();
+        state.Presets = _senate.BuildBillPresets();
         state.DraftBudget = ent.Comp.DraftBudget;
         state.GameTime = _time.TimeString();
         state.Schedule = _senate.BuildScheduleRows();

@@ -12,13 +12,10 @@ namespace Content.Client._SW._Senate;
 [GenerateTypedNameReferences]
 public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 {
-    private const int DraftTabIndex = 3;
-    private const int AgendaTabIndex = 4;
-    private const int ScheduleTabIndex = 5;
-    private const int AnnounceTabIndex = 6;
     private const float MaxEffect = 10f;
 
     private readonly SWSenateWorkConsoleBoundUserInterface _owner;
+    private (Button Nav, Control Panel)[] _sections = System.Array.Empty<(Button, Control)>();
     private readonly Dictionary<string, Slider> _draftSliders = new();
     private readonly Dictionary<string, Label> _draftValueLabels = new();
     private bool _draftBuilt;
@@ -33,13 +30,27 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         RobustXamlLoader.Load(this);
         _owner = owner;
 
-        Tabs.SetTabTitle(0, "Должность");
-        Tabs.SetTabTitle(1, "Состав Сената");
-        Tabs.SetTabTitle(2, "Сводка");
-        Tabs.SetTabTitle(DraftTabIndex, "Разработка");
-        Tabs.SetTabTitle(AgendaTabIndex, "Повестка");
-        Tabs.SetTabTitle(ScheduleTabIndex, "Расписание");
-        Tabs.SetTabTitle(AnnounceTabIndex, "Объявление");
+        _sections = new (Button, Control)[]
+        {
+            (NavOffice, OfficeTab),
+            (NavRoster, RosterScroll),
+            (NavSummary, DashScroll),
+            (NavDraft, DraftTab),
+            (NavAgenda, AgendaScroll),
+            (NavSchedule, ScheduleTab),
+            (NavAnnounce, AnnounceTab),
+        };
+        foreach (var (nav, panel) in _sections)
+        {
+            var target = panel;
+            nav.OnPressed += _ => ShowSection(target);
+        }
+
+        DraftModeCustom.OnPressed += _ => ShowDraftMode(true);
+        DraftModePreset.OnPressed += _ => ShowDraftMode(false);
+
+        ShowSection(OfficeTab);
+        ShowDraftMode(true);
 
         AnnounceButton.OnPressed += _ =>
         {
@@ -101,10 +112,19 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         var isSenator = state.IsSenateCard && state.Position == SWSenatePosition.Senator;
         var isLeader = state.IsSenateCard
             && (state.Position == SWSenatePosition.Speaker || state.Position == SWSenatePosition.Chancellor);
-        Tabs.SetTabVisible(DraftTabIndex, isSenator);
-        Tabs.SetTabVisible(AgendaTabIndex, state.IsSenateCard);
-        Tabs.SetTabVisible(ScheduleTabIndex, state.IsSenateCard);
-        Tabs.SetTabVisible(AnnounceTabIndex, isLeader && state.InOffice);
+        NavDraft.Visible = isSenator;
+        NavAgenda.Visible = state.IsSenateCard;
+        NavSchedule.Visible = state.IsSenateCard;
+        NavAnnounce.Visible = isLeader && state.InOffice;
+
+        foreach (var (nav, panel) in _sections)
+        {
+            if (panel.Visible && !nav.Visible)
+            {
+                ShowSection(OfficeTab);
+                break;
+            }
+        }
 
         if (!_draftBuilt && state.Globals.Count > 0)
             BuildDraft(state);
@@ -113,6 +133,71 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BuildDashboard(state);
         BuildAgenda(state);
         BuildSchedule(state);
+        BuildPresets(state);
+    }
+
+    private void ShowSection(Control target)
+    {
+        foreach (var (nav, panel) in _sections)
+        {
+            panel.Visible = panel == target;
+            nav.Disabled = panel == target;
+        }
+    }
+
+    private void ShowDraftMode(bool custom)
+    {
+        CustomDraftPanel.Visible = custom;
+        PresetPanel.Visible = !custom;
+        DraftModeCustom.Disabled = custom;
+        DraftModePreset.Disabled = !custom;
+    }
+
+    private void BuildPresets(SWSenateWorkConsoleState state)
+    {
+        PresetsList.RemoveAllChildren();
+        if (state.Presets.Count == 0)
+        {
+            PresetsList.AddChild(new Label { Text = "Шаблонов нет." });
+            return;
+        }
+
+        foreach (var preset in state.Presets)
+        {
+            var box = new BoxContainer
+            {
+                Orientation = BoxContainer.LayoutOrientation.Vertical,
+                Margin = new Thickness(0, 2, 0, 8),
+            };
+
+            box.AddChild(new Label { Text = preset.Name, StyleClasses = { "LabelKeyText" } });
+
+            if (!string.IsNullOrWhiteSpace(preset.Description))
+            {
+                var desc = new RichTextLabel { Margin = new Thickness(0, 1, 0, 2) };
+                desc.SetMessage(preset.Description);
+                box.AddChild(desc);
+            }
+
+            var effectsRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
+            foreach (var effect in preset.Effects)
+            {
+                effectsRow.AddChild(new Label
+                {
+                    Text = $"{effect.StatName} {effect.Delta:+0;-0}",
+                    FontColorOverride = effect.Color,
+                    Margin = new Thickness(0, 0, 10, 0),
+                });
+            }
+            box.AddChild(effectsRow);
+
+            var id = preset.Id;
+            var submit = new Button { Text = "Внести", Margin = new Thickness(0, 2, 0, 0), HorizontalAlignment = Control.HAlignment.Left };
+            submit.OnPressed += _ => _owner.SubmitPreset(id);
+            box.AddChild(submit);
+
+            PresetsList.AddChild(box);
+        }
     }
 
     private void BuildRoster(SWSenateWorkConsoleState state)

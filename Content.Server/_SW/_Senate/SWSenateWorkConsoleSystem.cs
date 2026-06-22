@@ -22,6 +22,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateFloorSystem _floor = default!;
+    [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
     private const float UpdateInterval = 3f;
@@ -38,6 +39,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateResignMessage>(OnResign);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSubmitBillMessage>(OnSubmitBill);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSubmitPresetMessage>(OnSubmitPreset);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateResolveDilemmaMessage>(OnResolveDilemma);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateScheduleSessionMessage>(OnScheduleSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRemoveSessionMessage>(OnRemoveSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateConfirmSessionMessage>(OnConfirmSession);
@@ -171,6 +173,12 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             return;
         }
 
+        if (!TryComp<SWSenateSectorComponent>(card, out var billSector) || billSector.Sector is not { } billSectorId || !_senate.IsClaimed(billSectorId))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-senator-hint"), args.Actor, PopupType.Medium);
+            return;
+        }
+
         var name = args.Name.Trim();
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -227,6 +235,12 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             return;
         }
 
+        if (!TryComp<SWSenateSectorComponent>(card, out var presetSector) || presetSector.Sector is not { } presetSectorId || !_senate.IsClaimed(presetSectorId))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-senator-hint"), args.Actor, PopupType.Medium);
+            return;
+        }
+
         if (_senate.HasActiveBill(Name(args.Actor)))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-bill-already-active"), args.Actor, PopupType.Medium);
@@ -254,6 +268,38 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
         _senate.SubmitBill(preset.Name, preset.Description, Name(args.Actor), effects);
         _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private string? GetDilemmaOwner(Entity<SWSenateWorkConsoleComponent> ent)
+    {
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null || !TryComp<SWSenatePositionCardComponent>(card, out var position))
+            return null;
+
+        if (position.Position == SWSenatePosition.Senator)
+        {
+            if (TryComp<SWSenateSectorComponent>(card, out var sector) && sector.Sector is { } claimed && _senate.IsClaimed(claimed))
+                return claimed;
+
+            return null;
+        }
+
+        if (position.Position == SWSenatePosition.Chancellor && _senate.Chancellor != null)
+            return SWSenateDilemmaSystem.RepublicOwner;
+
+        return null;
+    }
+
+    private void OnResolveDilemma(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateResolveDilemmaMessage args)
+    {
+        var owner = GetDilemmaOwner(ent);
+        if (owner == null)
+            return;
+
+        if (_dilemma.Resolve(args.DilemmaId, args.OptionIndex, owner))
+            _popup.PopupCursor(Loc.GetString("sw-senate-dilemma-resolved"), args.Actor, PopupType.Medium);
+
         UpdateUi(ent);
     }
 
@@ -377,6 +423,10 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.Roster = BuildRoster();
         state.Bills = _senate.BuildBillEntries();
         state.Presets = _senate.BuildBillPresets();
+        state.AllDilemmas = _dilemma.BuildAllDilemmas();
+        var dilemmaOwner = GetDilemmaOwner(ent);
+        state.MyDilemmas = _dilemma.BuildOwnerDilemmas(dilemmaOwner);
+        state.CanDilemmas = dilemmaOwner != null;
         state.DraftBudget = ent.Comp.DraftBudget;
         state.GameTime = _time.TimeString();
         state.Schedule = _senate.BuildScheduleRows();

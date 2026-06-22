@@ -197,6 +197,24 @@ public sealed class SWSenateStateSystem : EntitySystem
         return list;
     }
 
+    public void AddPolicy(string subId, float delta)
+    {
+        if (!_proto.TryIndex<SWStatPrototype>(subId, out var sub))
+            return;
+
+        var value = _republicSubStats.TryGetValue(subId, out var current) ? current : sub.Default;
+        _republicSubStats[subId] = Math.Clamp(value + delta, sub.Min, sub.Max);
+    }
+
+    public void AddSectorBias(string sectorId, string globalId, float delta)
+    {
+        if (!_sectorBias.TryGetValue(sectorId, out var bias))
+            return;
+
+        var value = bias.TryGetValue(globalId, out var current) ? current : 0f;
+        bias[globalId] = Math.Clamp(value + delta, -50f, 50f);
+    }
+
     public bool IsClaimed(string sectorId) => _sectorHolders.ContainsKey(sectorId);
 
     public string? GetSectorHolder(string sectorId) =>

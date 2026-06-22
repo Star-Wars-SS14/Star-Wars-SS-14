@@ -18,6 +18,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     private (Button Nav, Control Panel)[] _sections = System.Array.Empty<(Button, Control)>();
     private readonly Dictionary<string, Slider> _draftSliders = new();
     private readonly Dictionary<string, Label> _draftValueLabels = new();
+    private readonly HashSet<int> _expandedDilemmas = new();
     private bool _draftBuilt;
     private int _draftBudget;
 
@@ -38,6 +39,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             (NavDraft, DraftTab),
             (NavAgenda, AgendaScroll),
             (NavSchedule, ScheduleTab),
+            (NavDilemmas, DilemmaTab),
             (NavAnnounce, AnnounceTab),
         };
         foreach (var (nav, panel) in _sections)
@@ -49,8 +51,13 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         DraftModeCustom.OnPressed += _ => ShowDraftMode(true);
         DraftModePreset.OnPressed += _ => ShowDraftMode(false);
 
+        DilemmaModeActive.OnPressed += _ => ShowDilemmaMode(0);
+        DilemmaModeBudget.OnPressed += _ => ShowDilemmaMode(1);
+        DilemmaModeSummary.OnPressed += _ => ShowDilemmaMode(2);
+
         ShowSection(OfficeTab);
         ShowDraftMode(true);
+        ShowDilemmaMode(0);
 
         AnnounceButton.OnPressed += _ =>
         {
@@ -112,9 +119,10 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         var isSenator = state.IsSenateCard && state.Position == SWSenatePosition.Senator;
         var isLeader = state.IsSenateCard
             && (state.Position == SWSenatePosition.Speaker || state.Position == SWSenatePosition.Chancellor);
-        NavDraft.Visible = isSenator;
-        NavAgenda.Visible = state.IsSenateCard;
-        NavSchedule.Visible = state.IsSenateCard;
+        NavDraft.Visible = isSenator && state.InOffice;
+        NavAgenda.Visible = state.IsSenateCard && state.InOffice;
+        NavSchedule.Visible = state.IsSenateCard && state.InOffice;
+        NavDilemmas.Visible = state.CanDilemmas && state.InOffice;
         NavAnnounce.Visible = isLeader && state.InOffice;
 
         foreach (var (nav, panel) in _sections)
@@ -134,6 +142,190 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BuildAgenda(state);
         BuildSchedule(state);
         BuildPresets(state);
+        BuildDilemmas(state);
+    }
+
+    private void ShowDilemmaMode(int mode)
+    {
+        DilemmaActivePanel.Visible = mode == 0;
+        DilemmaBudgetPanel.Visible = mode == 1;
+        DilemmaSummaryPanel.Visible = mode == 2;
+        DilemmaModeActive.Disabled = mode == 0;
+        DilemmaModeBudget.Disabled = mode == 1;
+        DilemmaModeSummary.Disabled = mode == 2;
+    }
+
+    private void BuildDilemmas(SWSenateWorkConsoleState state)
+    {
+        DilemmaActiveList.RemoveAllChildren();
+        if (state.MyDilemmas.Count == 0)
+        {
+            DilemmaActiveList.AddChild(new Label { Text = "Активных дилемм нет.", FontColorOverride = Color.Gray });
+        }
+        else
+        {
+            foreach (var dilemma in state.MyDilemmas)
+                DilemmaActiveList.AddChild(MakeDilemmaCard(dilemma));
+        }
+
+        DilemmaSummaryList.RemoveAllChildren();
+        if (state.AllDilemmas.Count == 0)
+        {
+            DilemmaSummaryList.AddChild(new Label { Text = "Дилемм пока нет.", FontColorOverride = Color.Gray });
+            return;
+        }
+
+        foreach (var dilemma in state.AllDilemmas)
+            DilemmaSummaryList.AddChild(MakeSummaryEntry(dilemma));
+    }
+
+    private Control MakeDilemmaCard(SWDilemmaEntry dilemma)
+    {
+        var box = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            Margin = new Thickness(0, 2, 0, 10),
+        };
+
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
+        head.AddChild(new Label { Text = dilemma.Name, StyleClasses = { "LabelKeyText" }, HorizontalExpand = true });
+        head.AddChild(new Label { Text = dilemma.TimeLabel, FontColorOverride = Color.Goldenrod });
+        box.AddChild(head);
+
+        if (!string.IsNullOrWhiteSpace(dilemma.Description))
+        {
+            var desc = new RichTextLabel { Margin = new Thickness(0, 2, 0, 4) };
+            desc.SetMessage(dilemma.Description);
+            box.AddChild(desc);
+        }
+
+        for (var i = 0; i < dilemma.Options.Count; i++)
+        {
+            var option = dilemma.Options[i];
+            var optionBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, Margin = new Thickness(0, 1, 0, 4) };
+
+            var optionRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
+            var index = i;
+            var id = dilemma.Id;
+            var button = new Button
+            {
+                Text = option.Label,
+                Disabled = !dilemma.CanResolve,
+                HorizontalExpand = true,
+                HorizontalAlignment = Control.HAlignment.Left,
+            };
+            if (dilemma.ChosenOption == i)
+                button.Text = $"{option.Label} (выбрано)";
+            button.OnPressed += _ => _owner.ResolveDilemma(id, index);
+            optionRow.AddChild(button);
+            optionBox.AddChild(optionRow);
+
+            var effects = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(8, 0, 0, 0) };
+            foreach (var effect in option.Effects)
+            {
+                effects.AddChild(new Label
+                {
+                    Text = $"{effect.StatName} {effect.Delta:+0;-0}",
+                    FontColorOverride = effect.Color,
+                    Margin = new Thickness(0, 0, 10, 0),
+                });
+            }
+            optionBox.AddChild(effects);
+
+            box.AddChild(optionBox);
+        }
+
+        if (dilemma.ChosenOption < 0 && (dilemma.FailEffects.Count > 0 || !string.IsNullOrWhiteSpace(dilemma.FailText)))
+        {
+            box.AddChild(new Label
+            {
+                Text = "Срочно! При отсутствии решения наступит провал:",
+                FontColorOverride = Color.IndianRed,
+                Margin = new Thickness(0, 4, 0, 0),
+            });
+            if (!string.IsNullOrWhiteSpace(dilemma.FailText))
+                box.AddChild(new Label { Text = dilemma.FailText, FontColorOverride = Color.IndianRed, Margin = new Thickness(8, 0, 0, 0) });
+            if (dilemma.FailEffects.Count > 0)
+                box.AddChild(MakeEffectsRow(dilemma.FailEffects));
+        }
+
+        return box;
+    }
+
+    private static Control MakeEffectsRow(List<SWBillEffectEntry> effects)
+    {
+        var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(8, 0, 0, 0) };
+        foreach (var effect in effects)
+        {
+            row.AddChild(new Label
+            {
+                Text = $"{effect.StatName} {effect.Delta:+0;-0}",
+                FontColorOverride = effect.Color,
+                Margin = new Thickness(0, 0, 10, 0),
+            });
+        }
+
+        return row;
+    }
+
+    private Control MakeSummaryEntry(SWDilemmaEntry dilemma)
+    {
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, Margin = new Thickness(0, 1, 0, 2) };
+
+        var header = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
+        header.AddChild(new Label
+        {
+            Text = $"{dilemma.OwnerLabel}: {dilemma.Name}",
+            FontColorOverride = dilemma.IsRepublic ? Color.Gold : Color.White,
+            HorizontalExpand = true,
+        });
+        header.AddChild(new Label { Text = dilemma.Status, FontColorOverride = Color.Gray, Margin = new Thickness(0, 0, 8, 0) });
+
+        var expanded = _expandedDilemmas.Contains(dilemma.Id);
+        var details = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, Margin = new Thickness(12, 2, 0, 6), Visible = expanded };
+
+        var id = dilemma.Id;
+        var toggle = new Button { Text = expanded ? "Скрыть" : "Подробнее" };
+        toggle.OnPressed += _ =>
+        {
+            if (!_expandedDilemmas.Add(id))
+                _expandedDilemmas.Remove(id);
+            var now = _expandedDilemmas.Contains(id);
+            details.Visible = now;
+            toggle.Text = now ? "Скрыть" : "Подробнее";
+        };
+        header.AddChild(toggle);
+        box.AddChild(header);
+
+        if (!string.IsNullOrWhiteSpace(dilemma.Description))
+        {
+            var desc = new RichTextLabel { Margin = new Thickness(0, 0, 0, 4) };
+            desc.SetMessage(dilemma.Description);
+            details.AddChild(desc);
+        }
+
+        for (var i = 0; i < dilemma.Options.Count; i++)
+        {
+            var option = dilemma.Options[i];
+            details.AddChild(new Label
+            {
+                Text = dilemma.ChosenOption == i ? $"{option.Label} (выбрано)" : option.Label,
+                FontColorOverride = dilemma.ChosenOption == i ? Color.LightGreen : Color.LightGray,
+                Margin = new Thickness(0, 1, 0, 0),
+            });
+            details.AddChild(MakeEffectsRow(option.Effects));
+        }
+
+        if (dilemma.FailEffects.Count > 0 || !string.IsNullOrWhiteSpace(dilemma.FailText))
+        {
+            var failHeader = string.IsNullOrWhiteSpace(dilemma.FailText) ? "При провале:" : $"При провале: {dilemma.FailText}";
+            details.AddChild(new Label { Text = failHeader, FontColorOverride = Color.IndianRed, Margin = new Thickness(0, 2, 0, 0) });
+            if (dilemma.FailEffects.Count > 0)
+                details.AddChild(MakeEffectsRow(dilemma.FailEffects));
+        }
+
+        box.AddChild(details);
+        return box;
     }
 
     private void ShowSection(Control target)

@@ -168,6 +168,47 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public List<int> FreeStartHours = new();
     public List<SWSessionEntry> PendingSessions = new();
     public List<SWBillPresetEntry> Presets = new();
+    public bool CanDilemmas;
+    public List<SWDilemmaEntry> MyDilemmas = new();
+    public List<SWDilemmaEntry> AllDilemmas = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDilemmaOptionEntry
+{
+    public string Label = string.Empty;
+    public string Description = string.Empty;
+    public List<SWBillEffectEntry> Effects = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDilemmaEntry
+{
+    public int Id;
+    public string Name = string.Empty;
+    public string Description = string.Empty;
+    public bool IsRepublic;
+    public string OwnerLabel = string.Empty;
+    public string Status = string.Empty;
+    public string TimeLabel = string.Empty;
+    public int ChosenOption = -1;
+    public bool CanResolve;
+    public string FailText = string.Empty;
+    public List<SWDilemmaOptionEntry> Options = new();
+    public List<SWBillEffectEntry> FailEffects = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateResolveDilemmaMessage : BoundUserInterfaceMessage
+{
+    public int DilemmaId;
+    public int OptionIndex;
+
+    public SWSenateResolveDilemmaMessage(int dilemmaId, int optionIndex)
+    {
+        DilemmaId = dilemmaId;
+        OptionIndex = optionIndex;
+    }
 }
 
 [Serializable, NetSerializable]

@@ -70,3 +70,5 @@ sw-senate-floor-none = Очередь пуста.
 sw-senate-floor-speaker-on = Ваша трибуна включена.
 sw-senate-floor-speaker-off = Ваша трибуна выключена.
 sw-senate-floor-granted-announce = Слово предоставлено: {$name}.
+
+sw-senate-dilemma-resolved = Решение по дилемме принято.

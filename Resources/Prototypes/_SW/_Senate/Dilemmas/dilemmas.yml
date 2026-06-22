@@ -1,0 +1,1478 @@
+- type: swDilemma
+  id: SWDilemmaSecPlague
+  name: Вспышка болезни
+  description: В густонаселённых районах сектора вспыхнула опасная инфекция. Медики просят немедленных мер.
+  scope: Sectoral
+  order: 0
+  failText: Эпидемия выходит из-под контроля
+  options:
+  - label: Ввести карантин
+    description: Жёсткие меры остановят болезнь, но ударят по экономике.
+    sectorEffects:
+      SWGlobalHealthcare: 6
+      SWGlobalEconomy: -4
+  - label: Запросить помощь Республики
+    description: Помощь придёт, но не сразу.
+    sectorEffects:
+      SWGlobalHealthcare: 4
+      SWGlobalSociety: 2
+  - label: Списать на панику
+    description: Сэкономим средства, но рискуем жизнями.
+    sectorEffects:
+      SWGlobalEconomy: 2
+      SWGlobalHealthcare: -3
+  failSectorEffects:
+    SWGlobalHealthcare: -6
+    SWGlobalSociety: -4
+
+- type: swDilemma
+  id: SWDilemmaSecStrike
+  name: Забастовка рабочих
+  description: Профсоюзы сектора остановили производство, требуя улучшения условий.
+  scope: Sectoral
+  order: 1
+  failText: Производство встаёт, растёт недовольство
+  options:
+  - label: Уступить требованиям
+    sectorEffects:
+      SWGlobalSociety: 4
+      SWGlobalIndustry: -3
+      SWGlobalEconomy: -2
+  - label: Подавить силой
+    sectorEffects:
+      SWGlobalSecurity: 3
+      SWGlobalIndustry: 3
+      SWGlobalSociety: -5
+  failSectorEffects:
+    SWGlobalIndustry: -5
+    SWGlobalSociety: -3
+
+- type: swDilemma
+  id: SWDilemmaSecPirates
+  name: Пираты у границ сектора
+  description: Пиратские эскадры нападают на торговые суда в системе.
+  scope: Sectoral
+  order: 2
+  failText: Пираты грабят сектор безнаказанно
+  options:
+  - label: Послать флот
+    sectorEffects:
+      SWGlobalDefense: 5
+      SWGlobalEconomy: -3
+  - label: Откупиться
+    sectorEffects:
+      SWGlobalEconomy: -4
+      SWGlobalSociety: 2
+  failSectorEffects:
+    SWGlobalEconomy: -5
+    SWGlobalDefense: -3
+
+- type: swDilemma
+  id: SWDilemmaSecProtest
+  name: Массовые протесты
+  description: Граждане сектора вышли на улицы против политики Республики.
+  scope: Sectoral
+  order: 3
+  failText: Протесты перерастают в беспорядки
+  options:
+  - label: Начать диалог
+    sectorEffects:
+      SWGlobalSociety: 5
+      SWGlobalSecurity: -2
+  - label: Комендантский час
+    sectorEffects:
+      SWGlobalSecurity: 4
+      SWGlobalSociety: -5
+  failSectorEffects:
+    SWGlobalSociety: -6
+    SWGlobalSecurity: -3
+
+- type: swDilemma
+  id: SWDilemmaSecFactory
+  name: Авария на заводе
+  description: На крупном предприятии произошла авария с выбросом токсинов.
+  scope: Sectoral
+  order: 4
+  failText: Завод отравляет округу
+  options:
+  - label: Закрыть на ремонт
+    sectorEffects:
+      SWGlobalHealthcare: 3
+      SWGlobalIndustry: -2
+  - label: Продолжить работу
+    sectorEffects:
+      SWGlobalIndustry: 4
+      SWGlobalHealthcare: -4
+  failSectorEffects:
+    SWGlobalIndustry: -5
+    SWGlobalHealthcare: -3
+
+- type: swDilemma
+  id: SWDilemmaSecSchool
+  name: Кризис образования
+  description: Учебные заведения сектора закрываются из-за нехватки средств.
+  scope: Sectoral
+  order: 5
+  failText: Школы закрываются, молодёжь без будущего
+  options:
+  - label: Финансировать школы
+    sectorEffects:
+      SWGlobalEducation: 6
+      SWGlobalEconomy: -3
+  - label: Оставить как есть
+    sectorEffects:
+      SWGlobalEconomy: 1
+      SWGlobalEducation: -3
+  failSectorEffects:
+    SWGlobalEducation: -5
+    SWGlobalSociety: -2
+
+- type: swDilemma
+  id: SWDilemmaRepBorder
+  name: Имперская провокация на границе
+  description: Имперский флот демонстративно вошёл в приграничное пространство Республики.
+  scope: Republic
+  order: 6
+  failText: Империя укрепляется на границе
+  options:
+  - label: Усилить флот
+    policyEffects:
+      SWStatFleet: 6
+      SWStatTreasury: -5
+  - label: Дипломатический протест
+    policyEffects:
+      SWStatEmpireBorder: 4
+      SWStatMorale: -2
+  - label: Отступить
+    policyEffects:
+      SWStatEmpireBorder: 6
+      SWStatFleet: -4
+      SWStatMorale: -4
+  failPolicyEffects:
+    SWStatEmpireBorder: -6
+    SWStatMorale: -4
+
+- type: swDilemma
+  id: SWDilemmaRepBudget
+  name: Бюджетный кризис
+  description: Казна Республики на исходе. Нужны срочные меры.
+  scope: Republic
+  order: 7
+  failText: Казна пустеет, долги растут
+  options:
+  - label: Поднять налоги
+    policyEffects:
+      SWStatTaxes: 6
+      SWStatTreasury: 5
+      SWStatMorale: -4
+  - label: Урезать расходы
+    policyEffects:
+      SWStatTreasury: 6
+      SWStatWelfare: -5
+  failPolicyEffects:
+    SWStatTreasury: -6
+    SWStatEmployment: -4
+
+- type: swDilemma
+  id: SWDilemmaRepScandal
+  name: Коррупционный скандал
+  description: В прессу утекли документы о коррупции в высших эшелонах власти.
+  scope: Republic
+  order: 8
+  failText: Доверие к власти рушится
+  options:
+  - label: Публичное расследование
+    policyEffects:
+      SWStatCrime: 5
+      SWStatMorale: 3
+      SWStatCensorship: -3
+  - label: Замять дело
+    policyEffects:
+      SWStatCensorship: 4
+      SWStatMorale: -5
+  failPolicyEffects:
+    SWStatMorale: -6
+    SWStatCrime: -3
+
+- type: swDilemma
+  id: SWDilemmaRepJedi
+  name: Запрос Ордена джедаев
+  description: Совет джедаев просит у Сената поддержки для миссии на спорных мирах.
+  scope: Republic
+  order: 9
+  failText: Орден отворачивается от Сената
+  options:
+  - label: Поддержать джедаев
+    policyEffects:
+      SWStatTreaties: 5
+      SWStatMorale: 3
+      SWStatTreasury: -3
+  - label: Отказать
+    policyEffects:
+      SWStatTreasury: 2
+      SWStatMorale: -3
+      SWStatNeutral: -2
+  failPolicyEffects:
+    SWStatMorale: -4
+    SWStatTreaties: -4
+
+- type: swDilemma
+  id: SWDilemmaSecDrought
+  name: Засуха и голод
+  description: Неурожай грозит сектору голодом. Запасы продовольствия тают.
+  scope: Sectoral
+  order: 10
+  failText: Голод косит население
+  options:
+  - label: Раздать стратегические запасы
+    sectorEffects:
+      SWGlobalHealthcare: 5
+      SWGlobalEconomy: -4
+  - label: Ввести нормирование
+    sectorEffects:
+      SWGlobalSociety: -3
+      SWGlobalHealthcare: 2
+      SWGlobalEconomy: 2
+  failSectorEffects:
+    SWGlobalHealthcare: -6
+    SWGlobalSociety: -4
+
+- type: swDilemma
+  id: SWDilemmaSecBlackout
+  name: Энергетический кризис
+  description: Энергосети сектора перегружены, города погружаются во тьму.
+  scope: Sectoral
+  order: 11
+  failText: Сектор погружается во тьму
+  options:
+  - label: Срочно построить реактор
+    sectorEffects:
+      SWGlobalIndustry: 5
+      SWGlobalEconomy: -3
+  - label: Веерные отключения
+    sectorEffects:
+      SWGlobalSociety: -4
+      SWGlobalIndustry: 2
+  failSectorEffects:
+    SWGlobalIndustry: -5
+    SWGlobalSociety: -3
+
+- type: swDilemma
+  id: SWDilemmaSecSmuggling
+  name: Контрабандный синдикат
+  description: В секторе разрослась сеть контрабандистов, подрывающая порядок.
+  scope: Sectoral
+  order: 12
+  failText: Контрабандисты захватывают рынки
+  options:
+  - label: Облава на синдикат
+    sectorEffects:
+      SWGlobalSecurity: 5
+      SWGlobalEconomy: -2
+  - label: Закрыть глаза за откат
+    sectorEffects:
+      SWGlobalEconomy: 3
+      SWGlobalSecurity: -4
+  failSectorEffects:
+    SWGlobalSecurity: -5
+    SWGlobalEconomy: -2
+
+- type: swDilemma
+  id: SWDilemmaSecRefugees
+  name: Поток беженцев
+  description: В сектор хлынули беженцы с приграничных миров.
+  scope: Sectoral
+  order: 13
+  failText: Лагеря беженцев выходят из-под контроля
+  options:
+  - label: Принять и расселить
+    sectorEffects:
+      SWGlobalSociety: 4
+      SWGlobalEconomy: -4
+  - label: Закрыть границы
+    sectorEffects:
+      SWGlobalSecurity: 2
+      SWGlobalSociety: -4
+  failSectorEffects:
+    SWGlobalSociety: -5
+    SWGlobalHealthcare: -3
+
+- type: swDilemma
+  id: SWDilemmaSecNobles
+  name: Распри дворянских домов
+  description: Знатные дома сектора балансируют на грани вооружённого конфликта.
+  scope: Sectoral
+  order: 14
+  failText: Дворяне развязывают усобицу
+  options:
+  - label: Принудить к миру
+    sectorEffects:
+      SWGlobalSecurity: 4
+      SWGlobalSociety: 2
+  - label: Поддержать сильнейший дом
+    sectorEffects:
+      SWGlobalEconomy: 3
+      SWGlobalSociety: -4
+  failSectorEffects:
+    SWGlobalSociety: -5
+    SWGlobalSecurity: -4
+
+- type: swDilemma
+  id: SWDilemmaSecDroids
+  name: Сбой дроидов
+  description: Промышленные дроиды сектора начали выходить из строя и нападать.
+  scope: Sectoral
+  order: 15
+  failText: Взбунтовавшиеся дроиды сеют хаос
+  options:
+  - label: Полная перезагрузка систем
+    sectorEffects:
+      SWGlobalIndustry: -3
+      SWGlobalSecurity: 4
+  - label: Отключить протоколы безопасности
+    sectorEffects:
+      SWGlobalIndustry: 4
+      SWGlobalSecurity: -4
+  failSectorEffects:
+    SWGlobalIndustry: -5
+    SWGlobalSecurity: -4
+
+- type: swDilemma
+  id: SWDilemmaSecSpice
+  name: Эпидемия спайса
+  description: Сектор захлестнула волна наркотической зависимости.
+  scope: Sectoral
+  order: 16
+  failText: Наркоэпидемия захлёстывает сектор
+  options:
+  - label: Лечение и реабилитация
+    sectorEffects:
+      SWGlobalHealthcare: 5
+      SWGlobalEconomy: -3
+  - label: Жёсткие репрессии
+    sectorEffects:
+      SWGlobalSecurity: 4
+      SWGlobalSociety: -3
+  failSectorEffects:
+    SWGlobalHealthcare: -4
+    SWGlobalSociety: -4
+
+- type: swDilemma
+  id: SWDilemmaSecSpaceport
+  name: Расширение космопорта
+  description: Сектор может построить крупный космопорт, но ценой жилых районов.
+  scope: Sectoral
+  order: 17
+  failText: Инвесторы уходят, проект сорван
+  options:
+  - label: Одобрить стройку
+    sectorEffects:
+      SWGlobalEconomy: 5
+      SWGlobalSociety: -3
+  - label: Сохранить кварталы
+    sectorEffects:
+      SWGlobalSociety: 3
+      SWGlobalEconomy: -2
+  failSectorEffects:
+    SWGlobalEconomy: -3
+    SWGlobalSociety: -3
+
+- type: swDilemma
+  id: SWDilemmaSecCult
+  name: Религиозные волнения
+  description: В секторе набирает силу радикальный культ.
+  scope: Sectoral
+  order: 18
+  failText: Культ радикализируется
+  options:
+  - label: Запретить культ
+    sectorEffects:
+      SWGlobalSecurity: 3
+      SWGlobalSociety: -3
+  - label: Вступить в диалог
+    sectorEffects:
+      SWGlobalSociety: 4
+      SWGlobalSecurity: -2
+  failSectorEffects:
+    SWGlobalSociety: -5
+    SWGlobalSecurity: -3
+
+- type: swDilemma
+  id: SWDilemmaSecSlavery
+  name: Раскрыта работорговля
+  description: В секторе обнаружена подпольная работорговая сеть.
+  scope: Sectoral
+  order: 19
+  failText: Работорговцы чувствуют безнаказанность
+  options:
+  - label: Освободить и наказать
+    sectorEffects:
+      SWGlobalSociety: 5
+      SWGlobalEconomy: -3
+  - label: Тихо замять
+    sectorEffects:
+      SWGlobalEconomy: 2
+      SWGlobalSociety: -5
+  failSectorEffects:
+    SWGlobalSociety: -6
+    SWGlobalSecurity: -2
+
+- type: swDilemma
+  id: SWDilemmaSecMine
+  name: Обвал на шахте
+  description: Крупная авария на руднике сектора унесла жизни шахтёров.
+  scope: Sectoral
+  order: 20
+  failText: Новые жертвы на рудниках
+  options:
+  - label: Усилить технику безопасности
+    sectorEffects:
+      SWGlobalHealthcare: 4
+      SWGlobalIndustry: -3
+  - label: Возобновить добычу немедленно
+    sectorEffects:
+      SWGlobalIndustry: 4
+      SWGlobalHealthcare: -4
+  failSectorEffects:
+    SWGlobalIndustry: -4
+    SWGlobalHealthcare: -4
+
+- type: swDilemma
+  id: SWDilemmaSecGang
+  name: Война банд
+  description: Преступные кланы сектора развязали кровавую войну за территорию.
+  scope: Sectoral
+  order: 21
+  failText: Банды делят сектор кровью
+  options:
+  - label: Ввести спецотряды
+    sectorEffects:
+      SWGlobalSecurity: 5
+      SWGlobalSociety: -2
+  - label: Перемирие через посредников
+    sectorEffects:
+      SWGlobalSociety: 2
+      SWGlobalSecurity: 1
+  failSectorEffects:
+    SWGlobalSecurity: -5
+    SWGlobalSociety: -4
+
+- type: swDilemma
+  id: SWDilemmaSecBlockade
+  name: Блокада гиперпути
+  description: Ключевой торговый маршрут сектора перекрыт враждебными силами.
+  scope: Sectoral
+  order: 22
+  failText: Торговля задушена блокадой
+  options:
+  - label: Пробить блокаду флотом
+    sectorEffects:
+      SWGlobalDefense: 4
+      SWGlobalEconomy: 2
+  - label: Искать обходные пути
+    sectorEffects:
+      SWGlobalEconomy: -3
+      SWGlobalIndustry: 2
+  failSectorEffects:
+    SWGlobalEconomy: -5
+    SWGlobalDefense: -2
+
+- type: swDilemma
+  id: SWDilemmaSecFestival
+  name: Культурный фестиваль
+  description: Сектор хочет провести грандиозный праздник в честь Республики.
+  scope: Sectoral
+  order: 23
+  failText: Праздник сорван, народ разочарован
+  options:
+  - label: Профинансировать с размахом
+    sectorEffects:
+      SWGlobalSociety: 5
+      SWGlobalEconomy: -3
+  - label: Скромное мероприятие
+    sectorEffects:
+      SWGlobalSociety: 2
+  failSectorEffects:
+    SWGlobalSociety: -2
+
+- type: swDilemma
+  id: SWDilemmaSecUniversity
+  name: Скандал в академии
+  description: Ведущую академию сектора сотряс коррупционный скандал.
+  scope: Sectoral
+  order: 24
+  failText: Скандал топит репутацию академий
+  options:
+  - label: Сменить руководство
+    sectorEffects:
+      SWGlobalEducation: 4
+      SWGlobalSociety: 1
+  - label: Замолчать дело
+    sectorEffects:
+      SWGlobalSociety: -3
+      SWGlobalEducation: -2
+  failSectorEffects:
+    SWGlobalEducation: -4
+    SWGlobalSociety: -3
+
+- type: swDilemma
+  id: SWDilemmaSecSpy
+  name: Имперский шпион
+  description: В администрации сектора разоблачён имперский агент.
+  scope: Sectoral
+  order: 25
+  failText: Имперская агентура укрепляется
+  options:
+  - label: Публичный трибунал
+    sectorEffects:
+      SWGlobalSecurity: 4
+      SWGlobalDefense: 2
+  - label: Двойная игра
+    sectorEffects:
+      SWGlobalSecurity: 2
+      SWGlobalSociety: -2
+  failSectorEffects:
+    SWGlobalDefense: -4
+    SWGlobalSecurity: -3
+
+- type: swDilemma
+  id: SWDilemmaSecVeterans
+  name: Требования ветеранов
+  description: Ветераны войны в секторе требуют выплат и почестей.
+  scope: Sectoral
+  order: 26
+  failText: Ветераны чувствуют себя преданными
+  options:
+  - label: Выполнить требования
+    sectorEffects:
+      SWGlobalSociety: 4
+      SWGlobalEconomy: -3
+  - label: Отложить выплаты
+    sectorEffects:
+      SWGlobalEconomy: 2
+      SWGlobalDefense: -3
+  failSectorEffects:
+    SWGlobalSociety: -4
+    SWGlobalDefense: -3
+
+- type: swDilemma
+  id: SWDilemmaSecMonopoly
+  name: Корпоративная монополия
+  description: Мегакорпорация подмяла под себя всю экономику сектора.
+  scope: Sectoral
+  order: 27
+  failText: Корпорация диктует условия
+  options:
+  - label: Разделить монополию
+    sectorEffects:
+      SWGlobalSociety: 4
+      SWGlobalEconomy: -2
+  - label: Сотрудничать с корпорацией
+    sectorEffects:
+      SWGlobalEconomy: 4
+      SWGlobalSociety: -3
+  failSectorEffects:
+    SWGlobalEconomy: -3
+    SWGlobalSociety: -3
+
+- type: swDilemma
+  id: SWDilemmaSecFlood
+  name: Стихийное бедствие
+  description: Катаклизм разрушил инфраструктуру сектора.
+  scope: Sectoral
+  order: 28
+  failText: Последствия бедствия не устранены
+  options:
+  - label: Мобилизовать спасателей
+    sectorEffects:
+      SWGlobalHealthcare: 4
+      SWGlobalIndustry: 2
+      SWGlobalEconomy: -4
+  - label: Положиться на местных
+    sectorEffects:
+      SWGlobalSociety: -3
+  failSectorEffects:
+    SWGlobalHealthcare: -5
+    SWGlobalIndustry: -4
+
+- type: swDilemma
+  id: SWDilemmaSecSeparatist
+  name: Сепаратистская агитация
+  description: В секторе крепнут настроения за выход из Республики.
+  scope: Sectoral
+  order: 29
+  failText: Сепаратизм набирает силу
+  options:
+  - label: Уступки автономии
+    sectorEffects:
+      SWGlobalSociety: 4
+      SWGlobalSecurity: -2
+  - label: Подавить агитаторов
+    sectorEffects:
+      SWGlobalSecurity: 4
+      SWGlobalSociety: -4
+  failSectorEffects:
+    SWGlobalSociety: -5
+    SWGlobalForeign: -3
+
+- type: swDilemma
+  id: SWDilemmaSecAutomation
+  name: Волна автоматизации
+  description: Заводы сектора массово заменяют рабочих дроидами.
+  scope: Sectoral
+  order: 30
+  failText: Массовая безработица растёт
+  options:
+  - label: Поддержать модернизацию
+    sectorEffects:
+      SWGlobalIndustry: 5
+      SWGlobalSociety: -4
+  - label: Защитить рабочие места
+    sectorEffects:
+      SWGlobalSociety: 4
+      SWGlobalIndustry: -3
+  failSectorEffects:
+    SWGlobalIndustry: -3
+    SWGlobalSociety: -3
+
+- type: swDilemma
+  id: SWDilemmaSecHeritage
+  name: Угроза наследию
+  description: Древний памятник сектора под угрозой сноса ради застройки.
+  scope: Sectoral
+  order: 31
+  failText: Памятник снесён, народ возмущён
+  options:
+  - label: Сохранить памятник
+    sectorEffects:
+      SWGlobalSociety: 4
+      SWGlobalEconomy: -2
+  - label: Снести под застройку
+    sectorEffects:
+      SWGlobalEconomy: 3
+      SWGlobalSociety: -3
+  failSectorEffects:
+    SWGlobalSociety: -3
+    SWGlobalEducation: -2
+
+- type: swDilemma
+  id: SWDilemmaSecPlantProposal
+  name: Спорная электростанция
+  description: В секторе предлагают построить мощную, но грязную электростанцию.
+  scope: Sectoral
+  order: 32
+  failText: Энергии не хватает, заводы простаивают
+  options:
+  - label: Построить
+    sectorEffects:
+      SWGlobalIndustry: 5
+      SWGlobalHealthcare: -3
+  - label: Отклонить проект
+    sectorEffects:
+      SWGlobalHealthcare: 2
+      SWGlobalIndustry: -2
+  failSectorEffects:
+    SWGlobalIndustry: -3
+    SWGlobalEconomy: -2
+
+- type: swDilemma
+  id: SWDilemmaSecPress
+  name: Свобода прессы
+  description: Местная газета сектора публикует разоблачения властей.
+  scope: Sectoral
+  order: 33
+  failText: Свобода слова под ударом
+  options:
+  - label: Защитить журналистов
+    sectorEffects:
+      SWGlobalSociety: 4
+      SWGlobalSecurity: -2
+  - label: Закрыть издание
+    sectorEffects:
+      SWGlobalSecurity: 3
+      SWGlobalSociety: -4
+  failSectorEffects:
+    SWGlobalSociety: -4
+    SWGlobalSecurity: -2
+
+- type: swDilemma
+  id: SWDilemmaSecBorderRefugees
+  name: Беженцы из-за границы
+  description: К сектору прибывают спасающиеся от Империи переселенцы.
+  scope: Sectoral
+  order: 34
+  failText: Гуманитарный кризис на границе
+  options:
+  - label: Дать убежище
+    sectorEffects:
+      SWGlobalForeign: 3
+      SWGlobalSociety: 3
+      SWGlobalEconomy: -3
+  - label: Развернуть назад
+    sectorEffects:
+      SWGlobalForeign: -3
+      SWGlobalSecurity: 2
+  failSectorEffects:
+    SWGlobalSociety: -4
+    SWGlobalHealthcare: -3
+
+- type: swDilemma
+  id: SWDilemmaSecPlagueShips
+  name: Карантинные корабли
+  description: На орбите сектора застрял флот с больными на борту.
+  scope: Sectoral
+  order: 35
+  failText: Зараза прорывается в сектор
+  options:
+  - label: Принять и лечить
+    sectorEffects:
+      SWGlobalHealthcare: 4
+      SWGlobalEconomy: -3
+  - label: Не впускать
+    sectorEffects:
+      SWGlobalSecurity: 2
+      SWGlobalSociety: -4
+  failSectorEffects:
+    SWGlobalHealthcare: -5
+    SWGlobalSociety: -3
+
+- type: swDilemma
+  id: SWDilemmaSecGuildStrike
+  name: Стачка торговой гильдии
+  description: Торговая гильдия сектора перекрыла поставки в знак протеста.
+  scope: Sectoral
+  order: 36
+  failText: Поставки парализованы
+  options:
+  - label: Договориться о льготах
+    sectorEffects:
+      SWGlobalEconomy: 3
+      SWGlobalIndustry: 2
+  - label: Привлечь сторонних поставщиков
+    sectorEffects:
+      SWGlobalEconomy: -2
+      SWGlobalSociety: -2
+  failSectorEffects:
+    SWGlobalEconomy: -5
+    SWGlobalIndustry: -3
+
+- type: swDilemma
+  id: SWDilemmaSecJediOutpost
+  name: Запрос джедаев
+  description: Орден джедаев просит разрешения открыть форпост в секторе.
+  scope: Sectoral
+  order: 37
+  failText: Орден оскорблён отказом
+  options:
+  - label: Разрешить форпост
+    sectorEffects:
+      SWGlobalDefense: 3
+      SWGlobalSociety: 3
+  - label: Отказать
+    sectorEffects:
+      SWGlobalForeign: -2
+      SWGlobalSociety: -2
+  failSectorEffects:
+    SWGlobalSociety: -3
+    SWGlobalDefense: -2
+
+- type: swDilemma
+  id: SWDilemmaSecConscription
+  name: Сопротивление призыву
+  description: Жители сектора уклоняются от военного призыва.
+  scope: Sectoral
+  order: 38
+  failText: Призыв провален, армия слабеет
+  options:
+  - label: Принудительная мобилизация
+    sectorEffects:
+      SWGlobalDefense: 4
+      SWGlobalSociety: -4
+  - label: Кампания добровольцев
+    sectorEffects:
+      SWGlobalDefense: 2
+      SWGlobalSociety: 1
+  failSectorEffects:
+    SWGlobalDefense: -4
+    SWGlobalSociety: -2
+
+- type: swDilemma
+  id: SWDilemmaSecBlackMedicine
+  name: Чёрный рынок лекарств
+  description: В секторе процветает торговля поддельными медикаментами.
+  scope: Sectoral
+  order: 39
+  failText: Поддельные лекарства убивают людей
+  options:
+  - label: Облава на торговцев
+    sectorEffects:
+      SWGlobalSecurity: 3
+      SWGlobalHealthcare: 3
+  - label: Легализовать и контролировать
+    sectorEffects:
+      SWGlobalEconomy: 2
+      SWGlobalHealthcare: -2
+  failSectorEffects:
+    SWGlobalHealthcare: -5
+    SWGlobalSecurity: -2
+
+- type: swDilemma
+  id: SWDilemmaSecCurriculum
+  name: Спор о программе обучения
+  description: В секторе разгорелся конфликт вокруг школьной программы.
+  scope: Sectoral
+  order: 40
+  failText: Образовательный раскол углубляется
+  options:
+  - label: Реформировать образование
+    sectorEffects:
+      SWGlobalEducation: 4
+      SWGlobalSociety: -2
+  - label: Сохранить традиции
+    sectorEffects:
+      SWGlobalSociety: 3
+      SWGlobalEducation: -2
+  failSectorEffects:
+    SWGlobalEducation: -4
+    SWGlobalSociety: -2
+
+- type: swDilemma
+  id: SWDilemmaSecRelocation
+  name: Перенос производства
+  description: Крупный завод сектора грозит уйти к конкурентам.
+  scope: Sectoral
+  order: 41
+  failText: Завод уходит, рабочие на улице
+  options:
+  - label: Дать субсидии заводу
+    sectorEffects:
+      SWGlobalIndustry: 4
+      SWGlobalEconomy: -3
+  - label: Отпустить
+    sectorEffects:
+      SWGlobalIndustry: -4
+      SWGlobalEconomy: -2
+  failSectorEffects:
+    SWGlobalIndustry: -5
+    SWGlobalSociety: -3
+
+- type: swDilemma
+  id: SWDilemmaSecAutonomy
+  name: Требование автономии
+  description: Сектор требует расширенного самоуправления.
+  scope: Sectoral
+  order: 42
+  failText: Недовольство автономией кипит
+  options:
+  - label: Расширить полномочия
+    sectorEffects:
+      SWGlobalSociety: 4
+      SWGlobalSecurity: -2
+  - label: Отклонить
+    sectorEffects:
+      SWGlobalSecurity: 2
+      SWGlobalSociety: -3
+  failSectorEffects:
+    SWGlobalSociety: -4
+    SWGlobalForeign: -2
+
+- type: swDilemma
+  id: SWDilemmaSecHeist
+  name: Дерзкое ограбление
+  description: Налётчики обчистили хранилище ценностей сектора.
+  scope: Sectoral
+  order: 43
+  failText: Преступники уходят с добычей
+  options:
+  - label: Бросить силы на поимку
+    sectorEffects:
+      SWGlobalSecurity: 4
+      SWGlobalEconomy: -2
+  - label: Списать на убытки
+    sectorEffects:
+      SWGlobalEconomy: -3
+      SWGlobalSecurity: -2
+  failSectorEffects:
+    SWGlobalSecurity: -4
+    SWGlobalEconomy: -3
+
+- type: swDilemma
+  id: SWDilemmaSecToxic
+  name: Сброс токсичных отходов
+  description: Корпорация тайно сбрасывает отходы в секторе.
+  scope: Sectoral
+  order: 44
+  failText: Отходы отравляют сектор
+  options:
+  - label: Оштрафовать и очистить
+    sectorEffects:
+      SWGlobalHealthcare: 4
+      SWGlobalEconomy: -3
+  - label: Закрыть глаза
+    sectorEffects:
+      SWGlobalEconomy: 3
+      SWGlobalHealthcare: -4
+  failSectorEffects:
+    SWGlobalHealthcare: -5
+    SWGlobalSociety: -2
+
+- type: swDilemma
+  id: SWDilemmaSecMilitia
+  name: Стихийное ополчение
+  description: Жители сектора создают вооружённые отряды самообороны.
+  scope: Sectoral
+  order: 45
+  failText: Вооружённые отряды выходят из-под контроля
+  options:
+  - label: Узаконить и обучить
+    sectorEffects:
+      SWGlobalDefense: 3
+      SWGlobalSecurity: 2
+  - label: Разоружить ополчение
+    sectorEffects:
+      SWGlobalSecurity: 3
+      SWGlobalSociety: -3
+  failSectorEffects:
+    SWGlobalSecurity: -3
+    SWGlobalDefense: -2
+
+- type: swDilemma
+  id: SWDilemmaSecAntiDroid
+  name: Антидроидные бунты
+  description: Толпы громят дроидов, обвиняя их в безработице.
+  scope: Sectoral
+  order: 46
+  failText: Погромы парализуют промышленность
+  options:
+  - label: Ограничить дроидов
+    sectorEffects:
+      SWGlobalSociety: 3
+      SWGlobalIndustry: -3
+  - label: Защитить производство
+    sectorEffects:
+      SWGlobalIndustry: 3
+      SWGlobalSecurity: -2
+      SWGlobalSociety: -2
+  failSectorEffects:
+    SWGlobalSociety: -4
+    SWGlobalIndustry: -3
+
+- type: swDilemma
+  id: SWDilemmaSecBeast
+  name: Нашествие хищников
+  description: Стаи опасных тварей терроризируют окраины сектора.
+  scope: Sectoral
+  order: 47
+  failText: Хищники терроризируют поселения
+  options:
+  - label: Организовать охоту
+    sectorEffects:
+      SWGlobalSecurity: 3
+      SWGlobalSociety: 2
+  - label: Эвакуировать окраины
+    sectorEffects:
+      SWGlobalSociety: -2
+      SWGlobalEconomy: -2
+  failSectorEffects:
+    SWGlobalSociety: -4
+    SWGlobalHealthcare: -3
+
+- type: swDilemma
+  id: SWDilemmaSecElection
+  name: Подтасовка выборов
+  description: Местные выборы в секторе обвиняют в фальсификации.
+  scope: Sectoral
+  order: 48
+  failText: Выборы признаны сфальсифицированными
+  options:
+  - label: Назначить пересчёт
+    sectorEffects:
+      SWGlobalSociety: 4
+      SWGlobalSecurity: -1
+  - label: Признать результаты
+    sectorEffects:
+      SWGlobalSecurity: 1
+      SWGlobalSociety: -4
+  failSectorEffects:
+    SWGlobalSociety: -5
+    SWGlobalSecurity: -2
+
+- type: swDilemma
+  id: SWDilemmaSecBreakthrough
+  name: Медицинский прорыв
+  description: Учёные сектора создали прорывное лекарство.
+  scope: Sectoral
+  order: 49
+  failText: Открытие утекает к конкурентам
+  options:
+  - label: Внедрить повсеместно
+    sectorEffects:
+      SWGlobalHealthcare: 5
+      SWGlobalEducation: 2
+      SWGlobalEconomy: -2
+  - label: Продать патент
+    sectorEffects:
+      SWGlobalEconomy: 4
+      SWGlobalHealthcare: -1
+  failSectorEffects:
+    SWGlobalHealthcare: -2
+    SWGlobalEducation: -2
+
+- type: swDilemma
+  id: SWDilemmaSecWaterDispute
+  name: Спор за ресурсы
+  description: Два региона сектора враждуют из-за источника воды.
+  scope: Sectoral
+  order: 50
+  failText: Конфликт за воду обостряется
+  options:
+  - label: Построить общий акведук
+    sectorEffects:
+      SWGlobalIndustry: 3
+      SWGlobalSociety: 3
+      SWGlobalEconomy: -3
+  - label: Отдать приоритет одному
+    sectorEffects:
+      SWGlobalEconomy: 2
+      SWGlobalSociety: -4
+  failSectorEffects:
+    SWGlobalSociety: -4
+    SWGlobalHealthcare: -2
+
+- type: swDilemma
+  id: SWDilemmaSecAmnesty
+  name: Амнистия пиратам
+  description: Пиратский клан сектора предлагает сложить оружие за прощение.
+  scope: Sectoral
+  order: 51
+  failText: Пираты возобновляют налёты
+  options:
+  - label: Принять амнистию
+    sectorEffects:
+      SWGlobalSecurity: 3
+      SWGlobalSociety: -2
+  - label: Продолжить охоту
+    sectorEffects:
+      SWGlobalDefense: 2
+      SWGlobalEconomy: -3
+  failSectorEffects:
+    SWGlobalSecurity: -4
+    SWGlobalEconomy: -2
+
+- type: swDilemma
+  id: SWDilemmaSecOrbitalDebris
+  name: Орбитальная катастрофа
+  description: Столкновение на орбите засыпало сектор обломками.
+  scope: Sectoral
+  order: 52
+  failText: Обломки угрожают орбите
+  options:
+  - label: Очистить орбиту
+    sectorEffects:
+      SWGlobalIndustry: 3
+      SWGlobalEconomy: -3
+  - label: Отложить уборку
+    sectorEffects:
+      SWGlobalEconomy: 1
+      SWGlobalIndustry: -3
+  failSectorEffects:
+    SWGlobalIndustry: -4
+    SWGlobalHealthcare: -2
+
+- type: swDilemma
+  id: SWDilemmaSecResearchGrant
+  name: Запрос на исследования
+  description: Лаборатории сектора просят грант на перспективные разработки.
+  scope: Sectoral
+  order: 53
+  failText: Лаборатории закрываются
+  options:
+  - label: Выделить грант
+    sectorEffects:
+      SWGlobalEducation: 5
+      SWGlobalEconomy: -3
+  - label: Отказать
+    sectorEffects:
+      SWGlobalEconomy: 1
+      SWGlobalEducation: -2
+  failSectorEffects:
+    SWGlobalEducation: -3
+    SWGlobalIndustry: -2
+
+- type: swDilemma
+  id: SWDilemmaRepWarDebt
+  name: Реструктуризация военного долга
+  description: Кредиторы Республики требуют выплат по долгам прошлой войны.
+  scope: Republic
+  order: 54
+  failText: Дефолт по долгам неизбежен
+  options:
+  - label: Реструктурировать долг
+    policyEffects:
+      SWStatTreasury: 4
+      SWStatTrade: -3
+  - label: Поднять налоги для выплат
+    policyEffects:
+      SWStatTaxes: 5
+      SWStatTreasury: 3
+      SWStatMorale: -4
+  failPolicyEffects:
+    SWStatTreasury: -6
+    SWStatTrade: -3
+
+- type: swDilemma
+  id: SWDilemmaRepHutts
+  name: Переговоры с хаттами
+  description: Хаттские картели предлагают Республике сделку по гиперпутям.
+  scope: Republic
+  order: 55
+  failText: Картели перекрывают гиперпути
+  options:
+  - label: Заключить сделку
+    policyEffects:
+      SWStatTrade: 5
+      SWStatNeutral: 3
+      SWStatCrime: -4
+  - label: Отвергнуть преступников
+    policyEffects:
+      SWStatCrime: 3
+      SWStatTrade: -3
+  failPolicyEffects:
+    SWStatTrade: -4
+    SWStatNeutral: -3
+
+- type: swDilemma
+  id: SWDilemmaRepRecruit
+  name: Кризис набора в армию
+  description: Вооружённым силам Республики катастрофически не хватает солдат.
+  scope: Republic
+  order: 56
+  failText: Армия остаётся без пополнения
+  options:
+  - label: Объявить мобилизацию
+    policyEffects:
+      SWStatReserve: 6
+      SWStatArmy: 3
+      SWStatMorale: -4
+  - label: Поднять жалование
+    policyEffects:
+      SWStatArmy: 4
+      SWStatReserve: 3
+      SWStatTreasury: -5
+  failPolicyEffects:
+    SWStatArmy: -5
+    SWStatReserve: -4
+
+- type: swDilemma
+  id: SWDilemmaRepSisExpand
+  name: Расширение полномочий СИС
+  description: Разведка просит у Сената чрезвычайные полномочия.
+  scope: Republic
+  order: 57
+  failText: Разведка теряет хватку
+  options:
+  - label: Предоставить полномочия
+    policyEffects:
+      SWStatIntel: 6
+      SWStatCensorship: 3
+      SWStatRights: -5
+  - label: Сохранить свободы
+    policyEffects:
+      SWStatRights: 4
+      SWStatIntel: -3
+  failPolicyEffects:
+    SWStatIntel: -4
+    SWStatEmpireBorder: -3
+
+- type: swDilemma
+  id: SWDilemmaRepLaneTax
+  name: Налог на гиперпути
+  description: Предложено ввести пошлину на использование торговых маршрутов.
+  scope: Republic
+  order: 58
+  failText: Бюджет недополучает средства
+  options:
+  - label: Ввести пошлину
+    policyEffects:
+      SWStatTreasury: 5
+      SWStatTrade: -4
+  - label: Оставить пути свободными
+    policyEffects:
+      SWStatTrade: 4
+      SWStatTreasury: -3
+  failPolicyEffects:
+    SWStatTreasury: -4
+    SWStatTrade: -3
+
+- type: swDilemma
+  id: SWDilemmaRepRefugeePolicy
+  name: Политика по беженцам
+  description: Потоки беженцев требуют единой политики Республики.
+  scope: Republic
+  order: 59
+  failText: Беженцы остаются без помощи
+  options:
+  - label: Программа приёма
+    policyEffects:
+      SWStatWelfare: 5
+      SWStatCoverage: 3
+      SWStatTreasury: -5
+  - label: Ужесточить границы
+    policyEffects:
+      SWStatCounter: 4
+      SWStatMorale: -3
+  failPolicyEffects:
+    SWStatWelfare: -4
+    SWStatMorale: -4
+
+- type: swDilemma
+  id: SWDilemmaRepPrisonerSwap
+  name: Обмен пленными с Империей
+  description: Империя предлагает обмен военнопленными.
+  scope: Republic
+  order: 60
+  failText: Пленные брошены на произвол
+  options:
+  - label: Согласиться на обмен
+    policyEffects:
+      SWStatMorale: 4
+      SWStatEmpireBorder: 3
+      SWStatIntel: -2
+  - label: Отказаться
+    policyEffects:
+      SWStatEmpireBorder: -3
+      SWStatMorale: -3
+  failPolicyEffects:
+    SWStatMorale: -5
+    SWStatEmpireBorder: -3
+
+- type: swDilemma
+  id: SWDilemmaRepPressLaw
+  name: Закон о прессе
+  description: Правительство хочет ужесточить контроль над голонетом.
+  scope: Republic
+  order: 61
+  failText: Информационный хаос нарастает
+  options:
+  - label: Ввести цензуру
+    policyEffects:
+      SWStatCensorship: 5
+      SWStatMorale: 2
+      SWStatRights: -6
+  - label: Сохранить свободу слова
+    policyEffects:
+      SWStatRights: 5
+      SWStatCensorship: -3
+  failPolicyEffects:
+    SWStatMorale: -4
+    SWStatRights: -3
+
+- type: swDilemma
+  id: SWDilemmaRepResearch
+  name: Финансирование науки
+  description: Учёные Республики просят увеличить бюджет исследований.
+  scope: Republic
+  order: 62
+  failText: Наука Республики отстаёт
+  options:
+  - label: Увеличить финансирование
+    policyEffects:
+      SWStatResearch: 5
+      SWStatTech: 3
+      SWStatTreasury: -5
+  - label: Сократить расходы
+    policyEffects:
+      SWStatTreasury: 3
+      SWStatResearch: -4
+  failPolicyEffects:
+    SWStatResearch: -4
+    SWStatTech: -3
+
+- type: swDilemma
+  id: SWDilemmaRepFleetMod
+  name: Модернизация флота
+  description: Адмиралы требуют средств на обновление устаревшего флота.
+  scope: Republic
+  order: 63
+  failText: Флот ветшает
+  options:
+  - label: Профинансировать верфи
+    policyEffects:
+      SWStatFleet: 6
+      SWStatManufacturing: 2
+      SWStatTreasury: -6
+  - label: Отложить программу
+    policyEffects:
+      SWStatTreasury: 3
+      SWStatFleet: -4
+  failPolicyEffects:
+    SWStatFleet: -5
+    SWStatEmpireBorder: -3
+
+- type: swDilemma
+  id: SWDilemmaRepPension
+  name: Пенсионная реформа
+  description: Система пенсий Республики на грани коллапса.
+  scope: Republic
+  order: 64
+  failText: Пенсионеры в нищете
+  options:
+  - label: Повысить пенсии
+    policyEffects:
+      SWStatWelfare: 5
+      SWStatMorale: 3
+      SWStatTreasury: -5
+  - label: Урезать выплаты
+    policyEffects:
+      SWStatTreasury: 5
+      SWStatMorale: -5
+  failPolicyEffects:
+    SWStatWelfare: -5
+    SWStatMorale: -4
+
+- type: swDilemma
+  id: SWDilemmaRepEmbargo
+  name: Эмбарго против Империи
+  description: Ястребы требуют торговой блокады Империи ситхов.
+  scope: Republic
+  order: 65
+  failText: Нерешительность бьёт по престижу
+  options:
+  - label: Ввести эмбарго
+    policyEffects:
+      SWStatEmpireBorder: 4
+      SWStatMorale: 3
+      SWStatTrade: -5
+  - label: Сохранить торговлю
+    policyEffects:
+      SWStatTrade: 4
+      SWStatEmpireBorder: -3
+  failPolicyEffects:
+    SWStatTrade: -4
+    SWStatEmpireBorder: -3
+
+- type: swDilemma
+  id: SWDilemmaRepDeserters
+  name: Амнистия дезертирам
+  description: Тысячи дезертиров готовы вернуться при условии прощения.
+  scope: Republic
+  order: 66
+  failText: Дезертиры пополняют преступный мир
+  options:
+  - label: Объявить амнистию
+    policyEffects:
+      SWStatReserve: 5
+      SWStatMorale: 2
+      SWStatPolice: -3
+  - label: Судить дезертиров
+    policyEffects:
+      SWStatPolice: 3
+      SWStatReserve: -3
+  failPolicyEffects:
+    SWStatReserve: -4
+    SWStatMorale: -3
+
+- type: swDilemma
+  id: SWDilemmaRepProbe
+  name: Расследование в Сенате
+  description: Поступили обвинения в коррупции против сенаторов.
+  scope: Republic
+  order: 67
+  failText: Коррупция остаётся безнаказанной
+  options:
+  - label: Публичное расследование
+    policyEffects:
+      SWStatCrime: 5
+      SWStatMorale: 3
+      SWStatCensorship: -3
+  - label: Закрытое слушание
+    policyEffects:
+      SWStatCensorship: 3
+      SWStatMorale: -4
+  failPolicyEffects:
+    SWStatMorale: -6
+    SWStatCrime: -3
+
+- type: swDilemma
+  id: SWDilemmaRepJediRelations
+  name: Отношения с Орденом
+  description: Орден джедаев настаивает на большем влиянии в Сенате.
+  scope: Republic
+  order: 68
+  failText: Орден дистанцируется от Сената
+  options:
+  - label: Укрепить союз
+    policyEffects:
+      SWStatTreaties: 5
+      SWStatResearch: 2
+      SWStatMorale: 2
+  - label: Ограничить джедаев
+    policyEffects:
+      SWStatMorale: -3
+      SWStatTreaties: -3
+  failPolicyEffects:
+    SWStatTreaties: -4
+    SWStatMorale: -3
+
+- type: swDilemma
+  id: SWDilemmaRepFamine
+  name: Голод в Ядре
+  description: Перебои с продовольствием угрожают даже мирам Ядра.
+  scope: Republic
+  order: 69
+  failText: Голод добирается до Ядра
+  options:
+  - label: Экстренные поставки
+    policyEffects:
+      SWStatWelfare: 5
+      SWStatMedicine: 3
+      SWStatTreasury: -5
+  - label: Положиться на рынок
+    policyEffects:
+      SWStatTrade: 2
+      SWStatWelfare: -4
+  failPolicyEffects:
+    SWStatWelfare: -6
+    SWStatMorale: -4
+
+- type: swDilemma
+  id: SWDilemmaRepEnergy
+  name: Энергетический коллапс
+  description: Промышленным мирам Республики грозит нехватка энергии.
+  scope: Republic
+  order: 70
+  failText: Промышленность встаёт без энергии
+  options:
+  - label: Срочная программа реакторов
+    policyEffects:
+      SWStatEnergy: 6
+      SWStatManufacturing: 2
+      SWStatTreasury: -5
+  - label: Ввести лимиты
+    policyEffects:
+      SWStatEnergy: 2
+      SWStatManufacturing: -3
+  failPolicyEffects:
+    SWStatEnergy: -5
+    SWStatManufacturing: -4
+
+- type: swDilemma
+  id: SWDilemmaRepAlliance
+  name: Союз с нейтралами
+  description: Несколько независимых миров предлагают Республике альянс.
+  scope: Republic
+  order: 71
+  failText: Нейтралы уходят к другим
+  options:
+  - label: Принять в союзники
+    policyEffects:
+      SWStatNeutral: 5
+      SWStatTreaties: 4
+      SWStatTreasury: -3
+  - label: Сохранить нейтралитет
+    policyEffects:
+      SWStatTreasury: 2
+      SWStatNeutral: -3
+  failPolicyEffects:
+    SWStatNeutral: -4
+    SWStatTreaties: -3

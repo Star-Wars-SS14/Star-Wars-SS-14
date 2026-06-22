@@ -1,0 +1,26 @@
+- type: entity
+  id: SWAirlockChancellor
+  parent: CMAirlockCommand
+  name: шлюз Канцлера
+  suffix: Канцлер
+  components:
+  - type: AccessReader
+    access: [["SWSenateChancellor"]]
+
+- type: entity
+  id: SWAirlockSpeaker
+  parent: CMAirlockCommand
+  name: шлюз Спикера
+  suffix: Спикер
+  components:
+  - type: AccessReader
+    access: [["SWSenateChancellor"], ["SWSenateSpeaker"]]
+
+- type: entity
+  id: SWAirlockSenator
+  parent: CMAirlockCommand
+  name: сенатский шлюз
+  suffix: Сенатор
+  components:
+  - type: AccessReader
+    access: [["SWSenateChancellor"], ["SWSenateSpeaker"], ["SWSenateSenator"]]

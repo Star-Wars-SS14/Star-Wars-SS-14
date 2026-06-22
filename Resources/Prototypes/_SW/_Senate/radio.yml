@@ -1,0 +1,7 @@
+- type: radioChannel
+  id: SWSenate
+  name: Сенат
+  keycode: 'с'
+  frequency: 2050
+  color: "#9b59b6"
+  longRange: true

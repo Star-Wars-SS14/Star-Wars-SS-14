@@ -1,0 +1,13 @@
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeySenate
+  name: senate encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWSenate
+    defaultChannel: SWSenate
+  - type: Sprite
+    layers:
+    - state: crypt_blue
+    - state: republic

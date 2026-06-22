@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._SW._Senate;
@@ -155,6 +156,35 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
 }
 
 [Serializable, NetSerializable]
+public sealed class SWFloorQueueEntry
+{
+    public NetEntity Target;
+    public string Name = string.Empty;
+    public bool IsChancellor;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateGrantFloorMessage : BoundUserInterfaceMessage
+{
+    public NetEntity Target;
+
+    public SWSenateGrantFloorMessage(NetEntity target)
+    {
+        Target = target;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateRevokeFloorMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateGrantChancellorMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
 public sealed class SWBillEffectEntry
 {
     public string StatName = string.Empty;
@@ -232,6 +262,9 @@ public sealed class SWSenateVoteConsoleState : BoundUserInterfaceState
     public bool CanEndVote;
     public bool CanTiebreak;
     public string SessionInfo = string.Empty;
+    public bool CanControlFloor;
+    public string? FloorHolderName;
+    public List<SWFloorQueueEntry> FloorQueue = new();
 }
 
 [Serializable, NetSerializable]

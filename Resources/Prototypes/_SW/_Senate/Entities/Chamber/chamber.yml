@@ -1,0 +1,72 @@
+- type: entity
+  id: SWSenateChamberMarker
+  name: senate chamber marker
+  parent: MarkerBase
+  components:
+  - type: Sprite
+    drawdepth: Overdoors
+    sprite: Markers/cross.rsi
+    state: pink
+  - type: SWSenateChamberMarker
+
+- type: entity
+  id: SWSenateChamberSeat
+  name: senate seat
+  parent: ComfyChair
+  suffix: Senate
+  components:
+  - type: SWSenateChamberSeat
+
+- type: entity
+  id: SWSenateDeskMic
+  name: микрофон сенатора
+  description: Нажмите, чтобы попросить слова у Спикера.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Sprite
+    sprite: Objects/Fun/Instruments/microphone.rsi
+    state: icon
+  - type: SWSenateMic
+    priority: false
+    requiredPosition: Senator
+
+- type: entity
+  id: SWSenateChancellorMic
+  name: микрофон Канцлера
+  description: Слово Канцлера имеет высший приоритет.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Sprite
+    sprite: Objects/Fun/Instruments/microphone.rsi
+    state: icon
+  - type: SWSenateMic
+    priority: true
+    requiredPosition: Chancellor
+
+- type: entity
+  id: SWSenateSpeakerMic
+  name: микрофон Спикера
+  description: Включает и выключает вашу трибуну.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Sprite
+    sprite: Objects/Fun/Instruments/microphone.rsi
+    state: icon
+  - type: SWSenateMic
+    speakerToggle: true
+    requiredPosition: Speaker

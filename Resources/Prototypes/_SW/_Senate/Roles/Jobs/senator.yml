@@ -32,10 +32,25 @@
   id: SWSenate
   name: Сенат
 
+- type: accessLevel
+  id: SWSenateChancellor
+  name: Канцлер
+
+- type: accessLevel
+  id: SWSenateSpeaker
+  name: Спикер
+
+- type: accessLevel
+  id: SWSenateSenator
+  name: Сенатор
+
 - type: accessGroup
   id: SWSenateGroup
   tags:
   - SWSenate
+  - SWSenateChancellor
+  - SWSenateSpeaker
+  - SWSenateSenator
 
 - type: department
   id: SWSenate
@@ -60,6 +75,7 @@
   supervisors: job-supervisors-empire
   access:
   - SWSenate
+  - SWSenateChancellor
 
 - type: job
   id: SWSpeaker
@@ -73,6 +89,7 @@
   supervisors: job-supervisors-empire
   access:
   - SWSenate
+  - SWSenateSpeaker
 
 - type: job
   id: SWSenator
@@ -86,11 +103,13 @@
   supervisors: job-supervisors-empire
   access:
   - SWSenate
+  - SWSenateSenator
 
 - type: startingGear
   id: SenatorGear
   equipment:
     id: SWSenatorPDA
+    ears: SWClothingHeadsetSenate
     outerClothing: SWCitizenClothing
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen
@@ -103,6 +122,7 @@
   id: ChancellorGear
   equipment:
     id: SWChancellorPDA
+    ears: SWClothingHeadsetSenate
     outerClothing: SWCitizenClothing
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen
@@ -115,6 +135,7 @@
   id: SpeakerGear
   equipment:
     id: SWSpeakerPDA
+    ears: SWClothingHeadsetSenate
     outerClothing: SWCitizenClothing
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen

@@ -10,6 +10,8 @@ namespace Content.Client._SW._Senate;
 [GenerateTypedNameReferences]
 public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
 {
+    private const int FloorTabIndex = 2;
+
     private readonly SWSenateVoteConsoleBoundUserInterface _owner;
 
     public SWSenateVoteConsoleMenu(SWSenateVoteConsoleBoundUserInterface owner)
@@ -19,6 +21,7 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
 
         Tabs.SetTabTitle(0, "Повестка");
         Tabs.SetTabTitle(1, "Текущий законопроект");
+        Tabs.SetTabTitle(FloorTabIndex, "Трибуна");
 
         VoteForButton.OnPressed += _ => _owner.Vote(SWVoteChoice.For);
         VoteAgainstButton.OnPressed += _ => _owner.Vote(SWVoteChoice.Against);
@@ -26,6 +29,8 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
         EndVoteButton.OnPressed += _ => _owner.EndVote();
         TiebreakForButton.OnPressed += _ => _owner.Tiebreak(SWVoteChoice.For);
         TiebreakAgainstButton.OnPressed += _ => _owner.Tiebreak(SWVoteChoice.Against);
+        RevokeFloorButton.OnPressed += _ => _owner.RevokeFloor();
+        GrantChancellorButton.OnPressed += _ => _owner.GrantChancellor();
     }
 
     public void SetState(SWSenateVoteConsoleState state)
@@ -34,8 +39,52 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
             ? "Консоль голосования Сената"
             : $"Консоль голосования Сената — {state.GameTime}";
 
+        Tabs.SetTabVisible(FloorTabIndex, state.CanControlFloor);
+
         BuildAgenda(state);
         BuildCurrent(state);
+        BuildFloor(state);
+    }
+
+    private void BuildFloor(SWSenateVoteConsoleState state)
+    {
+        FloorHolderLabel.SetMessage(state.FloorHolderName != null
+            ? $"Слово у: {state.FloorHolderName}"
+            : "Слово сейчас ни у кого.");
+
+        RevokeFloorButton.Disabled = state.FloorHolderName == null;
+
+        FloorQueueList.RemoveAllChildren();
+        if (state.FloorQueue.Count == 0)
+        {
+            FloorQueueList.AddChild(new Label { Text = "Очередь пуста.", FontColorOverride = Color.Gray });
+            return;
+        }
+
+        var position = 1;
+        foreach (var entry in state.FloorQueue)
+        {
+            var rowBox = new BoxContainer
+            {
+                Orientation = BoxContainer.LayoutOrientation.Horizontal,
+                Margin = new Thickness(0, 1, 0, 1),
+            };
+
+            rowBox.AddChild(new Label
+            {
+                Text = entry.IsChancellor ? $"{position}. {entry.Name} (Канцлер)" : $"{position}. {entry.Name}",
+                FontColorOverride = entry.IsChancellor ? Color.Gold : Color.White,
+                HorizontalExpand = true,
+            });
+
+            var target = entry.Target;
+            var grant = new Button { Text = "Дать слово" };
+            grant.OnPressed += _ => _owner.GrantFloor(target);
+            rowBox.AddChild(grant);
+
+            FloorQueueList.AddChild(rowBox);
+            position++;
+        }
     }
 
     private void BuildAgenda(SWSenateVoteConsoleState state)

@@ -21,6 +21,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
+    [Dependency] private readonly SWSenateFloorSystem _floor = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
     private const float UpdateInterval = 3f;
@@ -264,14 +265,20 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
             case SWSenatePosition.Chancellor:
                 if (_senate.TryTakeChancellor(Name(args.Actor)))
+                {
+                    _floor.SetChancellor(args.Actor);
                     _popup.PopupCursor(Loc.GetString("sw-senate-work-took-office"), args.Actor, PopupType.Medium);
+                }
                 else
                     _popup.PopupCursor(Loc.GetString("sw-senate-work-office-taken"), args.Actor, PopupType.Medium);
                 break;
 
             case SWSenatePosition.Speaker:
                 if (_senate.TryTakeSpeaker(Name(args.Actor)))
+                {
+                    _floor.SetSpeaker(args.Actor);
                     _popup.PopupCursor(Loc.GetString("sw-senate-work-took-office"), args.Actor, PopupType.Medium);
+                }
                 else
                     _popup.PopupCursor(Loc.GetString("sw-senate-work-office-taken"), args.Actor, PopupType.Medium);
                 break;
@@ -303,11 +310,14 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
             case SWSenatePosition.Chancellor:
                 _senate.ResignChancellor();
+                _floor.SetChancellor(null);
                 _popup.PopupCursor(Loc.GetString("sw-senate-work-resigned"), args.Actor, PopupType.Medium);
                 break;
 
             case SWSenatePosition.Speaker:
                 _senate.ResignSpeaker();
+                _floor.SetSpeaker(null);
+                _floor.RevokeFloor();
                 _popup.PopupCursor(Loc.GetString("sw-senate-work-resigned"), args.Actor, PopupType.Medium);
                 break;
         }

@@ -1,0 +1,9 @@
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetSenate
+  name: senate headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeySenate

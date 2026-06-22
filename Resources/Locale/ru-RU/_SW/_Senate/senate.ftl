@@ -59,3 +59,14 @@ sw-senate-announce-sent = Объявление отправлено.
 sw-senate-announce-cooldown = Подождите перед следующим объявлением.
 sw-senate-not-in-office = Сначала вступите в должность.
 sw-senate-bill-already-active = У вас уже есть законопроект на рассмотрении.
+
+sw-senate-tribune-wrap = [bold]ТРИБУНА — {$name}:[/bold] {$message}
+sw-senate-floor-requested = Вы в очереди на слово. Позиция: {$position}.
+sw-senate-floor-already = Вы уже в очереди или у вас есть слово.
+sw-senate-floor-not-senator = Слово может попросить только сенатор с закреплённым сектором.
+sw-senate-floor-granted = Вам предоставлено слово.
+sw-senate-floor-revoked = Слово отозвано.
+sw-senate-floor-none = Очередь пуста.
+sw-senate-floor-speaker-on = Ваша трибуна включена.
+sw-senate-floor-speaker-off = Ваша трибуна выключена.
+sw-senate-floor-granted-announce = Слово предоставлено: {$name}.

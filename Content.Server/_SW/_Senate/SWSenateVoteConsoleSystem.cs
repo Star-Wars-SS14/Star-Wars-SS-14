@@ -18,6 +18,7 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
     [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
+    [Dependency] private readonly SWSenateFloorSystem _floor = default!;
 
     private const float UpdateInterval = 3f;
     private float _accumulator;
@@ -30,6 +31,43 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateCastVoteMessage>(OnVote);
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateEndVoteMessage>(OnEndVote);
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateTiebreakMessage>(OnTiebreak);
+        SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateGrantFloorMessage>(OnGrantFloor);
+        SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateRevokeFloorMessage>(OnRevokeFloor);
+        SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateGrantChancellorMessage>(OnGrantChancellor);
+    }
+
+    private void OnGrantFloor(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateGrantFloorMessage args)
+    {
+        if (GetCardPosition(ent) != SWSenatePosition.Speaker || _senate.Speaker == null)
+            return;
+
+        var target = GetEntity(args.Target);
+        if (!Exists(target))
+            return;
+
+        _floor.GrantFloor(target);
+        _popup.PopupCursor(Loc.GetString("sw-senate-floor-granted"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void OnRevokeFloor(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateRevokeFloorMessage args)
+    {
+        if (GetCardPosition(ent) != SWSenatePosition.Speaker || _senate.Speaker == null)
+            return;
+
+        _floor.RevokeFloor();
+        _popup.PopupCursor(Loc.GetString("sw-senate-floor-revoked"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void OnGrantChancellor(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateGrantChancellorMessage args)
+    {
+        if (GetCardPosition(ent) != SWSenatePosition.Speaker || _senate.Speaker == null)
+            return;
+
+        _floor.GrantChancellor();
+        _popup.PopupCursor(Loc.GetString("sw-senate-floor-granted"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
     }
 
     private SWSenatePosition? GetCardPosition(Entity<SWSenateVoteConsoleComponent> ent)
@@ -49,6 +87,12 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
             return;
         }
 
+        if (_senate.Speaker == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-not-in-office"), args.Actor, PopupType.Medium);
+            return;
+        }
+
         if (_senate.EndVoteBySpeaker())
             _popup.PopupCursor(Loc.GetString("sw-senate-vote-ended"), args.Actor, PopupType.Medium);
         else
@@ -62,6 +106,12 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
         if (GetCardPosition(ent) != SWSenatePosition.Chancellor)
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-vote-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.Chancellor == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-not-in-office"), args.Actor, PopupType.Medium);
             return;
         }
 
@@ -150,6 +200,26 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
         var voterSector = GetVoterSector(ent);
         var position = GetCardPosition(ent);
 
+        if (position == SWSenatePosition.Speaker && _senate.Speaker != null)
+        {
+            state.CanControlFloor = true;
+            if (_floor.FloorHolder is { } holder && Exists(holder))
+                state.FloorHolderName = Name(holder);
+
+            foreach (var requester in _floor.Queue)
+            {
+                if (!Exists(requester))
+                    continue;
+
+                state.FloorQueue.Add(new SWFloorQueueEntry
+                {
+                    Target = GetNetEntity(requester),
+                    Name = Name(requester),
+                    IsChancellor = requester == _floor.Chancellor,
+                });
+            }
+        }
+
         var activeSession = _senate.GetActiveSession();
         if (activeSession != null)
             state.SessionInfo = $"Заседание {activeSession.StartHour:00}:00–{activeSession.EndHour:00}:00";
@@ -160,8 +230,8 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
             state.HasCurrent = true;
             state.AwaitingTiebreak = bill.AwaitingTiebreak;
             state.CanVote = voterSector != null && !bill.AwaitingTiebreak;
-            state.CanEndVote = position == SWSenatePosition.Speaker && _senate.CanEndCurrentVote();
-            state.CanTiebreak = position == SWSenatePosition.Chancellor && bill.AwaitingTiebreak;
+            state.CanEndVote = position == SWSenatePosition.Speaker && _senate.Speaker != null && _senate.CanEndCurrentVote();
+            state.CanTiebreak = position == SWSenatePosition.Chancellor && _senate.Chancellor != null && bill.AwaitingTiebreak;
             state.CurrentId = bill.Id;
             state.CurrentName = bill.Name;
             state.CurrentAuthor = bill.Author;

@@ -45,6 +45,21 @@ public sealed class SWSenateVoteConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateTiebreakMessage(choice));
     }
 
+    public void GrantFloor(NetEntity target)
+    {
+        SendMessage(new SWSenateGrantFloorMessage(target));
+    }
+
+    public void RevokeFloor()
+    {
+        SendMessage(new SWSenateRevokeFloorMessage());
+    }
+
+    public void GrantChancellor()
+    {
+        SendMessage(new SWSenateGrantChancellorMessage());
+    }
+
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);

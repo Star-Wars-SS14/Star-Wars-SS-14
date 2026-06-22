@@ -31,5 +31,16 @@
                 <BoxContainer Name="SectorVotes" Orientation="Vertical" />
             </ScrollContainer>
         </BoxContainer>
+        <BoxContainer Name="FloorTab" Orientation="Vertical" Margin="12">
+            <RichTextLabel Name="FloorHolderLabel" Margin="0 0 0 6" />
+            <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
+                <Button Name="RevokeFloorButton" Text="Забрать слово" />
+                <Button Name="GrantChancellorButton" Text="Слово Канцлеру" Margin="6 0 0 0" />
+            </BoxContainer>
+            <Label Text="Очередь на слово" StyleClasses="LabelKeyText" />
+            <ScrollContainer VerticalExpand="True" Margin="0 2 0 0">
+                <BoxContainer Name="FloorQueueList" Orientation="Vertical" />
+            </ScrollContainer>
+        </BoxContainer>
     </TabContainer>
 </controls:FancyWindow>

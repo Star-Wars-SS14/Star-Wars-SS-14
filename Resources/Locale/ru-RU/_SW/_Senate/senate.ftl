@@ -73,3 +73,5 @@ sw-senate-floor-granted-announce = Слово предоставлено: {$name
 
 sw-senate-dilemma-resolved = Решение по дилемме принято.
 sw-senate-budget-locked = Бюджет распределён и зафиксирован на день.
+sw-senate-program-applied = Программа профинансирована и запущена в секторе.
+sw-senate-program-failed = Недостаточно средств или программа уже применена сегодня.

@@ -1,6 +1,7 @@
 using System.Linq;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Sectors;
+using Content.Shared.GameTicking;
 using Robust.Shared.Prototypes;
 
 namespace Content.Server._SW._Senate;
@@ -38,7 +39,23 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     public override void Initialize()
     {
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         InitState();
+    }
+
+    private void OnRoundRestart(RoundRestartCleanupEvent ev)
+    {
+        // World state (republic policy, sector globals/bias, passed laws) carries over between rounds.
+        // Session state resets: every office and sector claim is vacated so the new round starts empty,
+        // and in-progress bills/sessions are dropped (their authors are gone).
+        _sectorHolders.Clear();
+        Chancellor = null;
+        Speaker = null;
+        _sessions.Clear();
+        _announcedSessions.Clear();
+        _bills.RemoveAll(b => b.Stage != SWBillStage.Passed);
+        _nextSessionId = 1;
+        _scheduleDay = _time.Day;
     }
 
     private void InitState()

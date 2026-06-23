@@ -24,6 +24,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWSenateFloorSystem _floor = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
     [Dependency] private readonly SWSenateBudgetSystem _budget = default!;
+    [Dependency] private readonly SWSenateProgramSystem _program = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
     private const float UpdateInterval = 3f;
@@ -41,6 +42,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSubmitBillMessage>(OnSubmitBill);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSubmitPresetMessage>(OnSubmitPreset);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateResolveDilemmaMessage>(OnResolveDilemma);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateApplyProgramMessage>(OnApplyProgram);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSetBudgetMessage>(OnSetBudget);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateLockBudgetMessage>(OnLockBudget);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateScheduleSessionMessage>(OnScheduleSession);
@@ -306,6 +308,35 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
+    private string? GetSectorOwner(Entity<SWSenateWorkConsoleComponent> ent)
+    {
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null || !TryComp<SWSenatePositionCardComponent>(card, out var position) || position.Position != SWSenatePosition.Senator)
+            return null;
+
+        if (TryComp<SWSenateSectorComponent>(card, out var sector) && sector.Sector is { } claimed && _senate.IsClaimed(claimed))
+            return claimed;
+
+        return null;
+    }
+
+    private void OnApplyProgram(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateApplyProgramMessage args)
+    {
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-senator-hint"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_program.Apply(sectorId, args.ProgramId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-program-applied"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-program-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
     private bool ChancellorInOffice(Entity<SWSenateWorkConsoleComponent> ent) =>
         GetCardPosition(ent) == SWSenatePosition.Chancellor && _senate.Chancellor != null;
 
@@ -461,6 +492,10 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.IsChancellorView = ChancellorInOffice(ent);
         if (state.IsChancellorView)
             state.BudgetSectors = BuildBudgetSectors();
+        var programOwner = GetSectorOwner(ent);
+        state.CanPrograms = programOwner != null;
+        if (programOwner != null)
+            state.Programs = _program.BuildPrograms(programOwner);
         state.DraftBudget = ent.Comp.DraftBudget;
         state.GameTime = _time.TimeString();
         state.Schedule = _senate.BuildScheduleRows();

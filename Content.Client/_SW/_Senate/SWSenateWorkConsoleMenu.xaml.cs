@@ -56,7 +56,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
         DilemmaModeActive.OnPressed += _ => ShowDilemmaMode(0);
         DilemmaModeBudget.OnPressed += _ => ShowDilemmaMode(1);
-        DilemmaModeSummary.OnPressed += _ => ShowDilemmaMode(2);
+        DilemmaModePrograms.OnPressed += _ => ShowDilemmaMode(2);
+        DilemmaModeSummary.OnPressed += _ => ShowDilemmaMode(3);
 
         ShowSection(OfficeTab);
         ShowDraftMode(true);
@@ -146,19 +147,78 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BuildAgenda(state);
         BuildSchedule(state);
         BuildPresets(state);
+        DilemmaModePrograms.Visible = state.CanPrograms;
         BuildDilemmas(state);
         BuildBudget(state);
+        BuildPrograms(state);
         BuildBudgetSection(state);
+    }
+
+    private void BuildPrograms(SWSenateWorkConsoleState state)
+    {
+        ProgramSummary.SetMessage(state.BudgetLocked
+            ? $"Доступно вам: {state.MyBudgetAvailable} кр."
+            : $"Доступно вам: {state.MyBudgetAvailable} кр.   (бюджет ещё не зафиксирован Канцлером)");
+
+        ProgramList.RemoveAllChildren();
+        if (state.Programs.Count == 0)
+        {
+            ProgramList.AddChild(new Label { Text = "Программ нет.", FontColorOverride = Color.Gray });
+            return;
+        }
+
+        foreach (var program in state.Programs)
+            ProgramList.AddChild(MakeProgramCard(program));
+    }
+
+    private Control MakeProgramCard(SWProgramEntry program)
+    {
+        var box = new BoxContainer
+        {
+            Orientation = BoxContainer.LayoutOrientation.Vertical,
+            Margin = new Thickness(0, 2, 0, 10),
+        };
+
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
+        head.AddChild(new Label { Text = program.Name, StyleClasses = { "LabelKeyText" }, HorizontalExpand = true });
+        if (!string.IsNullOrWhiteSpace(program.Category))
+            head.AddChild(new Label { Text = program.Category, FontColorOverride = Color.Gray });
+        box.AddChild(head);
+
+        if (!string.IsNullOrWhiteSpace(program.Description))
+        {
+            var desc = new RichTextLabel { Margin = new Thickness(0, 2, 0, 4) };
+            desc.SetMessage(program.Description);
+            box.AddChild(desc);
+        }
+
+        box.AddChild(MakeEffectsRow(program.Effects));
+
+        var id = program.Id;
+        var label = program.Applied ? "Уже применено сегодня" : $"Применить — {program.Cost} кр.";
+        var button = new Button
+        {
+            Text = label,
+            Disabled = program.Applied || !program.Affordable,
+            HorizontalAlignment = Control.HAlignment.Left,
+            Margin = new Thickness(0, 2, 0, 0),
+        };
+        button.OnPressed += _ => _owner.ApplyProgram(id);
+        box.AddChild(button);
+
+        return box;
     }
 
     private void ShowDilemmaMode(int mode)
     {
         DilemmaActivePanel.Visible = mode == 0;
         DilemmaBudgetPanel.Visible = mode == 1;
-        DilemmaSummaryPanel.Visible = mode == 2;
+        DilemmaProgramPanel.Visible = mode == 2;
+        DilemmaSummaryPanel.Visible = mode == 3;
         DilemmaModeActive.Disabled = mode == 0;
         DilemmaModeBudget.Disabled = mode == 1;
-        DilemmaModeSummary.Disabled = mode == 2;
+        DilemmaModePrograms.Disabled = mode == 2;
+        DilemmaModeSummary.Disabled = mode == 3;
     }
 
     private void BuildDilemmas(SWSenateWorkConsoleState state)

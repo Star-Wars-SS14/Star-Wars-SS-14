@@ -178,6 +178,32 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public int BudgetReserve;
     public int MyBudgetAvailable;
     public List<SWBudgetSectorEntry> BudgetSectors = new();
+    public bool CanPrograms;
+    public List<SWProgramEntry> Programs = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWProgramEntry
+{
+    public string Id = string.Empty;
+    public string Name = string.Empty;
+    public string Description = string.Empty;
+    public string Category = string.Empty;
+    public int Cost;
+    public bool Affordable;
+    public bool Applied;
+    public List<SWBillEffectEntry> Effects = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateApplyProgramMessage : BoundUserInterfaceMessage
+{
+    public string ProgramId;
+
+    public SWSenateApplyProgramMessage(string programId)
+    {
+        ProgramId = programId;
+    }
 }
 
 [Serializable, NetSerializable]

@@ -1,0 +1,166 @@
+- type: swProgram
+  id: SWProgramClinics
+  name: Сеть клиник
+  description: Открытие районных клиник и снабжение бактой по всему сектору.
+  category: Здравоохранение
+  order: 100
+  cost: 3000
+  sectorEffects:
+    SWGlobalHealthcare: 5
+
+- type: swProgram
+  id: SWProgramVaccination
+  name: Кампания вакцинации
+  description: Массовая профилактика болезней и поддержка населения.
+  category: Здравоохранение
+  order: 101
+  cost: 4500
+  sectorEffects:
+    SWGlobalHealthcare: 6
+    SWGlobalSociety: 2
+
+- type: swProgram
+  id: SWProgramSchools
+  name: Школьная программа
+  description: Строительство школ и подготовка учителей.
+  category: Образование
+  order: 110
+  cost: 3000
+  sectorEffects:
+    SWGlobalEducation: 5
+
+- type: swProgram
+  id: SWProgramAcademy
+  name: Секторальная академия
+  description: Учреждение академии наук и исследовательских грантов.
+  category: Образование
+  order: 111
+  cost: 5500
+  sectorEffects:
+    SWGlobalEducation: 7
+    SWGlobalIndustry: 2
+
+- type: swProgram
+  id: SWProgramFactories
+  name: Промышленная модернизация
+  description: Обновление заводов и автоматизация производства.
+  category: Промышленность
+  order: 120
+  cost: 3500
+  sectorEffects:
+    SWGlobalIndustry: 5
+
+- type: swProgram
+  id: SWProgramEnergy
+  name: Энергетические сети
+  description: Расширение реакторов и распределительных сетей.
+  category: Промышленность
+  order: 121
+  cost: 5000
+  sectorEffects:
+    SWGlobalIndustry: 4
+    SWGlobalEconomy: 3
+
+- type: swProgram
+  id: SWProgramTrade
+  name: Торговый хаб
+  description: Развитие портов и торговых путей сектора.
+  category: Экономика
+  order: 130
+  cost: 4000
+  sectorEffects:
+    SWGlobalEconomy: 6
+
+- type: swProgram
+  id: SWProgramTaxReform
+  name: Налоговая реформа
+  description: Стимулы для бизнеса и упрощение сборов.
+  category: Экономика
+  order: 131
+  cost: 5500
+  sectorEffects:
+    SWGlobalEconomy: 7
+    SWGlobalIndustry: 2
+
+- type: swProgram
+  id: SWProgramPolice
+  name: Реформа правопорядка
+  description: Усиление патрулей и оснащение службы безопасности.
+  category: Безопасность
+  order: 140
+  cost: 3000
+  sectorEffects:
+    SWGlobalSecurity: 5
+
+- type: swProgram
+  id: SWProgramSurveillance
+  name: Система наблюдения
+  description: Контроль преступности и быстрый отклик на угрозы.
+  category: Безопасность
+  order: 141
+  cost: 4500
+  sectorEffects:
+    SWGlobalSecurity: 6
+    SWGlobalSociety: -1
+
+- type: swProgram
+  id: SWProgramGarrison
+  name: Планетарный гарнизон
+  description: Размещение войск и укрепление обороны сектора.
+  category: Оборона
+  order: 150
+  cost: 4000
+  sectorEffects:
+    SWGlobalDefense: 6
+
+- type: swProgram
+  id: SWProgramShield
+  name: Орбитальная оборона
+  description: Установка щитов и батарей на орбите сектора.
+  category: Оборона
+  order: 151
+  cost: 6000
+  sectorEffects:
+    SWGlobalDefense: 8
+
+- type: swProgram
+  id: SWProgramWelfare
+  name: Социальная поддержка
+  description: Пособия, жильё и помощь нуждающимся.
+  category: Общество
+  order: 160
+  cost: 3500
+  sectorEffects:
+    SWGlobalSociety: 5
+
+- type: swProgram
+  id: SWProgramCulture
+  name: Культурная инициатива
+  description: Поддержка искусства, праздников и местных традиций.
+  category: Общество
+  order: 161
+  cost: 3000
+  sectorEffects:
+    SWGlobalSociety: 4
+    SWGlobalEducation: 1
+
+- type: swProgram
+  id: SWProgramDiplomacy
+  name: Дипломатическая миссия
+  description: Налаживание связей с соседними секторами и Республикой.
+  category: Внешняя политика
+  order: 170
+  cost: 4000
+  sectorEffects:
+    SWGlobalForeign: 5
+
+- type: swProgram
+  id: SWProgramTradePact
+  name: Торговое соглашение
+  description: Заключение пактов о свободной торговле.
+  category: Внешняя политика
+  order: 171
+  cost: 5000
+  sectorEffects:
+    SWGlobalForeign: 5
+    SWGlobalEconomy: 3

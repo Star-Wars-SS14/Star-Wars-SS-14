@@ -1,5 +1,6 @@
 using Content.Server.Chat.Managers;
 using Content.Shared.Chat;
+using Content.Shared.GameTicking;
 using Robust.Shared.Player;
 using Robust.Shared.Utility;
 
@@ -26,6 +27,16 @@ public sealed class SWSenateFloorSystem : EntitySystem
     public override void Initialize()
     {
         SubscribeLocalEvent<EntitySpokeEvent>(OnSpoke);
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+    }
+
+    private void OnRoundRestart(RoundRestartCleanupEvent ev)
+    {
+        _speaker = null;
+        _chancellor = null;
+        _floorHolder = null;
+        _speakerActive = false;
+        _queue.Clear();
     }
 
     public void SetSpeaker(EntityUid? uid)

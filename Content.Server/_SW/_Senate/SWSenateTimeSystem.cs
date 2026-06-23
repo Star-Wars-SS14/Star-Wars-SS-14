@@ -1,3 +1,5 @@
+using Content.Shared.GameTicking;
+
 namespace Content.Server._SW._Senate;
 
 public sealed class SWSenateTimeSystem : EntitySystem
@@ -16,6 +18,21 @@ public sealed class SWSenateTimeSystem : EntitySystem
 
     public int CurrentHour => StartHour + Math.Clamp((int)(_gameMinutes / 60f), 0, EndHour - StartHour);
     public int CurrentMinute => (int)(_gameMinutes % 60f);
+
+    public override void Initialize()
+    {
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+    }
+
+    private void OnRoundRestart(RoundRestartCleanupEvent ev)
+    {
+        // A new round is the next senate day: the clock resets to morning while the day number carries
+        // over and advances (a round ending mid-day 1 makes the next round day 2).
+        Day++;
+        _gameMinutes = 0f;
+        _gapRemaining = 0f;
+        DayActive = true;
+    }
 
     public override void Update(float frameTime)
     {

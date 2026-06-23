@@ -215,6 +215,38 @@ public sealed class SWSenateStateSystem : EntitySystem
         bias[globalId] = Math.Clamp(value + delta, -50f, 50f);
     }
 
+    public void SetPolicy(string subId, float value)
+    {
+        if (!_proto.TryIndex<SWStatPrototype>(subId, out var sub))
+            return;
+
+        _republicSubStats[subId] = Math.Clamp(value, sub.Min, sub.Max);
+    }
+
+    public bool SetSectorGlobal(string sectorId, string globalId, float value)
+    {
+        if (!_sectorGlobals.TryGetValue(sectorId, out var globals) || !_proto.TryIndex<SWGlobalStatPrototype>(globalId, out var global))
+            return false;
+
+        globals[globalId] = Math.Clamp(value, global.Min, global.Max);
+        return true;
+    }
+
+    public void FillAll(float value)
+    {
+        foreach (var sub in _proto.EnumeratePrototypes<SWStatPrototype>())
+            _republicSubStats[sub.ID] = Math.Clamp(value, sub.Min, sub.Max);
+
+        foreach (var (_, globals) in _sectorGlobals)
+        {
+            foreach (var global in _proto.EnumeratePrototypes<SWGlobalStatPrototype>())
+            {
+                if (globals.ContainsKey(global.ID))
+                    globals[global.ID] = Math.Clamp(value, global.Min, global.Max);
+            }
+        }
+    }
+
     public bool IsClaimed(string sectorId) => _sectorHolders.ContainsKey(sectorId);
 
     public string? GetSectorHolder(string sectorId) =>

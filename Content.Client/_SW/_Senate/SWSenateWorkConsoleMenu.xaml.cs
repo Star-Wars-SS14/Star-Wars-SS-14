@@ -18,6 +18,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     private (Button Nav, Control Panel)[] _sections = System.Array.Empty<(Button, Control)>();
     private readonly Dictionary<string, Slider> _draftSliders = new();
     private readonly Dictionary<string, Label> _draftValueLabels = new();
+    private readonly Dictionary<string, LineEdit> _budgetEdits = new();
+    private string _budgetSignature = string.Empty;
     private readonly HashSet<int> _expandedDilemmas = new();
     private bool _draftBuilt;
     private int _draftBudget;
@@ -40,6 +42,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             (NavAgenda, AgendaScroll),
             (NavSchedule, ScheduleTab),
             (NavDilemmas, DilemmaTab),
+            (NavBudget, BudgetTab),
             (NavAnnounce, AnnounceTab),
         };
         foreach (var (nav, panel) in _sections)
@@ -123,6 +126,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         NavAgenda.Visible = state.IsSenateCard && state.InOffice;
         NavSchedule.Visible = state.IsSenateCard && state.InOffice;
         NavDilemmas.Visible = state.CanDilemmas && state.InOffice;
+        NavBudget.Visible = state.IsChancellorView;
         NavAnnounce.Visible = isLeader && state.InOffice;
 
         foreach (var (nav, panel) in _sections)
@@ -143,6 +147,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BuildSchedule(state);
         BuildPresets(state);
         BuildDilemmas(state);
+        BuildBudget(state);
+        BuildBudgetSection(state);
     }
 
     private void ShowDilemmaMode(int mode)
@@ -179,6 +185,86 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             DilemmaSummaryList.AddChild(MakeSummaryEntry(dilemma));
     }
 
+    private void BuildBudget(SWSenateWorkConsoleState state)
+    {
+        BudgetSummary.SetMessage(state.BudgetLocked
+            ? $"Доступно вам: {state.MyBudgetAvailable} кр."
+            : $"Доступно вам: {state.MyBudgetAvailable} кр.   (бюджет ещё не зафиксирован Канцлером)");
+
+        BudgetDilemmaList.RemoveAllChildren();
+        if (state.MyBudgetDilemmas.Count == 0)
+        {
+            BudgetDilemmaList.AddChild(new Label { Text = "Бюджетных дилемм нет.", FontColorOverride = Color.Gray });
+            return;
+        }
+
+        foreach (var dilemma in state.MyBudgetDilemmas)
+            BudgetDilemmaList.AddChild(MakeDilemmaCard(dilemma));
+    }
+
+    private void BuildBudgetSection(SWSenateWorkConsoleState state)
+    {
+        BudgetSectionSummary.SetMessage(
+            $"Бюджет дня: {state.BudgetTotal} кр.    Резерв: {state.BudgetReserve} кр.    " +
+            (state.BudgetLocked ? "[зафиксирован]" : "[не зафиксирован]"));
+
+        // Rebuild the input fields only when the sector set or lock state changes, so the periodic
+        // refresh never wipes what the Chancellor is typing.
+        var signature = (state.BudgetLocked ? "L:" : "U:");
+        foreach (var sector in state.BudgetSectors)
+            signature += sector.SectorId + ",";
+
+        if (signature == _budgetSignature)
+            return;
+
+        _budgetSignature = signature;
+        _budgetEdits.Clear();
+        BudgetAllocPanel.RemoveAllChildren();
+
+        if (state.BudgetLocked)
+        {
+            BudgetAllocPanel.AddChild(new Label { Text = "Распределение (зафиксировано):", StyleClasses = { "LabelKeyText" } });
+            foreach (var sector in state.BudgetSectors)
+                BudgetAllocPanel.AddChild(new Label { Text = $"{sector.Name}: {sector.Amount} кр.", FontColorOverride = sector.Color });
+            return;
+        }
+
+        BudgetAllocPanel.AddChild(new Label { Text = "Распределение по секторам:", StyleClasses = { "LabelKeyText" } });
+        foreach (var sector in state.BudgetSectors)
+        {
+            var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 1, 0, 1) };
+            row.AddChild(new Label { Text = sector.Name, FontColorOverride = sector.Color, MinWidth = 180 });
+
+            var edit = new LineEdit { Text = sector.Amount.ToString(), MinWidth = 100 };
+            _budgetEdits[sector.SectorId] = edit;
+
+            var id = sector.SectorId;
+            var setButton = new Button { Text = "Задать", Margin = new Thickness(6, 0, 0, 0) };
+            setButton.OnPressed += _ =>
+            {
+                if (int.TryParse(edit.Text, out var amount))
+                    _owner.SetBudget(id, amount);
+            };
+
+            row.AddChild(edit);
+            row.AddChild(setButton);
+            BudgetAllocPanel.AddChild(row);
+        }
+
+        var lockButton = new Button { Text = "Зафиксировать бюджет", Margin = new Thickness(0, 6, 0, 0) };
+        lockButton.OnPressed += _ =>
+        {
+            foreach (var (sectorId, edit) in _budgetEdits)
+            {
+                if (int.TryParse(edit.Text, out var amount))
+                    _owner.SetBudget(sectorId, amount);
+            }
+
+            _owner.LockBudget();
+        };
+        BudgetAllocPanel.AddChild(lockButton);
+    }
+
     private Control MakeDilemmaCard(SWDilemmaEntry dilemma)
     {
         var box = new BoxContainer
@@ -207,15 +293,16 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             var optionRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
             var index = i;
             var id = dilemma.Id;
+            var label = option.Cost > 0 ? $"{option.Label} — {option.Cost} кр." : option.Label;
+            if (dilemma.ChosenOption == i)
+                label += " (выбрано)";
             var button = new Button
             {
-                Text = option.Label,
-                Disabled = !dilemma.CanResolve,
+                Text = label,
+                Disabled = !dilemma.CanResolve || !option.Affordable,
                 HorizontalExpand = true,
                 HorizontalAlignment = Control.HAlignment.Left,
             };
-            if (dilemma.ChosenOption == i)
-                button.Text = $"{option.Label} (выбрано)";
             button.OnPressed += _ => _owner.ResolveDilemma(id, index);
             optionRow.AddChild(button);
             optionBox.AddChild(optionRow);

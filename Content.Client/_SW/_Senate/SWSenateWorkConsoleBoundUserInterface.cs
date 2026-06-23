@@ -55,6 +55,16 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateResolveDilemmaMessage(dilemmaId, optionIndex));
     }
 
+    public void SetBudget(string sectorId, int amount)
+    {
+        SendMessage(new SWSenateSetBudgetMessage(sectorId, amount));
+    }
+
+    public void LockBudget()
+    {
+        SendMessage(new SWSenateLockBudgetMessage());
+    }
+
     public void ScheduleSession(int billId, int startHour, int duration)
     {
         SendMessage(new SWSenateScheduleSessionMessage(billId, startHour, duration));

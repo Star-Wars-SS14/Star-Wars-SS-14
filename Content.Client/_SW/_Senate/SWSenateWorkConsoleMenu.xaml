@@ -11,6 +11,7 @@
             <Button Name="NavAgenda" Text="Повестка" Margin="0 0 0 2" />
             <Button Name="NavSchedule" Text="Расписание" Margin="0 0 0 2" />
             <Button Name="NavDilemmas" Text="Дилеммы" Margin="0 0 0 2" />
+            <Button Name="NavBudget" Text="Бюджет" Margin="0 0 0 2" />
             <Button Name="NavAnnounce" Text="Объявление" Margin="0 0 0 2" />
         </BoxContainer>
         <BoxContainer Name="ContentHost" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
@@ -69,6 +70,12 @@
                     <BoxContainer Name="ChancellorPendingList" Orientation="Vertical" />
                 </BoxContainer>
             </BoxContainer>
+            <BoxContainer Name="BudgetTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
+                <RichTextLabel Name="BudgetSectionSummary" Margin="0 0 0 8" />
+                <ScrollContainer HorizontalExpand="True" VerticalExpand="True">
+                    <BoxContainer Name="BudgetAllocPanel" Orientation="Vertical" />
+                </ScrollContainer>
+            </BoxContainer>
             <BoxContainer Name="AnnounceTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
                 <Label Text="Объявление Сената" StyleClasses="LabelKeyText" />
                 <LineEdit Name="AnnounceEdit" PlaceHolder="Текст объявления..." Margin="0 2 0 8" />
@@ -84,7 +91,10 @@
                     <BoxContainer Name="DilemmaActiveList" Orientation="Vertical" />
                 </ScrollContainer>
                 <BoxContainer Name="DilemmaBudgetPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
-                    <Label Text="Бюджетные дилеммы — в разработке." FontColorOverride="#888888" />
+                    <RichTextLabel Name="BudgetSummary" Margin="0 0 0 6" />
+                    <ScrollContainer HorizontalExpand="True" VerticalExpand="True">
+                        <BoxContainer Name="BudgetDilemmaList" Orientation="Vertical" />
+                    </ScrollContainer>
                 </BoxContainer>
                 <ScrollContainer Name="DilemmaSummaryPanel" HorizontalExpand="True" VerticalExpand="True">
                     <BoxContainer Name="DilemmaSummaryList" Orientation="Vertical" />

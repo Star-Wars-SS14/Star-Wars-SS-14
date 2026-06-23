@@ -46,6 +46,13 @@ public sealed partial class SWDilemmaPrototype : IPrototype
     public SWDilemmaScope Scope = SWDilemmaScope.Sectoral;
 
     /// <summary>
+    /// Budget dilemmas require spending the owner's allocated credits to resolve; effects are positive,
+    /// fail effects are empty (unresolved = missed opportunity).
+    /// </summary>
+    [DataField]
+    public bool Budget;
+
+    /// <summary>
     /// Reserved for condition-triggered dilemmas. Empty = part of the general random pool.
     /// </summary>
     [DataField]
@@ -78,6 +85,9 @@ public sealed partial class SWDilemmaOption
 
     [DataField]
     public string Description = string.Empty;
+
+    [DataField]
+    public int Cost;
 
     [DataField]
     public Dictionary<ProtoId<SWStatPrototype>, float> PolicyEffects = new();

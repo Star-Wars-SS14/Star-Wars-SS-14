@@ -72,3 +72,4 @@ sw-senate-floor-speaker-off = Ваша трибуна выключена.
 sw-senate-floor-granted-announce = Слово предоставлено: {$name}.
 
 sw-senate-dilemma-resolved = Решение по дилемме принято.
+sw-senate-budget-locked = Бюджет распределён и зафиксирован на день.

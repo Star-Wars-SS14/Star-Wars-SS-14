@@ -13,6 +13,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
+    [Dependency] private readonly SWSenateBudgetSystem _budget = default!;
 
     public const string RepublicOwner = "republic";
 
@@ -68,27 +69,42 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         if (window == null)
             return;
 
+        // Budget dilemmas only arrive in the morning (the Chancellor distributes the budget at day start).
+        var allowBudget = window.Value == SWDilemmaWindow.Morning;
+
         foreach (var (sectorId, _) in _senate.SectorHolders)
-            GenerateFor(sectorId, SWDilemmaScope.Sectoral, window.Value, sectorId);
+        {
+            GenerateFor(sectorId, SWDilemmaScope.Sectoral, window.Value, sectorId, false);
+            if (allowBudget)
+                GenerateFor(sectorId, SWDilemmaScope.Sectoral, window.Value, sectorId, true);
+        }
 
         if (_senate.Chancellor != null)
-            GenerateFor(RepublicOwner, SWDilemmaScope.Republic, window.Value, null);
+        {
+            GenerateFor(RepublicOwner, SWDilemmaScope.Republic, window.Value, null, false);
+            if (allowBudget)
+                GenerateFor(RepublicOwner, SWDilemmaScope.Republic, window.Value, null, true);
+        }
     }
 
-    private void GenerateFor(string owner, SWDilemmaScope scope, SWDilemmaWindow window, string? sectorId)
+    private void GenerateFor(string owner, SWDilemmaScope scope, SWDilemmaWindow window, string? sectorId, bool budget)
     {
-        var key = $"{owner}|{window}";
+        var key = $"{owner}|{window}|{budget}";
         if (!_generated.Add(key))
             return;
 
         var pool = _proto.EnumeratePrototypes<SWDilemmaPrototype>()
-            .Where(d => d.Scope == scope && string.IsNullOrEmpty(d.Trigger))
+            .Where(d => d.Scope == scope && d.Budget == budget && string.IsNullOrEmpty(d.Trigger))
             .ToList();
 
         if (pool.Count == 0)
             return;
 
-        var count = Math.Min(_random.Next(1, 3), pool.Count);
+        var roll = budget ? _random.Next(0, 2) : _random.Next(1, 3);
+        var count = Math.Min(roll, pool.Count);
+        if (count == 0)
+            return;
+
         _random.Shuffle(pool);
 
         var deadline = window == SWDilemmaWindow.Morning ? MorningDeadline : AfternoonDeadline;
@@ -101,6 +117,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
                 Id = _nextId++,
                 DilemmaId = pool[i].ID,
                 Scope = scope,
+                IsBudget = budget,
                 Owner = owner,
                 SectorId = sectorId,
                 Window = window,
@@ -164,6 +181,25 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         }
     }
 
+    public void AdminAddDilemma(SWDilemmaScope scope, string owner, string? sectorId, string dilemmaId)
+    {
+        var isBudget = _proto.TryIndex<SWDilemmaPrototype>(dilemmaId, out var proto) && proto.Budget;
+
+        _dilemmas.Add(new SWActiveDilemma
+        {
+            Id = _nextId++,
+            DilemmaId = dilemmaId,
+            Scope = scope,
+            IsBudget = isBudget,
+            Owner = owner,
+            SectorId = sectorId,
+            Window = SWDilemmaWindow.Afternoon,
+            DeadlineHour = SWSenateTimeSystem.EndHour,
+            ApplyHour = SWSenateTimeSystem.EndHour,
+            Status = SWDilemmaStatus.Pending,
+        });
+    }
+
     public bool Resolve(int id, int option, string owner)
     {
         var dilemma = _dilemmas.FirstOrDefault(d => d.Id == id);
@@ -178,12 +214,19 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             || option >= proto.Options.Count)
             return false;
 
+        if (dilemma.IsBudget && !_budget.Spend(dilemma.Owner, proto.Options[option].Cost))
+            return false;
+
         dilemma.ChosenOption = option;
         dilemma.Status = SWDilemmaStatus.Chosen;
         return true;
     }
 
-    public List<SWDilemmaEntry> BuildOwnerDilemmas(string? owner)
+    public List<SWDilemmaEntry> BuildOwnerDilemmas(string? owner) => BuildOwnerDilemmas(owner, false);
+
+    public List<SWDilemmaEntry> BuildOwnerBudgetDilemmas(string? owner) => BuildOwnerDilemmas(owner, true);
+
+    private List<SWDilemmaEntry> BuildOwnerDilemmas(string? owner, bool budget)
     {
         var list = new List<SWDilemmaEntry>();
         if (owner == null)
@@ -191,7 +234,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
         foreach (var dilemma in _dilemmas)
         {
-            if (dilemma.Owner != owner)
+            if (dilemma.Owner != owner || dilemma.IsBudget != budget)
                 continue;
             if (dilemma.Status is not (SWDilemmaStatus.Pending or SWDilemmaStatus.Chosen))
                 continue;
@@ -229,6 +272,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             Name = proto?.Name ?? dilemma.DilemmaId,
             Description = proto?.Description ?? string.Empty,
             IsRepublic = dilemma.Scope == SWDilemmaScope.Republic,
+            IsBudget = dilemma.IsBudget,
             OwnerLabel = dilemma.Scope == SWDilemmaScope.Republic ? "Канцлер" : SectorName(dilemma.SectorId),
             FailText = proto?.FailText ?? string.Empty,
             Status = StatusLabel(dilemma.Status),
@@ -245,12 +289,15 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
         if (proto != null)
         {
+            var available = dilemma.IsBudget ? _budget.Available(dilemma.Owner) : 0;
             foreach (var option in proto.Options)
             {
                 entry.Options.Add(new SWDilemmaOptionEntry
                 {
                     Label = option.Label,
                     Description = option.Description,
+                    Cost = option.Cost,
+                    Affordable = !dilemma.IsBudget || available >= option.Cost,
                     Effects = dilemma.Scope == SWDilemmaScope.Republic
                         ? PolicyEffectEntries(option.PolicyEffects)
                         : SectorEffectEntries(option.SectorEffects),
@@ -314,6 +361,7 @@ public sealed class SWActiveDilemma
     public int Id;
     public string DilemmaId = string.Empty;
     public SWDilemmaScope Scope;
+    public bool IsBudget;
     public string Owner = string.Empty;
     public string? SectorId;
     public SWDilemmaWindow Window;

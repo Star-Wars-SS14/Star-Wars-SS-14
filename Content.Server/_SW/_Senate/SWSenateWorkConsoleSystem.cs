@@ -23,6 +23,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateFloorSystem _floor = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
+    [Dependency] private readonly SWSenateBudgetSystem _budget = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
     private const float UpdateInterval = 3f;
@@ -40,6 +41,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSubmitBillMessage>(OnSubmitBill);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSubmitPresetMessage>(OnSubmitPreset);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateResolveDilemmaMessage>(OnResolveDilemma);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSetBudgetMessage>(OnSetBudget);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateLockBudgetMessage>(OnLockBudget);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateScheduleSessionMessage>(OnScheduleSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRemoveSessionMessage>(OnRemoveSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateConfirmSessionMessage>(OnConfirmSession);
@@ -303,6 +306,29 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
+    private bool ChancellorInOffice(Entity<SWSenateWorkConsoleComponent> ent) =>
+        GetCardPosition(ent) == SWSenatePosition.Chancellor && _senate.Chancellor != null;
+
+    private void OnSetBudget(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSetBudgetMessage args)
+    {
+        if (!ChancellorInOffice(ent))
+            return;
+
+        _budget.SetAllocation(args.SectorId, args.Amount);
+        UpdateUi(ent);
+    }
+
+    private void OnLockBudget(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateLockBudgetMessage args)
+    {
+        if (!ChancellorInOffice(ent))
+            return;
+
+        if (_budget.Lock())
+            _popup.PopupCursor(Loc.GetString("sw-senate-budget-locked"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
     private void OnOpened(EntityUid uid, SWSenateWorkConsoleComponent comp, BoundUIOpenedEvent args)
     {
         UpdateUi((uid, comp));
@@ -426,7 +452,15 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.AllDilemmas = _dilemma.BuildAllDilemmas();
         var dilemmaOwner = GetDilemmaOwner(ent);
         state.MyDilemmas = _dilemma.BuildOwnerDilemmas(dilemmaOwner);
+        state.MyBudgetDilemmas = _dilemma.BuildOwnerBudgetDilemmas(dilemmaOwner);
         state.CanDilemmas = dilemmaOwner != null;
+        state.BudgetLocked = _budget.Locked;
+        state.BudgetTotal = _budget.Total();
+        state.BudgetReserve = _budget.Reserve();
+        state.MyBudgetAvailable = dilemmaOwner != null ? _budget.Available(dilemmaOwner) : 0;
+        state.IsChancellorView = ChancellorInOffice(ent);
+        if (state.IsChancellorView)
+            state.BudgetSectors = BuildBudgetSectors();
         state.DraftBudget = ent.Comp.DraftBudget;
         state.GameTime = _time.TimeString();
         state.Schedule = _senate.BuildScheduleRows();
@@ -487,6 +521,27 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         }
 
         _ui.SetUiState(ent.Owner, SWSenateWorkConsoleUiKey.Key, state);
+    }
+
+    private List<SWBudgetSectorEntry> BuildBudgetSectors()
+    {
+        var list = new List<SWBudgetSectorEntry>();
+        foreach (var proto in _proto.EnumeratePrototypes<SWSectorPrototype>())
+        {
+            if (!_senate.IsClaimed(proto.ID))
+                continue;
+
+            list.Add(new SWBudgetSectorEntry
+            {
+                SectorId = proto.ID,
+                Name = proto.Name,
+                Color = proto.Color,
+                Amount = _budget.Allocation(proto.ID),
+            });
+        }
+
+        list.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+        return list;
     }
 
     private List<SWSenateRosterEntry> BuildRoster()

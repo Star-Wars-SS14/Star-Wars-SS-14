@@ -1,0 +1,290 @@
+- type: swDilemma
+  id: SWDilemmaBSecHospital
+  name: Строительство больницы
+  description: Сектор готов вложить кредиты в медицинскую инфраструктуру.
+  scope: Sectoral
+  budget: true
+  order: 100
+  options:
+  - label: Малая клиника
+    cost: 2500
+    sectorEffects:
+      SWGlobalHealthcare: 4
+  - label: Крупный госпиталь
+    cost: 5000
+    sectorEffects:
+      SWGlobalHealthcare: 7
+      SWGlobalSociety: 2
+
+- type: swDilemma
+  id: SWDilemmaBSecSchools
+  name: Финансирование школ
+  description: Выделение средств на образование в секторе.
+  scope: Sectoral
+  budget: true
+  order: 101
+  options:
+  - label: Базовые школы
+    cost: 2000
+    sectorEffects:
+      SWGlobalEducation: 3
+  - label: Сеть академий
+    cost: 4000
+    sectorEffects:
+      SWGlobalEducation: 6
+
+- type: swDilemma
+  id: SWDilemmaBSecIndustry
+  name: Промышленный грант
+  description: Субсидия на развитие производства в секторе.
+  scope: Sectoral
+  budget: true
+  order: 102
+  options:
+  - label: Модернизация цехов
+    cost: 3000
+    sectorEffects:
+      SWGlobalIndustry: 4
+  - label: Новый завод
+    cost: 5000
+    sectorEffects:
+      SWGlobalIndustry: 7
+
+- type: swDilemma
+  id: SWDilemmaBSecInfra
+  name: Развитие инфраструктуры
+  description: Вложение в транспорт и энергосети сектора.
+  scope: Sectoral
+  budget: true
+  order: 103
+  options:
+  - label: Ремонт сетей
+    cost: 3000
+    sectorEffects:
+      SWGlobalIndustry: 3
+      SWGlobalEconomy: 2
+  - label: Полная модернизация
+    cost: 5500
+    sectorEffects:
+      SWGlobalIndustry: 5
+      SWGlobalEconomy: 4
+
+- type: swDilemma
+  id: SWDilemmaBSecSecurity
+  name: Финансирование охраны порядка
+  description: Усиление правоохранительных сил сектора.
+  scope: Sectoral
+  budget: true
+  order: 104
+  options:
+  - label: Патрули
+    cost: 2500
+    sectorEffects:
+      SWGlobalSecurity: 4
+  - label: Полная реформа
+    cost: 4500
+    sectorEffects:
+      SWGlobalSecurity: 6
+      SWGlobalSociety: 1
+
+- type: swDilemma
+  id: SWDilemmaBSecWelfare
+  name: Социальная программа
+  description: Помощь нуждающимся жителям сектора.
+  scope: Sectoral
+  budget: true
+  order: 105
+  options:
+  - label: Точечная помощь
+    cost: 3000
+    sectorEffects:
+      SWGlobalSociety: 4
+      SWGlobalHealthcare: 2
+  - label: Широкая программа
+    cost: 5000
+    sectorEffects:
+      SWGlobalSociety: 6
+      SWGlobalHealthcare: 3
+
+- type: swDilemma
+  id: SWDilemmaBSecTrade
+  name: Торговые субсидии
+  description: Поддержка торговцев и предприятий сектора.
+  scope: Sectoral
+  budget: true
+  order: 106
+  options:
+  - label: Налоговые льготы
+    cost: 3000
+    sectorEffects:
+      SWGlobalEconomy: 5
+  - label: Прямые субсидии
+    cost: 5000
+    sectorEffects:
+      SWGlobalEconomy: 7
+      SWGlobalIndustry: 2
+
+- type: swDilemma
+  id: SWDilemmaBSecGarrison
+  name: Размещение гарнизона
+  description: Усиление обороны сектора за счёт бюджета.
+  scope: Sectoral
+  budget: true
+  order: 107
+  options:
+  - label: Небольшой гарнизон
+    cost: 3500
+    sectorEffects:
+      SWGlobalDefense: 5
+  - label: Военная база
+    cost: 6000
+    sectorEffects:
+      SWGlobalDefense: 8
+
+- type: swDilemma
+  id: SWDilemmaBSecResearch
+  name: Научная лаборатория
+  description: Финансирование исследований в секторе.
+  scope: Sectoral
+  budget: true
+  order: 108
+  options:
+  - label: Скромная лаборатория
+    cost: 3000
+    sectorEffects:
+      SWGlobalEducation: 4
+  - label: Исследовательский центр
+    cost: 5000
+    sectorEffects:
+      SWGlobalEducation: 6
+      SWGlobalIndustry: 2
+
+- type: swDilemma
+  id: SWDilemmaBSecRelief
+  name: Фонд помощи
+  description: Резерв на ликвидацию последствий бедствий в секторе.
+  scope: Sectoral
+  budget: true
+  order: 109
+  options:
+  - label: Базовый фонд
+    cost: 2500
+    sectorEffects:
+      SWGlobalHealthcare: 3
+      SWGlobalSociety: 2
+  - label: Крупный фонд
+    cost: 4500
+    sectorEffects:
+      SWGlobalHealthcare: 5
+      SWGlobalSociety: 4
+
+- type: swDilemma
+  id: SWDilemmaBRepFleet
+  name: Программа кораблестроения
+  description: Канцлер может профинансировать постройку новых кораблей.
+  scope: Republic
+  budget: true
+  order: 110
+  options:
+  - label: Эскадра фрегатов
+    cost: 4000
+    policyEffects:
+      SWStatFleet: 4
+  - label: Линейный флот
+    cost: 8000
+    policyEffects:
+      SWStatFleet: 7
+
+- type: swDilemma
+  id: SWDilemmaBRepMedical
+  name: Республиканская медпрограмма
+  description: Финансирование здравоохранения на уровне Республики.
+  scope: Republic
+  budget: true
+  order: 111
+  options:
+  - label: Снабжение бактой
+    cost: 4000
+    policyEffects:
+      SWStatMedicine: 4
+      SWStatWelfare: 2
+  - label: Сеть госпиталей
+    cost: 7000
+    policyEffects:
+      SWStatMedicine: 6
+      SWStatWelfare: 4
+
+- type: swDilemma
+  id: SWDilemmaBRepResearch
+  name: Научная инициатива
+  description: Вложение в исследования и технологии Республики.
+  scope: Republic
+  budget: true
+  order: 112
+  options:
+  - label: Гранты лабораториям
+    cost: 4000
+    policyEffects:
+      SWStatResearch: 4
+      SWStatTech: 2
+  - label: Большая программа
+    cost: 7000
+    policyEffects:
+      SWStatResearch: 6
+      SWStatTech: 4
+
+- type: swDilemma
+  id: SWDilemmaBRepBorder
+  name: Укрепление границы
+  description: Финансирование обороны приграничья с Империей.
+  scope: Republic
+  budget: true
+  order: 113
+  options:
+  - label: Заставы
+    cost: 5000
+    policyEffects:
+      SWStatEmpireBorder: 4
+      SWStatFleet: 2
+  - label: Линия обороны
+    cost: 8000
+    policyEffects:
+      SWStatEmpireBorder: 6
+      SWStatFleet: 4
+
+- type: swDilemma
+  id: SWDilemmaBRepWorks
+  name: Общественные работы
+  description: Программа занятости и улучшения жизни на средства казны.
+  scope: Republic
+  budget: true
+  order: 114
+  options:
+  - label: Локальные проекты
+    cost: 4000
+    policyEffects:
+      SWStatEmployment: 4
+      SWStatLiving: 2
+  - label: Масштабная программа
+    cost: 7000
+    policyEffects:
+      SWStatEmployment: 6
+      SWStatLiving: 4
+
+- type: swDilemma
+  id: SWDilemmaBRepIntel
+  name: Финансирование разведки
+  description: Дополнительные средства Стратегической информационной службе.
+  scope: Republic
+  budget: true
+  order: 115
+  options:
+  - label: Расширение агентуры
+    cost: 3500
+    policyEffects:
+      SWStatIntel: 4
+  - label: Полная программа
+    cost: 6500
+    policyEffects:
+      SWStatIntel: 6
+      SWStatCounter: 2

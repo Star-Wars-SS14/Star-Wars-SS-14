@@ -41,6 +41,15 @@ public sealed class SWSenateTimeSystem : EntitySystem
         }
     }
 
+    public void SetTime(int hour, int minute = 0)
+    {
+        hour = Math.Clamp(hour, StartHour, EndHour);
+        minute = Math.Clamp(minute, 0, 59);
+        DayActive = true;
+        _gapRemaining = 0f;
+        _gameMinutes = Math.Clamp((hour - StartHour) * 60 + minute, 0, DayLengthMinutes);
+    }
+
     public string TimeString()
     {
         if (!DayActive)

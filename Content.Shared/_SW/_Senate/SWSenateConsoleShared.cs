@@ -171,6 +171,40 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool CanDilemmas;
     public List<SWDilemmaEntry> MyDilemmas = new();
     public List<SWDilemmaEntry> AllDilemmas = new();
+    public List<SWDilemmaEntry> MyBudgetDilemmas = new();
+    public bool IsChancellorView;
+    public bool BudgetLocked;
+    public int BudgetTotal;
+    public int BudgetReserve;
+    public int MyBudgetAvailable;
+    public List<SWBudgetSectorEntry> BudgetSectors = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBudgetSectorEntry
+{
+    public string SectorId = string.Empty;
+    public string Name = string.Empty;
+    public Color Color;
+    public int Amount;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateSetBudgetMessage : BoundUserInterfaceMessage
+{
+    public string SectorId;
+    public int Amount;
+
+    public SWSenateSetBudgetMessage(string sectorId, int amount)
+    {
+        SectorId = sectorId;
+        Amount = amount;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateLockBudgetMessage : BoundUserInterfaceMessage
+{
 }
 
 [Serializable, NetSerializable]
@@ -178,6 +212,8 @@ public sealed class SWDilemmaOptionEntry
 {
     public string Label = string.Empty;
     public string Description = string.Empty;
+    public int Cost;
+    public bool Affordable = true;
     public List<SWBillEffectEntry> Effects = new();
 }
 
@@ -188,6 +224,7 @@ public sealed class SWDilemmaEntry
     public string Name = string.Empty;
     public string Description = string.Empty;
     public bool IsRepublic;
+    public bool IsBudget;
     public string OwnerLabel = string.Empty;
     public string Status = string.Empty;
     public string TimeLabel = string.Empty;

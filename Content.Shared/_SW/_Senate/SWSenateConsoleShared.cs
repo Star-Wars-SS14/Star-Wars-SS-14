@@ -180,6 +180,99 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public List<SWBudgetSectorEntry> BudgetSectors = new();
     public bool CanPrograms;
     public List<SWProgramEntry> Programs = new();
+    public bool CanAmbitions;
+    public List<SWAmbitionEntry> Ambitions = new();
+    public List<SWCrisisEntry> Crises = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCrisisSolutionEntry
+{
+    public string Label = string.Empty;
+    public string Description = string.Empty;
+    public int Cost;
+    public bool Affordable = true;
+    public float Relief;
+    public List<SWBillEffectEntry> Effects = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCrisisEntry
+{
+    public int Id;
+    public string Name = string.Empty;
+    public string Description = string.Empty;
+    public string TypeLabel = string.Empty;
+    public string AffectedLabel = string.Empty;
+    public float Severity;
+    public string SeverityLabel = string.Empty;
+    public List<SWBillEffectEntry> Impact = new();
+    public string EscalationThreat = string.Empty;
+    public string ExitProgress = string.Empty;
+    public bool CanResolve;
+    public bool CanAid;
+    public int AidCost;
+    public bool AidAffordable;
+    public bool CanPropose;
+    public List<SWCrisisSolutionEntry> Solutions = new();
+    public List<SWCrisisLawEntry> Laws = new();
+    public List<string> Log = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCrisisLawEntry
+{
+    public int Index;
+    public string Name = string.Empty;
+    public string Description = string.Empty;
+    public float Relief;
+    public List<SWBillEffectEntry> Effects = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateResolveCrisisMessage : BoundUserInterfaceMessage
+{
+    public int CrisisId;
+    public int SolutionIndex;
+
+    public SWSenateResolveCrisisMessage(int crisisId, int solutionIndex)
+    {
+        CrisisId = crisisId;
+        SolutionIndex = solutionIndex;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateAidCrisisMessage : BoundUserInterfaceMessage
+{
+    public int CrisisId;
+
+    public SWSenateAidCrisisMessage(int crisisId)
+    {
+        CrisisId = crisisId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateProposeEmergencyLawMessage : BoundUserInterfaceMessage
+{
+    public int CrisisId;
+    public int LawIndex;
+
+    public SWSenateProposeEmergencyLawMessage(int crisisId, int lawIndex)
+    {
+        CrisisId = crisisId;
+        LawIndex = lawIndex;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWAmbitionEntry
+{
+    public string Name = string.Empty;
+    public string Description = string.Empty;
+    public bool Met;
+    public string Progress = string.Empty;
 }
 
 [Serializable, NetSerializable]

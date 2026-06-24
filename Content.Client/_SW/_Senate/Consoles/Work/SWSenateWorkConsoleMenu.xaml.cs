@@ -21,6 +21,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     private readonly Dictionary<string, LineEdit> _budgetEdits = new();
     private string _budgetSignature = string.Empty;
     private readonly HashSet<int> _expandedDilemmas = new();
+    private readonly HashSet<int> _expandedCrises = new();
     private bool _draftBuilt;
     private int _draftBudget;
 
@@ -42,6 +43,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             (NavAgenda, AgendaScroll),
             (NavSchedule, ScheduleTab),
             (NavDilemmas, DilemmaTab),
+            (NavCrises, CrisesTab),
+            (NavAmbitions, AmbitionsTab),
             (NavBudget, BudgetTab),
             (NavAnnounce, AnnounceTab),
         };
@@ -127,6 +130,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         NavAgenda.Visible = state.IsSenateCard && state.InOffice;
         NavSchedule.Visible = state.IsSenateCard && state.InOffice;
         NavDilemmas.Visible = state.CanDilemmas && state.InOffice;
+        NavCrises.Visible = state.IsSenateCard;
+        NavAmbitions.Visible = state.CanAmbitions && state.InOffice;
         NavBudget.Visible = state.IsChancellorView;
         NavAnnounce.Visible = isLeader && state.InOffice;
 
@@ -151,7 +156,198 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BuildDilemmas(state);
         BuildBudget(state);
         BuildPrograms(state);
+        BuildAmbitions(state);
+        BuildCrises(state);
         BuildBudgetSection(state);
+    }
+
+    private void BuildCrises(SWSenateWorkConsoleState state)
+    {
+        CrisesList.RemoveAllChildren();
+        if (state.Crises.Count == 0)
+        {
+            CrisesList.AddChild(new Label { Text = "Активных кризисов нет.", FontColorOverride = Color.Gray });
+            return;
+        }
+
+        foreach (var crisis in state.Crises)
+            CrisesList.AddChild(MakeCrisisCard(crisis));
+    }
+
+    private Control MakeCrisisCard(SWCrisisEntry crisis)
+    {
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, Margin = new Thickness(0, 2, 0, 10) };
+
+        var sevColor = crisis.Severity >= 70f ? Color.IndianRed : crisis.Severity >= 40f ? Color.Goldenrod : Color.LightGreen;
+
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
+        head.AddChild(new Label { Text = $"{crisis.Name} [{crisis.TypeLabel}]", StyleClasses = { "LabelKeyText" }, HorizontalExpand = true });
+        head.AddChild(new Label { Text = $"{crisis.Severity:0}/100", FontColorOverride = sevColor });
+
+        var expanded = _expandedCrises.Contains(crisis.Id);
+        var details = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, Margin = new Thickness(0, 4, 0, 0), Visible = expanded };
+
+        var id = crisis.Id;
+        var toggle = new Button { Text = expanded ? "Скрыть" : "Подробнее", Margin = new Thickness(8, 0, 0, 0) };
+        toggle.OnPressed += _ =>
+        {
+            if (!_expandedCrises.Add(id))
+                _expandedCrises.Remove(id);
+            var now = _expandedCrises.Contains(id);
+            details.Visible = now;
+            toggle.Text = now ? "Скрыть" : "Подробнее";
+        };
+        head.AddChild(toggle);
+        box.AddChild(head);
+
+        box.AddChild(new ProgressBar
+        {
+            MinValue = 0,
+            MaxValue = 100,
+            Value = crisis.Severity,
+            MinHeight = 10,
+            Margin = new Thickness(0, 2, 0, 0),
+            ForegroundStyleBoxOverride = new StyleBoxFlat { BackgroundColor = sevColor },
+        });
+
+        if (!string.IsNullOrWhiteSpace(crisis.Description))
+        {
+            var desc = new RichTextLabel { Margin = new Thickness(0, 2, 0, 2) };
+            desc.SetMessage(crisis.Description);
+            details.AddChild(desc);
+        }
+
+        details.AddChild(new Label { Text = $"Очаг: {crisis.AffectedLabel}", FontColorOverride = Color.Gray });
+        details.AddChild(new Label { Text = crisis.SeverityLabel, FontColorOverride = sevColor });
+        details.AddChild(new Label { Text = crisis.EscalationThreat, FontColorOverride = Color.Goldenrod });
+        details.AddChild(new Label { Text = crisis.ExitProgress, FontColorOverride = Color.Gray });
+
+        if (crisis.Impact.Count > 0)
+        {
+            details.AddChild(new Label { Text = "Текущее давление:", FontColorOverride = Color.IndianRed, Margin = new Thickness(0, 2, 0, 0) });
+            details.AddChild(MakeEffectsRow(crisis.Impact));
+        }
+
+        if (crisis.Solutions.Count > 0)
+        {
+            details.AddChild(new Label { Text = "Меры:", StyleClasses = { "LabelKeyText" }, Margin = new Thickness(0, 4, 0, 0) });
+            for (var i = 0; i < crisis.Solutions.Count; i++)
+            {
+                var solution = crisis.Solutions[i];
+                var index = i;
+                var cid = crisis.Id;
+
+                var label = solution.Cost > 0 ? $"{solution.Label} — {solution.Cost} кр. (−{solution.Relief:0} тяж.)" : $"{solution.Label} (−{solution.Relief:0} тяж.)";
+                var button = new Button
+                {
+                    Text = label,
+                    Disabled = !crisis.CanResolve || !solution.Affordable,
+                    HorizontalAlignment = Control.HAlignment.Left,
+                    Margin = new Thickness(0, 1, 0, 0),
+                };
+                button.OnPressed += _ => _owner.ResolveCrisis(cid, index);
+                details.AddChild(button);
+
+                if (!string.IsNullOrWhiteSpace(solution.Description))
+                    details.AddChild(new Label { Text = solution.Description, FontColorOverride = Color.Gray, Margin = new Thickness(8, 0, 0, 0) });
+                if (solution.Effects.Count > 0)
+                    details.AddChild(MakeEffectsRow(solution.Effects));
+            }
+
+            if (!crisis.CanResolve)
+                details.AddChild(new Label { Text = "Меры доступны сенатору пострадавшего сектора.", FontColorOverride = Color.Gray, Margin = new Thickness(0, 2, 0, 0) });
+        }
+
+        if (crisis.CanAid)
+        {
+            var cid = crisis.Id;
+            var aid = new Button
+            {
+                Text = $"Направить помощь ({crisis.AidCost} кр.)",
+                Disabled = !crisis.AidAffordable,
+                HorizontalAlignment = Control.HAlignment.Left,
+                Margin = new Thickness(0, 4, 0, 0),
+            };
+            aid.OnPressed += _ => _owner.AidCrisis(cid);
+            details.AddChild(aid);
+        }
+
+        if (crisis.Laws.Count > 0)
+        {
+            details.AddChild(new Label { Text = "Экстренные законы:", StyleClasses = { "LabelKeyText" }, Margin = new Thickness(0, 4, 0, 0) });
+            foreach (var law in crisis.Laws)
+            {
+                var cid = crisis.Id;
+                var lawIndex = law.Index;
+                var button = new Button
+                {
+                    Text = $"Внести: {law.Name} (−{law.Relief:0} тяж.)",
+                    Disabled = !crisis.CanPropose,
+                    HorizontalAlignment = Control.HAlignment.Left,
+                    Margin = new Thickness(0, 1, 0, 0),
+                };
+                button.OnPressed += _ => _owner.ProposeEmergencyLaw(cid, lawIndex);
+                details.AddChild(button);
+
+                if (!string.IsNullOrWhiteSpace(law.Description))
+                    details.AddChild(new Label { Text = law.Description, FontColorOverride = Color.Gray, Margin = new Thickness(8, 0, 0, 0) });
+                if (law.Effects.Count > 0)
+                    details.AddChild(MakeEffectsRow(law.Effects));
+            }
+
+            if (!crisis.CanPropose)
+                details.AddChild(new Label { Text = "Внести может сенатор пострадавшего сектора или Канцлер.", FontColorOverride = Color.Gray, Margin = new Thickness(0, 2, 0, 0) });
+        }
+
+        if (crisis.Log.Count > 0)
+        {
+            details.AddChild(new Label { Text = "Хронология:", StyleClasses = { "LabelKeyText" }, Margin = new Thickness(0, 4, 0, 0) });
+            foreach (var line in crisis.Log)
+                details.AddChild(new Label { Text = $"  {line}", FontColorOverride = Color.DarkGray });
+        }
+
+        box.AddChild(details);
+        return box;
+    }
+
+    private void BuildAmbitions(SWSenateWorkConsoleState state)
+    {
+        AmbitionsList.RemoveAllChildren();
+        if (state.Ambitions.Count == 0)
+        {
+            AmbitionsList.AddChild(new Label { Text = "Амбиций нет.", FontColorOverride = Color.Gray });
+            return;
+        }
+
+        foreach (var ambition in state.Ambitions)
+        {
+            var box = new BoxContainer
+            {
+                Orientation = BoxContainer.LayoutOrientation.Vertical,
+                Margin = new Thickness(0, 2, 0, 10),
+            };
+
+            var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
+            head.AddChild(new Label { Text = ambition.Name, StyleClasses = { "LabelKeyText" }, HorizontalExpand = true });
+            head.AddChild(new Label
+            {
+                Text = ambition.Met ? "выполнено" : "не выполнено",
+                FontColorOverride = ambition.Met ? Color.LightGreen : Color.Gray,
+            });
+            box.AddChild(head);
+
+            if (!string.IsNullOrWhiteSpace(ambition.Description))
+            {
+                var desc = new RichTextLabel { Margin = new Thickness(0, 2, 0, 2) };
+                desc.SetMessage(ambition.Description);
+                box.AddChild(desc);
+            }
+
+            if (!string.IsNullOrWhiteSpace(ambition.Progress))
+                box.AddChild(new Label { Text = ambition.Progress, FontColorOverride = ambition.Met ? Color.LightGreen : Color.Goldenrod });
+
+            AmbitionsList.AddChild(box);
+        }
     }
 
     private void BuildPrograms(SWSenateWorkConsoleState state)

@@ -60,6 +60,21 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateApplyProgramMessage(programId));
     }
 
+    public void ResolveCrisis(int crisisId, int solutionIndex)
+    {
+        SendMessage(new SWSenateResolveCrisisMessage(crisisId, solutionIndex));
+    }
+
+    public void AidCrisis(int crisisId)
+    {
+        SendMessage(new SWSenateAidCrisisMessage(crisisId));
+    }
+
+    public void ProposeEmergencyLaw(int crisisId, int lawIndex)
+    {
+        SendMessage(new SWSenateProposeEmergencyLawMessage(crisisId, lawIndex));
+    }
+
     public void SetBudget(string sectorId, int amount)
     {
         SendMessage(new SWSenateSetBudgetMessage(sectorId, amount));

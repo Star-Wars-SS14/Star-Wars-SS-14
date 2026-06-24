@@ -2,6 +2,8 @@ using System.Globalization;
 using System.Linq;
 using Content.Server.Administration;
 using Content.Shared.Administration;
+using Content.Shared._SW._Senate;
+using Content.Shared._SW._Senate.Crises;
 using Content.Shared._SW._Senate.Dilemmas;
 using Content.Shared._SW._Senate.Sectors;
 using Robust.Shared.Console;
@@ -219,4 +221,105 @@ public sealed class SWStatCommand : IConsoleCommand
 
     private static bool TryParseValue(string raw, out float value) =>
         float.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out value);
+}
+
+// swambition — предпросмотр итогов по амбициям: для каждого занятого сектора и канцлера показывает
+// сколько амбиций выполнено и их текущий статус. Раунд НЕ завершает (официальный подсчёт идёт на экране
+// итогов раунда). Удобно для теста, не дожидаясь конца раунда.
+[AdminCommand(AdminFlags.Debug)]
+public sealed class SWAmbitionCommand : IConsoleCommand
+{
+    public string Command => "swambition";
+    public string Description => "Показать текущее выполнение амбиций сенаторами и канцлером.";
+    public string Help => "swambition";
+
+    public void Execute(IConsoleShell shell, string argStr, string[] args)
+    {
+        var entMan = IoCManager.Resolve<IEntityManager>();
+        var proto = IoCManager.Resolve<IPrototypeManager>();
+        var senate = entMan.System<SWSenateStateSystem>();
+        var ambition = entMan.System<SWSenateAmbitionSystem>();
+
+        var rows = new List<(string Label, int Score, int Total, List<SWAmbitionEntry> Entries)>();
+
+        foreach (var (sectorId, holder) in senate.SectorHolders)
+        {
+            var entries = ambition.BuildAmbitions(sectorId);
+            if (entries.Count == 0)
+                continue;
+
+            var name = proto.TryIndex<SWSectorPrototype>(sectorId, out var p) ? p.Name : sectorId;
+            rows.Add(($"{name} — {holder}", entries.Count(e => e.Met), entries.Count, entries));
+        }
+
+        if (senate.Chancellor != null)
+        {
+            var entries = ambition.BuildAmbitions(SWSenateDilemmaSystem.RepublicOwner);
+            if (entries.Count > 0)
+                rows.Add(($"Канцлер ({senate.Chancellor})", entries.Count(e => e.Met), entries.Count, entries));
+        }
+
+        if (rows.Count == 0)
+        {
+            shell.WriteLine("Активных амбиций нет (нет занятых секторов и канцлера).");
+            return;
+        }
+
+        rows.Sort((a, b) => b.Score.CompareTo(a.Score));
+        foreach (var row in rows)
+        {
+            shell.WriteLine($"{row.Label}: {row.Score}/{row.Total}");
+            foreach (var entry in row.Entries)
+                shell.WriteLine($"   [{(entry.Met ? "V" : " ")}] {entry.Name} ({entry.Progress})");
+        }
+    }
+}
+
+// swcrisis — заспавнить кризис вне зависимости от условий (для теста).
+// Аргумент можно дать как ID сектора, так и ID кризиса — команда сама разберётся.
+//   Республиканскому кризису сектор не нужен. Секторальному без сектора подберётся активный.
+// Примеры:
+//   swcrisis SWCrisisRepDepression              — республиканский кризис (без сектора)
+//   swcrisis SWCrisisPlague                      — секторальный кризис в случайном активном секторе
+//   swcrisis SWSectorKuat SWCrisisPlague         — секторальный кризис конкретному сектору
+//   swcrisis SWSectorKuat                        — случайный кризис Куату
+[AdminCommand(AdminFlags.Debug)]
+public sealed class SWCrisisCommand : IConsoleCommand
+{
+    public string Command => "swcrisis";
+    public string Description => "Заспавнить кризис (по ID кризиса и/или сектора, в любом порядке).";
+    public string Help => "swcrisis <sectorId|crisisId> [crisisId]";
+
+    public void Execute(IConsoleShell shell, string argStr, string[] args)
+    {
+        if (args.Length < 1)
+        {
+            shell.WriteError(Help);
+            return;
+        }
+
+        var entMan = IoCManager.Resolve<IEntityManager>();
+        var proto = IoCManager.Resolve<IPrototypeManager>();
+        var crisis = entMan.System<SWSenateCrisisSystem>();
+
+        string? sectorId;
+        string? crisisId;
+
+        // Allow the crisis id as the first argument (handy for sector-less republic crises).
+        if (proto.HasIndex<SWCrisisPrototype>(args[0]))
+        {
+            crisisId = args[0];
+            sectorId = args.Length >= 2 ? args[1] : null;
+        }
+        else
+        {
+            sectorId = args[0];
+            crisisId = args.Length >= 2 ? args[1] : null;
+        }
+
+        if (crisis.AdminSpawn(sectorId, crisisId))
+            shell.WriteLine("Кризис запущен.");
+        else
+            shell.WriteError("Не удалось: проверьте ID сектора/кризиса.");
+    }
 }

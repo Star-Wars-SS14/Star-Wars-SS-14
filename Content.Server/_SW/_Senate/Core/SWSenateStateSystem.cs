@@ -250,6 +250,20 @@ public sealed class SWSenateStateSystem : EntitySystem
         return true;
     }
 
+    /// <summary>
+    /// Additive push on a sector global (used by the crisis engine for reversible pressure — the drift
+    /// pulls the value back up once the pressure stops).
+    /// </summary>
+    public void NudgeSectorGlobal(string sectorId, string globalId, float delta)
+    {
+        if (!_sectorGlobals.TryGetValue(sectorId, out var globals)
+            || !globals.TryGetValue(globalId, out var value)
+            || !_proto.TryIndex<SWGlobalStatPrototype>(globalId, out var global))
+            return;
+
+        globals[globalId] = Math.Clamp(value + delta, global.Min, global.Max);
+    }
+
     public void FillAll(float value)
     {
         foreach (var sub in _proto.EnumeratePrototypes<SWStatPrototype>())
@@ -316,6 +330,25 @@ public sealed class SWSenateStateSystem : EntitySystem
             Author = author,
             Effects = effects,
             Stage = SWBillStage.Voting,
+        };
+
+        _bills.Add(bill);
+        return bill;
+    }
+
+    public SWSenateBill SubmitEmergencyBill(string name, string description, string author, Dictionary<string, float> effects, int crisisId, float relief)
+    {
+        var bill = new SWSenateBill
+        {
+            Id = _nextBillId++,
+            Name = $"СРОЧНО: {name}",
+            Description = description,
+            Author = author,
+            Effects = effects,
+            Stage = SWBillStage.Voting,
+            Emergency = true,
+            EmergencyCrisisId = crisisId,
+            EmergencyRelief = relief,
         };
 
         _bills.Add(bill);
@@ -392,7 +425,7 @@ public sealed class SWSenateStateSystem : EntitySystem
         {
             bill.Stage = SWBillStage.Passed;
             ApplyBill(bill);
-            RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, true));
+            RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, true, bill.EmergencyCrisisId, bill.EmergencyRelief));
         }
         else
         {
@@ -412,7 +445,7 @@ public sealed class SWSenateStateSystem : EntitySystem
         {
             bill.Stage = SWBillStage.Passed;
             ApplyBill(bill);
-            RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, true));
+            RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, true, bill.EmergencyCrisisId, bill.EmergencyRelief));
         }
         else if (votesAgainst > votesFor)
         {

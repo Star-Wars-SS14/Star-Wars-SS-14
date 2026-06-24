@@ -1,0 +1,297 @@
+- type: swCrisis
+  id: SWCrisisCivilWar
+  name: Гражданская война
+  description: "Сектор погружается в вооружённый хаос: фракции делят власть силой."
+  order: 0
+  conditions:
+  - stat: SWGlobalSecurity
+    comparison: Below
+    threshold: 25
+  startSeverity: 35
+  severityGain: 4
+  pressure:
+    SWGlobalSecurity: 1.0
+    SWGlobalSociety: 0.6
+    SWGlobalEconomy: 0.4
+  solutions:
+  - label: Ввести миротворцев
+    description: Гарнизон гасит насилие, но злит население.
+    cost: 4000
+    relief: 25
+    sectorEffects:
+      SWGlobalSecurity: 4
+      SWGlobalSociety: -2
+  - label: Переговоры с фракциями
+    description: Дипломатия медленнее, зато без жертв.
+    cost: 2000
+    relief: 15
+    sectorEffects:
+      SWGlobalSociety: 3
+  - label: Комендантский час
+    description: Дешёвая жёсткая мера.
+    relief: 12
+    sectorEffects:
+      SWGlobalSecurity: 2
+      SWGlobalSociety: -3
+  emergencyLaws:
+  - name: Закон о чрезвычайном положении
+    description: Чрезвычайные полномочия силовикам по всей Республике.
+    relief: 30
+    policyEffects:
+      SWStatPolice: 6
+      SWStatCounter: 4
+      SWStatRights: -4
+
+- type: swCrisis
+  id: SWCrisisEconomicCollapse
+  name: Экономический коллапс
+  description: Финансовая система сектора рушится, предприятия закрываются.
+  order: 1
+  conditions:
+  - stat: SWGlobalEconomy
+    comparison: Below
+    threshold: 25
+  startSeverity: 35
+  severityGain: 4
+  pressure:
+    SWGlobalEconomy: 1.0
+    SWGlobalIndustry: 0.5
+    SWGlobalSociety: 0.4
+  solutions:
+  - label: Экстренные дотации
+    description: Влить кредиты, чтобы удержать экономику.
+    cost: 5000
+    relief: 28
+    sectorEffects:
+      SWGlobalEconomy: 5
+  - label: Национализировать предприятия
+    description: Спасти производство ценой свобод рынка.
+    cost: 3000
+    relief: 18
+    sectorEffects:
+      SWGlobalIndustry: 3
+      SWGlobalSociety: -2
+  - label: Режим жёсткой экономии
+    description: Без затрат, но больно для людей.
+    relief: 12
+    sectorEffects:
+      SWGlobalSociety: -3
+  emergencyLaws:
+  - name: Пакет экстренной помощи
+    description: Республиканские вливания в рухнувшую экономику.
+    relief: 30
+    policyEffects:
+      SWStatTreasury: 6
+      SWStatTrade: 4
+      SWStatEmployment: 3
+
+- type: swCrisis
+  id: SWCrisisPlague
+  name: Пандемия
+  description: Смертельная инфекция расползается по сектору, медицина не справляется.
+  order: 2
+  conditions:
+  - stat: SWGlobalHealthcare
+    comparison: Below
+    threshold: 25
+  startSeverity: 40
+  severityGain: 5
+  pressure:
+    SWGlobalHealthcare: 1.0
+    SWGlobalSociety: 0.5
+    SWGlobalEconomy: 0.3
+  solutions:
+  - label: Республиканский карантин
+    description: Локдаун и поставки бакты.
+    cost: 5000
+    relief: 28
+    sectorEffects:
+      SWGlobalHealthcare: 5
+      SWGlobalEconomy: -2
+  - label: Мобилизация медиков
+    description: Все ресурсы — в госпитали.
+    cost: 3000
+    relief: 18
+    sectorEffects:
+      SWGlobalHealthcare: 4
+  - label: Изоляция очагов
+    description: Минимум затрат, но жёстко.
+    relief: 12
+    sectorEffects:
+      SWGlobalSociety: -3
+  emergencyLaws:
+  - name: Республиканский карантинный акт
+    description: Единые меры и снабжение бактой по всем мирам.
+    relief: 30
+    policyEffects:
+      SWStatMedicine: 6
+      SWStatWelfare: 4
+      SWStatCoverage: 3
+
+- type: swCrisis
+  id: SWCrisisBlackout
+  name: Энергетический коллапс
+  description: Энергосети сектора рухнули, промышленность встала, города во тьме.
+  order: 3
+  conditions:
+  - stat: SWGlobalIndustry
+    comparison: Below
+    threshold: 25
+  startSeverity: 35
+  severityGain: 4
+  pressure:
+    SWGlobalIndustry: 1.0
+    SWGlobalEconomy: 0.5
+    SWGlobalSociety: 0.4
+  solutions:
+  - label: Срочная постройка реакторов
+    description: Дорого, но восстанавливает мощности.
+    cost: 5000
+    relief: 28
+    sectorEffects:
+      SWGlobalIndustry: 5
+  - label: Аварийные поставки энергии
+    description: Закупить энергию извне.
+    cost: 3000
+    relief: 18
+    sectorEffects:
+      SWGlobalIndustry: 3
+  - label: Веерные отключения
+    description: Растянуть остатки без затрат.
+    relief: 10
+    sectorEffects:
+      SWGlobalSociety: -3
+
+- type: swCrisis
+  id: SWCrisisUprising
+  name: Народное восстание
+  description: Доведённое до отчаяния население поднялось против власти сектора.
+  order: 4
+  conditions:
+  - stat: SWGlobalSociety
+    comparison: Below
+    threshold: 25
+  startSeverity: 35
+  severityGain: 5
+  pressure:
+    SWGlobalSociety: 1.0
+    SWGlobalSecurity: 0.6
+    SWGlobalEconomy: 0.4
+  solutions:
+  - label: Социальные уступки
+    description: Деньги и реформы гасят гнев.
+    cost: 4000
+    relief: 25
+    sectorEffects:
+      SWGlobalSociety: 5
+  - label: Подавить силой
+    description: Быстро, но кроваво.
+    cost: 2000
+    relief: 18
+    sectorEffects:
+      SWGlobalSecurity: 3
+      SWGlobalSociety: -4
+  - label: Обещания и пропаганда
+    description: Без затрат, эффект слабее.
+    relief: 10
+    sectorEffects:
+      SWGlobalSociety: 2
+
+- type: swCrisis
+  id: SWCrisisInvasionThreat
+  name: Угроза вторжения
+  description: Оборона сектора рухнула, и враг готовится воспользоваться брешью.
+  order: 5
+  conditions:
+  - stat: SWGlobalDefense
+    comparison: Below
+    threshold: 25
+  startSeverity: 40
+  severityGain: 5
+  pressure:
+    SWGlobalDefense: 1.0
+    SWGlobalEconomy: 0.4
+    SWGlobalSociety: 0.4
+  solutions:
+  - label: Перебросить флот
+    description: Республиканские корабли закрывают брешь.
+    cost: 6000
+    relief: 30
+    sectorEffects:
+      SWGlobalDefense: 6
+  - label: Срочная мобилизация
+    description: Вооружить и поднять резерв.
+    cost: 3000
+    relief: 18
+    sectorEffects:
+      SWGlobalDefense: 4
+      SWGlobalSociety: -2
+  - label: Окопаться
+    description: Оборонительные работы без больших затрат.
+    relief: 10
+    sectorEffects:
+      SWGlobalDefense: 2
+
+- type: swCrisis
+  id: SWCrisisRepDepression
+  name: Великая депрессия
+  description: Экономика всей Республики рушится — кризис охватил и Ядро, и окраины.
+  order: 10
+  republic: true
+  conditions:
+  - stat: SWGlobalEconomy
+    comparison: Below
+    threshold: 30
+  startSeverity: 45
+  severityGain: 4
+  pressure:
+    SWGlobalEconomy: 1.0
+    SWGlobalIndustry: 0.5
+    SWGlobalSociety: 0.4
+  emergencyLaws:
+  - name: Республиканский план восстановления
+    description: Масштабные госинвестиции и поддержка занятости.
+    relief: 30
+    policyEffects:
+      SWStatTreasury: 6
+      SWStatEmployment: 4
+      SWStatTrade: 3
+  - name: Чрезвычайные налоги
+    description: Резко поднять сборы, чтобы наполнить казну.
+    relief: 22
+    policyEffects:
+      SWStatTaxes: 6
+      SWStatTreasury: 5
+      SWStatMorale: -4
+
+- type: swCrisis
+  id: SWCrisisRepArmsCrisis
+  name: Военная катастрофа
+  description: Оборона Республики подорвана — враг испытывает границы повсюду.
+  order: 11
+  republic: true
+  conditions:
+  - stat: SWGlobalDefense
+    comparison: Below
+    threshold: 30
+  startSeverity: 45
+  severityGain: 5
+  pressure:
+    SWGlobalDefense: 1.0
+    SWGlobalForeign: 0.5
+    SWGlobalEconomy: 0.3
+  emergencyLaws:
+  - name: Всеобщая мобилизация
+    description: Поднять флот, армию и резерв до военного положения.
+    relief: 32
+    policyEffects:
+      SWStatFleet: 6
+      SWStatArmy: 4
+      SWStatReserve: 4
+      SWStatMorale: -3
+  - name: Военный бюджет
+    description: Перенаправить казну на оборону.
+    relief: 24
+    policyEffects:
+      SWStatFleet: 5
+      SWStatTreasury: -5

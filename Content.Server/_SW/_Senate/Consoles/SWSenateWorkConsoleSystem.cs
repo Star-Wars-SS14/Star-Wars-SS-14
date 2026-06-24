@@ -29,6 +29,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
     [Dependency] private readonly SWSenateBudgetSystem _budget = default!;
     [Dependency] private readonly SWSenateProgramSystem _program = default!;
+    [Dependency] private readonly SWSenateAmbitionSystem _ambition = default!;
+    [Dependency] private readonly SWSenateCrisisSystem _crisis = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
     private const float UpdateInterval = 3f;
@@ -47,6 +49,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSubmitPresetMessage>(OnSubmitPreset);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateResolveDilemmaMessage>(OnResolveDilemma);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateApplyProgramMessage>(OnApplyProgram);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateResolveCrisisMessage>(OnResolveCrisis);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAidCrisisMessage>(OnAidCrisis);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateProposeEmergencyLawMessage>(OnProposeEmergencyLaw);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSetBudgetMessage>(OnSetBudget);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateLockBudgetMessage>(OnLockBudget);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateScheduleSessionMessage>(OnScheduleSession);
@@ -341,6 +346,54 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
+    private void OnResolveCrisis(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateResolveCrisisMessage args)
+    {
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-senator-hint"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_crisis.ApplySolution(args.CrisisId, args.SolutionIndex, sectorId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-crisis-action"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-crisis-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnAidCrisis(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateAidCrisisMessage args)
+    {
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-senator-hint"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_crisis.AidCrisis(args.CrisisId, sectorId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-crisis-aided"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-crisis-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnProposeEmergencyLaw(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateProposeEmergencyLawMessage args)
+    {
+        var author = Name(args.Actor);
+        var sectorOwner = GetSectorOwner(ent);
+        var isChancellor = ChancellorInOffice(ent);
+
+        if (_crisis.ProposeLaw(args.CrisisId, args.LawIndex, author, sectorOwner, isChancellor))
+            _popup.PopupCursor(Loc.GetString("sw-senate-crisis-law-proposed"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-crisis-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
     private bool ChancellorInOffice(Entity<SWSenateWorkConsoleComponent> ent) =>
         GetCardPosition(ent) == SWSenatePosition.Chancellor && _senate.Chancellor != null;
 
@@ -500,6 +553,10 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.CanPrograms = programOwner != null;
         if (programOwner != null)
             state.Programs = _program.BuildPrograms(programOwner);
+        state.CanAmbitions = dilemmaOwner != null;
+        if (dilemmaOwner != null)
+            state.Ambitions = _ambition.BuildAmbitions(dilemmaOwner);
+        state.Crises = _crisis.BuildCrises(programOwner, ChancellorInOffice(ent));
         state.DraftBudget = ent.Comp.DraftBudget;
         state.GameTime = _time.TimeString();
         state.Schedule = _senate.BuildScheduleRows();

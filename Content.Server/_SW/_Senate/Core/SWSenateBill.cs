@@ -19,4 +19,7 @@ public sealed class SWSenateBill
     public Dictionary<string, SWVoteChoice> Votes = new();
     public SWBillStage Stage = SWBillStage.Voting;
     public bool AwaitingTiebreak;
+    public bool Emergency;
+    public int EmergencyCrisisId;
+    public float EmergencyRelief;
 }

@@ -18,11 +18,15 @@ public sealed class SWSenateBillResolvedEvent : EntityEventArgs
 {
     public string BillName;
     public bool Passed;
+    public int EmergencyCrisisId;
+    public float EmergencyRelief;
 
-    public SWSenateBillResolvedEvent(string billName, bool passed)
+    public SWSenateBillResolvedEvent(string billName, bool passed, int emergencyCrisisId = 0, float emergencyRelief = 0f)
     {
         BillName = billName;
         Passed = passed;
+        EmergencyCrisisId = emergencyCrisisId;
+        EmergencyRelief = emergencyRelief;
     }
 }
 

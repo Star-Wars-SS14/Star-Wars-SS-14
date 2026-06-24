@@ -1,0 +1,280 @@
+- type: swAmbition
+  id: SWAmbitionSecEconomy
+  name: Процветающий сектор
+  description: К концу раунда экономика вашего сектора должна быть выше 70.
+  role: Senator
+  kind: SectorStat
+  stat: SWGlobalEconomy
+  comparison: Above
+  threshold: 70
+  order: 0
+
+- type: swAmbition
+  id: SWAmbitionSecHealth
+  name: Здоровый сектор
+  description: К концу раунда здравоохранение вашего сектора должно быть выше 70.
+  role: Senator
+  kind: SectorStat
+  stat: SWGlobalHealthcare
+  comparison: Above
+  threshold: 70
+  order: 1
+
+- type: swAmbition
+  id: SWAmbitionSecFortress
+  name: Сектор-крепость
+  description: К концу раунда оборона вашего сектора должна быть выше 65.
+  role: Senator
+  kind: SectorStat
+  stat: SWGlobalDefense
+  comparison: Above
+  threshold: 65
+  order: 2
+
+- type: swAmbition
+  id: SWAmbitionSecOrder
+  name: Оплот порядка
+  description: К концу раунда безопасность вашего сектора должна быть выше 70.
+  role: Senator
+  kind: SectorStat
+  stat: SWGlobalSecurity
+  comparison: Above
+  threshold: 70
+  order: 3
+
+- type: swAmbition
+  id: SWAmbitionSecLearned
+  name: Просвещённый сектор
+  description: К концу раунда образование вашего сектора должно быть выше 70.
+  role: Senator
+  kind: SectorStat
+  stat: SWGlobalEducation
+  comparison: Above
+  threshold: 70
+  order: 4
+
+- type: swAmbition
+  id: SWAmbitionSecIndustrial
+  name: Промышленный центр
+  description: К концу раунда промышленность вашего сектора должна быть выше 70.
+  role: Senator
+  kind: SectorStat
+  stat: SWGlobalIndustry
+  comparison: Above
+  threshold: 70
+  order: 5
+
+- type: swAmbition
+  id: SWAmbitionSecHappy
+  name: Довольный народ
+  description: К концу раунда общество вашего сектора должно быть выше 70.
+  role: Senator
+  kind: SectorStat
+  stat: SWGlobalSociety
+  comparison: Above
+  threshold: 70
+  order: 6
+
+- type: swAmbition
+  id: SWAmbitionSecIronGrip
+  name: Железная рука
+  description: Вы тайно держите народ в узде. К концу раунда общество вашего сектора должно быть ниже 40.
+  role: Senator
+  kind: SectorStat
+  stat: SWGlobalSociety
+  comparison: Below
+  threshold: 40
+  order: 7
+
+- type: swAmbition
+  id: SWAmbitionSecRepDefense
+  name: Сторонник перевооружения
+  description: К концу раунда оборона Республики должна быть выше 65.
+  role: Senator
+  kind: RepublicStat
+  stat: SWGlobalDefense
+  comparison: Above
+  threshold: 65
+  order: 8
+
+- type: swAmbition
+  id: SWAmbitionSecRepEconomy
+  name: Радетель экономики
+  description: К концу раунда экономика Республики должна быть выше 65.
+  role: Senator
+  kind: RepublicStat
+  stat: SWGlobalEconomy
+  comparison: Above
+  threshold: 65
+  order: 9
+
+- type: swAmbition
+  id: SWAmbitionSecRepSaboteur
+  name: Тайный сепаратист
+  description: Вы желаете ослабления центра. К концу раунда оборона Республики должна быть ниже 40.
+  role: Senator
+  kind: RepublicStat
+  stat: SWGlobalDefense
+  comparison: Below
+  threshold: 40
+  order: 10
+
+- type: swAmbition
+  id: SWAmbitionSecOutdoEconomy
+  name: Богаче соседа
+  description: Экономика вашего сектора должна превзойти сектор-соперник минимум на 15.
+  role: Senator
+  kind: OutdoSector
+  stat: SWGlobalEconomy
+  margin: 15
+  order: 11
+
+- type: swAmbition
+  id: SWAmbitionSecOutdoIndustry
+  name: Мощнее соседа
+  description: Промышленность вашего сектора должна превзойти сектор-соперник минимум на 15.
+  role: Senator
+  kind: OutdoSector
+  stat: SWGlobalIndustry
+  margin: 15
+  order: 12
+
+- type: swAmbition
+  id: SWAmbitionSecLawMedicine
+  name: Поборник медицины
+  description: Должен быть принят закон вашего авторства, развивающий медицину.
+  role: Senator
+  kind: AuthorLawStat
+  stat: SWStatMedicine
+  order: 13
+
+- type: swAmbition
+  id: SWAmbitionSecLawFleet
+  name: Друг флота
+  description: Должен быть принят закон вашего авторства, усиливающий флот.
+  role: Senator
+  kind: AuthorLawStat
+  stat: SWStatFleet
+  order: 14
+
+- type: swAmbition
+  id: SWAmbitionSecLawSchools
+  name: Реформатор школ
+  description: Должен быть принят закон вашего авторства, развивающий школы.
+  role: Senator
+  kind: AuthorLawStat
+  stat: SWStatSchools
+  order: 15
+
+- type: swAmbition
+  id: SWAmbitionSecLaws2
+  name: Законотворец
+  description: Не менее двух законов вашего авторства должны быть приняты.
+  role: Senator
+  kind: PassOwnLaws
+  count: 2
+  order: 16
+
+- type: swAmbition
+  id: SWAmbitionSecLaws3
+  name: Плодовитый законодатель
+  description: Не менее трёх законов вашего авторства должны быть приняты.
+  role: Senator
+  kind: PassOwnLaws
+  count: 3
+  order: 17
+
+- type: swAmbition
+  id: SWAmbitionChaEconomy
+  name: Процветание Республики
+  description: К концу раунда экономика Республики должна быть выше 65.
+  role: Chancellor
+  kind: RepublicStat
+  stat: SWGlobalEconomy
+  comparison: Above
+  threshold: 65
+  order: 18
+
+- type: swAmbition
+  id: SWAmbitionChaDefense
+  name: Щит Республики
+  description: К концу раунда оборона Республики должна быть выше 65.
+  role: Chancellor
+  kind: RepublicStat
+  stat: SWGlobalDefense
+  comparison: Above
+  threshold: 65
+  order: 19
+
+- type: swAmbition
+  id: SWAmbitionChaOrder
+  name: Закон и порядок
+  description: К концу раунда безопасность Республики должна быть выше 65.
+  role: Chancellor
+  kind: RepublicStat
+  stat: SWGlobalSecurity
+  comparison: Above
+  threshold: 65
+  order: 20
+
+- type: swAmbition
+  id: SWAmbitionChaSociety
+  name: Социальная Республика
+  description: К концу раунда общество Республики должно быть выше 65.
+  role: Chancellor
+  kind: RepublicStat
+  stat: SWGlobalSociety
+  comparison: Above
+  threshold: 65
+  order: 21
+
+- type: swAmbition
+  id: SWAmbitionChaForeign
+  name: Великая держава
+  description: К концу раунда внешняя политика Республики должна быть выше 60.
+  role: Chancellor
+  kind: RepublicStat
+  stat: SWGlobalForeign
+  comparison: Above
+  threshold: 60
+  order: 22
+
+- type: swAmbition
+  id: SWAmbitionChaEducation
+  name: Светоч науки
+  description: К концу раунда образование Республики должно быть выше 65.
+  role: Chancellor
+  kind: RepublicStat
+  stat: SWGlobalEducation
+  comparison: Above
+  threshold: 65
+  order: 23
+
+- type: swAmbition
+  id: SWAmbitionChaIsolation
+  name: Изоляционист
+  description: Вы тайно ведёте Республику к замкнутости. К концу раунда внешняя политика должна быть ниже 40.
+  role: Chancellor
+  kind: RepublicStat
+  stat: SWGlobalForeign
+  comparison: Below
+  threshold: 40
+  order: 24
+
+- type: swAmbition
+  id: SWAmbitionChaBills4
+  name: Деятельный Сенат
+  description: За время раунда должно быть принято не менее четырёх законопроектов.
+  role: Chancellor
+  kind: PassBills
+  count: 4
+  order: 25
+
+- type: swAmbition
+  id: SWAmbitionChaBills6
+  name: Великий реформатор
+  description: За время раунда должно быть принято не менее шести законопроектов.
+  role: Chancellor
+  kind: PassBills
+  count: 6
+  order: 26

@@ -412,6 +412,17 @@ public sealed class SWSenateRevokeFloorMessage : BoundUserInterfaceMessage
 }
 
 [Serializable, NetSerializable]
+public sealed class SWSenateRemoveFromQueueMessage : BoundUserInterfaceMessage
+{
+    public NetEntity Target;
+
+    public SWSenateRemoveFromQueueMessage(NetEntity target)
+    {
+        Target = target;
+    }
+}
+
+[Serializable, NetSerializable]
 public sealed class SWSenateGrantChancellorMessage : BoundUserInterfaceMessage
 {
 }
@@ -541,6 +552,7 @@ public sealed class SWBillOption
 {
     public int Id;
     public string Name = string.Empty;
+    public bool Emergency;
 }
 
 [Serializable, NetSerializable]
@@ -597,6 +609,17 @@ public sealed class SWSenateRemoveSessionMessage : BoundUserInterfaceMessage
     public SWSenateRemoveSessionMessage(int sessionId)
     {
         SessionId = sessionId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateEmergencySessionMessage : BoundUserInterfaceMessage
+{
+    public int BillId;
+
+    public SWSenateEmergencySessionMessage(int billId)
+    {
+        BillId = billId;
     }
 }
 

@@ -68,6 +68,8 @@ public sealed class SWSenateFloorSystem : EntitySystem
         return true;
     }
 
+    public bool RemoveFromQueue(EntityUid uid) => _queue.Remove(uid);
+
     public int GetQueuePosition(EntityUid requester)
     {
         var idx = _queue.IndexOf(requester);

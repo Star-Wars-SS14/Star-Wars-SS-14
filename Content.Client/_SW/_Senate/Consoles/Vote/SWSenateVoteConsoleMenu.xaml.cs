@@ -82,6 +82,10 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
             grant.OnPressed += _ => _owner.GrantFloor(target);
             rowBox.AddChild(grant);
 
+            var remove = new Button { Text = "Убрать", Margin = new Thickness(6, 0, 0, 0) };
+            remove.OnPressed += _ => _owner.RemoveFromQueue(target);
+            rowBox.AddChild(remove);
+
             FloorQueueList.AddChild(rowBox);
             position++;
         }

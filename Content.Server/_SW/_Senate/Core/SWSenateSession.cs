@@ -14,6 +14,13 @@ public sealed class SWSenateSession
     public int StartHour;
     public int Duration;
     public SWSessionStatus Status = SWSessionStatus.Pending;
+    public bool Emergency;
 
     public int EndHour => StartHour + Duration;
+}
+
+public sealed class SWEmergencyScheduleResult
+{
+    public int StartHour;
+    public string? DisplacedBill;
 }

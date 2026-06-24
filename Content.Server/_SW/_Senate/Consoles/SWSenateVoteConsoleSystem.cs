@@ -35,6 +35,7 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateTiebreakMessage>(OnTiebreak);
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateGrantFloorMessage>(OnGrantFloor);
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateRevokeFloorMessage>(OnRevokeFloor);
+        SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateRemoveFromQueueMessage>(OnRemoveFromQueue);
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateGrantChancellorMessage>(OnGrantChancellor);
     }
 
@@ -59,6 +60,17 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
         _floor.RevokeFloor();
         _popup.PopupCursor(Loc.GetString("sw-senate-floor-revoked"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void OnRemoveFromQueue(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateRemoveFromQueueMessage args)
+    {
+        if (GetCardPosition(ent) != SWSenatePosition.Speaker || _senate.Speaker == null)
+            return;
+
+        if (_floor.RemoveFromQueue(GetEntity(args.Target)))
+            _popup.PopupCursor(Loc.GetString("sw-senate-floor-queue-removed"), args.Actor, PopupType.Medium);
+
         UpdateUi(ent);
     }
 

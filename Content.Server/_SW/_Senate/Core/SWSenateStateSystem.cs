@@ -478,7 +478,7 @@ public sealed class SWSenateStateSystem : EntitySystem
             if (!_announcedSessions.Add(session.Id))
                 continue;
 
-            RaiseLocalEvent(new SWSenateSessionStartedEvent(GetBillName(session.BillId), session.StartHour, session.EndHour));
+            RaiseLocalEvent(new SWSenateSessionStartedEvent(GetBillName(session.BillId), session.StartHour, session.EndHour, session.Emergency));
         }
     }
 
@@ -618,6 +618,47 @@ public sealed class SWSenateStateSystem : EntitySystem
         return true;
     }
 
+    /// <summary>
+    /// Speaker's emergency power: book an emergency bill into the next game hour, overriding whatever was
+    /// there (a displaced bill session is dropped so it returns to the schedulable pool). Auto-confirmed —
+    /// no Chancellor sign-off. Only works on emergency ("СРОЧНО:") bills.
+    /// </summary>
+    public SWEmergencyScheduleResult? ScheduleEmergencySession(int billId)
+    {
+        var bill = _bills.FirstOrDefault(b => b.Id == billId);
+        if (bill is not { Stage: SWBillStage.Voting } || !bill.Emergency || !_time.DayActive)
+            return null;
+
+        if (_sessions.Any(s => s.BillId == billId && s.Status != SWSessionStatus.Rejected))
+            return null;
+
+        var targetHour = _time.CurrentHour + 1;
+        if (targetHour < SWSenateTimeSystem.StartHour || targetHour >= SWSenateTimeSystem.EndHour)
+            return null;
+
+        string? displaced = null;
+        foreach (var occupied in _sessions
+                     .Where(s => s.Status != SWSessionStatus.Rejected && targetHour >= s.StartHour && targetHour < s.EndHour)
+                     .ToList())
+        {
+            displaced ??= GetBillName(occupied.BillId);
+            _sessions.Remove(occupied);
+            _announcedSessions.Remove(occupied.Id);
+        }
+
+        _sessions.Add(new SWSenateSession
+        {
+            Id = _nextSessionId++,
+            BillId = billId,
+            StartHour = targetHour,
+            Duration = 1,
+            Status = SWSessionStatus.Confirmed,
+            Emergency = true,
+        });
+
+        return new SWEmergencyScheduleResult { StartHour = targetHour, DisplacedBill = displaced };
+    }
+
     public List<SWScheduleRow> BuildScheduleRows()
     {
         var rows = new List<SWScheduleRow>();
@@ -632,32 +673,37 @@ public sealed class SWSenateStateSystem : EntitySystem
                 IsNow = hour == nowHour,
             };
 
-            if (IsReserved(hour))
+            var session = _sessions.FirstOrDefault(s =>
+                s.Status != SWSessionStatus.Rejected && hour >= s.StartHour && hour < s.EndHour);
+
+            // Emergency sessions take priority even over reserved hours (lunch/personal time).
+            if (session is { Emergency: true })
+            {
+                row.Text = hour == session.StartHour
+                    ? $"СРОЧНО: {GetBillName(session.BillId)} ({session.StartHour:00}:00–{session.EndHour:00}:00)"
+                    : "   — продолжение";
+                row.Color = Color.IndianRed;
+            }
+            else if (IsReserved(hour))
             {
                 row.Text = ReservedLabel(hour);
                 row.Color = Color.DarkGray;
             }
+            else if (session == null)
+            {
+                row.Text = "Свободно";
+                row.Color = Color.DimGray;
+            }
+            else if (hour == session.StartHour)
+            {
+                var status = session.Status == SWSessionStatus.Confirmed ? "подтверждено" : "ожидает";
+                row.Text = $"Заседание: {GetBillName(session.BillId)} ({session.StartHour:00}:00–{session.EndHour:00}:00) [{status}]";
+                row.Color = session.Status == SWSessionStatus.Confirmed ? Color.LightGreen : Color.Goldenrod;
+            }
             else
             {
-                var session = _sessions.FirstOrDefault(s =>
-                    s.Status != SWSessionStatus.Rejected && hour >= s.StartHour && hour < s.EndHour);
-
-                if (session == null)
-                {
-                    row.Text = "Свободно";
-                    row.Color = Color.DimGray;
-                }
-                else if (hour == session.StartHour)
-                {
-                    var status = session.Status == SWSessionStatus.Confirmed ? "подтверждено" : "ожидает";
-                    row.Text = $"Заседание: {GetBillName(session.BillId)} ({session.StartHour:00}:00–{session.EndHour:00}:00) [{status}]";
-                    row.Color = session.Status == SWSessionStatus.Confirmed ? Color.LightGreen : Color.Goldenrod;
-                }
-                else
-                {
-                    row.Text = "   — продолжение";
-                    row.Color = session.Status == SWSessionStatus.Confirmed ? Color.LightGreen : Color.Goldenrod;
-                }
+                row.Text = "   — продолжение";
+                row.Color = session.Status == SWSessionStatus.Confirmed ? Color.LightGreen : Color.Goldenrod;
             }
 
             rows.Add(row);
@@ -676,9 +722,11 @@ public sealed class SWSenateStateSystem : EntitySystem
             if (_sessions.Any(s => s.BillId == bill.Id && s.Status != SWSessionStatus.Rejected))
                 continue;
 
-            options.Add(new SWBillOption { Id = bill.Id, Name = bill.Name });
+            options.Add(new SWBillOption { Id = bill.Id, Name = bill.Name, Emergency = bill.Emergency });
         }
 
+        // Emergency measures float to the top so the Speaker sees them first.
+        options.Sort((a, b) => b.Emergency.CompareTo(a.Emergency));
         return options;
     }
 

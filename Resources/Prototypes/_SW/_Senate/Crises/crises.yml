@@ -8,7 +8,7 @@
     comparison: Below
     threshold: 25
   startSeverity: 35
-  severityGain: 4
+  severityGain: 0.4
   pressure:
     SWGlobalSecurity: 1.0
     SWGlobalSociety: 0.6
@@ -52,7 +52,7 @@
     comparison: Below
     threshold: 25
   startSeverity: 35
-  severityGain: 4
+  severityGain: 0.4
   pressure:
     SWGlobalEconomy: 1.0
     SWGlobalIndustry: 0.5
@@ -95,7 +95,7 @@
     comparison: Below
     threshold: 25
   startSeverity: 40
-  severityGain: 5
+  severityGain: 0.5
   pressure:
     SWGlobalHealthcare: 1.0
     SWGlobalSociety: 0.5
@@ -138,7 +138,7 @@
     comparison: Below
     threshold: 25
   startSeverity: 35
-  severityGain: 4
+  severityGain: 0.4
   pressure:
     SWGlobalIndustry: 1.0
     SWGlobalEconomy: 0.5
@@ -172,7 +172,7 @@
     comparison: Below
     threshold: 25
   startSeverity: 35
-  severityGain: 5
+  severityGain: 0.5
   pressure:
     SWGlobalSociety: 1.0
     SWGlobalSecurity: 0.6
@@ -207,7 +207,7 @@
     comparison: Below
     threshold: 25
   startSeverity: 40
-  severityGain: 5
+  severityGain: 0.5
   pressure:
     SWGlobalDefense: 1.0
     SWGlobalEconomy: 0.4
@@ -243,7 +243,7 @@
     comparison: Below
     threshold: 30
   startSeverity: 45
-  severityGain: 4
+  severityGain: 0.4
   pressure:
     SWGlobalEconomy: 1.0
     SWGlobalIndustry: 0.5
@@ -275,7 +275,7 @@
     comparison: Below
     threshold: 30
   startSeverity: 45
-  severityGain: 5
+  severityGain: 0.5
   pressure:
     SWGlobalDefense: 1.0
     SWGlobalForeign: 0.5

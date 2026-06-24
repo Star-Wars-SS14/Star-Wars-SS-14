@@ -5,12 +5,28 @@ public sealed class SWSenateSessionStartedEvent : EntityEventArgs
     public string BillName;
     public int StartHour;
     public int EndHour;
+    public bool Emergency;
 
-    public SWSenateSessionStartedEvent(string billName, int startHour, int endHour)
+    public SWSenateSessionStartedEvent(string billName, int startHour, int endHour, bool emergency = false)
     {
         BillName = billName;
         StartHour = startHour;
         EndHour = endHour;
+        Emergency = emergency;
+    }
+}
+
+public sealed class SWSenateEmergencySessionScheduledEvent : EntityEventArgs
+{
+    public string BillName;
+    public int StartHour;
+    public string? DisplacedBill;
+
+    public SWSenateEmergencySessionScheduledEvent(string billName, int startHour, string? displacedBill)
+    {
+        BillName = billName;
+        StartHour = startHour;
+        DisplacedBill = displacedBill;
     }
 }
 

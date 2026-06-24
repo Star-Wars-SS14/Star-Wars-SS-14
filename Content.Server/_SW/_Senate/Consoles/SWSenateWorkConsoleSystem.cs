@@ -56,6 +56,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateLockBudgetMessage>(OnLockBudget);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateScheduleSessionMessage>(OnScheduleSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRemoveSessionMessage>(OnRemoveSession);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateEmergencySessionMessage>(OnEmergencySession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateConfirmSessionMessage>(OnConfirmSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectSessionMessage>(OnRejectSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAnnounceMessage>(OnAnnounce);
@@ -133,6 +134,34 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             return;
 
         _senate.RemoveSession(args.SessionId);
+        UpdateUi(ent);
+    }
+
+    private void OnEmergencySession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateEmergencySessionMessage args)
+    {
+        if (GetCardPosition(ent) != SWSenatePosition.Speaker)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-speaker"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.Speaker == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-not-in-office"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        var result = _senate.ScheduleEmergencySession(args.BillId);
+        if (result == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-emergency-invalid"), args.Actor, PopupType.Medium);
+        }
+        else
+        {
+            RaiseLocalEvent(new SWSenateEmergencySessionScheduledEvent(_senate.GetBillName(args.BillId), result.StartHour, result.DisplacedBill));
+            _popup.PopupCursor(Loc.GetString("sw-senate-emergency-scheduled"), args.Actor, PopupType.Medium);
+        }
+
         UpdateUi(ent);
     }
 

@@ -95,6 +95,11 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateRemoveSessionMessage(sessionId));
     }
 
+    public void EmergencySession(int billId)
+    {
+        SendMessage(new SWSenateEmergencySessionMessage(billId));
+    }
+
     public void ConfirmSession(int sessionId)
     {
         SendMessage(new SWSenateConfirmSessionMessage(sessionId));

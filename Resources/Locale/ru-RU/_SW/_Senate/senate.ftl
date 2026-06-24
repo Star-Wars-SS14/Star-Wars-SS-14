@@ -43,6 +43,8 @@ sw-senate-schedule-invalid = Невозможно поставить засед�
 sw-senate-schedule-added = Заседание добавлено в расписание.
 sw-senate-schedule-confirmed = Заседание подтверждено.
 sw-senate-schedule-rejected = Заседание отклонено.
+sw-senate-emergency-scheduled = Чрезвычайная сессия назначена.
+sw-senate-emergency-invalid = Нельзя назначить чрезвычайную сессию: нет свободного следующего часа или это не экстренная мера.
 
 sw-senate-vote-only-speaker = Завершить голосование может только Спикер.
 sw-senate-vote-only-chancellor = Решающий голос есть только у Канцлера.
@@ -52,6 +54,9 @@ sw-senate-vote-tiebreak-done = Решающий голос учтён.
 
 sw-senate-announce-sender = Сенат Республики
 sw-senate-announce-session = Сенат собрался на заседание по законопроекту «{$bill}».
+sw-senate-announce-emergency-scheduled = Внимание! На {$time} назначена экстренная сессия Сената по вопросу: «{$bill}».
+sw-senate-announce-emergency-replaced = Ранее запланированное слушание («{$bill}») отменено текущей повесткой.
+sw-senate-announce-emergency-started = Экстренная сессия Сената началась. На повестке: «{$bill}».
 sw-senate-announce-passed = Закон «{$bill}» принят Сенатом.
 sw-senate-announce-rejected = Законопроект «{$bill}» отклонён Сенатом.
 sw-senate-announce-only-leaders = Делать объявления могут только Спикер и Канцлер.
@@ -70,6 +75,7 @@ sw-senate-floor-none = Очередь пуста.
 sw-senate-floor-speaker-on = Ваша трибуна включена.
 sw-senate-floor-speaker-off = Ваша трибуна выключена.
 sw-senate-floor-granted-announce = Слово предоставлено: {$name}.
+sw-senate-floor-queue-removed = Сенатор убран из очереди.
 
 sw-senate-dilemma-resolved = Решение по дилемме принято.
 sw-senate-budget-locked = Бюджет распределён и зафиксирован на день.

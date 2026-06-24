@@ -55,6 +55,11 @@ public sealed class SWSenateVoteConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateRevokeFloorMessage());
     }
 
+    public void RemoveFromQueue(NetEntity target)
+    {
+        SendMessage(new SWSenateRemoveFromQueueMessage(target));
+    }
+
     public void GrantChancellor()
     {
         SendMessage(new SWSenateGrantChancellorMessage());

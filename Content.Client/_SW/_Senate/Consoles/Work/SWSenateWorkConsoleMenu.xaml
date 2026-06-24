@@ -58,6 +58,7 @@
                     <BoxContainer Name="ScheduleGrid" Orientation="Vertical" />
                 </ScrollContainer>
                 <BoxContainer Name="SpeakerPanel" Orientation="Vertical">
+                    <BoxContainer Name="EmergencyBillsPanel" Orientation="Vertical" Margin="0 0 0 6" />
                     <Label Text="Назначить заседание" StyleClasses="LabelKeyText" />
                     <BoxContainer Orientation="Horizontal" Margin="0 2 0 0">
                         <OptionButton Name="BillOption" HorizontalExpand="True" />

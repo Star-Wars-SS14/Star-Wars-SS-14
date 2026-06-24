@@ -39,3 +39,51 @@
     - state: image2
   - type: PresetIdCard
     job: SWSpeaker
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWUsherIDCard
+  name: ID-карта пристава Сената
+  description: Удостоверение пристава, следящего за порядком в зале заседаний.
+  components:
+  - type: Sprite
+    layers:
+    - state: image4
+  - type: PresetIdCard
+    job: SWUsher
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWSenateGuardHeadIDCard
+  name: ID-карта главы Сенатской Гвардии
+  description: Удостоверение командующего Сенатской Гвардией.
+  components:
+  - type: Sprite
+    layers:
+    - state: image5
+  - type: PresetIdCard
+    job: SWSenateGuardHead
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWSenateGuardOfficerIDCard
+  name: ID-карта офицера Сенатской Гвардии
+  description: Удостоверение офицера Сенатской Гвардии.
+  components:
+  - type: Sprite
+    layers:
+    - state: image6
+  - type: PresetIdCard
+    job: SWSenateGuardOfficer
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWSenateDoctorIDCard
+  name: ID-карта сенатского врача
+  description: Удостоверение врача медицинской службы Сената.
+  components:
+  - type: Sprite
+    layers:
+    - state: image7
+  - type: PresetIdCard
+    job: SWSenateDoctor

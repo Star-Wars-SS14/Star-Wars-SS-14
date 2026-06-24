@@ -6,9 +6,6 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._SW._Senate.Core;
 
-// Political parties: senator-only blocs spanning sectors. A party forms with a leader; it counts as
-// "formed" at MinMembers. Membership, leadership and leadership-change votes are all keyed by sectorId
-// (a senator == their claimed sector), so a senator who vacates their seat automatically leaves.
 public sealed class SWSenatePartySystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _proto = default!;
@@ -17,8 +14,7 @@ public sealed class SWSenatePartySystem : EntitySystem
 
     private const float TickInterval = 1f;
     private const int MinMembers = 3;
-    // Once formed, dropping below MinMembers gives this much game-time to recruit before reverting.
-    private const float GraceGameMinutes = 120f; // 2 game hours
+    private const float GraceGameMinutes = 120f;
     private const int NameLimit = 48;
     private const int DescLimit = 240;
 
@@ -103,7 +99,6 @@ public sealed class SWSenatePartySystem : EntitySystem
         if (party == null || party.Leader != leaderSector || !party.Pending.Remove(sectorId))
             return false;
 
-        // The applicant may have vacated their seat or joined elsewhere while waiting.
         if (!_senate.IsClaimed(sectorId) || MemberOf(sectorId) != null)
             return false;
 
@@ -146,7 +141,7 @@ public sealed class SWSenatePartySystem : EntitySystem
         party.VoteKind = SWPartyVoteKind.Leader;
         party.VoteTarget = sectorId;
         party.Ballots.Clear();
-        party.Ballots[sectorId] = true; // the initiator backs themselves
+        party.Ballots[sectorId] = true;
         EvaluateVote(party);
         return true;
     }
@@ -164,8 +159,8 @@ public sealed class SWSenatePartySystem : EntitySystem
         party.VoteKind = SWPartyVoteKind.Evict;
         party.VoteTarget = targetSector;
         party.Ballots.Clear();
-        party.Ballots[leaderSector] = true; // the leader pushes the eviction
-        party.Ballots[targetSector] = false; // the targeted member opposes by default
+        party.Ballots[leaderSector] = true;
+        party.Ballots[targetSector] = false;
         EvaluateVote(party);
         return true;
     }
@@ -186,7 +181,7 @@ public sealed class SWSenatePartySystem : EntitySystem
         if (party.VoteTarget == null)
             return;
 
-        var needed = party.Members.Count / 2 + 1; // strict majority
+        var needed = party.Members.Count / 2 + 1;
         var yes = party.Ballots.Count(b => party.Members.Contains(b.Key) && b.Value);
         var no = party.Ballots.Count(b => party.Members.Contains(b.Key) && !b.Value);
         var allVoted = party.Members.All(party.Ballots.ContainsKey);
@@ -199,11 +194,10 @@ public sealed class SWSenatePartySystem : EntitySystem
             if (kind == SWPartyVoteKind.Leader)
                 party.Leader = target;
             else
-                RemoveMember(party, target); // also handles leader handoff / disband edge cases
+                RemoveMember(party, target);
         }
         else if (no >= needed || allVoted)
         {
-            // Majority can no longer be reached (or everyone has voted and it fell short) — abandon.
             ClearVote(party);
         }
     }
@@ -228,7 +222,6 @@ public sealed class SWSenatePartySystem : EntitySystem
             return;
         }
 
-        // Leader gone -> hand off to the oldest remaining member (else the party would already be empty).
         if (party.Leader == sectorId)
             party.Leader = party.Members[0];
 
@@ -249,7 +242,6 @@ public sealed class SWSenatePartySystem : EntitySystem
         {
             var party = _parties[i];
 
-            // Drop members who no longer hold a sector (resigned / left office).
             for (var m = party.Members.Count - 1; m >= 0; m--)
             {
                 if (!_senate.IsClaimed(party.Members[m]))
@@ -268,7 +260,6 @@ public sealed class SWSenatePartySystem : EntitySystem
             }
             else if (party.Formed)
             {
-                // Was a real bloc, slipped below the threshold: count down the recruitment grace.
                 if (party.GraceLeft <= 0f)
                     party.GraceLeft = GraceGameMinutes;
                 else
@@ -284,7 +275,6 @@ public sealed class SWSenatePartySystem : EntitySystem
         }
     }
 
-    // Bloc tag for the vote console — only formed parties read as voting blocs.
     public (string Name, Color Color)? GetBlocTag(string sectorId)
     {
         var party = MemberOf(sectorId);

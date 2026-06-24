@@ -5,3 +5,27 @@
   frequency: 2050
   color: "#9b59b6"
   longRange: true
+
+- type: radioChannel
+  id: SWSenateStaff
+  name: Персонал Сената
+  keycode: 'е'
+  frequency: 2051
+  color: "#16a085"
+  longRange: true
+
+- type: radioChannel
+  id: SWSenateGuard
+  name: Гвардия
+  keycode: 'в'
+  frequency: 2052
+  color: "#c0392b"
+  longRange: true
+
+- type: radioChannel
+  id: SWChancellery
+  name: Администрация Канцлера
+  keycode: 'ц'
+  frequency: 2053
+  color: "#c9a227"
+  longRange: true

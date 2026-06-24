@@ -24,3 +24,39 @@
   components:
   - type: Loadout
     prototypes: [SpeakerGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidUsher
+  name: Пристав Сената
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [UsherGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidSenateGuardHead
+  name: Глава Сенатской Гвардии
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [SenateGuardHeadGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidSenateGuardOfficer
+  name: Офицер Сенатской Гвардии
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [SenateGuardOfficerGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidSenateDoctor
+  name: Сенатский врач
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [SenateDoctorGear]

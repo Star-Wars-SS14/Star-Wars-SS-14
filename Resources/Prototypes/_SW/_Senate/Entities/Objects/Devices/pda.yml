@@ -30,3 +30,47 @@
     id: SWSpeakerIDCard
   - type: PdaBorderColor
     borderColor: "#2980B9"
+
+- type: entity
+  parent: BasePDA
+  id: SWUsherPDA
+  name: КПК пристава
+  description: Персональный датапад пристава Сената.
+  components:
+  - type: Pda
+    id: SWUsherIDCard
+  - type: PdaBorderColor
+    borderColor: "#34495E"
+
+- type: entity
+  parent: BasePDA
+  id: SWSenateGuardHeadPDA
+  name: КПК главы Сенатской Гвардии
+  description: Персональный датапад командующего Сенатской Гвардией.
+  components:
+  - type: Pda
+    id: SWSenateGuardHeadIDCard
+  - type: PdaBorderColor
+    borderColor: "#C0392B"
+
+- type: entity
+  parent: BasePDA
+  id: SWSenateGuardOfficerPDA
+  name: КПК офицера Сенатской Гвардии
+  description: Персональный датапад офицера Сенатской Гвардии.
+  components:
+  - type: Pda
+    id: SWSenateGuardOfficerIDCard
+  - type: PdaBorderColor
+    borderColor: "#E67E22"
+
+- type: entity
+  parent: BasePDA
+  id: SWSenateDoctorPDA
+  name: КПК сенатского врача
+  description: Персональный датапад врача медслужбы Сената.
+  components:
+  - type: Pda
+    id: SWSenateDoctorIDCard
+  - type: PdaBorderColor
+    borderColor: "#16A085"

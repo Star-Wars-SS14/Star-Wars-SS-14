@@ -793,8 +793,6 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         return box;
     }
 
-    // Wrapping helpers: plain Labels never word-wrap, so long sentences run off the edge and shove
-    // sibling buttons out of view. RichTextLabel wraps to the available width, keeping rows tidy.
     private static RichTextLabel MakeWrap(string text, Color? color = null)
     {
         var label = new RichTextLabel { HorizontalExpand = true };

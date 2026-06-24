@@ -11,3 +11,42 @@
     layers:
     - state: crypt_blue
     - state: republic
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeySenateStaff
+  name: senate staff encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWSenateStaff
+    defaultChannel: SWSenateStaff
+  - type: Sprite
+    layers:
+    - state: crypt_blue
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeyGuard
+  name: senate guard encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWSenateGuard
+    defaultChannel: SWSenateGuard
+  - type: Sprite
+    layers:
+    - state: crypt_red
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeyChancellery
+  name: chancellery encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWChancellery
+    defaultChannel: SWChancellery
+  - type: Sprite
+    layers:
+    - state: crypt_gray

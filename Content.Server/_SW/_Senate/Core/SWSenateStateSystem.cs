@@ -618,11 +618,6 @@ public sealed class SWSenateStateSystem : EntitySystem
         return true;
     }
 
-    /// <summary>
-    /// Speaker's emergency power: book an emergency bill into the next game hour, overriding whatever was
-    /// there (a displaced bill session is dropped so it returns to the schedulable pool). Auto-confirmed —
-    /// no Chancellor sign-off. Only works on emergency ("СРОЧНО:") bills.
-    /// </summary>
     public SWEmergencyScheduleResult? ScheduleEmergencySession(int billId)
     {
         var bill = _bills.FirstOrDefault(b => b.Id == billId);
@@ -676,7 +671,6 @@ public sealed class SWSenateStateSystem : EntitySystem
             var session = _sessions.FirstOrDefault(s =>
                 s.Status != SWSessionStatus.Rejected && hour >= s.StartHour && hour < s.EndHour);
 
-            // Emergency sessions take priority even over reserved hours (lunch/personal time).
             if (session is { Emergency: true })
             {
                 row.Text = hour == session.StartHour
@@ -725,7 +719,6 @@ public sealed class SWSenateStateSystem : EntitySystem
             options.Add(new SWBillOption { Id = bill.Id, Name = bill.Name, Emergency = bill.Emergency });
         }
 
-        // Emergency measures float to the top so the Speaker sees them first.
         options.Sort((a, b) => b.Emergency.CompareTo(a.Emergency));
         return options;
     }

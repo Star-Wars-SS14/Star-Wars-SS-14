@@ -1,0 +1,170 @@
+- type: playTimeTracker
+  id: Job_Usher
+
+- type: playTimeTracker
+  id: Job_SenateGuardHead
+
+- type: playTimeTracker
+  id: Job_SenateGuardOfficer
+
+- type: playTimeTracker
+  id: Job_SenateDoctor
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconUsher
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: Civilian
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSenateGuardHead
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: Civilian
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSenateGuardOfficer
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: Civilian
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconSenateDoctor
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: Civilian
+
+- type: accessLevel
+  id: SWSenateGuard
+  name: Сенатская гвардия
+
+- type: accessLevel
+  id: SWSenateGuardCommand
+  name: Командование гвардии
+
+- type: accessLevel
+  id: SWSenateMedical
+  name: Медслужба Сената
+
+- type: department
+  id: SWSenateStaff
+  name: Аппарат Сената
+  description: "Персонал, обеспечивающий работу Сената: порядок в зале, охрана и медицинская служба."
+  color: "#16A085"
+  roles:
+  - SWUsher
+  - SWSenateGuardHead
+  - SWSenateGuardOfficer
+  - SWSenateDoctor
+  weight: 1990
+
+- type: job
+  id: SWUsher
+  name: Пристав Сената
+  playTimeTracker: Job_Usher
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0
+  startingGear: UsherGear
+  icon: "JobIconUsher"
+  supervisors: job-supervisors-empire
+  access:
+  - SWSenate
+  - SWSenateGuard
+
+- type: job
+  id: SWSenateGuardHead
+  name: Глава Сенатской Гвардии
+  playTimeTracker: Job_SenateGuardHead
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0
+  startingGear: SenateGuardHeadGear
+  icon: "JobIconSenateGuardHead"
+  supervisors: job-supervisors-empire
+  access:
+  - SWSenate
+  - SWSenateGuard
+  - SWSenateGuardCommand
+
+- type: job
+  id: SWSenateGuardOfficer
+  name: Офицер Сенатской Гвардии
+  playTimeTracker: Job_SenateGuardOfficer
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0
+  startingGear: SenateGuardOfficerGear
+  icon: "JobIconSenateGuardOfficer"
+  supervisors: job-supervisors-empire
+  access:
+  - SWSenate
+  - SWSenateGuard
+
+- type: job
+  id: SWSenateDoctor
+  name: Сенатский врач
+  playTimeTracker: Job_SenateDoctor
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0
+  startingGear: SenateDoctorGear
+  icon: "JobIconSenateDoctor"
+  supervisors: job-supervisors-empire
+  access:
+  - SWSenate
+  - SWSenateMedical
+
+- type: startingGear
+  id: UsherGear
+  equipment:
+    id: SWUsherPDA
+    ears: SWClothingHeadsetSenateUsher
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    outerClothing: SWCitizenClothing
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    back: ClothingBackpack
+    belt: ClothingBeltSecurityFilled
+
+- type: startingGear
+  id: SenateGuardHeadGear
+  equipment:
+    id: SWSenateGuardHeadPDA
+    ears: SWClothingHeadsetSenateGuardHead
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    outerClothing: SWLieutenantRepublicSuit
+    head: SW_ClothingHeadLieutenantRepublicHelmet
+    shoes: SWClothingShoesBootsJackFilled
+    belt: ClothingBeltAssault
+    back: ClothingBackpackMilitarySatchel
+    suitstorage: SWH206Renegade
+
+- type: startingGear
+  id: SenateGuardOfficerGear
+  equipment:
+    id: SWSenateGuardOfficerPDA
+    ears: SWClothingHeadsetSenateGuard
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    outerClothing: SWRepublicSuit
+    head: SW_ClothingHeadRepublicHelmet
+    shoes: SWClothingShoesBootsJackFilled
+    belt: ClothingBeltAssault
+    back: ClothingBackpackMilitarySatchel
+    suitstorage: SWH206Renegade
+
+- type: startingGear
+  id: SenateDoctorGear
+  equipment:
+    id: SWSenateDoctorPDA
+    ears: SWClothingHeadsetSenateMedical
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    outerClothing: SWMedicRepublicSuit
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    belt: ClothingBeltMedicalFilled
+    back: ClothingBackpack

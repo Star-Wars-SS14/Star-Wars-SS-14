@@ -51,6 +51,9 @@
   - SWSenateChancellor
   - SWSenateSpeaker
   - SWSenateSenator
+  - SWSenateGuard
+  - SWSenateGuardCommand
+  - SWSenateMedical
 
 - type: department
   id: SWSenate
@@ -122,7 +125,7 @@
   id: ChancellorGear
   equipment:
     id: SWChancellorPDA
-    ears: SWClothingHeadsetSenate
+    ears: SWClothingHeadsetSenateLeader
     outerClothing: SWCitizenClothing
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen
@@ -135,7 +138,7 @@
   id: SpeakerGear
   equipment:
     id: SWSpeakerPDA
-    ears: SWClothingHeadsetSenate
+    ears: SWClothingHeadsetSenateLeader
     outerClothing: SWCitizenClothing
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen

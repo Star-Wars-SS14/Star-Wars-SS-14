@@ -199,15 +199,6 @@
   components:
   - type: Fixtures
     fixtures:
-      base:
-        shape:
-          !type:PhysShapeAabb
-          bounds: "-2.0,-2.0,2.0,2.0"
-        mask:
-        - FullTileMask
-        layer:
-        - WallLayer
-        density: 3000
       in1:
         shape:
           !type:PhysShapeAabb
@@ -220,9 +211,11 @@
         hard: false
   - type: Sprite
     sprite: _SW/Structures/Machines/vehicle_fabricator.rsi
-    state: fabricator
+    drawdepth: HighFloorObjects
+    layers:
+      - state: fabricator
   - type: SWLathe
-    spawnPointOut: "0.0, 2.85"
+    spawnPointOut: "0.0, 0.0"
     recipes:
     - SWStormCallerSLR
     - SWSingleSeatSpeederSLR

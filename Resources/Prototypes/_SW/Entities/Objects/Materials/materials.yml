@@ -7,6 +7,9 @@
     sprite: _SW/Objects/lathe_materials.rsi
     state: electronics
   - type: Item
+  - type: Tag
+    tags:
+    - SWMaterial
 
 - type: entity
   parent: SWElectronics

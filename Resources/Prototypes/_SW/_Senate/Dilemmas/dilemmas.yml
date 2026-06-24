@@ -153,27 +153,6 @@
     SWStatMorale: -4
 
 - type: swDilemma
-  id: SWDilemmaRepBudget
-  name: Бюджетный кризис
-  description: Казна Республики на исходе. Нужны срочные меры.
-  scope: Republic
-  order: 7
-  failText: Казна пустеет, долги растут
-  options:
-  - label: Поднять налоги
-    policyEffects:
-      SWStatTaxes: 6
-      SWStatTreasury: 5
-      SWStatMorale: -4
-  - label: Урезать расходы
-    policyEffects:
-      SWStatTreasury: 6
-      SWStatWelfare: -5
-  failPolicyEffects:
-    SWStatTreasury: -6
-    SWStatEmployment: -4
-
-- type: swDilemma
   id: SWDilemmaRepScandal
   name: Коррупционный скандал
   description: В прессу утекли документы о коррупции в высших эшелонах власти.
@@ -215,47 +194,6 @@
   failPolicyEffects:
     SWStatMorale: -4
     SWStatTreaties: -4
-
-- type: swDilemma
-  id: SWDilemmaSecDrought
-  name: Засуха и голод
-  description: Неурожай грозит сектору голодом. Запасы продовольствия тают.
-  scope: Sectoral
-  order: 10
-  failText: Голод косит население
-  options:
-  - label: Раздать стратегические запасы
-    sectorEffects:
-      SWGlobalHealthcare: 5
-      SWGlobalEconomy: -4
-  - label: Ввести нормирование
-    sectorEffects:
-      SWGlobalSociety: -3
-      SWGlobalHealthcare: 2
-      SWGlobalEconomy: 2
-  failSectorEffects:
-    SWGlobalHealthcare: -6
-    SWGlobalSociety: -4
-
-- type: swDilemma
-  id: SWDilemmaSecBlackout
-  name: Энергетический кризис
-  description: Энергосети сектора перегружены, города погружаются во тьму.
-  scope: Sectoral
-  order: 11
-  failText: Сектор погружается во тьму
-  options:
-  - label: Срочно построить реактор
-    sectorEffects:
-      SWGlobalIndustry: 5
-      SWGlobalEconomy: -3
-  - label: Веерные отключения
-    sectorEffects:
-      SWGlobalSociety: -4
-      SWGlobalIndustry: 2
-  failSectorEffects:
-    SWGlobalIndustry: -5
-    SWGlobalSociety: -3
 
 - type: swDilemma
   id: SWDilemmaSecSmuggling
@@ -438,26 +376,6 @@
     SWGlobalHealthcare: -4
 
 - type: swDilemma
-  id: SWDilemmaSecGang
-  name: Война банд
-  description: Преступные кланы сектора развязали кровавую войну за территорию.
-  scope: Sectoral
-  order: 21
-  failText: Банды делят сектор кровью
-  options:
-  - label: Ввести спецотряды
-    sectorEffects:
-      SWGlobalSecurity: 5
-      SWGlobalSociety: -2
-  - label: Перемирие через посредников
-    sectorEffects:
-      SWGlobalSociety: 2
-      SWGlobalSecurity: 1
-  failSectorEffects:
-    SWGlobalSecurity: -5
-    SWGlobalSociety: -4
-
-- type: swDilemma
   id: SWDilemmaSecBlockade
   name: Блокада гиперпути
   description: Ключевой торговый маршрут сектора перекрыт враждебными силами.
@@ -594,26 +512,6 @@
   failSectorEffects:
     SWGlobalHealthcare: -5
     SWGlobalIndustry: -4
-
-- type: swDilemma
-  id: SWDilemmaSecSeparatist
-  name: Сепаратистская агитация
-  description: В секторе крепнут настроения за выход из Республики.
-  scope: Sectoral
-  order: 29
-  failText: Сепаратизм набирает силу
-  options:
-  - label: Уступки автономии
-    sectorEffects:
-      SWGlobalSociety: 4
-      SWGlobalSecurity: -2
-  - label: Подавить агитаторов
-    sectorEffects:
-      SWGlobalSecurity: 4
-      SWGlobalSociety: -4
-  failSectorEffects:
-    SWGlobalSociety: -5
-    SWGlobalForeign: -3
 
 - type: swDilemma
   id: SWDilemmaSecAutomation
@@ -1142,28 +1040,6 @@
     SWStatNeutral: -3
 
 - type: swDilemma
-  id: SWDilemmaRepRecruit
-  name: Кризис набора в армию
-  description: Вооружённым силам Республики катастрофически не хватает солдат.
-  scope: Republic
-  order: 56
-  failText: Армия остаётся без пополнения
-  options:
-  - label: Объявить мобилизацию
-    policyEffects:
-      SWStatReserve: 6
-      SWStatArmy: 3
-      SWStatMorale: -4
-  - label: Поднять жалование
-    policyEffects:
-      SWStatArmy: 4
-      SWStatReserve: 3
-      SWStatTreasury: -5
-  failPolicyEffects:
-    SWStatArmy: -5
-    SWStatReserve: -4
-
-- type: swDilemma
   id: SWDilemmaRepSisExpand
   name: Расширение полномочий СИС
   description: Разведка просит у Сената чрезвычайные полномочия.
@@ -1476,3 +1352,126 @@
   failPolicyEffects:
     SWStatNeutral: -4
     SWStatTreaties: -3
+
+- type: swDilemma
+  id: SWDilemmaSecTransit
+  name: Транспортная реформа
+  description: Сектору предлагают перестроить устаревшую транспортную сеть.
+  scope: Sectoral
+  order: 72
+  failText: Транспорт деградирует, растут заторы
+  options:
+  - label: Полная модернизация
+    sectorEffects:
+      SWGlobalIndustry: 4
+      SWGlobalEconomy: -3
+  - label: Косметический ремонт
+    sectorEffects:
+      SWGlobalEconomy: 1
+      SWGlobalIndustry: -2
+  failSectorEffects:
+    SWGlobalIndustry: -3
+    SWGlobalEconomy: -2
+
+- type: swDilemma
+  id: SWDilemmaSecTourism
+  name: Туристический наплыв
+  description: Сектор стал модным направлением, но инфраструктура не справляется.
+  scope: Sectoral
+  order: 73
+  failText: Хаос отпугивает гостей
+  options:
+  - label: Развивать индустрию отдыха
+    sectorEffects:
+      SWGlobalEconomy: 4
+      SWGlobalSociety: 2
+      SWGlobalSecurity: -2
+  - label: Ограничить поток
+    sectorEffects:
+      SWGlobalSociety: 1
+      SWGlobalEconomy: -2
+  failSectorEffects:
+    SWGlobalEconomy: -2
+    SWGlobalSociety: -2
+
+- type: swDilemma
+  id: SWDilemmaSecLandDispute
+  name: Земельный спор
+  description: Жители и застройщики сектора схлестнулись из-за земли.
+  scope: Sectoral
+  order: 74
+  failText: Спор перерастает в столкновения
+  options:
+  - label: Справедливый раздел
+    sectorEffects:
+      SWGlobalSociety: 4
+      SWGlobalEconomy: -2
+  - label: Отдать застройщикам
+    sectorEffects:
+      SWGlobalEconomy: 3
+      SWGlobalSociety: -3
+  failSectorEffects:
+    SWGlobalSociety: -3
+    SWGlobalEconomy: -2
+
+- type: swDilemma
+  id: SWDilemmaSecHolonet
+  name: Скандал в голосети
+  description: Местный голоканал сектора раздувает громкий скандал.
+  scope: Sectoral
+  order: 75
+  failText: Слухи подрывают доверие
+  options:
+  - label: Открытое расследование
+    sectorEffects:
+      SWGlobalSociety: 3
+      SWGlobalSecurity: -1
+  - label: Заглушить канал
+    sectorEffects:
+      SWGlobalSecurity: 2
+      SWGlobalSociety: -3
+  failSectorEffects:
+    SWGlobalSociety: -3
+    SWGlobalSecurity: -2
+
+- type: swDilemma
+  id: SWDilemmaRepTradePact
+  name: Торговый пакт
+  description: Группа миров предлагает Республике соглашение о свободной торговле.
+  scope: Republic
+  order: 76
+  failText: Торговые связи слабеют
+  options:
+  - label: Заключить пакт
+    policyEffects:
+      SWStatTrade: 5
+      SWStatNeutral: 3
+      SWStatTreasury: -3
+  - label: Защитить внутренний рынок
+    policyEffects:
+      SWStatTreasury: 3
+      SWStatTrade: -3
+  failPolicyEffects:
+    SWStatTrade: -4
+    SWStatNeutral: -3
+
+- type: swDilemma
+  id: SWDilemmaRepInfrastructure
+  name: Программа инфраструктуры
+  description: Сенат рассматривает масштабную программу общественных работ.
+  scope: Republic
+  order: 77
+  failText: Инфраструктура ветшает
+  options:
+  - label: Масштабная программа
+    policyEffects:
+      SWStatManufacturing: 4
+      SWStatTransport: 4
+      SWStatTreasury: -5
+  - label: Точечные проекты
+    policyEffects:
+      SWStatTransport: 2
+      SWStatTreasury: -2
+  failPolicyEffects:
+    SWStatManufacturing: -3
+    SWStatTransport: -3

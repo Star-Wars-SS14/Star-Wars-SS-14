@@ -27,6 +27,13 @@ public enum SWDilemmaStatus : byte
     Failed,
 }
 
+[Serializable, NetSerializable]
+public enum SWDilemmaComparison : byte
+{
+    Below,
+    Above,
+}
+
 [Prototype("swDilemma")]
 public sealed partial class SWDilemmaPrototype : IPrototype
 {
@@ -53,10 +60,13 @@ public sealed partial class SWDilemmaPrototype : IPrototype
     public bool Budget;
 
     /// <summary>
-    /// Reserved for condition-triggered dilemmas. Empty = part of the general random pool.
+    /// Empty = unconditional (part of the general random pool). Non-empty = conditional: every condition
+    /// (checked against the sector's global for Sectoral, or the republic's actual global for Republic)
+    /// must hold for the dilemma to become eligible — and even then it only gets a chance to fire.
+    /// Conditional dilemmas are always non-budget and tend to hit harder.
     /// </summary>
     [DataField]
-    public string? Trigger;
+    public List<SWDilemmaCondition> Conditions = new();
 
     [DataField]
     public string FailText = string.Empty;
@@ -75,6 +85,19 @@ public sealed partial class SWDilemmaPrototype : IPrototype
     /// </summary>
     [DataField]
     public Dictionary<ProtoId<SWGlobalStatPrototype>, float> FailSectorEffects = new();
+}
+
+[DataDefinition]
+public sealed partial class SWDilemmaCondition
+{
+    [DataField(required: true)]
+    public ProtoId<SWGlobalStatPrototype> Stat;
+
+    [DataField]
+    public SWDilemmaComparison Comparison = SWDilemmaComparison.Below;
+
+    [DataField]
+    public float Threshold;
 }
 
 [DataDefinition]

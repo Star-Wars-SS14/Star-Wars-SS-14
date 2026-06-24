@@ -1,0 +1,568 @@
+- type: swDilemma
+  id: SWDilemmaSecDrought
+  name: Засуха и голод
+  description: Неурожай грозит сектору голодом. Запасы продовольствия тают.
+  scope: Sectoral
+  order: 100
+  conditions:
+  - stat: SWGlobalHealthcare
+    comparison: Below
+    threshold: 30
+  failText: Голод косит население
+  options:
+  - label: Раздать стратегические запасы
+    sectorEffects:
+      SWGlobalHealthcare: 8
+      SWGlobalEconomy: -6
+  - label: Ввести жёсткое нормирование
+    sectorEffects:
+      SWGlobalHealthcare: 4
+      SWGlobalEconomy: 3
+      SWGlobalSociety: -5
+  failSectorEffects:
+    SWGlobalHealthcare: -9
+    SWGlobalSociety: -6
+
+- type: swDilemma
+  id: SWDilemmaSecBlackout
+  name: Энергетический кризис
+  description: Энергосети сектора рушатся, города погружаются во тьму.
+  scope: Sectoral
+  order: 101
+  conditions:
+  - stat: SWGlobalIndustry
+    comparison: Below
+    threshold: 30
+  failText: Сектор погружается во тьму
+  options:
+  - label: Срочно построить реактор
+    sectorEffects:
+      SWGlobalIndustry: 8
+      SWGlobalEconomy: -5
+  - label: Веерные отключения
+    sectorEffects:
+      SWGlobalIndustry: 3
+      SWGlobalSociety: -6
+  failSectorEffects:
+    SWGlobalIndustry: -8
+    SWGlobalSociety: -5
+
+- type: swDilemma
+  id: SWDilemmaSecGang
+  name: Война банд
+  description: Преступные кланы захлестнули сектор кровавой войной за территорию.
+  scope: Sectoral
+  order: 102
+  conditions:
+  - stat: SWGlobalSecurity
+    comparison: Below
+    threshold: 30
+  failText: Банды делят сектор кровью
+  options:
+  - label: Ввести спецотряды
+    sectorEffects:
+      SWGlobalSecurity: 8
+      SWGlobalSociety: -3
+  - label: Перемирие через посредников
+    sectorEffects:
+      SWGlobalSecurity: 3
+      SWGlobalSociety: 3
+  failSectorEffects:
+    SWGlobalSecurity: -8
+    SWGlobalSociety: -6
+
+- type: swDilemma
+  id: SWDilemmaSecSeparatist
+  name: Восстание сепаратистов
+  description: Сектор охвачен мятежом за выход из Республики.
+  scope: Sectoral
+  order: 103
+  conditions:
+  - stat: SWGlobalSociety
+    comparison: Below
+    threshold: 30
+  failText: Сепаратизм перерастает в восстание
+  options:
+  - label: Широкая автономия
+    sectorEffects:
+      SWGlobalSociety: 7
+      SWGlobalSecurity: -3
+  - label: Подавить мятеж
+    sectorEffects:
+      SWGlobalSecurity: 6
+      SWGlobalSociety: -6
+  failSectorEffects:
+    SWGlobalSociety: -8
+    SWGlobalForeign: -5
+
+- type: swDilemma
+  id: SWDilemmaSecCollapse
+  name: Финансовый крах сектора
+  description: Экономика сектора рушится, банки закрываются, паника растёт.
+  scope: Sectoral
+  order: 104
+  conditions:
+  - stat: SWGlobalEconomy
+    comparison: Below
+    threshold: 28
+  failText: Сектор скатывается в нищету
+  options:
+  - label: Экстренный заём Республики
+    sectorEffects:
+      SWGlobalEconomy: 7
+      SWGlobalIndustry: 3
+      SWGlobalSociety: -2
+  - label: Жёсткая экономия
+    sectorEffects:
+      SWGlobalEconomy: 5
+      SWGlobalSociety: -6
+  failSectorEffects:
+    SWGlobalEconomy: -9
+    SWGlobalSociety: -5
+
+- type: swDilemma
+  id: SWDilemmaSecBrainDrain
+  name: Развал образования
+  description: Учебные заведения сектора закрываются, специалисты бегут.
+  scope: Sectoral
+  order: 105
+  conditions:
+  - stat: SWGlobalEducation
+    comparison: Below
+    threshold: 28
+  failText: Сектор стремительно глупеет
+  options:
+  - label: Экстренное финансирование
+    sectorEffects:
+      SWGlobalEducation: 8
+      SWGlobalEconomy: -5
+  - label: Привлечь иностранных специалистов
+    sectorEffects:
+      SWGlobalEducation: 5
+      SWGlobalForeign: 2
+      SWGlobalSociety: -3
+  failSectorEffects:
+    SWGlobalEducation: -8
+    SWGlobalIndustry: -4
+
+- type: swDilemma
+  id: SWDilemmaSecDefenseless
+  name: Сектор беззащитен
+  description: Оборона сектора рухнула, враги чуют лёгкую добычу.
+  scope: Sectoral
+  order: 106
+  conditions:
+  - stat: SWGlobalDefense
+    comparison: Below
+    threshold: 28
+  failText: Сектор открыт для вторжения
+  options:
+  - label: Призвать республиканский гарнизон
+    sectorEffects:
+      SWGlobalDefense: 8
+      SWGlobalSociety: -3
+  - label: Вооружить население
+    sectorEffects:
+      SWGlobalDefense: 5
+      SWGlobalSecurity: -4
+  failSectorEffects:
+    SWGlobalDefense: -9
+    SWGlobalEconomy: -5
+
+- type: swDilemma
+  id: SWDilemmaSecIsolation
+  name: Сектор в изоляции
+  description: Связи сектора с остальной Республикой почти оборваны.
+  scope: Sectoral
+  order: 107
+  conditions:
+  - stat: SWGlobalForeign
+    comparison: Below
+    threshold: 30
+  failText: Сектор окончательно отрезан
+  options:
+  - label: Открыть дипломатические каналы
+    sectorEffects:
+      SWGlobalForeign: 7
+      SWGlobalEconomy: -4
+  - label: Замкнуться в себе
+    sectorEffects:
+      SWGlobalSecurity: 4
+      SWGlobalForeign: -3
+      SWGlobalEconomy: -3
+  failSectorEffects:
+    SWGlobalForeign: -8
+    SWGlobalEconomy: -5
+
+- type: swDilemma
+  id: SWDilemmaSecBoom
+  name: Экономический бум
+  description: Сектор переживает бурный рост — но перегрев грозит пузырём.
+  scope: Sectoral
+  order: 108
+  conditions:
+  - stat: SWGlobalEconomy
+    comparison: Above
+    threshold: 78
+  failText: Перегретый рынок обрушился
+  options:
+  - label: Реинвестировать в развитие
+    sectorEffects:
+      SWGlobalIndustry: 7
+      SWGlobalEducation: 3
+  - label: Раздать дивиденды
+    sectorEffects:
+      SWGlobalSociety: 7
+      SWGlobalEconomy: -3
+  failSectorEffects:
+    SWGlobalEconomy: -7
+    SWGlobalSociety: -3
+
+- type: swDilemma
+  id: SWDilemmaSecPoliceState
+  name: Полицейское государство
+  description: Безопасность сектора абсолютна, но граждане задыхаются под контролем.
+  scope: Sectoral
+  order: 109
+  conditions:
+  - stat: SWGlobalSecurity
+    comparison: Above
+    threshold: 80
+  failText: Репрессии порождают сопротивление
+  options:
+  - label: Ослабить контроль
+    sectorEffects:
+      SWGlobalSociety: 7
+      SWGlobalSecurity: -5
+  - label: Закрепить режим законом
+    sectorEffects:
+      SWGlobalSecurity: 5
+      SWGlobalSociety: -6
+      SWGlobalForeign: -2
+  failSectorEffects:
+    SWGlobalSociety: -8
+    SWGlobalForeign: -3
+
+- type: swDilemma
+  id: SWDilemmaSecIndustrialGiant
+  name: Промышленный гигант
+  description: Заводы сектора работают на полную, открывая большие возможности.
+  scope: Sectoral
+  order: 110
+  conditions:
+  - stat: SWGlobalIndustry
+    comparison: Above
+    threshold: 78
+  failText: Без вложений мощности простаивают
+  options:
+  - label: Экспортный бум
+    sectorEffects:
+      SWGlobalEconomy: 7
+      SWGlobalForeign: 3
+  - label: Перейти на военные заказы
+    sectorEffects:
+      SWGlobalDefense: 6
+      SWGlobalSociety: -4
+  failSectorEffects:
+    SWGlobalHealthcare: -6
+    SWGlobalSociety: -4
+
+- type: swDilemma
+  id: SWDilemmaSecGoldenAge
+  name: Расцвет сектора
+  description: Общество сектора процветает и полно энтузиазма.
+  scope: Sectoral
+  order: 111
+  conditions:
+  - stat: SWGlobalSociety
+    comparison: Above
+    threshold: 78
+  failText: Самодовольство сменяется застоем
+  options:
+  - label: Культурная экспансия
+    sectorEffects:
+      SWGlobalForeign: 6
+      SWGlobalEducation: 3
+  - label: Политические реформы
+    sectorEffects:
+      SWGlobalSociety: 6
+      SWGlobalSecurity: -3
+  failSectorEffects:
+    SWGlobalEconomy: -6
+    SWGlobalSociety: -3
+
+- type: swDilemma
+  id: SWDilemmaSecScienceHub
+  name: Научная столица
+  description: Сектор стал центром науки и технологий Республики.
+  scope: Sectoral
+  order: 112
+  conditions:
+  - stat: SWGlobalEducation
+    comparison: Above
+    threshold: 78
+  failText: Лучшие умы уезжают без поддержки
+  options:
+  - label: Открыть исследования миру
+    sectorEffects:
+      SWGlobalEducation: 6
+      SWGlobalForeign: 4
+  - label: Засекретить для обороны
+    sectorEffects:
+      SWGlobalDefense: 6
+      SWGlobalSociety: -3
+  failSectorEffects:
+    SWGlobalEducation: -6
+    SWGlobalEconomy: -4
+
+- type: swDilemma
+  id: SWDilemmaSecMedHub
+  name: Медицинская столица
+  description: Здравоохранение сектора — образцовое, к нему тянется вся система.
+  scope: Sectoral
+  order: 113
+  conditions:
+  - stat: SWGlobalHealthcare
+    comparison: Above
+    threshold: 80
+  failText: Без развития преимущество тает
+  options:
+  - label: Принимать пациентов со всей Республики
+    sectorEffects:
+      SWGlobalForeign: 5
+      SWGlobalEconomy: 4
+  - label: Экспорт медтехнологий
+    sectorEffects:
+      SWGlobalEconomy: 6
+      SWGlobalEducation: 2
+  failSectorEffects:
+    SWGlobalEconomy: -5
+    SWGlobalHealthcare: -3
+
+- type: swDilemma
+  id: SWDilemmaRepBudget
+  name: Бюджетный кризис
+  description: Казна Республики пуста, страна на грани дефолта.
+  scope: Republic
+  order: 114
+  conditions:
+  - stat: SWGlobalEconomy
+    comparison: Below
+    threshold: 30
+  failText: Дефолт обрушивает финансы Республики
+  options:
+  - label: Резко поднять налоги
+    policyEffects:
+      SWStatTaxes: 7
+      SWStatTreasury: 6
+      SWStatMorale: -6
+  - label: Жёсткое урезание расходов
+    policyEffects:
+      SWStatTreasury: 7
+      SWStatWelfare: -7
+  failPolicyEffects:
+    SWStatTreasury: -9
+    SWStatEmployment: -6
+
+- type: swDilemma
+  id: SWDilemmaRepRecruit
+  name: Кризис набора в армию
+  description: Армии Республики катастрофически не хватает солдат на фоне угрозы.
+  scope: Republic
+  order: 115
+  conditions:
+  - stat: SWGlobalDefense
+    comparison: Below
+    threshold: 30
+  failText: Армия рассыпается без пополнения
+  options:
+  - label: Всеобщая мобилизация
+    policyEffects:
+      SWStatReserve: 8
+      SWStatArmy: 4
+      SWStatMorale: -6
+  - label: Резко поднять жалование
+    policyEffects:
+      SWStatArmy: 6
+      SWStatReserve: 4
+      SWStatTreasury: -7
+  failPolicyEffects:
+    SWStatArmy: -8
+    SWStatReserve: -6
+
+- type: swDilemma
+  id: SWDilemmaRepCrimewave
+  name: Вал преступности
+  description: Преступность захлестнула Республику, граждане требуют порядка.
+  scope: Republic
+  order: 116
+  conditions:
+  - stat: SWGlobalSecurity
+    comparison: Below
+    threshold: 30
+  failText: Закон бессилен перед хаосом
+  options:
+  - label: Чрезвычайные полномочия полиции
+    policyEffects:
+      SWStatPolice: 8
+      SWStatRights: -6
+  - label: Социальные программы против корней
+    policyEffects:
+      SWStatLiving: 5
+      SWStatPolice: 3
+      SWStatTreasury: -5
+  failPolicyEffects:
+    SWStatPolice: -8
+    SWStatLiving: -5
+
+- type: swDilemma
+  id: SWDilemmaRepUnrest
+  name: Народные волнения
+  description: По всей Республике вспыхивают массовые протесты против власти.
+  scope: Republic
+  order: 117
+  conditions:
+  - stat: SWGlobalSociety
+    comparison: Below
+    threshold: 30
+  failText: Протесты перерастают в бунты
+  options:
+  - label: Уступки и реформы
+    policyEffects:
+      SWStatRights: 6
+      SWStatLiving: 4
+      SWStatTreasury: -5
+  - label: Подавить протесты
+    policyEffects:
+      SWStatCensorship: 5
+      SWStatRights: -7
+  failPolicyEffects:
+    SWStatMorale: -8
+    SWStatLiving: -5
+
+- type: swDilemma
+  id: SWDilemmaRepIsolation
+  name: Дипломатическая изоляция
+  description: Республика растеряла союзников и оказалась в окружении.
+  scope: Republic
+  order: 118
+  conditions:
+  - stat: SWGlobalForeign
+    comparison: Below
+    threshold: 30
+  failText: Республика остаётся одна против всех
+  options:
+  - label: Дипломатическое наступление
+    policyEffects:
+      SWStatTreaties: 7
+      SWStatNeutral: 4
+      SWStatTreasury: -4
+  - label: Сближение с Империей
+    policyEffects:
+      SWStatEmpireBorder: 6
+      SWStatMorale: -5
+  failPolicyEffects:
+    SWStatTreaties: -7
+    SWStatNeutral: -6
+
+- type: swDilemma
+  id: SWDilemmaRepHumanitarian
+  name: Гуманитарная катастрофа
+  description: Здравоохранение Республики рушится, эпидемии шагают по мирам.
+  scope: Republic
+  order: 119
+  conditions:
+  - stat: SWGlobalHealthcare
+    comparison: Below
+    threshold: 30
+  failText: Эпидемии выкашивают целые миры
+  options:
+  - label: Республиканская медпрограмма
+    policyEffects:
+      SWStatMedicine: 7
+      SWStatWelfare: 5
+      SWStatTreasury: -6
+  - label: Переложить всё на сектора
+    policyEffects:
+      SWStatCoverage: -5
+      SWStatWelfare: -3
+  failPolicyEffects:
+    SWStatMedicine: -8
+    SWStatWelfare: -6
+
+- type: swDilemma
+  id: SWDilemmaRepMilitarization
+  name: Милитаризация Республики
+  description: Оборона на пике, но ястребы требуют идти ещё дальше.
+  scope: Republic
+  order: 120
+  conditions:
+  - stat: SWGlobalDefense
+    comparison: Above
+    threshold: 78
+  failText: Раздутая армия разоряет казну
+  options:
+  - label: Частичная демобилизация
+    policyEffects:
+      SWStatTreasury: 6
+      SWStatMorale: 3
+      SWStatArmy: -5
+  - label: Превентивная сила у границ
+    policyEffects:
+      SWStatEmpireBorder: 6
+      SWStatFleet: 4
+      SWStatTreasury: -6
+  failPolicyEffects:
+    SWStatTreasury: -7
+    SWStatMorale: -4
+
+- type: swDilemma
+  id: SWDilemmaRepDiploTriumph
+  name: Дипломатический триумф
+  description: Авторитет Республики на внешней арене небывало высок.
+  scope: Republic
+  order: 121
+  conditions:
+  - stat: SWGlobalForeign
+    comparison: Above
+    threshold: 78
+  failText: Упущенный момент уносит инициативу
+  options:
+  - label: Заключить большой альянс
+    policyEffects:
+      SWStatTreaties: 8
+      SWStatNeutral: 5
+  - label: Усилить давление на Империю
+    policyEffects:
+      SWStatEmpireBorder: 7
+      SWStatMorale: 4
+      SWStatTrade: -5
+  failPolicyEffects:
+    SWStatTreaties: -6
+    SWStatNeutral: -4
+
+- type: swDilemma
+  id: SWDilemmaRepGoldenEconomy
+  name: Золотой век экономики
+  description: Экономика Республики на подъёме, казна полна возможностей.
+  scope: Republic
+  order: 122
+  conditions:
+  - stat: SWGlobalEconomy
+    comparison: Above
+    threshold: 78
+  failText: Без вложений подъём сходит на нет
+  options:
+  - label: Масштабные инвестиции в развитие
+    policyEffects:
+      SWStatManufacturing: 6
+      SWStatResearch: 5
+      SWStatTreasury: -5
+  - label: Снизить налоги для бизнеса
+    policyEffects:
+      SWStatTrade: 7
+      SWStatMorale: 4
+      SWStatTaxes: -5
+  failPolicyEffects:
+    SWStatTreasury: -6
+    SWStatTrade: -4

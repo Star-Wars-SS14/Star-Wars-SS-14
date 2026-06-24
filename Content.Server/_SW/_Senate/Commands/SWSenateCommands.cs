@@ -119,7 +119,7 @@ public sealed class SWDilemmaCommand : IConsoleCommand
         else
         {
             var pool = proto.EnumeratePrototypes<SWDilemmaPrototype>()
-                .Where(d => d.Scope == scope && string.IsNullOrEmpty(d.Trigger))
+                .Where(d => d.Scope == scope && d.Conditions.Count == 0)
                 .ToList();
 
             if (pool.Count == 0)

@@ -24,6 +24,10 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
     private const int AfternoonApply = 20;
     private const float UpdateInterval = 1f;
 
+    // Chance an eligible (condition-met) conditional dilemma actually fires in a window — a bit higher
+    // than any single unconditional one, but well short of guaranteed.
+    private const float ConditionalChance = 0.5f;
+
     private readonly List<SWActiveDilemma> _dilemmas = new();
     private readonly HashSet<string> _generated = new();
     private int _nextId = 1;
@@ -94,39 +98,83 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         if (!_generated.Add(key))
             return;
 
-        var pool = _proto.EnumeratePrototypes<SWDilemmaPrototype>()
-            .Where(d => d.Scope == scope && d.Budget == budget && string.IsNullOrEmpty(d.Trigger))
+        var candidates = _proto.EnumeratePrototypes<SWDilemmaPrototype>()
+            .Where(d => d.Scope == scope && d.Budget == budget)
             .ToList();
-
-        if (pool.Count == 0)
-            return;
-
-        var roll = budget ? _random.Next(0, 2) : _random.Next(1, 3);
-        var count = Math.Min(roll, pool.Count);
-        if (count == 0)
-            return;
-
-        _random.Shuffle(pool);
 
         var deadline = window == SWDilemmaWindow.Morning ? MorningDeadline : AfternoonDeadline;
         var apply = window == SWDilemmaWindow.Morning ? MorningApply : AfternoonApply;
 
+        // Unconditional pool: 1–2 random picks (budget pools roll 0–1).
+        var pool = candidates.Where(d => d.Conditions.Count == 0).ToList();
+        var count = Math.Min(budget ? _random.Next(0, 2) : _random.Next(1, 3), pool.Count);
+        _random.Shuffle(pool);
         for (var i = 0; i < count; i++)
+            Spawn(pool[i], scope, owner, sectorId, window, deadline, apply);
+
+        // Conditional dilemmas (always non-budget): each one whose thresholds currently hold gets an
+        // independent chance to fire. Meeting the condition only unlocks the possibility.
+        if (budget)
+            return;
+
+        var republicGlobals = scope == SWDilemmaScope.Republic ? _senate.GetRepublicGlobals() : null;
+        foreach (var proto in candidates)
         {
-            _dilemmas.Add(new SWActiveDilemma
-            {
-                Id = _nextId++,
-                DilemmaId = pool[i].ID,
-                Scope = scope,
-                IsBudget = budget,
-                Owner = owner,
-                SectorId = sectorId,
-                Window = window,
-                DeadlineHour = deadline,
-                ApplyHour = apply,
-                Status = SWDilemmaStatus.Pending,
-            });
+            if (proto.Conditions.Count == 0 || HasActive(proto.ID, owner))
+                continue;
+            if (!ConditionsMet(proto, scope, sectorId, republicGlobals))
+                continue;
+            if (_random.Prob(ConditionalChance))
+                Spawn(proto, scope, owner, sectorId, window, deadline, apply);
         }
+    }
+
+    private void Spawn(SWDilemmaPrototype proto, SWDilemmaScope scope, string owner, string? sectorId, SWDilemmaWindow window, int deadline, int apply)
+    {
+        _dilemmas.Add(new SWActiveDilemma
+        {
+            Id = _nextId++,
+            DilemmaId = proto.ID,
+            Scope = scope,
+            IsBudget = proto.Budget,
+            Owner = owner,
+            SectorId = sectorId,
+            Window = window,
+            DeadlineHour = deadline,
+            ApplyHour = apply,
+            Status = SWDilemmaStatus.Pending,
+        });
+    }
+
+    private bool HasActive(string dilemmaId, string owner) =>
+        _dilemmas.Any(d => d.DilemmaId == dilemmaId && d.Owner == owner
+            && d.Status is SWDilemmaStatus.Pending or SWDilemmaStatus.Chosen);
+
+    private bool ConditionsMet(SWDilemmaPrototype proto, SWDilemmaScope scope, string? sectorId, Dictionary<string, float>? republicGlobals)
+    {
+        foreach (var cond in proto.Conditions)
+        {
+            float value;
+            if (scope == SWDilemmaScope.Republic)
+            {
+                if (republicGlobals == null || !republicGlobals.TryGetValue(cond.Stat, out value))
+                    return false;
+            }
+            else if (sectorId == null
+                     || !_senate.SectorGlobals.TryGetValue(sectorId, out var globals)
+                     || !globals.TryGetValue(cond.Stat, out value))
+            {
+                return false;
+            }
+
+            var ok = cond.Comparison == SWDilemmaComparison.Below
+                ? value < cond.Threshold
+                : value > cond.Threshold;
+            if (!ok)
+                return false;
+        }
+
+        return true;
     }
 
     private void ApplyDue()

@@ -2,6 +2,8 @@ using Content.Server.Power.Components;
 using Content.Server.Power.EntitySystems;
 using Content.Shared._SW.Lathe;
 using Content.Shared.Lathe;
+using Content.Shared.UserInterface;
+using Robust.Server.GameObjects;
 using Content.Shared.Stacks;
 using Robust.Shared.Map;
 using Robust.Shared.Physics;
@@ -25,10 +27,36 @@ public sealed class SWLatheSystem : EntitySystem
     [Dependency] private readonly EntityLookupSystem _entityLookupSystem = default!;
     [Dependency] private readonly FixtureSystem _fixturesChangeSystem = default!;
     [Dependency] private readonly SharedPhysicsSystem _physicsSystem = default!;
+    [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
+
     public override void Initialize()
     {
         base.Initialize();
+        SubscribeLocalEvent<SWLatheComponent, BeforeActivatableUIOpenEvent>(OnBeforeUiOpen);
+        SubscribeLocalEvent<SWLatheComponent, SWLatheSelectRecipeMessage>(OnSelectRecipe);
         //SubscribeLocalEvent<SWLatheComponent, StartCollideEvent>(OnStartCollide);
+    }
+
+    private void OnBeforeUiOpen(Entity<SWLatheComponent> ent, ref BeforeActivatableUIOpenEvent args)
+    {
+        UpdateUserInterface(ent);
+    }
+
+    private void OnSelectRecipe(Entity<SWLatheComponent> ent, ref SWLatheSelectRecipeMessage args)
+    {
+        if (string.IsNullOrEmpty(args.Recipe))
+        {
+            ent.Comp.SelectedRecipe = null;
+            UpdateUserInterface(ent);
+            return;
+        }
+
+        var selectedRecipe = args.Recipe;
+        if (!ent.Comp.Recipes.Any(recipe => recipe == selectedRecipe))
+            return;
+
+        ent.Comp.SelectedRecipe = selectedRecipe;
+        UpdateUserInterface(ent);
     }
 
     //private void OnStartCollide(Entity<SWLatheComponent> ent, ref StartCollideEvent args)
@@ -90,6 +118,7 @@ public sealed class SWLatheSystem : EntitySystem
                 if (TryAddMaterial(new Entity<SWLatheComponent>(uid, comp), otherEntity))
                 {
                     Del(otherEntity);
+                    UpdateUserInterface((uid, comp));
                 }
             }
 
@@ -138,6 +167,7 @@ public sealed class SWLatheSystem : EntitySystem
             }
         }
         ent.Comp.CurrentRecipeProducting = null;
+        UpdateUserInterface(ent);
     }
 
     public string? CanUseInAnyRecipe(SWLatheComponent comp, EntityUid material)
@@ -206,12 +236,22 @@ public sealed class SWLatheSystem : EntitySystem
 
         ent.Comp.CurrentRecipeProducting = recipe;
         ent.Comp.ProductionEndTime = _timing.CurTime + TimeSpan.FromSeconds(recipe.ProduceTime);
+        UpdateUserInterface(ent);
         return true;
     }
 
     public SWLatheRecipePrototype? GetRecipeSatisfied(Entity<SWLatheComponent> ent)
     {
         var availableRecipes = GetRecipes(ent.Comp);
+
+        if (ent.Comp.SelectedRecipe != null)
+        {
+            var recipe = availableRecipes.FirstOrDefault(recipe => recipe.ID == ent.Comp.SelectedRecipe);
+            if (recipe != null && IsRecipeSatisfied(ent.Comp.StashedMaterials, recipe))
+                return recipe;
+
+            return null;
+        }
 
         foreach (var recipe in availableRecipes)
         {
@@ -238,5 +278,25 @@ public sealed class SWLatheSystem : EntitySystem
         }
 
         return true;
+    }
+
+    private void UpdateUserInterface(Entity<SWLatheComponent> ent)
+    {
+        var recipes = GetRecipes(ent.Comp)
+            .Select(recipe => new SWLatheRecipeInfo(
+                recipe.ID,
+                new Dictionary<string, int>(recipe.Materials),
+                new Dictionary<string, int>(recipe.Result),
+                recipe.ProduceTime))
+            .ToList();
+
+        var state = new SWLatheBoundUserInterfaceState(
+            recipes,
+            ent.Comp.StashedMaterials.ToDictionary(pair => pair.Key.ToString(), pair => pair.Value),
+            ent.Comp.MaxMaterialAmount,
+            ent.Comp.SelectedRecipe,
+            ent.Comp.CurrentRecipeProducting?.ID);
+
+        _uiSystem.SetUiState(ent.Owner, SWLatheUiKey.Key, state);
     }
 }

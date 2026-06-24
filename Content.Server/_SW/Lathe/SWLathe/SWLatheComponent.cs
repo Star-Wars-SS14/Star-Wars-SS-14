@@ -27,6 +27,9 @@ public sealed partial class SWLatheComponent : Component
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public int MaxMaterialAmount = 100000;
 
+    [DataField, ViewVariables(VVAccess.ReadWrite)]
+    public string? SelectedRecipe;
+
     public Dictionary<EntProtoId, int> StashedMaterials = new Dictionary<EntProtoId, int>();
 
     [ViewVariables(VVAccess.ReadOnly)]

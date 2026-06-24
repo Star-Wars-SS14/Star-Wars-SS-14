@@ -124,6 +124,12 @@
     recipes:
     - SWAdvancedCableSLR
     - SWElectronicsSLR
+  - type: ActivatableUI
+    key: enum.SWLatheUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWLatheUiKey.Key:
+        type: SWLatheBoundUserInterface
 
 - type: entity
   id: SWBlasterLathe
@@ -144,6 +150,12 @@
     - SWBarrelSLR
     - SWBlasterFrameSLR
     - SWT1WeaponSLR
+  - type: ActivatableUI
+    key: enum.SWLatheUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWLatheUiKey.Key:
+        type: SWLatheBoundUserInterface
 
 - type: entity
   id: SWSmeltLathe
@@ -165,6 +177,12 @@
     - SWLantanidAlloySLR
     - SWOreToGoldSLR
     - SWOreToLantanidSLR
+  - type: ActivatableUI
+    key: enum.SWLatheUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWLatheUiKey.Key:
+        type: SWLatheBoundUserInterface
 
 - type: entity
   id: SWDistributorLeftLathe

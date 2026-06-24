@@ -1,0 +1,22 @@
+using Content.Shared._SW._Senate;
+
+namespace Content.Server._SW._Senate.Core;
+
+public enum SWBillStage
+{
+    Voting,
+    Passed,
+    Rejected,
+}
+
+public sealed class SWSenateBill
+{
+    public int Id;
+    public string Name = string.Empty;
+    public string Description = string.Empty;
+    public string Author = string.Empty;
+    public Dictionary<string, float> Effects = new();
+    public Dictionary<string, SWVoteChoice> Votes = new();
+    public SWBillStage Stage = SWBillStage.Voting;
+    public bool AwaitingTiebreak;
+}

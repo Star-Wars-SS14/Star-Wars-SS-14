@@ -7,6 +7,8 @@ using Content.Shared._SW._Senate.Sectors;
 using Robust.Shared.Console;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
+using Content.Server._SW._Senate.Core;
+using Content.Server._SW._Senate.Economy;
 
 namespace Content.Server._SW._Senate.Commands;
 

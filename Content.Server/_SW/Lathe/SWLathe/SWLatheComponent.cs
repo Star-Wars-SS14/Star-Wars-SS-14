@@ -35,5 +35,7 @@ public sealed partial class SWLatheComponent : Component
     [ViewVariables(VVAccess.ReadOnly)]
     public SWLatheRecipePrototype? CurrentRecipeProducting;
 
+    public TimeSpan ProductionStartTime;
+
     public TimeSpan ProductionEndTime;
 }

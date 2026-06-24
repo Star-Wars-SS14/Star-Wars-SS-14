@@ -108,6 +108,7 @@
       tags:
         - Ore
         - SWMaterial
+        - ConstructionMaterial
 
 - type: entity
   id: SWElectronicsLathe

@@ -5,6 +5,7 @@ using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
 using System.Linq;
 
 namespace Content.Client._SW.Lathe.SWLathe.UI;
@@ -13,6 +14,7 @@ namespace Content.Client._SW.Lathe.SWLathe.UI;
 public sealed partial class SWLatheMenu : DefaultWindow
 {
     [Dependency] private readonly IPrototypeManager _prototype = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
 
     public event Action<string?>? OnRecipeSelected;
 
@@ -38,6 +40,42 @@ public sealed partial class SWLatheMenu : DefaultWindow
         CurrentProductionLabel.Text = state.CurrentRecipe == null
             ? Loc.GetString("sw-lathe-menu-current-production-none")
             : GetRecipeDisplayName(state.Recipes.FirstOrDefault(recipe => recipe.Id == state.CurrentRecipe));
+        UpdateProgressDisplay();
+    }
+
+    protected override void FrameUpdate(FrameEventArgs args)
+    {
+        base.FrameUpdate(args);
+        UpdateProgressDisplay();
+    }
+
+    private void UpdateProgressDisplay()
+    {
+        if (_state?.ProductionStartTime == null || _state.ProductionEndTime == null)
+        {
+            ProductionProgress.Value = 0;
+            ProductionTimeLabel.Text = Loc.GetString(
+                "sw-lathe-menu-production-time",
+                ("elapsed", FormatSeconds(0)),
+                ("total", FormatSeconds(0)));
+            return;
+        }
+
+        var start = _state.ProductionStartTime.Value;
+        var end = _state.ProductionEndTime.Value;
+        var total = Math.Max(0, (end - start).TotalSeconds);
+        var elapsed = Math.Clamp((_timing.CurTime - start).TotalSeconds, 0, total);
+
+        ProductionProgress.Value = total <= 0 ? 1 : (float) (elapsed / total);
+        ProductionTimeLabel.Text = Loc.GetString(
+            "sw-lathe-menu-production-time",
+            ("elapsed", FormatSeconds(elapsed)),
+            ("total", FormatSeconds(total)));
+    }
+
+    private double FormatSeconds(double seconds)
+    {
+        return Math.Round(seconds, 3);
     }
 
     private void PopulateModeSelector(SWLatheBoundUserInterfaceState state)

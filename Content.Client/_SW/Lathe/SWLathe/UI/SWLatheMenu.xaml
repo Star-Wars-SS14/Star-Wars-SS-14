@@ -54,6 +54,16 @@
                     <Label
                         Name="CurrentProductionLabel"
                         HorizontalExpand="True" />
+                    <ProgressBar
+                        Name="ProductionProgress"
+                        MinValue="0"
+                        MaxValue="1"
+                        Value="0"
+                        HorizontalExpand="True" />
+                    <Label
+                        Name="ProductionTimeLabel"
+                        HorizontalExpand="True"
+                        HorizontalAlignment="Center" />
                 </BoxContainer>
             </PanelContainer>
             <Label

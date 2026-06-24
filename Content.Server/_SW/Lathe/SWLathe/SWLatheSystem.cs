@@ -235,6 +235,7 @@ public sealed class SWLatheSystem : EntitySystem
         }
 
         ent.Comp.CurrentRecipeProducting = recipe;
+        ent.Comp.ProductionStartTime = _timing.CurTime;
         ent.Comp.ProductionEndTime = _timing.CurTime + TimeSpan.FromSeconds(recipe.ProduceTime);
         UpdateUserInterface(ent);
         return true;
@@ -295,7 +296,9 @@ public sealed class SWLatheSystem : EntitySystem
             ent.Comp.StashedMaterials.ToDictionary(pair => pair.Key.ToString(), pair => pair.Value),
             ent.Comp.MaxMaterialAmount,
             ent.Comp.SelectedRecipe,
-            ent.Comp.CurrentRecipeProducting?.ID);
+            ent.Comp.CurrentRecipeProducting?.ID,
+            ent.Comp.CurrentRecipeProducting == null ? null : ent.Comp.ProductionStartTime,
+            ent.Comp.CurrentRecipeProducting == null ? null : ent.Comp.ProductionEndTime);
 
         _uiSystem.SetUiState(ent.Owner, SWLatheUiKey.Key, state);
     }

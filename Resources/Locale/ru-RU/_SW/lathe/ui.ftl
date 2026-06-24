@@ -4,6 +4,7 @@ sw-lathe-menu-mode-title = Режим производства
 sw-lathe-menu-mode-auto = Авто
 sw-lathe-menu-current-production-title = Текущее производство
 sw-lathe-menu-current-production-none = Ничего
+sw-lathe-menu-production-time = { $elapsed } / { $total } с
 sw-lathe-menu-materials-title = Загруженные ресурсы
 sw-lathe-menu-no-materials = Ресурсы не загружены.
 sw-lathe-menu-material-entry = { $material }: { $amount } / { $limit }

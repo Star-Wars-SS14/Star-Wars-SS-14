@@ -7,6 +7,7 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Maths;
+using Robust.Shared.Utility;
 
 namespace Content.Client._SW._Senate.Consoles.Work;
 
@@ -23,6 +24,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     private string _budgetSignature = string.Empty;
     private readonly HashSet<int> _expandedDilemmas = new();
     private readonly HashSet<int> _expandedCrises = new();
+    private readonly HashSet<int> _expandedParties = new();
     private bool _draftBuilt;
     private int _draftBudget;
 
@@ -45,6 +47,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             (NavSchedule, ScheduleTab),
             (NavDilemmas, DilemmaTab),
             (NavCrises, CrisesTab),
+            (NavParties, PartiesTab),
             (NavAmbitions, AmbitionsTab),
             (NavBudget, BudgetTab),
             (NavAnnounce, AnnounceTab),
@@ -63,9 +66,22 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         DilemmaModePrograms.OnPressed += _ => ShowDilemmaMode(2);
         DilemmaModeSummary.OnPressed += _ => ShowDilemmaMode(3);
 
+        PartiesModeAll.OnPressed += _ => ShowPartiesMode(false);
+        PartiesModeMine.OnPressed += _ => ShowPartiesMode(true);
+        CreatePartyButton.OnPressed += _ =>
+        {
+            if (!string.IsNullOrWhiteSpace(PartyNameEdit.Text))
+            {
+                _owner.CreateParty(PartyNameEdit.Text, PartyDescEdit.Text);
+                PartyNameEdit.Text = string.Empty;
+                PartyDescEdit.Text = string.Empty;
+            }
+        };
+
         ShowSection(OfficeTab);
         ShowDraftMode(true);
         ShowDilemmaMode(0);
+        ShowPartiesMode(false);
 
         AnnounceButton.OnPressed += _ =>
         {
@@ -132,6 +148,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         NavSchedule.Visible = state.IsSenateCard && state.InOffice;
         NavDilemmas.Visible = state.CanDilemmas && state.InOffice;
         NavCrises.Visible = state.IsSenateCard;
+        NavParties.Visible = state.IsSenateCard;
         NavAmbitions.Visible = state.CanAmbitions && state.InOffice;
         NavBudget.Visible = state.IsChancellorView;
         NavAnnounce.Visible = isLeader && state.InOffice;
@@ -159,7 +176,207 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BuildPrograms(state);
         BuildAmbitions(state);
         BuildCrises(state);
+        BuildParties(state);
         BuildBudgetSection(state);
+    }
+
+    private void ShowPartiesMode(bool mine)
+    {
+        AllPartiesPanel.Visible = !mine;
+        MyPartyPanel.Visible = mine;
+        PartiesModeAll.Disabled = !mine;
+        PartiesModeMine.Disabled = mine;
+    }
+
+    private void BuildParties(SWSenateWorkConsoleState state)
+    {
+        AllPartiesList.RemoveAllChildren();
+        if (state.Parties.Count == 0)
+        {
+            AllPartiesList.AddChild(new Label { Text = "Партий пока нет.", FontColorOverride = Color.Gray });
+        }
+        else
+        {
+            foreach (var party in state.Parties)
+                AllPartiesList.AddChild(MakePartyCard(party, false));
+        }
+
+        var mine = state.Parties.FirstOrDefault(p => p.IsMine);
+        CreatePartyBox.Visible = state.CanParties && mine == null;
+
+        MyPartyList.RemoveAllChildren();
+        if (mine != null)
+        {
+            MyPartyList.AddChild(MakePartyCard(mine, true));
+        }
+        else if (!state.CanParties)
+        {
+            MyPartyList.AddChild(new Label { Text = "Партии доступны сенаторам с закреплённым сектором.", FontColorOverride = Color.Gray });
+        }
+        else
+        {
+            MyPartyList.AddChild(new Label { Text = "Вы не состоите в партии. Создайте свою или вступите в существующую.", FontColorOverride = Color.Gray });
+        }
+    }
+
+    private Control MakePartyCard(SWPartyEntry party, bool manage)
+    {
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, Margin = new Thickness(0, 2, 0, 10) };
+
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
+        head.AddChild(MakeTitle(party.Name, party.Color));
+
+        var expanded = _expandedParties.Contains(party.Id);
+        var details = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, Margin = new Thickness(0, 4, 0, 0), Visible = expanded || manage };
+
+        if (!manage)
+        {
+            var id = party.Id;
+            var toggle = new Button { Text = expanded ? "Скрыть" : "Подробнее", Margin = new Thickness(8, 0, 0, 0) };
+            toggle.OnPressed += _ =>
+            {
+                if (!_expandedParties.Add(id))
+                    _expandedParties.Remove(id);
+                var now = _expandedParties.Contains(id);
+                details.Visible = now;
+                toggle.Text = now ? "Скрыть" : "Подробнее";
+            };
+            head.AddChild(toggle);
+        }
+        box.AddChild(head);
+
+        box.AddChild(new Label
+        {
+            Text = $"{party.StatusLabel}  ({party.MemberCount})",
+            FontColorOverride = party.Formed ? Color.LightGreen : Color.Goldenrod,
+        });
+        box.AddChild(new Label { Text = $"Лидер: {party.LeaderName}", FontColorOverride = Color.Gray });
+
+        if (!string.IsNullOrWhiteSpace(party.GraceWarning))
+            details.AddChild(MakeWrap(party.GraceWarning, Color.IndianRed));
+
+        if (!string.IsNullOrWhiteSpace(party.Description))
+            details.AddChild(MakeWrap(party.Description));
+
+        details.AddChild(new Label { Text = "Члены партии:", StyleClasses = { "LabelKeyText" }, Margin = new Thickness(0, 4, 0, 0) });
+        foreach (var member in party.Members)
+        {
+            var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 1, 0, 1) };
+            row.AddChild(new Label
+            {
+                Text = member.IsLeader ? $"{member.Holder} — {member.SectorName} (лидер)" : $"{member.Holder} — {member.SectorName}",
+                FontColorOverride = member.Color,
+                HorizontalExpand = true,
+            });
+
+            if (manage && party.CanManageMembers && !member.IsLeader)
+            {
+                var id = party.Id;
+                var sectorId = member.SectorId;
+                var evict = new Button { Text = "Исключить" };
+                evict.OnPressed += _ => _owner.InitiateEvictVote(id, sectorId);
+                row.AddChild(evict);
+            }
+
+            details.AddChild(row);
+        }
+
+        if (!manage)
+        {
+            if (party.JoinPending)
+            {
+                var id = party.Id;
+                var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
+                row.AddChild(MakeWrap("Заявка подана, ожидает лидера.", Color.Goldenrod));
+                var cancel = new Button { Text = "Отозвать" };
+                cancel.OnPressed += _ => _owner.CancelJoinParty(id);
+                row.AddChild(cancel);
+                details.AddChild(row);
+            }
+            else if (party.CanRequestJoin)
+            {
+                var id = party.Id;
+                var join = new Button { Text = "Подать заявку на вступление", HorizontalAlignment = Control.HAlignment.Left, Margin = new Thickness(0, 4, 0, 0) };
+                join.OnPressed += _ => _owner.RequestJoinParty(id);
+                details.AddChild(join);
+            }
+        }
+        else
+        {
+            BuildPartyManagement(details, party);
+        }
+
+        box.AddChild(details);
+        return box;
+    }
+
+    private void BuildPartyManagement(BoxContainer details, SWPartyEntry party)
+    {
+        var id = party.Id;
+
+        if (party.ViewerIsLeader && party.Pending.Count > 0)
+        {
+            details.AddChild(new Label { Text = "Заявки на вступление:", StyleClasses = { "LabelKeyText" }, Margin = new Thickness(0, 6, 0, 0) });
+            foreach (var pending in party.Pending)
+            {
+                var sectorId = pending.SectorId;
+                var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 1, 0, 1) };
+                row.AddChild(new Label { Text = $"{pending.Holder} — {pending.SectorName}", HorizontalExpand = true });
+                var accept = new Button { Text = "Принять" };
+                accept.OnPressed += _ => _owner.ConfirmJoinParty(id, sectorId);
+                var reject = new Button { Text = "Отклонить", Margin = new Thickness(6, 0, 0, 0) };
+                reject.OnPressed += _ => _owner.RejectJoinParty(id, sectorId);
+                row.AddChild(accept);
+                row.AddChild(reject);
+                details.AddChild(row);
+            }
+        }
+
+        if (party.VoteActive)
+        {
+            var title = party.VoteIsEvict
+                ? $"Голосование за исключение: {party.VoteTargetName}"
+                : $"Голосование за нового лидера: {party.VoteTargetName}";
+            details.AddChild(MakeWrap(title, Color.Goldenrod));
+            details.AddChild(new Label { Text = $"За: {party.VoteYes}    Против: {party.VoteNo}    Нужно: {party.VoteNeeded}", FontColorOverride = Color.Gray });
+
+            if (party.ViewerCanCastVote)
+            {
+                var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 2, 0, 0) };
+                var forBtn = new Button { Text = "За" };
+                forBtn.OnPressed += _ => _owner.CastLeaderVote(id, true);
+                var againstBtn = new Button { Text = "Против", Margin = new Thickness(6, 0, 0, 0) };
+                againstBtn.OnPressed += _ => _owner.CastLeaderVote(id, false);
+                row.AddChild(forBtn);
+                row.AddChild(againstBtn);
+                details.AddChild(row);
+            }
+            else if (party.ViewerVoted)
+            {
+                details.AddChild(new Label { Text = "Ваш голос учтён.", FontColorOverride = Color.Gray });
+            }
+        }
+        else if (party.ViewerCanInitiateVote)
+        {
+            var vote = new Button { Text = "Выдвинуть себя в лидеры", HorizontalAlignment = Control.HAlignment.Left, Margin = new Thickness(0, 6, 0, 0) };
+            vote.OnPressed += _ => _owner.InitiateLeaderVote(id);
+            details.AddChild(vote);
+        }
+
+        var actions = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 8, 0, 0) };
+        if (party.ViewerCanLeave)
+        {
+            var leave = new Button { Text = "Выйти из партии" };
+            leave.OnPressed += _ => _owner.LeaveParty(id);
+            actions.AddChild(leave);
+        }
+        if (party.ViewerCanDisband)
+        {
+            var disband = new Button { Text = "Распустить партию", Margin = new Thickness(6, 0, 0, 0) };
+            disband.OnPressed += _ => _owner.DisbandParty(id);
+            actions.AddChild(disband);
+        }
+        details.AddChild(actions);
     }
 
     private void BuildCrises(SWSenateWorkConsoleState state)
@@ -182,8 +399,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         var sevColor = crisis.Severity >= 70f ? Color.IndianRed : crisis.Severity >= 40f ? Color.Goldenrod : Color.LightGreen;
 
         var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
-        head.AddChild(new Label { Text = $"{crisis.Name} [{crisis.TypeLabel}]", StyleClasses = { "LabelKeyText" }, HorizontalExpand = true });
-        head.AddChild(new Label { Text = $"{crisis.Severity:0}/100", FontColorOverride = sevColor });
+        head.AddChild(MakeTitle($"{crisis.Name} [{crisis.TypeLabel}]"));
+        head.AddChild(new Label { Text = $"{crisis.Severity:0}/100", FontColorOverride = sevColor, Margin = new Thickness(6, 0, 0, 0) });
 
         var expanded = _expandedCrises.Contains(crisis.Id);
         var details = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, Margin = new Thickness(0, 4, 0, 0), Visible = expanded };
@@ -212,16 +429,12 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         });
 
         if (!string.IsNullOrWhiteSpace(crisis.Description))
-        {
-            var desc = new RichTextLabel { Margin = new Thickness(0, 2, 0, 2) };
-            desc.SetMessage(crisis.Description);
-            details.AddChild(desc);
-        }
+            details.AddChild(MakeWrap(crisis.Description));
 
-        details.AddChild(new Label { Text = $"Очаг: {crisis.AffectedLabel}", FontColorOverride = Color.Gray });
-        details.AddChild(new Label { Text = crisis.SeverityLabel, FontColorOverride = sevColor });
-        details.AddChild(new Label { Text = crisis.EscalationThreat, FontColorOverride = Color.Goldenrod });
-        details.AddChild(new Label { Text = crisis.ExitProgress, FontColorOverride = Color.Gray });
+        details.AddChild(MakeWrap($"Очаг: {crisis.AffectedLabel}", Color.Gray));
+        details.AddChild(MakeWrap(crisis.SeverityLabel, sevColor));
+        details.AddChild(MakeWrap(crisis.EscalationThreat, Color.Goldenrod));
+        details.AddChild(MakeWrap(crisis.ExitProgress, Color.Gray));
 
         if (crisis.Impact.Count > 0)
         {
@@ -250,13 +463,13 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                 details.AddChild(button);
 
                 if (!string.IsNullOrWhiteSpace(solution.Description))
-                    details.AddChild(new Label { Text = solution.Description, FontColorOverride = Color.Gray, Margin = new Thickness(8, 0, 0, 0) });
+                    details.AddChild(MakeWrap(solution.Description, Color.Gray));
                 if (solution.Effects.Count > 0)
                     details.AddChild(MakeEffectsRow(solution.Effects));
             }
 
             if (!crisis.CanResolve)
-                details.AddChild(new Label { Text = "Меры доступны сенатору пострадавшего сектора.", FontColorOverride = Color.Gray, Margin = new Thickness(0, 2, 0, 0) });
+                details.AddChild(MakeWrap("Меры доступны сенатору пострадавшего сектора.", Color.Gray));
         }
 
         if (crisis.CanAid)
@@ -291,20 +504,20 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                 details.AddChild(button);
 
                 if (!string.IsNullOrWhiteSpace(law.Description))
-                    details.AddChild(new Label { Text = law.Description, FontColorOverride = Color.Gray, Margin = new Thickness(8, 0, 0, 0) });
+                    details.AddChild(MakeWrap(law.Description, Color.Gray));
                 if (law.Effects.Count > 0)
                     details.AddChild(MakeEffectsRow(law.Effects));
             }
 
             if (!crisis.CanPropose)
-                details.AddChild(new Label { Text = "Внести может сенатор пострадавшего сектора или Канцлер.", FontColorOverride = Color.Gray, Margin = new Thickness(0, 2, 0, 0) });
+                details.AddChild(MakeWrap("Внести может сенатор пострадавшего сектора или Канцлер.", Color.Gray));
         }
 
         if (crisis.Log.Count > 0)
         {
             details.AddChild(new Label { Text = "Хронология:", StyleClasses = { "LabelKeyText" }, Margin = new Thickness(0, 4, 0, 0) });
             foreach (var line in crisis.Log)
-                details.AddChild(new Label { Text = $"  {line}", FontColorOverride = Color.DarkGray });
+                details.AddChild(MakeWrap(line, Color.DarkGray));
         }
 
         box.AddChild(details);
@@ -329,23 +542,20 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             };
 
             var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
-            head.AddChild(new Label { Text = ambition.Name, StyleClasses = { "LabelKeyText" }, HorizontalExpand = true });
+            head.AddChild(MakeTitle(ambition.Name));
             head.AddChild(new Label
             {
                 Text = ambition.Met ? "выполнено" : "не выполнено",
                 FontColorOverride = ambition.Met ? Color.LightGreen : Color.Gray,
+                Margin = new Thickness(6, 0, 0, 0),
             });
             box.AddChild(head);
 
             if (!string.IsNullOrWhiteSpace(ambition.Description))
-            {
-                var desc = new RichTextLabel { Margin = new Thickness(0, 2, 0, 2) };
-                desc.SetMessage(ambition.Description);
-                box.AddChild(desc);
-            }
+                box.AddChild(MakeWrap(ambition.Description));
 
             if (!string.IsNullOrWhiteSpace(ambition.Progress))
-                box.AddChild(new Label { Text = ambition.Progress, FontColorOverride = ambition.Met ? Color.LightGreen : Color.Goldenrod });
+                box.AddChild(MakeWrap(ambition.Progress, ambition.Met ? Color.LightGreen : Color.Goldenrod));
 
             AmbitionsList.AddChild(box);
         }
@@ -377,17 +587,13 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         };
 
         var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
-        head.AddChild(new Label { Text = program.Name, StyleClasses = { "LabelKeyText" }, HorizontalExpand = true });
+        head.AddChild(MakeTitle(program.Name));
         if (!string.IsNullOrWhiteSpace(program.Category))
-            head.AddChild(new Label { Text = program.Category, FontColorOverride = Color.Gray });
+            head.AddChild(new Label { Text = program.Category, FontColorOverride = Color.Gray, Margin = new Thickness(6, 0, 0, 0) });
         box.AddChild(head);
 
         if (!string.IsNullOrWhiteSpace(program.Description))
-        {
-            var desc = new RichTextLabel { Margin = new Thickness(0, 2, 0, 4) };
-            desc.SetMessage(program.Description);
-            box.AddChild(desc);
-        }
+            box.AddChild(MakeWrap(program.Description));
 
         box.AddChild(MakeEffectsRow(program.Effects));
 
@@ -531,16 +737,12 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         };
 
         var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
-        head.AddChild(new Label { Text = dilemma.Name, StyleClasses = { "LabelKeyText" }, HorizontalExpand = true });
-        head.AddChild(new Label { Text = dilemma.TimeLabel, FontColorOverride = Color.Goldenrod });
+        head.AddChild(MakeTitle(dilemma.Name));
+        head.AddChild(new Label { Text = dilemma.TimeLabel, FontColorOverride = Color.Goldenrod, Margin = new Thickness(6, 0, 0, 0) });
         box.AddChild(head);
 
         if (!string.IsNullOrWhiteSpace(dilemma.Description))
-        {
-            var desc = new RichTextLabel { Margin = new Thickness(0, 2, 0, 4) };
-            desc.SetMessage(dilemma.Description);
-            box.AddChild(desc);
-        }
+            box.AddChild(MakeWrap(dilemma.Description));
 
         for (var i = 0; i < dilemma.Options.Count; i++)
         {
@@ -581,19 +783,32 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
         if (dilemma.ChosenOption < 0 && (dilemma.FailEffects.Count > 0 || !string.IsNullOrWhiteSpace(dilemma.FailText)))
         {
-            box.AddChild(new Label
-            {
-                Text = "Срочно! При отсутствии решения наступит провал:",
-                FontColorOverride = Color.IndianRed,
-                Margin = new Thickness(0, 4, 0, 0),
-            });
+            box.AddChild(MakeWrap("Срочно! При отсутствии решения наступит провал:", Color.IndianRed));
             if (!string.IsNullOrWhiteSpace(dilemma.FailText))
-                box.AddChild(new Label { Text = dilemma.FailText, FontColorOverride = Color.IndianRed, Margin = new Thickness(8, 0, 0, 0) });
+                box.AddChild(MakeWrap(dilemma.FailText, Color.IndianRed));
             if (dilemma.FailEffects.Count > 0)
                 box.AddChild(MakeEffectsRow(dilemma.FailEffects));
         }
 
         return box;
+    }
+
+    // Wrapping helpers: plain Labels never word-wrap, so long sentences run off the edge and shove
+    // sibling buttons out of view. RichTextLabel wraps to the available width, keeping rows tidy.
+    private static RichTextLabel MakeWrap(string text, Color? color = null)
+    {
+        var label = new RichTextLabel { HorizontalExpand = true };
+        var escaped = FormattedMessage.EscapeText(text);
+        label.SetMessage(color is { } c ? $"[color={c.ToHex()}]{escaped}[/color]" : escaped);
+        return label;
+    }
+
+    private static RichTextLabel MakeTitle(string text, Color? color = null)
+    {
+        var label = new RichTextLabel { HorizontalExpand = true };
+        var escaped = FormattedMessage.EscapeText(text);
+        label.SetMessage($"[bold][color={(color ?? Color.White).ToHex()}]{escaped}[/color][/bold]");
+        return label;
     }
 
     private static Control MakeEffectsRow(List<SWBillEffectEntry> effects)
@@ -617,13 +832,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, Margin = new Thickness(0, 1, 0, 2) };
 
         var header = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
-        header.AddChild(new Label
-        {
-            Text = $"{dilemma.OwnerLabel}: {dilemma.Name}",
-            FontColorOverride = dilemma.IsRepublic ? Color.Gold : Color.White,
-            HorizontalExpand = true,
-        });
-        header.AddChild(new Label { Text = dilemma.Status, FontColorOverride = Color.Gray, Margin = new Thickness(0, 0, 8, 0) });
+        header.AddChild(MakeTitle($"{dilemma.OwnerLabel}: {dilemma.Name}", dilemma.IsRepublic ? Color.Gold : Color.White));
+        header.AddChild(new Label { Text = dilemma.Status, FontColorOverride = Color.Gray, Margin = new Thickness(6, 0, 8, 0) });
 
         var expanded = _expandedDilemmas.Contains(dilemma.Id);
         var details = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, Margin = new Thickness(12, 2, 0, 6), Visible = expanded };
@@ -651,19 +861,16 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         for (var i = 0; i < dilemma.Options.Count; i++)
         {
             var option = dilemma.Options[i];
-            details.AddChild(new Label
-            {
-                Text = dilemma.ChosenOption == i ? $"{option.Label} (выбрано)" : option.Label,
-                FontColorOverride = dilemma.ChosenOption == i ? Color.LightGreen : Color.LightGray,
-                Margin = new Thickness(0, 1, 0, 0),
-            });
+            details.AddChild(MakeWrap(
+                dilemma.ChosenOption == i ? $"{option.Label} (выбрано)" : option.Label,
+                dilemma.ChosenOption == i ? Color.LightGreen : Color.LightGray));
             details.AddChild(MakeEffectsRow(option.Effects));
         }
 
         if (dilemma.FailEffects.Count > 0 || !string.IsNullOrWhiteSpace(dilemma.FailText))
         {
             var failHeader = string.IsNullOrWhiteSpace(dilemma.FailText) ? "При провале:" : $"При провале: {dilemma.FailText}";
-            details.AddChild(new Label { Text = failHeader, FontColorOverride = Color.IndianRed, Margin = new Thickness(0, 2, 0, 0) });
+            details.AddChild(MakeWrap(failHeader, Color.IndianRed));
             if (dilemma.FailEffects.Count > 0)
                 details.AddChild(MakeEffectsRow(dilemma.FailEffects));
         }

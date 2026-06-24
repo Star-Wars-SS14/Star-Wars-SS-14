@@ -115,6 +115,56 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateAnnounceMessage(text));
     }
 
+    public void CreateParty(string name, string description)
+    {
+        SendMessage(new SWSenateCreatePartyMessage(name, description));
+    }
+
+    public void RequestJoinParty(int partyId)
+    {
+        SendMessage(new SWSenateRequestJoinPartyMessage(partyId));
+    }
+
+    public void CancelJoinParty(int partyId)
+    {
+        SendMessage(new SWSenateCancelJoinPartyMessage(partyId));
+    }
+
+    public void ConfirmJoinParty(int partyId, string sectorId)
+    {
+        SendMessage(new SWSenateConfirmJoinPartyMessage(partyId, sectorId));
+    }
+
+    public void RejectJoinParty(int partyId, string sectorId)
+    {
+        SendMessage(new SWSenateRejectJoinPartyMessage(partyId, sectorId));
+    }
+
+    public void LeaveParty(int partyId)
+    {
+        SendMessage(new SWSenateLeavePartyMessage(partyId));
+    }
+
+    public void DisbandParty(int partyId)
+    {
+        SendMessage(new SWSenateDisbandPartyMessage(partyId));
+    }
+
+    public void InitiateLeaderVote(int partyId)
+    {
+        SendMessage(new SWSenateInitiateLeaderVoteMessage(partyId));
+    }
+
+    public void InitiateEvictVote(int partyId, string sectorId)
+    {
+        SendMessage(new SWSenateInitiateEvictVoteMessage(partyId, sectorId));
+    }
+
+    public void CastLeaderVote(int partyId, bool support)
+    {
+        SendMessage(new SWSenateCastLeaderVoteMessage(partyId, support));
+    }
+
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);

@@ -77,6 +77,15 @@ sw-senate-floor-speaker-off = Ваша трибуна выключена.
 sw-senate-floor-granted-announce = Слово предоставлено: {$name}.
 sw-senate-floor-queue-removed = Сенатор убран из очереди.
 
+sw-senate-party-created = Партия создана и набирает представителей.
+sw-senate-party-failed = Действие невозможно.
+sw-senate-party-join-requested = Заявка на вступление отправлена лидеру.
+sw-senate-party-member-added = Новый член принят в партию.
+sw-senate-party-left = Вы вышли из партии.
+sw-senate-party-disbanded = Партия распущена.
+sw-senate-party-vote-started = Запущено голосование за смену лидера.
+sw-senate-party-evict-started = Запущено голосование за исключение члена.
+
 sw-senate-dilemma-resolved = Решение по дилемме принято.
 sw-senate-budget-locked = Бюджет распределён и зафиксирован на день.
 sw-senate-program-applied = Программа профинансирована и запущена в секторе.

@@ -12,6 +12,7 @@
             <Button Name="NavSchedule" Text="Расписание" Margin="0 0 0 2" />
             <Button Name="NavDilemmas" Text="Дилеммы" Margin="0 0 0 2" />
             <Button Name="NavCrises" Text="Кризисы" Margin="0 0 0 2" />
+            <Button Name="NavParties" Text="Партии" Margin="0 0 0 2" />
             <Button Name="NavAmbitions" Text="Амбиции" Margin="0 0 0 2" />
             <Button Name="NavBudget" Text="Бюджет" Margin="0 0 0 2" />
             <Button Name="NavAnnounce" Text="Объявление" Margin="0 0 0 2" />
@@ -78,6 +79,26 @@
                 <ScrollContainer HorizontalExpand="True" VerticalExpand="True">
                     <BoxContainer Name="CrisesList" Orientation="Vertical" />
                 </ScrollContainer>
+            </BoxContainer>
+            <BoxContainer Name="PartiesTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
+                <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
+                    <Button Name="PartiesModeAll" Text="Все партии" />
+                    <Button Name="PartiesModeMine" Text="Моя партия" Margin="6 0 0 0" />
+                </BoxContainer>
+                <ScrollContainer Name="AllPartiesPanel" HorizontalExpand="True" VerticalExpand="True">
+                    <BoxContainer Name="AllPartiesList" Orientation="Vertical" />
+                </ScrollContainer>
+                <BoxContainer Name="MyPartyPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                    <BoxContainer Name="CreatePartyBox" Orientation="Vertical" Margin="0 0 0 8">
+                        <Label Text="Создать партию" StyleClasses="LabelKeyText" />
+                        <LineEdit Name="PartyNameEdit" PlaceHolder="Название партии..." Margin="0 2 0 4" />
+                        <LineEdit Name="PartyDescEdit" PlaceHolder="Описание..." Margin="0 0 0 4" />
+                        <Button Name="CreatePartyButton" Text="Создать партию" HorizontalAlignment="Left" />
+                    </BoxContainer>
+                    <ScrollContainer HorizontalExpand="True" VerticalExpand="True">
+                        <BoxContainer Name="MyPartyList" Orientation="Vertical" />
+                    </ScrollContainer>
+                </BoxContainer>
             </BoxContainer>
             <BoxContainer Name="AmbitionsTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
                 <Label Text="Тайные амбиции (известны только вам)" StyleClasses="LabelKeyText" Margin="0 0 0 6" />

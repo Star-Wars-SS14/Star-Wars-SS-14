@@ -21,6 +21,7 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateFloorSystem _floor = default!;
+    [Dependency] private readonly SWSenatePartySystem _party = default!;
 
     private const float UpdateInterval = 3f;
     private float _accumulator;
@@ -266,14 +267,22 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
                 if (!_proto.TryIndex<SWSectorPrototype>(sectorId, out var sectorProto))
                     continue;
 
-                state.SectorVotes.Add(new SWSectorVoteEntry
+                var voteEntry = new SWSectorVoteEntry
                 {
                     Name = sectorProto.Name,
                     Color = sectorProto.Color,
                     VoteLabel = bill.Votes.TryGetValue(sectorId, out var choice)
                         ? Loc.GetString(VoteLoc(choice))
                         : Loc.GetString("sw-senate-vote-none"),
-                });
+                };
+
+                if (_party.GetBlocTag(sectorId) is { } bloc)
+                {
+                    voteEntry.PartyTag = bloc.Name;
+                    voteEntry.PartyColor = bloc.Color;
+                }
+
+                state.SectorVotes.Add(voteEntry);
             }
 
             state.SectorVotes.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));

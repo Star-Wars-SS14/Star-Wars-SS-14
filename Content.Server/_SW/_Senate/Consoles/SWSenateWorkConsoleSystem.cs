@@ -31,6 +31,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWSenateProgramSystem _program = default!;
     [Dependency] private readonly SWSenateAmbitionSystem _ambition = default!;
     [Dependency] private readonly SWSenateCrisisSystem _crisis = default!;
+    [Dependency] private readonly SWSenatePartySystem _party = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
     private const float UpdateInterval = 3f;
@@ -60,6 +61,143 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateConfirmSessionMessage>(OnConfirmSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectSessionMessage>(OnRejectSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAnnounceMessage>(OnAnnounce);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateCreatePartyMessage>(OnCreateParty);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRequestJoinPartyMessage>(OnRequestJoinParty);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateCancelJoinPartyMessage>(OnCancelJoinParty);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateConfirmJoinPartyMessage>(OnConfirmJoinParty);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectJoinPartyMessage>(OnRejectJoinParty);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateLeavePartyMessage>(OnLeaveParty);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateDisbandPartyMessage>(OnDisbandParty);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateInitiateLeaderVoteMessage>(OnInitiateLeaderVote);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateInitiateEvictVoteMessage>(OnInitiateEvictVote);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateCastLeaderVoteMessage>(OnCastLeaderVote);
+    }
+
+    private void OnInitiateEvictVote(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateInitiateEvictVoteMessage args)
+    {
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        if (_party.InitiateEvict(sectorId, args.PartyId, args.SectorId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-evict-started"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnCreateParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateCreatePartyMessage args)
+    {
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-senator-hint"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_party.CreateParty(sectorId, args.Name, args.Description))
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-created"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRequestJoinParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateRequestJoinPartyMessage args)
+    {
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        if (_party.RequestJoin(sectorId, args.PartyId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-join-requested"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnCancelJoinParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateCancelJoinPartyMessage args)
+    {
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        _party.CancelJoin(sectorId, args.PartyId);
+        UpdateUi(ent);
+    }
+
+    private void OnConfirmJoinParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateConfirmJoinPartyMessage args)
+    {
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        if (_party.ConfirmJoin(sectorId, args.PartyId, args.SectorId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-member-added"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRejectJoinParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateRejectJoinPartyMessage args)
+    {
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        _party.RejectJoin(sectorId, args.PartyId, args.SectorId);
+        UpdateUi(ent);
+    }
+
+    private void OnLeaveParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateLeavePartyMessage args)
+    {
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        if (_party.Leave(sectorId, args.PartyId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-left"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnDisbandParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateDisbandPartyMessage args)
+    {
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        if (_party.Disband(sectorId, args.PartyId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-disbanded"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnInitiateLeaderVote(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateInitiateLeaderVoteMessage args)
+    {
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        if (_party.InitiateVote(sectorId, args.PartyId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-vote-started"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnCastLeaderVote(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateCastLeaderVoteMessage args)
+    {
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        _party.CastVote(sectorId, args.PartyId, args.Support);
+        UpdateUi(ent);
     }
 
     private void OnAnnounce(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateAnnounceMessage args)
@@ -586,6 +724,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (dilemmaOwner != null)
             state.Ambitions = _ambition.BuildAmbitions(dilemmaOwner);
         state.Crises = _crisis.BuildCrises(programOwner, ChancellorInOffice(ent));
+        state.CanParties = programOwner != null;
+        state.Parties = _party.BuildParties(programOwner);
+        state.MyPartyId = _party.GetPartyIdOf(programOwner);
         state.DraftBudget = ent.Comp.DraftBudget;
         state.GameTime = _time.TimeString();
         state.Schedule = _senate.BuildScheduleRows();

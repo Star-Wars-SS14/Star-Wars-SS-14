@@ -185,7 +185,9 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
         {
             var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 1, 0, 1) };
             row.AddChild(new Label { Text = sector.Name, FontColorOverride = sector.Color, MinWidth = 200 });
-            row.AddChild(new Label { Text = sector.VoteLabel });
+            row.AddChild(new Label { Text = sector.VoteLabel, MinWidth = 120 });
+            if (!string.IsNullOrEmpty(sector.PartyTag))
+                row.AddChild(new Label { Text = $"[{sector.PartyTag}]", FontColorOverride = sector.PartyColor });
             SectorVotes.AddChild(row);
         }
     }

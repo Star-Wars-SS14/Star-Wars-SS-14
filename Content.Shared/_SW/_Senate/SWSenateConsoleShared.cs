@@ -183,6 +183,179 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool CanAmbitions;
     public List<SWAmbitionEntry> Ambitions = new();
     public List<SWCrisisEntry> Crises = new();
+    public bool CanParties;
+    public int MyPartyId = -1;
+    public List<SWPartyEntry> Parties = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPartyMemberEntry
+{
+    public string SectorId = string.Empty;
+    public string SectorName = string.Empty;
+    public string Holder = string.Empty;
+    public Color Color;
+    public bool IsLeader;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPartyPendingEntry
+{
+    public string SectorId = string.Empty;
+    public string SectorName = string.Empty;
+    public string Holder = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPartyEntry
+{
+    public int Id;
+    public string Name = string.Empty;
+    public string Description = string.Empty;
+    public Color Color;
+    public bool Formed;
+    public string StatusLabel = string.Empty;
+    public string GraceWarning = string.Empty;
+    public string LeaderName = string.Empty;
+    public int MemberCount;
+    public List<SWPartyMemberEntry> Members = new();
+    public List<SWPartyPendingEntry> Pending = new();
+    public bool IsMine;
+    public bool ViewerIsLeader;
+    public bool CanRequestJoin;
+    public bool JoinPending;
+    public bool ViewerCanLeave;
+    public bool ViewerCanDisband;
+    public bool ViewerCanInitiateVote;
+    public bool CanManageMembers;
+    public bool VoteActive;
+    public bool VoteIsEvict;
+    public string VoteTargetName = string.Empty;
+    public int VoteYes;
+    public int VoteNo;
+    public int VoteNeeded;
+    public bool ViewerCanCastVote;
+    public bool ViewerVoted;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateCreatePartyMessage : BoundUserInterfaceMessage
+{
+    public string Name;
+    public string Description;
+
+    public SWSenateCreatePartyMessage(string name, string description)
+    {
+        Name = name;
+        Description = description;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateRequestJoinPartyMessage : BoundUserInterfaceMessage
+{
+    public int PartyId;
+
+    public SWSenateRequestJoinPartyMessage(int partyId)
+    {
+        PartyId = partyId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateCancelJoinPartyMessage : BoundUserInterfaceMessage
+{
+    public int PartyId;
+
+    public SWSenateCancelJoinPartyMessage(int partyId)
+    {
+        PartyId = partyId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateConfirmJoinPartyMessage : BoundUserInterfaceMessage
+{
+    public int PartyId;
+    public string SectorId;
+
+    public SWSenateConfirmJoinPartyMessage(int partyId, string sectorId)
+    {
+        PartyId = partyId;
+        SectorId = sectorId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateRejectJoinPartyMessage : BoundUserInterfaceMessage
+{
+    public int PartyId;
+    public string SectorId;
+
+    public SWSenateRejectJoinPartyMessage(int partyId, string sectorId)
+    {
+        PartyId = partyId;
+        SectorId = sectorId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateLeavePartyMessage : BoundUserInterfaceMessage
+{
+    public int PartyId;
+
+    public SWSenateLeavePartyMessage(int partyId)
+    {
+        PartyId = partyId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateDisbandPartyMessage : BoundUserInterfaceMessage
+{
+    public int PartyId;
+
+    public SWSenateDisbandPartyMessage(int partyId)
+    {
+        PartyId = partyId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateInitiateLeaderVoteMessage : BoundUserInterfaceMessage
+{
+    public int PartyId;
+
+    public SWSenateInitiateLeaderVoteMessage(int partyId)
+    {
+        PartyId = partyId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateInitiateEvictVoteMessage : BoundUserInterfaceMessage
+{
+    public int PartyId;
+    public string SectorId;
+
+    public SWSenateInitiateEvictVoteMessage(int partyId, string sectorId)
+    {
+        PartyId = partyId;
+        SectorId = sectorId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateCastLeaderVoteMessage : BoundUserInterfaceMessage
+{
+    public int PartyId;
+    public bool Support;
+
+    public SWSenateCastLeaderVoteMessage(int partyId, bool support)
+    {
+        PartyId = partyId;
+        Support = support;
+    }
 }
 
 [Serializable, NetSerializable]
@@ -481,6 +654,8 @@ public sealed class SWSectorVoteEntry
     public string Name = string.Empty;
     public Color Color;
     public string VoteLabel = string.Empty;
+    public string PartyTag = string.Empty;
+    public Color PartyColor;
 }
 
 [Serializable, NetSerializable]

@@ -128,6 +128,7 @@
     recipes:
     - SWAdvancedCableSLR
     - SWElectronicsSLR
+    - SWAdvancedElectronicsSLR
   - type: ActivatableUI
     key: enum.SWLatheUiKey.Key
   - type: UserInterface
@@ -179,6 +180,8 @@
     recipes:
     - SWOreToSteelSLR
     - SWLantanidAlloySLR
+    - SWReinforcedSteelSLR
+    - SWArmorPlateSLR
     - SWOreToGoldSLR
     - SWOreToLantanidSLR
   - type: ActivatableUI

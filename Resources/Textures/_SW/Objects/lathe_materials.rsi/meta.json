@@ -17,6 +17,15 @@
             "name": "electronics"
         },
         {
+            "name": "advanced_electronics"
+        },
+        {
+            "name": "reinforced_steel"
+        },
+        {
+            "name": "armor_plate"
+        },
+        {
             "name": "frame"
         },
         {

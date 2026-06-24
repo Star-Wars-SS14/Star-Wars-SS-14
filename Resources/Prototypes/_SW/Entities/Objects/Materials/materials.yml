@@ -13,6 +13,33 @@
 
 - type: entity
   parent: SWElectronics
+  id: SWAdvancedElectronics
+  name: advanced electronics
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/lathe_materials.rsi
+    state: advanced_electronics
+
+- type: entity
+  parent: SWElectronics
+  id: SWReinforcedSteel
+  name: reinforced steel
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/lathe_materials.rsi
+    state: reinforced_steel
+
+- type: entity
+  parent: SWElectronics
+  id: SWArmorPlate
+  name: armor plate
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/lathe_materials.rsi
+    state: armor_plate
+
+- type: entity
+  parent: SWElectronics
   id: SWBlasterBarrel
   name: blaster barrel
   components:

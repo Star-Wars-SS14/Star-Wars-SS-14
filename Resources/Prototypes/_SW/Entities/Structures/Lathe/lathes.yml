@@ -192,6 +192,49 @@
         type: SWLatheBoundUserInterface
 
 - type: entity
+  id: SWVehicleFabricator
+  parent: SWBaseLathe
+  name: vehicle fabricator
+  description: A large assembly platform surrounded by precision manipulators.
+  components:
+  - type: Fixtures
+    fixtures:
+      base:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-2.0,-2.0,2.0,2.0"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        density: 3000
+      in1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.6,-2.7,1.6,-2.05"
+        density: 190
+        mask:
+        - ItemMask
+        layer:
+        - WallLayer
+        hard: false
+  - type: Sprite
+    sprite: _SW/Structures/Machines/vehicle_fabricator.rsi
+    state: fabricator
+  - type: SWLathe
+    spawnPointOut: "0.0, 2.85"
+    recipes:
+    - SWStormCallerSLR
+    - SWSingleSeatSpeederSLR
+    - SWTwoSeatSpeederSLR
+  - type: ActivatableUI
+    key: enum.SWLatheUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWLatheUiKey.Key:
+        type: SWLatheBoundUserInterface
+
+- type: entity
   id: SWDistributorLeftLathe
   parent: SWBaseLathe
   name: sw distributor left lathe

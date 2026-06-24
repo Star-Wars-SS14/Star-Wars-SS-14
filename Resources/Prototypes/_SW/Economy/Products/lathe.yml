@@ -41,3 +41,14 @@
     SWEmpireCreditCurrency: 210
   category: sw-category-lathe
   group: SWLatheMarket
+
+- type: swCargoProduct
+  id: SWVehicleFabricatorCP
+  icon:
+    sprite: _SW/Structures/Machines/vehicle_fabricator.rsi
+    state: fabricator
+  product: SWVehicleFabricator
+  cost:
+    SWEmpireCreditCurrency: 800
+  category: sw-category-lathe
+  group: SWLatheMarket

@@ -35,4 +35,70 @@
               doAfter: 1.0
     - node: conveyor
       entity: SWConveyorBelt
+    - node: oreDispenser
+      entity: SWOreDispenser
+    - node: oreDispenserDestroyed
+      entity: SWOreDispenserDestroyed
+      edges:
+        - to: oreDispenser
+          steps:
+            - material: Steel
+              amount: 10
+              doAfter: 2.5
+    - node: electronicsLathe
+      entity: SWElectronicsLathe
+    - node: electronicsLatheDestroyed
+      entity: SWElectronicsLatheDestroyed
+      edges:
+        - to: electronicsLathe
+          steps:
+            - material: Steel
+              amount: 10
+              doAfter: 2.5
+    - node: blasterLathe
+      entity: SWBlasterLathe
+    - node: blasterLatheDestroyed
+      entity: SWBlasterLatheDestroyed
+      edges:
+        - to: blasterLathe
+          steps:
+            - material: Steel
+              amount: 10
+              doAfter: 2.5
+    - node: smeltLathe
+      entity: SWSmeltLathe
+    - node: smeltLatheDestroyed
+      entity: SWSmeltLatheDestroyed
+      edges:
+        - to: smeltLathe
+          steps:
+            - material: Steel
+              amount: 10
+              doAfter: 2.5
+    - node: vehicleFabricator
+      entity: SWVehicleFabricator
+    - node: distLeftDestroyed
+      entity: SWDistributorLeftLatheDestroyed
+      edges:
+        - to: distLeft
+          steps:
+            - material: Steel
+              amount: 10
+              doAfter: 2.5
+    - node: distRightDestroyed
+      entity: SWDistributorRightLatheDestroyed
+      edges:
+        - to: distRight
+          steps:
+            - material: Steel
+              amount: 10
+              doAfter: 2.5
+    - node: intersectionDestroyed
+      entity: SWIntersectionLatheDestroyed
+      edges:
+        - to: intersection
+          steps:
+            - material: Steel
+              amount: 10
+              doAfter: 2.5
 

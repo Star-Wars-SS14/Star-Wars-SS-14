@@ -1,2 +1,17 @@
 ent-SWVehicleFabricator = vehicle fabricator
   .desc = A large assembly platform with industrial manipulators for building speeders and heavy vehicles.
+sw-lathe-destroyed-desc = A damaged lathe system station. It can be repaired with steel.
+ent-SWOreDispenserDestroyed = destroyed item dispenser
+  .desc = { sw-lathe-destroyed-desc }
+ent-SWElectronicsLatheDestroyed = destroyed electronics lathe
+  .desc = { sw-lathe-destroyed-desc }
+ent-SWBlasterLatheDestroyed = destroyed blaster lathe
+  .desc = { sw-lathe-destroyed-desc }
+ent-SWSmeltLatheDestroyed = destroyed smelt lathe
+  .desc = { sw-lathe-destroyed-desc }
+ent-SWDistributorLeftLatheDestroyed = destroyed distributor
+  .desc = { sw-lathe-destroyed-desc }
+ent-SWDistributorRightLatheDestroyed = destroyed distributor
+  .desc = { sw-lathe-destroyed-desc }
+ent-SWIntersectionLatheDestroyed = destroyed intersection
+  .desc = { sw-lathe-destroyed-desc }

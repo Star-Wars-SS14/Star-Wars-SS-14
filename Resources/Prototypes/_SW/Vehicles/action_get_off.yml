@@ -9,3 +9,16 @@
     useDelay: 1
   - type: InstantAction    
     event: !type:SWExitVehicleRequested
+
+- type: entity
+  id: SWVehicleToggleHeadlightsAction
+  name: Toggle headlights
+  description: Toggle the vehicle headlights.
+  components:
+  - type: Action
+    icon:
+      sprite: Objects/Tools/flashlight.rsi
+      state: flashlight
+    useDelay: 0.5
+  - type: InstantAction
+    event: !type:SWToggleVehicleHeadlightsEvent

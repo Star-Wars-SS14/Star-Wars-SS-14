@@ -89,5 +89,5 @@ public sealed partial class SWInertialVehicleComponent : Component
     /// Local direction treated as the vehicle's nose for acceleration, braking, and drift calculations.
     /// </summary>
     [DataField, AutoNetworkedField, ViewVariables(VVAccess.ReadWrite)]
-    public Vector2 ForwardVector = Vector2.UnitY;
+    public Vector2 ForwardVector = -Vector2.UnitY;
 }

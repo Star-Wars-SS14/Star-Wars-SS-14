@@ -1,0 +1,61 @@
+- type: entity
+  id: SWElectrostaff
+  parent: BaseItem
+  name: electrostaff
+  description: A powered staff that can crackle with dangerous electrical arcs.
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Melee/electrostaff.rsi
+    layers:
+    - state: off-icon
+      map: [ "enum.ToggleableVisuals.Layer" ]
+  - type: ItemToggle
+    onUse: false # wielding events control it instead
+    onActivate: false # prevents the weapon from being able to be turned on when it is on the ground
+    soundActivate:
+      collection: sparks
+      params:
+        variation: 0.250
+    soundDeactivate:
+      collection: sparks
+      params:
+        variation: 0.250
+  - type: ItemToggleMeleeWeapon
+    activatedDamage:
+      types:
+        Shock: 55
+  - type: MeleeWeapon
+    wideAnimationRotation: -135
+    attackRate: 1
+    damage:
+      types:
+        Blunt: 10
+    angle: 60
+    animation: WeaponArcThrust
+  - type: SWWeaponBlock
+    requiresForceUser: false
+    blocksMelee: true
+    blocksProjectiles: false
+  - type: Item
+    heldPrefix: off
+    size: Huge
+    shape:
+    - 0,0,1,3
+  - type: Wieldable
+    wieldSound: null # electrostaff activation sound is handled by ItemToggle
+    wieldedInhandPrefix: on-wielded
+  - type: Clothing
+    sprite: _SW/Objects/Weapons/Melee/electrostaff.rsi
+    quickEquip: false
+    slots:
+    - Back
+    - SuitStorage
+  - type: UseDelay
+    delay: 1.0
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.ToggleableVisuals.Enabled:
+        enum.ToggleableVisuals.Layer:
+          True: { state: on-icon }
+          False: { state: off-icon }

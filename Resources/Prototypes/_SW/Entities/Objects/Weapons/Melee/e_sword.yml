@@ -5,6 +5,9 @@
   description: A very loud & dangerous sword with a beam made of pure, concentrated plasma. Cuts through unarmored targets like butter.
   components:
   - type: SWWeaponBlock
+    blocksMelee: true
+    blocksProjectiles: true
+    projectileReflectProb: 1
   - type: Reflect
     reflectProb: 0.0
   - type: SWSwordThrowable

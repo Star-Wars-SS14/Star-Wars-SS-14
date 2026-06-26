@@ -17,5 +17,5 @@ public sealed partial class SWShootByVehicleGunComponent : Component
     public double AngleInDegrees = 360f;
 
     [DataField]
-    public Vector2 ForwardVector = new Vector2(0.0f, 1.0f);
+    public Vector2 ForwardVector = new Vector2(0.0f, -1.0f);
 }

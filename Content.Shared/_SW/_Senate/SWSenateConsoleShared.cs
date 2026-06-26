@@ -720,6 +720,7 @@ public sealed class SWScheduleRow
     public string Text = string.Empty;
     public Color Color;
     public bool IsNow;
+    public bool Free;
 }
 
 [Serializable, NetSerializable]

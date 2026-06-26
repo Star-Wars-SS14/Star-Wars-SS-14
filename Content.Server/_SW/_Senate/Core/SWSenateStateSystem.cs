@@ -687,6 +687,7 @@ public sealed class SWSenateStateSystem : EntitySystem
             {
                 row.Text = "Свободно";
                 row.Color = Color.DimGray;
+                row.Free = true;
             }
             else if (hour == session.StartHour)
             {

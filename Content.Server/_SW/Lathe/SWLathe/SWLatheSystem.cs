@@ -27,6 +27,7 @@ public sealed class SWLatheSystem : EntitySystem
     [Dependency] private readonly EntityLookupSystem _entityLookupSystem = default!;
     [Dependency] private readonly FixtureSystem _fixturesChangeSystem = default!;
     [Dependency] private readonly SharedPhysicsSystem _physicsSystem = default!;
+    [Dependency] private readonly TransformSystem _transformSystem = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
 
     public override void Initialize()
@@ -158,7 +159,7 @@ public sealed class SWLatheSystem : EntitySystem
     public void FinishProduction(Entity<SWLatheComponent> ent)
     {
         DebugTools.Assert(ent.Comp.CurrentRecipeProducting != null);
-        var coords = new EntityCoordinates(ent, ent.Comp.SpawnPointOut);
+        var coords = _transformSystem.ToMapCoordinates(new EntityCoordinates(ent, ent.Comp.SpawnPointOut));
         foreach (var (id, amount) in ent.Comp.CurrentRecipeProducting.Result)
         {
             for (var _ = 0; _ < amount; _++)

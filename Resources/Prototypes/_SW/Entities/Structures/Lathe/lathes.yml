@@ -183,6 +183,7 @@
     recipes:
     - SWBarrelSLR
     - SWBlasterFrameSLR
+    - SWArmorPlateSLR
     - SWT1WeaponSLR
   - type: ActivatableUI
     key: enum.SWLatheUiKey.Key
@@ -224,7 +225,6 @@
     - SWOreToSteelSLR
     - SWLantanidAlloySLR
     - SWReinforcedSteelSLR
-    - SWArmorPlateSLR
     - SWOreToGoldSLR
     - SWOreToLantanidSLR
   - type: ActivatableUI
@@ -245,7 +245,7 @@
       in1:
         shape:
           !type:PhysShapeAabb
-          bounds: "-1.6,-2.7,1.6,-2.05"
+          bounds: "-1.6,-2.05,1.6,-1.4"
         density: 190
         mask:
         - ItemMask

@@ -57,6 +57,9 @@ public sealed class SWStatisticsConsoleState : BoundUserInterfaceState
 {
     public List<SWGlobalStatEntry> Globals;
     public List<SWSectorEntry> Sectors;
+    public List<SWCrisisEntry> Crises = new();
+    public List<SWBillEntry> ActiveLaws = new();
+    public string GameTime = string.Empty;
 
     public SWStatisticsConsoleState(List<SWGlobalStatEntry> globals, List<SWSectorEntry> sectors)
     {

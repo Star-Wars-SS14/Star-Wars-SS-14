@@ -1,46 +1,30 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
     Title="Консоль голосования Сената"
-    MinSize="560 560">
-    <TabContainer Name="Tabs" VerticalExpand="True" HorizontalExpand="True">
-        <ScrollContainer HorizontalExpand="True" VerticalExpand="True" Margin="8">
-            <BoxContainer Name="AgendaList" Orientation="Vertical" />
-        </ScrollContainer>
-        <BoxContainer Name="CurrentTab" Orientation="Vertical" Margin="12">
-            <RichTextLabel Name="SessionLabel" Margin="0 0 0 4" />
-            <RichTextLabel Name="BillTitle" Margin="0 0 0 4" />
-            <RichTextLabel Name="BillAuthor" Margin="0 0 0 6" />
-            <RichTextLabel Name="BillDescription" Margin="0 0 0 6" />
-            <BoxContainer Name="BillEffects" Orientation="Horizontal" Margin="0 0 0 10" />
-            <BoxContainer Orientation="Horizontal" Margin="0 0 0 6">
-                <Button Name="VoteForButton" Text="За" HorizontalExpand="True" />
-                <Button Name="VoteAgainstButton" Text="Против" HorizontalExpand="True" Margin="6 0 6 0" />
-                <Button Name="VoteAbstainButton" Text="Воздержался" HorizontalExpand="True" />
-            </BoxContainer>
-            <Button Name="EndVoteButton" Text="Завершить голосование" Margin="0 0 0 6" />
-            <BoxContainer Name="TiebreakPanel" Orientation="Vertical" Margin="0 0 0 6">
-                <RichTextLabel Name="TiebreakLabel" Margin="0 0 0 4" />
-                <BoxContainer Orientation="Horizontal">
-                    <Button Name="TiebreakForButton" Text="Решающий голос: За" HorizontalExpand="True" />
-                    <Button Name="TiebreakAgainstButton" Text="Решающий голос: Против" HorizontalExpand="True" Margin="6 0 0 0" />
+    MinSize="580 580">
+    <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+            <PanelContainer Name="HeaderPanel">
+                <BoxContainer Orientation="Horizontal" Margin="12 7">
+                    <Label Name="HeaderTitle" HorizontalExpand="True" />
+                    <PanelContainer Name="LiveDot" MinSize="9 9" VerticalAlignment="Center" />
+                    <Label Name="HeaderClock" Margin="7 0 0 0" />
                 </BoxContainer>
+            </PanelContainer>
+            <PanelContainer Name="TabBarPanel">
+                <BoxContainer Name="TabBar" Orientation="Horizontal" Margin="6 4" />
+            </PanelContainer>
+            <BoxContainer Name="ContentHost" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                <ScrollContainer Name="AgendaPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="AgendaList" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="CurrentPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="CurrentContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="FloorPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="FloorContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
             </BoxContainer>
-            <RichTextLabel Name="TallyLabel" Margin="0 0 0 8" />
-            <Label Text="Голоса секторов" StyleClasses="LabelKeyText" />
-            <ScrollContainer HorizontalExpand="True" VerticalExpand="True" Margin="0 4 0 0">
-                <BoxContainer Name="SectorVotes" Orientation="Vertical" />
-            </ScrollContainer>
         </BoxContainer>
-        <BoxContainer Name="FloorTab" Orientation="Vertical" Margin="12">
-            <RichTextLabel Name="FloorHolderLabel" Margin="0 0 0 6" />
-            <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
-                <Button Name="RevokeFloorButton" Text="Забрать слово" />
-                <Button Name="GrantChancellorButton" Text="Слово Канцлеру" Margin="6 0 0 0" />
-            </BoxContainer>
-            <Label Text="Очередь на слово" StyleClasses="LabelKeyText" />
-            <ScrollContainer VerticalExpand="True" Margin="0 2 0 0">
-                <BoxContainer Name="FloorQueueList" Orientation="Vertical" />
-            </ScrollContainer>
-        </BoxContainer>
-    </TabContainer>
+    </PanelContainer>
 </controls:FancyWindow>

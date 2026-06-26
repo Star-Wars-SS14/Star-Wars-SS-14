@@ -47,7 +47,7 @@
     openSpriteState: cavewall
     closedSpriteState: cavewall
     denySpriteState: cavewall
-    autoCloseDelay: 0.3
+    autoCloseDelay: 3
   - type: NavMapDoor
   - type: SWFactionNameVariance
     factionsToName:

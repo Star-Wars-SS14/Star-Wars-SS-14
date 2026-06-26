@@ -76,6 +76,18 @@ stack-clockwork-glass =
         [few] листа
        *[other] листов
     } заводного стекла
+stack-sw-electronics =
+    { $amount ->
+        [1] блок
+        [few] блока
+       *[other] блоков
+    } электроники
+stack-sw-advanced-cables =
+    { $amount ->
+        [1] пучок
+        [few] пучка
+       *[other] пучков
+    } проводов высокого класса
 stack-reinforced-plasma-glass =
     { $amount ->
         [1] лист

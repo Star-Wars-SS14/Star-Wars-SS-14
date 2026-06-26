@@ -15,6 +15,7 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
+    [Dependency] private readonly SWSenatePartySystem _party = default!;
 
     private const float UpdateInterval = 5f;
 
@@ -165,6 +166,22 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
             {
                 var n = _senate.Bills.Count(b => b.Stage == SWBillStage.Passed);
                 return (n >= proto.Count, $"{n}/{proto.Count}");
+            }
+            case SWAmbitionKind.PartyStrong:
+            {
+                var info = _party.GetMembership(active.Owner);
+                if (info is not { Formed: true } party)
+                    return (false, "нет сформированной партии");
+                var need = (int) proto.Threshold;
+                return (party.Cohesion >= need, $"сплочённость {party.Cohesion:+0;-0;0} / нужно +{need}");
+            }
+            case SWAmbitionKind.PartySize:
+            {
+                var info = _party.GetMembership(active.Owner);
+                var required = Math.Max(3, (int) Math.Ceiling(_senate.SectorHolders.Count * proto.Margin));
+                if (info is not { Formed: true } party)
+                    return (false, $"нет партии / нужно {required}");
+                return (party.Members >= required, $"{party.Members}/{required}");
             }
             default:
                 return (false, string.Empty);

@@ -3,6 +3,7 @@ using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 
 namespace Content.Server._SW._Senate.Core;
 
@@ -11,12 +12,17 @@ public sealed class SWSenatePartySystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
 
     private const float TickInterval = 1f;
     private const int MinMembers = 3;
     private const float GraceGameMinutes = 120f;
     private const int NameLimit = 48;
     private const int DescLimit = 240;
+    private const int CohesionMax = 5;
+    private const int CohesionMin = -5;
+    private const int WhipThreshold = 4;
+    private const int LawLogLimit = 30;
 
     private static readonly Color[] Palette =
     {
@@ -25,17 +31,20 @@ public sealed class SWSenatePartySystem : EntitySystem
     };
 
     private readonly List<SWSenateParty> _parties = new();
+    private readonly List<SWPartyLawLog> _partyLaws = new();
     private int _nextId = 1;
     private float _accum;
 
     public override void Initialize()
     {
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+        SubscribeLocalEvent<SWSenateBillVotesResolvedEvent>(OnBillResolved);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
         _parties.Clear();
+        _partyLaws.Clear();
         _nextId = 1;
     }
 
@@ -228,6 +237,168 @@ public sealed class SWSenatePartySystem : EntitySystem
         EvaluateVote(party);
     }
 
+    public bool CanWhip(string sectorId)
+    {
+        var party = MemberOf(sectorId);
+        if (party is not { Formed: true } || party.Leader != sectorId || party.Cohesion < WhipThreshold)
+            return false;
+
+        var bill = _senate.GetCurrentBill();
+        return bill is { AwaitingTiebreak: false } && bill.Votes.ContainsKey(sectorId);
+    }
+
+    public bool TryWhip(string sectorId, out string reason)
+    {
+        reason = string.Empty;
+        var party = MemberOf(sectorId);
+        if (party is not { Formed: true } || party.Leader != sectorId)
+        {
+            reason = "sw-senate-whip-not-leader";
+            return false;
+        }
+
+        if (party.Cohesion < WhipThreshold)
+        {
+            reason = "sw-senate-whip-low-cohesion";
+            return false;
+        }
+
+        var bill = _senate.GetCurrentBill();
+        if (bill is not { AwaitingTiebreak: false })
+        {
+            reason = "sw-senate-whip-no-bill";
+            return false;
+        }
+
+        if (!bill.Votes.TryGetValue(sectorId, out var choice))
+        {
+            reason = "sw-senate-whip-leader-not-voted";
+            return false;
+        }
+
+        foreach (var member in party.Members)
+            _senate.CastVote(member, choice);
+
+        party.Cohesion = 0;
+        party.WhippedBillId = bill.Id;
+
+        _partyLaws.Insert(0, new SWPartyLawLog
+        {
+            BillId = bill.Id,
+            PartyName = party.Name,
+            PartyColor = party.Color,
+            BillName = bill.Name,
+            Choice = choice,
+        });
+        if (_partyLaws.Count > LawLogLimit)
+            _partyLaws.RemoveRange(LawLogLimit, _partyLaws.Count - LawLogLimit);
+
+        RaiseLocalEvent(new SWSenatePartyWhipAnnouncedEvent(party.Name, bill.Name, ChoiceLabel(choice)));
+        return true;
+    }
+
+    private void OnBillResolved(SWSenateBillVotesResolvedEvent ev)
+    {
+        foreach (var log in _partyLaws)
+        {
+            if (log.BillId == ev.BillId && log.Result == null)
+                log.Result = ev.Passed;
+        }
+
+        foreach (var party in _parties)
+        {
+            if (party.WhippedBillId == ev.BillId)
+            {
+                party.WhippedBillId = null;
+                continue;
+            }
+
+            if (!party.Formed || !ev.Votes.TryGetValue(party.Leader, out var leaderChoice))
+                continue;
+
+            var matched = 0;
+            var differed = 0;
+            foreach (var member in party.Members)
+            {
+                if (member == party.Leader || !ev.Votes.TryGetValue(member, out var choice))
+                    continue;
+
+                if (choice == leaderChoice)
+                    matched++;
+                else
+                    differed++;
+            }
+
+            if (matched == differed)
+                continue;
+
+            party.Cohesion = Math.Clamp(party.Cohesion + (matched > differed ? 1 : -1), CohesionMin, CohesionMax);
+            if (party.Cohesion <= CohesionMin)
+                TriggerDisciplineVote(party);
+        }
+    }
+
+    private void TriggerDisciplineVote(SWSenateParty party)
+    {
+        party.Cohesion = 0;
+        if (party.VoteTarget != null)
+            return;
+
+        var candidates = party.Members.Where(m => m != party.Leader).ToList();
+        if (candidates.Count == 0)
+            return;
+
+        party.VoteKind = SWPartyVoteKind.Leader;
+        party.VoteTarget = _random.Pick(candidates);
+        party.Ballots.Clear();
+        party.Ballots[party.VoteTarget] = true;
+        EvaluateVote(party);
+    }
+
+    public (bool Formed, int Cohesion, int Members)? GetMembership(string sectorId)
+    {
+        var party = MemberOf(sectorId);
+        return party == null ? null : (party.Formed, party.Cohesion, party.Members.Count);
+    }
+
+    public List<SWPartyLawEntry> BuildPartyLaws()
+    {
+        var list = new List<SWPartyLawEntry>();
+        foreach (var log in _partyLaws)
+        {
+            list.Add(new SWPartyLawEntry
+            {
+                PartyName = log.PartyName,
+                PartyColor = log.PartyColor,
+                BillName = log.BillName,
+                ChoiceLabel = ChoiceLabel(log.Choice),
+                ChoiceColor = ChoiceColor(log.Choice),
+                ResultLabel = log.Result switch
+                {
+                    true => "принят",
+                    false => "отклонён",
+                    _ => "на голосовании",
+                },
+            });
+        }
+
+        return list;
+    }
+
+    private static string ChoiceLabel(SWVoteChoice choice) => choice switch
+    {
+        SWVoteChoice.For => "За",
+        SWVoteChoice.Against => "Против",
+        _ => "Воздержался",
+    };
+
+    private static Color ChoiceColor(SWVoteChoice choice) => choice switch
+    {
+        SWVoteChoice.For => Color.LightGreen,
+        SWVoteChoice.Against => Color.IndianRed,
+        _ => Color.Goldenrod,
+    };
+
     public override void Update(float frameTime)
     {
         _accum += frameTime;
@@ -299,6 +470,7 @@ public sealed class SWSenatePartySystem : EntitySystem
                 Description = party.Description,
                 Color = party.Color,
                 Formed = party.Formed,
+                Cohesion = party.Cohesion,
                 StatusLabel = StatusLabel(party),
                 GraceWarning = GraceWarning(party),
                 LeaderName = HolderName(party.Leader),
@@ -396,9 +568,21 @@ public sealed class SWSenateParty
     public readonly List<string> Pending = new();
     public bool Formed;
     public float GraceLeft;
+    public int Cohesion;
+    public int? WhippedBillId;
     public string? VoteTarget;
     public SWPartyVoteKind VoteKind;
     public readonly Dictionary<string, bool> Ballots = new();
+}
+
+public sealed class SWPartyLawLog
+{
+    public int BillId;
+    public string PartyName = string.Empty;
+    public Color PartyColor;
+    public string BillName = string.Empty;
+    public SWVoteChoice Choice;
+    public bool? Result;
 }
 
 public enum SWPartyVoteKind

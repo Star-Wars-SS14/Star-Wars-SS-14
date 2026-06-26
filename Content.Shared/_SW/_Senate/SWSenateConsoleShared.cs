@@ -170,6 +170,9 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public List<SWBillOption> SchedulableBills = new();
     public List<int> FreeStartHours = new();
     public List<SWSessionEntry> PendingSessions = new();
+    public bool CanScheduleSessions;
+    public bool CanConfirmSessions;
+    public bool OfficesVacant;
     public List<SWBillPresetEntry> Presets = new();
     public bool CanDilemmas;
     public List<SWDilemmaEntry> MyDilemmas = new();
@@ -189,6 +192,18 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool CanParties;
     public int MyPartyId = -1;
     public List<SWPartyEntry> Parties = new();
+    public List<SWPartyLawEntry> PartyLaws = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPartyLawEntry
+{
+    public string PartyName = string.Empty;
+    public Color PartyColor;
+    public string BillName = string.Empty;
+    public string ChoiceLabel = string.Empty;
+    public Color ChoiceColor;
+    public string ResultLabel = string.Empty;
 }
 
 [Serializable, NetSerializable]
@@ -217,6 +232,7 @@ public sealed class SWPartyEntry
     public string Description = string.Empty;
     public Color Color;
     public bool Formed;
+    public int Cohesion;
     public string StatusLabel = string.Empty;
     public string GraceWarning = string.Empty;
     public string LeaderName = string.Empty;
@@ -686,6 +702,13 @@ public sealed class SWSenateVoteConsoleState : BoundUserInterfaceState
     public bool CanControlFloor;
     public string? FloorHolderName;
     public List<SWFloorQueueEntry> FloorQueue = new();
+    public bool CanPartyWhip;
+    public string PartyWhipLabel = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenatePartyWhipMessage : BoundUserInterfaceMessage
+{
 }
 
 [Serializable, NetSerializable]

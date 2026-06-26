@@ -426,15 +426,20 @@ public sealed class SWSenateStateSystem : EntitySystem
             bill.Stage = SWBillStage.Passed;
             ApplyBill(bill);
             RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, true, bill.EmergencyCrisisId, bill.EmergencyRelief));
+            RaiseVotesResolved(bill, true);
         }
         else
         {
             bill.Stage = SWBillStage.Rejected;
             RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, false));
+            RaiseVotesResolved(bill, false);
         }
 
         return true;
     }
+
+    private void RaiseVotesResolved(SWSenateBill bill, bool passed) =>
+        RaiseLocalEvent(new SWSenateBillVotesResolvedEvent(bill.Id, bill.Name, passed, new Dictionary<string, SWVoteChoice>(bill.Votes)));
 
     private void ResolveBill(SWSenateBill bill, bool allowTiebreak)
     {
@@ -446,11 +451,13 @@ public sealed class SWSenateStateSystem : EntitySystem
             bill.Stage = SWBillStage.Passed;
             ApplyBill(bill);
             RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, true, bill.EmergencyCrisisId, bill.EmergencyRelief));
+            RaiseVotesResolved(bill, true);
         }
         else if (votesAgainst > votesFor)
         {
             bill.Stage = SWBillStage.Rejected;
             RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, false));
+            RaiseVotesResolved(bill, false);
         }
         else if (allowTiebreak)
         {
@@ -460,6 +467,37 @@ public sealed class SWSenateStateSystem : EntitySystem
         {
             bill.Stage = SWBillStage.Rejected;
             RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, false));
+            RaiseVotesResolved(bill, false);
+        }
+    }
+
+    public bool OfficesVacant => Speaker == null && Chancellor == null;
+
+    private void AutopilotTick()
+    {
+        if (!_time.DayActive || !OfficesVacant)
+            return;
+
+        foreach (var session in _sessions)
+        {
+            if (session.Status == SWSessionStatus.Pending)
+                session.Status = SWSessionStatus.Confirmed;
+        }
+
+        foreach (var bill in _bills)
+        {
+            if (bill.Stage != SWBillStage.Voting)
+                continue;
+            if (_sessions.Any(s => s.BillId == bill.Id && s.Status != SWSessionStatus.Rejected))
+                continue;
+
+            var free = BuildFreeStartHours();
+            if (free.Count == 0)
+                break;
+
+            var session = TryScheduleSession(bill.Id, free[0], 1);
+            if (session != null)
+                session.Status = SWSessionStatus.Confirmed;
         }
     }
 
@@ -869,6 +907,8 @@ public sealed class SWSenateStateSystem : EntitySystem
             return;
 
         _accumulator = 0f;
+
+        AutopilotTick();
 
         var policy = GetPolicyScores();
         foreach (var (sectorId, globals) in _sectorGlobals)

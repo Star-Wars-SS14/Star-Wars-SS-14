@@ -1,3 +1,5 @@
+using Content.Shared._SW._Senate;
+
 namespace Content.Server._SW._Senate.Core;
 
 public sealed class SWSenateSessionStartedEvent : EntityEventArgs
@@ -43,6 +45,36 @@ public sealed class SWSenateBillResolvedEvent : EntityEventArgs
         Passed = passed;
         EmergencyCrisisId = emergencyCrisisId;
         EmergencyRelief = emergencyRelief;
+    }
+}
+
+public sealed class SWSenateBillVotesResolvedEvent : EntityEventArgs
+{
+    public int BillId;
+    public string BillName;
+    public bool Passed;
+    public Dictionary<string, SWVoteChoice> Votes;
+
+    public SWSenateBillVotesResolvedEvent(int billId, string billName, bool passed, Dictionary<string, SWVoteChoice> votes)
+    {
+        BillId = billId;
+        BillName = billName;
+        Passed = passed;
+        Votes = votes;
+    }
+}
+
+public sealed class SWSenatePartyWhipAnnouncedEvent : EntityEventArgs
+{
+    public string PartyName;
+    public string BillName;
+    public string ChoiceLabel;
+
+    public SWSenatePartyWhipAnnouncedEvent(string partyName, string billName, string choiceLabel)
+    {
+        PartyName = partyName;
+        BillName = billName;
+        ChoiceLabel = choiceLabel;
     }
 }
 

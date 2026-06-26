@@ -109,9 +109,13 @@
                         <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
                             <Button Name="PartiesModeAll" Text="Все партии" />
                             <Button Name="PartiesModeMine" Text="Моя партия" Margin="6 0 0 0" />
+                            <Button Name="PartiesModeLaws" Text="Партийные законы" Margin="6 0 0 0" />
                         </BoxContainer>
                         <ScrollContainer Name="AllPartiesPanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                             <BoxContainer Name="AllPartiesList" Orientation="Vertical" HorizontalExpand="True" />
+                        </ScrollContainer>
+                        <ScrollContainer Name="PartyLawsPanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                            <BoxContainer Name="PartyLawsList" Orientation="Vertical" HorizontalExpand="True" />
                         </ScrollContainer>
                         <BoxContainer Name="MyPartyPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
                             <BoxContainer Name="CreatePartyBox" Orientation="Vertical" Margin="0 0 0 8">

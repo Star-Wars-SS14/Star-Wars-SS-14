@@ -14,7 +14,17 @@ public sealed class SWSenateAnnouncerSystem : EntitySystem
         SubscribeLocalEvent<SWSenateSessionStartedEvent>(OnSessionStarted);
         SubscribeLocalEvent<SWSenateEmergencySessionScheduledEvent>(OnEmergencyScheduled);
         SubscribeLocalEvent<SWSenateBillResolvedEvent>(OnBillResolved);
+        SubscribeLocalEvent<SWSenatePartyWhipAnnouncedEvent>(OnPartyWhip);
         SubscribeLocalEvent<SWSenateCustomAnnouncementEvent>(OnCustom);
+    }
+
+    private void OnPartyWhip(SWSenatePartyWhipAnnouncedEvent ev)
+    {
+        _chat.DispatchGlobalAnnouncement(
+            Loc.GetString("sw-senate-announce-party-whip",
+                ("party", ev.PartyName), ("bill", ev.BillName), ("choice", ev.ChoiceLabel)),
+            Loc.GetString("sw-senate-announce-sender"),
+            colorOverride: AnnouncementColor);
     }
 
     private void OnEmergencyScheduled(SWSenateEmergencySessionScheduledEvent ev)

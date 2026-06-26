@@ -38,11 +38,29 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateRevokeFloorMessage>(OnRevokeFloor);
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateRemoveFromQueueMessage>(OnRemoveFromQueue);
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateGrantChancellorMessage>(OnGrantChancellor);
+        SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenatePartyWhipMessage>(OnPartyWhip);
+    }
+
+    private void OnPartyWhip(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenatePartyWhipMessage args)
+    {
+        var sectorId = GetVoterSector(ent);
+        if (sectorId == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-vote-cant-vote"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_party.TryWhip(sectorId, out var reason))
+            _popup.PopupCursor(Loc.GetString("sw-senate-whip-done"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString(reason), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
     }
 
     private void OnGrantFloor(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateGrantFloorMessage args)
     {
-        if (GetCardPosition(ent) != SWSenatePosition.Speaker || _senate.Speaker == null)
+        if (!ActsAsSpeaker(ent))
             return;
 
         var target = GetEntity(args.Target);
@@ -56,7 +74,7 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     private void OnRevokeFloor(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateRevokeFloorMessage args)
     {
-        if (GetCardPosition(ent) != SWSenatePosition.Speaker || _senate.Speaker == null)
+        if (!ActsAsSpeaker(ent))
             return;
 
         _floor.RevokeFloor();
@@ -66,7 +84,7 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     private void OnRemoveFromQueue(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateRemoveFromQueueMessage args)
     {
-        if (GetCardPosition(ent) != SWSenatePosition.Speaker || _senate.Speaker == null)
+        if (!ActsAsSpeaker(ent))
             return;
 
         if (_floor.RemoveFromQueue(GetEntity(args.Target)))
@@ -77,7 +95,7 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     private void OnGrantChancellor(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateGrantChancellorMessage args)
     {
-        if (GetCardPosition(ent) != SWSenatePosition.Speaker || _senate.Speaker == null)
+        if (!ActsAsSpeaker(ent))
             return;
 
         _floor.GrantChancellor();
@@ -94,17 +112,27 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
         return position.Position;
     }
 
+    // A lone presiding officer covers the vacant counterpart: the Chancellor may chair (end votes,
+    // run the floor) when there is no Speaker, and the Speaker may break ties when there is no Chancellor.
+    private bool ActsAsSpeaker(Entity<SWSenateVoteConsoleComponent> ent) => GetCardPosition(ent) switch
+    {
+        SWSenatePosition.Speaker => _senate.Speaker != null,
+        SWSenatePosition.Chancellor => _senate.Chancellor != null && _senate.Speaker == null,
+        _ => false,
+    };
+
+    private bool ActsAsChancellor(Entity<SWSenateVoteConsoleComponent> ent) => GetCardPosition(ent) switch
+    {
+        SWSenatePosition.Chancellor => _senate.Chancellor != null,
+        SWSenatePosition.Speaker => _senate.Speaker != null && _senate.Chancellor == null,
+        _ => false,
+    };
+
     private void OnEndVote(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateEndVoteMessage args)
     {
-        if (GetCardPosition(ent) != SWSenatePosition.Speaker)
+        if (!ActsAsSpeaker(ent))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-vote-only-speaker"), args.Actor, PopupType.Medium);
-            return;
-        }
-
-        if (_senate.Speaker == null)
-        {
-            _popup.PopupCursor(Loc.GetString("sw-senate-not-in-office"), args.Actor, PopupType.Medium);
             return;
         }
 
@@ -118,15 +146,9 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     private void OnTiebreak(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateTiebreakMessage args)
     {
-        if (GetCardPosition(ent) != SWSenatePosition.Chancellor)
+        if (!ActsAsChancellor(ent))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-vote-only-chancellor"), args.Actor, PopupType.Medium);
-            return;
-        }
-
-        if (_senate.Chancellor == null)
-        {
-            _popup.PopupCursor(Loc.GetString("sw-senate-not-in-office"), args.Actor, PopupType.Medium);
             return;
         }
 
@@ -213,9 +235,8 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
         };
 
         var voterSector = GetVoterSector(ent);
-        var position = GetCardPosition(ent);
 
-        if (position == SWSenatePosition.Speaker && _senate.Speaker != null)
+        if (ActsAsSpeaker(ent))
         {
             state.CanControlFloor = true;
             if (_floor.FloorHolder is { } holder && Exists(holder))
@@ -245,8 +266,8 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
             state.HasCurrent = true;
             state.AwaitingTiebreak = bill.AwaitingTiebreak;
             state.CanVote = voterSector != null && !bill.AwaitingTiebreak;
-            state.CanEndVote = position == SWSenatePosition.Speaker && _senate.Speaker != null && _senate.CanEndCurrentVote();
-            state.CanTiebreak = position == SWSenatePosition.Chancellor && _senate.Chancellor != null && bill.AwaitingTiebreak;
+            state.CanEndVote = ActsAsSpeaker(ent) && _senate.CanEndCurrentVote();
+            state.CanTiebreak = ActsAsChancellor(ent) && bill.AwaitingTiebreak;
             state.CurrentId = bill.Id;
             state.CurrentName = bill.Name;
             state.CurrentAuthor = bill.Author;
@@ -260,6 +281,12 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
             {
                 state.HasVoted = true;
                 state.MyVote = myVote;
+            }
+
+            if (voterSector != null && _party.CanWhip(voterSector))
+            {
+                state.CanPartyWhip = true;
+                state.PartyWhipLabel = Loc.GetString("sw-senate-whip-action");
             }
 
             foreach (var (sectorId, _) in _senate.SectorHolders)

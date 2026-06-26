@@ -59,6 +59,14 @@ sw-senate-announce-emergency-replaced = Ранее запланированно�
 sw-senate-announce-emergency-started = Экстренная сессия Сената началась. На повестке: «{$bill}».
 sw-senate-announce-passed = Закон «{$bill}» принят Сенатом.
 sw-senate-announce-rejected = Законопроект «{$bill}» отклонён Сенатом.
+sw-senate-announce-party-whip = Партия «{$party}» объявила законопроект «{$bill}» партийным. Голоса всех её членов отданы единогласно: {$choice}.
+
+sw-senate-whip-not-leader = Объявить голосование партийным может только лидер сформированной партии.
+sw-senate-whip-low-cohesion = Недостаточно сплочённости партии (нужно +4).
+sw-senate-whip-no-bill = Сейчас нет активного голосования.
+sw-senate-whip-leader-not-voted = Сначала проголосуйте сами — члены продублируют ваш голос.
+sw-senate-whip-done = Голосование объявлено партийным.
+sw-senate-whip-action = ОБЪЯВИТЬ ПАРТИЙНЫМ
 sw-senate-announce-only-leaders = Делать объявления могут только Спикер и Канцлер.
 sw-senate-announce-sent = Объявление отправлено.
 sw-senate-announce-cooldown = Подождите перед следующим объявлением.

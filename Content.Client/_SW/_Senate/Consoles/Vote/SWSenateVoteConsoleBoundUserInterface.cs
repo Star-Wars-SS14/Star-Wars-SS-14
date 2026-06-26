@@ -65,6 +65,11 @@ public sealed class SWSenateVoteConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateGrantChancellorMessage());
     }
 
+    public void PartyWhip()
+    {
+        SendMessage(new SWSenatePartyWhipMessage());
+    }
+
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);

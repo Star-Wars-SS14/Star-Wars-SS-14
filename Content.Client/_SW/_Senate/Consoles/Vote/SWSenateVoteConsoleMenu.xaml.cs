@@ -166,6 +166,18 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
         votes.AddChild(VoteButton("ВОЗДЕРЖАТЬСЯ", SWConsoleStyle.Neutral, canVote, SWVoteChoice.Abstain, default));
         CurrentContent.AddChild(votes);
 
+        if (state.CanPartyWhip)
+        {
+            var whip = SWConsoleStyle.Action(state.PartyWhipLabel, SWConsoleStyle.Warn);
+            whip.HorizontalExpand = true;
+            whip.Margin = new Thickness(0, 6, 0, 0);
+            whip.OnPressed += _ => _owner.PartyWhip();
+            CurrentContent.AddChild(whip);
+            CurrentContent.AddChild(SWConsoleStyle.Text(
+                "Голоса всех членов партии продублируют ваш. Сплочённость обнулится.",
+                SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        }
+
         if (state.CanEndVote)
         {
             var end = SWConsoleStyle.Action("ЗАВЕРШИТЬ ГОЛОСОВАНИЕ", SWConsoleStyle.Accent);

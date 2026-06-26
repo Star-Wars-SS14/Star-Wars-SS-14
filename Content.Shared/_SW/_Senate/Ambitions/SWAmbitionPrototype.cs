@@ -26,6 +26,8 @@ public enum SWAmbitionKind : byte
     AuthorLawStat,
     PassOwnLaws,
     PassBills,
+    PartyStrong,
+    PartySize,
 }
 
 [Prototype("swAmbition")]

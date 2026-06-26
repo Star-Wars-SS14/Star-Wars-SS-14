@@ -244,17 +244,27 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         return position.Position;
     }
 
+    // When only one of the two presiding offices is filled, that officer acts for both:
+    // the lone Speaker also confirms, the lone Chancellor also schedules.
+    private bool CanScheduleAs(Entity<SWSenateWorkConsoleComponent> ent) => GetCardPosition(ent) switch
+    {
+        SWSenatePosition.Speaker => _senate.Speaker != null,
+        SWSenatePosition.Chancellor => _senate.Chancellor != null && _senate.Speaker == null,
+        _ => false,
+    };
+
+    private bool CanConfirmAs(Entity<SWSenateWorkConsoleComponent> ent) => GetCardPosition(ent) switch
+    {
+        SWSenatePosition.Chancellor => _senate.Chancellor != null,
+        SWSenatePosition.Speaker => _senate.Speaker != null && _senate.Chancellor == null,
+        _ => false,
+    };
+
     private void OnScheduleSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateScheduleSessionMessage args)
     {
-        if (GetCardPosition(ent) != SWSenatePosition.Speaker)
+        if (!CanScheduleAs(ent))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-speaker"), args.Actor, PopupType.Medium);
-            return;
-        }
-
-        if (_senate.Speaker == null)
-        {
-            _popup.PopupCursor(Loc.GetString("sw-senate-not-in-office"), args.Actor, PopupType.Medium);
             return;
         }
 
@@ -268,7 +278,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRemoveSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateRemoveSessionMessage args)
     {
-        if (GetCardPosition(ent) != SWSenatePosition.Speaker || _senate.Speaker == null)
+        if (!CanScheduleAs(ent))
             return;
 
         _senate.RemoveSession(args.SessionId);
@@ -277,15 +287,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnEmergencySession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateEmergencySessionMessage args)
     {
-        if (GetCardPosition(ent) != SWSenatePosition.Speaker)
+        if (!CanScheduleAs(ent))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-speaker"), args.Actor, PopupType.Medium);
-            return;
-        }
-
-        if (_senate.Speaker == null)
-        {
-            _popup.PopupCursor(Loc.GetString("sw-senate-not-in-office"), args.Actor, PopupType.Medium);
             return;
         }
 
@@ -305,15 +309,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnConfirmSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateConfirmSessionMessage args)
     {
-        if (GetCardPosition(ent) != SWSenatePosition.Chancellor)
+        if (!CanConfirmAs(ent))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
-            return;
-        }
-
-        if (_senate.Chancellor == null)
-        {
-            _popup.PopupCursor(Loc.GetString("sw-senate-not-in-office"), args.Actor, PopupType.Medium);
             return;
         }
 
@@ -325,15 +323,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateRejectSessionMessage args)
     {
-        if (GetCardPosition(ent) != SWSenatePosition.Chancellor)
+        if (!CanConfirmAs(ent))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
-            return;
-        }
-
-        if (_senate.Chancellor == null)
-        {
-            _popup.PopupCursor(Loc.GetString("sw-senate-not-in-office"), args.Actor, PopupType.Medium);
             return;
         }
 
@@ -727,12 +719,16 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.CanParties = programOwner != null;
         state.Parties = _party.BuildParties(programOwner);
         state.MyPartyId = _party.GetPartyIdOf(programOwner);
+        state.PartyLaws = _party.BuildPartyLaws();
         state.DraftBudget = ent.Comp.DraftBudget;
         state.GameTime = _time.TimeString();
         state.Schedule = _senate.BuildScheduleRows();
         state.SchedulableBills = _senate.BuildSchedulableBills();
         state.FreeStartHours = _senate.BuildFreeStartHours();
         state.PendingSessions = _senate.BuildPendingSessions();
+        state.CanScheduleSessions = CanScheduleAs(ent);
+        state.CanConfirmSessions = CanConfirmAs(ent);
+        state.OfficesVacant = _senate.OfficesVacant;
 
         if (card != null && TryComp<SWSenatePositionCardComponent>(card, out var position))
         {

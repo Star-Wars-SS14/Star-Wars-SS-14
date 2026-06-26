@@ -70,8 +70,9 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         DilemmaModePrograms.OnPressed += _ => ShowDilemmaMode(2);
         DilemmaModeSummary.OnPressed += _ => ShowDilemmaMode(3);
 
-        PartiesModeAll.OnPressed += _ => ShowPartiesMode(false);
-        PartiesModeMine.OnPressed += _ => ShowPartiesMode(true);
+        PartiesModeAll.OnPressed += _ => ShowPartiesMode(0);
+        PartiesModeMine.OnPressed += _ => ShowPartiesMode(1);
+        PartiesModeLaws.OnPressed += _ => ShowPartiesMode(2);
         CreatePartyButton.OnPressed += _ =>
         {
             if (!string.IsNullOrWhiteSpace(PartyNameEdit.Text))
@@ -85,7 +86,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         ShowSection(OfficeTab);
         ShowDraftMode(true);
         ShowDilemmaMode(0);
-        ShowPartiesMode(false);
+        ShowPartiesMode(0);
 
         AnnounceButton.OnPressed += _ =>
         {
@@ -186,14 +187,17 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BuildBudgetSection(state);
     }
 
-    private void ShowPartiesMode(bool mine)
+    private void ShowPartiesMode(int mode)
     {
-        AllPartiesPanel.Visible = !mine;
-        MyPartyPanel.Visible = mine;
-        PartiesModeAll.Disabled = !mine;
-        PartiesModeMine.Disabled = mine;
-        StyleToggle(PartiesModeAll, !mine);
-        StyleToggle(PartiesModeMine, mine);
+        AllPartiesPanel.Visible = mode == 0;
+        MyPartyPanel.Visible = mode == 1;
+        PartyLawsPanel.Visible = mode == 2;
+        PartiesModeAll.Disabled = mode == 0;
+        PartiesModeMine.Disabled = mode == 1;
+        PartiesModeLaws.Disabled = mode == 2;
+        StyleToggle(PartiesModeAll, mode == 0);
+        StyleToggle(PartiesModeMine, mode == 1);
+        StyleToggle(PartiesModeLaws, mode == 2);
     }
 
     private void BuildParties(SWSenateWorkConsoleState state)
@@ -231,7 +235,57 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         {
             MyPartyList.AddChild(SWConsoleStyle.Text("Вы не состоите в партии. Создайте свою или вступите в существующую.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
         }
+
+        BuildPartyLaws(state);
     }
+
+    private void BuildPartyLaws(SWSenateWorkConsoleState state)
+    {
+        PartyLawsList.RemoveAllChildren();
+        if (state.PartyLaws.Count == 0)
+        {
+            PartyLawsList.AddChild(SWConsoleStyle.Text("Партийных голосований ещё не было.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            return;
+        }
+
+        var alt = false;
+        foreach (var law in state.PartyLaws)
+        {
+            var row = SWConsoleStyle.Row(alt ? SWConsoleStyle.BgRowAlt : SWConsoleStyle.BgPanel, law.PartyColor);
+            row.Margin = new Thickness(0, 0, 0, 4);
+            alt = !alt;
+
+            var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+            box.AddChild(SWConsoleStyle.Text(law.BillName, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+
+            var line = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
+            line.AddChild(SWConsoleStyle.Text(law.PartyName, law.PartyColor, SWConsoleStyle.MonoSmall));
+            line.AddChild(SWConsoleStyle.Text($"  ·  голос: {law.ChoiceLabel}", law.ChoiceColor, SWConsoleStyle.MonoSmall));
+            line.AddChild(SWConsoleStyle.Text($"  ·  {law.ResultLabel}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            box.AddChild(line);
+
+            row.AddChild(box);
+            PartyLawsList.AddChild(row);
+        }
+    }
+
+    private static string CohesionLabel(int cohesion) => cohesion switch
+    {
+        >= 4 => "монолит",
+        >= 1 => "сплочённость",
+        0 => "нейтрально",
+        > -4 => "разлад",
+        _ => "раскол",
+    };
+
+    private static Color CohesionColor(int cohesion) => cohesion switch
+    {
+        >= 4 => Color.LightGreen,
+        >= 1 => Color.YellowGreen,
+        0 => Color.Gray,
+        > -4 => Color.Goldenrod,
+        _ => Color.IndianRed,
+    };
 
     private Control MakePartyCard(SWPartyEntry party, bool manage)
     {
@@ -265,6 +319,15 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             FontColorOverride = party.Formed ? Color.LightGreen : Color.Goldenrod,
         });
         box.AddChild(new Label { Text = $"Лидер: {party.LeaderName}", FontColorOverride = Color.Gray });
+
+        if (party.Formed)
+        {
+            box.AddChild(new Label
+            {
+                Text = $"Сплочённость: {party.Cohesion:+0;-0;0}  [{CohesionLabel(party.Cohesion)}]",
+                FontColorOverride = CohesionColor(party.Cohesion),
+            });
+        }
 
         if (!string.IsNullOrWhiteSpace(party.GraceWarning))
             details.AddChild(MakeWrap(party.GraceWarning, Color.IndianRed));
@@ -1263,6 +1326,14 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         ScheduleGrid.AddChild(SWConsoleStyle.Section("РАСПИСАНИЕ ДНЯ"));
         ScheduleGrid.AddChild(new Control { MinHeight = 6 });
 
+        if (state.OfficesVacant)
+        {
+            ScheduleGrid.AddChild(SWConsoleStyle.Text(
+                "Автопилот: нет Спикера и Канцлера — законы ставятся в расписание и подтверждаются автоматически.",
+                SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+            ScheduleGrid.AddChild(new Control { MinHeight = 6 });
+        }
+
         foreach (var row in state.Schedule)
         {
             var timeText = row.IsNow ? "> " + row.TimeLabel : "  " + row.TimeLabel;
@@ -1285,8 +1356,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             ScheduleGrid.AddChild(panel);
         }
 
-        var isSpeaker = state.IsSenateCard && state.Position == SWSenatePosition.Speaker && state.InOffice;
-        var isChancellor = state.IsSenateCard && state.Position == SWSenatePosition.Chancellor && state.InOffice;
+        var isSpeaker = state.CanScheduleSessions;
+        var isChancellor = state.CanConfirmSessions;
         SpeakerPanel.Visible = isSpeaker;
         ChancellorPanel.Visible = isChancellor;
 

@@ -185,6 +185,24 @@
   order: 17
 
 - type: swAmbition
+  id: SWAmbitionSecPartyStrong
+  name: Сплочённая партия
+  description: К концу раунда ваша партия должна быть крепко сплочена (сплочённость не ниже +4).
+  role: Senator
+  kind: PartyStrong
+  threshold: 4
+  order: 18
+
+- type: swAmbition
+  id: SWAmbitionSecPartyBig
+  name: Широкая коалиция
+  description: Соберите вокруг себя партию, охватывающую значимую часть секторов Сената.
+  role: Senator
+  kind: PartySize
+  margin: 0.4
+  order: 19
+
+- type: swAmbition
   id: SWAmbitionChaEconomy
   name: Процветание Республики
   description: К концу раунда экономика Республики должна быть выше 65.

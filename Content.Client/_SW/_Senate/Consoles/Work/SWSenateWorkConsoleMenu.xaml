@@ -1,148 +1,174 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
     Title="Сенатская рабочая консоль"
-    MinSize="640 560">
-    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
-        <BoxContainer Name="Nav" Orientation="Vertical" MinWidth="150" Margin="6 8 4 8">
-            <Button Name="NavOffice" Text="Должность" Margin="0 0 0 2" />
-            <Button Name="NavRoster" Text="Состав" Margin="0 0 0 2" />
-            <Button Name="NavSummary" Text="Сводка" Margin="0 0 0 2" />
-            <Button Name="NavDraft" Text="Разработка" Margin="0 0 0 2" />
-            <Button Name="NavAgenda" Text="Повестка" Margin="0 0 0 2" />
-            <Button Name="NavSchedule" Text="Расписание" Margin="0 0 0 2" />
-            <Button Name="NavDilemmas" Text="Дилеммы" Margin="0 0 0 2" />
-            <Button Name="NavCrises" Text="Кризисы" Margin="0 0 0 2" />
-            <Button Name="NavParties" Text="Партии" Margin="0 0 0 2" />
-            <Button Name="NavAmbitions" Text="Амбиции" Margin="0 0 0 2" />
-            <Button Name="NavBudget" Text="Бюджет" Margin="0 0 0 2" />
-            <Button Name="NavAnnounce" Text="Объявление" Margin="0 0 0 2" />
-        </BoxContainer>
-        <BoxContainer Name="ContentHost" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
-            <BoxContainer Name="OfficeTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
-                <RichTextLabel Name="PositionLabel" Margin="0 0 0 6" />
-                <RichTextLabel Name="StatusLabel" Margin="0 0 0 12" />
-                <Button Name="TakeButton" Text="Вступить в должность" />
-                <Button Name="ResignButton" Text="Сложить полномочия" Margin="0 6 0 0" />
-            </BoxContainer>
-            <ScrollContainer Name="RosterScroll" HorizontalExpand="True" VerticalExpand="True" Margin="8">
-                <BoxContainer Name="RosterList" Orientation="Vertical" />
-            </ScrollContainer>
-            <ScrollContainer Name="DashScroll" HorizontalExpand="True" VerticalExpand="True" Margin="8">
-                <BoxContainer Name="Dashboard" Orientation="Vertical" />
-            </ScrollContainer>
-            <BoxContainer Name="DraftTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
-                <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
-                    <Button Name="DraftModeCustom" Text="Свой закон" />
-                    <Button Name="DraftModePreset" Text="Шаблоны" Margin="6 0 0 0" />
+    MinSize="780 620">
+    <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+            <PanelContainer Name="HeaderPanel">
+                <BoxContainer Orientation="Horizontal" Margin="12 7">
+                    <Label Name="HeaderTitle" HorizontalExpand="True" />
+                    <PanelContainer Name="LiveDot" MinSize="9 9" VerticalAlignment="Center" />
+                    <Label Name="HeaderClock" Margin="7 0 0 0" />
                 </BoxContainer>
-                <BoxContainer Name="CustomDraftPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
-                    <Label Text="Название законопроекта" StyleClasses="LabelKeyText" />
-                    <LineEdit Name="BillNameEdit" PlaceHolder="Название..." Margin="0 2 0 8" />
-                    <Label Text="Изменения" StyleClasses="LabelKeyText" />
-                    <ScrollContainer VerticalExpand="True" Margin="0 2 0 4">
-                        <BoxContainer Name="DraftStatList" Orientation="Vertical" />
+            </PanelContainer>
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
+                <PanelContainer Name="NavPanel" MinWidth="190">
+                    <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                        <BoxContainer Name="Nav" Orientation="Vertical" Margin="8">
+                            <Label Name="GroupInfo" Text="ИНФОРМАЦИЯ" Margin="2 0 0 3" />
+                            <Button Name="NavOffice" Text="Должность" Margin="0 0 0 2" />
+                            <Button Name="NavSummary" Text="Сводка" Margin="0 0 0 2" />
+                            <Button Name="NavCrises" Text="Кризисы" Margin="0 0 0 2" />
+                            <Label Name="GroupOrg" Text="ОРГАНИЗАЦИЯ" Margin="2 10 0 3" />
+                            <Button Name="NavRoster" Text="Состав" Margin="0 0 0 2" />
+                            <Button Name="NavAgenda" Text="Повестка" Margin="0 0 0 2" />
+                            <Button Name="NavSchedule" Text="Расписание" Margin="0 0 0 2" />
+                            <Label Name="GroupWork" Text="РАБОТА" Margin="2 10 0 3" />
+                            <Button Name="NavDraft" Text="Разработка" Margin="0 0 0 2" />
+                            <Button Name="NavDilemmas" Text="Дилеммы" Margin="0 0 0 2" />
+                            <Button Name="NavParties" Text="Партии" Margin="0 0 0 2" />
+                            <Button Name="NavAmbitions" Text="Амбиции" Margin="0 0 0 2" />
+                            <Button Name="NavBudget" Text="Бюджет" Margin="0 0 0 2" />
+                            <Button Name="NavAnnounce" Text="Объявление" Margin="0 0 0 2" />
+                        </BoxContainer>
                     </ScrollContainer>
-                    <RichTextLabel Name="BudgetLabel" Margin="0 0 0 8" />
-                    <Label Text="Описание" StyleClasses="LabelKeyText" />
-                    <LineEdit Name="BillDescEdit" PlaceHolder="Описание..." Margin="0 2 0 8" />
-                    <Button Name="SubmitBillButton" Text="Внести законопроект" />
-                </BoxContainer>
-                <ScrollContainer Name="PresetPanel" HorizontalExpand="True" VerticalExpand="True">
-                    <BoxContainer Name="PresetsList" Orientation="Vertical" />
-                </ScrollContainer>
-            </BoxContainer>
-            <ScrollContainer Name="AgendaScroll" HorizontalExpand="True" VerticalExpand="True" Margin="8">
-                <BoxContainer Name="AgendaList" Orientation="Vertical" />
-            </ScrollContainer>
-            <BoxContainer Name="ScheduleTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
-                <ScrollContainer VerticalExpand="True" Margin="0 0 0 6">
-                    <BoxContainer Name="ScheduleGrid" Orientation="Vertical" />
-                </ScrollContainer>
-                <BoxContainer Name="SpeakerPanel" Orientation="Vertical">
-                    <BoxContainer Name="EmergencyBillsPanel" Orientation="Vertical" Margin="0 0 0 6" />
-                    <Label Text="Назначить заседание" StyleClasses="LabelKeyText" />
-                    <BoxContainer Orientation="Horizontal" Margin="0 2 0 0">
-                        <OptionButton Name="BillOption" HorizontalExpand="True" />
-                        <OptionButton Name="StartHourOption" Margin="6 0 6 0" />
-                        <OptionButton Name="DurationOption" />
+                </PanelContainer>
+                <BoxContainer Name="ContentHost" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                    <BoxContainer Name="OfficeTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
+                        <RichTextLabel Name="PositionLabel" Margin="0 0 0 6" />
+                        <RichTextLabel Name="StatusLabel" Margin="0 0 0 12" />
+                        <Button Name="TakeButton" Text="Вступить в должность" />
+                        <Button Name="ResignButton" Text="Сложить полномочия" Margin="0 6 0 0" />
                     </BoxContainer>
-                    <Button Name="ScheduleButton" Text="Запланировать" Margin="0 4 0 6" />
-                    <BoxContainer Name="SpeakerPendingList" Orientation="Vertical" />
-                </BoxContainer>
-                <BoxContainer Name="ChancellorPanel" Orientation="Vertical">
-                    <Label Text="Подтверждение заседаний" StyleClasses="LabelKeyText" />
-                    <BoxContainer Name="ChancellorPendingList" Orientation="Vertical" />
-                </BoxContainer>
-            </BoxContainer>
-            <BoxContainer Name="CrisesTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
-                <Label Text="Кризисы Республики" StyleClasses="LabelKeyText" Margin="0 0 0 6" />
-                <ScrollContainer HorizontalExpand="True" VerticalExpand="True">
-                    <BoxContainer Name="CrisesList" Orientation="Vertical" />
-                </ScrollContainer>
-            </BoxContainer>
-            <BoxContainer Name="PartiesTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
-                <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
-                    <Button Name="PartiesModeAll" Text="Все партии" />
-                    <Button Name="PartiesModeMine" Text="Моя партия" Margin="6 0 0 0" />
-                </BoxContainer>
-                <ScrollContainer Name="AllPartiesPanel" HorizontalExpand="True" VerticalExpand="True">
-                    <BoxContainer Name="AllPartiesList" Orientation="Vertical" />
-                </ScrollContainer>
-                <BoxContainer Name="MyPartyPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
-                    <BoxContainer Name="CreatePartyBox" Orientation="Vertical" Margin="0 0 0 8">
-                        <Label Text="Создать партию" StyleClasses="LabelKeyText" />
-                        <LineEdit Name="PartyNameEdit" PlaceHolder="Название партии..." Margin="0 2 0 4" />
-                        <LineEdit Name="PartyDescEdit" PlaceHolder="Описание..." Margin="0 0 0 4" />
-                        <Button Name="CreatePartyButton" Text="Создать партию" HorizontalAlignment="Left" />
+                    <ScrollContainer Name="RosterScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                        <BoxContainer Name="RosterList" Orientation="Vertical" HorizontalExpand="True" />
+                    </ScrollContainer>
+                    <ScrollContainer Name="DashScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                        <BoxContainer Name="Dashboard" Orientation="Vertical" HorizontalExpand="True" />
+                    </ScrollContainer>
+                    <BoxContainer Name="DraftTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
+                        <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
+                            <Button Name="DraftModeCustom" Text="Свой закон" />
+                            <Button Name="DraftModePreset" Text="Шаблоны" Margin="6 0 0 0" />
+                        </BoxContainer>
+                        <BoxContainer Name="CustomDraftPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                            <Label Text="Название законопроекта" StyleClasses="LabelKeyText" />
+                            <LineEdit Name="BillNameEdit" PlaceHolder="Название..." Margin="0 2 0 8" />
+                            <Label Text="Изменения" StyleClasses="LabelKeyText" />
+                            <ScrollContainer HScrollEnabled="False" VerticalExpand="True" Margin="0 2 0 4">
+                                <BoxContainer Name="DraftStatList" Orientation="Vertical" HorizontalExpand="True" />
+                            </ScrollContainer>
+                            <RichTextLabel Name="BudgetLabel" Margin="0 0 0 8" />
+                            <Label Text="Описание" StyleClasses="LabelKeyText" />
+                            <LineEdit Name="BillDescEdit" PlaceHolder="Описание..." Margin="0 2 0 8" />
+                            <Button Name="SubmitBillButton" Text="Внести законопроект" />
+                        </BoxContainer>
+                        <ScrollContainer Name="PresetPanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                            <BoxContainer Name="PresetsList" Orientation="Vertical" HorizontalExpand="True" />
+                        </ScrollContainer>
                     </BoxContainer>
-                    <ScrollContainer HorizontalExpand="True" VerticalExpand="True">
-                        <BoxContainer Name="MyPartyList" Orientation="Vertical" />
+                    <ScrollContainer Name="AgendaScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                        <BoxContainer Name="AgendaList" Orientation="Vertical" HorizontalExpand="True" />
                     </ScrollContainer>
+                    <BoxContainer Name="ScheduleTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
+                        <ScrollContainer HScrollEnabled="False" VerticalExpand="True" Margin="0 0 0 6">
+                            <BoxContainer Name="ScheduleGrid" Orientation="Vertical" HorizontalExpand="True" />
+                        </ScrollContainer>
+                        <BoxContainer Name="SpeakerPanel" Orientation="Vertical">
+                            <BoxContainer Name="EmergencyBillsPanel" Orientation="Vertical" Margin="0 0 0 6" />
+                            <Label Name="ScheduleHeader" Text="Назначить заседание" StyleClasses="LabelKeyText" />
+                            <BoxContainer Orientation="Horizontal" Margin="0 4 0 0">
+                                <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                                    <Label Name="BillOptionCaption" Text="Законопроект" />
+                                    <OptionButton Name="BillOption" HorizontalExpand="True" />
+                                </BoxContainer>
+                                <BoxContainer Orientation="Vertical" Margin="6 0 0 0">
+                                    <Label Name="HourCaption" Text="Час" />
+                                    <OptionButton Name="StartHourOption" />
+                                </BoxContainer>
+                                <BoxContainer Orientation="Vertical" Margin="6 0 0 0">
+                                    <Label Name="DurationCaption" Text="Длит." />
+                                    <OptionButton Name="DurationOption" />
+                                </BoxContainer>
+                            </BoxContainer>
+                            <Button Name="ScheduleButton" Text="Запланировать" Margin="0 6 0 8" />
+                            <Label Name="SpeakerPendingHeader" Text="Ваши заявки на заседания" StyleClasses="LabelKeyText" />
+                            <BoxContainer Name="SpeakerPendingList" Orientation="Vertical" Margin="0 4 0 0" />
+                        </BoxContainer>
+                        <BoxContainer Name="ChancellorPanel" Orientation="Vertical">
+                            <Label Name="ChancellorHeader" Text="Подтверждение заседаний" StyleClasses="LabelKeyText" />
+                            <BoxContainer Name="ChancellorPendingList" Orientation="Vertical" Margin="0 4 0 0" />
+                        </BoxContainer>
+                    </BoxContainer>
+                    <BoxContainer Name="CrisesTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
+                        <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                            <BoxContainer Name="CrisesList" Orientation="Vertical" HorizontalExpand="True" />
+                        </ScrollContainer>
+                    </BoxContainer>
+                    <BoxContainer Name="PartiesTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
+                        <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
+                            <Button Name="PartiesModeAll" Text="Все партии" />
+                            <Button Name="PartiesModeMine" Text="Моя партия" Margin="6 0 0 0" />
+                        </BoxContainer>
+                        <ScrollContainer Name="AllPartiesPanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                            <BoxContainer Name="AllPartiesList" Orientation="Vertical" HorizontalExpand="True" />
+                        </ScrollContainer>
+                        <BoxContainer Name="MyPartyPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                            <BoxContainer Name="CreatePartyBox" Orientation="Vertical" Margin="0 0 0 8">
+                                <Label Text="Создать партию" StyleClasses="LabelKeyText" />
+                                <LineEdit Name="PartyNameEdit" PlaceHolder="Название партии..." Margin="0 2 0 4" />
+                                <LineEdit Name="PartyDescEdit" PlaceHolder="Описание..." Margin="0 0 0 4" />
+                                <Button Name="CreatePartyButton" Text="Создать партию" HorizontalAlignment="Left" />
+                            </BoxContainer>
+                            <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                                <BoxContainer Name="MyPartyList" Orientation="Vertical" HorizontalExpand="True" />
+                            </ScrollContainer>
+                        </BoxContainer>
+                    </BoxContainer>
+                    <BoxContainer Name="AmbitionsTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
+                        <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                            <BoxContainer Name="AmbitionsList" Orientation="Vertical" HorizontalExpand="True" />
+                        </ScrollContainer>
+                    </BoxContainer>
+                    <BoxContainer Name="BudgetTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
+                        <RichTextLabel Name="BudgetSectionSummary" Margin="0 0 0 8" />
+                        <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                            <BoxContainer Name="BudgetAllocPanel" Orientation="Vertical" HorizontalExpand="True" />
+                        </ScrollContainer>
+                    </BoxContainer>
+                    <BoxContainer Name="AnnounceTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
+                        <Label Text="Объявление Сената" StyleClasses="LabelKeyText" />
+                        <LineEdit Name="AnnounceEdit" PlaceHolder="Текст объявления..." Margin="0 2 0 8" />
+                        <Button Name="AnnounceButton" Text="Отправить объявление" />
+                    </BoxContainer>
+                    <BoxContainer Name="DilemmaTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
+                        <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
+                            <Button Name="DilemmaModeActive" Text="Внебюджетные" />
+                            <Button Name="DilemmaModeBudget" Text="Бюджетные" Margin="6 0 0 0" />
+                            <Button Name="DilemmaModePrograms" Text="Программы" Margin="6 0 0 0" />
+                            <Button Name="DilemmaModeSummary" Text="Сводка решений" Margin="6 0 0 0" />
+                        </BoxContainer>
+                        <ScrollContainer Name="DilemmaActivePanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                            <BoxContainer Name="DilemmaActiveList" Orientation="Vertical" HorizontalExpand="True" />
+                        </ScrollContainer>
+                        <BoxContainer Name="DilemmaBudgetPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                            <RichTextLabel Name="BudgetSummary" Margin="0 0 0 6" />
+                            <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                                <BoxContainer Name="BudgetDilemmaList" Orientation="Vertical" HorizontalExpand="True" />
+                            </ScrollContainer>
+                        </BoxContainer>
+                        <BoxContainer Name="DilemmaProgramPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                            <RichTextLabel Name="ProgramSummary" Margin="0 0 0 6" />
+                            <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                                <BoxContainer Name="ProgramList" Orientation="Vertical" HorizontalExpand="True" />
+                            </ScrollContainer>
+                        </BoxContainer>
+                        <ScrollContainer Name="DilemmaSummaryPanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                            <BoxContainer Name="DilemmaSummaryList" Orientation="Vertical" HorizontalExpand="True" />
+                        </ScrollContainer>
+                    </BoxContainer>
                 </BoxContainer>
-            </BoxContainer>
-            <BoxContainer Name="AmbitionsTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
-                <Label Text="Тайные амбиции (известны только вам)" StyleClasses="LabelKeyText" Margin="0 0 0 6" />
-                <ScrollContainer HorizontalExpand="True" VerticalExpand="True">
-                    <BoxContainer Name="AmbitionsList" Orientation="Vertical" />
-                </ScrollContainer>
-            </BoxContainer>
-            <BoxContainer Name="BudgetTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
-                <RichTextLabel Name="BudgetSectionSummary" Margin="0 0 0 8" />
-                <ScrollContainer HorizontalExpand="True" VerticalExpand="True">
-                    <BoxContainer Name="BudgetAllocPanel" Orientation="Vertical" />
-                </ScrollContainer>
-            </BoxContainer>
-            <BoxContainer Name="AnnounceTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
-                <Label Text="Объявление Сената" StyleClasses="LabelKeyText" />
-                <LineEdit Name="AnnounceEdit" PlaceHolder="Текст объявления..." Margin="0 2 0 8" />
-                <Button Name="AnnounceButton" Text="Отправить объявление" />
-            </BoxContainer>
-            <BoxContainer Name="DilemmaTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
-                <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
-                    <Button Name="DilemmaModeActive" Text="Внебюджетные" />
-                    <Button Name="DilemmaModeBudget" Text="Бюджетные" Margin="6 0 0 0" />
-                    <Button Name="DilemmaModePrograms" Text="Программы" Margin="6 0 0 0" />
-                    <Button Name="DilemmaModeSummary" Text="Сводка решений" Margin="6 0 0 0" />
-                </BoxContainer>
-                <ScrollContainer Name="DilemmaActivePanel" HorizontalExpand="True" VerticalExpand="True">
-                    <BoxContainer Name="DilemmaActiveList" Orientation="Vertical" />
-                </ScrollContainer>
-                <BoxContainer Name="DilemmaBudgetPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
-                    <RichTextLabel Name="BudgetSummary" Margin="0 0 0 6" />
-                    <ScrollContainer HorizontalExpand="True" VerticalExpand="True">
-                        <BoxContainer Name="BudgetDilemmaList" Orientation="Vertical" />
-                    </ScrollContainer>
-                </BoxContainer>
-                <BoxContainer Name="DilemmaProgramPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
-                    <RichTextLabel Name="ProgramSummary" Margin="0 0 0 6" />
-                    <ScrollContainer HorizontalExpand="True" VerticalExpand="True">
-                        <BoxContainer Name="ProgramList" Orientation="Vertical" />
-                    </ScrollContainer>
-                </BoxContainer>
-                <ScrollContainer Name="DilemmaSummaryPanel" HorizontalExpand="True" VerticalExpand="True">
-                    <BoxContainer Name="DilemmaSummaryList" Orientation="Vertical" />
-                </ScrollContainer>
             </BoxContainer>
         </BoxContainer>
-    </BoxContainer>
+    </PanelContainer>
 </controls:FancyWindow>

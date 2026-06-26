@@ -19,6 +19,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private readonly SWSenateWorkConsoleBoundUserInterface _owner;
     private (Button Nav, Control Panel)[] _sections = System.Array.Empty<(Button, Control)>();
+    private (Label Header, Button[] Buttons)[] _navGroups = System.Array.Empty<(Label, Button[])>();
     private readonly Dictionary<string, Slider> _draftSliders = new();
     private readonly Dictionary<string, Label> _draftValueLabels = new();
     private readonly Dictionary<string, LineEdit> _budgetEdits = new();
@@ -58,6 +59,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             var target = panel;
             nav.OnPressed += _ => ShowSection(target);
         }
+
+        StyleChrome();
 
         DraftModeCustom.OnPressed += _ => ShowDraftMode(true);
         DraftModePreset.OnPressed += _ => ShowDraftMode(false);
@@ -125,9 +128,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     public void SetState(SWSenateWorkConsoleState state)
     {
-        Title = string.IsNullOrEmpty(state.GameTime)
-            ? "Сенатская рабочая консоль"
-            : $"Сенатская рабочая консоль — {state.GameTime}";
+        HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "—" : state.GameTime;
 
         if (!state.HasCard)
             PositionLabel.SetMessage("Вставьте ID-карту в консоль.");
@@ -136,7 +137,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         else
             PositionLabel.SetMessage(state.PositionLabel);
 
-        StatusLabel.SetMessage(state.InOffice ? "Статус: в должности" : "Статус: не в должности");
+        var statusColor = state.InOffice ? SWConsoleStyle.Good : SWConsoleStyle.TextDim;
+        StatusLabel.SetMarkup($"[color={statusColor.ToHex()}]{(state.InOffice ? "Статус: в должности" : "Статус: не в должности")}[/color]");
 
         TakeButton.Visible = state.CanTake;
         ResignButton.Visible = state.CanResign;
@@ -153,6 +155,9 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         NavAmbitions.Visible = state.CanAmbitions && state.InOffice;
         NavBudget.Visible = state.IsChancellorView;
         NavAnnounce.Visible = isLeader && state.InOffice;
+
+        foreach (var (header, buttons) in _navGroups)
+            header.Visible = buttons.Any(b => b.Visible);
 
         foreach (var (nav, panel) in _sections)
         {
@@ -187,6 +192,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         MyPartyPanel.Visible = mine;
         PartiesModeAll.Disabled = !mine;
         PartiesModeMine.Disabled = mine;
+        StyleToggle(PartiesModeAll, !mine);
+        StyleToggle(PartiesModeMine, mine);
     }
 
     private void BuildParties(SWSenateWorkConsoleState state)
@@ -194,12 +201,16 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         AllPartiesList.RemoveAllChildren();
         if (state.Parties.Count == 0)
         {
-            AllPartiesList.AddChild(new Label { Text = "Партий пока нет.", FontColorOverride = Color.Gray });
+            AllPartiesList.AddChild(SWConsoleStyle.Text("Партий пока нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
         }
         else
         {
             foreach (var party in state.Parties)
-                AllPartiesList.AddChild(MakePartyCard(party, false));
+            {
+                var card = MakePartyCard(party, false);
+                StyleCardButtons(card);
+                AllPartiesList.AddChild(card);
+            }
         }
 
         var mine = state.Parties.FirstOrDefault(p => p.IsMine);
@@ -208,15 +219,17 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         MyPartyList.RemoveAllChildren();
         if (mine != null)
         {
-            MyPartyList.AddChild(MakePartyCard(mine, true));
+            var card = MakePartyCard(mine, true);
+            StyleCardButtons(card);
+            MyPartyList.AddChild(card);
         }
         else if (!state.CanParties)
         {
-            MyPartyList.AddChild(new Label { Text = "Партии доступны сенаторам с закреплённым сектором.", FontColorOverride = Color.Gray });
+            MyPartyList.AddChild(SWConsoleStyle.Text("Партии доступны сенаторам с закреплённым сектором.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
         }
         else
         {
-            MyPartyList.AddChild(new Label { Text = "Вы не состоите в партии. Создайте свою или вступите в существующую.", FontColorOverride = Color.Gray });
+            MyPartyList.AddChild(SWConsoleStyle.Text("Вы не состоите в партии. Создайте свою или вступите в существующую.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
         }
     }
 
@@ -385,12 +398,16 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         CrisesList.RemoveAllChildren();
         if (state.Crises.Count == 0)
         {
-            CrisesList.AddChild(new Label { Text = "Активных кризисов нет.", FontColorOverride = Color.Gray });
+            CrisesList.AddChild(SWConsoleStyle.Text("Активных кризисов нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 
         foreach (var crisis in state.Crises)
-            CrisesList.AddChild(MakeCrisisCard(crisis));
+        {
+            var card = MakeCrisisCard(crisis);
+            StyleCardButtons(card);
+            CrisesList.AddChild(card);
+        }
     }
 
     private Control MakeCrisisCard(SWCrisisEntry crisis)
@@ -530,7 +547,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         AmbitionsList.RemoveAllChildren();
         if (state.Ambitions.Count == 0)
         {
-            AmbitionsList.AddChild(new Label { Text = "Амбиций нет.", FontColorOverride = Color.Gray });
+            AmbitionsList.AddChild(SWConsoleStyle.Text("Амбиций нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 
@@ -571,12 +588,16 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         ProgramList.RemoveAllChildren();
         if (state.Programs.Count == 0)
         {
-            ProgramList.AddChild(new Label { Text = "Программ нет.", FontColorOverride = Color.Gray });
+            ProgramList.AddChild(SWConsoleStyle.Text("Программ нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 
         foreach (var program in state.Programs)
-            ProgramList.AddChild(MakeProgramCard(program));
+        {
+            var card = MakeProgramCard(program);
+            StyleCardButtons(card);
+            ProgramList.AddChild(card);
+        }
     }
 
     private Control MakeProgramCard(SWProgramEntry program)
@@ -623,6 +644,10 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         DilemmaModeBudget.Disabled = mode == 1;
         DilemmaModePrograms.Disabled = mode == 2;
         DilemmaModeSummary.Disabled = mode == 3;
+        StyleToggle(DilemmaModeActive, mode == 0);
+        StyleToggle(DilemmaModeBudget, mode == 1);
+        StyleToggle(DilemmaModePrograms, mode == 2);
+        StyleToggle(DilemmaModeSummary, mode == 3);
     }
 
     private void BuildDilemmas(SWSenateWorkConsoleState state)
@@ -630,23 +655,31 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         DilemmaActiveList.RemoveAllChildren();
         if (state.MyDilemmas.Count == 0)
         {
-            DilemmaActiveList.AddChild(new Label { Text = "Активных дилемм нет.", FontColorOverride = Color.Gray });
+            DilemmaActiveList.AddChild(SWConsoleStyle.Text("Активных дилемм нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
         }
         else
         {
             foreach (var dilemma in state.MyDilemmas)
-                DilemmaActiveList.AddChild(MakeDilemmaCard(dilemma));
+            {
+                var card = MakeDilemmaCard(dilemma);
+                StyleCardButtons(card);
+                DilemmaActiveList.AddChild(card);
+            }
         }
 
         DilemmaSummaryList.RemoveAllChildren();
         if (state.AllDilemmas.Count == 0)
         {
-            DilemmaSummaryList.AddChild(new Label { Text = "Дилемм пока нет.", FontColorOverride = Color.Gray });
+            DilemmaSummaryList.AddChild(SWConsoleStyle.Text("Дилемм пока нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 
         foreach (var dilemma in state.AllDilemmas)
-            DilemmaSummaryList.AddChild(MakeSummaryEntry(dilemma));
+        {
+            var entry = MakeSummaryEntry(dilemma);
+            StyleCardButtons(entry);
+            DilemmaSummaryList.AddChild(entry);
+        }
     }
 
     private void BuildBudget(SWSenateWorkConsoleState state)
@@ -658,12 +691,16 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BudgetDilemmaList.RemoveAllChildren();
         if (state.MyBudgetDilemmas.Count == 0)
         {
-            BudgetDilemmaList.AddChild(new Label { Text = "Бюджетных дилемм нет.", FontColorOverride = Color.Gray });
+            BudgetDilemmaList.AddChild(SWConsoleStyle.Text("Бюджетных дилемм нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 
         foreach (var dilemma in state.MyBudgetDilemmas)
-            BudgetDilemmaList.AddChild(MakeDilemmaCard(dilemma));
+        {
+            var card = MakeDilemmaCard(dilemma);
+            StyleCardButtons(card);
+            BudgetDilemmaList.AddChild(card);
+        }
     }
 
     private void BuildBudgetSection(SWSenateWorkConsoleState state)
@@ -687,23 +724,36 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
         if (state.BudgetLocked)
         {
-            BudgetAllocPanel.AddChild(new Label { Text = "Распределение (зафиксировано):", StyleClasses = { "LabelKeyText" } });
+            BudgetAllocPanel.AddChild(SWConsoleStyle.Section("РАСПРЕДЕЛЕНИЕ (ЗАФИКСИРОВАНО)"));
+            BudgetAllocPanel.AddChild(new Control { MinHeight = 4 });
             foreach (var sector in state.BudgetSectors)
-                BudgetAllocPanel.AddChild(new Label { Text = $"{sector.Name}: {sector.Amount} кр.", FontColorOverride = sector.Color });
+            {
+                var panel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel);
+                var line = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+                line.AddChild(SWConsoleStyle.Text(sector.Name, sector.Color, SWConsoleStyle.MonoBold, 200));
+                line.AddChild(new Control { HorizontalExpand = true });
+                line.AddChild(SWConsoleStyle.Text($"{sector.Amount} кр.", SWConsoleStyle.TextBright, SWConsoleStyle.Mono));
+                panel.AddChild(line);
+                BudgetAllocPanel.AddChild(panel);
+            }
             return;
         }
 
-        BudgetAllocPanel.AddChild(new Label { Text = "Распределение по секторам:", StyleClasses = { "LabelKeyText" } });
+        BudgetAllocPanel.AddChild(SWConsoleStyle.Section("РАСПРЕДЕЛЕНИЕ ПО СЕКТОРАМ"));
+        BudgetAllocPanel.AddChild(new Control { MinHeight = 4 });
         foreach (var sector in state.BudgetSectors)
         {
             var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 1, 0, 1) };
-            row.AddChild(new Label { Text = sector.Name, FontColorOverride = sector.Color, MinWidth = 180 });
+            var nameLbl = SWConsoleStyle.Text(sector.Name, sector.Color, SWConsoleStyle.MonoBold, 180);
+            nameLbl.VerticalAlignment = Control.VAlignment.Center;
+            row.AddChild(nameLbl);
 
             var edit = new LineEdit { Text = sector.Amount.ToString(), MinWidth = 100 };
             _budgetEdits[sector.SectorId] = edit;
 
             var id = sector.SectorId;
-            var setButton = new Button { Text = "Задать", Margin = new Thickness(6, 0, 0, 0) };
+            var setButton = SWConsoleStyle.Action("Задать", SWConsoleStyle.Accent);
+            setButton.Margin = new Thickness(6, 0, 0, 0);
             setButton.OnPressed += _ =>
             {
                 if (int.TryParse(edit.Text, out var amount))
@@ -715,7 +765,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             BudgetAllocPanel.AddChild(row);
         }
 
-        var lockButton = new Button { Text = "Зафиксировать бюджет", Margin = new Thickness(0, 6, 0, 0) };
+        var lockButton = SWConsoleStyle.Action("Зафиксировать бюджет", SWConsoleStyle.Good);
+        lockButton.Margin = new Thickness(0, 8, 0, 0);
         lockButton.OnPressed += _ =>
         {
             foreach (var (sectorId, edit) in _budgetEdits)
@@ -812,15 +863,12 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private static Control MakeEffectsRow(List<SWBillEffectEntry> effects)
     {
-        var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(8, 0, 0, 0) };
+        var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 3, 0, 0) };
         foreach (var effect in effects)
         {
-            row.AddChild(new Label
-            {
-                Text = $"{effect.StatName} {effect.Delta:+0;-0}",
-                FontColorOverride = effect.Color,
-                Margin = new Thickness(0, 0, 10, 0),
-            });
+            var e = SWConsoleStyle.Text($"{effect.StatName} {effect.Delta:+0;-0}", effect.Color, SWConsoleStyle.MonoSmall);
+            e.Margin = new Thickness(0, 0, 12, 0);
+            row.AddChild(e);
         }
 
         return row;
@@ -878,12 +926,130 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         return box;
     }
 
+    private void StyleChrome()
+    {
+        SWConsoleStyle.StyleRoot(RootPanel);
+        SWConsoleStyle.StyleHeader(HeaderPanel);
+        NavPanel.PanelOverride = new StyleBoxFlat
+        {
+            BackgroundColor = SWConsoleStyle.BgDark,
+            BorderColor = SWConsoleStyle.Edge,
+            BorderThickness = new Thickness(0, 0, 1, 0),
+        };
+
+        HeaderTitle.FontOverride = SWConsoleStyle.MonoBold;
+        HeaderTitle.FontColorOverride = SWConsoleStyle.Accent;
+        HeaderTitle.Text = "РАБОЧАЯ КОНСОЛЬ СЕНАТА";
+        LiveDot.PanelOverride = new StyleBoxFlat { BackgroundColor = SWConsoleStyle.Good };
+        HeaderClock.FontOverride = SWConsoleStyle.Mono;
+        HeaderClock.FontColorOverride = SWConsoleStyle.TextBright;
+
+        _navGroups = new (Label, Button[])[]
+        {
+            (GroupInfo, new[] { NavOffice, NavSummary, NavCrises }),
+            (GroupOrg, new[] { NavRoster, NavAgenda, NavSchedule }),
+            (GroupWork, new[] { NavDraft, NavDilemmas, NavParties, NavAmbitions, NavBudget, NavAnnounce }),
+        };
+
+        foreach (var (header, buttons) in _navGroups)
+        {
+            header.FontOverride = SWConsoleStyle.MonoSmall;
+            header.FontColorOverride = SWConsoleStyle.Accent;
+            foreach (var btn in buttons)
+            {
+                btn.Label.FontOverride = SWConsoleStyle.Mono;
+                btn.TextAlign = Label.AlignMode.Left;
+            }
+        }
+
+        StyleButton(TakeButton, SWConsoleStyle.Good);
+        StyleButton(ResignButton, SWConsoleStyle.Bad);
+        StyleButton(SubmitBillButton, SWConsoleStyle.Accent);
+        StyleButton(AnnounceButton, SWConsoleStyle.Accent);
+        StyleButton(ScheduleButton, SWConsoleStyle.Accent);
+        StyleButton(CreatePartyButton, SWConsoleStyle.Accent);
+
+        foreach (var caption in new[] { BillOptionCaption, HourCaption, DurationCaption })
+        {
+            caption.FontOverride = SWConsoleStyle.MonoSmall;
+            caption.FontColorOverride = SWConsoleStyle.TextDim;
+        }
+        foreach (var heading in new[] { ScheduleHeader, SpeakerPendingHeader, ChancellorHeader })
+        {
+            heading.FontOverride = SWConsoleStyle.MonoBold;
+            heading.FontColorOverride = SWConsoleStyle.Accent;
+        }
+    }
+
+    private void StyleButton(Button btn, Color accent)
+    {
+        var on = !btn.Disabled;
+        btn.Label.FontOverride = SWConsoleStyle.MonoBold;
+        btn.Label.FontColorOverride = on ? accent : SWConsoleStyle.TextDim;
+        btn.StyleBoxOverride = new StyleBoxFlat
+        {
+            BackgroundColor = SWConsoleStyle.BgPanel,
+            BorderColor = on ? accent : SWConsoleStyle.Edge,
+            BorderThickness = new Thickness(1),
+            ContentMarginLeftOverride = 10,
+            ContentMarginRightOverride = 10,
+            ContentMarginTopOverride = 4,
+            ContentMarginBottomOverride = 4,
+        };
+    }
+
+    private void StyleCardButtons(Control root)
+    {
+        foreach (var child in root.Children)
+        {
+            if (child is Button b)
+                StyleButton(b, SWConsoleStyle.Accent);
+            else
+                StyleCardButtons(child);
+        }
+    }
+
+    private void StyleToggle(Button btn, bool active)
+    {
+        btn.Label.FontOverride = SWConsoleStyle.MonoBold;
+        btn.Label.FontColorOverride = active ? SWConsoleStyle.Accent : SWConsoleStyle.TextDim;
+        btn.StyleBoxOverride = new StyleBoxFlat
+        {
+            BackgroundColor = active ? SWConsoleStyle.BgPanel : SWConsoleStyle.BgDark,
+            BorderColor = active ? SWConsoleStyle.Accent : SWConsoleStyle.Edge,
+            BorderThickness = new Thickness(1),
+            ContentMarginLeftOverride = 10,
+            ContentMarginRightOverride = 10,
+            ContentMarginTopOverride = 4,
+            ContentMarginBottomOverride = 4,
+        };
+    }
+
+    private static Color ScheduleColor(Color c) =>
+        c == Color.DimGray || c == Color.DarkGray ? SWConsoleStyle.TextDim : c;
+
+    private void StyleNavButton(Button btn, bool active)
+    {
+        btn.StyleBoxOverride = new StyleBoxFlat
+        {
+            BackgroundColor = active ? SWConsoleStyle.BgPanel : Color.Transparent,
+            BorderColor = SWConsoleStyle.Accent,
+            BorderThickness = active ? new Thickness(3, 0, 0, 0) : new Thickness(0),
+            ContentMarginLeftOverride = active ? 8 : 11,
+            ContentMarginRightOverride = 8,
+            ContentMarginTopOverride = 5,
+            ContentMarginBottomOverride = 5,
+        };
+        btn.Label.FontColorOverride = active ? SWConsoleStyle.Accent : SWConsoleStyle.TextDim;
+    }
+
     private void ShowSection(Control target)
     {
         foreach (var (nav, panel) in _sections)
         {
-            panel.Visible = panel == target;
-            nav.Disabled = panel == target;
+            var active = panel == target;
+            panel.Visible = active;
+            StyleNavButton(nav, active);
         }
     }
 
@@ -893,6 +1059,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         PresetPanel.Visible = !custom;
         DraftModeCustom.Disabled = custom;
         DraftModePreset.Disabled = !custom;
+        StyleToggle(DraftModeCustom, custom);
+        StyleToggle(DraftModePreset, !custom);
     }
 
     private void BuildPresets(SWSenateWorkConsoleState state)
@@ -900,65 +1068,58 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         PresetsList.RemoveAllChildren();
         if (state.Presets.Count == 0)
         {
-            PresetsList.AddChild(new Label { Text = "Шаблонов нет." });
+            PresetsList.AddChild(SWConsoleStyle.Text("Шаблонов нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 
         foreach (var preset in state.Presets)
         {
-            var box = new BoxContainer
-            {
-                Orientation = BoxContainer.LayoutOrientation.Vertical,
-                Margin = new Thickness(0, 2, 0, 8),
-            };
+            var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
+            card.Margin = new Thickness(0, 0, 0, 6);
 
-            box.AddChild(new Label { Text = preset.Name, StyleClasses = { "LabelKeyText" } });
+            var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+            box.AddChild(SWConsoleStyle.Text(preset.Name, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
 
             if (!string.IsNullOrWhiteSpace(preset.Description))
-            {
-                var desc = new RichTextLabel { Margin = new Thickness(0, 1, 0, 2) };
-                desc.SetMessage(preset.Description);
-                box.AddChild(desc);
-            }
+                box.AddChild(MakeWrap(preset.Description, SWConsoleStyle.TextDim));
 
-            var effectsRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
-            foreach (var effect in preset.Effects)
-            {
-                effectsRow.AddChild(new Label
-                {
-                    Text = $"{effect.StatName} {effect.Delta:+0;-0}",
-                    FontColorOverride = effect.Color,
-                    Margin = new Thickness(0, 0, 10, 0),
-                });
-            }
-            box.AddChild(effectsRow);
+            if (preset.Effects.Count > 0)
+                box.AddChild(MakeEffectsRow(preset.Effects));
 
             var id = preset.Id;
-            var submit = new Button { Text = "Внести", Margin = new Thickness(0, 2, 0, 0), HorizontalAlignment = Control.HAlignment.Left };
+            var submit = SWConsoleStyle.Action("Внести", SWConsoleStyle.Accent);
+            submit.HorizontalAlignment = Control.HAlignment.Left;
+            submit.Margin = new Thickness(0, 4, 0, 0);
             submit.OnPressed += _ => _owner.SubmitPreset(id);
             box.AddChild(submit);
 
-            PresetsList.AddChild(box);
+            card.AddChild(box);
+            PresetsList.AddChild(card);
         }
     }
 
     private void BuildRoster(SWSenateWorkConsoleState state)
     {
         RosterList.RemoveAllChildren();
+        RosterList.AddChild(SWConsoleStyle.Section("СОСТАВ СЕНАТА"));
+        RosterList.AddChild(new Control { MinHeight = 6 });
+
         if (state.Roster.Count == 0)
         {
-            RosterList.AddChild(new Label { Text = "Должности пока никем не заняты." });
+            RosterList.AddChild(SWConsoleStyle.Text("Должности пока никем не заняты.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 
+        var alt = false;
         foreach (var entry in state.Roster)
         {
-            RosterList.AddChild(new Label
-            {
-                Text = $"{entry.Position}: {entry.Holder}",
-                FontColorOverride = entry.Color,
-                Margin = new Thickness(0, 1, 0, 1),
-            });
+            var panel = SWConsoleStyle.Row(alt ? SWConsoleStyle.BgRowAlt : SWConsoleStyle.BgPanel);
+            alt = !alt;
+            var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+            row.AddChild(SWConsoleStyle.Text(entry.Position, entry.Color, SWConsoleStyle.MonoBold, 200));
+            row.AddChild(SWConsoleStyle.Text(entry.Holder, SWConsoleStyle.TextBright, SWConsoleStyle.Mono));
+            panel.AddChild(row);
+            RosterList.AddChild(panel);
         }
     }
 
@@ -1043,6 +1204,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         var remaining = _draftBudget - net;
         BudgetLabel.SetMessage($"Очки: {remaining:0} из бюджета {_draftBudget}");
         SubmitBillButton.Disabled = remaining < 0;
+        StyleButton(SubmitBillButton, remaining < 0 ? SWConsoleStyle.TextDim : SWConsoleStyle.Accent);
     }
 
     private void OnSubmitPressed()
@@ -1067,74 +1229,60 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     private void BuildAgenda(SWSenateWorkConsoleState state)
     {
         AgendaList.RemoveAllChildren();
+        AgendaList.AddChild(SWConsoleStyle.Section("ПОВЕСТКА"));
+        AgendaList.AddChild(new Control { MinHeight = 6 });
+
         if (state.Bills.Count == 0)
         {
-            AgendaList.AddChild(new Label { Text = "Повестка пуста." });
+            AgendaList.AddChild(SWConsoleStyle.Text("Повестка пуста.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 
         foreach (var bill in state.Bills)
         {
-            var box = new BoxContainer
-            {
-                Orientation = BoxContainer.LayoutOrientation.Vertical,
-                Margin = new Thickness(0, 2, 0, 6),
-            };
+            var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
+            card.Margin = new Thickness(0, 0, 0, 6);
 
-            box.AddChild(new Label
-            {
-                Text = $"#{bill.Id}  {bill.Name}",
-                StyleClasses = { "LabelKeyText" },
-            });
-
-            box.AddChild(new Label
-            {
-                Text = $"Автор: {bill.Author}    Стадия: {bill.Stage}",
-                FontColorOverride = Color.Gray,
-            });
+            var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+            box.AddChild(SWConsoleStyle.Text($"#{bill.Id}  {bill.Name}", SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+            box.AddChild(SWConsoleStyle.Text($"автор: {bill.Author}  ·  {bill.Stage}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
 
             if (!string.IsNullOrWhiteSpace(bill.Description))
-            {
-                var desc = new RichTextLabel { Margin = new Thickness(0, 2, 0, 2) };
-                desc.SetMessage(bill.Description);
-                box.AddChild(desc);
-            }
+                box.AddChild(MakeWrap(bill.Description));
+            if (bill.Effects.Count > 0)
+                box.AddChild(MakeEffectsRow(bill.Effects));
 
-            var effectsRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
-            foreach (var effect in bill.Effects)
-            {
-                effectsRow.AddChild(new Label
-                {
-                    Text = $"{effect.StatName} {effect.Delta:+0;-0}",
-                    FontColorOverride = effect.Color,
-                    Margin = new Thickness(0, 0, 12, 0),
-                });
-            }
-
-            box.AddChild(effectsRow);
-            AgendaList.AddChild(box);
+            card.AddChild(box);
+            AgendaList.AddChild(card);
         }
     }
 
     private void BuildSchedule(SWSenateWorkConsoleState state)
     {
         ScheduleGrid.RemoveAllChildren();
+        ScheduleGrid.AddChild(SWConsoleStyle.Section("РАСПИСАНИЕ ДНЯ"));
+        ScheduleGrid.AddChild(new Control { MinHeight = 6 });
+
         foreach (var row in state.Schedule)
         {
-            var rowBox = new BoxContainer
-            {
-                Orientation = BoxContainer.LayoutOrientation.Horizontal,
-                Margin = new Thickness(0, 1, 0, 1),
-            };
+            var timeText = row.IsNow ? "> " + row.TimeLabel : "  " + row.TimeLabel;
+            var timeColor = row.IsNow ? SWConsoleStyle.Accent : SWConsoleStyle.TextDim;
 
-            rowBox.AddChild(new Label
+            if (row.Free)
             {
-                Text = row.IsNow ? $"> {row.TimeLabel}" : row.TimeLabel,
-                FontColorOverride = row.IsNow ? Color.White : Color.Gray,
-                MinWidth = 70,
-            });
-            rowBox.AddChild(new Label { Text = row.Text, FontColorOverride = row.Color });
-            ScheduleGrid.AddChild(rowBox);
+                var flat = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(8, 3, 8, 5) };
+                flat.AddChild(SWConsoleStyle.Text(timeText, timeColor, SWConsoleStyle.MonoBold, 90));
+                flat.AddChild(SWConsoleStyle.Text(row.Text, SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+                ScheduleGrid.AddChild(flat);
+                continue;
+            }
+
+            var panel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, row.IsNow ? SWConsoleStyle.Accent : null);
+            var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+            box.AddChild(SWConsoleStyle.Text(timeText, timeColor, SWConsoleStyle.MonoBold, 90));
+            box.AddChild(SWConsoleStyle.Text(row.Text, ScheduleColor(row.Color), SWConsoleStyle.Mono));
+            panel.AddChild(box);
+            ScheduleGrid.AddChild(panel);
         }
 
         var isSpeaker = state.IsSenateCard && state.Position == SWSenatePosition.Speaker && state.InOffice;
@@ -1148,17 +1296,23 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             PopulateBillOption(state.SchedulableBills);
             PopulateHourOption(state.FreeStartHours);
             ScheduleButton.Disabled = state.SchedulableBills.Count == 0 || state.FreeStartHours.Count == 0;
+            StyleButton(ScheduleButton, ScheduleButton.Disabled ? SWConsoleStyle.TextDim : SWConsoleStyle.Accent);
 
             SpeakerPendingList.RemoveAllChildren();
             foreach (var session in state.PendingSessions)
             {
-                var rowBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 1, 0, 1) };
-                rowBox.AddChild(new Label { Text = $"{session.TimeRange}  {session.BillName}", HorizontalExpand = true });
-                var remove = new Button { Text = "Удалить" };
+                var panel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel);
+                var rowBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+                var lbl = SWConsoleStyle.Text($"{session.TimeRange}  {session.BillName}", SWConsoleStyle.TextBright, SWConsoleStyle.Mono);
+                lbl.HorizontalExpand = true;
+                lbl.VerticalAlignment = Control.VAlignment.Center;
+                rowBox.AddChild(lbl);
                 var id = session.Id;
+                var remove = SWConsoleStyle.Action("Удалить", SWConsoleStyle.Bad);
                 remove.OnPressed += _ => _owner.RemoveSession(id);
                 rowBox.AddChild(remove);
-                SpeakerPendingList.AddChild(rowBox);
+                panel.AddChild(rowBox);
+                SpeakerPendingList.AddChild(panel);
             }
         }
 
@@ -1167,24 +1321,30 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             ChancellorPendingList.RemoveAllChildren();
             if (state.PendingSessions.Count == 0)
             {
-                ChancellorPendingList.AddChild(new Label { Text = "Нет заседаний на подтверждение." });
+                ChancellorPendingList.AddChild(SWConsoleStyle.Text("Нет заседаний на подтверждение.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             }
             else
             {
                 foreach (var session in state.PendingSessions)
                 {
-                    var rowBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 1, 0, 1) };
-                    rowBox.AddChild(new Label { Text = $"{session.TimeRange}  {session.BillName}", HorizontalExpand = true });
+                    var panel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel);
+                    var rowBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+                    var lbl = SWConsoleStyle.Text($"{session.TimeRange}  {session.BillName}", SWConsoleStyle.TextBright, SWConsoleStyle.Mono);
+                    lbl.HorizontalExpand = true;
+                    lbl.VerticalAlignment = Control.VAlignment.Center;
+                    rowBox.AddChild(lbl);
 
                     var id = session.Id;
-                    var confirm = new Button { Text = "Подтвердить" };
+                    var confirm = SWConsoleStyle.Action("Подтвердить", SWConsoleStyle.Good);
                     confirm.OnPressed += _ => _owner.ConfirmSession(id);
-                    var reject = new Button { Text = "Отклонить", Margin = new Thickness(6, 0, 0, 0) };
+                    var reject = SWConsoleStyle.Action("Отклонить", SWConsoleStyle.Bad);
+                    reject.Margin = new Thickness(6, 0, 0, 0);
                     reject.OnPressed += _ => _owner.RejectSession(id);
 
                     rowBox.AddChild(confirm);
                     rowBox.AddChild(reject);
-                    ChancellorPendingList.AddChild(rowBox);
+                    panel.AddChild(rowBox);
+                    ChancellorPendingList.AddChild(panel);
                 }
             }
         }
@@ -1197,24 +1357,24 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         if (emergency.Count == 0)
             return;
 
-        EmergencyBillsPanel.AddChild(new Label
-        {
-            Text = "ЭКСТРЕННЫЕ МЕРЫ — требуют немедленного слушания:",
-            FontColorOverride = Color.IndianRed,
-            StyleClasses = { "LabelKeyText" },
-        });
+        EmergencyBillsPanel.AddChild(SWConsoleStyle.Text("ЭКСТРЕННЫЕ МЕРЫ — требуют немедленного слушания:", SWConsoleStyle.Bad, SWConsoleStyle.MonoBold));
 
         foreach (var bill in emergency)
         {
-            var rowBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 1, 0, 1) };
-            rowBox.AddChild(new Label { Text = bill.Name, FontColorOverride = Color.IndianRed, HorizontalExpand = true });
+            var panel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Bad);
+            var rowBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+            var lbl = SWConsoleStyle.Text(bill.Name, SWConsoleStyle.Bad, SWConsoleStyle.MonoBold);
+            lbl.HorizontalExpand = true;
+            lbl.VerticalAlignment = Control.VAlignment.Center;
+            rowBox.AddChild(lbl);
 
             var id = bill.Id;
-            var button = new Button { Text = "Чрезвычайная сессия" };
+            var button = SWConsoleStyle.Action("Чрезвычайная сессия", SWConsoleStyle.Bad);
             button.OnPressed += _ => _owner.EmergencySession(id);
             rowBox.AddChild(button);
 
-            EmergencyBillsPanel.AddChild(rowBox);
+            panel.AddChild(rowBox);
+            EmergencyBillsPanel.AddChild(panel);
         }
     }
 
@@ -1274,73 +1434,53 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
         if (state.SectorStats.Count > 0)
         {
-            Dashboard.AddChild(new Label
-            {
-                Text = $"Сектор: {state.SectorName}",
-                StyleClasses = { "LabelHeading" },
-            });
+            Dashboard.AddChild(SWConsoleStyle.Section($"СЕКТОР: {state.SectorName}"));
+            Dashboard.AddChild(new Control { MinHeight = 6 });
 
+            var alt = false;
             for (var i = 0; i < state.SectorStats.Count; i++)
             {
                 var stat = state.SectorStats[i];
                 var trend = i < state.SectorTrends.Count ? state.SectorTrends[i] : 0;
 
-                var row = new BoxContainer
-                {
-                    Orientation = BoxContainer.LayoutOrientation.Horizontal,
-                    Margin = new Thickness(0, 1, 0, 1),
-                };
-
-                row.AddChild(new Label { Text = stat.Name, FontColorOverride = stat.Color, MinWidth = 170 });
-                row.AddChild(new Label { Text = $"{stat.Value:0}", MinWidth = 44, HorizontalAlignment = Control.HAlignment.Right });
+                var panel = SWConsoleStyle.Row(alt ? SWConsoleStyle.BgRowAlt : SWConsoleStyle.BgPanel);
+                alt = !alt;
+                var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+                row.AddChild(SWConsoleStyle.Text(stat.Name, stat.Color, SWConsoleStyle.Mono, 180));
+                row.AddChild(new Control { HorizontalExpand = true });
+                row.AddChild(SWConsoleStyle.Text($"{stat.Value:0}", SWConsoleStyle.ValueColor(stat.Value), SWConsoleStyle.MonoBold, 44, Control.HAlignment.Right));
                 row.AddChild(new Label
                 {
                     Text = trend > 0 ? "  ↑" : trend < 0 ? "  ↓" : "  →",
-                    FontColorOverride = trend > 0 ? Color.LightGreen : trend < 0 ? Color.IndianRed : Color.Gray,
+                    FontColorOverride = trend > 0 ? SWConsoleStyle.Good : trend < 0 ? SWConsoleStyle.Bad : SWConsoleStyle.TextDim,
                 });
-
-                Dashboard.AddChild(row);
+                panel.AddChild(row);
+                Dashboard.AddChild(panel);
             }
 
-            Dashboard.AddChild(new Control { MinHeight = 12 });
+            Dashboard.AddChild(new Control { MinHeight = 10 });
         }
 
-        Dashboard.AddChild(new Label { Text = "Республика (факт / политика)", StyleClasses = { "LabelHeading" } });
+        Dashboard.AddChild(SWConsoleStyle.Section("РЕСПУБЛИКА — ФАКТ / ПОЛИТИКА"));
+        Dashboard.AddChild(new Control { MinHeight = 6 });
         foreach (var global in state.Globals)
-        {
             Dashboard.AddChild(MakeGlobalBar(global));
-        }
     }
 
     private static Control MakeGlobalBar(SWGlobalStatEntry global)
     {
-        var box = new BoxContainer
-        {
-            Orientation = BoxContainer.LayoutOrientation.Vertical,
-            Margin = new Thickness(0, 1, 0, 4),
-        };
+        var panel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel);
+        panel.Margin = new Thickness(0, 0, 0, 4);
 
-        var head = new BoxContainer
-        {
-            Orientation = BoxContainer.LayoutOrientation.Horizontal,
-            HorizontalExpand = true,
-        };
-        head.AddChild(new Label { Text = global.Name, FontColorOverride = global.Color, HorizontalExpand = true });
-        head.AddChild(new Label { Text = $"{global.Actual:0}", MinWidth = 40, HorizontalAlignment = Control.HAlignment.Right });
-        head.AddChild(new Label { Text = $"/ {global.Policy:0}", MinWidth = 48, FontColorOverride = Color.Gray, HorizontalAlignment = Control.HAlignment.Right });
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        head.AddChild(SWConsoleStyle.Text(global.Name, global.Color, SWConsoleStyle.MonoBold));
+        head.AddChild(new Control { HorizontalExpand = true });
+        head.AddChild(SWConsoleStyle.Text($"ФАКТ {global.Actual:0}", SWConsoleStyle.ValueColor(global.Actual), SWConsoleStyle.Mono, 84, Control.HAlignment.Right));
+        head.AddChild(SWConsoleStyle.Text($"ПОЛ. {global.Policy:0}", SWConsoleStyle.TextDim, SWConsoleStyle.Mono, 84, Control.HAlignment.Right));
         box.AddChild(head);
-
-        box.AddChild(new ProgressBar
-        {
-            MinValue = global.Min,
-            MaxValue = global.Max <= global.Min ? global.Min + 1 : global.Max,
-            Value = global.Actual,
-            HorizontalExpand = true,
-            MinHeight = 14,
-            Margin = new Thickness(0, 2, 0, 0),
-            ForegroundStyleBoxOverride = new StyleBoxFlat { BackgroundColor = global.Color },
-        });
-
-        return box;
+        box.AddChild(SWConsoleStyle.Bar(global.Actual, global.Min, global.Max, global.Color));
+        panel.AddChild(box);
+        return panel;
     }
 }

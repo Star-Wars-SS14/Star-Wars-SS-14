@@ -716,6 +716,15 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     private void BuildDilemmas(SWSenateWorkConsoleState state)
     {
         DilemmaActiveList.RemoveAllChildren();
+
+        if (state.MinistryNotices.Count > 0)
+        {
+            DilemmaActiveList.AddChild(SWConsoleStyle.Section("ОТВЕТЫ МИНИСТЕРСТВ"));
+            foreach (var notice in state.MinistryNotices)
+                DilemmaActiveList.AddChild(MakeWrap(notice, Color.FromHex("#9B59B6")));
+            DilemmaActiveList.AddChild(new Control { MinHeight = 8 });
+        }
+
         if (state.MyDilemmas.Count == 0)
         {
             DilemmaActiveList.AddChild(SWConsoleStyle.Text("Активных дилемм нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
@@ -872,9 +881,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             string label;
             if (isAppeal)
             {
-                label = $"{option.Label} → {option.MinistryName}";
-                if (!option.MinistryAvailable)
-                    label += " (нет министра)";
+                label = "Передать профильному министерству";
             }
             else
             {
@@ -898,7 +905,10 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
             if (isAppeal)
             {
-                optionBox.AddChild(MakeWrap("Проблему решит министерство — эффект отложен.", Color.Gray));
+                var hint = option.MinistryAvailable
+                    ? $"Решает: {option.MinistryName}. Эффект отложен."
+                    : $"{option.MinistryName}: нет министра.";
+                optionBox.AddChild(MakeWrap(hint, Color.Gray));
             }
             else
             {

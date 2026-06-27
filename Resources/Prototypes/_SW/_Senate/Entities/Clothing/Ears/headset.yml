@@ -28,10 +28,11 @@
   name: minister headset
   components:
   - type: EncryptionKeyHolder
-    keySlots: 2
+    keySlots: 3
   - type: ContainerFill
     containers:
       key_slots:
+      - SWEncryptionKeyMinistry
       - SWEncryptionKeyChancellery
       - SWEncryptionKeySenate
 

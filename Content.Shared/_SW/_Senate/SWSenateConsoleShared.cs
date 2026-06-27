@@ -317,6 +317,7 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool OfficesVacant;
     public List<SWBillPresetEntry> Presets = new();
     public bool CanDilemmas;
+    public List<string> MinistryNotices = new();
     public List<SWDilemmaEntry> MyDilemmas = new();
     public List<SWDilemmaEntry> AllDilemmas = new();
     public List<SWDilemmaEntry> MyBudgetDilemmas = new();

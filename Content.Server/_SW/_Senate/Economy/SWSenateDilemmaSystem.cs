@@ -50,6 +50,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
     private readonly List<SWMinistryRequest> _requests = new();
     private readonly Dictionary<string, int> _ministryBudget = new();
     private readonly Dictionary<string, int> _ministryAdmin = new();
+    private readonly Dictionary<string, List<string>> _notices = new();
     private readonly HashSet<string> _generated = new();
     private int _nextId = 1;
     private int _nextRequestId = 1;
@@ -71,6 +72,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             _requests.Clear();
             _ministryBudget.Clear();
             _ministryAdmin.Clear();
+            _notices.Clear();
             _generated.Clear();
             _nextId = 1;
             _nextRequestId = 1;
@@ -452,7 +454,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         if (dilemma != null)
             dilemma.Status = SWDilemmaStatus.Applied;
 
-        NotifyOwner(request, $"обращение «{proto.Name}» удовлетворено");
+        AddNotice(request.Owner, $"{MinistryName(request.MinistryId)} удовлетворило обращение «{proto.Name}».");
         return true;
     }
 
@@ -464,19 +466,42 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
         request.Status = SWMinistryRequestStatus.Refused;
         request.RefuseReason = reason.Trim();
-        FailSource(request);
 
-        var tail = string.IsNullOrWhiteSpace(request.RefuseReason) ? string.Empty : $": {request.RefuseReason}";
+        // Refusal does not fail the dilemma — it returns to the sector, which can still resolve it itself
+        // (with a fresh deadline until the end of the day).
+        var dilemma = _dilemmas.FirstOrDefault(d => d.Id == request.SourceDilemmaId);
+        if (dilemma is { Status: SWDilemmaStatus.Delegated })
+        {
+            dilemma.Status = SWDilemmaStatus.Pending;
+            dilemma.ChosenOption = -1;
+            dilemma.DeadlineHour = SWSenateTimeSystem.EndHour;
+            dilemma.ApplyHour = SWSenateTimeSystem.EndHour;
+        }
+
         var name = _proto.TryIndex<SWDilemmaPrototype>(request.DilemmaId, out var proto) ? proto.Name : request.DilemmaId;
-        NotifyOwner(request, $"в обращении «{name}» отказано{tail}");
+        var tail = string.IsNullOrWhiteSpace(request.RefuseReason) ? "." : $": {request.RefuseReason}";
+        AddNotice(request.Owner, $"{MinistryName(request.MinistryId)} отказало в обращении «{name}»{tail} Решите вопрос самостоятельно.");
         return true;
     }
 
-    private void NotifyOwner(SWMinistryRequest request, string text)
+    private string MinistryName(string ministryId) =>
+        _proto.TryIndex<SWMinistryPrototype>(ministryId, out var mproto) ? mproto.Name : "Министерство";
+
+    private void AddNotice(string owner, string text)
     {
-        var sender = _proto.TryIndex<SWMinistryPrototype>(request.MinistryId, out var mproto) ? mproto.Name : "Министерство";
-        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent(sender, text));
+        if (!_notices.TryGetValue(owner, out var list))
+        {
+            list = new List<string>();
+            _notices[owner] = list;
+        }
+
+        list.Insert(0, text);
+        if (list.Count > 5)
+            list.RemoveRange(5, list.Count - 5);
     }
+
+    public List<string> GetNotices(string? owner) =>
+        owner != null && _notices.TryGetValue(owner, out var list) ? new List<string>(list) : new List<string>();
 
     private static int RealCost(int cost, SWAuditIssue issue) =>
         issue == SWAuditIssue.InflatedEstimate ? (int) (cost * InflatedFactor) : cost;

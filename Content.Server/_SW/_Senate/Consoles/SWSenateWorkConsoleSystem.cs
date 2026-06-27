@@ -700,6 +700,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         var dilemmaOwner = GetDilemmaOwner(ent);
         state.MyDilemmas = _dilemma.BuildOwnerDilemmas(dilemmaOwner);
         state.MyBudgetDilemmas = _dilemma.BuildOwnerBudgetDilemmas(dilemmaOwner);
+        state.MinistryNotices = _dilemma.GetNotices(dilemmaOwner);
         state.CanDilemmas = dilemmaOwner != null;
         state.BudgetLocked = _budget.Locked;
         state.BudgetTotal = _budget.Total();

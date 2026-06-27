@@ -29,3 +29,11 @@
   frequency: 2053
   color: "#c9a227"
   longRange: true
+
+- type: radioChannel
+  id: SWMinistry
+  name: Министерства
+  keycode: 'м'
+  frequency: 2054
+  color: "#2980b9"
+  longRange: true

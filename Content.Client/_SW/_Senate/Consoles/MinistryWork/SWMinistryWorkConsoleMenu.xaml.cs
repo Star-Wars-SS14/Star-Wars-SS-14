@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Content.Client.Message;
 using Content.Client.UserInterface.Controls;
@@ -19,6 +20,9 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
     private readonly (string Title, Control Panel)[] _tabs;
     private readonly Button[] _tabButtons;
     private int _active;
+
+    private readonly Dictionary<int, string> _refuseReasons = new();
+    private string _requestsSignature = string.Empty;
 
     public SWMinistryWorkConsoleMenu(SWMinistryWorkConsoleBoundUserInterface owner)
     {
@@ -165,6 +169,13 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
 
     private void BuildRequests(SWMinistryWorkConsoleState state)
     {
+        // Only rebuild when something actually changed, so the periodic refresh never wipes the
+        // refuse-reason field (or steals focus) while the minister is typing.
+        var signature = RequestsSignature(state);
+        if (signature == _requestsSignature)
+            return;
+        _requestsSignature = signature;
+
         RequestsContent.RemoveAllChildren();
 
         if (!state.HasMinistry)
@@ -191,6 +202,18 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
 
         foreach (var request in state.Requests)
             RequestsContent.AddChild(MakeRequestCard(request, state.AuditCost));
+    }
+
+    private static string RequestsSignature(SWMinistryWorkConsoleState state)
+    {
+        if (!state.HasMinistry)
+            return "none";
+
+        var sig = $"{state.MinistryBudget}|{state.MinistryAdmin}";
+        foreach (var r in state.Requests)
+            sig += $"|{r.Id}:{r.Audited}:{r.AuditInProgress}:{r.Options.Count}:{r.SideEffects.Count}";
+
+        return sig;
     }
 
     private Control MakeRequestCard(SWMinistryRequestEntry request, int auditCost)
@@ -268,8 +291,14 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
 
         // Refuse row.
         var refuseRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 6, 0, 0) };
-        var reasonEdit = new LineEdit { PlaceHolder = "Причина отказа...", HorizontalExpand = true };
         var rid = request.Id;
+        var reasonEdit = new LineEdit
+        {
+            PlaceHolder = "Причина отказа...",
+            HorizontalExpand = true,
+            Text = _refuseReasons.GetValueOrDefault(rid, string.Empty),
+        };
+        reasonEdit.OnTextChanged += args => _refuseReasons[rid] = args.Text;
         var refuseBtn = SWConsoleStyle.Action("ОТКАЗАТЬ", SWConsoleStyle.Bad);
         refuseBtn.Margin = new Thickness(6, 0, 0, 0);
         refuseBtn.OnPressed += _ => _owner.RefuseRequest(rid, reasonEdit.Text);

@@ -8,19 +8,22 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Maths;
+using Robust.Shared.Utility;
 
 namespace Content.Client._SW._Senate.Consoles.MinistryWork;
 
 [GenerateTypedNameReferences]
 public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
 {
+    private readonly SWMinistryWorkConsoleBoundUserInterface _owner;
     private readonly (string Title, Control Panel)[] _tabs;
     private readonly Button[] _tabButtons;
     private int _active;
 
-    public SWMinistryWorkConsoleMenu()
+    public SWMinistryWorkConsoleMenu(SWMinistryWorkConsoleBoundUserInterface owner)
     {
         RobustXamlLoader.Load(this);
+        _owner = owner;
 
         SWConsoleStyle.StyleRoot(RootPanel);
         SWConsoleStyle.StyleHeader(HeaderPanel);
@@ -69,7 +72,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
 
         BuildOverview(state);
         BuildRepublic(state);
-        BuildRequests();
+        BuildRequests(state);
     }
 
     private void BuildOverview(SWMinistryWorkConsoleState state)
@@ -160,14 +163,122 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             RepublicContent.AddChild(MakeGlobalBar(global));
     }
 
-    private void BuildRequests()
+    private void BuildRequests(SWMinistryWorkConsoleState state)
     {
         RequestsContent.RemoveAllChildren();
-        RequestsContent.AddChild(SWConsoleStyle.Section("МИНИСТЕРСКИЕ ЗАЯВКИ"));
+
+        if (!state.HasMinistry)
+        {
+            RequestsContent.AddChild(SWConsoleStyle.Text("Доступно только министру с назначением.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            return;
+        }
+
+        var header = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        header.AddChild(SWConsoleStyle.Text($"БЮДЖЕТ: {state.MinistryBudget} кр.", SWConsoleStyle.Good, SWConsoleStyle.MonoBold));
+        header.AddChild(new Control { HorizontalExpand = true });
+        header.AddChild(SWConsoleStyle.Text($"АДМИН-РЕСУРС: {state.MinistryAdmin}", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
+        RequestsContent.AddChild(header);
+        RequestsContent.AddChild(new Control { MinHeight = 8 });
+
+        RequestsContent.AddChild(SWConsoleStyle.Section("ОБРАЩЕНИЯ СЕКТОРОВ"));
         RequestsContent.AddChild(new Control { MinHeight = 6 });
-        RequestsContent.AddChild(SWConsoleStyle.Text(
-            "Раздел заявок появится на следующем этапе — здесь министр будет рассматривать обращения секторов.",
-            SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+
+        if (state.Requests.Count == 0)
+        {
+            RequestsContent.AddChild(SWConsoleStyle.Text("Активных обращений нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            return;
+        }
+
+        foreach (var request in state.Requests)
+            RequestsContent.AddChild(MakeRequestCard(request, state.AuditCost));
+    }
+
+    private Control MakeRequestCard(SWMinistryRequestEntry request, int auditCost)
+    {
+        var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
+        card.Margin = new Thickness(0, 0, 0, 8);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+
+        box.AddChild(SWConsoleStyle.Text(request.ProblemName, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+        box.AddChild(SWConsoleStyle.Text($"{request.OwnerLabel}  ·  {request.DeadlineLabel}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+        if (!string.IsNullOrWhiteSpace(request.ProblemDescription))
+        {
+            var desc = new RichTextLabel { Margin = new Thickness(0, 3, 0, 0) };
+            desc.SetMarkup(FormattedMessage.EscapeText(request.ProblemDescription));
+            box.AddChild(desc);
+        }
+
+        // Audit row.
+        var auditRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 5, 0, 0) };
+        var auditColor = request.Audited ? SWConsoleStyle.Warn : SWConsoleStyle.TextDim;
+        auditRow.AddChild(SWConsoleStyle.Text($"Аудит: {request.AuditLabel}", auditColor, SWConsoleStyle.MonoSmall));
+        auditRow.AddChild(new Control { HorizontalExpand = true });
+        if (request.CanAudit)
+        {
+            var id = request.Id;
+            var auditBtn = SWConsoleStyle.Action($"ПРОВЕСТИ АУДИТ ({auditCost})", SWConsoleStyle.Accent);
+            auditBtn.OnPressed += _ => _owner.AuditRequest(id);
+            auditRow.AddChild(auditBtn);
+        }
+        box.AddChild(auditRow);
+
+        if (request.Audited && !string.IsNullOrWhiteSpace(request.IssueDescription))
+            box.AddChild(SWConsoleStyle.Text(request.IssueDescription, SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+
+        if (request.SideEffects.Count > 0)
+        {
+            var side = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 2, 0, 0) };
+            side.AddChild(SWConsoleStyle.Text("Побочно:", SWConsoleStyle.Bad, SWConsoleStyle.MonoSmall));
+            foreach (var effect in request.SideEffects)
+            {
+                var e = SWConsoleStyle.Text($"  {effect.StatName} {effect.Delta:+0;-0}", effect.Color, SWConsoleStyle.MonoSmall);
+                side.AddChild(e);
+            }
+            box.AddChild(side);
+        }
+
+        box.AddChild(new Control { MinHeight = 5 });
+        box.AddChild(SWConsoleStyle.Text("РЕШЕНИЯ МИНИСТЕРСТВА", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+        for (var i = 0; i < request.Options.Count; i++)
+        {
+            var option = request.Options[i];
+            var index = i;
+            var id = request.Id;
+
+            var optBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, Margin = new Thickness(0, 2, 0, 0) };
+            var label = option.Cost > 0 ? $"{option.Label} — {option.Cost} кр." : option.Label;
+            var btn = SWConsoleStyle.Action(label, SWConsoleStyle.Good, !option.Affordable);
+            btn.HorizontalExpand = true;
+            if (option.Affordable)
+                btn.OnPressed += _ => _owner.ResolveRequest(id, index);
+            optBox.AddChild(btn);
+
+            if (option.Effects.Count > 0)
+            {
+                var eff = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(8, 0, 0, 0) };
+                foreach (var effect in option.Effects)
+                    eff.AddChild(SWConsoleStyle.Text($"{effect.StatName} {effect.Delta:+0;-0}  ", effect.Color, SWConsoleStyle.MonoSmall));
+                optBox.AddChild(eff);
+            }
+
+            box.AddChild(optBox);
+        }
+
+        // Refuse row.
+        var refuseRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 6, 0, 0) };
+        var reasonEdit = new LineEdit { PlaceHolder = "Причина отказа...", HorizontalExpand = true };
+        var rid = request.Id;
+        var refuseBtn = SWConsoleStyle.Action("ОТКАЗАТЬ", SWConsoleStyle.Bad);
+        refuseBtn.Margin = new Thickness(6, 0, 0, 0);
+        refuseBtn.OnPressed += _ => _owner.RefuseRequest(rid, reasonEdit.Text);
+        refuseRow.AddChild(reasonEdit);
+        refuseRow.AddChild(refuseBtn);
+        box.AddChild(refuseRow);
+
+        card.AddChild(box);
+        return card;
     }
 
     private static Control MakeGlobalBar(SWGlobalStatEntry global)

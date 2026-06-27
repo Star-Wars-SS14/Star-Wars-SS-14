@@ -15,9 +15,24 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
     {
         base.Open();
 
-        _menu = new SWMinistryWorkConsoleMenu();
+        _menu = new SWMinistryWorkConsoleMenu(this);
         _menu.OnClose += Close;
         _menu.OpenCentered();
+    }
+
+    public void AuditRequest(int requestId)
+    {
+        SendMessage(new SWMinistryAuditRequestMessage(requestId));
+    }
+
+    public void ResolveRequest(int requestId, int optionIndex)
+    {
+        SendMessage(new SWMinistryResolveRequestMessage(requestId, optionIndex));
+    }
+
+    public void RefuseRequest(int requestId, string reason)
+    {
+        SendMessage(new SWMinistryRefuseRequestMessage(requestId, reason));
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

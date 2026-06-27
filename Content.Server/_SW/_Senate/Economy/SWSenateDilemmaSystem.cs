@@ -23,6 +23,16 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
     // Mini-debuff to a sector whose citizens are left waiting on a delegated ministry request.
     private const float WaitingDebuff = -2f;
 
+    // Stock ministry budget/admin (later tied to МинФин). Recomputed each day from active sectors.
+    private const int MinistryBudgetBase = 4000;
+    private const int MinistryBudgetPerSector = 1000;
+    private const int MinistryAdminPerDay = 3;
+    private const int AuditAdminCost = 1;
+
+    private const float ReliableBonus = 1.25f;
+    private const float InflatedFactor = 0.7f;
+    private const float UnderestimatedFailFactor = 1.5f;
+
     private const int MorningDeadline = 14;
     private const int MorningApply = 15;
     private const int AfternoonDeadline = 20;
@@ -35,6 +45,8 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
     private readonly List<SWActiveDilemma> _dilemmas = new();
     private readonly List<SWMinistryRequest> _requests = new();
+    private readonly Dictionary<string, int> _ministryBudget = new();
+    private readonly Dictionary<string, int> _ministryAdmin = new();
     private readonly HashSet<string> _generated = new();
     private int _nextId = 1;
     private int _nextRequestId = 1;
@@ -54,15 +66,56 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             _day = _time.Day;
             _dilemmas.Clear();
             _requests.Clear();
+            _ministryBudget.Clear();
+            _ministryAdmin.Clear();
             _generated.Clear();
             _nextId = 1;
             _nextRequestId = 1;
         }
 
         ApplyDue();
+        CompleteAudits();
         ExpireRequests();
         EnsureGeneration();
     }
+
+    private void CompleteAudits()
+    {
+        foreach (var request in _requests)
+        {
+            if (!request.AuditPending)
+                continue;
+
+            if (_time.DayActive && _time.CurrentHour < request.AuditCompleteHour)
+                continue;
+
+            request.AuditPending = false;
+            request.AuditDone = true;
+        }
+    }
+
+    private void EnsureMinistry(string ministryId)
+    {
+        if (_ministryBudget.ContainsKey(ministryId))
+            return;
+
+        _ministryBudget[ministryId] = MinistryBudgetBase + MinistryBudgetPerSector * _senate.SectorHolders.Count;
+        _ministryAdmin[ministryId] = MinistryAdminPerDay;
+    }
+
+    public int GetMinistryBudget(string ministryId)
+    {
+        EnsureMinistry(ministryId);
+        return _ministryBudget[ministryId];
+    }
+
+    public int GetMinistryAdmin(string ministryId)
+    {
+        EnsureMinistry(ministryId);
+        return _ministryAdmin[ministryId];
+    }
+
+    public int AuditCost => AuditAdminCost;
 
     private SWDilemmaWindow? CurrentGenWindow()
     {
@@ -350,13 +403,116 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         if (dilemma == null || dilemma.Status != SWDilemmaStatus.Delegated)
             return;
 
+        var mult = request.Issue == SWAuditIssue.UnderestimatedCrisis ? UnderestimatedFailFactor : 1f;
         if (_proto.TryIndex<SWDilemmaPrototype>(dilemma.DilemmaId, out var proto))
-            Apply(dilemma, proto.FailPolicyEffects, proto.FailSectorEffects);
+            ApplyScaled(dilemma.Scope, dilemma.SectorId, proto.FailPolicyEffects, proto.FailSectorEffects, mult);
 
         dilemma.Status = SWDilemmaStatus.Failed;
     }
 
     public bool MinistryHasMinister(string ministryId) => _ministry.IsClaimed(ministryId);
+
+    public bool AuditRequest(string ministryId, int requestId)
+    {
+        var request = _requests.FirstOrDefault(r => r.Id == requestId);
+        if (request == null || request.MinistryId != ministryId || request.Status != SWMinistryRequestStatus.Pending)
+            return false;
+        if (request.AuditDone || request.AuditPending)
+            return false;
+
+        EnsureMinistry(ministryId);
+        if (_ministryAdmin[ministryId] < AuditAdminCost)
+            return false;
+
+        _ministryAdmin[ministryId] -= AuditAdminCost;
+        request.AuditPending = true;
+        request.AuditCompleteHour = _time.CurrentHour + 1;
+        return true;
+    }
+
+    public bool ResolveRequest(string ministryId, int requestId, int optionIndex)
+    {
+        var request = _requests.FirstOrDefault(r => r.Id == requestId);
+        if (request == null || request.MinistryId != ministryId || request.Status != SWMinistryRequestStatus.Pending)
+            return false;
+
+        if (!_proto.TryIndex<SWDilemmaPrototype>(request.DilemmaId, out var proto)
+            || optionIndex < 0
+            || optionIndex >= proto.MinistryOptions.Count)
+            return false;
+
+        var option = proto.MinistryOptions[optionIndex];
+        var cost = RealCost(option.Cost, request.Issue);
+
+        EnsureMinistry(ministryId);
+        if (_ministryBudget[ministryId] < cost)
+            return false;
+
+        _ministryBudget[ministryId] -= cost;
+
+        var mult = request.Issue == SWAuditIssue.Reliable ? ReliableBonus : 1f;
+        ApplyScaled(request.Scope, request.SectorId, option.PolicyEffects, option.SectorEffects, mult);
+
+        if (request.Issue == SWAuditIssue.CorruptContractor && request.SectorId != null)
+        {
+            _senate.AddSectorBias(request.SectorId, "SWGlobalSociety", -3f);
+            _senate.AddSectorBias(request.SectorId, "SWGlobalEconomy", -2f);
+        }
+
+        request.Status = SWMinistryRequestStatus.Resolved;
+        request.MinisterOption = optionIndex;
+
+        var dilemma = _dilemmas.FirstOrDefault(d => d.Id == request.SourceDilemmaId);
+        if (dilemma != null)
+            dilemma.Status = SWDilemmaStatus.Applied;
+
+        NotifyOwner(request, $"обращение «{proto.Name}» удовлетворено");
+        return true;
+    }
+
+    public bool RefuseRequest(string ministryId, int requestId, string reason)
+    {
+        var request = _requests.FirstOrDefault(r => r.Id == requestId);
+        if (request == null || request.MinistryId != ministryId || request.Status != SWMinistryRequestStatus.Pending)
+            return false;
+
+        request.Status = SWMinistryRequestStatus.Refused;
+        request.RefuseReason = reason.Trim();
+        FailSource(request);
+
+        var tail = string.IsNullOrWhiteSpace(request.RefuseReason) ? string.Empty : $": {request.RefuseReason}";
+        var name = _proto.TryIndex<SWDilemmaPrototype>(request.DilemmaId, out var proto) ? proto.Name : request.DilemmaId;
+        NotifyOwner(request, $"в обращении «{name}» отказано{tail}");
+        return true;
+    }
+
+    private void NotifyOwner(SWMinistryRequest request, string text)
+    {
+        var sender = _proto.TryIndex<SWMinistryPrototype>(request.MinistryId, out var mproto) ? mproto.Name : "Министерство";
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent(sender, text));
+    }
+
+    private static int RealCost(int cost, SWAuditIssue issue) =>
+        issue == SWAuditIssue.InflatedEstimate ? (int) (cost * InflatedFactor) : cost;
+
+    private void ApplyScaled(
+        SWDilemmaScope scope,
+        string? sectorId,
+        Dictionary<ProtoId<SWStatPrototype>, float> policy,
+        Dictionary<ProtoId<SWGlobalStatPrototype>, float> sector,
+        float mult)
+    {
+        if (scope == SWDilemmaScope.Republic)
+        {
+            foreach (var (sub, delta) in policy)
+                _senate.AddPolicy(sub, delta * mult);
+        }
+        else if (sectorId != null)
+        {
+            foreach (var (global, delta) in sector)
+                _senate.AddSectorBias(sectorId, global, delta * mult);
+        }
+    }
 
     public List<SWDilemmaEntry> BuildOwnerDilemmas(string? owner) => BuildOwnerDilemmas(owner, false);
 
@@ -479,19 +635,19 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         _ => "—",
     };
 
-    private List<SWBillEffectEntry> SectorEffectEntries(Dictionary<ProtoId<SWGlobalStatPrototype>, float> effects)
+    private List<SWBillEffectEntry> SectorEffectEntries(Dictionary<ProtoId<SWGlobalStatPrototype>, float> effects, float mult = 1f)
     {
         var list = new List<SWBillEffectEntry>();
         foreach (var global in _proto.EnumeratePrototypes<SWGlobalStatPrototype>().OrderBy(g => g.Order))
         {
             if (effects.TryGetValue(global.ID, out var delta))
-                list.Add(new SWBillEffectEntry { StatName = global.ShortName, Color = global.Color, Delta = delta });
+                list.Add(new SWBillEffectEntry { StatName = global.ShortName, Color = global.Color, Delta = delta * mult });
         }
 
         return list;
     }
 
-    private List<SWBillEffectEntry> PolicyEffectEntries(Dictionary<ProtoId<SWStatPrototype>, float> effects)
+    private List<SWBillEffectEntry> PolicyEffectEntries(Dictionary<ProtoId<SWStatPrototype>, float> effects, float mult = 1f)
     {
         var list = new List<SWBillEffectEntry>();
         foreach (var sub in _proto.EnumeratePrototypes<SWStatPrototype>().OrderBy(s => s.Order))
@@ -500,11 +656,98 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
                 continue;
 
             var color = _proto.TryIndex(sub.Global, out var global) ? global.Color : Color.White;
-            list.Add(new SWBillEffectEntry { StatName = sub.ShortName, Color = color, Delta = delta });
+            list.Add(new SWBillEffectEntry { StatName = sub.ShortName, Color = color, Delta = delta * mult });
         }
 
         return list;
     }
+
+    public List<SWMinistryRequestEntry> BuildMinistryRequests(string ministryId)
+    {
+        EnsureMinistry(ministryId);
+        var budget = _ministryBudget[ministryId];
+        var admin = _ministryAdmin[ministryId];
+
+        var list = new List<SWMinistryRequestEntry>();
+        foreach (var request in _requests)
+        {
+            if (request.MinistryId != ministryId || request.Status != SWMinistryRequestStatus.Pending)
+                continue;
+
+            _proto.TryIndex<SWDilemmaPrototype>(request.DilemmaId, out var proto);
+
+            var entry = new SWMinistryRequestEntry
+            {
+                Id = request.Id,
+                ProblemName = proto?.Name ?? request.DilemmaId,
+                ProblemDescription = proto?.Description ?? string.Empty,
+                OwnerLabel = request.Scope == SWDilemmaScope.Republic ? "Канцлер" : SectorName(request.SectorId),
+                DeadlineLabel = $"Решить до {request.DeadlineHour:00}:00",
+                Audited = request.AuditDone,
+                AuditInProgress = request.AuditPending,
+                AuditLabel = AuditLabel(request),
+                IssueDescription = request.AuditDone ? IssueDescription(request.Issue) : string.Empty,
+                CanAudit = !request.AuditDone && !request.AuditPending && admin >= AuditAdminCost,
+                FailText = proto?.FailText ?? string.Empty,
+            };
+
+            if (proto != null)
+            {
+                var mult = request.AuditDone && request.Issue == SWAuditIssue.Reliable ? ReliableBonus : 1f;
+
+                foreach (var option in proto.MinistryOptions)
+                {
+                    var shownCost = request.AuditDone ? RealCost(option.Cost, request.Issue) : option.Cost;
+                    entry.Options.Add(new SWMinistryRequestOptionEntry
+                    {
+                        Label = option.Label,
+                        Description = option.Description,
+                        Cost = shownCost,
+                        Affordable = budget >= shownCost,
+                        Effects = request.Scope == SWDilemmaScope.Republic
+                            ? PolicyEffectEntries(option.PolicyEffects, mult)
+                            : SectorEffectEntries(option.SectorEffects, mult),
+                    });
+                }
+
+                if (request.AuditDone && request.Issue == SWAuditIssue.CorruptContractor && request.Scope == SWDilemmaScope.Sectoral)
+                {
+                    entry.SideEffects = SectorEffectEntries(new Dictionary<ProtoId<SWGlobalStatPrototype>, float>
+                    {
+                        { "SWGlobalSociety", -3f },
+                        { "SWGlobalEconomy", -2f },
+                    });
+                }
+            }
+
+            list.Add(entry);
+        }
+
+        return list;
+    }
+
+    private static string AuditLabel(SWMinistryRequest request)
+    {
+        if (request.AuditDone)
+            return IssueLabel(request.Issue);
+        return request.AuditPending ? "Проверка идёт..." : "Не проверено";
+    }
+
+    private static string IssueLabel(SWAuditIssue issue) => issue switch
+    {
+        SWAuditIssue.InflatedEstimate => "Завышенная смета",
+        SWAuditIssue.CorruptContractor => "Коррупционный подрядчик",
+        SWAuditIssue.UnderestimatedCrisis => "Недооценённый кризис",
+        _ => "Надёжная заявка",
+    };
+
+    private static string IssueDescription(SWAuditIssue issue) => issue switch
+    {
+        SWAuditIssue.InflatedEstimate => "Реальная стоимость ниже заявленной.",
+        SWAuditIssue.CorruptContractor => "При одобрении будут побочные потери сектора.",
+        SWAuditIssue.UnderestimatedCrisis => "Если не решить — провал будет сильнее.",
+        _ => "Риск побочек снят, эффективность выше.",
+    };
 }
 
 public sealed class SWActiveDilemma
@@ -535,6 +778,9 @@ public sealed class SWMinistryRequest
     public int DeadlineHour;
     public SWMinistryRequestStatus Status;
     public SWAuditIssue Issue;
+    public bool AuditPending;
+    public bool AuditDone;
+    public int AuditCompleteHour;
     public int MinisterOption = -1;
     public string RefuseReason = string.Empty;
 }

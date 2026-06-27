@@ -15,6 +15,11 @@ sw-ministry-title-ministry = Министр {$name}
 sw-ministry-title-department = Глава Департамента {$name}
 sw-ministry-title-bureau = Директор Бюро {$name}
 
+sw-ministry-audit-failed = Аудит невозможен: нет админ-ресурса или уже проводится.
+sw-ministry-request-resolved = Заявка удовлетворена.
+sw-ministry-request-refused = В заявке отказано.
+sw-ministry-request-failed = Невозможно одобрить: не хватает бюджета.
+
 sw-senate-work-no-card = Вставьте сенатскую ID-карту в консоль.
 sw-senate-work-senator-hint = Сенаторы выбирают сектор на консоли выбора сектора.
 sw-senate-work-took-office = Вы вступили в должность.

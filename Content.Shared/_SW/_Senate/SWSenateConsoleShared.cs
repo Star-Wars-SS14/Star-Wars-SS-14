@@ -169,6 +169,75 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public string? DomainStatId;
     public List<SWGlobalStatEntry> Globals = new();
     public string GameTime = string.Empty;
+    public int MinistryBudget;
+    public int MinistryAdmin;
+    public int AuditCost;
+    public List<SWMinistryRequestEntry> Requests = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWMinistryRequestOptionEntry
+{
+    public string Label = string.Empty;
+    public string Description = string.Empty;
+    public int Cost;
+    public bool Affordable = true;
+    public List<SWBillEffectEntry> Effects = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWMinistryRequestEntry
+{
+    public int Id;
+    public string ProblemName = string.Empty;
+    public string ProblemDescription = string.Empty;
+    public string OwnerLabel = string.Empty;
+    public string DeadlineLabel = string.Empty;
+    public bool Audited;
+    public bool AuditInProgress;
+    public string AuditLabel = string.Empty;
+    public string IssueDescription = string.Empty;
+    public bool CanAudit;
+    public List<SWMinistryRequestOptionEntry> Options = new();
+    public List<SWBillEffectEntry> SideEffects = new();
+    public string FailText = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWMinistryAuditRequestMessage : BoundUserInterfaceMessage
+{
+    public int RequestId;
+
+    public SWMinistryAuditRequestMessage(int requestId)
+    {
+        RequestId = requestId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWMinistryResolveRequestMessage : BoundUserInterfaceMessage
+{
+    public int RequestId;
+    public int OptionIndex;
+
+    public SWMinistryResolveRequestMessage(int requestId, int optionIndex)
+    {
+        RequestId = requestId;
+        OptionIndex = optionIndex;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWMinistryRefuseRequestMessage : BoundUserInterfaceMessage
+{
+    public int RequestId;
+    public string Reason;
+
+    public SWMinistryRefuseRequestMessage(int requestId, string reason)
+    {
+        RequestId = requestId;
+        Reason = reason;
+    }
 }
 
 [Serializable, NetSerializable]

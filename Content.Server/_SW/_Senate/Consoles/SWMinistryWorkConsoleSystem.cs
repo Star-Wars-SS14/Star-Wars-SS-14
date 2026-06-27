@@ -1,10 +1,13 @@
+using Content.Server.Popups;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Ministries;
 using Content.Shared.Containers.ItemSlots;
+using Content.Shared.Popups;
 using Robust.Server.GameObjects;
 using Robust.Shared.Containers;
 using Robust.Shared.Prototypes;
 using Content.Server._SW._Senate.Core;
+using Content.Server._SW._Senate.Economy;
 
 namespace Content.Server._SW._Senate.Consoles;
 
@@ -15,6 +18,8 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
+    [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
+    [Dependency] private readonly PopupSystem _popup = default!;
 
     private const float UpdateInterval = 3f;
     private float _accumulator;
@@ -24,6 +29,57 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, BoundUIOpenedEvent>(OnOpened);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, EntInsertedIntoContainerMessage>(OnInserted);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, EntRemovedFromContainerMessage>(OnRemoved);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryAuditRequestMessage>(OnAudit);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryResolveRequestMessage>(OnResolve);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryRefuseRequestMessage>(OnRefuse);
+    }
+
+    private string? GetCardMinistry(Entity<SWMinistryWorkConsoleComponent> ent)
+    {
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null
+            || !TryComp<SWSenatePositionCardComponent>(card, out var position)
+            || position.Position != SWSenatePosition.Minister
+            || !TryComp<SWMinistryComponent>(card, out var ministryComp)
+            || ministryComp.Ministry == null)
+            return null;
+
+        return ministryComp.Ministry;
+    }
+
+    private void OnAudit(Entity<SWMinistryWorkConsoleComponent> ent, ref SWMinistryAuditRequestMessage args)
+    {
+        if (GetCardMinistry(ent) is not { } ministryId)
+            return;
+
+        if (!_dilemma.AuditRequest(ministryId, args.RequestId))
+            _popup.PopupCursor(Loc.GetString("sw-ministry-audit-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnResolve(Entity<SWMinistryWorkConsoleComponent> ent, ref SWMinistryResolveRequestMessage args)
+    {
+        if (GetCardMinistry(ent) is not { } ministryId)
+            return;
+
+        if (_dilemma.ResolveRequest(ministryId, args.RequestId, args.OptionIndex))
+            _popup.PopupCursor(Loc.GetString("sw-ministry-request-resolved"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-ministry-request-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRefuse(Entity<SWMinistryWorkConsoleComponent> ent, ref SWMinistryRefuseRequestMessage args)
+    {
+        if (GetCardMinistry(ent) is not { } ministryId)
+            return;
+
+        if (_dilemma.RefuseRequest(ministryId, args.RequestId, args.Reason))
+            _popup.PopupCursor(Loc.GetString("sw-ministry-request-refused"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
     }
 
     private void OnOpened(EntityUid uid, SWMinistryWorkConsoleComponent comp, BoundUIOpenedEvent args)
@@ -87,6 +143,12 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                 state.MinistryColor = proto.Color;
                 state.KindLabel = KindLabel(proto.Kind);
                 state.DomainStatId = proto.Domain;
+
+                var ministryId = ministryComp.Ministry.Value.Id;
+                state.MinistryBudget = _dilemma.GetMinistryBudget(ministryId);
+                state.MinistryAdmin = _dilemma.GetMinistryAdmin(ministryId);
+                state.AuditCost = _dilemma.AuditCost;
+                state.Requests = _dilemma.BuildMinistryRequests(ministryId);
             }
         }
 

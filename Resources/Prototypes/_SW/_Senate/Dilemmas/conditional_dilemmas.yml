@@ -27,13 +27,14 @@
   ministryOptions:
   - label: Республиканский продовольственный коридор
     sectorEffects:
-      SWGlobalHealthcare: 12
-      SWGlobalSociety: 4
+      SWGlobalHealthcare: 6
+      SWGlobalEconomy: -2
   - label: Экстренные поставки за счёт казны
     cost: 3500
     sectorEffects:
-      SWGlobalHealthcare: 16
-      SWGlobalSociety: 5
+      SWGlobalHealthcare: 8
+      SWGlobalSociety: 2
+      SWGlobalEconomy: -3
 
 - type: swDilemma
   id: SWDilemmaSecBlackout
@@ -63,13 +64,14 @@
   ministryOptions:
   - label: Аварийные реакторы Республики
     sectorEffects:
-      SWGlobalIndustry: 12
-      SWGlobalEconomy: 2
+      SWGlobalIndustry: 6
+      SWGlobalEconomy: -2
   - label: Программа модернизации энергосетей
     cost: 4000
     sectorEffects:
-      SWGlobalIndustry: 16
-      SWGlobalEconomy: 4
+      SWGlobalIndustry: 8
+      SWGlobalEconomy: 2
+      SWGlobalSociety: -2
 
 - type: swDilemma
   id: SWDilemmaSecGang
@@ -99,13 +101,14 @@
   ministryOptions:
   - label: Ввести республиканские силы порядка
     sectorEffects:
-      SWGlobalSecurity: 12
+      SWGlobalSecurity: 6
       SWGlobalSociety: -2
   - label: Спецоперация по картелям
     cost: 3500
     sectorEffects:
-      SWGlobalSecurity: 16
-      SWGlobalSociety: 2
+      SWGlobalSecurity: 8
+      SWGlobalSociety: -2
+      SWGlobalEconomy: -1
 
 - type: swDilemma
   id: SWDilemmaSecSeparatist
@@ -135,14 +138,14 @@
   ministryOptions:
   - label: Политическое урегулирование
     sectorEffects:
-      SWGlobalSociety: 10
-      SWGlobalSecurity: 2
+      SWGlobalSociety: 6
+      SWGlobalEconomy: -2
   - label: Операция по стабилизации
     cost: 3500
     sectorEffects:
-      SWGlobalSociety: 8
-      SWGlobalSecurity: 8
-      SWGlobalForeign: 2
+      SWGlobalSociety: 5
+      SWGlobalSecurity: 5
+      SWGlobalForeign: -2
 
 - type: swDilemma
   id: SWDilemmaSecCollapse
@@ -173,13 +176,14 @@
   ministryOptions:
   - label: Стабилизационный заём казны
     sectorEffects:
-      SWGlobalEconomy: 12
-      SWGlobalIndustry: 3
+      SWGlobalEconomy: 6
+      SWGlobalSociety: -2
   - label: Пакет финансовой помощи
     cost: 4500
     sectorEffects:
-      SWGlobalEconomy: 16
-      SWGlobalSociety: 2
+      SWGlobalEconomy: 8
+      SWGlobalIndustry: 2
+      SWGlobalSociety: -2
 
 - type: swDilemma
   id: SWDilemmaSecBrainDrain
@@ -234,13 +238,14 @@
   ministryOptions:
   - label: Республиканский гарнизон
     sectorEffects:
-      SWGlobalDefense: 12
-      SWGlobalSociety: 2
+      SWGlobalDefense: 6
+      SWGlobalEconomy: -2
   - label: Постоянная база флота
     cost: 4500
     sectorEffects:
-      SWGlobalDefense: 16
-      SWGlobalEconomy: 2
+      SWGlobalDefense: 8
+      SWGlobalSociety: 2
+      SWGlobalEconomy: -3
 
 - type: swDilemma
   id: SWDilemmaSecIsolation

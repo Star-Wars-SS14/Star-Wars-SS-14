@@ -33,6 +33,9 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
     private const float InflatedFactor = 0.7f;
     private const float UnderestimatedFailFactor = 1.5f;
 
+    // Sector self-solve options are toned down globally (the strong path is delegating to a ministry).
+    private const float SenatorScale = 0.6f;
+
     private const int MorningDeadline = 14;
     private const int MorningApply = 15;
     private const int AfternoonDeadline = 20;
@@ -266,30 +269,13 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             && dilemma.ChosenOption < proto.Options.Count)
         {
             var option = proto.Options[dilemma.ChosenOption];
-            Apply(dilemma, option.PolicyEffects, option.SectorEffects);
+            ApplyScaled(dilemma.Scope, dilemma.SectorId, option.PolicyEffects, option.SectorEffects, SenatorScale);
             dilemma.Status = SWDilemmaStatus.Applied;
         }
         else
         {
-            Apply(dilemma, proto.FailPolicyEffects, proto.FailSectorEffects);
+            ApplyScaled(dilemma.Scope, dilemma.SectorId, proto.FailPolicyEffects, proto.FailSectorEffects, 1f);
             dilemma.Status = SWDilemmaStatus.Failed;
-        }
-    }
-
-    private void Apply(
-        SWActiveDilemma dilemma,
-        Dictionary<ProtoId<SWStatPrototype>, float> policy,
-        Dictionary<ProtoId<SWGlobalStatPrototype>, float> sector)
-    {
-        if (dilemma.Scope == SWDilemmaScope.Republic)
-        {
-            foreach (var (sub, delta) in policy)
-                _senate.AddPolicy(sub, delta);
-        }
-        else if (dilemma.SectorId != null)
-        {
-            foreach (var (global, delta) in sector)
-                _senate.AddSectorBias(dilemma.SectorId, global, delta);
         }
     }
 
@@ -590,8 +576,8 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
                     Description = option.Description,
                     Cost = option.Cost,
                     Effects = dilemma.Scope == SWDilemmaScope.Republic
-                        ? PolicyEffectEntries(option.PolicyEffects)
-                        : SectorEffectEntries(option.SectorEffects),
+                        ? PolicyEffectEntries(option.PolicyEffects, SenatorScale)
+                        : SectorEffectEntries(option.SectorEffects, SenatorScale),
                 };
 
                 if (option.Ministry is { } ministryId)

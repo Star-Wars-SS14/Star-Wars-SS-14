@@ -30,13 +30,14 @@
   ministryOptions:
   - label: Развернуть республиканский медкорпус
     sectorEffects:
-      SWGlobalHealthcare: 11
-      SWGlobalSociety: 3
+      SWGlobalHealthcare: 5
+      SWGlobalEconomy: -2
   - label: Карантин под эгидой Республики
     cost: 3000
     sectorEffects:
-      SWGlobalHealthcare: 15
-      SWGlobalSociety: 4
+      SWGlobalHealthcare: 7
+      SWGlobalSociety: 2
+      SWGlobalEconomy: -3
 
 - type: swDilemma
   id: SWDilemmaSecStrike
@@ -85,13 +86,14 @@
   ministryOptions:
   - label: Направить патрульную эскадру
     sectorEffects:
-      SWGlobalDefense: 10
-      SWGlobalEconomy: 2
+      SWGlobalDefense: 5
+      SWGlobalSociety: -1
   - label: Постоянное военное присутствие
     cost: 3500
     sectorEffects:
-      SWGlobalDefense: 14
-      SWGlobalEconomy: 3
+      SWGlobalDefense: 7
+      SWGlobalEconomy: 2
+      SWGlobalSociety: -2
 
 - type: swDilemma
   id: SWDilemmaSecProtest
@@ -129,9 +131,21 @@
     sectorEffects:
       SWGlobalIndustry: 4
       SWGlobalHealthcare: -4
+  - label: Передать профильному министерству
+    ministry: SWMinistryHealth
   failSectorEffects:
     SWGlobalIndustry: -5
     SWGlobalHealthcare: -3
+  ministryOptions:
+  - label: Развернуть республиканский медкорпус
+    sectorEffects:
+      SWGlobalHealthcare: 5
+      SWGlobalIndustry: -2
+  - label: Полная дезактивация за счёт казны
+    cost: 3000
+    sectorEffects:
+      SWGlobalHealthcare: 7
+      SWGlobalIndustry: -3
 
 - type: swDilemma
   id: SWDilemmaSecSchool
@@ -246,13 +260,13 @@
   ministryOptions:
   - label: Межсекторальная операция
     sectorEffects:
-      SWGlobalSecurity: 10
-      SWGlobalEconomy: -1
+      SWGlobalSecurity: 5
+      SWGlobalEconomy: -2
   - label: Глубокое внедрение агентуры
     cost: 3000
     sectorEffects:
-      SWGlobalSecurity: 14
-      SWGlobalEconomy: 2
+      SWGlobalSecurity: 7
+      SWGlobalEconomy: -3
 
 - type: swDilemma
   id: SWDilemmaSecRefugees
@@ -310,9 +324,22 @@
     sectorEffects:
       SWGlobalIndustry: 4
       SWGlobalSecurity: -4
+  - label: Передать профильному министерству
+    ministry: SWMinistryInternalSecurity
   failSectorEffects:
     SWGlobalIndustry: -5
     SWGlobalSecurity: -4
+  ministryOptions:
+  - label: Межсекторальная операция
+    sectorEffects:
+      SWGlobalSecurity: 5
+      SWGlobalIndustry: -2
+  - label: Зачистка спецотрядами
+    cost: 3000
+    sectorEffects:
+      SWGlobalSecurity: 7
+      SWGlobalIndustry: -2
+      SWGlobalSociety: -1
 
 - type: swDilemma
   id: SWDilemmaSecSpice
@@ -330,9 +357,22 @@
     sectorEffects:
       SWGlobalSecurity: 4
       SWGlobalSociety: -3
+  - label: Передать профильному министерству
+    ministry: SWMinistryHealth
   failSectorEffects:
     SWGlobalHealthcare: -4
     SWGlobalSociety: -4
+  ministryOptions:
+  - label: Республиканская программа реабилитации
+    sectorEffects:
+      SWGlobalHealthcare: 5
+      SWGlobalEconomy: -2
+  - label: Перекрыть каналы поставок
+    cost: 3000
+    sectorEffects:
+      SWGlobalHealthcare: 6
+      SWGlobalSecurity: 3
+      SWGlobalSociety: -2
 
 - type: swDilemma
   id: SWDilemmaSecSpaceport
@@ -390,9 +430,22 @@
     sectorEffects:
       SWGlobalEconomy: 2
       SWGlobalSociety: -5
+  - label: Передать профильному министерству
+    ministry: SWMinistryJustice
   failSectorEffects:
     SWGlobalSociety: -6
     SWGlobalSecurity: -2
+  ministryOptions:
+  - label: Республиканский трибунал
+    sectorEffects:
+      SWGlobalSociety: 5
+      SWGlobalEconomy: -2
+  - label: Операция по освобождению
+    cost: 3000
+    sectorEffects:
+      SWGlobalSociety: 7
+      SWGlobalSecurity: 3
+      SWGlobalEconomy: -2
 
 - type: swDilemma
   id: SWDilemmaSecMine
@@ -410,9 +463,22 @@
     sectorEffects:
       SWGlobalIndustry: 4
       SWGlobalHealthcare: -4
+  - label: Передать профильному министерству
+    ministry: SWMinistryHealth
   failSectorEffects:
     SWGlobalIndustry: -4
     SWGlobalHealthcare: -4
+  ministryOptions:
+  - label: Спасательная экспедиция Республики
+    sectorEffects:
+      SWGlobalHealthcare: 5
+      SWGlobalIndustry: -1
+  - label: Модернизация рудников за счёт казны
+    cost: 3000
+    sectorEffects:
+      SWGlobalHealthcare: 6
+      SWGlobalIndustry: 3
+      SWGlobalEconomy: -3
 
 - type: swDilemma
   id: SWDilemmaSecBlockade
@@ -430,9 +496,22 @@
     sectorEffects:
       SWGlobalEconomy: -3
       SWGlobalIndustry: 2
+  - label: Передать профильному министерству
+    ministry: SWMinistryDefense
   failSectorEffects:
     SWGlobalEconomy: -5
     SWGlobalDefense: -2
+  ministryOptions:
+  - label: Деблокирующая эскадра
+    sectorEffects:
+      SWGlobalDefense: 5
+      SWGlobalEconomy: -2
+  - label: Постоянное прикрытие гиперпути
+    cost: 3500
+    sectorEffects:
+      SWGlobalDefense: 7
+      SWGlobalEconomy: 2
+      SWGlobalSociety: -2
 
 - type: swDilemma
   id: SWDilemmaSecFestival
@@ -488,9 +567,22 @@
     sectorEffects:
       SWGlobalSecurity: 2
       SWGlobalSociety: -2
+  - label: Передать профильному министерству
+    ministry: SWMinistryInternalSecurity
   failSectorEffects:
     SWGlobalDefense: -4
     SWGlobalSecurity: -3
+  ministryOptions:
+  - label: Контрразведывательная операция
+    sectorEffects:
+      SWGlobalSecurity: 5
+      SWGlobalSociety: -2
+  - label: Вскрыть всю сеть агентуры
+    cost: 3000
+    sectorEffects:
+      SWGlobalSecurity: 6
+      SWGlobalDefense: 3
+      SWGlobalSociety: -2
 
 - type: swDilemma
   id: SWDilemmaSecVeterans
@@ -528,9 +620,22 @@
     sectorEffects:
       SWGlobalEconomy: 4
       SWGlobalSociety: -3
+  - label: Передать профильному министерству
+    ministry: SWMinistryEconomy
   failSectorEffects:
     SWGlobalEconomy: -3
     SWGlobalSociety: -3
+  ministryOptions:
+  - label: Антимонопольное регулирование
+    sectorEffects:
+      SWGlobalEconomy: 5
+      SWGlobalSociety: 2
+  - label: Государственная поддержка конкурентов
+    cost: 3500
+    sectorEffects:
+      SWGlobalEconomy: 6
+      SWGlobalIndustry: 3
+      SWGlobalSociety: -2
 
 - type: swDilemma
   id: SWDilemmaSecFlood
@@ -548,9 +653,22 @@
   - label: Положиться на местных
     sectorEffects:
       SWGlobalSociety: -3
+  - label: Передать профильному министерству
+    ministry: SWMinistryHealth
   failSectorEffects:
     SWGlobalHealthcare: -5
     SWGlobalIndustry: -4
+  ministryOptions:
+  - label: Республиканская служба спасения
+    sectorEffects:
+      SWGlobalHealthcare: 5
+      SWGlobalEconomy: -2
+  - label: Программа восстановления за счёт казны
+    cost: 3500
+    sectorEffects:
+      SWGlobalHealthcare: 6
+      SWGlobalIndustry: 4
+      SWGlobalEconomy: -3
 
 - type: swDilemma
   id: SWDilemmaSecAutomation
@@ -669,9 +787,22 @@
     sectorEffects:
       SWGlobalSecurity: 2
       SWGlobalSociety: -4
+  - label: Передать профильному министерству
+    ministry: SWMinistryHealth
   failSectorEffects:
     SWGlobalHealthcare: -5
     SWGlobalSociety: -3
+  ministryOptions:
+  - label: Орбитальный карантинный госпиталь
+    sectorEffects:
+      SWGlobalHealthcare: 5
+      SWGlobalEconomy: -2
+  - label: Эвакуация и лечение за счёт казны
+    cost: 3000
+    sectorEffects:
+      SWGlobalHealthcare: 7
+      SWGlobalSociety: 2
+      SWGlobalEconomy: -3
 
 - type: swDilemma
   id: SWDilemmaSecGuildStrike
@@ -749,9 +880,22 @@
     sectorEffects:
       SWGlobalEconomy: 2
       SWGlobalHealthcare: -2
+  - label: Передать профильному министерству
+    ministry: SWMinistryHealth
   failSectorEffects:
     SWGlobalHealthcare: -5
     SWGlobalSecurity: -2
+  ministryOptions:
+  - label: Республиканская инспекция качества
+    sectorEffects:
+      SWGlobalHealthcare: 5
+      SWGlobalEconomy: -2
+  - label: Снабжение настоящей бактой
+    cost: 3000
+    sectorEffects:
+      SWGlobalHealthcare: 7
+      SWGlobalSecurity: 2
+      SWGlobalEconomy: -2
 
 - type: swDilemma
   id: SWDilemmaSecCurriculum
@@ -849,9 +993,22 @@
     sectorEffects:
       SWGlobalEconomy: 3
       SWGlobalHealthcare: -4
+  - label: Передать профильному министерству
+    ministry: SWMinistryHealth
   failSectorEffects:
     SWGlobalHealthcare: -5
     SWGlobalSociety: -2
+  ministryOptions:
+  - label: Экологическая инспекция Республики
+    sectorEffects:
+      SWGlobalHealthcare: 5
+      SWGlobalEconomy: -2
+  - label: Полная очистка за счёт казны
+    cost: 3000
+    sectorEffects:
+      SWGlobalHealthcare: 7
+      SWGlobalSociety: 2
+      SWGlobalEconomy: -3
 
 - type: swDilemma
   id: SWDilemmaSecMilitia
@@ -910,9 +1067,22 @@
     sectorEffects:
       SWGlobalSociety: -2
       SWGlobalEconomy: -2
+  - label: Передать профильному министерству
+    ministry: SWMinistryDefense
   failSectorEffects:
     SWGlobalSociety: -4
     SWGlobalHealthcare: -3
+  ministryOptions:
+  - label: Армейская зачистка территории
+    sectorEffects:
+      SWGlobalDefense: 5
+      SWGlobalEconomy: -2
+  - label: Военно-санитарная операция
+    cost: 3000
+    sectorEffects:
+      SWGlobalDefense: 5
+      SWGlobalHealthcare: 4
+      SWGlobalEconomy: -3
 
 - type: swDilemma
   id: SWDilemmaSecElection

@@ -1,0 +1,335 @@
+- type: swDilemma
+  id: SWDilemmaSecBankRun
+  name: Набег на банки
+  description: Паника охватила вкладчиков сектора, банки осаждают толпы.
+  scope: Sectoral
+  order: 200
+  failText: Финансовая система сектора рушится
+  options:
+  - label: Гарантировать вклады
+    sectorEffects:
+      SWGlobalEconomy: 3
+      SWGlobalSociety: 2
+  - label: Заморозить счета
+    sectorEffects:
+      SWGlobalEconomy: 2
+      SWGlobalSociety: -4
+  - label: Передать профильному министерству
+    ministry: SWMinistryFinance
+  failSectorEffects:
+    SWGlobalEconomy: -6
+    SWGlobalSociety: -4
+  ministryOptions:
+  - label: Стабилизационные кредиты казны
+    sectorEffects:
+      SWGlobalEconomy: 6
+      SWGlobalSociety: -2
+  - label: Полная санация банков
+    cost: 4000
+    sectorEffects:
+      SWGlobalEconomy: 8
+      SWGlobalSociety: 2
+      SWGlobalIndustry: -2
+
+- type: swDilemma
+  id: SWDilemmaSecCorruptCourt
+  name: Коррупция в судах
+  description: Судьи сектора берут взятки, правосудие продаётся с молотка.
+  scope: Sectoral
+  order: 201
+  failText: Закон в секторе теряет всякий вес
+  options:
+  - label: Внутренняя проверка
+    sectorEffects:
+      SWGlobalSociety: 3
+      SWGlobalSecurity: -1
+  - label: Замять ради стабильности
+    sectorEffects:
+      SWGlobalSecurity: 2
+      SWGlobalSociety: -4
+  - label: Передать профильному министерству
+    ministry: SWMinistryJustice
+  failSectorEffects:
+    SWGlobalSociety: -5
+    SWGlobalSecurity: -3
+  ministryOptions:
+  - label: Ревизия судебной системы
+    sectorEffects:
+      SWGlobalSociety: 6
+      SWGlobalEconomy: -2
+  - label: Показательный процесс
+    cost: 3000
+    sectorEffects:
+      SWGlobalSociety: 8
+      SWGlobalSecurity: 3
+      SWGlobalEconomy: -2
+
+- type: swDilemma
+  id: SWDilemmaSecBioLeak
+  name: Утечка из биолаборатории
+  description: Опасный патоген вырвался за стены лаборатории сектора.
+  scope: Sectoral
+  order: 202
+  failText: Заражение расползается по сектору
+  options:
+  - label: Локальный карантин
+    sectorEffects:
+      SWGlobalHealthcare: 4
+      SWGlobalEconomy: -3
+  - label: Уничтожить лабораторию
+    sectorEffects:
+      SWGlobalHealthcare: 3
+      SWGlobalIndustry: -3
+  - label: Передать профильному министерству
+    ministry: SWMinistryHealth
+  failSectorEffects:
+    SWGlobalHealthcare: -7
+    SWGlobalSociety: -4
+  ministryOptions:
+  - label: Биозащитный корпус Республики
+    sectorEffects:
+      SWGlobalHealthcare: 6
+      SWGlobalIndustry: -2
+  - label: Полная стерилизация очага
+    cost: 3500
+    sectorEffects:
+      SWGlobalHealthcare: 8
+      SWGlobalIndustry: -3
+
+- type: swDilemma
+  id: SWDilemmaSecRaiders
+  name: Налёт мародёров
+  description: Орда мародёров грабит поселения на окраинах сектора.
+  scope: Sectoral
+  order: 203
+  failText: Мародёры разоряют сектор безнаказанно
+  options:
+  - label: Поднять ополчение
+    sectorEffects:
+      SWGlobalDefense: 3
+      SWGlobalSociety: -2
+  - label: Откупиться добычей
+    sectorEffects:
+      SWGlobalEconomy: -4
+  - label: Передать профильному министерству
+    ministry: SWMinistryDefense
+  failSectorEffects:
+    SWGlobalDefense: -5
+    SWGlobalEconomy: -4
+  ministryOptions:
+  - label: Карательный рейд флота
+    sectorEffects:
+      SWGlobalDefense: 6
+      SWGlobalEconomy: -2
+  - label: Постоянный гарнизон
+    cost: 3500
+    sectorEffects:
+      SWGlobalDefense: 8
+      SWGlobalSociety: 2
+      SWGlobalEconomy: -3
+
+- type: swDilemma
+  id: SWDilemmaSecCyberattack
+  name: Кибератака на сети
+  description: Неизвестные парализовали цифровую инфраструктуру сектора.
+  scope: Sectoral
+  order: 204
+  failText: Системы сектора захвачены чужаками
+  options:
+  - label: Отключить сети вручную
+    sectorEffects:
+      SWGlobalSecurity: 3
+      SWGlobalIndustry: -3
+  - label: Заплатить вымогателям
+    sectorEffects:
+      SWGlobalEconomy: -4
+      SWGlobalSecurity: -2
+  - label: Передать профильному министерству
+    ministry: SWMinistryInternalSecurity
+  failSectorEffects:
+    SWGlobalSecurity: -5
+    SWGlobalIndustry: -4
+  ministryOptions:
+  - label: Киберотдел Республики
+    sectorEffects:
+      SWGlobalSecurity: 6
+      SWGlobalIndustry: -1
+  - label: Контратака и поимка
+    cost: 3000
+    sectorEffects:
+      SWGlobalSecurity: 8
+      SWGlobalIndustry: 2
+      SWGlobalEconomy: -2
+
+- type: swDilemma
+  id: SWDilemmaSecFoodRiots
+  name: Продовольственные бунты
+  description: Цены на еду взлетели, голодные толпы громят склады.
+  scope: Sectoral
+  order: 205
+  failText: Голодные бунты захлёстывают сектор
+  options:
+  - label: Раздать пайки
+    sectorEffects:
+      SWGlobalSociety: 4
+      SWGlobalEconomy: -3
+  - label: Силой разогнать
+    sectorEffects:
+      SWGlobalSecurity: 3
+      SWGlobalSociety: -5
+  - label: Передать профильному министерству
+    ministry: SWMinistryHealth
+  failSectorEffects:
+    SWGlobalSociety: -6
+    SWGlobalHealthcare: -3
+  ministryOptions:
+  - label: Гуманитарные поставки Республики
+    sectorEffects:
+      SWGlobalHealthcare: 5
+      SWGlobalSociety: 3
+      SWGlobalEconomy: -2
+  - label: Программа продовольственной безопасности
+    cost: 3500
+    sectorEffects:
+      SWGlobalHealthcare: 5
+      SWGlobalSociety: 6
+      SWGlobalEconomy: -3
+
+- type: swDilemma
+  id: SWDilemmaSecCounterfeit
+  name: Фальшивые кредиты
+  description: Сектор наводнили поддельные деньги, доверие к валюте падает.
+  scope: Sectoral
+  order: 206
+  failText: Экономика сектора тонет в фальшивках
+  options:
+  - label: Изъять наличность
+    sectorEffects:
+      SWGlobalEconomy: 3
+      SWGlobalSociety: -2
+  - label: Игнорировать проблему
+    sectorEffects:
+      SWGlobalEconomy: -3
+  - label: Передать профильному министерству
+    ministry: SWMinistryFinance
+  failSectorEffects:
+    SWGlobalEconomy: -5
+    SWGlobalSociety: -3
+  ministryOptions:
+  - label: Эмиссия защищённой валюты
+    sectorEffects:
+      SWGlobalEconomy: 6
+      SWGlobalSociety: -2
+  - label: Облава казначейства
+    cost: 3000
+    sectorEffects:
+      SWGlobalEconomy: 8
+      SWGlobalSecurity: 2
+      SWGlobalSociety: -2
+
+- type: swDilemma
+  id: SWDilemmaSecAsteroid
+  name: Астероид на курсе
+  description: К обитаемой планете сектора несётся крупный астероид.
+  scope: Sectoral
+  order: 207
+  failText: Удар астероида опустошает сектор
+  options:
+  - label: Эвакуировать зону удара
+    sectorEffects:
+      SWGlobalSociety: -3
+  - label: Расстрелять чем есть
+    sectorEffects:
+      SWGlobalDefense: 2
+      SWGlobalEconomy: -3
+  - label: Передать профильному министерству
+    ministry: SWMinistryDefense
+  failSectorEffects:
+    SWGlobalHealthcare: -7
+    SWGlobalIndustry: -5
+  ministryOptions:
+  - label: Флотская операция перехвата
+    sectorEffects:
+      SWGlobalDefense: 6
+      SWGlobalEconomy: -2
+  - label: Орбитальная оборона планеты
+    cost: 4000
+    sectorEffects:
+      SWGlobalDefense: 7
+      SWGlobalHealthcare: 4
+      SWGlobalEconomy: -3
+
+- type: swDilemma
+  id: SWDilemmaSecArtFair
+  name: Галактическая ярмарка искусств
+  description: Сектору предложили принять престижную ярмарку искусств.
+  scope: Sectoral
+  order: 208
+  failText: Шанс блеснуть упущен
+  options:
+  - label: Принять с размахом
+    sectorEffects:
+      SWGlobalSociety: 4
+      SWGlobalEconomy: -2
+  - label: Скромно поучаствовать
+    sectorEffects:
+      SWGlobalEconomy: 2
+  failSectorEffects:
+    SWGlobalSociety: -2
+
+- type: swDilemma
+  id: SWDilemmaSecZoning
+  name: Спор о застройке
+  description: Сектор спорит, что строить на освободившихся землях.
+  scope: Sectoral
+  order: 209
+  failText: Земли простаивают, инвесторы уходят
+  options:
+  - label: Жилые кварталы
+    sectorEffects:
+      SWGlobalSociety: 4
+      SWGlobalEconomy: -2
+  - label: Промышленная зона
+    sectorEffects:
+      SWGlobalIndustry: 4
+      SWGlobalSociety: -2
+  failSectorEffects:
+    SWGlobalEconomy: -2
+    SWGlobalSociety: -2
+
+- type: swDilemma
+  id: SWDilemmaSecExodus
+  name: Массовый исход
+  description: Жители тысячами бегут из сектора, оставляя города пустеть.
+  scope: Sectoral
+  order: 210
+  conditions:
+  - stat: SWGlobalSociety
+    comparison: Below
+    threshold: 25
+  failText: Сектор стремительно пустеет
+  options:
+  - label: Программа удержания
+    sectorEffects:
+      SWGlobalSociety: 6
+      SWGlobalEconomy: -5
+  - label: Закрыть выезд из сектора
+    sectorEffects:
+      SWGlobalSecurity: 4
+      SWGlobalSociety: -6
+  - label: Передать профильному министерству
+    ministry: SWMinistryInternalSecurity
+  failSectorEffects:
+    SWGlobalSociety: -9
+    SWGlobalEconomy: -6
+  ministryOptions:
+  - label: Республиканская программа стабилизации
+    sectorEffects:
+      SWGlobalSociety: 6
+      SWGlobalEconomy: -2
+  - label: Программа возвращения переселенцев
+    cost: 4000
+    sectorEffects:
+      SWGlobalSociety: 8
+      SWGlobalSecurity: 2
+      SWGlobalEconomy: -3

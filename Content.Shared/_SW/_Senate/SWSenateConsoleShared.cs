@@ -150,6 +150,28 @@ public sealed class SWSelectMinistryMessage : BoundUserInterfaceMessage
 }
 
 [Serializable, NetSerializable]
+public enum SWMinistryWorkConsoleUiKey
+{
+    Key
+}
+
+[Serializable, NetSerializable]
+public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
+{
+    public bool HasCard;
+    public bool IsMinisterCard;
+    public bool HasMinistry;
+    public string MinistryName = string.Empty;
+    public string MinistryTitle = string.Empty;
+    public string MinistryDescription = string.Empty;
+    public Color MinistryColor;
+    public string KindLabel = string.Empty;
+    public string? DomainStatId;
+    public List<SWGlobalStatEntry> Globals = new();
+    public string GameTime = string.Empty;
+}
+
+[Serializable, NetSerializable]
 public enum SWSenateInfoConsoleUiKey
 {
     Key

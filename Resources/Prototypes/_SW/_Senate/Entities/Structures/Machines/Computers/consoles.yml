@@ -71,6 +71,33 @@
 
 - type: entity
   parent: BaseComputer
+  id: SWMinistryWorkConsole
+  name: рабочая консоль министерства
+  description: Рабочее место министра — статистика Республики и ведомства.
+  components:
+  - type: SWMinistryWorkConsole
+  - type: ActivatableUI
+    key: enum.SWMinistryWorkConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWMinistryWorkConsoleUiKey.Key:
+        type: SWMinistryWorkConsoleBoundUserInterface
+  - type: ItemSlots
+    slots:
+      senate_id_slot:
+        name: ID-карта
+        whitelist:
+          components:
+          - IdCard
+  - type: ContainerContainer
+    containers:
+      senate_id_slot: !type:ContainerSlot {}
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Godmode
+
+- type: entity
+  parent: BaseComputer
   id: SWSenateVoteConsole
   name: консоль голосования Сената
   description: Голосование по текущему законопроекту.

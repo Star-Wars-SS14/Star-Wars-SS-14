@@ -27,6 +27,15 @@
 
 - type: entity
   parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidMinister
+  name: Министр
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [MinisterGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
   id: SWRandomHumanoidUsher
   name: Пристав Сената
   suffix: GhostRole

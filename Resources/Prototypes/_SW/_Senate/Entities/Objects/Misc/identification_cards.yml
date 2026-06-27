@@ -42,6 +42,20 @@
 
 - type: entity
   parent: SWIDCardStandard
+  id: SWMinisterIDCard
+  name: ID-карта министра
+  description: Удостоверение члена исполнительной власти Республики.
+  components:
+  - type: SWSenatePositionCard
+    position: Minister
+  - type: Sprite
+    layers:
+    - state: image8
+  - type: PresetIdCard
+    job: SWMinister
+
+- type: entity
+  parent: SWIDCardStandard
   id: SWUsherIDCard
   name: ID-карта пристава Сената
   description: Удостоверение пристава, следящего за порядком в зале заседаний.

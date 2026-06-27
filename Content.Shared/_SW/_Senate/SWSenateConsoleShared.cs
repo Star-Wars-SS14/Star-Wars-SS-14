@@ -99,6 +99,57 @@ public sealed class SWSelectSectorMessage : BoundUserInterfaceMessage
 }
 
 [Serializable, NetSerializable]
+public enum SWMinistrySelectConsoleUiKey
+{
+    Key
+}
+
+[Serializable, NetSerializable]
+public sealed class SWMinistryEntry
+{
+    public string Id = string.Empty;
+    public string Name = string.Empty;
+    public string Description = string.Empty;
+    public Color Color;
+    public int KindGroup;
+    public string KindLabel = string.Empty;
+    public string? ParentName;
+    public bool Claimed;
+    public string? Holder;
+    public bool Locked;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWMinistrySelectConsoleState : BoundUserInterfaceState
+{
+    public List<SWMinistryEntry> Ministries;
+    public bool HasCard;
+    public bool IsMinisterCard;
+    public string? Current;
+    public string? CurrentName;
+
+    public SWMinistrySelectConsoleState(List<SWMinistryEntry> ministries, bool hasCard, bool isMinisterCard, string? current, string? currentName)
+    {
+        Ministries = ministries;
+        HasCard = hasCard;
+        IsMinisterCard = isMinisterCard;
+        Current = current;
+        CurrentName = currentName;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSelectMinistryMessage : BoundUserInterfaceMessage
+{
+    public string MinistryId;
+
+    public SWSelectMinistryMessage(string ministryId)
+    {
+        MinistryId = ministryId;
+    }
+}
+
+[Serializable, NetSerializable]
 public enum SWSenateInfoConsoleUiKey
 {
     Key

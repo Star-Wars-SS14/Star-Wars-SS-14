@@ -54,6 +54,7 @@
   - SWSenateGuard
   - SWSenateGuardCommand
   - SWSenateMedical
+  - SWMinister
 
 - type: department
   id: SWSenate

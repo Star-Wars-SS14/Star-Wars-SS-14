@@ -1,0 +1,136 @@
+- type: swMinistry
+  id: SWMinistryDefense
+  name: Министерство обороны
+  titleName: обороны
+  description: Финансирование вооружённых сил, логистика и военные разработки Республики.
+  kind: Ministry
+  central: true
+  color: "#2C3E50"
+  domain: SWGlobalDefense
+  order: 0
+
+- type: swMinistry
+  id: SWMinistryInternalSecurity
+  name: Министерство внутренней безопасности
+  titleName: внутренней безопасности
+  description: Поддержание порядка, борьба с преступностью и политическая безопасность.
+  kind: Ministry
+  central: true
+  color: "#7B241C"
+  domain: SWGlobalSecurity
+  order: 1
+
+- type: swMinistry
+  id: SWMinistryEconomy
+  name: Министерство экономического развития
+  titleName: экономического развития
+  description: Долгосрочное планирование роста, программы развития и инфраструктура.
+  kind: Ministry
+  central: true
+  color: "#1E8449"
+  domain: SWGlobalEconomy
+  order: 2
+
+- type: swMinistry
+  id: SWMinistryFinance
+  name: Министерство финансов
+  titleName: финансов
+  description: Распределение бюджета, налоги и контроль государственного долга.
+  kind: Ministry
+  color: "#B7950B"
+  domain: SWGlobalEconomy
+  order: 3
+
+- type: swMinistry
+  id: SWMinistryJustice
+  name: Министерство юстиции
+  titleName: юстиции
+  description: Соблюдение законов, единые правовые стандарты и работа судов.
+  kind: Ministry
+  central: true
+  color: "#5B2C6F"
+  domain: SWGlobalSecurity
+  order: 4
+
+- type: swMinistry
+  id: SWMinistryHealth
+  name: Министерство здравоохранения
+  titleName: здравоохранения
+  description: Профилактика эпидемий, медицинские учреждения и исследования.
+  kind: Ministry
+  color: "#16A085"
+  domain: SWGlobalHealthcare
+  order: 5
+
+- type: swMinistry
+  id: SWDepartmentHealthcare
+  name: Департамент здравоохранения
+  titleName: здравоохранения
+  description: Полевые госпитали и работа в чрезвычайных ситуациях на местах.
+  kind: Department
+  color: "#48C9B0"
+  domain: SWGlobalHealthcare
+  parent: SWMinistryHealth
+  order: 10
+
+- type: swMinistry
+  id: SWDepartmentJustice
+  name: Департамент юстиции
+  titleName: юстиции
+  description: Судебный департамент, под управлением которого находится Сенатская Гвардия.
+  kind: Department
+  color: "#884EA0"
+  domain: SWGlobalSecurity
+  parent: SWMinistryJustice
+  order: 11
+
+- type: swMinistry
+  id: SWDepartmentArbitrage
+  name: Департамент арбитража
+  titleName: арбитража
+  description: Борьба с экономическими преступлениями и коррупцией.
+  kind: Department
+  color: "#A569BD"
+  domain: SWGlobalEconomy
+  parent: SWMinistryJustice
+  order: 12
+
+- type: swMinistry
+  id: SWDepartmentExpenditure
+  name: Департамент учёта расходов
+  titleName: учёта расходов
+  description: Аудит бюджетных средств и расследование финансовых злоупотреблений.
+  kind: Department
+  color: "#D4AC0D"
+  domain: SWGlobalEconomy
+  parent: SWMinistryFinance
+  order: 13
+
+- type: swMinistry
+  id: SWBureauShips
+  name: Бюро кораблей и услуг
+  titleName: кораблей и услуг
+  description: Реестр транспондеров звёздных кораблей и навигационная информация.
+  kind: Bureau
+  color: "#5499C7"
+  order: 20
+
+- type: swMinistry
+  id: SWBureauWeapons
+  name: Бюро по регулированию вооружений
+  titleName: по регулированию вооружений
+  description: Лицензирование боевых дроидов и опасного вооружения.
+  kind: Bureau
+  color: "#CB4335"
+  domain: SWGlobalSecurity
+  parent: SWMinistryInternalSecurity
+  order: 21
+
+- type: swMinistry
+  id: SWBureauTransit
+  name: Бюро путешествий и транзита
+  titleName: путешествий и транзита
+  description: Координация межпланетных перевозок и контроль передвижения граждан.
+  kind: Bureau
+  color: "#5DADE2"
+  order: 22

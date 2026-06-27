@@ -33,6 +33,17 @@
 
 - type: entity
   parent: BasePDA
+  id: SWMinisterPDA
+  name: КПК министра
+  description: Персональный датапад члена исполнительной власти Республики.
+  components:
+  - type: Pda
+    id: SWMinisterIDCard
+  - type: PdaBorderColor
+    borderColor: "#2980B9"
+
+- type: entity
+  parent: BasePDA
   id: SWUsherPDA
   name: КПК пристава
   description: Персональный датапад пристава Сената.

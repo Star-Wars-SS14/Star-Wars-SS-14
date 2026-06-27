@@ -6,6 +6,15 @@ sw-senate-select-success = Сектор закреплён: {$sector}.
 sw-senate-senator-title = Сенатор {$sector}
 sw-senate-senator-base = Сенатор
 
+sw-ministry-select-not-minister = Портфель может занять только карта министра.
+sw-ministry-select-already = За этой картой уже закреплён портфель.
+sw-ministry-select-taken = Это ведомство уже занято.
+sw-ministry-select-ministries-first = Сначала должны быть заняты все министерства — они важнее.
+sw-ministry-select-success = Назначение: {$title}.
+sw-ministry-title-ministry = Министр {$name}
+sw-ministry-title-department = Глава Департамента {$name}
+sw-ministry-title-bureau = Директор Бюро {$name}
+
 sw-senate-work-no-card = Вставьте сенатскую ID-карту в консоль.
 sw-senate-work-senator-hint = Сенаторы выбирают сектор на консоли выбора сектора.
 sw-senate-work-took-office = Вы вступили в должность.

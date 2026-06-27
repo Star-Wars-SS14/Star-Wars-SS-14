@@ -44,6 +44,33 @@
 
 - type: entity
   parent: BaseComputer
+  id: SWMinistrySelectConsole
+  name: консоль назначения министров
+  description: Закрепляет ведомство за ID-картой министра.
+  components:
+  - type: SWMinistrySelectConsole
+  - type: ActivatableUI
+    key: enum.SWMinistrySelectConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWMinistrySelectConsoleUiKey.Key:
+        type: SWMinistrySelectConsoleBoundUserInterface
+  - type: ItemSlots
+    slots:
+      senate_id_slot:
+        name: ID-карта
+        whitelist:
+          components:
+          - IdCard
+  - type: ContainerContainer
+    containers:
+      senate_id_slot: !type:ContainerSlot {}
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Godmode
+
+- type: entity
+  parent: BaseComputer
   id: SWSenateVoteConsole
   name: консоль голосования Сената
   description: Голосование по текущему законопроекту.

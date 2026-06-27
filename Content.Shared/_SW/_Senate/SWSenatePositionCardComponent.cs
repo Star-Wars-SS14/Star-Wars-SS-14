@@ -8,6 +8,7 @@ public enum SWSenatePosition : byte
     Senator,
     Chancellor,
     Speaker,
+    Minister,
 }
 
 [RegisterComponent]

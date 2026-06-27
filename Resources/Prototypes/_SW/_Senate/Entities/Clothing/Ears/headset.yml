@@ -24,6 +24,19 @@
 
 - type: entity
   parent: SWClothingHeadset
+  id: SWClothingHeadsetSenateMinister
+  name: minister headset
+  components:
+  - type: EncryptionKeyHolder
+    keySlots: 2
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyChancellery
+      - SWEncryptionKeySenate
+
+- type: entity
+  parent: SWClothingHeadset
   id: SWClothingHeadsetSenateMedical
   name: senate medical headset
   components:

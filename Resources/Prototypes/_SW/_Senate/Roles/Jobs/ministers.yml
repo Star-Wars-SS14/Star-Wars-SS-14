@@ -1,0 +1,49 @@
+- type: playTimeTracker
+  id: Job_Minister
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconMinister
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: Civilian
+
+- type: accessLevel
+  id: SWMinister
+  name: Министр
+
+- type: department
+  id: SWSenateExecutive
+  name: Исполнительная власть
+  description: "Министры, главы департаментов и директора бюро Галактической Республики."
+  color: "#2980B9"
+  roles:
+  - SWMinister
+  weight: 1995
+
+- type: job
+  id: SWMinister
+  name: Министр
+  playTimeTracker: Job_Minister
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0
+  startingGear: MinisterGear
+  icon: "JobIconMinister"
+  supervisors: job-supervisors-empire
+  access:
+  - SWSenate
+  - SWMinister
+
+- type: startingGear
+  id: MinisterGear
+  equipment:
+    id: SWMinisterPDA
+    ears: SWClothingHeadsetSenateMinister
+    outerClothing: SWCitizenClothing
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    back: ClothingBackpack
+    belt: ClothingBeltUtility
+    pocket1: FlashlightLantern

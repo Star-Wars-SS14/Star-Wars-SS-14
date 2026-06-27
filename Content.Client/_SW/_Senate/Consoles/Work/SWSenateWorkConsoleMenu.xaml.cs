@@ -867,9 +867,22 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             var optionRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
             var index = i;
             var id = dilemma.Id;
-            var label = option.Cost > 0 ? $"{option.Label} — {option.Cost} кр." : option.Label;
+            var isAppeal = !string.IsNullOrEmpty(option.MinistryName);
+
+            string label;
+            if (isAppeal)
+            {
+                label = $"{option.Label} → {option.MinistryName}";
+                if (!option.MinistryAvailable)
+                    label += " (нет министра)";
+            }
+            else
+            {
+                label = option.Cost > 0 ? $"{option.Label} — {option.Cost} кр." : option.Label;
+            }
             if (dilemma.ChosenOption == i)
                 label += " (выбрано)";
+
             var button = new Button
             {
                 Text = label,
@@ -877,21 +890,30 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                 HorizontalExpand = true,
                 HorizontalAlignment = Control.HAlignment.Left,
             };
+            if (isAppeal)
+                button.Modulate = Color.FromHex("#5DADE2");
             button.OnPressed += _ => _owner.ResolveDilemma(id, index);
             optionRow.AddChild(button);
             optionBox.AddChild(optionRow);
 
-            var effects = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(8, 0, 0, 0) };
-            foreach (var effect in option.Effects)
+            if (isAppeal)
             {
-                effects.AddChild(new Label
-                {
-                    Text = $"{effect.StatName} {effect.Delta:+0;-0}",
-                    FontColorOverride = effect.Color,
-                    Margin = new Thickness(0, 0, 10, 0),
-                });
+                optionBox.AddChild(MakeWrap("Проблему решит министерство — эффект отложен.", Color.Gray));
             }
-            optionBox.AddChild(effects);
+            else
+            {
+                var effects = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(8, 0, 0, 0) };
+                foreach (var effect in option.Effects)
+                {
+                    effects.AddChild(new Label
+                    {
+                        Text = $"{effect.StatName} {effect.Delta:+0;-0}",
+                        FontColorOverride = effect.Color,
+                        Margin = new Thickness(0, 0, 10, 0),
+                    });
+                }
+                optionBox.AddChild(effects);
+            }
 
             box.AddChild(optionBox);
         }

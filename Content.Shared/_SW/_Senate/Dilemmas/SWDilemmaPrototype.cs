@@ -1,3 +1,4 @@
+using Content.Shared._SW._Senate.Ministries;
 using Content.Shared._SW._Senate.Sectors;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
@@ -25,6 +26,29 @@ public enum SWDilemmaStatus : byte
     Chosen,
     Applied,
     Failed,
+    Delegated,
+}
+
+[Serializable, NetSerializable]
+public enum SWMinistryRequestStatus : byte
+{
+    Pending,
+    Resolved,
+    Refused,
+    Expired,
+}
+
+/// <summary>
+/// Hidden flaw rolled per request. The minister sees the option's "expected" numbers; the real
+/// cost/effects only diverge once an audit reveals the issue.
+/// </summary>
+[Serializable, NetSerializable]
+public enum SWAuditIssue : byte
+{
+    Reliable,
+    InflatedEstimate,
+    CorruptContractor,
+    UnderestimatedCrisis,
 }
 
 [Serializable, NetSerializable]
@@ -75,6 +99,13 @@ public sealed partial class SWDilemmaPrototype : IPrototype
     public List<SWDilemmaOption> Options = new();
 
     /// <summary>
+    /// Solutions available to the minister once this dilemma is delegated as a ministry request.
+    /// Distinct from (and usually stronger/broader than) the sector's own <see cref="Options"/>.
+    /// </summary>
+    [DataField]
+    public List<SWMinistryDilemmaOption> MinistryOptions = new();
+
+    /// <summary>
     /// Outcome applied if the dilemma is not resolved in time. Republic dilemmas use policy (sub) effects.
     /// </summary>
     [DataField]
@@ -102,6 +133,32 @@ public sealed partial class SWDilemmaCondition
 
 [DataDefinition]
 public sealed partial class SWDilemmaOption
+{
+    [DataField]
+    public string Label = string.Empty;
+
+    [DataField]
+    public string Description = string.Empty;
+
+    [DataField]
+    public int Cost;
+
+    /// <summary>
+    /// When set, this option is an appeal to the named ministry: choosing it does not apply effects
+    /// directly but delegates the dilemma as a ministry request (the minister resolves it later).
+    /// </summary>
+    [DataField]
+    public ProtoId<SWMinistryPrototype>? Ministry;
+
+    [DataField]
+    public Dictionary<ProtoId<SWStatPrototype>, float> PolicyEffects = new();
+
+    [DataField]
+    public Dictionary<ProtoId<SWGlobalStatPrototype>, float> SectorEffects = new();
+}
+
+[DataDefinition]
+public sealed partial class SWMinistryDilemmaOption
 {
     [DataField]
     public string Label = string.Empty;

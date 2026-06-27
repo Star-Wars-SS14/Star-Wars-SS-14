@@ -599,6 +599,8 @@ public sealed class SWDilemmaOptionEntry
     public int Cost;
     public bool Affordable = true;
     public List<SWBillEffectEntry> Effects = new();
+    public string MinistryName = string.Empty;
+    public bool MinistryAvailable;
 }
 
 [Serializable, NetSerializable]

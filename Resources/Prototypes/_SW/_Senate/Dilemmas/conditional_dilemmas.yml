@@ -19,9 +19,21 @@
       SWGlobalHealthcare: 4
       SWGlobalEconomy: 3
       SWGlobalSociety: -5
+  - label: Передать профильному министерству
+    ministry: SWMinistryHealth
   failSectorEffects:
     SWGlobalHealthcare: -9
     SWGlobalSociety: -6
+  ministryOptions:
+  - label: Республиканский продовольственный коридор
+    sectorEffects:
+      SWGlobalHealthcare: 12
+      SWGlobalSociety: 4
+  - label: Экстренные поставки за счёт казны
+    cost: 3500
+    sectorEffects:
+      SWGlobalHealthcare: 16
+      SWGlobalSociety: 5
 
 - type: swDilemma
   id: SWDilemmaSecBlackout
@@ -43,9 +55,21 @@
     sectorEffects:
       SWGlobalIndustry: 3
       SWGlobalSociety: -6
+  - label: Передать профильному министерству
+    ministry: SWMinistryEconomy
   failSectorEffects:
     SWGlobalIndustry: -8
     SWGlobalSociety: -5
+  ministryOptions:
+  - label: Аварийные реакторы Республики
+    sectorEffects:
+      SWGlobalIndustry: 12
+      SWGlobalEconomy: 2
+  - label: Программа модернизации энергосетей
+    cost: 4000
+    sectorEffects:
+      SWGlobalIndustry: 16
+      SWGlobalEconomy: 4
 
 - type: swDilemma
   id: SWDilemmaSecGang
@@ -67,9 +91,21 @@
     sectorEffects:
       SWGlobalSecurity: 3
       SWGlobalSociety: 3
+  - label: Передать профильному министерству
+    ministry: SWMinistryInternalSecurity
   failSectorEffects:
     SWGlobalSecurity: -8
     SWGlobalSociety: -6
+  ministryOptions:
+  - label: Ввести республиканские силы порядка
+    sectorEffects:
+      SWGlobalSecurity: 12
+      SWGlobalSociety: -2
+  - label: Спецоперация по картелям
+    cost: 3500
+    sectorEffects:
+      SWGlobalSecurity: 16
+      SWGlobalSociety: 2
 
 - type: swDilemma
   id: SWDilemmaSecSeparatist
@@ -91,9 +127,22 @@
     sectorEffects:
       SWGlobalSecurity: 6
       SWGlobalSociety: -6
+  - label: Передать профильному министерству
+    ministry: SWMinistryInternalSecurity
   failSectorEffects:
     SWGlobalSociety: -8
     SWGlobalForeign: -5
+  ministryOptions:
+  - label: Политическое урегулирование
+    sectorEffects:
+      SWGlobalSociety: 10
+      SWGlobalSecurity: 2
+  - label: Операция по стабилизации
+    cost: 3500
+    sectorEffects:
+      SWGlobalSociety: 8
+      SWGlobalSecurity: 8
+      SWGlobalForeign: 2
 
 - type: swDilemma
   id: SWDilemmaSecCollapse
@@ -116,9 +165,21 @@
     sectorEffects:
       SWGlobalEconomy: 5
       SWGlobalSociety: -6
+  - label: Передать профильному министерству
+    ministry: SWMinistryFinance
   failSectorEffects:
     SWGlobalEconomy: -9
     SWGlobalSociety: -5
+  ministryOptions:
+  - label: Стабилизационный заём казны
+    sectorEffects:
+      SWGlobalEconomy: 12
+      SWGlobalIndustry: 3
+  - label: Пакет финансовой помощи
+    cost: 4500
+    sectorEffects:
+      SWGlobalEconomy: 16
+      SWGlobalSociety: 2
 
 - type: swDilemma
   id: SWDilemmaSecBrainDrain
@@ -165,9 +226,21 @@
     sectorEffects:
       SWGlobalDefense: 5
       SWGlobalSecurity: -4
+  - label: Передать профильному министерству
+    ministry: SWMinistryDefense
   failSectorEffects:
     SWGlobalDefense: -9
     SWGlobalEconomy: -5
+  ministryOptions:
+  - label: Республиканский гарнизон
+    sectorEffects:
+      SWGlobalDefense: 12
+      SWGlobalSociety: 2
+  - label: Постоянная база флота
+    cost: 4500
+    sectorEffects:
+      SWGlobalDefense: 16
+      SWGlobalEconomy: 2
 
 - type: swDilemma
   id: SWDilemmaSecIsolation

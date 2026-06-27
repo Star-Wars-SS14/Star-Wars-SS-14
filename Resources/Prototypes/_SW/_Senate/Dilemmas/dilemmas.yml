@@ -21,9 +21,22 @@
     sectorEffects:
       SWGlobalEconomy: 2
       SWGlobalHealthcare: -3
+  - label: Передать профильному министерству
+    description: Силами сектора эпидемию не остановить — нужна помощь центра.
+    ministry: SWMinistryHealth
   failSectorEffects:
     SWGlobalHealthcare: -6
     SWGlobalSociety: -4
+  ministryOptions:
+  - label: Развернуть республиканский медкорпус
+    sectorEffects:
+      SWGlobalHealthcare: 11
+      SWGlobalSociety: 3
+  - label: Карантин под эгидой Республики
+    cost: 3000
+    sectorEffects:
+      SWGlobalHealthcare: 15
+      SWGlobalSociety: 4
 
 - type: swDilemma
   id: SWDilemmaSecStrike
@@ -63,9 +76,22 @@
     sectorEffects:
       SWGlobalEconomy: -4
       SWGlobalSociety: 2
+  - label: Передать профильному министерству
+    description: Своего флота не хватает — нужна военная помощь Республики.
+    ministry: SWMinistryDefense
   failSectorEffects:
     SWGlobalEconomy: -5
     SWGlobalDefense: -3
+  ministryOptions:
+  - label: Направить патрульную эскадру
+    sectorEffects:
+      SWGlobalDefense: 10
+      SWGlobalEconomy: 2
+  - label: Постоянное военное присутствие
+    cost: 3500
+    sectorEffects:
+      SWGlobalDefense: 14
+      SWGlobalEconomy: 3
 
 - type: swDilemma
   id: SWDilemmaSecProtest
@@ -211,9 +237,22 @@
     sectorEffects:
       SWGlobalEconomy: 3
       SWGlobalSecurity: -4
+  - label: Передать профильному министерству
+    description: Синдикат перерос сектор — нужны силы внутренней безопасности.
+    ministry: SWMinistryInternalSecurity
   failSectorEffects:
     SWGlobalSecurity: -5
     SWGlobalEconomy: -2
+  ministryOptions:
+  - label: Межсекторальная операция
+    sectorEffects:
+      SWGlobalSecurity: 10
+      SWGlobalEconomy: -1
+  - label: Глубокое внедрение агентуры
+    cost: 3000
+    sectorEffects:
+      SWGlobalSecurity: 14
+      SWGlobalEconomy: 2
 
 - type: swDilemma
   id: SWDilemmaSecRefugees

@@ -89,25 +89,25 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
     // (border rise per game-hour, war-weariness per game-hour, sector nudges per game-hour)
     private static (float Border, float Weariness, (string Stat, float Delta)[] Nudges) Config(SWDefenseStance stance) => stance switch
     {
-        SWDefenseStance.Peace => (2.25f, -2f, new[]
+        SWDefenseStance.Peace => (2.5f, -2.5f, new[]
         {
-            ("SWGlobalEconomy", 0.2f), ("SWGlobalSociety", 0.2f), ("SWGlobalDefense", -0.1f),
+            ("SWGlobalEconomy", 0.3f), ("SWGlobalSociety", 0.3f), ("SWGlobalDefense", -0.2f),
         }),
-        SWDefenseStance.Vigilance => (1.0f, -2f, new[]
+        SWDefenseStance.Vigilance => (1.0f, -2.5f, new[]
         {
-            ("SWGlobalDefense", 0.1f), ("SWGlobalSecurity", 0.1f), ("SWGlobalEconomy", 0.1f),
+            ("SWGlobalDefense", 0.2f), ("SWGlobalSecurity", 0.15f), ("SWGlobalEconomy", 0.15f),
         }),
-        SWDefenseStance.Alert => (1.5f, -1f, new[]
+        SWDefenseStance.Alert => (1.5f, -1.5f, new[]
         {
-            ("SWGlobalDefense", 0.1f), ("SWGlobalSociety", -0.1f),
+            ("SWGlobalDefense", 0.2f), ("SWGlobalSociety", -0.15f),
         }),
-        SWDefenseStance.Mobilization => (-1.5f, 2f, new[]
+        SWDefenseStance.Mobilization => (-2f, 2.5f, new[]
         {
-            ("SWGlobalDefense", 0.25f), ("SWGlobalEconomy", -0.2f), ("SWGlobalSociety", -0.2f),
+            ("SWGlobalDefense", 0.4f), ("SWGlobalEconomy", -0.3f), ("SWGlobalSociety", -0.3f),
         }),
-        _ => (-3f, 3f, new[]
+        _ => (-3.5f, 3.5f, new[]
         {
-            ("SWGlobalDefense", 0.35f), ("SWGlobalEconomy", -0.35f), ("SWGlobalSociety", -0.3f),
+            ("SWGlobalDefense", 0.5f), ("SWGlobalEconomy", -0.5f), ("SWGlobalSociety", -0.45f),
         }),
     };
 
@@ -200,13 +200,13 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
         _border = Math.Clamp(_border + cfg.Border * gameHours, 0f, 100f);
         if (_border >= 75f)
         {
-            NudgeSectors("SWGlobalDefense", -0.2f * gameHours);
-            NudgeSectors("SWGlobalSociety", -0.2f * gameHours);
+            NudgeSectors("SWGlobalDefense", -0.3f * gameHours);
+            NudgeSectors("SWGlobalSociety", -0.3f * gameHours);
         }
         if (_border >= 95f)
         {
-            NudgeSectors("SWGlobalDefense", -0.3f * gameHours);
-            NudgeSectors("SWGlobalSociety", -0.3f * gameHours);
+            NudgeSectors("SWGlobalDefense", -0.4f * gameHours);
+            NudgeSectors("SWGlobalSociety", -0.4f * gameHours);
         }
 
         foreach (var (stat, delta) in cfg.Nudges)

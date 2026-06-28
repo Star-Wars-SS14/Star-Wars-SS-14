@@ -168,6 +168,7 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public bool HasCard;
     public bool IsMinisterCard;
     public bool HasMinistry;
+    public bool CanResign;
     public string MinistryName = string.Empty;
     public string MinistryTitle = string.Empty;
     public string MinistryDescription = string.Empty;
@@ -206,6 +207,11 @@ public sealed class SWDefenseProgramEntry
     public string Description = string.Empty;
     public bool Selected;
     public List<SWBillEffectEntry> Effects = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWMinistryResignMessage : BoundUserInterfaceMessage
+{
 }
 
 [Serializable, NetSerializable]

@@ -14,6 +14,8 @@ sw-ministry-select-success = Назначение: {$title}.
 sw-ministry-title-ministry = Министр {$name}
 sw-ministry-title-department = Глава Департамента {$name}
 sw-ministry-title-bureau = Директор Бюро {$name}
+sw-minister-base = Министр
+sw-ministry-resigned = Вы сложили полномочия. Ведомство свободно.
 
 sw-ministry-audit-failed = Аудит невозможен: нет админ-ресурса или уже проводится.
 sw-ministry-request-resolved = Заявка удовлетворена.

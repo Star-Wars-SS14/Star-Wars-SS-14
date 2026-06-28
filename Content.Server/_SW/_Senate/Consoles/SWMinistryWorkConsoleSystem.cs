@@ -1,6 +1,7 @@
 using Content.Server.Popups;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Ministries;
+using Content.Shared.Access.Systems;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Popups;
 using Robust.Server.GameObjects;
@@ -20,6 +21,8 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
+    [Dependency] private readonly SWMinistrySystem _ministry = default!;
+    [Dependency] private readonly SharedIdCardSystem _idCard = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
 
     private const float UpdateInterval = 3f;
@@ -35,6 +38,22 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryRefuseRequestMessage>(OnRefuse);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseSetStanceMessage>(OnSetStance);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseSelectProgramMessage>(OnSelectProgram);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryResignMessage>(OnResign);
+    }
+
+    private void OnResign(Entity<SWMinistryWorkConsoleComponent> ent, ref SWMinistryResignMessage args)
+    {
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null
+            || !TryComp<SWMinistryComponent>(card, out var ministryComp)
+            || ministryComp.Ministry is not { } ministryId)
+            return;
+
+        _ministry.Unclaim(ministryId);
+        ministryComp.Ministry = null;
+        _idCard.TryChangeJobTitle(card.Value, Loc.GetString("sw-minister-base"));
+        _popup.PopupCursor(Loc.GetString("sw-ministry-resigned"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
     }
 
     private void OnSetStance(Entity<SWMinistryWorkConsoleComponent> ent, ref SWDefenseSetStanceMessage args)
@@ -158,6 +177,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                 && _proto.TryIndex<SWMinistryPrototype>(ministryComp.Ministry, out var proto))
             {
                 state.HasMinistry = true;
+                state.CanResign = true;
                 state.MinistryName = proto.Name;
                 state.MinistryTitle = Loc.GetString(TitleKey(proto.Kind), ("name", proto.TitleName));
                 state.MinistryDescription = proto.Description;

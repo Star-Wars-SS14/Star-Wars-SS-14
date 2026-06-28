@@ -36,6 +36,11 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWMinistryRefuseRequestMessage(requestId, reason));
     }
 
+    public void Resign()
+    {
+        SendMessage(new SWMinistryResignMessage());
+    }
+
     public void SetStance(SWDefenseStance stance)
     {
         SendMessage(new SWDefenseSetStanceMessage(stance));

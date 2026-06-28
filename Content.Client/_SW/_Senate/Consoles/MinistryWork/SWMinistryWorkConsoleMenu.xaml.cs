@@ -250,6 +250,15 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         card.AddChild(box);
         OverviewContent.AddChild(card);
 
+        if (state.CanResign)
+        {
+            var resign = SWConsoleStyle.Action("Сложить полномочия", SWConsoleStyle.Bad);
+            resign.HorizontalAlignment = Control.HAlignment.Left;
+            resign.Margin = new Thickness(0, 8, 0, 0);
+            resign.OnPressed += _ => _owner.Resign();
+            OverviewContent.AddChild(resign);
+        }
+
         var domain = state.Globals.FirstOrDefault(g => g.Id == state.DomainStatId);
         if (domain != null)
         {

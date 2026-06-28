@@ -17,6 +17,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateBudgetSystem _budget = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
+    [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
 
     public const string RepublicOwner = "republic";
 
@@ -450,7 +451,8 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             return false;
 
         var option = proto.MinistryOptions[optionIndex];
-        var cost = RealCost(option.Cost, request.Issue);
+        var (costMod, effectMod) = DefenseModifier(ministryId, request.SectorId);
+        var cost = (int) (RealCost(option.Cost, request.Issue) * costMod);
 
         EnsureMinistry(ministryId);
         if (_ministryBudget[ministryId] < cost)
@@ -458,7 +460,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
         _ministryBudget[ministryId] -= cost;
 
-        var mult = request.Issue == SWAuditIssue.Reliable ? ReliableBonus : 1f;
+        var mult = (request.Issue == SWAuditIssue.Reliable ? ReliableBonus : 1f) * effectMod;
         ApplyScaled(request.Scope, request.SectorId, option.PolicyEffects, option.SectorEffects, mult);
 
         if (request.Issue == SWAuditIssue.CorruptContractor && request.SectorId != null)
@@ -466,6 +468,9 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             _senate.AddSectorBias(request.SectorId, "SWGlobalSociety", -3f);
             _senate.AddSectorBias(request.SectorId, "SWGlobalEconomy", -2f);
         }
+
+        if (ministryId == SWMinistryDefenseSystem.DefenseMinistryId)
+            _defense.OnSectorEngagement(request.SectorId);
 
         request.Status = SWMinistryRequestStatus.Resolved;
         request.MinisterOption = optionIndex;
@@ -522,6 +527,9 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
     public List<string> GetNotices(string? owner) =>
         owner != null && _notices.TryGetValue(owner, out var list) ? new List<string>(list) : new List<string>();
+
+    private (float Cost, float Effect) DefenseModifier(string ministryId, string? sectorId) =>
+        ministryId == SWMinistryDefenseSystem.DefenseMinistryId ? _defense.GetRequestModifier(sectorId) : (1f, 1f);
 
     private static int RealCost(int cost, SWAuditIssue issue) =>
         issue == SWAuditIssue.InflatedEstimate ? (int) (cost * InflatedFactor) : cost;
@@ -724,11 +732,12 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
             if (proto != null)
             {
-                var mult = request.AuditDone && request.Issue == SWAuditIssue.Reliable ? ReliableBonus : 1f;
+                var (costMod, effectMod) = DefenseModifier(ministryId, request.SectorId);
+                var mult = (request.AuditDone && request.Issue == SWAuditIssue.Reliable ? ReliableBonus : 1f) * effectMod;
 
                 foreach (var option in proto.MinistryOptions)
                 {
-                    var shownCost = request.AuditDone ? RealCost(option.Cost, request.Issue) : option.Cost;
+                    var shownCost = (int) ((request.AuditDone ? RealCost(option.Cost, request.Issue) : option.Cost) * costMod);
                     entry.Options.Add(new SWMinistryRequestOptionEntry
                     {
                         Label = option.Label,

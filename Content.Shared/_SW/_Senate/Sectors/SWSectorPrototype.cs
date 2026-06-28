@@ -20,6 +20,10 @@ public sealed partial class SWSectorPrototype : IPrototype
     [DataField]
     public float Weight = 1f;
 
+    /// <summary>Shipyard world — damaged fleet groups can be repaired here.</summary>
+    [DataField]
+    public bool Shipyard;
+
     [DataField]
     public Dictionary<ProtoId<SWGlobalStatPrototype>, float> StartingStats = new();
 }

@@ -40,6 +40,7 @@
 - type: swSector
   id: SWSectorCorellia
   name: Кореллия
+  shipyard: true
   description: Колыбель верфей и вольных торговцев.
   color: "#E67E22"
   weight: 2
@@ -111,6 +112,7 @@
 - type: swSector
   id: SWSectorKuat
   name: Куат
+  shipyard: true
   description: Величайшие верфи Республики.
   color: "#BDC3C7"
   weight: 2.5
@@ -123,6 +125,7 @@
 - type: swSector
   id: SWSectorFondor
   name: Фондор
+  shipyard: true
   description: Орбитальные доки и тяжёлая промышленность.
   color: "#A6ACAF"
   startingStats:
@@ -143,6 +146,7 @@
 - type: swSector
   id: SWSectorRendili
   name: Рендили
+  shipyard: true
   description: Старинный мир кораблестроителей.
   color: "#909497"
   startingStats:

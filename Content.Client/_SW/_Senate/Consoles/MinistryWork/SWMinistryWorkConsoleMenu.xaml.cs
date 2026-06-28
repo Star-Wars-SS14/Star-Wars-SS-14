@@ -250,24 +250,46 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             return;
         }
 
-        FleetContent.AddChild(SWConsoleStyle.Text($"Приказ для: {selected.Id}-й Флот", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
+        if (selected.State == SWFleetState.Repairing)
+        {
+            FleetContent.AddChild(SWConsoleStyle.Text($"{selected.Id}-й Флот на верфи — ремонт {selected.RepairLeft} ч. Приказы недоступны.", SWConsoleStyle.Warn, SWConsoleStyle.Mono));
+            return;
+        }
+
+        var head2 = selected.Damaged ? $"Приказ для: {selected.Id}-й Флот  [ПОВРЕЖДЁН]" : $"Приказ для: {selected.Id}-й Флот";
+        FleetContent.AddChild(SWConsoleStyle.Text(head2, selected.Damaged ? SWConsoleStyle.Bad : SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
         FleetContent.AddChild(MakeOrderButton(selected.Id, "border", "Выдвинуть на границу", SWConsoleStyle.Accent, selected.State == SWFleetState.Border));
         FleetContent.AddChild(MakeOrderButton(selected.Id, "reserve", "Отозвать в резерв", SWConsoleStyle.Neutral, selected.State == SWFleetState.Reserve));
 
         if (state.FleetSectors.Count == 0)
-        {
             FleetContent.AddChild(SWConsoleStyle.Text("Гарнизоны откроются, когда сенаторы займут сектора.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
-            return;
+        else
+        {
+            FleetContent.AddChild(SWConsoleStyle.Text("Гарнизон сектора (по слабости обороны):", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            foreach (var sector in state.FleetSectors)
+            {
+                var already = selected.State == SWFleetState.Sector && selected.SectorId == sector.Id;
+                var garrison = state.Fleet.Where(g => g.State == SWFleetState.Sector && g.SectorId == sector.Id).Select(g => $"{g.Id}-й").ToList();
+                var suffix = garrison.Count > 0 ? $"  · гарнизон: {string.Join(", ", garrison)}" : string.Empty;
+                var label = $"{sector.Name}  ·  оборона {sector.Defense}{suffix}";
+                FleetContent.AddChild(MakeOrderButton(selected.Id, sector.Id, label, sector.Color, already));
+            }
         }
 
-        FleetContent.AddChild(SWConsoleStyle.Text("Гарнизон сектора (отсортированы по слабости обороны):", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
-        foreach (var sector in state.FleetSectors)
+        if (!selected.Damaged)
+            return;
+
+        FleetContent.AddChild(new Control { MinHeight = 6 });
+        FleetContent.AddChild(SWConsoleStyle.Section("РЕМОНТ"));
+        FleetContent.AddChild(new Control { MinHeight = 4 });
+        FleetContent.AddChild(MakeOrderButton(selected.Id, "express", "Экстренный ремонт — 3500 кр", SWConsoleStyle.Warn, false));
+        var yards = state.FleetSectors.Where(s => s.Shipyard).ToList();
+        if (yards.Count == 0)
+            FleetContent.AddChild(SWConsoleStyle.Text("Нет занятых верфей — доступен только экстренный ремонт.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        else
         {
-            var already = selected.State == SWFleetState.Sector && selected.SectorId == sector.Id;
-            var garrison = state.Fleet.Where(g => g.State == SWFleetState.Sector && g.SectorId == sector.Id).Select(g => $"{g.Id}-й").ToList();
-            var suffix = garrison.Count > 0 ? $"  · гарнизон: {string.Join(", ", garrison)}" : string.Empty;
-            var label = $"{sector.Name}  ·  оборона {sector.Defense}{suffix}";
-            FleetContent.AddChild(MakeOrderButton(selected.Id, sector.Id, label, sector.Color, already));
+            foreach (var yard in yards)
+                FleetContent.AddChild(MakeOrderButton(selected.Id, $"repair:{yard.Id}", $"Ремонт на верфи {yard.Name} — 1500 кр", SWConsoleStyle.Good, false));
         }
     }
 
@@ -275,14 +297,17 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
     {
         var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, Margin = new Thickness(0, 0, 0, 4) };
         var selected = _selectedFleet == group.Id;
-        var color = group.State switch
+        var color = group.Damaged ? SWConsoleStyle.Bad : group.State switch
         {
             SWFleetState.Border => SWConsoleStyle.Accent,
             SWFleetState.Sector => SWConsoleStyle.Good,
+            SWFleetState.Repairing => SWConsoleStyle.Warn,
             _ => SWConsoleStyle.TextDim,
         };
 
-        var btn = SWConsoleStyle.Action(selected ? $"> {group.Id}-й Флот — {group.LocationLabel}" : $"{group.Id}-й Флот — {group.LocationLabel}", color);
+        var tag = group.Damaged ? "  [ПОВРЕЖДЁН]" : string.Empty;
+        var text = $"{group.Id}-й Флот — {group.LocationLabel}{tag}";
+        var btn = SWConsoleStyle.Action(selected ? $"> {text}" : text, color);
         btn.HorizontalExpand = true;
         var id = group.Id;
         btn.OnPressed += _ =>
@@ -306,12 +331,19 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         return btn;
     }
 
-    private static string FleetMission(SWFleetGroupEntry group) => group.State switch
+    private static string FleetMission(SWFleetGroupEntry group)
     {
-        SWFleetState.Border => "Удерживает границу: -1.5/ч давления",
-        SWFleetState.Sector => $"Гарнизон {group.LocationLabel}: +0.4 оборона/ч",
-        _ => "В резерве — готов к переброске",
-    };
+        if (group.State == SWFleetState.Repairing)
+            return $"На верфи — ремонт {group.RepairLeft} ч";
+        if (group.Damaged)
+            return "Повреждён — эффективность вдвое ниже, нужен ремонт";
+        return group.State switch
+        {
+            SWFleetState.Border => "Удерживает границу: -1.5/ч давления",
+            SWFleetState.Sector => $"Гарнизон {group.LocationLabel}: +0.4 оборона/ч",
+            _ => "В резерве — готов к переброске",
+        };
+    }
 
     private void BuildCommand(SWMinistryWorkConsoleState state)
     {

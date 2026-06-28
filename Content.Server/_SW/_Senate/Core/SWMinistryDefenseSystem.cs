@@ -4,6 +4,7 @@ using Content.Shared._SW._Senate.Ministries;
 using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;
 using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
 using Content.Server._SW._Senate.Economy;
 
 namespace Content.Server._SW._Senate.Core;
@@ -14,6 +15,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
+    [Dependency] private readonly IRobustRandom _random = default!;
 
     public const string DefenseMinistryId = "SWMinistryDefense";
 
@@ -25,6 +27,11 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
     private const float BorderReliefPerGroup = 1.5f; // border pressure eased per game-hour, per border group
     private const float GarrisonDefense = 0.4f;
     private const float GarrisonSecurity = 0.2f;
+
+    private const float DamageChancePerHour = 0.25f; // per border group while the border is hot (>=75)
+    private const int RepairHours = 3;
+    private const int YardRepairCost = 1500;
+    private const int ExpressRepairCost = 3500;
 
     private const int MaxActiveOps = 2;
 
@@ -225,15 +232,23 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
 
         EnsureGroups();
         PruneGarrisons();
+        CompleteRepairs();
 
-        var borderGroups = _groups.Count(g => g.State == SWFleetState.Border);
-        var deployed = _groups.Count(g => g.State != SWFleetState.Reserve);
+        var borderRelief = 0f;
+        foreach (var g in _groups)
+        {
+            if (g.State == SWFleetState.Border)
+                borderRelief += g.Damaged ? BorderReliefPerGroup * 0.5f : BorderReliefPerGroup;
+        }
 
-        _border = Math.Clamp(_border + (cfg.Border - BorderReliefPerGroup * borderGroups) * gameHours, 0f, 100f);
+        var deployed = _groups.Count(g => g.State is SWFleetState.Border or SWFleetState.Sector);
+
+        _border = Math.Clamp(_border + (cfg.Border - borderRelief) * gameHours, 0f, 100f);
         if (_border >= 75f)
         {
             NudgeSectors("SWGlobalDefense", -0.3f * gameHours);
             NudgeSectors("SWGlobalSociety", -0.3f * gameHours);
+            RollBorderDamage(gameHours);
         }
         if (_border >= 95f)
         {
@@ -249,8 +264,9 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
             if (group.State != SWFleetState.Sector || group.SectorId == null)
                 continue;
 
-            _senate.AddSectorBias(group.SectorId, "SWGlobalDefense", GarrisonDefense * gameHours);
-            _senate.AddSectorBias(group.SectorId, "SWGlobalSecurity", GarrisonSecurity * gameHours);
+            var scale = group.Damaged ? 0.5f : 1f;
+            _senate.AddSectorBias(group.SectorId, "SWGlobalDefense", GarrisonDefense * scale * gameHours);
+            _senate.AddSectorBias(group.SectorId, "SWGlobalSecurity", GarrisonSecurity * scale * gameHours);
         }
 
         TickUpkeep(deployed, gameHours);
@@ -313,11 +329,57 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
             "Флот отозван в резерв: нет средств на содержание."));
     }
 
+    private void RollBorderDamage(float gameHours)
+    {
+        foreach (var group in _groups)
+        {
+            if (group.State == SWFleetState.Border && !group.Damaged && _random.Prob(DamageChancePerHour * gameHours))
+                group.Damaged = true;
+        }
+    }
+
+    private void CompleteRepairs()
+    {
+        foreach (var group in _groups)
+        {
+            if (group.State == SWFleetState.Repairing && _time.CurrentHour >= group.RepairUntil)
+            {
+                group.Damaged = false;
+                group.RepairUntil = 0;
+                group.State = SWFleetState.Reserve;
+                group.SectorId = null;
+            }
+        }
+    }
+
     public bool DeployGroup(int groupId, string target)
     {
         var group = _groups.FirstOrDefault(g => g.Id == groupId);
-        if (group == null)
+        if (group == null || group.State == SWFleetState.Repairing)
             return false;
+
+        if (target == "express")
+        {
+            if (!group.Damaged || !_dilemma.SpendMinistry(DefenseMinistryId, ExpressRepairCost))
+                return false;
+            group.Damaged = false;
+            return true;
+        }
+
+        if (target.StartsWith("repair:"))
+        {
+            var yard = target["repair:".Length..];
+            if (!group.Damaged
+                || !_senate.IsClaimed(yard)
+                || !_proto.TryIndex<SWSectorPrototype>(yard, out var yp) || !yp.Shipyard
+                || !_dilemma.SpendMinistry(DefenseMinistryId, YardRepairCost))
+                return false;
+
+            group.State = SWFleetState.Repairing;
+            group.SectorId = null;
+            group.RepairUntil = _time.CurrentHour + RepairHours;
+            return true;
+        }
 
         switch (target)
         {
@@ -350,6 +412,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
             var label = group.State switch
             {
                 SWFleetState.Border => "Граница",
+                SWFleetState.Repairing => "Ремонт",
                 SWFleetState.Sector => group.SectorId != null && _proto.TryIndex<SWSectorPrototype>(group.SectorId, out var sp) ? sp.Name : "Сектор",
                 _ => "Резерв",
             };
@@ -360,6 +423,8 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
                 State = group.State,
                 LocationLabel = label,
                 SectorId = group.SectorId,
+                Damaged = group.Damaged,
+                RepairLeft = group.State == SWFleetState.Repairing ? Math.Max(0, group.RepairUntil - _time.CurrentHour) : 0,
             });
         }
 
@@ -389,6 +454,43 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
 
         foreach (var (sectorId, _) in _senate.SectorHolders)
             _senate.AddSectorBias(sectorId, globalId, delta);
+    }
+
+    // Defense ministry requests are modulated by readiness and whether a healthy garrison holds the sector.
+    public (float Cost, float Effect) GetRequestModifier(string? sectorId)
+    {
+        var garrison = sectorId != null && _groups.Any(g => g.State == SWFleetState.Sector && g.SectorId == sectorId && !g.Damaged);
+
+        var cost = 1f;
+        var effect = 1f;
+
+        if (garrison)
+        {
+            cost *= 0.6f;
+            effect *= 1.25f;
+        }
+
+        if (_stance >= SWDefenseStance.Mobilization)
+            effect *= 1.2f;
+
+        if (_stance == SWDefenseStance.Peace && !garrison)
+        {
+            cost *= 1.3f;
+            effect *= 0.8f;
+        }
+
+        return (cost, effect);
+    }
+
+    // Resolving a hot military request can bloody the garrison that responded.
+    public void OnSectorEngagement(string? sectorId)
+    {
+        if (sectorId == null)
+            return;
+
+        var garrison = _groups.FirstOrDefault(g => g.State == SWFleetState.Sector && g.SectorId == sectorId && !g.Damaged);
+        if (garrison != null && _random.Prob(0.3f))
+            garrison.Damaged = true;
     }
 
     public bool LaunchOperation(string opId, string target)
@@ -604,6 +706,8 @@ public sealed class SWFleetGroup
     public int Id;
     public SWFleetState State;
     public string? SectorId;
+    public bool Damaged;
+    public int RepairUntil;
 }
 
 public sealed class SWActiveOperation

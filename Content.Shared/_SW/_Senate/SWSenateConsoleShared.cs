@@ -249,6 +249,8 @@ public sealed class SWFleetGroupEntry
     public SWFleetState State;
     public string LocationLabel = string.Empty;
     public string? SectorId;
+    public bool Damaged;
+    public int RepairLeft;
 }
 
 [Serializable, NetSerializable]
@@ -258,6 +260,7 @@ public sealed class SWFleetSectorEntry
     public string Name = string.Empty;
     public Color Color;
     public int Defense;
+    public bool Shipyard;
 }
 
 [Serializable, NetSerializable]

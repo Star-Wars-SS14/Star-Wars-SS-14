@@ -21,6 +21,7 @@ public enum SWFleetState : byte
     Reserve,
     Border,
     Sector,
+    Repairing,
 }
 
 [Serializable, NetSerializable]

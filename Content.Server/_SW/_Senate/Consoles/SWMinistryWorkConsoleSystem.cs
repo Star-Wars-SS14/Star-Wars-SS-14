@@ -259,7 +259,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     ? (int) MathF.Round(d)
                     : 50;
 
-            list.Add(new SWFleetSectorEntry { Id = sectorId, Name = proto.Name, Color = proto.Color, Defense = defense });
+            list.Add(new SWFleetSectorEntry { Id = sectorId, Name = proto.Name, Color = proto.Color, Defense = defense, Shipyard = proto.Shipyard });
         }
 
         list.Sort((a, b) => a.Defense.CompareTo(b.Defense));

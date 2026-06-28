@@ -16,6 +16,7 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
     [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
     [Dependency] private readonly SWMinistryHealthSystem _health = default!;
+    [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
 
     private const float UpdateInterval = 3f;
@@ -96,6 +97,11 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
             InfectionAvg = (int) MathF.Round(_health.InfectionAvg()),
             Immunity = _health.Immunity,
             Research = _health.Research,
+            EconPhaseName = SWMinistryEconomySystem.PhaseName(_economy.Phase),
+            EconPhaseColor = SWMinistryEconomySystem.PhaseColor(_economy.Phase),
+            Growth = _economy.Growth,
+            Overheat = _economy.Overheat,
+            OverheatStatus = _economy.OverheatStatus(),
         };
 
         _ui.SetUiState(ent.Owner, SWStatisticsConsoleUiKey.Key, state);

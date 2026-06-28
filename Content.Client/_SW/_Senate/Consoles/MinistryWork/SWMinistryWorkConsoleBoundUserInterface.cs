@@ -121,6 +121,41 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWHealthSelectProgramMessage(programId));
     }
 
+    public void SetEconPolicy(int level)
+    {
+        SendMessage(new SWEconomySetPolicyMessage(level));
+    }
+
+    public void LaunchProject(string projectId, string target)
+    {
+        SendMessage(new SWEconomyLaunchProjectMessage(projectId, target));
+    }
+
+    public void CancelProject(int index)
+    {
+        SendMessage(new SWEconomyCancelProjectMessage(index));
+    }
+
+    public void AddRoute(string aId, string bId)
+    {
+        SendMessage(new SWEconomyAddRouteMessage(aId, bId));
+    }
+
+    public void RemoveRoute(int routeId)
+    {
+        SendMessage(new SWEconomyRemoveRouteMessage(routeId));
+    }
+
+    public void DeclareStimulus()
+    {
+        SendMessage(new SWEconomyDeclareStimulusMessage());
+    }
+
+    public void SelectEconProgram(string programId)
+    {
+        SendMessage(new SWEconomySelectProgramMessage(programId));
+    }
+
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);

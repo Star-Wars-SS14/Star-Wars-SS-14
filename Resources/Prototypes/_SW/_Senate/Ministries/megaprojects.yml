@@ -1,0 +1,93 @@
+- type: swMegaproject
+  id: SWMegaHyperlane
+  name: Гипертрасса
+  description: Прокладка выделенного гиперпути резко поднимает торговлю и экономику сектора.
+  order: 0
+  phases: 3
+  costPerPhase: 2500
+  phaseHours: 5
+  target: Sector
+  overheatDelta: -5
+  policyEffects:
+    SWStatTrade: 5
+  sectorEffects:
+    SWGlobalEconomy: 8
+    SWGlobalIndustry: 4
+
+- type: swMegaproject
+  id: SWMegaShipyards
+  name: Орбитальные верфи
+  description: Крупные верфи делают сектор индустриальным сердцем и усиливают оборону.
+  order: 1
+  phases: 3
+  costPerPhase: 3000
+  phaseHours: 6
+  target: Sector
+  policyEffects:
+    SWStatManufacturing: 5
+  sectorEffects:
+    SWGlobalIndustry: 10
+    SWGlobalDefense: 3
+
+- type: swMegaproject
+  id: SWMegaIndustrial
+  name: Промышленный комплекс
+  description: Полный индустриальный кластер с энергетикой и производством.
+  order: 2
+  phases: 3
+  costPerPhase: 2500
+  phaseHours: 5
+  target: Sector
+  growthDelta: 1
+  policyEffects:
+    SWStatManufacturing: 4
+    SWStatEnergy: 3
+  sectorEffects:
+    SWGlobalIndustry: 9
+    SWGlobalEconomy: 3
+
+- type: swMegaproject
+  id: SWMegaTradeHub
+  name: Торговый узел
+  description: Крупный торговый хаб поднимает экономику и занятость сектора.
+  order: 3
+  phases: 2
+  costPerPhase: 2500
+  phaseHours: 4
+  target: Sector
+  policyEffects:
+    SWStatTrade: 6
+    SWStatEmployment: 3
+  sectorEffects:
+    SWGlobalEconomy: 9
+
+- type: swMegaproject
+  id: SWMegaTerraform
+  name: Терраформирование
+  description: Долгий проект преображает мир, поднимая экономику, общество и медицину.
+  order: 4
+  phases: 4
+  costPerPhase: 3000
+  phaseHours: 6
+  target: Sector
+  policyEffects:
+    SWStatEmployment: 4
+  sectorEffects:
+    SWGlobalEconomy: 6
+    SWGlobalSociety: 5
+    SWGlobalHealthcare: 3
+
+- type: swMegaproject
+  id: SWMegaHyperGrid
+  name: Гиперпутевая сеть
+  description: Республиканская сеть гиперпутей ускоряет рост всей экономики и снимает узкие места.
+  order: 5
+  phases: 3
+  costPerPhase: 3500
+  phaseHours: 6
+  target: None
+  growthDelta: 1.5
+  overheatDelta: -8
+  policyEffects:
+    SWStatTrade: 8
+    SWStatTransport: 6

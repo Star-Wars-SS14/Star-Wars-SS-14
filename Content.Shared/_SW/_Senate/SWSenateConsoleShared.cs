@@ -82,6 +82,11 @@ public sealed class SWStatisticsConsoleState : BoundUserInterfaceState
     public int InfectionAvg;
     public int Immunity;
     public int Research;
+    public string EconPhaseName = string.Empty;
+    public Color EconPhaseColor;
+    public float Growth;
+    public int Overheat;
+    public string OverheatStatus = string.Empty;
 
     public SWStatisticsConsoleState(List<SWGlobalStatEntry> globals, List<SWSectorEntry> sectors)
     {
@@ -270,6 +275,161 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public List<SWInfectionSectorEntry> InfectionSectors = new();
     public List<string> HealthLog = new();
     public int HospitalMaxLevel;
+
+    // ЭКОНОМИКА (Economy ministry only).
+    public bool IsEconomy;
+    public SWEconomyPhase EconPhase;
+    public string EconPhaseName = string.Empty;
+    public Color EconPhaseColor;
+    public float Growth;
+    public int Overheat;
+    public string OverheatStatus = string.Empty;
+    public int EconPolicy;
+    public string EconPolicyLabel = string.Empty;
+    public bool StimulusPending;
+    public string SelectedEconProgram = string.Empty;
+    public int EconProgramProgress;
+    public List<SWDefenseProgramEntry> EconPrograms = new();
+    public List<SWMegaprojectEntry> Megaprojects = new();
+    public List<SWActiveMegaprojectEntry> ActiveProjects = new();
+    public int ProjectSlots;
+    public int ProjectUsed;
+    public List<SWTradeRouteEntry> TradeRoutes = new();
+    public int TradeRouteCap;
+    public List<SWEconSectorEntry> EconSectors = new();
+    public List<string> EconomyLog = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWMegaprojectEntry
+{
+    public string Id = string.Empty;
+    public string Name = string.Empty;
+    public string Description = string.Empty;
+    public int Phases;
+    public int CostPerPhase;
+    public int PhaseHours;
+    public SWOpTarget Target;
+    public bool Available;
+    public string StatusLabel = string.Empty;
+    public List<SWBillEffectEntry> Effects = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWActiveMegaprojectEntry
+{
+    public int Index;
+    public string Name = string.Empty;
+    public string Detail = string.Empty;
+    public int Phase;
+    public int TotalPhases;
+    public int PhaseLeft;
+    public bool Stalled;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWTradeRouteEntry
+{
+    public int Id;
+    public string AName = string.Empty;
+    public string BName = string.Empty;
+    public bool Active;
+    public string StatusLabel = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWEconSectorEntry
+{
+    public string Id = string.Empty;
+    public string Name = string.Empty;
+    public Color Color;
+    public int Economy;
+    public int Industry;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWEconomySetPolicyMessage : BoundUserInterfaceMessage
+{
+    public int Level;
+
+    public SWEconomySetPolicyMessage(int level)
+    {
+        Level = level;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWEconomyLaunchProjectMessage : BoundUserInterfaceMessage
+{
+    public string ProjectId;
+    public string Target;
+
+    public SWEconomyLaunchProjectMessage(string projectId, string target)
+    {
+        ProjectId = projectId;
+        Target = target;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWEconomyCancelProjectMessage : BoundUserInterfaceMessage
+{
+    public int Index;
+
+    public SWEconomyCancelProjectMessage(int index)
+    {
+        Index = index;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWEconomyAddRouteMessage : BoundUserInterfaceMessage
+{
+    public string AId;
+    public string BId;
+
+    public SWEconomyAddRouteMessage(string aId, string bId)
+    {
+        AId = aId;
+        BId = bId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWEconomyRemoveRouteMessage : BoundUserInterfaceMessage
+{
+    public int RouteId;
+
+    public SWEconomyRemoveRouteMessage(int routeId)
+    {
+        RouteId = routeId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWEconomyDeclareStimulusMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWEconomySelectProgramMessage : BoundUserInterfaceMessage
+{
+    public string ProgramId;
+
+    public SWEconomySelectProgramMessage(string programId)
+    {
+        ProgramId = programId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWEconomyApproveStimulusMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWEconomyRejectStimulusMessage : BoundUserInterfaceMessage
+{
 }
 
 [Serializable, NetSerializable]
@@ -733,6 +893,8 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public string PendingPostureName = string.Empty;
     public bool HealthEmergencyProposed;
     public bool CanApproveHealthEmergency;
+    public bool StimulusProposed;
+    public bool CanApproveStimulus;
     public List<SWBillPresetEntry> Presets = new();
     public bool CanDilemmas;
     public List<string> MinistryNotices = new();

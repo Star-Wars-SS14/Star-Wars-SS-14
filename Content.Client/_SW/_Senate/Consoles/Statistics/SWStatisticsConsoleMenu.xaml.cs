@@ -124,6 +124,20 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
         RepublicStats.AddChild(healthPanel);
 
         RepublicStats.AddChild(new Control { MinHeight = 10 });
+        RepublicStats.AddChild(SWConsoleStyle.Section("ЭКОНОМИКА"));
+        RepublicStats.AddChild(new Control { MinHeight = 4 });
+        var econPanel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, state.EconPhaseColor);
+        var econBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+        var econHead = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        econHead.AddChild(SWConsoleStyle.Text(state.EconPhaseName, state.EconPhaseColor, SWConsoleStyle.MonoBold));
+        econHead.AddChild(new Control { HorizontalExpand = true });
+        econHead.AddChild(SWConsoleStyle.Text($"рост {state.Growth:+0.0;-0.0}/ч · перегрев {state.Overheat}/100", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        econBox.AddChild(econHead);
+        econBox.AddChild(SWConsoleStyle.Text(state.OverheatStatus, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        econPanel.AddChild(econBox);
+        RepublicStats.AddChild(econPanel);
+
+        RepublicStats.AddChild(new Control { MinHeight = 10 });
         RepublicStats.AddChild(SWConsoleStyle.Section("ПОКАЗАТЕЛИ РЕСПУБЛИКИ"));
         RepublicStats.AddChild(new Control { MinHeight = 6 });
 

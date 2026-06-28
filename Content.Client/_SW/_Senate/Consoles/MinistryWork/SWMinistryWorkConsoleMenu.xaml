@@ -51,6 +51,15 @@
                 <ScrollContainer Name="HealthProgramsPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
                     <BoxContainer Name="HealthProgramsContent" Orientation="Vertical" HorizontalExpand="True" />
                 </ScrollContainer>
+                <ScrollContainer Name="EconomyPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="EconomyContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="ProjectsPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="ProjectsContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="RoutesPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="RoutesContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
             </BoxContainer>
         </BoxContainer>
     </PanelContainer>

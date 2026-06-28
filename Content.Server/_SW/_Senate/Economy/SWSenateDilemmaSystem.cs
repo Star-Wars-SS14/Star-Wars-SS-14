@@ -20,6 +20,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
     [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
     [Dependency] private readonly SWMinistryHealthSystem _health = default!;
+    [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
 
     public const string RepublicOwner = "republic";
 
@@ -477,6 +478,8 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             _security.OnSectorEngagement(request.SectorId);
         else if (ministryId == SWMinistryHealthSystem.HealthMinistryId)
             _health.OnSectorEngagement(request.SectorId);
+        else if (ministryId == SWMinistryEconomySystem.EconomyMinistryId)
+            _economy.OnSectorEngagement(request.SectorId);
 
         request.Status = SWMinistryRequestStatus.Resolved;
         request.MinisterOption = optionIndex;
@@ -542,6 +545,8 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             return _security.GetRequestModifier(sectorId);
         if (ministryId == SWMinistryHealthSystem.HealthMinistryId)
             return _health.GetRequestModifier(sectorId);
+        if (ministryId == SWMinistryEconomySystem.EconomyMinistryId)
+            return _economy.GetRequestModifier(sectorId);
         return (1f, 1f);
     }
 

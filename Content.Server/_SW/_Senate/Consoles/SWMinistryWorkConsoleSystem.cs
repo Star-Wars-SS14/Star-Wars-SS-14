@@ -26,6 +26,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
     [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
     [Dependency] private readonly SWMinistryHealthSystem _health = default!;
+    [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
@@ -57,7 +58,84 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthEmergencyAidMessage>(OnEmergencyAid);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthDeclareEmergencyMessage>(OnDeclareEmergency);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthSelectProgramMessage>(OnSelectHealthProgram);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomySetPolicyMessage>(OnSetEconPolicy);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomyLaunchProjectMessage>(OnLaunchProject);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomyCancelProjectMessage>(OnCancelProject);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomyAddRouteMessage>(OnAddRoute);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomyRemoveRouteMessage>(OnRemoveRoute);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomyDeclareStimulusMessage>(OnDeclareStimulus);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomySelectProgramMessage>(OnSelectEconProgram);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryResignMessage>(OnResign);
+    }
+
+    private bool IsEconomyCard(Entity<SWMinistryWorkConsoleComponent> ent) =>
+        GetCardMinistry(ent) == SWMinistryEconomySystem.EconomyMinistryId;
+
+    private void OnSetEconPolicy(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomySetPolicyMessage args)
+    {
+        if (!IsEconomyCard(ent))
+            return;
+
+        _economy.SetPolicy(args.Level);
+        UpdateUi(ent);
+    }
+
+    private void OnLaunchProject(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomyLaunchProjectMessage args)
+    {
+        if (!IsEconomyCard(ent))
+            return;
+
+        if (!_economy.LaunchProject(args.ProjectId, args.Target))
+            _popup.PopupCursor(Loc.GetString("sw-economy-project-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnCancelProject(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomyCancelProjectMessage args)
+    {
+        if (!IsEconomyCard(ent))
+            return;
+
+        _economy.CancelProject(args.Index);
+        UpdateUi(ent);
+    }
+
+    private void OnAddRoute(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomyAddRouteMessage args)
+    {
+        if (!IsEconomyCard(ent))
+            return;
+
+        if (!_economy.AddRoute(args.AId, args.BId))
+            _popup.PopupCursor(Loc.GetString("sw-economy-route-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRemoveRoute(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomyRemoveRouteMessage args)
+    {
+        if (!IsEconomyCard(ent))
+            return;
+
+        _economy.RemoveRoute(args.RouteId);
+        UpdateUi(ent);
+    }
+
+    private void OnDeclareStimulus(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomyDeclareStimulusMessage args)
+    {
+        if (!IsEconomyCard(ent))
+            return;
+
+        _economy.DeclareStimulus();
+        UpdateUi(ent);
+    }
+
+    private void OnSelectEconProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomySelectProgramMessage args)
+    {
+        if (!IsEconomyCard(ent))
+            return;
+
+        _economy.SelectProgram(args.ProgramId);
+        UpdateUi(ent);
     }
 
     private bool IsHealthCard(Entity<SWMinistryWorkConsoleComponent> ent) =>
@@ -427,6 +505,30 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.InfectionSectors = _health.BuildInfectionSectors();
                     state.HealthLog = _health.GetLog();
                     state.HospitalMaxLevel = SWMinistryHealthSystem.HospitalMaxLevel;
+                }
+                else if (ministryId == SWMinistryEconomySystem.EconomyMinistryId)
+                {
+                    state.IsEconomy = true;
+                    state.EconPhase = _economy.Phase;
+                    state.EconPhaseName = SWMinistryEconomySystem.PhaseName(_economy.Phase);
+                    state.EconPhaseColor = SWMinistryEconomySystem.PhaseColor(_economy.Phase);
+                    state.Growth = _economy.Growth;
+                    state.Overheat = _economy.Overheat;
+                    state.OverheatStatus = _economy.OverheatStatus();
+                    state.EconPolicy = _economy.Policy;
+                    state.EconPolicyLabel = _economy.PolicyLabel();
+                    state.StimulusPending = _economy.StimulusPending;
+                    state.SelectedEconProgram = _economy.SelectedProgram ?? string.Empty;
+                    state.EconProgramProgress = _economy.ProgramProgress;
+                    state.EconPrograms = _economy.BuildPrograms();
+                    state.Megaprojects = _economy.BuildProjects();
+                    state.ActiveProjects = _economy.BuildActiveProjects();
+                    state.ProjectSlots = _economy.ProjectSlots;
+                    state.ProjectUsed = _economy.ProjectUsed;
+                    state.TradeRoutes = _economy.BuildRoutes();
+                    state.TradeRouteCap = _economy.RouteCap;
+                    state.EconSectors = _economy.BuildSectors();
+                    state.EconomyLog = _economy.GetLog();
                 }
             }
         }

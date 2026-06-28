@@ -1,0 +1,35 @@
+- type: swEconomyProgram
+  id: SWEconomyProgramIndustry
+  name: Индустриализация
+  description: Загрузка заводов и энергетики поднимает промышленность Республики.
+  order: 0
+  policyEffects:
+    SWStatManufacturing: 6
+    SWStatEnergy: 3
+
+- type: swEconomyProgram
+  id: SWEconomyProgramTrade
+  name: Развитие гиперпутей
+  description: Расширение торговых маршрутов усиливает торговлю и транспорт.
+  order: 1
+  policyEffects:
+    SWStatTrade: 7
+    SWStatTransport: 3
+
+- type: swEconomyProgram
+  id: SWEconomyProgramJobs
+  name: Программа занятости
+  description: Общественные работы поднимают занятость, слегка разгоняя экономику.
+  order: 2
+  growthDelta: 0.5
+  policyEffects:
+    SWStatEmployment: 7
+
+- type: swEconomyProgram
+  id: SWEconomyProgramAntiInflation
+  name: Антиинфляционные меры
+  description: Охлаждение экономики сбивает перегрев ценой части занятости.
+  order: 3
+  overheatDelta: -12
+  policyEffects:
+    SWStatEmployment: -2

@@ -34,6 +34,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
     [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
     [Dependency] private readonly SWMinistryHealthSystem _health = default!;
+    [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
     [Dependency] private readonly SWSenatePartySystem _party = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
@@ -68,6 +69,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSecurityRejectEmergencyMessage>(OnRejectEmergency);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWHealthApproveEmergencyMessage>(OnApproveHealthEmergency);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWHealthRejectEmergencyMessage>(OnRejectHealthEmergency);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEconomyApproveStimulusMessage>(OnApproveStimulus);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEconomyRejectStimulusMessage>(OnRejectStimulus);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectSessionMessage>(OnRejectSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAnnounceMessage>(OnAnnounce);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateCreatePartyMessage>(OnCreateParty);
@@ -396,6 +399,29 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             return;
 
         _health.RejectEmergency();
+        UpdateUi(ent);
+    }
+
+    private void OnApproveStimulus(Entity<SWSenateWorkConsoleComponent> ent, ref SWEconomyApproveStimulusMessage args)
+    {
+        if (!CanConfirmAs(ent))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_economy.ApproveStimulus())
+            _popup.PopupCursor(Loc.GetString("sw-economy-stimulus-approved"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRejectStimulus(Entity<SWSenateWorkConsoleComponent> ent, ref SWEconomyRejectStimulusMessage args)
+    {
+        if (!CanConfirmAs(ent))
+            return;
+
+        _economy.RejectStimulus();
         UpdateUi(ent);
     }
 
@@ -816,6 +842,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.PendingPostureName = _security.PendingPosture is { } pendingPosture ? SWMinistryInternalSecuritySystem.PostureName(pendingPosture) : string.Empty;
         state.HealthEmergencyProposed = _health.EmergencyPending;
         state.CanApproveHealthEmergency = _health.EmergencyPending && CanConfirmAs(ent);
+        state.StimulusProposed = _economy.StimulusPending;
+        state.CanApproveStimulus = _economy.StimulusPending && CanConfirmAs(ent);
 
         if (card != null && TryComp<SWSenatePositionCardComponent>(card, out var position))
         {

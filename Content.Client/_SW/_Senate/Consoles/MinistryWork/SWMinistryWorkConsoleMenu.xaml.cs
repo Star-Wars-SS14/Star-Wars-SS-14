@@ -31,6 +31,9 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
     private const int EpidemicTab = 9;
     private const int OutbreakTab = 10;
     private const int HealthProgramsTab = 11;
+    private const int EconomyTab = 12;
+    private const int ProjectsTab = 13;
+    private const int RoutesTab = 14;
 
     private readonly Dictionary<int, string> _refuseReasons = new();
     private string _requestsSignature = string.Empty;
@@ -38,6 +41,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
     private Label? _reqAdminLabel;
     private int? _selectedFleet;
     private int? _selectedCell;
+    private string? _routeEndpoint;
     private SWMinistryWorkConsoleState? _state;
 
     public SWMinistryWorkConsoleMenu(SWMinistryWorkConsoleBoundUserInterface owner)
@@ -70,6 +74,9 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             ("ЭПИДЕМИЯ", EpidemicPanel),
             ("КАРТА", OutbreakPanel),
             ("ПРОГРАММЫ", HealthProgramsPanel),
+            ("ЭКОНОМИКА", EconomyPanel),
+            ("ПРОЕКТЫ", ProjectsPanel),
+            ("ГИПЕРПУТИ", RoutesPanel),
         };
 
         _tabButtons = new Button[_tabs.Length];
@@ -109,11 +116,16 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         _tabButtons[EpidemicTab].Visible = state.IsHealth;
         _tabButtons[OutbreakTab].Visible = state.IsHealth;
         _tabButtons[HealthProgramsTab].Visible = state.IsHealth;
+        _tabButtons[EconomyTab].Visible = state.IsEconomy;
+        _tabButtons[ProjectsTab].Visible = state.IsEconomy;
+        _tabButtons[RoutesTab].Visible = state.IsEconomy;
         if (!state.IsDefense && (_active == CommandTab || _active == FleetTab || _active == OpsTab))
             ShowTab(0);
         if (!state.IsSecurity && (_active == ControlTab || _active == NetworkTab || _active == SecOpsTab))
             ShowTab(0);
         if (!state.IsHealth && (_active == EpidemicTab || _active == OutbreakTab || _active == HealthProgramsTab))
+            ShowTab(0);
+        if (!state.IsEconomy && (_active == EconomyTab || _active == ProjectsTab || _active == RoutesTab))
             ShowTab(0);
 
         BuildOverview(state);
@@ -128,6 +140,9 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         BuildEpidemic(state);
         BuildOutbreak(state);
         BuildHealthPrograms(state);
+        BuildEconomy(state);
+        BuildProjects(state);
+        BuildRoutes(state);
     }
 
     private void BuildOps(SWMinistryWorkConsoleState state)
@@ -1111,6 +1126,343 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
 
         card.AddChild(box);
         return card;
+    }
+
+    private static Color GrowthColor(float growth) =>
+        growth < 0f ? SWConsoleStyle.Bad : growth >= 3f ? SWConsoleStyle.Good : SWConsoleStyle.Accent;
+
+    private void BuildEconomy(SWMinistryWorkConsoleState state)
+    {
+        EconomyContent.RemoveAllChildren();
+        if (!state.IsEconomy)
+            return;
+
+        // Business cycle.
+        EconomyContent.AddChild(SWConsoleStyle.Section("ДЕЛОВОЙ ЦИКЛ"));
+        EconomyContent.AddChild(new Control { MinHeight = 4 });
+        var crow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        crow.AddChild(SWConsoleStyle.Text(state.EconPhaseName, state.EconPhaseColor, SWConsoleStyle.MonoBold));
+        crow.AddChild(new Control { HorizontalExpand = true });
+        crow.AddChild(SWConsoleStyle.Text($"темп роста {state.Growth:+0.0;-0.0}/ч", GrowthColor(state.Growth), SWConsoleStyle.MonoBold));
+        EconomyContent.AddChild(crow);
+        EconomyContent.AddChild(SWConsoleStyle.Bar(state.Growth + 4f, 0, 10, GrowthColor(state.Growth)));
+
+        // Overheat.
+        EconomyContent.AddChild(new Control { MinHeight = 10 });
+        EconomyContent.AddChild(SWConsoleStyle.Section("ПЕРЕГРЕВ"));
+        EconomyContent.AddChild(new Control { MinHeight = 4 });
+        var orow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        orow.AddChild(SWConsoleStyle.Text(state.OverheatStatus, GaugeColor(state.Overheat), SWConsoleStyle.MonoBold));
+        orow.AddChild(new Control { HorizontalExpand = true });
+        orow.AddChild(SWConsoleStyle.Text($"{state.Overheat}/100", GaugeColor(state.Overheat), SWConsoleStyle.MonoBold));
+        EconomyContent.AddChild(orow);
+        EconomyContent.AddChild(SWConsoleStyle.Bar(state.Overheat, 0, 100, GaugeColor(state.Overheat)));
+
+        // Policy.
+        EconomyContent.AddChild(new Control { MinHeight = 10 });
+        EconomyContent.AddChild(SWConsoleStyle.Section("ЭКОНОМИЧЕСКАЯ ПОЛИТИКА"));
+        EconomyContent.AddChild(new Control { MinHeight = 4 });
+        EconomyContent.AddChild(SWConsoleStyle.Text($"Текущая: {state.EconPolicyLabel}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        var polrow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
+        polrow.AddChild(MakePolicyButton(state.EconPolicy, 0, "Сдерживание", SWConsoleStyle.Accent));
+        polrow.AddChild(MakePolicyButton(state.EconPolicy, 1, "Нейтрально", SWConsoleStyle.Neutral));
+        polrow.AddChild(MakePolicyButton(state.EconPolicy, 2, "Стимул", SWConsoleStyle.Warn));
+        EconomyContent.AddChild(polrow);
+
+        // Big stimulus.
+        EconomyContent.AddChild(new Control { MinHeight = 10 });
+        EconomyContent.AddChild(SWConsoleStyle.Section("БОЛЬШОЙ СТИМУЛ"));
+        EconomyContent.AddChild(new Control { MinHeight = 4 });
+        if (state.StimulusPending)
+        {
+            EconomyContent.AddChild(SWConsoleStyle.Text("Ждёт одобрения Канцлера.", SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+        }
+        else
+        {
+            var stim = SWConsoleStyle.Action("Запросить большой стимул", SWConsoleStyle.Bad);
+            stim.HorizontalExpand = true;
+            stim.OnPressed += _ => _owner.DeclareStimulus();
+            EconomyContent.AddChild(stim);
+            EconomyContent.AddChild(SWConsoleStyle.Text("Резко разгоняет рост ценой сильного перегрева. Нужно одобрение Канцлера.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        }
+
+        // Programs.
+        EconomyContent.AddChild(new Control { MinHeight = 10 });
+        EconomyContent.AddChild(SWConsoleStyle.Section("ДНЕВНЫЕ ПРОГРАММЫ"));
+        EconomyContent.AddChild(new Control { MinHeight = 4 });
+        if (!string.IsNullOrEmpty(state.SelectedEconProgram))
+            EconomyContent.AddChild(SWConsoleStyle.Text($"Прогресс: {state.EconProgramProgress}%", SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall));
+        foreach (var program in state.EconPrograms)
+            EconomyContent.AddChild(MakeEconProgramCard(program));
+
+        if (state.EconomyLog.Count > 0)
+        {
+            EconomyContent.AddChild(new Control { MinHeight = 10 });
+            EconomyContent.AddChild(SWConsoleStyle.Section("СОБЫТИЯ"));
+            foreach (var entry in state.EconomyLog)
+                EconomyContent.AddChild(SWConsoleStyle.Text(entry, SWConsoleStyle.TextBright, SWConsoleStyle.MonoSmall));
+        }
+    }
+
+    private Control MakePolicyButton(int current, int level, string label, Color color)
+    {
+        var active = current == level;
+        var btn = SWConsoleStyle.Action(active ? $"> {label}" : label, color, active);
+        btn.HorizontalExpand = true;
+        btn.Margin = new Thickness(0, 0, 4, 0);
+        if (!active)
+            btn.OnPressed += _ => _owner.SetEconPolicy(level);
+        return btn;
+    }
+
+    private Control MakeEconProgramCard(SWDefenseProgramEntry program)
+    {
+        var card = SWConsoleStyle.Row(program.Selected ? SWConsoleStyle.BgRowAlt : SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
+        card.Margin = new Thickness(0, 0, 0, 4);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+
+        var id = program.Id;
+        var btn = SWConsoleStyle.Action(program.Selected ? $"{program.Name} (выбрано)" : program.Name, SWConsoleStyle.Accent, program.Selected);
+        btn.HorizontalExpand = true;
+        if (!program.Selected)
+            btn.OnPressed += _ => _owner.SelectEconProgram(id);
+        box.AddChild(btn);
+
+        if (!string.IsNullOrWhiteSpace(program.Description))
+            box.AddChild(SWConsoleStyle.Text(program.Description, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+        if (program.Effects.Count > 0)
+        {
+            var eff = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 2, 0, 0) };
+            foreach (var effect in program.Effects)
+                eff.AddChild(SWConsoleStyle.Text($"{effect.StatName} {effect.Delta:+0;-0}  ", effect.Color, SWConsoleStyle.MonoSmall));
+            box.AddChild(eff);
+        }
+
+        card.AddChild(box);
+        return card;
+    }
+
+    private void BuildProjects(SWMinistryWorkConsoleState state)
+    {
+        ProjectsContent.RemoveAllChildren();
+        if (!state.IsEconomy)
+            return;
+
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        head.AddChild(SWConsoleStyle.Text($"Бюджет {state.MinistryBudget} кр", SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+        head.AddChild(new Control { HorizontalExpand = true });
+        head.AddChild(SWConsoleStyle.Text($"Слоты: {state.ProjectUsed}/{state.ProjectSlots}", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
+        ProjectsContent.AddChild(head);
+        ProjectsContent.AddChild(new Control { MinHeight = 8 });
+
+        if (state.ActiveProjects.Count > 0)
+        {
+            ProjectsContent.AddChild(SWConsoleStyle.Section("В РАБОТЕ"));
+            ProjectsContent.AddChild(new Control { MinHeight = 4 });
+            foreach (var p in state.ActiveProjects)
+                ProjectsContent.AddChild(MakeActiveProjectCard(p));
+            ProjectsContent.AddChild(new Control { MinHeight = 8 });
+        }
+
+        ProjectsContent.AddChild(SWConsoleStyle.Section("МЕГАПРОЕКТЫ"));
+        ProjectsContent.AddChild(new Control { MinHeight = 4 });
+        foreach (var project in state.Megaprojects)
+            ProjectsContent.AddChild(MakeProjectCard(project, state.EconSectors));
+    }
+
+    private Control MakeActiveProjectCard(SWActiveMegaprojectEntry p)
+    {
+        var row = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, p.Stalled ? SWConsoleStyle.Bad : SWConsoleStyle.Warn);
+        row.Margin = new Thickness(0, 0, 0, 4);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+
+        var line = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        line.AddChild(SWConsoleStyle.Text($"{p.Name}  ({p.Detail})", SWConsoleStyle.TextBright, SWConsoleStyle.Mono));
+        line.AddChild(new Control { HorizontalExpand = true });
+        line.AddChild(SWConsoleStyle.Text($"фаза {p.Phase}/{p.TotalPhases}", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
+        box.AddChild(line);
+        box.AddChild(SWConsoleStyle.Text(p.Stalled ? "Ожидает финансирования следующей фазы" : $"До конца фазы: {p.PhaseLeft} ч", p.Stalled ? SWConsoleStyle.Bad : SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+        var idx = p.Index;
+        var cancel = SWConsoleStyle.Action("Свернуть проект", SWConsoleStyle.Bad);
+        cancel.Margin = new Thickness(0, 3, 0, 0);
+        cancel.OnPressed += _ => _owner.CancelProject(idx);
+        box.AddChild(cancel);
+
+        row.AddChild(box);
+        return row;
+    }
+
+    private Control MakeProjectCard(SWMegaprojectEntry project, System.Collections.Generic.List<SWEconSectorEntry> sectors)
+    {
+        var accent = project.Available ? SWConsoleStyle.Accent : SWConsoleStyle.TextDim;
+        var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, accent);
+        card.Margin = new Thickness(0, 0, 0, 6);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        head.AddChild(SWConsoleStyle.Text(project.Name, project.Available ? SWConsoleStyle.TextBright : SWConsoleStyle.TextDim, SWConsoleStyle.MonoBold));
+        head.AddChild(new Control { HorizontalExpand = true });
+        head.AddChild(SWConsoleStyle.Text($"{project.CostPerPhase} кр/фаза · {project.Phases} фаз · {project.PhaseHours} ч", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        box.AddChild(head);
+
+        if (!string.IsNullOrWhiteSpace(project.Description))
+            box.AddChild(SWConsoleStyle.Text(project.Description, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+        if (project.Effects.Count > 0)
+        {
+            var eff = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 2, 0, 0) };
+            foreach (var effect in project.Effects)
+                eff.AddChild(SWConsoleStyle.Text($"{effect.StatName} {effect.Delta:+0;-0}  ", effect.Color, SWConsoleStyle.MonoSmall));
+            box.AddChild(eff);
+        }
+
+        if (!project.Available)
+        {
+            box.AddChild(SWConsoleStyle.Text(project.StatusLabel, SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+        }
+        else if (project.Target == SWOpTarget.Sector)
+        {
+            if (sectors.Count == 0)
+            {
+                box.AddChild(SWConsoleStyle.Text("Нет занятых секторов для цели.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            }
+            else
+            {
+                box.AddChild(SWConsoleStyle.Text("Заложить в секторе:", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                var grid = new GridContainer { Columns = 3, HSeparationOverride = 4, VSeparationOverride = 4, Margin = new Thickness(0, 2, 0, 0) };
+                var id = project.Id;
+                foreach (var sector in sectors)
+                {
+                    var sid = sector.Id;
+                    var btn = SWConsoleStyle.Action($"{sector.Name} (П{sector.Industry})", sector.Color);
+                    btn.HorizontalExpand = true;
+                    btn.OnPressed += _ => _owner.LaunchProject(id, sid);
+                    grid.AddChild(btn);
+                }
+                box.AddChild(grid);
+            }
+        }
+        else
+        {
+            var id = project.Id;
+            var btn = SWConsoleStyle.Action("Заложить", SWConsoleStyle.Good);
+            btn.HorizontalExpand = true;
+            btn.Margin = new Thickness(0, 3, 0, 0);
+            btn.OnPressed += _ => _owner.LaunchProject(id, string.Empty);
+            box.AddChild(btn);
+        }
+
+        card.AddChild(box);
+        return card;
+    }
+
+    private void BuildRoutes(SWMinistryWorkConsoleState state)
+    {
+        RoutesContent.RemoveAllChildren();
+        if (!state.IsEconomy)
+            return;
+
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        head.AddChild(SWConsoleStyle.Text($"Бюджет {state.MinistryBudget} кр", SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+        head.AddChild(new Control { HorizontalExpand = true });
+        head.AddChild(SWConsoleStyle.Text($"Маршрутов: {state.TradeRoutes.Count}/{state.TradeRouteCap}", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
+        RoutesContent.AddChild(head);
+        RoutesContent.AddChild(new Control { MinHeight = 8 });
+
+        RoutesContent.AddChild(SWConsoleStyle.Section("ДЕЙСТВУЮЩИЕ ГИПЕРПУТИ"));
+        RoutesContent.AddChild(new Control { MinHeight = 4 });
+        if (state.TradeRoutes.Count == 0)
+            RoutesContent.AddChild(SWConsoleStyle.Text("Маршрутов нет. Свяжите два сектора ниже.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        else
+        {
+            foreach (var route in state.TradeRoutes)
+                RoutesContent.AddChild(MakeRouteCard(route));
+        }
+
+        // Builder.
+        RoutesContent.AddChild(new Control { MinHeight = 10 });
+        RoutesContent.AddChild(SWConsoleStyle.Section("ПРОЛОЖИТЬ МАРШРУТ"));
+        RoutesContent.AddChild(new Control { MinHeight = 4 });
+
+        if (state.TradeRoutes.Count >= state.TradeRouteCap)
+        {
+            RoutesContent.AddChild(SWConsoleStyle.Text("Достигнут предел маршрутов.", SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+            return;
+        }
+
+        if (state.EconSectors.Count < 2)
+        {
+            RoutesContent.AddChild(SWConsoleStyle.Text("Нужно минимум два занятых сектора.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            return;
+        }
+
+        if (_routeEndpoint == null || !state.EconSectors.Any(s => s.Id == _routeEndpoint))
+        {
+            _routeEndpoint = null;
+            RoutesContent.AddChild(SWConsoleStyle.Text("Первый сектор:", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            RoutesContent.AddChild(SectorPickGrid(state.EconSectors, null, id =>
+            {
+                _routeEndpoint = id;
+                if (_state != null)
+                    BuildRoutes(_state);
+            }));
+        }
+        else
+        {
+            var fromName = state.EconSectors.First(s => s.Id == _routeEndpoint).Name;
+            RoutesContent.AddChild(SWConsoleStyle.Text($"Из: {fromName}  —  выберите второй сектор:", SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall));
+            RoutesContent.AddChild(SectorPickGrid(state.EconSectors, _routeEndpoint, id =>
+            {
+                var from = _routeEndpoint!;
+                _routeEndpoint = null;
+                _owner.AddRoute(from, id);
+            }));
+            var reset = SWConsoleStyle.Action("Сбросить выбор", SWConsoleStyle.Neutral);
+            reset.Margin = new Thickness(0, 3, 0, 0);
+            reset.OnPressed += _ =>
+            {
+                _routeEndpoint = null;
+                if (_state != null)
+                    BuildRoutes(_state);
+            };
+            RoutesContent.AddChild(reset);
+        }
+    }
+
+    private Control SectorPickGrid(System.Collections.Generic.List<SWEconSectorEntry> sectors, string? exclude, System.Action<string> onPick)
+    {
+        var grid = new GridContainer { Columns = 3, HSeparationOverride = 4, VSeparationOverride = 4, Margin = new Thickness(0, 2, 0, 0) };
+        foreach (var sector in sectors)
+        {
+            if (sector.Id == exclude)
+                continue;
+            var sid = sector.Id;
+            var btn = SWConsoleStyle.Action($"{sector.Name} (Т{sector.Economy})", sector.Color);
+            btn.HorizontalExpand = true;
+            btn.OnPressed += _ => onPick(sid);
+            grid.AddChild(btn);
+        }
+
+        return grid;
+    }
+
+    private Control MakeRouteCard(SWTradeRouteEntry route)
+    {
+        var row = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, route.Active ? SWConsoleStyle.Good : SWConsoleStyle.Bad);
+        row.Margin = new Thickness(0, 0, 0, 4);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        var info = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+        info.AddChild(SWConsoleStyle.Text($"{route.AName} — {route.BName}", route.Active ? SWConsoleStyle.TextBright : SWConsoleStyle.Bad, SWConsoleStyle.Mono));
+        info.AddChild(SWConsoleStyle.Text(route.StatusLabel, route.Active ? SWConsoleStyle.TextDim : SWConsoleStyle.Bad, SWConsoleStyle.MonoSmall));
+        box.AddChild(info);
+        var id = route.Id;
+        var remove = SWConsoleStyle.Action("Закрыть", SWConsoleStyle.Neutral);
+        remove.OnPressed += _ => _owner.RemoveRoute(id);
+        box.AddChild(remove);
+        row.AddChild(box);
+        return row;
     }
 
     private void BuildOverview(SWMinistryWorkConsoleState state)

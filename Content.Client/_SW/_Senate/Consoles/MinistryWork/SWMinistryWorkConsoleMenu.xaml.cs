@@ -27,6 +27,10 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
 
     private readonly Dictionary<int, string> _refuseReasons = new();
     private string _requestsSignature = string.Empty;
+    private Label? _reqBudgetLabel;
+    private Label? _reqAdminLabel;
+    private int? _selectedFleet;
+    private SWMinistryWorkConsoleState? _state;
 
     public SWMinistryWorkConsoleMenu(SWMinistryWorkConsoleBoundUserInterface owner)
     {
@@ -78,6 +82,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
 
     public void SetState(SWMinistryWorkConsoleState state)
     {
+        _state = state;
         HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "—" : state.GameTime;
 
         _tabButtons[CommandTab].Visible = state.IsDefense;
@@ -98,23 +103,69 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         if (!state.IsDefense)
             return;
 
+        var borderGroups = state.Fleet.Count(g => g.State == SWFleetState.Border);
         var deployed = state.Fleet.Count(g => g.State != SWFleetState.Reserve);
-        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-        head.AddChild(SWConsoleStyle.Text($"Группы: {state.Fleet.Count}  ·  развёрнуто {deployed}", SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
-        head.AddChild(new Control { HorizontalExpand = true });
-        head.AddChild(SWConsoleStyle.Text($"содержание {state.FleetUpkeep} кр/ч", SWConsoleStyle.Warn, SWConsoleStyle.MonoBold));
-        FleetContent.AddChild(head);
-        FleetContent.AddChild(SWConsoleStyle.Text(
-            "Гарнизон: +оборона/+безопасность сектору. Граница: снижает давление Империи.",
-            SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
-        FleetContent.AddChild(new Control { MinHeight = 8 });
 
+        // Theatre / border line.
+        FleetContent.AddChild(SWConsoleStyle.Section("ТЕАТР ВОЕННЫХ ДЕЙСТВИЙ"));
+        FleetContent.AddChild(new Control { MinHeight = 4 });
+        var borderPanel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, BorderColor(state.BorderPressure));
+        var bbox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+        var brow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        brow.AddChild(SWConsoleStyle.Text($"ГРАНИЦА — {state.BorderStatus}", BorderColor(state.BorderPressure), SWConsoleStyle.MonoBold));
+        brow.AddChild(new Control { HorizontalExpand = true });
+        brow.AddChild(SWConsoleStyle.Text($"{state.BorderPressure}/100", BorderColor(state.BorderPressure), SWConsoleStyle.MonoBold));
+        bbox.AddChild(brow);
+        bbox.AddChild(SWConsoleStyle.Bar(state.BorderPressure, 0, 100, BorderColor(state.BorderPressure)));
+        bbox.AddChild(SWConsoleStyle.Text($"Удержание: {borderGroups} групп → -{borderGroups * 1.5f:0.0}/ч давления", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        borderPanel.AddChild(bbox);
+        FleetContent.AddChild(borderPanel);
+
+        // Your fleets (selectable).
+        FleetContent.AddChild(new Control { MinHeight = 10 });
+        FleetContent.AddChild(SWConsoleStyle.Section("ВАШИ ФЛОТЫ"));
+        FleetContent.AddChild(SWConsoleStyle.Text($"Групп {state.Fleet.Count}  ·  развёрнуто {deployed}  ·  содержание {state.FleetUpkeep} кр/ч", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        FleetContent.AddChild(new Control { MinHeight = 4 });
         foreach (var group in state.Fleet)
-            FleetContent.AddChild(MakeFleetCard(group, state.FleetSectors));
+            FleetContent.AddChild(MakeFleetChip(group));
+
+        // Orders for the selected fleet.
+        FleetContent.AddChild(new Control { MinHeight = 10 });
+        FleetContent.AddChild(SWConsoleStyle.Section("НАЗНАЧЕНИЕ"));
+        FleetContent.AddChild(new Control { MinHeight = 4 });
+
+        var selected = _selectedFleet != null ? state.Fleet.FirstOrDefault(g => g.Id == _selectedFleet) : null;
+        if (selected == null)
+        {
+            FleetContent.AddChild(SWConsoleStyle.Text("Выберите флот выше, чтобы отдать приказ.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            return;
+        }
+
+        FleetContent.AddChild(SWConsoleStyle.Text($"Приказ для: {selected.Id}-й Флот", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
+        FleetContent.AddChild(MakeOrderButton(selected.Id, "border", "Выдвинуть на границу", SWConsoleStyle.Accent, selected.State == SWFleetState.Border));
+        FleetContent.AddChild(MakeOrderButton(selected.Id, "reserve", "Отозвать в резерв", SWConsoleStyle.Neutral, selected.State == SWFleetState.Reserve));
+
+        if (state.FleetSectors.Count == 0)
+        {
+            FleetContent.AddChild(SWConsoleStyle.Text("Гарнизоны откроются, когда сенаторы займут сектора.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            return;
+        }
+
+        FleetContent.AddChild(SWConsoleStyle.Text("Гарнизон сектора (отсортированы по слабости обороны):", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        foreach (var sector in state.FleetSectors)
+        {
+            var already = selected.State == SWFleetState.Sector && selected.SectorId == sector.Id;
+            var garrison = state.Fleet.FirstOrDefault(g => g.SectorId == sector.Id);
+            var suffix = garrison != null ? $"  · занят {garrison.Id}-м" : string.Empty;
+            var label = $"{sector.Name}  ·  оборона {sector.Defense}{suffix}";
+            FleetContent.AddChild(MakeOrderButton(selected.Id, sector.Id, label, sector.Color, already));
+        }
     }
 
-    private Control MakeFleetCard(SWFleetGroupEntry group, System.Collections.Generic.List<SWSectorOccupancy> sectors)
+    private Control MakeFleetChip(SWFleetGroupEntry group)
     {
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, Margin = new Thickness(0, 0, 0, 4) };
+        var selected = _selectedFleet == group.Id;
         var color = group.State switch
         {
             SWFleetState.Border => SWConsoleStyle.Accent,
@@ -122,42 +173,36 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             _ => SWConsoleStyle.TextDim,
         };
 
-        var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, color);
-        card.Margin = new Thickness(0, 0, 0, 6);
-        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
-        box.AddChild(SWConsoleStyle.Text($"Группа #{group.Id} — {group.LocationLabel}", color, SWConsoleStyle.MonoBold));
-
-        var topRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 3, 0, 0) };
-        topRow.AddChild(MakeTargetButton(group, "Резерв", "reserve", group.State == SWFleetState.Reserve, SWConsoleStyle.Neutral));
-        topRow.AddChild(MakeTargetButton(group, "Граница", "border", group.State == SWFleetState.Border, SWConsoleStyle.Accent));
-        box.AddChild(topRow);
-
-        if (sectors.Count > 0)
+        var btn = SWConsoleStyle.Action(selected ? $"> {group.Id}-й Флот — {group.LocationLabel}" : $"{group.Id}-й Флот — {group.LocationLabel}", color);
+        btn.HorizontalExpand = true;
+        var id = group.Id;
+        btn.OnPressed += _ =>
         {
-            box.AddChild(SWConsoleStyle.Text("В сектор:", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
-            var grid = new GridContainer { Columns = 3, HSeparationOverride = 4, VSeparationOverride = 4, Margin = new Thickness(0, 2, 0, 0) };
-            foreach (var sector in sectors)
-            {
-                var active = group.State == SWFleetState.Sector && group.SectorId == sector.Id;
-                grid.AddChild(MakeTargetButton(group, sector.Name, sector.Id, active, sector.Color));
-            }
-            box.AddChild(grid);
-        }
-
-        card.AddChild(box);
-        return card;
+            _selectedFleet = id;
+            if (_state != null)
+                BuildFleet(_state);
+        };
+        box.AddChild(btn);
+        box.AddChild(SWConsoleStyle.Text(FleetMission(group), SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        return box;
     }
 
-    private Control MakeTargetButton(SWFleetGroupEntry group, string text, string target, bool active, Color color)
+    private Control MakeOrderButton(int groupId, string target, string label, Color color, bool already)
     {
-        var btn = SWConsoleStyle.Action(active ? $"> {text}" : text, color, active);
+        var btn = SWConsoleStyle.Action(already ? $"> {label}" : label, color, already);
         btn.HorizontalExpand = true;
-        btn.Margin = new Thickness(0, 0, 4, 0);
-        var id = group.Id;
-        if (!active)
-            btn.OnPressed += _ => _owner.DeployFleet(id, target);
+        btn.Margin = new Thickness(0, 0, 0, 3);
+        if (!already)
+            btn.OnPressed += _ => _owner.DeployFleet(groupId, target);
         return btn;
     }
+
+    private static string FleetMission(SWFleetGroupEntry group) => group.State switch
+    {
+        SWFleetState.Border => "Удерживает границу: -1.5/ч давления",
+        SWFleetState.Sector => $"Гарнизон {group.LocationLabel}: +0.4 оборона/ч",
+        _ => "В резерве — готов к переброске",
+    };
 
     private void BuildCommand(SWMinistryWorkConsoleState state)
     {
@@ -383,14 +428,28 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
 
     private void BuildRequests(SWMinistryWorkConsoleState state)
     {
-        // Only rebuild when something actually changed, so the periodic refresh never wipes the
-        // refuse-reason field (or steals focus) while the minister is typing.
+        // Rebuild the cards only on a structural change, so the periodic refresh never recreates the
+        // refuse-reason field (which would wipe text or reset the cursor) while the minister types.
+        // The budget/admin numbers fluctuate every tick (fleet upkeep), so they are NOT in the
+        // signature — instead we update those header labels live, in place.
         var signature = RequestsSignature(state);
-        if (signature == _requestsSignature)
-            return;
-        _requestsSignature = signature;
+        if (signature != _requestsSignature)
+        {
+            _requestsSignature = signature;
+            RebuildRequests(state);
+        }
 
+        if (_reqBudgetLabel != null)
+            _reqBudgetLabel.Text = $"БЮДЖЕТ: {state.MinistryBudget} кр.";
+        if (_reqAdminLabel != null)
+            _reqAdminLabel.Text = $"АДМИН-РЕСУРС: {state.MinistryAdmin}";
+    }
+
+    private void RebuildRequests(SWMinistryWorkConsoleState state)
+    {
         RequestsContent.RemoveAllChildren();
+        _reqBudgetLabel = null;
+        _reqAdminLabel = null;
 
         if (!state.HasMinistry)
         {
@@ -399,9 +458,11 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         }
 
         var header = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-        header.AddChild(SWConsoleStyle.Text($"БЮДЖЕТ: {state.MinistryBudget} кр.", SWConsoleStyle.Good, SWConsoleStyle.MonoBold));
+        _reqBudgetLabel = SWConsoleStyle.Text($"БЮДЖЕТ: {state.MinistryBudget} кр.", SWConsoleStyle.Good, SWConsoleStyle.MonoBold);
+        header.AddChild(_reqBudgetLabel);
         header.AddChild(new Control { HorizontalExpand = true });
-        header.AddChild(SWConsoleStyle.Text($"АДМИН-РЕСУРС: {state.MinistryAdmin}", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
+        _reqAdminLabel = SWConsoleStyle.Text($"АДМИН-РЕСУРС: {state.MinistryAdmin}", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold);
+        header.AddChild(_reqAdminLabel);
         RequestsContent.AddChild(header);
         RequestsContent.AddChild(new Control { MinHeight = 8 });
 
@@ -423,7 +484,8 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         if (!state.HasMinistry)
             return "none";
 
-        var sig = $"{state.MinistryBudget}|{state.MinistryAdmin}";
+        // Budget/admin deliberately excluded — they tick every frame and would force a rebuild.
+        var sig = "m";
         foreach (var r in state.Requests)
             sig += $"|{r.Id}:{r.Audited}:{r.AuditInProgress}:{r.Options.Count}:{r.SideEffects.Count}";
 

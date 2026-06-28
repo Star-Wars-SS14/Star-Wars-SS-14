@@ -230,18 +230,23 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         _ui.SetUiState(ent.Owner, SWMinistryWorkConsoleUiKey.Key, state);
     }
 
-    private List<SWSectorOccupancy> BuildClaimedSectors()
+    private List<SWFleetSectorEntry> BuildClaimedSectors()
     {
-        var list = new List<SWSectorOccupancy>();
-        foreach (var (sectorId, holder) in _senate.SectorHolders)
+        var list = new List<SWFleetSectorEntry>();
+        foreach (var (sectorId, _) in _senate.SectorHolders)
         {
             if (!_proto.TryIndex<SWSectorPrototype>(sectorId, out var proto))
                 continue;
 
-            list.Add(new SWSectorOccupancy { Id = sectorId, Name = proto.Name, Color = proto.Color, Holder = holder });
+            var defense = _senate.SectorGlobals.TryGetValue(sectorId, out var globals)
+                && globals.TryGetValue("SWGlobalDefense", out var d)
+                    ? (int) MathF.Round(d)
+                    : 50;
+
+            list.Add(new SWFleetSectorEntry { Id = sectorId, Name = proto.Name, Color = proto.Color, Defense = defense });
         }
 
-        list.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+        list.Sort((a, b) => a.Defense.CompareTo(b.Defense));
         return list;
     }
 

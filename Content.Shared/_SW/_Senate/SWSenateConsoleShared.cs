@@ -198,7 +198,7 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public int ProgramProgress;
     public List<SWDefenseProgramEntry> Programs = new();
     public List<SWFleetGroupEntry> Fleet = new();
-    public List<SWSectorOccupancy> FleetSectors = new();
+    public List<SWFleetSectorEntry> FleetSectors = new();
     public int FleetUpkeep;
 }
 
@@ -209,6 +209,15 @@ public sealed class SWFleetGroupEntry
     public SWFleetState State;
     public string LocationLabel = string.Empty;
     public string? SectorId;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWFleetSectorEntry
+{
+    public string Id = string.Empty;
+    public string Name = string.Empty;
+    public Color Color;
+    public int Defense;
 }
 
 [Serializable, NetSerializable]

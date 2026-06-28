@@ -4,6 +4,7 @@ using Content.Shared._SW._Senate.Ministries;
 using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;
 using Robust.Shared.Prototypes;
+using Content.Server._SW._Senate.Economy;
 
 namespace Content.Server._SW._Senate.Core;
 
@@ -12,11 +13,22 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
+    [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
 
     public const string DefenseMinistryId = "SWMinistryDefense";
 
     private const float TickInterval = 1f;
     private const float BorderStart = 30f;
+
+    private const int FleetCap = 5;
+    private const float UpkeepPerHour = 100f;       // per deployed group, per game-hour
+    private const float BorderReliefPerGroup = 1.5f; // border pressure eased per game-hour, per border group
+    private const float GarrisonDefense = 0.4f;
+    private const float GarrisonSecurity = 0.2f;
+
+    private readonly List<SWFleetGroup> _groups = new();
+    private int _nextGroupId = 1;
+    private float _upkeepAccum;
 
     // Escalation to this level or higher needs the Chancellor's ratification.
     private const SWDefenseStance ApprovalThreshold = SWDefenseStance.Mobilization;
@@ -52,6 +64,9 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
         _weariness = 0f;
         _program = null;
         _progress = 0f;
+        _groups.Clear();
+        _nextGroupId = 1;
+        _upkeepAccum = 0f;
         _day = -1;
     }
 
@@ -197,7 +212,13 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
         var gameHours = dt * (1f / SWSenateTimeSystem.RealSecondsPerGameHour);
         var cfg = Config(_stance);
 
-        _border = Math.Clamp(_border + cfg.Border * gameHours, 0f, 100f);
+        EnsureGroups();
+        PruneGarrisons();
+
+        var borderGroups = _groups.Count(g => g.State == SWFleetState.Border);
+        var deployed = _groups.Count(g => g.State != SWFleetState.Reserve);
+
+        _border = Math.Clamp(_border + (cfg.Border - BorderReliefPerGroup * borderGroups) * gameHours, 0f, 100f);
         if (_border >= 75f)
         {
             NudgeSectors("SWGlobalDefense", -0.3f * gameHours);
@@ -212,6 +233,17 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
         foreach (var (stat, delta) in cfg.Nudges)
             NudgeSectors(stat, delta * gameHours);
 
+        foreach (var group in _groups)
+        {
+            if (group.State != SWFleetState.Sector || group.SectorId == null)
+                continue;
+
+            _senate.AddSectorBias(group.SectorId, "SWGlobalDefense", GarrisonDefense * gameHours);
+            _senate.AddSectorBias(group.SectorId, "SWGlobalSecurity", GarrisonSecurity * gameHours);
+        }
+
+        TickUpkeep(deployed, gameHours);
+
         _weariness = Math.Clamp(_weariness + cfg.Weariness * gameHours, 0f, 100f);
 
         if (_program != null && _progress < 100f)
@@ -219,6 +251,108 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
             var perHour = 100f / (SWSenateTimeSystem.EndHour - SWSenateTimeSystem.StartHour);
             _progress = Math.Clamp(_progress + perHour * gameHours, 0f, 100f);
         }
+    }
+
+    private void EnsureGroups()
+    {
+        var target = Math.Clamp(2 + _senate.SectorHolders.Count / 6, 2, FleetCap);
+        while (_groups.Count < target)
+            _groups.Add(new SWFleetGroup { Id = _nextGroupId++, State = SWFleetState.Reserve });
+    }
+
+    // A garrison whose sector was vacated falls back to reserve.
+    private void PruneGarrisons()
+    {
+        foreach (var group in _groups)
+        {
+            if (group.State == SWFleetState.Sector && (group.SectorId == null || !_senate.IsClaimed(group.SectorId)))
+            {
+                group.State = SWFleetState.Reserve;
+                group.SectorId = null;
+            }
+        }
+    }
+
+    private void TickUpkeep(int deployed, float gameHours)
+    {
+        if (deployed == 0)
+        {
+            _upkeepAccum = 0f;
+            return;
+        }
+
+        _upkeepAccum += deployed * UpkeepPerHour * gameHours;
+        if (_upkeepAccum < 1f)
+            return;
+
+        var due = (int) _upkeepAccum;
+        _upkeepAccum -= due;
+
+        if (_dilemma.SpendMinistry(DefenseMinistryId, due))
+            return;
+
+        // Out of funds — fleet stands down.
+        foreach (var group in _groups)
+        {
+            group.State = SWFleetState.Reserve;
+            group.SectorId = null;
+        }
+        _upkeepAccum = 0f;
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Штаб обороны",
+            "Флот отозван в резерв: нет средств на содержание."));
+    }
+
+    public bool DeployGroup(int groupId, string target)
+    {
+        var group = _groups.FirstOrDefault(g => g.Id == groupId);
+        if (group == null)
+            return false;
+
+        switch (target)
+        {
+            case "":
+            case "reserve":
+                group.State = SWFleetState.Reserve;
+                group.SectorId = null;
+                return true;
+            case "border":
+                group.State = SWFleetState.Border;
+                group.SectorId = null;
+                return true;
+            default:
+                if (!_senate.IsClaimed(target))
+                    return false;
+                group.State = SWFleetState.Sector;
+                group.SectorId = target;
+                return true;
+        }
+    }
+
+    public int FleetUpkeep => (int) MathF.Round(_groups.Count(g => g.State != SWFleetState.Reserve) * UpkeepPerHour);
+
+    public List<SWFleetGroupEntry> BuildFleet()
+    {
+        EnsureGroups();
+        var list = new List<SWFleetGroupEntry>();
+        foreach (var group in _groups)
+        {
+            var label = group.State switch
+            {
+                SWFleetState.Border => "Граница",
+                SWFleetState.Sector => group.SectorId != null && _proto.TryIndex<SWSectorPrototype>(group.SectorId, out var sp) ? sp.Name : "Сектор",
+                _ => "Резерв",
+            };
+
+            list.Add(new SWFleetGroupEntry
+            {
+                Id = group.Id,
+                State = group.State,
+                LocationLabel = label,
+                SectorId = group.SectorId,
+            });
+        }
+
+        return list;
     }
 
     private void ApplyProgram()
@@ -303,4 +437,11 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
 
         return list;
     }
+}
+
+public sealed class SWFleetGroup
+{
+    public int Id;
+    public SWFleetState State;
+    public string? SectorId;
 }

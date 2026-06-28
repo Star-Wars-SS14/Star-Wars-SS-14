@@ -1,6 +1,9 @@
+using System;
+using System.Linq;
 using Content.Server.Popups;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Ministries;
+using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.Access.Systems;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.Popups;
@@ -38,7 +41,17 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryRefuseRequestMessage>(OnRefuse);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseSetStanceMessage>(OnSetStance);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseSelectProgramMessage>(OnSelectProgram);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFleetDeployMessage>(OnDeployFleet);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryResignMessage>(OnResign);
+    }
+
+    private void OnDeployFleet(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFleetDeployMessage args)
+    {
+        if (GetCardMinistry(ent) != SWMinistryDefenseSystem.DefenseMinistryId)
+            return;
+
+        _defense.DeployGroup(args.GroupId, args.Target);
+        UpdateUi(ent);
     }
 
     private void OnResign(Entity<SWMinistryWorkConsoleComponent> ent, ref SWMinistryResignMessage args)
@@ -207,11 +220,29 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.SelectedProgram = _defense.SelectedProgram ?? string.Empty;
                     state.ProgramProgress = _defense.ProgramProgress;
                     state.Programs = _defense.BuildPrograms();
+                    state.Fleet = _defense.BuildFleet();
+                    state.FleetUpkeep = _defense.FleetUpkeep;
+                    state.FleetSectors = BuildClaimedSectors();
                 }
             }
         }
 
         _ui.SetUiState(ent.Owner, SWMinistryWorkConsoleUiKey.Key, state);
+    }
+
+    private List<SWSectorOccupancy> BuildClaimedSectors()
+    {
+        var list = new List<SWSectorOccupancy>();
+        foreach (var (sectorId, holder) in _senate.SectorHolders)
+        {
+            if (!_proto.TryIndex<SWSectorPrototype>(sectorId, out var proto))
+                continue;
+
+            list.Add(new SWSectorOccupancy { Id = sectorId, Name = proto.Name, Color = proto.Color, Holder = holder });
+        }
+
+        list.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+        return list;
     }
 
     private static string TitleKey(SWMinistryKind kind) => kind switch

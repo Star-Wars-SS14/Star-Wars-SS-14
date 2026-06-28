@@ -122,6 +122,16 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
     public int AuditCost => AuditAdminCost;
 
+    public bool SpendMinistry(string ministryId, int amount)
+    {
+        EnsureMinistry(ministryId);
+        if (_ministryBudget[ministryId] < amount)
+            return false;
+
+        _ministryBudget[ministryId] -= amount;
+        return true;
+    }
+
     private SWDilemmaWindow? CurrentGenWindow()
     {
         if (!_time.DayActive)

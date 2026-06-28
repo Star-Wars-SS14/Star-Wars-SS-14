@@ -23,6 +23,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
     private int _active;
 
     private const int CommandTab = 3;
+    private const int FleetTab = 4;
 
     private readonly Dictionary<int, string> _refuseReasons = new();
     private string _requestsSignature = string.Empty;
@@ -49,6 +50,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             ("РЕСПУБЛИКА", RepublicPanel),
             ("ЗАЯВКИ", RequestsPanel),
             ("КОМАНДОВАНИЕ", CommandPanel),
+            ("ФЛОТ", FleetPanel),
         };
 
         _tabButtons = new Button[_tabs.Length];
@@ -79,13 +81,82 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "—" : state.GameTime;
 
         _tabButtons[CommandTab].Visible = state.IsDefense;
-        if (!state.IsDefense && _active == CommandTab)
+        _tabButtons[FleetTab].Visible = state.IsDefense;
+        if (!state.IsDefense && (_active == CommandTab || _active == FleetTab))
             ShowTab(0);
 
         BuildOverview(state);
         BuildRepublic(state);
         BuildRequests(state);
         BuildCommand(state);
+        BuildFleet(state);
+    }
+
+    private void BuildFleet(SWMinistryWorkConsoleState state)
+    {
+        FleetContent.RemoveAllChildren();
+        if (!state.IsDefense)
+            return;
+
+        var deployed = state.Fleet.Count(g => g.State != SWFleetState.Reserve);
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        head.AddChild(SWConsoleStyle.Text($"Группы: {state.Fleet.Count}  ·  развёрнуто {deployed}", SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+        head.AddChild(new Control { HorizontalExpand = true });
+        head.AddChild(SWConsoleStyle.Text($"содержание {state.FleetUpkeep} кр/ч", SWConsoleStyle.Warn, SWConsoleStyle.MonoBold));
+        FleetContent.AddChild(head);
+        FleetContent.AddChild(SWConsoleStyle.Text(
+            "Гарнизон: +оборона/+безопасность сектору. Граница: снижает давление Империи.",
+            SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        FleetContent.AddChild(new Control { MinHeight = 8 });
+
+        foreach (var group in state.Fleet)
+            FleetContent.AddChild(MakeFleetCard(group, state.FleetSectors));
+    }
+
+    private Control MakeFleetCard(SWFleetGroupEntry group, System.Collections.Generic.List<SWSectorOccupancy> sectors)
+    {
+        var color = group.State switch
+        {
+            SWFleetState.Border => SWConsoleStyle.Accent,
+            SWFleetState.Sector => SWConsoleStyle.Good,
+            _ => SWConsoleStyle.TextDim,
+        };
+
+        var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, color);
+        card.Margin = new Thickness(0, 0, 0, 6);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+        box.AddChild(SWConsoleStyle.Text($"Группа #{group.Id} — {group.LocationLabel}", color, SWConsoleStyle.MonoBold));
+
+        var topRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 3, 0, 0) };
+        topRow.AddChild(MakeTargetButton(group, "Резерв", "reserve", group.State == SWFleetState.Reserve, SWConsoleStyle.Neutral));
+        topRow.AddChild(MakeTargetButton(group, "Граница", "border", group.State == SWFleetState.Border, SWConsoleStyle.Accent));
+        box.AddChild(topRow);
+
+        if (sectors.Count > 0)
+        {
+            box.AddChild(SWConsoleStyle.Text("В сектор:", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            var grid = new GridContainer { Columns = 3, HSeparationOverride = 4, VSeparationOverride = 4, Margin = new Thickness(0, 2, 0, 0) };
+            foreach (var sector in sectors)
+            {
+                var active = group.State == SWFleetState.Sector && group.SectorId == sector.Id;
+                grid.AddChild(MakeTargetButton(group, sector.Name, sector.Id, active, sector.Color));
+            }
+            box.AddChild(grid);
+        }
+
+        card.AddChild(box);
+        return card;
+    }
+
+    private Control MakeTargetButton(SWFleetGroupEntry group, string text, string target, bool active, Color color)
+    {
+        var btn = SWConsoleStyle.Action(active ? $"> {text}" : text, color, active);
+        btn.HorizontalExpand = true;
+        btn.Margin = new Thickness(0, 0, 4, 0);
+        var id = group.Id;
+        if (!active)
+            btn.OnPressed += _ => _owner.DeployFleet(id, target);
+        return btn;
     }
 
     private void BuildCommand(SWMinistryWorkConsoleState state)

@@ -51,6 +51,11 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWDefenseSelectProgramMessage(programId));
     }
 
+    public void DeployFleet(int groupId, string target)
+    {
+        SendMessage(new SWFleetDeployMessage(groupId, target));
+    }
+
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);

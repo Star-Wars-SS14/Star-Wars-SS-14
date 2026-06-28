@@ -15,6 +15,14 @@ public enum SWDefenseStance : byte
     War,
 }
 
+[Serializable, NetSerializable]
+public enum SWFleetState : byte
+{
+    Reserve,
+    Border,
+    Sector,
+}
+
 [Prototype("swDefenseProgram")]
 public sealed partial class SWDefenseProgramPrototype : IPrototype
 {

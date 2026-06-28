@@ -197,6 +197,31 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public string SelectedProgram = string.Empty;
     public int ProgramProgress;
     public List<SWDefenseProgramEntry> Programs = new();
+    public List<SWFleetGroupEntry> Fleet = new();
+    public List<SWSectorOccupancy> FleetSectors = new();
+    public int FleetUpkeep;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWFleetGroupEntry
+{
+    public int Id;
+    public SWFleetState State;
+    public string LocationLabel = string.Empty;
+    public string? SectorId;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWFleetDeployMessage : BoundUserInterfaceMessage
+{
+    public int GroupId;
+    public string Target;
+
+    public SWFleetDeployMessage(int groupId, string target)
+    {
+        GroupId = groupId;
+        Target = target;
+    }
 }
 
 [Serializable, NetSerializable]

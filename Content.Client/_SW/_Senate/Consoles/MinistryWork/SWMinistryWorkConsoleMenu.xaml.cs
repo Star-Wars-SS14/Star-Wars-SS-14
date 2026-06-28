@@ -215,6 +215,14 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         var borderGroups = state.Fleet.Count(g => g.State == SWFleetState.Border);
         var deployed = state.Fleet.Count(g => g.State != SWFleetState.Reserve);
 
+        if (state.DefenseLog.Count > 0)
+        {
+            FleetContent.AddChild(SWConsoleStyle.Section("СОБЫТИЯ"));
+            foreach (var entry in state.DefenseLog)
+                FleetContent.AddChild(SWConsoleStyle.Text(entry, SWConsoleStyle.Bad, SWConsoleStyle.MonoSmall));
+            FleetContent.AddChild(new Control { MinHeight = 8 });
+        }
+
         // Theatre / border line.
         FleetContent.AddChild(SWConsoleStyle.Section("ТЕАТР ВОЕННЫХ ДЕЙСТВИЙ"));
         FleetContent.AddChild(new Control { MinHeight = 4 });

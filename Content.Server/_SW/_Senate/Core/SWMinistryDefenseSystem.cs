@@ -41,6 +41,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
 
     private readonly List<SWActiveOperation> _activeOps = new();
     private readonly Dictionary<string, int> _cooldowns = new();
+    private readonly List<string> _log = new();
 
     // Escalation to this level or higher needs the Chancellor's ratification.
     private const SWDefenseStance ApprovalThreshold = SWDefenseStance.Mobilization;
@@ -81,8 +82,18 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
         _upkeepAccum = 0f;
         _activeOps.Clear();
         _cooldowns.Clear();
+        _log.Clear();
         _day = -1;
     }
+
+    private void AddLog(string text)
+    {
+        _log.Insert(0, text);
+        if (_log.Count > 6)
+            _log.RemoveRange(6, _log.Count - 6);
+    }
+
+    public List<string> GetLog() => new(_log);
 
     public static int DefconLevel(SWDefenseStance stance) => 5 - (byte) stance;
 
@@ -104,6 +115,10 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
         _ => Color.FromHex("#E0556B"),
     };
 
+    public void SetBorder(float value) => _border = Math.Clamp(value, 0f, 100f);
+
+    public void AddBorder(float delta) => _border = Math.Clamp(_border + delta, 0f, 100f);
+
     public string BorderStatus()
     {
         return _border switch
@@ -118,15 +133,15 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
     // (border rise per game-hour, war-weariness per game-hour, sector nudges per game-hour)
     private static (float Border, float Weariness, (string Stat, float Delta)[] Nudges) Config(SWDefenseStance stance) => stance switch
     {
-        SWDefenseStance.Peace => (2.5f, -2.5f, new[]
+        SWDefenseStance.Peace => (3.5f, -2.5f, new[]
         {
             ("SWGlobalEconomy", 0.3f), ("SWGlobalSociety", 0.3f), ("SWGlobalDefense", -0.2f),
         }),
-        SWDefenseStance.Vigilance => (1.0f, -2.5f, new[]
+        SWDefenseStance.Vigilance => (1.8f, -2.5f, new[]
         {
             ("SWGlobalDefense", 0.2f), ("SWGlobalSecurity", 0.15f), ("SWGlobalEconomy", 0.15f),
         }),
-        SWDefenseStance.Alert => (1.5f, -1.5f, new[]
+        SWDefenseStance.Alert => (2.5f, -1.5f, new[]
         {
             ("SWGlobalDefense", 0.2f), ("SWGlobalSociety", -0.15f),
         }),
@@ -248,7 +263,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
         {
             NudgeSectors("SWGlobalDefense", -0.3f * gameHours);
             NudgeSectors("SWGlobalSociety", -0.3f * gameHours);
-            RollBorderDamage(gameHours);
+            RollBorderDamage(gameHours, _border >= 95f ? 0.5f : DamageChancePerHour);
         }
         if (_border >= 95f)
         {
@@ -329,12 +344,15 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
             "Флот отозван в резерв: нет средств на содержание."));
     }
 
-    private void RollBorderDamage(float gameHours)
+    private void RollBorderDamage(float gameHours, float chancePerHour)
     {
         foreach (var group in _groups)
         {
-            if (group.State == SWFleetState.Border && !group.Damaged && _random.Prob(DamageChancePerHour * gameHours))
+            if (group.State == SWFleetState.Border && !group.Damaged && _random.Prob(chancePerHour * gameHours))
+            {
                 group.Damaged = true;
+                AddLog($"{group.Id}-й Флот повреждён в стычке на границе.");
+            }
         }
     }
 
@@ -490,7 +508,11 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
 
         var garrison = _groups.FirstOrDefault(g => g.State == SWFleetState.Sector && g.SectorId == sectorId && !g.Damaged);
         if (garrison != null && _random.Prob(0.3f))
+        {
             garrison.Damaged = true;
+            var name = _proto.TryIndex<SWSectorPrototype>(sectorId, out var sp) ? sp.Name : sectorId;
+            AddLog($"{garrison.Id}-й Флот повреждён при отражении кризиса в {name}.");
+        }
     }
 
     public bool LaunchOperation(string opId, string target)

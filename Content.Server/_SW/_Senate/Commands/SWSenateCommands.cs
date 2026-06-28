@@ -275,6 +275,55 @@ public sealed class SWAmbitionCommand : IConsoleCommand
     }
 }
 
+// swborder — подвигать давление Империи на границе (для теста механик Обороны).
+//   swborder <0-100>        — задать абсолютное значение давления.
+//   swborder add <delta>    — прибавить/убавить (delta может быть отрицательным).
+// Примеры:
+//   swborder 80
+//   swborder add 15
+//   swborder add -20
+[AdminCommand(AdminFlags.Debug)]
+public sealed class SWBorderCommand : IConsoleCommand
+{
+    public string Command => "swborder";
+    public string Description => "Задать или сдвинуть давление Империи на границе.";
+    public string Help => "swborder <0-100> | swborder add <delta>";
+
+    public void Execute(IConsoleShell shell, string argStr, string[] args)
+    {
+        if (args.Length < 1)
+        {
+            shell.WriteError(Help);
+            return;
+        }
+
+        var defense = IoCManager.Resolve<IEntityManager>().System<SWMinistryDefenseSystem>();
+
+        if (string.Equals(args[0], "add", StringComparison.OrdinalIgnoreCase))
+        {
+            if (args.Length < 2 || !float.TryParse(args[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var delta))
+            {
+                shell.WriteError("swborder add <delta>");
+                return;
+            }
+
+            defense.AddBorder(delta);
+        }
+        else
+        {
+            if (!float.TryParse(args[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
+            {
+                shell.WriteError(Help);
+                return;
+            }
+
+            defense.SetBorder(value);
+        }
+
+        shell.WriteLine($"Давление границы: {defense.BorderPressure}/100 — {defense.BorderStatus()}");
+    }
+}
+
 // swcrisis — заспавнить кризис вне зависимости от условий (для теста).
 // Аргумент можно дать как ID сектора, так и ID кризиса — команда сама разберётся.
 //   Республиканскому кризису сектор не нужен. Секторальному без сектора подберётся активный.

@@ -204,6 +204,7 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public List<SWActiveOpEntry> ActiveOps = new();
     public int ActiveOpSlots;
     public int ActiveOpUsed;
+    public List<string> DefenseLog = new();
 }
 
 [Serializable, NetSerializable]

@@ -239,6 +239,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.ActiveOps = _defense.BuildActiveOps();
                     state.ActiveOpSlots = _defense.ActiveOpSlots;
                     state.ActiveOpUsed = _defense.ActiveOpUsed;
+                    state.DefenseLog = _defense.GetLog();
                 }
             }
         }

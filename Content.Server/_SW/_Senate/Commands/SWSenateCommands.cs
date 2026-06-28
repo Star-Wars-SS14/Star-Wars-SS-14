@@ -324,6 +324,91 @@ public sealed class SWBorderCommand : IConsoleCommand
     }
 }
 
+// swplague — управлять галактической эпидемией Минздрава (для теста).
+//   swplague                          — показать текущий статус.
+//   swplague seed [sectorId]          — заспавнить патоген (в случайном или указанном секторе);
+//                                       если эпидемия уже идёт — подсыпать очаг в этот сектор.
+//   swplague set <value> [sectorId]   — задать заражение всем занятым секторам (или одному).
+//   swplague add <delta>              — прибавить/убавить заражение всем секторам.
+//   swplague mutate                   — принудительная мутация (новый штамм).
+//   swplague clear                    — ликвидировать эпидемию и обнулить очаги.
+// Примеры:
+//   swplague seed
+//   swplague seed SWSectorKuat
+//   swplague set 80
+//   swplague set 60 SWSectorKuat
+//   swplague add -25
+[AdminCommand(AdminFlags.Debug)]
+public sealed class SWPlagueCommand : IConsoleCommand
+{
+    public string Command => "swplague";
+    public string Description => "Управлять галактической эпидемией: засеять, задать заражение, мутировать, очистить.";
+    public string Help => "swplague [seed [sectorId] | set <value> [sectorId] | add <delta> | mutate | clear]";
+
+    public void Execute(IConsoleShell shell, string argStr, string[] args)
+    {
+        var health = IoCManager.Resolve<IEntityManager>().System<SWMinistryHealthSystem>();
+
+        if (args.Length < 1)
+        {
+            shell.WriteLine(health.AdminStatus());
+            return;
+        }
+
+        switch (args[0].ToLowerInvariant())
+        {
+            case "seed":
+                var seedSector = args.Length >= 2 ? args[1] : null;
+                if (!health.ForceSeed(seedSector))
+                    shell.WriteError("Не удалось засеять: нет занятых секторов или сектор не найден.");
+                else
+                    shell.WriteLine(health.AdminStatus());
+                break;
+
+            case "set":
+                if (args.Length < 2 || !float.TryParse(args[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
+                {
+                    shell.WriteError("swplague set <value> [sectorId]");
+                    return;
+                }
+
+                var setSector = args.Length >= 3 ? args[2] : null;
+                if (!health.SetInfection(setSector, value))
+                    shell.WriteError("Не удалось: нет занятых секторов или сектор не найден.");
+                else
+                    shell.WriteLine(health.AdminStatus());
+                break;
+
+            case "add":
+                if (args.Length < 2 || !float.TryParse(args[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var delta))
+                {
+                    shell.WriteError("swplague add <delta>");
+                    return;
+                }
+
+                health.AddInfectionAll(delta);
+                shell.WriteLine(health.AdminStatus());
+                break;
+
+            case "mutate":
+                if (!health.ForceMutate())
+                    shell.WriteError("Нет активной эпидемии для мутации.");
+                else
+                    shell.WriteLine(health.AdminStatus());
+                break;
+
+            case "clear":
+                health.ClearPlague();
+                shell.WriteLine("Эпидемия ликвидирована.");
+                break;
+
+            default:
+                shell.WriteError(Help);
+                break;
+        }
+    }
+}
+
 // swcrisis — заспавнить кризис вне зависимости от условий (для теста).
 // Аргумент можно дать как ID сектора, так и ID кризиса — команда сама разберётся.
 //   Республиканскому кризису сектор не нужен. Секторальному без сектора подберётся активный.

@@ -74,6 +74,14 @@ public sealed class SWStatisticsConsoleState : BoundUserInterfaceState
     public int Unrest;
     public string UnrestStatus = string.Empty;
     public List<SWBillEffectEntry> PostureEffects = new();
+    public bool PathogenActive;
+    public string PandemicStatus = string.Empty;
+    public Color PandemicColor;
+    public string PathogenName = string.Empty;
+    public int PathogenStrain;
+    public int InfectionAvg;
+    public int Immunity;
+    public int Research;
 
     public SWStatisticsConsoleState(List<SWGlobalStatEntry> globals, List<SWSectorEntry> sectors)
     {
@@ -237,6 +245,127 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public int SecOpUsed;
     public List<string> SecurityLog = new();
     public List<SWPlotEntry> Plots = new();
+
+    // ЭПИДЕМИЯ (Health ministry only).
+    public bool IsHealth;
+    public bool PathogenActive;
+    public string PathogenName = string.Empty;
+    public int PathogenStrain;
+    public int Virulence;
+    public string PandemicStatus = string.Empty;
+    public Color PandemicColor;
+    public int InfectionAvg;
+    public int Immunity;
+    public int Research;
+    public bool VaccineReady;
+    public bool VaccineStale;
+    public int ResearchFunding;
+    public string ResearchFundingLabel = string.Empty;
+    public bool HealthEmergencyActive;
+    public int HealthEmergencyHoursLeft;
+    public bool HealthEmergencyPending;
+    public string SelectedHealthProgram = string.Empty;
+    public int HealthProgramProgress;
+    public List<SWDefenseProgramEntry> HealthPrograms = new();
+    public List<SWInfectionSectorEntry> InfectionSectors = new();
+    public List<string> HealthLog = new();
+    public int HospitalMaxLevel;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWInfectionSectorEntry
+{
+    public string Id = string.Empty;
+    public string Name = string.Empty;
+    public Color Color;
+    public int Infection;
+    public string StatusLabel = string.Empty;
+    public Color StatusColor;
+    public bool Quarantined;
+    public int HospitalLevel;
+    public bool Building;
+    public int BuildLeft;
+    public bool CanBuild;
+    public int BuildCost;
+    public bool CanAid;
+    public int AidCost;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWHealthSetFundingMessage : BoundUserInterfaceMessage
+{
+    public int Level;
+
+    public SWHealthSetFundingMessage(int level)
+    {
+        Level = level;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWHealthDeployVaccineMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWHealthQuarantineMessage : BoundUserInterfaceMessage
+{
+    public string SectorId;
+    public bool On;
+
+    public SWHealthQuarantineMessage(string sectorId, bool on)
+    {
+        SectorId = sectorId;
+        On = on;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWHealthBuildHospitalMessage : BoundUserInterfaceMessage
+{
+    public string SectorId;
+
+    public SWHealthBuildHospitalMessage(string sectorId)
+    {
+        SectorId = sectorId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWHealthEmergencyAidMessage : BoundUserInterfaceMessage
+{
+    public string SectorId;
+
+    public SWHealthEmergencyAidMessage(string sectorId)
+    {
+        SectorId = sectorId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWHealthDeclareEmergencyMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWHealthSelectProgramMessage : BoundUserInterfaceMessage
+{
+    public string ProgramId;
+
+    public SWHealthSelectProgramMessage(string programId)
+    {
+        ProgramId = programId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWHealthApproveEmergencyMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWHealthRejectEmergencyMessage : BoundUserInterfaceMessage
+{
 }
 
 [Serializable, NetSerializable]
@@ -602,6 +731,8 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool EmergencyProposed;
     public bool CanApproveEmergency;
     public string PendingPostureName = string.Empty;
+    public bool HealthEmergencyProposed;
+    public bool CanApproveHealthEmergency;
     public List<SWBillPresetEntry> Presets = new();
     public bool CanDilemmas;
     public List<string> MinistryNotices = new();

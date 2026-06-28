@@ -106,6 +106,24 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
         RepublicStats.AddChild(posturePanel);
 
         RepublicStats.AddChild(new Control { MinHeight = 10 });
+        RepublicStats.AddChild(SWConsoleStyle.Section("ЗДРАВООХРАНЕНИЕ"));
+        RepublicStats.AddChild(new Control { MinHeight = 4 });
+        var healthPanel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, state.PandemicColor);
+        var healthBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+        var healthHead = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        healthHead.AddChild(SWConsoleStyle.Text(state.PandemicStatus, state.PandemicColor, SWConsoleStyle.MonoBold));
+        healthHead.AddChild(new Control { HorizontalExpand = true });
+        if (state.PathogenActive)
+            healthHead.AddChild(SWConsoleStyle.Text($"Заражение {state.InfectionAvg}/100 · Иммунитет {state.Immunity}/100", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        else
+            healthHead.AddChild(SWConsoleStyle.Text($"Иммунитет {state.Immunity}/100", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        healthBox.AddChild(healthHead);
+        if (state.PathogenActive)
+            healthBox.AddChild(SWConsoleStyle.Text($"Патоген: {state.PathogenName} · штамм {state.PathogenStrain} · вакцина {state.Research}%", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        healthPanel.AddChild(healthBox);
+        RepublicStats.AddChild(healthPanel);
+
+        RepublicStats.AddChild(new Control { MinHeight = 10 });
         RepublicStats.AddChild(SWConsoleStyle.Section("ПОКАЗАТЕЛИ РЕСПУБЛИКИ"));
         RepublicStats.AddChild(new Control { MinHeight = 6 });
 

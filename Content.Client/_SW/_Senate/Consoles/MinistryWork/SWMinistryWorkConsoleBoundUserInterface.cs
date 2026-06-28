@@ -86,6 +86,41 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSecurityRaidPlotMessage(plotId));
     }
 
+    public void SetFunding(int level)
+    {
+        SendMessage(new SWHealthSetFundingMessage(level));
+    }
+
+    public void DeployVaccine()
+    {
+        SendMessage(new SWHealthDeployVaccineMessage());
+    }
+
+    public void Quarantine(string sectorId, bool on)
+    {
+        SendMessage(new SWHealthQuarantineMessage(sectorId, on));
+    }
+
+    public void BuildHospital(string sectorId)
+    {
+        SendMessage(new SWHealthBuildHospitalMessage(sectorId));
+    }
+
+    public void EmergencyAid(string sectorId)
+    {
+        SendMessage(new SWHealthEmergencyAidMessage(sectorId));
+    }
+
+    public void DeclareHealthEmergency()
+    {
+        SendMessage(new SWHealthDeclareEmergencyMessage());
+    }
+
+    public void SelectHealthProgram(string programId)
+    {
+        SendMessage(new SWHealthSelectProgramMessage(programId));
+    }
+
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);

@@ -25,6 +25,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
     [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
+    [Dependency] private readonly SWMinistryHealthSystem _health = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
@@ -49,7 +50,86 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecurityDeployCellMessage>(OnDeployCell);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecurityLaunchOpMessage>(OnLaunchSecOp);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecurityRaidPlotMessage>(OnRaidPlot);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthSetFundingMessage>(OnSetFunding);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthDeployVaccineMessage>(OnDeployVaccine);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthQuarantineMessage>(OnQuarantine);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthBuildHospitalMessage>(OnBuildHospital);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthEmergencyAidMessage>(OnEmergencyAid);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthDeclareEmergencyMessage>(OnDeclareEmergency);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthSelectProgramMessage>(OnSelectHealthProgram);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryResignMessage>(OnResign);
+    }
+
+    private bool IsHealthCard(Entity<SWMinistryWorkConsoleComponent> ent) =>
+        GetCardMinistry(ent) == SWMinistryHealthSystem.HealthMinistryId;
+
+    private void OnSetFunding(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthSetFundingMessage args)
+    {
+        if (!IsHealthCard(ent))
+            return;
+
+        _health.SetFunding(args.Level);
+        UpdateUi(ent);
+    }
+
+    private void OnDeployVaccine(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthDeployVaccineMessage args)
+    {
+        if (!IsHealthCard(ent))
+            return;
+
+        if (!_health.DeployVaccine())
+            _popup.PopupCursor(Loc.GetString("sw-health-vaccine-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnQuarantine(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthQuarantineMessage args)
+    {
+        if (!IsHealthCard(ent))
+            return;
+
+        _health.SetQuarantine(args.SectorId, args.On);
+        UpdateUi(ent);
+    }
+
+    private void OnBuildHospital(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthBuildHospitalMessage args)
+    {
+        if (!IsHealthCard(ent))
+            return;
+
+        if (!_health.BuildHospital(args.SectorId))
+            _popup.PopupCursor(Loc.GetString("sw-health-build-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnEmergencyAid(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthEmergencyAidMessage args)
+    {
+        if (!IsHealthCard(ent))
+            return;
+
+        if (!_health.EmergencyAid(args.SectorId))
+            _popup.PopupCursor(Loc.GetString("sw-health-aid-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnDeclareEmergency(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthDeclareEmergencyMessage args)
+    {
+        if (!IsHealthCard(ent))
+            return;
+
+        _health.DeclareEmergency();
+        UpdateUi(ent);
+    }
+
+    private void OnSelectHealthProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthSelectProgramMessage args)
+    {
+        if (!IsHealthCard(ent))
+            return;
+
+        _health.SelectProgram(args.ProgramId);
+        UpdateUi(ent);
     }
 
     private void OnSetPosture(Entity<SWMinistryWorkConsoleComponent> ent, ref SWSecuritySetPostureMessage args)
@@ -321,6 +401,32 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.SecOpUsed = _security.ActiveOpUsed;
                     state.SecurityLog = _security.GetLog();
                     state.Plots = _security.BuildPlots();
+                }
+                else if (ministryId == SWMinistryHealthSystem.HealthMinistryId)
+                {
+                    state.IsHealth = true;
+                    state.PathogenActive = _health.PathogenActive;
+                    state.PathogenName = _health.PathogenName;
+                    state.PathogenStrain = _health.PathogenStrain + 1;
+                    state.Virulence = _health.Virulence;
+                    state.PandemicStatus = _health.PandemicStatus();
+                    state.PandemicColor = _health.PandemicColor();
+                    state.InfectionAvg = (int) MathF.Round(_health.InfectionAvg());
+                    state.Immunity = _health.Immunity;
+                    state.Research = _health.Research;
+                    state.VaccineReady = _health.VaccineReady;
+                    state.VaccineStale = _health.VaccineStale;
+                    state.ResearchFunding = _health.ResearchFunding;
+                    state.ResearchFundingLabel = _health.ResearchFundingLabel();
+                    state.HealthEmergencyActive = _health.EmergencyActive;
+                    state.HealthEmergencyHoursLeft = _health.EmergencyHoursLeft;
+                    state.HealthEmergencyPending = _health.EmergencyPending;
+                    state.SelectedHealthProgram = _health.SelectedProgram ?? string.Empty;
+                    state.HealthProgramProgress = _health.ProgramProgress;
+                    state.HealthPrograms = _health.BuildPrograms();
+                    state.InfectionSectors = _health.BuildInfectionSectors();
+                    state.HealthLog = _health.GetLog();
+                    state.HospitalMaxLevel = SWMinistryHealthSystem.HospitalMaxLevel;
                 }
             }
         }

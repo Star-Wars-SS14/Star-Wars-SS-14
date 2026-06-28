@@ -28,6 +28,9 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
     private const int ControlTab = 6;
     private const int NetworkTab = 7;
     private const int SecOpsTab = 8;
+    private const int EpidemicTab = 9;
+    private const int OutbreakTab = 10;
+    private const int HealthProgramsTab = 11;
 
     private readonly Dictionary<int, string> _refuseReasons = new();
     private string _requestsSignature = string.Empty;
@@ -64,6 +67,9 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             ("КОНТРОЛЬ", ControlPanel),
             ("АГЕНТУРА", NetworkPanel),
             ("ОПЕРАЦИИ", SecOpsPanel),
+            ("ЭПИДЕМИЯ", EpidemicPanel),
+            ("КАРТА", OutbreakPanel),
+            ("ПРОГРАММЫ", HealthProgramsPanel),
         };
 
         _tabButtons = new Button[_tabs.Length];
@@ -100,9 +106,14 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         _tabButtons[ControlTab].Visible = state.IsSecurity;
         _tabButtons[NetworkTab].Visible = state.IsSecurity;
         _tabButtons[SecOpsTab].Visible = state.IsSecurity;
+        _tabButtons[EpidemicTab].Visible = state.IsHealth;
+        _tabButtons[OutbreakTab].Visible = state.IsHealth;
+        _tabButtons[HealthProgramsTab].Visible = state.IsHealth;
         if (!state.IsDefense && (_active == CommandTab || _active == FleetTab || _active == OpsTab))
             ShowTab(0);
         if (!state.IsSecurity && (_active == ControlTab || _active == NetworkTab || _active == SecOpsTab))
+            ShowTab(0);
+        if (!state.IsHealth && (_active == EpidemicTab || _active == OutbreakTab || _active == HealthProgramsTab))
             ShowTab(0);
 
         BuildOverview(state);
@@ -114,6 +125,9 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         BuildControl(state);
         BuildNetwork(state);
         BuildSecOps(state);
+        BuildEpidemic(state);
+        BuildOutbreak(state);
+        BuildHealthPrograms(state);
     }
 
     private void BuildOps(SWMinistryWorkConsoleState state)
@@ -878,6 +892,219 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             btn.Margin = new Thickness(0, 3, 0, 0);
             btn.OnPressed += _ => _owner.LaunchSecOp(opId, string.Empty);
             box.AddChild(btn);
+        }
+
+        card.AddChild(box);
+        return card;
+    }
+
+    private void BuildEpidemic(SWMinistryWorkConsoleState state)
+    {
+        EpidemicContent.RemoveAllChildren();
+        if (!state.IsHealth)
+            return;
+
+        // Pandemic status.
+        EpidemicContent.AddChild(SWConsoleStyle.Section("СОСТОЯНИЕ ПАНДЕМИИ"));
+        EpidemicContent.AddChild(new Control { MinHeight = 4 });
+        var prow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        prow.AddChild(SWConsoleStyle.Text(state.PandemicStatus, state.PandemicColor, SWConsoleStyle.MonoBold));
+        prow.AddChild(new Control { HorizontalExpand = true });
+        if (state.PathogenActive)
+            prow.AddChild(SWConsoleStyle.Text($"средн. заражение {state.InfectionAvg}/100", state.PandemicColor, SWConsoleStyle.MonoBold));
+        EpidemicContent.AddChild(prow);
+        EpidemicContent.AddChild(state.PathogenActive
+            ? SWConsoleStyle.Text($"Патоген: {state.PathogenName} · штамм {state.PathogenStrain} · вирулентность {state.Virulence}%", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall)
+            : SWConsoleStyle.Text("Активных эпидемий нет. Поддерживайте сеть и готовность.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+        // Immunity.
+        EpidemicContent.AddChild(new Control { MinHeight = 10 });
+        EpidemicContent.AddChild(SWConsoleStyle.Section("ИММУНИТЕТ НАСЕЛЕНИЯ"));
+        EpidemicContent.AddChild(new Control { MinHeight = 4 });
+        EpidemicContent.AddChild(SWConsoleStyle.Bar(state.Immunity, 0, 100, SWConsoleStyle.Good));
+
+        // Vaccine research race.
+        EpidemicContent.AddChild(new Control { MinHeight = 10 });
+        EpidemicContent.AddChild(SWConsoleStyle.Section("РАЗРАБОТКА ВАКЦИНЫ"));
+        EpidemicContent.AddChild(new Control { MinHeight = 4 });
+        var rlabel = state.VaccineReady
+            ? (state.VaccineStale ? "Вакцина готова — под устаревший штамм (вполсилы)" : "Вакцина готова к развёртыванию")
+            : $"Прогресс: {state.Research}%";
+        EpidemicContent.AddChild(SWConsoleStyle.Text(rlabel, state.VaccineReady ? SWConsoleStyle.Accent : SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+        EpidemicContent.AddChild(SWConsoleStyle.Bar(state.Research, 0, 100, SWConsoleStyle.Accent));
+
+        EpidemicContent.AddChild(SWConsoleStyle.Text($"Финансирование НИОКР: {state.ResearchFundingLabel}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        var frow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
+        frow.AddChild(MakeFundingButton(state.ResearchFunding, 0, "Остановить", SWConsoleStyle.Neutral));
+        frow.AddChild(MakeFundingButton(state.ResearchFunding, 1, "Базовое", SWConsoleStyle.Accent));
+        frow.AddChild(MakeFundingButton(state.ResearchFunding, 2, "Форсаж", SWConsoleStyle.Warn));
+        EpidemicContent.AddChild(frow);
+
+        if (state.VaccineReady)
+        {
+            var deploy = SWConsoleStyle.Action("Массовая вакцинация", SWConsoleStyle.Good);
+            deploy.HorizontalExpand = true;
+            deploy.Margin = new Thickness(0, 4, 0, 0);
+            deploy.OnPressed += _ => _owner.DeployVaccine();
+            EpidemicContent.AddChild(deploy);
+        }
+
+        // Galactic emergency.
+        EpidemicContent.AddChild(new Control { MinHeight = 10 });
+        EpidemicContent.AddChild(SWConsoleStyle.Section("ГАЛАКТИЧЕСКАЯ ЧС"));
+        EpidemicContent.AddChild(new Control { MinHeight = 4 });
+        if (state.HealthEmergencyActive)
+        {
+            EpidemicContent.AddChild(SWConsoleStyle.Text($"Галактический карантин активен — осталось {state.HealthEmergencyHoursLeft} ч", SWConsoleStyle.Bad, SWConsoleStyle.MonoBold));
+        }
+        else if (state.HealthEmergencyPending)
+        {
+            EpidemicContent.AddChild(SWConsoleStyle.Text("Ждёт одобрения Канцлера.", SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+        }
+        else
+        {
+            var decl = SWConsoleStyle.Action("Объявить галактический карантин", SWConsoleStyle.Bad);
+            decl.HorizontalExpand = true;
+            decl.OnPressed += _ => _owner.DeclareHealthEmergency();
+            EpidemicContent.AddChild(decl);
+            EpidemicContent.AddChild(SWConsoleStyle.Text("Тормозит эпидемию по всей галактике ценой экономики и общества. Нужно одобрение Канцлера.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        }
+
+        if (state.HealthLog.Count > 0)
+        {
+            EpidemicContent.AddChild(new Control { MinHeight = 10 });
+            EpidemicContent.AddChild(SWConsoleStyle.Section("СОБЫТИЯ"));
+            foreach (var entry in state.HealthLog)
+                EpidemicContent.AddChild(SWConsoleStyle.Text(entry, SWConsoleStyle.TextBright, SWConsoleStyle.MonoSmall));
+        }
+    }
+
+    private Control MakeFundingButton(int current, int level, string label, Color color)
+    {
+        var active = current == level;
+        var btn = SWConsoleStyle.Action(active ? $"> {label}" : label, color, active);
+        btn.HorizontalExpand = true;
+        btn.Margin = new Thickness(0, 0, 4, 0);
+        if (!active)
+            btn.OnPressed += _ => _owner.SetFunding(level);
+        return btn;
+    }
+
+    private void BuildOutbreak(SWMinistryWorkConsoleState state)
+    {
+        OutbreakContent.RemoveAllChildren();
+        if (!state.IsHealth)
+            return;
+
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        head.AddChild(SWConsoleStyle.Text($"Бюджет {state.MinistryBudget} кр  ·  админ {state.MinistryAdmin}", SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+        head.AddChild(new Control { HorizontalExpand = true });
+        if (state.HealthEmergencyActive)
+            head.AddChild(SWConsoleStyle.Text("КАРАНТИН", SWConsoleStyle.Bad, SWConsoleStyle.MonoBold));
+        OutbreakContent.AddChild(head);
+        OutbreakContent.AddChild(new Control { MinHeight = 8 });
+
+        OutbreakContent.AddChild(SWConsoleStyle.Section("ОЧАГИ ПО СЕКТОРАМ"));
+        OutbreakContent.AddChild(new Control { MinHeight = 4 });
+
+        if (state.InfectionSectors.Count == 0)
+        {
+            OutbreakContent.AddChild(SWConsoleStyle.Text("Сенаторы ещё не заняли сектора.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            return;
+        }
+
+        foreach (var sector in state.InfectionSectors)
+            OutbreakContent.AddChild(MakeInfectionCard(sector, state.HospitalMaxLevel));
+    }
+
+    private Control MakeInfectionCard(SWInfectionSectorEntry sector, int maxLevel)
+    {
+        var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, sector.StatusColor);
+        card.Margin = new Thickness(0, 0, 0, 6);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+
+        var headRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        var nameText = sector.Quarantined ? $"{sector.Name}  [КАРАНТИН]" : sector.Name;
+        headRow.AddChild(SWConsoleStyle.Text(nameText, sector.Color, SWConsoleStyle.MonoBold));
+        headRow.AddChild(new Control { HorizontalExpand = true });
+        headRow.AddChild(SWConsoleStyle.Text($"{sector.StatusLabel} · {sector.Infection}%", sector.StatusColor, SWConsoleStyle.MonoBold));
+        box.AddChild(headRow);
+        box.AddChild(SWConsoleStyle.Bar(sector.Infection, 0, 100, sector.StatusColor));
+
+        box.AddChild(sector.Building
+            ? SWConsoleStyle.Text($"Госпиталь: строится — {sector.BuildLeft} ч", SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall)
+            : SWConsoleStyle.Text($"Госпиталь: ур. {sector.HospitalLevel}/{maxLevel}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+        var actions = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 3, 0, 0) };
+        var id = sector.Id;
+
+        var quar = SWConsoleStyle.Action(sector.Quarantined ? "Снять карантин" : "Карантин", sector.Quarantined ? SWConsoleStyle.Warn : SWConsoleStyle.Accent);
+        quar.HorizontalExpand = true;
+        quar.Margin = new Thickness(0, 0, 4, 0);
+        var wasQuar = sector.Quarantined;
+        quar.OnPressed += _ => _owner.Quarantine(id, !wasQuar);
+        actions.AddChild(quar);
+
+        if (sector.HospitalLevel < maxLevel && !sector.Building)
+        {
+            var build = SWConsoleStyle.Action($"Госпиталь +1 — {sector.BuildCost} кр", SWConsoleStyle.Good, !sector.CanBuild);
+            build.HorizontalExpand = true;
+            build.Margin = new Thickness(0, 0, 4, 0);
+            if (sector.CanBuild)
+                build.OnPressed += _ => _owner.BuildHospital(id);
+            actions.AddChild(build);
+        }
+
+        var aid = SWConsoleStyle.Action($"Помощь — {sector.AidCost} кр", SWConsoleStyle.Accent, !sector.CanAid);
+        aid.HorizontalExpand = true;
+        if (sector.CanAid)
+            aid.OnPressed += _ => _owner.EmergencyAid(id);
+        actions.AddChild(aid);
+
+        box.AddChild(actions);
+        card.AddChild(box);
+        return card;
+    }
+
+    private void BuildHealthPrograms(SWMinistryWorkConsoleState state)
+    {
+        HealthProgramsContent.RemoveAllChildren();
+        if (!state.IsHealth)
+            return;
+
+        HealthProgramsContent.AddChild(SWConsoleStyle.Text($"Бюджет {state.MinistryBudget} кр  ·  админ {state.MinistryAdmin}", SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+        HealthProgramsContent.AddChild(new Control { MinHeight = 8 });
+        HealthProgramsContent.AddChild(SWConsoleStyle.Section("ДНЕВНЫЕ ПРОГРАММЫ"));
+        HealthProgramsContent.AddChild(new Control { MinHeight = 4 });
+        if (!string.IsNullOrEmpty(state.SelectedHealthProgram))
+            HealthProgramsContent.AddChild(SWConsoleStyle.Text($"Прогресс: {state.HealthProgramProgress}%", SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall));
+
+        foreach (var program in state.HealthPrograms)
+            HealthProgramsContent.AddChild(MakeHealthProgramCard(program));
+    }
+
+    private Control MakeHealthProgramCard(SWDefenseProgramEntry program)
+    {
+        var card = SWConsoleStyle.Row(program.Selected ? SWConsoleStyle.BgRowAlt : SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
+        card.Margin = new Thickness(0, 0, 0, 4);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+
+        var id = program.Id;
+        var btn = SWConsoleStyle.Action(program.Selected ? $"{program.Name} (выбрано)" : program.Name, SWConsoleStyle.Accent, program.Selected);
+        btn.HorizontalExpand = true;
+        if (!program.Selected)
+            btn.OnPressed += _ => _owner.SelectHealthProgram(id);
+        box.AddChild(btn);
+
+        if (!string.IsNullOrWhiteSpace(program.Description))
+            box.AddChild(SWConsoleStyle.Text(program.Description, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+        if (program.Effects.Count > 0)
+        {
+            var eff = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 2, 0, 0) };
+            foreach (var effect in program.Effects)
+                eff.AddChild(SWConsoleStyle.Text($"{effect.StatName} {effect.Delta:+0;-0}  ", effect.Color, SWConsoleStyle.MonoSmall));
+            box.AddChild(eff);
         }
 
         card.AddChild(box);

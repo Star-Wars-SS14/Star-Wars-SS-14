@@ -422,6 +422,8 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                 state.MinistryColor = proto.Color;
                 state.KindLabel = KindLabel(proto.Kind);
                 state.DomainStatId = proto.Domain;
+                foreach (var extra in proto.ExtraDomains)
+                    state.ExtraDomainStatIds.Add(extra);
 
                 var ministryId = ministryComp.Ministry.Value.Id;
                 state.MinistryBudget = _dilemma.GetMinistryBudget(ministryId);

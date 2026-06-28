@@ -39,6 +39,10 @@ public sealed partial class SWMinistryPrototype : IPrototype
     [DataField]
     public ProtoId<SWGlobalStatPrototype>? Domain;
 
+    /// <summary>Additional profile globals shown alongside the primary domain (e.g. Industry for Economy).</summary>
+    [DataField]
+    public List<ProtoId<SWGlobalStatPrototype>> ExtraDomains = new();
+
     [DataField]
     public ProtoId<SWMinistryPrototype>? Parent;
 

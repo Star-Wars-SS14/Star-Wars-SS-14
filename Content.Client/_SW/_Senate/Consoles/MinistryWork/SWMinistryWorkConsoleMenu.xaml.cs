@@ -1439,7 +1439,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             if (sector.Id == exclude)
                 continue;
             var sid = sector.Id;
-            var btn = SWConsoleStyle.Action($"{sector.Name} (Т{sector.Economy})", sector.Color);
+            var btn = SWConsoleStyle.Action($"{sector.Name} (Э{sector.Economy})", sector.Color);
             btn.HorizontalExpand = true;
             btn.OnPressed += _ => onPick(sid);
             grid.AddChild(btn);
@@ -1511,21 +1511,30 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             OverviewContent.AddChild(resign);
         }
 
-        var domain = state.Globals.FirstOrDefault(g => g.Id == state.DomainStatId);
-        if (domain != null)
+        var domainIds = new List<string>();
+        if (state.DomainStatId != null)
+            domainIds.Add(state.DomainStatId);
+        domainIds.AddRange(state.ExtraDomainStatIds);
+
+        var domains = domainIds
+            .Select(id => state.Globals.FirstOrDefault(g => g.Id == id))
+            .Where(g => g != null)
+            .ToList();
+
+        if (domains.Count > 0)
         {
             OverviewContent.AddChild(new Control { MinHeight = 10 });
-            OverviewContent.AddChild(SWConsoleStyle.Section("ПРОФИЛЬНЫЙ ПОКАЗАТЕЛЬ"));
+            OverviewContent.AddChild(SWConsoleStyle.Section(domains.Count > 1 ? "ПРОФИЛЬНЫЕ ПОКАЗАТЕЛИ" : "ПРОФИЛЬНЫЙ ПОКАЗАТЕЛЬ"));
             OverviewContent.AddChild(new Control { MinHeight = 6 });
-            OverviewContent.AddChild(MakeGlobalBar(domain));
 
-            if (domain.Subs.Count > 0)
+            foreach (var domain in domains)
             {
-                OverviewContent.AddChild(new Control { MinHeight = 8 });
-                OverviewContent.AddChild(SWConsoleStyle.Section("СОСТАВЛЯЮЩИЕ"));
-                OverviewContent.AddChild(new Control { MinHeight = 6 });
-                foreach (var sub in domain.Subs)
+                OverviewContent.AddChild(MakeGlobalBar(domain!));
+
+                foreach (var sub in domain!.Subs)
                     OverviewContent.AddChild(MakeSubBar(sub));
+
+                OverviewContent.AddChild(new Control { MinHeight = 8 });
             }
         }
     }

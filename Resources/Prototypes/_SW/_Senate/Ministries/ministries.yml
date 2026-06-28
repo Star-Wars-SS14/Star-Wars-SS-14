@@ -29,6 +29,8 @@
   central: true
   color: "#1E8449"
   domain: SWGlobalEconomy
+  extraDomains:
+  - SWGlobalIndustry
   order: 2
 
 - type: swMinistry

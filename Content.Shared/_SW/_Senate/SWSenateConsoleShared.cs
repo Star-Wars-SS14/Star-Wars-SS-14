@@ -195,6 +195,7 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public Color MinistryColor;
     public string KindLabel = string.Empty;
     public string? DomainStatId;
+    public List<string> ExtraDomainStatIds = new();
     public List<SWGlobalStatEntry> Globals = new();
     public string GameTime = string.Empty;
     public int MinistryBudget;

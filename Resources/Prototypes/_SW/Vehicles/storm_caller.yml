@@ -200,7 +200,7 @@
   - type: Projectile
     damage:
       types:
-        SWAntiVehicle: 100
+        SWAntiVehicle: 500
   - type: ExplodeOnTrigger
   - type: Explosive
     explosionType: Default

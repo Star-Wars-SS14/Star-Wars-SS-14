@@ -61,6 +61,12 @@ public sealed class SWStatisticsConsoleState : BoundUserInterfaceState
     public List<SWCrisisEntry> Crises = new();
     public List<SWBillEntry> ActiveLaws = new();
     public string GameTime = string.Empty;
+    public int DefconLevel;
+    public string DefconName = string.Empty;
+    public Color DefconColor;
+    public int BorderPressure;
+    public string BorderStatus = string.Empty;
+    public List<SWBillEffectEntry> DefconEffects = new();
 
     public SWStatisticsConsoleState(List<SWGlobalStatEntry> globals, List<SWSectorEntry> sectors)
     {
@@ -178,7 +184,12 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     // КОМАНДОВАНИЕ (Defense ministry only).
     public bool IsDefense;
     public SWDefenseStance Stance;
+    public int DefconLevel;
+    public string StanceName = string.Empty;
+    public Color StanceColor;
+    public List<SWBillEffectEntry> StanceEffects = new();
     public bool WarPending;
+    public string PendingStanceName = string.Empty;
     public int BorderPressure;
     public string BorderStatus = string.Empty;
     public int WarWeariness;
@@ -361,6 +372,7 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool OfficesVacant;
     public bool WarProposed;
     public bool CanApproveWar;
+    public string PendingStanceName = string.Empty;
     public List<SWBillPresetEntry> Presets = new();
     public bool CanDilemmas;
     public List<string> MinistryNotices = new();

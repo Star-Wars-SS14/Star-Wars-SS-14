@@ -175,7 +175,12 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                 {
                     state.IsDefense = true;
                     state.Stance = _defense.Stance;
+                    state.DefconLevel = SWMinistryDefenseSystem.DefconLevel(_defense.Stance);
+                    state.StanceName = SWMinistryDefenseSystem.StanceName(_defense.Stance);
+                    state.StanceColor = SWMinistryDefenseSystem.StanceColor(_defense.Stance);
+                    state.StanceEffects = _defense.BuildStanceEffects(_defense.Stance);
                     state.WarPending = _defense.WarPending;
+                    state.PendingStanceName = _defense.PendingStance is { } pend ? SWMinistryDefenseSystem.StanceName(pend) : string.Empty;
                     state.BorderPressure = _defense.BorderPressure;
                     state.BorderStatus = _defense.BorderStatus();
                     state.WarWeariness = _defense.WarWeariness;

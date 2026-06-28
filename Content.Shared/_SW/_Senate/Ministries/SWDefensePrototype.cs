@@ -4,11 +4,14 @@ using Robust.Shared.Serialization;
 
 namespace Content.Shared._SW._Senate.Ministries;
 
+// DEFCON ladder: Peace (5, lowest readiness) … War (1, max readiness). Higher enum value = more severe.
 [Serializable, NetSerializable]
 public enum SWDefenseStance : byte
 {
     Peace,
+    Vigilance,
     Alert,
+    Mobilization,
     War,
 }
 

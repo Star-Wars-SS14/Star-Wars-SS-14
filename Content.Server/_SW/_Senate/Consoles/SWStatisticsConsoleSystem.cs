@@ -13,6 +13,7 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWSenateCrisisSystem _crisis = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
+    [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
 
     private const float UpdateInterval = 3f;
@@ -66,11 +67,18 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
 
         sectors.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
 
+        var stance = _defense.Stance;
         var state = new SWStatisticsConsoleState(globals, sectors)
         {
             Crises = _crisis.BuildCrises(null, false),
             ActiveLaws = _senate.BuildActiveLaws(),
             GameTime = _time.TimeString(),
+            DefconLevel = SWMinistryDefenseSystem.DefconLevel(stance),
+            DefconName = SWMinistryDefenseSystem.StanceName(stance),
+            DefconColor = SWMinistryDefenseSystem.StanceColor(stance),
+            BorderPressure = _defense.BorderPressure,
+            BorderStatus = _defense.BorderStatus(),
+            DefconEffects = _defense.BuildStanceEffects(stance),
         };
 
         _ui.SetUiState(ent.Owner, SWStatisticsConsoleUiKey.Key, state);

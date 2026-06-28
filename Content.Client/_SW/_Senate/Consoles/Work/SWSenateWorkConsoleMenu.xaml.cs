@@ -948,12 +948,12 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         if (!state.WarProposed)
             return;
 
-        WarApprovalBox.AddChild(MakeWrap("Министр обороны предлагает объявить ВОЙНУ.", Color.IndianRed));
+        WarApprovalBox.AddChild(MakeWrap($"Министр обороны предлагает поднять боеготовность до: {state.PendingStanceName}.", Color.IndianRed));
 
         if (state.CanApproveWar)
         {
             var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
-            var approve = SWConsoleStyle.Action("Одобрить войну", SWConsoleStyle.Bad);
+            var approve = SWConsoleStyle.Action("Одобрить", SWConsoleStyle.Bad);
             approve.OnPressed += _ => _owner.ApproveWar();
             var reject = SWConsoleStyle.Action("Отклонить", SWConsoleStyle.Neutral);
             reject.Margin = new Thickness(6, 0, 0, 0);

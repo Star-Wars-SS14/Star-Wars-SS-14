@@ -758,6 +758,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.OfficesVacant = _senate.OfficesVacant;
         state.WarProposed = _defense.WarPending;
         state.CanApproveWar = _defense.WarPending && CanConfirmAs(ent);
+        state.PendingStanceName = _defense.PendingStance is { } pendingStance ? SWMinistryDefenseSystem.StanceName(pendingStance) : string.Empty;
 
         if (card != null && TryComp<SWSenatePositionCardComponent>(card, out var position))
         {

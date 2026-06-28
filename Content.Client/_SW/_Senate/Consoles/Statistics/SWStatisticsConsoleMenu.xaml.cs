@@ -74,11 +74,39 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
     private void BuildRepublic(SWStatisticsConsoleState state)
     {
         RepublicStats.RemoveAllChildren();
+
+        RepublicStats.AddChild(SWConsoleStyle.Section("БОЕГОТОВНОСТЬ"));
+        RepublicStats.AddChild(new Control { MinHeight = 4 });
+        var defconPanel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, state.DefconColor);
+        var defconBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+        var defconHead = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        defconHead.AddChild(SWConsoleStyle.Text($"DEFCON {state.DefconLevel} — {state.DefconName}", state.DefconColor, SWConsoleStyle.MonoBold));
+        defconHead.AddChild(new Control { HorizontalExpand = true });
+        defconHead.AddChild(SWConsoleStyle.Text($"Граница: {state.BorderStatus} ({state.BorderPressure}/100)", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        defconBox.AddChild(defconHead);
+        if (state.DefconEffects.Count > 0)
+            defconBox.AddChild(RateRow(state.DefconEffects));
+        defconPanel.AddChild(defconBox);
+        RepublicStats.AddChild(defconPanel);
+
+        RepublicStats.AddChild(new Control { MinHeight = 10 });
         RepublicStats.AddChild(SWConsoleStyle.Section("ПОКАЗАТЕЛИ РЕСПУБЛИКИ"));
         RepublicStats.AddChild(new Control { MinHeight = 6 });
 
         foreach (var global in state.Globals)
             RepublicStats.AddChild(MakeGlobalBlock(global));
+    }
+
+    private static Control RateRow(List<SWBillEffectEntry> effects)
+    {
+        var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 3, 0, 0) };
+        foreach (var effect in effects)
+        {
+            var e = SWConsoleStyle.Text($"{effect.StatName} {effect.Delta:+0.0;-0.0}/ч", effect.Color, SWConsoleStyle.MonoSmall);
+            e.Margin = new Thickness(0, 0, 12, 0);
+            row.AddChild(e);
+        }
+        return row;
     }
 
     private Control MakeGlobalBlock(SWGlobalStatEntry global)

@@ -104,17 +104,18 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         CommandContent.AddChild(borderRow);
         CommandContent.AddChild(SWConsoleStyle.Bar(state.BorderPressure, 0, 100, BorderColor(state.BorderPressure)));
 
-        // Stance.
+        // Readiness (DEFCON ladder).
         CommandContent.AddChild(new Control { MinHeight = 10 });
-        CommandContent.AddChild(SWConsoleStyle.Section("СТОЙКА МОБИЛИЗАЦИИ"));
+        CommandContent.AddChild(SWConsoleStyle.Section("БОЕГОТОВНОСТЬ (DEFCON)"));
         CommandContent.AddChild(new Control { MinHeight = 4 });
-        var stanceRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-        stanceRow.AddChild(MakeStanceButton("МИР", SWDefenseStance.Peace, state.Stance, SWConsoleStyle.Good));
-        stanceRow.AddChild(MakeStanceButton("ТРЕВОГА", SWDefenseStance.Alert, state.Stance, SWConsoleStyle.Warn));
-        stanceRow.AddChild(MakeStanceButton("ВОЙНА", SWDefenseStance.War, state.Stance, SWConsoleStyle.Bad));
-        CommandContent.AddChild(stanceRow);
+        CommandContent.AddChild(SWConsoleStyle.Text($"Текущий: DEFCON {state.DefconLevel} — {state.StanceName}", state.StanceColor, SWConsoleStyle.MonoBold));
+        if (state.StanceEffects.Count > 0)
+            CommandContent.AddChild(MakeRateRow(state.StanceEffects));
         if (state.WarPending)
-            CommandContent.AddChild(SWConsoleStyle.Text("Объявление войны ждёт одобрения Канцлера.", SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+            CommandContent.AddChild(SWConsoleStyle.Text($"Ждёт одобрения Канцлера: {state.PendingStanceName}", SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+        CommandContent.AddChild(new Control { MinHeight = 4 });
+        foreach (var stance in StanceLadder)
+            CommandContent.AddChild(MakeStanceButton(stance, state.Stance));
 
         // War weariness.
         CommandContent.AddChild(new Control { MinHeight = 10 });
@@ -133,15 +134,53 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             CommandContent.AddChild(MakeProgramCard(program));
     }
 
-    private Control MakeStanceButton(string text, SWDefenseStance stance, SWDefenseStance current, Color color)
+    private static readonly SWDefenseStance[] StanceLadder =
+    {
+        SWDefenseStance.War,
+        SWDefenseStance.Mobilization,
+        SWDefenseStance.Alert,
+        SWDefenseStance.Vigilance,
+        SWDefenseStance.Peace,
+    };
+
+    private Control MakeStanceButton(SWDefenseStance stance, SWDefenseStance current)
     {
         var active = stance == current;
-        var btn = SWConsoleStyle.Action(active ? $"[ {text} ]" : text, color);
+        var defcon = 5 - (int) stance;
+        var label = $"DEFCON {defcon} — {StanceClientName(stance)}";
+        var btn = SWConsoleStyle.Action(active ? $"> {label}" : label, StanceClientColor(stance), active);
         btn.HorizontalExpand = true;
-        btn.Margin = new Thickness(0, 0, 6, 0);
-        btn.OnPressed += _ => _owner.SetStance(stance);
+        btn.Margin = new Thickness(0, 0, 0, 3);
+        if (!active)
+            btn.OnPressed += _ => _owner.SetStance(stance);
         return btn;
     }
+
+    private static Control MakeRateRow(System.Collections.Generic.List<SWBillEffectEntry> effects)
+    {
+        var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 2, 0, 0) };
+        foreach (var e in effects)
+            row.AddChild(SWConsoleStyle.Text($"{e.StatName} {e.Delta:+0.0;-0.0}/ч  ", e.Color, SWConsoleStyle.MonoSmall));
+        return row;
+    }
+
+    private static string StanceClientName(SWDefenseStance stance) => stance switch
+    {
+        SWDefenseStance.Peace => "Мир",
+        SWDefenseStance.Vigilance => "Бдительность",
+        SWDefenseStance.Alert => "Тревога",
+        SWDefenseStance.Mobilization => "Мобилизация",
+        _ => "Война",
+    };
+
+    private static Color StanceClientColor(SWDefenseStance stance) => stance switch
+    {
+        SWDefenseStance.Peace => SWConsoleStyle.Good,
+        SWDefenseStance.Vigilance => SWConsoleStyle.Accent,
+        SWDefenseStance.Alert => SWConsoleStyle.Warn,
+        SWDefenseStance.Mobilization => Color.FromHex("#E67E22"),
+        _ => SWConsoleStyle.Bad,
+    };
 
     private Control MakeProgramCard(SWDefenseProgramEntry program)
     {

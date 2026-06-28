@@ -200,6 +200,46 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public List<SWFleetGroupEntry> Fleet = new();
     public List<SWFleetSectorEntry> FleetSectors = new();
     public int FleetUpkeep;
+    public List<SWDefenseOperationEntry> Operations = new();
+    public List<SWActiveOpEntry> ActiveOps = new();
+    public int ActiveOpSlots;
+    public int ActiveOpUsed;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDefenseOperationEntry
+{
+    public string Id = string.Empty;
+    public string Name = string.Empty;
+    public string Description = string.Empty;
+    public int Cost;
+    public int AdminCost;
+    public int Duration;
+    public SWOpTarget Target;
+    public bool Available;
+    public string StatusLabel = string.Empty;
+    public List<SWBillEffectEntry> Effects = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWActiveOpEntry
+{
+    public string Name = string.Empty;
+    public string Detail = string.Empty;
+    public int HoursLeft;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDefenseLaunchOpMessage : BoundUserInterfaceMessage
+{
+    public string OpId;
+    public string Target;
+
+    public SWDefenseLaunchOpMessage(string opId, string target)
+    {
+        OpId = opId;
+        Target = target;
+    }
 }
 
 [Serializable, NetSerializable]

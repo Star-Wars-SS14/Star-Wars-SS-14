@@ -132,6 +132,16 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         return true;
     }
 
+    public bool SpendMinistryAdmin(string ministryId, int amount)
+    {
+        EnsureMinistry(ministryId);
+        if (_ministryAdmin[ministryId] < amount)
+            return false;
+
+        _ministryAdmin[ministryId] -= amount;
+        return true;
+    }
+
     private SWDilemmaWindow? CurrentGenWindow()
     {
         if (!_time.DayActive)

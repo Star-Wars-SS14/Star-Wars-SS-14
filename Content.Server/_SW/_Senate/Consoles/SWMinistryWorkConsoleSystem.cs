@@ -42,7 +42,19 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseSetStanceMessage>(OnSetStance);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseSelectProgramMessage>(OnSelectProgram);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFleetDeployMessage>(OnDeployFleet);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseLaunchOpMessage>(OnLaunchOp);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryResignMessage>(OnResign);
+    }
+
+    private void OnLaunchOp(Entity<SWMinistryWorkConsoleComponent> ent, ref SWDefenseLaunchOpMessage args)
+    {
+        if (GetCardMinistry(ent) != SWMinistryDefenseSystem.DefenseMinistryId)
+            return;
+
+        if (!_defense.LaunchOperation(args.OpId, args.Target))
+            _popup.PopupCursor(Loc.GetString("sw-defense-op-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
     }
 
     private void OnDeployFleet(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFleetDeployMessage args)
@@ -223,6 +235,10 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.Fleet = _defense.BuildFleet();
                     state.FleetUpkeep = _defense.FleetUpkeep;
                     state.FleetSectors = BuildClaimedSectors();
+                    state.Operations = _defense.BuildOperations();
+                    state.ActiveOps = _defense.BuildActiveOps();
+                    state.ActiveOpSlots = _defense.ActiveOpSlots;
+                    state.ActiveOpUsed = _defense.ActiveOpUsed;
                 }
             }
         }

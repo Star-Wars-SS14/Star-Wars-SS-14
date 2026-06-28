@@ -24,6 +24,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
 
     private const int CommandTab = 3;
     private const int FleetTab = 4;
+    private const int OpsTab = 5;
 
     private readonly Dictionary<int, string> _refuseReasons = new();
     private string _requestsSignature = string.Empty;
@@ -55,6 +56,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             ("ЗАЯВКИ", RequestsPanel),
             ("КОМАНДОВАНИЕ", CommandPanel),
             ("ФЛОТ", FleetPanel),
+            ("ОПЕРАЦИИ", OpsPanel),
         };
 
         _tabButtons = new Button[_tabs.Length];
@@ -87,7 +89,8 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
 
         _tabButtons[CommandTab].Visible = state.IsDefense;
         _tabButtons[FleetTab].Visible = state.IsDefense;
-        if (!state.IsDefense && (_active == CommandTab || _active == FleetTab))
+        _tabButtons[OpsTab].Visible = state.IsDefense;
+        if (!state.IsDefense && (_active == CommandTab || _active == FleetTab || _active == OpsTab))
             ShowTab(0);
 
         BuildOverview(state);
@@ -95,6 +98,112 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         BuildRequests(state);
         BuildCommand(state);
         BuildFleet(state);
+        BuildOps(state);
+    }
+
+    private void BuildOps(SWMinistryWorkConsoleState state)
+    {
+        OpsContent.RemoveAllChildren();
+        if (!state.IsDefense)
+            return;
+
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        head.AddChild(SWConsoleStyle.Text($"Бюджет {state.MinistryBudget} кр  ·  админ {state.MinistryAdmin}", SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+        head.AddChild(new Control { HorizontalExpand = true });
+        head.AddChild(SWConsoleStyle.Text($"Слоты: {state.ActiveOpUsed}/{state.ActiveOpSlots}", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
+        OpsContent.AddChild(head);
+        OpsContent.AddChild(new Control { MinHeight = 8 });
+
+        if (state.ActiveOps.Count > 0)
+        {
+            OpsContent.AddChild(SWConsoleStyle.Section("В ПРОЦЕССЕ"));
+            OpsContent.AddChild(new Control { MinHeight = 4 });
+            foreach (var op in state.ActiveOps)
+            {
+                var row = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Warn);
+                row.Margin = new Thickness(0, 0, 0, 4);
+                var line = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+                line.AddChild(SWConsoleStyle.Text($"{op.Name}  ({op.Detail})", SWConsoleStyle.TextBright, SWConsoleStyle.Mono));
+                line.AddChild(new Control { HorizontalExpand = true });
+                line.AddChild(SWConsoleStyle.Text($"осталось {op.HoursLeft} ч", SWConsoleStyle.Warn, SWConsoleStyle.MonoBold));
+                row.AddChild(line);
+                OpsContent.AddChild(row);
+            }
+            OpsContent.AddChild(new Control { MinHeight = 8 });
+        }
+
+        OpsContent.AddChild(SWConsoleStyle.Section("ДОСТУПНЫЕ ОПЕРАЦИИ"));
+        OpsContent.AddChild(new Control { MinHeight = 4 });
+        foreach (var op in state.Operations)
+            OpsContent.AddChild(MakeOpCard(op, state.FleetSectors));
+    }
+
+    private Control MakeOpCard(SWDefenseOperationEntry op, System.Collections.Generic.List<SWFleetSectorEntry> sectors)
+    {
+        var accent = op.Available ? SWConsoleStyle.Accent : SWConsoleStyle.TextDim;
+        var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, accent);
+        card.Margin = new Thickness(0, 0, 0, 6);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        head.AddChild(SWConsoleStyle.Text(op.Name, op.Available ? SWConsoleStyle.TextBright : SWConsoleStyle.TextDim, SWConsoleStyle.MonoBold));
+        head.AddChild(new Control { HorizontalExpand = true });
+        var costText = op.Duration > 0
+            ? $"{op.Cost} кр · {op.AdminCost} адм · {op.Duration} ч"
+            : $"{op.Cost} кр · {op.AdminCost} адм";
+        head.AddChild(SWConsoleStyle.Text(costText, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        box.AddChild(head);
+
+        if (!string.IsNullOrWhiteSpace(op.Description))
+            box.AddChild(SWConsoleStyle.Text(op.Description, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+        if (op.Effects.Count > 0)
+        {
+            var eff = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 2, 0, 0) };
+            foreach (var effect in op.Effects)
+                eff.AddChild(SWConsoleStyle.Text($"{effect.StatName} {effect.Delta:+0;-0}  ", effect.Color, SWConsoleStyle.MonoSmall));
+            box.AddChild(eff);
+        }
+
+        if (!op.Available)
+        {
+            box.AddChild(SWConsoleStyle.Text(op.StatusLabel, SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+        }
+        else if (op.Target == SWOpTarget.Sector)
+        {
+            if (sectors.Count == 0)
+            {
+                box.AddChild(SWConsoleStyle.Text("Нет занятых секторов для цели.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            }
+            else
+            {
+                box.AddChild(SWConsoleStyle.Text("Цель:", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                var grid = new GridContainer { Columns = 3, HSeparationOverride = 4, VSeparationOverride = 4, Margin = new Thickness(0, 2, 0, 0) };
+                var opId = op.Id;
+                foreach (var sector in sectors)
+                {
+                    var sid = sector.Id;
+                    var btn = SWConsoleStyle.Action($"{sector.Name} ({sector.Defense})", sector.Color);
+                    btn.HorizontalExpand = true;
+                    btn.OnPressed += _ => _owner.LaunchOp(opId, sid);
+                    grid.AddChild(btn);
+                }
+                box.AddChild(grid);
+            }
+        }
+        else
+        {
+            var target = op.Target == SWOpTarget.Border ? "border" : string.Empty;
+            var opId = op.Id;
+            var btn = SWConsoleStyle.Action("Запустить", SWConsoleStyle.Good);
+            btn.HorizontalExpand = true;
+            btn.Margin = new Thickness(0, 3, 0, 0);
+            btn.OnPressed += _ => _owner.LaunchOp(opId, target);
+            box.AddChild(btn);
+        }
+
+        card.AddChild(box);
+        return card;
     }
 
     private void BuildFleet(SWMinistryWorkConsoleState state)
@@ -117,7 +226,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         brow.AddChild(SWConsoleStyle.Text($"{state.BorderPressure}/100", BorderColor(state.BorderPressure), SWConsoleStyle.MonoBold));
         bbox.AddChild(brow);
         bbox.AddChild(SWConsoleStyle.Bar(state.BorderPressure, 0, 100, BorderColor(state.BorderPressure)));
-        bbox.AddChild(SWConsoleStyle.Text($"Удержание: {borderGroups} групп → -{borderGroups * 1.5f:0.0}/ч давления", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        bbox.AddChild(SWConsoleStyle.Text($"Удержание: {borderGroups} групп  ·  -{borderGroups * 1.5f:0.0}/ч давления", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
         borderPanel.AddChild(bbox);
         FleetContent.AddChild(borderPanel);
 
@@ -155,8 +264,8 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         foreach (var sector in state.FleetSectors)
         {
             var already = selected.State == SWFleetState.Sector && selected.SectorId == sector.Id;
-            var garrison = state.Fleet.FirstOrDefault(g => g.SectorId == sector.Id);
-            var suffix = garrison != null ? $"  · занят {garrison.Id}-м" : string.Empty;
+            var garrison = state.Fleet.Where(g => g.State == SWFleetState.Sector && g.SectorId == sector.Id).Select(g => $"{g.Id}-й").ToList();
+            var suffix = garrison.Count > 0 ? $"  · гарнизон: {string.Join(", ", garrison)}" : string.Empty;
             var label = $"{sector.Name}  ·  оборона {sector.Defense}{suffix}";
             FleetContent.AddChild(MakeOrderButton(selected.Id, sector.Id, label, sector.Color, already));
         }

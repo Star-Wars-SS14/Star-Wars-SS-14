@@ -56,6 +56,11 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWFleetDeployMessage(groupId, target));
     }
 
+    public void LaunchOp(string opId, string target)
+    {
+        SendMessage(new SWDefenseLaunchOpMessage(opId, target));
+    }
+
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);

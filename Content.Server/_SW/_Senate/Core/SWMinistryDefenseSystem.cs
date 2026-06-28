@@ -26,9 +26,14 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
     private const float GarrisonDefense = 0.4f;
     private const float GarrisonSecurity = 0.2f;
 
+    private const int MaxActiveOps = 2;
+
     private readonly List<SWFleetGroup> _groups = new();
     private int _nextGroupId = 1;
     private float _upkeepAccum;
+
+    private readonly List<SWActiveOperation> _activeOps = new();
+    private readonly Dictionary<string, int> _cooldowns = new();
 
     // Escalation to this level or higher needs the Chancellor's ratification.
     private const SWDefenseStance ApprovalThreshold = SWDefenseStance.Mobilization;
@@ -67,6 +72,8 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
         _groups.Clear();
         _nextGroupId = 1;
         _upkeepAccum = 0f;
+        _activeOps.Clear();
+        _cooldowns.Clear();
         _day = -1;
     }
 
@@ -204,10 +211,14 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
             _day = _time.Day;
             _program = null;
             _progress = 0f;
+            _activeOps.Clear();
+            _cooldowns.Clear();
         }
 
         if (!_time.DayActive)
             return;
+
+        CompleteOperations();
 
         var gameHours = dt * (1f / SWSenateTimeSystem.RealSecondsPerGameHour);
         var cfg = Config(_stance);
@@ -380,6 +391,155 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
             _senate.AddSectorBias(sectorId, globalId, delta);
     }
 
+    public bool LaunchOperation(string opId, string target)
+    {
+        if (!_proto.TryIndex<SWDefenseOperationPrototype>(opId, out var op))
+            return false;
+        if (_stance < op.RequireStance)
+            return false;
+        if (op.RequireBorderFleet && _groups.All(g => g.State != SWFleetState.Border))
+            return false;
+        if (_cooldowns.TryGetValue(opId, out var ready) && _time.CurrentHour < ready)
+            return false;
+
+        string? sectorId = null;
+        if (op.Target == SWOpTarget.Sector)
+        {
+            if (!_senate.IsClaimed(target))
+                return false;
+            sectorId = target;
+        }
+
+        if (op.Duration > 0 && _activeOps.Count >= MaxActiveOps)
+            return false;
+
+        if (_dilemma.GetMinistryAdmin(DefenseMinistryId) < op.AdminCost
+            || _dilemma.GetMinistryBudget(DefenseMinistryId) < op.Cost)
+            return false;
+
+        _dilemma.SpendMinistryAdmin(DefenseMinistryId, op.AdminCost);
+        _dilemma.SpendMinistry(DefenseMinistryId, op.Cost);
+        _cooldowns[opId] = _time.CurrentHour + op.Cooldown;
+
+        if (op.Duration <= 0)
+            ApplyOp(op, sectorId);
+        else
+            _activeOps.Add(new SWActiveOperation { OpId = opId, SectorId = sectorId, CompleteHour = _time.CurrentHour + op.Duration });
+
+        return true;
+    }
+
+    private void ApplyOp(SWDefenseOperationPrototype op, string? sectorId)
+    {
+        if (op.BorderDelta != 0f)
+            _border = Math.Clamp(_border + op.BorderDelta, 0f, 100f);
+
+        foreach (var (sub, delta) in op.PolicyEffects)
+            _senate.AddPolicy(sub, delta);
+
+        if (sectorId != null && _senate.IsClaimed(sectorId))
+        {
+            foreach (var (global, delta) in op.SectorEffects)
+                _senate.AddSectorBias(sectorId, global, delta);
+        }
+    }
+
+    private void CompleteOperations()
+    {
+        for (var i = _activeOps.Count - 1; i >= 0; i--)
+        {
+            var active = _activeOps[i];
+            if (_time.CurrentHour < active.CompleteHour)
+                continue;
+
+            if (_proto.TryIndex<SWDefenseOperationPrototype>(active.OpId, out var op))
+                ApplyOp(op, active.SectorId);
+
+            _activeOps.RemoveAt(i);
+        }
+    }
+
+    public int ActiveOpSlots => MaxActiveOps;
+    public int ActiveOpUsed => _activeOps.Count;
+
+    public List<SWDefenseOperationEntry> BuildOperations()
+    {
+        var admin = _dilemma.GetMinistryAdmin(DefenseMinistryId);
+        var budget = _dilemma.GetMinistryBudget(DefenseMinistryId);
+        var borderFleet = _groups.Any(g => g.State == SWFleetState.Border);
+        var slotsFree = _activeOps.Count < MaxActiveOps;
+
+        var list = new List<SWDefenseOperationEntry>();
+        foreach (var op in _proto.EnumeratePrototypes<SWDefenseOperationPrototype>().OrderBy(o => o.Order))
+        {
+            var entry = new SWDefenseOperationEntry
+            {
+                Id = op.ID,
+                Name = op.Name,
+                Description = op.Description,
+                Cost = op.Cost,
+                AdminCost = op.AdminCost,
+                Duration = op.Duration,
+                Target = op.Target,
+                Effects = OpEffects(op),
+            };
+
+            if (_cooldowns.TryGetValue(op.ID, out var ready) && _time.CurrentHour < ready)
+                entry.StatusLabel = $"откат: {ready - _time.CurrentHour} ч";
+            else if (_stance < op.RequireStance)
+                entry.StatusLabel = $"нужна готовность: {StanceName(op.RequireStance)}";
+            else if (op.RequireBorderFleet && !borderFleet)
+                entry.StatusLabel = "нужен флот на границе";
+            else if (op.Duration > 0 && !slotsFree)
+                entry.StatusLabel = "нет свободных слотов";
+            else if (admin < op.AdminCost)
+                entry.StatusLabel = "нет админ-ресурса";
+            else if (budget < op.Cost)
+                entry.StatusLabel = "не хватает бюджета";
+            else
+                entry.Available = true;
+
+            list.Add(entry);
+        }
+
+        return list;
+    }
+
+    public List<SWActiveOpEntry> BuildActiveOps()
+    {
+        var list = new List<SWActiveOpEntry>();
+        foreach (var active in _activeOps)
+        {
+            var name = _proto.TryIndex<SWDefenseOperationPrototype>(active.OpId, out var op) ? op.Name : active.OpId;
+            var detail = active.SectorId != null && _proto.TryIndex<SWSectorPrototype>(active.SectorId, out var sp) ? sp.Name : "—";
+            list.Add(new SWActiveOpEntry { Name = name, Detail = detail, HoursLeft = Math.Max(0, active.CompleteHour - _time.CurrentHour) });
+        }
+
+        return list;
+    }
+
+    private List<SWBillEffectEntry> OpEffects(SWDefenseOperationPrototype op)
+    {
+        var list = PolicyEffectEntries(op.PolicyEffects);
+        foreach (var (global, delta) in op.SectorEffects)
+        {
+            var name = global.Id;
+            var color = Color.White;
+            if (_proto.TryIndex<SWGlobalStatPrototype>(global, out var gp))
+            {
+                name = gp.ShortName;
+                color = gp.Color;
+            }
+
+            list.Add(new SWBillEffectEntry { StatName = name, Color = color, Delta = delta });
+        }
+
+        if (op.BorderDelta != 0f)
+            list.Add(new SWBillEffectEntry { StatName = "Граница", Color = Color.FromHex("#5DADE2"), Delta = op.BorderDelta });
+
+        return list;
+    }
+
     public List<SWBillEffectEntry> BuildStanceEffects(SWDefenseStance stance)
     {
         var list = new List<SWBillEffectEntry>();
@@ -444,4 +604,11 @@ public sealed class SWFleetGroup
     public int Id;
     public SWFleetState State;
     public string? SectorId;
+}
+
+public sealed class SWActiveOperation
+{
+    public string OpId = string.Empty;
+    public string? SectorId;
+    public int CompleteHour;
 }

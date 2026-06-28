@@ -30,6 +30,9 @@
                 <ScrollContainer Name="FleetPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
                     <BoxContainer Name="FleetContent" Orientation="Vertical" HorizontalExpand="True" />
                 </ScrollContainer>
+                <ScrollContainer Name="OpsPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="OpsContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
             </BoxContainer>
         </BoxContainer>
     </PanelContainer>

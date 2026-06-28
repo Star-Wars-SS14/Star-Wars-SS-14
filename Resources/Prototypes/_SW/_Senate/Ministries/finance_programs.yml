@@ -1,0 +1,35 @@
+- type: swFinanceProgram
+  id: SWFinanceProgramCollection
+  name: Сбор налогов
+  description: Усиление сбора наполняет казну и подтягивает налоговую базу.
+  order: 0
+  policyEffects:
+    SWStatTreasury: 6
+    SWStatTaxes: 3
+
+- type: swFinanceProgram
+  id: SWFinanceProgramAntiInflation
+  name: Борьба с инфляцией
+  description: Жёсткие монетарные меры сбивают инфляцию.
+  order: 1
+  inflationDelta: -12
+  policyEffects:
+    SWStatTreasury: 2
+
+- type: swFinanceProgram
+  id: SWFinanceProgramRestructure
+  name: Реструктуризация долга
+  description: Переговоры с кредиторами снижают госдолг ценой части казны.
+  order: 2
+  debtDelta: -15
+  policyEffects:
+    SWStatTreasury: -3
+
+- type: swFinanceProgram
+  id: SWFinanceProgramTransparency
+  name: Финансовая прозрачность
+  description: Прозрачность бюджета укрепляет казну и инвестклимат.
+  order: 3
+  policyEffects:
+    SWStatTreasury: 4
+    SWStatTrade: 2

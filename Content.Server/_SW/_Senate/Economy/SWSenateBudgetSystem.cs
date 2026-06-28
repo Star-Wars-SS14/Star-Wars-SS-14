@@ -7,6 +7,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
 {
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
+    [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
 
     public const int PerSectorBase = 5000;
     private const float ChancellorWeight = 1.5f;
@@ -45,7 +46,8 @@ public sealed class SWSenateBudgetSystem : EntitySystem
             return _frozenTotal;
 
         var sectors = _senate.SectorHolders.Count;
-        return (int)MathF.Round((sectors + ChancellorWeight) * PerSectorBase * PolicyMultiplier());
+        // Inflation shrinks the real value of the treasury the Chancellor can distribute.
+        return (int)MathF.Round((sectors + ChancellorWeight) * PerSectorBase * PolicyMultiplier() / _finance.PriceMultiplier());
     }
 
     public int Allocated() => _alloc.Values.Sum();

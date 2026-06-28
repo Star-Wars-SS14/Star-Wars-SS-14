@@ -138,6 +138,20 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
         RepublicStats.AddChild(econPanel);
 
         RepublicStats.AddChild(new Control { MinHeight = 10 });
+        RepublicStats.AddChild(SWConsoleStyle.Section("ФИНАНСЫ"));
+        RepublicStats.AddChild(new Control { MinHeight = 4 });
+        var finPanel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, state.RatingColor);
+        var finBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+        var finHead = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        finHead.AddChild(SWConsoleStyle.Text($"Рейтинг {state.CreditRating}", state.RatingColor, SWConsoleStyle.MonoBold));
+        finHead.AddChild(new Control { HorizontalExpand = true });
+        finHead.AddChild(SWConsoleStyle.Text($"ставка {state.KeyRate}% · инфляция {state.Inflation}/100 · долг {state.Debt}/100", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        finBox.AddChild(finHead);
+        finBox.AddChild(SWConsoleStyle.Text(state.InflationStatus, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        finPanel.AddChild(finBox);
+        RepublicStats.AddChild(finPanel);
+
+        RepublicStats.AddChild(new Control { MinHeight = 10 });
         RepublicStats.AddChild(SWConsoleStyle.Section("ПОКАЗАТЕЛИ РЕСПУБЛИКИ"));
         RepublicStats.AddChild(new Control { MinHeight = 6 });
 

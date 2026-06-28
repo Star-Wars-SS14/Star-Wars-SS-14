@@ -34,6 +34,9 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
     private const int EconomyTab = 12;
     private const int ProjectsTab = 13;
     private const int RoutesTab = 14;
+    private const int MonetaryTab = 15;
+    private const int DebtTab = 16;
+    private const int BudgetsTab = 17;
 
     private readonly Dictionary<int, string> _refuseReasons = new();
     private string _requestsSignature = string.Empty;
@@ -77,6 +80,9 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             ("ЭКОНОМИКА", EconomyPanel),
             ("ПРОЕКТЫ", ProjectsPanel),
             ("ГИПЕРПУТИ", RoutesPanel),
+            ("МОНЕТАРКА", MonetaryPanel),
+            ("ДОЛГ", DebtPanel),
+            ("БЮДЖЕТЫ", BudgetsPanel),
         };
 
         _tabButtons = new Button[_tabs.Length];
@@ -119,6 +125,9 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         _tabButtons[EconomyTab].Visible = state.IsEconomy;
         _tabButtons[ProjectsTab].Visible = state.IsEconomy;
         _tabButtons[RoutesTab].Visible = state.IsEconomy;
+        _tabButtons[MonetaryTab].Visible = state.IsFinance;
+        _tabButtons[DebtTab].Visible = state.IsFinance;
+        _tabButtons[BudgetsTab].Visible = state.IsFinance;
         if (!state.IsDefense && (_active == CommandTab || _active == FleetTab || _active == OpsTab))
             ShowTab(0);
         if (!state.IsSecurity && (_active == ControlTab || _active == NetworkTab || _active == SecOpsTab))
@@ -126,6 +135,8 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         if (!state.IsHealth && (_active == EpidemicTab || _active == OutbreakTab || _active == HealthProgramsTab))
             ShowTab(0);
         if (!state.IsEconomy && (_active == EconomyTab || _active == ProjectsTab || _active == RoutesTab))
+            ShowTab(0);
+        if (!state.IsFinance && (_active == MonetaryTab || _active == DebtTab || _active == BudgetsTab))
             ShowTab(0);
 
         BuildOverview(state);
@@ -143,6 +154,9 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         BuildEconomy(state);
         BuildProjects(state);
         BuildRoutes(state);
+        BuildMonetary(state);
+        BuildDebt(state);
+        BuildBudgets(state);
     }
 
     private void BuildOps(SWMinistryWorkConsoleState state)
@@ -1463,6 +1477,186 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         box.AddChild(remove);
         row.AddChild(box);
         return row;
+    }
+
+    private void BuildMonetary(SWMinistryWorkConsoleState state)
+    {
+        MonetaryContent.RemoveAllChildren();
+        if (!state.IsFinance)
+            return;
+
+        // Treasury + rating header.
+        var hrow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        hrow.AddChild(SWConsoleStyle.Text($"Казна: {state.Treasury}/100", SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+        hrow.AddChild(new Control { HorizontalExpand = true });
+        hrow.AddChild(SWConsoleStyle.Text($"Рейтинг: {state.CreditRating}", state.RatingColor, SWConsoleStyle.MonoBold));
+        MonetaryContent.AddChild(hrow);
+        MonetaryContent.AddChild(new Control { MinHeight = 8 });
+
+        // Inflation.
+        MonetaryContent.AddChild(SWConsoleStyle.Section("ИНФЛЯЦИЯ"));
+        MonetaryContent.AddChild(new Control { MinHeight = 4 });
+        var irow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        irow.AddChild(SWConsoleStyle.Text(state.InflationStatus, GaugeColor(state.Inflation), SWConsoleStyle.MonoBold));
+        irow.AddChild(new Control { HorizontalExpand = true });
+        irow.AddChild(SWConsoleStyle.Text($"{state.Inflation}/100 · цены {state.PricePercent}%", GaugeColor(state.Inflation), SWConsoleStyle.MonoBold));
+        MonetaryContent.AddChild(irow);
+        MonetaryContent.AddChild(SWConsoleStyle.Bar(state.Inflation, 0, 100, GaugeColor(state.Inflation)));
+        MonetaryContent.AddChild(SWConsoleStyle.Text("Цены влияют на бюджеты всех министерств и распределяемую казну.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+        // Key rate.
+        MonetaryContent.AddChild(new Control { MinHeight = 10 });
+        MonetaryContent.AddChild(SWConsoleStyle.Section("КЛЮЧЕВАЯ СТАВКА"));
+        MonetaryContent.AddChild(new Control { MinHeight = 4 });
+        MonetaryContent.AddChild(SWConsoleStyle.Text($"Текущая: {state.KeyRate}%  ·  высокая давит инфляцию и рост, низкая разгоняет", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        var raterow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
+        foreach (var rate in state.RateOptions)
+            raterow.AddChild(MakeRateButton(state.KeyRate, rate));
+        MonetaryContent.AddChild(raterow);
+
+        // Tax policy.
+        MonetaryContent.AddChild(new Control { MinHeight = 10 });
+        MonetaryContent.AddChild(SWConsoleStyle.Section("НАЛОГОВАЯ ПОЛИТИКА"));
+        MonetaryContent.AddChild(new Control { MinHeight = 4 });
+        MonetaryContent.AddChild(SWConsoleStyle.Text($"Текущая: {state.TaxLevelLabel}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        var taxrow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
+        taxrow.AddChild(MakeTaxButton(state.TaxLevel, 0, "Низкие", SWConsoleStyle.Good));
+        taxrow.AddChild(MakeTaxButton(state.TaxLevel, 1, "Средние", SWConsoleStyle.Neutral));
+        taxrow.AddChild(MakeTaxButton(state.TaxLevel, 2, "Высокие", SWConsoleStyle.Warn));
+        MonetaryContent.AddChild(taxrow);
+
+        // Programs.
+        MonetaryContent.AddChild(new Control { MinHeight = 10 });
+        MonetaryContent.AddChild(SWConsoleStyle.Section("ДНЕВНЫЕ ПРОГРАММЫ"));
+        MonetaryContent.AddChild(new Control { MinHeight = 4 });
+        if (!string.IsNullOrEmpty(state.SelectedFinanceProgram))
+            MonetaryContent.AddChild(SWConsoleStyle.Text($"Прогресс: {state.FinanceProgramProgress}%", SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall));
+        foreach (var program in state.FinancePrograms)
+            MonetaryContent.AddChild(MakeFinProgramCard(program));
+
+        if (state.FinanceLog.Count > 0)
+        {
+            MonetaryContent.AddChild(new Control { MinHeight = 10 });
+            MonetaryContent.AddChild(SWConsoleStyle.Section("СОБЫТИЯ"));
+            foreach (var entry in state.FinanceLog)
+                MonetaryContent.AddChild(SWConsoleStyle.Text(entry, SWConsoleStyle.TextBright, SWConsoleStyle.MonoSmall));
+        }
+    }
+
+    private Control MakeRateButton(int current, int rate)
+    {
+        var active = current == rate;
+        var btn = SWConsoleStyle.Action(active ? $"> {rate}%" : $"{rate}%", SWConsoleStyle.Accent, active);
+        btn.HorizontalExpand = true;
+        btn.Margin = new Thickness(0, 0, 4, 0);
+        if (!active)
+            btn.OnPressed += _ => _owner.SetRate(rate);
+        return btn;
+    }
+
+    private Control MakeTaxButton(int current, int level, string label, Color color)
+    {
+        var active = current == level;
+        var btn = SWConsoleStyle.Action(active ? $"> {label}" : label, color, active);
+        btn.HorizontalExpand = true;
+        btn.Margin = new Thickness(0, 0, 4, 0);
+        if (!active)
+            btn.OnPressed += _ => _owner.SetTax(level);
+        return btn;
+    }
+
+    private Control MakeFinProgramCard(SWDefenseProgramEntry program)
+    {
+        var card = SWConsoleStyle.Row(program.Selected ? SWConsoleStyle.BgRowAlt : SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
+        card.Margin = new Thickness(0, 0, 0, 4);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+
+        var id = program.Id;
+        var btn = SWConsoleStyle.Action(program.Selected ? $"{program.Name} (выбрано)" : program.Name, SWConsoleStyle.Accent, program.Selected);
+        btn.HorizontalExpand = true;
+        if (!program.Selected)
+            btn.OnPressed += _ => _owner.SelectFinanceProgram(id);
+        box.AddChild(btn);
+
+        if (!string.IsNullOrWhiteSpace(program.Description))
+            box.AddChild(SWConsoleStyle.Text(program.Description, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+        if (program.Effects.Count > 0)
+        {
+            var eff = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 2, 0, 0) };
+            foreach (var effect in program.Effects)
+                eff.AddChild(SWConsoleStyle.Text($"{effect.StatName} {effect.Delta:+0;-0}  ", effect.Color, SWConsoleStyle.MonoSmall));
+            box.AddChild(eff);
+        }
+
+        card.AddChild(box);
+        return card;
+    }
+
+    private void BuildDebt(SWMinistryWorkConsoleState state)
+    {
+        DebtContent.RemoveAllChildren();
+        if (!state.IsFinance)
+            return;
+
+        DebtContent.AddChild(SWConsoleStyle.Section("ГОСУДАРСТВЕННЫЙ ДОЛГ"));
+        DebtContent.AddChild(new Control { MinHeight = 4 });
+        var drow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        drow.AddChild(SWConsoleStyle.Text(state.DebtStatus, GaugeColor(state.Debt), SWConsoleStyle.MonoBold));
+        drow.AddChild(new Control { HorizontalExpand = true });
+        drow.AddChild(SWConsoleStyle.Text($"{state.Debt}/100 · рейтинг {state.CreditRating}", state.RatingColor, SWConsoleStyle.MonoBold));
+        DebtContent.AddChild(drow);
+        DebtContent.AddChild(SWConsoleStyle.Bar(state.Debt, 0, 100, GaugeColor(state.Debt)));
+        DebtContent.AddChild(SWConsoleStyle.Text("Обслуживание долга утекает из казны каждый час по ключевой ставке.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+        // Instruments.
+        DebtContent.AddChild(new Control { MinHeight = 10 });
+        DebtContent.AddChild(SWConsoleStyle.Section("ИНСТРУМЕНТЫ"));
+        DebtContent.AddChild(new Control { MinHeight = 4 });
+
+        var bonds = SWConsoleStyle.Action($"Выпустить облигации (+{state.BondProceeds} в казну, +долг)", SWConsoleStyle.Warn, !state.CanIssueBonds);
+        bonds.HorizontalExpand = true;
+        bonds.Margin = new Thickness(0, 0, 0, 3);
+        if (state.CanIssueBonds)
+            bonds.OnPressed += _ => _owner.IssueBonds();
+        DebtContent.AddChild(bonds);
+
+        var repay = SWConsoleStyle.Action("Досрочно погасить долг (−казна)", SWConsoleStyle.Good, !state.CanRepayDebt);
+        repay.HorizontalExpand = true;
+        repay.Margin = new Thickness(0, 0, 0, 3);
+        if (state.CanRepayDebt)
+            repay.OnPressed += _ => _owner.RepayDebt();
+        DebtContent.AddChild(repay);
+
+        // Emission (Chancellor-gated).
+        DebtContent.AddChild(new Control { MinHeight = 10 });
+        DebtContent.AddChild(SWConsoleStyle.Section("ДЕНЕЖНАЯ ЭМИССИЯ"));
+        DebtContent.AddChild(new Control { MinHeight = 4 });
+        if (state.EmissionPending)
+        {
+            DebtContent.AddChild(SWConsoleStyle.Text("Ждёт одобрения Канцлера.", SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+        }
+        else
+        {
+            var emit = SWConsoleStyle.Action("Запросить эмиссию", SWConsoleStyle.Bad);
+            emit.HorizontalExpand = true;
+            emit.OnPressed += _ => _owner.DeclareEmission();
+            DebtContent.AddChild(emit);
+            DebtContent.AddChild(SWConsoleStyle.Text("Мгновенно наполняет казну ценой скачка инфляции и рейтинга. Нужно одобрение Канцлера.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        }
+    }
+
+    private void BuildBudgets(SWMinistryWorkConsoleState state)
+    {
+        BudgetsContent.RemoveAllChildren();
+        if (!state.IsFinance)
+            return;
+
+        BudgetsContent.AddChild(SWConsoleStyle.Section("РАСПРЕДЕЛЕНИЕ БЮДЖЕТОВ МИНИСТЕРСТВ"));
+        BudgetsContent.AddChild(new Control { MinHeight = 6 });
+        BudgetsContent.AddChild(SWConsoleStyle.Text("Здесь Минфин будет распределять казну между министерствами.", SWConsoleStyle.TextBright, SWConsoleStyle.Mono));
+        BudgetsContent.AddChild(new Control { MinHeight = 4 });
+        BudgetsContent.AddChild(SWConsoleStyle.Text("Функция в разработке. Пока бюджеты министерств начисляются автоматически (с поправкой на инфляцию).", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
     }
 
     private void BuildOverview(SWMinistryWorkConsoleState state)

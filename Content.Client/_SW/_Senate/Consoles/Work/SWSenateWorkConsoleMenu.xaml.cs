@@ -1033,6 +1033,28 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                 WarApprovalBox.AddChild(MakeWrap("Одобрить может только Канцлер.", Color.Gray));
             }
         }
+
+        if (state.EmissionProposed)
+        {
+            WarApprovalBox.AddChild(MakeWrap("Министр финансов предлагает провести денежную эмиссию.", Color.IndianRed));
+
+            if (state.CanApproveEmission)
+            {
+                var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
+                var approve = SWConsoleStyle.Action("Одобрить", SWConsoleStyle.Bad);
+                approve.OnPressed += _ => _owner.ApproveEmission();
+                var reject = SWConsoleStyle.Action("Отклонить", SWConsoleStyle.Neutral);
+                reject.Margin = new Thickness(6, 0, 0, 0);
+                reject.OnPressed += _ => _owner.RejectEmission();
+                row.AddChild(approve);
+                row.AddChild(reject);
+                WarApprovalBox.AddChild(row);
+            }
+            else
+            {
+                WarApprovalBox.AddChild(MakeWrap("Одобрить может только Канцлер.", Color.Gray));
+            }
+        }
     }
 
     private static RichTextLabel MakeWrap(string text, Color? color = null)

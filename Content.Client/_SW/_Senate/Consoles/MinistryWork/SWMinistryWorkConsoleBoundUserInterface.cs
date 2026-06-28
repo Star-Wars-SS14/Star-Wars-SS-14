@@ -156,6 +156,36 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWEconomySelectProgramMessage(programId));
     }
 
+    public void SetRate(int rate)
+    {
+        SendMessage(new SWFinanceSetRateMessage(rate));
+    }
+
+    public void SetTax(int level)
+    {
+        SendMessage(new SWFinanceSetTaxMessage(level));
+    }
+
+    public void IssueBonds()
+    {
+        SendMessage(new SWFinanceIssueBondsMessage());
+    }
+
+    public void RepayDebt()
+    {
+        SendMessage(new SWFinanceRepayDebtMessage());
+    }
+
+    public void DeclareEmission()
+    {
+        SendMessage(new SWFinanceEmissionMessage());
+    }
+
+    public void SelectFinanceProgram(string programId)
+    {
+        SendMessage(new SWFinanceSelectProgramMessage(programId));
+    }
+
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);

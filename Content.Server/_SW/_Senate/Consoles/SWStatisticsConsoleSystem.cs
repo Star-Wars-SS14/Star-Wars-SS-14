@@ -17,6 +17,7 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
     [Dependency] private readonly SWMinistryHealthSystem _health = default!;
     [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
+    [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
 
     private const float UpdateInterval = 3f;
@@ -102,6 +103,12 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
             Growth = _economy.Growth,
             Overheat = _economy.Overheat,
             OverheatStatus = _economy.OverheatStatus(),
+            KeyRate = _finance.KeyRate,
+            Inflation = _finance.Inflation,
+            InflationStatus = _finance.InflationStatus(),
+            Debt = _finance.Debt,
+            CreditRating = _finance.CreditRating(),
+            RatingColor = _finance.RatingColor(),
         };
 
         _ui.SetUiState(ent.Owner, SWStatisticsConsoleUiKey.Key, state);

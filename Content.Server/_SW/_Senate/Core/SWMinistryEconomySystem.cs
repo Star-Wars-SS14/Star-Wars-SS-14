@@ -15,6 +15,7 @@ public sealed class SWMinistryEconomySystem : EntitySystem
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
+    [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
 
     public const string EconomyMinistryId = "SWMinistryEconomy";
@@ -235,7 +236,9 @@ public sealed class SWMinistryEconomySystem : EntitySystem
         var cfg = PolicyConfig(_policy);
 
         var overheatDrag = _overheat >= 70f ? -(_overheat - 70f) / 10f : 0f;
-        _growth = Math.Clamp(_growth + (cfg.Growth + overheatDrag) * gameHours, -4f, 6f);
+        // The Finance ministry's key rate also steers growth (high rate cools, cheap rate fans).
+        var rateDrag = _finance.RateDrag();
+        _growth = Math.Clamp(_growth + (cfg.Growth + overheatDrag - rateDrag) * gameHours, -4f, 6f);
 
         var rise = cfg.Overheat + MathF.Max(0f, _growth - 2f) * 0.5f;
         if (rise > 0f)

@@ -1,0 +1,411 @@
+using System.Linq;
+using Content.Shared._SW._Senate;
+using Content.Shared._SW._Senate.Ministries;
+using Content.Shared._SW._Senate.Sectors;
+using Content.Shared.GameTicking;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Random;
+using Content.Server._SW._Senate.Economy;
+
+namespace Content.Server._SW._Senate.Core;
+
+public sealed class SWMinistryFinanceSystem : EntitySystem
+{
+    [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private readonly SWSenateTimeSystem _time = default!;
+    [Dependency] private readonly SWSenateStateSystem _senate = default!;
+    [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
+    [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
+
+    public const string FinanceMinistryId = "SWMinistryFinance";
+
+    private const float TickInterval = 1f;
+
+    private const float InflationNeutral = 20f;
+    private const float NeutralRate = 5f;
+
+    private static readonly int[] RatePresets = { 0, 3, 6, 9, 12, 16 };
+
+    private const int BondDebt = 15;        // debt added per bond issue
+    private const int BondTreasuryBase = 14; // treasury raised per issue at top rating
+    private const int RepayDebtAmount = 15;
+    private const int RepayTreasuryCost = 12;
+
+    private float _inflation = InflationNeutral;
+    private int _keyRate = 5;
+    private float _debt;
+    private int _taxLevel = 1; // 0 low / 1 mid / 2 high
+    private bool _emissionPending;
+
+    private string? _program;
+    private float _progress;
+
+    private readonly List<string> _log = new();
+    private int _day = -1;
+    private float _accum;
+
+    public int Inflation => (int) MathF.Round(_inflation);
+    public int KeyRate => _keyRate;
+    public int Debt => (int) MathF.Round(_debt);
+    public int TaxLevel => _taxLevel;
+    public bool EmissionPending => _emissionPending;
+    public string? SelectedProgram => _program;
+    public int ProgramProgress => (int) MathF.Round(_progress);
+    public IReadOnlyList<int> RateOptions => RatePresets;
+
+    public override void Initialize()
+    {
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+    }
+
+    private void OnRoundRestart(RoundRestartCleanupEvent ev)
+    {
+        _inflation = InflationNeutral;
+        _keyRate = 5;
+        _debt = 0f;
+        _taxLevel = 1;
+        _emissionPending = false;
+        _program = null;
+        _progress = 0f;
+        _log.Clear();
+        _day = -1;
+    }
+
+    private void AddLog(string text)
+    {
+        _log.Insert(0, text);
+        if (_log.Count > 6)
+            _log.RemoveRange(6, _log.Count - 6);
+    }
+
+    public List<string> GetLog() => new(_log);
+
+    // The price level: high inflation makes every credit buy less. Consumed by ministry budgets
+    // (SWSenateDilemmaSystem.EnsureMinistry) and the treasury distributable (SWSenateBudgetSystem.Total).
+    public float PriceMultiplier() => Math.Clamp(1f + (_inflation - InflationNeutral) / 100f, 0.8f, 1.8f);
+
+    public int PricePercent() => (int) MathF.Round(PriceMultiplier() * 100f);
+
+    // Growth drag handed to the Economy ministry: a high key rate cools the boom, a cheap rate fans it.
+    public float RateDrag() => (_keyRate - NeutralRate) * 0.1f;
+
+    public string InflationStatus() => _inflation switch
+    {
+        >= 70f => "Гиперинфляция",
+        >= 45f => "Высокая",
+        >= 28f => "Умеренная",
+        >= 10f => "Под контролем",
+        _ => "Дефляция",
+    };
+
+    public string DebtStatus() => _debt switch
+    {
+        >= 80f => "Критический",
+        >= 55f => "Высокий",
+        >= 30f => "Умеренный",
+        _ => "Низкий",
+    };
+
+    public string TaxLevelLabel() => _taxLevel switch
+    {
+        0 => "Низкие",
+        2 => "Высокие",
+        _ => "Средние",
+    };
+
+    private int Treasury() => _senate.SubStats.TryGetValue("SWStatTreasury", out var t) ? (int) MathF.Round(t) : 50;
+
+    // Credit score from treasury, debt and inflation → a sovereign rating band.
+    private int RatingScore() => (int) MathF.Round(Treasury() - _debt * 0.6f - (_inflation - InflationNeutral) * 0.4f);
+
+    public string CreditRating()
+    {
+        return RatingScore() switch
+        {
+            >= 60 => "AAA",
+            >= 45 => "AA",
+            >= 32 => "A",
+            >= 20 => "BBB",
+            >= 8 => "BB",
+            >= -6 => "B",
+            >= -20 => "CCC",
+            _ => "D",
+        };
+    }
+
+    public Color RatingColor()
+    {
+        return RatingScore() switch
+        {
+            >= 45 => Color.FromHex("#43D16A"),
+            >= 20 => Color.FromHex("#5DADE2"),
+            >= -6 => Color.FromHex("#E0A23B"),
+            _ => Color.FromHex("#E0556B"),
+        };
+    }
+
+    // Bond proceeds scale with the rating: a trusted Republic borrows cheaply.
+    public int BondProceeds() => Math.Clamp((int) MathF.Round(BondTreasuryBase * (RatingScore() / 50f + 0.5f)), 4, BondTreasuryBase + 6);
+
+    public bool CanIssueBonds() => _debt < 100f && CreditRating() != "D";
+
+    public bool CanRepayDebt() => _debt > 0f && Treasury() >= RepayTreasuryCost;
+
+    public void SetRate(int rate)
+    {
+        if (RatePresets.Contains(rate))
+            _keyRate = rate;
+    }
+
+    public void SetTax(int level) => _taxLevel = Math.Clamp(level, 0, 2);
+
+    public void SelectProgram(string programId)
+    {
+        if (_proto.HasIndex<SWFinanceProgramPrototype>(programId))
+            _program = programId;
+    }
+
+    public bool IssueBonds()
+    {
+        if (!CanIssueBonds())
+            return false;
+
+        var proceeds = BondProceeds();
+        _senate.AddPolicy("SWStatTreasury", proceeds);
+        _debt = Math.Clamp(_debt + BondDebt, 0f, 120f);
+        AddLog($"Выпущены облигации: +{proceeds} в казну, долг вырос.");
+        return true;
+    }
+
+    public bool RepayDebt()
+    {
+        if (!CanRepayDebt())
+            return false;
+
+        _senate.AddPolicy("SWStatTreasury", -RepayTreasuryCost);
+        _debt = Math.Clamp(_debt - RepayDebtAmount, 0f, 120f);
+        AddLog("Часть госдолга погашена досрочно.");
+        return true;
+    }
+
+    public void DeclareEmission()
+    {
+        if (_emissionPending)
+            return;
+
+        if (_senate.OfficesVacant)
+        {
+            BeginEmission();
+            return;
+        }
+
+        _emissionPending = true;
+    }
+
+    public bool ApproveEmission()
+    {
+        if (!_emissionPending)
+            return false;
+
+        _emissionPending = false;
+        BeginEmission();
+        return true;
+    }
+
+    public bool RejectEmission()
+    {
+        if (!_emissionPending)
+            return false;
+
+        _emissionPending = false;
+        return true;
+    }
+
+    private void BeginEmission()
+    {
+        _senate.AddPolicy("SWStatTreasury", 25f);
+        _inflation = Math.Clamp(_inflation + 25f, 0f, 100f);
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство финансов",
+            "Проведена денежная эмиссия: казна пополнена ценой скачка инфляции."));
+        AddLog("Денежная эмиссия: казна полна, инфляция подскочила.");
+    }
+
+    public override void Update(float frameTime)
+    {
+        _accum += frameTime;
+        if (_accum < TickInterval)
+            return;
+
+        var dt = _accum;
+        _accum = 0f;
+
+        if (_emissionPending && _senate.OfficesVacant)
+        {
+            _emissionPending = false;
+            BeginEmission();
+        }
+
+        if (_time.Day != _day)
+        {
+            if (_day != -1)
+                ApplyProgram();
+            _day = _time.Day;
+            _program = null;
+            _progress = 0f;
+        }
+
+        if (!_time.DayActive)
+            return;
+
+        var gameHours = dt * (1f / SWSenateTimeSystem.RealSecondsPerGameHour);
+
+        TickInflation(gameHours);
+        TickTaxes(gameHours);
+        TickDebtService(gameHours);
+
+        if (_program != null && _progress < 100f)
+        {
+            var perHour = 100f / (SWSenateTimeSystem.EndHour - SWSenateTimeSystem.StartHour);
+            _progress = Math.Clamp(_progress + perHour * gameHours, 0f, 100f);
+        }
+    }
+
+    private void TickInflation(float gameHours)
+    {
+        // Low rate stokes inflation; high rate tames it. Economic overheat pours fuel on (cross-link).
+        var rateGap = (NeutralRate - _keyRate) * 0.15f;
+        var overheat = _economy.Overheat;
+        var overheatPush = overheat > 50 ? (overheat - 50) / 50f * 1.5f : 0f;
+        _inflation = Math.Clamp(_inflation + (rateGap + overheatPush) * gameHours, 0f, 100f);
+
+        // Painful prices erode living standards and morale across the Republic.
+        if (_inflation >= 45f)
+        {
+            var bite = (_inflation - 45f) / 55f;
+            _senate.AddPolicy("SWStatLiving", -0.4f * bite * gameHours);
+            _senate.AddPolicy("SWStatMorale", -0.3f * bite * gameHours);
+        }
+    }
+
+    private void TickTaxes(float gameHours)
+    {
+        switch (_taxLevel)
+        {
+            case 0:
+                _senate.AddPolicy("SWStatTaxes", -0.4f * gameHours);
+                _senate.AddPolicy("SWStatTreasury", -0.2f * gameHours);
+                NudgeSectors("SWGlobalEconomy", 0.15f * gameHours);
+                _senate.AddPolicy("SWStatEmployment", 0.1f * gameHours);
+                break;
+            case 2:
+                _senate.AddPolicy("SWStatTaxes", 0.4f * gameHours);
+                _senate.AddPolicy("SWStatTreasury", 0.3f * gameHours);
+                NudgeSectors("SWGlobalEconomy", -0.15f * gameHours);
+                _senate.AddPolicy("SWStatMorale", -0.1f * gameHours);
+                break;
+        }
+    }
+
+    private void TickDebtService(float gameHours)
+    {
+        if (_debt <= 0f)
+            return;
+
+        var service = _debt * _keyRate * 0.0006f;
+        _senate.AddPolicy("SWStatTreasury", -service * gameHours);
+    }
+
+    private void NudgeSectors(string globalId, float delta)
+    {
+        if (delta == 0f)
+            return;
+
+        foreach (var (sectorId, _) in _senate.SectorHolders)
+            _senate.AddSectorBias(sectorId, globalId, delta);
+    }
+
+    private void ApplyProgram()
+    {
+        if (_program == null || !_proto.TryIndex<SWFinanceProgramPrototype>(_program, out var proto))
+            return;
+
+        var scale = _progress / 100f;
+        if (scale <= 0f)
+            return;
+
+        foreach (var (sub, delta) in proto.PolicyEffects)
+            _senate.AddPolicy(sub, delta * scale);
+
+        if (proto.InflationDelta != 0f)
+            _inflation = Math.Clamp(_inflation + proto.InflationDelta * scale, 0f, 100f);
+        if (proto.DebtDelta != 0f)
+            _debt = Math.Clamp(_debt + proto.DebtDelta * scale, 0f, 120f);
+    }
+
+    // Finance requests are eased when the treasury is healthy and bite under high inflation.
+    public (float Cost, float Effect) GetRequestModifier(string? sectorId)
+    {
+        var cost = 1f;
+        var effect = 1f;
+
+        if (Treasury() >= 60)
+            effect *= 1.15f;
+        else if (Treasury() <= 25)
+            cost *= 1.2f;
+
+        if (_inflation >= 55f)
+            cost *= 1.2f;
+
+        return (cost, effect);
+    }
+
+    public void OnSectorEngagement(string? sectorId)
+    {
+        if (sectorId == null)
+            return;
+
+        _senate.AddSectorBias(sectorId, "SWGlobalEconomy", 1.5f);
+    }
+
+    public int TreasuryValue => Treasury();
+
+    public List<SWDefenseProgramEntry> BuildPrograms()
+    {
+        var list = new List<SWDefenseProgramEntry>();
+        foreach (var proto in _proto.EnumeratePrototypes<SWFinanceProgramPrototype>().OrderBy(p => p.Order))
+        {
+            var entry = new SWDefenseProgramEntry
+            {
+                Id = proto.ID,
+                Name = proto.Name,
+                Description = proto.Description,
+                Selected = proto.ID == _program,
+                Effects = PolicyEffectEntries(proto.PolicyEffects),
+            };
+
+            if (proto.InflationDelta != 0f)
+                entry.Effects.Add(new SWBillEffectEntry { StatName = "Инфляция", Color = Color.FromHex("#E0556B"), Delta = proto.InflationDelta });
+            if (proto.DebtDelta != 0f)
+                entry.Effects.Add(new SWBillEffectEntry { StatName = "Долг", Color = Color.FromHex("#E0A23B"), Delta = proto.DebtDelta });
+
+            list.Add(entry);
+        }
+
+        return list;
+    }
+
+    private List<SWBillEffectEntry> PolicyEffectEntries(Dictionary<ProtoId<SWStatPrototype>, float> effects)
+    {
+        var list = new List<SWBillEffectEntry>();
+        foreach (var sub in _proto.EnumeratePrototypes<SWStatPrototype>().OrderBy(s => s.Order))
+        {
+            if (!effects.TryGetValue(sub.ID, out var delta))
+                continue;
+
+            var color = _proto.TryIndex(sub.Global, out var global) ? global.Color : Color.White;
+            list.Add(new SWBillEffectEntry { StatName = sub.ShortName, Color = color, Delta = delta });
+        }
+
+        return list;
+    }
+}

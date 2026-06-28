@@ -21,6 +21,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
     [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
     [Dependency] private readonly SWMinistryHealthSystem _health = default!;
     [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
+    [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
 
     public const string RepublicOwner = "republic";
 
@@ -108,7 +109,9 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         if (_ministryBudget.ContainsKey(ministryId))
             return;
 
-        _ministryBudget[ministryId] = MinistryBudgetBase + MinistryBudgetPerSector * _senate.SectorHolders.Count;
+        // Inflation erodes the real purchasing power of every ministry's daily allocation.
+        var nominal = MinistryBudgetBase + MinistryBudgetPerSector * _senate.SectorHolders.Count;
+        _ministryBudget[ministryId] = (int) (nominal / _finance.PriceMultiplier());
         _ministryAdmin[ministryId] = MinistryAdminPerDay;
     }
 
@@ -480,6 +483,8 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             _health.OnSectorEngagement(request.SectorId);
         else if (ministryId == SWMinistryEconomySystem.EconomyMinistryId)
             _economy.OnSectorEngagement(request.SectorId);
+        else if (ministryId == SWMinistryFinanceSystem.FinanceMinistryId)
+            _finance.OnSectorEngagement(request.SectorId);
 
         request.Status = SWMinistryRequestStatus.Resolved;
         request.MinisterOption = optionIndex;
@@ -547,6 +552,8 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             return _health.GetRequestModifier(sectorId);
         if (ministryId == SWMinistryEconomySystem.EconomyMinistryId)
             return _economy.GetRequestModifier(sectorId);
+        if (ministryId == SWMinistryFinanceSystem.FinanceMinistryId)
+            return _finance.GetRequestModifier(sectorId);
         return (1f, 1f);
     }
 

@@ -87,6 +87,12 @@ public sealed class SWStatisticsConsoleState : BoundUserInterfaceState
     public float Growth;
     public int Overheat;
     public string OverheatStatus = string.Empty;
+    public int KeyRate;
+    public int Inflation;
+    public string InflationStatus = string.Empty;
+    public int Debt;
+    public string CreditRating = string.Empty;
+    public Color RatingColor;
 
     public SWStatisticsConsoleState(List<SWGlobalStatEntry> globals, List<SWSectorEntry> sectors)
     {
@@ -299,6 +305,29 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public int TradeRouteCap;
     public List<SWEconSectorEntry> EconSectors = new();
     public List<string> EconomyLog = new();
+
+    // ФИНАНСЫ (Finance ministry only).
+    public bool IsFinance;
+    public int Treasury;
+    public int KeyRate;
+    public List<int> RateOptions = new();
+    public int Inflation;
+    public string InflationStatus = string.Empty;
+    public int PricePercent;
+    public int Debt;
+    public string DebtStatus = string.Empty;
+    public string CreditRating = string.Empty;
+    public Color RatingColor;
+    public int TaxLevel;
+    public string TaxLevelLabel = string.Empty;
+    public bool CanIssueBonds;
+    public int BondProceeds;
+    public bool CanRepayDebt;
+    public bool EmissionPending;
+    public string SelectedFinanceProgram = string.Empty;
+    public int FinanceProgramProgress;
+    public List<SWDefenseProgramEntry> FinancePrograms = new();
+    public List<string> FinanceLog = new();
 }
 
 [Serializable, NetSerializable]
@@ -430,6 +459,64 @@ public sealed class SWEconomyApproveStimulusMessage : BoundUserInterfaceMessage
 
 [Serializable, NetSerializable]
 public sealed class SWEconomyRejectStimulusMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWFinanceSetRateMessage : BoundUserInterfaceMessage
+{
+    public int Rate;
+
+    public SWFinanceSetRateMessage(int rate)
+    {
+        Rate = rate;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWFinanceSetTaxMessage : BoundUserInterfaceMessage
+{
+    public int Level;
+
+    public SWFinanceSetTaxMessage(int level)
+    {
+        Level = level;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWFinanceIssueBondsMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWFinanceRepayDebtMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWFinanceEmissionMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWFinanceSelectProgramMessage : BoundUserInterfaceMessage
+{
+    public string ProgramId;
+
+    public SWFinanceSelectProgramMessage(string programId)
+    {
+        ProgramId = programId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWFinanceApproveEmissionMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWFinanceRejectEmissionMessage : BoundUserInterfaceMessage
 {
 }
 
@@ -896,6 +983,8 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool CanApproveHealthEmergency;
     public bool StimulusProposed;
     public bool CanApproveStimulus;
+    public bool EmissionProposed;
+    public bool CanApproveEmission;
     public List<SWBillPresetEntry> Presets = new();
     public bool CanDilemmas;
     public List<string> MinistryNotices = new();

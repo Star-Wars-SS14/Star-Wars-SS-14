@@ -60,6 +60,15 @@
                 <ScrollContainer Name="RoutesPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
                     <BoxContainer Name="RoutesContent" Orientation="Vertical" HorizontalExpand="True" />
                 </ScrollContainer>
+                <ScrollContainer Name="MonetaryPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="MonetaryContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="DebtPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="DebtContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="BudgetsPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="BudgetsContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
             </BoxContainer>
         </BoxContainer>
     </PanelContainer>

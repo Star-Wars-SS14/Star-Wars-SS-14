@@ -27,6 +27,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
     [Dependency] private readonly SWMinistryHealthSystem _health = default!;
     [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
+    [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
@@ -65,7 +66,74 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomyRemoveRouteMessage>(OnRemoveRoute);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomyDeclareStimulusMessage>(OnDeclareStimulus);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomySelectProgramMessage>(OnSelectEconProgram);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceSetRateMessage>(OnSetRate);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceSetTaxMessage>(OnSetTax);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceIssueBondsMessage>(OnIssueBonds);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceRepayDebtMessage>(OnRepayDebt);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceEmissionMessage>(OnEmission);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceSelectProgramMessage>(OnSelectFinProgram);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryResignMessage>(OnResign);
+    }
+
+    private bool IsFinanceCard(Entity<SWMinistryWorkConsoleComponent> ent) =>
+        GetCardMinistry(ent) == SWMinistryFinanceSystem.FinanceMinistryId;
+
+    private void OnSetRate(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFinanceSetRateMessage args)
+    {
+        if (!IsFinanceCard(ent))
+            return;
+
+        _finance.SetRate(args.Rate);
+        UpdateUi(ent);
+    }
+
+    private void OnSetTax(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFinanceSetTaxMessage args)
+    {
+        if (!IsFinanceCard(ent))
+            return;
+
+        _finance.SetTax(args.Level);
+        UpdateUi(ent);
+    }
+
+    private void OnIssueBonds(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFinanceIssueBondsMessage args)
+    {
+        if (!IsFinanceCard(ent))
+            return;
+
+        if (!_finance.IssueBonds())
+            _popup.PopupCursor(Loc.GetString("sw-finance-bonds-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRepayDebt(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFinanceRepayDebtMessage args)
+    {
+        if (!IsFinanceCard(ent))
+            return;
+
+        if (!_finance.RepayDebt())
+            _popup.PopupCursor(Loc.GetString("sw-finance-repay-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnEmission(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFinanceEmissionMessage args)
+    {
+        if (!IsFinanceCard(ent))
+            return;
+
+        _finance.DeclareEmission();
+        UpdateUi(ent);
+    }
+
+    private void OnSelectFinProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFinanceSelectProgramMessage args)
+    {
+        if (!IsFinanceCard(ent))
+            return;
+
+        _finance.SelectProgram(args.ProgramId);
+        UpdateUi(ent);
     }
 
     private bool IsEconomyCard(Entity<SWMinistryWorkConsoleComponent> ent) =>
@@ -531,6 +599,30 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.TradeRouteCap = _economy.RouteCap;
                     state.EconSectors = _economy.BuildSectors();
                     state.EconomyLog = _economy.GetLog();
+                }
+                else if (ministryId == SWMinistryFinanceSystem.FinanceMinistryId)
+                {
+                    state.IsFinance = true;
+                    state.Treasury = _finance.TreasuryValue;
+                    state.KeyRate = _finance.KeyRate;
+                    state.RateOptions = new List<int>(_finance.RateOptions);
+                    state.Inflation = _finance.Inflation;
+                    state.InflationStatus = _finance.InflationStatus();
+                    state.PricePercent = _finance.PricePercent();
+                    state.Debt = _finance.Debt;
+                    state.DebtStatus = _finance.DebtStatus();
+                    state.CreditRating = _finance.CreditRating();
+                    state.RatingColor = _finance.RatingColor();
+                    state.TaxLevel = _finance.TaxLevel;
+                    state.TaxLevelLabel = _finance.TaxLevelLabel();
+                    state.CanIssueBonds = _finance.CanIssueBonds();
+                    state.BondProceeds = _finance.BondProceeds();
+                    state.CanRepayDebt = _finance.CanRepayDebt();
+                    state.EmissionPending = _finance.EmissionPending;
+                    state.SelectedFinanceProgram = _finance.SelectedProgram ?? string.Empty;
+                    state.FinanceProgramProgress = _finance.ProgramProgress;
+                    state.FinancePrograms = _finance.BuildPrograms();
+                    state.FinanceLog = _finance.GetLog();
                 }
             }
         }

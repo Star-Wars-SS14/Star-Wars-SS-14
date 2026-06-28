@@ -358,6 +358,8 @@ public sealed class SWMinistryHealthSystem : EntitySystem
             if (InfectionAvg() < 1f && _immunity > 40f)
             {
                 _active = false;
+                _research = 0f;
+                _vaccineStrain = -1;
                 AddLog($"Эпидемия «{_name}» подавлена.");
             }
         }
@@ -527,7 +529,8 @@ public sealed class SWMinistryHealthSystem : EntitySystem
 
     private void AdvanceResearch(float gameHours)
     {
-        if (_funding == 0 || _research >= 100f)
+        // No pathogen, no strain to target — a vaccine can't be developed in advance.
+        if (!_active || _funding == 0 || _research >= 100f)
             return;
 
         var medicine = _senate.GetRepublicGlobal("SWGlobalHealthcare");
@@ -574,7 +577,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         foreach (var (sub, delta) in proto.PolicyEffects)
             _senate.AddPolicy(sub, delta * scale);
 
-        if (proto.ResearchDelta != 0f && _research < 100f)
+        if (proto.ResearchDelta != 0f && _research < 100f && _active)
             _research = Math.Clamp(_research + proto.ResearchDelta * scale, 0f, 100f);
 
         if (proto.SpreadDelta != 0f)

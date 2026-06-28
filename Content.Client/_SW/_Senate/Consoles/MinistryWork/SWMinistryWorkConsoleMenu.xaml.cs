@@ -932,6 +932,8 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             : $"Прогресс: {state.Research}%";
         EpidemicContent.AddChild(SWConsoleStyle.Text(rlabel, state.VaccineReady ? SWConsoleStyle.Accent : SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
         EpidemicContent.AddChild(SWConsoleStyle.Bar(state.Research, 0, 100, SWConsoleStyle.Accent));
+        if (!state.PathogenActive)
+            EpidemicContent.AddChild(SWConsoleStyle.Text("Разработка идёт только при активной эпидемии — против её штамма.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
 
         EpidemicContent.AddChild(SWConsoleStyle.Text($"Финансирование НИОКР: {state.ResearchFundingLabel}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
         var frow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };

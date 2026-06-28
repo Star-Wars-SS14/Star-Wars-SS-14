@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Content.Shared._SW._Senate.Ministries;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Serialization;
 
@@ -173,6 +174,49 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public int MinistryAdmin;
     public int AuditCost;
     public List<SWMinistryRequestEntry> Requests = new();
+
+    // КОМАНДОВАНИЕ (Defense ministry only).
+    public bool IsDefense;
+    public SWDefenseStance Stance;
+    public bool WarPending;
+    public int BorderPressure;
+    public string BorderStatus = string.Empty;
+    public int WarWeariness;
+    public string SelectedProgram = string.Empty;
+    public int ProgramProgress;
+    public List<SWDefenseProgramEntry> Programs = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDefenseProgramEntry
+{
+    public string Id = string.Empty;
+    public string Name = string.Empty;
+    public string Description = string.Empty;
+    public bool Selected;
+    public List<SWBillEffectEntry> Effects = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDefenseSetStanceMessage : BoundUserInterfaceMessage
+{
+    public SWDefenseStance Stance;
+
+    public SWDefenseSetStanceMessage(SWDefenseStance stance)
+    {
+        Stance = stance;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDefenseSelectProgramMessage : BoundUserInterfaceMessage
+{
+    public string ProgramId;
+
+    public SWDefenseSelectProgramMessage(string programId)
+    {
+        ProgramId = programId;
+    }
 }
 
 [Serializable, NetSerializable]
@@ -315,6 +359,8 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool CanScheduleSessions;
     public bool CanConfirmSessions;
     public bool OfficesVacant;
+    public bool WarProposed;
+    public bool CanApproveWar;
     public List<SWBillPresetEntry> Presets = new();
     public bool CanDilemmas;
     public List<string> MinistryNotices = new();
@@ -979,6 +1025,16 @@ public sealed class SWSenateAnnounceMessage : BoundUserInterfaceMessage
     {
         Text = text;
     }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDefenseApproveWarMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDefenseRejectWarMessage : BoundUserInterfaceMessage
+{
 }
 
 [Serializable, NetSerializable]

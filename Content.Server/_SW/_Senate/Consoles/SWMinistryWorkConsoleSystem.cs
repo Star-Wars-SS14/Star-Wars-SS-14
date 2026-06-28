@@ -19,6 +19,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
     [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
+    [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
 
     private const float UpdateInterval = 3f;
@@ -32,6 +33,26 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryAuditRequestMessage>(OnAudit);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryResolveRequestMessage>(OnResolve);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryRefuseRequestMessage>(OnRefuse);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseSetStanceMessage>(OnSetStance);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseSelectProgramMessage>(OnSelectProgram);
+    }
+
+    private void OnSetStance(Entity<SWMinistryWorkConsoleComponent> ent, ref SWDefenseSetStanceMessage args)
+    {
+        if (GetCardMinistry(ent) != SWMinistryDefenseSystem.DefenseMinistryId)
+            return;
+
+        _defense.SetStance(args.Stance);
+        UpdateUi(ent);
+    }
+
+    private void OnSelectProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWDefenseSelectProgramMessage args)
+    {
+        if (GetCardMinistry(ent) != SWMinistryDefenseSystem.DefenseMinistryId)
+            return;
+
+        _defense.SelectProgram(args.ProgramId);
+        UpdateUi(ent);
     }
 
     private string? GetCardMinistry(Entity<SWMinistryWorkConsoleComponent> ent)
@@ -149,6 +170,19 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                 state.MinistryAdmin = _dilemma.GetMinistryAdmin(ministryId);
                 state.AuditCost = _dilemma.AuditCost;
                 state.Requests = _dilemma.BuildMinistryRequests(ministryId);
+
+                if (ministryId == SWMinistryDefenseSystem.DefenseMinistryId)
+                {
+                    state.IsDefense = true;
+                    state.Stance = _defense.Stance;
+                    state.WarPending = _defense.WarPending;
+                    state.BorderPressure = _defense.BorderPressure;
+                    state.BorderStatus = _defense.BorderStatus();
+                    state.WarWeariness = _defense.WarWeariness;
+                    state.SelectedProgram = _defense.SelectedProgram ?? string.Empty;
+                    state.ProgramProgress = _defense.ProgramProgress;
+                    state.Programs = _defense.BuildPrograms();
+                }
             }
         }
 

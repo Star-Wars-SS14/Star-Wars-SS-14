@@ -31,6 +31,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWSenateProgramSystem _program = default!;
     [Dependency] private readonly SWSenateAmbitionSystem _ambition = default!;
     [Dependency] private readonly SWSenateCrisisSystem _crisis = default!;
+    [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
     [Dependency] private readonly SWSenatePartySystem _party = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
@@ -59,6 +60,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRemoveSessionMessage>(OnRemoveSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateEmergencySessionMessage>(OnEmergencySession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateConfirmSessionMessage>(OnConfirmSession);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWDefenseApproveWarMessage>(OnApproveWar);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWDefenseRejectWarMessage>(OnRejectWar);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectSessionMessage>(OnRejectSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAnnounceMessage>(OnAnnounce);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateCreatePartyMessage>(OnCreateParty);
@@ -318,6 +321,29 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (_senate.ConfirmSession(args.SessionId))
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-confirmed"), args.Actor, PopupType.Medium);
 
+        UpdateUi(ent);
+    }
+
+    private void OnApproveWar(Entity<SWSenateWorkConsoleComponent> ent, ref SWDefenseApproveWarMessage args)
+    {
+        if (!CanConfirmAs(ent))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_defense.ApproveWar())
+            _popup.PopupCursor(Loc.GetString("sw-defense-war-approved"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRejectWar(Entity<SWSenateWorkConsoleComponent> ent, ref SWDefenseRejectWarMessage args)
+    {
+        if (!CanConfirmAs(ent))
+            return;
+
+        _defense.RejectWar();
         UpdateUi(ent);
     }
 
@@ -730,6 +756,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.CanScheduleSessions = CanScheduleAs(ent);
         state.CanConfirmSessions = CanConfirmAs(ent);
         state.OfficesVacant = _senate.OfficesVacant;
+        state.WarProposed = _defense.WarPending;
+        state.CanApproveWar = _defense.WarPending && CanConfirmAs(ent);
 
         if (card != null && TryComp<SWSenatePositionCardComponent>(card, out var position))
         {

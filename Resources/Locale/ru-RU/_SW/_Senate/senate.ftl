@@ -19,6 +19,7 @@ sw-ministry-audit-failed = Аудит невозможен: нет админ-р
 sw-ministry-request-resolved = Заявка удовлетворена.
 sw-ministry-request-refused = В заявке отказано.
 sw-ministry-request-failed = Невозможно одобрить: не хватает бюджета.
+sw-defense-war-approved = Война одобрена. Республика переходит на военное положение.
 
 sw-senate-work-no-card = Вставьте сенатскую ID-карту в консоль.
 sw-senate-work-senator-hint = Сенаторы выбирают сектор на консоли выбора сектора.

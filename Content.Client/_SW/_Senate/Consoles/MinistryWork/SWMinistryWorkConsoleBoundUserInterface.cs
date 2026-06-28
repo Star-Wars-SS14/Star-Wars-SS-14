@@ -1,4 +1,5 @@
 using Content.Shared._SW._Senate;
+using Content.Shared._SW._Senate.Ministries;
 
 namespace Content.Client._SW._Senate.Consoles.MinistryWork;
 
@@ -33,6 +34,16 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
     public void RefuseRequest(int requestId, string reason)
     {
         SendMessage(new SWMinistryRefuseRequestMessage(requestId, reason));
+    }
+
+    public void SetStance(SWDefenseStance stance)
+    {
+        SendMessage(new SWDefenseSetStanceMessage(stance));
+    }
+
+    public void SelectProgram(string programId)
+    {
+        SendMessage(new SWDefenseSelectProgramMessage(programId));
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

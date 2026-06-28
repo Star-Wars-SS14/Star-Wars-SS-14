@@ -144,6 +144,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         TakeButton.Visible = state.CanTake;
         ResignButton.Visible = state.CanResign;
 
+        BuildWarApproval(state);
+
         var isSenator = state.IsSenateCard && state.Position == SWSenatePosition.Senator;
         var isLeader = state.IsSenateCard
             && (state.Position == SWSenatePosition.Speaker || state.Position == SWSenatePosition.Chancellor);
@@ -938,6 +940,32 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         }
 
         return box;
+    }
+
+    private void BuildWarApproval(SWSenateWorkConsoleState state)
+    {
+        WarApprovalBox.RemoveAllChildren();
+        if (!state.WarProposed)
+            return;
+
+        WarApprovalBox.AddChild(MakeWrap("Министр обороны предлагает объявить ВОЙНУ.", Color.IndianRed));
+
+        if (state.CanApproveWar)
+        {
+            var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
+            var approve = SWConsoleStyle.Action("Одобрить войну", SWConsoleStyle.Bad);
+            approve.OnPressed += _ => _owner.ApproveWar();
+            var reject = SWConsoleStyle.Action("Отклонить", SWConsoleStyle.Neutral);
+            reject.Margin = new Thickness(6, 0, 0, 0);
+            reject.OnPressed += _ => _owner.RejectWar();
+            row.AddChild(approve);
+            row.AddChild(reject);
+            WarApprovalBox.AddChild(row);
+        }
+        else
+        {
+            WarApprovalBox.AddChild(MakeWrap("Одобрить может только Канцлер.", Color.Gray));
+        }
     }
 
     private static RichTextLabel MakeWrap(string text, Color? color = null)

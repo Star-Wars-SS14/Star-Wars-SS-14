@@ -35,6 +35,16 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateTakeOfficeMessage());
     }
 
+    public void ApproveWar()
+    {
+        SendMessage(new SWDefenseApproveWarMessage());
+    }
+
+    public void RejectWar()
+    {
+        SendMessage(new SWDefenseRejectWarMessage());
+    }
+
     public void Resign()
     {
         SendMessage(new SWSenateResignMessage());

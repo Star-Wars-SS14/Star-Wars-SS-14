@@ -16,9 +16,12 @@
           bounds: "-1.15,-1.55,1.15,1.55"
         density: 2500
         mask:
-        - MobMask
+        - HighImpassable
+        - BulletImpassable
         layer:
-        - MachineLayer
+        - Opaque
+        - HighImpassable
+        - BulletImpassable
   - type: Damageable
     damageContainer: SWVehicleArmored
     damageModifierSet: SWHeavyVehicle

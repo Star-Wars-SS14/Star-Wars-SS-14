@@ -173,6 +173,11 @@ public sealed class SWLatheSystem : EntitySystem
 
     public string? CanUseInAnyRecipe(SWLatheComponent comp, EntityUid material)
     {
+        if (!CanAcceptMaterialEntity(material))
+        {
+            return null;
+        }
+
         var protos = GetRecipes(comp);
 
         var matProto = Prototype(material);
@@ -194,6 +199,11 @@ public sealed class SWLatheSystem : EntitySystem
 
     public bool TryAddMaterial(Entity<SWLatheComponent> ent, EntityUid material)
     {
+        if (!CanAcceptMaterialEntity(material))
+        {
+            return false;
+        }
+
         var matProto = Prototype(material);
         if (matProto == null)
         {
@@ -214,6 +224,11 @@ public sealed class SWLatheSystem : EntitySystem
         }
 
         return false;
+    }
+
+    private bool CanAcceptMaterialEntity(EntityUid material)
+    {
+        return !TryComp<StackComponent>(material, out var stack) || stack.Count <= 1;
     }
 
     public bool TryStartProducingAnything(Entity<SWLatheComponent> ent)

@@ -25,12 +25,16 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
     private const int CommandTab = 3;
     private const int FleetTab = 4;
     private const int OpsTab = 5;
+    private const int ControlTab = 6;
+    private const int NetworkTab = 7;
+    private const int SecOpsTab = 8;
 
     private readonly Dictionary<int, string> _refuseReasons = new();
     private string _requestsSignature = string.Empty;
     private Label? _reqBudgetLabel;
     private Label? _reqAdminLabel;
     private int? _selectedFleet;
+    private int? _selectedCell;
     private SWMinistryWorkConsoleState? _state;
 
     public SWMinistryWorkConsoleMenu(SWMinistryWorkConsoleBoundUserInterface owner)
@@ -57,6 +61,9 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             ("КОМАНДОВАНИЕ", CommandPanel),
             ("ФЛОТ", FleetPanel),
             ("ОПЕРАЦИИ", OpsPanel),
+            ("КОНТРОЛЬ", ControlPanel),
+            ("АГЕНТУРА", NetworkPanel),
+            ("ОПЕРАЦИИ", SecOpsPanel),
         };
 
         _tabButtons = new Button[_tabs.Length];
@@ -90,7 +97,12 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         _tabButtons[CommandTab].Visible = state.IsDefense;
         _tabButtons[FleetTab].Visible = state.IsDefense;
         _tabButtons[OpsTab].Visible = state.IsDefense;
+        _tabButtons[ControlTab].Visible = state.IsSecurity;
+        _tabButtons[NetworkTab].Visible = state.IsSecurity;
+        _tabButtons[SecOpsTab].Visible = state.IsSecurity;
         if (!state.IsDefense && (_active == CommandTab || _active == FleetTab || _active == OpsTab))
+            ShowTab(0);
+        if (!state.IsSecurity && (_active == ControlTab || _active == NetworkTab || _active == SecOpsTab))
             ShowTab(0);
 
         BuildOverview(state);
@@ -99,6 +111,9 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         BuildCommand(state);
         BuildFleet(state);
         BuildOps(state);
+        BuildControl(state);
+        BuildNetwork(state);
+        BuildSecOps(state);
     }
 
     private void BuildOps(SWMinistryWorkConsoleState state)
@@ -477,6 +492,397 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
 
     private static Color BorderColor(int pressure) =>
         pressure >= 75 ? SWConsoleStyle.Bad : pressure >= 50 ? SWConsoleStyle.Warn : SWConsoleStyle.Good;
+
+    private static Color GaugeColor(int value) =>
+        value >= 70 ? SWConsoleStyle.Bad : value >= 40 ? SWConsoleStyle.Warn : SWConsoleStyle.Good;
+
+    private static readonly SWSecurityPosture[] PostureLadder =
+    {
+        SWSecurityPosture.Emergency,
+        SWSecurityPosture.Heightened,
+        SWSecurityPosture.Watch,
+        SWSecurityPosture.Civil,
+    };
+
+    private void BuildControl(SWMinistryWorkConsoleState state)
+    {
+        ControlContent.RemoveAllChildren();
+        if (!state.IsSecurity)
+            return;
+
+        // Threat gauge.
+        ControlContent.AddChild(SWConsoleStyle.Section("УГРОЗА — ПОДРЫВНАЯ АКТИВНОСТЬ"));
+        ControlContent.AddChild(new Control { MinHeight = 4 });
+        var trow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        trow.AddChild(SWConsoleStyle.Text(state.ThreatStatus, GaugeColor(state.Threat), SWConsoleStyle.MonoBold));
+        trow.AddChild(new Control { HorizontalExpand = true });
+        trow.AddChild(SWConsoleStyle.Text($"{state.Threat}/100", GaugeColor(state.Threat), SWConsoleStyle.MonoBold));
+        ControlContent.AddChild(trow);
+        ControlContent.AddChild(SWConsoleStyle.Bar(state.Threat, 0, 100, GaugeColor(state.Threat)));
+
+        // Unrest gauge.
+        ControlContent.AddChild(new Control { MinHeight = 10 });
+        ControlContent.AddChild(SWConsoleStyle.Section("НАКАЛ — ОБЩЕСТВЕННОЕ НЕДОВОЛЬСТВО"));
+        ControlContent.AddChild(new Control { MinHeight = 4 });
+        var urow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        urow.AddChild(SWConsoleStyle.Text(state.UnrestStatus, GaugeColor(state.Unrest), SWConsoleStyle.MonoBold));
+        urow.AddChild(new Control { HorizontalExpand = true });
+        urow.AddChild(SWConsoleStyle.Text($"{state.Unrest}/100", GaugeColor(state.Unrest), SWConsoleStyle.MonoBold));
+        ControlContent.AddChild(urow);
+        ControlContent.AddChild(SWConsoleStyle.Bar(state.Unrest, 0, 100, GaugeColor(state.Unrest)));
+
+        // Posture ladder.
+        ControlContent.AddChild(new Control { MinHeight = 10 });
+        ControlContent.AddChild(SWConsoleStyle.Section("РЕЖИМ БЕЗОПАСНОСТИ"));
+        ControlContent.AddChild(new Control { MinHeight = 4 });
+        ControlContent.AddChild(SWConsoleStyle.Text($"Текущий: {state.PostureName}", state.PostureColor, SWConsoleStyle.MonoBold));
+        if (state.PostureEffects.Count > 0)
+            ControlContent.AddChild(MakeRateRow(state.PostureEffects));
+        if (state.EmergencyPending)
+            ControlContent.AddChild(SWConsoleStyle.Text($"Ждёт одобрения Канцлера: {state.PendingPostureName}", SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+        ControlContent.AddChild(new Control { MinHeight = 4 });
+        foreach (var posture in PostureLadder)
+            ControlContent.AddChild(MakePostureButton(posture, state.Posture));
+
+        // Daily program.
+        ControlContent.AddChild(new Control { MinHeight = 10 });
+        ControlContent.AddChild(SWConsoleStyle.Section("ДНЕВНАЯ ПРОГРАММА"));
+        ControlContent.AddChild(new Control { MinHeight = 4 });
+        if (!string.IsNullOrEmpty(state.SelectedSecProgram))
+            ControlContent.AddChild(SWConsoleStyle.Text($"Прогресс: {state.SecProgramProgress}%", SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall));
+        foreach (var program in state.SecPrograms)
+            ControlContent.AddChild(MakeSecProgramCard(program));
+    }
+
+    private Control MakePostureButton(SWSecurityPosture posture, SWSecurityPosture current)
+    {
+        var active = posture == current;
+        var label = PostureClientName(posture);
+        var btn = SWConsoleStyle.Action(active ? $"> {label}" : label, PostureClientColor(posture), active);
+        btn.HorizontalExpand = true;
+        btn.Margin = new Thickness(0, 0, 0, 3);
+        if (!active)
+            btn.OnPressed += _ => _owner.SetPosture(posture);
+        return btn;
+    }
+
+    private static string PostureClientName(SWSecurityPosture posture) => posture switch
+    {
+        SWSecurityPosture.Civil => "Гражданский",
+        SWSecurityPosture.Watch => "Наблюдение",
+        SWSecurityPosture.Heightened => "Усиленный",
+        _ => "Чрезвычайное положение",
+    };
+
+    private static Color PostureClientColor(SWSecurityPosture posture) => posture switch
+    {
+        SWSecurityPosture.Civil => SWConsoleStyle.Good,
+        SWSecurityPosture.Watch => SWConsoleStyle.Accent,
+        SWSecurityPosture.Heightened => SWConsoleStyle.Warn,
+        _ => SWConsoleStyle.Bad,
+    };
+
+    private Control MakeSecProgramCard(SWDefenseProgramEntry program)
+    {
+        var card = SWConsoleStyle.Row(program.Selected ? SWConsoleStyle.BgRowAlt : SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
+        card.Margin = new Thickness(0, 0, 0, 4);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+
+        var id = program.Id;
+        var btn = SWConsoleStyle.Action(program.Selected ? $"{program.Name} (выбрано)" : program.Name, SWConsoleStyle.Accent, program.Selected);
+        btn.HorizontalExpand = true;
+        if (!program.Selected)
+            btn.OnPressed += _ => _owner.SelectSecProgram(id);
+        box.AddChild(btn);
+
+        if (!string.IsNullOrWhiteSpace(program.Description))
+            box.AddChild(SWConsoleStyle.Text(program.Description, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+        if (program.Effects.Count > 0)
+        {
+            var eff = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 2, 0, 0) };
+            foreach (var effect in program.Effects)
+                eff.AddChild(SWConsoleStyle.Text($"{effect.StatName} {effect.Delta:+0;-0}  ", effect.Color, SWConsoleStyle.MonoSmall));
+            box.AddChild(eff);
+        }
+
+        card.AddChild(box);
+        return card;
+    }
+
+    private void BuildNetwork(SWMinistryWorkConsoleState state)
+    {
+        NetworkContent.RemoveAllChildren();
+        if (!state.IsSecurity)
+            return;
+
+        if (state.SecurityLog.Count > 0)
+        {
+            NetworkContent.AddChild(SWConsoleStyle.Section("СОБЫТИЯ"));
+            foreach (var entry in state.SecurityLog)
+                NetworkContent.AddChild(SWConsoleStyle.Text(entry, SWConsoleStyle.Bad, SWConsoleStyle.MonoSmall));
+            NetworkContent.AddChild(new Control { MinHeight = 8 });
+        }
+
+        // Active plots.
+        NetworkContent.AddChild(SWConsoleStyle.Section("ЗАГОВОРЫ"));
+        NetworkContent.AddChild(new Control { MinHeight = 4 });
+        if (state.Plots.Count == 0)
+            NetworkContent.AddChild(SWConsoleStyle.Text("Вскрытых заговоров нет. Держите ячейки в секторах для разведки.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        else
+        {
+            foreach (var plot in state.Plots)
+                NetworkContent.AddChild(MakePlotCard(plot));
+        }
+
+        // Cells (selectable).
+        var deployed = state.Cells.Count(c => c.State == SWCellState.Sector);
+        NetworkContent.AddChild(new Control { MinHeight = 10 });
+        NetworkContent.AddChild(SWConsoleStyle.Section("АГЕНТУРНЫЕ ЯЧЕЙКИ"));
+        NetworkContent.AddChild(SWConsoleStyle.Text($"Ячеек {state.Cells.Count}  ·  в работе {deployed}  ·  содержание {state.CellUpkeep} кр/ч", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        NetworkContent.AddChild(new Control { MinHeight = 4 });
+        foreach (var cell in state.Cells)
+            NetworkContent.AddChild(MakeCellChip(cell));
+
+        // Orders for the selected cell.
+        NetworkContent.AddChild(new Control { MinHeight = 10 });
+        NetworkContent.AddChild(SWConsoleStyle.Section("НАЗНАЧЕНИЕ"));
+        NetworkContent.AddChild(new Control { MinHeight = 4 });
+
+        var selected = _selectedCell != null ? state.Cells.FirstOrDefault(c => c.Id == _selectedCell) : null;
+        if (selected == null)
+        {
+            NetworkContent.AddChild(SWConsoleStyle.Text("Выберите ячейку выше, чтобы отдать приказ.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            return;
+        }
+
+        if (selected.State == SWCellState.Rebuilding)
+        {
+            NetworkContent.AddChild(SWConsoleStyle.Text($"Ячейка {selected.Id} перестраивает прикрытие — {selected.RebuildLeft} ч. Приказы недоступны.", SWConsoleStyle.Warn, SWConsoleStyle.Mono));
+            return;
+        }
+
+        var head2 = selected.Burned ? $"Приказ для: ячейка {selected.Id}  [РАСКРЫТА]" : $"Приказ для: ячейка {selected.Id}";
+        NetworkContent.AddChild(SWConsoleStyle.Text(head2, selected.Burned ? SWConsoleStyle.Bad : SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
+        NetworkContent.AddChild(MakeCellOrderButton(selected.Id, "reserve", "Отозвать в резерв", SWConsoleStyle.Neutral, selected.State == SWCellState.Reserve));
+
+        if (state.CellSectors.Count == 0)
+            NetworkContent.AddChild(SWConsoleStyle.Text("Наблюдение откроется, когда сенаторы займут сектора.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        else
+        {
+            NetworkContent.AddChild(SWConsoleStyle.Text("Наблюдение за сектором (по слабости порядка):", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            foreach (var sector in state.CellSectors)
+            {
+                var already = selected.State == SWCellState.Sector && selected.SectorId == sector.Id;
+                var plotTag = sector.HasPlot ? $"  · {sector.PlotLabel}" : string.Empty;
+                var cover = sector.Cells > 0 ? $"  · ячеек: {sector.Cells}" : string.Empty;
+                var label = $"{sector.Name}  ·  порядок {sector.Order}{cover}{plotTag}";
+                NetworkContent.AddChild(MakeCellOrderButton(selected.Id, sector.Id, label, sector.HasPlot && sector.PlotRevealed ? sector.PlotColor : sector.Color, already));
+            }
+        }
+
+        if (!selected.Burned)
+            return;
+
+        NetworkContent.AddChild(new Control { MinHeight = 6 });
+        NetworkContent.AddChild(SWConsoleStyle.Section("ПЕРЕСТРОЙКА ПРИКРЫТИЯ"));
+        NetworkContent.AddChild(new Control { MinHeight = 4 });
+        NetworkContent.AddChild(MakeCellOrderButton(selected.Id, "express", "Экстренная замена — 3000 кр", SWConsoleStyle.Warn, false));
+        NetworkContent.AddChild(MakeCellOrderButton(selected.Id, "rebuild", "Перестроить прикрытие (3 ч) — 1200 кр", SWConsoleStyle.Good, false));
+    }
+
+    private Control MakePlotCard(SWPlotEntry plot)
+    {
+        var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, plot.TypeColor);
+        card.Margin = new Thickness(0, 0, 0, 6);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        head.AddChild(SWConsoleStyle.Text($"{plot.SectorName} — {plot.TypeLabel}", plot.TypeColor, SWConsoleStyle.MonoBold));
+        head.AddChild(new Control { HorizontalExpand = true });
+        head.AddChild(SWConsoleStyle.Text($"{plot.Maturity}%", GaugeColor(plot.Maturity), SWConsoleStyle.MonoBold));
+        box.AddChild(head);
+        box.AddChild(SWConsoleStyle.Bar(plot.Maturity, 0, 100, plot.TypeColor));
+
+        if (plot.Revealed)
+        {
+            box.AddChild(SWConsoleStyle.Text($"{plot.ThreatLabel}  ·  ячеек: {plot.Cells}  ·  шанс облавы {plot.SuccessChance}%", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            var id = plot.Id;
+            if (plot.CanRaid)
+            {
+                var btn = SWConsoleStyle.Action("Провести облаву — 800 кр", SWConsoleStyle.Bad);
+                btn.HorizontalExpand = true;
+                btn.Margin = new Thickness(0, 3, 0, 0);
+                btn.OnPressed += _ => _owner.RaidPlot(id);
+                box.AddChild(btn);
+            }
+            else
+            {
+                box.AddChild(SWConsoleStyle.Text("Недостаточно бюджета на облаву.", SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+            }
+        }
+        else
+        {
+            box.AddChild(SWConsoleStyle.Text("Источник не установлен — заведите агентуру в секторе для вскрытия.", SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+        }
+
+        card.AddChild(box);
+        return card;
+    }
+
+    private Control MakeCellChip(SWCellEntry cell)
+    {
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, Margin = new Thickness(0, 0, 0, 4) };
+        var selected = _selectedCell == cell.Id;
+        var color = cell.Burned ? SWConsoleStyle.Bad : cell.State switch
+        {
+            SWCellState.Sector => SWConsoleStyle.Good,
+            SWCellState.Rebuilding => SWConsoleStyle.Warn,
+            _ => SWConsoleStyle.TextDim,
+        };
+
+        var tag = cell.Burned ? "  [РАСКРЫТА]" : string.Empty;
+        var text = $"Ячейка {cell.Id} — {cell.LocationLabel}{tag}";
+        var btn = SWConsoleStyle.Action(selected ? $"> {text}" : text, color);
+        btn.HorizontalExpand = true;
+        var id = cell.Id;
+        btn.OnPressed += _ =>
+        {
+            _selectedCell = id;
+            if (_state != null)
+                BuildNetwork(_state);
+        };
+        box.AddChild(btn);
+        box.AddChild(SWConsoleStyle.Text(CellMission(cell), SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        return box;
+    }
+
+    private Control MakeCellOrderButton(int cellId, string target, string label, Color color, bool already)
+    {
+        var btn = SWConsoleStyle.Action(already ? $"> {label}" : label, color, already);
+        btn.HorizontalExpand = true;
+        btn.Margin = new Thickness(0, 0, 0, 3);
+        if (!already)
+            btn.OnPressed += _ => _owner.DeployCell(cellId, target);
+        return btn;
+    }
+
+    private static string CellMission(SWCellEntry cell)
+    {
+        if (cell.State == SWCellState.Rebuilding)
+            return $"Перестройка прикрытия — {cell.RebuildLeft} ч";
+        if (cell.Burned)
+            return "Раскрыта — эффективность вдвое ниже, нужна перестройка";
+        return cell.State switch
+        {
+            SWCellState.Sector => $"Наблюдение {cell.LocationLabel}: разведка заговоров, +порядок",
+            _ => "В резерве — готова к заброске",
+        };
+    }
+
+    private void BuildSecOps(SWMinistryWorkConsoleState state)
+    {
+        SecOpsContent.RemoveAllChildren();
+        if (!state.IsSecurity)
+            return;
+
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        head.AddChild(SWConsoleStyle.Text($"Бюджет {state.MinistryBudget} кр  ·  админ {state.MinistryAdmin}", SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+        head.AddChild(new Control { HorizontalExpand = true });
+        head.AddChild(SWConsoleStyle.Text($"Слоты: {state.SecOpUsed}/{state.SecOpSlots}", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
+        SecOpsContent.AddChild(head);
+        SecOpsContent.AddChild(new Control { MinHeight = 8 });
+
+        if (state.SecActiveOps.Count > 0)
+        {
+            SecOpsContent.AddChild(SWConsoleStyle.Section("В ПРОЦЕССЕ"));
+            SecOpsContent.AddChild(new Control { MinHeight = 4 });
+            foreach (var op in state.SecActiveOps)
+            {
+                var row = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Warn);
+                row.Margin = new Thickness(0, 0, 0, 4);
+                var line = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+                line.AddChild(SWConsoleStyle.Text($"{op.Name}  ({op.Detail})", SWConsoleStyle.TextBright, SWConsoleStyle.Mono));
+                line.AddChild(new Control { HorizontalExpand = true });
+                line.AddChild(SWConsoleStyle.Text($"осталось {op.HoursLeft} ч", SWConsoleStyle.Warn, SWConsoleStyle.MonoBold));
+                row.AddChild(line);
+                SecOpsContent.AddChild(row);
+            }
+            SecOpsContent.AddChild(new Control { MinHeight = 8 });
+        }
+
+        SecOpsContent.AddChild(SWConsoleStyle.Section("ДОСТУПНЫЕ ОПЕРАЦИИ"));
+        SecOpsContent.AddChild(new Control { MinHeight = 4 });
+        foreach (var op in state.SecOperations)
+            SecOpsContent.AddChild(MakeSecOpCard(op, state.CellSectors));
+    }
+
+    private Control MakeSecOpCard(SWDefenseOperationEntry op, System.Collections.Generic.List<SWCellSectorEntry> sectors)
+    {
+        var accent = op.Available ? SWConsoleStyle.Accent : SWConsoleStyle.TextDim;
+        var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, accent);
+        card.Margin = new Thickness(0, 0, 0, 6);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        head.AddChild(SWConsoleStyle.Text(op.Name, op.Available ? SWConsoleStyle.TextBright : SWConsoleStyle.TextDim, SWConsoleStyle.MonoBold));
+        head.AddChild(new Control { HorizontalExpand = true });
+        var costText = op.Duration > 0
+            ? $"{op.Cost} кр · {op.AdminCost} адм · {op.Duration} ч"
+            : $"{op.Cost} кр · {op.AdminCost} адм";
+        head.AddChild(SWConsoleStyle.Text(costText, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        box.AddChild(head);
+
+        if (!string.IsNullOrWhiteSpace(op.Description))
+            box.AddChild(SWConsoleStyle.Text(op.Description, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+        if (op.Effects.Count > 0)
+        {
+            var eff = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 2, 0, 0) };
+            foreach (var effect in op.Effects)
+                eff.AddChild(SWConsoleStyle.Text($"{effect.StatName} {effect.Delta:+0;-0}  ", effect.Color, SWConsoleStyle.MonoSmall));
+            box.AddChild(eff);
+        }
+
+        if (!op.Available)
+        {
+            box.AddChild(SWConsoleStyle.Text(op.StatusLabel, SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+        }
+        else if (op.Target == SWOpTarget.Sector)
+        {
+            if (sectors.Count == 0)
+            {
+                box.AddChild(SWConsoleStyle.Text("Нет занятых секторов для цели.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            }
+            else
+            {
+                box.AddChild(SWConsoleStyle.Text("Цель:", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                var grid = new GridContainer { Columns = 3, HSeparationOverride = 4, VSeparationOverride = 4, Margin = new Thickness(0, 2, 0, 0) };
+                var opId = op.Id;
+                foreach (var sector in sectors)
+                {
+                    var sid = sector.Id;
+                    var btn = SWConsoleStyle.Action($"{sector.Name} ({sector.Order})", sector.Color);
+                    btn.HorizontalExpand = true;
+                    btn.OnPressed += _ => _owner.LaunchSecOp(opId, sid);
+                    grid.AddChild(btn);
+                }
+                box.AddChild(grid);
+            }
+        }
+        else
+        {
+            var opId = op.Id;
+            var btn = SWConsoleStyle.Action("Запустить", SWConsoleStyle.Good);
+            btn.HorizontalExpand = true;
+            btn.Margin = new Thickness(0, 3, 0, 0);
+            btn.OnPressed += _ => _owner.LaunchSecOp(opId, string.Empty);
+            box.AddChild(btn);
+        }
+
+        card.AddChild(box);
+        return card;
+    }
 
     private void BuildOverview(SWMinistryWorkConsoleState state)
     {

@@ -945,26 +945,49 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     private void BuildWarApproval(SWSenateWorkConsoleState state)
     {
         WarApprovalBox.RemoveAllChildren();
-        if (!state.WarProposed)
-            return;
 
-        WarApprovalBox.AddChild(MakeWrap($"Министр обороны предлагает поднять боеготовность до: {state.PendingStanceName}.", Color.IndianRed));
-
-        if (state.CanApproveWar)
+        if (state.WarProposed)
         {
-            var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
-            var approve = SWConsoleStyle.Action("Одобрить", SWConsoleStyle.Bad);
-            approve.OnPressed += _ => _owner.ApproveWar();
-            var reject = SWConsoleStyle.Action("Отклонить", SWConsoleStyle.Neutral);
-            reject.Margin = new Thickness(6, 0, 0, 0);
-            reject.OnPressed += _ => _owner.RejectWar();
-            row.AddChild(approve);
-            row.AddChild(reject);
-            WarApprovalBox.AddChild(row);
+            WarApprovalBox.AddChild(MakeWrap($"Министр обороны предлагает поднять боеготовность до: {state.PendingStanceName}.", Color.IndianRed));
+
+            if (state.CanApproveWar)
+            {
+                var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
+                var approve = SWConsoleStyle.Action("Одобрить", SWConsoleStyle.Bad);
+                approve.OnPressed += _ => _owner.ApproveWar();
+                var reject = SWConsoleStyle.Action("Отклонить", SWConsoleStyle.Neutral);
+                reject.Margin = new Thickness(6, 0, 0, 0);
+                reject.OnPressed += _ => _owner.RejectWar();
+                row.AddChild(approve);
+                row.AddChild(reject);
+                WarApprovalBox.AddChild(row);
+            }
+            else
+            {
+                WarApprovalBox.AddChild(MakeWrap("Одобрить может только Канцлер.", Color.Gray));
+            }
         }
-        else
+
+        if (state.EmergencyProposed)
         {
-            WarApprovalBox.AddChild(MakeWrap("Одобрить может только Канцлер.", Color.Gray));
+            WarApprovalBox.AddChild(MakeWrap($"Министр ВБ предлагает ввести режим: {state.PendingPostureName}.", Color.IndianRed));
+
+            if (state.CanApproveEmergency)
+            {
+                var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
+                var approve = SWConsoleStyle.Action("Одобрить", SWConsoleStyle.Bad);
+                approve.OnPressed += _ => _owner.ApproveEmergency();
+                var reject = SWConsoleStyle.Action("Отклонить", SWConsoleStyle.Neutral);
+                reject.Margin = new Thickness(6, 0, 0, 0);
+                reject.OnPressed += _ => _owner.RejectEmergency();
+                row.AddChild(approve);
+                row.AddChild(reject);
+                WarApprovalBox.AddChild(row);
+            }
+            else
+            {
+                WarApprovalBox.AddChild(MakeWrap("Одобрить может только Канцлер.", Color.Gray));
+            }
         }
     }
 

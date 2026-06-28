@@ -205,6 +205,141 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public int ActiveOpSlots;
     public int ActiveOpUsed;
     public List<string> DefenseLog = new();
+
+    // КОНТРОЛЬ (Internal Security ministry only).
+    public bool IsSecurity;
+    public SWSecurityPosture Posture;
+    public string PostureName = string.Empty;
+    public Color PostureColor;
+    public List<SWBillEffectEntry> PostureEffects = new();
+    public bool EmergencyPending;
+    public string PendingPostureName = string.Empty;
+    public int Threat;
+    public string ThreatStatus = string.Empty;
+    public int Unrest;
+    public string UnrestStatus = string.Empty;
+    public string SelectedSecProgram = string.Empty;
+    public int SecProgramProgress;
+    public List<SWDefenseProgramEntry> SecPrograms = new();
+    public List<SWCellEntry> Cells = new();
+    public List<SWCellSectorEntry> CellSectors = new();
+    public int CellUpkeep;
+    public List<SWDefenseOperationEntry> SecOperations = new();
+    public List<SWActiveOpEntry> SecActiveOps = new();
+    public int SecOpSlots;
+    public int SecOpUsed;
+    public List<string> SecurityLog = new();
+    public List<SWPlotEntry> Plots = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCellEntry
+{
+    public int Id;
+    public SWCellState State;
+    public string LocationLabel = string.Empty;
+    public string? SectorId;
+    public bool Burned;
+    public int RebuildLeft;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCellSectorEntry
+{
+    public string Id = string.Empty;
+    public string Name = string.Empty;
+    public Color Color;
+    public int Order;
+    public int Cells;
+    public bool HasPlot;
+    public bool PlotRevealed;
+    public string PlotLabel = string.Empty;
+    public Color PlotColor;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPlotEntry
+{
+    public int Id;
+    public string SectorId = string.Empty;
+    public string SectorName = string.Empty;
+    public string TypeLabel = string.Empty;
+    public Color TypeColor;
+    public int Maturity;
+    public bool Revealed;
+    public int Cells;
+    public int SuccessChance;
+    public bool CanRaid;
+    public string ThreatLabel = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSecuritySetPostureMessage : BoundUserInterfaceMessage
+{
+    public SWSecurityPosture Posture;
+
+    public SWSecuritySetPostureMessage(SWSecurityPosture posture)
+    {
+        Posture = posture;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSecuritySelectProgramMessage : BoundUserInterfaceMessage
+{
+    public string ProgramId;
+
+    public SWSecuritySelectProgramMessage(string programId)
+    {
+        ProgramId = programId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSecurityDeployCellMessage : BoundUserInterfaceMessage
+{
+    public int CellId;
+    public string Target;
+
+    public SWSecurityDeployCellMessage(int cellId, string target)
+    {
+        CellId = cellId;
+        Target = target;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSecurityLaunchOpMessage : BoundUserInterfaceMessage
+{
+    public string OpId;
+    public string Target;
+
+    public SWSecurityLaunchOpMessage(string opId, string target)
+    {
+        OpId = opId;
+        Target = target;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSecurityRaidPlotMessage : BoundUserInterfaceMessage
+{
+    public int PlotId;
+
+    public SWSecurityRaidPlotMessage(int plotId)
+    {
+        PlotId = plotId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSecurityApproveEmergencyMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSecurityRejectEmergencyMessage : BoundUserInterfaceMessage
+{
 }
 
 [Serializable, NetSerializable]
@@ -457,6 +592,9 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool WarProposed;
     public bool CanApproveWar;
     public string PendingStanceName = string.Empty;
+    public bool EmergencyProposed;
+    public bool CanApproveEmergency;
+    public string PendingPostureName = string.Empty;
     public List<SWBillPresetEntry> Presets = new();
     public bool CanDilemmas;
     public List<string> MinistryNotices = new();

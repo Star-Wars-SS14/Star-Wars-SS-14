@@ -61,6 +61,31 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWDefenseLaunchOpMessage(opId, target));
     }
 
+    public void SetPosture(SWSecurityPosture posture)
+    {
+        SendMessage(new SWSecuritySetPostureMessage(posture));
+    }
+
+    public void SelectSecProgram(string programId)
+    {
+        SendMessage(new SWSecuritySelectProgramMessage(programId));
+    }
+
+    public void DeployCell(int cellId, string target)
+    {
+        SendMessage(new SWSecurityDeployCellMessage(cellId, target));
+    }
+
+    public void LaunchSecOp(string opId, string target)
+    {
+        SendMessage(new SWSecurityLaunchOpMessage(opId, target));
+    }
+
+    public void RaidPlot(int plotId)
+    {
+        SendMessage(new SWSecurityRaidPlotMessage(plotId));
+    }
+
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);

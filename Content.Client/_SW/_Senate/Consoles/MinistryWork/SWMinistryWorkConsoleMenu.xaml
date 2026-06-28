@@ -33,6 +33,15 @@
                 <ScrollContainer Name="OpsPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
                     <BoxContainer Name="OpsContent" Orientation="Vertical" HorizontalExpand="True" />
                 </ScrollContainer>
+                <ScrollContainer Name="ControlPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="ControlContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="NetworkPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="NetworkContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="SecOpsPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="SecOpsContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
             </BoxContainer>
         </BoxContainer>
     </PanelContainer>

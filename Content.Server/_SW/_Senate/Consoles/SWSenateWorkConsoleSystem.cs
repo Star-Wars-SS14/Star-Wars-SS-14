@@ -32,6 +32,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWSenateAmbitionSystem _ambition = default!;
     [Dependency] private readonly SWSenateCrisisSystem _crisis = default!;
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
+    [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
     [Dependency] private readonly SWSenatePartySystem _party = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
@@ -62,6 +63,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateConfirmSessionMessage>(OnConfirmSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWDefenseApproveWarMessage>(OnApproveWar);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWDefenseRejectWarMessage>(OnRejectWar);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSecurityApproveEmergencyMessage>(OnApproveEmergency);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSecurityRejectEmergencyMessage>(OnRejectEmergency);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectSessionMessage>(OnRejectSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAnnounceMessage>(OnAnnounce);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateCreatePartyMessage>(OnCreateParty);
@@ -344,6 +347,29 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             return;
 
         _defense.RejectWar();
+        UpdateUi(ent);
+    }
+
+    private void OnApproveEmergency(Entity<SWSenateWorkConsoleComponent> ent, ref SWSecurityApproveEmergencyMessage args)
+    {
+        if (!CanConfirmAs(ent))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_security.ApproveEmergency())
+            _popup.PopupCursor(Loc.GetString("sw-security-emergency-approved"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRejectEmergency(Entity<SWSenateWorkConsoleComponent> ent, ref SWSecurityRejectEmergencyMessage args)
+    {
+        if (!CanConfirmAs(ent))
+            return;
+
+        _security.RejectEmergency();
         UpdateUi(ent);
     }
 
@@ -759,6 +785,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.WarProposed = _defense.WarPending;
         state.CanApproveWar = _defense.WarPending && CanConfirmAs(ent);
         state.PendingStanceName = _defense.PendingStance is { } pendingStance ? SWMinistryDefenseSystem.StanceName(pendingStance) : string.Empty;
+        state.EmergencyProposed = _security.EmergencyPending;
+        state.CanApproveEmergency = _security.EmergencyPending && CanConfirmAs(ent);
+        state.PendingPostureName = _security.PendingPosture is { } pendingPosture ? SWMinistryInternalSecuritySystem.PostureName(pendingPosture) : string.Empty;
 
         if (card != null && TryComp<SWSenatePositionCardComponent>(card, out var position))
         {

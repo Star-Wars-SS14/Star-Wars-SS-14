@@ -1,0 +1,39 @@
+- type: swSecurityProgram
+  id: SWSecurityProgramSurveillance
+  name: Программа надзора
+  description: Тотальная слежка усиливает разведку и контртеррор, но давит свободы.
+  order: 0
+  policyEffects:
+    SWStatIntel: 6
+    SWStatCounter: 3
+    SWStatRights: -3
+
+- type: swSecurityProgram
+  id: SWSecurityProgramPublicOrder
+  name: Общественный порядок
+  description: Усиленное патрулирование поднимает правопорядок и сбивает накал.
+  order: 1
+  unrestDelta: -4
+  policyEffects:
+    SWStatPolice: 7
+    SWStatCrime: 3
+
+- type: swSecurityProgram
+  id: SWSecurityProgramAntiSmuggling
+  name: Антиконтрабандная сеть
+  description: Работа по каналам контрабанды снижает угрозу ценой части торговли.
+  order: 2
+  threatDelta: -6
+  policyEffects:
+    SWStatCounter: 7
+    SWStatTrade: -2
+
+- type: swSecurityProgram
+  id: SWSecurityProgramPropaganda
+  name: Пропагандистская кампания
+  description: Государственная пропаганда поднимает мораль и усиливает цензуру.
+  order: 3
+  unrestDelta: -5
+  policyEffects:
+    SWStatMorale: 6
+    SWStatCensorship: 4

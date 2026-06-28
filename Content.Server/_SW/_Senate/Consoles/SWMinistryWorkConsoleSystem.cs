@@ -24,6 +24,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
+    [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
@@ -43,7 +44,61 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseSelectProgramMessage>(OnSelectProgram);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFleetDeployMessage>(OnDeployFleet);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseLaunchOpMessage>(OnLaunchOp);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecuritySetPostureMessage>(OnSetPosture);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecuritySelectProgramMessage>(OnSelectSecProgram);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecurityDeployCellMessage>(OnDeployCell);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecurityLaunchOpMessage>(OnLaunchSecOp);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecurityRaidPlotMessage>(OnRaidPlot);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryResignMessage>(OnResign);
+    }
+
+    private void OnSetPosture(Entity<SWMinistryWorkConsoleComponent> ent, ref SWSecuritySetPostureMessage args)
+    {
+        if (GetCardMinistry(ent) != SWMinistryInternalSecuritySystem.SecurityMinistryId)
+            return;
+
+        _security.SetPosture(args.Posture);
+        UpdateUi(ent);
+    }
+
+    private void OnSelectSecProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWSecuritySelectProgramMessage args)
+    {
+        if (GetCardMinistry(ent) != SWMinistryInternalSecuritySystem.SecurityMinistryId)
+            return;
+
+        _security.SelectProgram(args.ProgramId);
+        UpdateUi(ent);
+    }
+
+    private void OnDeployCell(Entity<SWMinistryWorkConsoleComponent> ent, ref SWSecurityDeployCellMessage args)
+    {
+        if (GetCardMinistry(ent) != SWMinistryInternalSecuritySystem.SecurityMinistryId)
+            return;
+
+        _security.DeployCell(args.CellId, args.Target);
+        UpdateUi(ent);
+    }
+
+    private void OnLaunchSecOp(Entity<SWMinistryWorkConsoleComponent> ent, ref SWSecurityLaunchOpMessage args)
+    {
+        if (GetCardMinistry(ent) != SWMinistryInternalSecuritySystem.SecurityMinistryId)
+            return;
+
+        if (!_security.LaunchOperation(args.OpId, args.Target))
+            _popup.PopupCursor(Loc.GetString("sw-defense-op-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRaidPlot(Entity<SWMinistryWorkConsoleComponent> ent, ref SWSecurityRaidPlotMessage args)
+    {
+        if (GetCardMinistry(ent) != SWMinistryInternalSecuritySystem.SecurityMinistryId)
+            return;
+
+        if (!_security.RaidPlot(args.PlotId))
+            _popup.PopupCursor(Loc.GetString("sw-security-raid-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
     }
 
     private void OnLaunchOp(Entity<SWMinistryWorkConsoleComponent> ent, ref SWDefenseLaunchOpMessage args)
@@ -240,6 +295,32 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.ActiveOpSlots = _defense.ActiveOpSlots;
                     state.ActiveOpUsed = _defense.ActiveOpUsed;
                     state.DefenseLog = _defense.GetLog();
+                }
+                else if (ministryId == SWMinistryInternalSecuritySystem.SecurityMinistryId)
+                {
+                    state.IsSecurity = true;
+                    state.Posture = _security.Posture;
+                    state.PostureName = SWMinistryInternalSecuritySystem.PostureName(_security.Posture);
+                    state.PostureColor = SWMinistryInternalSecuritySystem.PostureColor(_security.Posture);
+                    state.PostureEffects = _security.BuildPostureEffects(_security.Posture);
+                    state.EmergencyPending = _security.EmergencyPending;
+                    state.PendingPostureName = _security.PendingPosture is { } pend ? SWMinistryInternalSecuritySystem.PostureName(pend) : string.Empty;
+                    state.Threat = _security.Threat;
+                    state.ThreatStatus = _security.ThreatStatus();
+                    state.Unrest = _security.Unrest;
+                    state.UnrestStatus = _security.UnrestStatus();
+                    state.SelectedSecProgram = _security.SelectedProgram ?? string.Empty;
+                    state.SecProgramProgress = _security.ProgramProgress;
+                    state.SecPrograms = _security.BuildPrograms();
+                    state.Cells = _security.BuildCells();
+                    state.CellSectors = _security.BuildCellSectors();
+                    state.CellUpkeep = _security.CellUpkeep;
+                    state.SecOperations = _security.BuildOperations();
+                    state.SecActiveOps = _security.BuildActiveOps();
+                    state.SecOpSlots = _security.ActiveOpSlots;
+                    state.SecOpUsed = _security.ActiveOpUsed;
+                    state.SecurityLog = _security.GetLog();
+                    state.Plots = _security.BuildPlots();
                 }
             }
         }

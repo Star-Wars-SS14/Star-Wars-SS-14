@@ -18,6 +18,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
     [Dependency] private readonly SWSenateBudgetSystem _budget = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
+    [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
 
     public const string RepublicOwner = "republic";
 
@@ -471,6 +472,8 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
         if (ministryId == SWMinistryDefenseSystem.DefenseMinistryId)
             _defense.OnSectorEngagement(request.SectorId);
+        else if (ministryId == SWMinistryInternalSecuritySystem.SecurityMinistryId)
+            _security.OnSectorEngagement(request.SectorId);
 
         request.Status = SWMinistryRequestStatus.Resolved;
         request.MinisterOption = optionIndex;
@@ -528,8 +531,14 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
     public List<string> GetNotices(string? owner) =>
         owner != null && _notices.TryGetValue(owner, out var list) ? new List<string>(list) : new List<string>();
 
-    private (float Cost, float Effect) DefenseModifier(string ministryId, string? sectorId) =>
-        ministryId == SWMinistryDefenseSystem.DefenseMinistryId ? _defense.GetRequestModifier(sectorId) : (1f, 1f);
+    private (float Cost, float Effect) DefenseModifier(string ministryId, string? sectorId)
+    {
+        if (ministryId == SWMinistryDefenseSystem.DefenseMinistryId)
+            return _defense.GetRequestModifier(sectorId);
+        if (ministryId == SWMinistryInternalSecuritySystem.SecurityMinistryId)
+            return _security.GetRequestModifier(sectorId);
+        return (1f, 1f);
+    }
 
     private static int RealCost(int cost, SWAuditIssue issue) =>
         issue == SWAuditIssue.InflatedEstimate ? (int) (cost * InflatedFactor) : cost;

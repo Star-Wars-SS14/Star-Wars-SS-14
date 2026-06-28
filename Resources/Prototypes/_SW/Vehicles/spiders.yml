@@ -74,8 +74,8 @@
     enabled: false
     mask: /Textures/Effects/LightMasks/cone.png
     autoRot: true
-    radius: 12
-    energy: 4
+    radius: 10
+    energy: 2
     color: "#e8f2ff"
   - type: SWExplosionThrowModifier
     throwMultiplier: 0.0

@@ -258,7 +258,9 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
 
         var deployed = _groups.Count(g => g.State is SWFleetState.Border or SWFleetState.Sector);
 
-        _border = Math.Clamp(_border + (cfg.Border - borderRelief) * gameHours, 0f, 100f);
+        // Imperial pressure builds faster the weaker the Republic's defences; fleet relief is unscaled.
+        var borderRise = cfg.Border * _senate.StatPressureScale("SWGlobalDefense", cfg.Border);
+        _border = Math.Clamp(_border + (borderRise - borderRelief) * gameHours, 0f, 100f);
         if (_border >= 75f)
         {
             NudgeSectors("SWGlobalDefense", -0.3f * gameHours);
@@ -286,7 +288,8 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
 
         TickUpkeep(deployed, gameHours);
 
-        _weariness = Math.Clamp(_weariness + cfg.Weariness * gameHours, 0f, 100f);
+        var wearinessScale = _senate.StatPressureScale("SWGlobalSociety", cfg.Weariness);
+        _weariness = Math.Clamp(_weariness + cfg.Weariness * wearinessScale * gameHours, 0f, 100f);
 
         if (_program != null && _progress < 100f)
         {

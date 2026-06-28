@@ -67,6 +67,13 @@ public sealed class SWStatisticsConsoleState : BoundUserInterfaceState
     public int BorderPressure;
     public string BorderStatus = string.Empty;
     public List<SWBillEffectEntry> DefconEffects = new();
+    public string PostureName = string.Empty;
+    public Color PostureColor;
+    public int Threat;
+    public string ThreatStatus = string.Empty;
+    public int Unrest;
+    public string UnrestStatus = string.Empty;
+    public List<SWBillEffectEntry> PostureEffects = new();
 
     public SWStatisticsConsoleState(List<SWGlobalStatEntry> globals, List<SWSectorEntry> sectors)
     {

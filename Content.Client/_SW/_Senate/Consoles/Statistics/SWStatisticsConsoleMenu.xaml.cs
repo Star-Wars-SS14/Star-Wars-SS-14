@@ -90,6 +90,22 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
         RepublicStats.AddChild(defconPanel);
 
         RepublicStats.AddChild(new Control { MinHeight = 10 });
+        RepublicStats.AddChild(SWConsoleStyle.Section("ВНУТРЕННЯЯ БЕЗОПАСНОСТЬ"));
+        RepublicStats.AddChild(new Control { MinHeight = 4 });
+        var posturePanel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, state.PostureColor);
+        var postureBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+        var postureHead = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        postureHead.AddChild(SWConsoleStyle.Text($"Режим: {state.PostureName}", state.PostureColor, SWConsoleStyle.MonoBold));
+        postureHead.AddChild(new Control { HorizontalExpand = true });
+        postureHead.AddChild(SWConsoleStyle.Text($"Угроза {state.Threat}/100 · Накал {state.Unrest}/100", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        postureBox.AddChild(postureHead);
+        postureBox.AddChild(SWConsoleStyle.Text($"{state.ThreatStatus} · {state.UnrestStatus}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        if (state.PostureEffects.Count > 0)
+            postureBox.AddChild(RateRow(state.PostureEffects));
+        posturePanel.AddChild(postureBox);
+        RepublicStats.AddChild(posturePanel);
+
+        RepublicStats.AddChild(new Control { MinHeight = 10 });
         RepublicStats.AddChild(SWConsoleStyle.Section("ПОКАЗАТЕЛИ РЕСПУБЛИКИ"));
         RepublicStats.AddChild(new Control { MinHeight = 6 });
 

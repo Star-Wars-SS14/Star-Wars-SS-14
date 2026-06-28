@@ -278,8 +278,12 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
 
         var deployed = _cells.Count(c => c.State == SWCellState.Sector);
 
-        _threat = Math.Clamp(_threat + cfg.Threat * gameHours, 0f, 100f);
-        _unrest = Math.Clamp(_unrest + cfg.Unrest * gameHours, 0f, 100f);
+        // Buildup speed is tied to the Republic: a weak state lets threats and unrest spiral several
+        // times faster, a strong one keeps them in check (direction-aware).
+        var threatScale = _senate.StatPressureScale("SWGlobalSecurity", cfg.Threat);
+        var unrestScale = _senate.StatPressureScale("SWGlobalSociety", cfg.Unrest);
+        _threat = Math.Clamp(_threat + cfg.Threat * threatScale * gameHours, 0f, 100f);
+        _unrest = Math.Clamp(_unrest + cfg.Unrest * unrestScale * gameHours, 0f, 100f);
 
         // Discontent feeds on low rights and morale; order represses it.
         UnrestFeedback(gameHours);

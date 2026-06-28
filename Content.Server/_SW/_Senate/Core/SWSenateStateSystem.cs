@@ -149,6 +149,34 @@ public sealed class SWSenateStateSystem : EntitySystem
         return result;
     }
 
+    public float GetRepublicGlobal(string globalId)
+    {
+        var sum = 0f;
+        var weight = 0f;
+        foreach (var (sectorId, globals) in _sectorGlobals)
+        {
+            if (!globals.TryGetValue(globalId, out var value))
+                continue;
+            var w = _sectorWeight.TryGetValue(sectorId, out var sw) ? sw : 1f;
+            sum += value * w;
+            weight += w;
+        }
+
+        return weight > 0 ? sum / weight : NeutralStat;
+    }
+
+    // Direction-aware multiplier for a per-game-hour accumulation, tied to a governing global's "факт".
+    // Worsening changes (delta > 0) bite several times harder when the stat is low and are dampened when
+    // it is high; improving changes (delta < 0) are weaker at low stats and stronger at high stats.
+    public float StatPressureScale(string governingGlobalId, float delta)
+    {
+        var stat = GetRepublicGlobal(governingGlobalId);
+        if (delta >= 0f)
+            return Math.Clamp(NeutralStat / Math.Max(stat, 1f), 0.4f, 3.5f);
+
+        return Math.Clamp(stat / NeutralStat, 0.6f, 1.6f);
+    }
+
     public List<SWGlobalStatEntry> BuildGlobalEntries()
     {
         var policy = GetPolicyScores();

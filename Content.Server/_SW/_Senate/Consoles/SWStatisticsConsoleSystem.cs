@@ -14,6 +14,7 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
     [Dependency] private readonly SWSenateCrisisSystem _crisis = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
+    [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
 
     private const float UpdateInterval = 3f;
@@ -79,6 +80,13 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
             BorderPressure = _defense.BorderPressure,
             BorderStatus = _defense.BorderStatus(),
             DefconEffects = _defense.BuildStanceEffects(stance),
+            PostureName = SWMinistryInternalSecuritySystem.PostureName(_security.Posture),
+            PostureColor = SWMinistryInternalSecuritySystem.PostureColor(_security.Posture),
+            Threat = _security.Threat,
+            ThreatStatus = _security.ThreatStatus(),
+            Unrest = _security.Unrest,
+            UnrestStatus = _security.UnrestStatus(),
+            PostureEffects = _security.BuildPostureEffects(_security.Posture),
         };
 
         _ui.SetUiState(ent.Owner, SWStatisticsConsoleUiKey.Key, state);

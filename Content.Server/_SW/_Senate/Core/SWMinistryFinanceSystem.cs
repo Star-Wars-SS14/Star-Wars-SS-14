@@ -37,6 +37,9 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
     private int _taxLevel = 1; // 0 low / 1 mid / 2 high
     private bool _emissionPending;
 
+    private float _ratingScore = 35f;
+    private int _ratingBand = 2; // A
+
     private string? _program;
     private float _progress;
 
@@ -65,6 +68,8 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
         _debt = 0f;
         _taxLevel = 1;
         _emissionPending = false;
+        _ratingScore = 35f;
+        _ratingBand = 2;
         _program = null;
         _progress = 0f;
         _log.Clear();
@@ -115,37 +120,38 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
 
     private int Treasury() => _senate.SubStats.TryGetValue("SWStatTreasury", out var t) ? (int) MathF.Round(t) : 50;
 
-    // Credit score from treasury, debt and inflation → a sovereign rating band.
-    private int RatingScore() => (int) MathF.Round(Treasury() - _debt * 0.6f - (_inflation - InflationNeutral) * 0.4f);
+    // Lower score edge of each rating band (index 0 = AAA … 6 = CCC; band 7 = D, below the last edge).
+    private static readonly float[] RatingEdges = { 60f, 45f, 32f, 20f, 8f, -6f, -20f };
+    private static readonly string[] RatingLabels = { "AAA", "AA", "A", "BBB", "BB", "B", "CCC", "D" };
+    private const float RatingHysteresis = 3f;
 
-    public string CreditRating()
+    // Instant credit score from treasury, debt and inflation. Smoothed into _ratingScore so the rating
+    // does not flicker as the underlying live stats jitter each tick.
+    private float TargetScore() => Treasury() - _debt * 0.6f - (_inflation - InflationNeutral) * 0.4f;
+
+    private void UpdateRating(float gameHours)
     {
-        return RatingScore() switch
-        {
-            >= 60 => "AAA",
-            >= 45 => "AA",
-            >= 32 => "A",
-            >= 20 => "BBB",
-            >= 8 => "BB",
-            >= -6 => "B",
-            >= -20 => "CCC",
-            _ => "D",
-        };
+        _ratingScore += (TargetScore() - _ratingScore) * Math.Clamp(2f * gameHours, 0f, 1f);
+
+        // Sticky bands: only upgrade/downgrade once the smoothed score clears the threshold by a margin.
+        while (_ratingBand > 0 && _ratingScore >= RatingEdges[_ratingBand - 1] + RatingHysteresis)
+            _ratingBand--;
+        while (_ratingBand < RatingLabels.Length - 1 && _ratingScore < RatingEdges[_ratingBand] - RatingHysteresis)
+            _ratingBand++;
     }
 
-    public Color RatingColor()
-    {
-        return RatingScore() switch
-        {
-            >= 45 => Color.FromHex("#43D16A"),
-            >= 20 => Color.FromHex("#5DADE2"),
-            >= -6 => Color.FromHex("#E0A23B"),
-            _ => Color.FromHex("#E0556B"),
-        };
-    }
+    public string CreditRating() => RatingLabels[_ratingBand];
 
-    // Bond proceeds scale with the rating: a trusted Republic borrows cheaply.
-    public int BondProceeds() => Math.Clamp((int) MathF.Round(BondTreasuryBase * (RatingScore() / 50f + 0.5f)), 4, BondTreasuryBase + 6);
+    public Color RatingColor() => _ratingBand switch
+    {
+        <= 1 => Color.FromHex("#43D16A"),
+        <= 3 => Color.FromHex("#5DADE2"),
+        <= 5 => Color.FromHex("#E0A23B"),
+        _ => Color.FromHex("#E0556B"),
+    };
+
+    // Bond proceeds scale with the (smoothed) rating: a trusted Republic borrows cheaply.
+    public int BondProceeds() => Math.Clamp((int) MathF.Round(BondTreasuryBase * (_ratingScore / 50f + 0.5f)), 4, BondTreasuryBase + 6);
 
     public bool CanIssueBonds() => _debt < 100f && CreditRating() != "D";
 
@@ -172,7 +178,7 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
 
         var proceeds = BondProceeds();
         _senate.AddPolicy("SWStatTreasury", proceeds);
-        _debt = Math.Clamp(_debt + BondDebt, 0f, 120f);
+        _debt = Math.Clamp(_debt + BondDebt, 0f, 100f);
         AddLog($"Выпущены облигации: +{proceeds} в казну, долг вырос.");
         return true;
     }
@@ -183,7 +189,7 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
             return false;
 
         _senate.AddPolicy("SWStatTreasury", -RepayTreasuryCost);
-        _debt = Math.Clamp(_debt - RepayDebtAmount, 0f, 120f);
+        _debt = Math.Clamp(_debt - RepayDebtAmount, 0f, 100f);
         AddLog("Часть госдолга погашена досрочно.");
         return true;
     }
@@ -262,6 +268,7 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
         TickInflation(gameHours);
         TickTaxes(gameHours);
         TickDebtService(gameHours);
+        UpdateRating(gameHours);
 
         if (_program != null && _progress < 100f)
         {
@@ -339,7 +346,7 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
         if (proto.InflationDelta != 0f)
             _inflation = Math.Clamp(_inflation + proto.InflationDelta * scale, 0f, 100f);
         if (proto.DebtDelta != 0f)
-            _debt = Math.Clamp(_debt + proto.DebtDelta * scale, 0f, 120f);
+            _debt = Math.Clamp(_debt + proto.DebtDelta * scale, 0f, 100f);
     }
 
     // Finance requests are eased when the treasury is healthy and bite under high inflation.

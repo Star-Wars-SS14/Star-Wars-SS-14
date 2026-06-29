@@ -479,6 +479,76 @@ public sealed class SWCaseCommand : IConsoleCommand
     }
 }
 
+// swcorrupt — управлять коррупцией (для теста).
+//   swcorrupt                          — статус (индекс).
+//   swcorrupt sector <sectorId> <0-100>  — коррумпированность сектора.
+//   swcorrupt person <имя...> <0-100>    — коррумпированность лица (имя может быть из нескольких слов).
+//   swcorrupt account <имя...> <сумма>   — личный счёт лица.
+[AdminCommand(AdminFlags.Debug)]
+public sealed class SWCorruptCommand : IConsoleCommand
+{
+    public string Command => "swcorrupt";
+    public string Description => "Задать коррупцию сектора/лица или личный счёт.";
+    public string Help => "swcorrupt [sector <id> <0-100> | person <name> <0-100> | account <name> <amount>]";
+
+    public void Execute(IConsoleShell shell, string argStr, string[] args)
+    {
+        var corruption = IoCManager.Resolve<IEntityManager>().System<SWCorruptionSystem>();
+
+        if (args.Length < 1)
+        {
+            shell.WriteLine(corruption.AdminStatus());
+            return;
+        }
+
+        if (args.Length < 3)
+        {
+            shell.WriteError(Help);
+            return;
+        }
+
+        var mode = args[0].ToLowerInvariant();
+        var key = string.Join(' ', args.Skip(1).Take(args.Length - 2));
+        var raw = args[^1];
+
+        switch (mode)
+        {
+            case "sector":
+                if (!float.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out var sv))
+                {
+                    shell.WriteError("swcorrupt sector <id> <0-100>");
+                    return;
+                }
+                corruption.AdminSetSector(key, sv);
+                break;
+
+            case "person":
+                if (!float.TryParse(raw, NumberStyles.Float, CultureInfo.InvariantCulture, out var pv))
+                {
+                    shell.WriteError("swcorrupt person <name> <0-100>");
+                    return;
+                }
+                corruption.AdminSetPerson(key, pv);
+                break;
+
+            case "account":
+                if (!int.TryParse(raw, out var av))
+                {
+                    shell.WriteError("swcorrupt account <name> <amount>");
+                    return;
+                }
+                corruption.AdminSetAccount(key, av);
+                break;
+
+            default:
+                shell.WriteError("swcorrupt [sector|person|account] ...");
+                return;
+        }
+
+        shell.WriteLine(corruption.AdminStatus());
+    }
+}
+
 // swcrisis — заспавнить кризис вне зависимости от условий (для теста).
 // Аргумент можно дать как ID сектора, так и ID кризиса — команда сама разберётся.
 //   Республиканскому кризису сектор не нужен. Секторальному без сектора подберётся активный.

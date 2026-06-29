@@ -34,6 +34,8 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
     };
 
     private readonly List<SWCourtCase> _cases = new();
+    private readonly List<SWCourtClosed> _archive = new();
+    private int _convictJust, _convictWrong, _acquitJust, _acquitWrong, _dismissed, _overdue;
     private int _nextCaseId = 1;
     private float _backlog = 20f;
     private int _capacity;
@@ -68,9 +70,13 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
         _cases.Clear();
+        _archive.Clear();
+        _convictJust = _convictWrong = _acquitJust = _acquitWrong = _dismissed = _overdue = 0;
         _nextCaseId = 1;
         _backlog = 20f;
         _capacity = CapacityFor(SWJusticeStance.Balanced);
+        _regenAccum = 0f;
+        _overtimeToday = 0;
         _stance = SWJusticeStance.Balanced;
         _tribunalUntil = -1;
         _tribunalPending = false;
@@ -89,12 +95,35 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
 
     public List<string> GetLog() => new(_log);
 
+    private const float RegenHours = 4f;       // courts recover 1 capacity every this many game-hours
+    private const int OvertimeGain = 3;
+    private const int OvertimeBaseCost = 1500;
+    private const int OvertimeStep = 1000;      // each extra overtime session this day costs this much more
+
+    private float _regenAccum;
+    private int _overtimeToday;
+
     private static int CapacityFor(SWJusticeStance stance) => stance switch
     {
-        SWJusticeStance.Lenient => 4,
-        SWJusticeStance.Harsh => 7,
-        _ => 5,
+        SWJusticeStance.Lenient => 6,
+        SWJusticeStance.Harsh => 9,
+        _ => 7,
     };
+
+    public int OvertimeCost() => OvertimeBaseCost + _overtimeToday * OvertimeStep;
+    public bool CanBuyOvertime() => _dilemma.GetMinistryBudget(JusticeMinistryId) >= OvertimeCost();
+
+    public bool BuyOvertime()
+    {
+        var cost = OvertimeCost();
+        if (!_dilemma.SpendMinistry(JusticeMinistryId, cost))
+            return false;
+
+        _capacity += OvertimeGain;
+        _overtimeToday++;
+        AddLog($"Назначены сверхурочные слушания: +{OvertimeGain} к ресурсу судов.");
+        return true;
+    }
 
     public static string StanceName(SWJusticeStance stance) => stance switch
     {
@@ -284,6 +313,8 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
                 _senate.AddPolicy("SWStatCrime", 1.0f * order);
                 _senate.AddPolicy("SWStatRights", -0.4f * sev * (harsh ? 1.3f : 1f));
                 Sector("SWGlobalSecurity", 1.5f * order);
+                _convictJust++;
+                Archive(c, "Справедливый приговор", 0);
                 break;
             }
             case SWVerdict.Convict:
@@ -293,11 +324,15 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
                 _senate.AddPolicy("SWStatPolice", -0.3f * sev);
                 _backlog = Math.Clamp(_backlog + 4f, 0f, 100f);
                 AddLog($"Судебная ошибка по делу #{c.Id} ({TypeName(c.Type)}): осуждён невиновный.");
+                _convictWrong++;
+                Archive(c, "Судебная ошибка", 1);
                 break;
             }
             case SWVerdict.Acquit when !c.Guilt:
             {
                 _senate.AddPolicy("SWStatRights", 1.2f * sev * (lenient ? 1.3f : 1f));
+                _acquitJust++;
+                Archive(c, "Оправдан невиновный", 0);
                 break;
             }
             case SWVerdict.Acquit:
@@ -306,14 +341,25 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
                 _senate.AddPolicy("SWStatPolice", -1.0f * sev);
                 Sector("SWGlobalSecurity", -1.0f * sev);
                 AddLog($"Виновный по делу #{c.Id} ({TypeName(c.Type)}) оправдан.");
+                _acquitWrong++;
+                Archive(c, "Виновный оправдан", 1);
                 break;
             }
             default:
             {
                 _senate.AddPolicy("SWStatPolice", -0.4f * sev);
+                _dismissed++;
+                Archive(c, "Дело прекращено", 2);
                 break;
             }
         }
+    }
+
+    private void Archive(SWCourtCase c, string result, int tier)
+    {
+        _archive.Insert(0, new SWCourtClosed { Id = c.Id, Type = c.Type, Result = result, Tier = tier });
+        if (_archive.Count > 25)
+            _archive.RemoveRange(25, _archive.Count - 25);
     }
 
     public override void Update(float frameTime)
@@ -339,6 +385,8 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
             _program = null;
             _progress = 0f;
             _capacity = CapacityFor(_stance) + (TribunalActive ? 10 : 0);
+            _regenAccum = 0f;
+            _overtimeToday = 0;
         }
 
         if (!_time.DayActive)
@@ -346,6 +394,7 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
 
         var gameHours = dt * (1f / SWSenateTimeSystem.RealSecondsPerGameHour);
 
+        RegenCapacity(gameHours);
         SpawnCases(gameHours);
         AgeCases(gameHours);
         TickBacklog(gameHours);
@@ -356,6 +405,21 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
         {
             var perHour = 100f / (SWSenateTimeSystem.EndHour - SWSenateTimeSystem.StartHour);
             _progress = Math.Clamp(_progress + perHour * gameHours, 0f, 100f);
+        }
+    }
+
+    // Courts slowly recover throughput through the day, up to their normal ceiling.
+    private void RegenCapacity(float gameHours)
+    {
+        var ceiling = CapacityFor(_stance) + (TribunalActive ? 10 : 0);
+        if (_capacity >= ceiling)
+            return;
+
+        _regenAccum += gameHours;
+        while (_regenAccum >= RegenHours && _capacity < ceiling)
+        {
+            _capacity++;
+            _regenAccum -= RegenHours;
         }
     }
 
@@ -420,6 +484,8 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
             _senate.AddPolicy("SWStatRights", -0.3f * c.Severity);
             _backlog = Math.Clamp(_backlog + 3f, 0f, 100f);
             AddLog($"Дело #{c.Id} ({TypeName(c.Type)}) просрочено и прекращено.");
+            _overdue++;
+            Archive(c, "Просрочено", 1);
             _cases.RemoveAt(i);
         }
     }
@@ -506,6 +572,43 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
     public void OnSectorEngagement(string? sectorId)
     {
         _backlog = Math.Clamp(_backlog - 4f, 0f, 100f);
+    }
+
+    public int ConvictJust => _convictJust;
+    public int ConvictWrong => _convictWrong;
+    public int AcquitJust => _acquitJust;
+    public int AcquitWrong => _acquitWrong;
+    public int Dismissed => _dismissed;
+    public int Overdue => _overdue;
+    public int Resolved => _convictJust + _convictWrong + _acquitJust + _acquitWrong + _dismissed + _overdue;
+
+    public int Accuracy()
+    {
+        var judged = _convictJust + _convictWrong + _acquitJust + _acquitWrong;
+        return judged > 0 ? (int) MathF.Round((_convictJust + _acquitJust) / (float) judged * 100f) : 0;
+    }
+
+    public List<SWClosedCaseEntry> BuildArchive()
+    {
+        var list = new List<SWClosedCaseEntry>();
+        foreach (var closed in _archive)
+        {
+            list.Add(new SWClosedCaseEntry
+            {
+                Id = closed.Id,
+                TypeLabel = TypeName(closed.Type),
+                TypeColor = TypeColor(closed.Type),
+                ResultLabel = closed.Result,
+                ResultColor = closed.Tier switch
+                {
+                    0 => Color.FromHex("#43D16A"),
+                    1 => Color.FromHex("#E0556B"),
+                    _ => Color.FromHex("#888888"),
+                },
+            });
+        }
+
+        return list;
     }
 
     public List<SWCaseEntry> BuildCases()
@@ -598,4 +701,12 @@ public sealed class SWCourtCase
     public int Severity;
     public string? SectorId;
     public float Age;
+}
+
+public sealed class SWCourtClosed
+{
+    public int Id;
+    public SWCaseType Type;
+    public string Result = string.Empty;
+    public int Tier;
 }

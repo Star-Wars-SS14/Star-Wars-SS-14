@@ -30,7 +30,11 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
     [Dependency] private readonly SWSenateBudgetSystem _budget = default!;
     [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
+    [Dependency] private readonly SWCorruptionSystem _corruption = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
+
+    private const int ScreenCost = 600;
+    private const int ProsecuteCost = 1200;
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
 
@@ -85,7 +89,47 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeSetStanceMessage>(OnSetJusticeStance);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeSelectProgramMessage>(OnSelectJusticeProgram);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeDeclareTribunalMessage>(OnDeclareTribunal);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeOvertimeMessage>(OnOvertime);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWCorruptionScreenMessage>(OnScreen);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWCorruptionProsecuteMessage>(OnProsecute);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryResignMessage>(OnResign);
+    }
+
+    private void OnScreen(Entity<SWMinistryWorkConsoleComponent> ent, ref SWCorruptionScreenMessage args)
+    {
+        if (!IsJusticeCard(ent))
+            return;
+
+        if (_dilemma.SpendMinistry(SWMinistryJusticeSystem.JusticeMinistryId, ScreenCost))
+            _corruption.Screen(args.Sector, args.Key);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-corruption-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnProsecute(Entity<SWMinistryWorkConsoleComponent> ent, ref SWCorruptionProsecuteMessage args)
+    {
+        if (!IsJusticeCard(ent))
+            return;
+
+        if (_dilemma.SpendMinistry(SWMinistryJusticeSystem.JusticeMinistryId, ProsecuteCost))
+            _popup.PopupCursor(_corruption.Prosecute(args.Sector, args.Key), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-corruption-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnOvertime(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeOvertimeMessage args)
+    {
+        if (!IsJusticeCard(ent))
+            return;
+
+        if (!_justice.BuyOvertime())
+            _popup.PopupCursor(Loc.GetString("sw-justice-action-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
     }
 
     private bool IsJusticeCard(Entity<SWMinistryWorkConsoleComponent> ent) =>
@@ -615,6 +659,13 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.ExtraDomainStatIds.Add(extra);
 
                 var ministryId = ministryComp.Ministry.Value.Id;
+                var holderName = _ministry.GetHolder(ministryId);
+                if (holderName != null)
+                {
+                    state.HasPersonal = true;
+                    state.MyCorruption = _corruption.PersonCorruptionInt(holderName);
+                    state.MyAccount = _corruption.Account(holderName);
+                }
                 state.MinistryBudget = _dilemma.GetMinistryBudget(ministryId);
                 state.MinistryAdmin = _dilemma.GetMinistryAdmin(ministryId);
                 state.AuditCost = _dilemma.AuditCost;
@@ -778,6 +829,8 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.BacklogStatus = _justice.BacklogStatus();
                     state.CourtCapacity = _justice.Capacity;
                     state.CourtCapacityMax = _justice.CapacityMax;
+                    state.OvertimeCost = _justice.OvertimeCost();
+                    state.CanBuyOvertime = _justice.CanBuyOvertime();
                     state.TribunalActive = _justice.TribunalActive;
                     state.TribunalHoursLeft = _justice.TribunalHoursLeft;
                     state.TribunalPending = _justice.TribunalPending;
@@ -787,11 +840,91 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.Cases = _justice.BuildCases();
                     state.CaseCount = _justice.CaseCount;
                     state.JusticeLog = _justice.GetLog();
+                    state.JusticeArchive = _justice.BuildArchive();
+                    state.JusticeResolved = _justice.Resolved;
+                    state.JusticeConvictJust = _justice.ConvictJust;
+                    state.JusticeConvictWrong = _justice.ConvictWrong;
+                    state.JusticeAcquitJust = _justice.AcquitJust;
+                    state.JusticeAcquitWrong = _justice.AcquitWrong;
+                    state.JusticeDismissed = _justice.Dismissed;
+                    state.JusticeOverdue = _justice.Overdue;
+                    state.JusticeAccuracy = _justice.Accuracy();
+
+                    var jbudget = _dilemma.GetMinistryBudget(ministryId);
+                    state.CorruptionIndex = _corruption.GlobalIndex();
+                    state.CorruptionStatus = _corruption.GlobalStatus();
+                    state.ScreenCost = ScreenCost;
+                    state.ProsecuteCost = ProsecuteCost;
+                    state.CorruptSectors = BuildCorruptSectors(jbudget);
+                    state.CorruptPeople = BuildCorruptPeople(jbudget);
+                    state.CorruptionLog = _corruption.GetLog();
                 }
             }
         }
 
         _ui.SetUiState(ent.Owner, SWMinistryWorkConsoleUiKey.Key, state);
+    }
+
+    private List<SWCorruptTargetEntry> BuildCorruptSectors(int budget)
+    {
+        var list = new List<SWCorruptTargetEntry>();
+        foreach (var (sectorId, holder) in _senate.SectorHolders)
+        {
+            if (!_proto.TryIndex<SWSectorPrototype>(sectorId, out var proto))
+                continue;
+
+            var revealed = _corruption.IsRevealed(true, sectorId);
+            list.Add(new SWCorruptTargetEntry
+            {
+                Key = sectorId,
+                Sector = true,
+                Name = proto.Name,
+                Role = $"Сенатор: {holder}",
+                Color = proto.Color,
+                Revealed = revealed,
+                Corruption = revealed ? _corruption.SectorCorruptionInt(sectorId) : -1,
+                Account = -1,
+                CanScreen = !revealed && budget >= ScreenCost,
+                CanProsecute = budget >= ProsecuteCost,
+            });
+        }
+
+        list.Sort((a, b) => b.Corruption.CompareTo(a.Corruption));
+        return list;
+    }
+
+    private List<SWCorruptTargetEntry> BuildCorruptPeople(int budget)
+    {
+        var roles = new Dictionary<string, string>();
+
+        foreach (var (sectorId, holder) in _senate.SectorHolders)
+            roles[holder] = $"Сенатор {(_proto.TryIndex<SWSectorPrototype>(sectorId, out var sp) ? sp.Name : sectorId)}";
+        foreach (var (mid, holder) in _ministry.Holders)
+            roles[holder] = _proto.TryIndex<SWMinistryPrototype>(mid, out var mp) ? $"Министр {mp.TitleName}" : "Министр";
+        if (_senate.Chancellor != null)
+            roles[_senate.Chancellor] = "Канцлер";
+
+        var list = new List<SWCorruptTargetEntry>();
+        foreach (var (name, role) in roles)
+        {
+            var revealed = _corruption.IsRevealed(false, name);
+            list.Add(new SWCorruptTargetEntry
+            {
+                Key = name,
+                Sector = false,
+                Name = name,
+                Role = role,
+                Color = Color.FromHex("#C0A062"),
+                Revealed = revealed,
+                Corruption = revealed ? _corruption.PersonCorruptionInt(name) : -1,
+                Account = revealed ? _corruption.Account(name) : -1,
+                CanScreen = !revealed && budget >= ScreenCost,
+                CanProsecute = budget >= ProsecuteCost,
+            });
+        }
+
+        list.Sort((a, b) => b.Corruption.CompareTo(a.Corruption));
+        return list;
     }
 
     private List<SWFleetSectorEntry> BuildClaimedSectors()

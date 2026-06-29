@@ -19,6 +19,7 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
     [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
+    [Dependency] private readonly SWCorruptionSystem _corruption = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
 
     private const float UpdateInterval = 3f;
@@ -115,6 +116,8 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
             JusticeStanceName = SWMinistryJusticeSystem.StanceName(_justice.Stance),
             JusticeStanceColor = SWMinistryJusticeSystem.StanceColor(_justice.Stance),
             CaseCount = _justice.CaseCount,
+            CorruptionIndex = _corruption.GlobalIndex(),
+            CorruptionStatus = _corruption.GlobalStatus(),
         };
 
         _ui.SetUiState(ent.Owner, SWStatisticsConsoleUiKey.Key, state);

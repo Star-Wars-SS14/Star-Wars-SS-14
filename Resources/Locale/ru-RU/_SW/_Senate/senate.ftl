@@ -131,6 +131,7 @@ sw-budget-approved = Бюджет утверждён. Средства пере�
 sw-budget-rejected = Проект бюджета отклонён. Минфин уведомлён.
 sw-justice-action-failed = Действие недоступно: проверьте ресурс судов или бюджет.
 sw-justice-tribunal-approved = Чрезвычайные трибуналы одобрены.
+sw-corruption-failed = Недостаточно бюджета министерства.
 sw-senate-program-applied = Программа профинансирована и запущена в секторе.
 sw-senate-program-failed = Недостаточно средств или программа уже применена сегодня.
 sw-senate-crisis-action = Меры против кризиса приняты.

@@ -719,6 +719,13 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     {
         DilemmaActiveList.RemoveAllChildren();
 
+        if (state.HasPersonal)
+        {
+            DilemmaActiveList.AddChild(MakeWrap($"Личный счёт: {state.MyAccount} кр   ·   ваша коррумпированность: {state.MyCorruption}%",
+                state.MyCorruption >= 60 ? Color.IndianRed : Color.FromHex("#C0A062")));
+            DilemmaActiveList.AddChild(new Control { MinHeight = 8 });
+        }
+
         if (state.MinistryNotices.Count > 0)
         {
             DilemmaActiveList.AddChild(SWConsoleStyle.Section("ОТВЕТЫ МИНИСТЕРСТВ"));
@@ -953,6 +960,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             };
             if (isAppeal)
                 button.Modulate = Color.FromHex("#5DADE2");
+            else if (option.Corrupt)
+                button.Modulate = Color.FromHex("#B7950B");
             button.OnPressed += _ => _owner.ResolveDilemma(id, index);
             optionRow.AddChild(button);
             optionBox.AddChild(optionRow);
@@ -963,6 +972,10 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                     ? $"Решает: {option.MinistryName}. Эффект отложен."
                     : $"{option.MinistryName}: нет министра.";
                 optionBox.AddChild(MakeWrap(hint, Color.Gray));
+            }
+            else if (option.Corrupt)
+            {
+                optionBox.AddChild(MakeWrap(option.Description, Color.FromHex("#B7950B")));
             }
             else
             {

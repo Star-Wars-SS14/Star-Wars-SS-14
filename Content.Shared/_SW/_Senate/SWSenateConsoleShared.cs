@@ -98,6 +98,8 @@ public sealed class SWStatisticsConsoleState : BoundUserInterfaceState
     public string JusticeStanceName = string.Empty;
     public Color JusticeStanceColor;
     public int CaseCount;
+    public int CorruptionIndex;
+    public string CorruptionStatus = string.Empty;
 
     public SWStatisticsConsoleState(List<SWGlobalStatEntry> globals, List<SWSectorEntry> sectors)
     {
@@ -356,6 +358,8 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public string BacklogStatus = string.Empty;
     public int CourtCapacity;
     public int CourtCapacityMax;
+    public int OvertimeCost;
+    public bool CanBuyOvertime;
     public bool TribunalActive;
     public int TribunalHoursLeft;
     public bool TribunalPending;
@@ -365,6 +369,80 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public List<SWCaseEntry> Cases = new();
     public int CaseCount;
     public List<string> JusticeLog = new();
+    public List<SWClosedCaseEntry> JusticeArchive = new();
+    public int JusticeResolved;
+    public int JusticeConvictJust;
+    public int JusticeConvictWrong;
+    public int JusticeAcquitJust;
+    public int JusticeAcquitWrong;
+    public int JusticeDismissed;
+    public int JusticeOverdue;
+    public int JusticeAccuracy;
+
+    // КОРРУПЦИЯ (Justice tab).
+    public int CorruptionIndex;
+    public string CorruptionStatus = string.Empty;
+    public int ScreenCost;
+    public int ProsecuteCost;
+    public List<SWCorruptTargetEntry> CorruptSectors = new();
+    public List<SWCorruptTargetEntry> CorruptPeople = new();
+    public List<string> CorruptionLog = new();
+
+    // Personal corruption (the viewer — any office holder).
+    public bool HasPersonal;
+    public int MyCorruption;
+    public int MyAccount;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCorruptTargetEntry
+{
+    public string Key = string.Empty;
+    public bool Sector;
+    public string Name = string.Empty;
+    public string Role = string.Empty;
+    public Color Color;
+    public bool Revealed;
+    public int Corruption;
+    public int Account;
+    public bool CanScreen;
+    public bool CanProsecute;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCorruptionScreenMessage : BoundUserInterfaceMessage
+{
+    public string Key;
+    public bool Sector;
+
+    public SWCorruptionScreenMessage(string key, bool sector)
+    {
+        Key = key;
+        Sector = sector;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCorruptionProsecuteMessage : BoundUserInterfaceMessage
+{
+    public string Key;
+    public bool Sector;
+
+    public SWCorruptionProsecuteMessage(string key, bool sector)
+    {
+        Key = key;
+        Sector = sector;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWClosedCaseEntry
+{
+    public int Id;
+    public string TypeLabel = string.Empty;
+    public Color TypeColor;
+    public string ResultLabel = string.Empty;
+    public Color ResultColor;
 }
 
 [Serializable, NetSerializable]
@@ -452,6 +530,11 @@ public sealed class SWJusticeSelectProgramMessage : BoundUserInterfaceMessage
     {
         ProgramId = programId;
     }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWJusticeOvertimeMessage : BoundUserInterfaceMessage
+{
 }
 
 [Serializable, NetSerializable]
@@ -1215,6 +1298,9 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public int MyPartyId = -1;
     public List<SWPartyEntry> Parties = new();
     public List<SWPartyLawEntry> PartyLaws = new();
+    public bool HasPersonal;
+    public int MyCorruption;
+    public int MyAccount;
 }
 
 [Serializable, NetSerializable]
@@ -1550,6 +1636,7 @@ public sealed class SWDilemmaOptionEntry
     public List<SWBillEffectEntry> Effects = new();
     public string MinistryName = string.Empty;
     public bool MinistryAvailable;
+    public bool Corrupt;
 }
 
 [Serializable, NetSerializable]

@@ -37,6 +37,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
     [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
+    [Dependency] private readonly SWCorruptionSystem _corruption = default!;
     [Dependency] private readonly SWSenatePartySystem _party = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
@@ -876,6 +877,16 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.MyBudgetDilemmas = _dilemma.BuildOwnerBudgetDilemmas(dilemmaOwner);
         state.MinistryNotices = _dilemma.GetNotices(dilemmaOwner);
         state.CanDilemmas = dilemmaOwner != null;
+
+        var viewer = dilemmaOwner == SWSenateDilemmaSystem.RepublicOwner
+            ? _senate.Chancellor
+            : dilemmaOwner != null && _senate.SectorHolders.TryGetValue(dilemmaOwner, out var h) ? h : null;
+        if (viewer != null)
+        {
+            state.HasPersonal = true;
+            state.MyCorruption = _corruption.PersonCorruptionInt(viewer);
+            state.MyAccount = _corruption.Account(viewer);
+        }
         state.BudgetLocked = _budget.Approved;
         state.BudgetTotal = _budget.Total();
         state.BudgetReserve = _budget.Reserve();

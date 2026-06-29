@@ -161,7 +161,7 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
         jusHead.AddChild(new Control { HorizontalExpand = true });
         jusHead.AddChild(SWConsoleStyle.Text($"{state.Backlog}/100 · дел {state.CaseCount}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
         jusBox.AddChild(jusHead);
-        jusBox.AddChild(SWConsoleStyle.Text($"Политика: {state.JusticeStanceName}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        jusBox.AddChild(SWConsoleStyle.Text($"Политика: {state.JusticeStanceName}  ·  коррупция: {state.CorruptionStatus} ({state.CorruptionIndex}/100)", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
         jusPanel.AddChild(jusBox);
         RepublicStats.AddChild(jusPanel);
 

@@ -23,6 +23,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
     [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
     [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
+    [Dependency] private readonly SWCorruptionSystem _corruption = default!;
 
     public const string RepublicOwner = "republic";
 
@@ -344,9 +345,14 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         if (!_time.DayActive || _time.CurrentHour >= dilemma.DeadlineHour)
             return false;
 
-        if (!_proto.TryIndex<SWDilemmaPrototype>(dilemma.DilemmaId, out var proto)
-            || option < 0
-            || option >= proto.Options.Count)
+        if (!_proto.TryIndex<SWDilemmaPrototype>(dilemma.DilemmaId, out var proto))
+            return false;
+
+        // Corrupt option lives just past the real options.
+        if (option == proto.Options.Count)
+            return ResolveCorrupt(dilemma, proto);
+
+        if (option < 0 || option >= proto.Options.Count)
             return false;
 
         var chosen = proto.Options[option];
@@ -355,12 +361,41 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         if (chosen.Ministry is { } ministryId)
             return Delegate(dilemma, option, ministryId);
 
-        if (dilemma.IsBudget && !_budget.Spend(dilemma.Owner, chosen.Cost))
+        var cost = dilemma.IsBudget ? (int) (chosen.Cost * _corruption.CostMultiplier(dilemma.SectorId)) : chosen.Cost;
+        if (dilemma.IsBudget && !_budget.Spend(dilemma.Owner, cost))
             return false;
 
         dilemma.ChosenOption = option;
         dilemma.Status = SWDilemmaStatus.Chosen;
         return true;
+    }
+
+    private bool ResolveCorrupt(SWActiveDilemma dilemma, SWDilemmaPrototype proto)
+    {
+        var beneficiary = dilemma.Scope == SWDilemmaScope.Republic
+            ? _senate.Chancellor
+            : dilemma.SectorId != null && _senate.SectorHolders.TryGetValue(dilemma.SectorId, out var h) ? h : null;
+        if (beneficiary == null)
+            return false;
+
+        _corruption.TakeBribe(beneficiary, dilemma.SectorId, KickbackFor(dilemma));
+
+        // The problem festers while the money is skimmed — half the failure lands.
+        ApplyScaled(dilemma.Scope, dilemma.SectorId, proto.FailPolicyEffects, proto.FailSectorEffects, 0.5f);
+        // Mask the choice in the public summary as an ordinary (non-ministry) option so the bribe — and even
+        // the existence of the corrupt option — stays hidden. Only the owner gets the private notice.
+        dilemma.ChosenOption = FirstNormalOption(proto);
+        dilemma.Status = SWDilemmaStatus.Applied;
+        AddNotice(dilemma.Owner, "Проблема замята за взятку. Деньги на личном счету.");
+        return true;
+    }
+
+    private static int FirstNormalOption(SWDilemmaPrototype proto)
+    {
+        for (var i = 0; i < proto.Options.Count; i++)
+            if (proto.Options[i].Ministry == null)
+                return i;
+        return 0;
     }
 
     private bool Delegate(SWActiveDilemma dilemma, int option, string ministryId)
@@ -466,7 +501,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
         var option = proto.MinistryOptions[optionIndex];
         var (costMod, effectMod) = DefenseModifier(ministryId, request.SectorId);
-        var cost = (int) (RealCost(option.Cost, request.Issue) * costMod);
+        var cost = (int) (RealCost(option.Cost, request.Issue) * costMod * _corruption.CostMultiplier(request.SectorId));
 
         EnsureMinistry(ministryId);
         if (_ministryBudget[ministryId] < cost)
@@ -659,13 +694,16 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         if (proto != null)
         {
             var available = dilemma.IsBudget ? _budget.Available(dilemma.Owner) : 0;
+            var costMult = _corruption.CostMultiplier(dilemma.SectorId);
             foreach (var option in proto.Options)
             {
+                // A corrupt sector inflates every credit a budget option costs.
+                var cost = dilemma.IsBudget ? (int) (option.Cost * costMult) : option.Cost;
                 var optionEntry = new SWDilemmaOptionEntry
                 {
                     Label = option.Label,
                     Description = option.Description,
-                    Cost = option.Cost,
+                    Cost = cost,
                     Effects = dilemma.Scope == SWDilemmaScope.Republic
                         ? PolicyEffectEntries(option.PolicyEffects, SenatorScale)
                         : SectorEffectEntries(option.SectorEffects, SenatorScale),
@@ -681,10 +719,22 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
                 }
                 else
                 {
-                    optionEntry.Affordable = !dilemma.IsBudget || available >= option.Cost;
+                    optionEntry.Affordable = !dilemma.IsBudget || available >= cost;
                 }
 
                 entry.Options.Add(optionEntry);
+            }
+
+            // Synthetic corrupt option (index == proto.Options.Count): pocket a kickback instead of solving.
+            if (entry.CanResolve)
+            {
+                entry.Options.Add(new SWDilemmaOptionEntry
+                {
+                    Label = $"Прикарманить (личный счёт +{KickbackFor(dilemma)} кр)",
+                    Description = "Замять проблему ради взятки. Деньги уйдут на ваш личный счёт, но коррупция и проблема вырастут.",
+                    Affordable = true,
+                    Corrupt = true,
+                });
             }
 
             entry.FailEffects = dilemma.Scope == SWDilemmaScope.Republic
@@ -694,6 +744,8 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
         return entry;
     }
+
+    private static int KickbackFor(SWActiveDilemma dilemma) => dilemma.IsBudget ? 1500 : 1000;
 
     private string SectorName(string? sectorId)
     {
@@ -775,7 +827,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
                 foreach (var option in proto.MinistryOptions)
                 {
-                    var shownCost = (int) ((request.AuditDone ? RealCost(option.Cost, request.Issue) : option.Cost) * costMod);
+                    var shownCost = (int) ((request.AuditDone ? RealCost(option.Cost, request.Issue) : option.Cost) * costMod * _corruption.CostMultiplier(request.SectorId));
                     entry.Options.Add(new SWMinistryRequestOptionEntry
                     {
                         Label = option.Label,

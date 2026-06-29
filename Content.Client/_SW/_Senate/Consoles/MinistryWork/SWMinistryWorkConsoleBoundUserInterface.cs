@@ -236,9 +236,24 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWJusticeSelectProgramMessage(programId));
     }
 
+    public void Overtime()
+    {
+        SendMessage(new SWJusticeOvertimeMessage());
+    }
+
     public void DeclareTribunal()
     {
         SendMessage(new SWJusticeDeclareTribunalMessage());
+    }
+
+    public void ScreenCorruption(string key, bool sector)
+    {
+        SendMessage(new SWCorruptionScreenMessage(key, sector));
+    }
+
+    public void ProsecuteCorruption(string key, bool sector)
+    {
+        SendMessage(new SWCorruptionProsecuteMessage(key, sector));
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

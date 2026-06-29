@@ -78,6 +78,9 @@
                 <ScrollContainer Name="CorruptionPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
                     <BoxContainer Name="CorruptionContent" Orientation="Vertical" HorizontalExpand="True" />
                 </ScrollContainer>
+                <ScrollContainer Name="ArchivePanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="ArchiveContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
             </BoxContainer>
         </BoxContainer>
     </PanelContainer>

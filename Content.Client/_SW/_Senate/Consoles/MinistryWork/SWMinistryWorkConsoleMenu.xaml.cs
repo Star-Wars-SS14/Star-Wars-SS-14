@@ -39,7 +39,8 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
     private const int BudgetsTab = 17;
     private const int CasesTab = 18;
     private const int JusticeTab = 19;
-    private const int CorruptionTab = 20;
+    private const int ArchiveTab = 20;
+    private const int CorruptionTab = 21;
 
     private readonly Dictionary<int, string> _refuseReasons = new();
     private string _requestsSignature = string.Empty;
@@ -88,6 +89,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             ("БЮДЖЕТЫ", BudgetsPanel),
             ("ДЕЛА", CasesPanel),
             ("ПОЛИТИКА", JusticePanel),
+            ("АРХИВ", ArchivePanel),
             ("КОРРУПЦИЯ", CorruptionPanel),
         };
 
@@ -142,6 +144,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         _tabButtons[BudgetsTab].Visible = state.IsFinance;
         _tabButtons[CasesTab].Visible = state.IsJustice;
         _tabButtons[JusticeTab].Visible = state.IsJustice;
+        _tabButtons[ArchiveTab].Visible = state.IsJustice;
         _tabButtons[CorruptionTab].Visible = state.IsJustice;
         if (!state.IsDefense && (_active == CommandTab || _active == FleetTab || _active == OpsTab))
             ShowTab(0);
@@ -153,7 +156,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             ShowTab(0);
         if (!state.IsFinance && (_active == MonetaryTab || _active == DebtTab || _active == BudgetsTab))
             ShowTab(0);
-        if (!state.IsJustice && (_active == CasesTab || _active == JusticeTab || _active == CorruptionTab))
+        if (!state.IsJustice && (_active == CasesTab || _active == JusticeTab || _active == ArchiveTab || _active == CorruptionTab))
             ShowTab(0);
 
         BuildOverview(state);
@@ -176,6 +179,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         BuildBudgets(state);
         BuildCases(state);
         BuildJusticePolicy(state);
+        BuildArchive(state);
         BuildCorruption(state);
     }
 
@@ -1907,6 +1911,18 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             srow.AddChild(MakeJusticeStanceButton(stance, state.JusticeStance));
         JusticeContent.AddChild(srow);
 
+        // Court capacity.
+        JusticeContent.AddChild(new Control { MinHeight = 10 });
+        JusticeContent.AddChild(SWConsoleStyle.Section("ПРОПУСКНАЯ СПОСОБНОСТЬ СУДОВ"));
+        JusticeContent.AddChild(new Control { MinHeight = 4 });
+        JusticeContent.AddChild(SWConsoleStyle.Text($"Ресурс: {state.CourtCapacity}/{state.CourtCapacityMax}  ·  суды восстанавливают ресурс в течение дня", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        var overtime = SWConsoleStyle.Action($"Сверхурочные слушания (+3 ресурс, −{state.OvertimeCost} кр)", SWConsoleStyle.Warn, !state.CanBuyOvertime);
+        overtime.HorizontalExpand = true;
+        overtime.Margin = new Thickness(0, 2, 0, 0);
+        if (state.CanBuyOvertime)
+            overtime.OnPressed += _ => _owner.Overtime();
+        JusticeContent.AddChild(overtime);
+
         // Tribunal.
         JusticeContent.AddChild(new Control { MinHeight = 10 });
         JusticeContent.AddChild(SWConsoleStyle.Section("ЧРЕЗВЫЧАЙНЫЕ ТРИБУНАЛЫ"));
@@ -1989,17 +2005,143 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         return card;
     }
 
+    private void BuildArchive(SWMinistryWorkConsoleState state)
+    {
+        ArchiveContent.RemoveAllChildren();
+        if (!state.IsJustice)
+            return;
+
+        ArchiveContent.AddChild(SWConsoleStyle.Section("СТАТИСТИКА ПРАВОСУДИЯ"));
+        ArchiveContent.AddChild(new Control { MinHeight = 4 });
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        head.AddChild(SWConsoleStyle.Text($"Всего рассмотрено: {state.JusticeResolved}", SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+        head.AddChild(new Control { HorizontalExpand = true });
+        var accColor = state.JusticeAccuracy >= 70 ? SWConsoleStyle.Good : state.JusticeAccuracy >= 40 ? SWConsoleStyle.Warn : SWConsoleStyle.Bad;
+        head.AddChild(SWConsoleStyle.Text($"Точность приговоров: {state.JusticeAccuracy}%", accColor, SWConsoleStyle.MonoBold));
+        ArchiveContent.AddChild(head);
+        ArchiveContent.AddChild(new Control { MinHeight = 6 });
+
+        ArchiveContent.AddChild(MakeStatLine("Справедливо осуждено", state.JusticeConvictJust, SWConsoleStyle.Good));
+        ArchiveContent.AddChild(MakeStatLine("Судебных ошибок", state.JusticeConvictWrong, SWConsoleStyle.Bad));
+        ArchiveContent.AddChild(MakeStatLine("Оправдано невиновных", state.JusticeAcquitJust, SWConsoleStyle.Good));
+        ArchiveContent.AddChild(MakeStatLine("Виновных оправдано", state.JusticeAcquitWrong, SWConsoleStyle.Warn));
+        ArchiveContent.AddChild(MakeStatLine("Прекращено", state.JusticeDismissed, SWConsoleStyle.TextDim));
+        ArchiveContent.AddChild(MakeStatLine("Просрочено", state.JusticeOverdue, SWConsoleStyle.Warn));
+
+        ArchiveContent.AddChild(new Control { MinHeight = 10 });
+        ArchiveContent.AddChild(SWConsoleStyle.Section("ПОСЛЕДНИЕ РЕШЕНИЯ"));
+        ArchiveContent.AddChild(new Control { MinHeight = 4 });
+        if (state.JusticeArchive.Count == 0)
+            ArchiveContent.AddChild(SWConsoleStyle.Text("Решённых дел пока нет.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        else
+        {
+            foreach (var closed in state.JusticeArchive)
+            {
+                var row = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, closed.ResultColor);
+                row.Margin = new Thickness(0, 0, 0, 3);
+                var line = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+                line.AddChild(SWConsoleStyle.Text($"Дело #{closed.Id} — {closed.TypeLabel}", closed.TypeColor, SWConsoleStyle.Mono));
+                line.AddChild(new Control { HorizontalExpand = true });
+                line.AddChild(SWConsoleStyle.Text(closed.ResultLabel, closed.ResultColor, SWConsoleStyle.MonoBold));
+                row.AddChild(line);
+                ArchiveContent.AddChild(row);
+            }
+        }
+    }
+
+    private static Control MakeStatLine(string label, int value, Color color)
+    {
+        var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 0, 0, 2) };
+        row.AddChild(SWConsoleStyle.Text(label, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        row.AddChild(new Control { HorizontalExpand = true });
+        row.AddChild(SWConsoleStyle.Text(value.ToString(), color, SWConsoleStyle.MonoBold));
+        return row;
+    }
+
     private void BuildCorruption(SWMinistryWorkConsoleState state)
     {
         CorruptionContent.RemoveAllChildren();
         if (!state.IsJustice)
             return;
 
-        CorruptionContent.AddChild(SWConsoleStyle.Section("БОРЬБА С КОРРУПЦИЕЙ"));
-        CorruptionContent.AddChild(new Control { MinHeight = 6 });
-        CorruptionContent.AddChild(SWConsoleStyle.Text("Здесь будет глобальная антикоррупционная функция Минюста.", SWConsoleStyle.TextBright, SWConsoleStyle.Mono));
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        head.AddChild(SWConsoleStyle.Text($"Индекс коррупции: {state.CorruptionStatus}", GaugeColor(state.CorruptionIndex), SWConsoleStyle.MonoBold));
+        head.AddChild(new Control { HorizontalExpand = true });
+        head.AddChild(SWConsoleStyle.Text($"{state.CorruptionIndex}/100", GaugeColor(state.CorruptionIndex), SWConsoleStyle.MonoBold));
+        CorruptionContent.AddChild(head);
+        CorruptionContent.AddChild(SWConsoleStyle.Bar(state.CorruptionIndex, 0, 100, GaugeColor(state.CorruptionIndex)));
+        CorruptionContent.AddChild(SWConsoleStyle.Text($"Проверка — {state.ScreenCost} кр (вскрыть уровень), дело — {state.ProsecuteCost} кр (привлечь).", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        CorruptionContent.AddChild(new Control { MinHeight = 8 });
+
+        CorruptionContent.AddChild(SWConsoleStyle.Section("ДОЛЖНОСТНЫЕ ЛИЦА"));
         CorruptionContent.AddChild(new Control { MinHeight = 4 });
-        CorruptionContent.AddChild(SWConsoleStyle.Text("Функция в разработке.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        if (state.CorruptPeople.Count == 0)
+            CorruptionContent.AddChild(SWConsoleStyle.Text("Нет должностных лиц.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        else
+            foreach (var t in state.CorruptPeople)
+                CorruptionContent.AddChild(MakeCorruptCard(t));
+
+        CorruptionContent.AddChild(new Control { MinHeight = 10 });
+        CorruptionContent.AddChild(SWConsoleStyle.Section("СЕКТОРА"));
+        CorruptionContent.AddChild(new Control { MinHeight = 4 });
+        if (state.CorruptSectors.Count == 0)
+            CorruptionContent.AddChild(SWConsoleStyle.Text("Нет занятых секторов.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        else
+            foreach (var t in state.CorruptSectors)
+                CorruptionContent.AddChild(MakeCorruptCard(t));
+
+        if (state.CorruptionLog.Count > 0)
+        {
+            CorruptionContent.AddChild(new Control { MinHeight = 10 });
+            CorruptionContent.AddChild(SWConsoleStyle.Section("СОБЫТИЯ"));
+            foreach (var entry in state.CorruptionLog)
+                CorruptionContent.AddChild(SWConsoleStyle.Text(entry, SWConsoleStyle.TextBright, SWConsoleStyle.MonoSmall));
+        }
+    }
+
+    private Control MakeCorruptCard(SWCorruptTargetEntry t)
+    {
+        var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, t.Revealed ? GaugeColor(t.Corruption) : t.Color);
+        card.Margin = new Thickness(0, 0, 0, 4);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        head.AddChild(SWConsoleStyle.Text(t.Name, t.Color, SWConsoleStyle.MonoBold));
+        head.AddChild(new Control { HorizontalExpand = true });
+        if (t.Revealed)
+        {
+            var detail = t.Sector ? $"коррупция {t.Corruption}%" : $"коррупция {t.Corruption}% · счёт {t.Account} кр";
+            head.AddChild(SWConsoleStyle.Text(detail, GaugeColor(t.Corruption), SWConsoleStyle.MonoBold));
+        }
+        else
+        {
+            head.AddChild(SWConsoleStyle.Text("не проверено", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        }
+        box.AddChild(head);
+        box.AddChild(SWConsoleStyle.Text(t.Role, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+        var actions = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 3, 0, 0) };
+        var key = t.Key;
+        var sector = t.Sector;
+        if (!t.Revealed)
+        {
+            var screen = SWConsoleStyle.Action("Проверить", SWConsoleStyle.Accent, !t.CanScreen);
+            screen.HorizontalExpand = true;
+            screen.Margin = new Thickness(0, 0, 4, 0);
+            if (t.CanScreen)
+                screen.OnPressed += _ => _owner.ScreenCorruption(key, sector);
+            actions.AddChild(screen);
+        }
+
+        var prosecute = SWConsoleStyle.Action("Возбудить дело", SWConsoleStyle.Bad, !t.CanProsecute);
+        prosecute.HorizontalExpand = true;
+        if (t.CanProsecute)
+            prosecute.OnPressed += _ => _owner.ProsecuteCorruption(key, sector);
+        actions.AddChild(prosecute);
+
+        box.AddChild(actions);
+        card.AddChild(box);
+        return card;
     }
 
     private void BuildOverview(SWMinistryWorkConsoleState state)
@@ -2046,6 +2188,20 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             resign.Margin = new Thickness(0, 8, 0, 0);
             resign.OnPressed += _ => _owner.Resign();
             OverviewContent.AddChild(resign);
+        }
+
+        if (state.HasPersonal)
+        {
+            OverviewContent.AddChild(new Control { MinHeight = 10 });
+            OverviewContent.AddChild(SWConsoleStyle.Section("ЛИЧНОЕ ДЕЛО"));
+            OverviewContent.AddChild(new Control { MinHeight = 4 });
+            var prow = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, GaugeColor(state.MyCorruption));
+            var pbox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+            pbox.AddChild(SWConsoleStyle.Text($"Личный счёт: {state.MyAccount} кр", SWConsoleStyle.Good, SWConsoleStyle.MonoBold));
+            pbox.AddChild(new Control { HorizontalExpand = true });
+            pbox.AddChild(SWConsoleStyle.Text($"Коррумпированность: {state.MyCorruption}%", GaugeColor(state.MyCorruption), SWConsoleStyle.MonoBold));
+            prow.AddChild(pbox);
+            OverviewContent.AddChild(prow);
         }
 
         var domainIds = new List<string>();

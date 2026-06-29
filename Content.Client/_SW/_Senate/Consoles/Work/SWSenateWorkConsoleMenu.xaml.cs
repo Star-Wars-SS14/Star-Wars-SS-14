@@ -305,6 +305,9 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         if (state.Legitimacy < 40)
             PowersList.AddChild(SWConsoleStyle.Text("Низкая легитимность: вотум недоверия проходит уже при 2/3.", SWConsoleStyle.Bad, SWConsoleStyle.MonoSmall));
 
+        if (!state.CanUseEmergencyPowers)
+            return;
+
         // Command.
         if (state.HasCommand)
         {

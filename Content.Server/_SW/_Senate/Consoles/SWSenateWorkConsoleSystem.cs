@@ -1071,6 +1071,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.Authority = _powers.Authority;
         state.Legitimacy = _powers.Legitimacy;
         state.EmergencyDaysLeft = _powers.DaysLeft;
+        state.CanUseEmergencyPowers = _powers.Active && CanConfirmAs(ent);
         state.CanRelinquish = _powers.Active && CanConfirmAs(ent);
         state.HasVeto = _powers.HasPower(SWEmergencyPower.Veto);
         state.HasCommand = _powers.HasPower(SWEmergencyPower.Command);

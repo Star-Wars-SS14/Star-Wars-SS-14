@@ -1331,6 +1331,7 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public int Authority;
     public int Legitimacy;
     public int EmergencyDaysLeft;
+    public bool CanUseEmergencyPowers;
     public bool CanRelinquish;
     public bool HasVeto;
     public bool HasCommand;

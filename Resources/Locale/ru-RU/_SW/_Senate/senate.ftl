@@ -58,6 +58,8 @@ sw-senate-bill-stage-tiebreak = Ничья: решающий голос Канц
 sw-senate-bill-stage-voting = На голосовании
 sw-senate-bill-stage-passed = Принят
 sw-senate-bill-stage-rejected = Отклонён
+sw-senate-bill-stage-signature = Прошёл голосование — ждёт подписи Канцлера
+sw-senate-bill-signed = Закон подписан и вступает в силу.
 
 sw-senate-vote-cant-vote = Голосовать может только сенатор с закреплённым сектором.
 sw-senate-vote-no-bill = Сейчас нет активного голосования.

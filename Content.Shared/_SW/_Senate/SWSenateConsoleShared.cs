@@ -1301,6 +1301,8 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool HasPersonal;
     public int MyCorruption;
     public int MyAccount;
+    public List<SWBillEntry> LawsAwaitingSignature = new();
+    public bool CanSignLaws;
 }
 
 [Serializable, NetSerializable]
@@ -1728,6 +1730,17 @@ public sealed class SWSenateRemoveFromQueueMessage : BoundUserInterfaceMessage
 [Serializable, NetSerializable]
 public sealed class SWSenateGrantChancellorMessage : BoundUserInterfaceMessage
 {
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateSignBillMessage : BoundUserInterfaceMessage
+{
+    public int BillId;
+
+    public SWSenateSignBillMessage(int billId)
+    {
+        BillId = billId;
+    }
 }
 
 [Serializable, NetSerializable]

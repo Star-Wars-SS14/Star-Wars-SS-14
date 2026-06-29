@@ -5,6 +5,7 @@ namespace Content.Server._SW._Senate.Core;
 public enum SWBillStage
 {
     Voting,
+    AwaitingSignature,
     Passed,
     Rejected,
 }

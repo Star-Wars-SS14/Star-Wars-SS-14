@@ -451,9 +451,8 @@ public sealed class SWSenateStateSystem : EntitySystem
         bill.AwaitingTiebreak = false;
         if (choice == SWVoteChoice.For)
         {
-            bill.Stage = SWBillStage.Passed;
-            ApplyBill(bill);
-            RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, true, bill.EmergencyCrisisId, bill.EmergencyRelief));
+            // Passed the vote, but now awaits the Chancellor's formal signature before it becomes law.
+            bill.Stage = SWBillStage.AwaitingSignature;
             RaiseVotesResolved(bill, true);
         }
         else
@@ -466,6 +465,41 @@ public sealed class SWSenateStateSystem : EntitySystem
         return true;
     }
 
+    // The Chancellor (or acting officer) ratifies a passed bill — only now does it apply and get announced.
+    public bool SignBill(int billId)
+    {
+        var bill = _bills.FirstOrDefault(b => b.Id == billId && b.Stage == SWBillStage.AwaitingSignature);
+        if (bill == null)
+            return false;
+
+        bill.Stage = SWBillStage.Passed;
+        ApplyBill(bill);
+        RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, true, bill.EmergencyCrisisId, bill.EmergencyRelief));
+        return true;
+    }
+
+    public List<SWBillEntry> BuildBillsAwaitingSignature()
+    {
+        var list = new List<SWBillEntry>();
+        foreach (var bill in _bills)
+        {
+            if (bill.Stage != SWBillStage.AwaitingSignature)
+                continue;
+
+            list.Add(new SWBillEntry
+            {
+                Id = bill.Id,
+                Name = bill.Name,
+                Author = bill.Author,
+                Description = bill.Description,
+                Stage = Loc.GetString("sw-senate-bill-stage-signature"),
+                Effects = BuildBillEffects(bill),
+            });
+        }
+
+        return list;
+    }
+
     private void RaiseVotesResolved(SWSenateBill bill, bool passed) =>
         RaiseLocalEvent(new SWSenateBillVotesResolvedEvent(bill.Id, bill.Name, passed, new Dictionary<string, SWVoteChoice>(bill.Votes)));
 
@@ -476,9 +510,8 @@ public sealed class SWSenateStateSystem : EntitySystem
 
         if (votesFor > votesAgainst)
         {
-            bill.Stage = SWBillStage.Passed;
-            ApplyBill(bill);
-            RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, true, bill.EmergencyCrisisId, bill.EmergencyRelief));
+            // Passed the vote, but now awaits the Chancellor's formal signature before it becomes law.
+            bill.Stage = SWBillStage.AwaitingSignature;
             RaiseVotesResolved(bill, true);
         }
         else if (votesAgainst > votesFor)
@@ -511,6 +544,10 @@ public sealed class SWSenateStateSystem : EntitySystem
             if (session.Status == SWSessionStatus.Pending)
                 session.Status = SWSessionStatus.Confirmed;
         }
+
+        // No Chancellor to ratify — passed bills are auto-signed into law.
+        foreach (var id in _bills.Where(b => b.Stage == SWBillStage.AwaitingSignature).Select(b => b.Id).ToList())
+            SignBill(id);
 
         foreach (var bill in _bills)
         {
@@ -889,6 +926,8 @@ public sealed class SWSenateStateSystem : EntitySystem
     {
         if (bill.Stage == SWBillStage.Passed)
             return Loc.GetString("sw-senate-bill-stage-passed");
+        if (bill.Stage == SWBillStage.AwaitingSignature)
+            return Loc.GetString("sw-senate-bill-stage-signature");
         if (bill.Stage == SWBillStage.Rejected)
             return Loc.GetString("sw-senate-bill-stage-rejected");
         if (bill.AwaitingTiebreak)

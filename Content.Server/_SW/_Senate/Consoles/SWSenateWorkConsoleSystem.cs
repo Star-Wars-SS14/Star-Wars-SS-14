@@ -79,6 +79,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWFinanceRejectEmissionMessage>(OnRejectEmission);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWJusticeApproveTribunalMessage>(OnApproveTribunal);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWJusticeRejectTribunalMessage>(OnRejectTribunal);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSignBillMessage>(OnSignBill);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectSessionMessage>(OnRejectSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAnnounceMessage>(OnAnnounce);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateCreatePartyMessage>(OnCreateParty);
@@ -476,6 +477,20 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             return;
 
         _justice.RejectTribunal();
+        UpdateUi(ent);
+    }
+
+    private void OnSignBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSignBillMessage args)
+    {
+        if (!CanConfirmAs(ent))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.SignBill(args.BillId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-signed"), args.Actor, PopupType.Medium);
+
         UpdateUi(ent);
     }
 
@@ -877,6 +892,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.MyBudgetDilemmas = _dilemma.BuildOwnerBudgetDilemmas(dilemmaOwner);
         state.MinistryNotices = _dilemma.GetNotices(dilemmaOwner);
         state.CanDilemmas = dilemmaOwner != null;
+
+        state.LawsAwaitingSignature = _senate.BuildBillsAwaitingSignature();
+        state.CanSignLaws = CanConfirmAs(ent);
 
         var viewer = dilemmaOwner == SWSenateDilemmaSystem.RepublicOwner
             ? _senate.Chancellor

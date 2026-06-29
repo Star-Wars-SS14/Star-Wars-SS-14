@@ -17,6 +17,7 @@
                         <BoxContainer Name="Nav" Orientation="Vertical" Margin="8">
                             <Label Name="GroupInfo" Text="ИНФОРМАЦИЯ" Margin="2 0 0 3" />
                             <Button Name="NavOffice" Text="Должность" Margin="0 0 0 2" />
+                            <Button Name="NavSignature" Text="На подпись" Margin="0 0 0 2" />
                             <Button Name="NavSummary" Text="Сводка" Margin="0 0 0 2" />
                             <Button Name="NavCrises" Text="Кризисы" Margin="0 0 0 2" />
                             <Label Name="GroupOrg" Text="ОРГАНИЗАЦИЯ" Margin="2 10 0 3" />
@@ -41,6 +42,9 @@
                         <Button Name="ResignButton" Text="Сложить полномочия" Margin="0 6 0 0" />
                         <BoxContainer Name="WarApprovalBox" Orientation="Vertical" Margin="0 12 0 0" />
                     </BoxContainer>
+                    <ScrollContainer Name="SignatureScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                        <BoxContainer Name="SignatureList" Orientation="Vertical" HorizontalExpand="True" />
+                    </ScrollContainer>
                     <ScrollContainer Name="RosterScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="10">
                         <BoxContainer Name="RosterList" Orientation="Vertical" HorizontalExpand="True" />
                     </ScrollContainer>

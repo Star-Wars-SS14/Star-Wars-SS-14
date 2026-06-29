@@ -95,6 +95,11 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWJusticeRejectTribunalMessage());
     }
 
+    public void SignBill(int billId)
+    {
+        SendMessage(new SWSenateSignBillMessage(billId));
+    }
+
     public void Resign()
     {
         SendMessage(new SWSenateResignMessage());

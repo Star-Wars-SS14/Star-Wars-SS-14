@@ -42,6 +42,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         _sections = new (Button, Control)[]
         {
             (NavOffice, OfficeTab),
+            (NavSignature, SignatureScroll),
             (NavRoster, RosterScroll),
             (NavSummary, DashScroll),
             (NavDraft, DraftTab),
@@ -187,6 +188,53 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BuildCrises(state);
         BuildParties(state);
         BuildBudgetSection(state);
+        BuildSignature(state);
+    }
+
+    private void BuildSignature(SWSenateWorkConsoleState state)
+    {
+        SignatureList.RemoveAllChildren();
+
+        SignatureList.AddChild(SWConsoleStyle.Section("ЗАКОНЫ НА ПОДПИСЬ"));
+        SignatureList.AddChild(SWConsoleStyle.Text("Законы, прошедшие голосование, вступают в силу только после вашей подписи.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        SignatureList.AddChild(new Control { MinHeight = 6 });
+
+        if (state.LawsAwaitingSignature.Count == 0)
+        {
+            SignatureList.AddChild(SWConsoleStyle.Text("Законов на подпись нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            return;
+        }
+
+        foreach (var law in state.LawsAwaitingSignature)
+        {
+            var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
+            card.Margin = new Thickness(0, 0, 0, 6);
+            var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+            box.AddChild(SWConsoleStyle.Text(law.Name, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+            if (!string.IsNullOrWhiteSpace(law.Author))
+                box.AddChild(SWConsoleStyle.Text($"Автор: {law.Author}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            if (!string.IsNullOrWhiteSpace(law.Description))
+                box.AddChild(MakeWrap(law.Description, Color.Gray));
+
+            if (law.Effects.Count > 0)
+            {
+                var eff = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 2, 0, 0) };
+                foreach (var e in law.Effects)
+                    eff.AddChild(SWConsoleStyle.Text($"{e.StatName} {e.Delta:+0;-0}  ", e.Color, SWConsoleStyle.MonoSmall));
+                box.AddChild(eff);
+            }
+
+            var id = law.Id;
+            var sign = SWConsoleStyle.Action(state.CanSignLaws ? "Подписать закон" : "Подписать может только Канцлер", SWConsoleStyle.Good, !state.CanSignLaws);
+            sign.HorizontalAlignment = Control.HAlignment.Left;
+            sign.Margin = new Thickness(0, 4, 0, 0);
+            if (state.CanSignLaws)
+                sign.OnPressed += _ => _owner.SignBill(id);
+            box.AddChild(sign);
+
+            card.AddChild(box);
+            SignatureList.AddChild(card);
+        }
     }
 
     private void ShowPartiesMode(int mode)
@@ -1245,7 +1293,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
         _navGroups = new (Label, Button[])[]
         {
-            (GroupInfo, new[] { NavOffice, NavSummary, NavCrises }),
+            (GroupInfo, new[] { NavOffice, NavSignature, NavSummary, NavCrises }),
             (GroupOrg, new[] { NavRoster, NavAgenda, NavSchedule }),
             (GroupWork, new[] { NavDraft, NavDilemmas, NavParties, NavAmbitions, NavBudget, NavAnnounce }),
         };

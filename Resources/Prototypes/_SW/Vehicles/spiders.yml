@@ -6,6 +6,7 @@
   - type: Sprite
     sprite: _SW/Vehicles/spider.rsi
     state: speedbike
+    drawdepth: OverMobs
   - type: Physics
     bodyType: Dynamic
   - type: Fixtures
@@ -17,11 +18,17 @@
         density: 1000
         mask:
         - HighImpassable
-        - BulletImpassable
         layer:
         - Opaque
-        - HighImpassable
+        - MidImpassable
         - BulletImpassable
+      mob_collision:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.2,0.85,0.2,-0.85"
+        hard: false
+        layer:
+        - MidImpassable
   - type: Damageable
     damageContainer: SWVehicleArmored
     damageModifierSet: SWLightVehicle
@@ -66,6 +73,8 @@
     rollingFriction: 5
     sidewaysFriction: 15
     turnSpeedReference: 2.5
+  - type: SWVehicleMobCollision
+    paralyzeTime: 5
   - type: SWVehicleMovementSound
     sound:
       path: /Audio/_SW/Vehicles/speeder.ogg

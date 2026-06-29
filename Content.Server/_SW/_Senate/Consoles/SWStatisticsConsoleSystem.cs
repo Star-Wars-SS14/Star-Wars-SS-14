@@ -18,6 +18,7 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryHealthSystem _health = default!;
     [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
+    [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
 
     private const float UpdateInterval = 3f;
@@ -109,6 +110,11 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
             Debt = _finance.Debt,
             CreditRating = _finance.CreditRating(),
             RatingColor = _finance.RatingColor(),
+            Backlog = _justice.Backlog,
+            BacklogStatus = _justice.BacklogStatus(),
+            JusticeStanceName = SWMinistryJusticeSystem.StanceName(_justice.Stance),
+            JusticeStanceColor = SWMinistryJusticeSystem.StanceColor(_justice.Stance),
+            CaseCount = _justice.CaseCount,
         };
 
         _ui.SetUiState(ent.Owner, SWStatisticsConsoleUiKey.Key, state);

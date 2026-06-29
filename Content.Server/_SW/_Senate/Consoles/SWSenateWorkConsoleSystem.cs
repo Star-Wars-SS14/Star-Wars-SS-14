@@ -36,6 +36,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryHealthSystem _health = default!;
     [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
+    [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
     [Dependency] private readonly SWSenatePartySystem _party = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
@@ -75,6 +76,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEconomyRejectStimulusMessage>(OnRejectStimulus);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWFinanceApproveEmissionMessage>(OnApproveEmission);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWFinanceRejectEmissionMessage>(OnRejectEmission);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWJusticeApproveTribunalMessage>(OnApproveTribunal);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWJusticeRejectTribunalMessage>(OnRejectTribunal);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectSessionMessage>(OnRejectSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAnnounceMessage>(OnAnnounce);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateCreatePartyMessage>(OnCreateParty);
@@ -449,6 +452,29 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             return;
 
         _finance.RejectEmission();
+        UpdateUi(ent);
+    }
+
+    private void OnApproveTribunal(Entity<SWSenateWorkConsoleComponent> ent, ref SWJusticeApproveTribunalMessage args)
+    {
+        if (!CanConfirmAs(ent))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_justice.ApproveTribunal())
+            _popup.PopupCursor(Loc.GetString("sw-justice-tribunal-approved"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRejectTribunal(Entity<SWSenateWorkConsoleComponent> ent, ref SWJusticeRejectTribunalMessage args)
+    {
+        if (!CanConfirmAs(ent))
+            return;
+
+        _justice.RejectTribunal();
         UpdateUi(ent);
     }
 
@@ -898,6 +924,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.CanApproveStimulus = _economy.StimulusPending && CanConfirmAs(ent);
         state.EmissionProposed = _finance.EmissionPending;
         state.CanApproveEmission = _finance.EmissionPending && CanConfirmAs(ent);
+        state.TribunalProposed = _justice.TribunalPending;
+        state.CanApproveTribunal = _justice.TribunalPending && CanConfirmAs(ent);
 
         if (card != null && TryComp<SWSenatePositionCardComponent>(card, out var position))
         {

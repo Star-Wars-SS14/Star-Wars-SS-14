@@ -206,6 +206,41 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWBudgetSubmitMessage());
     }
 
+    public void Investigate(int caseId)
+    {
+        SendMessage(new SWJusticeInvestigateMessage(caseId));
+    }
+
+    public void SendToCourt(int caseId)
+    {
+        SendMessage(new SWJusticeSendToCourtMessage(caseId));
+    }
+
+    public void HoldHearing(int caseId)
+    {
+        SendMessage(new SWJusticeHoldHearingMessage(caseId));
+    }
+
+    public void Verdict(int caseId, SWVerdict verdict)
+    {
+        SendMessage(new SWJusticeVerdictMessage(caseId, verdict));
+    }
+
+    public void SetJusticeStance(SWJusticeStance stance)
+    {
+        SendMessage(new SWJusticeSetStanceMessage(stance));
+    }
+
+    public void SelectJusticeProgram(string programId)
+    {
+        SendMessage(new SWJusticeSelectProgramMessage(programId));
+    }
+
+    public void DeclareTribunal()
+    {
+        SendMessage(new SWJusticeDeclareTribunalMessage());
+    }
+
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);

@@ -29,6 +29,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
     [Dependency] private readonly SWSenateBudgetSystem _budget = default!;
+    [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
@@ -77,7 +78,84 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWBudgetSetWeightMessage>(OnBudgetWeight);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWBudgetResetWeightsMessage>(OnBudgetResetWeights);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWBudgetSubmitMessage>(OnBudgetSubmit);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeInvestigateMessage>(OnInvestigate);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeSendToCourtMessage>(OnSendToCourt);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeHoldHearingMessage>(OnHoldHearing);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeVerdictMessage>(OnVerdict);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeSetStanceMessage>(OnSetJusticeStance);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeSelectProgramMessage>(OnSelectJusticeProgram);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeDeclareTribunalMessage>(OnDeclareTribunal);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryResignMessage>(OnResign);
+    }
+
+    private bool IsJusticeCard(Entity<SWMinistryWorkConsoleComponent> ent) =>
+        GetCardMinistry(ent) == SWMinistryJusticeSystem.JusticeMinistryId;
+
+    private void OnInvestigate(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeInvestigateMessage args)
+    {
+        if (!IsJusticeCard(ent))
+            return;
+
+        if (!_justice.Investigate(args.CaseId))
+            _popup.PopupCursor(Loc.GetString("sw-justice-action-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnSendToCourt(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeSendToCourtMessage args)
+    {
+        if (!IsJusticeCard(ent))
+            return;
+
+        _justice.SendToCourt(args.CaseId);
+        UpdateUi(ent);
+    }
+
+    private void OnHoldHearing(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeHoldHearingMessage args)
+    {
+        if (!IsJusticeCard(ent))
+            return;
+
+        if (!_justice.HoldHearing(args.CaseId))
+            _popup.PopupCursor(Loc.GetString("sw-justice-action-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnVerdict(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeVerdictMessage args)
+    {
+        if (!IsJusticeCard(ent))
+            return;
+
+        _justice.Rule(args.CaseId, args.Verdict);
+        UpdateUi(ent);
+    }
+
+    private void OnSetJusticeStance(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeSetStanceMessage args)
+    {
+        if (!IsJusticeCard(ent))
+            return;
+
+        _justice.SetStance(args.Stance);
+        UpdateUi(ent);
+    }
+
+    private void OnSelectJusticeProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeSelectProgramMessage args)
+    {
+        if (!IsJusticeCard(ent))
+            return;
+
+        _justice.SelectProgram(args.ProgramId);
+        UpdateUi(ent);
+    }
+
+    private void OnDeclareTribunal(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeDeclareTribunalMessage args)
+    {
+        if (!IsJusticeCard(ent))
+            return;
+
+        _justice.DeclareTribunal();
+        UpdateUi(ent);
     }
 
     private void OnBudgetRatio(Entity<SWMinistryWorkConsoleComponent> ent, ref SWBudgetAdjustRatioMessage args)
@@ -689,6 +767,26 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.BudgetCanEdit = phase != SWBudgetPhase.Approved;
                     state.BudgetCanSubmit = phase == SWBudgetPhase.Draft;
                     state.BudgetShares = _budget.BuildShares();
+                }
+                else if (ministryId == SWMinistryJusticeSystem.JusticeMinistryId)
+                {
+                    state.IsJustice = true;
+                    state.JusticeStance = _justice.Stance;
+                    state.JusticeStanceName = SWMinistryJusticeSystem.StanceName(_justice.Stance);
+                    state.JusticeStanceColor = SWMinistryJusticeSystem.StanceColor(_justice.Stance);
+                    state.Backlog = _justice.Backlog;
+                    state.BacklogStatus = _justice.BacklogStatus();
+                    state.CourtCapacity = _justice.Capacity;
+                    state.CourtCapacityMax = _justice.CapacityMax;
+                    state.TribunalActive = _justice.TribunalActive;
+                    state.TribunalHoursLeft = _justice.TribunalHoursLeft;
+                    state.TribunalPending = _justice.TribunalPending;
+                    state.SelectedJusticeProgram = _justice.SelectedProgram ?? string.Empty;
+                    state.JusticeProgramProgress = _justice.ProgramProgress;
+                    state.JusticePrograms = _justice.BuildPrograms();
+                    state.Cases = _justice.BuildCases();
+                    state.CaseCount = _justice.CaseCount;
+                    state.JusticeLog = _justice.GetLog();
                 }
             }
         }

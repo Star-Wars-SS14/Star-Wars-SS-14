@@ -85,6 +85,16 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWFinanceRejectEmissionMessage());
     }
 
+    public void ApproveTribunal()
+    {
+        SendMessage(new SWJusticeApproveTribunalMessage());
+    }
+
+    public void RejectTribunal()
+    {
+        SendMessage(new SWJusticeRejectTribunalMessage());
+    }
+
     public void Resign()
     {
         SendMessage(new SWSenateResignMessage());

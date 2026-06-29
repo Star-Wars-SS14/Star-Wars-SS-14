@@ -152,6 +152,20 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
         RepublicStats.AddChild(finPanel);
 
         RepublicStats.AddChild(new Control { MinHeight = 10 });
+        RepublicStats.AddChild(SWConsoleStyle.Section("ЮСТИЦИЯ"));
+        RepublicStats.AddChild(new Control { MinHeight = 4 });
+        var jusPanel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, state.JusticeStanceColor);
+        var jusBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+        var jusHead = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        jusHead.AddChild(SWConsoleStyle.Text($"Нагрузка судов: {state.BacklogStatus}", state.JusticeStanceColor, SWConsoleStyle.MonoBold));
+        jusHead.AddChild(new Control { HorizontalExpand = true });
+        jusHead.AddChild(SWConsoleStyle.Text($"{state.Backlog}/100 · дел {state.CaseCount}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        jusBox.AddChild(jusHead);
+        jusBox.AddChild(SWConsoleStyle.Text($"Политика: {state.JusticeStanceName}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        jusPanel.AddChild(jusBox);
+        RepublicStats.AddChild(jusPanel);
+
+        RepublicStats.AddChild(new Control { MinHeight = 10 });
         RepublicStats.AddChild(SWConsoleStyle.Section("ПОКАЗАТЕЛИ РЕСПУБЛИКИ"));
         RepublicStats.AddChild(new Control { MinHeight = 6 });
 

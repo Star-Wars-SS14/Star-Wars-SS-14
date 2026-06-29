@@ -69,6 +69,15 @@
                 <ScrollContainer Name="BudgetsPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
                     <BoxContainer Name="BudgetsContent" Orientation="Vertical" HorizontalExpand="True" />
                 </ScrollContainer>
+                <ScrollContainer Name="CasesPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="CasesContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="JusticePanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="JusticeContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="CorruptionPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="CorruptionContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
             </BoxContainer>
         </BoxContainer>
     </PanelContainer>

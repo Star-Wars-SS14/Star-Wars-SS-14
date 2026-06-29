@@ -52,6 +52,8 @@
   central: true
   color: "#5B2C6F"
   domain: SWGlobalSecurity
+  extraDomains:
+  - SWGlobalSociety
   order: 4
 
 - type: swMinistry

@@ -93,6 +93,11 @@ public sealed class SWStatisticsConsoleState : BoundUserInterfaceState
     public int Debt;
     public string CreditRating = string.Empty;
     public Color RatingColor;
+    public int Backlog;
+    public string BacklogStatus = string.Empty;
+    public string JusticeStanceName = string.Empty;
+    public Color JusticeStanceColor;
+    public int CaseCount;
 
     public SWStatisticsConsoleState(List<SWGlobalStatEntry> globals, List<SWSectorEntry> sectors)
     {
@@ -341,6 +346,127 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public bool BudgetCanEdit;
     public bool BudgetCanSubmit;
     public List<SWBudgetShareEntry> BudgetShares = new();
+
+    // ЮСТИЦИЯ (Justice ministry only).
+    public bool IsJustice;
+    public SWJusticeStance JusticeStance;
+    public string JusticeStanceName = string.Empty;
+    public Color JusticeStanceColor;
+    public int Backlog;
+    public string BacklogStatus = string.Empty;
+    public int CourtCapacity;
+    public int CourtCapacityMax;
+    public bool TribunalActive;
+    public int TribunalHoursLeft;
+    public bool TribunalPending;
+    public string SelectedJusticeProgram = string.Empty;
+    public int JusticeProgramProgress;
+    public List<SWDefenseProgramEntry> JusticePrograms = new();
+    public List<SWCaseEntry> Cases = new();
+    public int CaseCount;
+    public List<string> JusticeLog = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCaseEntry
+{
+    public int Id;
+    public SWCaseStage Stage;
+    public string TypeLabel = string.Empty;
+    public Color TypeColor;
+    public string StageLabel = string.Empty;
+    public int Evidence;
+    public string EvidenceLabel = string.Empty;
+    public string SeverityLabel = string.Empty;
+    public string AgeLabel = string.Empty;
+    public string SectorName = string.Empty;
+    public bool CanInvestigate;
+    public bool CanSendToCourt;
+    public bool CanHold;
+    public bool AtVerdict;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWJusticeInvestigateMessage : BoundUserInterfaceMessage
+{
+    public int CaseId;
+
+    public SWJusticeInvestigateMessage(int caseId)
+    {
+        CaseId = caseId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWJusticeSendToCourtMessage : BoundUserInterfaceMessage
+{
+    public int CaseId;
+
+    public SWJusticeSendToCourtMessage(int caseId)
+    {
+        CaseId = caseId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWJusticeHoldHearingMessage : BoundUserInterfaceMessage
+{
+    public int CaseId;
+
+    public SWJusticeHoldHearingMessage(int caseId)
+    {
+        CaseId = caseId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWJusticeVerdictMessage : BoundUserInterfaceMessage
+{
+    public int CaseId;
+    public SWVerdict Verdict;
+
+    public SWJusticeVerdictMessage(int caseId, SWVerdict verdict)
+    {
+        CaseId = caseId;
+        Verdict = verdict;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWJusticeSetStanceMessage : BoundUserInterfaceMessage
+{
+    public SWJusticeStance Stance;
+
+    public SWJusticeSetStanceMessage(SWJusticeStance stance)
+    {
+        Stance = stance;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWJusticeSelectProgramMessage : BoundUserInterfaceMessage
+{
+    public string ProgramId;
+
+    public SWJusticeSelectProgramMessage(string programId)
+    {
+        ProgramId = programId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWJusticeDeclareTribunalMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWJusticeApproveTribunalMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWJusticeRejectTribunalMessage : BoundUserInterfaceMessage
+{
 }
 
 [Serializable, NetSerializable]
@@ -1058,6 +1184,8 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool CanApproveStimulus;
     public bool EmissionProposed;
     public bool CanApproveEmission;
+    public bool TribunalProposed;
+    public bool CanApproveTribunal;
     public List<SWBillPresetEntry> Presets = new();
     public bool CanDilemmas;
     public List<string> MinistryNotices = new();

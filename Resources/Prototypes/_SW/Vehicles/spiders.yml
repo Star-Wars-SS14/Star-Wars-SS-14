@@ -162,6 +162,8 @@
     selectedMode: SemiAuto
     availableModes:
     - SemiAuto
+    soundGunshot:
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: PredictedBattery 
     maxCharge: 1000
     startingCharge: 1000

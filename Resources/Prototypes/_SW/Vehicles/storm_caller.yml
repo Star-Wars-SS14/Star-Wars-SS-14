@@ -113,6 +113,7 @@
     aliveDelay: 8
     criticalDelay: 4
     deadDelay: 2
+  - type: SWForceMoveImmune
 
 - type: entity
   id: SWStormCallerDestroyed
@@ -142,6 +143,7 @@
         - MachineLayer
   - type: Clickable
   - type: InteractionOutline
+  - type: SWForceMoveImmune
 
 - type: swVehicleRole
   id: SWVehicleRoleStormCallerDriver

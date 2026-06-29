@@ -369,7 +369,11 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
         if (!_random.Prob(Math.Clamp(rate, 0f, 1f)))
             return;
 
-        var type = _random.Pick(CaseTypes);
+        CreateCase(_random.Pick(CaseTypes));
+    }
+
+    private void CreateCase(SWCaseType type)
+    {
         var holders = _senate.SectorHolders.Keys.ToList();
         _cases.Add(new SWCourtCase
         {
@@ -383,6 +387,24 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
             Age = 0f,
         });
     }
+
+    // --- Admin (swcase) ---
+
+    public bool AdminAddCase(SWCaseType? type)
+    {
+        if (_cases.Count >= MaxActiveCases)
+            return false;
+
+        CreateCase(type ?? _random.Pick(CaseTypes));
+        return true;
+    }
+
+    public void ClearCases() => _cases.Clear();
+
+    public void SetBacklog(float value) => _backlog = Math.Clamp(value, 0f, 100f);
+
+    public string AdminStatus() =>
+        $"Дел: {_cases.Count}/{MaxActiveCases}, нагрузка {Backlog}/100 ({BacklogStatus()}), ресурс {_capacity}/{CapacityMax}, политика {StanceName(_stance)}.";
 
     private void AgeCases(float gameHours)
     {

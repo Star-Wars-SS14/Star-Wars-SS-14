@@ -99,10 +99,16 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             btn.OnPressed += _ => ShowTab(idx);
             TabBar.AddChild(btn);
             _tabButtons[i] = btn;
+            // Hide every ministry-specific tab until SetState reveals the relevant ones. Otherwise the
+            // window measures the full 21-tab width on first open and OpenCentered pushes it off-screen.
+            if (i >= FirstMinistryTab)
+                btn.Visible = false;
         }
 
         ShowTab(0);
     }
+
+    private const int FirstMinistryTab = 3;
 
     private void ShowTab(int index)
     {

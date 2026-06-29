@@ -5,6 +5,7 @@ using Content.Shared.Administration;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Crises;
 using Content.Shared._SW._Senate.Dilemmas;
+using Content.Shared._SW._Senate.Ministries;
 using Content.Shared._SW._Senate.Sectors;
 using Robust.Shared.Console;
 using Robust.Shared.Prototypes;
@@ -400,6 +401,75 @@ public sealed class SWPlagueCommand : IConsoleCommand
             case "clear":
                 health.ClearPlague();
                 shell.WriteLine("Эпидемия ликвидирована.");
+                break;
+
+            default:
+                shell.WriteError(Help);
+                break;
+        }
+    }
+}
+
+// swcase — управлять реестром дел Минюста (для теста).
+//   swcase                  — показать статус (дел, нагрузка, ресурс, политика).
+//   swcase add [тип]        — завести дело (тип: criminal|corruption|separatism|civil|political; без типа — случайный).
+//   swcase backlog <0-100>  — задать нагрузку судов.
+//   swcase clear            — очистить реестр дел.
+// Примеры:
+//   swcase add
+//   swcase add corruption
+//   swcase backlog 80
+[AdminCommand(AdminFlags.Debug)]
+public sealed class SWCaseCommand : IConsoleCommand
+{
+    public string Command => "swcase";
+    public string Description => "Управлять реестром дел Минюста: завести дело, задать нагрузку, очистить.";
+    public string Help => "swcase [add [type] | backlog <0-100> | clear]";
+
+    public void Execute(IConsoleShell shell, string argStr, string[] args)
+    {
+        var justice = IoCManager.Resolve<IEntityManager>().System<SWMinistryJusticeSystem>();
+
+        if (args.Length < 1)
+        {
+            shell.WriteLine(justice.AdminStatus());
+            return;
+        }
+
+        switch (args[0].ToLowerInvariant())
+        {
+            case "add":
+                SWCaseType? type = null;
+                if (args.Length >= 2)
+                {
+                    if (!Enum.TryParse<SWCaseType>(args[1], true, out var parsed))
+                    {
+                        shell.WriteError("Тип: criminal | corruption | separatism | civil | political");
+                        return;
+                    }
+                    type = parsed;
+                }
+
+                if (!justice.AdminAddCase(type))
+                    shell.WriteError("Реестр заполнен (предел дел).");
+                else
+                    shell.WriteLine(justice.AdminStatus());
+                break;
+
+            case "backlog":
+                if (args.Length < 2 || !float.TryParse(args[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var value))
+                {
+                    shell.WriteError("swcase backlog <0-100>");
+                    return;
+                }
+
+                justice.SetBacklog(value);
+                shell.WriteLine(justice.AdminStatus());
+                break;
+
+            case "clear":
+                justice.ClearCases();
+                shell.WriteLine("Реестр дел очищен.");
                 break;
 
             default:

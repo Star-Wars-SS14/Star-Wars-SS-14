@@ -21,6 +21,16 @@
       params:
         variation: 0.250
   - type: ItemToggleMeleeWeapon
+    activatedSoundOnHit:
+      collection: sparks
+      params:
+        variation: 0.250
+        volume: 20
+    activatedSoundOnHitNoDamage:
+      collection: sparks
+      params:
+        variation: 0.250
+        volume: 20
     activatedDamage:
       types:
         Shock: 55

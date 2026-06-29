@@ -3,12 +3,22 @@
   materials:
     IngotGold1: 2
   result:
-    SWAdvancedCables: 1
+    SWAdvancedCables1: 1
 
 - type: swLatheRecipe
   id: SWElectronicsSLR
   materials:
-    SWAdvancedCables: 1
+    SWAdvancedCables1: 1
     SWSheetLantanid1: 1
   result:
-    SWElectronics: 1
+    SWElectronics1: 1
+
+- type: swLatheRecipe
+  id: SWAdvancedElectronicsSLR
+  materials:
+    SWAdvancedCables1: 2
+    SWSheetLantanidAlloy1: 1
+    SWElectronics1: 1
+  result:
+    SWAdvancedElectronics: 1
+  produceTime: 3

@@ -41,24 +41,11 @@
   - type: Damageable
     damageContainer: Inorganic
     damageModifierSet: Metallic
-  - type: Destructible
-    thresholds:
-    - trigger:
-        !type:DamageTrigger
-        damage: 200
-      behaviors:
-      - !type:DoActsBehavior
-        acts: ["Destruction"]
-      - !type:SpawnEntitiesBehavior
-        spawn:
-          SheetSteel1:
-            min: 2
-            max: 5
 
 - type: entity
   id: SWOreDispenser
   parent: SWBaseLathe
-  name: sw ore dispenser
+  name: item dispenser
   description: debug
   components:
   - type: Physics
@@ -81,6 +68,20 @@
       - state: ore_dispenser
       - state: up_arrow
         rotation: 180
+  - type: Construction
+    graph: SWLatheGraph
+    node: oreDispenser
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:ChangeConstructionNodeBehavior
+        node: oreDispenserDestroyed
   - type: SWMagnetPickup
   - type: Storage
     maxItemSize: Normal
@@ -91,6 +92,8 @@
     whitelist:
       tags:
         - Ore
+        - SWMaterial
+        - ConstructionMaterial
   - type: ActivatableUI
     key: enum.StorageUiKey.Key
   - type: UserInterface
@@ -105,6 +108,8 @@
     dispenseWhitelist:
       tags:
         - Ore
+        - SWMaterial
+        - ConstructionMaterial
 
 - type: entity
   id: SWElectronicsLathe
@@ -120,10 +125,31 @@
         rotation: 90
       - state: up_arrow
       - state: down_arrow  
+  - type: Construction
+    graph: SWLatheGraph
+    node: electronicsLathe
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:ChangeConstructionNodeBehavior
+        node: electronicsLatheDestroyed
   - type: SWLathe
     recipes:
     - SWAdvancedCableSLR
     - SWElectronicsSLR
+    - SWAdvancedElectronicsSLR
+  - type: ActivatableUI
+    key: enum.SWLatheUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWLatheUiKey.Key:
+        type: SWLatheBoundUserInterface
 
 - type: entity
   id: SWBlasterLathe
@@ -139,11 +165,32 @@
         rotation: 90
       - state: up_arrow
       - state: down_arrow   
+  - type: Construction
+    graph: SWLatheGraph
+    node: blasterLathe
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:ChangeConstructionNodeBehavior
+        node: blasterLatheDestroyed
   - type: SWLathe
     recipes:
     - SWBarrelSLR
     - SWBlasterFrameSLR
+    - SWArmorPlateSLR
     - SWT1WeaponSLR
+  - type: ActivatableUI
+    key: enum.SWLatheUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWLatheUiKey.Key:
+        type: SWLatheBoundUserInterface
 
 - type: entity
   id: SWSmeltLathe
@@ -159,12 +206,191 @@
         rotation: 90
       - state: up_arrow
       - state: down_arrow   
+  - type: Construction
+    graph: SWLatheGraph
+    node: smeltLathe
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:ChangeConstructionNodeBehavior
+        node: smeltLatheDestroyed
   - type: SWLathe
     recipes:
     - SWOreToSteelSLR
     - SWLantanidAlloySLR
+    - SWReinforcedSteelSLR
     - SWOreToGoldSLR
     - SWOreToLantanidSLR
+  - type: ActivatableUI
+    key: enum.SWLatheUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWLatheUiKey.Key:
+        type: SWLatheBoundUserInterface
+
+- type: entity
+  id: SWVehicleFabricator
+  parent: SWBaseLathe
+  name: vehicle fabricator
+  description: A large assembly platform surrounded by precision manipulators.
+  components:
+  - type: Fixtures
+    fixtures:
+      in1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.6,-2.05,1.6,-1.4"
+        density: 190
+        mask:
+        - ItemMask
+        layer:
+        - WallLayer
+        hard: false
+  - type: Sprite
+    sprite: _SW/Structures/Machines/vehicle_fabricator.rsi
+    drawdepth: HighFloorObjects
+    layers:
+      - state: fabricator
+  - type: Construction
+    graph: SWLatheGraph
+    node: vehicleFabricator
+  - type: Godmode
+  - type: SWLathe
+    spawnPointOut: "0.0, 0.0"
+    recipes:
+    - SWStormCallerSLR
+    - SWSingleSeatSpeederSLR
+    - SWTwoSeatSpeederSLR
+  - type: ActivatableUI
+    key: enum.SWLatheUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWLatheUiKey.Key:
+        type: SWLatheBoundUserInterface
+
+- type: entity
+  id: SWBaseLatheDestroyed
+  name: destroyed lathe
+  parent: BaseStructure
+  abstract: true
+  components:
+  - type: Fixtures
+    fixtures:
+      base:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.4,-0.4, 0.4,0.4"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        density: 1000
+  - type: Anchorable
+  - type: InteractionOutline
+
+- type: entity
+  id: SWOreDispenserDestroyed
+  parent: SWBaseLatheDestroyed
+  name: destroyed item dispenser
+  description: A damaged lathe system station awaiting repairs.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: destroyed
+  - type: Construction
+    graph: SWLatheGraph
+    node: oreDispenserDestroyed
+
+- type: entity
+  id: SWElectronicsLatheDestroyed
+  parent: SWBaseLatheDestroyed
+  name: destroyed electronics lathe
+  description: A damaged lathe system station awaiting repairs.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: destroyed
+  - type: Construction
+    graph: SWLatheGraph
+    node: electronicsLatheDestroyed
+
+- type: entity
+  id: SWBlasterLatheDestroyed
+  parent: SWBaseLatheDestroyed
+  name: destroyed blaster lathe
+  description: A damaged lathe system station awaiting repairs.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: destroyed
+  - type: Construction
+    graph: SWLatheGraph
+    node: blasterLatheDestroyed
+
+- type: entity
+  id: SWSmeltLatheDestroyed
+  parent: SWBaseLatheDestroyed
+  name: destroyed smelt lathe
+  description: A damaged lathe system station awaiting repairs.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: destroyed
+  - type: Construction
+    graph: SWLatheGraph
+    node: smeltLatheDestroyed
+
+- type: entity
+  id: SWDistributorLeftLatheDestroyed
+  parent: SWBaseLatheDestroyed
+  name: destroyed left distributor
+  description: A damaged lathe system station awaiting repairs.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: destroyed
+  - type: Construction
+    graph: SWLatheGraph
+    node: distLeftDestroyed
+
+- type: entity
+  id: SWDistributorRightLatheDestroyed
+  parent: SWBaseLatheDestroyed
+  name: destroyed right distributor
+  description: A damaged lathe system station awaiting repairs.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: destroyed
+  - type: Construction
+    graph: SWLatheGraph
+    node: distRightDestroyed
+
+- type: entity
+  id: SWIntersectionLatheDestroyed
+  parent: SWBaseLatheDestroyed
+  name: destroyed intersection
+  description: A damaged lathe system station awaiting repairs.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+      - state: destroyed
+  - type: Construction
+    graph: SWLatheGraph
+    node: intersectionDestroyed
 
 - type: entity
   id: SWDistributorLeftLathe
@@ -194,6 +420,17 @@
   - type: Construction
     graph: SWLatheGraph
     node: distLeft
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:ChangeConstructionNodeBehavior
+        node: distLeftDestroyed
   - type: SWDistributor
     redirectionInfo:
     - inputFixture: in
@@ -229,6 +466,17 @@
   - type: Construction
     graph: SWLatheGraph
     node: distRight
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:ChangeConstructionNodeBehavior
+        node: distRightDestroyed
   - type: SWDistributor
     redirectionInfo:
     - inputFixture: in
@@ -304,6 +552,17 @@
   - type: Construction
     graph: SWLatheGraph
     node: intersection
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+      - !type:ChangeConstructionNodeBehavior
+        node: intersectionDestroyed
   - type: SWDistributor
     redirectionInfo:
     - inputFixture: in1

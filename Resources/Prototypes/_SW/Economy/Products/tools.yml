@@ -52,3 +52,14 @@
     SWEmpireCreditCurrency: 100
   category: sw-category-tools
   group: SWToolsMarket
+
+- type: swCargoProduct
+  id: SWMiningDrillCP
+  icon:
+    sprite: Objects/Tools/handdrill.rsi
+    state: handdrill
+  product: MiningDrill
+  cost:
+    SWEmpireCreditCurrency: 120
+  category: sw-category-tools
+  group: SWToolsMarket

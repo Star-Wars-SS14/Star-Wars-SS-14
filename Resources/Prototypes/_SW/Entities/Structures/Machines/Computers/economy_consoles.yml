@@ -263,6 +263,7 @@
     - SWSpecialToolsMarket
     - SWMandalorianToolsMarket
     - SWMiscMarket
+    - SWToolsMarket
   - type: Sprite
     sprite: _SW/Structures/Machines/NeutralCargoComputer.rsi
     layers:

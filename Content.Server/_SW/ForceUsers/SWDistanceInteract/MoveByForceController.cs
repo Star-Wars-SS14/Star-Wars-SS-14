@@ -330,7 +330,8 @@ public sealed partial class MoveByForceController : VirtualController
             if (comp.IsMoving && (comp.MovingTo.Position - objCoords.Position).Length() > 0.1f)
             {
                 var direction = comp.MovingTo.Position - objCoords.Position;
-                _physicsSystem.SetLinearVelocity(ent, direction.Normalized() * forceComp.MoveByForceImpulseMultiplayer / physComp.Mass);
+                var speed = forceComp.MoveByForceMinSpeed + forceComp.MoveByForceImpulseMultiplayer / physComp.Mass;
+                _physicsSystem.SetLinearVelocity(ent, direction.Normalized() * speed);
 
 
             }

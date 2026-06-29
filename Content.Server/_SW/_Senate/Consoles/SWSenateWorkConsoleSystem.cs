@@ -538,6 +538,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (self == null)
             return;
 
+        if (args.Type == SWMotionType.NoConfidence && GetCardPosition(ent) == SWSenatePosition.Chancellor)
+            return;
+
         _powers.ProposeMotion(args.Type, args.Level, args.Power, self);
         UpdateUi(ent);
     }

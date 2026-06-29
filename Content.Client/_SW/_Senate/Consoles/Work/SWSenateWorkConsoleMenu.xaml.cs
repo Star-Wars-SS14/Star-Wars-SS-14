@@ -243,11 +243,14 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                 prow.AddChild(btn);
             }
             PowersList.AddChild(prow);
-            var nc = SWConsoleStyle.Action("Вотум недоверия Канцлеру", SWConsoleStyle.Bad);
-            nc.HorizontalExpand = true;
-            nc.Margin = new Thickness(0, 3, 0, 0);
-            nc.OnPressed += _ => _owner.ProposeMotion(SWMotionType.NoConfidence, 0, SWEmergencyPower.Veto);
-            PowersList.AddChild(nc);
+            if (state.Position != SWSenatePosition.Chancellor)
+            {
+                var nc = SWConsoleStyle.Action("Вотум недоверия Канцлеру", SWConsoleStyle.Bad);
+                nc.HorizontalExpand = true;
+                nc.Margin = new Thickness(0, 3, 0, 0);
+                nc.OnPressed += _ => _owner.ProposeMotion(SWMotionType.NoConfidence, 0, SWEmergencyPower.Veto);
+                PowersList.AddChild(nc);
+            }
         }
     }
 

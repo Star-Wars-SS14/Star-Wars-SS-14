@@ -109,9 +109,9 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         if (_ministryBudget.ContainsKey(ministryId))
             return;
 
-        // Inflation erodes the real purchasing power of every ministry's daily allocation.
-        var nominal = MinistryBudgetBase + MinistryBudgetPerSector * _senate.SectorHolders.Count;
-        _ministryBudget[ministryId] = (int) (nominal / _finance.PriceMultiplier());
+        // No stock budget — ministries are funded only once the day's budget project is approved
+        // (SWSenateBudgetSystem.SetMinistryBudget). Admin resource is separate and still granted daily.
+        _ministryBudget[ministryId] = 0;
         _ministryAdmin[ministryId] = MinistryAdminPerDay;
     }
 
@@ -137,6 +137,13 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
         _ministryBudget[ministryId] -= amount;
         return true;
+    }
+
+    // Called by the budget pipeline when the day's project is approved.
+    public void SetMinistryBudget(string ministryId, int amount)
+    {
+        EnsureMinistry(ministryId);
+        _ministryBudget[ministryId] = Math.Max(0, amount);
     }
 
     public bool SpendMinistryAdmin(string ministryId, int amount)

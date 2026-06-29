@@ -328,6 +328,79 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public int FinanceProgramProgress;
     public List<SWDefenseProgramEntry> FinancePrograms = new();
     public List<string> FinanceLog = new();
+
+    // БЮДЖЕТЫ (Finance only) — daily budget project.
+    public string BudgetPhaseLabel = string.Empty;
+    public Color BudgetPhaseColor;
+    public int BudgetDayTotal;
+    public int BudgetSectorPool;
+    public int BudgetMinistryPool;
+    public int BudgetSectorPct;
+    public int BudgetRejects;
+    public string BudgetRejectReason = string.Empty;
+    public bool BudgetCanEdit;
+    public bool BudgetCanSubmit;
+    public List<SWBudgetShareEntry> BudgetShares = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBudgetShareEntry
+{
+    public string MinistryId = string.Empty;
+    public string Name = string.Empty;
+    public Color Color;
+    public int Weight;
+    public int Amount;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBudgetAdjustRatioMessage : BoundUserInterfaceMessage
+{
+    public int DeltaPct;
+
+    public SWBudgetAdjustRatioMessage(int deltaPct)
+    {
+        DeltaPct = deltaPct;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBudgetSetWeightMessage : BoundUserInterfaceMessage
+{
+    public string MinistryId;
+    public int Delta;
+
+    public SWBudgetSetWeightMessage(string ministryId, int delta)
+    {
+        MinistryId = ministryId;
+        Delta = delta;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBudgetResetWeightsMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBudgetSubmitMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBudgetApproveMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBudgetRejectMessage : BoundUserInterfaceMessage
+{
+    public string Reason;
+
+    public SWBudgetRejectMessage(string reason)
+    {
+        Reason = reason;
+    }
 }
 
 [Serializable, NetSerializable]
@@ -997,6 +1070,14 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public int BudgetReserve;
     public int MyBudgetAvailable;
     public List<SWBudgetSectorEntry> BudgetSectors = new();
+    public bool BudgetProjectPending;
+    public int BudgetSectorPool;
+    public int BudgetMinistryPool;
+    public int BudgetSectorPct;
+    public int BudgetRejects;
+    public bool CanRejectBudget;
+    public bool CanApproveBudget;
+    public List<SWBudgetShareEntry> BudgetMinistrySplit = new();
     public bool CanPrograms;
     public List<SWProgramEntry> Programs = new();
     public bool CanAmbitions;

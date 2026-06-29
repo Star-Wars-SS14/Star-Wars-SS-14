@@ -1652,11 +1652,106 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         if (!state.IsFinance)
             return;
 
-        BudgetsContent.AddChild(SWConsoleStyle.Section("РАСПРЕДЕЛЕНИЕ БЮДЖЕТОВ МИНИСТЕРСТВ"));
-        BudgetsContent.AddChild(new Control { MinHeight = 6 });
-        BudgetsContent.AddChild(SWConsoleStyle.Text("Здесь Минфин будет распределять казну между министерствами.", SWConsoleStyle.TextBright, SWConsoleStyle.Mono));
+        // Status.
+        var srow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        srow.AddChild(SWConsoleStyle.Text($"Проект бюджета: {state.BudgetPhaseLabel}", state.BudgetPhaseColor, SWConsoleStyle.MonoBold));
+        srow.AddChild(new Control { HorizontalExpand = true });
+        srow.AddChild(SWConsoleStyle.Text($"Бюджет дня: {state.BudgetDayTotal} кр", SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+        BudgetsContent.AddChild(srow);
+        if (state.BudgetRejects > 0 && !string.IsNullOrWhiteSpace(state.BudgetRejectReason))
+            BudgetsContent.AddChild(SWConsoleStyle.Text($"Отклонения: {state.BudgetRejects}/2  ·  причина: {state.BudgetRejectReason}", SWConsoleStyle.Bad, SWConsoleStyle.MonoSmall));
+        BudgetsContent.AddChild(SWConsoleStyle.Text("Распределите бюджет дня в первые два часа и подайте проект Канцлеру на одобрение.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        BudgetsContent.AddChild(new Control { MinHeight = 8 });
+
+        // Sector / ministry split.
+        BudgetsContent.AddChild(SWConsoleStyle.Section("СЕКТОРА / МИНИСТЕРСТВА"));
         BudgetsContent.AddChild(new Control { MinHeight = 4 });
-        BudgetsContent.AddChild(SWConsoleStyle.Text("Функция в разработке. Пока бюджеты министерств начисляются автоматически (с поправкой на инфляцию).", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        var prow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        prow.AddChild(SWConsoleStyle.Text($"Сектора {state.BudgetSectorPct}% — {state.BudgetSectorPool} кр", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
+        prow.AddChild(new Control { HorizontalExpand = true });
+        prow.AddChild(SWConsoleStyle.Text($"Министерства {100 - state.BudgetSectorPct}% — {state.BudgetMinistryPool} кр", SWConsoleStyle.Good, SWConsoleStyle.MonoBold));
+        BudgetsContent.AddChild(prow);
+        if (state.BudgetCanEdit)
+        {
+            var rrow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
+            var minus = SWConsoleStyle.Action("Секторам −5%", SWConsoleStyle.Neutral);
+            minus.HorizontalExpand = true;
+            minus.Margin = new Thickness(0, 0, 4, 0);
+            minus.OnPressed += _ => _owner.AdjustBudgetRatio(-5);
+            var plus = SWConsoleStyle.Action("Секторам +5%", SWConsoleStyle.Neutral);
+            plus.HorizontalExpand = true;
+            plus.OnPressed += _ => _owner.AdjustBudgetRatio(5);
+            rrow.AddChild(minus);
+            rrow.AddChild(plus);
+            BudgetsContent.AddChild(rrow);
+        }
+
+        // Ministry shares.
+        BudgetsContent.AddChild(new Control { MinHeight = 10 });
+        var mhead = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        mhead.AddChild(SWConsoleStyle.Text("ДОЛИ МИНИСТЕРСТВ", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
+        mhead.AddChild(new Control { HorizontalExpand = true });
+        if (state.BudgetCanEdit && state.BudgetShares.Count > 0)
+        {
+            var reset = SWConsoleStyle.Action("Поровну", SWConsoleStyle.Neutral);
+            reset.OnPressed += _ => _owner.ResetBudgetWeights();
+            mhead.AddChild(reset);
+        }
+        BudgetsContent.AddChild(mhead);
+        BudgetsContent.AddChild(new Control { MinHeight = 4 });
+
+        if (state.BudgetShares.Count == 0)
+            BudgetsContent.AddChild(SWConsoleStyle.Text("Нет занятых министерств.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        else
+        {
+            foreach (var share in state.BudgetShares)
+                BudgetsContent.AddChild(MakeShareRow(share, state.BudgetCanEdit));
+        }
+
+        // Submit.
+        if (state.BudgetCanSubmit)
+        {
+            BudgetsContent.AddChild(new Control { MinHeight = 10 });
+            var submit = SWConsoleStyle.Action("Подать проект Канцлеру", SWConsoleStyle.Good);
+            submit.HorizontalExpand = true;
+            submit.OnPressed += _ => _owner.SubmitBudget();
+            BudgetsContent.AddChild(submit);
+        }
+        else if (state.BudgetPhaseLabel == "На одобрении Канцлера")
+        {
+            BudgetsContent.AddChild(new Control { MinHeight = 8 });
+            BudgetsContent.AddChild(SWConsoleStyle.Text("Проект подан. Ожидается решение Канцлера.", SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+        }
+    }
+
+    private Control MakeShareRow(SWBudgetShareEntry share, bool canEdit)
+    {
+        var row = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, share.Color);
+        row.Margin = new Thickness(0, 0, 0, 4);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        box.AddChild(SWConsoleStyle.Text(share.Name, share.Color, SWConsoleStyle.Mono));
+        box.AddChild(new Control { HorizontalExpand = true });
+        box.AddChild(SWConsoleStyle.Text($"{share.Amount} кр", SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold, 90, Control.HAlignment.Right));
+
+        if (canEdit)
+        {
+            var id = share.MinistryId;
+            var minus = SWConsoleStyle.Action("−", SWConsoleStyle.Neutral);
+            minus.Margin = new Thickness(6, 0, 0, 0);
+            minus.OnPressed += _ => _owner.SetBudgetWeight(id, -1);
+            box.AddChild(minus);
+            box.AddChild(SWConsoleStyle.Text($"×{share.Weight}", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold, 32, Control.HAlignment.Center));
+            var plus = SWConsoleStyle.Action("+", SWConsoleStyle.Neutral);
+            plus.OnPressed += _ => _owner.SetBudgetWeight(id, 1);
+            box.AddChild(plus);
+        }
+        else
+        {
+            box.AddChild(SWConsoleStyle.Text($"×{share.Weight}", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold, 32, Control.HAlignment.Center));
+        }
+
+        row.AddChild(box);
+        return row;
     }
 
     private void BuildOverview(SWMinistryWorkConsoleState state)

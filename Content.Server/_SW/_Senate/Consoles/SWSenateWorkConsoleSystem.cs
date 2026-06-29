@@ -59,7 +59,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAidCrisisMessage>(OnAidCrisis);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateProposeEmergencyLawMessage>(OnProposeEmergencyLaw);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSetBudgetMessage>(OnSetBudget);
-        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateLockBudgetMessage>(OnLockBudget);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWBudgetApproveMessage>(OnApproveBudget);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWBudgetRejectMessage>(OnRejectBudget);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateScheduleSessionMessage>(OnScheduleSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRemoveSessionMessage>(OnRemoveSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateEmergencySessionMessage>(OnEmergencySession);
@@ -688,20 +689,37 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnSetBudget(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSetBudgetMessage args)
     {
-        if (!ChancellorInOffice(ent))
+        if (!CanConfirmAs(ent))
             return;
 
         _budget.SetAllocation(args.SectorId, args.Amount);
         UpdateUi(ent);
     }
 
-    private void OnLockBudget(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateLockBudgetMessage args)
+    private void OnApproveBudget(Entity<SWSenateWorkConsoleComponent> ent, ref SWBudgetApproveMessage args)
     {
-        if (!ChancellorInOffice(ent))
+        if (!CanConfirmAs(ent))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
             return;
+        }
 
-        if (_budget.Lock())
-            _popup.PopupCursor(Loc.GetString("sw-senate-budget-locked"), args.Actor, PopupType.Medium);
+        if (_budget.Approve())
+            _popup.PopupCursor(Loc.GetString("sw-budget-approved"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRejectBudget(Entity<SWSenateWorkConsoleComponent> ent, ref SWBudgetRejectMessage args)
+    {
+        if (!CanConfirmAs(ent))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_budget.Reject(args.Reason))
+            _popup.PopupCursor(Loc.GetString("sw-budget-rejected"), args.Actor, PopupType.Medium);
 
         UpdateUi(ent);
     }
@@ -832,11 +850,19 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.MyBudgetDilemmas = _dilemma.BuildOwnerBudgetDilemmas(dilemmaOwner);
         state.MinistryNotices = _dilemma.GetNotices(dilemmaOwner);
         state.CanDilemmas = dilemmaOwner != null;
-        state.BudgetLocked = _budget.Locked;
+        state.BudgetLocked = _budget.Approved;
         state.BudgetTotal = _budget.Total();
         state.BudgetReserve = _budget.Reserve();
         state.MyBudgetAvailable = dilemmaOwner != null ? _budget.Available(dilemmaOwner) : 0;
         state.IsChancellorView = ChancellorInOffice(ent);
+        state.BudgetProjectPending = _budget.Pending;
+        state.BudgetSectorPool = _budget.SectorPool();
+        state.BudgetMinistryPool = _budget.MinistryPool();
+        state.BudgetSectorPct = _budget.SectorPct;
+        state.BudgetRejects = _budget.Rejects;
+        state.CanRejectBudget = _budget.CanReject && CanConfirmAs(ent);
+        state.CanApproveBudget = _budget.Pending && CanConfirmAs(ent);
+        state.BudgetMinistrySplit = _budget.BuildShares();
         if (state.IsChancellorView)
             state.BudgetSectors = BuildBudgetSectors();
         var programOwner = GetSectorOwner(ent);

@@ -779,13 +779,12 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void BuildBudgetSection(SWSenateWorkConsoleState state)
     {
+        var phaseText = state.BudgetLocked ? "[одобрен]" : state.BudgetProjectPending ? "[на одобрении]" : "[проект не подан]";
         BudgetSectionSummary.SetMessage(
-            $"Бюджет дня: {state.BudgetTotal} кр.    Резерв: {state.BudgetReserve} кр.    " +
-            (state.BudgetLocked ? "[зафиксирован]" : "[не зафиксирован]"));
+            $"Бюджет дня: {state.BudgetTotal} кр.   Сектора: {state.BudgetSectorPool} кр   Министерства: {state.BudgetMinistryPool} кр   {phaseText}");
 
-        // Rebuild the input fields only when the sector set or lock state changes, so the periodic
-        // refresh never wipes what the Chancellor is typing.
-        var signature = (state.BudgetLocked ? "L:" : "U:");
+        // Rebuild only when the phase / sector set changes, so the periodic refresh never wipes inputs.
+        var signature = (state.BudgetLocked ? "A:" : state.BudgetProjectPending ? "P:" : "N:") + state.BudgetSectorPool + ":";
         foreach (var sector in state.BudgetSectors)
             signature += sector.SectorId + ",";
 
@@ -796,9 +795,27 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         _budgetEdits.Clear();
         BudgetAllocPanel.RemoveAllChildren();
 
+        // Ministry split (Finance's proposal, read-only).
+        if (state.BudgetMinistrySplit.Count > 0 && (state.BudgetProjectPending || state.BudgetLocked))
+        {
+            BudgetAllocPanel.AddChild(SWConsoleStyle.Section("ДОЛИ МИНИСТЕРСТВ (МИНФИН)"));
+            BudgetAllocPanel.AddChild(new Control { MinHeight = 4 });
+            foreach (var share in state.BudgetMinistrySplit)
+            {
+                var panel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel);
+                var line = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+                line.AddChild(SWConsoleStyle.Text(share.Name, share.Color, SWConsoleStyle.Mono, 220));
+                line.AddChild(new Control { HorizontalExpand = true });
+                line.AddChild(SWConsoleStyle.Text($"{share.Amount} кр.", SWConsoleStyle.TextBright, SWConsoleStyle.Mono));
+                panel.AddChild(line);
+                BudgetAllocPanel.AddChild(panel);
+            }
+            BudgetAllocPanel.AddChild(new Control { MinHeight = 10 });
+        }
+
         if (state.BudgetLocked)
         {
-            BudgetAllocPanel.AddChild(SWConsoleStyle.Section("РАСПРЕДЕЛЕНИЕ (ЗАФИКСИРОВАНО)"));
+            BudgetAllocPanel.AddChild(SWConsoleStyle.Section("СЕКТОРА (ОДОБРЕНО)"));
             BudgetAllocPanel.AddChild(new Control { MinHeight = 4 });
             foreach (var sector in state.BudgetSectors)
             {
@@ -813,45 +830,80 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             return;
         }
 
-        BudgetAllocPanel.AddChild(SWConsoleStyle.Section("РАСПРЕДЕЛЕНИЕ ПО СЕКТОРАМ"));
-        BudgetAllocPanel.AddChild(new Control { MinHeight = 4 });
-        foreach (var sector in state.BudgetSectors)
+        if (!state.BudgetProjectPending)
         {
-            var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 1, 0, 1) };
-            var nameLbl = SWConsoleStyle.Text(sector.Name, sector.Color, SWConsoleStyle.MonoBold, 180);
-            nameLbl.VerticalAlignment = Control.VAlignment.Center;
-            row.AddChild(nameLbl);
-
-            var edit = new LineEdit { Text = sector.Amount.ToString(), MinWidth = 100 };
-            _budgetEdits[sector.SectorId] = edit;
-
-            var id = sector.SectorId;
-            var setButton = SWConsoleStyle.Action("Задать", SWConsoleStyle.Accent);
-            setButton.Margin = new Thickness(6, 0, 0, 0);
-            setButton.OnPressed += _ =>
-            {
-                if (int.TryParse(edit.Text, out var amount))
-                    _owner.SetBudget(id, amount);
-            };
-
-            row.AddChild(edit);
-            row.AddChild(setButton);
-            BudgetAllocPanel.AddChild(row);
+            BudgetAllocPanel.AddChild(SWConsoleStyle.Text("Минфин ещё не подал проект бюджета на сегодня.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            return;
         }
 
-        var lockButton = SWConsoleStyle.Action("Зафиксировать бюджет", SWConsoleStyle.Good);
-        lockButton.Margin = new Thickness(0, 8, 0, 0);
-        lockButton.OnPressed += _ =>
+        // Pending: Chancellor allocates the sector pool, then approves or rejects the whole project.
+        if (state.IsChancellorView)
         {
-            foreach (var (sectorId, edit) in _budgetEdits)
+            BudgetAllocPanel.AddChild(SWConsoleStyle.Section($"РАСПРЕДЕЛЕНИЕ СЕКТОРОВ (пул {state.BudgetSectorPool} кр)"));
+            BudgetAllocPanel.AddChild(new Control { MinHeight = 4 });
+            foreach (var sector in state.BudgetSectors)
             {
-                if (int.TryParse(edit.Text, out var amount))
-                    _owner.SetBudget(sectorId, amount);
-            }
+                var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 1, 0, 1) };
+                var nameLbl = SWConsoleStyle.Text(sector.Name, sector.Color, SWConsoleStyle.MonoBold, 180);
+                nameLbl.VerticalAlignment = Control.VAlignment.Center;
+                row.AddChild(nameLbl);
 
-            _owner.LockBudget();
-        };
-        BudgetAllocPanel.AddChild(lockButton);
+                var edit = new LineEdit { Text = sector.Amount.ToString(), MinWidth = 100 };
+                _budgetEdits[sector.SectorId] = edit;
+
+                var id = sector.SectorId;
+                var setButton = SWConsoleStyle.Action("Задать", SWConsoleStyle.Accent);
+                setButton.Margin = new Thickness(6, 0, 0, 0);
+                setButton.OnPressed += _ =>
+                {
+                    if (int.TryParse(edit.Text, out var amount))
+                        _owner.SetBudget(id, amount);
+                };
+
+                row.AddChild(edit);
+                row.AddChild(setButton);
+                BudgetAllocPanel.AddChild(row);
+            }
+        }
+
+        BudgetAllocPanel.AddChild(new Control { MinHeight = 8 });
+        var reason = new LineEdit { PlaceHolder = "Причина отклонения...", HorizontalExpand = true };
+
+        if (state.CanApproveBudget)
+        {
+            var approve = SWConsoleStyle.Action("Принять бюджет", SWConsoleStyle.Good);
+            approve.HorizontalExpand = true;
+            approve.OnPressed += _ =>
+            {
+                foreach (var (sectorId, edit) in _budgetEdits)
+                {
+                    if (int.TryParse(edit.Text, out var amount))
+                        _owner.SetBudget(sectorId, amount);
+                }
+                _owner.ApproveBudget();
+            };
+            BudgetAllocPanel.AddChild(approve);
+
+            if (state.CanRejectBudget)
+            {
+                BudgetAllocPanel.AddChild(new Control { MinHeight = 4 });
+                var rrow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+                rrow.AddChild(reason);
+                var reject = SWConsoleStyle.Action("Отклонить", SWConsoleStyle.Bad);
+                reject.Margin = new Thickness(6, 0, 0, 0);
+                reject.OnPressed += _ => _owner.RejectBudget(reason.Text);
+                rrow.AddChild(reject);
+                BudgetAllocPanel.AddChild(rrow);
+            }
+            else
+            {
+                BudgetAllocPanel.AddChild(SWConsoleStyle.Text("Лимит отклонений исчерпан — проект нужно принять.", SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+            }
+        }
+        else
+        {
+            BudgetAllocPanel.AddChild(SWConsoleStyle.Text("Проект бюджета на одобрении у Канцлера.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        }
     }
 
     private Control MakeDilemmaCard(SWDilemmaEntry dilemma)

@@ -126,6 +126,9 @@ sw-senate-party-evict-started = Запущено голосование за и�
 
 sw-senate-dilemma-resolved = Решение по дилемме принято.
 sw-senate-budget-locked = Бюджет распределён и зафиксирован на день.
+sw-budget-submitted = Проект бюджета подан Канцлеру на одобрение.
+sw-budget-approved = Бюджет утверждён. Средства переданы министерствам и секторам.
+sw-budget-rejected = Проект бюджета отклонён. Минфин уведомлён.
 sw-senate-program-applied = Программа профинансирована и запущена в секторе.
 sw-senate-program-failed = Недостаточно средств или программа уже применена сегодня.
 sw-senate-crisis-action = Меры против кризиса приняты.

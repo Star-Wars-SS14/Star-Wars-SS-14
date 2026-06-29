@@ -186,6 +186,26 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWFinanceSelectProgramMessage(programId));
     }
 
+    public void AdjustBudgetRatio(int deltaPct)
+    {
+        SendMessage(new SWBudgetAdjustRatioMessage(deltaPct));
+    }
+
+    public void SetBudgetWeight(string ministryId, int delta)
+    {
+        SendMessage(new SWBudgetSetWeightMessage(ministryId, delta));
+    }
+
+    public void ResetBudgetWeights()
+    {
+        SendMessage(new SWBudgetResetWeightsMessage());
+    }
+
+    public void SubmitBudget()
+    {
+        SendMessage(new SWBudgetSubmitMessage());
+    }
+
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);

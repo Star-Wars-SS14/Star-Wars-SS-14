@@ -28,6 +28,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryHealthSystem _health = default!;
     [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
+    [Dependency] private readonly SWSenateBudgetSystem _budget = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
@@ -72,7 +73,49 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceRepayDebtMessage>(OnRepayDebt);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceEmissionMessage>(OnEmission);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceSelectProgramMessage>(OnSelectFinProgram);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWBudgetAdjustRatioMessage>(OnBudgetRatio);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWBudgetSetWeightMessage>(OnBudgetWeight);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWBudgetResetWeightsMessage>(OnBudgetResetWeights);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWBudgetSubmitMessage>(OnBudgetSubmit);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryResignMessage>(OnResign);
+    }
+
+    private void OnBudgetRatio(Entity<SWMinistryWorkConsoleComponent> ent, ref SWBudgetAdjustRatioMessage args)
+    {
+        if (!IsFinanceCard(ent))
+            return;
+
+        _budget.AdjustRatio(args.DeltaPct);
+        UpdateUi(ent);
+    }
+
+    private void OnBudgetWeight(Entity<SWMinistryWorkConsoleComponent> ent, ref SWBudgetSetWeightMessage args)
+    {
+        if (!IsFinanceCard(ent))
+            return;
+
+        _budget.SetWeight(args.MinistryId, args.Delta);
+        UpdateUi(ent);
+    }
+
+    private void OnBudgetResetWeights(Entity<SWMinistryWorkConsoleComponent> ent, ref SWBudgetResetWeightsMessage args)
+    {
+        if (!IsFinanceCard(ent))
+            return;
+
+        _budget.ResetWeights();
+        UpdateUi(ent);
+    }
+
+    private void OnBudgetSubmit(Entity<SWMinistryWorkConsoleComponent> ent, ref SWBudgetSubmitMessage args)
+    {
+        if (!IsFinanceCard(ent))
+            return;
+
+        if (_budget.Submit())
+            _popup.PopupCursor(Loc.GetString("sw-budget-submitted"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
     }
 
     private bool IsFinanceCard(Entity<SWMinistryWorkConsoleComponent> ent) =>
@@ -623,6 +666,29 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.FinanceProgramProgress = _finance.ProgramProgress;
                     state.FinancePrograms = _finance.BuildPrograms();
                     state.FinanceLog = _finance.GetLog();
+
+                    var phase = _budget.Phase;
+                    state.BudgetPhaseLabel = phase switch
+                    {
+                        SWBudgetPhase.Submitted => "На одобрении Канцлера",
+                        SWBudgetPhase.Approved => "Одобрен",
+                        _ => _budget.Rejects > 0 ? "Отклонён — переделайте" : "Черновик",
+                    };
+                    state.BudgetPhaseColor = phase switch
+                    {
+                        SWBudgetPhase.Submitted => Color.FromHex("#E0A23B"),
+                        SWBudgetPhase.Approved => Color.FromHex("#43D16A"),
+                        _ => _budget.Rejects > 0 ? Color.FromHex("#E0556B") : Color.FromHex("#5DADE2"),
+                    };
+                    state.BudgetDayTotal = _budget.Total();
+                    state.BudgetSectorPool = _budget.SectorPool();
+                    state.BudgetMinistryPool = _budget.MinistryPool();
+                    state.BudgetSectorPct = _budget.SectorPct;
+                    state.BudgetRejects = _budget.Rejects;
+                    state.BudgetRejectReason = _budget.RejectReason;
+                    state.BudgetCanEdit = phase != SWBudgetPhase.Approved;
+                    state.BudgetCanSubmit = phase == SWBudgetPhase.Draft;
+                    state.BudgetShares = _budget.BuildShares();
                 }
             }
         }

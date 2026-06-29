@@ -258,7 +258,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
         card.Margin = new Thickness(0, 0, 0, 4);
         var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
-        box.AddChild(SWConsoleStyle.Text(char.ToUpper(m.Label[0]) + m.Label[1..], SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+        box.AddChild(SWConsoleStyle.Text(m.Label, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
         box.AddChild(SWConsoleStyle.Text($"За: {m.Yes} · Против: {m.No} · нужно {m.Needed} из {m.Electorate}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
 
         if (m.Voted)

@@ -16,6 +16,7 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWSenatePartySystem _party = default!;
+    [Dependency] private readonly SWEmergencyPowersSystem _powers = default!;
 
     private const float UpdateInterval = 5f;
 
@@ -182,6 +183,11 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
                 if (info is not { Formed: true } party)
                     return (false, $"нет партии / нужно {required}");
                 return (party.Members >= required, $"{party.Members}/{required}");
+            }
+            case SWAmbitionKind.Consolidation:
+            {
+                var need = (int) proto.Threshold;
+                return (_powers.Authority >= need, $"авторитет {_powers.Authority} / нужно {need}");
             }
             default:
                 return (false, string.Empty);

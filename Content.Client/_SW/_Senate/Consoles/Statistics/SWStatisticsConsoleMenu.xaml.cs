@@ -165,6 +165,22 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
         jusPanel.AddChild(jusBox);
         RepublicStats.AddChild(jusPanel);
 
+        if (state.PowersActive)
+        {
+            RepublicStats.AddChild(new Control { MinHeight = 10 });
+            RepublicStats.AddChild(SWConsoleStyle.Section("ЧРЕЗВЫЧАЙНЫЕ ПОЛНОМОЧИЯ"));
+            RepublicStats.AddChild(new Control { MinHeight = 4 });
+            var powPanel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Bad);
+            var powBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+            var powHead = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+            powHead.AddChild(SWConsoleStyle.Text(state.EmergencyLevelName, SWConsoleStyle.Bad, SWConsoleStyle.MonoBold));
+            powHead.AddChild(new Control { HorizontalExpand = true });
+            powHead.AddChild(SWConsoleStyle.Text($"Тирания {state.Authority}/100 · Легитимность {state.Legitimacy}/100", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            powBox.AddChild(powHead);
+            powPanel.AddChild(powBox);
+            RepublicStats.AddChild(powPanel);
+        }
+
         RepublicStats.AddChild(new Control { MinHeight = 10 });
         RepublicStats.AddChild(SWConsoleStyle.Section("ПОКАЗАТЕЛИ РЕСПУБЛИКИ"));
         RepublicStats.AddChild(new Control { MinHeight = 6 });

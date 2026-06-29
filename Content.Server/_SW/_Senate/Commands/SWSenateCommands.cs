@@ -479,6 +479,81 @@ public sealed class SWCaseCommand : IConsoleCommand
     }
 }
 
+// swpowers — управлять чрезвычайными полномочиями Канцлера (для теста).
+//   swpowers                  — статус.
+//   swpowers level <0-3>      — выдать/снять уровень полномочий.
+//   swpowers grant <power>    — точечно выдать полномочие (veto/command/emergencybudget/martiallaw/mobilization/censorship/purge/decree/ministercontrol).
+//   swpowers authority <0-100>  — авторитет/тирания.
+//   swpowers legit <0-100>    — легитимность.
+//   swpowers relinquish       — сложить полномочия.
+[AdminCommand(AdminFlags.Debug)]
+public sealed class SWPowersCommand : IConsoleCommand
+{
+    public string Command => "swpowers";
+    public string Description => "Управлять чрезвычайными полномочиями Канцлера.";
+    public string Help => "swpowers [level <0-3> | grant <power> | authority <0-100> | legit <0-100> | relinquish]";
+
+    public void Execute(IConsoleShell shell, string argStr, string[] args)
+    {
+        var powers = IoCManager.Resolve<IEntityManager>().System<SWEmergencyPowersSystem>();
+
+        if (args.Length < 1)
+        {
+            shell.WriteLine(powers.AdminStatus());
+            return;
+        }
+
+        switch (args[0].ToLowerInvariant())
+        {
+            case "level":
+                if (args.Length < 2 || !int.TryParse(args[1], out var lvl))
+                {
+                    shell.WriteError("swpowers level <0-3>");
+                    return;
+                }
+                powers.AdminSetLevel(lvl);
+                break;
+
+            case "grant":
+                if (args.Length < 2 || !Enum.TryParse<SWEmergencyPower>(args[1], true, out var power))
+                {
+                    shell.WriteError("power: veto|command|emergencybudget|martiallaw|mobilization|censorship|purge|decree|ministercontrol");
+                    return;
+                }
+                powers.GrantPower(power);
+                break;
+
+            case "authority":
+                if (args.Length < 2 || !float.TryParse(args[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var au))
+                {
+                    shell.WriteError("swpowers authority <0-100>");
+                    return;
+                }
+                powers.AdminSetAuthority(au);
+                break;
+
+            case "legit":
+                if (args.Length < 2 || !float.TryParse(args[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var lg))
+                {
+                    shell.WriteError("swpowers legit <0-100>");
+                    return;
+                }
+                powers.AdminSetLegitimacy(lg);
+                break;
+
+            case "relinquish":
+                powers.Relinquish();
+                break;
+
+            default:
+                shell.WriteError(Help);
+                return;
+        }
+
+        shell.WriteLine(powers.AdminStatus());
+    }
+}
+
 // swcorrupt — управлять коррупцией (для теста).
 //   swcorrupt                          — статус (индекс).
 //   swcorrupt sector <sectorId> <0-100>  — коррумпированность сектора.

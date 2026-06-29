@@ -38,6 +38,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
     [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
     [Dependency] private readonly SWCorruptionSystem _corruption = default!;
+    [Dependency] private readonly SWEmergencyPowersSystem _powers = default!;
     [Dependency] private readonly SWSenatePartySystem _party = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
@@ -80,6 +81,11 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWJusticeApproveTribunalMessage>(OnApproveTribunal);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWJusticeRejectTribunalMessage>(OnRejectTribunal);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSignBillMessage>(OnSignBill);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateVetoBillMessage>(OnVetoBill);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmergencyRelinquishMessage>(OnRelinquishPowers);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmergencyCommandMessage>(OnEmergencyCommand);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWProposeMotionMessage>(OnProposeMotion);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWVoteMotionMessage>(OnVoteMotion);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectSessionMessage>(OnRejectSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAnnounceMessage>(OnAnnounce);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateCreatePartyMessage>(OnCreateParty);
@@ -494,6 +500,162 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
+    private void OnVetoBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateVetoBillMessage args)
+    {
+        if (!CanConfirmAs(ent) || !_powers.HasPower(SWEmergencyPower.Veto))
+            return;
+
+        if (_senate.VetoBill(args.BillId))
+        {
+            _powers.RegisterUse(6f, 6f, false);
+            _popup.PopupCursor(Loc.GetString("sw-power-veto"), args.Actor, PopupType.Medium);
+        }
+
+        UpdateUi(ent);
+    }
+
+    private void OnRelinquishPowers(Entity<SWSenateWorkConsoleComponent> ent, ref SWEmergencyRelinquishMessage args)
+    {
+        if (!CanConfirmAs(ent))
+            return;
+
+        _powers.Relinquish();
+        UpdateUi(ent);
+    }
+
+    // Vote identity of the card holder: a senator's sector holder, or the Chancellor.
+    private string? SelfName(Entity<SWSenateWorkConsoleComponent> ent)
+    {
+        var owner = GetDilemmaOwner(ent);
+        if (owner == SWSenateDilemmaSystem.RepublicOwner)
+            return _senate.Chancellor;
+        return owner != null && _senate.SectorHolders.TryGetValue(owner, out var h) ? h : null;
+    }
+
+    private void OnProposeMotion(Entity<SWSenateWorkConsoleComponent> ent, ref SWProposeMotionMessage args)
+    {
+        var self = SelfName(ent);
+        if (self == null)
+            return;
+
+        _powers.ProposeMotion(args.Type, args.Level, args.Power, self);
+        UpdateUi(ent);
+    }
+
+    private void OnVoteMotion(Entity<SWSenateWorkConsoleComponent> ent, ref SWVoteMotionMessage args)
+    {
+        var self = SelfName(ent);
+        if (self == null)
+            return;
+
+        _powers.VoteMotion(args.MotionId, self, args.Support);
+        UpdateUi(ent);
+    }
+
+    private void OnEmergencyCommand(Entity<SWSenateWorkConsoleComponent> ent, ref SWEmergencyCommandMessage args)
+    {
+        if (!CanConfirmAs(ent))
+            return;
+
+        switch (args.Action)
+        {
+            // 0–5: invoke a ministry's emergency action (needs Command).
+            case >= 0 and <= 5 when _powers.HasPower(SWEmergencyPower.Command):
+                InvokeMinistry(args.Action);
+                _powers.RegisterUse(8f, 5f, false);
+                break;
+
+            case 6 when _powers.HasPower(SWEmergencyPower.MartialLaw): // военное положение
+                InvokeMinistry(0);
+                InvokeMinistry(1);
+                InvokeMinistry(5);
+                _powers.RegisterUse(15f, 10f, true);
+                break;
+
+            case 7 when _powers.HasPower(SWEmergencyPower.Mobilization):
+                _senate.AddPolicy("SWStatReserve", 7f);
+                _senate.AddPolicy("SWStatArmy", 4f);
+                _senate.AddPolicy("SWStatMorale", -4f);
+                _powers.RegisterUse(8f, 5f, false);
+                break;
+
+            case 8 when _powers.HasPower(SWEmergencyPower.Censorship):
+                _senate.AddPolicy("SWStatCensorship", 6f);
+                _senate.AddPolicy("SWStatMorale", 4f);
+                _senate.AddPolicy("SWStatRights", -5f);
+                _powers.RegisterUse(8f, 6f, true);
+                break;
+
+            case 9 when _powers.HasPower(SWEmergencyPower.Purge):
+                _senate.AddPolicy("SWStatPolice", 5f);
+                _senate.AddPolicy("SWStatRights", -8f);
+                _senate.AddPolicy("SWStatMorale", -5f);
+                _powers.RegisterUse(12f, 12f, true);
+                break;
+
+            case 10 when _powers.HasPower(SWEmergencyPower.EmergencyBudget):
+                foreach (var id in EmergencyBudgetTargets)
+                    _dilemma.SetMinistryBudget(id, _dilemma.GetMinistryBudget(id) + 3000);
+                _powers.RegisterUse(8f, 6f, false);
+                break;
+
+            case 11 when _powers.HasPower(SWEmergencyPower.Decree):
+                _senate.AddPolicy("SWStatPolice", 4f);
+                _senate.AddPolicy("SWStatCensorship", 3f);
+                _senate.AddPolicy("SWStatRights", -3f);
+                RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Канцлер", "Издан чрезвычайный декрет."));
+                _powers.RegisterUse(8f, 8f, true);
+                break;
+
+            default:
+                return;
+        }
+
+        _popup.PopupCursor(Loc.GetString("sw-power-command"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private static readonly string[] EmergencyBudgetTargets =
+    {
+        SWMinistryDefenseSystem.DefenseMinistryId,
+        SWMinistryInternalSecuritySystem.SecurityMinistryId,
+        SWMinistryHealthSystem.HealthMinistryId,
+        SWMinistryEconomySystem.EconomyMinistryId,
+        SWMinistryFinanceSystem.FinanceMinistryId,
+        SWMinistryJusticeSystem.JusticeMinistryId,
+    };
+
+    private void InvokeMinistry(int action)
+    {
+        switch (action)
+        {
+            case 0:
+                _defense.SetStance(Content.Shared._SW._Senate.Ministries.SWDefenseStance.War);
+                _defense.ApproveWar();
+                break;
+            case 1:
+                _security.SetPosture(Content.Shared._SW._Senate.Ministries.SWSecurityPosture.Emergency);
+                _security.ApproveEmergency();
+                break;
+            case 2:
+                _health.DeclareEmergency();
+                _health.ApproveEmergency();
+                break;
+            case 3:
+                _economy.DeclareStimulus();
+                _economy.ApproveStimulus();
+                break;
+            case 4:
+                _finance.DeclareEmission();
+                _finance.ApproveEmission();
+                break;
+            case 5:
+                _justice.DeclareTribunal();
+                _justice.ApproveTribunal();
+                break;
+        }
+    }
+
     private void OnRejectSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateRejectSessionMessage args)
     {
         if (!CanConfirmAs(ent))
@@ -895,6 +1057,23 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
         state.LawsAwaitingSignature = _senate.BuildBillsAwaitingSignature();
         state.CanSignLaws = CanConfirmAs(ent);
+
+        var self = SelfName(ent);
+        state.ShowPowers = self != null;
+        state.CanProposeMotions = self != null;
+        state.Motions = _powers.BuildMotions(self);
+        state.PowersActive = _powers.Active;
+        state.EmergencyLevel = _powers.Level;
+        state.EmergencyLevelName = _powers.LevelName();
+        state.Authority = _powers.Authority;
+        state.Legitimacy = _powers.Legitimacy;
+        state.EmergencyDaysLeft = _powers.DaysLeft;
+        state.CanRelinquish = _powers.Active && CanConfirmAs(ent);
+        state.HasVeto = _powers.HasPower(SWEmergencyPower.Veto);
+        state.HasCommand = _powers.HasPower(SWEmergencyPower.Command);
+        foreach (var p in Enum.GetValues<SWEmergencyPower>())
+            if (_powers.HasPower(p))
+                state.AvailablePowers.Add((int) p);
 
         var viewer = dilemmaOwner == SWSenateDilemmaSystem.RepublicOwner
             ? _senate.Chancellor

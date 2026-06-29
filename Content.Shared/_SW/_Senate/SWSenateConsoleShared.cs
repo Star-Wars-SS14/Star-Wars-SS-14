@@ -11,6 +11,21 @@ public enum SWStatisticsConsoleUiKey
     Key
 }
 
+// Emergency powers the Senate can vest in the Chancellor, by escalating tier.
+[Serializable, NetSerializable]
+public enum SWEmergencyPower : byte
+{
+    Veto,            // tier I — reject a passed law instead of signing it
+    Command,         // tier I — invoke ministers' big buttons without them
+    EmergencyBudget, // tier II — requisition / redirect ministry budgets
+    MartialLaw,      // tier II — combined defence + security + courts crackdown
+    Mobilization,    // tier II — war economy / conscription
+    Censorship,      // tier II — suppress dissent
+    Purge,           // tier III — political prosecutions
+    Decree,          // tier III — enact law bypassing the Senate vote
+    MinisterControl, // tier III — appoint / dismiss ministers
+}
+
 [Serializable, NetSerializable]
 public enum SWSectorSelectConsoleUiKey
 {
@@ -100,6 +115,10 @@ public sealed class SWStatisticsConsoleState : BoundUserInterfaceState
     public int CaseCount;
     public int CorruptionIndex;
     public string CorruptionStatus = string.Empty;
+    public bool PowersActive;
+    public string EmergencyLevelName = string.Empty;
+    public int Authority;
+    public int Legitimacy;
 
     public SWStatisticsConsoleState(List<SWGlobalStatEntry> globals, List<SWSectorEntry> sectors)
     {
@@ -1303,6 +1322,98 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public int MyAccount;
     public List<SWBillEntry> LawsAwaitingSignature = new();
     public bool CanSignLaws;
+
+    // ПОЛНОМОЧИЯ (Chancellor / acting officer view).
+    public bool ShowPowers;
+    public bool PowersActive;
+    public int EmergencyLevel;
+    public string EmergencyLevelName = string.Empty;
+    public int Authority;
+    public int Legitimacy;
+    public int EmergencyDaysLeft;
+    public bool CanRelinquish;
+    public bool HasVeto;
+    public bool HasCommand;
+    public List<int> AvailablePowers = new();
+    public bool CanProposeMotions;
+    public List<SWMotionEntry> Motions = new();
+}
+
+[Serializable, NetSerializable]
+public enum SWMotionType : byte
+{
+    GrantLevel,
+    GrantPower,
+    NoConfidence,
+}
+
+[Serializable, NetSerializable]
+public sealed class SWMotionEntry
+{
+    public int Id;
+    public string Label = string.Empty;
+    public int Yes;
+    public int No;
+    public int Needed;
+    public int Electorate;
+    public bool Voted;
+    public bool Support;
+    public bool CanVote;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWProposeMotionMessage : BoundUserInterfaceMessage
+{
+    public SWMotionType Type;
+    public int Level;
+    public SWEmergencyPower Power;
+
+    public SWProposeMotionMessage(SWMotionType type, int level, SWEmergencyPower power)
+    {
+        Type = type;
+        Level = level;
+        Power = power;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWVoteMotionMessage : BoundUserInterfaceMessage
+{
+    public int MotionId;
+    public bool Support;
+
+    public SWVoteMotionMessage(int motionId, bool support)
+    {
+        MotionId = motionId;
+        Support = support;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWEmergencyRelinquishMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWEmergencyCommandMessage : BoundUserInterfaceMessage
+{
+    public int Action;
+
+    public SWEmergencyCommandMessage(int action)
+    {
+        Action = action;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateVetoBillMessage : BoundUserInterfaceMessage
+{
+    public int BillId;
+
+    public SWSenateVetoBillMessage(int billId)
+    {
+        BillId = billId;
+    }
 }
 
 [Serializable, NetSerializable]

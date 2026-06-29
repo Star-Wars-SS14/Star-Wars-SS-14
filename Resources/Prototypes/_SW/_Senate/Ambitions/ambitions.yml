@@ -296,3 +296,12 @@
   kind: PassBills
   count: 6
   order: 26
+
+- type: swAmbition
+  id: SWAmbitionChaConsolidation
+  name: Консолидация власти
+  description: Сосредоточить в своих руках всю полноту власти — авторитет не ниже 80.
+  role: Chancellor
+  kind: Consolidation
+  threshold: 80
+  order: 27

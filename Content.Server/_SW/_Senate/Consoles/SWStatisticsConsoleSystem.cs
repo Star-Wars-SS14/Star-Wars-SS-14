@@ -20,6 +20,7 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
     [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
     [Dependency] private readonly SWCorruptionSystem _corruption = default!;
+    [Dependency] private readonly SWEmergencyPowersSystem _powers = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
 
     private const float UpdateInterval = 3f;
@@ -118,6 +119,10 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
             CaseCount = _justice.CaseCount,
             CorruptionIndex = _corruption.GlobalIndex(),
             CorruptionStatus = _corruption.GlobalStatus(),
+            PowersActive = _powers.Active,
+            EmergencyLevelName = _powers.LevelName(),
+            Authority = _powers.Authority,
+            Legitimacy = _powers.Legitimacy,
         };
 
         _ui.SetUiState(ent.Owner, SWStatisticsConsoleUiKey.Key, state);

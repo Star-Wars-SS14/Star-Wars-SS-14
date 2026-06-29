@@ -52,6 +52,7 @@ public sealed class SWSenateStateSystem : EntitySystem
         _sectorHolders.Clear();
         Chancellor = null;
         Speaker = null;
+        _barredChancellors.Clear();
         _sessions.Clear();
         _announcedSessions.Clear();
         _bills.RemoveAll(b => b.Stage != SWBillStage.Passed);
@@ -323,9 +324,11 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     public void Unclaim(string sectorId) => _sectorHolders.Remove(sectorId);
 
+    private readonly HashSet<string> _barredChancellors = new();
+
     public bool TryTakeChancellor(string holder)
     {
-        if (Chancellor != null)
+        if (Chancellor != null || _barredChancellors.Contains(holder))
             return false;
 
         Chancellor = holder;
@@ -333,6 +336,18 @@ public sealed class SWSenateStateSystem : EntitySystem
     }
 
     public void ResignChancellor() => Chancellor = null;
+
+    public bool IsBarredChancellor(string holder) => _barredChancellors.Contains(holder);
+
+    // No-confidence ouster: vacate the office and bar the disgraced holder from retaking it this round.
+    public string? OustChancellor()
+    {
+        var name = Chancellor;
+        Chancellor = null;
+        if (name != null)
+            _barredChancellors.Add(name);
+        return name;
+    }
 
     public bool TryTakeSpeaker(string holder)
     {
@@ -475,6 +490,19 @@ public sealed class SWSenateStateSystem : EntitySystem
         bill.Stage = SWBillStage.Passed;
         ApplyBill(bill);
         RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, true, bill.EmergencyCrisisId, bill.EmergencyRelief));
+        return true;
+    }
+
+    // Emergency veto: kill a bill that passed the vote but awaits signature — it never becomes law.
+    public bool VetoBill(int billId)
+    {
+        var bill = _bills.FirstOrDefault(b => b.Id == billId && b.Stage == SWBillStage.AwaitingSignature);
+        if (bill == null)
+            return false;
+
+        bill.Stage = SWBillStage.Rejected;
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Сенат",
+            $"Канцлер наложил вето на закон «{bill.Name}»."));
         return true;
     }
 
@@ -967,6 +995,10 @@ public sealed class SWSenateStateSystem : EntitySystem
             _scheduleDay = _time.Day;
             _sessions.Clear();
             _announcedSessions.Clear();
+
+            // Any bill the Chancellor left unsigned is auto-signed into law at the end of the day.
+            foreach (var id in _bills.Where(b => b.Stage == SWBillStage.AwaitingSignature).Select(b => b.Id).ToList())
+                SignBill(id);
         }
 
         _accumulator += frameTime;

@@ -60,6 +60,8 @@ sw-senate-bill-stage-passed = Принят
 sw-senate-bill-stage-rejected = Отклонён
 sw-senate-bill-stage-signature = Прошёл голосование — ждёт подписи Канцлера
 sw-senate-bill-signed = Закон подписан и вступает в силу.
+sw-power-veto = Вето наложено. Закон не вступит в силу.
+sw-power-command = Чрезвычайное распоряжение отдано.
 
 sw-senate-vote-cant-vote = Голосовать может только сенатор с закреплённым сектором.
 sw-senate-vote-no-bill = Сейчас нет активного голосования.

@@ -100,6 +100,31 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateSignBillMessage(billId));
     }
 
+    public void VetoBill(int billId)
+    {
+        SendMessage(new SWSenateVetoBillMessage(billId));
+    }
+
+    public void RelinquishPowers()
+    {
+        SendMessage(new SWEmergencyRelinquishMessage());
+    }
+
+    public void EmergencyCommand(int action)
+    {
+        SendMessage(new SWEmergencyCommandMessage(action));
+    }
+
+    public void ProposeMotion(SWMotionType type, int level, SWEmergencyPower power)
+    {
+        SendMessage(new SWProposeMotionMessage(type, level, power));
+    }
+
+    public void VoteMotion(int motionId, bool support)
+    {
+        SendMessage(new SWVoteMotionMessage(motionId, support));
+    }
+
     public void Resign()
     {
         SendMessage(new SWSenateResignMessage());

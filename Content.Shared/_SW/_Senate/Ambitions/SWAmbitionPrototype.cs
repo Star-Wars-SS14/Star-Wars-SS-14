@@ -28,6 +28,7 @@ public enum SWAmbitionKind : byte
     PassBills,
     PartyStrong,
     PartySize,
+    Consolidation,
 }
 
 [Prototype("swAmbition")]

@@ -43,6 +43,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         {
             (NavOffice, OfficeTab),
             (NavSignature, SignatureScroll),
+            (NavPowers, PowersScroll),
             (NavRoster, RosterScroll),
             (NavSummary, DashScroll),
             (NavDraft, DraftTab),
@@ -158,6 +159,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         NavParties.Visible = state.IsSenateCard;
         NavAmbitions.Visible = state.CanAmbitions && state.InOffice;
         NavBudget.Visible = state.IsChancellorView;
+        NavSignature.Visible = state.CanSignLaws;
+        NavPowers.Visible = state.ShowPowers;
         NavAnnounce.Visible = isLeader && state.InOffice;
 
         foreach (var (header, buttons) in _navGroups)
@@ -189,6 +192,172 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BuildParties(state);
         BuildBudgetSection(state);
         BuildSignature(state);
+        BuildPowers(state);
+    }
+
+    private static readonly (int Action, string Label)[] CommandActions =
+    {
+        (0, "Объявить войну (DEFCON 1)"),
+        (1, "Чрезвычайное положение (ВБ)"),
+        (2, "Галактический карантин"),
+        (3, "Большой экономический стимул"),
+        (4, "Денежная эмиссия"),
+        (5, "Чрезвычайные трибуналы"),
+    };
+
+    private void BuildPowers(SWSenateWorkConsoleState state)
+    {
+        PowersList.RemoveAllChildren();
+
+        PowersList.AddChild(SWConsoleStyle.Section("ЧРЕЗВЫЧАЙНЫЕ ПОЛНОМОЧИЯ"));
+        PowersList.AddChild(new Control { MinHeight = 4 });
+
+        if (!state.PowersActive)
+            PowersList.AddChild(SWConsoleStyle.Text("Полномочия не предоставлены. Их наделяет Сенат голосованием.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+        else
+            BuildPowersActive(state);
+
+        // Motions — visible to every senator/Chancellor in office.
+        if (state.CanProposeMotions)
+        {
+            PowersList.AddChild(new Control { MinHeight = 12 });
+            PowersList.AddChild(SWConsoleStyle.Section("ГОЛОСОВАНИЯ"));
+            PowersList.AddChild(new Control { MinHeight = 4 });
+            if (state.Motions.Count == 0)
+                PowersList.AddChild(SWConsoleStyle.Text("Активных голосований нет.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            else
+                foreach (var m in state.Motions)
+                    PowersList.AddChild(MakeMotionCard(m));
+
+            PowersList.AddChild(new Control { MinHeight = 10 });
+            PowersList.AddChild(SWConsoleStyle.Section("ВНЕСТИ НА ГОЛОСОВАНИЕ"));
+            PowersList.AddChild(new Control { MinHeight = 4 });
+            var prow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+            for (var lvl = 1; lvl <= 3; lvl++)
+            {
+                var l = lvl;
+                var btn = SWConsoleStyle.Action($"Полномочия {Roman(l)}", SWConsoleStyle.Warn);
+                btn.HorizontalExpand = true;
+                btn.Margin = new Thickness(0, 0, 4, 0);
+                btn.OnPressed += _ => _owner.ProposeMotion(SWMotionType.GrantLevel, l, SWEmergencyPower.Veto);
+                prow.AddChild(btn);
+            }
+            PowersList.AddChild(prow);
+            var nc = SWConsoleStyle.Action("Вотум недоверия Канцлеру", SWConsoleStyle.Bad);
+            nc.HorizontalExpand = true;
+            nc.Margin = new Thickness(0, 3, 0, 0);
+            nc.OnPressed += _ => _owner.ProposeMotion(SWMotionType.NoConfidence, 0, SWEmergencyPower.Veto);
+            PowersList.AddChild(nc);
+        }
+    }
+
+    private static string Roman(int n) => n switch { 3 => "III", 2 => "II", _ => "I" };
+
+    private Control MakeMotionCard(SWMotionEntry m)
+    {
+        var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
+        card.Margin = new Thickness(0, 0, 0, 4);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+        box.AddChild(SWConsoleStyle.Text(char.ToUpper(m.Label[0]) + m.Label[1..], SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+        box.AddChild(SWConsoleStyle.Text($"За: {m.Yes} · Против: {m.No} · нужно {m.Needed} из {m.Electorate}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+        if (m.Voted)
+        {
+            box.AddChild(SWConsoleStyle.Text(m.Support ? "Вы проголосовали ЗА" : "Вы проголосовали ПРОТИВ", m.Support ? SWConsoleStyle.Good : SWConsoleStyle.Bad, SWConsoleStyle.MonoSmall));
+        }
+        else if (m.CanVote)
+        {
+            var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 3, 0, 0) };
+            var id = m.Id;
+            var yes = SWConsoleStyle.Action("За", SWConsoleStyle.Good);
+            yes.HorizontalExpand = true;
+            yes.Margin = new Thickness(0, 0, 4, 0);
+            yes.OnPressed += _ => _owner.VoteMotion(id, true);
+            var no = SWConsoleStyle.Action("Против", SWConsoleStyle.Bad);
+            no.HorizontalExpand = true;
+            no.OnPressed += _ => _owner.VoteMotion(id, false);
+            row.AddChild(yes);
+            row.AddChild(no);
+            box.AddChild(row);
+        }
+
+        card.AddChild(box);
+        return card;
+    }
+
+    private void BuildPowersActive(SWSenateWorkConsoleState state)
+    {
+        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        head.AddChild(SWConsoleStyle.Text(state.EmergencyLevelName, SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
+        head.AddChild(new Control { HorizontalExpand = true });
+        head.AddChild(SWConsoleStyle.Text($"осталось дней: {state.EmergencyDaysLeft}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        PowersList.AddChild(head);
+
+        // Authority / legitimacy.
+        PowersList.AddChild(new Control { MinHeight = 6 });
+        PowersList.AddChild(SWConsoleStyle.Text($"Авторитет (тирания): {state.Authority}/100", state.Authority >= 60 ? SWConsoleStyle.Bad : SWConsoleStyle.Warn, SWConsoleStyle.MonoBold));
+        PowersList.AddChild(SWConsoleStyle.Bar(state.Authority, 0, 100, state.Authority >= 60 ? SWConsoleStyle.Bad : SWConsoleStyle.Warn));
+        PowersList.AddChild(SWConsoleStyle.Text($"Легитимность: {state.Legitimacy}/100", state.Legitimacy < 40 ? SWConsoleStyle.Bad : SWConsoleStyle.Good, SWConsoleStyle.MonoBold));
+        PowersList.AddChild(SWConsoleStyle.Bar(state.Legitimacy, 0, 100, state.Legitimacy < 40 ? SWConsoleStyle.Bad : SWConsoleStyle.Good));
+        if (state.Legitimacy < 40)
+            PowersList.AddChild(SWConsoleStyle.Text("Низкая легитимность: вотум недоверия проходит уже при 2/3.", SWConsoleStyle.Bad, SWConsoleStyle.MonoSmall));
+
+        // Command.
+        if (state.HasCommand)
+        {
+            PowersList.AddChild(new Control { MinHeight = 10 });
+            PowersList.AddChild(SWConsoleStyle.Section("ПРЯМОЕ КОМАНДОВАНИЕ МИНИСТЕРСТВАМИ"));
+            PowersList.AddChild(SWConsoleStyle.Text("Отдать чрезвычайное распоряжение в обход министра. Растит тиранию, бьёт по легитимности.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            PowersList.AddChild(new Control { MinHeight = 4 });
+            foreach (var (action, label) in CommandActions)
+            {
+                var a = action;
+                var btn = SWConsoleStyle.Action(label, SWConsoleStyle.Bad);
+                btn.HorizontalExpand = true;
+                btn.Margin = new Thickness(0, 0, 0, 3);
+                btn.OnPressed += _ => _owner.EmergencyCommand(a);
+                PowersList.AddChild(btn);
+            }
+        }
+
+        // Special powers (coercive / fiscal / legislative), each shown only if vested.
+        var specials = new (int Power, int Action, string Label)[]
+        {
+            (3, 6, "Ввести военное положение"),
+            (4, 7, "Мобилизация"),
+            (5, 8, "Цензура"),
+            (2, 10, "Чрезвычайный бюджет министерствам"),
+            (6, 9, "Чистки"),
+            (7, 11, "Издать декрет"),
+        };
+        var anySpecial = specials.Any(s => state.AvailablePowers.Contains(s.Power));
+        if (anySpecial)
+        {
+            PowersList.AddChild(new Control { MinHeight = 10 });
+            PowersList.AddChild(SWConsoleStyle.Section("СПЕЦИАЛЬНЫЕ ПОЛНОМОЧИЯ"));
+            PowersList.AddChild(new Control { MinHeight = 4 });
+            foreach (var (power, action, label) in specials)
+            {
+                if (!state.AvailablePowers.Contains(power))
+                    continue;
+                var a = action;
+                var btn = SWConsoleStyle.Action(label, SWConsoleStyle.Bad);
+                btn.HorizontalExpand = true;
+                btn.Margin = new Thickness(0, 0, 0, 3);
+                btn.OnPressed += _ => _owner.EmergencyCommand(a);
+                PowersList.AddChild(btn);
+            }
+        }
+
+        // Relinquish.
+        if (state.CanRelinquish)
+        {
+            PowersList.AddChild(new Control { MinHeight = 10 });
+            var relinquish = SWConsoleStyle.Action("Сложить чрезвычайные полномочия", SWConsoleStyle.Neutral);
+            relinquish.HorizontalAlignment = Control.HAlignment.Left;
+            relinquish.OnPressed += _ => _owner.RelinquishPowers();
+            PowersList.AddChild(relinquish);
+        }
     }
 
     private void BuildSignature(SWSenateWorkConsoleState state)
@@ -225,12 +394,20 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             }
 
             var id = law.Id;
+            var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
             var sign = SWConsoleStyle.Action(state.CanSignLaws ? "Подписать закон" : "Подписать может только Канцлер", SWConsoleStyle.Good, !state.CanSignLaws);
-            sign.HorizontalAlignment = Control.HAlignment.Left;
-            sign.Margin = new Thickness(0, 4, 0, 0);
             if (state.CanSignLaws)
                 sign.OnPressed += _ => _owner.SignBill(id);
-            box.AddChild(sign);
+            row.AddChild(sign);
+
+            if (state.CanSignLaws && state.HasVeto)
+            {
+                var veto = SWConsoleStyle.Action("Наложить вето", SWConsoleStyle.Bad);
+                veto.Margin = new Thickness(6, 0, 0, 0);
+                veto.OnPressed += _ => _owner.VetoBill(id);
+                row.AddChild(veto);
+            }
+            box.AddChild(row);
 
             card.AddChild(box);
             SignatureList.AddChild(card);
@@ -1293,7 +1470,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
         _navGroups = new (Label, Button[])[]
         {
-            (GroupInfo, new[] { NavOffice, NavSignature, NavSummary, NavCrises }),
+            (GroupInfo, new[] { NavOffice, NavSignature, NavPowers, NavSummary, NavCrises }),
             (GroupOrg, new[] { NavRoster, NavAgenda, NavSchedule }),
             (GroupWork, new[] { NavDraft, NavDilemmas, NavParties, NavAmbitions, NavBudget, NavAnnounce }),
         };

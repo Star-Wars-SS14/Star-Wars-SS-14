@@ -1815,10 +1815,11 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
         if (isSpeaker)
         {
+            var regularBills = state.SchedulableBills.Where(b => !b.Emergency).ToList();
             BuildEmergencyBills(state.SchedulableBills);
-            PopulateBillOption(state.SchedulableBills);
+            PopulateBillOption(regularBills);
             PopulateHourOption(state.FreeStartHours);
-            ScheduleButton.Disabled = state.SchedulableBills.Count == 0 || state.FreeStartHours.Count == 0;
+            ScheduleButton.Disabled = regularBills.Count == 0 || state.FreeStartHours.Count == 0;
             StyleButton(ScheduleButton, ScheduleButton.Disabled ? SWConsoleStyle.TextDim : SWConsoleStyle.Accent);
 
             SpeakerPendingList.RemoveAllChildren();

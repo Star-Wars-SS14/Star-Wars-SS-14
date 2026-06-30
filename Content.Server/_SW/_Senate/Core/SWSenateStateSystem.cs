@@ -420,6 +420,7 @@ public sealed class SWSenateStateSystem : EntitySystem
             Description = EmergencyMotionDescription(type, motionLevel, motionPower, threshold),
             Author = author,
             Stage = SWBillStage.Voting,
+            Emergency = type == SWMotionType.NoConfidence,
             SpecialMotionType = type,
             SpecialMotionLevel = motionLevel,
             SpecialMotionPower = motionPower,
@@ -774,7 +775,8 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     public SWSenateSession? TryScheduleSession(int billId, int startHour, int duration)
     {
-        if (_bills.All(b => b.Id != billId) || !CanSchedule(startHour, duration))
+        var bill = _bills.FirstOrDefault(b => b.Id == billId);
+        if (bill == null || bill.Emergency || !CanSchedule(startHour, duration))
             return null;
 
         if (_sessions.Any(s => s.BillId == billId && s.Status != SWSessionStatus.Rejected))

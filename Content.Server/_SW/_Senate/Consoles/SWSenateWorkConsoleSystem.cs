@@ -319,17 +319,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             return;
         }
 
-        var result = _senate.ScheduleEmergencySession(args.BillId);
-        if (result == null)
-        {
-            _popup.PopupCursor(Loc.GetString("sw-senate-emergency-invalid"), args.Actor, PopupType.Medium);
-        }
-        else
-        {
-            RaiseLocalEvent(new SWSenateEmergencySessionScheduledEvent(_senate.GetBillName(args.BillId), result.StartHour, result.DisplacedBill));
-            _popup.PopupCursor(Loc.GetString("sw-senate-emergency-scheduled"), args.Actor, PopupType.Medium);
-        }
-
+        ScheduleEmergencySession(args.BillId, args.Actor);
         UpdateUi(ent);
     }
 
@@ -540,10 +530,24 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (args.Type == SWMotionType.NoConfidence && GetCardPosition(ent) == SWSenatePosition.Chancellor)
             return;
 
-        if (_senate.SubmitEmergencyPowerMotion(args.Type, args.Level, args.Power, self, _powers.MotionThreshold(args.Type)) != null)
+        var bill = _senate.SubmitEmergencyPowerMotion(args.Type, args.Level, args.Power, self, _powers.MotionThreshold(args.Type));
+        if (bill != null)
             _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
 
         UpdateUi(ent);
+    }
+
+    private void ScheduleEmergencySession(int billId, EntityUid actor)
+    {
+        var result = _senate.ScheduleEmergencySession(billId);
+        if (result == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-emergency-invalid"), actor, PopupType.Medium);
+            return;
+        }
+
+        RaiseLocalEvent(new SWSenateEmergencySessionScheduledEvent(_senate.GetBillName(billId), result.StartHour, result.DisplacedBill));
+        _popup.PopupCursor(Loc.GetString("sw-senate-emergency-scheduled"), actor, PopupType.Medium);
     }
 
     private void OnEmergencyCommand(Entity<SWSenateWorkConsoleComponent> ent, ref SWEmergencyCommandMessage args)

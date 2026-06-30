@@ -152,20 +152,26 @@ public sealed class SWEmergencyPowersSystem : EntitySystem
 
     public bool ProposeMotion(SWMotionType type, int level, SWEmergencyPower power, string? proposer)
     {
+        if (type == SWMotionType.GrantPower && !Enum.IsDefined(power))
+            return false;
+
+        var motionLevel = Math.Clamp(level, 1, 3);
+        var motionPower = type == SWMotionType.GrantPower ? power : SWEmergencyPower.Veto;
+
         // One live motion of a given shape at a time.
-        if (_motions.Any(m => m.Type == type && m.Level == level && m.Power == power))
+        if (_motions.Any(m => m.Type == type && m.Level == motionLevel && m.Power == motionPower))
             return false;
 
         _motions.Add(new SWMotion
         {
             Id = _nextMotionId++,
             Type = type,
-            Level = Math.Clamp(level, 1, 3),
-            Power = power,
+            Level = motionLevel,
+            Power = motionPower,
             Proposer = proposer ?? "Сенат",
         });
 
-        Announce($"Внесено голосование: {MotionLabel(type, level, power)} (выдвинул {proposer ?? "Сенат"}).");
+        Announce($"Внесено голосование: {MotionLabel(type, motionLevel, motionPower)} (выдвинул {proposer ?? "Сенат"}).");
         return true;
     }
 

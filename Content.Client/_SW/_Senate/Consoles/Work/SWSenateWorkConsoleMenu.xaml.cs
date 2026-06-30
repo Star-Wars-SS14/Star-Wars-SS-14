@@ -205,6 +205,19 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         (5, "Чрезвычайные трибуналы"),
     };
 
+    private static readonly (SWEmergencyPower Power, string Label)[] PowerMotionOptions =
+    {
+        (SWEmergencyPower.Veto, "Вето"),
+        (SWEmergencyPower.Command, "Командование министерствами"),
+        (SWEmergencyPower.EmergencyBudget, "Чрезвычайный бюджет"),
+        (SWEmergencyPower.MartialLaw, "Военное положение"),
+        (SWEmergencyPower.Mobilization, "Мобилизация"),
+        (SWEmergencyPower.Censorship, "Цензура"),
+        (SWEmergencyPower.Purge, "Чистки"),
+        (SWEmergencyPower.Decree, "Декреты"),
+        (SWEmergencyPower.MinisterControl, "Контроль над министрами"),
+    };
+
     private void BuildPowers(SWSenateWorkConsoleState state)
     {
         PowersList.RemoveAllChildren();
@@ -243,6 +256,19 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                 prow.AddChild(btn);
             }
             PowersList.AddChild(prow);
+
+            PowersList.AddChild(new Control { MinHeight = 6 });
+            PowersList.AddChild(SWConsoleStyle.Text("Отдельные полномочия", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            foreach (var (power, label) in PowerMotionOptions)
+            {
+                var p = power;
+                var btn = SWConsoleStyle.Action(label, SWConsoleStyle.Warn);
+                btn.HorizontalExpand = true;
+                btn.Margin = new Thickness(0, 0, 0, 3);
+                btn.OnPressed += _ => _owner.ProposeMotion(SWMotionType.GrantPower, 0, p);
+                PowersList.AddChild(btn);
+            }
+
             if (state.Position != SWSenatePosition.Chancellor)
             {
                 var nc = SWConsoleStyle.Action("Вотум недоверия Канцлеру", SWConsoleStyle.Bad);

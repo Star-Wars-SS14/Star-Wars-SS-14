@@ -230,20 +230,11 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         else
             BuildPowersActive(state);
 
-        // Motions — visible to every senator/Chancellor in office.
+        // Emergency motions are submitted as regular senate bills and then scheduled by the Speaker.
         if (state.CanProposeMotions)
         {
             PowersList.AddChild(new Control { MinHeight = 12 });
-            PowersList.AddChild(SWConsoleStyle.Section("ГОЛОСОВАНИЯ"));
-            PowersList.AddChild(new Control { MinHeight = 4 });
-            if (state.Motions.Count == 0)
-                PowersList.AddChild(SWConsoleStyle.Text("Активных голосований нет.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
-            else
-                foreach (var m in state.Motions)
-                    PowersList.AddChild(MakeMotionCard(m));
-
-            PowersList.AddChild(new Control { MinHeight = 10 });
-            PowersList.AddChild(SWConsoleStyle.Section("ВНЕСТИ НА ГОЛОСОВАНИЕ"));
+            PowersList.AddChild(SWConsoleStyle.Section("ВНЕСТИ НА ЗАСЕДАНИЕ"));
             PowersList.AddChild(new Control { MinHeight = 4 });
             var prow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
             for (var lvl = 1; lvl <= 3; lvl++)
@@ -281,38 +272,6 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     }
 
     private static string Roman(int n) => n switch { 3 => "III", 2 => "II", _ => "I" };
-
-    private Control MakeMotionCard(SWMotionEntry m)
-    {
-        var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
-        card.Margin = new Thickness(0, 0, 0, 4);
-        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
-        box.AddChild(SWConsoleStyle.Text(m.Label, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
-        box.AddChild(SWConsoleStyle.Text($"За: {m.Yes} · Против: {m.No} · нужно {m.Needed} из {m.Electorate}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
-
-        if (m.Voted)
-        {
-            box.AddChild(SWConsoleStyle.Text(m.Support ? "Вы проголосовали ЗА" : "Вы проголосовали ПРОТИВ", m.Support ? SWConsoleStyle.Good : SWConsoleStyle.Bad, SWConsoleStyle.MonoSmall));
-        }
-        else if (m.CanVote)
-        {
-            var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 3, 0, 0) };
-            var id = m.Id;
-            var yes = SWConsoleStyle.Action("За", SWConsoleStyle.Good);
-            yes.HorizontalExpand = true;
-            yes.Margin = new Thickness(0, 0, 4, 0);
-            yes.OnPressed += _ => _owner.VoteMotion(id, true);
-            var no = SWConsoleStyle.Action("Против", SWConsoleStyle.Bad);
-            no.HorizontalExpand = true;
-            no.OnPressed += _ => _owner.VoteMotion(id, false);
-            row.AddChild(yes);
-            row.AddChild(no);
-            box.AddChild(row);
-        }
-
-        card.AddChild(box);
-        return card;
-    }
 
     private void BuildPowersActive(SWSenateWorkConsoleState state)
     {

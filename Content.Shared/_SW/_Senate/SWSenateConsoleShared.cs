@@ -1337,7 +1337,6 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool HasCommand;
     public List<int> AvailablePowers = new();
     public bool CanProposeMotions;
-    public List<SWMotionEntry> Motions = new();
 }
 
 [Serializable, NetSerializable]
@@ -1346,20 +1345,6 @@ public enum SWMotionType : byte
     GrantLevel,
     GrantPower,
     NoConfidence,
-}
-
-[Serializable, NetSerializable]
-public sealed class SWMotionEntry
-{
-    public int Id;
-    public string Label = string.Empty;
-    public int Yes;
-    public int No;
-    public int Needed;
-    public int Electorate;
-    public bool Voted;
-    public bool Support;
-    public bool CanVote;
 }
 
 [Serializable, NetSerializable]
@@ -1374,19 +1359,6 @@ public sealed class SWProposeMotionMessage : BoundUserInterfaceMessage
         Type = type;
         Level = level;
         Power = power;
-    }
-}
-
-[Serializable, NetSerializable]
-public sealed class SWVoteMotionMessage : BoundUserInterfaceMessage
-{
-    public int MotionId;
-    public bool Support;
-
-    public SWVoteMotionMessage(int motionId, bool support)
-    {
-        MotionId = motionId;
-        Support = support;
     }
 }
 
@@ -1926,6 +1898,8 @@ public sealed class SWSenateVoteConsoleState : BoundUserInterfaceState
     public int VotesFor;
     public int VotesAgainst;
     public int VotesAbstain;
+    public int VoteNeeded;
+    public int VoteThreshold;
     public List<SWSectorVoteEntry> SectorVotes = new();
     public bool CanVote;
     public bool HasVoted;

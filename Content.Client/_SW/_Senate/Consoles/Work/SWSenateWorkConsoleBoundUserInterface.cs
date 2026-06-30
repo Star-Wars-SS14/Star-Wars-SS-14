@@ -120,11 +120,6 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWProposeMotionMessage(type, level, power));
     }
 
-    public void VoteMotion(int motionId, bool support)
-    {
-        SendMessage(new SWVoteMotionMessage(motionId, support));
-    }
-
     public void Resign()
     {
         SendMessage(new SWSenateResignMessage());

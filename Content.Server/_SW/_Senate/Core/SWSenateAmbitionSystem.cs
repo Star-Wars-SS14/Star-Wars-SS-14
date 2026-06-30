@@ -153,19 +153,19 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
             {
                 var holder = OwnerHolder(active.Owner);
                 var met = holder != null && _senate.Bills.Any(b =>
-                    b.Stage == SWBillStage.Passed && b.Author == holder
+                    b.Stage == SWBillStage.Passed && b.SpecialMotionType == null && b.Author == holder
                     && b.Effects.TryGetValue(proto.Stat, out var d) && d > 0);
                 return (met, met ? "закон принят" : "закона нет");
             }
             case SWAmbitionKind.PassOwnLaws:
             {
                 var holder = OwnerHolder(active.Owner);
-                var n = holder == null ? 0 : _senate.Bills.Count(b => b.Stage == SWBillStage.Passed && b.Author == holder);
+                var n = holder == null ? 0 : _senate.Bills.Count(b => b.Stage == SWBillStage.Passed && b.SpecialMotionType == null && b.Author == holder);
                 return (n >= proto.Count, $"{n}/{proto.Count}");
             }
             case SWAmbitionKind.PassBills:
             {
-                var n = _senate.Bills.Count(b => b.Stage == SWBillStage.Passed);
+                var n = _senate.Bills.Count(b => b.Stage == SWBillStage.Passed && b.SpecialMotionType == null);
                 return (n >= proto.Count, $"{n}/{proto.Count}");
             }
             case SWAmbitionKind.PartyStrong:

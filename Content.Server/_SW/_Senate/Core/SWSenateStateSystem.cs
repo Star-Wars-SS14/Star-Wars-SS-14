@@ -55,7 +55,7 @@ public sealed class SWSenateStateSystem : EntitySystem
         _barredChancellors.Clear();
         _sessions.Clear();
         _announcedSessions.Clear();
-        _bills.RemoveAll(b => b.Stage != SWBillStage.Passed);
+        _bills.RemoveAll(b => b.Stage != SWBillStage.Passed || b.SpecialMotionType != null);
         _nextSessionId = 1;
         _scheduleDay = _time.Day;
     }
@@ -398,6 +398,38 @@ public sealed class SWSenateStateSystem : EntitySystem
         return bill;
     }
 
+    public SWSenateBill? SubmitEmergencyPowerMotion(SWMotionType type, int level, SWEmergencyPower power, string author, int requiredPercent)
+    {
+        if (type == SWMotionType.GrantPower && !Enum.IsDefined(power))
+            return null;
+
+        var motionLevel = Math.Clamp(level, 1, 3);
+        var motionPower = type == SWMotionType.GrantPower ? power : SWEmergencyPower.Veto;
+        if (_bills.Any(b =>
+                b.Stage == SWBillStage.Voting
+                && b.SpecialMotionType == type
+                && b.SpecialMotionLevel == motionLevel
+                && b.SpecialMotionPower == motionPower))
+            return null;
+
+        var threshold = Math.Clamp(requiredPercent, 1, 100);
+        var bill = new SWSenateBill
+        {
+            Id = _nextBillId++,
+            Name = EmergencyMotionName(type, motionLevel, motionPower),
+            Description = EmergencyMotionDescription(type, motionLevel, motionPower, threshold),
+            Author = author,
+            Stage = SWBillStage.Voting,
+            SpecialMotionType = type,
+            SpecialMotionLevel = motionLevel,
+            SpecialMotionPower = motionPower,
+            RequiredPercent = threshold,
+        };
+
+        _bills.Add(bill);
+        return bill;
+    }
+
     public SWSenateSession? GetActiveSession()
     {
         if (!_time.DayActive)
@@ -434,6 +466,9 @@ public sealed class SWSenateStateSystem : EntitySystem
         if (bill == null || bill.AwaitingTiebreak)
             return false;
 
+        if (bill.SpecialMotionType != null)
+            return CanEndSpecialMotionVote(bill);
+
         var electorate = _sectorHolders.Count;
         if (electorate == 0)
             return false;
@@ -445,6 +480,17 @@ public sealed class SWSenateStateSystem : EntitySystem
         var votesFor = bill.Votes.Values.Count(v => v == SWVoteChoice.For);
         var votesAgainst = bill.Votes.Values.Count(v => v == SWVoteChoice.Against);
         return Math.Abs(votesFor - votesAgainst) > remaining;
+    }
+
+    private bool CanEndSpecialMotionVote(SWSenateBill bill)
+    {
+        var electorate = _sectorHolders.Count;
+        if (electorate == 0)
+            return false;
+
+        var votesFor = ValidVotesFor(bill);
+        var remaining = Math.Max(0, electorate - ValidVotesCast(bill));
+        return votesFor >= VoteNeeded(bill) || votesFor + remaining < VoteNeeded(bill) || remaining <= 0;
     }
 
     public bool EndVoteBySpeaker()
@@ -533,6 +579,12 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     private void ResolveBill(SWSenateBill bill, bool allowTiebreak)
     {
+        if (bill.SpecialMotionType != null)
+        {
+            ResolveSpecialMotionBill(bill);
+            return;
+        }
+
         var votesFor = bill.Votes.Values.Count(v => v == SWVoteChoice.For);
         var votesAgainst = bill.Votes.Values.Count(v => v == SWVoteChoice.Against);
 
@@ -558,6 +610,26 @@ public sealed class SWSenateStateSystem : EntitySystem
             RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, false));
             RaiseVotesResolved(bill, false);
         }
+    }
+
+    private void ResolveSpecialMotionBill(SWSenateBill bill)
+    {
+        bill.AwaitingTiebreak = false;
+
+        if (SpecialMotionPassed(bill))
+        {
+            bill.Stage = SWBillStage.Passed;
+            RaiseVotesResolved(bill, true);
+            RaiseLocalEvent(new SWSenateEmergencyMotionPassedEvent(
+                bill.SpecialMotionType!.Value,
+                bill.SpecialMotionLevel,
+                bill.SpecialMotionPower));
+            return;
+        }
+
+        bill.Stage = SWBillStage.Rejected;
+        RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, false));
+        RaiseVotesResolved(bill, false);
     }
 
     public bool OfficesVacant => Speaker == null && Chancellor == null;
@@ -619,6 +691,8 @@ public sealed class SWSenateStateSystem : EntitySystem
         foreach (var bill in _bills)
         {
             if (bill.Stage != SWBillStage.Passed)
+                continue;
+            if (bill.SpecialMotionType != null)
                 continue;
 
             laws.Add(new SWBillEntry
@@ -923,6 +997,40 @@ public sealed class SWSenateStateSystem : EntitySystem
 
         return effects;
     }
+
+    public int VoteNeeded(SWSenateBill bill)
+    {
+        if (bill.RequiredPercent <= 0)
+            return 0;
+
+        var electorate = Math.Max(1, _sectorHolders.Count);
+        return (int) MathF.Ceiling(bill.RequiredPercent / 100f * electorate);
+    }
+
+    private int ValidVotesCast(SWSenateBill bill) =>
+        bill.Votes.Keys.Count(sectorId => _sectorHolders.ContainsKey(sectorId));
+
+    private int ValidVotesFor(SWSenateBill bill) =>
+        bill.Votes.Count(vote => _sectorHolders.ContainsKey(vote.Key) && vote.Value == SWVoteChoice.For);
+
+    private bool SpecialMotionPassed(SWSenateBill bill) =>
+        bill.RequiredPercent > 0 && ValidVotesFor(bill) >= VoteNeeded(bill);
+
+    private static string EmergencyMotionName(SWMotionType type, int level, SWEmergencyPower power) => type switch
+    {
+        SWMotionType.GrantLevel => $"Чрезвычайные полномочия уровня {Roman(level)}",
+        SWMotionType.GrantPower => $"Чрезвычайное полномочие: {SWEmergencyPowersSystem.PowerName(power)}",
+        _ => "Вотум недоверия Канцлеру",
+    };
+
+    private static string EmergencyMotionDescription(SWMotionType type, int level, SWEmergencyPower power, int threshold) => type switch
+    {
+        SWMotionType.GrantLevel => $"Наделить Канцлера чрезвычайными полномочиями уровня {Roman(level)}. Для принятия нужно {threshold}% голосов ЗА.",
+        SWMotionType.GrantPower => $"Наделить Канцлера отдельным чрезвычайным полномочием «{SWEmergencyPowersSystem.PowerName(power)}». Для принятия нужно {threshold}% голосов ЗА.",
+        _ => $"Снять Канцлера с должности вотумом недоверия. Для принятия нужно {threshold}% голосов ЗА.",
+    };
+
+    private static string Roman(int n) => n switch { 3 => "III", 2 => "II", _ => "I" };
 
     public List<SWBillPresetEntry> BuildBillPresets()
     {

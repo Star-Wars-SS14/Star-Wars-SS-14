@@ -26,9 +26,6 @@ public sealed class SWEmergencyPowersSystem : EntitySystem
     private float _legitimacy = 100f;
     private bool _barredChancellor;              // set when a Chancellor is ousted by no-confidence
 
-    private readonly List<SWMotion> _motions = new();
-    private int _nextMotionId = 1;
-
     private int _day = -1;
     private float _accum;
 
@@ -76,6 +73,7 @@ public sealed class SWEmergencyPowersSystem : EntitySystem
     public override void Initialize()
     {
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+        SubscribeLocalEvent<SWSenateEmergencyMotionPassedEvent>(OnEmergencyMotionPassed);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
@@ -86,8 +84,6 @@ public sealed class SWEmergencyPowersSystem : EntitySystem
         _authority = 0f;
         _legitimacy = 100f;
         _barredChancellor = false;
-        _motions.Clear();
-        _nextMotionId = 1;
         _day = -1;
     }
 
@@ -148,90 +144,24 @@ public sealed class SWEmergencyPowersSystem : EntitySystem
 
     public void ClearBar() => _barredChancellor = false;
 
-    // --- Motions (Senate votes to grant powers / no-confidence) ---
-
-    public bool ProposeMotion(SWMotionType type, int level, SWEmergencyPower power, string? proposer)
-    {
-        if (type == SWMotionType.GrantPower && !Enum.IsDefined(power))
-            return false;
-
-        var motionLevel = Math.Clamp(level, 1, 3);
-        var motionPower = type == SWMotionType.GrantPower ? power : SWEmergencyPower.Veto;
-
-        // One live motion of a given shape at a time.
-        if (_motions.Any(m => m.Type == type && m.Level == motionLevel && m.Power == motionPower))
-            return false;
-
-        _motions.Add(new SWMotion
-        {
-            Id = _nextMotionId++,
-            Type = type,
-            Level = motionLevel,
-            Power = motionPower,
-            Proposer = proposer ?? "Сенат",
-        });
-
-        Announce($"Внесено голосование: {MotionLabel(type, motionLevel, motionPower)} (выдвинул {proposer ?? "Сенат"}).");
-        return true;
-    }
-
-    public void VoteMotion(int motionId, string voter, bool support)
-    {
-        var motion = _motions.FirstOrDefault(m => m.Id == motionId);
-        if (motion == null)
-            return;
-
-        motion.Yes.Remove(voter);
-        motion.No.Remove(voter);
-        if (support)
-            motion.Yes.Add(voter);
-        else
-            motion.No.Add(voter);
-
-        TryResolve(motion);
-    }
+    // --- Senate-session emergency motions ---
 
     public int MotionThreshold(SWMotionType type) => type == SWMotionType.NoConfidence ? NoConfidenceThreshold() : 67;
 
-    public int MotionNeeded(SWMotionType type)
+    private void OnEmergencyMotionPassed(SWSenateEmergencyMotionPassedEvent ev)
     {
-        var electorate = Math.Max(1, _senate.SectorHolders.Count);
-        return (int) MathF.Ceiling(MotionThreshold(type) / 100f * electorate);
+        ApplyPassedMotion(ev.Type, ev.Level, ev.Power);
     }
 
-    private void TryResolve(SWMotion motion)
+    private void ApplyPassedMotion(SWMotionType type, int level, SWEmergencyPower power)
     {
-        var electorate = Math.Max(1, _senate.SectorHolders.Count);
-        var needed = MotionNeeded(motion.Type);
-        var blockNeeded = electorate - needed + 1;
-
-        if (motion.Yes.Count >= needed)
-        {
-            ApplyMotion(motion, true);
-        }
-        else if (motion.No.Count >= blockNeeded || motion.Yes.Count + motion.No.Count >= electorate)
-        {
-            ApplyMotion(motion, false);
-        }
-    }
-
-    private void ApplyMotion(SWMotion motion, bool passed)
-    {
-        _motions.Remove(motion);
-
-        if (!passed)
-        {
-            Announce($"Голосование отклонено: {MotionLabel(motion.Type, motion.Level, motion.Power)}.");
-            return;
-        }
-
-        switch (motion.Type)
+        switch (type)
         {
             case SWMotionType.GrantLevel:
-                GrantLevel(motion.Level);
+                GrantLevel(level);
                 break;
             case SWMotionType.GrantPower:
-                GrantPower(motion.Power);
+                GrantPower(power);
                 break;
             case SWMotionType.NoConfidence:
                 var name = _senate.OustChancellor();
@@ -239,39 +169,6 @@ public sealed class SWEmergencyPowersSystem : EntitySystem
                 Announce($"Вотум недоверия принят: Канцлер {name ?? ""} снят с должности. Обязанности исполняет Спикер.");
                 break;
         }
-    }
-
-    public static string MotionLabel(SWMotionType type, int level, SWEmergencyPower power) => type switch
-    {
-        SWMotionType.GrantLevel => $"наделить Канцлера полномочиями уровня {Roman(level)}",
-        SWMotionType.GrantPower => $"наделить Канцлера полномочием «{PowerName(power)}»",
-        _ => "вотум недоверия Канцлеру",
-    };
-
-    private static string Roman(int n) => n switch { 3 => "III", 2 => "II", _ => "I" };
-
-    public List<SWMotionEntry> BuildMotions(string? voter)
-    {
-        var electorate = Math.Max(1, _senate.SectorHolders.Count);
-        var list = new List<SWMotionEntry>();
-        foreach (var m in _motions)
-        {
-            var voted = voter != null && (m.Yes.Contains(voter) || m.No.Contains(voter));
-            list.Add(new SWMotionEntry
-            {
-                Id = m.Id,
-                Label = MotionLabel(m.Type, m.Level, m.Power),
-                Yes = m.Yes.Count,
-                No = m.No.Count,
-                Needed = MotionNeeded(m.Type),
-                Electorate = electorate,
-                Voted = voted,
-                Support = voter != null && m.Yes.Contains(voter),
-                CanVote = voter != null && _senate.SectorHolders.Values.Contains(voter),
-            });
-        }
-
-        return list;
     }
 
     public override void Update(float frameTime)
@@ -345,11 +242,11 @@ public sealed class SWEmergencyPowersSystem : EntitySystem
         }
 
         // During a catastrophe, the Senate is offered an emergency act automatically (once per crisis).
-        if (_autoOffered || Active || _senate.SectorHolders.Count == 0 || _motions.Any(m => m.Type == SWMotionType.GrantLevel))
+        if (_autoOffered || Active || _senate.SectorHolders.Count == 0)
             return;
 
         _autoOffered = true;
-        ProposeMotion(SWMotionType.GrantLevel, 1, SWEmergencyPower.Veto, "Кризис");
+        _senate.SubmitEmergencyPowerMotion(SWMotionType.GrantLevel, 1, SWEmergencyPower.Veto, "Кризис", MotionThreshold(SWMotionType.GrantLevel));
     }
 
     private void Announce(string text) =>
@@ -370,15 +267,4 @@ public sealed class SWEmergencyPowersSystem : EntitySystem
 
     public string AdminStatus() =>
         $"Полномочия: {LevelName()} (точечно: {_granted.Count}). Авторитет {Authority}/100, легитимность {Legitimacy}/100, дней осталось {DaysLeft}.";
-}
-
-public sealed class SWMotion
-{
-    public int Id;
-    public SWMotionType Type;
-    public int Level;
-    public SWEmergencyPower Power;
-    public string Proposer = string.Empty;
-    public HashSet<string> Yes = new();
-    public HashSet<string> No = new();
 }

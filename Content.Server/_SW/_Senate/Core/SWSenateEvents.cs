@@ -64,6 +64,20 @@ public sealed class SWSenateBillVotesResolvedEvent : EntityEventArgs
     }
 }
 
+public sealed class SWSenateEmergencyMotionPassedEvent : EntityEventArgs
+{
+    public SWMotionType Type;
+    public int Level;
+    public SWEmergencyPower Power;
+
+    public SWSenateEmergencyMotionPassedEvent(SWMotionType type, int level, SWEmergencyPower power)
+    {
+        Type = type;
+        Level = level;
+        Power = power;
+    }
+}
+
 public sealed class SWSenatePartyWhipAnnouncedEvent : EntityEventArgs
 {
     public string PartyName;

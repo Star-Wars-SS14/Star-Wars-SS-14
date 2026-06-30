@@ -158,6 +158,8 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
         tally.AddChild(MarginRight(SWConsoleStyle.Text($"ПРОТИВ {state.VotesAgainst}", SWConsoleStyle.Bad, SWConsoleStyle.MonoBold), 16));
         tally.AddChild(SWConsoleStyle.Text($"ВОЗД. {state.VotesAbstain}", SWConsoleStyle.Warn, SWConsoleStyle.MonoBold));
         CurrentContent.AddChild(tally);
+        if (state.VoteNeeded > 0)
+            CurrentContent.AddChild(SWConsoleStyle.Text($"Нужно ЗА: {state.VoteNeeded} ({state.VoteThreshold}%)", SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall));
 
         var canVote = state.CanVote && state.HasCurrent && !state.AwaitingTiebreak;
         var votes = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 6, 0, 0) };

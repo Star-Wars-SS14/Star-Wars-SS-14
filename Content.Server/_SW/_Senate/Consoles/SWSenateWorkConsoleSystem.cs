@@ -85,7 +85,6 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmergencyRelinquishMessage>(OnRelinquishPowers);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmergencyCommandMessage>(OnEmergencyCommand);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWProposeMotionMessage>(OnProposeMotion);
-        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWVoteMotionMessage>(OnVoteMotion);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectSessionMessage>(OnRejectSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAnnounceMessage>(OnAnnounce);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateCreatePartyMessage>(OnCreateParty);
@@ -541,17 +540,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (args.Type == SWMotionType.NoConfidence && GetCardPosition(ent) == SWSenatePosition.Chancellor)
             return;
 
-        _powers.ProposeMotion(args.Type, args.Level, args.Power, self);
-        UpdateUi(ent);
-    }
+        if (_senate.SubmitEmergencyPowerMotion(args.Type, args.Level, args.Power, self, _powers.MotionThreshold(args.Type)) != null)
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
 
-    private void OnVoteMotion(Entity<SWSenateWorkConsoleComponent> ent, ref SWVoteMotionMessage args)
-    {
-        var self = SelfName(ent);
-        if (self == null)
-            return;
-
-        _powers.VoteMotion(args.MotionId, self, args.Support);
         UpdateUi(ent);
     }
 
@@ -1064,7 +1055,6 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         var self = SelfName(ent);
         state.ShowPowers = self != null;
         state.CanProposeMotions = self != null;
-        state.Motions = _powers.BuildMotions(self);
         state.PowersActive = _powers.Active;
         state.EmergencyLevel = _powers.Level;
         state.EmergencyLevelName = _powers.LevelName();

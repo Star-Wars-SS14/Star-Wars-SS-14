@@ -276,6 +276,8 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
             state.VotesFor = bill.Votes.Values.Count(v => v == SWVoteChoice.For);
             state.VotesAgainst = bill.Votes.Values.Count(v => v == SWVoteChoice.Against);
             state.VotesAbstain = bill.Votes.Values.Count(v => v == SWVoteChoice.Abstain);
+            state.VoteNeeded = _senate.VoteNeeded(bill);
+            state.VoteThreshold = bill.RequiredPercent;
 
             if (voterSector != null && bill.Votes.TryGetValue(voterSector, out var myVote))
             {

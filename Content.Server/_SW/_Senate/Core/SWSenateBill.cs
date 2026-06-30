@@ -23,4 +23,8 @@ public sealed class SWSenateBill
     public bool Emergency;
     public int EmergencyCrisisId;
     public float EmergencyRelief;
+    public SWMotionType? SpecialMotionType;
+    public int SpecialMotionLevel;
+    public SWEmergencyPower SpecialMotionPower;
+    public int RequiredPercent;
 }

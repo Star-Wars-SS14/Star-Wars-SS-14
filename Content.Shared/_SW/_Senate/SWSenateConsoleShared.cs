@@ -2136,3 +2136,113 @@ public sealed class SWSenateTakeOfficeMessage : BoundUserInterfaceMessage
 public sealed class SWSenateResignMessage : BoundUserInterfaceMessage
 {
 }
+
+// --- Bureau work console ---
+
+[Serializable, NetSerializable]
+public enum SWBureauWorkConsoleUiKey
+{
+    Key
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBureauDilemmaOptionEntry
+{
+    public string Label = string.Empty;
+    public string Description = string.Empty;
+    public List<SWBillEffectEntry> Effects = new();
+    public int Cost;
+    public bool Affordable = true;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBureauDilemmaEntry
+{
+    public string Name = string.Empty;
+    public string Description = string.Empty;
+    public string TimeLabel = string.Empty;
+    public List<SWBureauDilemmaOptionEntry> Options = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWShipsAppEntry
+{
+    public int Id;
+    public string Name = string.Empty;
+    public string Origin = string.Empty;
+    public string RiskLabel = string.Empty;
+    public Color RiskColor;
+    public bool Inspected;
+    public int InspectCost;
+    public bool CanInspect;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBureauWorkConsoleState : BoundUserInterfaceState
+{
+    public bool HasCard;
+    public bool IsBureauCard;
+    public bool HasBureau;
+    public string BureauId = string.Empty;
+    public string BureauName = string.Empty;
+    public string BureauTitle = string.Empty;
+    public string BureauDescription = string.Empty;
+    public Color BureauColor;
+    public bool CanResign;
+    public int Budget;
+    public int Admin;
+    public int AuditCost;
+    public string GameTime = string.Empty;
+
+    public SWBureauDilemmaEntry? Dilemma;
+    public List<SWMinistryRequestEntry> Requests = new();
+
+    // Ships & Services bureau: transponder registry.
+    public bool IsShips;
+    public int TradeFlow;
+    public string TradeFlowStatus = string.Empty;
+    public int Policy;
+    public string PolicyLabel = string.Empty;
+    public int ForgedActive;
+    public List<SWShipsAppEntry> Applications = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBureauResignMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBureauResolveDilemmaMessage : BoundUserInterfaceMessage
+{
+    public int OptionIndex;
+
+    public SWBureauResolveDilemmaMessage(int optionIndex)
+    {
+        OptionIndex = optionIndex;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWShipsProcessAppMessage : BoundUserInterfaceMessage
+{
+    public int AppId;
+    public int Action; // 0 approve, 1 inspect, 2 deny
+
+    public SWShipsProcessAppMessage(int appId, int action)
+    {
+        AppId = appId;
+        Action = action;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWShipsSetPolicyMessage : BoundUserInterfaceMessage
+{
+    public int Level;
+
+    public SWShipsSetPolicyMessage(int level)
+    {
+        Level = level;
+    }
+}

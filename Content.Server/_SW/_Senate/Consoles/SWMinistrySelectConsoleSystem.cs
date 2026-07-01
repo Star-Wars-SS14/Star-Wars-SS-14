@@ -71,9 +71,16 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
         if (!_proto.TryIndex<SWMinistryPrototype>(args.MinistryId, out var proto))
             return;
 
-        if (proto.Kind != SWMinistryKind.Ministry && !AllMinistriesClaimed())
+        if (proto.Kind == SWMinistryKind.Department && !AllMinistriesClaimed())
         {
             _popup.PopupCursor(Loc.GetString("sw-ministry-select-ministries-first"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (proto.RequiresActive is { } required && !_ministry.IsClaimed(required))
+        {
+            var reqName = _proto.TryIndex<SWMinistryPrototype>(required, out var reqProto) ? reqProto.Name : required.Id;
+            _popup.PopupCursor(Loc.GetString("sw-ministry-select-requires-active", ("name", reqName)), args.Actor, PopupType.Medium);
             return;
         }
 
@@ -140,7 +147,8 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
                 ParentName = parentName,
                 Claimed = _ministry.IsClaimed(proto.ID),
                 Holder = _ministry.GetHolder(proto.ID),
-                Locked = proto.Kind != SWMinistryKind.Ministry && ministriesPending,
+                Locked = (proto.Kind == SWMinistryKind.Department && ministriesPending)
+                    || (proto.RequiresActive is { } req && !_ministry.IsClaimed(req)),
             });
         }
 

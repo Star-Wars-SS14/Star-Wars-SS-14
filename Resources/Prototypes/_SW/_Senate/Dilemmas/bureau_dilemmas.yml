@@ -1,0 +1,105 @@
+# Sectoral dilemmas a senator can escalate to a bureau (delegated as a bureau request).
+
+- type: swDilemma
+  id: SWDilemmaBureauHyperport
+  name: Забитый гиперпорт
+  description: Главный порт сектора парализован очередью незарегистрированных судов. Торговля стоит.
+  scope: Sectoral
+  order: 40
+  failText: Гиперпорт задыхается, грузы гниют на орбите
+  options:
+  - label: Разгрузить вручную
+    description: Местные бригады разгребут очередь, но медленно и дорого.
+    sectorEffects:
+      SWGlobalEconomy: 3
+      SWGlobalSociety: -2
+  - label: Пропустить всех без проверки
+    description: Быстро, но в сектор хлынут тёмные грузы.
+    sectorEffects:
+      SWGlobalEconomy: 4
+      SWGlobalSecurity: -4
+  - label: Передать в Бюро кораблей и услуг
+    description: Реестр наведёт порядок с транспондерами быстрее сектора.
+    ministry: SWBureauShips
+  failSectorEffects:
+    SWGlobalEconomy: -5
+    SWGlobalIndustry: -3
+  ministryOptions:
+  - label: Экстренная перерегистрация
+    sectorEffects:
+      SWGlobalEconomy: 5
+      SWGlobalSecurity: 1
+  - label: Развернуть выездной пункт реестра
+    cost: 2500
+    sectorEffects:
+      SWGlobalEconomy: 7
+      SWGlobalIndustry: 2
+
+- type: swDilemma
+  id: SWDilemmaBureauGhostShip
+  name: Судно-призрак
+  description: Контрабандисты используют клонированный транспондер республиканского корабля, прикрываясь флагом сектора.
+  scope: Sectoral
+  order: 41
+  failText: Под флагом сектора процветает контрабанда
+  options:
+  - label: Своими силами перехватить
+    description: Местная охрана попробует задержать судно.
+    sectorEffects:
+      SWGlobalSecurity: 3
+      SWGlobalEconomy: -2
+  - label: Закрыть глаза
+    description: Не связываться — контрабанда крепнет.
+    sectorEffects:
+      SWGlobalEconomy: 2
+      SWGlobalSecurity: -4
+  - label: Передать в Бюро кораблей и услуг
+    description: Аннулировать поддельные транспондеры может только реестр.
+    ministry: SWBureauShips
+  failSectorEffects:
+    SWGlobalSecurity: -5
+    SWGlobalSociety: -3
+  ministryOptions:
+  - label: Аннулировать транспондер
+    sectorEffects:
+      SWGlobalSecurity: 5
+      SWGlobalEconomy: -1
+  - label: Операция с ВБ по каравану
+    cost: 3000
+    sectorEffects:
+      SWGlobalSecurity: 7
+      SWGlobalSociety: 2
+
+- type: swDilemma
+  id: SWDilemmaBureauFlagDispute
+  name: Спор о флаге
+  description: Крупный перевозчик грозит увести флот под чужой флаг, если сектор не упростит регистрацию.
+  scope: Sectoral
+  order: 42
+  failText: Перевозчик ушёл, налоговая база просела
+  options:
+  - label: Дать местные льготы
+    description: Удержать перевозчика за счёт казны сектора.
+    sectorEffects:
+      SWGlobalEconomy: 3
+      SWGlobalSociety: 1
+  - label: Отпустить
+    description: Не идти на уступки — потеря рабочих мест.
+    sectorEffects:
+      SWGlobalEconomy: -4
+      SWGlobalSociety: -2
+  - label: Передать в Бюро кораблей и услуг
+    description: Пусть реестр решит вопрос флага на уровне Республики.
+    ministry: SWBureauShips
+  failSectorEffects:
+    SWGlobalEconomy: -4
+  ministryOptions:
+  - label: Республиканский флаг с гарантиями
+    sectorEffects:
+      SWGlobalEconomy: 5
+      SWGlobalIndustry: 2
+  - label: Льготная регистрация флота
+    cost: 2000
+    sectorEffects:
+      SWGlobalEconomy: 6
+      SWGlobalSociety: 2

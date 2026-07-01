@@ -46,6 +46,10 @@ public sealed partial class SWMinistryPrototype : IPrototype
     [DataField]
     public ProtoId<SWMinistryPrototype>? Parent;
 
+    /// <summary>Another ministry that must be claimed before this seat can be taken (e.g. the Weapons bureau needs an active МВБ).</summary>
+    [DataField]
+    public ProtoId<SWMinistryPrototype>? RequiresActive;
+
     [DataField]
     public bool Central;
 

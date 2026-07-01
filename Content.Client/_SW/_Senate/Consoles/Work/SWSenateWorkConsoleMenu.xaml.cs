@@ -153,6 +153,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         ResignButton.Visible = state.CanResign;
 
         BuildWarApproval(state);
+        BuildElectionElect(state);
 
         var isSenator = state.IsSenateCard && state.Position == SWSenatePosition.Senator;
         var isLeader = state.IsSenateCard
@@ -1260,6 +1261,24 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         }
 
         return box;
+    }
+
+    private void BuildElectionElect(SWSenateWorkConsoleState state)
+    {
+        ElectionElectBox.RemoveAllChildren();
+        if (!state.IsChancellorElect)
+            return;
+
+        var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+        box.AddChild(SWConsoleStyle.Text("Вы избраны Верховным Канцлером Республики!", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
+        box.AddChild(SWConsoleStyle.Text("Подтвердите полномочия — ваш сектор освободится для нового сенатора.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        var confirm = SWConsoleStyle.Action("Подтвердить избрание", SWConsoleStyle.Good);
+        confirm.Margin = new Thickness(0, 6, 0, 0);
+        confirm.OnPressed += _ => _owner.ConfirmElection();
+        box.AddChild(confirm);
+        card.AddChild(box);
+        ElectionElectBox.AddChild(card);
     }
 
     private void BuildWarApproval(SWSenateWorkConsoleState state)

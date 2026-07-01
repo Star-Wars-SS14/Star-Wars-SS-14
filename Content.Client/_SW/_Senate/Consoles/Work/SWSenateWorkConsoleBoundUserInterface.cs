@@ -125,6 +125,11 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateIssueDecreeMessage(name, description, effects));
     }
 
+    public void ConfirmElection()
+    {
+        SendMessage(new SWSenateConfirmElectionMessage());
+    }
+
     public void ProposeMotion(SWMotionType type, int level, SWEmergencyPower power)
     {
         SendMessage(new SWProposeMotionMessage(type, level, power));

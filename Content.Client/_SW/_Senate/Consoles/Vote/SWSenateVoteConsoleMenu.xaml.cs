@@ -137,7 +137,9 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
             : $"#{state.CurrentId}  {state.CurrentName}";
         box.AddChild(SWConsoleStyle.Text(title, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
 
-        var mine = state.HasVoted ? $"   ваш голос: {VoteLabel(state.MyVote)}" : string.Empty;
+        var mine = state.IsElection
+            ? (state.MyElectionVote != null ? $"   ваш голос: {state.MyElectionVote}" : string.Empty)
+            : (state.HasVoted ? $"   ваш голос: {VoteLabel(state.MyVote)}" : string.Empty);
         box.AddChild(SWConsoleStyle.Text($"автор: {state.CurrentAuthor}{mine}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
 
         if (!string.IsNullOrWhiteSpace(state.CurrentDescription))
@@ -153,20 +155,27 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
         card.AddChild(box);
         CurrentContent.AddChild(card);
 
-        var tally = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
-        tally.AddChild(MarginRight(SWConsoleStyle.Text($"ЗА {state.VotesFor}", SWConsoleStyle.Good, SWConsoleStyle.MonoBold), 16));
-        tally.AddChild(MarginRight(SWConsoleStyle.Text($"ПРОТИВ {state.VotesAgainst}", SWConsoleStyle.Bad, SWConsoleStyle.MonoBold), 16));
-        tally.AddChild(SWConsoleStyle.Text($"ВОЗД. {state.VotesAbstain}", SWConsoleStyle.Warn, SWConsoleStyle.MonoBold));
-        CurrentContent.AddChild(tally);
-        if (state.VoteNeeded > 0)
-            CurrentContent.AddChild(SWConsoleStyle.Text($"Нужно ЗА: {state.VoteNeeded} ({state.VoteThreshold}%)", SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall));
+        if (state.IsElection)
+        {
+            BuildElectionCurrent(state);
+        }
+        else
+        {
+            var tally = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
+            tally.AddChild(MarginRight(SWConsoleStyle.Text($"ЗА {state.VotesFor}", SWConsoleStyle.Good, SWConsoleStyle.MonoBold), 16));
+            tally.AddChild(MarginRight(SWConsoleStyle.Text($"ПРОТИВ {state.VotesAgainst}", SWConsoleStyle.Bad, SWConsoleStyle.MonoBold), 16));
+            tally.AddChild(SWConsoleStyle.Text($"ВОЗД. {state.VotesAbstain}", SWConsoleStyle.Warn, SWConsoleStyle.MonoBold));
+            CurrentContent.AddChild(tally);
+            if (state.VoteNeeded > 0)
+                CurrentContent.AddChild(SWConsoleStyle.Text($"Нужно ЗА: {state.VoteNeeded} ({state.VoteThreshold}%)", SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall));
 
-        var canVote = state.CanVote && state.HasCurrent && !state.AwaitingTiebreak;
-        var votes = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 6, 0, 0) };
-        votes.AddChild(VoteButton("ЗА", SWConsoleStyle.Good, canVote, SWVoteChoice.For, new Thickness(0, 0, 6, 0)));
-        votes.AddChild(VoteButton("ПРОТИВ", SWConsoleStyle.Bad, canVote, SWVoteChoice.Against, new Thickness(0, 0, 6, 0)));
-        votes.AddChild(VoteButton("ВОЗДЕРЖАТЬСЯ", SWConsoleStyle.Neutral, canVote, SWVoteChoice.Abstain, default));
-        CurrentContent.AddChild(votes);
+            var canVote = state.CanVote && state.HasCurrent && !state.AwaitingTiebreak;
+            var votes = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 6, 0, 0) };
+            votes.AddChild(VoteButton("ЗА", SWConsoleStyle.Good, canVote, SWVoteChoice.For, new Thickness(0, 0, 6, 0)));
+            votes.AddChild(VoteButton("ПРОТИВ", SWConsoleStyle.Bad, canVote, SWVoteChoice.Against, new Thickness(0, 0, 6, 0)));
+            votes.AddChild(VoteButton("ВОЗДЕРЖАТЬСЯ", SWConsoleStyle.Neutral, canVote, SWVoteChoice.Abstain, default));
+            CurrentContent.AddChild(votes);
+        }
 
         if (state.CanPartyWhip)
         {
@@ -228,6 +237,52 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
 
             var vote = SWConsoleStyle.Text(sector.VoteLabel, VoteLabelColor(sector.VoteLabel), SWConsoleStyle.MonoBold);
             vote.VerticalAlignment = Control.VAlignment.Center;
+            line.AddChild(vote);
+
+            row.AddChild(line);
+            CurrentContent.AddChild(row);
+        }
+    }
+
+    private void BuildElectionCurrent(SWSenateVoteConsoleState state)
+    {
+        CurrentContent.AddChild(new Control { MinHeight = 6 });
+
+        if (state.CanNominate)
+        {
+            var nominate = SWConsoleStyle.Action("ВЫДВИНУТЬ СВОЮ КАНДИДАТУРУ", SWConsoleStyle.Accent);
+            nominate.HorizontalExpand = true;
+            nominate.OnPressed += _ => _owner.Nominate();
+            CurrentContent.AddChild(nominate);
+            CurrentContent.AddChild(new Control { MinHeight = 8 });
+        }
+
+        CurrentContent.AddChild(SWConsoleStyle.Section("КАНДИДАТЫ"));
+        CurrentContent.AddChild(new Control { MinHeight = 4 });
+
+        if (state.Candidates.Count == 0)
+        {
+            CurrentContent.AddChild(SWConsoleStyle.Text("Кандидатов пока нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            return;
+        }
+
+        var alt = false;
+        foreach (var candidate in state.Candidates)
+        {
+            var row = SWConsoleStyle.Row(alt ? SWConsoleStyle.BgRowAlt : SWConsoleStyle.BgPanel);
+            alt = !alt;
+
+            var line = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+            var mine = candidate.Name == state.MyElectionVote;
+            var label = SWConsoleStyle.Text($"{candidate.Name}  —  {candidate.Votes} голосов", mine ? SWConsoleStyle.Accent : SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold);
+            label.HorizontalExpand = true;
+            label.VerticalAlignment = Control.VAlignment.Center;
+            line.AddChild(label);
+
+            var name = candidate.Name;
+            var vote = SWConsoleStyle.Action(mine ? "ВЫ ГОЛОСОВАЛИ" : "ГОЛОСОВАТЬ", mine ? SWConsoleStyle.Neutral : SWConsoleStyle.Good, mine || !state.CanVote);
+            if (!mine && state.CanVote)
+                vote.OnPressed += _ => _owner.ElectionVote(name);
             line.AddChild(vote);
 
             row.AddChild(line);

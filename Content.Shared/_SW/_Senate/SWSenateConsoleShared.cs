@@ -1338,6 +1338,9 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public List<int> AvailablePowers = new();
     public bool CanProposeMotions;
     public List<SWCabinetEntry> Cabinet = new();
+
+    // A senator who just won a Chancellor election must confirm it here before it takes effect.
+    public bool IsChancellorElect;
 }
 
 [Serializable, NetSerializable]
@@ -1402,6 +1405,36 @@ public sealed class SWProposeMotionMessage : BoundUserInterfaceMessage
 [Serializable, NetSerializable]
 public sealed class SWEmergencyRelinquishMessage : BoundUserInterfaceMessage
 {
+}
+
+// Chancellor election: any senator may self-nominate while an election vote is in progress; a plain
+// candidate-name vote is cast the same way as a regular bill vote.
+[Serializable, NetSerializable]
+public sealed class SWSenateNominateMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateElectionVoteMessage : BoundUserInterfaceMessage
+{
+    public string Candidate;
+
+    public SWSenateElectionVoteMessage(string candidate)
+    {
+        Candidate = candidate;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateConfirmElectionMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWElectionCandidateEntry
+{
+    public string Name = string.Empty;
+    public int Votes;
 }
 
 [Serializable, NetSerializable]
@@ -1949,6 +1982,12 @@ public sealed class SWSenateVoteConsoleState : BoundUserInterfaceState
     public bool CanControlFloor;
     public string? FloorHolderName;
     public List<SWFloorQueueEntry> FloorQueue = new();
+
+    // Chancellor election: same session/vote plumbing as a bill, but multi-candidate.
+    public bool IsElection;
+    public List<SWElectionCandidateEntry> Candidates = new();
+    public string? MyElectionVote;
+    public bool CanNominate;
     public bool CanPartyWhip;
     public string PartyWhipLabel = string.Empty;
 }

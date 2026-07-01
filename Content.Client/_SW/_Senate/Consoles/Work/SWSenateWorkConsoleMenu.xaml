@@ -40,6 +40,7 @@
                     <BoxContainer Name="OfficeTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
                         <RichTextLabel Name="PositionLabel" Margin="0 0 0 6" />
                         <RichTextLabel Name="StatusLabel" Margin="0 0 0 12" />
+                        <BoxContainer Name="ElectionElectBox" Orientation="Vertical" Margin="0 0 0 12" />
                         <Button Name="TakeButton" Text="Вступить в должность" />
                         <Button Name="ResignButton" Text="Сложить полномочия" Margin="0 6 0 0" />
                         <BoxContainer Name="WarApprovalBox" Orientation="Vertical" Margin="0 12 0 0" />

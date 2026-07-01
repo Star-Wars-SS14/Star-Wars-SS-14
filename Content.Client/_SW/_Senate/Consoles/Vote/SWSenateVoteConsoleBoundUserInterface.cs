@@ -70,6 +70,16 @@ public sealed class SWSenateVoteConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenatePartyWhipMessage());
     }
 
+    public void Nominate()
+    {
+        SendMessage(new SWSenateNominateMessage());
+    }
+
+    public void ElectionVote(string candidate)
+    {
+        SendMessage(new SWSenateElectionVoteMessage(candidate));
+    }
+
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);

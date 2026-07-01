@@ -87,6 +87,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmergencyCommandMessage>(OnEmergencyCommand);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmergencyDismissMinisterMessage>(OnDismissMinister);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateIssueDecreeMessage>(OnIssueDecree);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateConfirmElectionMessage>(OnConfirmElection);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWProposeMotionMessage>(OnProposeMotion);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectSessionMessage>(OnRejectSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAnnounceMessage>(OnAnnounce);
@@ -614,6 +615,35 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
+    // The winning senator confirms their election: same physical card is promoted to Chancellor in
+    // place (mirrors ministry title changes), and their sector frees up for someone else to claim.
+    private void OnConfirmElection(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateConfirmElectionMessage args)
+    {
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null
+            || !TryComp<SWSenatePositionCardComponent>(card, out var position)
+            || position.Position != SWSenatePosition.Senator
+            || !TryComp<SWSenateSectorComponent>(card, out var sectorComp)
+            || sectorComp.Sector is not { } sectorId)
+            return;
+
+        if (!_senate.SectorHolders.TryGetValue(sectorId, out var name) || name != _senate.ChancellorElect)
+            return;
+
+        if (!_senate.ConfirmChancellorElect(name, sectorId))
+            return;
+
+        position.Position = SWSenatePosition.Chancellor;
+        sectorComp.Sector = null;
+        _idCard.TryChangeJobTitle(card.Value, Loc.GetString("sw-senate-work-position-chancellor"));
+        _floor.SetChancellor(args.Actor);
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent(
+            Loc.GetString("sw-senate-announce-sender"),
+            Loc.GetString("sw-senate-election-took-office", ("name", name))));
+        _popup.PopupCursor(Loc.GetString("sw-senate-work-took-office"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
     private List<SWCabinetEntry> BuildCabinet()
     {
         var list = new List<SWCabinetEntry>();
@@ -1129,6 +1159,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         var self = SelfName(ent);
         state.ShowPowers = self != null;
         state.CanProposeMotions = self != null;
+        state.IsChancellorElect = self != null && self == _senate.ChancellorElect;
         state.PowersActive = _powers.Active;
         state.EmergencyLevel = _powers.Level;
         state.EmergencyLevelName = _powers.LevelName();

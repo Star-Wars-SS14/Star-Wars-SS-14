@@ -67,6 +67,12 @@ sw-senate-decree-author = Канцлер (декрет)
 sw-senate-decree-issued = Декрет издан и вступил в силу.
 sw-senate-decree-announce = Канцлер издал декрет «{$name}» в обход Сената.
 
+sw-senate-bill-stage-election-done = Выборы завершены
+sw-senate-election-result = Выборы завершены: Канцлером избран(а) {$name}. Требуется подтверждение полномочий в рабочей консоли.
+sw-senate-election-took-office = {$name} вступил(а) в должность Верховного Канцлера.
+sw-senate-election-nominate-success = Ваша кандидатура выдвинута.
+sw-senate-election-nominate-failed = Не удалось выдвинуть кандидатуру.
+
 sw-senate-vote-cant-vote = Голосовать может только сенатор с закреплённым сектором.
 sw-senate-vote-no-bill = Сейчас нет активного голосования.
 sw-senate-vote-cast = Ваш голос учтён.

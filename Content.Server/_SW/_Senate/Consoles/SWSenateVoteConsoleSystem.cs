@@ -39,6 +39,40 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateRemoveFromQueueMessage>(OnRemoveFromQueue);
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateGrantChancellorMessage>(OnGrantChancellor);
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenatePartyWhipMessage>(OnPartyWhip);
+        SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateNominateMessage>(OnNominate);
+        SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateElectionVoteMessage>(OnElectionVote);
+    }
+
+    private void OnNominate(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateNominateMessage args)
+    {
+        var sectorId = GetVoterSector(ent);
+        if (sectorId == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-vote-cant-vote"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.NominateChancellor(sectorId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-election-nominate-success"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-election-nominate-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnElectionVote(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateElectionVoteMessage args)
+    {
+        var sectorId = GetVoterSector(ent);
+        if (sectorId == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-vote-cant-vote"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.CastElectionVote(sectorId, args.Candidate))
+            _popup.PopupCursor(Loc.GetString("sw-senate-vote-cast"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
     }
 
     private void OnPartyWhip(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenatePartyWhipMessage args)
@@ -285,10 +319,31 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
                 state.MyVote = myVote;
             }
 
-            if (voterSector != null && _party.CanWhip(voterSector))
+            if (!bill.IsElection && voterSector != null && _party.CanWhip(voterSector))
             {
                 state.CanPartyWhip = true;
                 state.PartyWhipLabel = Loc.GetString("sw-senate-whip-action");
+            }
+
+            if (bill.IsElection)
+            {
+                state.IsElection = true;
+                foreach (var candidate in bill.Candidates)
+                {
+                    state.Candidates.Add(new SWElectionCandidateEntry
+                    {
+                        Name = candidate,
+                        Votes = bill.ElectionVotes.Values.Count(v => v == candidate),
+                    });
+                }
+
+                if (voterSector != null && bill.ElectionVotes.TryGetValue(voterSector, out var myCandidate))
+                    state.MyElectionVote = myCandidate;
+
+                var voterName = voterSector != null ? _senate.GetSectorHolder(voterSector) : null;
+                state.CanNominate = voterName != null
+                    && !bill.Candidates.Contains(voterName)
+                    && !_senate.IsBarredChancellor(voterName);
             }
 
             foreach (var (sectorId, _) in _senate.SectorHolders)
@@ -300,9 +355,9 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
                 {
                     Name = sectorProto.Name,
                     Color = sectorProto.Color,
-                    VoteLabel = bill.Votes.TryGetValue(sectorId, out var choice)
-                        ? Loc.GetString(VoteLoc(choice))
-                        : Loc.GetString("sw-senate-vote-none"),
+                    VoteLabel = bill.IsElection
+                        ? (bill.ElectionVotes.TryGetValue(sectorId, out var electionChoice) ? electionChoice : Loc.GetString("sw-senate-vote-none"))
+                        : (bill.Votes.TryGetValue(sectorId, out var choice) ? Loc.GetString(VoteLoc(choice)) : Loc.GetString("sw-senate-vote-none")),
                 };
 
                 if (_party.GetBlocTag(sectorId) is { } bloc)

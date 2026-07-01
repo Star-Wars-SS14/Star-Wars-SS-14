@@ -32,6 +32,14 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     public string? Chancellor { get; private set; }
     public string? Speaker { get; private set; }
+    public string? ChancellorElect => _chancellorElect;
+
+    private string? _chancellorElect;
+
+    // Set when the Chancellor is removed (no-confidence or coup): forces a new election even while a
+    // Speaker is still sitting and could otherwise act as Chancellor indefinitely. Cleared once a
+    // Chancellor is actually seated again (election or direct take-office).
+    private bool _electionForced;
 
     public IReadOnlyDictionary<string, Dictionary<string, float>> SectorGlobals => _sectorGlobals;
     public IReadOnlyDictionary<string, float> SubStats => _republicSubStats;
@@ -55,9 +63,11 @@ public sealed class SWSenateStateSystem : EntitySystem
         _barredChancellors.Clear();
         _sessions.Clear();
         _announcedSessions.Clear();
-        _bills.RemoveAll(b => b.Stage != SWBillStage.Passed || b.SpecialMotionType != null);
+        _bills.RemoveAll(b => b.Stage != SWBillStage.Passed || b.SpecialMotionType != null || b.IsElection);
         _nextSessionId = 1;
         _scheduleDay = _time.Day;
+        _chancellorElect = null;
+        _electionForced = false;
     }
 
     private void InitState()
@@ -75,6 +85,8 @@ public sealed class SWSenateStateSystem : EntitySystem
         _scheduleDay = _time.Day;
         Chancellor = null;
         Speaker = null;
+        _chancellorElect = null;
+        _electionForced = false;
 
         foreach (var sub in _proto.EnumeratePrototypes<SWStatPrototype>())
             _republicSubStats[sub.ID] = Math.Clamp(sub.Default, sub.Min, sub.Max);
@@ -332,6 +344,7 @@ public sealed class SWSenateStateSystem : EntitySystem
             return false;
 
         Chancellor = holder;
+        _electionForced = false;
         return true;
     }
 
@@ -340,12 +353,14 @@ public sealed class SWSenateStateSystem : EntitySystem
     public bool IsBarredChancellor(string holder) => _barredChancellors.Contains(holder);
 
     // No-confidence ouster: vacate the office and bar the disgraced holder from retaking it this round.
+    // Forces a fresh election even while a Speaker is still sitting.
     public string? OustChancellor()
     {
         var name = Chancellor;
         Chancellor = null;
         if (name != null)
             _barredChancellors.Add(name);
+        _electionForced = true;
         return name;
     }
 
@@ -448,6 +463,180 @@ public sealed class SWSenateStateSystem : EntitySystem
 
         _bills.Add(bill);
         return bill;
+    }
+
+    // --- Chancellor elections ---
+
+    // Runs every tick: schedules a new election whenever the Republic has no Chancellor and no one is
+    // acting for them (or the Chancellor was just removed), and drives one already in progress toward a
+    // free slot if it hasn't found one yet.
+    private void TickChancellorElection()
+    {
+        if (!_time.DayActive || _chancellorElect != null)
+            return;
+
+        var bill = _bills.FirstOrDefault(b => b.IsElection && b.Stage == SWBillStage.Voting);
+        if (bill == null)
+        {
+            if (Chancellor != null)
+                return;
+            if (Speaker != null && !_electionForced)
+                return;
+            if (_sectorHolders.Count < 2)
+                return;
+
+            bill = new SWSenateBill
+            {
+                Id = _nextBillId++,
+                Name = "Выборы Верховного Канцлера",
+                Description = "Внеочередные выборы главы исполнительной власти Республики. Кандидатом может выдвинуть себя любой сенатор в ходе заседания.",
+                Author = "Сенат",
+                Stage = SWBillStage.Voting,
+                IsElection = true,
+            };
+            _bills.Add(bill);
+        }
+
+        if (_sessions.Any(s => s.BillId == bill.Id && s.Status != SWSessionStatus.Rejected))
+            return;
+
+        for (var hour = FirstSchedulableHour(); hour < SWSenateTimeSystem.EndHour; hour++)
+        {
+            if (!CanSchedule(hour, 2))
+                continue;
+
+            _sessions.Add(new SWSenateSession
+            {
+                Id = _nextSessionId++,
+                BillId = bill.Id,
+                StartHour = hour,
+                Duration = 2,
+                Status = SWSessionStatus.Confirmed,
+            });
+            return;
+        }
+    }
+
+    // Early resolution: an outright majority of the whole electorate wins instantly; failing that, once
+    // every sector holder has voted the untied leader wins immediately rather than waiting out the clock.
+    private void TickElectionResolution()
+    {
+        var session = GetActiveSession();
+        if (session == null)
+            return;
+
+        var bill = _bills.FirstOrDefault(b => b.Id == session.BillId);
+        if (bill is not { IsElection: true, Stage: SWBillStage.Voting })
+            return;
+
+        var electorate = _sectorHolders.Count;
+        if (electorate == 0 || bill.Candidates.Count == 0)
+            return;
+
+        string? leader = null;
+        var leaderVotes = -1;
+        var tied = false;
+        foreach (var candidate in bill.Candidates)
+        {
+            var count = bill.ElectionVotes.Values.Count(v => v == candidate);
+            if (count > leaderVotes)
+            {
+                leaderVotes = count;
+                leader = candidate;
+                tied = false;
+            }
+            else if (count == leaderVotes)
+            {
+                tied = true;
+            }
+        }
+
+        if (leader == null)
+            return;
+
+        var majority = electorate / 2 + 1;
+        if (leaderVotes >= majority)
+        {
+            ResolveElection(bill, leader);
+            return;
+        }
+
+        var castCount = bill.ElectionVotes.Keys.Count(sectorId => _sectorHolders.ContainsKey(sectorId));
+        if (castCount >= electorate && !tied)
+            ResolveElection(bill, leader);
+    }
+
+    // Fallback when the 2-hour session runs out with nobody having won outright: the vote-count leader
+    // takes it, ties broken by candidacy order (whoever declared first).
+    private void ResolveElectionByPlurality(SWSenateBill bill)
+    {
+        string? winner = null;
+        var best = -1;
+        foreach (var candidate in bill.Candidates)
+        {
+            var count = bill.ElectionVotes.Values.Count(v => v == candidate);
+            if (count > best)
+            {
+                best = count;
+                winner = candidate;
+            }
+        }
+
+        if (winner == null)
+        {
+            bill.Stage = SWBillStage.Rejected;
+            return;
+        }
+
+        ResolveElection(bill, winner);
+    }
+
+    private void ResolveElection(SWSenateBill bill, string winner)
+    {
+        bill.Stage = SWBillStage.Passed;
+        _chancellorElect = winner;
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Сенат",
+            Loc.GetString("sw-senate-election-result", ("name", winner))));
+    }
+
+    public bool NominateChancellor(string sectorId)
+    {
+        var bill = GetCurrentBill();
+        if (bill is not { IsElection: true })
+            return false;
+
+        if (!_sectorHolders.TryGetValue(sectorId, out var name))
+            return false;
+
+        if (_barredChancellors.Contains(name) || bill.Candidates.Contains(name))
+            return false;
+
+        bill.Candidates.Add(name);
+        return true;
+    }
+
+    public bool CastElectionVote(string sectorId, string candidate)
+    {
+        var bill = GetCurrentBill();
+        if (bill is not { IsElection: true } || !_sectorHolders.ContainsKey(sectorId) || !bill.Candidates.Contains(candidate))
+            return false;
+
+        bill.ElectionVotes[sectorId] = candidate;
+        return true;
+    }
+
+    // The winning senator ratifies their own election: their card is promoted to Chancellor and their
+    // sector is freed for someone else to claim. Card mutation itself happens in the console system.
+    public bool ConfirmChancellorElect(string name, string sectorId)
+    {
+        if (_chancellorElect == null || _chancellorElect != name || Chancellor != null)
+            return false;
+
+        Chancellor = name;
+        _chancellorElect = null;
+        _electionForced = false;
+        Unclaim(sectorId);
+        return true;
     }
 
     public SWSenateSession? GetActiveSession()
@@ -714,6 +903,8 @@ public sealed class SWSenateStateSystem : EntitySystem
                 continue;
             if (bill.SpecialMotionType != null)
                 continue;
+            if (bill.IsElection)
+                continue;
 
             laws.Add(new SWBillEntry
             {
@@ -741,11 +932,17 @@ public sealed class SWSenateStateSystem : EntitySystem
                 continue;
 
             var bill = _bills.FirstOrDefault(b => b.Id == session.BillId);
-            if (bill is { Stage: SWBillStage.Voting })
+            if (bill is not { Stage: SWBillStage.Voting })
+                continue;
+
+            if (bill.IsElection)
             {
-                bill.AwaitingTiebreak = false;
-                ResolveBill(bill, false);
+                ResolveElectionByPlurality(bill);
+                continue;
             }
+
+            bill.AwaitingTiebreak = false;
+            ResolveBill(bill, false);
         }
     }
 
@@ -795,7 +992,7 @@ public sealed class SWSenateStateSystem : EntitySystem
     public SWSenateSession? TryScheduleSession(int billId, int startHour, int duration)
     {
         var bill = _bills.FirstOrDefault(b => b.Id == billId);
-        if (bill == null || bill.Emergency || !CanSchedule(startHour, duration))
+        if (bill == null || bill.Emergency || bill.IsElection || !CanSchedule(startHour, duration))
             return null;
 
         if (_sessions.Any(s => s.BillId == billId && s.Status != SWSessionStatus.Rejected))
@@ -940,6 +1137,8 @@ public sealed class SWSenateStateSystem : EntitySystem
         {
             if (bill.Stage != SWBillStage.Voting)
                 continue;
+            if (bill.IsElection)
+                continue;
             if (_sessions.Any(s => s.BillId == bill.Id && s.Status != SWSessionStatus.Rejected))
                 continue;
 
@@ -1082,7 +1281,7 @@ public sealed class SWSenateStateSystem : EntitySystem
     public string BillStageLabel(SWSenateBill bill)
     {
         if (bill.Stage == SWBillStage.Passed)
-            return Loc.GetString("sw-senate-bill-stage-passed");
+            return bill.IsElection ? Loc.GetString("sw-senate-bill-stage-election-done") : Loc.GetString("sw-senate-bill-stage-passed");
         if (bill.Stage == SWBillStage.AwaitingSignature)
             return Loc.GetString("sw-senate-bill-stage-signature");
         if (bill.Stage == SWBillStage.Rejected)
@@ -1118,6 +1317,8 @@ public sealed class SWSenateStateSystem : EntitySystem
     {
         ResolveExpiredSessions();
         AnnounceStartedSessions();
+        TickChancellorElection();
+        TickElectionResolution();
 
         if (_time.Day != _scheduleDay)
         {

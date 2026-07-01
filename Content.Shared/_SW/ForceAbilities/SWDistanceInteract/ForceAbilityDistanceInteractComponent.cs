@@ -26,6 +26,10 @@ public sealed partial class ForceAbilityDistanceInteractComponent : Component
 
     [DataField]
     [ViewVariables(VVAccess.ReadWrite)]
+    public float MoveByForceMinSpeed = 2.5f;
+
+    [DataField]
+    [ViewVariables(VVAccess.ReadWrite)]
     public float Range = 11f;
     public EntityUid? CurrentMovingItem;
     public bool IsUsingForceToMoveObject = false;

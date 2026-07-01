@@ -6,6 +6,7 @@
   - type: Sprite
     sprite: _SW/Vehicles/storm_caller.rsi
     state: vehicle
+    drawdepth: OverMobs
   - type: Physics
     bodyType: Dynamic
   - type: Fixtures
@@ -16,9 +17,18 @@
           bounds: "-1.15,-1.55,1.15,1.55"
         density: 2500
         mask:
-        - MobMask
+        - HighImpassable
         layer:
-        - MachineLayer
+        - Opaque
+        - MidImpassable
+        - BulletImpassable
+      mob_collision:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.15,-1.55,1.15,1.55"
+        hard: false
+        layer:
+        - MidImpassable
   - type: Damageable
     damageContainer: SWVehicleArmored
     damageModifierSet: SWHeavyVehicle
@@ -80,6 +90,8 @@
     sidewaysFriction: 20
     turnSpeedReference: 2.5
     minTurnSpeed: 1.2
+  - type: SWVehicleMobCollision
+    paralyzeTime: 5
   - type: SWVehicleMovementSound
     sound:
       path: /Audio/_SW/Vehicles/stormcaller.ogg
@@ -101,6 +113,7 @@
     aliveDelay: 8
     criticalDelay: 4
     deadDelay: 2
+  - type: SWForceMoveImmune
 
 - type: entity
   id: SWStormCallerDestroyed
@@ -110,6 +123,7 @@
   - type: Sprite
     sprite: _SW/Vehicles/storm_caller.rsi
     state: destroyed
+    drawdepth: OverMobs
   - type: Construction
     graph: SWStormCallerGraph
     node: SWStormCallerDestroyedNode
@@ -129,6 +143,7 @@
         - MachineLayer
   - type: Clickable
   - type: InteractionOutline
+  - type: SWForceMoveImmune
 
 - type: swVehicleRole
   id: SWVehicleRoleStormCallerDriver

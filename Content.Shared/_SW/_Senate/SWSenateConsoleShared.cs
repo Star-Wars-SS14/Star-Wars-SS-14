@@ -1339,7 +1339,6 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool CanProposeMotions;
     public List<SWCabinetEntry> Cabinet = new();
 
-    // A senator who just won a Chancellor election must confirm it here before it takes effect.
     public bool IsChancellorElect;
 }
 
@@ -1363,7 +1362,6 @@ public sealed class SWEmergencyDismissMinisterMessage : BoundUserInterfaceMessag
     }
 }
 
-// Chancellor's Decree power: enact a self-authored law instantly, bypassing the Senate vote.
 [Serializable, NetSerializable]
 public sealed class SWSenateIssueDecreeMessage : BoundUserInterfaceMessage
 {
@@ -1407,8 +1405,6 @@ public sealed class SWEmergencyRelinquishMessage : BoundUserInterfaceMessage
 {
 }
 
-// Chancellor election: any senator may self-nominate while an election vote is in progress; a plain
-// candidate-name vote is cast the same way as a regular bill vote.
 [Serializable, NetSerializable]
 public sealed class SWSenateNominateMessage : BoundUserInterfaceMessage
 {
@@ -1983,7 +1979,6 @@ public sealed class SWSenateVoteConsoleState : BoundUserInterfaceState
     public string? FloorHolderName;
     public List<SWFloorQueueEntry> FloorQueue = new();
 
-    // Chancellor election: same session/vote plumbing as a bill, but multi-candidate.
     public bool IsElection;
     public List<SWElectionCandidateEntry> Candidates = new();
     public string? MyElectionVote;

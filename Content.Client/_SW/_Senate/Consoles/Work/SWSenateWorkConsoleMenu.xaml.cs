@@ -1800,8 +1800,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         RecomputeBudget();
     }
 
-    // Chancellor's decree editor: same stat sliders as a bill, but no budget cap — the price is paid in
-    // tyranny/legitimacy, not points. Built once so periodic refreshes don't wipe the sliders or name.
+    // Built once — periodic refreshes must not wipe the sliders/name mid-edit.
     private void BuildDecreeDraft(SWSenateWorkConsoleState state)
     {
         DecreeStatList.RemoveAllChildren();

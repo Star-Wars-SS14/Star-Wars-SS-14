@@ -571,8 +571,6 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
-    // Decree: the Chancellor enacts a self-authored law instantly, bypassing the Senate. Costs authority
-    // and legitimacy (counts as abuse — the vote was skipped) and grows sharper the wider the changes.
     private void OnIssueDecree(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateIssueDecreeMessage args)
     {
         if (!CanConfirmAs(ent) || !_powers.HasPower(SWEmergencyPower.Decree))
@@ -615,8 +613,6 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
-    // The winning senator confirms their election: same physical card is promoted to Chancellor in
-    // place (mirrors ministry title changes), and their sector frees up for someone else to claim.
     private void OnConfirmElection(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateConfirmElectionMessage args)
     {
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);

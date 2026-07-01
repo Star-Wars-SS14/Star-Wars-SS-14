@@ -31,7 +31,6 @@ public sealed class SWMinistrySystem : EntitySystem
     public bool IsBarred(string ministryId, string holder) =>
         _barred.TryGetValue(ministryId, out var set) && set.Contains(holder);
 
-    // A minister dismissed by the Chancellor is barred from retaking that same portfolio this round.
     public void Bar(string ministryId, string holder)
     {
         if (!_barred.TryGetValue(ministryId, out var set))
@@ -65,8 +64,6 @@ public sealed class SWMinistrySystem : EntitySystem
         _holderCards.Remove(ministryId);
     }
 
-    // Lazily strip a card's ministry title when it no longer holds the seat (e.g. dismissed by the
-    // Chancellor while the card was elsewhere, or the seat was reclaimed by someone else).
     public void ReconcileCard(EntityUid card)
     {
         if (!TryComp<SWMinistryComponent>(card, out var comp) || comp.Ministry is not { } id)

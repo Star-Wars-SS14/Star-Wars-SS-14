@@ -23,12 +23,12 @@ public sealed class SWSenateBill
     public bool Emergency;
     public int EmergencyCrisisId;
     public float EmergencyRelief;
+    public float EmergencyWaitHours;
     public SWMotionType? SpecialMotionType;
     public int SpecialMotionLevel;
     public SWEmergencyPower SpecialMotionPower;
     public int RequiredPercent;
 
-    // Chancellor election: multi-candidate vote, resolved separately from the For/Against pipeline.
     public bool IsElection;
     public List<string> Candidates = new();
     public Dictionary<string, string> ElectionVotes = new();

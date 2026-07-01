@@ -35,11 +35,10 @@ public sealed class SWSenateStateSystem : EntitySystem
     public string? ChancellorElect => _chancellorElect;
 
     private string? _chancellorElect;
-
-    // Set when the Chancellor is removed (no-confidence or coup): forces a new election even while a
-    // Speaker is still sitting and could otherwise act as Chancellor indefinitely. Cleared once a
-    // Chancellor is actually seated again (election or direct take-office).
     private bool _electionForced;
+    private float _vacancyHours;
+    private const float ElectionDelayHours = 1f;
+    private const float EmergencySessionDelayHours = 2f;
 
     public IReadOnlyDictionary<string, Dictionary<string, float>> SectorGlobals => _sectorGlobals;
     public IReadOnlyDictionary<string, float> SubStats => _republicSubStats;
@@ -68,6 +67,7 @@ public sealed class SWSenateStateSystem : EntitySystem
         _scheduleDay = _time.Day;
         _chancellorElect = null;
         _electionForced = false;
+        _vacancyHours = 0f;
     }
 
     private void InitState()
@@ -87,6 +87,7 @@ public sealed class SWSenateStateSystem : EntitySystem
         Speaker = null;
         _chancellorElect = null;
         _electionForced = false;
+        _vacancyHours = 0f;
 
         foreach (var sub in _proto.EnumeratePrototypes<SWStatPrototype>())
             _republicSubStats[sub.ID] = Math.Clamp(sub.Default, sub.Min, sub.Max);
@@ -352,8 +353,6 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     public bool IsBarredChancellor(string holder) => _barredChancellors.Contains(holder);
 
-    // No-confidence ouster: vacate the office and bar the disgraced holder from retaking it this round.
-    // Forces a fresh election even while a Speaker is still sitting.
     public string? OustChancellor()
     {
         var name = Chancellor;
@@ -394,8 +393,6 @@ public sealed class SWSenateStateSystem : EntitySystem
         return bill;
     }
 
-    // A Chancellor's decree: a self-authored law that skips the vote entirely — it is enacted and applied
-    // the moment it is issued, then lives on as an ordinary active law.
     public SWSenateBill IssueDecree(string name, string description, string author, Dictionary<string, float> effects)
     {
         var bill = new SWSenateBill
@@ -467,22 +464,21 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     // --- Chancellor elections ---
 
-    // Runs every tick: schedules a new election whenever the Republic has no Chancellor and no one is
-    // acting for them (or the Chancellor was just removed), and drives one already in progress toward a
-    // free slot if it hasn't found one yet.
-    private void TickChancellorElection()
+    private void TickChancellorElection(float frameTime)
     {
-        if (!_time.DayActive || _chancellorElect != null)
+        if (_chancellorElect != null)
+        {
+            _vacancyHours = 0f;
             return;
+        }
 
         var bill = _bills.FirstOrDefault(b => b.IsElection && b.Stage == SWBillStage.Voting);
         if (bill == null)
         {
-            if (Chancellor != null)
-                return;
-            if (Speaker != null && !_electionForced)
-                return;
-            if (_sectorHolders.Count < 2)
+            var vacant = _time.DayActive && Chancellor == null && (Speaker == null || _electionForced);
+            _vacancyHours = vacant ? _vacancyHours + frameTime * (1f / SWSenateTimeSystem.RealSecondsPerGameHour) : 0f;
+
+            if (!vacant || _vacancyHours < ElectionDelayHours || _sectorHolders.Count < 2)
                 return;
 
             bill = new SWSenateBill
@@ -495,8 +491,11 @@ public sealed class SWSenateStateSystem : EntitySystem
                 IsElection = true,
             };
             _bills.Add(bill);
+            _vacancyHours = 0f;
         }
 
+        if (!_time.DayActive)
+            return;
         if (_sessions.Any(s => s.BillId == bill.Id && s.Status != SWSessionStatus.Rejected))
             return;
 
@@ -517,8 +516,6 @@ public sealed class SWSenateStateSystem : EntitySystem
         }
     }
 
-    // Early resolution: an outright majority of the whole electorate wins instantly; failing that, once
-    // every sector holder has voted the untied leader wins immediately rather than waiting out the clock.
     private void TickElectionResolution()
     {
         var session = GetActiveSession();
@@ -566,8 +563,29 @@ public sealed class SWSenateStateSystem : EntitySystem
             ResolveElection(bill, leader);
     }
 
-    // Fallback when the 2-hour session runs out with nobody having won outright: the vote-count leader
-    // takes it, ties broken by candidacy order (whoever declared first).
+    private void TickEmergencySessions(float frameTime)
+    {
+        if (!_time.DayActive)
+            return;
+
+        var gameHours = frameTime * (1f / SWSenateTimeSystem.RealSecondsPerGameHour);
+        foreach (var bill in _bills)
+        {
+            if (bill.Stage != SWBillStage.Voting || !bill.Emergency)
+                continue;
+            if (_sessions.Any(s => s.BillId == bill.Id && s.Status != SWSessionStatus.Rejected))
+                continue;
+
+            bill.EmergencyWaitHours += gameHours;
+            if (bill.EmergencyWaitHours < EmergencySessionDelayHours)
+                continue;
+
+            var result = ScheduleEmergencySession(bill.Id);
+            if (result != null)
+                RaiseLocalEvent(new SWSenateEmergencySessionScheduledEvent(bill.Name, result.StartHour, result.DisplacedBill));
+        }
+    }
+
     private void ResolveElectionByPlurality(SWSenateBill bill)
     {
         string? winner = null;
@@ -625,8 +643,6 @@ public sealed class SWSenateStateSystem : EntitySystem
         return true;
     }
 
-    // The winning senator ratifies their own election: their card is promoted to Chancellor and their
-    // sector is freed for someone else to claim. Card mutation itself happens in the console system.
     public bool ConfirmChancellorElect(string name, string sectorId)
     {
         if (_chancellorElect == null || _chancellorElect != name || Chancellor != null)
@@ -1317,8 +1333,9 @@ public sealed class SWSenateStateSystem : EntitySystem
     {
         ResolveExpiredSessions();
         AnnounceStartedSessions();
-        TickChancellorElection();
+        TickChancellorElection(frameTime);
         TickElectionResolution();
+        TickEmergencySessions(frameTime);
 
         if (_time.Day != _scheduleDay)
         {

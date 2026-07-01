@@ -60,6 +60,8 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
             return;
         }
 
+        _ministry.ReconcileCard(card.Value);
+
         if (TryComp<SWMinistryComponent>(card, out var existing) && existing.Ministry != null)
         {
             _popup.PopupCursor(Loc.GetString("sw-ministry-select-already"), args.Actor, PopupType.Medium);
@@ -75,7 +77,13 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
             return;
         }
 
-        if (!_ministry.TryClaim(args.MinistryId, Name(args.Actor)))
+        if (_ministry.IsBarred(args.MinistryId, Name(args.Actor)))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-ministry-select-barred"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (!_ministry.TryClaim(args.MinistryId, Name(args.Actor), card.Value))
         {
             _popup.PopupCursor(Loc.GetString("sw-ministry-select-taken"), args.Actor, PopupType.Medium);
             UpdateUi(ent);
@@ -95,6 +103,9 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
     private void UpdateUi(Entity<SWMinistrySelectConsoleComponent> ent)
     {
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+
+        if (card != null)
+            _ministry.ReconcileCard(card.Value);
 
         var isMinisterCard = card != null
             && TryComp<SWSenatePositionCardComponent>(card, out var position)

@@ -548,6 +548,8 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
     private string? GetCardMinistry(Entity<SWMinistryWorkConsoleComponent> ent)
     {
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card != null)
+            _ministry.ReconcileCard(card.Value);
         if (card == null
             || !TryComp<SWSenatePositionCardComponent>(card, out var position)
             || position.Position != SWSenatePosition.Minister
@@ -629,6 +631,8 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
     private void UpdateUi(Entity<SWMinistryWorkConsoleComponent> ent)
     {
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card != null)
+            _ministry.ReconcileCard(card.Value);
 
         var state = new SWMinistryWorkConsoleState
         {

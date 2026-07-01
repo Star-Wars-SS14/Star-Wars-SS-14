@@ -340,6 +340,36 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             }
         }
 
+        // Cabinet control (dismiss ministers) — MinisterControl == enum value 8.
+        if (state.AvailablePowers.Contains(8))
+        {
+            PowersList.AddChild(new Control { MinHeight = 10 });
+            PowersList.AddChild(SWConsoleStyle.Section("КАБИНЕТ"));
+            PowersList.AddChild(SWConsoleStyle.Text("Отстранить министра — его портфель освобождается.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            PowersList.AddChild(new Control { MinHeight = 4 });
+            if (state.Cabinet.Count == 0)
+            {
+                PowersList.AddChild(SWConsoleStyle.Text("Действующих министров нет.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            }
+            else
+            {
+                foreach (var seat in state.Cabinet)
+                {
+                    var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 0, 0, 3) };
+                    var label = SWConsoleStyle.Text($"{seat.Name} — {seat.Holder}", seat.Color, SWConsoleStyle.MonoSmall);
+                    label.HorizontalExpand = true;
+                    label.VerticalAlignment = Control.VAlignment.Center;
+                    row.AddChild(label);
+                    var mid = seat.MinistryId;
+                    var fire = SWConsoleStyle.Action("Отстранить", SWConsoleStyle.Bad);
+                    fire.Margin = new Thickness(8, 0, 0, 0);
+                    fire.OnPressed += _ => _owner.DismissMinister(mid);
+                    row.AddChild(fire);
+                    PowersList.AddChild(row);
+                }
+            }
+        }
+
         // Relinquish.
         if (state.CanRelinquish)
         {

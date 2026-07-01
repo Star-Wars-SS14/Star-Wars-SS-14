@@ -9,6 +9,7 @@ sw-senate-senator-base = Сенатор
 sw-ministry-select-not-minister = Портфель может занять только карта министра.
 sw-ministry-select-already = За этой картой уже закреплён портфель.
 sw-ministry-select-taken = Это ведомство уже занято.
+sw-ministry-select-barred = Вы отстранены от этого поста и не можете занять его снова.
 sw-ministry-select-ministries-first = Сначала должны быть заняты все министерства — они важнее.
 sw-ministry-select-success = Назначение: {$title}.
 sw-ministry-title-ministry = Министр {$name}

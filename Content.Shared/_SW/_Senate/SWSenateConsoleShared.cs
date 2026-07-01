@@ -1337,6 +1337,27 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool HasCommand;
     public List<int> AvailablePowers = new();
     public bool CanProposeMotions;
+    public List<SWCabinetEntry> Cabinet = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCabinetEntry
+{
+    public string MinistryId = string.Empty;
+    public string Name = string.Empty;
+    public string Holder = string.Empty;
+    public Color Color;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWEmergencyDismissMinisterMessage : BoundUserInterfaceMessage
+{
+    public string MinistryId;
+
+    public SWEmergencyDismissMinisterMessage(string ministryId)
+    {
+        MinistryId = ministryId;
+    }
 }
 
 [Serializable, NetSerializable]

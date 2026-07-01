@@ -115,6 +115,11 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWEmergencyCommandMessage(action));
     }
 
+    public void DismissMinister(string ministryId)
+    {
+        SendMessage(new SWEmergencyDismissMinisterMessage(ministryId));
+    }
+
     public void ProposeMotion(SWMotionType type, int level, SWEmergencyPower power)
     {
         SendMessage(new SWProposeMotionMessage(type, level, power));

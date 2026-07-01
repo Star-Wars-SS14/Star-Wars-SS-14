@@ -39,6 +39,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
     [Dependency] private readonly SWCorruptionSystem _corruption = default!;
     [Dependency] private readonly SWEmergencyPowersSystem _powers = default!;
+    [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SWSenatePartySystem _party = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
@@ -84,6 +85,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateVetoBillMessage>(OnVetoBill);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmergencyRelinquishMessage>(OnRelinquishPowers);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmergencyCommandMessage>(OnEmergencyCommand);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmergencyDismissMinisterMessage>(OnDismissMinister);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWProposeMotionMessage>(OnProposeMotion);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectSessionMessage>(OnRejectSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAnnounceMessage>(OnAnnounce);
@@ -548,6 +550,37 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
         RaiseLocalEvent(new SWSenateEmergencySessionScheduledEvent(_senate.GetBillName(billId), result.StartHour, result.DisplacedBill));
         _popup.PopupCursor(Loc.GetString("sw-senate-emergency-scheduled"), actor, PopupType.Medium);
+    }
+
+    private void OnDismissMinister(Entity<SWSenateWorkConsoleComponent> ent, ref SWEmergencyDismissMinisterMessage args)
+    {
+        if (!CanConfirmAs(ent) || !_powers.HasPower(SWEmergencyPower.MinisterControl))
+            return;
+        if (!_ministry.IsClaimed(args.MinistryId))
+            return;
+
+        var dismissed = _ministry.GetHolder(args.MinistryId);
+        if (dismissed != null)
+            _ministry.Bar(args.MinistryId, dismissed);
+        _ministry.Unclaim(args.MinistryId);
+        _powers.RegisterUse(6f, 4f, false);
+        var name = _proto.TryIndex<Content.Shared._SW._Senate.Ministries.SWMinistryPrototype>(args.MinistryId, out var proto) ? proto.Name : args.MinistryId;
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Канцлер", $"Министр отстранён: {name}."));
+        UpdateUi(ent);
+    }
+
+    private List<SWCabinetEntry> BuildCabinet()
+    {
+        var list = new List<SWCabinetEntry>();
+        foreach (var (ministryId, holder) in _ministry.Holders)
+        {
+            if (!_proto.TryIndex<Content.Shared._SW._Senate.Ministries.SWMinistryPrototype>(ministryId, out var proto))
+                continue;
+            list.Add(new SWCabinetEntry { MinistryId = ministryId, Name = proto.Name, Holder = holder, Color = proto.Color });
+        }
+
+        list.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+        return list;
     }
 
     private void OnEmergencyCommand(Entity<SWSenateWorkConsoleComponent> ent, ref SWEmergencyCommandMessage args)
@@ -1072,6 +1105,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         foreach (var p in Enum.GetValues<SWEmergencyPower>())
             if (_powers.HasPower(p))
                 state.AvailablePowers.Add((int) p);
+        if (_powers.HasPower(SWEmergencyPower.MinisterControl))
+            state.Cabinet = BuildCabinet();
 
         var viewer = dilemmaOwner == SWSenateDilemmaSystem.RepublicOwner
             ? _senate.Chancellor

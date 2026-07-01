@@ -22,6 +22,9 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     private (Label Header, Button[] Buttons)[] _navGroups = System.Array.Empty<(Label, Button[])>();
     private readonly Dictionary<string, Slider> _draftSliders = new();
     private readonly Dictionary<string, Label> _draftValueLabels = new();
+    private readonly Dictionary<string, Slider> _decreeSliders = new();
+    private readonly Dictionary<string, Label> _decreeValueLabels = new();
+    private bool _decreeBuilt;
     private readonly Dictionary<string, LineEdit> _budgetEdits = new();
     private string _budgetSignature = string.Empty;
     private readonly HashSet<int> _expandedDilemmas = new();
@@ -44,6 +47,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             (NavOffice, OfficeTab),
             (NavSignature, SignatureScroll),
             (NavPowers, PowersScroll),
+            (NavDecree, DecreeTab),
             (NavRoster, RosterScroll),
             (NavSummary, DashScroll),
             (NavDraft, DraftTab),
@@ -102,6 +106,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         TakeButton.OnPressed += _ => _owner.TakeOffice();
         ResignButton.OnPressed += _ => _owner.Resign();
         SubmitBillButton.OnPressed += _ => OnSubmitPressed();
+        IssueDecreeButton.OnPressed += _ => OnIssueDecreePressed();
+        DecreeIntro.SetMessage("Декрет — закон, изданный вами единолично в обход Сената. Вступает в силу немедленно, но резко растит тиранию и бьёт по легитимности. Чем шире изменения, тем выше цена.");
 
         for (var d = 1; d <= 4; d++)
             DurationOption.AddItem($"{d}ч", d);
@@ -161,6 +167,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         NavBudget.Visible = state.IsChancellorView;
         NavSignature.Visible = state.CanSignLaws;
         NavPowers.Visible = state.ShowPowers;
+        NavDecree.Visible = state.CanUseEmergencyPowers && state.AvailablePowers.Contains((int) SWEmergencyPower.Decree);
         NavAnnounce.Visible = isLeader && state.InOffice;
 
         foreach (var (header, buttons) in _navGroups)
@@ -177,6 +184,9 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
         if (!_draftBuilt && state.Globals.Count > 0)
             BuildDraft(state);
+
+        if (!_decreeBuilt && state.Globals.Count > 0)
+            BuildDecreeDraft(state);
 
         BuildRoster(state);
         BuildDashboard(state);
@@ -319,7 +329,6 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             (5, 8, "Цензура"),
             (2, 10, "Чрезвычайный бюджет министерствам"),
             (6, 9, "Чистки"),
-            (7, 11, "Издать декрет"),
         };
         var anySpecial = specials.Any(s => state.AvailablePowers.Contains(s.Power));
         if (anySpecial)
@@ -1491,7 +1500,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
         _navGroups = new (Label, Button[])[]
         {
-            (GroupInfo, new[] { NavOffice, NavSignature, NavPowers, NavSummary, NavCrises }),
+            (GroupInfo, new[] { NavOffice, NavSignature, NavPowers, NavDecree, NavSummary, NavCrises }),
             (GroupOrg, new[] { NavRoster, NavAgenda, NavSchedule }),
             (GroupWork, new[] { NavDraft, NavDilemmas, NavParties, NavAmbitions, NavBudget, NavAnnounce }),
         };
@@ -1510,6 +1519,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         StyleButton(TakeButton, SWConsoleStyle.Good);
         StyleButton(ResignButton, SWConsoleStyle.Bad);
         StyleButton(SubmitBillButton, SWConsoleStyle.Accent);
+        StyleButton(IssueDecreeButton, SWConsoleStyle.Bad);
         StyleButton(AnnounceButton, SWConsoleStyle.Accent);
         StyleButton(ScheduleButton, SWConsoleStyle.Accent);
         StyleButton(CreatePartyButton, SWConsoleStyle.Accent);
@@ -1769,6 +1779,111 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         foreach (var slider in _draftSliders.Values)
             slider.Value = 0;
         RecomputeBudget();
+    }
+
+    // Chancellor's decree editor: same stat sliders as a bill, but no budget cap — the price is paid in
+    // tyranny/legitimacy, not points. Built once so periodic refreshes don't wipe the sliders or name.
+    private void BuildDecreeDraft(SWSenateWorkConsoleState state)
+    {
+        DecreeStatList.RemoveAllChildren();
+        _decreeSliders.Clear();
+        _decreeValueLabels.Clear();
+
+        foreach (var global in state.Globals)
+        {
+            var subPanel = new BoxContainer
+            {
+                Orientation = BoxContainer.LayoutOrientation.Vertical,
+                Margin = new Thickness(16, 0, 0, 6),
+                Visible = false,
+            };
+
+            var header = new Button
+            {
+                Text = $"[+] {global.Name}",
+                HorizontalExpand = true,
+                Margin = new Thickness(0, 2, 0, 0),
+            };
+            header.OnPressed += _ =>
+            {
+                subPanel.Visible = !subPanel.Visible;
+                header.Text = (subPanel.Visible ? "[-] " : "[+] ") + global.Name;
+            };
+            DecreeStatList.AddChild(header);
+
+            foreach (var sub in global.Subs)
+            {
+                var row = new BoxContainer
+                {
+                    Orientation = BoxContainer.LayoutOrientation.Horizontal,
+                    HorizontalExpand = true,
+                    Margin = new Thickness(0, 1, 0, 1),
+                };
+
+                row.AddChild(new Label { Text = sub.Name, FontColorOverride = global.Color, MinWidth = 150 });
+
+                var slider = new Slider
+                {
+                    MinValue = -MaxEffect,
+                    MaxValue = MaxEffect,
+                    Value = 0,
+                    HorizontalExpand = true,
+                    MinWidth = 180,
+                };
+
+                var valueLabel = new Label { Text = "0", MinWidth = 40, HorizontalAlignment = Control.HAlignment.Right };
+
+                slider.OnValueChanged += _ =>
+                {
+                    valueLabel.Text = $"{MathF.Round(slider.Value):+0;-0;0}";
+                    RecomputeDecree();
+                };
+
+                row.AddChild(slider);
+                row.AddChild(valueLabel);
+                subPanel.AddChild(row);
+
+                _decreeSliders[sub.Id] = slider;
+                _decreeValueLabels[sub.Id] = valueLabel;
+            }
+
+            DecreeStatList.AddChild(subPanel);
+        }
+
+        RecomputeDecree();
+        _decreeBuilt = true;
+    }
+
+    private void RecomputeDecree()
+    {
+        var magnitude = 0f;
+        foreach (var slider in _decreeSliders.Values)
+            magnitude += MathF.Abs(MathF.Round(slider.Value));
+
+        DecreeMagnitudeLabel.SetMessage(
+            $"Суммарная сила изменений: {magnitude:0}. Цена ≈ +{6f + magnitude * 0.4f:0} тирании, −{(5f + magnitude * 0.4f) * 2f:0} легитимности.");
+    }
+
+    private void OnIssueDecreePressed()
+    {
+        var effects = new Dictionary<string, float>();
+        foreach (var (id, slider) in _decreeSliders)
+        {
+            var delta = MathF.Round(slider.Value);
+            if (delta != 0)
+                effects[id] = delta;
+        }
+
+        if (effects.Count == 0 || string.IsNullOrWhiteSpace(DecreeNameEdit.Text))
+            return;
+
+        _owner.IssueDecree(DecreeNameEdit.Text, DecreeDescEdit.Text, effects);
+
+        DecreeNameEdit.Text = string.Empty;
+        DecreeDescEdit.Text = string.Empty;
+        foreach (var slider in _decreeSliders.Values)
+            slider.Value = 0;
+        RecomputeDecree();
     }
 
     private void BuildAgenda(SWSenateWorkConsoleState state)

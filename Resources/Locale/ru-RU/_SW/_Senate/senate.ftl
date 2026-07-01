@@ -63,6 +63,9 @@ sw-senate-bill-stage-signature = Прошёл голосование — ждё�
 sw-senate-bill-signed = Закон подписан и вступает в силу.
 sw-power-veto = Вето наложено. Закон не вступит в силу.
 sw-power-command = Чрезвычайное распоряжение отдано.
+sw-senate-decree-author = Канцлер (декрет)
+sw-senate-decree-issued = Декрет издан и вступил в силу.
+sw-senate-decree-announce = Канцлер издал декрет «{$name}» в обход Сената.
 
 sw-senate-vote-cant-vote = Голосовать может только сенатор с закреплённым сектором.
 sw-senate-vote-no-bill = Сейчас нет активного голосования.

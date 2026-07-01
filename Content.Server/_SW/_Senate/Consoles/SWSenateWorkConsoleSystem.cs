@@ -86,6 +86,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmergencyRelinquishMessage>(OnRelinquishPowers);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmergencyCommandMessage>(OnEmergencyCommand);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmergencyDismissMinisterMessage>(OnDismissMinister);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateIssueDecreeMessage>(OnIssueDecree);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWProposeMotionMessage>(OnProposeMotion);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectSessionMessage>(OnRejectSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAnnounceMessage>(OnAnnounce);
@@ -569,6 +570,50 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
+    // Decree: the Chancellor enacts a self-authored law instantly, bypassing the Senate. Costs authority
+    // and legitimacy (counts as abuse — the vote was skipped) and grows sharper the wider the changes.
+    private void OnIssueDecree(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateIssueDecreeMessage args)
+    {
+        if (!CanConfirmAs(ent) || !_powers.HasPower(SWEmergencyPower.Decree))
+            return;
+
+        var name = args.Name.Trim();
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-no-name"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        var effects = new Dictionary<string, float>();
+        var magnitude = 0f;
+        foreach (var (statId, rawDelta) in args.Effects)
+        {
+            if (!_proto.HasIndex<SWStatPrototype>(statId))
+                continue;
+
+            var delta = Math.Clamp(rawDelta, -ent.Comp.MaxEffect, ent.Comp.MaxEffect);
+            if (delta == 0)
+                continue;
+
+            effects[statId] = delta;
+            magnitude += Math.Abs(delta);
+        }
+
+        if (effects.Count == 0)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-no-effect"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        _senate.IssueDecree(name, args.Description.Trim(), Loc.GetString("sw-senate-decree-author"), effects);
+        _powers.RegisterUse(6f + magnitude * 0.4f, 5f + magnitude * 0.4f, true);
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent(
+            Loc.GetString("sw-senate-work-position-chancellor"),
+            Loc.GetString("sw-senate-decree-announce", ("name", name))));
+        _popup.PopupCursor(Loc.GetString("sw-senate-decree-issued"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
     private List<SWCabinetEntry> BuildCabinet()
     {
         var list = new List<SWCabinetEntry>();
@@ -628,14 +673,6 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
                 foreach (var id in EmergencyBudgetTargets)
                     _dilemma.SetMinistryBudget(id, _dilemma.GetMinistryBudget(id) + 3000);
                 _powers.RegisterUse(8f, 6f, false);
-                break;
-
-            case 11 when _powers.HasPower(SWEmergencyPower.Decree):
-                _senate.AddPolicy("SWStatPolice", 4f);
-                _senate.AddPolicy("SWStatCensorship", 3f);
-                _senate.AddPolicy("SWStatRights", -3f);
-                RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Канцлер", "Издан чрезвычайный декрет."));
-                _powers.RegisterUse(8f, 8f, true);
                 break;
 
             default:

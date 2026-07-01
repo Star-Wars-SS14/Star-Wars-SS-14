@@ -379,6 +379,25 @@ public sealed class SWSenateStateSystem : EntitySystem
         return bill;
     }
 
+    // A Chancellor's decree: a self-authored law that skips the vote entirely — it is enacted and applied
+    // the moment it is issued, then lives on as an ordinary active law.
+    public SWSenateBill IssueDecree(string name, string description, string author, Dictionary<string, float> effects)
+    {
+        var bill = new SWSenateBill
+        {
+            Id = _nextBillId++,
+            Name = name,
+            Description = description,
+            Author = author,
+            Effects = effects,
+            Stage = SWBillStage.Passed,
+        };
+
+        _bills.Add(bill);
+        ApplyBill(bill);
+        return bill;
+    }
+
     public SWSenateBill SubmitEmergencyBill(string name, string description, string author, Dictionary<string, float> effects, int crisisId, float relief)
     {
         var bill = new SWSenateBill

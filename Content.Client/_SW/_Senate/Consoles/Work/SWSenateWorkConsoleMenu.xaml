@@ -19,6 +19,7 @@
                             <Button Name="NavOffice" Text="Должность" Margin="0 0 0 2" />
                             <Button Name="NavSignature" Text="На подпись" Margin="0 0 0 2" />
                             <Button Name="NavPowers" Text="Полномочия" Margin="0 0 0 2" />
+                            <Button Name="NavDecree" Text="Декрет" Margin="0 0 0 2" />
                             <Button Name="NavSummary" Text="Сводка" Margin="0 0 0 2" />
                             <Button Name="NavCrises" Text="Кризисы" Margin="0 0 0 2" />
                             <Label Name="GroupOrg" Text="ОРГАНИЗАЦИЯ" Margin="2 10 0 3" />
@@ -49,6 +50,19 @@
                     <ScrollContainer Name="PowersScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="10">
                         <BoxContainer Name="PowersList" Orientation="Vertical" HorizontalExpand="True" />
                     </ScrollContainer>
+                    <BoxContainer Name="DecreeTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
+                        <RichTextLabel Name="DecreeIntro" Margin="0 0 0 8" />
+                        <Label Text="Название декрета" StyleClasses="LabelKeyText" />
+                        <LineEdit Name="DecreeNameEdit" PlaceHolder="Название..." Margin="0 2 0 8" />
+                        <Label Text="Изменения" StyleClasses="LabelKeyText" />
+                        <ScrollContainer HScrollEnabled="False" VerticalExpand="True" Margin="0 2 0 4">
+                            <BoxContainer Name="DecreeStatList" Orientation="Vertical" HorizontalExpand="True" />
+                        </ScrollContainer>
+                        <RichTextLabel Name="DecreeMagnitudeLabel" Margin="0 0 0 8" />
+                        <Label Text="Описание" StyleClasses="LabelKeyText" />
+                        <LineEdit Name="DecreeDescEdit" PlaceHolder="Описание..." Margin="0 2 0 8" />
+                        <Button Name="IssueDecreeButton" Text="Издать декрет" />
+                    </BoxContainer>
                     <ScrollContainer Name="RosterScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="10">
                         <BoxContainer Name="RosterList" Orientation="Vertical" HorizontalExpand="True" />
                     </ScrollContainer>

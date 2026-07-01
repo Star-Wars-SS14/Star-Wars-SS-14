@@ -1360,6 +1360,22 @@ public sealed class SWEmergencyDismissMinisterMessage : BoundUserInterfaceMessag
     }
 }
 
+// Chancellor's Decree power: enact a self-authored law instantly, bypassing the Senate vote.
+[Serializable, NetSerializable]
+public sealed class SWSenateIssueDecreeMessage : BoundUserInterfaceMessage
+{
+    public string Name;
+    public string Description;
+    public Dictionary<string, float> Effects;
+
+    public SWSenateIssueDecreeMessage(string name, string description, Dictionary<string, float> effects)
+    {
+        Name = name;
+        Description = description;
+        Effects = effects;
+    }
+}
+
 [Serializable, NetSerializable]
 public enum SWMotionType : byte
 {

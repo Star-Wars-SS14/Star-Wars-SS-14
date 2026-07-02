@@ -20,6 +20,8 @@ public sealed class SWDroidControlDatapadBoundUserInterface : BoundUserInterface
         _menu.OnJobButtonPressed += SendToggleMessage;
         _menu.OnFactionAllowButtonPressed += SendAllowMessage;
         _menu.OnFactionDisallowButtonPressed += SendDisallowMessage;
+        _menu.OnTargetHumanoidsWithoutIdToggled += SendToggleTargetHumanoidsWithoutIdMessage;
+        _menu.OnTargetAnimalsToggled += SendToggleTargetAnimalsMessage;
         _menu.OpenCenteredRight();
     }
 
@@ -33,6 +35,8 @@ public sealed class SWDroidControlDatapadBoundUserInterface : BoundUserInterface
         _menu.OnJobButtonPressed -= SendToggleMessage;
         _menu.OnFactionAllowButtonPressed -= SendAllowMessage;
         _menu.OnFactionDisallowButtonPressed -= SendDisallowMessage;
+        _menu.OnTargetHumanoidsWithoutIdToggled -= SendToggleTargetHumanoidsWithoutIdMessage;
+        _menu.OnTargetAnimalsToggled -= SendToggleTargetAnimalsMessage;
     }
 
     private void SendToggleMessage(string job)
@@ -48,6 +52,16 @@ public sealed class SWDroidControlDatapadBoundUserInterface : BoundUserInterface
     private void SendDisallowMessage(string faction)
     {
         SendMessage(new SWDisallowFaction(faction));
+    }
+
+    private void SendToggleTargetHumanoidsWithoutIdMessage()
+    {
+        SendMessage(new SWToggleTargetHumanoidsWithoutIdMessage());
+    }
+
+    private void SendToggleTargetAnimalsMessage()
+    {
+        SendMessage(new SWToggleTargetAnimalsMessage());
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

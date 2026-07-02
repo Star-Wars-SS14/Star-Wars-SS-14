@@ -18,10 +18,16 @@ public sealed partial class SWTurretConsoleMenu : DefaultWindow
 
     public event Action<string>? OnFactionAllowBtnPressed;
     public event Action<string>? OnFactionDisallowBtnPressed;
+    public event Action? OnTargetHumanoidsWithoutIdToggled;
+    public event Action? OnTargetAnimalsToggled;
+
     public SWTurretConsoleMenu()
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
+
+        TargetHumanoidsWithoutIdCheckBox.OnToggled += _ => OnTargetHumanoidsWithoutIdToggled?.Invoke();
+        TargetAnimalsCheckBox.OnToggled += _ => OnTargetAnimalsToggled?.Invoke();
     }
 
     public void UpdateJobs(Dictionary<string, bool> jobs)
@@ -63,5 +69,11 @@ public sealed partial class SWTurretConsoleMenu : DefaultWindow
             btn.OnPressed += (_) => OnFactionDisallowBtnPressed?.Invoke(id);
             DisallowFactionsList.AddChild(btn);
         }
+    }
+
+    public void UpdateTargetOptions(bool targetHumanoidsWithoutId, bool targetAnimals)
+    {
+        TargetHumanoidsWithoutIdCheckBox.Pressed = targetHumanoidsWithoutId;
+        TargetAnimalsCheckBox.Pressed = targetAnimals;
     }
 }

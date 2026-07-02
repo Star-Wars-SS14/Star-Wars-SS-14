@@ -78,10 +78,13 @@ public sealed class SWDroidControlDatapadUISystem : EntitySystem
             factions[id] = ent.Value.Comp.Name;
         }
 
+        TryComp<SWTargetingConfigTargetsComponent>(uid, out var targets);
         var state = new SWDroidControlDatapadBoundUserInterfaceState(
             new Dictionary<string, bool>(console.JobsAllowed),
             factions,
-            GetDroidEntries(uid));
+            GetDroidEntries(uid),
+            targets?.TargetHumanoidsWithoutId ?? false,
+            targets?.TargetAnimals ?? false);
 
         _ui.SetUiState(uid, SWTurretConsoleUiKey.Key, state);
     }

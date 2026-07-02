@@ -8,4 +8,10 @@ public sealed partial class SWTargetingConfigComponent : Component
 
     [DataField]
     public bool TargetUnconfiguredJobs = true;
+
+    [DataField]
+    public bool TargetHumanoidsWithoutId;
+
+    [DataField]
+    public bool TargetAnimals;
 }

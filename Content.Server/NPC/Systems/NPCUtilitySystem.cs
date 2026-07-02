@@ -12,11 +12,14 @@ using Content.Server.Nutrition.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Examine;
 using Content.Shared.Fluids.Components;
+using Content.Shared.Body.Components;
+using Content.Shared.Humanoid;
 using Content.Shared.Inventory;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.NPC.Systems;
 using Content.Shared.Nutrition.Components;
+using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Nutrition.EntitySystems;
 using Content.Shared.Storage.Components;
 using Content.Shared.Stunnable;
@@ -385,9 +388,11 @@ public sealed class NPCUtilitySystem : EntitySystem
                 }
             case SWHasIdCardCon con:
                 {
-                    if (!TryComp<SWTargetingConfigComponent>(owner, out var config)) {
+                    if (!TryComp<SWTargetingConfigComponent>(owner, out var config))
+                    {
                         return 1f;
                     }
+
                     if (_inventory.TryGetSlotEntity(targetUid, "id", out var idcard))
                     {
                         if (TryComp<PresetIdCardComponent>(idcard, out var comp) && comp.JobName != null)
@@ -396,6 +401,13 @@ public sealed class NPCUtilitySystem : EntitySystem
                                 return allowed ? 1f : 0f;
                             }
                     }
+
+                    if (HasComp<HumanoidAppearanceComponent>(targetUid))
+                        return config.TargetHumanoidsWithoutId ? 1f : 0f;
+
+                    if (HasComp<BodyComponent>(targetUid) && !HasComp<BorgChassisComponent>(targetUid))
+                        return config.TargetAnimals ? 1f : 0f;
+
                     return config.TargetUnconfiguredJobs ? 0f : 1f;
                 }
             default:

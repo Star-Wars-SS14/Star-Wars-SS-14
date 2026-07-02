@@ -150,6 +150,8 @@ public sealed class SWTargetingConfigTargetsSystem : EntitySystem
         var config = EnsureComp<SWTargetingConfigComponent>(target);
         config.AllowedJobs = new Dictionary<string, bool>(console.JobsAllowed);
         config.TargetUnconfiguredJobs = targets.TargetUnconfiguredJobs;
+        config.TargetHumanoidsWithoutId = targets.TargetHumanoidsWithoutId;
+        config.TargetAnimals = targets.TargetAnimals;
     }
 
     private void RefreshTargetConfig(EntityUid target)
@@ -178,5 +180,7 @@ public sealed class SWTargetingConfigTargetsSystem : EntitySystem
         var config = EnsureComp<SWTargetingConfigComponent>(target);
         config.AllowedJobs.Clear();
         config.TargetUnconfiguredJobs = false;
+        config.TargetHumanoidsWithoutId = false;
+        config.TargetAnimals = false;
     }
 }

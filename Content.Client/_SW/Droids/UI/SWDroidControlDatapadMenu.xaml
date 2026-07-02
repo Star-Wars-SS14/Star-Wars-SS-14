@@ -20,24 +20,30 @@
                     </ScrollContainer>
                 </PanelContainer>
             </BoxContainer>
-            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
-                <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="0 0 6 0">
-                    <Label Text="{Loc 'sw-droid-control-datapad-targets-disabled'}" HorizontalAlignment="Center" Margin="0 0 0 4"/>
-                    <BoxContainer Orientation="Vertical" SeparationOverride="4" Margin="0 0 0 6" Name="DisallowFactionsList" HorizontalExpand="True" />
-                    <PanelContainer VerticalExpand="True" HorizontalExpand="True">
-                        <ScrollContainer VerticalExpand="True" HorizontalExpand="True">
-                            <BoxContainer Name="DisallowedJobsList" Orientation="Vertical" HorizontalExpand="True" />
-                        </ScrollContainer>
-                    </PanelContainer>
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True" Margin="0 0 0 8" SeparationOverride="12">
+                    <CheckBox Name="TargetHumanoidsWithoutIdCheckBox" Text="{Loc 'sw-targeting-console-target-humanoids-without-id'}" />
+                    <CheckBox Name="TargetAnimalsCheckBox" Text="{Loc 'sw-targeting-console-target-animals'}" />
                 </BoxContainer>
-                <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="6 0 0 0">
-                    <Label Text="{Loc 'sw-droid-control-datapad-targets-enabled'}" HorizontalAlignment="Center" Margin="0 0 0 4"/>
-                    <BoxContainer Orientation="Vertical" SeparationOverride="4" Margin="0 0 0 6" Name="AllowFactionsList" HorizontalExpand="True" />
-                    <PanelContainer VerticalExpand="True" HorizontalExpand="True">
-                        <ScrollContainer VerticalExpand="True" HorizontalExpand="True">
-                            <BoxContainer Name="AllowedJobsList" Orientation="Vertical" HorizontalExpand="True" />
-                        </ScrollContainer>
-                    </PanelContainer>
+                <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="0 0 6 0">
+                        <Label Text="{Loc 'sw-droid-control-datapad-targets-disabled'}" HorizontalAlignment="Center" Margin="0 0 0 4"/>
+                        <BoxContainer Orientation="Vertical" SeparationOverride="4" Margin="0 0 0 6" Name="DisallowFactionsList" HorizontalExpand="True" />
+                        <PanelContainer VerticalExpand="True" HorizontalExpand="True">
+                            <ScrollContainer VerticalExpand="True" HorizontalExpand="True">
+                                <BoxContainer Name="DisallowedJobsList" Orientation="Vertical" HorizontalExpand="True" />
+                            </ScrollContainer>
+                        </PanelContainer>
+                    </BoxContainer>
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="6 0 0 0">
+                        <Label Text="{Loc 'sw-droid-control-datapad-targets-enabled'}" HorizontalAlignment="Center" Margin="0 0 0 4"/>
+                        <BoxContainer Orientation="Vertical" SeparationOverride="4" Margin="0 0 0 6" Name="AllowFactionsList" HorizontalExpand="True" />
+                        <PanelContainer VerticalExpand="True" HorizontalExpand="True">
+                            <ScrollContainer VerticalExpand="True" HorizontalExpand="True">
+                                <BoxContainer Name="AllowedJobsList" Orientation="Vertical" HorizontalExpand="True" />
+                            </ScrollContainer>
+                        </PanelContainer>
+                    </BoxContainer>
                 </BoxContainer>
             </BoxContainer>
         </TabContainer>

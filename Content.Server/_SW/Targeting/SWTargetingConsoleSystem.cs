@@ -23,6 +23,8 @@ public sealed partial class SWTargetingConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWTurretConsoleComponent, SWTurretJobToggleMessage>(OnToggle);
         SubscribeLocalEvent<SWTurretConsoleComponent, SWAllowFaction>(OnAllow);
         SubscribeLocalEvent<SWTurretConsoleComponent, SWDisallowFaction>(OnDisAllow);
+        SubscribeLocalEvent<SWTurretConsoleComponent, SWToggleTargetHumanoidsWithoutIdMessage>(OnToggleTargetHumanoidsWithoutId);
+        SubscribeLocalEvent<SWTurretConsoleComponent, SWToggleTargetAnimalsMessage>(OnToggleTargetAnimals);
     }
 
     private void OnDisAllow(Entity<SWTurretConsoleComponent> ent, ref SWDisallowFaction args)
@@ -94,6 +96,40 @@ public sealed partial class SWTargetingConsoleSystem : EntitySystem
         RaiseSettingsChanged(ent.Owner, user);
     }
 
+    private void OnToggleTargetHumanoidsWithoutId(Entity<SWTurretConsoleComponent> ent, ref SWToggleTargetHumanoidsWithoutIdMessage args)
+    {
+        if (args.Actor is not { Valid: true } user)
+            return;
+
+        if (!CanUse(user, ent.Owner))
+        {
+            _popupSystem.PopupCursor(Loc.GetString("comms-console-permission-denied"), user, PopupType.Medium);
+            return;
+        }
+
+        var targets = EnsureComp<SWTargetingConfigTargetsComponent>(ent.Owner);
+        targets.TargetHumanoidsWithoutId = !targets.TargetHumanoidsWithoutId;
+        UpdateInterface(ent.Owner, ent.Comp);
+        RaiseSettingsChanged(ent.Owner, user);
+    }
+
+    private void OnToggleTargetAnimals(Entity<SWTurretConsoleComponent> ent, ref SWToggleTargetAnimalsMessage args)
+    {
+        if (args.Actor is not { Valid: true } user)
+            return;
+
+        if (!CanUse(user, ent.Owner))
+        {
+            _popupSystem.PopupCursor(Loc.GetString("comms-console-permission-denied"), user, PopupType.Medium);
+            return;
+        }
+
+        var targets = EnsureComp<SWTargetingConfigTargetsComponent>(ent.Owner);
+        targets.TargetAnimals = !targets.TargetAnimals;
+        UpdateInterface(ent.Owner, ent.Comp);
+        RaiseSettingsChanged(ent.Owner, user);
+    }
+
     private void OnStartup(Entity<SWTurretConsoleComponent> ent, ref ComponentStartup args)
     {
         var defaultAllowed = TryComp<SWTargetingConfigTargetsComponent>(ent.Owner, out var targets) &&
@@ -123,7 +159,12 @@ public sealed partial class SWTargetingConsoleSystem : EntitySystem
             }
             res[id] = ent.Value.Comp.Name;
         }
-        var state = new SWTurretConsoleBounderUserInterfaceState(comp.JobsAllowed, res);
+        TryComp<SWTargetingConfigTargetsComponent>(uid, out var targets);
+        var state = new SWTurretConsoleBounderUserInterfaceState(
+            comp.JobsAllowed,
+            res,
+            targets?.TargetHumanoidsWithoutId ?? false,
+            targets?.TargetAnimals ?? false);
         _uiSystem.SetUiState(uid, SWTurretConsoleUiKey.Key, state);
     }
     private bool CanUse(EntityUid user, EntityUid console)

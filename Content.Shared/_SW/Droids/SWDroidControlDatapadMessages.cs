@@ -8,15 +8,21 @@ public sealed class SWDroidControlDatapadBoundUserInterfaceState : BoundUserInte
     public Dictionary<string, bool> JobsAllowed = new();
     public Dictionary<string, string> AvailableFactions = new();
     public List<SWDroidControlDatapadDroidEntry> Droids = new();
+    public bool TargetHumanoidsWithoutId;
+    public bool TargetAnimals;
 
     public SWDroidControlDatapadBoundUserInterfaceState(
         Dictionary<string, bool> jobsAllowed,
         Dictionary<string, string> availableFactions,
-        List<SWDroidControlDatapadDroidEntry> droids)
+        List<SWDroidControlDatapadDroidEntry> droids,
+        bool targetHumanoidsWithoutId,
+        bool targetAnimals)
     {
         JobsAllowed = jobsAllowed;
         AvailableFactions = availableFactions;
         Droids = droids;
+        TargetHumanoidsWithoutId = targetHumanoidsWithoutId;
+        TargetAnimals = targetAnimals;
     }
 }
 

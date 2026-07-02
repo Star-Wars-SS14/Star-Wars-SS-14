@@ -18,6 +18,8 @@ public sealed partial class SWDroidControlDatapadMenu : DefaultWindow
     public event Action<string>? OnJobButtonPressed;
     public event Action<string>? OnFactionAllowButtonPressed;
     public event Action<string>? OnFactionDisallowButtonPressed;
+    public event Action? OnTargetHumanoidsWithoutIdToggled;
+    public event Action? OnTargetAnimalsToggled;
 
     public SWDroidControlDatapadMenu()
     {
@@ -26,6 +28,9 @@ public sealed partial class SWDroidControlDatapadMenu : DefaultWindow
 
         Tabs.SetTabTitle(0, Loc.GetString("sw-droid-control-datapad-tab-droids"));
         Tabs.SetTabTitle(1, Loc.GetString("sw-droid-control-datapad-tab-targets"));
+
+        TargetHumanoidsWithoutIdCheckBox.OnToggled += _ => OnTargetHumanoidsWithoutIdToggled?.Invoke();
+        TargetAnimalsCheckBox.OnToggled += _ => OnTargetAnimalsToggled?.Invoke();
     }
 
     public void UpdateState(SWDroidControlDatapadBoundUserInterfaceState state)
@@ -33,6 +38,7 @@ public sealed partial class SWDroidControlDatapadMenu : DefaultWindow
         UpdateDroids(state.Droids);
         UpdateJobs(state.JobsAllowed);
         UpdateFactions(state.AvailableFactions);
+        UpdateTargetOptions(state.TargetHumanoidsWithoutId, state.TargetAnimals);
     }
 
     private void UpdateDroids(List<SWDroidControlDatapadDroidEntry> droids)
@@ -139,5 +145,11 @@ public sealed partial class SWDroidControlDatapadMenu : DefaultWindow
             button.OnPressed += _ => OnFactionDisallowButtonPressed?.Invoke(id);
             DisallowFactionsList.AddChild(button);
         }
+    }
+
+    private void UpdateTargetOptions(bool targetHumanoidsWithoutId, bool targetAnimals)
+    {
+        TargetHumanoidsWithoutIdCheckBox.Pressed = targetHumanoidsWithoutId;
+        TargetAnimalsCheckBox.Pressed = targetAnimals;
     }
 }

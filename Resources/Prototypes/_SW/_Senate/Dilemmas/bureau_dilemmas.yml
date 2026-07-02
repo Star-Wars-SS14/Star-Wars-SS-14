@@ -1,6 +1,107 @@
 # Sectoral dilemmas a senator can escalate to a bureau (delegated as a bureau request).
 
 - type: swDilemma
+  id: SWDilemmaBureauShootouts
+  name: Перестрелки в нижних кварталах
+  description: Нелегальные бластеры наводнили нижние уровни сектора. Каждую ночь — новые жертвы.
+  scope: Sectoral
+  order: 46
+  failText: Улицы сектора превращаются в тир
+  options:
+  - label: Усилить патрули
+    description: Полиция сектора возьмёт кварталы в кольцо.
+    sectorEffects:
+      SWGlobalSecurity: 3
+      SWGlobalSociety: -2
+  - label: Комендантский час
+    description: Жёстко, но стрельба стихнет.
+    sectorEffects:
+      SWGlobalSecurity: 4
+      SWGlobalSociety: -4
+  - label: Передать в Бюро вооружений
+    description: Пусть бюро перекроет каналы поставок.
+    ministry: SWBureauWeapons
+  failSectorEffects:
+    SWGlobalSecurity: -5
+    SWGlobalSociety: -3
+  ministryOptions:
+  - label: Перекрыть каналы поставок
+    sectorEffects:
+      SWGlobalSecurity: 4
+  - label: Выкуп оружия у населения
+    cost: 2500
+    sectorEffects:
+      SWGlobalSecurity: 5
+      SWGlobalSociety: 2
+
+- type: swDilemma
+  id: SWDilemmaBureauMilitia
+  name: Ополчение просит оружие
+  description: Колонии сектора требуют права на самооборону — пиратские рейды участились.
+  scope: Sectoral
+  order: 47
+  failText: Колонии беззащитны перед рейдами
+  options:
+  - label: Раздать со складов сектора
+    description: Быстро, но без учёта.
+    sectorEffects:
+      SWGlobalDefense: 3
+      SWGlobalSecurity: -3
+  - label: Отказать
+    description: Гражданские с бластерами — новые проблемы.
+    sectorEffects:
+      SWGlobalSociety: -3
+  - label: Передать в Бюро вооружений
+    description: Официальные лицензии и учтённые стволы.
+    ministry: SWBureauWeapons
+  failSectorEffects:
+    SWGlobalDefense: -4
+    SWGlobalSociety: -2
+  ministryOptions:
+  - label: Лицензированное ополчение
+    sectorEffects:
+      SWGlobalDefense: 4
+      SWGlobalSecurity: 1
+  - label: Ополчение + инструкторы бюро
+    cost: 2800
+    sectorEffects:
+      SWGlobalDefense: 6
+      SWGlobalSecurity: 2
+
+- type: swDilemma
+  id: SWDilemmaBureauDroidFactory
+  name: Подпольный завод дроидов
+  description: В промзоне сектора нашли цех, печатающий боевых дроидов без лицензии.
+  scope: Sectoral
+  order: 48
+  failText: Нелегальные дроиды расползаются по рукам
+  options:
+  - label: Штурм силами сектора
+    description: Быстро и шумно.
+    sectorEffects:
+      SWGlobalSecurity: 3
+      SWGlobalIndustry: -2
+  - label: Закрыть глаза за долю
+    description: Цех платит — сектор молчит.
+    sectorEffects:
+      SWGlobalEconomy: 2
+      SWGlobalSecurity: -4
+  - label: Передать в Бюро вооружений
+    description: Изъять станки и конфисковать партию.
+    ministry: SWBureauWeapons
+  failSectorEffects:
+    SWGlobalSecurity: -5
+  ministryOptions:
+  - label: Конфискация и демонтаж
+    sectorEffects:
+      SWGlobalSecurity: 4
+  - label: Легализовать под контролем бюро
+    cost: 3000
+    sectorEffects:
+      SWGlobalSecurity: 3
+      SWGlobalIndustry: 3
+
+- type: swDilemma
   id: SWDilemmaBureauHyperport
   name: Забитый гиперпорт
   description: Главный порт сектора парализован очередью незарегистрированных судов. Торговля стоит.

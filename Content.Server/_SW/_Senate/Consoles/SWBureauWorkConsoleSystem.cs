@@ -24,6 +24,7 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
     [Dependency] private readonly SWBureauShipsSystem _ships = default!;
     [Dependency] private readonly SWBureauTransitSystem _transit = default!;
+    [Dependency] private readonly SWBureauWeaponsSystem _weapons = default!;
     [Dependency] private readonly SWCorruptionSystem _corruption = default!;
 
     private const float UpdateInterval = 3f;
@@ -41,6 +42,9 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWShipsLaunchOpMessage>(OnLaunchOp);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWTransitSetSectorMessage>(OnSetTransitStatus);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWTransitResolveEventMessage>(OnResolveTransitEvent);
+        SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWArmsSetPolicyMessage>(OnSetArmsPolicy);
+        SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWArmsSeizeMessage>(OnArmsSeize);
+        SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWArmsDroidMessage>(OnArmsDroid);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWMinistryAuditRequestMessage>(OnAudit);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWMinistryResolveRequestMessage>(OnResolveRequest);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWMinistryRefuseRequestMessage>(OnRefuseRequest);
@@ -123,6 +127,9 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
             case SWBureauTransitSystem.BureauId:
                 _transit.ResolveDilemma(args.OptionIndex);
                 break;
+            case SWBureauWeaponsSystem.BureauId:
+                _weapons.ResolveDilemma(args.OptionIndex);
+                break;
             default:
                 return;
         }
@@ -150,13 +157,50 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
-    private void OnProcessApp(Entity<SWBureauWorkConsoleComponent> ent, ref SWShipsProcessAppMessage args)
+    private void OnSetArmsPolicy(Entity<SWBureauWorkConsoleComponent> ent, ref SWArmsSetPolicyMessage args)
     {
-        if (GetCardBureau(ent) != SWBureauShipsSystem.BureauId)
+        if (GetCardBureau(ent) != SWBureauWeaponsSystem.BureauId)
             return;
 
-        if (!_ships.Process(args.AppId, args.Action))
-            _popup.PopupCursor(Loc.GetString("sw-bureau-ships-action-failed"), args.Actor, PopupType.Medium);
+        _weapons.SetPolicy(args.Category, args.Level);
+        UpdateUi(ent);
+    }
+
+    private void OnArmsSeize(Entity<SWBureauWorkConsoleComponent> ent, ref SWArmsSeizeMessage args)
+    {
+        if (GetCardBureau(ent) != SWBureauWeaponsSystem.BureauId)
+            return;
+
+        if (!_weapons.Seize(args.SectorId))
+            _popup.PopupCursor(Loc.GetString("sw-bureau-action-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnArmsDroid(Entity<SWBureauWorkConsoleComponent> ent, ref SWArmsDroidMessage args)
+    {
+        if (GetCardBureau(ent) != SWBureauWeaponsSystem.BureauId)
+            return;
+
+        if (!_weapons.DroidAction(args.Action))
+            _popup.PopupCursor(Loc.GetString("sw-bureau-action-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnProcessApp(Entity<SWBureauWorkConsoleComponent> ent, ref SWShipsProcessAppMessage args)
+    {
+        var ok = GetCardBureau(ent) switch
+        {
+            SWBureauShipsSystem.BureauId => _ships.Process(args.AppId, args.Action),
+            SWBureauWeaponsSystem.BureauId => _weapons.Process(args.AppId, args.Action),
+            _ => (bool?) null,
+        };
+
+        if (ok == null)
+            return;
+        if (!ok.Value)
+            _popup.PopupCursor(Loc.GetString("sw-bureau-action-failed"), args.Actor, PopupType.Medium);
 
         UpdateUi(ent);
     }
@@ -176,6 +220,7 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
         {
             SWBureauShipsSystem.BureauId => _ships.LaunchOp(args.Op),
             SWBureauTransitSystem.BureauId => _transit.LaunchOp(args.Op),
+            SWBureauWeaponsSystem.BureauId => _weapons.LaunchOp(args.Op),
             _ => (bool?) null,
         };
 
@@ -273,6 +318,26 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
                 state.Wanted = _ships.BuildWanted();
                 state.Ops = _ships.BuildOps();
                 state.RegistryLog = _ships.GetLog();
+            }
+            else if (bureauId == SWBureauWeaponsSystem.BureauId)
+            {
+                state.IsWeapons = true;
+                state.ArmsControl = _weapons.Control;
+                state.ArmsControlStatus = _weapons.ControlStatus();
+                state.BlackMarket = _weapons.BlackMarket();
+                state.BlackMarketStatus = _weapons.BlackMarketStatus();
+                state.CivPolicy = _weapons.GetPolicy(0);
+                state.HeavyPolicy = _weapons.GetPolicy(1);
+                state.DroidPolicy = _weapons.GetPolicy(2);
+                state.RegistryDroids = _weapons.RegistryDroids;
+                state.SecurityDroids = _weapons.SecurityDroids;
+                state.LicenseIncome = _weapons.LicenseIncome();
+                state.SecurityActive = _ministry.IsClaimed(SWMinistryInternalSecuritySystem.SecurityMinistryId);
+                state.ArmsSectors = _weapons.BuildSectors();
+                state.Applications = _weapons.BuildApps();
+                state.Dilemma = _weapons.BuildDilemma();
+                state.Ops = _weapons.BuildOps();
+                state.RegistryLog = _weapons.GetLog();
             }
             else if (bureauId == SWBureauTransitSystem.BureauId)
             {

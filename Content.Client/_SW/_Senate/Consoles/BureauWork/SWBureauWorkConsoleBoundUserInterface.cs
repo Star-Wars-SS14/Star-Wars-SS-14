@@ -58,6 +58,21 @@ public sealed class SWBureauWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWTransitSetSectorMessage(sectorId, status));
     }
 
+    public void SetArmsPolicy(int category, int level)
+    {
+        SendMessage(new SWArmsSetPolicyMessage(category, level));
+    }
+
+    public void ArmsSeize(string sectorId)
+    {
+        SendMessage(new SWArmsSeizeMessage(sectorId));
+    }
+
+    public void ArmsDroid(int action)
+    {
+        SendMessage(new SWArmsDroidMessage(action));
+    }
+
     public void ResolveTransitEvent(int eventId, int optionIndex)
     {
         SendMessage(new SWTransitResolveEventMessage(eventId, optionIndex));

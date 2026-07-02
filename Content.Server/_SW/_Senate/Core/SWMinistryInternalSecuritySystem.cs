@@ -15,6 +15,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
+    [Dependency] private readonly SWBureauWeaponsSystem _weapons = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
 
     public const string SecurityMinistryId = "SWMinistryInternalSecurity";
@@ -526,7 +527,18 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
             SWSecurityPosture.Emergency => 20,
             _ => 0,
         };
+        chance -= (int) (_weapons.ArmsLevel(plot.SectorId) / 5f);
+        chance += _weapons.SecurityDroids * 3;
         return Math.Clamp(chance, 5, 95);
+    }
+
+    public void DampPlots(string sectorId, float delta)
+    {
+        foreach (var plot in _plots)
+        {
+            if (plot.SectorId == sectorId)
+                plot.Maturity = Math.Clamp(plot.Maturity + delta, 0f, 100f);
+        }
     }
 
     public List<SWPlotEntry> BuildPlots()
@@ -648,7 +660,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
             if (CellsOn(plot.SectorId) > 0)
                 plot.Revealed = true;
 
-            plot.Maturity += PlotMaturityPerHour * (0.7f + _threat / 200f) * gameHours;
+            plot.Maturity += PlotMaturityPerHour * (0.7f + _threat / 200f) * (1f + _weapons.ArmsLevel(plot.SectorId) / 150f) * gameHours;
             if (plot.Maturity >= 100f)
             {
                 MaturePlot(plot);

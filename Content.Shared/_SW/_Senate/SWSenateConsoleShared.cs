@@ -2232,6 +2232,54 @@ public sealed class SWTransitEventEntry
 }
 
 [Serializable, NetSerializable]
+public sealed class SWArmsSectorEntry
+{
+    public string Id = string.Empty;
+    public string Name = string.Empty;
+    public Color Color;
+    public int Arms;
+    public string ArmsLabel = string.Empty;
+    public int SeizeCost;
+    public bool CanSeize;
+    public string SeizeLabel = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWArmsSetPolicyMessage : BoundUserInterfaceMessage
+{
+    public int Category;
+    public int Level;
+
+    public SWArmsSetPolicyMessage(int category, int level)
+    {
+        Category = category;
+        Level = level;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWArmsSeizeMessage : BoundUserInterfaceMessage
+{
+    public string SectorId;
+
+    public SWArmsSeizeMessage(string sectorId)
+    {
+        SectorId = sectorId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWArmsDroidMessage : BoundUserInterfaceMessage
+{
+    public int Action; // 0 transfer to Defense, 1 assign to МВБ, 2 recall from МВБ
+
+    public SWArmsDroidMessage(int action)
+    {
+        Action = action;
+    }
+}
+
+[Serializable, NetSerializable]
 public sealed class SWTransitSetSectorMessage : BoundUserInterfaceMessage
 {
     public string SectorId;
@@ -2296,6 +2344,21 @@ public sealed class SWBureauWorkConsoleState : BoundUserInterfaceState
     public bool HasPersonal;
     public int MyAccount;
     public int MyCorruption;
+
+    // Weapons Regulation bureau: arms flow & droid registry.
+    public bool IsWeapons;
+    public int ArmsControl;
+    public string ArmsControlStatus = string.Empty;
+    public int BlackMarket;
+    public string BlackMarketStatus = string.Empty;
+    public int CivPolicy;
+    public int HeavyPolicy;
+    public int DroidPolicy;
+    public int RegistryDroids;
+    public int SecurityDroids;
+    public int LicenseIncome;
+    public bool SecurityActive;
+    public List<SWArmsSectorEntry> ArmsSectors = new();
 
     // Travel & Transit bureau: mobility network.
     public bool IsTransit;

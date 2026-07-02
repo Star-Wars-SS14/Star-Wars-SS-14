@@ -90,8 +90,8 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
         StatusStrip.Visible = true;
         TabBarPanel.Visible = true;
 
-        _tabButtons[0].Text = state.IsTransit ? "СЕТЬ ПЕРЕВОЗОК" : "СТОЛ РЕГИСТРАЦИИ";
-        _tabButtons[1].Text = state.IsTransit ? "СОБЫТИЯ НА ЛИНИЯХ" : "ФЛОТ И РОЗЫСК";
+        _tabButtons[0].Text = state.IsTransit ? "СЕТЬ ПЕРЕВОЗОК" : state.IsWeapons ? "АРСЕНАЛ" : "СТОЛ РЕГИСТРАЦИИ";
+        _tabButtons[1].Text = state.IsTransit ? "СОБЫТИЯ НА ЛИНИЯХ" : state.IsWeapons ? "ЛИЦЕНЗИИ И ДРОИДЫ" : "ФЛОТ И РОЗЫСК";
 
         BuildStrip(state);
 
@@ -99,6 +99,11 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
         {
             BuildTransitDesk(state);
             BuildTransitLines(state);
+        }
+        else if (state.IsWeapons)
+        {
+            BuildWeaponsDesk(state);
+            BuildWeaponsLicenses(state);
         }
         else
         {
@@ -108,6 +113,210 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
 
         BuildOpsTab(state);
         BuildRequests(state);
+    }
+
+    private void BuildWeaponsDesk(SWBureauWorkConsoleState state)
+    {
+        DeskList.AddChild(SWConsoleStyle.Section("ПУЛЬТ РЕГУЛИРОВАНИЯ"));
+        DeskList.AddChild(new Control { MinHeight = 4 });
+
+        AddMeter(DeskList, "Контроль оборота", state.ArmsControl, state.ArmsControlStatus, SWConsoleStyle.ValueColor(state.ArmsControl));
+        AddMeter(DeskList, "Чёрный рынок", state.BlackMarket, state.BlackMarketStatus, SWConsoleStyle.ValueColor(100 - state.BlackMarket));
+
+        DeskList.AddChild(SWConsoleStyle.Text($"Лицензионные сборы: ~{state.LicenseIncome} кр/ч в казну бюро", SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+        if (!state.SecurityActive)
+            DeskList.AddChild(SWConsoleStyle.Text("МВБ не активно: изъятия проходят без поддержки ячеек.", SWConsoleStyle.Bad, SWConsoleStyle.MonoSmall));
+
+        DeskList.AddChild(new Control { MinHeight = 8 });
+        DeskList.AddChild(SWConsoleStyle.Section("ЛИЦЕНЗИОННЫЕ РЕЖИМЫ"));
+        DeskList.AddChild(SWConsoleStyle.Text(
+            "Лицензии: заявки идут в бюро. Свободно: без бумаг, рынок растёт. Запрет: контрабанда крепнет, права падают.",
+            SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        DeskList.AddChild(new Control { MinHeight = 4 });
+
+        AddArmsPolicyRow(state, 0, "Гражданское оружие", state.CivPolicy);
+        AddArmsPolicyRow(state, 1, "Тяжёлое вооружение", state.HeavyPolicy);
+        AddArmsPolicyRow(state, 2, "Боевые дроиды", state.DroidPolicy);
+
+        BuildDilemma(DeskList, state);
+
+        DeskList.AddChild(new Control { MinHeight = 10 });
+        DeskList.AddChild(SWConsoleStyle.Section("ЧЁРНЫЙ РЫНОК ПО СЕКТОРАМ"));
+        DeskList.AddChild(SWConsoleStyle.Text(
+            "Нелегальный оборот ускоряет заговоры и мешает облавам МВБ. Изъятие срезает оборот; при активном МВБ бьёт и по заговорам.",
+            SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        DeskList.AddChild(new Control { MinHeight = 4 });
+
+        if (state.ArmsSectors.Count == 0)
+        {
+            DeskList.AddChild(SWConsoleStyle.Text("Ни один сектор не закреплён за сенаторами.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            return;
+        }
+
+        var alt = false;
+        foreach (var sector in state.ArmsSectors)
+        {
+            var row = SWConsoleStyle.Row(alt ? SWConsoleStyle.BgRowAlt : SWConsoleStyle.BgPanel,
+                sector.Arms >= 60 ? SWConsoleStyle.Bad : null);
+            alt = !alt;
+            var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+
+            var line = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+            var name = SWConsoleStyle.Text(sector.Name, sector.Color, SWConsoleStyle.MonoBold);
+            name.HorizontalExpand = true;
+            name.VerticalAlignment = Control.VAlignment.Center;
+            line.AddChild(name);
+
+            var armsColor = sector.Arms >= 60 ? SWConsoleStyle.Bad : sector.Arms >= 30 ? SWConsoleStyle.Warn : SWConsoleStyle.Good;
+            var arms = SWConsoleStyle.Text($"{sector.Arms}%  ·  {sector.ArmsLabel}", armsColor, SWConsoleStyle.MonoSmall);
+            arms.VerticalAlignment = Control.VAlignment.Center;
+            arms.Margin = new Thickness(0, 0, 8, 0);
+            line.AddChild(arms);
+
+            var id = sector.Id;
+            var seize = SWConsoleStyle.Action(sector.CanSeize ? $"{sector.SeizeLabel} ({sector.SeizeCost})" : sector.SeizeLabel,
+                sector.CanSeize ? SWConsoleStyle.Accent : SWConsoleStyle.TextDim, !sector.CanSeize);
+            if (sector.CanSeize)
+                seize.OnPressed += _ => _owner.ArmsSeize(id);
+            line.AddChild(seize);
+
+            box.AddChild(line);
+            row.AddChild(box);
+            DeskList.AddChild(row);
+        }
+    }
+
+    private void AddArmsPolicyRow(SWBureauWorkConsoleState state, int category, string label, int current)
+    {
+        var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 0, 0, 3) };
+        var name = SWConsoleStyle.Text(label, SWConsoleStyle.TextBright, SWConsoleStyle.MonoSmall, 180);
+        name.VerticalAlignment = Control.VAlignment.Center;
+        row.AddChild(name);
+
+        AddArmsPolicyButton(row, category, 0, "Запрет", current, SWConsoleStyle.Bad);
+        AddArmsPolicyButton(row, category, 1, "Лицензии", current, SWConsoleStyle.Good);
+        AddArmsPolicyButton(row, category, 2, "Свободно", current, SWConsoleStyle.Warn);
+        DeskList.AddChild(row);
+    }
+
+    private void AddArmsPolicyButton(BoxContainer row, int category, int level, string label, int current, Color color)
+    {
+        var active = current == level;
+        var btn = SWConsoleStyle.Action(label, active ? color : SWConsoleStyle.Neutral, active);
+        btn.Margin = new Thickness(4, 0, 0, 0);
+        if (!active)
+            btn.OnPressed += _ => _owner.SetArmsPolicy(category, level);
+        row.AddChild(btn);
+    }
+
+    private void BuildWeaponsLicenses(SWBureauWorkConsoleState state)
+    {
+        FleetList.AddChild(SWConsoleStyle.Section("ЗАЯВКИ НА ЛИЦЕНЗИИ"));
+        FleetList.AddChild(SWConsoleStyle.Text(
+            "Пошлина за одобрение идёт в казну. Проверка биографии вскрывает подставные фирмы картелей.",
+            SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        FleetList.AddChild(new Control { MinHeight = 4 });
+
+        if (state.Applications.Count == 0)
+        {
+            FleetList.AddChild(SWConsoleStyle.Text("Заявок нет. Лицензионные категории закрыты или очередь пуста.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+        }
+        else
+        {
+            var alt = false;
+            foreach (var app in state.Applications)
+            {
+                var row = SWConsoleStyle.Row(alt ? SWConsoleStyle.BgRowAlt : SWConsoleStyle.BgPanel);
+                alt = !alt;
+                var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+
+                var top = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+                var name = SWConsoleStyle.Text(app.Name, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold);
+                name.HorizontalExpand = true;
+                top.AddChild(name);
+                top.AddChild(SWConsoleStyle.Text(app.RiskLabel, app.RiskColor, SWConsoleStyle.MonoSmall));
+                box.AddChild(top);
+
+                box.AddChild(SWConsoleStyle.Text(app.Origin, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+                if (!string.IsNullOrEmpty(app.DossierLabel))
+                    box.AddChild(SWConsoleStyle.Text($"Досье: {app.DossierLabel}", SWConsoleStyle.TextBright, SWConsoleStyle.MonoSmall));
+
+                var id = app.Id;
+                var buttons = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 3, 0, 0) };
+
+                var approve = SWConsoleStyle.Action($"Одобрить (+{app.Fee})", SWConsoleStyle.Good);
+                approve.OnPressed += _ => _owner.ProcessApp(id, 0);
+                buttons.AddChild(approve);
+
+                var inspect = SWConsoleStyle.Action(app.Inspected ? "Проверено" : $"Проверка ({app.InspectCost})", SWConsoleStyle.Warn, !app.CanInspect);
+                inspect.Margin = new Thickness(6, 0, 0, 0);
+                if (app.CanInspect)
+                    inspect.OnPressed += _ => _owner.ProcessApp(id, 1);
+                buttons.AddChild(inspect);
+
+                var deny = SWConsoleStyle.Action("Отказать", SWConsoleStyle.Bad);
+                deny.Margin = new Thickness(6, 0, 0, 0);
+                deny.OnPressed += _ => _owner.ProcessApp(id, 2);
+                buttons.AddChild(deny);
+                box.AddChild(buttons);
+
+                if (app.Bribe > 0)
+                {
+                    var bribe = SWConsoleStyle.Action($"Принять подношение (+{app.Bribe} кр лично)", SWConsoleStyle.Warn);
+                    bribe.HorizontalAlignment = Control.HAlignment.Left;
+                    bribe.Margin = new Thickness(0, 3, 0, 0);
+                    bribe.OnPressed += _ => _owner.ProcessApp(id, 3);
+                    box.AddChild(bribe);
+                }
+
+                row.AddChild(box);
+                FleetList.AddChild(row);
+            }
+        }
+
+        FleetList.AddChild(new Control { MinHeight = 10 });
+        FleetList.AddChild(SWConsoleStyle.Section("РЕЕСТР БОЕВЫХ ДРОИДОВ"));
+        FleetList.AddChild(SWConsoleStyle.Text(
+            "Партии под контролем бюро. Приданные МВБ повышают точность облав; переданные Обороне усиливают резерв.",
+            SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        FleetList.AddChild(new Control { MinHeight = 4 });
+
+        FleetList.AddChild(SWConsoleStyle.Text(
+            $"В резерве бюро: {state.RegistryDroids} парт.   ·   приданы МВБ: {state.SecurityDroids}/5",
+            SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+
+        var droidRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
+        var toDefense = SWConsoleStyle.Action("Передать Обороне", SWConsoleStyle.Accent, state.RegistryDroids <= 0);
+        if (state.RegistryDroids > 0)
+            toDefense.OnPressed += _ => _owner.ArmsDroid(0);
+        droidRow.AddChild(toDefense);
+
+        var toSecurity = SWConsoleStyle.Action("Придать МВБ", SWConsoleStyle.Good, state.RegistryDroids <= 0 || state.SecurityDroids >= 5);
+        toSecurity.Margin = new Thickness(6, 0, 0, 0);
+        if (state.RegistryDroids > 0 && state.SecurityDroids < 5)
+            toSecurity.OnPressed += _ => _owner.ArmsDroid(1);
+        droidRow.AddChild(toSecurity);
+
+        var recall = SWConsoleStyle.Action("Отозвать от МВБ", SWConsoleStyle.Neutral, state.SecurityDroids <= 0);
+        recall.Margin = new Thickness(6, 0, 0, 0);
+        if (state.SecurityDroids > 0)
+            recall.OnPressed += _ => _owner.ArmsDroid(2);
+        droidRow.AddChild(recall);
+        FleetList.AddChild(droidRow);
+
+        FleetList.AddChild(new Control { MinHeight = 10 });
+        FleetList.AddChild(SWConsoleStyle.Section("ЖУРНАЛ БЮРО"));
+        FleetList.AddChild(new Control { MinHeight = 4 });
+
+        if (state.RegistryLog.Count == 0)
+        {
+            FleetList.AddChild(SWConsoleStyle.Text("Записей пока нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            return;
+        }
+
+        foreach (var line in state.RegistryLog)
+            FleetList.AddChild(SWConsoleStyle.Text(line, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
     }
 
     private void BuildTransitDesk(SWBureauWorkConsoleState state)
@@ -407,7 +616,8 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
             if (!string.IsNullOrWhiteSpace(opt.Description))
                 row.AddChild(SWConsoleStyle.Text(opt.Description, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
             var label = opt.Cost > 0 ? $"{opt.Label}  ({opt.Cost} кр)" : opt.Label;
-            var btn = SWConsoleStyle.Action(label, opt.Affordable ? SWConsoleStyle.Accent : SWConsoleStyle.TextDim, !opt.Affordable);
+            var color = opt.Corrupt ? SWConsoleStyle.Warn : SWConsoleStyle.Accent;
+            var btn = SWConsoleStyle.Action(label, opt.Affordable ? color : SWConsoleStyle.TextDim, !opt.Affordable);
             btn.HorizontalAlignment = Control.HAlignment.Left;
             btn.Margin = new Thickness(0, 2, 0, 0);
             if (opt.Affordable)

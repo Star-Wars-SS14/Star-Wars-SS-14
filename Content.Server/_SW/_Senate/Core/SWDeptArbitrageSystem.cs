@@ -211,8 +211,6 @@ public sealed class SWDeptArbitrageSystem : EntitySystem
         }
 
         AddLog($"«{def.Name}»: арест! Штраф {def.Fine} кр взыскан.");
-        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Департамент арбитража",
-            $"Дело «{def.Name}» закрыто: виновные арестованы, взыскано {def.Fine} кр."));
     }
 
     private void RevealRandomOfficial()

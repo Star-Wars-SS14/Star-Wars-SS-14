@@ -139,21 +139,11 @@ public sealed class SWBureauTransitSystem : EntitySystem
         var name = SectorName(sectorId);
 
         if (status == StatusCordon)
-        {
             AddLog($"Кордон: {name} закрыт для перемещений.");
-            RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Бюро путешествий и транзита",
-                $"Сектор {name} закрыт на транзитный кордон."));
-        }
         else if (old == StatusCordon)
-        {
             AddLog($"Кордон снят: {name} снова принимает рейсы.");
-            RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Бюро путешествий и транзита",
-                $"Транзитный кордон с сектора {name} снят."));
-        }
         else
-        {
             AddLog($"{name}: режим «{StatusLabel(status)}».");
-        }
 
         return true;
     }
@@ -452,8 +442,6 @@ public sealed class SWBureauTransitSystem : EntitySystem
                 _security.AddThreat(-4f);
                 _senate.AddPolicy("SWStatMorale", 2f);
                 AddLog("Рейд с ВБ: невольничий борт перехвачен, экипаж под арестом.");
-                RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Бюро путешествий и транзита",
-                    "Совместный рейд с МВБ: судно работорговцев перехвачено на транзитной линии."));
                 break;
             case (8, 1):
                 _security.AddThreat(3f);
@@ -581,8 +569,6 @@ public sealed class SWBureauTransitSystem : EntitySystem
         _senate.AddSectorBias(worst, "SWGlobalHealthcare", 2f);
         AddCongestion(6f);
         AddLog($"Эвакуационный конвой вывез жителей из {SectorName(worst)}.");
-        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Бюро путешествий и транзита",
-            $"Эвакуационный конвой направлен в сектор {SectorName(worst)}."));
     }
 
     // --- Bureau dilemmas ---

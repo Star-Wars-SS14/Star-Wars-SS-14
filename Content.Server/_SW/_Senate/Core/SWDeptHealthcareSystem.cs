@@ -337,8 +337,6 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
                     _health.AddInfectionAll(-6f);
                 _senate.AddPolicy("SWStatMorale", 2f);
                 AddLog("Вакцинационный десант прошёл по секторам.");
-                RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Департамент здравоохранения",
-                    "Полевые бригады начали вакцинацию населения по секторам."));
                 break;
             case 3:
                 DeployFieldHospital();

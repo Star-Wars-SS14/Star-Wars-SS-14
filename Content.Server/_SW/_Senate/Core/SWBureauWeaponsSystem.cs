@@ -555,8 +555,6 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
                 foreach (var sectorId in _senate.SectorHolders.Keys.ToList())
                     _security.DampPlots(sectorId, -5f);
                 AddLog("Совместные рейды с ВБ: склады контрабандистов пусты.");
-                RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Бюро по регулированию вооружений",
-                    "Совместная операция бюро и МВБ: оружейные склады контрабандистов зачищены."));
                 break;
             case 3:
                 AddBudget(1800);

@@ -184,8 +184,6 @@ public sealed class SWDeptExpenditureSystem : EntitySystem
                 {
                     _corruption.Screen(false, holder);
                     AddLog($"{name}: следы хищений. Досье на {holder} передано Минюсту.");
-                    RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Департамент учёта расходов",
-                        $"Аудит {name}: выявлены признаки хищений, материалы переданы Министерству юстиции."));
                 }
                 break;
         }

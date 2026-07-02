@@ -331,9 +331,7 @@ public sealed class SWBureauShipsSystem : EntitySystem
             AddBudget(bounty);
             _security.AddThreat(-4f);
             AddIntegrity(6f);
-            AddLog($"«{app.ShipName}» задержан по розыску: премия {bounty} кр.");
-            RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Бюро кораблей и услуг",
-                $"Задержано разыскиваемое судно «{app.ShipName}»: {wanted?.Reason ?? "по ориентировке МВБ"}."));
+            AddLog($"«{app.ShipName}» задержан по розыску ({wanted?.Reason ?? "ориентировка МВБ"}): премия {bounty} кр.");
             return;
         }
 

@@ -290,8 +290,6 @@ public sealed class SWDeptGuardSystem : EntitySystem
                 _senate.AddPolicy("SWStatMorale", 2f);
                 AddDiscipline(-5f);
                 AddLog("Парад гвардии прошёл на главной площади.");
-                RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Сенатская Гвардия",
-                    "Парад Сенатской Гвардии: алые плащи на главной площади станции."));
                 break;
             case 3:
                 _security.AddUnrest(-6f);

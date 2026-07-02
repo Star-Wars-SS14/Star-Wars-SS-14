@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
+using Content.Shared._SW.Vehicle;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Actions;
 using Content.Shared.Administration.Logs;
@@ -179,6 +180,19 @@ public abstract partial class SharedGunSystem : EntitySystem
     {
         gunEntity = default;
         gunComp = null;
+        //SW start. For transport guns.
+        var ev = new SWGetGunEvent(GetNetEntity(entity));
+
+        RaiseLocalEvent(entity, ref ev);
+
+        if (ev.Handled)
+        {
+            gunEntity = GetEntity(ev.Gun);
+            gunComp = Comp<GunComponent>(gunEntity);
+            return true;
+        }
+
+        //SW end.
 
         if (_hands.GetActiveItem(entity) is { } held &&
             TryComp(held, out GunComponent? gun))
@@ -314,7 +328,7 @@ public abstract partial class SharedGunSystem : EntitySystem
             shots = Math.Min(shots, gun.ShotsPerBurstModified - gun.ShotCounter);
         }
 
-        var attemptEv = new AttemptShootEvent(user, null);
+        var attemptEv = new AttemptShootEvent(user, null, ToCoordinates: toCoordinates); //SW 
         RaiseLocalEvent(gunUid, ref attemptEv);
 
         if (attemptEv.Cancelled)
@@ -328,8 +342,18 @@ public abstract partial class SharedGunSystem : EntitySystem
             gun.NextFire = TimeSpan.FromSeconds(Math.Max(lastFire.TotalSeconds + SafetyNextFire, gun.NextFire.TotalSeconds));
             return false;
         }
-
         var fromCoordinates = Transform(user).Coordinates;
+
+        //SW start
+        var evGetCoords = new SWGetFromCoordsShootEvent(user, gunUid);
+        RaiseLocalEvent(user, ref evGetCoords);
+        if (evGetCoords.Handled)
+        {
+            fromCoordinates = evGetCoords.Coords;
+        }
+        
+        //SW end
+
         // Remove ammo
         var ev = new TakeAmmoEvent(shots, new List<(EntityUid? Entity, IShootable Shootable)>(), fromCoordinates, user);
 
@@ -672,7 +696,7 @@ public abstract partial class SharedGunSystem : EntitySystem
 /// <param name="Cancelled">Set this to true if the shot should be cancelled.</param>
 /// <param name="ThrowItems">Set this to true if the ammo shouldn't actually be fired, just thrown.</param>
 [ByRefEvent]
-public record struct AttemptShootEvent(EntityUid User, string? Message, bool Cancelled = false, bool ThrowItems = false);
+public record struct AttemptShootEvent(EntityUid User, string? Message, bool Cancelled = false, bool ThrowItems = false, EntityCoordinates? ToCoordinates = null); //SW
 
 /// <summary>
 ///     Raised directed on the gun after firing.

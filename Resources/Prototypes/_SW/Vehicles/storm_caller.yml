@@ -1,0 +1,237 @@
+- type: entity
+  id: SWStormCaller
+  name: StormCaller
+  components:
+  - type: Transform
+  - type: Sprite
+    sprite: _SW/Vehicles/storm_caller.rsi
+    state: vehicle
+    drawdepth: OverMobs
+  - type: Physics
+    bodyType: Dynamic
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.15,-1.55,1.15,1.55"
+        density: 2500
+        mask:
+        - HighImpassable
+        layer:
+        - Opaque
+        - MidImpassable
+        - BulletImpassable
+      mob_collision:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.15,-1.55,1.15,1.55"
+        hard: false
+        layer:
+        - MidImpassable
+  - type: Damageable
+    damageContainer: SWVehicleArmored
+    damageModifierSet: SWHeavyVehicle
+  - type: Construction
+    graph: SWStormCallerGraph
+    node: SWStormCallerNode
+    deconstructionTarget: null
+  - type: Destructible
+    thresholds:
+      - trigger:
+          !type:DamageTrigger
+          damage: 1500
+        behaviors:
+          - !type:ExplodeBehavior
+          - !type:ChangeConstructionNodeBehavior
+            node: SWStormCallerDestroyedNode
+  - type: Explosive
+    explosionType: Default
+    maxIntensity: 50
+    intensitySlope: 20
+    totalIntensity: 500
+    maxTileBreak: 1
+    canCreateVacuum: false
+  - type: Clickable
+  - type: InteractionOutline
+  - type: SWVehicle
+    rolesInfo:
+      driver:
+        role: SWVehicleRoleStormCallerDriver
+      shooter:
+        role: SWVehicleRoleStormCallerShooter
+    vehicleParts:
+      cannon:
+        entProto: SWStormCallerCannon
+        buckleCoords: "0.0, -1.35"
+      driver_seat:
+        entProto: SWVehicleSeat
+        buckleCoords: "0.0, -0.25"
+      shooter_seat:
+        entProto: SWVehicleSeat
+        buckleCoords: "0.0, 0.55"
+  - type: ActivatableUI
+    key: enum.SWVehicleMenuUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWVehicleMenuUiKey.Key:
+        type: SWVehicleBoundUserInterface
+  - type: InputMover
+  - type: SWInertialVehicle
+    acceleration: 1.6
+    reverseAcceleration: 1.2
+    brakeAcceleration: 8
+    maxForwardSpeed: 4
+    maxReverseSpeed: 2
+    turnAcceleration: 1.8
+    maxAngularVelocity: 1.2
+    angularDamping: 8
+    rollingFriction: 3
+    sidewaysFriction: 20
+    turnSpeedReference: 2.5
+    minTurnSpeed: 1.2
+  - type: SWVehicleMobCollision
+    paralyzeTime: 5
+  - type: SWVehicleMovementSound
+    sound:
+      path: /Audio/_SW/Vehicles/stormcaller.ogg
+      params:
+        volume: -2
+        maxDistance: 18
+  - type: SWVehicleHeadlight
+  - type: PointLight
+    enabled: false
+    mask: /Textures/Effects/LightMasks/cone.png
+    autoRot: true
+    radius: 15
+    energy: 10
+    fallOf: 5
+    color: "#e8f2ff"
+  - type: SWExplosionThrowModifier
+    throwMultiplier: 0.0
+  - type: SWVehicleExtractable
+    aliveDelay: 8
+    criticalDelay: 4
+    deadDelay: 2
+  - type: SWForceMoveImmune
+
+- type: entity
+  id: SWStormCallerDestroyed
+  name: destroyed StormCaller
+  components:
+  - type: Transform
+  - type: Sprite
+    sprite: _SW/Vehicles/storm_caller.rsi
+    state: destroyed
+    drawdepth: OverMobs
+  - type: Construction
+    graph: SWStormCallerGraph
+    node: SWStormCallerDestroyedNode
+    deconstructionTarget: null
+  - type: Physics
+    bodyType: Static
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.15,-1.55,1.15,1.55"
+        density: 2500
+        mask:
+        - MobMask
+        layer:
+        - MachineLayer
+  - type: Clickable
+  - type: InteractionOutline
+  - type: SWForceMoveImmune
+
+- type: swVehicleRole
+  id: SWVehicleRoleStormCallerDriver
+  localizedName: sw-vehicle-role-driver
+  components:
+  - type: SWRedirectMovement
+  - type: SWVehicleDriverDrawDepth
+  - type: SWInVehicleVisibility
+  - type: SWInVehicleDamageProtection
+  - type: SWVehicleRequiresHandsUser
+  - type: SWVehicleHeadlightUser
+  - type: SWBuckleToVehiclePart
+    part: driver_seat
+  # - type: Stealth
+  #   minVisibility: -1
+  #   lastVisibility: -1
+
+- type: swVehicleRole
+  id: SWVehicleRoleStormCallerShooter
+  localizedName: sw-vehicle-role-shooter
+  components:
+  - type: SWInVehicleZoom
+  - type: SWInVehicleVisibility
+  - type: SWInVehicleDamageProtection
+  - type: SWVehicleRequiresHandsUser
+    hands: 1
+  - type: SWShootByVehicleUser
+    part: cannon
+  - type: SWBuckleToVehiclePart
+    part: shooter_seat
+  - type: SWVehicleProjectilePass
+  # - type: Stealth
+  #   minVisibility: -1
+  #   lastVisibility: -1
+
+
+- type: entity
+  id: SWStormCallerCannon
+  parent: SWSpiderCannon
+  name: StormCaller cannon
+  components:
+  - type: Gun
+    fireRate: 0.5
+    projectileSpeed: 55
+    selectedMode: SemiAuto
+    availableModes:
+    - SemiAuto
+    soundGunshot:
+      path: /Audio/Weapons/Guns/Gunshots/ship_perforator.ogg
+      params:
+        variation: 0.05
+  - type: PredictedBattery
+    maxCharge: 2000
+    startingCharge: 2000
+  - type: BatteryAmmoProvider
+    proto: SWStormCallerCannonBlast
+    fireCost: 250
+  - type: PredictedBatterySelfRecharger
+    autoRechargeRate: 35
+  - type: SWShootByVehicleGun
+    angle: 60
+
+- type: entity
+  id: SWStormCallerCannonBlast
+  name: StormCaller blast
+  parent: BaseBulletTrigger
+  noSpawn: true
+  components:
+  - type: Projectile
+    damage:
+      types:
+        SWAntiVehicle: 500
+  - type: ExplodeOnTrigger
+  - type: Explosive
+    explosionType: Default
+    totalIntensity: 250
+    intensitySlope: 6
+    maxIntensity: 35
+    maxTileBreak: 1
+    canCreateVacuum: false
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/Ammunition/Casings/red_ammo_casing.rsi
+    layers:
+    - state: base
+      shader: unshaded
+    scale: 1.5, 1.5
+  - type: PointLight
+    color: Red
+    radius: 3
+    energy: 2
+

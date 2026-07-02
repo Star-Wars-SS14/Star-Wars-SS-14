@@ -1,0 +1,16 @@
+sw-base-role-name = Vehicle role
+sw-vehicle-role-driver = Driver
+sw-vehicle-role-passenger = Passenger
+sw-vehicle-role-shooter = Shooter
+sw-vehicle-extract-verb = Extract {$role}
+sw-vehicle-extract-finished = Occupant extracted.
+ent-SWVehicleToggleHeadlightsAction = Toggle headlights
+    .desc = Toggle the vehicle headlights.
+ent-SWSpider = spider
+  .desc = A fast, lightly armored repulsor vehicle with a forward-mounted cannon.
+ent-SWSpiderTwoRoles = two-seat Spider
+  .desc = A fast, lightly armored repulsor vehicle with an additional passenger seat.
+ent-SWStormCaller = StormCaller
+  .desc = A heavily armed and well-armored repulsor tank of the Sith Empire from the Battle of Denova.
+ent-SWStormCallerDestroyed = destroyed StormCaller
+  .desc = The burnt-out wreck of a StormCaller repulsor tank.

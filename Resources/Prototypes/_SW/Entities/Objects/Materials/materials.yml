@@ -1,37 +1,154 @@
 - type: entity
+  abstract: true
   parent: BaseItem
-  id: SWElectronics
-  name: electronics  
+  id: SWLatheMaterialBase
   components:
   - type: Sprite
     sprite: _SW/Objects/lathe_materials.rsi
-    state: electronics
   - type: Item
+  - type: Tag
+    tags:
+    - SWMaterial
+
+- type: entity
+  parent: SWLatheMaterialBase
+  id: SWElectronics
+  name: electronics  
+  suffix: Full
+  components:
+  - type: Stack
+    stackType: SWElectronics
+    baseLayer: base
+    layerStates:
+    - electronics1
+    - electronics2
+    - electronics3
+  - type: Sprite
+    state: electronics3
+    layers:
+    - state: electronics3
+      map: ["base"]
+  - type: Appearance
 
 - type: entity
   parent: SWElectronics
+  id: SWElectronics10
+  name: electronics
+  suffix: 10
+  components:
+  - type: Sprite
+    state: electronics1
+  - type: Stack
+    stackType: SWElectronics
+    count: 10
+
+- type: entity
+  parent: SWElectronics
+  id: SWElectronics1
+  name: electronics
+  suffix: Single
+  components:
+  - type: Sprite
+    state: electronics1
+  - type: Stack
+    stackType: SWElectronics
+    count: 1
+
+- type: entity
+  parent: SWLatheMaterialBase
+  id: SWAdvancedElectronics
+  name: advanced electronics
+  components:
+  - type: Sprite
+    state: advanced_electronics
+
+- type: entity
+  parent: SWLatheMaterialBase
+  id: SWReinforcedSteel
+  name: reinforced steel
+  components:
+  - type: Sprite
+    state: reinforced_steel
+
+- type: entity
+  parent: SWLatheMaterialBase
+  id: SWArmorPlate
+  name: armor plate
+  components:
+  - type: Sprite
+    state: armor_plate
+
+- type: entity
+  parent: SWLatheMaterialBase
   id: SWBlasterBarrel
   name: blaster barrel
   components:
   - type: Sprite
-    sprite: _SW/Objects/lathe_materials.rsi
     state: barrel
 
 - type: entity
-  parent: SWElectronics
+  parent: SWLatheMaterialBase
   id: SWAdvancedCables
   name: advanced cables
+  suffix: Full
   components:
+  - type: Stack
+    stackType: SWAdvancedCables
+    baseLayer: base
+    layerStates:
+    - cables1
+    - cables2
+    - cables3
   - type: Sprite
-    sprite: _SW/Objects/lathe_materials.rsi
-    state: cables
+    state: cables3
+    layers:
+    - state: cables3
+      map: ["base"]
+  - type: Appearance
 
 - type: entity
-  parent: SWElectronics
+  parent: SWAdvancedCables
+  id: SWAdvancedCables10
+  name: advanced cables
+  suffix: 10
+  components:
+  - type: Sprite
+    state: cables1
+  - type: Stack
+    stackType: SWAdvancedCables
+    count: 10
+
+- type: entity
+  parent: SWAdvancedCables
+  id: SWAdvancedCables1
+  name: advanced cables
+  suffix: Single
+  components:
+  - type: Sprite
+    state: cables1
+  - type: Stack
+    stackType: SWAdvancedCables
+    count: 1
+
+- type: entity
+  parent: SWLatheMaterialBase
   id: SWBlasterFrame
   name: blaster frame
   components:
   - type: Sprite
-    sprite: _SW/Objects/lathe_materials.rsi
     state: frame
+
+- type: stack
+  parent: BaseSheetStack
+  id: SWElectronics
+  name: stack-sw-electronics
+  icon: { sprite: /Textures/_SW/Objects/lathe_materials.rsi, state: electronics1 }
+  spawn: SWElectronics1
+
+- type: stack
+  parent: BaseSheetStack
+  id: SWAdvancedCables
+  name: stack-sw-advanced-cables
+  icon: { sprite: /Textures/_SW/Objects/lathe_materials.rsi, state: cables1 }
+  spawn: SWAdvancedCables1
 

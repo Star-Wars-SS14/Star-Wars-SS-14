@@ -10,6 +10,9 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Events;
 using Content.Shared.Tag;
+//SW transport start
+using Content.Shared._SW.Vehicle;
+//SW transport end
 using Robust.Shared.Audio;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
@@ -185,6 +188,14 @@ public abstract partial class SharedMoverController : VirtualController
             LerpRotation(uid, mover, frameTime);
         }
 
+        //SW transport start
+        if (HasComp<SWInertialVehicleComponent>(uid))
+        {
+            UsedMobMovement[uid] = true;
+            return;
+        }
+        //SW transport end
+
         // If we can't move then just use tile-friction / no movement handling.
         if (!mover.CanMove
             || !PhysicsQuery.TryComp(uid, out var physicsComponent)
@@ -219,7 +230,7 @@ public abstract partial class SharedMoverController : VirtualController
 
         // Get current tile def for things like speed/friction mods
         ContentTileDefinition? tileDef = null;
-
+        //ISawmill _s = Logger.GetSawmill("moveinput");
         var touching = false;
         // Whether we use tilefriction or not
         if (weightless || inAirHelpless)
@@ -263,11 +274,16 @@ public abstract partial class SharedMoverController : VirtualController
                 && physicsComponent.BodyStatus == BodyStatus.OnGround)
                 tileDef = (ContentTileDefinition)_tileDefinitionManager[tile.Tile.TypeId];
 
+           
+
+
             var walkSpeed = moveSpeedComponent?.CurrentWalkSpeed ?? MovementSpeedModifierComponent.DefaultBaseWalkSpeed;
             var sprintSpeed = moveSpeedComponent?.CurrentSprintSpeed ?? MovementSpeedModifierComponent.DefaultBaseSprintSpeed;
 
-            wishDir = AssertValidWish(mover, walkSpeed, sprintSpeed);
+            //_s.Fatal($"e: {entity.Owner}; w: {walkSpeed};r: {sprintSpeed}");
 
+            wishDir = AssertValidWish(mover, walkSpeed, sprintSpeed);
+            //_s.Fatal($"e {entity.Owner}; wishdir: {wishDir}");
             if (wishDir != Vector2.Zero)
             {
                 friction = moveSpeedComponent?.Friction ?? MovementSpeedModifierComponent.DefaultFriction;
@@ -295,7 +311,7 @@ public abstract partial class SharedMoverController : VirtualController
             Accelerate(ref velocity, in wishDir, accel, frameTime);
 
         SetWishDir((uid, mover), wishDir);
-
+        //_s.Fatal($"e {entity.Owner}; velocity: {velocity}");
         /*
          * SNAKING!!! >-( 0 ================>
          * Snaking is a feature where you can move faster by strafing in a direction perpendicular to the

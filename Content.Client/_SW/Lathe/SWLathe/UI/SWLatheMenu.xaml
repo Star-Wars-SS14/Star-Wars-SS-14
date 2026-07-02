@@ -1,0 +1,88 @@
+<DefaultWindow
+    xmlns="https://spacestation14.io"
+    xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+    Title="{Loc 'sw-lathe-menu-title'}"
+    MinSize="680 460"
+    SetSize="760 520">
+    <BoxContainer
+        Orientation="Horizontal"
+        VerticalExpand="True"
+        HorizontalExpand="True"
+        SeparationOverride="8"
+        Margin="6">
+        <BoxContainer
+            Orientation="Vertical"
+            VerticalExpand="True"
+            HorizontalExpand="True"
+            SeparationOverride="5">
+            <Label
+                Text="{Loc 'sw-lathe-menu-recipes-title'}"
+                HorizontalAlignment="Center" />
+            <PanelContainer VerticalExpand="True" HorizontalExpand="True">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#1B1B1E" />
+                </PanelContainer.PanelOverride>
+                <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+                    <BoxContainer
+                        Name="RecipeList"
+                        Orientation="Vertical"
+                        HorizontalExpand="True"
+                        VerticalExpand="True" />
+                </ScrollContainer>
+            </PanelContainer>
+        </BoxContainer>
+        <BoxContainer
+            Orientation="Vertical"
+            MinWidth="260"
+            VerticalExpand="True"
+            SeparationOverride="5">
+            <Label
+                Text="{Loc 'sw-lathe-menu-mode-title'}"
+                HorizontalAlignment="Center" />
+            <OptionButton
+                Name="ModeOption"
+                HorizontalExpand="True"
+                StyleClasses="ButtonSquare" />
+            <PanelContainer HorizontalExpand="True">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#252529" />
+                </PanelContainer.PanelOverride>
+                <BoxContainer Orientation="Vertical" Margin="5">
+                    <Label
+                        Text="{Loc 'sw-lathe-menu-current-production-title'}"
+                        StyleClasses="LabelKeyText" />
+                    <Label
+                        Name="CurrentProductionLabel"
+                        HorizontalExpand="True" />
+                    <ProgressBar
+                        Name="ProductionProgress"
+                        MinValue="0"
+                        MaxValue="1"
+                        Value="0"
+                        HorizontalExpand="True" />
+                    <Label
+                        Name="ProductionTimeLabel"
+                        HorizontalExpand="True"
+                        HorizontalAlignment="Center" />
+                </BoxContainer>
+            </PanelContainer>
+            <Label
+                Text="{Loc 'sw-lathe-menu-materials-title'}"
+                HorizontalAlignment="Center"
+                Margin="0 8 0 0" />
+            <PanelContainer VerticalExpand="True" HorizontalExpand="True">
+                <PanelContainer.PanelOverride>
+                    <gfx:StyleBoxFlat BackgroundColor="#1B1B1E" />
+                </PanelContainer.PanelOverride>
+                <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+                    <BoxContainer
+                        Name="MaterialsList"
+                        Orientation="Vertical"
+                        HorizontalExpand="True"
+                        VerticalExpand="True"
+                        Margin="5" />
+                </ScrollContainer>
+            </PanelContainer>
+        </BoxContainer>
+    </BoxContainer>
+</DefaultWindow>

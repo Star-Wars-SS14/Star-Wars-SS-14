@@ -107,4 +107,10 @@
   id: RodMetal1
 
 - type: Tag
+  id: SWMaterial
+
+- type: Tag
   id: HidesNose
+
+- type: Tag
+  id: SWCartridgeAntiVehicleRocket # Anti-vehicle ammo for SWWeaponLauncherAntiVehicleRocket.

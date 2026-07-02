@@ -142,7 +142,7 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
         if (altDown == BoundKeyState.Down)
         {
             //SW start
-            if (HasComp<SWForceUserBlockComponent>(entity) && HasComp<SWWeaponBlockComponent>(weaponUid))
+            if (CanUseSWWeaponBlock(entity, weaponUid))
             {
                 //Нам нужно регистрировать только одиночное нажатие на клавишу, поэтому
                 //проверяем, была ли отжата клаваиша в предыдущий тик или нет.
@@ -171,7 +171,7 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
             var attackerPos = TransformSystem.GetMapCoordinates(entity);
 
             //SW start. if is force user, use custom logic
-            if (HasComp<SWForceUserBlockComponent>(entity) && HasComp<SWWeaponBlockComponent>(weaponUid))
+            if (CanUseSWWeaponBlock(entity, weaponUid))
             {
                 ClientHeavyAttack(entity, coordinates, weaponUid, weapon);
                 return;
@@ -270,6 +270,12 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
             return;
 
         RaisePredictiveEvent(new LightAttackEvent(GetNetEntity(target), GetNetEntity(weaponUid), GetNetCoordinates(coordinates)));
+    }
+
+    private bool CanUseSWWeaponBlock(EntityUid user, EntityUid weapon)
+    {
+        return TryComp<SWWeaponBlockComponent>(weapon, out var block) &&
+               (!block.RequiresForceUser || HasComp<SWForceUserBlockComponent>(user));
     }
 
     private void OnMeleeLunge(MeleeLungeEvent ev)

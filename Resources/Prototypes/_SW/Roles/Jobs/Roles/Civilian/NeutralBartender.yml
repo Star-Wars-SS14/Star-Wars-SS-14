@@ -8,3 +8,9 @@
   startingGear: NeutralBartenderGear
   icon: "JobIconCivilian"
   supervisors: job-supervisors-empire
+  access:
+  - Service
+  - Maintenance
+  - Bar
+  - Kitchen
+  - Hydroponics

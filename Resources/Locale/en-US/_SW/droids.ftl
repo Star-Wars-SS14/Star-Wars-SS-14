@@ -9,8 +9,12 @@ sw-targeting-console-target-animals = Target animals
 sw-droid-control-datapad-window-title = Droid control datapad
 sw-droid-control-datapad-tab-droids = Droids
 sw-droid-control-datapad-tab-targets = Targets
+sw-droid-control-datapad-tab-map = Map
 sw-droid-control-datapad-droids-count = Linked droids: {$count}
+sw-droid-control-datapad-map-droids-count = Droids on current grid: {$count}
 sw-droid-control-datapad-no-linked-droids = No linked droids.
+sw-droid-control-datapad-no-map-droids = No linked droids on your current grid.
+sw-droid-control-datapad-map-unavailable = Droid map unavailable.
 sw-droid-control-datapad-unknown = Unknown
 sw-droid-control-datapad-no-battery = No battery
 sw-droid-control-datapad-charge-percent = {$percent}%
@@ -22,6 +26,10 @@ sw-droid-control-datapad-status-unknown = Unknown
 sw-droid-control-datapad-droid-status = Status: {$status}
 sw-droid-control-datapad-droid-charge = Charge: {$charge}
 sw-droid-control-datapad-droid-coordinates = Coordinates: {$coordinates}
+sw-droid-control-datapad-map-selected = {$name}
+    Status: {$status}
+    Charge: {$charge}
+sw-droid-control-datapad-map-entry-details = {$status}, {$charge}
 sw-droid-control-datapad-targets-enabled = Targeted jobs
 sw-droid-control-datapad-targets-disabled = Ignored jobs
 sw-droid-control-datapad-faction-allow = Target all {$faction}

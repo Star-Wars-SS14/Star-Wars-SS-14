@@ -28,6 +28,7 @@ public sealed class SWDroidControlDatapadUISystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<SWDroidTargetingTabletComponent, BoundUIOpenedEvent>(OnBoundUIOpened);
+        SubscribeLocalEvent<SWDroidTargetingTabletComponent, BoundUIClosedEvent>(OnBoundUIClosed);
         SubscribeLocalEvent<SWDroidTargetingTabletComponent, SWTargetingConsoleSettingsChangedEvent>(OnSettingsChanged);
     }
 
@@ -42,12 +43,12 @@ public sealed class SWDroidControlDatapadUISystem : EntitySystem
         _accumulator = 0f;
 
         var query = EntityQueryEnumerator<SWDroidTargetingTabletComponent, UserInterfaceComponent>();
-        while (query.MoveNext(out var uid, out _, out var ui))
+        while (query.MoveNext(out var uid, out var tablet, out var ui))
         {
             if (!_ui.IsUiOpen((uid, ui), SWTurretConsoleUiKey.Key))
                 continue;
 
-            UpdateInterface(uid);
+            UpdateInterface(uid, tablet);
         }
     }
 
@@ -56,15 +57,26 @@ public sealed class SWDroidControlDatapadUISystem : EntitySystem
         if (!Equals(args.UiKey, SWTurretConsoleUiKey.Key))
             return;
 
-        UpdateInterface(ent.Owner);
+        ent.Comp.CurrentUiUser = args.Actor;
+        UpdateInterface(ent.Owner, ent.Comp);
+    }
+
+    private void OnBoundUIClosed(Entity<SWDroidTargetingTabletComponent> ent, ref BoundUIClosedEvent args)
+    {
+        if (!Equals(args.UiKey, SWTurretConsoleUiKey.Key))
+            return;
+
+        if (ent.Comp.CurrentUiUser == args.Actor)
+            ent.Comp.CurrentUiUser = null;
     }
 
     private void OnSettingsChanged(Entity<SWDroidTargetingTabletComponent> ent, ref SWTargetingConsoleSettingsChangedEvent args)
     {
-        UpdateInterface(ent.Owner);
+        ent.Comp.CurrentUiUser = args.User;
+        UpdateInterface(ent.Owner, ent.Comp);
     }
 
-    private void UpdateInterface(EntityUid uid)
+    private void UpdateInterface(EntityUid uid, SWDroidTargetingTabletComponent tablet)
     {
         if (!TryComp<SWTurretConsoleComponent>(uid, out var console))
             return;
@@ -83,26 +95,38 @@ public sealed class SWDroidControlDatapadUISystem : EntitySystem
             new Dictionary<string, bool>(console.JobsAllowed),
             factions,
             GetDroidEntries(uid),
+            GetDroidEntries(uid, tablet.CurrentUiUser),
+            GetMapUid(tablet.CurrentUiUser),
             targets?.TargetHumanoidsWithoutId ?? false,
             targets?.TargetAnimals ?? false);
 
         _ui.SetUiState(uid, SWTurretConsoleUiKey.Key, state);
     }
 
-    private List<SWDroidControlDatapadDroidEntry> GetDroidEntries(EntityUid uid)
+    private List<SWDroidControlDatapadDroidEntry> GetDroidEntries(EntityUid uid, EntityUid? user = null)
     {
         var entries = new List<SWDroidControlDatapadDroidEntry>();
         if (!TryComp<SWTargetingConfigTargetsComponent>(uid, out var targets))
             return entries;
+
+        var userGrid = GetGridUid(user);
 
         foreach (var droid in targets.Targets)
         {
             if (TerminatingOrDeleted(droid))
                 continue;
 
+            if (!TryComp(droid, out TransformComponent? xform))
+                continue;
+
+            if (user != null && (userGrid == null || xform.GridUid != userGrid))
+                continue;
+
             entries.Add(new SWDroidControlDatapadDroidEntry(
+                GetNetEntity(droid),
+                GetNetCoordinates(xform.Coordinates),
                 Name(droid),
-                GetCoordinates(droid),
+                GetCoordinates(droid, xform),
                 GetCharge(droid),
                 GetStatus(droid)));
         }
@@ -110,11 +134,22 @@ public sealed class SWDroidControlDatapadUISystem : EntitySystem
         return entries;
     }
 
-    private string GetCoordinates(EntityUid droid)
+    private NetEntity? GetMapUid(EntityUid? user)
     {
-        if (!TryComp(droid, out TransformComponent? xform))
-            return Loc.GetString("sw-droid-control-datapad-unknown");
+        var grid = GetGridUid(user);
+        return grid == null ? null : GetNetEntity(grid.Value);
+    }
 
+    private EntityUid? GetGridUid(EntityUid? user)
+    {
+        if (user == null || !TryComp(user.Value, out TransformComponent? xform))
+            return null;
+
+        return xform.GridUid;
+    }
+
+    private string GetCoordinates(EntityUid droid, TransformComponent xform)
+    {
         var coordinates = _transform.GetMapCoordinates(droid, xform);
         return Loc.GetString(
             "sw-droid-control-datapad-coordinates",

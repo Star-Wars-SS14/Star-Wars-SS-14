@@ -9,8 +9,12 @@ sw-targeting-console-target-animals = Атаковать животных
 sw-droid-control-datapad-window-title = Датапад управления дроидами
 sw-droid-control-datapad-tab-droids = Дроиды
 sw-droid-control-datapad-tab-targets = Цели
+sw-droid-control-datapad-tab-map = Карта
 sw-droid-control-datapad-droids-count = Привязанные дроиды: {$count}
+sw-droid-control-datapad-map-droids-count = Привязанные дроиды: {$count}
 sw-droid-control-datapad-no-linked-droids = Нет привязанных дроидов.
+sw-droid-control-datapad-no-map-droids = Нет привязанных дроидов на вашем текущем гриде.
+sw-droid-control-datapad-map-unavailable = Карта дроидов недоступна.
 sw-droid-control-datapad-unknown = Неизвестно
 sw-droid-control-datapad-no-battery = Нет батареи
 sw-droid-control-datapad-charge-percent = {$percent}%
@@ -22,6 +26,10 @@ sw-droid-control-datapad-status-unknown = Неизвестно
 sw-droid-control-datapad-droid-status = Статус: {$status}
 sw-droid-control-datapad-droid-charge = Заряд: {$charge}
 sw-droid-control-datapad-droid-coordinates = Координаты: {$coordinates}
+sw-droid-control-datapad-map-selected = {$name}
+    Статус: {$status}
+    Заряд: {$charge}
+sw-droid-control-datapad-map-entry-details = {$status}, {$charge}
 sw-droid-control-datapad-targets-enabled = Целевые должности
 sw-droid-control-datapad-targets-disabled = Игнорируемые должности
 sw-droid-control-datapad-faction-allow = Атаковать всю фракцию: {$faction}

@@ -24,7 +24,7 @@
   - type: UserInterface
     interfaces:
       enum.SWTurretConsoleUiKey.Key:
-        type: SWTurretConsoleBoundUserInterface
+        type: SWDroidControlDatapadBoundUserInterface
   - type: Damageable
     damageContainer: Inorganic
   - type: Destructible

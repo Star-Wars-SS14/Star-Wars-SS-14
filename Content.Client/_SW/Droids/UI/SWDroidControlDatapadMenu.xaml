@@ -1,0 +1,45 @@
+<DefaultWindow
+    xmlns="https://spacestation14.io"
+    xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    Title="{Loc 'sw-droid-control-datapad-window-title'}"
+    MinSize="560 440"
+    SetSize="820 620">
+    <BoxContainer Orientation="Vertical" Margin="8">
+        <TabContainer Name="Tabs" VerticalExpand="True">
+            <BoxContainer Orientation="Vertical" VerticalExpand="True">
+                <Label Name="DroidsSummary" Margin="0 0 0 6" />
+                <PanelContainer VerticalExpand="True" HorizontalExpand="True">
+                    <ScrollContainer VerticalExpand="True" HorizontalExpand="True">
+                        <BoxContainer
+                            Name="DroidsList"
+                            Orientation="Vertical"
+                            SeparationOverride="4"
+                            HorizontalExpand="True"
+                            VerticalExpand="True" />
+                    </ScrollContainer>
+                </PanelContainer>
+            </BoxContainer>
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="0 0 6 0">
+                    <Label Text="{Loc 'sw-droid-control-datapad-targets-disabled'}" HorizontalAlignment="Center" Margin="0 0 0 4"/>
+                    <BoxContainer Orientation="Vertical" SeparationOverride="4" Margin="0 0 0 6" Name="DisallowFactionsList" HorizontalExpand="True" />
+                    <PanelContainer VerticalExpand="True" HorizontalExpand="True">
+                        <ScrollContainer VerticalExpand="True" HorizontalExpand="True">
+                            <BoxContainer Name="DisallowedJobsList" Orientation="Vertical" HorizontalExpand="True" />
+                        </ScrollContainer>
+                    </PanelContainer>
+                </BoxContainer>
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" Margin="6 0 0 0">
+                    <Label Text="{Loc 'sw-droid-control-datapad-targets-enabled'}" HorizontalAlignment="Center" Margin="0 0 0 4"/>
+                    <BoxContainer Orientation="Vertical" SeparationOverride="4" Margin="0 0 0 6" Name="AllowFactionsList" HorizontalExpand="True" />
+                    <PanelContainer VerticalExpand="True" HorizontalExpand="True">
+                        <ScrollContainer VerticalExpand="True" HorizontalExpand="True">
+                            <BoxContainer Name="AllowedJobsList" Orientation="Vertical" HorizontalExpand="True" />
+                        </ScrollContainer>
+                    </PanelContainer>
+                </BoxContainer>
+            </BoxContainer>
+        </TabContainer>
+    </BoxContainer>
+</DefaultWindow>

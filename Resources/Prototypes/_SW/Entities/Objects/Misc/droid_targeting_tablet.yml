@@ -3,6 +3,7 @@
   id: SWDroidTargetingTablet
   name: droid targeting tablet
   description: A portable droid targeting configuration terminal.
+  abstract: true
   components:
   - type: Sprite
     sprite: Objects/Devices/tablets.rsi

@@ -74,8 +74,6 @@
         true
   - type: SWDroidCommandable
     commandRange: 3
-  - type: SWTargetingConfig
-    targetUnconfiguredJobs: false
   - type: UserInterface
     interfaces:
       enum.BorgUiKey.Key:

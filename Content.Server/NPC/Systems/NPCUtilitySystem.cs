@@ -396,17 +396,21 @@ public sealed class NPCUtilitySystem : EntitySystem
                     if (_inventory.TryGetSlotEntity(targetUid, "id", out var idcard))
                     {
                         if (TryComp<PresetIdCardComponent>(idcard, out var comp) && comp.JobName != null)
+                        {
                             if (config.AllowedJobs.TryGetValue(comp.JobName, out var allowed))
                             {
                                 return allowed ? 1f : 0f;
                             }
+
+                            return config.TargetUnconfiguredJobs ? 0f : 1f;
+                        }
                     }
 
                     if (HasComp<HumanoidAppearanceComponent>(targetUid))
-                        return config.TargetHumanoidsWithoutId ? 1f : 0f;
+                        return config.TargetHumanoidsWithoutId ? 0f : 1f;
 
                     if (HasComp<BodyComponent>(targetUid) && !HasComp<BorgChassisComponent>(targetUid))
-                        return config.TargetAnimals ? 1f : 0f;
+                        return config.TargetAnimals ? 0f : 1f;
 
                     return config.TargetUnconfiguredJobs ? 0f : 1f;
                 }

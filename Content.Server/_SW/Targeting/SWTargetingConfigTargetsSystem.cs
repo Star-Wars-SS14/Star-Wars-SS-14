@@ -177,10 +177,6 @@ public sealed class SWTargetingConfigTargetsSystem : EntitySystem
         if (TerminatingOrDeleted(target))
             return;
 
-        var config = EnsureComp<SWTargetingConfigComponent>(target);
-        config.AllowedJobs.Clear();
-        config.TargetUnconfiguredJobs = false;
-        config.TargetHumanoidsWithoutId = false;
-        config.TargetAnimals = false;
+        RemComp<SWTargetingConfigComponent>(target);
     }
 }

@@ -5,6 +5,9 @@
       components:
         - type: HumanoidAppearance
           species: randomshit
+    - !type:ComponentQuery
+      components:
+        - type: Body
   considerations:
     - !type:TargetIsAliveCon
       curve: !type:BoolCurve

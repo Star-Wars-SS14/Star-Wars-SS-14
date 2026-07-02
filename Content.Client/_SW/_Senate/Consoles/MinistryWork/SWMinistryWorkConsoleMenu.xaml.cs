@@ -743,7 +743,8 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
                 var already = selected.State == SWCellState.Sector && selected.SectorId == sector.Id;
                 var plotTag = sector.HasPlot ? $"  · {sector.PlotLabel}" : string.Empty;
                 var cover = sector.Cells > 0 ? $"  · ячеек: {sector.Cells}" : string.Empty;
-                var label = $"{sector.Name}  ·  порядок {sector.Order}{cover}{plotTag}";
+                var armsTag = sector.Arms >= 30 ? $"  · оружие {sector.Arms}%" : string.Empty;
+                var label = $"{sector.Name}  ·  порядок {sector.Order}{cover}{armsTag}{plotTag}";
                 NetworkContent.AddChild(MakeCellOrderButton(selected.Id, sector.Id, label, sector.HasPlot && sector.PlotRevealed ? sector.PlotColor : sector.Color, already));
             }
         }
@@ -774,6 +775,10 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         if (plot.Revealed)
         {
             box.AddChild(SWConsoleStyle.Text($"{plot.ThreatLabel}  ·  ячеек: {plot.Cells}  ·  шанс облавы {plot.SuccessChance}%", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            if (plot.Arms >= 15)
+                box.AddChild(SWConsoleStyle.Text(
+                    $"нелегальный оборот оружия: {plot.Arms}% — облава затруднена, заговор крепнет",
+                    plot.Arms >= 60 ? SWConsoleStyle.Bad : SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
             var id = plot.Id;
             if (plot.CanRaid)
             {

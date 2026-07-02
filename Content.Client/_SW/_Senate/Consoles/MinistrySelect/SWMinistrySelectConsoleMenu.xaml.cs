@@ -117,7 +117,7 @@ public sealed partial class SWMinistrySelectConsoleMenu : FancyWindow
         var sub = claimed && ministry.Holder != null
             ? $"Занимает: {ministry.Holder}"
             : ministry.Locked
-                ? "Сначала должны быть заняты все министерства"
+                ? ministry.LockedReason
                 : ministry.ParentName != null
                     ? $"Подчинение: {ministry.ParentName}"
                     : string.Empty;

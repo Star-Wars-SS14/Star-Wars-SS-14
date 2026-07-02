@@ -176,6 +176,7 @@ public sealed class SWMinistryEntry
     public bool Claimed;
     public string? Holder;
     public bool Locked;
+    public string LockedReason = string.Empty;
 }
 
 [Serializable, NetSerializable]
@@ -940,6 +941,7 @@ public sealed class SWCellSectorEntry
     public bool PlotRevealed;
     public string PlotLabel = string.Empty;
     public Color PlotColor;
+    public int Arms;
 }
 
 [Serializable, NetSerializable]
@@ -956,6 +958,7 @@ public sealed class SWPlotEntry
     public int SuccessChance;
     public bool CanRaid;
     public string ThreatLabel = string.Empty;
+    public int Arms;
 }
 
 [Serializable, NetSerializable]

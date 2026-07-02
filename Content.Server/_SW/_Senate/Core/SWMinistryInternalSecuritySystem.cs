@@ -488,6 +488,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
                 Color = proto.Color,
                 Order = order,
                 Cells = _cells.Count(c => c.State == SWCellState.Sector && c.SectorId == sectorId),
+                Arms = (int) MathF.Round(_weapons.ArmsLevel(sectorId)),
             };
 
             var plot = _plots.FirstOrDefault(p => p.SectorId == sectorId);
@@ -565,6 +566,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
                 SuccessChance = RaidChance(plot),
                 CanRaid = plot.Revealed && budget >= RaidCost,
                 ThreatLabel = plot.Maturity >= 80f ? "созревает" : plot.Maturity >= 50f ? "развивается" : "в зачатке",
+                Arms = (int) MathF.Round(_weapons.ArmsLevel(plot.SectorId)),
             });
         }
 

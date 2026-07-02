@@ -136,6 +136,14 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
             if (proto.Parent != null && _proto.TryIndex<SWMinistryPrototype>(proto.Parent, out var parent))
                 parentName = parent.Name;
 
+            var lockedReason = string.Empty;
+            if (proto.Kind == SWMinistryKind.Department && ministriesPending)
+                lockedReason = "Сначала должны быть заняты все министерства";
+            else if (proto.RequiresActive is { } req && !_ministry.IsClaimed(req))
+                lockedReason = _proto.TryIndex<SWMinistryPrototype>(req, out var reqProto)
+                    ? $"Должно быть занято: {reqProto.Name}"
+                    : $"Должно быть занято: {req.Id}";
+
             ministries.Add(new SWMinistryEntry
             {
                 Id = proto.ID,
@@ -147,8 +155,8 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
                 ParentName = parentName,
                 Claimed = _ministry.IsClaimed(proto.ID),
                 Holder = _ministry.GetHolder(proto.ID),
-                Locked = (proto.Kind == SWMinistryKind.Department && ministriesPending)
-                    || (proto.RequiresActive is { } req && !_ministry.IsClaimed(req)),
+                Locked = lockedReason.Length > 0,
+                LockedReason = lockedReason,
             });
         }
 

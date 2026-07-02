@@ -23,6 +23,7 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
     [Dependency] private readonly SWBureauShipsSystem _ships = default!;
+    [Dependency] private readonly SWCorruptionSystem _corruption = default!;
 
     private const float UpdateInterval = 3f;
     private float _accumulator;
@@ -36,6 +37,7 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWBureauResolveDilemmaMessage>(OnResolveDilemma);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWShipsProcessAppMessage>(OnProcessApp);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWShipsSetPolicyMessage>(OnSetPolicy);
+        SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWShipsLaunchOpMessage>(OnLaunchOp);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWMinistryAuditRequestMessage>(OnAudit);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWMinistryResolveRequestMessage>(OnResolveRequest);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWMinistryRefuseRequestMessage>(OnRefuseRequest);
@@ -137,6 +139,17 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
+    private void OnLaunchOp(Entity<SWBureauWorkConsoleComponent> ent, ref SWShipsLaunchOpMessage args)
+    {
+        if (GetCardBureau(ent) != SWBureauShipsSystem.BureauId)
+            return;
+
+        if (!_ships.LaunchOp(args.Op))
+            _popup.PopupCursor(Loc.GetString("sw-bureau-ships-action-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
     private void OnOpened(EntityUid uid, SWBureauWorkConsoleComponent comp, BoundUIOpenedEvent args)
     {
         UpdateUi((uid, comp));
@@ -198,16 +211,31 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
             state.AuditCost = _dilemma.AuditCost;
             state.Requests = _dilemma.BuildMinistryRequests(bureauId);
 
+            if (_ministry.GetHolder(bureauId) is { } holder)
+            {
+                state.HasPersonal = true;
+                state.MyCorruption = _corruption.PersonCorruptionInt(holder);
+                state.MyAccount = _corruption.Account(holder);
+            }
+
             if (bureauId == SWBureauShipsSystem.BureauId)
             {
                 state.IsShips = true;
                 state.TradeFlow = _ships.TradeFlow;
                 state.TradeFlowStatus = _ships.TradeFlowStatus();
+                state.Integrity = _ships.Integrity;
+                state.IntegrityStatus = _ships.IntegrityStatus();
+                state.Network = _ships.Network;
+                state.NetworkStatus = _ships.NetworkStatus();
                 state.Policy = _ships.Policy;
                 state.PolicyLabel = SWBureauShipsSystem.PolicyLabel(_ships.Policy);
                 state.ForgedActive = _ships.ForgedTotal;
                 state.Applications = _ships.BuildApps();
                 state.Dilemma = _ships.BuildDilemma();
+                state.Fleet = _ships.BuildFleet();
+                state.Wanted = _ships.BuildWanted();
+                state.Ops = _ships.BuildOps();
+                state.RegistryLog = _ships.GetLog();
             }
         }
         else if (card != null && TryComp<SWSenatePositionCardComponent>(card, out var position) && position.Position == SWSenatePosition.Minister)

@@ -48,6 +48,11 @@ public sealed class SWBureauWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWShipsSetPolicyMessage(level));
     }
 
+    public void LaunchOp(int op)
+    {
+        SendMessage(new SWShipsLaunchOpMessage(op));
+    }
+
     public void AuditRequest(int requestId)
     {
         SendMessage(new SWMinistryAuditRequestMessage(requestId));

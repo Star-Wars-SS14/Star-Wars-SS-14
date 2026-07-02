@@ -2170,11 +2170,44 @@ public sealed class SWShipsAppEntry
     public int Id;
     public string Name = string.Empty;
     public string Origin = string.Empty;
+    public string FlagsLabel = string.Empty;
     public string RiskLabel = string.Empty;
     public Color RiskColor;
+    public string DossierLabel = string.Empty;
     public bool Inspected;
     public int InspectCost;
     public bool CanInspect;
+    public int Fee;
+    public int Bribe;
+    public bool WantedMatch;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWShipsFleetEntry
+{
+    public string Name = string.Empty;
+    public string Detail = string.Empty;
+    public string StatusLabel = string.Empty;
+    public Color StatusColor;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWShipsWantedEntry
+{
+    public string Signature = string.Empty;
+    public string Reason = string.Empty;
+    public int Bounty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWShipsOpEntry
+{
+    public int Id;
+    public string Name = string.Empty;
+    public string Description = string.Empty;
+    public int Cost;
+    public string Status = string.Empty;
+    public bool Available;
 }
 
 [Serializable, NetSerializable]
@@ -2201,10 +2234,21 @@ public sealed class SWBureauWorkConsoleState : BoundUserInterfaceState
     public bool IsShips;
     public int TradeFlow;
     public string TradeFlowStatus = string.Empty;
+    public int Integrity;
+    public string IntegrityStatus = string.Empty;
+    public int Network;
+    public string NetworkStatus = string.Empty;
     public int Policy;
     public string PolicyLabel = string.Empty;
     public int ForgedActive;
     public List<SWShipsAppEntry> Applications = new();
+    public List<SWShipsFleetEntry> Fleet = new();
+    public List<SWShipsWantedEntry> Wanted = new();
+    public List<SWShipsOpEntry> Ops = new();
+    public List<string> RegistryLog = new();
+    public bool HasPersonal;
+    public int MyAccount;
+    public int MyCorruption;
 }
 
 [Serializable, NetSerializable]
@@ -2227,12 +2271,23 @@ public sealed class SWBureauResolveDilemmaMessage : BoundUserInterfaceMessage
 public sealed class SWShipsProcessAppMessage : BoundUserInterfaceMessage
 {
     public int AppId;
-    public int Action; // 0 approve, 1 inspect, 2 deny
+    public int Action; // 0 approve, 1 inspect, 2 deny/detain, 3 accept bribe
 
     public SWShipsProcessAppMessage(int appId, int action)
     {
         AppId = appId;
         Action = action;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWShipsLaunchOpMessage : BoundUserInterfaceMessage
+{
+    public int Op;
+
+    public SWShipsLaunchOpMessage(int op)
+    {
+        Op = op;
     }
 }
 

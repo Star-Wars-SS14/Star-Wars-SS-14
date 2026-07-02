@@ -1,6 +1,119 @@
 # Sectoral dilemmas a senator can escalate to a bureau (delegated as a bureau request).
 
 - type: swDilemma
+  id: SWDilemmaDeptFieldClinic
+  name: Медики не справляются
+  description: Районные клиники сектора захлёбываются от пострадавших после серии аварий.
+  scope: Sectoral
+  order: 50
+  failText: Больницы переполнены, растёт смертность
+  options:
+  - label: Мобилизовать местных врачей
+    sectorEffects:
+      SWGlobalHealthcare: 3
+      SWGlobalEconomy: -2
+  - label: Передать в Департамент здравоохранения
+    description: Полевые бригады центра развернут триаж на месте.
+    ministry: SWDepartmentHealthcare
+  failSectorEffects:
+    SWGlobalHealthcare: -5
+    SWGlobalSociety: -2
+  ministryOptions:
+  - label: Направить полевую бригаду
+    sectorEffects:
+      SWGlobalHealthcare: 4
+  - label: Полевой госпиталь под ключ
+    cost: 2500
+    sectorEffects:
+      SWGlobalHealthcare: 6
+      SWGlobalSociety: 2
+
+- type: swDilemma
+  id: SWDilemmaDeptCourtEscort
+  name: Свидетели под ударом
+  description: Свидетели громкого процесса в секторе получают угрозы — конвоя нет.
+  scope: Sectoral
+  order: 51
+  failText: Свидетели отказываются от показаний
+  options:
+  - label: Охрана силами сектора
+    sectorEffects:
+      SWGlobalSecurity: 2
+      SWGlobalEconomy: -2
+  - label: Передать в Департамент юстиции
+    description: Сенатская Гвардия возьмёт свидетелей под конвой.
+    ministry: SWDepartmentJustice
+  failSectorEffects:
+    SWGlobalSecurity: -4
+    SWGlobalSociety: -2
+  ministryOptions:
+  - label: Конвой гвардии
+    sectorEffects:
+      SWGlobalSecurity: 4
+  - label: Программа защиты
+    cost: 2200
+    sectorEffects:
+      SWGlobalSecurity: 5
+      SWGlobalSociety: 2
+
+- type: swDilemma
+  id: SWDilemmaDeptShellFirms
+  name: Гнездо фирм-однодневок
+  description: В деловом квартале сектора плодятся подставные конторы, отмывающие кредиты.
+  scope: Sectoral
+  order: 52
+  failText: Теневой капитал подминает экономику сектора
+  options:
+  - label: Местная проверка
+    sectorEffects:
+      SWGlobalEconomy: 2
+      SWGlobalSociety: -1
+  - label: Передать в Департамент арбитража
+    description: Следователи арбитража распутают всю сеть.
+    ministry: SWDepartmentArbitrage
+  failSectorEffects:
+    SWGlobalEconomy: -4
+    SWGlobalSecurity: -2
+  ministryOptions:
+  - label: Распутать сеть
+    sectorEffects:
+      SWGlobalEconomy: 4
+  - label: Показательный процесс
+    cost: 2400
+    sectorEffects:
+      SWGlobalEconomy: 5
+      SWGlobalSociety: 2
+
+- type: swDilemma
+  id: SWDilemmaDeptGrantFraud
+  name: Испарившийся грант
+  description: Республиканский грант на развитие сектора растворился, не дойдя до строек.
+  scope: Sectoral
+  order: 53
+  failText: Деньги ушли, стройки стоят
+  options:
+  - label: Внутреннее расследование
+    sectorEffects:
+      SWGlobalSociety: 1
+      SWGlobalEconomy: -1
+  - label: Передать в Департамент учёта расходов
+    description: Ревизоры проследят каждый кредит.
+    ministry: SWDepartmentExpenditure
+  failSectorEffects:
+    SWGlobalEconomy: -4
+    SWGlobalSociety: -2
+  ministryOptions:
+  - label: Проследить транзакции
+    sectorEffects:
+      SWGlobalEconomy: 3
+      SWGlobalSociety: 1
+  - label: Ревизия с возвратом средств
+    cost: 2000
+    sectorEffects:
+      SWGlobalEconomy: 5
+      SWGlobalSociety: 2
+
+- type: swDilemma
   id: SWDilemmaBureauShootouts
   name: Перестрелки в нижних кварталах
   description: Нелегальные бластеры наводнили нижние уровни сектора. Каждую ночь — новые жертвы.

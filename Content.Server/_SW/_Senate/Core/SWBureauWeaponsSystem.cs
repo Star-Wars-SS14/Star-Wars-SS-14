@@ -93,6 +93,16 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
 
     public float ArmsLevel(string sectorId) => _arms.TryGetValue(sectorId, out var v) ? v : 0f;
 
+    public void ReduceArms(string sectorId, float amount) =>
+        _arms[sectorId] = Math.Clamp(ArmsLevel(sectorId) - MathF.Abs(amount), 0f, 100f);
+
+    public void ReduceArmsRandom(float amount)
+    {
+        var claimed = _senate.SectorHolders.Keys.ToList();
+        if (claimed.Count > 0)
+            ReduceArms(_random.Pick(claimed), amount);
+    }
+
     public int BlackMarket()
     {
         var claimed = _senate.SectorHolders.Keys.ToList();

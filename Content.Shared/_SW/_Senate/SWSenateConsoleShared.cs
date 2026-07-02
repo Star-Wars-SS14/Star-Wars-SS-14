@@ -2282,6 +2282,154 @@ public sealed class SWArmsDroidMessage : BoundUserInterfaceMessage
     }
 }
 
+// --- Department work console ---
+
+[Serializable, NetSerializable]
+public enum SWDepartmentWorkConsoleUiKey
+{
+    Key
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDeptMeterEntry
+{
+    public string Label = string.Empty;
+    public int Value;
+    public string Status = string.Empty;
+    public bool Invert;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWGuardPostEntry
+{
+    public int Index;
+    public string Name = string.Empty;
+    public int Assigned;
+    public int Max;
+    public string EffectLabel = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWArbCaseEntry
+{
+    public int Id;
+    public string Name = string.Empty;
+    public string Description = string.Empty;
+    public int Stage;
+    public string StageLabel = string.Empty;
+    public string AdvanceLabel = string.Empty;
+    public int AdvanceCost;
+    public bool CanAdvance;
+    public string RiskLabel = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWAuditRowEntry
+{
+    public string TargetId = string.Empty;
+    public string Name = string.Empty;
+    public Color Color;
+    public int Budget;
+    public string StatusLabel = string.Empty;
+    public bool StatusGood;
+    public int AuditCost;
+    public bool CanAudit;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDepartmentWorkConsoleState : BoundUserInterfaceState
+{
+    public bool HasCard;
+    public bool IsDeptCard;
+    public bool HasDept;
+    public string DeptId = string.Empty;
+    public string DeptName = string.Empty;
+    public string DeptDescription = string.Empty;
+    public Color DeptColor;
+    public string ParentName = string.Empty;
+    public bool ParentActive;
+    public bool CanResign;
+    public int Budget;
+    public int Admin;
+    public int AuditCost;
+    public string GameTime = string.Empty;
+    public bool HasPersonal;
+    public int MyAccount;
+    public int MyCorruption;
+
+    public List<SWDeptMeterEntry> Meters = new();
+    public List<SWTransitEventEntry> Tasks = new();
+    public List<SWShipsOpEntry> Ops = new();
+    public List<string> Log = new();
+    public List<SWMinistryRequestEntry> Requests = new();
+
+    public bool IsHealthcare;
+    public int FreeBrigades;
+    public int TotalBrigades;
+    public int ActiveMissions;
+
+    public bool IsGuard;
+    public int ReserveSquads;
+    public int TotalSquads;
+    public List<SWGuardPostEntry> Posts = new();
+
+    public bool IsArbitrage;
+    public int Solved;
+    public List<SWArbCaseEntry> Cases = new();
+
+    public bool IsExpenditure;
+    public int Recovered;
+    public List<SWAuditRowEntry> AuditRows = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDeptResolveTaskMessage : BoundUserInterfaceMessage
+{
+    public int TaskId;
+    public int OptionIndex;
+
+    public SWDeptResolveTaskMessage(int taskId, int optionIndex)
+    {
+        TaskId = taskId;
+        OptionIndex = optionIndex;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDeptCaseAdvanceMessage : BoundUserInterfaceMessage
+{
+    public int CaseId;
+
+    public SWDeptCaseAdvanceMessage(int caseId)
+    {
+        CaseId = caseId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDeptAuditTargetMessage : BoundUserInterfaceMessage
+{
+    public string TargetId;
+
+    public SWDeptAuditTargetMessage(string targetId)
+    {
+        TargetId = targetId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDeptPostMessage : BoundUserInterfaceMessage
+{
+    public int Post;
+    public int Delta;
+
+    public SWDeptPostMessage(int post, int delta)
+    {
+        Post = post;
+        Delta = delta;
+    }
+}
+
 [Serializable, NetSerializable]
 public sealed class SWTransitSetSectorMessage : BoundUserInterfaceMessage
 {

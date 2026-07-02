@@ -24,6 +24,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
+    [Dependency] private readonly SWDeptExpenditureSystem _expenditure = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
 
     public const string FinanceMinistryId = "SWMinistryFinance";
@@ -115,7 +116,8 @@ public sealed class SWSenateBudgetSystem : EntitySystem
             return _frozenTotal;
 
         var baseMoney = _senate.SectorHolders.Count * PerSector + _ministry.Holders.Count * PerMinistry;
-        return (int) MathF.Round(baseMoney * TreasuryMultiplier() / _finance.PriceMultiplier());
+        var transparency = _expenditure.TransparencyBonusActive ? 1.1f : 1f;
+        return (int) MathF.Round(baseMoney * TreasuryMultiplier() * transparency / _finance.PriceMultiplier());
     }
 
     public int SectorPool() => (int) MathF.Round(Total() * _sectorRatio);

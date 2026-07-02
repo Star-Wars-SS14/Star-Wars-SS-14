@@ -71,9 +71,10 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
         if (!_proto.TryIndex<SWMinistryPrototype>(args.MinistryId, out var proto))
             return;
 
-        if (proto.Kind == SWMinistryKind.Department && !AllMinistriesClaimed())
+        if (proto.Kind == SWMinistryKind.Department && proto.Parent is { } parentId && !_ministry.IsClaimed(parentId))
         {
-            _popup.PopupCursor(Loc.GetString("sw-ministry-select-ministries-first"), args.Actor, PopupType.Medium);
+            var parentName = _proto.TryIndex<SWMinistryPrototype>(parentId, out var pp) ? pp.Name : parentId.Id;
+            _popup.PopupCursor(Loc.GetString("sw-ministry-select-requires-active", ("name", parentName)), args.Actor, PopupType.Medium);
             return;
         }
 
@@ -127,8 +128,6 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
                 currentName = proto.Name;
         }
 
-        var ministriesPending = !AllMinistriesClaimed();
-
         var ministries = new List<SWMinistryEntry>();
         foreach (var proto in _proto.EnumeratePrototypes<SWMinistryPrototype>())
         {
@@ -137,8 +136,8 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
                 parentName = parent.Name;
 
             var lockedReason = string.Empty;
-            if (proto.Kind == SWMinistryKind.Department && ministriesPending)
-                lockedReason = "Сначала должны быть заняты все министерства";
+            if (proto.Kind == SWMinistryKind.Department && proto.Parent is { } depParent && !_ministry.IsClaimed(depParent))
+                lockedReason = $"Должно быть занято: {parentName ?? depParent.Id}";
             else if (proto.RequiresActive is { } req && !_ministry.IsClaimed(req))
                 lockedReason = _proto.TryIndex<SWMinistryPrototype>(req, out var reqProto)
                     ? $"Должно быть занято: {reqProto.Name}"
@@ -168,17 +167,6 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
 
         _ui.SetUiState(ent.Owner, SWMinistrySelectConsoleUiKey.Key,
             new SWMinistrySelectConsoleState(ministries, card != null, isMinisterCard, current, currentName));
-    }
-
-    private bool AllMinistriesClaimed()
-    {
-        foreach (var proto in _proto.EnumeratePrototypes<SWMinistryPrototype>())
-        {
-            if (proto.Kind == SWMinistryKind.Ministry && !_ministry.IsClaimed(proto.ID))
-                return false;
-        }
-
-        return true;
     }
 
     private static string TitleKey(SWMinistryKind kind) => kind switch

@@ -62,6 +62,8 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
     public string? SelectedProgram => _program;
     public int ProgramProgress => (int) MathF.Round(_progress);
 
+    public void RelieveBacklog(float amount) => _backlog = Math.Clamp(_backlog - amount, 0f, 100f);
+
     public override void Initialize()
     {
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);

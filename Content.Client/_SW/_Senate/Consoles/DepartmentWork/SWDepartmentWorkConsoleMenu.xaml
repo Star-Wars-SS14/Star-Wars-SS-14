@@ -1,0 +1,34 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    Title="Рабочая консоль департамента"
+    MinSize="700 660">
+    <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+            <PanelContainer Name="HeaderPanel">
+                <BoxContainer Orientation="Horizontal" Margin="12 7">
+                    <Label Name="HeaderTitle" HorizontalExpand="True" />
+                    <PanelContainer Name="LiveDot" MinSize="9 9" VerticalAlignment="Center" />
+                    <Label Name="HeaderClock" Margin="7 0 0 0" />
+                </BoxContainer>
+            </PanelContainer>
+            <BoxContainer Name="StatusStrip" Orientation="Horizontal" Margin="12 6" />
+            <PanelContainer Name="TabBarPanel">
+                <BoxContainer Name="TabBar" Orientation="Horizontal" Margin="6 4" />
+            </PanelContainer>
+            <BoxContainer Name="ContentHost" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                <ScrollContainer Name="WorkScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                    <BoxContainer Name="WorkList" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="TasksScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                    <BoxContainer Name="TasksList" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="OpsScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                    <BoxContainer Name="OpsList" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="RequestsScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                    <BoxContainer Name="RequestsList" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+            </BoxContainer>
+        </BoxContainer>
+    </PanelContainer>
+</controls:FancyWindow>

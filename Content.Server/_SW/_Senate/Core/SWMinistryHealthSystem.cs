@@ -692,6 +692,18 @@ public sealed class SWMinistryHealthSystem : EntitySystem
             _infection[s] = Math.Clamp((_infection.TryGetValue(s, out var v) ? v : 0f) + delta, 0f, 100f);
     }
 
+    public float SectorInfection(string sectorId) => _infection.TryGetValue(sectorId, out var v) ? v : 0f;
+
+    public bool IsQuarantined(string sectorId) => _quarantine.Contains(sectorId);
+
+    public void AddInfection(string sectorId, float delta)
+    {
+        if (!_active || !_senate.IsClaimed(sectorId))
+            return;
+
+        _infection[sectorId] = Math.Clamp(SectorInfection(sectorId) + delta, 0f, 100f);
+    }
+
     public bool ForceMutate()
     {
         if (!_active)

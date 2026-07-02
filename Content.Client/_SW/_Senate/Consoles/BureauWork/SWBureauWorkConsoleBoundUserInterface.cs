@@ -53,6 +53,16 @@ public sealed class SWBureauWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWShipsLaunchOpMessage(op));
     }
 
+    public void SetTransitStatus(string sectorId, int status)
+    {
+        SendMessage(new SWTransitSetSectorMessage(sectorId, status));
+    }
+
+    public void ResolveTransitEvent(int eventId, int optionIndex)
+    {
+        SendMessage(new SWTransitResolveEventMessage(eventId, optionIndex));
+    }
+
     public void AuditRequest(int requestId)
     {
         SendMessage(new SWMinistryAuditRequestMessage(requestId));

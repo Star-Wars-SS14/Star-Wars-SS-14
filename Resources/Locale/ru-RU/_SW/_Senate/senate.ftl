@@ -19,6 +19,7 @@ sw-ministry-title-bureau = Директор Бюро {$name}
 sw-minister-base = Министр
 sw-ministry-resigned = Вы сложили полномочия. Ведомство свободно.
 sw-bureau-ships-action-failed = Действие невозможно: проверьте бюджет бюро.
+sw-bureau-action-failed = Действие невозможно: проверьте бюджет бюро.
 
 sw-ministry-audit-failed = Аудит невозможен: нет админ-ресурса или уже проводится.
 sw-ministry-request-resolved = Заявка удовлетворена.

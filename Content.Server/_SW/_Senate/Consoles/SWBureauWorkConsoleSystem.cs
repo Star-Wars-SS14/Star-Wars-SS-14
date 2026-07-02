@@ -23,6 +23,7 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
     [Dependency] private readonly SWBureauShipsSystem _ships = default!;
+    [Dependency] private readonly SWBureauTransitSystem _transit = default!;
     [Dependency] private readonly SWCorruptionSystem _corruption = default!;
 
     private const float UpdateInterval = 3f;
@@ -38,6 +39,8 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWShipsProcessAppMessage>(OnProcessApp);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWShipsSetPolicyMessage>(OnSetPolicy);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWShipsLaunchOpMessage>(OnLaunchOp);
+        SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWTransitSetSectorMessage>(OnSetTransitStatus);
+        SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWTransitResolveEventMessage>(OnResolveTransitEvent);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWMinistryAuditRequestMessage>(OnAudit);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWMinistryResolveRequestMessage>(OnResolveRequest);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWMinistryRefuseRequestMessage>(OnRefuseRequest);
@@ -112,10 +115,38 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
 
     private void OnResolveDilemma(Entity<SWBureauWorkConsoleComponent> ent, ref SWBureauResolveDilemmaMessage args)
     {
-        if (GetCardBureau(ent) != SWBureauShipsSystem.BureauId)
+        switch (GetCardBureau(ent))
+        {
+            case SWBureauShipsSystem.BureauId:
+                _ships.ResolveDilemma(args.OptionIndex);
+                break;
+            case SWBureauTransitSystem.BureauId:
+                _transit.ResolveDilemma(args.OptionIndex);
+                break;
+            default:
+                return;
+        }
+
+        UpdateUi(ent);
+    }
+
+    private void OnSetTransitStatus(Entity<SWBureauWorkConsoleComponent> ent, ref SWTransitSetSectorMessage args)
+    {
+        if (GetCardBureau(ent) != SWBureauTransitSystem.BureauId)
             return;
 
-        _ships.ResolveDilemma(args.OptionIndex);
+        _transit.SetStatus(args.SectorId, args.Status);
+        UpdateUi(ent);
+    }
+
+    private void OnResolveTransitEvent(Entity<SWBureauWorkConsoleComponent> ent, ref SWTransitResolveEventMessage args)
+    {
+        if (GetCardBureau(ent) != SWBureauTransitSystem.BureauId)
+            return;
+
+        if (!_transit.ResolveEvent(args.EventId, args.OptionIndex))
+            _popup.PopupCursor(Loc.GetString("sw-bureau-action-failed"), args.Actor, PopupType.Medium);
+
         UpdateUi(ent);
     }
 
@@ -141,11 +172,17 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
 
     private void OnLaunchOp(Entity<SWBureauWorkConsoleComponent> ent, ref SWShipsLaunchOpMessage args)
     {
-        if (GetCardBureau(ent) != SWBureauShipsSystem.BureauId)
-            return;
+        var ok = GetCardBureau(ent) switch
+        {
+            SWBureauShipsSystem.BureauId => _ships.LaunchOp(args.Op),
+            SWBureauTransitSystem.BureauId => _transit.LaunchOp(args.Op),
+            _ => (bool?) null,
+        };
 
-        if (!_ships.LaunchOp(args.Op))
-            _popup.PopupCursor(Loc.GetString("sw-bureau-ships-action-failed"), args.Actor, PopupType.Medium);
+        if (ok == null)
+            return;
+        if (!ok.Value)
+            _popup.PopupCursor(Loc.GetString("sw-bureau-action-failed"), args.Actor, PopupType.Medium);
 
         UpdateUi(ent);
     }
@@ -236,6 +273,22 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
                 state.Wanted = _ships.BuildWanted();
                 state.Ops = _ships.BuildOps();
                 state.RegistryLog = _ships.GetLog();
+            }
+            else if (bureauId == SWBureauTransitSystem.BureauId)
+            {
+                state.IsTransit = true;
+                state.Mobility = _transit.Mobility;
+                state.MobilityStatus = _transit.MobilityStatus();
+                state.Congestion = _transit.Congestion;
+                state.CongestionStatus = _transit.CongestionStatus();
+                state.LineSafety = _transit.Safety;
+                state.LineSafetyStatus = _transit.SafetyStatus();
+                state.TicketIncome = _transit.TicketIncome();
+                state.TransitSectors = _transit.BuildSectors();
+                state.TransitEvents = _transit.BuildEvents();
+                state.Dilemma = _transit.BuildDilemma();
+                state.Ops = _transit.BuildOps();
+                state.RegistryLog = _transit.GetLog();
             }
         }
         else if (card != null && TryComp<SWSenatePositionCardComponent>(card, out var position) && position.Position == SWSenatePosition.Minister)

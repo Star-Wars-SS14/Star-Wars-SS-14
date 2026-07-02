@@ -16,6 +16,7 @@ public sealed class SWMinistryEconomySystem : EntitySystem
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
+    [Dependency] private readonly SWBureauTransitSystem _transit = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
 
     public const string EconomyMinistryId = "SWMinistryEconomy";
@@ -425,7 +426,11 @@ public sealed class SWMinistryEconomySystem : EntitySystem
     }
 
     private bool RouteDisrupted(SWTradeRoute route) =>
-        SectorSecurity(route.A) < RouteSecurityFloor || SectorSecurity(route.B) < RouteSecurityFloor;
+        SectorSecurity(route.A) < RouteSecurityFloor || SectorSecurity(route.B) < RouteSecurityFloor || RouteCordoned(route);
+
+    private bool RouteCordoned(SWTradeRoute route) =>
+        _transit.GetStatus(route.A) == SWBureauTransitSystem.StatusCordon
+        || _transit.GetStatus(route.B) == SWBureauTransitSystem.StatusCordon;
 
     private float SectorSecurity(string sectorId) =>
         _senate.SectorGlobals.TryGetValue(sectorId, out var g) && g.TryGetValue("SWGlobalSecurity", out var s) ? s : 50f;
@@ -609,7 +614,8 @@ public sealed class SWMinistryEconomySystem : EntitySystem
                 AName = an,
                 BName = bn,
                 Active = !disrupted,
-                StatusLabel = disrupted ? "под угрозой пиратов" : $"+{RouteEconomyBonus:0.0} торговли/ч",
+                StatusLabel = !disrupted ? $"+{RouteEconomyBonus:0.0} торговли/ч"
+                    : RouteCordoned(route) ? "перекрыт кордоном транзита" : "под угрозой пиратов",
             });
         }
 

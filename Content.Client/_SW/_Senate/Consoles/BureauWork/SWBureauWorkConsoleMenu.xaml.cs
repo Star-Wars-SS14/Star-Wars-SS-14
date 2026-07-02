@@ -90,11 +90,157 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
         StatusStrip.Visible = true;
         TabBarPanel.Visible = true;
 
+        _tabButtons[0].Text = state.IsTransit ? "СЕТЬ ПЕРЕВОЗОК" : "СТОЛ РЕГИСТРАЦИИ";
+        _tabButtons[1].Text = state.IsTransit ? "СОБЫТИЯ НА ЛИНИЯХ" : "ФЛОТ И РОЗЫСК";
+
         BuildStrip(state);
-        BuildDesk(state);
-        BuildFleetTab(state);
+
+        if (state.IsTransit)
+        {
+            BuildTransitDesk(state);
+            BuildTransitLines(state);
+        }
+        else
+        {
+            BuildDesk(state);
+            BuildFleetTab(state);
+        }
+
         BuildOpsTab(state);
         BuildRequests(state);
+    }
+
+    private void BuildTransitDesk(SWBureauWorkConsoleState state)
+    {
+        DeskList.AddChild(SWConsoleStyle.Section("ПУЛЬТ СЕТИ ПЕРЕВОЗОК"));
+        DeskList.AddChild(new Control { MinHeight = 4 });
+
+        AddMeter(DeskList, "Мобильность", state.Mobility, state.MobilityStatus, SWConsoleStyle.ValueColor(state.Mobility));
+        AddMeter(DeskList, "Загруженность узлов", state.Congestion, state.CongestionStatus, SWConsoleStyle.ValueColor(100 - state.Congestion));
+        AddMeter(DeskList, "Безопасность линий", state.LineSafety, state.LineSafetyStatus, SWConsoleStyle.ValueColor(state.LineSafety));
+
+        DeskList.AddChild(SWConsoleStyle.Text($"Билетные сборы: ~{state.TicketIncome} кр/ч в казну бюро", SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+
+        BuildDilemma(DeskList, state);
+
+        DeskList.AddChild(new Control { MinHeight = 10 });
+        DeskList.AddChild(SWConsoleStyle.Section("РЕЖИМЫ СЕКТОРОВ"));
+        DeskList.AddChild(SWConsoleStyle.Text(
+            "Открытые сектора образуют сеть: благополучие выравнивается, но зараза и волнения расползаются. Кордон изолирует сектор и рвёт торговые гиперпути.",
+            SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        DeskList.AddChild(new Control { MinHeight = 4 });
+
+        if (state.TransitSectors.Count == 0)
+        {
+            DeskList.AddChild(SWConsoleStyle.Text("Ни один сектор не закреплён за сенаторами.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            return;
+        }
+
+        var alt = false;
+        foreach (var sector in state.TransitSectors)
+        {
+            var row = SWConsoleStyle.Row(alt ? SWConsoleStyle.BgRowAlt : SWConsoleStyle.BgPanel,
+                sector.Status == 2 ? SWConsoleStyle.Bad : null);
+            alt = !alt;
+            var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+
+            var line = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+            var name = SWConsoleStyle.Text(sector.Name, sector.Color, SWConsoleStyle.MonoBold);
+            name.HorizontalExpand = true;
+            name.VerticalAlignment = Control.VAlignment.Center;
+            line.AddChild(name);
+
+            var id = sector.Id;
+            AddStatusButton(line, sector, id, 0, "Открыт");
+            AddStatusButton(line, sector, id, 1, "Визы");
+            AddStatusButton(line, sector, id, 2, "Кордон");
+            box.AddChild(line);
+
+            if (!string.IsNullOrEmpty(sector.FlagsLabel))
+                box.AddChild(SWConsoleStyle.Text(sector.FlagsLabel, SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+
+            row.AddChild(box);
+            DeskList.AddChild(row);
+        }
+    }
+
+    private void AddStatusButton(BoxContainer line, SWTransitSectorEntry sector, string id, int status, string label)
+    {
+        var active = sector.Status == status;
+        var color = status == 2 ? SWConsoleStyle.Bad : status == 1 ? SWConsoleStyle.Warn : SWConsoleStyle.Good;
+        var btn = SWConsoleStyle.Action(label, active ? color : SWConsoleStyle.Neutral, active);
+        btn.Margin = new Thickness(4, 0, 0, 0);
+        if (!active)
+            btn.OnPressed += _ => _owner.SetTransitStatus(id, status);
+        line.AddChild(btn);
+    }
+
+    private void BuildTransitLines(SWBureauWorkConsoleState state)
+    {
+        FleetList.AddChild(SWConsoleStyle.Section("СОБЫТИЯ НА ЛИНИЯХ"));
+        FleetList.AddChild(SWConsoleStyle.Text(
+            "Оперативные происшествия пассажирских линий. Нерешённые уходят сами — с потерями.",
+            SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        FleetList.AddChild(new Control { MinHeight = 4 });
+
+        if (state.TransitEvents.Count == 0)
+        {
+            FleetList.AddChild(SWConsoleStyle.Text("На линиях спокойно. Пока.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+        }
+        else
+        {
+            foreach (var evt in state.TransitEvents)
+            {
+                var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Warn);
+                card.Margin = new Thickness(0, 0, 0, 6);
+                var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+                box.AddChild(SWConsoleStyle.Text(evt.Name, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+                if (!string.IsNullOrWhiteSpace(evt.Description))
+                {
+                    var desc = new RichTextLabel { Margin = new Thickness(0, 2, 0, 0) };
+                    desc.SetMessage(evt.Description);
+                    box.AddChild(desc);
+                }
+                box.AddChild(SWConsoleStyle.Text(evt.TimeLabel, SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+
+                var id = evt.Id;
+                for (var i = 0; i < evt.Options.Count; i++)
+                {
+                    var opt = evt.Options[i];
+                    var idx = i;
+                    var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, Margin = new Thickness(0, 3, 0, 0) };
+                    if (opt.Effects.Count > 0)
+                        row.AddChild(EffectsRow(opt.Effects));
+                    if (!string.IsNullOrWhiteSpace(opt.Description))
+                        row.AddChild(SWConsoleStyle.Text(opt.Description, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                    var label = opt.Cost > 0 ? $"{opt.Label}  ({opt.Cost} кр)" : opt.Label;
+                    var color = opt.Corrupt ? SWConsoleStyle.Warn : SWConsoleStyle.Accent;
+                    var btn = SWConsoleStyle.Action(label, opt.Affordable ? color : SWConsoleStyle.TextDim, !opt.Affordable);
+                    btn.HorizontalAlignment = Control.HAlignment.Left;
+                    btn.Margin = new Thickness(0, 2, 0, 0);
+                    if (opt.Affordable)
+                        btn.OnPressed += _ => _owner.ResolveTransitEvent(id, idx);
+                    row.AddChild(btn);
+                    box.AddChild(row);
+                }
+
+                card.AddChild(box);
+                FleetList.AddChild(card);
+            }
+        }
+
+        FleetList.AddChild(new Control { MinHeight = 10 });
+        FleetList.AddChild(SWConsoleStyle.Section("ЖУРНАЛ БЮРО"));
+        FleetList.AddChild(new Control { MinHeight = 4 });
+
+        if (state.RegistryLog.Count == 0)
+        {
+            FleetList.AddChild(SWConsoleStyle.Text("Записей пока нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            return;
+        }
+
+        foreach (var line in state.RegistryLog)
+            FleetList.AddChild(SWConsoleStyle.Text(line, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
     }
 
     private void BuildStrip(SWBureauWorkConsoleState state)

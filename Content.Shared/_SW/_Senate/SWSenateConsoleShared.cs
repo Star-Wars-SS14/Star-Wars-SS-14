@@ -2153,6 +2153,7 @@ public sealed class SWBureauDilemmaOptionEntry
     public List<SWBillEffectEntry> Effects = new();
     public int Cost;
     public bool Affordable = true;
+    public bool Corrupt;
 }
 
 [Serializable, NetSerializable]
@@ -2211,6 +2212,52 @@ public sealed class SWShipsOpEntry
 }
 
 [Serializable, NetSerializable]
+public sealed class SWTransitSectorEntry
+{
+    public string Id = string.Empty;
+    public string Name = string.Empty;
+    public Color Color;
+    public int Status;
+    public string FlagsLabel = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWTransitEventEntry
+{
+    public int Id;
+    public string Name = string.Empty;
+    public string Description = string.Empty;
+    public string TimeLabel = string.Empty;
+    public List<SWBureauDilemmaOptionEntry> Options = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWTransitSetSectorMessage : BoundUserInterfaceMessage
+{
+    public string SectorId;
+    public int Status;
+
+    public SWTransitSetSectorMessage(string sectorId, int status)
+    {
+        SectorId = sectorId;
+        Status = status;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWTransitResolveEventMessage : BoundUserInterfaceMessage
+{
+    public int EventId;
+    public int OptionIndex;
+
+    public SWTransitResolveEventMessage(int eventId, int optionIndex)
+    {
+        EventId = eventId;
+        OptionIndex = optionIndex;
+    }
+}
+
+[Serializable, NetSerializable]
 public sealed class SWBureauWorkConsoleState : BoundUserInterfaceState
 {
     public bool HasCard;
@@ -2249,6 +2296,18 @@ public sealed class SWBureauWorkConsoleState : BoundUserInterfaceState
     public bool HasPersonal;
     public int MyAccount;
     public int MyCorruption;
+
+    // Travel & Transit bureau: mobility network.
+    public bool IsTransit;
+    public int Mobility;
+    public string MobilityStatus = string.Empty;
+    public int Congestion;
+    public string CongestionStatus = string.Empty;
+    public int LineSafety;
+    public string LineSafetyStatus = string.Empty;
+    public int TicketIncome;
+    public List<SWTransitSectorEntry> TransitSectors = new();
+    public List<SWTransitEventEntry> TransitEvents = new();
 }
 
 [Serializable, NetSerializable]

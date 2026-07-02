@@ -71,6 +71,108 @@
       SWGlobalSociety: 2
 
 - type: swDilemma
+  id: SWDilemmaBureauStrandedPilgrims
+  name: Застрявшие паломники
+  description: Тысячи паломников застряли на пересадочном узле сектора — рейсов нет уже двое суток.
+  scope: Sectoral
+  order: 43
+  failText: Паломники бунтуют на станциях
+  options:
+  - label: Разместить за счёт сектора
+    description: Гостиницы, еда, терпение.
+    sectorEffects:
+      SWGlobalSociety: 2
+      SWGlobalEconomy: -3
+  - label: Разогнать силой
+    description: Освободить узел, испортить репутацию.
+    sectorEffects:
+      SWGlobalSecurity: 2
+      SWGlobalSociety: -4
+  - label: Передать в Бюро транзита
+    description: Пусть бюро выделит спецрейсы.
+    ministry: SWBureauTransit
+  failSectorEffects:
+    SWGlobalSociety: -5
+    SWGlobalSecurity: -2
+  ministryOptions:
+  - label: Спецрейсы до места
+    sectorEffects:
+      SWGlobalSociety: 4
+  - label: Чартерный конвой с эскортом
+    cost: 2500
+    sectorEffects:
+      SWGlobalSociety: 6
+      SWGlobalSecurity: 1
+
+- type: swDilemma
+  id: SWDilemmaBureauIsolated
+  name: Отрезанный сектор
+  description: После пиратских атак перевозчики отказываются летать в сектор. Люди и товары заперты.
+  scope: Sectoral
+  order: 44
+  failText: Сектор задыхается в изоляции
+  options:
+  - label: Нанять частников
+    description: Дорого и рискованно, но летают.
+    sectorEffects:
+      SWGlobalEconomy: 2
+      SWGlobalSecurity: -2
+  - label: Ждать у моря погоды
+    description: Само рассосётся. Когда-нибудь.
+    sectorEffects:
+      SWGlobalEconomy: -3
+      SWGlobalSociety: -2
+  - label: Передать в Бюро транзита
+    description: Бюро может выстроить защищённый коридор.
+    ministry: SWBureauTransit
+  failSectorEffects:
+    SWGlobalEconomy: -5
+    SWGlobalSociety: -3
+  ministryOptions:
+  - label: Субсидировать перевозчиков
+    sectorEffects:
+      SWGlobalEconomy: 4
+      SWGlobalSociety: 1
+  - label: Конвойный коридор
+    cost: 3000
+    sectorEffects:
+      SWGlobalEconomy: 6
+      SWGlobalSecurity: 2
+
+- type: swDilemma
+  id: SWDilemmaBureauVisaScandal
+  name: Визовый скандал
+  description: Граждан сектора массово разворачивают на узлах из-за сбоя в базе транзитных разрешений.
+  scope: Sectoral
+  order: 45
+  failText: Сектор кипит от унижения
+  options:
+  - label: Компенсации из бюджета сектора
+    description: Погасить скандал деньгами.
+    sectorEffects:
+      SWGlobalSociety: 2
+      SWGlobalEconomy: -2
+  - label: Замять
+    description: Пошумят и перестанут.
+    sectorEffects:
+      SWGlobalSociety: -4
+  - label: Передать в Бюро транзита
+    description: Только бюро может починить базу разрешений.
+    ministry: SWBureauTransit
+  failSectorEffects:
+    SWGlobalSociety: -4
+    SWGlobalEconomy: -2
+  ministryOptions:
+  - label: Починить базу и извиниться
+    sectorEffects:
+      SWGlobalSociety: 4
+  - label: База, компенсации и льготные билеты
+    cost: 2000
+    sectorEffects:
+      SWGlobalSociety: 6
+      SWGlobalEconomy: 1
+
+- type: swDilemma
   id: SWDilemmaBureauFlagDispute
   name: Спор о флаге
   description: Крупный перевозчик грозит увести флот под чужой флаг, если сектор не упростит регистрацию.

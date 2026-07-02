@@ -19,6 +19,7 @@ using Content.Shared.Mobs.Systems;
 using Content.Shared.NPC;
 using Content.Shared.Random.Helpers;
 using Content.Shared.Roles;
+using Content.Shared.Silicons.Borgs.Components;
 using Robust.Shared.Map;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
@@ -310,7 +311,21 @@ public sealed class SWDroidCommandSystem : EntitySystem
 
     private bool IsAvailableDroid(EntityUid uid)
     {
-        return !TerminatingOrDeleted(uid) && _mobState.IsAlive(uid);
+        return !TerminatingOrDeleted(uid) && _mobState.IsAlive(uid) && HasAICore(uid);
+    }
+
+    private bool HasAICore(EntityUid uid)
+    {
+        if (!TryComp<BorgChassisComponent>(uid, out var chassis))
+            return false;
+
+        foreach (var module in chassis.ModuleContainer.ContainedEntities)
+        {
+            if (HasComp<SWDroidAICoreModuleComponent>(module))
+                return true;
+        }
+
+        return false;
     }
 
     private void SetOrder(EntityUid droid, SWDroidCommandableComponent droidComp, EntityUid commander, SWDroidOrderType order)

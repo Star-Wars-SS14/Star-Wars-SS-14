@@ -1,5 +1,8 @@
 using Content.Server.Popups;
 using Content.Server._SW.Targeting;
+using Content.Server.NPC;
+using Content.Server.NPC.HTN;
+using Content.Server.NPC.Systems;
 using Content.Shared._SW.Droids;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
@@ -8,12 +11,15 @@ using Content.Shared.Interaction;
 using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Wires;
 using Robust.Shared.Containers;
+using Robust.Shared.Map;
 
 namespace Content.Server._SW.Droids;
 
 public sealed class SWDroidModuleSystem : EntitySystem
 {
     [Dependency] private readonly AccessReaderSystem _accessReader = default!;
+    [Dependency] private readonly HTNSystem _htn = default!;
+    [Dependency] private readonly NPCSteeringSystem _steering = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly SWTargetingConfigTargetsSystem _targeting = default!;
 
@@ -26,6 +32,7 @@ public sealed class SWDroidModuleSystem : EntitySystem
 
         SubscribeLocalEvent<SWDroidFactionModuleComponent, EntGotInsertedIntoContainerMessage>(OnFactionModuleInserted);
         SubscribeLocalEvent<SWDroidFactionModuleComponent, EntGotRemovedFromContainerMessage>(OnFactionModuleRemoved);
+        SubscribeLocalEvent<SWDroidAICoreModuleComponent, EntGotRemovedFromContainerMessage>(OnAICoreRemoved);
     }
 
     private void OnDroidMapInit(Entity<SWDroidCommandableComponent> droid, ref MapInitEvent args)
@@ -88,6 +95,14 @@ public sealed class SWDroidModuleSystem : EntitySystem
             return;
 
         RefreshFactionFromModules(droid);
+    }
+
+    private void OnAICoreRemoved(Entity<SWDroidAICoreModuleComponent> module, ref EntGotRemovedFromContainerMessage args)
+    {
+        if (!TryGetDroidFromModuleContainer(args.Container, out var droid))
+            return;
+
+        DisableDroidAI(droid.Owner);
     }
 
     private bool TryGetDroidFromModuleContainer(BaseContainer container, out Entity<BorgChassisComponent> droid)
@@ -153,5 +168,35 @@ public sealed class SWDroidModuleSystem : EntitySystem
         {
             _accessReader.TryClearAccesses((droid.Owner, accessReader));
         }
+    }
+
+    private void DisableDroidAI(EntityUid droid)
+    {
+        if (TryComp<SWDroidCommandableComponent>(droid, out var commandable))
+        {
+            if (commandable.ActiveCommander != null &&
+                TryComp<SWDroidCommanderComponent>(commandable.ActiveCommander.Value, out var commander))
+            {
+                commander.Droids.Remove(droid);
+            }
+
+            commandable.ActiveCommander = null;
+            commandable.ActiveCommanderRank = 0;
+            Dirty(droid, commandable);
+        }
+
+        _targeting.UnregisterTargetFromAll(droid);
+        _steering.Unregister(droid);
+
+        if (!TryComp<HTNComponent>(droid, out var htn))
+            return;
+
+        if (htn.Plan != null)
+            _htn.ShutdownPlan(htn);
+
+        htn.Blackboard.Remove<EntityCoordinates>(NPCBlackboard.FollowTarget);
+        htn.Blackboard.Remove<EntityCoordinates>("FollowIdleTarget");
+        htn.Blackboard.Remove<float>("IdleTime");
+        _htn.Replan(htn);
     }
 }

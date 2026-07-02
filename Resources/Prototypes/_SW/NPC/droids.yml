@@ -1,16 +1,20 @@
 - type: htnCompound
   id: SWDroidCommandedCompound
   branches:
-  - tasks:
+  - preconditions:
+    - !type:SWDroidHasAICorePrecondition
+    tasks:
     - !type:HTNCompoundTask
       task: SWDroidRangedCombatCompound
   - preconditions:
+    - !type:SWDroidHasAICorePrecondition
     - !type:HasOrdersPrecondition
       orders: enum.SWDroidOrderType.Stay
     tasks:
     - !type:HTNCompoundTask
       task: SWDroidStayCompound
   - preconditions:
+    - !type:SWDroidHasAICorePrecondition
     - !type:HasOrdersPrecondition
       orders: enum.SWDroidOrderType.Follow
     tasks:

@@ -1,4 +1,48 @@
 - type: entity
+  parent: BaseBorgModule
+  id: SWDroidAICoreModule
+  name: droid AI core
+  description: A compact processor module that allows a droid to execute orders and combat routines.
+  components:
+  - type: SWDroidModuleCategory
+    category: AiCore
+  - type: SWDroidAICoreModule
+  - type: Sprite
+    sprite: _SW/Objects/Specific/Robotics/droid_ai_core.rsi
+    layers:
+    - state: icon
+  - type: Item
+    size: Small
+    inhandVisuals:
+      left:
+      - sprite: Objects/Specific/Robotics/borgmodule.rsi
+        state: base-icon-inhand-left
+        color: "#42D9C8"
+      - sprite: Objects/Specific/Robotics/borgmodule.rsi
+        state: base-module-inhand-left
+        color: "#48555A"
+      - sprite: Objects/Specific/Robotics/borgmodule.rsi
+        state: base-part-inhand-left
+      - sprite: Objects/Specific/Robotics/borgmodule.rsi
+        state: base-stripes-inhand-left
+        color: "#11191C"
+      right:
+      - sprite: Objects/Specific/Robotics/borgmodule.rsi
+        state: base-icon-inhand-right
+        color: "#42D9C8"
+      - sprite: Objects/Specific/Robotics/borgmodule.rsi
+        state: base-module-inhand-right
+        color: "#48555A"
+      - sprite: Objects/Specific/Robotics/borgmodule.rsi
+        state: base-part-inhand-right
+      - sprite: Objects/Specific/Robotics/borgmodule.rsi
+        state: base-stripes-inhand-right
+        color: "#11191C"
+  - type: Tag
+    tags:
+    - SWDroidModule
+
+- type: entity
   parent: [ BaseBorgModule, BaseProviderBorgModule ]
   id: SWDroidBlasterModule
   name: droid blaster module

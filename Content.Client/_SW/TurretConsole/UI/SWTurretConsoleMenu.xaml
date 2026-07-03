@@ -3,7 +3,7 @@
     xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
     xmlns:ui="clr-namespace:Content.Client.Voting.UI"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-    Title="РљРѕРЅСЃРѕР»СЊ СѓРїСЂР°РІР»РµРЅРёСЏ С‚СѓСЂРµР»СЏРјРё"
+    Title="{Loc 'sw-turret-console-window-title'}"
     MinSize="550 450"
     SetSize="1000 750">
     <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
@@ -13,7 +13,7 @@
         </BoxContainer>
         <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
             <BoxContainer Orientation="Vertical" HorizontalExpand="True">
-                <Label Text="Р Р°Р·СЂРµС€РµРЅРЅС‹Рµ РґРѕР»Р¶РЅРѕСЃС‚Рё" HorizontalAlignment="Center"/>
+                <Label Text="{Loc 'sw-turret-console-targets-enabled'}" HorizontalAlignment="Center"/>
                 <BoxContainer Orientation="Vertical" SeparationOverride="4" Margin="20 20 20 20" Name="AllowFactionsList" HorizontalExpand="True">
                     <controls:VSpacer/>
                 </BoxContainer>
@@ -32,7 +32,7 @@
             </BoxContainer>
 
             <BoxContainer Orientation="Vertical" HorizontalExpand="True">
-                <Label Text="Р—Р°РїСЂРµС‰РµРЅРЅС‹Рµ РґРѕР»Р¶РЅРѕСЃС‚Рё" HorizontalAlignment="Center"/>
+                <Label Text="{Loc 'sw-turret-console-targets-disabled'}" HorizontalAlignment="Center"/>
                 <BoxContainer Orientation="Vertical" SeparationOverride="4" Margin="20 20 20 20" Name="DisallowFactionsList" HorizontalExpand="True">
                     <controls:VSpacer/>
                 </BoxContainer>

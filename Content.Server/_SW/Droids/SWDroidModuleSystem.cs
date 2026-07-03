@@ -1,5 +1,6 @@
 using Content.Server.Popups;
 using Content.Server._SW.Targeting;
+using Content.Server.Access.Components;
 using Content.Server.NPC;
 using Content.Server.NPC.HTN;
 using Content.Server.NPC.Systems;
@@ -8,18 +9,22 @@ using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Shared.Containers;
 using Content.Shared.Interaction;
+using Content.Shared.Roles;
 using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Wires;
 using Robust.Shared.Containers;
 using Robust.Shared.Map;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._SW.Droids;
 
 public sealed class SWDroidModuleSystem : EntitySystem
 {
     [Dependency] private readonly AccessReaderSystem _accessReader = default!;
+    [Dependency] private readonly SharedAccessSystem _access = default!;
     [Dependency] private readonly HTNSystem _htn = default!;
     [Dependency] private readonly NPCSteeringSystem _steering = default!;
+    [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly SWTargetingConfigTargetsSystem _targeting = default!;
 
@@ -146,6 +151,8 @@ public sealed class SWDroidModuleSystem : EntitySystem
             Dirty(droid, commandable);
         }
 
+        ApplyFactionAccess(droid.Owner, module);
+
         if (TryComp<AccessReaderComponent>(droid, out var accessReader))
         {
             _accessReader.TrySetAccesses((droid.Owner, accessReader), module.LockAccess);
@@ -164,10 +171,45 @@ public sealed class SWDroidModuleSystem : EntitySystem
             Dirty(droid, commandable);
         }
 
+        ClearFactionAccess(droid.Owner);
+
         if (TryComp<AccessReaderComponent>(droid, out var accessReader))
         {
             _accessReader.TryClearAccesses((droid.Owner, accessReader));
         }
+    }
+
+    private void ApplyFactionAccess(EntityUid droid, SWDroidFactionModuleComponent module)
+    {
+        var id = EnsureComp<PresetIdCardComponent>(droid);
+        id.JobName = module.Job;
+
+        if (module.Job == null)
+        {
+            ClearIdAccess(droid);
+            return;
+        }
+
+        if (!_prototype.TryIndex(module.Job.Value, out JobPrototype? job))
+        {
+            Log.Error($"Invalid job id ({module.Job.Value}) for droid faction chip.");
+            ClearIdAccess(droid);
+            return;
+        }
+
+        var access = EnsureComp<AccessComponent>(droid);
+        _access.SetAccessToJob(droid, job, false, access);
+    }
+
+    private void ClearFactionAccess(EntityUid droid)
+    {
+        RemCompDeferred<PresetIdCardComponent>(droid);
+        ClearIdAccess(droid);
+    }
+
+    private void ClearIdAccess(EntityUid droid)
+    {
+        RemCompDeferred<AccessComponent>(droid);
     }
 
     private void DisableDroidAI(EntityUid droid)

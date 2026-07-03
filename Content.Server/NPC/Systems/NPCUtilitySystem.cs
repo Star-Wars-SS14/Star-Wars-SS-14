@@ -393,17 +393,14 @@ public sealed class NPCUtilitySystem : EntitySystem
                         return 1f;
                     }
 
-                    if (_inventory.TryGetSlotEntity(targetUid, "id", out var idcard))
+                    if (TryGetTargetJob(targetUid, out var job))
                     {
-                        if (TryComp<PresetIdCardComponent>(idcard, out var comp) && comp.JobName != null)
+                        if (config.AllowedJobs.TryGetValue(job, out var allowed))
                         {
-                            if (config.AllowedJobs.TryGetValue(comp.JobName, out var allowed))
-                            {
-                                return allowed ? 1f : 0f;
-                            }
-
-                            return config.TargetUnconfiguredJobs ? 0f : 1f;
+                            return allowed ? 1f : 0f;
                         }
+
+                        return config.TargetUnconfiguredJobs ? 0f : 1f;
                     }
 
                     if (HasComp<HumanoidAppearanceComponent>(targetUid))
@@ -417,6 +414,28 @@ public sealed class NPCUtilitySystem : EntitySystem
             default:
                 throw new NotImplementedException();
         }
+    }
+
+    private bool TryGetTargetJob(EntityUid targetUid, out string job)
+    {
+        job = string.Empty;
+
+        if (_inventory.TryGetSlotEntity(targetUid, "id", out var idcard) &&
+            TryComp<PresetIdCardComponent>(idcard, out var idComp) &&
+            idComp.JobName != null)
+        {
+            job = idComp.JobName.Value.Id;
+            return true;
+        }
+
+        if (TryComp<PresetIdCardComponent>(targetUid, out var targetIdComp) &&
+            targetIdComp.JobName != null)
+        {
+            job = targetIdComp.JobName.Value.Id;
+            return true;
+        }
+
+        return false;
     }
 
     private float GetAdjustedScore(float score, int considerations)

@@ -91,6 +91,7 @@
     category: FactionChip
   - type: SWDroidFactionModule
     faction: RepublicFaction
+    job: SWRepublicSoldier
     lockAccess:
     - SWRepublicBase
     - SWRepublicCommander
@@ -131,6 +132,7 @@
     category: FactionChip
   - type: SWDroidFactionModule
     faction: EmpireFaction
+    job: SWEmpireSoldier
     lockAccess:
     - SWEmpireBase
     - SWEmpireCommander

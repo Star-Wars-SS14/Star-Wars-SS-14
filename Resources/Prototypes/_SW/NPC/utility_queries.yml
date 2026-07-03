@@ -8,6 +8,9 @@
     - !type:ComponentQuery
       components:
         - type: Body
+    - !type:ComponentQuery
+      components:
+        - type: BorgChassis
   considerations:
     - !type:TargetIsAliveCon
       curve: !type:BoolCurve

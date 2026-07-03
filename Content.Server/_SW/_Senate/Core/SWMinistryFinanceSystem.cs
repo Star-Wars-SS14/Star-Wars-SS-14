@@ -56,6 +56,9 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
     public int ProgramProgress => (int) MathF.Round(_progress);
     public IReadOnlyList<int> RateOptions => RatePresets;
 
+    /// <summary>Rating band index: 0 = AAA (best) .. 7 = D (worst). See <see cref="RatingLabels"/>.</summary>
+    public int RatingBand => _ratingBand;
+
     public override void Initialize()
     {
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);

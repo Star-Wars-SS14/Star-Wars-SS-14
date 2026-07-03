@@ -423,6 +423,8 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
     }
 
     public int FleetUpkeep => (int) MathF.Round(_groups.Count(g => g.State != SWFleetState.Reserve) * UpkeepPerHour);
+    public int FleetSize => _groups.Count;
+    public int FleetActive => _groups.Count(g => g.State == SWFleetState.Sector);
 
     public List<SWFleetGroupEntry> BuildFleet()
     {

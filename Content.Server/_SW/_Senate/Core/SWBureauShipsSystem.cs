@@ -112,6 +112,7 @@ public sealed class SWBureauShipsSystem : EntitySystem
     public int Network => (int) MathF.Round(_network);
     public int Policy => _policy;
     public int ForgedTotal => (int) MathF.Round(_forged.Values.Sum());
+    public int FleetRegistered => _fleet.Count;
 
     public override void Initialize()
     {

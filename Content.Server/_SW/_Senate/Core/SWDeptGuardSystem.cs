@@ -61,11 +61,13 @@ public sealed class SWDeptGuardSystem : EntitySystem
 
     private int _day = -1;
     private float _accum;
+    private int _writsExecuted;
 
     public int Discipline => (int) MathF.Round(_discipline);
     public int TotalSquads => _totalSquads;
     public int PostedTotal => _posted.Sum();
     public int ReserveSquads => Math.Max(0, _totalSquads - PostedTotal - _running.Sum(r => r.Squads));
+    public int WritsExecuted => _writsExecuted;
 
     public override void Initialize()
     {
@@ -83,6 +85,7 @@ public sealed class SWDeptGuardSystem : EntitySystem
         _running.Clear();
         _opCooldowns.Clear();
         _log.Clear();
+        _writsExecuted = 0;
         _day = -1;
     }
 
@@ -206,6 +209,7 @@ public sealed class SWDeptGuardSystem : EntitySystem
         var def = Writs[writ.DefIndex];
         if (_random.Prob(writ.SuccessChance / 100f))
         {
+            _writsExecuted++;
             _justice.RelieveBacklog(def.Relief);
             _dilemma.SetMinistryBudget(DeptId, _dilemma.GetMinistryBudget(DeptId) + def.Fine);
             AddDiscipline(2f);

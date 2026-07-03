@@ -3,6 +3,7 @@ using Content.Server.GameTicking;
 using Content.Server._SW._Senate.Economy;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Ambitions;
+using Content.Shared._SW._Senate.Ministries;
 using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;
 using Robust.Shared.Prototypes;
@@ -17,11 +18,26 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWSenatePartySystem _party = default!;
     [Dependency] private readonly SWEmergencyPowersSystem _powers = default!;
+    [Dependency] private readonly SWMinistrySystem _ministry = default!;
+    [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
+    [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
+    [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
+    [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
+    [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
+    [Dependency] private readonly SWMinistryHealthSystem _health = default!;
+    [Dependency] private readonly SWDeptHealthcareSystem _deptHealth = default!;
+    [Dependency] private readonly SWDeptGuardSystem _deptGuard = default!;
+    [Dependency] private readonly SWDeptArbitrageSystem _deptArbitrage = default!;
+    [Dependency] private readonly SWDeptExpenditureSystem _deptExpenditure = default!;
+    [Dependency] private readonly SWBureauShipsSystem _bureauShips = default!;
+    [Dependency] private readonly SWBureauWeaponsSystem _bureauWeapons = default!;
+    [Dependency] private readonly SWBureauTransitSystem _bureauTransit = default!;
 
     private const float UpdateInterval = 5f;
 
-    // Assigned once per round per owner (sector id for senators, "republic" for the Chancellor); persists
-    // across game days and is only wiped on round restart.
+    // Assigned once per round per owner (sector id for senators, "republic" for the Chancellor, the
+    // ministry/department/bureau id for a minister-role office); persists across game days and is only
+    // wiped on round restart, and stays with the OFFICE even if its holder changes.
     private readonly Dictionary<string, List<SWActiveAmbition>> _assigned = new();
     private float _accumulator;
 
@@ -45,18 +61,23 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
         _accumulator = 0f;
 
         foreach (var (sectorId, _) in _senate.SectorHolders)
-            EnsureAssigned(sectorId, SWAmbitionRole.Senator, sectorId);
+            EnsureAssigned(sectorId, SWAmbitionRole.Senator, sectorId, null);
 
         if (_senate.Chancellor != null)
-            EnsureAssigned(SWSenateDilemmaSystem.RepublicOwner, SWAmbitionRole.Chancellor, null);
+            EnsureAssigned(SWSenateDilemmaSystem.RepublicOwner, SWAmbitionRole.Chancellor, null, null);
+
+        foreach (var (ministryId, _) in _ministry.Holders)
+            EnsureAssigned(ministryId, SWAmbitionRole.Minister, null, ministryId);
     }
 
-    private void EnsureAssigned(string owner, SWAmbitionRole role, string? sectorId)
+    private void EnsureAssigned(string owner, SWAmbitionRole role, string? sectorId, string? ministryId)
     {
         if (_assigned.ContainsKey(owner))
             return;
 
-        var pool = _proto.EnumeratePrototypes<SWAmbitionPrototype>().Where(a => a.Role == role).ToList();
+        var pool = _proto.EnumeratePrototypes<SWAmbitionPrototype>()
+            .Where(a => a.Role == role && (role != SWAmbitionRole.Minister || a.MinistryId == ministryId))
+            .ToList();
         _random.Shuffle(pool);
 
         var target = Math.Min(_random.Next(2, 4), pool.Count);
@@ -90,9 +111,11 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
     private void EnsureForOwner(string owner)
     {
         if (owner == SWSenateDilemmaSystem.RepublicOwner)
-            EnsureAssigned(owner, SWAmbitionRole.Chancellor, null);
+            EnsureAssigned(owner, SWAmbitionRole.Chancellor, null, null);
+        else if (_proto.HasIndex<SWMinistryPrototype>(owner))
+            EnsureAssigned(owner, SWAmbitionRole.Minister, null, owner);
         else
-            EnsureAssigned(owner, SWAmbitionRole.Senator, owner);
+            EnsureAssigned(owner, SWAmbitionRole.Senator, owner, null);
     }
 
     public List<SWAmbitionEntry> BuildAmbitions(string owner)
@@ -189,10 +212,118 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
                 var need = (int) proto.Threshold;
                 return (_powers.Authority >= need, $"авторитет {_powers.Authority} / нужно {need}");
             }
+            case SWAmbitionKind.MinisterMetric:
+            {
+                var value = MinisterMetricValue(active.Owner, proto.Stat);
+                return (Compare(value, proto.Comparison, proto.Threshold), StatProgress(value, proto));
+            }
             default:
                 return (false, string.Empty);
         }
     }
+
+    // Generic (ministryId, metric) lookup for every Minister-role ambition. One switch per office keeps
+    // each ministry/department/bureau's ambitions grounded in that office's own real mechanics instead of
+    // generic global stats.
+    private float MinisterMetricValue(string ministryId, string metric) => ministryId switch
+    {
+        SWMinistryDefenseSystem.DefenseMinistryId => metric switch
+        {
+            "BorderPressure" => _defense.BorderPressure,
+            "WarWeariness" => _defense.WarWeariness,
+            "FleetSize" => _defense.FleetSize,
+            "FleetActive" => _defense.FleetActive,
+            _ => 0f,
+        },
+        SWMinistryInternalSecuritySystem.SecurityMinistryId => metric switch
+        {
+            "Threat" => _security.Threat,
+            "Unrest" => _security.Unrest,
+            "PlotsBusted" => _security.PlotsBusted,
+            _ => 0f,
+        },
+        SWMinistryEconomySystem.EconomyMinistryId => metric switch
+        {
+            "Growth" => _economy.Growth,
+            "Overheat" => _economy.Overheat,
+            "ProjectsCompleted" => _economy.ProjectsCompleted,
+            "ActiveRoutes" => _economy.ActiveRoutes,
+            _ => 0f,
+        },
+        SWMinistryFinanceSystem.FinanceMinistryId => metric switch
+        {
+            "Inflation" => _finance.Inflation,
+            "Debt" => _finance.Debt,
+            "RatingBand" => _finance.RatingBand,
+            _ => 0f,
+        },
+        SWMinistryJusticeSystem.JusticeMinistryId => metric switch
+        {
+            "Backlog" => _justice.Backlog,
+            "Accuracy" => _justice.Accuracy(),
+            "Resolved" => _justice.Resolved,
+            "Overdue" => _justice.Overdue,
+            _ => 0f,
+        },
+        SWMinistryHealthSystem.HealthMinistryId => metric switch
+        {
+            "Immunity" => _health.Immunity,
+            "HospitalsBuilt" => _health.HospitalsBuilt,
+            "VaccineReady" => _health.VaccineReady ? 1f : 0f,
+            _ => 0f,
+        },
+        SWDeptHealthcareSystem.DeptId => metric switch
+        {
+            "Readiness" => _deptHealth.Readiness,
+            "Supplies" => _deptHealth.Supplies,
+            "SuccessfulMissions" => _deptHealth.SuccessfulMissions,
+            _ => 0f,
+        },
+        SWDeptGuardSystem.DeptId => metric switch
+        {
+            "Discipline" => _deptGuard.Discipline,
+            "TotalSquads" => _deptGuard.TotalSquads,
+            "WritsExecuted" => _deptGuard.WritsExecuted,
+            "PostedTotal" => _deptGuard.PostedTotal,
+            _ => 0f,
+        },
+        SWDeptArbitrageSystem.DeptId => metric switch
+        {
+            "Independence" => _deptArbitrage.Independence,
+            "Solved" => _deptArbitrage.Solved,
+            _ => 0f,
+        },
+        SWDeptExpenditureSystem.DeptId => metric switch
+        {
+            "Transparency" => _deptExpenditure.Transparency,
+            "Recovered" => _deptExpenditure.Recovered,
+            _ => 0f,
+        },
+        SWBureauShipsSystem.BureauId => metric switch
+        {
+            "TradeFlow" => _bureauShips.TradeFlow,
+            "Integrity" => _bureauShips.Integrity,
+            "Network" => _bureauShips.Network,
+            "ForgedTotal" => _bureauShips.ForgedTotal,
+            "FleetRegistered" => _bureauShips.FleetRegistered,
+            _ => 0f,
+        },
+        SWBureauWeaponsSystem.BureauId => metric switch
+        {
+            "Control" => _bureauWeapons.Control,
+            "BlackMarket" => _bureauWeapons.BlackMarket(),
+            "SecurityDroids" => _bureauWeapons.SecurityDroids,
+            _ => 0f,
+        },
+        SWBureauTransitSystem.BureauId => metric switch
+        {
+            "Mobility" => _bureauTransit.Mobility,
+            "Safety" => _bureauTransit.Safety,
+            "Congestion" => _bureauTransit.Congestion,
+            _ => 0f,
+        },
+        _ => 0f,
+    };
 
     private static string StatProgress(float value, SWAmbitionPrototype proto)
     {
@@ -204,9 +335,11 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
     {
         // Make sure everyone holding a seat at round end is scored, even if they never opened the console.
         foreach (var (sectorId, _) in _senate.SectorHolders)
-            EnsureAssigned(sectorId, SWAmbitionRole.Senator, sectorId);
+            EnsureAssigned(sectorId, SWAmbitionRole.Senator, sectorId, null);
         if (_senate.Chancellor != null)
-            EnsureAssigned(SWSenateDilemmaSystem.RepublicOwner, SWAmbitionRole.Chancellor, null);
+            EnsureAssigned(SWSenateDilemmaSystem.RepublicOwner, SWAmbitionRole.Chancellor, null, null);
+        foreach (var (ministryId, _) in _ministry.Holders)
+            EnsureAssigned(ministryId, SWAmbitionRole.Minister, null, ministryId);
 
         if (_assigned.Count == 0)
             return;
@@ -220,7 +353,9 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
             var holder = OwnerHolder(owner) ?? "—";
             var label = owner == SWSenateDilemmaSystem.RepublicOwner
                 ? $"Канцлер ({holder})"
-                : $"{SectorName(owner)} — {holder}";
+                : _proto.TryIndex<SWMinistryPrototype>(owner, out var ministryProto)
+                    ? $"{ministryProto.Name} — {holder}"
+                    : $"{SectorName(owner)} — {holder}";
 
             var score = 0;
             var lines = new List<string>();
@@ -273,8 +408,14 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
     private float RepublicGlobal(string stat) =>
         _senate.GetRepublicGlobals().TryGetValue(stat, out var value) ? value : 50f;
 
-    private string? OwnerHolder(string owner) =>
-        owner == SWSenateDilemmaSystem.RepublicOwner ? _senate.Chancellor : _senate.GetSectorHolder(owner);
+    private string? OwnerHolder(string owner)
+    {
+        if (owner == SWSenateDilemmaSystem.RepublicOwner)
+            return _senate.Chancellor;
+        if (_senate.SectorGlobals.ContainsKey(owner))
+            return _senate.GetSectorHolder(owner);
+        return _ministry.GetHolder(owner);
+    }
 
     private string SectorName(string id) =>
         _proto.TryIndex<SWSectorPrototype>(id, out var proto) ? proto.Name : id;

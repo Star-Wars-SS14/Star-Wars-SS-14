@@ -305,3 +305,641 @@
   kind: Consolidation
   threshold: 80
   order: 27
+
+# === Министр обороны ===
+
+- type: swAmbition
+  id: SWAmbitionMinDefBorder
+  name: Мирные рубежи
+  description: К концу раунда напряжённость на границах должна быть ниже 25.
+  role: Minister
+  ministryId: SWMinistryDefense
+  kind: MinisterMetric
+  stat: BorderPressure
+  comparison: Below
+  threshold: 25
+  order: 30
+
+- type: swAmbition
+  id: SWAmbitionMinDefWeariness
+  name: Свежая армия
+  description: К концу раунда усталость от войны должна быть ниже 20.
+  role: Minister
+  ministryId: SWMinistryDefense
+  kind: MinisterMetric
+  stat: WarWeariness
+  comparison: Below
+  threshold: 20
+  order: 31
+
+- type: swAmbition
+  id: SWAmbitionMinDefFleetSize
+  name: Великий флот
+  description: Собрать под своим командованием не менее пяти флотских групп.
+  role: Minister
+  ministryId: SWMinistryDefense
+  kind: MinisterMetric
+  stat: FleetSize
+  comparison: Above
+  threshold: 5
+  order: 32
+
+- type: swAmbition
+  id: SWAmbitionMinDefFleetActive
+  name: Флот на страже
+  description: Держать не менее трёх флотских групп развёрнутыми в секторах одновременно.
+  role: Minister
+  ministryId: SWMinistryDefense
+  kind: MinisterMetric
+  stat: FleetActive
+  comparison: Above
+  threshold: 3
+  order: 33
+
+- type: swAmbition
+  id: SWAmbitionMinDefHawk
+  name: Ястреб Республики
+  description: Вы тайно наживаетесь на военных заказах. К концу раунда напряжённость на границах должна быть выше 60.
+  role: Minister
+  ministryId: SWMinistryDefense
+  kind: MinisterMetric
+  stat: BorderPressure
+  comparison: Above
+  threshold: 60
+  order: 34
+
+# === Министерство внутренней безопасности ===
+
+- type: swAmbition
+  id: SWAmbitionMinSecThreat
+  name: Спокойствие в Республике
+  description: К концу раунда уровень угрозы должен быть ниже 20.
+  role: Minister
+  ministryId: SWMinistryInternalSecurity
+  kind: MinisterMetric
+  stat: Threat
+  comparison: Below
+  threshold: 20
+  order: 35
+
+- type: swAmbition
+  id: SWAmbitionMinSecUnrest
+  name: Мир в секторах
+  description: К концу раунда уровень накала должен быть ниже 20.
+  role: Minister
+  ministryId: SWMinistryInternalSecurity
+  kind: MinisterMetric
+  stat: Unrest
+  comparison: Below
+  threshold: 20
+  order: 36
+
+- type: swAmbition
+  id: SWAmbitionMinSecPlots
+  name: Гроза заговорщиков
+  description: Раскрыть силами агентуры не менее трёх заговоров за раунд.
+  role: Minister
+  ministryId: SWMinistryInternalSecurity
+  kind: MinisterMetric
+  stat: PlotsBusted
+  comparison: Above
+  threshold: 3
+  order: 37
+
+- type: swAmbition
+  id: SWAmbitionMinSecProvocateur
+  name: Провокатор
+  description: Вы тайно раздуваете угрозу, чтобы оправдать свои полномочия. К концу раунда угроза должна быть выше 60.
+  role: Minister
+  ministryId: SWMinistryInternalSecurity
+  kind: MinisterMetric
+  stat: Threat
+  comparison: Above
+  threshold: 60
+  order: 38
+
+# === Министерство экономического развития ===
+
+- type: swAmbition
+  id: SWAmbitionMinEcoGrowth
+  name: Экономический бум
+  description: К концу раунда темп роста экономики должен быть выше 3.
+  role: Minister
+  ministryId: SWMinistryEconomy
+  kind: MinisterMetric
+  stat: Growth
+  comparison: Above
+  threshold: 3
+  order: 39
+
+- type: swAmbition
+  id: SWAmbitionMinEcoSoftLanding
+  name: Мягкая посадка
+  description: К концу раунда перегрев экономики должен быть ниже 30 — рост без пузырей.
+  role: Minister
+  ministryId: SWMinistryEconomy
+  kind: MinisterMetric
+  stat: Overheat
+  comparison: Below
+  threshold: 30
+  order: 40
+
+- type: swAmbition
+  id: SWAmbitionMinEcoProjects
+  name: Строитель будущего
+  description: Завершить не менее двух мегапроектов за раунд.
+  role: Minister
+  ministryId: SWMinistryEconomy
+  kind: MinisterMetric
+  stat: ProjectsCompleted
+  comparison: Above
+  threshold: 2
+  order: 41
+
+- type: swAmbition
+  id: SWAmbitionMinEcoRoutes
+  name: Торговые пути
+  description: Поддерживать не менее трёх действующих гиперпутей одновременно.
+  role: Minister
+  ministryId: SWMinistryEconomy
+  kind: MinisterMetric
+  stat: ActiveRoutes
+  comparison: Above
+  threshold: 3
+  order: 42
+
+- type: swAmbition
+  id: SWAmbitionMinEcoBubble
+  name: Дутый пузырь
+  description: Вам плевать на завтра — важны сегодняшние сводки. К концу раунда перегрев экономики должен быть выше 70.
+  role: Minister
+  ministryId: SWMinistryEconomy
+  kind: MinisterMetric
+  stat: Overheat
+  comparison: Above
+  threshold: 70
+  order: 43
+
+# === Министерство финансов ===
+
+- type: swAmbition
+  id: SWAmbitionMinFinInflation
+  name: Твёрдая валюта
+  description: К концу раунда инфляция должна быть ниже 20.
+  role: Minister
+  ministryId: SWMinistryFinance
+  kind: MinisterMetric
+  stat: Inflation
+  comparison: Below
+  threshold: 20
+  order: 44
+
+- type: swAmbition
+  id: SWAmbitionMinFinDebt
+  name: Республика без долгов
+  description: К концу раунда государственный долг должен быть ниже 20.
+  role: Minister
+  ministryId: SWMinistryFinance
+  kind: MinisterMetric
+  stat: Debt
+  comparison: Below
+  threshold: 20
+  order: 45
+
+- type: swAmbition
+  id: SWAmbitionMinFinRating
+  name: Наивысший рейтинг
+  description: К концу раунда кредитный рейтинг Республики должен быть не ниже AA.
+  role: Minister
+  ministryId: SWMinistryFinance
+  kind: MinisterMetric
+  stat: RatingBand
+  comparison: Below
+  threshold: 2
+  order: 46
+
+- type: swAmbition
+  id: SWAmbitionMinFinSpiral
+  name: Долговая спираль
+  description: Вы тайно наращиваете долг Республики в личных интересах. К концу раунда долг должен быть выше 70.
+  role: Minister
+  ministryId: SWMinistryFinance
+  kind: MinisterMetric
+  stat: Debt
+  comparison: Above
+  threshold: 70
+  order: 47
+
+# === Министерство юстиции ===
+
+- type: swAmbition
+  id: SWAmbitionMinJusBacklog
+  name: Быстрое правосудие
+  description: К концу раунда загруженность судов должна быть ниже 20.
+  role: Minister
+  ministryId: SWMinistryJustice
+  kind: MinisterMetric
+  stat: Backlog
+  comparison: Below
+  threshold: 20
+  order: 48
+
+- type: swAmbition
+  id: SWAmbitionMinJusAccuracy
+  name: Справедливый суд
+  description: К концу раунда точность приговоров должна быть не ниже 80%.
+  role: Minister
+  ministryId: SWMinistryJustice
+  kind: MinisterMetric
+  stat: Accuracy
+  comparison: Above
+  threshold: 80
+  order: 49
+
+- type: swAmbition
+  id: SWAmbitionMinJusResolved
+  name: Трудяга правосудия
+  description: Рассмотреть не менее пятнадцати дел за раунд.
+  role: Minister
+  ministryId: SWMinistryJustice
+  kind: MinisterMetric
+  stat: Resolved
+  comparison: Above
+  threshold: 15
+  order: 50
+
+- type: swAmbition
+  id: SWAmbitionMinJusOverdue
+  name: Никаких проволочек
+  description: К концу раунда просроченных дел должно быть не больше пяти.
+  role: Minister
+  ministryId: SWMinistryJustice
+  kind: MinisterMetric
+  stat: Overdue
+  comparison: Below
+  threshold: 5
+  order: 51
+
+- type: swAmbition
+  id: SWAmbitionMinJusCrisis
+  name: Кризис в судах
+  description: Вы тайно затягиваете дела, чтобы обосновать созыв чрезвычайных трибуналов. Загруженность судов должна быть выше 60.
+  role: Minister
+  ministryId: SWMinistryJustice
+  kind: MinisterMetric
+  stat: Backlog
+  comparison: Above
+  threshold: 60
+  order: 52
+
+# === Министерство здравоохранения ===
+
+- type: swAmbition
+  id: SWAmbitionMinHelImmunity
+  name: Крепкий иммунитет
+  description: К концу раунда средний иммунитет населения должен быть выше 70.
+  role: Minister
+  ministryId: SWMinistryHealth
+  kind: MinisterMetric
+  stat: Immunity
+  comparison: Above
+  threshold: 70
+  order: 53
+
+- type: swAmbition
+  id: SWAmbitionMinHelHospitals
+  name: Сеть госпиталей
+  description: Достроить не менее трёх госпиталей за раунд.
+  role: Minister
+  ministryId: SWMinistryHealth
+  kind: MinisterMetric
+  stat: HospitalsBuilt
+  comparison: Above
+  threshold: 3
+  order: 54
+
+- type: swAmbition
+  id: SWAmbitionMinHelVaccine
+  name: Победа над чумой
+  description: Разработать и подтвердить готовность вакцины против галактического патогена.
+  role: Minister
+  ministryId: SWMinistryHealth
+  kind: MinisterMetric
+  stat: VaccineReady
+  comparison: Above
+  threshold: 0.5
+  order: 55
+
+- type: swAmbition
+  id: SWAmbitionMinHelBaron
+  name: Фармацевтический барон
+  description: Вы тайно держите население хронически больным — аптеки процветают. Иммунитет должен быть ниже 30.
+  role: Minister
+  ministryId: SWMinistryHealth
+  kind: MinisterMetric
+  stat: Immunity
+  comparison: Below
+  threshold: 30
+  order: 56
+
+# === Департамент здравоохранения ===
+
+- type: swAmbition
+  id: SWAmbitionDepHelReadiness
+  name: Готовые к вылету
+  description: К концу раунда готовность полевых бригад должна быть выше 70.
+  role: Minister
+  ministryId: SWDepartmentHealthcare
+  kind: MinisterMetric
+  stat: Readiness
+  comparison: Above
+  threshold: 70
+  order: 60
+
+- type: swAmbition
+  id: SWAmbitionDepHelSupplies
+  name: Полные склады
+  description: К концу раунда запасы медикаментов должны быть выше 60.
+  role: Minister
+  ministryId: SWDepartmentHealthcare
+  kind: MinisterMetric
+  stat: Supplies
+  comparison: Above
+  threshold: 60
+  order: 61
+
+- type: swAmbition
+  id: SWAmbitionDepHelMissions
+  name: Спасатели
+  description: Успешно завершить не менее пяти выездов полевых бригад за раунд.
+  role: Minister
+  ministryId: SWDepartmentHealthcare
+  kind: MinisterMetric
+  stat: SuccessfulMissions
+  comparison: Above
+  threshold: 5
+  order: 62
+
+# === Сенатская Гвардия (Департамент юстиции) ===
+
+- type: swAmbition
+  id: SWAmbitionDepGuardDiscipline
+  name: Железная дисциплина
+  description: К концу раунда дисциплина гвардии должна быть выше 80.
+  role: Minister
+  ministryId: SWDepartmentJustice
+  kind: MinisterMetric
+  stat: Discipline
+  comparison: Above
+  threshold: 80
+  order: 63
+
+- type: swAmbition
+  id: SWAmbitionDepGuardSquads
+  name: Растущий гарнизон
+  description: Довести число отрядов гвардии до шести.
+  role: Minister
+  ministryId: SWDepartmentJustice
+  kind: MinisterMetric
+  stat: TotalSquads
+  comparison: Above
+  threshold: 5
+  order: 64
+
+- type: swAmbition
+  id: SWAmbitionDepGuardWrits
+  name: Служители закона
+  description: Исполнить не менее пяти судебных ордеров за раунд.
+  role: Minister
+  ministryId: SWDepartmentJustice
+  kind: MinisterMetric
+  stat: WritsExecuted
+  comparison: Above
+  threshold: 5
+  order: 65
+
+- type: swAmbition
+  id: SWAmbitionDepGuardPosts
+  name: Все на постах
+  description: Держать не менее шести отрядов на постоянных постах одновременно.
+  role: Minister
+  ministryId: SWDepartmentJustice
+  kind: MinisterMetric
+  stat: PostedTotal
+  comparison: Above
+  threshold: 6
+  order: 66
+
+# === Департамент арбитража ===
+
+- type: swAmbition
+  id: SWAmbitionDepArbIndependence
+  name: Неподкупный трибунал
+  description: К концу раунда независимость арбитража должна быть выше 75.
+  role: Minister
+  ministryId: SWDepartmentArbitrage
+  kind: MinisterMetric
+  stat: Independence
+  comparison: Above
+  threshold: 75
+  order: 67
+
+- type: swAmbition
+  id: SWAmbitionDepArbSolved
+  name: Гроза коррупционеров
+  description: Довести до ареста не менее трёх крупных дел за раунд.
+  role: Minister
+  ministryId: SWDepartmentArbitrage
+  kind: MinisterMetric
+  stat: Solved
+  comparison: Above
+  threshold: 3
+  order: 68
+
+- type: swAmbition
+  id: SWAmbitionDepArbPuppet
+  name: Карманный арбитраж
+  description: Вы тайно пляшете под чужую дудку. К концу раунда независимость арбитража должна быть ниже 30.
+  role: Minister
+  ministryId: SWDepartmentArbitrage
+  kind: MinisterMetric
+  stat: Independence
+  comparison: Below
+  threshold: 30
+  order: 69
+
+# === Департамент учёта расходов ===
+
+- type: swAmbition
+  id: SWAmbitionDepExpTransparency
+  name: Стеклянная казна
+  description: К концу раунда прозрачность бюджета должна быть выше 70.
+  role: Minister
+  ministryId: SWDepartmentExpenditure
+  kind: MinisterMetric
+  stat: Transparency
+  comparison: Above
+  threshold: 70
+  order: 70
+
+- type: swAmbition
+  id: SWAmbitionDepExpRecovered
+  name: Возвращённые средства
+  description: Вернуть в казну не менее трёх тысяч кредитов за раунд.
+  role: Minister
+  ministryId: SWDepartmentExpenditure
+  kind: MinisterMetric
+  stat: Recovered
+  comparison: Above
+  threshold: 3000
+  order: 71
+
+- type: swAmbition
+  id: SWAmbitionDepExpDarkBooks
+  name: Тёмная бухгалтерия
+  description: Вы тайно покрываете хищения ради своей доли. К концу раунда прозрачность бюджета должна быть ниже 25.
+  role: Minister
+  ministryId: SWDepartmentExpenditure
+  kind: MinisterMetric
+  stat: Transparency
+  comparison: Below
+  threshold: 25
+  order: 72
+
+# === Бюро кораблей и услуг ===
+
+- type: swAmbition
+  id: SWAmbitionBurShipsFlow
+  name: Оживлённые торговые пути
+  description: К концу раунда торговый поток должен быть выше 70.
+  role: Minister
+  ministryId: SWBureauShips
+  kind: MinisterMetric
+  stat: TradeFlow
+  comparison: Above
+  threshold: 70
+  order: 75
+
+- type: swAmbition
+  id: SWAmbitionBurShipsIntegrity
+  name: Образцовый реестр
+  description: К концу раунда целостность реестра должна быть выше 70.
+  role: Minister
+  ministryId: SWBureauShips
+  kind: MinisterMetric
+  stat: Integrity
+  comparison: Above
+  threshold: 70
+  order: 76
+
+- type: swAmbition
+  id: SWAmbitionBurShipsFleet
+  name: Растущий торговый флот
+  description: Зарегистрировать под флагом Республики не менее десяти судов за раунд.
+  role: Minister
+  ministryId: SWBureauShips
+  kind: MinisterMetric
+  stat: FleetRegistered
+  comparison: Above
+  threshold: 10
+  order: 77
+
+- type: swAmbition
+  id: SWAmbitionBurShipsSmuggler
+  name: Покровитель контрабандистов
+  description: Вы тайно закрываете глаза на подделки за долю малую. Фальшивых транспондеров в обороте должно быть не меньше пяти.
+  role: Minister
+  ministryId: SWBureauShips
+  kind: MinisterMetric
+  stat: ForgedTotal
+  comparison: Above
+  threshold: 5
+  order: 78
+
+# === Бюро по регулированию вооружений ===
+
+- type: swAmbition
+  id: SWAmbitionBurArmsControl
+  name: Строгий учёт оружия
+  description: К концу раунда контроль оборота оружия должен быть выше 70.
+  role: Minister
+  ministryId: SWBureauWeapons
+  kind: MinisterMetric
+  stat: Control
+  comparison: Above
+  threshold: 70
+  order: 79
+
+- type: swAmbition
+  id: SWAmbitionBurArmsAlly
+  name: Союзник ВБ
+  description: Придать Министерству внутренней безопасности не менее трёх партий боевых дроидов.
+  role: Minister
+  ministryId: SWBureauWeapons
+  kind: MinisterMetric
+  stat: SecurityDroids
+  comparison: Above
+  threshold: 3
+  order: 80
+
+- type: swAmbition
+  id: SWAmbitionBurArmsBaron
+  name: Оружейный барон
+  description: Вы тайно потворствуете чёрному рынку оружия. К концу раунда чёрный рынок должен быть выше 50.
+  role: Minister
+  ministryId: SWBureauWeapons
+  kind: MinisterMetric
+  stat: BlackMarket
+  comparison: Above
+  threshold: 50
+  order: 81
+
+# === Бюро путешествий и транзита ===
+
+- type: swAmbition
+  id: SWAmbitionBurTransitMobility
+  name: Республика в движении
+  description: К концу раунда мобильность сети должна быть выше 70.
+  role: Minister
+  ministryId: SWBureauTransit
+  kind: MinisterMetric
+  stat: Mobility
+  comparison: Above
+  threshold: 70
+  order: 82
+
+- type: swAmbition
+  id: SWAmbitionBurTransitSafety
+  name: Безопасные линии
+  description: К концу раунда безопасность линий должна быть выше 70.
+  role: Minister
+  ministryId: SWBureauTransit
+  kind: MinisterMetric
+  stat: Safety
+  comparison: Above
+  threshold: 70
+  order: 83
+
+- type: swAmbition
+  id: SWAmbitionBurTransitFree
+  name: Свободные узлы
+  description: К концу раунда загруженность узлов должна быть ниже 30.
+  role: Minister
+  ministryId: SWBureauTransit
+  kind: MinisterMetric
+  stat: Congestion
+  comparison: Below
+  threshold: 30
+  order: 84
+
+- type: swAmbition
+  id: SWAmbitionBurTransitChaos
+  name: Хаос ради выгоды
+  description: Вы тайно душите узлы, зарабатывая на экстренных сборах. Загруженность узлов должна быть выше 70.
+  role: Minister
+  ministryId: SWBureauTransit
+  kind: MinisterMetric
+  stat: Congestion
+  comparison: Above
+  threshold: 70
+  order: 85

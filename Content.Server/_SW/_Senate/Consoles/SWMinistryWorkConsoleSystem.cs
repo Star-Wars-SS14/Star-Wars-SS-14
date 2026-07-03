@@ -32,6 +32,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
     [Dependency] private readonly SWCorruptionSystem _corruption = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
+    [Dependency] private readonly SWSenateAmbitionSystem _ambition = default!;
 
     private const int ScreenCost = 600;
     private const int ProsecuteCost = 1200;
@@ -674,6 +675,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                 state.MinistryAdmin = _dilemma.GetMinistryAdmin(ministryId);
                 state.AuditCost = _dilemma.AuditCost;
                 state.Requests = _dilemma.BuildMinistryRequests(ministryId);
+                state.Ambitions = _ambition.BuildAmbitions(ministryId);
 
                 if (ministryId == SWMinistryDefenseSystem.DefenseMinistryId)
                 {

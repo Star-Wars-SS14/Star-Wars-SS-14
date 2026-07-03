@@ -44,6 +44,7 @@ public sealed class SWMinistryEconomySystem : EntitySystem
 
     private string? _program;
     private float _progress;
+    private int _projectsCompleted;
 
     private int _day = -1;
     private float _accum;
@@ -57,7 +58,9 @@ public sealed class SWMinistryEconomySystem : EntitySystem
     public int ProgramProgress => (int) MathF.Round(_progress);
     public int ProjectSlots => MaxProjects;
     public int ProjectUsed => _projects.Count;
+    public int ProjectsCompleted => _projectsCompleted;
     public int RouteCap => MaxRoutes;
+    public int ActiveRoutes => _routes.Count(r => !RouteDisrupted(r));
 
     public override void Initialize()
     {
@@ -77,6 +80,7 @@ public sealed class SWMinistryEconomySystem : EntitySystem
         _stimulusPending = false;
         _program = null;
         _progress = 0f;
+        _projectsCompleted = 0;
         _day = -1;
     }
 
@@ -347,6 +351,7 @@ public sealed class SWMinistryEconomySystem : EntitySystem
             {
                 CompleteProject(proto, project.SectorId);
                 _projects.RemoveAt(i);
+                _projectsCompleted++;
                 continue;
             }
 

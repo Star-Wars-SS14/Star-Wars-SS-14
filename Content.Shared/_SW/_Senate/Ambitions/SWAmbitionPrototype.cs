@@ -1,3 +1,4 @@
+using Content.Shared._SW._Senate.Ministries;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
@@ -8,6 +9,7 @@ public enum SWAmbitionRole : byte
 {
     Senator,
     Chancellor,
+    Minister,
 }
 
 [Serializable, NetSerializable]
@@ -29,6 +31,13 @@ public enum SWAmbitionKind : byte
     PartyStrong,
     PartySize,
     Consolidation,
+
+    /// <summary>
+    /// Minister-role ambitions: a named metric read off that office's own system, compared against
+    /// Threshold. One generic kind reused for every ministry/department/bureau — see
+    /// SWSenateAmbitionSystem.MinisterMetricValue for the (ministryId, metric) lookup table.
+    /// </summary>
+    MinisterMetric,
 }
 
 [Prototype("swAmbition")]
@@ -49,11 +58,19 @@ public sealed partial class SWAmbitionPrototype : IPrototype
     [DataField]
     public SWAmbitionRole Role = SWAmbitionRole.Senator;
 
+    /// <summary>
+    /// Required when Role == Minister: which ministry/department/bureau office this ambition can be
+    /// assigned to (e.g. SWMinistryDefense, SWDepartmentArbitrage, SWBureauShips).
+    /// </summary>
+    [DataField]
+    public ProtoId<SWMinistryPrototype>? MinistryId;
+
     [DataField]
     public SWAmbitionKind Kind;
 
     /// <summary>
-    /// Global stat id for stat/outdo kinds; sub-stat id for AuthorLawStat. Unused for law-count kinds.
+    /// Global stat id for stat/outdo kinds; sub-stat id for AuthorLawStat; metric name for MinisterMetric.
+    /// Unused for law-count kinds.
     /// </summary>
     [DataField]
     public string Stat = string.Empty;

@@ -64,6 +64,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
     private float _unrest = UnrestStart;
     private string? _program;
     private float _progress;
+    private int _plotsBusted;
 
     private int _day = -1;
     private float _accum;
@@ -75,6 +76,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
     public int Unrest => (int) MathF.Round(_unrest);
     public string? SelectedProgram => _program;
     public int ProgramProgress => (int) MathF.Round(_progress);
+    public int PlotsBusted => _plotsBusted;
 
     public override void Initialize()
     {
@@ -97,6 +99,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
         _log.Clear();
         _plots.Clear();
         _nextPlotId = 1;
+        _plotsBusted = 0;
         _day = -1;
     }
 
@@ -587,6 +590,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
         if (_random.Prob(RaidChance(plot) / 100f))
         {
             _plots.Remove(plot);
+            _plotsBusted++;
             AddThreat(-4f);
             AddUnrest(3f);
             if (_senate.IsClaimed(plot.SectorId))

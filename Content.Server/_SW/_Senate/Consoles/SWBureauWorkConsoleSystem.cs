@@ -26,6 +26,7 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWBureauTransitSystem _transit = default!;
     [Dependency] private readonly SWBureauWeaponsSystem _weapons = default!;
     [Dependency] private readonly SWCorruptionSystem _corruption = default!;
+    [Dependency] private readonly SWSenateAmbitionSystem _ambition = default!;
 
     private const float UpdateInterval = 3f;
     private float _accumulator;
@@ -292,6 +293,7 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
             state.Admin = _dilemma.GetMinistryAdmin(bureauId);
             state.AuditCost = _dilemma.AuditCost;
             state.Requests = _dilemma.BuildMinistryRequests(bureauId);
+            state.Ambitions = _ambition.BuildAmbitions(bureauId);
 
             if (_ministry.GetHolder(bureauId) is { } holder)
             {

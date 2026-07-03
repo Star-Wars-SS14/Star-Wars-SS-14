@@ -73,11 +73,13 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
 
     private int _day = -1;
     private float _accum;
+    private int _successfulMissions;
 
     public int Readiness => (int) MathF.Round(_readiness);
     public int Supplies => (int) MathF.Round(_supplies);
     public int FreeBrigades => _freeBrigades;
     public int ActiveMissions => _missions.Count;
+    public int SuccessfulMissions => _successfulMissions;
 
     public override void Initialize()
     {
@@ -95,6 +97,7 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
         _missions.Clear();
         _opCooldowns.Clear();
         _log.Clear();
+        _successfulMissions = 0;
         _day = -1;
     }
 
@@ -226,6 +229,7 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
         ApplyOutcome(success ? def.Win : def.Fail, mission.SectorId);
         if (success)
         {
+            _successfulMissions++;
             AddReadiness(3f);
             AddLog($"{def.Name}: бригада справилась ({SectorName(mission.SectorId)}).");
         }

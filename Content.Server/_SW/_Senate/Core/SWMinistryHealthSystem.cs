@@ -66,11 +66,13 @@ public sealed class SWMinistryHealthSystem : EntitySystem
 
     private string? _program;
     private float _progress;
+    private int _hospitalsBuilt;
 
     private float _upkeepAccum;
     private int _day = -1;
     private float _accum;
 
+    public int HospitalsBuilt => _hospitalsBuilt;
     public bool PathogenActive => _active;
     public string PathogenName => _name;
     public int PathogenStrain => _strain;
@@ -112,6 +114,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         _emergencyPending = false;
         _program = null;
         _progress = 0f;
+        _hospitalsBuilt = 0;
         _upkeepAccum = 0f;
         _day = -1;
     }
@@ -392,6 +395,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
 
             _hospitals[sectorId] = Math.Min(HospitalMaxLevel, (_hospitals.TryGetValue(sectorId, out var l) ? l : 0) + 1);
             _construction.Remove(sectorId);
+            _hospitalsBuilt++;
             var name = _proto.TryIndex<SWSectorPrototype>(sectorId, out var sp) ? sp.Name : sectorId;
             AddLog($"Госпиталь в {name} достроен (ур. {_hospitals[sectorId]}).");
         }

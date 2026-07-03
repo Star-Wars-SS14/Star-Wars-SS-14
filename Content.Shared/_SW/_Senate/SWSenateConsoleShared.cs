@@ -235,6 +235,7 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public int MinistryAdmin;
     public int AuditCost;
     public List<SWMinistryRequestEntry> Requests = new();
+    public List<SWAmbitionEntry> Ambitions = new();
 
     // КОМАНДОВАНИЕ (Defense ministry only).
     public bool IsDefense;
@@ -2362,6 +2363,7 @@ public sealed class SWDepartmentWorkConsoleState : BoundUserInterfaceState
     public List<SWShipsOpEntry> Ops = new();
     public List<string> Log = new();
     public List<SWMinistryRequestEntry> Requests = new();
+    public List<SWAmbitionEntry> Ambitions = new();
 
     public bool IsHealthcare;
     public int FreeBrigades;
@@ -2475,6 +2477,7 @@ public sealed class SWBureauWorkConsoleState : BoundUserInterfaceState
 
     public SWBureauDilemmaEntry? Dilemma;
     public List<SWMinistryRequestEntry> Requests = new();
+    public List<SWAmbitionEntry> Ambitions = new();
 
     // Ships & Services bureau: transponder registry.
     public bool IsShips;

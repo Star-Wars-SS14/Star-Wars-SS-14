@@ -2235,6 +2235,48 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
                 OverviewContent.AddChild(new Control { MinHeight = 8 });
             }
         }
+
+        BuildAmbitionsSection(OverviewContent, state.Ambitions);
+    }
+
+    private void BuildAmbitionsSection(BoxContainer target, List<SWAmbitionEntry> ambitions)
+    {
+        target.AddChild(new Control { MinHeight = 10 });
+        target.AddChild(SWConsoleStyle.Section("АМБИЦИИ"));
+        target.AddChild(new Control { MinHeight = 4 });
+
+        if (ambitions.Count == 0)
+        {
+            target.AddChild(SWConsoleStyle.Text("Амбиций нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            return;
+        }
+
+        foreach (var ambition in ambitions)
+        {
+            var row = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, ambition.Met ? SWConsoleStyle.Good : SWConsoleStyle.Edge);
+            row.Margin = new Thickness(0, 0, 0, 6);
+            var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+
+            var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+            var name = SWConsoleStyle.Text(ambition.Name, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold);
+            name.HorizontalExpand = true;
+            head.AddChild(name);
+            head.AddChild(SWConsoleStyle.Text(ambition.Met ? "выполнено" : "не выполнено", ambition.Met ? SWConsoleStyle.Good : SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            box.AddChild(head);
+
+            if (!string.IsNullOrWhiteSpace(ambition.Description))
+            {
+                var desc = new RichTextLabel { Margin = new Thickness(0, 2, 0, 0) };
+                desc.SetMessage(ambition.Description);
+                box.AddChild(desc);
+            }
+
+            if (!string.IsNullOrWhiteSpace(ambition.Progress))
+                box.AddChild(SWConsoleStyle.Text(ambition.Progress, SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+
+            row.AddChild(box);
+            target.AddChild(row);
+        }
     }
 
     private static Control MakeSubBar(SWStatEntry sub)

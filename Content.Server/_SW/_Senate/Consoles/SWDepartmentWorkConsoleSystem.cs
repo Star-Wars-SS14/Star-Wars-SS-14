@@ -27,6 +27,7 @@ public sealed class SWDepartmentWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWDeptGuardSystem _guard = default!;
     [Dependency] private readonly SWDeptArbitrageSystem _arbitrage = default!;
     [Dependency] private readonly SWDeptExpenditureSystem _expenditure = default!;
+    [Dependency] private readonly SWSenateAmbitionSystem _ambition = default!;
 
     private const float UpdateInterval = 3f;
     private float _accumulator;
@@ -241,6 +242,7 @@ public sealed class SWDepartmentWorkConsoleSystem : EntitySystem
             state.Admin = _dilemma.GetMinistryAdmin(deptId);
             state.AuditCost = _dilemma.AuditCost;
             state.Requests = _dilemma.BuildMinistryRequests(deptId);
+            state.Ambitions = _ambition.BuildAmbitions(deptId);
 
             if (proto.Parent is { } parentId && _proto.TryIndex<SWMinistryPrototype>(parentId, out var parentProto))
             {

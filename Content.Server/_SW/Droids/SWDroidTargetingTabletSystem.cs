@@ -3,6 +3,7 @@ using Content.Server._SW.TurretConsole;
 using Content.Server.Popups;
 using Content.Shared._SW.Droids;
 using Content.Shared._SW.TaskSystem;
+using Content.Shared.Examine;
 using Content.Shared.Interaction;
 using Content.Shared.Lock;
 using Content.Shared.Popups;
@@ -21,7 +22,46 @@ public sealed class SWDroidTargetingTabletSystem : EntitySystem
     {
         base.Initialize();
 
+        SubscribeLocalEvent<SWDroidTargetingTabletComponent, ComponentStartup>(OnTabletStartup);
+        SubscribeLocalEvent<SWDroidTargetingTabletComponent, ExaminedEvent>(OnTabletExamined);
+        SubscribeLocalEvent<SWDroidTargetingTabletComponent, SWTargetingProviderAvailableEvent>(OnProviderAvailable);
         SubscribeLocalEvent<SWDroidCommandableComponent, InteractUsingEvent>(OnDroidInteractUsing);
+    }
+
+    private void OnTabletStartup(Entity<SWDroidTargetingTabletComponent> ent, ref ComponentStartup args)
+    {
+        EnsureControlId(ent.Owner, ent.Comp);
+    }
+
+    private void OnTabletExamined(Entity<SWDroidTargetingTabletComponent> ent, ref ExaminedEvent args)
+    {
+        if (!args.IsInDetailsRange)
+            return;
+
+        EnsureControlId(ent.Owner, ent.Comp);
+
+        args.PushMarkup(Loc.GetString(
+            "sw-droid-targeting-tablet-examine-control-id",
+            ("id", ent.Comp.ControlId),
+            ("status", Loc.GetString(ent.Comp.Enabled
+                ? "sw-droid-control-console-status-enabled"
+                : "sw-droid-control-console-status-disabled"))));
+    }
+
+    private void OnProviderAvailable(Entity<SWDroidTargetingTabletComponent> ent, ref SWTargetingProviderAvailableEvent args)
+    {
+        if (ent.Comp.Enabled)
+            return;
+
+        args.Cancel();
+
+        if (!args.Popup ||
+            args.User is not { Valid: true } user)
+        {
+            return;
+        }
+
+        _popup.PopupCursor(Loc.GetString("sw-droid-targeting-tablet-disabled"), user, PopupType.MediumCaution);
     }
 
     private void OnDroidInteractUsing(Entity<SWDroidCommandableComponent> droid, ref InteractUsingEvent args)
@@ -34,6 +74,12 @@ public sealed class SWDroidTargetingTabletSystem : EntitySystem
         }
 
         args.Handled = true;
+
+        if (!tablet.Enabled)
+        {
+            _popup.PopupEntity(Loc.GetString("sw-droid-targeting-tablet-disabled"), droid, args.User, PopupType.MediumCaution);
+            return;
+        }
 
         if (_lock.IsLocked(droid.Owner))
         {
@@ -66,4 +112,11 @@ public sealed class SWDroidTargetingTabletSystem : EntitySystem
         return true;
     }
 
+    private void EnsureControlId(EntityUid uid, SWDroidTargetingTabletComponent component)
+    {
+        if (!string.IsNullOrWhiteSpace(component.ControlId))
+            return;
+
+        component.ControlId = $"{component.ControlIdPrefix}-{GetNetEntity(uid).Id}";
+    }
 }

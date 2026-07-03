@@ -25,7 +25,7 @@ public sealed class SWTargetingConfigTargetsSystem : EntitySystem
 
         var targets = EnsureComp<SWTargetingConfigTargetsComponent>(provider);
         targets.Targets.Add(target);
-        ApplyConfigToTarget(target, console, targets);
+        ApplyConfigToTarget(provider, target, console, targets);
     }
 
     public void UnregisterTarget(EntityUid provider, EntityUid target)
@@ -46,6 +46,20 @@ public sealed class SWTargetingConfigTargetsSystem : EntitySystem
         }
 
         DisableTargetConfig(target);
+    }
+
+    public void RefreshProvider(EntityUid provider)
+    {
+        if (!TryComp<SWTargetingConfigTargetsComponent>(provider, out var targets))
+            return;
+
+        if (!TryComp<SWTurretConsoleComponent>(provider, out var console))
+            return;
+
+        if (IsProviderEnabled(provider))
+            ApplyConfigToTargets(provider, console, targets);
+        else
+            DisableConfigForTargets(targets);
     }
 
     private void OnMapInit(Entity<SWTargetingConfigTargetsComponent> ent, ref MapInitEvent args)
@@ -82,7 +96,7 @@ public sealed class SWTargetingConfigTargetsSystem : EntitySystem
         if (!TryComp<SWTargetingConfigTargetsComponent>(ent.Owner, out var targets))
             return;
 
-        ApplyConfigToTargets(ent.Comp, targets);
+        ApplyConfigToTargets(ent.Owner, ent.Comp, targets);
     }
 
     private void SyncPortTargets(Entity<SWTargetingConfigTargetsComponent> ent)
@@ -105,7 +119,7 @@ public sealed class SWTargetingConfigTargetsSystem : EntitySystem
         foreach (var source in sink.LinkedSources)
         {
             ent.Comp.Targets.Add(source);
-            ApplyConfigToTarget(source, console, ent.Comp);
+            ApplyConfigToTarget(ent.Owner, source, console, ent.Comp);
         }
     }
 
@@ -131,7 +145,7 @@ public sealed class SWTargetingConfigTargetsSystem : EntitySystem
         RefreshTargetConfig(target);
     }
 
-    private void ApplyConfigToTargets(SWTurretConsoleComponent console, SWTargetingConfigTargetsComponent targets)
+    private void ApplyConfigToTargets(EntityUid provider, SWTurretConsoleComponent console, SWTargetingConfigTargetsComponent targets)
     {
         foreach (var target in targets.Targets.ToArray())
         {
@@ -141,12 +155,18 @@ public sealed class SWTargetingConfigTargetsSystem : EntitySystem
                 continue;
             }
 
-            ApplyConfigToTarget(target, console, targets);
+            ApplyConfigToTarget(provider, target, console, targets);
         }
     }
 
-    private void ApplyConfigToTarget(EntityUid target, SWTurretConsoleComponent console, SWTargetingConfigTargetsComponent targets)
+    private void ApplyConfigToTarget(EntityUid provider, EntityUid target, SWTurretConsoleComponent console, SWTargetingConfigTargetsComponent targets)
     {
+        if (!IsProviderEnabled(provider))
+        {
+            RefreshTargetConfig(target);
+            return;
+        }
+
         var config = EnsureComp<SWTargetingConfigComponent>(target);
         config.AllowedJobs = new Dictionary<string, bool>(console.JobsAllowed);
         config.TargetUnconfiguredJobs = targets.TargetUnconfiguredJobs;
@@ -160,12 +180,13 @@ public sealed class SWTargetingConfigTargetsSystem : EntitySystem
             return;
 
         var query = EntityQueryEnumerator<SWTurretConsoleComponent, SWTargetingConfigTargetsComponent>();
-        while (query.MoveNext(out _, out var console, out var targets))
+        while (query.MoveNext(out var provider, out var console, out var targets))
         {
-            if (!targets.Targets.Contains(target))
+            if (!IsProviderEnabled(provider) ||
+                !targets.Targets.Contains(target))
                 continue;
 
-            ApplyConfigToTarget(target, console, targets);
+            ApplyConfigToTarget(provider, target, console, targets);
             return;
         }
 
@@ -178,5 +199,20 @@ public sealed class SWTargetingConfigTargetsSystem : EntitySystem
             return;
 
         RemComp<SWTargetingConfigComponent>(target);
+    }
+
+    private void DisableConfigForTargets(SWTargetingConfigTargetsComponent targets)
+    {
+        foreach (var target in targets.Targets)
+        {
+            RefreshTargetConfig(target);
+        }
+    }
+
+    private bool IsProviderEnabled(EntityUid provider)
+    {
+        var ev = new SWTargetingProviderAvailableEvent(null, false);
+        RaiseLocalEvent(provider, ev);
+        return !ev.Cancelled;
     }
 }

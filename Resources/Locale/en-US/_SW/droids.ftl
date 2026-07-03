@@ -4,10 +4,22 @@ sw-droid-module-category-limit = This droid already has a module of that categor
 sw-droid-targeting-tablet-linked = Droid targeting tablet linked.
 sw-droid-targeting-tablet-locked = Unlock the droid first.
 sw-droid-targeting-tablet-wrong-faction = This tablet is incompatible with this droid.
+sw-droid-targeting-tablet-disabled = This datapad has been remotely disabled.
+sw-droid-targeting-tablet-examine-control-id = Control ID: {$id}. Status: {$status}.
 sw-droid-repair-missing-steel = You need steel to repair the droid.
 sw-targeting-console-target-humanoids-without-id = Target humanoids without ID
 sw-targeting-console-target-animals = Target animals
+sw-droid-control-console-window-title = Droid control console
+sw-droid-control-console-datapads-count = Control datapads: {$count}
+sw-droid-control-console-no-datapads = No registered control datapads.
+sw-droid-control-console-status-enabled = Enabled
+sw-droid-control-console-status-disabled = Disabled
+sw-droid-control-console-datapad-heading = {$id} - {$name}
+sw-droid-control-console-datapad-details = Status: {$status}; linked droids: {$count}
+sw-droid-control-console-disable = Disable
+sw-droid-control-console-enable = Enable
 sw-droid-control-datapad-window-title = Droid control datapad
+sw-droid-control-datapad-disabled-overlay = DISABLED
 sw-droid-control-datapad-tab-droids = Droids
 sw-droid-control-datapad-tab-targets = Targets
 sw-droid-control-datapad-tab-map = Map
@@ -65,3 +77,11 @@ ent-SWDroidTargetingTabletEmpire = Imperial droid targeting tablet
 
 ent-SWDroidChargingPad = droid charging pad
     .desc = A flat powered platform that recharges droids standing on it.
+
+ent-SWDroidControlConsoleEmpire = imperial droid control console
+    .suffix = Empire
+    .desc = A command console for monitoring and disabling Imperial droid control datapads.
+
+ent-SWDroidControlConsoleRepublic = republic droid control console
+    .suffix = Republic
+    .desc = A command console for monitoring and disabling Republic droid control datapads.

@@ -97,6 +97,7 @@ public sealed class SWDroidControlDatapadUISystem : EntitySystem
             GetDroidEntries(uid),
             GetDroidEntries(uid, tablet.CurrentUiUser),
             GetMapUid(tablet.CurrentUiUser),
+            tablet.Enabled,
             targets?.TargetHumanoidsWithoutId ?? false,
             targets?.TargetAnimals ?? false);
 

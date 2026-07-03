@@ -46,6 +46,8 @@ public sealed partial class SWDroidControlDatapadMenu : DefaultWindow
         Tabs.SetTabTitle(1, Loc.GetString("sw-droid-control-datapad-tab-targets"));
         Tabs.SetTabTitle(2, Loc.GetString("sw-droid-control-datapad-tab-map"));
 
+        DisabledOverlayLabel.FontColorOverride = Color.Red;
+
         TargetHumanoidsWithoutIdCheckBox.OnToggled += _ => OnTargetHumanoidsWithoutIdToggled?.Invoke();
         TargetAnimalsCheckBox.OnToggled += _ => OnTargetAnimalsToggled?.Invoke();
         DroidNavMap.TrackedEntitySelectedAction += SetTrackedDroidFromMap;
@@ -53,6 +55,9 @@ public sealed partial class SWDroidControlDatapadMenu : DefaultWindow
 
     public void UpdateState(SWDroidControlDatapadBoundUserInterfaceState state)
     {
+        MainContent.Visible = state.Enabled;
+        DisabledOverlay.Visible = !state.Enabled;
+
         UpdateDroids(state.Droids);
         UpdateJobs(state.JobsAllowed);
         UpdateFactions(state.AvailableFactions);

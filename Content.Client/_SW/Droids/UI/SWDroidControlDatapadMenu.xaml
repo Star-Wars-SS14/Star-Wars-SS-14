@@ -6,7 +6,7 @@
     Title="{Loc 'sw-droid-control-datapad-window-title'}"
     MinSize="560 440"
     SetSize="820 620">
-    <BoxContainer Orientation="Vertical" Margin="8">
+    <BoxContainer Name="MainContent" Orientation="Vertical" Margin="8">
         <TabContainer Name="Tabs" VerticalExpand="True">
             <BoxContainer Orientation="Vertical" VerticalExpand="True">
                 <Label Name="DroidsSummary" Margin="0 0 0 6" />
@@ -65,4 +65,16 @@
             </BoxContainer>
         </TabContainer>
     </BoxContainer>
+    <PanelContainer Name="DisabledOverlay" Visible="False" MouseFilter="Stop">
+        <PanelContainer.PanelOverride>
+            <gfx:StyleBoxFlat BackgroundColor="#1B1B1EE5" />
+        </PanelContainer.PanelOverride>
+        <Label
+            Name="DisabledOverlayLabel"
+            Text="{Loc 'sw-droid-control-datapad-disabled-overlay'}"
+            Align="Center"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            StyleClasses="LabelBig" />
+    </PanelContainer>
 </DefaultWindow>

@@ -51,3 +51,23 @@ ent-ActionSWDroidOrderFollow = Следовать
 
 ent-ActionSWDroidOrderStay = Стоять
     .desc = Подконтрольные дроиды удерживают позицию.
+sw-droid-targeting-tablet-disabled = Этот датапад дистанционно отключён.
+sw-droid-targeting-tablet-examine-control-id = Код управления: {$id}. Статус: {$status}.
+sw-droid-control-console-window-title = Консоль управления дроидами
+sw-droid-control-console-datapads-count = Датапады управления: {$count}
+sw-droid-control-console-no-datapads = Нет зарегистрированных датападов управления.
+sw-droid-control-console-status-enabled = Включён
+sw-droid-control-console-status-disabled = Отключён
+sw-droid-control-console-datapad-heading = {$id} - {$name}
+sw-droid-control-console-datapad-details = Статус: {$status}; привязанные дроиды: {$count}
+sw-droid-control-console-disable = Отключить
+sw-droid-control-console-enable = Включить
+
+ent-SWDroidControlConsoleEmpire = имперская консоль управления дроидами
+    .suffix = Империя
+    .desc = Командная консоль для отслеживания и отключения имперских датападов управления дроидами.
+
+ent-SWDroidControlConsoleRepublic = республиканская консоль управления дроидами
+    .suffix = Республика
+    .desc = Командная консоль для отслеживания и отключения республиканских датападов управления дроидами.
+sw-droid-control-datapad-disabled-overlay = ОТКЛЮЧЕН

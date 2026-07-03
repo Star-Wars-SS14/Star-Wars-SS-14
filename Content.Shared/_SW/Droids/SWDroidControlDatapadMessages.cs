@@ -11,6 +11,7 @@ public sealed class SWDroidControlDatapadBoundUserInterfaceState : BoundUserInte
     public List<SWDroidControlDatapadDroidEntry> Droids = new();
     public List<SWDroidControlDatapadDroidEntry> MapDroids = new();
     public NetEntity? MapUid;
+    public bool Enabled;
     public bool TargetHumanoidsWithoutId;
     public bool TargetAnimals;
 
@@ -20,6 +21,7 @@ public sealed class SWDroidControlDatapadBoundUserInterfaceState : BoundUserInte
         List<SWDroidControlDatapadDroidEntry> droids,
         List<SWDroidControlDatapadDroidEntry> mapDroids,
         NetEntity? mapUid,
+        bool enabled,
         bool targetHumanoidsWithoutId,
         bool targetAnimals)
     {
@@ -28,6 +30,7 @@ public sealed class SWDroidControlDatapadBoundUserInterfaceState : BoundUserInte
         Droids = droids;
         MapDroids = mapDroids;
         MapUid = mapUid;
+        Enabled = enabled;
         TargetHumanoidsWithoutId = targetHumanoidsWithoutId;
         TargetAnimals = targetAnimals;
     }
@@ -57,5 +60,60 @@ public sealed class SWDroidControlDatapadDroidEntry
         CoordinatesText = coordinatesText;
         Charge = charge;
         Status = status;
+    }
+}
+
+[NetSerializable, Serializable]
+public enum SWDroidControlConsoleUiKey : byte
+{
+    Key,
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDroidControlConsoleBoundUserInterfaceState : BoundUserInterfaceState
+{
+    public List<SWDroidControlConsoleDatapadEntry> Datapads = new();
+
+    public SWDroidControlConsoleBoundUserInterfaceState(List<SWDroidControlConsoleDatapadEntry> datapads)
+    {
+        Datapads = datapads;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDroidControlConsoleDatapadEntry
+{
+    public NetEntity DatapadUid;
+    public string ControlId;
+    public string Name;
+    public string Status;
+    public int LinkedDroids;
+    public bool Enabled;
+
+    public SWDroidControlConsoleDatapadEntry(
+        NetEntity datapadUid,
+        string controlId,
+        string name,
+        string status,
+        int linkedDroids,
+        bool enabled)
+    {
+        DatapadUid = datapadUid;
+        ControlId = controlId;
+        Name = name;
+        Status = status;
+        LinkedDroids = linkedDroids;
+        Enabled = enabled;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDroidControlConsoleToggleDatapadMessage : BoundUserInterfaceMessage
+{
+    public NetEntity DatapadUid;
+
+    public SWDroidControlConsoleToggleDatapadMessage(NetEntity datapadUid)
+    {
+        DatapadUid = datapadUid;
     }
 }

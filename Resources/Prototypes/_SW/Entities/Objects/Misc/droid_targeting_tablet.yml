@@ -45,6 +45,7 @@
   components:
   - type: SWDroidTargetingTablet
     faction: RepublicFaction
+    controlIdPrefix: RDU
   - type: SWTurretConsole
     jobsAllowed:
       SWSobrikCaptain: false
@@ -68,6 +69,7 @@
   components:
   - type: SWDroidTargetingTablet
     faction: EmpireFaction
+    controlIdPrefix: IDU
   - type: SWTurretConsole
     jobsAllowed:
       SWRepublicCommanderCommander: false

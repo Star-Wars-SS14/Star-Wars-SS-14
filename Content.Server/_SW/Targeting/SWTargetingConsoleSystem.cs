@@ -37,6 +37,10 @@ public sealed partial class SWTargetingConsoleSystem : EntitySystem
             _popupSystem.PopupCursor(Loc.GetString("comms-console-permission-denied"), user, PopupType.Medium);
             return;
         }
+
+        if (!IsProviderEnabled(user, ent.Owner))
+            return;
+
         var faction = _sWFaction.GetFactionEntity(args.Faction);
         if (faction == null)
         {
@@ -64,6 +68,10 @@ public sealed partial class SWTargetingConsoleSystem : EntitySystem
             _popupSystem.PopupCursor(Loc.GetString("comms-console-permission-denied"), user, PopupType.Medium);
             return;
         }
+
+        if (!IsProviderEnabled(user, ent.Owner))
+            return;
+
         var faction = _sWFaction.GetFactionEntity(args.Faction);
         if (faction == null)
         {
@@ -91,6 +99,10 @@ public sealed partial class SWTargetingConsoleSystem : EntitySystem
             _popupSystem.PopupCursor(Loc.GetString("comms-console-permission-denied"), user, PopupType.Medium);
             return;
         }
+
+        if (!IsProviderEnabled(user, ent.Owner))
+            return;
+
         ent.Comp.JobsAllowed[args.Job] = !ent.Comp.JobsAllowed[args.Job];
         UpdateInterface(ent.Owner, ent.Comp);
         RaiseSettingsChanged(ent.Owner, user);
@@ -106,6 +118,9 @@ public sealed partial class SWTargetingConsoleSystem : EntitySystem
             _popupSystem.PopupCursor(Loc.GetString("comms-console-permission-denied"), user, PopupType.Medium);
             return;
         }
+
+        if (!IsProviderEnabled(user, ent.Owner))
+            return;
 
         var targets = EnsureComp<SWTargetingConfigTargetsComponent>(ent.Owner);
         targets.TargetHumanoidsWithoutId = !targets.TargetHumanoidsWithoutId;
@@ -123,6 +138,9 @@ public sealed partial class SWTargetingConsoleSystem : EntitySystem
             _popupSystem.PopupCursor(Loc.GetString("comms-console-permission-denied"), user, PopupType.Medium);
             return;
         }
+
+        if (!IsProviderEnabled(user, ent.Owner))
+            return;
 
         var targets = EnsureComp<SWTargetingConfigTargetsComponent>(ent.Owner);
         targets.TargetAnimals = !targets.TargetAnimals;
@@ -174,6 +192,13 @@ public sealed partial class SWTargetingConsoleSystem : EntitySystem
             return _accessReaderSystem.IsAllowed(user, console, accessReaderComponent);
         }
         return true;
+    }
+
+    private bool IsProviderEnabled(EntityUid user, EntityUid provider)
+    {
+        var ev = new SWTargetingProviderAvailableEvent(user, true);
+        RaiseLocalEvent(provider, ev);
+        return !ev.Cancelled;
     }
 
     private void RaiseSettingsChanged(EntityUid uid, EntityUid user)

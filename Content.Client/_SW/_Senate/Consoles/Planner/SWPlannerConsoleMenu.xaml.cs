@@ -8,6 +8,7 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Maths;
+using Robust.Shared.Utility;
 
 namespace Content.Client._SW._Senate.Consoles.Planner;
 
@@ -209,7 +210,13 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
         if (!state.HasCard)
         {
             DayList.RemoveAllChildren();
-            DayList.AddChild(SWConsoleStyle.Text("Вставьте ID-карту с именем владельца.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            if (state.CardInserted)
+            {
+                DayList.AddChild(SWConsoleStyle.Text("Карта не опознана: нет имени владельца и закреплённой должности.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+                DayList.AddChild(SWConsoleStyle.Text("Закрепите за картой сектор или ведомство — планировщик опознает вас по должности.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            }
+            else
+                DayList.AddChild(SWConsoleStyle.Text("Вставьте ID-карту.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             PeopleList.RemoveAllChildren();
             BlockList.RemoveAllChildren();
             return;
@@ -235,7 +242,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
     {
         StatusStrip.RemoveAllChildren();
 
-        var who = SWConsoleStyle.Text(state.HasCard ? state.Me : "нет карты", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold);
+        var who = SWConsoleStyle.Text(state.HasCard ? state.Me : state.CardInserted ? "карта не опознана" : "нет карты", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold);
         who.VerticalAlignment = Control.VAlignment.Center;
         StatusStrip.AddChild(who);
 
@@ -624,11 +631,11 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
 
         if (conflicts.Count > 0)
         {
-            MeetHintLabel.SetMessage($"[color=#E0556B]Слот {SWPlannerSlots.Range(_meetSlot, _meetDuration)} пересекается с расписанием: {string.Join(", ", conflicts)}.[/color]");
+            SetMarkup(MeetHintLabel, $"[color=#E0556B]Слот {SWPlannerSlots.Range(_meetSlot, _meetDuration)} пересекается с расписанием: {string.Join(", ", conflicts)}.[/color]");
         }
         else
         {
-            MeetHintLabel.SetMessage($"[color=#43D16A]Слот {SWPlannerSlots.Range(_meetSlot, _meetDuration)} свободен у всех участников.[/color]");
+            SetMarkup(MeetHintLabel, $"[color=#43D16A]Слот {SWPlannerSlots.Range(_meetSlot, _meetDuration)} свободен у всех участников.[/color]");
             _confirmArmed = false;
         }
 
@@ -642,10 +649,13 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
                 free.Add(SWPlannerSlots.Time(slot));
         }
 
-        CommonSlotsLabel.SetMessage(free.Count > 0
+        SetMarkup(CommonSlotsLabel, free.Count > 0
             ? $"[color=#8899AA]Все свободны в: {string.Join(", ", free)}[/color]"
             : "[color=#E0556B]Общих свободных окон такой длины нет.[/color]");
     }
+
+    private static void SetMarkup(RichTextLabel label, string markup) =>
+        label.SetMessage(FormattedMessage.FromMarkupPermissive(markup));
 
     private void OnCreatePressed()
     {

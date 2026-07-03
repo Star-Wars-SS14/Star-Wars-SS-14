@@ -2660,6 +2660,7 @@ public sealed class SWPlannerMeetingEntry
 public sealed class SWPlannerConsoleState : BoundUserInterfaceState
 {
     public bool HasCard;
+    public bool CardInserted;
     public string Me = string.Empty;
     public string GameTime = string.Empty;
     public int Today;

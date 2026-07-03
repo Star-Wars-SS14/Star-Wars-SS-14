@@ -16,6 +16,8 @@ public sealed class SWPlannerConsoleSystem : EntitySystem
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenatePlannerSystem _planner = default!;
+    [Dependency] private readonly SWSenateStateSystem _senate = default!;
+    [Dependency] private readonly SWMinistrySystem _ministry = default!;
 
     private const float UpdateInterval = 3f;
     private float _accumulator;
@@ -37,10 +39,29 @@ public sealed class SWPlannerConsoleSystem : EntitySystem
     private string? GetMe(Entity<SWPlannerConsoleComponent> ent)
     {
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
-        if (card == null || !TryComp<IdCardComponent>(card, out var idCard))
+        if (card == null)
             return null;
 
-        return string.IsNullOrWhiteSpace(idCard.FullName) ? null : idCard.FullName;
+        if (TryComp<IdCardComponent>(card, out var idCard) && !string.IsNullOrWhiteSpace(idCard.FullName))
+            return idCard.FullName;
+
+        if (TryComp<SWSenateSectorComponent>(card, out var sector) && sector.Sector is { } sectorId
+            && _senate.SectorHolders.TryGetValue(sectorId, out var senator))
+            return senator;
+
+        if (TryComp<SWMinistryComponent>(card, out var ministry) && ministry.Ministry is { } ministryId
+            && _ministry.Holders.TryGetValue(ministryId, out var minister))
+            return minister;
+
+        if (TryComp<SWSenatePositionCardComponent>(card, out var position))
+        {
+            if (position.Position == SWSenatePosition.Speaker)
+                return _senate.Speaker;
+            if (position.Position == SWSenatePosition.Chancellor)
+                return _senate.Chancellor;
+        }
+
+        return null;
     }
 
     private void OnCreateMeeting(Entity<SWPlannerConsoleComponent> ent, ref SWPlannerCreateMeetingMessage args)
@@ -162,6 +183,7 @@ public sealed class SWPlannerConsoleSystem : EntitySystem
         var state = new SWPlannerConsoleState
         {
             HasCard = me != null,
+            CardInserted = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot) != null,
             Me = me ?? string.Empty,
             GameTime = _time.TimeString(),
             Today = today,

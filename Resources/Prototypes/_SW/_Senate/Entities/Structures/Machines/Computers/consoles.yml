@@ -152,6 +152,33 @@
 
 - type: entity
   parent: BaseComputer
+  id: SWPlannerConsole
+  name: планировщик Сената
+  description: Личные расписания, встречи и графики сотрудников Сената.
+  components:
+  - type: SWPlannerConsole
+  - type: ActivatableUI
+    key: enum.SWPlannerConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWPlannerConsoleUiKey.Key:
+        type: SWPlannerConsoleBoundUserInterface
+  - type: ItemSlots
+    slots:
+      senate_id_slot:
+        name: ID-карта
+        whitelist:
+          components:
+          - IdCard
+  - type: ContainerContainer
+    containers:
+      senate_id_slot: !type:ContainerSlot {}
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Godmode
+
+- type: entity
+  parent: BaseComputer
   id: SWSenateVoteConsole
   name: консоль голосования Сената
   description: Голосование по текущему законопроекту.

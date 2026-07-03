@@ -2577,3 +2577,210 @@ public sealed class SWShipsSetPolicyMessage : BoundUserInterfaceMessage
         Level = level;
     }
 }
+
+// --- Personal planner console ---
+
+[Serializable, NetSerializable]
+public enum SWPlannerConsoleUiKey
+{
+    Key
+}
+
+[Serializable, NetSerializable]
+public enum SWInviteStatus : byte
+{
+    Pending,
+    Accepted,
+    Declined,
+}
+
+/// <summary>The senate day sliced into 15-minute slots: 07:00–21:00 → 56 slots, bit-packable into a ulong.</summary>
+public static class SWPlannerSlots
+{
+    public const int PerDay = 56;
+
+    public static string Time(int slot) => $"{7 + slot / 4:00}:{slot % 4 * 15:00}";
+
+    public static string Range(int slot, int duration) => $"{Time(slot)}–{Time(slot + duration)}";
+
+    public static ulong Mask(int slot, int duration)
+    {
+        ulong mask = 0;
+        for (var i = slot; i < slot + duration && i < PerDay; i++)
+            mask |= 1UL << i;
+        return mask;
+    }
+
+    public static bool Overlaps(ulong busy, int slot, int duration) => (busy & Mask(slot, duration)) != 0;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPlannerItemEntry
+{
+    public int StartSlot;
+    public int Duration;
+    public int Kind; // 0 preset, 1 session, 2 meeting, 3 block, 4 busy (private)
+    public string Label = string.Empty;
+    public string Sub = string.Empty;
+    public int MeetingId = -1;
+    public int BlockId = -1;
+    public bool Confirmed;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPlannerPersonEntry
+{
+    public string Name = string.Empty;
+    public string Role = string.Empty;
+    public ulong BusyToday;
+    public ulong BusyTomorrow;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPlannerMeetingEntry
+{
+    public int Id;
+    public int Day;
+    public int StartSlot;
+    public int Duration;
+    public string Title = string.Empty;
+    public string Description = string.Empty;
+    public string Location = string.Empty;
+    public string Host = string.Empty;
+    public bool Private;
+    public bool Confirmed;
+    public bool IsHost;
+    public bool Invited;
+    public SWInviteStatus MyStatus;
+    public List<string> ParticipantLines = new();
+    public string Warning = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPlannerConsoleState : BoundUserInterfaceState
+{
+    public bool HasCard;
+    public string Me = string.Empty;
+    public string GameTime = string.Empty;
+    public int Today;
+    public int NowSlot = -1;
+    public ulong MyBusyToday;
+    public ulong MyBusyTomorrow;
+    public List<SWPlannerPersonEntry> Roster = new();
+    public List<SWPlannerItemEntry> MyItemsToday = new();
+    public List<SWPlannerItemEntry> MyItemsTomorrow = new();
+    public List<SWPlannerMeetingEntry> Meetings = new();
+    public List<string> Notices = new();
+    public string ViewPerson = string.Empty;
+    public int ViewDay;
+    public List<SWPlannerItemEntry> ViewItems = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPlannerCreateMeetingMessage : BoundUserInterfaceMessage
+{
+    public int Day;
+    public int Slot;
+    public int Duration;
+    public string Title;
+    public string Description;
+    public string Location;
+    public bool Private;
+    public List<string> Invitees;
+
+    public SWPlannerCreateMeetingMessage(int day, int slot, int duration, string title, string description, string location, bool priv, List<string> invitees)
+    {
+        Day = day;
+        Slot = slot;
+        Duration = duration;
+        Title = title;
+        Description = description;
+        Location = location;
+        Private = priv;
+        Invitees = invitees;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPlannerRespondMessage : BoundUserInterfaceMessage
+{
+    public int MeetingId;
+    public bool Accept;
+    public string Reason;
+
+    public SWPlannerRespondMessage(int meetingId, bool accept, string reason)
+    {
+        MeetingId = meetingId;
+        Accept = accept;
+        Reason = reason;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPlannerCancelMessage : BoundUserInterfaceMessage
+{
+    public int MeetingId;
+
+    public SWPlannerCancelMessage(int meetingId)
+    {
+        MeetingId = meetingId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPlannerRescheduleMessage : BoundUserInterfaceMessage
+{
+    public int MeetingId;
+    public int Day;
+    public int Slot;
+    public int Duration;
+
+    public SWPlannerRescheduleMessage(int meetingId, int day, int slot, int duration)
+    {
+        MeetingId = meetingId;
+        Day = day;
+        Slot = slot;
+        Duration = duration;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPlannerBlockMessage : BoundUserInterfaceMessage
+{
+    public int Day;
+    public int Slot;
+    public int Duration;
+    public string Label;
+
+    public SWPlannerBlockMessage(int day, int slot, int duration, string label)
+    {
+        Day = day;
+        Slot = slot;
+        Duration = duration;
+        Label = label;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPlannerRemoveBlockMessage : BoundUserInterfaceMessage
+{
+    public int BlockId;
+
+    public SWPlannerRemoveBlockMessage(int blockId)
+    {
+        BlockId = blockId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPlannerViewMessage : BoundUserInterfaceMessage
+{
+    public string Person;
+    public int Day;
+
+    public SWPlannerViewMessage(string person, int day)
+    {
+        Person = person;
+        Day = day;
+    }
+}

@@ -9,3 +9,15 @@
   values:
     prefix: sw-droid-command-follow-
     count: 3
+
+- type: localizedDataset
+  id: SWDroidCommandGoTo
+  values:
+    prefix: sw-droid-command-go-to-
+    count: 3
+
+- type: localizedDataset
+  id: SWDroidCommandAttack
+  values:
+    prefix: sw-droid-command-attack-
+    count: 3

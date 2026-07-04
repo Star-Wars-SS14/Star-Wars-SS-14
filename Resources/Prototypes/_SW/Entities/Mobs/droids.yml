@@ -210,3 +210,38 @@
   - type: InstantAction
     event: !type:SWDroidOrderActionEvent
       type: Stay
+
+- type: entity
+  id: ActionSWDroidOrderGoTo
+  parent: BaseAction
+  name: Go!
+  description: Ordered droids move to the selected point and hold there.
+  components:
+  - type: Action
+    useDelay: 0.5
+    icon:
+      sprite: _SW/Mobs/Droids/droid.rsi
+      state: base
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SWDroidGoToActionEvent
+
+- type: entity
+  id: ActionSWDroidOrderAttack
+  parent: BaseAction
+  name: Fire!
+  description: Ordered droids fire at the selected target.
+  components:
+  - type: Action
+    useDelay: 0.5
+    icon:
+      sprite: _SW/Mobs/Droids/droid.rsi
+      state: base
+  - type: TargetAction
+    checkCanAccess: false
+    range: 100
+  - type: EntityTargetAction
+    canTargetSelf: false
+    event: !type:SWDroidAttackActionEvent

@@ -5,6 +5,7 @@ using Content.Server._SW.Targeting;
 using Content.Server.Chat.Systems;
 using Content.Server.NPC;
 using Content.Server.NPC.HTN;
+using Content.Server.NPC.Pathfinding;
 using Content.Server.NPC.Systems;
 using Content.Server.Popups;
 using Content.Shared._SW.Droids;
@@ -42,6 +43,9 @@ public sealed class SWDroidCommandSystem : EntitySystem
     [Dependency] private readonly SWTargetingConfigTargetsSystem _targeting = default!;
     private const float UpdateDelay = 0.5f;
     private const float StayTime = 999999f;
+    private const string DroidCommandTarget = "DroidCommandTarget";
+    private const string DroidCommandTargetCoordinates = "DroidCommandTargetCoordinates";
+    private const string DroidCommandTargetPathfind = "DroidCommandTargetPathfind";
     private float _updateAccumulator;
 
     public override void Initialize()
@@ -50,6 +54,8 @@ public sealed class SWDroidCommandSystem : EntitySystem
 
         SubscribeLocalEvent<SWDroidCommanderComponent, SWDroidTakeCommandActionEvent>(OnTakeCommand);
         SubscribeLocalEvent<SWDroidCommanderComponent, SWDroidOrderActionEvent>(OnOrder);
+        SubscribeLocalEvent<SWDroidCommanderComponent, SWDroidGoToActionEvent>(OnGoToOrder);
+        SubscribeLocalEvent<SWDroidCommanderComponent, SWDroidAttackActionEvent>(OnAttackOrder);
         SubscribeLocalEvent<SWDroidCommanderComponent, ComponentShutdown>(OnCommanderShutdown);
         SubscribeLocalEvent<SWDroidCommandableComponent, ComponentShutdown>(OnDroidShutdown);
         SubscribeLocalEvent<SWDroidCommandableComponent, MobStateChangedEvent>(OnDroidMobStateChanged);
@@ -127,7 +133,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
 
         component.Droids.Add(droid);
         EnsureOrderActions(uid, component);
-        SetOrder(droid, droidComp, uid, component.CurrentOrder);
+        SetOrder(droid, droidComp, uid, component.CurrentOrder, component.CurrentGoToTarget, component.CurrentAttackTarget);
 
         _popup.PopupEntity(Loc.GetString("sw-droid-command-accepted"), uid, uid);
     }
@@ -138,8 +144,38 @@ public sealed class SWDroidCommandSystem : EntitySystem
             return;
 
         args.Handled = true;
-        component.CurrentOrder = args.Type;
-        DoCommandCallout(uid, component, args.Type);
+        IssueOrder(uid, component, args.Type);
+    }
+
+    private void OnGoToOrder(EntityUid uid, SWDroidCommanderComponent component, SWDroidGoToActionEvent args)
+    {
+        if (args.Handled)
+            return;
+
+        args.Handled = true;
+        IssueOrder(uid, component, SWDroidOrderType.GoTo, coordinates: args.Target);
+    }
+
+    private void OnAttackOrder(EntityUid uid, SWDroidCommanderComponent component, SWDroidAttackActionEvent args)
+    {
+        if (args.Handled)
+            return;
+
+        args.Handled = true;
+        IssueOrder(uid, component, SWDroidOrderType.Attack, target: args.Target);
+    }
+
+    private void IssueOrder(
+        EntityUid uid,
+        SWDroidCommanderComponent component,
+        SWDroidOrderType order,
+        EntityCoordinates? coordinates = null,
+        EntityUid? target = null)
+    {
+        component.CurrentOrder = order;
+        component.CurrentGoToTarget = order == SWDroidOrderType.GoTo ? coordinates : null;
+        component.CurrentAttackTarget = order == SWDroidOrderType.Attack ? target : null;
+        DoCommandCallout(uid, component, order);
 
         foreach (var droid in component.Droids.ToArray())
         {
@@ -150,7 +186,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
                 continue;
             }
 
-            SetOrder(droid, droidComp, uid, args.Type);
+            SetOrder(droid, droidComp, uid, order, coordinates, target);
         }
 
         UpdateOrderActions(uid, component);
@@ -328,17 +364,42 @@ public sealed class SWDroidCommandSystem : EntitySystem
         return false;
     }
 
-    private void SetOrder(EntityUid droid, SWDroidCommandableComponent droidComp, EntityUid commander, SWDroidOrderType order)
+    private void SetOrder(
+        EntityUid droid,
+        SWDroidCommandableComponent droidComp,
+        EntityUid commander,
+        SWDroidOrderType order,
+        EntityCoordinates? coordinates = null,
+        EntityUid? target = null)
     {
         if (!TryComp<HTNComponent>(droid, out var htn))
             return;
 
+        htn.PlanningToken?.Cancel();
+        htn.PlanningToken = null;
+        htn.PlanningJob = null;
+
         if (htn.Plan != null)
             _htn.ShutdownPlan(htn);
 
+        ClearCombatTarget(htn);
+
         if (order == SWDroidOrderType.Follow)
         {
+            StopFollowingMovement(droid, htn, false);
             _npc.SetBlackboard(droid, NPCBlackboard.FollowTarget, new EntityCoordinates(commander, Vector2.Zero));
+        }
+        else if (order == SWDroidOrderType.GoTo && coordinates != null)
+        {
+            StopFollowingMovement(droid, htn, false);
+            _npc.SetBlackboard(droid, NPCBlackboard.FollowTarget, coordinates.Value);
+            _npc.SetBlackboard(droid, "DroidStayTime", StayTime);
+        }
+        else if (order == SWDroidOrderType.Attack && target != null)
+        {
+            StopFollowingMovement(droid, htn);
+            _npc.SetBlackboard(droid, DroidCommandTarget, target.Value);
+            _npc.SetBlackboard(droid, DroidCommandTargetCoordinates, new EntityCoordinates(target.Value, Vector2.Zero));
         }
         else
         {
@@ -351,12 +412,21 @@ public sealed class SWDroidCommandSystem : EntitySystem
         _npc.WakeNPC(droid, htn);
     }
 
-    private void StopFollowingMovement(EntityUid droid, HTNComponent htn)
+    private void StopFollowingMovement(EntityUid droid, HTNComponent htn, bool removeFollowTarget = true)
     {
         _steering.Unregister(droid);
-        htn.Blackboard.Remove<EntityCoordinates>(NPCBlackboard.FollowTarget);
+        if (removeFollowTarget)
+            htn.Blackboard.Remove<EntityCoordinates>(NPCBlackboard.FollowTarget);
         htn.Blackboard.Remove<EntityCoordinates>("FollowIdleTarget");
         htn.Blackboard.Remove<float>("IdleTime");
+    }
+
+    private void ClearCombatTarget(HTNComponent htn)
+    {
+        htn.Blackboard.Remove<EntityUid>("Target");
+        htn.Blackboard.Remove<EntityUid>(DroidCommandTarget);
+        htn.Blackboard.Remove<EntityCoordinates>(DroidCommandTargetCoordinates);
+        htn.Blackboard.Remove<PathResultEvent>(DroidCommandTargetPathfind);
     }
 
     private void DoCommandCallout(EntityUid uid, SWDroidCommanderComponent component, SWDroidOrderType order)
@@ -383,6 +453,8 @@ public sealed class SWDroidCommandSystem : EntitySystem
 
         _actions.AddAction(uid, ref component.OrderFollowActionEntity, component.OrderFollowAction, component: actions);
         _actions.AddAction(uid, ref component.OrderStayActionEntity, component.OrderStayAction, component: actions);
+        _actions.AddAction(uid, ref component.OrderGoToActionEntity, component.OrderGoToAction, component: actions);
+        _actions.AddAction(uid, ref component.OrderAttackActionEntity, component.OrderAttackAction, component: actions);
         UpdateOrderActions(uid, component);
     }
 
@@ -398,8 +470,12 @@ public sealed class SWDroidCommandSystem : EntitySystem
 
         _actions.SetToggled(component.OrderFollowActionEntity, component.CurrentOrder == SWDroidOrderType.Follow);
         _actions.SetToggled(component.OrderStayActionEntity, component.CurrentOrder == SWDroidOrderType.Stay);
+        _actions.SetToggled(component.OrderGoToActionEntity, component.CurrentOrder == SWDroidOrderType.GoTo);
+        _actions.SetToggled(component.OrderAttackActionEntity, component.CurrentOrder == SWDroidOrderType.Attack);
         _actions.StartUseDelay(component.OrderFollowActionEntity);
         _actions.StartUseDelay(component.OrderStayActionEntity);
+        _actions.StartUseDelay(component.OrderGoToActionEntity);
+        _actions.StartUseDelay(component.OrderAttackActionEntity);
     }
 
     private void RemoveTakeCommandAction(EntityUid uid, SWDroidCommanderComponent component, ActionsComponent actions)
@@ -414,8 +490,12 @@ public sealed class SWDroidCommandSystem : EntitySystem
         var actionEntity = new Entity<ActionsComponent?>(uid, actions);
         _actions.RemoveAction(actionEntity, component.OrderFollowActionEntity);
         _actions.RemoveAction(actionEntity, component.OrderStayActionEntity);
+        _actions.RemoveAction(actionEntity, component.OrderGoToActionEntity);
+        _actions.RemoveAction(actionEntity, component.OrderAttackActionEntity);
         component.OrderFollowActionEntity = null;
         component.OrderStayActionEntity = null;
+        component.OrderGoToActionEntity = null;
+        component.OrderAttackActionEntity = null;
     }
 
     private void CleanupInvalidDroids(EntityUid commanderUid, SWDroidCommanderComponent component)

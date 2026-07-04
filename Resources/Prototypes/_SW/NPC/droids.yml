@@ -3,6 +3,24 @@
   branches:
   - preconditions:
     - !type:SWDroidHasAICorePrecondition
+    - !type:HasOrdersPrecondition
+      orders: enum.SWDroidOrderType.Attack
+    - !type:KeyExistsPrecondition
+      key: DroidCommandTarget
+    tasks:
+    - !type:HTNCompoundTask
+      task: SWDroidOrderedAttackCompound
+  - preconditions:
+    - !type:SWDroidHasAICorePrecondition
+    - !type:HasOrdersPrecondition
+      orders: enum.SWDroidOrderType.GoTo
+    - !type:KeyExistsPrecondition
+      key: FollowTarget
+    tasks:
+    - !type:HTNCompoundTask
+      task: SWDroidGoToCompound
+  - preconditions:
+    - !type:SWDroidHasAICorePrecondition
     tasks:
     - !type:HTNCompoundTask
       task: SWDroidRangedCombatCompound
@@ -17,12 +35,39 @@
     - !type:SWDroidHasAICorePrecondition
     - !type:HasOrdersPrecondition
       orders: enum.SWDroidOrderType.Follow
+    - !type:KeyExistsPrecondition
+      key: FollowTarget
     tasks:
     - !type:HTNCompoundTask
       task: FollowCompound
   - tasks:
     - !type:HTNCompoundTask
       task: SWDroidStayCompound
+
+- type: htnCompound
+  id: SWDroidGoToCompound
+  branches:
+  - tasks:
+    - !type:HTNPrimitiveTask
+      preconditions:
+      - !type:CoordinatesNotInRangePrecondition
+        targetKey: FollowTarget
+        rangeKey: FollowCloseRange
+      operator: !type:MoveToOperator
+        pathfindInPlanning: true
+        targetKey: FollowTarget
+        rangeKey: FollowCloseRange
+        removeKeyOnFinish: false
+  - tasks:
+    - !type:HTNPrimitiveTask
+      preconditions:
+      - !type:KeyExistsPrecondition
+        key: DroidStayTime
+      - !type:CoordinatesInRangePrecondition
+        targetKey: FollowTarget
+        rangeKey: FollowCloseRange
+      operator: !type:WaitOperator
+        key: DroidStayTime
 
 - type: htnCompound
   id: SWDroidStayCompound
@@ -60,3 +105,24 @@
         id: RangedService
         proto: SWNearbyGunTargetsWithID
         key: Target
+
+- type: htnCompound
+  id: SWDroidOrderedAttackCompound
+  branches:
+  - tasks:
+    - !type:HTNPrimitiveTask
+      operator: !type:MoveToOperator
+        shutdownState: PlanFinished
+        pathfindInPlanning: true
+        removeKeyOnFinish: false
+        targetKey: DroidCommandTargetCoordinates
+        pathfindKey: DroidCommandTargetPathfind
+        stopOnLineOfSight: true
+        rangeKey: RangedRange
+    - !type:HTNPrimitiveTask
+      preconditions:
+      - !type:KeyExistsPrecondition
+        key: DroidCommandTarget
+      operator: !type:GunOperator
+        targetKey: DroidCommandTarget
+        targetState: Critical

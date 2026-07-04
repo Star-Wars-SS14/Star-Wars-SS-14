@@ -64,6 +64,12 @@ ent-ActionSWDroidOrderFollow = Follow
 ent-ActionSWDroidOrderStay = Stay
     .desc = Ordered droids hold position.
 
+ent-ActionSWDroidOrderGoTo = Go!
+    .desc = Ordered droids move to the selected point and hold there.
+
+ent-ActionSWDroidOrderAttack = Fire!
+    .desc = Ordered droids fire at the selected target.
+
 ent-SWDroidTargetingTablet = droid targeting tablet
     .desc = A portable droid targeting configuration terminal.
 

@@ -71,3 +71,8 @@ ent-SWDroidControlConsoleRepublic = республиканская консол�
     .suffix = Республика
     .desc = Командная консоль для отслеживания и отключения республиканских датападов управления дроидами.
 sw-droid-control-datapad-disabled-overlay = ОТКЛЮЧЕН
+ent-ActionSWDroidOrderGoTo = Иди!
+    .desc = Подконтрольные дроиды идут в указанную точку и удерживают ее.
+
+ent-ActionSWDroidOrderAttack = Стреляй!
+    .desc = Подконтрольные дроиды открывают огонь по выбранной цели.

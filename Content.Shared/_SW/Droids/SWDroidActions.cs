@@ -13,9 +13,19 @@ public sealed partial class SWDroidOrderActionEvent : InstantActionEvent
     public SWDroidOrderType Type;
 }
 
+public sealed partial class SWDroidGoToActionEvent : WorldTargetActionEvent
+{
+}
+
+public sealed partial class SWDroidAttackActionEvent : EntityTargetActionEvent
+{
+}
+
 [Serializable, NetSerializable]
 public enum SWDroidOrderType : byte
 {
     Stay,
-    Follow
+    Follow,
+    GoTo,
+    Attack
 }

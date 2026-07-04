@@ -1,0 +1,16 @@
+- type: entity
+  parent: BaseGameRule
+  id: SWSenateGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWSenateRule
+
+- type: gamePreset
+  id: SWSenatePreset
+  name: Галактический Сенат
+  description: "Я люблю демократию, я люблю республику"
+  showInVote: true
+  rules:
+    - SWSenateGamerule
+    - SWRespawnGamerule

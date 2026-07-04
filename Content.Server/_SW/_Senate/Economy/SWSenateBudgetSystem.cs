@@ -290,6 +290,9 @@ public sealed class SWSenateBudgetSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        if (!_time.ModeActive)
+            return;
+
         if (_time.Day != _day)
         {
             _day = _time.Day;

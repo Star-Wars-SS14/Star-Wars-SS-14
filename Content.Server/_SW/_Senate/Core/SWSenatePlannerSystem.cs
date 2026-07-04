@@ -42,6 +42,9 @@ public sealed class SWSenatePlannerSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        if (!_time.ModeActive)
+            return;
+
         if (_time.Day == _day)
             return;
 

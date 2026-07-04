@@ -211,6 +211,9 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        if (!_time.ModeActive)
+            return;
+
         _accumulator += frameTime;
         if (_accumulator < UpdateInterval)
             return;

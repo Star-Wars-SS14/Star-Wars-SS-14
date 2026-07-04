@@ -15,6 +15,7 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWSenatePartySystem _party = default!;
     [Dependency] private readonly SWEmergencyPowersSystem _powers = default!;
@@ -54,6 +55,9 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        if (!_time.ModeActive)
+            return;
+
         _accumulator += frameTime;
         if (_accumulator < UpdateInterval)
             return;

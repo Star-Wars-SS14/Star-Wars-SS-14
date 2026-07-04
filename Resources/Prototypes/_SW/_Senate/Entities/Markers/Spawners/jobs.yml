@@ -1,0 +1,183 @@
+- type: entity
+  id: SWSpawnPointChancellor
+  parent: SpawnPointJobBase
+  name: Senate Chancellor
+  components:
+  - type: SpawnPoint
+    job_id: SWChancellor
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointSpeaker
+  parent: SpawnPointJobBase
+  name: Senate Speaker
+  components:
+  - type: SpawnPoint
+    job_id: SWSpeaker
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointSenator
+  parent: SpawnPointJobBase
+  name: Senate Senator
+  components:
+  - type: SpawnPoint
+    job_id: SWSenator
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointMinister
+  parent: SpawnPointJobBase
+  name: Senate Minister
+  components:
+  - type: SpawnPoint
+    job_id: SWMinister
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointUsher
+  parent: SpawnPointJobBase
+  name: Senate Usher
+  components:
+  - type: SpawnPoint
+    job_id: SWUsher
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointSenateGuardHead
+  parent: SpawnPointJobBase
+  name: Senate Guard Head
+  components:
+  - type: SpawnPoint
+    job_id: SWSenateGuardHead
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointSenateGuardOfficer
+  parent: SpawnPointJobBase
+  name: Senate Guard Officer
+  components:
+  - type: SpawnPoint
+    job_id: SWSenateGuardOfficer
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointSenateDoctor
+  parent: SpawnPointJobBase
+  name: Senate Doctor
+  components:
+  - type: SpawnPoint
+    job_id: SWSenateDoctor
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointChancellorLJ
+  parent: SpawnPointJobBase
+  name: Senate Chancellor LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWChancellor
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointSpeakerLJ
+  parent: SpawnPointJobBase
+  name: Senate Speaker LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWSpeaker
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointSenatorLJ
+  parent: SpawnPointJobBase
+  name: Senate Senator LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWSenator
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointMinisterLJ
+  parent: SpawnPointJobBase
+  name: Senate Minister LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWMinister
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointUsherLJ
+  parent: SpawnPointJobBase
+  name: Senate Usher LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWUsher
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointSenateGuardHeadLJ
+  parent: SpawnPointJobBase
+  name: Senate Guard Head LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWSenateGuardHead
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointSenateGuardOfficerLJ
+  parent: SpawnPointJobBase
+  name: Senate Guard Officer LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWSenateGuardOfficer
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointSenateDoctorLJ
+  parent: SpawnPointJobBase
+  name: Senate Doctor LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWSenateDoctor
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green

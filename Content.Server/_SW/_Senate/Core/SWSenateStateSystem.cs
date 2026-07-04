@@ -1331,6 +1331,9 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        if (!_time.ModeActive)
+            return;
+
         ResolveExpiredSessions();
         AnnounceStartedSessions();
         TickChancellorElection(frameTime);

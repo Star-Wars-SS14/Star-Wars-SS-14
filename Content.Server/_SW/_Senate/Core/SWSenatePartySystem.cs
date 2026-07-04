@@ -401,6 +401,9 @@ public sealed class SWSenatePartySystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        if (!_time.ModeActive)
+            return;
+
         _accum += frameTime;
         if (_accum < TickInterval)
             return;

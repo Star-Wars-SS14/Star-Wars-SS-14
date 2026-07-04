@@ -12,6 +12,7 @@ public sealed class SWSenateTimeSystem : EntitySystem
 
     public int Day { get; private set; } = 1;
     public bool DayActive { get; private set; } = true;
+    public bool ModeActive { get; set; }
 
     private float _gameMinutes;
     private float _gapRemaining;
@@ -36,6 +37,9 @@ public sealed class SWSenateTimeSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        if (!ModeActive)
+            return;
+
         if (!DayActive)
         {
             _gapRemaining -= frameTime;

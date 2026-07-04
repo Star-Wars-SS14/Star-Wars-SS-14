@@ -71,6 +71,9 @@ public sealed class SWSenateCrisisSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        if (!_time.ModeActive)
+            return;
+
         // Advance on game time only (frozen during the overnight gap), so pacing is speed-independent.
         if (!_time.DayActive)
             return;

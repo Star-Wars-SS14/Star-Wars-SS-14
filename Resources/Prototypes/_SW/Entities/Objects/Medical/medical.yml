@@ -1,0 +1,217 @@
+- type: entity
+  parent: Gauze
+  id: SWBandage
+  name: bandage
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Medical/bandage.rsi
+    state: icon
+  - type: Item
+    sprite: _SW/Objects/Medical/bandage.rsi
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Stack
+    stackType: SWBandage
+    count: 10
+
+- type: entity
+  parent: SWBandage
+  id: SWBandage1
+  suffix: Single
+  components:
+  - type: Stack
+    stackType: SWBandage
+    count: 1
+
+- type: entity
+  parent: BaseItem
+  id: SWBandagePack
+  name: bandage pack
+  description: A sterile package containing a full stack of bandages.
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Medical/bandagepack.rsi
+    state: icon
+  - type: Item
+    size: Small
+    sprite: _SW/Objects/Medical/bandagepack.rsi
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: SpawnItemsOnUse
+    items:
+    - id: SWBandage
+
+- type: entity
+  parent: Brutepack
+  id: SWBruisesKit
+  name: cold pack
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Medical/bruiseskit.rsi
+    state: icon
+  - type: Item
+    sprite: _SW/Objects/Medical/bruiseskit.rsi
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Stack
+    stackType: SWBruisesKit
+    count: 10
+
+- type: entity
+  parent: SWBruisesKit
+  id: SWBruisesKit1
+  suffix: Single
+  components:
+  - type: Stack
+    stackType: SWBruisesKit
+    count: 1
+
+- type: entity
+  parent: Ointment
+  id: SWOintment
+  name: ointment
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Medical/ointment.rsi
+    state: icon
+  - type: Item
+    sprite: _SW/Objects/Medical/ointment.rsi
+    storedSprite:
+      state: icon
+      sprite: _SW/Objects/Medical/ointment.rsi
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Stack
+    stackType: SWOintment
+    count: 10
+
+- type: entity
+  parent: SWOintment
+  id: SWOintment1
+  suffix: Single
+  components:
+  - type: Stack
+    stackType: SWOintment
+    count: 1
+
+- type: entity
+  parent: Medkit
+  id: SWFirstAidKit
+  name: first aid kit
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Medical/firstaidkit.rsi
+    layers:
+    - state: icon
+      map: [ base ]
+  - type: Item
+    sprite: _SW/Objects/Medical/firstaidkit.rsi
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Storage
+    maxItemSize: Small
+    grid:
+    - 0,0,4,1
+  - type: GenericVisualizer
+    visuals:
+      enum.StorageVisuals.Open:
+        base:
+          True: { state: icon-open }
+          False: { state: icon }
+  - type: Appearance
+
+- type: entity
+  parent: SWFirstAidKit
+  id: SWFirstAidKitFilled
+  suffix: Filled
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:AllSelector
+        children:
+        - id: SWkoltoBeakerFull
+        - id: SWBandage
+        - id: SWBruisesKit
+        - id: SWOintment
+        - id: Syringe
+
+- type: entity
+  parent: Medkit
+  id: SWCombatAidKit
+  name: combat aid kit
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Medical/combataidkit.rsi
+    layers:
+    - state: icon
+      map: [ base ]
+  - type: Item
+    size: Normal
+    sprite: _SW/Objects/Medical/combataidkit.rsi
+    inhandVisuals:
+      left:
+      - state: inhand-left
+      right:
+      - state: inhand-right
+  - type: Storage
+    maxItemSize: Small
+    grid:
+    - 0,0,4,1
+  - type: GenericVisualizer
+    visuals:
+      enum.StorageVisuals.Open:
+        base:
+          True: { state: icon-open }
+          False: { state: icon }
+  - type: Appearance
+
+- type: entity
+  parent: SWCombatAidKit
+  id: SWCombatAidKitFilled
+  suffix: Filled
+  components:
+  - type: EntityTableContainerFill
+    containers:
+      storagebase: !type:AllSelector
+        children:
+        - id: SWbactaBeakerFull
+        - id: SWBandage
+        - id: SWBruisesKit
+        - id: SWOintment
+        - id: Syringe
+
+- type: stack
+  parent: BaseSmallStack
+  id: SWBandage
+  name: stack-sw-bandage
+  icon: { sprite: /Textures/_SW/Objects/Medical/bandage.rsi, state: icon }
+  spawn: SWBandage1
+
+- type: stack
+  parent: BaseSmallStack
+  id: SWBruisesKit
+  name: stack-sw-bruises-kit
+  icon: { sprite: /Textures/_SW/Objects/Medical/bruiseskit.rsi, state: icon }
+  spawn: SWBruisesKit1
+
+- type: stack
+  parent: BaseSmallStack
+  id: SWOintment
+  name: stack-sw-ointment
+  icon: { sprite: /Textures/_SW/Objects/Medical/ointment.rsi, state: icon }
+  spawn: SWOintment1

@@ -5,3 +5,20 @@
     SheetSteel1: 2
   result:
     SWSheetLantanidAlloy1: 3
+
+- type: swLatheRecipe
+  id: SWReinforcedSteelSLR
+  materials:
+    Coal1: 2
+    SheetSteel1: 1
+  result:
+    SWReinforcedSteel: 1
+  produceTime: 1
+
+- type: swLatheRecipe
+  id: SWArmorPlateSLR
+  materials:
+    SWReinforcedSteel: 5
+  result:
+    SWArmorPlate: 1
+  produceTime: 10

@@ -23,6 +23,9 @@
             "name": "down_arrow"
         },
         {
+            "name": "destroyed"
+        },
+        {
             "name": "electronics"
         },
         {

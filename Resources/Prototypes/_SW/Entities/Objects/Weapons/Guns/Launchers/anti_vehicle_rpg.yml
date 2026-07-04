@@ -4,6 +4,19 @@
   id: SWWeaponLauncherAntiVehicleRocket
   description: A rocket-propelled grenade launcher loaded with compact anti-vehicle warheads.
   components:
+  - type: Clothing
+    sprite: Objects/Weapons/Guns/Launchers/rocket.rsi
+    quickEquip: false
+    slots:
+    - Back
+    - suitStorage
+  - type: Wieldable
+    unwieldOnUse: false
+  - type: EyeCursorOffset
+    maxOffset: 8
+    pvsIncrease: 0.8
+  - type: CursorOffsetRequiresWield
+  - type: GunRequiresWield
   - type: BallisticAmmoProvider
     whitelist:
       tags:

@@ -207,6 +207,11 @@ public sealed partial class MoveByForceController : VirtualController
 
     private bool CanBeMoved(EntityUid obj, EntityUid mover)
     {
+        if (HasComp<SWForceMoveImmuneComponent>(obj))
+        {
+            return false;
+        }
+
         //Check if entity is mob. Alive mobs cant be moved by force.
         if (TryComp<MobThresholdsComponent>(obj, out var tComp))
         {
@@ -271,7 +276,6 @@ public sealed partial class MoveByForceController : VirtualController
             return false;
         }
 
-        var comp = EnsureComp<BeingMovedByForceComponent>(uid);
         if (forceComp.CurrentMovingItem == uid && forceComp.IsUsingForceToMoveObject)
         {
             OnReleaseObject(session, coords, uid);
@@ -290,6 +294,7 @@ public sealed partial class MoveByForceController : VirtualController
 
         forceComp.IsUsingForceToMoveObject = true;
         forceComp.CurrentMovingItem = uid;
+        var comp = EnsureComp<BeingMovedByForceComponent>(uid);
         comp.ForceUserMover = userEntity.Value;
         _physicsSystem.SetBodyStatus(uid, physComp, BodyStatus.InAir);
         var name = Identity.Name(uid, EntityManager);
@@ -325,7 +330,8 @@ public sealed partial class MoveByForceController : VirtualController
             if (comp.IsMoving && (comp.MovingTo.Position - objCoords.Position).Length() > 0.1f)
             {
                 var direction = comp.MovingTo.Position - objCoords.Position;
-                _physicsSystem.SetLinearVelocity(ent, direction.Normalized() * forceComp.MoveByForceImpulseMultiplayer / physComp.Mass);
+                var speed = forceComp.MoveByForceMinSpeed + forceComp.MoveByForceImpulseMultiplayer / physComp.Mass;
+                _physicsSystem.SetLinearVelocity(ent, direction.Normalized() * speed);
 
 
             }

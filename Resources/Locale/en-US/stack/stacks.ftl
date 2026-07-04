@@ -15,6 +15,14 @@ stack-reinforced-plasma-glass = reinforced plasma glass
 stack-reinforced-uranium-glass = reinforced uranium glass
 stack-gunpowder = gunpowder
 stack-cardboard = cardboard
+stack-sw-electronics = {$amount ->
+    [1] electronics module
+    *[other] electronics modules
+}
+stack-sw-advanced-cables = {$amount ->
+    [1] high-grade cable bundle
+    *[other] high-grade cable bundles
+}
 
 stack-bones = {$amount ->
     [1] bone

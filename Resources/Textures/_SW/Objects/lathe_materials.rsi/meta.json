@@ -14,7 +14,34 @@
             "name": "cables"
         },
         {
+            "name": "cables1"
+        },
+        {
+            "name": "cables2"
+        },
+        {
+            "name": "cables3"
+        },
+        {
             "name": "electronics"
+        },
+        {
+            "name": "electronics1"
+        },
+        {
+            "name": "electronics2"
+        },
+        {
+            "name": "electronics3"
+        },
+        {
+            "name": "advanced_electronics"
+        },
+        {
+            "name": "reinforced_steel"
+        },
+        {
+            "name": "armor_plate"
         },
         {
             "name": "frame"

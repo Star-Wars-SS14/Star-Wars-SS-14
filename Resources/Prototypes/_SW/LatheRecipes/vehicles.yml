@@ -1,0 +1,26 @@
+- type: swLatheRecipe
+  id: SWStormCallerSLR
+  materials:
+    SWAdvancedElectronics: 5
+    SWArmorPlate: 7
+  result:
+    SWStormCaller: 1
+  produceTime: 120
+
+- type: swLatheRecipe
+  id: SWSingleSeatSpeederSLR
+  materials:
+    SWAdvancedElectronics: 3
+    SWArmorPlate: 2
+  result:
+    SWSpider: 1
+  produceTime: 45
+
+- type: swLatheRecipe
+  id: SWTwoSeatSpeederSLR
+  materials:
+    SWAdvancedElectronics: 4
+    SWArmorPlate: 3
+  result:
+    SWSpiderTwoRoles: 1
+  produceTime: 60

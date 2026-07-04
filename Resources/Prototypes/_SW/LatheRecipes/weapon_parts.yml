@@ -15,7 +15,7 @@
 - type: swLatheRecipe
   id: SWT1WeaponSLR
   materials:
-    SWElectronics: 1
+    SWElectronics1: 1
     SWBlasterBarrel: 1
     SWBlasterFrame: 1
   result:

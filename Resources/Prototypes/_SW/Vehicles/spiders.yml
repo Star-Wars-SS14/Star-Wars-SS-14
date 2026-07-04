@@ -6,6 +6,7 @@
   - type: Sprite
     sprite: _SW/Vehicles/spider.rsi
     state: speedbike
+    drawdepth: OverMobs
   - type: Physics
     bodyType: Dynamic
   - type: Fixtures
@@ -16,9 +17,18 @@
           bounds: "-0.2,0.85,0.2,-0.85"
         density: 1000
         mask:
-        - MobMask
+        - HighImpassable
         layer:
-        - MachineLayer
+        - Opaque
+        - MidImpassable
+        - BulletImpassable
+      mob_collision:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.2,0.85,0.2,-0.85"
+        hard: false
+        layer:
+        - MidImpassable
   - type: Damageable
     damageContainer: SWVehicleArmored
     damageModifierSet: SWLightVehicle
@@ -40,10 +50,10 @@
     vehicleParts:
       cannon:
         entProto: SWSpiderCannon
-        buckleCoords: "0.0, 1.2"
+        buckleCoords: "0.0, -1.2"
       driver_seat:
         entProto: SWVehicleSeat
-        buckleCoords: "0.0, 0.35"
+        buckleCoords: "0.0, -0.35"
   - type: ActivatableUI
     key: enum.SWVehicleMenuUiKey.Key
   - type: UserInterface
@@ -63,12 +73,22 @@
     rollingFriction: 5
     sidewaysFriction: 15
     turnSpeedReference: 2.5
+  - type: SWVehicleMobCollision
+    paralyzeTime: 5
   - type: SWVehicleMovementSound
     sound:
       path: /Audio/_SW/Vehicles/speeder.ogg
       params:
         volume: -6
         maxDistance: 14
+  - type: SWVehicleHeadlight
+  - type: PointLight
+    enabled: false
+    mask: /Textures/Effects/LightMasks/cone.png
+    autoRot: true
+    radius: 10
+    energy: 2
+    color: "#e8f2ff"
   - type: SWExplosionThrowModifier
     throwMultiplier: 0.0
   - type: SWVehicleExtractable
@@ -104,9 +124,9 @@
   components:
   - type: SWRedirectMovement
   - type: SWVehicleFaceForward
-    rotationOffset: 180
   - type: SWVehicleDriverDrawDepth
   - type: SWVehicleRequiresHandsUser
+  - type: SWVehicleHeadlightUser
   - type: SWShootByVehicleUser
     part: cannon
   - type: SWBuckleToVehiclePart
@@ -142,6 +162,8 @@
     selectedMode: SemiAuto
     availableModes:
     - SemiAuto
+    soundGunshot:
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   - type: PredictedBattery 
     maxCharge: 1000
     startingCharge: 1000

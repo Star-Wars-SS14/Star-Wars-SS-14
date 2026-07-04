@@ -1,9 +1,9 @@
 - type: swCargoProduct
   id: SWOintmentCP
   icon:
-    sprite: Objects/Specific/Medical/medical.rsi
-    state: ointment
-  product: Ointment
+    sprite: _SW/Objects/Medical/ointment.rsi
+    state: icon
+  product: SWOintment
   cost:
     SWEmpireCreditCurrency: 25
   category: sw-category-medicine
@@ -21,11 +21,33 @@
   group: SWT1MedicineMarket
 
 - type: swCargoProduct
+  id: SWBandageCP
+  icon:
+    sprite: _SW/Objects/Medical/bandage.rsi
+    state: icon
+  product: SWBandage
+  cost:
+    SWEmpireCreditCurrency: 10
+  category: sw-category-medicine
+  group: SWT1MedicineMarket
+
+- type: swCargoProduct
+  id: SWCrateBandageCP
+  icon:
+    sprite: Structures/Storage/Crates/generic.rsi
+    state: icon
+  product: SWCrateBandage
+  cost:
+    SWEmpireCreditCurrency: 100
+  category: sw-category-medicine
+  group: SWT1MedicineMarket
+
+- type: swCargoProduct
   id: SWBrutepackCP
   icon:
-    sprite: Objects/Specific/Medical/medical.rsi
-    state: brutepack
-  product: Brutepack
+    sprite: _SW/Objects/Medical/bruiseskit.rsi
+    state: icon
+  product: SWBruisesKit
   cost:
     SWEmpireCreditCurrency: 20
   category: sw-category-medicine
@@ -41,6 +63,29 @@
     SWEmpireCreditCurrency: 200
   category: sw-category-medicine
   group: SWT1MedicineMarket
+
+- type: swCargoProduct
+  id: SWFirstAidKitCP
+  icon:
+    sprite: _SW/Objects/Medical/firstaidkit.rsi
+    state: icon
+  product: SWFirstAidKitFilled
+  cost:
+    SWEmpireCreditCurrency: 155
+  category: sw-category-medicine
+  group: SWT2MedicineMarket
+
+- type: swCargoProduct
+  id: SWCombatAidKitCP
+  icon:
+    sprite: _SW/Objects/Medical/combataidkit.rsi
+    state: icon
+  product: SWCombatAidKitFilled
+  cost:
+    SWSupplyScoresEmpire: 300
+    SWSupplyScoresRepublic: 300
+  category: sw-category-medicine
+  group: SWT3MedicineMarket
 
 - type: swCargoProduct
   id: SWTourniquetCP

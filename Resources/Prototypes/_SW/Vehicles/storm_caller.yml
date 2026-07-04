@@ -6,6 +6,7 @@
   - type: Sprite
     sprite: _SW/Vehicles/storm_caller.rsi
     state: vehicle
+    drawdepth: OverMobs
   - type: Physics
     bodyType: Dynamic
   - type: Fixtures
@@ -16,9 +17,18 @@
           bounds: "-1.15,-1.55,1.15,1.55"
         density: 2500
         mask:
-        - MobMask
+        - HighImpassable
         layer:
-        - MachineLayer
+        - Opaque
+        - MidImpassable
+        - BulletImpassable
+      mob_collision:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.15,-1.55,1.15,1.55"
+        hard: false
+        layer:
+        - MidImpassable
   - type: Damageable
     damageContainer: SWVehicleArmored
     damageModifierSet: SWHeavyVehicle
@@ -53,13 +63,13 @@
     vehicleParts:
       cannon:
         entProto: SWStormCallerCannon
-        buckleCoords: "0.0, 1.35"
+        buckleCoords: "0.0, -1.35"
       driver_seat:
         entProto: SWVehicleSeat
-        buckleCoords: "0.0, 0.25"
+        buckleCoords: "0.0, -0.25"
       shooter_seat:
         entProto: SWVehicleSeat
-        buckleCoords: "0.0, -0.55"
+        buckleCoords: "0.0, 0.55"
   - type: ActivatableUI
     key: enum.SWVehicleMenuUiKey.Key
   - type: UserInterface
@@ -80,18 +90,30 @@
     sidewaysFriction: 20
     turnSpeedReference: 2.5
     minTurnSpeed: 1.2
+  - type: SWVehicleMobCollision
+    paralyzeTime: 5
   - type: SWVehicleMovementSound
     sound:
       path: /Audio/_SW/Vehicles/stormcaller.ogg
       params:
         volume: -2
         maxDistance: 18
+  - type: SWVehicleHeadlight
+  - type: PointLight
+    enabled: false
+    mask: /Textures/Effects/LightMasks/cone.png
+    autoRot: true
+    radius: 15
+    energy: 10
+    fallOf: 5
+    color: "#e8f2ff"
   - type: SWExplosionThrowModifier
     throwMultiplier: 0.0
   - type: SWVehicleExtractable
     aliveDelay: 8
     criticalDelay: 4
     deadDelay: 2
+  - type: SWForceMoveImmune
 
 - type: entity
   id: SWStormCallerDestroyed
@@ -101,6 +123,7 @@
   - type: Sprite
     sprite: _SW/Vehicles/storm_caller.rsi
     state: destroyed
+    drawdepth: OverMobs
   - type: Construction
     graph: SWStormCallerGraph
     node: SWStormCallerDestroyedNode
@@ -120,6 +143,7 @@
         - MachineLayer
   - type: Clickable
   - type: InteractionOutline
+  - type: SWForceMoveImmune
 
 - type: swVehicleRole
   id: SWVehicleRoleStormCallerDriver
@@ -130,6 +154,7 @@
   - type: SWInVehicleVisibility
   - type: SWInVehicleDamageProtection
   - type: SWVehicleRequiresHandsUser
+  - type: SWVehicleHeadlightUser
   - type: SWBuckleToVehiclePart
     part: driver_seat
   # - type: Stealth
@@ -190,7 +215,7 @@
   - type: Projectile
     damage:
       types:
-        SWAntiVehicle: 100
+        SWAntiVehicle: 500
   - type: ExplodeOnTrigger
   - type: Explosive
     explosionType: Default

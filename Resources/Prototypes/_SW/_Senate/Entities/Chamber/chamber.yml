@@ -29,8 +29,8 @@
   - type: Clickable
   - type: InteractionOutline
   - type: Sprite
-    sprite: Objects/Fun/Instruments/microphone.rsi
-    state: icon
+    sprite: _SW/_Senate/Structures/Specific/Chamber/desk_microphone.rsi
+    state: senator
   - type: SWSenateMic
     priority: false
     requiredPosition: Senator
@@ -47,8 +47,8 @@
   - type: Clickable
   - type: InteractionOutline
   - type: Sprite
-    sprite: Objects/Fun/Instruments/microphone.rsi
-    state: icon
+    sprite: _SW/_Senate/Structures/Specific/Chamber/desk_microphone.rsi
+    state: chancellor
   - type: SWSenateMic
     priority: true
     requiredPosition: Chancellor
@@ -65,8 +65,8 @@
   - type: Clickable
   - type: InteractionOutline
   - type: Sprite
-    sprite: Objects/Fun/Instruments/microphone.rsi
-    state: icon
+    sprite: _SW/_Senate/Structures/Specific/Chamber/desk_microphone.rsi
+    state: speaker
   - type: SWSenateMic
     speakerToggle: true
     requiredPosition: Speaker

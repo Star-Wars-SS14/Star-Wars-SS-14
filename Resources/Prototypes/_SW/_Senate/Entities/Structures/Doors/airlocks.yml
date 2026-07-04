@@ -4,6 +4,8 @@
   name: шлюз Канцлера
   suffix: Канцлер
   components:
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/RepublicChancellorAirlock.rsi
   - type: AccessReader
     access: [["SWSenateChancellor"]]
 
@@ -13,6 +15,8 @@
   name: шлюз Спикера
   suffix: Спикер
   components:
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/RepublicSpeakerAirlock.rsi
   - type: AccessReader
     access: [["SWSenateChancellor"], ["SWSenateSpeaker"]]
 
@@ -22,5 +26,18 @@
   name: сенатский шлюз
   suffix: Сенатор
   components:
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/RepublicSenateAirlock.rsi
   - type: AccessReader
     access: [["SWSenateChancellor"], ["SWSenateSpeaker"], ["SWSenateSenator"]]
+
+- type: entity
+  id: SWAirlockMinister
+  parent: CMAirlockCommand
+  name: министерский шлюз
+  suffix: Министр
+  components:
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/RepublicMinisterAirlock.rsi
+  - type: AccessReader
+    access: [["SWSenateChancellor"], ["SWMinister"]]

@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "senator"
+    },
+    {
+      "name": "chancellor"
+    },
+    {
+      "name": "speaker"
+    },
+    {
+      "name": "minister"
+    },
+    {
+      "name": "usher"
+    },
+    {
+      "name": "guard_head"
+    },
+    {
+      "name": "guard_officer"
+    },
+    {
+      "name": "doctor"
+    }
+  ]
+}

@@ -6,6 +6,27 @@
   components:
   - type: Pda
     id: SWSenatorIDCard
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-senator
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: "unshaded"
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: "unshaded"
+      visible: false
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-senator
+  - type: Icon
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    state: pda-senator
   - type: PdaBorderColor
     borderColor: "#9B59B6"
 
@@ -17,6 +38,27 @@
   components:
   - type: Pda
     id: SWChancellorIDCard
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-chancellor
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: "unshaded"
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: "unshaded"
+      visible: false
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-chancellor
+  - type: Icon
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    state: pda-chancellor
   - type: PdaBorderColor
     borderColor: "#C0392B"
 
@@ -28,6 +70,27 @@
   components:
   - type: Pda
     id: SWSpeakerIDCard
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-speaker
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: "unshaded"
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: "unshaded"
+      visible: false
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-speaker
+  - type: Icon
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    state: pda-speaker
   - type: PdaBorderColor
     borderColor: "#2980B9"
 
@@ -39,6 +102,27 @@
   components:
   - type: Pda
     id: SWMinisterIDCard
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-minister
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: "unshaded"
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: "unshaded"
+      visible: false
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-minister
+  - type: Icon
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    state: pda-minister
   - type: PdaBorderColor
     borderColor: "#2980B9"
 
@@ -50,6 +134,27 @@
   components:
   - type: Pda
     id: SWUsherIDCard
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-usher
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: "unshaded"
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: "unshaded"
+      visible: false
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-usher
+  - type: Icon
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    state: pda-usher
   - type: PdaBorderColor
     borderColor: "#34495E"
 
@@ -61,6 +166,27 @@
   components:
   - type: Pda
     id: SWSenateGuardHeadIDCard
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-guard-head
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: "unshaded"
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: "unshaded"
+      visible: false
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-guard-head
+  - type: Icon
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    state: pda-guard-head
   - type: PdaBorderColor
     borderColor: "#C0392B"
 
@@ -72,6 +198,27 @@
   components:
   - type: Pda
     id: SWSenateGuardOfficerIDCard
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-guard-officer
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: "unshaded"
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: "unshaded"
+      visible: false
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-guard-officer
+  - type: Icon
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    state: pda-guard-officer
   - type: PdaBorderColor
     borderColor: "#E67E22"
 
@@ -83,5 +230,26 @@
   components:
   - type: Pda
     id: SWSenateDoctorIDCard
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-doctor
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: "unshaded"
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: "unshaded"
+      visible: false
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-doctor
+  - type: Icon
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    state: pda-doctor
   - type: PdaBorderColor
     borderColor: "#16A085"

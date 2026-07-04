@@ -11,6 +11,13 @@
     interfaces:
       enum.SWStatisticsConsoleUiKey.Key:
         type: SWStatisticsConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicStatisticsComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: statistics_monitor
   - type: ApcPowerReceiver
     needsPower: false
   - type: Godmode
@@ -28,6 +35,13 @@
     interfaces:
       enum.SWSectorSelectConsoleUiKey.Key:
         type: SWSectorSelectConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicSectorSelectComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: sector_select_monitor
   - type: ItemSlots
     slots:
       senate_id_slot:
@@ -55,6 +69,13 @@
     interfaces:
       enum.SWMinistrySelectConsoleUiKey.Key:
         type: SWMinistrySelectConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicMinistrySelectComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: ministry_select_monitor
   - type: ItemSlots
     slots:
       senate_id_slot:
@@ -82,6 +103,13 @@
     interfaces:
       enum.SWMinistryWorkConsoleUiKey.Key:
         type: SWMinistryWorkConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicMinistryWorkComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: ministry_work_monitor
   - type: ItemSlots
     slots:
       senate_id_slot:
@@ -109,6 +137,13 @@
     interfaces:
       enum.SWBureauWorkConsoleUiKey.Key:
         type: SWBureauWorkConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicBureauWorkComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: bureau_work_monitor
   - type: ItemSlots
     slots:
       senate_id_slot:
@@ -136,6 +171,13 @@
     interfaces:
       enum.SWDepartmentWorkConsoleUiKey.Key:
         type: SWDepartmentWorkConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicDepartmentWorkComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: department_work_monitor
   - type: ItemSlots
     slots:
       senate_id_slot:
@@ -163,6 +205,13 @@
     interfaces:
       enum.SWPlannerConsoleUiKey.Key:
         type: SWPlannerConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicPlannerComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: planner_monitor
   - type: ItemSlots
     slots:
       senate_id_slot:
@@ -190,6 +239,13 @@
     interfaces:
       enum.SWSenateVoteConsoleUiKey.Key:
         type: SWSenateVoteConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicSenateVoteComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: vote_monitor
   - type: ItemSlots
     slots:
       senate_id_slot:
@@ -217,6 +273,13 @@
     interfaces:
       enum.SWSenateInfoConsoleUiKey.Key:
         type: SWSenateInfoConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicSenateInfoComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: senate_info_monitor
   - type: ActivatableUIRequiresAccess
   - type: AccessReader
     access: [["SWSenate"]]
@@ -237,6 +300,13 @@
     interfaces:
       enum.SWSenateWorkConsoleUiKey.Key:
         type: SWSenateWorkConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicSenateWorkComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: senate_work_monitor
   - type: ItemSlots
     slots:
       senate_id_slot:

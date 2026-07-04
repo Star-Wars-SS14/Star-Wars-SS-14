@@ -7,8 +7,9 @@
   - type: SWSenatePositionCard
     position: Senator
   - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
     layers:
-    - state: image3
+    - state: senator
   - type: PresetIdCard
     job: SWSenator
 
@@ -21,8 +22,9 @@
   - type: SWSenatePositionCard
     position: Chancellor
   - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
     layers:
-    - state: image1
+    - state: chancellor
   - type: PresetIdCard
     job: SWChancellor
 
@@ -35,8 +37,9 @@
   - type: SWSenatePositionCard
     position: Speaker
   - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
     layers:
-    - state: image2
+    - state: speaker
   - type: PresetIdCard
     job: SWSpeaker
 
@@ -49,8 +52,9 @@
   - type: SWSenatePositionCard
     position: Minister
   - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
     layers:
-    - state: image8
+    - state: minister
   - type: PresetIdCard
     job: SWMinister
 
@@ -61,8 +65,9 @@
   description: Удостоверение пристава, следящего за порядком в зале заседаний.
   components:
   - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
     layers:
-    - state: image4
+    - state: usher
   - type: PresetIdCard
     job: SWUsher
 
@@ -73,8 +78,9 @@
   description: Удостоверение командующего Сенатской Гвардией.
   components:
   - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
     layers:
-    - state: image5
+    - state: guard_head
   - type: PresetIdCard
     job: SWSenateGuardHead
 
@@ -85,8 +91,9 @@
   description: Удостоверение офицера Сенатской Гвардии.
   components:
   - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
     layers:
-    - state: image6
+    - state: guard_officer
   - type: PresetIdCard
     job: SWSenateGuardOfficer
 
@@ -97,7 +104,8 @@
   description: Удостоверение врача медицинской службы Сената.
   components:
   - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
     layers:
-    - state: image7
+    - state: doctor
   - type: PresetIdCard
     job: SWSenateDoctor

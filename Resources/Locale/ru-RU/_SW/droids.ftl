@@ -46,6 +46,9 @@ ent-SWMobDroid = боевой дроид
 ent-ActionSWDroidTakeCommand = Взять командование
     .desc = Взять командование над ближайшим союзным дроидом.
 
+ent-ActionSWDroidCommandMenu = Команды дроида
+    .desc = Открыть колесо команд для подконтрольных дроидов.
+
 ent-ActionSWDroidOrderFollow = Следовать
     .desc = Подконтрольные дроиды следуют за вами.
 

@@ -7,6 +7,10 @@ public sealed partial class SWDroidTakeCommandActionEvent : InstantActionEvent
 {
 }
 
+public sealed partial class SWDroidOpenCommandMenuActionEvent : InstantActionEvent
+{
+}
+
 public sealed partial class SWDroidOrderActionEvent : InstantActionEvent
 {
     [DataField(required: true)]

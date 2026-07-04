@@ -451,6 +451,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
         if (!TryComp<ActionsComponent>(uid, out var actions))
             return;
 
+        _actions.AddAction(uid, ref component.CommandMenuActionEntity, component.CommandMenuAction, component: actions);
         _actions.AddAction(uid, ref component.OrderFollowActionEntity, component.OrderFollowAction, component: actions);
         _actions.AddAction(uid, ref component.OrderStayActionEntity, component.OrderStayAction, component: actions);
         _actions.AddAction(uid, ref component.OrderGoToActionEntity, component.OrderGoToAction, component: actions);
@@ -472,6 +473,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
         _actions.SetToggled(component.OrderStayActionEntity, component.CurrentOrder == SWDroidOrderType.Stay);
         _actions.SetToggled(component.OrderGoToActionEntity, component.CurrentOrder == SWDroidOrderType.GoTo);
         _actions.SetToggled(component.OrderAttackActionEntity, component.CurrentOrder == SWDroidOrderType.Attack);
+        _actions.StartUseDelay(component.CommandMenuActionEntity);
         _actions.StartUseDelay(component.OrderFollowActionEntity);
         _actions.StartUseDelay(component.OrderStayActionEntity);
         _actions.StartUseDelay(component.OrderGoToActionEntity);
@@ -488,10 +490,12 @@ public sealed class SWDroidCommandSystem : EntitySystem
     private void RemoveOrderActions(EntityUid uid, SWDroidCommanderComponent component, ActionsComponent actions)
     {
         var actionEntity = new Entity<ActionsComponent?>(uid, actions);
+        _actions.RemoveAction(actionEntity, component.CommandMenuActionEntity);
         _actions.RemoveAction(actionEntity, component.OrderFollowActionEntity);
         _actions.RemoveAction(actionEntity, component.OrderStayActionEntity);
         _actions.RemoveAction(actionEntity, component.OrderGoToActionEntity);
         _actions.RemoveAction(actionEntity, component.OrderAttackActionEntity);
+        component.CommandMenuActionEntity = null;
         component.OrderFollowActionEntity = null;
         component.OrderStayActionEntity = null;
         component.OrderGoToActionEntity = null;

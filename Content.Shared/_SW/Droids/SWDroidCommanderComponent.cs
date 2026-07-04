@@ -14,6 +14,12 @@ public sealed partial class SWDroidCommanderComponent : Component
     public EntityUid? TakeCommandActionEntity;
 
     [DataField(customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    public string CommandMenuAction = "ActionSWDroidCommandMenu";
+
+    [DataField]
+    public EntityUid? CommandMenuActionEntity;
+
+    [DataField(customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
     public string OrderFollowAction = "ActionSWDroidOrderFollow";
 
     [DataField]

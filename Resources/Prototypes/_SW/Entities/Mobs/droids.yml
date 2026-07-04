@@ -182,6 +182,21 @@
     event: !type:SWDroidTakeCommandActionEvent
 
 - type: entity
+  id: ActionSWDroidCommandMenu
+  parent: BaseAction
+  name: Droid commands
+  description: Open the command wheel for controlled droids.
+  components:
+  - type: Action
+    useDelay: 0.5
+    clientExclusive: true
+    icon:
+      sprite: _SW/Mobs/Droids/droid.rsi
+      state: base
+  - type: InstantAction
+    event: !type:SWDroidOpenCommandMenuActionEvent
+
+- type: entity
   id: ActionSWDroidOrderFollow
   parent: BaseAction
   name: Follow
@@ -189,6 +204,7 @@
   components:
   - type: Action
     useDelay: 0.5
+    autoPopulate: false
     icon:
       sprite: _SW/Mobs/Droids/droid.rsi
       state: base
@@ -204,6 +220,7 @@
   components:
   - type: Action
     useDelay: 0.5
+    autoPopulate: false
     icon:
       sprite: _SW/Mobs/Droids/droid.rsi
       state: broken
@@ -219,6 +236,7 @@
   components:
   - type: Action
     useDelay: 0.5
+    autoPopulate: false
     icon:
       sprite: _SW/Mobs/Droids/droid.rsi
       state: base
@@ -236,6 +254,7 @@
   components:
   - type: Action
     useDelay: 0.5
+    autoPopulate: false
     icon:
       sprite: _SW/Mobs/Droids/droid.rsi
       state: base

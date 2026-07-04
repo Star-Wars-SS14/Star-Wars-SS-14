@@ -58,6 +58,9 @@ ent-SWMobDroid = battle droid
 ent-ActionSWDroidTakeCommand = Take command
     .desc = Assume command of a nearby allied droid.
 
+ent-ActionSWDroidCommandMenu = Droid commands
+    .desc = Open the command wheel for controlled droids.
+
 ent-ActionSWDroidOrderFollow = Follow
     .desc = Ordered droids follow you.
 

@@ -235,7 +235,8 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
         _senate.AddPolicy("SWStatTreasury", 25f);
         _inflation = Math.Clamp(_inflation + 25f, 0f, 100f);
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство финансов",
-            "Проведена денежная эмиссия: казна пополнена ценой скачка инфляции."));
+            "Проведена денежная эмиссия: казна пополнена ценой скачка инфляции.",
+            SWSenateAnnouncementKind.Finance));
         AddLog("Денежная эмиссия: казна полна, инфляция подскочила.");
     }
 

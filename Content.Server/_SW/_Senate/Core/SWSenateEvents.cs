@@ -92,14 +92,29 @@ public sealed class SWSenatePartyWhipAnnouncedEvent : EntityEventArgs
     }
 }
 
+public enum SWSenateAnnouncementKind : byte
+{
+    Notice,
+    Defense,
+    Security,
+    Health,
+    Economy,
+    Finance,
+    Justice,
+    Chancellor,
+    Scandal,
+}
+
 public sealed class SWSenateCustomAnnouncementEvent : EntityEventArgs
 {
     public string Sender;
     public string Text;
+    public SWSenateAnnouncementKind Kind;
 
-    public SWSenateCustomAnnouncementEvent(string sender, string text)
+    public SWSenateCustomAnnouncementEvent(string sender, string text, SWSenateAnnouncementKind kind = SWSenateAnnouncementKind.Notice)
     {
         Sender = sender;
         Text = text;
+        Kind = kind;
     }
 }

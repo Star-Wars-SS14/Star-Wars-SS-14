@@ -1,0 +1,84 @@
+- type: soundCollection
+  id: SWSenateNoticeSoft
+  files:
+  - /Audio/_SW/_Senate/Announcements/senate_notice_soft.wav
+
+- type: soundCollection
+  id: SWSenateVoteStarted
+  files:
+  - /Audio/_SW/_Senate/Announcements/senate_vote_started.wav
+
+- type: soundCollection
+  id: SWSenateVoiceNotice
+  files:
+  - /Audio/_SW/_Senate/Announcements/senate_voice_notice.wav
+
+- type: soundCollection
+  id: SWSenateVoiceSessionStarted
+  files:
+  - /Audio/_SW/_Senate/Announcements/senate_voice_session_started.wav
+
+- type: soundCollection
+  id: SWSenateVoiceEmergencyScheduled
+  files:
+  - /Audio/_SW/_Senate/Announcements/senate_voice_emergency_scheduled.wav
+
+- type: soundCollection
+  id: SWSenateVoiceEmergencyStarted
+  files:
+  - /Audio/_SW/_Senate/Announcements/senate_voice_emergency_started.wav
+
+- type: soundCollection
+  id: SWSenateVoiceBillPassed
+  files:
+  - /Audio/_SW/_Senate/Announcements/senate_voice_bill_passed.wav
+
+- type: soundCollection
+  id: SWSenateVoiceBillRejected
+  files:
+  - /Audio/_SW/_Senate/Announcements/senate_voice_bill_rejected.wav
+
+- type: soundCollection
+  id: SWSenateVoicePartyWhip
+  files:
+  - /Audio/_SW/_Senate/Announcements/senate_voice_party_whip.wav
+
+- type: soundCollection
+  id: SWSenateVoiceMinistryDefense
+  files:
+  - /Audio/_SW/_Senate/Announcements/senate_voice_ministry_defense.wav
+
+- type: soundCollection
+  id: SWSenateVoiceMinistrySecurity
+  files:
+  - /Audio/_SW/_Senate/Announcements/senate_voice_ministry_security.wav
+
+- type: soundCollection
+  id: SWSenateVoiceMinistryHealth
+  files:
+  - /Audio/_SW/_Senate/Announcements/senate_voice_ministry_health.wav
+
+- type: soundCollection
+  id: SWSenateVoiceMinistryEconomy
+  files:
+  - /Audio/_SW/_Senate/Announcements/senate_voice_ministry_economy.wav
+
+- type: soundCollection
+  id: SWSenateVoiceMinistryFinance
+  files:
+  - /Audio/_SW/_Senate/Announcements/senate_voice_ministry_finance.wav
+
+- type: soundCollection
+  id: SWSenateVoiceMinistryJustice
+  files:
+  - /Audio/_SW/_Senate/Announcements/senate_voice_ministry_justice.wav
+
+- type: soundCollection
+  id: SWSenateVoiceChancellorAction
+  files:
+  - /Audio/_SW/_Senate/Announcements/senate_voice_chancellor_action.wav
+
+- type: soundCollection
+  id: SWSenateVoiceScandal
+  files:
+  - /Audio/_SW/_Senate/Announcements/senate_voice_scandal.wav

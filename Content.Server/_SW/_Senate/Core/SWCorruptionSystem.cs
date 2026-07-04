@@ -194,7 +194,8 @@ public sealed class SWCorruptionSystem : EntitySystem
             _senate.AddPolicy("SWStatMorale", -3f);
             _senate.AddPolicy("SWStatRights", -1.5f);
             RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Скандал",
-                $"Коррупционный скандал: {name} в центре разоблачения."));
+                $"Коррупционный скандал: {name} в центре разоблачения.",
+                SWSenateAnnouncementKind.Scandal));
             AddLog($"Скандал: {name} разоблачён, штраф {fine} кр.");
         }
     }

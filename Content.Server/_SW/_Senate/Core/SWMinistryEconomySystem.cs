@@ -189,7 +189,8 @@ public sealed class SWMinistryEconomySystem : EntitySystem
         _growth = Math.Clamp(_growth + 4f, -4f, 6f);
         _overheat = Math.Clamp(_overheat + 30f, 0f, 100f);
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство экономики",
-            "Запущен большой стимул: экономика резко разогнана."));
+            "Запущен большой стимул: экономика резко разогнана.",
+            SWSenateAnnouncementKind.Economy));
         AddLog("Большой стимул: рост разогнан, перегрев подскочил.");
     }
 
@@ -258,7 +259,8 @@ public sealed class SWMinistryEconomySystem : EntitySystem
             _growth = -3f;
             _overheat = 40f;
             RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство экономики",
-                "Экономика перегрелась — обвал! Республика входит в рецессию."));
+                "Экономика перегрелась — обвал! Республика входит в рецессию.",
+                SWSenateAnnouncementKind.Economy));
             AddLog("Пузырь лопнул: обвал и рецессия.");
         }
 
@@ -385,7 +387,8 @@ public sealed class SWMinistryEconomySystem : EntitySystem
 
         var where = sectorId != null && _proto.TryIndex<SWSectorPrototype>(sectorId, out var sp) ? sp.Name : "Республики";
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство экономики",
-            $"Мегапроект «{proto.Name}» завершён в интересах {where}."));
+            $"Мегапроект «{proto.Name}» завершён в интересах {where}.",
+            SWSenateAnnouncementKind.Economy));
         AddLog($"Мегапроект «{proto.Name}» завершён.");
     }
 

@@ -239,7 +239,8 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
         _tribunalUntil = _time.CurrentHour + TribunalHours;
         _capacity += 10;
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство юстиции",
-            "Учреждены чрезвычайные трибуналы: ускоренные процессы по всей Республике."));
+            "Учреждены чрезвычайные трибуналы: ускоренные процессы по всей Республике.",
+            SWSenateAnnouncementKind.Justice));
         AddLog("Чрезвычайные трибуналы запущены.");
     }
 

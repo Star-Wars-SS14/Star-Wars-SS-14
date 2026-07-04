@@ -773,7 +773,8 @@ public sealed class SWSenateStateSystem : EntitySystem
 
         bill.Stage = SWBillStage.Rejected;
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Сенат",
-            $"Канцлер наложил вето на закон «{bill.Name}»."));
+            $"Канцлер наложил вето на закон «{bill.Name}».",
+            SWSenateAnnouncementKind.Chancellor));
         return true;
     }
 

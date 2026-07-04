@@ -307,7 +307,8 @@ public sealed class SWMinistryHealthSystem : EntitySystem
     {
         _emergencyUntil = _time.CurrentHour + EmergencyHours;
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство здравоохранения",
-            "Объявлено галактическое чрезвычайное положение по здоровью: всеобщий карантин."));
+            "Объявлено галактическое чрезвычайное положение по здоровью: всеобщий карантин.",
+            SWSenateAnnouncementKind.Health));
         AddLog("Введён галактический карантин.");
     }
 
@@ -446,7 +447,8 @@ public sealed class SWMinistryHealthSystem : EntitySystem
 
         var name = _proto.TryIndex<SWSectorPrototype>(origin, out var sp) ? sp.Name : origin;
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство здравоохранения",
-            $"Вспышка неизвестного патогена «{_name}» в секторе {name}."));
+            $"Вспышка неизвестного патогена «{_name}» в секторе {name}.",
+            SWSenateAnnouncementKind.Health));
         AddLog($"Новый патоген «{_name}» — очаг в {name} (вирулентность {(int) (_virulence * 100f)}%).");
     }
 
@@ -516,7 +518,8 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         _immunity *= 0.5f;
         AddLog($"Патоген мутировал — штамм {_strain + 1}, вирулентность выше.");
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство здравоохранения",
-            $"Патоген «{_name}» мутировал в штамм {_strain + 1}."));
+            $"Патоген «{_name}» мутировал в штамм {_strain + 1}.",
+            SWSenateAnnouncementKind.Health));
     }
 
     private void ApplyMortality(float gameHours)

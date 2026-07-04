@@ -200,7 +200,8 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
 
         _stance = stance;
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Штаб обороны",
-            $"Уровень боеготовности: DEFCON {DefconLevel(stance)} — {StanceName(stance)}."));
+            $"Уровень боеготовности: DEFCON {DefconLevel(stance)} — {StanceName(stance)}.",
+            SWSenateAnnouncementKind.Defense));
     }
 
     public void SelectProgram(string programId)
@@ -347,7 +348,8 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
         }
         _upkeepAccum = 0f;
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Штаб обороны",
-            "Флот отозван в резерв: нет средств на содержание."));
+            "Флот отозван в резерв: нет средств на содержание.",
+            SWSenateAnnouncementKind.Defense));
     }
 
     private void RollBorderDamage(float gameHours, float chancePerHour)

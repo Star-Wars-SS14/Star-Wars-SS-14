@@ -260,7 +260,10 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             ? "sw-senate-work-position-speaker"
             : "sw-senate-work-position-chancellor");
 
-        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent(sender, text));
+        var kind = position == SWSenatePosition.Chancellor
+            ? SWSenateAnnouncementKind.Chancellor
+            : SWSenateAnnouncementKind.Notice;
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent(sender, text, kind));
         _nextAnnounce = _timing.CurTime + AnnounceCooldown;
         _popup.PopupCursor(Loc.GetString("sw-senate-announce-sent"), args.Actor, PopupType.Medium);
     }
@@ -567,7 +570,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         _ministry.Unclaim(args.MinistryId);
         _powers.RegisterUse(6f, 4f, false);
         var name = _proto.TryIndex<Content.Shared._SW._Senate.Ministries.SWMinistryPrototype>(args.MinistryId, out var proto) ? proto.Name : args.MinistryId;
-        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Канцлер", $"Министр отстранён: {name}."));
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Канцлер", $"Министр отстранён: {name}.", SWSenateAnnouncementKind.Chancellor));
         UpdateUi(ent);
     }
 
@@ -608,7 +611,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         _powers.RegisterUse(6f + magnitude * 0.4f, 5f + magnitude * 0.4f, true);
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent(
             Loc.GetString("sw-senate-work-position-chancellor"),
-            Loc.GetString("sw-senate-decree-announce", ("name", name))));
+            Loc.GetString("sw-senate-decree-announce", ("name", name)),
+            SWSenateAnnouncementKind.Chancellor));
         _popup.PopupCursor(Loc.GetString("sw-senate-decree-issued"), args.Actor, PopupType.Medium);
         UpdateUi(ent);
     }
@@ -635,7 +639,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         _floor.SetChancellor(args.Actor);
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent(
             Loc.GetString("sw-senate-announce-sender"),
-            Loc.GetString("sw-senate-election-took-office", ("name", name))));
+            Loc.GetString("sw-senate-election-took-office", ("name", name)),
+            SWSenateAnnouncementKind.Chancellor));
         _popup.PopupCursor(Loc.GetString("sw-senate-work-took-office"), args.Actor, PopupType.Medium);
         UpdateUi(ent);
     }

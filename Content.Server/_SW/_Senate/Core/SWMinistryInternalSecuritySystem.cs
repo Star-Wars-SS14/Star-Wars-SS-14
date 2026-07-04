@@ -231,7 +231,8 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
 
         _posture = posture;
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство ВБ",
-            $"Режим безопасности: {PostureName(posture)}."));
+            $"Режим безопасности: {PostureName(posture)}.",
+            SWSenateAnnouncementKind.Security));
     }
 
     public void SelectProgram(string programId)
@@ -384,7 +385,8 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
         }
         _upkeepAccum = 0f;
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство ВБ",
-            "Агентура отозвана: нет средств на содержание сети."));
+            "Агентура отозвана: нет средств на содержание сети.",
+            SWSenateAnnouncementKind.Security));
     }
 
     private void CompleteRebuilds()

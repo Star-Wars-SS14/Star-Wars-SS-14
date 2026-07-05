@@ -296,7 +296,7 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
             var (name, desc, cost, _) = Ops[i];
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
-            if (_opCooldowns.TryGetValue(i, out var ready) && _time.CurrentHour < ready)
+            if (_opCooldowns.TryGetValue(i, out var ready) && _time.AbsoluteHour < ready)
                 entry.Status = $"готовность через {ready - _time.CurrentHour} ч";
             else if (i == 2 && !_health.VaccineReady)
                 entry.Status = "вакцина не готова";
@@ -315,7 +315,7 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
     {
         if (idx < 0 || idx >= Ops.Length)
             return false;
-        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.CurrentHour < ready)
+        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.AbsoluteHour < ready)
             return false;
         if (idx == 2 && !_health.VaccineReady)
             return false;
@@ -324,7 +324,7 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
         if (cost > 0 && !_dilemma.SpendMinistry(DeptId, cost))
             return false;
 
-        _opCooldowns[idx] = _time.CurrentHour + cd;
+        _opCooldowns[idx] = _time.AbsoluteHour + cd;
 
         switch (idx)
         {

@@ -392,7 +392,7 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
                 continue;
 
             var arms = (int) MathF.Round(ArmsLevel(sectorId));
-            var onCooldown = _seizeCooldown.TryGetValue(sectorId, out var ready) && _time.CurrentHour < ready;
+            var onCooldown = _seizeCooldown.TryGetValue(sectorId, out var ready) && _time.AbsoluteHour < ready;
 
             list.Add(new SWArmsSectorEntry
             {
@@ -422,12 +422,12 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
     {
         if (!_senate.IsClaimed(sectorId))
             return false;
-        if (_seizeCooldown.TryGetValue(sectorId, out var ready) && _time.CurrentHour < ready)
+        if (_seizeCooldown.TryGetValue(sectorId, out var ready) && _time.AbsoluteHour < ready)
             return false;
         if (!_dilemma.SpendMinistry(BureauId, SeizeCost))
             return false;
 
-        _seizeCooldown[sectorId] = _time.CurrentHour + SeizeCooldownHours;
+        _seizeCooldown[sectorId] = _time.AbsoluteHour + SeizeCooldownHours;
         AddArms(sectorId, -15f);
         _senate.AddPolicy("SWStatRights", -0.5f);
 
@@ -506,7 +506,7 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
             var (name, desc, cost, _) = Ops[i];
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
-            if (_opCooldowns.TryGetValue(i, out var ready) && _time.CurrentHour < ready)
+            if (_opCooldowns.TryGetValue(i, out var ready) && _time.AbsoluteHour < ready)
                 entry.Status = $"готовность через {ready - _time.CurrentHour} ч";
             else if (i == 2 && !_ministry.IsClaimed(SWMinistryInternalSecuritySystem.SecurityMinistryId))
                 entry.Status = "требуется активное МВБ";
@@ -525,7 +525,7 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
     {
         if (idx < 0 || idx >= Ops.Length)
             return false;
-        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.CurrentHour < ready)
+        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.AbsoluteHour < ready)
             return false;
         if (idx == 2 && !_ministry.IsClaimed(SWMinistryInternalSecuritySystem.SecurityMinistryId))
             return false;
@@ -534,7 +534,7 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
         if (cost > 0 && !_dilemma.SpendMinistry(BureauId, cost))
             return false;
 
-        _opCooldowns[idx] = _time.CurrentHour + cd;
+        _opCooldowns[idx] = _time.AbsoluteHour + cd;
 
         switch (idx)
         {

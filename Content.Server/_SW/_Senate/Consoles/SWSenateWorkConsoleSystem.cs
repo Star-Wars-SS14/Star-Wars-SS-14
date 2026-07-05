@@ -293,9 +293,15 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         _ => false,
     };
 
+    private bool CanScheduleAs(Entity<SWSenateWorkConsoleComponent> ent, EntityUid actor) =>
+        CanScheduleAs(ent) && Name(actor) == (GetCardPosition(ent) == SWSenatePosition.Speaker ? _senate.Speaker : _senate.Chancellor);
+
+    private bool CanConfirmAs(Entity<SWSenateWorkConsoleComponent> ent, EntityUid actor) =>
+        CanConfirmAs(ent) && Name(actor) == (GetCardPosition(ent) == SWSenatePosition.Chancellor ? _senate.Chancellor : _senate.Speaker);
+
     private void OnScheduleSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateScheduleSessionMessage args)
     {
-        if (!CanScheduleAs(ent))
+        if (!CanScheduleAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-speaker"), args.Actor, PopupType.Medium);
             return;
@@ -311,7 +317,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRemoveSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateRemoveSessionMessage args)
     {
-        if (!CanScheduleAs(ent))
+        if (!CanScheduleAs(ent, args.Actor))
             return;
 
         _senate.RemoveSession(args.SessionId);
@@ -320,7 +326,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnEmergencySession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateEmergencySessionMessage args)
     {
-        if (!CanScheduleAs(ent))
+        if (!CanScheduleAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-speaker"), args.Actor, PopupType.Medium);
             return;
@@ -332,7 +338,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnConfirmSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateConfirmSessionMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
             return;
@@ -346,7 +352,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnApproveWar(Entity<SWSenateWorkConsoleComponent> ent, ref SWDefenseApproveWarMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
             return;
@@ -360,7 +366,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectWar(Entity<SWSenateWorkConsoleComponent> ent, ref SWDefenseRejectWarMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
             return;
 
         _defense.RejectWar();
@@ -369,7 +375,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnApproveEmergency(Entity<SWSenateWorkConsoleComponent> ent, ref SWSecurityApproveEmergencyMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
             return;
@@ -383,7 +389,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectEmergency(Entity<SWSenateWorkConsoleComponent> ent, ref SWSecurityRejectEmergencyMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
             return;
 
         _security.RejectEmergency();
@@ -392,7 +398,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnApproveHealthEmergency(Entity<SWSenateWorkConsoleComponent> ent, ref SWHealthApproveEmergencyMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
             return;
@@ -406,7 +412,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectHealthEmergency(Entity<SWSenateWorkConsoleComponent> ent, ref SWHealthRejectEmergencyMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
             return;
 
         _health.RejectEmergency();
@@ -415,7 +421,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnApproveStimulus(Entity<SWSenateWorkConsoleComponent> ent, ref SWEconomyApproveStimulusMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
             return;
@@ -429,7 +435,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectStimulus(Entity<SWSenateWorkConsoleComponent> ent, ref SWEconomyRejectStimulusMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
             return;
 
         _economy.RejectStimulus();
@@ -438,7 +444,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnApproveEmission(Entity<SWSenateWorkConsoleComponent> ent, ref SWFinanceApproveEmissionMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
             return;
@@ -452,7 +458,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectEmission(Entity<SWSenateWorkConsoleComponent> ent, ref SWFinanceRejectEmissionMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
             return;
 
         _finance.RejectEmission();
@@ -461,7 +467,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnApproveTribunal(Entity<SWSenateWorkConsoleComponent> ent, ref SWJusticeApproveTribunalMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
             return;
@@ -475,7 +481,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectTribunal(Entity<SWSenateWorkConsoleComponent> ent, ref SWJusticeRejectTribunalMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
             return;
 
         _justice.RejectTribunal();
@@ -484,7 +490,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnSignBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSignBillMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
             return;
@@ -498,7 +504,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnVetoBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateVetoBillMessage args)
     {
-        if (!CanConfirmAs(ent) || !_powers.HasPower(SWEmergencyPower.Veto))
+        if (!CanConfirmAs(ent, args.Actor) || !_powers.HasPower(SWEmergencyPower.Veto))
             return;
 
         if (_senate.VetoBill(args.BillId))
@@ -512,7 +518,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRelinquishPowers(Entity<SWSenateWorkConsoleComponent> ent, ref SWEmergencyRelinquishMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
             return;
 
         _powers.Relinquish();
@@ -559,7 +565,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnDismissMinister(Entity<SWSenateWorkConsoleComponent> ent, ref SWEmergencyDismissMinisterMessage args)
     {
-        if (!CanConfirmAs(ent) || !_powers.HasPower(SWEmergencyPower.MinisterControl))
+        if (!CanConfirmAs(ent, args.Actor) || !_powers.HasPower(SWEmergencyPower.MinisterControl))
             return;
         if (!_ministry.IsClaimed(args.MinistryId))
             return;
@@ -576,7 +582,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnIssueDecree(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateIssueDecreeMessage args)
     {
-        if (!CanConfirmAs(ent) || !_powers.HasPower(SWEmergencyPower.Decree))
+        if (!CanConfirmAs(ent, args.Actor) || !_powers.HasPower(SWEmergencyPower.Decree))
             return;
 
         var name = args.Name.Trim();
@@ -590,7 +596,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         var magnitude = 0f;
         foreach (var (statId, rawDelta) in args.Effects)
         {
-            if (!_proto.HasIndex<SWStatPrototype>(statId))
+            if (!_proto.HasIndex<SWStatPrototype>(statId) || !float.IsFinite(rawDelta))
                 continue;
 
             var delta = Math.Clamp(rawDelta, -ent.Comp.MaxEffect, ent.Comp.MaxEffect);
@@ -627,7 +633,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             || sectorComp.Sector is not { } sectorId)
             return;
 
-        if (!_senate.SectorHolders.TryGetValue(sectorId, out var name) || name != _senate.ChancellorElect)
+        if (!_senate.SectorHolders.TryGetValue(sectorId, out var name) || name != _senate.ChancellorElect
+            || Name(args.Actor) != name)
             return;
 
         if (!_senate.ConfirmChancellorElect(name, sectorId))
@@ -661,7 +668,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnEmergencyCommand(Entity<SWSenateWorkConsoleComponent> ent, ref SWEmergencyCommandMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
             return;
 
         switch (args.Action)
@@ -757,7 +764,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateRejectSessionMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
             return;
@@ -803,7 +810,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         var net = 0f;
         foreach (var (statId, rawDelta) in args.Effects)
         {
-            if (!_proto.HasIndex<SWStatPrototype>(statId))
+            if (!_proto.HasIndex<SWStatPrototype>(statId) || !float.IsFinite(rawDelta))
                 continue;
 
             var delta = Math.Clamp(rawDelta, -ent.Comp.MaxEffect, ent.Comp.MaxEffect);
@@ -992,7 +999,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnSetBudget(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSetBudgetMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
             return;
 
         _budget.SetAllocation(args.SectorId, args.Amount);
@@ -1001,7 +1008,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnApproveBudget(Entity<SWSenateWorkConsoleComponent> ent, ref SWBudgetApproveMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
             return;
@@ -1015,7 +1022,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectBudget(Entity<SWSenateWorkConsoleComponent> ent, ref SWBudgetRejectMessage args)
     {
-        if (!CanConfirmAs(ent))
+        if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
             return;
@@ -1114,9 +1121,11 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         switch (position.Position)
         {
             case SWSenatePosition.Senator:
-                if (TryComp<SWSenateSectorComponent>(card, out var sectorComp) && sectorComp.Sector != null)
+                if (TryComp<SWSenateSectorComponent>(card, out var sectorComp) && sectorComp.Sector is { } heldSector
+                    && _senate.SectorHolders.TryGetValue(heldSector, out var sectorHolder)
+                    && sectorHolder == Name(args.Actor))
                 {
-                    _senate.Unclaim(sectorComp.Sector);
+                    _senate.Unclaim(heldSector);
                     sectorComp.Sector = null;
                     _idCard.TryChangeJobTitle(card.Value, Loc.GetString("sw-senate-senator-base"));
                     _popup.PopupCursor(Loc.GetString("sw-senate-work-resigned"), args.Actor, PopupType.Medium);
@@ -1124,12 +1133,20 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
                 break;
 
             case SWSenatePosition.Chancellor:
+                if (_senate.Chancellor != Name(args.Actor))
+                    break;
+
+                if (_powers.Active)
+                    _powers.Relinquish();
                 _senate.ResignChancellor();
                 _floor.SetChancellor(null);
                 _popup.PopupCursor(Loc.GetString("sw-senate-work-resigned"), args.Actor, PopupType.Medium);
                 break;
 
             case SWSenatePosition.Speaker:
+                if (_senate.Speaker != Name(args.Actor))
+                    break;
+
                 _senate.ResignSpeaker();
                 _floor.SetSpeaker(null);
                 _floor.RevokeFloor();

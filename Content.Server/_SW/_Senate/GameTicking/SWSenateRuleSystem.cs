@@ -32,6 +32,7 @@ public sealed class SWSenateRuleSystem : GameRuleSystem<SWSenateRuleComponent>
             return;
 
         component.EndTriggered = true;
+        _time.ModeActive = false;
         _chatManager.DispatchServerAnnouncement(
             "Рабочая сессия Сената завершена. Созыв распускается - подводятся итоги.",
             Color.FromHex("#9B59B6"));

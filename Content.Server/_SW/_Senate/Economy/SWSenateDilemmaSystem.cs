@@ -101,7 +101,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             if (!request.AuditPending)
                 continue;
 
-            if (_time.DayActive && _time.CurrentHour < request.AuditCompleteHour)
+            if (_time.DayActive && _time.AbsoluteHour < request.AuditCompleteHour)
                 continue;
 
             request.AuditPending = false;
@@ -487,7 +487,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
         _ministryAdmin[ministryId] -= AuditAdminCost;
         request.AuditPending = true;
-        request.AuditCompleteHour = _time.CurrentHour + 1;
+        request.AuditCompleteHour = _time.AbsoluteHour + 1;
         return true;
     }
 

@@ -82,8 +82,8 @@ public sealed class SWMinistryHealthSystem : EntitySystem
     public bool VaccineReady => _research >= 100f || _vaccineStrain >= 0;
     public bool VaccineStale => _vaccineStrain >= 0 && _vaccineStrain != _strain;
     public int ResearchFunding => _funding;
-    public bool EmergencyActive => _emergencyUntil >= 0 && _time.CurrentHour < _emergencyUntil;
-    public int EmergencyHoursLeft => EmergencyActive ? Math.Max(0, _emergencyUntil - _time.CurrentHour) : 0;
+    public bool EmergencyActive => _emergencyUntil >= 0 && _time.AbsoluteHour < _emergencyUntil;
+    public int EmergencyHoursLeft => EmergencyActive ? Math.Max(0, _emergencyUntil - _time.AbsoluteHour) : 0;
     public bool EmergencyPending => _emergencyPending;
     public string? SelectedProgram => _program;
     public int ProgramProgress => (int) MathF.Round(_progress);
@@ -247,7 +247,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         if (!_dilemma.SpendMinistry(HealthMinistryId, BuildCost(level)))
             return false;
 
-        _construction[sectorId] = _time.CurrentHour + BuildHours;
+        _construction[sectorId] = _time.AbsoluteHour + BuildHours;
         return true;
     }
 
@@ -255,7 +255,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
     {
         if (!_senate.IsClaimed(sectorId))
             return false;
-        if (_aidCooldown.TryGetValue(sectorId, out var ready) && _time.CurrentHour < ready)
+        if (_aidCooldown.TryGetValue(sectorId, out var ready) && _time.AbsoluteHour < ready)
             return false;
         if (!_dilemma.SpendMinistry(HealthMinistryId, AidCost))
             return false;
@@ -263,7 +263,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         if (_infection.TryGetValue(sectorId, out var inf))
             _infection[sectorId] = Math.Clamp(inf - 30f, 0f, 100f);
         _senate.AddSectorBias(sectorId, "SWGlobalHealthcare", 3f);
-        _aidCooldown[sectorId] = _time.CurrentHour + 3;
+        _aidCooldown[sectorId] = _time.AbsoluteHour + 3;
 
         var name = _proto.TryIndex<SWSectorPrototype>(sectorId, out var sp) ? sp.Name : sectorId;
         AddLog($"Экстренная помощь в {name}: очаг подавлен.");
@@ -305,7 +305,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
 
     private void BeginEmergency()
     {
-        _emergencyUntil = _time.CurrentHour + EmergencyHours;
+        _emergencyUntil = _time.AbsoluteHour + EmergencyHours;
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство здравоохранения",
             "Объявлено галактическое чрезвычайное положение по здоровью: всеобщий карантин.",
             SWSenateAnnouncementKind.Health));
@@ -742,7 +742,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
             var inf = _infection.TryGetValue(sectorId, out var v) ? (int) MathF.Round(v) : 0;
             var level = _hospitals.TryGetValue(sectorId, out var l) ? l : 0;
             var building = _construction.TryGetValue(sectorId, out var ready);
-            var aidReady = !_aidCooldown.TryGetValue(sectorId, out var ar) || _time.CurrentHour >= ar;
+            var aidReady = !_aidCooldown.TryGetValue(sectorId, out var ar) || _time.AbsoluteHour >= ar;
 
             list.Add(new SWInfectionSectorEntry
             {

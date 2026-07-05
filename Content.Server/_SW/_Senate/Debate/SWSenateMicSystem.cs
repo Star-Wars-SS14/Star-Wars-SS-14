@@ -57,11 +57,14 @@ public sealed class SWSenateMicSystem : EntitySystem
         if (!TryComp<SWSenatePositionCardComponent>(card, out var position) || position.Position != comp.RequiredPosition)
             return false;
 
-        if (comp.RequiredPosition != SWSenatePosition.Senator)
-            return true;
-
-        return TryComp<SWSenateSectorComponent>(card, out var sector)
-            && sector.Sector is { } claimed
-            && _senate.IsClaimed(claimed);
+        return comp.RequiredPosition switch
+        {
+            SWSenatePosition.Speaker => _senate.Speaker == Name(user),
+            SWSenatePosition.Chancellor => _senate.Chancellor == Name(user),
+            _ => TryComp<SWSenateSectorComponent>(card, out var sector)
+                && sector.Sector is { } claimed
+                && _senate.SectorHolders.TryGetValue(claimed, out var holder)
+                && holder == Name(user),
+        };
     }
 }

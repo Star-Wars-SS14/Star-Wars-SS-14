@@ -19,6 +19,7 @@ public sealed class SWSenateTimeSystem : EntitySystem
 
     public int CurrentHour => StartHour + Math.Clamp((int)(_gameMinutes / 60f), 0, EndHour - StartHour);
     public int CurrentMinute => (int)(_gameMinutes % 60f);
+    public int AbsoluteHour => Day * 24 + CurrentHour;
 
     public override void Initialize()
     {
@@ -33,6 +34,7 @@ public sealed class SWSenateTimeSystem : EntitySystem
         _gameMinutes = 0f;
         _gapRemaining = 0f;
         DayActive = true;
+        ModeActive = false;
     }
 
     public override void Update(float frameTime)

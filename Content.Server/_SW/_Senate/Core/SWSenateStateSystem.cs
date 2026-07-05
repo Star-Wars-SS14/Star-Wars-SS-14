@@ -468,8 +468,15 @@ public sealed class SWSenateStateSystem : EntitySystem
     {
         if (_chancellorElect != null)
         {
-            _vacancyHours = 0f;
-            return;
+            if (Chancellor != null || !_sectorHolders.ContainsValue(_chancellorElect))
+            {
+                _chancellorElect = null;
+            }
+            else
+            {
+                _vacancyHours = 0f;
+                return;
+            }
         }
 
         var bill = _bills.FirstOrDefault(b => b.IsElection && b.Stage == SWBillStage.Voting);
@@ -535,7 +542,7 @@ public sealed class SWSenateStateSystem : EntitySystem
         var tied = false;
         foreach (var candidate in bill.Candidates)
         {
-            var count = bill.ElectionVotes.Values.Count(v => v == candidate);
+            var count = bill.ElectionVotes.Count(kv => _sectorHolders.ContainsKey(kv.Key) && kv.Value == candidate);
             if (count > leaderVotes)
             {
                 leaderVotes = count;
@@ -582,17 +589,23 @@ public sealed class SWSenateStateSystem : EntitySystem
 
             var result = ScheduleEmergencySession(bill.Id);
             if (result != null)
+            {
+                bill.EmergencyWaitHours = 0f;
                 RaiseLocalEvent(new SWSenateEmergencySessionScheduledEvent(bill.Name, result.StartHour, result.DisplacedBill));
+            }
         }
     }
 
     private void ResolveElectionByPlurality(SWSenateBill bill)
     {
         string? winner = null;
-        var best = -1;
+        var best = 0;
         foreach (var candidate in bill.Candidates)
         {
-            var count = bill.ElectionVotes.Values.Count(v => v == candidate);
+            if (!_sectorHolders.ContainsValue(candidate))
+                continue;
+
+            var count = bill.ElectionVotes.Count(kv => _sectorHolders.ContainsKey(kv.Key) && kv.Value == candidate);
             if (count > best)
             {
                 best = count;
@@ -702,8 +715,8 @@ public sealed class SWSenateStateSystem : EntitySystem
         if (remaining <= 0)
             return true;
 
-        var votesFor = bill.Votes.Values.Count(v => v == SWVoteChoice.For);
-        var votesAgainst = bill.Votes.Values.Count(v => v == SWVoteChoice.Against);
+        var votesFor = bill.Votes.Count(kv => _sectorHolders.ContainsKey(kv.Key) && kv.Value == SWVoteChoice.For);
+        var votesAgainst = bill.Votes.Count(kv => _sectorHolders.ContainsKey(kv.Key) && kv.Value == SWVoteChoice.Against);
         return Math.Abs(votesFor - votesAgainst) > remaining;
     }
 
@@ -811,8 +824,8 @@ public sealed class SWSenateStateSystem : EntitySystem
             return;
         }
 
-        var votesFor = bill.Votes.Values.Count(v => v == SWVoteChoice.For);
-        var votesAgainst = bill.Votes.Values.Count(v => v == SWVoteChoice.Against);
+        var votesFor = bill.Votes.Count(kv => _sectorHolders.ContainsKey(kv.Key) && kv.Value == SWVoteChoice.For);
+        var votesAgainst = bill.Votes.Count(kv => _sectorHolders.ContainsKey(kv.Key) && kv.Value == SWVoteChoice.Against);
 
         if (votesFor > votesAgainst)
         {
@@ -1068,6 +1081,11 @@ public sealed class SWSenateStateSystem : EntitySystem
             return null;
 
         var targetHour = _time.CurrentHour + 1;
+        while (targetHour < SWSenateTimeSystem.EndHour
+               && _sessions.Any(s => s.Emergency && s.Status != SWSessionStatus.Rejected
+                   && targetHour >= s.StartHour && targetHour < s.EndHour))
+            targetHour++;
+
         if (targetHour < SWSenateTimeSystem.StartHour || targetHour >= SWSenateTimeSystem.EndHour)
             return null;
 

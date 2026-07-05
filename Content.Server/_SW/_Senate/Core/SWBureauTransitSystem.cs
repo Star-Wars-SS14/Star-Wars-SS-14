@@ -487,7 +487,7 @@ public sealed class SWBureauTransitSystem : EntitySystem
             var (name, desc, cost, _) = Ops[i];
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
-            if (_opCooldowns.TryGetValue(i, out var ready) && _time.CurrentHour < ready)
+            if (_opCooldowns.TryGetValue(i, out var ready) && _time.AbsoluteHour < ready)
                 entry.Status = $"готовность через {ready - _time.CurrentHour} ч";
             else if (cost > budget)
                 entry.Status = "недостаточно бюджета";
@@ -504,14 +504,14 @@ public sealed class SWBureauTransitSystem : EntitySystem
     {
         if (idx < 0 || idx >= Ops.Length)
             return false;
-        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.CurrentHour < ready)
+        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.AbsoluteHour < ready)
             return false;
 
         var (_, _, cost, cd) = Ops[idx];
         if (cost > 0 && !_dilemma.SpendMinistry(BureauId, cost))
             return false;
 
-        _opCooldowns[idx] = _time.CurrentHour + cd;
+        _opCooldowns[idx] = _time.AbsoluteHour + cd;
 
         switch (idx)
         {

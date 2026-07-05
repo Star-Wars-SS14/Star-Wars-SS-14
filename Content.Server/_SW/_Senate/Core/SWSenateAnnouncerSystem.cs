@@ -6,6 +6,7 @@ namespace Content.Server._SW._Senate.Core;
 public sealed class SWSenateAnnouncerSystem : EntitySystem
 {
     [Dependency] private readonly ChatSystem _chat = default!;
+    [Dependency] private readonly SWSenateTimeSystem _time = default!;
 
     private static readonly Color AnnouncementColor = Color.FromHex("#9B59B6");
     private static readonly Color EmergencyColor = Color.FromHex("#C0392B");
@@ -36,6 +37,9 @@ public sealed class SWSenateAnnouncerSystem : EntitySystem
 
     private void OnPartyWhip(SWSenatePartyWhipAnnouncedEvent ev)
     {
+        if (!_time.ModeActive)
+            return;
+
         _chat.DispatchGlobalAnnouncement(
             Loc.GetString("sw-senate-announce-party-whip",
                 ("party", ev.PartyName), ("bill", ev.BillName), ("choice", ev.ChoiceLabel)),
@@ -46,6 +50,9 @@ public sealed class SWSenateAnnouncerSystem : EntitySystem
 
     private void OnEmergencyScheduled(SWSenateEmergencySessionScheduledEvent ev)
     {
+        if (!_time.ModeActive)
+            return;
+
         var text = Loc.GetString("sw-senate-announce-emergency-scheduled",
             ("time", $"{ev.StartHour:00}:00"), ("bill", ev.BillName));
         if (ev.DisplacedBill != null)
@@ -60,6 +67,9 @@ public sealed class SWSenateAnnouncerSystem : EntitySystem
 
     private void OnCustom(SWSenateCustomAnnouncementEvent ev)
     {
+        if (!_time.ModeActive)
+            return;
+
         _chat.DispatchGlobalAnnouncement(
             ev.Text,
             ev.Sender,
@@ -69,6 +79,9 @@ public sealed class SWSenateAnnouncerSystem : EntitySystem
 
     private void OnSessionStarted(SWSenateSessionStartedEvent ev)
     {
+        if (!_time.ModeActive)
+            return;
+
         var key = ev.Emergency ? "sw-senate-announce-emergency-started" : "sw-senate-announce-session";
         _chat.DispatchGlobalAnnouncement(
             Loc.GetString(key, ("bill", ev.BillName)),
@@ -79,6 +92,9 @@ public sealed class SWSenateAnnouncerSystem : EntitySystem
 
     private void OnBillResolved(SWSenateBillResolvedEvent ev)
     {
+        if (!_time.ModeActive)
+            return;
+
         var key = ev.Passed ? "sw-senate-announce-passed" : "sw-senate-announce-rejected";
         _chat.DispatchGlobalAnnouncement(
             Loc.GetString(key, ("bill", ev.BillName)),

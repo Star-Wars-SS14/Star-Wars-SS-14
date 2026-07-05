@@ -108,7 +108,8 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         if (card == null
             || !TryComp<SWMinistryComponent>(card, out var ministryComp)
-            || ministryComp.Ministry is not { } ministryId)
+            || ministryComp.Ministry is not { } ministryId
+            || GetCardBureau(ent) == null)
             return;
 
         _ministry.Unclaim(ministryId);

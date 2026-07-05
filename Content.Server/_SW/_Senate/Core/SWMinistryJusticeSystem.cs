@@ -56,8 +56,8 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
     public int Capacity => _capacity;
     public int CapacityMax => CapacityFor(_stance) + (TribunalActive ? 10 : 0);
     public int CaseCount => _cases.Count;
-    public bool TribunalActive => _tribunalUntil >= 0 && _time.CurrentHour < _tribunalUntil;
-    public int TribunalHoursLeft => TribunalActive ? Math.Max(0, _tribunalUntil - _time.CurrentHour) : 0;
+    public bool TribunalActive => _tribunalUntil >= 0 && _time.AbsoluteHour < _tribunalUntil;
+    public int TribunalHoursLeft => TribunalActive ? Math.Max(0, _tribunalUntil - _time.AbsoluteHour) : 0;
     public bool TribunalPending => _tribunalPending;
     public string? SelectedProgram => _program;
     public int ProgramProgress => (int) MathF.Round(_progress);
@@ -236,7 +236,7 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
 
     private void BeginTribunal()
     {
-        _tribunalUntil = _time.CurrentHour + TribunalHours;
+        _tribunalUntil = _time.AbsoluteHour + TribunalHours;
         _capacity += 10;
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство юстиции",
             "Учреждены чрезвычайные трибуналы: ускоренные процессы по всей Республике.",

@@ -237,7 +237,6 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
             _day = _time.Day;
             _program = null;
             _progress = 0f;
-            _activeOps.Clear();
             _cooldowns.Clear();
         }
 
@@ -368,7 +367,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
     {
         foreach (var group in _groups)
         {
-            if (group.State == SWFleetState.Repairing && _time.CurrentHour >= group.RepairUntil)
+            if (group.State == SWFleetState.Repairing && _time.AbsoluteHour >= group.RepairUntil)
             {
                 group.Damaged = false;
                 group.RepairUntil = 0;
@@ -403,7 +402,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
 
             group.State = SWFleetState.Repairing;
             group.SectorId = null;
-            group.RepairUntil = _time.CurrentHour + RepairHours;
+            group.RepairUntil = _time.AbsoluteHour + RepairHours;
             return true;
         }
 
@@ -452,7 +451,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
                 LocationLabel = label,
                 SectorId = group.SectorId,
                 Damaged = group.Damaged,
-                RepairLeft = group.State == SWFleetState.Repairing ? Math.Max(0, group.RepairUntil - _time.CurrentHour) : 0,
+                RepairLeft = group.State == SWFleetState.Repairing ? Math.Max(0, group.RepairUntil - _time.AbsoluteHour) : 0,
             });
         }
 
@@ -533,7 +532,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
             return false;
         if (op.RequireBorderFleet && _groups.All(g => g.State != SWFleetState.Border))
             return false;
-        if (_cooldowns.TryGetValue(opId, out var ready) && _time.CurrentHour < ready)
+        if (_cooldowns.TryGetValue(opId, out var ready) && _time.AbsoluteHour < ready)
             return false;
 
         string? sectorId = null;
@@ -553,12 +552,12 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
 
         _dilemma.SpendMinistryAdmin(DefenseMinistryId, op.AdminCost);
         _dilemma.SpendMinistry(DefenseMinistryId, op.Cost);
-        _cooldowns[opId] = _time.CurrentHour + op.Cooldown;
+        _cooldowns[opId] = _time.AbsoluteHour + op.Cooldown;
 
         if (op.Duration <= 0)
             ApplyOp(op, sectorId);
         else
-            _activeOps.Add(new SWActiveOperation { OpId = opId, SectorId = sectorId, CompleteHour = _time.CurrentHour + op.Duration });
+            _activeOps.Add(new SWActiveOperation { OpId = opId, SectorId = sectorId, CompleteHour = _time.AbsoluteHour + op.Duration });
 
         return true;
     }
@@ -583,7 +582,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
         for (var i = _activeOps.Count - 1; i >= 0; i--)
         {
             var active = _activeOps[i];
-            if (_time.CurrentHour < active.CompleteHour)
+            if (_time.AbsoluteHour < active.CompleteHour)
                 continue;
 
             if (_proto.TryIndex<SWDefenseOperationPrototype>(active.OpId, out var op))
@@ -618,7 +617,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
                 Effects = OpEffects(op),
             };
 
-            if (_cooldowns.TryGetValue(op.ID, out var ready) && _time.CurrentHour < ready)
+            if (_cooldowns.TryGetValue(op.ID, out var ready) && _time.AbsoluteHour < ready)
                 entry.StatusLabel = $"готовность через {ready - _time.CurrentHour} ч";
             else if (_stance < op.RequireStance)
                 entry.StatusLabel = $"нужна готовность: {StanceName(op.RequireStance)}";
@@ -646,7 +645,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
         {
             var name = _proto.TryIndex<SWDefenseOperationPrototype>(active.OpId, out var op) ? op.Name : active.OpId;
             var detail = active.SectorId != null && _proto.TryIndex<SWSectorPrototype>(active.SectorId, out var sp) ? sp.Name : "-";
-            list.Add(new SWActiveOpEntry { Name = name, Detail = detail, HoursLeft = Math.Max(0, active.CompleteHour - _time.CurrentHour) });
+            list.Add(new SWActiveOpEntry { Name = name, Detail = detail, HoursLeft = Math.Max(0, active.CompleteHour - _time.AbsoluteHour) });
         }
 
         return list;

@@ -393,7 +393,7 @@ public sealed class SWSenateCrisisSystem : EntitySystem
                 });
             }
 
-            var available = _budget.Available(crisis.OriginSector);
+            var available = viewerSector != null ? _budget.Available(viewerSector) : 0;
             foreach (var solution in proto.Solutions)
             {
                 entry.Solutions.Add(new SWCrisisSolutionEntry

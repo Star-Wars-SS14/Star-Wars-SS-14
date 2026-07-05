@@ -244,7 +244,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
         {
             var weight = _ministryWeights.TryGetValue(id, out var w) ? w : 1;
             var amount = totalWeight > 0 ? (int) MathF.Round((float) ministryPool * weight / totalWeight) : 0;
-            _dilemma.SetMinistryBudget(id, amount);
+            _dilemma.SetMinistryBudget(id, _dilemma.GetMinistryBudget(id) + amount);
         }
 
         _phase = SWBudgetPhase.Approved;

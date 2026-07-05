@@ -416,10 +416,10 @@ public sealed class SWSenatePartySystem : EntitySystem
         {
             var party = _parties[i];
 
-            for (var m = party.Members.Count - 1; m >= 0; m--)
+            foreach (var member in party.Members.ToList())
             {
-                if (!_senate.IsClaimed(party.Members[m]))
-                    RemoveMember(party, party.Members[m]);
+                if (party.Members.Contains(member) && !_senate.IsClaimed(member))
+                    RemoveMember(party, member);
             }
 
             if (!_parties.Contains(party))

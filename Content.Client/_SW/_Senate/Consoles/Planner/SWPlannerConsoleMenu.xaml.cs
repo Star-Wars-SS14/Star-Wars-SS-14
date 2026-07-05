@@ -203,7 +203,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
     public void SetState(SWPlannerConsoleState state)
     {
         _state = state;
-        HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "—" : state.GameTime;
+        HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "-" : state.GameTime;
 
         BuildStrip(state);
 
@@ -213,7 +213,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
             if (state.CardInserted)
             {
                 DayList.AddChild(SWConsoleStyle.Text("Карта не опознана: нет имени владельца и закреплённой должности.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
-                DayList.AddChild(SWConsoleStyle.Text("Закрепите за картой сектор или ведомство — планировщик опознает вас по должности.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                DayList.AddChild(SWConsoleStyle.Text("Закрепите за картой сектор или ведомство - планировщик опознает вас по должности.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
             }
             else
                 DayList.AddChild(SWConsoleStyle.Text("Вставьте ID-карту.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
@@ -303,7 +303,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
             DayList.AddChild(new Control { MinHeight = 8 });
         }
 
-        DayList.AddChild(SWConsoleStyle.Section(_myDay == 0 ? "РАСПОРЯДОК — СЕГОДНЯ" : "РАСПОРЯДОК — ЗАВТРА"));
+        DayList.AddChild(SWConsoleStyle.Section(_myDay == 0 ? "РАСПОРЯДОК - СЕГОДНЯ" : "РАСПОРЯДОК - ЗАВТРА"));
         DayList.AddChild(new Control { MinHeight = 4 });
         BuildTimeline(DayList, _myDay == 0 ? state.MyItemsToday : state.MyItemsTomorrow, _myDay == 0 ? state.NowSlot : -1);
     }
@@ -416,8 +416,8 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
     }
 
     private static Color LineColor(string line) =>
-        line.Contains("— принял") ? SWConsoleStyle.Good
-        : line.Contains("— отказ") ? SWConsoleStyle.Bad
+        line.Contains("- принял") ? SWConsoleStyle.Good
+        : line.Contains("- отказ") ? SWConsoleStyle.Bad
         : SWConsoleStyle.TextDim;
 
     private string MeetingSubLine(SWPlannerMeetingEntry meeting)
@@ -442,7 +442,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
             if (nowPlaced || nowSlot >= beforeSlot)
                 return;
             nowPlaced = true;
-            target.AddChild(SWConsoleStyle.Text($"—— сейчас {SWPlannerSlots.Time(nowSlot)} ——", SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall));
+            target.AddChild(SWConsoleStyle.Text($"-- сейчас {SWPlannerSlots.Time(nowSlot)} --", SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall));
         }
 
         foreach (var item in items)
@@ -525,7 +525,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
         for (var i = 0; i < state.Roster.Count; i++)
         {
             var person = state.Roster[i];
-            PersonOption.AddItem($"{person.Name} — {person.Role}", i);
+            PersonOption.AddItem($"{person.Name} - {person.Role}", i);
             if (person.Name == _selectedPerson)
                 PersonOption.SelectId(i);
         }
@@ -548,7 +548,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
             : null;
 
         PeopleList.AddChild(SWConsoleStyle.Text(
-            $"{state.ViewPerson} — {(state.ViewDay == state.Today ? "сегодня" : "завтра")}"
+            $"{state.ViewPerson} - {(state.ViewDay == state.Today ? "сегодня" : "завтра")}"
             + (busyNow != null ? $"   ·   сейчас занят до {SWPlannerSlots.Time(busyNow.StartSlot + busyNow.Duration)}" : string.Empty),
             SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
         PeopleList.AddChild(new Control { MinHeight = 4 });
@@ -572,7 +572,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
             var name = person.Name;
             var btn = new Button
             {
-                Text = $"{person.Name} — {person.Role}",
+                Text = $"{person.Name} - {person.Role}",
                 ToggleMode = true,
                 Pressed = _invitees.Contains(name),
                 HorizontalExpand = true,
@@ -639,7 +639,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
             _confirmArmed = false;
         }
 
-        CreateMeetingButton.Text = _confirmArmed ? "Слоты пересекаются — всё равно создать?" : "Создать встречу";
+        CreateMeetingButton.Text = _confirmArmed ? "Слоты пересекаются - всё равно создать?" : "Создать встречу";
         StyleButton(CreateMeetingButton, _confirmArmed ? SWConsoleStyle.Warn : SWConsoleStyle.Accent);
 
         var free = new List<string>();
@@ -701,7 +701,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
         BlockList.RemoveAllChildren();
         BlockList.AddChild(SWConsoleStyle.Section("МОИ БЛОКИ"));
         BlockList.AddChild(SWConsoleStyle.Text(
-            "Блоки видны всем в вашем расписании с подписью — коллеги знают, чем вы заняты.",
+            "Блоки видны всем в вашем расписании с подписью - коллеги знают, чем вы заняты.",
             SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
         BlockList.AddChild(new Control { MinHeight = 4 });
 

@@ -295,7 +295,7 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
         var activeSession = _senate.GetActiveSession();
         if (activeSession != null)
-            state.SessionInfo = $"Заседание {activeSession.StartHour:00}:00–{activeSession.EndHour:00}:00";
+            state.SessionInfo = $"Заседание {activeSession.StartHour:00}:00-{activeSession.EndHour:00}:00";
 
         var bill = _senate.GetCurrentBill();
         if (bill != null)

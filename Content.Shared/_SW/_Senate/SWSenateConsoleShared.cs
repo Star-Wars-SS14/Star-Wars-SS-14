@@ -15,15 +15,15 @@ public enum SWStatisticsConsoleUiKey
 [Serializable, NetSerializable]
 public enum SWEmergencyPower : byte
 {
-    Veto,            // tier I — reject a passed law instead of signing it
-    Command,         // tier I — invoke ministers' big buttons without them
-    EmergencyBudget, // tier II — requisition / redirect ministry budgets
-    MartialLaw,      // tier II — combined defence + security + courts crackdown
-    Mobilization,    // tier II — war economy / conscription
-    Censorship,      // tier II — suppress dissent
-    Purge,           // tier III — political prosecutions
-    Decree,          // tier III — enact law bypassing the Senate vote
-    MinisterControl, // tier III — appoint / dismiss ministers
+    Veto,            // tier I - reject a passed law instead of signing it
+    Command,         // tier I - invoke ministers' big buttons without them
+    EmergencyBudget, // tier II - requisition / redirect ministry budgets
+    MartialLaw,      // tier II - combined defence + security + courts crackdown
+    Mobilization,    // tier II - war economy / conscription
+    Censorship,      // tier II - suppress dissent
+    Purge,           // tier III - political prosecutions
+    Decree,          // tier III - enact law bypassing the Senate vote
+    MinisterControl, // tier III - appoint / dismiss ministers
 }
 
 [Serializable, NetSerializable]
@@ -357,7 +357,7 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public List<SWDefenseProgramEntry> FinancePrograms = new();
     public List<string> FinanceLog = new();
 
-    // БЮДЖЕТЫ (Finance only) — daily budget project.
+    // БЮДЖЕТЫ (Finance only) - daily budget project.
     public string BudgetPhaseLabel = string.Empty;
     public Color BudgetPhaseColor;
     public int BudgetDayTotal;
@@ -409,7 +409,7 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public List<SWCorruptTargetEntry> CorruptPeople = new();
     public List<string> CorruptionLog = new();
 
-    // Personal corruption (the viewer — any office holder).
+    // Personal corruption (the viewer - any office holder).
     public bool HasPersonal;
     public int MyCorruption;
     public int MyAccount;
@@ -2594,14 +2594,14 @@ public enum SWInviteStatus : byte
     Declined,
 }
 
-/// <summary>The senate day sliced into 15-minute slots: 07:00–21:00 → 56 slots, bit-packable into a ulong.</summary>
+/// <summary>The senate day sliced into 15-minute slots: 07:00-21:00 → 56 slots, bit-packable into a ulong.</summary>
 public static class SWPlannerSlots
 {
     public const int PerDay = 56;
 
     public static string Time(int slot) => $"{7 + slot / 4:00}:{slot % 4 * 15:00}";
 
-    public static string Range(int slot, int duration) => $"{Time(slot)}–{Time(slot + duration)}";
+    public static string Range(int slot, int duration) => $"{Time(slot)}-{Time(slot + duration)}";
 
     public static ulong Mask(int slot, int duration)
     {

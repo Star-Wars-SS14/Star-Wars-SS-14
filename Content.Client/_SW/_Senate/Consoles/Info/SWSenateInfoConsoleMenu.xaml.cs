@@ -110,7 +110,7 @@ public sealed partial class SWSenateInfoConsoleMenu : FancyWindow
 
     public void SetState(SWSenateInfoConsoleState state)
     {
-        HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "—" : state.GameTime;
+        HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "-" : state.GameTime;
 
         BuildSectors(state);
         BuildLeadership(state);

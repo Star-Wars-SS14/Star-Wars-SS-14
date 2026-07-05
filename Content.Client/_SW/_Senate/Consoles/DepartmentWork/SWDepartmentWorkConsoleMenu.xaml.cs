@@ -66,7 +66,7 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
 
     public void SetState(SWDepartmentWorkConsoleState state)
     {
-        HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "—" : state.GameTime;
+        HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "-" : state.GameTime;
 
         StatusStrip.RemoveAllChildren();
         WorkList.RemoveAllChildren();
@@ -180,7 +180,7 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
         {
             var value = meter.Invert ? 100 - meter.Value : meter.Value;
             var color = SWConsoleStyle.ValueColor(value);
-            WorkList.AddChild(SWConsoleStyle.Text($"{meter.Label}: {meter.Value}/100 — {meter.Status}", color, SWConsoleStyle.MonoBold));
+            WorkList.AddChild(SWConsoleStyle.Text($"{meter.Label}: {meter.Value}/100 - {meter.Status}", color, SWConsoleStyle.MonoBold));
             WorkList.AddChild(SWConsoleStyle.Bar(meter.Value, 0, 100, color));
             WorkList.AddChild(new Control { MinHeight = 4 });
         }
@@ -263,7 +263,7 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
 
         if (state.Cases.Count == 0)
         {
-            WorkList.AddChild(SWConsoleStyle.Text("Новых дел нет — следователи изучают архивы.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            WorkList.AddChild(SWConsoleStyle.Text("Новых дел нет - следователи изучают архивы.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 
@@ -346,7 +346,7 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
     {
         var title = state.IsHealthcare ? "ВЫЗОВЫ НА ЛИНИИ" : state.IsGuard ? "СУДЕБНЫЕ ОРДЕРА" : state.IsExpenditure ? "СИГНАЛЫ О НАРУШЕНИЯХ" : "ЗАДАЧИ";
         TasksList.AddChild(SWConsoleStyle.Section(title));
-        TasksList.AddChild(SWConsoleStyle.Text("Просроченные задачи закрываются сами — с потерями.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        TasksList.AddChild(SWConsoleStyle.Text("Просроченные задачи закрываются сами - с потерями.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
         TasksList.AddChild(new Control { MinHeight = 4 });
 
         if (state.Tasks.Count == 0)

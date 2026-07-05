@@ -259,7 +259,7 @@ public sealed class SWMinistryEconomySystem : EntitySystem
             _growth = -3f;
             _overheat = 40f;
             RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство экономики",
-                "Экономика перегрелась — обвал! Республика входит в рецессию.",
+                "Экономика перегрелась - обвал! Республика входит в рецессию.",
                 SWSenateAnnouncementKind.Economy));
             AddLog("Пузырь лопнул: обвал и рецессия.");
         }
@@ -422,7 +422,7 @@ public sealed class SWMinistryEconomySystem : EntitySystem
         _routes.Add(new SWTradeRoute { Id = _nextRouteId++, A = aId, B = bId });
         var an = _proto.TryIndex<SWSectorPrototype>(aId, out var ap) ? ap.Name : aId;
         var bn = _proto.TryIndex<SWSectorPrototype>(bId, out var bp) ? bp.Name : bId;
-        AddLog($"Открыт гиперпуть {an} — {bn}.");
+        AddLog($"Открыт гиперпуть {an} - {bn}.");
         return true;
     }
 

@@ -34,7 +34,7 @@ public enum SWAmbitionKind : byte
 
     /// <summary>
     /// Minister-role ambitions: a named metric read off that office's own system, compared against
-    /// Threshold. One generic kind reused for every ministry/department/bureau — see
+    /// Threshold. One generic kind reused for every ministry/department/bureau - see
     /// SWSenateAmbitionSystem.MinisterMetricValue for the (ministryId, metric) lookup table.
     /// </summary>
     MinisterMetric,

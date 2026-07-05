@@ -64,9 +64,9 @@ public sealed class SWEmergencyPowersSystem : EntitySystem
 
     public string LevelName() => _level switch
     {
-        3 => "Уровень III — чрезвычайный",
-        2 => "Уровень II — расширенный",
-        1 => "Уровень I — ограниченный",
+        3 => "Уровень III - чрезвычайный",
+        2 => "Уровень II - расширенный",
+        1 => "Уровень I - ограниченный",
         _ => _granted.Count > 0 ? "Точечные полномочия" : "Нет полномочий",
     };
 
@@ -204,7 +204,7 @@ public sealed class SWEmergencyPowersSystem : EntitySystem
         TickAutoOffer(gameHours);
     }
 
-    // High tyranny breeds unrest, and — paired with collapsed legitimacy — the risk of a coup that topples
+    // High tyranny breeds unrest, and - paired with collapsed legitimacy - the risk of a coup that topples
     // the Chancellor outright.
     private void TickTyrannyConsequences(float gameHours)
     {

@@ -68,7 +68,7 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
 
     public void SetState(SWSenateVoteConsoleState state)
     {
-        HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "—" : state.GameTime;
+        HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "-" : state.GameTime;
 
         _tabButtons[FloorTab].Visible = state.CanControlFloor;
         if (!state.CanControlFloor && _active == FloorTab)
@@ -133,7 +133,7 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
         var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
 
         var title = state.AwaitingTiebreak
-            ? $"#{state.CurrentId}  {state.CurrentName}  — ничья, ожидание Канцлера"
+            ? $"#{state.CurrentId}  {state.CurrentName}  - ничья, ожидание Канцлера"
             : $"#{state.CurrentId}  {state.CurrentName}";
         box.AddChild(SWConsoleStyle.Text(title, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
 
@@ -274,7 +274,7 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
 
             var line = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
             var mine = candidate.Name == state.MyElectionVote;
-            var label = SWConsoleStyle.Text($"{candidate.Name}  —  {candidate.Votes} голосов", mine ? SWConsoleStyle.Accent : SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold);
+            var label = SWConsoleStyle.Text($"{candidate.Name}  -  {candidate.Votes} голосов", mine ? SWConsoleStyle.Accent : SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold);
             label.HorizontalExpand = true;
             label.VerticalAlignment = Control.VAlignment.Center;
             line.AddChild(label);
@@ -387,6 +387,6 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
         SWVoteChoice.For => "За",
         SWVoteChoice.Against => "Против",
         SWVoteChoice.Abstain => "Воздержался",
-        _ => "—",
+        _ => "-",
     };
 }

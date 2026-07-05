@@ -213,8 +213,8 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         }
 
         AddLog(efficacy < 1f
-            ? $"Развёрнута вакцина (штамм {_vaccineStrain + 1}) — против штамма {_strain + 1} вполсилы."
-            : $"Массовая вакцинация завершена — иммунитет population подскочил.");
+            ? $"Развёрнута вакцина (штамм {_vaccineStrain + 1}) - против штамма {_strain + 1} вполсилы."
+            : $"Массовая вакцинация завершена - иммунитет population подскочил.");
 
         _research = 0f;
         _vaccineStrain = -1;
@@ -449,7 +449,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство здравоохранения",
             $"Вспышка неизвестного патогена «{_name}» в секторе {name}.",
             SWSenateAnnouncementKind.Health));
-        AddLog($"Новый патоген «{_name}» — очаг в {name} (вирулентность {(int) (_virulence * 100f)}%).");
+        AddLog($"Новый патоген «{_name}» - очаг в {name} (вирулентность {(int) (_virulence * 100f)}%).");
     }
 
     private void SpreadInfection(float gameHours)
@@ -516,7 +516,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         _lethality = MathF.Min(_lethality * 1.1f, 2.5f);
         _research *= 0.6f;
         _immunity *= 0.5f;
-        AddLog($"Патоген мутировал — штамм {_strain + 1}, вирулентность выше.");
+        AddLog($"Патоген мутировал - штамм {_strain + 1}, вирулентность выше.");
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство здравоохранения",
             $"Патоген «{_name}» мутировал в штамм {_strain + 1}.",
             SWSenateAnnouncementKind.Health));
@@ -539,7 +539,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
 
     private void AdvanceResearch(float gameHours)
     {
-        // No pathogen, no strain to target — a vaccine can't be developed in advance.
+        // No pathogen, no strain to target - a vaccine can't be developed in advance.
         if (!_active || _funding == 0 || _research >= 100f)
             return;
 

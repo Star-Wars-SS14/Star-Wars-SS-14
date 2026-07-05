@@ -293,7 +293,7 @@ public sealed class SWSenateStateSystem : EntitySystem
     }
 
     /// <summary>
-    /// Additive push on a sector global (used by the crisis engine for reversible pressure — the drift
+    /// Additive push on a sector global (used by the crisis engine for reversible pressure - the drift
     /// pulls the value back up once the pressure stops).
     /// </summary>
     public void NudgeSectorGlobal(string sectorId, string globalId, float delta)
@@ -751,7 +751,7 @@ public sealed class SWSenateStateSystem : EntitySystem
         return true;
     }
 
-    // The Chancellor (or acting officer) ratifies a passed bill — only now does it apply and get announced.
+    // The Chancellor (or acting officer) ratifies a passed bill - only now does it apply and get announced.
     public bool SignBill(int billId)
     {
         var bill = _bills.FirstOrDefault(b => b.Id == billId && b.Stage == SWBillStage.AwaitingSignature);
@@ -764,7 +764,7 @@ public sealed class SWSenateStateSystem : EntitySystem
         return true;
     }
 
-    // Emergency veto: kill a bill that passed the vote but awaits signature — it never becomes law.
+    // Emergency veto: kill a bill that passed the vote but awaits signature - it never becomes law.
     public bool VetoBill(int billId)
     {
         var bill = _bills.FirstOrDefault(b => b.Id == billId && b.Stage == SWBillStage.AwaitingSignature);
@@ -871,7 +871,7 @@ public sealed class SWSenateStateSystem : EntitySystem
                 session.Status = SWSessionStatus.Confirmed;
         }
 
-        // No Chancellor to ratify — passed bills are auto-signed into law.
+        // No Chancellor to ratify - passed bills are auto-signed into law.
         foreach (var id in _bills.Where(b => b.Stage == SWBillStage.AwaitingSignature).Select(b => b.Id).ToList())
             SignBill(id);
 
@@ -1114,8 +1114,8 @@ public sealed class SWSenateStateSystem : EntitySystem
             if (session is { Emergency: true })
             {
                 row.Text = hour == session.StartHour
-                    ? $"СРОЧНО: {GetBillName(session.BillId)} ({session.StartHour:00}:00–{session.EndHour:00}:00)"
-                    : "   — продолжение";
+                    ? $"СРОЧНО: {GetBillName(session.BillId)} ({session.StartHour:00}:00-{session.EndHour:00}:00)"
+                    : "   - продолжение";
                 row.Color = Color.IndianRed;
             }
             else if (IsReserved(hour))
@@ -1132,12 +1132,12 @@ public sealed class SWSenateStateSystem : EntitySystem
             else if (hour == session.StartHour)
             {
                 var status = session.Status == SWSessionStatus.Confirmed ? "подтверждено" : "ожидает";
-                row.Text = $"Заседание: {GetBillName(session.BillId)} ({session.StartHour:00}:00–{session.EndHour:00}:00) [{status}]";
+                row.Text = $"Заседание: {GetBillName(session.BillId)} ({session.StartHour:00}:00-{session.EndHour:00}:00) [{status}]";
                 row.Color = session.Status == SWSessionStatus.Confirmed ? Color.LightGreen : Color.Goldenrod;
             }
             else
             {
-                row.Text = "   — продолжение";
+                row.Text = "   - продолжение";
                 row.Color = session.Status == SWSessionStatus.Confirmed ? Color.LightGreen : Color.Goldenrod;
             }
 
@@ -1191,7 +1191,7 @@ public sealed class SWSenateStateSystem : EntitySystem
             {
                 Id = session.Id,
                 BillName = GetBillName(session.BillId),
-                TimeRange = $"{session.StartHour:00}:00–{session.EndHour:00}:00",
+                TimeRange = $"{session.StartHour:00}:00-{session.EndHour:00}:00",
                 Status = "ожидает",
             });
         }
@@ -1200,7 +1200,7 @@ public sealed class SWSenateStateSystem : EntitySystem
     }
 
     public string GetBillName(int billId) =>
-        _bills.FirstOrDefault(b => b.Id == billId)?.Name ?? "—";
+        _bills.FirstOrDefault(b => b.Id == billId)?.Name ?? "-";
 
     public List<SWBillEntry> BuildBillEntries()
     {

@@ -666,7 +666,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
         switch (args.Action)
         {
-            // 0–5: invoke a ministry's emergency action (needs Command).
+            // 0-5: invoke a ministry's emergency action (needs Command).
             case >= 0 and <= 5 when _powers.HasPower(SWEmergencyPower.Command):
                 InvokeMinistry(args.Action);
                 _powers.RegisterUse(8f, 5f, false);

@@ -49,7 +49,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
     private const int AfternoonApply = 20;
     private const float UpdateInterval = 1f;
 
-    // Chance an eligible (condition-met) conditional dilemma actually fires in a window — a bit higher
+    // Chance an eligible (condition-met) conditional dilemma actually fires in a window - a bit higher
     // than any single unconditional one, but well short of guaranteed.
     private const float ConditionalChance = 0.5f;
 
@@ -114,7 +114,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         if (_ministryBudget.ContainsKey(ministryId))
             return;
 
-        // No stock budget — ministries are funded only once the day's budget project is approved
+        // No stock budget - ministries are funded only once the day's budget project is approved
         // (SWSenateBudgetSystem.SetMinistryBudget). Admin resource is separate and still granted daily.
         _ministryBudget[ministryId] = 0;
         _ministryAdmin[ministryId] = MinistryAdminPerDay;
@@ -212,7 +212,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         var deadline = window == SWDilemmaWindow.Morning ? MorningDeadline : AfternoonDeadline;
         var apply = window == SWDilemmaWindow.Morning ? MorningApply : AfternoonApply;
 
-        // Unconditional pool: 1–2 random picks (budget pools roll 0–1).
+        // Unconditional pool: 1-2 random picks (budget pools roll 0-1).
         var pool = candidates.Where(d => d.Conditions.Count == 0).ToList();
         var count = Math.Min(budget ? _random.Next(0, 2) : _random.Next(1, 3), pool.Count);
         _random.Shuffle(pool);
@@ -383,10 +383,10 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
         _corruption.TakeBribe(beneficiary, dilemma.SectorId, KickbackFor(dilemma));
 
-        // The problem festers while the money is skimmed — half the failure lands.
+        // The problem festers while the money is skimmed - half the failure lands.
         ApplyScaled(dilemma.Scope, dilemma.SectorId, proto.FailPolicyEffects, proto.FailSectorEffects, 0.5f);
-        // Mask the choice in the public summary as an ordinary (non-ministry) option so the bribe — and even
-        // the existence of the corrupt option — stays hidden. Only the owner gets the private notice.
+        // Mask the choice in the public summary as an ordinary (non-ministry) option so the bribe - and even
+        // the existence of the corrupt option - stays hidden. Only the owner gets the private notice.
         dilemma.ChosenOption = FirstNormalOption(proto);
         dilemma.Status = SWDilemmaStatus.Applied;
         AddNotice(dilemma.Owner, "Проблема замята за взятку. Деньги на личном счету.");
@@ -424,7 +424,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             Issue = RollIssue(),
         });
 
-        // Citizens are left waiting on the ministry — a small hit while the request is unresolved.
+        // Citizens are left waiting on the ministry - a small hit while the request is unresolved.
         if (dilemma.SectorId != null)
             _senate.AddSectorBias(dilemma.SectorId, "SWGlobalSociety", WaitingDebuff);
 
@@ -554,7 +554,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         request.Status = SWMinistryRequestStatus.Refused;
         request.RefuseReason = reason.Trim();
 
-        // Refusal does not fail the dilemma — it returns to the sector, which can still resolve it itself
+        // Refusal does not fail the dilemma - it returns to the sector, which can still resolve it itself
         // (with a fresh deadline until the end of the day).
         var dilemma = _dilemmas.FirstOrDefault(d => d.Id == request.SourceDilemmaId);
         if (dilemma is { Status: SWDilemmaStatus.Delegated })
@@ -754,7 +754,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
     {
         if (sectorId != null && _proto.TryIndex<SWSectorPrototype>(sectorId, out var proto))
             return proto.Name;
-        return sectorId ?? "—";
+        return sectorId ?? "-";
     }
 
     private static string StatusLabel(SWDilemmaStatus status) => status switch
@@ -764,7 +764,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         SWDilemmaStatus.Applied => "Применено",
         SWDilemmaStatus.Failed => "Провалено",
         SWDilemmaStatus.Delegated => "Передан в профильное министерство",
-        _ => "—",
+        _ => "-",
     };
 
     private List<SWBillEffectEntry> SectorEffectEntries(Dictionary<ProtoId<SWGlobalStatPrototype>, float> effects, float mult = 1f)
@@ -878,7 +878,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
     {
         SWAuditIssue.InflatedEstimate => "Реальная стоимость ниже заявленной.",
         SWAuditIssue.CorruptContractor => "При одобрении будут побочные потери сектора.",
-        SWAuditIssue.UnderestimatedCrisis => "Если не решить — провал будет сильнее.",
+        SWAuditIssue.UnderestimatedCrisis => "Если не решить - провал будет сильнее.",
         _ => "Риск побочек снят, эффективность выше.",
     };
 }

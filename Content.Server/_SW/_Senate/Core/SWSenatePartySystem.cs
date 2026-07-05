@@ -546,7 +546,7 @@ public sealed class SWSenatePartySystem : EntitySystem
             return string.Empty;
 
         var hours = party.GraceLeft / 60f;
-        return $"Меньше {MinMembers} членов — найдите ещё одного примерно за {hours:0.0} ч, иначе партия вернётся в статус формирования.";
+        return $"Меньше {MinMembers} членов - найдите ещё одного примерно за {hours:0.0} ч, иначе партия вернётся в статус формирования.";
     }
 
     private string HolderName(string sectorId) => _senate.GetSectorHolder(sectorId) ?? SectorName(sectorId);

@@ -31,7 +31,7 @@
 - type: swDilemma
   id: SWDilemmaDeptCourtEscort
   name: Свидетели под ударом
-  description: Свидетели громкого процесса в секторе получают угрозы — конвоя нет.
+  description: Свидетели громкого процесса в секторе получают угрозы - конвоя нет.
   scope: Sectoral
   order: 51
   failText: Свидетели отказываются от показаний
@@ -116,7 +116,7 @@
 - type: swDilemma
   id: SWDilemmaBureauShootouts
   name: Перестрелки в нижних кварталах
-  description: Нелегальные бластеры наводнили нижние уровни сектора. Каждую ночь — новые жертвы.
+  description: Нелегальные бластеры наводнили нижние уровни сектора. Каждую ночь - новые жертвы.
   scope: Sectoral
   order: 46
   failText: Улицы сектора превращаются в тир
@@ -150,7 +150,7 @@
 - type: swDilemma
   id: SWDilemmaBureauMilitia
   name: Ополчение просит оружие
-  description: Колонии сектора требуют права на самооборону — пиратские рейды участились.
+  description: Колонии сектора требуют права на самооборону - пиратские рейды участились.
   scope: Sectoral
   order: 47
   failText: Колонии беззащитны перед рейдами
@@ -161,7 +161,7 @@
       SWGlobalDefense: 3
       SWGlobalSecurity: -3
   - label: Отказать
-    description: Гражданские с бластерами — новые проблемы.
+    description: Гражданские с бластерами - новые проблемы.
     sectorEffects:
       SWGlobalSociety: -3
   - label: Передать в Бюро вооружений
@@ -195,7 +195,7 @@
       SWGlobalSecurity: 3
       SWGlobalIndustry: -2
   - label: Закрыть глаза за долю
-    description: Цех платит — сектор молчит.
+    description: Цех платит - сектор молчит.
     sectorEffects:
       SWGlobalEconomy: 2
       SWGlobalSecurity: -4
@@ -263,7 +263,7 @@
       SWGlobalSecurity: 3
       SWGlobalEconomy: -2
   - label: Закрыть глаза
-    description: Не связываться — контрабанда крепнет.
+    description: Не связываться - контрабанда крепнет.
     sectorEffects:
       SWGlobalEconomy: 2
       SWGlobalSecurity: -4
@@ -287,7 +287,7 @@
 - type: swDilemma
   id: SWDilemmaBureauStrandedPilgrims
   name: Застрявшие паломники
-  description: Тысячи паломников застряли на пересадочном узле сектора — рейсов нет уже двое суток.
+  description: Тысячи паломников застряли на пересадочном узле сектора - рейсов нет уже двое суток.
   scope: Sectoral
   order: 43
   failText: Паломники бунтуют на станциях
@@ -400,7 +400,7 @@
       SWGlobalEconomy: 3
       SWGlobalSociety: 1
   - label: Отпустить
-    description: Не идти на уступки — потеря рабочих мест.
+    description: Не идти на уступки - потеря рабочих мест.
     sectorEffects:
       SWGlobalEconomy: -4
       SWGlobalSociety: -2

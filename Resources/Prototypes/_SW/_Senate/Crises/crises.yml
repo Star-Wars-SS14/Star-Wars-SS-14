@@ -109,7 +109,7 @@
       SWGlobalHealthcare: 5
       SWGlobalEconomy: -2
   - label: Мобилизация медиков
-    description: Все ресурсы — в госпитали.
+    description: Все ресурсы - в госпитали.
     cost: 3000
     relief: 18
     sectorEffects:
@@ -235,7 +235,7 @@
 - type: swCrisis
   id: SWCrisisRepDepression
   name: Великая депрессия
-  description: Экономика всей Республики рушится — кризис охватил и Ядро, и окраины.
+  description: Экономика всей Республики рушится - кризис охватил и Ядро, и окраины.
   order: 10
   republic: true
   conditions:
@@ -267,7 +267,7 @@
 - type: swCrisis
   id: SWCrisisRepArmsCrisis
   name: Военная катастрофа
-  description: Оборона Республики подорвана — враг испытывает границы повсюду.
+  description: Оборона Республики подорвана - враг испытывает границы повсюду.
   order: 11
   republic: true
   conditions:

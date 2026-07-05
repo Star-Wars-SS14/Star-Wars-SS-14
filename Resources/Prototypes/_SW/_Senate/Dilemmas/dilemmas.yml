@@ -22,7 +22,7 @@
       SWGlobalEconomy: 2
       SWGlobalHealthcare: -3
   - label: Передать профильному министерству
-    description: Силами сектора эпидемию не остановить — нужна помощь центра.
+    description: Силами сектора эпидемию не остановить - нужна помощь центра.
     ministry: SWMinistryHealth
   failSectorEffects:
     SWGlobalHealthcare: -6
@@ -78,7 +78,7 @@
       SWGlobalEconomy: -4
       SWGlobalSociety: 2
   - label: Передать профильному министерству
-    description: Своего флота не хватает — нужна военная помощь Республики.
+    description: Своего флота не хватает - нужна военная помощь Республики.
     ministry: SWMinistryDefense
   failSectorEffects:
     SWGlobalEconomy: -5
@@ -252,7 +252,7 @@
       SWGlobalEconomy: 3
       SWGlobalSecurity: -4
   - label: Передать профильному министерству
-    description: Синдикат перерос сектор — нужны силы внутренней безопасности.
+    description: Синдикат перерос сектор - нужны силы внутренней безопасности.
     ministry: SWMinistryInternalSecurity
   failSectorEffects:
     SWGlobalSecurity: -5

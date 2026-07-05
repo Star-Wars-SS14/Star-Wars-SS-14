@@ -66,7 +66,7 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
 
     public void SetState(SWBureauWorkConsoleState state)
     {
-        HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "—" : state.GameTime;
+        HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "-" : state.GameTime;
 
         StatusStrip.RemoveAllChildren();
         DeskList.RemoveAllChildren();
@@ -429,7 +429,7 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
     {
         FleetList.AddChild(SWConsoleStyle.Section("СОБЫТИЯ НА ЛИНИЯХ"));
         FleetList.AddChild(SWConsoleStyle.Text(
-            "Оперативные происшествия пассажирских линий. Нерешённые уходят сами — с потерями.",
+            "Оперативные происшествия пассажирских линий. Нерешённые уходят сами - с потерями.",
             SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
         FleetList.AddChild(new Control { MinHeight = 4 });
 
@@ -561,7 +561,7 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
 
         if (state.Applications.Count == 0)
         {
-            DeskList.AddChild(SWConsoleStyle.Text("Очередь пуста — диспетчеры ждут бортов.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            DeskList.AddChild(SWConsoleStyle.Text("Очередь пуста - диспетчеры ждут бортов.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 
@@ -672,7 +672,7 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
     {
         FleetList.AddChild(SWConsoleStyle.Section("РОЗЫСК МВБ"));
         FleetList.AddChild(SWConsoleStyle.Text(
-            "Ориентировки на транспондеры. Досмотр заявки вскрывает совпадение — задержание даёт премию.",
+            "Ориентировки на транспондеры. Досмотр заявки вскрывает совпадение - задержание даёт премию.",
             SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
         FleetList.AddChild(new Control { MinHeight = 4 });
 
@@ -837,7 +837,7 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
 
     private void AddMeter(BoxContainer target, string label, int value, string status, Color color)
     {
-        target.AddChild(SWConsoleStyle.Text($"{label}: {value}/100 — {status}", color, SWConsoleStyle.MonoBold));
+        target.AddChild(SWConsoleStyle.Text($"{label}: {value}/100 - {status}", color, SWConsoleStyle.MonoBold));
         target.AddChild(SWConsoleStyle.Bar(value, 0, 100, color));
         target.AddChild(new Control { MinHeight = 4 });
     }

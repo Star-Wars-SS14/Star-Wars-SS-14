@@ -81,7 +81,7 @@ public sealed class SWCorruptionSystem : EntitySystem
     };
 
     // A player skims from a decision into their private account; the sector and the official both rot.
-    // Deliberately NOT logged — a bribe is secret. Justice learns of it only via screening, prosecution
+    // Deliberately NOT logged - a bribe is secret. Justice learns of it only via screening, prosecution
     // or a public scandal; the briber alone gets a private notice in the dilemma system.
     public void TakeBribe(string player, string? sectorId, int amount)
     {
@@ -118,8 +118,8 @@ public sealed class SWCorruptionSystem : EntitySystem
             }
 
             _senate.AddSectorBias(key, "SWGlobalSociety", -3f);
-            AddLog($"Сектор {name}: расследование не нашло коррупции — недовольство.");
-            return $"В {name} коррупции не найдено — удар по доверию.";
+            AddLog($"Сектор {name}: расследование не нашло коррупции - недовольство.");
+            return $"В {name} коррупции не найдено - удар по доверию.";
         }
 
         var pc = PersonCorruption(key);
@@ -139,7 +139,7 @@ public sealed class SWCorruptionSystem : EntitySystem
         _senate.AddPolicy("SWStatRights", -3f);
         _senate.AddPolicy("SWStatMorale", -2f);
         AddLog($"{key}: обвинение в коррупции не подтвердилось.");
-        return $"{key} оправдан — ложное обвинение бьёт по правам.";
+        return $"{key} оправдан - ложное обвинение бьёт по правам.";
     }
 
     // --- Admin (swcorrupt) ---

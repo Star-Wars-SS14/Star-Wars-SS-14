@@ -141,7 +141,7 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
             var entry = new SWTransitEventEntry
             {
                 Id = call.Id,
-                Name = $"{def.Name} — {SectorName(call.SectorId)}",
+                Name = $"{def.Name} - {SectorName(call.SectorId)}",
                 Description = def.Desc,
                 TimeLabel = $"Вызов сгорит через ~{MathF.Max(0f, call.LifeHours):0.0} ч",
             };

@@ -107,7 +107,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         ResignButton.OnPressed += _ => _owner.Resign();
         SubmitBillButton.OnPressed += _ => OnSubmitPressed();
         IssueDecreeButton.OnPressed += _ => OnIssueDecreePressed();
-        DecreeIntro.SetMessage("Декрет — закон, изданный вами единолично в обход Сената. Вступает в силу немедленно, но резко растит тиранию и бьёт по легитимности. Чем шире изменения, тем выше цена.");
+        DecreeIntro.SetMessage("Декрет - закон, изданный вами единолично в обход Сената. Вступает в силу немедленно, но резко растит тиранию и бьёт по легитимности. Чем шире изменения, тем выше цена.");
 
         for (var d = 1; d <= 4; d++)
             DurationOption.AddItem($"{d}ч", d);
@@ -137,7 +137,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     public void SetState(SWSenateWorkConsoleState state)
     {
-        HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "—" : state.GameTime;
+        HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "-" : state.GameTime;
 
         if (!state.HasCard)
             PositionLabel.SetMessage("Вставьте ID-карту в консоль.");
@@ -350,12 +350,12 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             }
         }
 
-        // Cabinet control (dismiss ministers) — MinisterControl == enum value 8.
+        // Cabinet control (dismiss ministers) - MinisterControl == enum value 8.
         if (state.AvailablePowers.Contains(8))
         {
             PowersList.AddChild(new Control { MinHeight = 10 });
             PowersList.AddChild(SWConsoleStyle.Section("КАБИНЕТ"));
-            PowersList.AddChild(SWConsoleStyle.Text("Отстранить министра — его портфель освобождается.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            PowersList.AddChild(SWConsoleStyle.Text("Отстранить министра - его портфель освобождается.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
             PowersList.AddChild(new Control { MinHeight = 4 });
             if (state.Cabinet.Count == 0)
             {
@@ -366,7 +366,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                 foreach (var seat in state.Cabinet)
                 {
                     var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 0, 0, 3) };
-                    var label = SWConsoleStyle.Text($"{seat.Name} — {seat.Holder}", seat.Color, SWConsoleStyle.MonoSmall);
+                    var label = SWConsoleStyle.Text($"{seat.Name} - {seat.Holder}", seat.Color, SWConsoleStyle.MonoSmall);
                     label.HorizontalExpand = true;
                     label.VerticalAlignment = Control.VAlignment.Center;
                     row.AddChild(label);
@@ -599,7 +599,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 1, 0, 1) };
             row.AddChild(new Label
             {
-                Text = member.IsLeader ? $"{member.Holder} — {member.SectorName} (лидер)" : $"{member.Holder} — {member.SectorName}",
+                Text = member.IsLeader ? $"{member.Holder} - {member.SectorName} (лидер)" : $"{member.Holder} - {member.SectorName}",
                 FontColorOverride = member.Color,
                 HorizontalExpand = true,
             });
@@ -656,7 +656,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             {
                 var sectorId = pending.SectorId;
                 var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 1, 0, 1) };
-                row.AddChild(new Label { Text = $"{pending.Holder} — {pending.SectorName}", HorizontalExpand = true });
+                row.AddChild(new Label { Text = $"{pending.Holder} - {pending.SectorName}", HorizontalExpand = true });
                 var accept = new Button { Text = "Принять" };
                 accept.OnPressed += _ => _owner.ConfirmJoinParty(id, sectorId);
                 var reject = new Button { Text = "Отклонить", Margin = new Thickness(6, 0, 0, 0) };
@@ -790,7 +790,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                 var index = i;
                 var cid = crisis.Id;
 
-                var label = solution.Cost > 0 ? $"{solution.Label} — {solution.Cost} кр. (−{solution.Relief:0} тяж.)" : $"{solution.Label} (−{solution.Relief:0} тяж.)";
+                var label = solution.Cost > 0 ? $"{solution.Label} - {solution.Cost} кр. (−{solution.Relief:0} тяж.)" : $"{solution.Label} (−{solution.Relief:0} тяж.)";
                 var button = new Button
                 {
                     Text = label,
@@ -941,7 +941,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         box.AddChild(MakeEffectsRow(program.Effects));
 
         var id = program.Id;
-        var label = program.Applied ? "Уже применено сегодня" : $"Применить — {program.Cost} кр.";
+        var label = program.Applied ? "Уже применено сегодня" : $"Применить - {program.Cost} кр.";
         var button = new Button
         {
             Text = label,
@@ -1160,7 +1160,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             }
             else
             {
-                BudgetAllocPanel.AddChild(SWConsoleStyle.Text("Лимит отклонений исчерпан — проект нужно принять.", SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+                BudgetAllocPanel.AddChild(SWConsoleStyle.Text("Лимит отклонений исчерпан - проект нужно принять.", SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
             }
         }
         else
@@ -1202,7 +1202,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             }
             else
             {
-                label = option.Cost > 0 ? $"{option.Label} — {option.Cost} кр." : option.Label;
+                label = option.Cost > 0 ? $"{option.Label} - {option.Cost} кр." : option.Label;
             }
             if (dilemma.ChosenOption == i)
                 label += " (выбрано)";
@@ -1272,7 +1272,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
         var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
         box.AddChild(SWConsoleStyle.Text("Вы избраны Верховным Канцлером Республики!", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
-        box.AddChild(SWConsoleStyle.Text("Подтвердите полномочия — ваш сектор освободится для нового сенатора.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        box.AddChild(SWConsoleStyle.Text("Подтвердите полномочия - ваш сектор освободится для нового сенатора.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
         var confirm = SWConsoleStyle.Action("Подтвердить избрание", SWConsoleStyle.Good);
         confirm.Margin = new Thickness(0, 6, 0, 0);
         confirm.OnPressed += _ => _owner.ConfirmElection();
@@ -1800,7 +1800,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         RecomputeBudget();
     }
 
-    // Built once — periodic refreshes must not wipe the sliders/name mid-edit.
+    // Built once - periodic refreshes must not wipe the sliders/name mid-edit.
     private void BuildDecreeDraft(SWSenateWorkConsoleState state)
     {
         DecreeStatList.RemoveAllChildren();
@@ -1944,7 +1944,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         if (state.OfficesVacant)
         {
             ScheduleGrid.AddChild(SWConsoleStyle.Text(
-                "Автопилот: нет Спикера и Канцлера — законы ставятся в расписание и подтверждаются автоматически.",
+                "Автопилот: нет Спикера и Канцлера - законы ставятся в расписание и подтверждаются автоматически.",
                 SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
             ScheduleGrid.AddChild(new Control { MinHeight = 6 });
         }
@@ -2044,7 +2044,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         if (emergency.Count == 0)
             return;
 
-        EmergencyBillsPanel.AddChild(SWConsoleStyle.Text("ЭКСТРЕННЫЕ МЕРЫ — требуют немедленного слушания:", SWConsoleStyle.Bad, SWConsoleStyle.MonoBold));
+        EmergencyBillsPanel.AddChild(SWConsoleStyle.Text("ЭКСТРЕННЫЕ МЕРЫ - требуют немедленного слушания:", SWConsoleStyle.Bad, SWConsoleStyle.MonoBold));
 
         foreach (var bill in emergency)
         {
@@ -2148,7 +2148,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             Dashboard.AddChild(new Control { MinHeight = 10 });
         }
 
-        Dashboard.AddChild(SWConsoleStyle.Section("РЕСПУБЛИКА — ФАКТ / ПОЛИТИКА"));
+        Dashboard.AddChild(SWConsoleStyle.Section("РЕСПУБЛИКА - ФАКТ / ПОЛИТИКА"));
         Dashboard.AddChild(new Control { MinHeight = 6 });
         foreach (var global in state.Globals)
             Dashboard.AddChild(MakeGlobalBar(global));

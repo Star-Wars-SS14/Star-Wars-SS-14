@@ -275,7 +275,7 @@
 - type: swDilemma
   id: SWDilemmaSecBoom
   name: Экономический бум
-  description: Сектор переживает бурный рост — но перегрев грозит пузырём.
+  description: Сектор переживает бурный рост - но перегрев грозит пузырём.
   scope: Sectoral
   order: 108
   conditions:
@@ -396,7 +396,7 @@
 - type: swDilemma
   id: SWDilemmaSecMedHub
   name: Медицинская столица
-  description: Здравоохранение сектора — образцовое, к нему тянется вся система.
+  description: Здравоохранение сектора - образцовое, к нему тянется вся система.
   scope: Sectoral
   order: 113
   conditions:

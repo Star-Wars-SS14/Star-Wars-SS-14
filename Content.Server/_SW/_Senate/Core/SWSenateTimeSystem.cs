@@ -6,7 +6,7 @@ public sealed class SWSenateTimeSystem : EntitySystem
 {
     public const int StartHour = 7;
     public const int EndHour = 21;
-    public const float RealSecondsPerGameHour = 300f;
+    public const float RealSecondsPerGameHour = 240f;
     private const float DayGapRealSeconds = 60f;
     private const int DayLengthMinutes = (EndHour - StartHour) * 60;
 

@@ -300,7 +300,7 @@
 - type: swAmbition
   id: SWAmbitionChaConsolidation
   name: Консолидация власти
-  description: Сосредоточить в своих руках всю полноту власти — авторитет не ниже 80.
+  description: Сосредоточить в своих руках всю полноту власти - авторитет не ниже 80.
   role: Chancellor
   kind: Consolidation
   threshold: 80
@@ -435,7 +435,7 @@
 - type: swAmbition
   id: SWAmbitionMinEcoSoftLanding
   name: Мягкая посадка
-  description: К концу раунда перегрев экономики должен быть ниже 30 — рост без пузырей.
+  description: К концу раунда перегрев экономики должен быть ниже 30 - рост без пузырей.
   role: Minister
   ministryId: SWMinistryEconomy
   kind: MinisterMetric
@@ -471,7 +471,7 @@
 - type: swAmbition
   id: SWAmbitionMinEcoBubble
   name: Дутый пузырь
-  description: Вам плевать на завтра — важны сегодняшние сводки. К концу раунда перегрев экономики должен быть выше 70.
+  description: Вам плевать на завтра - важны сегодняшние сводки. К концу раунда перегрев экономики должен быть выше 70.
   role: Minister
   ministryId: SWMinistryEconomy
   kind: MinisterMetric
@@ -633,7 +633,7 @@
 - type: swAmbition
   id: SWAmbitionMinHelBaron
   name: Фармацевтический барон
-  description: Вы тайно держите население хронически больным — аптеки процветают. Иммунитет должен быть ниже 30.
+  description: Вы тайно держите население хронически больным - аптеки процветают. Иммунитет должен быть ниже 30.
   role: Minister
   ministryId: SWMinistryHealth
   kind: MinisterMetric

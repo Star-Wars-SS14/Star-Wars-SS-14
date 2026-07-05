@@ -228,7 +228,7 @@ public sealed class SWDeptArbitrageSystem : EntitySystem
 
         var name = _random.Pick(names);
         _corruption.Screen(false, name);
-        AddLog($"Материалы дела раскрыли счета: {name} — досье передано Минюсту.");
+        AddLog($"Материалы дела раскрыли счета: {name} - досье передано Минюсту.");
     }
 
     // --- Express operations ---

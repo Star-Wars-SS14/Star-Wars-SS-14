@@ -63,7 +63,7 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
 
     public void SetState(SWStatisticsConsoleState state)
     {
-        HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "—" : state.GameTime;
+        HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "-" : state.GameTime;
 
         BuildRepublic(state);
         BuildSectors(state);
@@ -80,7 +80,7 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
         var defconPanel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, state.DefconColor);
         var defconBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
         var defconHead = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-        defconHead.AddChild(SWConsoleStyle.Text($"DEFCON {state.DefconLevel} — {state.DefconName}", state.DefconColor, SWConsoleStyle.MonoBold));
+        defconHead.AddChild(SWConsoleStyle.Text($"DEFCON {state.DefconLevel} - {state.DefconName}", state.DefconColor, SWConsoleStyle.MonoBold));
         defconHead.AddChild(new Control { HorizontalExpand = true });
         defconHead.AddChild(SWConsoleStyle.Text($"Граница: {state.BorderStatus} ({state.BorderPressure}/100)", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
         defconBox.AddChild(defconHead);

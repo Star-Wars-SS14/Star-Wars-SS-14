@@ -810,7 +810,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     {
                         SWBudgetPhase.Submitted => "На одобрении Канцлера",
                         SWBudgetPhase.Approved => "Одобрен",
-                        _ => _budget.Rejects > 0 ? "Отклонён — переделайте" : "Черновик",
+                        _ => _budget.Rejects > 0 ? "Отклонён - переделайте" : "Черновик",
                     };
                     state.BudgetPhaseColor = phase switch
                     {

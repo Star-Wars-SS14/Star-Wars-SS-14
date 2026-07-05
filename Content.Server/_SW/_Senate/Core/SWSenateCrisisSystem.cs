@@ -17,10 +17,10 @@ public sealed class SWSenateCrisisSystem : EntitySystem
     [Dependency] private readonly SWSenateBudgetSystem _budget = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
 
-    // All rates below are per GAME MINUTE — crises pace the same at any game speed and freeze overnight.
+    // All rates below are per GAME MINUTE - crises pace the same at any game speed and freeze overnight.
     private const float TickGameMinutes = 1f;
     private const float SpawnChance = 0.25f;
-    // Natural wind-down once the root cause is fixed — deliberately slow (≈ a third of the growth rate)
+    // Natural wind-down once the root cause is fixed - deliberately slow (≈ a third of the growth rate)
     // so the acute phase lingers and solutions/aid/laws stay worth applying.
     private const float SelfDecay = 1.5f;
     // Pressure → stat-depression scaling. Equilibrium drag ≈ weight * (severity/100) * PressureToDrag.
@@ -66,7 +66,7 @@ public sealed class SWSenateCrisisSystem : EntitySystem
             return;
 
         crisis.Severity = Math.Max(0f, crisis.Severity - ev.EmergencyRelief);
-        Log(crisis, "Принят экстренный закон — тяжесть снижена.");
+        Log(crisis, "Принят экстренный закон - тяжесть снижена.");
     }
 
     public override void Update(float frameTime)
@@ -318,7 +318,7 @@ public sealed class SWSenateCrisisSystem : EntitySystem
             proto = _random.Pick(pool);
         }
 
-        // Republic crises need no sector — they cover the whole Republic.
+        // Republic crises need no sector - they cover the whole Republic.
         if (proto.Republic)
         {
             SpawnRepublic(proto);
@@ -442,10 +442,10 @@ public sealed class SWSenateCrisisSystem : EntitySystem
     private string EscalationThreat(SWActiveCrisis crisis) => crisis.Type switch
     {
         SWCrisisType.Sectoral => crisis.Severity >= EscalateThreshold
-            ? "Высокая тяжесть — кризис вот-вот перекинется на другие сектора."
+            ? "Высокая тяжесть - кризис вот-вот перекинется на другие сектора."
             : "Локализован в одном секторе; рост тяжести грозит распространением.",
         SWCrisisType.Inter => "Межсекторальный: при охвате больше половины секторов станет республиканским.",
-        SWCrisisType.Republic => "Республиканский масштаб — давит на все сектора Республики.",
+        SWCrisisType.Republic => "Республиканский масштаб - давит на все сектора Республики.",
         _ => string.Empty,
     };
 
@@ -534,7 +534,7 @@ public sealed class SWSenateCrisisSystem : EntitySystem
         SWCrisisType.Sectoral => "Секторальный",
         SWCrisisType.Inter => "Межсекторальный",
         SWCrisisType.Republic => "Республиканский",
-        _ => "—",
+        _ => "-",
     };
 }
 

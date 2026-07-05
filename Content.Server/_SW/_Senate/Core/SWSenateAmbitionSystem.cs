@@ -354,12 +354,12 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
             if (ambitions.Count == 0)
                 continue;
 
-            var holder = OwnerHolder(owner) ?? "—";
+            var holder = OwnerHolder(owner) ?? "-";
             var label = owner == SWSenateDilemmaSystem.RepublicOwner
                 ? $"Канцлер ({holder})"
                 : _proto.TryIndex<SWMinistryPrototype>(owner, out var ministryProto)
-                    ? $"{ministryProto.Name} — {holder}"
-                    : $"{SectorName(owner)} — {holder}";
+                    ? $"{ministryProto.Name} - {holder}"
+                    : $"{SectorName(owner)} - {holder}";
 
             var score = 0;
             var lines = new List<string>();
@@ -398,7 +398,7 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
 
         foreach (var standing in standings)
         {
-            args.AddLine($"[bold]{standing.Label}[/bold] — {standing.Score}/{standing.Total} очк.");
+            args.AddLine($"[bold]{standing.Label}[/bold] - {standing.Score}/{standing.Total} очк.");
             foreach (var line in standing.Lines)
                 args.AddLine(line);
         }

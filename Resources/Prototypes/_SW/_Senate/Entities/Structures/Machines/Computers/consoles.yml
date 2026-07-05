@@ -94,7 +94,7 @@
   parent: BaseComputer
   id: SWMinistryWorkConsole
   name: рабочая консоль министерства
-  description: Рабочее место министра — статистика Республики и ведомства.
+  description: Рабочее место министра - статистика Республики и ведомства.
   components:
   - type: SWMinistryWorkConsole
   - type: ActivatableUI
@@ -128,7 +128,7 @@
   parent: BaseComputer
   id: SWBureauWorkConsole
   name: рабочая консоль бюро
-  description: Рабочее место главы бюро — профильная механика и дилеммы ведомства.
+  description: Рабочее место главы бюро - профильная механика и дилеммы ведомства.
   components:
   - type: SWBureauWorkConsole
   - type: ActivatableUI
@@ -162,7 +162,7 @@
   parent: BaseComputer
   id: SWDepartmentWorkConsole
   name: рабочая консоль департамента
-  description: Рабочее место главы департамента — оперативные задачи ведомства.
+  description: Рабочее место главы департамента - оперативные задачи ведомства.
   components:
   - type: SWDepartmentWorkConsole
   - type: ActivatableUI

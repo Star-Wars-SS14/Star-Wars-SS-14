@@ -171,7 +171,7 @@ public sealed class SWSenatePlannerSystem : EntitySystem
         foreach (var name in meeting.Invites.Keys.ToList())
         {
             meeting.Invites[name] = SWInviteStatus.Pending;
-            AddNotice(name, $"{host} перенёс «{meeting.Title}» на {DayLabel(day)} {SWPlannerSlots.Range(slot, duration)} — подтвердите заново.");
+            AddNotice(name, $"{host} перенёс «{meeting.Title}» на {DayLabel(day)} {SWPlannerSlots.Range(slot, duration)} - подтвердите заново.");
         }
 
         return true;
@@ -359,11 +359,11 @@ public sealed class SWSenatePlannerSystem : EntitySystem
             {
                 var line = status switch
                 {
-                    SWInviteStatus.Accepted => $"{name} — принял",
+                    SWInviteStatus.Accepted => $"{name} - принял",
                     SWInviteStatus.Declined => meeting.Reasons.TryGetValue(name, out var r) && r.Length > 0
-                        ? $"{name} — отказ: {r}"
-                        : $"{name} — отказался",
-                    _ => $"{name} — не ответил",
+                        ? $"{name} - отказ: {r}"
+                        : $"{name} - отказался",
+                    _ => $"{name} - не ответил",
                 };
                 entry.ParticipantLines.Add(line);
             }

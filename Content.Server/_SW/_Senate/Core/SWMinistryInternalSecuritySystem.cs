@@ -621,7 +621,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
             return;
 
         cell.Burned = true;
-        AddLog($"Ячейка {cell.Id} раскрыта — нужна перестройка прикрытия.");
+        AddLog($"Ячейка {cell.Id} раскрыта - нужна перестройка прикрытия.");
     }
 
     private void RevealPlots(string sectorId)
@@ -911,7 +911,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
         foreach (var active in _activeOps)
         {
             var name = _proto.TryIndex<SWSecurityOperationPrototype>(active.OpId, out var op) ? op.Name : active.OpId;
-            var detail = active.SectorId != null && _proto.TryIndex<SWSectorPrototype>(active.SectorId, out var sp) ? sp.Name : "—";
+            var detail = active.SectorId != null && _proto.TryIndex<SWSectorPrototype>(active.SectorId, out var sp) ? sp.Name : "-";
             list.Add(new SWActiveOpEntry { Name = name, Detail = detail, HoursLeft = Math.Max(0, active.CompleteHour - _time.CurrentHour) });
         }
 

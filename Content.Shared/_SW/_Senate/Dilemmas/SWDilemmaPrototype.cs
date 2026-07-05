@@ -86,7 +86,7 @@ public sealed partial class SWDilemmaPrototype : IPrototype
     /// <summary>
     /// Empty = unconditional (part of the general random pool). Non-empty = conditional: every condition
     /// (checked against the sector's global for Sectoral, or the republic's actual global for Republic)
-    /// must hold for the dilemma to become eligible — and even then it only gets a chance to fire.
+    /// must hold for the dilemma to become eligible - and even then it only gets a chance to fire.
     /// Conditional dilemmas are always non-budget and tend to hit harder.
     /// </summary>
     [DataField]

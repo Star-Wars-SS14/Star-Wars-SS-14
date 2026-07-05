@@ -485,7 +485,7 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
             if (c.Age < OverdueAge)
                 continue;
 
-            // Overdue: dropped without justice — order and trust suffer.
+            // Overdue: dropped without justice - order and trust suffer.
             _senate.AddPolicy("SWStatPolice", -0.5f * c.Severity);
             _senate.AddPolicy("SWStatRights", -0.3f * c.Severity);
             _backlog = Math.Clamp(_backlog + 3f, 0f, 100f);

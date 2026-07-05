@@ -200,7 +200,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
 
         _stance = stance;
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Штаб обороны",
-            $"Уровень боеготовности: DEFCON {DefconLevel(stance)} — {StanceName(stance)}.",
+            $"Уровень боеготовности: DEFCON {DefconLevel(stance)} - {StanceName(stance)}.",
             SWSenateAnnouncementKind.Defense));
     }
 
@@ -340,7 +340,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
         if (_dilemma.SpendMinistry(DefenseMinistryId, due))
             return;
 
-        // Out of funds — fleet stands down.
+        // Out of funds - fleet stands down.
         foreach (var group in _groups)
         {
             group.State = SWFleetState.Reserve;
@@ -645,7 +645,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
         foreach (var active in _activeOps)
         {
             var name = _proto.TryIndex<SWDefenseOperationPrototype>(active.OpId, out var op) ? op.Name : active.OpId;
-            var detail = active.SectorId != null && _proto.TryIndex<SWSectorPrototype>(active.SectorId, out var sp) ? sp.Name : "—";
+            var detail = active.SectorId != null && _proto.TryIndex<SWSectorPrototype>(active.SectorId, out var sp) ? sp.Name : "-";
             list.Add(new SWActiveOpEntry { Name = name, Detail = detail, HoursLeft = Math.Max(0, active.CompleteHour - _time.CurrentHour) });
         }
 

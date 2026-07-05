@@ -39,8 +39,8 @@ public sealed class SWDeptExpenditureSystem : EntitySystem
 
     private static readonly TipDef[] Tips =
     {
-        new("Закупки по завышенным ценам", "Аноним сообщает: расходники берут втридорога у «своих» фирм.", 0),
-        new("Мёртвые души в ведомостях", "На довольствии числятся давно уволенные сотрудники.", 800),
+        new("Закупки по завышенным ценам", "Аноним сообщает: расходники закупаются по завышенной цене у аффилированных фирм.", 0),
+        new("Фиктивные сотрудники в ведомостях", "На довольствии числятся давно уволенные сотрудники.", 800),
         new("Банкет за казённый счёт", "Приём «для служебных нужд» на роскошной палубе.", 0),
         new("Двойные командировочные", "Одни и те же перелёты оплачены дважды.", 700),
         new("Исчезнувший груз снабжения", "Партия оборудования растворилась между складами.", 900),
@@ -103,9 +103,9 @@ public sealed class SWDeptExpenditureSystem : EntitySystem
     public string TransparencyStatus() => _transparency switch
     {
         >= 70f => "Стеклянная казна (+10% к бюджету дня)",
-        >= 45f => "Терпимо",
-        >= 25f => "Мутные ведомости",
-        _ => "Чёрная дыра",
+        >= 45f => "Допустимая прозрачность",
+        >= 25f => "Непрозрачные ведомости",
+        _ => "Критическая утечка",
     };
 
     // --- Ledger (audit board) ---
@@ -221,8 +221,8 @@ public sealed class SWDeptExpenditureSystem : EntitySystem
             {
                 entry.Options.Add(new SWBureauDilemmaOptionEntry
                 {
-                    Label = $"Закрыть глаза (+{def.Bribe} кр лично)",
-                    Description = "Нарушитель предлагает решить вопрос тихо.",
+                    Label = $"Скрыть нарушение (+{def.Bribe} кр лично)",
+                    Description = "Нарушитель предлагает скрыть нарушение.",
                     Affordable = true,
                     Corrupt = true,
                 });
@@ -304,9 +304,9 @@ public sealed class SWDeptExpenditureSystem : EntitySystem
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
             if (_opCooldowns.TryGetValue(i, out var ready) && _time.CurrentHour < ready)
-                entry.Status = $"откат: {ready - _time.CurrentHour} ч";
+                entry.Status = $"готовность через {ready - _time.CurrentHour} ч";
             else if (cost > budget)
-                entry.Status = "не хватает бюджета";
+                entry.Status = "недостаточно бюджета";
             else
                 entry.Available = true;
 

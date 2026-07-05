@@ -171,7 +171,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
     public string ResearchFundingLabel() => _funding switch
     {
         1 => "Базовое",
-        2 => "Форсаж",
+        2 => "Усиленное",
         _ => "Остановлено",
     };
 
@@ -213,7 +213,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         }
 
         AddLog(efficacy < 1f
-            ? $"Развёрнута вакцина (штамм {_vaccineStrain + 1}) - против штамма {_strain + 1} вполсилы."
+            ? $"Развёрнута вакцина (штамм {_vaccineStrain + 1}) - сниженная эффективность против штамма {_strain + 1}."
             : $"Массовая вакцинация завершена - иммунитет population подскочил.");
 
         _research = 0f;
@@ -266,7 +266,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         _aidCooldown[sectorId] = _time.CurrentHour + 3;
 
         var name = _proto.TryIndex<SWSectorPrototype>(sectorId, out var sp) ? sp.Name : sectorId;
-        AddLog($"Экстренная помощь в {name}: очаг сбит.");
+        AddLog($"Экстренная помощь в {name}: очаг подавлен.");
         return true;
     }
 

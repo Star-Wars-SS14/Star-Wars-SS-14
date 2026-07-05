@@ -619,7 +619,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
             };
 
             if (_cooldowns.TryGetValue(op.ID, out var ready) && _time.CurrentHour < ready)
-                entry.StatusLabel = $"откат: {ready - _time.CurrentHour} ч";
+                entry.StatusLabel = $"готовность через {ready - _time.CurrentHour} ч";
             else if (_stance < op.RequireStance)
                 entry.StatusLabel = $"нужна готовность: {StanceName(op.RequireStance)}";
             else if (op.RequireBorderFleet && !borderFleet)
@@ -629,7 +629,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
             else if (admin < op.AdminCost)
                 entry.StatusLabel = "нет админ-ресурса";
             else if (budget < op.Cost)
-                entry.StatusLabel = "не хватает бюджета";
+                entry.StatusLabel = "недостаточно бюджета";
             else
                 entry.Available = true;
 

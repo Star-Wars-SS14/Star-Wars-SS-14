@@ -567,7 +567,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
         var name = _proto.TryIndex<SWDilemmaPrototype>(request.DilemmaId, out var proto) ? proto.Name : request.DilemmaId;
         var tail = string.IsNullOrWhiteSpace(request.RefuseReason) ? "." : $": {request.RefuseReason}";
-        AddNotice(request.Owner, $"{MinistryName(request.MinistryId)} отказало в обращении «{name}»{tail} Решите вопрос самостоятельно.");
+        AddNotice(request.Owner, $"{MinistryName(request.MinistryId)} отказало в обращении «{name}»{tail} Решение остаётся за адресатом.");
         return true;
     }
 
@@ -733,8 +733,8 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             {
                 entry.Options.Add(new SWDilemmaOptionEntry
                 {
-                    Label = $"Прикарманить (личный счёт +{KickbackFor(dilemma)} кр)",
-                    Description = "Замять проблему ради взятки. Деньги уйдут на ваш личный счёт, но коррупция и проблема вырастут.",
+                    Label = $"Присвоить средства (личный счёт +{KickbackFor(dilemma)} кр)",
+                    Description = "Скрыть проблему ради взятки. Деньги уйдут на ваш личный счёт, но коррупция и масштаб проблемы вырастут.",
                     Affordable = true,
                     Corrupt = true,
                 });

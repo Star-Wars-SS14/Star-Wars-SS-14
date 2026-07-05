@@ -283,7 +283,7 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
         ("Закупка медикаментов", "Пополнить полевые склады: запасы +30.", 800, 2),
         ("Ротация бригад", "Свежие смены из резерва: готовность +25.", 600, 3),
         ("Вакцинационный десант", "Развезти вакцину по секторам. Требует готовой вакцины Минздрава.", 1000, 6),
-        ("Полевой госпиталь", "Развернуть модуль в самом больном секторе.", 1500, 6),
+        ("Полевой госпиталь", "Развернуть модуль в секторе с наибольшей заболеваемостью.", 1500, 6),
         ("Санитарная инспекция", "Проверка столовых и куполов в случайном секторе.", 500, 3),
     };
 
@@ -297,11 +297,11 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
             if (_opCooldowns.TryGetValue(i, out var ready) && _time.CurrentHour < ready)
-                entry.Status = $"откат: {ready - _time.CurrentHour} ч";
+                entry.Status = $"готовность через {ready - _time.CurrentHour} ч";
             else if (i == 2 && !_health.VaccineReady)
                 entry.Status = "вакцина не готова";
             else if (cost > budget)
-                entry.Status = "не хватает бюджета";
+                entry.Status = "недостаточно бюджета";
             else
                 entry.Available = true;
 

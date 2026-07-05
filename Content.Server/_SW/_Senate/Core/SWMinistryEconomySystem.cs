@@ -122,7 +122,7 @@ public sealed class SWMinistryEconomySystem : EntitySystem
 
     public string OverheatStatus() => _overheat switch
     {
-        >= 90f => "Пузырь вот-вот лопнет",
+        >= 90f => "Критический риск пузыря",
         >= 70f => "Перегрев",
         >= 45f => "Напряжённо",
         _ => "Здоровый",
@@ -261,7 +261,7 @@ public sealed class SWMinistryEconomySystem : EntitySystem
             RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство экономики",
                 "Экономика перегрелась - обвал! Республика входит в рецессию.",
                 SWSenateAnnouncementKind.Economy));
-            AddLog("Пузырь лопнул: обвал и рецессия.");
+            AddLog("Экономический пузырь лопнул: начались обвал и рецессия.");
         }
 
         // Growth (or its absence) compounds onto the sectors.
@@ -578,7 +578,7 @@ public sealed class SWMinistryEconomySystem : EntitySystem
             if (!slotsFree)
                 entry.StatusLabel = "нет свободных слотов";
             else if (budget < proto.CostPerPhase)
-                entry.StatusLabel = "не хватает бюджета на фазу";
+                entry.StatusLabel = "недостаточно бюджета на фазу";
             else
                 entry.Available = true;
 

@@ -463,7 +463,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         AllPartiesList.RemoveAllChildren();
         if (state.Parties.Count == 0)
         {
-            AllPartiesList.AddChild(SWConsoleStyle.Text("Партий пока нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            AllPartiesList.AddChild(SWConsoleStyle.Text("Партий нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
         }
         else
         {
@@ -1007,7 +1007,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         DilemmaSummaryList.RemoveAllChildren();
         if (state.AllDilemmas.Count == 0)
         {
-            DilemmaSummaryList.AddChild(SWConsoleStyle.Text("Дилемм пока нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            DilemmaSummaryList.AddChild(SWConsoleStyle.Text("Дилемм нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 
@@ -1680,7 +1680,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
         if (state.Roster.Count == 0)
         {
-            RosterList.AddChild(SWConsoleStyle.Text("Должности пока никем не заняты.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            RosterList.AddChild(SWConsoleStyle.Text("Должности не заняты.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 

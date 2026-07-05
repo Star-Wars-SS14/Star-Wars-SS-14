@@ -442,7 +442,7 @@ public sealed class SWSenateCrisisSystem : EntitySystem
     private string EscalationThreat(SWActiveCrisis crisis) => crisis.Type switch
     {
         SWCrisisType.Sectoral => crisis.Severity >= EscalateThreshold
-            ? "Высокая тяжесть - кризис вот-вот перекинется на другие сектора."
+            ? "Высокая тяжесть - кризис может распространиться на другие сектора."
             : "Локализован в одном секторе; рост тяжести грозит распространением.",
         SWCrisisType.Inter => "Межсекторальный: при охвате больше половины секторов станет республиканским.",
         SWCrisisType.Republic => "Республиканский масштаб - давит на все сектора Республики.",

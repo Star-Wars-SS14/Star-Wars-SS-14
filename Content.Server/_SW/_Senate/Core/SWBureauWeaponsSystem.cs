@@ -54,7 +54,7 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
     private static readonly string[] ShadyDossiers =
     {
         "связи с картелями не доказаны, но и не опровергнуты", "часть прошлых партий не найдена",
-        "учредители прячутся за подставными счетами",
+        "учредители скрываются за подставными счетами",
     };
 
     private static readonly string[] FrontDossiers =
@@ -170,15 +170,15 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
     {
         >= 75f => "Железный учёт",
         >= 50f => "Рабочий контроль",
-        >= 30f => "Прорехи в учёте",
-        _ => "Оружие течёт рекой",
+        >= 30f => "Недостатки учёта",
+        _ => "Контроль утрачен",
     };
 
     public string BlackMarketStatus() => BlackMarket() switch
     {
-        >= 70 => "Галактика вооружена до зубов",
-        >= 50 => "Чёрный рынок процветает",
-        >= 30 => "Теневая торговля тлеет",
+        >= 70 => "Высокое насыщение вооружением",
+        >= 50 => "Активный чёрный рынок",
+        >= 30 => "Ограниченная теневая торговля",
         _ => "Рынок подавлен",
     };
 
@@ -409,7 +409,7 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
                 },
                 SeizeCost = SeizeCost,
                 CanSeize = !onCooldown && budget >= SeizeCost,
-                SeizeLabel = onCooldown ? $"откат: {ready - _time.CurrentHour} ч"
+                SeizeLabel = onCooldown ? $"готовность через {ready - _time.CurrentHour} ч"
                     : joint ? "Изъятие (совместно с ВБ)" : "Изъятие",
             });
         }
@@ -507,11 +507,11 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
             if (_opCooldowns.TryGetValue(i, out var ready) && _time.CurrentHour < ready)
-                entry.Status = $"откат: {ready - _time.CurrentHour} ч";
+                entry.Status = $"готовность через {ready - _time.CurrentHour} ч";
             else if (i == 2 && !_ministry.IsClaimed(SWMinistryInternalSecuritySystem.SecurityMinistryId))
-                entry.Status = "нужно активное МВБ";
+                entry.Status = "требуется активное МВБ";
             else if (cost > budget)
-                entry.Status = "не хватает бюджета";
+                entry.Status = "недостаточно бюджета";
             else
                 entry.Available = true;
 
@@ -589,7 +589,7 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
             {
                 new DilOpt("Оформить без досмотра", "Барон умеет благодарить.", 0, 1200,
                     new[] { ("Контроль", -6f), ("Чёрный рынок", 6f) }),
-                new DilOpt("Отказать и внести в чёрный список", "Пусть лязгает в другом месте.", 0, 0,
+                new DilOpt("Отказать и внести в чёрный список", "Заявитель будет исключён из будущих процедур лицензирования.", 0, 0,
                     new[] { ("Контроль", 3f), ("Угроза ВБ", -2f) }),
             }),
         new("Кризис «БласТех»",
@@ -598,7 +598,7 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
             {
                 new DilOpt("Субсидировать", "Сохранить производство и рабочие места.", 1200,  0,
                     new[] { ("Производство", 3f), ("Резерв", 2f) }),
-                new DilOpt("Пусть закрывается", "Рынок рассудит. Мастера уйдут в тень.", 0, 0,
+                new DilOpt("Не вмешиваться", "Без поддержки мастерская уйдёт в теневой сектор.", 0, 0,
                     new[] { ("Производство", -3f), ("Чёрный рынок", 5f) }),
             }),
         new("Реестр световых мечей",
@@ -607,7 +607,7 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
             {
                 new DilOpt("Поддержать инициативу", "Закон один для всех. Орден будет в ярости.", 0, 0,
                     new[] { ("Контроль", 4f), ("Договоры", -2f) }),
-                new DilOpt("Отклонить", "Оружие джедая - часть его самого.", 0, 0,
+                new DilOpt("Отклонить", "Оружие Ордена остаётся вне общего реестра.", 0, 0,
                     new[] { ("Мораль", 1f), ("Договоры", 1f) }),
             }),
         new("Выставка вооружений",
@@ -623,18 +623,18 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
             "Боевой дроид прошлой войны, обретший разум, просит легальный статус вместо переплавки.",
             new[]
             {
-                new DilOpt("Легализовать", "Прецедент. И новый сотрудник реестра.", 0, 0,
+                new DilOpt("Легализовать", "Решение создаст правовой прецедент и даст реестру нового сотрудника.", 0, 0,
                     new[] { ("Права", 2f), ("Мораль", 1f), ("Дроиды", 1f) }),
-                new DilOpt("На переплавку", "Закон о боевых машинах однозначен.", 0, 0,
+                new DilOpt("Утилизировать", "Закон о боевых машинах требует утилизации.", 0, 0,
                     new[] { ("Права", -2f), ("Мораль", -1f) }),
             }),
         new("Ополчение Внешнего Кольца",
             "Приграничный сектор просит партию оружия для ополчения - пираты сожгли три поселения.",
             new[]
             {
-                new DilOpt("Выдать партию", "Вооружённый колонист - живой колонист.", 0, 0,
+                new DilOpt("Выдать партию", "Вооружение повысит выживаемость колоний, но усилит неконтролируемый оборот.", 0, 0,
                     new[] { ("Сектор", 4f), ("Чёрный рынок", 8f) }),
-                new DilOpt("Отказать", "Оружие в глуши всегда всплывает не там.", 0, 0,
+                new DilOpt("Отказать", "Отказ снизит риск утечки оружия в нелегальный оборот.", 0, 0,
                     new[] { ("Сектор", -2f) }),
             }),
         new("Утечка чертежей",
@@ -652,7 +652,7 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
             {
                 new DilOpt("Заблокировать сделки", "Империя останется без республиканских стволов.", 0, 0,
                     new[] { ("Угроза ВБ", -2f), ("Договоры", -1f) }),
-                new DilOpt("Продать втридорога", "Деньги не пахнут. Пока.", 0, 0,
+                new DilOpt("Продать по завышенной цене", "Продажа пополнит казну бюро, но усилит серый оборот.", 0, 0,
                     new[] { ("Казна бюро", 2500f), ("Угроза ВБ", 3f), ("Контроль", -5f) }),
             }),
         new("Коллекция сенатора",

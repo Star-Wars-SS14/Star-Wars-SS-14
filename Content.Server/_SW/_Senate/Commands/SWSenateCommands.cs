@@ -15,11 +15,11 @@ using Content.Server._SW._Senate.Economy;
 
 namespace Content.Server._SW._Senate.Commands;
 
-// Дебаг-команды режима Сената. Все под админ-флагом Debug.
-// Системы достаются через IoC, так как консольные команды не являются EntitySystem.
+// Отладочные команды режима Сената. Доступны под админ-флагом Debug.
+// Системы запрашиваются через IoC, так как консольные команды не являются EntitySystem.
 
 // swtime - перевести игровое время на конкретный час дня (07-21).
-// Полезно догнать время до 15:00/20:00, чтобы проверить применение/провал дилемм,
+// Полезно перевести время к 15:00/20:00, чтобы проверить применение/провал дилемм,
 // или до окна заседания. Минута необязательна.
 // Примеры: swtime 14   |   swtime 19 45
 [AdminCommand(AdminFlags.Debug)]
@@ -50,9 +50,9 @@ public sealed class SWTimeCommand : IConsoleCommand
     }
 }
 
-// swdilemma - выдать дилемму вне расписания.
+// swdilemma - назначить дилемму вне расписания.
 // Первый аргумент: ID сектора (секторальная дилемма этому сектору) либо "republic" (канцлерская).
-// Второй аргумент опционален: конкретный ID дилеммы; без него берётся случайная из пула нужного типа.
+// Второй аргумент опционален: конкретный ID дилеммы; без него выбирается случайная дилемма нужного типа.
 // Тип проверяется (секторальная/республиканская), дедлайн и применение - конец дня (21:00).
 // Примеры:
 //   swdilemma SWSectorAlderaan                       - случайная секторальная Альдераану
@@ -139,12 +139,12 @@ public sealed class SWDilemmaCommand : IConsoleCommand
     }
 }
 
-// swstat - напрямую задать статы (выставить значение, не прибавить).
-//   policy <subId> <value>             - установить саб-стат политики Республики (0-100).
-//   sector <sectorId> <globalId> <value> - установить глобал-стат конкретного сектора (его «факт»).
-//   fill <value>                       - установить ВСЕ сабы политики и ВСЕ глобалы всех секторов разом.
-// Замечание: значения секторов со временем дрейфуют к политике+смещению, так что для устойчивого
-// эффекта меняй и политику (policy/fill). Значение - дробное, точка как разделитель.
+// swstat - напрямую задать показатели (выставить значение, не прибавить).
+//   policy <subId> <value>             - установить подпоказатель политики Республики (0-100).
+//   sector <sectorId> <globalId> <value> - установить фактический глобальный показатель конкретного сектора.
+//   fill <value>                       - установить все подпоказатели политики и глобальные показатели секторов.
+// Замечание: значения секторов со временем дрейфуют к политике+смещению. Для устойчивого
+// эффекта измените и политику (policy/fill). Значение - дробное, точка как разделитель.
 // Примеры:
 //   swstat policy SWStatTreasury 90
 //   swstat sector SWSectorKuat SWGlobalIndustry 100
@@ -153,7 +153,7 @@ public sealed class SWDilemmaCommand : IConsoleCommand
 public sealed class SWStatCommand : IConsoleCommand
 {
     public string Command => "swstat";
-    public string Description => "Задать статы Сената: политику (саб), сектор (глобал) или всё разом.";
+    public string Description => "Задать показатели Сената: политику, сектор или все значения сразу.";
     public string Help => "swstat policy <subId> <value> | swstat sector <sectorId> <globalId> <value> | swstat fill <value>";
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
@@ -179,7 +179,7 @@ public sealed class SWStatCommand : IConsoleCommand
 
                 if (!proto.HasIndex<SWStatPrototype>(args[1]))
                 {
-                    shell.WriteError($"Саб не найден: {args[1]}");
+                    shell.WriteError($"Подпоказатель не найден: {args[1]}");
                     return;
                 }
 
@@ -196,7 +196,7 @@ public sealed class SWStatCommand : IConsoleCommand
 
                 if (!senate.SetSectorGlobal(args[1], args[2], sectorValue))
                 {
-                    shell.WriteError($"Не найден сектор/глобал: {args[1]} {args[2]}");
+                    shell.WriteError($"Не найден сектор или глобальный показатель: {args[1]} {args[2]}");
                     return;
                 }
 
@@ -211,7 +211,7 @@ public sealed class SWStatCommand : IConsoleCommand
                 }
 
                 senate.FillAll(fillValue);
-                shell.WriteLine($"Все статы = {fillValue}");
+                shell.WriteLine($"Все показатели = {fillValue}");
                 break;
 
             default:
@@ -276,7 +276,7 @@ public sealed class SWAmbitionCommand : IConsoleCommand
     }
 }
 
-// swborder - подвигать давление Империи на границе (для теста механик Обороны).
+// swborder - изменить давление Империи на границе (для теста механик Обороны).
 //   swborder <0-100>        - задать абсолютное значение давления.
 //   swborder add <delta>    - прибавить/убавить (delta может быть отрицательным).
 // Примеры:
@@ -287,7 +287,7 @@ public sealed class SWAmbitionCommand : IConsoleCommand
 public sealed class SWBorderCommand : IConsoleCommand
 {
     public string Command => "swborder";
-    public string Description => "Задать или сдвинуть давление Империи на границе.";
+    public string Description => "Задать или изменить давление Империи на границе.";
     public string Help => "swborder <0-100> | swborder add <delta>";
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
@@ -327,8 +327,8 @@ public sealed class SWBorderCommand : IConsoleCommand
 
 // swplague - управлять галактической эпидемией Минздрава (для теста).
 //   swplague                          - показать текущий статус.
-//   swplague seed [sectorId]          - заспавнить патоген (в случайном или указанном секторе);
-//                                       если эпидемия уже идёт - подсыпать очаг в этот сектор.
+//   swplague seed [sectorId]          - создать патоген в случайном или указанном секторе;
+//                                       если эпидемия уже идёт - добавить очаг в этот сектор.
 //   swplague set <value> [sectorId]   - задать заражение всем занятым секторам (или одному).
 //   swplague add <delta>              - прибавить/убавить заражение всем секторам.
 //   swplague mutate                   - принудительная мутация (новый штамм).
@@ -343,7 +343,7 @@ public sealed class SWBorderCommand : IConsoleCommand
 public sealed class SWPlagueCommand : IConsoleCommand
 {
     public string Command => "swplague";
-    public string Description => "Управлять галактической эпидемией: засеять, задать заражение, мутировать, очистить.";
+    public string Description => "Управлять галактической эпидемией: создать патоген, задать заражение, мутировать, очистить.";
     public string Help => "swplague [seed [sectorId] | set <value> [sectorId] | add <delta> | mutate | clear]";
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
@@ -361,7 +361,7 @@ public sealed class SWPlagueCommand : IConsoleCommand
             case "seed":
                 var seedSector = args.Length >= 2 ? args[1] : null;
                 if (!health.ForceSeed(seedSector))
-                    shell.WriteError("Не удалось засеять: нет занятых секторов или сектор не найден.");
+                    shell.WriteError("Не удалось создать патоген: нет занятых секторов или сектор не найден.");
                 else
                     shell.WriteLine(health.AdminStatus());
                 break;
@@ -412,7 +412,7 @@ public sealed class SWPlagueCommand : IConsoleCommand
 
 // swcase - управлять реестром дел Минюста (для теста).
 //   swcase                  - показать статус (дел, нагрузка, ресурс, политика).
-//   swcase add [тип]        - завести дело (тип: criminal|corruption|separatism|civil|political; без типа - случайный).
+//   swcase add [тип]        - создать дело (тип: criminal|corruption|separatism|civil|political; без типа - случайный).
 //   swcase backlog <0-100>  - задать нагрузку судов.
 //   swcase clear            - очистить реестр дел.
 // Примеры:
@@ -423,7 +423,7 @@ public sealed class SWPlagueCommand : IConsoleCommand
 public sealed class SWCaseCommand : IConsoleCommand
 {
     public string Command => "swcase";
-    public string Description => "Управлять реестром дел Минюста: завести дело, задать нагрузку, очистить.";
+    public string Description => "Управлять реестром дел Минюста: создать дело, задать нагрузку, очистить.";
     public string Help => "swcase [add [type] | backlog <0-100> | clear]";
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
@@ -624,9 +624,9 @@ public sealed class SWCorruptCommand : IConsoleCommand
     }
 }
 
-// swcrisis - заспавнить кризис вне зависимости от условий (для теста).
-// Аргумент можно дать как ID сектора, так и ID кризиса - команда сама разберётся.
-//   Республиканскому кризису сектор не нужен. Секторальному без сектора подберётся активный.
+// swcrisis - создать кризис вне зависимости от условий (для теста).
+// Аргумент может быть ID сектора или ID кризиса; команда определит тип автоматически.
+//   Республиканскому кризису сектор не нужен. Для секторального кризиса без сектора выбирается активный сектор.
 // Примеры:
 //   swcrisis SWCrisisRepDepression              - республиканский кризис (без сектора)
 //   swcrisis SWCrisisPlague                      - секторальный кризис в случайном активном секторе
@@ -636,7 +636,7 @@ public sealed class SWCorruptCommand : IConsoleCommand
 public sealed class SWCrisisCommand : IConsoleCommand
 {
     public string Command => "swcrisis";
-    public string Description => "Заспавнить кризис (по ID кризиса и/или сектора, в любом порядке).";
+    public string Description => "Создать кризис (по ID кризиса и/или сектора, в любом порядке).";
     public string Help => "swcrisis <sectorId|crisisId> [crisisId]";
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)

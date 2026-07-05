@@ -986,7 +986,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         EpidemicContent.AddChild(SWConsoleStyle.Section("РАЗРАБОТКА ВАКЦИНЫ"));
         EpidemicContent.AddChild(new Control { MinHeight = 4 });
         var rlabel = state.VaccineReady
-            ? (state.VaccineStale ? "Вакцина готова - под устаревший штамм (вполсилы)" : "Вакцина готова к развёртыванию")
+            ? (state.VaccineStale ? "Вакцина готова - устаревший штамм, сниженная эффективность" : "Вакцина готова к развёртыванию")
             : $"Прогресс: {state.Research}%";
         EpidemicContent.AddChild(SWConsoleStyle.Text(rlabel, state.VaccineReady ? SWConsoleStyle.Accent : SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
         EpidemicContent.AddChild(SWConsoleStyle.Bar(state.Research, 0, 100, SWConsoleStyle.Accent));
@@ -997,7 +997,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         var frow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
         frow.AddChild(MakeFundingButton(state.ResearchFunding, 0, "Остановить", SWConsoleStyle.Neutral));
         frow.AddChild(MakeFundingButton(state.ResearchFunding, 1, "Базовое", SWConsoleStyle.Accent));
-        frow.AddChild(MakeFundingButton(state.ResearchFunding, 2, "Форсаж", SWConsoleStyle.Warn));
+        frow.AddChild(MakeFundingButton(state.ResearchFunding, 2, "Усиленное", SWConsoleStyle.Warn));
         EpidemicContent.AddChild(frow);
 
         if (state.VaccineReady)
@@ -1910,7 +1910,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         JusticeContent.AddChild(SWConsoleStyle.Section("СУДЕБНАЯ ПОЛИТИКА"));
         JusticeContent.AddChild(new Control { MinHeight = 4 });
         JusticeContent.AddChild(SWConsoleStyle.Text($"Текущая: {state.JusticeStanceName}", state.JusticeStanceColor, SWConsoleStyle.MonoBold));
-        JusticeContent.AddChild(SWConsoleStyle.Text("Жёсткая - больше порядка, но падают права и растёт риск ошибок. Мягкая - наоборот.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        JusticeContent.AddChild(SWConsoleStyle.Text("Жёсткая политика повышает порядок, но снижает права и повышает риск ошибок. Мягкая политика действует наоборот.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
         var srow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
         foreach (var stance in JusticeStances)
             srow.AddChild(MakeJusticeStanceButton(stance, state.JusticeStance));
@@ -2037,7 +2037,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         ArchiveContent.AddChild(SWConsoleStyle.Section("ПОСЛЕДНИЕ РЕШЕНИЯ"));
         ArchiveContent.AddChild(new Control { MinHeight = 4 });
         if (state.JusticeArchive.Count == 0)
-            ArchiveContent.AddChild(SWConsoleStyle.Text("Решённых дел пока нет.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            ArchiveContent.AddChild(SWConsoleStyle.Text("Решённых дел нет.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
         else
         {
             foreach (var closed in state.JusticeArchive)

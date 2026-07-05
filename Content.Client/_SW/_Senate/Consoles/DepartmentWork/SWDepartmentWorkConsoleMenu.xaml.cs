@@ -346,13 +346,13 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
     {
         var title = state.IsHealthcare ? "ВЫЗОВЫ НА ЛИНИИ" : state.IsGuard ? "СУДЕБНЫЕ ОРДЕРА" : state.IsExpenditure ? "СИГНАЛЫ О НАРУШЕНИЯХ" : "ЗАДАЧИ";
         TasksList.AddChild(SWConsoleStyle.Section(title));
-        TasksList.AddChild(SWConsoleStyle.Text("Просроченные задачи закрываются сами - с потерями.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        TasksList.AddChild(SWConsoleStyle.Text("Просроченные задачи закрываются с негативными последствиями.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
         TasksList.AddChild(new Control { MinHeight = 4 });
 
         if (state.Tasks.Count == 0)
         {
             TasksList.AddChild(SWConsoleStyle.Text(
-                state.IsArbitrage ? "Дела ведутся на вкладке «РАБОТА»." : "Пока тихо. Наслаждайтесь моментом.",
+                state.IsArbitrage ? "Дела ведутся на вкладке «РАБОТА»." : "Активных задач нет.",
                 SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
         }
         else
@@ -403,7 +403,7 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
 
         if (state.Log.Count == 0)
         {
-            TasksList.AddChild(SWConsoleStyle.Text("Записей пока нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            TasksList.AddChild(SWConsoleStyle.Text("Записей нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 

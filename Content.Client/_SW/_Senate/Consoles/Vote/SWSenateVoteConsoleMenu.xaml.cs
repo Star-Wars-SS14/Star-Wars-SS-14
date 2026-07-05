@@ -262,7 +262,7 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
 
         if (state.Candidates.Count == 0)
         {
-            CurrentContent.AddChild(SWConsoleStyle.Text("Кандидатов пока нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            CurrentContent.AddChild(SWConsoleStyle.Text("Кандидатов нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 

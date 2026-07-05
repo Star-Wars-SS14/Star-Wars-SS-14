@@ -887,7 +887,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
             };
 
             if (_cooldowns.TryGetValue(op.ID, out var ready) && _time.CurrentHour < ready)
-                entry.StatusLabel = $"откат: {ready - _time.CurrentHour} ч";
+                entry.StatusLabel = $"готовность через {ready - _time.CurrentHour} ч";
             else if (_posture < op.RequirePosture)
                 entry.StatusLabel = $"нужен режим: {PostureName(op.RequirePosture)}";
             else if (op.Duration > 0 && !slotsFree)
@@ -895,7 +895,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
             else if (admin < op.AdminCost)
                 entry.StatusLabel = "нет админ-ресурса";
             else if (budget < op.Cost)
-                entry.StatusLabel = "не хватает бюджета";
+                entry.StatusLabel = "недостаточно бюджета";
             else
                 entry.Available = true;
 

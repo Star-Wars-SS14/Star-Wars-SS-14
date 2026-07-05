@@ -312,7 +312,7 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
 
         if (state.ActiveLaws.Count == 0)
         {
-            LawsList.AddChild(SWConsoleStyle.Text("Действующих законов пока нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            LawsList.AddChild(SWConsoleStyle.Text("Действующих законов нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 

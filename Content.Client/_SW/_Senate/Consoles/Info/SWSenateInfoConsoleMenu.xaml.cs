@@ -237,7 +237,7 @@ public sealed partial class SWSenateInfoConsoleMenu : FancyWindow
 
         if (state.ActiveLaws.Count == 0)
         {
-            ActiveLawsList.AddChild(Mono("Действующих законов пока нет.", TextDim, _mono));
+            ActiveLawsList.AddChild(Mono("Действующих законов нет.", TextDim, _mono));
             return;
         }
 

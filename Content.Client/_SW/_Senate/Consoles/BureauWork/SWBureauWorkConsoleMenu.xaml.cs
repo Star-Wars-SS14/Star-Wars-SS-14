@@ -352,7 +352,7 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
 
         if (state.RegistryLog.Count == 0)
         {
-            FleetList.AddChild(SWConsoleStyle.Text("Записей пока нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            FleetList.AddChild(SWConsoleStyle.Text("Записей нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 
@@ -376,7 +376,7 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
         DeskList.AddChild(new Control { MinHeight = 10 });
         DeskList.AddChild(SWConsoleStyle.Section("РЕЖИМЫ СЕКТОРОВ"));
         DeskList.AddChild(SWConsoleStyle.Text(
-            "Открытые сектора образуют сеть: благополучие выравнивается, но зараза и волнения расползаются. Кордон изолирует сектор и рвёт торговые гиперпути.",
+            "Открытые сектора образуют сеть: благополучие выравнивается, но инфекция и волнения распространяются. Кордон изолирует сектор и разрывает торговые гиперпути.",
             SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
         DeskList.AddChild(new Control { MinHeight = 4 });
 
@@ -429,13 +429,13 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
     {
         FleetList.AddChild(SWConsoleStyle.Section("СОБЫТИЯ НА ЛИНИЯХ"));
         FleetList.AddChild(SWConsoleStyle.Text(
-            "Оперативные происшествия пассажирских линий. Нерешённые уходят сами - с потерями.",
+            "Оперативные происшествия пассажирских линий. Нерешённые происшествия закрываются с потерями.",
             SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
         FleetList.AddChild(new Control { MinHeight = 4 });
 
         if (state.TransitEvents.Count == 0)
         {
-            FleetList.AddChild(SWConsoleStyle.Text("На линиях спокойно. Пока.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            FleetList.AddChild(SWConsoleStyle.Text("На линиях нет активных происшествий.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
         }
         else
         {
@@ -485,7 +485,7 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
 
         if (state.RegistryLog.Count == 0)
         {
-            FleetList.AddChild(SWConsoleStyle.Text("Записей пока нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            FleetList.AddChild(SWConsoleStyle.Text("Записей нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 
@@ -729,7 +729,7 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
 
         if (state.RegistryLog.Count == 0)
         {
-            FleetList.AddChild(SWConsoleStyle.Text("Записей пока нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            FleetList.AddChild(SWConsoleStyle.Text("Записей нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
             return;
         }
 

@@ -21,3 +21,9 @@
   values:
     prefix: sw-droid-command-attack-
     count: 3
+
+- type: localizedDataset
+  id: SWDroidCommandDismiss
+  values:
+    prefix: sw-droid-command-dismiss-
+    count: 3

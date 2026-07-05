@@ -31,5 +31,6 @@ public enum SWDroidOrderType : byte
     Stay,
     Follow,
     GoTo,
-    Attack
+    Attack,
+    Dismiss
 }

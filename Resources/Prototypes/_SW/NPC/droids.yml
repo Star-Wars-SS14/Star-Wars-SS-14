@@ -21,11 +21,6 @@
       task: SWDroidGoToCompound
   - preconditions:
     - !type:SWDroidHasAICorePrecondition
-    tasks:
-    - !type:HTNCompoundTask
-      task: SWDroidRangedCombatCompound
-  - preconditions:
-    - !type:SWDroidHasAICorePrecondition
     - !type:HasOrdersPrecondition
       orders: enum.SWDroidOrderType.Stay
     tasks:
@@ -40,6 +35,11 @@
     tasks:
     - !type:HTNCompoundTask
       task: FollowCompound
+  - preconditions:
+    - !type:SWDroidHasAICorePrecondition
+    tasks:
+    - !type:HTNCompoundTask
+      task: SWDroidRangedCombatCompound
   - tasks:
     - !type:HTNCompoundTask
       task: SWDroidStayCompound

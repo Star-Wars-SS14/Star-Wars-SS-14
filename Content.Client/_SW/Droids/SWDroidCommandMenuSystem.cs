@@ -21,7 +21,8 @@ public sealed class SWDroidCommandMenuSystem : EntitySystem
         "ActionSWDroidOrderFollow",
         "ActionSWDroidOrderStay",
         "ActionSWDroidOrderGoTo",
-        "ActionSWDroidOrderAttack"
+        "ActionSWDroidOrderAttack",
+        "ActionSWDroidOrderDismiss"
     };
 
     public override void Initialize()

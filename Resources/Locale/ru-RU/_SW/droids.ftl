@@ -79,3 +79,6 @@ ent-ActionSWDroidOrderGoTo = Иди!
 
 ent-ActionSWDroidOrderAttack = Стреляй!
     .desc = Подконтрольные дроиды открывают огонь по выбранной цели.
+
+ent-ActionSWDroidOrderDismiss = Отставить!
+    .desc = Подконтрольные дроиды прекращают выполнение текущего приказа.

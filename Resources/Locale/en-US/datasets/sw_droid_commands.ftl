@@ -10,3 +10,6 @@ sw-droid-command-go-to-3 = Take that position!
 sw-droid-command-attack-1 = Fire!
 sw-droid-command-attack-2 = Open fire!
 sw-droid-command-attack-3 = Destroy that target!
+sw-droid-command-dismiss-1 = Belay that order.
+sw-droid-command-dismiss-2 = Stand down.
+sw-droid-command-dismiss-3 = Cancel current order.

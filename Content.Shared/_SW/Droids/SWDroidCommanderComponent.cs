@@ -43,6 +43,12 @@ public sealed partial class SWDroidCommanderComponent : Component
     [DataField]
     public EntityUid? OrderAttackActionEntity;
 
+    [DataField(customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
+    public string OrderDismissAction = "ActionSWDroidOrderDismiss";
+
+    [DataField]
+    public EntityUid? OrderDismissActionEntity;
+
     [DataField]
     public SWDroidOrderType CurrentOrder = SWDroidOrderType.Follow;
 
@@ -56,7 +62,8 @@ public sealed partial class SWDroidCommanderComponent : Component
         { SWDroidOrderType.Stay, "SWDroidCommandStay" },
         { SWDroidOrderType.Follow, "SWDroidCommandFollow" },
         { SWDroidOrderType.GoTo, "SWDroidCommandGoTo" },
-        { SWDroidOrderType.Attack, "SWDroidCommandAttack" }
+        { SWDroidOrderType.Attack, "SWDroidCommandAttack" },
+        { SWDroidOrderType.Dismiss, "SWDroidCommandDismiss" }
     };
 
     public readonly HashSet<EntityUid> Droids = new();

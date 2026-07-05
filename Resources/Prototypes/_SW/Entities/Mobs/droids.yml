@@ -264,3 +264,19 @@
   - type: EntityTargetAction
     canTargetSelf: false
     event: !type:SWDroidAttackActionEvent
+
+- type: entity
+  id: ActionSWDroidOrderDismiss
+  parent: BaseAction
+  name: Dismiss!
+  description: Ordered droids stop executing their current order.
+  components:
+  - type: Action
+    useDelay: 0.5
+    autoPopulate: false
+    icon:
+      sprite: _SW/Mobs/Droids/droid.rsi
+      state: broken
+  - type: InstantAction
+    event: !type:SWDroidOrderActionEvent
+      type: Dismiss

@@ -10,3 +10,6 @@ sw-droid-command-go-to-3 = Занять позицию!
 sw-droid-command-attack-1 = Стреляй!
 sw-droid-command-attack-2 = Открыть огонь!
 sw-droid-command-attack-3 = Уничтожить цель!
+sw-droid-command-dismiss-1 = Отставить!
+sw-droid-command-dismiss-2 = Приказ отменить!
+sw-droid-command-dismiss-3 = Прекратить выполнение!

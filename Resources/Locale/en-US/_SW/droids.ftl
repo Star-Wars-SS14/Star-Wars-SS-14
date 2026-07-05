@@ -73,6 +73,9 @@ ent-ActionSWDroidOrderGoTo = Go!
 ent-ActionSWDroidOrderAttack = Fire!
     .desc = Ordered droids fire at the selected target.
 
+ent-ActionSWDroidOrderDismiss = Dismiss!
+    .desc = Ordered droids stop executing their current order.
+
 ent-SWDroidChargingPad = droid charging pad
     .desc = A flat powered platform that recharges droids standing on it.
 

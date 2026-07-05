@@ -11,6 +11,7 @@
   name: Галактический Сенат
   description: "Я люблю демократию, я люблю республику"
   showInVote: true
+  supportedMaps: SWSenateMapPool
   rules:
     - SWSenateGamerule
     - SWRespawnGamerule

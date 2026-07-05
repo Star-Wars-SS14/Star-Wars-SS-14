@@ -41,3 +41,14 @@
     sprite: _SW/_Senate/Structures/Doors/Airlocks/RepublicMinisterAirlock.rsi
   - type: AccessReader
     access: [["SWSenateChancellor"], ["SWMinister"]]
+
+- type: entity
+  id: SWAirlockSenate
+  parent: CMAirlockCommand
+  name: служебный шлюз Сената
+  suffix: Сенат
+  components:
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/RepublicSenateAirlock.rsi
+  - type: AccessReader
+    access: [["SWSenate"]]

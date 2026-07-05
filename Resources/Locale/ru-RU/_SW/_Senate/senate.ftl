@@ -155,3 +155,15 @@ sw-senate-crisis-action = Меры против кризиса приняты.
 sw-senate-crisis-failed = Не удалось применить меры (нет средств или не ваш сектор).
 sw-senate-crisis-aided = Помощь направлена пострадавшим секторам.
 sw-senate-crisis-law-proposed = Экстренный закон внесён на голосование с приоритетом.
+
+loadout-group-sw-senator-jumpsuit = Одеяние сенатора
+loadout-group-sw-senate-outer = Верхняя одежда
+loadout-group-sw-chancellor-jumpsuit = Костюм Канцлера
+loadout-group-sw-chancellor-neck = Регалии Канцлера
+loadout-group-sw-speaker-jumpsuit = Костюм Спикера
+loadout-group-sw-speaker-neck = Мантия Спикера
+loadout-group-sw-minister-jumpsuit = Костюм министра
+loadout-group-sw-usher-jumpsuit = Форма пристава
+loadout-group-sw-guardhead-jumpsuit = Форма главы Гвардии
+loadout-group-sw-guardofficer-jumpsuit = Форма Гвардии
+loadout-group-sw-doctor-jumpsuit = Форма врача

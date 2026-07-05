@@ -40,10 +40,9 @@
   equipment:
     id: SWMinisterPDA
     ears: SWClothingHeadsetSenateMinister
-    outerClothing: SWCitizenClothing
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen
-    jumpsuit: SWClothingUniformJumpsuitFleece
+    jumpsuit: ClothingUniformJumpsuitLawyerBlack
     back: ClothingBackpack
     belt: ClothingBeltUtility
     pocket1: FlashlightLantern

@@ -1,0 +1,27 @@
+- type: gameMap
+  id: SWSenate
+  mapName: 'Сенат Республики'
+  mapPath: /Maps/SW/senate.yml
+  minPlayers: 0
+  maxPlayers: 100
+  stations:
+    SWSenate:
+      stationProto: SWStandardStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Сенат Галактической Республики'
+      - type: StationJobs
+        availableJobs:
+          SWChancellor: [ 1, 1 ]
+          SWSpeaker: [ 1, 1 ]
+          SWSenator: [ 12, 12 ]
+          SWMinister: [ 13, 13 ]
+          SWUsher: [ 1, 1 ]
+          SWSenateGuardHead: [ 1, 1 ]
+          SWSenateGuardOfficer: [ 4, 4 ]
+          SWSenateDoctor: [ 1, 1 ]
+
+- type: gameMapPool
+  id: SWSenateMapPool
+  maps:
+  - SWSenate

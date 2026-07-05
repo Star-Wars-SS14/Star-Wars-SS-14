@@ -1,0 +1,365 @@
+# --- Senator ---
+- type: loadout
+  id: SWSenatorRobeLight
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitMonasticRobeLight
+
+- type: loadout
+  id: SWSenatorRobeDark
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitMonasticRobeDark
+
+- type: loadout
+  id: SWSenatorSuitBlack
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitLawyerBlack
+
+- type: loadout
+  id: SWSenatorSkirtBlack
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtLawyerBlack
+
+- type: loadout
+  id: SWSenatorSuitPurple
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitLawyerPurple
+
+- type: loadout
+  id: SWSenatorSkirtPurple
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtLawyerPurple
+
+- type: loadout
+  id: SWSenateCoatCitizen
+  equipment:
+    outerClothing: SWCitizenClothing
+
+- type: loadout
+  id: SWSenateCoatGentle
+  equipment:
+    outerClothing: ClothingOuterCoatGentle
+
+- type: loadoutGroup
+  id: SWSenatorJumpsuit
+  name: loadout-group-sw-senator-jumpsuit
+  loadouts:
+  - SWSenatorRobeLight
+  - SWSenatorRobeDark
+  - SWSenatorSuitBlack
+  - SWSenatorSkirtBlack
+  - SWSenatorSuitPurple
+  - SWSenatorSkirtPurple
+
+- type: loadoutGroup
+  id: SWSenateOuter
+  name: loadout-group-sw-senate-outer
+  minLimit: 0
+  loadouts:
+  - SWSenateCoatCitizen
+  - SWSenateCoatGentle
+
+- type: roleLoadout
+  id: JobSWSenator
+  groups:
+  - SWSenatorJumpsuit
+  - SWSenateOuter
+  - Glasses
+  - Trinkets
+
+# --- Chancellor ---
+- type: loadout
+  id: SWChancellorFormal
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomFormal
+
+- type: loadout
+  id: SWChancellorFormalDress
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtCentcomFormalDress
+
+- type: loadout
+  id: SWChancellorCapFormal
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCapFormal
+
+- type: loadout
+  id: SWChancellorCapFormalDress
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtCapFormalDress
+
+- type: loadout
+  id: SWChancellorCloak
+  equipment:
+    neck: ClothingNeckCloakCapFormal
+
+- type: loadout
+  id: SWChancellorMantle
+  equipment:
+    neck: ClothingNeckMantleCap
+
+- type: loadoutGroup
+  id: SWChancellorJumpsuit
+  name: loadout-group-sw-chancellor-jumpsuit
+  loadouts:
+  - SWChancellorFormal
+  - SWChancellorFormalDress
+  - SWChancellorCapFormal
+  - SWChancellorCapFormalDress
+
+- type: loadoutGroup
+  id: SWChancellorNeck
+  name: loadout-group-sw-chancellor-neck
+  loadouts:
+  - SWChancellorCloak
+  - SWChancellorMantle
+
+- type: roleLoadout
+  id: JobSWChancellor
+  groups:
+  - SWChancellorJumpsuit
+  - SWChancellorNeck
+  - SWSenateOuter
+  - Glasses
+  - Trinkets
+
+# --- Speaker ---
+- type: loadout
+  id: SWSpeakerOfficial
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomOfficial
+
+- type: loadout
+  id: SWSpeakerOfficer
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCentcomOfficer
+
+- type: loadout
+  id: SWSpeakerCommand
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitCommandGeneric
+
+- type: loadout
+  id: SWSpeakerMantleHOP
+  equipment:
+    neck: ClothingNeckMantleHOP
+
+- type: loadout
+  id: SWSpeakerMantleRD
+  equipment:
+    neck: ClothingNeckMantleRD
+
+- type: loadoutGroup
+  id: SWSpeakerJumpsuit
+  name: loadout-group-sw-speaker-jumpsuit
+  loadouts:
+  - SWSpeakerOfficial
+  - SWSpeakerOfficer
+  - SWSpeakerCommand
+
+- type: loadoutGroup
+  id: SWSpeakerNeck
+  name: loadout-group-sw-speaker-neck
+  loadouts:
+  - SWSpeakerMantleHOP
+  - SWSpeakerMantleRD
+
+- type: roleLoadout
+  id: JobSWSpeaker
+  groups:
+  - SWSpeakerJumpsuit
+  - SWSpeakerNeck
+  - SWSenateOuter
+  - Glasses
+  - Trinkets
+
+# --- Minister ---
+- type: loadout
+  id: SWMinisterSuitBlack
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitLawyerBlack
+
+- type: loadout
+  id: SWMinisterSkirtBlack
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtLawyerBlack
+
+- type: loadout
+  id: SWMinisterSuitBlue
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitLawyerBlue
+
+- type: loadout
+  id: SWMinisterSkirtBlue
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtLawyerBlue
+
+- type: loadout
+  id: SWMinisterSuitRed
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitLawyerRed
+
+- type: loadout
+  id: SWMinisterSkirtRed
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtLawyerRed
+
+- type: loadout
+  id: SWMinisterSuitGood
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitLawyerGood
+
+- type: loadout
+  id: SWMinisterSkirtGood
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtLawyerGood
+
+- type: loadoutGroup
+  id: SWMinisterJumpsuit
+  name: loadout-group-sw-minister-jumpsuit
+  loadouts:
+  - SWMinisterSuitBlack
+  - SWMinisterSkirtBlack
+  - SWMinisterSuitBlue
+  - SWMinisterSkirtBlue
+  - SWMinisterSuitRed
+  - SWMinisterSkirtRed
+  - SWMinisterSuitGood
+  - SWMinisterSkirtGood
+
+- type: roleLoadout
+  id: JobSWMinister
+  groups:
+  - SWMinisterJumpsuit
+  - SWSenateOuter
+  - Glasses
+  - Trinkets
+
+# --- Usher ---
+- type: loadout
+  id: SWUsherFormal
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitHosFormal
+
+- type: loadout
+  id: SWUsherFormalSkirt
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtHosFormal
+
+- type: loadout
+  id: SWUsherGrey
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitSecGrey
+
+- type: loadoutGroup
+  id: SWUsherJumpsuit
+  name: loadout-group-sw-usher-jumpsuit
+  loadouts:
+  - SWUsherFormal
+  - SWUsherFormalSkirt
+  - SWUsherGrey
+
+- type: roleLoadout
+  id: JobSWUsher
+  groups:
+  - SWUsherJumpsuit
+  - Glasses
+  - Trinkets
+
+# --- Senate Guard Head ---
+- type: loadout
+  id: SWGuardHeadGrey
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitHoSGrey
+
+- type: loadout
+  id: SWGuardHeadAlt
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitHoSAlt
+
+- type: loadout
+  id: SWGuardHeadParade
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitHoSParadeMale
+
+- type: loadout
+  id: SWGuardHeadFormal
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitHosFormal
+
+- type: loadoutGroup
+  id: SWGuardHeadJumpsuit
+  name: loadout-group-sw-guardhead-jumpsuit
+  loadouts:
+  - SWGuardHeadGrey
+  - SWGuardHeadAlt
+  - SWGuardHeadParade
+  - SWGuardHeadFormal
+
+- type: roleLoadout
+  id: JobSWSenateGuardHead
+  groups:
+  - SWGuardHeadJumpsuit
+  - Glasses
+  - Trinkets
+
+# --- Senate Guard Officer ---
+- type: loadout
+  id: SWGuardOfficerGrey
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitSecGrey
+
+- type: loadout
+  id: SWGuardOfficerRed
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitSec
+
+- type: loadout
+  id: SWGuardOfficerBlue
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitSecBlue
+
+- type: loadoutGroup
+  id: SWGuardOfficerJumpsuit
+  name: loadout-group-sw-guardofficer-jumpsuit
+  loadouts:
+  - SWGuardOfficerGrey
+  - SWGuardOfficerRed
+  - SWGuardOfficerBlue
+
+- type: roleLoadout
+  id: JobSWSenateGuardOfficer
+  groups:
+  - SWGuardOfficerJumpsuit
+  - Glasses
+  - Trinkets
+
+# --- Senate Doctor ---
+- type: loadout
+  id: SWSenateDoctorStandard
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitMedicalDoctor
+
+- type: loadout
+  id: SWSenateDoctorSenior
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitSeniorPhysician
+
+- type: loadout
+  id: SWSenateDoctorParamedic
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitParamedic
+
+- type: loadoutGroup
+  id: SWSenateDoctorJumpsuit
+  name: loadout-group-sw-doctor-jumpsuit
+  loadouts:
+  - SWSenateDoctorStandard
+  - SWSenateDoctorSenior
+  - SWSenateDoctorParamedic
+
+- type: roleLoadout
+  id: JobSWSenateDoctor
+  groups:
+  - SWSenateDoctorJumpsuit
+  - Glasses
+  - Trinkets

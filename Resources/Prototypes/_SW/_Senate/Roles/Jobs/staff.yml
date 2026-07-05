@@ -124,8 +124,7 @@
   equipment:
     id: SWUsherPDA
     ears: SWClothingHeadsetSenateUsher
-    jumpsuit: SWClothingUniformJumpsuitFleece
-    outerClothing: SWCitizenClothing
+    jumpsuit: ClothingUniformJumpsuitHosFormal
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen
     back: ClothingBackpack
@@ -136,7 +135,7 @@
   equipment:
     id: SWSenateGuardHeadPDA
     ears: SWClothingHeadsetSenateGuardHead
-    jumpsuit: SWClothingUniformJumpsuitFleece
+    jumpsuit: ClothingUniformJumpsuitHoSGrey
     outerClothing: SWLieutenantRepublicSuit
     head: SW_ClothingHeadLieutenantRepublicHelmet
     shoes: SWClothingShoesBootsJackFilled
@@ -149,7 +148,7 @@
   equipment:
     id: SWSenateGuardOfficerPDA
     ears: SWClothingHeadsetSenateGuard
-    jumpsuit: SWClothingUniformJumpsuitFleece
+    jumpsuit: ClothingUniformJumpsuitSecGrey
     outerClothing: SWRepublicSuit
     head: SW_ClothingHeadRepublicHelmet
     shoes: SWClothingShoesBootsJackFilled
@@ -162,7 +161,7 @@
   equipment:
     id: SWSenateDoctorPDA
     ears: SWClothingHeadsetSenateMedical
-    jumpsuit: SWClothingUniformJumpsuitFleece
+    jumpsuit: ClothingUniformJumpsuitMedicalDoctor
     outerClothing: SWMedicRepublicSuit
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen

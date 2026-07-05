@@ -114,10 +114,9 @@
   equipment:
     id: SWSenatorPDA
     ears: SWClothingHeadsetSenate
-    outerClothing: SWCitizenClothing
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen
-    jumpsuit: SWClothingUniformJumpsuitFleece
+    jumpsuit: ClothingUniformJumpsuitMonasticRobeLight
     back: ClothingBackpack
     belt: ClothingBeltUtility
     pocket1: FlashlightLantern
@@ -127,10 +126,11 @@
   equipment:
     id: SWChancellorPDA
     ears: SWClothingHeadsetSenateLeader
-    outerClothing: SWCitizenClothing
+    outerClothing: ClothingOuterCoatGentle
+    neck: ClothingNeckCloakCapFormal
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen
-    jumpsuit: SWClothingUniformJumpsuitFleece
+    jumpsuit: ClothingUniformJumpsuitCentcomFormal
     back: ClothingBackpack
     belt: ClothingBeltUtility
     pocket1: FlashlightLantern
@@ -140,10 +140,10 @@
   equipment:
     id: SWSpeakerPDA
     ears: SWClothingHeadsetSenateLeader
-    outerClothing: SWCitizenClothing
+    neck: ClothingNeckMantleHOP
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen
-    jumpsuit: SWClothingUniformJumpsuitFleece
+    jumpsuit: ClothingUniformJumpsuitCentcomOfficial
     back: ClothingBackpack
     belt: ClothingBeltUtility
     pocket1: FlashlightLantern

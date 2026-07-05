@@ -73,17 +73,6 @@ ent-ActionSWDroidOrderGoTo = Go!
 ent-ActionSWDroidOrderAttack = Fire!
     .desc = Ordered droids fire at the selected target.
 
-ent-SWDroidTargetingTablet = droid targeting tablet
-    .desc = A portable droid targeting configuration terminal.
-
-ent-SWDroidTargetingTabletRepublic = Republic droid targeting tablet
-    .suffix = Republic
-    .desc = A portable droid targeting configuration terminal preset to target Imperial personnel.
-
-ent-SWDroidTargetingTabletEmpire = Imperial droid targeting tablet
-    .suffix = Empire
-    .desc = A portable droid targeting configuration terminal preset to target Republic personnel.
-
 ent-SWDroidChargingPad = droid charging pad
     .desc = A flat powered platform that recharges droids standing on it.
 

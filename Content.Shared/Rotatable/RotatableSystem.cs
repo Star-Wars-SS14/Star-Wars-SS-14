@@ -65,6 +65,11 @@ public sealed class RotatableSystem : EntitySystem
             || Transform(uid).NoLocalRotation) // Good ol prototype inheritance, eh?
             return;
 
+        // SW start: allow systems to hide rotate verbs when rotation is currently blocked.
+        if (!CanRotate(uid, args.User, false))
+            return;
+        // SW end
+
         // Check if the object is anchored, and whether we are still allowed to rotate it.
         if (!component.RotateWhileAnchored &&
             TryComp<PhysicsComponent>(uid, out var physics) &&
@@ -74,7 +79,9 @@ public sealed class RotatableSystem : EntitySystem
         Verb resetRotation = new()
         {
             DoContactInteraction = true,
-            Act = () => ResetRotation(uid),
+            // SW start: pass the user so blocked rotation actions can show feedback.
+            Act = () => ResetRotation(uid, args.User),
+            // SW end
             Category = VerbCategory.Rotate,
             Icon = new SpriteSpecifier.Texture(new("/Textures/Interface/VerbIcons/refresh.svg.192dpi.png")),
             Text = Loc.GetString("rotate-reset-verb-get-data-text"),
@@ -86,7 +93,9 @@ public sealed class RotatableSystem : EntitySystem
         // rotate clockwise
         Verb rotateCW = new()
         {
-            Act = () => Rotate(uid, -component.Increment),
+            // SW start: pass the user so blocked rotation actions can show feedback.
+            Act = () => Rotate(uid, -component.Increment, args.User),
+            // SW end
             Category = VerbCategory.Rotate,
             Icon = new SpriteSpecifier.Texture(new("/Textures/Interface/VerbIcons/rotate_cw.svg.192dpi.png")),
             Text = Loc.GetString("rotate-verb-get-data-text"),
@@ -98,7 +107,9 @@ public sealed class RotatableSystem : EntitySystem
         // rotate counter-clockwise
         Verb rotateCCW = new()
         {
-            Act = () => Rotate(uid, component.Increment),
+            // SW start: pass the user so blocked rotation actions can show feedback.
+            Act = () => Rotate(uid, component.Increment, args.User),
+            // SW end
             Category = VerbCategory.Rotate,
             Icon = new SpriteSpecifier.Texture(new("/Textures/Interface/VerbIcons/rotate_ccw.svg.192dpi.png")),
             Text = Loc.GetString("rotate-counter-verb-get-data-text"),
@@ -142,7 +153,9 @@ public sealed class RotatableSystem : EntitySystem
             return false;
         }
 
-        Rotate(entity, -rotatableComp.Increment);
+        // SW start: pass the user so blocked hotkey rotations can show feedback.
+        Rotate(entity, -rotatableComp.Increment, player);
+        // SW end
         return false;
     }
 
@@ -167,7 +180,9 @@ public sealed class RotatableSystem : EntitySystem
             return false;
         }
 
-        Rotate(entity, rotatableComp.Increment);
+        // SW start: pass the user so blocked hotkey rotations can show feedback.
+        Rotate(entity, rotatableComp.Increment, player);
+        // SW end
         return false;
     }
 
@@ -195,19 +210,59 @@ public sealed class RotatableSystem : EntitySystem
         return false;
     }
 
-    private void Rotate(Entity<TransformComponent?> ent, Angle angle)
+    // SW start: let other systems cancel rotation before transform state changes.
+    private void Rotate(Entity<TransformComponent?> ent, Angle angle, EntityUid? user)
     {
+        if (!CanRotate(ent.Owner, user, true))
+            return;
+
         if (!Resolve(ent, ref ent.Comp, false))
             return;
 
         _transform.SetLocalRotation(ent.Owner, ent.Comp.LocalRotation + angle);
     }
+    // SW end
 
-    private void ResetRotation(Entity<TransformComponent?> ent)
+    // SW start: let other systems cancel reset rotation before transform state changes.
+    private void ResetRotation(Entity<TransformComponent?> ent, EntityUid? user)
     {
+        if (!CanRotate(ent.Owner, user, true))
+            return;
+
         if (!Resolve(ent, ref ent.Comp, false))
             return;
 
         _transform.SetLocalRotation(ent.Owner, Angle.Zero);
     }
+    // SW end
+
+    // SW start: raise a shared attempt event so systems can deny rotation.
+    private bool CanRotate(EntityUid uid, EntityUid? user, bool popup)
+    {
+        var ev = new RotateAttemptEvent(user);
+        RaiseLocalEvent(uid, ref ev);
+
+        if (!ev.Cancelled)
+            return true;
+
+        if (popup && user != null && !string.IsNullOrEmpty(ev.Message))
+            _popup.PopupClient(ev.Message, uid, user.Value);
+
+        return false;
+    }
+    // SW end
 }
+
+// SW start: expose a cancellable rotation attempt for systems that need rotation rules.
+[ByRefEvent]
+public sealed class RotateAttemptEvent : CancellableEntityEventArgs
+{
+    public EntityUid? User;
+    public string? Message;
+
+    public RotateAttemptEvent(EntityUid? user)
+    {
+        User = user;
+    }
+}
+// SW end

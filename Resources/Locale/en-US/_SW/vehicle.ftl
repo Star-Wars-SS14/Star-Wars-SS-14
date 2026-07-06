@@ -4,6 +4,7 @@ sw-vehicle-role-passenger = Passenger
 sw-vehicle-role-shooter = Shooter
 sw-vehicle-extract-verb = Extract {$role}
 sw-vehicle-extract-finished = Occupant extracted.
+sw-vehicle-occupied-cannot-rotate = You cannot rotate the vehicle while someone is inside.
 ent-SWVehicleToggleHeadlightsAction = Toggle headlights
     .desc = Toggle the vehicle headlights.
 ent-SWSpider = spider

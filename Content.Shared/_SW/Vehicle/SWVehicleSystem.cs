@@ -6,6 +6,7 @@ using Content.Shared.DoAfter;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Popups;
+using Content.Shared.Rotatable;
 using Content.Shared.Verbs;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
@@ -32,6 +33,7 @@ public sealed class SWVehicleSystem : EntitySystem
         SubscribeLocalEvent<SWVehicleComponent, SWOccupyRoleMessage>(OnOccupy);
         SubscribeLocalEvent<SWVehicleExtractableComponent, GetVerbsEvent<AlternativeVerb>>(OnGetExtractVerbs);
         SubscribeLocalEvent<SWVehicleExtractableComponent, SWVehicleExtractDoAfterEvent>(OnExtractDoAfter);
+        SubscribeLocalEvent<SWVehicleComponent, RotateAttemptEvent>(OnRotateAttempt);
         //SubscribeLocalEvent<SWInVehicleComponent, UpdateCanMoveEvent>(OnMoveInVehicle);
         //SubscribeLocalEvent<SWVehicleComponent, DestructionEventArgs>(OnDestroy);
         SubscribeLocalEvent<SWVehicleComponent, EntityTerminatingEvent>(OnTerminating);
@@ -106,6 +108,7 @@ public sealed class SWVehicleSystem : EntitySystem
         _actions.AddAction(user, ref comp.ActionEntity, SWSharedVehicleSystem.ActionExitVehicle);
         Dirty(user, comp);
         ent.Comp.RolesInfo[role].Occupant = GetNetEntity(user);
+        Dirty(ent);
 
         var evOnUser = new SWUserEnterVehicleEvent(ent);
         RaiseLocalEvent(user, evOnUser);
@@ -172,6 +175,7 @@ public sealed class SWVehicleSystem : EntitySystem
         if (!TryGetEntity(roleInfo.Occupant.Value, out var occupantEntity))
         {
             roleInfo.Occupant = null;
+            Dirty(vehicle);
             return false;
         }
 
@@ -180,12 +184,14 @@ public sealed class SWVehicleSystem : EntitySystem
         if (TerminatingOrDeleted(occupantUid))
         {
             roleInfo.Occupant = null;
+            Dirty(vehicle);
             return false;
         }
 
         if (!TryComp<SWInVehicleComponent>(occupantUid, out var inVehicle))
         {
             roleInfo.Occupant = null;
+            Dirty(vehicle);
             return false;
         }
 
@@ -227,6 +233,7 @@ public sealed class SWVehicleSystem : EntitySystem
             !TryGetEntity(roleInfo.Occupant.Value, out _))
         {
             roleInfo.Occupant = null;
+            Dirty(vehicle);
         }
 
         UpdateInterface(vehicle);
@@ -362,6 +369,39 @@ public sealed class SWVehicleSystem : EntitySystem
             _popupSystem.PopupEntity(Loc.GetString("sw-vehicle-extract-finished"), ent, args.User);
 
         args.Handled = true;
+    }
+
+    private void OnRotateAttempt(Entity<SWVehicleComponent> ent, ref RotateAttemptEvent args)
+    {
+        if (!HasOccupant(ent.Comp) && !IsUserInVehicle(args.User, ent))
+            return;
+
+        args.Cancel();
+        args.Message = Loc.GetString("sw-vehicle-occupied-cannot-rotate");
+    }
+
+    private bool IsUserInVehicle(EntityUid? user, EntityUid vehicle)
+    {
+        return user != null &&
+               TryComp<SWInVehicleComponent>(user.Value, out var inVehicle) &&
+               inVehicle.Vehicle == vehicle;
+    }
+
+    private bool HasOccupant(SWVehicleComponent vehicle)
+    {
+        foreach (var roleInfo in vehicle.RolesInfo.Values)
+        {
+            if (roleInfo.Occupant == null ||
+                !TryGetEntity(roleInfo.Occupant.Value, out var occupant) ||
+                TerminatingOrDeleted(occupant.Value))
+            {
+                continue;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     private bool RoleHasOccupant(SWVehicleComponent vehicle, string role, NetEntity occupant)

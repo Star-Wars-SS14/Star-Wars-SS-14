@@ -90,3 +90,30 @@
       - SWEncryptionKeySenate
       - SWEncryptionKeySenateStaff
       - SWEncryptionKeyChancellery
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetCourt
+  name: court headset
+  components:
+  - type: EncryptionKeyHolder
+    keySlots: 2
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyCourt
+      - SWEncryptionKeySenate
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetCourtChief
+  name: chief justice headset
+  components:
+  - type: EncryptionKeyHolder
+    keySlots: 3
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyCourt
+      - SWEncryptionKeySenate
+      - SWEncryptionKeyChancellery

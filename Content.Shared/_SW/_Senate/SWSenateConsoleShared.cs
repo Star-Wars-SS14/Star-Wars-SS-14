@@ -1263,6 +1263,14 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool InOffice;
     public bool CanTake;
     public bool CanResign;
+    public bool CanNominateJudges;
+    public bool MustPromoteChief;
+    public string CourtStatusLabel = string.Empty;
+    public string CourtPendingLabel = string.Empty;
+    public List<string> CourtCandidates = new();
+    public List<string> CourtChiefCandidates = new();
+    public bool IsCourtNominee;
+    public string CourtNominationLabel = string.Empty;
     public string? SectorName;
     public List<SWStatEntry> SectorStats = new();
     public List<int> SectorTrends = new();
@@ -1965,6 +1973,12 @@ public sealed class SWSenateVoteConsoleState : BoundUserInterfaceState
     public string CurrentAuthor = string.Empty;
     public string CurrentDescription = string.Empty;
     public List<SWBillEffectEntry> CurrentEffects = new();
+    public bool HasJudgeConfirmation;
+    public string JudgeConfirmationLabel = string.Empty;
+    public int JudgeConfirmYes;
+    public int JudgeConfirmNo;
+    public int MyJudgeConfirmVote;
+    public bool CanJudgeConfirmVote;
     public int VotesFor;
     public int VotesAgainst;
     public int VotesAbstain;
@@ -2783,5 +2797,188 @@ public sealed class SWPlannerViewMessage : BoundUserInterfaceMessage
     {
         Person = person;
         Day = day;
+    }
+}
+
+// --- Supreme Court ---
+
+[Serializable, NetSerializable]
+public enum SWJudicialWorkConsoleUiKey : byte
+{
+    Key,
+}
+
+[Serializable, NetSerializable]
+public enum SWCourtInfoConsoleUiKey : byte
+{
+    Key,
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCourtJudgeEntry
+{
+    public string Name = string.Empty;
+    public bool IsChief;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCourtCaseEntry
+{
+    public int Id;
+    public string Number = string.Empty;
+    public string Title = string.Empty;
+    public string TypeLabel = string.Empty;
+    public string Parties = string.Empty;
+    public string Description = string.Empty;
+    public List<string> Hints = new();
+    public string HearingLabel = string.Empty;
+    public string Presiding = string.Empty;
+    public string StatusLabel = string.Empty;
+    public string Verdict = string.Empty;
+    public string OutcomePlaintiff = string.Empty;
+    public string OutcomeDefendant = string.Empty;
+    public bool CanVote;
+    public bool CanCloseVote;
+    public int MyVote;
+    public int VotesPlaintiff;
+    public int VotesDefendant;
+    public bool Closed;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCourtLawOption
+{
+    public int Id;
+    public string Name = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCourtReviewEntry
+{
+    public int LawId;
+    public string LawName = string.Empty;
+    public int VotesFor;
+    public int VotesAgainst;
+    public int MyVote;
+    public bool CanVote;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWJudicialWorkConsoleState : BoundUserInterfaceState
+{
+    public bool HasCard;
+    public bool InOffice;
+    public bool CanTakeOffice;
+    public string RoleLabel = string.Empty;
+    public string TakeOfficeLabel = string.Empty;
+    public bool IsJudge;
+    public bool IsChief;
+    public string GameTime = string.Empty;
+    public string BenchLabel = string.Empty;
+    public List<SWCourtJudgeEntry> Judges = new();
+    public string ProsecutorName = string.Empty;
+    public string DefenderName = string.Empty;
+    public SWCourtCaseEntry? CurrentCase;
+    public List<SWCourtCaseEntry> Registry = new();
+    public SWCourtReviewEntry? Review;
+    public List<SWCourtLawOption> ReviewableLaws = new();
+    public List<SWAmbitionEntry> Ambitions = new();
+    public List<string> Notices = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCourtInfoConsoleState : BoundUserInterfaceState
+{
+    public string GameTime = string.Empty;
+    public string BenchLabel = string.Empty;
+    public List<SWCourtJudgeEntry> Judges = new();
+    public string ProsecutorName = string.Empty;
+    public string DefenderName = string.Empty;
+    public List<SWCourtCaseEntry> Cases = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCourtVerdictVoteMessage : BoundUserInterfaceMessage
+{
+    public int CaseId;
+    public bool ForPlaintiff;
+
+    public SWCourtVerdictVoteMessage(int caseId, bool forPlaintiff)
+    {
+        CaseId = caseId;
+        ForPlaintiff = forPlaintiff;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCourtCloseVoteMessage : BoundUserInterfaceMessage
+{
+    public int CaseId;
+
+    public SWCourtCloseVoteMessage(int caseId)
+    {
+        CaseId = caseId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCourtStartReviewMessage : BoundUserInterfaceMessage
+{
+    public int LawId;
+
+    public SWCourtStartReviewMessage(int lawId)
+    {
+        LawId = lawId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCourtReviewVoteMessage : BoundUserInterfaceMessage
+{
+    public bool Unconstitutional;
+
+    public SWCourtReviewVoteMessage(bool unconstitutional)
+    {
+        Unconstitutional = unconstitutional;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCourtResignMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCourtNominateMessage : BoundUserInterfaceMessage
+{
+    public string Name;
+    public bool ForChief;
+
+    public SWCourtNominateMessage(string name, bool forChief)
+    {
+        Name = name;
+        ForChief = forChief;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCourtNominationResponseMessage : BoundUserInterfaceMessage
+{
+    public bool Accept;
+
+    public SWCourtNominationResponseMessage(bool accept)
+    {
+        Accept = accept;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCourtConfirmVoteMessage : BoundUserInterfaceMessage
+{
+    public bool Approve;
+
+    public SWCourtConfirmVoteMessage(bool approve)
+    {
+        Approve = approve;
     }
 }

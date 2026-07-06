@@ -58,6 +58,7 @@ public sealed class SWCorruptionSystem : EntitySystem
 
     public float SectorCorruption(string sectorId) => _sector.TryGetValue(sectorId, out var v) ? v : 0f;
     public int SectorCorruptionInt(string sectorId) => (int) MathF.Round(SectorCorruption(sectorId));
+    public IReadOnlyDictionary<string, float> Persons => _person;
     public float PersonCorruption(string name) => _person.TryGetValue(name, out var v) ? v : 0f;
     public int PersonCorruptionInt(string name) => (int) MathF.Round(PersonCorruption(name));
     public int Account(string name) => _account.TryGetValue(name, out var v) ? v : 0;

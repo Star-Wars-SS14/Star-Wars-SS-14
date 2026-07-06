@@ -6,7 +6,7 @@
   id: JobIconMinister
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
-    state: Civilian
+    state: RepublicRecruit
 
 - type: accessLevel
   id: SWMinister

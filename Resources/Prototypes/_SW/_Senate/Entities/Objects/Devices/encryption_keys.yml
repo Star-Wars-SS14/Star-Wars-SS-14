@@ -63,3 +63,16 @@
   - type: Sprite
     layers:
     - state: crypt_gray
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeyCourt
+  name: court encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWCourt
+    defaultChannel: SWCourt
+  - type: Sprite
+    layers:
+    - state: crypt_gray

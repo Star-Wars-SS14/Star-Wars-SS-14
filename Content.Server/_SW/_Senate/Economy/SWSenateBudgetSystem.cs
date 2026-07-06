@@ -289,6 +289,14 @@ public sealed class SWSenateBudgetSystem : EntitySystem
         return true;
     }
 
+    public void Grant(string owner, int amount)
+    {
+        if (_phase != SWBudgetPhase.Approved || amount == 0)
+            return;
+
+        _remaining[owner] = Math.Max(0, (_remaining.TryGetValue(owner, out var r) ? r : 0) + amount);
+    }
+
     public override void Update(float frameTime)
     {
         if (!_time.ModeActive)

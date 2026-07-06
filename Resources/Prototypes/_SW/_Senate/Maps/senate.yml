@@ -20,6 +20,10 @@
           SWSenateGuardHead: [ 1, 1 ]
           SWSenateGuardOfficer: [ 4, 4 ]
           SWSenateDoctor: [ 1, 1 ]
+          SWChiefJustice: [ 1, 1 ]
+          SWRepublicJudge: [ 2, 2 ]
+          SWProsecutor: [ 1, 1 ]
+          SWDefender: [ 1, 1 ]
 
 - type: gameMapPool
   id: SWSenateMapPool

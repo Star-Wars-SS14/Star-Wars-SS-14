@@ -52,3 +52,14 @@
     sprite: _SW/_Senate/Structures/Doors/Airlocks/RepublicSenateAirlock.rsi
   - type: AccessReader
     access: [["SWSenate"]]
+
+- type: entity
+  id: SWAirlockCourt
+  parent: CMAirlockCommand
+  name: шлюз Верховного Суда
+  suffix: Суд
+  components:
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/RepublicSenateAirlock.rsi
+  - type: AccessReader
+    access: [["SWSenateCourt"]]

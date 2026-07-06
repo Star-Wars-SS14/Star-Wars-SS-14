@@ -1,9 +1,11 @@
+using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.IoC;
 using Robust.Shared.Maths;
+using Robust.Shared.Utility;
 
 namespace Content.Client._SW._Senate;
 
@@ -48,6 +50,23 @@ public static class SWConsoleStyle
     }
 
     public static Label Section(string text) => Text("// " + text, Accent, MonoBold);
+
+    public static RichTextLabel Wrap(string text, Color color, float fallbackWidth = 660f)
+    {
+        var label = new WrappingRichTextLabel(fallbackWidth)
+        {
+            HorizontalExpand = true,
+            HorizontalAlignment = Control.HAlignment.Stretch,
+            VerticalAlignment = Control.VAlignment.Top,
+        };
+
+        var msg = new FormattedMessage();
+        msg.PushColor(color);
+        msg.AddText(text);
+        msg.Pop();
+        label.SetMessage(msg);
+        return label;
+    }
 
     public static Control Pill(string text, Color fg, Color bg)
     {
@@ -167,4 +186,22 @@ public static class SWConsoleStyle
 
     public static Color SeverityColor(float severity) =>
         severity >= 70f ? Bad : severity >= 40f ? Warn : Good;
+
+    private sealed class WrappingRichTextLabel : RichTextLabel
+    {
+        private readonly float _fallbackWidth;
+
+        public WrappingRichTextLabel(float fallbackWidth)
+        {
+            _fallbackWidth = fallbackWidth;
+        }
+
+        protected override Vector2 MeasureOverride(Vector2 availableSize)
+        {
+            if (float.IsInfinity(availableSize.X) || availableSize.X <= 0)
+                availableSize.X = _fallbackWidth;
+
+            return base.MeasureOverride(availableSize);
+        }
+    }
 }

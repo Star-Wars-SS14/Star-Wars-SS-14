@@ -253,3 +253,39 @@
     state: pda-doctor
   - type: PdaBorderColor
     borderColor: "#16A085"
+
+- type: entity
+  parent: SWMinisterPDA
+  id: SWChiefJusticePDA
+  name: КПК Верховного Судьи
+  description: Персональный датапад председателя Верховного Суда.
+  components:
+  - type: Pda
+    id: SWChiefJusticeIDCard
+
+- type: entity
+  parent: SWMinisterPDA
+  id: SWRepublicJudgePDA
+  name: КПК Республиканского Судьи
+  description: Персональный датапад члена Верховного Суда.
+  components:
+  - type: Pda
+    id: SWRepublicJudgeIDCard
+
+- type: entity
+  parent: SWMinisterPDA
+  id: SWProsecutorPDA
+  name: КПК Обвинителя
+  description: Персональный датапад стороны обвинения.
+  components:
+  - type: Pda
+    id: SWProsecutorIDCard
+
+- type: entity
+  parent: SWMinisterPDA
+  id: SWDefenderPDA
+  name: КПК Защитника
+  description: Персональный датапад стороны защиты.
+  components:
+  - type: Pda
+    id: SWDefenderIDCard

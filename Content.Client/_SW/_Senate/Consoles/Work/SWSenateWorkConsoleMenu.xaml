@@ -26,6 +26,7 @@
                             <Button Name="NavRoster" Text="Состав" Margin="0 0 0 2" />
                             <Button Name="NavAgenda" Text="Повестка" Margin="0 0 0 2" />
                             <Button Name="NavSchedule" Text="Расписание" Margin="0 0 0 2" />
+                            <Button Name="NavCourt" Text="Суд" Margin="0 0 0 2" />
                             <Label Name="GroupWork" Text="РАБОТА" Margin="2 10 0 3" />
                             <Button Name="NavDraft" Text="Разработка" Margin="0 0 0 2" />
                             <Button Name="NavDilemmas" Text="Дилеммы" Margin="0 0 0 2" />
@@ -41,6 +42,7 @@
                         <RichTextLabel Name="PositionLabel" Margin="0 0 0 6" />
                         <RichTextLabel Name="StatusLabel" Margin="0 0 0 12" />
                         <BoxContainer Name="ElectionElectBox" Orientation="Vertical" Margin="0 0 0 12" />
+                        <BoxContainer Name="CourtNomineeBox" Orientation="Vertical" Margin="0 0 0 12" />
                         <Button Name="TakeButton" Text="Вступить в должность" />
                         <Button Name="ResignButton" Text="Сложить полномочия" Margin="0 6 0 0" />
                         <BoxContainer Name="WarApprovalBox" Orientation="Vertical" Margin="0 12 0 0" />
@@ -168,6 +170,11 @@
                         <Label Text="Объявление Сената" StyleClasses="LabelKeyText" />
                         <LineEdit Name="AnnounceEdit" PlaceHolder="Текст объявления..." Margin="0 2 0 8" />
                         <Button Name="AnnounceButton" Text="Отправить объявление" />
+                    </BoxContainer>
+                    <BoxContainer Name="CourtTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
+                        <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                            <BoxContainer Name="CourtList" Orientation="Vertical" HorizontalExpand="True" />
+                        </ScrollContainer>
                     </BoxContainer>
                     <BoxContainer Name="DilemmaTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
                         <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">

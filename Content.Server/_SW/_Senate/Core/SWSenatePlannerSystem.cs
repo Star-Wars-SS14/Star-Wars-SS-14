@@ -13,6 +13,7 @@ public sealed class SWSenatePlannerSystem : EntitySystem
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
+    [Dependency] private readonly SWSenateCourtSystem _court = default!;
 
     private const int MaxMeetingsPerHost = 8;
     private const int MaxBlocksPerOwner = 10;
@@ -238,7 +239,29 @@ public sealed class SWSenatePlannerSystem : EntitySystem
             }
         }
 
+        if (JudicialRole(person) is { } judicial)
+        {
+            mask |= SWPlannerSlots.Mask((SWSenateCourtSystem.MorningStart - SWSenateTimeSystem.StartHour) * 4,
+                (SWSenateCourtSystem.MorningEnd - SWSenateCourtSystem.MorningStart) * 4);
+            mask |= SWPlannerSlots.Mask((SWSenateCourtSystem.EveningStart - SWSenateTimeSystem.StartHour) * 4,
+                (SWSenateCourtSystem.EveningEnd - SWSenateCourtSystem.EveningStart) * 4);
+            if (judicial)
+            {
+                mask |= SWPlannerSlots.Mask((SWSenateCourtSystem.MorningEnd - SWSenateTimeSystem.StartHour) * 4, 4);
+                mask |= SWPlannerSlots.Mask((SWSenateCourtSystem.EveningEnd - SWSenateTimeSystem.StartHour) * 4, 4);
+            }
+        }
+
         return mask;
+    }
+
+    private bool? JudicialRole(string person)
+    {
+        if (_court.IsJudge(person))
+            return true;
+        if (_court.Prosecutor == person || _court.Defender == person)
+            return false;
+        return null;
     }
 
     public List<SWPlannerItemEntry> BuildItems(string viewer, string person, int day)
@@ -261,6 +284,41 @@ public sealed class SWSenatePlannerSystem : EntitySystem
                     Duration = session.Duration * 4,
                     Kind = 1,
                     Label = $"Заседание Сената: {_senate.GetBillName(session.BillId)}",
+                });
+            }
+        }
+
+        if (JudicialRole(person) is { } judicialRole)
+        {
+            items.Add(new SWPlannerItemEntry
+            {
+                StartSlot = (SWSenateCourtSystem.MorningStart - SWSenateTimeSystem.StartHour) * 4,
+                Duration = (SWSenateCourtSystem.MorningEnd - SWSenateCourtSystem.MorningStart) * 4,
+                Kind = 1,
+                Label = "Утреннее слушание суда",
+            });
+            items.Add(new SWPlannerItemEntry
+            {
+                StartSlot = (SWSenateCourtSystem.EveningStart - SWSenateTimeSystem.StartHour) * 4,
+                Duration = (SWSenateCourtSystem.EveningEnd - SWSenateCourtSystem.EveningStart) * 4,
+                Kind = 1,
+                Label = "Вечернее слушание суда",
+            });
+            if (judicialRole)
+            {
+                items.Add(new SWPlannerItemEntry
+                {
+                    StartSlot = (SWSenateCourtSystem.MorningEnd - SWSenateTimeSystem.StartHour) * 4,
+                    Duration = 4,
+                    Kind = 1,
+                    Label = "Совещание судей",
+                });
+                items.Add(new SWPlannerItemEntry
+                {
+                    StartSlot = (SWSenateCourtSystem.EveningEnd - SWSenateTimeSystem.StartHour) * 4,
+                    Duration = 4,
+                    Kind = 1,
+                    Label = "Совещание судей",
                 });
             }
         }
@@ -406,6 +464,12 @@ public sealed class SWSenatePlannerSystem : EntitySystem
             roles[_senate.Speaker] = "Спикер Сената";
         if (_senate.Chancellor != null)
             roles[_senate.Chancellor] = "Верховный Канцлер";
+        foreach (var judge in _court.BuildJudges())
+            roles[judge.Name] = judge.IsChief ? "Верховный Судья" : "Республиканский Судья";
+        if (_court.Prosecutor != null)
+            roles.TryAdd(_court.Prosecutor, "Обвинитель");
+        if (_court.Defender != null)
+            roles.TryAdd(_court.Defender, "Защитник");
 
         foreach (var meeting in _meetings)
         {

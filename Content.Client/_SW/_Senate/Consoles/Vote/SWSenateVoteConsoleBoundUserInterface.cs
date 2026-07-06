@@ -80,6 +80,11 @@ public sealed class SWSenateVoteConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateElectionVoteMessage(candidate));
     }
 
+    public void CourtConfirmVote(bool approve)
+    {
+        SendMessage(new SWCourtConfirmVoteMessage(approve));
+    }
+
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);

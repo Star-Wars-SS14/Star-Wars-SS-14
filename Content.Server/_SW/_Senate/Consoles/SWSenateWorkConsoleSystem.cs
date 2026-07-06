@@ -39,6 +39,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
     [Dependency] private readonly SWCorruptionSystem _corruption = default!;
     [Dependency] private readonly SWEmergencyPowersSystem _powers = default!;
+    [Dependency] private readonly SWSenateCourtSystem _court = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SWSenatePartySystem _party = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
@@ -88,6 +89,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmergencyDismissMinisterMessage>(OnDismissMinister);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateIssueDecreeMessage>(OnIssueDecree);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateConfirmElectionMessage>(OnConfirmElection);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWCourtNominateMessage>(OnCourtNominate);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWCourtNominationResponseMessage>(OnCourtNominationResponse);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWProposeMotionMessage>(OnProposeMotion);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectSessionMessage>(OnRejectSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAnnounceMessage>(OnAnnounce);
@@ -532,6 +535,37 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (owner == SWSenateDilemmaSystem.RepublicOwner)
             return _senate.Chancellor;
         return owner != null && _senate.SectorHolders.TryGetValue(owner, out var h) ? h : null;
+    }
+
+    private string? CardFullName(Entity<SWSenateWorkConsoleComponent> ent)
+    {
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null || !TryComp<Content.Shared.Access.Components.IdCardComponent>(card, out var idCard))
+            return null;
+
+        return string.IsNullOrWhiteSpace(idCard.FullName) ? null : idCard.FullName;
+    }
+
+    private void OnCourtNominate(Entity<SWSenateWorkConsoleComponent> ent, ref SWCourtNominateMessage args)
+    {
+        if (GetCardPosition(ent) != SWSenatePosition.Chancellor || _senate.Chancellor == null
+            || _senate.Chancellor != Name(args.Actor))
+            return;
+
+        if (_court.Nominate(args.Name, args.ForChief))
+            _popup.PopupCursor("Предложение направлено кандидату.", args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor("Выдвижение невозможно.", args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnCourtNominationResponse(Entity<SWSenateWorkConsoleComponent> ent, ref SWCourtNominationResponseMessage args)
+    {
+        if (_court.RespondNomination(Name(args.Actor), args.Accept))
+            _popup.PopupCursor(args.Accept ? "Согласие передано в Сенат." : "Предложение отклонено.", args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
     }
 
     private void OnProposeMotion(Entity<SWSenateWorkConsoleComponent> ent, ref SWProposeMotionMessage args)
@@ -1182,6 +1216,22 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.CanProposeMotions = self != null;
         state.IsChancellorElect = self != null && self == _senate.ChancellorElect;
         state.PowersActive = _powers.Active;
+
+        state.CourtStatusLabel = _court.BenchLabel();
+        state.CourtPendingLabel = _court.PendingLabel();
+        state.MustPromoteChief = _court.MustPromoteChief;
+        state.CanNominateJudges = GetCardPosition(ent) == SWSenatePosition.Chancellor && _senate.Chancellor != null
+            && _court.NominationsOpen && _court.PendingNominee == null
+            && (_court.MustPromoteChief || _court.SeatsTaken < 3);
+        if (state.CanNominateJudges)
+        {
+            state.CourtCandidates = _court.BuildCandidates();
+            state.CourtChiefCandidates = new List<string>(_court.Judges);
+        }
+
+        var nomineeIdentity = self ?? CardFullName(ent);
+        state.IsCourtNominee = nomineeIdentity != null && _court.IsNominee(nomineeIdentity);
+        state.CourtNominationLabel = nomineeIdentity != null ? _court.NominationLabel(nomineeIdentity) : string.Empty;
         state.EmergencyLevel = _powers.Level;
         state.EmergencyLevelName = _powers.LevelName();
         state.Authority = _powers.Authority;

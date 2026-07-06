@@ -181,3 +181,92 @@
   - type: Sprite
     layers:
     - state: green
+
+- type: entity
+  id: SWSpawnPointChiefJustice
+  parent: SpawnPointJobBase
+  name: Court Chief Justice
+  components:
+  - type: SpawnPoint
+    job_id: SWChiefJustice
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointChiefJusticeLJ
+  parent: SpawnPointJobBase
+  name: Court Chief Justice LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWChiefJustice
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+- type: entity
+  id: SWSpawnPointRepublicJudge
+  parent: SpawnPointJobBase
+  name: Court Republic Judge
+  components:
+  - type: SpawnPoint
+    job_id: SWRepublicJudge
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointRepublicJudgeLJ
+  parent: SpawnPointJobBase
+  name: Court Republic Judge LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWRepublicJudge
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+- type: entity
+  id: SWSpawnPointProsecutor
+  parent: SpawnPointJobBase
+  name: Court Prosecutor
+  components:
+  - type: SpawnPoint
+    job_id: SWProsecutor
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointProsecutorLJ
+  parent: SpawnPointJobBase
+  name: Court Prosecutor LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWProsecutor
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+- type: entity
+  id: SWSpawnPointDefender
+  parent: SpawnPointJobBase
+  name: Court Defender
+  components:
+  - type: SpawnPoint
+    job_id: SWDefender
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointDefenderLJ
+  parent: SpawnPointJobBase
+  name: Court Defender LJ
+  components:
+  - type: SpawnPoint
+    job_id: SWDefender
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green

@@ -320,3 +320,47 @@
   - type: ApcPowerReceiver
     needsPower: false
   - type: Godmode
+
+- type: entity
+  parent: BaseComputer
+  id: SWJudicialWorkConsole
+  name: рабочая консоль Верховного Суда
+  description: Рабочее место судей, обвинителя и защитника — дела, вердикты и конституционный надзор.
+  components:
+  - type: SWJudicialWorkConsole
+  - type: ActivatableUI
+    key: enum.SWJudicialWorkConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWJudicialWorkConsoleUiKey.Key:
+        type: SWJudicialWorkConsoleBoundUserInterface
+  - type: ItemSlots
+    slots:
+      senate_id_slot:
+        name: ID-карта
+        whitelist:
+          components:
+          - IdCard
+  - type: ContainerContainer
+    containers:
+      senate_id_slot: !type:ContainerSlot {}
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Godmode
+
+- type: entity
+  parent: BaseComputer
+  id: SWCourtInfoConsole
+  name: информационная консоль Верховного Суда
+  description: Публичный реестр дел Верховного Суда — стороны, председатели, вердикты.
+  components:
+  - type: SWCourtInfoConsole
+  - type: ActivatableUI
+    key: enum.SWCourtInfoConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWCourtInfoConsoleUiKey.Key:
+        type: SWCourtInfoConsoleBoundUserInterface
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Godmode

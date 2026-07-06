@@ -130,6 +130,16 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateConfirmElectionMessage());
     }
 
+    public void NominateJudge(string name, bool forChief)
+    {
+        SendMessage(new SWCourtNominateMessage(name, forChief));
+    }
+
+    public void RespondCourtNomination(bool accept)
+    {
+        SendMessage(new SWCourtNominationResponseMessage(accept));
+    }
+
     public void ProposeMotion(SWMotionType type, int level, SWEmergencyPower power)
     {
         SendMessage(new SWProposeMotionMessage(type, level, power));

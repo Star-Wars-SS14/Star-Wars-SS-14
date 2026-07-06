@@ -943,3 +943,160 @@
   comparison: Above
   threshold: 70
   order: 85
+
+# --- Judicial ---
+- type: swAmbition
+  id: SWAmbitionCourtChiefRepeal
+  name: Страж Конституции
+  description: Признать хотя бы один закон Сената неконституционным и отменить его.
+  order: 90
+  role: Judicial
+  courtRole: chief
+  kind: CourtMetric
+  stat: LawsRepealed
+  comparison: Above
+  threshold: 0
+
+- type: swAmbition
+  id: SWAmbitionCourtChiefNoUnresolved
+  name: Безупречная скамья
+  description: Ни одно дело за раунд не должно остаться без вердикта.
+  order: 91
+  role: Judicial
+  courtRole: chief
+  kind: CourtMetric
+  stat: CasesUnresolved
+  comparison: Below
+  threshold: 1
+
+- type: swAmbition
+  id: SWAmbitionCourtChiefCaseload
+  name: Молот правосудия
+  description: Довести до вердикта не менее четырёх дел за раунд.
+  order: 92
+  role: Judicial
+  courtRole: chief
+  kind: CourtMetric
+  stat: CasesResolved
+  comparison: Above
+  threshold: 3
+
+- type: swAmbition
+  id: SWAmbitionCourtJudgeCaseload
+  name: Рабочая лошадка Фемиды
+  description: Суд должен вынести вердикт минимум по трём делам.
+  order: 93
+  role: Judicial
+  courtRole: judge
+  kind: CourtMetric
+  stat: CasesResolved
+  comparison: Above
+  threshold: 2
+
+- type: swAmbition
+  id: SWAmbitionCourtJudgeNoUnresolved
+  name: Без проволочек
+  description: Не допустить ни одного дела, оставшегося без решения.
+  order: 94
+  role: Judicial
+  courtRole: judge
+  kind: CourtMetric
+  stat: CasesUnresolved
+  comparison: Below
+  threshold: 1
+
+- type: swAmbition
+  id: SWAmbitionCourtJudgeIron
+  name: Карающий меч
+  description: Суд должен встать на сторону истца не менее трёх раз — пусть виновные платят.
+  order: 95
+  role: Judicial
+  courtRole: judge
+  kind: CourtMetric
+  stat: VerdictsForPlaintiff
+  comparison: Above
+  threshold: 2
+
+- type: swAmbition
+  id: SWAmbitionCourtJudgeMercy
+  name: Презумпция невиновности
+  description: Суд должен встать на сторону ответчика не менее трёх раз.
+  order: 96
+  role: Judicial
+  courtRole: judge
+  kind: CourtMetric
+  stat: VerdictsForDefendant
+  comparison: Above
+  threshold: 2
+
+- type: swAmbition
+  id: SWAmbitionProsecutorWins
+  name: Именем Республики
+  description: Добиться минимум двух вердиктов в пользу вашей стороны обвинения.
+  order: 97
+  role: Judicial
+  courtRole: prosecutor
+  kind: CourtMetric
+  stat: VerdictsForPlaintiff
+  comparison: Above
+  threshold: 1
+
+- type: swAmbition
+  id: SWAmbitionProsecutorCrusade
+  name: Обвинительный уклон
+  description: Четыре победы обвинения за раунд — рекорд, о котором будут говорить.
+  order: 98
+  role: Judicial
+  courtRole: prosecutor
+  kind: CourtMetric
+  stat: VerdictsForPlaintiff
+  comparison: Above
+  threshold: 3
+
+- type: swAmbition
+  id: SWAmbitionProsecutorShutout
+  name: Защита пусть плачет
+  description: Не позволить защите выиграть больше одного дела.
+  order: 99
+  role: Judicial
+  courtRole: prosecutor
+  kind: CourtMetric
+  stat: VerdictsForDefendant
+  comparison: Below
+  threshold: 2
+
+- type: swAmbition
+  id: SWAmbitionDefenderWins
+  name: Щит невиновных
+  description: Добиться минимум двух вердиктов в пользу вашей стороны защиты.
+  order: 100
+  role: Judicial
+  courtRole: defender
+  kind: CourtMetric
+  stat: VerdictsForDefendant
+  comparison: Above
+  threshold: 1
+
+- type: swAmbition
+  id: SWAmbitionDefenderLegend
+  name: Легенда адвокатуры
+  description: Четыре победы защиты за раунд.
+  order: 101
+  role: Judicial
+  courtRole: defender
+  kind: CourtMetric
+  stat: VerdictsForDefendant
+  comparison: Above
+  threshold: 3
+
+- type: swAmbition
+  id: SWAmbitionDefenderShutout
+  name: Обвинение ни с чем
+  description: Не позволить обвинению выиграть больше одного дела.
+  order: 102
+  role: Judicial
+  courtRole: defender
+  kind: CourtMetric
+  stat: VerdictsForPlaintiff
+  comparison: Below
+  threshold: 2

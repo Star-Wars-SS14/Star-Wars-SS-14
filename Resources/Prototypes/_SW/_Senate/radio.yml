@@ -37,3 +37,11 @@
   frequency: 2054
   color: "#2980b9"
   longRange: true
+
+- type: radioChannel
+  id: SWCourt
+  name: Суд
+  keycode: 'ю'
+  frequency: 2055
+  color: "#b8860b"
+  longRange: true

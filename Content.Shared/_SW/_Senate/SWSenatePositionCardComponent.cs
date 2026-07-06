@@ -9,6 +9,10 @@ public enum SWSenatePosition : byte
     Chancellor,
     Speaker,
     Minister,
+    ChiefJustice,
+    Judge,
+    Prosecutor,
+    Defender,
 }
 
 [RegisterComponent]

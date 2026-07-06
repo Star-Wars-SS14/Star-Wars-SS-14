@@ -15,28 +15,28 @@
   id: JobIconUsher
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
-    state: Civilian
+    state: RepublicSoldier
 
 - type: jobIcon
   parent: JobIcon
   id: JobIconSenateGuardHead
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
-    state: Civilian
+    state: RepublicCapitan
 
 - type: jobIcon
   parent: JobIcon
   id: JobIconSenateGuardOfficer
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
-    state: Civilian
+    state: RepublicSoldier
 
 - type: jobIcon
   parent: JobIcon
   id: JobIconSenateDoctor
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
-    state: Civilian
+    state: RepublicMedic
 
 - type: accessLevel
   id: SWSenateGuard

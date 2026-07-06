@@ -12,21 +12,21 @@
   id: JobIconSenator
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
-    state: Civilian
+    state: RepublicLieutenant
 
 - type: jobIcon
   parent: JobIcon
   id: JobIconChancellor
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
-    state: Civilian
+    state: RepublicGeneral
 
 - type: jobIcon
   parent: JobIcon
   id: JobIconSpeaker
   icon:
     sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
-    state: Civilian
+    state: RepublicCapitan
 
 - type: accessLevel
   id: SWSenate
@@ -55,6 +55,7 @@
   - SWSenateGuardCommand
   - SWSenateMedical
   - SWMinister
+  - SWSenateCourt
 
 - type: department
   id: SWSenate

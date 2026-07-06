@@ -109,3 +109,63 @@
     - state: doctor
   - type: PresetIdCard
     job: SWSenateDoctor
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWChiefJusticeIDCard
+  name: ID-карта Верховного Судьи
+  description: Удостоверение председателя Верховного Суда Республики.
+  components:
+  - type: SWSenatePositionCard
+    position: ChiefJustice
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: speaker
+  - type: PresetIdCard
+    job: SWChiefJustice
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWRepublicJudgeIDCard
+  name: ID-карта Республиканского Судьи
+  description: Удостоверение члена Верховного Суда Республики.
+  components:
+  - type: SWSenatePositionCard
+    position: Judge
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: minister
+  - type: PresetIdCard
+    job: SWRepublicJudge
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWProsecutorIDCard
+  name: ID-карта Обвинителя Республики
+  description: Удостоверение стороны обвинения Верховного Суда.
+  components:
+  - type: SWSenatePositionCard
+    position: Prosecutor
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: usher
+  - type: PresetIdCard
+    job: SWProsecutor
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWDefenderIDCard
+  name: ID-карта Защитника Республики
+  description: Удостоверение стороны защиты Верховного Суда.
+  components:
+  - type: SWSenatePositionCard
+    position: Defender
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: usher
+  - type: PresetIdCard
+    job: SWDefender

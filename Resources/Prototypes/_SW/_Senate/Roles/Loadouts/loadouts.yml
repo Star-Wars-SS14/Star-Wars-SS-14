@@ -363,3 +363,107 @@
   - SWSenateDoctorJumpsuit
   - Glasses
   - Trinkets
+
+# --- Court ---
+- type: loadout
+  id: SWJudgeSuitBlack
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitLawyerBlack
+
+- type: loadout
+  id: SWJudgeSuitGood
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitLawyerGood
+
+- type: loadout
+  id: SWJudgeSkirtBlack
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtLawyerBlack
+
+- type: loadout
+  id: SWJudgeSkirtGood
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtLawyerGood
+
+- type: loadoutGroup
+  id: SWJudgeJumpsuit
+  name: loadout-group-sw-judge-jumpsuit
+  loadouts:
+  - SWJudgeSuitBlack
+  - SWJudgeSuitGood
+  - SWJudgeSkirtBlack
+  - SWJudgeSkirtGood
+
+- type: roleLoadout
+  id: JobSWChiefJustice
+  groups:
+  - SWJudgeJumpsuit
+  - Glasses
+  - Trinkets
+
+- type: roleLoadout
+  id: JobSWRepublicJudge
+  groups:
+  - SWJudgeJumpsuit
+  - Glasses
+  - Trinkets
+
+- type: loadout
+  id: SWProsecutorSuit
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitLawyerRed
+
+- type: loadout
+  id: SWProsecutorSkirt
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtLawyerRed
+
+- type: loadout
+  id: SWProsecutorSuitBlack
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitLawyerBlack
+
+- type: loadoutGroup
+  id: SWProsecutorJumpsuit
+  name: loadout-group-sw-prosecutor-jumpsuit
+  loadouts:
+  - SWProsecutorSuit
+  - SWProsecutorSkirt
+  - SWProsecutorSuitBlack
+
+- type: roleLoadout
+  id: JobSWProsecutor
+  groups:
+  - SWProsecutorJumpsuit
+  - Glasses
+  - Trinkets
+
+- type: loadout
+  id: SWDefenderSuit
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitLawyerBlue
+
+- type: loadout
+  id: SWDefenderSkirt
+  equipment:
+    jumpsuit: ClothingUniformJumpskirtLawyerBlue
+
+- type: loadout
+  id: SWDefenderSuitGood
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitLawyerGood
+
+- type: loadoutGroup
+  id: SWDefenderJumpsuit
+  name: loadout-group-sw-defender-jumpsuit
+  loadouts:
+  - SWDefenderSuit
+  - SWDefenderSkirt
+  - SWDefenderSuitGood
+
+- type: roleLoadout
+  id: JobSWDefender
+  groups:
+  - SWDefenderJumpsuit
+  - Glasses
+  - Trinkets

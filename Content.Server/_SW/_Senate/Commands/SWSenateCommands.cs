@@ -3,6 +3,7 @@ using System.Linq;
 using Content.Server.Administration;
 using Content.Shared.Administration;
 using Content.Shared._SW._Senate;
+using Content.Shared._SW._Senate.Court;
 using Content.Shared._SW._Senate.Crises;
 using Content.Shared._SW._Senate.Dilemmas;
 using Content.Shared._SW._Senate.Ministries;
@@ -407,6 +408,44 @@ public sealed class SWPlagueCommand : IConsoleCommand
                 shell.WriteError(Help);
                 break;
         }
+    }
+}
+
+// swcourtcase - открыть дело Верховного Суда, игнорируя отсутствие судебного состава.
+// Аргумент опционален: конкретный ID прототипа дела.
+[AdminCommand(AdminFlags.Debug)]
+public sealed class SWCourtCaseCommand : IConsoleCommand
+{
+    public string Command => "swcourtcase";
+    public string Description => "Открыть дело Верховного Суда.";
+    public string Help => "swcourtcase [courtCaseId]";
+
+    public void Execute(IConsoleShell shell, string argStr, string[] args)
+    {
+        if (args.Length > 1)
+        {
+            shell.WriteError(Help);
+            return;
+        }
+
+        var proto = IoCManager.Resolve<IPrototypeManager>();
+        var caseId = args.Length == 1 ? args[0] : null;
+        if (caseId != null && !proto.HasIndex<SWCourtCasePrototype>(caseId))
+        {
+            shell.WriteError($"Судебное дело не найдено: {caseId}");
+            return;
+        }
+
+        var court = IoCManager.Resolve<IEntityManager>().System<SWSenateCourtSystem>();
+        if (!court.AdminGenerateCase(caseId))
+        {
+            shell.WriteError("Дело не открыто: слот уже занят или нет подходящего прототипа.");
+            return;
+        }
+
+        shell.WriteLine(caseId == null
+            ? "Дело Верховного Суда открыто."
+            : $"Дело Верховного Суда открыто: {caseId}");
     }
 }
 

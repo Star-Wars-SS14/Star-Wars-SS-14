@@ -33,6 +33,7 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
     [Dependency] private readonly SWBureauShipsSystem _bureauShips = default!;
     [Dependency] private readonly SWBureauWeaponsSystem _bureauWeapons = default!;
     [Dependency] private readonly SWBureauTransitSystem _bureauTransit = default!;
+    [Dependency] private readonly SWSenateCourtSystem _court = default!;
 
     private const float UpdateInterval = 5f;
 
@@ -72,15 +73,31 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
 
         foreach (var (ministryId, _) in _ministry.Holders)
             EnsureAssigned(ministryId, SWAmbitionRole.Minister, null, ministryId);
+
+        EnsureCourtAssigned();
     }
 
-    private void EnsureAssigned(string owner, SWAmbitionRole role, string? sectorId, string? ministryId)
+    private void EnsureCourtAssigned()
+    {
+        if (_court.Chief != null)
+            EnsureAssigned("court-chief", SWAmbitionRole.Judicial, null, null, "chief");
+        for (var i = 0; i < _court.Judges.Count; i++)
+            EnsureAssigned($"court-judge-{i}", SWAmbitionRole.Judicial, null, null, "judge");
+        if (_court.Prosecutor != null)
+            EnsureAssigned("court-prosecutor", SWAmbitionRole.Judicial, null, null, "prosecutor");
+        if (_court.Defender != null)
+            EnsureAssigned("court-defender", SWAmbitionRole.Judicial, null, null, "defender");
+    }
+
+    private void EnsureAssigned(string owner, SWAmbitionRole role, string? sectorId, string? ministryId, string? courtRole = null)
     {
         if (_assigned.ContainsKey(owner))
             return;
 
         var pool = _proto.EnumeratePrototypes<SWAmbitionPrototype>()
-            .Where(a => a.Role == role && (role != SWAmbitionRole.Minister || a.MinistryId == ministryId))
+            .Where(a => a.Role == role
+                && (role != SWAmbitionRole.Minister || a.MinistryId == ministryId)
+                && (role != SWAmbitionRole.Judicial || a.CourtRole == courtRole))
             .ToList();
         _random.Shuffle(pool);
 
@@ -116,6 +133,8 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
     {
         if (owner == SWSenateDilemmaSystem.RepublicOwner)
             EnsureAssigned(owner, SWAmbitionRole.Chancellor, null, null);
+        else if (owner.StartsWith("court-"))
+            EnsureCourtAssigned();
         else if (_proto.HasIndex<SWMinistryPrototype>(owner))
             EnsureAssigned(owner, SWAmbitionRole.Minister, null, owner);
         else
@@ -219,6 +238,11 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
             case SWAmbitionKind.MinisterMetric:
             {
                 var value = MinisterMetricValue(active.Owner, proto.Stat);
+                return (Compare(value, proto.Comparison, proto.Threshold), StatProgress(value, proto));
+            }
+            case SWAmbitionKind.CourtMetric:
+            {
+                var value = CourtMetricValue(proto.Stat);
                 return (Compare(value, proto.Comparison, proto.Threshold), StatProgress(value, proto));
             }
             default:
@@ -329,6 +353,16 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
         _ => 0f,
     };
 
+    private float CourtMetricValue(string metric) => metric switch
+    {
+        "CasesResolved" => _court.CasesResolved,
+        "CasesUnresolved" => _court.CasesUnresolved,
+        "LawsRepealed" => _court.LawsRepealed,
+        "VerdictsForPlaintiff" => _court.VerdictsForPlaintiff,
+        "VerdictsForDefendant" => _court.VerdictsForDefendant,
+        _ => 0f,
+    };
+
     private static string StatProgress(float value, SWAmbitionPrototype proto)
     {
         var sign = proto.Comparison == SWAmbitionComparison.Above ? ">" : "<";
@@ -344,6 +378,7 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
             EnsureAssigned(SWSenateDilemmaSystem.RepublicOwner, SWAmbitionRole.Chancellor, null, null);
         foreach (var (ministryId, _) in _ministry.Holders)
             EnsureAssigned(ministryId, SWAmbitionRole.Minister, null, ministryId);
+        EnsureCourtAssigned();
 
         if (_assigned.Count == 0)
             return;
@@ -357,9 +392,11 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
             var holder = OwnerHolder(owner) ?? "-";
             var label = owner == SWSenateDilemmaSystem.RepublicOwner
                 ? $"Канцлер ({holder})"
-                : _proto.TryIndex<SWMinistryPrototype>(owner, out var ministryProto)
-                    ? $"{ministryProto.Name} - {holder}"
-                    : $"{SectorName(owner)} - {holder}";
+                : owner.StartsWith("court-")
+                    ? $"{CourtSeatLabel(owner)} - {holder}"
+                    : _proto.TryIndex<SWMinistryPrototype>(owner, out var ministryProto)
+                        ? $"{ministryProto.Name} - {holder}"
+                        : $"{SectorName(owner)} - {holder}";
 
             var score = 0;
             var lines = new List<string>();
@@ -416,10 +453,30 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
     {
         if (owner == SWSenateDilemmaSystem.RepublicOwner)
             return _senate.Chancellor;
+        if (owner == "court-chief")
+            return _court.Chief;
+        if (owner.StartsWith("court-judge-"))
+        {
+            return int.TryParse(owner["court-judge-".Length..], out var index) && index < _court.Judges.Count
+                ? _court.Judges[index]
+                : null;
+        }
+        if (owner == "court-prosecutor")
+            return _court.Prosecutor;
+        if (owner == "court-defender")
+            return _court.Defender;
         if (_senate.SectorGlobals.ContainsKey(owner))
             return _senate.GetSectorHolder(owner);
         return _ministry.GetHolder(owner);
     }
+
+    private static string CourtSeatLabel(string owner) => owner switch
+    {
+        "court-chief" => "Верховный Судья",
+        "court-prosecutor" => "Обвинитель",
+        "court-defender" => "Защитник",
+        _ => "Республиканский Судья",
+    };
 
     private string SectorName(string id) =>
         _proto.TryIndex<SWSectorPrototype>(id, out var proto) ? proto.Name : id;

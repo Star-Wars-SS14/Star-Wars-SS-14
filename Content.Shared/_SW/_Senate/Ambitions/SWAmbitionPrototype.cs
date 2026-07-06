@@ -10,6 +10,7 @@ public enum SWAmbitionRole : byte
     Senator,
     Chancellor,
     Minister,
+    Judicial,
 }
 
 [Serializable, NetSerializable]
@@ -38,6 +39,11 @@ public enum SWAmbitionKind : byte
     /// SWSenateAmbitionSystem.MinisterMetricValue for the (ministryId, metric) lookup table.
     /// </summary>
     MinisterMetric,
+
+    /// <summary>
+    /// Judicial-role ambitions: a named metric read off SWSenateCourtSystem, compared against Threshold.
+    /// </summary>
+    CourtMetric,
 }
 
 [Prototype("swAmbition")]
@@ -64,6 +70,12 @@ public sealed partial class SWAmbitionPrototype : IPrototype
     /// </summary>
     [DataField]
     public ProtoId<SWMinistryPrototype>? MinistryId;
+
+    /// <summary>
+    /// Required when Role == Judicial: which court seat this ambition fits (chief/judge/prosecutor/defender).
+    /// </summary>
+    [DataField]
+    public string CourtRole = string.Empty;
 
     [DataField]
     public SWAmbitionKind Kind;

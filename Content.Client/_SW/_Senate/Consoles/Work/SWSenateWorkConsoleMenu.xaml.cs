@@ -53,6 +53,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             (NavDraft, DraftTab),
             (NavAgenda, AgendaScroll),
             (NavSchedule, ScheduleTab),
+            (NavCourt, CourtTab),
             (NavDilemmas, DilemmaTab),
             (NavCrises, CrisesTab),
             (NavParties, PartiesTab),
@@ -154,6 +155,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
         BuildWarApproval(state);
         BuildElectionElect(state);
+        BuildCourtNominee(state);
 
         var isSenator = state.IsSenateCard && state.Position == SWSenatePosition.Senator;
         var isLeader = state.IsSenateCard
@@ -170,6 +172,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         NavPowers.Visible = state.ShowPowers;
         NavDecree.Visible = state.CanUseEmergencyPowers && state.AvailablePowers.Contains((int) SWEmergencyPower.Decree);
         NavAnnounce.Visible = isLeader && state.InOffice;
+        NavCourt.Visible = state.IsSenateCard && state.Position == SWSenatePosition.Chancellor && state.InOffice;
 
         foreach (var (header, buttons) in _navGroups)
             header.Visible = buttons.Any(b => b.Visible);
@@ -204,6 +207,121 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BuildBudgetSection(state);
         BuildSignature(state);
         BuildPowers(state);
+        BuildCourtSection(state);
+    }
+
+    private void BuildCourtNominee(SWSenateWorkConsoleState state)
+    {
+        CourtNomineeBox.RemoveAllChildren();
+        if (!state.IsCourtNominee)
+            return;
+
+        var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+        box.AddChild(MakeTitle(state.CourtNominationLabel, SWConsoleStyle.Accent));
+        box.AddChild(MakeWrap("Согласие означает утверждение Сенатом; при назначении вы потеряете все текущие посты. Снять судью против его воли невозможно."));
+
+        var buttons = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
+        var accept = SWConsoleStyle.Action("Принять предложение", SWConsoleStyle.Good);
+        accept.OnPressed += _ => _owner.RespondCourtNomination(true);
+        buttons.AddChild(accept);
+        var decline = SWConsoleStyle.Action("Отказаться", SWConsoleStyle.Bad);
+        decline.Margin = new Thickness(6, 0, 0, 0);
+        decline.OnPressed += _ => _owner.RespondCourtNomination(false);
+        buttons.AddChild(decline);
+        box.AddChild(buttons);
+
+        card.AddChild(box);
+        CourtNomineeBox.AddChild(card);
+    }
+
+    private string? _courtCandidate;
+    private string? _courtChiefCandidate;
+
+    private void BuildCourtSection(SWSenateWorkConsoleState state)
+    {
+        CourtList.RemoveAllChildren();
+        if (!NavCourt.Visible)
+            return;
+
+        CourtList.AddChild(SWConsoleStyle.Section("ВЕРХОВНЫЙ СУД"));
+        CourtList.AddChild(MakeWrap(state.CourtStatusLabel));
+        CourtList.AddChild(new Control { MinHeight = 6 });
+
+        if (state.CourtPendingLabel.Length > 0)
+        {
+            CourtList.AddChild(MakeWrap(state.CourtPendingLabel, SWConsoleStyle.Warn));
+            CourtList.AddChild(new Control { MinHeight = 6 });
+        }
+
+        if (state.MustPromoteChief)
+            CourtList.AddChild(MakeWrap("Пост Верховного Судьи вакантен — вы обязаны в кратчайший срок предложить Сенату одного из судей на повышение.", SWConsoleStyle.Bad));
+
+        if (!state.CanNominateJudges)
+        {
+            if (state.CourtPendingLabel.Length == 0)
+                CourtList.AddChild(MakeWrap("Выдвижение сейчас недоступно (все места заняты или ещё не 10:00 первого дня).", SWConsoleStyle.TextDim));
+            return;
+        }
+
+        if (state.MustPromoteChief)
+        {
+            CourtList.AddChild(new Control { MinHeight = 6 });
+            CourtList.AddChild(SWConsoleStyle.Text("Кандидат на пост Верховного Судьи (из действующих судей):", SWConsoleStyle.TextBright, SWConsoleStyle.Mono));
+            var chiefOption = new OptionButton { HorizontalExpand = true };
+            for (var i = 0; i < state.CourtChiefCandidates.Count; i++)
+            {
+                chiefOption.AddItem(state.CourtChiefCandidates[i], i);
+                if (state.CourtChiefCandidates[i] == _courtChiefCandidate)
+                    chiefOption.SelectId(i);
+            }
+
+            chiefOption.OnItemSelected += args =>
+            {
+                chiefOption.SelectId(args.Id);
+                _courtChiefCandidate = state.CourtChiefCandidates[args.Id];
+            };
+            CourtList.AddChild(chiefOption);
+
+            var promote = SWConsoleStyle.Action("Выдвинуть Верховным Судьёй", SWConsoleStyle.Accent);
+            promote.Margin = new Thickness(0, 6, 0, 0);
+            promote.OnPressed += _ =>
+            {
+                var name = _courtChiefCandidate ?? (state.CourtChiefCandidates.Count > 0 ? state.CourtChiefCandidates[0] : null);
+                if (name != null)
+                    _owner.NominateJudge(name, true);
+            };
+            CourtList.AddChild(promote);
+            return;
+        }
+
+        CourtList.AddChild(new Control { MinHeight = 6 });
+        CourtList.AddChild(SWConsoleStyle.Text("Кандидат в Республиканские Судьи:", SWConsoleStyle.TextBright, SWConsoleStyle.Mono));
+        var option = new OptionButton { HorizontalExpand = true };
+        for (var i = 0; i < state.CourtCandidates.Count; i++)
+        {
+            option.AddItem(state.CourtCandidates[i], i);
+            if (state.CourtCandidates[i] == _courtCandidate)
+                option.SelectId(i);
+        }
+
+        option.OnItemSelected += args =>
+        {
+            option.SelectId(args.Id);
+            _courtCandidate = state.CourtCandidates[args.Id];
+        };
+        CourtList.AddChild(option);
+
+        var nominate = SWConsoleStyle.Action("Выдвинуть судьёй", SWConsoleStyle.Accent);
+        nominate.Margin = new Thickness(0, 6, 0, 0);
+        nominate.OnPressed += _ =>
+        {
+            var name = _courtCandidate ?? (state.CourtCandidates.Count > 0 ? state.CourtCandidates[0] : null);
+            if (name != null)
+                _owner.NominateJudge(name, false);
+        };
+        CourtList.AddChild(nominate);
+        CourtList.AddChild(MakeWrap("Кандидат должен согласиться, затем Сенат утверждает назначение голосованием (50%+1). Назначенный теряет все текущие посты.", SWConsoleStyle.TextDim));
     }
 
     private static readonly (int Action, string Label)[] CommandActions =
@@ -1520,7 +1638,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         _navGroups = new (Label, Button[])[]
         {
             (GroupInfo, new[] { NavOffice, NavSignature, NavPowers, NavDecree, NavSummary, NavCrises }),
-            (GroupOrg, new[] { NavRoster, NavAgenda, NavSchedule }),
+            (GroupOrg, new[] { NavRoster, NavAgenda, NavSchedule, NavCourt }),
             (GroupWork, new[] { NavDraft, NavDilemmas, NavParties, NavAmbitions, NavBudget, NavAnnounce }),
         };
 

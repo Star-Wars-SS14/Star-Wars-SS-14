@@ -22,6 +22,7 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateFloorSystem _floor = default!;
     [Dependency] private readonly SWSenatePartySystem _party = default!;
+    [Dependency] private readonly SWSenateCourtSystem _court = default!;
 
     private const float UpdateInterval = 3f;
     private float _accumulator;
@@ -41,6 +42,17 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenatePartyWhipMessage>(OnPartyWhip);
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateNominateMessage>(OnNominate);
         SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWSenateElectionVoteMessage>(OnElectionVote);
+        SubscribeLocalEvent<SWSenateVoteConsoleComponent, SWCourtConfirmVoteMessage>(OnCourtConfirmVote);
+    }
+
+    private void OnCourtConfirmVote(Entity<SWSenateVoteConsoleComponent> ent, ref SWCourtConfirmVoteMessage args)
+    {
+        var sector = GetVoterSector(ent);
+        if (sector == null)
+            return;
+
+        _court.CastConfirmationVote(sector, args.Approve);
+        UpdateUi(ent);
     }
 
     private void OnNominate(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateNominateMessage args)
@@ -272,6 +284,17 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
         };
 
         var voterSector = GetVoterSector(ent);
+
+        if (_court.HasConfirmationVote)
+        {
+            state.HasJudgeConfirmation = true;
+            state.JudgeConfirmationLabel = _court.ConfirmationLabel();
+            var (confirmYes, confirmNo) = _court.ConfirmationTally();
+            state.JudgeConfirmYes = confirmYes;
+            state.JudgeConfirmNo = confirmNo;
+            state.CanJudgeConfirmVote = voterSector != null;
+            state.MyJudgeConfirmVote = voterSector != null ? _court.ConfirmationVoteOf(voterSector) : 0;
+        }
 
         if (ActsAsSpeaker(ent))
         {

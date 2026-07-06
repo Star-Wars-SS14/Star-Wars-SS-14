@@ -167,3 +167,6 @@ loadout-group-sw-usher-jumpsuit = Форма пристава
 loadout-group-sw-guardhead-jumpsuit = Форма главы Гвардии
 loadout-group-sw-guardofficer-jumpsuit = Форма Гвардии
 loadout-group-sw-doctor-jumpsuit = Форма врача
+loadout-group-sw-judge-jumpsuit = Костюм судьи
+loadout-group-sw-prosecutor-jumpsuit = Костюм обвинителя
+loadout-group-sw-defender-jumpsuit = Костюм защитника

@@ -1,0 +1,161 @@
+- type: playTimeTracker
+  id: Job_ChiefJustice
+
+- type: playTimeTracker
+  id: Job_RepublicJudge
+
+- type: playTimeTracker
+  id: Job_Prosecutor
+
+- type: playTimeTracker
+  id: Job_Defender
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconChiefJustice
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: RepublicCapitan
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconRepublicJudge
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: RepublicLieutenant
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconProsecutor
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: RepublicSoldier
+
+- type: jobIcon
+  parent: JobIcon
+  id: JobIconDefender
+  icon:
+    sprite: /Textures/_SW/Interface/Misc/job_icons.rsi
+    state: RepublicRecruit
+
+- type: accessLevel
+  id: SWSenateCourt
+  name: Верховный Суд
+
+- type: department
+  id: SWCourt
+  name: Верховный Суд
+  description: "Судебная власть Республики: Верховный Суд, обвинение и защита."
+  color: "#B8860B"
+  roles:
+  - SWChiefJustice
+  - SWRepublicJudge
+  - SWProsecutor
+  - SWDefender
+  weight: 1985
+
+- type: job
+  id: SWChiefJustice
+  name: Верховный Судья
+  playTimeTracker: Job_ChiefJustice
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0
+  startingGear: ChiefJusticeGear
+  icon: "JobIconChiefJustice"
+  supervisors: job-supervisors-empire
+  access:
+  - SWSenate
+  - SWSenateCourt
+
+- type: job
+  id: SWRepublicJudge
+  name: Республиканский Судья
+  playTimeTracker: Job_RepublicJudge
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0
+  startingGear: RepublicJudgeGear
+  icon: "JobIconRepublicJudge"
+  supervisors: job-supervisors-empire
+  access:
+  - SWSenate
+  - SWSenateCourt
+
+- type: job
+  id: SWProsecutor
+  name: Обвинитель Республики
+  playTimeTracker: Job_Prosecutor
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0
+  startingGear: ProsecutorGear
+  icon: "JobIconProsecutor"
+  supervisors: job-supervisors-empire
+  access:
+  - SWSenate
+  - SWSenateCourt
+
+- type: job
+  id: SWDefender
+  name: Защитник Республики
+  playTimeTracker: Job_Defender
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0
+  startingGear: DefenderGear
+  icon: "JobIconDefender"
+  supervisors: job-supervisors-empire
+  access:
+  - SWSenate
+  - SWSenateCourt
+
+- type: startingGear
+  id: ChiefJusticeGear
+  equipment:
+    id: SWChiefJusticePDA
+    ears: SWClothingHeadsetCourtChief
+    jumpsuit: ClothingUniformJumpsuitLawyerGood
+    outerClothing: ClothingOuterRobesJudge
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    back: ClothingBackpack
+    belt: ClothingBeltUtility
+    pocket1: FlashlightLantern
+
+- type: startingGear
+  id: RepublicJudgeGear
+  equipment:
+    id: SWRepublicJudgePDA
+    ears: SWClothingHeadsetCourt
+    jumpsuit: ClothingUniformJumpsuitLawyerBlack
+    outerClothing: ClothingOuterRobesJudge
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    back: ClothingBackpack
+    belt: ClothingBeltUtility
+    pocket1: FlashlightLantern
+
+- type: startingGear
+  id: ProsecutorGear
+  equipment:
+    id: SWProsecutorPDA
+    ears: SWClothingHeadsetCourt
+    jumpsuit: ClothingUniformJumpsuitLawyerRed
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    back: ClothingBackpack
+    belt: ClothingBeltUtility
+    pocket1: FlashlightLantern
+
+- type: startingGear
+  id: DefenderGear
+  equipment:
+    id: SWDefenderPDA
+    ears: SWClothingHeadsetCourt
+    jumpsuit: ClothingUniformJumpsuitLawyerBlue
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    back: ClothingBackpack
+    belt: ClothingBeltUtility
+    pocket1: FlashlightLantern

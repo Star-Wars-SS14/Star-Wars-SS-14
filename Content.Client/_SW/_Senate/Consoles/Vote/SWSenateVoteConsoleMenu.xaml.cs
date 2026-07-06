@@ -123,6 +123,34 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
             SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
         CurrentContent.AddChild(new Control { MinHeight = 6 });
 
+        if (state.HasJudgeConfirmation)
+        {
+            var confirmCard = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
+            confirmCard.Margin = new Thickness(0, 0, 0, 8);
+            var confirmBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+            confirmBox.AddChild(SWConsoleStyle.Text(state.JudgeConfirmationLabel, SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
+            confirmBox.AddChild(SWConsoleStyle.Text(
+                $"ЗА {state.JudgeConfirmYes}   ·   ПРОТИВ {state.JudgeConfirmNo}"
+                + (state.MyJudgeConfirmVote != 0 ? $"   ·   ваш голос: {(state.MyJudgeConfirmVote == 1 ? "за" : "против")}" : string.Empty),
+                SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+            if (state.CanJudgeConfirmVote)
+            {
+                var confirmButtons = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
+                var yes = SWConsoleStyle.Action("Утвердить", SWConsoleStyle.Good);
+                yes.OnPressed += _ => _owner.CourtConfirmVote(true);
+                confirmButtons.AddChild(yes);
+                var no = SWConsoleStyle.Action("Отклонить", SWConsoleStyle.Bad);
+                no.Margin = new Thickness(6, 0, 0, 0);
+                no.OnPressed += _ => _owner.CourtConfirmVote(false);
+                confirmButtons.AddChild(no);
+                confirmBox.AddChild(confirmButtons);
+            }
+
+            confirmCard.AddChild(confirmBox);
+            CurrentContent.AddChild(confirmCard);
+        }
+
         if (!state.HasCurrent)
         {
             CurrentContent.AddChild(SWConsoleStyle.Text("Нет активного голосования.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));

@@ -935,6 +935,8 @@ public sealed class SWSenateStateSystem : EntitySystem
                 continue;
             if (bill.IsElection)
                 continue;
+            if (bill.Repealed)
+                continue;
 
             laws.Add(new SWBillEntry
             {
@@ -1346,6 +1348,39 @@ public sealed class SWSenateStateSystem : EntitySystem
             var value = _republicSubStats.TryGetValue(subId, out var current) ? current : sub.Default;
             _republicSubStats[subId] = Math.Clamp(value + delta, sub.Min, sub.Max);
         }
+    }
+
+    public bool RepealLaw(int billId)
+    {
+        var bill = _bills.FirstOrDefault(b => b.Id == billId);
+        if (bill is not { Stage: SWBillStage.Passed, SpecialMotionType: null, IsElection: false } || bill.Repealed)
+            return false;
+
+        bill.Repealed = true;
+        foreach (var (subId, delta) in bill.Effects)
+        {
+            if (!_proto.TryIndex<SWStatPrototype>(subId, out var sub))
+                continue;
+
+            var value = _republicSubStats.TryGetValue(subId, out var current) ? current : sub.Default;
+            _republicSubStats[subId] = Math.Clamp(value - delta, sub.Min, sub.Max);
+        }
+
+        return true;
+    }
+
+    public string? LawName(int billId) => _bills.FirstOrDefault(b => b.Id == billId)?.Name;
+
+    public List<SWCourtLawOption> BuildRepealableLaws()
+    {
+        var list = new List<SWCourtLawOption>();
+        foreach (var bill in _bills)
+        {
+            if (bill is { Stage: SWBillStage.Passed, SpecialMotionType: null, IsElection: false, Repealed: false })
+                list.Add(new SWCourtLawOption { Id = bill.Id, Name = bill.Name });
+        }
+
+        return list;
     }
 
     public override void Update(float frameTime)

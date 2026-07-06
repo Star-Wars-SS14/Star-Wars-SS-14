@@ -69,3 +69,39 @@
   components:
   - type: Loadout
     prototypes: [SenateDoctorGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidChiefJustice
+  name: Верховный Судья
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [ChiefJusticeGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidRepublicJudge
+  name: Республиканский Судья
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [RepublicJudgeGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidProsecutor
+  name: Обвинитель Республики
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [ProsecutorGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidDefender
+  name: Защитник Республики
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [DefenderGear]

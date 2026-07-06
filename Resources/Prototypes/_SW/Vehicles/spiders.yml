@@ -40,7 +40,8 @@
         behaviors:
           - !type:DoActsBehavior
             acts: [ "Destruction" ]
-  # - type: Pullable
+  - type: Pullable
+  - type: Rotatable
   - type: Clickable
   - type: InteractionOutline
   - type: SWVehicle

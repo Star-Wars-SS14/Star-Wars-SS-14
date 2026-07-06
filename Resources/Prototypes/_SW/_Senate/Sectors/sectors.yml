@@ -1,7 +1,7 @@
 - type: swSector
   id: SWSectorCoruscant
   name: Корускант
-  description: Столица Республики, сердце галактической политики.
+  description: Столичный округ Республики. Сердце галактической политики, всё ещё не оправившееся от имперского разграбления.
   color: "#F1C40F"
   weight: 3
   startingStats:
@@ -15,19 +15,20 @@
 - type: swSector
   id: SWSectorTython
   name: Тайтон
-  description: Древний мир Ордена джедаев.
+  description: Миры Ордена джедаев — Тайтон, Руусан и святыни Глубокого Ядра, где Орден восстанавливает силы после разрушения храма.
   color: "#3498DB"
   startingStats:
     SWGlobalHealthcare: 60
     SWGlobalDefense: 60
     SWGlobalEducation: 70
     SWGlobalForeign: 65
-    SWGlobalSociety: 90
+    SWGlobalIndustry: 35
+    SWGlobalSociety: 85
 
 - type: swSector
   id: SWSectorAlderaan
   name: Альдераан
-  description: Мир дворянских домов, охваченный гражданской смутой.
+  description: Альдераанский макрорегион дворянских домов, охваченный гражданской смутой после ухода планеты с Сената.
   color: "#AED6F1"
   weight: 1.5
   startingStats:
@@ -41,92 +42,66 @@
   id: SWSectorCorellia
   name: Кореллия
   shipyard: true
-  description: Колыбель верфей и вольных торговцев.
+  description: Кореллианский макрорегион — Кореллия, Дуро и миры Кореллианского пути. Колыбель верфей и вольных торговцев.
   color: "#E67E22"
   weight: 2
   startingStats:
+    SWGlobalHealthcare: 50
     SWGlobalDefense: 65
     SWGlobalEconomy: 80
     SWGlobalIndustry: 85
     SWGlobalSociety: 60
 
 - type: swSector
-  id: SWSectorBrentaal
-  name: Брентаал
-  description: Торговый узел Перлемианского пути.
-  color: "#D4AC0D"
-  startingStats:
-    SWGlobalEconomy: 85
-    SWGlobalIndustry: 60
-    SWGlobalSociety: 65
-
-- type: swSector
-  id: SWSectorDenon
-  name: Денон
-  description: Плотно застроенный индустриальный мир.
-  color: "#95A5A6"
-  startingStats:
-    SWGlobalEconomy: 75
-    SWGlobalIndustry: 80
-    SWGlobalSociety: 60
-
-- type: swSector
-  id: SWSectorChandrila
-  name: Чандрила
-  description: Спокойный мир, оплот республиканских идеалов.
-  color: "#82E0AA"
-  startingStats:
-    SWGlobalHealthcare: 75
-    SWGlobalEducation: 65
-    SWGlobalSociety: 85
-
-- type: swSector
-  id: SWSectorCommenor
-  name: Коммендор
-  description: Крупный торговый перекрёсток у Ядра.
-  color: "#F5B041"
-  startingStats:
-    SWGlobalEconomy: 80
-    SWGlobalIndustry: 55
-    SWGlobalSociety: 65
-
-- type: swSector
-  id: SWSectorCorulag
-  name: Корулаг
-  description: Мир Ядра с престижными академиями.
-  color: "#5DADE2"
-  startingStats:
-    SWGlobalEducation: 80
-    SWGlobalEconomy: 70
-    SWGlobalSociety: 75
-
-- type: swSector
-  id: SWSectorRalltiir
-  name: Ралльтиир
-  description: Финансовый центр Ядра.
-  color: "#F4D03F"
-  startingStats:
-    SWGlobalEconomy: 85
-    SWGlobalSociety: 60
-
-- type: swSector
   id: SWSectorKuat
   name: Куат
   shipyard: true
-  description: Величайшие верфи Республики.
+  description: Куатский промышленный пояс — Куат, Рендили и орбитальные доки. Величайшие верфи Республики.
   color: "#BDC3C7"
   weight: 2.5
   startingStats:
     SWGlobalDefense: 70
-    SWGlobalEconomy: 80
+    SWGlobalEconomy: 75
     SWGlobalIndustry: 95
     SWGlobalSociety: 70
+
+- type: swSector
+  id: SWSectorBrentaal
+  name: Брентаал
+  description: Перлемианский коридор — Брентаал, Корулаг и торговые узлы великого пути. Биржи и престижные академии.
+  color: "#D4AC0D"
+  startingStats:
+    SWGlobalEducation: 75
+    SWGlobalEconomy: 80
+    SWGlobalIndustry: 60
+    SWGlobalSociety: 70
+
+- type: swSector
+  id: SWSectorChandrila
+  name: Чандрила
+  description: Чандрила, Ралльтиир и аграрно-финансовые миры Ядра — оплот республиканских идеалов и банковских домов.
+  color: "#82E0AA"
+  startingStats:
+    SWGlobalHealthcare: 70
+    SWGlobalEducation: 65
+    SWGlobalEconomy: 80
+    SWGlobalSociety: 75
+
+- type: swSector
+  id: SWSectorDenon
+  name: Денон
+  description: Денон, Коммендор и урбанизированные перекрёстки на стыке Ядра и Колоний.
+  color: "#95A5A6"
+  startingStats:
+    SWGlobalEconomy: 80
+    SWGlobalIndustry: 70
+    SWGlobalSociety: 60
 
 - type: swSector
   id: SWSectorFondor
   name: Фондор
   shipyard: true
-  description: Орбитальные доки и тяжёлая промышленность.
+  description: Фондорский док-регион — орбитальные верфи и тяжёлая промышленность Колоний.
   color: "#A6ACAF"
   startingStats:
     SWGlobalDefense: 65
@@ -134,60 +109,32 @@
     SWGlobalIndustry: 90
 
 - type: swSector
-  id: SWSectorDuro
-  name: Дуро
-  description: Орбитальные города над опустошённой планетой.
-  color: "#7F8C8D"
-  startingStats:
-    SWGlobalEconomy: 70
-    SWGlobalIndustry: 85
-    SWGlobalHealthcare: 45
-
-- type: swSector
-  id: SWSectorRendili
-  name: Рендили
-  shipyard: true
-  description: Старинный мир кораблестроителей.
-  color: "#909497"
-  startingStats:
-    SWGlobalDefense: 60
-    SWGlobalIndustry: 80
-    SWGlobalEconomy: 65
-
-- type: swSector
   id: SWSectorAnaxes
   name: Анаксес
-  description: Военно-морская крепость Республики.
+  description: Военный округ Ядра — Анаксес, Карида и цитадели республиканского флота. Академии и арсеналы.
   color: "#566573"
+  weight: 1.5
   startingStats:
-    SWGlobalDefense: 85
+    SWGlobalDefense: 90
+    SWGlobalEducation: 75
     SWGlobalSecurity: 70
     SWGlobalSociety: 75
 
 - type: swSector
-  id: SWSectorCarida
-  name: Карида
-  description: Главная военная академия Республики.
-  color: "#7B241C"
-  weight: 1.5
-  startingStats:
-    SWGlobalDefense: 90
-    SWGlobalEducation: 80
-    SWGlobalSociety: 80
-
-- type: swSector
   id: SWSectorSullust
   name: Сулласт
-  description: Вулканический мир тяжёлой промышленности.
+  description: Сулласт, Контруум и промышленные миры снабжения. Вулканические цеха и тыловые арсеналы.
   color: "#6E2C00"
   startingStats:
-    SWGlobalIndustry: 85
-    SWGlobalEconomy: 65
+    SWGlobalDefense: 55
+    SWGlobalEconomy: 60
+    SWGlobalIndustry: 80
+    SWGlobalSociety: 55
 
 - type: swSector
   id: SWSectorEriadu
   name: Эриаду
-  description: Промышленная столица дальнего фронтира.
+  description: Сесвеннский макрорегион — Эриаду и промышленный фронтир Внешнего кольца.
   color: "#85929E"
   startingStats:
     SWGlobalIndustry: 70
@@ -196,24 +143,16 @@
     SWGlobalSociety: 50
 
 - type: swSector
-  id: SWSectorContruum
-  name: Контруум
-  description: Стратегический узел снабжения.
-  color: "#48C9B0"
-  startingStats:
-    SWGlobalDefense: 55
-    SWGlobalIndustry: 50
-    SWGlobalSociety: 60
-
-- type: swSector
   id: SWSectorTelos
   name: Телос
-  description: Мир, восстановленный после опустошения.
+  description: Регион реставраций — Телос и Таврис, миры, поднимаемые из руин республиканскими программами восстановления.
   color: "#76D7C4"
   startingStats:
-    SWGlobalHealthcare: 70
-    SWGlobalSociety: 65
-    SWGlobalIndustry: 45
+    SWGlobalHealthcare: 50
+    SWGlobalEconomy: 40
+    SWGlobalIndustry: 40
+    SWGlobalSecurity: 45
+    SWGlobalSociety: 55
 
 - type: swSector
   id: SWSectorOrdMantell
@@ -229,11 +168,12 @@
 - type: swSector
   id: SWSectorDantooine
   name: Дантуин
-  description: Тихий аграрный мир Внешнего кольца.
+  description: Аграрный фронтир — Дантуин, Бестин и сельские миры Внешнего кольца.
   color: "#7DCEA0"
   startingStats:
-    SWGlobalHealthcare: 45
-    SWGlobalIndustry: 30
+    SWGlobalHealthcare: 50
+    SWGlobalEconomy: 50
+    SWGlobalIndustry: 35
     SWGlobalSociety: 55
 
 - type: swSector
@@ -249,17 +189,6 @@
     SWGlobalSociety: 70
 
 - type: swSector
-  id: SWSectorTaris
-  name: Таврис
-  description: Руины разрушенного мира под медленным восстановлением.
-  color: "#566573"
-  startingStats:
-    SWGlobalHealthcare: 25
-    SWGlobalEconomy: 30
-    SWGlobalIndustry: 35
-    SWGlobalSecurity: 35
-
-- type: swSector
   id: SWSectorBothawui
   name: Ботавуи
   description: Центр шпионской сети ботанов.
@@ -270,42 +199,15 @@
     SWGlobalForeign: 60
 
 - type: swSector
-  id: SWSectorBelsavis
-  name: Бельсавис
-  description: Мир-тюрьма с древними секретами.
-  color: "#4A235A"
-  startingStats:
-    SWGlobalSecurity: 80
-    SWGlobalSociety: 45
-
-- type: swSector
   id: SWSectorKashyyyk
   name: Кашиик
-  description: Родина вуки, живущая под постоянной угрозой.
-  color: "#6E2C00"
+  description: Родина вуки, живущая под постоянной угрозой работорговцев.
+  color: "#7E5109"
   startingStats:
     SWGlobalDefense: 50
     SWGlobalIndustry: 65
     SWGlobalForeign: 45
     SWGlobalSociety: 60
-
-- type: swSector
-  id: SWSectorRuusan
-  name: Руусан
-  description: Удалённый мир со скромным населением.
-  color: "#A2D9CE"
-  startingStats:
-    SWGlobalIndustry: 35
-    SWGlobalSociety: 60
-
-- type: swSector
-  id: SWSectorBestine
-  name: Бестин
-  description: Спокойный мир средней руки.
-  color: "#73C6B6"
-  startingStats:
-    SWGlobalEconomy: 55
-    SWGlobalSociety: 55
 
 - type: swSector
   id: SWSectorIthor
@@ -317,3 +219,12 @@
     SWGlobalForeign: 65
     SWGlobalIndustry: 35
     SWGlobalSociety: 70
+
+- type: swSector
+  id: SWSectorBelsavis
+  name: Бельсавис
+  description: Мир-тюрьма с древними секретами.
+  color: "#4A235A"
+  startingStats:
+    SWGlobalSecurity: 80
+    SWGlobalSociety: 45

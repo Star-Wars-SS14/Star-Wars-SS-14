@@ -29,6 +29,18 @@
     },
     {
       "name": "doctor"
+    },
+    {
+      "name": "chief_justice"
+    },
+    {
+      "name": "judge"
+    },
+    {
+      "name": "prosecutor"
+    },
+    {
+      "name": "defender"
     }
   ]
 }

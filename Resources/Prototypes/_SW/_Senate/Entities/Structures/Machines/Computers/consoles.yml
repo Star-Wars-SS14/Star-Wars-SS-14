@@ -334,6 +334,13 @@
     interfaces:
       enum.SWJudicialWorkConsoleUiKey.Key:
         type: SWJudicialWorkConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicJudicialWorkComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: judicial_work_monitor
   - type: ItemSlots
     slots:
       senate_id_slot:
@@ -361,6 +368,13 @@
     interfaces:
       enum.SWCourtInfoConsoleUiKey.Key:
         type: SWCourtInfoConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicCourtInfoComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: court_info_monitor
   - type: ApcPowerReceiver
     needsPower: false
   - type: Godmode

@@ -121,7 +121,7 @@
   - type: Sprite
     sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
     layers:
-    - state: speaker
+    - state: chief_justice
   - type: PresetIdCard
     job: SWChiefJustice
 
@@ -136,7 +136,7 @@
   - type: Sprite
     sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
     layers:
-    - state: minister
+    - state: judge
   - type: PresetIdCard
     job: SWRepublicJudge
 
@@ -151,7 +151,7 @@
   - type: Sprite
     sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
     layers:
-    - state: usher
+    - state: prosecutor
   - type: PresetIdCard
     job: SWProsecutor
 
@@ -166,6 +166,6 @@
   - type: Sprite
     sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
     layers:
-    - state: usher
+    - state: defender
   - type: PresetIdCard
     job: SWDefender

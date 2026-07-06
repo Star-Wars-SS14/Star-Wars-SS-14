@@ -58,6 +58,18 @@
       "name": "pda-doctor"
     },
     {
+      "name": "pda-chief-justice"
+    },
+    {
+      "name": "pda-judge"
+    },
+    {
+      "name": "pda-prosecutor"
+    },
+    {
+      "name": "pda-defender"
+    },
+    {
       "name": "equipped-IDCARD",
       "directions": 4
     }

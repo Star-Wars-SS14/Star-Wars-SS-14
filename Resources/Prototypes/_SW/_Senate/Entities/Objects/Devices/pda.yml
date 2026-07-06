@@ -255,37 +255,129 @@
     borderColor: "#16A085"
 
 - type: entity
-  parent: SWMinisterPDA
+  parent: BasePDA
   id: SWChiefJusticePDA
   name: КПК Верховного Судьи
   description: Персональный датапад председателя Верховного Суда.
   components:
   - type: Pda
     id: SWChiefJusticeIDCard
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-chief-justice
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: "unshaded"
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: "unshaded"
+      visible: false
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-chief-justice
+  - type: Icon
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    state: pda-chief-justice
+  - type: PdaBorderColor
+    borderColor: "#D6B45A"
 
 - type: entity
-  parent: SWMinisterPDA
+  parent: BasePDA
   id: SWRepublicJudgePDA
   name: КПК Республиканского Судьи
   description: Персональный датапад члена Верховного Суда.
   components:
   - type: Pda
     id: SWRepublicJudgeIDCard
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-judge
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: "unshaded"
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: "unshaded"
+      visible: false
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-judge
+  - type: Icon
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    state: pda-judge
+  - type: PdaBorderColor
+    borderColor: "#647B8E"
 
 - type: entity
-  parent: SWMinisterPDA
+  parent: BasePDA
   id: SWProsecutorPDA
   name: КПК Обвинителя
   description: Персональный датапад стороны обвинения.
   components:
   - type: Pda
     id: SWProsecutorIDCard
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-prosecutor
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: "unshaded"
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: "unshaded"
+      visible: false
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-prosecutor
+  - type: Icon
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    state: pda-prosecutor
+  - type: PdaBorderColor
+    borderColor: "#D14D55"
 
 - type: entity
-  parent: SWMinisterPDA
+  parent: BasePDA
   id: SWDefenderPDA
   name: КПК Защитника
   description: Персональный датапад стороны защиты.
   components:
   - type: Pda
     id: SWDefenderIDCard
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-defender
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: "unshaded"
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: "unshaded"
+      visible: false
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType:
+        !type:String
+        pda-defender
+  - type: Icon
+    sprite: _SW/_Senate/Objects/Devices/pda.rsi
+    state: pda-defender
+  - type: PdaBorderColor
+    borderColor: "#35B8C2"

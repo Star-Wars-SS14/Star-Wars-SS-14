@@ -248,15 +248,6 @@ public sealed class SWDroidCommandSystem : EntitySystem
 
         if (args.ForcedTarget)
             return;
-
-        if (!TryComp<HTNComponent>(ent.Owner, out var htn) ||
-            !htn.Blackboard.TryGetValue<SWDroidOrderType>(NPCBlackboard.CurrentOrders, out var order, EntityManager))
-        {
-            return;
-        }
-
-        if (order == SWDroidOrderType.Stay)
-            args.Cancel();
     }
 
     private void ReleaseDroidCommand(EntityUid uid, SWDroidCommandableComponent component, bool dirty)

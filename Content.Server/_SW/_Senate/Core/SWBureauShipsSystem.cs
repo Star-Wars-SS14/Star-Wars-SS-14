@@ -474,7 +474,7 @@ public sealed class SWBureauShipsSystem : EntitySystem
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
             if (_opCooldowns.TryGetValue(i, out var ready) && _time.AbsoluteHour < ready)
-                entry.Status = $"готовность через {ready - _time.CurrentHour} ч";
+                entry.Status = $"готовность через {ready - _time.AbsoluteHour} ч";
             else if (cost > budget)
                 entry.Status = "недостаточно бюджета";
             else

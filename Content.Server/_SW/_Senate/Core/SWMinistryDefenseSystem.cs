@@ -618,7 +618,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
             };
 
             if (_cooldowns.TryGetValue(op.ID, out var ready) && _time.AbsoluteHour < ready)
-                entry.StatusLabel = $"готовность через {ready - _time.CurrentHour} ч";
+                entry.StatusLabel = $"готовность через {ready - _time.AbsoluteHour} ч";
             else if (_stance < op.RequireStance)
                 entry.StatusLabel = $"нужна готовность: {StanceName(op.RequireStance)}";
             else if (op.RequireBorderFleet && !borderFleet)

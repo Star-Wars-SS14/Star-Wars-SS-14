@@ -886,7 +886,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
             };
 
             if (_cooldowns.TryGetValue(op.ID, out var ready) && _time.AbsoluteHour < ready)
-                entry.StatusLabel = $"готовность через {ready - _time.CurrentHour} ч";
+                entry.StatusLabel = $"готовность через {ready - _time.AbsoluteHour} ч";
             else if (_posture < op.RequirePosture)
                 entry.StatusLabel = $"нужен режим: {PostureName(op.RequirePosture)}";
             else if (op.Duration > 0 && !slotsFree)

@@ -251,7 +251,7 @@ public sealed class SWDeptGuardSystem : EntitySystem
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
             if (_opCooldowns.TryGetValue(i, out var ready) && _time.AbsoluteHour < ready)
-                entry.Status = $"готовность через {ready - _time.CurrentHour} ч";
+                entry.Status = $"готовность через {ready - _time.AbsoluteHour} ч";
             else if (i == 1 && _totalSquads >= MaxSquads)
                 entry.Status = "штат укомплектован";
             else if (cost > budget)

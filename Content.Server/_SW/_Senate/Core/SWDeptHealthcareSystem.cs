@@ -297,7 +297,7 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
             if (_opCooldowns.TryGetValue(i, out var ready) && _time.AbsoluteHour < ready)
-                entry.Status = $"готовность через {ready - _time.CurrentHour} ч";
+                entry.Status = $"готовность через {ready - _time.AbsoluteHour} ч";
             else if (i == 2 && !_health.VaccineReady)
                 entry.Status = "вакцина не готова";
             else if (cost > budget)

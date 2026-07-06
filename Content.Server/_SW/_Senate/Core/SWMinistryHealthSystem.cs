@@ -394,7 +394,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
     {
         foreach (var (sectorId, ready) in _construction.ToList())
         {
-            if (_time.CurrentHour < ready)
+            if (_time.AbsoluteHour < ready)
                 continue;
 
             _hospitals[sectorId] = Math.Min(HospitalMaxLevel, (_hospitals.TryGetValue(sectorId, out var l) ? l : 0) + 1);
@@ -755,7 +755,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
                 Quarantined = _quarantine.Contains(sectorId),
                 HospitalLevel = level,
                 Building = building,
-                BuildLeft = building ? Math.Max(0, ready - _time.CurrentHour) : 0,
+                BuildLeft = building ? Math.Max(0, ready - _time.AbsoluteHour) : 0,
                 CanBuild = !building && level < HospitalMaxLevel && budget >= BuildCost(level),
                 BuildCost = level < HospitalMaxLevel ? BuildCost(level) : 0,
                 CanAid = aidReady && budget >= AidCost,

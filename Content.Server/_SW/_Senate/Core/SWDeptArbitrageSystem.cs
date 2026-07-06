@@ -252,7 +252,7 @@ public sealed class SWDeptArbitrageSystem : EntitySystem
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
             if (_opCooldowns.TryGetValue(i, out var ready) && _time.AbsoluteHour < ready)
-                entry.Status = $"готовность через {ready - _time.CurrentHour} ч";
+                entry.Status = $"готовность через {ready - _time.AbsoluteHour} ч";
             else if (i == 4 && _cases.Count >= CaseCap)
                 entry.Status = "все следователи заняты";
             else if (cost > budget)

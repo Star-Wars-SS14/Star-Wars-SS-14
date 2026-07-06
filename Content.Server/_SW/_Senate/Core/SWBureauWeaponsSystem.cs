@@ -409,7 +409,7 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
                 },
                 SeizeCost = SeizeCost,
                 CanSeize = !onCooldown && budget >= SeizeCost,
-                SeizeLabel = onCooldown ? $"готовность через {ready - _time.CurrentHour} ч"
+                SeizeLabel = onCooldown ? $"готовность через {ready - _time.AbsoluteHour} ч"
                     : joint ? "Изъятие (совместно с ВБ)" : "Изъятие",
             });
         }
@@ -507,7 +507,7 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
             if (_opCooldowns.TryGetValue(i, out var ready) && _time.AbsoluteHour < ready)
-                entry.Status = $"готовность через {ready - _time.CurrentHour} ч";
+                entry.Status = $"готовность через {ready - _time.AbsoluteHour} ч";
             else if (i == 2 && !_ministry.IsClaimed(SWMinistryInternalSecuritySystem.SecurityMinistryId))
                 entry.Status = "требуется активное МВБ";
             else if (cost > budget)

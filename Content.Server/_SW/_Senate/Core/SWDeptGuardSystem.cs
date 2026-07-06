@@ -334,8 +334,6 @@ public sealed class SWDeptGuardSystem : EntitySystem
         if (_time.Day != _day)
         {
             _day = _time.Day;
-            _writs.Clear();
-            _running.Clear();
             _opCooldowns.Clear();
             _writTimer = 0f;
         }

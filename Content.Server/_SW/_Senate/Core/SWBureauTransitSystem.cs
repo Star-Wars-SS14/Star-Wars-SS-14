@@ -853,7 +853,6 @@ public sealed class SWBureauTransitSystem : EntitySystem
         if (_time.Day != _day)
         {
             _day = _time.Day;
-            _events.Clear();
             _opCooldowns.Clear();
             _dilIndex = -1;
             _dilTimer = DilInterval - 0.75f;

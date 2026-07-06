@@ -35,6 +35,11 @@ public sealed class SWDepartmentWorkConsoleBoundUserInterface : BoundUserInterfa
         SendMessage(new SWBureauResignMessage());
     }
 
+    public void AssumeParent()
+    {
+        SendMessage(new SWMinistryAssumeParentMessage());
+    }
+
     public void LaunchOp(int op)
     {
         SendMessage(new SWShipsLaunchOpMessage(op));

@@ -159,9 +159,18 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
 
         StatusStrip.AddChild(new Control { HorizontalExpand = true });
 
+        if (state.CanAssumeParent)
+        {
+            var assume = SWConsoleStyle.Action("Принять министерство", SWConsoleStyle.Warn);
+            assume.OnPressed += _ => _owner.AssumeParent();
+            StatusStrip.AddChild(assume);
+        }
+
         if (state.CanResign)
         {
             var resign = SWConsoleStyle.Action("Сложить полномочия", SWConsoleStyle.Bad);
+            if (state.CanAssumeParent)
+                resign.Margin = new Thickness(6, 0, 0, 0);
             resign.OnPressed += _ => _owner.Resign();
             StatusStrip.AddChild(resign);
         }

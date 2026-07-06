@@ -73,6 +73,12 @@ public sealed class SWSenateTimeSystem : EntitySystem
         _gameMinutes = Math.Clamp((hour - StartHour) * 60 + minute, 0, DayLengthMinutes);
     }
 
+    public void SetDateTime(int day, int hour, int minute = 0)
+    {
+        Day = Math.Max(1, day);
+        SetTime(hour, minute);
+    }
+
     public string TimeString()
     {
         if (!DayActive)

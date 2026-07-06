@@ -804,7 +804,6 @@ public sealed class SWBureauShipsSystem : EntitySystem
         if (_time.Day != _day)
         {
             _day = _time.Day;
-            _apps.Clear();
             _opCooldowns.Clear();
             _dilIndex = -1;
             _dilTimer = DilInterval - 0.75f;

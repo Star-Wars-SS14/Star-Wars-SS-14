@@ -22,19 +22,70 @@ namespace Content.Server._SW._Senate.Commands;
 // swtime - перевести игровое время на конкретный час дня (07-21).
 // Полезно перевести время к 15:00/20:00, чтобы проверить применение/провал дилемм,
 // или до окна заседания. Минута необязательна.
-// Примеры: swtime 14   |   swtime 19 45
+// Примеры: swtime 14   |   swtime 19 45   |   swtime day 3 12 30
 [AdminCommand(AdminFlags.Debug)]
 public sealed class SWTimeCommand : IConsoleCommand
 {
     public string Command => "swtime";
     public string Description => "Перевести время Сената на указанный час.";
-    public string Help => "swtime <час 7-21> [минута]";
+    public string Help => "swtime <час 7-21> [минута] | swtime day <день> <час 7-21> [минута]";
 
     public void Execute(IConsoleShell shell, string argStr, string[] args)
     {
-        if (args.Length < 1 || !int.TryParse(args[0], out var hour))
+        if (args.Length < 1)
         {
             shell.WriteError(Help);
+            return;
+        }
+
+        var time = IoCManager.Resolve<IEntityManager>().System<SWSenateTimeSystem>();
+
+        if (string.Equals(args[0], "day", StringComparison.OrdinalIgnoreCase))
+        {
+            if (args.Length < 3
+                || args.Length > 4
+                || !int.TryParse(args[1], out var explicitDay)
+                || !int.TryParse(args[2], out var explicitHour))
+            {
+                shell.WriteError(Help);
+                return;
+            }
+
+            var explicitMinute = 0;
+            if (args.Length >= 4 && !int.TryParse(args[3], out explicitMinute))
+            {
+                shell.WriteError(Help);
+                return;
+            }
+
+            time.SetDateTime(explicitDay, explicitHour, explicitMinute);
+            shell.WriteLine(time.TimeString());
+            return;
+        }
+
+        if (args.Length > 3)
+        {
+            shell.WriteError(Help);
+            return;
+        }
+
+        if (!int.TryParse(args[0], out var first))
+        {
+            shell.WriteError(Help);
+            return;
+        }
+
+        if (args.Length >= 3)
+        {
+            if (!int.TryParse(args[1], out var hourWithDay)
+                || !int.TryParse(args[2], out var minuteWithDay))
+            {
+                shell.WriteError(Help);
+                return;
+            }
+
+            time.SetDateTime(first, hourWithDay, minuteWithDay);
+            shell.WriteLine(time.TimeString());
             return;
         }
 
@@ -45,8 +96,17 @@ public sealed class SWTimeCommand : IConsoleCommand
             return;
         }
 
-        var time = IoCManager.Resolve<IEntityManager>().System<SWSenateTimeSystem>();
-        time.SetTime(hour, minute);
+        if (args.Length == 2
+            && first < SWSenateTimeSystem.StartHour
+            && minute >= SWSenateTimeSystem.StartHour
+            && minute <= SWSenateTimeSystem.EndHour)
+        {
+            time.SetDateTime(first, minute);
+            shell.WriteLine(time.TimeString());
+            return;
+        }
+
+        time.SetTime(first, minute);
         shell.WriteLine(time.TimeString());
     }
 }

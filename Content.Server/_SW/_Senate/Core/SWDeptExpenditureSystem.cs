@@ -81,6 +81,8 @@ public sealed class SWDeptExpenditureSystem : EntitySystem
         _tips.Clear();
         _nextTipId = 1;
         _tipTimer = 0f;
+        _tipBoostHours = 0f;
+        _auditBoost = false;
         _opCooldowns.Clear();
         _log.Clear();
         _day = -1;
@@ -391,9 +393,9 @@ public sealed class SWDeptExpenditureSystem : EntitySystem
             _day = _time.Day;
             _anomalies.Clear();
             _audited.Clear();
-            _tips.Clear();
             _opCooldowns.Clear();
             _tipTimer = 0f;
+            _tipBoostHours = 0f;
             _auditBoost = false;
         }
 

@@ -2363,6 +2363,7 @@ public sealed class SWDepartmentWorkConsoleState : BoundUserInterfaceState
     public Color DeptColor;
     public string ParentName = string.Empty;
     public bool ParentActive;
+    public bool CanAssumeParent;
     public bool CanResign;
     public int Budget;
     public int Admin;
@@ -2447,6 +2448,11 @@ public sealed class SWDeptPostMessage : BoundUserInterfaceMessage
 }
 
 [Serializable, NetSerializable]
+public sealed class SWMinistryAssumeParentMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
 public sealed class SWTransitSetSectorMessage : BoundUserInterfaceMessage
 {
     public string SectorId;
@@ -2483,6 +2489,9 @@ public sealed class SWBureauWorkConsoleState : BoundUserInterfaceState
     public string BureauTitle = string.Empty;
     public string BureauDescription = string.Empty;
     public Color BureauColor;
+    public string ParentName = string.Empty;
+    public bool ParentActive;
+    public bool CanAssumeParent;
     public bool CanResign;
     public int Budget;
     public int Admin;

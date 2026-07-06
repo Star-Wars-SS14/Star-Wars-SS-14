@@ -64,6 +64,23 @@ public sealed class SWMinistrySystem : EntitySystem
         _holderCards.Remove(ministryId);
     }
 
+    public bool TryTransfer(string fromId, string toId, EntityUid card)
+    {
+        if (fromId == toId
+            || !_holders.TryGetValue(fromId, out var holder)
+            || !_holderCards.TryGetValue(fromId, out var heldCard)
+            || heldCard != card
+            || _holders.ContainsKey(toId)
+            || IsBarred(toId, holder))
+            return false;
+
+        _holders.Remove(fromId);
+        _holderCards.Remove(fromId);
+        _holders[toId] = holder;
+        _holderCards[toId] = card;
+        return true;
+    }
+
     public void ReconcileCard(EntityUid card)
     {
         if (!TryComp<SWMinistryComponent>(card, out var comp) || comp.Ministry is not { } id)

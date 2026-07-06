@@ -37,6 +37,7 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, EntInsertedIntoContainerMessage>(OnInserted);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, EntRemovedFromContainerMessage>(OnRemoved);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWBureauResignMessage>(OnResign);
+        SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWMinistryAssumeParentMessage>(OnAssumeParent);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWBureauResolveDilemmaMessage>(OnResolveDilemma);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWShipsProcessAppMessage>(OnProcessApp);
         SubscribeLocalEvent<SWBureauWorkConsoleComponent, SWShipsSetPolicyMessage>(OnSetPolicy);
@@ -116,6 +117,32 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
         ministryComp.Ministry = null;
         _idCard.TryChangeJobTitle(card.Value, Loc.GetString("sw-minister-base"));
         _popup.PopupCursor(Loc.GetString("sw-ministry-resigned"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void OnAssumeParent(Entity<SWBureauWorkConsoleComponent> ent, ref SWMinistryAssumeParentMessage args)
+    {
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        var bureauId = GetCardBureau(ent);
+        if (card == null
+            || bureauId == null
+            || !TryComp<SWMinistryComponent>(card, out var ministryComp)
+            || !_proto.TryIndex<SWMinistryPrototype>(bureauId, out var bureauProto)
+            || bureauProto.Parent is not { } parentId
+            || !_proto.TryIndex<SWMinistryPrototype>(parentId, out var parentProto))
+            return;
+
+        if (!_ministry.TryTransfer(bureauId, parentId, card.Value))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-ministry-assume-parent-failed"), args.Actor, PopupType.Medium);
+            UpdateUi(ent);
+            return;
+        }
+
+        ministryComp.Ministry = parentId;
+        var title = Loc.GetString("sw-ministry-title-ministry", ("name", parentProto.TitleName));
+        _idCard.TryChangeJobTitle(card.Value, title);
+        _popup.PopupCursor(Loc.GetString("sw-ministry-select-success", ("title", title)), args.Actor, PopupType.Medium);
         UpdateUi(ent);
     }
 
@@ -298,6 +325,13 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
             state.AuditCost = _dilemma.AuditCost;
             state.Requests = _dilemma.BuildMinistryRequests(bureauId);
             state.Ambitions = _ambition.BuildAmbitions(bureauId);
+
+            if (proto.Parent is { } parentId && _proto.TryIndex<SWMinistryPrototype>(parentId, out var parentProto))
+            {
+                state.ParentName = parentProto.Name;
+                state.ParentActive = _ministry.IsClaimed(parentId);
+                state.CanAssumeParent = !state.ParentActive;
+            }
 
             if (_ministry.GetHolder(bureauId) is { } holder)
             {

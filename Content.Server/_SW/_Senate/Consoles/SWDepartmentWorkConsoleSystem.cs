@@ -38,6 +38,7 @@ public sealed class SWDepartmentWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWDepartmentWorkConsoleComponent, EntInsertedIntoContainerMessage>(OnInserted);
         SubscribeLocalEvent<SWDepartmentWorkConsoleComponent, EntRemovedFromContainerMessage>(OnRemoved);
         SubscribeLocalEvent<SWDepartmentWorkConsoleComponent, SWBureauResignMessage>(OnResign);
+        SubscribeLocalEvent<SWDepartmentWorkConsoleComponent, SWMinistryAssumeParentMessage>(OnAssumeParent);
         SubscribeLocalEvent<SWDepartmentWorkConsoleComponent, SWShipsLaunchOpMessage>(OnLaunchOp);
         SubscribeLocalEvent<SWDepartmentWorkConsoleComponent, SWDeptResolveTaskMessage>(OnResolveTask);
         SubscribeLocalEvent<SWDepartmentWorkConsoleComponent, SWDeptCaseAdvanceMessage>(OnCaseAdvance);
@@ -78,6 +79,32 @@ public sealed class SWDepartmentWorkConsoleSystem : EntitySystem
         ministryComp.Ministry = null;
         _idCard.TryChangeJobTitle(card.Value, Loc.GetString("sw-minister-base"));
         _popup.PopupCursor(Loc.GetString("sw-ministry-resigned"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void OnAssumeParent(Entity<SWDepartmentWorkConsoleComponent> ent, ref SWMinistryAssumeParentMessage args)
+    {
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        var deptId = GetCardDepartment(ent);
+        if (card == null
+            || deptId == null
+            || !TryComp<SWMinistryComponent>(card, out var ministryComp)
+            || !_proto.TryIndex<SWMinistryPrototype>(deptId, out var deptProto)
+            || deptProto.Parent is not { } parentId
+            || !_proto.TryIndex<SWMinistryPrototype>(parentId, out var parentProto))
+            return;
+
+        if (!_ministry.TryTransfer(deptId, parentId, card.Value))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-ministry-assume-parent-failed"), args.Actor, PopupType.Medium);
+            UpdateUi(ent);
+            return;
+        }
+
+        ministryComp.Ministry = parentId;
+        var title = Loc.GetString("sw-ministry-title-ministry", ("name", parentProto.TitleName));
+        _idCard.TryChangeJobTitle(card.Value, title);
+        _popup.PopupCursor(Loc.GetString("sw-ministry-select-success", ("title", title)), args.Actor, PopupType.Medium);
         UpdateUi(ent);
     }
 
@@ -252,6 +279,7 @@ public sealed class SWDepartmentWorkConsoleSystem : EntitySystem
             {
                 state.ParentName = parentProto.Name;
                 state.ParentActive = _ministry.IsClaimed(parentId);
+                state.CanAssumeParent = !state.ParentActive;
             }
 
             if (_ministry.GetHolder(deptId) is { } holder)

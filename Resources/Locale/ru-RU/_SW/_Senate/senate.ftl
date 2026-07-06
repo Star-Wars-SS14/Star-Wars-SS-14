@@ -18,6 +18,7 @@ sw-ministry-title-department = Глава Департамента {$name}
 sw-ministry-title-bureau = Директор Бюро {$name}
 sw-minister-base = Министр
 sw-ministry-resigned = Вы сложили полномочия. Ведомство свободно.
+sw-ministry-assume-parent-failed = Нельзя принять министерство: пост уже занят или полномочия изменились.
 sw-bureau-ships-action-failed = Действие невозможно: проверьте бюджет бюро.
 sw-bureau-action-failed = Действие невозможно: проверьте бюджет бюро.
 

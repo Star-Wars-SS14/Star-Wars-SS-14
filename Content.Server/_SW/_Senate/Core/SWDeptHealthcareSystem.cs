@@ -400,9 +400,6 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
         if (_time.Day != _day)
         {
             _day = _time.Day;
-            _calls.Clear();
-            _missions.Clear();
-            _freeBrigades = TotalBrigades;
             _opCooldowns.Clear();
             _callTimer = 0f;
         }

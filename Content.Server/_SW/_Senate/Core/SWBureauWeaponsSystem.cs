@@ -870,7 +870,6 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
         if (_time.Day != _day)
         {
             _day = _time.Day;
-            _apps.Clear();
             _opCooldowns.Clear();
             _seizeCooldown.Clear();
             _dilIndex = -1;

@@ -33,6 +33,11 @@ public sealed class SWBureauWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWBureauResignMessage());
     }
 
+    public void AssumeParent()
+    {
+        SendMessage(new SWMinistryAssumeParentMessage());
+    }
+
     public void ResolveDilemma(int optionIndex)
     {
         SendMessage(new SWBureauResolveDilemmaMessage(optionIndex));

@@ -136,8 +136,10 @@ public sealed partial class SWJudicialWorkConsoleMenu : FancyWindow
             box.AddChild(new Control { MinHeight = 6 });
         }
 
-        box.AddChild(SWConsoleStyle.Wrap($"Решение в пользу истца: {c.OutcomePlaintiff}", SWConsoleStyle.Good, 720f));
-        box.AddChild(SWConsoleStyle.Wrap($"Решение в пользу ответчика: {c.OutcomeDefendant}", SWConsoleStyle.Warn, 720f));
+        if (c.OutcomePlaintiff.Length > 0)
+            box.AddChild(SWConsoleStyle.Wrap($"Решение в пользу истца: {c.OutcomePlaintiff}", SWConsoleStyle.Good, 720f));
+        if (c.OutcomeDefendant.Length > 0)
+            box.AddChild(SWConsoleStyle.Wrap($"Решение в пользу ответчика: {c.OutcomeDefendant}", SWConsoleStyle.Warn, 720f));
 
         if (c.Verdict.Length > 0)
         {

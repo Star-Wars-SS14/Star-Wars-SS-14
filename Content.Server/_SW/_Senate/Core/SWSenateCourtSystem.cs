@@ -30,6 +30,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
     public const int EveningDeadline = 20;
     public const int NominationOpenHour = 10;
     public const float ConfirmHours = 2f;
+    public const int ReviewHours = 2;
     public const int OfficialCorruptionThreshold = 45;
 
     public string? Chief { get; private set; }
@@ -76,6 +77,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
     {
         public int LawId;
         public string LawName = string.Empty;
+        public int DeadlineAbs;
         public readonly Dictionary<string, bool> Votes = new();
     }
 
@@ -184,6 +186,9 @@ public sealed class SWSenateCourtSystem : EntitySystem
 
         if (_nomination is { Accepted: true } nom && _time.AbsoluteHour >= nom.DeadlineAbs)
             ResolveNomination();
+
+        if (_review is { } review && _time.AbsoluteHour >= review.DeadlineAbs)
+            ResolveReview();
     }
 
     // --- bench ---
@@ -448,6 +453,9 @@ public sealed class SWSenateCourtSystem : EntitySystem
             _morningInitialAttempted = false;
         }
 
+        if (_time.CurrentHour >= MorningStart)
+            return false;
+
         if (!_morningInitialAttempted && _time.CurrentHour >= SWSenateTimeSystem.StartHour)
         {
             _morningInitialAttempted = true;
@@ -480,15 +488,18 @@ public sealed class SWSenateCourtSystem : EntitySystem
         var official = FindOfficialFigurant();
 
         var pool = _proto.EnumeratePrototypes<SWCourtCasePrototype>()
-            .Where(p => !_usedProtos.Contains(p.ID))
+            .Where(p => force || !_usedProtos.Contains(p.ID))
             .ToList();
         _random.Shuffle(pool);
 
         SWCourtCasePrototype? pick = null;
         if (protoId != null)
         {
-            pick = pool.FirstOrDefault(p => p.ID == protoId);
-            if (pick == null || !CanGenerateCase(pick, sectors.Count, official))
+            if (!_proto.TryIndex<SWCourtCasePrototype>(protoId, out pick))
+                return false;
+            if (!force && _usedProtos.Contains(pick.ID))
+                return false;
+            if (!CanGenerateCase(pick, sectors.Count, official))
                 return false;
         }
 
@@ -726,7 +737,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
         if (lawName == null || !_senate.BuildRepealableLaws().Any(l => l.Id == lawId))
             return false;
 
-        _review = new Review { LawId = lawId, LawName = lawName };
+        _review = new Review { LawId = lawId, LawName = lawName, DeadlineAbs = _time.AbsoluteHour + ReviewHours };
         Announce($"Верховный Суд начал проверку закона «{lawName}» на конституционность.");
         return true;
     }
@@ -735,6 +746,12 @@ public sealed class SWSenateCourtSystem : EntitySystem
     {
         if (_review == null || !IsJudge(judge))
             return false;
+
+        if (_time.AbsoluteHour >= _review.DeadlineAbs)
+        {
+            ResolveReview();
+            return false;
+        }
 
         _review.Votes[judge] = unconstitutional;
 
@@ -784,7 +801,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
             VotesFor = _review.Votes.Count(kv => bench.Contains(kv.Key) && kv.Value),
             VotesAgainst = _review.Votes.Count(kv => bench.Contains(kv.Key) && !kv.Value),
             MyVote = viewer != null && _review.Votes.TryGetValue(viewer, out var v) ? (v ? 1 : 2) : 0,
-            CanVote = viewer != null && IsJudge(viewer),
+            CanVote = viewer != null && IsJudge(viewer) && _time.AbsoluteHour < _review.DeadlineAbs,
         };
     }
 
@@ -808,6 +825,8 @@ public sealed class SWSenateCourtSystem : EntitySystem
     private SWCourtCaseEntry BuildEntry(ActiveCase c, string? viewer, int hintSide)
     {
         _proto.TryIndex<SWCourtCasePrototype>(c.ProtoId, out var proto);
+        var judgeName = viewer != null && IsJudge(viewer) ? viewer : null;
+        var judgeViewer = judgeName != null;
 
         var entry = new SWCourtCaseEntry
         {
@@ -828,8 +847,10 @@ public sealed class SWSenateCourtSystem : EntitySystem
 
         if (proto != null)
         {
-            entry.OutcomePlaintiff = Fill(proto.PlaintiffWin.Summary, c);
-            entry.OutcomeDefendant = Fill(proto.DefendantWin.Summary, c);
+            if (judgeViewer || hintSide is 1 or 3)
+                entry.OutcomePlaintiff = Fill(proto.PlaintiffWin.Summary, c);
+            if (judgeViewer || hintSide is 2 or 3)
+                entry.OutcomeDefendant = Fill(proto.DefendantWin.Summary, c);
 
             if (hintSide is 1 or 3)
                 foreach (var hint in proto.ProsecutionHints)
@@ -839,12 +860,12 @@ public sealed class SWSenateCourtSystem : EntitySystem
                     entry.Hints.Add($"[Защита] {Fill(hint, c)}");
         }
 
-        if (viewer != null && IsJudge(viewer))
+        if (judgeName != null)
         {
             entry.CanVote = !c.Closed && c.Day == _time.Day && _time.DayActive
                 && _time.CurrentHour >= HearingStart(c.Slot) && _time.AbsoluteHour < DeadlineAbs(c);
-            entry.CanCloseVote = CanCloseVerdictVote(viewer, c.Id);
-            entry.MyVote = c.Votes.TryGetValue(viewer, out var v) ? (v ? 1 : 2) : 0;
+            entry.CanCloseVote = CanCloseVerdictVote(judgeName, c.Id);
+            entry.MyVote = c.Votes.TryGetValue(judgeName, out var v) ? (v ? 1 : 2) : 0;
             var bench = BuildJudges().Select(j => j.Name).ToList();
             entry.VotesPlaintiff = c.Votes.Count(kv => bench.Contains(kv.Key) && kv.Value);
             entry.VotesDefendant = c.Votes.Count(kv => bench.Contains(kv.Key) && !kv.Value);

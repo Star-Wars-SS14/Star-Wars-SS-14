@@ -263,7 +263,7 @@ public sealed class SWJudicialWorkConsoleSystem : EntitySystem
             };
 
             state.CurrentCase = _court.BuildCurrentCase(id.Name, hintSide);
-            state.Registry = _court.BuildRegistry(id.Name);
+            state.Registry = _court.BuildRegistry(id.Name, hintSide);
             state.Review = _court.BuildReview(id.Name);
             if (state.IsChief && state.Review == null)
                 state.ReviewableLaws = _senate.BuildRepealableLaws();

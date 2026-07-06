@@ -87,8 +87,10 @@ public sealed partial class SWCourtInfoConsoleMenu : FancyWindow
                 box.AddChild(new Control { MinHeight = 4 });
                 box.AddChild(SWConsoleStyle.Wrap(c.Description, SWConsoleStyle.TextBright, 660f));
                 box.AddChild(new Control { MinHeight = 4 });
-                box.AddChild(SWConsoleStyle.Wrap($"Решение в пользу истца: {c.OutcomePlaintiff}", SWConsoleStyle.Good, 660f));
-                box.AddChild(SWConsoleStyle.Wrap($"Решение в пользу ответчика: {c.OutcomeDefendant}", SWConsoleStyle.Warn, 660f));
+                if (c.OutcomePlaintiff.Length > 0)
+                    box.AddChild(SWConsoleStyle.Wrap($"Решение в пользу истца: {c.OutcomePlaintiff}", SWConsoleStyle.Good, 660f));
+                if (c.OutcomeDefendant.Length > 0)
+                    box.AddChild(SWConsoleStyle.Wrap($"Решение в пользу ответчика: {c.OutcomeDefendant}", SWConsoleStyle.Warn, 660f));
             }
 
             row.AddChild(box);

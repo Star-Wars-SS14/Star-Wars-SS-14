@@ -42,6 +42,7 @@
             acts: [ "Destruction" ]
   - type: Pullable
   - type: Rotatable
+    increment: 10
   - type: Clickable
   - type: InteractionOutline
   - type: SWVehicle

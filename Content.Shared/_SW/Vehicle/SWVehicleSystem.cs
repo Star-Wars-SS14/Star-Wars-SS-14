@@ -108,6 +108,7 @@ public sealed class SWVehicleSystem : EntitySystem
         _actions.AddAction(user, ref comp.ActionEntity, SWSharedVehicleSystem.ActionExitVehicle);
         Dirty(user, comp);
         ent.Comp.RolesInfo[role].Occupant = GetNetEntity(user);
+        Dirty(ent);
 
         var evOnUser = new SWUserEnterVehicleEvent(ent);
         RaiseLocalEvent(user, evOnUser);
@@ -174,6 +175,7 @@ public sealed class SWVehicleSystem : EntitySystem
         if (!TryGetEntity(roleInfo.Occupant.Value, out var occupantEntity))
         {
             roleInfo.Occupant = null;
+            Dirty(vehicle);
             return false;
         }
 
@@ -182,12 +184,14 @@ public sealed class SWVehicleSystem : EntitySystem
         if (TerminatingOrDeleted(occupantUid))
         {
             roleInfo.Occupant = null;
+            Dirty(vehicle);
             return false;
         }
 
         if (!TryComp<SWInVehicleComponent>(occupantUid, out var inVehicle))
         {
             roleInfo.Occupant = null;
+            Dirty(vehicle);
             return false;
         }
 
@@ -229,6 +233,7 @@ public sealed class SWVehicleSystem : EntitySystem
             !TryGetEntity(roleInfo.Occupant.Value, out _))
         {
             roleInfo.Occupant = null;
+            Dirty(vehicle);
         }
 
         UpdateInterface(vehicle);
@@ -368,11 +373,18 @@ public sealed class SWVehicleSystem : EntitySystem
 
     private void OnRotateAttempt(Entity<SWVehicleComponent> ent, ref RotateAttemptEvent args)
     {
-        if (!HasOccupant(ent.Comp))
+        if (!HasOccupant(ent.Comp) && !IsUserInVehicle(args.User, ent))
             return;
 
         args.Cancel();
         args.Message = Loc.GetString("sw-vehicle-occupied-cannot-rotate");
+    }
+
+    private bool IsUserInVehicle(EntityUid? user, EntityUid vehicle)
+    {
+        return user != null &&
+               TryComp<SWInVehicleComponent>(user.Value, out var inVehicle) &&
+               inVehicle.Vehicle == vehicle;
     }
 
     private bool HasOccupant(SWVehicleComponent vehicle)

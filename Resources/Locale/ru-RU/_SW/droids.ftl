@@ -31,10 +31,10 @@ sw-droid-control-datapad-map-selected = {$name}
     Статус: {$status}
     Заряд: {$charge}
 sw-droid-control-datapad-map-entry-details = {$status}, {$charge}
-sw-droid-control-datapad-targets-enabled = Целевые должности
-sw-droid-control-datapad-targets-disabled = Игнорируемые должности
-sw-droid-control-datapad-faction-allow = Атаковать всю фракцию: {$faction}
-sw-droid-control-datapad-faction-disallow = Игнорировать всю фракцию: {$faction}
+sw-droid-control-datapad-targets-enabled = Игнорируемые должности
+sw-droid-control-datapad-targets-disabled = Атакуемые должности
+sw-droid-control-datapad-faction-allow = Игнорировать всю фракцию: {$faction}
+sw-droid-control-datapad-faction-disallow = Атаковать всю фракцию: {$faction}
 
 ent-SWMobDroidBase = боевой дроид
     .desc = Компактный боевой дроид с модульными системами.

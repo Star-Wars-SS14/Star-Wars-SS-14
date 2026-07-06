@@ -43,10 +43,10 @@ sw-droid-control-datapad-map-selected = {$name}
     Status: {$status}
     Charge: {$charge}
 sw-droid-control-datapad-map-entry-details = {$status}, {$charge}
-sw-droid-control-datapad-targets-enabled = Targeted jobs
-sw-droid-control-datapad-targets-disabled = Ignored jobs
-sw-droid-control-datapad-faction-allow = Target all {$faction}
-sw-droid-control-datapad-faction-disallow = Ignore all {$faction}
+sw-droid-control-datapad-targets-enabled = Ignored jobs
+sw-droid-control-datapad-targets-disabled = Targeted jobs
+sw-droid-control-datapad-faction-allow = Ignore all {$faction}
+sw-droid-control-datapad-faction-disallow = Target all {$faction}
 
 ent-SWMobDroidBase = battle droid
     .desc = A compact combat droid with modular systems.

@@ -79,6 +79,8 @@
         true
   - type: SWDroidCommandable
     commandRange: 3
+  - type: SWAutoTargetingGun
+    range: 10
   - type: UserInterface
     interfaces:
       enum.BorgUiKey.Key:

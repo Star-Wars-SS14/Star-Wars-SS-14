@@ -39,7 +39,7 @@
     - !type:SWDroidHasAICorePrecondition
     tasks:
     - !type:HTNCompoundTask
-      task: SWDroidRangedCombatCompound
+      task: SWDroidStayCompound
   - tasks:
     - !type:HTNCompoundTask
       task: SWDroidStayCompound
@@ -120,9 +120,5 @@
         stopOnLineOfSight: true
         rangeKey: RangedRange
     - !type:HTNPrimitiveTask
-      preconditions:
-      - !type:KeyExistsPrecondition
-        key: DroidCommandTarget
-      operator: !type:GunOperator
-        targetKey: DroidCommandTarget
-        targetState: Critical
+      operator: !type:WaitOperator
+        key: DroidStayTime

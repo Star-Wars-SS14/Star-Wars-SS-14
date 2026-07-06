@@ -41,6 +41,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SWFactionGameruleSystem _factions = default!;
+    [Dependency] private readonly SWAutoTargetingGunSystem _autoGun = default!;
     [Dependency] private readonly SWTargetingConfigTargetsSystem _targeting = default!;
     private const float UpdateDelay = 0.5f;
     private const float StayTime = 999999f;
@@ -60,6 +61,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
         SubscribeLocalEvent<SWDroidCommanderComponent, ComponentShutdown>(OnCommanderShutdown);
         SubscribeLocalEvent<SWDroidCommandableComponent, ComponentShutdown>(OnDroidShutdown);
         SubscribeLocalEvent<SWDroidCommandableComponent, MobStateChangedEvent>(OnDroidMobStateChanged);
+        SubscribeLocalEvent<SWDroidCommandableComponent, SWAutoTargetingGunAttemptEvent>(OnAutoGunAttempt);
     }
 
     public override void Update(float frameTime)
@@ -228,6 +230,33 @@ public sealed class SWDroidCommandSystem : EntitySystem
             return;
 
         ReleaseDroidCommand(uid, component, true);
+    }
+
+    private void OnAutoGunAttempt(Entity<SWDroidCommandableComponent> ent, ref SWAutoTargetingGunAttemptEvent args)
+    {
+        if (!IsAvailableDroid(ent.Owner))
+        {
+            args.Cancel();
+            return;
+        }
+
+        if (!args.ForcedTarget && !HasComp<SWTargetingConfigComponent>(ent.Owner))
+        {
+            args.Cancel();
+            return;
+        }
+
+        if (args.ForcedTarget)
+            return;
+
+        if (!TryComp<HTNComponent>(ent.Owner, out var htn) ||
+            !htn.Blackboard.TryGetValue<SWDroidOrderType>(NPCBlackboard.CurrentOrders, out var order, EntityManager))
+        {
+            return;
+        }
+
+        if (order == SWDroidOrderType.Stay)
+            args.Cancel();
     }
 
     private void ReleaseDroidCommand(EntityUid uid, SWDroidCommandableComponent component, bool dirty)
@@ -406,12 +435,16 @@ public sealed class SWDroidCommandSystem : EntitySystem
             StopFollowingMovement(droid, htn);
             _npc.SetBlackboard(droid, DroidCommandTarget, target.Value);
             _npc.SetBlackboard(droid, DroidCommandTargetCoordinates, new EntityCoordinates(target.Value, Vector2.Zero));
+            _autoGun.SetForcedTarget(droid, target.Value);
         }
         else
         {
             StopFollowingMovement(droid, htn);
             _npc.SetBlackboard(droid, "DroidStayTime", StayTime);
         }
+
+        if (htnOrder != SWDroidOrderType.Attack)
+            _autoGun.SetForcedTarget(droid, null);
 
         _npc.SetBlackboard(droid, NPCBlackboard.CurrentOrders, htnOrder);
         _htn.Replan(htn);

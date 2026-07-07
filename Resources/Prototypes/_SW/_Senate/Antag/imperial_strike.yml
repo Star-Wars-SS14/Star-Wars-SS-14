@@ -1,0 +1,175 @@
+# Имперский диверсионный отряд: маркеры для маппинга, гост-роли, мобы, снаряжение, консоль контроля.
+
+- type: entity
+  id: SWImperialStrikeSpawn
+  parent: MarkerBase
+  name: точка высадки диверсантов
+  suffix: Сенат
+  components:
+  - type: SWImperialStrikeSpawn
+
+- type: entity
+  id: SWImperialEvacPoint
+  parent: MarkerBase
+  name: точка эвакуации Империи
+  suffix: Сенат
+  components:
+  - type: SWImperialEvacPoint
+
+- type: entity
+  id: SWSpawnPointImperialStrikeCommander
+  parent: MarkerBase
+  name: imperial strike commander
+  suffix: спавнер
+  components:
+  - type: GhostRole
+    name: Командир имперского диверсионного отряда
+    description: Возглавьте диверсионную группу Империи, проникшую на Корускант. Задача будет выдана после высадки.
+    rules: Действуйте строго по задаче отряда. Не устраивайте бессмысленную резню.
+    raffle:
+      settings: short
+    job: SWEmpireLieutenant
+  - type: GhostRoleMobSpawner
+    prototype: SWRandomHumanoidImperialStrikeCommander
+
+- type: entity
+  id: SWSpawnPointImperialStrikeOperative
+  parent: MarkerBase
+  name: imperial strike operative
+  suffix: спавнер
+  components:
+  - type: GhostRole
+    name: Оперативник имперского диверсионного отряда
+    description: Оперативник диверсионной группы Империи. Выполняйте приказы командира отряда.
+    rules: Действуйте строго по задаче отряда. Не устраивайте бессмысленную резню.
+    raffle:
+      settings: short
+    job: SWEmpireSoldier
+  - type: GhostRoleMobSpawner
+    prototype: SWRandomHumanoidImperialStrikeOperative
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidImperialStrikeCommander
+  name: командир диверсионного отряда
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [SWImperialStrikeCommanderGear]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirstMilitaryLieutenant
+    - NamesMilitaryLast
+    nameFormat: name-format-ert
+  - type: SWFactionMember
+    faction: EmpireFaction
+    job: SWEmpireLieutenant
+  - type: SWImperialStrikeMember
+    commander: true
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidImperialStrikeOperative
+  name: оперативник диверсионного отряда
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [SWImperialStrikeOperativeGear]
+  - type: RandomMetadata
+    nameSegments:
+    - NamesFirstMilitarySoldier
+    - NamesMilitaryLast
+    nameFormat: name-format-ert
+  - type: SWFactionMember
+    faction: EmpireFaction
+    job: SWEmpireSoldier
+  - type: SWImperialStrikeMember
+
+- type: startingGear
+  id: SWImperialStrikeCommanderGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitOfficers
+    outerClothing: SWLieutenantImperialSuit
+    head: SWClothingHeadLieutenantImperialHelmet
+    gloves: ClothingHandsGlovesColorBlack
+    shoes: SWClothingShoesBootsOfficers
+    belt: ClothingBeltAssault
+    back: SWImperialBackpack
+    ears: SWClothingHeadsetRegularCom
+    id: SWImperialForgedCommanderCard
+    suitstorage: SWE1BlasterRifle
+    pocket1: SWScoutBlasterSmall
+    pocket2: Zipties
+
+- type: startingGear
+  id: SWImperialStrikeOperativeGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    outerClothing: SWImperialSuit
+    head: SW_ClothingHeadImperialHelmet
+    shoes: SWClothingShoesBootsCombatFilled
+    belt: ClothingBeltAssault
+    back: SWImperialBackpack
+    ears: SWClothingHeadsetRegular
+    id: SWImperialForgedOperativeCard
+    suitstorage: SWE1BlasterRifle
+    pocket1: Zipties
+    pocket2: Zipties
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWImperialForgedCommanderCard
+  name: пропуск аппарата Сената
+  description: Служебный пропуск сотрудника аппарата Сената. Выглядит настоящим.
+  components:
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: usher
+  - type: IdCard
+    jobTitle: сотрудник аппарата Сената
+  - type: Access
+    tags:
+    - SWSenate
+    - SWSenateSenator
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWImperialForgedOperativeCard
+  name: пропуск аппарата Сената
+  description: Служебный пропуск сотрудника аппарата Сената. Выглядит настоящим.
+  components:
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: usher
+  - type: IdCard
+    jobTitle: сотрудник аппарата Сената
+  - type: Access
+    tags:
+    - SWSenate
+
+- type: entity
+  parent: BaseComputer
+  id: SWSenateCaptureConsole
+  name: консоль контроля Сената
+  description: Центральный узел управления комплексом Сената. Показывает, чья власть распоряжается зданием.
+  components:
+  - type: SWSenateCaptureConsole
+  - type: ActivatableUI
+    singleUser: true
+    key: enum.CaptureConsoleUi.Key
+  - type: UserInterface
+    interfaces:
+      enum.CaptureConsoleUi.Key:
+        type: CaptureConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicStatisticsComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: statistics_monitor
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Godmode

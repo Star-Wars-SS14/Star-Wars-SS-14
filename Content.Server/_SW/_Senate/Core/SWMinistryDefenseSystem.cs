@@ -86,7 +86,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
         _day = -1;
     }
 
-    private void AddLog(string text)
+    public void AddLog(string text)
     {
         _log.Insert(0, text);
         if (_log.Count > 6)
@@ -426,6 +426,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
         }
     }
 
+    public bool HasBorderFleet => _groups.Any(g => g.State == SWFleetState.Border);
     public int FleetUpkeep => (int) MathF.Round(_groups.Count(g => g.State != SWFleetState.Reserve) * UpkeepPerHour);
     public int FleetSize => _groups.Count;
     public int FleetActive => _groups.Count(g => g.State == SWFleetState.Sector);

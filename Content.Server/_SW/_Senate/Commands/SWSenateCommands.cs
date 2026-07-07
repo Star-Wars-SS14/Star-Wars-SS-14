@@ -771,3 +771,58 @@ public sealed class SWCrisisCommand : IConsoleCommand
             shell.WriteError("Не удалось: проверьте ID сектора/кризиса.");
     }
 }
+
+// swstrike - запустить имперский диверсионный отряд вручную.
+// Без аргументов задача выбирается случайно из валидных. Цель (для kidnap/kill) - имя персонажа;
+// без цели выбирается случайное живое должностное лицо.
+// Примеры:
+//   swstrike                       - случайная задача
+//   swstrike capture               - захват здания Сената
+//   swstrike kidnap                - похищение случайного должностного лица
+//   swstrike kill Падме Амидала    - ликвидация конкретного персонажа
+[AdminCommand(AdminFlags.Debug)]
+public sealed class SWStrikeCommand : IConsoleCommand
+{
+    public string Command => "swstrike";
+    public string Description => "Запустить имперский диверсионный отряд.";
+    public string Help => "swstrike [kidnap|kill|capture] [имя цели]";
+
+    public void Execute(IConsoleShell shell, string argStr, string[] args)
+    {
+        var strike = IoCManager.Resolve<IEntityManager>().System<Antag.SWImperialStrikeSystem>();
+
+        Antag.SWStrikeTask? task = null;
+        string? target = null;
+
+        if (args.Length >= 1)
+        {
+            task = args[0].ToLowerInvariant() switch
+            {
+                "kidnap" => Antag.SWStrikeTask.Kidnap,
+                "kill" => Antag.SWStrikeTask.Kill,
+                "capture" => Antag.SWStrikeTask.Capture,
+                _ => null,
+            };
+
+            if (task == null)
+            {
+                shell.WriteError(Help);
+                return;
+            }
+
+            if (args.Length >= 2)
+                target = string.Join(' ', args.Skip(1));
+        }
+
+        if (task == Antag.SWStrikeTask.Capture && target != null)
+        {
+            shell.WriteError("Для задачи capture цель не указывается.");
+            return;
+        }
+
+        if (strike.TryLaunch(task, target, out var error))
+            shell.WriteLine($"Отряд высажен. Задача: {strike.DescribeTask()}.");
+        else
+            shell.WriteError(error);
+    }
+}

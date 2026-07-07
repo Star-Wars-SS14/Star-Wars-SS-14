@@ -1100,3 +1100,36 @@
   stat: VerdictsForPlaintiff
   comparison: Below
   threshold: 2
+
+- type: swAmbition
+  id: SWAmbitionMercRemoval
+  name: Ничего личного
+  description: Заказанный вами синдикату контракт на убийство или похищение выполнен.
+  role: Senator
+  kind: PersonMetric
+  stat: DirtyDone
+  comparison: Above
+  threshold: 0
+  order: 90
+
+- type: swAmbition
+  id: SWAmbitionMercProtection
+  name: Крыша синдиката
+  description: Купите у синдиката контракт собственной защиты и доживите до конца раунда.
+  role: Senator
+  kind: PersonMetric
+  stat: SelfProtected
+  comparison: Above
+  threshold: 0
+  order: 91
+
+- type: swAmbition
+  id: SWAmbitionMercPatron
+  name: Щедрый патрон
+  description: Потратьте на контракты синдиката свыше 2400 кредитов с теневого счёта.
+  role: Senator
+  kind: PersonMetric
+  stat: Spent
+  comparison: Above
+  threshold: 2400
+  order: 92

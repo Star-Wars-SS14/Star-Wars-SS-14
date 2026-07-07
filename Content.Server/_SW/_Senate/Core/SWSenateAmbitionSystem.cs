@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Server.GameTicking;
+using Content.Server._SW._Senate.Antag;
 using Content.Server._SW._Senate.Economy;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Ambitions;
@@ -34,6 +35,7 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
     [Dependency] private readonly SWBureauWeaponsSystem _bureauWeapons = default!;
     [Dependency] private readonly SWBureauTransitSystem _bureauTransit = default!;
     [Dependency] private readonly SWSenateCourtSystem _court = default!;
+    [Dependency] private readonly SWMercSystem _merc = default!;
 
     private const float UpdateInterval = 5f;
 
@@ -243,6 +245,12 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
             case SWAmbitionKind.CourtMetric:
             {
                 var value = CourtMetricValue(proto.Stat);
+                return (Compare(value, proto.Comparison, proto.Threshold), StatProgress(value, proto));
+            }
+            case SWAmbitionKind.PersonMetric:
+            {
+                var holder = OwnerHolder(active.Owner);
+                var value = holder == null ? 0f : _merc.PersonMetricValue(holder, proto.Stat);
                 return (Compare(value, proto.Comparison, proto.Threshold), StatProgress(value, proto));
             }
             default:

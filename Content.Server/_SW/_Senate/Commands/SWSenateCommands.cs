@@ -826,3 +826,47 @@ public sealed class SWStrikeCommand : IConsoleCommand
             shell.WriteError(error);
     }
 }
+
+// swmerc - запустить наёмника синдиката вручную: контракт без заказчика и без оплаты.
+// Примеры:
+//   swmerc kill Падме Амидала
+//   swmerc kidnap Бейл Органа
+//   swmerc protect Падме Амидала
+[AdminCommand(AdminFlags.Debug)]
+public sealed class SWMercCommand : IConsoleCommand
+{
+    public string Command => "swmerc";
+    public string Description => "Запустить наёмника синдиката с контрактом.";
+    public string Help => "swmerc <kill|kidnap|protect> <имя цели>";
+
+    public void Execute(IConsoleShell shell, string argStr, string[] args)
+    {
+        if (args.Length < 2)
+        {
+            shell.WriteError(Help);
+            return;
+        }
+
+        var merc = IoCManager.Resolve<IEntityManager>().System<Antag.SWMercSystem>();
+
+        SWMercContractKind? kind = args[0].ToLowerInvariant() switch
+        {
+            "kill" => SWMercContractKind.Kill,
+            "kidnap" => SWMercContractKind.Kidnap,
+            "protect" => SWMercContractKind.ProtectOther,
+            _ => null,
+        };
+
+        if (kind == null)
+        {
+            shell.WriteError(Help);
+            return;
+        }
+
+        var target = string.Join(' ', args.Skip(1));
+        if (merc.TryOrder(kind.Value, target, out var error))
+            shell.WriteLine($"Контракт запущен: {merc.DescribeContract()}.");
+        else
+            shell.WriteError(error);
+    }
+}

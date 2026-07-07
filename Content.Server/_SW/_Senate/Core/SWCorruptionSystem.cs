@@ -95,6 +95,18 @@ public sealed class SWCorruptionSystem : EntitySystem
     public void AddSectorCorruption(string sectorId, float delta) =>
         _sector[sectorId] = Math.Clamp(SectorCorruption(sectorId) + delta, 0f, 100f);
 
+    public void AddPersonCorruption(string name, float delta) =>
+        _person[name] = Math.Clamp(PersonCorruption(name) + delta, 0f, 100f);
+
+    public bool SpendAccount(string name, int amount)
+    {
+        if (amount <= 0 || Account(name) < amount)
+            return false;
+
+        _account[name] = Account(name) - amount;
+        return true;
+    }
+
     // --- Justice tools ---
 
     public bool IsRevealed(bool sector, string key) => _revealed.Contains((sector ? "s:" : "p:") + key);

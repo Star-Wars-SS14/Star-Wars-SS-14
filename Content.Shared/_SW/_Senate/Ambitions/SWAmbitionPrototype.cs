@@ -44,6 +44,11 @@ public enum SWAmbitionKind : byte
     /// Judicial-role ambitions: a named metric read off SWSenateCourtSystem, compared against Threshold.
     /// </summary>
     CourtMetric,
+
+    /// <summary>
+    /// A named metric keyed to the office HOLDER's person (not the office), read off SWMercSystem.
+    /// </summary>
+    PersonMetric,
 }
 
 [Prototype("swAmbition")]

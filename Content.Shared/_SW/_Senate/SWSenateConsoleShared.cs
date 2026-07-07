@@ -2991,3 +2991,46 @@ public sealed class SWCourtConfirmVoteMessage : BoundUserInterfaceMessage
         Approve = approve;
     }
 }
+
+[Serializable, NetSerializable]
+public enum SWMercContractKind : byte
+{
+    ProtectSelf,
+    ProtectOther,
+    Kill,
+    Kidnap,
+}
+
+[Serializable, NetSerializable]
+public enum SWShadowTerminalUiKey : byte
+{
+    Key,
+}
+
+[Serializable, NetSerializable]
+public sealed class SWShadowTerminalState : BoundUserInterfaceState
+{
+    public string UserName = string.Empty;
+    public int Balance;
+    public bool ContractActive;
+    public string ContractLabel = string.Empty;
+    public string Notice = string.Empty;
+    public int PriceProtectSelf;
+    public int PriceProtectOther;
+    public int PriceKill;
+    public int PriceKidnap;
+    public List<string> Targets = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWShadowHireMessage : BoundUserInterfaceMessage
+{
+    public SWMercContractKind Kind;
+    public string Target;
+
+    public SWShadowHireMessage(SWMercContractKind kind, string target)
+    {
+        Kind = kind;
+        Target = target;
+    }
+}

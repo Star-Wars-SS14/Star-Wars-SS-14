@@ -7,6 +7,10 @@
   suffix: Сенат
   components:
   - type: SWImperialStrikeSpawn
+  - type: Sprite
+    layers:
+    - state: red
+      shader: unshaded
 
 - type: entity
   id: SWImperialEvacPoint
@@ -15,6 +19,10 @@
   suffix: Сенат
   components:
   - type: SWImperialEvacPoint
+  - type: Sprite
+    layers:
+    - state: blue
+      shader: unshaded
 
 - type: entity
   id: SWSpawnPointImperialStrikeCommander

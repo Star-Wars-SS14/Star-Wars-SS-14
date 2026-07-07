@@ -1,6 +1,7 @@
 using System.Linq;
 using Content.Server.Chat.Managers;
 using Content.Server.GameTicking;
+using Content.Server.RoundEnd;
 using Content.Server._SW._Senate.Core;
 using Content.Server._SW._Senate.GameTicking;
 using Content.Shared.Echo.CaptureConsole;
@@ -36,6 +37,7 @@ public sealed class SWImperialStrikeSystem : EntitySystem
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
     [Dependency] private readonly SWSenateCourtSystem _court = default!;
+    [Dependency] private readonly RoundEndSystem _roundEnd = default!;
 
     private const int WindowOpenHour = 10;
     private const int WindowCloseHour = 18;
@@ -305,12 +307,12 @@ public sealed class SWImperialStrikeSystem : EntitySystem
                 if (_task == SWStrikeTask.Capture)
                     _succeeded = true;
                 Announce("Здание Сената под контролем имперских сил!");
-            }
-            else
-            {
-                Announce("Контроль над зданием Сената возвращён Республике.");
+                UpdateConsole(uid, comp, null);
+                EndRoundCaptured();
+                return;
             }
 
+            Announce("Контроль над зданием Сената возвращён Республике.");
             UpdateConsole(uid, comp, null);
         }
     }
@@ -374,6 +376,24 @@ public sealed class SWImperialStrikeSystem : EntitySystem
         _ui.SetUiState(uid, CaptureConsoleUi.Key, state);
     }
 
+    private void EndRoundCaptured()
+    {
+        var query = EntityQueryEnumerator<SWSenateRuleComponent>();
+        while (query.MoveNext(out var rule))
+        {
+            if (rule.EndTriggered)
+                return;
+
+            rule.EndTriggered = true;
+        }
+
+        _time.ModeActive = false;
+        _chat.DispatchServerAnnouncement(
+            "Здание Сената захвачено силами Империи. Работа созыва прервана - подводятся итоги.",
+            Color.FromHex("#E0556B"));
+        _roundEnd.EndRound();
+    }
+
     private void OnRoundEnd(RoundEndTextAppendEvent args)
     {
         if (!Launched || _task is not { } task)
@@ -393,6 +413,8 @@ public sealed class SWImperialStrikeSystem : EntitySystem
         };
 
         args.AddLine(string.Empty);
+        if (_empireControls)
+            args.AddLine("[color=red]Здание Сената захвачено Империей - победа диверсионного отряда.[/color]");
         args.AddLine($"Имперский диверсионный отряд: {result}.");
     }
 

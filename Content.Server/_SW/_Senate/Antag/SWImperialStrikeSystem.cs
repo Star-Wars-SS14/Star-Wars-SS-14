@@ -91,7 +91,7 @@ public sealed class SWImperialStrikeSystem : EntitySystem
         if (!Launched)
             TickBreach();
         else
-            TickKidnap(frameTime);
+            TickExtraction(frameTime);
     }
 
     private void TickBreach()
@@ -128,13 +128,14 @@ public sealed class SWImperialStrikeSystem : EntitySystem
         TryLaunch(null, null, out _);
     }
 
-    private void TickKidnap(float frameTime)
+    private void TickExtraction(float frameTime)
     {
-        if (_task != SWStrikeTask.Kidnap || _succeeded || _targetName == null)
+        if (_succeeded || _targetName == null || _task is not (SWStrikeTask.Kidnap or SWStrikeTask.Kill))
             return;
 
-        var target = FindAlive(_targetName);
-        if (target == null || !InEvacZone(target.Value))
+        var wantDead = _task == SWStrikeTask.Kill;
+        var target = FindTarget(_targetName, out var dead);
+        if (target == null || dead != wantDead || !InEvacZone(target.Value))
         {
             _holdTime = 0f;
             return;
@@ -145,7 +146,9 @@ public sealed class SWImperialStrikeSystem : EntitySystem
             return;
 
         _succeeded = true;
-        Announce($"{_targetName} похищен имперским диверсионным отрядом! Челнок противника покинул атмосферу.");
+        Announce(wantDead
+            ? $"Имперский диверсионный отряд вывез тело — {_targetName}. Челнок противника покинул атмосферу."
+            : $"{_targetName} похищен имперским диверсионным отрядом! Челнок противника покинул атмосферу.");
 
         var query = EntityQueryEnumerator<SWImperialStrikeMemberComponent>();
         while (query.MoveNext(out var uid, out _))
@@ -202,7 +205,7 @@ public sealed class SWImperialStrikeSystem : EntitySystem
                 return false;
             }
 
-            if (task == SWStrikeTask.Kidnap && !hasEvac)
+            if (task is SWStrikeTask.Kidnap or SWStrikeTask.Kill && !hasEvac)
             {
                 error = "На карте нет точки эвакуации (SWImperialEvacPoint).";
                 return false;
@@ -224,10 +227,11 @@ public sealed class SWImperialStrikeSystem : EntitySystem
         {
             var pool = OfficialPool();
             var options = new List<SWStrikeTask>();
-            if (pool.Count > 0)
-                options.Add(SWStrikeTask.Kill);
             if (pool.Count > 0 && hasEvac)
+            {
+                options.Add(SWStrikeTask.Kill);
                 options.Add(SWStrikeTask.Kidnap);
+            }
             if (hasConsole)
                 options.Add(SWStrikeTask.Capture);
 
@@ -276,7 +280,7 @@ public sealed class SWImperialStrikeSystem : EntitySystem
             SWStrikeTask.Kidnap =>
                 $"Задача отряда: похитить должностное лицо — {_targetName}. Доставьте цель живой в точку эвакуации и удерживайте её там {(int) EvacHoldSeconds} секунд: челнок заберёт группу вместе с целью.",
             SWStrikeTask.Kill =>
-                $"Задача отряда: ликвидировать должностное лицо — {_targetName}. Цель должна быть мертва к концу раунда.",
+                $"Задача отряда: ликвидировать должностное лицо — {_targetName}. Доставьте тело в точку эвакуации и удерживайте его там {(int) EvacHoldSeconds} секунд: челнок заберёт группу вместе с телом.",
             _ =>
                 "Задача отряда: захватить здание Сената. Активируйте консоль контроля Сената и не позволяйте республиканцам прервать перехват до его завершения.",
         };
@@ -404,9 +408,9 @@ public sealed class SWImperialStrikeSystem : EntitySystem
             SWStrikeTask.Kidnap => _succeeded
                 ? $"[color=red]задание выполнено — {_targetName} похищен(а) Империей[/color]"
                 : $"[color=green]задание провалено — похищение ({_targetName}) не удалось[/color]",
-            SWStrikeTask.Kill => TargetDeadOrGone(_targetName!)
-                ? $"[color=red]задание выполнено — {_targetName} мёртв(а)[/color]"
-                : $"[color=green]задание провалено — {_targetName} выжил(а)[/color]",
+            SWStrikeTask.Kill => _succeeded
+                ? $"[color=red]задание выполнено — {_targetName} ликвидирован(а), тело вывезено Империей[/color]"
+                : $"[color=green]задание провалено — тело ({_targetName}) не было вывезено[/color]",
             _ => _succeeded
                 ? "[color=red]задание выполнено — здание Сената было захвачено[/color]"
                 : "[color=green]задание провалено — Сенат устоял[/color]",
@@ -453,18 +457,20 @@ public sealed class SWImperialStrikeSystem : EntitySystem
         return null;
     }
 
-    private bool TargetDeadOrGone(string name)
+    private EntityUid? FindTarget(string name, out bool dead)
     {
+        dead = false;
         var query = EntityQueryEnumerator<HumanoidAppearanceComponent, MobStateComponent, MetaDataComponent>();
-        while (query.MoveNext(out _, out _, out var mob, out var meta))
+        while (query.MoveNext(out var uid, out _, out var mob, out var meta))
         {
             if (meta.EntityName != name)
                 continue;
 
-            return mob.CurrentState == MobState.Dead;
+            dead = mob.CurrentState == MobState.Dead;
+            return uid;
         }
 
-        return true;
+        return null;
     }
 
     private bool InEvacZone(EntityUid uid)

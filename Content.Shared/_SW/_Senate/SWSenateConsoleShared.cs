@@ -3034,3 +3034,38 @@ public sealed class SWShadowHireMessage : BoundUserInterfaceMessage
         Target = target;
     }
 }
+
+[Serializable, NetSerializable]
+public enum SWShadowShopUiKey : byte
+{
+    Key,
+}
+
+[Serializable, NetSerializable]
+public sealed class SWShadowShopEntry
+{
+    public int Index;
+    public string Name = string.Empty;
+    public int Price;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWShadowShopState : BoundUserInterfaceState
+{
+    public string ShopName = string.Empty;
+    public string UserName = string.Empty;
+    public int Balance;
+    public string Notice = string.Empty;
+    public List<SWShadowShopEntry> Items = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWShadowShopBuyMessage : BoundUserInterfaceMessage
+{
+    public int Index;
+
+    public SWShadowShopBuyMessage(int index)
+    {
+        Index = index;
+    }
+}

@@ -1,0 +1,75 @@
+- type: entity
+  parent: BaseStructure
+  id: SWBoutiqueClothes
+  name: бутик «Корусант Кутюр»
+  description: Автомат элитной формальной одежды. Принимает только «особые» кредиты — без чеков и вопросов.
+  components:
+  - type: InteractionOutline
+  - type: Sprite
+    sprite: Structures/Machines/VendingMachines/clothing.rsi
+    layers:
+    - state: "off"
+  - type: SWShadowShop
+    catalog:
+    - proto: ClothingUniformJumpsuitCentcomFormal
+      price: 600
+    - proto: ClothingUniformJumpskirtCentcomFormalDress
+      price: 600
+    - proto: ClothingUniformJumpsuitCapFormal
+      price: 800
+    - proto: ClothingUniformJumpskirtCapFormalDress
+      price: 800
+    - proto: ClothingUniformJumpsuitLawyerBlack
+      price: 350
+    - proto: ClothingUniformJumpskirtLawyerBlack
+      price: 350
+    - proto: ClothingUniformJumpsuitLawyerPurple
+      price: 400
+    - proto: ClothingUniformJumpskirtLawyerPurple
+      price: 400
+    - proto: ClothingUniformJumpsuitMonasticRobeDark
+      price: 500
+    - proto: ClothingOuterCoatGentle
+      price: 700
+  - type: ActivatableUI
+    singleUser: true
+    key: enum.SWShadowShopUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWShadowShopUiKey.Key:
+        type: SWShadowShopBoundUserInterface
+  - type: Godmode
+
+- type: entity
+  parent: BaseStructure
+  id: SWBoutiqueAccessories
+  name: галантерея «Звезда Ядра»
+  description: Аксессуары для тех, кто живёт заметно лучше своего оклада.
+  components:
+  - type: InteractionOutline
+  - type: Sprite
+    sprite: Structures/Machines/VendingMachines/theater.rsi
+    layers:
+    - state: "off"
+  - type: SWShadowShop
+    catalog:
+    - proto: ClothingHeadHatTophat
+      price: 450
+    - proto: ClothingNeckCloakCapFormal
+      price: 900
+    - proto: ClothingNeckMantleCap
+      price: 850
+    - proto: ClothingNeckTieRed
+      price: 200
+    - proto: ClothingShoesLeather
+      price: 300
+    - proto: ClothingHandsGlovesColorWhite
+      price: 150
+  - type: ActivatableUI
+    singleUser: true
+    key: enum.SWShadowShopUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWShadowShopUiKey.Key:
+        type: SWShadowShopBoundUserInterface
+  - type: Godmode

@@ -188,9 +188,6 @@ public sealed class SWMinistryEconomySystem : EntitySystem
     {
         _growth = Math.Clamp(_growth + 4f, -4f, 6f);
         _overheat = Math.Clamp(_overheat + 30f, 0f, 100f);
-        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство экономики",
-            "Запущен большой стимул: экономика резко разогнана.",
-            SWSenateAnnouncementKind.Economy));
         AddLog("Большой стимул: рост разогнан, перегрев подскочил.");
     }
 

@@ -248,9 +248,6 @@ public sealed class SWSenateBudgetSystem : EntitySystem
         }
 
         _phase = SWBudgetPhase.Approved;
-        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство финансов",
-            "Бюджет на текущий день утверждён.",
-            SWSenateAnnouncementKind.Finance));
     }
 
     public List<SWBudgetShareEntry> BuildShares()

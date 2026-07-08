@@ -346,9 +346,7 @@ public sealed class SWMinistryDefenseSystem : EntitySystem
             group.SectorId = null;
         }
         _upkeepAccum = 0f;
-        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Штаб обороны",
-            "Флот отозван в резерв: нет средств на содержание.",
-            SWSenateAnnouncementKind.Defense));
+        AddLog("Флот отозван в резерв: нет средств на содержание.");
     }
 
     private void RollBorderDamage(float gameHours, float chancePerHour)

@@ -517,9 +517,6 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         _research *= 0.6f;
         _immunity *= 0.5f;
         AddLog($"Патоген мутировал - штамм {_strain + 1}, вирулентность выше.");
-        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство здравоохранения",
-            $"Патоген «{_name}» мутировал в штамм {_strain + 1}.",
-            SWSenateAnnouncementKind.Health));
     }
 
     private void ApplyMortality(float gameHours)

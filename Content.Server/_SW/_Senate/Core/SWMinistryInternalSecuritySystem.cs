@@ -383,9 +383,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
             }
         }
         _upkeepAccum = 0f;
-        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство ВБ",
-            "Агентура отозвана: нет средств на содержание сети.",
-            SWSenateAnnouncementKind.Security));
+        AddLog("Агентура отозвана: нет средств на содержание сети.");
     }
 
     private void CompleteRebuilds()

@@ -72,6 +72,7 @@ public sealed class SWMercSystem : EntitySystem
     private bool _mercArrived;
     private int _lastProcHour = -1;
     private float _holdTime;
+    private bool _wasDay = true;
 
     public override void Initialize()
     {
@@ -91,6 +92,7 @@ public sealed class SWMercSystem : EntitySystem
         _mercArrived = false;
         _lastProcHour = -1;
         _holdTime = 0f;
+        _wasDay = true;
     }
 
     public override void Update(float frameTime)
@@ -98,7 +100,12 @@ public sealed class SWMercSystem : EntitySystem
         if (!_time.ModeActive)
             return;
 
+        var nightStarted = _wasDay && !_time.DayActive;
+        _wasDay = _time.DayActive;
+
         TickAuto();
+        if (nightStarted && !_autoSpawned && !ContractOpen)
+            AutoRoll(2f);
         TickContract(frameTime);
     }
 
@@ -114,25 +121,19 @@ public sealed class SWMercSystem : EntitySystem
             return;
 
         _lastProcHour = hour;
+        AutoRoll(1f);
+    }
 
-        var startDay = _time.Day;
-        var roundDays = 3;
-        var ruleQuery = EntityQueryEnumerator<SWSenateRuleComponent>();
-        if (ruleQuery.MoveNext(out var rule))
-        {
-            startDay = rule.StartDay;
-            roundDays = rule.RoundDays;
-        }
-
-        if (hour < startDay * 24 + WindowOpenHour)
-            return;
-        if (hour > (startDay + roundDays - 1) * 24 + WindowCloseHour)
+    private void AutoRoll(float scale)
+    {
+        if (!InWindow(_time.AbsoluteHour))
             return;
 
         if (!_senate.GetRepublicGlobals().TryGetValue("SWGlobalSecurity", out var security) || security >= SecuritySoft)
             return;
 
-        if (!_random.Prob(security < SecurityHard ? AutoChanceHot : AutoChance))
+        var chance = (security < SecurityHard ? AutoChanceHot : AutoChance) * scale;
+        if (!_random.Prob(Math.Min(chance, 1f)))
             return;
 
         var senators = _senate.SectorHolders.Values.Where(name => FindAlive(name) != null).ToList();
@@ -142,6 +143,21 @@ public sealed class SWMercSystem : EntitySystem
         var kind = _random.Prob(0.5f) ? SWMercContractKind.Kill : SWMercContractKind.Kidnap;
         if (StartContract(null, kind, _random.Pick(senators)))
             _autoSpawned = true;
+    }
+
+    private bool InWindow(int hour)
+    {
+        var startDay = _time.Day;
+        var roundDays = 3;
+        var ruleQuery = EntityQueryEnumerator<SWSenateRuleComponent>();
+        if (ruleQuery.MoveNext(out var rule))
+        {
+            startDay = rule.StartDay;
+            roundDays = rule.RoundDays;
+        }
+
+        return hour >= startDay * 24 + WindowOpenHour
+            && hour <= (startDay + roundDays - 1) * 24 + WindowCloseHour;
     }
 
     private void TickContract(float frameTime)

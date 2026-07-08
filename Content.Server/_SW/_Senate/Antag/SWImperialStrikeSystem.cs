@@ -60,6 +60,7 @@ public sealed class SWImperialStrikeSystem : EntitySystem
     private bool _empireControls;
     private float _holdTime;
     private int _lastProcHour = -1;
+    private bool _wasDay = true;
 
     public override void Initialize()
     {
@@ -79,6 +80,7 @@ public sealed class SWImperialStrikeSystem : EntitySystem
         _empireControls = false;
         _holdTime = 0f;
         _lastProcHour = -1;
+        _wasDay = true;
     }
 
     public override void Update(float frameTime)
@@ -86,12 +88,21 @@ public sealed class SWImperialStrikeSystem : EntitySystem
         if (!_time.ModeActive)
             return;
 
+        var nightStarted = _wasDay && !_time.DayActive;
+        _wasDay = _time.DayActive;
+
         TickConsoles();
 
         if (!Launched)
+        {
             TickBreach();
+            if (nightStarted)
+                BreachRoll(2f);
+        }
         else
+        {
             TickExtraction(frameTime);
+        }
     }
 
     private void TickBreach()
@@ -104,7 +115,26 @@ public sealed class SWImperialStrikeSystem : EntitySystem
             return;
 
         _lastProcHour = hour;
+        BreachRoll(1f);
+    }
 
+    private void BreachRoll(float scale)
+    {
+        if (!InWindow(_time.AbsoluteHour))
+            return;
+
+        if (_defense.HasBorderFleet)
+            return;
+
+        var chance = (_defense.BorderPressure >= HotBorder ? BreachChanceHot : BreachChance) * scale;
+        if (!_random.Prob(Math.Min(chance, 1f)))
+            return;
+
+        TryLaunch(null, null, out _);
+    }
+
+    private bool InWindow(int hour)
+    {
         var startDay = _time.Day;
         var roundDays = 3;
         var ruleQuery = EntityQueryEnumerator<SWSenateRuleComponent>();
@@ -114,18 +144,8 @@ public sealed class SWImperialStrikeSystem : EntitySystem
             roundDays = rule.RoundDays;
         }
 
-        if (hour < startDay * 24 + WindowOpenHour)
-            return;
-        if (hour > (startDay + roundDays - 1) * 24 + WindowCloseHour)
-            return;
-
-        if (_defense.HasBorderFleet)
-            return;
-
-        if (!_random.Prob(_defense.BorderPressure >= HotBorder ? BreachChanceHot : BreachChance))
-            return;
-
-        TryLaunch(null, null, out _);
+        return hour >= startDay * 24 + WindowOpenHour
+            && hour <= (startDay + roundDays - 1) * 24 + WindowCloseHour;
     }
 
     private void TickExtraction(float frameTime)

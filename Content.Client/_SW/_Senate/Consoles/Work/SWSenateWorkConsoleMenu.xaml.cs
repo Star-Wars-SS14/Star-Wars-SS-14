@@ -53,6 +53,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             (NavDraft, DraftTab),
             (NavAgenda, AgendaScroll),
             (NavSchedule, ScheduleTab),
+            (NavCommittees, CommitteesTab),
             (NavCourt, CourtTab),
             (NavDilemmas, DilemmaTab),
             (NavCrises, CrisesTab),
@@ -80,6 +81,9 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         PartiesModeAll.OnPressed += _ => ShowPartiesMode(0);
         PartiesModeMine.OnPressed += _ => ShowPartiesMode(1);
         PartiesModeLaws.OnPressed += _ => ShowPartiesMode(2);
+
+        CommitteesModeAll.OnPressed += _ => ShowCommitteesMode(0);
+        CommitteesModeMine.OnPressed += _ => ShowCommitteesMode(1);
         CreatePartyButton.OnPressed += _ =>
         {
             if (!string.IsNullOrWhiteSpace(PartyNameEdit.Text))
@@ -94,6 +98,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         ShowDraftMode(true);
         ShowDilemmaMode(0);
         ShowPartiesMode(0);
+        ShowCommitteesMode(0);
 
         AnnounceButton.OnPressed += _ =>
         {
@@ -166,6 +171,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         NavDilemmas.Visible = state.CanDilemmas && state.InOffice;
         NavCrises.Visible = state.IsSenateCard;
         NavParties.Visible = state.IsSenateCard;
+        NavCommittees.Visible = state.CanCommittees && state.InOffice;
         NavAmbitions.Visible = state.CanAmbitions && state.InOffice;
         NavBudget.Visible = state.IsChancellorView;
         NavSignature.Visible = state.CanSignLaws;
@@ -204,6 +210,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BuildAmbitions(state);
         BuildCrises(state);
         BuildParties(state);
+        BuildCommittees(state);
         BuildBudgetSection(state);
         BuildSignature(state);
         BuildPowers(state);
@@ -574,6 +581,143 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         StyleToggle(PartiesModeAll, mode == 0);
         StyleToggle(PartiesModeMine, mode == 1);
         StyleToggle(PartiesModeLaws, mode == 2);
+    }
+
+    private void ShowCommitteesMode(int mode)
+    {
+        AllCommitteesPanel.Visible = mode == 0;
+        MyCommitteesPanel.Visible = mode == 1;
+        CommitteesModeAll.Disabled = mode == 0;
+        CommitteesModeMine.Disabled = mode == 1;
+        StyleToggle(CommitteesModeAll, mode == 0);
+        StyleToggle(CommitteesModeMine, mode == 1);
+    }
+
+    private void BuildCommittees(SWSenateWorkConsoleState state)
+    {
+        AllCommitteesList.RemoveAllChildren();
+        MyCommitteesList.RemoveAllChildren();
+
+        if (state.Committees.Count == 0)
+        {
+            AllCommitteesList.AddChild(SWConsoleStyle.Text("Комитеты недоступны.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            return;
+        }
+
+        foreach (var committee in state.Committees)
+        {
+            var card = MakeCommitteeCard(committee, false);
+            StyleCardButtons(card);
+            AllCommitteesList.AddChild(card);
+        }
+
+        var mine = state.Committees.Where(c => c.IAmMember).ToList();
+        if (mine.Count == 0)
+        {
+            MyCommitteesList.AddChild(SWConsoleStyle.Text("Вы не состоите ни в одном комитете.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            return;
+        }
+
+        foreach (var committee in mine)
+        {
+            var card = MakeCommitteeCard(committee, true);
+            StyleCardButtons(card);
+            MyCommitteesList.AddChild(card);
+        }
+    }
+
+    private Control MakeCommitteeCard(SWCommitteeEntry committee, bool detailed)
+    {
+        var inner = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+
+        var header = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+        header.AddChild(SWConsoleStyle.Text(committee.Name, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+        header.AddChild(new Control { HorizontalExpand = true });
+        var seatsColor = committee.MemberCount >= committee.Seats ? SWConsoleStyle.Bad : SWConsoleStyle.Neutral;
+        header.AddChild(SWConsoleStyle.Pill($"{committee.MemberCount}/{committee.Seats} мест", seatsColor, SWConsoleStyle.PillDim));
+        inner.AddChild(header);
+
+        inner.AddChild(SWConsoleStyle.Wrap(committee.Description, SWConsoleStyle.TextDim));
+
+        var chairText = committee.ElectionOpen
+            ? "Председатель: идут выборы"
+            : committee.ChairName.Length > 0
+                ? $"Председатель: {committee.ChairName}"
+                : "Председатель: —";
+        var chair = SWConsoleStyle.Text(chairText, committee.ElectionOpen ? SWConsoleStyle.Warn : SWConsoleStyle.TextBright, SWConsoleStyle.Mono);
+        chair.Margin = new Thickness(0, 4, 0, 0);
+        inner.AddChild(chair);
+
+        if (detailed)
+        {
+            foreach (var member in committee.Members)
+            {
+                var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
+                var label = member.IsChair ? $"{member.Name} · председатель" : member.Name;
+                row.AddChild(SWConsoleStyle.Text(label, member.IsMe ? SWConsoleStyle.Accent : SWConsoleStyle.TextBright, SWConsoleStyle.Mono));
+                row.AddChild(new Control { HorizontalExpand = true });
+
+                if (committee.ElectionOpen)
+                {
+                    row.AddChild(SWConsoleStyle.Text($"{member.Votes} голос.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                    var voted = committee.MyVote == member.Name;
+                    var vote = new Button
+                    {
+                        Text = voted ? "ваш голос" : "голос",
+                        Disabled = voted,
+                        Margin = new Thickness(6, 0, 0, 0),
+                    };
+                    var id = committee.Id;
+                    var candidate = member.Name;
+                    vote.OnPressed += _ => _owner.VoteChair(id, candidate);
+                    row.AddChild(vote);
+                }
+
+                inner.AddChild(row);
+            }
+        }
+        else
+        {
+            var names = committee.Members.Count == 0
+                ? "нет членов"
+                : string.Join(", ", committee.Members.Select(m => m.IsChair ? $"{m.Name} (предс.)" : m.Name));
+            var roster = SWConsoleStyle.Wrap("Состав: " + names, SWConsoleStyle.TextDim);
+            roster.Margin = new Thickness(0, 4, 0, 0);
+            inner.AddChild(roster);
+        }
+
+        if (committee.CanJoin)
+        {
+            var join = new Button { Text = "Вступить", HorizontalAlignment = Control.HAlignment.Left, Margin = new Thickness(0, 6, 0, 0) };
+            var id = committee.Id;
+            join.OnPressed += _ => _owner.JoinCommittee(id);
+            inner.AddChild(join);
+        }
+        else if (committee.CanLeave)
+        {
+            var leave = new Button { Text = "Выйти", HorizontalAlignment = Control.HAlignment.Left, Margin = new Thickness(0, 6, 0, 0) };
+            var id = committee.Id;
+            leave.OnPressed += _ => _owner.LeaveCommittee(id);
+            inner.AddChild(leave);
+        }
+
+        var panel = new PanelContainer
+        {
+            HorizontalExpand = true,
+            Margin = new Thickness(0, 0, 0, 10),
+            PanelOverride = new StyleBoxFlat
+            {
+                BackgroundColor = SWConsoleStyle.BgPanel,
+                BorderColor = committee.IAmMember ? SWConsoleStyle.Accent : SWConsoleStyle.Edge,
+                BorderThickness = new Thickness(committee.IAmMember ? 2 : 1),
+                ContentMarginLeftOverride = 10,
+                ContentMarginRightOverride = 10,
+                ContentMarginTopOverride = 8,
+                ContentMarginBottomOverride = 8,
+            },
+        };
+        panel.AddChild(inner);
+        return panel;
     }
 
     private void BuildParties(SWSenateWorkConsoleState state)
@@ -1638,7 +1782,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         _navGroups = new (Label, Button[])[]
         {
             (GroupInfo, new[] { NavOffice, NavSignature, NavPowers, NavDecree, NavSummary, NavCrises }),
-            (GroupOrg, new[] { NavRoster, NavAgenda, NavSchedule, NavCourt }),
+            (GroupOrg, new[] { NavRoster, NavAgenda, NavSchedule, NavCommittees, NavCourt }),
             (GroupWork, new[] { NavDraft, NavDilemmas, NavParties, NavAmbitions, NavBudget, NavAnnounce }),
         };
 

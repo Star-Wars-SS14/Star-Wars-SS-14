@@ -26,6 +26,7 @@
                             <Button Name="NavRoster" Text="Состав" Margin="0 0 0 2" />
                             <Button Name="NavAgenda" Text="Повестка" Margin="0 0 0 2" />
                             <Button Name="NavSchedule" Text="Расписание" Margin="0 0 0 2" />
+                            <Button Name="NavCommittees" Text="Комитеты" Margin="0 0 0 2" />
                             <Button Name="NavCourt" Text="Суд" Margin="0 0 0 2" />
                             <Label Name="GroupWork" Text="РАБОТА" Margin="2 10 0 3" />
                             <Button Name="NavDraft" Text="Разработка" Margin="0 0 0 2" />
@@ -158,6 +159,18 @@
                     <BoxContainer Name="AmbitionsTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
                         <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                             <BoxContainer Name="AmbitionsList" Orientation="Vertical" HorizontalExpand="True" />
+                        </ScrollContainer>
+                    </BoxContainer>
+                    <BoxContainer Name="CommitteesTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
+                        <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
+                            <Button Name="CommitteesModeAll" Text="Все комитеты" />
+                            <Button Name="CommitteesModeMine" Text="Мои комитеты" Margin="6 0 0 0" />
+                        </BoxContainer>
+                        <ScrollContainer Name="AllCommitteesPanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                            <BoxContainer Name="AllCommitteesList" Orientation="Vertical" HorizontalExpand="True" />
+                        </ScrollContainer>
+                        <ScrollContainer Name="MyCommitteesPanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                            <BoxContainer Name="MyCommitteesList" Orientation="Vertical" HorizontalExpand="True" />
                         </ScrollContainer>
                     </BoxContainer>
                     <BoxContainer Name="BudgetTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">

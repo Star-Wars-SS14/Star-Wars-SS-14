@@ -42,6 +42,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWSenateCourtSystem _court = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SWSenatePartySystem _party = default!;
+    [Dependency] private readonly SWSenateCommitteeSystem _committee = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
     private const float UpdateInterval = 3f;
@@ -104,6 +105,48 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateInitiateLeaderVoteMessage>(OnInitiateLeaderVote);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateInitiateEvictVoteMessage>(OnInitiateEvictVote);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateCastLeaderVoteMessage>(OnCastLeaderVote);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateJoinCommitteeMessage>(OnJoinCommittee);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateLeaveCommitteeMessage>(OnLeaveCommittee);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateVoteChairMessage>(OnVoteChair);
+    }
+
+    private string? SenatorName(Entity<SWSenateWorkConsoleComponent> ent)
+    {
+        var sectorId = GetSectorOwner(ent);
+        return sectorId != null && _senate.SectorHolders.TryGetValue(sectorId, out var name) ? name : null;
+    }
+
+    private void OnJoinCommittee(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateJoinCommitteeMessage args)
+    {
+        var name = SenatorName(ent);
+        if (name == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-senator-hint"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (!_committee.Join(name, args.CommitteeId))
+            _popup.PopupCursor("Мест в комитете нет.", args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnLeaveCommittee(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateLeaveCommitteeMessage args)
+    {
+        var name = SenatorName(ent);
+        if (name != null)
+            _committee.Leave(name, args.CommitteeId);
+
+        UpdateUi(ent);
+    }
+
+    private void OnVoteChair(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateVoteChairMessage args)
+    {
+        var name = SenatorName(ent);
+        if (name != null)
+            _committee.VoteChair(name, args.CommitteeId, args.Candidate);
+
+        UpdateUi(ent);
     }
 
     private void OnInitiateEvictVote(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateInitiateEvictVoteMessage args)
@@ -1283,6 +1326,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.Parties = _party.BuildParties(programOwner);
         state.MyPartyId = _party.GetPartyIdOf(programOwner);
         state.PartyLaws = _party.BuildPartyLaws();
+        var committeeViewer = SenatorName(ent);
+        state.CanCommittees = committeeViewer != null;
+        state.Committees = _committee.BuildCommittees(committeeViewer);
         state.DraftBudget = ent.Comp.DraftBudget;
         state.GameTime = _time.TimeString();
         state.Schedule = _senate.BuildScheduleRows();

@@ -1329,6 +1329,8 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public int MyPartyId = -1;
     public List<SWPartyEntry> Parties = new();
     public List<SWPartyLawEntry> PartyLaws = new();
+    public bool CanCommittees;
+    public List<SWCommitteeEntry> Committees = new();
     public bool HasPersonal;
     public int MyCorruption;
     public int MyAccount;
@@ -1361,6 +1363,69 @@ public sealed class SWCabinetEntry
     public string Name = string.Empty;
     public string Holder = string.Empty;
     public Color Color;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCommitteeMemberEntry
+{
+    public string Name = string.Empty;
+    public bool IsChair;
+    public bool IsMe;
+    public int Votes;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCommitteeEntry
+{
+    public string Id = string.Empty;
+    public string Name = string.Empty;
+    public string Description = string.Empty;
+    public string ChairName = string.Empty;
+    public int Seats;
+    public int MemberCount;
+    public bool IAmMember;
+    public bool IAmChair;
+    public bool CanJoin;
+    public bool CanLeave;
+    public bool ElectionOpen;
+    public bool IVoted;
+    public string MyVote = string.Empty;
+    public List<SWCommitteeMemberEntry> Members = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateJoinCommitteeMessage : BoundUserInterfaceMessage
+{
+    public string CommitteeId;
+
+    public SWSenateJoinCommitteeMessage(string committeeId)
+    {
+        CommitteeId = committeeId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateLeaveCommitteeMessage : BoundUserInterfaceMessage
+{
+    public string CommitteeId;
+
+    public SWSenateLeaveCommitteeMessage(string committeeId)
+    {
+        CommitteeId = committeeId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateVoteChairMessage : BoundUserInterfaceMessage
+{
+    public string CommitteeId;
+    public string Candidate;
+
+    public SWSenateVoteChairMessage(string committeeId, string candidate)
+    {
+        CommitteeId = committeeId;
+        Candidate = candidate;
+    }
 }
 
 [Serializable, NetSerializable]

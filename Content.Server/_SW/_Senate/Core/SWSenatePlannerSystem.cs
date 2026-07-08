@@ -14,6 +14,7 @@ public sealed class SWSenatePlannerSystem : EntitySystem
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SWSenateCourtSystem _court = default!;
+    [Dependency] private readonly SWSenateCommitteeSystem _committee = default!;
 
     private const int MaxMeetingsPerHost = 8;
     private const int MaxBlocksPerOwner = 10;
@@ -288,10 +289,17 @@ public sealed class SWSenatePlannerSystem : EntitySystem
         var cabinet = IsCabinet(person);
         foreach (var (slot, duration, label) in Presets)
         {
-            if (cabinet && slot == 0)
+            if (slot == 0 && cabinet)
             {
                 items.Add(new SWPlannerItemEntry { StartSlot = 0, Duration = 4, Kind = 0, Label = "Личное время" });
                 items.Add(new SWPlannerItemEntry { StartSlot = 4, Duration = 4, Kind = 1, Label = "Собрание Кабинета" });
+                continue;
+            }
+
+            if (slot == 0 && _committee.IsAnyMember(person))
+            {
+                items.Add(new SWPlannerItemEntry { StartSlot = 0, Duration = 4, Kind = 0, Label = "Личное время" });
+                items.Add(new SWPlannerItemEntry { StartSlot = 4, Duration = 4, Kind = 1, Label = "Комитетский час" });
                 continue;
             }
 

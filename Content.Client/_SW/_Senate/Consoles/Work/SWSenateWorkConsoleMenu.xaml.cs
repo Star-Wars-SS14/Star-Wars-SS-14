@@ -1538,7 +1538,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private static RichTextLabel MakeWrap(string text, Color? color = null)
     {
-        var label = new RichTextLabel { HorizontalExpand = true };
+        var label = new SWConsoleStyle.WrappingRichTextLabel(660f) { HorizontalExpand = true };
         var escaped = FormattedMessage.EscapeText(text);
         label.SetMarkup(color is { } c ? $"[color={c.ToHex()}]{escaped}[/color]" : escaped);
         return label;
@@ -1591,7 +1591,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
         if (!string.IsNullOrWhiteSpace(dilemma.Description))
         {
-            var desc = new RichTextLabel { Margin = new Thickness(0, 0, 0, 4) };
+            var desc = new SWConsoleStyle.WrappingRichTextLabel(660f) { HorizontalExpand = true, Margin = new Thickness(0, 0, 0, 4) };
             desc.SetMessage(dilemma.Description);
             details.AddChild(desc);
         }

@@ -2178,7 +2178,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
 
         if (!string.IsNullOrWhiteSpace(state.MinistryDescription))
         {
-            var desc = new RichTextLabel { Margin = new Thickness(0, 4, 0, 0) };
+            var desc = new SWConsoleStyle.WrappingRichTextLabel(660f) { HorizontalExpand = true, Margin = new Thickness(0, 4, 0, 0) };
             desc.SetMarkup(state.MinistryDescription);
             box.AddChild(desc);
         }
@@ -2266,7 +2266,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
 
             if (!string.IsNullOrWhiteSpace(ambition.Description))
             {
-                var desc = new RichTextLabel { Margin = new Thickness(0, 2, 0, 0) };
+                var desc = new SWConsoleStyle.WrappingRichTextLabel(660f) { HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
                 desc.SetMessage(ambition.Description);
                 box.AddChild(desc);
             }
@@ -2388,7 +2388,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
 
         if (!string.IsNullOrWhiteSpace(request.ProblemDescription))
         {
-            var desc = new RichTextLabel { Margin = new Thickness(0, 3, 0, 0) };
+            var desc = new SWConsoleStyle.WrappingRichTextLabel(660f) { HorizontalExpand = true, Margin = new Thickness(0, 3, 0, 0) };
             desc.SetMarkup(FormattedMessage.EscapeText(request.ProblemDescription));
             box.AddChild(desc);
         }

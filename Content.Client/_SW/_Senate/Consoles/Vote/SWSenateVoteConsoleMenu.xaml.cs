@@ -102,7 +102,7 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
 
             if (!string.IsNullOrWhiteSpace(bill.Description))
             {
-                var desc = new RichTextLabel { Margin = new Thickness(0, 3, 0, 0) };
+                var desc = new SWConsoleStyle.WrappingRichTextLabel(660f) { HorizontalExpand = true, Margin = new Thickness(0, 3, 0, 0) };
                 desc.SetMessage(bill.Description);
                 box.AddChild(desc);
             }
@@ -172,7 +172,7 @@ public sealed partial class SWSenateVoteConsoleMenu : FancyWindow
 
         if (!string.IsNullOrWhiteSpace(state.CurrentDescription))
         {
-            var desc = new RichTextLabel { Margin = new Thickness(0, 3, 0, 0) };
+            var desc = new SWConsoleStyle.WrappingRichTextLabel(660f) { HorizontalExpand = true, Margin = new Thickness(0, 3, 0, 0) };
             desc.SetMessage(state.CurrentDescription);
             box.AddChild(desc);
         }

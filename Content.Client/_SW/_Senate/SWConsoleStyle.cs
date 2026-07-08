@@ -187,7 +187,7 @@ public static class SWConsoleStyle
     public static Color SeverityColor(float severity) =>
         severity >= 70f ? Bad : severity >= 40f ? Warn : Good;
 
-    private sealed class WrappingRichTextLabel : RichTextLabel
+    public sealed class WrappingRichTextLabel : RichTextLabel
     {
         private readonly float _fallbackWidth;
 

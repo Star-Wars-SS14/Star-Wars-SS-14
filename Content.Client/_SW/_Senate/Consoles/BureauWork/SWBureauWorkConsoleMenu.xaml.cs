@@ -148,7 +148,7 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
 
             if (!string.IsNullOrWhiteSpace(ambition.Description))
             {
-                var desc = new RichTextLabel { Margin = new Thickness(0, 2, 0, 0) };
+                var desc = new SWConsoleStyle.WrappingRichTextLabel(660f) { HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
                 desc.SetMessage(ambition.Description);
                 box.AddChild(desc);
             }
@@ -452,7 +452,7 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
                 box.AddChild(SWConsoleStyle.Text(evt.Name, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
                 if (!string.IsNullOrWhiteSpace(evt.Description))
                 {
-                    var desc = new RichTextLabel { Margin = new Thickness(0, 2, 0, 0) };
+                    var desc = new SWConsoleStyle.WrappingRichTextLabel(660f) { HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
                     desc.SetMessage(evt.Description);
                     box.AddChild(desc);
                 }
@@ -653,7 +653,7 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
         box.AddChild(SWConsoleStyle.Text(dil.Name, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
         if (!string.IsNullOrWhiteSpace(dil.Description))
         {
-            var desc = new RichTextLabel { Margin = new Thickness(0, 2, 0, 0) };
+            var desc = new SWConsoleStyle.WrappingRichTextLabel(660f) { HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
             desc.SetMessage(dil.Description);
             box.AddChild(desc);
         }
@@ -808,7 +808,7 @@ public sealed partial class SWBureauWorkConsoleMenu : FancyWindow
             box.AddChild(SWConsoleStyle.Text($"{req.OwnerLabel}  ·  {req.DeadlineLabel}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
             if (!string.IsNullOrWhiteSpace(req.ProblemDescription))
             {
-                var desc = new RichTextLabel { Margin = new Thickness(0, 2, 0, 0) };
+                var desc = new SWConsoleStyle.WrappingRichTextLabel(660f) { HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
                 desc.SetMessage(req.ProblemDescription);
                 box.AddChild(desc);
             }

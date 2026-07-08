@@ -187,6 +187,12 @@ public static class SWConsoleStyle
     public static Color SeverityColor(float severity) =>
         severity >= 70f ? Bad : severity >= 40f ? Warn : Good;
 
+    // RichTextLabel wraps text at whatever width it was MEASURED with and never re-wraps on arrange
+    // (RobustToolbox RichTextLabel: Draw uses the wrapping computed in the last MeasureOverride). Parents
+    // routinely MEASURE us at a width wider than the width we are ultimately ARRANGED to (a scroll
+    // container measures children at its own width but arranges them minus the scrollbar/margins), so the
+    // text wraps too wide and gets clipped. Mirroring OutputPanel/chat, we ignore the measure-time width
+    // and always wrap against our real arranged Width, re-measuring on Resized so the wrap follows layout.
     public sealed class WrappingRichTextLabel : RichTextLabel
     {
         private readonly float _fallbackWidth;
@@ -196,12 +202,21 @@ public static class SWConsoleStyle
             _fallbackWidth = fallbackWidth;
         }
 
+        protected override void Resized()
+        {
+            base.Resized();
+            InvalidateMeasure();
+        }
+
         protected override Vector2 MeasureOverride(Vector2 availableSize)
         {
-            if (float.IsInfinity(availableSize.X) || availableSize.X <= 0)
-                availableSize.X = _fallbackWidth;
+            // Once we've been arranged at least once, wrap against that real width; otherwise fall back to
+            // the caller's available width (or a fixed hint if that is infinite on the first pass).
+            var width = Width;
+            if (width <= 1f)
+                width = float.IsInfinity(availableSize.X) || availableSize.X <= 0f ? _fallbackWidth : availableSize.X;
 
-            return base.MeasureOverride(availableSize);
+            return base.MeasureOverride(new Vector2(width, availableSize.Y));
         }
     }
 }

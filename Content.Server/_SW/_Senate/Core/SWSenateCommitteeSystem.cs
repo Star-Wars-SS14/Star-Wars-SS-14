@@ -13,7 +13,7 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
 
-    public const int SeatsPerCommittee = 6;
+    public const int SeatsPerCommittee = 3;
     public static int CommitteeHour => SWSenateTimeSystem.StartHour + 1;
 
     public bool InCommitteeHour => _time.DayActive && _time.CurrentHour == CommitteeHour;
@@ -93,11 +93,11 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
 
     public bool Join(string person, string committeeId)
     {
-        if (!IsSenator(person))
+        if (!IsSenator(person) || IsAnyMember(person))
             return false;
 
         var committee = _committees.FirstOrDefault(c => c.Id == committeeId);
-        if (committee == null || committee.Members.Contains(person) || committee.Members.Count >= SeatsPerCommittee)
+        if (committee == null || committee.Members.Count >= SeatsPerCommittee)
             return false;
 
         committee.Members.Add(person);
@@ -205,7 +205,7 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
 
     public List<SWCommitteeEntry> BuildCommittees(string? viewer)
     {
-        var canJoin = viewer != null && IsSenator(viewer);
+        var canJoin = viewer != null && IsSenator(viewer) && !IsAnyMember(viewer);
         var list = new List<SWCommitteeEntry>();
 
         foreach (var committee in _committees)

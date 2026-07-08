@@ -986,6 +986,8 @@ public sealed class SWSenateStateSystem : EntitySystem
     {
         if (hour == 14)
             return "Обед";
+        if (hour == 8)
+            return "Личное время · Собрание Кабинета";
         return "Личное время";
     }
 

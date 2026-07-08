@@ -200,6 +200,23 @@ public sealed class SWSenatePlannerSystem : EntitySystem
     private bool IsPolitical(string person) =>
         person == _senate.Chancellor || person == _senate.Speaker || _senate.SectorHolders.Values.Contains(person);
 
+    // The Chancellor's administration: Chancellor, Speaker and sitting ministry heads (not departments/bureaus).
+    private bool IsCabinet(string person)
+    {
+        if (person == _senate.Chancellor || person == _senate.Speaker)
+            return true;
+
+        foreach (var (ministryId, holder) in _ministry.Holders)
+        {
+            if (holder == person
+                && _proto.TryIndex<SWMinistryPrototype>(ministryId, out var proto)
+                && proto.Kind == SWMinistryKind.Ministry)
+                return true;
+        }
+
+        return false;
+    }
+
     private static readonly (int Slot, int Duration, string Label)[] Presets =
     {
         (0, 8, "Личное время"),
@@ -268,8 +285,18 @@ public sealed class SWSenatePlannerSystem : EntitySystem
     {
         var items = new List<SWPlannerItemEntry>();
 
+        var cabinet = IsCabinet(person);
         foreach (var (slot, duration, label) in Presets)
+        {
+            if (cabinet && slot == 0)
+            {
+                items.Add(new SWPlannerItemEntry { StartSlot = 0, Duration = 4, Kind = 0, Label = "Личное время" });
+                items.Add(new SWPlannerItemEntry { StartSlot = 4, Duration = 4, Kind = 1, Label = "Собрание Кабинета" });
+                continue;
+            }
+
             items.Add(new SWPlannerItemEntry { StartSlot = slot, Duration = duration, Kind = 0, Label = label });
+        }
 
         if (day == _time.Day && IsPolitical(person))
         {

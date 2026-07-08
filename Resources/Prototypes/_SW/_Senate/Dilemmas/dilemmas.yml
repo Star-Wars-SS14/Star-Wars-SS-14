@@ -393,7 +393,7 @@
       SWGlobalSecurity: 5
       SWGlobalEconomy: -2
   - label: Глубокое внедрение агентуры
-    description: Долгая игра: агенты внутри синдиката выведут следствие на всех покровителей сети.
+    description: "Долгая игра: агенты внутри синдиката выведут следствие на всех покровителей сети."
     cost: 3000
     sectorEffects:
       SWGlobalSecurity: 7
@@ -552,7 +552,7 @@
       SWGlobalHealthcare: 5
       SWGlobalEconomy: -2
   - label: Перекрыть каналы поставок
-    description: Совместная операция с таможней: перехват транспортов картеля ещё на дальних подступах.
+    description: "Совместная операция с таможней: перехват транспортов картеля ещё на дальних подступах."
     cost: 3000
     sectorEffects:
       SWGlobalHealthcare: 6
@@ -872,7 +872,7 @@
       SWGlobalSecurity: 5
       SWGlobalSociety: -2
   - label: Вскрыть всю сеть агентуры
-    description: Масштабная чистка: наблюдение, аресты и перевербовка по всей цепочке имперской резидентуры.
+    description: "Масштабная чистка: наблюдение, аресты и перевербовка по всей цепочке имперской резидентуры."
     cost: 3000
     sectorEffects:
       SWGlobalSecurity: 6

@@ -73,3 +73,49 @@
       enum.SWShadowShopUiKey.Key:
         type: SWShadowShopBoundUserInterface
   - type: Godmode
+
+- type: entity
+  parent: BaseStructure
+  id: SWBoutiqueFurniture
+  name: салон «Уют Кора»
+  description: Мебель и убранство для тех, кому надоело смотреть на голые стены апартаментов.
+  components:
+  - type: InteractionOutline
+  - type: Sprite
+    sprite: Structures/Machines/VendingMachines/centdrobe.rsi
+    layers:
+    - state: "off"
+  - type: SWShadowShop
+    catalog:
+    - proto: PottedPlant27
+      price: 100
+    - proto: PottedPlant1
+      price: 150
+    - proto: Lamp
+      price: 150
+    - proto: FloorCarpetItemRed
+      price: 200
+    - proto: FloorCarpetItemBlack
+      price: 200
+    - proto: FloorCarpetItemWhite
+      price: 200
+    - proto: PottedPlant7
+      price: 200
+    - proto: FloorCarpetItemPurple
+      price: 250
+    - proto: PottedPlant13
+      price: 250
+    - proto: LampGold
+      price: 350
+    - proto: LampBanana
+      price: 450
+    - proto: PottedPlantBioluminscent
+      price: 500
+  - type: ActivatableUI
+    singleUser: true
+    key: enum.SWShadowShopUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWShadowShopUiKey.Key:
+        type: SWShadowShopBoundUserInterface
+  - type: Godmode

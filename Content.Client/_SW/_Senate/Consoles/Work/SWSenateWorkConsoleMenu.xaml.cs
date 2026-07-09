@@ -28,6 +28,107 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     private bool _decreeBuilt;
     private readonly Dictionary<string, LineEdit> _budgetEdits = new();
     private string _budgetSignature = string.Empty;
+    private string _committeesSignature = string.Empty;
+    private string _agendaSignature = string.Empty;
+    private string _ambitionsSignature = string.Empty;
+    private string _dilemmaActiveSignature = string.Empty;
+    private string _dilemmaSummarySignature = string.Empty;
+    private string _budgetDilemmaSignature = string.Empty;
+    private string _crisesSignature = string.Empty;
+    private readonly Dictionary<int, (Label Severity, ProgressBar Bar)> _crisisRefs = new();
+    private string _returnedBillsSignature = string.Empty;
+    private string _partiesSignature = string.Empty;
+    private string _partyLawsSignature = string.Empty;
+    private string _programsSignature = string.Empty;
+    private string _rosterSignature = string.Empty;
+    private string _scheduleSignature = string.Empty;
+    private string _signatureListSignature = string.Empty;
+    private string _powersSignature = string.Empty;
+    private string _courtSignature = string.Empty;
+    private string _dashboardSignature = string.Empty;
+    private string _courtNomineeSignature = string.Empty;
+    private bool _electionElectSignature;
+    private string _warApprovalSignature = string.Empty;
+    private SWSenateWorkConsoleState? _lastState;
+
+    // A panel built while its ancestor tab is hidden never gets a real Measure/Arrange pass (RobustToolbox
+    // skips invisible subtrees), so WrappingRichTextLabel children can end up stuck at an unconverged size.
+    // Force every signature-guarded panel to rebuild for real the moment the user actually navigates to it.
+    private void InvalidateAllSignatures()
+    {
+        _committeesSignature = string.Empty;
+        _agendaSignature = string.Empty;
+        _ambitionsSignature = string.Empty;
+        _dilemmaActiveSignature = string.Empty;
+        _dilemmaSummarySignature = string.Empty;
+        _budgetDilemmaSignature = string.Empty;
+        _crisesSignature = string.Empty;
+        _crisisRefs.Clear();
+        _returnedBillsSignature = string.Empty;
+        _partiesSignature = string.Empty;
+        _partyLawsSignature = string.Empty;
+        _programsSignature = string.Empty;
+        _rosterSignature = string.Empty;
+        _scheduleSignature = string.Empty;
+        _signatureListSignature = string.Empty;
+        _powersSignature = string.Empty;
+        _courtSignature = string.Empty;
+        _dashboardSignature = string.Empty;
+        _courtNomineeSignature = string.Empty;
+        _warApprovalSignature = string.Empty;
+        _budgetSignature = string.Empty;
+        _presetsBuilt = false;
+    }
+
+    private Control[] _trackedPanels = System.Array.Empty<Control>();
+    private readonly Dictionary<Control, bool> _lastPanelVisible = new();
+
+    // Belt-and-suspenders on top of the RebuildAllPanels() calls in ShowSection/ShowDilemmaMode/etc:
+    // catches a hidden->visible transition no matter which code path caused it, so a stale unconverged
+    // layout can never survive more than one periodic SetState after the panel is actually shown.
+    private void TrackVisibilityTransitions()
+    {
+        foreach (var panel in _trackedPanels)
+        {
+            var now = panel.Visible;
+            var was = _lastPanelVisible.TryGetValue(panel, out var prev) && prev;
+            _lastPanelVisible[panel] = now;
+            if (now && !was)
+            {
+                InvalidateAllSignatures();
+                return;
+            }
+        }
+    }
+
+    private void RebuildAllPanels()
+    {
+        if (_lastState is not { } state)
+            return;
+
+        InvalidateAllSignatures();
+
+        BuildRoster(state);
+        BuildDashboard(state);
+        BuildAgenda(state);
+        BuildSchedule(state);
+        BuildPresets(state);
+        BuildDilemmas(state);
+        BuildBudget(state);
+        BuildPrograms(state);
+        BuildAmbitions(state);
+        BuildCrises(state);
+        BuildParties(state);
+        BuildCommittees(state);
+        BuildReturnedBills(state);
+        BuildBudgetSection(state);
+        BuildSignature(state);
+        BuildPowers(state);
+        BuildCourtSection(state);
+        BuildCourtNominee(state);
+        BuildElectionElect(state);
+        BuildWarApproval(state);
+    }
     private readonly HashSet<int> _expandedDilemmas = new();
     private readonly HashSet<int> _expandedCrises = new();
     private readonly HashSet<int> _expandedParties = new();
@@ -69,6 +170,16 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             var target = panel;
             nav.OnPressed += _ => ShowSection(target);
         }
+
+        _trackedPanels = _sections.Select(s => s.Panel)
+            .Concat(new Control[]
+            {
+                DilemmaActivePanel, DilemmaBudgetPanel, DilemmaProgramPanel, DilemmaSummaryPanel,
+                AllPartiesPanel, MyPartyPanel, PartyLawsPanel,
+                AllCommitteesPanel, MyCommitteesPanel,
+                CustomDraftPanel, PresetPanel,
+            })
+            .ToArray();
 
         StyleChrome();
 
@@ -146,6 +257,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     public void SetState(SWSenateWorkConsoleState state)
     {
+        _lastState = state;
+        TrackVisibilityTransitions();
         HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "-" : state.GameTime;
 
         if (!state.HasCard)
@@ -223,6 +336,11 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void BuildCourtNominee(SWSenateWorkConsoleState state)
     {
+        var signature = $"{state.IsCourtNominee}={state.CourtNominationLabel}";
+        if (signature == _courtNomineeSignature)
+            return;
+
+        _courtNomineeSignature = signature;
         CourtNomineeBox.RemoveAllChildren();
         if (!state.IsCourtNominee)
             return;
@@ -251,9 +369,16 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void BuildCourtSection(SWSenateWorkConsoleState state)
     {
-        CourtList.RemoveAllChildren();
         if (!NavCourt.Visible)
             return;
+
+        var signature = $"{state.CourtStatusLabel}={state.CourtPendingLabel}={state.MustPromoteChief}={state.CanNominateJudges}=" +
+            string.Join(",", state.CourtChiefCandidates) + "|" + string.Join(",", state.CourtCandidates);
+        if (signature == _courtSignature)
+            return;
+
+        _courtSignature = signature;
+        CourtList.RemoveAllChildren();
 
         CourtList.AddChild(SWConsoleStyle.Section("ВЕРХОВНЫЙ СУД"));
         CourtList.AddChild(MakeWrap(state.CourtStatusLabel));
@@ -360,6 +485,13 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void BuildPowers(SWSenateWorkConsoleState state)
     {
+        var signature = $"{state.PowersActive}={state.EmergencyLevelName}={state.EmergencyDaysLeft}={state.Authority}={state.Legitimacy}=" +
+            $"{state.CanUseEmergencyPowers}={state.HasCommand}={state.CanRelinquish}={state.CanProposeMotions}={state.Position}=" +
+            string.Join(",", state.AvailablePowers) + "|" + string.Join(",", state.Cabinet.Select(c => $"{c.MinistryId}={c.Holder}"));
+        if (signature == _powersSignature)
+            return;
+
+        _powersSignature = signature;
         PowersList.RemoveAllChildren();
 
         PowersList.AddChild(SWConsoleStyle.Section("ЧРЕЗВЫЧАЙНЫЕ ПОЛНОМОЧИЯ"));
@@ -522,6 +654,12 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void BuildSignature(SWSenateWorkConsoleState state)
     {
+        var signature = $"{state.CanSignLaws}={state.HasVeto}=" +
+            string.Join(",", state.LawsAwaitingSignature.Select(l => l.Id));
+        if (signature == _signatureListSignature)
+            return;
+
+        _signatureListSignature = signature;
         SignatureList.RemoveAllChildren();
 
         SignatureList.AddChild(SWConsoleStyle.Section("ЗАКОНЫ НА ПОДПИСЬ"));
@@ -585,6 +723,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         StyleToggle(PartiesModeAll, mode == 0);
         StyleToggle(PartiesModeMine, mode == 1);
         StyleToggle(PartiesModeLaws, mode == 2);
+        RebuildAllPanels();
     }
 
     private void ShowCommitteesMode(int mode)
@@ -595,10 +734,35 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         CommitteesModeMine.Disabled = mode == 1;
         StyleToggle(CommitteesModeAll, mode == 0);
         StyleToggle(CommitteesModeMine, mode == 1);
+        RebuildAllPanels();
     }
 
     private void BuildCommittees(SWSenateWorkConsoleState state)
     {
+        // Rebuild only when membership, chair, votes or bill queues actually change, so the periodic
+        // refresh doesn't tear down and flash the cards every few seconds for no reason.
+        var signature = new System.Text.StringBuilder();
+        foreach (var committee in state.Committees)
+        {
+            signature.Append(committee.Id).Append(':').Append(committee.ChairName).Append(':')
+                .Append(committee.ElectionOpen).Append(':').Append(committee.CanJoin).Append(':')
+                .Append(committee.CanLeave).Append(':').Append(committee.MyVote).Append(';');
+            foreach (var member in committee.Members)
+                signature.Append(member.Name).Append('=').Append(member.IsChair).Append('=').Append(member.Votes).Append(',');
+            foreach (var bill in committee.Bills)
+            {
+                signature.Append(bill.Id).Append('=').Append(bill.SendBacks).Append('=').Append(bill.CanSendBack).Append('=')
+                    .Append(bill.AdvanceVotes).Append('=').Append(bill.SendBackVotes).Append('=')
+                    .Append(bill.MyVote).Append('=').Append(bill.CanAct).Append(',');
+            }
+            signature.Append('|');
+        }
+
+        if (signature.ToString() == _committeesSignature)
+            return;
+
+        _committeesSignature = signature.ToString();
+
         AllCommitteesList.RemoveAllChildren();
         MyCommitteesList.RemoveAllChildren();
 
@@ -792,6 +956,11 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void BuildReturnedBills(SWSenateWorkConsoleState state)
     {
+        var signature = string.Join(",", state.ReturnedBills.Select(b => $"{b.Id}={b.SendBacks}={b.Reason}"));
+        if (signature == _returnedBillsSignature)
+            return;
+
+        _returnedBillsSignature = signature;
         ReturnedBillsBox.RemoveAllChildren();
         if (state.ReturnedBills.Count == 0)
         {
@@ -829,40 +998,50 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         }
     }
 
+    private static string PartySignature(SWPartyEntry p) =>
+        $"{p.Id}={p.Cohesion}={p.StatusLabel}={p.GraceWarning}={p.MemberCount}={p.Members.Count}={p.Pending.Count}=" +
+        $"{p.IsMine}={p.ViewerIsLeader}={p.CanRequestJoin}={p.JoinPending}={p.VoteActive}={p.VoteYes}={p.VoteNo}={p.ViewerVoted},";
+
     private void BuildParties(SWSenateWorkConsoleState state)
     {
-        AllPartiesList.RemoveAllChildren();
-        if (state.Parties.Count == 0)
-        {
-            AllPartiesList.AddChild(SWConsoleStyle.Text("Партий нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
-        }
-        else
-        {
-            foreach (var party in state.Parties)
-            {
-                var card = MakePartyCard(party, false);
-                StyleCardButtons(card);
-                AllPartiesList.AddChild(card);
-            }
-        }
-
         var mine = state.Parties.FirstOrDefault(p => p.IsMine);
-        CreatePartyBox.Visible = state.CanParties && mine == null;
+        var signature = string.Join("", state.Parties.Select(PartySignature)) + "|" + state.CanParties + (mine == null);
+        if (signature != _partiesSignature)
+        {
+            _partiesSignature = signature;
 
-        MyPartyList.RemoveAllChildren();
-        if (mine != null)
-        {
-            var card = MakePartyCard(mine, true);
-            StyleCardButtons(card);
-            MyPartyList.AddChild(card);
-        }
-        else if (!state.CanParties)
-        {
-            MyPartyList.AddChild(SWConsoleStyle.Text("Партии доступны сенаторам с закреплённым сектором.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
-        }
-        else
-        {
-            MyPartyList.AddChild(SWConsoleStyle.Text("Вы не состоите в партии. Создайте свою или вступите в существующую.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            AllPartiesList.RemoveAllChildren();
+            if (state.Parties.Count == 0)
+            {
+                AllPartiesList.AddChild(SWConsoleStyle.Text("Партий нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            }
+            else
+            {
+                foreach (var party in state.Parties)
+                {
+                    var card = MakePartyCard(party, false);
+                    StyleCardButtons(card);
+                    AllPartiesList.AddChild(card);
+                }
+            }
+
+            CreatePartyBox.Visible = state.CanParties && mine == null;
+
+            MyPartyList.RemoveAllChildren();
+            if (mine != null)
+            {
+                var card = MakePartyCard(mine, true);
+                StyleCardButtons(card);
+                MyPartyList.AddChild(card);
+            }
+            else if (!state.CanParties)
+            {
+                MyPartyList.AddChild(SWConsoleStyle.Text("Партии доступны сенаторам с закреплённым сектором.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            }
+            else
+            {
+                MyPartyList.AddChild(SWConsoleStyle.Text("Вы не состоите в партии. Создайте свою или вступите в существующую.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            }
         }
 
         BuildPartyLaws(state);
@@ -870,6 +1049,11 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void BuildPartyLaws(SWSenateWorkConsoleState state)
     {
+        var signature = string.Join(",", state.PartyLaws.Select(l => $"{l.BillName}={l.ResultLabel}"));
+        if (signature == _partyLawsSignature)
+            return;
+
+        _partyLawsSignature = signature;
         PartyLawsList.RemoveAllChildren();
         if (state.PartyLaws.Count == 0)
         {
@@ -1087,18 +1271,48 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void BuildCrises(SWSenateWorkConsoleState state)
     {
-        CrisesList.RemoveAllChildren();
-        if (state.Crises.Count == 0)
+        // Severity drifts almost every tick, so it's excluded from the rebuild signature; the number and
+        // bar are instead refreshed in place below, on whichever cards already exist.
+        var signature = new System.Text.StringBuilder();
+        foreach (var crisis in state.Crises)
         {
-            CrisesList.AddChild(SWConsoleStyle.Text("Активных кризисов нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
-            return;
+            signature.Append(crisis.Id).Append('=').Append(crisis.CanResolve).Append('=').Append(crisis.CanAid).Append('=')
+                .Append(crisis.AidAffordable).Append('=').Append(crisis.AffectedLabel).Append('=').Append(crisis.EscalationThreat)
+                .Append('=').Append(crisis.ExitProgress).Append('=').Append(crisis.Solutions.Count).Append('=')
+                .Append(crisis.Laws.Count).Append('=').Append(crisis.Log.Count).Append(',');
+        }
+
+        if (signature.ToString() != _crisesSignature)
+        {
+            _crisesSignature = signature.ToString();
+            _crisisRefs.Clear();
+            CrisesList.RemoveAllChildren();
+
+            if (state.Crises.Count == 0)
+            {
+                CrisesList.AddChild(SWConsoleStyle.Text("Активных кризисов нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            }
+            else
+            {
+                foreach (var crisis in state.Crises)
+                {
+                    var card = MakeCrisisCard(crisis);
+                    StyleCardButtons(card);
+                    CrisesList.AddChild(card);
+                }
+            }
         }
 
         foreach (var crisis in state.Crises)
         {
-            var card = MakeCrisisCard(crisis);
-            StyleCardButtons(card);
-            CrisesList.AddChild(card);
+            if (!_crisisRefs.TryGetValue(crisis.Id, out var refs))
+                continue;
+
+            var sevColor = crisis.Severity >= 70f ? Color.IndianRed : crisis.Severity >= 40f ? Color.Goldenrod : Color.LightGreen;
+            refs.Severity.Text = $"{crisis.Severity:0}/100";
+            refs.Severity.FontColorOverride = sevColor;
+            refs.Bar.Value = crisis.Severity;
+            refs.Bar.ForegroundStyleBoxOverride = new StyleBoxFlat { BackgroundColor = sevColor };
         }
     }
 
@@ -1110,7 +1324,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
         var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
         head.AddChild(MakeTitle($"{crisis.Name} [{crisis.TypeLabel}]"));
-        head.AddChild(new Label { Text = $"{crisis.Severity:0}/100", FontColorOverride = sevColor, Margin = new Thickness(6, 0, 0, 0) });
+        var severityLabel = new Label { Text = $"{crisis.Severity:0}/100", FontColorOverride = sevColor, Margin = new Thickness(6, 0, 0, 0) };
+        head.AddChild(severityLabel);
 
         var expanded = _expandedCrises.Contains(crisis.Id);
         var details = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, Margin = new Thickness(0, 4, 0, 0), Visible = expanded };
@@ -1128,7 +1343,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         head.AddChild(toggle);
         box.AddChild(head);
 
-        box.AddChild(new ProgressBar
+        var severityBar = new ProgressBar
         {
             MinValue = 0,
             MaxValue = 100,
@@ -1136,7 +1351,9 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             MinHeight = 10,
             Margin = new Thickness(0, 2, 0, 0),
             ForegroundStyleBoxOverride = new StyleBoxFlat { BackgroundColor = sevColor },
-        });
+        };
+        box.AddChild(severityBar);
+        _crisisRefs[crisis.Id] = (severityLabel, severityBar);
 
         if (!string.IsNullOrWhiteSpace(crisis.Description))
             details.AddChild(MakeWrap(crisis.Description));
@@ -1236,6 +1453,15 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void BuildAmbitions(SWSenateWorkConsoleState state)
     {
+        var signature = new System.Text.StringBuilder();
+        foreach (var ambition in state.Ambitions)
+            signature.Append(ambition.Name).Append('=').Append(ambition.Met).Append('=').Append(ambition.Progress).Append(',');
+
+        if (signature.ToString() == _ambitionsSignature)
+            return;
+
+        _ambitionsSignature = signature.ToString();
+
         AmbitionsList.RemoveAllChildren();
         if (state.Ambitions.Count == 0)
         {
@@ -1277,6 +1503,11 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             ? $"Доступно вам: {state.MyBudgetAvailable} кр."
             : $"Доступно вам: {state.MyBudgetAvailable} кр.   (бюджет ещё не зафиксирован Канцлером)");
 
+        var signature = string.Join(",", state.Programs.Select(p => $"{p.Id}={p.Affordable}={p.Applied}"));
+        if (signature == _programsSignature)
+            return;
+
+        _programsSignature = signature;
         ProgramList.RemoveAllChildren();
         if (state.Programs.Count == 0)
         {
@@ -1340,41 +1571,65 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         StyleToggle(DilemmaModeBudget, mode == 1);
         StyleToggle(DilemmaModePrograms, mode == 2);
         StyleToggle(DilemmaModeSummary, mode == 3);
+        RebuildAllPanels();
     }
+
+    private static string DilemmaSignature(SWDilemmaEntry d) =>
+        $"{d.Id}={d.Status}={d.TimeLabel}={d.ChosenOption}={d.CanResolve},";
 
     private void BuildDilemmas(SWSenateWorkConsoleState state)
     {
-        DilemmaActiveList.RemoveAllChildren();
+        var activeSignature = new System.Text.StringBuilder()
+            .Append(state.HasPersonal).Append('=').Append(state.MyAccount).Append('=').Append(state.MyCorruption).Append('|');
+        foreach (var notice in state.MinistryNotices)
+            activeSignature.Append(notice).Append(',');
+        activeSignature.Append('|');
+        foreach (var dilemma in state.MyDilemmas)
+            activeSignature.Append(DilemmaSignature(dilemma));
 
-        if (state.HasPersonal)
+        if (activeSignature.ToString() != _dilemmaActiveSignature)
         {
-            DilemmaActiveList.AddChild(MakeWrap($"Личный счёт: {state.MyAccount} кр   ·   ваша коррумпированность: {state.MyCorruption}%",
-                state.MyCorruption >= 60 ? Color.IndianRed : Color.FromHex("#C0A062")));
-            DilemmaActiveList.AddChild(new Control { MinHeight = 8 });
-        }
+            _dilemmaActiveSignature = activeSignature.ToString();
+            DilemmaActiveList.RemoveAllChildren();
 
-        if (state.MinistryNotices.Count > 0)
-        {
-            DilemmaActiveList.AddChild(SWConsoleStyle.Section("ОТВЕТЫ МИНИСТЕРСТВ"));
-            foreach (var notice in state.MinistryNotices)
-                DilemmaActiveList.AddChild(MakeWrap(notice, Color.FromHex("#9B59B6")));
-            DilemmaActiveList.AddChild(new Control { MinHeight = 8 });
-        }
-
-        if (state.MyDilemmas.Count == 0)
-        {
-            DilemmaActiveList.AddChild(SWConsoleStyle.Text("Активных дилемм нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
-        }
-        else
-        {
-            foreach (var dilemma in state.MyDilemmas)
+            if (state.HasPersonal)
             {
-                var card = MakeDilemmaCard(dilemma);
-                StyleCardButtons(card);
-                DilemmaActiveList.AddChild(card);
+                DilemmaActiveList.AddChild(MakeWrap($"Личный счёт: {state.MyAccount} кр   ·   ваша коррумпированность: {state.MyCorruption}%",
+                    state.MyCorruption >= 60 ? Color.IndianRed : Color.FromHex("#C0A062")));
+                DilemmaActiveList.AddChild(new Control { MinHeight = 8 });
+            }
+
+            if (state.MinistryNotices.Count > 0)
+            {
+                DilemmaActiveList.AddChild(SWConsoleStyle.Section("ОТВЕТЫ МИНИСТЕРСТВ"));
+                foreach (var notice in state.MinistryNotices)
+                    DilemmaActiveList.AddChild(MakeWrap(notice, Color.FromHex("#9B59B6")));
+                DilemmaActiveList.AddChild(new Control { MinHeight = 8 });
+            }
+
+            if (state.MyDilemmas.Count == 0)
+            {
+                DilemmaActiveList.AddChild(SWConsoleStyle.Text("Активных дилемм нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            }
+            else
+            {
+                foreach (var dilemma in state.MyDilemmas)
+                {
+                    var card = MakeDilemmaCard(dilemma);
+                    StyleCardButtons(card);
+                    DilemmaActiveList.AddChild(card);
+                }
             }
         }
 
+        var summarySignature = new System.Text.StringBuilder();
+        foreach (var dilemma in state.AllDilemmas)
+            summarySignature.Append(DilemmaSignature(dilemma));
+
+        if (summarySignature.ToString() == _dilemmaSummarySignature)
+            return;
+
+        _dilemmaSummarySignature = summarySignature.ToString();
         DilemmaSummaryList.RemoveAllChildren();
         if (state.AllDilemmas.Count == 0)
         {
@@ -1396,6 +1651,14 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             ? $"Доступно вам: {state.MyBudgetAvailable} кр."
             : $"Доступно вам: {state.MyBudgetAvailable} кр.   (бюджет ещё не зафиксирован Канцлером)");
 
+        var budgetDilemmaSignature = new System.Text.StringBuilder();
+        foreach (var dilemma in state.MyBudgetDilemmas)
+            budgetDilemmaSignature.Append(DilemmaSignature(dilemma));
+
+        if (budgetDilemmaSignature.ToString() == _budgetDilemmaSignature)
+            return;
+
+        _budgetDilemmaSignature = budgetDilemmaSignature.ToString();
         BudgetDilemmaList.RemoveAllChildren();
         if (state.MyBudgetDilemmas.Count == 0)
         {
@@ -1636,6 +1899,10 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void BuildElectionElect(SWSenateWorkConsoleState state)
     {
+        if (state.IsChancellorElect == _electionElectSignature)
+            return;
+
+        _electionElectSignature = state.IsChancellorElect;
         ElectionElectBox.RemoveAllChildren();
         if (!state.IsChancellorElect)
             return;
@@ -1654,6 +1921,16 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void BuildWarApproval(SWSenateWorkConsoleState state)
     {
+        var signature = $"{state.WarProposed}={state.CanApproveWar}={state.PendingStanceName}=" +
+            $"{state.EmergencyProposed}={state.CanApproveEmergency}={state.PendingPostureName}=" +
+            $"{state.HealthEmergencyProposed}={state.CanApproveHealthEmergency}=" +
+            $"{state.StimulusProposed}={state.CanApproveStimulus}=" +
+            $"{state.EmissionProposed}={state.CanApproveEmission}=" +
+            $"{state.TribunalProposed}={state.CanApproveTribunal}";
+        if (signature == _warApprovalSignature)
+            return;
+
+        _warApprovalSignature = signature;
         WarApprovalBox.RemoveAllChildren();
 
         if (state.WarProposed)
@@ -1990,12 +2267,18 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void ShowSection(Control target)
     {
+        var wasHidden = !target.Visible;
         foreach (var (nav, panel) in _sections)
         {
             var active = panel == target;
             panel.Visible = active;
             StyleNavButton(nav, active);
         }
+
+        // Content built while this tab was hidden never got a real layout pass - force one now that
+        // it's actually on screen, instead of waiting on the next periodic refresh.
+        if (wasHidden)
+            RebuildAllPanels();
     }
 
     private void ShowDraftMode(bool custom)
@@ -2006,10 +2289,18 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         DraftModePreset.Disabled = !custom;
         StyleToggle(DraftModeCustom, custom);
         StyleToggle(DraftModePreset, !custom);
+        RebuildAllPanels();
     }
 
+    private bool _presetsBuilt;
+
+    // Presets come from prototypes and never change mid-round - build once like the draft/decree sliders.
     private void BuildPresets(SWSenateWorkConsoleState state)
     {
+        if (_presetsBuilt || state.Presets.Count == 0)
+            return;
+
+        _presetsBuilt = true;
         PresetsList.RemoveAllChildren();
         if (state.Presets.Count == 0)
         {
@@ -2045,6 +2336,11 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void BuildRoster(SWSenateWorkConsoleState state)
     {
+        var signature = string.Join(",", state.Roster.Select(r => $"{r.Position}={r.Holder}"));
+        if (signature == _rosterSignature)
+            return;
+
+        _rosterSignature = signature;
         RosterList.RemoveAllChildren();
         RosterList.AddChild(SWConsoleStyle.Section("СОСТАВ СЕНАТА"));
         RosterList.AddChild(new Control { MinHeight = 6 });
@@ -2329,6 +2625,17 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void BuildAgenda(SWSenateWorkConsoleState state)
     {
+        // Rebuild only when the bill list or a bill's stage actually changes, so the periodic refresh
+        // doesn't tear down and flash the cards every few seconds for no reason.
+        var signature = new System.Text.StringBuilder();
+        foreach (var bill in state.Bills)
+            signature.Append(bill.Id).Append('=').Append(bill.Stage).Append(',');
+
+        if (signature.ToString() == _agendaSignature)
+            return;
+
+        _agendaSignature = signature.ToString();
+
         AgendaList.RemoveAllChildren();
         AgendaList.AddChild(SWConsoleStyle.Section("ПОВЕСТКА"));
         AgendaList.AddChild(new Control { MinHeight = 6 });
@@ -2360,6 +2667,22 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void BuildSchedule(SWSenateWorkConsoleState state)
     {
+        var signature = new System.Text.StringBuilder();
+        signature.Append(state.OfficesVacant).Append('=').Append(state.CanScheduleSessions).Append('=').Append(state.CanConfirmSessions).Append('|');
+        foreach (var row in state.Schedule)
+            signature.Append(row.Hour).Append('=').Append(row.IsNow).Append('=').Append(row.Text).Append(',');
+        signature.Append('|');
+        foreach (var bill in state.SchedulableBills)
+            signature.Append(bill.Id).Append('=').Append(bill.Emergency).Append(',');
+        signature.Append('|').Append(string.Join(",", state.FreeStartHours)).Append('|');
+        foreach (var session in state.PendingSessions)
+            signature.Append(session.Id).Append('=').Append(session.TimeRange).Append(',');
+
+        if (signature.ToString() == _scheduleSignature)
+            return;
+
+        _scheduleSignature = signature.ToString();
+
         ScheduleGrid.RemoveAllChildren();
         ScheduleGrid.AddChild(SWConsoleStyle.Section("РАСПИСАНИЕ ДНЯ"));
         ScheduleGrid.AddChild(new Control { MinHeight = 6 });
@@ -2540,6 +2863,21 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void BuildDashboard(SWSenateWorkConsoleState state)
     {
+        var signature = new System.Text.StringBuilder();
+        signature.Append(state.SectorName).Append('|');
+        for (var i = 0; i < state.SectorStats.Count; i++)
+        {
+            var trend = i < state.SectorTrends.Count ? state.SectorTrends[i] : 0;
+            signature.Append(state.SectorStats[i].Value.ToString("0")).Append('=').Append(trend).Append(',');
+        }
+        signature.Append('|');
+        foreach (var global in state.Globals)
+            signature.Append(global.Id).Append('=').Append(global.Actual.ToString("0")).Append('=').Append(global.Policy.ToString("0")).Append(',');
+
+        if (signature.ToString() == _dashboardSignature)
+            return;
+
+        _dashboardSignature = signature.ToString();
         Dashboard.RemoveAllChildren();
 
         if (state.SectorStats.Count > 0)

@@ -1,0 +1,23 @@
+- type: swApartmentClass
+  id: SWApartmentEconomy
+  name: Эконом
+  description: Скромная комната без изысков — крыша над головой и запертая дверь.
+  color: "#7A8696"
+  pricePerDay: 500
+  order: 0
+
+- type: swApartmentClass
+  id: SWApartmentStandard
+  name: Стандарт
+  description: Приличные апартаменты с отдельной спальней и санузлом.
+  color: "#37C8D6"
+  pricePerDay: 1200
+  order: 1
+
+- type: swApartmentClass
+  id: SWApartmentLux
+  name: Люкс
+  description: Просторные апартаменты с видом на купол Сената — статус обязывает.
+  color: "#E0A23B"
+  pricePerDay: 2500
+  order: 2

@@ -1,0 +1,105 @@
+# Generic pool of per-apartment access tags. A mapper placing a physical SWApartmentDoor picks one
+# unused slot here, sets it as that door's sole AccessReader access entry, and sets the matching
+# ClassId on the door's SWApartmentDoorComponent - the slot tag IS the apartment's identity, the
+# apartment console discovers doors by querying the map, no other bookkeeping needed.
+- type: accessLevel
+  id: SWApartmentSlot1
+  name: Апартаменты 1
+
+- type: accessLevel
+  id: SWApartmentSlot2
+  name: Апартаменты 2
+
+- type: accessLevel
+  id: SWApartmentSlot3
+  name: Апартаменты 3
+
+- type: accessLevel
+  id: SWApartmentSlot4
+  name: Апартаменты 4
+
+- type: accessLevel
+  id: SWApartmentSlot5
+  name: Апартаменты 5
+
+- type: accessLevel
+  id: SWApartmentSlot6
+  name: Апартаменты 6
+
+- type: accessLevel
+  id: SWApartmentSlot7
+  name: Апартаменты 7
+
+- type: accessLevel
+  id: SWApartmentSlot8
+  name: Апартаменты 8
+
+- type: accessLevel
+  id: SWApartmentSlot9
+  name: Апартаменты 9
+
+- type: accessLevel
+  id: SWApartmentSlot10
+  name: Апартаменты 10
+
+- type: accessLevel
+  id: SWApartmentSlot11
+  name: Апартаменты 11
+
+- type: accessLevel
+  id: SWApartmentSlot12
+  name: Апартаменты 12
+
+- type: accessLevel
+  id: SWApartmentSlot13
+  name: Апартаменты 13
+
+- type: accessLevel
+  id: SWApartmentSlot14
+  name: Апартаменты 14
+
+- type: accessLevel
+  id: SWApartmentSlot15
+  name: Апартаменты 15
+
+# Placeholder door: place one per physical apartment, then on THAT instance override
+# `access: [["SWApartmentSlotN"]]` and `classId: SWApartmentEconomy|SWApartmentStandard|SWApartmentLux`
+# to a free slot number. WARNING: an empty access list means the door is UNLOCKED for everyone
+# (RobustToolbox treats "no requirements configured" as public, not restricted) - never leave a
+# placed instance without its own access override, or the room is a public one, not a private rental.
+- type: entity
+  parent: CMAirlockCommand
+  id: SWApartmentDoor
+  name: дверь апартаментов
+  suffix: Апартаменты, задать слот вручную
+  components:
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/RepublicSenateAirlock.rsi
+  - type: AccessReader
+    access: []
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: BaseComputer
+  id: SWApartmentConsole
+  name: консоль аренды апартаментов
+  description: Учёт свободных и занятых апартаментов Сената. Оплата — с теневого счёта.
+  components:
+  - type: SWApartmentConsole
+  - type: ActivatableUI
+    key: enum.SWApartmentConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWApartmentConsoleUiKey.Key:
+        type: SWApartmentConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicSenateWorkComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: senate_info_monitor
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Godmode

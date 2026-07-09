@@ -3209,3 +3209,48 @@ public sealed class SWShadowShopBuyMessage : BoundUserInterfaceMessage
         Index = index;
     }
 }
+
+[Serializable, NetSerializable]
+public enum SWApartmentConsoleUiKey : byte
+{
+    Key,
+}
+
+[Serializable, NetSerializable]
+public sealed class SWApartmentSlotEntry
+{
+    public string SlotTag = string.Empty;
+    public string ClassId = string.Empty;
+    public string ClassName = string.Empty;
+    public Color ClassColor;
+    public int Price;
+    public bool Occupied;
+    public string TenantName = string.Empty;
+    public bool IsMine;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWApartmentConsoleState : BoundUserInterfaceState
+{
+    public string UserName = string.Empty;
+    public int Balance;
+    public string? MySlotTag;
+    public string Notice = string.Empty;
+    public List<SWApartmentSlotEntry> Slots = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWApartmentRentMessage : BoundUserInterfaceMessage
+{
+    public string SlotTag;
+
+    public SWApartmentRentMessage(string slotTag)
+    {
+        SlotTag = slotTag;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWApartmentVacateMessage : BoundUserInterfaceMessage
+{
+}

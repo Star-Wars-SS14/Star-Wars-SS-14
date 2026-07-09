@@ -375,7 +375,7 @@ public sealed class SWSenateStateSystem : EntitySystem
     public void ResignSpeaker() => Speaker = null;
 
     public bool HasActiveBill(string author) =>
-        _bills.Any(b => b.Stage == SWBillStage.Voting && b.Author == author);
+        _bills.Any(b => (b.Stage == SWBillStage.Voting || b.Stage == SWBillStage.InCommittee) && b.Author == author);
 
     public SWSenateBill SubmitBill(string name, string description, string author, Dictionary<string, float> effects)
     {
@@ -1243,6 +1243,46 @@ public sealed class SWSenateStateSystem : EntitySystem
         return bills;
     }
 
+    public void ReferToCommittee(SWSenateBill bill, string committeeId, string committeeName, int day)
+    {
+        bill.Stage = SWBillStage.InCommittee;
+        bill.CommitteeId = committeeId;
+        bill.CommitteeName = committeeName;
+        bill.CommitteeDay = day;
+    }
+
+    // Bills held past their referral day are auto-discharged to the floor at the next committee hour.
+    public void DischargeReferredBills(int currentDay)
+    {
+        foreach (var bill in _bills)
+        {
+            if (bill.Stage == SWBillStage.InCommittee && bill.CommitteeDay < currentDay)
+                bill.Stage = SWBillStage.Voting;
+        }
+    }
+
+    public List<SWBillEntry> BuildCommitteeBills(string committeeId)
+    {
+        var bills = new List<SWBillEntry>();
+        foreach (var bill in _bills)
+        {
+            if (bill.Stage != SWBillStage.InCommittee || bill.CommitteeId != committeeId)
+                continue;
+
+            bills.Add(new SWBillEntry
+            {
+                Id = bill.Id,
+                Name = bill.Name,
+                Author = bill.Author,
+                Description = bill.Description,
+                Stage = BillStageLabel(bill),
+                Effects = BuildBillEffects(bill),
+            });
+        }
+
+        return bills;
+    }
+
     public List<SWBillEffectEntry> BuildBillEffects(SWSenateBill bill)
     {
         var effects = new List<SWBillEffectEntry>();
@@ -1319,6 +1359,8 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     public string BillStageLabel(SWSenateBill bill)
     {
+        if (bill.Stage == SWBillStage.InCommittee)
+            return bill.CommitteeName ?? "На рассмотрении в комитете";
         if (bill.Stage == SWBillStage.Passed)
             return bill.IsElection ? Loc.GetString("sw-senate-bill-stage-election-done") : Loc.GetString("sw-senate-bill-stage-passed");
         if (bill.Stage == SWBillStage.AwaitingSignature)

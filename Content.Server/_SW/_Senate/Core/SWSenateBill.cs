@@ -5,6 +5,7 @@ namespace Content.Server._SW._Senate.Core;
 public enum SWBillStage
 {
     Voting,
+    InCommittee,
     AwaitingSignature,
     Passed,
     Rejected,
@@ -19,6 +20,9 @@ public sealed class SWSenateBill
     public Dictionary<string, float> Effects = new();
     public Dictionary<string, SWVoteChoice> Votes = new();
     public SWBillStage Stage = SWBillStage.Voting;
+    public string? CommitteeId;
+    public string? CommitteeName;
+    public int CommitteeDay;
     public bool Repealed;
     public bool AwaitingTiebreak;
     public bool Emergency;

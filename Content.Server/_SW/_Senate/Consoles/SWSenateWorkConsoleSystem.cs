@@ -910,9 +910,16 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             return;
         }
 
-        _senate.SubmitBill(name, args.Description.Trim(), Name(args.Actor), effects);
+        ReferBill(_senate.SubmitBill(name, args.Description.Trim(), Name(args.Actor), effects));
         _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
         UpdateUi(ent);
+    }
+
+    private void ReferBill(SWSenateBill bill)
+    {
+        var committeeId = _committee.RouteBill(bill.Effects);
+        if (committeeId != null)
+            _senate.ReferToCommittee(bill, committeeId, _committee.CommitteeName(committeeId), _time.Day);
     }
 
     private void OnSubmitPreset(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSubmitPresetMessage args)
@@ -957,7 +964,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (effects.Count == 0)
             return;
 
-        _senate.SubmitBill(preset.Name, preset.Description, Name(args.Actor), effects);
+        ReferBill(_senate.SubmitBill(preset.Name, preset.Description, Name(args.Actor), effects));
         _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
         UpdateUi(ent);
     }
@@ -1329,6 +1336,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         var committeeViewer = SenatorName(ent);
         state.CanCommittees = committeeViewer != null;
         state.Committees = _committee.BuildCommittees(committeeViewer);
+        foreach (var committee in state.Committees)
+            committee.Bills = _senate.BuildCommitteeBills(committee.Id);
         state.DraftBudget = ent.Comp.DraftBudget;
         state.GameTime = _time.TimeString();
         state.Schedule = _senate.BuildScheduleRows();

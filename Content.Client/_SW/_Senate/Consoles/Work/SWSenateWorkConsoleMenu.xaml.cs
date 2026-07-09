@@ -686,6 +686,35 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             inner.AddChild(roster);
         }
 
+        if (committee.Bills.Count == 0)
+        {
+            if (detailed)
+            {
+                var none = SWConsoleStyle.Text("Законов на рассмотрении нет.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall);
+                none.Margin = new Thickness(0, 6, 0, 0);
+                inner.AddChild(none);
+            }
+        }
+        else
+        {
+            var billsHeader = SWConsoleStyle.Text($"На рассмотрении: {committee.Bills.Count}", SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall);
+            billsHeader.Margin = new Thickness(0, 6, 0, 0);
+            inner.AddChild(billsHeader);
+
+            if (detailed)
+            {
+                foreach (var bill in committee.Bills)
+                {
+                    var billBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true, Margin = new Thickness(8, 3, 0, 0) };
+                    billBox.AddChild(SWConsoleStyle.Text(bill.Name, SWConsoleStyle.TextBright, SWConsoleStyle.Mono));
+                    billBox.AddChild(SWConsoleStyle.Text($"автор: {bill.Author}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                    if (bill.Effects.Count > 0)
+                        billBox.AddChild(MakeEffectsRow(bill.Effects));
+                    inner.AddChild(billBox);
+                }
+            }
+        }
+
         if (committee.CanJoin)
         {
             var join = new Button { Text = "Вступить", HorizontalAlignment = Control.HAlignment.Left, Margin = new Thickness(0, 6, 0, 0) };

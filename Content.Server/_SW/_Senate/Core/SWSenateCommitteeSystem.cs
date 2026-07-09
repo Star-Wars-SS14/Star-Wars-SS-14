@@ -1,6 +1,9 @@
+using System;
 using System.Linq;
 using Content.Shared._SW._Senate;
+using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._SW._Senate.Core;
 
@@ -12,11 +15,29 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
 {
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
+    [Dependency] private readonly IPrototypeManager _proto = default!;
 
     public const int SeatsPerCommittee = 3;
+    public const float CommitteeWeightThreshold = 8f;
     public static int CommitteeHour => SWSenateTimeSystem.StartHour + 1;
 
     public bool InCommitteeHour => _time.DayActive && _time.CurrentHour == CommitteeHour;
+
+    // Which committee owns each policy domain (global stat). Bills route to the committee holding the
+    // largest share of their effect weight.
+    private static readonly Dictionary<string, string> GlobalToCommittee = new()
+    {
+        ["SWGlobalDefense"] = "defense",
+        ["SWGlobalSecurity"] = "defense",
+        ["SWGlobalForeign"] = "defense",
+        ["SWGlobalEconomy"] = "finance",
+        ["SWGlobalIndustry"] = "finance",
+        ["SWGlobalHealthcare"] = "welfare",
+        ["SWGlobalEducation"] = "welfare",
+        ["SWGlobalSociety"] = "justice",
+    };
+
+    private readonly Dictionary<string, string> _statToCommittee = new();
 
     private sealed class Committee
     {
@@ -36,7 +57,56 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
     {
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         BuildCommittees();
+        BuildStatMap();
     }
+
+    private void BuildStatMap()
+    {
+        _statToCommittee.Clear();
+        foreach (var (globalId, committeeId) in GlobalToCommittee)
+            _statToCommittee[globalId] = committeeId;
+        foreach (var stat in _proto.EnumeratePrototypes<SWStatPrototype>())
+        {
+            if (GlobalToCommittee.TryGetValue(stat.Global.Id, out var committeeId))
+                _statToCommittee[stat.ID] = committeeId;
+        }
+    }
+
+    // Returns the committee a bill should be referred to, or null to send it straight to the floor.
+    public string? RouteBill(IReadOnlyDictionary<string, float> effects)
+    {
+        if (effects.Count == 0)
+            return null;
+
+        var weights = new Dictionary<string, float>();
+        var total = 0f;
+        foreach (var (statId, delta) in effects)
+        {
+            var mag = MathF.Abs(delta);
+            total += mag;
+            if (_statToCommittee.TryGetValue(statId, out var committeeId))
+                weights[committeeId] = weights.GetValueOrDefault(committeeId) + mag;
+        }
+
+        if (total < CommitteeWeightThreshold || weights.Count == 0)
+            return null;
+
+        string? best = null;
+        var bestWeight = -1f;
+        foreach (var committee in _committees)
+        {
+            if (weights.TryGetValue(committee.Id, out var weight) && weight > bestWeight)
+            {
+                best = committee.Id;
+                bestWeight = weight;
+            }
+        }
+
+        return best;
+    }
+
+    public string CommitteeName(string committeeId) =>
+        _committees.FirstOrDefault(c => c.Id == committeeId)?.Name ?? committeeId;
 
     private void BuildCommittees()
     {
@@ -78,6 +148,8 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
             return;
 
         _lastResolveDay = _time.Day;
+
+        _senate.DischargeReferredBills(_time.Day);
 
         foreach (var committee in _committees)
         {

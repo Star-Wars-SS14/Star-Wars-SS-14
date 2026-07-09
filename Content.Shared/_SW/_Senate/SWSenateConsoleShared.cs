@@ -1391,6 +1391,7 @@ public sealed class SWCommitteeEntry
     public bool IVoted;
     public string MyVote = string.Empty;
     public List<SWCommitteeMemberEntry> Members = new();
+    public List<SWBillEntry> Bills = new();
 }
 
 [Serializable, NetSerializable]

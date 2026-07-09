@@ -98,6 +98,16 @@ public sealed class SWCorruptionSystem : EntitySystem
     public void AddPersonCorruption(string name, float delta) =>
         _person[name] = Math.Clamp(PersonCorruption(name) + delta, 0f, 100f);
 
+    // Clean income (salary, etc) - credits the same personal balance bribes use, but never touches
+    // the corruption index, since the account is just a wallet and corruption is a separate reputation.
+    public void AddAccount(string name, int amount)
+    {
+        if (amount <= 0)
+            return;
+
+        _account[name] = Account(name) + amount;
+    }
+
     public bool SpendAccount(string name, int amount)
     {
         if (amount <= 0 || Account(name) < amount)

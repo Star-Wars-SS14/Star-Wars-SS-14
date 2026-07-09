@@ -49,6 +49,12 @@ public enum SWAmbitionKind : byte
     /// A named metric keyed to the office HOLDER's person (not the office), read off SWMercSystem.
     /// </summary>
     PersonMetric,
+
+    /// <summary>
+    /// Senator-role committee ambitions: a named metric keyed to the senator's person, read off
+    /// SWSenateCommitteeSystem (chairing, bills advanced/returned by their committee).
+    /// </summary>
+    CommitteeMetric,
 }
 
 [Prototype("swAmbition")]

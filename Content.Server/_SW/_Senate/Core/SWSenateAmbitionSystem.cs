@@ -36,6 +36,7 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
     [Dependency] private readonly SWBureauTransitSystem _bureauTransit = default!;
     [Dependency] private readonly SWSenateCourtSystem _court = default!;
     [Dependency] private readonly SWMercSystem _merc = default!;
+    [Dependency] private readonly SWSenateCommitteeSystem _committee = default!;
 
     private const float UpdateInterval = 5f;
 
@@ -251,6 +252,12 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
             {
                 var holder = OwnerHolder(active.Owner);
                 var value = holder == null ? 0f : _merc.PersonMetricValue(holder, proto.Stat);
+                return (Compare(value, proto.Comparison, proto.Threshold), StatProgress(value, proto));
+            }
+            case SWAmbitionKind.CommitteeMetric:
+            {
+                var holder = OwnerHolder(active.Owner);
+                var value = holder == null ? 0f : _committee.CommitteeMetricValue(holder, proto.Stat);
                 return (Compare(value, proto.Comparison, proto.Threshold), StatProgress(value, proto));
             }
             default:

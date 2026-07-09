@@ -55,6 +55,8 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
     private readonly List<Committee> _committees = new();
     private readonly Dictionary<int, Dictionary<string, bool>> _billVotes = new();
     private readonly Dictionary<int, string> _billReason = new();
+    private readonly Dictionary<string, int> _advanced = new();
+    private readonly Dictionary<string, int> _returned = new();
     private int _lastResolveDay = -1;
     private int _lastDischargeDay = -1;
 
@@ -161,6 +163,7 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
 
         if (sendBackCount >= need && _senate.SendBackBill(billId, _billReason.GetValueOrDefault(billId, string.Empty)))
         {
+            Credit(committee, _returned);
             ClearBillVotes(billId);
             return;
         }
@@ -168,9 +171,24 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
         if (advanceCount >= need)
         {
             _senate.AdvanceToFloor(billId);
+            Credit(committee, _advanced);
             ClearBillVotes(billId);
         }
     }
+
+    private static void Credit(Committee committee, Dictionary<string, int> tally)
+    {
+        foreach (var member in committee.Members)
+            tally[member] = tally.GetValueOrDefault(member) + 1;
+    }
+
+    public float CommitteeMetricValue(string person, string metric) => metric switch
+    {
+        "IsChair" => _committees.Any(c => c.Chair == person) ? 1f : 0f,
+        "BillsAdvanced" => _advanced.GetValueOrDefault(person),
+        "BillsReturned" => _returned.GetValueOrDefault(person),
+        _ => 0f,
+    };
 
     private void ClearBillVotes(int billId)
     {
@@ -258,7 +276,10 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
         });
         _billVotes.Clear();
         _billReason.Clear();
+        _advanced.Clear();
+        _returned.Clear();
         _lastResolveDay = -1;
+        _lastDischargeDay = -1;
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev) => BuildCommittees();

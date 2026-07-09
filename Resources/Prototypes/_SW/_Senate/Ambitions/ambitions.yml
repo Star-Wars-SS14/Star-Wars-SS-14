@@ -1133,3 +1133,36 @@
   comparison: Above
   threshold: 2400
   order: 92
+
+- type: swAmbition
+  id: SWAmbitionCommitteeChair
+  name: Председатель комитета
+  description: К концу раунда возглавляйте один из законодательных комитетов.
+  role: Senator
+  kind: CommitteeMetric
+  stat: IsChair
+  comparison: Above
+  threshold: 0
+  order: 93
+
+- type: swAmbition
+  id: SWAmbitionCommitteeWork
+  name: Комитетский труд
+  description: Проведите через свой комитет на голосование Сената не менее двух законопроектов.
+  role: Senator
+  kind: CommitteeMetric
+  stat: BillsAdvanced
+  comparison: Above
+  threshold: 1
+  order: 94
+
+- type: swAmbition
+  id: SWAmbitionCommitteeStrict
+  name: Строгий надзор
+  description: Верните автору на доработку хотя бы один законопроект через ваш комитет.
+  role: Senator
+  kind: CommitteeMetric
+  stat: BillsReturned
+  comparison: Above
+  threshold: 0
+  order: 95

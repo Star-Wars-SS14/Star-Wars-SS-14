@@ -22,6 +22,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     private (Label Header, Button[] Buttons)[] _navGroups = System.Array.Empty<(Label, Button[])>();
     private readonly Dictionary<string, Slider> _draftSliders = new();
     private readonly Dictionary<string, Label> _draftValueLabels = new();
+    private readonly List<(BoxContainer Panel, Button Header, string Name, List<string> SubIds)> _draftSubPanels = new();
     private readonly Dictionary<string, Slider> _decreeSliders = new();
     private readonly Dictionary<string, Label> _decreeValueLabels = new();
     private bool _decreeBuilt;
@@ -32,6 +33,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     private readonly HashSet<int> _expandedParties = new();
     private bool _draftBuilt;
     private int _draftBudget;
+    private int _revisingBillId = -1;
 
     private int _selectedBillId = -1;
     private int _selectedStartHour = -1;
@@ -112,6 +114,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         TakeButton.OnPressed += _ => _owner.TakeOffice();
         ResignButton.OnPressed += _ => _owner.Resign();
         SubmitBillButton.OnPressed += _ => OnSubmitPressed();
+        CancelRevisionButton.OnPressed += _ => CancelRevision();
         IssueDecreeButton.OnPressed += _ => OnIssueDecreePressed();
         DecreeIntro.SetMessage("Декрет - закон, изданный вами единолично в обход Сената. Вступает в силу немедленно, но резко растит тиранию и бьёт по легитимности. Чем шире изменения, тем выше цена.");
 
@@ -808,12 +811,20 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             if (bill.Effects.Count > 0)
                 box.AddChild(MakeEffectsRow(bill.Effects));
 
-            var resubmit = new Button { Text = "Внести повторно", HorizontalAlignment = Control.HAlignment.Left, Margin = new Thickness(0, 4, 0, 0) };
-            var id = bill.Id;
-            resubmit.OnPressed += _ => _owner.ResubmitBill(id);
-            StyleButton(resubmit, SWConsoleStyle.Accent);
-            box.AddChild(resubmit);
+            var buttons = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
+            var entry = bill;
 
+            var revise = new Button { Text = "Доработать" };
+            revise.OnPressed += _ => LoadRevision(entry);
+            StyleButton(revise, SWConsoleStyle.Accent);
+            buttons.AddChild(revise);
+
+            var resubmit = new Button { Text = "Внести как есть", Margin = new Thickness(6, 0, 0, 0) };
+            resubmit.OnPressed += _ => _owner.ResubmitBill(entry.Id);
+            StyleButton(resubmit, SWConsoleStyle.Neutral);
+            buttons.AddChild(resubmit);
+
+            box.AddChild(buttons);
             ReturnedBillsBox.AddChild(box);
         }
     }
@@ -2063,6 +2074,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         DraftStatList.RemoveAllChildren();
         _draftSliders.Clear();
         _draftValueLabels.Clear();
+        _draftSubPanels.Clear();
 
         foreach (var global in state.Globals)
         {
@@ -2123,6 +2135,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             }
 
             DraftStatList.AddChild(subPanel);
+            _draftSubPanels.Add((subPanel, header, global.Name, global.Subs.Select(s => s.Id).ToList()));
         }
 
         RecomputeBudget();
@@ -2151,13 +2164,63 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                 effects[id] = delta;
         }
 
-        _owner.SubmitBill(BillNameEdit.Text, BillDescEdit.Text, effects);
+        if (_revisingBillId >= 0)
+            _owner.ReviseBill(_revisingBillId, BillNameEdit.Text, BillDescEdit.Text, effects);
+        else
+            _owner.SubmitBill(BillNameEdit.Text, BillDescEdit.Text, effects);
 
+        _revisingBillId = -1;
         BillNameEdit.Text = string.Empty;
         BillDescEdit.Text = string.Empty;
         foreach (var slider in _draftSliders.Values)
             slider.Value = 0;
         RecomputeBudget();
+        UpdateRevisionBanner(null);
+    }
+
+    private void LoadRevision(SWReturnedBillEntry bill)
+    {
+        _revisingBillId = bill.Id;
+        ShowSection(DraftTab);
+        ShowDraftMode(true);
+        BillNameEdit.Text = bill.Name;
+        BillDescEdit.Text = bill.Description;
+
+        foreach (var slider in _draftSliders.Values)
+            slider.Value = 0;
+        foreach (var (statId, delta) in bill.EffectValues)
+            if (_draftSliders.TryGetValue(statId, out var slider))
+                slider.Value = delta;
+
+        foreach (var (panel, header, name, subIds) in _draftSubPanels)
+        {
+            var has = subIds.Any(bill.EffectValues.ContainsKey);
+            panel.Visible = has;
+            header.Text = (has ? "[-] " : "[+] ") + name;
+        }
+
+        RecomputeBudget();
+        UpdateRevisionBanner(bill.Name);
+    }
+
+    private void CancelRevision()
+    {
+        _revisingBillId = -1;
+        BillNameEdit.Text = string.Empty;
+        BillDescEdit.Text = string.Empty;
+        foreach (var slider in _draftSliders.Values)
+            slider.Value = 0;
+        RecomputeBudget();
+        UpdateRevisionBanner(null);
+    }
+
+    private void UpdateRevisionBanner(string? name)
+    {
+        var revising = _revisingBillId >= 0 && name != null;
+        RevisionBanner.Visible = revising;
+        RevisionLabel.Text = revising ? $"Доработка: {name}" : string.Empty;
+        RevisionLabel.FontColorOverride = SWConsoleStyle.Warn;
+        SubmitBillButton.Text = revising ? "Внести доработанный" : "Внести законопроект";
     }
 
     // Built once - periodic refreshes must not wipe the sliders/name mid-edit.

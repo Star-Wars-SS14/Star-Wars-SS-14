@@ -110,6 +110,66 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateVoteChairMessage>(OnVoteChair);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWCommitteeVoteBillMessage>(OnCommitteeVoteBill);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateResubmitBillMessage>(OnResubmitBill);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateReviseBillMessage>(OnReviseBill);
+    }
+
+    private void RequeueBill(SWSenateBill bill)
+    {
+        var committeeId = _committee.RouteBill(bill.Effects);
+        if (committeeId != null)
+            _senate.ReferToCommittee(bill, committeeId, _committee.CommitteeName(committeeId), _time.Day);
+        else
+            _senate.PlaceOnFloor(bill);
+    }
+
+    private void OnReviseBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateReviseBillMessage args)
+    {
+        var author = SenatorName(ent);
+        if (author == null)
+            return;
+
+        var bill = _senate.GetReturnedBill(args.BillId, author);
+        if (bill == null)
+            return;
+
+        var name = args.Name.Trim();
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-no-name"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        var effects = new Dictionary<string, float>();
+        var net = 0f;
+        foreach (var (statId, rawDelta) in args.Effects)
+        {
+            if (!_proto.HasIndex<SWStatPrototype>(statId) || !float.IsFinite(rawDelta))
+                continue;
+
+            var delta = Math.Clamp(rawDelta, -ent.Comp.MaxEffect, ent.Comp.MaxEffect);
+            if (delta == 0)
+                continue;
+
+            effects[statId] = delta;
+            net += delta;
+        }
+
+        if (effects.Count == 0)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-no-effect"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (net > ent.Comp.DraftBudget)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-over-budget"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        _senate.ReviseBill(bill, name, args.Description.Trim(), effects);
+        RequeueBill(bill);
+        _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
     }
 
     private void OnCommitteeVoteBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWCommitteeVoteBillMessage args)
@@ -140,12 +200,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (bill == null)
             return;
 
-        var committeeId = _committee.RouteBill(bill.Effects);
-        if (committeeId != null)
-            _senate.ReferToCommittee(bill, committeeId, _committee.CommitteeName(committeeId), _time.Day);
-        else
-            _senate.PlaceOnFloor(bill);
-
+        RequeueBill(bill);
         _popup.PopupCursor("Законопроект внесён повторно.", args.Actor, PopupType.Medium);
         UpdateUi(ent);
     }

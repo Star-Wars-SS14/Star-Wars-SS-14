@@ -305,6 +305,11 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateResubmitBillMessage(billId));
     }
 
+    public void ReviseBill(int billId, string name, string description, Dictionary<string, float> effects)
+    {
+        SendMessage(new SWSenateReviseBillMessage(billId, name, description, effects));
+    }
+
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);

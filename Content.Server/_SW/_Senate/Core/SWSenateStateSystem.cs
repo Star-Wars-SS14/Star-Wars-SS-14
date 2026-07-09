@@ -1300,6 +1300,13 @@ public sealed class SWSenateStateSystem : EntitySystem
     public SWSenateBill? GetReturnedBill(int billId, string author) =>
         _bills.FirstOrDefault(b => b.Id == billId && b.Stage == SWBillStage.Returned && b.Author == author);
 
+    public void ReviseBill(SWSenateBill bill, string name, string description, Dictionary<string, float> effects)
+    {
+        bill.Name = name;
+        bill.Description = description;
+        bill.Effects = effects;
+    }
+
     public List<SWReturnedBillEntry> BuildReturnedBills(string author)
     {
         var bills = new List<SWReturnedBillEntry>();
@@ -1312,9 +1319,11 @@ public sealed class SWSenateStateSystem : EntitySystem
             {
                 Id = bill.Id,
                 Name = bill.Name,
+                Description = bill.Description,
                 Reason = bill.ReturnReason ?? string.Empty,
                 SendBacks = bill.SendBacks,
                 Effects = BuildBillEffects(bill),
+                EffectValues = new Dictionary<string, float>(bill.Effects),
             });
         }
 

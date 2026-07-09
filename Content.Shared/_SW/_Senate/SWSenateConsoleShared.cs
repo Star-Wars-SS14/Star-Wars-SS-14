@@ -1416,9 +1416,11 @@ public sealed class SWReturnedBillEntry
 {
     public int Id;
     public string Name = string.Empty;
+    public string Description = string.Empty;
     public string Reason = string.Empty;
     public int SendBacks;
     public List<SWBillEffectEntry> Effects = new();
+    public Dictionary<string, float> EffectValues = new();
 }
 
 [Serializable, NetSerializable]
@@ -1446,6 +1448,23 @@ public sealed class SWSenateResubmitBillMessage : BoundUserInterfaceMessage
     public SWSenateResubmitBillMessage(int billId)
     {
         BillId = billId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateReviseBillMessage : BoundUserInterfaceMessage
+{
+    public int BillId;
+    public string Name;
+    public string Description;
+    public Dictionary<string, float> Effects;
+
+    public SWSenateReviseBillMessage(int billId, string name, string description, Dictionary<string, float> effects)
+    {
+        BillId = billId;
+        Name = name;
+        Description = description;
+        Effects = effects;
     }
 }
 

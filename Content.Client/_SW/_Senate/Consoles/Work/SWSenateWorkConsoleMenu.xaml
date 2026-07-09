@@ -80,6 +80,10 @@
                             <Button Name="DraftModePreset" Text="Шаблоны" Margin="6 0 0 0" />
                         </BoxContainer>
                         <BoxContainer Name="CustomDraftPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                            <BoxContainer Name="RevisionBanner" Orientation="Horizontal" HorizontalExpand="True" Margin="0 0 0 6" Visible="False">
+                                <Label Name="RevisionLabel" HorizontalExpand="True" />
+                                <Button Name="CancelRevisionButton" Text="Отменить" />
+                            </BoxContainer>
                             <Label Text="Название законопроекта" StyleClasses="LabelKeyText" />
                             <LineEdit Name="BillNameEdit" PlaceHolder="Название..." Margin="0 2 0 8" />
                             <Label Text="Изменения" StyleClasses="LabelKeyText" />

@@ -919,20 +919,20 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             box.AddChild(MakeEffectsRow(bill.Effects));
 
         var tally = SWConsoleStyle.Text(
-            $"на пол: {bill.AdvanceVotes} · вернуть: {bill.SendBackVotes} (нужно {bill.VotesNeeded}) · возвраты {bill.SendBacks}/2",
+            $"на заседание: {bill.AdvanceVotes} · вернуть: {bill.SendBackVotes} (нужно {bill.VotesNeeded}) · возвраты {bill.SendBacks}/2",
             SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall);
         tally.Margin = new Thickness(0, 2, 0, 0);
         box.AddChild(tally);
 
         if (bill.MyVote != 0)
-            box.AddChild(SWConsoleStyle.Text(bill.MyVote == 1 ? "ваш голос: на пол" : "ваш голос: вернуть автору", SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall));
+            box.AddChild(SWConsoleStyle.Text(bill.MyVote == 1 ? "ваш голос: на заседание" : "ваш голос: вернуть автору", SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall));
 
         if (bill.CanAct)
         {
             var actions = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 3, 0, 0) };
             var id = bill.Id;
 
-            var advance = new Button { Text = "На пол" };
+            var advance = new Button { Text = "На заседание" };
             advance.OnPressed += _ => _owner.CommitteeVoteBill(committeeId, id, 1, string.Empty);
             StyleButton(advance, SWConsoleStyle.Accent);
             actions.AddChild(advance);

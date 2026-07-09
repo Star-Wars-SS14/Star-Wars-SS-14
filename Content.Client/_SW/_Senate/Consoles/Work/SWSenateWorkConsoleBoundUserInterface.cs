@@ -295,6 +295,16 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateVoteChairMessage(committeeId, candidate));
     }
 
+    public void CommitteeVoteBill(string committeeId, int billId, int disposition, string reason)
+    {
+        SendMessage(new SWCommitteeVoteBillMessage(committeeId, billId, disposition, reason));
+    }
+
+    public void ResubmitBill(int billId)
+    {
+        SendMessage(new SWSenateResubmitBillMessage(billId));
+    }
+
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);

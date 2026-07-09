@@ -6,6 +6,7 @@ public enum SWBillStage
 {
     Voting,
     InCommittee,
+    Returned,
     AwaitingSignature,
     Passed,
     Rejected,
@@ -23,6 +24,8 @@ public sealed class SWSenateBill
     public string? CommitteeId;
     public string? CommitteeName;
     public int CommitteeDay;
+    public int SendBacks;
+    public string? ReturnReason;
     public bool Repealed;
     public bool AwaitingTiebreak;
     public bool Emergency;

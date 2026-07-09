@@ -211,6 +211,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BuildCrises(state);
         BuildParties(state);
         BuildCommittees(state);
+        BuildReturnedBills(state);
         BuildBudgetSection(state);
         BuildSignature(state);
         BuildPowers(state);
@@ -704,14 +705,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             if (detailed)
             {
                 foreach (var bill in committee.Bills)
-                {
-                    var billBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true, Margin = new Thickness(8, 3, 0, 0) };
-                    billBox.AddChild(SWConsoleStyle.Text(bill.Name, SWConsoleStyle.TextBright, SWConsoleStyle.Mono));
-                    billBox.AddChild(SWConsoleStyle.Text($"автор: {bill.Author}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
-                    if (bill.Effects.Count > 0)
-                        billBox.AddChild(MakeEffectsRow(bill.Effects));
-                    inner.AddChild(billBox);
-                }
+                    inner.AddChild(MakeCommitteeBillBox(committee.Id, bill));
             }
         }
 
@@ -747,6 +741,81 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         };
         panel.AddChild(inner);
         return panel;
+    }
+
+    private Control MakeCommitteeBillBox(string committeeId, SWCommitteeBillEntry bill)
+    {
+        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true, Margin = new Thickness(8, 5, 0, 0) };
+        box.AddChild(SWConsoleStyle.Text(bill.Name, SWConsoleStyle.TextBright, SWConsoleStyle.Mono));
+        box.AddChild(SWConsoleStyle.Text($"автор: {bill.Author}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        if (bill.Effects.Count > 0)
+            box.AddChild(MakeEffectsRow(bill.Effects));
+
+        var tally = SWConsoleStyle.Text(
+            $"на пол: {bill.AdvanceVotes} · вернуть: {bill.SendBackVotes} (нужно {bill.VotesNeeded}) · возвраты {bill.SendBacks}/2",
+            SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall);
+        tally.Margin = new Thickness(0, 2, 0, 0);
+        box.AddChild(tally);
+
+        if (bill.MyVote != 0)
+            box.AddChild(SWConsoleStyle.Text(bill.MyVote == 1 ? "ваш голос: на пол" : "ваш голос: вернуть автору", SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall));
+
+        if (bill.CanAct)
+        {
+            var actions = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 3, 0, 0) };
+            var id = bill.Id;
+
+            var advance = new Button { Text = "На пол" };
+            advance.OnPressed += _ => _owner.CommitteeVoteBill(committeeId, id, 1, string.Empty);
+            StyleButton(advance, SWConsoleStyle.Accent);
+            actions.AddChild(advance);
+
+            var ret = new Button { Text = "Вернуть автору", Disabled = !bill.CanSendBack, Margin = new Thickness(6, 0, 0, 0) };
+            ret.OnPressed += _ => _owner.CommitteeVoteBill(committeeId, id, 2, CommitteeReasonEdit.Text);
+            StyleButton(ret, SWConsoleStyle.Warn);
+            actions.AddChild(ret);
+
+            box.AddChild(actions);
+        }
+        else
+        {
+            var hint = SWConsoleStyle.Text("Голосование — в комитетский час (08:00)", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall);
+            hint.Margin = new Thickness(0, 3, 0, 0);
+            box.AddChild(hint);
+        }
+
+        return box;
+    }
+
+    private void BuildReturnedBills(SWSenateWorkConsoleState state)
+    {
+        ReturnedBillsBox.RemoveAllChildren();
+        if (state.ReturnedBills.Count == 0)
+        {
+            ReturnedBillsBox.Visible = false;
+            return;
+        }
+
+        ReturnedBillsBox.Visible = true;
+        ReturnedBillsBox.AddChild(SWConsoleStyle.Section("ВОЗВРАЩЕНО НА ДОРАБОТКУ"));
+
+        foreach (var bill in state.ReturnedBills)
+        {
+            var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true, Margin = new Thickness(0, 4, 0, 0) };
+            box.AddChild(SWConsoleStyle.Text(bill.Name, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+            box.AddChild(MakeWrap($"Причина: {bill.Reason}", SWConsoleStyle.Warn));
+            box.AddChild(SWConsoleStyle.Text($"возвраты: {bill.SendBacks}/2", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            if (bill.Effects.Count > 0)
+                box.AddChild(MakeEffectsRow(bill.Effects));
+
+            var resubmit = new Button { Text = "Внести повторно", HorizontalAlignment = Control.HAlignment.Left, Margin = new Thickness(0, 4, 0, 0) };
+            var id = bill.Id;
+            resubmit.OnPressed += _ => _owner.ResubmitBill(id);
+            StyleButton(resubmit, SWConsoleStyle.Accent);
+            box.AddChild(resubmit);
+
+            ReturnedBillsBox.AddChild(box);
+        }
     }
 
     private void BuildParties(SWSenateWorkConsoleState state)

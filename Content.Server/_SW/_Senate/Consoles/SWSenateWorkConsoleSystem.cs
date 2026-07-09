@@ -108,6 +108,46 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateJoinCommitteeMessage>(OnJoinCommittee);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateLeaveCommitteeMessage>(OnLeaveCommittee);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateVoteChairMessage>(OnVoteChair);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWCommitteeVoteBillMessage>(OnCommitteeVoteBill);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateResubmitBillMessage>(OnResubmitBill);
+    }
+
+    private void OnCommitteeVoteBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWCommitteeVoteBillMessage args)
+    {
+        var name = SenatorName(ent);
+        if (name == null)
+            return;
+
+        if (args.Disposition == 2 && string.IsNullOrWhiteSpace(args.Reason))
+        {
+            _popup.PopupCursor("Укажите причину возврата.", args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (!_committee.VoteBill(name, args.CommitteeId, args.BillId, args.Disposition == 1, args.Reason.Trim()))
+            _popup.PopupCursor("Голосовать можно только в комитетский час.", args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnResubmitBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateResubmitBillMessage args)
+    {
+        var name = SenatorName(ent);
+        if (name == null)
+            return;
+
+        var bill = _senate.GetReturnedBill(args.BillId, name);
+        if (bill == null)
+            return;
+
+        var committeeId = _committee.RouteBill(bill.Effects);
+        if (committeeId != null)
+            _senate.ReferToCommittee(bill, committeeId, _committee.CommitteeName(committeeId), _time.Day);
+        else
+            _senate.PlaceOnFloor(bill);
+
+        _popup.PopupCursor("Законопроект внесён повторно.", args.Actor, PopupType.Medium);
+        UpdateUi(ent);
     }
 
     private string? SenatorName(Entity<SWSenateWorkConsoleComponent> ent)
@@ -1337,7 +1377,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.CanCommittees = committeeViewer != null;
         state.Committees = _committee.BuildCommittees(committeeViewer);
         foreach (var committee in state.Committees)
-            committee.Bills = _senate.BuildCommitteeBills(committee.Id);
+            committee.Bills = _committee.BuildCommitteeBills(committee.Id, committeeViewer);
+        if (committeeViewer != null)
+            state.ReturnedBills = _senate.BuildReturnedBills(committeeViewer);
         state.DraftBudget = ent.Comp.DraftBudget;
         state.GameTime = _time.TimeString();
         state.Schedule = _senate.BuildScheduleRows();

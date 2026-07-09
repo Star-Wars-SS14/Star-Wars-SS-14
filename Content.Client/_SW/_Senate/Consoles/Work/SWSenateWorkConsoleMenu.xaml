@@ -74,6 +74,7 @@
                         <BoxContainer Name="Dashboard" Orientation="Vertical" HorizontalExpand="True" />
                     </ScrollContainer>
                     <BoxContainer Name="DraftTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
+                        <BoxContainer Name="ReturnedBillsBox" Orientation="Vertical" HorizontalExpand="True" Margin="0 0 0 8" />
                         <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
                             <Button Name="DraftModeCustom" Text="Свой закон" />
                             <Button Name="DraftModePreset" Text="Шаблоны" Margin="6 0 0 0" />
@@ -169,9 +170,13 @@
                         <ScrollContainer Name="AllCommitteesPanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                             <BoxContainer Name="AllCommitteesList" Orientation="Vertical" HorizontalExpand="True" />
                         </ScrollContainer>
-                        <ScrollContainer Name="MyCommitteesPanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
-                            <BoxContainer Name="MyCommitteesList" Orientation="Vertical" HorizontalExpand="True" />
-                        </ScrollContainer>
+                        <BoxContainer Name="MyCommitteesPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                            <Label Text="Причина возврата (для «Вернуть автору»)" StyleClasses="LabelKeyText" />
+                            <LineEdit Name="CommitteeReasonEdit" PlaceHolder="Что доработать..." Margin="0 2 0 6" />
+                            <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                                <BoxContainer Name="MyCommitteesList" Orientation="Vertical" HorizontalExpand="True" />
+                            </ScrollContainer>
+                        </BoxContainer>
                     </BoxContainer>
                     <BoxContainer Name="BudgetTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
                         <RichTextLabel Name="BudgetSectionSummary" Margin="0 0 0 8" />

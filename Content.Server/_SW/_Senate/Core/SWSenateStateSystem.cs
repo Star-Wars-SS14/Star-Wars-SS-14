@@ -375,7 +375,7 @@ public sealed class SWSenateStateSystem : EntitySystem
     public void ResignSpeaker() => Speaker = null;
 
     public bool HasActiveBill(string author) =>
-        _bills.Any(b => (b.Stage == SWBillStage.Voting || b.Stage == SWBillStage.InCommittee) && b.Author == author);
+        _bills.Any(b => (b.Stage == SWBillStage.Voting || b.Stage == SWBillStage.InCommittee || b.Stage == SWBillStage.Returned) && b.Author == author);
 
     public SWSenateBill SubmitBill(string name, string description, string author, Dictionary<string, float> effects)
     {
@@ -1251,6 +1251,13 @@ public sealed class SWSenateStateSystem : EntitySystem
         bill.CommitteeDay = day;
     }
 
+    public void PlaceOnFloor(SWSenateBill bill)
+    {
+        bill.Stage = SWBillStage.Voting;
+        bill.CommitteeId = null;
+        bill.CommitteeName = null;
+    }
+
     // Bills held past their referral day are auto-discharged to the floor at the next committee hour.
     public void DischargeReferredBills(int currentDay)
     {
@@ -1261,21 +1268,52 @@ public sealed class SWSenateStateSystem : EntitySystem
         }
     }
 
-    public List<SWBillEntry> BuildCommitteeBills(string committeeId)
+    public List<SWSenateBill> GetInCommitteeBills(string committeeId) =>
+        _bills.Where(b => b.Stage == SWBillStage.InCommittee && b.CommitteeId == committeeId).ToList();
+
+    public bool IsInCommittee(int billId) =>
+        _bills.Any(b => b.Id == billId && b.Stage == SWBillStage.InCommittee);
+
+    public void AdvanceToFloor(int billId)
     {
-        var bills = new List<SWBillEntry>();
+        var bill = _bills.FirstOrDefault(b => b.Id == billId && b.Stage == SWBillStage.InCommittee);
+        if (bill == null)
+            return;
+
+        bill.Stage = SWBillStage.Voting;
+        bill.CommitteeId = null;
+        bill.CommitteeName = null;
+    }
+
+    public bool SendBackBill(int billId, string reason)
+    {
+        var bill = _bills.FirstOrDefault(b => b.Id == billId && b.Stage == SWBillStage.InCommittee);
+        if (bill == null || bill.SendBacks >= 2)
+            return false;
+
+        bill.Stage = SWBillStage.Returned;
+        bill.SendBacks++;
+        bill.ReturnReason = reason;
+        return true;
+    }
+
+    public SWSenateBill? GetReturnedBill(int billId, string author) =>
+        _bills.FirstOrDefault(b => b.Id == billId && b.Stage == SWBillStage.Returned && b.Author == author);
+
+    public List<SWReturnedBillEntry> BuildReturnedBills(string author)
+    {
+        var bills = new List<SWReturnedBillEntry>();
         foreach (var bill in _bills)
         {
-            if (bill.Stage != SWBillStage.InCommittee || bill.CommitteeId != committeeId)
+            if (bill.Stage != SWBillStage.Returned || bill.Author != author)
                 continue;
 
-            bills.Add(new SWBillEntry
+            bills.Add(new SWReturnedBillEntry
             {
                 Id = bill.Id,
                 Name = bill.Name,
-                Author = bill.Author,
-                Description = bill.Description,
-                Stage = BillStageLabel(bill),
+                Reason = bill.ReturnReason ?? string.Empty,
+                SendBacks = bill.SendBacks,
                 Effects = BuildBillEffects(bill),
             });
         }
@@ -1361,6 +1399,8 @@ public sealed class SWSenateStateSystem : EntitySystem
     {
         if (bill.Stage == SWBillStage.InCommittee)
             return bill.CommitteeName ?? "На рассмотрении в комитете";
+        if (bill.Stage == SWBillStage.Returned)
+            return "Возвращён автору на доработку";
         if (bill.Stage == SWBillStage.Passed)
             return bill.IsElection ? Loc.GetString("sw-senate-bill-stage-election-done") : Loc.GetString("sw-senate-bill-stage-passed");
         if (bill.Stage == SWBillStage.AwaitingSignature)

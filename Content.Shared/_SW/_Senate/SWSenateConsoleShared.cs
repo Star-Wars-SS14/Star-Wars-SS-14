@@ -1331,6 +1331,7 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public List<SWPartyLawEntry> PartyLaws = new();
     public bool CanCommittees;
     public List<SWCommitteeEntry> Committees = new();
+    public List<SWReturnedBillEntry> ReturnedBills = new();
     public bool HasPersonal;
     public int MyCorruption;
     public int MyAccount;
@@ -1391,7 +1392,61 @@ public sealed class SWCommitteeEntry
     public bool IVoted;
     public string MyVote = string.Empty;
     public List<SWCommitteeMemberEntry> Members = new();
-    public List<SWBillEntry> Bills = new();
+    public List<SWCommitteeBillEntry> Bills = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCommitteeBillEntry
+{
+    public int Id;
+    public string Name = string.Empty;
+    public string Author = string.Empty;
+    public List<SWBillEffectEntry> Effects = new();
+    public int SendBacks;
+    public bool CanSendBack;
+    public int AdvanceVotes;
+    public int SendBackVotes;
+    public int VotesNeeded;
+    public int MyVote;
+    public bool CanAct;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWReturnedBillEntry
+{
+    public int Id;
+    public string Name = string.Empty;
+    public string Reason = string.Empty;
+    public int SendBacks;
+    public List<SWBillEffectEntry> Effects = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWCommitteeVoteBillMessage : BoundUserInterfaceMessage
+{
+    public string CommitteeId;
+    public int BillId;
+    public int Disposition;
+    public string Reason;
+
+    public SWCommitteeVoteBillMessage(string committeeId, int billId, int disposition, string reason)
+    {
+        CommitteeId = committeeId;
+        BillId = billId;
+        Disposition = disposition;
+        Reason = reason;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateResubmitBillMessage : BoundUserInterfaceMessage
+{
+    public int BillId;
+
+    public SWSenateResubmitBillMessage(int billId)
+    {
+        BillId = billId;
+    }
 }
 
 [Serializable, NetSerializable]

@@ -23,6 +23,8 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
 
     public bool InCommitteeHour => _time.DayActive && _time.CurrentHour == CommitteeHour;
 
+    private bool PastCommitteeHour => _time.DayActive && _time.CurrentHour > CommitteeHour;
+
     // Which committee owns each policy domain (global stat). Bills route to the committee holding the
     // largest share of their effect weight.
     private static readonly Dictionary<string, string> GlobalToCommittee = new()
@@ -51,7 +53,10 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
     }
 
     private readonly List<Committee> _committees = new();
+    private readonly Dictionary<int, Dictionary<string, bool>> _billVotes = new();
+    private readonly Dictionary<int, string> _billReason = new();
     private int _lastResolveDay = -1;
+    private int _lastDischargeDay = -1;
 
     public override void Initialize()
     {
@@ -108,6 +113,122 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
     public string CommitteeName(string committeeId) =>
         _committees.FirstOrDefault(c => c.Id == committeeId)?.Name ?? committeeId;
 
+    // Committee members vote per bill during the committee hour: advance to the floor, or return it to
+    // the author with a reason (capped at two returns). Resolves as soon as a majority agrees.
+    public bool VoteBill(string voter, string committeeId, int billId, bool advance, string reason)
+    {
+        if (!InCommitteeHour)
+            return false;
+
+        var committee = _committees.FirstOrDefault(c => c.Id == committeeId);
+        if (committee == null || !committee.Members.Contains(voter))
+            return false;
+        if (!_senate.GetInCommitteeBills(committeeId).Any(b => b.Id == billId))
+            return false;
+
+        if (!_billVotes.TryGetValue(billId, out var votes))
+        {
+            votes = new Dictionary<string, bool>();
+            _billVotes[billId] = votes;
+        }
+
+        votes[voter] = advance;
+        if (!advance)
+            _billReason[billId] = reason;
+
+        ResolveBill(committee, billId);
+        return true;
+    }
+
+    private void ResolveBill(Committee committee, int billId)
+    {
+        if (!_billVotes.TryGetValue(billId, out var votes))
+            return;
+
+        var advanceCount = 0;
+        var sendBackCount = 0;
+        foreach (var (voter, advance) in votes)
+        {
+            if (!committee.Members.Contains(voter))
+                continue;
+            if (advance)
+                advanceCount++;
+            else
+                sendBackCount++;
+        }
+
+        var need = committee.Members.Count / 2 + 1;
+
+        if (sendBackCount >= need && _senate.SendBackBill(billId, _billReason.GetValueOrDefault(billId, string.Empty)))
+        {
+            ClearBillVotes(billId);
+            return;
+        }
+
+        if (advanceCount >= need)
+        {
+            _senate.AdvanceToFloor(billId);
+            ClearBillVotes(billId);
+        }
+    }
+
+    private void ClearBillVotes(int billId)
+    {
+        _billVotes.Remove(billId);
+        _billReason.Remove(billId);
+    }
+
+    public List<SWCommitteeBillEntry> BuildCommitteeBills(string committeeId, string? viewer)
+    {
+        var list = new List<SWCommitteeBillEntry>();
+        var committee = _committees.FirstOrDefault(c => c.Id == committeeId);
+        if (committee == null)
+            return list;
+
+        var canAct = viewer != null && committee.Members.Contains(viewer) && InCommitteeHour;
+        var need = committee.Members.Count / 2 + 1;
+
+        foreach (var bill in _senate.GetInCommitteeBills(committeeId))
+        {
+            _billVotes.TryGetValue(bill.Id, out var votes);
+            var advanceCount = 0;
+            var sendBackCount = 0;
+            var myVote = 0;
+            if (votes != null)
+            {
+                foreach (var (voter, advance) in votes)
+                {
+                    if (!committee.Members.Contains(voter))
+                        continue;
+                    if (advance)
+                        advanceCount++;
+                    else
+                        sendBackCount++;
+                }
+
+                if (viewer != null && votes.TryGetValue(viewer, out var mine))
+                    myVote = mine ? 1 : 2;
+            }
+
+            list.Add(new SWCommitteeBillEntry
+            {
+                Id = bill.Id,
+                Name = bill.Name,
+                Author = bill.Author,
+                Effects = _senate.BuildBillEffects(bill),
+                SendBacks = bill.SendBacks,
+                CanSendBack = bill.SendBacks < 2,
+                AdvanceVotes = advanceCount,
+                SendBackVotes = sendBackCount,
+                VotesNeeded = need,
+                MyVote = myVote,
+                CanAct = canAct,
+            });
+        }
+
+        return list;
+    }
+
     private void BuildCommittees()
     {
         _committees.Clear();
@@ -135,6 +256,8 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
             Name = "Комитет юстиции и регламента",
             Description = "Правовые законы, регламент Сената, наделение полномочиями, борьба с коррупцией.",
         });
+        _billVotes.Clear();
+        _billReason.Clear();
         _lastResolveDay = -1;
     }
 
@@ -144,18 +267,29 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
     {
         if (!_time.ModeActive)
             return;
-        if (!InCommitteeHour || _lastResolveDay == _time.Day)
-            return;
 
-        _lastResolveDay = _time.Day;
-
-        _senate.DischargeReferredBills(_time.Day);
-
-        foreach (var committee in _committees)
+        // Committee convenes: settle chair elections and prune departed members.
+        if (InCommitteeHour && _lastResolveDay != _time.Day)
         {
-            Prune(committee);
-            if (committee.ElectionOpen)
-                ResolveElection(committee);
+            _lastResolveDay = _time.Day;
+            foreach (var committee in _committees)
+            {
+                Prune(committee);
+                if (committee.ElectionOpen)
+                    ResolveElection(committee);
+            }
+        }
+
+        // Committee adjourns: bills the committee did not act on this session are auto-discharged.
+        if (PastCommitteeHour && _lastDischargeDay != _time.Day)
+        {
+            _lastDischargeDay = _time.Day;
+            _senate.DischargeReferredBills(_time.Day);
+            foreach (var billId in _billVotes.Keys.ToList())
+            {
+                if (!_senate.IsInCommittee(billId))
+                    ClearBillVotes(billId);
+            }
         }
     }
 

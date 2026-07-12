@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using Content.Server._SW._Senate.Consoles;
+using Content.Server.Radio.EntitySystems;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;
@@ -16,6 +18,7 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private readonly RadioSystem _radio = default!;
 
     public const int SeatsPerCommittee = 3;
     public const float CommitteeWeightThreshold = 8f;
@@ -160,11 +163,13 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
         }
 
         var need = committee.Members.Count / 2 + 1;
+        var billName = _senate.GetBillName(billId);
 
         if (sendBackCount >= need && _senate.SendBackBill(billId, _billReason.GetValueOrDefault(billId, string.Empty)))
         {
             Credit(committee, _returned);
             ClearBillVotes(billId);
+            AnnounceWire($"Закон «{billName}» возвращён автору комитетом «{committee.Name}» на доработку.");
             return;
         }
 
@@ -173,7 +178,17 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
             _senate.AdvanceToFloor(billId);
             Credit(committee, _advanced);
             ClearBillVotes(billId);
+            AnnounceWire($"Закон «{billName}» одобрен комитетом «{committee.Name}» и передан на пленарное заседание.");
         }
+    }
+
+    // System-generated bulletin, not tied to any player's speech - posted on the dedicated committee
+    // wire channel so it doesn't clutter the general Senate channel or require checking a console tab.
+    private void AnnounceWire(string message)
+    {
+        var query = EntityQueryEnumerator<SWSenateWorkConsoleComponent>();
+        if (query.MoveNext(out var console, out _))
+            _radio.SendRadioMessage(console, message, "SWCommittees", console);
     }
 
     private static void Credit(Committee committee, Dictionary<string, int> tally)

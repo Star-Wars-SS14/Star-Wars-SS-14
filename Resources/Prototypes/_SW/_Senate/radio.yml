@@ -45,3 +45,11 @@
   frequency: 2055
   color: "#b8860b"
   longRange: true
+
+- type: radioChannel
+  id: SWCommittees
+  name: Комитеты
+  keycode: 'к'
+  frequency: 2056
+  color: "#27ae60"
+  longRange: true

@@ -76,3 +76,16 @@
   - type: Sprite
     layers:
     - state: crypt_gray
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeyCommittees
+  name: committee wire encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWCommittees
+    defaultChannel: SWCommittees
+  - type: Sprite
+    layers:
+    - state: crypt_blue

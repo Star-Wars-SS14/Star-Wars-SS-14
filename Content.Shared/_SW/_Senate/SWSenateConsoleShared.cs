@@ -3254,3 +3254,33 @@ public sealed class SWApartmentRentMessage : BoundUserInterfaceMessage
 public sealed class SWApartmentVacateMessage : BoundUserInterfaceMessage
 {
 }
+
+[Serializable, NetSerializable]
+public enum SWStaffShiftConsoleUiKey : byte
+{
+    Key,
+}
+
+[Serializable, NetSerializable]
+public sealed class SWStaffShiftEntry
+{
+    public string RoleId = string.Empty;
+    public string RoleName = string.Empty;
+    public string Name = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWStaffShiftConsoleState : BoundUserInterfaceState
+{
+    public string UserName = string.Empty;
+    public string? MyRoleId;
+    public string MyRoleName = string.Empty;
+    public bool OnShift;
+    public string Notice = string.Empty;
+    public List<SWStaffShiftEntry> Roster = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWStaffShiftToggleMessage : BoundUserInterfaceMessage
+{
+}

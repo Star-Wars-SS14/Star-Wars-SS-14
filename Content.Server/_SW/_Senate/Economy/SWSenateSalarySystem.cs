@@ -7,8 +7,8 @@ namespace Content.Server._SW._Senate.Economy;
 
 // Hourly paycheck for every tracked office - credited to the same personal account the shadow
 // economy uses, but through SWCorruptionSystem.AddAccount so it never touches the corruption index.
-// Staff roles (usher/guard/doctor) are out of scope: unlike every political/executive/judicial post,
-// they have no "who currently holds this" tracking anywhere in the Senate systems to pay against.
+// Staff roles (usher/guard/doctor) are paid separately by SWSenateStaffSystem, keyed off shift
+// clock-in rather than a take-office console.
 public sealed class SWSenateSalarySystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _proto = default!;

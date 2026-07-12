@@ -1,0 +1,23 @@
+- type: entity
+  parent: BaseComputer
+  id: SWStaffShiftConsole
+  name: консоль дежурств персонала
+  description: Регистрация на смену для приставов, гвардии и врача Сената. Оплата идёт только за отработанные часы.
+  components:
+  - type: SWStaffShiftConsole
+  - type: ActivatableUI
+    key: enum.SWStaffShiftConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWStaffShiftConsoleUiKey.Key:
+        type: SWStaffShiftConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicSenateWorkComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: senate_info_monitor
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Godmode

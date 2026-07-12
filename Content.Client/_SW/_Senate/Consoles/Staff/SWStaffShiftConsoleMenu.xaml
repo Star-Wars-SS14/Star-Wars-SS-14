@@ -1,0 +1,21 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    Title="Смена персонала"
+    MinSize="480 540">
+    <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+            <PanelContainer Name="HeaderPanel">
+                <BoxContainer Orientation="Horizontal" Margin="12 7">
+                    <Label Name="HeaderTitle" HorizontalExpand="True" />
+                </BoxContainer>
+            </PanelContainer>
+            <Label Name="RoleLabel" Margin="12 8 12 2" />
+            <Label Name="NoticeLabel" Margin="12 2 12 6" />
+            <BoxContainer Name="ToggleBox" Orientation="Horizontal" Margin="12 0 12 8" />
+            <Label Name="RosterHeader" Text="На смене:" Margin="12 4 12 4" />
+            <ScrollContainer HorizontalExpand="True" VerticalExpand="True" Margin="8">
+                <BoxContainer Name="RosterBox" Orientation="Vertical" HorizontalExpand="True" />
+            </ScrollContainer>
+        </BoxContainer>
+    </PanelContainer>
+</controls:FancyWindow>

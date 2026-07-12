@@ -43,6 +43,7 @@ public sealed class SWSenateStaffSystem : EntitySystem
     };
 
     private readonly Dictionary<string, string> _onShift = new();
+    public IEnumerable<string> OnShiftNames => _onShift.Keys;
 
     private int _lastPaidDay = -1;
     private int _lastPaidHour = -1;

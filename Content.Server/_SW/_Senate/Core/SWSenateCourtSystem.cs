@@ -19,6 +19,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SWCorruptionSystem _corruption = default!;
     [Dependency] private readonly SWSenateBudgetSystem _budget = default!;
+    [Dependency] private readonly SWSenateStaffSystem _staff = default!;
 
     public const int MorningStart = 9;
     public const int MorningEnd = 13;
@@ -280,6 +281,9 @@ public sealed class SWSenateCourtSystem : EntitySystem
             list.Add(Prosecutor);
         if (Defender != null && !list.Contains(Defender))
             list.Add(Defender);
+        foreach (var name in _staff.OnShiftNames)
+            if (!list.Contains(name))
+                list.Add(name);
 
         list.RemoveAll(name => name == _senate.Chancellor || IsJudge(name));
         list.Sort(StringComparer.Ordinal);

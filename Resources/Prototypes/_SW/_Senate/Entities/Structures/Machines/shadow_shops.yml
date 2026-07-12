@@ -119,3 +119,37 @@
       enum.SWShadowShopUiKey.Key:
         type: SWShadowShopBoundUserInterface
   - type: Godmode
+
+- type: entity
+  parent: BaseStructure
+  id: SWBoutiqueCatering
+  name: погребок «Набу»
+  description: Вино, коньяк и сигары для приёмов — то, без чего салонные разговоры не клеятся.
+  components:
+  - type: InteractionOutline
+  - type: Sprite
+    sprite: Structures/Machines/VendingMachines/boozeomat.rsi
+    layers:
+    - state: "off"
+  - type: SWShadowShop
+    catalog:
+    - proto: Cigar
+      price: 50
+    - proto: DrinkWineBottleFull
+      price: 150
+    - proto: DrinkCognacBottleFull
+      price: 200
+    - proto: DrinkWhiskeyBottleFull
+      price: 200
+    - proto: DrinkChampagneBottleFull
+      price: 250
+    - proto: CigarGold
+      price: 300
+  - type: ActivatableUI
+    singleUser: true
+    key: enum.SWShadowShopUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWShadowShopUiKey.Key:
+        type: SWShadowShopBoundUserInterface
+  - type: Godmode

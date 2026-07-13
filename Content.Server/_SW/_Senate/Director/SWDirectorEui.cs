@@ -45,6 +45,9 @@ public sealed class SWDirectorEui : BaseEui
     {
         base.HandleMessage(msg);
 
+        if (msg is CloseEuiMessage)
+            return;
+
         if (!_admin.HasAdminFlag(Player, AdminFlags.Admin))
             return;
 

@@ -8,6 +8,7 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Maths;
+using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
 namespace Content.Client._SW._Senate.Consoles.Work;
@@ -84,6 +85,58 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private Control[] _trackedPanels = System.Array.Empty<Control>();
     private readonly Dictionary<Control, bool> _lastPanelVisible = new();
+    private readonly Dictionary<Control, bool> _lastTreeVisible = new();
+    private readonly Dictionary<Control, int> _relayoutQueue = new();
+
+    // Content built (or toggled on) inside a hidden subtree never gets a real Measure pass, and the
+    // engine reuses the stale cached sizes once it becomes visible - children end up stacked on top of
+    // each other. Frame-driven cure: whenever a tracked panel actually BECOMES visible on screen
+    // (VisibleInTree, any code path), force-invalidate its whole subtree for a few consecutive frames.
+    private void ForceRelayout(Control root)
+    {
+        _relayoutQueue[root] = 3;
+    }
+
+    private static void InvalidateTree(Control root)
+    {
+        root.InvalidateMeasure();
+        foreach (var child in root.Children)
+            InvalidateTree(child);
+    }
+
+    protected override void FrameUpdate(FrameEventArgs args)
+    {
+        base.FrameUpdate(args);
+
+        foreach (var panel in _trackedPanels)
+        {
+            var visible = panel.VisibleInTree;
+            if (_lastTreeVisible.TryGetValue(panel, out var was) && !was && visible)
+                ForceRelayout(panel);
+            _lastTreeVisible[panel] = visible;
+        }
+
+        if (_relayoutQueue.Count == 0)
+            return;
+
+        foreach (var (root, frames) in _relayoutQueue.ToList())
+        {
+            if (root.Disposed)
+            {
+                _relayoutQueue.Remove(root);
+                continue;
+            }
+
+            if (!root.VisibleInTree)
+                continue;
+
+            InvalidateTree(root);
+            if (frames <= 1)
+                _relayoutQueue.Remove(root);
+            else
+                _relayoutQueue[root] = frames - 1;
+        }
+    }
 
     // Belt-and-suspenders on top of the RebuildAllPanels() calls in ShowSection/ShowDilemmaMode/etc:
     // catches a hidden->visible transition no matter which code path caused it, so a stale unconverged
@@ -1178,6 +1231,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                     _expandedParties.Remove(id);
                 var now = _expandedParties.Contains(id);
                 details.Visible = now;
+                if (now)
+                    ForceRelayout(details);
                 toggle.Text = now ? "Скрыть" : "Подробнее";
             };
             head.AddChild(toggle);
@@ -1396,6 +1451,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                 _expandedCrises.Remove(id);
             var now = _expandedCrises.Contains(id);
             details.Visible = now;
+            if (now)
+                ForceRelayout(details);
             toggle.Text = now ? "Скрыть" : "Подробнее";
         };
         head.AddChild(toggle);
@@ -2172,6 +2229,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                 _expandedDilemmas.Remove(id);
             var now = _expandedDilemmas.Contains(id);
             details.Visible = now;
+            if (now)
+                ForceRelayout(details);
             toggle.Text = now ? "Скрыть" : "Подробнее";
         };
         header.AddChild(toggle);

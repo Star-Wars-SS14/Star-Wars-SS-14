@@ -210,11 +210,13 @@ public static class SWConsoleStyle
 
         protected override Vector2 MeasureOverride(Vector2 availableSize)
         {
-            // Once we've been arranged at least once, wrap against that real width; otherwise fall back to
-            // the caller's available width (or a fixed hint if that is infinite on the first pass).
-            var width = Width;
-            if (width <= 1f)
-                width = float.IsInfinity(availableSize.X) || availableSize.X <= 0f ? _fallbackWidth : availableSize.X;
+            // Prefer the LIVE constraint: the previously arranged Width can be stale garbage from a pass
+            // made while the subtree was hidden/collapsed, and latching onto it kept the wrong wrap height
+            // forever (only a manual window resize re-arranged and healed it). The remembered width is
+            // only a fallback for a genuinely infinite first-pass constraint.
+            var width = availableSize.X;
+            if (float.IsInfinity(width) || width <= 0f)
+                width = Width > 1f ? Width : _fallbackWidth;
 
             return base.MeasureOverride(new Vector2(width, availableSize.Y));
         }

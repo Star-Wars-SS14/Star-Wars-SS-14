@@ -263,7 +263,7 @@ public sealed class SWMercSystem : EntitySystem
         var price = PriceFor(kind);
         if (!_corruption.SpendAccount(client, price))
         {
-            error = $"Недостаточно средств на теневом счёте: нужно {price}.";
+            error = $"Недостаточно средств на личном счёте: нужно {price}.";
             return false;
         }
 

@@ -1126,7 +1126,7 @@
 - type: swAmbition
   id: SWAmbitionMercPatron
   name: Щедрый патрон
-  description: Потратьте на контракты синдиката свыше 2400 кредитов с теневого счёта.
+  description: Потратьте на контракты синдиката свыше 2400 кредитов с личного счёта.
   role: Senator
   kind: PersonMetric
   stat: Spent

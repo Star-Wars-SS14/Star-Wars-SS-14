@@ -1,6 +1,7 @@
 using System.Linq;
 using Content.Server._SW._Senate.Core;
 using Content.Shared._SW._Senate;
+using Content.Shared.Access.Systems;
 using Content.Shared.GameTicking;
 using Content.Shared.Mind;
 using Content.Shared.Roles.Jobs;
@@ -23,6 +24,7 @@ public sealed class SWSenateStaffSystem : EntitySystem
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly SharedMindSystem _mind = default!;
     [Dependency] private readonly SharedJobSystem _jobs = default!;
+    [Dependency] private readonly SharedIdCardSystem _idCard = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWCorruptionSystem _corruption = default!;
 
@@ -40,6 +42,16 @@ public sealed class SWSenateStaffSystem : EntitySystem
         ["SWSenateGuardHead"] = 60,
         ["SWSenateGuardOfficer"] = 45,
         ["SWSenateDoctor"] = 55,
+    };
+
+    // Ghost-role dummies have no Job on their mind, so the worn/held ID card's stamped job icon is
+    // the fallback identity - PresetIdCard writes a unique icon per staff role.
+    private static readonly Dictionary<string, string> IconToRole = new()
+    {
+        ["JobIconUsher"] = "SWUsher",
+        ["JobIconSenateGuardHead"] = "SWSenateGuardHead",
+        ["JobIconSenateGuardOfficer"] = "SWSenateGuardOfficer",
+        ["JobIconSenateDoctor"] = "SWSenateDoctor",
     };
 
     private readonly Dictionary<string, string> _onShift = new();
@@ -91,7 +103,7 @@ public sealed class SWSenateStaffSystem : EntitySystem
 
         if (!TryGetStaffRole(actor, out var roleId, out _))
         {
-            UpdateUi(ent, actor, "Эта консоль только для персонала Сената.");
+            UpdateUi(ent, actor, "Должность не опознана: нужна ID-карта персонала Сената при себе.");
             return;
         }
 
@@ -117,18 +129,24 @@ public sealed class SWSenateStaffSystem : EntitySystem
         roleId = string.Empty;
         roleName = string.Empty;
 
-        if (!_mind.TryGetMind(actor, out var mindId, out _))
-            return false;
+        if (_mind.TryGetMind(actor, out var mindId, out _)
+            && _jobs.MindTryGetJob(mindId, out var job)
+            && StaffRoles.ContainsKey(job.ID))
+        {
+            roleId = job.ID;
+            roleName = StaffRoles[job.ID];
+            return true;
+        }
 
-        if (!_jobs.MindTryGetJob(mindId, out var job))
-            return false;
+        if (_idCard.TryFindIdCard(actor, out var card)
+            && IconToRole.TryGetValue(card.Comp.JobIcon.Id, out var cardRole))
+        {
+            roleId = cardRole;
+            roleName = StaffRoles[cardRole];
+            return true;
+        }
 
-        if (!StaffRoles.TryGetValue(job.ID, out var name))
-            return false;
-
-        roleId = job.ID;
-        roleName = name;
-        return true;
+        return false;
     }
 
     private void UpdateUi(EntityUid uid, EntityUid actor, string notice)

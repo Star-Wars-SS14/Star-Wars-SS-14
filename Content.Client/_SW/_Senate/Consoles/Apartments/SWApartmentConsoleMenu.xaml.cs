@@ -29,7 +29,7 @@ public sealed partial class SWApartmentConsoleMenu : FancyWindow
 
     public void SetState(SWApartmentConsoleState state)
     {
-        BalanceLabel.Text = $"Наниматель: {state.UserName}   ·   теневой счёт: {state.Balance} кр.";
+        BalanceLabel.Text = $"Наниматель: {state.UserName}   ·   личный счёт: {state.Balance} кр.";
 
         NoticeLabel.Visible = state.Notice.Length > 0;
         NoticeLabel.Text = state.Notice;

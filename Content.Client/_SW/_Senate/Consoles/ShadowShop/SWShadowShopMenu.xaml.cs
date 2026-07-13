@@ -33,7 +33,7 @@ public sealed partial class SWShadowShopMenu : FancyWindow
 
         HeaderTitle.Text = state.ShopName.ToUpperInvariant();
         Title = state.ShopName;
-        BalanceLabel.Text = $"Покупатель: {state.UserName}   ·   теневой счёт: {state.Balance} кр.";
+        BalanceLabel.Text = $"Покупатель: {state.UserName}   ·   личный счёт: {state.Balance} кр.";
 
         NoticeLabel.Visible = state.Notice.Length > 0;
         NoticeLabel.Text = state.Notice;

@@ -224,7 +224,7 @@
   parent: BaseComputer
   id: SWApartmentConsole
   name: консоль аренды апартаментов
-  description: Учёт свободных и занятых апартаментов Сената. Оплата — с счёта.
+  description: Учёт свободных и занятых апартаментов Сената. Оплата — с личного счёта.
   components:
   - type: SWApartmentConsole
   - type: ActivatableUI

@@ -42,7 +42,7 @@ public sealed partial class SWShadowTerminalMenu : FancyWindow
     {
         _state = state;
 
-        BalanceLabel.Text = $"Оператор: {state.UserName}   ·   теневой счёт: {state.Balance} кр.";
+        BalanceLabel.Text = $"Оператор: {state.UserName}   ·   личный счёт: {state.Balance} кр.";
         StatusLabel.Text = state.ContractActive ? state.ContractLabel : "Канал свободен. Синдикат ждёт предложений.";
         StatusLabel.FontColorOverride = state.ContractActive ? SWConsoleStyle.Warn : SWConsoleStyle.TextDim;
 

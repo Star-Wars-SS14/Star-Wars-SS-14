@@ -12,7 +12,7 @@
       enum.SWStaffShiftConsoleUiKey.Key:
         type: SWStaffShiftConsoleBoundUserInterface
   - type: Sprite
-    sprite: _SW/_Senate/Structures/Machines/RepublicSenateWorkComputer.rsi
+    sprite: _SW/_Senate/Structures/Machines/RepublicSenateInfoComputer.rsi
     layers:
     - map: ["computerLayerBody"]
       state: computer

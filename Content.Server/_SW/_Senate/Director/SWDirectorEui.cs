@@ -57,7 +57,7 @@ public sealed class SWDirectorEui : BaseEui
             case SWDirectorActionMessage action:
                 if (Director.Mode != SWDirectorMode.Manual || Director.Controller != Player.UserId)
                     break;
-                Director.TryAction(action.Kind, action.SectorId, out _);
+                Director.TryAction(action.Kind, action.SectorId, action.Param, action.Target, out _);
                 break;
 
             case SWDirectorSendNoteMessage note:

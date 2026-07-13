@@ -19,6 +19,12 @@ public enum SWDirectorActionKind : byte
     Sanction,
     LiftSanction,
     Blockade,
+    Crisis,
+    RepublicCrisis,
+    Dilemma,
+    RepublicDilemma,
+    Strike,
+    Merc,
 }
 
 [Serializable, NetSerializable]
@@ -57,10 +63,20 @@ public sealed class SWDirectorEuiState : EuiStateBase
     public List<SWDirectorSectorEntry> Sectors = new();
     public List<SWDiploEntry> Diplomacy = new();
     public List<string> Chronicle = new();
+    public List<string> Targets = new();
+    public bool StrikeAvailable;
+    public string StrikeLabel = string.Empty;
+    public bool MercAvailable;
+    public string MercLabel = string.Empty;
     public int CostManeuvers;
     public int CostProvocation;
     public int CostSanction;
     public int CostBlockade;
+    public int CostCrisis;
+    public int CostRepublicCrisis;
+    public int CostDilemma;
+    public int CostStrike;
+    public int CostMerc;
 }
 
 [Serializable, NetSerializable]
@@ -79,11 +95,15 @@ public sealed class SWDirectorActionMessage : EuiMessageBase
 {
     public SWDirectorActionKind Kind;
     public string SectorId = string.Empty;
+    public string Param = string.Empty;
+    public string Target = string.Empty;
 
-    public SWDirectorActionMessage(SWDirectorActionKind kind, string sectorId = "")
+    public SWDirectorActionMessage(SWDirectorActionKind kind, string sectorId = "", string param = "", string target = "")
     {
         Kind = kind;
         SectorId = sectorId;
+        Param = param;
+        Target = target;
     }
 }
 

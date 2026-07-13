@@ -11,8 +11,13 @@ namespace Content.Client._SW._Senate.Director;
 public sealed partial class SWDirectorWindow : FancyWindow
 {
     public event Action<SWDirectorMode>? OnSetMode;
-    public event Action<SWDirectorActionKind, string>? OnAction;
+    public event Action<SWDirectorActionKind, string, string, string>? OnAction;
     public event Action<string, bool>? OnSendNote;
+
+    private string _strikeTask = string.Empty;
+    private string _strikeTarget = string.Empty;
+    private string _mercKind = "kill";
+    private string _mercTarget = string.Empty;
 
     public SWDirectorWindow()
     {
@@ -39,7 +44,7 @@ public sealed partial class SWDirectorWindow : FancyWindow
         BorderLabel.FontOverride = SWConsoleStyle.Mono;
         BorderLabel.FontColorOverride = SWConsoleStyle.TextBright;
         NoticeLabel.FontOverride = SWConsoleStyle.MonoSmall;
-        NoticeLabel.FontColorOverride = SWConsoleStyle.Bad;
+        NoticeLabel.FontColorOverride = Color.FromHex("#E0A23B");
     }
 
     public void SetState(SWDirectorEuiState state)
@@ -90,18 +95,33 @@ public sealed partial class SWDirectorWindow : FancyWindow
         Body.RemoveAllChildren();
 
         Body.AddChild(SWConsoleStyle.Section("ОБЩИЕ ОПЕРАЦИИ"));
-        var global = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 8) };
+        var global = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 4) };
 
         var maneuvers = SWConsoleStyle.Action($"МАНЁВРЫ У ГРАНИЦЫ — {state.CostManeuvers}", Color.FromHex("#E0556B"),
             !canAct || state.Influence < state.CostManeuvers);
-        maneuvers.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.Maneuvers, "");
+        maneuvers.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.Maneuvers, "", "", "");
         global.AddChild(maneuvers);
 
         var blockade = SWConsoleStyle.Action($"ТОРГОВАЯ БЛОКАДА — {state.CostBlockade}", Color.FromHex("#E0556B"),
             !canAct || state.BlockadeActive || state.Influence < state.CostBlockade);
-        blockade.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.Blockade, "");
+        blockade.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.Blockade, "", "", "");
         global.AddChild(blockade);
         Body.AddChild(global);
+
+        var covert = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 0, 0, 8) };
+
+        var repCrisis = SWConsoleStyle.Action($"КРИЗИС РЕСПУБЛИКИ — {state.CostRepublicCrisis}", Color.FromHex("#E0A23B"),
+            !canAct || state.Influence < state.CostRepublicCrisis);
+        repCrisis.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.RepublicCrisis, "", "", "");
+        covert.AddChild(repCrisis);
+
+        var repDilemma = SWConsoleStyle.Action($"ДИЛЕММА КАНЦЛЕРУ — {state.CostDilemma}", Color.FromHex("#E0A23B"),
+            !canAct || state.Influence < state.CostDilemma);
+        repDilemma.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.RepublicDilemma, "", "", "");
+        covert.AddChild(repDilemma);
+        Body.AddChild(covert);
+
+        BuildAgents(state, canAct);
 
         Body.AddChild(SWConsoleStyle.Section("СЕКТОРА"));
         if (state.Sectors.Count == 0)
@@ -111,38 +131,47 @@ public sealed partial class SWDirectorWindow : FancyWindow
         {
             var row = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, sector.Sanctioned ? Color.FromHex("#E0556B") : null);
             row.Margin = new Thickness(0, 0, 0, 5);
-            var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
+            var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
 
             var info = sector.Sanctioned
                 ? $"{sector.Name} — {sector.Holder} · {sector.SanctionLabel}"
                 : $"{sector.Name} — {sector.Holder}";
             var label = SWConsoleStyle.Text(info, sector.Sanctioned ? Color.FromHex("#E0556B") : SWConsoleStyle.TextBright, SWConsoleStyle.Mono);
             label.HorizontalExpand = true;
-            label.VerticalAlignment = Control.VAlignment.Center;
             box.AddChild(label);
+
+            var buttons = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
 
             var provoke = SWConsoleStyle.Action($"ПРОВОКАЦИЯ {state.CostProvocation}", Color.FromHex("#E0A23B"),
                 !canAct || state.Influence < state.CostProvocation);
-            provoke.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.Provocation, sector.Id);
-            provoke.VerticalAlignment = Control.VAlignment.Center;
-            box.AddChild(provoke);
+            provoke.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.Provocation, sector.Id, "", "");
+            buttons.AddChild(provoke);
 
             if (!sector.Sanctioned)
             {
                 var sanction = SWConsoleStyle.Action($"САНКЦИИ {state.CostSanction}", Color.FromHex("#E0556B"),
                     !canAct || state.Influence < state.CostSanction);
-                sanction.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.Sanction, sector.Id);
-                sanction.VerticalAlignment = Control.VAlignment.Center;
-                box.AddChild(sanction);
+                sanction.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.Sanction, sector.Id, "", "");
+                buttons.AddChild(sanction);
             }
             else
             {
                 var lift = SWConsoleStyle.Action("СНЯТЬ", SWConsoleStyle.Good, !canAct);
-                lift.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.LiftSanction, sector.Id);
-                lift.VerticalAlignment = Control.VAlignment.Center;
-                box.AddChild(lift);
+                lift.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.LiftSanction, sector.Id, "", "");
+                buttons.AddChild(lift);
             }
 
+            var crisis = SWConsoleStyle.Action($"КРИЗИС {state.CostCrisis}", Color.FromHex("#E0556B"),
+                !canAct || state.Influence < state.CostCrisis);
+            crisis.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.Crisis, sector.Id, "", "");
+            buttons.AddChild(crisis);
+
+            var dilemma = SWConsoleStyle.Action($"ДИЛЕММА {state.CostDilemma}", Color.FromHex("#E0A23B"),
+                !canAct || state.Influence < state.CostDilemma);
+            dilemma.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.Dilemma, sector.Id, "", "");
+            buttons.AddChild(dilemma);
+
+            box.AddChild(buttons);
             row.AddChild(box);
             Body.AddChild(row);
         }
@@ -168,5 +197,85 @@ public sealed partial class SWDirectorWindow : FancyWindow
             Body.AddChild(SWConsoleStyle.Text("Пока пусто.", SWConsoleStyle.TextBright, SWConsoleStyle.MonoSmall));
         foreach (var line in state.Chronicle)
             Body.AddChild(SWConsoleStyle.Text(line, SWConsoleStyle.TextBright, SWConsoleStyle.MonoSmall));
+    }
+
+    private void BuildAgents(SWDirectorEuiState state, bool canAct)
+    {
+        Body.AddChild(SWConsoleStyle.Section("АГЕНТУРА"));
+
+        if (!state.Targets.Contains(_strikeTarget))
+            _strikeTarget = string.Empty;
+        if (!state.Targets.Contains(_mercTarget))
+            _mercTarget = state.Targets.Count > 0 ? state.Targets[0] : string.Empty;
+
+        var strikeRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 4) };
+
+        var taskOption = new OptionButton();
+        taskOption.AddItem("Случайная задача", 0);
+        taskOption.AddItem("Похищение", 1);
+        taskOption.AddItem("Убийство", 2);
+        taskOption.AddItem("Захват здания", 3);
+        taskOption.SelectId(_strikeTask switch { "kidnap" => 1, "kill" => 2, "capture" => 3, _ => 0 });
+        taskOption.OnItemSelected += args =>
+        {
+            taskOption.SelectId(args.Id);
+            _strikeTask = args.Id switch { 1 => "kidnap", 2 => "kill", 3 => "capture", _ => "" };
+        };
+        strikeRow.AddChild(taskOption);
+
+        var strikeTargetOption = new OptionButton();
+        strikeTargetOption.AddItem("Случайная цель", 0);
+        for (var i = 0; i < state.Targets.Count; i++)
+            strikeTargetOption.AddItem(state.Targets[i], i + 1);
+        strikeTargetOption.SelectId(_strikeTarget.Length > 0 ? state.Targets.IndexOf(_strikeTarget) + 1 : 0);
+        strikeTargetOption.OnItemSelected += args =>
+        {
+            strikeTargetOption.SelectId(args.Id);
+            _strikeTarget = args.Id > 0 ? state.Targets[args.Id - 1] : string.Empty;
+        };
+        strikeRow.AddChild(strikeTargetOption);
+
+        var strike = SWConsoleStyle.Action($"ОТРЯД — {state.CostStrike}", Color.FromHex("#E0556B"),
+            !canAct || !state.StrikeAvailable || state.Influence < state.CostStrike);
+        strike.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.Strike, "", _strikeTask, _strikeTarget);
+        strikeRow.AddChild(strike);
+        Body.AddChild(strikeRow);
+
+        if (state.StrikeLabel.Length > 0)
+            Body.AddChild(SWConsoleStyle.Text(state.StrikeLabel, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+
+        var mercRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 4) };
+
+        var kindOption = new OptionButton();
+        kindOption.AddItem("Убийство", 0);
+        kindOption.AddItem("Похищение", 1);
+        kindOption.SelectId(_mercKind == "kidnap" ? 1 : 0);
+        kindOption.OnItemSelected += args =>
+        {
+            kindOption.SelectId(args.Id);
+            _mercKind = args.Id == 1 ? "kidnap" : "kill";
+        };
+        mercRow.AddChild(kindOption);
+
+        var mercTargetOption = new OptionButton();
+        for (var i = 0; i < state.Targets.Count; i++)
+            mercTargetOption.AddItem(state.Targets[i], i);
+        if (state.Targets.Count > 0)
+            mercTargetOption.SelectId(Math.Max(0, state.Targets.IndexOf(_mercTarget)));
+        mercTargetOption.OnItemSelected += args =>
+        {
+            mercTargetOption.SelectId(args.Id);
+            _mercTarget = state.Targets[args.Id];
+        };
+        mercRow.AddChild(mercTargetOption);
+
+        var merc = SWConsoleStyle.Action($"НАЁМНИК — {state.CostMerc}", Color.FromHex("#E0556B"),
+            !canAct || !state.MercAvailable || state.Targets.Count == 0 || state.Influence < state.CostMerc);
+        merc.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.Merc, "", _mercKind, _mercTarget);
+        mercRow.AddChild(merc);
+        Body.AddChild(mercRow);
+
+        if (state.MercLabel.Length > 0)
+            Body.AddChild(SWConsoleStyle.Text(state.MercLabel, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
     }
 }

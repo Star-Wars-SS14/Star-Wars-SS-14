@@ -1,6 +1,11 @@
 using System.Linq;
+using Content.Server._SW._Senate.Antag;
 using Content.Server._SW._Senate.Core;
+using Content.Server._SW._Senate.Economy;
 using Content.Server.Chat.Systems;
+using Content.Shared._SW._Senate;
+using Content.Shared._SW._Senate.Crises;
+using Content.Shared._SW._Senate.Dilemmas;
 using Content.Shared._SW._Senate.Director;
 using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;
@@ -22,6 +27,10 @@ public sealed class SWDirectorSystem : EntitySystem
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
     [Dependency] private readonly SWCorruptionSystem _corruption = default!;
+    [Dependency] private readonly SWSenateCrisisSystem _crisis = default!;
+    [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
+    [Dependency] private readonly SWImperialStrikeSystem _strike = default!;
+    [Dependency] private readonly SWMercSystem _merc = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
 
     public const int InfluenceCap = 100;
@@ -29,6 +38,11 @@ public sealed class SWDirectorSystem : EntitySystem
     public const int CostProvocation = 25;
     public const int CostSanction = 30;
     public const int CostBlockade = 50;
+    public const int CostCrisis = 40;
+    public const int CostRepublicCrisis = 50;
+    public const int CostDilemma = 15;
+    public const int CostStrike = 60;
+    public const int CostMerc = 45;
 
     private const float StartInfluence = 20f;
     private const float BaseIncomePerHour = 8f;
@@ -78,6 +92,7 @@ public sealed class SWDirectorSystem : EntitySystem
         _blockade = 0f;
         _chronicle.Clear();
         _diplomacy.Clear();
+        LastNotice = string.Empty;
         _minuteAccum = 0f;
         _lastHour = -1;
     }
@@ -186,7 +201,22 @@ public sealed class SWDirectorSystem : EntitySystem
         Updated?.Invoke();
     }
 
-    public bool TryAction(SWDirectorActionKind kind, string sectorId, out string result)
+    public string LastNotice { get; private set; } = string.Empty;
+
+    public bool TryAction(SWDirectorActionKind kind, string sectorId, out string result) =>
+        TryAction(kind, sectorId, string.Empty, string.Empty, out result);
+
+    public bool TryAction(SWDirectorActionKind kind, string sectorId, string param, string target, out string result)
+    {
+        var ok = DoAction(kind, sectorId, param, target, out result);
+        if (result.Length > 0)
+            LastNotice = result;
+        else if (ok)
+            LastNotice = string.Empty;
+        return ok;
+    }
+
+    private bool DoAction(SWDirectorActionKind kind, string sectorId, string param, string target, out string result)
     {
         result = string.Empty;
         if (Mode == SWDirectorMode.Off)
@@ -252,9 +282,148 @@ public sealed class SWDirectorSystem : EntitySystem
                 Announce("Империя объявляет блокаду республиканских торговых маршрутов.");
                 AddChronicle("торговая блокада Республики");
                 break;
+
+            case SWDirectorActionKind.Crisis:
+            {
+                if (!ValidSector(sectorId, ref result))
+                    return false;
+                var pool = _proto.EnumeratePrototypes<SWCrisisPrototype>().Where(c => !c.Republic).ToList();
+                if (pool.Count == 0 || _influence < CostCrisis)
+                {
+                    result = pool.Count == 0 ? "Нет подходящих кризисов." : $"Недостаточно влияния: нужно {CostCrisis}.";
+                    return false;
+                }
+                if (!_crisis.AdminSpawn(sectorId, _random.Pick(pool).ID))
+                {
+                    result = "Кризис не удалось спровоцировать.";
+                    return false;
+                }
+                _influence -= CostCrisis;
+                AddChronicle($"тайно: спровоцирован кризис в секторе {SectorName(sectorId)}");
+                result = "Кризис спровоцирован.";
+                break;
+            }
+
+            case SWDirectorActionKind.RepublicCrisis:
+            {
+                var pool = _proto.EnumeratePrototypes<SWCrisisPrototype>().Where(c => c.Republic).ToList();
+                if (pool.Count == 0 || _influence < CostRepublicCrisis)
+                {
+                    result = pool.Count == 0 ? "Нет подходящих кризисов." : $"Недостаточно влияния: нужно {CostRepublicCrisis}.";
+                    return false;
+                }
+                if (!_crisis.AdminSpawn(null, _random.Pick(pool).ID))
+                {
+                    result = "Кризис не удалось спровоцировать.";
+                    return false;
+                }
+                _influence -= CostRepublicCrisis;
+                AddChronicle("тайно: спровоцирован республиканский кризис");
+                result = "Республиканский кризис спровоцирован.";
+                break;
+            }
+
+            case SWDirectorActionKind.Dilemma:
+            {
+                if (!ValidSector(sectorId, ref result))
+                    return false;
+                if (!SpawnDilemma(SWDilemmaScope.Sectoral, sectorId, sectorId, ref result))
+                    return false;
+                AddChronicle($"тайно: подброшена дилемма сектору {SectorName(sectorId)}");
+                result = "Дилемма подброшена.";
+                break;
+            }
+
+            case SWDirectorActionKind.RepublicDilemma:
+            {
+                if (!SpawnDilemma(SWDilemmaScope.Republic, SWSenateDilemmaSystem.RepublicOwner, null, ref result))
+                    return false;
+                AddChronicle("тайно: подброшена дилемма Канцлеру");
+                result = "Дилемма подброшена Канцлеру.";
+                break;
+            }
+
+            case SWDirectorActionKind.Strike:
+            {
+                if (_influence < CostStrike)
+                {
+                    result = $"Недостаточно влияния: нужно {CostStrike}.";
+                    return false;
+                }
+                SWStrikeTask? task = param switch
+                {
+                    "kidnap" => SWStrikeTask.Kidnap,
+                    "kill" => SWStrikeTask.Kill,
+                    "capture" => SWStrikeTask.Capture,
+                    _ => null,
+                };
+                if (!_strike.TryLaunch(task, target.Length > 0 ? target : null, out var strikeError))
+                {
+                    result = strikeError;
+                    return false;
+                }
+                _influence -= CostStrike;
+                var taskLabel = param switch
+                {
+                    "kidnap" => "похищение",
+                    "kill" => "убийство",
+                    "capture" => "захват",
+                    _ => "случайная задача",
+                };
+                AddChronicle($"тайно: заброшен диверсионный отряд ({taskLabel}{(target.Length > 0 ? $", цель {target}" : "")})");
+                result = "Диверсионный отряд заброшен.";
+                break;
+            }
+
+            case SWDirectorActionKind.Merc:
+            {
+                if (_influence < CostMerc)
+                {
+                    result = $"Недостаточно влияния: нужно {CostMerc}.";
+                    return false;
+                }
+                var kind2 = param == "kidnap" ? SWMercContractKind.Kidnap : SWMercContractKind.Kill;
+                if (target.Length == 0)
+                {
+                    result = "Не выбрана цель.";
+                    return false;
+                }
+                if (!_merc.TryOrder(kind2, target, out var mercError))
+                {
+                    result = mercError;
+                    return false;
+                }
+                _influence -= CostMerc;
+                AddChronicle($"тайно: нанят наёмник ({(kind2 == SWMercContractKind.Kidnap ? "похищение" : "убийство")}, цель {target})");
+                result = "Контракт наёмника оформлен.";
+                break;
+            }
         }
 
         Updated?.Invoke();
+        return true;
+    }
+
+    private bool SpawnDilemma(SWDilemmaScope scope, string owner, string? sectorId, ref string result)
+    {
+        var pool = _proto.EnumeratePrototypes<SWDilemmaPrototype>()
+            .Where(d => d.Scope == scope && d.Conditions.Count == 0 && !d.Budget)
+            .ToList();
+
+        if (pool.Count == 0)
+        {
+            result = "Нет подходящих дилемм.";
+            return false;
+        }
+
+        if (_influence < CostDilemma)
+        {
+            result = $"Недостаточно влияния: нужно {CostDilemma}.";
+            return false;
+        }
+
+        _dilemma.AdminAddDilemma(scope, owner, sectorId, _random.Pick(pool).ID);
+        _influence -= CostDilemma;
         return true;
     }
 
@@ -387,10 +556,21 @@ public sealed class SWDirectorSystem : EntitySystem
             BorderStatus = _defense.BorderStatus(),
             BlockadeActive = _blockade > 0f,
             BlockadeLabel = _blockade > 0f ? $"ещё ~{Math.Ceiling(_blockade / 60f)} ч" : string.Empty,
+            Notice = LastNotice,
+            Targets = _strike.OfficialPool(),
+            StrikeAvailable = !_strike.Launched,
+            StrikeLabel = _strike.Launched ? "отряд уже был заброшен в этом раунде" : string.Empty,
+            MercAvailable = !_merc.ContractOpen,
+            MercLabel = _merc.ContractOpen ? "действующий контракт ещё не закрыт" : string.Empty,
             CostManeuvers = CostManeuvers,
             CostProvocation = CostProvocation,
             CostSanction = CostSanction,
             CostBlockade = CostBlockade,
+            CostCrisis = CostCrisis,
+            CostRepublicCrisis = CostRepublicCrisis,
+            CostDilemma = CostDilemma,
+            CostStrike = CostStrike,
+            CostMerc = CostMerc,
         };
 
         foreach (var (sectorId, holder) in _senate.SectorHolders.OrderBy(kv => kv.Key))

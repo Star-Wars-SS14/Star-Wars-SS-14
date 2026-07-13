@@ -111,7 +111,7 @@ public sealed class SWMercSystem : EntitySystem
         TickContract(frameTime);
     }
 
-    private bool ContractOpen => _contract is { Closed: false };
+    public bool ContractOpen => _contract is { Closed: false };
 
     private void TickAuto()
     {

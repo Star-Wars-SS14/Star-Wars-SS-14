@@ -15,7 +15,7 @@ public sealed class SWDirectorEui : BaseEui
         _window = new SWDirectorWindow();
         _window.OnClose += () => SendMessage(new CloseEuiMessage());
         _window.OnSetMode += mode => SendMessage(new SWDirectorSetModeMessage(mode));
-        _window.OnAction += (kind, sectorId) => SendMessage(new SWDirectorActionMessage(kind, sectorId));
+        _window.OnAction += (kind, sectorId, param, target) => SendMessage(new SWDirectorActionMessage(kind, sectorId, param, target));
         _window.OnSendNote += (text, isPublic) => SendMessage(new SWDirectorSendNoteMessage(text, isPublic));
     }
 

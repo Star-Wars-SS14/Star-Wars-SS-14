@@ -447,7 +447,7 @@ public sealed class SWImperialStrikeSystem : EntitySystem
         args.AddLine($"Имперский диверсионный отряд: {result}.");
     }
 
-    private List<string> OfficialPool()
+    public List<string> OfficialPool()
     {
         var names = new HashSet<string>();
         foreach (var (_, holder) in _senate.SectorHolders)

@@ -3,6 +3,7 @@ using Content.Server.Chat.Managers;
 using Content.Server.GameTicking;
 using Content.Server.RoundEnd;
 using Content.Server._SW._Senate.Core;
+using Content.Server._SW._Senate.Director;
 using Content.Server._SW._Senate.GameTicking;
 using Content.Shared.Echo.CaptureConsole;
 using Content.Shared.GameTicking;
@@ -37,6 +38,7 @@ public sealed class SWImperialStrikeSystem : EntitySystem
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
     [Dependency] private readonly SWSenateCourtSystem _court = default!;
+    [Dependency] private readonly SWDirectorSystem _director = default!;
     [Dependency] private readonly RoundEndSystem _roundEnd = default!;
 
     private const int WindowOpenHour = 10;
@@ -120,6 +122,9 @@ public sealed class SWImperialStrikeSystem : EntitySystem
 
     private void BreachRoll(float scale)
     {
+        if (!_director.AutoAntagsAllowed)
+            return;
+
         if (!InWindow(_time.AbsoluteHour))
             return;
 

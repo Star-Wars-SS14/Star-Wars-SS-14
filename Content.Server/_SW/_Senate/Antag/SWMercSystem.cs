@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Server.Chat.Managers;
 using Content.Server.GameTicking;
 using Content.Server._SW._Senate.Core;
+using Content.Server._SW._Senate.Director;
 using Content.Server._SW._Senate.GameTicking;
 using Content.Shared._SW._Senate;
 using Content.Shared.GameTicking;
@@ -26,6 +27,7 @@ public sealed class SWMercSystem : EntitySystem
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWCorruptionSystem _corruption = default!;
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
+    [Dependency] private readonly SWDirectorSystem _director = default!;
 
     private const int WindowOpenHour = 10;
     private const int WindowCloseHour = 18;
@@ -126,6 +128,9 @@ public sealed class SWMercSystem : EntitySystem
 
     private void AutoRoll(float scale)
     {
+        if (!_director.AutoAntagsAllowed)
+            return;
+
         if (!InWindow(_time.AbsoluteHour))
             return;
 

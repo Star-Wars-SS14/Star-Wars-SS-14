@@ -1,0 +1,23 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    Title="Панель режиссёра"
+    MinSize="560 640">
+    <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+            <PanelContainer Name="HeaderPanel">
+                <BoxContainer Orientation="Horizontal" Margin="12 7">
+                    <Label Name="HeaderTitle" HorizontalExpand="True" />
+                </BoxContainer>
+            </PanelContainer>
+            <Label Name="ModeLabel" Margin="12 8 12 2" />
+            <BoxContainer Name="ModeButtons" Orientation="Horizontal" Margin="12 2 12 6" />
+            <Label Name="InfluenceLabel" Margin="12 4 12 0" />
+            <Label Name="IncomeLabel" Margin="12 0 12 4" />
+            <Label Name="BorderLabel" Margin="12 0 12 4" />
+            <Label Name="NoticeLabel" Margin="12 0 12 4" />
+            <ScrollContainer HorizontalExpand="True" VerticalExpand="True" Margin="8">
+                <BoxContainer Name="Body" Orientation="Vertical" HorizontalExpand="True" />
+            </ScrollContainer>
+        </BoxContainer>
+    </PanelContainer>
+</controls:FancyWindow>

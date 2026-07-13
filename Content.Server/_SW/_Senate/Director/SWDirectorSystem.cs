@@ -3,6 +3,7 @@ using Content.Server._SW._Senate.Antag;
 using Content.Server._SW._Senate.Core;
 using Content.Server._SW._Senate.Economy;
 using Content.Server.Chat.Systems;
+using Content.Server.GameTicking;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Crises;
 using Content.Shared._SW._Senate.Dilemmas;
@@ -80,6 +81,19 @@ public sealed class SWDirectorSystem : EntitySystem
     public override void Initialize()
     {
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+        SubscribeLocalEvent<RoundEndTextAppendEvent>(OnRoundEnd);
+    }
+
+    // The full imperial ledger - covert ops included - goes public once the round is over.
+    private void OnRoundEnd(RoundEndTextAppendEvent args)
+    {
+        if (_chronicle.Count == 0)
+            return;
+
+        args.AddLine(string.Empty);
+        args.AddLine("[bold][color=#C0392B]Хроника Империи[/color][/bold]");
+        foreach (var line in _chronicle)
+            args.AddLine(line);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)

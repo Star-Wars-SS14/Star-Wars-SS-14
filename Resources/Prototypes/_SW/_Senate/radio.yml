@@ -49,7 +49,7 @@
 - type: radioChannel
   id: SWCommittees
   name: Комитеты
-  keycode: 'к'
+  keycode: 'з'
   frequency: 2056
   color: "#27ae60"
   longRange: true

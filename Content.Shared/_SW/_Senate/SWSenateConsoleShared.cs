@@ -1338,6 +1338,10 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public List<SWBillEntry> LawsAwaitingSignature = new();
     public bool CanSignLaws;
 
+    public bool CanDiplomacy;
+    public bool CanDiploReply;
+    public List<Director.SWDiploEntry> Diplomacy = new();
+
     // ПОЛНОМОЧИЯ (Chancellor / acting officer view).
     public bool ShowPowers;
     public bool PowersActive;
@@ -3283,4 +3287,15 @@ public sealed class SWStaffShiftConsoleState : BoundUserInterfaceState
 [Serializable, NetSerializable]
 public sealed class SWStaffShiftToggleMessage : BoundUserInterfaceMessage
 {
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateDiploReplyMessage : BoundUserInterfaceMessage
+{
+    public string Text;
+
+    public SWSenateDiploReplyMessage(string text)
+    {
+        Text = text;
+    }
 }

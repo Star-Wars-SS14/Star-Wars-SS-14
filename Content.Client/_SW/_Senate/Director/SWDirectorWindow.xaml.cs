@@ -12,10 +12,20 @@ public sealed partial class SWDirectorWindow : FancyWindow
 {
     public event Action<SWDirectorMode>? OnSetMode;
     public event Action<SWDirectorActionKind, string>? OnAction;
+    public event Action<string, bool>? OnSendNote;
 
     public SWDirectorWindow()
     {
         RobustXamlLoader.Load(this);
+
+        NoteSend.OnPressed += _ =>
+        {
+            if (string.IsNullOrWhiteSpace(NoteEdit.Text))
+                return;
+
+            OnSendNote?.Invoke(NoteEdit.Text, NotePublic.Pressed);
+            NoteEdit.Text = string.Empty;
+        };
 
         SWConsoleStyle.StyleRoot(RootPanel);
         SWConsoleStyle.StyleHeader(HeaderPanel);
@@ -136,6 +146,22 @@ public sealed partial class SWDirectorWindow : FancyWindow
             row.AddChild(box);
             Body.AddChild(row);
         }
+
+        Body.AddChild(SWConsoleStyle.Section("ДИПЛОМАТИЯ"));
+        if (state.Diplomacy.Count == 0)
+            Body.AddChild(SWConsoleStyle.Text("Переписки нет.", SWConsoleStyle.TextBright, SWConsoleStyle.MonoSmall));
+        foreach (var entry in state.Diplomacy)
+        {
+            var accent = entry.FromEmpire ? Color.FromHex("#E0556B") : SWConsoleStyle.Accent;
+            var header = entry.FromEmpire
+                ? $"Империя · {entry.Stamp}" + (entry.Public ? " · публично" : "")
+                : $"Республика · {entry.Stamp}";
+            Body.AddChild(SWConsoleStyle.Text(header, accent, SWConsoleStyle.MonoBold));
+            Body.AddChild(SWConsoleStyle.Text(entry.Text, SWConsoleStyle.TextBright, SWConsoleStyle.MonoSmall));
+            Body.AddChild(new Control { MinHeight = 6 });
+        }
+
+        NoteBox.Visible = canAct;
 
         Body.AddChild(SWConsoleStyle.Section("ХРОНИКА"));
         if (state.Chronicle.Count == 0)

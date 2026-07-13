@@ -28,6 +28,7 @@
                             <Button Name="NavSchedule" Text="Расписание" Margin="0 0 0 2" />
                             <Button Name="NavCommittees" Text="Комитеты" Margin="0 0 0 2" />
                             <Button Name="NavCourt" Text="Суд" Margin="0 0 0 2" />
+                            <Button Name="NavDiplomacy" Text="Дипломатия" Margin="0 0 0 2" />
                             <Label Name="GroupWork" Text="РАБОТА" Margin="2 10 0 3" />
                             <Button Name="NavDraft" Text="Разработка" Margin="0 0 0 2" />
                             <Button Name="NavDilemmas" Text="Дилеммы" Margin="0 0 0 2" />
@@ -192,6 +193,15 @@
                         <Label Text="Объявление Сената" StyleClasses="LabelKeyText" />
                         <LineEdit Name="AnnounceEdit" PlaceHolder="Текст объявления..." Margin="0 2 0 8" />
                         <Button Name="AnnounceButton" Text="Отправить объявление" />
+                    </BoxContainer>
+                    <BoxContainer Name="DiplomacyTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
+                        <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                            <BoxContainer Name="DiplomacyList" Orientation="Vertical" HorizontalExpand="True" />
+                        </ScrollContainer>
+                        <BoxContainer Name="DiploReplyBox" Orientation="Vertical" Margin="0 8 0 0">
+                            <LineEdit Name="DiploReplyEdit" PlaceHolder="Текст ответа Империи..." Margin="0 2 0 6" />
+                            <Button Name="DiploReplyButton" Text="Отправить ответ" />
+                        </BoxContainer>
                     </BoxContainer>
                     <BoxContainer Name="CourtTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
                         <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">

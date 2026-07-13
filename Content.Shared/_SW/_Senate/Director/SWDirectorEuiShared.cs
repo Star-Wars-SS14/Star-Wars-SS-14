@@ -32,6 +32,15 @@ public sealed class SWDirectorSectorEntry
 }
 
 [Serializable, NetSerializable]
+public sealed class SWDiploEntry
+{
+    public bool FromEmpire;
+    public string Stamp = string.Empty;
+    public string Text = string.Empty;
+    public bool Public;
+}
+
+[Serializable, NetSerializable]
 public sealed class SWDirectorEuiState : EuiStateBase
 {
     public SWDirectorMode Mode;
@@ -46,6 +55,7 @@ public sealed class SWDirectorEuiState : EuiStateBase
     public string BlockadeLabel = string.Empty;
     public string Notice = string.Empty;
     public List<SWDirectorSectorEntry> Sectors = new();
+    public List<SWDiploEntry> Diplomacy = new();
     public List<string> Chronicle = new();
     public int CostManeuvers;
     public int CostProvocation;
@@ -74,5 +84,18 @@ public sealed class SWDirectorActionMessage : EuiMessageBase
     {
         Kind = kind;
         SectorId = sectorId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDirectorSendNoteMessage : EuiMessageBase
+{
+    public string Text;
+    public bool Public;
+
+    public SWDirectorSendNoteMessage(string text, bool isPublic)
+    {
+        Text = text;
+        Public = isPublic;
     }
 }

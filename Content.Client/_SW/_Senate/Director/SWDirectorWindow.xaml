@@ -18,6 +18,13 @@
             <ScrollContainer HorizontalExpand="True" VerticalExpand="True" Margin="8">
                 <BoxContainer Name="Body" Orientation="Vertical" HorizontalExpand="True" />
             </ScrollContainer>
+            <BoxContainer Name="NoteBox" Orientation="Vertical" Margin="12 4 12 10">
+                <LineEdit Name="NoteEdit" PlaceHolder="Текст ноты Канцлеру..." Margin="0 2 0 4" />
+                <BoxContainer Orientation="Horizontal">
+                    <CheckBox Name="NotePublic" Text="Публично" Margin="0 0 8 0" />
+                    <Button Name="NoteSend" Text="Отправить ноту" />
+                </BoxContainer>
+            </BoxContainer>
         </BoxContainer>
     </PanelContainer>
 </controls:FancyWindow>

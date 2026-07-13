@@ -230,6 +230,11 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateAnnounceMessage(text));
     }
 
+    public void DiploReply(string text)
+    {
+        SendMessage(new SWSenateDiploReplyMessage(text));
+    }
+
     public void CreateParty(string name, string description)
     {
         SendMessage(new SWSenateCreatePartyMessage(name, description));

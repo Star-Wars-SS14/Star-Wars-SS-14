@@ -59,6 +59,7 @@ public sealed class SWDirectorSystem : EntitySystem
     private readonly Dictionary<string, float> _sanctions = new();
     private float _blockade;
     private readonly List<string> _chronicle = new();
+    private readonly List<SWDiploEntry> _diplomacy = new();
     private float _minuteAccum;
     private int _lastHour = -1;
 
@@ -76,6 +77,7 @@ public sealed class SWDirectorSystem : EntitySystem
         _sanctions.Clear();
         _blockade = 0f;
         _chronicle.Clear();
+        _diplomacy.Clear();
         _minuteAccum = 0f;
         _lastHour = -1;
     }
@@ -314,6 +316,53 @@ public sealed class SWDirectorSystem : EntitySystem
         }
     }
 
+    public bool SendImperialNote(string text, bool isPublic)
+    {
+        if (Mode == SWDirectorMode.Off || string.IsNullOrWhiteSpace(text))
+            return false;
+
+        text = text.Trim();
+        _diplomacy.Add(new SWDiploEntry
+        {
+            FromEmpire = true,
+            Stamp = Stamp(),
+            Text = text,
+            Public = isPublic,
+        });
+
+        if (isPublic)
+            Announce(text);
+
+        AddChronicle(isPublic ? $"публичная нота: «{Shorten(text)}»" : $"тайная нота Канцлеру: «{Shorten(text)}»");
+        Updated?.Invoke();
+        return true;
+    }
+
+    public bool AddRepublicReply(string author, string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return false;
+
+        text = text.Trim();
+        _diplomacy.Add(new SWDiploEntry
+        {
+            FromEmpire = false,
+            Stamp = $"{Stamp()} · {author}",
+            Text = text,
+        });
+
+        AddChronicle($"ответ Республики ({author}): «{Shorten(text)}»");
+        Updated?.Invoke();
+        return true;
+    }
+
+    public List<SWDiploEntry> BuildDiplomacy() => new(_diplomacy);
+
+    private string Stamp() => $"День {_time.Day}, {_time.CurrentHour:00}:00";
+
+    private static string Shorten(string text) =>
+        text.Length <= 60 ? text : text[..57] + "...";
+
     private void Announce(string text)
     {
         _chat.DispatchGlobalAnnouncement(text, ImperialSender, colorOverride: ImperialColor);
@@ -321,7 +370,7 @@ public sealed class SWDirectorSystem : EntitySystem
 
     private void AddChronicle(string text)
     {
-        _chronicle.Add($"День {_time.Day}, {_time.CurrentHour:00}:00 — {text}");
+        _chronicle.Add($"{Stamp()} — {text}");
     }
 
     public SWDirectorEuiState BuildEuiState(NetUserId viewer)
@@ -360,6 +409,8 @@ public sealed class SWDirectorSystem : EntitySystem
         for (var i = Math.Max(0, _chronicle.Count - 15); i < _chronicle.Count; i++)
             state.Chronicle.Add(_chronicle[i]);
         state.Chronicle.Reverse();
+
+        state.Diplomacy = BuildDiplomacy();
 
         return state;
     }

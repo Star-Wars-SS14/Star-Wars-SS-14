@@ -59,6 +59,12 @@ public sealed class SWDirectorEui : BaseEui
                     break;
                 Director.TryAction(action.Kind, action.SectorId, out _);
                 break;
+
+            case SWDirectorSendNoteMessage note:
+                if (Director.Mode != SWDirectorMode.Manual || Director.Controller != Player.UserId)
+                    break;
+                Director.SendImperialNote(note.Text, note.Public);
+                break;
         }
 
         StateDirty();

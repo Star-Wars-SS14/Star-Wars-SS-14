@@ -11,6 +11,7 @@ using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Content.Server._SW._Senate.Core;
 using Content.Server._SW._Senate.Debate;
+using Content.Server._SW._Senate.Director;
 using Content.Server._SW._Senate.Economy;
 using Content.Shared._SW._Senate.Bills;
 
@@ -43,6 +44,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SWSenatePartySystem _party = default!;
     [Dependency] private readonly SWSenateCommitteeSystem _committee = default!;
+    [Dependency] private readonly SWDirectorSystem _director = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
     private const float UpdateInterval = 3f;
@@ -92,6 +94,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateConfirmElectionMessage>(OnConfirmElection);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWCourtNominateMessage>(OnCourtNominate);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWCourtNominationResponseMessage>(OnCourtNominationResponse);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateDiploReplyMessage>(OnDiploReply);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWProposeMotionMessage>(OnProposeMotion);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectSessionMessage>(OnRejectSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAnnounceMessage>(OnAnnounce);
@@ -702,6 +705,18 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     {
         if (_court.RespondNomination(Name(args.Actor), args.Accept))
             _popup.PopupCursor(args.Accept ? "Согласие передано в Сенат." : "Предложение отклонено.", args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnDiploReply(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateDiploReplyMessage args)
+    {
+        if (GetCardPosition(ent) != SWSenatePosition.Chancellor || _senate.Chancellor == null
+            || _senate.Chancellor != Name(args.Actor))
+            return;
+
+        if (_director.AddRepublicReply(_senate.Chancellor, args.Text))
+            _popup.PopupCursor("Ответ передан по имперскому дипканалу.", args.Actor, PopupType.Medium);
 
         UpdateUi(ent);
     }
@@ -1355,6 +1370,12 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
         state.LawsAwaitingSignature = _senate.BuildBillsAwaitingSignature();
         state.CanSignLaws = CanConfirmAs(ent);
+
+        var cardPosition = GetCardPosition(ent);
+        state.CanDiplomacy = cardPosition is SWSenatePosition.Chancellor or SWSenatePosition.Speaker;
+        state.CanDiploReply = cardPosition == SWSenatePosition.Chancellor && _senate.Chancellor != null;
+        if (state.CanDiplomacy)
+            state.Diplomacy = _director.BuildDiplomacy();
 
         var self = SelfName(ent);
         state.ShowPowers = self != null;

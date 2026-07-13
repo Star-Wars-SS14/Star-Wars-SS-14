@@ -45,6 +45,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     private string _signatureListSignature = string.Empty;
     private string _powersSignature = string.Empty;
     private string _courtSignature = string.Empty;
+    private string _diplomacySignature = string.Empty;
     private string _dashboardSignature = string.Empty;
     private string _courtNomineeSignature = string.Empty;
     private bool _electionElectSignature;
@@ -73,6 +74,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         _signatureListSignature = string.Empty;
         _powersSignature = string.Empty;
         _courtSignature = string.Empty;
+        _diplomacySignature = string.Empty;
         _dashboardSignature = string.Empty;
         _courtNomineeSignature = string.Empty;
         _warApprovalSignature = string.Empty;
@@ -125,6 +127,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BuildSignature(state);
         BuildPowers(state);
         BuildCourtSection(state);
+        BuildDiplomacy(state);
         BuildCourtNominee(state);
         BuildElectionElect(state);
         BuildWarApproval(state);
@@ -158,6 +161,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             (NavSchedule, ScheduleTab),
             (NavCommittees, CommitteesTab),
             (NavCourt, CourtTab),
+            (NavDiplomacy, DiplomacyTab),
             (NavDilemmas, DilemmaTab),
             (NavCrises, CrisesTab),
             (NavParties, PartiesTab),
@@ -219,6 +223,15 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             {
                 _owner.Announce(AnnounceEdit.Text);
                 AnnounceEdit.Text = string.Empty;
+            }
+        };
+
+        DiploReplyButton.OnPressed += _ =>
+        {
+            if (!string.IsNullOrWhiteSpace(DiploReplyEdit.Text))
+            {
+                _owner.DiploReply(DiploReplyEdit.Text);
+                DiploReplyEdit.Text = string.Empty;
             }
         };
 
@@ -295,6 +308,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         NavDecree.Visible = state.CanUseEmergencyPowers && state.AvailablePowers.Contains((int) SWEmergencyPower.Decree);
         NavAnnounce.Visible = isLeader && state.InOffice;
         NavCourt.Visible = state.IsSenateCard && state.Position == SWSenatePosition.Chancellor && state.InOffice;
+        NavDiplomacy.Visible = state.CanDiplomacy;
 
         foreach (var (header, buttons) in _navGroups)
             header.Visible = buttons.Any(b => b.Visible);
@@ -332,6 +346,50 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BuildSignature(state);
         BuildPowers(state);
         BuildCourtSection(state);
+        BuildDiplomacy(state);
+    }
+
+    private void BuildDiplomacy(SWSenateWorkConsoleState state)
+    {
+        if (!NavDiplomacy.Visible)
+            return;
+
+        DiploReplyBox.Visible = state.CanDiploReply;
+
+        var signature = new System.Text.StringBuilder().Append(state.CanDiploReply).Append('|');
+        foreach (var entry in state.Diplomacy)
+            signature.Append(entry.FromEmpire).Append('=').Append(entry.Stamp).Append('=').Append(entry.Text).Append(',');
+
+        var sig = signature.ToString();
+        if (sig == _diplomacySignature)
+            return;
+
+        _diplomacySignature = sig;
+        DiplomacyList.RemoveAllChildren();
+
+        DiplomacyList.AddChild(SWConsoleStyle.Section("ИМПЕРСКИЙ ДИПКАНАЛ"));
+        if (state.Diplomacy.Count == 0)
+        {
+            DiplomacyList.AddChild(MakeWrap("Сообщений от Империи не поступало.", SWConsoleStyle.TextDim));
+            return;
+        }
+
+        foreach (var entry in state.Diplomacy)
+        {
+            var accent = entry.FromEmpire ? Color.FromHex("#E0556B") : SWConsoleStyle.Accent;
+            var row = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, accent);
+            row.Margin = new Thickness(0, 0, 0, 6);
+
+            var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
+            var header = entry.FromEmpire
+                ? $"Империя Ситов · {entry.Stamp}" + (entry.Public ? " · публично" : string.Empty)
+                : $"Республика · {entry.Stamp}";
+            box.AddChild(MakeTitle(header, accent));
+            box.AddChild(MakeWrap(entry.Text));
+
+            row.AddChild(box);
+            DiplomacyList.AddChild(row);
+        }
     }
 
     private void BuildCourtNominee(SWSenateWorkConsoleState state)

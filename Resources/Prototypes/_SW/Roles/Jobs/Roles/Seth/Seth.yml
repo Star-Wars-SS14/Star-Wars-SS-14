@@ -366,7 +366,7 @@
     head: SW_ClothingHeadImperialIntelligenceHelmet
     belt: SWInvisGeneratorBelt
     id: SWIDCardEmpireIntelligenceCaretaker
-    shoes: SWClothingShoesBootsCombatFilled
+    shoes: SWClothingShoesBootsCombatSilentFilled
     gloves: ClothingHandsGlovesCombat
     ears: SWClothingHeadsetAllEmpire
     back: SWImperialBackpackCamo
@@ -381,7 +381,7 @@
     head: SW_ClothingHeadImperialIntelligenceHelmet
     belt: SWInvisGeneratorBelt
     id: SWIDCardEmpireIntelligenceAgent
-    shoes: SWClothingShoesBootsCombatFilled
+    shoes: SWClothingShoesBootsCombatSilentFilled
     gloves: ClothingHandsGlovesCombat
     ears: SWClothingHeadsetIntelligence
     suitstorage: SWK406Ripper

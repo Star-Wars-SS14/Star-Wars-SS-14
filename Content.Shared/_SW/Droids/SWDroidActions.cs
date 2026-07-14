@@ -7,6 +7,10 @@ public sealed partial class SWDroidTakeCommandActionEvent : InstantActionEvent
 {
 }
 
+public sealed partial class SWDroidRelinquishCommandActionEvent : InstantActionEvent
+{
+}
+
 public sealed partial class SWDroidOpenCommandMenuActionEvent : InstantActionEvent
 {
 }

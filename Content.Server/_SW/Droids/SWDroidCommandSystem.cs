@@ -55,6 +55,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
         base.Initialize();
 
         SubscribeLocalEvent<SWDroidCommanderComponent, SWDroidTakeCommandActionEvent>(OnTakeCommand);
+        SubscribeLocalEvent<SWDroidCommanderComponent, SWDroidRelinquishCommandActionEvent>(OnRelinquishCommand);
         SubscribeLocalEvent<SWDroidCommanderComponent, SWDroidOrderActionEvent>(OnOrder);
         SubscribeLocalEvent<SWDroidCommanderComponent, SWDroidGoToActionEvent>(OnGoToOrder);
         SubscribeLocalEvent<SWDroidCommanderComponent, SWDroidAttackActionEvent>(OnAttackOrder);
@@ -90,19 +91,28 @@ public sealed class SWDroidCommandSystem : EntitySystem
             {
                 commander ??= EnsureComp<SWDroidCommanderComponent>(uid);
                 EnsureTakeCommandAction(uid, commander, actions);
-                continue;
+            }
+            else if (commander != null)
+            {
+                RemoveTakeCommandAction(uid, commander, actions);
             }
 
             if (commander == null)
                 continue;
 
-            RemoveTakeCommandAction(uid, commander, actions);
             CleanupInvalidDroids(uid, commander);
+
+            if (TryFindNearbyCommandedDroidForAction(uid, commander, transform, out _))
+                EnsureRelinquishCommandAction(uid, commander, actions);
+            else
+                RemoveRelinquishCommandAction(uid, commander, actions);
 
             if (commander.Droids.Count == 0)
             {
                 RemoveOrderActions(uid, commander, actions);
-                RemCompDeferred<SWDroidCommanderComponent>(uid);
+
+                if (!hasNearbyDroid)
+                    RemCompDeferred<SWDroidCommanderComponent>(uid);
             }
         }
     }
@@ -139,6 +149,25 @@ public sealed class SWDroidCommandSystem : EntitySystem
         SetOrder(droid, droidComp, uid, component.CurrentOrder, component.CurrentGoToTarget, component.CurrentAttackTarget);
 
         _popup.PopupEntity(Loc.GetString("sw-droid-command-accepted"), uid, uid);
+    }
+
+    private void OnRelinquishCommand(EntityUid uid, SWDroidCommanderComponent component, SWDroidRelinquishCommandActionEvent args)
+    {
+        if (args.Handled)
+            return;
+
+        args.Handled = true;
+
+        if (!TryComp(uid, out TransformComponent? transform) ||
+            !TryFindNearbyCommandedDroidForAction(uid, component, transform, out var droid) ||
+            !TryComp<SWDroidCommandableComponent>(droid, out var droidComp))
+        {
+            _popup.PopupEntity(Loc.GetString("sw-droid-command-no-droids-nearby"), uid, uid);
+            return;
+        }
+
+        RelinquishDroidCommand(uid, component, droid, droidComp);
+        _popup.PopupEntity(Loc.GetString("sw-droid-command-relinquished"), uid, uid);
     }
 
     private void OnOrder(EntityUid uid, SWDroidCommanderComponent component, SWDroidOrderActionEvent args)
@@ -215,6 +244,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
             return;
 
         RemoveTakeCommandAction(uid, component, actions);
+        RemoveRelinquishCommandAction(uid, component, actions);
         RemoveOrderActions(uid, component, actions);
     }
 
@@ -267,6 +297,33 @@ public sealed class SWDroidCommandSystem : EntitySystem
 
         if (dirty)
             Dirty(uid, component);
+    }
+
+    private void RelinquishDroidCommand(
+        EntityUid commanderUid,
+        SWDroidCommanderComponent commander,
+        EntityUid droid,
+        SWDroidCommandableComponent droidComp)
+    {
+        commander.Droids.Remove(droid);
+
+        droidComp.ActiveCommander = null;
+        droidComp.ActiveCommanderRank = 0;
+        Dirty(droid, droidComp);
+
+        SetOrder(droid, droidComp, commanderUid, SWDroidOrderType.Stay);
+
+        if (!TryComp<ActionsComponent>(commanderUid, out var actions))
+            return;
+
+        if (commander.Droids.Count == 0)
+        {
+            RemoveOrderActions(commanderUid, commander, actions);
+            RemoveRelinquishCommandAction(commanderUid, commander, actions);
+            return;
+        }
+
+        UpdateOrderActions(commanderUid, commander);
     }
 
     private bool TryFindCommandableDroid(
@@ -326,6 +383,35 @@ public sealed class SWDroidCommandSystem : EntitySystem
         }
 
         return false;
+    }
+
+    private bool TryFindNearbyCommandedDroidForAction(
+        EntityUid commander,
+        SWDroidCommanderComponent commanderComp,
+        TransformComponent commanderTransform,
+        out EntityUid droid)
+    {
+        droid = default;
+        var closestDistance = float.MaxValue;
+
+        foreach (var candidate in commanderComp.Droids)
+        {
+            if (!TryComp<SWDroidCommandableComponent>(candidate, out var commandable) ||
+                commandable.ActiveCommander != commander ||
+                !IsAvailableDroid(candidate) ||
+                !TryComp(candidate, out TransformComponent? droidTransform) ||
+                !commanderTransform.Coordinates.TryDistance(EntityManager, droidTransform.Coordinates, out var distance) ||
+                distance > commandable.CommandRange ||
+                distance >= closestDistance)
+            {
+                continue;
+            }
+
+            droid = candidate;
+            closestDistance = distance;
+        }
+
+        return droid != default;
     }
 
     private bool TryGetCommandRank(SWFactionMemberComponent factionMember, string factionId, out int rank)
@@ -482,6 +568,11 @@ public sealed class SWDroidCommandSystem : EntitySystem
         _actions.AddAction(uid, ref component.TakeCommandActionEntity, component.TakeCommandAction, component: actions);
     }
 
+    private void EnsureRelinquishCommandAction(EntityUid uid, SWDroidCommanderComponent component, ActionsComponent actions)
+    {
+        _actions.AddAction(uid, ref component.RelinquishCommandActionEntity, component.RelinquishCommandAction, component: actions);
+    }
+
     private void EnsureOrderActions(EntityUid uid, SWDroidCommanderComponent component)
     {
         if (!TryComp<ActionsComponent>(uid, out var actions))
@@ -521,9 +612,22 @@ public sealed class SWDroidCommandSystem : EntitySystem
 
     private void RemoveTakeCommandAction(EntityUid uid, SWDroidCommanderComponent component, ActionsComponent actions)
     {
+        if (component.TakeCommandActionEntity == null)
+            return;
+
         var actionEntity = new Entity<ActionsComponent?>(uid, actions);
         _actions.RemoveAction(actionEntity, component.TakeCommandActionEntity);
         component.TakeCommandActionEntity = null;
+    }
+
+    private void RemoveRelinquishCommandAction(EntityUid uid, SWDroidCommanderComponent component, ActionsComponent actions)
+    {
+        if (component.RelinquishCommandActionEntity == null)
+            return;
+
+        var actionEntity = new Entity<ActionsComponent?>(uid, actions);
+        _actions.RemoveAction(actionEntity, component.RelinquishCommandActionEntity);
+        component.RelinquishCommandActionEntity = null;
     }
 
     private void RemoveOrderActions(EntityUid uid, SWDroidCommanderComponent component, ActionsComponent actions)

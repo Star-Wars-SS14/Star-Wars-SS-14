@@ -1,5 +1,6 @@
 sw-droid-command-no-droids-nearby = No droids nearby.
 sw-droid-command-accepted = Droid command accepted.
+sw-droid-command-relinquished = Droid command relinquished.
 sw-droid-module-category-limit = This droid already has a module of that category installed.
 sw-droid-targeting-tablet-linked = Droid targeting tablet linked.
 sw-droid-targeting-tablet-locked = Unlock the droid first.
@@ -57,6 +58,9 @@ ent-SWMobDroid = battle droid
 
 ent-ActionSWDroidTakeCommand = Take command
     .desc = Assume command of a nearby allied droid.
+
+ent-ActionSWDroidRelinquishCommand = Relinquish command
+    .desc = Release command of a nearby controlled droid.
 
 ent-ActionSWDroidCommandMenu = Droid commands
     .desc = Open the command wheel for controlled droids.

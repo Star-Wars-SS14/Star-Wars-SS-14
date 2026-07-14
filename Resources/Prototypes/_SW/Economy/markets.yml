@@ -26,6 +26,9 @@
   id: SWMaterialsMarket
 
 - type: cargoMarket
+  id: SWPowerMarket
+
+- type: cargoMarket
   id: SWExplosiveMarket
 
 - type: cargoMarket

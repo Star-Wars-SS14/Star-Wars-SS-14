@@ -184,6 +184,20 @@
     event: !type:SWDroidTakeCommandActionEvent
 
 - type: entity
+  id: ActionSWDroidRelinquishCommand
+  parent: BaseAction
+  name: Relinquish command
+  description: Release command of a nearby controlled droid.
+  components:
+  - type: Action
+    useDelay: 1
+    icon:
+      sprite: _SW/Interface/Actions/droid_commands.rsi
+      state: dismiss
+  - type: InstantAction
+    event: !type:SWDroidRelinquishCommandActionEvent
+
+- type: entity
   id: ActionSWDroidCommandMenu
   parent: BaseAction
   name: Droid commands

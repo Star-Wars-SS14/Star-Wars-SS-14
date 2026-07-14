@@ -1,5 +1,6 @@
 sw-droid-command-no-droids-nearby = Рядом нет доступных дроидов.
 sw-droid-command-accepted = Командование дроидом принято.
+sw-droid-command-relinquished = Командование дроидом прекращено.
 sw-droid-module-category-limit = В этом дроиде уже установлен модуль этой категории.
 sw-droid-targeting-tablet-linked = Планшет наведения дроида привязан.
 sw-droid-targeting-tablet-locked = Сначала разблокируйте дроида.
@@ -45,6 +46,9 @@ ent-SWMobDroid = боевой дроид
 
 ent-ActionSWDroidTakeCommand = Взять командование
     .desc = Взять командование над ближайшим союзным дроидом.
+
+ent-ActionSWDroidRelinquishCommand = Отстраниться от командования
+    .desc = Отпустить командование ближайшим подконтрольным дроидом.
 
 ent-ActionSWDroidCommandMenu = Команды дроида
     .desc = Открыть колесо команд для подконтрольных дроидов.

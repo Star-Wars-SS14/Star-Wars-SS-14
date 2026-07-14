@@ -36,15 +36,15 @@
   - type: MobThresholds
     thresholds:
       0: Alive
-      120: Dead
+      200: Dead
     stateAlertDict:
       Alive: BorgHealth
       Dead: BorgDead
     showOverlays: false
   - type: SlowOnDamage
     speedModifierThresholds:
-      70: 0.8
-      100: 0.6
+      70: 0.9
+      100: 0.8
   - type: MovementSpeedModifier
     baseWalkSpeed: 2.4
     baseSprintSpeed: 3.6

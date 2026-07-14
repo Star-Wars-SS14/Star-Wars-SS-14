@@ -56,7 +56,7 @@
     - state: icon-syndicate
   - type: ItemBorgModule
     hands:
-    - item: SWGrantekF11D2
+    - item: SWDroidGrantekF11D2
   - type: BorgModuleIcon
     icon: { sprite: Interface/Actions/actions_borg.rsi, state: syndicate-weapon-module }
   - type: Item

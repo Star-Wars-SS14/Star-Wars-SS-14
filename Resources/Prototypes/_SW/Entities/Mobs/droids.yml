@@ -162,6 +162,15 @@
   - type: Speech
     speechVerb: Robotic
     speechSounds: Borg
+  - type: FootstepModifier
+    footstepSoundCollection:
+      path: /Audio/Mecha/sound_mecha_powerloader_step.ogg
+  - type: Tag
+    tags:
+    - DoorBumpOpener
+    - FootstepSound
+    - SiliconEmotes
+    - Unimplantable
 
 - type: entity
   id: SWMobDroid

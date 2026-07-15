@@ -99,7 +99,7 @@
     canBeStripped: false
   - type: BorgChassis
     active: true
-    maxModules: 3
+    maxModules: 4
     moduleWhitelist:
       tags:
       - SWDroidModule
@@ -110,6 +110,7 @@
     limits:
       Weapon: 1
       FactionChip: 1
+      LoyaltyChip: 1
       AiCore: 1
   - type: ContainerFill
     containers:

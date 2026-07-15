@@ -1,4 +1,6 @@
+using System.Linq;
 using System.Numerics;
+using Content.Server._SW.Droids;
 using Content.Server.Interaction;
 using Content.Server.NPC;
 using Content.Server.NPC.Systems;
@@ -30,6 +32,7 @@ public sealed class SWAutoTargetingGunSystem : EntitySystem
     [Dependency] private readonly RotateToFaceSystem _rotate = default!;
     [Dependency] private readonly NPCUtilitySystem _utility = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
+    [Dependency] private readonly SWDroidLoyaltySystem _loyalty = default!;
 
     private EntityQuery<PhysicsComponent> _physicsQuery;
     private EntityQuery<RechargeBasicEntityAmmoComponent> _rechargeQuery;
@@ -159,15 +162,20 @@ public sealed class SWAutoTargetingGunSystem : EntitySystem
         targetXform = default!;
         targetBody = default!;
 
-        if (component.ForcedTarget is { } forcedTarget && IsValidTarget(uid, xform, forcedTarget, out targetXform, out targetBody))
+        if (component.ForcedTarget is { } forcedTarget &&
+            !_loyalty.IsTargetProtected(uid, forcedTarget) &&
+            IsValidTarget(uid, xform, forcedTarget, out targetXform, out targetBody))
         {
             target = forcedTarget;
             forced = true;
             return true;
         }
 
-        if (component.ForcedTarget is { } invalidForced && !IsValidTarget(uid, xform, invalidForced, out _, out _))
+        if (component.ForcedTarget is { } invalidForced &&
+            (_loyalty.IsTargetProtected(uid, invalidForced) || !IsValidTarget(uid, xform, invalidForced, out _, out _)))
+        {
             component.ForcedTarget = null;
+        }
 
         component.TargetUpdateAccumulator -= frameTime;
         if (component.TargetUpdateAccumulator <= 0f)
@@ -179,6 +187,7 @@ public sealed class SWAutoTargetingGunSystem : EntitySystem
         }
 
         if (component.Target is not { } candidate ||
+            _loyalty.IsTargetProtected(uid, candidate) ||
             !IsValidTarget(uid, xform, candidate, out targetXform, out targetBody))
         {
             component.Target = null;
@@ -202,9 +211,19 @@ public sealed class SWAutoTargetingGunSystem : EntitySystem
         if (component.Target is { } target)
             blackboard.SetValue("Target", target);
 
-        var result = _utility.GetEntities(blackboard, component.UtilityQuery);
-        var picked = result.GetHighest();
-        return picked.IsValid() ? picked : null;
+        var result = _utility.GetEntities(blackboard, component.UtilityQuery, false);
+        foreach (var (candidate, _) in result.Entities.OrderByDescending(x => x.Value))
+        {
+            if (!candidate.IsValid() ||
+                _loyalty.IsTargetProtected(uid, candidate))
+            {
+                continue;
+            }
+
+            return candidate;
+        }
+
+        return null;
     }
 
     private bool IsValidTarget(

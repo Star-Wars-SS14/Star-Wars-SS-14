@@ -9,3 +9,9 @@ ent-SWDroidFactionChipRepublic = Republic droid faction chip
 
 ent-SWDroidFactionChipEmpire = Imperial droid faction chip
     .desc = A faction identity chip that makes a droid obey Imperial personnel.
+
+ent-SWDroidLoyaltyChipRepublic = Republic droid loyalty chip
+    .desc = A loyalty safeguard that prevents a droid from firing on Republic personnel.
+
+ent-SWDroidLoyaltyChipEmpire = Imperial droid loyalty chip
+    .desc = A loyalty safeguard that prevents a droid from firing on Imperial personnel.

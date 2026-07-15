@@ -45,6 +45,7 @@ public sealed class SWDroidControlDatapadDroidEntry
     public string CoordinatesText;
     public string Charge;
     public string Status;
+    public bool FollowingDatapad;
 
     public SWDroidControlDatapadDroidEntry(
         NetEntity droidUid,
@@ -52,7 +53,8 @@ public sealed class SWDroidControlDatapadDroidEntry
         string name,
         string coordinatesText,
         string charge,
-        string status)
+        string status,
+        bool followingDatapad)
     {
         DroidUid = droidUid;
         Coordinates = coordinates;
@@ -60,6 +62,29 @@ public sealed class SWDroidControlDatapadDroidEntry
         CoordinatesText = coordinatesText;
         Charge = charge;
         Status = status;
+        FollowingDatapad = followingDatapad;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDroidControlDatapadFollowDroidMessage : BoundUserInterfaceMessage
+{
+    public NetEntity DroidUid;
+
+    public SWDroidControlDatapadFollowDroidMessage(NetEntity droidUid)
+    {
+        DroidUid = droidUid;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDroidControlDatapadStopFollowDroidMessage : BoundUserInterfaceMessage
+{
+    public NetEntity DroidUid;
+
+    public SWDroidControlDatapadStopFollowDroidMessage(NetEntity droidUid)
+    {
+        DroidUid = droidUid;
     }
 }
 

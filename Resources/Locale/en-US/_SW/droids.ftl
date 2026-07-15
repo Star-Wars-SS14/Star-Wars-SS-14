@@ -40,6 +40,8 @@ sw-droid-control-datapad-status-unknown = Unknown
 sw-droid-control-datapad-droid-status = Status: {$status}
 sw-droid-control-datapad-droid-charge = Charge: {$charge}
 sw-droid-control-datapad-droid-coordinates = Coordinates: {$coordinates}
+sw-droid-control-datapad-follow-datapad = Follow datapad
+sw-droid-control-datapad-stop-following = Stop following
 sw-droid-control-datapad-map-selected = {$name}
     Status: {$status}
     Charge: {$charge}

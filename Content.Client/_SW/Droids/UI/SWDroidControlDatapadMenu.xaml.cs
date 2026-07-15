@@ -32,6 +32,8 @@ public sealed partial class SWDroidControlDatapadMenu : DefaultWindow
     public event Action<string>? OnFactionDisallowButtonPressed;
     public event Action? OnTargetHumanoidsWithoutIdToggled;
     public event Action? OnTargetAnimalsToggled;
+    public event Action<NetEntity>? OnFollowDatapadButtonPressed;
+    public event Action<NetEntity>? OnStopFollowDatapadButtonPressed;
 
     public SWDroidControlDatapadMenu()
     {
@@ -81,46 +83,18 @@ public sealed partial class SWDroidControlDatapadMenu : DefaultWindow
 
         foreach (var droid in droids)
         {
-            DroidsList.AddChild(CreateDroidEntry(droid));
+            DroidsList.AddChild(new SWDroidControlDatapadDroidControl(droid, FollowDatapad, StopFollowDatapad));
         }
     }
 
-    private Control CreateDroidEntry(SWDroidControlDatapadDroidEntry droid)
+    private void FollowDatapad(NetEntity droid)
     {
-        var panel = new PanelContainer
-        {
-            HorizontalExpand = true
-        };
+        OnFollowDatapadButtonPressed?.Invoke(droid);
+    }
 
-        var box = new BoxContainer
-        {
-            Orientation = BoxContainer.LayoutOrientation.Vertical,
-            Margin = new Thickness(6)
-        };
-
-        box.AddChild(new Label
-        {
-            Text = droid.Name,
-            StyleClasses = { "LabelHeading" }
-        });
-
-        box.AddChild(new Label
-        {
-            Text = Loc.GetString("sw-droid-control-datapad-droid-status", ("status", droid.Status))
-        });
-
-        box.AddChild(new Label
-        {
-            Text = Loc.GetString("sw-droid-control-datapad-droid-charge", ("charge", droid.Charge))
-        });
-
-        box.AddChild(new Label
-        {
-            Text = Loc.GetString("sw-droid-control-datapad-droid-coordinates", ("coordinates", droid.CoordinatesText))
-        });
-
-        panel.AddChild(box);
-        return panel;
+    private void StopFollowDatapad(NetEntity droid)
+    {
+        OnStopFollowDatapadButtonPressed?.Invoke(droid);
     }
 
     private void UpdateMap(SWDroidControlDatapadBoundUserInterfaceState state)

@@ -9,6 +9,8 @@ using Content.Shared.Power.EntitySystems;
 using Content.Shared.PowerCell;
 using Robust.Server.GameObjects;
 using Robust.Shared.Map;
+using Content.Server.Popups;
+using Content.Shared.Popups;
 
 namespace Content.Server._SW.Droids;
 
@@ -19,6 +21,8 @@ public sealed class SWDroidControlDatapadUISystem : EntitySystem
     [Dependency] private readonly SWFactionGameruleSystem _factions = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
+    [Dependency] private readonly PopupSystem _popup = default!;
+    [Dependency] private readonly SWDroidCommandSystem _droidCommand = default!;
 
     private const float UpdateDelay = 1f;
     private float _accumulator;
@@ -30,6 +34,8 @@ public sealed class SWDroidControlDatapadUISystem : EntitySystem
         SubscribeLocalEvent<SWDroidTargetingTabletComponent, BoundUIOpenedEvent>(OnBoundUIOpened);
         SubscribeLocalEvent<SWDroidTargetingTabletComponent, BoundUIClosedEvent>(OnBoundUIClosed);
         SubscribeLocalEvent<SWDroidTargetingTabletComponent, SWTargetingConsoleSettingsChangedEvent>(OnSettingsChanged);
+        SubscribeLocalEvent<SWDroidTargetingTabletComponent, SWDroidControlDatapadFollowDroidMessage>(OnFollowDroid);
+        SubscribeLocalEvent<SWDroidTargetingTabletComponent, SWDroidControlDatapadStopFollowDroidMessage>(OnStopFollowDroid);
     }
 
     public override void Update(float frameTime)
@@ -74,6 +80,53 @@ public sealed class SWDroidControlDatapadUISystem : EntitySystem
     {
         ent.Comp.CurrentUiUser = args.User;
         UpdateInterface(ent.Owner, ent.Comp);
+    }
+
+    private void OnFollowDroid(Entity<SWDroidTargetingTabletComponent> ent, ref SWDroidControlDatapadFollowDroidMessage args)
+    {
+        if (!TryGetLinkedDroid(ent, args.Actor, args.DroidUid, out var droid))
+            return;
+
+        _droidCommand.TrySetFollowTarget(droid, ent.Owner);
+        UpdateInterface(ent.Owner, ent.Comp);
+    }
+
+    private void OnStopFollowDroid(Entity<SWDroidTargetingTabletComponent> ent, ref SWDroidControlDatapadStopFollowDroidMessage args)
+    {
+        if (!TryGetLinkedDroid(ent, args.Actor, args.DroidUid, out var droid))
+            return;
+
+        _droidCommand.TryStopFollowingDatapad(droid, ent.Owner);
+        UpdateInterface(ent.Owner, ent.Comp);
+    }
+
+    private bool TryGetLinkedDroid(
+        Entity<SWDroidTargetingTabletComponent> ent,
+        EntityUid? actor,
+        NetEntity netDroid,
+        out EntityUid droid)
+    {
+        droid = default;
+
+        if (actor is not { Valid: true } user)
+            return false;
+
+        if (!ent.Comp.Enabled)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-droid-targeting-tablet-disabled"), user, PopupType.MediumCaution);
+            return false;
+        }
+
+        if (!TryComp<SWTargetingConfigTargetsComponent>(ent.Owner, out var targets) ||
+            !TryGetEntity(netDroid, out var droidEnt) ||
+            !targets.Targets.Contains(droidEnt.Value))
+        {
+            UpdateInterface(ent.Owner, ent.Comp);
+            return false;
+        }
+
+        droid = droidEnt.Value;
+        return true;
     }
 
     private void UpdateInterface(EntityUid uid, SWDroidTargetingTabletComponent tablet)
@@ -129,7 +182,8 @@ public sealed class SWDroidControlDatapadUISystem : EntitySystem
                 Name(droid),
                 GetCoordinates(droid, xform),
                 GetCharge(droid),
-                GetStatus(droid)));
+                GetStatus(droid),
+                _droidCommand.IsFollowingDatapad(droid, uid)));
         }
 
         return entries;

@@ -528,6 +528,44 @@ public sealed class SWDroidCommandSystem : EntitySystem
         _npc.WakeNPC(droid, htn);
     }
 
+    public bool TrySetFollowTarget(EntityUid droid, EntityUid target)
+    {
+        if (!IsAvailableDroid(droid) ||
+            !TryComp<SWDroidCommandableComponent>(droid, out var droidComp))
+        {
+            return false;
+        }
+
+        SetOrder(droid, droidComp, target, SWDroidOrderType.Follow);
+        return true;
+    }
+
+    public bool TryStopFollowingDatapad(EntityUid droid, EntityUid datapad)
+    {
+        if (!IsFollowingDatapad(droid, datapad) ||
+            !IsAvailableDroid(droid) ||
+            !TryComp<SWDroidCommandableComponent>(droid, out var droidComp))
+        {
+            return false;
+        }
+
+        SetOrder(droid, droidComp, datapad, SWDroidOrderType.Dismiss);
+        return true;
+    }
+
+    public bool IsFollowingDatapad(EntityUid droid, EntityUid datapad)
+    {
+        if (!TryComp<HTNComponent>(droid, out var htn) ||
+            !htn.Blackboard.TryGetValue<SWDroidOrderType>(NPCBlackboard.CurrentOrders, out var order, EntityManager) ||
+            order != SWDroidOrderType.Follow ||
+            !htn.Blackboard.TryGetValue<EntityCoordinates>(NPCBlackboard.FollowTarget, out var followTarget, EntityManager))
+        {
+            return false;
+        }
+
+        return followTarget.EntityId == datapad;
+    }
+
     private void StopFollowingMovement(EntityUid droid, HTNComponent htn, bool removeFollowTarget = true)
     {
         _steering.Unregister(droid);

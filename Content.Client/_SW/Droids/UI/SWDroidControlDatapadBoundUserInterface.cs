@@ -22,6 +22,8 @@ public sealed class SWDroidControlDatapadBoundUserInterface : BoundUserInterface
         _menu.OnFactionDisallowButtonPressed += SendDisallowMessage;
         _menu.OnTargetHumanoidsWithoutIdToggled += SendToggleTargetHumanoidsWithoutIdMessage;
         _menu.OnTargetAnimalsToggled += SendToggleTargetAnimalsMessage;
+        _menu.OnFollowDatapadButtonPressed += SendFollowDatapadMessage;
+        _menu.OnStopFollowDatapadButtonPressed += SendStopFollowDatapadMessage;
         _menu.OpenCenteredRight();
     }
 
@@ -37,6 +39,8 @@ public sealed class SWDroidControlDatapadBoundUserInterface : BoundUserInterface
         _menu.OnFactionDisallowButtonPressed -= SendDisallowMessage;
         _menu.OnTargetHumanoidsWithoutIdToggled -= SendToggleTargetHumanoidsWithoutIdMessage;
         _menu.OnTargetAnimalsToggled -= SendToggleTargetAnimalsMessage;
+        _menu.OnFollowDatapadButtonPressed -= SendFollowDatapadMessage;
+        _menu.OnStopFollowDatapadButtonPressed -= SendStopFollowDatapadMessage;
     }
 
     private void SendToggleMessage(string job)
@@ -62,6 +66,16 @@ public sealed class SWDroidControlDatapadBoundUserInterface : BoundUserInterface
     private void SendToggleTargetAnimalsMessage()
     {
         SendMessage(new SWToggleTargetAnimalsMessage());
+    }
+
+    private void SendFollowDatapadMessage(NetEntity droid)
+    {
+        SendMessage(new SWDroidControlDatapadFollowDroidMessage(droid));
+    }
+
+    private void SendStopFollowDatapadMessage(NetEntity droid)
+    {
+        SendMessage(new SWDroidControlDatapadStopFollowDroidMessage(droid));
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

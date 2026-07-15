@@ -28,6 +28,8 @@ sw-droid-control-datapad-status-unknown = Неизвестно
 sw-droid-control-datapad-droid-status = Статус: {$status}
 sw-droid-control-datapad-droid-charge = Заряд: {$charge}
 sw-droid-control-datapad-droid-coordinates = Координаты: {$coordinates}
+sw-droid-control-datapad-follow-datapad = Следовать за датападом
+sw-droid-control-datapad-stop-following = Прекратить следование
 sw-droid-control-datapad-map-selected = {$name}
     Статус: {$status}
     Заряд: {$charge}

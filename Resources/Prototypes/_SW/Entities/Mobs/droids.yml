@@ -48,6 +48,7 @@
   - type: MovementSpeedModifier
     baseWalkSpeed: 2.4
     baseSprintSpeed: 3.6
+  - type: Climbing
   - type: Fixtures
     fixtures:
       fix1:
@@ -75,10 +76,15 @@
         2
       DroidStayTime: !type:Single
         999999
+      NavInteract: !type:Bool
+        true
+      NavClimb: !type:Bool
+        true
       NavSmash: !type:Bool
         true
   - type: SWDroidCommandable
     commandRange: 3
+  - type: SWDroidDoorNavigation
   - type: SWAutoTargetingGun
     range: 10
   - type: UserInterface

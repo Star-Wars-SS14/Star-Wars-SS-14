@@ -41,14 +41,16 @@ public sealed class SWOreDispenserSystem : EntitySystem
             if (_timing.CurTime > comp.NextDispense)
             {
                 var container = containerComp.Containers[comp.ContainerName];
-                var items = container.ContainedEntities;
+                var items = container.ContainedEntities.ToArray();
 
                 foreach (var item in items)
                 {
-                    if (_whitelist.IsWhitelistPass(comp.DispenseWhitelist, item)){
-                        DispenseItem(new Entity<SWOreDispenserComponent>(uid, comp), container, item);
-                        comp.NextDispense = _timing.CurTime + TimeSpan.FromSeconds(comp.DelayBetweenSpawns);
-                    }
+                    if (!_whitelist.IsWhitelistPass(comp.DispenseWhitelist, item))
+                        continue;
+
+                    DispenseItem(new Entity<SWOreDispenserComponent>(uid, comp), container, item);
+                    comp.NextDispense = _timing.CurTime + TimeSpan.FromSeconds(comp.DelayBetweenSpawns);
+                    break;
                 }
             }
         }

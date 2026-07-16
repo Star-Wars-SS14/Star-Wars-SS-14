@@ -51,10 +51,10 @@ sw-droid-control-datapad-targets-disabled = Targeted jobs
 sw-droid-control-datapad-faction-allow = Ignore all {$faction}
 sw-droid-control-datapad-faction-disallow = Target all {$faction}
 
-ent-SWMobDroidBase = battle droid
+ent-SWMobDroidBase = Mark II
     .desc = A compact combat droid with modular systems.
 
-ent-SWMobDroid = battle droid
+ent-SWMobDroid = Mark II
     .suffix = AI
     .desc = { ent-SWMobDroidBase.desc }
 

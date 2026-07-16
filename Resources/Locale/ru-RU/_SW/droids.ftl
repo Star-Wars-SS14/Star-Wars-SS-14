@@ -39,10 +39,10 @@ sw-droid-control-datapad-targets-disabled = Атакуемые должност�
 sw-droid-control-datapad-faction-allow = Игнорировать всю фракцию: {$faction}
 sw-droid-control-datapad-faction-disallow = Атаковать всю фракцию: {$faction}
 
-ent-SWMobDroidBase = боевой дроид
+ent-SWMobDroidBase = Марк II
     .desc = Компактный боевой дроид с модульными системами.
 
-ent-SWMobDroid = боевой дроид
+ent-SWMobDroid = Марк II
     .suffix = ИИ
     .desc = { ent-SWMobDroidBase.desc }
 

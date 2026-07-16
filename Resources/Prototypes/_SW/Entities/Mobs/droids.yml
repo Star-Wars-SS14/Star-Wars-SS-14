@@ -1,7 +1,7 @@
 - type: entity
   id: SWMobDroidBase
   parent: [ MobRobotic, MobCombat ]
-  name: battle droid
+  name: Mark II
   description: A compact combat droid with an integrated blaster.
   abstract: true
   components:
@@ -182,7 +182,7 @@
 - type: entity
   id: SWMobDroid
   parent: SWMobDroidBase
-  name: battle droid
+  name: Mark II
   suffix: AI
 
 - type: entity

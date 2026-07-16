@@ -1,6 +1,7 @@
 sw-lathe-menu-title = Lathe control
 sw-lathe-menu-recipes-title = Recipes
 sw-lathe-menu-mode-title = Production mode
+sw-lathe-menu-mode-disabled = Disabled
 sw-lathe-menu-mode-auto = Auto
 sw-lathe-menu-current-production-title = Current production
 sw-lathe-menu-current-production-none = Nothing

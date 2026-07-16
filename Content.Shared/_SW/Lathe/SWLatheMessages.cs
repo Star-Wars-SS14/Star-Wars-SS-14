@@ -14,6 +14,7 @@ public sealed class SWLatheBoundUserInterfaceState : BoundUserInterfaceState
     public List<SWLatheRecipeInfo> Recipes;
     public Dictionary<string, int> StashedMaterials;
     public int MaxMaterialAmount;
+    public bool ProductionDisabled;
     public string? SelectedRecipe;
     public string? CurrentRecipe;
     public TimeSpan? ProductionStartTime;
@@ -23,6 +24,7 @@ public sealed class SWLatheBoundUserInterfaceState : BoundUserInterfaceState
         List<SWLatheRecipeInfo> recipes,
         Dictionary<string, int> stashedMaterials,
         int maxMaterialAmount,
+        bool productionDisabled,
         string? selectedRecipe,
         string? currentRecipe,
         TimeSpan? productionStartTime,
@@ -31,6 +33,7 @@ public sealed class SWLatheBoundUserInterfaceState : BoundUserInterfaceState
         Recipes = recipes;
         StashedMaterials = stashedMaterials;
         MaxMaterialAmount = maxMaterialAmount;
+        ProductionDisabled = productionDisabled;
         SelectedRecipe = selectedRecipe;
         CurrentRecipe = currentRecipe;
         ProductionStartTime = productionStartTime;
@@ -63,9 +66,11 @@ public sealed class SWLatheRecipeInfo
 public sealed class SWLatheSelectRecipeMessage : BoundUserInterfaceMessage
 {
     public string? Recipe;
+    public bool ProductionDisabled;
 
-    public SWLatheSelectRecipeMessage(string? recipe)
+    public SWLatheSelectRecipeMessage(string? recipe, bool productionDisabled = false)
     {
         Recipe = recipe;
+        ProductionDisabled = productionDisabled;
     }
 }

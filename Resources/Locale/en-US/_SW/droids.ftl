@@ -58,6 +58,10 @@ ent-SWMobDroid = Mark II
     .suffix = AI
     .desc = { ent-SWMobDroidBase.desc }
 
+ent-SWMobDroidChassis = Mark II chassis
+    .suffix = Empty
+    .desc = An empty Mark II droid chassis awaiting modules.
+
 ent-ActionSWDroidTakeCommand = Take command
     .desc = Assume command of a nearby allied droid.
 

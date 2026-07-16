@@ -46,6 +46,10 @@ ent-SWMobDroid = Марк II
     .suffix = ИИ
     .desc = { ent-SWMobDroidBase.desc }
 
+ent-SWMobDroidChassis = корпус Марк II
+    .suffix = Пустой
+    .desc = Пустой корпус дроида Марк II, ожидающий установки модулей.
+
 ent-ActionSWDroidTakeCommand = Взять командование
     .desc = Взять командование над ближайшим союзным дроидом.
 

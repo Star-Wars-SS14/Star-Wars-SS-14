@@ -125,27 +125,21 @@ public sealed partial class SWLatheMenu : DefaultWindow
                 StyleClasses = { "LabelKeyText" },
             });
 
-            container.AddChild(new Label
-            {
-                Text = Loc.GetString("sw-lathe-menu-recipe-inputs", ("materials", FormatItemList(recipe.Materials))),
-            });
+            container.AddChild(CreateWrappedLabel(Loc.GetString(
+                "sw-lathe-menu-recipe-inputs",
+                ("materials", FormatItemList(recipe.Materials)))));
 
-            container.AddChild(new Label
-            {
-                Text = Loc.GetString("sw-lathe-menu-recipe-outputs", ("results", FormatItemList(recipe.Result))),
-            });
+            container.AddChild(CreateWrappedLabel(Loc.GetString(
+                "sw-lathe-menu-recipe-outputs",
+                ("results", FormatItemList(recipe.Result)))));
 
-            container.AddChild(new Label
-            {
-                Text = Loc.GetString("sw-lathe-menu-recipe-time", ("time", Math.Round(recipe.ProduceTime, 3))),
-            });
+            container.AddChild(CreateWrappedLabel(Loc.GetString(
+                "sw-lathe-menu-recipe-time",
+                ("time", Math.Round(recipe.ProduceTime, 3)))));
 
-            container.AddChild(new Label
-            {
-                Text = ready
-                    ? Loc.GetString("sw-lathe-menu-recipe-ready")
-                    : Loc.GetString("sw-lathe-menu-recipe-missing"),
-            });
+            container.AddChild(CreateWrappedLabel(ready
+                ? Loc.GetString("sw-lathe-menu-recipe-ready")
+                : Loc.GetString("sw-lathe-menu-recipe-missing")));
 
             var button = new Button
             {
@@ -162,6 +156,18 @@ public sealed partial class SWLatheMenu : DefaultWindow
 
             RecipeList.AddChild(container);
         }
+    }
+
+    private RichTextLabel CreateWrappedLabel(string text)
+    {
+        var label = new RichTextLabel
+        {
+            HorizontalExpand = true,
+            VerticalAlignment = VAlignment.Top,
+        };
+
+        label.SetMessage(text);
+        return label;
     }
 
     private void PopulateMaterials(SWLatheBoundUserInterfaceState state)

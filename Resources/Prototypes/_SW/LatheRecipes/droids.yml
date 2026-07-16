@@ -1,0 +1,67 @@
+- type: swLatheRecipe
+  id: SWDroidChassisSLR
+  materials:
+    SWAdvancedElectronics: 1
+    SWArmorPlate: 1
+    SWReinforcedSteel: 2
+    SWElectronics1: 1
+  result:
+    SWMobDroidChassis: 1
+  produceTime: 25
+
+- type: swLatheRecipe
+  id: SWDroidAICoreModuleSLR
+  materials:
+    SWAdvancedElectronics: 1
+    SWAdvancedCables1: 1
+  result:
+    SWDroidAICoreModule: 1
+  produceTime: 10
+
+- type: swLatheRecipe
+  id: SWDroidBlasterModuleSLR
+  materials:
+    SWAdvancedElectronics: 1
+    SWBlasterBarrel: 1
+    SWBlasterFrame: 1
+  result:
+    SWDroidBlasterModule: 1
+  produceTime: 15
+
+- type: swLatheRecipe
+  id: SWDroidFactionChipRepublicSLR
+  materials:
+    SWElectronics1: 1
+    SWAdvancedCables1: 1
+    IngotGold1: 1
+  result:
+    SWDroidFactionChipRepublic: 1
+  produceTime: 5
+
+- type: swLatheRecipe
+  id: SWDroidFactionChipEmpireSLR
+  materials:
+    SWElectronics1: 1
+    SWAdvancedCables1: 1
+    IngotGold1: 1
+  result:
+    SWDroidFactionChipEmpire: 1
+  produceTime: 5
+
+- type: swLatheRecipe
+  id: SWDroidLoyaltyChipRepublicSLR
+  materials:
+    SWElectronics1: 1
+    SWAdvancedCables1: 1
+  result:
+    SWDroidLoyaltyChipRepublic: 1
+  produceTime: 5
+
+- type: swLatheRecipe
+  id: SWDroidLoyaltyChipEmpireSLR
+  materials:
+    SWElectronics1: 1
+    SWAdvancedCables1: 1
+  result:
+    SWDroidLoyaltyChipEmpire: 1
+  produceTime: 5

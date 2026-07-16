@@ -275,6 +275,50 @@
         type: SWLatheBoundUserInterface
 
 - type: entity
+  id: SWDroidFabricator
+  parent: SWBaseLathe
+  name: droid fabricator
+  description: A compact assembly platform tuned for droid chassis and module production.
+  components:
+  - type: Fixtures
+    fixtures:
+      in1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.6,-2.05,1.6,-1.4"
+        density: 190
+        mask:
+        - ItemMask
+        layer:
+        - WallLayer
+        hard: false
+  - type: Sprite
+    sprite: _SW/Structures/Machines/droid_fabricator.rsi
+    drawdepth: HighFloorObjects
+    layers:
+      - state: fabricator
+  - type: Construction
+    graph: SWLatheGraph
+    node: droidFabricator
+  - type: Godmode
+  - type: SWLathe
+    spawnPointOut: "0.0, 0.0"
+    recipes:
+    - SWDroidChassisSLR
+    - SWDroidAICoreModuleSLR
+    - SWDroidBlasterModuleSLR
+    - SWDroidFactionChipRepublicSLR
+    - SWDroidFactionChipEmpireSLR
+    - SWDroidLoyaltyChipRepublicSLR
+    - SWDroidLoyaltyChipEmpireSLR
+  - type: ActivatableUI
+    key: enum.SWLatheUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWLatheUiKey.Key:
+        type: SWLatheBoundUserInterface
+
+- type: entity
   id: SWBaseLatheDestroyed
   name: destroyed lathe
   parent: BaseStructure

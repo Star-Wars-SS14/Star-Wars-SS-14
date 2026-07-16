@@ -112,12 +112,6 @@
       FactionChip: 1
       LoyaltyChip: 1
       AiCore: 1
-  - type: ContainerFill
-    containers:
-      borg_module:
-      - SWDroidAICoreModule
-      - SWDroidBlasterModule
-      - SWDroidFactionChipEmpire
   - type: LockingWhitelist
     blacklist:
       components:
@@ -184,6 +178,19 @@
   parent: SWMobDroidBase
   name: Mark II
   suffix: AI
+  components:
+  - type: ContainerFill
+    containers:
+      borg_module:
+      - SWDroidAICoreModule
+      - SWDroidBlasterModule
+      - SWDroidFactionChipEmpire
+
+- type: entity
+  id: SWMobDroidChassis
+  parent: SWMobDroidBase
+  name: Mark II chassis
+  suffix: Empty
 
 - type: entity
   id: ActionSWDroidTakeCommand

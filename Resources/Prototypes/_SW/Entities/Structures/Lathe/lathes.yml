@@ -307,8 +307,6 @@
     - SWDroidChassisSLR
     - SWDroidAICoreModuleSLR
     - SWDroidBlasterModuleSLR
-    - SWDroidFactionChipRepublicSLR
-    - SWDroidFactionChipEmpireSLR
     - SWDroidLoyaltyChipRepublicSLR
     - SWDroidLoyaltyChipEmpireSLR
   - type: ActivatableUI

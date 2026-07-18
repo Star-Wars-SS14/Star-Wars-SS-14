@@ -111,20 +111,17 @@ public sealed class SWLatheSystem : EntitySystem
 
             //var fix = fixComp.
 
-            if (!comp.ProductionDisabled)
+            foreach (var otherEntity in GetEntitiesInInputFixtures(uid, comp, fixComp))
             {
-                foreach (var otherEntity in GetEntitiesInInputFixtures(uid, comp, fixComp))
+                if (CanUseInAnyRecipe(comp, otherEntity) == null)
                 {
-                    if (CanUseInAnyRecipe(comp, otherEntity) == null)
-                    {
-                        continue;
-                    }
+                    continue;
+                }
 
-                    if (TryAddMaterial(new Entity<SWLatheComponent>(uid, comp), otherEntity))
-                    {
-                        Del(otherEntity);
-                        UpdateUserInterface((uid, comp));
-                    }
+                if (TryAddMaterial(new Entity<SWLatheComponent>(uid, comp), otherEntity))
+                {
+                    Del(otherEntity);
+                    UpdateUserInterface((uid, comp));
                 }
             }
 

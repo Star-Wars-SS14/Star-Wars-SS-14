@@ -133,6 +133,7 @@
     - SWAdditionalAmunitionMarket
     - SWToolsMarket
     - SWLatheMarket
+    - SWEmpireDroidMarket
     - SWT3WeaponMarket
     - SWT3MedicineMarket
     - SWMiscMarket
@@ -205,6 +206,8 @@
     - SWExplosiveMarket
     - SWAdditionalAmunitionMarket
     - SWToolsMarket
+    - SWLatheMarket
+    - SWRepublicDroidMarket
     - SWT3WeaponMarket
     - SWT3MedicineMarket
     - SWMiscMarket

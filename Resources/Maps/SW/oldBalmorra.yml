@@ -293,6 +293,7 @@ entities:
       chunkCollection:
         version: 2
         nodes: []
+    - type: NavMap
   - uid: 2
     components:
     - type: MetaData

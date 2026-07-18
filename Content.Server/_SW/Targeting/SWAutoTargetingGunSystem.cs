@@ -86,7 +86,7 @@ public sealed class SWAutoTargetingGunSystem : EntitySystem
         }
 
         if (!_gun.TryGetGun(uid, out var gunUid, out var gun) &&
-            (!TrySelectBorgRangedModule(uid) || !_gun.TryGetGun(uid, out gunUid, out gun)))
+            !TryGetBorgRangedModuleGun(uid, out gunUid, out gun))
         {
             component.ShootAccumulator = 0f;
             return;
@@ -258,8 +258,14 @@ public sealed class SWAutoTargetingGunSystem : EntitySystem
         return new EntityCoordinates(xform.MapUid!.Value, targetSpot);
     }
 
-    private bool TrySelectBorgRangedModule(EntityUid uid)
+    private bool TryGetBorgRangedModuleGun(
+        EntityUid uid,
+        out EntityUid gunUid,
+        out GunComponent gun)
     {
+        gunUid = default;
+        gun = default!;
+
         if (!TryComp<BorgChassisComponent>(uid, out var chassis) || !chassis.Active)
             return false;
 
@@ -277,7 +283,21 @@ public sealed class SWAutoTargetingGunSystem : EntitySystem
                 _borg.InstallModule((uid, chassis), (moduleUid, module));
 
             _borg.SelectModule((uid, chassis), (moduleUid, module));
-            return true;
+            if (_gun.TryGetGun(uid, out gunUid, out var selectedGun) && selectedGun != null)
+            {
+                gun = selectedGun;
+                return true;
+            }
+
+            foreach (var providedItem in itemModule.StoredItems.Values)
+            {
+                if (TryComp<GunComponent>(providedItem, out var providedGun))
+                {
+                    gunUid = providedItem;
+                    gun = providedGun;
+                    return true;
+                }
+            }
         }
 
         return false;

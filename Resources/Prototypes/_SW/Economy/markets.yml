@@ -41,6 +41,12 @@
   id: SWLatheMarket
 
 - type: cargoMarket
+  id: SWRepublicDroidMarket
+
+- type: cargoMarket
+  id: SWEmpireDroidMarket
+
+- type: cargoMarket
   id: SWEmpiteSpaceWarMarketReinforcement
 
 - type: cargoMarket

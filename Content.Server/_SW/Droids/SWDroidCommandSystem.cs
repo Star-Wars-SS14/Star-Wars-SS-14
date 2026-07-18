@@ -59,6 +59,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
         SubscribeLocalEvent<SWDroidCommanderComponent, SWDroidOrderActionEvent>(OnOrder);
         SubscribeLocalEvent<SWDroidCommanderComponent, SWDroidGoToActionEvent>(OnGoToOrder);
         SubscribeLocalEvent<SWDroidCommanderComponent, SWDroidAttackActionEvent>(OnAttackOrder);
+        SubscribeLocalEvent<SWDroidCommanderComponent, MobStateChangedEvent>(OnCommanderMobStateChanged);
         SubscribeLocalEvent<SWDroidCommanderComponent, ComponentShutdown>(OnCommanderShutdown);
         SubscribeLocalEvent<SWDroidCommandableComponent, ComponentShutdown>(OnDroidShutdown);
         SubscribeLocalEvent<SWDroidCommandableComponent, MobStateChangedEvent>(OnDroidMobStateChanged);
@@ -78,7 +79,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
         var query = EntityQueryEnumerator<SWFactionMemberComponent, ActionsComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var factionMember, out var actions, out var transform))
         {
-            if (!HasComp<ActorComponent>(uid))
+            if (!HasComp<ActorComponent>(uid) || !_mobState.IsAlive(uid))
                 continue;
 
             var commander = CompOrNull<SWDroidCommanderComponent>(uid);
@@ -197,6 +198,23 @@ public sealed class SWDroidCommandSystem : EntitySystem
         IssueOrder(uid, component, SWDroidOrderType.Attack, target: args.Target);
     }
 
+    private void OnCommanderMobStateChanged(EntityUid uid, SWDroidCommanderComponent component, MobStateChangedEvent args)
+    {
+        if (args.NewMobState != MobState.Dead)
+            return;
+
+        ReleaseCommanderDroids(uid, component);
+
+        if (TryComp<ActionsComponent>(uid, out var actions))
+        {
+            RemoveTakeCommandAction(uid, component, actions);
+            RemoveRelinquishCommandAction(uid, component, actions);
+            RemoveOrderActions(uid, component, actions);
+        }
+
+        RemCompDeferred<SWDroidCommanderComponent>(uid);
+    }
+
     private void IssueOrder(
         EntityUid uid,
         SWDroidCommanderComponent component,
@@ -226,7 +244,19 @@ public sealed class SWDroidCommandSystem : EntitySystem
 
     private void OnCommanderShutdown(EntityUid uid, SWDroidCommanderComponent component, ComponentShutdown args)
     {
-        foreach (var droid in component.Droids)
+        ReleaseCommanderDroids(uid, component);
+
+        if (!TryComp<ActionsComponent>(uid, out var actions))
+            return;
+
+        RemoveTakeCommandAction(uid, component, actions);
+        RemoveRelinquishCommandAction(uid, component, actions);
+        RemoveOrderActions(uid, component, actions);
+    }
+
+    private void ReleaseCommanderDroids(EntityUid uid, SWDroidCommanderComponent component)
+    {
+        foreach (var droid in component.Droids.ToArray())
         {
             if (!TryComp<SWDroidCommandableComponent>(droid, out var droidComp) ||
                 droidComp.ActiveCommander != uid)
@@ -240,12 +270,7 @@ public sealed class SWDroidCommandSystem : EntitySystem
             SetOrder(droid, droidComp, uid, SWDroidOrderType.Stay);
         }
 
-        if (!TryComp<ActionsComponent>(uid, out var actions))
-            return;
-
-        RemoveTakeCommandAction(uid, component, actions);
-        RemoveRelinquishCommandAction(uid, component, actions);
-        RemoveOrderActions(uid, component, actions);
+        component.Droids.Clear();
     }
 
     private void OnDroidShutdown(EntityUid uid, SWDroidCommandableComponent component, ComponentShutdown args)

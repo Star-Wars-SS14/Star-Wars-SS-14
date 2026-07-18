@@ -13,3 +13,4 @@ sw-category-melee = Оружие ближнего боя
 sw-category-lathe = Станки
 sw-category-reinforcements = Подкрепления
 sw-category-misc = Смешанное
+sw-category-droids = Дроиды

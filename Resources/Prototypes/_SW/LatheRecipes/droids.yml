@@ -29,26 +29,6 @@
   produceTime: 15
 
 - type: swLatheRecipe
-  id: SWDroidFactionChipRepublicSLR
-  materials:
-    SWElectronics1: 1
-    SWAdvancedCables1: 1
-    IngotGold1: 1
-  result:
-    SWDroidFactionChipRepublic: 1
-  produceTime: 5
-
-- type: swLatheRecipe
-  id: SWDroidFactionChipEmpireSLR
-  materials:
-    SWElectronics1: 1
-    SWAdvancedCables1: 1
-    IngotGold1: 1
-  result:
-    SWDroidFactionChipEmpire: 1
-  produceTime: 5
-
-- type: swLatheRecipe
   id: SWDroidLoyaltyChipRepublicSLR
   materials:
     SWElectronics1: 1

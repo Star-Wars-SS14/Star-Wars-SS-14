@@ -6,7 +6,6 @@
   product: SWDroidTargetingTabletRepublic
   cost:
     SWRepublicCreditCurrency: 300
-    SWSupplyScoresRepublic: 300
   category: sw-category-droids
   group: SWRepublicDroidMarket
 
@@ -18,7 +17,6 @@
   product: SWDroidTargetingTabletEmpire
   cost:
     SWEmpireCreditCurrency: 300
-    SWSupplyScoresEmpire: 300
   category: sw-category-droids
   group: SWEmpireDroidMarket
 

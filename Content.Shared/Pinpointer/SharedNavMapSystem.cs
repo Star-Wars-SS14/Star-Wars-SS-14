@@ -248,9 +248,9 @@ public abstract class SharedNavMapSystem : EntitySystem
                 var newData = chunks[index] = new int[ArraySize];
 
                 if (ModifiedChunks.TryGetValue(index, out var updatedData))
-                    Array.Copy(newData, updatedData, ArraySize);
+                    Array.Copy(updatedData, newData, ArraySize);
                 else
-                    Array.Copy(newData, data, ArraySize);
+                    Array.Copy(data, newData, ArraySize);
             }
 
             return new NavMapState(chunks, new(Beacons), new(Regions));

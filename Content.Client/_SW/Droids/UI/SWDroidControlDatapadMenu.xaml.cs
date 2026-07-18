@@ -122,8 +122,9 @@ public sealed partial class SWDroidControlDatapadMenu : DefaultWindow
         {
             DroidNavMap.MapUid = mapUid;
             DroidNavMap.Visible = true;
-            DroidNavMap.ForceNavMapUpdate();
         }
+
+        DroidNavMap.ForceNavMapUpdate();
 
         if (state.MapDroids.Count == 0)
         {

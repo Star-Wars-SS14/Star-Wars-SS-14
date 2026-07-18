@@ -65,6 +65,7 @@ public partial class NavMapControl : MapGridControl
     protected float FullWallInstep = 0.165f;
     protected float ThinWallThickness = 0.165f;
     protected float ThinDoorThickness = 0.30f;
+    private const int MaxPrimitiveVerticesPerBatch = 60000;
 
     // Local variables
     private float _updateTimer = 1.0f;
@@ -346,8 +347,7 @@ public partial class NavMapControl : MapGridControl
                 lines.Add(terminus);
             }
 
-            if (lines.Count > 0)
-                handle.DrawPrimitives(DrawPrimitiveTopology.LineList, lines.Span, wallsRGB);
+            DrawLineListBatched(handle, lines.Span, wallsRGB);
         }
 
         // Draw map rects
@@ -373,8 +373,7 @@ public partial class NavMapControl : MapGridControl
                 rects.Add(leftTop);
             }
 
-            if (rects.Count > 0)
-                handle.DrawPrimitives(DrawPrimitiveTopology.LineList, rects.Span, wallsRGB);
+            DrawLineListBatched(handle, rects.Span, wallsRGB);
         }
 
         // Invoke post wall drawing action
@@ -723,6 +722,26 @@ public partial class NavMapControl : MapGridControl
         // Completely disconnected line segment.
         lookup.Add(origin, terminus);
         lookupReversed.Add(terminus, origin);
+    }
+
+    private static void DrawLineListBatched(DrawingHandleScreen handle, Span<Vector2> vertices, Color color)
+    {
+        if (vertices.Length < 2)
+            return;
+
+        const int verticesPerLine = 2;
+        var maxVertices = MaxPrimitiveVerticesPerBatch - MaxPrimitiveVerticesPerBatch % verticesPerLine;
+
+        for (var i = 0; i < vertices.Length; i += maxVertices)
+        {
+            var count = Math.Min(maxVertices, vertices.Length - i);
+            count -= count % verticesPerLine;
+
+            if (count <= 0)
+                continue;
+
+            handle.DrawPrimitives(DrawPrimitiveTopology.LineList, vertices.Slice(i, count), color);
+        }
     }
 
     protected Vector2 GetOffset()

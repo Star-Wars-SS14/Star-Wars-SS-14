@@ -307,8 +307,6 @@
     - SWDroidChassisSLR
     - SWDroidAICoreModuleSLR
     - SWDroidBlasterModuleSLR
-    - SWDroidLoyaltyChipRepublicSLR
-    - SWDroidLoyaltyChipEmpireSLR
   - type: ActivatableUI
     key: enum.SWLatheUiKey.Key
   - type: UserInterface

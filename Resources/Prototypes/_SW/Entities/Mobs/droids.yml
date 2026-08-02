@@ -41,6 +41,14 @@
       Alive: BorgHealth
       Dead: BorgDead
     showOverlays: false
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:ChangeConstructionNodeBehavior
+        node: broken
   - type: SlowOnDamage
     speedModifierThresholds:
       70: 0.9
@@ -179,6 +187,13 @@
   name: Mark II
   suffix: AI
   components:
+  - type: Construction
+    graph: SWDroidGraph
+    node: working
+    containers:
+    - borg_brain
+    - borg_module
+    - cell_slot
   - type: ContainerFill
     containers:
       borg_module:
@@ -191,6 +206,57 @@
   parent: SWMobDroidBase
   name: Mark II chassis
   suffix: Empty
+  components:
+  - type: Construction
+    graph: SWDroidGraph
+    node: chassis
+    containers:
+    - borg_brain
+    - borg_module
+    - cell_slot
+
+- type: entity
+  id: SWMobDroidBroken
+  parent: BaseStructureDynamic
+  name: broken Mark II
+  description: A destroyed Mark II droid chassis that can be repaired into an empty chassis.
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _SW/Mobs/Droids/droid.rsi
+    layers:
+    - state: broken
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 150
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: InteractionOutline
+  - type: Construction
+    graph: SWDroidGraph
+    node: broken
+    containers:
+    - borg_brain
+    - borg_module
+    - cell_slot
+  - type: PowerCellSlot
+    cellSlotId: cell_slot
+    fitsInCharger: true
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+  - type: ContainerContainer
+    containers:
+      borg_brain: !type:ContainerSlot { }
+      borg_module: !type:Container { }
+      cell_slot: !type:ContainerSlot { }
 
 - type: entity
   id: ActionSWDroidTakeCommand

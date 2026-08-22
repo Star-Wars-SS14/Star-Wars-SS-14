@@ -143,11 +143,7 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
         if (!TryGetCurrentBlockWeapon(ent.Owner, out var weapon))
             return;
 
-        if (CanBlock(weapon))
-            EnableBlock(weapon);
-
-        if (weapon.Comp.IsBlocking)
-        {
+        if (CanBlock(weapon)) {
             args.Cancel();
             PopupSystem.PopupPredicted(Loc.GetString(HitBlockedPopup), ent.Owner, null, PopupType.Medium);
         }

@@ -179,6 +179,13 @@
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/Ammunition/Magazine/Blaster/hevy/grantekF11DAmmo.rsi
 
+- type: entity
+  id: SWDroidF11DCannonMagazine
+  name: "droid F-11D Magazine blast"
+  parent: SWF11DCannonMagazine
+  components:
+  - type: BatterySelfRecharger
+    autoRechargeRate: 200
 
 - type: entity
   id: SWEL34Magazine

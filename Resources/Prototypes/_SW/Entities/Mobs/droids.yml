@@ -1,0 +1,387 @@
+- type: entity
+  id: SWMobDroidBase
+  parent: [ MobRobotic, MobCombat ]
+  name: Mark II
+  description: A compact combat droid with an integrated blaster.
+  abstract: true
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _SW/Mobs/Droids/droid.rsi
+    layers:
+    - map: [ "enum.DamageStateVisualLayers.Base" ]
+      state: base
+  - type: DamageStateVisuals
+    states:
+      Alive:
+        Base: base
+      Dead:
+        Base: broken
+  - type: DamageVisuals
+    thresholds: [ 30, 60, 90 ]
+    trackAllDamage: true
+    damageOverlay:
+      sprite: _SW/Mobs/Droids/droid.rsi
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Repairable
+    doAfterDelay: 8
+    fuelCost: 15
+  - type: SWDroidRepairable
+    doAfterDelay: 8
+    fuelCost: 15
+    materialAmount: 1
+    damageValue: -30
+  - type: MobThresholds
+    thresholds:
+      0: Alive
+      200: Dead
+    stateAlertDict:
+      Alive: BorgHealth
+      Dead: BorgDead
+    showOverlays: false
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 200
+      behaviors:
+      - !type:ChangeConstructionNodeBehavior
+        node: broken
+  - type: SlowOnDamage
+    speedModifierThresholds:
+      70: 0.9
+      100: 0.8
+  - type: MovementSpeedModifier
+    baseWalkSpeed: 2.4
+    baseSprintSpeed: 3.6
+  - type: Climbing
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeCircle
+          radius: 0.40
+        density: 100
+        mask:
+        - MobMask
+        layer:
+        - MobLayer
+  - type: HTN
+    rootTask:
+      task: SWDroidCommandedCompound
+    blackboard:
+      FollowCloseRange: !type:Single
+        1.5
+      FollowRange: !type:Single
+        2.5
+      RangedRange: !type:Single
+        10
+      MinimumIdleTime: !type:Single
+        1
+      MaximumIdleTime: !type:Single
+        2
+      DroidStayTime: !type:Single
+        999999
+      NavInteract: !type:Bool
+        true
+      NavClimb: !type:Bool
+        true
+      NavSmash: !type:Bool
+        true
+  - type: SWDroidCommandable
+    commandRange: 3
+  - type: SWDroidDoorNavigation
+  - type: SWAutoTargetingGun
+    range: 10
+  - type: UserInterface
+    interfaces:
+      enum.BorgUiKey.Key:
+        type: BorgBoundUserInterface
+  - type: ActivatableUI
+    key: enum.BorgUiKey.Key
+  - type: Hands
+    showInHands: false
+    disableExplosionRecursion: true
+    canBeStripped: false
+  - type: BorgChassis
+    active: true
+    maxModules: 4
+    moduleWhitelist:
+      tags:
+      - SWDroidModule
+    brainWhitelist:
+      components:
+      - SWDroidCommandable
+  - type: SWDroidModuleLimits
+    limits:
+      Weapon: 1
+      FactionChip: 1
+      LoyaltyChip: 1
+      AiCore: 1
+  - type: LockingWhitelist
+    blacklist:
+      components:
+      - BorgChassis
+      - RoboticsConsole
+  - type: WiresPanel
+    openingTool: Screwing
+  - type: ActivatableUIRequiresPanel
+  - type: Lock
+    locked: true
+    unlockOnClick: false
+  - type: UIRequiresLock
+    userInterfaceKeys:
+    - enum.BorgUiKey.Key
+  - type: LockedWiresPanel
+  - type: AccessReader
+    access:
+    - [SWEmpireBase]
+  - type: PowerCellSlot
+    cellSlotId: cell_slot
+    fitsInCharger: true
+  - type: PowerCellDraw
+    drawRate: 0.6
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+        startingItem: PowerCellMedium
+  - type: ContainerContainer
+    containers:
+      borg_brain: !type:ContainerSlot { }
+      borg_module: !type:Container { }
+      cell_slot: !type:ContainerSlot { }
+  - type: NpcFactionMember
+    factions:
+    - SimpleHostile
+  - type: BatteryAmmoProvider
+    proto: SWScoutBlasterBullet
+    fireCost: 50
+  - type: MeleeWeapon
+    hidden: true
+    angle: 0
+    animation: WeaponArcPunch
+    soundHit:
+      collection: MetalThud
+    damage:
+      types:
+        Blunt: 5
+  - type: Speech
+    speechVerb: Robotic
+    speechSounds: Borg
+  - type: FootstepModifier
+    footstepSoundCollection:
+      path: /Audio/Mecha/sound_mecha_powerloader_step.ogg
+  - type: Tag
+    tags:
+    - DoorBumpOpener
+    - FootstepSound
+    - SiliconEmotes
+    - Unimplantable
+
+- type: entity
+  id: SWMobDroid
+  parent: SWMobDroidBase
+  name: Mark II
+  suffix: AI
+  components:
+  - type: Construction
+    graph: SWDroidGraph
+    node: working
+    containers:
+    - borg_brain
+    - borg_module
+    - cell_slot
+  - type: ContainerFill
+    containers:
+      borg_module:
+      - SWDroidAICoreModule
+      - SWDroidBlasterModule
+      - SWDroidFactionChipEmpire
+
+- type: entity
+  id: SWMobDroidChassis
+  parent: SWMobDroidBase
+  name: Mark II chassis
+  suffix: Empty
+  components:
+  - type: Construction
+    graph: SWDroidGraph
+    node: chassis
+    containers:
+    - borg_brain
+    - borg_module
+    - cell_slot
+
+- type: entity
+  id: SWMobDroidBroken
+  parent: BaseStructureDynamic
+  name: broken Mark II
+  description: A destroyed Mark II droid chassis that can be repaired into an empty chassis.
+  components:
+  - type: Sprite
+    drawdepth: Mobs
+    sprite: _SW/Mobs/Droids/droid.rsi
+    layers:
+    - state: broken
+  - type: Damageable
+    damageContainer: Inorganic
+    damageModifierSet: Metallic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 150
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+  - type: InteractionOutline
+  - type: Construction
+    graph: SWDroidGraph
+    node: broken
+    containers:
+    - borg_brain
+    - borg_module
+    - cell_slot
+  - type: PowerCellSlot
+    cellSlotId: cell_slot
+    fitsInCharger: true
+  - type: ItemSlots
+    slots:
+      cell_slot:
+        name: power-cell-slot-component-slot-name-default
+  - type: ContainerContainer
+    containers:
+      borg_brain: !type:ContainerSlot { }
+      borg_module: !type:Container { }
+      cell_slot: !type:ContainerSlot { }
+
+- type: entity
+  id: ActionSWDroidTakeCommand
+  parent: BaseAction
+  name: Take command
+  description: Assume command of a nearby allied droid.
+  components:
+  - type: Action
+    useDelay: 1
+    icon:
+      sprite: _SW/Mobs/Droids/droid.rsi
+      state: base
+  - type: InstantAction
+    event: !type:SWDroidTakeCommandActionEvent
+
+- type: entity
+  id: ActionSWDroidRelinquishCommand
+  parent: BaseAction
+  name: Relinquish command
+  description: Release command of a nearby controlled droid.
+  components:
+  - type: Action
+    useDelay: 1
+    icon:
+      sprite: _SW/Interface/Actions/droid_commands.rsi
+      state: dismiss
+  - type: InstantAction
+    event: !type:SWDroidRelinquishCommandActionEvent
+
+- type: entity
+  id: ActionSWDroidCommandMenu
+  parent: BaseAction
+  name: Droid commands
+  description: Open the command wheel for controlled droids.
+  components:
+  - type: Action
+    useDelay: 0.5
+    clientExclusive: true
+    icon:
+      sprite: _SW/Mobs/Droids/droid.rsi
+      state: base
+  - type: InstantAction
+    event: !type:SWDroidOpenCommandMenuActionEvent
+
+- type: entity
+  id: ActionSWDroidOrderFollow
+  parent: BaseAction
+  name: Follow
+  description: Ordered droids follow you.
+  components:
+  - type: Action
+    useDelay: 0.5
+    autoPopulate: false
+    icon:
+      sprite: _SW/Interface/Actions/droid_commands.rsi
+      state: follow
+  - type: InstantAction
+    event: !type:SWDroidOrderActionEvent
+      type: Follow
+
+- type: entity
+  id: ActionSWDroidOrderStay
+  parent: BaseAction
+  name: Stay
+  description: Ordered droids hold position.
+  components:
+  - type: Action
+    useDelay: 0.5
+    autoPopulate: false
+    icon:
+      sprite: _SW/Interface/Actions/droid_commands.rsi
+      state: stay
+  - type: InstantAction
+    event: !type:SWDroidOrderActionEvent
+      type: Stay
+
+- type: entity
+  id: ActionSWDroidOrderGoTo
+  parent: BaseAction
+  name: Go!
+  description: Ordered droids move to the selected point and hold there.
+  components:
+  - type: Action
+    useDelay: 0.5
+    autoPopulate: false
+    icon:
+      sprite: _SW/Interface/Actions/droid_commands.rsi
+      state: go-to
+  - type: TargetAction
+    checkCanAccess: false
+    range: 30
+  - type: WorldTargetAction
+    event: !type:SWDroidGoToActionEvent
+
+- type: entity
+  id: ActionSWDroidOrderAttack
+  parent: BaseAction
+  name: Fire!
+  description: Ordered droids fire at the selected target.
+  components:
+  - type: Action
+    useDelay: 0.5
+    autoPopulate: false
+    icon:
+      sprite: _SW/Interface/Actions/droid_commands.rsi
+      state: attack
+  - type: TargetAction
+    checkCanAccess: false
+    range: 100
+  - type: EntityTargetAction
+    canTargetSelf: false
+    event: !type:SWDroidAttackActionEvent
+
+- type: entity
+  id: ActionSWDroidOrderDismiss
+  parent: BaseAction
+  name: Dismiss!
+  description: Ordered droids stop executing their current order.
+  components:
+  - type: Action
+    useDelay: 0.5
+    autoPopulate: false
+    icon:
+      sprite: _SW/Interface/Actions/droid_commands.rsi
+      state: dismiss
+  - type: InstantAction
+    event: !type:SWDroidOrderActionEvent
+      type: Dismiss

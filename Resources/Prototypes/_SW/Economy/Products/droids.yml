@@ -1,0 +1,65 @@
+- type: swCargoProduct
+  id: SWDroidTargetingTabletRepublicCP
+  icon:
+    sprite: Objects/Devices/tablets.rsi
+    state: tablet
+  product: SWDroidTargetingTabletRepublic
+  cost:
+    SWRepublicCreditCurrency: 300
+  category: sw-category-droids
+  group: SWRepublicDroidMarket
+
+- type: swCargoProduct
+  id: SWDroidTargetingTabletEmpireCP
+  icon:
+    sprite: Objects/Devices/tablets.rsi
+    state: tablet
+  product: SWDroidTargetingTabletEmpire
+  cost:
+    SWEmpireCreditCurrency: 300
+  category: sw-category-droids
+  group: SWEmpireDroidMarket
+
+- type: swCargoProduct
+  id: SWDroidFactionChipRepublicCP
+  icon:
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  product: SWDroidFactionChipRepublic
+  cost:
+    SWRepublicCreditCurrency: 300
+  category: sw-category-droids
+  group: SWRepublicDroidMarket
+
+- type: swCargoProduct
+  id: SWDroidFactionChipEmpireCP
+  icon:
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  product: SWDroidFactionChipEmpire
+  cost:
+    SWEmpireCreditCurrency: 300
+  category: sw-category-droids
+  group: SWEmpireDroidMarket
+
+- type: swCargoProduct
+  id: SWDroidLoyaltyChipRepublicCP
+  icon:
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  product: SWDroidLoyaltyChipRepublic
+  cost:
+    SWRepublicCreditCurrency: 300
+  category: sw-category-droids
+  group: SWRepublicDroidMarket
+
+- type: swCargoProduct
+  id: SWDroidLoyaltyChipEmpireCP
+  icon:
+    sprite: Objects/Specific/Robotics/borgmodule.rsi
+    state: generic
+  product: SWDroidLoyaltyChipEmpire
+  cost:
+    SWEmpireCreditCurrency: 300
+  category: sw-category-droids
+  group: SWEmpireDroidMarket

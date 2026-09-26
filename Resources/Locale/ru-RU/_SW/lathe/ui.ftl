@@ -1,6 +1,7 @@
 sw-lathe-menu-title = Управление станком
 sw-lathe-menu-recipes-title = Рецепты
 sw-lathe-menu-mode-title = Режим производства
+sw-lathe-menu-mode-disabled = Отключено
 sw-lathe-menu-mode-auto = Авто
 sw-lathe-menu-current-production-title = Текущее производство
 sw-lathe-menu-current-production-none = Ничего

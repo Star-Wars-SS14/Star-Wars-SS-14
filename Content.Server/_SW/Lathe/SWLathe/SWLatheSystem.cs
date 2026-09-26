@@ -45,6 +45,8 @@ public sealed class SWLatheSystem : EntitySystem
 
     private void OnSelectRecipe(Entity<SWLatheComponent> ent, ref SWLatheSelectRecipeMessage args)
     {
+        ent.Comp.ProductionDisabled = args.ProductionDisabled;
+
         if (string.IsNullOrEmpty(args.Recipe))
         {
             ent.Comp.SelectedRecipe = null;
@@ -129,7 +131,7 @@ public sealed class SWLatheSystem : EntitySystem
                 FinishProduction(new Entity<SWLatheComponent>(uid, comp));
             }
 
-            if (comp.CurrentRecipeProducting == null)
+            if (comp.CurrentRecipeProducting == null && !comp.ProductionDisabled)
             {
                 TryStartProducingAnything(new Entity<SWLatheComponent>(uid, comp));
             }
@@ -311,6 +313,7 @@ public sealed class SWLatheSystem : EntitySystem
             recipes,
             ent.Comp.StashedMaterials.ToDictionary(pair => pair.Key.ToString(), pair => pair.Value),
             ent.Comp.MaxMaterialAmount,
+            ent.Comp.ProductionDisabled,
             ent.Comp.SelectedRecipe,
             ent.Comp.CurrentRecipeProducting?.ID,
             ent.Comp.CurrentRecipeProducting == null ? null : ent.Comp.ProductionStartTime,

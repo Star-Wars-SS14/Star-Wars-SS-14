@@ -55,6 +55,7 @@ public sealed partial class NavMapSystem : SharedNavMapSystem
         SubscribeLocalEvent<GridSplitEvent>(OnNavMapSplit);
         SubscribeLocalEvent<TileChangedEvent>(OnTileChanged);
 
+        SubscribeLocalEvent<NavMapComponent, ComponentStartup>(OnNavMapStartup);
         SubscribeLocalEvent<AirtightChanged>(OnAirtightChange);
 
         // Beacon events
@@ -68,6 +69,14 @@ public sealed partial class NavMapSystem : SharedNavMapSystem
     {
         var comp = EnsureComp<NavMapComponent>(ev.GridId);
         RefreshGrid(ev.GridId, comp, Comp<MapGridComponent>(ev.GridId));
+    }
+
+    private void OnNavMapStartup(Entity<NavMapComponent> ent, ref ComponentStartup args)
+    {
+        if (!_gridQuery.TryComp(ent.Owner, out var mapGrid))
+            return;
+
+        RefreshGrid(ent.Owner, ent.Comp, mapGrid);
     }
 
     #region: Grid change event handling

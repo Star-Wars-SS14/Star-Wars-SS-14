@@ -333,6 +333,44 @@
           - F-11DCannonMagazine
 
 - type: entity
+  name: Droid Grantek F-11D Assault Cannon
+  parent: SWBaseWeaponBlaster
+  id: SWDroidGrantekF11D2
+  description: A droid-mounted assault cannon with an integrated recharging power pack.
+  components:
+  - type: ClothingSpeedModifier
+    walkModifier: 0.7
+    sprintModifier: 0.7
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Guns/MachineGuns/grantekF11D.rsi
+    layers:
+    - state: base
+      map: [ "enum.GunVisualLayers.Base" ]
+  - type: Clothing
+    sprite: _SW/Objects/Weapons/Guns/MachineGuns/grantekF11D.rsi
+  - type: HeldSpeedModifier
+    walkModifier: 0.4
+    sprintModifier: 0.4
+  - type: Gun
+    soundGunshot:
+      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+    fireRate: 8.2
+    angleIncrease: 0.2
+    minAngle: 3
+    maxAngle: 10
+    angleDecay: 4
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: SWDroidF11DCannonMagazine
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        whitelist:
+          tags:
+          - F-11DCannonMagazine
+
+- type: entity
   name: GT-13 ST Assault Cannon
   parent: SWBaseWeaponBlaster
   id: SWGT-13ST

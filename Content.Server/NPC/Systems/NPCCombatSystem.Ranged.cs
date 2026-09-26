@@ -6,10 +6,14 @@ using Content.Shared.Chat;
 using Content.Shared.CombatMode;
 using Content.Shared.Interaction;
 using Content.Shared.Physics;
+using Content.Shared.Prototypes;
+using Content.Shared.Silicons.Borgs;
+using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
 using Robust.Shared.Map;
 using Robust.Shared.Physics.Components;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.NPC.Systems;
 
@@ -18,6 +22,8 @@ public sealed partial class NPCCombatSystem
     [Dependency] private readonly SharedCombatModeSystem _combat = default!;
     [Dependency] private readonly RotateToFaceSystem _rotate = default!;
     [Dependency] private readonly ChatSystem _chat = default!;
+    [Dependency] private readonly SharedBorgSystem _borg = default!;
+    [Dependency] private readonly IPrototypeManager _prototype = default!;
 
     private EntityQuery<CombatModeComponent> _combatQuery;
     private EntityQuery<NPCSteeringComponent> _steeringQuery;
@@ -101,7 +107,8 @@ public sealed partial class NPCCombatSystem
                 _combat.SetInCombatMode(uid, true, combatMode);
             }
 
-            if (!_gun.TryGetGun(uid, out var gunUid, out var gun))
+            if (!_gun.TryGetGun(uid, out var gunUid, out var gun) &&
+                (!TrySelectBorgRangedModule(uid) || !_gun.TryGetGun(uid, out gunUid, out gun)))
             {
                 comp.Status = CombatStatus.NoWeapon;
                 comp.ShootAccumulator = 0f;
@@ -221,5 +228,47 @@ public sealed partial class NPCCombatSystem
 
             _gun.AttemptShoot(uid, gunUid, gun, targetCordinates, comp.Target);
         }
+    }
+
+    private bool TrySelectBorgRangedModule(EntityUid uid)
+    {
+        if (!TryComp<BorgChassisComponent>(uid, out var chassis) || !chassis.Active)
+            return false;
+
+        foreach (var moduleUid in chassis.ModuleContainer.ContainedEntities)
+        {
+            if (!TryComp<BorgModuleComponent>(moduleUid, out var module) ||
+                !TryComp<ItemBorgModuleComponent>(moduleUid, out var itemModule) ||
+                !HasComp<SelectableBorgModuleComponent>(moduleUid) ||
+                !BorgModuleProvidesGun(itemModule))
+            {
+                continue;
+            }
+
+            if (!module.Installed || module.InstalledEntity != uid)
+                _borg.InstallModule((uid, chassis), (moduleUid, module));
+
+            _borg.SelectModule((uid, chassis), (moduleUid, module));
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool BorgModuleProvidesGun(ItemBorgModuleComponent module)
+    {
+        foreach (var hand in module.Hands)
+        {
+            if (hand.Item is not { } itemProto ||
+                !_prototype.TryIndex<EntityPrototype>(itemProto, out var prototype))
+            {
+                continue;
+            }
+
+            if (prototype.HasComponent<GunComponent>(EntityManager.ComponentFactory))
+                return true;
+        }
+
+        return false;
     }
 }

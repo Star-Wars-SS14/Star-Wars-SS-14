@@ -1,0 +1,21 @@
+<PanelContainer xmlns="https://spacestation14.io" HorizontalExpand="True">
+    <BoxContainer
+        Orientation="Horizontal"
+        Margin="6"
+        HorizontalExpand="True"
+        SeparationOverride="8">
+        <BoxContainer
+            Orientation="Vertical"
+            HorizontalExpand="True">
+            <Label
+                Name="Heading"
+                ClipText="True" />
+            <Label
+                Name="Details"
+                ClipText="True" />
+        </BoxContainer>
+        <Button
+            Name="ToggleButton"
+            MinWidth="110" />
+    </BoxContainer>
+</PanelContainer>

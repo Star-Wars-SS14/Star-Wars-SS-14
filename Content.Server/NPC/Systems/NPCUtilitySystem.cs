@@ -1,5 +1,5 @@
 using Content.Server._SW.NPC;
-using Content.Server._SW.TurretConsole;
+using Content.Server._SW.Targeting;
 using Content.Server.Access.Components;
 using Content.Server.Atmos.Components;
 using Content.Server.Fluids.EntitySystems;
@@ -12,11 +12,14 @@ using Content.Server.Nutrition.Components;
 using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.Examine;
 using Content.Shared.Fluids.Components;
+using Content.Shared.Body.Components;
+using Content.Shared.Humanoid;
 using Content.Shared.Inventory;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.NPC.Systems;
 using Content.Shared.Nutrition.Components;
+using Content.Shared.Silicons.Borgs.Components;
 using Content.Shared.Nutrition.EntitySystems;
 using Content.Shared.Storage.Components;
 using Content.Shared.Stunnable;
@@ -385,22 +388,54 @@ public sealed class NPCUtilitySystem : EntitySystem
                 }
             case SWHasIdCardCon con:
                 {
-                    if (!TryComp<SWTurretConfigComponent>(owner, out var config)) {
+                    if (!TryComp<SWTargetingConfigComponent>(owner, out var config))
+                    {
                         return 1f;
                     }
-                    if (_inventory.TryGetSlotEntity(targetUid, "id", out var idcard))
+
+                    if (TryGetTargetJob(targetUid, out var job))
                     {
-                        if (TryComp<PresetIdCardComponent>(idcard, out var comp) && comp.JobName != null)
-                            if (config.AllowedJobs.TryGetValue(comp.JobName, out var allowed))
-                            {
-                                return allowed ? 1f : 0f;
-                            }
+                        if (config.AllowedJobs.TryGetValue(job, out var allowed))
+                        {
+                            return allowed ? 1f : 0f;
+                        }
+
+                        return config.TargetUnconfiguredJobs ? 0f : 1f;
                     }
-                    return 0f;
+
+                    if (HasComp<HumanoidAppearanceComponent>(targetUid))
+                        return config.TargetHumanoidsWithoutId ? 0f : 1f;
+
+                    if (HasComp<BodyComponent>(targetUid) && !HasComp<BorgChassisComponent>(targetUid))
+                        return config.TargetAnimals ? 0f : 1f;
+
+                    return config.TargetUnconfiguredJobs ? 0f : 1f;
                 }
             default:
                 throw new NotImplementedException();
         }
+    }
+
+    private bool TryGetTargetJob(EntityUid targetUid, out string job)
+    {
+        job = string.Empty;
+
+        if (_inventory.TryGetSlotEntity(targetUid, "id", out var idcard) &&
+            TryComp<PresetIdCardComponent>(idcard, out var idComp) &&
+            idComp.JobName != null)
+        {
+            job = idComp.JobName.Value.Id;
+            return true;
+        }
+
+        if (TryComp<PresetIdCardComponent>(targetUid, out var targetIdComp) &&
+            targetIdComp.JobName != null)
+        {
+            job = targetIdComp.JobName.Value.Id;
+            return true;
+        }
+
+        return false;
     }
 
     private float GetAdjustedScore(float score, int considerations)

@@ -1,0 +1,15 @@
+sw-droid-command-stay-1 = Удерживать позицию.
+sw-droid-command-stay-2 = Оставаться на месте.
+sw-droid-command-stay-3 = Стоять здесь.
+sw-droid-command-follow-1 = За мной.
+sw-droid-command-follow-2 = Следовать за мной.
+sw-droid-command-follow-3 = Двигаться со мной.
+sw-droid-command-go-to-1 = Иди!
+sw-droid-command-go-to-2 = Двигайся туда!
+sw-droid-command-go-to-3 = Занять позицию!
+sw-droid-command-attack-1 = Стреляй!
+sw-droid-command-attack-2 = Открыть огонь!
+sw-droid-command-attack-3 = Уничтожить цель!
+sw-droid-command-dismiss-1 = Отставить!
+sw-droid-command-dismiss-2 = Приказ отменить!
+sw-droid-command-dismiss-3 = Прекратить выполнение!

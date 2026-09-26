@@ -52,3 +52,14 @@
     SWEmpireCreditCurrency: 800
   category: sw-category-lathe
   group: SWLatheMarket
+
+- type: swCargoProduct
+  id: SWDroidFabricatorCP
+  icon:
+    sprite: _SW/Structures/Machines/droid_fabricator.rsi
+    state: fabricator
+  product: SWDroidFabricator
+  cost:
+    SWEmpireCreditCurrency: 750
+  category: sw-category-lathe
+  group: SWLatheMarket

@@ -251,6 +251,11 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
         if (_actionsSystem?.GetAction(actionId) is not {} action)
             return;
 
+        // SW start - Keep dynamically granted hidden actions out of the hotbar.
+        if (!action.Comp.AutoPopulate)
+            return;
+        // SW end
+
         // TODO: event
         // if the action is toggled when we add it, start targeting
         if (action.Comp.Toggled && EntityManager.TryGetComponent<TargetActionComponent>(actionId, out var target))
@@ -771,6 +776,26 @@ public sealed class ActionUIController : UIController, IOnStateChanged<GameplayS
                 _actions.Add(action);
         }
     }
+
+    // SW start - Expose action targeting so SW radial command menus can reuse the standard targeting flow.
+    /// <summary>
+    /// If currently targeting with this slot, stops targeting.
+    /// If currently targeting with no slot or a different slot, switches to
+    /// targeting with the specified slot.
+    /// </summary>
+    public bool TryToggleTargeting(EntityUid actionId)
+    {
+        if (_actionsSystem?.GetAction(actionId) is not { } action ||
+            !EntityManager.TryGetComponent<TargetActionComponent>(action, out var target) ||
+            !_actionsSystem.ValidAction(action))
+        {
+            return false;
+        }
+
+        ToggleTargeting((action, action, target));
+        return true;
+    }
+    // SW end
 
     /// <summary>
     /// If currently targeting with this slot, stops targeting.

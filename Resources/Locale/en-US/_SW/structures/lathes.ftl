@@ -1,5 +1,7 @@
 ent-SWVehicleFabricator = vehicle fabricator
   .desc = A large assembly platform with industrial manipulators for building speeders and heavy vehicles.
+ent-SWDroidFabricator = droid fabricator
+  .desc = A compact assembly platform tuned for droid chassis and module production.
 sw-lathe-destroyed-desc = A damaged lathe system station. It can be repaired with steel.
 ent-SWOreDispenserDestroyed = destroyed item dispenser
   .desc = { sw-lathe-destroyed-desc }

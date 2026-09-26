@@ -1,0 +1,29 @@
+- type: swLatheRecipe
+  id: SWDroidChassisSLR
+  materials:
+    SWAdvancedElectronics: 1
+    SWArmorPlate: 1
+    SWReinforcedSteel: 2
+    SWElectronics1: 1
+  result:
+    SWMobDroidChassis: 1
+  produceTime: 25
+
+- type: swLatheRecipe
+  id: SWDroidAICoreModuleSLR
+  materials:
+    SWElectronics1: 1
+    SWAdvancedCables1: 1
+  result:
+    SWDroidAICoreModule: 1
+  produceTime: 10
+
+- type: swLatheRecipe
+  id: SWDroidBlasterModuleSLR
+  materials:
+    SWElectronics1: 1
+    SWBlasterBarrel: 1
+    SWBlasterFrame: 1
+  result:
+    SWDroidBlasterModule: 1
+  produceTime: 15

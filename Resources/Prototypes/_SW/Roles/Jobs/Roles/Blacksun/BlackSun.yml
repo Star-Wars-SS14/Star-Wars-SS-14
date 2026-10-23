@@ -4,7 +4,7 @@
   playTimeTracker: Job_BlackSun
   requirements:
   - !type:OverallPlaytimeRequirement
-    time: 14400 # 4h
+    time: 0 # 0h
   startingGear: BlackSunGear
   icon: JobIconBlackSun
   supervisors: job-supervisors-reg-blacksun

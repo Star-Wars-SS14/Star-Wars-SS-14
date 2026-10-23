@@ -4,7 +4,7 @@
   playTimeTracker: Job_BlackSun_Mercenary
   requirements:
   - !type:OverallPlaytimeRequirement
-    time: 7200 # 2h
+    time: 0 # 0h
   startingGear: BlackSunMercenaryGear
   icon: "JobIconBlackSunMercenary"
   supervisors: job-supervisors-blacksun-cap

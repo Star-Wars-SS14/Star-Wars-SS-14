@@ -62,8 +62,8 @@
         SWAntiVehicle: 450
   - type: ExplodeOnTrigger
   - type: Explosive
-    explosionType: Default
-    maxIntensity: 15
+    explosionType: SWAntiVehicleRocketExplosion
+    maxIntensity: 10 # 100 total non-vehicle damage at the epicenter.
     intensitySlope: 25
     totalIntensity: 50
     maxTileBreak: 0

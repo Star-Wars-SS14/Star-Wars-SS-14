@@ -3,9 +3,8 @@
   name: Пилот Сил Республики
   playTimeTracker: Job_Republic_Pilot
   requirements:
-  - !type:RoleTimeRequirement
-    role: Job_Republic_Recruit
-    time: 18000 # 5h
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 0h
   startingGear: RepublicPilotGear
   icon: "JobIconRepublicSoldier"
   supervisors: job-supervisors-leit-rep

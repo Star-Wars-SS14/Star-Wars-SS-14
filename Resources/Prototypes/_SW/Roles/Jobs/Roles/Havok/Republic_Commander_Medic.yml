@@ -5,10 +5,7 @@
   playTimeTracker: Job_Republic_Commander_Medic
   requirements:
   - !type:OverallPlaytimeRequirement
-    time: 72000 # 20h
-  - !type:DepartmentTimeRequirement
-    department: SWPepublic
-    time: 36000 # 10h
+    time: 7200 # 2h
   startingGear: RepublicCommanderMedicGear
   icon: "JobIconHavokMedic"
   supervisors: job-supervisors-havok-cap

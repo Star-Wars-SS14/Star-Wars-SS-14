@@ -4,10 +4,7 @@
   playTimeTracker: Job_Exchange_Captain
   requirements:
   - !type:OverallPlaytimeRequirement
-    time: 36000 # 10h
-  - !type:RoleTimeRequirement
-    role: Job_Exchange_Operative
-    time: 18000 # 5h
+    time: 14400 # 4h
   startingGear: ExchangeCaptainGear
   icon: "JobIconExchangeCaptain"
   supervisors: job-supervisors-exchange

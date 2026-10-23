@@ -4,7 +4,7 @@
   playTimeTracker: Job_Republic_Soldier
   requirements:
   - !type:OverallPlaytimeRequirement
-    time: 18000 # 5h
+    time: 0 # 0h
   startingGear: RepublicSoldierGear
   icon: "JobIconRepublicSoldier"
   supervisors: job-supervisors-leit-rep

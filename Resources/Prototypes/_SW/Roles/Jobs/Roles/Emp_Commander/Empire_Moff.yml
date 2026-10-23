@@ -4,10 +4,7 @@
   playTimeTracker: Job_Empire_Moff
   requirements:
   - !type:OverallPlaytimeRequirement
-    time: 144000 # 40h
-  - !type:RoleTimeRequirement
-    role: Job_Empire_Major
-    time: 36000 # 10h
+    time: 14400 # 4h
   - !type:SWSpeciesJobRequirement
     allowedSpecies: [ Human, Chiss ]
   startingGear: EmpireMoffGear

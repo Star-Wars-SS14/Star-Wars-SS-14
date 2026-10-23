@@ -5,10 +5,7 @@
   playTimeTracker: Job_Republic_Commander_Commander
   requirements:
   - !type:OverallPlaytimeRequirement
-    time: 144000 # 40h
-  - !type:RoleTimeRequirement
-    role: Job_Republic_Commander_Lieutenant
-    time: 18000 # 5h
+    time: 14400 # 4h
   startingGear: RepublicCommanderCommanderGear
   icon: "JobIconHavokCommander"
   supervisors: job-supervisors-general-gaza

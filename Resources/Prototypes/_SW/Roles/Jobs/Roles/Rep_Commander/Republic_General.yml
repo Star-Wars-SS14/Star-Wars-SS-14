@@ -4,10 +4,7 @@
   playTimeTracker: Job_Republic_General
   requirements:
   - !type:OverallPlaytimeRequirement
-    time: 108000 # 30h
-  - !type:RoleTimeRequirement
-    role: Job_Republic_Captain
-    time: 18000 # 5h
+    time: 14400 # 4h
   startingGear: RepublicGeneralGear
   icon: "JobIconRepublicGeneral"
   supervisors: job-supervisors-grand-marshal

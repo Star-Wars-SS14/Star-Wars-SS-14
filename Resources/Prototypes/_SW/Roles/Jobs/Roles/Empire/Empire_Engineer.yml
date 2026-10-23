@@ -4,7 +4,7 @@
   playTimeTracker: Job_Empire_Engineer
   requirements:
     - !type:OverallPlaytimeRequirement
-      time: 9000
+      time: 0 # 0h
     - !type:SWSpeciesJobRequirement
       allowedSpecies: [ Human, Chiss ]
   startingGear: EmpireEngineerGear

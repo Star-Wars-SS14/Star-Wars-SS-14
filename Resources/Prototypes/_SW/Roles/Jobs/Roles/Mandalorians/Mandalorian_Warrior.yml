@@ -3,9 +3,8 @@
   name: Воин Мандалорцев
   playTimeTracker: Job_Mandalorian_Warrior
   requirements:
-  - !type:RoleTimeRequirement
-    role: Job_Mandalorian_Recruit
-    time: 18000 # 5h
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 0h
   startingGear: MandalorianWarriorGear
   icon: "JobIconMandalorianWarrior"
   supervisors: job-supervisors-mando

@@ -3,9 +3,8 @@
   name: Капитан черного солнца
   playTimeTracker: Job_BlackSun
   requirements:
-  - !type:RoleTimeRequirement
-    role: Job_BlackSun_Mercenary
-    time: 18000 # 5h
+  - !type:OverallPlaytimeRequirement
+    time: 14400 # 4h
   startingGear: BlackSunGear
   icon: JobIconBlackSun
   supervisors: job-supervisors-reg-blacksun

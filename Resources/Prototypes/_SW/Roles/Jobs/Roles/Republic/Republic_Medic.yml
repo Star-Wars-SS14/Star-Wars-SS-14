@@ -3,9 +3,8 @@
   name: Медик Сил Республики
   playTimeTracker: Job_Republic_Medic
   requirements:
-  - !type:RoleTimeRequirement
-    role: Job_Republic_Soldier
-    time: 18000 # 5h
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 0h
   startingGear: RepublicMedicGear
   icon: "JobIconRepublicMedic"
   supervisors: job-supervisors-leit-rep

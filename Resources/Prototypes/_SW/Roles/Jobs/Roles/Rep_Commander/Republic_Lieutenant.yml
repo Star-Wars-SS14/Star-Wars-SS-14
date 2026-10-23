@@ -4,10 +4,7 @@
   playTimeTracker: Job_Republic_Lieutenant
   requirements:
   - !type:OverallPlaytimeRequirement
-    time: 54000 # 15h
-  - !type:RoleTimeRequirement
-    role: Job_Republic_Soldier
-    time: 18000 # 5h
+    time: 14400 # 4h
   startingGear: RepublicLieutenantGear
   icon: "JobIconRepublicLieutenant"
   supervisors: job-supervisors-rep-cap

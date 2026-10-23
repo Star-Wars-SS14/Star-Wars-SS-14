@@ -4,7 +4,7 @@
   playTimeTracker: Job_Republic_Engineer
   requirements:
     - !type:OverallPlaytimeRequirement
-      time: 9000
+      time: 0 # 0h
   startingGear: RepublicEngineerGear
   icon: "JobIconStationEngineer"
   supervisors: job-supervisors-leit-rep

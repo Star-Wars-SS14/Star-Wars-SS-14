@@ -3,9 +3,8 @@
   name: Медик Корпуса
   playTimeTracker: Job_Sobrik_Medic
   requirements:
-  - !type:RoleTimeRequirement
-    role: Job_Sobrik_Officer
-    time: 7200 # 2h
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 0h
   - !type:SWSpeciesJobRequirement
     allowedSpecies: [ Human, Chiss ]
   startingGear: SobrikMedicGear

@@ -4,10 +4,7 @@
   playTimeTracker: Job_Empire_Intelligence_Agent
   requirements:
   - !type:OverallPlaytimeRequirement
-    time: 18000 # 5h
-  - !type:RoleTimeRequirement
-    role: Job_Empire_Soldier
-    time: 7200 # 2h
+    time: 0 # 0h
   - !type:SWSpeciesJobRequirement
     disallowedSpecies: [ Colicoid ]
   startingGear: EmpireIntelligenceAgentGear

@@ -3,9 +3,8 @@
   name: Ветеран Мандалорцев
   playTimeTracker: Job_Mandalorian_Veteran
   requirements:
-  - !type:RoleTimeRequirement
-    role: Job_Mandalorian_Warrior
-    time: 18000 # 5h
+  - !type:OverallPlaytimeRequirement
+    time: 0 # 0h
   startingGear: MandalorianVeteranGear
   icon: "JobIconMandalorianVeteran"
   supervisors: job-supervisors-mando

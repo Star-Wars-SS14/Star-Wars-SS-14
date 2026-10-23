@@ -4,7 +4,7 @@
   playTimeTracker: Job_NeutralBartender
   requirements:
   - !type:OverallPlaytimeRequirement
-    time: 18000 # 0 h
+    time: 0 # 0h
   startingGear: NeutralBartenderGear
   icon: "JobIconCivilian"
   supervisors: job-supervisors-empire

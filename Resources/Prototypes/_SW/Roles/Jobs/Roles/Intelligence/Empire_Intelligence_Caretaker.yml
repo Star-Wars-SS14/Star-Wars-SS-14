@@ -4,10 +4,7 @@
   playTimeTracker: Job_Empire_Intelligence_Caretaker
   requirements:
   - !type:OverallPlaytimeRequirement
-    time: 54000 # 15h
-  - !type:RoleTimeRequirement
-    role: Job_Empire_Intelligence_Agent
-    time: 18000 # 5h
+    time: 14400 # 4h
   - !type:SWSpeciesJobRequirement
     disallowedSpecies: [ Colicoid ]
   startingGear: EmpireIntelligenceCaretakerGear

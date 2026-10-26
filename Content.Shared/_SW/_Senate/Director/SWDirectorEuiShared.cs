@@ -1,4 +1,5 @@
 using Content.Shared.Eui;
+using Content.Shared._SW._Senate.Ministries;
 using Robust.Shared.Serialization;
 
 namespace Content.Shared._SW._Senate.Director;
@@ -49,6 +50,7 @@ public sealed class SWDiploEntry
 [Serializable, NetSerializable]
 public sealed class SWDirectorEuiState : EuiStateBase
 {
+    public SWDefenseMapState? DefenseMap;
     public SWDirectorMode Mode;
     public string ControllerName = string.Empty;
     public bool IAmController;

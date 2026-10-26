@@ -55,6 +55,22 @@ public enum SWAmbitionKind : byte
     /// SWSenateCommitteeSystem (chairing, bills advanced/returned by their committee).
     /// </summary>
     CommitteeMetric,
+
+    /// <summary>
+    /// Count the current holder's enacted amendments whose parent law is still in force.
+    /// </summary>
+    PassOwnAmendments,
+
+    /// <summary>
+    /// Count enacted amendments to laws originally authored by another person.
+    /// </summary>
+    AmendOthersLaw,
+
+    /// <summary>
+    /// The holder's active amendments must contribute positively to a sub-stat that is also
+    /// positive in the resulting law. Opposite amendments by that holder offset one another.
+    /// </summary>
+    AmendmentStat,
 }
 
 [Prototype("swAmbition")]
@@ -92,7 +108,8 @@ public sealed partial class SWAmbitionPrototype : IPrototype
     public SWAmbitionKind Kind;
 
     /// <summary>
-    /// Global stat id for stat/outdo kinds; sub-stat id for AuthorLawStat; metric name for MinisterMetric.
+    /// Global stat id for stat/outdo kinds; sub-stat id for AuthorLawStat / AmendmentStat;
+    /// metric name for MinisterMetric.
     /// Unused for law-count kinds.
     /// </summary>
     [DataField]
@@ -112,6 +129,7 @@ public sealed partial class SWAmbitionPrototype : IPrototype
 
     /// <summary>
     /// PassOwnLaws / PassBills: how many passed laws are required.
+    /// PassOwnAmendments / AmendOthersLaw: how many active enacted amendments are required.
     /// </summary>
     [DataField]
     public int Count;

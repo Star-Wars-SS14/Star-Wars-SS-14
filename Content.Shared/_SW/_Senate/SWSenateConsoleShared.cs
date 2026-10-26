@@ -74,8 +74,11 @@ public sealed class SWStatisticsConsoleState : BoundUserInterfaceState
     public List<SWGlobalStatEntry> Globals;
     public List<SWSectorEntry> Sectors;
     public List<SWCrisisEntry> Crises = new();
+    public List<SWMapCrisisEntry> MapCrises = new();
     public List<SWBillEntry> ActiveLaws = new();
     public string GameTime = string.Empty;
+    public int SampleMinute;
+    public List<SWStatisticsSample> History = new();
     public int DefconLevel;
     public string DefconName = string.Empty;
     public Color DefconColor;
@@ -125,6 +128,22 @@ public sealed class SWStatisticsConsoleState : BoundUserInterfaceState
         Globals = globals;
         Sectors = sectors;
     }
+}
+
+/// <summary>A real server observation; time is expressed in absolute Senate game minutes.</summary>
+[Serializable, NetSerializable]
+public sealed class SWStatisticsSample
+{
+    public int Minute;
+    public List<SWStatisticsValue> Values = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWStatisticsValue
+{
+    public string Id = string.Empty;
+    public float Actual;
+    public float Policy;
 }
 
 [Serializable, NetSerializable]
@@ -239,6 +258,8 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
 
     // КОМАНДОВАНИЕ (Defense ministry only).
     public bool IsDefense;
+    public SWDefenseMapState? DefenseMap;
+    public SWDefensePlanetaryState? DefensePlanetary;
     public SWDefenseStance Stance;
     public int DefconLevel;
     public string StanceName = string.Empty;
@@ -302,7 +323,7 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public int ResearchFunding;
     public string ResearchFundingLabel = string.Empty;
     public bool HealthEmergencyActive;
-    public int HealthEmergencyHoursLeft;
+    public double HealthEmergencyHoursLeft;
     public bool HealthEmergencyPending;
     public string SelectedHealthProgram = string.Empty;
     public int HealthProgramProgress;
@@ -351,6 +372,8 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public bool CanIssueBonds;
     public int BondProceeds;
     public bool CanRepayDebt;
+    public int NextRepaymentCost;
+    public int HospitalServicePercent;
     public bool EmissionPending;
     public string SelectedFinanceProgram = string.Empty;
     public int FinanceProgramProgress;
@@ -382,7 +405,7 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public int OvertimeCost;
     public bool CanBuyOvertime;
     public bool TribunalActive;
-    public int TribunalHoursLeft;
+    public double TribunalHoursLeft;
     public bool TribunalPending;
     public string SelectedJusticeProgram = string.Empty;
     public int JusticeProgramProgress;
@@ -835,7 +858,7 @@ public sealed class SWInfectionSectorEntry
     public bool Quarantined;
     public int HospitalLevel;
     public bool Building;
-    public int BuildLeft;
+    public double BuildLeft;
     public bool CanBuild;
     public int BuildCost;
     public bool CanAid;
@@ -927,7 +950,7 @@ public sealed class SWCellEntry
     public string LocationLabel = string.Empty;
     public string? SectorId;
     public bool Burned;
-    public int RebuildLeft;
+    public double RebuildLeft;
 }
 
 [Serializable, NetSerializable]
@@ -1051,7 +1074,7 @@ public sealed class SWActiveOpEntry
 {
     public string Name = string.Empty;
     public string Detail = string.Empty;
-    public int HoursLeft;
+    public double HoursLeft;
 }
 
 [Serializable, NetSerializable]
@@ -1075,7 +1098,7 @@ public sealed class SWFleetGroupEntry
     public string LocationLabel = string.Empty;
     public string? SectorId;
     public bool Damaged;
-    public int RepairLeft;
+    public double RepairLeft;
 }
 
 [Serializable, NetSerializable]
@@ -1272,12 +1295,16 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool IsCourtNominee;
     public string CourtNominationLabel = string.Empty;
     public string? SectorName;
+    public string? SectorId;
+    public List<SWSectorEntry> MapSectors = new();
     public List<SWStatEntry> SectorStats = new();
     public List<int> SectorTrends = new();
     public List<SWGlobalStatEntry> Globals = new();
     public List<SWSenateRosterEntry> Roster = new();
     public List<SWBillEntry> Bills = new();
     public int DraftBudget;
+    public bool CanSubmitAmendments;
+    public bool CanReviseBills;
     public string GameTime = string.Empty;
     public List<SWScheduleRow> Schedule = new();
     public List<SWBillOption> SchedulableBills = new();
@@ -1322,6 +1349,7 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public List<SWBudgetShareEntry> BudgetMinistrySplit = new();
     public bool CanPrograms;
     public List<SWProgramEntry> Programs = new();
+    public List<SWProgramWorldEntry> ProgramWorlds = new();
     public bool CanAmbitions;
     public List<SWAmbitionEntry> Ambitions = new();
     public List<SWCrisisEntry> Crises = new();
@@ -1351,6 +1379,9 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public int Legitimacy;
     public int EmergencyDaysLeft;
     public bool CanUseEmergencyPowers;
+    public int EmergencyBudgetAmount;
+    public int EmergencyBudgetReserve;
+    public string EmergencyBudgetStatus = string.Empty;
     public bool CanRelinquish;
     public bool HasVeto;
     public bool HasCommand;
@@ -1419,6 +1450,8 @@ public sealed class SWCommitteeBillEntry
 public sealed class SWReturnedBillEntry
 {
     public int Id;
+    public int? AmendsLawId;
+    public string? AmendsLawName;
     public string Name = string.Empty;
     public string Description = string.Empty;
     public string Reason = string.Empty;
@@ -1796,6 +1829,8 @@ public sealed class SWSenateCastLeaderVoteMessage : BoundUserInterfaceMessage
 [Serializable, NetSerializable]
 public sealed class SWCrisisSolutionEntry
 {
+    public bool Policy;
+    public bool Active;
     public string Label = string.Empty;
     public string Description = string.Empty;
     public int Cost;
@@ -1893,17 +1928,43 @@ public sealed class SWProgramEntry
     public int Cost;
     public bool Affordable;
     public bool Applied;
+    public bool Started;
+    public string WorldId = string.Empty;
+    public string WorldName = string.Empty;
+    public string Status = string.Empty;
+    public float WorkHours;
+    public float WorkedHours;
+    public List<SWProgramMaterialEntry> Materials = new();
     public List<SWBillEffectEntry> Effects = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWProgramWorldEntry
+{
+    public string Id = string.Empty;
+    public string Name = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWProgramMaterialEntry
+{
+    public string GoodId = string.Empty;
+    public string Name = string.Empty;
+    public float Required;
+    public float Delivered;
+    public float InTransit;
 }
 
 [Serializable, NetSerializable]
 public sealed class SWSenateApplyProgramMessage : BoundUserInterfaceMessage
 {
     public string ProgramId;
+    public string? WorldId;
 
-    public SWSenateApplyProgramMessage(string programId)
+    public SWSenateApplyProgramMessage(string programId, string? worldId = null)
     {
         ProgramId = programId;
+        WorldId = worldId;
     }
 }
 
@@ -2061,11 +2122,33 @@ public sealed class SWBillEffectEntry
 public sealed class SWBillEntry
 {
     public int Id;
+    public int? AmendsLawId;
+    public string? AmendsLawName;
+    public bool CanAmend;
     public string Name = string.Empty;
     public string Author = string.Empty;
     public string Description = string.Empty;
     public string Stage = string.Empty;
     public List<SWBillEffectEntry> Effects = new();
+    public Dictionary<string, float> EffectValues = new();
+    public List<SWBillEntry> Amendments = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateSubmitAmendmentMessage : BoundUserInterfaceMessage
+{
+    public int LawId;
+    public string Name;
+    public string Description;
+    public Dictionary<string, float> Effects;
+
+    public SWSenateSubmitAmendmentMessage(int lawId, string name, string description, Dictionary<string, float> effects)
+    {
+        LawId = lawId;
+        Name = name;
+        Description = description;
+        Effects = effects;
+    }
 }
 
 [Serializable, NetSerializable]
@@ -2198,6 +2281,8 @@ public sealed class SWBillOption
     public int Id;
     public string Name = string.Empty;
     public bool Emergency;
+    public int? AmendsLawId;
+    public string AmendsLawName = string.Empty;
 }
 
 [Serializable, NetSerializable]
@@ -2205,6 +2290,7 @@ public sealed class SWSessionEntry
 {
     public int Id;
     public string BillName = string.Empty;
+    public List<string> BillNames = new();
     public string TimeRange = string.Empty;
     public string Status = string.Empty;
 }
@@ -2219,6 +2305,21 @@ public sealed class SWSenateScheduleSessionMessage : BoundUserInterfaceMessage
     public SWSenateScheduleSessionMessage(int billId, int startHour, int duration)
     {
         BillId = billId;
+        StartHour = startHour;
+        Duration = duration;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateScheduleAmendmentSessionMessage : BoundUserInterfaceMessage
+{
+    public List<int> BillIds;
+    public int StartHour;
+    public int Duration;
+
+    public SWSenateScheduleAmendmentSessionMessage(List<int> billIds, int startHour, int duration)
+    {
+        BillIds = billIds;
         StartHour = startHour;
         Duration = duration;
     }

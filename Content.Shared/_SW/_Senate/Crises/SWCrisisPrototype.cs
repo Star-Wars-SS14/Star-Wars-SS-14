@@ -112,6 +112,15 @@ public sealed partial class SWCrisisLaw
 public sealed partial class SWCrisisSolution
 {
     [DataField]
+    public bool Policy;
+
+    [DataField]
+    public float ReliefPerHour;
+
+    [DataField]
+    public Dictionary<ProtoId<SWGlobalStatPrototype>, float> SectorEffectsPerHour = new();
+
+    [DataField]
     public string Label = string.Empty;
 
     [DataField]

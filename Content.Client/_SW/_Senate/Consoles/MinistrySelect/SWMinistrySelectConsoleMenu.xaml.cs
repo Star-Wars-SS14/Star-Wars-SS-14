@@ -17,14 +17,17 @@ public sealed partial class SWMinistrySelectConsoleMenu : FancyWindow
     public SWMinistrySelectConsoleMenu(SWMinistrySelectConsoleBoundUserInterface owner)
     {
         RobustXamlLoader.Load(this);
+        TitleClass = "LabelKeyText";
         _owner = owner;
 
         SWConsoleStyle.StyleRoot(RootPanel);
         SWConsoleStyle.StyleHeader(HeaderPanel);
-        HeaderTitle.FontOverride = SWConsoleStyle.MonoBold;
-        HeaderTitle.FontColorOverride = SWConsoleStyle.Accent;
-        HeaderTitle.Text = "ИСПОЛНИТЕЛЬНАЯ ВЛАСТЬ";
-        StatusLabel.FontOverride = SWConsoleStyle.Mono;
+        HeaderNetwork.FontOverride = SWConsoleStyle.Small;
+        HeaderNetwork.FontColorOverride = SWConsoleStyle.Brass;
+        HeaderTitle.FontOverride = SWConsoleStyle.Header;
+        HeaderTitle.FontColorOverride = SWConsoleStyle.TextBright;
+        HeaderTitle.Text = "Исполнительная власть";
+        StatusLabel.FontOverride = SWConsoleStyle.Body;
     }
 
     public void SetState(SWMinistrySelectConsoleState state)
@@ -33,7 +36,7 @@ public sealed partial class SWMinistrySelectConsoleMenu : FancyWindow
 
         if (!state.HasCard)
         {
-            SetStatus("Вставьте ID-карту, чтобы занять портфель.", SWConsoleStyle.TextDim);
+            SetStatus("ID-карта не установлена", SWConsoleStyle.TextDim);
             return;
         }
 
@@ -49,7 +52,7 @@ public sealed partial class SWMinistrySelectConsoleMenu : FancyWindow
             return;
         }
 
-        SetStatus("Выберите ведомство для назначения:", SWConsoleStyle.TextBright);
+        SetStatus("Назначение", SWConsoleStyle.TextBright);
 
         var currentGroup = -1;
         foreach (var ministry in state.Ministries)
@@ -84,7 +87,7 @@ public sealed partial class SWMinistrySelectConsoleMenu : FancyWindow
 
         var claimed = ministry.Claimed;
         var disabled = claimed || ministry.Locked;
-        var suffix = claimed ? "  ·  ЗАНЯТО" : ministry.Locked ? "  ·  НЕДОСТУПНО" : string.Empty;
+        var suffix = claimed ? ", ЗАНЯТО" : ministry.Locked ? ", НЕДОСТУПНО" : string.Empty;
         var btn = new Button
         {
             Text = $"{ministry.Name}{suffix}",
@@ -93,7 +96,7 @@ public sealed partial class SWMinistrySelectConsoleMenu : FancyWindow
             TextAlign = Label.AlignMode.Left,
         };
 
-        btn.Label.FontOverride = SWConsoleStyle.MonoBold;
+        btn.Label.FontOverride = SWConsoleStyle.Strong;
         btn.Label.FontColorOverride = disabled ? SWConsoleStyle.TextDim : ministry.Color;
         btn.StyleBoxOverride = new StyleBoxFlat
         {
@@ -124,7 +127,7 @@ public sealed partial class SWMinistrySelectConsoleMenu : FancyWindow
 
         if (!string.IsNullOrEmpty(sub))
         {
-            var sl = SWConsoleStyle.Text(sub, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall);
+            var sl = SWConsoleStyle.Text(sub, SWConsoleStyle.TextDim, SWConsoleStyle.Small);
             sl.Margin = new Thickness(6, 1, 0, 0);
             box.AddChild(sl);
         }

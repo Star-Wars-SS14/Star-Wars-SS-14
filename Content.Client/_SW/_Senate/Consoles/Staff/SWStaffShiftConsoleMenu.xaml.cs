@@ -15,25 +15,28 @@ public sealed partial class SWStaffShiftConsoleMenu : FancyWindow
     public SWStaffShiftConsoleMenu(SWStaffShiftConsoleBoundUserInterface owner)
     {
         RobustXamlLoader.Load(this);
+        TitleClass = "LabelKeyText";
         _owner = owner;
 
         SWConsoleStyle.StyleRoot(RootPanel);
         SWConsoleStyle.StyleHeader(HeaderPanel);
-        HeaderTitle.Text = "ДЕЖУРСТВА ПЕРСОНАЛА";
-        HeaderTitle.FontOverride = SWConsoleStyle.MonoBold;
-        HeaderTitle.FontColorOverride = SWConsoleStyle.Accent;
-        RoleLabel.FontOverride = SWConsoleStyle.Mono;
+        HeaderNetwork.FontOverride = SWConsoleStyle.Small;
+        HeaderNetwork.FontColorOverride = SWConsoleStyle.Brass;
+        HeaderTitle.Text = "Дежурства персонала";
+        HeaderTitle.FontOverride = SWConsoleStyle.Header;
+        HeaderTitle.FontColorOverride = SWConsoleStyle.TextBright;
+        RoleLabel.FontOverride = SWConsoleStyle.Body;
         RoleLabel.FontColorOverride = SWConsoleStyle.TextBright;
-        NoticeLabel.FontOverride = SWConsoleStyle.MonoSmall;
-        RosterHeader.FontOverride = SWConsoleStyle.MonoBold;
+        NoticeLabel.FontOverride = SWConsoleStyle.Small;
+        RosterHeader.FontOverride = SWConsoleStyle.Strong;
         RosterHeader.FontColorOverride = SWConsoleStyle.TextBright;
     }
 
     public void SetState(SWStaffShiftConsoleState state)
     {
         RoleLabel.Text = state.MyRoleId != null
-            ? $"Сотрудник: {state.UserName}   ·   должность: {state.MyRoleName}"
-            : $"Сотрудник: {state.UserName}   ·   должность не сенатского персонала";
+            ? $"Сотрудник: {state.UserName}, должность: {state.MyRoleName}"
+            : $"Сотрудник: {state.UserName}, должность не сенатского персонала";
 
         NoticeLabel.Visible = state.Notice.Length > 0;
         NoticeLabel.Text = state.Notice;
@@ -43,8 +46,8 @@ public sealed partial class SWStaffShiftConsoleMenu : FancyWindow
         if (state.MyRoleId != null)
         {
             var toggle = state.OnShift
-                ? SWConsoleStyle.Action("СДАТЬ СМЕНУ", SWConsoleStyle.Bad)
-                : SWConsoleStyle.Action("ЗАСТУПИТЬ НА СМЕНУ", SWConsoleStyle.Good);
+                ? SWConsoleStyle.Action("Сдать смену", SWConsoleStyle.Bad)
+                : SWConsoleStyle.Action("Заступить на смену", SWConsoleStyle.Good);
             toggle.OnPressed += _ => _owner.Toggle();
             ToggleBox.AddChild(toggle);
         }
@@ -64,7 +67,7 @@ public sealed partial class SWStaffShiftConsoleMenu : FancyWindow
             var row = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, entry.Name == state.UserName ? SWConsoleStyle.Accent : null);
             row.Margin = new Thickness(0, 0, 0, 5);
 
-            var label = SWConsoleStyle.Text(entry.Name, SWConsoleStyle.TextBright, SWConsoleStyle.Mono);
+            var label = SWConsoleStyle.Text(entry.Name, SWConsoleStyle.TextBright, SWConsoleStyle.Body);
             label.HorizontalExpand = true;
             row.AddChild(label);
 
@@ -73,7 +76,7 @@ public sealed partial class SWStaffShiftConsoleMenu : FancyWindow
 
         if (state.Roster.Count == 0)
         {
-            var empty = SWConsoleStyle.Text("Никто не на смене.", SWConsoleStyle.TextBright, SWConsoleStyle.MonoSmall);
+            var empty = SWConsoleStyle.Text("Никто не на смене.", SWConsoleStyle.TextBright, SWConsoleStyle.Small);
             RosterBox.AddChild(empty);
         }
     }

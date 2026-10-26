@@ -16,24 +16,27 @@ public sealed partial class SWShadowShopMenu : FancyWindow
     public SWShadowShopMenu(SWShadowShopBoundUserInterface owner)
     {
         RobustXamlLoader.Load(this);
+        TitleClass = "LabelKeyText";
         _owner = owner;
 
         SWConsoleStyle.StyleRoot(RootPanel);
         SWConsoleStyle.StyleHeader(HeaderPanel);
-        HeaderTitle.FontOverride = SWConsoleStyle.MonoBold;
-        HeaderTitle.FontColorOverride = SWConsoleStyle.Accent;
-        BalanceLabel.FontOverride = SWConsoleStyle.Mono;
+        HeaderNetwork.FontOverride = SWConsoleStyle.Small;
+        HeaderNetwork.FontColorOverride = SWConsoleStyle.Brass;
+        HeaderTitle.FontOverride = SWConsoleStyle.Header;
+        HeaderTitle.FontColorOverride = SWConsoleStyle.TextBright;
+        BalanceLabel.FontOverride = SWConsoleStyle.Body;
         BalanceLabel.FontColorOverride = SWConsoleStyle.TextBright;
-        NoticeLabel.FontOverride = SWConsoleStyle.MonoSmall;
+        NoticeLabel.FontOverride = SWConsoleStyle.Small;
     }
 
     public void SetState(SWShadowShopState state)
     {
         _state = state;
 
-        HeaderTitle.Text = state.ShopName.ToUpperInvariant();
+        HeaderTitle.Text = state.ShopName;
         Title = state.ShopName;
-        BalanceLabel.Text = $"Покупатель: {state.UserName}   ·   личный счёт: {state.Balance} кр.";
+        BalanceLabel.Text = $"Покупатель: {state.UserName}, личный счёт: {state.Balance} кр.";
 
         NoticeLabel.Visible = state.Notice.Length > 0;
         NoticeLabel.Text = state.Notice;
@@ -47,17 +50,17 @@ public sealed partial class SWShadowShopMenu : FancyWindow
 
             var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
 
-            var name = SWConsoleStyle.Text(item.Name, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold);
+            var name = SWConsoleStyle.Text(item.Name, SWConsoleStyle.TextBright, SWConsoleStyle.Strong);
             name.HorizontalExpand = true;
             name.VerticalAlignment = Control.VAlignment.Center;
             box.AddChild(name);
 
-            var price = SWConsoleStyle.Text($"{item.Price} кр.", SWConsoleStyle.Warn, SWConsoleStyle.MonoBold);
+            var price = SWConsoleStyle.Text($"{item.Price} кр.", SWConsoleStyle.Warn, SWConsoleStyle.Strong);
             price.VerticalAlignment = Control.VAlignment.Center;
             price.Margin = new Thickness(0, 0, 10, 0);
             box.AddChild(price);
 
-            var btn = SWConsoleStyle.Action("КУПИТЬ", SWConsoleStyle.Accent);
+            var btn = SWConsoleStyle.Action("Купить", SWConsoleStyle.Accent);
             btn.VerticalAlignment = Control.VAlignment.Center;
             btn.Disabled = state.Balance < item.Price;
             var index = item.Index;

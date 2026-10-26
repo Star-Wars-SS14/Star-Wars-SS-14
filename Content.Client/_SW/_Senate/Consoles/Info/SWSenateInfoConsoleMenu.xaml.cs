@@ -14,18 +14,18 @@ namespace Content.Client._SW._Senate.Consoles.Info;
 [GenerateTypedNameReferences]
 public sealed partial class SWSenateInfoConsoleMenu : FancyWindow
 {
-    private static readonly Color BgDark = Color.FromHex("#0A0E14");
-    private static readonly Color BgPanel = Color.FromHex("#141B26");
-    private static readonly Color BgRowAlt = Color.FromHex("#0F141D");
-    private static readonly Color Accent = Color.FromHex("#37C8D6");
-    private static readonly Color TextBright = Color.FromHex("#D6E2F0");
-    private static readonly Color TextDim = Color.FromHex("#6E7E92");
-    private static readonly Color Occupied = Color.FromHex("#43D16A");
-    private static readonly Color Free = Color.FromHex("#7A8696");
-    private static readonly Color Vacant = Color.FromHex("#E0556B");
-    private static readonly Color PillOcc = Color.FromHex("#15301E");
-    private static readonly Color PillFree = Color.FromHex("#1A2230");
-    private static readonly Color PillVacant = Color.FromHex("#321A22");
+    private static readonly Color BgDark = SWConsoleStyle.BgDark;
+    private static readonly Color BgPanel = SWConsoleStyle.BgPanel;
+    private static readonly Color BgRowAlt = SWConsoleStyle.BgRowAlt;
+    private static readonly Color Accent = SWConsoleStyle.Accent;
+    private static readonly Color TextBright = SWConsoleStyle.TextBright;
+    private static readonly Color TextDim = SWConsoleStyle.TextDim;
+    private static readonly Color Occupied = SWConsoleStyle.Good;
+    private static readonly Color Free = SWConsoleStyle.Neutral;
+    private static readonly Color Vacant = SWConsoleStyle.Bad;
+    private static readonly Color PillOcc = SWConsoleStyle.PillGood;
+    private static readonly Color PillFree = SWConsoleStyle.PillDim;
+    private static readonly Color PillVacant = SWConsoleStyle.PillBad;
 
     private readonly Font _mono;
     private readonly Font _monoBold;
@@ -37,47 +37,36 @@ public sealed partial class SWSenateInfoConsoleMenu : FancyWindow
     public SWSenateInfoConsoleMenu()
     {
         RobustXamlLoader.Load(this);
+        TitleClass = "LabelKeyText";
 
-        var cache = IoCManager.Resolve<IResourceCache>();
-        _mono = new VectorFont(cache.GetResource<FontResource>("/Fonts/RobotoMono/RobotoMono-Regular.ttf"), 11);
-        _monoBold = new VectorFont(cache.GetResource<FontResource>("/Fonts/RobotoMono/RobotoMono-Bold.ttf"), 12);
-        _monoSmall = new VectorFont(cache.GetResource<FontResource>("/Fonts/RobotoMono/RobotoMono-Regular.ttf"), 10);
-
-        RootPanel.PanelOverride = new StyleBoxFlat { BackgroundColor = BgDark };
-        HeaderPanel.PanelOverride = new StyleBoxFlat
-        {
-            BackgroundColor = BgPanel,
-            BorderColor = Accent,
-            BorderThickness = new Thickness(0, 0, 0, 2),
-        };
-
-        HeaderTitle.FontOverride = _monoBold;
-        HeaderTitle.FontColorOverride = Accent;
-        HeaderTitle.Text = "СЕНАТ РЕСПУБЛИКИ";
-        LiveDot.PanelOverride = new StyleBoxFlat { BackgroundColor = Occupied };
+        _mono = SWConsoleStyle.Body;
+        _monoBold = SWConsoleStyle.Strong;
+        _monoSmall = SWConsoleStyle.Small;
+        SWConsoleStyle.StyleRoot(RootPanel);
+        SWConsoleStyle.StyleHeader(HeaderPanel);
+        HeaderNetwork.FontOverride = SWConsoleStyle.Small;
+        HeaderNetwork.FontColorOverride = SWConsoleStyle.Brass;
+        HeaderTitle.FontOverride = SWConsoleStyle.Header;
+        HeaderTitle.FontColorOverride = TextBright;
+        HeaderTitle.Text = "Сенат Республики";
         HeaderClock.FontOverride = _mono;
         HeaderClock.FontColorOverride = TextBright;
 
-        TabBarPanel.PanelOverride = new StyleBoxFlat
-        {
-            BackgroundColor = BgDark,
-            BorderColor = Color.FromHex("#1C2530"),
-            BorderThickness = new Thickness(0, 0, 0, 1),
-        };
+        SWConsoleStyle.StyleTabBar(TabBarPanel);
 
         _tabs = new (string, Control)[]
         {
-            ("СЕКТОРА", SectorsPanel),
-            ("РУКОВОДСТВО", LeadershipPanel),
-            ("РАСПИСАНИЕ", SchedulePanel),
-            ("ЗАКОНЫ", LawsPanel),
+            ("Сектора", SectorsPanel),
+            ("Руководство", LeadershipPanel),
+            ("Расписание", SchedulePanel),
+            ("Законы", LawsPanel),
         };
 
         _tabButtons = new Button[_tabs.Length];
         for (var i = 0; i < _tabs.Length; i++)
         {
             var idx = i;
-            var btn = new Button { Text = _tabs[i].Title, Margin = new Thickness(0, 0, 4, 0) };
+            var btn = SWConsoleStyle.TabButton(_tabs[i].Title);
             btn.Label.FontOverride = _monoBold;
             btn.OnPressed += _ => ShowTab(idx);
             TabBar.AddChild(btn);
@@ -93,18 +82,7 @@ public sealed partial class SWSenateInfoConsoleMenu : FancyWindow
         {
             _tabs[i].Panel.Visible = i == index;
 
-            var active = i == index;
-            _tabButtons[i].StyleBoxOverride = new StyleBoxFlat
-            {
-                BackgroundColor = active ? BgPanel : BgDark,
-                BorderColor = Accent,
-                BorderThickness = active ? new Thickness(0, 0, 0, 2) : new Thickness(0),
-                ContentMarginLeftOverride = 12,
-                ContentMarginRightOverride = 12,
-                ContentMarginTopOverride = 4,
-                ContentMarginBottomOverride = 4,
-            };
-            _tabButtons[i].Label.FontColorOverride = active ? Accent : TextDim;
+            SWConsoleStyle.StyleTabButton(_tabButtons[i], i == index);
         }
     }
 
@@ -121,7 +99,7 @@ public sealed partial class SWSenateInfoConsoleMenu : FancyWindow
     private void BuildSectors(SWSenateInfoConsoleState state)
     {
         SectorList.RemoveAllChildren();
-        SectorList.AddChild(SectionHeader("СЕКТОРА"));
+        SectorList.AddChild(SectionHeader("Сектора"));
         SectorList.AddChild(new Control { MinHeight = 6 });
 
         var occupied = 0;
@@ -137,7 +115,7 @@ public sealed partial class SWSenateInfoConsoleMenu : FancyWindow
 
             if (sector.Holder == null)
             {
-                row.AddChild(Pill("СВОБОДНО", Free, PillFree));
+                row.AddChild(Pill("Свободно", Free, PillFree));
             }
             else
             {
@@ -146,7 +124,7 @@ public sealed partial class SWSenateInfoConsoleMenu : FancyWindow
                 holder.Margin = new Thickness(0, 0, 8, 0);
                 holder.VerticalAlignment = VAlignment.Center;
                 row.AddChild(holder);
-                row.AddChild(Pill("ЗАНЯТ", Occupied, PillOcc));
+                row.AddChild(Pill("Занят", Occupied, PillOcc));
             }
 
             panel.AddChild(row);
@@ -155,17 +133,17 @@ public sealed partial class SWSenateInfoConsoleMenu : FancyWindow
 
         SectorList.AddChild(new Control { MinHeight = 8 });
         SectorList.AddChild(Mono(
-            $"{state.Sectors.Count} секторов · {occupied} занято · {state.Sectors.Count - occupied} свободно",
+            $"{state.Sectors.Count} секторов, {occupied} занято, {state.Sectors.Count - occupied} свободно",
             TextDim, _monoSmall));
     }
 
     private void BuildLeadership(SWSenateInfoConsoleState state)
     {
         LeadershipList.RemoveAllChildren();
-        LeadershipList.AddChild(SectionHeader("РУКОВОДСТВО РЕСПУБЛИКИ"));
+        LeadershipList.AddChild(SectionHeader("Руководство республики"));
         LeadershipList.AddChild(new Control { MinHeight = 8 });
-        LeadershipList.AddChild(LeaderCard("ВЕРХОВНЫЙ КАНЦЛЕР", state.Chancellor));
-        LeadershipList.AddChild(LeaderCard("СПИКЕР СЕНАТА", state.Speaker));
+        LeadershipList.AddChild(LeaderCard("Верховный канцлер", state.Chancellor));
+        LeadershipList.AddChild(LeaderCard("Спикер сената", state.Speaker));
     }
 
     private Control LeaderCard(string title, string? holder)
@@ -179,11 +157,11 @@ public sealed partial class SWSenateInfoConsoleMenu : FancyWindow
         var valRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 3, 0, 0) };
         if (holder == null)
         {
-            valRow.AddChild(Pill("ВАКАНТНО", Vacant, PillVacant));
+            valRow.AddChild(Pill("Вакантно", Vacant, PillVacant));
         }
         else
         {
-            valRow.AddChild(Pill("В ДОЛЖНОСТИ", Occupied, PillOcc));
+            valRow.AddChild(Pill("В должности", Occupied, PillOcc));
             var name = Mono(holder, TextBright, _monoBold);
             name.Margin = new Thickness(8, 0, 0, 0);
             name.VerticalAlignment = VAlignment.Center;
@@ -198,7 +176,7 @@ public sealed partial class SWSenateInfoConsoleMenu : FancyWindow
     private void BuildSchedule(SWSenateInfoConsoleState state)
     {
         ScheduleGrid.RemoveAllChildren();
-        ScheduleGrid.AddChild(SectionHeader("РАСПИСАНИЕ ДНЯ"));
+        ScheduleGrid.AddChild(SectionHeader("Расписание дня"));
         ScheduleGrid.AddChild(new Control { MinHeight = 6 });
 
         foreach (var row in state.Schedule)
@@ -232,7 +210,7 @@ public sealed partial class SWSenateInfoConsoleMenu : FancyWindow
     private void BuildLaws(SWSenateInfoConsoleState state)
     {
         ActiveLawsList.RemoveAllChildren();
-        ActiveLawsList.AddChild(SectionHeader("ДЕЙСТВУЮЩИЕ ЗАКОНЫ"));
+        ActiveLawsList.AddChild(SectionHeader("Действующие законы"));
         ActiveLawsList.AddChild(new Control { MinHeight = 6 });
 
         if (state.ActiveLaws.Count == 0)
@@ -275,47 +253,12 @@ public sealed partial class SWSenateInfoConsoleMenu : FancyWindow
         return label;
     }
 
-    private Label SectionHeader(string text) => Mono("// " + text, Accent, _monoBold);
+    private Label SectionHeader(string text) => SWConsoleStyle.Section(text);
 
-    private Control Pill(string text, Color fg, Color bg)
-    {
-        var panel = new PanelContainer
-        {
-            VerticalAlignment = VAlignment.Center,
-            PanelOverride = new StyleBoxFlat
-            {
-                BackgroundColor = bg,
-                BorderColor = fg,
-                BorderThickness = new Thickness(1),
-                ContentMarginLeftOverride = 7,
-                ContentMarginRightOverride = 7,
-                ContentMarginTopOverride = 1,
-                ContentMarginBottomOverride = 1,
-            },
-        };
-        panel.AddChild(Mono(text, fg, _monoSmall));
-        return panel;
-    }
+    private Control Pill(string text, Color fg, Color bg) => SWConsoleStyle.Pill(text, fg, bg);
 
-    private PanelContainer RowPanel(bool alt, Color? leftAccent = null, Color? bg = null)
-    {
-        var box = new StyleBoxFlat
-        {
-            BackgroundColor = bg ?? (alt ? BgRowAlt : BgPanel),
-            ContentMarginLeftOverride = 8,
-            ContentMarginRightOverride = 8,
-            ContentMarginTopOverride = 3,
-            ContentMarginBottomOverride = 3,
-        };
-
-        if (leftAccent is { } a)
-        {
-            box.BorderColor = a;
-            box.BorderThickness = new Thickness(2, 0, 0, 0);
-        }
-
-        return new PanelContainer { PanelOverride = box, HorizontalExpand = true, Margin = new Thickness(0, 0, 0, 2) };
-    }
+    private PanelContainer RowPanel(bool alt, Color? leftAccent = null, Color? bg = null) =>
+        SWConsoleStyle.Row(bg ?? (alt ? BgRowAlt : BgPanel));
 
     private static Color ScheduleColor(Color color) =>
         color == Color.DimGray || color == Color.DarkGray ? TextDim : color;

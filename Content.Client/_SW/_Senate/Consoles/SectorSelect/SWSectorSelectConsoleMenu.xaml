@@ -1,12 +1,17 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
+    xmlns:senate="clr-namespace:Content.Client._SW._Senate"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
     Title="Выбор сектора"
     MinSize="480 480">
     <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
         <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
             <PanelContainer Name="HeaderPanel">
-                <BoxContainer Orientation="Horizontal" Margin="12 7">
-                    <Label Name="HeaderTitle" HorizontalExpand="True" />
+                <BoxContainer Orientation="Horizontal" Margin="14 10" SeparationOverride="0">
+                    <senate:SWConsoleSeal Margin="0 0 12 0" />
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="2">
+                        <Label Name="HeaderNetwork" Text="РЕСПУБЛИКА / ГОЛОНЕТ" />
+                        <Label Name="HeaderTitle" HorizontalExpand="True" ClipText="True" />
+                    </BoxContainer>
                 </BoxContainer>
             </PanelContainer>
             <Label Name="StatusLabel" Margin="12 8 12 6" />

@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using Content.Client.UserInterface.Controls;
 using Content.Shared._SW._Senate;
@@ -11,90 +12,37 @@ namespace Content.Client._SW._Senate.Consoles.CourtInfo;
 [GenerateTypedNameReferences]
 public sealed partial class SWCourtInfoConsoleMenu : FancyWindow
 {
-    private readonly HashSet<int> _expanded = new();
-    private SWCourtInfoConsoleState? _state;
 
     public SWCourtInfoConsoleMenu()
     {
         RobustXamlLoader.Load(this);
+        TitleClass = "LabelKeyText";
 
         SWConsoleStyle.StyleRoot(RootPanel);
         SWConsoleStyle.StyleHeader(HeaderPanel);
-        HeaderTitle.FontOverride = SWConsoleStyle.MonoBold;
-        HeaderTitle.FontColorOverride = SWConsoleStyle.Accent;
-        HeaderTitle.Text = "ВЕРХОВНЫЙ СУД - РЕЕСТР ДЕЛ";
-        HeaderClock.FontOverride = SWConsoleStyle.Mono;
+        HeaderNetwork.FontOverride = SWConsoleStyle.Small;
+        HeaderNetwork.FontColorOverride = SWConsoleStyle.Brass;
+        HeaderTitle.FontOverride = SWConsoleStyle.Header;
+        HeaderTitle.FontColorOverride = SWConsoleStyle.TextBright;
+        HeaderTitle.Text = "Верховный суд - реестр дел";
+        HeaderClock.FontOverride = SWConsoleStyle.Body;
         HeaderClock.FontColorOverride = SWConsoleStyle.TextBright;
     }
 
+    private readonly SWConsoleDocuments _documents = new();
+
     public void SetState(SWCourtInfoConsoleState state)
     {
-        _state = state;
-        HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "-" : state.GameTime;
-
+        HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "—" : state.GameTime;
         StatusStrip.RemoveAllChildren();
-        var bench = SWConsoleStyle.Text(state.BenchLabel, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall);
-        bench.VerticalAlignment = Control.VAlignment.Center;
-        StatusStrip.AddChild(bench);
-
-        CaseListBox.RemoveAllChildren();
-
-        var sides = $"Обвинитель: {(state.ProsecutorName.Length > 0 ? state.ProsecutorName : "не назначен")}   |   "
-            + $"Защитник: {(state.DefenderName.Length > 0 ? state.DefenderName : "не назначен")}";
-        CaseListBox.AddChild(SWConsoleStyle.Text(sides, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
-        CaseListBox.AddChild(new Control { MinHeight = 8 });
-
-        if (state.Cases.Count == 0)
-        {
-            CaseListBox.AddChild(SWConsoleStyle.Text("В реестре нет дел. Утреннее дело открывается в 07:00; вечернее - в 14:00.",
-                SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
-            return;
-        }
-
-        foreach (var c in state.Cases)
-        {
-            var accent = c.Closed
-                ? c.Verdict.Contains("не вынесено") || c.StatusLabel == "Не рассмотрено" ? SWConsoleStyle.Bad : SWConsoleStyle.Good
-                : SWConsoleStyle.Warn;
-            var row = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, accent);
-            row.Margin = new Thickness(0, 0, 0, 5);
-            var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
-
-            var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-            var title = SWConsoleStyle.Text($"{c.Number}: {c.Title}", SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold);
-            title.HorizontalExpand = true;
-            head.AddChild(title);
-
-            var id = c.Id;
-            var toggle = SWConsoleStyle.Action(_expanded.Contains(id) ? "Свернуть" : "Подробнее", SWConsoleStyle.Accent);
-            toggle.OnPressed += _ =>
-            {
-                if (!_expanded.Remove(id))
-                    _expanded.Add(id);
-                if (_state != null)
-                    SetState(_state);
-            };
-            head.AddChild(toggle);
-            box.AddChild(head);
-
-            box.AddChild(SWConsoleStyle.Text($"{c.TypeLabel}   |   {c.Parties}", SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall));
-            box.AddChild(SWConsoleStyle.Text($"{c.HearingLabel}   |   председатель: {c.Presiding}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
-            box.AddChild(SWConsoleStyle.Text(c.Verdict.Length > 0 ? $"Вердикт: {c.Verdict}" : $"Статус: {c.StatusLabel}",
-                c.Verdict.Length > 0 ? SWConsoleStyle.Accent : SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
-
-            if (_expanded.Contains(id))
-            {
-                box.AddChild(new Control { MinHeight = 4 });
-                box.AddChild(SWConsoleStyle.Wrap(c.Description, SWConsoleStyle.TextBright, 660f));
-                box.AddChild(new Control { MinHeight = 4 });
-                if (c.OutcomePlaintiff.Length > 0)
-                    box.AddChild(SWConsoleStyle.Wrap($"Решение в пользу истца: {c.OutcomePlaintiff}", SWConsoleStyle.Good, 660f));
-                if (c.OutcomeDefendant.Length > 0)
-                    box.AddChild(SWConsoleStyle.Wrap($"Решение в пользу ответчика: {c.OutcomeDefendant}", SWConsoleStyle.Warn, 660f));
-            }
-
-            row.AddChild(box);
-            CaseListBox.AddChild(row);
-        }
+        StatusStrip.AddChild(SWConsoleStyle.Wrap(state.BenchLabel, SWConsoleStyle.TextDim));
+        StatusStrip.AddChild(SWConsoleStyle.Wrap(
+            $"Обвинитель: {(state.ProsecutorName.Length > 0 ? state.ProsecutorName : "не назначен")}\nЗащитник: {(state.DefenderName.Length > 0 ? state.DefenderName : "не назначен")}",
+            SWConsoleStyle.TextDim));
+        if (_documents.Parent == null)
+            CaseListBox.AddChild(_documents);
+        _documents.SetDocuments(state.Cases.Select(entry => new SWConsoleDocumentEntry(
+            entry.Id, entry.Title, $"{entry.Number}, {entry.StatusLabel}", SWConsoleDocument.Revision(entry),
+            () => SWConsoleDocument.CourtCase(entry))));
     }
 }

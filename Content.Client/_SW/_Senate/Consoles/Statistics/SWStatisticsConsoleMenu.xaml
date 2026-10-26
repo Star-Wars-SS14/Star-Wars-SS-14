@@ -1,32 +1,38 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
+    xmlns:senate="clr-namespace:Content.Client._SW._Senate"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-    Title="Статистика Республики"
-    MinSize="720 560">
+    Title="Статистика Республики" SetSize="1100 760" MinSize="760 620">
     <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
-        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="0">
             <PanelContainer Name="HeaderPanel">
-                <BoxContainer Orientation="Horizontal" Margin="12 7">
-                    <Label Name="HeaderTitle" HorizontalExpand="True" />
-                    <PanelContainer Name="LiveDot" MinSize="9 9" VerticalAlignment="Center" />
-                    <Label Name="HeaderClock" Margin="7 0 0 0" />
+                <BoxContainer Orientation="Horizontal" Margin="14 10" SeparationOverride="0">
+                    <senate:SWConsoleSeal Margin="0 0 12 0" />
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="2">
+                        <Label Name="HeaderNetwork" Text="РЕСПУБЛИКА / ГОЛОНЕТ" />
+                        <Label Name="HeaderTitle" Text="Аналитика Республики" ClipText="True" />
+                    </BoxContainer>
+                    <Label Name="HeaderClock" Margin="12 0 0 0" VerticalAlignment="Center" />
                 </BoxContainer>
             </PanelContainer>
-            <PanelContainer Name="TabBarPanel">
-                <BoxContainer Name="TabBar" Orientation="Horizontal" Margin="6 4" />
-            </PanelContainer>
+            <PanelContainer Name="TabBarPanel"><WrapContainer Name="TabBar" Margin="8 4" /></PanelContainer>
             <BoxContainer Name="ContentHost" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
-                <ScrollContainer Name="RepublicPanel" HorizontalExpand="True" VerticalExpand="True" Margin="10">
-                    <BoxContainer Name="RepublicStats" Orientation="Vertical" />
+                <BoxContainer Name="GalaxyPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="12" SeparationOverride="8" />
+                <BoxContainer Name="CommoditiesPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="12" />
+                <ScrollContainer Name="RepublicPanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="16">
+                    <BoxContainer Name="RepublicStats" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="12" />
                 </ScrollContainer>
-                <ScrollContainer Name="SectorsPanel" HorizontalExpand="True" VerticalExpand="True" Margin="10">
-                    <BoxContainer Name="SectorTable" Orientation="Vertical" />
+                <ScrollContainer Name="SectorsPanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="16">
+                    <BoxContainer Name="SectorTable" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="12" />
                 </ScrollContainer>
-                <ScrollContainer Name="CrisesPanel" HorizontalExpand="True" VerticalExpand="True" Margin="10">
-                    <BoxContainer Name="CrisesList" Orientation="Vertical" />
+                <ScrollContainer Name="OperationsPanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="16">
+                    <BoxContainer Name="OperationsContent" Orientation="Vertical" HorizontalExpand="True" />
                 </ScrollContainer>
-                <ScrollContainer Name="LawsPanel" HorizontalExpand="True" VerticalExpand="True" Margin="10">
-                    <BoxContainer Name="LawsList" Orientation="Vertical" />
-                </ScrollContainer>
+                <BoxContainer Name="CrisesPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="16">
+                    <BoxContainer Name="CrisesList" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="12" />
+                </BoxContainer>
+                <BoxContainer Name="LawsPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="16">
+                    <BoxContainer Name="LawsList" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" />
+                </BoxContainer>
             </BoxContainer>
         </BoxContainer>
     </PanelContainer>

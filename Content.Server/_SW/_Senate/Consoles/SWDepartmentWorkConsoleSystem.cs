@@ -68,6 +68,9 @@ public sealed class SWDepartmentWorkConsoleSystem : EntitySystem
 
     private void OnResign(Entity<SWDepartmentWorkConsoleComponent> ent, ref SWBureauResignMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         if (card == null
             || !TryComp<SWMinistryComponent>(card, out var ministryComp)
@@ -84,6 +87,9 @@ public sealed class SWDepartmentWorkConsoleSystem : EntitySystem
 
     private void OnAssumeParent(Entity<SWDepartmentWorkConsoleComponent> ent, ref SWMinistryAssumeParentMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         var deptId = GetCardDepartment(ent);
         if (card == null
@@ -110,6 +116,9 @@ public sealed class SWDepartmentWorkConsoleSystem : EntitySystem
 
     private void OnLaunchOp(Entity<SWDepartmentWorkConsoleComponent> ent, ref SWShipsLaunchOpMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var ok = GetCardDepartment(ent) switch
         {
             SWDeptHealthcareSystem.DeptId => _healthcare.LaunchOp(args.Op),
@@ -129,6 +138,9 @@ public sealed class SWDepartmentWorkConsoleSystem : EntitySystem
 
     private void OnResolveTask(Entity<SWDepartmentWorkConsoleComponent> ent, ref SWDeptResolveTaskMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var ok = GetCardDepartment(ent) switch
         {
             SWDeptHealthcareSystem.DeptId => _healthcare.ResolveCall(args.TaskId, args.OptionIndex),
@@ -147,6 +159,9 @@ public sealed class SWDepartmentWorkConsoleSystem : EntitySystem
 
     private void OnCaseAdvance(Entity<SWDepartmentWorkConsoleComponent> ent, ref SWDeptCaseAdvanceMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardDepartment(ent) != SWDeptArbitrageSystem.DeptId)
             return;
 
@@ -158,6 +173,9 @@ public sealed class SWDepartmentWorkConsoleSystem : EntitySystem
 
     private void OnAuditTarget(Entity<SWDepartmentWorkConsoleComponent> ent, ref SWDeptAuditTargetMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardDepartment(ent) != SWDeptExpenditureSystem.DeptId)
             return;
 
@@ -169,6 +187,9 @@ public sealed class SWDepartmentWorkConsoleSystem : EntitySystem
 
     private void OnPost(Entity<SWDepartmentWorkConsoleComponent> ent, ref SWDeptPostMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardDepartment(ent) != SWDeptGuardSystem.DeptId)
             return;
 
@@ -178,6 +199,9 @@ public sealed class SWDepartmentWorkConsoleSystem : EntitySystem
 
     private void OnAuditRequest(Entity<SWDepartmentWorkConsoleComponent> ent, ref SWMinistryAuditRequestMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardDepartment(ent) is not { } deptId)
             return;
 
@@ -189,6 +213,9 @@ public sealed class SWDepartmentWorkConsoleSystem : EntitySystem
 
     private void OnResolveRequest(Entity<SWDepartmentWorkConsoleComponent> ent, ref SWMinistryResolveRequestMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardDepartment(ent) is not { } deptId)
             return;
 
@@ -202,6 +229,9 @@ public sealed class SWDepartmentWorkConsoleSystem : EntitySystem
 
     private void OnRefuseRequest(Entity<SWDepartmentWorkConsoleComponent> ent, ref SWMinistryRefuseRequestMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardDepartment(ent) is not { } deptId)
             return;
 
@@ -218,12 +248,18 @@ public sealed class SWDepartmentWorkConsoleSystem : EntitySystem
 
     private void OnInserted(Entity<SWDepartmentWorkConsoleComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
 
     private void OnRemoved(Entity<SWDepartmentWorkConsoleComponent> ent, ref EntRemovedFromContainerMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }

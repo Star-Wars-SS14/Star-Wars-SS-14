@@ -54,6 +54,9 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
 
     private void OnAudit(Entity<SWBureauWorkConsoleComponent> ent, ref SWMinistryAuditRequestMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardBureau(ent) is not { } bureauId)
             return;
 
@@ -65,6 +68,9 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
 
     private void OnResolveRequest(Entity<SWBureauWorkConsoleComponent> ent, ref SWMinistryResolveRequestMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardBureau(ent) is not { } bureauId)
             return;
 
@@ -78,6 +84,9 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
 
     private void OnRefuseRequest(Entity<SWBureauWorkConsoleComponent> ent, ref SWMinistryRefuseRequestMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardBureau(ent) is not { } bureauId)
             return;
 
@@ -106,6 +115,9 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
 
     private void OnResign(Entity<SWBureauWorkConsoleComponent> ent, ref SWBureauResignMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         if (card == null
             || !TryComp<SWMinistryComponent>(card, out var ministryComp)
@@ -122,6 +134,9 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
 
     private void OnAssumeParent(Entity<SWBureauWorkConsoleComponent> ent, ref SWMinistryAssumeParentMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         var bureauId = GetCardBureau(ent);
         if (card == null
@@ -148,6 +163,9 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
 
     private void OnResolveDilemma(Entity<SWBureauWorkConsoleComponent> ent, ref SWBureauResolveDilemmaMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         switch (GetCardBureau(ent))
         {
             case SWBureauShipsSystem.BureauId:
@@ -168,6 +186,9 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
 
     private void OnSetTransitStatus(Entity<SWBureauWorkConsoleComponent> ent, ref SWTransitSetSectorMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardBureau(ent) != SWBureauTransitSystem.BureauId)
             return;
 
@@ -177,6 +198,9 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
 
     private void OnResolveTransitEvent(Entity<SWBureauWorkConsoleComponent> ent, ref SWTransitResolveEventMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardBureau(ent) != SWBureauTransitSystem.BureauId)
             return;
 
@@ -188,6 +212,9 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
 
     private void OnSetArmsPolicy(Entity<SWBureauWorkConsoleComponent> ent, ref SWArmsSetPolicyMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardBureau(ent) != SWBureauWeaponsSystem.BureauId)
             return;
 
@@ -197,6 +224,9 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
 
     private void OnArmsSeize(Entity<SWBureauWorkConsoleComponent> ent, ref SWArmsSeizeMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardBureau(ent) != SWBureauWeaponsSystem.BureauId)
             return;
 
@@ -208,6 +238,9 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
 
     private void OnArmsDroid(Entity<SWBureauWorkConsoleComponent> ent, ref SWArmsDroidMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardBureau(ent) != SWBureauWeaponsSystem.BureauId)
             return;
 
@@ -219,6 +252,9 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
 
     private void OnProcessApp(Entity<SWBureauWorkConsoleComponent> ent, ref SWShipsProcessAppMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var ok = GetCardBureau(ent) switch
         {
             SWBureauShipsSystem.BureauId => _ships.Process(args.AppId, args.Action),
@@ -236,6 +272,9 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
 
     private void OnSetPolicy(Entity<SWBureauWorkConsoleComponent> ent, ref SWShipsSetPolicyMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardBureau(ent) != SWBureauShipsSystem.BureauId)
             return;
 
@@ -245,6 +284,9 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
 
     private void OnLaunchOp(Entity<SWBureauWorkConsoleComponent> ent, ref SWShipsLaunchOpMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var ok = GetCardBureau(ent) switch
         {
             SWBureauShipsSystem.BureauId => _ships.LaunchOp(args.Op),
@@ -268,12 +310,18 @@ public sealed class SWBureauWorkConsoleSystem : EntitySystem
 
     private void OnInserted(Entity<SWBureauWorkConsoleComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
 
     private void OnRemoved(Entity<SWBureauWorkConsoleComponent> ent, ref EntRemovedFromContainerMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }

@@ -15,21 +15,24 @@ public sealed partial class SWApartmentConsoleMenu : FancyWindow
     public SWApartmentConsoleMenu(SWApartmentConsoleBoundUserInterface owner)
     {
         RobustXamlLoader.Load(this);
+        TitleClass = "LabelKeyText";
         _owner = owner;
 
         SWConsoleStyle.StyleRoot(RootPanel);
         SWConsoleStyle.StyleHeader(HeaderPanel);
-        HeaderTitle.Text = "АРЕНДА АПАРТАМЕНТОВ";
-        HeaderTitle.FontOverride = SWConsoleStyle.MonoBold;
-        HeaderTitle.FontColorOverride = SWConsoleStyle.Accent;
-        BalanceLabel.FontOverride = SWConsoleStyle.Mono;
+        HeaderNetwork.FontOverride = SWConsoleStyle.Small;
+        HeaderNetwork.FontColorOverride = SWConsoleStyle.Brass;
+        HeaderTitle.Text = "Аренда апартаментов";
+        HeaderTitle.FontOverride = SWConsoleStyle.Header;
+        HeaderTitle.FontColorOverride = SWConsoleStyle.TextBright;
+        BalanceLabel.FontOverride = SWConsoleStyle.Body;
         BalanceLabel.FontColorOverride = SWConsoleStyle.TextBright;
-        NoticeLabel.FontOverride = SWConsoleStyle.MonoSmall;
+        NoticeLabel.FontOverride = SWConsoleStyle.Small;
     }
 
     public void SetState(SWApartmentConsoleState state)
     {
-        BalanceLabel.Text = $"Наниматель: {state.UserName}   ·   личный счёт: {state.Balance} кр.";
+        BalanceLabel.Text = $"Наниматель: {state.UserName}, личный счёт: {state.Balance} кр.";
 
         NoticeLabel.Visible = state.Notice.Length > 0;
         NoticeLabel.Text = state.Notice;
@@ -46,12 +49,12 @@ public sealed partial class SWApartmentConsoleMenu : FancyWindow
 
             var label = SWConsoleStyle.Text(
                 mine != null ? $"Ваши апартаменты: класс «{mine.ClassName}»" : "Ваши апартаменты",
-                SWConsoleStyle.Accent, SWConsoleStyle.MonoBold);
+                SWConsoleStyle.Accent, SWConsoleStyle.Strong);
             label.HorizontalExpand = true;
             label.VerticalAlignment = Control.VAlignment.Center;
             box.AddChild(label);
 
-            var vacate = SWConsoleStyle.Action("СЪЕХАТЬ", SWConsoleStyle.Bad);
+            var vacate = SWConsoleStyle.Action("Съехать", SWConsoleStyle.Bad);
             vacate.VerticalAlignment = Control.VAlignment.Center;
             vacate.OnPressed += _ => _owner.Vacate();
             box.AddChild(vacate);
@@ -67,7 +70,7 @@ public sealed partial class SWApartmentConsoleMenu : FancyWindow
             if (slot.ClassId != currentClass)
             {
                 currentClass = slot.ClassId;
-                var header = SWConsoleStyle.Section($"{slot.ClassName} · {slot.Price} кр/день");
+                var header = SWConsoleStyle.Section($"{slot.ClassName}, {slot.Price} кр/день");
                 header.FontColorOverride = slot.ClassColor;
                 header.Margin = new Thickness(0, 8, 0, 4);
                 SlotsBox.AddChild(header);
@@ -80,14 +83,14 @@ public sealed partial class SWApartmentConsoleMenu : FancyWindow
 
             var statusText = slot.Occupied ? (slot.IsMine ? "занято вами" : $"занято: {slot.TenantName}") : "свободно";
             var statusColor = slot.Occupied ? (slot.IsMine ? SWConsoleStyle.Accent : SWConsoleStyle.Bad) : SWConsoleStyle.Good;
-            var status = SWConsoleStyle.Text(statusText, statusColor, SWConsoleStyle.MonoBold);
+            var status = SWConsoleStyle.Text(statusText, statusColor, SWConsoleStyle.Strong);
             status.HorizontalExpand = true;
             status.VerticalAlignment = Control.VAlignment.Center;
             box.AddChild(status);
 
             if (!slot.Occupied)
             {
-                var rent = SWConsoleStyle.Action("АРЕНДОВАТЬ", SWConsoleStyle.Accent);
+                var rent = SWConsoleStyle.Action("Арендовать", SWConsoleStyle.Accent);
                 rent.VerticalAlignment = Control.VAlignment.Center;
                 var tag = slot.SlotTag;
                 rent.OnPressed += _ => _owner.Rent(tag);

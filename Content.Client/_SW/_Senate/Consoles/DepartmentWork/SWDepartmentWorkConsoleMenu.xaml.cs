@@ -21,24 +21,26 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
     public SWDepartmentWorkConsoleMenu(SWDepartmentWorkConsoleBoundUserInterface owner)
     {
         RobustXamlLoader.Load(this);
+        TitleClass = "LabelKeyText";
         _owner = owner;
 
         SWConsoleStyle.StyleRoot(RootPanel);
         SWConsoleStyle.StyleHeader(HeaderPanel);
+        HeaderNetwork.FontOverride = SWConsoleStyle.Small;
+        HeaderNetwork.FontColorOverride = SWConsoleStyle.Brass;
         SWConsoleStyle.StyleTabBar(TabBarPanel);
-        HeaderTitle.FontOverride = SWConsoleStyle.MonoBold;
-        HeaderTitle.FontColorOverride = SWConsoleStyle.Accent;
-        HeaderTitle.Text = "РАБОЧАЯ КОНСОЛЬ ДЕПАРТАМЕНТА";
-        LiveDot.PanelOverride = new StyleBoxFlat { BackgroundColor = SWConsoleStyle.Good };
-        HeaderClock.FontOverride = SWConsoleStyle.Mono;
+        HeaderTitle.FontOverride = SWConsoleStyle.Header;
+        HeaderTitle.FontColorOverride = SWConsoleStyle.TextBright;
+        HeaderTitle.Text = "Рабочая консоль департамента";
+        HeaderClock.FontOverride = SWConsoleStyle.Body;
         HeaderClock.FontColorOverride = SWConsoleStyle.TextBright;
 
         _tabs = new (string, Control)[]
         {
-            ("РАБОТА", WorkScroll),
-            ("ЗАДАЧИ", TasksScroll),
-            ("ОПЕРАЦИИ", OpsScroll),
-            ("ЗАЯВКИ", RequestsScroll),
+            ("Работа", WorkScroll),
+            ("Задачи", TasksScroll),
+            ("Операции", OpsScroll),
+            ("Заявки", RequestsScroll),
         };
 
         _tabButtons = new Button[_tabs.Length];
@@ -81,16 +83,16 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
             ShowTab(0);
             WorkList.AddChild(SWConsoleStyle.Text(
                 state.HasCard
-                    ? "Эта карта не закреплена ни за одним департаментом. Займите департамент на консоли назначения."
+                    ? "Департамент не назначен"
                     : "Вставьте ID-карту министра в консоль.",
-                SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+                SWConsoleStyle.TextDim, SWConsoleStyle.Body));
             return;
         }
 
         StatusStrip.Visible = true;
         TabBarPanel.Visible = true;
 
-        _tabButtons[1].Text = state.IsHealthcare ? "ВЫЗОВЫ" : state.IsGuard ? "ОРДЕРА" : state.IsExpenditure ? "СИГНАЛЫ" : "ЗАДАЧИ";
+        _tabButtons[1].Text = state.IsHealthcare ? "Вызовы" : state.IsGuard ? "Ордера" : state.IsExpenditure ? "Сигналы" : "Задачи";
 
         BuildStrip(state);
         BuildWork(state);
@@ -103,12 +105,12 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
     private void BuildAmbitionsSection(BoxContainer target, List<SWAmbitionEntry> ambitions)
     {
         target.AddChild(new Control { MinHeight = 10 });
-        target.AddChild(SWConsoleStyle.Section("АМБИЦИИ"));
+        target.AddChild(SWConsoleStyle.Section("Амбиции"));
         target.AddChild(new Control { MinHeight = 4 });
 
         if (ambitions.Count == 0)
         {
-            target.AddChild(SWConsoleStyle.Text("Амбиций нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            target.AddChild(SWConsoleStyle.Text("Амбиций нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
             return;
         }
 
@@ -119,10 +121,10 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
             var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
 
             var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-            var name = SWConsoleStyle.Text(ambition.Name, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold);
+            var name = SWConsoleStyle.Text(ambition.Name, SWConsoleStyle.TextBright, SWConsoleStyle.Strong);
             name.HorizontalExpand = true;
             head.AddChild(name);
-            head.AddChild(SWConsoleStyle.Text(ambition.Met ? "выполнено" : "не выполнено", ambition.Met ? SWConsoleStyle.Good : SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            head.AddChild(SWConsoleStyle.Text(ambition.Met ? "выполнено" : "не выполнено", ambition.Met ? SWConsoleStyle.Good : SWConsoleStyle.TextDim, SWConsoleStyle.Small));
             box.AddChild(head);
 
             if (!string.IsNullOrWhiteSpace(ambition.Description))
@@ -133,7 +135,7 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
             }
 
             if (!string.IsNullOrWhiteSpace(ambition.Progress))
-                box.AddChild(SWConsoleStyle.Text(ambition.Progress, SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+                box.AddChild(SWConsoleStyle.Text(ambition.Progress, SWConsoleStyle.Warn, SWConsoleStyle.Small));
 
             row.AddChild(box);
             target.AddChild(row);
@@ -146,13 +148,13 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
         pill.Margin = new Thickness(0, 0, 10, 0);
         StatusStrip.AddChild(pill);
 
-        var budget = SWConsoleStyle.Text($"Бюджет: {state.Budget} кр", SWConsoleStyle.Warn, SWConsoleStyle.MonoBold);
+        var budget = SWConsoleStyle.Text($"Бюджет: {state.Budget} кр", SWConsoleStyle.Warn, SWConsoleStyle.Strong);
         budget.VerticalAlignment = Control.VAlignment.Center;
         StatusStrip.AddChild(budget);
 
         if (state.HasPersonal)
         {
-            var acc = SWConsoleStyle.Text($"   личный счёт: {state.MyAccount} кр", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall);
+            var acc = SWConsoleStyle.Text($"   личный счёт: {state.MyAccount} кр", SWConsoleStyle.TextDim, SWConsoleStyle.Small);
             acc.VerticalAlignment = Control.VAlignment.Center;
             StatusStrip.AddChild(acc);
         }
@@ -178,18 +180,18 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
 
     private void BuildWork(SWDepartmentWorkConsoleState state)
     {
-        WorkList.AddChild(SWConsoleStyle.Section("ПУЛЬТ ДЕПАРТАМЕНТА"));
+        WorkList.AddChild(SWConsoleStyle.Section("Пульт департамента"));
         if (!string.IsNullOrEmpty(state.ParentName))
             WorkList.AddChild(SWConsoleStyle.Text(
-                $"Подотчётен: {state.ParentName}" + (state.ParentActive ? string.Empty : "  ·  министерство пустует!"),
-                state.ParentActive ? SWConsoleStyle.TextDim : SWConsoleStyle.Bad, SWConsoleStyle.MonoSmall));
+                $"Подотчётен: {state.ParentName}" + (state.ParentActive ? string.Empty : ", министерство пустует!"),
+                state.ParentActive ? SWConsoleStyle.TextDim : SWConsoleStyle.Bad, SWConsoleStyle.Small));
         WorkList.AddChild(new Control { MinHeight = 4 });
 
         foreach (var meter in state.Meters)
         {
             var value = meter.Invert ? 100 - meter.Value : meter.Value;
             var color = SWConsoleStyle.ValueColor(value);
-            WorkList.AddChild(SWConsoleStyle.Text($"{meter.Label}: {meter.Value}/100 - {meter.Status}", color, SWConsoleStyle.MonoBold));
+            WorkList.AddChild(SWConsoleStyle.Text($"{meter.Label}: {meter.Value}/100 - {meter.Status}", color, SWConsoleStyle.Strong));
             WorkList.AddChild(SWConsoleStyle.Bar(meter.Value, 0, 100, color));
             WorkList.AddChild(new Control { MinHeight = 4 });
         }
@@ -207,23 +209,17 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
     private void BuildHealthcareWork(SWDepartmentWorkConsoleState state)
     {
         WorkList.AddChild(SWConsoleStyle.Text(
-            $"Бригады: свободно {state.FreeBrigades}/{state.TotalBrigades}  ·  на выезде: {state.ActiveMissions}",
-            SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
-        WorkList.AddChild(SWConsoleStyle.Text(
-            "Вызовы поступают на вкладку «ВЫЗОВЫ». Бригада возвращается через час после выезда.",
-            SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            $"Бригады: свободно {state.FreeBrigades}/{state.TotalBrigades}, на выезде: {state.ActiveMissions}",
+            SWConsoleStyle.TextBright, SWConsoleStyle.Strong));
     }
 
     private void BuildGuardWork(SWDepartmentWorkConsoleState state)
     {
         WorkList.AddChild(SWConsoleStyle.Text(
-            $"Отрядов всего: {state.TotalSquads}  ·  в резерве: {state.ReserveSquads}",
-            SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+            $"Отрядов всего: {state.TotalSquads}, в резерве: {state.ReserveSquads}",
+            SWConsoleStyle.TextBright, SWConsoleStyle.Strong));
         WorkList.AddChild(new Control { MinHeight = 6 });
-        WorkList.AddChild(SWConsoleStyle.Section("ПОСТЫ ГВАРДИИ"));
-        WorkList.AddChild(SWConsoleStyle.Text(
-            "Отряды на постах дают постоянные эффекты. Резерв нужен для исполнения ордеров.",
-            SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        WorkList.AddChild(SWConsoleStyle.Section("Посты гвардии"));
         WorkList.AddChild(new Control { MinHeight = 4 });
 
         var alt = false;
@@ -233,12 +229,12 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
             alt = !alt;
             var line = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
 
-            var name = SWConsoleStyle.Text($"{post.Name}  ·  {post.EffectLabel}", SWConsoleStyle.TextBright, SWConsoleStyle.MonoSmall);
+            var name = SWConsoleStyle.Text($"{post.Name}, {post.EffectLabel}", SWConsoleStyle.TextBright, SWConsoleStyle.Small);
             name.HorizontalExpand = true;
             name.VerticalAlignment = Control.VAlignment.Center;
             line.AddChild(name);
 
-            var count = SWConsoleStyle.Text($"{post.Assigned}/{post.Max}", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold);
+            var count = SWConsoleStyle.Text($"{post.Assigned}/{post.Max}", SWConsoleStyle.Accent, SWConsoleStyle.Strong);
             count.VerticalAlignment = Control.VAlignment.Center;
             count.Margin = new Thickness(0, 0, 6, 0);
             line.AddChild(count);
@@ -262,17 +258,14 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
 
     private void BuildArbitrageWork(SWDepartmentWorkConsoleState state)
     {
-        WorkList.AddChild(SWConsoleStyle.Text($"Закрыто дел за раунд: {state.Solved}", SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+        WorkList.AddChild(SWConsoleStyle.Text($"Закрыто дел за раунд: {state.Solved}", SWConsoleStyle.TextBright, SWConsoleStyle.Strong));
         WorkList.AddChild(new Control { MinHeight = 6 });
-        WorkList.AddChild(SWConsoleStyle.Section("ДЕЛА В ПРОИЗВОДСТВЕ"));
-        WorkList.AddChild(SWConsoleStyle.Text(
-            "Дело идёт по стадиям: зацепка, улики, арест. Каждая стадия стоит денег и рискует быть развалена давлением сверху.",
-            SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        WorkList.AddChild(SWConsoleStyle.Section("Дела в производстве"));
         WorkList.AddChild(new Control { MinHeight = 4 });
 
         if (state.Cases.Count == 0)
         {
-            WorkList.AddChild(SWConsoleStyle.Text("Новых дел нет - следователи изучают архивы.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            WorkList.AddChild(SWConsoleStyle.Text("Новых дел нет - следователи изучают архивы.", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
             return;
         }
 
@@ -282,14 +275,14 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
             card.Margin = new Thickness(0, 0, 0, 6);
             var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
 
-            box.AddChild(SWConsoleStyle.Text(arb.Name, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+            box.AddChild(SWConsoleStyle.Text(arb.Name, SWConsoleStyle.TextBright, SWConsoleStyle.Strong));
             var desc = new SWConsoleStyle.WrappingRichTextLabel(660f) { HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
             desc.SetMessage(arb.Description);
             box.AddChild(desc);
 
-            box.AddChild(SWConsoleStyle.Text(arb.StageLabel, SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall));
+            box.AddChild(SWConsoleStyle.Text(arb.StageLabel, SWConsoleStyle.Accent, SWConsoleStyle.Small));
             box.AddChild(SWConsoleStyle.Bar((arb.Stage + 1) * 33f, 0, 100, SWConsoleStyle.Accent));
-            box.AddChild(SWConsoleStyle.Text(arb.RiskLabel, SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+            box.AddChild(SWConsoleStyle.Text(arb.RiskLabel, SWConsoleStyle.Warn, SWConsoleStyle.Small));
 
             var id = arb.Id;
             var btn = SWConsoleStyle.Action($"{arb.AdvanceLabel}  ({arb.AdvanceCost} кр)",
@@ -307,17 +300,14 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
 
     private void BuildExpenditureWork(SWDepartmentWorkConsoleState state)
     {
-        WorkList.AddChild(SWConsoleStyle.Text($"Возвращено в казну за раунд: {state.Recovered} кр", SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+        WorkList.AddChild(SWConsoleStyle.Text($"Возвращено в казну за раунд: {state.Recovered} кр", SWConsoleStyle.TextBright, SWConsoleStyle.Strong));
         WorkList.AddChild(new Control { MinHeight = 6 });
-        WorkList.AddChild(SWConsoleStyle.Section("ВЕДОМОСТЬ ВЕДОМСТВ"));
-        WorkList.AddChild(SWConsoleStyle.Text(
-            "Аудит вскрывает приписки (возврат средств) и хищения (досье в Минюст). Одна проверка на ведомство в день.",
-            SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        WorkList.AddChild(SWConsoleStyle.Section("Ведомость ведомств"));
         WorkList.AddChild(new Control { MinHeight = 4 });
 
         if (state.AuditRows.Count == 0)
         {
-            WorkList.AddChild(SWConsoleStyle.Text("Ни одно ведомство не занято.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            WorkList.AddChild(SWConsoleStyle.Text("Ни одно ведомство не занято.", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
             return;
         }
 
@@ -328,13 +318,13 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
             alt = !alt;
             var line = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
 
-            var name = SWConsoleStyle.Text(row.Name, row.Color, SWConsoleStyle.MonoSmall);
+            var name = SWConsoleStyle.Text(row.Name, row.Color, SWConsoleStyle.Small);
             name.HorizontalExpand = true;
             name.VerticalAlignment = Control.VAlignment.Center;
             line.AddChild(name);
 
-            var info = SWConsoleStyle.Text($"{row.Budget} кр  ·  {row.StatusLabel}",
-                row.StatusGood ? SWConsoleStyle.Good : SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall);
+            var info = SWConsoleStyle.Text($"{row.Budget} кр, {row.StatusLabel}",
+                row.StatusGood ? SWConsoleStyle.Good : SWConsoleStyle.TextDim, SWConsoleStyle.Small);
             info.VerticalAlignment = Control.VAlignment.Center;
             info.Margin = new Thickness(0, 0, 8, 0);
             line.AddChild(info);
@@ -353,16 +343,15 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
 
     private void BuildTasks(SWDepartmentWorkConsoleState state)
     {
-        var title = state.IsHealthcare ? "ВЫЗОВЫ НА ЛИНИИ" : state.IsGuard ? "СУДЕБНЫЕ ОРДЕРА" : state.IsExpenditure ? "СИГНАЛЫ О НАРУШЕНИЯХ" : "ЗАДАЧИ";
+        var title = state.IsHealthcare ? "Вызовы на линии" : state.IsGuard ? "Судебные ордера" : state.IsExpenditure ? "Сигналы о нарушениях" : "Задачи";
         TasksList.AddChild(SWConsoleStyle.Section(title));
-        TasksList.AddChild(SWConsoleStyle.Text("Просроченные задачи закрываются с негативными последствиями.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
         TasksList.AddChild(new Control { MinHeight = 4 });
 
         if (state.Tasks.Count == 0)
         {
             TasksList.AddChild(SWConsoleStyle.Text(
-                state.IsArbitrage ? "Дела ведутся на вкладке «РАБОТА»." : "Активных задач нет.",
-                SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+                "Активных задач нет",
+                SWConsoleStyle.TextDim, SWConsoleStyle.Body));
         }
         else
         {
@@ -371,14 +360,14 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
                 var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Warn);
                 card.Margin = new Thickness(0, 0, 0, 6);
                 var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
-                box.AddChild(SWConsoleStyle.Text(task.Name, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+                box.AddChild(SWConsoleStyle.Text(task.Name, SWConsoleStyle.TextBright, SWConsoleStyle.Strong));
                 if (!string.IsNullOrWhiteSpace(task.Description))
                 {
                     var desc = new SWConsoleStyle.WrappingRichTextLabel(660f) { HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
                     desc.SetMessage(task.Description);
                     box.AddChild(desc);
                 }
-                box.AddChild(SWConsoleStyle.Text(task.TimeLabel, SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+                box.AddChild(SWConsoleStyle.Text(task.TimeLabel, SWConsoleStyle.Warn, SWConsoleStyle.Small));
 
                 var id = task.Id;
                 for (var i = 0; i < task.Options.Count; i++)
@@ -389,7 +378,7 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
                     if (opt.Effects.Count > 0)
                         row.AddChild(EffectsRow(opt.Effects));
                     if (!string.IsNullOrWhiteSpace(opt.Description))
-                        row.AddChild(SWConsoleStyle.Text(opt.Description, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                        row.AddChild(SWConsoleStyle.Text(opt.Description, SWConsoleStyle.TextDim, SWConsoleStyle.Small));
                     var label = opt.Cost > 0 ? $"{opt.Label}  ({opt.Cost} кр)" : opt.Label;
                     var color = opt.Corrupt ? SWConsoleStyle.Warn : SWConsoleStyle.Accent;
                     var btn = SWConsoleStyle.Action(label, opt.Affordable ? color : SWConsoleStyle.TextDim, !opt.Affordable);
@@ -407,23 +396,22 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
         }
 
         TasksList.AddChild(new Control { MinHeight = 10 });
-        TasksList.AddChild(SWConsoleStyle.Section("ЖУРНАЛ ДЕПАРТАМЕНТА"));
+        TasksList.AddChild(SWConsoleStyle.Section("Журнал департамента"));
         TasksList.AddChild(new Control { MinHeight = 4 });
 
         if (state.Log.Count == 0)
         {
-            TasksList.AddChild(SWConsoleStyle.Text("Записей нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            TasksList.AddChild(SWConsoleStyle.Text("Записей нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
             return;
         }
 
         foreach (var line in state.Log)
-            TasksList.AddChild(SWConsoleStyle.Text(line, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            TasksList.AddChild(SWConsoleStyle.Text(line, SWConsoleStyle.TextDim, SWConsoleStyle.Small));
     }
 
     private void BuildOps(SWDepartmentWorkConsoleState state)
     {
-        OpsList.AddChild(SWConsoleStyle.Section("ЭКСПРЕСС-ОПЕРАЦИИ"));
-        OpsList.AddChild(SWConsoleStyle.Text("Разовые акции за счёт казны департамента. Откаты в игровых часах.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        OpsList.AddChild(SWConsoleStyle.Section("Экспресс-операции"));
         OpsList.AddChild(new Control { MinHeight = 6 });
 
         foreach (var op in state.Ops)
@@ -433,13 +421,13 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
             var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
 
             var top = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-            var name = SWConsoleStyle.Text(op.Name, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold);
+            var name = SWConsoleStyle.Text(op.Name, SWConsoleStyle.TextBright, SWConsoleStyle.Strong);
             name.HorizontalExpand = true;
             top.AddChild(name);
-            top.AddChild(SWConsoleStyle.Text(op.Cost > 0 ? $"{op.Cost} кр" : "бесплатно", SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+            top.AddChild(SWConsoleStyle.Text(op.Cost > 0 ? $"{op.Cost} кр" : "бесплатно", SWConsoleStyle.Warn, SWConsoleStyle.Small));
             box.AddChild(top);
 
-            box.AddChild(SWConsoleStyle.Text(op.Description, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            box.AddChild(SWConsoleStyle.Text(op.Description, SWConsoleStyle.TextDim, SWConsoleStyle.Small));
 
             var id = op.Id;
             var btn = SWConsoleStyle.Action(op.Available ? "Выполнить" : op.Status, op.Available ? SWConsoleStyle.Good : SWConsoleStyle.TextDim, !op.Available);
@@ -456,13 +444,13 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
 
     private void BuildRequests(SWDepartmentWorkConsoleState state)
     {
-        RequestsList.AddChild(SWConsoleStyle.Section("ЗАЯВКИ СЕНАТОРОВ"));
-        RequestsList.AddChild(SWConsoleStyle.Text($"Админ-ресурс: {state.Admin}  ·  аудит: {state.AuditCost}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        RequestsList.AddChild(SWConsoleStyle.Section("Заявки сенаторов"));
+        RequestsList.AddChild(SWConsoleStyle.Text($"Админ-ресурс: {state.Admin}, аудит: {state.AuditCost}", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
         RequestsList.AddChild(new Control { MinHeight = 4 });
 
         if (state.Requests.Count == 0)
         {
-            RequestsList.AddChild(SWConsoleStyle.Text("Обращений в департамент нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            RequestsList.AddChild(SWConsoleStyle.Text("Обращений в департамент нет.", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
             return;
         }
 
@@ -471,8 +459,8 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
             var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
             card.Margin = new Thickness(0, 0, 0, 6);
             var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
-            box.AddChild(SWConsoleStyle.Text(req.ProblemName, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
-            box.AddChild(SWConsoleStyle.Text($"{req.OwnerLabel}  ·  {req.DeadlineLabel}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            box.AddChild(SWConsoleStyle.Text(req.ProblemName, SWConsoleStyle.TextBright, SWConsoleStyle.Strong));
+            box.AddChild(SWConsoleStyle.Text($"{req.OwnerLabel}, {req.DeadlineLabel}", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
             if (!string.IsNullOrWhiteSpace(req.ProblemDescription))
             {
                 var desc = new SWConsoleStyle.WrappingRichTextLabel(660f) { HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
@@ -480,9 +468,9 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
                 box.AddChild(desc);
             }
 
-            box.AddChild(SWConsoleStyle.Text($"Проверка: {req.AuditLabel}", req.Audited ? SWConsoleStyle.Good : SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            box.AddChild(SWConsoleStyle.Text($"Проверка: {req.AuditLabel}", req.Audited ? SWConsoleStyle.Good : SWConsoleStyle.TextDim, SWConsoleStyle.Small));
             if (req.Audited && !string.IsNullOrWhiteSpace(req.IssueDescription))
-                box.AddChild(SWConsoleStyle.Text(req.IssueDescription, SWConsoleStyle.Warn, SWConsoleStyle.MonoSmall));
+                box.AddChild(SWConsoleStyle.Text(req.IssueDescription, SWConsoleStyle.Warn, SWConsoleStyle.Small));
 
             var id = req.Id;
             var top = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 3, 0, 0) };
@@ -521,7 +509,7 @@ public sealed partial class SWDepartmentWorkConsoleMenu : FancyWindow
         var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
         foreach (var e in effects)
         {
-            var label = SWConsoleStyle.Text($"{e.StatName} {e.Delta:+0;-0}", e.Color, SWConsoleStyle.MonoSmall);
+            var label = SWConsoleStyle.Text($"{e.StatName} {e.Delta:+0;-0}", e.Color, SWConsoleStyle.Small);
             label.Margin = new Thickness(0, 0, 10, 0);
             row.AddChild(label);
         }

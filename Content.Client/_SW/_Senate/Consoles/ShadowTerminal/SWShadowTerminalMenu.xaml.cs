@@ -16,18 +16,21 @@ public sealed partial class SWShadowTerminalMenu : FancyWindow
     public SWShadowTerminalMenu(SWShadowTerminalBoundUserInterface owner)
     {
         RobustXamlLoader.Load(this);
+        TitleClass = "LabelKeyText";
         _owner = owner;
 
         SWConsoleStyle.StyleRoot(RootPanel);
         SWConsoleStyle.StyleHeader(HeaderPanel);
-        HeaderTitle.FontOverride = SWConsoleStyle.MonoBold;
+        HeaderNetwork.FontOverride = SWConsoleStyle.Small;
+        HeaderNetwork.FontColorOverride = SWConsoleStyle.Brass;
+        HeaderTitle.FontOverride = SWConsoleStyle.Header;
         HeaderTitle.FontColorOverride = SWConsoleStyle.Bad;
-        HeaderTitle.Text = "ТЕНЕВОЙ КАНАЛ СВЯЗИ";
-        BalanceLabel.FontOverride = SWConsoleStyle.Mono;
+        HeaderTitle.Text = "Теневой канал связи";
+        BalanceLabel.FontOverride = SWConsoleStyle.Body;
         BalanceLabel.FontColorOverride = SWConsoleStyle.TextBright;
-        StatusLabel.FontOverride = SWConsoleStyle.Mono;
-        NoticeLabel.FontOverride = SWConsoleStyle.MonoSmall;
-        TargetCaption.FontOverride = SWConsoleStyle.MonoSmall;
+        StatusLabel.FontOverride = SWConsoleStyle.Body;
+        NoticeLabel.FontOverride = SWConsoleStyle.Small;
+        TargetCaption.FontOverride = SWConsoleStyle.Small;
         TargetCaption.FontColorOverride = SWConsoleStyle.TextDim;
         TargetCaption.Text = "Цель контракта (для защиты персоны, похищения, ликвидации):";
 
@@ -42,7 +45,7 @@ public sealed partial class SWShadowTerminalMenu : FancyWindow
     {
         _state = state;
 
-        BalanceLabel.Text = $"Оператор: {state.UserName}   ·   личный счёт: {state.Balance} кр.";
+        BalanceLabel.Text = $"Оператор: {state.UserName}, личный счёт: {state.Balance} кр.";
         StatusLabel.Text = state.ContractActive ? state.ContractLabel : "Канал свободен. Синдикат ждёт предложений.";
         StatusLabel.FontColorOverride = state.ContractActive ? SWConsoleStyle.Warn : SWConsoleStyle.TextDim;
 
@@ -99,16 +102,16 @@ public sealed partial class SWShadowTerminalMenu : FancyWindow
         var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
 
         var info = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
-        info.AddChild(SWConsoleStyle.Text(title, SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
-        info.AddChild(SWConsoleStyle.Text(desc, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        info.AddChild(SWConsoleStyle.Text(title, SWConsoleStyle.TextBright, SWConsoleStyle.Strong));
+        info.AddChild(SWConsoleStyle.Text(desc, SWConsoleStyle.TextDim, SWConsoleStyle.Small));
         box.AddChild(info);
 
-        var priceLabel = SWConsoleStyle.Text($"{price} кр.", SWConsoleStyle.Warn, SWConsoleStyle.MonoBold);
+        var priceLabel = SWConsoleStyle.Text($"{price} кр.", SWConsoleStyle.Warn, SWConsoleStyle.Strong);
         priceLabel.VerticalAlignment = Control.VAlignment.Center;
         priceLabel.Margin = new Thickness(0, 0, 10, 0);
         box.AddChild(priceLabel);
 
-        var btn = SWConsoleStyle.Action("НАНЯТЬ", SWConsoleStyle.Bad);
+        var btn = SWConsoleStyle.Action("Нанять", SWConsoleStyle.Bad);
         btn.VerticalAlignment = Control.VAlignment.Center;
         btn.Disabled = _state == null
             || _state.ContractActive

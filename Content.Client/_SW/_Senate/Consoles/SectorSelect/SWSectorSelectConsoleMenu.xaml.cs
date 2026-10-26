@@ -16,14 +16,17 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
     public SWSectorSelectConsoleMenu(SWSectorSelectConsoleBoundUserInterface owner)
     {
         RobustXamlLoader.Load(this);
+        TitleClass = "LabelKeyText";
         _owner = owner;
 
         SWConsoleStyle.StyleRoot(RootPanel);
         SWConsoleStyle.StyleHeader(HeaderPanel);
-        HeaderTitle.FontOverride = SWConsoleStyle.MonoBold;
-        HeaderTitle.FontColorOverride = SWConsoleStyle.Accent;
-        HeaderTitle.Text = "ВЫБОР СЕКТОРА";
-        StatusLabel.FontOverride = SWConsoleStyle.Mono;
+        HeaderNetwork.FontOverride = SWConsoleStyle.Small;
+        HeaderNetwork.FontColorOverride = SWConsoleStyle.Brass;
+        HeaderTitle.FontOverride = SWConsoleStyle.Header;
+        HeaderTitle.FontColorOverride = SWConsoleStyle.TextBright;
+        HeaderTitle.Text = "Выбор сектора";
+        StatusLabel.FontOverride = SWConsoleStyle.Body;
     }
 
     public void SetState(SWSectorSelectConsoleState state)
@@ -32,7 +35,7 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
 
         if (!state.HasCard)
         {
-            SetStatus("Вставьте ID-карту, чтобы выбрать сектор.", SWConsoleStyle.TextDim);
+            SetStatus("ID-карта не установлена", SWConsoleStyle.TextDim);
             return;
         }
 
@@ -48,7 +51,7 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
             return;
         }
 
-        SetStatus("Выберите сектор для представительства:", SWConsoleStyle.TextBright);
+        SetStatus("Представительство", SWConsoleStyle.TextBright);
 
         foreach (var sector in state.Sectors)
             SectorGrid.AddChild(MakeSectorButton(sector));
@@ -65,13 +68,13 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
         var claimed = sector.Claimed;
         var btn = new Button
         {
-            Text = claimed ? $"{sector.Name}  · ЗАНЯТО" : sector.Name,
+            Text = claimed ? $"{sector.Name}, ЗАНЯТО" : sector.Name,
             HorizontalExpand = true,
             Disabled = claimed,
             TextAlign = Label.AlignMode.Left,
         };
 
-        btn.Label.FontOverride = SWConsoleStyle.MonoBold;
+        btn.Label.FontOverride = SWConsoleStyle.Strong;
         btn.Label.FontColorOverride = claimed ? SWConsoleStyle.TextDim : sector.Color;
         btn.StyleBoxOverride = new StyleBoxFlat
         {

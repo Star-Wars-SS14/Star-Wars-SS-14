@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using Content.Client.UserInterface.Controls;
 using Content.Shared._SW._Senate;
@@ -18,27 +19,33 @@ public sealed partial class SWJudicialWorkConsoleMenu : FancyWindow
     private SWJudicialWorkConsoleState? _state;
     private int _selectedLaw = -1;
     private bool _confirmResign;
+    private bool _caseDecision;
+    private int? _currentCaseId;
+    private readonly SWConsoleDocuments _registryDocuments = new();
 
     public SWJudicialWorkConsoleMenu(SWJudicialWorkConsoleBoundUserInterface owner)
     {
         RobustXamlLoader.Load(this);
+        TitleClass = "LabelKeyText";
         _owner = owner;
 
         SWConsoleStyle.StyleRoot(RootPanel);
         SWConsoleStyle.StyleHeader(HeaderPanel);
+        HeaderNetwork.FontOverride = SWConsoleStyle.Small;
+        HeaderNetwork.FontColorOverride = SWConsoleStyle.Brass;
         SWConsoleStyle.StyleTabBar(TabBarPanel);
-        HeaderTitle.FontOverride = SWConsoleStyle.MonoBold;
-        HeaderTitle.FontColorOverride = SWConsoleStyle.Accent;
-        HeaderTitle.Text = "ВЕРХОВНЫЙ СУД РЕСПУБЛИКИ";
-        HeaderClock.FontOverride = SWConsoleStyle.Mono;
+        HeaderTitle.FontOverride = SWConsoleStyle.Header;
+        HeaderTitle.FontColorOverride = SWConsoleStyle.TextBright;
+        HeaderTitle.Text = "Верховный суд Республики";
+        HeaderClock.FontOverride = SWConsoleStyle.Body;
         HeaderClock.FontColorOverride = SWConsoleStyle.TextBright;
 
         _tabs = new (string, Control)[]
         {
-            ("ДЕЛО", CaseTab),
-            ("РЕЕСТР", RegistryTab),
-            ("ЗАКОНЫ", LawsTab),
-            ("СОСТАВ", BenchTab),
+            ("Дело", CaseTab),
+            ("Реестр", RegistryTab),
+            ("Законы", LawsTab),
+            ("Состав", BenchTab),
         };
 
         _tabButtons = new Button[_tabs.Length];
@@ -69,10 +76,10 @@ public sealed partial class SWJudicialWorkConsoleMenu : FancyWindow
         HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "-" : state.GameTime;
 
         StatusStrip.RemoveAllChildren();
-        var who = SWConsoleStyle.Text(state.HasCard ? state.RoleLabel : "Вставьте судебную карту", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold);
+        var who = SWConsoleStyle.Text(state.HasCard ? state.RoleLabel : "Вставьте судебную карту", SWConsoleStyle.Accent, SWConsoleStyle.Strong);
         who.VerticalAlignment = Control.VAlignment.Center;
         StatusStrip.AddChild(who);
-        var bench = SWConsoleStyle.Text($"   {state.BenchLabel}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall);
+        var bench = SWConsoleStyle.Text($"   {state.BenchLabel}", SWConsoleStyle.TextDim, SWConsoleStyle.Small);
         bench.VerticalAlignment = Control.VAlignment.Center;
         StatusStrip.AddChild(bench);
 
@@ -90,71 +97,66 @@ public sealed partial class SWJudicialWorkConsoleMenu : FancyWindow
 
         if (!state.HasCard)
         {
-            CaseList.AddChild(SWConsoleStyle.Text("Доступ разрешён судьям, обвинителю и защитнику.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            CaseList.AddChild(SWConsoleStyle.Text("Доступ разрешён судьям, обвинителю и защитнику.", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
             return;
         }
 
         if (!state.InOffice)
         {
-            CaseList.AddChild(SWConsoleStyle.Text("Перед работой с делами необходимо принять судебные полномочия во вкладке «Состав».", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            CaseList.AddChild(SWConsoleStyle.Text("Судебные полномочия не приняты", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
             return;
         }
 
         if (state.Notices.Count > 0)
         {
-            CaseList.AddChild(SWConsoleStyle.Section("УВЕДОМЛЕНИЯ"));
+            CaseList.AddChild(SWConsoleStyle.Section("Уведомления"));
             foreach (var notice in state.Notices)
-                CaseList.AddChild(SWConsoleStyle.Text(notice, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                CaseList.AddChild(SWConsoleStyle.Text(notice, SWConsoleStyle.TextDim, SWConsoleStyle.Small));
             CaseList.AddChild(new Control { MinHeight = 8 });
         }
 
         if (state.CurrentCase is not { } c)
         {
-            CaseList.AddChild(SWConsoleStyle.Text("Текущее дело отсутствует. Утреннее дело открывается в 07:00; вечернее - в 14:00.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            CaseList.AddChild(SWConsoleStyle.Text("Нет текущего дела", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
             return;
         }
 
-        CaseList.AddChild(SWConsoleStyle.Section($"{c.Number} - {c.TypeLabel}"));
-        CaseList.AddChild(new Control { MinHeight = 4 });
-
-        var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
-        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
-
-        box.AddChild(SWConsoleStyle.Wrap(c.Title, SWConsoleStyle.TextBright, 720f));
-        box.AddChild(SWConsoleStyle.Text(c.Parties, SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
-        box.AddChild(SWConsoleStyle.Text($"{c.HearingLabel}   |   председатель: {c.Presiding}   |   {c.StatusLabel}",
-            SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
-        box.AddChild(new Control { MinHeight = 6 });
-        box.AddChild(SWConsoleStyle.Wrap(c.Description, SWConsoleStyle.TextBright, 720f));
-        box.AddChild(new Control { MinHeight = 6 });
-
-        if (c.Hints.Count > 0)
+        if (_currentCaseId != c.Id)
         {
-            box.AddChild(SWConsoleStyle.Text("ПОЗИЦИИ СТОРОН", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
-            foreach (var hint in c.Hints)
-                box.AddChild(SWConsoleStyle.Wrap($"- {hint}", SWConsoleStyle.TextDim, 720f));
-            box.AddChild(new Control { MinHeight = 6 });
+            _currentCaseId = c.Id;
+            _caseDecision = false;
         }
-
+        var navigation = new WrapContainer { SeparationOverride = 6 };
+        var materials = SWConsoleStyle.TabButton("Материалы дела");
+        var decision = SWConsoleStyle.TabButton("Решение суда");
+        SWConsoleStyle.StyleTabButton(materials, !_caseDecision);
+        SWConsoleStyle.StyleTabButton(decision, _caseDecision);
+        materials.OnPressed += _ => { _caseDecision = false; if (_state != null) BuildCase(_state); };
+        decision.OnPressed += _ => { _caseDecision = true; if (_state != null) BuildCase(_state); };
+        navigation.AddChild(materials);
+        navigation.AddChild(decision);
+        CaseList.AddChild(navigation);
+        if (!_caseDecision)
+        {
+            CaseList.AddChild(SWConsoleDocument.CourtCase(c));
+            return;
+        }
+        var box = SWConsoleDocument.Body(c.Title, string.Empty);
         if (c.OutcomePlaintiff.Length > 0)
-            box.AddChild(SWConsoleStyle.Wrap($"Решение в пользу истца: {c.OutcomePlaintiff}", SWConsoleStyle.Good, 720f));
+            box.AddChild(SWConsoleStyle.Wrap($"В пользу истца: {c.OutcomePlaintiff}", SWConsoleStyle.Good));
         if (c.OutcomeDefendant.Length > 0)
-            box.AddChild(SWConsoleStyle.Wrap($"Решение в пользу ответчика: {c.OutcomeDefendant}", SWConsoleStyle.Warn, 720f));
-
+            box.AddChild(SWConsoleStyle.Wrap($"В пользу ответчика: {c.OutcomeDefendant}", SWConsoleStyle.Warn));
         if (c.Verdict.Length > 0)
-        {
-            box.AddChild(new Control { MinHeight = 6 });
-            box.AddChild(SWConsoleStyle.Text($"ВЕРДИКТ: {c.Verdict}", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold));
-        }
+            box.AddChild(SWConsoleStyle.Wrap($"Вердикт: {c.Verdict}", SWConsoleStyle.Accent));
 
         if (state.IsJudge && !c.Closed)
         {
             box.AddChild(new Control { MinHeight = 8 });
             box.AddChild(SWConsoleStyle.Text($"Подано голосов: истец - {c.VotesPlaintiff}, ответчик - {c.VotesDefendant}"
                 + (c.MyVote != 0 ? $"   |   ваш голос: {(c.MyVote == 1 ? "истец" : "ответчик")}" : string.Empty),
-                SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                SWConsoleStyle.TextDim, SWConsoleStyle.Small));
 
-            var buttons = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 3, 0, 0) };
+            var buttons = new WrapContainer { SeparationOverride = 8, CrossSeparationOverride = 8, Margin = new Thickness(0, 8, 0, 0) };
             var plaintiff = SWConsoleStyle.Action("В пользу истца", SWConsoleStyle.Good);
             plaintiff.Disabled = !c.CanVote;
             var id = c.Id;
@@ -177,51 +179,29 @@ public sealed partial class SWJudicialWorkConsoleMenu : FancyWindow
             }
 
             if (!c.CanVote)
-                box.AddChild(SWConsoleStyle.Text("Голосование открыто с начала слушания до окончания совещания.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                box.AddChild(SWConsoleStyle.Text("Голосование открыто с начала слушания до окончания совещания.", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
             else
-                box.AddChild(SWConsoleStyle.Text("Голос можно изменить до закрытия голосования.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                box.AddChild(SWConsoleStyle.Text("Голос можно изменить до закрытия голосования.", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
         }
 
-        card.AddChild(box);
-        CaseList.AddChild(card);
+        CaseList.AddChild(new SWConsoleColumns(box, SWConsoleDocument.CourtMetadata(c)));
     }
 
     // --- РЕЕСТР ---
 
     private void BuildRegistry(SWJudicialWorkConsoleState state)
     {
-        RegistryList.RemoveAllChildren();
-        RegistryList.AddChild(SWConsoleStyle.Section("РЕЕСТР ДЕЛ"));
-        RegistryList.AddChild(new Control { MinHeight = 4 });
-
-        if (state.Registry.Count == 0)
-        {
-            RegistryList.AddChild(SWConsoleStyle.Text("В реестре нет дел.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
-            return;
-        }
-
-        foreach (var c in state.Registry)
-        {
-            var row = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, c.Closed
-                ? c.Verdict.Contains("не вынесено") || c.Verdict.Contains("Не рассмотрено") ? SWConsoleStyle.Bad : SWConsoleStyle.Good
-                : SWConsoleStyle.Warn);
-            row.Margin = new Thickness(0, 0, 0, 4);
-            var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
-            box.AddChild(SWConsoleStyle.Wrap($"{c.Number}: {c.Title}", SWConsoleStyle.TextBright, 720f));
-            box.AddChild(SWConsoleStyle.Text($"{c.Parties}   |   {c.HearingLabel}", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
-            box.AddChild(SWConsoleStyle.Text(c.Verdict.Length > 0 ? c.Verdict : c.StatusLabel,
-                c.Verdict.Length > 0 ? SWConsoleStyle.Accent : SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
-            row.AddChild(box);
-            RegistryList.AddChild(row);
-        }
+        if (_registryDocuments.Parent == null)
+            RegistryList.AddChild(_registryDocuments);
+        _registryDocuments.SetDocuments(state.Registry.Select(entry => new SWConsoleDocumentEntry(
+            entry.Id, entry.Title, $"{entry.Number}, {entry.StatusLabel}", SWConsoleDocument.Revision(entry),
+            () => SWConsoleDocument.CourtCase(entry))));
     }
-
-    // --- ЗАКОНЫ ---
 
     private void BuildLaws(SWJudicialWorkConsoleState state)
     {
         LawsList.RemoveAllChildren();
-        LawsList.AddChild(SWConsoleStyle.Section("КОНСТИТУЦИОННЫЙ НАДЗОР"));
+        LawsList.AddChild(SWConsoleStyle.Section("Конституционный надзор"));
         LawsList.AddChild(new Control { MinHeight = 4 });
 
         if (state.Review is { } review)
@@ -231,7 +211,7 @@ public sealed partial class SWJudicialWorkConsoleMenu : FancyWindow
             box.AddChild(SWConsoleStyle.Wrap($"Конституционная проверка: «{review.LawName}»", SWConsoleStyle.TextBright, 720f));
             box.AddChild(SWConsoleStyle.Text($"За признание неконституционным: {review.VotesFor}   |   против: {review.VotesAgainst}"
                 + (review.MyVote != 0 ? $"   |   ваш голос: {(review.MyVote == 1 ? "отменить" : "оставить")}" : string.Empty),
-                SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                SWConsoleStyle.TextDim, SWConsoleStyle.Small));
 
             if (review.CanVote)
             {
@@ -253,13 +233,13 @@ public sealed partial class SWJudicialWorkConsoleMenu : FancyWindow
 
         if (!state.IsChief)
         {
-            LawsList.AddChild(SWConsoleStyle.Text("Конституционную проверку может открыть только Верховный Судья.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            LawsList.AddChild(SWConsoleStyle.Text("Конституционную проверку может открыть только Верховный Судья.", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
             return;
         }
 
         if (state.ReviewableLaws.Count == 0)
         {
-            LawsList.AddChild(SWConsoleStyle.Text("Нет действующих законов, доступных для проверки.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            LawsList.AddChild(SWConsoleStyle.Text("Нет действующих законов", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
             return;
         }
 
@@ -298,7 +278,7 @@ public sealed partial class SWJudicialWorkConsoleMenu : FancyWindow
     private void BuildBench(SWJudicialWorkConsoleState state)
     {
         BenchList.RemoveAllChildren();
-        BenchList.AddChild(SWConsoleStyle.Section("СОСТАВ ВЕРХОВНОГО СУДА"));
+        BenchList.AddChild(SWConsoleStyle.Section("Состав верховного суда"));
         BenchList.AddChild(new Control { MinHeight = 4 });
 
         if (state.HasCard && !state.InOffice)
@@ -306,7 +286,7 @@ public sealed partial class SWJudicialWorkConsoleMenu : FancyWindow
             var office = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, state.CanTakeOffice ? SWConsoleStyle.Good : SWConsoleStyle.Warn);
             office.Margin = new Thickness(0, 0, 0, 8);
             var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
-            box.AddChild(SWConsoleStyle.Text(state.TakeOfficeLabel, SWConsoleStyle.TextBright, SWConsoleStyle.Mono));
+            box.AddChild(SWConsoleStyle.Text(state.TakeOfficeLabel, SWConsoleStyle.TextBright, SWConsoleStyle.Body));
 
             if (state.CanTakeOffice)
             {
@@ -317,7 +297,7 @@ public sealed partial class SWJudicialWorkConsoleMenu : FancyWindow
             }
             else
             {
-                box.AddChild(SWConsoleStyle.Text("Невозможно принять полномочия: должность занята или несовместима с текущим статусом.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                box.AddChild(SWConsoleStyle.Text("Должность занята или несовместима с текущим статусом", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
             }
 
             office.AddChild(box);
@@ -325,7 +305,7 @@ public sealed partial class SWJudicialWorkConsoleMenu : FancyWindow
         }
 
         if (state.Judges.Count == 0)
-            BenchList.AddChild(SWConsoleStyle.Text("Состав суда не сформирован.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            BenchList.AddChild(SWConsoleStyle.Text("Состав суда не сформирован.", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
 
         foreach (var judge in state.Judges)
         {
@@ -333,19 +313,19 @@ public sealed partial class SWJudicialWorkConsoleMenu : FancyWindow
             row.Margin = new Thickness(0, 0, 0, 3);
             row.AddChild(SWConsoleStyle.Text(
                 judge.IsChief ? $"Верховный Судья {judge.Name}" : $"Республиканский Судья {judge.Name}",
-                judge.IsChief ? SWConsoleStyle.Accent : SWConsoleStyle.TextBright, SWConsoleStyle.Mono));
+                judge.IsChief ? SWConsoleStyle.Accent : SWConsoleStyle.TextBright, SWConsoleStyle.Body));
             BenchList.AddChild(row);
         }
 
         BenchList.AddChild(new Control { MinHeight = 6 });
-        BenchList.AddChild(SWConsoleStyle.Text($"Обвинитель: {(state.ProsecutorName.Length > 0 ? state.ProsecutorName : "не назначен")}", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
-        BenchList.AddChild(SWConsoleStyle.Text($"Защитник: {(state.DefenderName.Length > 0 ? state.DefenderName : "не назначен")}", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+        BenchList.AddChild(SWConsoleStyle.Text($"Обвинитель: {(state.ProsecutorName.Length > 0 ? state.ProsecutorName : "не назначен")}", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
+        BenchList.AddChild(SWConsoleStyle.Text($"Защитник: {(state.DefenderName.Length > 0 ? state.DefenderName : "не назначен")}", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
 
         if (state.Ambitions.Count > 0)
         {
             BenchList.AddChild(new Control { MinHeight = 10 });
-            BenchList.AddChild(SWConsoleStyle.Section("ВАШИ АМБИЦИИ"));
-            BenchList.AddChild(SWConsoleStyle.Text("Личные цели раунда. Информация доступна только вам.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            BenchList.AddChild(SWConsoleStyle.Section("Ваши амбиции"));
+            BenchList.AddChild(SWConsoleStyle.Text("Личные цели", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
             BenchList.AddChild(new Control { MinHeight = 4 });
             foreach (var ambition in state.Ambitions)
             {
@@ -356,7 +336,7 @@ public sealed partial class SWJudicialWorkConsoleMenu : FancyWindow
                 abox.AddChild(SWConsoleStyle.Wrap(ambition.Description, SWConsoleStyle.TextDim, 720f));
                 abox.AddChild(SWConsoleStyle.Text(
                     (ambition.Met ? "выполнено" : "не выполнено") + $"   |   {ambition.Progress}",
-                    ambition.Met ? SWConsoleStyle.Good : SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                    ambition.Met ? SWConsoleStyle.Good : SWConsoleStyle.TextDim, SWConsoleStyle.Small));
                 row.AddChild(abox);
                 BenchList.AddChild(row);
             }
@@ -381,7 +361,7 @@ public sealed partial class SWJudicialWorkConsoleMenu : FancyWindow
             };
             BenchList.AddChild(resign);
             BenchList.AddChild(SWConsoleStyle.Text("Принудительное прекращение полномочий судьи возможно только по приговору суда.",
-                SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                SWConsoleStyle.TextDim, SWConsoleStyle.Small));
         }
     }
 }

@@ -41,30 +41,32 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
     public SWPlannerConsoleMenu(SWPlannerConsoleBoundUserInterface owner)
     {
         RobustXamlLoader.Load(this);
+        TitleClass = "LabelKeyText";
         _owner = owner;
 
         SWConsoleStyle.StyleRoot(RootPanel);
         SWConsoleStyle.StyleHeader(HeaderPanel);
+        HeaderNetwork.FontOverride = SWConsoleStyle.Small;
+        HeaderNetwork.FontColorOverride = SWConsoleStyle.Brass;
         SWConsoleStyle.StyleTabBar(TabBarPanel);
-        HeaderTitle.FontOverride = SWConsoleStyle.MonoBold;
-        HeaderTitle.FontColorOverride = SWConsoleStyle.Accent;
-        HeaderTitle.Text = "ПЛАНИРОВЩИК СЕНАТА";
-        LiveDot.PanelOverride = new StyleBoxFlat { BackgroundColor = SWConsoleStyle.Good };
-        HeaderClock.FontOverride = SWConsoleStyle.Mono;
+        HeaderTitle.FontOverride = SWConsoleStyle.Header;
+        HeaderTitle.FontColorOverride = SWConsoleStyle.TextBright;
+        HeaderTitle.Text = "Планировщик сената";
+        HeaderClock.FontOverride = SWConsoleStyle.Body;
         HeaderClock.FontColorOverride = SWConsoleStyle.TextBright;
 
         foreach (var header in new[] { MeetFormHeader, InviteesHeader, BlockFormHeader })
         {
-            header.FontOverride = SWConsoleStyle.MonoBold;
+            header.FontOverride = SWConsoleStyle.Strong;
             header.FontColorOverride = SWConsoleStyle.Accent;
         }
 
         _tabs = new (string, Control)[]
         {
-            ("МОЙ ДЕНЬ", DayTab),
+            ("Мой день", DayTab),
             ("ЛЮДИ", PeopleTab),
-            ("НОВАЯ ВСТРЕЧА", MeetTab),
-            ("МОЙ ГРАФИК", BlockTab),
+            ("Новая встреча", MeetTab),
+            ("Мой график", BlockTab),
         };
 
         _tabButtons = new Button[_tabs.Length];
@@ -156,7 +158,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
 
     private static void StyleButton(Button btn, Color color)
     {
-        btn.Label.FontOverride = SWConsoleStyle.MonoBold;
+        btn.Label.FontOverride = SWConsoleStyle.Strong;
         btn.Label.FontColorOverride = color;
     }
 
@@ -212,11 +214,11 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
             DayList.RemoveAllChildren();
             if (state.CardInserted)
             {
-                DayList.AddChild(SWConsoleStyle.Text("Карта не опознана: нет имени владельца и закреплённой должности.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
-                DayList.AddChild(SWConsoleStyle.Text("Закрепите за картой сектор или ведомство - планировщик опознает вас по должности.", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                DayList.AddChild(SWConsoleStyle.Text("Карта не опознана: нет имени владельца и закреплённой должности.", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
+                DayList.AddChild(SWConsoleStyle.Text("Должность не назначена", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
             }
             else
-                DayList.AddChild(SWConsoleStyle.Text("Вставьте ID-карту.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+                DayList.AddChild(SWConsoleStyle.Text("Вставьте ID-карту.", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
             PeopleList.RemoveAllChildren();
             BlockList.RemoveAllChildren();
             return;
@@ -242,7 +244,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
     {
         StatusStrip.RemoveAllChildren();
 
-        var who = SWConsoleStyle.Text(state.HasCard ? state.Me : state.CardInserted ? "карта не опознана" : "нет карты", SWConsoleStyle.Accent, SWConsoleStyle.MonoBold);
+        var who = SWConsoleStyle.Text(state.HasCard ? state.Me : state.CardInserted ? "карта не опознана" : "нет карты", SWConsoleStyle.Accent, SWConsoleStyle.Strong);
         who.VerticalAlignment = Control.VAlignment.Center;
         StatusStrip.AddChild(who);
 
@@ -250,7 +252,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
         {
             var current = FindCurrent(state);
             var text = current != null ? $"   сейчас: {current}" : "   сейчас: свободно";
-            var now = SWConsoleStyle.Text(text, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall);
+            var now = SWConsoleStyle.Text(text, SWConsoleStyle.TextDim, SWConsoleStyle.Small);
             now.VerticalAlignment = Control.VAlignment.Center;
             StatusStrip.AddChild(now);
         }
@@ -277,16 +279,16 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
 
         if (state.Notices.Count > 0)
         {
-            DayList.AddChild(SWConsoleStyle.Section("УВЕДОМЛЕНИЯ"));
+            DayList.AddChild(SWConsoleStyle.Section("Уведомления"));
             foreach (var notice in state.Notices)
-                DayList.AddChild(SWConsoleStyle.Text(notice, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+                DayList.AddChild(SWConsoleStyle.Text(notice, SWConsoleStyle.TextDim, SWConsoleStyle.Small));
             DayList.AddChild(new Control { MinHeight = 8 });
         }
 
         var invites = state.Meetings.Where(m => m.Invited && !m.IsHost && m.MyStatus == SWInviteStatus.Pending).ToList();
         if (invites.Count > 0)
         {
-            DayList.AddChild(SWConsoleStyle.Section("ВХОДЯЩИЕ ПРИГЛАШЕНИЯ"));
+            DayList.AddChild(SWConsoleStyle.Section("Входящие приглашения"));
             DayList.AddChild(new Control { MinHeight = 4 });
             foreach (var meeting in invites)
                 DayList.AddChild(BuildInviteCard(state, meeting));
@@ -296,14 +298,14 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
         var mine = state.Meetings.Where(m => m.IsHost || m.MyStatus == SWInviteStatus.Accepted).ToList();
         if (mine.Count > 0)
         {
-            DayList.AddChild(SWConsoleStyle.Section("МОИ ВСТРЕЧИ"));
+            DayList.AddChild(SWConsoleStyle.Section("Мои встречи"));
             DayList.AddChild(new Control { MinHeight = 4 });
             foreach (var meeting in mine)
                 DayList.AddChild(BuildMeetingCard(state, meeting));
             DayList.AddChild(new Control { MinHeight = 8 });
         }
 
-        DayList.AddChild(SWConsoleStyle.Section(_myDay == 0 ? "РАСПОРЯДОК - СЕГОДНЯ" : "РАСПОРЯДОК - ЗАВТРА"));
+        DayList.AddChild(SWConsoleStyle.Section(_myDay == 0 ? "Распорядок - сегодня" : "Распорядок - завтра"));
         DayList.AddChild(new Control { MinHeight = 4 });
         BuildTimeline(DayList, _myDay == 0 ? state.MyItemsToday : state.MyItemsTomorrow, _myDay == 0 ? state.NowSlot : -1);
     }
@@ -314,14 +316,14 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
         card.Margin = new Thickness(0, 0, 0, 6);
         var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
 
-        box.AddChild(SWConsoleStyle.Text($"{meeting.Title}  ·  {DayName(state, meeting.Day)} {SWPlannerSlots.Range(meeting.StartSlot, meeting.Duration)}",
-            SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
-        box.AddChild(SWConsoleStyle.Text(MeetingSubLine(meeting), SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        box.AddChild(SWConsoleStyle.Text($"{meeting.Title}, {DayName(state, meeting.Day)} {SWPlannerSlots.Range(meeting.StartSlot, meeting.Duration)}",
+            SWConsoleStyle.TextBright, SWConsoleStyle.Strong));
+        box.AddChild(SWConsoleStyle.Text(MeetingSubLine(meeting), SWConsoleStyle.TextDim, SWConsoleStyle.Small));
         if (!string.IsNullOrWhiteSpace(meeting.Description))
-            box.AddChild(SWConsoleStyle.Text(meeting.Description, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            box.AddChild(SWConsoleStyle.Text(meeting.Description, SWConsoleStyle.TextDim, SWConsoleStyle.Small));
 
         if (SWPlannerSlots.Overlaps(MyBusy(state, meeting.Day) & ~SWPlannerSlots.Mask(meeting.StartSlot, meeting.Duration), meeting.StartSlot, meeting.Duration))
-            box.AddChild(SWConsoleStyle.Text("Пересекается с вашим расписанием!", SWConsoleStyle.Bad, SWConsoleStyle.MonoSmall));
+            box.AddChild(SWConsoleStyle.Text("Пересекается с вашим расписанием!", SWConsoleStyle.Bad, SWConsoleStyle.Small));
 
         var id = meeting.Id;
         var reason = new LineEdit { PlaceHolder = "Причина отказа...", HorizontalExpand = true, Margin = new Thickness(0, 3, 0, 0) };
@@ -362,24 +364,24 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
         var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
 
         var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-        var title = SWConsoleStyle.Text($"{meeting.Title}  ·  {DayName(state, meeting.Day)} {SWPlannerSlots.Range(meeting.StartSlot, meeting.Duration)}",
-            SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold);
+        var title = SWConsoleStyle.Text($"{meeting.Title}, {DayName(state, meeting.Day)} {SWPlannerSlots.Range(meeting.StartSlot, meeting.Duration)}",
+            SWConsoleStyle.TextBright, SWConsoleStyle.Strong);
         title.HorizontalExpand = true;
         head.AddChild(title);
         head.AddChild(SWConsoleStyle.Text(NowBadge(state, meeting) ?? (meeting.Confirmed ? "подтверждена" : "ждёт ответов"),
             NowBadge(state, meeting) != null ? SWConsoleStyle.Accent : meeting.Confirmed ? SWConsoleStyle.Good : SWConsoleStyle.Warn,
-            SWConsoleStyle.MonoSmall));
+            SWConsoleStyle.Small));
         box.AddChild(head);
 
-        box.AddChild(SWConsoleStyle.Text(MeetingSubLine(meeting), SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        box.AddChild(SWConsoleStyle.Text(MeetingSubLine(meeting), SWConsoleStyle.TextDim, SWConsoleStyle.Small));
         if (!string.IsNullOrWhiteSpace(meeting.Description))
-            box.AddChild(SWConsoleStyle.Text(meeting.Description, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            box.AddChild(SWConsoleStyle.Text(meeting.Description, SWConsoleStyle.TextDim, SWConsoleStyle.Small));
 
         foreach (var line in meeting.ParticipantLines)
-            box.AddChild(SWConsoleStyle.Text(line, LineColor(line), SWConsoleStyle.MonoSmall));
+            box.AddChild(SWConsoleStyle.Text(line, LineColor(line), SWConsoleStyle.Small));
 
         if (meeting.Warning.Length > 0)
-            box.AddChild(SWConsoleStyle.Text(meeting.Warning, SWConsoleStyle.Bad, SWConsoleStyle.MonoSmall));
+            box.AddChild(SWConsoleStyle.Text(meeting.Warning, SWConsoleStyle.Bad, SWConsoleStyle.Small));
 
         if (meeting.IsHost)
         {
@@ -409,9 +411,9 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
         if (meeting.Day != state.Today || state.NowSlot < 0)
             return null;
         if (state.NowSlot >= meeting.StartSlot && state.NowSlot < meeting.StartSlot + meeting.Duration)
-            return "· СЕЙЧАС ·";
+            return "Сейчас";
         if (meeting.StartSlot - state.NowSlot == 1)
-            return "· ЧЕРЕЗ 15 МИН ·";
+            return "Через 15 мин";
         return null;
     }
 
@@ -427,7 +429,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
             parts.Add($"место: {meeting.Location}");
         if (meeting.Private)
             parts.Add("приватная");
-        return string.Join("  ·  ", parts);
+        return string.Join(", ", parts);
     }
 
     private string DayName(SWPlannerConsoleState state, int day) => day == state.Today ? "сегодня" : "завтра";
@@ -442,7 +444,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
             if (nowPlaced || nowSlot >= beforeSlot)
                 return;
             nowPlaced = true;
-            target.AddChild(SWConsoleStyle.Text($"-- сейчас {SWPlannerSlots.Time(nowSlot)} --", SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall));
+            target.AddChild(SWConsoleStyle.Text($"-- сейчас {SWPlannerSlots.Time(nowSlot)} --", SWConsoleStyle.Accent, SWConsoleStyle.Small));
         }
 
         foreach (var item in items)
@@ -469,7 +471,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
     {
         var row = SWConsoleStyle.Row(SWConsoleStyle.BgRowAlt);
         row.Margin = new Thickness(0, 0, 0, 2);
-        row.AddChild(SWConsoleStyle.Text($"{SWPlannerSlots.Range(slot, duration)}   свободно", SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        row.AddChild(SWConsoleStyle.Text($"{SWPlannerSlots.Range(slot, duration)}   свободно", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
         return row;
     }
 
@@ -489,12 +491,12 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
         var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
 
         var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-        var label = SWConsoleStyle.Text($"{SWPlannerSlots.Range(item.StartSlot, item.Duration)}   {item.Label}", color, SWConsoleStyle.MonoSmall);
+        var label = SWConsoleStyle.Text($"{SWPlannerSlots.Range(item.StartSlot, item.Duration)}   {item.Label}", color, SWConsoleStyle.Small);
         label.HorizontalExpand = true;
         head.AddChild(label);
 
         if (nowSlot >= item.StartSlot && nowSlot < item.StartSlot + item.Duration)
-            head.AddChild(SWConsoleStyle.Text("СЕЙЧАС", SWConsoleStyle.Accent, SWConsoleStyle.MonoSmall));
+            head.AddChild(SWConsoleStyle.Text("Сейчас", SWConsoleStyle.Accent, SWConsoleStyle.Small));
 
         if (item.BlockId >= 0)
         {
@@ -506,7 +508,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
 
         box.AddChild(head);
         if (item.Sub.Length > 0)
-            box.AddChild(SWConsoleStyle.Text(item.Sub, SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+            box.AddChild(SWConsoleStyle.Text(item.Sub, SWConsoleStyle.TextDim, SWConsoleStyle.Small));
 
         row.AddChild(box);
         return row;
@@ -539,7 +541,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
 
         if (state.ViewPerson.Length == 0)
         {
-            PeopleList.AddChild(SWConsoleStyle.Text("Выберите человека, чтобы посмотреть его расписание.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            PeopleList.AddChild(SWConsoleStyle.Text("Сотрудник не выбран", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
             return;
         }
 
@@ -549,8 +551,8 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
 
         PeopleList.AddChild(SWConsoleStyle.Text(
             $"{state.ViewPerson} - {(state.ViewDay == state.Today ? "сегодня" : "завтра")}"
-            + (busyNow != null ? $"   ·   сейчас занят до {SWPlannerSlots.Time(busyNow.StartSlot + busyNow.Duration)}" : string.Empty),
-            SWConsoleStyle.TextBright, SWConsoleStyle.MonoBold));
+            + (busyNow != null ? $", сейчас занят до {SWPlannerSlots.Time(busyNow.StartSlot + busyNow.Duration)}" : string.Empty),
+            SWConsoleStyle.TextBright, SWConsoleStyle.Strong));
         PeopleList.AddChild(new Control { MinHeight = 4 });
 
         BuildTimeline(PeopleList, state.ViewItems, state.ViewDay == state.Today ? state.NowSlot : -1);
@@ -578,7 +580,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
                 HorizontalExpand = true,
                 Margin = new Thickness(0, 0, 0, 2),
             };
-            btn.Label.FontOverride = SWConsoleStyle.MonoSmall;
+            btn.Label.FontOverride = SWConsoleStyle.Small;
             btn.OnToggled += args =>
             {
                 if (args.Pressed)
@@ -699,10 +701,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
     private void BuildBlocks(SWPlannerConsoleState state)
     {
         BlockList.RemoveAllChildren();
-        BlockList.AddChild(SWConsoleStyle.Section("МОИ БЛОКИ"));
-        BlockList.AddChild(SWConsoleStyle.Text(
-            "Блоки видны всем в вашем расписании с подписью - коллеги знают, чем вы заняты.",
-            SWConsoleStyle.TextDim, SWConsoleStyle.MonoSmall));
+        BlockList.AddChild(SWConsoleStyle.Section("Мои блоки"));
         BlockList.AddChild(new Control { MinHeight = 4 });
 
         var any = false;
@@ -718,7 +717,7 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
                 row.Margin = new Thickness(0, 0, 0, 3);
                 var line = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
                 var label = SWConsoleStyle.Text($"{dayLabel} {SWPlannerSlots.Range(item.StartSlot, item.Duration)}   {item.Label}",
-                    SWConsoleStyle.TextBright, SWConsoleStyle.MonoSmall);
+                    SWConsoleStyle.TextBright, SWConsoleStyle.Small);
                 label.HorizontalExpand = true;
                 label.VerticalAlignment = Control.VAlignment.Center;
                 line.AddChild(label);
@@ -734,6 +733,6 @@ public sealed partial class SWPlannerConsoleMenu : FancyWindow
         }
 
         if (!any)
-            BlockList.AddChild(SWConsoleStyle.Text("Блоков нет. Добавьте первый выше.", SWConsoleStyle.TextDim, SWConsoleStyle.Mono));
+            BlockList.AddChild(SWConsoleStyle.Text("Блоков нет", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
     }
 }

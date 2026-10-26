@@ -4,6 +4,7 @@ using Content.Shared._SW._Senate.Sectors;
 using Robust.Server.GameObjects;
 using Robust.Shared.Prototypes;
 using Content.Server._SW._Senate.Core;
+using Content.Shared.GameTicking;
 
 namespace Content.Server._SW._Senate.Consoles;
 
@@ -25,10 +26,16 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
 
     private const float UpdateInterval = 3f;
     private float _accumulator;
+    private readonly SWStatisticsHistoryBuffer _history = new();
 
     public override void Initialize()
     {
         SubscribeLocalEvent<SWStatisticsConsoleComponent, BoundUIOpenedEvent>(OnOpened);
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(_ =>
+        {
+            _history.Clear();
+            _accumulator = 0f;
+        });
     }
 
     private void OnOpened(EntityUid uid, SWStatisticsConsoleComponent comp, BoundUIOpenedEvent args)
@@ -47,6 +54,8 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
 
         _accumulator = 0f;
 
+        _history.Record(_time.AbsoluteHour * 60 + _time.CurrentMinute, _senate.BuildGlobalEntries());
+
         var query = EntityQueryEnumerator<SWStatisticsConsoleComponent>();
         while (query.MoveNext(out var uid, out var comp))
         {
@@ -59,30 +68,17 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
     {
         var globals = _senate.BuildGlobalEntries();
 
-        var sectors = new List<SWSectorEntry>();
-        foreach (var proto in _proto.EnumeratePrototypes<SWSectorPrototype>())
-        {
-            if (!_senate.SectorGlobals.ContainsKey(proto.ID))
-                continue;
-
-            sectors.Add(new SWSectorEntry
-            {
-                Id = proto.ID,
-                Name = proto.Name,
-                Color = proto.Color,
-                Claimed = _senate.IsClaimed(proto.ID),
-                Stats = _senate.BuildSectorGlobals(proto.ID),
-            });
-        }
-
-        sectors.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+        var sectors = _senate.BuildSectorEntries();
 
         var stance = _defense.Stance;
         var state = new SWStatisticsConsoleState(globals, sectors)
         {
             Crises = _crisis.BuildCrises(null, false),
+            MapCrises = BuildMapCrises(),
             ActiveLaws = _senate.BuildActiveLaws(),
             GameTime = _time.TimeString(),
+            SampleMinute = _time.AbsoluteHour * 60 + _time.CurrentMinute,
+            History = _history.Snapshot(),
             DefconLevel = SWMinistryDefenseSystem.DefconLevel(stance),
             DefconName = SWMinistryDefenseSystem.StanceName(stance),
             DefconColor = SWMinistryDefenseSystem.StanceColor(stance),
@@ -129,5 +125,12 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
         };
 
         _ui.SetUiState(ent.Owner, SWStatisticsConsoleUiKey.Key, state);
+    }
+
+    public List<SWMapCrisisEntry> BuildMapCrises()
+    {
+        var entries = _crisis.BuildMapCrises();
+        entries.AddRange(_defense.BuildPublicMapCrises());
+        return entries.OrderByDescending(c => c.Severity).ThenBy(c => c.Id).ToList();
     }
 }

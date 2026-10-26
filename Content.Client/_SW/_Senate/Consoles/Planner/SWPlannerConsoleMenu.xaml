@@ -1,25 +1,29 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
+    xmlns:senate="clr-namespace:Content.Client._SW._Senate"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
     Title="Планировщик Сената"
     MinSize="720 680">
     <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
         <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
             <PanelContainer Name="HeaderPanel">
-                <BoxContainer Orientation="Horizontal" Margin="12 7">
-                    <Label Name="HeaderTitle" HorizontalExpand="True" />
-                    <PanelContainer Name="LiveDot" MinSize="9 9" VerticalAlignment="Center" />
-                    <Label Name="HeaderClock" Margin="7 0 0 0" />
+                <BoxContainer Orientation="Horizontal" Margin="14 10" SeparationOverride="0">
+                    <senate:SWConsoleSeal Margin="0 0 12 0" />
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="2">
+                        <Label Name="HeaderNetwork" Text="РЕСПУБЛИКА / ГОЛОНЕТ" />
+                        <Label Name="HeaderTitle" HorizontalExpand="True" ClipText="True" />
+                    </BoxContainer>
+                    <Label Name="HeaderClock" Margin="12 0 0 0" VerticalAlignment="Center" />
                 </BoxContainer>
             </PanelContainer>
             <BoxContainer Name="StatusStrip" Orientation="Horizontal" Margin="12 6" />
             <PanelContainer Name="TabBarPanel">
-                <BoxContainer Name="TabBar" Orientation="Horizontal" Margin="6 4" />
+                <WrapContainer Name="TabBar" Margin="6 4" />
             </PanelContainer>
             <BoxContainer Name="ContentHost" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
                 <BoxContainer Name="DayTab" Orientation="Vertical" Margin="10" HorizontalExpand="True" VerticalExpand="True">
                     <BoxContainer Orientation="Horizontal" Margin="0 0 0 6">
-                        <Button Name="MyDayToday" Text="Сегодня" />
-                        <Button Name="MyDayTomorrow" Text="Завтра" Margin="6 0 0 0" />
+                        <senate:SWConsoleButton Name="MyDayToday" Text="Сегодня" />
+                        <senate:SWConsoleButton Name="MyDayTomorrow" Text="Завтра" Margin="6 0 0 0" />
                     </BoxContainer>
                     <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                         <BoxContainer Name="DayList" Orientation="Vertical" HorizontalExpand="True" />
@@ -28,8 +32,8 @@
                 <BoxContainer Name="PeopleTab" Orientation="Vertical" Margin="10" HorizontalExpand="True" VerticalExpand="True">
                     <BoxContainer Orientation="Horizontal" Margin="0 0 0 6">
                         <OptionButton Name="PersonOption" HorizontalExpand="True" />
-                        <Button Name="ViewToday" Text="Сегодня" Margin="6 0 0 0" />
-                        <Button Name="ViewTomorrow" Text="Завтра" Margin="6 0 0 0" />
+                        <senate:SWConsoleButton Name="ViewToday" Text="Сегодня" Margin="6 0 0 0" />
+                        <senate:SWConsoleButton Name="ViewTomorrow" Text="Завтра" Margin="6 0 0 0" />
                     </BoxContainer>
                     <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                         <BoxContainer Name="PeopleList" Orientation="Vertical" HorizontalExpand="True" />
@@ -38,7 +42,7 @@
                 <BoxContainer Name="MeetTab" Orientation="Vertical" Margin="10" HorizontalExpand="True" VerticalExpand="True">
                     <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                         <BoxContainer Orientation="Vertical" HorizontalExpand="True">
-                            <Label Name="MeetFormHeader" Text="НОВАЯ ВСТРЕЧА" />
+                            <Label Name="MeetFormHeader" Text="Новая встреча" />
                             <Label Text="Название" StyleClasses="LabelKeyText" Margin="0 6 0 0" />
                             <LineEdit Name="MeetTitleEdit" PlaceHolder="Название встречи..." Margin="0 2 0 4" />
                             <Label Text="Описание" StyleClasses="LabelKeyText" />
@@ -46,32 +50,32 @@
                             <Label Text="Место" StyleClasses="LabelKeyText" />
                             <LineEdit Name="MeetLocationEdit" PlaceHolder="Кабинет, зал, палуба..." Margin="0 2 0 6" />
                             <BoxContainer Orientation="Horizontal" Margin="0 0 0 6">
-                                <Button Name="MeetDayToday" Text="Сегодня" />
-                                <Button Name="MeetDayTomorrow" Text="Завтра" Margin="6 0 0 0" />
+                                <senate:SWConsoleButton Name="MeetDayToday" Text="Сегодня" />
+                                <senate:SWConsoleButton Name="MeetDayTomorrow" Text="Завтра" Margin="6 0 0 0" />
                                 <Control MinWidth="14" />
                                 <OptionButton Name="MeetSlotOption" MinWidth="110" />
                                 <OptionButton Name="MeetDurationOption" MinWidth="110" Margin="6 0 0 0" />
-                                <Button Name="MeetPrivateToggle" Text="Приватная: нет" Margin="6 0 0 0" />
+                                <senate:SWConsoleButton Name="MeetPrivateToggle" Text="Приватная: нет" Margin="6 0 0 0" />
                             </BoxContainer>
                             <RichTextLabel Name="MeetHintLabel" Margin="0 0 0 6" />
-                            <Label Name="InviteesHeader" Text="УЧАСТНИКИ" />
+                            <Label Name="InviteesHeader" Text="Участники" />
                             <BoxContainer Name="InviteeList" Orientation="Vertical" Margin="0 4 0 6" />
                             <RichTextLabel Name="CommonSlotsLabel" Margin="0 0 0 6" />
-                            <Button Name="CreateMeetingButton" Text="Создать встречу" HorizontalAlignment="Left" />
+                            <senate:SWConsoleButton Name="CreateMeetingButton" Text="Создать встречу" HorizontalAlignment="Left" />
                         </BoxContainer>
                     </ScrollContainer>
                 </BoxContainer>
                 <BoxContainer Name="BlockTab" Orientation="Vertical" Margin="10" HorizontalExpand="True" VerticalExpand="True">
-                    <Label Name="BlockFormHeader" Text="МОЙ ГРАФИК" />
+                    <Label Name="BlockFormHeader" Text="Мой график" />
                     <Label Text="Чем заняты" StyleClasses="LabelKeyText" Margin="0 6 0 0" />
                     <LineEdit Name="BlockLabelEdit" PlaceHolder="Работа с документами, приём граждан..." Margin="0 2 0 6" />
                     <BoxContainer Orientation="Horizontal" Margin="0 0 0 6">
-                        <Button Name="BlockDayToday" Text="Сегодня" />
-                        <Button Name="BlockDayTomorrow" Text="Завтра" Margin="6 0 0 0" />
+                        <senate:SWConsoleButton Name="BlockDayToday" Text="Сегодня" />
+                        <senate:SWConsoleButton Name="BlockDayTomorrow" Text="Завтра" Margin="6 0 0 0" />
                         <Control MinWidth="14" />
                         <OptionButton Name="BlockSlotOption" MinWidth="110" />
                         <OptionButton Name="BlockDurationOption" MinWidth="110" Margin="6 0 0 0" />
-                        <Button Name="AddBlockButton" Text="Добавить блок" Margin="10 0 0 0" />
+                        <senate:SWConsoleButton Name="AddBlockButton" Text="Добавить блок" Margin="10 0 0 0" />
                     </BoxContainer>
                     <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                         <BoxContainer Name="BlockList" Orientation="Vertical" HorizontalExpand="True" />

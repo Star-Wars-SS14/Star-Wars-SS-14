@@ -29,10 +29,11 @@
       SWGlobalSociety: 3
   - label: Комендантский час
     description: Дешёвая жёсткая мера.
-    relief: 12
-    sectorEffects:
-      SWGlobalSecurity: 2
-      SWGlobalSociety: -3
+    policy: true
+    reliefPerHour: 6
+    sectorEffectsPerHour:
+      SWGlobalSecurity: 0.5
+      SWGlobalSociety: -0.75
   emergencyLaws:
   - name: Закон о чрезвычайном положении
     description: Чрезвычайные полномочия силовикам по всей Республике.
@@ -73,9 +74,10 @@
       SWGlobalSociety: -2
   - label: Режим жёсткой экономии
     description: Без затрат, но больно для людей.
-    relief: 12
-    sectorEffects:
-      SWGlobalSociety: -3
+    policy: true
+    reliefPerHour: 6
+    sectorEffectsPerHour:
+      SWGlobalSociety: -0.75
   emergencyLaws:
   - name: Пакет экстренной помощи
     description: Республиканские вливания в рухнувшую экономику.
@@ -116,9 +118,10 @@
       SWGlobalHealthcare: 4
   - label: Изоляция очагов
     description: Минимум затрат, но жёстко.
-    relief: 12
-    sectorEffects:
-      SWGlobalSociety: -3
+    policy: true
+    reliefPerHour: 6
+    sectorEffectsPerHour:
+      SWGlobalSociety: -0.75
   emergencyLaws:
   - name: Республиканский карантинный акт
     description: Единые меры и снабжение бактой по всем мирам.
@@ -158,9 +161,10 @@
       SWGlobalIndustry: 3
   - label: Веерные отключения
     description: Растянуть остатки без затрат.
-    relief: 10
-    sectorEffects:
-      SWGlobalSociety: -3
+    policy: true
+    reliefPerHour: 5
+    sectorEffectsPerHour:
+      SWGlobalSociety: -0.75
 
 - type: swCrisis
   id: SWCrisisUprising
@@ -193,9 +197,10 @@
       SWGlobalSociety: -4
   - label: Обещания и пропаганда
     description: Без затрат, эффект слабее.
-    relief: 10
-    sectorEffects:
-      SWGlobalSociety: 2
+    policy: true
+    reliefPerHour: 5
+    sectorEffectsPerHour:
+      SWGlobalSociety: 0.5
 
 - type: swCrisis
   id: SWCrisisInvasionThreat
@@ -228,9 +233,10 @@
       SWGlobalSociety: -2
   - label: Окопаться
     description: Оборонительные работы без больших затрат.
-    relief: 10
-    sectorEffects:
-      SWGlobalDefense: 2
+    policy: true
+    reliefPerHour: 5
+    sectorEffectsPerHour:
+      SWGlobalDefense: 0.5
 
 - type: swCrisis
   id: SWCrisisRepDepression

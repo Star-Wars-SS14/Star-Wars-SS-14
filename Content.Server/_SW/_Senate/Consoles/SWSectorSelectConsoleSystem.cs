@@ -13,6 +13,7 @@ namespace Content.Server._SW._Senate.Consoles;
 
 public sealed class SWSectorSelectConsoleSystem : EntitySystem
 {
+    [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
@@ -35,18 +36,27 @@ public sealed class SWSectorSelectConsoleSystem : EntitySystem
 
     private void OnInserted(Entity<SWSectorSelectConsoleComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
 
     private void OnRemoved(Entity<SWSectorSelectConsoleComponent> ent, ref EntRemovedFromContainerMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
 
     private void OnSelect(Entity<SWSectorSelectConsoleComponent> ent, ref SWSelectSectorMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         if (card == null)
         {

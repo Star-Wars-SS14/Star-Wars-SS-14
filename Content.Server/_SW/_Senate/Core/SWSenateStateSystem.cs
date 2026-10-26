@@ -11,10 +11,14 @@ public sealed class SWSenateStateSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
+    [Dependency] private readonly SWSenateCardSystem _cards = default!;
 
     private readonly Dictionary<string, float> _republicSubStats = new();
     private readonly Dictionary<string, Dictionary<string, float>> _sectorGlobals = new();
     private readonly Dictionary<string, Dictionary<string, float>> _sectorBias = new();
+    private readonly Dictionary<(string Sector, string Global), float> _supplyPenalties = new();
+    private readonly Dictionary<(string Sector, string Global), float> _programEffects = new();
+    private readonly Dictionary<string, Dictionary<string, float>> _inheritance = new();
     private readonly Dictionary<string, float> _sectorWeight = new();
     private readonly Dictionary<string, string> _sectorHolders = new();
     private readonly List<SWSenateBill> _bills = new();
@@ -26,6 +30,8 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     private const float NeutralStat = 50f;
     private const float DriftRate = 0.01f;
+    // Carry-over decays more slowly; new decisions retain the normal response speed.
+    public const float InheritanceHalfLifeSeconds = 28f * 60f;
     private const float UpdateInterval = 5f;
 
     private float _accumulator;
@@ -47,22 +53,37 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+        SubscribeLocalEvent<SWSenateDayClosedEvent>(ev =>
+        {
+            if (!ev.FinalDay)
+                ResolveExpiredSessions();
+        });
         InitState();
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
-        // World state (republic policy, sector globals/bias, passed laws) carries over between rounds.
-        // Session state resets: every office and sector claim is vacated so the new round starts empty,
-        // and in-progress bills/sessions are dropped (their authors are gone).
+        // Only actual sector statistics carry over. A new legislature starts from default policy.
+        foreach (var sub in _proto.EnumeratePrototypes<SWStatPrototype>())
+            _republicSubStats[sub.ID] = Math.Clamp(sub.Default, sub.Min, sub.Max);
+        foreach (var bias in _sectorBias.Values)
+            bias.Clear();
+        _supplyPenalties.Clear();
+        _programEffects.Clear();
+        _inheritance.Clear();
+        foreach (var (sector, globals) in _sectorGlobals)
+            _inheritance[sector] = globals.ToDictionary(g => g.Key, g => g.Value - GetSectorTarget(sector, g.Key));
+        _accumulator = 0f;
         _sectorHolders.Clear();
         Chancellor = null;
         Speaker = null;
         _barredChancellors.Clear();
         _sessions.Clear();
         _announcedSessions.Clear();
-        _bills.RemoveAll(b => b.Stage != SWBillStage.Passed || b.SpecialMotionType != null || b.IsElection);
+        _bills.Clear();
+        _nextBillId = 1;
         _nextSessionId = 1;
         _scheduleDay = _time.Day;
         _chancellorElect = null;
@@ -75,6 +96,9 @@ public sealed class SWSenateStateSystem : EntitySystem
         _republicSubStats.Clear();
         _sectorGlobals.Clear();
         _sectorBias.Clear();
+        _supplyPenalties.Clear();
+        _programEffects.Clear();
+        _inheritance.Clear();
         _sectorWeight.Clear();
         _sectorHolders.Clear();
         _bills.Clear();
@@ -102,7 +126,7 @@ public sealed class SWSenateStateSystem : EntitySystem
                     ? Math.Clamp(value, global.Min, global.Max)
                     : NeutralStat;
                 globals[global.ID] = start;
-                bias[global.ID] = start - NeutralStat;
+                bias[global.ID] = 0f;
             }
 
             _sectorGlobals[sector.ID] = globals;
@@ -139,6 +163,68 @@ public sealed class SWSenateStateSystem : EntitySystem
             result[global.ID] = GetPolicyScore(global.ID);
 
         return result;
+    }
+
+    public float GetSectorTarget(string sectorId, string globalId)
+    {
+        if (!_proto.TryIndex<SWSectorPrototype>(sectorId, out var sector)
+            || !_proto.TryIndex<SWGlobalStatPrototype>(globalId, out var global))
+            return NeutralStat;
+
+        var baseline = sector.StartingStats.TryGetValue(globalId, out var start) ? start : NeutralStat;
+        var subs = SubsOf(globalId).ToList();
+        var weight = subs.Sum(s => s.Weight);
+        var defaultPolicy = weight > 0f
+            ? subs.Sum(s => Math.Clamp(s.Default, s.Min, s.Max) * s.Weight) / weight
+            : NeutralStat;
+        var bias = _sectorBias.TryGetValue(sectorId, out var offsets) && offsets.TryGetValue(globalId, out var b) ? b : 0f;
+        var supply = _supplyPenalties.GetValueOrDefault((sectorId, globalId));
+        var programs = _programEffects.GetValueOrDefault((sectorId, globalId));
+        return Math.Clamp(baseline + GetPolicyScore(globalId) - defaultPolicy + bias + supply + programs, global.Min, global.Max);
+    }
+
+    /// <summary>Replace a temporary supply offset, including fulfilled-service benefits; never accumulate policy bias.</summary>
+    public void SetSupplyPenalty(string sectorId, string globalId, float offset)
+    {
+        if (!float.IsFinite(offset) || !_sectorGlobals.ContainsKey(sectorId)
+            || !_proto.HasIndex<SWGlobalStatPrototype>(globalId))
+            return;
+        var key = (sectorId, globalId);
+        if (Math.Abs(offset) < .001f)
+            _supplyPenalties.Remove(key);
+        else
+            _supplyPenalties[key] = Math.Clamp(offset, -20f, 6f);
+    }
+
+    public void ClearSupplyPenalties() => _supplyPenalties.Clear();
+
+    /// <summary>Replace the contribution of completed projects; never accumulate it on each economy tick.</summary>
+    public void SetProgramEffect(string sectorId, string globalId, float offset)
+    {
+        if (!float.IsFinite(offset) || !_sectorGlobals.ContainsKey(sectorId)
+            || !_proto.HasIndex<SWGlobalStatPrototype>(globalId))
+            return;
+        var key = (sectorId, globalId);
+        if (Math.Abs(offset) < .001f)
+            _programEffects.Remove(key);
+        else
+            _programEffects[key] = Math.Clamp(offset, -100f, 100f);
+    }
+
+    public void ClearProgramEffects() => _programEffects.Clear();
+
+    public float WeightedSectorAverage(Func<string, float> value)
+    {
+        var weight = _sectorWeight.Values.Sum();
+        return weight > 0f ? _sectorWeight.Sum(s => value(s.Key) * s.Value) / weight : 0f;
+    }
+
+    public float GetRepublicTarget(string globalId)
+    {
+        var weight = _sectorWeight.Values.Sum();
+        return weight > 0f
+            ? _sectorWeight.Sum(s => GetSectorTarget(s.Key, globalId) * s.Value) / weight
+            : NeutralStat;
     }
 
     public Dictionary<string, float> GetRepublicGlobals()
@@ -180,20 +266,19 @@ public sealed class SWSenateStateSystem : EntitySystem
     }
 
     // Direction-aware multiplier for a per-game-hour accumulation, tied to a governing global's "факт".
-    // Worsening changes (delta > 0) bite several times harder when the stat is low and are dampened when
-    // it is high; improving changes (delta < 0) are weaker at low stats and stronger at high stats.
+    // Weak institutions can double worsening pressure, but do not penalize the base recovery rate.
+    // Strong institutions still dampen pressure and improve recovery.
     public float StatPressureScale(string governingGlobalId, float delta)
     {
         var stat = GetRepublicGlobal(governingGlobalId);
         if (delta >= 0f)
-            return Math.Clamp(NeutralStat / Math.Max(stat, 1f), 0.4f, 3.5f);
+            return Math.Clamp(NeutralStat / Math.Max(stat, 1f), 0.4f, 2f);
 
-        return Math.Clamp(stat / NeutralStat, 0.6f, 1.6f);
+        return Math.Clamp(stat / NeutralStat, 1f, 1.6f);
     }
 
     public List<SWGlobalStatEntry> BuildGlobalEntries()
     {
-        var policy = GetPolicyScores();
         var actual = GetRepublicGlobals();
         var list = new List<SWGlobalStatEntry>();
 
@@ -205,7 +290,7 @@ public sealed class SWSenateStateSystem : EntitySystem
                 Name = global.Name,
                 ShortName = global.ShortName,
                 Color = global.Color,
-                Policy = policy.TryGetValue(global.ID, out var p) ? p : NeutralStat,
+                Policy = GetRepublicTarget(global.ID),
                 Actual = actual.TryGetValue(global.ID, out var a) ? a : NeutralStat,
                 Min = global.Min,
                 Max = global.Max,
@@ -229,6 +314,18 @@ public sealed class SWSenateStateSystem : EntitySystem
         }
 
         return list;
+    }
+
+    public List<SWSectorEntry> BuildSectorEntries(string? onlySector = null)
+    {
+        return _proto.EnumeratePrototypes<SWSectorPrototype>()
+            .Where(p => _sectorGlobals.ContainsKey(p.ID) && (onlySector == null || onlySector == p.ID))
+            .OrderBy(p => p.Name, StringComparer.Ordinal)
+            .Select(p => new SWSectorEntry
+            {
+                Id = p.ID, Name = p.Name, Color = p.Color,
+                Claimed = IsClaimed(p.ID), Stats = BuildSectorGlobals(p.ID),
+            }).ToList();
     }
 
     public List<SWStatEntry> BuildSectorGlobals(string sectorId)
@@ -349,14 +446,19 @@ public sealed class SWSenateStateSystem : EntitySystem
         return true;
     }
 
-    public void ResignChancellor() => Chancellor = null;
+    public void ResignChancellor()
+    {
+        if (Chancellor is { } holder)
+            _cards.RevokeHolder(holder, SWSenatePosition.Chancellor);
+        Chancellor = null;
+    }
 
     public bool IsBarredChancellor(string holder) => _barredChancellors.Contains(holder);
 
     public string? OustChancellor()
     {
         var name = Chancellor;
-        Chancellor = null;
+        ResignChancellor();
         if (name != null)
             _barredChancellors.Add(name);
         _electionForced = true;
@@ -372,7 +474,12 @@ public sealed class SWSenateStateSystem : EntitySystem
         return true;
     }
 
-    public void ResignSpeaker() => Speaker = null;
+    public void ResignSpeaker()
+    {
+        if (Speaker is { } holder)
+            _cards.RevokeHolder(holder, SWSenatePosition.Speaker);
+        Speaker = null;
+    }
 
     public bool HasActiveBill(string author) =>
         _bills.Any(b => (b.Stage == SWBillStage.Voting || b.Stage == SWBillStage.InCommittee || b.Stage == SWBillStage.Returned) && b.Author == author);
@@ -392,6 +499,78 @@ public sealed class SWSenateStateSystem : EntitySystem
         _bills.Add(bill);
         return bill;
     }
+
+    public bool CanAmendLaw(int lawId) => _bills.Any(b => b.Id == lawId && IsActiveRootLaw(b));
+
+    private static bool IsActiveRootLaw(SWSenateBill bill) => bill is
+    {
+        Stage: SWBillStage.Passed,
+        Repealed: false,
+        IsElection: false,
+        SpecialMotionType: null,
+        AmendsLawId: null,
+    };
+
+    private bool HasActiveAmendmentTarget(SWSenateBill bill) =>
+        bill.AmendsLawId is not { } lawId || CanAmendLaw(lawId);
+
+    private bool ValidAmendmentEffects(IReadOnlyDictionary<string, float> effects, string description) =>
+        (effects.Any(e => e.Value != 0f) || !string.IsNullOrWhiteSpace(description))
+        && effects.All(e => _proto.HasIndex<SWStatPrototype>(e.Key) && float.IsFinite(e.Value));
+
+    private static string AmendmentName(SWSenateBill law, string name)
+    {
+        var prefix = $"Поправки к «{law.Name}»: ";
+        name = name.Trim();
+        return name.StartsWith(prefix, StringComparison.Ordinal) ? name : prefix + name;
+    }
+
+    public SWSenateBill? SubmitAmendment(int lawId, string name, string description, string author,
+        Dictionary<string, float> effects)
+    {
+        if (!_time.ModeActive || !_time.DayActive || !_sectorHolders.Values.Contains(author)
+            || HasActiveBill(author) || string.IsNullOrWhiteSpace(name) || !ValidAmendmentEffects(effects, description))
+            return null;
+
+        var law = _bills.FirstOrDefault(b => b.Id == lawId && IsActiveRootLaw(b));
+        if (law == null)
+            return null;
+
+        var bill = new SWSenateBill
+        {
+            Id = _nextBillId++,
+            Name = AmendmentName(law, name),
+            Description = description.Trim(),
+            Author = author,
+            AmendsLawId = law.Id,
+            Effects = effects.Where(e => e.Value != 0f).ToDictionary(e => e.Key, e => e.Value),
+            Stage = SWBillStage.Voting,
+        };
+        _bills.Add(bill);
+        return bill;
+    }
+
+    /// <summary>
+    /// Consolidated enacted law, without modifying its original bill or any amendment's delta.
+    /// Pending, vetoed and repealed amendments do not contribute.
+    /// </summary>
+    public Dictionary<string, float> GetEffectiveLawEffects(int lawId)
+    {
+        var law = _bills.FirstOrDefault(b => b.Id == lawId && IsActiveRootLaw(b));
+        if (law == null)
+            return new Dictionary<string, float>();
+
+        var effects = new Dictionary<string, float>(law.Effects);
+        foreach (var amendment in ActiveAmendments(lawId))
+        {
+            foreach (var (stat, delta) in amendment.Effects)
+                effects[stat] = effects.GetValueOrDefault(stat) + delta;
+        }
+        return effects;
+    }
+
+    private IEnumerable<SWSenateBill> ActiveAmendments(int lawId) =>
+        _bills.Where(b => b.AmendsLawId == lawId && b.Stage == SWBillStage.Passed && !b.Repealed);
 
     public SWSenateBill IssueDecree(string name, string description, string author, Dictionary<string, float> effects)
     {
@@ -503,7 +682,7 @@ public sealed class SWSenateStateSystem : EntitySystem
 
         if (!_time.DayActive)
             return;
-        if (_sessions.Any(s => s.BillId == bill.Id && s.Status != SWSessionStatus.Rejected))
+        if (_sessions.Any(s => s.ContainsBill(bill.Id) && s.Status != SWSessionStatus.Rejected))
             return;
 
         for (var hour = FirstSchedulableHour(); hour < SWSenateTimeSystem.EndHour; hour++)
@@ -529,7 +708,7 @@ public sealed class SWSenateStateSystem : EntitySystem
         if (session == null)
             return;
 
-        var bill = _bills.FirstOrDefault(b => b.Id == session.BillId);
+        var bill = _bills.FirstOrDefault(b => b.Id == session.CurrentBillId);
         if (bill is not { IsElection: true, Stage: SWBillStage.Voting })
             return;
 
@@ -580,11 +759,11 @@ public sealed class SWSenateStateSystem : EntitySystem
         {
             if (bill.Stage != SWBillStage.Voting || !bill.Emergency)
                 continue;
-            if (_sessions.Any(s => s.BillId == bill.Id && s.Status != SWSessionStatus.Rejected))
+            if (_sessions.Any(s => s.ContainsBill(bill.Id) && s.Status != SWSessionStatus.Rejected))
                 continue;
 
             bill.EmergencyWaitHours += gameHours;
-            if (bill.EmergencyWaitHours < EmergencySessionDelayHours)
+            if (bill.EmergencyWaitHours < (bill.EmergencyCrisisId > 0 ? 0.5f : EmergencySessionDelayHours))
                 continue;
 
             var result = ScheduleEmergencySession(bill.Id);
@@ -673,9 +852,20 @@ public sealed class SWSenateStateSystem : EntitySystem
         if (!_time.DayActive)
             return null;
 
-        var hour = _time.CurrentHour;
-        return _sessions.FirstOrDefault(s =>
-            s.Status == SWSessionStatus.Confirmed && hour >= s.StartHour && hour < s.EndHour);
+        if (_time.ModeActive)
+            ResolveExpiredSessions();
+        return _sessions.FirstOrDefault(s => SessionIsActive(s));
+    }
+
+    private bool SessionIsActive(SWSenateSession session)
+    {
+        if (!_time.DayActive || session.IsAmendmentSession && !_time.ModeActive || session.Status != SWSessionStatus.Confirmed
+            || !_bills.Any(b => b.Id == session.CurrentBillId && b.Stage == SWBillStage.Voting))
+            return false;
+        return session.ActiveEndHour is { } end
+            ? _time.ActiveGameHours < end
+            : _time.CalendarGameMinutes / 60d - _time.Day * 24 >= session.StartHour
+              && _time.CalendarGameMinutes / 60d - _time.Day * 24 < session.EndHour;
     }
 
     public SWSenateBill? GetCurrentBill()
@@ -684,7 +874,7 @@ public sealed class SWSenateStateSystem : EntitySystem
         if (session == null)
             return null;
 
-        var bill = _bills.FirstOrDefault(b => b.Id == session.BillId);
+        var bill = _bills.FirstOrDefault(b => b.Id == session.CurrentBillId);
         return bill is { Stage: SWBillStage.Voting } ? bill : null;
     }
 
@@ -738,6 +928,7 @@ public sealed class SWSenateStateSystem : EntitySystem
             return false;
 
         ResolveBill(bill, true);
+        AdvanceAmendmentAgenda(bill.Id);
         return true;
     }
 
@@ -761,6 +952,7 @@ public sealed class SWSenateStateSystem : EntitySystem
             RaiseVotesResolved(bill, false);
         }
 
+        AdvanceAmendmentAgenda(bill.Id);
         return true;
     }
 
@@ -770,6 +962,12 @@ public sealed class SWSenateStateSystem : EntitySystem
         var bill = _bills.FirstOrDefault(b => b.Id == billId && b.Stage == SWBillStage.AwaitingSignature);
         if (bill == null)
             return false;
+
+        if (!HasActiveAmendmentTarget(bill))
+        {
+            RejectOrphanedAmendment(bill);
+            return false;
+        }
 
         bill.Stage = SWBillStage.Passed;
         ApplyBill(bill);
@@ -799,15 +997,7 @@ public sealed class SWSenateStateSystem : EntitySystem
             if (bill.Stage != SWBillStage.AwaitingSignature)
                 continue;
 
-            list.Add(new SWBillEntry
-            {
-                Id = bill.Id,
-                Name = bill.Name,
-                Author = bill.Author,
-                Description = bill.Description,
-                Stage = Loc.GetString("sw-senate-bill-stage-signature"),
-                Effects = BuildBillEffects(bill),
-            });
+            list.Add(BuildBillEntry(bill));
         }
 
         return list;
@@ -818,6 +1008,12 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     private void ResolveBill(SWSenateBill bill, bool allowTiebreak)
     {
+        if (!HasActiveAmendmentTarget(bill))
+        {
+            RejectOrphanedAmendment(bill);
+            return;
+        }
+
         if (bill.SpecialMotionType != null)
         {
             ResolveSpecialMotionBill(bill);
@@ -881,18 +1077,18 @@ public sealed class SWSenateStateSystem : EntitySystem
         foreach (var session in _sessions)
         {
             if (session.Status == SWSessionStatus.Pending)
-                session.Status = SWSessionStatus.Confirmed;
+                ConfirmSession(session.Id);
         }
 
         // No Chancellor to ratify - passed bills are auto-signed into law.
-        foreach (var id in _bills.Where(b => b.Stage == SWBillStage.AwaitingSignature).Select(b => b.Id).ToList())
+        foreach (var id in _bills.Where(b => b.Stage == SWBillStage.AwaitingSignature && b.EmergencyCrisisId <= 0).Select(b => b.Id).ToList())
             SignBill(id);
 
         foreach (var bill in _bills)
         {
             if (bill.Stage != SWBillStage.Voting)
                 continue;
-            if (_sessions.Any(s => s.BillId == bill.Id && s.Status != SWSessionStatus.Rejected))
+            if (_sessions.Any(s => s.ContainsBill(bill.Id) && s.Status != SWSessionStatus.Rejected))
                 continue;
 
             var free = BuildFreeStartHours();
@@ -915,12 +1111,12 @@ public sealed class SWSenateStateSystem : EntitySystem
         {
             if (session.Status != SWSessionStatus.Confirmed)
                 continue;
-            if (hour < session.StartHour || hour >= session.EndHour)
+            if (!SessionIsActive(session))
                 continue;
             if (!_announcedSessions.Add(session.Id))
                 continue;
 
-            RaiseLocalEvent(new SWSenateSessionStartedEvent(GetBillName(session.BillId), session.StartHour, session.EndHour, session.Emergency));
+            RaiseLocalEvent(new SWSenateSessionStartedEvent(GetSessionName(session), session.StartHour, session.EndHour, session.Emergency));
         }
     }
 
@@ -929,24 +1125,10 @@ public sealed class SWSenateStateSystem : EntitySystem
         var laws = new List<SWBillEntry>();
         foreach (var bill in _bills)
         {
-            if (bill.Stage != SWBillStage.Passed)
-                continue;
-            if (bill.SpecialMotionType != null)
-                continue;
-            if (bill.IsElection)
-                continue;
-            if (bill.Repealed)
+            if (!IsActiveRootLaw(bill))
                 continue;
 
-            laws.Add(new SWBillEntry
-            {
-                Id = bill.Id,
-                Name = bill.Name,
-                Author = bill.Author,
-                Description = bill.Description,
-                Stage = Loc.GetString("sw-senate-bill-stage-passed"),
-                Effects = BuildBillEffects(bill),
-            });
+            laws.Add(BuildBillEntry(bill));
         }
 
         return laws;
@@ -954,12 +1136,20 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     private void ResolveExpiredSessions()
     {
-        foreach (var session in _sessions)
+        foreach (var session in _sessions.ToArray())
         {
             if (session.Status != SWSessionStatus.Confirmed)
                 continue;
 
-            var expired = !_time.DayActive || _time.CurrentHour >= session.EndHour;
+            if (session.IsAmendmentSession)
+            {
+                TickAmendmentSession(session);
+                continue;
+            }
+
+            var expired = session.ActiveEndHour is { } end
+                ? _time.ActiveGameHours >= end
+                : !_time.DayActive || _time.CalendarGameMinutes / 60d - _time.Day * 24 >= session.EndHour;
             if (!expired)
                 continue;
 
@@ -978,6 +1168,103 @@ public sealed class SWSenateStateSystem : EntitySystem
         }
     }
 
+    private void AdvanceAmendmentAgenda(int billId)
+    {
+        var session = _sessions.FirstOrDefault(s => s.IsAmendmentSession && s.CurrentBillId == billId);
+        if (session != null)
+            TickAmendmentSession(session);
+    }
+
+    private void TickAmendmentSession(SWSenateSession session)
+    {
+        if (!_time.ModeActive)
+            return;
+
+        var now = _time.CalendarGameMinutes / 60d - _time.Day * 24;
+        if (_time.DayActive && now < session.StartHour)
+            return;
+
+        // A delayed update must never reject the untouched remainder of the agenda.
+        if (!_time.DayActive || now >= session.EndHour)
+        {
+            var current = _bills.FirstOrDefault(b => b.Id == session.CurrentBillId && b.Stage == SWBillStage.Voting);
+            if (session.BallotEndHour != null && current != null)
+            {
+                current.AwaitingTiebreak = false;
+                ResolveBill(current, false);
+            }
+            ReleaseAmendmentSession(session);
+            return;
+        }
+
+        while (session.CurrentAmendmentIndex < session.AmendmentBillIds.Count)
+        {
+            var bill = _bills.FirstOrDefault(b => b.Id == session.CurrentBillId);
+            if (bill is not { Stage: SWBillStage.Voting })
+            {
+                session.CurrentAmendmentIndex++;
+                session.BallotEndHour = null;
+                continue;
+            }
+            if (!HasActiveAmendmentTarget(bill))
+            {
+                RejectOrphanedAmendment(bill);
+                return;
+            }
+            if (session.BallotEndHour == null)
+            {
+                var remaining = session.AmendmentBillIds.Skip(session.CurrentAmendmentIndex)
+                    .Count(id => _bills.Any(b => b.Id == id && b.Stage == SWBillStage.Voting));
+                bill.Votes.Clear();
+                bill.AwaitingTiebreak = false;
+                session.BallotEndHour = now + (session.EndHour - now) / remaining;
+                return;
+            }
+            if (now < session.BallotEndHour)
+                return;
+
+            bill.AwaitingTiebreak = false;
+            ResolveBill(bill, false);
+            session.CurrentAmendmentIndex++;
+            session.BallotEndHour = null;
+        }
+    }
+
+    private void ReleaseAmendmentSession(SWSenateSession session)
+    {
+        if (session.IsAmendmentSession)
+        {
+            foreach (var bill in _bills.Where(b => session.ContainsBill(b.Id) && b.Stage == SWBillStage.Voting))
+            {
+                bill.Votes.Clear();
+                bill.AwaitingTiebreak = false;
+            }
+        }
+        _sessions.Remove(session);
+        _announcedSessions.Remove(session.Id);
+    }
+
+    public string GetSessionName(SWSenateSession session)
+    {
+        if (!session.IsAmendmentSession)
+            return GetBillName(session.BillId);
+
+        var first = _bills.FirstOrDefault(b => b.Id == session.BillId);
+        var name = first?.AmendsLawId is { } lawId ? LawName(lawId) : null;
+        return $"Поправки к «{name ?? "закону"}» ({session.AmendmentBillIds.Count})";
+    }
+
+    public string GetSessionAgendaInfo(SWSenateSession session)
+    {
+        if (!session.IsAmendmentSession)
+            return string.Empty;
+        if (session.CurrentBillId == null)
+            return "Повестка рассмотрена";
+
+        var deadline = session.BallotEndHour is { } end ? $"\nГолосование до {SWSenateDuration.FormatClock(end)}" : string.Empty;
+        return $"Поправка {session.CurrentAmendmentIndex + 1} из {session.AmendmentBillIds.Count}{deadline}";
+    }
+
     public IReadOnlyList<SWSenateSession> Sessions => _sessions;
 
     public static bool IsReserved(int hour) => hour < 9 || hour == 14 || hour >= 20;
@@ -987,7 +1274,7 @@ public sealed class SWSenateStateSystem : EntitySystem
         if (hour == 14)
             return "Обед";
         if (hour == 8)
-            return "Собрание Кабинета · Комитеты";
+            return "Собрание Кабинета и комитетов";
         return "Личное время";
     }
 
@@ -1026,10 +1313,11 @@ public sealed class SWSenateStateSystem : EntitySystem
     public SWSenateSession? TryScheduleSession(int billId, int startHour, int duration)
     {
         var bill = _bills.FirstOrDefault(b => b.Id == billId);
-        if (bill == null || bill.Emergency || bill.IsElection || !CanSchedule(startHour, duration))
+        if (bill is not { Stage: SWBillStage.Voting } || bill.Emergency || bill.IsElection
+            || !HasActiveAmendmentTarget(bill) || !CanSchedule(startHour, duration))
             return null;
 
-        if (_sessions.Any(s => s.BillId == billId && s.Status != SWSessionStatus.Rejected))
+        if (_sessions.Any(s => s.ContainsBill(billId) && s.Status != SWSessionStatus.Rejected))
             return null;
 
         var session = new SWSenateSession
@@ -1045,10 +1333,50 @@ public sealed class SWSenateStateSystem : EntitySystem
         return session;
     }
 
+    public SWSenateSession? TryScheduleAmendmentSession(List<int> billIds, int startHour, int duration)
+    {
+        if (!_time.ModeActive || !_time.DayActive || !CanSchedule(startHour, duration) || !CanGroupAmendments(billIds))
+            return null;
+
+        var session = new SWSenateSession
+        {
+            Id = _nextSessionId++,
+            BillId = billIds[0],
+            AmendmentBillIds = new List<int>(billIds),
+            StartHour = startHour,
+            Duration = duration,
+        };
+        _sessions.Add(session);
+        return session;
+    }
+
+    private bool CanGroupAmendments(IReadOnlyList<int> billIds, int? existingSessionId = null)
+    {
+        if (billIds.Count < 2 || billIds.Distinct().Count() != billIds.Count)
+            return false;
+
+        int? lawId = null;
+        foreach (var id in billIds)
+        {
+            var bill = _bills.FirstOrDefault(b => b.Id == id);
+            if (bill is not { Stage: SWBillStage.Voting, AmendsLawId: not null, Emergency: false, IsElection: false,
+                    SpecialMotionType: null, Repealed: false }
+                || !HasActiveAmendmentTarget(bill) || lawId != null && lawId != bill.AmendsLawId
+                || _sessions.Any(s => s.Id != existingSessionId && s.ContainsBill(id) && s.Status != SWSessionStatus.Rejected))
+                return false;
+            lawId = bill.AmendsLawId;
+        }
+        return true;
+    }
+
     public bool ConfirmSession(int sessionId)
     {
         var session = _sessions.FirstOrDefault(s => s.Id == sessionId && s.Status == SWSessionStatus.Pending);
         if (session == null)
+            return false;
+
+        if (session.IsAmendmentSession && (!_time.ModeActive || !_time.DayActive
+            || !CanGroupAmendments(session.AmendmentBillIds, session.Id)))
             return false;
 
         session.Status = SWSessionStatus.Confirmed;
@@ -1081,8 +1409,32 @@ public sealed class SWSenateStateSystem : EntitySystem
         if (bill is not { Stage: SWBillStage.Voting } || !bill.Emergency || !_time.DayActive)
             return null;
 
-        if (_sessions.Any(s => s.BillId == billId && s.Status != SWSessionStatus.Rejected))
+        if (_sessions.Any(s => s.ContainsBill(billId) && s.Status != SWSessionStatus.Rejected))
             return null;
+
+        if (bill.EmergencyCrisisId > 0)
+        {
+            // An ongoing emergency vote has priority. Waiting bills remain visible in the queue.
+            if (_sessions.Any(s => s.Emergency && s.Status != SWSessionStatus.Rejected
+                && _bills.Any(b => b.Id == s.CurrentBillId && b.Stage == SWBillStage.Voting)
+                && (s.ActiveEndHour is { } end ? _time.ActiveGameHours < end : s.EndHour > _time.CurrentHour)))
+                return null;
+            var now = _time.CalendarGameMinutes / 60d - _time.Day * 24;
+            string? displacedCrisis = null;
+            foreach (var occupied in _sessions.Where(s => !s.Emergency && s.Status != SWSessionStatus.Rejected
+                && s.StartHour < now + 0.5d && now < s.EndHour).ToList())
+            {
+                displacedCrisis ??= GetSessionName(occupied);
+                ReleaseAmendmentSession(occupied);
+            }
+            _sessions.Add(new SWSenateSession
+            {
+                Id = _nextSessionId++, BillId = billId, StartHour = now, Duration = 0.5d,
+                ActiveEndHour = _time.ActiveGameHours + 0.5d,
+                Status = SWSessionStatus.Confirmed, Emergency = true,
+            });
+            return new SWEmergencyScheduleResult { StartHour = now, DisplacedBill = displacedCrisis };
+        }
 
         var targetHour = _time.CurrentHour + 1;
         while (targetHour < SWSenateTimeSystem.EndHour
@@ -1098,9 +1450,8 @@ public sealed class SWSenateStateSystem : EntitySystem
                      .Where(s => s.Status != SWSessionStatus.Rejected && targetHour >= s.StartHour && targetHour < s.EndHour)
                      .ToList())
         {
-            displaced ??= GetBillName(occupied.BillId);
-            _sessions.Remove(occupied);
-            _announcedSessions.Remove(occupied.Id);
+            displaced ??= GetSessionName(occupied);
+            ReleaseAmendmentSession(occupied);
         }
 
         _sessions.Add(new SWSenateSession
@@ -1131,12 +1482,12 @@ public sealed class SWSenateStateSystem : EntitySystem
             };
 
             var session = _sessions.FirstOrDefault(s =>
-                s.Status != SWSessionStatus.Rejected && hour >= s.StartHour && hour < s.EndHour);
+                s.Status != SWSessionStatus.Rejected && hour < s.EndHour && s.StartHour < hour + 1);
 
             if (session is { Emergency: true })
             {
-                row.Text = hour == session.StartHour
-                    ? $"СРОЧНО: {GetBillName(session.BillId)} ({session.StartHour:00}:00-{session.EndHour:00}:00)"
+                row.Text = hour == (int) Math.Floor(session.StartHour)
+                    ? $"СРОЧНО: {GetSessionName(session)} ({session.TimeRange})"
                     : "   - продолжение";
                 row.Color = Color.IndianRed;
             }
@@ -1151,10 +1502,10 @@ public sealed class SWSenateStateSystem : EntitySystem
                 row.Color = Color.DimGray;
                 row.Free = true;
             }
-            else if (hour == session.StartHour)
+            else if (hour == (int) Math.Floor(session.StartHour))
             {
                 var status = session.Status == SWSessionStatus.Confirmed ? "подтверждено" : "ожидает";
-                row.Text = $"Заседание: {GetBillName(session.BillId)} ({session.StartHour:00}:00-{session.EndHour:00}:00) [{status}]";
+                row.Text = $"Заседание: {GetSessionName(session)} ({session.TimeRange}) [{status}]";
                 row.Color = session.Status == SWSessionStatus.Confirmed ? Color.LightGreen : Color.Goldenrod;
             }
             else
@@ -1178,10 +1529,17 @@ public sealed class SWSenateStateSystem : EntitySystem
                 continue;
             if (bill.IsElection)
                 continue;
-            if (_sessions.Any(s => s.BillId == bill.Id && s.Status != SWSessionStatus.Rejected))
+            if (_sessions.Any(s => s.ContainsBill(bill.Id) && s.Status != SWSessionStatus.Rejected))
                 continue;
 
-            options.Add(new SWBillOption { Id = bill.Id, Name = bill.Name, Emergency = bill.Emergency });
+            options.Add(new SWBillOption
+            {
+                Id = bill.Id,
+                Name = bill.Name,
+                Emergency = bill.Emergency,
+                AmendsLawId = bill.AmendsLawId,
+                AmendsLawName = bill.AmendsLawId is { } lawId ? LawName(lawId) ?? string.Empty : string.Empty,
+            });
         }
 
         options.Sort((a, b) => b.Emergency.CompareTo(a.Emergency));
@@ -1212,8 +1570,10 @@ public sealed class SWSenateStateSystem : EntitySystem
             pending.Add(new SWSessionEntry
             {
                 Id = session.Id,
-                BillName = GetBillName(session.BillId),
-                TimeRange = $"{session.StartHour:00}:00-{session.EndHour:00}:00",
+                BillName = GetSessionName(session),
+                BillNames = session.IsAmendmentSession
+                    ? session.AmendmentBillIds.Select(GetBillName).ToList() : new List<string> { GetBillName(session.BillId) },
+                TimeRange = $"{session.TimeRange}",
                 Status = "ожидает",
             });
         }
@@ -1228,23 +1588,42 @@ public sealed class SWSenateStateSystem : EntitySystem
     {
         var bills = new List<SWBillEntry>();
         foreach (var bill in _bills)
-        {
-            bills.Add(new SWBillEntry
-            {
-                Id = bill.Id,
-                Name = bill.Name,
-                Author = bill.Author,
-                Description = bill.Description,
-                Stage = BillStageLabel(bill),
-                Effects = BuildBillEffects(bill),
-            });
-        }
+            bills.Add(BuildBillEntry(bill));
 
         return bills;
     }
 
+    private SWBillEntry BuildBillEntry(SWSenateBill bill)
+    {
+        var activeRoot = IsActiveRootLaw(bill);
+        var effects = activeRoot ? GetEffectiveLawEffects(bill.Id) : new Dictionary<string, float>(bill.Effects);
+        return new SWBillEntry
+        {
+            Id = bill.Id,
+            Name = bill.Name,
+            Author = bill.Author,
+            Description = bill.Description,
+            Stage = BillStageLabel(bill),
+            AmendsLawId = bill.AmendsLawId,
+            AmendsLawName = bill.AmendsLawId is { } lawId ? LawName(lawId) : null,
+            CanAmend = activeRoot,
+            Effects = BuildEffects(effects),
+            EffectValues = effects,
+            Amendments = activeRoot ? ActiveAmendments(bill.Id).Select(BuildBillEntry).ToList() : new List<SWBillEntry>(),
+        };
+    }
+
     public void ReferToCommittee(SWSenateBill bill, string committeeId, string committeeName, int day)
     {
+        if (bill.AmendsLawId != null && bill.Stage is not (SWBillStage.Voting or SWBillStage.InCommittee or SWBillStage.Returned))
+            return;
+
+        if (!HasActiveAmendmentTarget(bill))
+        {
+            RejectOrphanedAmendment(bill);
+            return;
+        }
+
         bill.Stage = SWBillStage.InCommittee;
         bill.CommitteeId = committeeId;
         bill.CommitteeName = committeeName;
@@ -1253,6 +1632,15 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     public void PlaceOnFloor(SWSenateBill bill)
     {
+        if (bill.AmendsLawId != null && bill.Stage is not (SWBillStage.Voting or SWBillStage.InCommittee or SWBillStage.Returned))
+            return;
+
+        if (!HasActiveAmendmentTarget(bill))
+        {
+            RejectOrphanedAmendment(bill);
+            return;
+        }
+
         bill.Stage = SWBillStage.Voting;
         bill.CommitteeId = null;
         bill.CommitteeName = null;
@@ -1302,9 +1690,17 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     public void ReviseBill(SWSenateBill bill, string name, string description, Dictionary<string, float> effects)
     {
+        if (bill.AmendsLawId is { } lawId)
+        {
+            var law = _bills.FirstOrDefault(b => b.Id == lawId && IsActiveRootLaw(b));
+            if (law == null || bill.Stage != SWBillStage.Returned || string.IsNullOrWhiteSpace(name)
+                || !ValidAmendmentEffects(effects, description))
+                return;
+            name = AmendmentName(law, name);
+        }
         bill.Name = name;
         bill.Description = description;
-        bill.Effects = effects;
+        bill.Effects = effects.Where(e => e.Value != 0f).ToDictionary(e => e.Key, e => e.Value);
     }
 
     public List<SWReturnedBillEntry> BuildReturnedBills(string author)
@@ -1318,6 +1714,8 @@ public sealed class SWSenateStateSystem : EntitySystem
             bills.Add(new SWReturnedBillEntry
             {
                 Id = bill.Id,
+                AmendsLawId = bill.AmendsLawId,
+                AmendsLawName = bill.AmendsLawId is { } lawId ? LawName(lawId) : null,
                 Name = bill.Name,
                 Description = bill.Description,
                 Reason = bill.ReturnReason ?? string.Empty,
@@ -1330,12 +1728,14 @@ public sealed class SWSenateStateSystem : EntitySystem
         return bills;
     }
 
-    public List<SWBillEffectEntry> BuildBillEffects(SWSenateBill bill)
+    public List<SWBillEffectEntry> BuildBillEffects(SWSenateBill bill) => BuildEffects(bill.Effects);
+
+    private List<SWBillEffectEntry> BuildEffects(IReadOnlyDictionary<string, float> values)
     {
         var effects = new List<SWBillEffectEntry>();
         foreach (var sub in _proto.EnumeratePrototypes<SWStatPrototype>().OrderBy(s => s.Order))
         {
-            if (!bill.Effects.TryGetValue(sub.ID, out var delta))
+            if (!values.TryGetValue(sub.ID, out var delta))
                 continue;
 
             effects.Add(new SWBillEffectEntry { StatName = sub.ShortName, Color = SubColor(sub), Delta = delta });
@@ -1406,6 +1806,9 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     public string BillStageLabel(SWSenateBill bill)
     {
+        if (bill.Repealed)
+            return "Отменён";
+
         if (bill.Stage == SWBillStage.InCommittee)
             return bill.CommitteeName ?? "На рассмотрении в комитете";
         if (bill.Stage == SWBillStage.Returned)
@@ -1419,16 +1822,16 @@ public sealed class SWSenateStateSystem : EntitySystem
         if (bill.AwaitingTiebreak)
             return Loc.GetString("sw-senate-bill-stage-tiebreak");
 
-        var session = _sessions.FirstOrDefault(s => s.BillId == bill.Id && s.Status != SWSessionStatus.Rejected);
+        var session = _sessions.FirstOrDefault(s => s.ContainsBill(bill.Id) && s.Status != SWSessionStatus.Rejected);
         if (session == null)
-            return Loc.GetString("sw-senate-bill-stage-awaiting");
+            return bill.EmergencyCrisisId > 0 ? "В очереди экстренного созыва" : Loc.GetString("sw-senate-bill-stage-awaiting");
         if (session.Status == SWSessionStatus.Pending)
             return Loc.GetString("sw-senate-bill-stage-pending");
 
-        if (_time.DayActive && _time.CurrentHour >= session.StartHour && _time.CurrentHour < session.EndHour)
+        if (_time.DayActive && SessionIsActive(session) && session.CurrentBillId == bill.Id)
             return Loc.GetString("sw-senate-bill-stage-voting");
 
-        return Loc.GetString("sw-senate-bill-stage-scheduled", ("time", $"{session.StartHour:00}:00"));
+        return Loc.GetString("sw-senate-bill-stage-scheduled", ("time", SWSenateDuration.FormatClock(session.StartHour)));
     }
 
     private void ApplyBill(SWSenateBill bill)
@@ -1449,8 +1852,21 @@ public sealed class SWSenateStateSystem : EntitySystem
         if (bill is not { Stage: SWBillStage.Passed, SpecialMotionType: null, IsElection: false } || bill.Repealed)
             return false;
 
+        // Undo the consolidated law once. Child amendments retain their own records and cannot be undone twice.
+        var effects = bill.AmendsLawId == null ? GetEffectiveLawEffects(bill.Id) : bill.Effects;
         bill.Repealed = true;
-        foreach (var (subId, delta) in bill.Effects)
+        if (bill.AmendsLawId == null)
+        {
+            foreach (var amendment in _bills.Where(b => b.AmendsLawId == bill.Id))
+            {
+                if (amendment.Stage == SWBillStage.Passed)
+                    amendment.Repealed = true;
+                else if (amendment.Stage != SWBillStage.Rejected)
+                    RejectOrphanedAmendment(amendment);
+            }
+        }
+
+        foreach (var (subId, delta) in effects)
         {
             if (!_proto.TryIndex<SWStatPrototype>(subId, out var sub))
                 continue;
@@ -1460,6 +1876,21 @@ public sealed class SWSenateStateSystem : EntitySystem
         }
 
         return true;
+    }
+
+    private void RejectOrphanedAmendment(SWSenateBill bill)
+    {
+        if (bill.AmendsLawId == null || bill.Stage is SWBillStage.Passed or SWBillStage.Rejected)
+            return;
+
+        bill.Stage = SWBillStage.Rejected;
+        bill.AwaitingTiebreak = false;
+        bill.ReturnReason = "Закон, к которому предложены поправки, больше не действует.";
+        foreach (var session in _sessions.Where(s => s.ContainsBill(bill.Id)).ToArray())
+        {
+            ReleaseAmendmentSession(session);
+        }
+        RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, false));
     }
 
     public string? LawName(int billId) => _bills.FirstOrDefault(b => b.Id == billId)?.Name;
@@ -1478,6 +1909,9 @@ public sealed class SWSenateStateSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -1490,11 +1924,17 @@ public sealed class SWSenateStateSystem : EntitySystem
         if (_time.Day != _scheduleDay)
         {
             _scheduleDay = _time.Day;
-            _sessions.Clear();
+            _sessions.RemoveAll(s => s.ActiveEndHour == null
+                || !_bills.Any(b => s.ContainsBill(b.Id) && b.Stage == SWBillStage.Voting));
+            foreach (var session in _sessions)
+            {
+                session.StartHour = SWSenateTimeSystem.StartHour;
+                session.Duration = Math.Max(0d, session.ActiveEndHour!.Value - _time.ActiveGameHours);
+            }
             _announcedSessions.Clear();
 
             // Any bill the Chancellor left unsigned is auto-signed into law at the end of the day.
-            foreach (var id in _bills.Where(b => b.Stage == SWBillStage.AwaitingSignature).Select(b => b.Id).ToList())
+            foreach (var id in _bills.Where(b => b.Stage == SWBillStage.AwaitingSignature && b.EmergencyCrisisId <= 0).Select(b => b.Id).ToList())
                 SignBill(id);
         }
 
@@ -1502,25 +1942,29 @@ public sealed class SWSenateStateSystem : EntitySystem
         if (_accumulator < UpdateInterval)
             return;
 
+        var elapsed = _accumulator;
         _accumulator = 0f;
+        var drift = 1f - MathF.Pow(1f - DriftRate, elapsed / UpdateInterval);
+        var inheritanceDecay = MathF.Pow(0.5f, elapsed / InheritanceHalfLifeSeconds);
 
         AutopilotTick();
 
-        var policy = GetPolicyScores();
         foreach (var (sectorId, globals) in _sectorGlobals)
         {
-            if (!_sectorBias.TryGetValue(sectorId, out var bias))
-                continue;
-
             foreach (var global in _proto.EnumeratePrototypes<SWGlobalStatPrototype>())
             {
                 if (!globals.TryGetValue(global.ID, out var value))
                     continue;
 
-                var policyScore = policy.TryGetValue(global.ID, out var p) ? p : NeutralStat;
-                var offset = bias.TryGetValue(global.ID, out var b) ? b : 0f;
-                var target = Math.Clamp(policyScore + offset, global.Min, global.Max);
-                globals[global.ID] = value + (target - value) * DriftRate;
+                var target = GetSectorTarget(sectorId, global.ID);
+                var inherited = _inheritance.TryGetValue(sectorId, out var carry)
+                    && carry.TryGetValue(global.ID, out var previous) ? previous : 0f;
+                var currentRoundValue = value - inherited;
+                var remaining = inherited * inheritanceDecay;
+                if (carry != null)
+                    carry[global.ID] = remaining;
+                globals[global.ID] = Math.Clamp(currentRoundValue + (target - currentRoundValue) * drift + remaining,
+                    global.Min, global.Max);
             }
         }
     }

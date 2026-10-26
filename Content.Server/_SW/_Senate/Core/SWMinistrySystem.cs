@@ -1,6 +1,10 @@
 using Content.Shared._SW._Senate;
 using Content.Shared.Access.Systems;
 using Content.Shared.GameTicking;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
+using Robust.Shared.Enums;
+using Robust.Shared.Player;
 
 namespace Content.Server._SW._Senate.Core;
 
@@ -10,6 +14,7 @@ public sealed class SWMinistrySystem : EntitySystem
 
     private readonly Dictionary<string, string> _holders = new();
     private readonly Dictionary<string, EntityUid> _holderCards = new();
+    private readonly Dictionary<string, EntityUid> _holderEntities = new();
     private readonly Dictionary<string, HashSet<string>> _barred = new();
 
     public IReadOnlyDictionary<string, string> Holders => _holders;
@@ -23,6 +28,7 @@ public sealed class SWMinistrySystem : EntitySystem
     {
         _holders.Clear();
         _holderCards.Clear();
+        _holderEntities.Clear();
         _barred.Clear();
     }
 
@@ -48,13 +54,26 @@ public sealed class SWMinistrySystem : EntitySystem
     public EntityUid? GetHolderCard(string ministryId) =>
         _holderCards.TryGetValue(ministryId, out var card) ? card : null;
 
-    public bool TryClaim(string ministryId, string holder, EntityUid card)
+    /// <summary>The appointed player is connected and controlling their living minister.
+    /// The ID can remain inserted in a console without suspending the ministry.</summary>
+    public bool IsHolderActive(string ministryId) =>
+        _holders.ContainsKey(ministryId)
+        && _holderEntities.TryGetValue(ministryId, out var entity)
+        && TryComp<ActorComponent>(entity, out var actor)
+        && actor.PlayerSession.Status == SessionStatus.InGame
+        && actor.PlayerSession.AttachedEntity == entity
+        && TryComp<MobStateComponent>(entity, out var mob)
+        && mob.CurrentState == MobState.Alive;
+
+    public bool TryClaim(string ministryId, string holder, EntityUid card, EntityUid? actor = null)
     {
         if (_holders.ContainsKey(ministryId) || IsBarred(ministryId, holder))
             return false;
 
         _holders[ministryId] = holder;
         _holderCards[ministryId] = card;
+        if (actor is { } entity)
+            _holderEntities[ministryId] = entity;
         return true;
     }
 
@@ -62,6 +81,7 @@ public sealed class SWMinistrySystem : EntitySystem
     {
         _holders.Remove(ministryId);
         _holderCards.Remove(ministryId);
+        _holderEntities.Remove(ministryId);
     }
 
     public bool TryTransfer(string fromId, string toId, EntityUid card)
@@ -78,6 +98,8 @@ public sealed class SWMinistrySystem : EntitySystem
         _holderCards.Remove(fromId);
         _holders[toId] = holder;
         _holderCards[toId] = card;
+        if (_holderEntities.Remove(fromId, out var entity))
+            _holderEntities[toId] = entity;
         return true;
     }
 

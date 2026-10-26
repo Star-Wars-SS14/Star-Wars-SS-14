@@ -37,12 +37,14 @@ public sealed class SWSenatePartySystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<SWSenateBillVotesResolvedEvent>(OnBillResolved);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _accum = 0f;
         _parties.Clear();
         _partyLaws.Clear();
         _nextId = 1;
@@ -401,6 +403,9 @@ public sealed class SWSenatePartySystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 

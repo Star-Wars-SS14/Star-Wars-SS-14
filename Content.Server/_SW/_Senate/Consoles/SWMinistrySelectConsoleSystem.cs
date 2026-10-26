@@ -13,6 +13,7 @@ namespace Content.Server._SW._Senate.Consoles;
 
 public sealed class SWMinistrySelectConsoleSystem : EntitySystem
 {
+    [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
@@ -35,18 +36,27 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
 
     private void OnInserted(Entity<SWMinistrySelectConsoleComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
 
     private void OnRemoved(Entity<SWMinistrySelectConsoleComponent> ent, ref EntRemovedFromContainerMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
 
     private void OnSelect(Entity<SWMinistrySelectConsoleComponent> ent, ref SWSelectMinistryMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         if (card == null)
         {
@@ -91,7 +101,7 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
             return;
         }
 
-        if (!_ministry.TryClaim(args.MinistryId, Name(args.Actor), card.Value))
+        if (!_ministry.TryClaim(args.MinistryId, Name(args.Actor), card.Value, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-ministry-select-taken"), args.Actor, PopupType.Medium);
             UpdateUi(ent);

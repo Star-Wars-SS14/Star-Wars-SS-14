@@ -2235,32 +2235,48 @@ public sealed class SWSenateVoteConsoleState : BoundUserInterfaceState
 [Serializable, NetSerializable]
 public sealed class SWSenatePartyWhipMessage : BoundUserInterfaceMessage
 {
+    public int BillId;
+
+    public SWSenatePartyWhipMessage(int billId)
+    {
+        BillId = billId;
+    }
 }
 
 [Serializable, NetSerializable]
 public sealed class SWSenateCastVoteMessage : BoundUserInterfaceMessage
 {
     public SWVoteChoice Choice;
+    public int BillId;
 
-    public SWSenateCastVoteMessage(SWVoteChoice choice)
+    public SWSenateCastVoteMessage(SWVoteChoice choice, int billId)
     {
         Choice = choice;
+        BillId = billId;
     }
 }
 
 [Serializable, NetSerializable]
 public sealed class SWSenateEndVoteMessage : BoundUserInterfaceMessage
 {
+    public int BillId;
+
+    public SWSenateEndVoteMessage(int billId)
+    {
+        BillId = billId;
+    }
 }
 
 [Serializable, NetSerializable]
 public sealed class SWSenateTiebreakMessage : BoundUserInterfaceMessage
 {
     public SWVoteChoice Choice;
+    public int BillId;
 
-    public SWSenateTiebreakMessage(SWVoteChoice choice)
+    public SWSenateTiebreakMessage(SWVoteChoice choice, int billId)
     {
         Choice = choice;
+        BillId = billId;
     }
 }
 

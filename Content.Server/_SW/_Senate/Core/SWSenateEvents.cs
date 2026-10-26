@@ -5,11 +5,11 @@ namespace Content.Server._SW._Senate.Core;
 public sealed class SWSenateSessionStartedEvent : EntityEventArgs
 {
     public string BillName;
-    public int StartHour;
-    public int EndHour;
+    public double StartHour;
+    public double EndHour;
     public bool Emergency;
 
-    public SWSenateSessionStartedEvent(string billName, int startHour, int endHour, bool emergency = false)
+    public SWSenateSessionStartedEvent(string billName, double startHour, double endHour, bool emergency = false)
     {
         BillName = billName;
         StartHour = startHour;
@@ -21,10 +21,10 @@ public sealed class SWSenateSessionStartedEvent : EntityEventArgs
 public sealed class SWSenateEmergencySessionScheduledEvent : EntityEventArgs
 {
     public string BillName;
-    public int StartHour;
+    public double StartHour;
     public string? DisplacedBill;
 
-    public SWSenateEmergencySessionScheduledEvent(string billName, int startHour, string? displacedBill)
+    public SWSenateEmergencySessionScheduledEvent(string billName, double startHour, string? displacedBill)
     {
         BillName = billName;
         StartHour = startHour;
@@ -117,4 +117,9 @@ public sealed class SWSenateCustomAnnouncementEvent : EntityEventArgs
         Text = text;
         Kind = kind;
     }
+}
+
+public sealed class SWSenateDayClosedEvent(bool finalDay) : EntityEventArgs
+{
+    public bool FinalDay { get; } = finalDay;
 }

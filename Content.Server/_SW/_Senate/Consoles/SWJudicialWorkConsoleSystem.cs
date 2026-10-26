@@ -21,6 +21,7 @@ public sealed class SWJudicialWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWSenateCourtSystem _court = default!;
     [Dependency] private readonly SWSenateAmbitionSystem _ambition = default!;
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
+    [Dependency] private readonly SWSenateCardSystem _cards = default!;
 
     private const float UpdateInterval = 3f;
     private float _accumulator;
@@ -57,12 +58,18 @@ public sealed class SWJudicialWorkConsoleSystem : EntitySystem
 
     private void OnInserted(Entity<SWJudicialWorkConsoleComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
 
     private void OnRemoved(Entity<SWJudicialWorkConsoleComponent> ent, ref EntRemovedFromContainerMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
@@ -70,12 +77,23 @@ public sealed class SWJudicialWorkConsoleSystem : EntitySystem
     private (SWSenatePosition Position, string Name)? GetCardIdentity(Entity<SWJudicialWorkConsoleComponent> ent)
     {
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
-        if (card == null || !TryComp<SWSenatePositionCardComponent>(card, out var position))
+        if (card == null)
             return null;
 
         var fullName = TryComp<IdCardComponent>(card, out var idCard) && !string.IsNullOrWhiteSpace(idCard.FullName)
             ? idCard.FullName
             : null;
+
+        // Reconcile an appointment before interpreting an old judicial card as its former office.
+        if (fullName != null && _court.IsJudge(fullName))
+        {
+            var judicialPosition = _court.Chief == fullName ? SWSenatePosition.ChiefJustice : SWSenatePosition.Judge;
+            _cards.Synchronize(card.Value, judicialPosition);
+            return (judicialPosition, fullName);
+        }
+
+        if (!TryComp<SWSenatePositionCardComponent>(card, out var position))
+            return null;
 
         switch (position.Position)
         {
@@ -86,17 +104,7 @@ public sealed class SWJudicialWorkConsoleSystem : EntitySystem
                 return fullName == null ? null : (position.Position, fullName);
 
             default:
-                // A freshly appointed judge arrives with their old card: convert it once the
-                // bench actually lists them.
-                if (fullName == null || !_court.IsJudge(fullName))
-                    return null;
-
-                position.Position = _court.Chief == fullName ? SWSenatePosition.ChiefJustice : SWSenatePosition.Judge;
-                if (TryComp<SWSenateSectorComponent>(card, out var sector))
-                    sector.Sector = null;
-                if (TryComp<SWMinistryComponent>(card, out var ministry))
-                    ministry.Ministry = null;
-                return (position.Position, fullName);
+                return null;
         }
     }
 
@@ -128,6 +136,9 @@ public sealed class SWJudicialWorkConsoleSystem : EntitySystem
 
     private void OnTakeOffice(Entity<SWJudicialWorkConsoleComponent> ent, ref SWSenateTakeOfficeMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardIdentity(ent) is not { } id)
         {
             _popup.PopupCursor("Вставьте судебную карту.", args.Actor, PopupType.Medium);
@@ -141,7 +152,10 @@ public sealed class SWJudicialWorkConsoleSystem : EntitySystem
         }
 
         if (_court.TakeOffice(id.Position, id.Name))
+        {
+            _cards.SynchronizeHolder(id.Name, id.Position);
             _popup.PopupCursor("Судебные полномочия приняты.", args.Actor, PopupType.Medium);
+        }
         else
             _popup.PopupCursor("Принять судебные полномочия невозможно.", args.Actor, PopupType.Medium);
 
@@ -150,6 +164,9 @@ public sealed class SWJudicialWorkConsoleSystem : EntitySystem
 
     private void OnVerdictVote(Entity<SWJudicialWorkConsoleComponent> ent, ref SWCourtVerdictVoteMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetIdentity(ent) is not { } id || !_court.IsJudge(id.Name) || id.Name != Name(args.Actor))
             return;
 
@@ -161,6 +178,9 @@ public sealed class SWJudicialWorkConsoleSystem : EntitySystem
 
     private void OnCloseVote(Entity<SWJudicialWorkConsoleComponent> ent, ref SWCourtCloseVoteMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetIdentity(ent) is not { } id || !_court.IsJudge(id.Name) || id.Name != Name(args.Actor))
             return;
 
@@ -174,6 +194,9 @@ public sealed class SWJudicialWorkConsoleSystem : EntitySystem
 
     private void OnStartReview(Entity<SWJudicialWorkConsoleComponent> ent, ref SWCourtStartReviewMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetIdentity(ent) is not { } id || id.Name != Name(args.Actor))
             return;
 
@@ -187,6 +210,9 @@ public sealed class SWJudicialWorkConsoleSystem : EntitySystem
 
     private void OnReviewVote(Entity<SWJudicialWorkConsoleComponent> ent, ref SWCourtReviewVoteMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetIdentity(ent) is not { } id || !_court.IsJudge(id.Name) || id.Name != Name(args.Actor))
             return;
 
@@ -196,16 +222,14 @@ public sealed class SWJudicialWorkConsoleSystem : EntitySystem
 
     private void OnResign(Entity<SWJudicialWorkConsoleComponent> ent, ref SWCourtResignMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetIdentity(ent) is not { } id || id.Name != Name(args.Actor))
             return;
 
         if (!_court.Resign(id.Name))
             return;
-
-        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
-        if (card != null && TryComp<SWSenatePositionCardComponent>(card, out var position)
-            && position.Position is SWSenatePosition.ChiefJustice or SWSenatePosition.Judge)
-            position.Position = SWSenatePosition.Senator;
 
         _popup.PopupCursor("Полномочия сложены.", args.Actor, PopupType.Medium);
         UpdateUi(ent);
@@ -259,7 +283,7 @@ public sealed class SWJudicialWorkConsoleSystem : EntitySystem
             {
                 SWSenatePosition.Prosecutor => 1,
                 SWSenatePosition.Defender => 2,
-                _ => 0,
+                _ => state.IsJudge ? 3 : 0,
             };
 
             state.CurrentCase = _court.BuildCurrentCase(id.Name, hintSide);

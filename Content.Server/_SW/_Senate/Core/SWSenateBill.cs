@@ -18,6 +18,8 @@ public sealed class SWSenateBill
     public string Name = string.Empty;
     public string Description = string.Empty;
     public string Author = string.Empty;
+    // Amendments are independent bills; their effects are deltas to this enacted root law.
+    public int? AmendsLawId;
     public Dictionary<string, float> Effects = new();
     public Dictionary<string, SWVoteChoice> Votes = new();
     public SWBillStage Stage = SWBillStage.Voting;

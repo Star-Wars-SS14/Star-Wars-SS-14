@@ -30,19 +30,19 @@ public sealed class SWSenateVoteConsoleBoundUserInterface : BoundUserInterface
         _menu?.SetState(castState);
     }
 
-    public void Vote(SWVoteChoice choice)
+    public void Vote(SWVoteChoice choice, int billId)
     {
-        SendMessage(new SWSenateCastVoteMessage(choice));
+        SendMessage(new SWSenateCastVoteMessage(choice, billId));
     }
 
-    public void EndVote()
+    public void EndVote(int billId)
     {
-        SendMessage(new SWSenateEndVoteMessage());
+        SendMessage(new SWSenateEndVoteMessage(billId));
     }
 
-    public void Tiebreak(SWVoteChoice choice)
+    public void Tiebreak(SWVoteChoice choice, int billId)
     {
-        SendMessage(new SWSenateTiebreakMessage(choice));
+        SendMessage(new SWSenateTiebreakMessage(choice, billId));
     }
 
     public void GrantFloor(NetEntity target)
@@ -65,9 +65,9 @@ public sealed class SWSenateVoteConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateGrantChancellorMessage());
     }
 
-    public void PartyWhip()
+    public void PartyWhip(int billId)
     {
-        SendMessage(new SWSenatePartyWhipMessage());
+        SendMessage(new SWSenatePartyWhipMessage(billId));
     }
 
     public void Nominate()

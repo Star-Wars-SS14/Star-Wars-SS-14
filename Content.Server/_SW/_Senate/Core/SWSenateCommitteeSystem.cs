@@ -65,6 +65,7 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         BuildCommittees();
         BuildStatMap();
@@ -301,6 +302,9 @@ public sealed class SWSenateCommitteeSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 

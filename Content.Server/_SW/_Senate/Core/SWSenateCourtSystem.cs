@@ -20,6 +20,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
     [Dependency] private readonly SWCorruptionSystem _corruption = default!;
     [Dependency] private readonly SWSenateBudgetSystem _budget = default!;
     [Dependency] private readonly SWSenateStaffSystem _staff = default!;
+    [Dependency] private readonly SWSenateCardSystem _cards = default!;
 
     public const int MorningStart = 9;
     public const int MorningEnd = 13;
@@ -46,7 +47,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
         public bool ForChief;
         public bool Accepted;
         public readonly Dictionary<string, bool> Votes = new();
-        public int DeadlineAbs;
+        public double DeadlineActiveHour;
     }
 
     private Nomination? _nomination;
@@ -78,7 +79,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
     {
         public int LawId;
         public string LawName = string.Empty;
-        public int DeadlineAbs;
+        public double DeadlineActiveHour;
         public readonly Dictionary<string, bool> Votes = new();
     }
 
@@ -91,11 +92,18 @@ public sealed class SWSenateCourtSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+        SubscribeLocalEvent<SWSenateDayClosedEvent>(ev =>
+        {
+            if (!ev.FinalDay)
+                ResolveTimedVotes();
+        });
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _accumulator = 0f;
         Chief = null;
         _judges.Clear();
         Prosecutor = null;
@@ -106,6 +114,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
         _prosecuted.Clear();
         _nextCaseNumber = 1;
         _review = null;
+        LawsRepealed = 0;
         _notices.Clear();
         _morningAttemptDay = 0;
         _morningInitialAttempted = false;
@@ -162,6 +171,9 @@ public sealed class SWSenateCourtSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -185,10 +197,15 @@ public sealed class SWSenateCourtSystem : EntitySystem
                 ResolveCase(c);
         }
 
-        if (_nomination is { Accepted: true } nom && _time.AbsoluteHour >= nom.DeadlineAbs)
+        ResolveTimedVotes();
+    }
+
+    private void ResolveTimedVotes()
+    {
+        if (_nomination is { Accepted: true } nom && _time.ActiveGameHours >= nom.DeadlineActiveHour)
             ResolveNomination();
 
-        if (_review is { } review && _time.AbsoluteHour >= review.DeadlineAbs)
+        if (_review is { } review && _time.ActiveGameHours >= review.DeadlineActiveHour)
             ResolveReview();
     }
 
@@ -222,6 +239,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
     {
         if (Chief == name)
         {
+            _cards.SynchronizeHolder(name, SWSenatePosition.Senator);
             Chief = null;
             Announce($"Верховный Судья {name} сложил полномочия.");
             return true;
@@ -229,18 +247,21 @@ public sealed class SWSenateCourtSystem : EntitySystem
 
         if (_judges.Remove(name))
         {
+            _cards.SynchronizeHolder(name, SWSenatePosition.Senator);
             Announce($"Республиканский Судья {name} сложил полномочия.");
             return true;
         }
 
         if (Prosecutor == name)
         {
+            _cards.RevokeHolder(name, SWSenatePosition.Prosecutor);
             Prosecutor = null;
             return true;
         }
 
         if (Defender == name)
         {
+            _cards.RevokeHolder(name, SWSenatePosition.Defender);
             Defender = null;
             return true;
         }
@@ -343,7 +364,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
         }
 
         _nomination!.Accepted = true;
-        _nomination.DeadlineAbs = _time.AbsoluteHour + (int) ConfirmHours;
+        _nomination.DeadlineActiveHour = _time.ActiveGameHours + ConfirmHours;
         Announce($"Сенат рассматривает кандидатуру {name} на пост {(_nomination.ForChief ? "Верховного Судьи" : "Республиканского Судьи")}. Голосование в консоли голосования.");
         return true;
     }
@@ -439,7 +460,8 @@ public sealed class SWSenateCourtSystem : EntitySystem
             Announce($"Сенат утвердил {name} в должности Республиканского Судьи.");
         }
 
-        AddNotice(name, "Назначение утверждено. Перерегистрируйте карту в судебной рабочей консоли.");
+        _cards.SynchronizeHolder(name, forChief ? SWSenatePosition.ChiefJustice : SWSenatePosition.Judge);
+        AddNotice(name, "Назначение утверждено. Судебные полномочия и доступы обновлены.");
     }
 
     // --- cases ---
@@ -741,7 +763,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
         if (lawName == null || !_senate.BuildRepealableLaws().Any(l => l.Id == lawId))
             return false;
 
-        _review = new Review { LawId = lawId, LawName = lawName, DeadlineAbs = _time.AbsoluteHour + ReviewHours };
+        _review = new Review { LawId = lawId, LawName = lawName, DeadlineActiveHour = _time.ActiveGameHours + ReviewHours };
         Announce($"Верховный Суд начал проверку закона «{lawName}» на конституционность.");
         return true;
     }
@@ -751,7 +773,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
         if (_review == null || !IsJudge(judge))
             return false;
 
-        if (_time.AbsoluteHour >= _review.DeadlineAbs)
+        if (_time.ActiveGameHours >= _review.DeadlineActiveHour)
         {
             ResolveReview();
             return false;
@@ -805,7 +827,7 @@ public sealed class SWSenateCourtSystem : EntitySystem
             VotesFor = _review.Votes.Count(kv => bench.Contains(kv.Key) && kv.Value),
             VotesAgainst = _review.Votes.Count(kv => bench.Contains(kv.Key) && !kv.Value),
             MyVote = viewer != null && _review.Votes.TryGetValue(viewer, out var v) ? (v ? 1 : 2) : 0,
-            CanVote = viewer != null && IsJudge(viewer) && _time.AbsoluteHour < _review.DeadlineAbs,
+            CanVote = viewer != null && IsJudge(viewer) && _time.ActiveGameHours < _review.DeadlineActiveHour,
         };
     }
 

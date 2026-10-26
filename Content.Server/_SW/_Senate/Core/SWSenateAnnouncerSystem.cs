@@ -1,4 +1,5 @@
 using Content.Server.Chat.Systems;
+using Content.Shared._SW._Senate;
 using Robust.Shared.Audio;
 
 namespace Content.Server._SW._Senate.Core;
@@ -54,7 +55,7 @@ public sealed class SWSenateAnnouncerSystem : EntitySystem
             return;
 
         var text = Loc.GetString("sw-senate-announce-emergency-scheduled",
-            ("time", $"{ev.StartHour:00}:00"), ("bill", ev.BillName));
+            ("time", SWSenateDuration.FormatClock(ev.StartHour)), ("bill", ev.BillName));
         if (ev.DisplacedBill != null)
             text += " " + Loc.GetString("sw-senate-announce-emergency-replaced", ("bill", ev.DisplacedBill));
 

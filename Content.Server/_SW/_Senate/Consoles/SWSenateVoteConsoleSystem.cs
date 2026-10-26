@@ -47,6 +47,9 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     private void OnCourtConfirmVote(Entity<SWSenateVoteConsoleComponent> ent, ref SWCourtConfirmVoteMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var sector = GetVoterSector(ent);
         if (sector == null)
             return;
@@ -57,6 +60,9 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     private void OnNominate(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateNominateMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var sectorId = GetVoterSector(ent);
         if (sectorId == null)
         {
@@ -74,6 +80,9 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     private void OnElectionVote(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateElectionVoteMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var sectorId = GetVoterSector(ent);
         if (sectorId == null)
         {
@@ -89,6 +98,12 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     private void OnPartyWhip(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenatePartyWhipMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!IsCurrentBallot(ent, args.BillId))
+            return;
+
         var sectorId = GetVoterSector(ent);
         if (sectorId == null)
         {
@@ -106,6 +121,9 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     private void OnGrantFloor(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateGrantFloorMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!ActsAsSpeaker(ent))
             return;
 
@@ -120,6 +138,9 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     private void OnRevokeFloor(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateRevokeFloorMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!ActsAsSpeaker(ent))
             return;
 
@@ -130,6 +151,9 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     private void OnRemoveFromQueue(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateRemoveFromQueueMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!ActsAsSpeaker(ent))
             return;
 
@@ -141,6 +165,9 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     private void OnGrantChancellor(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateGrantChancellorMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!ActsAsSpeaker(ent))
             return;
 
@@ -176,6 +203,12 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     private void OnEndVote(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateEndVoteMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!IsCurrentBallot(ent, args.BillId))
+            return;
+
         if (!ActsAsSpeaker(ent))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-vote-only-speaker"), args.Actor, PopupType.Medium);
@@ -192,6 +225,12 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     private void OnTiebreak(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateTiebreakMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!IsCurrentBallot(ent, args.BillId))
+            return;
+
         if (!ActsAsChancellor(ent))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-vote-only-chancellor"), args.Actor, PopupType.Medium);
@@ -211,12 +250,18 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     private void OnInserted(Entity<SWSenateVoteConsoleComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
 
     private void OnRemoved(Entity<SWSenateVoteConsoleComponent> ent, ref EntRemovedFromContainerMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
@@ -242,6 +287,12 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     private void OnVote(Entity<SWSenateVoteConsoleComponent> ent, ref SWSenateCastVoteMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!IsCurrentBallot(ent, args.BillId))
+            return;
+
         var sectorId = GetVoterSector(ent);
         if (sectorId == null)
         {
@@ -261,6 +312,16 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
+    private bool IsCurrentBallot(Entity<SWSenateVoteConsoleComponent> ent, int billId)
+    {
+        if (_senate.GetCurrentBill()?.Id == billId)
+            return true;
+
+        // A click from the previous agenda item must never affect the next ballot.
+        UpdateUi(ent);
+        return false;
+    }
+
     private string? GetVoterSector(Entity<SWSenateVoteConsoleComponent> ent)
     {
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
@@ -277,6 +338,9 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
 
     private void UpdateUi(Entity<SWSenateVoteConsoleComponent> ent)
     {
+        // Resolve expired agenda items before taking any part of this UI snapshot.
+        var activeSession = _senate.GetActiveSession();
+        var bill = _senate.GetCurrentBill();
         var state = new SWSenateVoteConsoleState
         {
             Bills = _senate.BuildBillEntries(),
@@ -316,11 +380,14 @@ public sealed class SWSenateVoteConsoleSystem : EntitySystem
             }
         }
 
-        var activeSession = _senate.GetActiveSession();
         if (activeSession != null)
-            state.SessionInfo = $"Заседание {activeSession.StartHour:00}:00-{activeSession.EndHour:00}:00";
+        {
+            state.SessionInfo = $"Заседание {activeSession.TimeRange}";
+            var agendaInfo = _senate.GetSessionAgendaInfo(activeSession);
+            if (!string.IsNullOrEmpty(agendaInfo))
+                state.SessionInfo += $"\n{agendaInfo}";
+        }
 
-        var bill = _senate.GetCurrentBill();
         if (bill != null)
         {
             state.HasCurrent = true;

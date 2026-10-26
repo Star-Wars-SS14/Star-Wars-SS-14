@@ -48,17 +48,22 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<RoundEndTextAppendEvent>(OnRoundEnd);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _accumulator = 0f;
         _assigned.Clear();
     }
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -202,20 +207,40 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
             {
                 var holder = OwnerHolder(active.Owner);
                 var met = holder != null && _senate.Bills.Any(b =>
-                    b.Stage == SWBillStage.Passed && b.SpecialMotionType == null && b.Author == holder
+                    IsPassedBaseLaw(b) && b.Author == holder
                     && b.Effects.TryGetValue(proto.Stat, out var d) && d > 0);
                 return (met, met ? "закон принят" : "закона нет");
             }
             case SWAmbitionKind.PassOwnLaws:
             {
                 var holder = OwnerHolder(active.Owner);
-                var n = holder == null ? 0 : _senate.Bills.Count(b => b.Stage == SWBillStage.Passed && b.SpecialMotionType == null && b.Author == holder);
+                var n = holder == null ? 0 : _senate.Bills.Count(b => IsPassedBaseLaw(b) && b.Author == holder);
                 return (n >= proto.Count, $"{n}/{proto.Count}");
             }
             case SWAmbitionKind.PassBills:
             {
-                var n = _senate.Bills.Count(b => b.Stage == SWBillStage.Passed && b.SpecialMotionType == null);
+                var n = _senate.Bills.Count(IsPassedBaseLaw);
                 return (n >= proto.Count, $"{n}/{proto.Count}");
+            }
+            case SWAmbitionKind.PassOwnAmendments:
+            case SWAmbitionKind.AmendOthersLaw:
+            {
+                var holder = OwnerHolder(active.Owner);
+                var amendments = ActiveOwnAmendments(holder);
+                if (proto.Kind == SWAmbitionKind.AmendOthersLaw)
+                    amendments = amendments.Where(b => _senate.Bills.Any(law =>
+                        law.Id == b.AmendsLawId && law.Author != holder));
+                var n = amendments.Count();
+                return (n >= proto.Count, $"{n}/{proto.Count}");
+            }
+            case SWAmbitionKind.AmendmentStat:
+            {
+                var holder = OwnerHolder(active.Owner);
+                var met = ActiveOwnAmendments(holder)
+                    .GroupBy(b => b.AmendsLawId!.Value)
+                    .Any(group => group.Sum(b => b.Effects.GetValueOrDefault(proto.Stat)) > 0
+                        && _senate.GetEffectiveLawEffects(group.Key).GetValueOrDefault(proto.Stat) > 0);
+                return (met, met ? "поправка действует" : "нет действующей поправки");
             }
             case SWAmbitionKind.PartyStrong:
             {
@@ -264,6 +289,16 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
                 return (false, string.Empty);
         }
     }
+
+    // General law ambitions retain their original authorship. Another senator's amendment
+    // neither creates a second base law nor changes what the original author contributed.
+    private static bool IsPassedBaseLaw(SWSenateBill bill) =>
+        bill is { Stage: SWBillStage.Passed, SpecialMotionType: null, IsElection: false, AmendsLawId: null };
+
+    private IEnumerable<SWSenateBill> ActiveOwnAmendments(string? holder) =>
+        _senate.Bills.Where(b => holder != null && b.Author == holder
+            && b is { Stage: SWBillStage.Passed, Repealed: false, SpecialMotionType: null, IsElection: false, AmendsLawId: not null }
+            && _senate.Bills.Any(law => law.Id == b.AmendsLawId && IsPassedBaseLaw(law) && !law.Repealed));
 
     // Generic (ministryId, metric) lookup for every Minister-role ambition. One switch per office keeps
     // each ministry/department/bureau's ambitions grounded in that office's own real mechanics instead of

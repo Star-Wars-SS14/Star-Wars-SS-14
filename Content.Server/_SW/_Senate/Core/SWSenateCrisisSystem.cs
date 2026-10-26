@@ -46,12 +46,14 @@ public sealed class SWSenateCrisisSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<SWSenateBillResolvedEvent>(OnBillResolved);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _gameAccum = 0f;
         _crises.Clear();
         _nextId = 1;
     }
@@ -71,6 +73,9 @@ public sealed class SWSenateCrisisSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -172,6 +177,7 @@ public sealed class SWSenateCrisisSystem : EntitySystem
             else
                 crisis.Severity = Math.Max(0f, crisis.Severity - SelfDecay * minutes);
 
+            TickPolicies(crisis, proto, minutes / 60f);
             Escalate(crisis, proto);
             ApplyPressure(crisis, proto, minutes);
 
@@ -182,6 +188,28 @@ public sealed class SWSenateCrisisSystem : EntitySystem
                 _crises.RemoveAt(i);
             }
         }
+    }
+
+    private void TickPolicies(SWActiveCrisis crisis, SWCrisisPrototype proto, float hours)
+    {
+        var relief = 0f;
+        var affected = crisis.AffectedSectors.Count(s => _senate.IsClaimed(s));
+        foreach (var (sector, index) in crisis.Policies.ToList())
+        {
+            if (!_senate.IsClaimed(sector) || !crisis.AffectedSectors.Contains(sector)
+                || index < 0 || index >= proto.Solutions.Count || !proto.Solutions[index].Policy)
+            {
+                crisis.Policies.Remove(sector);
+                continue;
+            }
+            var solution = proto.Solutions[index];
+            relief += solution.ReliefPerHour;
+            foreach (var (global, delta) in solution.SectorEffectsPerHour)
+                _senate.AddSectorBias(sector, global, delta * hours);
+        }
+        // Shared severity cannot be farmed by adding more seats to the same crisis.
+        if (affected > 0)
+            crisis.Severity = Math.Max(0f, crisis.Severity - relief / affected * hours);
     }
 
     private void Escalate(SWActiveCrisis crisis, SWCrisisPrototype proto)
@@ -263,6 +291,8 @@ public sealed class SWSenateCrisisSystem : EntitySystem
 
     public bool AidCrisis(int crisisId, string helperSector)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return false;
         var crisis = _crises.FirstOrDefault(c => c.Id == crisisId);
         if (crisis == null
             || helperSector == crisis.OriginSector
@@ -281,6 +311,8 @@ public sealed class SWSenateCrisisSystem : EntitySystem
 
     public bool ApplySolution(int crisisId, int index, string sectorId)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return false;
         var crisis = _crises.FirstOrDefault(c => c.Id == crisisId);
         if (crisis == null || !crisis.AffectedSectors.Contains(sectorId))
             return false;
@@ -290,6 +322,20 @@ public sealed class SWSenateCrisisSystem : EntitySystem
             return false;
 
         var solution = proto.Solutions[index];
+        if (solution.Policy)
+        {
+            if (crisis.Policies.TryGetValue(sectorId, out var active) && active == index)
+            {
+                crisis.Policies.Remove(sectorId);
+                Log(crisis, $"{SectorName(sectorId)}: отменена мера «{solution.Label}».");
+            }
+            else
+            {
+                crisis.Policies[sectorId] = index;
+                Log(crisis, $"{SectorName(sectorId)}: действует мера «{solution.Label}».");
+            }
+            return true;
+        }
         if (solution.Cost > 0 && !_budget.Spend(sectorId, solution.Cost))
             return false;
 
@@ -394,16 +440,19 @@ public sealed class SWSenateCrisisSystem : EntitySystem
             }
 
             var available = viewerSector != null ? _budget.Available(viewerSector) : 0;
-            foreach (var solution in proto.Solutions)
+            for (var i = 0; i < proto.Solutions.Count; i++)
             {
+                var solution = proto.Solutions[i];
                 entry.Solutions.Add(new SWCrisisSolutionEntry
                 {
                     Label = solution.Label,
                     Description = solution.Description,
                     Cost = solution.Cost,
-                    Relief = solution.Relief,
+                    Relief = solution.Policy ? solution.ReliefPerHour : solution.Relief,
+                    Policy = solution.Policy,
+                    Active = viewerSector != null && crisis.Policies.TryGetValue(viewerSector, out var active) && active == i,
                     Affordable = solution.Cost <= 0 || available >= solution.Cost,
-                    Effects = BiasEffects(solution.SectorEffects),
+                    Effects = BiasEffects(solution.Policy ? solution.SectorEffectsPerHour : solution.SectorEffects),
                 });
             }
 
@@ -412,6 +461,28 @@ public sealed class SWSenateCrisisSystem : EntitySystem
 
         list.Sort((a, b) => b.Severity.CompareTo(a.Severity));
         return list;
+    }
+
+    public List<SWMapCrisisEntry> BuildMapCrises()
+    {
+        var entries = new List<SWMapCrisisEntry>();
+        foreach (var crisis in _crises)
+        {
+            if (!_proto.TryIndex<SWCrisisPrototype>(crisis.CrisisId, out var proto))
+                continue;
+            entries.Add(new SWMapCrisisEntry
+            {
+                Id = $"senate:{crisis.Id}", Title = proto.Name, Description = proto.Description,
+                Severity = crisis.Severity, Status = RootActive(crisis, proto) ? "Первопричина активна" : "Первопричина устранена; кризис спадает",
+                SectorIds = crisis.AffectedSectors.OrderBy(s => s).ToList(),
+                LocationLabel = crisis.AffectedSectors.Count == 0 ? "Республика" : string.Join(", ", crisis.AffectedSectors.OrderBy(s => s).Select(SectorName)),
+                Effects = BuildImpact(crisis, proto),
+                EffectsLabel = "Оценка изменения равновесных значений",
+                Consequences = "Давление на показатели затронутых секторов."
+                    + (crisis.Type == SWCrisisType.Republic ? " На остальные секторы действует 50% давления." : crisis.Type == SWCrisisType.Inter ? " На остальные секторы действует 25% давления." : ""),
+            });
+        }
+        return entries;
     }
 
     private List<SWBillEffectEntry> BuildImpact(SWActiveCrisis crisis, SWCrisisPrototype proto)
@@ -469,6 +540,8 @@ public sealed class SWSenateCrisisSystem : EntitySystem
 
     public bool ProposeLaw(int crisisId, int lawIndex, string author, string? sectorOwner, bool isChancellor)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return false;
         var crisis = _crises.FirstOrDefault(c => c.Id == crisisId);
         if (crisis == null
             || !_proto.TryIndex<SWCrisisPrototype>(crisis.CrisisId, out var proto)
@@ -545,6 +618,7 @@ public sealed class SWActiveCrisis
     public SWCrisisType Type;
     public string OriginSector = string.Empty;
     public readonly HashSet<string> AffectedSectors = new();
+    public readonly Dictionary<string, int> Policies = new();
     public float Severity;
     public int HighTicks;
     public readonly List<string> Log = new();

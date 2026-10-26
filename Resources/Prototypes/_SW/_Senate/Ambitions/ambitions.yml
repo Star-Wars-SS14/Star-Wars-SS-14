@@ -203,6 +203,33 @@
   order: 19
 
 - type: swAmbition
+  id: SWAmbitionSecAmendment
+  name: Автор поправки
+  description: К концу раунда должна действовать хотя бы одна поправка вашего авторства.
+  role: Senator
+  kind: PassOwnAmendments
+  count: 1
+  order: 20
+
+- type: swAmbition
+  id: SWAmbitionSecAmendOthersLaw
+  name: Новый взгляд
+  description: Проведите свою поправку к закону другого автора. Закон и поправка должны действовать к концу раунда.
+  role: Senator
+  kind: AmendOthersLaw
+  count: 1
+  order: 21
+
+- type: swAmbition
+  id: SWAmbitionSecAmendMedicine
+  name: Медицина в законе
+  description: Усильте поддержку медицины своими поправками. К концу раунда вклад ваших поправок и итоговый эффект закона на медицину должны быть положительными.
+  role: Senator
+  kind: AmendmentStat
+  stat: SWStatMedicine
+  order: 22
+
+- type: swAmbition
   id: SWAmbitionChaEconomy
   name: Процветание Республики
   description: К концу раунда экономика Республики должна быть выше 65.

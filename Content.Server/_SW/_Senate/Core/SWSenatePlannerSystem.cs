@@ -29,6 +29,7 @@ public sealed class SWSenatePlannerSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
@@ -44,6 +45,9 @@ public sealed class SWSenatePlannerSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -253,7 +257,7 @@ public sealed class SWSenatePlannerSystem : EntitySystem
             {
                 if (session.Status != SWSessionStatus.Confirmed)
                     continue;
-                mask |= SWPlannerSlots.Mask((session.StartHour - SWSenateTimeSystem.StartHour) * 4, session.Duration * 4);
+                mask |= SWPlannerSlots.Mask(session.StartSlot, session.SlotDuration);
             }
         }
 
@@ -315,10 +319,10 @@ public sealed class SWSenatePlannerSystem : EntitySystem
 
                 items.Add(new SWPlannerItemEntry
                 {
-                    StartSlot = (session.StartHour - SWSenateTimeSystem.StartHour) * 4,
-                    Duration = session.Duration * 4,
+                    StartSlot = session.StartSlot,
+                    Duration = session.SlotDuration,
                     Kind = 1,
-                    Label = $"Заседание Сената: {_senate.GetBillName(session.BillId)}",
+                    Label = $"Заседание Сената: {_senate.GetSessionName(session)}",
                 });
             }
         }
@@ -417,7 +421,7 @@ public sealed class SWSenatePlannerSystem : EntitySystem
         if (meeting.Location.Length > 0)
             parts.Add($"место: {meeting.Location}");
         parts.Add(Confirmed(meeting) ? "подтверждена" : "ждёт ответов");
-        return string.Join("  ·  ", parts);
+        return string.Join(", ", parts);
     }
 
     public List<SWPlannerMeetingEntry> BuildMeetingsFor(string person)
@@ -468,10 +472,10 @@ public sealed class SWSenatePlannerSystem : EntitySystem
                     if (session.Status != SWSessionStatus.Confirmed)
                         continue;
 
-                    var sessionMask = SWPlannerSlots.Mask((session.StartHour - SWSenateTimeSystem.StartHour) * 4, session.Duration * 4);
+                    var sessionMask = SWPlannerSlots.Mask(session.StartSlot, session.SlotDuration);
                     if ((sessionMask & SWPlannerSlots.Mask(meeting.StartSlot, meeting.Duration)) != 0)
                     {
-                        entry.Warning = $"Пересекается с заседанием Сената ({session.StartHour:00}:00)";
+                        entry.Warning = $"Пересекается с заседанием Сената ({SWSenateDuration.FormatClock(session.StartHour)})";
                         break;
                     }
                 }

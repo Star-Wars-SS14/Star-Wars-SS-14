@@ -15,12 +15,22 @@ public sealed class SWSenateTimeSystem : EntitySystem
     public bool DayActive { get; private set; } = true;
     public bool ModeActive { get; set; }
 
-    private float _gameMinutes;
+    // Accumulate in double: float rounding at 30 ticks/s shortened a full day
+    // enough to lose the final quarter-hour economy step over a three-day round.
+    private double _gameMinutes;
     private float _gapRemaining;
 
     public int CurrentHour => StartHour + Math.Clamp((int)(_gameMinutes / 60f), 0, EndHour - StartHour);
     public int CurrentMinute => (int)(_gameMinutes % 60f);
     public int AbsoluteHour => Day * 24 + CurrentHour;
+    public double CalendarGameMinutes => Day * 1440d + StartHour * 60d + _gameMinutes;
+    public double ActiveGameMinutes { get; private set; }
+    public double ActiveGameHours => ActiveGameMinutes / 60d;
+
+    // Simulation systems run before the clock. Clip their elapsed time at the day boundary.
+    public float ActiveSeconds(float seconds) => ModeActive && DayActive
+        ? (float) Math.Clamp(seconds, 0d, Math.Max(0d, (DayLengthMinutes - _gameMinutes) * RealSecondsPerGameHour / 60d))
+        : 0f;
 
     public override void Initialize()
     {
@@ -32,6 +42,7 @@ public sealed class SWSenateTimeSystem : EntitySystem
         // A new round is the next senate day: the clock resets to morning while the day number carries
         // over and advances (a round ending mid-day 1 makes the next round day 2).
         Day++;
+        ActiveGameMinutes = 0d;
         _gameMinutes = 0f;
         _gapRemaining = 0f;
         DayActive = true;
@@ -58,10 +69,13 @@ public sealed class SWSenateTimeSystem : EntitySystem
             return;
         }
 
-        _gameMinutes += frameTime * (60f / RealSecondsPerGameHour);
+        var activeMinutes = ActiveSeconds(frameTime) * (60d / RealSecondsPerGameHour);
+        ActiveGameMinutes += activeMinutes;
+        _gameMinutes += activeMinutes;
         if (_gameMinutes >= DayLengthMinutes)
         {
             _gameMinutes = DayLengthMinutes;
+            RaiseLocalEvent(new SWSenateDayClosedEvent(FinalNight()));
             DayActive = false;
             _gapRemaining = DayGapRealSeconds;
             if (!FinalNight())

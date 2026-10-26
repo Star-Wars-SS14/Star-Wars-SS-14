@@ -34,11 +34,13 @@ public sealed class SWCorruptionSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _accum = 0f;
         _sector.Clear();
         _person.Clear();
         _account.Clear();
@@ -66,6 +68,9 @@ public sealed class SWCorruptionSystem : EntitySystem
     // Sector corruption inflates the cost of everything that draws money there.
     public float CostMultiplier(string? sectorId) =>
         sectorId == null ? 1f : 1f + SectorCorruption(sectorId) / 100f * CostFactor;
+
+    public int ProjectCost(string sectorId, int baseCost) =>
+        (int) MathF.Ceiling(Math.Max(0, baseCost) * CostMultiplier(sectorId));
 
     public int GlobalIndex()
     {
@@ -174,6 +179,9 @@ public sealed class SWCorruptionSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 

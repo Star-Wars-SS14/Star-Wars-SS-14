@@ -1,0 +1,10 @@
+- type: vendingMachineInventory
+  id: SWSenateStationeryInventory
+  startingInventory:
+    Paper: 40
+    Envelope: 20
+    Pen: 20
+    BoxFolderBlueEmpty: 10
+    BoxFolderClipboardEmpty: 10
+    RubberStampApproved: 2
+    RubberStampDenied: 2

@@ -1,7 +1,7 @@
 - type: gameMap
   id: SWSenate
   mapName: 'Сенат Республики'
-  mapPath: /Maps/SW/senate.yml
+  mapPath: /Maps/SW/senate_v17.yml
   minPlayers: 0
   maxPlayers: 100
   stations:

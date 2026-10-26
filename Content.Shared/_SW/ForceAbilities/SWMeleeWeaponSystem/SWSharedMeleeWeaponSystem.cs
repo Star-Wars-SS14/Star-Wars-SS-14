@@ -1,11 +1,14 @@
 using System;
 using Content.Shared.Hands;
+using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Item.ItemToggle;
 using Content.Shared.Item.ItemToggle.Components;
 using Content.Shared.Popups;
+using Content.Shared.Tag;
 using Content.Shared.Weapons.Melee;
 using Content.Shared.Weapons.Melee.Events;
 using Content.Shared.Weapons.Reflect;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 using Robust.Shared.Timing;
 
@@ -18,10 +21,13 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
     private const string AlreadyBlockingPopup = "sw-weapon-block-already-blocking";
     private const string BlockCooldownPopup = "sw-weapon-block-cooldown";
     private const string RaiseBlockPopup = "sw-weapon-block-raise";
+    private static readonly ProtoId<TagPrototype> LightsaberTag = "SWEnergySwordTag";
 
     [Dependency] private readonly IGameTiming _gameTiming = default!;
     [Dependency] protected readonly SharedPopupSystem PopupSystem = default!;
     [Dependency] private readonly ItemToggleSystem _toggle = default!;
+    [Dependency] private readonly SharedHandsSystem _hands = default!;
+    [Dependency] private readonly TagSystem _tag = default!;
 
     public override void Initialize()
     {
@@ -140,16 +146,17 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
 
     private void OnLightningHit(Entity<SWForceUserBlockComponent> ent, ref HitByLightningEvent args)
     {
-        if (!TryGetCurrentBlockWeapon(ent.Owner, out var weapon))
+        if (args.Cancelled)
             return;
 
-        if (CanBlock(weapon))
-            EnableBlock(weapon);
-
-        if (weapon.Comp.IsBlocking)
+        foreach (var held in _hands.EnumerateHeld(ent.Owner))
         {
+            if (!_tag.HasTag(held, LightsaberTag) || !_toggle.IsActivated(held))
+                continue;
+
             args.Cancel();
             PopupSystem.PopupPredicted(Loc.GetString(HitBlockedPopup), ent.Owner, null, PopupType.Medium);
+            return;
         }
     }
 

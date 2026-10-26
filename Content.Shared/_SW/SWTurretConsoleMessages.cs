@@ -19,10 +19,19 @@ public sealed class SWTurretConsoleBounderUserInterfaceState : BoundUserInterfac
 {
     public Dictionary<string, bool> JobsAllowed = new Dictionary<string, bool>();
     public Dictionary<string, string> AvailableFactions = new Dictionary<string, string>();
-    public SWTurretConsoleBounderUserInterfaceState(Dictionary<string, bool> dict, Dictionary<string, string> availableFactions)
+    public bool TargetHumanoidsWithoutId;
+    public bool TargetAnimals;
+
+    public SWTurretConsoleBounderUserInterfaceState(
+        Dictionary<string, bool> dict,
+        Dictionary<string, string> availableFactions,
+        bool targetHumanoidsWithoutId,
+        bool targetAnimals)
     {
         JobsAllowed = dict;
         AvailableFactions = availableFactions;
+        TargetHumanoidsWithoutId = targetHumanoidsWithoutId;
+        TargetAnimals = targetAnimals;
     }
 }
 
@@ -55,5 +64,15 @@ public sealed class SWAllowFaction : BoundUserInterfaceMessage
     {
         Faction = faction;
     }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWToggleTargetHumanoidsWithoutIdMessage : BoundUserInterfaceMessage
+{
+}
+
+[Serializable, NetSerializable]
+public sealed class SWToggleTargetAnimalsMessage : BoundUserInterfaceMessage
+{
 }
 

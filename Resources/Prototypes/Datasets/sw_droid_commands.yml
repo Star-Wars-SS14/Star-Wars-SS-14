@@ -1,0 +1,29 @@
+- type: localizedDataset
+  id: SWDroidCommandStay
+  values:
+    prefix: sw-droid-command-stay-
+    count: 3
+
+- type: localizedDataset
+  id: SWDroidCommandFollow
+  values:
+    prefix: sw-droid-command-follow-
+    count: 3
+
+- type: localizedDataset
+  id: SWDroidCommandGoTo
+  values:
+    prefix: sw-droid-command-go-to-
+    count: 3
+
+- type: localizedDataset
+  id: SWDroidCommandAttack
+  values:
+    prefix: sw-droid-command-attack-
+    count: 3
+
+- type: localizedDataset
+  id: SWDroidCommandDismiss
+  values:
+    prefix: sw-droid-command-dismiss-
+    count: 3

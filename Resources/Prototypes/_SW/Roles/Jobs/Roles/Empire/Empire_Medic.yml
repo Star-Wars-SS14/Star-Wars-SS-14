@@ -4,10 +4,7 @@
   playTimeTracker: Job_Empire_Medic
   requirements:
   - !type:OverallPlaytimeRequirement
-    time: 36000 # 10h
-  - !type:RoleTimeRequirement
-    role: Job_Empire_Soldier
-    time: 18000 # 5h
+    time: 0 # 0h
   - !type:SWSpeciesJobRequirement
     allowedSpecies: [ Human, Chiss ]
   startingGear: EmpireMedicalGear

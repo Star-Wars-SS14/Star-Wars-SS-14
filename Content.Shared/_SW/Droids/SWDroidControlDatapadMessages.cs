@@ -1,0 +1,144 @@
+using Robust.Shared.Map;
+using Robust.Shared.Serialization;
+
+namespace Content.Shared._SW.Droids;
+
+[Serializable, NetSerializable]
+public sealed class SWDroidControlDatapadBoundUserInterfaceState : BoundUserInterfaceState
+{
+    public Dictionary<string, bool> JobsAllowed = new();
+    public Dictionary<string, string> AvailableFactions = new();
+    public List<SWDroidControlDatapadDroidEntry> Droids = new();
+    public List<SWDroidControlDatapadDroidEntry> MapDroids = new();
+    public NetEntity? MapUid;
+    public bool Enabled;
+    public bool TargetHumanoidsWithoutId;
+    public bool TargetAnimals;
+
+    public SWDroidControlDatapadBoundUserInterfaceState(
+        Dictionary<string, bool> jobsAllowed,
+        Dictionary<string, string> availableFactions,
+        List<SWDroidControlDatapadDroidEntry> droids,
+        List<SWDroidControlDatapadDroidEntry> mapDroids,
+        NetEntity? mapUid,
+        bool enabled,
+        bool targetHumanoidsWithoutId,
+        bool targetAnimals)
+    {
+        JobsAllowed = jobsAllowed;
+        AvailableFactions = availableFactions;
+        Droids = droids;
+        MapDroids = mapDroids;
+        MapUid = mapUid;
+        Enabled = enabled;
+        TargetHumanoidsWithoutId = targetHumanoidsWithoutId;
+        TargetAnimals = targetAnimals;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDroidControlDatapadDroidEntry
+{
+    public NetEntity DroidUid;
+    public NetCoordinates Coordinates;
+    public string Name;
+    public string CoordinatesText;
+    public string Charge;
+    public string Status;
+    public bool FollowingDatapad;
+
+    public SWDroidControlDatapadDroidEntry(
+        NetEntity droidUid,
+        NetCoordinates coordinates,
+        string name,
+        string coordinatesText,
+        string charge,
+        string status,
+        bool followingDatapad)
+    {
+        DroidUid = droidUid;
+        Coordinates = coordinates;
+        Name = name;
+        CoordinatesText = coordinatesText;
+        Charge = charge;
+        Status = status;
+        FollowingDatapad = followingDatapad;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDroidControlDatapadFollowDroidMessage : BoundUserInterfaceMessage
+{
+    public NetEntity DroidUid;
+
+    public SWDroidControlDatapadFollowDroidMessage(NetEntity droidUid)
+    {
+        DroidUid = droidUid;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDroidControlDatapadStopFollowDroidMessage : BoundUserInterfaceMessage
+{
+    public NetEntity DroidUid;
+
+    public SWDroidControlDatapadStopFollowDroidMessage(NetEntity droidUid)
+    {
+        DroidUid = droidUid;
+    }
+}
+
+[NetSerializable, Serializable]
+public enum SWDroidControlConsoleUiKey : byte
+{
+    Key,
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDroidControlConsoleBoundUserInterfaceState : BoundUserInterfaceState
+{
+    public List<SWDroidControlConsoleDatapadEntry> Datapads = new();
+
+    public SWDroidControlConsoleBoundUserInterfaceState(List<SWDroidControlConsoleDatapadEntry> datapads)
+    {
+        Datapads = datapads;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDroidControlConsoleDatapadEntry
+{
+    public NetEntity DatapadUid;
+    public string ControlId;
+    public string Name;
+    public string Status;
+    public int LinkedDroids;
+    public bool Enabled;
+
+    public SWDroidControlConsoleDatapadEntry(
+        NetEntity datapadUid,
+        string controlId,
+        string name,
+        string status,
+        int linkedDroids,
+        bool enabled)
+    {
+        DatapadUid = datapadUid;
+        ControlId = controlId;
+        Name = name;
+        Status = status;
+        LinkedDroids = linkedDroids;
+        Enabled = enabled;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDroidControlConsoleToggleDatapadMessage : BoundUserInterfaceMessage
+{
+    public NetEntity DatapadUid;
+
+    public SWDroidControlConsoleToggleDatapadMessage(NetEntity datapadUid)
+    {
+        DatapadUid = datapadUid;
+    }
+}

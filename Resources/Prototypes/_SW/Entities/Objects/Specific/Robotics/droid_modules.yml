@@ -1,0 +1,265 @@
+- type: entity
+  parent: BaseBorgModule
+  id: SWDroidAICoreModule
+  name: droid AI core
+  description: A compact processor module that allows a droid to execute orders and combat routines.
+  components:
+  - type: SWDroidModuleCategory
+    category: AiCore
+  - type: SWDroidAICoreModule
+  - type: Sprite
+    sprite: _SW/Objects/Specific/Robotics/droid_ai_core.rsi
+    layers:
+    - state: icon
+  - type: Item
+    size: Small
+    inhandVisuals:
+      left:
+      - sprite: Objects/Specific/Robotics/borgmodule.rsi
+        state: base-icon-inhand-left
+        color: "#42D9C8"
+      - sprite: Objects/Specific/Robotics/borgmodule.rsi
+        state: base-module-inhand-left
+        color: "#48555A"
+      - sprite: Objects/Specific/Robotics/borgmodule.rsi
+        state: base-part-inhand-left
+      - sprite: Objects/Specific/Robotics/borgmodule.rsi
+        state: base-stripes-inhand-left
+        color: "#11191C"
+      right:
+      - sprite: Objects/Specific/Robotics/borgmodule.rsi
+        state: base-icon-inhand-right
+        color: "#42D9C8"
+      - sprite: Objects/Specific/Robotics/borgmodule.rsi
+        state: base-module-inhand-right
+        color: "#48555A"
+      - sprite: Objects/Specific/Robotics/borgmodule.rsi
+        state: base-part-inhand-right
+      - sprite: Objects/Specific/Robotics/borgmodule.rsi
+        state: base-stripes-inhand-right
+        color: "#11191C"
+  - type: Tag
+    tags:
+    - SWDroidModule
+
+- type: entity
+  parent: [ BaseBorgModule, BaseProviderBorgModule ]
+  id: SWDroidBlasterModule
+  name: droid blaster module
+  description: A combat module that equips a battle droid with a compact scout blaster.
+  components:
+  - type: SWDroidModuleCategory
+    category: Weapon
+  - type: Sprite
+    layers:
+    - state: generic
+    - state: icon-syndicate
+  - type: ItemBorgModule
+    hands:
+    - item: SWDroidGrantekF11D2
+  - type: BorgModuleIcon
+    icon: { sprite: Interface/Actions/actions_borg.rsi, state: syndicate-weapon-module }
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-icon-inhand-left
+        color: "#C94C3F"
+      - state: base-module-inhand-left
+        color: "#5F6D73"
+      - state: base-part-inhand-left
+      - state: base-stripes-inhand-left
+        color: "#202629"
+      right:
+      - state: base-icon-inhand-right
+        color: "#C94C3F"
+      - state: base-module-inhand-right
+        color: "#5F6D73"
+      - state: base-part-inhand-right
+      - state: base-stripes-inhand-right
+        color: "#202629"
+  - type: Tag
+    tags:
+    - SWDroidModule
+
+- type: entity
+  parent: BaseBorgModule
+  id: SWDroidFactionChipRepublic
+  name: republic droid faction chip
+  description: A faction identity chip that makes a droid obey Republic personnel.
+  components:
+  - type: SWDroidModuleCategory
+    category: FactionChip
+  - type: SWDroidFactionModule
+    faction: RepublicFaction
+    job: SWRepublicSoldier
+    lockAccess:
+    - SWRepublicBase
+    - SWRepublicCommander
+    - SWRepublicGeneral
+  - type: Sprite
+    layers:
+    - state: generic
+    - state: icon-template
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-icon-inhand-left
+        color: "#4D8FDB"
+      - state: base-module-inhand-left
+        color: "#5F6D73"
+      - state: base-part-inhand-left
+      - state: base-stripes-inhand-left
+        color: "#202629"
+      right:
+      - state: base-icon-inhand-right
+        color: "#4D8FDB"
+      - state: base-module-inhand-right
+        color: "#5F6D73"
+      - state: base-part-inhand-right
+      - state: base-stripes-inhand-right
+        color: "#202629"
+  - type: Tag
+    tags:
+    - SWDroidModule
+
+- type: entity
+  parent: BaseBorgModule
+  id: SWDroidFactionChipEmpire
+  name: imperial droid faction chip
+  description: A faction identity chip that makes a droid obey Imperial personnel.
+  components:
+  - type: SWDroidModuleCategory
+    category: FactionChip
+  - type: SWDroidFactionModule
+    faction: EmpireFaction
+    job: SWEmpireSoldier
+    lockAccess:
+    - SWEmpireBase
+    - SWEmpireCommander
+    - SWEmpireMoff
+  - type: Sprite
+    layers:
+    - state: generic
+    - state: icon-template
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-icon-inhand-left
+        color: "#C94C3F"
+      - state: base-module-inhand-left
+        color: "#5F6D73"
+      - state: base-part-inhand-left
+      - state: base-stripes-inhand-left
+        color: "#202629"
+      right:
+      - state: base-icon-inhand-right
+        color: "#C94C3F"
+      - state: base-module-inhand-right
+        color: "#5F6D73"
+      - state: base-part-inhand-right
+      - state: base-stripes-inhand-right
+        color: "#202629"
+  - type: Tag
+    tags:
+    - SWDroidModule
+
+- type: entity
+  parent: BaseBorgModule
+  id: SWDroidLoyaltyChipRepublic
+  name: republic droid loyalty chip
+  description: A loyalty safeguard that prevents a droid from firing on Republic personnel.
+  components:
+  - type: SWDroidModuleCategory
+    category: LoyaltyChip
+  - type: SWDroidLoyaltyModule
+    protectedJobs:
+    - SWRepublicRecruit
+    - SWRepublicSoldier
+    - SWRepublicPilot
+    - SWRepublicMedic
+    - SWRepublicEngineer
+    - SWRepublicLieutenant
+    - SWRepublicCaptain
+    - SWRepublicGeneral
+    - SWRepublicCommanderStormtrooper
+    - SWRepublicCommanderSniper
+    - SWRepublicCommanderMedic
+    - SWRepublicCommanderLieutenant
+    - SWRepublicCommanderCommander
+    - SWJedi
+  - type: Sprite
+    layers:
+    - state: generic
+    - state: icon-template
+      color: "#4D8FDB"
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-icon-inhand-left
+        color: "#4D8FDB"
+      - state: base-module-inhand-left
+        color: "#5F6D73"
+      - state: base-part-inhand-left
+      - state: base-stripes-inhand-left
+        color: "#E7EEF8"
+      right:
+      - state: base-icon-inhand-right
+        color: "#4D8FDB"
+      - state: base-module-inhand-right
+        color: "#5F6D73"
+      - state: base-part-inhand-right
+      - state: base-stripes-inhand-right
+        color: "#E7EEF8"
+  - type: Tag
+    tags:
+    - SWDroidModule
+
+- type: entity
+  parent: BaseBorgModule
+  id: SWDroidLoyaltyChipEmpire
+  name: imperial droid loyalty chip
+  description: A loyalty safeguard that prevents a droid from firing on Imperial personnel.
+  components:
+  - type: SWDroidModuleCategory
+    category: LoyaltyChip
+  - type: SWDroidLoyaltyModule
+    protectedJobs:
+    - SWEmpireSoldier
+    - SWEmpirePilot
+    - SWEmpireMedic
+    - SWEmpireEngineer
+    - SWEmpireLieutenant
+    - SWEmpireMajor
+    - SWEmpireMoff
+    - SWEmpireIntelligenceAgent
+    - SWEmpireIntelligenceCaretaker
+    - SWSobrikOfficer
+    - SWSobrikMedic
+    - SWSobrikCaptain
+    - SWSith
+  - type: Sprite
+    layers:
+    - state: generic
+    - state: icon-template
+      color: "#C94C3F"
+  - type: Item
+    inhandVisuals:
+      left:
+      - state: base-icon-inhand-left
+        color: "#C94C3F"
+      - state: base-module-inhand-left
+        color: "#5F6D73"
+      - state: base-part-inhand-left
+      - state: base-stripes-inhand-left
+        color: "#F5E3DE"
+      right:
+      - state: base-icon-inhand-right
+        color: "#C94C3F"
+      - state: base-module-inhand-right
+        color: "#5F6D73"
+      - state: base-part-inhand-right
+      - state: base-stripes-inhand-right
+        color: "#F5E3DE"
+  - type: Tag
+    tags:
+    - SWDroidModule

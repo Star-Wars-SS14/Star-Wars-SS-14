@@ -1,0 +1,86 @@
+- type: entity
+  parent: BaseItem
+  id: SWDroidTargetingTablet
+  name: droid targeting tablet
+  description: A portable droid targeting configuration terminal.
+  abstract: true
+  components:
+  - type: Sprite
+    sprite: Objects/Devices/tablets.rsi
+    layers:
+    - state: tablet
+    - state: generic
+      shader: unshaded
+  - type: Item
+    size: Small
+  - type: SWTurretConsole
+  - type: SWTargetingConfigTargets
+    defaultAllowedJobs: true
+    targetUnconfiguredJobs: false
+  - type: ActivatableUI
+    inHandsOnly: true
+    singleUser: true
+    key: enum.SWTurretConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWTurretConsoleUiKey.Key:
+        type: SWDroidControlDatapadBoundUserInterface
+  - type: Damageable
+    damageContainer: Inorganic
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 100
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+
+- type: entity
+  parent: SWDroidTargetingTablet
+  id: SWDroidTargetingTabletRepublic
+  name: republic droid targeting tablet
+  description: A portable droid targeting configuration terminal preset to target Imperial personnel.
+  suffix: Republic
+  components:
+  - type: SWDroidTargetingTablet
+    faction: RepublicFaction
+    controlIdPrefix: RDU
+  - type: SWTurretConsole
+    jobsAllowed:
+      SWSobrikCaptain: false
+      SWSobrikOfficer: false
+      SWSobrikMedic: false
+      SWEmpireMoff: false
+      SWEmpireMajor: false
+      SWEmpireLieutenant: false
+      SWEmpireSoldier: false
+      SWEmpireMedic: false
+      SWEmpireIntelligenceCaretaker: false
+      SWEmpireIntelligenceAgent: false
+      SWSith: false
+
+- type: entity
+  parent: SWDroidTargetingTablet
+  id: SWDroidTargetingTabletEmpire
+  name: imperial droid targeting tablet
+  description: A portable droid targeting configuration terminal preset to target Republic personnel.
+  suffix: Empire
+  components:
+  - type: SWDroidTargetingTablet
+    faction: EmpireFaction
+    controlIdPrefix: IDU
+  - type: SWTurretConsole
+    jobsAllowed:
+      SWRepublicCommanderCommander: false
+      SWRepublicCommanderLieutenant: false
+      SWRepublicCommanderMedic: false
+      SWRepublicCommanderStormtrooper: false
+      SWRepublicCommanderSniper: false
+      SWRepublicGeneral: false
+      SWRepublicCaptain: false
+      SWRepublicLieutenant: false
+      SWRepublicSoldier: false
+      SWRepublicMedic: false
+      SWRepublicRecruit: false
+      SWJedi: false

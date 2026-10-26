@@ -128,10 +128,12 @@
     - SWT1MedicineMarket
     - SWT2MedicineMarket
     - SWMaterialsMarket
+    - SWPowerMarket
     - SWExplosiveMarket
     - SWAdditionalAmunitionMarket
     - SWToolsMarket
     - SWLatheMarket
+    - SWEmpireDroidMarket
     - SWT3WeaponMarket
     - SWT3MedicineMarket
     - SWMiscMarket
@@ -200,9 +202,12 @@
     - SWT1MedicineMarket
     - SWT2MedicineMarket
     - SWMaterialsMarket
+    - SWPowerMarket
     - SWExplosiveMarket
     - SWAdditionalAmunitionMarket
     - SWToolsMarket
+    - SWLatheMarket
+    - SWRepublicDroidMarket
     - SWT3WeaponMarket
     - SWT3MedicineMarket
     - SWMiscMarket
@@ -264,6 +269,7 @@
     - SWMandalorianToolsMarket
     - SWMiscMarket
     - SWToolsMarket
+    - SWPowerMarket
   - type: Sprite
     sprite: _SW/Structures/Machines/NeutralCargoComputer.rsi
     layers:

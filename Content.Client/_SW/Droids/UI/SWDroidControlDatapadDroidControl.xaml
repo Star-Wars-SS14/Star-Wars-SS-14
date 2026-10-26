@@ -1,0 +1,15 @@
+<PanelContainer
+    xmlns="https://spacestation14.io">
+    <BoxContainer Orientation="Horizontal" Margin="6" SeparationOverride="6">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+            <Label Name="DroidName" StyleClasses="LabelHeading" ClipText="True" />
+            <Label Name="DroidStatus" ClipText="True" />
+            <Label Name="DroidCharge" ClipText="True" />
+            <Label Name="DroidCoordinates" ClipText="True" />
+        </BoxContainer>
+        <Button
+            Name="FollowDatapadButton"
+            VerticalAlignment="Center"
+            Text="{Loc 'sw-droid-control-datapad-follow-datapad'}" />
+    </BoxContainer>
+</PanelContainer>

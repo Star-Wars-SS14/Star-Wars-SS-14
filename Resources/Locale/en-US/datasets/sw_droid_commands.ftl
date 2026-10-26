@@ -1,0 +1,15 @@
+sw-droid-command-stay-1 = Hold position.
+sw-droid-command-stay-2 = Stand by.
+sw-droid-command-stay-3 = Stay here.
+sw-droid-command-follow-1 = Follow me.
+sw-droid-command-follow-2 = On me.
+sw-droid-command-follow-3 = Move with me.
+sw-droid-command-go-to-1 = Go!
+sw-droid-command-go-to-2 = Move there!
+sw-droid-command-go-to-3 = Take that position!
+sw-droid-command-attack-1 = Fire!
+sw-droid-command-attack-2 = Open fire!
+sw-droid-command-attack-3 = Destroy that target!
+sw-droid-command-dismiss-1 = Belay that order.
+sw-droid-command-dismiss-2 = Stand down.
+sw-droid-command-dismiss-3 = Cancel current order.

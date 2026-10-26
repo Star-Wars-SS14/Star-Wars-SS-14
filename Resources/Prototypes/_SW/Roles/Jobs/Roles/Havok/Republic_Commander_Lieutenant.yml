@@ -5,10 +5,7 @@
   playTimeTracker: Job_Republic_Commander_Lieutenant
   requirements:
   - !type:OverallPlaytimeRequirement
-    time: 108000 # 30h
-  - !type:DepartmentTimeRequirement
-    department: SWRPCommander
-    time: 18000 # 5h
+    time: 14400 # 4h
   startingGear: RepublicCommanderLieutenantGear
   icon: "JobIconHavokStormtrooper"
   supervisors: job-supervisors-havok-cap

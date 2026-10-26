@@ -55,6 +55,6 @@
 
           SWNeutralBartender: [1, 1]
           SWCivialian: [-1, -1]
-          SWJedi: [ 1, 1 ]
-          SWSith: [ 1, 1 ]
+          SWJedi: [ 2, 2 ]
+          SWSith: [ 2, 2 ]
       # - type: SWEndRound

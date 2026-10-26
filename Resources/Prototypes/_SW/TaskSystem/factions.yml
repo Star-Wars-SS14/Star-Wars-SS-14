@@ -17,6 +17,19 @@
     - SWRepublicMedic
     - SWRepublicRecruit
     - SWJedi
+    commandRanks:
+      SWRepublicCommanderCommander: 90
+      SWRepublicCommanderLieutenant: 70
+      SWRepublicCommanderMedic: 50
+      SWRepublicCommanderStormtrooper: 40
+      SWRepublicCommanderSniper: 40
+      SWRepublicGeneral: 100
+      SWRepublicCaptain: 80
+      SWRepublicLieutenant: 60
+      SWRepublicSoldier: 20
+      SWRepublicMedic: 20
+      SWRepublicRecruit: 10
+      SWJedi: 100
   - type: SWTaskContainer
     availableTasks: RepublicTasksSet
     addIntervalInSeconds: 1200 #20 min    
@@ -45,6 +58,18 @@
     - SWEmpireIntelligenceCaretaker
     - SWEmpireIntelligenceAgent
     - SWSith
+    commandRanks:
+      SWSobrikCaptain: 80
+      SWSobrikOfficer: 50
+      SWSobrikMedic: 20
+      SWEmpireMoff: 100
+      SWEmpireMajor: 90
+      SWEmpireLieutenant: 60
+      SWEmpireSoldier: 20
+      SWEmpireMedic: 20
+      SWEmpireIntelligenceCaretaker: 70
+      SWEmpireIntelligenceAgent: 40
+      SWSith: 100
   - type: SWTaskContainer
     availableTasks: EmpireTasksSet
     addIntervalInSeconds: 1200 #20 min   

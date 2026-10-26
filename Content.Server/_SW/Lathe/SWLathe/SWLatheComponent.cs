@@ -30,6 +30,9 @@ public sealed partial class SWLatheComponent : Component
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public string? SelectedRecipe;
 
+    [DataField, ViewVariables(VVAccess.ReadWrite)]
+    public bool ProductionDisabled;
+
     public Dictionary<EntProtoId, int> StashedMaterials = new Dictionary<EntProtoId, int>();
 
     [ViewVariables(VVAccess.ReadOnly)]

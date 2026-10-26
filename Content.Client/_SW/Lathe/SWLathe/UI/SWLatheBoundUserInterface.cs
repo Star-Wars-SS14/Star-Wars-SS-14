@@ -16,7 +16,8 @@ public sealed class SWLatheBoundUserInterface : BoundUserInterface
         base.Open();
 
         _menu = this.CreateWindow<SWLatheMenu>();
-        _menu.OnRecipeSelected += recipe => SendMessage(new SWLatheSelectRecipeMessage(recipe));
+        _menu.OnRecipeSelected += (recipe, productionDisabled) =>
+            SendMessage(new SWLatheSelectRecipeMessage(recipe, productionDisabled));
         _menu.OpenCenteredRight();
     }
 

@@ -1,0 +1,54 @@
+- type: swCargoProduct
+  id: SWPowerCellMediumCP
+  icon:
+    sprite: Objects/Power/power_cells.rsi
+    state: medium
+  product: PowerCellMedium
+  cost:
+    SWEmpireCreditCurrency: 150
+  category: sw-category-tools
+  group: SWPowerMarket
+
+- type: swCargoProduct
+  id: SWPowerCellHighCP
+  icon:
+    sprite: Objects/Power/power_cells.rsi
+    state: high
+  product: PowerCellHigh
+  cost:
+    SWEmpireCreditCurrency: 300
+  category: sw-category-tools
+  group: SWPowerMarket
+
+- type: swCargoProduct
+  id: SWPowerCellHyperCP
+  icon:
+    sprite: Objects/Power/power_cells.rsi
+    state: hyper
+  product: PowerCellHyper
+  cost:
+    SWEmpireCreditCurrency: 800
+  category: sw-category-tools
+  group: SWPowerMarket
+
+- type: swCargoProduct
+  id: SWPowerCellRechargerCP
+  icon:
+    sprite: Structures/Power/cell_recharger.rsi
+    state: empty
+  product: PowerCellRecharger
+  cost:
+    SWEmpireCreditCurrency: 350
+  category: sw-category-tools
+  group: SWPowerMarket
+
+- type: swCargoProduct
+  id: SWTurboItemRechargerCP
+  icon:
+    sprite: Structures/Power/turbo_recharger.rsi
+    state: empty
+  product: TurboItemRecharger
+  cost:
+    SWEmpireCreditCurrency: 800
+  category: sw-category-tools
+  group: SWPowerMarket

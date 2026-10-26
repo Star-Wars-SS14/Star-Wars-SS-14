@@ -1,0 +1,18 @@
+- type: constructionGraph
+  id: SWDroidGraph
+  start: broken
+  graph:
+  - node: broken
+    entity: SWMobDroidBroken
+    edges:
+    - to: chassis
+      steps:
+      - material: Steel
+        amount: 1
+        doAfter: 2
+      - tool: Welding
+        doAfter: 8
+  - node: chassis
+    entity: SWMobDroidChassis
+  - node: working
+    entity: SWMobDroid

@@ -1,54 +1,30 @@
-using Content.Shared._SW.TaskSystem;
 using Content.Shared._SW;
-using Robust.Shared.Prototypes;
-using Robust.Shared.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Robust.Server.GameObjects;
-using Content.Shared.Roles;
-using Content.Shared.DeviceLinking.Events;
-using Content.Shared.Xenoarchaeology.Equipment.Components;
 using Content.Server._SW.TaskSystem;
-using Content.Server._SW.TaskSystem.TargetSelector;
+using Content.Server._SW.TurretConsole;
+using Robust.Server.GameObjects;
 using Content.Shared.Popups;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Server.Popups;
-using Content.Server.DeviceLinking.Systems;
-using Content.Shared.DeviceLinking;
 
-namespace Content.Server._SW.TurretConsole;
+namespace Content.Server._SW.Targeting;
 
-public sealed partial class SWTurretConsoleSystem : EntitySystem
+public sealed partial class SWTargetingConsoleSystem : EntitySystem
 {
-    [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly SWFactionGameruleSystem _sWFaction = default!;
     [Dependency] private readonly AccessReaderSystem _accessReaderSystem = default!;
     [Dependency] private readonly PopupSystem _popupSystem = default!;
-    [Dependency] private readonly DeviceLinkSystem _signalSystem = default!;
+
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<SWTurretConsoleComponent, ComponentStartup>(OnStartup);
-        SubscribeLocalEvent<SWTurretConsoleComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SWTurretConsoleComponent, SWTurretJobToggleMessage>(OnToggle);
         SubscribeLocalEvent<SWTurretConsoleComponent, SWAllowFaction>(OnAllow);
         SubscribeLocalEvent<SWTurretConsoleComponent, SWDisallowFaction>(OnDisAllow);
-        SubscribeLocalEvent<SWTurretConsoleComponent, NewLinkEvent>(OnNewLink);
-        SubscribeLocalEvent<SWTurretConfigComponent, PortDisconnectedEvent>(OnPortDisconnected);
-    }
-
-    private void OnMapInit(Entity<SWTurretConsoleComponent> ent, ref MapInitEvent args)
-    {
-        var comp = Comp<DeviceLinkSinkComponent>(ent.Owner);
-        foreach (var source in comp.LinkedSources)
-        {
-            EnsureTurretConfig(ent, source);
-        }
+        SubscribeLocalEvent<SWTurretConsoleComponent, SWToggleTargetHumanoidsWithoutIdMessage>(OnToggleTargetHumanoidsWithoutId);
+        SubscribeLocalEvent<SWTurretConsoleComponent, SWToggleTargetAnimalsMessage>(OnToggleTargetAnimals);
     }
 
     private void OnDisAllow(Entity<SWTurretConsoleComponent> ent, ref SWDisallowFaction args)
@@ -61,6 +37,10 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
             _popupSystem.PopupCursor(Loc.GetString("comms-console-permission-denied"), user, PopupType.Medium);
             return;
         }
+
+        if (!IsProviderEnabled(user, ent.Owner))
+            return;
+
         var faction = _sWFaction.GetFactionEntity(args.Faction);
         if (faction == null)
         {
@@ -75,6 +55,7 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
             }
         }
         UpdateInterface(ent.Owner, ent.Comp);
+        RaiseSettingsChanged(ent.Owner, user);
     }
 
     private void OnAllow(Entity<SWTurretConsoleComponent> ent, ref SWAllowFaction args)
@@ -87,6 +68,10 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
             _popupSystem.PopupCursor(Loc.GetString("comms-console-permission-denied"), user, PopupType.Medium);
             return;
         }
+
+        if (!IsProviderEnabled(user, ent.Owner))
+            return;
+
         var faction = _sWFaction.GetFactionEntity(args.Faction);
         if (faction == null)
         {
@@ -101,17 +86,7 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
             }
         }
         UpdateInterface(ent.Owner, ent.Comp);
-    }
-
-    private void OnPortDisconnected(Entity<SWTurretConfigComponent> ent, ref PortDisconnectedEvent args)
-    {
-        //if port is disconnected remove config then
-        RemoveTurretConfig(ent.Owner);
-    }
-
-    private void OnNewLink(Entity<SWTurretConsoleComponent> ent, ref NewLinkEvent args)
-    {
-        EnsureTurretConfig(ent, args.Source);
+        RaiseSettingsChanged(ent.Owner, user);
     }
 
     private void OnToggle(Entity<SWTurretConsoleComponent> ent, ref SWTurretJobToggleMessage args)
@@ -124,13 +99,59 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
             _popupSystem.PopupCursor(Loc.GetString("comms-console-permission-denied"), user, PopupType.Medium);
             return;
         }
+
+        if (!IsProviderEnabled(user, ent.Owner))
+            return;
+
         ent.Comp.JobsAllowed[args.Job] = !ent.Comp.JobsAllowed[args.Job];
         UpdateInterface(ent.Owner, ent.Comp);
+        RaiseSettingsChanged(ent.Owner, user);
+    }
+
+    private void OnToggleTargetHumanoidsWithoutId(Entity<SWTurretConsoleComponent> ent, ref SWToggleTargetHumanoidsWithoutIdMessage args)
+    {
+        if (args.Actor is not { Valid: true } user)
+            return;
+
+        if (!CanUse(user, ent.Owner))
+        {
+            _popupSystem.PopupCursor(Loc.GetString("comms-console-permission-denied"), user, PopupType.Medium);
+            return;
+        }
+
+        if (!IsProviderEnabled(user, ent.Owner))
+            return;
+
+        var targets = EnsureComp<SWTargetingConfigTargetsComponent>(ent.Owner);
+        targets.TargetHumanoidsWithoutId = !targets.TargetHumanoidsWithoutId;
+        UpdateInterface(ent.Owner, ent.Comp);
+        RaiseSettingsChanged(ent.Owner, user);
+    }
+
+    private void OnToggleTargetAnimals(Entity<SWTurretConsoleComponent> ent, ref SWToggleTargetAnimalsMessage args)
+    {
+        if (args.Actor is not { Valid: true } user)
+            return;
+
+        if (!CanUse(user, ent.Owner))
+        {
+            _popupSystem.PopupCursor(Loc.GetString("comms-console-permission-denied"), user, PopupType.Medium);
+            return;
+        }
+
+        if (!IsProviderEnabled(user, ent.Owner))
+            return;
+
+        var targets = EnsureComp<SWTargetingConfigTargetsComponent>(ent.Owner);
+        targets.TargetAnimals = !targets.TargetAnimals;
+        UpdateInterface(ent.Owner, ent.Comp);
+        RaiseSettingsChanged(ent.Owner, user);
     }
 
     private void OnStartup(Entity<SWTurretConsoleComponent> ent, ref ComponentStartup args)
     {
-        var jobList = _prototype.EnumeratePrototypes<JobPrototype>().ToList();
+        var defaultAllowed = TryComp<SWTargetingConfigTargetsComponent>(ent.Owner, out var targets) &&
+                             targets.DefaultAllowedJobs;
 
         foreach (var job in ent.Comp.Jobs)
         {
@@ -138,7 +159,7 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
             {
                 continue;
             }
-            ent.Comp.JobsAllowed[job] = false;
+            ent.Comp.JobsAllowed[job] = defaultAllowed;
         }
 
         UpdateInterface(ent.Owner, ent.Comp);
@@ -156,7 +177,12 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
             }
             res[id] = ent.Value.Comp.Name;
         }
-        var state = new SWTurretConsoleBounderUserInterfaceState(comp.JobsAllowed, res);
+        TryComp<SWTargetingConfigTargetsComponent>(uid, out var targets);
+        var state = new SWTurretConsoleBounderUserInterfaceState(
+            comp.JobsAllowed,
+            res,
+            targets?.TargetHumanoidsWithoutId ?? false,
+            targets?.TargetAnimals ?? false);
         _uiSystem.SetUiState(uid, SWTurretConsoleUiKey.Key, state);
     }
     private bool CanUse(EntityUid user, EntityUid console)
@@ -168,14 +194,15 @@ public sealed partial class SWTurretConsoleSystem : EntitySystem
         return true;
     }
 
-    private void EnsureTurretConfig(Entity<SWTurretConsoleComponent> console, EntityUid turret)
+    private bool IsProviderEnabled(EntityUid user, EntityUid provider)
     {
-        var comp = EnsureComp<SWTurretConfigComponent>(turret);
-        comp.AllowedJobs = console.Comp.JobsAllowed;
+        var ev = new SWTargetingProviderAvailableEvent(user, true);
+        RaiseLocalEvent(provider, ev);
+        return !ev.Cancelled;
     }
 
-    private void RemoveTurretConfig(EntityUid turret)
+    private void RaiseSettingsChanged(EntityUid uid, EntityUid user)
     {
-        RemComp<SWTurretConfigComponent>(turret);
+        RaiseLocalEvent(uid, new SWTargetingConsoleSettingsChangedEvent(user));
     }
 }

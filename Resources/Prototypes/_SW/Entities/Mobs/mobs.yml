@@ -10,6 +10,7 @@
     prototypes: [RepublicGeneralGear]
   - type: SWFactionMember
     faction: RepublicFaction
+    job: SWRepublicGeneral
 
 - type: entity
   name: SWRepublic Captain
@@ -21,6 +22,7 @@
     prototypes: [RepublicCaptainGear]
   - type: SWFactionMember
     faction: RepublicFaction
+    job: SWRepublicCaptain
 
 - type: entity
   name: SWRepublic Lieutenant
@@ -32,6 +34,7 @@
     prototypes: [RepublicLieutenantGear]
   - type: SWFactionMember
     faction: RepublicFaction
+    job: SWRepublicLieutenant
 
 
 - type: entity
@@ -44,6 +47,7 @@
     prototypes: [RepublicSoldierGear]
   - type: SWFactionMember
     faction: RepublicFaction
+    job: SWRepublicSoldier
 
 - type: entity
   name: SWRepublic Recruit
@@ -55,6 +59,7 @@
     prototypes: [RepublicRecruitGear]
   - type: SWFactionMember
     faction: RepublicFaction
+    job: SWRepublicRecruit
 
 - type: entity
   name: SWRepublic Medic
@@ -66,6 +71,7 @@
     prototypes: [RepublicMedicGear]
   - type: SWFactionMember
     faction: RepublicFaction
+    job: SWRepublicMedic
 
 ##Republic_Commander
 - type: entity
@@ -78,6 +84,7 @@
     prototypes: [RepublicCommanderCommanderGear]
   - type: SWFactionMember
     faction: RepublicFaction
+    job: SWRepublicCommanderCommander
 
 - type: entity
   name: SWRepublic Commander Lieutenant
@@ -89,6 +96,7 @@
     prototypes: [RepublicCommanderLieutenantGear]
   - type: SWFactionMember
     faction: RepublicFaction
+    job: SWRepublicCommanderLieutenant
 
 - type: entity
   name: SWRepublic Commander Medic
@@ -100,6 +108,7 @@
     prototypes: [RepublicCommanderMedicGear]
   - type: SWFactionMember
     faction: RepublicFaction
+    job: SWRepublicCommanderMedic
 
 - type: entity
   name: SWRepublic Commander Stormtrooper
@@ -111,6 +120,7 @@
     prototypes: [RepublicCommanderStormtrooperGear]
   - type: SWFactionMember
     faction: RepublicFaction
+    job: SWRepublicCommanderStormtrooper
 
 - type: entity
   name: SWRepublic Commander Sniper
@@ -122,6 +132,7 @@
     prototypes: [RepublicCommanderSniperGear]
   - type: SWFactionMember
     faction: RepublicFaction
+    job: SWRepublicCommanderSniper
 
 ##Empire
 - type: entity
@@ -134,6 +145,7 @@
     prototypes: [EmpireMoffGear]
   - type: SWFactionMember
     faction: EmpireFaction
+    job: SWEmpireMoff
 
 - type: entity
   name: Empire Major
@@ -145,6 +157,7 @@
     prototypes: [EmpireMajorGear]
   - type: SWFactionMember
     faction: EmpireFaction
+    job: SWEmpireMajor
 
 - type: entity
   name: Empire Lieutenant
@@ -156,6 +169,7 @@
     prototypes: [EmpireLieutenantGear]
   - type: SWFactionMember
     faction: EmpireFaction
+    job: SWEmpireLieutenant
 
 - type: entity
   name: Empire Soldier
@@ -167,6 +181,7 @@
     prototypes: [EmpireSoldierGear]
   - type: SWFactionMember
     faction: EmpireFaction
+    job: SWEmpireSoldier
 
 - type: entity
   name: Empire Medic
@@ -178,6 +193,7 @@
     prototypes: [EmpireMedicalGear]
   - type: SWFactionMember
     faction: EmpireFaction
+    job: SWEmpireMedic
 
 ##Sobrik
 - type: entity
@@ -190,6 +206,7 @@
     prototypes: [SobrikCaptainGear]
   - type: SWFactionMember
     faction: EmpireFaction
+    job: SWSobrikCaptain
 
 - type: entity
   name: Sobrik Officer
@@ -201,6 +218,7 @@
     prototypes: [SobrikOfficerGear]
   - type: SWFactionMember
     faction: EmpireFaction
+    job: SWSobrikOfficer
 
 - type: entity
   name: Sobrik Medic
@@ -212,6 +230,7 @@
     prototypes: [SobrikMedicGear]
   - type: SWFactionMember
     faction: EmpireFaction
+    job: SWSobrikMedic
 
 ##Mandalorians
 - type: entity
@@ -224,6 +243,7 @@
     prototypes: [MandalorianLeaderGear]
   - type: SWFactionMember
     faction: MandalorinFaction
+    job: SWMandalorianLeader
 
 - type: entity
   name: SWMandalorian Veteran
@@ -235,6 +255,7 @@
     prototypes: [MandalorianVeteranGear]
   - type: SWFactionMember
     faction: MandalorinFaction
+    job: SWMandalorianVeteran
 
 - type: entity
   name: SWMandalorian Warrior
@@ -246,6 +267,7 @@
     prototypes: [MandalorianWarriorGear]
   - type: SWFactionMember
     faction: MandalorinFaction
+    job: SWMandalorianWarrior
 
 - type: entity
   name: SWMandalorian Recruit
@@ -257,6 +279,7 @@
     prototypes: [MandalorianRecruitGear]
   - type: SWFactionMember
     faction: MandalorinFaction
+    job: SWMandalorianRecruit
 
 # ##Balmorran
 # - type: entity
@@ -330,6 +353,7 @@
     prototypes: [EmpireIntelligenceCaretakerGear]
   - type: SWFactionMember
     faction: EmpireFaction
+    job: SWEmpireIntelligenceCaretaker
 
 - type: entity
   name: Intelligence Agent
@@ -341,6 +365,7 @@
     prototypes: [EmpireIntelligenceAgentGear]
   - type: SWFactionMember
     faction: EmpireFaction
+    job: SWEmpireIntelligenceAgent
 
 ##Roles_Black_Sun
 - type: entity
@@ -353,6 +378,7 @@
     prototypes: [BlackSunGear]
   - type: SWFactionMember
     faction: BlackSunFaction
+    job: SWBlackSun
 
 - type: entity
   name: SWBlackSun Mercenary
@@ -364,6 +390,7 @@
     prototypes: [BlackSunMercenaryGear]
   - type: SWFactionMember
     faction: BlackSunFaction
+    job: SWBlackSunMercenary
 
 ##SWExchange
 - type: entity
@@ -376,6 +403,7 @@
     prototypes: [ExchangeCaptainGear]
   - type: SWFactionMember
     faction: ExchangeFaction
+    job: SWExchangeCaptain
 
 - type: entity
   name: SWExchange Operative
@@ -387,6 +415,7 @@
     prototypes: [ExchangeOperativeGear]
   - type: SWFactionMember
     faction: ExchangeFaction
+    job: SWExchangeOperative
 
 # ###The Age of Rebellion
 # #NanoTrasen

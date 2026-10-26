@@ -190,7 +190,7 @@
   id: SWSabotageQuotaRepublic 
   components:
   - type: SWTask
-    score: 30
+    score: 10
     name: Саботировать квоту
     description: Империя получила крупный заказ на производство вооружения. Не дайте им произвести достаточное для его выполнения количество оружия.
   - type: SWParallelTaskInvertStatus

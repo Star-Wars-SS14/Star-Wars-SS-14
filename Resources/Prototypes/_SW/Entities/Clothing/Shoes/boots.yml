@@ -89,6 +89,15 @@
       - SWVibroDagger
 
 - type: entity
+  id: SWClothingShoesBootsCombatSilentFilled
+  name: intelligence boots
+  suffix: Filled, Vibro Knife, Intelligence
+  parent: SWClothingShoesBootsCombatFilled
+  components:
+  - type: FootstepModifier
+    footstepSoundCollection: null
+
+- type: entity
   id: SWClothingShoesBootsJackFilled
   suffix: Filled, Vibro Knife
   parent: ClothingShoesBootsJackFilled

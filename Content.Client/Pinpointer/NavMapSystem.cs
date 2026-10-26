@@ -27,7 +27,7 @@ public sealed partial class NavMapSystem : SharedNavMapSystem
                 beacons = delta.Beacons;
                 regions = delta.Regions;
 
-                foreach (var index in component.Chunks.Keys)
+                foreach (var index in component.Chunks.Keys.ToArray())
                 {
                     if (!delta.AllChunks!.Contains(index))
                         component.Chunks.Remove(index);
@@ -41,7 +41,7 @@ public sealed partial class NavMapSystem : SharedNavMapSystem
                 beacons = state.Beacons;
                 regions = state.Regions;
 
-                foreach (var index in component.Chunks.Keys)
+                foreach (var index in component.Chunks.Keys.ToArray())
                 {
                     if (!state.Chunks.ContainsKey(index))
                         component.Chunks.Remove(index);

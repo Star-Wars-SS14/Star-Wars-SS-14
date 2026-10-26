@@ -4,10 +4,7 @@
   playTimeTracker: Job_Sobrik_Captain
   requirements:
   - !type:OverallPlaytimeRequirement
-    time: 72000 # 20h
-  - !type:RoleTimeRequirement
-    role: Job_Sobrik_Officer
-    time: 36000 # 10h
+    time: 14400 # 4h
   - !type:SWSpeciesJobRequirement
     allowedSpecies: [ Human, Chiss ]
   startingGear: SobrikCaptainGear

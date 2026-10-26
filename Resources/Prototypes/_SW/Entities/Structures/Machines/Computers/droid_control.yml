@@ -1,0 +1,53 @@
+- type: entity
+  parent: BaseComputer
+  id: SWDroidControlConsoleEmpire
+  name: imperial droid control console
+  suffix: Empire
+  components:
+  - type: SWDroidControlConsole
+    faction: EmpireFaction
+  - type: ActivatableUI
+    key: enum.SWDroidControlConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWDroidControlConsoleUiKey.Key:
+        type: SWDroidControlConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/Structures/Machines/ImperialTurretComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: turretcontrol_monitor
+  - type: AccessReader
+    access: [[ "SWEmpireCommander" ]]
+  - type: Godmode
+  - type: ApcPowerReceiver
+    needsPower: false
+
+- type: entity
+  parent: BaseComputer
+  id: SWDroidControlConsoleRepublic
+  name: republic droid control console
+  suffix: Republic
+  components:
+  - type: SWDroidControlConsole
+    faction: RepublicFaction
+  - type: ActivatableUI
+    key: enum.SWDroidControlConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWDroidControlConsoleUiKey.Key:
+        type: SWDroidControlConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/Structures/Machines/RepublicTurretComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: turretcontrol_monitor
+  - type: AccessReader
+    access: [[ "SWRepublicCommander" ]]
+  - type: Godmode
+  - type: ApcPowerReceiver
+    needsPower: false

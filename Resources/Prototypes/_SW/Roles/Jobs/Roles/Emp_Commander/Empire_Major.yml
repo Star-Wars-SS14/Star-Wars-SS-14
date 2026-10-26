@@ -4,10 +4,7 @@
   playTimeTracker: Job_Empire_Major
   requirements:
   - !type:OverallPlaytimeRequirement
-    time: 108000 # 30h
-  - !type:RoleTimeRequirement
-    role: Job_Empire_Lieutenant
-    time: 18000 # 5h
+    time: 14400 # 4h
   - !type:SWSpeciesJobRequirement
     allowedSpecies: [ Human, Chiss ]
   startingGear: EmpireMajorGear

@@ -83,6 +83,9 @@
   id: SWAnarchyMagazineTag
 
 - type: Tag
+  id: SWDroidModule
+
+- type: Tag
   id: SWM44MagazineTag
 
 - type: Tag

@@ -1,0 +1,67 @@
+- type: entity
+  parent: BaseMachinePowered
+  id: SWDroidChargingPad
+  name: droid charging pad
+  description: A flat powered platform that recharges droids standing on it.
+  placement:
+    mode: SnapgridCenter
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    drawdepth: SmallObjects
+    sprite: Structures/Power/recharger.rsi
+    layers:
+    - state: empty
+    - state: light-off
+      map: [ "light" ]
+      shader: unshaded
+  - type: Appearance
+  - type: SWDroidChargingPad
+    chargeRate: 30
+    passiveDraw: 1
+    range: 0.6
+    whitelist:
+      components:
+      - BorgChassis
+  - type: ApcPowerReceiver
+    powerLoad: 1
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 190
+        hard: false
+        mask:
+        - MachineMask
+        layer:
+        - MachineLayer
+  - type: GenericVisualizer
+    visuals:
+      enum.CellVisual.Light:
+        light:
+          Off: { state: light-off }
+          Empty: { state: light-empty }
+          Charging: { state: light-charging }
+          Charged: { state: light-charged }
+  - type: Destructible
+    thresholds:
+    - trigger:
+        !type:DamageTrigger
+        damage: 80
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+    - trigger:
+        !type:DamageTrigger
+        damage: 40
+      behaviors:
+      - !type:DoActsBehavior
+        acts: [ "Destruction" ]
+      - !type:PlaySoundBehavior
+        sound:
+          collection: MetalBreak
+  - type: StaticPrice
+    price: 75

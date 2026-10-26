@@ -19,6 +19,8 @@ public sealed partial class SWTurretConsoleBoundUserInterface : BoundUserInterfa
         base.Open();
         _menu = this.CreateWindow<SWTurretConsoleMenu>();
         _menu.OnJobButtonPressed += SendToggleMessage;
+        _menu.OnTargetHumanoidsWithoutIdToggled += SendToggleTargetHumanoidsWithoutIdMessage;
+        _menu.OnTargetAnimalsToggled += SendToggleTargetAnimalsMessage;
         _menu.OpenCenteredRight();
         _menu.OnFactionAllowBtnPressed += SendAllowMessage;
         _menu.OnFactionDisallowBtnPressed += SendDisallowMessage;
@@ -35,6 +37,14 @@ public sealed partial class SWTurretConsoleBoundUserInterface : BoundUserInterfa
     {
         SendMessage(new SWDisallowFaction(f));
     }
+    public void SendToggleTargetHumanoidsWithoutIdMessage()
+    {
+        SendMessage(new SWToggleTargetHumanoidsWithoutIdMessage());
+    }
+    public void SendToggleTargetAnimalsMessage()
+    {
+        SendMessage(new SWToggleTargetAnimalsMessage());
+    }
     protected override void UpdateState(BoundUserInterfaceState state)
     {
         base.UpdateState(state);
@@ -44,6 +54,7 @@ public sealed partial class SWTurretConsoleBoundUserInterface : BoundUserInterfa
             case SWTurretConsoleBounderUserInterfaceState msg:
                 _menu?.UpdateJobs(msg.JobsAllowed);
                 _menu?.UpdateFactions(msg.AvailableFactions);
+                _menu?.UpdateTargetOptions(msg.TargetHumanoidsWithoutId, msg.TargetAnimals);
                 break;
         }
     }

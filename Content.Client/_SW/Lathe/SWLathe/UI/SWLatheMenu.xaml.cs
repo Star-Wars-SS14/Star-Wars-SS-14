@@ -16,7 +16,7 @@ public sealed partial class SWLatheMenu : DefaultWindow
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
-    public event Action<string?>? OnRecipeSelected;
+    public event Action<string?, bool>? OnRecipeSelected;
 
     private readonly List<string> _recipeIds = new();
     private SWLatheBoundUserInterfaceState? _state;
@@ -83,21 +83,22 @@ public sealed partial class SWLatheMenu : DefaultWindow
         _updatingMode = true;
         _recipeIds.Clear();
         ModeOption.Clear();
-        ModeOption.AddItem(Loc.GetString("sw-lathe-menu-mode-auto"), 0);
+        ModeOption.AddItem(Loc.GetString("sw-lathe-menu-mode-disabled"), 0);
+        ModeOption.AddItem(Loc.GetString("sw-lathe-menu-mode-auto"), 1);
 
         for (var i = 0; i < state.Recipes.Count; i++)
         {
             var recipe = state.Recipes[i];
             _recipeIds.Add(recipe.Id);
-            ModeOption.AddItem(GetRecipeDisplayName(recipe), i + 1);
+            ModeOption.AddItem(GetRecipeDisplayName(recipe), i + 2);
         }
 
-        var selectedId = 0;
-        if (state.SelectedRecipe != null)
+        var selectedId = state.ProductionDisabled ? 0 : 1;
+        if (!state.ProductionDisabled && state.SelectedRecipe != null)
         {
             var index = _recipeIds.IndexOf(state.SelectedRecipe);
             if (index >= 0)
-                selectedId = index + 1;
+                selectedId = index + 2;
         }
 
         ModeOption.SelectId(selectedId);
@@ -125,27 +126,21 @@ public sealed partial class SWLatheMenu : DefaultWindow
                 StyleClasses = { "LabelKeyText" },
             });
 
-            container.AddChild(new Label
-            {
-                Text = Loc.GetString("sw-lathe-menu-recipe-inputs", ("materials", FormatItemList(recipe.Materials))),
-            });
+            container.AddChild(CreateMultilineLabel(Loc.GetString(
+                "sw-lathe-menu-recipe-inputs",
+                ("materials", FormatItemLines(recipe.Materials)))));
 
-            container.AddChild(new Label
-            {
-                Text = Loc.GetString("sw-lathe-menu-recipe-outputs", ("results", FormatItemList(recipe.Result))),
-            });
+            container.AddChild(CreateMultilineLabel(Loc.GetString(
+                "sw-lathe-menu-recipe-outputs",
+                ("results", FormatItemLines(recipe.Result)))));
 
-            container.AddChild(new Label
-            {
-                Text = Loc.GetString("sw-lathe-menu-recipe-time", ("time", Math.Round(recipe.ProduceTime, 3))),
-            });
+            container.AddChild(CreateMultilineLabel(Loc.GetString(
+                "sw-lathe-menu-recipe-time",
+                ("time", Math.Round(recipe.ProduceTime, 3)))));
 
-            container.AddChild(new Label
-            {
-                Text = ready
-                    ? Loc.GetString("sw-lathe-menu-recipe-ready")
-                    : Loc.GetString("sw-lathe-menu-recipe-missing"),
-            });
+            container.AddChild(CreateMultilineLabel(ready
+                ? Loc.GetString("sw-lathe-menu-recipe-ready")
+                : Loc.GetString("sw-lathe-menu-recipe-missing")));
 
             var button = new Button
             {
@@ -157,11 +152,21 @@ public sealed partial class SWLatheMenu : DefaultWindow
             };
 
             var recipeId = recipe.Id;
-            button.OnPressed += _ => OnRecipeSelected?.Invoke(recipeId);
+            button.OnPressed += _ => OnRecipeSelected?.Invoke(recipeId, false);
             container.AddChild(button);
 
             RecipeList.AddChild(container);
         }
+    }
+
+    private Label CreateMultilineLabel(string text)
+    {
+        return new Label
+        {
+            Text = text,
+            HorizontalExpand = true,
+            VerticalAlignment = VAlignment.Top,
+        };
     }
 
     private void PopulateMaterials(SWLatheBoundUserInterfaceState state)
@@ -196,13 +201,19 @@ public sealed partial class SWLatheMenu : DefaultWindow
 
         if (args.Id == 0)
         {
-            OnRecipeSelected?.Invoke(null);
+            OnRecipeSelected?.Invoke(null, true);
             return;
         }
 
-        var index = args.Id - 1;
+        if (args.Id == 1)
+        {
+            OnRecipeSelected?.Invoke(null, false);
+            return;
+        }
+
+        var index = args.Id - 2;
         if (index >= 0 && index < _recipeIds.Count)
-            OnRecipeSelected?.Invoke(_recipeIds[index]);
+            OnRecipeSelected?.Invoke(_recipeIds[index], false);
     }
 
     private bool CanProduce(SWLatheRecipeInfo recipe, Dictionary<string, int> stashedMaterials)
@@ -237,6 +248,26 @@ public sealed partial class SWLatheMenu : DefaultWindow
                 "sw-lathe-menu-item-amount",
                 ("item", GetEntityName(pair.Key)),
                 ("amount", pair.Value))));
+    }
+
+    private string FormatItemLines(Dictionary<string, int> items)
+    {
+        if (items.Count == 0)
+            return Loc.GetString("sw-lathe-menu-empty-list");
+
+        var lines = new List<string>();
+
+        foreach (var pair in items)
+        {
+            var entry = Loc.GetString(
+                "sw-lathe-menu-item-amount",
+                ("item", GetEntityName(pair.Key)),
+                ("amount", pair.Value));
+
+            lines.Add($"- {entry}");
+        }
+
+        return "\n" + string.Join("\n", lines);
     }
 
     private string GetEntityName(string id)

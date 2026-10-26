@@ -17,6 +17,7 @@ public sealed class SWDirectorEui : BaseEui
         _window.OnSetMode += mode => SendMessage(new SWDirectorSetModeMessage(mode));
         _window.OnAction += (kind, sectorId, param, target) => SendMessage(new SWDirectorActionMessage(kind, sectorId, param, target));
         _window.OnSendNote += (text, isPublic) => SendMessage(new SWDirectorSendNoteMessage(text, isPublic));
+        _window.OnDefenseEvent += message => SendMessage(message);
     }
 
     public override void Opened()

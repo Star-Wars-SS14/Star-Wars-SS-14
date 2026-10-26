@@ -46,19 +46,24 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWDefenseSetStanceMessage(stance));
     }
 
-    public void SelectProgram(string programId)
+    public void OrderFleet(int fleetId, SWDefenseFleetOrder order, string target, int eventId = 0)
     {
-        SendMessage(new SWDefenseSelectProgramMessage(programId));
+        SendMessage(new SWDefenseFleetOrderMessage(fleetId, order, target, eventId));
     }
 
-    public void DeployFleet(int groupId, string target)
+    public void RecruitFleet(string worldId)
     {
-        SendMessage(new SWFleetDeployMessage(groupId, target));
+        SendMessage(new SWDefenseRecruitMessage(worldId));
     }
 
-    public void LaunchOp(string opId, string target)
+    public void BuildWorldDefense(string worldId, string programId)
     {
-        SendMessage(new SWDefenseLaunchOpMessage(opId, target));
+        SendMessage(new SWDefenseWorldProgramMessage(worldId, programId));
+    }
+
+    public void ResupplyWorldDefense(string worldId)
+    {
+        SendMessage(new SWDefenseWorldResupplyMessage(worldId));
     }
 
     public void SetPosture(SWSecurityPosture posture)

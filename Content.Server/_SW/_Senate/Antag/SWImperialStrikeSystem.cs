@@ -62,11 +62,13 @@ public sealed class SWImperialStrikeSystem : EntitySystem
     private bool _empireControls;
     private float _holdTime;
     private int _lastProcHour = -1;
-    private bool _wasDay = true;
+    private bool _consoleClockRunning;
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+        SubscribeLocalEvent<SWSenateDayClosedEvent>(OnDayClosed);
         SubscribeLocalEvent<RoundEndTextAppendEvent>(OnRoundEnd);
         SubscribeLocalEvent<SWImperialStrikeMemberComponent, PlayerAttachedEvent>(OnMemberAttached);
         SubscribeLocalEvent<SWSenateCaptureConsoleComponent, CaptureConsoleButtonPressedMessage>(OnCaptureButton);
@@ -82,24 +84,39 @@ public sealed class SWImperialStrikeSystem : EntitySystem
         _empireControls = false;
         _holdTime = 0f;
         _lastProcHour = -1;
-        _wasDay = true;
+        _consoleClockRunning = false;
+    }
+
+    private void OnDayClosed(SWSenateDayClosedEvent ev)
+    {
+        // The clock has reached 21:00. Complete already-due work on an ordinary day,
+        // without flushing pending operations at the end of the legislature.
+        if (!ev.FinalDay)
+            TickConsoles();
     }
 
     public override void Update(float frameTime)
     {
+        var clockRunning = _time.ModeActive && _time.DayActive;
+        if (_consoleClockRunning != clockRunning)
+        {
+            _consoleClockRunning = clockRunning;
+            var consoles = EntityQueryEnumerator<SWSenateCaptureConsoleComponent>();
+            while (consoles.MoveNext(out var uid, out var comp))
+                UpdateConsole(uid, comp, null);
+        }
+
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
-
-        var nightStarted = _wasDay && !_time.DayActive;
-        _wasDay = _time.DayActive;
 
         TickConsoles();
 
         if (!Launched)
         {
             TickBreach();
-            if (nightStarted)
-                BreachRoll(2f);
         }
         else
         {
@@ -117,10 +134,10 @@ public sealed class SWImperialStrikeSystem : EntitySystem
             return;
 
         _lastProcHour = hour;
-        BreachRoll(1f);
+        BreachRoll();
     }
 
-    private void BreachRoll(float scale)
+    private void BreachRoll()
     {
         if (!_director.AutoAntagsAllowed)
             return;
@@ -128,10 +145,8 @@ public sealed class SWImperialStrikeSystem : EntitySystem
         if (!InWindow(_time.AbsoluteHour))
             return;
 
-        if (_defense.HasBorderFleet)
-            return;
-
-        var chance = (_defense.BorderPressure >= HotBorder ? BreachChanceHot : BreachChance) * scale;
+        var chance = _defense.BorderPressure >= HotBorder ? BreachChanceHot : BreachChance;
+        chance *= 1 - _defense.BorderCoverageFraction;
         if (!_random.Prob(Math.Min(chance, 1f)))
             return;
 
@@ -319,13 +334,13 @@ public sealed class SWImperialStrikeSystem : EntitySystem
         var query = EntityQueryEnumerator<SWSenateCaptureConsoleComponent>();
         while (query.MoveNext(out var uid, out var comp))
         {
-            if (comp.IsTimeout && _timing.CurTime - comp.TimeoutStart > ConsoleTimeout)
+            if (comp.IsTimeout && ActiveElapsed(comp.TimeoutStartHours) >= ConsoleTimeout)
             {
                 comp.IsTimeout = false;
                 UpdateConsole(uid, comp, null);
             }
 
-            if (!comp.Capturing || _timing.CurTime - comp.StartTime < comp.CaptureDuration)
+            if (!comp.Capturing || ActiveElapsed(comp.CaptureStartHours) < comp.CaptureDuration)
                 continue;
 
             comp.Capturing = false;
@@ -348,38 +363,44 @@ public sealed class SWImperialStrikeSystem : EntitySystem
 
     private void OnCaptureButton(EntityUid uid, SWSenateCaptureConsoleComponent comp, CaptureConsoleButtonPressedMessage args)
     {
-        if (!_time.ModeActive || comp.IsTimeout)
-            return;
+        TryToggleCapture(uid, args.Actor, comp);
+    }
+
+    public bool TryToggleCapture(EntityUid uid, EntityUid actor, SWSenateCaptureConsoleComponent? comp = null)
+    {
+        if (!_time.ModeActive || !_time.DayActive || !Resolve(uid, ref comp) || comp.IsTimeout)
+            return false;
 
         if (comp.Capturing)
         {
             comp.Capturing = false;
             comp.IsTimeout = true;
-            comp.TimeoutStart = _timing.CurTime;
+            comp.TimeoutStartHours = _time.ActiveGameHours;
             Announce(comp.ByEmpire
                 ? "Перехват управления Сенатом прерван."
                 : "Восстановление контроля над Сенатом прервано.");
         }
         else
         {
-            var member = HasComp<SWImperialStrikeMemberComponent>(args.Actor);
+            var member = HasComp<SWImperialStrikeMemberComponent>(actor);
             if (member == _empireControls)
             {
-                UpdateConsole(uid, comp, args.Actor);
-                return;
+                UpdateConsole(uid, comp, actor);
+                return false;
             }
 
             comp.Capturing = true;
             comp.ByEmpire = member;
-            comp.StartTime = _timing.CurTime;
+            comp.CaptureStartHours = _time.ActiveGameHours;
             comp.IsTimeout = true;
-            comp.TimeoutStart = _timing.CurTime;
+            comp.TimeoutStartHours = _time.ActiveGameHours;
             Announce(member
                 ? "Тревога! Неизвестные перехватывают управление зданием Сената!"
                 : "Республиканские силы восстанавливают контроль над зданием Сената.");
         }
 
-        UpdateConsole(uid, comp, args.Actor);
+        UpdateConsole(uid, comp, actor);
+        return true;
     }
 
     private void OnConsoleOpen(EntityUid uid, SWSenateCaptureConsoleComponent comp, BeforeActivatableUIOpenEvent args)
@@ -389,20 +410,34 @@ public sealed class SWImperialStrikeSystem : EntitySystem
 
     private void UpdateConsole(EntityUid uid, SWSenateCaptureConsoleComponent comp, EntityUid? user)
     {
+        _ui.SetUiState(uid, CaptureConsoleUi.Key, BuildConsoleState(comp, user));
+    }
+
+    private TimeSpan ActiveElapsed(double startHours) => TimeSpan.FromTicks((long) Math.Round(
+        Math.Max(0, _time.ActiveGameHours - startHours)
+        * SWSenateTimeSystem.RealSecondsPerGameHour * TimeSpan.TicksPerSecond));
+
+    public CaptureConsoleUpdateState BuildConsoleState(SWSenateCaptureConsoleComponent comp, EntityUid? user = null)
+    {
         var member = user != null && HasComp<SWImperialStrikeMemberComponent>(user.Value);
-        var remain = comp.Capturing ? comp.CaptureDuration - (_timing.CurTime - comp.StartTime) : TimeSpan.Zero;
+        var elapsed = ActiveElapsed(comp.CaptureStartHours);
+        var remain = comp.Capturing && elapsed < comp.CaptureDuration ? comp.CaptureDuration - elapsed : TimeSpan.Zero;
+        var running = _time.ModeActive && _time.DayActive;
         var state = new CaptureConsoleUpdateState(
             comp.Capturing,
-            comp.StartTime,
+            running ? _timing.CurTime - elapsed : null,
             remain,
             comp.CaptureDuration,
             _empireControls ? EmpireLabel : RepublicLabel,
             member ? EmpireLabel : RepublicLabel,
             "Сенат Галактической Республики",
             true,
-            comp.IsTimeout);
+            comp.IsTimeout || !running);
 
-        _ui.SetUiState(uid, CaptureConsoleUi.Key, state);
+        // Broadcast updates must preserve the individual faction already shown by the client.
+        if (user == null)
+            state.UserFraction = null;
+        return state;
     }
 
     private void EndRoundCaptured()

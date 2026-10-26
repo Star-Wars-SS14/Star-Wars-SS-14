@@ -1,6 +1,7 @@
 using Content.Server.Administration.Managers;
 using Content.Server.EUI;
 using Content.Shared._SW._Senate.Director;
+using Content.Shared._SW._Senate.Ministries;
 using Content.Shared.Administration;
 using Content.Shared.Eui;
 
@@ -53,6 +54,11 @@ public sealed class SWDirectorEui : BaseEui
 
         switch (msg)
         {
+            case SWDefenseDirectorEventMessage tactical:
+                if (Director.Mode == SWDirectorMode.Manual && Director.Controller == Player.UserId)
+                    Director.EditDefenseEvent(tactical);
+                break;
+
             case SWDirectorSetModeMessage setMode:
                 Director.SetMode(setMode.Mode, Player.UserId, Player.Name);
                 break;

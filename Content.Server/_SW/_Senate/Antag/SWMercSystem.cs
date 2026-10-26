@@ -74,10 +74,10 @@ public sealed class SWMercSystem : EntitySystem
     private bool _mercArrived;
     private int _lastProcHour = -1;
     private float _holdTime;
-    private bool _wasDay = true;
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<RoundEndTextAppendEvent>(OnRoundEnd);
         SubscribeLocalEvent<SWMercMemberComponent, PlayerAttachedEvent>(OnMercAttached);
@@ -94,20 +94,17 @@ public sealed class SWMercSystem : EntitySystem
         _mercArrived = false;
         _lastProcHour = -1;
         _holdTime = 0f;
-        _wasDay = true;
     }
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
-        var nightStarted = _wasDay && !_time.DayActive;
-        _wasDay = _time.DayActive;
-
         TickAuto();
-        if (nightStarted && !_autoSpawned && !ContractOpen)
-            AutoRoll(2f);
         TickContract(frameTime);
     }
 
@@ -123,10 +120,10 @@ public sealed class SWMercSystem : EntitySystem
             return;
 
         _lastProcHour = hour;
-        AutoRoll(1f);
+        AutoRoll();
     }
 
-    private void AutoRoll(float scale)
+    private void AutoRoll()
     {
         if (!_director.AutoAntagsAllowed)
             return;
@@ -137,7 +134,7 @@ public sealed class SWMercSystem : EntitySystem
         if (!_senate.GetRepublicGlobals().TryGetValue("SWGlobalSecurity", out var security) || security >= SecuritySoft)
             return;
 
-        var chance = (security < SecurityHard ? AutoChanceHot : AutoChance) * scale;
+        var chance = security < SecurityHard ? AutoChanceHot : AutoChance;
         if (!_random.Prob(Math.Min(chance, 1f)))
             return;
 

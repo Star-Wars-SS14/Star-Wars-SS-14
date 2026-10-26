@@ -8,6 +8,7 @@ using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Crises;
 using Content.Shared._SW._Senate.Dilemmas;
 using Content.Shared._SW._Senate.Director;
+using Content.Shared._SW._Senate.Ministries;
 using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;
 using Robust.Shared.Network;
@@ -20,7 +21,7 @@ namespace Content.Server._SW._Senate.Director;
 // system spends imperial influence itself - the default), Manual (an admin at the helm via the
 // swdirector EUI). Influence accrues per game hour and grows when the Republic is weak - a strong
 // Republic starves the Empire, which is the whole counterplay of v1.
-public sealed class SWDirectorSystem : EntitySystem
+public sealed partial class SWDirectorSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
@@ -50,14 +51,9 @@ public sealed class SWDirectorSystem : EntitySystem
     private const float AutopilotReserve = 10f;
     private const float AutopilotActChance = 0.4f;
 
-    private const float ManeuversBorderDelta = 12f;
-    private const float ProvocationBorderDelta = 6f;
-    private const float ProvocationSocietyHit = 4f;
     private const int SanctionHours = 6;
-    private const int BlockadeHours = 4;
     private const float SanctionEconomyPerMinute = 0.06f;
     private const float SanctionIndustryPerMinute = 0.04f;
-    private const float BlockadeEconomyPerMinute = 0.05f;
 
     private static readonly Color ImperialColor = Color.FromHex("#C0392B");
     private const string ImperialSender = "Империя Ситов";
@@ -72,7 +68,6 @@ public sealed class SWDirectorSystem : EntitySystem
 
     private float _influence = StartInfluence;
     private readonly Dictionary<string, float> _sanctions = new();
-    private float _blockade;
     private readonly List<string> _chronicle = new();
     private readonly List<SWDiploEntry> _diplomacy = new();
     private float _minuteAccum;
@@ -80,6 +75,7 @@ public sealed class SWDirectorSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<RoundEndTextAppendEvent>(OnRoundEnd);
     }
@@ -103,7 +99,6 @@ public sealed class SWDirectorSystem : EntitySystem
         ControllerName = string.Empty;
         _influence = StartInfluence;
         _sanctions.Clear();
-        _blockade = 0f;
         _chronicle.Clear();
         _diplomacy.Clear();
         LastNotice = string.Empty;
@@ -113,6 +108,9 @@ public sealed class SWDirectorSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive || !_time.DayActive)
             return;
 
@@ -133,8 +131,8 @@ public sealed class SWDirectorSystem : EntitySystem
         {
             _lastHour = hour;
             AutopilotTick();
-            Updated?.Invoke();
         }
+        Updated?.Invoke();
     }
 
     private void TickEffects(float minutes)
@@ -156,19 +154,6 @@ public sealed class SWDirectorSystem : EntitySystem
             AddChronicle($"санкции против сектора {SectorName(sectorId)} истекли");
         }
 
-        if (_blockade > 0f)
-        {
-            foreach (var sectorId in _senate.SectorHolders.Keys)
-                _senate.NudgeSectorGlobal(sectorId, "SWGlobalEconomy", -BlockadeEconomyPerMinute * minutes);
-
-            _blockade -= minutes;
-            if (_blockade <= 0f)
-            {
-                _blockade = 0f;
-                Announce("Империя сняла блокаду республиканских торговых маршрутов.");
-                AddChronicle("торговая блокада истекла");
-            }
-        }
     }
 
     public float IncomePerHour()
@@ -203,6 +188,7 @@ public sealed class SWDirectorSystem : EntitySystem
     public void SetMode(SWDirectorMode mode, NetUserId? controller, string controllerName)
     {
         Mode = mode;
+        _defense.ImperialThreatsEnabled = mode != SWDirectorMode.Off;
         Controller = mode == SWDirectorMode.Manual ? controller : null;
         ControllerName = mode == SWDirectorMode.Manual ? controllerName : string.Empty;
 
@@ -233,6 +219,12 @@ public sealed class SWDirectorSystem : EntitySystem
     private bool DoAction(SWDirectorActionKind kind, string sectorId, string param, string target, out string result)
     {
         result = string.Empty;
+        if (!_time.ModeActive || !_time.DayActive)
+        {
+            result = "Операции доступны только в рабочее время Сената.";
+            return false;
+        }
+
         if (Mode == SWDirectorMode.Off)
         {
             result = "Империя отключена.";
@@ -242,19 +234,15 @@ public sealed class SWDirectorSystem : EntitySystem
         switch (kind)
         {
             case SWDirectorActionKind.Maneuvers:
-                if (!Spend(CostManeuvers, ref result))
+                if (!CreateTacticalPressure(string.Empty, false, CostManeuvers, ref result))
                     return false;
-                _defense.AddBorder(ManeuversBorderDelta);
-                _defense.AddLog("Разведка: имперский флот стягивается к границе.");
                 Announce("Имперский флот начал широкомасштабные манёвры у границы Республики.");
                 AddChronicle("флотские манёвры у границы");
                 break;
 
             case SWDirectorActionKind.Provocation:
-                if (!ValidSector(sectorId, ref result) || !Spend(CostProvocation, ref result))
+                if (!CreateTacticalPressure(sectorId, false, CostProvocation, ref result))
                     return false;
-                _defense.AddBorder(ProvocationBorderDelta);
-                _senate.NudgeSectorGlobal(sectorId, "SWGlobalSociety", -ProvocationSocietyHit);
                 Announce($"Имперские корабли нарушили границу сектора {SectorName(sectorId)}. Зафиксированы провокационные манёвры.");
                 AddChronicle($"провокация в секторе {SectorName(sectorId)}");
                 break;
@@ -285,16 +273,10 @@ public sealed class SWDirectorSystem : EntitySystem
                 break;
 
             case SWDirectorActionKind.Blockade:
-                if (_blockade > 0f)
-                {
-                    result = "Блокада уже действует.";
+                if (!CreateTacticalPressure(string.Empty, true, CostBlockade, ref result))
                     return false;
-                }
-                if (!Spend(CostBlockade, ref result))
-                    return false;
-                _blockade = BlockadeHours * 60f;
-                Announce("Империя объявляет блокаду республиканских торговых маршрутов.");
-                AddChronicle("торговая блокада Республики");
+                Announce("Имперский флот установил блокаду на приграничном гиперпути.");
+                AddChronicle("локальная блокада гиперпути");
                 break;
 
             case SWDirectorActionKind.Crisis:
@@ -470,17 +452,17 @@ public sealed class SWDirectorSystem : EntitySystem
         var candidates = new List<(SWDirectorActionKind Kind, string Sector, int Weight)>();
         var claimed = _senate.SectorHolders.Keys.ToList();
 
-        if (_influence >= CostManeuvers + AutopilotReserve && _defense.BorderPressure < 70)
+        if (_defense.MinisterActive && _influence >= CostManeuvers + AutopilotReserve && _defense.BorderPressure < 70)
             candidates.Add((SWDirectorActionKind.Maneuvers, string.Empty, 3));
 
-        if (claimed.Count > 0 && _influence >= CostProvocation + AutopilotReserve)
+        if (_defense.MinisterActive && claimed.Count > 0 && _influence >= CostProvocation + AutopilotReserve)
             candidates.Add((SWDirectorActionKind.Provocation, _random.Pick(claimed), 2));
 
         var unsanctioned = claimed.Where(s => !_sanctions.ContainsKey(s)).ToList();
         if (unsanctioned.Count > 0 && _influence >= CostSanction + AutopilotReserve)
             candidates.Add((SWDirectorActionKind.Sanction, _random.Pick(unsanctioned), 2));
 
-        if (_blockade <= 0f && _influence >= CostBlockade + AutopilotReserve)
+        if (_defense.MinisterActive && _influence >= CostBlockade + AutopilotReserve)
             candidates.Add((SWDirectorActionKind.Blockade, string.Empty, 1));
 
         if (candidates.Count == 0)
@@ -530,7 +512,7 @@ public sealed class SWDirectorSystem : EntitySystem
         _diplomacy.Add(new SWDiploEntry
         {
             FromEmpire = false,
-            Stamp = $"{Stamp()} · {author}",
+            Stamp = $"{Stamp()}, {author}",
             Text = text,
         });
 
@@ -560,6 +542,7 @@ public sealed class SWDirectorSystem : EntitySystem
     {
         var state = new SWDirectorEuiState
         {
+            DefenseMap = _defense.BuildMapState(includeOrderOptions: false),
             Mode = Mode,
             ControllerName = ControllerName,
             IAmController = Controller == viewer,
@@ -568,8 +551,7 @@ public sealed class SWDirectorSystem : EntitySystem
             IncomeLine = $"+{IncomePerHour():0.#}/ч ({IncomeBreakdown()})",
             BorderPressure = _defense.BorderPressure,
             BorderStatus = _defense.BorderStatus(),
-            BlockadeActive = _blockade > 0f,
-            BlockadeLabel = _blockade > 0f ? $"ещё ~{Math.Ceiling(_blockade / 60f)} ч" : string.Empty,
+            BlockadeActive = false,
             Notice = LastNotice,
             Targets = _strike.OfficialPool(),
             StrikeAvailable = !_strike.Launched,
@@ -586,6 +568,10 @@ public sealed class SWDirectorSystem : EntitySystem
             CostStrike = CostStrike,
             CostMerc = CostMerc,
         };
+
+        var blockades = state.DefenseMap.Events.Where(e => !e.Resolved && e.Kind == SWDefenseEventKind.Blockade).ToArray();
+        state.BlockadeActive = blockades.Length > 0;
+        state.BlockadeLabel = blockades.Length == 0 ? string.Empty : $"участков: {blockades.Length}";
 
         foreach (var (sectorId, holder) in _senate.SectorHolders.OrderBy(kv => kv.Key))
         {

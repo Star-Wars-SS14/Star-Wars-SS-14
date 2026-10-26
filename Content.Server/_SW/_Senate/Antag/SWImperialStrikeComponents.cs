@@ -32,11 +32,11 @@ public sealed partial class SWSenateCaptureConsoleComponent : Component
     public bool ByEmpire;
 
     [ViewVariables]
-    public TimeSpan StartTime;
+    public double CaptureStartHours;
 
     [ViewVariables]
     public bool IsTimeout;
 
     [ViewVariables]
-    public TimeSpan TimeoutStart;
+    public double TimeoutStartHours;
 }

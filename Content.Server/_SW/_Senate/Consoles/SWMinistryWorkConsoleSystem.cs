@@ -54,6 +54,10 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseSelectProgramMessage>(OnSelectProgram);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFleetDeployMessage>(OnDeployFleet);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseLaunchOpMessage>(OnLaunchOp);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseFleetOrderMessage>(OnFleetOrder);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseRecruitMessage>(OnRecruitFleet);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseWorldProgramMessage>(OnWorldDefenseProgram);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseWorldResupplyMessage>(OnWorldDefenseResupply);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecuritySetPostureMessage>(OnSetPosture);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecuritySelectProgramMessage>(OnSelectSecProgram);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecurityDeployCellMessage>(OnDeployCell);
@@ -98,6 +102,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnScreen(Entity<SWMinistryWorkConsoleComponent> ent, ref SWCorruptionScreenMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsJusticeCard(ent))
             return;
 
@@ -111,6 +118,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnProsecute(Entity<SWMinistryWorkConsoleComponent> ent, ref SWCorruptionProsecuteMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsJusticeCard(ent))
             return;
 
@@ -124,6 +134,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnOvertime(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeOvertimeMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsJusticeCard(ent))
             return;
 
@@ -138,6 +151,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnInvestigate(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeInvestigateMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsJusticeCard(ent))
             return;
 
@@ -149,6 +165,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnSendToCourt(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeSendToCourtMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsJusticeCard(ent))
             return;
 
@@ -158,6 +177,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnHoldHearing(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeHoldHearingMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsJusticeCard(ent))
             return;
 
@@ -169,6 +191,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnVerdict(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeVerdictMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsJusticeCard(ent))
             return;
 
@@ -178,6 +203,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnSetJusticeStance(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeSetStanceMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsJusticeCard(ent))
             return;
 
@@ -187,6 +215,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnSelectJusticeProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeSelectProgramMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsJusticeCard(ent))
             return;
 
@@ -196,6 +227,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnDeclareTribunal(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeDeclareTribunalMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsJusticeCard(ent))
             return;
 
@@ -205,6 +239,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnBudgetRatio(Entity<SWMinistryWorkConsoleComponent> ent, ref SWBudgetAdjustRatioMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsFinanceCard(ent))
             return;
 
@@ -214,6 +251,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnBudgetWeight(Entity<SWMinistryWorkConsoleComponent> ent, ref SWBudgetSetWeightMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsFinanceCard(ent))
             return;
 
@@ -223,6 +263,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnBudgetResetWeights(Entity<SWMinistryWorkConsoleComponent> ent, ref SWBudgetResetWeightsMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsFinanceCard(ent))
             return;
 
@@ -232,6 +275,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnBudgetSubmit(Entity<SWMinistryWorkConsoleComponent> ent, ref SWBudgetSubmitMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsFinanceCard(ent))
             return;
 
@@ -246,6 +292,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnSetRate(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFinanceSetRateMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsFinanceCard(ent))
             return;
 
@@ -255,6 +304,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnSetTax(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFinanceSetTaxMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsFinanceCard(ent))
             return;
 
@@ -264,6 +316,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnIssueBonds(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFinanceIssueBondsMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsFinanceCard(ent))
             return;
 
@@ -275,6 +330,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnRepayDebt(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFinanceRepayDebtMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsFinanceCard(ent))
             return;
 
@@ -286,6 +344,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnEmission(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFinanceEmissionMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsFinanceCard(ent))
             return;
 
@@ -295,6 +356,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnSelectFinProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFinanceSelectProgramMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsFinanceCard(ent))
             return;
 
@@ -307,6 +371,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnSetEconPolicy(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomySetPolicyMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsEconomyCard(ent))
             return;
 
@@ -316,6 +383,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnLaunchProject(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomyLaunchProjectMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsEconomyCard(ent))
             return;
 
@@ -327,6 +397,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnCancelProject(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomyCancelProjectMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsEconomyCard(ent))
             return;
 
@@ -336,6 +409,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnAddRoute(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomyAddRouteMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsEconomyCard(ent))
             return;
 
@@ -347,6 +423,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnRemoveRoute(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomyRemoveRouteMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsEconomyCard(ent))
             return;
 
@@ -356,6 +435,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnDeclareStimulus(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomyDeclareStimulusMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsEconomyCard(ent))
             return;
 
@@ -365,6 +447,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnSelectEconProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomySelectProgramMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsEconomyCard(ent))
             return;
 
@@ -377,6 +462,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnSetFunding(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthSetFundingMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsHealthCard(ent))
             return;
 
@@ -386,6 +474,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnDeployVaccine(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthDeployVaccineMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsHealthCard(ent))
             return;
 
@@ -397,6 +488,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnQuarantine(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthQuarantineMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsHealthCard(ent))
             return;
 
@@ -406,6 +500,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnBuildHospital(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthBuildHospitalMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsHealthCard(ent))
             return;
 
@@ -417,6 +514,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnEmergencyAid(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthEmergencyAidMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsHealthCard(ent))
             return;
 
@@ -428,6 +528,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnDeclareEmergency(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthDeclareEmergencyMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsHealthCard(ent))
             return;
 
@@ -437,6 +540,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnSelectHealthProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthSelectProgramMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!IsHealthCard(ent))
             return;
 
@@ -446,6 +552,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnSetPosture(Entity<SWMinistryWorkConsoleComponent> ent, ref SWSecuritySetPostureMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardMinistry(ent) != SWMinistryInternalSecuritySystem.SecurityMinistryId)
             return;
 
@@ -455,6 +564,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnSelectSecProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWSecuritySelectProgramMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardMinistry(ent) != SWMinistryInternalSecuritySystem.SecurityMinistryId)
             return;
 
@@ -464,6 +576,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnDeployCell(Entity<SWMinistryWorkConsoleComponent> ent, ref SWSecurityDeployCellMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardMinistry(ent) != SWMinistryInternalSecuritySystem.SecurityMinistryId)
             return;
 
@@ -473,6 +588,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnLaunchSecOp(Entity<SWMinistryWorkConsoleComponent> ent, ref SWSecurityLaunchOpMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardMinistry(ent) != SWMinistryInternalSecuritySystem.SecurityMinistryId)
             return;
 
@@ -484,6 +602,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnRaidPlot(Entity<SWMinistryWorkConsoleComponent> ent, ref SWSecurityRaidPlotMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardMinistry(ent) != SWMinistryInternalSecuritySystem.SecurityMinistryId)
             return;
 
@@ -493,8 +614,56 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
+    private void OnWorldDefenseProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWDefenseWorldProgramMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive
+            || GetCardMinistry(ent) != SWMinistryDefenseSystem.DefenseMinistryId)
+            return;
+
+        if (!_defense.StartWorldProgram(args.WorldId, args.ProgramId))
+            _popup.PopupCursor("Проект не запущен: проверьте бюджет и существующие проекты округа.", args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void OnWorldDefenseResupply(Entity<SWMinistryWorkConsoleComponent> ent, ref SWDefenseWorldResupplyMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive
+            || GetCardMinistry(ent) != SWMinistryDefenseSystem.DefenseMinistryId)
+            return;
+
+        if (!_defense.ResupplyWorld(args.WorldId))
+            _popup.PopupCursor("Поставка не заказана: проверьте бюджет, наличие обороны и её резерв.", args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void OnRecruitFleet(Entity<SWMinistryWorkConsoleComponent> ent, ref SWDefenseRecruitMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive
+            || GetCardMinistry(ent) != SWMinistryDefenseSystem.DefenseMinistryId)
+            return;
+
+        if (!_defense.RecruitFleet(args.WorldId))
+            _popup.PopupCursor("Заказ отклонён: проверьте бюджет и доступность верфи.", args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void OnFleetOrder(Entity<SWMinistryWorkConsoleComponent> ent, ref SWDefenseFleetOrderMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive
+            || GetCardMinistry(ent) != SWMinistryDefenseSystem.DefenseMinistryId)
+            return;
+
+        if (!_defense.IssueFleetOrder(args.FleetId, args.Order, args.Target, args.EventId))
+            _popup.PopupCursor("Приказ отклонён: проверьте состояние соединения, маршрут и бюджет.", args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
     private void OnLaunchOp(Entity<SWMinistryWorkConsoleComponent> ent, ref SWDefenseLaunchOpMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardMinistry(ent) != SWMinistryDefenseSystem.DefenseMinistryId)
             return;
 
@@ -506,6 +675,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnDeployFleet(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFleetDeployMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardMinistry(ent) != SWMinistryDefenseSystem.DefenseMinistryId)
             return;
 
@@ -515,6 +687,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnResign(Entity<SWMinistryWorkConsoleComponent> ent, ref SWMinistryResignMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         if (card == null
             || !TryComp<SWMinistryComponent>(card, out var ministryComp)
@@ -530,6 +705,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnSetStance(Entity<SWMinistryWorkConsoleComponent> ent, ref SWDefenseSetStanceMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardMinistry(ent) != SWMinistryDefenseSystem.DefenseMinistryId)
             return;
 
@@ -539,6 +717,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnSelectProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWDefenseSelectProgramMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardMinistry(ent) != SWMinistryDefenseSystem.DefenseMinistryId)
             return;
 
@@ -563,6 +744,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnAudit(Entity<SWMinistryWorkConsoleComponent> ent, ref SWMinistryAuditRequestMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardMinistry(ent) is not { } ministryId)
             return;
 
@@ -574,6 +758,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnResolve(Entity<SWMinistryWorkConsoleComponent> ent, ref SWMinistryResolveRequestMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardMinistry(ent) is not { } ministryId)
             return;
 
@@ -587,6 +774,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnRefuse(Entity<SWMinistryWorkConsoleComponent> ent, ref SWMinistryRefuseRequestMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardMinistry(ent) is not { } ministryId)
             return;
 
@@ -603,12 +793,18 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
 
     private void OnInserted(Entity<SWMinistryWorkConsoleComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
 
     private void OnRemoved(Entity<SWMinistryWorkConsoleComponent> ent, ref EntRemovedFromContainerMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
@@ -683,6 +879,8 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                 if (ministryId == SWMinistryDefenseSystem.DefenseMinistryId)
                 {
                     state.IsDefense = true;
+                    state.DefenseMap = _defense.BuildMapState();
+                    state.DefensePlanetary = _defense.BuildPlanetaryState();
                     state.Stance = _defense.Stance;
                     state.DefconLevel = SWMinistryDefenseSystem.DefconLevel(_defense.Stance);
                     state.StanceName = SWMinistryDefenseSystem.StanceName(_defense.Stance);
@@ -749,6 +947,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.ResearchFundingLabel = _health.ResearchFundingLabel();
                     state.HealthEmergencyActive = _health.EmergencyActive;
                     state.HealthEmergencyHoursLeft = _health.EmergencyHoursLeft;
+                    state.HospitalServicePercent = _health.HospitalServicePercent;
                     state.HealthEmergencyPending = _health.EmergencyPending;
                     state.SelectedHealthProgram = _health.SelectedProgram ?? string.Empty;
                     state.HealthProgramProgress = _health.ProgramProgress;
@@ -799,6 +998,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.CanIssueBonds = _finance.CanIssueBonds();
                     state.BondProceeds = _finance.BondProceeds();
                     state.CanRepayDebt = _finance.CanRepayDebt();
+                    state.NextRepaymentCost = _finance.NextRepaymentCost;
                     state.EmissionPending = _finance.EmissionPending;
                     state.SelectedFinanceProgram = _finance.SelectedProgram ?? string.Empty;
                     state.FinanceProgramProgress = _finance.ProgramProgress;

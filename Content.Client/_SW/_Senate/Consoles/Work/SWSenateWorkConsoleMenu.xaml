@@ -1,57 +1,65 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
+    xmlns:senate="clr-namespace:Content.Client._SW._Senate"
+    xmlns:work="clr-namespace:Content.Client._SW._Senate.Consoles.Work"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
     Title="Сенатская рабочая консоль"
+    SetSize="1120 700"
     MinSize="780 620">
     <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
         <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
             <PanelContainer Name="HeaderPanel">
-                <BoxContainer Orientation="Horizontal" Margin="12 7">
-                    <Label Name="HeaderTitle" HorizontalExpand="True" />
-                    <PanelContainer Name="LiveDot" MinSize="9 9" VerticalAlignment="Center" />
-                    <Label Name="HeaderClock" Margin="7 0 0 0" />
+                <BoxContainer Orientation="Horizontal" Margin="14 10" SeparationOverride="0">
+                    <senate:SWConsoleSeal Margin="0 0 12 0" />
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="2">
+                        <Label Name="HeaderNetwork" Text="РЕСПУБЛИКА / ГОЛОНЕТ" />
+                        <Label Name="HeaderTitle" HorizontalExpand="True" ClipText="True" />
+                    </BoxContainer>
+                    <Label Name="HeaderClock" Margin="12 0 0 0" VerticalAlignment="Center" />
                 </BoxContainer>
             </PanelContainer>
             <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
                 <PanelContainer Name="NavPanel" MinWidth="190">
                     <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                         <BoxContainer Name="Nav" Orientation="Vertical" Margin="8">
-                            <Label Name="GroupInfo" Text="ИНФОРМАЦИЯ" Margin="2 0 0 3" />
-                            <Button Name="NavOffice" Text="Должность" Margin="0 0 0 2" />
-                            <Button Name="NavSignature" Text="На подпись" Margin="0 0 0 2" />
-                            <Button Name="NavPowers" Text="Полномочия" Margin="0 0 0 2" />
-                            <Button Name="NavDecree" Text="Декрет" Margin="0 0 0 2" />
-                            <Button Name="NavSummary" Text="Сводка" Margin="0 0 0 2" />
-                            <Button Name="NavCrises" Text="Кризисы" Margin="0 0 0 2" />
-                            <Label Name="GroupOrg" Text="ОРГАНИЗАЦИЯ" Margin="2 10 0 3" />
-                            <Button Name="NavRoster" Text="Состав" Margin="0 0 0 2" />
-                            <Button Name="NavAgenda" Text="Повестка" Margin="0 0 0 2" />
-                            <Button Name="NavSchedule" Text="Расписание" Margin="0 0 0 2" />
-                            <Button Name="NavCommittees" Text="Комитеты" Margin="0 0 0 2" />
-                            <Button Name="NavCourt" Text="Суд" Margin="0 0 0 2" />
-                            <Button Name="NavDiplomacy" Text="Дипломатия" Margin="0 0 0 2" />
-                            <Label Name="GroupWork" Text="РАБОТА" Margin="2 10 0 3" />
-                            <Button Name="NavDraft" Text="Разработка" Margin="0 0 0 2" />
-                            <Button Name="NavDilemmas" Text="Дилеммы" Margin="0 0 0 2" />
-                            <Button Name="NavParties" Text="Партии" Margin="0 0 0 2" />
-                            <Button Name="NavAmbitions" Text="Амбиции" Margin="0 0 0 2" />
-                            <Button Name="NavBudget" Text="Бюджет" Margin="0 0 0 2" />
-                            <Button Name="NavAnnounce" Text="Объявление" Margin="0 0 0 2" />
+                            <Label Name="GroupInfo" Text="Информация" Margin="2 0 0 3" />
+                            <senate:SWConsoleButton Name="NavOffice" Text="Должность" Margin="0 0 0 2" />
+                            <senate:SWConsoleButton Name="NavMap" Text="Карта" Visible="False" Margin="0 0 0 2" />
+                            <senate:SWConsoleButton Name="NavSignature" Text="На подпись" Margin="0 0 0 2" />
+                            <senate:SWConsoleButton Name="NavPowers" Text="Полномочия" Margin="0 0 0 2" />
+                            <senate:SWConsoleButton Name="NavDecree" Text="Декрет" Margin="0 0 0 2" />
+                            <senate:SWConsoleButton Name="NavSummary" Text="Сводка" Margin="0 0 0 2" />
+                            <senate:SWConsoleButton Name="NavCrises" Text="Кризисы" Margin="0 0 0 2" />
+                            <Label Name="GroupOrg" Text="Организация" Margin="2 10 0 3" />
+                            <senate:SWConsoleButton Name="NavRoster" Text="Состав" Margin="0 0 0 2" />
+                            <senate:SWConsoleButton Name="NavAgenda" Text="Повестка" Margin="0 0 0 2" />
+                            <senate:SWConsoleButton Name="NavSchedule" Text="Расписание" Margin="0 0 0 2" />
+                            <senate:SWConsoleButton Name="NavCommittees" Text="Комитеты" Margin="0 0 0 2" />
+                            <senate:SWConsoleButton Name="NavCourt" Text="Суд" Margin="0 0 0 2" />
+                            <senate:SWConsoleButton Name="NavDiplomacy" Text="Дипломатия" Margin="0 0 0 2" />
+                            <Label Name="GroupWork" Text="Работа" Margin="2 10 0 3" />
+                            <senate:SWConsoleButton Name="NavDraft" Text="Разработка" Margin="0 0 0 2" />
+                            <senate:SWConsoleButton Name="NavDilemmas" Text="Дилеммы" Margin="0 0 0 2" />
+                            <senate:SWConsoleButton Name="NavParties" Text="Партии" Margin="0 0 0 2" />
+                            <senate:SWConsoleButton Name="NavAmbitions" Text="Амбиции" Margin="0 0 0 2" />
+                            <senate:SWConsoleButton Name="NavBudget" Text="Бюджет" Margin="0 0 0 2" />
+                            <senate:SWConsoleButton Name="NavAnnounce" Text="Объявление" Margin="0 0 0 2" />
                         </BoxContainer>
                     </ScrollContainer>
                 </PanelContainer>
                 <BoxContainer Name="ContentHost" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                    <BoxContainer Name="MapTab" Orientation="Vertical" Visible="False" HorizontalExpand="True" VerticalExpand="True" Margin="12" />
                     <BoxContainer Name="OfficeTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
                         <RichTextLabel Name="PositionLabel" Margin="0 0 0 6" />
                         <RichTextLabel Name="StatusLabel" Margin="0 0 0 12" />
                         <BoxContainer Name="ElectionElectBox" Orientation="Vertical" Margin="0 0 0 12" />
                         <BoxContainer Name="CourtNomineeBox" Orientation="Vertical" Margin="0 0 0 12" />
-                        <Button Name="TakeButton" Text="Вступить в должность" />
-                        <Button Name="ResignButton" Text="Сложить полномочия" Margin="0 6 0 0" />
+                        <senate:SWConsoleButton Name="TakeButton" Text="Вступить в должность" />
+                        <senate:SWConsoleButton Name="ResignButton" Text="Сложить полномочия" Margin="0 6 0 0" />
                         <BoxContainer Name="WarApprovalBox" Orientation="Vertical" Margin="0 12 0 0" />
                     </BoxContainer>
-                    <ScrollContainer Name="SignatureScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="10">
-                        <BoxContainer Name="SignatureList" Orientation="Vertical" HorizontalExpand="True" />
-                    </ScrollContainer>
+                    <BoxContainer Name="SignaturePanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                        <BoxContainer Name="SignatureList" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" />
+                    </BoxContainer>
                     <ScrollContainer Name="PowersScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="10">
                         <BoxContainer Name="PowersList" Orientation="Vertical" HorizontalExpand="True" />
                     </ScrollContainer>
@@ -65,8 +73,8 @@
                         </ScrollContainer>
                         <RichTextLabel Name="DecreeMagnitudeLabel" Margin="0 0 0 8" />
                         <Label Text="Описание" StyleClasses="LabelKeyText" />
-                        <LineEdit Name="DecreeDescEdit" PlaceHolder="Описание..." Margin="0 2 0 8" />
-                        <Button Name="IssueDecreeButton" Text="Издать декрет" />
+                        <senate:SWConsoleTextEdit Name="DecreeDescEdit" PlaceHolder="Описание..." Margin="0 2 0 8" />
+                        <senate:SWConsoleButton Name="IssueDecreeButton" Text="Издать декрет" />
                     </BoxContainer>
                     <ScrollContainer Name="RosterScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="10">
                         <BoxContainer Name="RosterList" Orientation="Vertical" HorizontalExpand="True" />
@@ -77,32 +85,33 @@
                     <BoxContainer Name="DraftTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
                         <BoxContainer Name="ReturnedBillsBox" Orientation="Vertical" HorizontalExpand="True" Margin="0 0 0 8" />
                         <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
-                            <Button Name="DraftModeCustom" Text="Свой закон" />
-                            <Button Name="DraftModePreset" Text="Шаблоны" Margin="6 0 0 0" />
+                            <senate:SWConsoleButton Name="DraftModeCustom" Text="Свой закон" />
+                            <senate:SWConsoleButton Name="DraftModePreset" Text="Шаблоны" Margin="6 0 0 0" />
                         </BoxContainer>
                         <BoxContainer Name="CustomDraftPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
                             <BoxContainer Name="RevisionBanner" Orientation="Horizontal" HorizontalExpand="True" Margin="0 0 0 6" Visible="False">
-                                <Label Name="RevisionLabel" HorizontalExpand="True" />
-                                <Button Name="CancelRevisionButton" Text="Отменить" />
+                                <RichTextLabel Name="RevisionLabel" HorizontalExpand="True" />
+                                <senate:SWConsoleButton Name="CancelRevisionButton" Text="Отменить" />
                             </BoxContainer>
+                            <BoxContainer Name="AmendmentTargetBox" Orientation="Vertical" HorizontalExpand="True" Margin="0 0 0 8" Visible="False" />
                             <Label Text="Название законопроекта" StyleClasses="LabelKeyText" />
                             <LineEdit Name="BillNameEdit" PlaceHolder="Название..." Margin="0 2 0 8" />
-                            <Label Text="Изменения" StyleClasses="LabelKeyText" />
+                            <Label Name="DraftEffectsLabel" Text="Изменения" StyleClasses="LabelKeyText" />
                             <ScrollContainer HScrollEnabled="False" VerticalExpand="True" Margin="0 2 0 4">
                                 <BoxContainer Name="DraftStatList" Orientation="Vertical" HorizontalExpand="True" />
                             </ScrollContainer>
                             <RichTextLabel Name="BudgetLabel" Margin="0 0 0 8" />
                             <Label Text="Описание" StyleClasses="LabelKeyText" />
-                            <LineEdit Name="BillDescEdit" PlaceHolder="Описание..." Margin="0 2 0 8" />
-                            <Button Name="SubmitBillButton" Text="Внести законопроект" />
+                            <senate:SWConsoleTextEdit Name="BillDescEdit" PlaceHolder="Описание..." Margin="0 2 0 8" />
+                            <senate:SWConsoleButton Name="SubmitBillButton" Text="Внести законопроект" />
                         </BoxContainer>
                         <ScrollContainer Name="PresetPanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                             <BoxContainer Name="PresetsList" Orientation="Vertical" HorizontalExpand="True" />
                         </ScrollContainer>
                     </BoxContainer>
-                    <ScrollContainer Name="AgendaScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Margin="10">
-                        <BoxContainer Name="AgendaList" Orientation="Vertical" HorizontalExpand="True" />
-                    </ScrollContainer>
+                    <BoxContainer Name="AgendaPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                        <BoxContainer Name="AgendaList" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" />
+                    </BoxContainer>
                     <BoxContainer Name="ScheduleTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
                         <ScrollContainer HScrollEnabled="False" VerticalExpand="True" Margin="0 0 0 6">
                             <BoxContainer Name="ScheduleGrid" Orientation="Vertical" HorizontalExpand="True" />
@@ -124,7 +133,8 @@
                                     <OptionButton Name="DurationOption" />
                                 </BoxContainer>
                             </BoxContainer>
-                            <Button Name="ScheduleButton" Text="Запланировать" Margin="0 6 0 8" />
+                            <BoxContainer Name="GroupedAmendmentsBox" Orientation="Vertical" HorizontalExpand="True" Margin="0 8 0 0" Visible="False" />
+                            <senate:SWConsoleButton Name="ScheduleButton" Text="Запланировать" Margin="0 6 0 8" />
                             <Label Name="SpeakerPendingHeader" Text="Ваши заявки на заседания" StyleClasses="LabelKeyText" />
                             <BoxContainer Name="SpeakerPendingList" Orientation="Vertical" Margin="0 4 0 0" />
                         </BoxContainer>
@@ -140,9 +150,9 @@
                     </BoxContainer>
                     <BoxContainer Name="PartiesTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
                         <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
-                            <Button Name="PartiesModeAll" Text="Все партии" />
-                            <Button Name="PartiesModeMine" Text="Моя партия" Margin="6 0 0 0" />
-                            <Button Name="PartiesModeLaws" Text="Партийные законы" Margin="6 0 0 0" />
+                            <senate:SWConsoleButton Name="PartiesModeAll" Text="Все партии" />
+                            <senate:SWConsoleButton Name="PartiesModeMine" Text="Моя партия" Margin="6 0 0 0" />
+                            <senate:SWConsoleButton Name="PartiesModeLaws" Text="Партийные законы" Margin="6 0 0 0" />
                         </BoxContainer>
                         <ScrollContainer Name="AllPartiesPanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                             <BoxContainer Name="AllPartiesList" Orientation="Vertical" HorizontalExpand="True" />
@@ -154,8 +164,8 @@
                             <BoxContainer Name="CreatePartyBox" Orientation="Vertical" Margin="0 0 0 8">
                                 <Label Text="Создать партию" StyleClasses="LabelKeyText" />
                                 <LineEdit Name="PartyNameEdit" PlaceHolder="Название партии..." Margin="0 2 0 4" />
-                                <LineEdit Name="PartyDescEdit" PlaceHolder="Описание..." Margin="0 0 0 4" />
-                                <Button Name="CreatePartyButton" Text="Создать партию" HorizontalAlignment="Left" />
+                                <senate:SWConsoleTextEdit Name="PartyDescEdit" PlaceHolder="Описание..." Margin="0 0 0 4" />
+                                <senate:SWConsoleButton Name="CreatePartyButton" Text="Создать партию" HorizontalAlignment="Left" />
                             </BoxContainer>
                             <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                                 <BoxContainer Name="MyPartyList" Orientation="Vertical" HorizontalExpand="True" />
@@ -169,15 +179,15 @@
                     </BoxContainer>
                     <BoxContainer Name="CommitteesTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
                         <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
-                            <Button Name="CommitteesModeAll" Text="Все комитеты" />
-                            <Button Name="CommitteesModeMine" Text="Мои комитеты" Margin="6 0 0 0" />
+                            <senate:SWConsoleButton Name="CommitteesModeAll" Text="Все комитеты" />
+                            <senate:SWConsoleButton Name="CommitteesModeMine" Text="Мои комитеты" Margin="6 0 0 0" />
                         </BoxContainer>
                         <ScrollContainer Name="AllCommitteesPanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                             <BoxContainer Name="AllCommitteesList" Orientation="Vertical" HorizontalExpand="True" />
                         </ScrollContainer>
                         <BoxContainer Name="MyCommitteesPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
-                            <Label Text="Причина возврата (для «Вернуть автору»)" StyleClasses="LabelKeyText" />
-                            <LineEdit Name="CommitteeReasonEdit" PlaceHolder="Что доработать..." Margin="0 2 0 6" />
+                            <Label Text="Причина возврата" StyleClasses="LabelKeyText" />
+                            <senate:SWConsoleTextEdit Name="CommitteeReasonEdit" PlaceHolder="Что доработать..." Margin="0 2 0 6" />
                             <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                                 <BoxContainer Name="MyCommitteesList" Orientation="Vertical" HorizontalExpand="True" />
                             </ScrollContainer>
@@ -191,16 +201,16 @@
                     </BoxContainer>
                     <BoxContainer Name="AnnounceTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
                         <Label Text="Объявление Сената" StyleClasses="LabelKeyText" />
-                        <LineEdit Name="AnnounceEdit" PlaceHolder="Текст объявления..." Margin="0 2 0 8" />
-                        <Button Name="AnnounceButton" Text="Отправить объявление" />
+                        <senate:SWConsoleTextEdit Name="AnnounceEdit" PlaceHolder="Текст объявления..." Margin="0 2 0 8" />
+                        <senate:SWConsoleButton Name="AnnounceButton" Text="Отправить объявление" />
                     </BoxContainer>
                     <BoxContainer Name="DiplomacyTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
                         <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                             <BoxContainer Name="DiplomacyList" Orientation="Vertical" HorizontalExpand="True" />
                         </ScrollContainer>
                         <BoxContainer Name="DiploReplyBox" Orientation="Vertical" Margin="0 8 0 0">
-                            <LineEdit Name="DiploReplyEdit" PlaceHolder="Текст ответа Империи..." Margin="0 2 0 6" />
-                            <Button Name="DiploReplyButton" Text="Отправить ответ" />
+                            <senate:SWConsoleTextEdit Name="DiploReplyEdit" PlaceHolder="Текст ответа Империи..." Margin="0 2 0 6" />
+                            <senate:SWConsoleButton Name="DiploReplyButton" Text="Отправить ответ" />
                         </BoxContainer>
                     </BoxContainer>
                     <BoxContainer Name="CourtTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
@@ -210,10 +220,10 @@
                     </BoxContainer>
                     <BoxContainer Name="DilemmaTab" Orientation="Vertical" Margin="12" HorizontalExpand="True" VerticalExpand="True">
                         <BoxContainer Orientation="Horizontal" Margin="0 0 0 8">
-                            <Button Name="DilemmaModeActive" Text="Внебюджетные" />
-                            <Button Name="DilemmaModeBudget" Text="Бюджетные" Margin="6 0 0 0" />
-                            <Button Name="DilemmaModePrograms" Text="Программы" Margin="6 0 0 0" />
-                            <Button Name="DilemmaModeSummary" Text="Сводка решений" Margin="6 0 0 0" />
+                            <senate:SWConsoleButton Name="DilemmaModeActive" Text="Внебюджетные" />
+                            <senate:SWConsoleButton Name="DilemmaModeBudget" Text="Бюджетные" Margin="6 0 0 0" />
+                            <senate:SWConsoleButton Name="DilemmaModePrograms" Text="Программы" Margin="6 0 0 0" />
+                            <senate:SWConsoleButton Name="DilemmaModeSummary" Text="Сводка решений" Margin="6 0 0 0" />
                         </BoxContainer>
                         <ScrollContainer Name="DilemmaActivePanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                             <BoxContainer Name="DilemmaActiveList" Orientation="Vertical" HorizontalExpand="True" />
@@ -225,10 +235,7 @@
                             </ScrollContainer>
                         </BoxContainer>
                         <BoxContainer Name="DilemmaProgramPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
-                            <RichTextLabel Name="ProgramSummary" Margin="0 0 0 6" />
-                            <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
-                                <BoxContainer Name="ProgramList" Orientation="Vertical" HorizontalExpand="True" />
-                            </ScrollContainer>
+                            <work:SWProgramPanel Name="SectorPrograms" HorizontalExpand="True" VerticalExpand="True" />
                         </BoxContainer>
                         <ScrollContainer Name="DilemmaSummaryPanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                             <BoxContainer Name="DilemmaSummaryList" Orientation="Vertical" HorizontalExpand="True" />

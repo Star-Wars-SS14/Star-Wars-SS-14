@@ -155,6 +155,11 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateSubmitBillMessage(name, description, effects));
     }
 
+    public void SubmitAmendment(int lawId, string name, string description, Dictionary<string, float> effects)
+    {
+        SendMessage(new SWSenateSubmitAmendmentMessage(lawId, name, description, effects));
+    }
+
     public void SubmitPreset(string presetId)
     {
         SendMessage(new SWSenateSubmitPresetMessage(presetId));
@@ -165,9 +170,9 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateResolveDilemmaMessage(dilemmaId, optionIndex));
     }
 
-    public void ApplyProgram(string programId)
+    public void ApplyProgram(string programId, string? worldId = null)
     {
-        SendMessage(new SWSenateApplyProgramMessage(programId));
+        SendMessage(new SWSenateApplyProgramMessage(programId, worldId));
     }
 
     public void ResolveCrisis(int crisisId, int solutionIndex)
@@ -203,6 +208,11 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
     public void ScheduleSession(int billId, int startHour, int duration)
     {
         SendMessage(new SWSenateScheduleSessionMessage(billId, startHour, duration));
+    }
+
+    public void ScheduleAmendmentSession(List<int> billIds, int startHour, int duration)
+    {
+        SendMessage(new SWSenateScheduleAmendmentSessionMessage(billIds, startHour, duration));
     }
 
     public void RemoveSession(int sessionId)

@@ -25,6 +25,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
+    [Dependency] private readonly SWSenateCardSystem _cards = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateFloorSystem _floor = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
@@ -60,6 +61,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateTakeOfficeMessage>(OnTakeOffice);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateResignMessage>(OnResign);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSubmitBillMessage>(OnSubmitBill);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSubmitAmendmentMessage>(OnSubmitAmendment);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSubmitPresetMessage>(OnSubmitPreset);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateResolveDilemmaMessage>(OnResolveDilemma);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateApplyProgramMessage>(OnApplyProgram);
@@ -70,6 +72,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWBudgetApproveMessage>(OnApproveBudget);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWBudgetRejectMessage>(OnRejectBudget);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateScheduleSessionMessage>(OnScheduleSession);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateScheduleAmendmentSessionMessage>(OnScheduleAmendmentSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRemoveSessionMessage>(OnRemoveSession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateEmergencySessionMessage>(OnEmergencySession);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateConfirmSessionMessage>(OnConfirmSession);
@@ -127,6 +130,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnReviseBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateReviseBillMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var author = SenatorName(ent);
         if (author == null)
             return;
@@ -135,39 +141,12 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (bill == null)
             return;
 
-        var name = args.Name.Trim();
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            _popup.PopupCursor(Loc.GetString("sw-senate-bill-no-name"), args.Actor, PopupType.Medium);
+        if (bill.AmendsLawId is { } parentId && !_senate.CanAmendLaw(parentId))
             return;
-        }
 
-        var effects = new Dictionary<string, float>();
-        var net = 0f;
-        foreach (var (statId, rawDelta) in args.Effects)
-        {
-            if (!_proto.HasIndex<SWStatPrototype>(statId) || !float.IsFinite(rawDelta))
-                continue;
-
-            var delta = Math.Clamp(rawDelta, -ent.Comp.MaxEffect, ent.Comp.MaxEffect);
-            if (delta == 0)
-                continue;
-
-            effects[statId] = delta;
-            net += delta;
-        }
-
-        if (effects.Count == 0)
-        {
-            _popup.PopupCursor(Loc.GetString("sw-senate-bill-no-effect"), args.Actor, PopupType.Medium);
+        if (!TryPrepareDraft(ent, args.Actor, args.Name, args.Effects, out var name, out var effects,
+                bill.AmendsLawId != null && !string.IsNullOrWhiteSpace(args.Description)))
             return;
-        }
-
-        if (net > ent.Comp.DraftBudget)
-        {
-            _popup.PopupCursor(Loc.GetString("sw-senate-bill-over-budget"), args.Actor, PopupType.Medium);
-            return;
-        }
 
         _senate.ReviseBill(bill, name, args.Description.Trim(), effects);
         RequeueBill(bill);
@@ -177,6 +156,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnCommitteeVoteBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWCommitteeVoteBillMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var name = SenatorName(ent);
         if (name == null)
             return;
@@ -195,6 +177,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnResubmitBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateResubmitBillMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var name = SenatorName(ent);
         if (name == null)
             return;
@@ -216,6 +201,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnJoinCommittee(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateJoinCommitteeMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var name = SenatorName(ent);
         if (name == null)
         {
@@ -231,6 +219,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnLeaveCommittee(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateLeaveCommitteeMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var name = SenatorName(ent);
         if (name != null)
             _committee.Leave(name, args.CommitteeId);
@@ -240,6 +231,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnVoteChair(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateVoteChairMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var name = SenatorName(ent);
         if (name != null)
             _committee.VoteChair(name, args.CommitteeId, args.Candidate);
@@ -249,6 +243,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnInitiateEvictVote(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateInitiateEvictVoteMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var sectorId = GetSectorOwner(ent);
         if (sectorId == null)
             return;
@@ -263,6 +260,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnCreateParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateCreatePartyMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var sectorId = GetSectorOwner(ent);
         if (sectorId == null)
         {
@@ -280,6 +280,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRequestJoinParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateRequestJoinPartyMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var sectorId = GetSectorOwner(ent);
         if (sectorId == null)
             return;
@@ -294,6 +297,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnCancelJoinParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateCancelJoinPartyMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var sectorId = GetSectorOwner(ent);
         if (sectorId == null)
             return;
@@ -304,6 +310,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnConfirmJoinParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateConfirmJoinPartyMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var sectorId = GetSectorOwner(ent);
         if (sectorId == null)
             return;
@@ -318,6 +327,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectJoinParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateRejectJoinPartyMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var sectorId = GetSectorOwner(ent);
         if (sectorId == null)
             return;
@@ -328,6 +340,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnLeaveParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateLeavePartyMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var sectorId = GetSectorOwner(ent);
         if (sectorId == null)
             return;
@@ -340,6 +355,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnDisbandParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateDisbandPartyMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var sectorId = GetSectorOwner(ent);
         if (sectorId == null)
             return;
@@ -352,6 +370,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnInitiateLeaderVote(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateInitiateLeaderVoteMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var sectorId = GetSectorOwner(ent);
         if (sectorId == null)
             return;
@@ -366,6 +387,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnCastLeaderVote(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateCastLeaderVoteMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var sectorId = GetSectorOwner(ent);
         if (sectorId == null)
             return;
@@ -376,6 +400,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnAnnounce(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateAnnounceMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var position = GetCardPosition(ent);
         if (position != SWSenatePosition.Speaker && position != SWSenatePosition.Chancellor)
         {
@@ -445,6 +472,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnScheduleSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateScheduleSessionMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanScheduleAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-speaker"), args.Actor, PopupType.Medium);
@@ -459,8 +489,30 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
+    private void OnScheduleAmendmentSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateScheduleAmendmentSessionMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanScheduleAs(ent, args.Actor))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-speaker"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.TryScheduleAmendmentSession(args.BillIds, args.StartHour, args.Duration) == null)
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-invalid"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-added"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
     private void OnRemoveSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateRemoveSessionMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanScheduleAs(ent, args.Actor))
             return;
 
@@ -470,6 +522,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnEmergencySession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateEmergencySessionMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanScheduleAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-speaker"), args.Actor, PopupType.Medium);
@@ -482,6 +537,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnConfirmSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateConfirmSessionMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
@@ -496,6 +554,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnApproveWar(Entity<SWSenateWorkConsoleComponent> ent, ref SWDefenseApproveWarMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
@@ -510,6 +571,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectWar(Entity<SWSenateWorkConsoleComponent> ent, ref SWDefenseRejectWarMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
             return;
 
@@ -519,6 +583,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnApproveEmergency(Entity<SWSenateWorkConsoleComponent> ent, ref SWSecurityApproveEmergencyMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
@@ -533,6 +600,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectEmergency(Entity<SWSenateWorkConsoleComponent> ent, ref SWSecurityRejectEmergencyMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
             return;
 
@@ -542,6 +612,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnApproveHealthEmergency(Entity<SWSenateWorkConsoleComponent> ent, ref SWHealthApproveEmergencyMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
@@ -556,6 +629,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectHealthEmergency(Entity<SWSenateWorkConsoleComponent> ent, ref SWHealthRejectEmergencyMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
             return;
 
@@ -565,6 +641,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnApproveStimulus(Entity<SWSenateWorkConsoleComponent> ent, ref SWEconomyApproveStimulusMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
@@ -579,6 +658,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectStimulus(Entity<SWSenateWorkConsoleComponent> ent, ref SWEconomyRejectStimulusMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
             return;
 
@@ -588,6 +670,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnApproveEmission(Entity<SWSenateWorkConsoleComponent> ent, ref SWFinanceApproveEmissionMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
@@ -602,6 +687,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectEmission(Entity<SWSenateWorkConsoleComponent> ent, ref SWFinanceRejectEmissionMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
             return;
 
@@ -611,6 +699,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnApproveTribunal(Entity<SWSenateWorkConsoleComponent> ent, ref SWJusticeApproveTribunalMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
@@ -625,6 +716,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectTribunal(Entity<SWSenateWorkConsoleComponent> ent, ref SWJusticeRejectTribunalMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
             return;
 
@@ -634,6 +728,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnSignBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSignBillMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
@@ -648,6 +745,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnVetoBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateVetoBillMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor) || !_powers.HasPower(SWEmergencyPower.Veto))
             return;
 
@@ -662,6 +762,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRelinquishPowers(Entity<SWSenateWorkConsoleComponent> ent, ref SWEmergencyRelinquishMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
             return;
 
@@ -689,6 +792,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnCourtNominate(Entity<SWSenateWorkConsoleComponent> ent, ref SWCourtNominateMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardPosition(ent) != SWSenatePosition.Chancellor || _senate.Chancellor == null
             || _senate.Chancellor != Name(args.Actor))
             return;
@@ -703,6 +809,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnCourtNominationResponse(Entity<SWSenateWorkConsoleComponent> ent, ref SWCourtNominationResponseMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (_court.RespondNomination(Name(args.Actor), args.Accept))
             _popup.PopupCursor(args.Accept ? "Согласие передано в Сенат." : "Предложение отклонено.", args.Actor, PopupType.Medium);
 
@@ -711,6 +820,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnDiploReply(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateDiploReplyMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (GetCardPosition(ent) != SWSenatePosition.Chancellor || _senate.Chancellor == null
             || _senate.Chancellor != Name(args.Actor))
             return;
@@ -723,6 +835,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnProposeMotion(Entity<SWSenateWorkConsoleComponent> ent, ref SWProposeMotionMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var self = SelfName(ent);
         if (self == null)
             return;
@@ -752,6 +867,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnDismissMinister(Entity<SWSenateWorkConsoleComponent> ent, ref SWEmergencyDismissMinisterMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor) || !_powers.HasPower(SWEmergencyPower.MinisterControl))
             return;
         if (!_ministry.IsClaimed(args.MinistryId))
@@ -769,6 +887,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnIssueDecree(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateIssueDecreeMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor) || !_powers.HasPower(SWEmergencyPower.Decree))
             return;
 
@@ -812,6 +933,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnConfirmElection(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateConfirmElectionMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         if (card == null
             || !TryComp<SWSenatePositionCardComponent>(card, out var position)
@@ -827,9 +951,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (!_senate.ConfirmChancellorElect(name, sectorId))
             return;
 
-        position.Position = SWSenatePosition.Chancellor;
-        sectorComp.Sector = null;
-        _idCard.TryChangeJobTitle(card.Value, Loc.GetString("sw-senate-work-position-chancellor"));
+        _idCard.TryChangeFullName(card.Value, name);
+        _cards.SynchronizeHolder(name, SWSenatePosition.Chancellor);
         _floor.SetChancellor(args.Actor);
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent(
             Loc.GetString("sw-senate-announce-sender"),
@@ -855,6 +978,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnEmergencyCommand(Entity<SWSenateWorkConsoleComponent> ent, ref SWEmergencyCommandMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
             return;
 
@@ -895,9 +1021,12 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
                 break;
 
             case 10 when _powers.HasPower(SWEmergencyPower.EmergencyBudget):
-                foreach (var id in EmergencyBudgetTargets)
-                    _dilemma.SetMinistryBudget(id, _dilemma.GetMinistryBudget(id) + 3000);
-                _powers.RegisterUse(8f, 6f, false);
+                if (!_powers.TryEmergencyBudget())
+                {
+                    _popup.PopupCursor(_powers.EmergencyBudgetStatus, args.Actor, PopupType.Medium);
+                    UpdateUi(ent);
+                    return;
+                }
                 break;
 
             default:
@@ -907,16 +1036,6 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         _popup.PopupCursor(Loc.GetString("sw-power-command"), args.Actor, PopupType.Medium);
         UpdateUi(ent);
     }
-
-    private static readonly string[] EmergencyBudgetTargets =
-    {
-        SWMinistryDefenseSystem.DefenseMinistryId,
-        SWMinistryInternalSecuritySystem.SecurityMinistryId,
-        SWMinistryHealthSystem.HealthMinistryId,
-        SWMinistryEconomySystem.EconomyMinistryId,
-        SWMinistryFinanceSystem.FinanceMinistryId,
-        SWMinistryJusticeSystem.JusticeMinistryId,
-    };
 
     private void InvokeMinistry(int action)
     {
@@ -951,6 +1070,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateRejectSessionMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
@@ -965,6 +1087,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnSubmitBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSubmitBillMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         if (card == null
             || !TryComp<SWSenatePositionCardComponent>(card, out var position)
@@ -980,22 +1105,75 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             return;
         }
 
-        var name = args.Name.Trim();
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            _popup.PopupCursor(Loc.GetString("sw-senate-bill-no-name"), args.Actor, PopupType.Medium);
+        var author = SenatorName(ent);
+        if (author == null)
             return;
-        }
 
-        if (_senate.HasActiveBill(Name(args.Actor)))
+        if (_senate.HasActiveBill(author))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-bill-already-active"), args.Actor, PopupType.Medium);
             return;
         }
 
-        var effects = new Dictionary<string, float>();
+        if (!TryPrepareDraft(ent, args.Actor, args.Name, args.Effects, out var name, out var effects))
+            return;
+
+        ReferBill(_senate.SubmitBill(name, args.Description.Trim(), author, effects));
+        _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void OnSubmitAmendment(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSubmitAmendmentMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var author = SenatorName(ent);
+        if (author == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-senator-hint"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (!_senate.CanAmendLaw(args.LawId))
+        {
+            _popup.PopupCursor("Поправки можно предложить только к действующему закону.", args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.HasActiveBill(author))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-already-active"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (!TryPrepareDraft(ent, args.Actor, args.Name, args.Effects, out var name, out var effects,
+                !string.IsNullOrWhiteSpace(args.Description)))
+            return;
+
+        var amendment = _senate.SubmitAmendment(args.LawId, name, args.Description.Trim(), author, effects);
+        if (amendment == null)
+            return;
+
+        ReferBill(amendment);
+        _popup.PopupCursor("Поправки внесены на рассмотрение.", args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private bool TryPrepareDraft(Entity<SWSenateWorkConsoleComponent> ent, EntityUid actor, string rawName,
+        IReadOnlyDictionary<string, float> rawEffects, out string name, out Dictionary<string, float> effects,
+        bool allowTextOnly = false)
+    {
+        name = rawName.Trim();
+        effects = new Dictionary<string, float>();
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-no-name"), actor, PopupType.Medium);
+            return false;
+        }
+
         var net = 0f;
-        foreach (var (statId, rawDelta) in args.Effects)
+        foreach (var (statId, rawDelta) in rawEffects)
         {
             if (!_proto.HasIndex<SWStatPrototype>(statId) || !float.IsFinite(rawDelta))
                 continue;
@@ -1008,21 +1186,18 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             net += delta;
         }
 
-        if (effects.Count == 0)
+        if (effects.Count == 0 && !allowTextOnly)
         {
-            _popup.PopupCursor(Loc.GetString("sw-senate-bill-no-effect"), args.Actor, PopupType.Medium);
-            return;
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-no-effect"), actor, PopupType.Medium);
+            return false;
         }
 
         if (net > ent.Comp.DraftBudget)
         {
-            _popup.PopupCursor(Loc.GetString("sw-senate-bill-over-budget"), args.Actor, PopupType.Medium);
-            return;
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-over-budget"), actor, PopupType.Medium);
+            return false;
         }
-
-        ReferBill(_senate.SubmitBill(name, args.Description.Trim(), Name(args.Actor), effects));
-        _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
-        UpdateUi(ent);
+        return true;
     }
 
     private void ReferBill(SWSenateBill bill)
@@ -1034,6 +1209,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnSubmitPreset(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSubmitPresetMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         if (card == null
             || !TryComp<SWSenatePositionCardComponent>(card, out var position)
@@ -1049,7 +1227,11 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             return;
         }
 
-        if (_senate.HasActiveBill(Name(args.Actor)))
+        var author = SenatorName(ent);
+        if (author == null)
+            return;
+
+        if (_senate.HasActiveBill(author))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-bill-already-active"), args.Actor, PopupType.Medium);
             return;
@@ -1074,7 +1256,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (effects.Count == 0)
             return;
 
-        ReferBill(_senate.SubmitBill(preset.Name, preset.Description, Name(args.Actor), effects));
+        ReferBill(_senate.SubmitBill(preset.Name, preset.Description, author, effects));
         _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
         UpdateUi(ent);
     }
@@ -1101,6 +1283,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnResolveDilemma(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateResolveDilemmaMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var owner = GetDilemmaOwner(ent);
         if (owner == null)
             return;
@@ -1125,6 +1310,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnApplyProgram(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateApplyProgramMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var sectorId = GetSectorOwner(ent);
         if (sectorId == null)
         {
@@ -1132,7 +1320,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             return;
         }
 
-        if (_program.Apply(sectorId, args.ProgramId))
+        if (_program.Apply(sectorId, args.ProgramId, args.WorldId))
             _popup.PopupCursor(Loc.GetString("sw-senate-program-applied"), args.Actor, PopupType.Medium);
         else
             _popup.PopupCursor(Loc.GetString("sw-senate-program-failed"), args.Actor, PopupType.Medium);
@@ -1142,6 +1330,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnResolveCrisis(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateResolveCrisisMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var sectorId = GetSectorOwner(ent);
         if (sectorId == null)
         {
@@ -1159,6 +1350,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnAidCrisis(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateAidCrisisMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var sectorId = GetSectorOwner(ent);
         if (sectorId == null)
         {
@@ -1176,6 +1370,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnProposeEmergencyLaw(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateProposeEmergencyLawMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var author = Name(args.Actor);
         var sectorOwner = GetSectorOwner(ent);
         var isChancellor = ChancellorInOffice(ent);
@@ -1193,6 +1390,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnSetBudget(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSetBudgetMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
             return;
 
@@ -1202,6 +1402,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnApproveBudget(Entity<SWSenateWorkConsoleComponent> ent, ref SWBudgetApproveMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
@@ -1216,6 +1419,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnRejectBudget(Entity<SWSenateWorkConsoleComponent> ent, ref SWBudgetRejectMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (!CanConfirmAs(ent, args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
@@ -1235,12 +1441,18 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnInserted(Entity<SWSenateWorkConsoleComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
 
     private void OnRemoved(Entity<SWSenateWorkConsoleComponent> ent, ref EntRemovedFromContainerMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
@@ -1266,6 +1478,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnTakeOffice(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateTakeOfficeMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         if (card == null || !TryComp<SWSenatePositionCardComponent>(card, out var position))
         {
@@ -1282,6 +1497,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             case SWSenatePosition.Chancellor:
                 if (_senate.TryTakeChancellor(Name(args.Actor)))
                 {
+                    _idCard.TryChangeFullName(card.Value, Name(args.Actor));
+                    _cards.Synchronize(card.Value, SWSenatePosition.Chancellor);
                     _floor.SetChancellor(args.Actor);
                     _popup.PopupCursor(Loc.GetString("sw-senate-work-took-office"), args.Actor, PopupType.Medium);
                 }
@@ -1292,6 +1509,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             case SWSenatePosition.Speaker:
                 if (_senate.TryTakeSpeaker(Name(args.Actor)))
                 {
+                    _idCard.TryChangeFullName(card.Value, Name(args.Actor));
+                    _cards.Synchronize(card.Value, SWSenatePosition.Speaker);
                     _floor.SetSpeaker(args.Actor);
                     _popup.PopupCursor(Loc.GetString("sw-senate-work-took-office"), args.Actor, PopupType.Medium);
                 }
@@ -1305,6 +1524,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnResign(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateResignMessage args)
     {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         if (card == null || !TryComp<SWSenatePositionCardComponent>(card, out var position))
         {
@@ -1404,6 +1626,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.Legitimacy = _powers.Legitimacy;
         state.EmergencyDaysLeft = _powers.DaysLeft;
         state.CanUseEmergencyPowers = _powers.Active && CanConfirmAs(ent);
+        state.EmergencyBudgetAmount = _powers.EmergencyBudgetAmount;
+        state.EmergencyBudgetReserve = _powers.EmergencyBudgetReserve;
+        state.EmergencyBudgetStatus = _powers.EmergencyBudgetStatus;
         state.CanRelinquish = _powers.Active && CanConfirmAs(ent);
         state.HasVeto = _powers.HasPower(SWEmergencyPower.Veto);
         state.HasCommand = _powers.HasPower(SWEmergencyPower.Command);
@@ -1440,7 +1665,10 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         var programOwner = GetSectorOwner(ent);
         state.CanPrograms = programOwner != null;
         if (programOwner != null)
+        {
             state.Programs = _program.BuildPrograms(programOwner);
+            state.ProgramWorlds = _program.BuildWorlds(programOwner);
+        }
         state.CanAmbitions = dilemmaOwner != null;
         if (dilemmaOwner != null)
             state.Ambitions = _ambition.BuildAmbitions(dilemmaOwner);
@@ -1450,6 +1678,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.MyPartyId = _party.GetPartyIdOf(programOwner);
         state.PartyLaws = _party.BuildPartyLaws();
         var committeeViewer = SenatorName(ent);
+        state.CanReviseBills = committeeViewer != null && _time.ModeActive && _time.DayActive;
+        state.CanSubmitAmendments = state.CanReviseBills && !_senate.HasActiveBill(committeeViewer!);
         state.CanCommittees = committeeViewer != null;
         state.Committees = _committee.BuildCommittees(committeeViewer);
         foreach (var committee in state.Committees)
@@ -1498,6 +1728,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
                         state.InOffice = true;
                         state.CanResign = true;
                         state.SectorName = sectorProto.Name;
+                        state.SectorId = sectorId;
+                        state.MapSectors = _senate.BuildSectorEntries(sectorId);
 
                         if (_senate.SectorGlobals.ContainsKey(sectorId))
                         {
@@ -1519,6 +1751,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
                 case SWSenatePosition.Chancellor:
                     state.PositionLabel = Loc.GetString("sw-senate-work-position-chancellor");
                     state.InOffice = _senate.Chancellor != null;
+                    if (state.InOffice) state.MapSectors = _senate.BuildSectorEntries();
                     state.CanTake = _senate.Chancellor == null;
                     state.CanResign = _senate.Chancellor != null;
                     break;
@@ -1540,7 +1773,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         var list = new List<SWBudgetSectorEntry>();
         foreach (var proto in _proto.EnumeratePrototypes<SWSectorPrototype>())
         {
-            if (!_senate.IsClaimed(proto.ID))
+            if (!_budget.GovernedSectors.Contains(proto.ID))
                 continue;
 
             list.Add(new SWBudgetSectorEntry

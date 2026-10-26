@@ -35,7 +35,8 @@ public sealed class SWMinistryEconomySystem : EntitySystem
     private readonly List<SWTradeRoute> _routes = new();
     private int _nextRouteId = 1;
     private readonly List<string> _log = new();
-    private float _routeUpkeepAccum;
+    private float _routeCredit;
+    private float _routeService;
 
     private float _growth = 1f;
     private float _overheat = 25f;
@@ -60,20 +61,23 @@ public sealed class SWMinistryEconomySystem : EntitySystem
     public int ProjectUsed => _projects.Count;
     public int ProjectsCompleted => _projectsCompleted;
     public int RouteCap => MaxRoutes;
-    public int ActiveRoutes => _routes.Count(r => !RouteDisrupted(r));
+    public int ActiveRoutes => _routeService > 0f ? _routes.Count(r => !RouteDisrupted(r)) : 0;
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _accum = 0f;
+        _routeService = 0f;
         _projects.Clear();
         _routes.Clear();
         _nextRouteId = 1;
         _log.Clear();
-        _routeUpkeepAccum = 0f;
+        _routeCredit = 0f;
         _growth = 1f;
         _overheat = 25f;
         _policy = 1;
@@ -193,6 +197,9 @@ public sealed class SWMinistryEconomySystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -445,30 +452,18 @@ public sealed class SWMinistryEconomySystem : EntitySystem
 
     private void TickRoutes(float gameHours)
     {
-        if (_routes.Count == 0)
-        {
-            _routeUpkeepAccum = 0f;
-            return;
-        }
-
+        _routeService = _dilemma.FundWork(EconomyMinistryId,
+            _routes.Count * RouteUpkeepPerHour * gameHours, ref _routeCredit);
         foreach (var route in _routes)
         {
             if (RouteDisrupted(route))
                 continue;
-
-            _senate.AddSectorBias(route.A, "SWGlobalEconomy", RouteEconomyBonus * gameHours);
-            _senate.AddSectorBias(route.B, "SWGlobalEconomy", RouteEconomyBonus * gameHours);
-            _senate.AddSectorBias(route.A, "SWGlobalIndustry", RouteIndustryBonus * gameHours);
-            _senate.AddSectorBias(route.B, "SWGlobalIndustry", RouteIndustryBonus * gameHours);
+            var paidHours = gameHours * _routeService;
+            _senate.AddSectorBias(route.A, "SWGlobalEconomy", RouteEconomyBonus * paidHours);
+            _senate.AddSectorBias(route.B, "SWGlobalEconomy", RouteEconomyBonus * paidHours);
+            _senate.AddSectorBias(route.A, "SWGlobalIndustry", RouteIndustryBonus * paidHours);
+            _senate.AddSectorBias(route.B, "SWGlobalIndustry", RouteIndustryBonus * paidHours);
         }
-
-        _routeUpkeepAccum += _routes.Count * RouteUpkeepPerHour * gameHours;
-        if (_routeUpkeepAccum < 1f)
-            return;
-
-        var due = (int) _routeUpkeepAccum;
-        _routeUpkeepAccum -= due;
-        _dilemma.SpendMinistry(EconomyMinistryId, due);
     }
 
     private void PruneRoutes()
@@ -621,8 +616,9 @@ public sealed class SWMinistryEconomySystem : EntitySystem
                 Id = route.Id,
                 AName = an,
                 BName = bn,
-                Active = !disrupted,
-                StatusLabel = !disrupted ? $"+{RouteEconomyBonus:0.0} торговли/ч"
+                Active = !disrupted && _routeService > 0f,
+                StatusLabel = _routeService <= 0f ? "Нет средств на содержание"
+                    : !disrupted ? $"+{RouteEconomyBonus * _routeService:0.0} торговли/ч"
                     : RouteCordoned(route) ? "перекрыт кордоном транзита" : "под угрозой пиратов",
             });
         }

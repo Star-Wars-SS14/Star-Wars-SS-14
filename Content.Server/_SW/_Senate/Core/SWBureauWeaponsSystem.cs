@@ -28,7 +28,6 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
     private const float TickInterval = 1f;
     private const float DilInterval = 2f;
     private const int AppCap = 6;
-    private const float AppInterval = 0.5f;
     private const int InspectCost = 300;
     private const int SeizeCost = 600;
     private const int SeizeCooldownHours = 2;
@@ -66,21 +65,21 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
     private float _control = 55f;
     private readonly int[] _policy = { PolicyLicense, PolicyLicense, PolicyLicense };
     private readonly Dictionary<string, float> _arms = new();
-    private readonly Dictionary<string, int> _seizeCooldown = new();
+    private readonly Dictionary<string, double> _seizeCooldown = new();
 
     private readonly List<ArmsApp> _apps = new();
     private int _nextAppId = 1;
-    private float _appTimer;
+    private readonly SWSenateWorkQueue _arrivalQueue = new(.625f, .875f);
 
     private int _registryDroids;
     private int _securityDroids;
 
-    private readonly Dictionary<int, int> _opCooldowns = new();
+    private readonly Dictionary<int, double> _opCooldowns = new();
     private readonly List<string> _log = new();
     private float _income;
 
     private int _dilIndex = -1;
-    private float _dilTimer;
+    private readonly SWSenateWorkQueue _dilemmaQueue = new(3f, 4f, 1.5f, 2.5f);
     private float _dilLife;
 
     private int _day = -1;
@@ -113,25 +112,27 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _accum = 0f;
         _control = 55f;
         _policy[0] = _policy[1] = _policy[2] = PolicyLicense;
         _arms.Clear();
         _seizeCooldown.Clear();
         _apps.Clear();
         _nextAppId = 1;
-        _appTimer = 0f;
+        _arrivalQueue.Reset();
         _registryDroids = 0;
         _securityDroids = 0;
         _opCooldowns.Clear();
         _log.Clear();
         _income = 0f;
         _dilIndex = -1;
-        _dilTimer = 0f;
+        _dilemmaQueue.Reset();
         _dilLife = 0f;
         _day = -1;
     }
@@ -348,8 +349,8 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
             list.Add(new SWShipsAppEntry
             {
                 Id = app.Id,
-                Name = $"{app.Applicant} · {CategoryName(app.Category)}",
-                Origin = $"назначение: {app.Purpose} · партия: {app.Quantity} ед. · пошлина: {app.Fee} кр",
+                Name = $"{app.Applicant}, {CategoryName(app.Category)}",
+                Origin = $"назначение: {app.Purpose}, партия: {app.Quantity} ед., пошлина: {app.Fee} кр",
                 RiskLabel = app.Inspected ? RiskLabel(app.Risk) : "не проверено",
                 RiskColor = app.Inspected ? RiskColor(app.Risk) : Color.FromHex("#888888"),
                 DossierLabel = app.Inspected ? app.Dossier : string.Empty,
@@ -392,7 +393,7 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
                 continue;
 
             var arms = (int) MathF.Round(ArmsLevel(sectorId));
-            var onCooldown = _seizeCooldown.TryGetValue(sectorId, out var ready) && _time.AbsoluteHour < ready;
+            var onCooldown = _seizeCooldown.TryGetValue(sectorId, out var ready) && _time.ActiveGameHours < ready;
 
             list.Add(new SWArmsSectorEntry
             {
@@ -409,7 +410,7 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
                 },
                 SeizeCost = SeizeCost,
                 CanSeize = !onCooldown && budget >= SeizeCost,
-                SeizeLabel = onCooldown ? $"готовность через {ready - _time.AbsoluteHour} ч"
+                SeizeLabel = onCooldown ? $"готовность через {SWSenateDuration.FormatHours(ready - _time.ActiveGameHours)}"
                     : joint ? "Изъятие (совместно с ВБ)" : "Изъятие",
             });
         }
@@ -422,12 +423,12 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
     {
         if (!_senate.IsClaimed(sectorId))
             return false;
-        if (_seizeCooldown.TryGetValue(sectorId, out var ready) && _time.AbsoluteHour < ready)
+        if (_seizeCooldown.TryGetValue(sectorId, out var ready) && _time.ActiveGameHours < ready)
             return false;
         if (!_dilemma.SpendMinistry(BureauId, SeizeCost))
             return false;
 
-        _seizeCooldown[sectorId] = _time.AbsoluteHour + SeizeCooldownHours;
+        _seizeCooldown[sectorId] = _time.ActiveGameHours + SeizeCooldownHours;
         AddArms(sectorId, -15f);
         _senate.AddPolicy("SWStatRights", -0.5f);
 
@@ -506,8 +507,8 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
             var (name, desc, cost, _) = Ops[i];
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
-            if (_opCooldowns.TryGetValue(i, out var ready) && _time.AbsoluteHour < ready)
-                entry.Status = $"готовность через {ready - _time.AbsoluteHour} ч";
+            if (_opCooldowns.TryGetValue(i, out var ready) && _time.ActiveGameHours < ready)
+                entry.Status = $"готовность через {SWSenateDuration.FormatHours(ready - _time.ActiveGameHours)}";
             else if (i == 2 && !_ministry.IsClaimed(SWMinistryInternalSecuritySystem.SecurityMinistryId))
                 entry.Status = "требуется активное МВБ";
             else if (cost > budget)
@@ -525,7 +526,7 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
     {
         if (idx < 0 || idx >= Ops.Length)
             return false;
-        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.AbsoluteHour < ready)
+        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.ActiveGameHours < ready)
             return false;
         if (idx == 2 && !_ministry.IsClaimed(SWMinistryInternalSecuritySystem.SecurityMinistryId))
             return false;
@@ -534,7 +535,7 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
         if (cost > 0 && !_dilemma.SpendMinistry(BureauId, cost))
             return false;
 
-        _opCooldowns[idx] = _time.AbsoluteHour + cd;
+        _opCooldowns[idx] = _time.ActiveGameHours + cd;
 
         switch (idx)
         {
@@ -728,7 +729,7 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
 
         ApplyDilemma(_dilIndex, optionIndex);
         _dilIndex = -1;
-        _dilTimer = 0f;
+        _dilemmaQueue.Reset(false);
         return true;
     }
 
@@ -857,6 +858,9 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -870,11 +874,6 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
         if (_time.Day != _day)
         {
             _day = _time.Day;
-            _opCooldowns.Clear();
-            _seizeCooldown.Clear();
-            _dilIndex = -1;
-            _dilTimer = DilInterval - 0.75f;
-            _appTimer = 0f;
         }
 
         if (!_time.DayActive)
@@ -953,12 +952,8 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
 
     private void TickApps(float gameHours)
     {
-        _appTimer += gameHours;
-        var interval = _apps.Count < 2 ? 0.25f : AppInterval;
-        if (_appTimer < interval || _apps.Count >= AppCap)
+        if (!_arrivalQueue.Tick(_random, gameHours, _apps.Count + (_dilIndex >= 0 ? 2 : 0) + _dilemma.PendingWork(BureauId), AppCap))
             return;
-
-        _appTimer = 0f;
         SpawnApp();
     }
 
@@ -971,17 +966,15 @@ public sealed class SWBureauWeaponsSystem : EntitySystem
             {
                 FailDilemma();
                 _dilIndex = -1;
-                _dilTimer = 0f;
+                _dilemmaQueue.Reset(false);
             }
 
             return;
         }
 
-        _dilTimer += gameHours;
-        if (_dilTimer < DilInterval)
+        if (!_dilemmaQueue.Tick(_random, gameHours,
+            _apps.Count + _dilemma.PendingWork(BureauId), 4))
             return;
-
-        _dilTimer = 0f;
         _dilIndex = _random.Next(Dilemmas.Length);
         _dilLife = DilInterval;
     }

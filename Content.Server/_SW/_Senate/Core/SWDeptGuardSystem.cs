@@ -21,7 +21,6 @@ public sealed class SWDeptGuardSystem : EntitySystem
     private const float TickInterval = 1f;
     private const int MaxSquads = 6;
     private const int PostCap = 2;
-    private const float WritInterval = 0.7f;
     private const int WritCap = 3;
     private const float WritLife = 2f;
     private const float WritHours = 1f;
@@ -53,10 +52,10 @@ public sealed class SWDeptGuardSystem : EntitySystem
 
     private readonly List<ActiveWrit> _writs = new();
     private int _nextWritId = 1;
-    private float _writTimer;
+    private readonly SWSenateWorkQueue _arrivalQueue = new(1f, 1.25f);
 
     private readonly List<RunningWrit> _running = new();
-    private readonly Dictionary<int, int> _opCooldowns = new();
+    private readonly Dictionary<int, double> _opCooldowns = new();
     private readonly List<string> _log = new();
 
     private int _day = -1;
@@ -71,17 +70,19 @@ public sealed class SWDeptGuardSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _accum = 0f;
         _discipline = 60f;
         _totalSquads = 4;
         Array.Clear(_posted, 0, _posted.Length);
         _writs.Clear();
         _nextWritId = 1;
-        _writTimer = 0f;
+        _arrivalQueue.Reset();
         _running.Clear();
         _opCooldowns.Clear();
         _log.Clear();
@@ -250,8 +251,8 @@ public sealed class SWDeptGuardSystem : EntitySystem
             var (name, desc, cost, _) = Ops[i];
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
-            if (_opCooldowns.TryGetValue(i, out var ready) && _time.AbsoluteHour < ready)
-                entry.Status = $"готовность через {ready - _time.AbsoluteHour} ч";
+            if (_opCooldowns.TryGetValue(i, out var ready) && _time.ActiveGameHours < ready)
+                entry.Status = $"готовность через {SWSenateDuration.FormatHours(ready - _time.ActiveGameHours)}";
             else if (i == 1 && _totalSquads >= MaxSquads)
                 entry.Status = "штат укомплектован";
             else if (cost > budget)
@@ -269,7 +270,7 @@ public sealed class SWDeptGuardSystem : EntitySystem
     {
         if (idx < 0 || idx >= Ops.Length)
             return false;
-        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.AbsoluteHour < ready)
+        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.ActiveGameHours < ready)
             return false;
         if (idx == 1 && _totalSquads >= MaxSquads)
             return false;
@@ -278,7 +279,7 @@ public sealed class SWDeptGuardSystem : EntitySystem
         if (cost > 0 && !_dilemma.SpendMinistry(DeptId, cost))
             return false;
 
-        _opCooldowns[idx] = _time.AbsoluteHour + cd;
+        _opCooldowns[idx] = _time.ActiveGameHours + cd;
 
         switch (idx)
         {
@@ -321,6 +322,9 @@ public sealed class SWDeptGuardSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -334,8 +338,6 @@ public sealed class SWDeptGuardSystem : EntitySystem
         if (_time.Day != _day)
         {
             _day = _time.Day;
-            _opCooldowns.Clear();
-            _writTimer = 0f;
         }
 
         if (!_time.DayActive || !_ministry.IsClaimed(DeptId))
@@ -367,10 +369,8 @@ public sealed class SWDeptGuardSystem : EntitySystem
             FailWrit(writ);
         }
 
-        _writTimer += gameHours;
-        if (_writTimer >= WritInterval && _writs.Count < WritCap)
+        if (_arrivalQueue.Tick(_random, gameHours, _writs.Count + _dilemma.PendingWork(DeptId), WritCap))
         {
-            _writTimer = 0f;
             var pool = Enumerable.Range(0, Writs.Length).Where(i => _writs.All(w => w.DefIndex != i)).ToList();
             if (pool.Count > 0)
                 _writs.Add(new ActiveWrit { Id = _nextWritId++, DefIndex = _random.Pick(pool), LifeHours = WritLife });
@@ -392,7 +392,7 @@ public sealed class SWDeptGuardSystem : EntitySystem
         }
 
         if (_posted[2] > 0)
-            _senate.AddPolicy("SWStatCrime", -0.05f * _posted[2] * scale * gameHours);
+            _senate.AddPolicy("SWStatCrime", 0.05f * _posted[2] * scale * gameHours);
 
         if (_posted[3] > 0)
             _senate.AddPolicy("SWStatCounter", 0.04f * _posted[3] * scale * gameHours);

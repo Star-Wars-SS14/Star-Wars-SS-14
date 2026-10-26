@@ -46,8 +46,8 @@ public sealed class SWMinistryHealthSystem : EntitySystem
     private readonly Dictionary<string, float> _infection = new();
     private readonly HashSet<string> _quarantine = new();
     private readonly Dictionary<string, int> _hospitals = new();
-    private readonly Dictionary<string, int> _construction = new();
-    private readonly Dictionary<string, int> _aidCooldown = new();
+    private readonly Dictionary<string, double> _construction = new();
+    private readonly Dictionary<string, double> _aidCooldown = new();
     private readonly List<string> _log = new();
 
     private bool _active;
@@ -61,14 +61,17 @@ public sealed class SWMinistryHealthSystem : EntitySystem
     private int _funding;
     private float _immunity;
 
-    private int _emergencyUntil = -1;
+    private double _emergencyUntil = -1;
     private bool _emergencyPending;
 
     private string? _program;
     private float _progress;
     private int _hospitalsBuilt;
 
-    private float _upkeepAccum;
+    private float _hospitalCredit;
+    private float _researchCredit;
+    private float _hospitalService;
+    public int HospitalServicePercent => (int) MathF.Round(_hospitalService * 100f);
     private int _day = -1;
     private float _accum;
 
@@ -82,19 +85,26 @@ public sealed class SWMinistryHealthSystem : EntitySystem
     public bool VaccineReady => _research >= 100f || _vaccineStrain >= 0;
     public bool VaccineStale => _vaccineStrain >= 0 && _vaccineStrain != _strain;
     public int ResearchFunding => _funding;
-    public bool EmergencyActive => _emergencyUntil >= 0 && _time.AbsoluteHour < _emergencyUntil;
-    public int EmergencyHoursLeft => EmergencyActive ? Math.Max(0, _emergencyUntil - _time.AbsoluteHour) : 0;
+    public bool EmergencyActive => _emergencyUntil >= 0 && _time.ActiveGameHours < _emergencyUntil;
+    public double EmergencyHoursLeft => EmergencyActive ? Math.Max(0, _emergencyUntil - _time.ActiveGameHours) : 0;
     public bool EmergencyPending => _emergencyPending;
     public string? SelectedProgram => _program;
     public int ProgramProgress => (int) MathF.Round(_progress);
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+        SubscribeLocalEvent<SWSenateDayClosedEvent>(ev =>
+        {
+            if (!ev.FinalDay)
+                CompleteConstruction();
+        });
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _accum = 0f;
         _infection.Clear();
         _quarantine.Clear();
         _hospitals.Clear();
@@ -115,7 +125,9 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         _program = null;
         _progress = 0f;
         _hospitalsBuilt = 0;
-        _upkeepAccum = 0f;
+        _hospitalCredit = 0f;
+        _researchCredit = 0f;
+        _hospitalService = 0f;
         _day = -1;
     }
 
@@ -247,7 +259,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         if (!_dilemma.SpendMinistry(HealthMinistryId, BuildCost(level)))
             return false;
 
-        _construction[sectorId] = _time.AbsoluteHour + BuildHours;
+        _construction[sectorId] = _time.ActiveGameHours + BuildHours;
         return true;
     }
 
@@ -255,7 +267,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
     {
         if (!_senate.IsClaimed(sectorId))
             return false;
-        if (_aidCooldown.TryGetValue(sectorId, out var ready) && _time.AbsoluteHour < ready)
+        if (_aidCooldown.TryGetValue(sectorId, out var ready) && _time.ActiveGameHours < ready)
             return false;
         if (!_dilemma.SpendMinistry(HealthMinistryId, AidCost))
             return false;
@@ -263,7 +275,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         if (_infection.TryGetValue(sectorId, out var inf))
             _infection[sectorId] = Math.Clamp(inf - 30f, 0f, 100f);
         _senate.AddSectorBias(sectorId, "SWGlobalHealthcare", 3f);
-        _aidCooldown[sectorId] = _time.AbsoluteHour + 3;
+        _aidCooldown[sectorId] = _time.ActiveGameHours + 3;
 
         var name = _proto.TryIndex<SWSectorPrototype>(sectorId, out var sp) ? sp.Name : sectorId;
         AddLog($"Экстренная помощь в {name}: очаг подавлен.");
@@ -305,7 +317,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
 
     private void BeginEmergency()
     {
-        _emergencyUntil = _time.AbsoluteHour + EmergencyHours;
+        _emergencyUntil = _time.ActiveGameHours + EmergencyHours;
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство здравоохранения",
             "Объявлено галактическое чрезвычайное положение по здоровью: всеобщий карантин.",
             SWSenateAnnouncementKind.Health));
@@ -322,6 +334,9 @@ public sealed class SWMinistryHealthSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -355,6 +370,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         CompleteConstruction();
         PruneSectors();
         SeedPathogen(gameHours);
+        TickUpkeep(gameHours);
 
         if (_active)
         {
@@ -372,7 +388,6 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         }
 
         AdvanceResearch(gameHours);
-        TickUpkeep(gameHours);
 
         if (_program != null && _progress < 100f)
         {
@@ -394,7 +409,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
     {
         foreach (var (sectorId, ready) in _construction.ToList())
         {
-            if (_time.AbsoluteHour < ready)
+            if (_time.ActiveGameHours < ready)
                 continue;
 
             _hospitals[sectorId] = Math.Min(HospitalMaxLevel, (_hospitals.TryGetValue(sectorId, out var l) ? l : 0) + 1);
@@ -462,7 +477,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         {
             var inf = _infection.TryGetValue(sectorId, out var v) ? v : 0f;
             var quarantined = _quarantine.Contains(sectorId) || EmergencyActive;
-            var hospital = _hospitals.TryGetValue(sectorId, out var hl) ? hl : 0;
+            var hospital = (_hospitals.TryGetValue(sectorId, out var hl) ? hl : 0) * _hospitalService;
 
             if (!quarantined)
             {
@@ -521,6 +536,11 @@ public sealed class SWMinistryHealthSystem : EntitySystem
 
     private void ApplyMortality(float gameHours)
     {
+        // Country-wide welfare follows affected population weight, not the number of loop iterations.
+        var burden = _senate.WeightedSectorAverage(sectorId =>
+            _senate.IsClaimed(sectorId) && _infection.TryGetValue(sectorId, out var inf)
+                ? Math.Max(0f, (inf - 50f) / 50f) * _lethality : 0f);
+        _senate.AddPolicy("SWStatWelfare", -0.25f * burden * gameHours);
         foreach (var (sectorId, inf) in _infection)
         {
             if (inf < 50f || !_senate.IsClaimed(sectorId))
@@ -530,7 +550,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
             _senate.AddSectorBias(sectorId, "SWGlobalHealthcare", -0.6f * severity * gameHours);
             _senate.AddSectorBias(sectorId, "SWGlobalSociety", -0.4f * severity * gameHours);
             _senate.AddSectorBias(sectorId, "SWGlobalEconomy", -0.3f * severity * gameHours);
-            _senate.AddPolicy("SWStatWelfare", -0.25f * severity * gameHours);
+
         }
     }
 
@@ -541,9 +561,12 @@ public sealed class SWMinistryHealthSystem : EntitySystem
             return;
 
         var medicine = _senate.GetRepublicGlobal("SWGlobalHealthcare");
-        var networkBonus = 1f + TotalHospitalLevels() * 0.05f;
+        var funded = _dilemma.FundWork(HealthMinistryId, FundingCostPerHour[_funding] * gameHours, ref _researchCredit);
+        if (funded <= 0f)
+            return;
+        var networkBonus = 1f + TotalHospitalLevels() * _hospitalService * 0.05f;
         var rate = FundingResearchRate[_funding] * (medicine / 50f) * networkBonus;
-        _research = Math.Clamp(_research + rate * gameHours, 0f, 100f);
+        _research = Math.Clamp(_research + rate * gameHours * funded, 0f, 100f);
 
         if (_research >= 100f && _vaccineStrain < 0)
         {
@@ -556,20 +579,8 @@ public sealed class SWMinistryHealthSystem : EntitySystem
 
     private void TickUpkeep(float gameHours)
     {
-        var levels = TotalHospitalLevels();
-        if (levels == 0)
-        {
-            _upkeepAccum = 0f;
-            return;
-        }
-
-        _upkeepAccum += levels * HospitalUpkeepPerLevel * gameHours;
-        if (_upkeepAccum < 1f)
-            return;
-
-        var due = (int) _upkeepAccum;
-        _upkeepAccum -= due;
-        _dilemma.SpendMinistry(HealthMinistryId, due);
+        _hospitalService = _dilemma.FundWork(HealthMinistryId,
+            TotalHospitalLevels() * HospitalUpkeepPerLevel * gameHours, ref _hospitalCredit);
     }
 
     private void ApplyProgram()
@@ -600,7 +611,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
         if (sectorId == null)
             return (1f, 1f);
 
-        var hospital = _hospitals.TryGetValue(sectorId, out var l) ? l : 0;
+        var hospital = (_hospitals.TryGetValue(sectorId, out var l) ? l : 0) * _hospitalService;
         var inf = _infection.TryGetValue(sectorId, out var v) ? v : 0f;
 
         var cost = 1f;
@@ -739,7 +750,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
             var inf = _infection.TryGetValue(sectorId, out var v) ? (int) MathF.Round(v) : 0;
             var level = _hospitals.TryGetValue(sectorId, out var l) ? l : 0;
             var building = _construction.TryGetValue(sectorId, out var ready);
-            var aidReady = !_aidCooldown.TryGetValue(sectorId, out var ar) || _time.AbsoluteHour >= ar;
+            var aidReady = !_aidCooldown.TryGetValue(sectorId, out var ar) || _time.ActiveGameHours >= ar;
 
             list.Add(new SWInfectionSectorEntry
             {
@@ -752,7 +763,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
                 Quarantined = _quarantine.Contains(sectorId),
                 HospitalLevel = level,
                 Building = building,
-                BuildLeft = building ? Math.Max(0, ready - _time.AbsoluteHour) : 0,
+                BuildLeft = building ? Math.Max(0, ready - _time.ActiveGameHours) : 0,
                 CanBuild = !building && level < HospitalMaxLevel && budget >= BuildCost(level),
                 BuildCost = level < HospitalMaxLevel ? BuildCost(level) : 0,
                 CanAid = aidReady && budget >= AidCost,

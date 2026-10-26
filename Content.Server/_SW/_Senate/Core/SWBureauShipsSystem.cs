@@ -23,7 +23,6 @@ public sealed class SWBureauShipsSystem : EntitySystem
 
     private const float TickInterval = 1f;
     private const int AppCap = 8;
-    private const float AppInterval = 0.35f;
     private const float DilInterval = 2f;
     private const int InspectCost = 400;
     private const float NetworkDecay = 1.1f;
@@ -88,7 +87,7 @@ public sealed class SWBureauShipsSystem : EntitySystem
 
     private readonly List<ShipApp> _apps = new();
     private int _nextAppId = 1;
-    private float _appTimer;
+    private readonly SWSenateWorkQueue _arrivalQueue = new(.45f, .65f);
 
     private readonly List<RegisteredShip> _fleet = new();
     private int _nextShipId = 1;
@@ -97,11 +96,11 @@ public sealed class SWBureauShipsSystem : EntitySystem
     private readonly List<WantedEntry> _wanted = new();
     private int _nextWantedId = 1;
 
-    private readonly Dictionary<int, int> _opCooldowns = new();
+    private readonly Dictionary<int, double> _opCooldowns = new();
     private readonly List<string> _log = new();
 
     private int _dilIndex = -1;
-    private float _dilTimer;
+    private readonly SWSenateWorkQueue _dilemmaQueue = new(3f, 4f, 1.5f, 2.5f);
     private float _dilLife;
 
     private int _day = -1;
@@ -116,11 +115,13 @@ public sealed class SWBureauShipsSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _accum = 0f;
         _tradeFlow = 50f;
         _integrity = 60f;
         _network = 75f;
@@ -128,7 +129,7 @@ public sealed class SWBureauShipsSystem : EntitySystem
         _forged.Clear();
         _apps.Clear();
         _nextAppId = 1;
-        _appTimer = 0f;
+        _arrivalQueue.Reset();
         _fleet.Clear();
         _nextShipId = 1;
         _dues = 0f;
@@ -137,7 +138,7 @@ public sealed class SWBureauShipsSystem : EntitySystem
         _opCooldowns.Clear();
         _log.Clear();
         _dilIndex = -1;
-        _dilTimer = 0f;
+        _dilemmaQueue.Reset();
         _dilLife = 0f;
         _day = -1;
     }
@@ -219,7 +220,7 @@ public sealed class SWBureauShipsSystem : EntitySystem
             Risk = risk,
             Fee = fee,
             Urgent = _random.Prob(0.25f),
-            LifeHours = 1.2f,
+            LifeHours = 2f,
             Vip = origin != null && _random.Prob(0.15f),
         };
 
@@ -377,7 +378,7 @@ public sealed class SWBureauShipsSystem : EntitySystem
 
             var flags = new List<string>();
             if (app.Urgent)
-                flags.Add($"СРОЧНО · осталось {MathF.Max(0f, app.LifeHours):0.0} ч");
+                flags.Add($"СРОЧНО: осталось {MathF.Max(0f, app.LifeHours):0.0} ч");
             if (app.Vip)
                 flags.Add("VIP-протекция сектора");
 
@@ -386,15 +387,15 @@ public sealed class SWBureauShipsSystem : EntitySystem
             {
                 dossier = app.TrueCargo;
                 if (app.WantedId > 0 && _wanted.FirstOrDefault(w => w.Id == app.WantedId) is { } wanted)
-                    dossier += $" · СОВПАДЕНИЕ С РОЗЫСКОМ {wanted.Signature}";
+                    dossier += $", СОВПАДЕНИЕ С РОЗЫСКОМ {wanted.Signature}";
             }
 
             list.Add(new SWShipsAppEntry
             {
                 Id = app.Id,
-                Name = $"«{app.ShipName}» · {app.Class} · {app.Flag}",
-                Origin = $"{origin} · груз: {app.DeclaredCargo} · пошлина: {app.Fee} кр",
-                FlagsLabel = string.Join("  ·  ", flags),
+                Name = $"«{app.ShipName}», {app.Class}, {app.Flag}",
+                Origin = $"{origin}, груз: {app.DeclaredCargo}, пошлина: {app.Fee} кр",
+                FlagsLabel = string.Join(", ", flags),
                 RiskLabel = app.Inspected ? RiskLabel(app.Risk) : "не проверено",
                 RiskColor = app.Inspected ? RiskColor(app.Risk) : Color.FromHex("#888888"),
                 DossierLabel = dossier,
@@ -441,7 +442,7 @@ public sealed class SWBureauShipsSystem : EntitySystem
             list.Add(new SWShipsFleetEntry
             {
                 Name = $"«{ship.Name}»",
-                Detail = $"{ship.Class} · {ship.Flag}",
+                Detail = $"{ship.Class}, {ship.Flag}",
                 StatusLabel = label,
                 StatusColor = color,
             });
@@ -473,8 +474,8 @@ public sealed class SWBureauShipsSystem : EntitySystem
             var (name, desc, cost, _) = Ops[i];
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
-            if (_opCooldowns.TryGetValue(i, out var ready) && _time.AbsoluteHour < ready)
-                entry.Status = $"готовность через {ready - _time.AbsoluteHour} ч";
+            if (_opCooldowns.TryGetValue(i, out var ready) && _time.ActiveGameHours < ready)
+                entry.Status = $"готовность через {SWSenateDuration.FormatHours(ready - _time.ActiveGameHours)}";
             else if (cost > budget)
                 entry.Status = "недостаточно бюджета";
             else
@@ -490,14 +491,14 @@ public sealed class SWBureauShipsSystem : EntitySystem
     {
         if (idx < 0 || idx >= Ops.Length)
             return false;
-        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.AbsoluteHour < ready)
+        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.ActiveGameHours < ready)
             return false;
 
         var (_, _, cost, cd) = Ops[idx];
         if (cost > 0 && !_dilemma.SpendMinistry(BureauId, cost))
             return false;
 
-        _opCooldowns[idx] = _time.AbsoluteHour + cd;
+        _opCooldowns[idx] = _time.ActiveGameHours + cd;
 
         switch (idx)
         {
@@ -677,7 +678,7 @@ public sealed class SWBureauShipsSystem : EntitySystem
 
         ApplyDilemma(_dilIndex, optionIndex);
         _dilIndex = -1;
-        _dilTimer = 0f;
+        _dilemmaQueue.Reset(false);
         return true;
     }
 
@@ -791,6 +792,9 @@ public sealed class SWBureauShipsSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -804,10 +808,6 @@ public sealed class SWBureauShipsSystem : EntitySystem
         if (_time.Day != _day)
         {
             _day = _time.Day;
-            _opCooldowns.Clear();
-            _dilIndex = -1;
-            _dilTimer = DilInterval - 0.75f;
-            _appTimer = 0f;
         }
 
         if (!_time.DayActive)
@@ -918,13 +918,8 @@ public sealed class SWBureauShipsSystem : EntitySystem
             AddLog($"«{app.ShipName}» не дождался регистрации и ушёл под чужой флаг.");
         }
 
-        _appTimer += gameHours;
-        var interval = _apps.Count < 3 ? 0.15f : AppInterval;
-        if (_appTimer >= interval && _apps.Count < AppCap)
-        {
-            _appTimer = 0f;
+        if (_arrivalQueue.Tick(_random, gameHours, _apps.Count + (_dilIndex >= 0 ? 2 : 0) + _dilemma.PendingWork(BureauId), AppCap))
             SpawnApp();
-        }
     }
 
     private void TickDilemma(float gameHours)
@@ -936,17 +931,15 @@ public sealed class SWBureauShipsSystem : EntitySystem
             {
                 FailDilemma();
                 _dilIndex = -1;
-                _dilTimer = 0f;
+                _dilemmaQueue.Reset(false);
             }
 
             return;
         }
 
-        _dilTimer += gameHours;
-        if (_dilTimer < DilInterval)
+        if (!_dilemmaQueue.Tick(_random, gameHours,
+            _apps.Count + _dilemma.PendingWork(BureauId), 4))
             return;
-
-        _dilTimer = 0f;
         _dilIndex = _random.Next(Dilemmas.Length);
         _dilLife = DilInterval;
     }

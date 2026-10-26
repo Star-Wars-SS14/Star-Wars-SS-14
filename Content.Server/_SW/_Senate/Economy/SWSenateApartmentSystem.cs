@@ -49,6 +49,7 @@ public sealed class SWSenateApartmentSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<SWApartmentConsoleComponent, BeforeActivatableUIOpenEvent>(OnOpen);
         SubscribeLocalEvent<SWApartmentConsoleComponent, SWApartmentRentMessage>(OnRent);
         SubscribeLocalEvent<SWApartmentConsoleComponent, SWApartmentVacateMessage>(OnVacate);
@@ -63,6 +64,9 @@ public sealed class SWSenateApartmentSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -100,37 +104,56 @@ public sealed class SWSenateApartmentSystem : EntitySystem
 
     private void OnRent(Entity<SWApartmentConsoleComponent> ent, ref SWApartmentRentMessage args)
     {
-        if (!_time.ModeActive)
-            return;
+        TryRent(args.Actor, args.SlotTag, out var notice);
+        UpdateUi(ent, args.Actor, notice);
+    }
 
-        var slotTag = args.SlotTag;
-        var actor = args.Actor;
+    public bool TryRent(EntityUid actor, string slotTag, out string notice)
+    {
+        notice = string.Empty;
+        if (!_time.ModeActive)
+            return false;
 
         var slot = BuildSlotPool().FirstOrDefault(s => s.SlotTag == slotTag);
         if (slot.SlotTag == null || _leases.ContainsKey(slotTag))
         {
-            UpdateUi(ent, actor, "Апартаменты уже заняты.");
-            return;
+            notice = "Апартаменты уже заняты.";
+            return false;
         }
 
         if (!_proto.TryIndex<SWApartmentClassPrototype>(slot.ClassId, out var cls))
-            return;
+            return false;
+
+        // Do not charge or vacate an existing lease unless the new door access can be issued.
+        if (!_idCard.TryFindIdCard(actor, out var idCard)
+            || !TryComp<AccessComponent>(idCard, out var access)
+            || !access.Enabled)
+        {
+            notice = "Для аренды нужна действующая ID-карта при себе.";
+            return false;
+        }
 
         var tenant = Name(actor);
         var price = AdjustedPrice(cls.PricePerDay);
 
         if (!_corruption.SpendAccount(tenant, price))
         {
-            UpdateUi(ent, actor, $"Недостаточно средств: нужно {price} кр.");
-            return;
+            notice = $"Недостаточно средств: нужно {price} кр.";
+            return false;
+        }
+
+        if (!GrantAccess(idCard, access, slotTag))
+        {
+            _corruption.AddAccount(tenant, price);
+            notice = "Не удалось выдать доступ. Аренда не оформлена, оплата возвращена.";
+            return false;
         }
 
         VacateCurrent(tenant);
-
         _leases[slotTag] = new Lease { Tenant = tenant, ClassId = slot.ClassId };
-        GrantAccess(actor, slotTag);
 
-        UpdateUi(ent, actor, $"Апартаменты класса «{cls.Name}» арендованы.");
+        notice = $"Апартаменты класса «{cls.Name}» арендованы.";
+        return true;
     }
 
     private void OnVacate(Entity<SWApartmentConsoleComponent> ent, ref SWApartmentVacateMessage args)
@@ -151,19 +174,14 @@ public sealed class SWSenateApartmentSystem : EntitySystem
         return true;
     }
 
-    private void GrantAccess(EntityUid actor, string slotTag)
+    private bool GrantAccess(EntityUid idCard, AccessComponent access, string slotTag)
     {
-        if (!_idCard.TryFindIdCard(actor, out var idCard))
-            return;
-
-        var tags = _access.TryGetTags(idCard) is { } current
-            ? new List<ProtoId<AccessLevelPrototype>>(current)
-            : new List<ProtoId<AccessLevelPrototype>>();
+        var tags = new List<ProtoId<AccessLevelPrototype>>(access.Tags);
 
         if (!tags.Contains(slotTag))
             tags.Add(slotTag);
 
-        _access.TrySetTags(idCard, tags);
+        return _access.TrySetTags(idCard, tags, access);
     }
 
     // Eviction/vacating only know the tenant's NAME (billing runs with nobody present), not their

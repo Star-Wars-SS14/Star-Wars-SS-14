@@ -23,7 +23,7 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
 
     private const int MaxActiveCases = 10;
     private const int BacklogComfort = 4;
-    private const float ArrivalBase = 0.14f;
+    private readonly SWSenateWorkQueue _arrivalQueue = new(2.5f, 3.5f, 1.25f, 1.5f);
     private const float OverdueAge = 28f;        // game-hours before a case is dropped
     private const int InvestigateCost = 200;
     private const int TribunalHours = 6;
@@ -41,7 +41,7 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
     private int _capacity;
     private SWJusticeStance _stance = SWJusticeStance.Balanced;
 
-    private int _tribunalUntil = -1;
+    private double _tribunalUntil = -1;
     private bool _tribunalPending;
 
     private string? _program;
@@ -56,8 +56,8 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
     public int Capacity => _capacity;
     public int CapacityMax => CapacityFor(_stance) + (TribunalActive ? 10 : 0);
     public int CaseCount => _cases.Count;
-    public bool TribunalActive => _tribunalUntil >= 0 && _time.AbsoluteHour < _tribunalUntil;
-    public int TribunalHoursLeft => TribunalActive ? Math.Max(0, _tribunalUntil - _time.AbsoluteHour) : 0;
+    public bool TribunalActive => _tribunalUntil >= 0 && _time.ActiveGameHours < _tribunalUntil;
+    public double TribunalHoursLeft => TribunalActive ? Math.Max(0, _tribunalUntil - _time.ActiveGameHours) : 0;
     public bool TribunalPending => _tribunalPending;
     public string? SelectedProgram => _program;
     public int ProgramProgress => (int) MathF.Round(_progress);
@@ -66,11 +66,14 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _accum = 0f;
+        _arrivalQueue.Reset();
         _cases.Clear();
         _archive.Clear();
         _convictJust = _convictWrong = _acquitJust = _acquitWrong = _dismissed = _overdue = 0;
@@ -236,7 +239,7 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
 
     private void BeginTribunal()
     {
-        _tribunalUntil = _time.AbsoluteHour + TribunalHours;
+        _tribunalUntil = _time.ActiveGameHours + TribunalHours;
         _capacity += 10;
         AddLog("Чрезвычайные трибуналы запущены.");
     }
@@ -364,6 +367,9 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -428,15 +434,9 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
 
     private void SpawnCases(float gameHours)
     {
-        if (_cases.Count >= MaxActiveCases)
-            return;
-
-        var crimeControl = _senate.SubStats.TryGetValue("SWStatCrime", out var c) ? c : 40f;
-        var rate = (ArrivalBase + (50f - crimeControl) / 100f * 0.15f + _backlog / 100f * 0.1f) * gameHours;
-        if (!_random.Prob(Math.Clamp(rate, 0f, 1f)))
-            return;
-
-        CreateCase(_random.Pick(CaseTypes));
+        if (_arrivalQueue.Tick(_random, gameHours,
+            _cases.Count + _dilemma.PendingWork(JusticeMinistryId), MaxActiveCases))
+            CreateCase(_random.Pick(CaseTypes));
     }
 
     private void CreateCase(SWCaseType type)

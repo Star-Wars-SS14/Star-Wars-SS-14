@@ -52,7 +52,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
     private float _upkeepAccum;
 
     private readonly List<SWActiveOperation> _activeOps = new();
-    private readonly Dictionary<string, int> _cooldowns = new();
+    private readonly Dictionary<string, double> _cooldowns = new();
     private readonly List<string> _log = new();
 
     private readonly List<SWPlot> _plots = new();
@@ -80,11 +80,20 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+        SubscribeLocalEvent<SWSenateDayClosedEvent>(ev =>
+        {
+            if (ev.FinalDay)
+                return;
+            CompleteRebuilds();
+            CompleteOperations();
+        });
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _accum = 0f;
         _posture = SWSecurityPosture.Watch;
         _pending = null;
         _threat = ThreatStart;
@@ -245,6 +254,9 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -268,7 +280,6 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
             _day = _time.Day;
             _program = null;
             _progress = 0f;
-            _cooldowns.Clear();
         }
 
         if (!_time.DayActive)
@@ -282,8 +293,8 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
         EnsureCells();
         PruneCells();
         CompleteRebuilds();
+        var cellService = TickUpkeep(_cells.Count(c => c.State == SWCellState.Sector), gameHours);
 
-        var deployed = _cells.Count(c => c.State == SWCellState.Sector);
 
         // Buildup speed is tied to the Republic: a weak state lets threats and unrest spiral several
         // times faster, a strong one keeps them in check (direction-aware).
@@ -311,11 +322,10 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
             if (cell.State != SWCellState.Sector || cell.SectorId == null)
                 continue;
 
-            var scale = cell.Burned ? 0.5f : 1f;
+            var scale = (cell.Burned ? 0.5f : 1f) * cellService;
             _senate.AddSectorBias(cell.SectorId, "SWGlobalSecurity", SurveillanceSecurity * scale * gameHours);
         }
 
-        TickUpkeep(deployed, gameHours);
         TickPlots(gameHours);
 
         if (_program != null && _progress < 100f)
@@ -356,41 +366,27 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
         }
     }
 
-    private void TickUpkeep(int deployed, float gameHours)
+    private float TickUpkeep(int deployed, float gameHours)
     {
-        if (deployed == 0)
-        {
-            _upkeepAccum = 0f;
-            return;
-        }
-
-        _upkeepAccum += deployed * UpkeepPerHour * gameHours;
-        if (_upkeepAccum < 1f)
-            return;
-
-        var due = (int) _upkeepAccum;
-        _upkeepAccum -= due;
-
-        if (_dilemma.SpendMinistry(SecurityMinistryId, due))
-            return;
-
+        var paid = _dilemma.FundWork(SecurityMinistryId, deployed * UpkeepPerHour * gameHours, ref _upkeepAccum);
+        if (paid > 0f || deployed == 0)
+            return paid;
         foreach (var cell in _cells)
         {
-            if (cell.State == SWCellState.Sector)
-            {
-                cell.State = SWCellState.Reserve;
-                cell.SectorId = null;
-            }
+            if (cell.State != SWCellState.Sector)
+                continue;
+            cell.State = SWCellState.Reserve;
+            cell.SectorId = null;
         }
-        _upkeepAccum = 0f;
         AddLog("Агентура отозвана: нет средств на содержание сети.");
+        return 0f;
     }
 
     private void CompleteRebuilds()
     {
         foreach (var cell in _cells)
         {
-            if (cell.State == SWCellState.Rebuilding && _time.AbsoluteHour >= cell.ReadyHour)
+            if (cell.State == SWCellState.Rebuilding && _time.ActiveGameHours >= cell.ReadyHour)
             {
                 cell.Burned = false;
                 cell.ReadyHour = 0;
@@ -420,7 +416,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
                 return false;
             cell.State = SWCellState.Rebuilding;
             cell.SectorId = null;
-            cell.ReadyHour = _time.AbsoluteHour + RebuildHours;
+            cell.ReadyHour = _time.ActiveGameHours + RebuildHours;
             return true;
         }
 
@@ -466,7 +462,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
                 LocationLabel = label,
                 SectorId = cell.SectorId,
                 Burned = cell.Burned,
-                RebuildLeft = cell.State == SWCellState.Rebuilding ? Math.Max(0, cell.ReadyHour - _time.AbsoluteHour) : 0,
+                RebuildLeft = cell.State == SWCellState.Rebuilding ? Math.Max(0, cell.ReadyHour - _time.ActiveGameHours) : 0,
             });
         }
 
@@ -797,7 +793,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
             return false;
         if (_posture < op.RequirePosture)
             return false;
-        if (_cooldowns.TryGetValue(opId, out var ready) && _time.AbsoluteHour < ready)
+        if (_cooldowns.TryGetValue(opId, out var ready) && _time.ActiveGameHours < ready)
             return false;
 
         string? sectorId = null;
@@ -817,12 +813,12 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
 
         _dilemma.SpendMinistryAdmin(SecurityMinistryId, op.AdminCost);
         _dilemma.SpendMinistry(SecurityMinistryId, op.Cost);
-        _cooldowns[opId] = _time.AbsoluteHour + op.Cooldown;
+        _cooldowns[opId] = _time.ActiveGameHours + op.Cooldown;
 
         if (op.Duration <= 0)
             ApplyOp(op, sectorId);
         else
-            _activeOps.Add(new SWActiveOperation { OpId = opId, SectorId = sectorId, CompleteHour = _time.AbsoluteHour + op.Duration });
+            _activeOps.Add(new SWActiveOperation { OpId = opId, SectorId = sectorId, CompleteHour = _time.ActiveGameHours + op.Duration });
 
         return true;
     }
@@ -849,7 +845,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
         for (var i = _activeOps.Count - 1; i >= 0; i--)
         {
             var active = _activeOps[i];
-            if (_time.AbsoluteHour < active.CompleteHour)
+            if (_time.ActiveGameHours < active.CompleteHour)
                 continue;
 
             if (_proto.TryIndex<SWSecurityOperationPrototype>(active.OpId, out var op))
@@ -883,8 +879,8 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
                 Effects = OpEffects(op),
             };
 
-            if (_cooldowns.TryGetValue(op.ID, out var ready) && _time.AbsoluteHour < ready)
-                entry.StatusLabel = $"готовность через {ready - _time.AbsoluteHour} ч";
+            if (_cooldowns.TryGetValue(op.ID, out var ready) && _time.ActiveGameHours < ready)
+                entry.StatusLabel = $"готовность через {SWSenateDuration.FormatHours(ready - _time.ActiveGameHours)}";
             else if (_posture < op.RequirePosture)
                 entry.StatusLabel = $"нужен режим: {PostureName(op.RequirePosture)}";
             else if (op.Duration > 0 && !slotsFree)
@@ -909,7 +905,7 @@ public sealed class SWMinistryInternalSecuritySystem : EntitySystem
         {
             var name = _proto.TryIndex<SWSecurityOperationPrototype>(active.OpId, out var op) ? op.Name : active.OpId;
             var detail = active.SectorId != null && _proto.TryIndex<SWSectorPrototype>(active.SectorId, out var sp) ? sp.Name : "-";
-            list.Add(new SWActiveOpEntry { Name = name, Detail = detail, HoursLeft = Math.Max(0, active.CompleteHour - _time.AbsoluteHour) });
+            list.Add(new SWActiveOpEntry { Name = name, Detail = detail, HoursLeft = Math.Max(0, active.CompleteHour - _time.ActiveGameHours) });
         }
 
         return list;
@@ -1008,7 +1004,7 @@ public sealed class SWCell
     public SWCellState State;
     public string? SectorId;
     public bool Burned;
-    public int ReadyHour;
+    public double ReadyHour;
 }
 
 public sealed class SWPlot

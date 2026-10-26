@@ -18,8 +18,8 @@
 
 - type: swFinanceProgram
   id: SWFinanceProgramRestructure
-  name: Реструктуризация долга
-  description: Переговоры с кредиторами снижают госдолг ценой части казны.
+  name: Плановое погашение долга
+  description: Погашение выпусков по зафиксированной стоимости. Организационные расходы — до 3 пунктов казны.
   order: 2
   debtDelta: -15
   policyEffects:

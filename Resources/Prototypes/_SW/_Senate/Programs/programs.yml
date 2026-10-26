@@ -1,20 +1,30 @@
 - type: swProgram
   id: SWProgramClinics
   name: Сеть клиник
-  description: Открытие районных клиник и снабжение бактой по всему сектору.
+  description: Оснащение районных клиник на выбранном мире. Работа клиник зависит от поставок лекарств, медицинских расходников и обслуживания оборудования.
   category: Здравоохранение
   order: 100
   cost: 3000
+  materials:
+    medical_equipment: 0.25
+    building_modules: 0.3
+    medical_supplies: 0.5
+  workHours: 3
+  suppliesGroups: [maintenance, care_drugs, care_supplies]
   sectorEffects:
     SWGlobalHealthcare: 5
 
 - type: swProgram
   id: SWProgramVaccination
   name: Кампания вакцинации
-  description: Массовая профилактика болезней и поддержка населения.
+  description: Доставка профилактических препаратов и расходников, подготовка бригад и проведение кампании на выбранном мире.
   category: Здравоохранение
   order: 101
   cost: 4500
+  materials:
+    drugs: 0.4
+    medical_supplies: 0.8
+  workHours: 2
   sectorEffects:
     SWGlobalHealthcare: 6
     SWGlobalSociety: 2
@@ -22,20 +32,31 @@
 - type: swProgram
   id: SWProgramSchools
   name: Школьная программа
-  description: Строительство школ и подготовка учителей.
+  description: Подготовка школьных помещений и установка учебного оснащения на выбранном мире. Для работы нужны обслуживание и автономное питание оборудования.
   category: Образование
   order: 110
   cost: 3000
+  materials:
+    education_kits: 0.4
+    building_modules: 0.3
+  workHours: 3
+  suppliesGroups: [maintenance, other]
   sectorEffects:
     SWGlobalEducation: 5
 
 - type: swProgram
   id: SWProgramAcademy
   name: Секторальная академия
-  description: Учреждение академии наук и исследовательских грантов.
+  description: Оснащение учебных лабораторий и открытие академии на выбранном мире. Исследования зависят от обслуживания и питания оборудования.
   category: Образование
   order: 111
   cost: 5500
+  materials:
+    lab_equipment: 0.25
+    education_kits: 0.2
+    building_modules: 0.3
+  workHours: 4
+  suppliesGroups: [maintenance, other]
   sectorEffects:
     SWGlobalEducation: 7
     SWGlobalIndustry: 2
@@ -43,20 +64,31 @@
 - type: swProgram
   id: SWProgramFactories
   name: Промышленная модернизация
-  description: Обновление заводов и автоматизация производства.
+  description: Доставка станков и рабочих дроидов для переоснащения предприятий выбранного мира. Результат зависит от обслуживания и питания установленной техники.
   category: Промышленность
   order: 120
   cost: 3500
+  materials:
+    machinery: 0.4
+    work_droids: 0.2
+  workHours: 3
+  suppliesGroups: [maintenance, other]
   sectorEffects:
     SWGlobalIndustry: 5
 
 - type: swProgram
   id: SWProgramEnergy
   name: Энергетические сети
-  description: Расширение реакторов и распределительных сетей.
+  description: Замена реакторных узлов и распределительного оборудования на выбранном мире. После монтажа сети нуждаются в техническом обслуживании.
   category: Промышленность
   order: 121
   cost: 5000
+  materials:
+    reactor_modules: 0.25
+    parts: 0.6
+    circuits: 0.3
+  workHours: 4
+  suppliesGroups: [maintenance]
   sectorEffects:
     SWGlobalIndustry: 4
     SWGlobalEconomy: 3
@@ -64,20 +96,27 @@
 - type: swProgram
   id: SWProgramTrade
   name: Торговый хаб
-  description: Развитие портов и торговых путей сектора.
+  description: Оснащение грузовых терминалов выбранного мира связью и наземным транспортом. Их работа зависит от обслуживания и питания техники.
   category: Экономика
   order: 130
   cost: 4000
+  materials:
+    com_equipment: 0.3
+    ground_vehicles: 0.2
+    building_modules: 0.3
+  workHours: 3
+  suppliesGroups: [maintenance, other]
   sectorEffects:
     SWGlobalEconomy: 6
 
 - type: swProgram
   id: SWProgramTaxReform
   name: Налоговая реформа
-  description: Стимулы для бизнеса и упрощение сборов.
+  description: Подготовка новых правил сборов, обновление реестров и обучение налоговой службы. Требует времени на внедрение; поставки оборудования не нужны.
   category: Экономика
   order: 131
   cost: 5500
+  workHours: 2
   sectorEffects:
     SWGlobalEconomy: 7
     SWGlobalIndustry: 2
@@ -85,20 +124,32 @@
 - type: swProgram
   id: SWProgramPolice
   name: Реформа правопорядка
-  description: Усиление патрулей и оснащение службы безопасности.
+  description: Доставка защитного снаряжения, оружия и средств связи для патрулей выбранного мира, затем подготовка службы к новой работе.
   category: Безопасность
   order: 140
   cost: 3000
+  materials:
+    blasters: 0.2
+    armor: 0.2
+    com_equipment: 0.1
+  workHours: 2
+  suppliesGroups: [maintenance, other]
   sectorEffects:
     SWGlobalSecurity: 5
 
 - type: swProgram
   id: SWProgramSurveillance
   name: Система наблюдения
-  description: Контроль преступности и быстрый отклик на угрозы.
+  description: Установка средств связи и обработки данных на выбранном мире. Наблюдение требует обслуживания и питания оборудования, а расширение контроля снижает общественное доверие.
   category: Безопасность
   order: 141
   cost: 4500
+  materials:
+    com_equipment: 0.3
+    processors: 0.2
+    energy_cells: 0.2
+  workHours: 3
+  suppliesGroups: [maintenance, other]
   sectorEffects:
     SWGlobalSecurity: 6
     SWGlobalSociety: -1
@@ -106,40 +157,62 @@
 - type: swProgram
   id: SWProgramGarrison
   name: Планетарный гарнизон
-  description: Размещение войск и укрепление обороны сектора.
+  description: Доставка вооружения, брони и начального снабжения для гарнизона выбранного мира. После развёртывания боеготовность зависит от военных поставок и обслуживания.
   category: Оборона
   order: 150
   cost: 4000
+  materials:
+    blasters: 0.35
+    armor: 0.35
+    military_supplies: 0.5
+  workHours: 3
+  suppliesGroups: [maintenance, military]
   sectorEffects:
     SWGlobalDefense: 6
 
 - type: swProgram
   id: SWProgramShield
   name: Орбитальная оборона
-  description: Установка щитов и батарей на орбите сектора.
+  description: Доставка щитовых генераторов и вооружения, монтаж орбитальных батарей у выбранного мира. Защита требует военного снабжения и технического обслуживания.
   category: Оборона
   order: 151
   cost: 6000
+  materials:
+    shield_generators: 0.3
+    ship_weapons: 0.15
+    parts: 0.4
+  workHours: 4
+  suppliesGroups: [maintenance, military]
   sectorEffects:
     SWGlobalDefense: 8
 
 - type: swProgram
   id: SWProgramWelfare
   name: Социальная поддержка
-  description: Пособия, жильё и помощь нуждающимся.
+  description: Подготовка временного жилья и пунктов выдачи помощи на выбранном мире. Начальный запас включает пайки и бытовые товары; дальнейшая поддержка зависит от местного снабжения.
   category: Общество
   order: 160
   cost: 3500
+  materials:
+    building_modules: 0.25
+    household_goods: 1
+    rations: 1
+  workHours: 2
+  suppliesGroups: [household, nutrition]
   sectorEffects:
     SWGlobalSociety: 5
 
 - type: swProgram
   id: SWProgramCulture
   name: Культурная инициатива
-  description: Поддержка искусства, праздников и местных традиций.
+  description: Оснащение общественных площадок выбранного мира и подготовка культурной программы. Работа площадок зависит от обслуживания и питания оборудования.
   category: Общество
   order: 161
   cost: 3000
+  materials:
+    entertainment: 0.3
+  workHours: 2
+  suppliesGroups: [maintenance, other]
   sectorEffects:
     SWGlobalSociety: 4
     SWGlobalEducation: 1
@@ -147,20 +220,22 @@
 - type: swProgram
   id: SWProgramDiplomacy
   name: Дипломатическая миссия
-  description: Налаживание связей с соседними секторами и Республикой.
+  description: Подготовка делегации, переговоры с соседними секторами и согласование договорённостей. Требует времени на работу миссии; поставки оборудования не нужны.
   category: Внешняя политика
   order: 170
   cost: 4000
+  workHours: 2
   sectorEffects:
     SWGlobalForeign: 5
 
 - type: swProgram
   id: SWProgramTradePact
   name: Торговое соглашение
-  description: Заключение пактов о свободной торговле.
+  description: Подготовка торгового соглашения, согласование условий и введение новых правил обмена. Требует времени на оформление; поставки оборудования не нужны.
   category: Внешняя политика
   order: 171
   cost: 5000
+  workHours: 3
   sectorEffects:
     SWGlobalForeign: 5
     SWGlobalEconomy: 3

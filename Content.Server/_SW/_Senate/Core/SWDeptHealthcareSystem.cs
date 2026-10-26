@@ -22,7 +22,6 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
 
     private const float TickInterval = 1f;
     private const int TotalBrigades = 3;
-    private const float CallInterval = 0.55f;
     private const int CallCap = 3;
     private const float CallLife = 2f;
     private const float MissionHours = 1f;
@@ -65,10 +64,10 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
 
     private readonly List<ActiveCall> _calls = new();
     private int _nextCallId = 1;
-    private float _callTimer;
+    private readonly SWSenateWorkQueue _arrivalQueue = new(.75f, 1f);
 
     private readonly List<Mission> _missions = new();
-    private readonly Dictionary<int, int> _opCooldowns = new();
+    private readonly Dictionary<int, double> _opCooldowns = new();
     private readonly List<string> _log = new();
 
     private int _day = -1;
@@ -83,17 +82,19 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _accum = 0f;
         _readiness = 80f;
         _supplies = 70f;
         _freeBrigades = TotalBrigades;
         _calls.Clear();
         _nextCallId = 1;
-        _callTimer = 0f;
+        _arrivalQueue.Reset();
         _missions.Clear();
         _opCooldowns.Clear();
         _log.Clear();
@@ -296,8 +297,8 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
             var (name, desc, cost, _) = Ops[i];
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
-            if (_opCooldowns.TryGetValue(i, out var ready) && _time.AbsoluteHour < ready)
-                entry.Status = $"готовность через {ready - _time.AbsoluteHour} ч";
+            if (_opCooldowns.TryGetValue(i, out var ready) && _time.ActiveGameHours < ready)
+                entry.Status = $"готовность через {SWSenateDuration.FormatHours(ready - _time.ActiveGameHours)}";
             else if (i == 2 && !_health.VaccineReady)
                 entry.Status = "вакцина не готова";
             else if (cost > budget)
@@ -315,7 +316,7 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
     {
         if (idx < 0 || idx >= Ops.Length)
             return false;
-        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.AbsoluteHour < ready)
+        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.ActiveGameHours < ready)
             return false;
         if (idx == 2 && !_health.VaccineReady)
             return false;
@@ -324,7 +325,7 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
         if (cost > 0 && !_dilemma.SpendMinistry(DeptId, cost))
             return false;
 
-        _opCooldowns[idx] = _time.AbsoluteHour + cd;
+        _opCooldowns[idx] = _time.ActiveGameHours + cd;
 
         switch (idx)
         {
@@ -387,6 +388,9 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -400,8 +404,6 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
         if (_time.Day != _day)
         {
             _day = _time.Day;
-            _opCooldowns.Clear();
-            _callTimer = 0f;
         }
 
         if (!_time.DayActive || !_ministry.IsClaimed(DeptId))
@@ -433,11 +435,8 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
             FailCall(call);
         }
 
-        _callTimer += gameHours;
-        if (_callTimer < CallInterval || _calls.Count >= CallCap)
+        if (!_arrivalQueue.Tick(_random, gameHours, _calls.Count + _dilemma.PendingWork(DeptId), CallCap))
             return;
-
-        _callTimer = 0f;
         SpawnCall();
     }
 

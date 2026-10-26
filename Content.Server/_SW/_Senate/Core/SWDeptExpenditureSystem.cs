@@ -22,9 +22,8 @@ public sealed class SWDeptExpenditureSystem : EntitySystem
 
     private const float TickInterval = 1f;
     private const int TargetAuditCost = 400;
-    private const float TipInterval = 0.7f;
     private const int TipCap = 3;
-    private const float TipLife = 2f;
+    private const float TipLife = 3f;
     private const float TransparencyDecay = 0.6f;
     public const int TransparencyBonusThreshold = 70;
 
@@ -55,9 +54,9 @@ public sealed class SWDeptExpenditureSystem : EntitySystem
 
     private readonly List<ActiveTip> _tips = new();
     private int _nextTipId = 1;
-    private float _tipTimer;
+    private readonly SWSenateWorkQueue _arrivalQueue = new(1f, 1.25f);
 
-    private readonly Dictionary<int, int> _opCooldowns = new();
+    private readonly Dictionary<int, double> _opCooldowns = new();
     private readonly List<string> _log = new();
 
     private int _day = -1;
@@ -69,18 +68,20 @@ public sealed class SWDeptExpenditureSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _accum = 0f;
         _transparency = 50f;
         _recovered = 0;
         _anomalies.Clear();
         _audited.Clear();
         _tips.Clear();
         _nextTipId = 1;
-        _tipTimer = 0f;
+        _arrivalQueue.Reset();
         _tipBoostHours = 0f;
         _auditBoost = false;
         _opCooldowns.Clear();
@@ -305,8 +306,8 @@ public sealed class SWDeptExpenditureSystem : EntitySystem
             var (name, desc, cost, _) = Ops[i];
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
-            if (_opCooldowns.TryGetValue(i, out var ready) && _time.AbsoluteHour < ready)
-                entry.Status = $"готовность через {ready - _time.AbsoluteHour} ч";
+            if (_opCooldowns.TryGetValue(i, out var ready) && _time.ActiveGameHours < ready)
+                entry.Status = $"готовность через {SWSenateDuration.FormatHours(ready - _time.ActiveGameHours)}";
             else if (cost > budget)
                 entry.Status = "недостаточно бюджета";
             else
@@ -322,14 +323,14 @@ public sealed class SWDeptExpenditureSystem : EntitySystem
     {
         if (idx < 0 || idx >= Ops.Length)
             return false;
-        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.AbsoluteHour < ready)
+        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.ActiveGameHours < ready)
             return false;
 
         var (_, _, cost, cd) = Ops[idx];
         if (cost > 0 && !_dilemma.SpendMinistry(DeptId, cost))
             return false;
 
-        _opCooldowns[idx] = _time.AbsoluteHour + cd;
+        _opCooldowns[idx] = _time.ActiveGameHours + cd;
 
         switch (idx)
         {
@@ -378,6 +379,9 @@ public sealed class SWDeptExpenditureSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -393,8 +397,6 @@ public sealed class SWDeptExpenditureSystem : EntitySystem
             _day = _time.Day;
             _anomalies.Clear();
             _audited.Clear();
-            _opCooldowns.Clear();
-            _tipTimer = 0f;
             _tipBoostHours = 0f;
             _auditBoost = false;
         }
@@ -420,11 +422,8 @@ public sealed class SWDeptExpenditureSystem : EntitySystem
             FailTip(tip);
         }
 
-        _tipTimer += gameHours;
-        var interval = _tipBoostHours > 0f ? TipInterval * 0.5f : TipInterval;
-        if (_tipTimer >= interval && _tips.Count < TipCap)
+        if (_arrivalQueue.Tick(_random, gameHours * (_tipBoostHours > 0f ? 1.5f : 1f), _tips.Count + _dilemma.PendingWork(DeptId), TipCap))
         {
-            _tipTimer = 0f;
             var pool = Enumerable.Range(0, Tips.Length).Where(i => _tips.All(t => t.DefIndex != i)).ToList();
             if (pool.Count > 0)
                 _tips.Add(new ActiveTip { Id = _nextTipId++, DefIndex = _random.Pick(pool), LifeHours = TipLife });

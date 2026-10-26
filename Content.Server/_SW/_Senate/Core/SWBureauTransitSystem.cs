@@ -28,7 +28,7 @@ public sealed class SWBureauTransitSystem : EntitySystem
 
     private const float TickInterval = 1f;
     private const float DilInterval = 2f;
-    private const float EventLife = 1.5f;
+    private const float EventLife = 2f;
     private const int EventCap = 3;
     private const float SafetyDecay = 0.8f;
 
@@ -39,14 +39,14 @@ public sealed class SWBureauTransitSystem : EntitySystem
 
     private readonly List<ActiveEvent> _events = new();
     private int _nextEventId = 1;
-    private float _eventTimer;
+    private readonly SWSenateWorkQueue _arrivalQueue = new(.75f, 1f);
 
-    private readonly Dictionary<int, int> _opCooldowns = new();
+    private readonly Dictionary<int, double> _opCooldowns = new();
     private readonly List<string> _log = new();
     private float _income;
 
     private int _dilIndex = -1;
-    private float _dilTimer;
+    private readonly SWSenateWorkQueue _dilemmaQueue = new(3f, 4f, 1.5f, 2.5f);
     private float _dilLife;
 
     private int _day = -1;
@@ -58,23 +58,25 @@ public sealed class SWBureauTransitSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _accum = 0f;
         _mobility = 50f;
         _congestion = 30f;
         _safety = 70f;
         _status.Clear();
         _events.Clear();
         _nextEventId = 1;
-        _eventTimer = 0f;
+        _arrivalQueue.Reset();
         _opCooldowns.Clear();
         _log.Clear();
         _income = 0f;
         _dilIndex = -1;
-        _dilTimer = 0f;
+        _dilemmaQueue.Reset();
         _dilLife = 0f;
         _day = -1;
     }
@@ -190,7 +192,7 @@ public sealed class SWBureauTransitSystem : EntitySystem
                 Name = proto.Name,
                 Color = proto.Color,
                 Status = status,
-                FlagsLabel = string.Join("  ·  ", flags),
+                FlagsLabel = string.Join(", ", flags),
             });
         }
 
@@ -487,8 +489,8 @@ public sealed class SWBureauTransitSystem : EntitySystem
             var (name, desc, cost, _) = Ops[i];
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
-            if (_opCooldowns.TryGetValue(i, out var ready) && _time.AbsoluteHour < ready)
-                entry.Status = $"готовность через {ready - _time.AbsoluteHour} ч";
+            if (_opCooldowns.TryGetValue(i, out var ready) && _time.ActiveGameHours < ready)
+                entry.Status = $"готовность через {SWSenateDuration.FormatHours(ready - _time.ActiveGameHours)}";
             else if (cost > budget)
                 entry.Status = "недостаточно бюджета";
             else
@@ -504,14 +506,14 @@ public sealed class SWBureauTransitSystem : EntitySystem
     {
         if (idx < 0 || idx >= Ops.Length)
             return false;
-        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.AbsoluteHour < ready)
+        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.ActiveGameHours < ready)
             return false;
 
         var (_, _, cost, cd) = Ops[idx];
         if (cost > 0 && !_dilemma.SpendMinistry(BureauId, cost))
             return false;
 
-        _opCooldowns[idx] = _time.AbsoluteHour + cd;
+        _opCooldowns[idx] = _time.ActiveGameHours + cd;
 
         switch (idx)
         {
@@ -713,7 +715,7 @@ public sealed class SWBureauTransitSystem : EntitySystem
 
         ApplyDilemma(_dilIndex, optionIndex);
         _dilIndex = -1;
-        _dilTimer = 0f;
+        _dilemmaQueue.Reset(false);
         return true;
     }
 
@@ -840,6 +842,9 @@ public sealed class SWBureauTransitSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -853,10 +858,6 @@ public sealed class SWBureauTransitSystem : EntitySystem
         if (_time.Day != _day)
         {
             _day = _time.Day;
-            _opCooldowns.Clear();
-            _dilIndex = -1;
-            _dilTimer = DilInterval - 0.75f;
-            _eventTimer = 0f;
         }
 
         if (!_time.DayActive)
@@ -1041,12 +1042,8 @@ public sealed class SWBureauTransitSystem : EntitySystem
             FailEvent(active);
         }
 
-        _eventTimer += gameHours;
-        var interval = _congestion >= 70f ? 0.3f : 0.5f;
-        if (_eventTimer < interval || _events.Count >= EventCap)
+        if (!_arrivalQueue.Tick(_random, gameHours, _events.Count + (_dilIndex >= 0 ? 2 : 0) + _dilemma.PendingWork(BureauId), EventCap))
             return;
-
-        _eventTimer = 0f;
         var pool = Enumerable.Range(0, Events.Length).Where(i => _events.All(e => e.DefIndex != i)).ToList();
         if (pool.Count == 0)
             return;
@@ -1070,17 +1067,15 @@ public sealed class SWBureauTransitSystem : EntitySystem
             {
                 FailDilemma();
                 _dilIndex = -1;
-                _dilTimer = 0f;
+                _dilemmaQueue.Reset(false);
             }
 
             return;
         }
 
-        _dilTimer += gameHours;
-        if (_dilTimer < DilInterval)
+        if (!_dilemmaQueue.Tick(_random, gameHours,
+            _events.Count + _dilemma.PendingWork(BureauId), 4))
             return;
-
-        _dilTimer = 0f;
         _dilIndex = _random.Next(Dilemmas.Length);
         _dilLife = DilInterval;
     }

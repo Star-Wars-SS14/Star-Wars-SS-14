@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Shared.GameTicking;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Dilemmas;
 using Content.Shared._SW._Senate.Ministries;
@@ -9,7 +10,7 @@ using Content.Server._SW._Senate.Core;
 
 namespace Content.Server._SW._Senate.Economy;
 
-public sealed class SWSenateDilemmaSystem : EntitySystem
+public sealed partial class SWSenateDilemmaSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
@@ -30,9 +31,6 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
     // Mini-debuff to a sector whose citizens are left waiting on a delegated ministry request.
     private const float WaitingDebuff = -2f;
 
-    // Stock ministry budget/admin (later tied to МинФин). Recomputed each day from active sectors.
-    private const int MinistryBudgetBase = 4000;
-    private const int MinistryBudgetPerSector = 1000;
     private const int MinistryAdminPerDay = 3;
     private const int AuditAdminCost = 1;
 
@@ -64,8 +62,61 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
     private int _day = -1;
     private float _accumulator;
 
+    public override void Initialize()
+    {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+        SubscribeLocalEvent<SWSenateDayClosedEvent>(ev =>
+        {
+            if (!ev.FinalDay)
+            {
+                ApplyDue();
+                CompleteAudits();
+                ExpireRequests();
+            }
+        });
+    }
+
+    private void OnRoundRestart(RoundRestartCleanupEvent ev)
+    {
+        _governorRequests.Clear();
+        _governorCooldown.Clear();
+        _dilemmas.Clear();
+        _requests.Clear();
+        _ministryBudget.Clear();
+        _ministryAdmin.Clear();
+        _notices.Clear();
+        _generated.Clear();
+        _nextId = 1;
+        _nextRequestId = 1;
+        _day = -1;
+        _accumulator = 0f;
+    }
+
+    // Buy work before granting its benefit. Fractional prepaid credits survive ticks;
+    // lack of funding scales this tick's work without creating debt or free fractions.
+    public float FundWork(string ministryId, float cost, ref float credit)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return 0f;
+        if (cost <= 0f)
+            return 1f;
+        var purchase = Math.Min(GetMinistryBudget(ministryId), (int) MathF.Ceiling(Math.Max(0f, cost - credit)));
+        if (purchase > 0 && SpendMinistry(ministryId, purchase))
+            credit += purchase;
+        var paid = Math.Min(cost, credit);
+        credit = Math.Max(0f, credit - paid);
+        return paid / cost;
+    }
+
+    public int PendingWork(string ministryId) => _requests.Count(r =>
+        r.MinistryId == ministryId && r.Status == SWMinistryRequestStatus.Pending);
+
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -75,17 +126,18 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
         _accumulator = 0f;
 
+        ExpireGovernorRequests();
+
         if (_time.Day != _day)
         {
             _day = _time.Day;
-            _dilemmas.Clear();
-            _requests.Clear();
+            var carriedSources = _requests.Where(r => r.AuditPending || GovernorPending(r.DilemmaId)).Select(r => r.SourceDilemmaId).ToHashSet();
+            _dilemmas.RemoveAll(d => !carriedSources.Contains(d.Id) && !GovernorPending(d.DilemmaId));
+            _requests.RemoveAll(r => !r.AuditPending && !GovernorPending(r.DilemmaId));
             _ministryBudget.Clear();
             _ministryAdmin.Clear();
             _notices.Clear();
             _generated.Clear();
-            _nextId = 1;
-            _nextRequestId = 1;
         }
 
         ApplyDue();
@@ -101,11 +153,13 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             if (!request.AuditPending)
                 continue;
 
-            if (_time.DayActive && _time.AbsoluteHour < request.AuditCompleteHour)
+            if (!_time.DayActive || _time.ActiveGameHours < request.AuditCompleteHour)
                 continue;
 
             request.AuditPending = false;
             request.AuditDone = true;
+            if (request.AuditDay < _time.Day)
+                request.DeadlineHour = Math.Min(SWSenateTimeSystem.EndHour, _time.CurrentHour + 2);
         }
     }
 
@@ -207,6 +261,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
         var candidates = _proto.EnumeratePrototypes<SWDilemmaPrototype>()
             .Where(d => d.Scope == scope && d.Budget == budget)
+            .Where(d => !GovernorSectorPending(sectorId) || !(d.Budget && d.Options.Any(o => o.Ministry == SWMinistryEconomySystem.EconomyMinistryId)))
             .ToList();
 
         var deadline = window == SWDilemmaWindow.Morning ? MorningDeadline : AfternoonDeadline;
@@ -291,6 +346,8 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             if (dilemma.Status is not (SWDilemmaStatus.Pending or SWDilemmaStatus.Chosen))
                 continue;
 
+            if (_governorRequests.ContainsKey(dilemma.DilemmaId))
+                continue;
             var due = !_time.DayActive || _time.CurrentHour >= dilemma.ApplyHour;
             if (due)
                 ApplyDilemma(dilemma);
@@ -299,7 +356,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
     private void ApplyDilemma(SWActiveDilemma dilemma)
     {
-        if (!_proto.TryIndex<SWDilemmaPrototype>(dilemma.DilemmaId, out var proto))
+        if (!TryDilemma(dilemma.DilemmaId, out var proto))
         {
             dilemma.Status = SWDilemmaStatus.Applied;
             return;
@@ -322,7 +379,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
     public void AdminAddDilemma(SWDilemmaScope scope, string owner, string? sectorId, string dilemmaId)
     {
-        var isBudget = _proto.TryIndex<SWDilemmaPrototype>(dilemmaId, out var proto) && proto.Budget;
+        var isBudget = TryDilemma(dilemmaId, out var proto) && proto.Budget;
 
         _dilemmas.Add(new SWActiveDilemma
         {
@@ -345,10 +402,13 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         if (dilemma == null || dilemma.Owner != owner || dilemma.Status != SWDilemmaStatus.Pending)
             return false;
 
+        if (_governorRequests.ContainsKey(dilemma.DilemmaId))
+            return ResolveGovernorDilemma(dilemma, option);
+
         if (!_time.DayActive || _time.CurrentHour >= dilemma.DeadlineHour)
             return false;
 
-        if (!_proto.TryIndex<SWDilemmaPrototype>(dilemma.DilemmaId, out var proto))
+        if (!TryDilemma(dilemma.DilemmaId, out var proto))
             return false;
 
         // Corrupt option lives just past the real options.
@@ -421,11 +481,11 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             OptionIndex = option,
             DeadlineHour = SWSenateTimeSystem.EndHour,
             Status = SWMinistryRequestStatus.Pending,
-            Issue = RollIssue(),
+            Issue = _governorRequests.ContainsKey(dilemma.DilemmaId) ? SWAuditIssue.Reliable : RollIssue(),
         });
 
         // Citizens are left waiting on the ministry - a small hit while the request is unresolved.
-        if (dilemma.SectorId != null)
+        if (!_governorRequests.ContainsKey(dilemma.DilemmaId) && dilemma.SectorId != null)
             _senate.AddSectorBias(dilemma.SectorId, "SWGlobalSociety", WaitingDebuff);
 
         return true;
@@ -447,7 +507,9 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
     {
         foreach (var request in _requests)
         {
-            if (request.Status != SWMinistryRequestStatus.Pending)
+            if (_governorRequests.ContainsKey(request.DilemmaId))
+                continue;
+            if (request.Status != SWMinistryRequestStatus.Pending || request.AuditPending)
                 continue;
 
             if (_time.DayActive && _time.CurrentHour < request.DeadlineHour)
@@ -465,7 +527,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             return;
 
         var mult = request.Issue == SWAuditIssue.UnderestimatedCrisis ? UnderestimatedFailFactor : 1f;
-        if (_proto.TryIndex<SWDilemmaPrototype>(dilemma.DilemmaId, out var proto))
+        if (TryDilemma(dilemma.DilemmaId, out var proto))
             ApplyScaled(dilemma.Scope, dilemma.SectorId, proto.FailPolicyEffects, proto.FailSectorEffects, mult);
 
         dilemma.Status = SWDilemmaStatus.Failed;
@@ -478,6 +540,8 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         var request = _requests.FirstOrDefault(r => r.Id == requestId);
         if (request == null || request.MinistryId != ministryId || request.Status != SWMinistryRequestStatus.Pending)
             return false;
+        if (_governorRequests.ContainsKey(request.DilemmaId) && (!_time.ModeActive || !_time.DayActive || !_ministry.IsClaimed(ministryId)))
+            return false;
         if (request.AuditDone || request.AuditPending)
             return false;
 
@@ -487,7 +551,8 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
         _ministryAdmin[ministryId] -= AuditAdminCost;
         request.AuditPending = true;
-        request.AuditCompleteHour = _time.AbsoluteHour + 1;
+        request.AuditCompleteHour = _time.ActiveGameHours + 1;
+        request.AuditDay = _time.Day;
         return true;
     }
 
@@ -497,10 +562,13 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         if (request == null || request.MinistryId != ministryId || request.Status != SWMinistryRequestStatus.Pending)
             return false;
 
-        if (!_proto.TryIndex<SWDilemmaPrototype>(request.DilemmaId, out var proto)
+        if (!TryDilemma(request.DilemmaId, out var proto)
             || optionIndex < 0
             || optionIndex >= proto.MinistryOptions.Count)
             return false;
+
+        if (_governorRequests.TryGetValue(request.DilemmaId, out var governor))
+            return FundGovernorRequest(request, governor, optionIndex);
 
         var option = proto.MinistryOptions[optionIndex];
         var (costMod, effectMod) = DefenseModifier(ministryId, request.SectorId);
@@ -551,6 +619,15 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
         if (request == null || request.MinistryId != ministryId || request.Status != SWMinistryRequestStatus.Pending)
             return false;
 
+        if (_governorRequests.TryGetValue(request.DilemmaId, out var governor))
+        {
+            if (!_time.ModeActive || !_time.DayActive || !_ministry.IsClaimed(ministryId))
+                return false;
+            request.RefuseReason = reason.Trim();
+            FinishGovernor(governor, true, $"Министерство экономики отклонило обращение: {request.RefuseReason}");
+            return true;
+        }
+
         request.Status = SWMinistryRequestStatus.Refused;
         request.RefuseReason = reason.Trim();
 
@@ -565,7 +642,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             dilemma.ApplyHour = SWSenateTimeSystem.EndHour;
         }
 
-        var name = _proto.TryIndex<SWDilemmaPrototype>(request.DilemmaId, out var proto) ? proto.Name : request.DilemmaId;
+        var name = TryDilemma(request.DilemmaId, out var proto) ? proto.Name : request.DilemmaId;
         var tail = string.IsNullOrWhiteSpace(request.RefuseReason) ? "." : $": {request.RefuseReason}";
         AddNotice(request.Owner, $"{MinistryName(request.MinistryId)} отказало в обращении «{name}»{tail} Решение остаётся за адресатом.");
         return true;
@@ -671,7 +748,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
 
     private SWDilemmaEntry BuildEntry(SWActiveDilemma dilemma, string? viewer)
     {
-        _proto.TryIndex<SWDilemmaPrototype>(dilemma.DilemmaId, out var proto);
+        TryDilemma(dilemma.DilemmaId, out var proto);
 
         var entry = new SWDilemmaEntry
         {
@@ -693,6 +770,12 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
                 ? $"Решить до {dilemma.DeadlineHour:00}:00"
                 : StatusLabel(dilemma.Status),
         };
+
+        if (_governorRequests.TryGetValue(dilemma.DilemmaId, out var governorEntry))
+        {
+            entry.CanResolve = viewer == dilemma.Owner && dilemma.Status == SWDilemmaStatus.Pending && _time.DayActive && GovernorPending(dilemma.DilemmaId);
+            entry.TimeLabel = GovernorDeadline(governorEntry);
+        }
 
         if (proto != null)
         {
@@ -729,7 +812,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             }
 
             // Synthetic corrupt option (index == proto.Options.Count): pocket a kickback instead of solving.
-            if (entry.CanResolve)
+            if (entry.CanResolve && !_governorRequests.ContainsKey(dilemma.DilemmaId))
             {
                 entry.Options.Add(new SWDilemmaOptionEntry
                 {
@@ -806,7 +889,7 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
             if (request.MinistryId != ministryId || request.Status != SWMinistryRequestStatus.Pending)
                 continue;
 
-            _proto.TryIndex<SWDilemmaPrototype>(request.DilemmaId, out var proto);
+            TryDilemma(request.DilemmaId, out var proto);
 
             var entry = new SWMinistryRequestEntry
             {
@@ -853,6 +936,18 @@ public sealed class SWSenateDilemmaSystem : EntitySystem
                 }
             }
 
+            if (_governorRequests.TryGetValue(request.DilemmaId, out var governorEntry))
+            {
+                entry.DeadlineLabel = GovernorDeadline(governorEntry);
+                foreach (var option in entry.Options)
+                {
+                    option.Cost = governorEntry.Credits;
+                    option.Affordable = budget >= governorEntry.Credits && _budget.Approved && _time.ModeActive && _time.DayActive
+                        && _time.ActiveGameHours < governorEntry.Expires && _ministry.IsClaimed(ministryId);
+                }
+                entry.CanAudit &= _time.ModeActive && _time.DayActive && _ministry.IsClaimed(ministryId);
+                entry.IssueDescription = request.AuditDone ? "Запрошен реальный перевод в бюджет округа; объекты и снабжение строятся отдельно." : string.Empty;
+            }
             list.Add(entry);
         }
 
@@ -913,7 +1008,8 @@ public sealed class SWMinistryRequest
     public SWAuditIssue Issue;
     public bool AuditPending;
     public bool AuditDone;
-    public int AuditCompleteHour;
+    public double AuditCompleteHour;
+    public int AuditDay;
     public int MinisterOption = -1;
     public string RefuseReason = string.Empty;
 }

@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Server._SW._Senate.Core;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Ministries;
+using Content.Shared._SW._Senate.Economy;
 using Content.Shared.GameTicking;
 using Robust.Shared.Prototypes;
 
@@ -54,6 +55,8 @@ public sealed class SWSenateBudgetSystem : EntitySystem
 
     private int _frozenTotal;
     private readonly Dictionary<string, int> _remaining = new();
+    private string[] _governedSectors = Array.Empty<string>();
+    public IReadOnlyList<string> GovernedSectors => _governedSectors;
 
     public SWBudgetPhase Phase => _phase;
     public bool Approved => _phase == SWBudgetPhase.Approved;
@@ -65,6 +68,12 @@ public sealed class SWSenateBudgetSystem : EntitySystem
 
     public override void Initialize()
     {
+        // Civilian administrations exist independently of occupied Senate seats.
+        var scenario = _proto.Index<SWRepublicEconomyScenarioPrototype>(SWRepublicEconomyFactory.ScenarioId);
+        _governedSectors = _proto.Index(scenario.Map).Worlds
+            .Where(w => w.Sector != null && _proto.Index<SWPlanetEconomyPrototype>(w.Id).ActiveEconomy)
+            .Select(w => w.Sector!.Value.Id).Distinct().OrderBy(id => id, StringComparer.Ordinal).ToArray();
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
@@ -95,7 +104,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
 
     private float DefaultRatio()
     {
-        var sectorMoney = _senate.SectorHolders.Count * PerSector;
+        var sectorMoney = _governedSectors.Length * PerSector;
         var ministryMoney = _ministry.Holders.Count * PerMinistry;
         var denom = sectorMoney + ministryMoney;
         return denom > 0 ? Math.Clamp((float) sectorMoney / denom, 0.1f, 0.9f) : 0.5f;
@@ -115,7 +124,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
         if (_phase == SWBudgetPhase.Approved)
             return _frozenTotal;
 
-        var baseMoney = _senate.SectorHolders.Count * PerSector + _ministry.Holders.Count * PerMinistry;
+        var baseMoney = _governedSectors.Length * PerSector + _ministry.Holders.Count * PerMinistry;
         var transparency = _expenditure.TransparencyBonusActive ? 1.1f : 1f;
         return (int) MathF.Round(baseMoney * TreasuryMultiplier() * transparency / _finance.PriceMultiplier());
     }
@@ -178,7 +187,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
 
     public bool SetAllocation(string sectorId, int amount)
     {
-        if (_phase != SWBudgetPhase.Submitted)
+        if (_phase != SWBudgetPhase.Submitted || !_governedSectors.Contains(sectorId))
             return false;
 
         amount = Math.Max(0, amount);
@@ -218,7 +227,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
 
         _remaining.Clear();
 
-        var sectors = _senate.SectorHolders.Keys.ToList();
+        var sectors = _governedSectors.ToList();
         if (equalSectors || _sectorAlloc.Count == 0)
         {
             var share = sectors.Count > 0 ? sectorPool / sectors.Count : 0;
@@ -296,6 +305,9 @@ public sealed class SWSenateBudgetSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 

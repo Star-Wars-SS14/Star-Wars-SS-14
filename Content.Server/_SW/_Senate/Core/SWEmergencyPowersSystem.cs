@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Server._SW._Senate.Economy;
 using Content.Shared._SW._Senate;
 using Content.Shared.GameTicking;
 using Robust.Shared.Random;
@@ -11,6 +12,9 @@ public sealed class SWEmergencyPowersSystem : EntitySystem
 {
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
+    [Dependency] private readonly SWSenateBudgetSystem _budget = default!;
+    [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
+    [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly Robust.Shared.Random.IRobustRandom _random = default!;
 
     private const float TickInterval = 1f;
@@ -28,6 +32,55 @@ public sealed class SWEmergencyPowersSystem : EntitySystem
 
     private int _day = -1;
     private float _accum;
+    private int _emergencyBudgetDay = -1;
+
+    private static readonly string[] EmergencyBudgetTargets =
+    {
+        SWMinistryDefenseSystem.DefenseMinistryId,
+        SWMinistryInternalSecuritySystem.SecurityMinistryId,
+        SWMinistryHealthSystem.HealthMinistryId,
+        SWMinistryEconomySystem.EconomyMinistryId,
+        SWMinistryFinanceSystem.FinanceMinistryId,
+        SWMinistryJusticeSystem.JusticeMinistryId,
+    };
+
+    public int EmergencyBudgetReserve => _budget.Available(SWSenateDilemmaSystem.RepublicOwner);
+
+    public int EmergencyBudgetAmount
+    {
+        get
+        {
+            if (!_time.ModeActive || !_time.DayActive || !HasPower(SWEmergencyPower.EmergencyBudget)
+                || !_budget.Approved || _emergencyBudgetDay == _time.Day)
+                return 0;
+            var count = EmergencyBudgetTargets.Count(_ministry.IsClaimed);
+            return count == 0 ? 0 : Math.Min(3000, EmergencyBudgetReserve / count) * count;
+        }
+    }
+
+    public string EmergencyBudgetStatus => !_time.ModeActive ? "Режим не активен"
+        : !_time.DayActive ? "Ночная пауза"
+        : !HasPower(SWEmergencyPower.EmergencyBudget) ? "Нет чрезвычайного полномочия"
+        : !_budget.Approved ? "Бюджет ещё не утверждён"
+        : _emergencyBudgetDay == _time.Day ? "Лимит дня использован"
+        : !EmergencyBudgetTargets.Any(_ministry.IsClaimed) ? "Нет действующих министров"
+        : EmergencyBudgetAmount == 0 ? "Недостаточно средств в резерве"
+        : $"Перевод из резерва: {EmergencyBudgetAmount} кр. Один раз в день";
+
+    public bool TryEmergencyBudget()
+    {
+        var total = EmergencyBudgetAmount;
+        if (total <= 0 || !_budget.Spend(SWSenateDilemmaSystem.RepublicOwner, total))
+            return false;
+
+        var targets = EmergencyBudgetTargets.Where(_ministry.IsClaimed).ToList();
+        var share = total / targets.Count;
+        foreach (var id in targets)
+            _dilemma.SetMinistryBudget(id, _dilemma.GetMinistryBudget(id) + share);
+        _emergencyBudgetDay = _time.Day;
+        RegisterUse(8f, 6f, false);
+        return true;
+    }
 
     public int Level => _level;
     public int Authority => (int) MathF.Round(_authority);
@@ -72,12 +125,14 @@ public sealed class SWEmergencyPowersSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<SWSenateEmergencyMotionPassedEvent>(OnEmergencyMotionPassed);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _accum = 0f;
         _level = 0;
         _granted.Clear();
         _expiryDay = -1;
@@ -85,6 +140,8 @@ public sealed class SWEmergencyPowersSystem : EntitySystem
         _legitimacy = 100f;
         _barredChancellor = false;
         _day = -1;
+        _autoOffered = false;
+        _emergencyBudgetDay = -1;
     }
 
     // --- Grants ---
@@ -173,6 +230,9 @@ public sealed class SWEmergencyPowersSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 

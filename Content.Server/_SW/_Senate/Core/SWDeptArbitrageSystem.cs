@@ -20,7 +20,6 @@ public sealed class SWDeptArbitrageSystem : EntitySystem
     public const string DeptId = "SWDepartmentArbitrage";
 
     private const float TickInterval = 1f;
-    private const float CaseInterval = 1.5f;
     private const int CaseCap = 3;
     private static readonly int[] StageCosts = { 500, 800, 1200 };
     private static readonly string[] StageNames = { "Зацепка", "Улики", "Арест" };
@@ -64,9 +63,9 @@ public sealed class SWDeptArbitrageSystem : EntitySystem
 
     private readonly List<ArbCase> _cases = new();
     private int _nextCaseId = 1;
-    private float _caseTimer;
+    private readonly SWSenateWorkQueue _arrivalQueue = new(1.5f, 2f);
 
-    private readonly Dictionary<int, int> _opCooldowns = new();
+    private readonly Dictionary<int, double> _opCooldowns = new();
     private readonly List<string> _log = new();
 
     private int _day = -1;
@@ -77,16 +76,18 @@ public sealed class SWDeptArbitrageSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _accum = 0f;
         _independence = 60f;
         _solved = 0;
         _cases.Clear();
         _nextCaseId = 1;
-        _caseTimer = 0f;
+        _arrivalQueue.Reset();
         _opCooldowns.Clear();
         _log.Clear();
         _day = -1;
@@ -180,7 +181,7 @@ public sealed class SWDeptArbitrageSystem : EntitySystem
         _solved++;
         AddBudget(def.Fine);
         AddIndependence(4f);
-        _senate.AddPolicy("SWStatCrime", -1.5f);
+        _senate.AddPolicy("SWStatCrime", 1.5f);
 
         switch (def.Bonus)
         {
@@ -251,8 +252,8 @@ public sealed class SWDeptArbitrageSystem : EntitySystem
             var (name, desc, cost, _) = Ops[i];
             var entry = new SWShipsOpEntry { Id = i, Name = name, Description = desc, Cost = cost };
 
-            if (_opCooldowns.TryGetValue(i, out var ready) && _time.AbsoluteHour < ready)
-                entry.Status = $"готовность через {ready - _time.AbsoluteHour} ч";
+            if (_opCooldowns.TryGetValue(i, out var ready) && _time.ActiveGameHours < ready)
+                entry.Status = $"готовность через {SWSenateDuration.FormatHours(ready - _time.ActiveGameHours)}";
             else if (i == 4 && _cases.Count >= CaseCap)
                 entry.Status = "все следователи заняты";
             else if (cost > budget)
@@ -270,7 +271,7 @@ public sealed class SWDeptArbitrageSystem : EntitySystem
     {
         if (idx < 0 || idx >= Ops.Length)
             return false;
-        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.AbsoluteHour < ready)
+        if (_opCooldowns.TryGetValue(idx, out var ready) && _time.ActiveGameHours < ready)
             return false;
         if (idx == 4 && _cases.Count >= CaseCap)
             return false;
@@ -279,7 +280,7 @@ public sealed class SWDeptArbitrageSystem : EntitySystem
         if (cost > 0 && !_dilemma.SpendMinistry(DeptId, cost))
             return false;
 
-        _opCooldowns[idx] = _time.AbsoluteHour + cd;
+        _opCooldowns[idx] = _time.ActiveGameHours + cd;
 
         switch (idx)
         {
@@ -315,6 +316,9 @@ public sealed class SWDeptArbitrageSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -328,8 +332,6 @@ public sealed class SWDeptArbitrageSystem : EntitySystem
         if (_time.Day != _day)
         {
             _day = _time.Day;
-            _opCooldowns.Clear();
-            _caseTimer = 0f;
         }
 
         if (!_time.DayActive || !_ministry.IsClaimed(DeptId))
@@ -341,10 +343,8 @@ public sealed class SWDeptArbitrageSystem : EntitySystem
         if (_corruption.GlobalIndex() >= 50)
             AddIndependence(-0.4f * gameHours);
 
-        _caseTimer += gameHours;
-        if (_caseTimer >= CaseInterval && _cases.Count < CaseCap)
+        if (_arrivalQueue.Tick(_random, gameHours, _cases.Count + _dilemma.PendingWork(DeptId), CaseCap))
         {
-            _caseTimer = 0f;
             SpawnCase(0);
         }
     }

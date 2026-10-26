@@ -28,12 +28,21 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
 
     private const int BondDebt = 15;        // debt added per bond issue
     private const int BondTreasuryBase = 14; // treasury raised per issue at top rating
-    private const int RepayDebtAmount = 15;
-    private const int RepayTreasuryCost = 12;
+    private const float BondInterest = 0.1f;
+    private sealed class BondIssue(int proceeds, int repayment)
+    {
+        public readonly int Proceeds = proceeds;
+        public readonly int RepaymentAtIssue = repayment;
+        public float UnitsLeft = BondDebt;
+        public int CostLeft = repayment;
+    }
+
+    private readonly Queue<BondIssue> _bondRepayments = new();
+    public int NextRepaymentCost => _bondRepayments.TryPeek(out var issue) ? issue.CostLeft : 0;
 
     private float _inflation = InflationNeutral;
     private int _keyRate = 5;
-    private float _debt;
+    private float DebtUnits => _bondRepayments.Sum(b => b.UnitsLeft);
     private int _taxLevel = 1; // 0 low / 1 mid / 2 high
     private bool _emissionPending;
 
@@ -49,7 +58,7 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
 
     public int Inflation => (int) MathF.Round(_inflation);
     public int KeyRate => _keyRate;
-    public int Debt => (int) MathF.Round(_debt);
+    public int Debt => (int) MathF.Round(DebtUnits);
     public int TaxLevel => _taxLevel;
     public bool EmissionPending => _emissionPending;
     public string? SelectedProgram => _program;
@@ -61,14 +70,16 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
 
     public override void Initialize()
     {
+        UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        _accum = 0f;
         _inflation = InflationNeutral;
         _keyRate = 5;
-        _debt = 0f;
+        _bondRepayments.Clear();
         _taxLevel = 1;
         _emissionPending = false;
         _ratingScore = 35f;
@@ -106,7 +117,7 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
         _ => "Дефляция",
     };
 
-    public string DebtStatus() => _debt switch
+    public string DebtStatus() => DebtUnits switch
     {
         >= 80f => "Критический",
         >= 55f => "Высокий",
@@ -130,7 +141,7 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
 
     // Instant credit score from treasury, debt and inflation. Smoothed into _ratingScore so the rating
     // does not flicker as the underlying live stats jitter each tick.
-    private float TargetScore() => Treasury() - _debt * 0.6f - (_inflation - InflationNeutral) * 0.4f;
+    private float TargetScore() => Treasury() - DebtUnits * 0.6f - (_inflation - InflationNeutral) * 0.4f;
 
     private void UpdateRating(float gameHours)
     {
@@ -156,9 +167,13 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
     // Bond proceeds scale with the (smoothed) rating: a trusted Republic borrows cheaply.
     public int BondProceeds() => Math.Clamp((int) MathF.Round(BondTreasuryBase * (_ratingScore / 50f + 0.5f)), 4, BondTreasuryBase + 6);
 
-    public bool CanIssueBonds() => _debt < 100f && CreditRating() != "D";
+    public bool CanIssueBonds() => _time.ModeActive && _time.DayActive
+        && DebtUnits + BondDebt <= 100f && CreditRating() != "D"
+        && _senate.SubStats.TryGetValue("SWStatTreasury", out var treasury)
+        && treasury + BondProceeds() <= 100f;
 
-    public bool CanRepayDebt() => _debt > 0f && Treasury() >= RepayTreasuryCost;
+    public bool CanRepayDebt() => _time.ModeActive && _time.DayActive && NextRepaymentCost > 0
+        && _senate.SubStats.TryGetValue("SWStatTreasury", out var treasury) && treasury >= NextRepaymentCost;
 
     public void SetRate(int rate)
     {
@@ -181,7 +196,8 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
 
         var proceeds = BondProceeds();
         _senate.AddPolicy("SWStatTreasury", proceeds);
-        _debt = Math.Clamp(_debt + BondDebt, 0f, 100f);
+        var repayment = proceeds + Math.Max(1, (int) MathF.Ceiling(proceeds * BondInterest));
+        _bondRepayments.Enqueue(new BondIssue(proceeds, repayment));
         AddLog($"Выпущены облигации: +{proceeds} в казну, долг вырос.");
         return true;
     }
@@ -191,10 +207,26 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
         if (!CanRepayDebt())
             return false;
 
-        _senate.AddPolicy("SWStatTreasury", -RepayTreasuryCost);
-        _debt = Math.Clamp(_debt - RepayDebtAmount, 0f, 100f);
+        RepayUnits(_bondRepayments.Peek().UnitsLeft);
         AddLog("Часть госдолга погашена досрочно.");
         return true;
+    }
+
+    private void RepayUnits(float units)
+    {
+        while (units > 0f && _bondRepayments.TryPeek(out var issue))
+        {
+            var portion = Math.Min(units, issue.UnitsLeft);
+            var cost = Math.Min(issue.CostLeft, (int) MathF.Ceiling(issue.CostLeft * portion / issue.UnitsLeft));
+            if (!_senate.SubStats.TryGetValue("SWStatTreasury", out var treasury) || treasury < cost)
+                break;
+            _senate.AddPolicy("SWStatTreasury", -cost);
+            issue.UnitsLeft -= portion;
+            issue.CostLeft -= cost;
+            units -= portion;
+            if (issue.UnitsLeft <= 0f || issue.CostLeft == 0)
+                _bondRepayments.Dequeue();
+        }
     }
 
     public void DeclareEmission()
@@ -239,6 +271,9 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        frameTime = _time.ActiveSeconds(frameTime);
+        if (frameTime <= 0f)
+            return;
         if (!_time.ModeActive)
             return;
 
@@ -319,10 +354,10 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
 
     private void TickDebtService(float gameHours)
     {
-        if (_debt <= 0f)
+        if (DebtUnits <= 0f)
             return;
 
-        var service = _debt * _keyRate * 0.0006f;
+        var service = DebtUnits * _keyRate * 0.0006f;
         _senate.AddPolicy("SWStatTreasury", -service * gameHours);
     }
 
@@ -349,8 +384,8 @@ public sealed class SWMinistryFinanceSystem : EntitySystem
 
         if (proto.InflationDelta != 0f)
             _inflation = Math.Clamp(_inflation + proto.InflationDelta * scale, 0f, 100f);
-        if (proto.DebtDelta != 0f)
-            _debt = Math.Clamp(_debt + proto.DebtDelta * scale, 0f, 100f);
+        if (proto.DebtDelta < 0f)
+            RepayUnits(-proto.DebtDelta * scale);
     }
 
     // Finance requests are eased when the treasury is healthy and bite under high inflation.

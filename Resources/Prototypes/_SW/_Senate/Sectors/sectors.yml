@@ -1,6 +1,6 @@
 - type: swSector
   id: SWSectorCoruscant
-  name: Корускант
+  name: Корусант
   description: Столичный округ Республики. Сердце галактической политики, всё ещё не оправившееся от имперского разграбления.
   color: "#F1C40F"
   weight: 3

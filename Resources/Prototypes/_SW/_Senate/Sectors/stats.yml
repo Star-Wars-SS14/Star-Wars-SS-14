@@ -312,6 +312,6 @@
   id: SWStatCrime
   global: SWGlobalSociety
   name: Контроль преступности
-  shortName: Преступн.
+  shortName: Контроль прест.
   order: 30
   default: 40

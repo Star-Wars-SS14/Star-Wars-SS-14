@@ -47,7 +47,7 @@
     selectedMode: FullAuto
     availableModes:
       - FullAuto
-    soundGunshot: /Audio/Weapons/Guns/Gunshots/gun_sentry.ogg
+    soundGunshot: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   # TODO: Power ammo provider?
   - type: BallisticAmmoProvider
     proto: SWE-1Bullet
@@ -133,5 +133,5 @@
     selectedMode: FullAuto
     availableModes:
       - FullAuto
-    soundGunshot: /Audio/Weapons/Guns/Gunshots/gun_sentry.ogg
+    soundGunshot: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
 

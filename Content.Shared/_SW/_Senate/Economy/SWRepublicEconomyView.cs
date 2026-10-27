@@ -10,6 +10,8 @@ public sealed class SWEconomyView
     public bool Paused;
     public int Revision;
     public double Hour;
+    public double SupplyRealSecondsPerHour = 240;
+    public List<SWHealthSupplyFlowView> MedicalSupplyFlows = new();
     public List<SWEconomyWorldView> Worlds = new();
     public List<SWGovernorView> Governors = new();
     public List<SWEconomyRouteFlow> Flows = new();

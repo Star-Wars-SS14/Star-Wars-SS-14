@@ -18,6 +18,7 @@ public enum SWAmbitionComparison : byte
 {
     Above,
     Below,
+    AtLeast,
 }
 
 [Serializable, NetSerializable]

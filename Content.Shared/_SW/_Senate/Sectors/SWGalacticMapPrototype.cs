@@ -59,6 +59,9 @@ public sealed partial class SWGalacticMapWorld
     [DataField] public Vector2? LocalPosition;
     [DataField] public string Kind = "Планета";
     [DataField] public string Description = string.Empty;
+    // Explicit star-system membership, independent of the Senate constituency.
+    [DataField] public string SystemId = string.Empty;
+    [DataField] public string SystemName = string.Empty;
 }
 
 [DataDefinition]

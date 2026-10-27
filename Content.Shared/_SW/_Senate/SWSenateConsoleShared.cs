@@ -71,6 +71,10 @@ public sealed class SWSectorEntry
 [Serializable, NetSerializable]
 public sealed class SWStatisticsConsoleState : BoundUserInterfaceState
 {
+    public int FinanceBaseTaxRate;
+    public List<SWFinanceTaxEntry> FinanceActiveTaxes = new();
+    public List<SWFinanceTaxEntry> FinanceActiveReliefs = new();
+    public List<SWSituationalStatView> SituationalStats = new();
     public List<SWGlobalStatEntry> Globals;
     public List<SWSectorEntry> Sectors;
     public List<SWCrisisEntry> Crises = new();
@@ -237,6 +241,7 @@ public enum SWMinistryWorkConsoleUiKey
 [Serializable, NetSerializable]
 public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
 {
+    public List<SWSituationalStatView> SituationalStats = new();
     public bool HasCard;
     public bool IsMinisterCard;
     public bool HasMinistry;
@@ -309,6 +314,9 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
 
     // ЭПИДЕМИЯ (Health ministry only).
     public bool IsHealth;
+    public Content.Shared._SW._Senate.Ministries.SWHealthView Health = new();
+    public Content.Shared._SW._Senate.Economy.SWEconomyView? HealthEconomy;
+    public List<SWMapCrisisEntry> HealthCrises = new();
     public bool PathogenActive;
     public string PathogenName = string.Empty;
     public int PathogenStrain;
@@ -355,6 +363,15 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public List<SWEconSectorEntry> EconSectors = new();
     public List<string> EconomyLog = new();
 
+    public string EconSelectedGood = string.Empty;
+    public List<SWEconomyGoodView> EconGoods = new();
+    public List<SWEconomyProblemView> EconProblems = new();
+    public List<SWEconomyExpansionView> EconCandidates = new();
+    public List<SWEconomyIndustrialProjectView> EconIndustrialProjects = new();
+    public List<SWEconomyRouteView> EconRoutes = new();
+    public List<SWEconomyEventView> EconEvents = new();
+    public List<SWMapCrisisEntry> EconMapCrises = new();
+
     // ФИНАНСЫ (Finance ministry only).
     public bool IsFinance;
     public int Treasury;
@@ -366,6 +383,10 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public int Debt;
     public string DebtStatus = string.Empty;
     public string CreditRating = string.Empty;
+    public string FinanceRatingReason = string.Empty;
+    public int FinanceCreditDebt;
+    public bool FinanceCoverageAvailable;
+    public float FinanceDebtCoverage;
     public Color RatingColor;
     public int TaxLevel;
     public string TaxLevelLabel = string.Empty;
@@ -387,6 +408,27 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public int BudgetSectorPool;
     public int BudgetMinistryPool;
     public int BudgetSectorPct;
+    public int BudgetReservePct;
+    public int BudgetReservePool;
+    public int BudgetReserveRemaining;
+    public int BudgetTreasury;
+    public int BudgetRevision;
+    public int BudgetDay;
+    public bool BudgetAutoApplied;
+    public string BudgetAutoReason = string.Empty;
+    public bool BudgetCanTransfer;
+    public string BudgetTransferResultRequestId = string.Empty;
+    public string BudgetTransferResult = string.Empty;
+    public List<SWBudgetTransferTarget> BudgetTransferTargets = new();
+    public List<SWBudgetTransferEntry> BudgetTransferHistory = new();
+    public List<SWFinanceSectorRevenue> FinanceRevenueSectors = new();
+    public List<SWFinanceTaxEntry> FinanceTaxGoods = new();
+    public List<SWFinanceTaxEntry> FinanceReliefs = new();
+    public string FinanceTaxResultRequestId = string.Empty;
+    public string FinanceTaxResult = string.Empty;
+    public List<SWFinanceGovernorRequest> FinanceGovernorRequests = new();
+    public string FinanceGovernorResult = string.Empty;
+    public string FinanceGovernorResultRequestId = string.Empty;
     public int BudgetRejects;
     public string BudgetRejectReason = string.Empty;
     public bool BudgetCanEdit;
@@ -638,22 +680,124 @@ public sealed class SWBudgetResetWeightsMessage : BoundUserInterfaceMessage
 [Serializable, NetSerializable]
 public sealed class SWBudgetSubmitMessage : BoundUserInterfaceMessage
 {
+    public int Revision;
+    public int SectorPct;
+    public int ReservePct;
+    public Dictionary<string, int> Weights = new();
+
+    public SWBudgetSubmitMessage() { }
+    public SWBudgetSubmitMessage(int revision, int sectorPct, int reservePct, Dictionary<string, int> weights)
+    {
+        Revision = revision;
+        SectorPct = sectorPct;
+        ReservePct = reservePct;
+        Weights = weights;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBudgetTransferTarget
+{
+    public string Id = string.Empty;
+    public string Name = string.Empty;
+    public bool Ministry;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBudgetTransferEntry
+{
+    public string TargetName = string.Empty;
+    public int Amount;
+    public string Purpose = string.Empty;
+    public string Time = string.Empty;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWFinanceSectorRevenue
+{
+    public string SectorId = string.Empty;
+    public string Name = string.Empty;
+    public float ProducedValue;
+    public float Tax;
+    public List<string> Reasons = new();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWFinanceTaxEntry
+{
+    public string Id = string.Empty;
+    public string Name = string.Empty;
+    public int Rate;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWBudgetReserveTransferMessage : BoundUserInterfaceMessage
+{
+    public int Revision;
+    public string RequestId;
+    public bool Ministry;
+    public string TargetId;
+    public int Amount;
+    public string Purpose;
+    public SWBudgetReserveTransferMessage(int revision, string requestId, bool ministry, string targetId, int amount, string purpose)
+    {
+        Revision = revision; RequestId = requestId; Ministry = ministry; TargetId = targetId; Amount = amount; Purpose = purpose;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWFinanceGovernorRequest
+{
+    public string RequestId = string.Empty;
+    public string SectorId = string.Empty;
+    public string SectorName = string.Empty;
+    public string Governor = string.Empty;
+    public string WorldName = string.Empty;
+    public string ProjectName = string.Empty;
+    public string Reason = string.Empty;
+    public string Outcome = string.Empty;
+    public int Cost;
+    public int Missing;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWFinanceGovernorDecisionMessage : BoundUserInterfaceMessage
+{
+    public string RequestId;
+    public bool Approve;
+    public SWFinanceGovernorDecisionMessage(string requestId, bool approve) { RequestId = requestId; Approve = approve; }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWFinanceTaxSetMessage : BoundUserInterfaceMessage
+{
+    public string Id;
+    public int Rate;
+    public bool Relief;
+    public string RequestId;
+    public SWFinanceTaxSetMessage(string id, int rate, bool relief, string requestId = "") { Id = id; Rate = rate; Relief = relief; RequestId = requestId; }
 }
 
 [Serializable, NetSerializable]
 public sealed class SWBudgetApproveMessage : BoundUserInterfaceMessage
 {
+    public int Revision;
+    public Dictionary<string, int> Allocations = new();
+    public SWBudgetApproveMessage() { }
+    public SWBudgetApproveMessage(int revision, Dictionary<string, int> allocations) { Revision = revision; Allocations = allocations; }
 }
 
 [Serializable, NetSerializable]
 public sealed class SWBudgetRejectMessage : BoundUserInterfaceMessage
 {
     public string Reason;
+    public int Revision;
 
     public SWBudgetRejectMessage(string reason)
     {
         Reason = reason;
     }
+    public SWBudgetRejectMessage(int revision, string reason) { Revision = revision; Reason = reason; }
 }
 
 [Serializable, NetSerializable]
@@ -702,6 +846,44 @@ public sealed class SWEconSectorEntry
     public int Economy;
     public int Industry;
 }
+
+[Serializable, NetSerializable]
+public sealed class SWEconomyGoodView { public string Id = string.Empty; public string Name = string.Empty; }
+[Serializable, NetSerializable]
+public sealed class SWEconomyProblemView
+{
+    public string World = string.Empty, WorldName = string.Empty, Sector = string.Empty, Good = string.Empty, GoodName = string.Empty;
+    public string Kind = string.Empty, Detail = string.Empty, Sources = string.Empty, Governor = string.Empty;
+}
+[Serializable, NetSerializable]
+public sealed class SWEconomyExpansionView
+{
+    public string World = string.Empty, WorldName = string.Empty, Sector = string.Empty, Recipe = string.Empty, RecipeName = string.Empty;
+    public string Good = string.Empty, SectorName = string.Empty, Reason = string.Empty, Materials = string.Empty, Status = string.Empty;
+    public int Cost; public double AddedRate, WorkHours; public bool Available;
+}
+[Serializable, NetSerializable]
+public sealed class SWEconomyIndustrialProjectView
+{
+    public string Id = string.Empty, Name = string.Empty, WorldName = string.Empty, Status = string.Empty, Materials = string.Empty;
+    public string Work = string.Empty;
+    public double Progress; public bool Completed;
+}
+[Serializable, NetSerializable]
+public sealed class SWEconomyRouteView
+{
+    public string Id = string.Empty, AName = string.Empty, BName = string.Empty, Detail = string.Empty, Status = string.Empty;
+    public string A = string.Empty, B = string.Empty, ConstructionWorld = string.Empty, ConstructionWorldName = string.Empty;
+    public double Capacity, BaseCapacity, Loaded, AddedCapacity;
+    public int Cost; public bool Available;
+}
+[Serializable, NetSerializable]
+public sealed class SWEconomySelectGoodMessage(string good) : BoundUserInterfaceMessage { public string Good = good; }
+[Serializable, NetSerializable]
+public sealed class SWEconomyFundExpansionMessage(string world, string recipe) : BoundUserInterfaceMessage
+{ public string World = world; public string Recipe = recipe; }
+[Serializable, NetSerializable]
+public sealed class SWEconomyFundRouteMessage(string edge) : BoundUserInterfaceMessage { public string Edge = edge; }
 
 [Serializable, NetSerializable]
 public sealed class SWEconomySetPolicyMessage : BoundUserInterfaceMessage
@@ -1279,6 +1461,7 @@ public sealed class SWSenateRosterEntry
 [Serializable, NetSerializable]
 public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
 {
+    public List<SWSituationalStatView> SituationalStats = new();
     public bool HasCard;
     public bool IsSenateCard;
     public SWSenatePosition Position;
@@ -1297,6 +1480,7 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public string? SectorName;
     public string? SectorId;
     public List<SWSectorEntry> MapSectors = new();
+    public List<SWMapCrisisEntry> MapCrises = new();
     public List<SWStatEntry> SectorStats = new();
     public List<int> SectorTrends = new();
     public List<SWGlobalStatEntry> Globals = new();
@@ -1321,6 +1505,7 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public string PendingPostureName = string.Empty;
     public bool HealthEmergencyProposed;
     public bool CanApproveHealthEmergency;
+    public List<Content.Shared._SW._Senate.Ministries.SWHealthQuarantineView> HealthQuarantines = new();
     public bool StimulusProposed;
     public bool CanApproveStimulus;
     public bool EmissionProposed;
@@ -1336,7 +1521,12 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool IsChancellorView;
     public bool BudgetLocked;
     public int BudgetTotal;
+    public int BudgetRevision;
+    public int BudgetDay;
+    public bool BudgetAutoApplied;
+    public string BudgetAutoReason = string.Empty;
     public int BudgetReserve;
+    public int BudgetRepublicReservePool;
     public int MyBudgetAvailable;
     public List<SWBudgetSectorEntry> BudgetSectors = new();
     public bool BudgetProjectPending;
@@ -1953,6 +2143,12 @@ public sealed class SWProgramMaterialEntry
     public float Required;
     public float Delivered;
     public float InTransit;
+    public double? DeliveryHours;
+    public double? MinimumTravelHours;
+    public double? NextDeliveryHours;
+    public double? NextMinimumTravelHours;
+    public double NextDeliveryQuantity;
+    public string DeliveryStatus = "waiting_materials";
 }
 
 [Serializable, NetSerializable]
@@ -2116,6 +2312,7 @@ public sealed class SWBillEffectEntry
     public string StatName = string.Empty;
     public Color Color;
     public float Delta;
+    public bool PerHour;
 }
 
 [Serializable, NetSerializable]

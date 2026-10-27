@@ -17,6 +17,8 @@ public sealed partial class SWRepublicEconomyScenarioPrototype : IPrototype
     [DataField] public double DomesticPowerPerPopulation = 1.5;
     [DataField] public double RecoveryHours = 4;
     [DataField] public double OrderDeadlineHours = 42;
+    /// <summary>Existing merchant fleet slots, independent of the current freight travel clock.</summary>
+    [DataField(required: true)] public Dictionary<ProtoId<SWPlanetEconomyPrototype>, double> InitialFleetSlots = new();
     [DataField(required: true)] public List<SWEconomyInitialProduction> Production = new();
     [DataField(required: true)] public List<SWEconomyInitialStock> Inventory = new();
     [DataField(required: true)] public List<SWEconomyInitialShipping> Shipping = new();

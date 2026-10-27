@@ -26,6 +26,7 @@ public enum SWDirectorActionKind : byte
     RepublicDilemma,
     Strike,
     Merc,
+    EconomyIncident,
 }
 
 [Serializable, NetSerializable]

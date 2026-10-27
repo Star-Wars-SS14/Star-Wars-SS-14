@@ -22,9 +22,7 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._SW.GlobalWar;
 
-/// <summary>
-/// Validates console requests and sends the entire shuttle through the existing timed FTL pipeline.
-/// </summary>
+// Handles interplanetary console requests, safe arrival points, and timed FTL travel.
 public sealed class SWGlobalWarTravelSystem : EntitySystem
 {
     [Dependency] private readonly SWGlobalWarPlanetSystem _planets = default!;
@@ -37,6 +35,14 @@ public sealed class SWGlobalWarTravelSystem : EntitySystem
     [Dependency] private readonly SharedInteractionSystem _interaction = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly IPrototypeManager _prototypes = default!;
+
+    // Extra clearance in meters between the station's bounding circle and the ship's FTL safety circle.
+    private const float MinimumArrivalDistance = 8f;
+
+    // Number of search rings, directions per ring, and radial spacing in meters.
+    private const int ArrivalSearchRingCount = 4;
+    private const int ArrivalSearchDirectionCount = 16;
+    private const float ArrivalSearchRingSpacing = 64f;
 
     public override void Initialize()
     {
@@ -82,8 +88,12 @@ public sealed class SWGlobalWarTravelSystem : EntitySystem
     }
 
     /// <summary>
-    /// This is the authoritative entry point. The client supplies only a destination prototype ID.
+    /// Validates a travel request, reserves a safe arrival point, and starts FTL to the destination orbit.
     /// </summary>
+    /// <param name="console">Navigation console used to request travel.</param>
+    /// <param name="user">Entity interacting with the console.</param>
+    /// <param name="destination">Prototype ID of the target planet.</param>
+    /// <param name="reason">Localized rejection reason, or an empty string on success.</param>
     public bool TryStartTravel(EntityUid console, EntityUid user, ProtoId<SWGlobalWarPlanetPrototype> destination,
         out string reason)
     {
@@ -99,13 +109,13 @@ public sealed class SWGlobalWarTravelSystem : EntitySystem
             return false;
 
         var source = Comp<SWGlobalWarPlanetComponent>(planet).Prototype;
+
         if (!_planets.TryPrepareArrival(destination, SWGlobalWarPlanetLocation.Orbit, ship, out var map))
         {
             reason = Loc.GetString("sw-global-war-travel-unavailable");
             return false;
         }
 
-        // Wake first: collision and exclusion queries must include the destination's current state.
         var flight = AddComp<SWGlobalWarTravelComponent>(ship);
         flight.GlobalWarGamerule = Comp<SWGlobalWarPlanetComponent>(planet).GlobalWarGamerule;
         flight.Source = source;
@@ -137,11 +147,19 @@ public sealed class SWGlobalWarTravelSystem : EntitySystem
         }
     }
 
+    /// <summary>
+    /// Resolves the source ship and planet and checks their readiness for interplanetary travel.
+    /// </summary>
+    /// <param name="console">Navigation console on the departing ship.</param>
+    /// <param name="ship">Resolved ship grid.</param>
+    /// <param name="planet">Resolved source planet controller.</param>
+    /// <param name="reason">Localized reason if validation fails.</param>
     private bool TryGetContext(EntityUid console, out EntityUid ship, out EntityUid planet,
         out string reason)
     {
         ship = planet = default;
         reason = Loc.GetString("sw-global-war-travel-orbit-only");
+        // Interplanetary travel must start from a ship grid on an orbit map.
         var xform = Transform(console);
         if (xform.GridUid is not { } grid ||
             !TryComp<SWGlobalWarPlanetMapComponent>(xform.MapUid, out var link) ||
@@ -151,6 +169,7 @@ public sealed class SWGlobalWarTravelSystem : EntitySystem
 
         ship = grid;
         planet = link.Planet;
+        // Reject maps belonging to a previous GlobalWarGamerule instance.
         reason = Loc.GetString("sw-global-war-travel-unavailable");
         if (!_globalWarGamerule.TryGetGlobalWarGamerule(out var globalWarGamerule) ||
             data.GlobalWarGamerule != globalWarGamerule.Owner)
@@ -160,6 +179,7 @@ public sealed class SWGlobalWarTravelSystem : EntitySystem
         if (!this.IsPowered(console, EntityManager) || !xform.Anchored)
             return false;
 
+        // Only mobile ships may travel; station grids and static bodies are excluded.
         reason = Loc.GetString("sw-global-war-travel-ship-only");
         if (!TryComp<ShuttleComponent>(ship, out var shuttle) || !shuttle.Enabled ||
             !TryComp<PhysicsComponent>(ship, out var body) || body.BodyType != BodyType.Dynamic ||
@@ -182,6 +202,15 @@ public sealed class SWGlobalWarTravelSystem : EntitySystem
         return true;
     }
 
+    /// <summary>
+    /// Checks the directed route, destination station, and standard FTL destination restrictions.
+    /// </summary>
+    /// <param name="console">Console used to check destination access and coordinate disk requirements.</param>
+    /// <param name="ship">Departing ship grid.</param>
+    /// <param name="planet">Source planet controller.</param>
+    /// <param name="destination">Prototype ID of the target planet.</param>
+    /// <param name="targetPlanet">Resolved destination planet controller.</param>
+    /// <param name="reason">Localized reason if validation fails.</param>
     private bool CheckDestination(EntityUid console, EntityUid ship, EntityUid planet,
         ProtoId<SWGlobalWarPlanetPrototype> destination, out EntityUid targetPlanet, out string reason)
     {
@@ -214,6 +243,10 @@ public sealed class SWGlobalWarTravelSystem : EntitySystem
         _ui.SetUiState(console, SWGlobalWarTravelConsoleUiKey.Key, GetState(console));
     }
 
+    /// <summary>
+    /// Builds the current planet, flight status, and destination availability without searching for exit points.
+    /// </summary>
+    /// <param name="console">Navigation console whose state is being requested.</param>
     public SWGlobalWarTravelConsoleState GetState(EntityUid console)
     {
         var entries = new List<SWGlobalWarTravelDestination>();
@@ -244,6 +277,12 @@ public sealed class SWGlobalWarTravelSystem : EntitySystem
         return new SWGlobalWarTravelConsoleState(current, status, entries);
     }
 
+    /// <summary>
+    /// Searches outward from the destination station and reserves the first exit accepted by FTLFree.
+    /// </summary>
+    /// <param name="ship">Arriving ship grid whose size determines the required clearance.</param>
+    /// <param name="flight">Destination and arrival reservation updated when a safe point is found.</param>
+    /// <param name="coordinates">Ship origin coordinates for FTLToCoordinates on success.</param>
     private bool TryFindArrival(EntityUid ship, SWGlobalWarTravelComponent flight, out EntityCoordinates coordinates)
     {
         coordinates = default;
@@ -252,6 +291,7 @@ public sealed class SWGlobalWarTravelSystem : EntitySystem
             !TryComp<PhysicsComponent>(ship, out var body))
             return false;
 
+        // Collect active exclusion zones; FTLFree filters them by the destination map.
         var exclusions = new List<ShuttleExclusionObject>();
         var exclusionQuery = AllEntityQuery<FTLExclusionComponent, TransformComponent>();
         while (exclusionQuery.MoveNext(out var exclusion, out var xform))
@@ -262,32 +302,46 @@ public sealed class SWGlobalWarTravelSystem : EntitySystem
 
         var stationGrid = Comp<MapGridComponent>(station.Value);
         var center = Vector2.Transform(stationGrid.LocalAABB.Center, _transform.GetWorldMatrix(station.Value));
+        // Match the safety radius used by FTLFree around the ship's center of mass.
         var radius = _shuttles.GetFTLBufferRange(ship) + SharedShuttleSystem.FTLBufferRange;
-        var minimumDistance = stationGrid.LocalAABB.Size.Length() / 2f + radius + 8f;
-        for (var ring = 0; ring < 4; ring++)
+        // Half the diagonal encloses the rotated station; add the ship's safety radius and extra clearance.
+        var minimumDistance = stationGrid.LocalAABB.Size.Length() / 2f + radius + MinimumArrivalDistance;
+
+        // Search evenly spaced points on concentric rings, starting with the nearest ring.
+        for (var ring = 0; ring < ArrivalSearchRingCount; ring++)
         {
-            for (var direction = 0; direction < 16; direction++)
+            for (var direction = 0; direction < ArrivalSearchDirectionCount; direction++)
             {
-                var angle = direction * MathF.Tau / 16;
-                var point = center + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) * (minimumDistance + ring * 64f);
+                var angle = direction * MathF.Tau / ArrivalSearchDirectionCount;
+                var point = center + new Vector2(MathF.Cos(angle), MathF.Sin(angle)) *
+                    (minimumDistance + ring * ArrivalSearchRingSpacing);
                 var candidate = new EntityCoordinates(flight.DestinationMap, point);
 
-                // Local map coordinates on different planets have no meaningful travel distance.
-                // Retain FTLFree's grid clearance and exclusion checks, but use GlobalWarGamerule routes for range.
+
                 if (!_shuttles.FTLFree(ship, candidate, Angle.Zero, exclusions, checkRange: false) ||
                     IsArrivalReserved(ship, flight.DestinationMap, point, radius))
                     continue;
 
+                // Reserve the first valid area until this flight completes or is cancelled.
                 flight.ArrivalCenter = point;
                 flight.ArrivalRadius = radius;
+
                 coordinates = candidate.Offset(-body.LocalCenter);
                 return true;
             }
         }
 
+        // Every candidate is obstructed, excluded, or reserved by another flight.
         return false;
     }
 
+    /// <summary>
+    /// Checks whether an arrival circle overlaps another incoming ship's reservation on the same map.
+    /// </summary>
+    /// <param name="ship">Ship whose own reservation should be ignored.</param>
+    /// <param name="map">Destination map containing the proposed arrival area.</param>
+    /// <param name="point">Arrival circle center in map coordinates.</param>
+    /// <param name="radius">Arrival circle radius in meters, including FTL safety buffers.</param>
     private bool IsArrivalReserved(EntityUid ship, EntityUid map, Vector2 point, float radius)
     {
         var query = AllEntityQuery<SWGlobalWarTravelComponent>();
@@ -303,8 +357,6 @@ public sealed class SWGlobalWarTravelSystem : EntitySystem
 
     private void OnBeforeArrival(Entity<SWGlobalWarTravelComponent> ent, ref FTLBeforeArrivalEvent args)
     {
-        // A station can move or another grid can occupy the exit during the journey.
-        // Wait in hyperspace if all exits are blocked instead of smashing into the station.
         if (!TryFindArrival(ent.Owner, ent.Comp, out var coordinates))
         {
             args.Cancelled = true;

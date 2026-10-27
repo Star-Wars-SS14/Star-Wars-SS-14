@@ -47,7 +47,7 @@
     selectedMode: FullAuto
     availableModes:
       - FullAuto
-    soundGunshot: /Audio/Weapons/Guns/Gunshots/gun_sentry.ogg
+    soundGunshot: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
   # TODO: Power ammo provider?
   - type: BallisticAmmoProvider
     proto: SWE-1Bullet
@@ -104,6 +104,7 @@
   - type: SWReportOnDamaged
     channelId: SWEmpireRegular
   - type: SWTurretSayOnTargetLos
+    messageId: sw-turret-say-empire
 
 - type: entity
   parent: SWTurret
@@ -133,5 +134,7 @@
     selectedMode: FullAuto
     availableModes:
       - FullAuto
-    soundGunshot: /Audio/Weapons/Guns/Gunshots/gun_sentry.ogg
+    soundGunshot: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+  - type: SWTurretSayOnTargetLos
+    messageId: sw-turret-say-allhostile
 

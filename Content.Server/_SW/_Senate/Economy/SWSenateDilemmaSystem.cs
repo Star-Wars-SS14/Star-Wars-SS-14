@@ -134,7 +134,6 @@ public sealed partial class SWSenateDilemmaSystem : EntitySystem
             var carriedSources = _requests.Where(r => r.AuditPending || GovernorPending(r.DilemmaId)).Select(r => r.SourceDilemmaId).ToHashSet();
             _dilemmas.RemoveAll(d => !carriedSources.Contains(d.Id) && !GovernorPending(d.DilemmaId));
             _requests.RemoveAll(r => !r.AuditPending && !GovernorPending(r.DilemmaId));
-            _ministryBudget.Clear();
             _ministryAdmin.Clear();
             _notices.Clear();
             _generated.Clear();
@@ -178,6 +177,17 @@ public sealed partial class SWSenateDilemmaSystem : EntitySystem
     {
         EnsureMinistry(ministryId);
         return _ministryBudget[ministryId];
+    }
+
+    public long TotalUnspentMinistryBudgets => _ministryBudget.Values.Sum(value => (long) value);
+
+    // The budget system owns the day rollover. Taking all balances at once avoids
+    // losing money when entity systems observe the new day in a different order.
+    public int ReturnAllMinistryBudgets()
+    {
+        var total = _ministryBudget.Values.Sum();
+        _ministryBudget.Clear();
+        return total;
     }
 
     public int GetMinistryAdmin(string ministryId)

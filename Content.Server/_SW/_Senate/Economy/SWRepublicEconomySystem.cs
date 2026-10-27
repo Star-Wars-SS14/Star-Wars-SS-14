@@ -15,21 +15,34 @@ public sealed class SWRepublicEconomySystem : EntitySystem
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWMinistryHealthSystem _health = default!;
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
+    [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
     private SWRepublicEconomyRunner? _runner;
     private EconomyDefinition? _definition;
     private EconomyDemandModifier[] _modifiers = Array.Empty<EconomyDemandModifier>();
+    private readonly Dictionary<string, EconomyDemandModifier[]> _demandSources = new();
     private EconomyDemandModifier[] _manualModifiers = Array.Empty<EconomyDemandModifier>();
     private readonly Dictionary<string, string> _worldSectors = new();
     private readonly Dictionary<string, string> _goodNames = new();
     private EconomySnapshot? _navySupplySnapshot;
+    private EconomySnapshot? _medicalSupplySnapshot;
+    private IReadOnlyList<SWHealthSupplyFlowView>? _medicalSupplyFlows;
     private SWNavySupplyState? _navySupplyState;
     private SWRepublicSupplyFeedback? _feedback;
     private EconomySnapshot? _feedbackSnapshot;
     private Exception? _reportedFault;
+    private IReadOnlyList<EconomySupplyPenalty> _appliedSupplyPenalties = Array.Empty<EconomySupplyPenalty>();
     public SWRepublicEconomyRunner? Runner => _runner;
     public EconomySnapshot? Snapshot => _runner?.Snapshot;
     internal EconomyDefinition? Definition => _definition;
-    public IReadOnlyList<EconomySupplyPenalty> SupplyPenalties => _feedback?.Penalties ?? Array.Empty<EconomySupplyPenalty>();
+    internal IReadOnlyDictionary<string, string> GoodNames => _goodNames;
+    public IReadOnlyList<SWHealthSupplyFlowView> GetMedicalSupplyFlows()
+    {
+        var snapshot = Snapshot;
+        if (_medicalSupplyFlows != null && ReferenceEquals(snapshot, _medicalSupplySnapshot)) return _medicalSupplyFlows;
+        _medicalSupplySnapshot = snapshot;
+        return _medicalSupplyFlows = SWRepublicMedicalSupplyPublication.Create(snapshot, _goodNames);
+    }
+    public IReadOnlyList<EconomySupplyPenalty> SupplyPenalties => _appliedSupplyPenalties;
 
     public bool QueueProject(EconomyProjectRequest project) =>
         _time.ModeActive && _time.DayActive && _runner != null && _runner.TryQueueProject(project);
@@ -60,6 +73,27 @@ public sealed class SWRepublicEconomySystem : EntitySystem
     public bool SetDefenseTransitRestrictions(IReadOnlyDictionary<string, double> multipliers) =>
         _runner?.SetTransitRestrictions(multipliers) ?? false;
 
+    public bool SetTransitRestrictions(string source, IReadOnlyDictionary<string, double> multipliers) =>
+        _runner?.SetTransitRestrictions(source, multipliers) ?? false;
+
+    public bool SetProductionModifiers(string source, IReadOnlyList<EconomyProductionModifier> modifiers) =>
+        _runner?.SetProductionModifiers(source, modifiers) ?? false;
+
+    public bool SetDemandModifiers(string source, IReadOnlyList<EconomyDemandModifier> modifiers)
+    {
+        if (_definition == null || string.IsNullOrWhiteSpace(source) || modifiers.Any(m => !double.IsFinite(m.Multiplier)
+            || m.Multiplier < 1 || m.Multiplier > 2 || m.Group == "orders"
+            || !_definition.Demands.Any(d => d.World == m.World && d.Group == m.Group))
+            || modifiers.Select(m => (m.World, m.Group)).Distinct().Count() != modifiers.Count) return false;
+        if (_demandSources.TryGetValue(source, out var previous) && previous.SequenceEqual(modifiers)) return true;
+        _demandSources[source] = modifiers.ToArray();
+        RefreshDemandModifiers();
+        return true;
+    }
+
+    public bool SetQuarantineTransitRestrictions(IReadOnlyList<EconomyQuarantineRule> rules) =>
+        _runner?.SetQuarantineTransitRestrictions(rules) ?? false;
+
     public override void Initialize()
     {
         UpdatesBefore.Add(typeof(SWSenateTimeSystem));
@@ -85,9 +119,13 @@ public sealed class SWRepublicEconomySystem : EntitySystem
         _runner?.Reset();
         _modifiers = Array.Empty<EconomyDemandModifier>();
         _manualModifiers = Array.Empty<EconomyDemandModifier>();
+        _demandSources.Clear();
         _feedback?.Reset();
+        _appliedSupplyPenalties = Array.Empty<EconomySupplyPenalty>();
         _feedbackSnapshot = null;
         _navySupplySnapshot = null;
+        _medicalSupplySnapshot = null;
+        _medicalSupplyFlows = null;
         _navySupplyState = null;
         _senate.ClearSupplyPenalties();
         _reportedFault = null;
@@ -103,15 +141,18 @@ public sealed class SWRepublicEconomySystem : EntitySystem
         if (running && !_runner.Busy
             && (_runner.Snapshot == null || _runner.PendingHours + activeHours + 1e-9 >= SWRepublicEconomyRunner.StepHours))
             RefreshDemandModifiers();
-        _runner.Update(activeHours, running, _modifiers);
+        _runner.Update(activeHours, running, _modifiers, _time.Day);
         // The runner may publish the last daytime step just after night or the round end begins.
         // Settle that accepted active time exactly once; never use wall time for supply feedback.
         if (_runner.Snapshot is { } snapshot && !ReferenceEquals(snapshot, _feedbackSnapshot))
         {
             _feedbackSnapshot = snapshot;
+            _finance.AcceptProductionSnapshot(snapshot, _definition, _runner.SnapshotDay);
             if (_feedback?.Update(snapshot, true) == true)
             {
-                foreach (var penalty in _feedback.Penalties)
+                _appliedSupplyPenalties = _feedback.Penalties.Select(p => p.Global == "SWGlobalHealthcare"
+                    ? p with { Offset = Math.Clamp(p.Offset + _health.PlannedCarePenalty(p.Sector), -20, 6) } : p).ToArray();
+                foreach (var penalty in _appliedSupplyPenalties)
                     _senate.SetSupplyPenalty(penalty.Sector, penalty.Global, penalty.Offset);
             }
         }
@@ -140,7 +181,11 @@ public sealed class SWRepublicEconomySystem : EntitySystem
     {
         if (_definition == null)
             return;
-        var infection = _worldSectors.ToDictionary(w => w.Key, w => (double) _health.SectorInfection(w.Value));
-        _modifiers = SWRepublicNeedsPolicy.BuildModifiers(_definition.Demands, infection, _defense.Stance, _manualModifiers);
+        var infection = _worldSectors.ToDictionary(w => w.Key, w => (double) _health.PlanetInfection(w.Key));
+        var baseline = SWRepublicNeedsPolicy.BuildModifiers(_definition.Demands, infection, _defense.Stance, _manualModifiers)
+            .ToDictionary(m => (m.World, m.Group), m => m.Multiplier);
+        foreach (var modifier in _demandSources.Values.SelectMany(v => v))
+            baseline[(modifier.World, modifier.Group)] = Math.Clamp(baseline.GetValueOrDefault((modifier.World, modifier.Group), 1) * modifier.Multiplier, 0, 10);
+        _modifiers = baseline.Select(p => new EconomyDemandModifier(p.Key.World, p.Key.Group, p.Value)).ToArray();
     }
 }

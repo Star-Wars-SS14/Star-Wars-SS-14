@@ -14,6 +14,11 @@ using Content.Server._SW._Senate.Debate;
 using Content.Server._SW._Senate.Director;
 using Content.Server._SW._Senate.Economy;
 using Content.Shared._SW._Senate.Bills;
+using Content.Shared._SW._Senate.Ministries;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
+using Robust.Shared.Player;
+using Robust.Shared.Enums;
 
 namespace Content.Server._SW._Senate.Consoles;
 
@@ -36,6 +41,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
     [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
     [Dependency] private readonly SWMinistryHealthSystem _health = default!;
+    [Dependency] private readonly SWStatisticsConsoleSystem _mapStatistics = default!;
     [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
     [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
@@ -82,6 +88,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSecurityRejectEmergencyMessage>(OnRejectEmergency);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWHealthApproveEmergencyMessage>(OnApproveHealthEmergency);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWHealthRejectEmergencyMessage>(OnRejectHealthEmergency);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWHealthQuarantineDecisionMessage>(OnHealthQuarantineDecision);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEconomyApproveStimulusMessage>(OnApproveStimulus);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEconomyRejectStimulusMessage>(OnRejectStimulus);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWFinanceApproveEmissionMessage>(OnApproveEmission);
@@ -610,6 +617,15 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
+    private void OnHealthQuarantineDecision(Entity<SWSenateWorkConsoleComponent> ent, ref SWHealthQuarantineDecisionMessage args)
+    {
+        if (!CanConfirmAs(ent, args.Actor) || !_health.CanDecideQuarantine(args.Actor))
+            return;
+        var applied = args.Lift ? _health.LiftQuarantine(args.Id) : _health.DecideQuarantine(args.Id, args.Approve, args.Actor);
+        if (!applied) _popup.PopupCursor("Заявка уже рассмотрена или недоступна.", args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
     private void OnApproveHealthEmergency(Entity<SWSenateWorkConsoleComponent> ent, ref SWHealthApproveEmergencyMessage args)
     {
         if (!_time.ModeActive || !_time.DayActive)
@@ -986,8 +1002,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
         switch (args.Action)
         {
-            // 0-5: invoke a ministry's emergency action (needs Command).
-            case >= 0 and <= 5 when _powers.HasPower(SWEmergencyPower.Command):
+            // Quarantine requires a specific Health request, even with emergency powers.
+            case >= 0 and <= 5 when args.Action != 2 && _powers.HasPower(SWEmergencyPower.Command):
                 InvokeMinistry(args.Action);
                 _powers.RegisterUse(8f, 5f, false);
                 break;
@@ -1048,10 +1064,6 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             case 1:
                 _security.SetPosture(Content.Shared._SW._Senate.Ministries.SWSecurityPosture.Emergency);
                 _security.ApproveEmergency();
-                break;
-            case 2:
-                _health.DeclareEmergency();
-                _health.ApproveEmergency();
                 break;
             case 3:
                 _economy.DeclareStimulus();
@@ -1411,7 +1423,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             return;
         }
 
-        if (_budget.Approve())
+        if (_budget.Approve(args.Revision, args.Allocations))
             _popup.PopupCursor(Loc.GetString("sw-budget-approved"), args.Actor, PopupType.Medium);
 
         UpdateUi(ent);
@@ -1428,7 +1440,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             return;
         }
 
-        if (_budget.Reject(args.Reason))
+        if (_budget.Reject(args.Revision, args.Reason))
             _popup.PopupCursor(Loc.GetString("sw-budget-rejected"), args.Actor, PopupType.Medium);
 
         UpdateUi(ent);
@@ -1576,6 +1588,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     private void UpdateUi(Entity<SWSenateWorkConsoleComponent> ent)
     {
         var state = new SWSenateWorkConsoleState();
+        state.SituationalStats = _senate.BuildSituationalStats(null);
+        foreach (var situationSector in _senate.SectorGlobals.Keys)
+            state.SituationalStats.AddRange(_senate.BuildSituationalStats(situationSector));
 
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         state.HasCard = card != null;
@@ -1649,7 +1664,12 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         }
         state.BudgetLocked = _budget.Approved;
         state.BudgetTotal = _budget.Total();
+        state.BudgetRevision = _budget.Revision;
+        state.BudgetDay = _time.Day;
+        state.BudgetAutoApplied = _budget.AutoApplied;
+        state.BudgetAutoReason = _budget.AutoReason;
         state.BudgetReserve = _budget.Reserve();
+        state.BudgetRepublicReservePool = _budget.ReservePool();
         state.MyBudgetAvailable = dilemmaOwner != null ? _budget.Available(dilemmaOwner) : 0;
         state.IsChancellorView = ChancellorInOffice(ent);
         state.BudgetProjectPending = _budget.Pending;
@@ -1702,7 +1722,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.CanApproveEmergency = _security.EmergencyPending && CanConfirmAs(ent);
         state.PendingPostureName = _security.PendingPosture is { } pendingPosture ? SWMinistryInternalSecuritySystem.PostureName(pendingPosture) : string.Empty;
         state.HealthEmergencyProposed = _health.EmergencyPending;
-        state.CanApproveHealthEmergency = _health.EmergencyPending && CanConfirmAs(ent);
+        state.MapCrises = _mapStatistics.BuildMapCrises();
+        state.CanApproveHealthEmergency = CanConfirmAs(ent);
+        state.HealthQuarantines = _health.BuildQuarantines();
         state.StimulusProposed = _economy.StimulusPending;
         state.CanApproveStimulus = _economy.StimulusPending && CanConfirmAs(ent);
         state.EmissionProposed = _finance.EmissionPending;

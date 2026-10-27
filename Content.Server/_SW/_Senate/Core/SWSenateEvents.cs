@@ -119,6 +119,8 @@ public sealed class SWSenateCustomAnnouncementEvent : EntityEventArgs
     }
 }
 
+public sealed class SWSenateDayStartedEvent : EntityEventArgs { }
+
 public sealed class SWSenateDayClosedEvent(bool finalDay) : EntityEventArgs
 {
     public bool FinalDay { get; } = finalDay;

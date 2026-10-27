@@ -73,6 +73,7 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
         var stance = _defense.Stance;
         var state = new SWStatisticsConsoleState(globals, sectors)
         {
+            SituationalStats = _senate.BuildSituationalStats(null),
             Crises = _crisis.BuildCrises(null, false),
             MapCrises = BuildMapCrises(),
             ActiveLaws = _senate.BuildActiveLaws(),
@@ -106,6 +107,9 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
             Overheat = _economy.Overheat,
             OverheatStatus = _economy.OverheatStatus(),
             KeyRate = _finance.KeyRate,
+            FinanceBaseTaxRate = _finance.TaxLevel switch { 0 => 10, 2 => 30, _ => 20 },
+            FinanceActiveTaxes = _finance.TaxGoods().Where(x => x.Rate > 0).ToList(),
+            FinanceActiveReliefs = _finance.TaxReliefs().Where(x => x.Rate > 0).ToList(),
             Inflation = _finance.Inflation,
             InflationStatus = _finance.InflationStatus(),
             Debt = _finance.Debt,
@@ -123,6 +127,8 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
             Authority = _powers.Authority,
             Legitimacy = _powers.Legitimacy,
         };
+        foreach (var sector in _senate.SectorGlobals.Keys)
+            state.SituationalStats.AddRange(_senate.BuildSituationalStats(sector));
 
         _ui.SetUiState(ent.Owner, SWStatisticsConsoleUiKey.Key, state);
     }
@@ -131,6 +137,8 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
     {
         var entries = _crisis.BuildMapCrises();
         entries.AddRange(_defense.BuildPublicMapCrises());
+        entries.AddRange(_health.BuildPublicMapCrises());
+        entries.AddRange(_economy.BuildPublicMapCrises());
         return entries.OrderByDescending(c => c.Severity).ThenBy(c => c.Id).ToList();
     }
 }

@@ -19,6 +19,7 @@ public static class SWRepublicEconomyFactory
         var scenario = prototypes.Index<SWRepublicEconomyScenarioPrototype>(ScenarioId);
         var map = prototypes.Index(scenario.Map);
         var worlds = map.Worlds.Select(w => prototypes.Index<SWPlanetEconomyPrototype>(w.Id)).ToDictionary(w => w.ID);
+        ValidateInitialFleetSlots(scenario.InitialFleetSlots, worlds.Keys);
         var goods = prototypes.EnumeratePrototypes<SWCommodityPrototype>().OrderBy(g => g.ID).ToArray();
         var links = prototypes.EnumeratePrototypes<SWTransitLinkPrototype>()
             .Where(e => worlds.ContainsKey(e.From) && worlds.ContainsKey(e.To)).OrderBy(e => e.ID).ToArray();
@@ -90,7 +91,7 @@ public static class SWRepublicEconomyFactory
                 g.ID == "military_ships" ? SWRepublicNavyLogistics.HullCargoSlots : g.CargoSlots)).ToArray(),
             worlds.Values.OrderBy(w => w.ID).Select(w => new EconomyWorld(w.ID, w.BaseloadPower,
                 w.PopulationUnits * scenario.DomesticPowerPerPopulation, w.LaborCapacity,
-                reactors.GetValueOrDefault(w.ID), Active: w.ActiveEconomy)).ToArray(),
+                reactors.GetValueOrDefault(w.ID), FleetCapacity: scenario.InitialFleetSlots[w.ID], Active: w.ActiveEconomy)).ToArray(),
             stocks, production,
             links.Select(e => new EconomyEdge(e.ID, e.From, e.To, e.Accessible ? e.CapacitySlotsPerHour : 0,
                 e.TravelHours, e.FuelPerSlot)).ToArray(),
@@ -114,6 +115,15 @@ public static class SWRepublicEconomyFactory
                 new EconomyAmount("ship_fuel", SWRepublicNavyLogistics.OpeningDepotReserve("ship_fuel")),
             })).ToArray(),
         };
+    }
+
+    internal static void ValidateInitialFleetSlots(IReadOnlyDictionary<ProtoId<SWPlanetEconomyPrototype>, double> slots, IEnumerable<string> worlds)
+    {
+        var expected = worlds.ToHashSet();
+        if (!expected.SetEquals(slots.Keys.Select(k => k.Id)))
+            throw new InvalidOperationException("InitialFleetSlots must cover every map world exactly, without unknown worlds.");
+        if (slots.Values.Any(value => !double.IsFinite(value) || value < 0))
+            throw new InvalidOperationException("InitialFleetSlots must contain only finite nonnegative capacities.");
     }
 
     private static void RequireRoute(SWTransitLinkPrototype edge, string from, string to)

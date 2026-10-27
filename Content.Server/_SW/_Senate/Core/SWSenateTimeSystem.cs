@@ -39,9 +39,7 @@ public sealed class SWSenateTimeSystem : EntitySystem
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
-        // A new round is the next senate day: the clock resets to morning while the day number carries
-        // over and advances (a round ending mid-day 1 makes the next round day 2).
-        Day++;
+        Day = 1;
         ActiveGameMinutes = 0d;
         _gameMinutes = 0f;
         _gapRemaining = 0f;
@@ -62,6 +60,7 @@ public sealed class SWSenateTimeSystem : EntitySystem
                 DayActive = true;
                 Day++;
                 _gameMinutes = 0f;
+                RaiseLocalEvent(new SWSenateDayStartedEvent());
                 RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Сенат Республики",
                     $"Наступил день {Day}. Ведомства Республики возобновляют работу."));
             }
@@ -108,8 +107,11 @@ public sealed class SWSenateTimeSystem : EntitySystem
 
     public void SetDateTime(int day, int hour, int minute = 0)
     {
+        var previousDay = Day;
         Day = Math.Max(1, day);
         SetTime(hour, minute);
+        if (Day != previousDay)
+            RaiseLocalEvent(new SWSenateDayStartedEvent());
     }
 
     public string TimeString()

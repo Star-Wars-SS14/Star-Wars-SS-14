@@ -44,6 +44,7 @@ public sealed partial class SWSenateProgramSystem : EntitySystem
         var scenario = _proto.Index<SWRepublicEconomyScenarioPrototype>(SWRepublicEconomyFactory.ScenarioId);
         var map = _proto.Index(scenario.Map);
         InitializeDefensePrograms(map);
+        InitializeHealthPrograms(map);
         foreach (var group in map.Worlds.Where(w => w.Sector != null
                      && _proto.Index<SWPlanetEconomyPrototype>(w.Id).ActiveEconomy).GroupBy(w => w.Sector!.Value.Id))
         {
@@ -114,7 +115,7 @@ public sealed partial class SWSenateProgramSystem : EntitySystem
 
     public List<SWProgramEntry> BuildPrograms(string sectorId) => BuildProgramEntries(sectorId);
 
-    private List<SWProgramEntry> BuildProgramEntries(string sectorId, bool defenseOnly = false)
+    private List<SWProgramEntry> BuildProgramEntries(string sectorId, bool defenseOnly = false, bool healthOnly = false)
     {
         Update(0);
         var available = _budget.Available(sectorId);
@@ -122,7 +123,7 @@ public sealed partial class SWSenateProgramSystem : EntitySystem
         var services = _serviceStates;
         var list = new List<SWProgramEntry>();
         foreach (var proto in _proto.EnumeratePrototypes<SWProgramPrototype>()
-                     .Where(p => !defenseOnly || IsDefenseProgram(p.ID)).OrderBy(p => p.Order))
+                     .Where(p => (!defenseOnly || IsDefenseProgram(p.ID)) && (!healthOnly || IsHealthProgram(p.ID))).OrderBy(p => p.Order))
         {
             var cost = _corruption.ProjectCost(sectorId, proto.Cost);
             _projects.TryGetValue((sectorId, proto.ID), out var project);
@@ -166,6 +167,13 @@ public sealed partial class SWSenateProgramSystem : EntitySystem
                     Required = m.Value,
                     Delivered = (float) (materials?.GetValueOrDefault(m.Key.Id)?.Delivered ?? 0),
                     InTransit = (float) (materials?.GetValueOrDefault(m.Key.Id)?.Incoming ?? 0),
+                    DeliveryHours = materials?.GetValueOrDefault(m.Key.Id)?.DeliveryHours,
+                    MinimumTravelHours = materials?.GetValueOrDefault(m.Key.Id)?.MinimumTravelHours,
+                    NextDeliveryHours = materials?.GetValueOrDefault(m.Key.Id)?.NextDeliveryHours,
+                    NextMinimumTravelHours = materials?.GetValueOrDefault(m.Key.Id)?.NextMinimumTravelHours,
+                    NextDeliveryQuantity = materials?.GetValueOrDefault(m.Key.Id)?.NextDeliveryQuantity ?? 0,
+                    DeliveryStatus = materials?.GetValueOrDefault(m.Key.Id)?.DeliveryStatus
+                        ?? (project == null ? "awaiting_order" : "awaiting_publication"),
                 }).ToList(),
                 Effects = EffectEntries(proto.SectorEffects, complete ? operating : 1f),
             });

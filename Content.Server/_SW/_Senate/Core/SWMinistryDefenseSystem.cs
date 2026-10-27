@@ -202,20 +202,20 @@ public sealed partial class SWMinistryDefenseSystem : EntitySystem
     public List<SWBillEffectEntry> BuildStanceEffects(SWDefenseStance stance)
     {
         var list = new List<SWBillEffectEntry>();
-        foreach (var (stat, delta) in Config(stance).Nudges)
+        foreach (var (global, delta) in Config(stance).Nudges)
         {
-            var name = stat;
+            var id = DoctrineStat(global);
+            var name = id;
             var color = Color.White;
-            if (_proto.TryIndex<SWGlobalStatPrototype>(stat, out var global))
+            if (_proto.TryIndex<SWStatPrototype>(id, out var stat))
             {
-                name = global.ShortName;
-                color = global.Color;
+                name = stat.ShortName;
+                color = _proto.TryIndex<SWGlobalStatPrototype>(stat.Global, out var group) ? group.Color : Color.White;
             }
-
-            list.Add(new SWBillEffectEntry { StatName = name, Color = color, Delta = delta });
+            list.Add(new SWBillEffectEntry { StatName = name, Color = color, Delta = delta * 6f });
         }
-
-        list.Add(new SWBillEffectEntry { StatName = "Граница", Color = Color.FromHex("#5DADE2"), Delta = Config(stance).Border });
+        list.Add(new SWBillEffectEntry { StatName = "Граница", Color = Color.FromHex("#5DADE2"), Delta = Config(stance).Border, PerHour = true });
+        list.Add(new SWBillEffectEntry { StatName = "Усталость", Color = Color.FromHex("#E0A23B"), Delta = Config(stance).Weariness, PerHour = true });
         return list;
     }
 

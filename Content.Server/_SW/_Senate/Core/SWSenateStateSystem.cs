@@ -7,7 +7,7 @@ using Content.Shared._SW._Senate.Bills;
 
 namespace Content.Server._SW._Senate.Core;
 
-public sealed class SWSenateStateSystem : EntitySystem
+public sealed partial class SWSenateStateSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
@@ -72,6 +72,7 @@ public sealed class SWSenateStateSystem : EntitySystem
             bias.Clear();
         _supplyPenalties.Clear();
         _programEffects.Clear();
+        ClearAllSituationalContributions();
         _inheritance.Clear();
         foreach (var (sector, globals) in _sectorGlobals)
             _inheritance[sector] = globals.ToDictionary(g => g.Key, g => g.Value - GetSectorTarget(sector, g.Key));
@@ -98,6 +99,7 @@ public sealed class SWSenateStateSystem : EntitySystem
         _sectorBias.Clear();
         _supplyPenalties.Clear();
         _programEffects.Clear();
+        ClearAllSituationalContributions();
         _inheritance.Clear();
         _sectorWeight.Clear();
         _sectorHolders.Clear();
@@ -180,7 +182,8 @@ public sealed class SWSenateStateSystem : EntitySystem
         var bias = _sectorBias.TryGetValue(sectorId, out var offsets) && offsets.TryGetValue(globalId, out var b) ? b : 0f;
         var supply = _supplyPenalties.GetValueOrDefault((sectorId, globalId));
         var programs = _programEffects.GetValueOrDefault((sectorId, globalId));
-        return Math.Clamp(baseline + GetPolicyScore(globalId) - defaultPolicy + bias + supply + programs, global.Min, global.Max);
+        return Math.Clamp(baseline + GetPolicyScore(globalId) - defaultPolicy + bias + supply + programs
+            + GetSituationalGlobalDelta(sectorId, globalId), global.Min, global.Max);
     }
 
     /// <summary>Replace a temporary supply offset, including fulfilled-service benefits; never accumulate policy bias.</summary>

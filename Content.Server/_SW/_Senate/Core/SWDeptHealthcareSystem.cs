@@ -283,7 +283,7 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
     {
         ("Закупка медикаментов", "Пополнить полевые склады: запасы +30.", 800, 2),
         ("Ротация бригад", "Свежие смены из резерва: готовность +25.", 600, 3),
-        ("Вакцинационный десант", "Развезти вакцину по секторам. Требует готовой вакцины Минздрава.", 1000, 6),
+        ("Вакцинационные бригады", "Ускорить вакцинацию там, где уже доставлены дозы и действует медицинское снабжение.", 1000, 6),
         ("Полевой госпиталь", "Развернуть модуль в секторе с наибольшей заболеваемостью.", 1500, 6),
         ("Санитарная инспекция", "Проверка столовых и куполов в случайном секторе.", 500, 3),
     };
@@ -299,8 +299,8 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
 
             if (_opCooldowns.TryGetValue(i, out var ready) && _time.ActiveGameHours < ready)
                 entry.Status = $"готовность через {SWSenateDuration.FormatHours(ready - _time.ActiveGameHours)}";
-            else if (i == 2 && !_health.VaccineReady)
-                entry.Status = "вакцина не готова";
+            else if (i == 2 && !_health.CanDeployVaccinationTeams)
+                entry.Status = "нет доставленных доз или медицинского снабжения";
             else if (cost > budget)
                 entry.Status = "недостаточно бюджета";
             else
@@ -318,7 +318,7 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
             return false;
         if (_opCooldowns.TryGetValue(idx, out var ready) && _time.ActiveGameHours < ready)
             return false;
-        if (idx == 2 && !_health.VaccineReady)
+        if (idx == 2 && !_health.CanDeployVaccinationTeams)
             return false;
 
         var (_, _, cost, cd) = Ops[idx];
@@ -338,10 +338,9 @@ public sealed class SWDeptHealthcareSystem : EntitySystem
                 AddLog("Бригады отдохнули и вернулись в строй.");
                 break;
             case 2:
-                if (_health.PathogenActive)
-                    _health.AddInfectionAll(-6f);
+                _health.DeployVaccinationTeams();
                 _senate.AddPolicy("SWStatMorale", 2f);
-                AddLog("Вакцинационный десант прошёл по секторам.");
+                AddLog("Бригады используют доставленные дозы на местах.");
                 break;
             case 3:
                 DeployFieldHospital();

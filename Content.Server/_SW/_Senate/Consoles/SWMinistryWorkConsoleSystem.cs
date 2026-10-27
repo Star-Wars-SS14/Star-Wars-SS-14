@@ -26,9 +26,12 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
     [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
     [Dependency] private readonly SWMinistryHealthSystem _health = default!;
+    [Dependency] private readonly Content.Server._SW._Senate.Economy.SWRepublicEconomyPublicationSystem _healthEconomy = default!;
     [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
+    [Dependency] private readonly SWStatisticsConsoleSystem _mapStatistics = default!;
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
     [Dependency] private readonly SWSenateBudgetSystem _budget = default!;
+    [Dependency] private readonly Content.Server._SW._Senate.Economy.SWGovernorSystem _governor = default!;
     [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
     [Dependency] private readonly SWCorruptionSystem _corruption = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
@@ -51,7 +54,6 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryResolveRequestMessage>(OnResolve);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryRefuseRequestMessage>(OnRefuse);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseSetStanceMessage>(OnSetStance);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseSelectProgramMessage>(OnSelectProgram);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFleetDeployMessage>(OnDeployFleet);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseLaunchOpMessage>(OnLaunchOp);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseFleetOrderMessage>(OnFleetOrder);
@@ -63,30 +65,25 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecurityDeployCellMessage>(OnDeployCell);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecurityLaunchOpMessage>(OnLaunchSecOp);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecurityRaidPlotMessage>(OnRaidPlot);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthSetFundingMessage>(OnSetFunding);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthDeployVaccineMessage>(OnDeployVaccine);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthQuarantineMessage>(OnQuarantine);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthBuildHospitalMessage>(OnBuildHospital);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthEmergencyAidMessage>(OnEmergencyAid);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthDeclareEmergencyMessage>(OnDeclareEmergency);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthSelectProgramMessage>(OnSelectHealthProgram);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthActionMessage>(OnHealthAction);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomySetPolicyMessage>(OnSetEconPolicy);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomyLaunchProjectMessage>(OnLaunchProject);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomyCancelProjectMessage>(OnCancelProject);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomyAddRouteMessage>(OnAddRoute);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomyRemoveRouteMessage>(OnRemoveRoute);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomySelectGoodMessage>(OnSelectEconGood);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomyFundExpansionMessage>(OnFundEconExpansion);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomyFundRouteMessage>(OnFundEconRoute);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomyRespondEventMessage>(OnRespondEconomyEvent);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomyDeclareStimulusMessage>(OnDeclareStimulus);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomySelectProgramMessage>(OnSelectEconProgram);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceSetRateMessage>(OnSetRate);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceSetTaxMessage>(OnSetTax);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceIssueBondsMessage>(OnIssueBonds);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceRepayDebtMessage>(OnRepayDebt);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceEmissionMessage>(OnEmission);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceSelectProgramMessage>(OnSelectFinProgram);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWBudgetAdjustRatioMessage>(OnBudgetRatio);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWBudgetSetWeightMessage>(OnBudgetWeight);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWBudgetResetWeightsMessage>(OnBudgetResetWeights);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWBudgetSubmitMessage>(OnBudgetSubmit);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWBudgetReserveTransferMessage>(OnBudgetReserveTransfer);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceTaxSetMessage>(OnFinanceTaxSet);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceGovernorDecisionMessage>(OnFinanceGovernorDecision);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeInvestigateMessage>(OnInvestigate);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeSendToCourtMessage>(OnSendToCourt);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeHoldHearingMessage>(OnHoldHearing);
@@ -242,7 +239,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         if (!_time.ModeActive || !_time.DayActive)
             return;
 
-        if (!IsFinanceCard(ent))
+        if (!CanActAsFinance(ent, args.Actor))
             return;
 
         _budget.AdjustRatio(args.DeltaPct);
@@ -254,7 +251,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         if (!_time.ModeActive || !_time.DayActive)
             return;
 
-        if (!IsFinanceCard(ent))
+        if (!CanActAsFinance(ent, args.Actor))
             return;
 
         _budget.SetWeight(args.MinistryId, args.Delta);
@@ -266,7 +263,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         if (!_time.ModeActive || !_time.DayActive)
             return;
 
-        if (!IsFinanceCard(ent))
+        if (!CanActAsFinance(ent, args.Actor))
             return;
 
         _budget.ResetWeights();
@@ -278,24 +275,66 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         if (!_time.ModeActive || !_time.DayActive)
             return;
 
-        if (!IsFinanceCard(ent))
+        if (!CanActAsFinance(ent, args.Actor))
             return;
 
-        if (_budget.Submit())
+        if (_budget.Submit(args.Revision, args.SectorPct, args.ReservePct, args.Weights))
             _popup.PopupCursor(Loc.GetString("sw-budget-submitted"), args.Actor, PopupType.Medium);
 
+        UpdateUi(ent);
+    }
+
+    private void OnBudgetReserveTransfer(Entity<SWMinistryWorkConsoleComponent> ent, ref SWBudgetReserveTransferMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive || !CanActAsFinance(ent, args.Actor)) return;
+        var success = _budget.Transfer(args.Revision, args.RequestId, args.Ministry, args.TargetId, args.Amount, args.Purpose);
+        _budget.ReportTransfer(args.RequestId, success);
+        UpdateUi(ent);
+    }
+
+    private void OnFinanceTaxSet(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFinanceTaxSetMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive || !CanActAsFinance(ent, args.Actor))
+        {
+            _finance.ReportTaxResult(args.RequestId, false);
+            UpdateUi(ent);
+            return;
+        }
+        var success = !string.IsNullOrWhiteSpace(args.RequestId) && args.RequestId.Length <= 100
+            && _finance.SetCommodityTax(args.Id, args.Rate, args.Relief);
+        _finance.ReportTaxResult(args.RequestId, success);
+        UpdateUi(ent);
+    }
+
+    private void OnFinanceGovernorDecision(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFinanceGovernorDecisionMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive || !CanActAsFinance(ent, args.Actor))
+        {
+            _governor.ReportFinanceDenied(args.RequestId);
+            UpdateUi(ent);
+            return;
+        }
+        _governor.DecideFinanceRequest(args.RequestId, args.Approve);
         UpdateUi(ent);
     }
 
     private bool IsFinanceCard(Entity<SWMinistryWorkConsoleComponent> ent) =>
         GetCardMinistry(ent) == SWMinistryFinanceSystem.FinanceMinistryId;
 
+    private bool CanActAsFinance(Entity<SWMinistryWorkConsoleComponent> ent, EntityUid actor)
+    {
+        if (IsFinanceCard(ent) && _ministry.IsActiveHolder(SWMinistryFinanceSystem.FinanceMinistryId, actor))
+            return true;
+        _popup.PopupCursor(Loc.GetString("sw-finance-holder-required"), actor, PopupType.Medium);
+        return false;
+    }
+
     private void OnSetRate(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFinanceSetRateMessage args)
     {
         if (!_time.ModeActive || !_time.DayActive)
             return;
 
-        if (!IsFinanceCard(ent))
+        if (!CanActAsFinance(ent, args.Actor))
             return;
 
         _finance.SetRate(args.Rate);
@@ -307,7 +346,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         if (!_time.ModeActive || !_time.DayActive)
             return;
 
-        if (!IsFinanceCard(ent))
+        if (!CanActAsFinance(ent, args.Actor))
             return;
 
         _finance.SetTax(args.Level);
@@ -319,7 +358,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         if (!_time.ModeActive || !_time.DayActive)
             return;
 
-        if (!IsFinanceCard(ent))
+        if (!CanActAsFinance(ent, args.Actor))
             return;
 
         if (!_finance.IssueBonds())
@@ -333,7 +372,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         if (!_time.ModeActive || !_time.DayActive)
             return;
 
-        if (!IsFinanceCard(ent))
+        if (!CanActAsFinance(ent, args.Actor))
             return;
 
         if (!_finance.RepayDebt())
@@ -347,22 +386,10 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         if (!_time.ModeActive || !_time.DayActive)
             return;
 
-        if (!IsFinanceCard(ent))
+        if (!CanActAsFinance(ent, args.Actor))
             return;
 
         _finance.DeclareEmission();
-        UpdateUi(ent);
-    }
-
-    private void OnSelectFinProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWFinanceSelectProgramMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsFinanceCard(ent))
-            return;
-
-        _finance.SelectProgram(args.ProgramId);
         UpdateUi(ent);
     }
 
@@ -378,6 +405,37 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
             return;
 
         _economy.SetPolicy(args.Level);
+        UpdateUi(ent);
+    }
+
+    private void OnSelectEconGood(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomySelectGoodMessage args)
+    {
+        if (!IsEconomyCard(ent) || !_time.ModeActive || !_time.DayActive) return;
+        _economy.SelectGood(args.Good);
+        UpdateUi(ent);
+    }
+
+    private void OnFundEconExpansion(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomyFundExpansionMessage args)
+    {
+        if (!IsEconomyCard(ent) || !_time.ModeActive || !_time.DayActive) return;
+        if (!_economy.FundExpansion(args.World, args.Recipe))
+            _popup.PopupCursor(Loc.GetString("sw-economy-project-failed"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void OnFundEconRoute(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomyFundRouteMessage args)
+    {
+        if (!IsEconomyCard(ent) || !_time.ModeActive || !_time.DayActive) return;
+        if (!_economy.FundRoute(args.Edge))
+            _popup.PopupCursor(Loc.GetString("sw-economy-route-failed"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void OnRespondEconomyEvent(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomyRespondEventMessage args)
+    {
+        if (!IsEconomyCard(ent) || !_ministry.IsActiveHolder(SWMinistryEconomySystem.EconomyMinistryId, args.Actor)) return;
+        if (!_economy.RespondEconomyEvent(args.EventId, args.Accelerated))
+            _popup.PopupCursor(Loc.GetString("sw-economy-project-failed"), args.Actor, PopupType.Medium);
         UpdateUi(ent);
     }
 
@@ -445,108 +503,17 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
-    private void OnSelectEconProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWEconomySelectProgramMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsEconomyCard(ent))
-            return;
-
-        _economy.SelectProgram(args.ProgramId);
-        UpdateUi(ent);
-    }
-
     private bool IsHealthCard(Entity<SWMinistryWorkConsoleComponent> ent) =>
         GetCardMinistry(ent) == SWMinistryHealthSystem.HealthMinistryId;
 
-    private void OnSetFunding(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthSetFundingMessage args)
+    private void OnHealthAction(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthActionMessage args)
     {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsHealthCard(ent))
-            return;
-
-        _health.SetFunding(args.Level);
-        UpdateUi(ent);
-    }
-
-    private void OnDeployVaccine(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthDeployVaccineMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsHealthCard(ent))
-            return;
-
-        if (!_health.DeployVaccine())
-            _popup.PopupCursor(Loc.GetString("sw-health-vaccine-failed"), args.Actor, PopupType.Medium);
-
-        UpdateUi(ent);
-    }
-
-    private void OnQuarantine(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthQuarantineMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsHealthCard(ent))
-            return;
-
-        _health.SetQuarantine(args.SectorId, args.On);
-        UpdateUi(ent);
-    }
-
-    private void OnBuildHospital(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthBuildHospitalMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsHealthCard(ent))
-            return;
-
-        if (!_health.BuildHospital(args.SectorId))
-            _popup.PopupCursor(Loc.GetString("sw-health-build-failed"), args.Actor, PopupType.Medium);
-
-        UpdateUi(ent);
-    }
-
-    private void OnEmergencyAid(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthEmergencyAidMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsHealthCard(ent))
-            return;
-
-        if (!_health.EmergencyAid(args.SectorId))
-            _popup.PopupCursor(Loc.GetString("sw-health-aid-failed"), args.Actor, PopupType.Medium);
-
-        UpdateUi(ent);
-    }
-
-    private void OnDeclareEmergency(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthDeclareEmergencyMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsHealthCard(ent))
-            return;
-
-        _health.DeclareEmergency();
-        UpdateUi(ent);
-    }
-
-    private void OnSelectHealthProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWHealthSelectProgramMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsHealthCard(ent))
-            return;
-
-        _health.SelectProgram(args.ProgramId);
+        if (!IsHealthCard(ent) || !_health.HandleAction(args, args.Actor))
+        {
+            var reason = IsHealthCard(ent) && args.Action == SWHealthAction.OrderBatch
+                ? _health.VaccineProductionUnavailableReason(args.WorldId) : null;
+            _popup.PopupCursor(reason ?? "Действие недоступно: проверьте полномочия, этап работы, средства и снабжение.", args.Actor, PopupType.Medium);
+        }
         UpdateUi(ent);
     }
 
@@ -715,18 +682,6 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
-    private void OnSelectProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWDefenseSelectProgramMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (GetCardMinistry(ent) != SWMinistryDefenseSystem.DefenseMinistryId)
-            return;
-
-        _defense.SelectProgram(args.ProgramId);
-        UpdateUi(ent);
-    }
-
     private string? GetCardMinistry(Entity<SWMinistryWorkConsoleComponent> ent)
     {
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
@@ -839,6 +794,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
             HasCard = card != null,
             GameTime = _time.TimeString(),
             Globals = _senate.BuildGlobalEntries(),
+            SituationalStats = _senate.BuildSituationalStats(null),
         };
 
         if (card != null
@@ -932,6 +888,9 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                 else if (ministryId == SWMinistryHealthSystem.HealthMinistryId)
                 {
                     state.IsHealth = true;
+                    state.Health = _health.BuildHealthView();
+                    state.HealthEconomy = _healthEconomy.View;
+                    state.HealthCrises = _health.BuildPublicMapCrises();
                     state.PathogenActive = _health.PathogenActive;
                     state.PathogenName = _health.PathogenName;
                     state.PathogenStrain = _health.PathogenStrain + 1;
@@ -949,9 +908,6 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.HealthEmergencyHoursLeft = _health.EmergencyHoursLeft;
                     state.HospitalServicePercent = _health.HospitalServicePercent;
                     state.HealthEmergencyPending = _health.EmergencyPending;
-                    state.SelectedHealthProgram = _health.SelectedProgram ?? string.Empty;
-                    state.HealthProgramProgress = _health.ProgramProgress;
-                    state.HealthPrograms = _health.BuildPrograms();
                     state.InfectionSectors = _health.BuildInfectionSectors();
                     state.HealthLog = _health.GetLog();
                     state.HospitalMaxLevel = SWMinistryHealthSystem.HospitalMaxLevel;
@@ -959,6 +915,14 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                 else if (ministryId == SWMinistryEconomySystem.EconomyMinistryId)
                 {
                     state.IsEconomy = true;
+                    state.EconSelectedGood = _economy.SelectedGood;
+                    state.EconGoods = _economy.BuildIndustrialGoods();
+                    state.EconProblems = _economy.BuildIndustrialProblems();
+                    state.EconCandidates = _economy.BuildIndustrialCandidates();
+                    state.EconIndustrialProjects = _economy.BuildIndustrialProjects();
+                    state.EconRoutes = _economy.BuildIndustrialRoutes();
+                    state.EconEvents = _economy.BuildEconomyEvents();
+                    state.EconMapCrises = _mapStatistics.BuildMapCrises();
                     state.EconPhase = _economy.Phase;
                     state.EconPhaseName = SWMinistryEconomySystem.PhaseName(_economy.Phase);
                     state.EconPhaseColor = SWMinistryEconomySystem.PhaseColor(_economy.Phase);
@@ -970,7 +934,6 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.StimulusPending = _economy.StimulusPending;
                     state.SelectedEconProgram = _economy.SelectedProgram ?? string.Empty;
                     state.EconProgramProgress = _economy.ProgramProgress;
-                    state.EconPrograms = _economy.BuildPrograms();
                     state.Megaprojects = _economy.BuildProjects();
                     state.ActiveProjects = _economy.BuildActiveProjects();
                     state.ProjectSlots = _economy.ProjectSlots;
@@ -992,6 +955,10 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.Debt = _finance.Debt;
                     state.DebtStatus = _finance.DebtStatus();
                     state.CreditRating = _finance.CreditRating();
+                    state.FinanceRatingReason = _finance.RatingReason;
+                    state.FinanceCreditDebt = _finance.CreditDebt;
+                    state.FinanceCoverageAvailable = _finance.HasTaxHistory && _finance.CreditDebt > 0;
+                    state.FinanceDebtCoverage = (float) _finance.DebtCoverage;
                     state.RatingColor = _finance.RatingColor();
                     state.TaxLevel = _finance.TaxLevel;
                     state.TaxLevelLabel = _finance.TaxLevelLabel();
@@ -1000,9 +967,6 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.CanRepayDebt = _finance.CanRepayDebt();
                     state.NextRepaymentCost = _finance.NextRepaymentCost;
                     state.EmissionPending = _finance.EmissionPending;
-                    state.SelectedFinanceProgram = _finance.SelectedProgram ?? string.Empty;
-                    state.FinanceProgramProgress = _finance.ProgramProgress;
-                    state.FinancePrograms = _finance.BuildPrograms();
                     state.FinanceLog = _finance.GetLog();
 
                     var phase = _budget.Phase;
@@ -1022,9 +986,30 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.BudgetSectorPool = _budget.SectorPool();
                     state.BudgetMinistryPool = _budget.MinistryPool();
                     state.BudgetSectorPct = _budget.SectorPct;
+                    state.BudgetReservePct = _budget.ReservePct;
+                    state.BudgetReservePool = _budget.ReservePool();
+                    state.BudgetReserveRemaining = _budget.ReserveBalance;
+                    state.BudgetTreasury = _budget.Treasury;
+                    state.BudgetRevision = _budget.Revision;
+                    state.BudgetDay = _time.Day;
+                    state.BudgetAutoApplied = _budget.AutoApplied;
+                    state.BudgetAutoReason = _budget.AutoReason;
+                    state.BudgetCanTransfer = _budget.Approved;
+                    state.BudgetTransferResultRequestId = _budget.TransferResultRequestId;
+                    state.BudgetTransferResult = _budget.TransferResult;
+                    state.BudgetTransferHistory = new(_budget.TransferHistory);
+                    state.BudgetTransferTargets = _budget.BuildTransferTargets();
+                    state.FinanceTaxGoods = _finance.TaxGoods();
+                    state.FinanceReliefs = _finance.TaxReliefs();
+                    state.FinanceTaxResultRequestId = _finance.TaxResultRequestId;
+                    state.FinanceTaxResult = _finance.TaxResult;
+                    state.FinanceGovernorRequests = _governor.FinanceRequests();
+                    state.FinanceGovernorResult = _governor.FinanceResult;
+                    state.FinanceGovernorResultRequestId = _governor.FinanceResultRequestId;
+                    state.FinanceRevenueSectors = _finance.SectorRevenue();
                     state.BudgetRejects = _budget.Rejects;
                     state.BudgetRejectReason = _budget.RejectReason;
-                    state.BudgetCanEdit = phase != SWBudgetPhase.Approved;
+                    state.BudgetCanEdit = phase == SWBudgetPhase.Draft;
                     state.BudgetCanSubmit = phase == SWBudgetPhase.Draft;
                     state.BudgetShares = _budget.BuildShares();
                 }

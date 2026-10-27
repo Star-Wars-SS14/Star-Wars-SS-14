@@ -870,7 +870,6 @@ public sealed class SWBureauTransitSystem : EntitySystem
         DriftMeters(gameHours);
         TickNetworkEffects(gameHours);
         TickDiffusion(gameHours);
-        TickEpidemicSpread(gameHours);
 
         if (!claimed)
             return;
@@ -988,34 +987,11 @@ public sealed class SWBureauTransitSystem : EntitySystem
         }
     }
 
-    private void TickEpidemicSpread(float gameHours)
+    /// <summary>Passenger restrictions affect the health model's real graph contacts.</summary>
+    public float HealthContactFactor(string sectorId)
     {
-        if (!_health.PathogenActive)
-            return;
-
-        var open = ClaimedStatuses()
-            .Where(kv => kv.Value != StatusCordon && !_health.IsQuarantined(kv.Key))
-            .ToList();
-        if (open.Count < 2)
-            return;
-
-        var rate = 0.012f * (_mobility / 50f) * gameHours;
-        foreach (var (target, targetStatus) in open)
-        {
-            var mult = targetStatus == StatusVisa ? 0.5f : 1f;
-            var targetInf = _health.SectorInfection(target);
-            var pull = 0f;
-            foreach (var (source, sourceStatus) in open)
-            {
-                if (source == target)
-                    continue;
-                var sourceMult = sourceStatus == StatusVisa ? 0.5f : 1f;
-                pull += MathF.Max(0f, _health.SectorInfection(source) - targetInf) * sourceMult;
-            }
-
-            if (pull > 0f)
-                _health.AddInfection(target, pull * rate * mult);
-        }
+        var status = GetStatus(sectorId);
+        return status == StatusCordon ? 0 : (status == StatusVisa ? .5f : 1) * Math.Clamp(_mobility / 50, 0, 2);
     }
 
     private void TickIncome(float gameHours)

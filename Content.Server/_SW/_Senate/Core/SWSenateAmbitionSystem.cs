@@ -266,7 +266,14 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
             case SWAmbitionKind.MinisterMetric:
             {
                 var value = MinisterMetricValue(active.Owner, proto.Stat);
-                return (Compare(value, proto.Comparison, proto.Threshold), StatProgress(value, proto));
+                var progress = active.Owner == SWMinistryHealthSystem.HealthMinistryId ? proto.Stat switch
+                {
+                    "HealthProtectionAchievements" => $"Подтверждено препаратов {_health.ValidatedVaccines}/1 или завершено профилактических кампаний {_health.CompletedPreventionCampaigns}/3",
+                    "TreatmentWithoutMassImmunization" => $"Завершено лечебных кампаний {_health.CompletedElectiveCareCampaigns}/3; средний иммунитет {_health.Immunity}% / не выше 30%",
+                    "ProtectedWorlds" => $"Миров с иммунитетом не ниже 10%: {_health.ProtectedWorlds}/3",
+                    _ => StatProgress(value, proto),
+                } : StatProgress(value, proto);
+                return (Compare(value, proto.Comparison, proto.Threshold), progress);
             }
             case SWAmbitionKind.CourtMetric:
             {
@@ -348,6 +355,9 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
             "Immunity" => _health.Immunity,
             "HospitalsBuilt" => _health.HospitalsBuilt,
             "VaccineReady" => _health.VaccineReady ? 1f : 0f,
+            "ProtectedWorlds" => _health.ProtectedWorlds,
+            "HealthProtectionAchievements" => _health.HealthProtectionAchievements,
+            "TreatmentWithoutMassImmunization" => _health.Immunity <= 30 ? _health.CompletedElectiveCareCampaigns : 0f,
             _ => 0f,
         },
         SWDeptHealthcareSystem.DeptId => metric switch
@@ -415,7 +425,7 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
 
     private static string StatProgress(float value, SWAmbitionPrototype proto)
     {
-        var sign = proto.Comparison == SWAmbitionComparison.Above ? ">" : "<";
+        var sign = proto.Comparison switch { SWAmbitionComparison.Above => ">", SWAmbitionComparison.AtLeast => "≥", _ => "<" };
         return $"{value:0} / нужно {sign}{proto.Threshold:0}";
     }
 
@@ -532,7 +542,7 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
         _proto.TryIndex<SWSectorPrototype>(id, out var proto) ? proto.Name : id;
 
     private static bool Compare(float value, SWAmbitionComparison comparison, float threshold) =>
-        comparison == SWAmbitionComparison.Above ? value > threshold : value < threshold;
+        comparison switch { SWAmbitionComparison.Above => value > threshold, SWAmbitionComparison.AtLeast => value >= threshold, _ => value < threshold };
 }
 
 public sealed class SWActiveAmbition

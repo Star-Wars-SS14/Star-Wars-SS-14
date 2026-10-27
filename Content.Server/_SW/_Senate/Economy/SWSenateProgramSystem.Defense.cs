@@ -38,7 +38,9 @@ public sealed partial class SWSenateProgramSystem
 
     private EconomyProjectRequest CreateProgramRequest(string id, string world, SWProgramPrototype proto) =>
         new(id, world, proto.Materials.Select(m => new EconomyAmount(m.Key.Id, m.Value)).ToArray(), proto.WorkHours,
-            NavyKind: IsDefenseProgram(proto.ID) ? EconomyNavyProjectKind.PlanetaryConstruction : null);
+            NavyKind: IsDefenseProgram(proto.ID) ? EconomyNavyProjectKind.PlanetaryConstruction : null,
+            Medical: IsHealthProgram(proto.ID) ? new EconomyMedicalProject(proto.ID == "SWProgramVaccination"
+                ? EconomyMedicalProjectKind.Prevention : EconomyMedicalProjectKind.Relief, "", world, 1) : null);
 
     public bool ApplyFromDefense(string worldId, string programId)
     {

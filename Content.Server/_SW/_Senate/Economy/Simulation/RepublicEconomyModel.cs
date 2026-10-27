@@ -273,6 +273,8 @@ public sealed partial class RepublicEconomyModel
     private double PowerAvailable(EconomyWorld world) => world.BaseloadPower + Math.Min(ReactorCapacity(world),
         Stock(new Key(world.Id, "reactor_fuel")) * _definition.ReactorPowerPerFuel / StepHours);
 
+    private Dictionary<Key, double> _lastDemandModifiers = new();
+
     public EconomySnapshot Advance(bool active = true, EconomyDemandModifier[]? modifiers = null)
     {
         if (!active)
@@ -284,6 +286,7 @@ public sealed partial class RepublicEconomyModel
                 throw new ArgumentException("Invalid demand modifier");
             demandModifiers.Add(new Key(modifier.World, modifier.Group), modifier.Multiplier);
         }
+        _lastDemandModifiers = demandModifiers;
         _activity.Clear();
         _productionStarted.Clear();
         _productionCompleted.Clear();
@@ -319,6 +322,8 @@ public sealed partial class RepublicEconomyModel
             Add(usedLabor, batch.Recipe.World, batch.Cycles * batch.Recipe.Labor);
         }
         var progress = new Dictionary<string, double>();
+        _medicalWorkFractions.Clear();
+        _medicalProductionSites.Clear();
         foreach (var world in _definition.Worlds)
         {
             var available = PowerAvailable(world);
@@ -329,11 +334,14 @@ public sealed partial class RepublicEconomyModel
             var laborFraction = laborRequired > Epsilon ? LaborAvailable(world) / laborRequired : 1;
             var fraction = Math.Min(1, Math.Min(powerFraction, laborFraction));
             progress.Add(world.Id, fraction);
+            var medical = AllocateMedicalWork(world, Math.Max(0, available - domestic - powerRequired * fraction),
+                Math.Max(0, LaborAvailable(world) - laborRequired * fraction));
             if (ReactorCapacity(world) > 0)
                 ActivityFor(new Key(world.Id, "reactor_fuel")).Required += Math.Min(ReactorCapacity(world),
-                    Math.Max(0, DomesticPower(world) + powerRequired - world.BaseloadPower)) * StepHours / _definition.ReactorPowerPerFuel;
-            Withdraw(new Key(world.Id, "reactor_fuel"), Math.Max(0, domestic + Get(usedPower, world.Id) * fraction - world.BaseloadPower) * StepHours / _definition.ReactorPowerPerFuel);
+                    Math.Max(0, DomesticPower(world) + powerRequired + medical.Power - world.BaseloadPower)) * StepHours / _definition.ReactorPowerPerFuel;
+            Withdraw(new Key(world.Id, "reactor_fuel"), Math.Max(0, domestic + Get(usedPower, world.Id) * fraction + medical.Power - world.BaseloadPower) * StepHours / _definition.ReactorPowerPerFuel);
         }
+        AdvanceProjectWork(medicalWork: true);
         foreach (var batch in _batches)
         {
             batch.Remaining -= StepHours * progress[batch.Recipe.World];
@@ -355,6 +363,7 @@ public sealed partial class RepublicEconomyModel
         RefreshAssets();
         RefreshProjectRoutes();
         _projectSupplyReserves.Clear();
+        _medicalMaterialReserves.Clear();
         _edgeUsed.Clear();
         _edgeEmpty.Clear();
         Dispatch(demandModifiers);
@@ -510,8 +519,18 @@ public sealed partial class RepublicEconomyModel
         // returns can allocate the same kit to remote merchants. Ordinary freight priorities
         // and the public project admission queue are unaffected.
         GatherNavyDepotMaterials();
+        // A funded finite research kit claims only its remaining requirements. Give its
+        // actual cargo first departure/relay slots; ordinary local service reserves remain intact.
+        GatherProjectMaterials(modifiers, researchOnly: true);
+        DispatchProjects(modifiers, researchOnly: true);
+        // Allocate a finite vaccine kit locally before empty backhauls can claim its demand
+        // from distant worlds. The medical reserve still protects local care and factory inputs.
+        GatherProjectMaterials(modifiers, vaccineOnly: true);
+        // Already-paid relief claims only its local surplus before ordinary freight departs.
+        // Medical research and vaccine kits retain their existing precedence above.
+        GatherProjectMaterials(modifiers, reliefOnly: true);
         var reserved = Reservations();
-        var desired = _definition.Shipping.Select(f => f.Rate * TransportMultiplier(f.Source) * StepHours * (f.Good == null ? 1 : Factor(new Key(f.Target, f.Good), reserved))).ToArray();
+        var desired = _definition.Shipping.Select(f => (CrossingAllowed(f.Source, f.Target, f.Good) ? 1 : 0) * f.Rate * TransportMultiplier(f.Source) * StepHours * (f.Good == null ? 1 : Factor(new Key(f.Target, f.Good), reserved))).ToArray();
         for (var i = 0; i < desired.Length; i++)
         {
             var f = _definition.Shipping[i];
@@ -717,6 +736,8 @@ public sealed partial class RepublicEconomyModel
             Add(stock, key.Good, store.Quantity);
         foreach (var (key, quantity) in _navyDepotStock)
             Add(stock, key.Good, quantity);
+        foreach (var project in _projects.Values.Where(p => p.Manufactured && p.PayloadRemaining > Epsilon))
+            Add(stock, project.Request.Medical!.Good, project.PayloadRemaining);
         foreach (var batch in _batches)
         foreach (var input in batch.Recipe.Inputs)
             Add(wip, input.Good, input.Quantity * batch.Cycles);
@@ -734,6 +755,10 @@ public sealed partial class RepublicEconomyModel
             Add(incoming, new Key(cargo.Leg.To, cargo.Good), cargo.Quantity);
             Add(flows, cargo.Flow, cargo.Quantity);
         }
+        // Snapshot only event-kit goods; the same reserve calculation gates actual project gathering.
+        _projectSupplyReserves.Clear();
+        var eventSupply = _stores.Keys.Where(k => k.Good is "parts" or "circuits" or "machinery" or "water" or "ship_fuel")
+            .Select(k => new EconomyProjectSupplyState(k.World, k.Good, ProjectAvailable(k, _lastDemandModifiers))).ToArray();
         return new EconomySnapshot(_hour,
             Array.AsReadOnly(_stores.Select(s => new EconomyInventoryState(s.Key.World, s.Key.Good,
                 s.Value.Quantity + Get(_navyDepotStock, s.Key), s.Value.Definition.Target,
@@ -758,7 +783,10 @@ public sealed partial class RepublicEconomyModel
             Capacities = CapacitySnapshot(),
             Diets = DietSnapshot(),
             Projects = ProjectSnapshot(),
+            ProjectSupply = Array.AsReadOnly(eventSupply),
             NavySupplyFlows = NavySupplySnapshot(),
+            MedicalSupplyFlows = MedicalSupplySnapshot(),
+            MedicalProductionSites = Array.AsReadOnly(_medicalProductionSites.Values.ToArray()),
             Production = Array.AsReadOnly(_definition.Production.Select(p =>
                 new EconomyProductionState(p.World, p.Recipe,
                     Get(_productionCompleted, new Key(p.World, p.Recipe)),

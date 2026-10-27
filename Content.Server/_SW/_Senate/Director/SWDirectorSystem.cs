@@ -30,6 +30,7 @@ public sealed partial class SWDirectorSystem : EntitySystem
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
     [Dependency] private readonly SWCorruptionSystem _corruption = default!;
     [Dependency] private readonly SWSenateCrisisSystem _crisis = default!;
+    [Dependency] private readonly SWMinistryEconomySystem _economyEvents = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
     [Dependency] private readonly SWImperialStrikeSystem _strike = default!;
     [Dependency] private readonly SWMercSystem _merc = default!;
@@ -233,6 +234,13 @@ public sealed partial class SWDirectorSystem : EntitySystem
 
         switch (kind)
         {
+            case SWDirectorActionKind.EconomyIncident:
+                if (Mode != SWDirectorMode.Manual)
+                { result = "Экономическое событие доступно только в ручном режиме."; return false; }
+                if (!_economyEvents.CreateDirectorEconomyIncident(param, target, out result)) return false;
+                AddChronicle(result);
+                break;
+
             case SWDirectorActionKind.Maneuvers:
                 if (!CreateTacticalPressure(string.Empty, false, CostManeuvers, ref result))
                     return false;

@@ -65,6 +65,9 @@ public sealed class SWMinistrySystem : EntitySystem
         && TryComp<MobStateComponent>(entity, out var mob)
         && mob.CurrentState == MobState.Alive;
 
+    public bool IsActiveHolder(string ministryId, EntityUid actor) =>
+        _holderEntities.TryGetValue(ministryId, out var holder) && holder == actor && IsHolderActive(ministryId);
+
     public bool TryClaim(string ministryId, string holder, EntityUid card, EntityUid? actor = null)
     {
         if (_holders.ContainsKey(ministryId) || IsBarred(ministryId, holder))

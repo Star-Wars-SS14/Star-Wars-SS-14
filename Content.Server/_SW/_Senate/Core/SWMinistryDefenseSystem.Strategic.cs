@@ -12,6 +12,7 @@ namespace Content.Server._SW._Senate.Core;
 public sealed partial class SWMinistryDefenseSystem
 {
     [Dependency] private readonly SWRepublicEconomySystem _economy = default!;
+    [Dependency] private readonly SWSenateTransientSituationSystem _transient = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     private readonly List<SWDefenseEventView> _incidents = new();
     private readonly Dictionary<string, string> _construction = new();
@@ -123,16 +124,13 @@ public sealed partial class SWMinistryDefenseSystem
         var coverage = _groups.Where(g => g.Alive && g.Order == SWDefenseFleetOrder.Border
             && g.Phase == SWDefenseOperationPhase.Standing).Sum(g => Effective(g) / 100f);
         AddBorder((cfg.Border * _senate.StatPressureScale("SWGlobalDefense", cfg.Border) - coverage * BorderReliefPerGroup * service) * hours);
-        foreach (var (stat, delta) in cfg.Nudges) NudgeSectors(stat, delta * hours);
+
         _weariness = Math.Clamp(_weariness + cfg.Weariness * _senate.StatPressureScale("SWGlobalSociety", cfg.Weariness) * hours, 0f, 100f);
         foreach (var group in _groups.Where(g => g.Alive))
         {
             if (service == 0f) group.Supply = Math.Max(0, group.Supply - hours * 6);
-            if (group.Phase != SWDefenseOperationPhase.Standing || group.Order is not (SWDefenseFleetOrder.Guard or SWDefenseFleetOrder.Patrol)) continue;
-            var sector = _worlds[group.World].SectorId;
-            _senate.AddSectorBias(sector, "SWGlobalDefense", GarrisonDefense * Effective(group) / 100 * hours);
-            _senate.AddSectorBias(sector, "SWGlobalSecurity", GarrisonSecurity * Effective(group) / 100 * hours);
         }
+        PublishDefenseConditions();
     }
 
     private static float Effective(SWFleetGroup group) => group.Strength * (1f - group.Damage / 125f)
@@ -149,13 +147,6 @@ public sealed partial class SWMinistryDefenseSystem
                 ev.Severity = Math.Max(0, ev.Severity - hours * 20);
                 ev.ExpiresAt = Math.Min(ev.ExpiresAt, now + 1);
                 ev.Status = "Деэскалация: министр отсутствует";
-            }
-            else if (_worlds.TryGetValue(ev.WorldId, out var affected) && affected.SectorId.Length > 0)
-            {
-                var protection = PlanetaryHarmFactor(ev.WorldId, ev.Kind);
-                _senate.NudgeSectorGlobal(affected.SectorId, "SWGlobalSecurity", -ev.Severity * .003f * hours * protection);
-                if (ev.Kind is SWDefenseEventKind.Incursion or SWDefenseEventKind.Blockade)
-                    _senate.NudgeSectorGlobal(affected.SectorId, "SWGlobalDefense", -ev.Severity * .002f * hours * protection);
             }
             if (MinisterActive)
             {
@@ -358,9 +349,12 @@ public sealed partial class SWMinistryDefenseSystem
     private SWTransitLinkPrototype? Link(string a, string b) => _links.FirstOrDefault(l => l.From == a && l.To == b || l.From == b && l.To == a);
     // Existing named corridors give military formations priority. Local links keep a slower
     // military crossing; neither classification changes the civilian freight clock or graph.
-    private double FleetTravelHours(SWTransitLinkPrototype link) => _mainHyperlanes.ContainsKey(link.ID)
-        ? Math.Clamp(link.TravelHours * .1, .05, .15)
-        : Math.Clamp(link.TravelHours * .2, .1, .3);
+    private double FleetTravelHours(SWTransitLinkPrototype link) => FleetCrossingHours(link.TravelHours, _mainHyperlanes.ContainsKey(link.ID));
+    // Freight now uses half the planning clock. Keep the military's existing
+    // crossing times and named-corridor priority independent of that rebalance.
+    internal static double FleetCrossingHours(double freightHours, bool mainHyperlane) => mainHyperlane
+        ? Math.Clamp(freightHours * .2, .05, .15)
+        : Math.Clamp(freightHours * .4, .1, .3);
     private bool MilitaryRoute(SWFleetGroup group, SWDefenseFleetOrder order) => order == SWDefenseFleetOrder.Respond
         || order is SWDefenseFleetOrder.Return or SWDefenseFleetOrder.Move && _worlds[group.Next ?? group.World].Faction == "empire";
     private double PathHours(string from, IEnumerable<string>? path)

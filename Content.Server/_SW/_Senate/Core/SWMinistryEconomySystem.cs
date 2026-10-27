@@ -9,11 +9,12 @@ using Content.Server._SW._Senate.Economy;
 
 namespace Content.Server._SW._Senate.Core;
 
-public sealed class SWMinistryEconomySystem : EntitySystem
+public sealed partial class SWMinistryEconomySystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
+    [Dependency] private readonly SWSenateTransientSituationSystem _transient = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
     [Dependency] private readonly SWBureauTransitSystem _transit = default!;
@@ -59,18 +60,22 @@ public sealed class SWMinistryEconomySystem : EntitySystem
     public int ProgramProgress => (int) MathF.Round(_progress);
     public int ProjectSlots => MaxProjects;
     public int ProjectUsed => _projects.Count;
-    public int ProjectsCompleted => _projectsCompleted;
+    public int ProjectsCompleted => _industrialProjects.Count(p => p.Kind == "industry" && _economy.GetProject(p.Id)?.CompletedHour != null);
     public int RouteCap => MaxRoutes;
-    public int ActiveRoutes => _routeService > 0f ? _routes.Count(r => !RouteDisrupted(r)) : 0;
+    public int ActiveRoutes => _industrialProjects.Count(p => p.Kind == "route" && _economy.GetProject(p.Id)?.CompletedHour != null);
 
     public override void Initialize()
     {
+        UpdatesAfter.Add(typeof(SWRepublicEconomySystem));
         UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
+        ResetEconomicConditions();
+        ResetIndustrial();
+        ResetEconomyEvents();
         _accum = 0f;
         _routeService = 0f;
         _projects.Clear();
@@ -143,8 +148,6 @@ public sealed class SWMinistryEconomySystem : EntitySystem
 
     public void SelectProgram(string programId)
     {
-        if (_proto.HasIndex<SWEconomyProgramPrototype>(programId))
-            _program = programId;
     }
 
     // (growth push, overheat push) per game-hour.
@@ -197,6 +200,8 @@ public sealed class SWMinistryEconomySystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        RefreshIndustrialPublication();
+        PublishEconomicConditions();
         frameTime = _time.ActiveSeconds(frameTime);
         if (frameTime <= 0f)
             return;
@@ -218,8 +223,7 @@ public sealed class SWMinistryEconomySystem : EntitySystem
 
         if (_time.Day != _day)
         {
-            if (_day != -1)
-                ApplyProgram();
+
             _day = _time.Day;
             _program = null;
             _progress = 0f;
@@ -230,12 +234,9 @@ public sealed class SWMinistryEconomySystem : EntitySystem
 
         var gameHours = dt * (1f / SWSenateTimeSystem.RealSecondsPerGameHour);
 
-        PruneProjects();
-        PruneRoutes();
-
+        TickEconomyEvents(gameHours);
         TickCycle(gameHours);
-        TickProjects(gameHours);
-        TickRoutes(gameHours);
+
 
         if (_program != null && _progress < 100f)
         {
@@ -268,19 +269,6 @@ public sealed class SWMinistryEconomySystem : EntitySystem
             AddLog("Экономический пузырь лопнул: начались обвал и рецессия.");
         }
 
-        // Growth (or its absence) compounds onto the sectors.
-        NudgeSectors("SWGlobalEconomy", _growth * 0.15f * gameHours);
-        NudgeSectors("SWGlobalIndustry", _growth * 0.12f * gameHours);
-        _senate.AddPolicy("SWStatEmployment", _growth * 0.05f * gameHours);
-    }
-
-    private void NudgeSectors(string globalId, float delta)
-    {
-        if (delta == 0f)
-            return;
-
-        foreach (var (sectorId, _) in _senate.SectorHolders)
-            _senate.AddSectorBias(sectorId, globalId, delta);
     }
 
     // --- Megaprojects ---
@@ -524,7 +512,7 @@ public sealed class SWMinistryEconomySystem : EntitySystem
         if (sectorId == null)
             return;
 
-        _senate.AddSectorBias(sectorId, "SWGlobalEconomy", 2f);
+        _transient.Refresh("ministry.economy.engagement", sectorId, "SWStatMorale", 2f);
     }
 
     // --- UI builders ---

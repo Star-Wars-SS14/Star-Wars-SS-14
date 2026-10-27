@@ -158,7 +158,7 @@ public sealed partial class SWMinistryDefenseSystem
             AddBorder(-Math.Min(8, ev.Severity * .08f));
             _weariness = Math.Clamp(_weariness - 1, 0, 100);
             var sector = _worlds[ev.WorldId].SectorId;
-            if (sector.Length > 0) _senate.AddSectorBias(sector, "SWGlobalSecurity", Math.Min(3, ev.Severity * .03f));
+            if (sector.Length > 0) _transient.Refresh("ministry.defense.response", sector, "SWStatMorale", Math.Min(3, ev.Severity * .03f));
         }
         AddLog($"{ev.Title}: {ev.Status}."); ApplyRouteRestrictions();
     }

@@ -2,779 +2,281 @@ using System.Linq;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Ministries;
 using Content.Shared._SW._Senate.Sectors;
+using Content.Shared._SW._Senate.Economy;
 using Content.Shared.GameTicking;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Content.Server._SW._Senate.Economy;
-
 namespace Content.Server._SW._Senate.Core;
-
-public sealed class SWMinistryHealthSystem : EntitySystem
+public sealed partial class SWMinistryHealthSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
+    [Dependency] private readonly SWMinistrySystem _ministry = default!;
+    [Dependency] private readonly SWRepublicEconomySystem _economy = default!;
+    [Dependency] private readonly SWSenateProgramSystem _programs = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
-
+    [Dependency] private readonly SWBureauTransitSystem _transit = default!;
     public const string HealthMinistryId = "SWMinistryHealth";
-
-    private const float TickInterval = 1f;
-
     public const int HospitalMaxLevel = 3;
-    private const int BuildHours = 2;
-    private const float HospitalUpkeepPerLevel = 40f; // per game-hour, per hospital level
-    private const float TreatPerLevel = 0.8f;          // infection reduced per game-hour, per level
-    private const float QuarantineBurn = 1.6f;         // infection reduced per game-hour while quarantined
-    private const float BaseContagion = 0.9f;
-
-    private const int AidCost = 1000;
-    private const int EmergencyHours = 6;
-    private const float SeedBaseChance = 0.04f; // per game-hour at neutral stats, before the stat scale
-
-    private static readonly int[] FundingCostPerHour = { 0, 60, 140 };
-    private static readonly float[] FundingResearchRate = { 0f, 6f, 13f }; // base research %/game-hour at Medicine 50
-
-    private static readonly string[] PathogenNames =
+    private const int AidCost = 750;
+    private static readonly string[] PathogenNames = { "Чума Ракгулов", "Синяя Тень", "Лихорадка Кашиика", "Серая оспа", "Споровый бич" };
+    private sealed class World(SWGalacticMapWorld map, double population)
     {
-        "Чума Ракгулов", "Синяя Тень", "Лихорадка Кашиика", "Кровавая гниль",
-        "Серая оспа", "Дрожь Криффа", "Споровый бич",
-    };
-
-    private static int BuildCost(int currentLevel) => 1500 + currentLevel * 1500;
-
-    private readonly Dictionary<string, float> _infection = new();
-    private readonly HashSet<string> _quarantine = new();
-    private readonly Dictionary<string, int> _hospitals = new();
-    private readonly Dictionary<string, double> _construction = new();
-    private readonly Dictionary<string, double> _aidCooldown = new();
+        public readonly SWGalacticMapWorld Map = map;
+        public readonly double Population = population;
+        public float Infection, Immunity, Trend, Reserve, PendingImmunity, IncomingInfectionPerHour;
+    }
+    private readonly Dictionary<string, World> _worlds = new();
+    private SWTransitLinkPrototype[] _links = Array.Empty<SWTransitLinkPrototype>();
     private readonly List<string> _log = new();
-
+    private Content.Server._SW._Senate.Economy.Simulation.EconomySnapshot? _careSnapshot;
+    private readonly Dictionary<string, float> _careSupplied = new();
     private bool _active;
     private string _name = string.Empty;
-    private int _strain;
-    private float _virulence = 1f;
-    private float _lethality = 1f;
-
-    private float _research;
-    private int _vaccineStrain = -1; // strain the finished vaccine targets; -1 = none finished
-    private int _funding;
-    private float _immunity;
-
-    private double _emergencyUntil = -1;
-    private bool _emergencyPending;
-
+    private int _strain, _episode;
+    private float _virulence = 1, _lethality = 1;
     private string? _program;
-    private float _progress;
-    private int _hospitalsBuilt;
-
-    private float _hospitalCredit;
-    private float _researchCredit;
-    private float _hospitalService;
-    public int HospitalServicePercent => (int) MathF.Round(_hospitalService * 100f);
-    private int _day = -1;
-    private float _accum;
-
+    private float _progress, _accum;
+    private int _day = -1, _hospitalsBuilt;
+    private readonly HashSet<string> _countedClinics = new(), _preventedWorlds = new();
+    private bool CanManage => _time.ModeActive && _time.DayActive && MinisterActive;
+    public bool MinisterActive => _ministry.IsHolderActive(HealthMinistryId);
     public int HospitalsBuilt => _hospitalsBuilt;
+    public int HospitalServicePercent => (int) MathF.Round(Weighted(Care) * 100);
     public bool PathogenActive => _active;
     public string PathogenName => _name;
     public int PathogenStrain => _strain;
-    public int Virulence => (int) MathF.Round(_virulence * 100f);
-    public int Immunity => (int) MathF.Round(_immunity);
-    public int Research => (int) MathF.Round(_research);
-    public bool VaccineReady => _research >= 100f || _vaccineStrain >= 0;
-    public bool VaccineStale => _vaccineStrain >= 0 && _vaccineStrain != _strain;
-    public int ResearchFunding => _funding;
-    public bool EmergencyActive => _emergencyUntil >= 0 && _time.ActiveGameHours < _emergencyUntil;
-    public double EmergencyHoursLeft => EmergencyActive ? Math.Max(0, _emergencyUntil - _time.ActiveGameHours) : 0;
-    public bool EmergencyPending => _emergencyPending;
+    public int Virulence => (int) MathF.Round(_virulence * 100);
+    public int Immunity => (int) MathF.Round(Weighted(w => w.Immunity));
     public string? SelectedProgram => _program;
     public int ProgramProgress => (int) MathF.Round(_progress);
-
     public override void Initialize()
     {
         UpdatesBefore.Add(typeof(SWSenateTimeSystem));
+        UpdatesAfter.Add(typeof(SWRepublicEconomySystem));
+        var scenario = _proto.Index<SWRepublicEconomyScenarioPrototype>(SWRepublicEconomyFactory.ScenarioId);
+        foreach (var map in _proto.Index(scenario.Map).Worlds)
+            if (map.Sector != null && _proto.TryIndex<SWPlanetEconomyPrototype>(map.Id, out var economy) && economy.ActiveEconomy)
+                _worlds[map.Id] = new World(map, Math.Max(.001, economy.PopulationUnits));
+        _links = _proto.EnumeratePrototypes<SWTransitLinkPrototype>().Where(l => l.Accessible && _worlds.ContainsKey(l.From) && _worlds.ContainsKey(l.To)).ToArray();
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
-        SubscribeLocalEvent<SWSenateDayClosedEvent>(ev =>
-        {
-            if (!ev.FinalDay)
-                CompleteConstruction();
-        });
     }
-
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
-        _accum = 0f;
-        _infection.Clear();
-        _quarantine.Clear();
-        _hospitals.Clear();
-        _construction.Clear();
-        _aidCooldown.Clear();
-        _log.Clear();
-        _active = false;
-        _name = string.Empty;
-        _strain = 0;
-        _virulence = 1f;
-        _lethality = 1f;
-        _research = 0f;
-        _vaccineStrain = -1;
-        _funding = 0;
-        _immunity = 0f;
-        _emergencyUntil = -1;
-        _emergencyPending = false;
-        _program = null;
-        _progress = 0f;
-        _hospitalsBuilt = 0;
-        _hospitalCredit = 0f;
-        _researchCredit = 0f;
-        _hospitalService = 0f;
-        _day = -1;
+        foreach (var w in _worlds.Values) w.Infection = w.Immunity = w.Trend = w.Reserve = w.PendingImmunity = w.IncomingInfectionPerHour = 0;
+        _active = false; _name = ""; _strain = _episode = 0; _virulence = _lethality = 1;
+        _program = null; _progress = _accum = 0; _day = -1; _hospitalsBuilt = 0;
+        _careSnapshot = null; _careSupplied.Clear();
+        _log.Clear(); _countedClinics.Clear(); _preventedWorlds.Clear(); ResetResearch(); ResetQuarantines(); ResetPlannedCare();
     }
-
-    private void AddLog(string text)
-    {
-        _log.Insert(0, text);
-        if (_log.Count > 6)
-            _log.RemoveRange(6, _log.Count - 6);
-    }
-
+    private void AddLog(string text) { _log.Insert(0, text); if (_log.Count > 12) _log.RemoveRange(12, _log.Count - 12); }
     public List<string> GetLog() => new(_log);
-
-    public float InfectionAvg()
+    private float Weighted(Func<World, float> value, string? sector = null)
     {
-        var holders = _senate.SectorHolders.Keys.ToList();
-        if (holders.Count == 0)
-            return 0f;
-
-        var sum = 0f;
-        foreach (var sectorId in holders)
-            sum += _infection.TryGetValue(sectorId, out var v) ? v : 0f;
-        return sum / holders.Count;
+        var worlds = _worlds.Values.Where(w => sector == null || w.Map.Sector?.Id == sector).ToArray();
+        var population = worlds.Sum(w => w.Population);
+        return population <= 0 ? 0 : (float) (worlds.Sum(w => value(w) * w.Population) / population);
     }
-
-    public string PandemicStatus()
+    private World? ResolveWorld(string? id) => id == null ? null : _worlds.GetValueOrDefault(id) ??
+        _worlds.Values.Where(w => w.Map.Sector?.Id == id).OrderByDescending(w => w.Infection).ThenByDescending(w => w.Map.Anchor).FirstOrDefault();
+    public float PlanetInfection(string world) => _worlds.GetValueOrDefault(world)?.Infection ?? 0;
+    public float SectorInfection(string sector) => Weighted(w => w.Infection, sector);
+    public float InfectionAvg() => Weighted(w => w.Infection);
+    private float Care(string id) => _worlds.TryGetValue(id, out var world) ? Care(world) : 0;
+    private float Care(World world)
     {
-        if (!_active)
-            return "Нет вспышек";
-
-        return InfectionAvg() switch
+        var snapshot = _economy.Snapshot;
+        if (!ReferenceEquals(snapshot, _careSnapshot))
         {
-            >= 60f => "Пандемия",
-            >= 35f => "Эпидемия",
-            >= 15f => "Вспышки",
-            _ => "Очаги",
-        };
-    }
-
-    public Color PandemicColor()
-    {
-        if (!_active)
-            return Color.FromHex("#43D16A");
-
-        return InfectionAvg() switch
-        {
-            >= 60f => Color.FromHex("#E0556B"),
-            >= 35f => Color.FromHex("#E67E22"),
-            >= 15f => Color.FromHex("#E0A23B"),
-            _ => Color.FromHex("#5DADE2"),
-        };
-    }
-
-    public string ResearchFundingLabel() => _funding switch
-    {
-        1 => "Базовое",
-        2 => "Усиленное",
-        _ => "Остановлено",
-    };
-
-    private static string SectorStatus(float infection) => infection switch
-    {
-        >= 70f => "Катастрофа",
-        >= 40f => "Вспышка",
-        >= 12f => "Очаг",
-        _ => "Чисто",
-    };
-
-    private static Color SectorStatusColor(float infection) => infection switch
-    {
-        >= 70f => Color.FromHex("#E0556B"),
-        >= 40f => Color.FromHex("#E67E22"),
-        >= 12f => Color.FromHex("#E0A23B"),
-        _ => Color.FromHex("#43D16A"),
-    };
-
-    public void SetFunding(int level) => _funding = Math.Clamp(level, 0, 2);
-
-    public bool DeployVaccine()
-    {
-        if (_vaccineStrain < 0 && _research < 100f)
-            return false;
-
-        if (_research >= 100f && _vaccineStrain < 0)
-            _vaccineStrain = _strain;
-
-        var matched = _vaccineStrain == _strain;
-        var efficacy = matched ? 1f : 0.5f;
-        var crush = matched ? 0.35f : 0.6f;
-        _immunity = Math.Clamp(_immunity + 55f * efficacy, 0f, 100f);
-
-        foreach (var sectorId in _senate.SectorHolders.Keys.ToList())
-        {
-            if (_infection.TryGetValue(sectorId, out var inf))
-                _infection[sectorId] = inf * crush;
+            _careSnapshot = snapshot;
+            _careSupplied.Clear();
+            if (snapshot != null)
+                foreach (var group in snapshot.Services.Where(s => s.Group is "care_drugs" or "care_supplies").GroupBy(s => s.World))
+                {
+                    var services = group.ToDictionary(s => s.Group);
+                    var supplied = 1d;
+                    foreach (var required in new[] { "care_drugs", "care_supplies" })
+                    {
+                        var service = services.GetValueOrDefault(required);
+                        supplied = Math.Min(supplied, service is { LastRequired: > 1e-9 } ? Math.Clamp(service.LastServed / service.LastRequired, 0, 1) : 0);
+                    }
+                    _careSupplied[group.Key] = (float) supplied;
+                }
         }
-
-        AddLog(efficacy < 1f
-            ? $"Развёрнута вакцина (штамм {_vaccineStrain + 1}) - сниженная эффективность против штамма {_strain + 1}."
-            : $"Массовая вакцинация завершена - иммунитет population подскочил.");
-
-        _research = 0f;
-        _vaccineStrain = -1;
-        return true;
+        return _careSupplied.GetValueOrDefault(world.Map.Id) * (.25f + .75f * _programs.GetHealthClinicCoverage(world.Map.Id));
     }
-
-    public bool SetQuarantine(string sectorId, bool on)
-    {
-        if (!_senate.IsClaimed(sectorId))
-            return false;
-
-        if (on)
-            _quarantine.Add(sectorId);
-        else
-            _quarantine.Remove(sectorId);
-        return true;
-    }
-
-    public bool BuildHospital(string sectorId)
-    {
-        if (!_senate.IsClaimed(sectorId))
-            return false;
-        if (_construction.ContainsKey(sectorId))
-            return false;
-
-        var level = _hospitals.TryGetValue(sectorId, out var l) ? l : 0;
-        if (level >= HospitalMaxLevel)
-            return false;
-
-        if (!_dilemma.SpendMinistry(HealthMinistryId, BuildCost(level)))
-            return false;
-
-        _construction[sectorId] = _time.ActiveGameHours + BuildHours;
-        return true;
-    }
-
-    public bool EmergencyAid(string sectorId)
-    {
-        if (!_senate.IsClaimed(sectorId))
-            return false;
-        if (_aidCooldown.TryGetValue(sectorId, out var ready) && _time.ActiveGameHours < ready)
-            return false;
-        if (!_dilemma.SpendMinistry(HealthMinistryId, AidCost))
-            return false;
-
-        if (_infection.TryGetValue(sectorId, out var inf))
-            _infection[sectorId] = Math.Clamp(inf - 30f, 0f, 100f);
-        _senate.AddSectorBias(sectorId, "SWGlobalHealthcare", 3f);
-        _aidCooldown[sectorId] = _time.ActiveGameHours + 3;
-
-        var name = _proto.TryIndex<SWSectorPrototype>(sectorId, out var sp) ? sp.Name : sectorId;
-        AddLog($"Экстренная помощь в {name}: очаг подавлен.");
-        return true;
-    }
-
-    public void DeclareEmergency()
-    {
-        if (EmergencyActive || _emergencyPending)
-            return;
-
-        if (_senate.OfficesVacant)
-        {
-            BeginEmergency();
-            return;
-        }
-
-        _emergencyPending = true;
-    }
-
-    public bool ApproveEmergency()
-    {
-        if (!_emergencyPending)
-            return false;
-
-        _emergencyPending = false;
-        BeginEmergency();
-        return true;
-    }
-
-    public bool RejectEmergency()
-    {
-        if (!_emergencyPending)
-            return false;
-
-        _emergencyPending = false;
-        return true;
-    }
-
-    private void BeginEmergency()
-    {
-        _emergencyUntil = _time.ActiveGameHours + EmergencyHours;
-        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство здравоохранения",
-            "Объявлено галактическое чрезвычайное положение по здоровью: всеобщий карантин.",
-            SWSenateAnnouncementKind.Health));
-        AddLog("Введён галактический карантин.");
-    }
-
-    public void SelectProgram(string programId)
-    {
-        if (!_proto.HasIndex<SWHealthProgramPrototype>(programId))
-            return;
-
-        _program = programId;
-    }
-
     public override void Update(float frameTime)
     {
-        frameTime = _time.ActiveSeconds(frameTime);
-        if (frameTime <= 0f)
-            return;
-        if (!_time.ModeActive)
-            return;
-
-        _accum += frameTime;
-        if (_accum < TickInterval)
-            return;
-
-        var dt = _accum;
-        _accum = 0f;
-
-        if (_emergencyPending && _senate.OfficesVacant)
-        {
-            _emergencyPending = false;
-            BeginEmergency();
-        }
-
-        if (_time.Day != _day)
-        {
-            if (_day != -1)
-                ApplyProgram();
-            _day = _time.Day;
-            _program = null;
-            _progress = 0f;
-        }
-
-        if (!_time.DayActive)
-            return;
-
-        var gameHours = dt * (1f / SWSenateTimeSystem.RealSecondsPerGameHour);
-
-        CompleteConstruction();
-        PruneSectors();
-        SeedPathogen(gameHours);
-        TickUpkeep(gameHours);
-
+        SettleMedicalOrders();
+        SettlePlannedCare();
+        if (!_time.ModeActive) return;
+        // The clock reaches the night boundary after simulation systems; release an expiry
+        // on the following frame even though active-time progression has now stopped.
+        if (_quarantines.Any(q => !q.Pending && q.Until <= _time.ActiveGameHours)) ExpireQuarantines();
+        var seconds = _time.ActiveSeconds(frameTime); if (seconds <= 0) return;
+        _accum += seconds; if (_accum < 1) return;
+        var hours = _accum / SWSenateTimeSystem.RealSecondsPerGameHour; _accum = 0;
+        if (_time.Day != _day) { _day = _time.Day; _program = null; _progress = 0; }
+        ExpireQuarantines(); ProcessQuarantineAutopilot(); RefreshSharedClinics(); SeedPathogen(hours);
         if (_active)
         {
-            SpreadInfection(gameHours);
-            RollMutation(gameHours);
-            ApplyMortality(gameHours);
+            SpreadInfection(hours);
+            if (MinisterActive && _random.Prob(Math.Clamp((.015f + InfectionAvg() * .0005f) * hours, 0, 1))) Mutate();
 
-            if (InfectionAvg() < 1f && _immunity > 40f)
+            if (_worlds.Values.All(w => w.Infection < .5f)) { _active = false; AddLog($"Эпидемия «{_name}» подавлена. Досье и партии сохранены."); }
+        }
+        else
+        {
+            foreach (var world in _worlds.Values) world.Trend = 0;
+            AdvanceLocalCare(hours);
+        }
+        if (!_active) foreach (var w in _worlds.Values) w.IncomingInfectionPerHour = 0;
+        PublishInfectionEffects();
+        AdvanceDossier(hours);
+        if (_program != null) _progress = Math.Clamp(_progress + 100f / (SWSenateTimeSystem.EndHour - SWSenateTimeSystem.StartHour) * hours, 0, 100);
+    }
+    private void RefreshSharedClinics()
+    {
+        foreach (var w in _worlds.Values)
+        {
+            if (_programs.IsHealthProgramCompleted(w.Map.Id, "SWProgramClinics") && _countedClinics.Add(w.Map.Id)) _hospitalsBuilt++;
+            if (_programs.IsHealthProgramCompleted(w.Map.Id, "SWProgramVaccination") && _preventedWorlds.Add(w.Map.Id)) w.PendingImmunity += 15;
+        }
+    }
+    private void SeedPathogen(float hours)
+    {
+        if (_active || _worlds.Count == 0) return;
+        var health = _senate.GetRepublicGlobal("SWGlobalHealthcare");
+        var scale = Math.Clamp(50 / Math.Max(health, 1), .4f, 3.5f);
+        if (_random.Prob(Math.Clamp(.04f * scale * hours, 0, 1))) BeginPathogen(_random.Pick(_worlds.Keys.ToList()));
+    }
+    private void BeginPathogen(string id)
+    {
+        var w = ResolveWorld(id); if (w == null) return;
+        // Previous exposure offers limited general protection, not permanent immunity to every future pathogen.
+        foreach (var previous in _worlds.Values)
+        {
+            previous.Immunity *= .25f;
+            previous.PendingImmunity *= .15f;
+        }
+        _active = true; _episode++; _name = _random.Pick(PathogenNames); _strain = 0;
+        _virulence = MinisterActive ? Math.Clamp(1 + (50 - _senate.GetRepublicGlobal("SWGlobalHealthcare")) / 120, .85f, 1.5f) : .7f;
+        _lethality = 1; w.Infection = Math.Max(w.Infection, MinisterActive ? 20 : 8); StartNewDossier();
+        AddLog($"Новый патоген «{_name}»: очаг на {w.Map.Name}.");
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство здравоохранения", $"Выявлен очаг «{_name}» на {w.Map.Name}.", SWSenateAnnouncementKind.Health));
+    }
+    private void SpreadInfection(float hours)
+    {
+        var incoming = _worlds.Keys.ToDictionary(w => w, _ => 0f); var snapshot = _economy.Snapshot;
+        if (MinisterActive && snapshot != null)
+        {
+            var edges = snapshot.Edges.ToDictionary(e => e.Id);
+            var traffic = snapshot.Flows.GroupBy(f => f.Edge).ToDictionary(g => g.Key, g => g.Sum(f => f.Dispatched) / .25);
+            foreach (var link in _links)
             {
-                _active = false;
-                _research = 0f;
-                _vaccineStrain = -1;
-                AddLog($"Эпидемия «{_name}» подавлена.");
+                if (!edges.TryGetValue(link.ID, out var edge) || edge.CapacitySlotsPerHour <= 0 || QuarantineBlocksContact(link.From, link.To)) continue;
+                var intensity = (float) Math.Clamp(traffic.GetValueOrDefault(link.ID) / Math.Max(1, link.CapacitySlotsPerHour), 0, 1);
+                intensity *= _transit.HealthContactFactor(_worlds[link.From].Map.Sector!.Value.Id)
+                    * _transit.HealthContactFactor(_worlds[link.To].Map.Sector!.Value.Id);
+                incoming[link.To] += _worlds[link.From].Infection * intensity * .025f;
+                incoming[link.From] += _worlds[link.To].Infection * intensity * .025f;
             }
         }
-
-        AdvanceResearch(gameHours);
-
-        if (_program != null && _progress < 100f)
+        foreach (var w in _worlds.Values)
         {
-            var perHour = 100f / (SWSenateTimeSystem.EndHour - SWSenateTimeSystem.StartHour);
-            _progress = Math.Clamp(_progress + perHour * gameHours, 0f, 100f);
+            var before = w.Infection;
+            w.IncomingInfectionPerHour = incoming[w.Map.Id];
+            w.Infection = SWHealthWorldPolicy.AdvanceInfection(before, w.Immunity, Care(w), incoming[w.Map.Id], _virulence, MinisterActive, hours);
+            w.Trend = hours > 0 ? (w.Infection - before) / hours : 0;
+        }
+        AdvanceLocalCare(hours);
+    }
+    private void AdvanceLocalCare(float hours)
+    {
+        foreach (var w in _worlds.Values)
+        {
+            var result = SWHealthWorldPolicy.AdvanceCare(w.Infection, w.Immunity, w.PendingImmunity, w.Reserve,
+                _programs.GetHealthClinicCoverage(w.Map.Id), Care(w), hours);
+            if (hours > 0) w.Trend += (result.Infection - w.Infection) / hours;
+            w.Infection = result.Infection;
+            w.Immunity = result.Immunity;
+            w.PendingImmunity = result.PendingImmunity;
+            w.Reserve = result.Reserve;
         }
     }
-
-    private void PruneSectors()
+    private void Mutate() { _strain++; _virulence = Math.Min(_virulence * 1.15f, 3); _lethality = Math.Min(_lethality * 1.1f, 2.5f); AddLog($"Мутация: штамм {_strain + 1}. Досье и партии сохранены."); }
+    // An epidemic is a current condition, not a permanent policy change. Clinic and
+    // supply effects remain in their existing sources and are not repeated here.
+    private void PublishInfectionEffects()
     {
-        foreach (var sectorId in _infection.Keys.ToList())
-            if (!_senate.IsClaimed(sectorId))
-                _infection.Remove(sectorId);
-
-        _quarantine.RemoveWhere(s => !_senate.IsClaimed(s));
-    }
-
-    private void CompleteConstruction()
-    {
-        foreach (var (sectorId, ready) in _construction.ToList())
+        var contributions = new List<SWSituationalContribution>();
+        foreach (var sector in _worlds.Values.Select(w => w.Map.Sector!.Value.Id).Distinct())
         {
-            if (_time.ActiveGameHours < ready)
-                continue;
-
-            _hospitals[sectorId] = Math.Min(HospitalMaxLevel, (_hospitals.TryGetValue(sectorId, out var l) ? l : 0) + 1);
-            _construction.Remove(sectorId);
-            _hospitalsBuilt++;
-            var name = _proto.TryIndex<SWSectorPrototype>(sectorId, out var sp) ? sp.Name : sectorId;
-            AddLog($"Госпиталь в {name} достроен (ур. {_hospitals[sectorId]}).");
+            var severity = Math.Clamp((SectorInfection(sector) - 50f) / 50f * _lethality, 0f, 1f);
+            if (severity <= 0) continue;
+            contributions.Add(new SWSituationalContribution(sector, "SWStatEpidemic", -6f * severity));
+            contributions.Add(new SWSituationalContribution(sector, "SWStatLiving", -4f * severity));
         }
+        _senate.ReplaceSituationalContributions("ministry.health.infection", contributions);
     }
-
-    // Outbreak frequency is governed by the Republic's health (and, lighter, its society):
-    // a sickly, deprived galaxy breeds new plagues far more often than a well-run one.
-    private float SeedChanceScale()
-    {
-        var hc = _senate.GetRepublicGlobal("SWGlobalHealthcare");
-        var soc = _senate.GetRepublicGlobal("SWGlobalSociety");
-        var gov = hc * 0.7f + soc * 0.3f;
-        return Math.Clamp(50f / Math.Max(gov, 1f), 0.4f, 3.5f);
-    }
-
-    private void SeedPathogen(float gameHours)
-    {
-        if (_active)
-            return;
-
-        var holders = _senate.SectorHolders.Keys.ToList();
-        if (holders.Count == 0)
-            return;
-
-        var chance = SeedBaseChance * SeedChanceScale() * gameHours;
-        if (!_random.Prob(Math.Clamp(chance, 0f, 1f)))
-            return;
-
-        BeginPathogen(_random.Pick(holders));
-    }
-
-    private void BeginPathogen(string origin)
-    {
-        _active = true;
-        _name = _random.Pick(PathogenNames);
-        _strain = 0;
-        // A weak healthcare system also lets the pathogen emerge nastier.
-        var hc = _senate.GetRepublicGlobal("SWGlobalHealthcare");
-        _virulence = Math.Clamp(1f + (50f - hc) / 120f, 0.85f, 1.5f);
-        _lethality = 1f;
-        _research = 0f;
-        _vaccineStrain = -1;
-        _immunity = Math.Max(0f, _immunity - 30f);
-        _infection[origin] = 20f;
-
-        var name = _proto.TryIndex<SWSectorPrototype>(origin, out var sp) ? sp.Name : origin;
-        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Министерство здравоохранения",
-            $"Вспышка неизвестного патогена «{_name}» в секторе {name}.",
-            SWSenateAnnouncementKind.Health));
-        AddLog($"Новый патоген «{_name}» - очаг в {name} (вирулентность {(int) (_virulence * 100f)}%).");
-    }
-
-    private void SpreadInfection(float gameHours)
-    {
-        var holders = _senate.SectorHolders.Keys.ToList();
-        var pressure = InfectionAvg();
-        var spreadScale = _senate.StatPressureScale("SWGlobalHealthcare", 1f);
-
-        foreach (var sectorId in holders)
-        {
-            var inf = _infection.TryGetValue(sectorId, out var v) ? v : 0f;
-            var quarantined = _quarantine.Contains(sectorId) || EmergencyActive;
-            var hospital = (_hospitals.TryGetValue(sectorId, out var hl) ? hl : 0) * _hospitalService;
-
-            if (!quarantined)
-            {
-                var gain = BaseContagion * (0.3f + pressure / 100f) * _virulence
-                           * (1f - _immunity / 100f) * spreadScale * gameHours;
-                inf += gain;
-            }
-
-            var treat = hospital * TreatPerLevel;
-            if (quarantined)
-                treat += QuarantineBurn;
-            if (EmergencyActive)
-                treat += 2.5f;
-            inf -= treat * gameHours;
-
-            _infection[sectorId] = Math.Clamp(inf, 0f, 100f);
-
-            if (hospital > 0)
-            {
-                _senate.AddSectorBias(sectorId, "SWGlobalHealthcare", 0.25f * hospital * gameHours);
-            }
-
-            if (quarantined && !EmergencyActive)
-            {
-                _senate.AddSectorBias(sectorId, "SWGlobalEconomy", -0.3f * gameHours);
-                _senate.AddSectorBias(sectorId, "SWGlobalSociety", -0.2f * gameHours);
-            }
-        }
-
-        if (EmergencyActive)
-        {
-            foreach (var sectorId in holders)
-            {
-                _senate.AddSectorBias(sectorId, "SWGlobalEconomy", -0.6f * gameHours);
-                _senate.AddSectorBias(sectorId, "SWGlobalSociety", -0.4f * gameHours);
-            }
-        }
-    }
-
-    private void RollMutation(float gameHours)
-    {
-        var chance = (0.015f + InfectionAvg() / 100f * 0.05f) * gameHours;
-        if (_random.Prob(Math.Clamp(chance, 0f, 1f)))
-            Mutate();
-    }
-
-    private void Mutate()
-    {
-        _strain++;
-        _virulence = MathF.Min(_virulence * 1.15f, 3f);
-        _lethality = MathF.Min(_lethality * 1.1f, 2.5f);
-        _research *= 0.6f;
-        _immunity *= 0.5f;
-        AddLog($"Патоген мутировал - штамм {_strain + 1}, вирулентность выше.");
-    }
-
-    private void ApplyMortality(float gameHours)
-    {
-        // Country-wide welfare follows affected population weight, not the number of loop iterations.
-        var burden = _senate.WeightedSectorAverage(sectorId =>
-            _senate.IsClaimed(sectorId) && _infection.TryGetValue(sectorId, out var inf)
-                ? Math.Max(0f, (inf - 50f) / 50f) * _lethality : 0f);
-        _senate.AddPolicy("SWStatWelfare", -0.25f * burden * gameHours);
-        foreach (var (sectorId, inf) in _infection)
-        {
-            if (inf < 50f || !_senate.IsClaimed(sectorId))
-                continue;
-
-            var severity = (inf - 50f) / 50f * _lethality;
-            _senate.AddSectorBias(sectorId, "SWGlobalHealthcare", -0.6f * severity * gameHours);
-            _senate.AddSectorBias(sectorId, "SWGlobalSociety", -0.4f * severity * gameHours);
-            _senate.AddSectorBias(sectorId, "SWGlobalEconomy", -0.3f * severity * gameHours);
-
-        }
-    }
-
-    private void AdvanceResearch(float gameHours)
-    {
-        // No pathogen, no strain to target - a vaccine can't be developed in advance.
-        if (!_active || _funding == 0 || _research >= 100f)
-            return;
-
-        var medicine = _senate.GetRepublicGlobal("SWGlobalHealthcare");
-        var funded = _dilemma.FundWork(HealthMinistryId, FundingCostPerHour[_funding] * gameHours, ref _researchCredit);
-        if (funded <= 0f)
-            return;
-        var networkBonus = 1f + TotalHospitalLevels() * _hospitalService * 0.05f;
-        var rate = FundingResearchRate[_funding] * (medicine / 50f) * networkBonus;
-        _research = Math.Clamp(_research + rate * gameHours * funded, 0f, 100f);
-
-        if (_research >= 100f && _vaccineStrain < 0)
-        {
-            _vaccineStrain = _strain;
-            AddLog($"Вакцина против штамма {_strain + 1} готова к развёртыванию.");
-        }
-    }
-
-    private int TotalHospitalLevels() => _hospitals.Values.Sum();
-
-    private void TickUpkeep(float gameHours)
-    {
-        _hospitalService = _dilemma.FundWork(HealthMinistryId,
-            TotalHospitalLevels() * HospitalUpkeepPerLevel * gameHours, ref _hospitalCredit);
-    }
-
+    private bool BuildClinic(string world) => CanManage && _worlds.ContainsKey(world) && _programs.ApplyFromHealth(world, "SWProgramClinics");
+    public bool BuildHospital(string id) => CanManage && ResolveWorld(id) is { } w && _programs.ApplyFromHealth(w.Map.Id, "SWProgramClinics");
+    public bool EmergencyAid(string id) => CanManage && ResolveWorld(id) is { } w && SendAid(w.Map.Id);
+    public void SelectProgram(string id) { }
     private void ApplyProgram()
     {
-        if (_program == null || !_proto.TryIndex<SWHealthProgramPrototype>(_program, out var proto))
-            return;
-
-        var scale = _progress / 100f;
-        if (scale <= 0f)
-            return;
-
-        foreach (var (sub, delta) in proto.PolicyEffects)
-            _senate.AddPolicy(sub, delta * scale);
-
-        if (proto.ResearchDelta != 0f && _research < 100f && _active)
-            _research = Math.Clamp(_research + proto.ResearchDelta * scale, 0f, 100f);
-
-        if (proto.SpreadDelta != 0f)
-        {
-            foreach (var sectorId in _infection.Keys.ToList())
-                _infection[sectorId] = Math.Clamp(_infection[sectorId] + proto.SpreadDelta * scale, 0f, 100f);
-        }
+        if (_program == null || !_proto.TryIndex<SWHealthProgramPrototype>(_program, out var p)) return;
+        foreach (var (stat, delta) in p.PolicyEffects) _senate.AddPolicy(stat, delta * _progress / 100);
+        if (p.SpreadDelta != 0) AddInfectionAll(p.SpreadDelta * _progress / 100);
+        if (_active && _samples.Count > 0 && _stage <= SWHealthStage.Analysis)
+            _stageProgress = Math.Clamp(_stageProgress + p.ResearchDelta * _progress / 100, 0, 99);
     }
-
-    // Health ministry requests are eased where a hospital stands and the sector is not ravaged.
-    public (float Cost, float Effect) GetRequestModifier(string? sectorId)
+    public (float Cost, float Effect) GetRequestModifier(string? sector)
     {
-        if (sectorId == null)
-            return (1f, 1f);
-
-        var hospital = (_hospitals.TryGetValue(sectorId, out var l) ? l : 0) * _hospitalService;
-        var inf = _infection.TryGetValue(sectorId, out var v) ? v : 0f;
-
-        var cost = 1f;
-        var effect = 1f;
-
-        if (hospital > 0)
-        {
-            cost *= 1f - 0.12f * hospital;
-            effect *= 1f + 0.12f * hospital;
-        }
-
-        if (inf >= 50f)
-        {
-            cost *= 1.3f;
-            effect *= 0.8f;
-        }
-
-        return (cost, effect);
+        if (sector == null) return (1, 1);
+        var coverage = Weighted(w => _programs.GetHealthClinicCoverage(w.Map.Id), sector); var severe = SectorInfection(sector) >= 50;
+        return ((1 - .25f * coverage) * (severe ? 1.3f : 1), (1 + .25f * coverage) * (severe ? .8f : 1));
     }
-
-    // Resolving a sector's health request also relieves its outbreak.
-    public void OnSectorEngagement(string? sectorId)
+    public void OnSectorEngagement(string? sector) { if (sector != null) AddInfection(sector, -12); }
+    public bool ForceSeed(string? id)
     {
-        if (sectorId == null)
-            return;
-
-        if (_infection.TryGetValue(sectorId, out var inf))
-            _infection[sectorId] = Math.Clamp(inf - 12f, 0f, 100f);
+        var w = id == null && _worlds.Count > 0 ? _random.Pick(_worlds.Values.ToList()) : ResolveWorld(id); if (w == null) return false;
+        if (!_active) BeginPathogen(w.Map.Id); else w.Infection = Math.Clamp(w.Infection + 25, 0, 100);
+        AddLog($"Администратор: усилен очаг на {w.Map.Name}."); return true;
     }
-
-    // --- Admin (swplague) ---
-
-    public bool ForceSeed(string? sectorId)
+    public void ClearPlague() { _active = false; foreach (var w in _worlds.Values) w.Infection = w.Trend = w.IncomingInfectionPerHour = 0; AddLog("Администратор: эпидемия ликвидирована; досье и партии сохранены."); }
+    public bool SetInfection(string? id, float value)
     {
-        string origin;
-        if (sectorId != null)
-        {
-            if (!_senate.IsClaimed(sectorId))
-                return false;
-            origin = sectorId;
-        }
-        else
-        {
-            var holders = _senate.SectorHolders.Keys.ToList();
-            if (holders.Count == 0)
-                return false;
-            origin = _random.Pick(holders);
-        }
-
-        if (_active)
-        {
-            _infection[origin] = Math.Clamp((_infection.TryGetValue(origin, out var v) ? v : 0f) + 25f, 0f, 100f);
-            return true;
-        }
-
-        BeginPathogen(origin);
-        return true;
+        if (!float.IsFinite(value)) return false;
+        var targets = id == null ? _worlds.Values.ToArray() : _worlds.Values.Where(w => w.Map.Id == id || w.Map.Sector?.Id == id).ToArray();
+        if (targets.Length == 0) return false; if (!_active && value > 0) BeginPathogen(targets[0].Map.Id);
+        foreach (var w in targets) w.Infection = Math.Clamp(value, 0, 100); AddLog($"Администратор: заражение установлено {value:0}%."); return true;
     }
-
-    public void ClearPlague()
-    {
-        _active = false;
-        _infection.Clear();
-        _research = 0f;
-        _vaccineStrain = -1;
-        AddLog("Эпидемия ликвидирована (адм.).");
-    }
-
-    public bool SetInfection(string? sectorId, float value)
-    {
-        var holders = _senate.SectorHolders.Keys.ToList();
-        if (holders.Count == 0)
-            return false;
-
-        if (!_active && value > 0f)
-            BeginPathogen(sectorId != null && _senate.IsClaimed(sectorId) ? sectorId : _random.Pick(holders));
-
-        if (sectorId != null)
-        {
-            if (!_senate.IsClaimed(sectorId))
-                return false;
-            _infection[sectorId] = Math.Clamp(value, 0f, 100f);
-        }
-        else
-        {
-            foreach (var s in holders)
-                _infection[s] = Math.Clamp(value, 0f, 100f);
-        }
-
-        return true;
-    }
-
-    public void AddInfectionAll(float delta)
-    {
-        foreach (var s in _senate.SectorHolders.Keys.ToList())
-            _infection[s] = Math.Clamp((_infection.TryGetValue(s, out var v) ? v : 0f) + delta, 0f, 100f);
-    }
-
-    public float SectorInfection(string sectorId) => _infection.TryGetValue(sectorId, out var v) ? v : 0f;
-
-    public bool IsQuarantined(string sectorId) => _quarantine.Contains(sectorId);
-
-    public void AddInfection(string sectorId, float delta)
-    {
-        if (!_active || !_senate.IsClaimed(sectorId))
-            return;
-
-        _infection[sectorId] = Math.Clamp(SectorInfection(sectorId) + delta, 0f, 100f);
-    }
-
-    public bool ForceMutate()
-    {
-        if (!_active)
-            return false;
-        Mutate();
-        return true;
-    }
-
-    public string AdminStatus()
-    {
-        if (!_active)
-            return $"Эпидемий нет. Иммунитет {Immunity}/100.";
-
-        return $"«{_name}» штамм {_strain + 1}, вирулентность {Virulence}%, среднее заражение {(int) InfectionAvg()}/100, вакцина {Research}%.";
-    }
-
+    public void AddInfectionAll(float delta) { if (float.IsFinite(delta)) foreach (var w in _worlds.Values) w.Infection = Math.Clamp(w.Infection + delta, 0, 100); }
+    public void AddInfection(string id, float delta) { if (_active && float.IsFinite(delta)) foreach (var w in _worlds.Values.Where(w => w.Map.Id == id || w.Map.Sector?.Id == id)) w.Infection = Math.Clamp(w.Infection + delta, 0, 100); }
+    public bool ForceMutate() { if (!_active) return false; Mutate(); AddLog("Администратор: вызвана мутация."); return true; }
+    public string AdminStatus() => _active ? $"«{_name}», штамм {_strain + 1}; заражение {InfectionAvg():0}%; иммунитет {Immunity}%; исследование {Research}%." : $"Эпидемий нет. Иммунитет {Immunity}%.";
+    public string PandemicStatus() => !_active ? "Нет вспышек" : InfectionAvg() switch { >= 60 => "Пандемия", >= 35 => "Эпидемия", >= 15 => "Вспышки", _ => "Очаги" };
+    public Color PandemicColor() => !_active ? Color.FromHex("#43D16A") : SectorStatusColor(InfectionAvg());
+    private static string SectorStatus(float inf) => inf switch { >= 70 => "Катастрофа", >= 40 => "Вспышка", >= 12 => "Очаг", _ => "Чисто" };
+    private static Color SectorStatusColor(float inf) => Color.FromHex(inf switch { >= 70 => "#E0556B", >= 40 => "#E67E22", >= 12 => "#E0A23B", _ => "#43D16A" });
     public List<SWInfectionSectorEntry> BuildInfectionSectors()
     {
-        var budget = _dilemma.GetMinistryBudget(HealthMinistryId);
-        var list = new List<SWInfectionSectorEntry>();
-        foreach (var (sectorId, _) in _senate.SectorHolders)
+        var result = new List<SWInfectionSectorEntry>();
+        foreach (var sector in _worlds.Values.Select(w => w.Map.Sector!.Value.Id).Distinct())
         {
-            if (!_proto.TryIndex<SWSectorPrototype>(sectorId, out var proto))
-                continue;
-
-            var inf = _infection.TryGetValue(sectorId, out var v) ? (int) MathF.Round(v) : 0;
-            var level = _hospitals.TryGetValue(sectorId, out var l) ? l : 0;
-            var building = _construction.TryGetValue(sectorId, out var ready);
-            var aidReady = !_aidCooldown.TryGetValue(sectorId, out var ar) || _time.ActiveGameHours >= ar;
-
-            list.Add(new SWInfectionSectorEntry
-            {
-                Id = sectorId,
-                Name = proto.Name,
-                Color = proto.Color,
-                Infection = inf,
-                StatusLabel = SectorStatus(inf),
-                StatusColor = SectorStatusColor(inf),
-                Quarantined = _quarantine.Contains(sectorId),
-                HospitalLevel = level,
-                Building = building,
-                BuildLeft = building ? Math.Max(0, ready - _time.ActiveGameHours) : 0,
-                CanBuild = !building && level < HospitalMaxLevel && budget >= BuildCost(level),
-                BuildCost = level < HospitalMaxLevel ? BuildCost(level) : 0,
-                CanAid = aidReady && budget >= AidCost,
-                AidCost = AidCost,
-            });
+            if (!_proto.TryIndex<SWSectorPrototype>(sector, out var p)) continue;
+            var w = ResolveWorld(sector)!; var clinic = _programs.BuildHealthPrograms(w.Map.Id).FirstOrDefault(p => p.Id == "SWProgramClinics"); var inf = (int) MathF.Round(SectorInfection(sector));
+            result.Add(new SWInfectionSectorEntry { Id = sector, Name = p.Name, Color = p.Color, Infection = inf, StatusLabel = SectorStatus(inf), StatusColor = SectorStatusColor(inf), Quarantined = IsQuarantined(sector),
+                HospitalLevel = (int) MathF.Round(Weighted(w => _programs.GetHealthClinicCoverage(w.Map.Id), sector) * HospitalMaxLevel), Building = clinic is { Started: true, Applied: false },
+                BuildLeft = clinic == null ? 0 : Math.Max(0, clinic.WorkHours - clinic.WorkedHours), CanBuild = CanManage && clinic?.Affordable == true, BuildCost = clinic?.Cost ?? 0,
+                CanAid = CanManage && _dilemma.GetMinistryBudget(HealthMinistryId) >= AidCost, AidCost = AidCost });
         }
-
-        list.Sort((a, b) => b.Infection.CompareTo(a.Infection));
-        return list;
+        return result.OrderByDescending(s => s.Infection).ToList();
     }
-
     public List<SWDefenseProgramEntry> BuildPrograms()
     {
         var list = new List<SWDefenseProgramEntry>();
@@ -790,7 +292,7 @@ public sealed class SWMinistryHealthSystem : EntitySystem
             };
 
             if (proto.ResearchDelta != 0f)
-                entry.Effects.Add(new SWBillEffectEntry { StatName = "Вакцина", Color = Color.FromHex("#48C9B0"), Delta = proto.ResearchDelta });
+                entry.Effects.Add(new SWBillEffectEntry { StatName = "Исследование данных", Color = Color.FromHex("#48C9B0"), Delta = proto.ResearchDelta });
             if (proto.SpreadDelta != 0f)
                 entry.Effects.Add(new SWBillEffectEntry { StatName = "Заражение", Color = Color.FromHex("#E0556B"), Delta = proto.SpreadDelta });
 

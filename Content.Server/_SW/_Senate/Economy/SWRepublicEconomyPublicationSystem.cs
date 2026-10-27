@@ -65,7 +65,7 @@ public sealed class SWRepublicEconomyPublicationSystem : EntitySystem
             if (!ReferenceEquals(snapshot, _published))
             {
                 _published = snapshot;
-                _view = BuildView(snapshot, ++_revision, paused);
+                _view = BuildView(snapshot, ++_revision, paused, _economy.GoodNames);
             }
             else
             {
@@ -74,6 +74,7 @@ public sealed class SWRepublicEconomyPublicationSystem : EntitySystem
                 {
                     Ready = _view.Ready, Paused = paused, Revision = ++_revision, Hour = _view.Hour,
                     Worlds = _view.Worlds, Flows = _view.Flows, Links = _view.Links,
+                    MedicalSupplyFlows = _view.MedicalSupplyFlows, SupplyRealSecondsPerHour = _view.SupplyRealSecondsPerHour,
                 };
             }
             _view.Governors = _time.ModeActive ? _governors.BuildViews() : new();
@@ -135,12 +136,13 @@ public sealed class SWRepublicEconomyPublicationSystem : EntitySystem
         }
     }
 
-    public static SWEconomyView BuildView(EconomySnapshot? snapshot, int revision, bool paused)
+    public static SWEconomyView BuildView(EconomySnapshot? snapshot, int revision, bool paused, IReadOnlyDictionary<string, string>? goodNames = null)
     {
-        var view = new SWEconomyView { Revision = revision, Paused = paused, Ready = snapshot != null };
+        var view = new SWEconomyView { Revision = revision, Paused = paused, Ready = snapshot != null, SupplyRealSecondsPerHour = SWSenateTimeSystem.RealSecondsPerGameHour };
         if (snapshot == null)
             return view;
         view.Hour = snapshot.Hour;
+        view.MedicalSupplyFlows = SWRepublicMedicalSupplyPublication.Create(snapshot, goodNames).ToList();
         var activity = snapshot.Goods.ToDictionary(g => (g.World, g.Good));
         var activityByWorld = snapshot.Goods.ToLookup(g => g.World);
         var inventory = snapshot.Inventory.ToLookup(i => i.World);

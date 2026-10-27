@@ -2,6 +2,8 @@ using System.Linq;
 using Content.Server._SW._Senate.Core;
 using Content.Server._SW._Senate.Economy.Simulation;
 using Content.Shared._SW._Senate.Economy;
+using Content.Shared._SW._Senate;
+using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -36,6 +38,9 @@ public sealed class SWGovernorSystem : EntitySystem
         public double DecisionHour;
         public string? RequestKey;
         public int RequestedCredits;
+        public SWGovernorCandidate? FinanceCandidate;
+        public string? FinanceRequestId;
+        public int FinanceRetryDay;
     }
 
     private readonly Dictionary<string, Governor> _governors = new();
@@ -43,6 +48,13 @@ public sealed class SWGovernorSystem : EntitySystem
     private readonly Dictionary<string, string> _worldNames = new();
     private int _lastHour;
     private int _nextProject;
+    public string FinanceResult { get; private set; } = string.Empty;
+    public string FinanceResultRequestId { get; private set; } = string.Empty;
+    public void ReportFinanceDenied(string requestId)
+    {
+        FinanceResultRequestId = requestId ?? string.Empty;
+        FinanceResult = "Действие доступно только министру финансов";
+    }
     private readonly Queue<string> _decisions = new();
     private EconomySnapshot? _decisionSnapshot;
     public int Revision { get; private set; }
@@ -63,6 +75,8 @@ public sealed class SWGovernorSystem : EntitySystem
             _governors.Clear();
             _lastHour = 0;
             _nextProject = 0;
+            FinanceResult = string.Empty;
+            FinanceResultRequestId = string.Empty;
             _decisions.Clear();
             _decisionSnapshot = null;
             Revision++;
@@ -183,6 +197,17 @@ public sealed class SWGovernorSystem : EntitySystem
             // A grant enlarges the same envelope and therefore also its protected reserve.
             var missing = (int) Math.Ceiling((cost + reserve - available) / (1 - SWGovernorPolicy.ReserveFraction(governor.Personality)));
             governor.RequestedCredits = Math.Clamp(missing, 1, 10000);
+            if (governor.FinanceCandidate != null && (governor.FinanceCandidate.World != best.World || governor.FinanceCandidate.Recipe != best.Recipe))
+            {
+                governor.FinanceCandidate = null;
+                governor.FinanceRequestId = null;
+            }
+            if (_time.Day >= governor.FinanceRetryDay && governor.FinanceRequestId == null
+                && _governors.Values.Count(g => g.FinanceRequestId != null) < 6)
+            {
+                governor.FinanceCandidate = best;
+                governor.FinanceRequestId = $"governor-finance:{Guid.NewGuid():N}";
+            }
             var materials = string.Join(", ", best.Materials.Select(m => $"{GoodName(m.Good)} {m.Quantity:0.##}"));
             if (_dilemmas.UpsertGovernorRequest(sector, key, $"{governor.Name}: расширение производства",
                 $"{WorldName(best.World)}. {RecipeName(best.Recipe)}. {best.Reason}. " +
@@ -218,6 +243,68 @@ public sealed class SWGovernorSystem : EntitySystem
         if (governor.RequestKey is { } key) _dilemmas.CloseGovernorRequest(key);
         governor.RequestKey = null;
         governor.RequestedCredits = 0;
+        governor.FinanceRequestId = null;
+        governor.FinanceCandidate = null;
+    }
+
+    public List<SWFinanceGovernorRequest> FinanceRequests()
+    {
+        var list = new List<SWFinanceGovernorRequest>();
+        foreach (var (sector, governor) in _governors)
+        {
+            if (governor.FinanceRequestId is not { } id || governor.FinanceCandidate is not { } candidate) continue;
+            var cost = _corruption.ProjectCost(sector, candidate.BaseCost);
+            var available = Math.Max(0, _budget.Available(sector) - Reserve(governor));
+            list.Add(new SWFinanceGovernorRequest { RequestId = id, SectorId = sector,
+                SectorName = _proto.TryIndex<SWSectorPrototype>(sector, out var sp) ? sp.Name : sector, Governor = governor.Name,
+                WorldName = WorldName(candidate.World), ProjectName = RecipeName(candidate.Recipe), Reason = candidate.Reason,
+                Outcome = $"+{candidate.AddedCyclesPerHour:0.###} цикла производства в час",
+                Cost = cost, Missing = Math.Max(0, cost - available) });
+        }
+        return list;
+    }
+
+    public bool DecideFinanceRequest(string requestId, bool approve)
+    {
+        FinanceResultRequestId = requestId ?? string.Empty;
+        var match = _governors.FirstOrDefault(x => x.Value.FinanceRequestId == requestId);
+        var governor = match.Value;
+        if (governor?.FinanceCandidate is not { } candidate) { FinanceResult = "Обращение устарело"; return false; }
+        var sector = match.Key;
+        if (!approve)
+        {
+            CloseRequest(governor);
+            governor.FinanceRetryDay = _time.Day + 1;
+            FinanceResult = "Обращение отклонено";
+            return true;
+        }
+        if (_economy.Snapshot is not { } snapshot || _economy.Definition is not { } definition || governor.ProjectId != null
+            || !SWGovernorPolicy.Evaluate(definition, snapshot, _sectorWorlds[sector], governor.Personality)
+                .Any(c => c.World == candidate.World && c.Recipe == candidate.Recipe && c.AddedCyclesPerHour == candidate.AddedCyclesPerHour))
+        {
+            CloseRequest(governor); FinanceResult = "Проект устарел или больше недоступен"; return false;
+        }
+        var cost = _corruption.ProjectCost(sector, candidate.BaseCost);
+        var sectorPart = Math.Min(cost, Math.Max(0, _budget.Available(sector) - Reserve(governor)));
+        var reservePart = cost - sectorPart;
+        if (reservePart <= 0) { CloseRequest(governor); FinanceResult = "Дополнительные средства больше не нужны"; return false; }
+        if (!_budget.SpendReserveForProject(reservePart)) { FinanceResult = "Недостаточно средств в резерве"; return false; }
+        if (!_budget.Spend(sector, sectorPart)) { _budget.RefundReserveForProject(reservePart); FinanceResult = "Секторный бюджет изменился"; return false; }
+        var id = $"governor:{sector}:{++_nextProject}";
+        var project = new EconomyProjectRequest(id, candidate.World, candidate.Materials, candidate.WorkHours,
+            new EconomyProductionExpansion(candidate.Recipe, candidate.AddedCyclesPerHour));
+        if (!_economy.QueueProject(project))
+        {
+            _budget.Grant(sector, sectorPart); _budget.RefundReserveForProject(reservePart);
+            CloseRequest(governor); FinanceResult = "Проект не принят; средства возвращены"; return false;
+        }
+        CloseRequest(governor);
+        governor.LastBudget = _budget.Available(sector); governor.ProjectId = id; governor.Project = candidate; governor.Observed = null;
+        governor.Status = "Проект профинансирован из резерва";
+        _budget.RecordReserveProject(governor.Name, reservePart, $"{WorldName(candidate.World)}: {RecipeName(candidate.Recipe)}");
+        Record(governor, $"{WorldName(candidate.World)}: {RecipeName(candidate.Recipe)}, {cost} кр., из резерва {reservePart} кр.");
+        FinanceResult = "Проект профинансирован и заказан";
+        return true;
     }
 
     private void Record(Governor governor, string text)

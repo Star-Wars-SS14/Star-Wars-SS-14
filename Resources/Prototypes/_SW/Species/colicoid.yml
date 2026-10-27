@@ -1,7 +1,7 @@
 - type: species
   id: Colicoid
   name: species-name-colicoid
-  roundStart: true
+  roundStart: false
   prototype: MobColicoid
   sprites: MobColicoidSprites
   markingLimits: MobNoHairMarkingLimits

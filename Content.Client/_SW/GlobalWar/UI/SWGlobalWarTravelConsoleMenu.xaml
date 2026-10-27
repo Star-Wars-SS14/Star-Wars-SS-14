@@ -1,0 +1,20 @@
+<DefaultWindow xmlns="https://spacestation14.io"
+               Title="{Loc 'sw-global-war-travel-title'}"
+               MinSize="760 460" SetSize="900 540">
+    <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="8">
+        <Label Name="CurrentPlanet" />
+        <Label Name="Status" />
+        <BoxContainer Orientation="Horizontal" VerticalExpand="True" SeparationOverride="12">
+            <BoxContainer Orientation="Vertical" MinWidth="280" MaxWidth="340" HorizontalExpand="True" SeparationOverride="6">
+                <Label Text="{Loc 'sw-global-war-travel-destinations'}" />
+                <ScrollContainer VerticalExpand="True" HorizontalExpand="True">
+                    <BoxContainer Name="Destinations" Orientation="Vertical" SeparationOverride="8" HorizontalExpand="True" />
+                </ScrollContainer>
+            </BoxContainer>
+            <PanelContainer HorizontalExpand="True" VerticalExpand="True">
+                <Label Text="{Loc 'sw-global-war-travel-map-placeholder'}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="16" />
+            </PanelContainer>
+        </BoxContainer>
+        <Button Name="Travel" Text="{Loc 'sw-global-war-travel-jump'}" Disabled="True" />
+    </BoxContainer>
+</DefaultWindow>

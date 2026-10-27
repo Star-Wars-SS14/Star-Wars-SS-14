@@ -4,7 +4,7 @@ using Robust.Shared.Prototypes;
 namespace Content.Server._SW.GlobalWar;
 
 /// <summary>
-/// Configuration and planet registry for a Global War campaign.
+/// Configuration and planet registry for the singleton GlobalWarGamerule.
 /// </summary>
 [RegisterComponent, Access(typeof(SWGlobalWarGameruleSystem), typeof(SWGlobalWarPlanetSystem))]
 public sealed partial class SWGlobalWarGameruleComponent : Component

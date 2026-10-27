@@ -459,6 +459,14 @@ public sealed partial class ShuttleSystem
     /// </summary>
     private void UpdateFTLArriving(Entity<FTLComponent, ShuttleComponent> entity)
     {
+        var attempt = new FTLBeforeArrivalEvent();
+        RaiseLocalEvent(entity.Owner, ref attempt);
+        if (attempt.Cancelled)
+        {
+            entity.Comp1.StateTime = StartEndTime.FromCurTime(_gameTiming, TimeSpan.FromSeconds(1));
+            return;
+        }
+
         var uid = entity.Owner;
         var xform = _xformQuery.GetComponent(uid);
         var body = _physicsQuery.GetComponent(uid);

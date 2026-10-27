@@ -1,5 +1,6 @@
 using Content.Server.GameTicking.Rules;
 using Content.Shared.GameTicking.Components;
+using Content.Shared.GameTicking;
 
 namespace Content.Server._SW.GlobalWar;
 
@@ -10,10 +11,33 @@ public sealed class SWGlobalWarGameruleSystem : GameRuleSystem<SWGlobalWarGameru
 {
     [Dependency] private readonly SWGlobalWarPlanetSystem _planets = default!;
 
+    [ViewVariables]
+    public Entity<SWGlobalWarGameruleComponent>? GlobalWarGamerule { get; private set; }
+
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<SWGlobalWarGameruleComponent, ComponentShutdown>(OnShutdown);
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
+    }
+
+    public bool TryGetGlobalWarGamerule(out Entity<SWGlobalWarGameruleComponent> globalWarGamerule)
+    {
+        globalWarGamerule = default;
+        if (GlobalWarGamerule is not { } current || TerminatingOrDeleted(current.Owner) ||
+            !GameTicker.IsGameRuleActive(current.Owner))
+            return false;
+
+        globalWarGamerule = current;
+        return true;
+    }
+
+    protected override void Added(EntityUid uid, SWGlobalWarGameruleComponent component,
+        GameRuleComponent gameRule, GameRuleAddedEvent args)
+    {
+        base.Added(uid, component, gameRule, args);
+        if (TryGetGlobalWarGamerule(out var current) && current.Owner != uid)
+            ForceEndSelf(uid, gameRule);
     }
 
     protected override void Started(EntityUid uid, SWGlobalWarGameruleComponent component,
@@ -21,9 +45,18 @@ public sealed class SWGlobalWarGameruleSystem : GameRuleSystem<SWGlobalWarGameru
     {
         base.Started(uid, component, gameRule, args);
 
+        // Multiple pending rules can be added before any of them starts.
+        if (TryGetGlobalWarGamerule(out var current) && current.Owner != uid)
+        {
+            ForceEndSelf(uid, gameRule);
+            return;
+        }
+
+        GlobalWarGamerule = (uid, component);
+
         try
         {
-            _planets.InitializePlanets((uid, component));
+            _planets.InitializePlanets();
         }
         catch
         {
@@ -37,10 +70,19 @@ public sealed class SWGlobalWarGameruleSystem : GameRuleSystem<SWGlobalWarGameru
     {
         base.Ended(uid, component, gameRule, args);
         _planets.StopPlanets((uid, component));
+        if (GlobalWarGamerule?.Owner == uid)
+            GlobalWarGamerule = null;
     }
 
     private void OnShutdown(Entity<SWGlobalWarGameruleComponent> ent, ref ComponentShutdown args)
     {
         _planets.StopPlanets(ent);
+        if (GlobalWarGamerule?.Owner == ent.Owner)
+            GlobalWarGamerule = null;
+    }
+
+    private void OnRoundRestart(RoundRestartCleanupEvent args)
+    {
+        GlobalWarGamerule = null;
     }
 }

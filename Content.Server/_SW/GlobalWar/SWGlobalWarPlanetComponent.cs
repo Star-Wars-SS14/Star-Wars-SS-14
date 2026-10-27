@@ -13,7 +13,7 @@ public sealed partial class SWGlobalWarPlanetComponent : Component
     public ProtoId<SWGlobalWarPlanetPrototype> Prototype;
 
     [ViewVariables]
-    public EntityUid Gamerule;
+    public EntityUid GlobalWarGamerule;
 
     [ViewVariables]
     public Dictionary<SWGlobalWarPlanetLocation, EntityUid> Maps = new();
@@ -22,4 +22,10 @@ public sealed partial class SWGlobalWarPlanetComponent : Component
     /// Stations created by this planet's game maps, tracked for failed-start cleanup.
     /// </summary>
     public HashSet<EntityUid> Stations = new();
+
+    /// <summary>
+    /// Original station grids, excluding ships assigned to these stations later in the round.
+    /// </summary>
+    [ViewVariables]
+    public HashSet<EntityUid> StationGrids = new();
 }

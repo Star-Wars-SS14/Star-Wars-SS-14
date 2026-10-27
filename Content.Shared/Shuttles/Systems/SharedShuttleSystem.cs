@@ -187,7 +187,9 @@ public abstract partial class SharedShuttleSystem : EntitySystem
     /// <summary>
     /// Returns true if the spot is free to be FTLd to (not close to any objects and in range).
     /// </summary>
-    public bool FTLFree(EntityUid shuttleUid, EntityCoordinates coordinates, Angle angle, List<ShuttleExclusionObject>? exclusionZones)
+    /// <param name="checkRange">Disable only when a separate route system determines inter-map reachability.</param>
+    public bool FTLFree(EntityUid shuttleUid, EntityCoordinates coordinates, Angle angle, List<ShuttleExclusionObject>? exclusionZones,
+        bool checkRange = true)
     {
         if (!_physicsQuery.TryGetComponent(shuttleUid, out var shuttlePhysics) ||
             !_xformQuery.TryGetComponent(shuttleUid, out var shuttleXform))
@@ -204,8 +206,8 @@ public abstract partial class SharedShuttleSystem : EntitySystem
         // This is the already adjusted position
         var targetPosition = mapCoordinates.Position;
 
-        // Check range even if it's cross-map.
-        if ((targetPosition - ourPos).Length() > FTLRange)
+        // Standard navigation checks range even if it's cross-map.
+        if (checkRange && (targetPosition - ourPos).Length() > FTLRange)
         {
             return false;
         }

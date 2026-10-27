@@ -1,0 +1,15 @@
+ent-SWGlobalWarTravelConsole = консоль межпланетной навигации
+    .desc = Прокладывает гиперпространственные маршруты между орбитальными станциями Global War.
+sw-global-war-travel-title = Межпланетная навигация
+sw-global-war-travel-location = Текущая планета: {$planet}
+sw-global-war-travel-destinations = Направления
+sw-global-war-travel-map-placeholder = Карта галактики
+sw-global-war-travel-jump = Начать гиперпрыжок
+sw-global-war-travel-denied = Консоль недоступна или отказано в доступе.
+sw-global-war-travel-orbit-only = Межпланетные прыжки доступны только с орбиты.
+sw-global-war-travel-ship-only = Установите консоль на подвижный шаттл.
+sw-global-war-travel-no-route = К этой планете нет гиперпространственного маршрута.
+sw-global-war-travel-current = Вы уже находитесь у этой планеты.
+sw-global-war-travel-unavailable = Планета или орбитальная станция недоступна.
+sw-global-war-travel-blocked = Рядом с орбитальной станцией нет безопасной точки прибытия.
+sw-global-war-travel-in-progress = Перелёт к {$planet}. При необходимости ожидаем свободный выход.

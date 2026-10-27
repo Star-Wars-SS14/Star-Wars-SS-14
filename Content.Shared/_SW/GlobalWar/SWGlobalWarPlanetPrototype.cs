@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Numerics;
 using Content.Shared.Maps;
 using Robust.Shared.Prototypes;
 
@@ -15,6 +16,13 @@ public sealed partial class SWGlobalWarPlanetPrototype : IPrototype
 
     [DataField(required: true)]
     public string Name = string.Empty;
+
+    /// <summary>Position on the travel console's schematic map, independent of gameplay coordinates.</summary>
+    [DataField]
+    public Vector2 MapPosition;
+
+    [DataField]
+    public string Description = string.Empty;
 
     [DataField(required: true)]
     public ProtoId<GameMapPrototype> Surface;

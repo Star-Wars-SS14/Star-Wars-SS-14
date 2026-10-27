@@ -66,6 +66,9 @@ public sealed class SWGlobalWarPlanetSystem : EntitySystem
         foreach (var id in globalWarGamerule.Comp.Planets)
         {
             var prototype = _prototypes.Index(id);
+            if (!float.IsFinite(prototype.MapPosition.X) || !float.IsFinite(prototype.MapPosition.Y))
+                throw new ArgumentException($"Planet {id} mapPosition must be finite.", nameof(globalWarGamerule));
+
             if (prototype.HyperspaceTime is { } duration && (!float.IsFinite(duration) || duration < 0f))
                 throw new ArgumentException($"Planet {id} hyperspaceTime must be finite and non-negative.", nameof(globalWarGamerule));
 

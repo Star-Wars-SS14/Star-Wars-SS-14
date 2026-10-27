@@ -13,15 +13,28 @@ public sealed partial class SWGlobalWarTravelConsoleMenu : DefaultWindow
 {
     public event Action<ProtoId<SWGlobalWarPlanetPrototype>>? OnTravelPressed;
 
+    private readonly IPrototypeManager _prototypes;
+    private readonly Dictionary<RichTextLabel, string> _displayedText = new();
+    private SWGlobalWarTravelConsoleState? _state;
     private ProtoId<SWGlobalWarPlanetPrototype>? _selected;
-    private readonly Dictionary<ProtoId<SWGlobalWarPlanetPrototype>, (Button Button, Label Reason)> _destinations = new();
 
     public SWGlobalWarTravelConsoleMenu()
     {
         RobustXamlLoader.Load(this);
+        _prototypes = IoCManager.Resolve<IPrototypeManager>();
+        Map.PlanetSelected += id =>
+        {
+            _selected = id;
+            UpdatePlanetInfo();
+        };
+        Map.ViewChanged += () => Zoom.Text = $"{Map.Zoom * 100:0}%";
+        ZoomOut.OnPressed += _ => Map.ChangeZoom(1 / 1.2f);
+        ZoomIn.OnPressed += _ => Map.ChangeZoom(1.2f);
+        ResetView.OnPressed += _ => Map.ResetView();
         Travel.OnPressed += _ =>
         {
-            if (_selected is not { } selected)
+            if (_selected is not { } selected ||
+                _state?.Destinations.Any(entry => entry.Id == selected && entry.Available) != true)
                 return;
 
             Travel.Disabled = true;
@@ -31,58 +44,52 @@ public sealed partial class SWGlobalWarTravelConsoleMenu : DefaultWindow
 
     public void UpdateState(SWGlobalWarTravelConsoleState state)
     {
-        Status.Text = string.IsNullOrEmpty(state.Status)
+        _state = state;
+        SetText(Status, string.IsNullOrEmpty(state.Status)
             ? Loc.GetString("sw-global-war-travel-location", ("planet", state.CurrentPlanet))
-            : state.Status;
-        var present = state.Destinations.Select(entry => entry.Id).ToHashSet();
-        foreach (var (id, controls) in _destinations.ToArray())
-        {
-            if (present.Contains(id))
-                continue;
+            : state.Status);
+        // Update availability without rebuilding the map, preserving selection, zoom and an active drag.
+        Map.SetState(state.Destinations);
+        UpdatePlanetInfo();
+    }
 
-            Destinations.RemoveChild(controls.Button);
-            Destinations.RemoveChild(controls.Reason);
-            _destinations.Remove(id);
-            if (_selected == id)
-                _selected = null;
+    /// <summary>Updates the selected planet's details and server-provided travel availability in place.</summary>
+    private void UpdatePlanetInfo()
+    {
+        var entry = _state?.Destinations.FirstOrDefault(destination => destination.Id == _selected);
+        if (entry == null || !_prototypes.TryIndex(entry.Id, out var planet))
+        {
+            _selected = null;
+            SelectionHint.Visible = true;
+            PlanetInfo.Visible = false;
+            Travel.Disabled = true;
+            return;
         }
 
-        var selectedAvailable = false;
-        var position = 0;
-        foreach (var entry in state.Destinations)
-        {
-            // Keep controls attached across updates so an in-progress mouse click and scroll position survive.
-            if (!_destinations.TryGetValue(entry.Id, out var controls))
-            {
-                var id = entry.Id;
-                var button = new Button { ToggleMode = true, HorizontalExpand = true };
-                var reason = new Label { MaxWidth = 330, ClipText = true };
-                controls = (button, reason);
-                _destinations.Add(id, controls);
-                Destinations.AddChild(button);
-                Destinations.AddChild(reason);
-                button.OnPressed += _ =>
-                {
-                    _selected = id;
-                    foreach (var (otherId, other) in _destinations)
-                        other.Button.Pressed = otherId == id;
-                    Travel.Disabled = button.Disabled;
-                };
-            }
+        SelectionHint.Visible = false;
+        PlanetInfo.Visible = true;
+        SetText(PlanetName, entry.Name);
+        SetText(PlanetDescription, planet.Description);
+        PlanetDescription.Visible = !string.IsNullOrEmpty(planet.Description);
+        SetText(HyperspaceTime, planet.HyperspaceTime is { } seconds
+            ? Loc.GetString("sw-global-war-travel-time", ("seconds", seconds))
+            : Loc.GetString("sw-global-war-travel-time-default"));
+        var connections = _state!.Destinations.Where(destination => planet.Connections.Contains(destination.Id))
+            .Select(destination => destination.Name);
+        var names = string.Join(", ", connections);
+        SetText(Connections, Loc.GetString("sw-global-war-travel-connections", ("planets",
+            string.IsNullOrEmpty(names) ? Loc.GetString("sw-global-war-travel-no-connections") : names)));
+        SetText(Availability, entry.Available ? Loc.GetString("sw-global-war-travel-ready") : entry.Reason);
+        Availability.Visible = entry.Available || !string.IsNullOrEmpty(entry.Reason);
+        Travel.Disabled = !entry.Available;
+    }
 
-            controls.Button.Text = entry.Name;
-            controls.Button.ToolTip = entry.Reason;
-            controls.Button.Disabled = !entry.Available;
-            controls.Button.Pressed = _selected == entry.Id;
-            controls.Reason.Text = entry.Reason;
-            controls.Reason.Visible = !entry.Available && !string.IsNullOrEmpty(entry.Reason);
-            controls.Button.SetPositionInParent(position++);
-            controls.Reason.SetPositionInParent(position++);
+    private void SetText(RichTextLabel label, string text)
+    {
+        if (_displayedText.TryGetValue(label, out var previous) && previous == text)
+            return;
 
-            if (_selected == entry.Id && entry.Available)
-                selectedAvailable = true;
-        }
-
-        Travel.Disabled = !selectedAvailable;
+        _displayedText[label] = text;
+        label.SetMessage(text);
     }
 }

@@ -1,6 +1,7 @@
 - type: swGlobalWarPlanet
   id: SWGlobalWarTestAlpha
   name: Alpha
+  mapPosition: "20, 30"
   hyperspaceTime: 20
   orbit: SWGlobalWarTestAsteroid
   surface: oldBalmora
@@ -9,6 +10,7 @@
 - type: swGlobalWarPlanet
   id: SWGlobalWarTestBeta
   name: Beta
+  mapPosition: "60, 60"
   hyperspaceTime: 30
   orbit: SWGlobalWarTestAsteroid
   surface: oldBalmora
@@ -17,6 +19,7 @@
 - type: swGlobalWarPlanet
   id: SWGlobalWarTestGamma
   name: Gamma
+  mapPosition: "100, 25"
   hyperspaceTime: 40
   orbit: SWGlobalWarTestAsteroid
   surface: oldBalmora

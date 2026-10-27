@@ -90,6 +90,8 @@ public sealed class SWGlobalWarPlanetSystem : EntitySystem
 
                 LoadLocation((uid, planet), SWGlobalWarPlanetLocation.Surface, prototype.Surface);
                 LoadLocation((uid, planet), SWGlobalWarPlanetLocation.Orbit, prototype.Orbit);
+                var loaded = new SWGlobalWarPlanetLoadedEvent();
+                RaiseLocalEvent(uid, ref loaded);
             }
         }
         catch
@@ -340,6 +342,9 @@ public sealed class SWGlobalWarPlanetSystem : EntitySystem
                 link.IncomingTravellers.Clear();
                 WakeMap(map, link);
             }
+
+            var stopped = new SWGlobalWarPlanetStoppedEvent();
+            RaiseLocalEvent(uid, ref stopped);
         }
     }
 

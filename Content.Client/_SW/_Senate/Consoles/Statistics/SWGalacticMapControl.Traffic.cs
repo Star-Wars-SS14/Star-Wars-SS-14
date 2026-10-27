@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using Content.Shared._SW._Senate.Economy;
 using Content.Shared._SW._Senate.Sectors;
@@ -25,6 +26,59 @@ public sealed partial class SWGalacticMapControl
     private DrawVertexUV2DColor[] _trafficVertices = Array.Empty<DrawVertexUV2DColor>();
     private int _trafficVertexCount;
     private SWEconomyView? _economy;
+    private int _economyMapMode = -1;
+    private string? _economyMapGood;
+    private readonly Dictionary<string, (int Count, int Shortages, double? WorstHours, double Production)> _economySectorCache = new();
+
+    public void SetEconomyMapMode(int mode, string? good)
+    {
+        _economyMapMode = mode;
+        _economyMapGood = good;
+        _economySectorCache.Clear();
+    }
+
+    // An overview anchor represents the entire sector, including worlds hidden at galaxy scale.
+    private (int Count, int Shortages, double? WorstHours, double Production)? EconomySectorStats(string id)
+    {
+        if (_focusSector != null || _economy is not { Ready: true }) return null;
+        if (_economySectorCache.TryGetValue(id, out var cached)) return cached;
+        var geography = IoCManager.Resolve<IPrototypeManager>().Index<SWGalacticMapPrototype>("SenateRepublic");
+        var anchor = geography.Worlds.FirstOrDefault(w => w.Id == id);
+        if (anchor?.Sector is not { } sector) return null;
+        var ids = geography.Worlds.Where(w => w.Sector?.Id == sector.Id).Select(w => w.Id).ToHashSet();
+        var goods = _economy.Worlds.Where(w => ids.Contains(w.World))
+            .SelectMany(w => w.Goods.Where(g => _economyMapGood == null || g.Good == _economyMapGood)
+                .Select(g => (World: w.World, Good: g))).ToArray();
+        var demand = goods.Where(g => g.Good.RequiredPerHour > 0).ToArray();
+        var result = (goods.Length, demand.Where(g => g.Good.Stock / g.Good.RequiredPerHour < 4).Select(g => g.World).Distinct().Count(),
+            demand.Length == 0 ? (double?) null : demand.Min(g => g.Good.Stock / g.Good.RequiredPerHour), goods.Sum(g => g.Good.ProducedPerHour));
+        _economySectorCache[id] = result;
+        return result;
+    }
+
+    public string? EconomySectorSummary(string id)
+    {
+        if (EconomySectorStats(id) is not { } stats) return null;
+        if (stats.Count == 0) return "Сектор: нет данных по товару";
+        var coverage = stats.WorstHours is { } hours ? $"{hours:0.0} ч" : "нет спроса";
+        return $"Сектор: проблемных миров {stats.Shortages}\nМинимальное покрытие: {coverage}\nОбщий выпуск: {stats.Production:0.##} ед/ч";
+    }
+
+    private Color? EconomyWorldColor(string id)
+    {
+        if (_economyMapMode is < 0 or > 1 || _economy is not { Ready: true }) return null;
+        if (EconomySectorStats(id) is { } sector)
+            return _economyMapMode == 0 ? (sector.Shortages > 0 ? SWConsoleStyle.Bad : SWConsoleStyle.TextDim)
+                : (sector.Production > 0 ? SWConsoleStyle.Good : SWConsoleStyle.TextDim);
+        var world = _economy.Worlds.FirstOrDefault(w => w.World == id);
+        if (world == null) return null;
+        var goods = world.Goods.Where(g => _economyMapGood == null || g.Good == _economyMapGood).ToArray();
+        if (_economyMapMode == 0)
+            return goods.Any(g => g.RequiredPerHour > 0 && g.Stock / g.RequiredPerHour < 4)
+                ? SWConsoleStyle.Bad : SWConsoleStyle.TextDim;
+        return goods.Any(g => g.ProducedPerHour > 0) ? SWConsoleStyle.Good : SWConsoleStyle.TextDim;
+    }
+
     private string? _trafficCommodity;
     private bool _showTraffic = true;
     private bool _hasTraffic;
@@ -81,6 +135,8 @@ public sealed partial class SWGalacticMapControl
     public void SetEconomy(SWEconomyView? view)
     {
         _economy = view;
+        _economySectorCache.Clear();
+        UpdateMedicalSupply();
         RebuildTraffic();
     }
 
@@ -136,6 +192,19 @@ public sealed partial class SWGalacticMapControl
             else continue;
             var units = Math.Max(0, flow.UnitsPerHour);
             var transit = Math.Max(0, flow.InTransit);
+            if (_medicalVisible)
+            {
+                // Project cargo already has a finite tracked medical marker. Rendering the
+                // same volume as repeating aggregate traffic made a delivered vaccine look
+                // like a ship endlessly restarting its route.
+                foreach (var medical in _economy.MedicalSupplyFlows.Where(m => m.EdgeId == flow.Edge
+                             && m.From == flow.From && m.To == flow.To && m.Good == flow.Good))
+                {
+                    transit = Math.Max(0, transit - medical.Quantity);
+                    if (Math.Abs(medical.DepartAtHours - _economy.Hour) < 1e-7)
+                        units = Math.Max(0, units - medical.Quantity / .25);
+                }
+            }
             direction.Units += units;
             direction.Transit += transit;
             direction.Slots += units * cargo;

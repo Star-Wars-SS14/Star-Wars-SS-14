@@ -47,9 +47,9 @@ public sealed partial class SWRepublicMapBrowser
         var scroll = new ScrollContainer { HScrollEnabled = false, HorizontalExpand = true, VerticalExpand = true };
         scroll.AddChild(_detail);
         sidebar.AddChild(scroll);
-        _columns = new SWAtlasLayout(surface, sidebar) { VerticalExpand = true };
+        _columns = new SWAtlasLayout(surface, sidebar, stackBelow: _compactEconomy ? 0 : 680, minDetails: _compactEconomy ? 220 : 300, minMapHeight: _compactEconomy ? 150 : 220) { VerticalExpand = true };
         _body.AddChild(_columns);
-        _trafficToggle.Visible = true;
+        _trafficToggle.Visible = _economyMapMode < 0;
         RefreshEconomyStatus();
         _zoom.Text = $"{surface.Zoom * 100:0}%";
         _title.Text = $"Территория: {world.Name}";
@@ -72,6 +72,12 @@ public sealed partial class SWRepublicMapBrowser
         back.Name = "BackToSector";
         back.OnPressed += _ => { OpenSector(CurrentSectorId!); SelectWorld(id); };
         _detailHeading.AddChild(back);
+        if (EconomyDetailsOverride != null)
+        {
+            EconomyDetailsOverride(_detailHeading, _detail, id, null);
+            SelectionChanged?.Invoke();
+            return;
+        }
         _detailHeading.AddChild(SWConsoleStyle.Wrap(WorldName(id), SWConsoleStyle.Brass));
         _detailHeading.AddChild(SWConsoleStyle.Wrap(Surface.Surface.Biome, SWConsoleStyle.TextDim));
         var site = Surface.Surface.Sites.FirstOrDefault(s => s.Id == Surface.SelectedSiteId);

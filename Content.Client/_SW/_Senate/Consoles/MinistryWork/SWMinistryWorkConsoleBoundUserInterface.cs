@@ -91,40 +91,12 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSecurityRaidPlotMessage(plotId));
     }
 
-    public void SetFunding(int level)
-    {
-        SendMessage(new SWHealthSetFundingMessage(level));
-    }
+    public void HealthAction(SWHealthActionMessage message) => SendMessage(message);
 
-    public void DeployVaccine()
-    {
-        SendMessage(new SWHealthDeployVaccineMessage());
-    }
-
-    public void Quarantine(string sectorId, bool on)
-    {
-        SendMessage(new SWHealthQuarantineMessage(sectorId, on));
-    }
-
-    public void BuildHospital(string sectorId)
-    {
-        SendMessage(new SWHealthBuildHospitalMessage(sectorId));
-    }
-
-    public void EmergencyAid(string sectorId)
-    {
-        SendMessage(new SWHealthEmergencyAidMessage(sectorId));
-    }
-
-    public void DeclareHealthEmergency()
-    {
-        SendMessage(new SWHealthDeclareEmergencyMessage());
-    }
-
-    public void SelectHealthProgram(string programId)
-    {
-        SendMessage(new SWHealthSelectProgramMessage(programId));
-    }
+    public void SelectEconomyGood(string good) => SendMessage(new SWEconomySelectGoodMessage(good));
+    public void FundExpansion(string world, string recipe) => SendMessage(new SWEconomyFundExpansionMessage(world, recipe));
+    public void FundEconomyRoute(string edge) => SendMessage(new SWEconomyFundRouteMessage(edge));
+    public void RespondEconomyEvent(int eventId, bool accelerated) => SendMessage(new SWEconomyRespondEventMessage(eventId, accelerated));
 
     public void SetEconPolicy(int level)
     {
@@ -156,11 +128,6 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWEconomyDeclareStimulusMessage());
     }
 
-    public void SelectEconProgram(string programId)
-    {
-        SendMessage(new SWEconomySelectProgramMessage(programId));
-    }
-
     public void SetRate(int rate)
     {
         SendMessage(new SWFinanceSetRateMessage(rate));
@@ -186,11 +153,6 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWFinanceEmissionMessage());
     }
 
-    public void SelectFinanceProgram(string programId)
-    {
-        SendMessage(new SWFinanceSelectProgramMessage(programId));
-    }
-
     public void AdjustBudgetRatio(int deltaPct)
     {
         SendMessage(new SWBudgetAdjustRatioMessage(deltaPct));
@@ -210,6 +172,18 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
     {
         SendMessage(new SWBudgetSubmitMessage());
     }
+
+    public void SubmitBudget(int revision, int sector, int reserve, System.Collections.Generic.Dictionary<string, int> weights)
+        => SendMessage(new SWBudgetSubmitMessage(revision, sector, reserve, weights));
+
+    public void TransferReserve(int revision, string requestId, bool ministry, string target, int amount, string purpose)
+        => SendMessage(new SWBudgetReserveTransferMessage(revision, requestId, ministry, target, amount, purpose));
+
+    public void DecideGovernorRequest(string requestId, bool approve)
+        => SendMessage(new SWFinanceGovernorDecisionMessage(requestId, approve));
+
+    public void SetFinanceTax(string id, int rate, bool relief, string requestId)
+        => SendMessage(new SWFinanceTaxSetMessage(id, rate, relief, requestId));
 
     public void Investigate(int caseId)
     {

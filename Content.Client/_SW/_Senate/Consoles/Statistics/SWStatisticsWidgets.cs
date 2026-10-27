@@ -30,7 +30,7 @@ public static class SWStatisticsWidgets
         if (effects.Count == 0) return;
         target.AddChild(SWConsoleStyle.Section(perHour ? "Влияние режима за игровой час" : "Последствия"));
         foreach (var effect in effects)
-            target.AddChild(SWConsoleStyle.Wrap($"{effect.StatName}   {effect.Delta:+0.#;-0.#;0}{(perHour ? "/ч" : string.Empty)}", effect.Color));
+            target.AddChild(SWConsoleStyle.Wrap($"{effect.StatName}   {effect.Delta:+0.#;-0.#;0}{(perHour || effect.PerHour ? "/ч" : string.Empty)}", effect.Color));
     }
 
     public static Control Operations(SWStatisticsConsoleState s, int section)
@@ -47,7 +47,7 @@ public static class SWStatisticsWidgets
             case 0:
                 Text(s.DefconName.Length > 0 ? $"DEFCON {s.DefconLevel}, {s.DefconName}" : "Режим боеготовности не указан");
                 Risk("Давление на границы", s.BorderPressure, s.BorderStatus);
-                StatEffects(b, s.DefconEffects, true);
+                StatEffects(b, s.DefconEffects);
                 break;
             case 1:
                 Text(s.PostureName);

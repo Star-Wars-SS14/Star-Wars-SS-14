@@ -15,15 +15,17 @@ public sealed class SWAtlasLayout : Container
     private readonly float _minDetails;
     private readonly float _maxDetails;
     private const float Gap = 16;
+    private readonly float _minMapHeight;
 
-    public SWAtlasLayout(Control map, Control details, float stackBelow = 680, float minDetails = 300, float maxDetails = 410)
+    public SWAtlasLayout(Control map, Control details, float stackBelow = 680, float minDetails = 300, float maxDetails = 410, float minMapHeight = 220)
     {
         _map = map;
         _details = details;
         _stackBelow = stackBelow;
         _minDetails = minDetails;
         _maxDetails = maxDetails;
-        _map.MinHeight = 220;
+        _minMapHeight = minMapHeight;
+        _map.MinHeight = minMapHeight;
         HorizontalExpand = VerticalExpand = true;
         AddChild(map);
         AddChild(details);
@@ -34,7 +36,7 @@ public sealed class SWAtlasLayout : Container
         var width = float.IsFinite(availableSize.X) ? availableSize.X : 1000;
         var height = float.IsFinite(availableSize.Y) ? availableSize.Y : 500;
         MeasureChildren(new Vector2(width, height), false);
-        return new Vector2(width, Math.Max(220, height));
+        return new Vector2(width, Math.Max(_minMapHeight, height));
     }
 
     protected override Vector2 ArrangeOverride(Vector2 finalSize)
@@ -47,7 +49,7 @@ public sealed class SWAtlasLayout : Container
     {
         var stacked = size.X < _stackBelow;
         var detailWidth = Math.Clamp(size.X * .37f, _minDetails, _maxDetails);
-        var mapSize = stacked ? new Vector2(size.X, Math.Max(220, size.Y * .46f))
+        var mapSize = stacked ? new Vector2(size.X, Math.Max(_minMapHeight, size.Y * .46f))
             : new Vector2(Math.Max(0, size.X - detailWidth - Gap), size.Y);
         var detailSize = stacked ? new Vector2(size.X, Math.Max(0, size.Y - mapSize.Y - Gap))
             : new Vector2(detailWidth, size.Y);

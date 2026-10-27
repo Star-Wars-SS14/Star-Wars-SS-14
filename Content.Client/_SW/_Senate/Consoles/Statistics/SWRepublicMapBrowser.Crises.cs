@@ -33,6 +33,7 @@ public sealed partial class SWRepublicMapBrowser
 
     public void SelectCrises(IEnumerable<string> ids)
     {
+        _selectedMedicalShipmentId = null;
         var selected = ids.Where(id => _mapCrises.Any(c => c.Id == id)).Distinct().ToArray();
         if (selected.Length == 0) return;
         if (Surface != null) SwitchView(CurrentSectorId);

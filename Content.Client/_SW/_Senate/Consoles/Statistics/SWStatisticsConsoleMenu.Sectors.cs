@@ -102,6 +102,8 @@ public sealed partial class SWStatisticsConsoleMenu
             var stat = SWStatisticsPresentation.SectorMetric(selected, global.Id);
             _sectorDetail.AddChild(Metric(global.Name, stat?.Value ?? float.NaN, global.Min, global.Max, reference: global.Actual));
         }
+        var breakdown = _state.SituationalStats.Where(x => x.SectorId == selected.Id && x.GlobalId == g?.Id).ToArray();
+        foreach (var entry in breakdown) _sectorDetail.AddChild(SWSituationalStatDisplay.Make(entry, _situationExpanded));
     }
 
     private sealed class SectorRow

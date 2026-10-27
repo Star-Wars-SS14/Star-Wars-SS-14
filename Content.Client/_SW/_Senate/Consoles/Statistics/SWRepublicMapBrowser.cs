@@ -19,6 +19,15 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
     private static readonly ProtoId<SWGalacticMapPrototype> MapPrototype = "SenateRepublic";
     private readonly SWGalacticMapPrototype _data;
     private readonly bool _showProductionRecipes;
+    private readonly bool _compactEconomy;
+    private readonly bool _financeOnly;
+    private readonly bool _showMedicalToggle;
+    private IReadOnlyDictionary<string, SWFinanceSectorRevenue>? _financeSectors;
+    public void SetFinanceSectors(IEnumerable<SWFinanceSectorRevenue> sectors)
+    {
+        _financeSectors = sectors.ToDictionary(x => x.SectorId);
+        Map.SetFinanceSectors(_financeSectors);
+    }
     private readonly Dictionary<string, SWGalacticMapWorld> _worlds;
     private readonly Dictionary<string, SWTransitLinkPrototype> _transitLinks;
     private readonly SWSectorPrototype[] _sectorPrototypes;
@@ -34,20 +43,42 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
     private SWGalacticMapWorld[] _searchWorlds = Array.Empty<SWGalacticMapWorld>();
     private IReadOnlyList<SWSectorEntry> _sectors = Array.Empty<SWSectorEntry>();
     private IReadOnlyList<SWGlobalStatEntry> _globals = Array.Empty<SWGlobalStatEntry>();
+    private readonly HashSet<string> _situationExpanded = new();
+    private IReadOnlyList<SWSituationalStatView> _situationalStats = Array.Empty<SWSituationalStatView>();
+    public void SetSituationalStats(IReadOnlyList<SWSituationalStatView> stats) => _situationalStats = stats;
     private SWGalacticMapRoute? _route;
     private string? _lockedSector;
     public SWGalacticMapControl Map { get; private set; } = default!;
     public SWGalacticMapPrototype View { get; private set; } = default!;
     public string? CurrentSectorId { get; private set; }
     public string? SelectedWorldId { get; private set; }
+    public string? SelectedSectorId => SelectedWorldId is { } id && _worlds.TryGetValue(id, out var world) ? world.Sector?.Id : null;
     public string? SelectedLiveSectorId => SelectedWorldId is { } id && _worlds[id].Sector is { } sector
         && _sectors.Any(s => s.Id == sector.Id) ? sector.Id : null;
     public event Action? SelectionChanged;
+    public event Action<string?>? CommodityChanged;
+    public Action<BoxContainer, BoxContainer, string?, SWGalacticMapRoute?>? EconomyDetailsOverride { get; set; }
+    private int _economyMapMode = -1;
+
+    public void SetEconomyMapMode(int mode)
+    {
+        _economyMapMode = mode;
+        _trafficToggle.Visible = false;
+        Map.SetEconomyMapMode(mode, _commodityFilter);
+        _showTraffic = mode == 2;
+        SWConsoleStyle.StyleTabButton(_trafficToggle, _showTraffic);
+        Map.SetTrafficFilter(_commodityFilter, _showTraffic);
+        Surface?.SetTrafficFilter(_commodityFilter, _showTraffic);
+        RefreshDetails();
+    }
     public event Action<string>? SectorSummaryRequested;
 
-    public SWRepublicMapBrowser(bool showProductionRecipes = false)
+    public SWRepublicMapBrowser(bool showProductionRecipes = false, bool compactEconomy = false, bool financeOnly = false, bool showMedicalToggle = true)
     {
         _showProductionRecipes = showProductionRecipes;
+        _compactEconomy = compactEconomy;
+        _financeOnly = financeOnly;
+        _showMedicalToggle = showMedicalToggle;
         Orientation = LayoutOrientation.Vertical;
         HorizontalExpand = true;
         VerticalExpand = true;
@@ -90,7 +121,8 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         toolbar.AddChild(plus);
         _zoom.Margin = new Thickness(4, 6);
         toolbar.AddChild(_zoom);
-        var resetZoom = SWConsoleStyle.TabButton("Сбросить масштаб");
+        var resetZoom = SWConsoleStyle.TabButton(compactEconomy ? "Сброс" : "Сбросить масштаб");
+        resetZoom.ToolTip = "Сбросить масштаб";
         resetZoom.OnPressed += _ => { if (Surface != null) Surface.ResetView(); else Map.ResetView(); };
         toolbar.AddChild(resetZoom);
         _crisisButton.Name = "MapCrises";
@@ -128,9 +160,9 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
     public bool ShowGalaxy()
     {
         if (_lockedSector != null) return false;
-        if (CurrentSectorId != null)
+        if (CurrentSectorId != null || Surface != null)
         {
-            var anchor = _data.Worlds.FirstOrDefault(w => w.Anchor && w.Sector?.Id == CurrentSectorId);
+            var anchor = _data.Worlds.FirstOrDefault(w => w.Overview && w.Anchor && w.Sector?.Id == CurrentSectorId);
             SwitchView(null, animate: true);
             if (anchor != null) SelectWorld(anchor.Id);
         }
@@ -147,7 +179,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
     private void SwitchView(string? sectorId, bool animate = false)
     {
         Surface = null;
-        _trafficToggle.Visible = true;
+        _trafficToggle.Visible = _economyMapMode < 0;
         var previous = Map;
         var throughSector = sectorId ?? CurrentSectorId;
         var throughWorld = SelectedWorldId is { } selected && _worlds[selected].Sector?.Id == throughSector
@@ -156,11 +188,16 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         previous?.FinishTransition();
         CurrentSectorId = sectorId;
         View = sectorId == null ? SWGalacticMapViews.Overview(_data) : SWGalacticMapViews.Sector(_data, sectorId);
-        _galaxyButton.Visible = _lockedSector == null && sectorId != null;
+        _galaxyButton.Visible = _lockedSector == null;
+        _galaxyButton.Disabled = sectorId == null;
         _body.RemoveAllChildren();
         Map = new SWGalacticMapControl(View, sectorId, _lockedSector == null);
         Map.SetState(_sectors);
+        Map.SetFinanceSectors(_financeSectors);
         Map.SetEconomy(_economyView);
+        Map.SetEconomyMapMode(_economyMapMode, _commodityFilter);
+        Map.SetMedicalSupplyVisible(_showMedicalSupply);
+        Map.MedicalSupplySelected += SelectMedicalShipment;
         Map.SetCrises(_mapCrises, _data.Worlds);
         Map.CrisesSelected += SelectCrises;
         Map.SetTrafficFilter(_commodityFilter, _showTraffic);
@@ -168,11 +205,12 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         Map.WorldSelected += id => SelectWorld(id);
         Map.WorldActivated += id =>
         {
-            if (CurrentSectorId != null && _worlds[id].Sector?.Id == CurrentSectorId) OpenSurface(id);
+            if (CurrentSectorId != null && _worlds[id].Sector?.Id == CurrentSectorId) { if (!_financeOnly) OpenSurface(id); }
             else if (_worlds[id].Sector is { } sector && OpenSector(sector.Id)) SelectWorld(id, true);
         };
         Map.RouteSelected += route =>
         {
+            _selectedMedicalShipmentId = null;
             ClearCrisisSelection();
             _route = route;
             SelectedWorldId = null;
@@ -189,9 +227,9 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         var scroll = new ScrollContainer { Name = "MapDetailsScroll", HScrollEnabled = false, HorizontalExpand = true, VerticalExpand = true };
         scroll.AddChild(_detail);
         sidebar.AddChild(scroll);
-        _columns = new SWAtlasLayout(Map, sidebar) { VerticalExpand = true };
+        _columns = new SWAtlasLayout(Map, sidebar, stackBelow: _compactEconomy ? 0 : 680, minDetails: _compactEconomy ? 220 : 300, minMapHeight: _compactEconomy ? 150 : 220) { VerticalExpand = true };
         _body.AddChild(_columns);
-        _title.Text = sectorId == null ? "Карта галактики" : $"Сектор: {SectorName(sectorId)}";
+        _title.Text = sectorId == null ? "Карта галактики" : _financeOnly ? SectorName(sectorId) : $"Сектор: {SectorName(sectorId)}";
         SelectWorld(View.Worlds.FirstOrDefault(w => w.Anchor && (sectorId == null ? w.Id == "coruscant" : w.Sector?.Id == sectorId))?.Id
             ?? View.Worlds.First().Id);
         if (animate && previous != null && throughWorld != null)
@@ -228,6 +266,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
 
     public void SelectWorld(string id, bool focus = false)
     {
+        _selectedMedicalShipmentId = null;
         if (!_worlds.TryGetValue(id, out var world)) return;
         if (Surface != null && SelectedWorldId != id) SwitchView(CurrentSectorId);
         if (!View.Worlds.Any(w => w.Id == id))
@@ -243,10 +282,42 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         RefreshDetails();
     }
 
-    private string SectorName(string id) => _sectorPrototypes.FirstOrDefault(s => s.ID == id)?.Name ?? id;
+    public bool SelectEconomyRoute(string id)
+    {
+        var route = _data.Routes.FirstOrDefault(r => SWTransitLinkPrototype.LinkId(r.From, r.To) == id);
+        if (route == null || !_worlds.TryGetValue(route.From, out var world)) return false;
+        if (world.Sector is { } sector) { if (!OpenSector(sector.Id)) return false; }
+        else if (!ShowGalaxy()) return false;
+        route = View.Routes.FirstOrDefault(r => SWTransitLinkPrototype.LinkId(r.From, r.To) == id);
+        if (route == null) return false;
+        _selectedMedicalShipmentId = null;
+        ClearCrisisSelection();
+        _route = route;
+        SelectedWorldId = null;
+        Map.ResetView();
+        Map.SelectRoute(route);
+        RefreshDetails();
+        return true;
+    }
+
+    public string? SelectedSectorName => SelectedWorldId is { } id && _worlds[id].Sector is { } sector ? SectorName(sector.Id) : null;
+
+    private string SectorName(string id) => GetSectorName(id);
+
+    public void RefreshEconomySelection() => RefreshDetails();
 
     private void RefreshDetails()
     {
+        if (EconomyDetailsOverride != null && Surface == null
+            && (_selectedCrisisIds.Length == 0 || _selectedCrisisIds.All(id => id.StartsWith("economy:event:", StringComparison.Ordinal))))
+        {
+            _detailHeading.RemoveAllChildren();
+            _detail.RemoveAllChildren();
+            EconomyDetailsOverride(_detailHeading, _detail, SelectedWorldId, _route);
+            SelectionChanged?.Invoke();
+            return;
+        }
+        if (RefreshMedicalShipment()) return;
         if (Surface != null) RefreshSurfaceDetails();
         else if (_selectedCrisisIds.Length > 0) RefreshCrisisDetails();
         else RefreshEconomyDetails();

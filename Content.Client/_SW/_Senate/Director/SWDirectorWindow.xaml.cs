@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Client.UserInterface.Controls;
 using Content.Shared._SW._Senate.Director;
 using Content.Shared._SW._Senate.Ministries;
@@ -17,6 +18,15 @@ public sealed partial class SWDirectorWindow : FancyWindow
     public event Action<SWDefenseDirectorEventMessage>? OnDefenseEvent;
     private readonly SWDefenseDirectorWindow _defenseEditor = new();
 
+    private readonly OptionButton _economyKindPicker = new() { Name = "DirectorEconomyKind", MinWidth = 210 };
+    private readonly OptionButton _economyTargetPicker = new() { Name = "DirectorEconomyTarget", Filterable = true, HorizontalExpand = true, MinWidth = 210 };
+    private readonly Button _economyCreate = SWConsoleStyle.Action("Создать", SWConsoleStyle.Accent);
+    private static readonly (string Id, string Name)[] EconomyKinds = { ("production", "Авария производства"), ("transit", "Повреждение грузового узла"), ("demand", "Повышенный спрос на воду") };
+    private (string Id, string Name)[] _economyTargets = Array.Empty<(string, string)>();
+    private SWDirectorEuiState? _economyState;
+    private string? _economyTargetsKey;
+    private string _economyEventKind = "production";
+    private string _economyEventTarget = string.Empty;
     private string _strikeTask = string.Empty;
     private string _strikeTarget = string.Empty;
     private string _mercKind = "kill";
@@ -25,6 +35,7 @@ public sealed partial class SWDirectorWindow : FancyWindow
     public SWDirectorWindow()
     {
         RobustXamlLoader.Load(this);
+        InitializeEconomyEvents();
         _defenseEditor.Submitted += message => OnDefenseEvent?.Invoke(message);
         OnClose += () => _defenseEditor.Close();
 
@@ -134,6 +145,7 @@ public sealed partial class SWDirectorWindow : FancyWindow
         covert.AddChild(repDilemma);
         Body.AddChild(covert);
 
+        UpdateEconomyEvents(state, canAct);
         BuildAgents(state, canAct);
 
         Body.AddChild(SWConsoleStyle.Section("СЕКТОРА"));
@@ -210,6 +222,63 @@ public sealed partial class SWDirectorWindow : FancyWindow
             Body.AddChild(SWConsoleStyle.Text("Пока пусто.", SWConsoleStyle.TextBright, SWConsoleStyle.MonoSmall));
         foreach (var line in state.Chronicle)
             Body.AddChild(SWConsoleStyle.Text(line, SWConsoleStyle.TextBright, SWConsoleStyle.MonoSmall));
+    }
+
+    private void InitializeEconomyEvents()
+    {
+        EconomyDirectorControls.AddChild(SWConsoleStyle.Section("ЭКОНОМИЧЕСКИЕ СОБЫТИЯ"));
+        var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, SeparationOverride = 6 };
+        for (var i = 0; i < EconomyKinds.Length; i++) _economyKindPicker.AddItem(EconomyKinds[i].Name, i);
+        _economyKindPicker.SelectId(0);
+        _economyKindPicker.OnItemSelected += args =>
+        {
+            if (args.Id < 0 || args.Id >= EconomyKinds.Length) return;
+            _economyKindPicker.SelectId(args.Id);
+            _economyEventKind = EconomyKinds[args.Id].Id;
+            _economyEventTarget = string.Empty;
+            _economyTargetsKey = null;
+            if (_economyState != null) UpdateEconomyEvents(_economyState, _economyState.Mode == SWDirectorMode.Manual && _economyState.IAmController);
+        };
+        _economyTargetPicker.OnItemSelected += args =>
+        {
+            if (args.Id < 0 || args.Id > _economyTargets.Length) return;
+            _economyTargetPicker.SelectId(args.Id);
+            _economyEventTarget = args.Id == 0 ? string.Empty : _economyTargets[args.Id - 1].Id;
+        };
+        _economyCreate.Name = "DirectorEconomyCreate";
+        _economyCreate.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.EconomyIncident, "", _economyEventKind, _economyEventTarget);
+        row.AddChild(_economyKindPicker);
+        row.AddChild(_economyTargetPicker);
+        row.AddChild(_economyCreate);
+        EconomyDirectorControls.AddChild(row);
+        EconomyDirectorControls.AddChild(SWConsoleStyle.Wrap("Если министр экономики отсутствует, событие будет постепенно устранено службами.", SWConsoleStyle.TextDim));
+    }
+
+    private void UpdateEconomyEvents(SWDirectorEuiState state, bool canAct)
+    {
+        _economyState = state;
+        EconomyDirectorControls.Visible = state.DefenseMap != null;
+        _economyCreate.Disabled = !canAct;
+        if (state.DefenseMap is not { } map) return;
+        var worlds = map.Worlds.Where(w => w.Faction == "republic").ToDictionary(w => w.Id, w => w.Name);
+        var targets = _economyEventKind == "transit"
+            ? map.Links.Where(l => l.Traversable && worlds.ContainsKey(l.From) && worlds.ContainsKey(l.To))
+                .Select(l => (Id: l.Id, Name: $"{worlds[l.From]} — {worlds[l.To]}"))
+                .OrderBy(v => v.Name).ToArray()
+            : map.Worlds.Where(w => w.Faction == "republic" && !string.IsNullOrWhiteSpace(w.Name))
+                .Select(w => (Id: w.Id, Name: w.Name)).OrderBy(v => v.Name).ToArray();
+        var key = _economyEventKind + "|" + string.Join("|", targets.Select(t => t.Id + "=" + t.Name));
+        if (_economyTargetsKey == key) return;
+        // Keep an open list stable; a later state refresh applies catalogue changes after it closes.
+        if (_economyTargetPicker.OptionsScroll.Parent?.Parent != null) return;
+        _economyTargetsKey = key;
+        _economyTargets = targets;
+        _economyTargetPicker.Clear();
+        _economyTargetPicker.AddItem(_economyEventKind == "transit" ? "Случайный подходящий маршрут" : "Случайный подходящий мир", 0);
+        for (var i = 0; i < targets.Length; i++) _economyTargetPicker.AddItem(targets[i].Name, i + 1);
+        var selected = Array.FindIndex(targets, t => t.Id == _economyEventTarget);
+        if (selected < 0) _economyEventTarget = string.Empty;
+        _economyTargetPicker.SelectId(selected + 1);
     }
 
     private void BuildAgents(SWDirectorEuiState state, bool canAct)

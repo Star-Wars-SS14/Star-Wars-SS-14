@@ -1,3 +1,4 @@
+using Content.Shared._SW._Senate.Ministries;
 using Content.Shared._SW._Senate;
 
 namespace Content.Client._SW._Senate.Consoles.Work;
@@ -55,16 +56,7 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSecurityRejectEmergencyMessage());
     }
 
-    public void ApproveHealthEmergency()
-    {
-        SendMessage(new SWHealthApproveEmergencyMessage());
-    }
-
-    public void RejectHealthEmergency()
-    {
-        SendMessage(new SWHealthRejectEmergencyMessage());
-    }
-
+    public void HealthQuarantineDecision(int id, bool approve, bool lift = false) => SendMessage(new SWHealthQuarantineDecisionMessage(id, approve, lift));
     public void ApproveStimulus()
     {
         SendMessage(new SWEconomyApproveStimulusMessage());
@@ -195,14 +187,14 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSenateSetBudgetMessage(sectorId, amount));
     }
 
-    public void ApproveBudget()
+    public void ApproveBudget(int revision, System.Collections.Generic.Dictionary<string, int> allocations)
     {
-        SendMessage(new SWBudgetApproveMessage());
+        SendMessage(new SWBudgetApproveMessage(revision, allocations));
     }
 
-    public void RejectBudget(string reason)
+    public void RejectBudget(int revision, string reason)
     {
-        SendMessage(new SWBudgetRejectMessage(reason));
+        SendMessage(new SWBudgetRejectMessage(revision, reason));
     }
 
     public void ScheduleSession(int billId, int startHour, int duration)

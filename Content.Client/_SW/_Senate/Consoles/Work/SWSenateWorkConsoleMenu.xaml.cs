@@ -28,6 +28,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     private readonly Dictionary<string, Label> _decreeValueLabels = new();
     private bool _decreeBuilt;
     private readonly Dictionary<string, LineEdit> _budgetEdits = new();
+    private readonly HashSet<string> _situationExpanded = new();
     private string _budgetSignature = string.Empty;
     private string _committeesSignature = string.Empty;
     private readonly SWConsoleDocuments _agendaDocuments = new();
@@ -587,7 +588,6 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     {
         (0, "Объявить войну (DEFCON 1)"),
         (1, "Чрезвычайное положение (ВБ)"),
-        (2, "Галактический карантин"),
         (3, "Большой экономический стимул"),
         (4, "Денежная эмиссия"),
         (5, "Чрезвычайные трибуналы"),
@@ -1729,10 +1729,11 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     {
         var phaseText = state.BudgetLocked ? "[одобрен]" : state.BudgetProjectPending ? "[на одобрении]" : "[проект не подан]";
         BudgetSectionSummary.SetMessage(
-            $"Бюджет дня: {state.BudgetTotal} кр.   Сектора: {state.BudgetSectorPool} кр   Министерства: {state.BudgetMinistryPool} кр   {phaseText}");
+            $"Бюджет дня: {state.BudgetTotal:N0} кр.   Сектора: {state.BudgetSectorPool:N0} кр   Ведомства: {state.BudgetMinistryPool:N0} кр   Республиканский резерв: {state.BudgetRepublicReservePool:N0} кр   {phaseText}" +
+            (state.BudgetAutoApplied ? $"\nСтандартное распределение: {state.BudgetAutoReason}" : ""));
 
         // Rebuild only when the phase / sector set changes, so the periodic refresh never wipes inputs.
-        var signature = (state.BudgetLocked ? "A:" : state.BudgetProjectPending ? "P:" : "N:") + state.BudgetSectorPool + ":";
+        var signature = state.BudgetDay + ":" + (state.BudgetLocked ? "A:" : state.BudgetProjectPending ? "P:" : "N:") + state.BudgetSectorPool + ":";
         foreach (var sector in state.BudgetSectors)
             signature += sector.SectorId + ",";
 
@@ -1789,6 +1790,19 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         {
             BudgetAllocPanel.AddChild(SWConsoleStyle.Section($"РАСПРЕДЕЛЕНИЕ СЕКТОРОВ (пул {state.BudgetSectorPool} кр)"));
             BudgetAllocPanel.AddChild(new Control { MinHeight = 4 });
+            var remaining = SWConsoleStyle.Wrap("", SWConsoleStyle.Brass);
+            void UpdateRemaining()
+            {
+                long allocated = 0;
+                foreach (var edit in _budgetEdits.Values)
+                {
+                    if (!int.TryParse(edit.Text, out var value) || value < 0)
+                    { remaining.SetMessage("Проверьте суммы секторов."); return; }
+                    allocated += value;
+                }
+                remaining.SetMessage($"Общереспубликанские нужды: {state.BudgetSectorPool - allocated:N0} кр");
+            }
+            BudgetAllocPanel.AddChild(remaining);
             foreach (var sector in state.BudgetSectors)
             {
                 var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 1, 0, 1) };
@@ -1799,23 +1813,17 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                 var edit = new LineEdit { Text = sector.Amount.ToString(), MinWidth = 100 };
                 _budgetEdits[sector.SectorId] = edit;
 
-                var id = sector.SectorId;
-                var setButton = SWConsoleStyle.Action("Задать", SWConsoleStyle.Accent);
-                setButton.Margin = new Thickness(6, 0, 0, 0);
-                setButton.OnPressed += _ =>
-                {
-                    if (int.TryParse(edit.Text, out var amount))
-                        _owner.SetBudget(id, amount);
-                };
-
+                edit.OnTextChanged += _ => UpdateRemaining();
                 row.AddChild(edit);
-                row.AddChild(setButton);
                 BudgetAllocPanel.AddChild(row);
             }
+            UpdateRemaining();
         }
 
         BudgetAllocPanel.AddChild(new Control { MinHeight = 8 });
-        var reason = new LineEdit { PlaceHolder = "Причина отклонения...", HorizontalExpand = true };
+        var reason = new LineEdit { PlaceHolder = "Замечание для Минфина", HorizontalExpand = true };
+        var budgetError = SWConsoleStyle.Wrap("", SWConsoleStyle.Bad);
+        BudgetAllocPanel.AddChild(budgetError);
 
         if (state.CanApproveBudget)
         {
@@ -1823,12 +1831,18 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             approve.HorizontalExpand = true;
             approve.OnPressed += _ =>
             {
+                var allocations = new Dictionary<string, int>();
+                var total = 0L;
                 foreach (var (sectorId, edit) in _budgetEdits)
                 {
-                    if (int.TryParse(edit.Text, out var amount))
-                        _owner.SetBudget(sectorId, amount);
+                    if (!int.TryParse(edit.Text, out var amount) || amount < 0)
+                    { budgetError.SetMessage("Укажите неотрицательные целые суммы для всех секторов."); return; }
+                    allocations[sectorId] = amount;
+                    total += amount;
                 }
-                _owner.ApproveBudget();
+                if (total > state.BudgetSectorPool)
+                { budgetError.SetMessage("Сумма распределения превышает секторный пул."); return; }
+                _owner.ApproveBudget(state.BudgetRevision, allocations);
             };
             BudgetAllocPanel.AddChild(approve);
 
@@ -1839,7 +1853,11 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                 rrow.AddChild(reason);
                 var reject = SWConsoleStyle.Action("Отклонить", SWConsoleStyle.Bad);
                 reject.Margin = new Thickness(6, 0, 0, 0);
-                reject.OnPressed += _ => _owner.RejectBudget(reason.Text);
+                reject.OnPressed += _ =>
+                {
+                    if (string.IsNullOrWhiteSpace(reason.Text)) { budgetError.SetMessage("Укажите замечание для Минфина."); return; }
+                    _owner.RejectBudget(state.BudgetRevision, reason.Text.Trim());
+                };
                 rrow.AddChild(reject);
                 BudgetAllocPanel.AddChild(rrow);
             }
@@ -1974,7 +1992,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     {
         var signature = $"{state.WarProposed}={state.CanApproveWar}={state.PendingStanceName}=" +
             $"{state.EmergencyProposed}={state.CanApproveEmergency}={state.PendingPostureName}=" +
-            $"{state.HealthEmergencyProposed}={state.CanApproveHealthEmergency}=" +
+            $"{state.CanApproveHealthEmergency}={string.Join(";", state.HealthQuarantines.Select(q => $"{q.Id}:{q.Pending}:{q.HoursLeft}:{q.Consequences}"))}=" +
             $"{state.StimulusProposed}={state.CanApproveStimulus}=" +
             $"{state.EmissionProposed}={state.CanApproveEmission}=" +
             $"{state.TribunalProposed}={state.CanApproveTribunal}";
@@ -2028,28 +2046,28 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             }
         }
 
-        if (state.HealthEmergencyProposed)
+        foreach (var quarantine in state.HealthQuarantines)
         {
-            WarApprovalBox.AddChild(MakeWrap("Министр здравоохранения предлагает ввести галактический карантин.", Color.IndianRed));
-
-            if (state.CanApproveHealthEmergency)
+            WarApprovalBox.AddChild(MakeWrap($"{quarantine.Label}: {(quarantine.Pending ? "запрос карантина" : $"карантин, осталось {quarantine.HoursLeft:0.0} ч")}\n{quarantine.Consequences}", SWConsoleStyle.Warn));
+            if (!state.CanApproveHealthEmergency) continue;
+            var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, SeparationOverride = 6 };
+            var id = quarantine.Id;
+            if (quarantine.Pending)
             {
-                var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 0) };
                 var approve = SWConsoleStyle.Action("Одобрить", SWConsoleStyle.Bad);
-                approve.OnPressed += _ => _owner.ApproveHealthEmergency();
+                approve.OnPressed += _ => _owner.HealthQuarantineDecision(id, true);
                 var reject = SWConsoleStyle.Action("Отклонить", SWConsoleStyle.Neutral);
-                reject.Margin = new Thickness(6, 0, 0, 0);
-                reject.OnPressed += _ => _owner.RejectHealthEmergency();
-                row.AddChild(approve);
-                row.AddChild(reject);
-                WarApprovalBox.AddChild(row);
+                reject.OnPressed += _ => _owner.HealthQuarantineDecision(id, false);
+                row.AddChild(approve); row.AddChild(reject);
             }
             else
             {
-                WarApprovalBox.AddChild(MakeWrap("Одобрить может только Канцлер.", Color.Gray));
+                var lift = SWConsoleStyle.Action("Снять карантин", SWConsoleStyle.Warn);
+                lift.OnPressed += _ => _owner.HealthQuarantineDecision(id, true, true);
+                row.AddChild(lift);
             }
+            WarApprovalBox.AddChild(row);
         }
-
         if (state.StimulusProposed)
         {
             WarApprovalBox.AddChild(MakeWrap("Министр экономики предлагает запустить большой стимул.", Color.IndianRed));
@@ -3102,6 +3120,11 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         foreach (var global in state.Globals)
             signature.Append(global.Id).Append('=').Append(global.Actual.ToString("0")).Append('=').Append(global.Policy.ToString("0")).Append(',');
 
+        foreach (var detail in state.SituationalStats.Where(x => x.SectorId == state.SectorId))
+        {
+            signature.Append(detail.SubstatId).Append(detail.BaseValue.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(detail.RawTotal.ToString(System.Globalization.CultureInfo.InvariantCulture)).Append(detail.AppliedTotal.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            foreach (var source in detail.Sources) signature.Append(source.SourceName).Append(source.RawValue.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        }
         if (signature.ToString() == _dashboardSignature)
             return;
 
@@ -3134,6 +3157,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                 Dashboard.AddChild(panel);
             }
 
+            foreach (var detail in state.SituationalStats.Where(x => x.SectorId == state.SectorId && x.Sources.Count > 0))
+                Dashboard.AddChild(SWSituationalStatDisplay.Make(detail, _situationExpanded));
             Dashboard.AddChild(new Control { MinHeight = 10 });
         }
 

@@ -58,18 +58,22 @@
                 <ScrollContainer Name="OutbreakPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
                     <BoxContainer Name="OutbreakContent" Orientation="Vertical" HorizontalExpand="True" />
                 </ScrollContainer>
-                <ScrollContainer Name="HealthProgramsPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
-                    <BoxContainer Name="HealthProgramsContent" Orientation="Vertical" HorizontalExpand="True" />
-                </ScrollContainer>
+                <BoxContainer Name="HealthProgramsPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                    <BoxContainer Name="HealthProgramsContent" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" />
+                </BoxContainer>
+                <BoxContainer Name="HealthQuarantinePanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
                 <ScrollContainer Name="EconomyPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
                     <BoxContainer Name="EconomyContent" Orientation="Vertical" HorizontalExpand="True" />
                 </ScrollContainer>
-                <ScrollContainer Name="ProjectsPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
-                    <BoxContainer Name="ProjectsContent" Orientation="Vertical" HorizontalExpand="True" />
-                </ScrollContainer>
-                <ScrollContainer Name="RoutesPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
-                    <BoxContainer Name="RoutesContent" Orientation="Vertical" HorizontalExpand="True" />
-                </ScrollContainer>
+                <BoxContainer Name="ProjectsPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                    <BoxContainer Name="ProjectsContent" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" />
+                </BoxContainer>
+                <BoxContainer Name="RoutesPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                    <BoxContainer Name="RoutesHeader" Orientation="Vertical" HorizontalExpand="True" />
+                    <ScrollContainer Name="RoutesScroll" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+                        <BoxContainer Name="RoutesContent" Orientation="Vertical" HorizontalExpand="True" />
+                    </ScrollContainer>
+                </BoxContainer>
                 <ScrollContainer Name="MonetaryPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
                     <BoxContainer Name="MonetaryContent" Orientation="Vertical" HorizontalExpand="True" />
                 </ScrollContainer>
@@ -78,6 +82,11 @@
                 </ScrollContainer>
                 <ScrollContainer Name="BudgetsPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
                     <BoxContainer Name="BudgetsContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <BoxContainer Name="ReservePanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
+                <BoxContainer Name="FinanceMapPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
+                <ScrollContainer Name="FinanceTaxesPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="FinanceTaxesContent" Orientation="Vertical" HorizontalExpand="True" />
                 </ScrollContainer>
                 <ScrollContainer Name="CasesPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
                     <BoxContainer Name="CasesContent" Orientation="Vertical" HorizontalExpand="True" />

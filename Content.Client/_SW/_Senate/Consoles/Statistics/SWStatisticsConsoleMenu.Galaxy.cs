@@ -9,7 +9,7 @@ public sealed partial class SWStatisticsConsoleMenu
 
     private void InitializeGalaxy()
     {
-        _galaxy = new SWRepublicMapBrowser(showProductionRecipes: true);
+        _galaxy = new SWRepublicMapBrowser(showProductionRecipes: true, showMedicalToggle: false);
         _galaxy.SelectionChanged += () => _sectorId = _galaxy.SelectedLiveSectorId;
         _galaxy.SectorSummaryRequested += OpenSectorSummary;
         GalaxyPanel.AddChild(_galaxy);
@@ -20,6 +20,7 @@ public sealed partial class SWStatisticsConsoleMenu
     private void RefreshGalaxy()
     {
         if (_state == null) return;
+        _galaxy.SetSituationalStats(_state.SituationalStats);
         _galaxy.SetState(_state.Sectors, _state.Globals);
         _galaxy.SetCrises(_state.MapCrises);
     }

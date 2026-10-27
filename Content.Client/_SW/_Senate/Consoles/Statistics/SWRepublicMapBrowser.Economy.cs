@@ -32,7 +32,7 @@ public sealed partial class SWRepublicMapBrowser
     {
         var proto = IoCManager.Resolve<IPrototypeManager>();
         _commodities = proto.EnumeratePrototypes<SWCommodityPrototype>().OrderBy(g => g.Order).ToArray();
-        var bar = new WrapContainer { HorizontalExpand = true, SeparationOverride = 6, CrossSeparationOverride = 4 };
+        var bar = new WrapContainer { HorizontalExpand = true, SeparationOverride = 6, CrossSeparationOverride = 4, Visible = !_financeOnly };
         StylePicker(_commodityPicker);
         _commodityPicker.AddItem("Все товары", 0);
         for (var i = 0; i < _commodities.Length; i++) _commodityPicker.AddItem(_commodities[i].Name, i + 1);
@@ -50,6 +50,10 @@ public sealed partial class SWRepublicMapBrowser
         SWConsoleStyle.StyleTabButton(_trafficToggle, true);
         bar.AddChild(_commodityPicker);
         bar.AddChild(_trafficToggle);
+        _medicalToggle.Name = "MedicalSupplyToggle";
+        _medicalToggle.Visible = !_compactEconomy && _showMedicalToggle;
+        _medicalToggle.OnPressed += _ => SetMedicalSupplyVisible(!_showMedicalSupply);
+        bar.AddChild(_medicalToggle);
         _economyStatus.Margin = new Thickness(8, 6);
         bar.AddChild(_economyStatus);
         AddChild(bar);
@@ -58,6 +62,7 @@ public sealed partial class SWRepublicMapBrowser
     protected override void EnteredTree()
     {
         base.EnteredTree();
+        if (_financeOnly) return;
         _economyClient = IoCManager.Resolve<IEntitySystemManager>().GetEntitySystem<SWRepublicEconomyClientSystem>();
         _economyClient.Changed += OnEconomyChanged;
         SetEconomy(_economyClient.View);
@@ -91,14 +96,33 @@ public sealed partial class SWRepublicMapBrowser
             ? SWConsoleStyle.Accent : SWConsoleStyle.TextDim;
     }
 
+    private string? _industrialGoodsKey;
+    public void SetIndustrialGoods(System.Collections.Generic.IEnumerable<string> ids)
+    {
+        var allowed = ids.ToHashSet();
+        var key = string.Join("|", allowed.OrderBy(id => id));
+        if (_industrialGoodsKey == key) return;
+        _industrialGoodsKey = key;
+        _commodities = IoCManager.Resolve<IPrototypeManager>().EnumeratePrototypes<SWCommodityPrototype>()
+            .Where(g => allowed.Contains(g.ID)).OrderBy(g => g.Order).ToArray();
+        _commodityPicker.Clear();
+        _commodityPicker.AddItem("Выберите товар", 0);
+        _commodityPicker.SetItemDisabled(0, true);
+        for (var i = 0; i < _commodities.Length; i++) _commodityPicker.AddItem(_commodities[i].Name, i + 1);
+        var selected = Array.FindIndex(_commodities, g => g.ID == _commodityFilter);
+        _commodityPicker.SelectId(selected + 1);
+    }
+
     public void SelectCommodity(string? id)
     {
         var index = id == null ? -1 : Array.FindIndex(_commodities, g => g.ID == id);
         _commodityFilter = index < 0 ? null : id;
         _commodityPicker.SelectId(index + 1);
         Map.SetTrafficFilter(_commodityFilter, _showTraffic);
+        Map.SetEconomyMapMode(_economyMapMode, _commodityFilter);
         Surface?.SetTrafficFilter(_commodityFilter, _showTraffic);
         RefreshDetails();
+        CommodityChanged?.Invoke(_commodityFilter);
     }
 
     public void ShowEconomyPage(int page)
@@ -425,11 +449,15 @@ public sealed partial class SWRepublicMapBrowser
             _detail.AddChild(Metric(stat.Name, stat.Value, global?.Min ?? stat.Min, global?.Max ?? stat.Max,
                 color: SWStatisticsPresentation.LevelColor(stat.Value, global?.Min ?? stat.Min, global?.Max ?? stat.Max), reference: global?.Actual));
         }
+        foreach (var detail in _situationalStats.Where(x => x.SectorId == sector.Id))
+            _detail.AddChild(SWSituationalStatDisplay.Make(detail, _situationExpanded));
     }
 
     private void Empty(string text) => _detail.AddChild(SWConsoleStyle.Wrap(text, SWConsoleStyle.TextDim));
-    private string GoodName(string id) => _commodities.FirstOrDefault(g => g.ID == id)?.Name ?? id;
-    private string WorldName(string id) => _worlds.TryGetValue(id, out var world) ? world.Name : id;
+    private string GoodName(string id) => IoCManager.Resolve<IPrototypeManager>().TryIndex<SWCommodityPrototype>(id, out var good) && !string.IsNullOrWhiteSpace(good.Name) ? good.Name : "Неизвестный товар";
+    public string GetWorldName(string id) => _worlds.TryGetValue(id, out var world) && !string.IsNullOrWhiteSpace(world.Name) ? world.Name : "Неизвестный мир";
+    public string GetSectorName(string id) => _sectorPrototypes.FirstOrDefault(s => s.ID == id)?.Name is { Length: > 0 } name ? name : "Неизвестный сектор";
+    private string WorldName(string id) => GetWorldName(id);
     private static string Number(double value) => value > 0 && value < .01 ? value.ToString("0.###") : value.ToString("0.##");
     private static Label NumberCell(string value, Color color, float width) => new()
     {

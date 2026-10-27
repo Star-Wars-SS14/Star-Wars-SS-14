@@ -32,6 +32,8 @@ public sealed partial class SWGalacticMapControl : Control
     private readonly Vector2[] _strokeVertices = new Vector2[4];
     private readonly List<(string Id, UIBox2 Box)> _labels = new();
     private readonly Dictionary<string, SWSectorEntry> _sectors = new();
+    private IReadOnlyDictionary<string, SWFinanceSectorRevenue>? _financeSectors;
+    public void SetFinanceSectors(IReadOnlyDictionary<string, SWFinanceSectorRevenue>? sectors) { _financeSectors = sectors; _labelsDirty = true; }
     private Vector2 _pan;
     private Vector2? _press;
     private Vector2? _pointer;
@@ -197,7 +199,7 @@ public sealed partial class SWGalacticMapControl : Control
             _lastClickWorld = null;
             return;
         }
-        if (ActivateCrisisAt(position) || ActivateDefenseAt(position))
+        if (ActivateMedicalSupply(position) || ActivateCrisisAt(position) || ActivateDefenseAt(position))
         {
             _lastClickWorld = null;
             return;
@@ -318,9 +320,14 @@ public sealed partial class SWGalacticMapControl : Control
             ToolTip = supplyTip;
             return;
         }
+        if (_pointer is { } medicalPointer && MedicalSupplyToolTip(medicalPointer) is { } medicalTip) { ToolTip = medicalTip; return; }
         if (hovered == null) return;
         var world = _worlds[hovered];
         ToolTip = world.Name;
+        if (_financeSectors != null && world.Sector is { } financeSector && _financeSectors.TryGetValue(financeSector.Id, out var finance))
+            ToolTip += $"\n{finance.Name}\nНалоговые поступления с начала дня {finance.Tax:N0} кр";
+        if (_economyMapMode >= 0 && EconomySectorSummary(world.Id) is { } economySummary)
+            ToolTip += $"\n{economySummary}";
         if (_map.PoliticalAreas.LastOrDefault(a => a.Contains(world.Position)) is { } politicalArea)
             ToolTip += $"\n{politicalArea.Name}";
         if (world.Sector is { } sectorId && _sectors.TryGetValue(sectorId.Id, out var sector))
@@ -415,6 +422,7 @@ public sealed partial class SWGalacticMapControl : Control
     {
         base.FrameUpdate(args);
         AdvanceTraffic(args.DeltaSeconds);
+        AdvanceMedicalSupply(args.DeltaSeconds);
         AdvanceDefense(args.DeltaSeconds);
         if (!IsTransitioning || Width <= 64 || Height <= 56) return;
         _transitionTime += args.DeltaSeconds;
@@ -486,7 +494,11 @@ public sealed partial class SWGalacticMapControl : Control
             var p = Screen(world.Position);
             var selected = world.Id == _selectedWorld;
             var hover = world.Id == _hover;
-            var color = selected || hover ? SWConsoleStyle.Accent : SWConsoleStyle.TextBright;
+            var color = selected || hover ? SWConsoleStyle.Accent : EconomyWorldColor(world.Id) ?? SWConsoleStyle.TextBright;
+            if (!selected && !hover && _financeSectors != null)
+                color = world.Sector is { } financeSector && _financeSectors.TryGetValue(financeSector.Id, out var finance)
+                    ? finance.Reasons.Count > 0 ? SWConsoleStyle.Warn : SWConsoleStyle.Good
+                    : SWConsoleStyle.TextDim;
             if (selected || hover) handle.DrawCircle(p, (selected ? 11 : 9) * UIScale, Color.ToSrgb(color), false);
             if (_focusSector != null && world.Sector?.Id != _focusSector)
             {
@@ -510,11 +522,12 @@ public sealed partial class SWGalacticMapControl : Control
             if (Vector2.Distance(p, end) > 15) handle.DrawLine(p * UIScale, end * UIScale, SWConsoleStyle.Edge);
             handle.DrawRect(new UIBox2((box.TopLeft - new Vector2(2, 1)) * UIScale,
                 (box.BottomRight + new Vector2(2, 1)) * UIScale), SWConsoleStyle.Navigation);
-            handle.DrawString(SWConsoleStyle.Small, box.TopLeft * UIScale, _worlds[id].Name, UIScale,
+            handle.DrawString(SWConsoleStyle.Small, box.TopLeft * UIScale, FinanceLabel(_worlds[id]), UIScale,
                 id == _selectedWorld || id == _hover ? SWConsoleStyle.Accent : SWConsoleStyle.TextBright);
         }
         DrawDefense(handle);
         DrawCrisisMarkers(handle);
+        DrawMedicalSupply(handle);
     }
 
     private void Stroke(DrawingHandleScreen handle, Vector2 a, Vector2 b, Color color, float width)
@@ -527,6 +540,14 @@ public sealed partial class SWGalacticMapControl : Control
         _strokeVertices[2] = b + normal;
         _strokeVertices[3] = b - normal;
         handle.DrawPrimitives(DrawPrimitiveTopology.TriangleFan, _strokeVertices, Color.ToSrgb(color));
+    }
+
+    private string FinanceLabel(SWGalacticMapWorld world)
+    {
+        if (_financeSectors != null && world.Anchor && world.Sector is { } sector
+            && _financeSectors.TryGetValue(sector.Id, out var revenue))
+            return $"{world.Name}  {revenue.Tax:N0} кр";
+        return world.Name;
     }
 
     private void LayoutLabels(DrawingHandleScreen handle)
@@ -544,10 +565,10 @@ public sealed partial class SWGalacticMapControl : Control
         {
             var point = points[world.Id];
             if (point.X < 0 || point.Y < 0 || point.X > Width || point.Y > Height) continue;
-            var size = handle.GetDimensions(SWConsoleStyle.Small, world.Name, UIScale) / UIScale;
+            var size = handle.GetDimensions(SWConsoleStyle.Small, FinanceLabel(world), UIScale) / UIScale;
             // A selected label must stay under the pointer between the two clicks.
             // ViewUpdated clears old bounds when zoom, pan or window size changes.
-            if ((world.Id == _selectedWorld || world.Id == _hover) && previous.TryGetValue(world.Id, out var prior)
+            if (_financeSectors == null && (world.Id == _selectedWorld || world.Id == _hover) && previous.TryGetValue(world.Id, out var prior)
                 && !OverlayIntersectsLabel(prior)
                 && !_labels.Any(l => l.Box.Intersects(new UIBox2(prior.Left - 4, prior.Top - 3, prior.Right + 4, prior.Bottom + 3))))
             {

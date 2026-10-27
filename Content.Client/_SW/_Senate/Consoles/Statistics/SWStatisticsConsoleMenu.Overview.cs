@@ -98,7 +98,11 @@ public sealed partial class SWStatisticsConsoleMenu
         if (_showComponents)
         {
             _components.RemoveAllChildren();
-            foreach (var sub in g.Subs) _components.AddChild(Metric(sub.Name, sub.Value, sub.Min, sub.Max));
+            foreach (var sub in g.Subs)
+            {
+                var detail = _state.SituationalStats.FirstOrDefault(x => x.SectorId == null && x.SubstatId == sub.Id);
+                _components.AddChild(detail == null ? Metric(sub.Name, sub.Value, sub.Min, sub.Max) : SWSituationalStatDisplay.Make(detail, _situationExpanded));
+            }
             if (g.Subs.Count == 0) _components.AddChild(SWConsoleStyle.Wrap("Подробных показателей нет.", SWConsoleStyle.TextDim));
         }
         if (_showObservations)

@@ -16,7 +16,10 @@
             <Label Name="BorderLabel" Margin="12 0 12 4" />
             <Label Name="NoticeLabel" Margin="12 0 12 4" />
             <ScrollContainer HorizontalExpand="True" VerticalExpand="True" Margin="8">
-                <BoxContainer Name="Body" Orientation="Vertical" HorizontalExpand="True" />
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                    <BoxContainer Name="EconomyDirectorControls" Orientation="Vertical" HorizontalExpand="True" />
+                    <BoxContainer Name="Body" Orientation="Vertical" HorizontalExpand="True" />
+                </BoxContainer>
             </ScrollContainer>
             <BoxContainer Name="NoteBox" Orientation="Vertical" Margin="12 4 12 10">
                 <LineEdit Name="NoteEdit" PlaceHolder="Текст ноты Канцлеру..." Margin="0 2 0 4" />

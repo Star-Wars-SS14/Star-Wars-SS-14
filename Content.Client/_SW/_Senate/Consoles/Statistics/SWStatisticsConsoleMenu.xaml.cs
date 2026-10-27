@@ -9,6 +9,7 @@ using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.XAML;
 using Robust.Shared.Maths;
+using Robust.Shared.Localization;
 using static Content.Client._SW._Senate.Consoles.Statistics.SWStatisticsWidgets;
 
 namespace Content.Client._SW._Senate.Consoles.Statistics;
@@ -19,10 +20,12 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
     private readonly Control[] _panels;
     private readonly Button[] _tabs;
     private SWStatisticsConsoleState? _state;
+    private readonly HashSet<string> _situationExpanded = new();
     private int _active;
     private string? _metricId;
     private string? _sectorId;
     private int _operation;
+    private bool _financeTaxesSelected;
     private string _metricSignature = string.Empty;
     private readonly BoxContainer _metrics = VerticalStack(4);
     private readonly Dictionary<string, (SWConsoleButton Button, Label Status)> _metricButtons = new();
@@ -188,7 +191,37 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
         for (var i = 0; i < _operationButtons.Length; i++) SWConsoleStyle.StyleTabButton(_operationButtons[i], i == _operation);
         _operationDetail.RemoveAllChildren();
         _operationDetail.AddChild(SWConsoleDocument.Body(_operationButtons[_operation].Text ?? string.Empty, ""));
-        _operationDetail.AddChild(Operations(_state, _operation));
+        if (_operation != 4)
+        {
+            _operationDetail.AddChild(Operations(_state, _operation));
+            return;
+        }
+        var tabs = new WrapContainer { HorizontalExpand = true, SeparationOverride = 6, CrossSeparationOverride = 4 };
+        var overview = SWConsoleStyle.TabButton(Loc.GetString("sw-statistics-finance-overview"));
+        var taxes = SWConsoleStyle.TabButton(Loc.GetString("sw-statistics-finance-taxes"));
+        SWConsoleStyle.StyleTabButton(overview, !_financeTaxesSelected);
+        SWConsoleStyle.StyleTabButton(taxes, _financeTaxesSelected);
+        overview.OnPressed += _ => { _financeTaxesSelected = false; RefreshOperations(); };
+        taxes.OnPressed += _ => { _financeTaxesSelected = true; RefreshOperations(); };
+        tabs.AddChild(overview); tabs.AddChild(taxes); _operationDetail.AddChild(tabs);
+        if (!_financeTaxesSelected)
+        {
+            _operationDetail.AddChild(Operations(_state, _operation));
+            return;
+        }
+        _operationDetail.AddChild(SWConsoleStyle.Wrap(Loc.GetString("sw-statistics-finance-base-tax", ("rate", _state.FinanceBaseTaxRate)), SWConsoleStyle.TextBright));
+        _operationDetail.AddChild(SWConsoleStyle.Section(Loc.GetString("sw-statistics-finance-active-taxes")));
+        if (_state.FinanceActiveTaxes.Count == 0)
+            _operationDetail.AddChild(SWConsoleStyle.Wrap(Loc.GetString("sw-statistics-finance-no-taxes"), SWConsoleStyle.TextDim));
+        else
+            foreach (var entry in _state.FinanceActiveTaxes)
+                _operationDetail.AddChild(SWConsoleStyle.Wrap(Loc.GetString("sw-statistics-finance-tax-row", ("name", entry.Name), ("rate", entry.Rate)), SWConsoleStyle.TextBright));
+        _operationDetail.AddChild(SWConsoleStyle.Section(Loc.GetString("sw-statistics-finance-active-reliefs")));
+        if (_state.FinanceActiveReliefs.Count == 0)
+            _operationDetail.AddChild(SWConsoleStyle.Wrap(Loc.GetString("sw-statistics-finance-no-reliefs"), SWConsoleStyle.TextDim));
+        else
+            foreach (var entry in _state.FinanceActiveReliefs)
+                _operationDetail.AddChild(SWConsoleStyle.Wrap(Loc.GetString("sw-statistics-finance-relief-row", ("name", entry.Name), ("rate", entry.Rate)), SWConsoleStyle.TextBright));
     }
 
     private void RefreshCrises()

@@ -2,12 +2,21 @@ using System;
 using System.Linq;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Ministries;
+using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 
 namespace Content.Client._SW._Senate.Consoles.MinistryWork;
 
 public sealed partial class SWMinistryWorkConsoleMenu
 {
+    private static Control MakeStanceEffects(System.Collections.Generic.List<SWBillEffectEntry> effects)
+    {
+        var row = new WrapContainer { HorizontalExpand = true, SeparationOverride = 8, CrossSeparationOverride = 2 };
+        foreach (var effect in effects)
+            row.AddChild(SWConsoleStyle.Text($"{effect.StatName} {effect.Delta:+0.#;-0.#;0}{(effect.PerHour ? "/ч" : "")}", effect.Color, SWConsoleStyle.Small));
+        return row;
+    }
+
     private void BuildPlanetaryDefense(SWMinistryWorkConsoleState state)
     {
         if (!state.IsDefense) return;
@@ -31,10 +40,11 @@ public sealed partial class SWMinistryWorkConsoleMenu
 
     private void UpdateDefenseHeader(SWMinistryWorkConsoleState state)
     {
-        DefenseHeaderBudgetPanel.Visible = state.IsDefense && state.HasMinistry;
+        DefenseHeaderBudgetPanel.Visible = (state.IsDefense || state.IsEconomy) && state.HasMinistry;
         // Header figures change on every publication, independently of command card caching
         // and whichever ministry tab the player currently has open.
         DefenseHeaderBudget.Text = $"Бюджет: {state.MinistryBudget:N0} кр";
+        DefenseHeaderUpkeep.Visible = state.IsDefense;
         DefenseHeaderUpkeep.Text = $"Содержание: {state.DefenseMap?.UpkeepPerHour ?? state.FleetUpkeep:N0} кр/ч";
         DefenseHeaderBudgetPhase.Visible = !string.IsNullOrWhiteSpace(state.BudgetPhaseLabel);
         DefenseHeaderBudgetPhase.Text = $"Бюджет дня: {state.BudgetPhaseLabel}";
@@ -75,7 +85,7 @@ public sealed partial class SWMinistryWorkConsoleMenu
         var revision = $"{state.Stance}:{state.DefconLevel}:{state.StanceName}:{state.WarPending}:" +
             $"{state.HasCard}:{state.IsMinisterCard}:{state.HasMinistry}:{state.DefenseMap?.ClockRunning}:{state.DefenseMap?.MinisterActive}:" +
             $"{state.PendingStanceName}:{state.BorderPressure}:{state.BorderStatus}:{state.WarWeariness}:" +
-            string.Join(";", state.StanceEffects.Select(e => $"{e.StatName}:{e.Delta}:{e.Color}"));
+            string.Join(";", state.StanceEffects.Select(e => $"{e.StatName}:{e.Delta}:{e.Color}:{e.PerHour}"));
         if (_defenseCommandRevision == revision) return;
         _defenseCommandRevision = revision;
         CommandContent.RemoveAllChildren();
@@ -84,7 +94,7 @@ public sealed partial class SWMinistryWorkConsoleMenu
         var readiness = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, SeparationOverride = 6 };
         readiness.AddChild(SWConsoleStyle.Text("СТРАТЕГИЧЕСКОЕ КОМАНДОВАНИЕ", SWConsoleStyle.Brass, SWConsoleStyle.Small));
         readiness.AddChild(SWConsoleStyle.Text($"DEFCON {state.DefconLevel}   {state.StanceName}", state.StanceColor, SWConsoleStyle.Title));
-        if (state.StanceEffects.Count > 0) readiness.AddChild(MakeRateRow(state.StanceEffects));
+        if (state.StanceEffects.Count > 0) readiness.AddChild(MakeStanceEffects(state.StanceEffects));
         if (state.WarPending)
             readiness.AddChild(SWConsoleStyle.Wrap($"Ожидает одобрения Канцлера: {state.PendingStanceName}", SWConsoleStyle.Warn));
         readiness.AddChild(SWConsoleStyle.Wrap("Повышение до DEFCON 1–2 — через Канцлера.", SWConsoleStyle.TextDim));

@@ -25,6 +25,8 @@ public sealed partial class SWSenateWorkConsoleMenu
         }
         NavMap.Text = chancellor ? "Карта галактики" : "Карта сектора";
         SectorMap.SetScope(chancellor ? null : state.SectorId);
+        SectorMap.SetSituationalStats(state.SituationalStats);
         SectorMap.SetState(state.MapSectors, state.Globals);
+        SectorMap.SetCrises(state.MapCrises);
     }
 }

@@ -42,6 +42,10 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
     private const int ArchiveTab = 20;
     private const int CorruptionTab = 21;
     private const int PlanetaryDefenseTab = 22;
+    private const int HealthQuarantineTab = 23;
+    private const int ReserveTab = 24;
+    private const int FinanceMapTab = 25;
+    private const int FinanceTaxesTab = 26;
 
     private readonly Dictionary<int, string> _refuseReasons = new();
     private SWDefenseMapPanel? _defenseMap;
@@ -51,6 +55,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
     private int? _selectedCell;
     private string? _routeEndpoint;
     private SWMinistryWorkConsoleState? _state;
+    private readonly HashSet<string> _situationExpanded = new();
 
     public SWMinistryWorkConsoleMenu(SWMinistryWorkConsoleBoundUserInterface owner)
     {
@@ -88,12 +93,12 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             ("Контроль", ControlPanel),
             ("Агентура", NetworkPanel),
             ("Операции", SecOpsPanel),
-            ("Эпидемия", EpidemicPanel),
+            ("Исследование", EpidemicPanel),
             ("Карта", OutbreakPanel),
-            ("Программы", HealthProgramsPanel),
+            ("Медицинская сеть", HealthProgramsPanel),
             ("Экономика", EconomyPanel),
-            ("Проекты", ProjectsPanel),
-            ("Гиперпути", RoutesPanel),
+            ("Карта экономики", ProjectsPanel),
+            ("Программы", RoutesPanel),
             ("Монетарка", MonetaryPanel),
             ("ДОЛГ", DebtPanel),
             ("Бюджеты", BudgetsPanel),
@@ -102,6 +107,10 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             ("Архив", ArchivePanel),
             ("Коррупция", CorruptionPanel),
             ("Оборона миров", PlanetaryDefensePanel),
+            ("Карантин", HealthQuarantinePanel),
+            ("Резерв", ReservePanel),
+            ("Карта финансов", FinanceMapPanel),
+            ("Допналоги и льготы", FinanceTaxesPanel),
         };
 
         _tabButtons = new Button[_tabs.Length];
@@ -151,12 +160,16 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         _tabButtons[EpidemicTab].Visible = state.IsHealth;
         _tabButtons[OutbreakTab].Visible = state.IsHealth;
         _tabButtons[HealthProgramsTab].Visible = state.IsHealth;
+        _tabButtons[HealthQuarantineTab].Visible = state.IsHealth;
         _tabButtons[EconomyTab].Visible = state.IsEconomy;
         _tabButtons[ProjectsTab].Visible = state.IsEconomy;
         _tabButtons[RoutesTab].Visible = state.IsEconomy;
         _tabButtons[MonetaryTab].Visible = state.IsFinance;
         _tabButtons[DebtTab].Visible = state.IsFinance;
         _tabButtons[BudgetsTab].Visible = state.IsFinance;
+        _tabButtons[ReserveTab].Visible = state.IsFinance;
+        _tabButtons[FinanceMapTab].Visible = state.IsFinance;
+        _tabButtons[FinanceTaxesTab].Visible = state.IsFinance;
         _tabButtons[CasesTab].Visible = state.IsJustice;
         _tabButtons[JusticeTab].Visible = state.IsJustice;
         _tabButtons[ArchiveTab].Visible = state.IsJustice;
@@ -165,11 +178,11 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             ShowTab(0);
         if (!state.IsSecurity && (_active == ControlTab || _active == NetworkTab || _active == SecOpsTab))
             ShowTab(0);
-        if (!state.IsHealth && (_active == EpidemicTab || _active == OutbreakTab || _active == HealthProgramsTab))
+        if (!state.IsHealth && (_active == EpidemicTab || _active == OutbreakTab || _active == HealthProgramsTab || _active == HealthQuarantineTab))
             ShowTab(0);
         if (!state.IsEconomy && (_active == EconomyTab || _active == ProjectsTab || _active == RoutesTab))
             ShowTab(0);
-        if (!state.IsFinance && (_active == MonetaryTab || _active == DebtTab || _active == BudgetsTab))
+        if (!state.IsFinance && (_active == MonetaryTab || _active == DebtTab || _active == BudgetsTab || _active == ReserveTab || _active == FinanceMapTab || _active == FinanceTaxesTab))
             ShowTab(0);
         if (!state.IsJustice && (_active == CasesTab || _active == JusticeTab || _active == ArchiveTab || _active == CorruptionTab))
             ShowTab(0);
@@ -188,11 +201,14 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         BuildOutbreak(state);
         BuildHealthPrograms(state);
         BuildEconomy(state);
-        BuildProjects(state);
-        BuildRoutes(state);
+        BuildEconomyMap(state);
+        BuildIndustrialPrograms(state);
         BuildMonetary(state);
         BuildDebt(state);
         BuildBudgets(state);
+        BuildFinanceReserve(state);
+        BuildFinanceMap(state);
+        BuildFinanceTaxes(state);
         BuildCases(state);
         BuildJusticePolicy(state);
         BuildArchive(state);
@@ -624,222 +640,6 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         return card;
     }
 
-    private void BuildEpidemic(SWMinistryWorkConsoleState state)
-    {
-        EpidemicContent.RemoveAllChildren();
-        if (!state.IsHealth)
-            return;
-
-        // Pandemic status.
-        EpidemicContent.AddChild(SWConsoleStyle.Section("Состояние пандемии"));
-        EpidemicContent.AddChild(new Control { MinHeight = 4 });
-        var prow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-        prow.AddChild(SWConsoleStyle.Text(state.PandemicStatus, state.PandemicColor, SWConsoleStyle.Strong));
-        prow.AddChild(new Control { HorizontalExpand = true });
-        if (state.PathogenActive)
-            prow.AddChild(SWConsoleStyle.Text($"средн. заражение {state.InfectionAvg}/100", state.PandemicColor, SWConsoleStyle.Strong));
-        EpidemicContent.AddChild(prow);
-        EpidemicContent.AddChild(state.PathogenActive
-            ? SWConsoleStyle.Text($"Патоген: {state.PathogenName}, штамм {state.PathogenStrain}, вирулентность {state.Virulence}%", SWConsoleStyle.TextDim, SWConsoleStyle.Small)
-            : SWConsoleStyle.Text("Активных эпидемий нет. Поддерживайте сеть и готовность.", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
-
-        // Immunity.
-        EpidemicContent.AddChild(new Control { MinHeight = 10 });
-        EpidemicContent.AddChild(SWConsoleStyle.Section("Иммунитет населения"));
-        EpidemicContent.AddChild(new Control { MinHeight = 4 });
-        EpidemicContent.AddChild(SWConsoleStyle.Bar(state.Immunity, 0, 100, SWConsoleStyle.Good));
-
-        // Vaccine research race.
-        EpidemicContent.AddChild(new Control { MinHeight = 10 });
-        EpidemicContent.AddChild(SWConsoleStyle.Section("Разработка вакцины"));
-        EpidemicContent.AddChild(new Control { MinHeight = 4 });
-        var rlabel = state.VaccineReady
-            ? (state.VaccineStale ? "Вакцина готова - устаревший штамм, сниженная эффективность" : "Вакцина готова к развёртыванию")
-            : $"Прогресс: {state.Research}%";
-        EpidemicContent.AddChild(SWConsoleStyle.Text(rlabel, state.VaccineReady ? SWConsoleStyle.Accent : SWConsoleStyle.TextBright, SWConsoleStyle.Strong));
-        EpidemicContent.AddChild(SWConsoleStyle.Bar(state.Research, 0, 100, SWConsoleStyle.Accent));
-        if (!state.PathogenActive)
-            EpidemicContent.AddChild(SWConsoleStyle.Text("Разработка идёт только при активной эпидемии - против её штамма.", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
-
-        EpidemicContent.AddChild(SWConsoleStyle.Text($"Финансирование НИОКР: {state.ResearchFundingLabel}", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
-        var frow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
-        frow.AddChild(MakeFundingButton(state.ResearchFunding, 0, "Остановить", SWConsoleStyle.Neutral));
-        frow.AddChild(MakeFundingButton(state.ResearchFunding, 1, "Базовое: 60 кр/ч", SWConsoleStyle.Accent));
-        frow.AddChild(MakeFundingButton(state.ResearchFunding, 2, "Усиленное: 140 кр/ч", SWConsoleStyle.Warn));
-        EpidemicContent.AddChild(frow);
-
-        if (state.VaccineReady)
-        {
-            var deploy = SWConsoleStyle.Action("Массовая вакцинация", SWConsoleStyle.Good);
-            deploy.HorizontalExpand = true;
-            deploy.Margin = new Thickness(0, 4, 0, 0);
-            deploy.OnPressed += _ => _owner.DeployVaccine();
-            EpidemicContent.AddChild(deploy);
-        }
-
-        // Galactic emergency.
-        EpidemicContent.AddChild(new Control { MinHeight = 10 });
-        EpidemicContent.AddChild(SWConsoleStyle.Section("Галактическая чс"));
-        EpidemicContent.AddChild(new Control { MinHeight = 4 });
-        if (state.HealthEmergencyActive)
-        {
-            EpidemicContent.AddChild(SWConsoleStyle.Text($"Галактический карантин активен - осталось {SWSenateDuration.FormatHours(state.HealthEmergencyHoursLeft)}", SWConsoleStyle.Bad, SWConsoleStyle.Strong));
-        }
-        else if (state.HealthEmergencyPending)
-        {
-            EpidemicContent.AddChild(SWConsoleStyle.Text("Ждёт одобрения Канцлера.", SWConsoleStyle.Warn, SWConsoleStyle.Small));
-        }
-        else
-        {
-            var decl = SWConsoleStyle.Action("Объявить галактический карантин", SWConsoleStyle.Bad);
-            decl.HorizontalExpand = true;
-            decl.OnPressed += _ => _owner.DeclareHealthEmergency();
-            EpidemicContent.AddChild(decl);
-            EpidemicContent.AddChild(SWConsoleStyle.Text("Снижение заражения, экономики и общества. Одобрение Канцлера.", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
-        }
-
-        if (state.HealthLog.Count > 0)
-        {
-            EpidemicContent.AddChild(new Control { MinHeight = 10 });
-            EpidemicContent.AddChild(SWConsoleStyle.Section("События"));
-            foreach (var entry in state.HealthLog)
-                EpidemicContent.AddChild(SWConsoleStyle.Text(entry, SWConsoleStyle.TextBright, SWConsoleStyle.Small));
-        }
-    }
-
-    private Control MakeFundingButton(int current, int level, string label, Color color)
-    {
-        var active = current == level;
-        var btn = SWConsoleStyle.Action(active ? $"> {label}" : label, color, active);
-        btn.HorizontalExpand = true;
-        btn.Margin = new Thickness(0, 0, 4, 0);
-        if (!active)
-            btn.OnPressed += _ => _owner.SetFunding(level);
-        return btn;
-    }
-
-    private void BuildOutbreak(SWMinistryWorkConsoleState state)
-    {
-        OutbreakContent.RemoveAllChildren();
-        if (!state.IsHealth)
-            return;
-
-        var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-        head.AddChild(SWConsoleStyle.Text($"Бюджет {state.MinistryBudget} кр, админ {state.MinistryAdmin}", SWConsoleStyle.TextBright, SWConsoleStyle.Strong));
-        head.AddChild(new Control { HorizontalExpand = true });
-        if (state.HealthEmergencyActive)
-            head.AddChild(SWConsoleStyle.Text("Карантин", SWConsoleStyle.Bad, SWConsoleStyle.Strong));
-        OutbreakContent.AddChild(head);
-        OutbreakContent.AddChild(SWConsoleStyle.Text($"Обеспечение госпиталей: {state.HospitalServicePercent}%", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
-        OutbreakContent.AddChild(new Control { MinHeight = 8 });
-
-        OutbreakContent.AddChild(SWConsoleStyle.Section("Очаги по секторам"));
-        OutbreakContent.AddChild(new Control { MinHeight = 4 });
-
-        if (state.InfectionSectors.Count == 0)
-        {
-            OutbreakContent.AddChild(SWConsoleStyle.Text("Сенаторы ещё не заняли сектора.", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
-            return;
-        }
-
-        foreach (var sector in state.InfectionSectors)
-            OutbreakContent.AddChild(MakeInfectionCard(sector, state.HospitalMaxLevel));
-    }
-
-    private Control MakeInfectionCard(SWInfectionSectorEntry sector, int maxLevel)
-    {
-        var card = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, sector.StatusColor);
-        card.Margin = new Thickness(0, 0, 0, 6);
-        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
-
-        var headRow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-        var nameText = sector.Quarantined ? $"{sector.Name}  [КАРАНТИН]" : sector.Name;
-        headRow.AddChild(SWConsoleStyle.Text(nameText, sector.Color, SWConsoleStyle.Strong));
-        headRow.AddChild(new Control { HorizontalExpand = true });
-        headRow.AddChild(SWConsoleStyle.Text($"{sector.StatusLabel}, {sector.Infection}%", sector.StatusColor, SWConsoleStyle.Strong));
-        box.AddChild(headRow);
-        box.AddChild(SWConsoleStyle.Bar(sector.Infection, 0, 100, sector.StatusColor));
-
-        box.AddChild(sector.Building
-            ? SWConsoleStyle.Text($"Госпиталь: строится - {SWSenateDuration.FormatHours(sector.BuildLeft)}", SWConsoleStyle.Warn, SWConsoleStyle.Small)
-            : SWConsoleStyle.Text($"Госпиталь: ур. {sector.HospitalLevel}/{maxLevel}", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
-
-        var actions = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 3, 0, 0) };
-        var id = sector.Id;
-
-        var quar = SWConsoleStyle.Action(sector.Quarantined ? "Снять карантин" : "Карантин", sector.Quarantined ? SWConsoleStyle.Warn : SWConsoleStyle.Accent);
-        quar.HorizontalExpand = true;
-        quar.Margin = new Thickness(0, 0, 4, 0);
-        var wasQuar = sector.Quarantined;
-        quar.OnPressed += _ => _owner.Quarantine(id, !wasQuar);
-        actions.AddChild(quar);
-
-        if (sector.HospitalLevel < maxLevel && !sector.Building)
-        {
-            var build = SWConsoleStyle.Action($"Госпиталь +1 - {sector.BuildCost} кр", SWConsoleStyle.Good, !sector.CanBuild);
-            build.HorizontalExpand = true;
-            build.Margin = new Thickness(0, 0, 4, 0);
-            if (sector.CanBuild)
-                build.OnPressed += _ => _owner.BuildHospital(id);
-            actions.AddChild(build);
-        }
-
-        var aid = SWConsoleStyle.Action($"Помощь - {sector.AidCost} кр", SWConsoleStyle.Accent, !sector.CanAid);
-        aid.HorizontalExpand = true;
-        if (sector.CanAid)
-            aid.OnPressed += _ => _owner.EmergencyAid(id);
-        actions.AddChild(aid);
-
-        box.AddChild(actions);
-        card.AddChild(box);
-        return card;
-    }
-
-    private void BuildHealthPrograms(SWMinistryWorkConsoleState state)
-    {
-        HealthProgramsContent.RemoveAllChildren();
-        if (!state.IsHealth)
-            return;
-
-        HealthProgramsContent.AddChild(SWConsoleStyle.Text($"Бюджет {state.MinistryBudget} кр, админ {state.MinistryAdmin}", SWConsoleStyle.TextBright, SWConsoleStyle.Strong));
-        HealthProgramsContent.AddChild(new Control { MinHeight = 8 });
-        HealthProgramsContent.AddChild(SWConsoleStyle.Section("Дневные программы"));
-        HealthProgramsContent.AddChild(new Control { MinHeight = 4 });
-        if (!string.IsNullOrEmpty(state.SelectedHealthProgram))
-            HealthProgramsContent.AddChild(SWConsoleStyle.Text($"Прогресс: {state.HealthProgramProgress}%", SWConsoleStyle.Accent, SWConsoleStyle.Small));
-
-        foreach (var program in state.HealthPrograms)
-            HealthProgramsContent.AddChild(MakeHealthProgramCard(program));
-    }
-
-    private Control MakeHealthProgramCard(SWDefenseProgramEntry program)
-    {
-        var card = SWConsoleStyle.Row(program.Selected ? SWConsoleStyle.BgRowAlt : SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
-        card.Margin = new Thickness(0, 0, 0, 4);
-        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
-
-        var id = program.Id;
-        var btn = SWConsoleStyle.Action(program.Selected ? $"{program.Name} (выбрано)" : program.Name, SWConsoleStyle.Accent, program.Selected);
-        btn.HorizontalExpand = true;
-        if (!program.Selected)
-            btn.OnPressed += _ => _owner.SelectHealthProgram(id);
-        box.AddChild(btn);
-
-        if (!string.IsNullOrWhiteSpace(program.Description))
-            box.AddChild(SWConsoleStyle.Text(program.Description, SWConsoleStyle.TextDim, SWConsoleStyle.Small));
-
-        if (program.Effects.Count > 0)
-        {
-            var eff = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 2, 0, 0) };
-            foreach (var effect in program.Effects)
-                eff.AddChild(SWConsoleStyle.Text($"{effect.StatName} {effect.Delta:+0;-0}  ", effect.Color, SWConsoleStyle.Small));
-            box.AddChild(eff);
-        }
-
-        card.AddChild(box);
-        return card;
-    }
-
     private static Color GrowthColor(float growth) =>
         growth < 0f ? SWConsoleStyle.Bad : growth >= 3f ? SWConsoleStyle.Good : SWConsoleStyle.Accent;
 
@@ -898,15 +698,6 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             EconomyContent.AddChild(SWConsoleStyle.Text("Рост экономики и перегрева. Одобрение Канцлера.", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
         }
 
-        // Programs.
-        EconomyContent.AddChild(new Control { MinHeight = 10 });
-        EconomyContent.AddChild(SWConsoleStyle.Section("Дневные программы"));
-        EconomyContent.AddChild(new Control { MinHeight = 4 });
-        if (!string.IsNullOrEmpty(state.SelectedEconProgram))
-            EconomyContent.AddChild(SWConsoleStyle.Text($"Прогресс: {state.EconProgramProgress}%", SWConsoleStyle.Accent, SWConsoleStyle.Small));
-        foreach (var program in state.EconPrograms)
-            EconomyContent.AddChild(MakeEconProgramCard(program));
-
         if (state.EconomyLog.Count > 0)
         {
             EconomyContent.AddChild(new Control { MinHeight = 10 });
@@ -919,40 +710,12 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
     private Control MakePolicyButton(int current, int level, string label, Color color)
     {
         var active = current == level;
-        var btn = SWConsoleStyle.Action(active ? $"> {label}" : label, color, active);
+        var btn = SWConsoleStyle.Action(label, color, active);
         btn.HorizontalExpand = true;
         btn.Margin = new Thickness(0, 0, 4, 0);
         if (!active)
             btn.OnPressed += _ => _owner.SetEconPolicy(level);
         return btn;
-    }
-
-    private Control MakeEconProgramCard(SWDefenseProgramEntry program)
-    {
-        var card = SWConsoleStyle.Row(program.Selected ? SWConsoleStyle.BgRowAlt : SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
-        card.Margin = new Thickness(0, 0, 0, 4);
-        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
-
-        var id = program.Id;
-        var btn = SWConsoleStyle.Action(program.Selected ? $"{program.Name} (выбрано)" : program.Name, SWConsoleStyle.Accent, program.Selected);
-        btn.HorizontalExpand = true;
-        if (!program.Selected)
-            btn.OnPressed += _ => _owner.SelectEconProgram(id);
-        box.AddChild(btn);
-
-        if (!string.IsNullOrWhiteSpace(program.Description))
-            box.AddChild(SWConsoleStyle.Text(program.Description, SWConsoleStyle.TextDim, SWConsoleStyle.Small));
-
-        if (program.Effects.Count > 0)
-        {
-            var eff = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 2, 0, 0) };
-            foreach (var effect in program.Effects)
-                eff.AddChild(SWConsoleStyle.Text($"{effect.StatName} {effect.Delta:+0;-0}  ", effect.Color, SWConsoleStyle.Small));
-            box.AddChild(eff);
-        }
-
-        card.AddChild(box);
-        return card;
     }
 
     private void BuildProjects(SWMinistryWorkConsoleState state)
@@ -1218,19 +981,10 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         MonetaryContent.AddChild(new Control { MinHeight = 4 });
         MonetaryContent.AddChild(SWConsoleStyle.Text($"Текущая: {state.TaxLevelLabel}", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
         var taxrow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
-        taxrow.AddChild(MakeTaxButton(state.TaxLevel, 0, "Низкие", SWConsoleStyle.Good));
-        taxrow.AddChild(MakeTaxButton(state.TaxLevel, 1, "Средние", SWConsoleStyle.Neutral));
-        taxrow.AddChild(MakeTaxButton(state.TaxLevel, 2, "Высокие", SWConsoleStyle.Warn));
+        taxrow.AddChild(MakeTaxButton(state.TaxLevel, 0, "Низкие 10%", SWConsoleStyle.Good));
+        taxrow.AddChild(MakeTaxButton(state.TaxLevel, 1, "Средние 20%", SWConsoleStyle.Neutral));
+        taxrow.AddChild(MakeTaxButton(state.TaxLevel, 2, "Высокие 30%", SWConsoleStyle.Warn));
         MonetaryContent.AddChild(taxrow);
-
-        // Programs.
-        MonetaryContent.AddChild(new Control { MinHeight = 10 });
-        MonetaryContent.AddChild(SWConsoleStyle.Section("Дневные программы"));
-        MonetaryContent.AddChild(new Control { MinHeight = 4 });
-        if (!string.IsNullOrEmpty(state.SelectedFinanceProgram))
-            MonetaryContent.AddChild(SWConsoleStyle.Text($"Прогресс: {state.FinanceProgramProgress}%", SWConsoleStyle.Accent, SWConsoleStyle.Small));
-        foreach (var program in state.FinancePrograms)
-            MonetaryContent.AddChild(MakeFinProgramCard(program));
 
         if (state.FinanceLog.Count > 0)
         {
@@ -1244,7 +998,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
     private Control MakeRateButton(int current, int rate)
     {
         var active = current == rate;
-        var btn = SWConsoleStyle.Action(active ? $"> {rate}%" : $"{rate}%", SWConsoleStyle.Accent, active);
+        var btn = SWConsoleStyle.Action($"{rate}%", SWConsoleStyle.Accent, active);
         btn.HorizontalExpand = true;
         btn.Margin = new Thickness(0, 0, 4, 0);
         if (!active)
@@ -1255,40 +1009,12 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
     private Control MakeTaxButton(int current, int level, string label, Color color)
     {
         var active = current == level;
-        var btn = SWConsoleStyle.Action(active ? $"> {label}" : label, color, active);
+        var btn = SWConsoleStyle.Action(label, color, active);
         btn.HorizontalExpand = true;
         btn.Margin = new Thickness(0, 0, 4, 0);
         if (!active)
             btn.OnPressed += _ => _owner.SetTax(level);
         return btn;
-    }
-
-    private Control MakeFinProgramCard(SWDefenseProgramEntry program)
-    {
-        var card = SWConsoleStyle.Row(program.Selected ? SWConsoleStyle.BgRowAlt : SWConsoleStyle.BgPanel, SWConsoleStyle.Accent);
-        card.Margin = new Thickness(0, 0, 0, 4);
-        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
-
-        var id = program.Id;
-        var btn = SWConsoleStyle.Action(program.Selected ? $"{program.Name} (выбрано)" : program.Name, SWConsoleStyle.Accent, program.Selected);
-        btn.HorizontalExpand = true;
-        if (!program.Selected)
-            btn.OnPressed += _ => _owner.SelectFinanceProgram(id);
-        box.AddChild(btn);
-
-        if (!string.IsNullOrWhiteSpace(program.Description))
-            box.AddChild(SWConsoleStyle.Text(program.Description, SWConsoleStyle.TextDim, SWConsoleStyle.Small));
-
-        if (program.Effects.Count > 0)
-        {
-            var eff = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 2, 0, 0) };
-            foreach (var effect in program.Effects)
-                eff.AddChild(SWConsoleStyle.Text($"{effect.StatName} {effect.Delta:+0;-0}  ", effect.Color, SWConsoleStyle.Small));
-            box.AddChild(eff);
-        }
-
-        card.AddChild(box);
-        return card;
     }
 
     private void BuildDebt(SWMinistryWorkConsoleState state)
@@ -1305,20 +1031,24 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
         drow.AddChild(SWConsoleStyle.Text($"{state.Debt}/100, рейтинг {state.CreditRating}", state.RatingColor, SWConsoleStyle.Strong));
         DebtContent.AddChild(drow);
         DebtContent.AddChild(SWConsoleStyle.Bar(state.Debt, 0, 100, GaugeColor(state.Debt)));
+        DebtContent.AddChild(SWConsoleStyle.Wrap($"Долг по облигациям: {state.FinanceCreditDebt:N0} кр\n" +
+            (state.FinanceCoverageAvailable ? $"Покрытие долга: {state.FinanceDebtCoverage * 100:0}%" : "Покрытие долга: недостаточно наблюдений") +
+            (string.IsNullOrWhiteSpace(state.FinanceRatingReason) ? "" : $"\n{state.FinanceRatingReason}"), SWConsoleStyle.TextBright));
 
         // Instruments.
         DebtContent.AddChild(new Control { MinHeight = 10 });
         DebtContent.AddChild(SWConsoleStyle.Section("Инструменты"));
         DebtContent.AddChild(new Control { MinHeight = 4 });
 
-        var bonds = SWConsoleStyle.Action($"Выпустить облигации (+{state.BondProceeds} в казну, +долг)", SWConsoleStyle.Warn, !state.CanIssueBonds);
+        var bonds = SWConsoleStyle.Action($"Выпустить облигации (+{state.BondProceeds * 1000:N0} кр в казну, долг +15)", SWConsoleStyle.Warn, !state.CanIssueBonds);
         bonds.HorizontalExpand = true;
         bonds.Margin = new Thickness(0, 0, 0, 3);
         if (state.CanIssueBonds)
             bonds.OnPressed += _ => _owner.IssueBonds();
         DebtContent.AddChild(bonds);
+        DebtContent.AddChild(SWConsoleStyle.Wrap("Срок погашения не установлен. При выпуске фиксируется сумма возврата с процентами; высокий долг снижает рейтинг.", SWConsoleStyle.TextDim));
 
-        var repay = SWConsoleStyle.Action($"Погасить выпуск (−{state.NextRepaymentCost} казны)", SWConsoleStyle.Good, !state.CanRepayDebt);
+        var repay = SWConsoleStyle.Action($"Погасить ближайший выпуск (−{state.NextRepaymentCost * 1000:N0} кр)", SWConsoleStyle.Good, !state.CanRepayDebt);
         repay.HorizontalExpand = true;
         repay.Margin = new Thickness(0, 0, 0, 3);
         if (state.CanRepayDebt)
@@ -1341,114 +1071,6 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             DebtContent.AddChild(emit);
             DebtContent.AddChild(SWConsoleStyle.Text("Пополнение казны, рост инфляции, снижение рейтинга. Одобрение Канцлера.", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
         }
-    }
-
-    private void BuildBudgets(SWMinistryWorkConsoleState state)
-    {
-        BudgetsContent.RemoveAllChildren();
-        if (!state.IsFinance)
-            return;
-
-        // Status.
-        var srow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-        srow.AddChild(SWConsoleStyle.Text($"Проект бюджета: {state.BudgetPhaseLabel}", state.BudgetPhaseColor, SWConsoleStyle.Strong));
-        srow.AddChild(new Control { HorizontalExpand = true });
-        srow.AddChild(SWConsoleStyle.Text($"Бюджет дня: {state.BudgetDayTotal} кр", SWConsoleStyle.TextBright, SWConsoleStyle.Strong));
-        BudgetsContent.AddChild(srow);
-        if (state.BudgetRejects > 0 && !string.IsNullOrWhiteSpace(state.BudgetRejectReason))
-            BudgetsContent.AddChild(SWConsoleStyle.Text($"Отклонения: {state.BudgetRejects}/2, причина: {state.BudgetRejectReason}", SWConsoleStyle.Bad, SWConsoleStyle.Small));
-        BudgetsContent.AddChild(SWConsoleStyle.Text("Приём проекта бюджета: первые два часа дня.", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
-        BudgetsContent.AddChild(new Control { MinHeight = 8 });
-
-        // Sector / ministry split.
-        BudgetsContent.AddChild(SWConsoleStyle.Section("Сектора / министерства"));
-        BudgetsContent.AddChild(new Control { MinHeight = 4 });
-        var prow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-        prow.AddChild(SWConsoleStyle.Text($"Сектора {state.BudgetSectorPct}% - {state.BudgetSectorPool} кр", SWConsoleStyle.Accent, SWConsoleStyle.Strong));
-        prow.AddChild(new Control { HorizontalExpand = true });
-        prow.AddChild(SWConsoleStyle.Text($"Министерства {100 - state.BudgetSectorPct}% - {state.BudgetMinistryPool} кр", SWConsoleStyle.Good, SWConsoleStyle.Strong));
-        BudgetsContent.AddChild(prow);
-        if (state.BudgetCanEdit)
-        {
-            var rrow = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(0, 2, 0, 0) };
-            var minus = SWConsoleStyle.Action("Секторам −5%", SWConsoleStyle.Neutral);
-            minus.HorizontalExpand = true;
-            minus.Margin = new Thickness(0, 0, 4, 0);
-            minus.OnPressed += _ => _owner.AdjustBudgetRatio(-5);
-            var plus = SWConsoleStyle.Action("Секторам +5%", SWConsoleStyle.Neutral);
-            plus.HorizontalExpand = true;
-            plus.OnPressed += _ => _owner.AdjustBudgetRatio(5);
-            rrow.AddChild(minus);
-            rrow.AddChild(plus);
-            BudgetsContent.AddChild(rrow);
-        }
-
-        // Ministry shares.
-        BudgetsContent.AddChild(new Control { MinHeight = 10 });
-        var mhead = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-        mhead.AddChild(SWConsoleStyle.Text("Доли министерств", SWConsoleStyle.Accent, SWConsoleStyle.Strong));
-        mhead.AddChild(new Control { HorizontalExpand = true });
-        if (state.BudgetCanEdit && state.BudgetShares.Count > 0)
-        {
-            var reset = SWConsoleStyle.Action("Поровну", SWConsoleStyle.Neutral);
-            reset.OnPressed += _ => _owner.ResetBudgetWeights();
-            mhead.AddChild(reset);
-        }
-        BudgetsContent.AddChild(mhead);
-        BudgetsContent.AddChild(new Control { MinHeight = 4 });
-
-        if (state.BudgetShares.Count == 0)
-            BudgetsContent.AddChild(SWConsoleStyle.Text("Нет занятых министерств.", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
-        else
-        {
-            foreach (var share in state.BudgetShares)
-                BudgetsContent.AddChild(MakeShareRow(share, state.BudgetCanEdit));
-        }
-
-        // Submit.
-        if (state.BudgetCanSubmit)
-        {
-            BudgetsContent.AddChild(new Control { MinHeight = 10 });
-            var submit = SWConsoleStyle.Action("Подать проект Канцлеру", SWConsoleStyle.Good);
-            submit.HorizontalExpand = true;
-            submit.OnPressed += _ => _owner.SubmitBudget();
-            BudgetsContent.AddChild(submit);
-        }
-        else if (state.BudgetPhaseLabel == "На одобрении Канцлера")
-        {
-            BudgetsContent.AddChild(new Control { MinHeight = 8 });
-            BudgetsContent.AddChild(SWConsoleStyle.Text("Проект подан. Ожидается решение Канцлера.", SWConsoleStyle.Warn, SWConsoleStyle.Small));
-        }
-    }
-
-    private Control MakeShareRow(SWBudgetShareEntry share, bool canEdit)
-    {
-        var row = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, share.Color);
-        row.Margin = new Thickness(0, 0, 0, 4);
-        var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-        box.AddChild(SWConsoleStyle.Text(share.Name, share.Color, SWConsoleStyle.Body));
-        box.AddChild(new Control { HorizontalExpand = true });
-        box.AddChild(SWConsoleStyle.Text($"{share.Amount} кр", SWConsoleStyle.TextBright, SWConsoleStyle.Strong, 90, Control.HAlignment.Right));
-
-        if (canEdit)
-        {
-            var id = share.MinistryId;
-            var minus = SWConsoleStyle.Action("−", SWConsoleStyle.Neutral);
-            minus.Margin = new Thickness(6, 0, 0, 0);
-            minus.OnPressed += _ => _owner.SetBudgetWeight(id, -1);
-            box.AddChild(minus);
-            box.AddChild(SWConsoleStyle.Text($"×{share.Weight}", SWConsoleStyle.Accent, SWConsoleStyle.Strong, 32, Control.HAlignment.Center));
-            var plus = SWConsoleStyle.Action("+", SWConsoleStyle.Neutral);
-            plus.OnPressed += _ => _owner.SetBudgetWeight(id, 1);
-            box.AddChild(plus);
-        }
-        else
-        {
-            box.AddChild(SWConsoleStyle.Text($"×{share.Weight}", SWConsoleStyle.Accent, SWConsoleStyle.Strong, 32, Control.HAlignment.Center));
-        }
-
-        row.AddChild(box);
-        return row;
     }
 
     private void BuildCases(SWMinistryWorkConsoleState state)
@@ -1641,7 +1263,7 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
             SWJusticeStance.Harsh => SWConsoleStyle.Bad,
             _ => SWConsoleStyle.Accent,
         };
-        var btn = SWConsoleStyle.Action(active ? $"> {label}" : label, color, active);
+        var btn = SWConsoleStyle.Action(label, color, active);
         btn.HorizontalExpand = true;
         btn.Margin = new Thickness(0, 0, 4, 0);
         if (!active)
@@ -1897,7 +1519,10 @@ public sealed partial class SWMinistryWorkConsoleMenu : FancyWindow
                 OverviewContent.AddChild(MakeGlobalBar(domain!));
 
                 foreach (var sub in domain!.Subs)
-                    OverviewContent.AddChild(MakeSubBar(sub));
+                {
+                    var detail = state.SituationalStats.FirstOrDefault(x => x.SectorId == null && x.SubstatId == sub.Id);
+                    OverviewContent.AddChild(detail == null ? MakeSubBar(sub) : SWSituationalStatDisplay.Make(detail, _situationExpanded));
+                }
 
                 OverviewContent.AddChild(new Control { MinHeight = 8 });
             }

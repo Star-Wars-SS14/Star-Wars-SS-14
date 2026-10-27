@@ -13,7 +13,7 @@ public sealed partial class SWGlobalWarGameruleComponent : Component
     public List<ProtoId<SWGlobalWarPlanetPrototype>> Planets = new();
 
     [DataField]
-    public TimeSpan EmptyMapPauseDelay = TimeSpan.FromSeconds(30);
+    public TimeSpan EmptyMapPauseDelay = TimeSpan.FromMinutes(5);
 
     /// <summary>
     /// Runtime registry. Entity UIDs are never used as persistent planet identities.

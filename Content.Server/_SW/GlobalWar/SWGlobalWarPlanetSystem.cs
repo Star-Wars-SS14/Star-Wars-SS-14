@@ -235,8 +235,13 @@ public sealed class SWGlobalWarPlanetSystem : EntitySystem
 
             link.EmptySince ??= _timing.CurTime;
             if (_timing.CurTime - link.EmptySince.Value >= campaign.EmptyMapPauseDelay)
-                _maps.SetPaused(uid, true);
+                SleepMap(uid);
         }
+    }
+
+    private void SleepMap(EntityUid map)
+    {
+        _maps.SetPaused(map, true);
     }
 
     private void WakeMap(EntityUid map, SWGlobalWarPlanetMapComponent link)

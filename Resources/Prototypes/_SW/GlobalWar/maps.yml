@@ -1,0 +1,17 @@
+- type: gameMap
+  id: SWGlobalWarTestAsteroid
+  mapName: Global War Test Asteroid
+  mapPath: /Maps/SW/asteroid.yml
+  isGrid: true
+  minPlayers: 0
+  stations:
+    Asteroid:
+      stationProto: SWStandardStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: Global War Test Asteroid
+
+- type: gameMapPool
+  id: SWGlobalWarMapPool
+  maps:
+  - Empty

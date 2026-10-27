@@ -3,5 +3,8 @@
   id: SWGlobalWar
   components:
   - type: SWGlobalWarGamerule
-    planets: []
+    planets:
+    - SWGlobalWarTestAlpha
+    - SWGlobalWarTestBeta
+    - SWGlobalWarTestGamma
     emptyMapPauseDelay: 30

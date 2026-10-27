@@ -1,0 +1,10 @@
+- type: gamePreset
+  id: SWGlobalWar
+  alias:
+  - globalwar
+  name: sw-global-war-title
+  description: sw-global-war-description
+  showInVote: false
+  supportedMaps: SWGlobalWarMapPool
+  rules:
+  - SWGlobalWar

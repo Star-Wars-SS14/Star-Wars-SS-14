@@ -1,0 +1,20 @@
+- type: swGlobalWarPlanet
+  id: SWGlobalWarTestAlpha
+  name: Alpha
+  orbit: SWGlobalWarTestAsteroid
+  surface: oldBalmora
+  connections: [SWGlobalWarTestBeta]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarTestBeta
+  name: Beta
+  orbit: SWGlobalWarTestAsteroid
+  surface: oldBalmora
+  connections: [SWGlobalWarTestAlpha, SWGlobalWarTestGamma]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarTestGamma
+  name: Gamma
+  orbit: SWGlobalWarTestAsteroid
+  surface: oldBalmora
+  connections: [SWGlobalWarTestBeta]

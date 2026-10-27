@@ -73973,7 +73973,6 @@ entities:
       playLandSound: True
       landTime: 22353.9368238
       thrownTime: 22353.7109796
-      thrower: invalid
   - uid: 6978
     components:
     - type: Transform
@@ -290696,7 +290695,6 @@ entities:
       playLandSound: True
       landTime: 2609.19081
       thrownTime: 2609.1640575
-      thrower: invalid
   - uid: 46803
     components:
     - type: Transform
@@ -292979,16 +292977,14 @@ entities:
       pos: 169.5,-130.5
       parent: 2
     - type: DeviceNetwork
-      configurators:
-      - invalid
+      configurators: []
   - uid: 47157
     components:
     - type: Transform
       pos: 171.5,-130.5
       parent: 2
     - type: DeviceNetwork
-      configurators:
-      - invalid
+      configurators: []
   - uid: 47158
     components:
     - type: Transform
@@ -293022,8 +293018,7 @@ entities:
       pos: 170.5,-130.5
       parent: 2
     - type: DeviceNetwork
-      configurators:
-      - invalid
+      configurators: []
 - proto: ShuttleWindow
   entities:
   - uid: 47164
@@ -293802,8 +293797,7 @@ entities:
       pos: 168.5,-130.5
       parent: 2
     - type: DeviceNetwork
-      configurators:
-      - invalid
+      configurators: []
     - type: Fixtures
       fixtures: {}
 - proto: SignArmory
@@ -333206,7 +333200,6 @@ entities:
       playLandSound: True
       landTime: 22357.1302816
       thrownTime: 22356.9443097
-      thrower: invalid
   - uid: 54168
     components:
     - type: Transform
@@ -333492,7 +333485,6 @@ entities:
       playLandSound: True
       landTime: 22350.8656892
       thrownTime: 22350.644316
-      thrower: invalid
   - uid: 54216
     components:
     - type: Transform

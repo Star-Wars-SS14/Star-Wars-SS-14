@@ -474,24 +474,24 @@
 - type: swAmbition
   id: SWAmbitionMinEcoProjects
   name: Строитель будущего
-  description: Завершить не менее двух мегапроектов за раунд.
+  description: Завершить не менее двух республиканских расширений производства за раунд.
   role: Minister
   ministryId: SWMinistryEconomy
   kind: MinisterMetric
   stat: ProjectsCompleted
-  comparison: Above
+  comparison: AtLeast
   threshold: 2
   order: 41
 
 - type: swAmbition
   id: SWAmbitionMinEcoRoutes
   name: Торговые пути
-  description: Поддерживать не менее трёх действующих гиперпутей одновременно.
+  description: Завершить расширение не менее трёх транспортных маршрутов за раунд.
   role: Minister
   ministryId: SWMinistryEconomy
   kind: MinisterMetric
   stat: ActiveRoutes
-  comparison: Above
+  comparison: AtLeast
   threshold: 3
   order: 42
 
@@ -624,49 +624,49 @@
 - type: swAmbition
   id: SWAmbitionMinHelImmunity
   name: Крепкий иммунитет
-  description: К концу раунда средний иммунитет населения должен быть выше 70.
+  description: Обеспечить реальный иммунитет не ниже 10% как минимум на трёх мирах. Доставленные препараты и профилактические кампании должны быть применены местными клиниками.
   role: Minister
   ministryId: SWMinistryHealth
   kind: MinisterMetric
-  stat: Immunity
-  comparison: Above
-  threshold: 70
+  stat: ProtectedWorlds
+  comparison: AtLeast
+  threshold: 3
   order: 53
 
 - type: swAmbition
   id: SWAmbitionMinHelHospitals
   name: Сеть госпиталей
-  description: Достроить не менее трёх госпиталей за раунд.
+  description: Завершить не менее трёх материальных программ строительства клиник на разных мирах за раунд.
   role: Minister
   ministryId: SWMinistryHealth
   kind: MinisterMetric
   stat: HospitalsBuilt
-  comparison: Above
+  comparison: AtLeast
   threshold: 3
   order: 54
 
 - type: swAmbition
   id: SWAmbitionMinHelVaccine
   name: Победа над чумой
-  description: Разработать и подтвердить готовность вакцины против галактического патогена.
+  description: Подтвердить в испытаниях хотя бы один препарат за раунд или завершить три материальные кампании профилактической вакцинации. Без эпидемии доступен путь профилактики.
   role: Minister
   ministryId: SWMinistryHealth
   kind: MinisterMetric
-  stat: VaccineReady
-  comparison: Above
-  threshold: 0.5
+  stat: HealthProtectionAchievements
+  comparison: AtLeast
+  threshold: 1
   order: 55
 
 - type: swAmbition
   id: SWAmbitionMinHelBaron
   name: Фармацевтический барон
-  description: Вы тайно держите население хронически больным - аптеки процветают. Иммунитет должен быть ниже 30.
+  description: Завершить три плановые лечебные кампании регенерации или протезирования, продавая лечение без массовой иммунизации. К концу раунда средний иммунитет должен быть не выше 30%.
   role: Minister
   ministryId: SWMinistryHealth
   kind: MinisterMetric
-  stat: Immunity
-  comparison: Below
-  threshold: 30
+  stat: TreatmentWithoutMassImmunization
+  comparison: AtLeast
+  threshold: 3
   order: 56
 
 # === Департамент здравоохранения ===
@@ -703,7 +703,7 @@
   ministryId: SWDepartmentHealthcare
   kind: MinisterMetric
   stat: SuccessfulMissions
-  comparison: Above
+  comparison: AtLeast
   threshold: 5
   order: 62
 

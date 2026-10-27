@@ -66,6 +66,8 @@
     position: "61, 56"
   - id: corellia
     name: "Кореллия"
+    systemId: corell
+    systemName: "Система Корелл"
     position: "54, 64"
     sector: SWSectorCorellia
     anchor: true
@@ -253,6 +255,8 @@
     description: "Система Альдераан."
   - id: selonia
     name: "Селония"
+    systemId: corell
+    systemName: "Система Корелл"
     position: "54, 64"
     sector: SWSectorCorellia
     overview: false
@@ -260,6 +264,8 @@
     description: "Один из Пяти Братьев системы Корелл."
   - id: drall
     name: "Дралл"
+    systemId: corell
+    systemName: "Система Корелл"
     position: "54, 64"
     sector: SWSectorCorellia
     overview: false
@@ -267,6 +273,8 @@
     description: "Один из Пяти Братьев системы Корелл."
   - id: talus
     name: "Талус"
+    systemId: corell
+    systemName: "Система Корелл"
     position: "54, 64"
     sector: SWSectorCorellia
     overview: false
@@ -274,6 +282,8 @@
     description: "Парный мир Талуса и Тралуса. Система Корелл."
   - id: tralus
     name: "Тралус"
+    systemId: corell
+    systemName: "Система Корелл"
     position: "54, 64"
     sector: SWSectorCorellia
     overview: false

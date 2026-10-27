@@ -254,13 +254,18 @@ public sealed class SWGlobalWarTravelSystem : EntitySystem
         var valid = TryGetContext(console, out var ship, out var planet, out var status);
         var hasGlobalWarGamerule = _globalWarGamerule.TryGetGlobalWarGamerule(out var globalWarGamerule);
         var current = string.Empty;
+        ProtoId<SWGlobalWarPlanetPrototype>? currentId = null;
         if (planet.Valid)
-            current = _prototypes.Index(Comp<SWGlobalWarPlanetComponent>(planet).Prototype).Name;
+        {
+            currentId = Comp<SWGlobalWarPlanetComponent>(planet).Prototype;
+            current = _prototypes.Index(currentId.Value).Name;
+        }
 
         if (Transform(console).GridUid is { } grid && TryComp<SWGlobalWarTravelComponent>(grid, out var flight))
         {
             hasGlobalWarGamerule &= flight.GlobalWarGamerule == globalWarGamerule.Owner;
             current = _prototypes.Index(flight.Source).Name;
+            currentId = flight.Source;
             status = Loc.GetString("sw-global-war-travel-in-progress", ("planet", _prototypes.Index(flight.Destination).Name));
             valid = false;
         }
@@ -275,7 +280,7 @@ public sealed class SWGlobalWarTravelSystem : EntitySystem
             }
         }
 
-        return new SWGlobalWarTravelConsoleState(current, status, entries);
+        return new SWGlobalWarTravelConsoleState(current, status, entries, currentId);
     }
 
     /// <summary>

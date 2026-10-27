@@ -1,33 +1,67 @@
-<DefaultWindow xmlns="https://spacestation14.io"
-               xmlns:ui="clr-namespace:Content.Client._SW.GlobalWar.UI"
-               Title="{Loc 'sw-global-war-travel-title'}"
-               MinSize="760 460" SetSize="900 540">
-    <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="8">
-        <RichTextLabel Name="Status" />
-        <BoxContainer Orientation="Horizontal" SeparationOverride="6">
-            <Button Name="ZoomOut" Text="−" />
-            <Button Name="ZoomIn" Text="+" />
-            <Label Name="Zoom" Text="100%" MinWidth="50" />
-            <Button Name="ResetView" Text="{Loc 'sw-global-war-travel-reset-view'}" />
-        </BoxContainer>
-        <BoxContainer Orientation="Horizontal" VerticalExpand="True" SeparationOverride="12">
-            <PanelContainer HorizontalExpand="True" VerticalExpand="True">
-                <ui:SWGlobalWarMapControl Name="Map" HorizontalExpand="True" VerticalExpand="True" />
-            </PanelContainer>
-            <BoxContainer Orientation="Vertical" MinWidth="260" MaxWidth="300" SeparationOverride="8">
-                <Label Text="{Loc 'sw-global-war-travel-planet-info'}" />
-                <RichTextLabel Name="SelectionHint" Text="{Loc 'sw-global-war-travel-select-planet'}" />
-                <ScrollContainer VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False">
-                    <BoxContainer Name="PlanetInfo" Orientation="Vertical" SeparationOverride="10" HorizontalExpand="True" Visible="False">
-                        <RichTextLabel Name="PlanetName" />
-                        <RichTextLabel Name="PlanetDescription" />
-                        <RichTextLabel Name="HyperspaceTime" />
-                        <RichTextLabel Name="Connections" />
-                        <RichTextLabel Name="Availability" />
-                        <Button Name="Travel" Text="{Loc 'sw-global-war-travel-jump'}" Disabled="True" />
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      xmlns:ui="clr-namespace:Content.Client._SW.GlobalWar.UI"
+                      Title="{Loc 'sw-global-war-travel-title'}"
+                      MinSize="700 560" SetSize="1100 720">
+    <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="0">
+            <PanelContainer Name="HeaderPanel">
+                <BoxContainer Orientation="Horizontal" Margin="16 12" SeparationOverride="12">
+                    <ui:SWGlobalWarConsoleSeal />
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="3">
+                        <Label Name="HeaderNetwork" Text="{Loc 'sw-global-war-travel-network'}" />
+                        <Label Name="HeaderTitle" Text="{Loc 'sw-global-war-travel-title'}" ClipText="True" />
                     </BoxContainer>
-                </ScrollContainer>
-            </BoxContainer>
+                </BoxContainer>
+            </PanelContainer>
+            <PanelContainer Name="StatusPanel">
+                <RichTextLabel Name="Status" Margin="16 9" />
+            </PanelContainer>
+            <WrapContainer Margin="12 10" SeparationOverride="6" CrossSeparationOverride="6">
+                <OptionButton Name="PlanetSearch" Filterable="True" PrefixMargin="False" MinWidth="210" />
+                <ui:SWGlobalWarConsoleButton Name="ZoomOut" Text="−" MinWidth="34" />
+                <ui:SWGlobalWarConsoleButton Name="ZoomIn" Text="+" MinWidth="34" />
+                <Label Name="Zoom" Text="100%" MinWidth="50" Margin="4 6" />
+                <ui:SWGlobalWarConsoleButton Name="ResetView" Text="{Loc 'sw-global-war-travel-reset-view'}" />
+                <ui:SWGlobalWarConsoleButton Name="FocusPlanet" Text="{Loc 'sw-global-war-travel-focus'}" Disabled="True" />
+            </WrapContainer>
+            <ui:SWGlobalWarAtlasLayout HorizontalExpand="True" VerticalExpand="True" Margin="12 0 12 12">
+                <PanelContainer Name="MapPanel" HorizontalExpand="True" VerticalExpand="True">
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="0">
+                        <BoxContainer Orientation="Horizontal" Margin="12 8" SeparationOverride="10">
+                            <Label Name="MapTitle" Text="{Loc 'sw-global-war-travel-map-title'}" HorizontalExpand="True" />
+                            <Label Name="PlanetCount" />
+                        </BoxContainer>
+                        <ui:SWGlobalWarMapControl Name="Map" HorizontalExpand="True" VerticalExpand="True" />
+                        <WrapContainer Margin="12 8" SeparationOverride="16" CrossSeparationOverride="4">
+                            <Label Name="CurrentLegend" Text="{Loc 'sw-global-war-travel-legend-current'}" />
+                            <Label Name="AvailableLegend" Text="{Loc 'sw-global-war-travel-legend-available'}" />
+                            <Label Name="UnavailableLegend" Text="{Loc 'sw-global-war-travel-legend-unavailable'}" />
+                        </WrapContainer>
+                    </BoxContainer>
+                </PanelContainer>
+                <PanelContainer Name="DetailsPanel" HorizontalExpand="True" VerticalExpand="True">
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="16" SeparationOverride="12">
+                        <Label Name="InfoTitle" Text="{Loc 'sw-global-war-travel-planet-info'}" />
+                        <RichTextLabel Name="SelectionHint" Text="{Loc 'sw-global-war-travel-select-planet'}" />
+                        <ScrollContainer VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False">
+                            <BoxContainer Name="PlanetInfo" Orientation="Vertical" SeparationOverride="12" HorizontalExpand="True" Visible="False">
+                                <RichTextLabel Name="PlanetName" StyleClasses="GlobalWarPlanetTitle" />
+                                <RichTextLabel Name="PlanetDescription" />
+                                <PanelContainer Name="TravelInfoPanel">
+                                    <BoxContainer Orientation="Vertical" Margin="12" SeparationOverride="10">
+                                        <RichTextLabel Name="HyperspaceTime" />
+                                        <RichTextLabel Name="Connections" />
+                                    </BoxContainer>
+                                </PanelContainer>
+                                <RichTextLabel Name="Availability" />
+                            </BoxContainer>
+                        </ScrollContainer>
+                        <ui:SWGlobalWarConsoleButton Name="Travel" Text="{Loc 'sw-global-war-travel-jump'}" Disabled="True" Visible="False" />
+                    </BoxContainer>
+                </PanelContainer>
+            </ui:SWGlobalWarAtlasLayout>
+            <RichTextLabel Name="MapHelp" StyleClasses="GlobalWarMapHelp" Text="{Loc 'sw-global-war-travel-map-help'}" Margin="16 0 16 10" />
         </BoxContainer>
-    </BoxContainer>
-</DefaultWindow>
+    </PanelContainer>
+</controls:FancyWindow>

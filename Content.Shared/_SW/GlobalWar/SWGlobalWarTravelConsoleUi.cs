@@ -14,12 +14,15 @@ public sealed class SWGlobalWarTravelConsoleState : BoundUserInterfaceState
 {
     public readonly string CurrentPlanet;
     public readonly string Status;
+    public readonly ProtoId<SWGlobalWarPlanetPrototype>? CurrentPlanetId;
     public readonly List<SWGlobalWarTravelDestination> Destinations;
 
-    public SWGlobalWarTravelConsoleState(string currentPlanet, string status, List<SWGlobalWarTravelDestination> destinations)
+    public SWGlobalWarTravelConsoleState(string currentPlanet, string status, List<SWGlobalWarTravelDestination> destinations,
+        ProtoId<SWGlobalWarPlanetPrototype>? currentPlanetId = null)
     {
         CurrentPlanet = currentPlanet;
         Status = status;
+        CurrentPlanetId = currentPlanetId;
         Destinations = destinations;
     }
 }

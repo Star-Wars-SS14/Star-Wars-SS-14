@@ -459,6 +459,8 @@ public sealed partial class ShuttleSystem
     /// </summary>
     private void UpdateFTLArriving(Entity<FTLComponent, ShuttleComponent> entity)
     {
+        //SW start
+        // Let GlobalWar adjust the arrival point or keep the ship in hyperspace until a safe exit is available.
         var attempt = new FTLBeforeArrivalEvent();
         RaiseLocalEvent(entity.Owner, ref attempt);
         if (attempt.Cancelled)
@@ -466,6 +468,7 @@ public sealed partial class ShuttleSystem
             entity.Comp1.StateTime = StartEndTime.FromCurTime(_gameTiming, TimeSpan.FromSeconds(1));
             return;
         }
+        //SW end
 
         var uid = entity.Owner;
         var xform = _xformQuery.GetComponent(uid);

@@ -12,6 +12,7 @@ using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Events;
 using Robust.Shared.Physics.Systems;
+using Content.Shared._SW.Vehicle;
 using Robust.Shared.Serialization;
 using Robust.Shared.Utility;
 
@@ -200,12 +201,23 @@ public abstract partial class SharedProjectileSystem : EntitySystem
     }
 
     private void PreventCollision(EntityUid uid, ProjectileComponent component, ref PreventCollideEvent args)
+{
+    if (component.IgnoreShooter && (args.OtherEntity == component.Shooter || args.OtherEntity == component.Weapon))
     {
-        if (component.IgnoreShooter && (args.OtherEntity == component.Shooter || args.OtherEntity == component.Weapon))
-        {
-            args.Cancelled = true;
-        }
+        args.Cancelled = true;
+        return;
     }
+
+    // НОВАЯ ПРОВЕРКА: защита экипажа одного транспорта от снарядов друг друга
+    if (component.Shooter != null &&
+        TryComp<SWInVehicleComponent>(args.OtherEntity, out var targetInVehicle) &&
+        TryComp<SWInVehicleComponent>(component.Shooter.Value, out var shooterInVehicle) &&
+        targetInVehicle.Vehicle == shooterInVehicle.Vehicle)
+    {
+        args.Cancelled = true;
+        return;
+    }
+}
 
     public void SetShooter(EntityUid id, ProjectileComponent component, EntityUid shooterId)
     {

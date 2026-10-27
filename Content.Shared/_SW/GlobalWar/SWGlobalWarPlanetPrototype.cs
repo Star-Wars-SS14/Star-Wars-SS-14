@@ -23,6 +23,12 @@ public sealed partial class SWGlobalWarPlanetPrototype : IPrototype
     public ProtoId<GameMapPrototype> Orbit;
 
     /// <summary>
+    /// Hyperspace travel time to this planet in seconds; null uses shuttle.travel_time.
+    /// </summary>
+    [DataField]
+    public float? HyperspaceTime;
+
+    /// <summary>
     /// Direct, directional connections to other planets. Return connections must be configured separately.
     /// </summary>
     [DataField]

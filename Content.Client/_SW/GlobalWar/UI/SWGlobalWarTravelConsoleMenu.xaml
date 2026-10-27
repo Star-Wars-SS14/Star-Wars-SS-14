@@ -2,7 +2,6 @@
                Title="{Loc 'sw-global-war-travel-title'}"
                MinSize="760 460" SetSize="900 540">
     <BoxContainer Orientation="Vertical" Margin="8" SeparationOverride="8">
-        <Label Name="CurrentPlanet" />
         <Label Name="Status" />
         <BoxContainer Orientation="Horizontal" VerticalExpand="True" SeparationOverride="12">
             <BoxContainer Orientation="Vertical" MinWidth="280" MaxWidth="340" HorizontalExpand="True" SeparationOverride="6">

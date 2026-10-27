@@ -130,7 +130,8 @@ public sealed class SWGlobalWarTravelSystem : EntitySystem
                 return false;
             }
 
-            _shuttles.FTLToCoordinates(ship, Comp<ShuttleComponent>(ship), coordinates, Angle.Zero);
+            _shuttles.FTLToCoordinates(ship, Comp<ShuttleComponent>(ship), coordinates, Angle.Zero,
+                hyperspaceTime: _prototypes.Index(destination).HyperspaceTime);
             if (!HasComp<FTLComponent>(ship))
             {
                 reason = Loc.GetString("sw-global-war-travel-unavailable");
@@ -268,7 +269,7 @@ public sealed class SWGlobalWarTravelSystem : EntitySystem
         {
             foreach (var id in globalWarGamerule.Comp.Planets)
             {
-                var reason = status;
+                var reason = string.Empty;
                 var available = valid && CheckDestination(console, ship, planet, id, out _, out reason);
                 entries.Add(new SWGlobalWarTravelDestination(id, _prototypes.Index(id).Name, available, reason));
             }

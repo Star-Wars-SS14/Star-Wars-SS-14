@@ -1,7 +1,7 @@
 ent-SWGlobalWarTravelConsole = interplanetary navigation console
     .desc = Plots hyperspace routes between Global War orbital stations.
 sw-global-war-travel-title = Interplanetary navigation
-sw-global-war-travel-location = Current planet: {$planet}
+sw-global-war-travel-location = You are on planet {$planet}.
 sw-global-war-travel-destinations = Destinations
 sw-global-war-travel-map-placeholder = Galactic map
 sw-global-war-travel-jump = Begin hyperspace jump
@@ -12,4 +12,4 @@ sw-global-war-travel-no-route = No hyperspace route to this planet.
 sw-global-war-travel-current = You are already at this planet.
 sw-global-war-travel-unavailable = Destination or orbital station unavailable.
 sw-global-war-travel-blocked = No safe arrival point near the orbital station.
-sw-global-war-travel-in-progress = Travelling to {$planet}. Waiting for a safe exit if necessary.
+sw-global-war-travel-in-progress = You are travelling to {$planet}.

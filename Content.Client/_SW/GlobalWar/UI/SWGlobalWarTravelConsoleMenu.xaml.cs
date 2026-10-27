@@ -31,8 +31,9 @@ public sealed partial class SWGlobalWarTravelConsoleMenu : DefaultWindow
 
     public void UpdateState(SWGlobalWarTravelConsoleState state)
     {
-        CurrentPlanet.Text = Loc.GetString("sw-global-war-travel-location", ("planet", state.CurrentPlanet));
-        Status.Text = state.Status;
+        Status.Text = string.IsNullOrEmpty(state.Status)
+            ? Loc.GetString("sw-global-war-travel-location", ("planet", state.CurrentPlanet))
+            : state.Status;
         var present = state.Destinations.Select(entry => entry.Id).ToHashSet();
         foreach (var (id, controls) in _destinations.ToArray())
         {
@@ -74,7 +75,7 @@ public sealed partial class SWGlobalWarTravelConsoleMenu : DefaultWindow
             controls.Button.Disabled = !entry.Available;
             controls.Button.Pressed = _selected == entry.Id;
             controls.Reason.Text = entry.Reason;
-            controls.Reason.Visible = !entry.Available;
+            controls.Reason.Visible = !entry.Available && !string.IsNullOrEmpty(entry.Reason);
             controls.Button.SetPositionInParent(position++);
             controls.Reason.SetPositionInParent(position++);
 

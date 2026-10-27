@@ -1,6 +1,7 @@
 - type: swGlobalWarPlanet
   id: SWGlobalWarTestAlpha
   name: Alpha
+  hyperspaceTime: 20
   orbit: SWGlobalWarTestAsteroid
   surface: oldBalmora
   connections: [SWGlobalWarTestBeta]
@@ -8,6 +9,7 @@
 - type: swGlobalWarPlanet
   id: SWGlobalWarTestBeta
   name: Beta
+  hyperspaceTime: 30
   orbit: SWGlobalWarTestAsteroid
   surface: oldBalmora
   connections: [SWGlobalWarTestAlpha, SWGlobalWarTestGamma]
@@ -15,6 +17,7 @@
 - type: swGlobalWarPlanet
   id: SWGlobalWarTestGamma
   name: Gamma
+  hyperspaceTime: 40
   orbit: SWGlobalWarTestAsteroid
   surface: oldBalmora
   connections: [SWGlobalWarTestBeta]

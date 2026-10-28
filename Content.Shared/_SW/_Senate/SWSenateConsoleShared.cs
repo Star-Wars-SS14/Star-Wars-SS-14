@@ -289,6 +289,7 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
 
     // КОНТРОЛЬ (Internal Security ministry only).
     public bool IsSecurity;
+    public SWSecurityMapState? SecurityMap;
     public SWSecurityPosture Posture;
     public string PostureName = string.Empty;
     public Color PostureColor;
@@ -437,6 +438,7 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
 
     // ЮСТИЦИЯ (Justice ministry only).
     public bool IsJustice;
+    public SWJusticeInspectionState? JusticeInspections;
     public SWJusticeStance JusticeStance;
     public string JusticeStanceName = string.Empty;
     public Color JusticeStanceColor;
@@ -1237,6 +1239,19 @@ public sealed class SWSecurityRejectEmergencyMessage : BoundUserInterfaceMessage
 }
 
 [Serializable, NetSerializable]
+public sealed class SWSecuritySabotageDecisionMessage : BoundUserInterfaceMessage
+{
+    public int CaseId;
+    public bool Approve;
+
+    public SWSecuritySabotageDecisionMessage(int caseId, bool approve)
+    {
+        CaseId = caseId;
+        Approve = approve;
+    }
+}
+
+[Serializable, NetSerializable]
 public sealed class SWDefenseOperationEntry
 {
     public string Id = string.Empty;
@@ -1503,6 +1518,8 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool EmergencyProposed;
     public bool CanApproveEmergency;
     public string PendingPostureName = string.Empty;
+    public bool CanApproveSecuritySabotage;
+    public List<SWSecuritySabotageRequestView> SecuritySabotageRequests = new();
     public bool HealthEmergencyProposed;
     public bool CanApproveHealthEmergency;
     public List<Content.Shared._SW._Senate.Ministries.SWHealthQuarantineView> HealthQuarantines = new();

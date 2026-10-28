@@ -47,7 +47,7 @@
     selectedMode: FullAuto
     availableModes:
       - FullAuto
-    soundGunshot: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+    soundGunshot: /Audio/_SW/Weapons/Guns/Gunshots/turret_blaster_sound.ogg
   # TODO: Power ammo provider?
   - type: BallisticAmmoProvider
     proto: SWE-1Bullet
@@ -134,7 +134,7 @@
     selectedMode: FullAuto
     availableModes:
       - FullAuto
-    soundGunshot: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+    soundGunshot: /Audio/_SW/Weapons/Guns/Gunshots/turret_blaster_sound.ogg
   - type: SWTurretSayOnTargetLos
     messageId: sw-turret-say-allhostile
 

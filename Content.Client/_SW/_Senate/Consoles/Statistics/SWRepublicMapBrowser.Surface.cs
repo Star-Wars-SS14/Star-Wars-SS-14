@@ -17,8 +17,9 @@ public sealed partial class SWRepublicMapBrowser
     public bool CanOpenSurface(string id)
     {
         var proto = IoCManager.Resolve<IPrototypeManager>();
-        return _worlds.TryGetValue(id, out var world) && world.Sector != null
-            && (_lockedSector == null || world.Sector.Value.Id == _lockedSector)
+        return _worlds.TryGetValue(id, out var world) && (world.Sector != null || !string.IsNullOrEmpty(world.PoliticalSectorId))
+            && CanReadWorldState(world)
+            && (_lockedSector == null || world.Sector?.Id == _lockedSector)
             && proto.TryIndex<SWPlanetEconomyPrototype>(id, out var economy) && economy.ActiveEconomy
             && proto.TryIndex<SWPlanetSurfacePrototype>(id, out _);
     }
@@ -28,7 +29,11 @@ public sealed partial class SWRepublicMapBrowser
         if (!CanOpenSurface(id)) return false;
         if (Surface != null && SelectedWorldId == id) return true;
         var world = _worlds[id];
-        OpenSector(world.Sector!.Value.Id);
+        if (_viewerFaction == "empire" && HasSystem(world)) OpenSystem(world.SystemId);
+        else if (_viewerFaction == "empire" && !string.IsNullOrEmpty(world.PoliticalSectorId)) OpenPoliticalSector(world.PoliticalSectorId);
+        else if (world.Sector is { } sector) OpenSector(sector.Id);
+        else if (!string.IsNullOrEmpty(world.SystemId)) OpenSystem(world.SystemId);
+        else OpenPoliticalSector(world.PoliticalSectorId);
         SelectWorld(id);
         var surface = new SWPlanetSurfaceControl(IoCManager.Resolve<IPrototypeManager>().Index<SWPlanetSurfacePrototype>(id));
         Surface = surface;
@@ -70,8 +75,17 @@ public sealed partial class SWRepublicMapBrowser
         _detail.RemoveAllChildren();
         var back = SWConsoleStyle.TabButton("К сектору");
         back.Name = "BackToSector";
-        back.OnPressed += _ => { OpenSector(CurrentSectorId!); SelectWorld(id); };
+        back.OnPressed += _ =>
+        {
+            if (CurrentSectorId != null) OpenSector(CurrentSectorId);
+            else if (CurrentSystemId != null) OpenSystem(CurrentSystemId);
+            else if (CurrentPoliticalSectorId != null) OpenPoliticalSector(CurrentPoliticalSectorId);
+            SelectWorld(id);
+        };
         _detailHeading.AddChild(back);
+        var world = _worlds[id];
+        if (_data.GetWorldFaction(world) == "empire")
+            _detailHeading.AddChild(SWConsoleStyle.Wrap(_data.GetWorldPoliticalName(world), SWConsoleStyle.Warn));
         if (EconomyDetailsOverride != null)
         {
             EconomyDetailsOverride(_detailHeading, _detail, id, null);
@@ -83,7 +97,7 @@ public sealed partial class SWRepublicMapBrowser
         var site = Surface.Surface.Sites.FirstOrDefault(s => s.Id == Surface.SelectedSiteId);
         if (site == null)
         {
-            AddGovernorCard(_worlds[id].Sector?.Id);
+            if (_data.GetWorldFaction(world) == "republic") AddGovernorCard(world.Sector?.Id);
             Empty("Выберите объект территории");
             if (Surface.SelectedCell is { } cell)
             {

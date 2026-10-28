@@ -80,6 +80,7 @@ public sealed partial class SWRepublicMapBrowser
 
     public void SetEconomy(SWEconomyView? view)
     {
+        if (view != null && view.ViewerFaction != _viewerFaction) view = null;
         _economyView = view;
         Map.SetEconomy(view);
         Surface?.SetEconomy(view?.Worlds.FirstOrDefault(w => w.World == SelectedWorldId), view?.Paused ?? false, view?.Ready ?? false);
@@ -147,6 +148,22 @@ public sealed partial class SWRepublicMapBrowser
         _detailHeading.AddChild(SWConsoleStyle.Wrap(world.Name, SWConsoleStyle.Brass));
         _detailHeading.AddChild(SWConsoleStyle.Wrap(world.Sector is { } owner
             ? $"{world.Kind} / {SectorName(owner.Id)}" : world.Kind, SWConsoleStyle.TextDim));
+        if (world.Sector != null && _data.GetWorldFaction(world) == "empire")
+            _detailHeading.AddChild(SWConsoleStyle.Wrap(_data.GetWorldPoliticalName(world), SWConsoleStyle.Warn));
+        if (!CanReadWorldState(world))
+        {
+            WorldDetails(world);
+            Empty("Текущее состояние мира неизвестно");
+            SelectionChanged?.Invoke();
+            return;
+        }
+        var live = _economyView?.Worlds.FirstOrDefault(w => w.World == id);
+        if (world.Sector == null && !HasWorldEconomy(world.Id, live))
+        {
+            WorldDetails(world);
+            SelectionChanged?.Invoke();
+            return;
+        }
         var tabs = new WrapContainer { HorizontalExpand = true, SeparationOverride = 2, CrossSeparationOverride = 2 };
         // Keep the existing page IDs stable for the other consoles and saved selections.
         var pages = new[] { (0, "Снабжение"), (1, "Товары"), (4, "Оснащение"), (2, "Рейсы"), (3, "О мире") };
@@ -166,15 +183,28 @@ public sealed partial class SWRepublicMapBrowser
             territory.OnPressed += _ => OpenSurface(id);
             _detailHeading.AddChild(territory);
         }
-        var live = _economyView?.Worlds.FirstOrDefault(w => w.World == id);
         if (_detailPage == 3) WorldDetails(world);
         else if (_economyView is not { Ready: true }) Empty("Ожидание данных экономики");
         else if (_detailPage == 2) FreightDetails(id);
         else if (_detailPage == 4 && live != null) EquipmentDetails(live);
-        else if (live == null || live.Goods.Count == 0) Empty("Вне производственной сети Республики");
+        else if (live == null || live.Goods.Count == 0) Empty("Вне производственной сети");
         else if (_detailPage == 0) SupplyDetails(live);
         else GoodsDetails(live);
         SelectionChanged?.Invoke();
+    }
+
+    private static bool HasWorldEconomy(string id, SWEconomyWorldView? live)
+    {
+        var prototypes = IoCManager.Resolve<IPrototypeManager>();
+        if (prototypes.TryIndex<SWPlanetEconomyPrototype>(id, out var profile) && profile.ActiveEconomy)
+            return true;
+        // Capacity snapshots also contain inactive worlds. Count actual activity instead.
+        return live != null && (live.Goods.Any(g => g.Stock != 0 || g.Capacity != 0 || g.ProducedPerHour != 0
+                || g.ConsumedPerHour != 0 || g.RequiredPerHour != 0 || g.ImportedPerHour != 0 || g.ExportedPerHour != 0 || g.Incoming != 0)
+            || live.Services.Any(s => s.RequiredPerHour != 0 || s.ServedPerHour != 0)
+            || live.Assets.Any(a => a.Installed != 0 || a.Operational != 0 || a.Target != 0)
+            || live.Orders.Any(o => o.Ordered != 0 || o.Delivered != 0)
+            || live.Production.Any(p => p.CompletedCyclesPerHour != 0 || p.StartedCyclesPerHour != 0 || p.WorkInProgress != 0));
     }
 
     private void SupplyDetails(SWEconomyWorldView world)
@@ -367,6 +397,17 @@ public sealed partial class SWRepublicMapBrowser
         _detailHeading.AddChild(SWConsoleStyle.Wrap(corridor?.Name ?? "Местный гиперпуть", SWConsoleStyle.Brass));
         _detailHeading.AddChild(SWConsoleStyle.Wrap($"{WorldName(route.From)} / {WorldName(route.To)}", SWConsoleStyle.TextBright));
         var edge = SWTransitLinkPrototype.LinkId(route.From, route.To);
+        if (!CanReadWorldState(_worlds[route.From]) || !CanReadWorldState(_worlds[route.To]))
+        {
+            // A publicly closed crossing is geography, not private traffic telemetry.
+            if (_transitLinks.TryGetValue(edge, out var publicLink) && !publicLink.Accessible)
+                _detail.AddChild(new Label { Name = "TransitClosed", Text = "Маршрут закрыт", FontColorOverride = SWConsoleStyle.Bad });
+            Empty("Данные о перевозках недоступны");
+            _detail.AddChild(SWConsoleStyle.Section("Конечные точки"));
+            WorldButton(route.From);
+            WorldButton(route.To);
+            return;
+        }
         RouteCrisisDetails(edge);
         if (!_transitLinks.TryGetValue(edge, out var link)) return;
         if (!link.Accessible)
@@ -423,7 +464,8 @@ public sealed partial class SWRepublicMapBrowser
 
     private void WorldDetails(SWGalacticMapWorld world)
     {
-        AddGovernorCard(world.Sector?.Id);
+        if (CanReadWorldState(world) && _viewerFaction == "republic") AddGovernorCard(world.Sector?.Id);
+        _detail.AddChild(SWConsoleStyle.Wrap(_data.GetWorldPoliticalName(world), SWConsoleStyle.TextDim));
         if (world.Description.Length > 0) _detail.AddChild(SWConsoleStyle.Wrap(world.Description, SWConsoleStyle.TextDim));
         if (world.Sector is { } owner && CurrentSectorId != owner.Id && _lockedSector == null)
         {
@@ -431,10 +473,18 @@ public sealed partial class SWRepublicMapBrowser
             open.OnPressed += _ => { OpenSector(owner.Id); SelectWorld(world.Id); };
             _detail.AddChild(open);
         }
-        _detail.AddChild(new SWPlanetResourcePanel(world.Id));
+        if (_lockedSector == null && world.Sector == null && HasSystem(world) && CurrentSystemId != world.SystemId)
+        {
+            var open = SWConsoleStyle.TabButton("Открыть систему");
+            open.OnPressed += _ => { if (OpenSystem(world.SystemId)) SelectWorld(world.Id); };
+            _detail.AddChild(open);
+        }
+        if (CanReadWorldState(world) && (world.Sector != null || HasWorldEconomy(world.Id, _economyView?.Worlds.FirstOrDefault(w => w.World == world.Id))))
+            _detail.AddChild(new SWPlanetResourcePanel(world.Id));
         _detail.AddChild(SWConsoleStyle.Section("Связи"));
         foreach (var edge in View.Routes.Where(r => r.From == world.Id || r.To == world.Id))
             WorldButton(edge.From == world.Id ? edge.To : edge.From);
+        if (!CanReadWorldState(world)) return;
         var sector = _sectors.FirstOrDefault(s => s.Id == world.Sector?.Id);
         if (sector == null) return;
         if (SectorSummaryRequested != null)

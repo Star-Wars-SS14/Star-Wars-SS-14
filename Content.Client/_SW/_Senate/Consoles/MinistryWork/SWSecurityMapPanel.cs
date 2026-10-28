@@ -84,7 +84,8 @@ public sealed class SWSecurityMapPanel : BoxContainer
     }
     public void SelectWorld(string id)
     {
-        var world = _source.Worlds.FirstOrDefault(w => w.Id == id);
+        var visible = SWGalacticMapViews.ForFaction(_source, "republic");
+        var world = visible.Worlds.FirstOrDefault(w => w.Id == id);
         if (world == null) return;
         if (_sector != world.Sector?.Id && _sector != null) SwitchView(world.Sector?.Id);
         else if (_sector == null && !world.Anchor) SwitchView(world.Sector?.Id);
@@ -96,7 +97,8 @@ public sealed class SWSecurityMapPanel : BoxContainer
         var previous = _map;
         var anchor = _source.Worlds.FirstOrDefault(w => w.Anchor && w.Sector?.Id == (sector ?? _sector))?.Id;
         _sector = sector;
-        var view = sector == null ? SWGalacticMapViews.Overview(_source) : SWGalacticMapViews.Sector(_source, sector);
+        var visible = SWGalacticMapViews.ForFaction(_source, "republic");
+        var view = sector == null ? SWGalacticMapViews.Overview(visible) : SWGalacticMapViews.Sector(visible, sector);
         _host.RemoveAllChildren();
         _map = new SWGalacticMapControl(view, sector) { MinHeight = 260 };
         _map.SetSecurity(_state, _team);

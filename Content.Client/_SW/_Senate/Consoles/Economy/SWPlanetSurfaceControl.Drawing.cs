@@ -35,7 +35,7 @@ public sealed partial class SWPlanetSurfaceControl
             color = new Color(color.R * light, color.G * light, color.B * light, 1);
             handle.DrawRect(UIBox2.FromDimensions(p * UIScale, new Vector2(tile * UIScale + .5f)), color);
             TerrainGlyph(handle, p, tile, terrain, x, y);
-            handle.DrawRect(UIBox2.FromDimensions(p * UIScale, new Vector2(tile * UIScale)), new Color(0.05f, .1f, .14f, .25f), false);
+            handle.DrawRect(UIBox2.FromDimensions(p * UIScale, new Vector2(tile * UIScale)), new Color(0.05f, .1f, .14f, .08f), false);
         }
 
         DrawRoads(handle, tile);
@@ -133,115 +133,104 @@ public sealed partial class SWPlanetSurfaceControl
 
     private void Building(DrawingHandleScreen h, SWPlanetSurfaceSite site, Vector2 p, float t, bool match)
     {
-        var ink = match ? Ink("#D3DAD8") : Ink("#66746F");
-        var accent = site.Kind switch
-        {
-            "resource" => Ink("#D7BC83"), "port" => Ink("#9BD3E0"), "power" => Ink("#E3B96F"),
-            "settlement" => Ink("#BED0BD"), _ => Ink("#C5CDCD"),
-        };
-        if (!match) accent = Ink("#66746F");
+        // Buildings sit beside the road centreline. The short driveway connects the
+        // entrance to the actual network cell and leaves the traffic lane unobstructed.
+        var wall = match ? Ink("#75888A") : Ink("#475955");
+        var roof = match ? Ink("#314952") : Ink("#293A38");
+        var light = match ? Ink("#C7D1C3") : Ink("#60716A");
+        var accent = match ? Ink("#D2B27A") : Ink("#66726A");
         void Line(float ax, float ay, float bx, float by, Color? tint = null) => h.DrawLine(
-            (p + new Vector2(ax, ay) * t) * UIScale, (p + new Vector2(bx, by) * t) * UIScale, tint ?? ink);
-        void Box(float ax, float ay, float w, float height, Color tint, bool filled = true) => h.DrawRect(
-            UIBox2.FromDimensions((p + new Vector2(ax, ay) * t) * UIScale, new Vector2(w, height) * t * UIScale), tint, filled);
-        Box(.1f, .14f, .82f, .77f, new Color(.025f, .045f, .06f, .55f));
-        Box(.08f, .1f, .82f, .76f, Ink("#182934"));
-        Box(.08f, .1f, .82f, .76f, match ? Ink("#607477") : Ink("#3E4D50"), false);
+            (p + new Vector2(ax, ay) * t) * UIScale, (p + new Vector2(bx, by) * t) * UIScale, tint ?? light);
+        void Box(float x, float y, float w, float height, Color color, bool filled = true) => h.DrawRect(
+            UIBox2.FromDimensions((p + new Vector2(x, y) * t) * UIScale, new Vector2(w, height) * t * UIScale), color, filled);
+        void Circle(float x, float y, float radius, Color color) => h.DrawCircle(
+            (p + new Vector2(x, y) * t) * UIScale, radius * t * UIScale, Color.ToSrgb(color), false);
+        void Hall(float x, float width)
+        {
+            Box(x, .12f, width, .22f, wall);
+            Box(x + .025f, .14f, width - .05f, .11f, roof);
+            Line(x, .34f, x + width, .34f, light);
+        }
         var symbol = site.Kind;
-        if (symbol == "production" && site.Recipes.Count > 0)
-            symbol = _recipes[site.Recipes[0].Id].Facility.Id switch
+        if (symbol == "production" && site.Recipes.Count > 0 && _recipes.TryGetValue(site.Recipes[0].Id, out var recipe))
+            symbol = recipe.Facility.Id switch
             {
-                "farm" or "bioreactor" => "agriculture",
-                "mine" or "quarry" => "extraction",
-                "pharma" or "medtech" => "medical",
-                "shipyard" => "shipyard",
-                "waterworks" or "fishery" => "water",
-                _ => "production",
+                "farm" or "bioreactor" => "agriculture", "mine" or "quarry" => "extraction",
+                "pharma" or "medtech" => "medical", "shipyard" => "shipyard",
+                "waterworks" or "fishery" => "water", _ => "production",
             };
         if (site.Resource?.Id == "water_source") symbol = "water";
         if (site.Resource?.Id is "arable" or "medical_biome") symbol = "agriculture";
         switch (symbol)
         {
             case "agriculture":
-                Line(.5f, .27f, .5f, .72f, accent);
-                Line(.5f, .42f, .28f, .28f, accent); Line(.28f, .28f, .29f, .43f, accent); Line(.29f, .43f, .5f, .54f, accent);
-                Line(.5f, .51f, .72f, .34f, accent); Line(.72f, .34f, .7f, .53f, accent); Line(.7f, .53f, .5f, .65f, accent);
-                Line(.25f, .74f, .75f, .74f);
+                Hall(.12f, .22f);
+                for (var i = 0; i < 3; i++) Line(.43f + i * .14f, .08f, .43f + i * .14f, .34f, accent);
+                Line(.39f, .34f, .85f, .34f, wall);
                 break;
             case "extraction":
-                Line(.24f, .72f, .49f, .24f); Line(.49f, .24f, .75f, .72f);
-                Line(.3f, .59f, .68f, .59f); Line(.37f, .44f, .6f, .44f);
-                Line(.49f, .24f, .49f, .64f, accent); Box(.4f, .64f, .18f, .11f, accent);
-                break;
-            case "medical":
-                Box(.36f, .24f, .26f, .5f, accent); Box(.24f, .36f, .5f, .26f, accent);
+            case "resource":
+                Hall(.12f, .22f);
+                Line(.48f, .34f, .65f, .06f, accent); Line(.65f, .06f, .83f, .34f, accent);
+                Line(.52f, .27f, .79f, .27f, wall); Line(.65f, .08f, .65f, .35f, light);
                 break;
             case "shipyard":
-                Line(.18f, .24f, .18f, .73f); Line(.8f, .24f, .8f, .73f);
-                Line(.18f, .24f, .32f, .24f); Line(.8f, .24f, .66f, .24f);
-                Line(.49f, .22f, .67f, .63f, accent); Line(.67f, .63f, .31f, .63f, accent);
-                Line(.31f, .63f, .49f, .22f, accent); Box(.42f, .64f, .14f, .11f, accent);
+                Hall(.10f, .20f);
+                Line(.39f, .08f, .39f, .36f, accent); Line(.86f, .08f, .86f, .36f, accent);
+                Line(.39f, .08f, .86f, .08f, accent);
+                Line(.48f, .3f, .62f, .12f, light); Line(.62f, .12f, .78f, .3f, light); Line(.48f, .3f, .78f, .3f, light);
+                break;
+            case "medical":
+                Hall(.18f, .64f);
+                Line(.5f, .15f, .5f, .27f, accent); Line(.43f, .21f, .57f, .21f, accent);
                 break;
             case "water":
-                Line(.49f, .23f, .29f, .53f, accent); Line(.49f, .23f, .69f, .53f, accent);
-                Line(.29f, .53f, .34f, .66f, accent); Line(.69f, .53f, .64f, .66f, accent);
-                Line(.34f, .66f, .64f, .66f, accent); Line(.27f, .76f, .71f, .76f);
-                break;
-            case "production":
-                Box(.22f, .47f, .53f, .25f, ink, false);
-                Line(.22f, .47f, .39f, .34f); Line(.39f, .34f, .39f, .47f);
-                Line(.39f, .47f, .55f, .34f); Line(.55f, .34f, .55f, .47f);
-                Box(.64f, .26f, .09f, .23f, ink);
-                for (var i = 0; i < 3; i++) Box(.29f + i * .16f, .56f, .07f, .07f, accent);
+                Hall(.12f, .27f); Circle(.65f, .21f, .14f, accent); Line(.52f, .21f, .78f, .21f, light);
                 break;
             case "port":
-                h.DrawCircle((p + new Vector2(.49f, .47f) * t) * UIScale, t * .23f * UIScale, Color.ToSrgb(accent), false);
-                Line(.36f, .35f, .36f, .59f); Line(.62f, .35f, .62f, .59f); Line(.36f, .47f, .62f, .47f);
-                Line(.2f, .73f, .78f, .73f, accent);
-                break;
-            case "resource":
-                Line(.23f, .57f, .4f, .29f, accent); Line(.4f, .29f, .57f, .57f, accent);
-                Line(.23f, .57f, .43f, .71f, accent); Line(.43f, .71f, .57f, .57f, accent);
-                Line(.55f, .4f, .68f, .3f, accent); Line(.68f, .3f, .8f, .6f, accent);
-                Line(.8f, .6f, .6f, .72f, accent);
+                Hall(.08f, .25f); Circle(.62f, .22f, .16f, accent);
+                Line(.48f, .22f, .76f, .22f, light); Line(.62f, .09f, .62f, .35f, light);
                 break;
             case "power":
-                h.DrawCircle((p + new Vector2(.49f, .48f) * t) * UIScale, t * .23f * UIScale, Color.ToSrgb(accent), false);
-                Line(.54f, .25f, .39f, .49f, accent); Line(.39f, .49f, .59f, .49f, accent); Line(.59f, .49f, .44f, .72f, accent);
+                Hall(.08f, .23f); Circle(.63f, .21f, .15f, accent);
+                Line(.65f, .1f, .57f, .22f, light); Line(.57f, .22f, .68f, .22f, light); Line(.68f, .22f, .61f, .32f, light);
                 break;
             case "storage":
-                Box(.21f, .46f, .24f, .23f, ink, false); Box(.5f, .46f, .24f, .23f, ink, false);
-                Box(.36f, .22f, .24f, .23f, ink, false); Line(.24f, .73f, .76f, .73f);
-                break;
-            case "settlement" when site.Id == _settlementCenter:
-                // Civic centre: a broad hall, stepped roof and a small public square.
-                Box(.23f, .43f, .53f, .27f, ink, false);
-                Line(.18f, .43f, .49f, .24f, accent); Line(.49f, .24f, .8f, .43f, accent);
-                for (var i = 0; i < 3; i++) Line(.32f + i * .17f, .47f, .32f + i * .17f, .67f);
-                Box(.2f, .74f, .59f, .05f, accent);
+                Hall(.09f, .38f); Hall(.54f, .36f);
+                Line(.17f, .28f, .38f, .28f, accent); Line(.62f, .28f, .82f, .28f, accent);
                 break;
             case "settlement":
-                // Residential districts: separate low roofs instead of the civic landmark.
-                for (var i = 0; i < 3; i++)
+                if (site.Id == _settlementCenter)
                 {
-                    var xx = .18f + i * .22f;
-                    var yy = i == 1 ? .32f : .47f;
-                    Box(xx, yy, .17f, .23f, ink, false);
-                    Line(xx - .02f, yy, xx + .085f, yy - .1f, accent);
-                    Line(xx + .085f, yy - .1f, xx + .19f, yy, accent);
+                    Hall(.18f, .64f); Line(.14f, .13f, .5f, .025f, accent); Line(.5f, .025f, .86f, .13f, accent);
+                    for (var i = 0; i < 3; i++) Line(.32f + i * .18f, .23f, .32f + i * .18f, .34f, light);
                 }
-                Line(.18f, .76f, .81f, .76f);
+                else
+                {
+                    Hall(.12f, .19f); Hall(.39f, .19f); Hall(.66f, .19f);
+                    Line(.12f, .12f, .215f, .055f, accent); Line(.215f, .055f, .31f, .12f, accent);
+                    Line(.66f, .12f, .755f, .055f, accent); Line(.755f, .055f, .85f, .12f, accent);
+                }
                 break;
             default:
-                Box(.21f, .42f, .15f, .3f, ink, false); Box(.41f, .25f, .17f, .47f, ink, false);
-                Box(.63f, .36f, .14f, .36f, ink, false); Line(.18f, .75f, .8f, .75f);
+                Hall(.09f, .56f); Hall(.69f, .21f);
+                for (var i = 0; i < 3; i++)
+                {
+                    var x = .12f + i * .17f;
+                    Line(x, .12f, x + .085f, .05f, accent); Line(x + .085f, .05f, x + .16f, .12f, accent);
+                }
+                Box(.73f, .03f, .06f, .1f, wall);
                 break;
         }
-        if (site.Kind != "production") return;
-        var running = site.Recipes.Any(r => _production.TryGetValue(r.Id, out var line)
-            && (line.WorkInProgress > 1e-9 || line.CompletedCyclesPerHour > 1e-9));
-        var stateColor = !_ready || _paused ? Ink("#839093") : running ? Ink("#92C8A7") : Ink("#D6B577");
-        if (!match) stateColor = Ink("#566464");
-        Box(.65f, .12f, .2f, .06f, stateColor);
+        // A small loading court and doorway are aligned with the road passing through the cell.
+        Line(.34f, .38f, .66f, .38f, wall);
+        Line(.5f, .34f, .5f, .43f, accent);
+        if (site.Kind == "production")
+        {
+            var running = site.Recipes.Any(r => _production.TryGetValue(r.Id, out var line)
+                && (line.WorkInProgress > 1e-9 || line.CompletedCyclesPerHour > 1e-9));
+            var status = !_ready || _paused ? Ink("#839093") : running ? Ink("#92C8A7") : Ink("#D6B577");
+            Box(.84f, .03f, .07f, .04f, match ? status : Ink("#566464"));
+        }
     }
 }

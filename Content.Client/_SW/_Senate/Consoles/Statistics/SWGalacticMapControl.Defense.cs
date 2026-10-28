@@ -17,6 +17,7 @@ public sealed partial class SWGalacticMapControl
     // which is unavailable to launcher-loaded content in the engine sandbox.
     private static readonly IComparer<string> DefenseWorldIdComparer = Comparer<string>.Create(string.CompareOrdinal);
     private SWDefenseMapState? _defense;
+    private IReadOnlyList<string>? _publishedDefenseRoute;
     private double _defenseElapsed;
     private int? _defenseFleet;
     private string? _defenseDestination;
@@ -278,12 +279,26 @@ public sealed partial class SWGalacticMapControl
     private SWDefenseBorderView? DefenseBorderAt(Vector2 point) => _defense?.Borders.FirstOrDefault(b =>
         DefenseBorderPosition(b) is { } position && DefenseBadgeBox(position, BorderBadgeText(b)).Contains(point));
 
+    /// <summary>Use the server's actual fleet route without calculating a second path.</summary>
+    public void SetPublishedDefenseRoute(IReadOnlyList<string>? route)
+    {
+        _publishedDefenseRoute = route;
+        RebuildDefenseRoute();
+    }
+
     private void RebuildDefenseRoute()
     {
         _defensePreviewWorlds.Clear();
         _defensePreviewEdges.Clear();
         var fleet = _defense?.Fleets.FirstOrDefault(f => f.Id == _defenseFleet && f.Phase != SWDefenseOperationPhase.Lost);
         if (fleet == null) return;
+        if (_publishedDefenseRoute != null)
+        {
+            _defensePreviewWorlds.AddRange(_publishedDefenseRoute);
+            for (var i = 1; i < _publishedDefenseRoute.Count; i++)
+                _defensePreviewEdges.Add(SWTransitLinkPrototype.LinkId(_publishedDefenseRoute[i - 1], _publishedDefenseRoute[i]));
+            return;
+        }
         var target = _defenseDestination ?? fleet.TargetWorldId;
         // Redirects, including new movement drafts, replace only the route after the
         // committed crossing. The physical current leg is never cancelled by a click.

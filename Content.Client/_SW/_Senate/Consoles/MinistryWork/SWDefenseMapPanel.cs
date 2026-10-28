@@ -222,7 +222,7 @@ public sealed class SWDefenseMapPanel : BoxContainer
 
     public void SelectWorld(string id)
     {
-        var world = _source.Worlds.FirstOrDefault(w => w.Id == id);
+        var world = View.Worlds.FirstOrDefault(w => w.Id == id) ?? _source.Worlds.FirstOrDefault(w => w.Id == id);
         if (world == null) return;
         if (!View.Worlds.Any(w => w.Id == id)) SwitchView(world.Sector?.Id);
         _targetWorld = id;
@@ -277,14 +277,15 @@ public sealed class SWDefenseMapPanel : BoxContainer
         var throughSector = sectorId ?? CurrentSectorId;
         var anchor = _source.Worlds.FirstOrDefault(w => w.Anchor && w.Sector?.Id == throughSector)?.Id;
         CurrentSectorId = sectorId;
-        View = sectorId == null ? SWGalacticMapViews.Overview(_source) : SWGalacticMapViews.Sector(_source, sectorId);
+        var visible = SWGalacticMapViews.ForFaction(_source, "republic");
+        View = sectorId == null ? SWGalacticMapViews.Overview(visible) : SWGalacticMapViews.Sector(visible, sectorId);
         _mapHost.RemoveAllChildren();
         Map = new SWGalacticMapControl(View, sectorId);
         Map.MinHeight = 260;
         Map.SetDefenseSupplyVisible(_supplies.Pressed);
         Map.SetDefense(_state, SelectedFleetId);
         Map.WorldSelected += SelectWorld;
-        Map.WorldActivated += id => { var world = _source.Worlds.First(w => w.Id == id); if (world.Sector is { } sector) { OpenSector(sector.Id); SelectWorld(id); } };
+        Map.WorldActivated += id => { var world = View.Worlds.FirstOrDefault(w => w.Id == id); if (world?.Sector is { } sector) { OpenSector(sector.Id); SelectWorld(id); } };
         Map.RouteSelected += route =>
         {
             _targetEdge = SWTransitLinkPrototype.LinkId(route.From, route.To);
@@ -399,7 +400,7 @@ public sealed class SWDefenseMapPanel : BoxContainer
         };
     }
 
-    private string WorldName(string? id) => id == null ? "" : _source.Worlds.FirstOrDefault(w => w.Id == id)?.Name ?? id;
+    private string WorldName(string? id) => id == null ? "" : View.Worlds.FirstOrDefault(w => w.Id == id)?.Name ?? _source.Worlds.FirstOrDefault(w => w.Id == id)?.Name ?? "Неизвестный мир";
     private string BorderSummary(SWDefenseBorderView border)
     {
         var stationed = _state!.Fleets.Where(f => f.CurrentWorldId == border.RepublicWorldId

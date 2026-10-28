@@ -70,6 +70,7 @@ public sealed partial class SWDirectorWindow : FancyWindow
         ModeLabel.Text = state.Mode switch
         {
             SWDirectorMode.Off => "Империя отключена — спокойный раунд",
+            SWDirectorMode.Autopilot when state.CouncilPlayerControl => "Управление Тёмным советом — автопилот приостановлен",
             SWDirectorMode.Autopilot => "Автопилот — Империя действует сама",
             _ => $"Ручное управление: {state.ControllerName}",
         };

@@ -40,7 +40,7 @@ public sealed partial class SWGalacticMapControl
     // An overview anchor represents the entire sector, including worlds hidden at galaxy scale.
     private (int Count, int Shortages, double? WorstHours, double Production)? EconomySectorStats(string id)
     {
-        if (_focusSector != null || _economy is not { Ready: true }) return null;
+        if (IsLocalView || _economy is not { Ready: true }) return null;
         if (_economySectorCache.TryGetValue(id, out var cached)) return cached;
         var geography = IoCManager.Resolve<IPrototypeManager>().Index<SWGalacticMapPrototype>("SenateRepublic");
         var anchor = geography.Worlds.FirstOrDefault(w => w.Id == id);

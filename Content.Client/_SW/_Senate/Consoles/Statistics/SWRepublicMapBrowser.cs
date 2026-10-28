@@ -17,7 +17,9 @@ namespace Content.Client._SW._Senate.Consoles.Statistics;
 public sealed partial class SWRepublicMapBrowser : BoxContainer
 {
     private static readonly ProtoId<SWGalacticMapPrototype> MapPrototype = "SenateRepublic";
-    private readonly SWGalacticMapPrototype _data;
+    private readonly SWGalacticMapPrototype _source;
+    private SWGalacticMapPrototype _data;
+    private string _viewerFaction = "republic";
     private readonly bool _showProductionRecipes;
     private readonly bool _compactEconomy;
     private readonly bool _financeOnly;
@@ -28,7 +30,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         _financeSectors = sectors.ToDictionary(x => x.SectorId);
         Map.SetFinanceSectors(_financeSectors);
     }
-    private readonly Dictionary<string, SWGalacticMapWorld> _worlds;
+    private Dictionary<string, SWGalacticMapWorld> _worlds;
     private readonly Dictionary<string, SWTransitLinkPrototype> _transitLinks;
     private readonly SWSectorPrototype[] _sectorPrototypes;
     private readonly OptionButton _search = new() { Name = "MapSearch", Filterable = true, MinWidth = 210, PrefixMargin = false };
@@ -51,6 +53,8 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
     public SWGalacticMapControl Map { get; private set; } = default!;
     public SWGalacticMapPrototype View { get; private set; } = default!;
     public string? CurrentSectorId { get; private set; }
+    public string? CurrentSystemId { get; private set; }
+    public string? CurrentPoliticalSectorId { get; private set; }
     public string? SelectedWorldId { get; private set; }
     public string? SelectedSectorId => SelectedWorldId is { } id && _worlds.TryGetValue(id, out var world) ? world.Sector?.Id : null;
     public string? SelectedLiveSectorId => SelectedWorldId is { } id && _worlds[id].Sector is { } sector
@@ -73,8 +77,9 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
     }
     public event Action<string>? SectorSummaryRequested;
 
-    public SWRepublicMapBrowser(bool showProductionRecipes = false, bool compactEconomy = false, bool financeOnly = false, bool showMedicalToggle = true)
+    public SWRepublicMapBrowser(bool showProductionRecipes = false, bool compactEconomy = false, bool financeOnly = false, bool showMedicalToggle = true, string viewerFaction = "republic")
     {
+        _viewerFaction = viewerFaction;
         _showProductionRecipes = showProductionRecipes;
         _compactEconomy = compactEconomy;
         _financeOnly = financeOnly;
@@ -84,11 +89,12 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         VerticalExpand = true;
         SeparationOverride = 8;
         var prototypes = IoCManager.Resolve<IPrototypeManager>();
-        _data = prototypes.Index(MapPrototype);
+        _source = prototypes.Index(MapPrototype);
+        _data = SWGalacticMapViews.ForFaction(_source, _viewerFaction, id => prototypes.TryIndex<SWSectorPrototype>(id, out var sector) ? sector.Name : id);
         _worlds = _data.Worlds.ToDictionary(w => w.Id);
         _transitLinks = prototypes.EnumeratePrototypes<SWTransitLinkPrototype>().ToDictionary(l => l.ID);
         _sectorPrototypes = prototypes.EnumeratePrototypes<SWSectorPrototype>()
-            .Where(s => _data.Worlds.Any(w => w.Sector?.Id == s.ID)).OrderBy(s => s.Name).ToArray();
+            .Where(s => _source.Worlds.Any(w => w.Sector?.Id == s.ID)).OrderBy(s => s.Name).ToArray();
         var location = new WrapContainer { HorizontalExpand = true, SeparationOverride = 12, CrossSeparationOverride = 4 };
         _galaxyButton.OnPressed += _ => ShowGalaxy();
         location.AddChild(_galaxyButton);
@@ -104,7 +110,11 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
             var world = _searchWorlds[args.Id];
             if (_lockedSector == null)
             {
-                if (world.Sector is { } sector) OpenSector(sector.Id);
+                if (_viewerFaction == "empire" && !world.Overview && HasSystem(world)) OpenSystem(world.SystemId);
+                else if (_viewerFaction == "empire" && !string.IsNullOrEmpty(world.PoliticalSectorId)) OpenPoliticalSector(world.PoliticalSectorId);
+                else if (world.Sector is { } sector) OpenSector(sector.Id);
+                else if (!world.Overview && HasSystem(world)) OpenSystem(world.SystemId);
+                else if (!world.Overview && !string.IsNullOrEmpty(world.PoliticalSectorId)) OpenPoliticalSector(world.PoliticalSectorId);
                 else ShowGalaxy();
             }
             SelectWorld(world.Id, true);
@@ -157,12 +167,51 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         RebuildSearch();
     }
 
+    public void SetViewerFaction(string faction)
+    {
+        if (_viewerFaction == faction) return;
+        _viewerFaction = faction;
+        var prototypes = IoCManager.Resolve<IPrototypeManager>();
+        _data = SWGalacticMapViews.ForFaction(_source, faction, id => prototypes.TryIndex<SWSectorPrototype>(id, out var sector) ? sector.Name : id);
+        _worlds = _data.Worlds.ToDictionary(w => w.Id);
+        _lockedSector = null;
+        SelectedWorldId = null;
+        _route = null;
+        _economyView = null;
+        _sectors = Array.Empty<SWSectorEntry>();
+        _globals = Array.Empty<SWGlobalStatEntry>();
+        _situationalStats = Array.Empty<SWSituationalStatView>();
+        _financeSectors = null;
+        _mapCrises = Array.Empty<SWMapCrisisEntry>();
+        _selectedCrisisIds = Array.Empty<string>();
+        SwitchView(null);
+        if (_economyClient?.View is { } cached && cached.ViewerFaction == faction) SetEconomy(cached);
+        RebuildSearch();
+    }
+
+    private static bool IsPublicSector(SWGalacticMapWorld world) => world.Id.StartsWith("public-sector:", StringComparison.Ordinal);
+
+    private bool CanReadWorldState(SWGalacticMapWorld world) => _data.GetWorldFaction(world) == _viewerFaction
+        || _viewerFaction == "republic" && _data.GetWorldFaction(world) == "neutral";
+
     public bool ShowGalaxy()
     {
         if (_lockedSector != null) return false;
-        if (CurrentSectorId != null || Surface != null)
+        if (CurrentSystemId != null && SelectedWorldId is { } systemWorld && _worlds.TryGetValue(systemWorld, out var current)
+            && !string.IsNullOrEmpty(current.PoliticalSectorId))
         {
-            var anchor = _data.Worlds.FirstOrDefault(w => w.Overview && w.Anchor && w.Sector?.Id == CurrentSectorId);
+            var anchor = _data.Worlds.FirstOrDefault(w => w.Overview && w.SystemId == current.SystemId
+                && w.PoliticalSectorId == current.PoliticalSectorId);
+            if (OpenPoliticalSector(current.PoliticalSectorId))
+            {
+                if (anchor != null) SelectWorld(anchor.Id);
+                return true;
+            }
+        }
+        if (CurrentSectorId != null || CurrentSystemId != null || CurrentPoliticalSectorId != null || Surface != null)
+        {
+            var anchor = CurrentSectorId == null ? null : _data.Worlds.FirstOrDefault(w => w.Overview && w.Anchor && w.Sector?.Id == CurrentSectorId);
+            anchor ??= _data.Worlds.FirstOrDefault(w => w.Overview && w.SystemId == CurrentSystemId);
             SwitchView(null, animate: true);
             if (anchor != null) SelectWorld(anchor.Id);
         }
@@ -176,7 +225,24 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         return true;
     }
 
-    private void SwitchView(string? sectorId, bool animate = false)
+    public bool OpenPoliticalSector(string id)
+    {
+        if (_lockedSector != null || !_data.Worlds.Any(w => w.PoliticalSectorId == id)) return false;
+        if (CurrentPoliticalSectorId != id || Surface != null) SwitchView(null, animate: true, politicalSectorId: id);
+        return true;
+    }
+
+    private bool HasSystem(SWGalacticMapWorld world) => !string.IsNullOrEmpty(world.SystemId)
+        && _data.Worlds.Count(w => w.SystemId == world.SystemId) > 1;
+
+    public bool OpenSystem(string systemId)
+    {
+        if (_lockedSector != null || !_data.Worlds.Any(w => w.SystemId == systemId && HasSystem(w))) return false;
+        if (CurrentSystemId != systemId || Surface != null) SwitchView(null, animate: true, systemId: systemId);
+        return true;
+    }
+
+    private void SwitchView(string? sectorId, bool animate = false, string? systemId = null, string? politicalSectorId = null)
     {
         Surface = null;
         _trafficToggle.Visible = _economyMapMode < 0;
@@ -185,13 +251,21 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         var throughWorld = SelectedWorldId is { } selected && _worlds[selected].Sector?.Id == throughSector
             && (sectorId != null || _worlds[selected].Overview) ? selected
             : _data.Worlds.FirstOrDefault(w => w.Anchor && w.Sector?.Id == throughSector)?.Id;
+        var throughSystem = systemId ?? CurrentSystemId;
+        if (throughSector == null && throughSystem != null)
+            throughWorld = _data.Worlds.FirstOrDefault(w => w.SystemId == throughSystem && w.Overview)?.Id;
         previous?.FinishTransition();
         CurrentSectorId = sectorId;
-        View = sectorId == null ? SWGalacticMapViews.Overview(_data) : SWGalacticMapViews.Sector(_data, sectorId);
+        CurrentSystemId = systemId;
+        CurrentPoliticalSectorId = politicalSectorId;
+        View = sectorId != null ? SWGalacticMapViews.Sector(_data, sectorId)
+            : systemId != null ? SWGalacticMapViews.System(_data, systemId)
+            : politicalSectorId != null ? SWGalacticMapViews.PoliticalSector(_data, politicalSectorId) : SWGalacticMapViews.Overview(_data);
+        _galaxyButton.Text = systemId != null && _data.Worlds.Any(w => w.SystemId == systemId && !string.IsNullOrEmpty(w.PoliticalSectorId)) ? "К сектору" : "К галактике";
         _galaxyButton.Visible = _lockedSector == null;
-        _galaxyButton.Disabled = sectorId == null;
+        _galaxyButton.Disabled = sectorId == null && systemId == null && politicalSectorId == null;
         _body.RemoveAllChildren();
-        Map = new SWGalacticMapControl(View, sectorId, _lockedSector == null);
+        Map = new SWGalacticMapControl(View, sectorId, _lockedSector == null, systemId, politicalSectorId);
         Map.SetState(_sectors);
         Map.SetFinanceSectors(_financeSectors);
         Map.SetEconomy(_economyView);
@@ -205,8 +279,15 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         Map.WorldSelected += id => SelectWorld(id);
         Map.WorldActivated += id =>
         {
-            if (CurrentSectorId != null && _worlds[id].Sector?.Id == CurrentSectorId) { if (!_financeOnly) OpenSurface(id); }
+            if (_viewerFaction == "empire" && CurrentSystemId != null && _worlds[id].SystemId == CurrentSystemId) { if (!_financeOnly) OpenSurface(id); }
+            else if (_viewerFaction == "empire" && CurrentPoliticalSectorId != null && _worlds[id].PoliticalSectorId == CurrentPoliticalSectorId && !HasSystem(_worlds[id])) { if (!_financeOnly) OpenSurface(id); }
+            else if (_viewerFaction == "empire" && CurrentSystemId == null && CurrentPoliticalSectorId == null && !string.IsNullOrEmpty(_worlds[id].PoliticalSectorId) && OpenPoliticalSector(_worlds[id].PoliticalSectorId)) SelectWorld(id, true);
+            else if (_viewerFaction == "empire" && CurrentSystemId == null && HasSystem(_worlds[id]) && OpenSystem(_worlds[id].SystemId)) SelectWorld(id, true);
+            else if (CurrentSectorId != null && _worlds[id].Sector?.Id == CurrentSectorId) { if (!_financeOnly) OpenSurface(id); }
             else if (_worlds[id].Sector is { } sector && OpenSector(sector.Id)) SelectWorld(id, true);
+            else if (CurrentSystemId == null && CurrentPoliticalSectorId == null && !string.IsNullOrEmpty(_worlds[id].PoliticalSectorId) && OpenPoliticalSector(_worlds[id].PoliticalSectorId)) SelectWorld(id, true);
+            else if (CurrentSystemId != _worlds[id].SystemId && HasSystem(_worlds[id]) && OpenSystem(_worlds[id].SystemId)) SelectWorld(id, true);
+            else if (CurrentSystemId != null && _worlds[id].SystemId != CurrentSystemId && _worlds[id].Overview && ShowGalaxy()) SelectWorld(id, true);
         };
         Map.RouteSelected += route =>
         {
@@ -229,11 +310,14 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         sidebar.AddChild(scroll);
         _columns = new SWAtlasLayout(Map, sidebar, stackBelow: _compactEconomy ? 0 : 680, minDetails: _compactEconomy ? 220 : 300, minMapHeight: _compactEconomy ? 150 : 220) { VerticalExpand = true };
         _body.AddChild(_columns);
-        _title.Text = sectorId == null ? "Карта галактики" : _financeOnly ? SectorName(sectorId) : $"Сектор: {SectorName(sectorId)}";
-        SelectWorld(View.Worlds.FirstOrDefault(w => w.Anchor && (sectorId == null ? w.Id == "coruscant" : w.Sector?.Id == sectorId))?.Id
-            ?? View.Worlds.First().Id);
+        _title.Text = sectorId != null ? (_financeOnly ? SectorName(sectorId) : $"Сектор: {SectorName(sectorId)}")
+            : systemId != null ? _data.Worlds.First(w => w.SystemId == systemId).SystemName
+            : politicalSectorId != null ? _data.Worlds.First(w => w.PoliticalSectorId == politicalSectorId).PoliticalSectorName : "Карта галактики";
+        var initial = View.Worlds.FirstOrDefault(w => w.Anchor && (sectorId == null ? w.Id == "coruscant" : w.Sector?.Id == sectorId))
+            ?? View.Worlds.FirstOrDefault(w => !IsPublicSector(w));
+        if (initial != null) SelectWorld(initial.Id);
         if (animate && previous != null && throughWorld != null)
-            Map.TransitionFrom(previous, throughWorld, sectorId != null);
+            Map.TransitionFrom(previous, throughWorld, sectorId != null || systemId != null || politicalSectorId != null);
     }
 
     private void RebuildSearch()
@@ -245,11 +329,11 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         _searchFilter.PlaceHolder = prompt;
         _search.AddItem(prompt, -1);
         _search.SetItemDisabled(0, true);
-        _searchWorlds = (_lockedSector == null ? _data.Worlds : View.Worlds).OrderBy(w => w.Name).ToArray();
+        _searchWorlds = (_lockedSector == null ? _data.Worlds.Where(w => !IsPublicSector(w)) : View.Worlds.Where(w => !IsPublicSector(w))).OrderBy(w => w.Name).ToArray();
         for (var i = 0; i < _searchWorlds.Length; i++)
         {
             var world = _searchWorlds[i];
-            var kind = _lockedSector == null && world.Anchor ? "сектор"
+            var kind = _lockedSector == null && world.Anchor && world.Sector != null ? "сектор"
                 : _lockedSector != null && world.Sector?.Id != _lockedSector ? "выход" : world.Kind.ToLowerInvariant();
             _search.AddItem($"{world.Name} ({kind})", i);
         }
@@ -267,13 +351,18 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
     public void SelectWorld(string id, bool focus = false)
     {
         _selectedMedicalShipmentId = null;
-        if (!_worlds.TryGetValue(id, out var world)) return;
+        if (!_worlds.TryGetValue(id, out var world) || IsPublicSector(world)) return;
         if (Surface != null && SelectedWorldId != id) SwitchView(CurrentSectorId);
         if (!View.Worlds.Any(w => w.Id == id))
         {
             if (_lockedSector != null) return;
-            if (world.Sector is { } sector) OpenSector(sector.Id);
+            if (_viewerFaction == "empire" && HasSystem(world)) OpenSystem(world.SystemId);
+            else if (_viewerFaction == "empire" && !string.IsNullOrEmpty(world.PoliticalSectorId)) OpenPoliticalSector(world.PoliticalSectorId);
+            else if (world.Sector is { } sector) OpenSector(sector.Id);
+            else if (!world.Overview && HasSystem(world)) OpenSystem(world.SystemId);
+            else if (!world.Overview && !string.IsNullOrEmpty(world.PoliticalSectorId)) OpenPoliticalSector(world.PoliticalSectorId);
             else ShowGalaxy();
+            if (!View.Worlds.Any(w => w.Id == id)) return;
         }
         SelectedWorldId = id;
         ClearCrisisSelection();
@@ -309,6 +398,8 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
     private void RefreshDetails()
     {
         if (EconomyDetailsOverride != null && Surface == null
+            && (SelectedWorldId is not { } selected || CanReadWorldState(_worlds[selected]))
+            && (_route == null || CanReadWorldState(_worlds[_route.From]) && CanReadWorldState(_worlds[_route.To]))
             && (_selectedCrisisIds.Length == 0 || _selectedCrisisIds.All(id => id.StartsWith("economy:event:", StringComparison.Ordinal))))
         {
             _detailHeading.RemoveAllChildren();

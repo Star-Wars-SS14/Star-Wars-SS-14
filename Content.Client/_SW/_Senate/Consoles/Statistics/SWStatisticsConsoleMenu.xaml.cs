@@ -111,6 +111,14 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
     public void SetState(SWStatisticsConsoleState state)
     {
         _state = state;
+        var empire = state.Faction == "empire";
+        _galaxy.SetViewerFaction(state.Faction);
+        for (var i = 0; i < _tabs.Length; i++) _tabs[i].Visible = !empire || i is GalaxyTab or CommoditiesTab;
+        Title = empire ? "Статистика Империи" : "Статистика Республики";
+        HeaderNetwork.Text = empire ? "ИМПЕРИЯ / ГОЛОНЕТ" : "РЕСПУБЛИКА / ГОЛОНЕТ";
+        HeaderTitle.Text = empire ? "Имперский атлас" : "Галактическая Республика";
+        RepublicSeal.Visible = !empire;
+        if (empire && _active is not (GalaxyTab or CommoditiesTab)) ShowTab(GalaxyTab);
         HeaderClock.Text = state.GameTime.Length > 0 ? state.GameTime : "—";
         if (!state.Globals.Any(g => g.Id == _metricId)) _metricId = state.Globals.FirstOrDefault()?.Id;
         UpdateMetricNavigation();

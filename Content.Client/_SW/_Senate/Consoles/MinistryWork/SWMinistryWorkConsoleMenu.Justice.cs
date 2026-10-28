@@ -108,10 +108,11 @@ public sealed class SWJusticeMapPanel : BoxContainer
         var previous = _map;
         var anchor = _source.Worlds.FirstOrDefault(w => w.Anchor && w.Sector?.Id == (sector ?? _sector))?.Id;
         _sector = sector;
-        var view = sector == null ? SWGalacticMapViews.Overview(_source) : SWGalacticMapViews.Sector(_source, sector);
+        var visible = SWGalacticMapViews.ForFaction(_source, "republic");
+        var view = sector == null ? SWGalacticMapViews.Overview(visible) : SWGalacticMapViews.Sector(visible, sector);
         _host.RemoveAllChildren();
         _map = new SWGalacticMapControl(view, sector) { MinHeight = 260 };
-        _map.WorldSelected += id => { _world = id; Refresh(); };
+        _map.WorldSelected += id => { if (!id.StartsWith("public-sector:", StringComparison.Ordinal)) { _world = id; Refresh(); } };
         _map.WorldActivated += id => { var world = _source.Worlds.FirstOrDefault(w => w.Id == id); if (world?.Sector is { } s) { SwitchView(s.Id); _world = id; _map.SelectWorld(id); Refresh(); } };
         _map.ViewChanged += () => _zoom.Text = $"{_map.Zoom * 100:0}%";
         _host.AddChild(_map);

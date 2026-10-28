@@ -21,6 +21,12 @@ public sealed partial class SWGalacticMapControl : Control
 {
     private readonly SWGalacticMapPrototype _map;
     private readonly string? _focusSector;
+    private readonly string? _focusSystem;
+    private readonly string? _focusPoliticalSector;
+    private bool IsLocalView => _focusSector != null || _focusSystem != null || _focusPoliticalSector != null;
+    private bool IsExternalWorld(SWGalacticMapWorld world) => _focusSector != null
+        ? world.Sector?.Id != _focusSector : _focusSystem != null ? world.SystemId != _focusSystem
+        : _focusPoliticalSector != null && world.PoliticalSectorId != _focusPoliticalSector;
     private readonly bool _canOpenSectors;
     private readonly IGameTiming _timing;
     private readonly IConfigurationManager _configuration;
@@ -61,10 +67,12 @@ public sealed partial class SWGalacticMapControl : Control
     public event Action<SWGalacticMapRoute>? RouteSelected;
     public event Action? ViewChanged;
 
-    public SWGalacticMapControl(SWGalacticMapPrototype map, string? focusSector = null, bool canOpenSectors = true)
+    public SWGalacticMapControl(SWGalacticMapPrototype map, string? focusSector = null, bool canOpenSectors = true, string? focusSystem = null, string? focusPoliticalSector = null)
     {
         _map = map;
         _focusSector = focusSector;
+        _focusSystem = focusSystem;
+        _focusPoliticalSector = focusPoliticalSector;
         _canOpenSectors = canOpenSectors;
         BuildPoliticalGeometry();
         _timing = IoCManager.Resolve<IGameTiming>();
@@ -328,8 +336,8 @@ public sealed partial class SWGalacticMapControl : Control
             ToolTip += $"\n{finance.Name}\nНалоговые поступления с начала дня {finance.Tax:N0} кр";
         if (_economyMapMode >= 0 && EconomySectorSummary(world.Id) is { } economySummary)
             ToolTip += $"\n{economySummary}";
-        if (_map.PoliticalAreas.LastOrDefault(a => a.Contains(world.Position)) is { } politicalArea)
-            ToolTip += $"\n{politicalArea.Name}";
+        if (!string.IsNullOrWhiteSpace(world.Faction) || _map.PoliticalAreas.Count > 0)
+            ToolTip += $"\n{_map.GetWorldPoliticalName(world)}";
         if (world.Sector is { } sectorId && _sectors.TryGetValue(sectorId.Id, out var sector))
             ToolTip += $"\n{sector.Name}\n{(sector.Claimed ? "Представлен в Сенате" : "Сенатор не назначен")}";
         if (_canOpenSectors && world.Sector is { } target && target.Id != _focusSector)
@@ -359,7 +367,7 @@ public sealed partial class SWGalacticMapControl : Control
             * Matrix3x2.CreateScale(outgoingScale) * Matrix3x2.CreateTranslation(focus);
         var incoming = Matrix3x2.CreateTranslation(-destination) * Matrix3x2.CreateScale(incomingScale)
             * Matrix3x2.CreateTranslation(focus);
-        if (previous._focusSector != null && _focusSector != null)
+        if (previous.IsLocalView && IsLocalView)
         {
             // Adjacent sectors are at the same map level. Follow the exit's edge, without zooming.
             var exit = previous._worlds[world].Position / previous._map.Size - new Vector2(.5f);
@@ -436,7 +444,7 @@ public sealed partial class SWGalacticMapControl : Control
     {
         Vector2 Screen(Vector2 point) => MapToLocal(point) * UIScale;
         DrawPoliticalAreas(handle, false);
-        if (_focusSector != null)
+        if (IsLocalView)
         {
             var boundary = new UIBox2(Screen(new Vector2(18, 16)), Screen(new Vector2(102, 84)));
             handle.DrawRect(boundary, SWConsoleStyle.Edge, false);
@@ -457,7 +465,7 @@ public sealed partial class SWGalacticMapControl : Control
             var route = path.Route;
             var selected = route == _selectedRoute || _selectedWorld != null && (route.From == _selectedWorld || route.To == _selectedWorld);
             var color = route.Corridor != null && _corridors.TryGetValue(route.Corridor, out var corridor)
-                ? corridor.Color : selected ? SWConsoleStyle.TextBright : _focusSector != null ? SWConsoleStyle.TextDim : SWConsoleStyle.Edge;
+                ? corridor.Color : selected ? SWConsoleStyle.TextBright : IsLocalView ? SWConsoleStyle.TextDim : SWConsoleStyle.Edge;
             color = TrafficRouteColor(route, color, selected);
             var length = 0f;
             for (var i = 1; i < path.Points.Length; i++)
@@ -495,13 +503,19 @@ public sealed partial class SWGalacticMapControl : Control
             var p = Screen(world.Position);
             var selected = world.Id == _selectedWorld;
             var hover = world.Id == _hover;
-            var color = selected || hover ? SWConsoleStyle.Accent : EconomyWorldColor(world.Id) ?? SWConsoleStyle.TextBright;
+            var baseColor = _map.GetWorldFaction(world) switch
+            {
+                "empire" => PoliticalColor("empire"),
+                "republic" => SWConsoleStyle.TextBright,
+                _ => PoliticalColor("neutral"),
+            };
+            var color = selected || hover ? SWConsoleStyle.Accent : EconomyWorldColor(world.Id) ?? baseColor;
             if (!selected && !hover && _financeSectors != null)
                 color = world.Sector is { } financeSector && _financeSectors.TryGetValue(financeSector.Id, out var finance)
                     ? finance.Reasons.Count > 0 ? SWConsoleStyle.Warn : SWConsoleStyle.Good
                     : SWConsoleStyle.TextDim;
             if (selected || hover) handle.DrawCircle(p, (selected ? 11 : 9) * UIScale, Color.ToSrgb(color), false);
-            if (_focusSector != null && world.Sector?.Id != _focusSector)
+            if (IsExternalWorld(world))
             {
                 var radius = 6 * UIScale;
                 handle.DrawRect(new UIBox2(p - new Vector2(radius), p + new Vector2(radius)), SWConsoleStyle.Navigation);
@@ -563,6 +577,7 @@ public sealed partial class SWGalacticMapControl : Control
         _labelsDirty = false;
         var points = _map.Worlds.ToDictionary(w => w.Id, w => MapToLocal(w.Position));
         foreach (var world in _map.Worlds.OrderByDescending(w => w.Id == _selectedWorld || w.Id == _hover)
+                     .ThenByDescending(w => w.LabelPriority)
                      .ThenByDescending(w => w.Anchor).ThenByDescending(w => _hubs.Contains(w.Id)))
         {
             var point = points[world.Id];
@@ -579,7 +594,10 @@ public sealed partial class SWGalacticMapControl : Control
             }
             UIBox2? best = null;
             var cost = float.PositiveInfinity;
-            foreach (var y in new[] { -size.Y - 10, 10, -size.Y - 28, 28, -size.Y - 46, 46 })
+            var yOffsets = IsLocalView || world.LabelPriority >= 3 || world.Id == _selectedWorld || world.Id == _hover
+                ? new[] { -size.Y - 10, 10, -size.Y - 28, 28, -size.Y - 46, 46 }
+                : new[] { -size.Y - 10, 10 };
+            foreach (var y in yOffsets)
             foreach (var x in new[] { -size.X / 2, 10, -size.X - 10 })
             {
                 var box = UIBox2.FromDimensions(point + new Vector2(x, y), size);

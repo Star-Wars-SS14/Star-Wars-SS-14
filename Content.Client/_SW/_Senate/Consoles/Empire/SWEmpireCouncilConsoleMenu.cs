@@ -22,7 +22,6 @@ public sealed class SWEmpireCouncilConsoleMenu : FancyWindow
 {
     private readonly SWEmpireCouncilConsoleBoundUserInterface _owner;
     private readonly SWEmpireMilitaryPanel _military;
-    private bool _initialTabChosen;
     private readonly IPrototypeManager _proto = IoCManager.Resolve<IPrototypeManager>();
     private readonly SWGalacticMapPrototype _geography;
     private readonly SWRepublicMapBrowser _atlas = new(compactEconomy: true, showMedicalToggle: false, viewerFaction: "empire");
@@ -34,6 +33,9 @@ public sealed class SWEmpireCouncilConsoleMenu : FancyWindow
     private readonly Label _feedback = SWConsoleStyle.Text("", SWConsoleStyle.Warn, SWConsoleStyle.Small);
     private readonly BoxContainer _orders = VerticalStack(6);
     private readonly ScrollContainer _orderScroll = new() { HScrollEnabled = false, HorizontalExpand = true, VerticalExpand = true };
+    private readonly BoxContainer _ordersPage = VerticalStack(0);
+    private readonly ScrollContainer _deliveryScroll = new() { HScrollEnabled = false, HorizontalExpand = true, VerticalExpand = true };
+    private readonly SWConsoleColumns _orderColumns;
     private readonly BoxContainer _finance = VerticalStack(8);
     private readonly RichTextLabel _financeSummary = SWConsoleStyle.Wrap("", SWConsoleStyle.TextBright);
     private readonly OptionButton _recipient = new() { HorizontalExpand = true, MinWidth = 180 };
@@ -42,6 +44,7 @@ public sealed class SWEmpireCouncilConsoleMenu : FancyWindow
     private readonly Composer _delivery;
     private readonly Composer _development;
     private SWEmpireCouncilConsoleState? _state;
+    private SWEmpireCouncilSphere? _currentSphere;
     private int _tab;
     private string _ordersKey = "initial";
     private string _financeKey = string.Empty;
@@ -100,9 +103,11 @@ public sealed class SWEmpireCouncilConsoleMenu : FancyWindow
         _orderScroll.AddChild(_orders);
         _delivery = new Composer(this, delivery: true);
         _development = new Composer(this, delivery: false);
-        var deliveryScroll = new ScrollContainer { HScrollEnabled = false, HorizontalExpand = true, VerticalExpand = true };
-        deliveryScroll.AddChild(_delivery);
-        _panels[1] = new SWConsoleColumns(_orderScroll, deliveryScroll, 400, 730) { VerticalExpand = true };
+        _deliveryScroll.AddChild(_delivery);
+        _orderColumns = new SWConsoleColumns(_orderScroll, _deliveryScroll, 400, 730) { VerticalExpand = true };
+        _ordersPage.VerticalExpand = true;
+        _ordersPage.AddChild(_orderColumns);
+        _panels[1] = _ordersPage;
         _panels[2] = new ScrollContainer { HScrollEnabled = false, HorizontalExpand = true, VerticalExpand = true };
         ((ScrollContainer) _panels[2]).AddChild(new SWConsoleColumns(_development, _development.QuotePanel, 560, 900, fixedFirst: true));
         _panels[3] = new ScrollContainer { HScrollEnabled = false, HorizontalExpand = true, VerticalExpand = true };
@@ -110,13 +115,44 @@ public sealed class SWEmpireCouncilConsoleMenu : FancyWindow
         BuildFinance();
         _panels[4] = _military;
         foreach (var page in _panels) _pages.AddChild(page);
-        ShowTab(0);
+        UpdateTabs(SWEmpireCouncilSphere.None);
     }
 
     private bool CanManage => _state?.Sphere == SWEmpireCouncilSphere.ProductionLogistics;
 
+    private void UpdateTabs(SWEmpireCouncilSphere sphere)
+    {
+        var valid = sphere is SWEmpireCouncilSphere.ProductionLogistics or SWEmpireCouncilSphere.MilitaryOffense
+            or SWEmpireCouncilSphere.Intelligence or SWEmpireCouncilSphere.ExpansionDiplomacy;
+        for (var i = 0; i < _tabs.Length; i++)
+            _tabs[i].Visible = valid && (i != 2 || sphere == SWEmpireCouncilSphere.ProductionLogistics)
+                                     && (i != 4 || sphere == SWEmpireCouncilSphere.MilitaryOffense);
+        _tabs[1].Text = sphere == SWEmpireCouncilSphere.ProductionLogistics ? "Заказы" : "Заявки";
+        var production = sphere == SWEmpireCouncilSphere.ProductionLogistics;
+        if (production && _deliveryScroll.Parent == _ordersPage)
+        {
+            _ordersPage.RemoveChild(_deliveryScroll);
+            _orderColumns.AddChild(_deliveryScroll);
+            _ordersPage.AddChild(_orderColumns);
+        }
+        else if (!production && _deliveryScroll.Parent == _orderColumns)
+        {
+            _orderColumns.RemoveChild(_deliveryScroll);
+            _ordersPage.RemoveChild(_orderColumns);
+            _ordersPage.AddChild(_deliveryScroll);
+        }
+        if (!valid)
+        {
+            _tab = -1;
+            foreach (var panel in _panels) panel.Visible = false;
+            return;
+        }
+        ShowTab(sphere == SWEmpireCouncilSphere.MilitaryOffense ? 4 : 0);
+    }
+
     private void ShowTab(int tab)
     {
+        if (tab < 0 || tab >= _tabs.Length || !_tabs[tab].Visible) return;
         _tab = tab;
         for (var i = 0; i < _tabs.Length; i++)
         {
@@ -127,11 +163,17 @@ public sealed class SWEmpireCouncilConsoleMenu : FancyWindow
 
     public void SetState(SWEmpireCouncilConsoleState state)
     {
-        var previousSphere = _state?.Sphere;
+        var previousSphere = _currentSphere;
+        _currentSphere = state.Sphere;
         _state = state;
         _military.SetState(state);
-        if (!_initialTabChosen) { _initialTabChosen = true; if (state.Sphere == SWEmpireCouncilSphere.MilitaryOffense) ShowTab(4); }
-        if (previousSphere != state.Sphere) ResetTransfer();
+        if (previousSphere != state.Sphere)
+        {
+            ResetTransfer();
+            _transferRequest = null; _rejectRequest = null; _feedback.Text = string.Empty;
+            _transferAmount.SetText(string.Empty);
+            UpdateTabs(state.Sphere);
+        }
         _treasury.Text = $"Казна  {state.Treasury:N0} кр";
         _role.Text = SphereName(state.Sphere);
         _atlas.SetEconomy(state.Economy);
@@ -165,11 +207,13 @@ public sealed class SWEmpireCouncilConsoleMenu : FancyWindow
         if (route != null)
         {
             heading.AddChild(SWConsoleStyle.Wrap($"{World(route.From)} — {World(route.To)}", SWConsoleStyle.Brass));
-            var expand = SWConsoleStyle.TabButton("Развитие маршрута");
-            expand.Disabled = !CanManage;
-            expand.ToolTip = CanManage ? "Рассчитать увеличение пропускной способности" : "Управление доступно сфере производства и логистики";
-            expand.OnPressed += _ => { _development.SelectRoute(route.From, SWTransitLinkPrototype.LinkId(route.From, route.To)); ShowTab(2); };
-            detail.AddChild(expand);
+            if (CanManage)
+            {
+                var expand = SWConsoleStyle.TabButton("Развитие маршрута");
+                expand.ToolTip = "Рассчитать увеличение пропускной способности";
+                expand.OnPressed += _ => { _development.SelectRoute(route.From, SWTransitLinkPrototype.LinkId(route.From, route.To)); ShowTab(2); };
+                detail.AddChild(expand);
+            }
             return;
         }
         if (id == null) { heading.AddChild(SWConsoleStyle.Wrap("Выберите мир", SWConsoleStyle.TextDim)); return; }
@@ -198,11 +242,13 @@ public sealed class SWEmpireCouncilConsoleMenu : FancyWindow
         ship.ToolTip = "Оформить доставку с этого мира";
         ship.OnPressed += _ => { if (CanManage) _delivery.SelectWorld(id); else _delivery.SelectDestination(id); ShowTab(1); };
         detail.AddChild(ship);
-        var develop = SWConsoleStyle.TabButton("Развитие мира");
-        develop.Disabled = !CanManage;
-        develop.ToolTip = CanManage ? "Рассчитать проект" : "Управление доступно сфере производства и логистики";
-        develop.OnPressed += _ => { _development.SelectWorld(id); ShowTab(2); };
-        detail.AddChild(develop);
+        if (CanManage)
+        {
+            var develop = SWConsoleStyle.TabButton("Развитие мира");
+            develop.ToolTip = "Рассчитать проект";
+            develop.OnPressed += _ => { _development.SelectWorld(id); ShowTab(2); };
+            detail.AddChild(develop);
+        }
     }
 
     private void RefreshOrders()
@@ -495,8 +541,12 @@ public sealed class SWEmpireCouncilConsoleMenu : FancyWindow
             if (_lastSphere != state.Sphere)
             {
                 _lastSphere = state.Sphere;
-                if (state.Sphere != SWEmpireCouncilSphere.ProductionLogistics) _acceptOrder = null;
-                _detailKey = string.Empty;
+                _acceptOrder = null;
+                _worldId = _targetId = _goodId = _recipeId = _routeId = string.Empty;
+                _catalogKey = _detailKey = string.Empty;
+                _amount.SetText("1"); _deadline.SetText("4");
+                _priority.SelectId(0);
+                _action.SelectId((int) (_delivery ? SWEmpireIndustryAction.Ship : SWEmpireIndustryAction.UpgradeLine));
                 Invalidate();
             }
             _state = state;

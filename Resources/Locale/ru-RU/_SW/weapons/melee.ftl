@@ -26,3 +26,5 @@ ent-SWNagibator = SW нагибатор
 
 ent-SWElectrostaff = электропосох
   .desc = Силовое древковое оружие, способное потрескивать опасными электрическими дугами.
+ent-SWEnergySwordYellow = жёлтый световой меч
+ent-SWEnergySwordYellow-desc = Световой меч с жёлтым клинком.

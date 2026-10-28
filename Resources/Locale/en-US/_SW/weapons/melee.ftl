@@ -3,3 +3,5 @@ ent-SWNagibator = SW nagibator
 
 ent-SWElectrostaff = electrostaff
     .desc = A powered staff that can crackle with dangerous electrical arcs.
+ent-SWEnergySwordYellow = yellow lightsaber
+ent-SWEnergySwordYellow-desc = A lightsaber with a yellow blade.

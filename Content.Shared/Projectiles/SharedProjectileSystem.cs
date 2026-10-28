@@ -208,7 +208,7 @@ public abstract partial class SharedProjectileSystem : EntitySystem
         return;
     }
 
-    // НОВАЯ ПРОВЕРКА: защита экипажа одного транспорта от снарядов друг друга
+    // NEW CHECK: protecting the crew of one vehicle from projectiles fired by another
     if (component.Shooter != null &&
         TryComp<SWInVehicleComponent>(args.OtherEntity, out var targetInVehicle) &&
         TryComp<SWInVehicleComponent>(component.Shooter.Value, out var shooterInVehicle) &&

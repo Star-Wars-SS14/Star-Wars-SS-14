@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Content.Shared._SW._Senate.Sectors;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Maths;
 
@@ -86,11 +87,20 @@ public static class SWPlanetSurfaceValidator
         var worlds = prototypes.EnumeratePrototypes<SWPlanetEconomyPrototype>().Where(w => w.ActiveEconomy).ToArray();
         if (!surfaces.Keys.ToHashSet().SetEquals(worlds.Select(w => w.ID)))
             errors.Add("Surface catalog must cover exactly the active economy worlds.");
-        var scenario = prototypes.Index<SWRepublicEconomyScenarioPrototype>("SenateRepublicEconomy");
+        var map = prototypes.Index<SWGalacticMapPrototype>("SenateRepublic");
+        var geography = map.Worlds.ToDictionary(w => w.Id);
+        var republic = prototypes.Index<SWRepublicEconomyScenarioPrototype>("SenateRepublicEconomy");
+        var empire = prototypes.Index<SWRepublicEconomyScenarioPrototype>("SenateEmpireEconomy");
         foreach (var world in worlds)
         {
             if (!surfaces.TryGetValue(world.ID, out var surface))
                 continue;
+            if (!geography.TryGetValue(world.ID, out var mapWorld))
+            {
+                errors.Add($"{world.ID}: surface world is missing from the map.");
+                continue;
+            }
+            var scenario = map.GetWorldFaction(mapWorld) == "empire" ? empire : republic;
             errors.AddRange(Validate(surface));
             var expectedSettlements = world.PopulationUnits < 1.5 ? 3 : world.PopulationUnits < 2.5 ? 4 : 5;
             if (surface.Sites.Count(site => site.Kind == "settlement") != expectedSettlements)

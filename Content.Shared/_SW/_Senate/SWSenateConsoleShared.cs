@@ -71,6 +71,7 @@ public sealed class SWSectorEntry
 [Serializable, NetSerializable]
 public sealed class SWStatisticsConsoleState : BoundUserInterfaceState
 {
+    public string Faction = "none";
     public int FinanceBaseTaxRate;
     public List<SWFinanceTaxEntry> FinanceActiveTaxes = new();
     public List<SWFinanceTaxEntry> FinanceActiveReliefs = new();

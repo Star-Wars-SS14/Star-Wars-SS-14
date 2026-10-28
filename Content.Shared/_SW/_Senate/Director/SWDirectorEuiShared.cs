@@ -60,6 +60,7 @@ public sealed class SWDirectorEuiState : EuiStateBase
     public List<SWJusticeInstitutionView> JusticeInstitutions = new();
     public List<SWJusticeCaseView> JusticeCases = new();
     public SWDirectorMode Mode;
+    public bool CouncilPlayerControl;
     public string ControllerName = string.Empty;
     public bool IAmController;
     public int Influence;

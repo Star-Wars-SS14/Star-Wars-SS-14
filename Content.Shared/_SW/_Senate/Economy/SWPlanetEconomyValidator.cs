@@ -23,7 +23,8 @@ public static class SWPlanetEconomyValidator
         IEnumerable<SWPlanetEconomyPrototype> planets)
     {
         var errors = new List<string>();
-        var worlds = prototypes.Index<SWGalacticMapPrototype>("SenateRepublic").Worlds.ToDictionary(w => w.Id);
+        var map = prototypes.Index<SWGalacticMapPrototype>("SenateRepublic");
+        var worlds = map.Worlds.ToDictionary(w => w.Id);
         var recipes = prototypes.EnumeratePrototypes<SWProductionRecipePrototype>().ToArray();
         var seen = new HashSet<string>();
         foreach (var planet in planets)
@@ -32,7 +33,7 @@ public static class SWPlanetEconomyValidator
                 errors.Add($"Planet economy repeats world {planet.ID}.");
             if (!worlds.TryGetValue(planet.ID, out var world))
                 errors.Add($"Planet economy {planet.ID} has no graph world.");
-            else if (world.Sector == null && planet.ActiveEconomy)
+            else if (world.Sector == null && planet.ActiveEconomy && map.GetWorldFaction(world) != "empire")
                 errors.Add($"External world {planet.ID} cannot have a domestic economy.");
 
             CheckNumber(planet.ID, nameof(planet.PopulationUnits), planet.PopulationUnits);

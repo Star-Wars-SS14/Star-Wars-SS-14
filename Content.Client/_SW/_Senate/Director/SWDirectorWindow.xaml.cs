@@ -118,6 +118,52 @@ public sealed partial class SWDirectorWindow : FancyWindow
             Body.AddChild(editor);
         }
 
+        if (state.SecurityMap is { } securityMap)
+        {
+            Body.AddChild(SWConsoleStyle.Section("ДЕЛА БЕЗОПАСНОСТИ"));
+            foreach (var (faction, kind, label) in new[] { ("republic", "domestic", "Внутреннее"), ("empire", "imperial", "Имперское") })
+            {
+                var randomCase = SWConsoleStyle.Action($"{label}: случайный мир", SWConsoleStyle.Accent, !canAct);
+                randomCase.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.SecurityCreate, "", kind, "");
+                Body.AddChild(randomCase);
+                var picker = new OptionButton { Filterable = true, HorizontalExpand = true, MinWidth = 210 };
+                var worlds = securityMap.Worlds.Where(w => w.Faction == faction).ToArray();
+                foreach (var world in worlds) picker.AddItem(world.Name);
+                if (worlds.Length > 0) picker.SelectId(0);
+                var create = SWConsoleStyle.Action($"{label}: выбранный мир", SWConsoleStyle.Accent, !canAct || worlds.Length == 0);
+                create.OnPressed += _ => { if (picker.SelectedId >= 0 && picker.SelectedId < worlds.Length) OnAction?.Invoke(SWDirectorActionKind.SecurityCreate, "", kind, worlds[picker.SelectedId].Id); };
+                Body.AddChild(picker);
+                Body.AddChild(create);
+            }
+            foreach (var securityCase in securityMap.Cases)
+            {
+                var close = SWConsoleStyle.Action($"Закрыть: {securityCase.Title} ({securityCase.WorldId})", SWConsoleStyle.TextBright, !canAct);
+                close.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.SecurityCancel, "", "", securityCase.Id.ToString());
+                Body.AddChild(close);
+            }
+        }
+
+        Body.AddChild(SWConsoleStyle.Section("ПРОВЕРКИ МИНИСТЕРСТВА ЮСТИЦИИ"));
+        var institutions = state.JusticeInstitutions.Where(i => i.Available).ToArray();
+        var randomInspection = SWConsoleStyle.Action("Случайное учреждение", SWConsoleStyle.Accent, !canAct || institutions.Length == 0);
+        randomInspection.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.JusticeCreate, "", "", "");
+        Body.AddChild(randomInspection);
+        var institutionPicker = new OptionButton { Filterable = true, HorizontalExpand = true, MinWidth = 210 };
+        foreach (var institution in institutions) institutionPicker.AddItem($"{institution.Name} · {institution.SectorName}");
+        if (institutions.Length > 0) institutionPicker.SelectId(0);
+        institutionPicker.OnItemSelected += args => institutionPicker.SelectId(args.Id);
+        var createInspection = SWConsoleStyle.Action("Проверить выбранное учреждение", SWConsoleStyle.Accent, !canAct || institutions.Length == 0);
+        createInspection.OnPressed += _ => { if (institutionPicker.SelectedId >= 0 && institutionPicker.SelectedId < institutions.Length)
+            OnAction?.Invoke(SWDirectorActionKind.JusticeCreate, "", "", institutions[institutionPicker.SelectedId].Id); };
+        Body.AddChild(institutionPicker);
+        Body.AddChild(createInspection);
+        foreach (var inspection in state.JusticeCases)
+        {
+            var cancel = SWConsoleStyle.Action($"Отменить №{inspection.Id}: {inspection.Title} ({inspection.InstitutionName})", SWConsoleStyle.TextBright, !canAct);
+            cancel.OnPressed += _ => OnAction?.Invoke(SWDirectorActionKind.JusticeCancel, "", "", inspection.Id.ToString());
+            Body.AddChild(cancel);
+        }
+
         Body.AddChild(SWConsoleStyle.Section("ОБЩИЕ ОПЕРАЦИИ"));
         var global = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, Margin = new Thickness(0, 4, 0, 4) };
 

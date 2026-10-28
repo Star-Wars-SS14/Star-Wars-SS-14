@@ -590,7 +590,6 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         (1, "Чрезвычайное положение (ВБ)"),
         (3, "Большой экономический стимул"),
         (4, "Денежная эмиссия"),
-        (5, "Чрезвычайные трибуналы"),
     };
 
     private static readonly (SWEmergencyPower Power, string Label)[] PowerMotionOptions =
@@ -1992,6 +1991,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     {
         var signature = $"{state.WarProposed}={state.CanApproveWar}={state.PendingStanceName}=" +
             $"{state.EmergencyProposed}={state.CanApproveEmergency}={state.PendingPostureName}=" +
+            $"{state.CanApproveSecuritySabotage}={string.Join(";", state.SecuritySabotageRequests.Select(r => $"{r.CaseId}:{r.TeamId}:{r.Title}:{r.WorldId}:{r.Risk}:{r.Cost}"))}=" +
             $"{state.CanApproveHealthEmergency}={string.Join(";", state.HealthQuarantines.Select(q => $"{q.Id}:{q.Pending}:{q.HoursLeft}:{q.Consequences}"))}=" +
             $"{state.StimulusProposed}={state.CanApproveStimulus}=" +
             $"{state.EmissionProposed}={state.CanApproveEmission}=" +
@@ -2001,6 +2001,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
         _warApprovalSignature = signature;
         WarApprovalBox.RemoveAllChildren();
+        BuildSecuritySabotageApprovals(state);
 
         if (state.WarProposed)
         {

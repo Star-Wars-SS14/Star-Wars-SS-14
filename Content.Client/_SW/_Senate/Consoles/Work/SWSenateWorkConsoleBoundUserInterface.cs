@@ -56,6 +56,9 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWSecurityRejectEmergencyMessage());
     }
 
+    public void SecuritySabotageDecision(int caseId, bool approve) =>
+        SendMessage(new SWSecuritySabotageDecisionMessage(caseId, approve));
+
     public void HealthQuarantineDecision(int id, bool approve, bool lift = false) => SendMessage(new SWHealthQuarantineDecisionMessage(id, approve, lift));
     public void ApproveStimulus()
     {

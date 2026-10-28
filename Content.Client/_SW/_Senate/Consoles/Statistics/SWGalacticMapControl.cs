@@ -199,7 +199,7 @@ public sealed partial class SWGalacticMapControl : Control
             _lastClickWorld = null;
             return;
         }
-        if (ActivateMedicalSupply(position) || ActivateCrisisAt(position) || ActivateDefenseAt(position))
+        if (ActivateSecurityAt(position) || ActivateMedicalSupply(position) || ActivateCrisisAt(position) || ActivateDefenseAt(position))
         {
             _lastClickWorld = null;
             return;
@@ -424,6 +424,7 @@ public sealed partial class SWGalacticMapControl : Control
         AdvanceTraffic(args.DeltaSeconds);
         AdvanceMedicalSupply(args.DeltaSeconds);
         AdvanceDefense(args.DeltaSeconds);
+        AdvanceSecurity(args.DeltaSeconds);
         if (!IsTransitioning || Width <= 64 || Height <= 56) return;
         _transitionTime += args.DeltaSeconds;
         if (_transitionTime < TransitionDuration && !_configuration.GetCVar(CCVars.ReducedMotion)) return;
@@ -526,6 +527,7 @@ public sealed partial class SWGalacticMapControl : Control
                 id == _selectedWorld || id == _hover ? SWConsoleStyle.Accent : SWConsoleStyle.TextBright);
         }
         DrawDefense(handle);
+        DrawSecurity(handle);
         DrawCrisisMarkers(handle);
         DrawMedicalSupply(handle);
     }

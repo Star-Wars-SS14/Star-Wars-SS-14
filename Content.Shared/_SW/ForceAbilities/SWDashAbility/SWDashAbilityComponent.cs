@@ -13,6 +13,7 @@ public sealed partial class SWDashAbilityComponent : Component
 {
     [DataField("sprintModifier"), ViewVariables(VVAccess.ReadWrite)]
     public float SpeedSprintModifier = 2f;
+    
     [DataField("walkModifier")]
     public float SpeedWalkModifier = 2f;
 
@@ -23,5 +24,15 @@ public sealed partial class SWDashAbilityComponent : Component
     public float DashDuration = 5f;
     public TimeSpan DashEndTime;
 
+    // Keep only ONE IsDashing listing
     public bool IsDashing = false;
+
+    // Sprite swaying parameters during a dash
+    [DataField("swayAmplitude")]
+    public float SwayAmplitude = 0.15f;
+    
+    [DataField("swayFrequency")]
+    public float SwayFrequency = 4f;
+    
+    public float SwayTime = 0f;
 }

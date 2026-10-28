@@ -4,6 +4,7 @@ using Content.Shared.Damage.Components;
 using Content.Shared.Movement.Components;
 using Content.Shared.Movement.Systems;
 using Content.Shared.Popups;
+using Content.Shared.Sprite;
 using Robust.Shared.Timing;
 using System;
 using System.Collections.Generic;
@@ -26,6 +27,7 @@ public sealed class SWDashAbilitySystem : EntitySystem
         SubscribeLocalEvent<SWDashAbilityComponent, DashRequestedEvent>(OnTryDash);
         SubscribeLocalEvent<SWDashAbilityComponent, RefreshMovementSpeedModifiersEvent>(OnRefreshMovement);
     }
+
     private void OnRefreshMovement(Entity<SWDashAbilityComponent> ent, ref RefreshMovementSpeedModifiersEvent args)
     {
         if (ent.Comp.IsDashing)
@@ -57,12 +59,13 @@ public sealed class SWDashAbilitySystem : EntitySystem
         }
     }
 
-    private void StopDashing(EntityUid uid, SWDashAbilityComponent comp)
+        private void StopDashing(EntityUid uid, SWDashAbilityComponent comp)
     {
         comp.IsDashing = false;
         _movementSpeedModifierSystem.RefreshMovementSpeedModifiers(uid);
+        comp.SwayTime = 0f;
     }
-
+    
     private void StartDash(Entity<SWDashAbilityComponent> ent)
     {
         ent.Comp.IsDashing = true;

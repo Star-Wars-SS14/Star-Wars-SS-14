@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Content.Server._SW._Senate.Economy;
+using Content.Server._SW._Senate.Economy.Simulation;
 using Content.Shared._SW._Senate.Economy;
 using Content.Shared._SW._Senate.Empire;
 
@@ -10,6 +11,34 @@ public sealed partial class SWEmpireMilitarySystem
 {
     private bool Yard(string world) => Own(world) && _proto.TryIndex<SWPlanetEconomyPrototype>(world, out var p)
         && p.Facilities.Any(f => f.Id == "shipyard");
+
+    private (string Status, string Details) SupplyView(Fleet fleet)
+    {
+        if (!fleet.Alive) return ("Соединение утрачено", string.Empty);
+        if (fleet.Next != null) return ("В пути", "Пополнение доступно в порту.");
+        if (!Imperial(fleet.World)) return ("Вне зоны снабжения", "Для пополнения вернитесь в имперский порт.");
+        if (!Own(fleet.World)) return ("Вне зоны снабжения", "На этом мире нет действующего порта снабжения.");
+        if (fleet.Supply > 60) return ("Запаса достаточно", "Новый комплект будет заказан при запасе 60 или ниже. Базовый расход на позиции: 3 пункта за активный час.");
+        if (_economy.Runner?.Fault != null) return ("Снабжение недоступно", "Порт не может обработать заказ.");
+        if (!_supplyPorts.TryGetValue(fleet.World, out var id)) return ("Ожидание заявки", "Порт ещё не принял заказ.");
+        var project = _economy.GetProject(id);
+        if (project == null) return ("Заказ принят", "Порт принял заказ на снабжение.");
+        if (project.Status == EconomyProjectStatus.Completed)
+            return ("Комплект готов", "Готовый комплект получит одно соединение в порту.");
+        if (project.Status == EconomyProjectStatus.Working)
+            return ("Сборка комплекта", $"Материалы доставлены; работа {project.WorkDone:0.##}/{project.WorkHours:0.##} ч.");
+        var lines = project.Materials.Select(m =>
+        {
+            var name = _economy.GoodNames.GetValueOrDefault(m.Good, m.Good);
+            var arrival = m.NextDeliveryHours is { } h ? $", ближайшая часть через {h:0.##} эконом. ч" : string.Empty;
+            return $"{name}: {m.Delivered:0.###}/{m.Required:0.###}, в пути {m.Incoming:0.###}{arrival}";
+        });
+        var status = project.Materials.Any(m => m.DeliveryStatus == "route_blocked") ? "Нет источника или доступного маршрута"
+            : project.Materials.Any(m => m.DeliveryStatus == "fuel") ? "Ожидание топлива для доставки"
+            : project.Materials.Any(m => m.DeliveryStatus is "waiting_transport" or "transshipment") ? "Ожидание транспорта"
+            : project.Materials.Any(m => m.Incoming > 0) ? "Материалы в пути" : "Ожидание материалов";
+        return (status, string.Join("\n", lines));
+    }
 
     public bool TryQuote(SWEmpireMilitaryRequest request, out SWEmpireMilitaryQuote quote)
     {
@@ -196,6 +225,7 @@ public sealed partial class SWEmpireMilitarySystem
         }
         foreach (var fleet in _fleets.Values)
         {
+            var supplyStatus = SupplyView(fleet);
             state.Fleets.Add(new SWEmpireMilitaryFleetView { Id = fleet.Id, Name = fleet.Name, WorldId = PublicWorld(fleet.World),
                 NextWorldId = fleet.Next == null ? string.Empty : PublicWorld(fleet.Next), Target = PublicWorld(fleet.Target), Order = fleet.Order, Strength = fleet.Strength,
                 Damage = fleet.Damage, Supply = fleet.Supply, Training = fleet.Training, EtaHours = fleet.Until,
@@ -204,6 +234,7 @@ public sealed partial class SWEmpireMilitarySystem
                 CargoAmount = fleet.CargoAmount, CargoCapacity = RaidCargoSlots,
                 CargoUsedSlots = fleet.CargoAmount * (_economy.Definition?.Goods.FirstOrDefault(g => g.Id == fleet.CargoGood)?.CargoSlots ?? 0),
                 CargoReadyAt = fleet.RaidReadyAt > _time.ActiveGameHours ? fleet.RaidReadyAt : null,
+                SupplyStatus = supplyStatus.Status, SupplyDetails = supplyStatus.Details,
                 CargoStatus = fleet.RaidPending != null ? "Изъятие подтверждается" : fleet.DepositPending != null ? "Разгрузка подтверждается"
                     : fleet.RaidReadyAt > _time.ActiveGameHours ? "Подготовка захвата груза"
                     : fleet.CargoAmount > 0 && fleet.Next == null && Own(fleet.World) ? "Груз на борту; ожидание места на складе"

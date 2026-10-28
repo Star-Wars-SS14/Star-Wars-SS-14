@@ -34,6 +34,7 @@ public sealed class SWEmpireMilitaryFleetView
     public int Id;
     public string Name = string.Empty, WorldId = string.Empty, NextWorldId = string.Empty, Target = string.Empty;
     public string Status = string.Empty, Phase = string.Empty;
+    public string SupplyStatus = string.Empty, SupplyDetails = string.Empty;
     public SWEmpireMilitaryAction Order;
     public double Strength, Damage, Supply, Training, EtaHours, LegStartedAt, LegEndsAt;
     public string CargoGood = string.Empty, CargoGoodName = string.Empty, CargoStatus = string.Empty;

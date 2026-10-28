@@ -150,13 +150,15 @@ public sealed partial class SWEmpireMilitarySystem : EntitySystem
             { fleet.Damage = 0; fleet.Strength = Math.Min(100, fleet.Strength + 30); fleet.WorkProject = null; fleet.Order = SWEmpireMilitaryAction.Guard; }
             fleet.Supply = Math.Max(0, fleet.Supply - hours * (fleet.Next == null ? 3 : 7));
             TickRaidCargo(fleet);
+            // Resolve the completed leg before looking for a real port kit. Otherwise a
+            // patrol immediately starts its next leg and is never seen in port by TickSupply.
+            if (fleet.Next != null && _time.ActiveGameHours >= fleet.Until)
+            { fleet.World = fleet.Next; fleet.Next = null; }
             TickSupply(fleet);
             TickEscort(fleet);
             TickBorderBattle(fleet, hours);
             TickRaidBattle(fleet, hours);
             ObserveBorder(fleet);
-            if (fleet.Next != null && _time.ActiveGameHours >= fleet.Until)
-            { fleet.World = fleet.Next; fleet.Next = null; }
             if (fleet.Next == null && Republic(fleet.World) && fleet.Permit == null && fleet.Order is SWEmpireMilitaryAction.Raid or SWEmpireMilitaryAction.Blockade)
                 QueueRetreat(fleet);
             if (fleet.Order == SWEmpireMilitaryAction.Blockade && Republic(fleet.World))

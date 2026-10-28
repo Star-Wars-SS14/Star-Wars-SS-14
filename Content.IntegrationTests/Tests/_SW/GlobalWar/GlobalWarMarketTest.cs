@@ -94,6 +94,69 @@ public sealed class GlobalWarMarketTest
     }
 
     [Test]
+    public void ReplacementCargoIsNotDispatchedTwice()
+    {
+        var model = new SWGlobalWarMarketSimulation(new[] { Ore },
+            new[] { Market("A", 1000, 0), Market("B", 80, 8) },
+            new[] { new SWGlobalWarTradeConnection("A", "B", TimeSpan.FromSeconds(30), 120) });
+        model.Advance(TimeSpan.FromSeconds(7));
+        Assert.Multiple(() =>
+        {
+            Assert.That(model.Markets["B"].Goods["ore"].Stock, Is.EqualTo(80));
+            Assert.That(model.Markets["B"].Goods["ore"].Incoming, Is.EqualTo(4));
+            Assert.That(model.Shipments.Single().Quantity, Is.EqualTo(4));
+            Assert.That(model.Markets["A"].Goods["ore"].Stock, Is.EqualTo(996));
+        });
+    }
+
+    [TestCase(8, 30, 1, 4)]
+    [TestCase(3, 30, 2, 3)]
+    [TestCase(60, 0.1, 2, 2)]
+    public void FullStocksReceiveReplacementForConsumptionDuringDelivery(int consumption, double legSeconds, int legs, int expected)
+    {
+        var target = consumption * 10;
+        var markets = new[] { Market("A", 10000, 0), Market("M", 0, 0), Market("Z", target + consumption / 60, consumption) };
+        var duration = TimeSpan.FromSeconds(legSeconds);
+        var links = legs == 1
+            ? new[] { new SWGlobalWarTradeConnection("A", "Z", duration, 1000) }
+            : new[] { new SWGlobalWarTradeConnection("A", "M", duration, 1000), new SWGlobalWarTradeConnection("M", "Z", duration, 1000) };
+        var model = new SWGlobalWarMarketSimulation(new[] { Ore }, markets, links);
+        model.Advance(TimeSpan.FromSeconds(1));
+        var recipient = model.Markets["Z"].Goods["ore"];
+        Assert.Multiple(() =>
+        {
+            Assert.That(recipient.Stock, Is.EqualTo(target));
+            Assert.That(recipient.Demand, Is.Zero, "Physical demand must retain its existing definition.");
+            Assert.That(recipient.Incoming, Is.EqualTo(expected));
+            Assert.That(model.Shipments.Single().Quantity, Is.EqualTo(expected));
+        });
+    }
+
+    [Test]
+    public void DeliveryCompensationMaintainsPhysicalBuffersAcrossThePlanetChain()
+    {
+        var model = new SWGlobalWarMarketSimulation(new[] { Ore },
+            new[] { Market("A", 10000, 0), Market("B", 20, 8), Market("C", 10, 3) },
+            new[]
+            {
+                new SWGlobalWarTradeConnection("A", "B", TimeSpan.FromSeconds(30), 120),
+                new SWGlobalWarTradeConnection("B", "A", TimeSpan.FromSeconds(30), 120),
+                new SWGlobalWarTradeConnection("B", "C", TimeSpan.FromSeconds(30), 120),
+                new SWGlobalWarTradeConnection("C", "B", TimeSpan.FromSeconds(30), 120),
+            });
+        model.Advance(TimeSpan.FromMinutes(3));
+        for (var second = 0; second < 180; second++)
+        {
+            model.Advance(TimeSpan.FromSeconds(1));
+            Assert.Multiple(() =>
+            {
+                Assert.That(model.Markets["B"].Goods["ore"].Stock, Is.GreaterThanOrEqualTo(80), "The 30-second trip consumes four units.");
+                Assert.That(model.Markets["C"].Goods["ore"].Stock, Is.GreaterThanOrEqualTo(30), "The two-leg trip consumes three units.");
+            });
+        }
+    }
+
+    [Test]
     public void ShipmentIsDebitedImmediatelyAndOnlyCreditedOnArrival()
     {
         var model = new SWGlobalWarMarketSimulation(new[] { Ore }, new[] { Market("A", 100, 0), Market("B", 0, 1) },
@@ -103,9 +166,9 @@ public sealed class GlobalWarMarketTest
         var target = model.Markets["B"].Goods["ore"];
         Assert.Multiple(() =>
         {
-            Assert.That(source.Stock, Is.EqualTo(90));
+            Assert.That(source.Stock, Is.EqualTo(89));
             Assert.That(target.Stock, Is.Zero);
-            Assert.That(target.Incoming, Is.EqualTo(10));
+            Assert.That(target.Incoming, Is.EqualTo(11));
             Assert.That(target.ImportNeed, Is.Zero);
         });
 
@@ -117,7 +180,7 @@ public sealed class GlobalWarMarketTest
         model.Advance(TimeSpan.FromSeconds(1));
         Assert.Multiple(() =>
         {
-            Assert.That(target.Stock, Is.EqualTo(10));
+            Assert.That(target.Stock, Is.EqualTo(11));
             Assert.That(target.Incoming, Is.Zero);
             Assert.That(model.Shipments, Is.Empty);
         });
@@ -168,10 +231,10 @@ public sealed class GlobalWarMarketTest
             Assert.That(model.Shipments.Single().Leg, Is.EqualTo(1));
             Assert.That(model.Markets["B"].Goods["ore"].Stock, Is.Zero);
             Assert.That(model.Markets["C"].Goods["ore"].Stock, Is.Zero);
-            Assert.That(model.Markets["C"].Goods["ore"].Incoming, Is.EqualTo(10));
+            Assert.That(model.Markets["C"].Goods["ore"].Incoming, Is.EqualTo(11));
         });
         model.Advance(TimeSpan.FromSeconds(3));
-        Assert.That(model.Markets["C"].Goods["ore"].Stock, Is.EqualTo(10));
+        Assert.That(model.Markets["C"].Goods["ore"].Stock, Is.EqualTo(11));
         Assert.That(model.Markets["B"].Goods["ore"].Stock, Is.Zero);
     }
 
@@ -205,6 +268,7 @@ public sealed class GlobalWarMarketTest
         model.Advance(TimeSpan.FromSeconds(1));
         model.TryAddStock("A", "ore", 10);
         model.TrySetConsumption("B", "ore", 1);
+        model.TrySetConsumption("C", "ore", 0);
         model.Advance(TimeSpan.FromSeconds(1));
         Assert.Multiple(() =>
         {

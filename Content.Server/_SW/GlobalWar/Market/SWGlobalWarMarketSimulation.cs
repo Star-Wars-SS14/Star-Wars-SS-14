@@ -171,7 +171,7 @@ public sealed class SWGlobalWarMarketSimulation
     private void Dispatch()
     {
         var needs = _markets.Values.SelectMany(market => market.Goods
-            .Where(pair => pair.Value.ImportNeed > 0)
+            .Where(pair => pair.Value.ConsumptionPerMinute > 0)
             .Select(pair => (Market: market, Commodity: pair.Key, Good: pair.Value)))
             .OrderBy(need => need.Market.Planet, StringComparer.Ordinal).ThenBy(need => need.Commodity, StringComparer.Ordinal).ToArray();
         if (needs.Length == 0)
@@ -183,9 +183,10 @@ public sealed class SWGlobalWarMarketSimulation
         foreach (var need in needs.Select((need, index) => (Need: need, Tie: (index + turn) % needs.Length))
                      .OrderBy(entry => (double) entry.Need.Good.Stock / entry.Need.Good.ConsumptionPerMinute).ThenBy(entry => entry.Tie))
         {
-            while (need.Need.Good.ImportNeed > 0)
+            // A full stock still needs replacement cargo before consumption during delivery creates a deficit.
+            while (true)
             {
-                var supplier = FindSupplier(need.Need.Market.Planet, need.Need.Commodity, need.Need.Good.ImportNeed);
+                var supplier = FindSupplier(need.Need.Market.Planet, need.Need.Commodity);
                 if (supplier == null)
                     break;
 
@@ -205,11 +206,12 @@ public sealed class SWGlobalWarMarketSimulation
             _dispatchTurn++;
     }
 
-    private (SWGlobalWarMarketState Source, string[] Route, int Quantity)? FindSupplier(string destination, string commodity, int need)
+    private (SWGlobalWarMarketState Source, string[] Route, int Quantity)? FindSupplier(string destination, string commodity)
     {
         (SWGlobalWarMarketState Source, string[] Route, int Quantity)? result = null;
         var bestTime = TimeSpan.MaxValue;
         var cargoVolume = _commodities[commodity].CargoVolume;
+        var recipient = _markets[destination].Goods[commodity];
         foreach (var source in _markets.Values)
         {
             if (source.Planet == destination || !source.Goods.TryGetValue(commodity, out var good) || good.Supply == 0)
@@ -223,16 +225,33 @@ public sealed class SWGlobalWarMarketSimulation
             var capacity = _remainingCapacity[lane];
             for (var i = 1; i < route.Length; i++)
             {
-                time += _connections[(route[i - 1], route[i])].TravelTime;
+                var duration = _connections[(route[i - 1], route[i])].TravelTime;
+                time += duration;
+                // Each leg arrives on its own step boundary, including legs shorter than a full step.
+                var remainder = duration.Ticks % StepDuration.Ticks;
+                if (remainder > 0)
+                    time += TimeSpan.FromTicks(StepDuration.Ticks - remainder);
             }
             // Departure uses the first link's capacity; narrower transit links split cargo when it reaches them.
-            var quantity = TransferQuantity(Math.Min(good.Supply, need), capacity, cargoVolume);
+            var quantity = TransferQuantity(Math.Min(good.Supply, GetImportNeed(recipient, time)), capacity, cargoVolume);
             if (quantity == 0 || time >= bestTime)
                 continue;
             bestTime = time;
             result = (source, route, quantity);
         }
         return result;
+    }
+
+    /// <summary>Targets a ten-minute physical stock after delivery, accounting for consumption and all dispatched cargo.</summary>
+    /// <param name="recipient">Destination inventory and consumption rate.</param>
+    /// <param name="deliveryTime">Sum of route leg durations rounded to simulation steps; excludes uncertain capacity queues.</param>
+    private static int GetImportNeed(SWGlobalWarMarketGoodState recipient, TimeSpan deliveryTime)
+    {
+        var consumption = decimal.Ceiling((decimal) recipient.ConsumptionPerMinute * deliveryTime.Ticks / TimeSpan.TicksPerMinute);
+        var need = Math.Max(0m, recipient.TargetStock + consumption - recipient.Stock - recipient.Incoming);
+        // Reserve integer storage space for incoming cargo as well as the current stock.
+        var headroom = int.MaxValue - recipient.Stock - recipient.Incoming;
+        return (int) Math.Min(need, headroom);
     }
 
     private static int TransferQuantity(int limit, double capacity, double cargoVolume) =>

@@ -9,13 +9,6 @@
   market:
     SWGlobalWarOre:
       initialStock: 1500
-      consumptionPerMinute: 1
-    SWGlobalWarFuel:
-      initialStock: 10
-      consumptionPerMinute: 4
-    SWGlobalWarSupplies:
-      initialStock: 20
-      consumptionPerMinute: 2
 
 - type: swGlobalWarPlanet
   id: SWGlobalWarTestBeta
@@ -29,12 +22,6 @@
     SWGlobalWarOre:
       initialStock: 20
       consumptionPerMinute: 8
-    SWGlobalWarFuel:
-      initialStock: 1000
-      consumptionPerMinute: 2
-    SWGlobalWarSupplies:
-      initialStock: 10
-      consumptionPerMinute: 6
 
 - type: swGlobalWarPlanet
   id: SWGlobalWarTestGamma
@@ -48,9 +35,3 @@
     SWGlobalWarOre:
       initialStock: 10
       consumptionPerMinute: 3
-    SWGlobalWarFuel:
-      initialStock: 20
-      consumptionPerMinute: 6
-    SWGlobalWarSupplies:
-      initialStock: 1000
-      consumptionPerMinute: 1

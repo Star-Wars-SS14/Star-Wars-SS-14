@@ -24,6 +24,7 @@ public sealed class SWGlobalWarMarketGoodState
     public int TargetStock => ConsumptionPerMinute * SWGlobalWarMarketConstants.StockBufferMinutes;
     public int Demand => Math.Max(0, TargetStock - Stock);
     public int Supply => Math.Max(0, Stock - TargetStock);
+    // Immediate uncovered demand; dispatch additionally accounts for consumption along each candidate route.
     public int ImportNeed => Math.Max(0, Demand - Incoming);
 
     // Fractional consumption in item-ticks; one whole item requires TimeSpan.TicksPerMinute.

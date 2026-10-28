@@ -149,6 +149,7 @@ public sealed partial class SWGlobalWarMapControl
     private Color MarketRouteColor(Route route, Color color, bool focused) =>
         _marketState == null || !_showTraffic ? color : _activeFreightRoutes.Contains(route)
             ? (focused ? SWGlobalWarConsoleStyle.Accent : SWGlobalWarConsoleStyle.Accent.WithAlpha(.55f))
+            : _filteredFreightRoutes.Contains(route) ? SWGlobalWarConsoleStyle.Brass.WithAlpha(focused ? 1 : .55f)
             : color.WithAlpha(focused ? .8f : .4f);
 
     private bool IsMarketRouteVisible(Route route) => _marketState == null || !_showTraffic || _marketCommodity == null

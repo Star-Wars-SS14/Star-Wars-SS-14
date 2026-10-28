@@ -3,7 +3,6 @@ ent-SWGlobalWarMarketConsole = консоль планетарных рынко�
 sw-global-war-market-console-title = Планетарные рынки
 sw-global-war-market-network = GLOBAL WAR / ГОЛОНЕТ / ТОРГОВАЯ СЕТЬ
 sw-global-war-market-offline = Нет активной торговой сети Global War.
-sw-global-war-market-status = Вся сеть · Планет: {$planets} · Товаров в полёте: {$moving} · Ожидает отправки: {$waiting}
 sw-global-war-market-status-filtered = {$commodity} · Планет: {$planets} · В полёте: {$moving} · Ожидает отправки: {$waiting}
 sw-global-war-market-map-title = Торговый атлас
 sw-global-war-market-all-goods = Все товары
@@ -19,20 +18,20 @@ sw-global-war-market-demand = Спрос
 sw-global-war-market-supply = Предложение
 sw-global-war-market-balance = Баланс
 sw-global-war-market-incoming = В пути к получателю
-sw-global-war-market-uncovered = Ещё нужно отправить
+sw-global-war-market-uncovered = Непокрытый спрос
 sw-global-war-market-coverage = Запас по времени
 sw-global-war-market-moving = В полёте
 sw-global-war-market-waiting = Ожидает места
 sw-global-war-market-per-minute = {$value}/мин
 sw-global-war-market-minutes = {$value} мин
 sw-global-war-market-no-consumption = нет потребления
-sw-global-war-market-target-hint = Цель — запас на 10 минут потребления. Спрос показывает нехватку до цели, предложение — излишек. Уже отправленные товары уменьшают потребность в новых отправках. Для обзора сети показан минимальный запас по времени среди потребляющих планет.
+sw-global-war-market-target-hint = Цель — фактический запас на 10 минут потребления. Спрос показывает нехватку до цели, предложение — излишек. Непокрытый спрос — спрос за вычетом входящих грузов. Автоперевозки дополнительно учитывают расход за время перелёта. Для обзора сети показан минимальный запас по времени среди потребляющих планет.
 sw-global-war-market-summary =
     Запас / цель: {$stock} / {$target}
     Потребление: {$consumption}/мин
     Спрос: {$demand} · Предложение: {$supply}
     В пути к получателям: {$incoming}
-    Ещё нужно отправить: {$uncovered}
+    Непокрытый спрос: {$uncovered}
     Минимальный запас: {$coverage}
 sw-global-war-market-map-demand = Спрос {$value}
 sw-global-war-market-map-supply = Излишек {$value}

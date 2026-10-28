@@ -1,0 +1,201 @@
+- type: entity
+  parent: SWIDCardStandard
+  id: SWDarkCouncilMilitaryOffenseIDCard
+  name: ID-карта владыки сферы военного наступления
+  description: Карта владыки, руководящего военным наступлением Империи.
+  components:
+  - type: Sprite
+    layers:
+    - state: image17
+      color: "#ffaaaa"
+  - type: PresetIdCard
+    job: SWDarkCouncilMilitaryOffense
+
+- type: entity
+  parent: BasePDA
+  id: SWDarkCouncilMilitaryOffensePDA
+  name: КПК владыки сферы военного наступления
+  description: Персональный датапад члена Тёмного совета.
+  components:
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType: !type:String pda-syndi-commander
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-syndi-commander
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+  - type: Icon
+    sprite: Objects/Devices/pda.rsi
+    state: pda-syndi-commander
+  - type: PdaBorderColor
+    borderColor: "#ffaaaa"
+  - type: Pda
+    id: SWDarkCouncilMilitaryOffenseIDCard
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWDarkCouncilIntelligenceIDCard
+  name: ID-карта владыки Пирамиды Имперской разведки
+  description: Карта владыки, руководящего Имперской разведкой.
+  components:
+  - type: Sprite
+    layers:
+    - state: image17
+      color: "#d9b3ff"
+  - type: PresetIdCard
+    job: SWDarkCouncilIntelligence
+
+- type: entity
+  parent: BasePDA
+  id: SWDarkCouncilIntelligencePDA
+  name: КПК владыки Пирамиды Имперской разведки
+  description: Персональный датапад члена Тёмного совета.
+  components:
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType: !type:String pda-syndi-commander
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-syndi-commander
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+  - type: Icon
+    sprite: Objects/Devices/pda.rsi
+    state: pda-syndi-commander
+  - type: PdaBorderColor
+    borderColor: "#d9b3ff"
+  - type: Pda
+    id: SWDarkCouncilIntelligenceIDCard
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWDarkCouncilProductionLogisticsIDCard
+  name: ID-карта владыки сферы производства и логистики
+  description: Карта владыки, руководящего производством и логистикой Империи.
+  components:
+  - type: Sprite
+    layers:
+    - state: image17
+      color: "#ffcf99"
+  - type: PresetIdCard
+    job: SWDarkCouncilProductionLogistics
+
+- type: entity
+  parent: BasePDA
+  id: SWDarkCouncilProductionLogisticsPDA
+  name: КПК владыки сферы производства и логистики
+  description: Персональный датапад члена Тёмного совета.
+  components:
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType: !type:String pda-syndi-commander
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-syndi-commander
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+  - type: Icon
+    sprite: Objects/Devices/pda.rsi
+    state: pda-syndi-commander
+  - type: PdaBorderColor
+    borderColor: "#ffcf99"
+  - type: Pda
+    id: SWDarkCouncilProductionLogisticsIDCard
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWDarkCouncilExpansionDiplomacyIDCard
+  name: ID-карта владыки сферы расширения и дипломатии
+  description: Карта владыки, руководящего расширением и дипломатией Империи.
+  components:
+  - type: Sprite
+    layers:
+    - state: image17
+      color: "#b3caff"
+  - type: PresetIdCard
+    job: SWDarkCouncilExpansionDiplomacy
+
+- type: entity
+  parent: BasePDA
+  id: SWDarkCouncilExpansionDiplomacyPDA
+  name: КПК владыки сферы расширения и дипломатии
+  description: Персональный датапад члена Тёмного совета.
+  components:
+  - type: Appearance
+    appearanceDataInit:
+      enum.PdaVisuals.PdaType: !type:String pda-syndi-commander
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      state: pda-syndi-commander
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+  - type: Icon
+    sprite: Objects/Devices/pda.rsi
+    state: pda-syndi-commander
+  - type: PdaBorderColor
+    borderColor: "#b3caff"
+  - type: Pda
+    id: SWDarkCouncilExpansionDiplomacyIDCard
+
+- type: entity
+  parent: Clothing
+  id: SWDarkCouncilBackpack
+  name: имперский рюкзак Тёмного совета
+  description: Рюкзак для личных вещей члена Тёмного совета.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Back/Backpacks/imperialbackpack.rsi
+    state: icon
+  - type: Item
+    size: Huge
+  - type: Clothing
+    quickEquip: false
+    slots:
+    - back
+  - type: Storage
+    grid:
+    - 0,0,8,4
+    maxItemSize: Huge
+  - type: ContainerContainer
+    containers:
+      storagebase: !type:Container
+        ents: []
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+  - type: UseDelay
+    delay: 0.5
+  - type: Tag
+    tags:
+    - WhitelistChameleon
+    - Backpack

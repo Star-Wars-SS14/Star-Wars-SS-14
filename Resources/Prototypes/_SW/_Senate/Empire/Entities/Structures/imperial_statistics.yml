@@ -1,0 +1,8 @@
+- type: entity
+  parent: SWStatisticsConsole
+  id: SWEmpireStatisticsConsole
+  name: консоль хозяйства Империи
+  description: Сектора, системы и снабжение Ситхской империи.
+  components:
+  - type: SWStatisticsConsole
+    faction: empire

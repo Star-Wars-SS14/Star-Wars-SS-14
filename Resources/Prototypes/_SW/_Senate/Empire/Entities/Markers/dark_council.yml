@@ -1,0 +1,99 @@
+- type: entity
+  id: SWSpawnPointDarkCouncilMilitaryOffense
+  parent: SpawnPointJobBase
+  suffix: Тёмный совет
+  name: Владыка Сферы военного наступления
+  components:
+  - type: SpawnPoint
+    job_id: SWDarkCouncilMilitaryOffense
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointDarkCouncilMilitaryOffenseLJ
+  parent: SpawnPointJobBase
+  suffix: Тёмный совет
+  name: Владыка Сферы военного наступления (позднее прибытие)
+  components:
+  - type: SpawnPoint
+    job_id: SWDarkCouncilMilitaryOffense
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointDarkCouncilIntelligence
+  parent: SpawnPointJobBase
+  suffix: Тёмный совет
+  name: Владыка Пирамиды Имперской разведки
+  components:
+  - type: SpawnPoint
+    job_id: SWDarkCouncilIntelligence
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointDarkCouncilIntelligenceLJ
+  parent: SpawnPointJobBase
+  suffix: Тёмный совет
+  name: Владыка Пирамиды Имперской разведки (позднее прибытие)
+  components:
+  - type: SpawnPoint
+    job_id: SWDarkCouncilIntelligence
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointDarkCouncilProductionLogistics
+  parent: SpawnPointJobBase
+  suffix: Тёмный совет
+  name: Владыка Сферы производства и логистики
+  components:
+  - type: SpawnPoint
+    job_id: SWDarkCouncilProductionLogistics
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointDarkCouncilProductionLogisticsLJ
+  parent: SpawnPointJobBase
+  suffix: Тёмный совет
+  name: Владыка Сферы производства и логистики (позднее прибытие)
+  components:
+  - type: SpawnPoint
+    job_id: SWDarkCouncilProductionLogistics
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointDarkCouncilExpansionDiplomacy
+  parent: SpawnPointJobBase
+  suffix: Тёмный совет
+  name: Владыка Сферы расширения и дипломатии
+  components:
+  - type: SpawnPoint
+    job_id: SWDarkCouncilExpansionDiplomacy
+  - type: Sprite
+    layers:
+    - state: green
+
+- type: entity
+  id: SWSpawnPointDarkCouncilExpansionDiplomacyLJ
+  parent: SpawnPointJobBase
+  suffix: Тёмный совет
+  name: Владыка Сферы расширения и дипломатии (позднее прибытие)
+  components:
+  - type: SpawnPoint
+    job_id: SWDarkCouncilExpansionDiplomacy
+    spawn_type: LateJoinByJob
+  - type: Sprite
+    layers:
+    - state: green

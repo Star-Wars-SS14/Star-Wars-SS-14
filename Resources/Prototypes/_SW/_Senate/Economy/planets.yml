@@ -76,25 +76,100 @@
 
 - type: swPlanetEconomy
   id: korriban
-  activeEconomy: false
-  populationUnits: 0
-  baseloadPower: 0
-  laborCapacity: 0
-  bufferHours: 0
-  facilities: []
-  conditions: []
-  naturalResources: []
+  activeEconomy: true
+  populationUnits: 6.39408025
+  baseloadPower: 47.251931
+  laborCapacity: 90.6321675
+  bufferHours: 8
+  facilities:
+  - chemworks
+  - civilworks
+  - electronics
+  - farm
+  - foodworks
+  - machineworks
+  - mine
+  - quarry
+  - refinery
+  - smelter
+  - textileworks
+  - waterworks
+  conditions:
+  - arable
+  - chemical_deposit
+  - metal_deposit
+  - mineral_deposit
+  - water_source
+  naturalResources:
+  - condition: arable
+    baselineYieldPerHour:
+      crops: 0.123409467
+      fibers: 1.495533039
+  - condition: chemical_deposit
+    baselineYieldPerHour:
+      chemical_feedstock: 19.78845443
+  - condition: metal_deposit
+    baselineYieldPerHour:
+      metal_ore: 4.87784047
+  - condition: mineral_deposit
+    baselineYieldPerHour:
+      minerals: 1.028235145
+  - condition: water_source
+    baselineYieldPerHour:
+      water: 13.8379578
 
 - type: swPlanetEconomy
   id: dromund_kaas
-  activeEconomy: false
-  populationUnits: 0
-  baseloadPower: 0
-  laborCapacity: 0
-  bufferHours: 0
-  facilities: []
-  conditions: []
-  naturalResources: []
+  activeEconomy: true
+  populationUnits: 9.59112038
+  baseloadPower: 71.0623554
+  laborCapacity: 84.2032421
+  bufferHours: 8
+  facilities:
+  - chemworks
+  - bioreactor
+  - civilworks
+  - crafts
+  - electronics
+  - farm
+  - fishery
+  - foodworks
+  - machineworks
+  - mine
+  - pharma
+  - refinery
+  - smelter
+  - waterworks
+  conditions:
+  - arable
+  - fish_stock
+  - fuel_deposit
+  - medical_biome
+  - metal_deposit
+  - rare_deposit
+  - water_source
+  naturalResources:
+  - condition: arable
+    baselineYieldPerHour:
+      crops: 3.16998801
+  - condition: fish_stock
+    baselineYieldPerHour:
+      protein: 8.32986926
+  - condition: fuel_deposit
+    baselineYieldPerHour:
+      raw_fuel: 21
+  - condition: medical_biome
+    baselineYieldPerHour:
+      medical_biomass: 0.209802681
+  - condition: metal_deposit
+    baselineYieldPerHour:
+      metal_ore: 1.04287308
+  - condition: rare_deposit
+    baselineYieldPerHour:
+      rare_ore: 0.438053307
+  - condition: water_source
+    baselineYieldPerHour:
+      water: 15.5958785
 
 - type: swPlanetEconomy
   id: voss
@@ -216,14 +291,52 @@
 
 - type: swPlanetEconomy
   id: balmorra
-  activeEconomy: false
-  populationUnits: 0
-  baseloadPower: 0
-  laborCapacity: 0
-  bufferHours: 0
-  facilities: []
-  conditions: []
-  naturalResources: []
+  activeEconomy: true
+  populationUnits: 3.99847798
+  baseloadPower: 14.3823249
+  laborCapacity: 65.8050166
+  bufferHours: 8
+  facilities:
+  - bioreactor
+  - chemworks
+  - controlled_lab
+  - electronics
+  - farm
+  - foodworks
+  - machineworks
+  - mine
+  - pharma
+  - refinery
+  - shipyard
+  - waterworks
+  conditions:
+  - arable
+  - chemical_deposit
+  - fuel_deposit
+  - licensed_arms
+  - licensed_stims
+  - medical_biome
+  - rare_deposit
+  - water_source
+  naturalResources:
+  - condition: arable
+    baselineYieldPerHour:
+      crops: 1.52096073
+      fibers: 0.665364878
+  - condition: chemical_deposit
+    baselineYieldPerHour:
+      chemical_feedstock: 4.72682351
+  - condition: fuel_deposit
+    baselineYieldPerHour:
+      raw_fuel: 0.946368595
+  - condition: medical_biome
+    baselineYieldPerHour:
+      medical_biomass: 0.284002525
+  - condition: water_source
+    baselineYieldPerHour:
+      water: 7.54769434
+  - condition: rare_deposit
+    baselineYieldPerHour: {}
 
 - type: swPlanetEconomy
   id: corellia
@@ -370,37 +483,56 @@
 - type: swPlanetEconomy
   id: sullust
   activeEconomy: true
-  populationUnits: 2.75
-  baseloadPower: 5.75
-  laborCapacity: 19
+  populationUnits: 8.78968252
+  baseloadPower: 82.4058145
+  laborCapacity: 156.941609
   bufferHours: 8
   facilities:
-  - waterworks
-  - mine
-  - smelter
-  - machineworks
-  - refinery
-  - chemworks
   - arsenal
+  - buildingworks
+  - chemworks
+  - civilworks
+  - machineworks
+  - medtech
+  - mine
+  - precision
+  - quarry
+  - refinery
+  - salvage
+  - smelter
+  - waterworks
   conditions:
-  - water_source
-  - metal_deposit
-  - rare_deposit
+  - chemical_deposit
+  - crystal_deposit
   - fuel_deposit
   - licensed_arms
+  - metal_deposit
+  - mineral_deposit
+  - rare_deposit
+  - scrap_feed
+  - water_source
   naturalResources:
-  - condition: water_source
+  - condition: chemical_deposit
     baselineYieldPerHour:
-      water: 2.7336150408868347
-  - condition: metal_deposit
+      chemical_feedstock: 14.9336246
+  - condition: crystal_deposit
     baselineYieldPerHour:
-      metal_ore: 0.30913771148927316
-  - condition: rare_deposit
-    baselineYieldPerHour:
-      rare_ore: 0.1407416375302441
+      raw_crystals: 0.294472443
   - condition: fuel_deposit
     baselineYieldPerHour:
-      raw_fuel: 1.1335282453339595
+      raw_fuel: 21.3926719
+  - condition: metal_deposit
+    baselineYieldPerHour:
+      metal_ore: 4.01177914
+  - condition: mineral_deposit
+    baselineYieldPerHour:
+      minerals: 1.2540405
+  - condition: rare_deposit
+    baselineYieldPerHour:
+      rare_ore: 0.335211887
+  - condition: water_source
+    baselineYieldPerHour:
+      water: 29.2485516
 
 - type: swPlanetEconomy
   id: eriadu

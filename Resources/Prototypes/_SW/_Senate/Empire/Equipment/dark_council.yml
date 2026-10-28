@@ -1,0 +1,58 @@
+- type: startingGear
+  id: SWDarkCouncilMilitaryOffenseGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitSith
+    shoes: SWClothingShoesBootsSith
+    gloves: ClothingHandsGlovesColorBlack
+    belt: SWSithBelt
+    neck: SWClothingNeckCloakSithCloak
+    ears: SWDarkCouncilHeadset
+    back: SWDarkCouncilBackpack
+    id: SWDarkCouncilMilitaryOffensePDA
+    pocket1: SWEnergySwordSith
+    pocket2: Pen
+    outerClothing: SWSithSuit1
+
+- type: startingGear
+  id: SWDarkCouncilIntelligenceGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitSith
+    shoes: SWClothingShoesBootsSith
+    gloves: ClothingHandsGlovesColorBlack
+    belt: SWSithBelt
+    neck: SWClothingNeckCloakSithCloak
+    ears: SWDarkCouncilHeadset
+    back: SWDarkCouncilBackpack
+    id: SWDarkCouncilIntelligencePDA
+    pocket1: SWEnergySwordSith
+    pocket2: Pen
+    outerClothing: SWSithSuit2
+
+- type: startingGear
+  id: SWDarkCouncilProductionLogisticsGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitSith
+    shoes: SWClothingShoesBootsSith
+    gloves: ClothingHandsGlovesColorBlack
+    belt: SWSithBelt
+    neck: SWClothingNeckCloakSithCloak
+    ears: SWDarkCouncilHeadset
+    back: SWDarkCouncilBackpack
+    id: SWDarkCouncilProductionLogisticsPDA
+    pocket1: SWEnergySwordSith
+    pocket2: Pen
+    outerClothing: SWSithCoat
+
+- type: startingGear
+  id: SWDarkCouncilExpansionDiplomacyGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitSith
+    shoes: SWClothingShoesBootsSith
+    gloves: ClothingHandsGlovesColorBlack
+    belt: SWSithBelt
+    neck: SWClothingNeckCloakSithCloak
+    ears: SWDarkCouncilHeadset
+    back: SWDarkCouncilBackpack
+    id: SWDarkCouncilExpansionDiplomacyPDA
+    pocket1: SWEnergySwordSith
+    pocket2: Pen

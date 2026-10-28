@@ -55,6 +55,10 @@
                                     </BoxContainer>
                                 </PanelContainer>
                                 <RichTextLabel Name="Availability" />
+                                <BoxContainer Name="MarketInfo" Orientation="Vertical" SeparationOverride="8" Visible="False">
+                                    <Label Name="MarketTitle" Text="{Loc 'sw-global-war-market-title'}" />
+                                    <RichTextLabel Name="MarketGoods" />
+                                </BoxContainer>
                             </BoxContainer>
                         </ScrollContainer>
                         <ui:SWGlobalWarConsoleButton Name="Travel" Text="{Loc 'sw-global-war-travel-jump'}" Disabled="True" Visible="False" />

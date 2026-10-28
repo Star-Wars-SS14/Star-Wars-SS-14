@@ -41,6 +41,10 @@ public sealed partial class SWGlobalWarPlanetPrototype : IPrototype
     /// </summary>
     [DataField]
     public HashSet<ProtoId<SWGlobalWarPlanetPrototype>> Connections = new();
+
+    /// <summary>Initial inventory and consumption; runtime stock belongs to the planet controller.</summary>
+    [DataField]
+    public Dictionary<ProtoId<SWGlobalWarCommodityPrototype>, SWGlobalWarMarketGoodConfiguration> Market = new();
 }
 
 public enum SWGlobalWarPlanetLocation : byte

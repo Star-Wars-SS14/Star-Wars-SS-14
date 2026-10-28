@@ -8,3 +8,5 @@
     - SWGlobalWarTestBeta
     - SWGlobalWarTestGamma
     emptyMapPauseDelay: 30
+    autoTradeCapacity: 120
+    autoTradeTravelTime: 30

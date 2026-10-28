@@ -1,4 +1,5 @@
 using Content.Server.GameTicking.Rules;
+using Content.Server._SW.GlobalWar.Market;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.GameTicking;
 
@@ -10,6 +11,7 @@ namespace Content.Server._SW.GlobalWar;
 public sealed class SWGlobalWarGameruleSystem : GameRuleSystem<SWGlobalWarGameruleComponent>
 {
     [Dependency] private readonly SWGlobalWarPlanetSystem _planets = default!;
+    [Dependency] private readonly SWGlobalWarMarketSystem _markets = default!;
 
     [ViewVariables]
     public Entity<SWGlobalWarGameruleComponent>? GlobalWarGamerule { get; private set; }
@@ -56,7 +58,9 @@ public sealed class SWGlobalWarGameruleSystem : GameRuleSystem<SWGlobalWarGameru
 
         try
         {
+            _markets.ValidateConfiguration(component);
             _planets.InitializePlanets();
+            _markets.InitializeMarkets();
         }
         catch
         {
@@ -69,6 +73,7 @@ public sealed class SWGlobalWarGameruleSystem : GameRuleSystem<SWGlobalWarGameru
         GameRuleComponent gameRule, GameRuleEndedEvent args)
     {
         base.Ended(uid, component, gameRule, args);
+        _markets.StopMarkets(uid);
         _planets.StopPlanets((uid, component));
         if (GlobalWarGamerule?.Owner == uid)
             GlobalWarGamerule = null;
@@ -76,6 +81,7 @@ public sealed class SWGlobalWarGameruleSystem : GameRuleSystem<SWGlobalWarGameru
 
     private void OnShutdown(Entity<SWGlobalWarGameruleComponent> ent, ref ComponentShutdown args)
     {
+        _markets.StopMarkets(ent.Owner);
         _planets.StopPlanets(ent);
         if (GlobalWarGamerule?.Owner == ent.Owner)
             GlobalWarGamerule = null;

@@ -1,4 +1,5 @@
 using System.Numerics;
+using Content.Server._SW.GlobalWar.Market;
 using Content.Server.Popups;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Shuttles.Components;
@@ -26,6 +27,7 @@ namespace Content.Server._SW.GlobalWar;
 public sealed class SWGlobalWarTravelSystem : EntitySystem
 {
     [Dependency] private readonly SWGlobalWarPlanetSystem _planets = default!;
+    [Dependency] private readonly SWGlobalWarMarketSystem _markets = default!;
     [Dependency] private readonly SWGlobalWarGameruleSystem _globalWarGamerule = default!;
     [Dependency] private readonly ShuttleSystem _shuttles = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
@@ -276,7 +278,7 @@ public sealed class SWGlobalWarTravelSystem : EntitySystem
             {
                 var reason = string.Empty;
                 var available = valid && CheckDestination(console, ship, planet, id, out _, out reason);
-                entries.Add(new SWGlobalWarTravelDestination(id, _prototypes.Index(id).Name, available, reason));
+                entries.Add(new SWGlobalWarTravelDestination(id, _prototypes.Index(id).Name, available, reason, _markets.GetMarketView(id)));
             }
         }
 

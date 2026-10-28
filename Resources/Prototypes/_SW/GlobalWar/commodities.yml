@@ -1,0 +1,14 @@
+- type: swGlobalWarCommodity
+  id: SWGlobalWarOre
+  name: sw-global-war-commodity-ore
+  cargoVolume: 1
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarFuel
+  name: sw-global-war-commodity-fuel
+  cargoVolume: 1
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarSupplies
+  name: sw-global-war-commodity-supplies
+  cargoVolume: 2

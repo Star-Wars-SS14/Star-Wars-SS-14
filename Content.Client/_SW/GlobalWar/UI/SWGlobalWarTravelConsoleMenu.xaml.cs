@@ -106,6 +106,17 @@ public sealed partial class SWGlobalWarTravelConsoleMenu : FancyWindow
         }
         Availability.Visible = entry.Available || !string.IsNullOrEmpty(entry.Reason);
         Travel.Disabled = !entry.Available;
+        MarketInfo.Visible = entry.Market is { Count: > 0 };
+        if (entry.Market != null)
+        {
+            var descriptions = entry.Market.Select(good => Loc.GetString("sw-global-war-market-good",
+                ("commodity", Loc.GetString(_prototypes.Index(good.Commodity).Name)),
+                ("stock", good.Stock.ToString()), ("target", good.TargetStock.ToString()),
+                ("consumption", good.ConsumptionPerMinute.ToString()),
+                ("demand", good.Demand.ToString()), ("supply", good.Supply.ToString()),
+                ("incoming", good.Incoming.ToString())));
+            SetText(MarketGoods, string.Join("\n\n", descriptions));
+        }
     }
 
     private void UpdateSearch(IReadOnlyList<SWGlobalWarTravelDestination> destinations)
@@ -144,7 +155,8 @@ public sealed partial class SWGlobalWarTravelConsoleMenu : FancyWindow
         HeaderNetwork.FontColorOverride = SWGlobalWarConsoleStyle.Brass;
         HeaderTitle.FontOverride = SWGlobalWarConsoleStyle.Title;
         HeaderTitle.FontColorOverride = SWGlobalWarConsoleStyle.TextBright;
-        InfoTitle.FontOverride = MapTitle.FontOverride = SWGlobalWarConsoleStyle.Strong;
+        InfoTitle.FontOverride = MapTitle.FontOverride = MarketTitle.FontOverride = SWGlobalWarConsoleStyle.Strong;
+        MarketTitle.FontColorOverride = SWGlobalWarConsoleStyle.Brass;
         InfoTitle.FontColorOverride = SWGlobalWarConsoleStyle.Brass;
         MapTitle.FontColorOverride = SWGlobalWarConsoleStyle.TextBright;
         PlanetCount.FontOverride = SWGlobalWarConsoleStyle.Small;

@@ -28,7 +28,8 @@ public sealed class SWGlobalWarTravelConsoleState : BoundUserInterfaceState
 }
 
 [Serializable, NetSerializable]
-public sealed record SWGlobalWarTravelDestination(ProtoId<SWGlobalWarPlanetPrototype> Id, string Name, bool Available, string Reason);
+public sealed record SWGlobalWarTravelDestination(ProtoId<SWGlobalWarPlanetPrototype> Id, string Name, bool Available, string Reason,
+    List<SWGlobalWarMarketGoodView>? Market = null);
 
 [Serializable, NetSerializable]
 public sealed class SWGlobalWarTravelRequest : BoundUserInterfaceMessage

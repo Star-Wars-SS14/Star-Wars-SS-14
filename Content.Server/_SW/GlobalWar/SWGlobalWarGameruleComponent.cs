@@ -15,6 +15,14 @@ public sealed partial class SWGlobalWarGameruleComponent : Component
     [DataField]
     public TimeSpan EmptyMapPauseDelay = TimeSpan.FromMinutes(5);
 
+    /// <summary>Maximum cargo volume simultaneously in flight, shared by both directions of each connected pair.</summary>
+    [DataField]
+    public double AutoTradeCapacity = 60;
+
+    /// <summary>Virtual freight travel time per connection, independent of player shuttle FTL settings.</summary>
+    [DataField]
+    public TimeSpan AutoTradeTravelTime = TimeSpan.FromSeconds(30);
+
     /// <summary>
     /// Runtime registry. Entity UIDs are never used as persistent planet identities.
     /// </summary>

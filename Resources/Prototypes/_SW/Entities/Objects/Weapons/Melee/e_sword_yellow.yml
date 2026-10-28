@@ -1,0 +1,10 @@
+# Yellow lightsaber
+- type: entity
+  parent: SWEnergySwordBase
+  id: SWEnergySwordYellow
+  name: Жёлтый световой меч
+  description: Световой меч с жёлтым клинком.
+  components:
+  - type: EnergySword
+    colorOptions:
+      - Yellow

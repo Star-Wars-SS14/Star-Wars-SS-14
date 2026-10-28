@@ -1,11 +1,11 @@
 using System.Linq;
+using Content.Server._SW._Senate.Economy;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Ministries;
 using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
-using Content.Server._SW._Senate.Economy;
 
 namespace Content.Server._SW._Senate.Core;
 
@@ -15,701 +15,352 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
+    [Dependency] private readonly SWMinistrySystem _ministry = default!;
+    [Dependency] private readonly SWRepublicEconomySystem _economy = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
 
     public const string JusticeMinistryId = "SWMinistryJustice";
-
-    private const float TickInterval = 1f;
-
-    private const int MaxActiveCases = 10;
-    private const int BacklogComfort = 4;
-    private readonly SWSenateWorkQueue _arrivalQueue = new(2.5f, 3.5f, 1.25f, 1.5f);
-    private const float OverdueAge = 28f;        // game-hours before a case is dropped
-    private const int InvestigateCost = 200;
-    private const int TribunalHours = 6;
-
-    private static readonly SWCaseType[] CaseTypes =
+    private const int MaxCases = 4, MaxChecks = 2;
+    private sealed class Case
     {
-        SWCaseType.Criminal, SWCaseType.Corruption, SWCaseType.Separatism, SWCaseType.Civil, SWCaseType.Political,
-    };
-
-    private readonly List<SWCourtCase> _cases = new();
-    private readonly List<SWCourtClosed> _archive = new();
-    private int _convictJust, _convictWrong, _acquitJust, _acquitWrong, _dismissed, _overdue;
-    private int _nextCaseId = 1;
-    private float _backlog = 20f;
-    private int _capacity;
-    private SWJusticeStance _stance = SWJusticeStance.Balanced;
-
-    private double _tribunalUntil = -1;
-    private bool _tribunalPending;
-
-    private string? _program;
-    private float _progress;
-
+        public int Id;
+        public SWJusticeInstitutionView Institution = default!;
+        public SWJusticeInspectionPrototype Template = default!;
+        public SWJusticeVariantPrototype Variant = default!;
+        public string Reference = string.Empty, Amount = string.Empty;
+        public readonly HashSet<string> Collected = new();
+        public readonly List<string> Cited = new();
+        public string? Pending;
+        public double CheckUntil, RemedyUntil;
+        public double OpenedAt;
+        public SWJusticeInspectionStage Stage;
+        public SWJusticeConclusion? Conclusion;
+        public SWJusticeRemedy? Remedy;
+        public string Result = string.Empty;
+    }
+    private readonly List<Case> _cases = new(), _archive = new();
     private readonly List<string> _log = new();
-    private int _day = -1;
-    private float _accum;
-
-    public SWJusticeStance Stance => _stance;
-    public int Backlog => (int) MathF.Round(_backlog);
-    public int Capacity => _capacity;
-    public int CapacityMax => CapacityFor(_stance) + (TribunalActive ? 10 : 0);
-    public int CaseCount => _cases.Count;
-    public bool TribunalActive => _tribunalUntil >= 0 && _time.ActiveGameHours < _tribunalUntil;
-    public double TribunalHoursLeft => TribunalActive ? Math.Max(0, _tribunalUntil - _time.ActiveGameHours) : 0;
-    public bool TribunalPending => _tribunalPending;
-    public string? SelectedProgram => _program;
-    public int ProgramProgress => (int) MathF.Round(_progress);
-
-    public void RelieveBacklog(float amount) => _backlog = Math.Clamp(_backlog - amount, 0f, 100f);
+    private readonly List<SWJusticeLogEntry> _journal = new();
+    private int _nextJournalSequence = 1;
+    private readonly Queue<string> _recent = new();
+    private readonly List<(string Sector, double Until)> _wrongRestrictions = new();
+    private readonly List<(string Sector, string Stat, double Until)> _unresolved = new();
+    private readonly List<SWJusticeInstitutionView> _institutions = new();
+    private readonly List<SWJusticeInspectionPrototype> _templates = new();
+    private readonly HashSet<string> _completedSectors = new();
+    private double _now, _arrival, _trustUntil;
+    private float _backlogRelief;
+    private float _conditionAccum;
+    private int _nextId = 1, _correct, _wrong, _fulfilled;
+    private bool _firstComplaint;
+    private bool CanManage => _time.ModeActive && _time.DayActive && MinisterActive;
+    public bool MinisterActive => _ministry.IsHolderActive(JusticeMinistryId);
+    private int Busy => _cases.Count(c => c.Pending != null);
 
     public override void Initialize()
     {
         UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
-
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
-        _accum = 0f;
-        _arrivalQueue.Reset();
-        _cases.Clear();
-        _archive.Clear();
-        _convictJust = _convictWrong = _acquitJust = _acquitWrong = _dismissed = _overdue = 0;
-        _nextCaseId = 1;
-        _backlog = 20f;
-        _capacity = CapacityFor(SWJusticeStance.Balanced);
-        _regenAccum = 0f;
-        _overtimeToday = 0;
-        _stance = SWJusticeStance.Balanced;
-        _tribunalUntil = -1;
-        _tribunalPending = false;
-        _program = null;
-        _progress = 0f;
-        _log.Clear();
-        _day = -1;
+        _cases.Clear(); _archive.Clear(); _log.Clear(); _journal.Clear(); _nextJournalSequence = 1; _recent.Clear(); _wrongRestrictions.Clear(); _unresolved.Clear();
+        _institutions.Clear(); _templates.Clear(); _completedSectors.Clear();
+        _now = _arrival = _trustUntil = 0; _conditionAccum = _backlogRelief = 0; _nextId = 1; _correct = _wrong = _fulfilled = 0; _firstComplaint = false;
+        PublishConditions();
     }
-
-    private void AddLog(string text)
+    private void Log(string message)
     {
-        _log.Insert(0, text);
-        if (_log.Count > 6)
-            _log.RemoveRange(6, _log.Count - 6);
+        _log.Insert(0, message);
+        if (_log.Count > 12) _log.RemoveAt(_log.Count - 1);
     }
-
     public List<string> GetLog() => new(_log);
-
-    private const float RegenHours = 4f;       // courts recover 1 capacity every this many game-hours
-    private const int OvertimeGain = 3;
-    private const int OvertimeBaseCost = 1500;
-    private const int OvertimeStep = 1000;      // each extra overtime session this day costs this much more
-
-    private float _regenAccum;
-    private int _overtimeToday;
-
-    private static int CapacityFor(SWJusticeStance stance) => stance switch
+    private void Journal(Case c, string message)
     {
-        SWJusticeStance.Lenient => 6,
-        SWJusticeStance.Harsh => 9,
-        _ => 7,
-    };
-
-    public int OvertimeCost() => OvertimeBaseCost + _overtimeToday * OvertimeStep;
-    public bool CanBuyOvertime() => _dilemma.GetMinistryBudget(JusticeMinistryId) >= OvertimeCost();
-
-    public bool BuyOvertime()
-    {
-        var cost = OvertimeCost();
-        if (!_dilemma.SpendMinistry(JusticeMinistryId, cost))
-            return false;
-
-        _capacity += OvertimeGain;
-        _overtimeToday++;
-        AddLog($"Назначены сверхурочные слушания: +{OvertimeGain} к ресурсу судов.");
-        return true;
+        _journal.Insert(0, new SWJusticeLogEntry { Sequence = _nextJournalSequence++, CaseId = c.Id, ActiveHours = _now,
+            Day = _time.Day, Hour = _time.CurrentHour, Minute = _time.CurrentMinute,
+            CaseTitle = Expand(c, c.Template.Title), InstitutionName = c.Institution.Name, WorldName = c.Institution.WorldName, Message = message });
+        if (_journal.Count > 200) _journal.RemoveAt(_journal.Count - 1);
+        Log($"Проверка №{c.Id}: {message}");
     }
 
-    public static string StanceName(SWJusticeStance stance) => stance switch
+    private static string KindName(SWJusticeInstitutionKind kind) => kind switch
     {
-        SWJusticeStance.Lenient => "Мягкая",
-        SWJusticeStance.Harsh => "Жёсткая",
-        _ => "Сбалансированная",
+        SWJusticeInstitutionKind.Medical => "Медицинское учреждение",
+        SWJusticeInstitutionKind.Industry => "Промышленное предприятие",
+        SWJusticeInstitutionKind.Port => "Портовая служба",
+        SWJusticeInstitutionKind.Utilities => "Коммунальная служба",
+        SWJusticeInstitutionKind.Procurement => "Служба закупок",
+        _ => "Администрация",
     };
-
-    public static Color StanceColor(SWJusticeStance stance) => stance switch
+    private void EnsureCatalog()
     {
-        SWJusticeStance.Lenient => Color.FromHex("#43D16A"),
-        SWJusticeStance.Harsh => Color.FromHex("#E0556B"),
-        _ => Color.FromHex("#5DADE2"),
-    };
-
-    public string BacklogStatus() => _backlog switch
-    {
-        >= 80f => "Коллапс судов",
-        >= 60f => "Суды перегружены",
-        >= 35f => "Напряжённо",
-        _ => "В норме",
-    };
-
-    private static string TypeName(SWCaseType type) => type switch
-    {
-        SWCaseType.Criminal => "Уголовное",
-        SWCaseType.Corruption => "Коррупция",
-        SWCaseType.Separatism => "Сепаратизм",
-        SWCaseType.Civil => "Гражданское",
-        _ => "Политическое",
-    };
-
-    private static Color TypeColor(SWCaseType type) => type switch
-    {
-        SWCaseType.Criminal => Color.FromHex("#E0556B"),
-        SWCaseType.Corruption => Color.FromHex("#B7950B"),
-        SWCaseType.Separatism => Color.FromHex("#E67E22"),
-        SWCaseType.Civil => Color.FromHex("#5DADE2"),
-        _ => Color.FromHex("#9B59B6"),
-    };
-
-    private static float GuiltProb(SWCaseType type) => type switch
-    {
-        SWCaseType.Criminal => 0.7f,
-        SWCaseType.Corruption => 0.65f,
-        SWCaseType.Separatism => 0.6f,
-        SWCaseType.Civil => 0.45f,
-        _ => 0.38f,
-    };
-
-    private static string EvidenceLabel(float e) => e switch
-    {
-        >= 75f => "неопровержимая",
-        >= 55f => "весомая",
-        >= 35f => "спорная",
-        _ => "слабая",
-    };
-
-    private static string SeverityLabel(int s) => s switch
-    {
-        3 => "особо тяжкое",
-        2 => "тяжкое",
-        _ => "мелкое",
-    };
-
-    public void SetStance(SWJusticeStance stance) => _stance = stance;
-
-    public void SelectProgram(string programId)
-    {
-        if (_proto.HasIndex<SWJusticeProgramPrototype>(programId))
-            _program = programId;
-    }
-
-    // --- Tribunal (Chancellor-ratified) ---
-
-    public void DeclareTribunal()
-    {
-        if (_tribunalPending || TribunalActive)
-            return;
-
-        if (_senate.OfficesVacant)
+        if (_institutions.Count > 0) return;
+        var map = _proto.Index<SWGalacticMapPrototype>("SenateRepublic");
+        var economy = _economy.Definition ?? SWRepublicEconomyFactory.Create(_proto);
+        _templates.AddRange(_proto.EnumeratePrototypes<SWJusticeInspectionPrototype>().Where(p => p.IsValid()).OrderBy(p => p.ID));
+        var active = economy.Worlds.Where(w => w.Active).ToDictionary(w => w.Id);
+        foreach (var world in map.Worlds.OrderBy(w => w.Id))
         {
-            BeginTribunal();
-            return;
-        }
-
-        _tribunalPending = true;
-    }
-
-    public bool ApproveTribunal()
-    {
-        if (!_tribunalPending)
-            return false;
-
-        _tribunalPending = false;
-        BeginTribunal();
-        return true;
-    }
-
-    public bool RejectTribunal()
-    {
-        if (!_tribunalPending)
-            return false;
-
-        _tribunalPending = false;
-        return true;
-    }
-
-    private void BeginTribunal()
-    {
-        _tribunalUntil = _time.ActiveGameHours + TribunalHours;
-        _capacity += 10;
-        AddLog("Чрезвычайные трибуналы запущены.");
-    }
-
-    // --- Case actions ---
-
-    private SWCourtCase? Find(int id) => _cases.FirstOrDefault(c => c.Id == id);
-
-    public bool Investigate(int caseId)
-    {
-        var c = Find(caseId);
-        if (c == null || c.Stage != SWCaseStage.Investigation || _capacity < 1)
-            return false;
-        if (!_dilemma.SpendMinistry(JusticeMinistryId, InvestigateCost))
-            return false;
-
-        _capacity--;
-        var target = c.Guilt ? 88f : 28f;
-        c.Evidence = Math.Clamp(c.Evidence + (target - c.Evidence) * 0.5f + _random.NextFloat(-8f, 8f), 0f, 100f);
-        return true;
-    }
-
-    public bool SendToCourt(int caseId)
-    {
-        var c = Find(caseId);
-        if (c == null || c.Stage != SWCaseStage.Investigation)
-            return false;
-
-        c.Stage = SWCaseStage.Hearing;
-        return true;
-    }
-
-    public bool HoldHearing(int caseId)
-    {
-        var c = Find(caseId);
-        if (c == null || c.Stage != SWCaseStage.Hearing || _capacity < 1)
-            return false;
-
-        _capacity--;
-        c.Stage = SWCaseStage.Verdict;
-        return true;
-    }
-
-    public bool Rule(int caseId, SWVerdict verdict)
-    {
-        var c = Find(caseId);
-        if (c == null || c.Stage != SWCaseStage.Verdict)
-            return false;
-
-        ApplyVerdict(c, verdict);
-        _cases.Remove(c);
-        _backlog = Math.Clamp(_backlog - 6f, 0f, 100f);
-        return true;
-    }
-
-    private void ApplyVerdict(SWCourtCase c, SWVerdict verdict)
-    {
-        var sev = c.Severity;
-        var harsh = _stance == SWJusticeStance.Harsh;
-        var lenient = _stance == SWJusticeStance.Lenient;
-
-        void Sector(string global, float delta)
-        {
-            if (c.SectorId != null && _senate.IsClaimed(c.SectorId))
-                _senate.AddSectorBias(c.SectorId, global, delta);
-        }
-
-        switch (verdict)
-        {
-            case SWVerdict.Convict when c.Guilt:
+            var sector = world.Sector?.Id;
+            if (sector == null || !_proto.TryIndex<SWSectorPrototype>(sector, out var sp)
+                || !active.TryGetValue(world.Id, out var economyWorld)
+                || map.PoliticalAreas.LastOrDefault(a => a.Contains(world.Position))?.Faction != "republic") continue;
+            foreach (var kind in Enum.GetValues<SWJusticeInstitutionKind>())
             {
-                var order = sev * (harsh ? 1.4f : lenient ? 0.7f : 1f);
-                _senate.AddPolicy("SWStatPolice", 1.2f * order);
-                _senate.AddPolicy("SWStatCrime", 1.0f * order);
-                _senate.AddPolicy("SWStatRights", -0.4f * sev * (harsh ? 1.3f : 1f));
-                Sector("SWGlobalSecurity", 1.5f * order);
-                _convictJust++;
-                Archive(c, "Справедливый приговор", 0);
-                break;
-            }
-            case SWVerdict.Convict:
-            {
-                _senate.AddPolicy("SWStatRights", -2.0f * sev * (harsh ? 1.2f : 1f));
-                _senate.AddPolicy("SWStatMorale", -1.2f * sev);
-                _senate.AddPolicy("SWStatPolice", -0.3f * sev);
-                _backlog = Math.Clamp(_backlog + 4f, 0f, 100f);
-                AddLog($"Судебная ошибка по делу #{c.Id} ({TypeName(c.Type)}): осуждён невиновный.");
-                _convictWrong++;
-                Archive(c, "Судебная ошибка", 1);
-                break;
-            }
-            case SWVerdict.Acquit when !c.Guilt:
-            {
-                _senate.AddPolicy("SWStatRights", 1.2f * sev * (lenient ? 1.3f : 1f));
-                _acquitJust++;
-                Archive(c, "Оправдан невиновный", 0);
-                break;
-            }
-            case SWVerdict.Acquit:
-            {
-                _senate.AddPolicy("SWStatCrime", -1.2f * sev);
-                _senate.AddPolicy("SWStatPolice", -1.0f * sev);
-                Sector("SWGlobalSecurity", -1.0f * sev);
-                AddLog($"Виновный по делу #{c.Id} ({TypeName(c.Type)}) оправдан.");
-                _acquitWrong++;
-                Archive(c, "Виновный оправдан", 1);
-                break;
-            }
-            default:
-            {
-                _senate.AddPolicy("SWStatPolice", -0.4f * sev);
-                _dismissed++;
-                Archive(c, "Дело прекращено", 2);
-                break;
+                var exists = kind switch
+                {
+                    SWJusticeInstitutionKind.Medical => economy.Demands.Any(d => d.World == world.Id && d.Rate > 0 && d.Group is "care_drugs" or "care_supplies"),
+                    SWJusticeInstitutionKind.Industry => economy.Production.Any(p => p.World == world.Id && p.Rate > 0),
+                    SWJusticeInstitutionKind.Port => economy.Edges.Any(e => e.CapacitySlotsPerHour > 0 && (e.A == world.Id || e.B == world.Id)),
+                    SWJusticeInstitutionKind.Utilities => economyWorld.BaseloadPower > 0 || economyWorld.DomesticPower > 0 || economyWorld.ReactorCapacityPower > 0,
+                    _ => true,
+                };
+                if (!exists) continue;
+                var id = $"{world.Id}:{kind}";
+                _institutions.Add(new SWJusticeInstitutionView { Id = id, Name = $"{KindName(kind)} — {world.Name}", WorldId = world.Id,
+                    WorldName = world.Name, SectorId = sector, SectorName = sp.Name, Kind = kind, KindName = KindName(kind) });
             }
         }
     }
-
-    private void Archive(SWCourtCase c, string result, int tier)
+    private List<SWJusticeInstitutionView> Institutions(bool admin = false)
     {
-        _archive.Insert(0, new SWCourtClosed { Id = c.Id, Type = c.Type, Result = result, Tier = tier });
-        if (_archive.Count > 25)
-            _archive.RemoveRange(25, _archive.Count - 25);
+        EnsureCatalog();
+        var result = new List<SWJusticeInstitutionView>();
+        foreach (var institution in _institutions)
+        {
+                var id = institution.Id;
+                var occupied = _cases.Any(c => c.Institution.Id == id);
+                var hasTemplate = _templates.Any(p => p.Kind == institution.Kind && _cases.All(c => c.Template.ID != p.ID));
+                var reason = !(admin ? _time.ModeActive && _time.DayActive : CanManage) ? "Министр отсутствует или рабочий день завершён" : occupied ? "Уже проводится проверка" : _cases.Count >= MaxCases ? "Реестр проверок заполнен" : !hasTemplate ? "Нет доступных материалов проверки" : string.Empty;
+                result.Add(new SWJusticeInstitutionView { Id = id, Name = institution.Name, WorldId = institution.WorldId,
+                    WorldName = institution.WorldName, SectorId = institution.SectorId, SectorName = institution.SectorName,
+                    Kind = institution.Kind, KindName = institution.KindName, Available = reason.Length == 0, Reason = reason });
+        }
+        return result;
     }
-
+    public List<SWJusticeInstitutionView> BuildDirectorInstitutions() => Institutions(true);
+    public bool OpenInspection(string institutionId) => OpenInspectionInternal(institutionId, false) != 0;
+    public int AdminOpenInspection(string? institutionId = null)
+    {
+        var available = Institutions(true).Where(i => i.Available && (string.IsNullOrEmpty(institutionId) || i.Id == institutionId)).ToList();
+        return available.Count == 0 ? 0 : OpenInspectionInternal(_random.Pick(available).Id, true);
+    }
+    public bool AdminCancelInspection(int caseId)
+    {
+        if (!_time.ModeActive || !_time.DayActive) return false;
+        var c = _cases.FirstOrDefault(x => x.Id == caseId);
+        if (c == null) return false;
+        _cases.Remove(c); Journal(c, "Проверка отменена директором"); PublishConditions(); return true;
+    }
+    private int OpenInspectionInternal(string institutionId, bool admin, bool complaint = false)
+    {
+        if (!(admin ? _time.ModeActive && _time.DayActive : CanManage) || _cases.Count >= MaxCases) return 0;
+        var institution = Institutions(admin).FirstOrDefault(i => i.Id == institutionId && i.Available);
+        if (institution == null) return 0;
+        var options = _templates.Where(p => p.Kind == institution.Kind
+            && _cases.All(c => c.Template.ID != p.ID)).OrderBy(p => p.ID).ToList();
+        if (options.Count == 0) return 0;
+        var fresh = options.Where(p => !_recent.Contains(p.ID)).ToList();
+        if (fresh.Count > 0) options = fresh;
+        var total = options.Sum(p => p.Weight);
+        var roll = _random.Next(0, total);
+        var template = options[0];
+        foreach (var option in options) { roll -= option.Weight; if (roll < 0) { template = option; break; } }
+        var c = new Case { Id = _nextId++, Institution = institution, Template = template, OpenedAt = _now,
+            Variant = _random.Pick(template.Variants), Reference = $"Р-{_random.Next(10000, 99999)}", Amount = _random.Next(10, 100) * 100 + " кредитов" };
+        _cases.Add(c); _recent.Enqueue(template.ID); if (_recent.Count > 12) _recent.Dequeue();
+        Journal(c, admin ? "Проверка открыта директором" : complaint ? "Поступило обращение, открыта проверка" : "Открыта проверка"); PublishConditions(); return c.Id;
+    }
+    private string Expand(Case c, string text) => text.Replace("{world}", c.Institution.WorldName).Replace("{sector}", c.Institution.SectorName)
+        .Replace("{institution}", c.Institution.Name).Replace("{amount}", c.Amount).Replace("{reference}", c.Reference);
+    public bool RunCheck(int caseId, string checkId)
+    {
+        var c = _cases.FirstOrDefault(x => x.Id == caseId);
+        var check = c?.Template.Checks.FirstOrDefault(x => x.Id == checkId);
+        if (!CanManage || c == null || c.Stage != SWJusticeInspectionStage.Inspecting || check == null || c.Pending != null
+            || Busy >= MaxChecks || c.Collected.Contains(checkId) || !_dilemma.SpendMinistry(JusticeMinistryId, check.Cost)) return false;
+        c.Pending = checkId; c.CheckUntil = _now + check.Hours; Journal(c, $"Назначена проверка «{check.Title}», стоимость {check.Cost} кр"); return true;
+    }
+    public bool Conclude(int caseId, SWJusticeConclusion conclusion, List<string> evidenceIds)
+    {
+        var c = _cases.FirstOrDefault(x => x.Id == caseId);
+        if (!CanManage || c == null || c.Stage != SWJusticeInspectionStage.Inspecting || c.Pending != null
+            || !Enum.IsDefined(conclusion) || evidenceIds == null || evidenceIds.Count < 2
+            || evidenceIds.Distinct().Count() != evidenceIds.Count || evidenceIds.Any(id => !c.Collected.Contains(id))) return false;
+        c.Conclusion = conclusion; c.Cited.AddRange(evidenceIds); c.Stage = SWJusticeInspectionStage.Enforcement;
+        Journal(c, $"Принято заключение: {ConclusionName(conclusion)}"); return true;
+    }
+    private static List<SWJusticeRemedy> Remedies(Case c) => c.Conclusion switch
+    {
+        SWJusticeConclusion.NoViolation => new() { SWJusticeRemedy.Close },
+        SWJusticeConclusion.Negligence => new() { SWJusticeRemedy.CorrectRecords, SWJusticeRemedy.Restitution },
+        SWJusticeConclusion.IntentionalViolation => new() { SWJusticeRemedy.Restitution, SWJusticeRemedy.RestrictOperation },
+        _ => new(),
+    };
+    public bool ApplyRemedy(int caseId, SWJusticeRemedy remedy)
+    {
+        var c = _cases.FirstOrDefault(x => x.Id == caseId);
+        if (!CanManage || c == null || c.Stage != SWJusticeInspectionStage.Enforcement || c.Remedy != null || !Remedies(c).Contains(remedy)) return false;
+        var cost = RemedyCost(remedy);
+        if (cost > 0 && !_dilemma.SpendMinistry(JusticeMinistryId, cost)) return false;
+        c.Remedy = remedy; c.RemedyUntil = _now + RemedyHours(remedy);
+        Journal(c, $"Назначена мера: {RemedyName(remedy)}, стоимость {cost} кр"); PublishConditions(); return true;
+    }
+    public bool FollowUp(int caseId)
+    {
+        var c = _cases.FirstOrDefault(x => x.Id == caseId);
+        if (!CanManage || c == null || c.Stage != SWJusticeInspectionStage.Enforcement || c.Remedy == null || _now < c.RemedyUntil) return false;
+        var correct = c.Conclusion == c.Variant.Conclusion;
+        if (correct) { _correct++; if (c.Remedy != SWJusticeRemedy.Close) _fulfilled++; _completedSectors.Add(c.Institution.SectorId); }
+        else { _wrong++; _trustUntil = Math.Max(_trustUntil, _now + 4); }
+        if (!correct && c.Remedy == SWJusticeRemedy.RestrictOperation) _wrongRestrictions.Add((c.Institution.SectorId, _now + 4));
+        if (!correct && c.Variant.Conclusion != SWJusticeConclusion.NoViolation)
+            _unresolved.Add((c.Institution.SectorId, RelevantStat(c.Institution.Kind), _now + 4));
+        c.Result = correct ? "Заключение подтверждено" : "Повторная проверка выявила ошибочное заключение";
+        c.Stage = SWJusticeInspectionStage.Closed; _cases.Remove(c); _archive.Insert(0, c);
+        if (_archive.Count > 25) _archive.RemoveAt(_archive.Count - 1);
+        Journal(c, $"Проверено исполнение. {c.Result}"); PublishConditions(); return true;
+    }
     public override void Update(float frameTime)
     {
-        frameTime = _time.ActiveSeconds(frameTime);
-        if (frameTime <= 0f)
-            return;
-        if (!_time.ModeActive)
-            return;
-
-        _accum += frameTime;
-        if (_accum < TickInterval)
-            return;
-
-        var dt = _accum;
-        _accum = 0f;
-
-        if (_tribunalPending && _senate.OfficesVacant)
+        var dt = _time.ActiveSeconds(frameTime);
+        if (dt <= 0 || !MinisterActive) return;
+        _now += dt / SWSenateTimeSystem.RealSecondsPerGameHour;
+        _backlogRelief = Math.Max(0, _backlogRelief - dt / SWSenateTimeSystem.RealSecondsPerGameHour);
+        foreach (var c in _cases.Where(c => c.Pending != null && c.CheckUntil <= _now))
         {
-            _tribunalPending = false;
-            BeginTribunal();
+            var completed = c.Pending!;
+            c.Collected.Add(completed); c.Pending = null;
+            var title = c.Template.Checks.First(check => check.Id == completed).Title;
+            Journal(c, $"Получены материалы проверки «{title}»");
         }
-
-        if (_time.Day != _day)
+        if (!_firstComplaint || _now >= _arrival)
         {
-            if (_day != -1)
-                ApplyProgram();
-            _day = _time.Day;
-            _program = null;
-            _progress = 0f;
-            _capacity = CapacityFor(_stance) + (TribunalActive ? 10 : 0);
-            _regenAccum = 0f;
-            _overtimeToday = 0;
+            _firstComplaint = true; _arrival = _now + _random.NextFloat(2f, 3f);
+            var available = Institutions().Where(i => i.Available).ToList();
+            if (available.Count > 0) OpenInspectionInternal(_random.Pick(available).Id, false, true);
         }
-
-        if (!_time.DayActive)
-            return;
-
-        var gameHours = dt * (1f / SWSenateTimeSystem.RealSecondsPerGameHour);
-
-        RegenCapacity(gameHours);
-        SpawnCases(gameHours);
-        AgeCases(gameHours);
-        TickBacklog(gameHours);
-        TickStance(gameHours);
-        TickTribunal(gameHours);
-
-        if (_program != null && _progress < 100f)
+        _conditionAccum += dt;
+        if (_conditionAccum >= 1f)
         {
-            var perHour = 100f / (SWSenateTimeSystem.EndHour - SWSenateTimeSystem.StartHour);
-            _progress = Math.Clamp(_progress + perHour * gameHours, 0f, 100f);
+            _conditionAccum = 0;
+            _wrongRestrictions.RemoveAll(r => r.Until <= _now);
+            _unresolved.RemoveAll(r => r.Until <= _now);
+            PublishConditions();
         }
     }
-
-    // Courts slowly recover throughput through the day, up to their normal ceiling.
-    private void RegenCapacity(float gameHours)
+    private static string RelevantStat(SWJusticeInstitutionKind kind) => kind switch
     {
-        var ceiling = CapacityFor(_stance) + (TribunalActive ? 10 : 0);
-        if (_capacity >= ceiling)
-            return;
-
-        _regenAccum += gameHours;
-        while (_regenAccum >= RegenHours && _capacity < ceiling)
+        SWJusticeInstitutionKind.Medical => "SWStatLiving", SWJusticeInstitutionKind.Industry => "SWStatManufacturing",
+        SWJusticeInstitutionKind.Port => "SWStatTrade", SWJusticeInstitutionKind.Utilities => "SWStatLiving",
+        SWJusticeInstitutionKind.Procurement => "SWStatTreasury", _ => "SWStatMorale",
+    };
+    private void PublishConditions()
+    {
+        // A complaint has the same public effect for all variants; its truth cannot be inferred from statistics.
+        var current = _cases.Select(c => (Sector: c.Institution.SectorId, Stat: RelevantStat(c.Institution.Kind), Value: -.5f));
+        var inspections = current.Concat(_unresolved.Select(r => (r.Sector, r.Stat, Value: -.5f)))
+            .GroupBy(e => (e.Sector, e.Stat)).Select(g => new SWSituationalContribution(g.Key.Sector, g.Key.Stat, Math.Clamp(g.Sum(e => e.Value), -4f, 0f))).ToArray();
+        var restrictionSectors = _wrongRestrictions.Select(r => r.Sector).Concat(_cases.Where(c => c.Remedy == SWJusticeRemedy.RestrictOperation).Select(c => c.Institution.SectorId));
+        var restrictions = restrictionSectors.GroupBy(r => r).Select(g => new SWSituationalContribution(g.Key, "SWStatTrade", Math.Clamp(-g.Count(), -4f, 0f))).ToArray();
+        _senate.ReplaceSituationalContributions("ministry.justice.inspections", inspections);
+        _senate.ReplaceSituationalContributions("ministry.justice.enforcement", restrictions);
+        _senate.ReplaceSituationalContributions("ministry.justice.trust", _trustUntil > _now
+            ? new[] { new SWSituationalContribution(null, "SWStatRights", -2f), new SWSituationalContribution(null, "SWStatMorale", -2f) }
+            : Array.Empty<SWSituationalContribution>());
+    }
+    private SWJusticeCaseView View(Case c, int budget)
+    {
+        var view = new SWJusticeCaseView { Id = c.Id, Title = Expand(c, c.Template.Title), Briefing = Expand(c, c.Template.Briefing),
+            InstitutionId = c.Institution.Id, InstitutionName = c.Institution.Name, WorldId = c.Institution.WorldId, WorldName = c.Institution.WorldName,
+            SectorId = c.Institution.SectorId, SectorName = c.Institution.SectorName, Stage = c.Stage, SelectedConclusion = c.Conclusion,
+            SelectedRemedy = c.Remedy, CitedEvidenceIds = new List<string>(c.Cited), RemedyEtaHours = c.Remedy == null ? 0 : Math.Max(0, c.RemedyUntil - _now),
+            CanConclude = CanManage && c.Stage == SWJusticeInspectionStage.Inspecting && c.Pending == null && c.Collected.Count >= 2,
+            CanFollowUp = CanManage && c.Stage == SWJusticeInspectionStage.Enforcement && c.Remedy != null && _now >= c.RemedyUntil };
+        foreach (var check in c.Template.Checks)
         {
-            _capacity++;
-            _regenAccum -= RegenHours;
+            var collected = c.Collected.Contains(check.Id); var pending = c.Pending == check.Id;
+            if (collected) view.Evidence.Add(new SWJusticeEvidenceView { CheckId = check.Id, Title = check.Title, Text = Expand(c, c.Variant.Evidence[check.Id]) });
+            var reason = !CanManage ? "Министр отсутствует или рабочий день завершён" : c.Stage != SWJusticeInspectionStage.Inspecting ? "Заключение уже принято" : collected ? "Материал получен" : pending ? "Материал запрошен" : c.Pending != null ? "Другая проверка учреждения выполняется" : Busy >= MaxChecks ? "Все специалисты заняты" : budget < check.Cost ? "Недостаточно средств" : string.Empty;
+            view.Checks.Add(new SWJusticeCheckView { Id = check.Id, Title = check.Title, Cost = check.Cost, Hours = check.Hours, Available = reason.Length == 0,
+                Reason = reason, Completed = collected, Pending = pending, EtaHours = pending ? Math.Max(0, c.CheckUntil - _now) : 0 });
         }
-    }
-
-    private void SpawnCases(float gameHours)
-    {
-        if (_arrivalQueue.Tick(_random, gameHours,
-            _cases.Count + _dilemma.PendingWork(JusticeMinistryId), MaxActiveCases))
-            CreateCase(_random.Pick(CaseTypes));
-    }
-
-    private void CreateCase(SWCaseType type)
-    {
-        var holders = _senate.SectorHolders.Keys.ToList();
-        _cases.Add(new SWCourtCase
+        if (c.Stage == SWJusticeInspectionStage.Enforcement && c.Remedy == null && CanManage)
         {
-            Id = _nextCaseId++,
-            Type = type,
-            Stage = SWCaseStage.Investigation,
-            Guilt = _random.Prob(GuiltProb(type)),
-            Evidence = _random.NextFloat(35f, 60f),
-            Severity = _random.Next(1, 4),
-            SectorId = holders.Count > 0 && _random.Prob(0.5f) ? _random.Pick(holders) : null,
-            Age = 0f,
-        });
-    }
-
-    // --- Admin (swcase) ---
-
-    public bool AdminAddCase(SWCaseType? type)
-    {
-        if (_cases.Count >= MaxActiveCases)
-            return false;
-
-        CreateCase(type ?? _random.Pick(CaseTypes));
-        return true;
-    }
-
-    public void ClearCases() => _cases.Clear();
-
-    public void SetBacklog(float value) => _backlog = Math.Clamp(value, 0f, 100f);
-
-    public string AdminStatus() =>
-        $"Дел: {_cases.Count}/{MaxActiveCases}, нагрузка {Backlog}/100 ({BacklogStatus()}), ресурс {_capacity}/{CapacityMax}, политика {StanceName(_stance)}.";
-
-    private void AgeCases(float gameHours)
-    {
-        for (var i = _cases.Count - 1; i >= 0; i--)
-        {
-            var c = _cases[i];
-            c.Age += gameHours;
-            if (c.Age < OverdueAge)
-                continue;
-
-            // Overdue: dropped without justice - order and trust suffer.
-            _senate.AddPolicy("SWStatPolice", -0.5f * c.Severity);
-            _senate.AddPolicy("SWStatRights", -0.3f * c.Severity);
-            _backlog = Math.Clamp(_backlog + 3f, 0f, 100f);
-            AddLog($"Дело #{c.Id} ({TypeName(c.Type)}) просрочено и прекращено.");
-            _overdue++;
-            Archive(c, "Просрочено", 1);
-            _cases.RemoveAt(i);
+            view.AvailableRemedies = Remedies(c).Where(r => budget >= RemedyCost(r)).ToList();
+            view.RemedyOptions = Remedies(c).Select(r => new SWJusticeRemedyOptionView { Remedy = r, Cost = RemedyCost(r), Hours = RemedyHours(r),
+                Available = budget >= RemedyCost(r), Reason = budget >= RemedyCost(r) ? string.Empty : "Недостаточно средств" }).ToList();
         }
+        if (c.Stage == SWJusticeInspectionStage.Closed) { view.ActualConclusion = c.Variant.Conclusion; view.Explanation = Expand(c, c.Variant.Explanation); view.Result = c.Result; }
+        return view;
     }
-
-    private void TickBacklog(float gameHours)
-    {
-        var over = Math.Max(0, _cases.Count - BacklogComfort);
-        var scale = _senate.StatPressureScale("SWGlobalSecurity", 1f);
-
-        if (over > 0)
-            _backlog = Math.Clamp(_backlog + over * 0.4f * scale * gameHours, 0f, 100f);
-        else
-            _backlog = Math.Clamp(_backlog - 0.6f * gameHours, 0f, 100f);
-
-        if (_backlog >= 70f)
-        {
-            _senate.AddPolicy("SWStatPolice", -0.2f * gameHours);
-            _senate.AddPolicy("SWStatRights", -0.15f * gameHours);
-        }
-    }
-
-    private void TickStance(float gameHours)
-    {
-        switch (_stance)
-        {
-            case SWJusticeStance.Lenient:
-                _senate.AddPolicy("SWStatRights", 0.15f * gameHours);
-                _senate.AddPolicy("SWStatPolice", -0.1f * gameHours);
-                break;
-            case SWJusticeStance.Harsh:
-                _senate.AddPolicy("SWStatPolice", 0.15f * gameHours);
-                _senate.AddPolicy("SWStatCrime", 0.1f * gameHours);
-                _senate.AddPolicy("SWStatRights", -0.15f * gameHours);
-                break;
-        }
-    }
-
-    private void TickTribunal(float gameHours)
-    {
-        if (!TribunalActive)
-            return;
-
-        _backlog = Math.Clamp(_backlog - 4f * gameHours, 0f, 100f);
-        _senate.AddPolicy("SWStatPolice", 0.3f * gameHours);
-        _senate.AddPolicy("SWStatRights", -0.5f * gameHours);
-        _senate.AddPolicy("SWStatMorale", -0.2f * gameHours);
-    }
-
-    private void ApplyProgram()
-    {
-        if (_program == null || !_proto.TryIndex<SWJusticeProgramPrototype>(_program, out var proto))
-            return;
-
-        var scale = _progress / 100f;
-        if (scale <= 0f)
-            return;
-
-        foreach (var (sub, delta) in proto.PolicyEffects)
-            _senate.AddPolicy(sub, delta * scale);
-
-        if (proto.BacklogDelta != 0f)
-            _backlog = Math.Clamp(_backlog + proto.BacklogDelta * scale, 0f, 100f);
-    }
-
-    // Justice requests ease when courts are orderly and bite when the docket is swamped.
-    public (float Cost, float Effect) GetRequestModifier(string? sectorId)
-    {
-        var cost = 1f;
-        var effect = 1f;
-
-        if (_backlog >= 60f)
-        {
-            cost *= 1.25f;
-            effect *= 0.85f;
-        }
-        else if (_backlog <= 25f)
-        {
-            effect *= 1.15f;
-        }
-
-        return (cost, effect);
-    }
-
-    public void OnSectorEngagement(string? sectorId)
-    {
-        _backlog = Math.Clamp(_backlog - 4f, 0f, 100f);
-    }
-
-    public int ConvictJust => _convictJust;
-    public int ConvictWrong => _convictWrong;
-    public int AcquitJust => _acquitJust;
-    public int AcquitWrong => _acquitWrong;
-    public int Dismissed => _dismissed;
-    public int Overdue => _overdue;
-    public int Resolved => _convictJust + _convictWrong + _acquitJust + _acquitWrong + _dismissed + _overdue;
-
-    public int Accuracy()
-    {
-        var judged = _convictJust + _convictWrong + _acquitJust + _acquitWrong;
-        return judged > 0 ? (int) MathF.Round((_convictJust + _acquitJust) / (float) judged * 100f) : 0;
-    }
-
-    public List<SWClosedCaseEntry> BuildArchive()
-    {
-        var list = new List<SWClosedCaseEntry>();
-        foreach (var closed in _archive)
-        {
-            list.Add(new SWClosedCaseEntry
-            {
-                Id = closed.Id,
-                TypeLabel = TypeName(closed.Type),
-                TypeColor = TypeColor(closed.Type),
-                ResultLabel = closed.Result,
-                ResultColor = closed.Tier switch
-                {
-                    0 => Color.FromHex("#43D16A"),
-                    1 => Color.FromHex("#E0556B"),
-                    _ => Color.FromHex("#888888"),
-                },
-            });
-        }
-
-        return list;
-    }
-
-    public List<SWCaseEntry> BuildCases()
+    public SWJusticeInspectionState BuildInspectionState()
     {
         var budget = _dilemma.GetMinistryBudget(JusticeMinistryId);
-        var list = new List<SWCaseEntry>();
-        foreach (var c in _cases)
-        {
-            var sectorName = c.SectorId != null && _proto.TryIndex<SWSectorPrototype>(c.SectorId, out var sp) ? sp.Name : string.Empty;
-            list.Add(new SWCaseEntry
-            {
-                Id = c.Id,
-                Stage = c.Stage,
-                TypeLabel = TypeName(c.Type),
-                TypeColor = TypeColor(c.Type),
-                StageLabel = c.Stage switch
-                {
-                    SWCaseStage.Investigation => "Расследование",
-                    SWCaseStage.Hearing => "Слушание",
-                    _ => "Приговор",
-                },
-                Evidence = (int) MathF.Round(c.Evidence),
-                EvidenceLabel = EvidenceLabel(c.Evidence),
-                SeverityLabel = SeverityLabel(c.Severity),
-                AgeLabel = $"{(int) MathF.Floor(c.Age)} ч в реестре",
-                SectorName = sectorName,
-                CanInvestigate = c.Stage == SWCaseStage.Investigation && _capacity >= 1 && budget >= InvestigateCost,
-                CanSendToCourt = c.Stage == SWCaseStage.Investigation,
-                CanHold = c.Stage == SWCaseStage.Hearing && _capacity >= 1,
-                AtVerdict = c.Stage == SWCaseStage.Verdict,
-            });
-        }
-
-        // Verdict-ready first, then by age.
-        list.Sort((a, b) =>
-        {
-            if (a.AtVerdict != b.AtVerdict)
-                return a.AtVerdict ? -1 : 1;
-            return b.Id.CompareTo(a.Id);
-        });
-        return list;
+        var institutions = Institutions();
+        return new SWJusticeInspectionState { NowHours = _now, RealSecondsPerHour = SWSenateTimeSystem.RealSecondsPerGameHour,
+            ClockRunning = CanManage, MinisterActive = MinisterActive, Budget = budget, CaseCap = MaxCases, CheckCap = MaxChecks, BusyChecks = Busy,
+            Workload = Backlog, WorkloadStatus = BacklogStatus(),
+            Worlds = institutions.GroupBy(i => i.WorldId).Select(g => new SWJusticeWorldView { Id = g.Key, Name = g.First().WorldName,
+                SectorId = g.First().SectorId, SectorName = g.First().SectorName }).ToList(), Institutions = institutions,
+            ActiveCases = _cases.Select(c => View(c, budget)).ToList(), Archive = _archive.Select(c => View(c, budget)).ToList(), Log = GetLog(), Journal = new List<SWJusticeLogEntry>(_journal) };
     }
 
-    public List<SWDefenseProgramEntry> BuildPrograms()
-    {
-        var list = new List<SWDefenseProgramEntry>();
-        foreach (var proto in _proto.EnumeratePrototypes<SWJusticeProgramPrototype>().OrderBy(p => p.Order))
-        {
-            var entry = new SWDefenseProgramEntry
-            {
-                Id = proto.ID,
-                Name = proto.Name,
-                Description = proto.Description,
-                Selected = proto.ID == _program,
-                Effects = PolicyEffectEntries(proto.PolicyEffects),
-            };
-
-            if (proto.BacklogDelta != 0f)
-                entry.Effects.Add(new SWBillEffectEntry { StatName = "Нагрузка", Color = Color.FromHex("#E0A23B"), Delta = proto.BacklogDelta });
-
-            list.Add(entry);
-        }
-
-        return list;
-    }
-
-    private List<SWBillEffectEntry> PolicyEffectEntries(Dictionary<ProtoId<SWStatPrototype>, float> effects)
-    {
-        var list = new List<SWBillEffectEntry>();
-        foreach (var sub in _proto.EnumeratePrototypes<SWStatPrototype>().OrderBy(s => s.Order))
-        {
-            if (!effects.TryGetValue(sub.ID, out var delta))
-                continue;
-
-            var color = _proto.TryIndex(sub.Global, out var global) ? global.Color : Color.White;
-            list.Add(new SWBillEffectEntry { StatName = sub.ShortName, Color = color, Delta = delta });
-        }
-
-        return list;
-    }
-}
-
-public sealed class SWCourtCase
-{
-    public int Id;
-    public SWCaseType Type;
-    public SWCaseStage Stage;
-    public bool Guilt;
-    public float Evidence;
-    public int Severity;
-    public string? SectorId;
-    public float Age;
-}
-
-public sealed class SWCourtClosed
-{
-    public int Id;
-    public SWCaseType Type;
-    public string Result = string.Empty;
-    public int Tier;
+    // Legacy court controls are deliberately inert; court adjudication is outside the ministry.
+    public SWJusticeStance Stance => SWJusticeStance.Balanced;
+    public static string StanceName(SWJusticeStance stance) => "Ведомственный надзор";
+    public static Color StanceColor(SWJusticeStance stance) => Color.FromHex("#5DADE2");
+    private static int RemedyCost(SWJusticeRemedy remedy) => remedy switch
+    { SWJusticeRemedy.CorrectRecords => 200, SWJusticeRemedy.Restitution => 350, SWJusticeRemedy.RestrictOperation => 250, _ => 0 };
+    private static double RemedyHours(SWJusticeRemedy remedy) => remedy switch
+    { SWJusticeRemedy.Close => .5, SWJusticeRemedy.CorrectRecords => 1, SWJusticeRemedy.RestrictOperation => 1.5, _ => 2 };
+    private static string ConclusionName(SWJusticeConclusion conclusion) => conclusion switch
+    { SWJusticeConclusion.NoViolation => "Нарушений нет", SWJusticeConclusion.Negligence => "Халатность", _ => "Умышленное нарушение" };
+    private static string RemedyName(SWJusticeRemedy remedy) => remedy switch
+    { SWJusticeRemedy.Close => "Закрыть проверку", SWJusticeRemedy.CorrectRecords => "Исправить документы", SWJusticeRemedy.Restitution => "Возместить ущерб", _ => "Ограничить работу" };
+    public int Backlog => (int) Math.Clamp(_cases.Count * 12 + _cases.Sum(c => Math.Max(0, _now - c.OpenedAt)) + Overdue * 8 - _backlogRelief, 0, 100);
+    public string BacklogStatus() => Backlog switch
+    { >= 80 => "Критическая нагрузка", >= 60 => "Высокая нагрузка", >= 35 => "Повышенная нагрузка", _ => "Нагрузка в норме" };
+    public int Capacity => MaxChecks - Busy;
+    public int CapacityMax => MaxChecks;
+    public int CaseCount => _cases.Count;
+    public bool TribunalActive => false;
+    public double TribunalHoursLeft => 0;
+    public bool TribunalPending => false;
+    public string? SelectedProgram => null;
+    public int ProgramProgress => 0;
+    public int OvertimeCost() => 0;
+    public bool CanBuyOvertime() => false;
+    public bool BuyOvertime() => false;
+    public void SetStance(SWJusticeStance stance) { }
+    public void SelectProgram(string id) { }
+    public void DeclareTribunal() { }
+    public bool ApproveTribunal() => false;
+    public bool RejectTribunal() => false;
+    public bool Investigate(int id) => false;
+    public bool SendToCourt(int id) => false;
+    public bool HoldHearing(int id) => false;
+    public bool Rule(int id, SWVerdict verdict) => false;
+    public void ClearCases() { foreach (var c in _cases) Journal(c, "Проверка отменена"); _cases.Clear(); PublishConditions(); }
+    public void RelieveBacklog(float amount) => _backlogRelief = Math.Clamp(_backlogRelief + Math.Max(0, amount), 0, 100);
+    public string AdminStatus() => BacklogStatus();
+    public (float Cost, float Effect) GetRequestModifier(string? sectorId) => Backlog switch
+    { >= 60 => (1.25f, .85f), <= 25 => (1f, 1.15f), _ => (1f, 1f) };
+    public void OnSectorEngagement(string? sectorId) => RelieveBacklog(4f);
+    public int ConvictJust => _correct;
+    public int ConvictWrong => _wrong;
+    public int AcquitJust => 0;
+    public int AcquitWrong => 0;
+    public int Dismissed => 0;
+    public int Overdue => _cases.Count(c => _now - c.OpenedAt >= 12);
+    public int CorrectInspections => _correct;
+    public int WrongInspections => _wrong;
+    public int FulfilledInspections => _fulfilled;
+    public int CompletedSectors => _completedSectors.Count;
+    public int Resolved => _correct + _wrong;
+    public int Accuracy() => Resolved == 0 ? 0 : (int) MathF.Round(_correct * 100f / Resolved);
+    public List<SWClosedCaseEntry> BuildArchive() => new();
+    public List<SWCaseEntry> BuildCases() => new();
+    public List<SWDefenseProgramEntry> BuildPrograms() => new();
 }

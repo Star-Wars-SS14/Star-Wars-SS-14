@@ -15,7 +15,7 @@ using Content.Server._SW._Senate.Economy;
 
 namespace Content.Server._SW._Senate.Consoles;
 
-public sealed class SWMinistryWorkConsoleSystem : EntitySystem
+public sealed partial class SWMinistryWorkConsoleSystem : EntitySystem
 {
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
@@ -37,8 +37,6 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
     [Dependency] private readonly SWSenateAmbitionSystem _ambition = default!;
 
-    private const int ScreenCost = 600;
-    private const int ProsecuteCost = 1200;
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
 
@@ -61,10 +59,8 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseWorldProgramMessage>(OnWorldDefenseProgram);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWDefenseWorldResupplyMessage>(OnWorldDefenseResupply);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecuritySetPostureMessage>(OnSetPosture);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecuritySelectProgramMessage>(OnSelectSecProgram);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecurityDeployCellMessage>(OnDeployCell);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecurityLaunchOpMessage>(OnLaunchSecOp);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecurityRaidPlotMessage>(OnRaidPlot);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecurityTeamOrderMessage>(OnSecurityOrder);
+        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWSecurityCellCommandMessage>(OnSecurityCell);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWHealthActionMessage>(OnHealthAction);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomySetPolicyMessage>(OnSetEconPolicy);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWEconomySelectGoodMessage>(OnSelectEconGood);
@@ -84,155 +80,12 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWBudgetReserveTransferMessage>(OnBudgetReserveTransfer);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceTaxSetMessage>(OnFinanceTaxSet);
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWFinanceGovernorDecisionMessage>(OnFinanceGovernorDecision);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeInvestigateMessage>(OnInvestigate);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeSendToCourtMessage>(OnSendToCourt);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeHoldHearingMessage>(OnHoldHearing);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeVerdictMessage>(OnVerdict);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeSetStanceMessage>(OnSetJusticeStance);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeSelectProgramMessage>(OnSelectJusticeProgram);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeDeclareTribunalMessage>(OnDeclareTribunal);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWJusticeOvertimeMessage>(OnOvertime);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWCorruptionScreenMessage>(OnScreen);
-        SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWCorruptionProsecuteMessage>(OnProsecute);
+        InitializeJusticeInspections();
         SubscribeLocalEvent<SWMinistryWorkConsoleComponent, SWMinistryResignMessage>(OnResign);
-    }
-
-    private void OnScreen(Entity<SWMinistryWorkConsoleComponent> ent, ref SWCorruptionScreenMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsJusticeCard(ent))
-            return;
-
-        if (_dilemma.SpendMinistry(SWMinistryJusticeSystem.JusticeMinistryId, ScreenCost))
-            _corruption.Screen(args.Sector, args.Key);
-        else
-            _popup.PopupCursor(Loc.GetString("sw-corruption-failed"), args.Actor, PopupType.Medium);
-
-        UpdateUi(ent);
-    }
-
-    private void OnProsecute(Entity<SWMinistryWorkConsoleComponent> ent, ref SWCorruptionProsecuteMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsJusticeCard(ent))
-            return;
-
-        if (_dilemma.SpendMinistry(SWMinistryJusticeSystem.JusticeMinistryId, ProsecuteCost))
-            _popup.PopupCursor(_corruption.Prosecute(args.Sector, args.Key), args.Actor, PopupType.Medium);
-        else
-            _popup.PopupCursor(Loc.GetString("sw-corruption-failed"), args.Actor, PopupType.Medium);
-
-        UpdateUi(ent);
-    }
-
-    private void OnOvertime(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeOvertimeMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsJusticeCard(ent))
-            return;
-
-        if (!_justice.BuyOvertime())
-            _popup.PopupCursor(Loc.GetString("sw-justice-action-failed"), args.Actor, PopupType.Medium);
-
-        UpdateUi(ent);
     }
 
     private bool IsJusticeCard(Entity<SWMinistryWorkConsoleComponent> ent) =>
         GetCardMinistry(ent) == SWMinistryJusticeSystem.JusticeMinistryId;
-
-    private void OnInvestigate(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeInvestigateMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsJusticeCard(ent))
-            return;
-
-        if (!_justice.Investigate(args.CaseId))
-            _popup.PopupCursor(Loc.GetString("sw-justice-action-failed"), args.Actor, PopupType.Medium);
-
-        UpdateUi(ent);
-    }
-
-    private void OnSendToCourt(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeSendToCourtMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsJusticeCard(ent))
-            return;
-
-        _justice.SendToCourt(args.CaseId);
-        UpdateUi(ent);
-    }
-
-    private void OnHoldHearing(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeHoldHearingMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsJusticeCard(ent))
-            return;
-
-        if (!_justice.HoldHearing(args.CaseId))
-            _popup.PopupCursor(Loc.GetString("sw-justice-action-failed"), args.Actor, PopupType.Medium);
-
-        UpdateUi(ent);
-    }
-
-    private void OnVerdict(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeVerdictMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsJusticeCard(ent))
-            return;
-
-        _justice.Rule(args.CaseId, args.Verdict);
-        UpdateUi(ent);
-    }
-
-    private void OnSetJusticeStance(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeSetStanceMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsJusticeCard(ent))
-            return;
-
-        _justice.SetStance(args.Stance);
-        UpdateUi(ent);
-    }
-
-    private void OnSelectJusticeProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeSelectProgramMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsJusticeCard(ent))
-            return;
-
-        _justice.SelectProgram(args.ProgramId);
-        UpdateUi(ent);
-    }
-
-    private void OnDeclareTribunal(Entity<SWMinistryWorkConsoleComponent> ent, ref SWJusticeDeclareTribunalMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (!IsJusticeCard(ent))
-            return;
-
-        _justice.DeclareTribunal();
-        UpdateUi(ent);
-    }
 
     private void OnBudgetRatio(Entity<SWMinistryWorkConsoleComponent> ent, ref SWBudgetAdjustRatioMessage args)
     {
@@ -529,7 +382,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
-    private void OnSelectSecProgram(Entity<SWMinistryWorkConsoleComponent> ent, ref SWSecuritySelectProgramMessage args)
+    private void OnSecurityOrder(Entity<SWMinistryWorkConsoleComponent> ent, ref SWSecurityTeamOrderMessage args)
     {
         if (!_time.ModeActive || !_time.DayActive)
             return;
@@ -537,37 +390,13 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         if (GetCardMinistry(ent) != SWMinistryInternalSecuritySystem.SecurityMinistryId)
             return;
 
-        _security.SelectProgram(args.ProgramId);
-        UpdateUi(ent);
-    }
-
-    private void OnDeployCell(Entity<SWMinistryWorkConsoleComponent> ent, ref SWSecurityDeployCellMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (GetCardMinistry(ent) != SWMinistryInternalSecuritySystem.SecurityMinistryId)
-            return;
-
-        _security.DeployCell(args.CellId, args.Target);
-        UpdateUi(ent);
-    }
-
-    private void OnLaunchSecOp(Entity<SWMinistryWorkConsoleComponent> ent, ref SWSecurityLaunchOpMessage args)
-    {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
-        if (GetCardMinistry(ent) != SWMinistryInternalSecuritySystem.SecurityMinistryId)
-            return;
-
-        if (!_security.LaunchOperation(args.OpId, args.Target))
-            _popup.PopupCursor(Loc.GetString("sw-defense-op-failed"), args.Actor, PopupType.Medium);
+        if (!_security.ExecuteOrder(args.TeamId, args.Order, args.WorldId, args.CaseId))
+            _popup.PopupCursor("Приказ не принят. Проверьте доступность группы, маршрут и текущий этап расследования.", args.Actor, PopupType.Medium);
 
         UpdateUi(ent);
     }
 
-    private void OnRaidPlot(Entity<SWMinistryWorkConsoleComponent> ent, ref SWSecurityRaidPlotMessage args)
+    private void OnSecurityCell(Entity<SWMinistryWorkConsoleComponent> ent, ref SWSecurityCellCommandMessage args)
     {
         if (!_time.ModeActive || !_time.DayActive)
             return;
@@ -575,8 +404,8 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         if (GetCardMinistry(ent) != SWMinistryInternalSecuritySystem.SecurityMinistryId)
             return;
 
-        if (!_security.RaidPlot(args.PlotId))
-            _popup.PopupCursor(Loc.GetString("sw-security-raid-failed"), args.Actor, PopupType.Medium);
+        if (!_security.SetCell(args.WorldId, args.Deploy))
+            _popup.PopupCursor("Сеть не изменена. Проверьте доступность планеты, свободные ячейки и бюджет.", args.Actor, PopupType.Medium);
 
         UpdateUi(ent);
     }
@@ -862,6 +691,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                 else if (ministryId == SWMinistryInternalSecuritySystem.SecurityMinistryId)
                 {
                     state.IsSecurity = true;
+                    state.SecurityMap = _security.BuildMapState();
                     state.Posture = _security.Posture;
                     state.PostureName = SWMinistryInternalSecuritySystem.PostureName(_security.Posture);
                     state.PostureColor = SWMinistryInternalSecuritySystem.PostureColor(_security.Posture);
@@ -872,18 +702,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.ThreatStatus = _security.ThreatStatus();
                     state.Unrest = _security.Unrest;
                     state.UnrestStatus = _security.UnrestStatus();
-                    state.SelectedSecProgram = _security.SelectedProgram ?? string.Empty;
-                    state.SecProgramProgress = _security.ProgramProgress;
-                    state.SecPrograms = _security.BuildPrograms();
-                    state.Cells = _security.BuildCells();
-                    state.CellSectors = _security.BuildCellSectors();
-                    state.CellUpkeep = _security.CellUpkeep;
-                    state.SecOperations = _security.BuildOperations();
-                    state.SecActiveOps = _security.BuildActiveOps();
-                    state.SecOpSlots = _security.ActiveOpSlots;
-                    state.SecOpUsed = _security.ActiveOpUsed;
                     state.SecurityLog = _security.GetLog();
-                    state.Plots = _security.BuildPlots();
                 }
                 else if (ministryId == SWMinistryHealthSystem.HealthMinistryId)
                 {
@@ -1016,6 +835,7 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                 else if (ministryId == SWMinistryJusticeSystem.JusticeMinistryId)
                 {
                     state.IsJustice = true;
+                    state.JusticeInspections = _justice.BuildInspectionState();
                     state.JusticeStance = _justice.Stance;
                     state.JusticeStanceName = SWMinistryJusticeSystem.StanceName(_justice.Stance);
                     state.JusticeStanceColor = SWMinistryJusticeSystem.StanceColor(_justice.Stance);
@@ -1028,10 +848,6 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.TribunalActive = _justice.TribunalActive;
                     state.TribunalHoursLeft = _justice.TribunalHoursLeft;
                     state.TribunalPending = _justice.TribunalPending;
-                    state.SelectedJusticeProgram = _justice.SelectedProgram ?? string.Empty;
-                    state.JusticeProgramProgress = _justice.ProgramProgress;
-                    state.JusticePrograms = _justice.BuildPrograms();
-                    state.Cases = _justice.BuildCases();
                     state.CaseCount = _justice.CaseCount;
                     state.JusticeLog = _justice.GetLog();
                     state.JusticeArchive = _justice.BuildArchive();
@@ -1044,14 +860,6 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
                     state.JusticeOverdue = _justice.Overdue;
                     state.JusticeAccuracy = _justice.Accuracy();
 
-                    var jbudget = _dilemma.GetMinistryBudget(ministryId);
-                    state.CorruptionIndex = _corruption.GlobalIndex();
-                    state.CorruptionStatus = _corruption.GlobalStatus();
-                    state.ScreenCost = ScreenCost;
-                    state.ProsecuteCost = ProsecuteCost;
-                    state.CorruptSectors = BuildCorruptSectors(jbudget);
-                    state.CorruptPeople = BuildCorruptPeople(jbudget);
-                    state.CorruptionLog = _corruption.GetLog();
                 }
             }
         }
@@ -1059,67 +867,6 @@ public sealed class SWMinistryWorkConsoleSystem : EntitySystem
         _ui.SetUiState(ent.Owner, SWMinistryWorkConsoleUiKey.Key, state);
     }
 
-    private List<SWCorruptTargetEntry> BuildCorruptSectors(int budget)
-    {
-        var list = new List<SWCorruptTargetEntry>();
-        foreach (var (sectorId, holder) in _senate.SectorHolders)
-        {
-            if (!_proto.TryIndex<SWSectorPrototype>(sectorId, out var proto))
-                continue;
-
-            var revealed = _corruption.IsRevealed(true, sectorId);
-            list.Add(new SWCorruptTargetEntry
-            {
-                Key = sectorId,
-                Sector = true,
-                Name = proto.Name,
-                Role = $"Сенатор: {holder}",
-                Color = proto.Color,
-                Revealed = revealed,
-                Corruption = revealed ? _corruption.SectorCorruptionInt(sectorId) : -1,
-                Account = -1,
-                CanScreen = !revealed && budget >= ScreenCost,
-                CanProsecute = budget >= ProsecuteCost,
-            });
-        }
-
-        list.Sort((a, b) => b.Corruption.CompareTo(a.Corruption));
-        return list;
-    }
-
-    private List<SWCorruptTargetEntry> BuildCorruptPeople(int budget)
-    {
-        var roles = new Dictionary<string, string>();
-
-        foreach (var (sectorId, holder) in _senate.SectorHolders)
-            roles[holder] = $"Сенатор {(_proto.TryIndex<SWSectorPrototype>(sectorId, out var sp) ? sp.Name : sectorId)}";
-        foreach (var (mid, holder) in _ministry.Holders)
-            roles[holder] = _proto.TryIndex<SWMinistryPrototype>(mid, out var mp) ? $"Министр {mp.TitleName}" : "Министр";
-        if (_senate.Chancellor != null)
-            roles[_senate.Chancellor] = "Канцлер";
-
-        var list = new List<SWCorruptTargetEntry>();
-        foreach (var (name, role) in roles)
-        {
-            var revealed = _corruption.IsRevealed(false, name);
-            list.Add(new SWCorruptTargetEntry
-            {
-                Key = name,
-                Sector = false,
-                Name = name,
-                Role = role,
-                Color = Color.FromHex("#C0A062"),
-                Revealed = revealed,
-                Corruption = revealed ? _corruption.PersonCorruptionInt(name) : -1,
-                Account = revealed ? _corruption.Account(name) : -1,
-                CanScreen = !revealed && budget >= ScreenCost,
-                CanProsecute = budget >= ProsecuteCost,
-            });
-        }
-
-        list.Sort((a, b) => b.Corruption.CompareTo(a.Corruption));
-        return list;
-    }
 
     private List<SWFleetSectorEntry> BuildClaimedSectors()
     {

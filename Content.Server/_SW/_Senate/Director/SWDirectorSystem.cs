@@ -28,6 +28,8 @@ public sealed partial class SWDirectorSystem : EntitySystem
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
+    [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
+    [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
     [Dependency] private readonly SWCorruptionSystem _corruption = default!;
     [Dependency] private readonly SWSenateCrisisSystem _crisis = default!;
     [Dependency] private readonly SWMinistryEconomySystem _economyEvents = default!;
@@ -234,6 +236,45 @@ public sealed partial class SWDirectorSystem : EntitySystem
 
         switch (kind)
         {
+            case SWDirectorActionKind.SecurityCreate:
+                if (Mode != SWDirectorMode.Manual) return false;
+                if (param != "domestic" && param != "imperial") { result = "Неизвестный тип дела."; return false; }
+                var caseKind = param == "imperial" ? SWSecurityCaseKind.Imperial : SWSecurityCaseKind.Domestic;
+                var faction = caseKind == SWSecurityCaseKind.Imperial ? "empire" : "republic";
+                var worlds = _security.BuildMapState().Worlds.Where(w => w.Faction == faction && (target.Length == 0 || w.Id == target)).ToList();
+                if (worlds.Count == 0) { result = "Нет подходящего мира."; return false; }
+                var world = _random.Pick(worlds);
+                if (_security.AddCase(caseKind == SWSecurityCaseKind.Imperial ? "Имперская сеть" : "Подозрительная деятельность", world.Id, caseKind) == 0)
+                { result = "Не удалось создать дело."; return false; }
+                result = $"Создано дело: {world.Name}.";
+                AddChronicle(result);
+                break;
+
+            case SWDirectorActionKind.SecurityCancel:
+                if (Mode != SWDirectorMode.Manual || !int.TryParse(target, out var caseId) || !_security.CancelCase(caseId))
+                { result = "Не удалось закрыть дело."; return false; }
+                result = "Дело закрыто директором.";
+                AddChronicle(result);
+                break;
+
+            case SWDirectorActionKind.JusticeCreate:
+            {
+                if (Mode != SWDirectorMode.Manual) { result = "Проверки доступны только в ручном режиме."; return false; }
+                var inspectionId = _justice.AdminOpenInspection(target);
+                if (inspectionId == 0) { result = "Не удалось открыть проверку: учреждение недоступно или реестр заполнен."; return false; }
+                result = $"Создана ведомственная проверка №{inspectionId}.";
+                AddChronicle(result);
+                break;
+            }
+            case SWDirectorActionKind.JusticeCancel:
+            {
+                if (Mode != SWDirectorMode.Manual || !int.TryParse(target, out var inspectionId) || !_justice.AdminCancelInspection(inspectionId))
+                { result = "Не удалось отменить проверку."; return false; }
+                result = $"Проверка №{inspectionId} отменена директором.";
+                AddChronicle(result);
+                break;
+            }
+
             case SWDirectorActionKind.EconomyIncident:
                 if (Mode != SWDirectorMode.Manual)
                 { result = "Экономическое событие доступно только в ручном режиме."; return false; }
@@ -551,6 +592,9 @@ public sealed partial class SWDirectorSystem : EntitySystem
         var state = new SWDirectorEuiState
         {
             DefenseMap = _defense.BuildMapState(includeOrderOptions: false),
+            SecurityMap = _security.BuildMapState(),
+            JusticeInstitutions = _justice.BuildDirectorInstitutions(),
+            JusticeCases = _justice.BuildInspectionState().ActiveCases,
             Mode = Mode,
             ControllerName = ControllerName,
             IAmController = Controller == viewer,

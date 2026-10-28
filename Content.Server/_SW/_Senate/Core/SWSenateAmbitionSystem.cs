@@ -324,7 +324,9 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
         {
             "Threat" => _security.Threat,
             "Unrest" => _security.Unrest,
-            "PlotsBusted" => _security.PlotsBusted,
+            "PlotsBusted" => _security.DomesticCasesCompleted,
+            "ImperialCasesCompleted" => _security.ImperialCasesCompleted,
+            "ActiveCells" => _security.ActiveCells,
             _ => 0f,
         },
         SWMinistryEconomySystem.EconomyMinistryId => metric switch
@@ -345,9 +347,12 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
         SWMinistryJusticeSystem.JusticeMinistryId => metric switch
         {
             "Backlog" => _justice.Backlog,
-            "Accuracy" => _justice.Accuracy(),
+            "Accuracy" => _justice.Resolved >= 3 ? _justice.Accuracy() : 0,
             "Resolved" => _justice.Resolved,
             "Overdue" => _justice.Overdue,
+            "CorrectInspections" => _justice.CorrectInspections,
+            "FulfilledInspections" => _justice.FulfilledInspections,
+            "CompletedSectors" => _justice.CompletedSectors,
             _ => 0f,
         },
         SWMinistryHealthSystem.HealthMinistryId => metric switch

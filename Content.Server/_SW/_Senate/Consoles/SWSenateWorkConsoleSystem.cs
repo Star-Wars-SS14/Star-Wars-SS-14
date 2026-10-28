@@ -86,6 +86,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWDefenseRejectWarMessage>(OnRejectWar);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSecurityApproveEmergencyMessage>(OnApproveEmergency);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSecurityRejectEmergencyMessage>(OnRejectEmergency);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSecuritySabotageDecisionMessage>(OnSecuritySabotageDecision);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWHealthApproveEmergencyMessage>(OnApproveHealthEmergency);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWHealthRejectEmergencyMessage>(OnRejectHealthEmergency);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWHealthQuarantineDecisionMessage>(OnHealthQuarantineDecision);
@@ -617,6 +618,18 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
+    private void OnSecuritySabotageDecision(Entity<SWSenateWorkConsoleComponent> ent, ref SWSecuritySabotageDecisionMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive || !CanConfirmAs(ent, args.Actor))
+            return;
+
+        var applied = args.Approve ? _security.ApproveSabotage(args.CaseId) : _security.RejectSabotage(args.CaseId);
+        _popup.PopupCursor(applied
+            ? args.Approve ? "Диверсия одобрена. Министр может отдать приказ группе." : "Запрос на диверсию отклонён."
+            : "Запрос уже рассмотрен или отозван.", args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
     private void OnHealthQuarantineDecision(Entity<SWSenateWorkConsoleComponent> ent, ref SWHealthQuarantineDecisionMessage args)
     {
         if (!CanConfirmAs(ent, args.Actor) || !_health.CanDecideQuarantine(args.Actor))
@@ -1002,8 +1015,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
         switch (args.Action)
         {
-            // Quarantine requires a specific Health request, even with emergency powers.
-            case >= 0 and <= 5 when args.Action != 2 && _powers.HasPower(SWEmergencyPower.Command):
+            // Quarantine requires a Health request; departmental inspections do not confer judicial powers.
+            case >= 0 and <= 4 when args.Action != 2 && _powers.HasPower(SWEmergencyPower.Command):
                 InvokeMinistry(args.Action);
                 _powers.RegisterUse(8f, 5f, false);
                 break;
@@ -1011,7 +1024,6 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             case 6 when _powers.HasPower(SWEmergencyPower.MartialLaw): // военное положение
                 InvokeMinistry(0);
                 InvokeMinistry(1);
-                InvokeMinistry(5);
                 _powers.RegisterUse(15f, 10f, true);
                 break;
 
@@ -1072,10 +1084,6 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             case 4:
                 _finance.DeclareEmission();
                 _finance.ApproveEmission();
-                break;
-            case 5:
-                _justice.DeclareTribunal();
-                _justice.ApproveTribunal();
                 break;
         }
     }
@@ -1720,6 +1728,10 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.PendingStanceName = _defense.PendingStance is { } pendingStance ? SWMinistryDefenseSystem.StanceName(pendingStance) : string.Empty;
         state.EmergencyProposed = _security.EmergencyPending;
         state.CanApproveEmergency = _security.EmergencyPending && CanConfirmAs(ent);
+        state.CanApproveSecuritySabotage = _time.ModeActive && _time.DayActive && CanConfirmAs(ent);
+        // Covert mission details are only sent to the approving office.
+        if (CanConfirmAs(ent))
+            state.SecuritySabotageRequests = _security.BuildSabotageRequests();
         state.PendingPostureName = _security.PendingPosture is { } pendingPosture ? SWMinistryInternalSecuritySystem.PostureName(pendingPosture) : string.Empty;
         state.HealthEmergencyProposed = _health.EmergencyPending;
         state.MapCrises = _mapStatistics.BuildMapCrises();

@@ -1,0 +1,80 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+                      xmlns:ui="clr-namespace:Content.Client._SW.GlobalWar.UI"
+                      Title="{Loc 'sw-global-war-market-console-title'}"
+                      MinSize="760 580" SetSize="1200 800">
+    <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="0">
+            <PanelContainer Name="HeaderPanel">
+                <BoxContainer Margin="16 12" SeparationOverride="12">
+                    <ui:SWGlobalWarConsoleSeal />
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="3">
+                        <Label Name="HeaderNetwork" Text="{Loc 'sw-global-war-market-network'}" />
+                        <Label Name="HeaderTitle" Text="{Loc 'sw-global-war-market-console-title'}" />
+                    </BoxContainer>
+                </BoxContainer>
+            </PanelContainer>
+            <PanelContainer Name="StatusPanel">
+                <RichTextLabel Name="NetworkStatus" Margin="16 9" Text="{Loc 'sw-global-war-market-offline'}" />
+            </PanelContainer>
+            <WrapContainer Margin="12 10 12 4" SeparationOverride="6" CrossSeparationOverride="6">
+                <OptionButton Name="CommodityFilter" Filterable="True" PrefixMargin="False" MinWidth="210" />
+                <OptionButton Name="MetricFilter" PrefixMargin="False" MinWidth="150" />
+                <ui:SWGlobalWarConsoleButton Name="TrafficToggle" Text="{Loc 'sw-global-war-market-traffic'}" />
+                <ui:SWGlobalWarConsoleButton Name="Overview" Text="{Loc 'sw-global-war-market-overview'}" />
+            </WrapContainer>
+            <WrapContainer Margin="12 4 12 10" SeparationOverride="6" CrossSeparationOverride="6">
+                <OptionButton Name="PlanetSearch" Filterable="True" PrefixMargin="False" MinWidth="210" />
+                <ui:SWGlobalWarConsoleButton Name="ZoomOut" Text="−" MinWidth="34" />
+                <ui:SWGlobalWarConsoleButton Name="ZoomIn" Text="+" MinWidth="34" />
+                <Label Name="Zoom" Text="100%" MinWidth="50" Margin="4 6" />
+                <ui:SWGlobalWarConsoleButton Name="ResetView" Text="{Loc 'sw-global-war-travel-reset-view'}" />
+                <ui:SWGlobalWarConsoleButton Name="FocusPlanet" Text="{Loc 'sw-global-war-travel-focus'}" Disabled="True" />
+            </WrapContainer>
+            <ui:SWGlobalWarAtlasLayout HorizontalExpand="True" VerticalExpand="True" Margin="12 0 12 12">
+                <PanelContainer Name="MapPanel" HorizontalExpand="True" VerticalExpand="True">
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="0">
+                        <BoxContainer Margin="12 8" SeparationOverride="8">
+                            <Label Name="MapTitle" Text="{Loc 'sw-global-war-market-map-title'}" HorizontalExpand="True" />
+                            <Label Name="PlanetCount" />
+                        </BoxContainer>
+                        <ui:SWGlobalWarMapControl Name="Map" HorizontalExpand="True" VerticalExpand="True" />
+                        <WrapContainer Margin="12 8" SeparationOverride="14" CrossSeparationOverride="4">
+                            <Label Name="DemandLegend" Text="{Loc 'sw-global-war-market-demand'}" />
+                            <Label Name="SupplyLegend" Text="{Loc 'sw-global-war-market-supply'}" />
+                            <Label Name="TransitLegend" Text="{Loc 'sw-global-war-market-moving'}" />
+                            <Label Name="WaitingLegend" Text="{Loc 'sw-global-war-market-waiting'}" />
+                        </WrapContainer>
+                    </BoxContainer>
+                </PanelContainer>
+                <PanelContainer Name="DetailsPanel" HorizontalExpand="True" VerticalExpand="True">
+                    <BoxContainer Orientation="Vertical" Margin="14" SeparationOverride="10" HorizontalExpand="True" VerticalExpand="True">
+                        <RichTextLabel Name="SelectionTitle" StyleClasses="GlobalWarPlanetTitle" Text="{Loc 'sw-global-war-market-overview'}" />
+                        <RichTextLabel Name="SelectionDescription" Text="{Loc 'sw-global-war-market-select-hint'}" />
+                        <BoxContainer SeparationOverride="4">
+                            <ui:SWGlobalWarConsoleButton Name="GoodsTab" Text="{Loc 'sw-global-war-market-goods'}" HorizontalExpand="True" />
+                            <ui:SWGlobalWarConsoleButton Name="FreightTab" Text="{Loc 'sw-global-war-market-freight'}" HorizontalExpand="True" />
+                        </BoxContainer>
+                        <ScrollContainer Name="GoodsScroll" VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False">
+                            <BoxContainer Orientation="Vertical" SeparationOverride="10" HorizontalExpand="True">
+                                <RichTextLabel Name="MarketSummary" />
+                                <BoxContainer Name="GoodsRows" Orientation="Vertical" SeparationOverride="8" HorizontalExpand="True" />
+                                <RichTextLabel Name="EmptyGoods" Text="{Loc 'sw-global-war-market-empty-goods'}" Visible="False" />
+                            </BoxContainer>
+                        </ScrollContainer>
+                        <ScrollContainer Name="FreightScroll" VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False" Visible="False">
+                            <BoxContainer Orientation="Vertical" SeparationOverride="10" HorizontalExpand="True">
+                                <RichTextLabel Name="FreightSummary" />
+                                <RichTextLabel Name="LinkInfo" Visible="False" />
+                                <ui:SWGlobalWarMarketBar Name="LinkLoad" Visible="False" />
+                                <BoxContainer Name="ShipmentRows" Orientation="Vertical" SeparationOverride="8" HorizontalExpand="True" />
+                                <RichTextLabel Name="EmptyShipments" Text="{Loc 'sw-global-war-market-empty-freight'}" Visible="False" />
+                            </BoxContainer>
+                        </ScrollContainer>
+                    </BoxContainer>
+                </PanelContainer>
+            </ui:SWGlobalWarAtlasLayout>
+            <RichTextLabel Name="MapHelp" StyleClasses="GlobalWarMapHelp" Text="{Loc 'sw-global-war-market-map-help'}" Margin="16 0 16 10" />
+        </BoxContainer>
+    </PanelContainer>
+</controls:FancyWindow>

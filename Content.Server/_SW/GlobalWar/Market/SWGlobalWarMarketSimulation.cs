@@ -22,6 +22,7 @@ public sealed class SWGlobalWarMarketSimulation
     public TimeSpan Time { get; private set; }
     public IReadOnlyDictionary<string, SWGlobalWarMarketState> Markets => _markets;
     public IReadOnlyList<SWGlobalWarShipment> Shipments => _shipments;
+    public IReadOnlyDictionary<(string From, string To), SWGlobalWarTradeConnection> Connections => _connections;
 
     public SWGlobalWarMarketSimulation(IEnumerable<SWGlobalWarCommodityDefinition> commodities,
         IEnumerable<SWGlobalWarMarketDefinition> markets, IEnumerable<SWGlobalWarTradeConnection> connections)

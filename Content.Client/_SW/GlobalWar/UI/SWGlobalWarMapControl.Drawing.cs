@@ -83,12 +83,15 @@ public sealed partial class SWGlobalWarMapControl
         DrawGrid(handle);
         foreach (var route in _routes)
         {
-            var selected = _selected == route.From || _selected == route.To;
+            if (!IsMarketRouteVisible(route))
+                continue;
+            var selected = _selectedRoute == route || _selected == route.From || _selected == route.To;
             var hovered = route == _hoveredRoute;
             var available = _current == route.From && _available.Contains(route.To)
                 || route.Bidirectional && _current == route.To && _available.Contains(route.From);
             var color = hovered ? SWGlobalWarConsoleStyle.Brass : selected ? SWGlobalWarConsoleStyle.Accent
                 : available ? SWGlobalWarConsoleStyle.Good.WithAlpha(.75f) : SWGlobalWarConsoleStyle.Edge;
+            color = MarketRouteColor(route, color, selected || hovered);
             for (var i = 1; i < route.Points.Length; i++)
             {
                 var a = MapToLocal(route.Points[i - 1]) * UIScale;
@@ -101,6 +104,7 @@ public sealed partial class SWGlobalWarMapControl
                 DrawDirection(handle, route, color);
         }
 
+        DrawMarketTraffic(handle);
         foreach (var (id, planet) in _planets)
         {
             var point = MapToLocal(planet.MapPosition) * UIScale;
@@ -109,7 +113,7 @@ public sealed partial class SWGlobalWarMapControl
             var current = id == _current;
             var color = selected || hovered ? SWGlobalWarConsoleStyle.Accent
                 : current ? SWGlobalWarConsoleStyle.Brass
-                : _available.Contains(id) ? SWGlobalWarConsoleStyle.Good : SWGlobalWarConsoleStyle.TextDim;
+                : MarketPlanetColor(id) ?? (_available.Contains(id) ? SWGlobalWarConsoleStyle.Good : SWGlobalWarConsoleStyle.TextDim);
             if (selected || hovered)
                 handle.DrawCircle(point, (selected ? 11 : 9) * UIScale, Color.ToSrgb(color), false);
             if (current)
@@ -143,6 +147,12 @@ public sealed partial class SWGlobalWarMapControl
             var color = id == _selected || id == _hovered ? SWGlobalWarConsoleStyle.Accent
                 : id == _current ? SWGlobalWarConsoleStyle.Brass : SWGlobalWarConsoleStyle.TextBright;
             handle.DrawString(SWGlobalWarConsoleStyle.Small, box.TopLeft * UIScale, _planets[id].Name, UIScale, color);
+            if (_marketLabels.TryGetValue(id, out var metric))
+            {
+                var height = handle.GetDimensions(SWGlobalWarConsoleStyle.Small, _planets[id].Name, UIScale).Y;
+                handle.DrawString(SWGlobalWarConsoleStyle.Small, box.TopLeft * UIScale + new Vector2(0, height + 3 * UIScale),
+                    metric, UIScale, MarketPlanetColor(id) ?? SWGlobalWarConsoleStyle.TextDim);
+            }
         }
 
         if (_planets.Count == 0)
@@ -210,7 +220,13 @@ public sealed partial class SWGlobalWarMapControl
             if (point.X < 0 || point.Y < 0 || point.X > Width || point.Y > Height)
                 continue;
             var size = handle.GetDimensions(SWGlobalWarConsoleStyle.Small, planet.Name, UIScale) / UIScale;
+            if (_marketLabels.TryGetValue(id, out var metric))
+            {
+                var metricSize = handle.GetDimensions(SWGlobalWarConsoleStyle.Small, metric, UIScale) / UIScale;
+                size = new Vector2(Math.Max(size.X, metricSize.X), size.Y + metricSize.Y + 3);
+            }
             if ((id == _selected || id == _hovered) && previous.TryGetValue(id, out var prior)
+                && prior.Width >= size.X && prior.Height >= size.Y
                 && !_labels.Any(label => label.Bounds.Intersects(new UIBox2(prior.Left - 4, prior.Top - 3, prior.Right + 4, prior.Bottom + 3))))
             {
                 _labels.Add((id, prior));

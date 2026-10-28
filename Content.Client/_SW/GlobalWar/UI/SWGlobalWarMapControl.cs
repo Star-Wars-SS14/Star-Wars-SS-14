@@ -29,6 +29,7 @@ public sealed partial class SWGlobalWarMapControl : Control
     private ProtoId<SWGlobalWarPlanetPrototype>? _selected;
     private ProtoId<SWGlobalWarPlanetPrototype>? _hovered;
     private Route? _hoveredRoute;
+    private Route? _selectedRoute;
     private ProtoId<SWGlobalWarPlanetPrototype>? _lastClickPlanet;
     private TimeSpan _lastClickTime;
     private Vector2 _lastClickPosition;
@@ -45,6 +46,7 @@ public sealed partial class SWGlobalWarMapControl : Control
     public float Zoom { get; private set; } = 1f;
     public event Action<ProtoId<SWGlobalWarPlanetPrototype>>? PlanetSelected;
     public event Action? ViewChanged;
+    public event Action<ProtoId<SWGlobalWarPlanetPrototype>, ProtoId<SWGlobalWarPlanetPrototype>>? RouteSelected;
 
     private sealed record Route(ProtoId<SWGlobalWarPlanetPrototype> From,
         ProtoId<SWGlobalWarPlanetPrototype> To, bool Bidirectional, Vector2[] Points);
@@ -117,6 +119,7 @@ public sealed partial class SWGlobalWarMapControl : Control
             return;
 
         _selected = id;
+        _selectedRoute = null;
         _labelsDirty = true;
         if (focus)
         {
@@ -247,18 +250,22 @@ public sealed partial class SWGlobalWarMapControl : Control
         Route? best = null;
         var distance = 6f;
         foreach (var route in _routes)
-        for (var i = 1; i < route.Points.Length; i++)
         {
-            var a = MapToLocal(route.Points[i - 1]);
-            var b = MapToLocal(route.Points[i]);
-            var delta = b - a;
-            var t = delta.LengthSquared() < .0001f ? 0
-                : Math.Clamp(Vector2.Dot(position - a, delta) / delta.LengthSquared(), 0, 1);
-            var next = Vector2.Distance(position, a + t * delta);
-            if (next >= distance)
+            if (!IsMarketRouteVisible(route))
                 continue;
-            distance = next;
-            best = route;
+            for (var i = 1; i < route.Points.Length; i++)
+            {
+                var a = MapToLocal(route.Points[i - 1]);
+                var b = MapToLocal(route.Points[i]);
+                var delta = b - a;
+                var t = delta.LengthSquared() < .0001f ? 0
+                    : Math.Clamp(Vector2.Dot(position - a, delta) / delta.LengthSquared(), 0, 1);
+                var next = Vector2.Distance(position, a + t * delta);
+                if (next >= distance)
+                    continue;
+                distance = next;
+                best = route;
+            }
         }
         return best;
     }
@@ -266,7 +273,16 @@ public sealed partial class SWGlobalWarMapControl : Control
     private void ActivateAt(Vector2 position)
     {
         if (HitTestPlanet(position) is not { } id)
+        {
+            if (_marketState != null && HitTestRoute(position) is { } route)
+            {
+                _selected = null;
+                _selectedRoute = route;
+                _labelsDirty = true;
+                RouteSelected?.Invoke(route.From, route.To);
+            }
             return;
+        }
 
         var now = _timing.RealTime;
         var delay = TimeSpan.FromMilliseconds(_configuration.GetCVar(CVars.DoubleClickDelay));
@@ -349,11 +365,18 @@ public sealed partial class SWGlobalWarMapControl : Control
             _labelsDirty = true;
         _hovered = planet;
         _hoveredRoute = _pointer is { } pointer && planet == null ? HitTestRoute(pointer) : null;
-        DefaultCursorShape = planet != null ? CursorShape.Hand : CursorShape.Arrow;
+        DefaultCursorShape = planet != null || _marketState != null && _hoveredRoute != null ? CursorShape.Hand : CursorShape.Arrow;
         ToolTip = planet is { } id
             ? _planets[id].Name + "\n" + Loc.GetString("sw-global-war-travel-focus-hint")
             : _hoveredRoute is { } route ? Loc.GetString("sw-global-war-travel-route-tooltip",
                 ("from", _planets[route.From].Name), ("to", _planets[route.To].Name),
                 ("direction", route.Bidirectional ? "↔" : "→")) : null;
+        if (_marketState != null)
+        {
+            if (planet is { } marketPlanet)
+                ToolTip = _planets[marketPlanet].Name + "\n" + MarketPlanetToolTip(marketPlanet);
+            else if (_hoveredRoute is { } marketRoute)
+                ToolTip += "\n" + MarketRouteToolTip(marketRoute);
+        }
     }
 }

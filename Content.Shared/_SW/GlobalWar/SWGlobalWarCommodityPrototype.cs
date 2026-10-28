@@ -12,6 +12,10 @@ public sealed partial class SWGlobalWarCommodityPrototype : IPrototype
     [DataField(required: true)]
     public LocId Name = string.Empty;
 
+    /// <summary>Entity prototype representing one market unit; use a single-item prototype for stackable goods.</summary>
+    [DataField(required: true)]
+    public EntProtoId Entity;
+
     /// <summary>Transport capacity occupied by one unit of this commodity.</summary>
     [DataField]
     public double CargoVolume = 1;

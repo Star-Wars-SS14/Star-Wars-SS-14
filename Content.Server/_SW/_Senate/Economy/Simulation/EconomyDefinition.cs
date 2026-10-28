@@ -32,6 +32,7 @@ public sealed record EconomyDefinition(
     bool EnableAssets = false)
 {
     public EconomyNavyDepot[] NavyDepots { get; init; } = Array.Empty<EconomyNavyDepot>();
+    public bool IncludeFullProjectSupply { get; init; }
 }
 public sealed record EconomyNavyDepot(string World, EconomyAmount[] Materials);
 
@@ -41,6 +42,7 @@ public sealed record EconomyCapacityState(string World, double ProductionMultipl
 public sealed record EconomyDietState(string World, double Consumed, double Quality);
 public sealed record EconomyProductionExpansion(string Recipe, double AddedCyclesPerHour);
 public sealed record EconomyTransitExpansion(string Edge, double AddedSlotsPerHour);
+public sealed record EconomyIndustryDelivery(string Source, bool Urgent, double DeadlineHours);
 public enum EconomyNavyProjectKind : byte { Supply, Repair, Construction, PlanetaryConstruction, PlanetarySupply }
 public sealed record EconomyProjectRequest(string Id, string World, EconomyAmount[] Materials, double WorkHours,
     EconomyProductionExpansion? Expansion = null, bool NavySupply = false,
@@ -48,6 +50,8 @@ public sealed record EconomyProjectRequest(string Id, string World, EconomyAmoun
 {
     public EconomyTransitExpansion? TransitExpansion { get; init; }
     public bool EconomicRelief { get; init; }
+    public EconomyIndustryDelivery? IndustryDelivery { get; init; }
+    public EconomyProduction? NewProduction { get; init; }
 }
 public enum EconomyMedicalProjectKind : byte { Research, Relief, VaccineProduction, Prevention, RegenerativeCare, ProstheticCare }
 public sealed record EconomyMedicalProject(EconomyMedicalProjectKind Kind, string StrainId, string TargetWorld, double Quantity, string Good = "medical_supplies");
@@ -81,6 +85,8 @@ public sealed record EconomyProjectState(string Id, string World, IReadOnlyList<
     public double ProducedQuantity { get; init; }
     public double DeliveredQuantity { get; init; }
     public EconomyProjectMaterialState? PayloadDelivery { get; init; }
+    public double SentQuantity { get; init; }
+    public double InTransitQuantity { get; init; }
 }
 
 public sealed record EconomyProjectSupplyState(string World, string Good, double Available);
@@ -98,8 +104,13 @@ public sealed record EconomyProductionState(string World, string Recipe, double 
 public sealed record EconomyRouteActivity(string Edge, string From, string To, string Good, double Dispatched, double InTransit, double TravelHours);
 public sealed record EconomyLedgerState(string Good, double Initial, double Manufactured, double Transformed, double Consumed, double Losses, double Stock, double WipInputs, double Transit)
 {
-    public double Error => Initial + Manufactured - Transformed - Consumed - Losses - Stock - WipInputs - Transit;
+    public double ExternalIn { get; init; }
+    public double ExternalOut { get; init; }
+    public double Error => Initial + Manufactured + ExternalIn - ExternalOut - Transformed - Consumed - Losses - Stock - WipInputs - Transit;
 }
+
+public sealed record EconomyExternalTransfer(string Id, string World, string Good, double Amount, bool Deposit);
+public sealed record EconomyExternalTransferResult(string Id, double Amount);
 
 /// <summary>Detached read-only publication. No collection exposes mutable worker state.</summary>
 public sealed record EconomyMedicalProductionState(string World, double PowerRequired, double PowerAvailable,

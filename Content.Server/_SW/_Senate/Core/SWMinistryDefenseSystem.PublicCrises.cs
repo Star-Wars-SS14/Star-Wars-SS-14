@@ -24,11 +24,12 @@ public sealed partial class SWMinistryDefenseSystem
             var entry = new SWMapCrisisEntry
             {
                 Id = $"defense:{ev.Id}", Title = ev.Title, Description = IncidentTitle(ev.Kind),
-                WorldId = ev.WorldId, EdgeId = ev.EdgeId, Severity = ev.Severity, Status = ev.Status,
+                WorldId = ev.WorldId, EdgeId = _imperialCrossings.ContainsKey(ev.Id) ? string.Empty : ev.EdgeId, Severity = ev.Severity, Status = ev.Status,
                 LocationLabel = world?.Name ?? ev.WorldId,
                 SectorIds = sector.Length > 0 ? new() { sector } : new(),
                 EffectsLabel = "Воздействие за игровой час",
-                Consequences = MinisterActive ? $"По истечении угрозы: пограничное давление +{ev.Severity * .03f:0.###}, усталость от войны +{ev.Severity * .015f:0.###}."
+                Consequences = _imperialCrossings.ContainsKey(ev.Id) ? "Исход зависит от столкновения флотов; при отсутствии министра бой приостановлен."
+                    : MinisterActive ? $"По истечении угрозы: пограничное давление +{ev.Severity * .03f:0.###}, усталость от войны +{ev.Severity * .015f:0.###}."
                     : "Министр отсутствует: угроза деэскалирует без штрафов.",
             };
             if (security != 0 && _proto.TryIndex<SWGlobalStatPrototype>("SWGlobalSecurity", out var securityStat))

@@ -390,7 +390,9 @@ public sealed partial class SWMinistryWorkConsoleSystem : EntitySystem
         if (GetCardMinistry(ent) != SWMinistryInternalSecuritySystem.SecurityMinistryId)
             return;
 
-        if (!_security.ExecuteOrder(args.TeamId, args.Order, args.WorldId, args.CaseId))
+        var target = new SWStrategicMapDisclosure(_proto).ResolveSecurityTarget(
+            _security.BuildMapState(), args.TeamId, args.Order, args.WorldId, args.CaseId);
+        if (!_security.ExecuteOrder(args.TeamId, args.Order, target, args.CaseId))
             _popup.PopupCursor("Приказ не принят. Проверьте доступность группы, маршрут и текущий этап расследования.", args.Actor, PopupType.Medium);
 
         UpdateUi(ent);
@@ -664,7 +666,7 @@ public sealed partial class SWMinistryWorkConsoleSystem : EntitySystem
                 if (ministryId == SWMinistryDefenseSystem.DefenseMinistryId)
                 {
                     state.IsDefense = true;
-                    state.DefenseMap = _defense.BuildMapState();
+                    state.DefenseMap = new SWStrategicMapDisclosure(_proto).Defense(_defense.BuildMapState());
                     state.DefensePlanetary = _defense.BuildPlanetaryState();
                     state.Stance = _defense.Stance;
                     state.DefconLevel = SWMinistryDefenseSystem.DefconLevel(_defense.Stance);
@@ -686,12 +688,12 @@ public sealed partial class SWMinistryWorkConsoleSystem : EntitySystem
                     state.ActiveOps = _defense.BuildActiveOps();
                     state.ActiveOpSlots = _defense.ActiveOpSlots;
                     state.ActiveOpUsed = _defense.ActiveOpUsed;
-                    state.DefenseLog = _defense.GetLog();
+                    state.DefenseLog = _defense.GetLog().Select(new SWStrategicMapDisclosure(_proto).Text).ToList();
                 }
                 else if (ministryId == SWMinistryInternalSecuritySystem.SecurityMinistryId)
                 {
                     state.IsSecurity = true;
-                    state.SecurityMap = _security.BuildMapState();
+                    state.SecurityMap = new SWStrategicMapDisclosure(_proto).Security(_security.BuildMapState());
                     state.Posture = _security.Posture;
                     state.PostureName = SWMinistryInternalSecuritySystem.PostureName(_security.Posture);
                     state.PostureColor = SWMinistryInternalSecuritySystem.PostureColor(_security.Posture);
@@ -702,7 +704,7 @@ public sealed partial class SWMinistryWorkConsoleSystem : EntitySystem
                     state.ThreatStatus = _security.ThreatStatus();
                     state.Unrest = _security.Unrest;
                     state.UnrestStatus = _security.UnrestStatus();
-                    state.SecurityLog = _security.GetLog();
+                    state.SecurityLog = _security.GetLog().Select(new SWStrategicMapDisclosure(_proto).Text).ToList();
                 }
                 else if (ministryId == SWMinistryHealthSystem.HealthMinistryId)
                 {

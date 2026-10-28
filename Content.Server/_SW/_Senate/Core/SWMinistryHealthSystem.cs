@@ -58,9 +58,10 @@ public sealed partial class SWMinistryHealthSystem : EntitySystem
         UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         UpdatesAfter.Add(typeof(SWRepublicEconomySystem));
         var scenario = _proto.Index<SWRepublicEconomyScenarioPrototype>(SWRepublicEconomyFactory.ScenarioId);
-        foreach (var map in _proto.Index(scenario.Map).Worlds)
-            if (map.Sector != null && _proto.TryIndex<SWPlanetEconomyPrototype>(map.Id, out var economy) && economy.ActiveEconomy)
-                _worlds[map.Id] = new World(map, Math.Max(.001, economy.PopulationUnits));
+        var geography = _proto.Index(scenario.Map);
+        foreach (var world in geography.Worlds)
+            if (world.Sector != null && geography.GetWorldFaction(world) == "republic" && _proto.TryIndex<SWPlanetEconomyPrototype>(world.Id, out var economy) && economy.ActiveEconomy)
+                _worlds[world.Id] = new World(world, Math.Max(.001, economy.PopulationUnits));
         _links = _proto.EnumeratePrototypes<SWTransitLinkPrototype>().Where(l => l.Accessible && _worlds.ContainsKey(l.From) && _worlds.ContainsKey(l.To)).ToArray();
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }

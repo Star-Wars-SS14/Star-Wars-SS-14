@@ -26,7 +26,7 @@ public sealed partial class SWSenateProgramSystem
     {
         foreach (var world in map.Worlds)
             if (world.Sector is { } sector && _proto.Index<SWPlanetEconomyPrototype>(world.Id).ActiveEconomy
-                && map.PoliticalAreas.LastOrDefault(a => a.Contains(world.Position))?.Faction == "republic")
+                && map.GetWorldFaction(world) == "republic")
                 _defenseWorldSectors[world.Id] = sector.Id;
     }
 

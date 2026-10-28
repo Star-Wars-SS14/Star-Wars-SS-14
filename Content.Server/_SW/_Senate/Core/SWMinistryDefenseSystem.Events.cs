@@ -23,7 +23,7 @@ public sealed partial class SWMinistryDefenseSystem
             candidates.Add((world.Id, edge?.ID ?? "", SWDefenseEventKind.Piracy, Math.Max(1, 110 - security - LocalCoverage(world.Id))));
             candidates.Add((world.Id, "", SWDefenseEventKind.Unrest, Math.Max(1, 80 - defense)));
         }
-        if (ImperialThreatsEnabled)
+        if (ImperialThreatsEnabled && AutoImperialThreatsAllowed)
             foreach (var border in _borders.Where(b => b.Faction == "empire"))
             {
                 candidates.Add((border.RepublicWorldId, border.Id, _random.Prob(.25f) ? SWDefenseEventKind.Blockade : SWDefenseEventKind.Incursion,
@@ -129,6 +129,7 @@ public sealed partial class SWMinistryDefenseSystem
         if (kind == SWDefenseEventKind.Blockade && edgeId.Length == 0) return false;
         var ev = _incidents.FirstOrDefault(e => e.Id == eventId && !e.Resolved);
         if (eventId != 0 && ev == null) return false;
+        if (ev != null && _imperialCrossings.ContainsKey(ev.Id)) return false;
         if (ev == null)
         {
             if (_incidents.Count(e => !e.Resolved) >= 8) return false;
@@ -145,7 +146,7 @@ public sealed partial class SWMinistryDefenseSystem
     public bool ResolveDirectorEvent(int eventId, bool success = true)
     {
         var ev = _incidents.FirstOrDefault(e => e.Id == eventId && !e.Resolved);
-        if (ev == null) return false;
+        if (ev == null || _imperialCrossings.ContainsKey(eventId)) return false;
         ResolveIncident(ev, success); return true;
     }
 
@@ -235,6 +236,8 @@ public sealed partial class SWMinistryDefenseSystem
     // One source of truth for the enforced restriction and the public statistics card.
     private (string Edge, double Factor)? IncidentTransitRestriction(SWDefenseEventView ev)
     {
+        if (_imperialCrossings.ContainsKey(ev.Id))
+            return !ev.Resolved && _imperialBlockades.TryGetValue(ev.Id, out var blockade) ? (blockade, 0) : null;
         if (ev.Resolved || ev.EdgeId.Length == 0 || !MinisterActive || ev.Kind == SWDefenseEventKind.Raid) return null;
         var factor = ev.Kind == SWDefenseEventKind.Blockade && ev.Severity >= 75 ? 0 : Math.Clamp(1 - ev.Severity / 125d, .3, .8);
         if (factor > 0) factor += (1 - factor) * .2 * OrbitalReadiness(ev.WorldId);

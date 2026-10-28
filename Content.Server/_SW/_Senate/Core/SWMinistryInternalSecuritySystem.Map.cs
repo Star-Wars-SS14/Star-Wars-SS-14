@@ -73,7 +73,7 @@ public sealed partial class SWMinistryInternalSecuritySystem
         var map = _proto.Index<SWGalacticMapPrototype>("SenateRepublic");
         foreach (var world in map.Worlds)
         {
-            var faction = map.PoliticalAreas.LastOrDefault(a => a.Contains(world.Position))?.Faction ?? "neutral";
+            var faction = map.GetWorldFaction(world);
             _securityWorlds[world.Id] = new SWSecurityWorldView { Id = world.Id, Name = world.Name,
                 SectorId = world.Sector?.Id ?? string.Empty, Faction = faction };
             if (faction == "republic" && world.Sector != null)

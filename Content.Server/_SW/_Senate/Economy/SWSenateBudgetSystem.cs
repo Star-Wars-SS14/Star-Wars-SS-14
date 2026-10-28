@@ -135,8 +135,9 @@ public sealed class SWSenateBudgetSystem : EntitySystem
     {
         // Civilian administrations exist independently of occupied Senate seats.
         var scenario = _proto.Index<SWRepublicEconomyScenarioPrototype>(SWRepublicEconomyFactory.ScenarioId);
-        _governedSectors = _proto.Index(scenario.Map).Worlds
-            .Where(w => w.Sector != null && _proto.Index<SWPlanetEconomyPrototype>(w.Id).ActiveEconomy)
+        var map = _proto.Index(scenario.Map);
+        _governedSectors = map.Worlds
+            .Where(w => w.Sector != null && map.GetWorldFaction(w) == "republic" && _proto.Index<SWPlanetEconomyPrototype>(w.Id).ActiveEconomy)
             .Select(w => w.Sector!.Value.Id).Distinct().OrderBy(id => id, StringComparer.Ordinal).ToArray();
         UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);

@@ -12,6 +12,7 @@ using Content.Shared._SW._Senate.Ministries;
 using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;
 using Robust.Shared.Network;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 
@@ -65,7 +66,8 @@ public sealed partial class SWDirectorSystem : EntitySystem
     public NetUserId? Controller { get; private set; }
     public string ControllerName { get; private set; } = string.Empty;
 
-    public bool AutoAntagsAllowed => Mode == SWDirectorMode.Autopilot;
+    public bool CouncilPlayerControl { get; private set; }
+    public bool AutoAntagsAllowed => Mode == SWDirectorMode.Autopilot && !CouncilPlayerControl;
 
     public event Action? Updated;
 
@@ -79,8 +81,42 @@ public sealed partial class SWDirectorSystem : EntitySystem
     public override void Initialize()
     {
         UpdatesBefore.Add(typeof(SWSenateTimeSystem));
+        SubscribeLocalEvent<SWDarkCouncilMemberComponent, PlayerAttachedEvent>(OnCouncilPlayerAttached);
+        SubscribeLocalEvent<SWDarkCouncilMemberComponent, ComponentStartup>(OnCouncilStartup);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<RoundEndTextAppendEvent>(OnRoundEnd);
+    }
+
+    private void OnCouncilPlayerAttached(EntityUid uid, SWDarkCouncilMemberComponent component, PlayerAttachedEvent args)
+    {
+        TakeCouncilControl();
+    }
+
+    private void OnCouncilStartup(EntityUid uid, SWDarkCouncilMemberComponent component, ComponentStartup args)
+    {
+        if (HasComp<ActorComponent>(uid))
+            TakeCouncilControl();
+    }
+
+    private void TakeCouncilControl()
+    {
+        if (CouncilPlayerControl)
+            return;
+        SetCouncilControl(true);
+        AddChronicle("управление Империей принял Тёмный совет");
+        Updated?.Invoke();
+    }
+
+    private void SetCouncilControl(bool enabled)
+    {
+        CouncilPlayerControl = enabled;
+        _defense.AutoImperialThreatsAllowed = !enabled;
+    }
+
+    private bool HasActiveCouncilPlayer()
+    {
+        var query = EntityQueryEnumerator<SWDarkCouncilMemberComponent, ActorComponent>();
+        return query.MoveNext(out _, out _, out _);
     }
 
     // The full imperial ledger - covert ops included - goes public once the round is over.
@@ -98,6 +134,7 @@ public sealed partial class SWDirectorSystem : EntitySystem
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
         Mode = SWDirectorMode.Autopilot;
+        SetCouncilControl(false);
         Controller = null;
         ControllerName = string.Empty;
         _influence = StartInfluence;
@@ -190,6 +227,9 @@ public sealed partial class SWDirectorSystem : EntitySystem
 
     public void SetMode(SWDirectorMode mode, NetUserId? controller, string controllerName)
     {
+        if (mode == SWDirectorMode.Autopilot && CouncilPlayerControl && !HasActiveCouncilPlayer())
+            SetCouncilControl(false);
+
         Mode = mode;
         _defense.ImperialThreatsEnabled = mode != SWDirectorMode.Off;
         Controller = mode == SWDirectorMode.Manual ? controller : null;
@@ -198,6 +238,7 @@ public sealed partial class SWDirectorSystem : EntitySystem
         AddChronicle(mode switch
         {
             SWDirectorMode.Off => "Империя отключена (спокойный раунд)",
+            SWDirectorMode.Autopilot when CouncilPlayerControl => "автопилот приостановлен: управляет Тёмный совет",
             SWDirectorMode.Autopilot => "Империя переведена на автопилот",
             _ => $"управление Империей взял {controllerName}",
         });
@@ -495,7 +536,7 @@ public sealed partial class SWDirectorSystem : EntitySystem
 
     private void AutopilotTick()
     {
-        if (Mode != SWDirectorMode.Autopilot || !_random.Prob(AutopilotActChance))
+        if (!AutoAntagsAllowed || !_random.Prob(AutopilotActChance))
             return;
 
         var candidates = new List<(SWDirectorActionKind Kind, string Sector, int Weight)>();
@@ -596,6 +637,7 @@ public sealed partial class SWDirectorSystem : EntitySystem
             JusticeInstitutions = _justice.BuildDirectorInstitutions(),
             JusticeCases = _justice.BuildInspectionState().ActiveCases,
             Mode = Mode,
+            CouncilPlayerControl = CouncilPlayerControl,
             ControllerName = ControllerName,
             IAmController = Controller == viewer,
             Influence = (int) MathF.Round(_influence),

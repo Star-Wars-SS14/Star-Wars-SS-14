@@ -105,7 +105,7 @@ public sealed class SWMinistryJusticeSystem : EntitySystem
             var sector = world.Sector?.Id;
             if (sector == null || !_proto.TryIndex<SWSectorPrototype>(sector, out var sp)
                 || !active.TryGetValue(world.Id, out var economyWorld)
-                || map.PoliticalAreas.LastOrDefault(a => a.Contains(world.Position))?.Faction != "republic") continue;
+                || map.GetWorldFaction(world) != "republic") continue;
             foreach (var kind in Enum.GetValues<SWJusticeInstitutionKind>())
             {
                 var exists = kind switch

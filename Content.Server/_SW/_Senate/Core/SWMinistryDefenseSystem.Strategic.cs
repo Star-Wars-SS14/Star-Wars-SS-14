@@ -29,6 +29,7 @@ public sealed partial class SWMinistryDefenseSystem
     private int _nextProjectId = 1;
     private double _nextIncident;
     public bool ImperialThreatsEnabled { get; set; } = true;
+    public bool AutoImperialThreatsAllowed { get; set; } = true;
     public bool MinisterActive => _ministry.IsHolderActive(DefenseMinistryId);
     public bool HasBorderFleet => _groups.Any(g => g.Alive && g.Order == SWDefenseFleetOrder.Border && g.Phase == SWDefenseOperationPhase.Standing);
     public int FleetUpkeep => (int) (_groups.Count(g => g.Alive) * UpkeepPerHour);
@@ -44,7 +45,10 @@ public sealed partial class SWMinistryDefenseSystem
         _nextProjectId = 1;
         _nextIncident = 0;
         ImperialThreatsEnabled = true;
+        AutoImperialThreatsAllowed = true;
         _incidents.Clear();
+        _imperialCrossings.Clear();
+        _imperialBlockades.Clear();
         _construction.Clear();
         _supplyPorts.Clear();
         _pathCache.Clear();
@@ -73,7 +77,7 @@ public sealed partial class SWMinistryDefenseSystem
             _worlds[world.Id] = new SWDefenseWorldView
             {
                 Id = world.Id, Name = world.Name, SectorId = sector,
-                Faction = map.PoliticalAreas.LastOrDefault(a => a.Contains(world.Position))?.Faction ?? "neutral",
+                Faction = map.GetWorldFaction(world),
                 Shipyard = sector.Length > 0 && _proto.TryIndex<SWSectorPrototype>(sector, out var sp) && sp.Shipyard && world.Anchor,
             };
         }
@@ -142,6 +146,15 @@ public sealed partial class SWMinistryDefenseSystem
         var now = _time.ActiveGameHours;
         foreach (var ev in _incidents.Where(e => !e.Resolved))
         {
+            if (_imperialCrossings.TryGetValue(ev.Id, out var crossing))
+            {
+                if (!MinisterActive)
+                {
+                    if (now < crossing.ReadyAt) _imperialCrossings[ev.Id] = crossing with { ReadyAt = crossing.ReadyAt + hours };
+                    _imperialBlockades.Remove(ev.Id);
+                }
+                continue;
+            }
             if (!MinisterActive)
             {
                 ev.Severity = Math.Max(0, ev.Severity - hours * 20);
@@ -183,7 +196,7 @@ public sealed partial class SWMinistryDefenseSystem
             }
             else if (group.Phase == SWDefenseOperationPhase.Preparation && now >= group.Until)
             { if (!StartNextLeg(group)) Arrive(group); }
-            else if (group.Phase == SWDefenseOperationPhase.Execution && group.Order == SWDefenseFleetOrder.Respond)
+            else if (group.Phase == SWDefenseOperationPhase.Execution && group.Order == SWDefenseFleetOrder.Respond && !_imperialCrossings.ContainsKey(group.EventId))
                 TickCombat(group, hours);
             else if (group.Phase == SWDefenseOperationPhase.Recovery && now >= group.Until)
             { group.EventId = 0; BeginReturn(group); }
@@ -223,7 +236,7 @@ public sealed partial class SWMinistryDefenseSystem
 
     private bool MustRecallOperation(SWFleetGroup group) => group.EventId != 0
         && group.Phase != SWDefenseOperationPhase.Recovery
-        && (!MinisterActive || !_incidents.Any(e => e.Id == group.EventId && !e.Resolved));
+        && ((!MinisterActive && !_imperialCrossings.ContainsKey(group.EventId)) || !_incidents.Any(e => e.Id == group.EventId && !e.Resolved));
 
     private string ProjectId(string purpose) => $"navy-{purpose}-{_nextProjectId++}";
     private void TickSupply(SWFleetGroup group)

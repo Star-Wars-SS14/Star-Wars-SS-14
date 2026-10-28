@@ -1732,6 +1732,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         // Covert mission details are only sent to the approving office.
         if (CanConfirmAs(ent))
             state.SecuritySabotageRequests = _security.BuildSabotageRequests();
+            new SWStrategicMapDisclosure(_proto).Sabotage(state.SecuritySabotageRequests);
         state.PendingPostureName = _security.PendingPosture is { } pendingPosture ? SWMinistryInternalSecuritySystem.PostureName(pendingPosture) : string.Empty;
         state.HealthEmergencyProposed = _health.EmergencyPending;
         state.MapCrises = _mapStatistics.BuildMapCrises();

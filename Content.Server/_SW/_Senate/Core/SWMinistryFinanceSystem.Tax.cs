@@ -42,8 +42,9 @@ public sealed partial class SWMinistryFinanceSystem
         foreach (var category in _proto.EnumeratePrototypes<SWCommodityCategoryPrototype>())
             _taxCategories[category.ID] = category.Name;
         var scenario = _proto.Index<SWRepublicEconomyScenarioPrototype>(SWRepublicEconomyFactory.ScenarioId);
-        foreach (var world in _proto.Index(scenario.Map).Worlds)
-            if (world.Sector is { } sector && _proto.TryIndex<SWPlanetEconomyPrototype>(world.Id, out var planet) && planet.ActiveEconomy)
+        var map = _proto.Index(scenario.Map);
+        foreach (var world in map.Worlds)
+            if (world.Sector is { } sector && map.GetWorldFaction(world) == "republic" && _proto.TryIndex<SWPlanetEconomyPrototype>(world.Id, out var planet) && planet.ActiveEconomy)
                 _taxSectors[world.Id] = sector.Id;
     }
 

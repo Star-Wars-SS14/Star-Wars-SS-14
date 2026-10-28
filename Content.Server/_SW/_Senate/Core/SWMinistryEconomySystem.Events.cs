@@ -128,7 +128,7 @@ public sealed partial class SWMinistryEconomySystem
         EnsureIndustrialWorlds();
         var blocked = _eventHealth.BuildQuarantines().Where(q => !q.Pending).SelectMany(q => q.WorldIds).ToHashSet();
         var map = _proto.Index(_proto.Index<SWRepublicEconomyScenarioPrototype>("SenateRepublicEconomy").Map);
-        var republic = map.Worlds.Where(w => map.PoliticalAreas.LastOrDefault(a => a.Contains(w.Position))?.Faction == "republic")
+        var republic = map.Worlds.Where(w => map.GetWorldFaction(w) == "republic")
             .Select(w => w.Id).ToHashSet();
         var active = definition.Worlds.Where(w => w.Active && republic.Contains(w.Id) && !blocked.Contains(w.Id) && IndustrialSector(w.Id).Length > 0).Select(w => w.Id).ToHashSet();
         var liveEdges = snapshot.Edges.Where(e => e.CapacitySlotsPerHour > 1e-6).Select(e => e.Id).ToHashSet();

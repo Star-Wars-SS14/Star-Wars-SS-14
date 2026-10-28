@@ -66,6 +66,20 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
 
     private void UpdateUi(Entity<SWStatisticsConsoleComponent> ent)
     {
+        // Imperial terminals publish their own economy through the faction-scoped feed.
+        // Never put Republic budgets, crises or sector statistics into their BUI state.
+        if (ent.Comp.Faction == "empire")
+        {
+            _ui.SetUiState(ent.Owner, SWStatisticsConsoleUiKey.Key,
+                new SWStatisticsConsoleState(new(), new())
+                {
+                    Faction = "empire",
+                    GameTime = _time.TimeString(),
+                    SampleMinute = _time.AbsoluteHour * 60 + _time.CurrentMinute,
+                });
+            return;
+        }
+
         var globals = _senate.BuildGlobalEntries();
 
         var sectors = _senate.BuildSectorEntries();
@@ -73,6 +87,7 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
         var stance = _defense.Stance;
         var state = new SWStatisticsConsoleState(globals, sectors)
         {
+            Faction = "republic",
             SituationalStats = _senate.BuildSituationalStats(null),
             Crises = _crisis.BuildCrises(null, false),
             MapCrises = BuildMapCrises(),
@@ -139,6 +154,13 @@ public sealed class SWStatisticsConsoleSystem : EntitySystem
         entries.AddRange(_defense.BuildPublicMapCrises());
         entries.AddRange(_health.BuildPublicMapCrises());
         entries.AddRange(_economy.BuildPublicMapCrises());
+        var map = _proto.Index<SWGalacticMapPrototype>("SenateRepublic");
+        var hidden = map.Worlds.Where(w => map.GetWorldFaction(w) == "empire").Select(w => w.Id).ToHashSet();
+        var hiddenLinks = map.Routes.Where(r => hidden.Contains(r.From) || hidden.Contains(r.To))
+            .Select(r => Content.Shared._SW._Senate.Economy.SWTransitLinkPrototype.LinkId(r.From, r.To)).ToHashSet();
+        entries.RemoveAll(c => hidden.Contains(c.WorldId) || hiddenLinks.Contains(c.EdgeId));
+        foreach (var entry in entries)
+            entry.Routes.RemoveAll(r => hiddenLinks.Contains(r.EdgeId));
         return entries.OrderByDescending(c => c.Severity).ThenBy(c => c.Id).ToList();
     }
 }

@@ -15,6 +15,8 @@ public sealed partial class RepublicEconomyModel
         public double PayloadRemaining;
         public double PayloadDelivered;
         public double? Completed;
+        public double AcceptedHour;
+        public double SentQuantity;
         public string Reason = "materials";
         public bool Ready => Request.Materials.All(a => MaterialSatisfied(this, a.Quantity, Delivered[a.Good]));
     }
@@ -55,7 +57,7 @@ public sealed partial class RepublicEconomyModel
     private readonly Dictionary<Key, double> _productionModifiers = new();
     public void SetProductionModifiers(IReadOnlyList<EconomyProductionModifier> modifiers)
     {
-        if (modifiers.Any(m => !double.IsFinite(m.Multiplier) || m.Multiplier < 0 || m.Multiplier > 1
+        if (modifiers.Any(m => !double.IsFinite(m.Multiplier) || m.Multiplier < 0 || m.Multiplier > 2
             || !_definition.Production.Any(p => p.World == m.World && p.Recipe == m.Recipe))
             || modifiers.Select(m => (m.World, m.Recipe)).Distinct().Count() != modifiers.Count)
             throw new ArgumentException("Invalid production modifiers", nameof(modifiers));
@@ -88,8 +90,11 @@ public sealed partial class RepublicEconomyModel
         // Funded kits are filled in admission order. Splitting scarce equipment equally across
         // every project can leave all of them unfinished; a blocked material still lets later
         // projects use other goods and routes. IDs and the clock do not reorder this queue.
-        return _projects.Values.Where(p => p.Completed == null && !p.Ready).ToArray();
+        return _projects.Values.Where(p => p.Completed == null && !p.Ready && MayCollect(p)).ToArray();
     }
+
+    private bool MayCollect(Project project) => project.Request.IndustryDelivery is not { } delivery ||
+        _hour < project.AcceptedHour + delivery.DeadlineHours;
 
     public static bool ValidProject(EconomyDefinition definition, EconomyProjectRequest request)
     {
@@ -100,6 +105,26 @@ public sealed partial class RepublicEconomyModel
             return false;
         if (request.EconomicRelief && (request.Materials.Length == 0 || request.Expansion != null || request.TransitExpansion != null
             || request.Medical != null || request.NavySupply || request.NavyKind != null || request.RecipientFleetId != null))
+            return false;
+        if (request.IndustryDelivery is { } delivery &&
+            (request.Materials.Length != 1 || request.World == delivery.Source ||
+             !definition.Worlds.Any(w => w.Id == delivery.Source && w.Active) ||
+             !double.IsFinite(delivery.DeadlineHours) || delivery.DeadlineHours < 1 || delivery.DeadlineHours > 42 ||
+             request.Expansion != null || request.TransitExpansion != null || request.Medical != null ||
+             request.NavySupply || request.NavyKind != null || request.RecipientFleetId != null || request.EconomicRelief ||
+             !definition.Inventory.Any(i => i.World == delivery.Source && i.Good == request.Materials[0].Good) ||
+             !definition.Inventory.Any(i => i.World == request.World && i.Good == request.Materials[0].Good)))
+            return false;
+        if (request.NewProduction is { } newLine &&
+            (newLine.World != request.World || string.IsNullOrWhiteSpace(newLine.Recipe) ||
+             definition.Production.Any(p => p.World == newLine.World && p.Recipe == newLine.Recipe) ||
+             !double.IsFinite(newLine.Rate) || newLine.Rate <= 0 || newLine.Rate > 1 ||
+             !double.IsFinite(newLine.Hours) || newLine.Hours <= 0 ||
+             !double.IsFinite(newLine.Power) || newLine.Power < 0 || !double.IsFinite(newLine.Labor) || newLine.Labor < 0 ||
+             newLine.Inputs.Any(a => !double.IsFinite(a.Quantity) || a.Quantity <= 0 || !definition.Inventory.Any(i => i.World == request.World && i.Good == a.Good)) ||
+             newLine.Outputs.Length == 0 || newLine.Outputs.Any(a => !double.IsFinite(a.Quantity) || a.Quantity <= 0 || !definition.Inventory.Any(i => i.World == request.World && i.Good == a.Good)) ||
+             request.Materials.Length == 0 || request.Expansion != null || request.TransitExpansion != null ||
+             request.IndustryDelivery != null || request.Medical != null || request.NavyKind != null || request.EconomicRelief))
             return false;
         var seen = new HashSet<string>();
         if (request.Medical is { } medical && (!Enum.IsDefined(medical.Kind) ||
@@ -171,7 +196,7 @@ public sealed partial class RepublicEconomyModel
                 return false;
             _committedProduction[key] = committed;
         }
-        _projects.Add(request.Id, new Project(request with { Materials = request.Materials.ToArray() }));
+        _projects.Add(request.Id, new Project(request with { Materials = request.Materials.ToArray() }) { AcceptedHour = _hour });
         return true;
     }
 
@@ -179,7 +204,7 @@ public sealed partial class RepublicEconomyModel
         .Where(c => c.Project == project && c.Good == good && !c.Payload).Sum(c => c.Quantity);
 
     // Goods already allocated to a shipment are outside warehouse stock and already cover this demand.
-    private double ProjectOutstanding(string good) => _projects.Values.Sum(p => p.Request.Materials
+    private double ProjectOutstanding(string good) => _projects.Values.Where(MayCollect).Sum(p => p.Request.Materials
         .Where(a => a.Good == good).Sum(a => ProjectMaterialMissing(p, a.Quantity, p.Delivered[good] + ProjectExpectedIncoming(p, good))));
 
     private double ProjectCommissioningHold(Key key)
@@ -187,6 +212,8 @@ public sealed partial class RepublicEconomyModel
         var amount = 0d;
         foreach (var project in _projects.Values)
         {
+            if (!MayCollect(project)) continue;
+            if (project.Request.IndustryDelivery is { } delivery && delivery.Source != key.World) continue;
             if (!project.Delivered.TryGetValue(key.Good, out var delivered) || project.Completed != null ||
                 !PathsTo(project.Request.World, key.Good, IsMedicalCargo(project, key.Good)).ContainsKey(key.World))
                 continue;
@@ -242,6 +269,15 @@ public sealed partial class RepublicEconomyModel
                         Add(_replenishment, new Key(recipe.World, output.Good), expansion.AddedCyclesPerHour * output.Quantity);
                     }
                 }
+                if (project.Request.NewProduction is { } newLine)
+                {
+                    _definition = _definition with { Production = _definition.Production.Append(newLine).ToArray() };
+                    foreach (var output in newLine.Outputs)
+                    {
+                        Add(_pipeline, new Key(newLine.World, output.Good), newLine.Rate * output.Quantity * newLine.Hours);
+                        Add(_replenishment, new Key(newLine.World, output.Good), newLine.Rate * output.Quantity);
+                    }
+                }
             }
         }
     }
@@ -267,7 +303,10 @@ public sealed partial class RepublicEconomyModel
         }
         foreach (var cargo in _projectCargo)
         {
-            var after = cargo.Payload ? cargo.Quantity : cargo.Quantity * Survival(cargo.Good, cargo.Traveling ? Math.Min(StepHours, cargo.Remaining) : StepHours);
+            // A full destination can hold cargo after its final leg has arrived. Waiting
+            // still incurs one step of decay, never a negative travel duration.
+            var elapsed = cargo.Traveling && cargo.Remaining > 0 ? Math.Min(StepHours, cargo.Remaining) : StepHours;
+            var after = cargo.Payload ? cargo.Quantity : cargo.Quantity * Survival(cargo.Good, elapsed);
             _ledgers[cargo.Good].Losses += cargo.Quantity - after;
             cargo.Quantity = after;
             if (!cargo.Traveling)
@@ -275,6 +314,23 @@ public sealed partial class RepublicEconomyModel
             cargo.Remaining -= StepHours;
             if (cargo.Remaining > Epsilon)
                 continue;
+            if (cargo.Index == cargo.Path.Length - 1 && cargo.Project.Request.IndustryDelivery != null)
+            {
+                var destination = new Key(cargo.Project.Request.World, cargo.Good);
+                // The destination reservation includes this shipment itself. Keep all
+                // other in-flight and production reservations, but release this portion.
+                var reservedOthers = Math.Max(0, Get(Reservations(), destination) - cargo.Quantity);
+                var available = Math.Max(0, StorageCapacity(destination) - Stock(destination) - reservedOthers);
+                var delivered = Math.Min(available, cargo.Quantity);
+                if (delivered <= Epsilon) { cargo.Project.Reason = "storage"; continue; }
+                _stores[destination].Quantity += delivered;
+                cargo.Project.Delivered[cargo.Good] += delivered;
+                ActivityFor(destination).Imported += delivered;
+                cargo.Quantity -= delivered;
+                if (cargo.Quantity > Epsilon) { cargo.Project.Reason = "storage"; continue; }
+                cargo.Index++;
+                continue;
+            }
             ActivityFor(new Key(cargo.Leg.To, cargo.Good)).Imported += cargo.Quantity;
             cargo.Traveling = false;
             cargo.Index++;
@@ -347,6 +403,7 @@ public sealed partial class RepublicEconomyModel
     {
         foreach (var project in ProjectsCollectingMaterials())
         {
+            if (project.Request.IndustryDelivery != null) continue;
             if (reliefOnly && !project.Request.EconomicRelief) continue;
             if (vaccineOnly && project.Request.Medical is not { Kind: EconomyMedicalProjectKind.VaccineProduction }) continue;
             if (project.Completed != null || project.Ready)
@@ -404,6 +461,14 @@ public sealed partial class RepublicEconomyModel
         var amount = cargo.Quantity;
         reason = "transport";
         if (!CrossingAllowed(leg.From, leg.To, cargo.Good, IsMedicalCargo(cargo.Project, cargo.Good, cargo.Payload))) return 0;
+        if (cargo.Project.Request.IndustryDelivery != null)
+        {
+            var destination = new Key(cargo.Project.Request.World, cargo.Good);
+            var own = _projectCargo.Contains(cargo) ? cargo.Quantity : 0;
+            var space = Math.Max(0, StorageCapacity(destination) - Stock(destination) - Get(Reservations(), destination) + own);
+            amount = Math.Min(amount, space);
+            if (amount <= Epsilon) { reason = "storage"; return 0; }
+        }
         amount = Math.Min(amount, Math.Max(0, EdgeCapacity(leg.Edge) * StepHours - Get(_edgeUsed, leg.Edge)) / slots);
         if (_definition.EnableAssets)
             amount = Math.Min(amount, Math.Max(0, FleetCapacity(leg.From) - FleetOccupied(leg.From)) / slots);
@@ -457,6 +522,8 @@ public sealed partial class RepublicEconomyModel
         foreach (var project in ProjectsCollectingMaterials())
         {
             if (remaining <= Epsilon) break;
+            if (project.Request.IndustryDelivery is { } delivery &&
+                (delivery.Source != route.Source || _hour >= project.AcceptedHour + delivery.DeadlineHours)) continue;
             foreach (var material in project.Request.Materials)
             {
                 if (!PathsTo(project.Request.World, material.Good, IsMedicalCargo(project, material.Good)).TryGetValue(route.Source, out var path) || path.Length == 0
@@ -466,8 +533,14 @@ public sealed partial class RepublicEconomyModel
                 var key = new Key(route.Source, material.Good);
                 var amount = SourceProjectAmount(material.Good, missing, path,
                     Math.Min(ProjectAvailable(key, modifiers, project), remaining / _goods[material.Good].CargoSlots), route.TravelHours);
+                if (project.Request.IndustryDelivery != null)
+                {
+                    var destination = new Key(project.Request.World, material.Good);
+                    amount = Math.Min(amount, Math.Max(0, StorageCapacity(destination) - Stock(destination) - Get(Reservations(), destination)));
+                }
                 if (amount <= Epsilon) continue;
                 _stores[key].Quantity -= amount;
+                if (project.Request.IndustryDelivery != null) project.SentQuantity += amount;
                 var shipment = CreateProjectCargo(project, material.Good, amount, path);
                 _projectCargo.Add(shipment);
                 Depart(shipment, amount);
@@ -485,13 +558,13 @@ public sealed partial class RepublicEconomyModel
         }
     }
 
-    private void DispatchProjects(Dictionary<Key, double> modifiers, bool researchOnly = false)
+    private void DispatchProjects(Dictionary<Key, double> modifiers, bool researchOnly = false, bool industryUrgentOnly = false)
     {
         // Returning empty carriers use physical reverse crossings and shared edge capacity.
         // They retain their origin's fleet slots until they actually arrive back, including
         // time waiting at the destination for a free crossing.
         var splitReturns = new List<ProjectReturn>();
-        foreach (var carrier in _projectReturns.Where(c => c.Priority == researchOnly && c.Stage == ReturnStage.Waiting))
+        foreach (var carrier in _projectReturns.Where(c => !industryUrgentOnly && c.Priority == researchOnly && c.Stage == ReturnStage.Waiting))
         {
             if (!CrossingAllowed(carrier.Leg.To, carrier.Leg.From, null, carrier.Medical)) continue;
             var available = Math.Max(0, EdgeCapacity(carrier.Leg.Edge) * StepHours - Get(_edgeUsed, carrier.Leg.Edge));
@@ -515,7 +588,8 @@ public sealed partial class RepublicEconomyModel
         // Freight already en route is forwarded first. A smaller second leg can split a load;
         // the undispatched portion remains physically at its relay and continues to decay.
         var forwarded = new List<ProjectCargo>();
-        foreach (var cargo in _projectCargo.Where(c => !c.Traveling && IsPriorityProjectCargo(c) == researchOnly))
+        foreach (var cargo in _projectCargo.Where(c => !c.Traveling && IsPriorityProjectCargo(c) == researchOnly &&
+                     (!industryUrgentOnly || c.Project.Request.IndustryDelivery?.Urgent == true && MayCollect(c.Project))))
         {
             if (cargo.Path.Skip(cargo.Index).Any(l => EdgeCapacity(l.Edge) <= Epsilon || !CrossingAllowed(l.From, l.To, cargo.Good, IsMedicalCargo(cargo.Project, cargo.Good, cargo.Payload))))
             {
@@ -551,6 +625,9 @@ public sealed partial class RepublicEconomyModel
         if (researchOnly) DispatchMedicalPayloads(modifiers);
         foreach (var project in ProjectsCollectingMaterials())
         {
+            if (industryUrgentOnly && project.Request.IndustryDelivery?.Urgent != true) continue;
+            if (project.Request.IndustryDelivery is { } delivery && _hour >= project.AcceptedHour + delivery.DeadlineHours)
+            { project.Reason = "deadline"; continue; }
             if (project.Completed != null || project.Ready)
                 continue;
             foreach (var material in project.Request.Materials)
@@ -561,7 +638,8 @@ public sealed partial class RepublicEconomyModel
                 if (missing <= Epsilon)
                     continue;
                 project.Reason = "materials";
-                var sources = _stores.Keys.Where(k => k.Good == material.Good && k.World != project.Request.World)
+                var sources = _stores.Keys.Where(k => k.Good == material.Good && k.World != project.Request.World &&
+                        (project.Request.IndustryDelivery == null || k.World == project.Request.IndustryDelivery.Source))
                     .OrderBy(k => paths.TryGetValue(k.World, out var p) ? p.Sum(l => l.Hours) : double.PositiveInfinity)
                     .ThenBy(k => k.World, StringComparer.Ordinal);
                 var reachable = false;
@@ -587,6 +665,7 @@ public sealed partial class RepublicEconomyModel
                     if (amount <= Epsilon)
                         continue;
                     _stores[source].Quantity -= amount;
+                    if (project.Request.IndustryDelivery != null) project.SentQuantity += amount;
                     cargo.Quantity = amount;
                     StartProjectCargo(cargo, cargo.Leg.Hours);
                     _projectCargo.Add(cargo);
@@ -610,7 +689,9 @@ public sealed partial class RepublicEconomyModel
             p.Request.WorkHours, p.WorkDone,
             p.Completed != null ? EconomyProjectStatus.Completed : p.Manufactured ? EconomyProjectStatus.Delivering : p.Ready ? EconomyProjectStatus.Working : EconomyProjectStatus.WaitingMaterials,
             p.Completed != null ? "" : IsCareProject(p) && p.Ready ? careTeams.Contains(p) ? "" : "medical_teams" : p.Reason, p.Completed)
-            { Medical = p.Request.Medical, ProducedQuantity = p.Manufactured ? p.Request.Medical!.Quantity : 0, DeliveredQuantity = p.PayloadDelivered,
+            { Medical = p.Request.Medical, ProducedQuantity = p.Manufactured ? p.Request.Medical!.Quantity : 0,
+                DeliveredQuantity = p.Request.IndustryDelivery != null ? p.Delivered.Values.Sum() : p.PayloadDelivered,
+                SentQuantity = p.SentQuantity, InTransitQuantity = _projectCargo.Where(c => c.Project == p).Sum(c => c.Quantity),
                 PayloadDelivery = p.Manufactured ? ProjectPayloadSnapshot(p) : null }).ToArray());
 
     }

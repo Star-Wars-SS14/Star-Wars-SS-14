@@ -117,7 +117,7 @@
 - type: entity
   id: SWForceInfluenceAction
   name: Влияние силы
-  description: Заставьте другого гуманоида подчиниться вашей воле. Учтите, что если ему сообщат о влиянии, то он избавиться от него.
+  description: Заставьте другого гуманоида подчиниться вашей воле через секунду после применения. Учтите, что если ему сообщат о влиянии, то он избавится от него.
   components:
   - type: Action
     icon: _SW/Interface/Actions/force_attract.png

@@ -24,7 +24,6 @@ public sealed partial class SWDashAbilityComponent : Component
     public float DashDuration = 5f;
     public TimeSpan DashEndTime;
 
-    // Keep only ONE IsDashing listing
     public bool IsDashing = false;
 
     // Sprite swaying parameters during a dash

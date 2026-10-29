@@ -2,8 +2,8 @@
 - type: entity
   parent: ForceUserBase
   id: ForceUserHybrid
-  name: ent-ForceUserHybrid
-  description: ent-ForceUserHybrid-desc
+  name: Sith-Jedi
+  description: Wields both the dark and light sides of the Force.
   components:
   # sith abilities
   - type: SWLightningAbility

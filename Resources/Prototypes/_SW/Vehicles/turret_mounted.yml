@@ -1,9 +1,8 @@
 # --- Mounted Turret (Base) ---
 - type: entity
   id: SWTurretMounted
-  name: ent-SWTurretMounted
-  description: >-
-    { ent-SWTurretMounted.desc }
+  name: Mounted Turret
+  description: A stationary weapon. Sit and shoot.
   suffix: SW
   parent: BaseStructure
   components:
@@ -95,9 +94,8 @@
 # --- Gun part (for vehicle system) ---
 - type: entity
   id: SWTurretGunPart
-  name: ent-SWTurretGunPart
-  description: >-
-    { ent-SWTurretGunPart.desc }
+  name: Mounted Turret Gun
+  description: Gun for the mounted turret.
   suffix: SW
   categories: [ HideSpawnMenu ]
   components:

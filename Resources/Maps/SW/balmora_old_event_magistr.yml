@@ -298407,34 +298407,6 @@ entities:
           ents: []
 - proto: SWTurret
   entities:
-  - uid: 49061
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -136.5,-102.5
-      parent: 2
-    - type: DeviceLinkSource
-      linkedPorts:
-        49066:
-        - - SWTurretSender
-          - SWTurretConsoleReceiver
-    - type: SWTurretConfig
-    missingComponents:
-    - ActiveRadio
-  - uid: 49062
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -136.5,-98.5
-      parent: 2
-    - type: DeviceLinkSource
-      linkedPorts:
-        49066:
-        - - SWTurretSender
-          - SWTurretConsoleReceiver
-    - type: SWTurretConfig
-    missingComponents:
-    - ActiveRadio
   - uid: 49063
     components:
     - type: Transform
@@ -298546,6 +298518,36 @@ entities:
         SWSobrikCaptain: False
         SWSobrikMedic: False
         SWSobrikOfficer: False
+- proto: SWTurretRepublic
+  entities:
+  - uid: 49061
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -136.5,-102.5
+      parent: 2
+    - type: DeviceLinkSource
+      linkedPorts:
+        49066:
+        - - SWTurretSender
+          - SWTurretConsoleReceiver
+    - type: SWTurretConfig
+    missingComponents:
+    - ActiveRadio
+  - uid: 49062
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -136.5,-98.5
+      parent: 2
+    - type: DeviceLinkSource
+      linkedPorts:
+        49066:
+        - - SWTurretSender
+          - SWTurretConsoleReceiver
+    - type: SWTurretConfig
+    missingComponents:
+    - ActiveRadio
 - proto: SWVibroDagger
   entities:
   - uid: 5202

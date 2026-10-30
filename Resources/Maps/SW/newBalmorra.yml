@@ -512763,9 +512763,6 @@ entities:
       parent: 2
   - uid: 60227
     components:
-    - type: MetaData
-      desc: фу...
-      name: Говно
     - type: Transform
       pos: 80.34013,-260.49146
       parent: 2
@@ -529801,9 +529798,6 @@ entities:
       parent: 2
   - uid: 61986
     components:
-    - type: MetaData
-      desc: Бумага с говном
-      name: Грязная бумага
     - type: Transform
       rot: 3.141592653589793 rad
       pos: 80.6179,-260.44037

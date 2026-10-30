@@ -566259,9 +566259,6 @@ entities:
     - type: Transform
       pos: -36.5,-125.5
       parent: 2
-    - type: Strap
-      buckledEntities:
-      - invalid
   - uid: 67962
     components:
     - type: Transform
@@ -566273,9 +566270,6 @@ entities:
       rot: 6.283185307179586 rad
       pos: -34.5,-125.5
       parent: 2
-    - type: Strap
-      buckledEntities:
-      - invalid
   - uid: 67964
     components:
     - type: Transform
@@ -566424,9 +566418,6 @@ entities:
       rot: 3.141592653589793 rad
       pos: -36.5,-127.5
       parent: 2
-    - type: Strap
-      buckledEntities:
-      - invalid
   - uid: 67989
     components:
     - type: Transform

@@ -99,7 +99,13 @@ public sealed class CaptureConsoleSystem : EntitySystem
 
         EnsureComp<CapturableStationComponent>(station.Value, out var capturable);
 
-        
+        // Another console of this station may have finished first: no second reward.
+        if (capturable.Fraction == console.CapturingFraction)
+        {
+            UpdateUserInterface(uid);
+            return;
+        }
+
         var fractionText = "";
         var faction = _sWFaction.GetFactionEntity(console.CapturingFraction);
 
@@ -185,16 +191,25 @@ public sealed class CaptureConsoleSystem : EntitySystem
         CaptureConsoleComponent component,
         CaptureConsoleButtonPressedMessage args)
     {
-        component.TimeoutStart = _timing.CurTime;
-        component.IsTimeout = true;
-
-        var station = GetNetEntity(_station.GetOwningStation(uid));
-        var name = _station.GetStationNames().FirstOrNull(x => x.Entity == station)?.Name;
-
-        if (!TryComp<SWFactionMemberComponent>(args.Actor, out var factionComp))
+        // The window disables the button in these cases, the server has to refuse them too.
+        if (component.IsTimeout || !TryComp<SWFactionMemberComponent>(args.Actor, out var factionComp))
         {
             return;
         }
+
+        var owningStation = _station.GetOwningStation(uid);
+        if (!component.Capturing
+            && TryComp<CapturableStationComponent>(owningStation, out var capturable)
+            && capturable.Fraction == factionComp.Faction)
+        {
+            return;
+        }
+
+        component.TimeoutStart = _timing.CurTime;
+        component.IsTimeout = true;
+
+        var station = GetNetEntity(owningStation);
+        var name = _station.GetStationNames().FirstOrNull(x => x.Entity == station)?.Name;
 
         if (component.Capturing)
         {

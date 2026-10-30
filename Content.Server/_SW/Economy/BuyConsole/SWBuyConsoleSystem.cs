@@ -100,6 +100,12 @@ public sealed class SWBuyConsoleSystem : EntitySystem
         {
             return;
         }
+        if (args.Amount <= 0
+            || args.Amount > ent.Comp.MaxOrderAmount
+            || !ent.Comp.AvailableProducts.Contains(args.CargoProductId))
+        {
+            return;
+        }
         var account = accComp.Account.Value;
         var proto = _prototypeManager.Index(args.CargoProductId);
         Dictionary<ProtoId<SWCurrencyPrototype>, float> totalCost = new Dictionary<ProtoId<SWCurrencyPrototype>, float>();

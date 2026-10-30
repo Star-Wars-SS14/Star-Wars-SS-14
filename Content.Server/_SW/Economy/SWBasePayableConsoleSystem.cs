@@ -85,6 +85,11 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
             return;
         }
 
+        if (!IsValidPayout(args.Requests))
+        {
+            return;
+        }
+
         if (_bankSystem.TryPayAll(args.Requests, ent.Comp.Account.Value.Comp.CurrentAmount))
         {
             foreach (var (currency, amount) in args.Requests)
@@ -97,6 +102,26 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
         ent.Comp.AccountInterfaceRequiresUpdate = true;
         //UpdateInterface(ent);
     }
+
+    /// <summary>
+    /// Cash stacks hold a whole positive count, so a payout request must be one too.
+    /// </summary>
+    private bool IsValidPayout(Dictionary<ProtoId<SWCurrencyPrototype>, float> requests)
+    {
+        foreach (var amount in requests.Values)
+        {
+            if (!_bankSystem.IsValidAmount(amount)
+                || amount < 1
+                || amount > int.MaxValue
+                || amount != MathF.Floor(amount))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private void OnAddMoney(Entity<SWBankAccountAccessorComponent> ent, ref SWTryAddMoneyMessage args)
     {
         if (ent.Comp.Account == null)

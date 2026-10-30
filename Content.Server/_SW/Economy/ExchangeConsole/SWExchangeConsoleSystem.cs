@@ -41,7 +41,13 @@ public sealed class SWExchangeConsoleSystem : EntitySystem
 
     private void OnTryExchange(Entity<SWExchangeConsoleComponent> ent, ref SWTryExchangeMessage args)
     {
-        if (args.CurrencyFrom == args.CurrencyTo)
+        if (args.CurrencyFrom == args.CurrencyTo || args.Amount <= 0)
+        {
+            return;
+        }
+
+        if (!ent.Comp.AllowedCurrencies.Contains(args.CurrencyFrom)
+            || !ent.Comp.AllowedCurrencies.Contains(args.CurrencyTo))
         {
             return;
         }
@@ -56,12 +62,19 @@ public sealed class SWExchangeConsoleSystem : EntitySystem
             return;
         }
 
+        // Rounding down must not eat the money: 1 RC is worth 0 IC.
+        if (resultAmount <= 0)
+        {
+            return;
+        }
+
         var request = new Dictionary<ProtoId<SWCurrencyPrototype>, float>();
         request[args.CurrencyFrom] = args.Amount;
 
-        if (_bankSystem.TryPayAll(request, accComp.Account.Value.Comp.CurrentAmount))
+        var balance = accComp.Account.Value.Comp.CurrentAmount;
+        if (_bankSystem.TryPayAll(request, balance))
         {
-            accComp.Account.Value.Comp.CurrentAmount[args.CurrencyTo] += resultAmount;
+            balance[args.CurrencyTo] = balance.GetValueOrDefault(args.CurrencyTo) + resultAmount;
         }
 
         UpdateInterface(ent);

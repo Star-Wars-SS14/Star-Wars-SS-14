@@ -63,7 +63,7 @@ public static class SWTerminalStyle
         ("Mandalorian", Color.FromHex("#D9A441"), Color.FromHex("#7A5A17"), Color.FromHex("#936D1C"), Color.FromHex("#B0862C")),
         ("BlackSun", Color.FromHex("#9B5DE5"), Color.FromHex("#5B2A9D"), Color.FromHex("#6E36B8"), Color.FromHex("#8250CC")),
         ("Exchange", Color.FromHex("#2BBBB3"), Color.FromHex("#0F6B68"), Color.FromHex("#13807C"), Color.FromHex("#22A39C")),
-        (NeutralAccent, Color.FromHex("#8E97A8"), Color.FromHex("#3A3F4A"), Color.FromHex("#474D5A"), Color.FromHex("#5D6476")),
+        (NeutralAccent, Color.FromHex("#8E97A8"), Color.FromHex("#3A3F4A"), Color.FromHex("#474D5A"), Color.FromHex("#7C8493")),
         (MoneyAccent, MoneyColor, Color.FromHex("#7A5A17"), Color.FromHex("#936D1C"), Color.FromHex("#B0862C")),
     };
 
@@ -115,8 +115,9 @@ public static class SWTerminalStyle
     public static readonly Color Disabled = Color.FromHex("#16181C");
     public static readonly Color TextBright = Color.FromHex("#E1E1EF");
     private static readonly Color TextDim = Color.FromHex("#AEB3BF");
+    private static readonly Color TextBody = Color.FromHex("#CBCBD5");
     private static readonly Color TextDoneColor = Color.FromHex("#8A91A0");
-    private static readonly Color TextOff = Color.FromHex("#5D6476");
+    private static readonly Color TextOff = Color.FromHex("#697387");
 
     public static StyleRule[] GetRules(IResourceCache res)
     {
@@ -168,8 +169,8 @@ public static class SWTerminalStyle
 
             E<Label>().Class(Title).Font(title).FontColor(TextBright),
             E<Label>().Class(Heading).Font(heading).FontColor(TextBright),
-            E<Label>().Class(Text).Font(regular).FontColor(TextDim),
-            E<RichTextLabel>().Class(Text).Font(regular).FontColor(TextDim),
+            E<Label>().Class(Text).Font(regular).FontColor(TextBody),
+            E<RichTextLabel>().Class(Text).Font(regular).FontColor(TextBody),
             E<RichTextLabel>().Class(TextDone).Font(regular).FontColor(TextDoneColor),
             E<Label>().Class(Value).Font(bold).FontColor(TextBright),
             E<Label>().Class(Money).Font(bold).FontColor(MoneyColor),

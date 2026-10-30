@@ -11,7 +11,7 @@
   name: Регулярные Силы Империи
   keycode: 'т'
   frequency: 2025
-  color: "#b22222"
+  color: "#ff9991"
   longRange: false
 
 - type: radioChannel

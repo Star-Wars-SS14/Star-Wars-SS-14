@@ -22,7 +22,7 @@ public sealed partial class SWRespawnEntitiesGameruleComponent : Component
     public LocId AnnouncementId = "sw-announce-mine-collapsed";
 
     [DataField]
-    public Color AnnounceColor = Color.SaddleBrown;
+    public Color AnnounceColor = Color.FromHex("#E2AA80");
 
     public TimeSpan NextSpawn = TimeSpan.FromSeconds(0);
     public TimeSpan NextWarning = TimeSpan.FromSeconds(0);

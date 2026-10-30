@@ -3,6 +3,7 @@ using Content.Client.ContextMenu.UI;
 using Content.Client.Examine;
 using Content.Client.Resources;
 using Content.Client.Stylesheets;
+using Content.Client.Stylesheets.Palette;
 using Content.Client.Stylesheets.Sheetlets;
 using Content.Client.UserInterface.Controls;
 using Content.Client.UserInterface.Controls.FancyTree;
@@ -137,18 +138,21 @@ public static class SWTerminalGlobalRules
         AddButtonKind(rules, StyleClass.ButtonSquare, 8, 8, 2);
         AddButtonKind(rules, StyleClass.ButtonSmall, 0, 0, 0);
 
-        // A status keeps its colour: the base rule still tints these, over a white box.
-        var tinted = Box(Color.White, Color.White, 0, 14, 2);
-        foreach (var status in new[] { StyleClass.Positive, StyleClass.Negative })
+        // A status keeps the base colours. A tint cannot give a border lighter than the fill, so these are set directly.
+        foreach (var (status, palette) in new[] { (StyleClass.Positive, Palettes.Green), (StyleClass.Negative, Palettes.Red) })
         {
+            var border = Color.InterpolateBetween(palette.Element, Color.White, 0.4f);
             rules.AddRange(new StyleRule[]
             {
-                CButton().Class(status).PseudoNormal().Box(tinted),
-                CButton().Class(status).PseudoHovered().Box(tinted),
-                CButton().Class(status).PseudoPressed().Box(tinted),
-                CButton().Class(status).PseudoDisabled().Box(tinted),
+                CButton().Class(status).PseudoNormal().Modulate(Color.White).Box(Box(palette.Element, border, 1, 14, 2)),
+                CButton().Class(status).PseudoHovered().Modulate(Color.White).Box(Box(palette.HoveredElement, border, 1, 14, 2)),
+                CButton().Class(status).PseudoPressed().Modulate(Color.White).Box(Box(palette.PressedElement, border, 1, 14, 2)),
+                CButton().Class(status).PseudoDisabled().Modulate(Color.White).Box(Box(Disabled, DividerColor, 1, 14, 2)),
             });
         }
+
+        // A confirm button is tinted by the base rule, over a white box.
+        var tinted = Box(Color.White, Color.White, 0, 14, 2);
 
         foreach (var state in new[]
                  {

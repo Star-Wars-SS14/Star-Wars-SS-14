@@ -292968,17 +292968,11 @@ entities:
     - type: Transform
       pos: 169.5,-130.5
       parent: 2
-    - type: DeviceNetwork
-      configurators:
-      - invalid
   - uid: 47157
     components:
     - type: Transform
       pos: 171.5,-130.5
       parent: 2
-    - type: DeviceNetwork
-      configurators:
-      - invalid
   - uid: 47158
     components:
     - type: Transform
@@ -293011,9 +293005,6 @@ entities:
     - type: Transform
       pos: 170.5,-130.5
       parent: 2
-    - type: DeviceNetwork
-      configurators:
-      - invalid
 - proto: ShuttleWindow
   entities:
   - uid: 47164
@@ -293791,9 +293782,6 @@ entities:
       rot: 3.141592653589793 rad
       pos: 168.5,-130.5
       parent: 2
-    - type: DeviceNetwork
-      configurators:
-      - invalid
     - type: Fixtures
       fixtures: {}
 - proto: SignArmory

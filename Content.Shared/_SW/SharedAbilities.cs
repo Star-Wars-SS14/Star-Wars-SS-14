@@ -71,17 +71,6 @@ public sealed partial class SWRequestSendMessageEvent : EntityTargetActionEvent
 
 }
 
-public record struct SWUpdateStrangulateEvent
-{
-    public EntityUid Entity;
-    public bool IsStrangulated;
-    public SWUpdateStrangulateEvent(EntityUid entity, bool isStrangulated)
-    {
-        Entity = entity;
-        IsStrangulated = isStrangulated;
-    }
-}
-
 public sealed class HitByLightningEvent : CancellableEntityEventArgs
 {
 

@@ -134,6 +134,7 @@
     - SWToolsMarket
     - SWLatheMarket
     - SWEmpireDroidMarket
+    - SWEmpireEquipmentMarket
     - SWT3WeaponMarket
     - SWT3MedicineMarket
     - SWMiscMarket
@@ -208,6 +209,7 @@
     - SWToolsMarket
     - SWLatheMarket
     - SWRepublicDroidMarket
+    - SWRepublicEquipmentMarket
     - SWT3WeaponMarket
     - SWT3MedicineMarket
     - SWMiscMarket

@@ -34,24 +34,29 @@ public sealed class SWLightningAbilitySystem : EntitySystem
     }
 
     private void OnLightning(Entity<SWLightningAbilityComponent> ent, ref ForceLightningAbilityEvent args)
+{
+    var user = args.Performer;
+    var lightningAbility = ent.Comp;
+
+    for (var i = 0; i < lightningAbility.BoltCount; i++)
     {
-        var user = args.Performer;
-        var lightningAbility = ent.Comp;
-
-        for (var i = 0; i < lightningAbility.BoltCount; i++)
+        _beam.TryCreateBeam(user,
+            args.Target,
+            "BlueSWLightning");
+        
+        // Spawn a sparks effect on the victim
+        var victimTransform = EntityManager.GetComponent<TransformComponent>(args.Target);
+        EntityManager.SpawnEntity("EffectSparks", victimTransform.Coordinates);
+        
+        var ev = new HitByLightningEvent();
+        RaiseLocalEvent(args.Target, ev);
+        if (!ev.Cancelled)
         {
-            _beam.TryCreateBeam(user,
-                args.Target,
-                "BlueSWLightning");
-            var ev = new HitByLightningEvent();
-            RaiseLocalEvent(args.Target, ev);
-            if (!ev.Cancelled)
-            {
-                _damageable.TryChangeDamage(args.Target, ent.Comp.Damage, true);
-                _stunSystem.TryAddStunDuration(args.Target, TimeSpan.FromSeconds(ent.Comp.StunTimeInSeconds), false);
-            }
+            _damageable.TryChangeDamage(args.Target, ent.Comp.Damage, true);
+            _stunSystem.TryAddStunDuration(args.Target, TimeSpan.FromSeconds(ent.Comp.StunTimeInSeconds), false);
         }
-
-        args.Handled = true;
     }
+
+    args.Handled = true;
+}
 }

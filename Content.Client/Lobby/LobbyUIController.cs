@@ -237,6 +237,14 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
             {
                 if (!ContainsMarkingOfCategory(EditedProfile.Appearance.Markings, category))
                 {
+                    //SW start
+                    UIManager.Popup(
+                        Loc.GetString(
+                            "sw-profile-save-required-marking",
+                            ("category", Loc.GetString($"markings-category-{category}"))),
+                        Loc.GetString("sw-profile-save-refused-title"),
+                        clipboardButton: false);
+                    //SW end
                     return false;
                 }
             }

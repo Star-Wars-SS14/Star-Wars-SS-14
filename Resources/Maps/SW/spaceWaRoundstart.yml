@@ -200607,7 +200607,6 @@ entities:
         29049:
         - - SWTurretSender
           - SWTurretConsoleReceiver
-    - type: SWTurretConfig
     missingComponents:
     - ActiveRadio
   - uid: 29047
@@ -200621,7 +200620,6 @@ entities:
         29049:
         - - SWTurretSender
           - SWTurretConsoleReceiver
-    - type: SWTurretConfig
     missingComponents:
     - ActiveRadio
   - uid: 29048
@@ -200635,7 +200633,6 @@ entities:
         29049:
         - - SWTurretSender
           - SWTurretConsoleReceiver
-    - type: SWTurretConfig
     missingComponents:
     - ActiveRadio
 - proto: SWVendingMachineEmpire

@@ -2,6 +2,7 @@
 - type: job
   id: SWRepublicCommanderStormtrooper
   name: Штурмовик-Коммандос
+  description: job-description-sw-havok-stormtrooper
   playTimeTracker: Job_Republic_Commander_Stormtrooper
   requirements:
   - !type:OverallPlaytimeRequirement

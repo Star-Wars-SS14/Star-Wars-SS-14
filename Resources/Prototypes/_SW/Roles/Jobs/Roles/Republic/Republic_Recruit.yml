@@ -1,6 +1,7 @@
 - type: job
   id: SWRepublicRecruit
   name: Рекрут Сил Республики
+  description: job-description-sw-republic-recruit
   playTimeTracker: Job_Republic_Recruit
   requirements:
   - !type:OverallPlaytimeRequirement

@@ -1,6 +1,7 @@
 - type: job
   id: SWJedi
   name: Джедай
+  description: job-description-sw-jedi
   playTimeTracker: Job_Jedi
   requirements:
   - !type:OverallPlaytimeRequirement

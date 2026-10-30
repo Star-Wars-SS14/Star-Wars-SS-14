@@ -37,6 +37,7 @@ namespace Content.Server._SW.Artillery
         [Dependency] private readonly ChatSystem _chatSystem = default!;
         [Dependency] private readonly AccessReaderSystem _accessReaderSystem = default!;
         [Dependency] private readonly PopupSystem _popupSystem = default!;
+        [Dependency] private readonly IMapManager _mapManager = default!;
 
         private const float UIUpdateInterval = 5.0f;
 
@@ -59,10 +60,16 @@ namespace Content.Server._SW.Artillery
                 return;
             }
             MapId id = _sharedTransformSystem.GetMapId(ent.Owner);
+            var target = new MapCoordinates(new System.Numerics.Vector2(args.x, args.y), id);
+            // A strike off the grid hits nothing and still costs an attack.
+            if (!_mapManager.TryFindGridAt(target, out _, out _))
+            {
+                return;
+            }
             var title = Loc.GetString(ent.Comp.Title);
             var msg = Loc.GetString(ent.Comp.AnnouncementText);
             _chatSystem.DispatchGlobalAnnouncement(msg, title, announcementSound: ent.Comp.Sound, colorOverride: ent.Comp.Color);
-            Spawn(ent.Comp.ArtilleryProto, new MapCoordinates(new System.Numerics.Vector2(args.x, args.y), id));
+            Spawn(ent.Comp.ArtilleryProto, target);
             ent.Comp.CurrentDelay = ent.Comp.DelayBetweenCalls;
             ent.Comp.AttacksLeft--;
         }

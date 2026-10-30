@@ -67,7 +67,7 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
         {
             return;
         }
-        _bankSystem.TryPayBill(ent.Comp.Account.Value.Owner, args.Bill);
+        _bankSystem.TryPayBill(ent.Comp.Account.Value.Owner, args.BillId);
         UpdateInterface(ent, ent.Comp.Account.Value);
     }
     private void UpdateInterface(EntityUid console, Entity<SWBankAccountContainerComponent> account)

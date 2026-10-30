@@ -61,7 +61,7 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayableBo
 
     public void SendPayBillMessage(SWBill bill)
     {
-        SendMessage(new SWTryPayBillMessage(bill));
+        SendMessage(new SWTryPayBillMessage(bill.Id));
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

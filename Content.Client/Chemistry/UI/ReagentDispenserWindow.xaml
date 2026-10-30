@@ -62,7 +62,7 @@
                              MinHeight="50">
                 <PanelContainer VerticalExpand="True">
                     <PanelContainer.PanelOverride>
-                        <gfx:StyleBoxFlat BackgroundColor="#1b1b1e" />
+                        <gfx:StyleBoxFlat BackgroundColor="#16181C" />
                     </PanelContainer.PanelOverride>
                     <BoxContainer Name="ContainerInfo"
                                   Orientation="Vertical"
@@ -76,3 +76,4 @@
         </SplitContainer>
     </BoxContainer>
 </controls:FancyWindow>
+<!-- #SW: terminal colours -->

@@ -1,6 +1,7 @@
 - type: job
   id: SWEmpireSoldier
   name: Солдат Сил Империи
+  description: job-description-sw-empire-soldier
   playTimeTracker: Job_Empire_Soldier
   requirements:
   - !type:OverallPlaytimeRequirement

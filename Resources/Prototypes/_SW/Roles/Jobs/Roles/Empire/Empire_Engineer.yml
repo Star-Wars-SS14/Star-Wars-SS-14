@@ -1,6 +1,7 @@
 - type: job
   id: SWEmpireEngineer
   name: Инженер Сил Империи
+  description: job-description-sw-empire-engineer
   playTimeTracker: Job_Empire_Engineer
   requirements:
     - !type:OverallPlaytimeRequirement

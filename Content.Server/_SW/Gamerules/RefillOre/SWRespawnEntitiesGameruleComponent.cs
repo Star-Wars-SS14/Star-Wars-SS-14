@@ -28,4 +28,6 @@ public sealed partial class SWRespawnEntitiesGameruleComponent : Component
     public TimeSpan NextWarning = TimeSpan.FromSeconds(0);
 
     public bool WarningDispatched = false;
+
+    public bool InitialSpawnDone = false;
 }

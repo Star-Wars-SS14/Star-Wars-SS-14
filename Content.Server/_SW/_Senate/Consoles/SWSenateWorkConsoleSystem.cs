@@ -1690,6 +1690,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.IsChancellorView = ChancellorInOffice(ent);
         state.BudgetProjectPending = _budget.Pending;
         state.BudgetSectorPool = _budget.SectorPool();
+        state.BudgetRepublicPool = _budget.RepublicPool();
+                    state.BudgetRepublicRemaining = _budget.Available(SWSenateDilemmaSystem.RepublicOwner);
+        state.BudgetRepublicPct = _budget.RepublicPct;
         state.BudgetMinistryPool = _budget.MinistryPool();
         state.BudgetSectorPct = _budget.SectorPct;
         state.BudgetRejects = _budget.Rejects;

@@ -414,6 +414,9 @@ public sealed class SWMinistryWorkConsoleState : BoundUserInterfaceState
     public int BudgetDayTotal;
     public int BudgetSectorPool;
     public int BudgetMinistryPool;
+    public int BudgetRepublicPool;
+    public int BudgetRepublicRemaining;
+    public int BudgetRepublicPct;
     public int BudgetSectorPct;
     public int BudgetReservePct;
     public int BudgetReservePool;
@@ -691,14 +694,16 @@ public sealed class SWBudgetSubmitMessage : BoundUserInterfaceMessage
     public int Revision;
     public int SectorPct;
     public int ReservePct;
+    public int RepublicPct;
     public Dictionary<string, int> Weights = new();
 
     public SWBudgetSubmitMessage() { }
-    public SWBudgetSubmitMessage(int revision, int sectorPct, int reservePct, Dictionary<string, int> weights)
+    public SWBudgetSubmitMessage(int revision, int sectorPct, int reservePct, int republicPct, Dictionary<string, int> weights)
     {
         Revision = revision;
         SectorPct = sectorPct;
         ReservePct = reservePct;
+        RepublicPct = republicPct;
         Weights = weights;
     }
 }
@@ -1558,6 +1563,9 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool BudgetProjectPending;
     public int BudgetSectorPool;
     public int BudgetMinistryPool;
+    public int BudgetRepublicPool;
+    public int BudgetRepublicRemaining;
+    public int BudgetRepublicPct;
     public int BudgetSectorPct;
     public int BudgetRejects;
     public bool CanRejectBudget;

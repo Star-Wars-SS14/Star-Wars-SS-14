@@ -42,6 +42,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
     private SWBudgetPhase _phase = SWBudgetPhase.Draft;
     private float _sectorRatio = 0.5f;
     private int _reservePct = 10;
+    private int _republicPct = 5;
     private int _treasury;
     private int _revision;
     private int _reserveBalance;
@@ -57,6 +58,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
     private bool _hasSubmitted;
     private float _submittedRatio = 0.5f;
     private int _submittedReservePct = 10;
+    private int _submittedRepublicPct = 5;
     private readonly Dictionary<string, int> _submittedWeights = new();
 
     private bool _autoSubmitted;
@@ -85,6 +87,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
     public string RejectReason => _rejectReason;
     public int SectorPct { get { RefreshDraftHolders(); return (int) MathF.Round(_sectorRatio * 100f); } }
     public int ReservePct => _reservePct;
+    public int RepublicPct => _republicPct;
     public int Treasury => _treasury;
     public int Revision => _revision;
     public int ReserveBalance => _reserveBalance;
@@ -169,6 +172,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
         _draftHolders = HolderSignature();
         _draftManuallyModified = false;
         _reservePct = 10;
+        _republicPct = 5;
         _sectorRatio = Math.Min(_sectorRatio, 0.9f);
         _ministryWeights.Clear();
         foreach (var id in _ministry.Holders.Keys)
@@ -180,6 +184,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
         _submittedWeights.Clear();
         _submittedRatio = _sectorRatio;
         _submittedReservePct = _reservePct;
+        _submittedRepublicPct = _republicPct;
         _autoSubmitted = false;
         _appliedFallback = false;
         AutoApplied = false;
@@ -196,7 +201,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
         return denom > 0 ? Math.Clamp((float) sectorMoney / denom, 0.1f, 0.9f) : 0.5f;
     }
 
-    private float DefaultSectorRatio() => _ministry.Holders.Count == 0 ? 0.9f : Math.Max(0f, DefaultRatio() - 0.1f);
+    private float DefaultSectorRatio() => _ministry.Holders.Count == 0 ? 0.85f : Math.Max(0f, DefaultRatio() - 0.15f);
 
     private string HolderSignature() => string.Join("|", _ministry.Holders.Keys.OrderBy(id => id, StringComparer.Ordinal));
 
@@ -232,8 +237,9 @@ public sealed class SWSenateBudgetSystem : EntitySystem
     }
 
     public int SectorPool() => (int) MathF.Round(Total() * _sectorRatio);
-    public int ReservePool() => Math.Min(Total() - SectorPool(), (int) MathF.Round(Total() * _reservePct / 100f));
-    public int MinistryPool() => Math.Max(0, Total() - SectorPool() - ReservePool());
+    public int RepublicPool() => Math.Min(Total() - SectorPool(), (int) MathF.Round(Total() * _republicPct / 100f));
+    public int ReservePool() => Math.Min(Total() - SectorPool() - RepublicPool(), (int) MathF.Round(Total() * _reservePct / 100f));
+    public int MinistryPool() => Math.Max(0, Total() - SectorPool() - RepublicPool() - ReservePool());
 
     public int Allocated() => _sectorAlloc.Values.Sum();
     public int Reserve() => Math.Max(0, SectorPool() - Allocated());
@@ -247,7 +253,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
         if (_phase != SWBudgetPhase.Draft)
             return;
         _draftManuallyModified = true;
-        _sectorRatio = Math.Clamp(_sectorRatio + deltaPct / 100f, 0.1f, 0.9f);
+        _sectorRatio = Math.Clamp(_sectorRatio + deltaPct / 100f, 0f, Math.Max(0f, 1f - (_reservePct + _republicPct) / 100f));
     }
 
     public void SetWeight(string ministryId, int delta)
@@ -280,15 +286,16 @@ public sealed class SWSenateBudgetSystem : EntitySystem
         return true;
     }
 
-    public bool Submit(int revision, int sectorPct, int reservePct, Dictionary<string, int> weights)
+    public bool Submit(int revision, int sectorPct, int reservePct, int republicPct, Dictionary<string, int> weights)
     {
-        if (_day != _time.Day || revision != _revision || _phase != SWBudgetPhase.Draft || sectorPct < 0 || reservePct < 0
-            || sectorPct + reservePct > 100 || weights == null || weights.Count != _ministry.Holders.Count
+        if (_day != _time.Day || revision != _revision || _phase != SWBudgetPhase.Draft || sectorPct < 0 || reservePct < 0 || republicPct < 0
+            || (long) sectorPct + reservePct + republicPct > 100 || weights == null || weights.Count != _ministry.Holders.Count
             || weights.Any(w => !_ministry.IsClaimed(w.Key) || w.Value < 0 || w.Value > 6)
-            || (weights.Count > 0 && sectorPct + reservePct < 100 && weights.Values.Sum() == 0))
+            || (weights.Count > 0 && sectorPct + reservePct + republicPct < 100 && weights.Values.Sum() == 0))
             return false;
         _sectorRatio = sectorPct / 100f;
         _reservePct = reservePct;
+        _republicPct = republicPct;
         _draftManuallyModified = true;
         _ministryWeights.Clear();
         foreach (var (id, weight) in weights) _ministryWeights[id] = weight;
@@ -300,6 +307,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
         _hasSubmitted = true;
         _submittedRatio = _sectorRatio;
         _submittedReservePct = _reservePct;
+        _submittedRepublicPct = _republicPct;
         _submittedWeights.Clear();
         foreach (var (id, w) in _ministryWeights)
             _submittedWeights[id] = w;
@@ -361,7 +369,8 @@ public sealed class SWSenateBudgetSystem : EntitySystem
         _frozenTotal = Total();
         var sectorPool = (int) MathF.Round(_frozenTotal * _sectorRatio);
         _reserveBalance = ReservePool();
-        var ministryPool = _frozenTotal - sectorPool - _reserveBalance;
+        var republicPool = RepublicPool();
+        var ministryPool = _frozenTotal - sectorPool - republicPool - _reserveBalance;
         _treasury -= _frozenTotal;
 
         _remaining.Clear();
@@ -372,7 +381,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
             var share = sectors.Count > 0 ? sectorPool / sectors.Count : 0;
             foreach (var sector in sectors)
                 _remaining[sector] = share;
-            _remaining[SWSenateDilemmaSystem.RepublicOwner] = sectorPool - share * sectors.Count;
+            _remaining[SWSenateDilemmaSystem.RepublicOwner] = republicPool + sectorPool - share * sectors.Count;
         }
         else
         {
@@ -383,7 +392,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
                 _remaining[sector] = amount;
                 used += amount;
             }
-            _remaining[SWSenateDilemmaSystem.RepublicOwner] = Math.Max(0, sectorPool - used);
+            _remaining[SWSenateDilemmaSystem.RepublicOwner] = republicPool + Math.Max(0, sectorPool - used);
         }
 
         var shares = CalculateMinistryShares(ministryPool);
@@ -533,6 +542,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
             {
                 _sectorRatio = _submittedRatio;
                 _reservePct = _submittedReservePct;
+                _republicPct = _submittedRepublicPct;
                 _ministryWeights.Clear();
                 foreach (var (id, w) in _submittedWeights)
                     _ministryWeights[id] = w;
@@ -541,6 +551,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
             {
                 _sectorRatio = DefaultSectorRatio();
                 _reservePct = 10;
+                _republicPct = 5;
                 ResetWeights();
                 _sectorAlloc.Clear();
             }

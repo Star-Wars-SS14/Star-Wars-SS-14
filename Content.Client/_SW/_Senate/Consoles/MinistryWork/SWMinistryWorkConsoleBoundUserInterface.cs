@@ -153,8 +153,8 @@ public sealed class SWMinistryWorkConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWBudgetSubmitMessage());
     }
 
-    public void SubmitBudget(int revision, int sector, int reserve, System.Collections.Generic.Dictionary<string, int> weights)
-        => SendMessage(new SWBudgetSubmitMessage(revision, sector, reserve, weights));
+    public void SubmitBudget(int revision, int sector, int reserve, int republic, System.Collections.Generic.Dictionary<string, int> weights)
+        => SendMessage(new SWBudgetSubmitMessage(revision, sector, reserve, republic, weights));
 
     public void TransferReserve(int revision, string requestId, bool ministry, string target, int amount, string purpose)
         => SendMessage(new SWBudgetReserveTransferMessage(revision, requestId, ministry, target, amount, purpose));

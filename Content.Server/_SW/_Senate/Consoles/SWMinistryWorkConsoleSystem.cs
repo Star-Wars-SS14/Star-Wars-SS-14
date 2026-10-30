@@ -131,7 +131,7 @@ public sealed partial class SWMinistryWorkConsoleSystem : EntitySystem
         if (!CanActAsFinance(ent, args.Actor))
             return;
 
-        if (_budget.Submit(args.Revision, args.SectorPct, args.ReservePct, args.Weights))
+        if (_budget.Submit(args.Revision, args.SectorPct, args.ReservePct, args.RepublicPct, args.Weights))
             _popup.PopupCursor(Loc.GetString("sw-budget-submitted"), args.Actor, PopupType.Medium);
 
         UpdateUi(ent);
@@ -805,6 +805,9 @@ public sealed partial class SWMinistryWorkConsoleSystem : EntitySystem
                     };
                     state.BudgetDayTotal = _budget.Total();
                     state.BudgetSectorPool = _budget.SectorPool();
+                    state.BudgetRepublicPool = _budget.RepublicPool();
+                    state.BudgetRepublicRemaining = _budget.Available(SWSenateDilemmaSystem.RepublicOwner);
+                    state.BudgetRepublicPct = _budget.RepublicPct;
                     state.BudgetMinistryPool = _budget.MinistryPool();
                     state.BudgetSectorPct = _budget.SectorPct;
                     state.BudgetReservePct = _budget.ReservePct;

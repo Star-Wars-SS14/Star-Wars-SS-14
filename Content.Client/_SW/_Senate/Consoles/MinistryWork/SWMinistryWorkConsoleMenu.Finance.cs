@@ -20,6 +20,7 @@ public sealed partial class SWMinistryWorkConsoleMenu
     private RichTextLabel? _reserveResult;
     private LineEdit _sectorEdit = default!;
     private LineEdit _reserveEdit = default!;
+    private LineEdit _republicEdit = default!;
     private LineEdit _ministryEdit = default!;
     private readonly Dictionary<string, LineEdit> _weightEdits = new();
     private RichTextLabel _budgetInfo = default!;
@@ -62,7 +63,7 @@ public sealed partial class SWMinistryWorkConsoleMenu
             _draftSummary = SWConsoleStyle.Wrap("", SWConsoleStyle.TextBright);
             BudgetsContent.AddChild(_draftSummary);
             var bar = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, MinHeight = 10 };
-            _splitBars = new[] { SWConsoleStyle.Accent, SWConsoleStyle.Good, SWConsoleStyle.Brass }.Select(color => new PanelContainer
+            _splitBars = new[] { SWConsoleStyle.Accent, SWConsoleStyle.Good, SWConsoleStyle.TextBright, SWConsoleStyle.Brass }.Select(color => new PanelContainer
             { HorizontalExpand = true, MinHeight = 10, PanelOverride = new StyleBoxFlat { BackgroundColor = color } }).ToArray();
             foreach (var segment in _splitBars) bar.AddChild(segment);
             BudgetsContent.AddChild(bar);
@@ -71,18 +72,24 @@ public sealed partial class SWMinistryWorkConsoleMenu
             _sectorEdit = new LineEdit { Text = state.BudgetSectorPct.ToString(), MinWidth = 55, Editable = state.BudgetCanEdit };
             split.AddChild(_sectorEdit);
             split.AddChild(SWConsoleStyle.Text("Ведомства, %", SWConsoleStyle.Good, SWConsoleStyle.Body));
-            _ministryEdit = new LineEdit { Text = (100 - state.BudgetSectorPct - state.BudgetReservePct).ToString(), MinWidth = 55, Editable = state.BudgetCanEdit };
+            _ministryEdit = new LineEdit { Text = (100 - state.BudgetSectorPct - state.BudgetReservePct - state.BudgetRepublicPct).ToString(), MinWidth = 55, Editable = state.BudgetCanEdit };
             split.AddChild(_ministryEdit);
+            BudgetsContent.AddChild(split);
+            split = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, SeparationOverride = 8 };
+            split.AddChild(SWConsoleStyle.Text("Фонд Республики, %", SWConsoleStyle.TextBright, SWConsoleStyle.Body));
+            _republicEdit = new LineEdit { Text = state.BudgetRepublicPct.ToString(), MinWidth = 55, Editable = state.BudgetCanEdit };
+            split.AddChild(_republicEdit);
             split.AddChild(SWConsoleStyle.Text("Резерв, %", SWConsoleStyle.Brass, SWConsoleStyle.Body));
             _reserveEdit = new LineEdit { Text = state.BudgetReservePct.ToString(), MinWidth = 55, Editable = state.BudgetCanEdit };
             split.AddChild(_reserveEdit);
             BudgetsContent.AddChild(split);
             _sectorEdit.OnTextChanged += _ => SyncMinistryShare();
             _reserveEdit.OnTextChanged += _ => SyncMinistryShare();
+            _republicEdit.OnTextChanged += _ => SyncMinistryShare();
             _ministryEdit.OnTextChanged += _ =>
             {
-                if (int.TryParse(_ministryEdit.Text, out var ministry) && int.TryParse(_reserveEdit.Text, out var reserve) && ministry >= 0 && reserve >= 0 && ministry + reserve <= 100)
-                    _sectorEdit.SetText((100 - ministry - reserve).ToString());
+                if (int.TryParse(_ministryEdit.Text, out var ministry) && int.TryParse(_reserveEdit.Text, out var reserve) && int.TryParse(_republicEdit.Text, out var republic) && ministry >= 0 && reserve >= 0 && republic >= 0 && (long) ministry + reserve + republic <= 100)
+                    _sectorEdit.SetText((100 - ministry - reserve - republic).ToString());
                 UpdateFinanceDraft();
             };
             BudgetsContent.AddChild(SWConsoleStyle.Section("Доли ведомств"));
@@ -109,7 +116,8 @@ public sealed partial class SWMinistryWorkConsoleMenu
         }
         _budgetInfo.SetMessage($"{state.BudgetPhaseLabel}   Бюджет дня: {state.BudgetDayTotal:N0} кр" +
             (string.IsNullOrWhiteSpace(state.BudgetRejectReason) ? "" : $"\nЗамечание канцлера: {state.BudgetRejectReason}") +
-            (state.BudgetAutoApplied ? $"\nПрименено стандартное распределение: {state.BudgetAutoReason}" : ""));
+            (state.BudgetAutoApplied ? $"\nПрименено стандартное распределение: {state.BudgetAutoReason}" : "") +
+            (state.BudgetPhaseLabel == "Одобрен" ? $"\nОстаток фонда Республики: {state.BudgetRepublicRemaining:N0} кр" : ""));
         _budgetReload.Visible = state.BudgetCanEdit && _budgetEditorRevision != state.BudgetRevision;
         if (_budgetReload.Visible)
             _budgetError.SetMessage("Проект изменился на сервере. Загрузите актуальную версию перед отправкой; местные правки будут сброшены.");
@@ -119,26 +127,27 @@ public sealed partial class SWMinistryWorkConsoleMenu
 
     private void SyncMinistryShare()
     {
-        if (int.TryParse(_sectorEdit.Text, out var sector) && int.TryParse(_reserveEdit.Text, out var reserve) && sector >= 0 && reserve >= 0 && sector + reserve <= 100)
-            _ministryEdit.SetText((100 - sector - reserve).ToString());
+        if (int.TryParse(_sectorEdit.Text, out var sector) && int.TryParse(_reserveEdit.Text, out var reserve) && int.TryParse(_republicEdit.Text, out var republic) && sector >= 0 && reserve >= 0 && republic >= 0 && (long) sector + reserve + republic <= 100)
+            _ministryEdit.SetText((100 - sector - reserve - republic).ToString());
         UpdateFinanceDraft();
     }
 
     private void UpdateFinanceDraft()
     {
         var state = _state;
-        if (state == null || !int.TryParse(_sectorEdit.Text, out var sector) || !int.TryParse(_reserveEdit.Text, out var reserve) || sector < 0 || reserve < 0 || sector + reserve > 100)
+        if (state == null || !int.TryParse(_sectorEdit.Text, out var sector) || !int.TryParse(_reserveEdit.Text, out var reserve) || !int.TryParse(_republicEdit.Text, out var republic) || sector < 0 || reserve < 0 || republic < 0 || (long) sector + reserve + republic > 100)
         { _draftSummary.SetMessage("Проверьте доли: сумма не должна превышать 100%."); return; }
-        if (!int.TryParse(_ministryEdit.Text, out var enteredMinistry) || enteredMinistry < 0 || sector + reserve + enteredMinistry != 100)
+        if (!int.TryParse(_ministryEdit.Text, out var enteredMinistry) || enteredMinistry < 0 || (long) sector + reserve + republic + enteredMinistry != 100)
         { _draftSummary.SetMessage("Сумма долей должна составлять 100%."); return; }
-        var ministry = 100 - sector - reserve;
+        var ministry = 100 - sector - reserve - republic;
         var sectorPool = (int) MathF.Round(state.BudgetDayTotal * sector / 100f);
-        var reservePool = (int) MathF.Round(state.BudgetDayTotal * reserve / 100f);
-        var ministryPool = state.BudgetDayTotal - sectorPool - reservePool;
+        var republicPool = Math.Min(state.BudgetDayTotal - sectorPool, (int) MathF.Round(state.BudgetDayTotal * republic / 100f));
+        var reservePool = Math.Min(state.BudgetDayTotal - sectorPool - republicPool, (int) MathF.Round(state.BudgetDayTotal * reserve / 100f));
+        var ministryPool = state.BudgetDayTotal - sectorPool - republicPool - reservePool;
         var weights = _weightEdits.ToDictionary(x => x.Key, x => int.TryParse(x.Value.Text, out var w) && w >= 0 && w <= 6 ? w : 0);
         var totalWeight = weights.Values.Sum();
-        _draftSummary.SetMessage($"Сектора {sector}% — {sectorPool:N0} кр\nВедомства {ministry}% — {ministryPool:N0} кр\nРезерв {reserve}% — {reservePool:N0} кр");
-        var values = new[] { sector, ministry, reserve };
+        _draftSummary.SetMessage($"Сектора {sector}% — {sectorPool:N0} кр\nВедомства {ministry}% — {ministryPool:N0} кр\nФонд Республики {republic}% — {republicPool:N0} кр\nРезерв {reserve}% — {reservePool:N0} кр");
+        var values = new[] { sector, ministry, republic, reserve };
         for (var i = 0; i < values.Length; i++) { _splitBars[i].Visible = values[i] > 0; _splitBars[i].SizeFlagsStretchRatio = Math.Max(1, values[i]); }
         foreach (var (id, label) in _draftAmounts)
             label.Text = totalWeight == 0 ? "—" : $"≈ {(int) MathF.Round((float) ministryPool * weights[id] / totalWeight):N0} кр";
@@ -150,9 +159,9 @@ public sealed partial class SWMinistryWorkConsoleMenu
         if (state != null && _budgetEditorRevision != state.BudgetRevision)
         { _budgetError.SetMessage("Проект изменился на сервере. Загрузите актуальную версию."); return; }
         if (state == null || !state.BudgetCanSubmit) { _budgetError.SetMessage("Сейчас проект нельзя подать."); return; }
-        if (!int.TryParse(_sectorEdit.Text, out var sector) || !int.TryParse(_reserveEdit.Text, out var reserve) || sector < 0 || reserve < 0 || sector + reserve > 100)
+        if (!int.TryParse(_sectorEdit.Text, out var sector) || !int.TryParse(_reserveEdit.Text, out var reserve) || !int.TryParse(_republicEdit.Text, out var republic) || sector < 0 || reserve < 0 || republic < 0 || (long) sector + reserve + republic > 100)
         { _budgetError.SetMessage("Введите доли от 0 до 100%; их сумма не должна превышать 100%."); return; }
-        if (!int.TryParse(_ministryEdit.Text, out var ministry) || ministry < 0 || sector + reserve + ministry != 100)
+        if (!int.TryParse(_ministryEdit.Text, out var ministry) || ministry < 0 || (long) sector + reserve + republic + ministry != 100)
         { _budgetError.SetMessage("Сумма долей должна составлять 100%."); return; }
         var weights = new Dictionary<string, int>();
         foreach (var (id, edit) in _weightEdits)
@@ -161,10 +170,10 @@ public sealed partial class SWMinistryWorkConsoleMenu
             { _budgetError.SetMessage("Доля каждого ведомства должна быть целым числом от 0 до 6."); return; }
             weights[id] = weight;
         }
-        if (weights.Count > 0 && weights.Values.Sum() == 0 && sector + reserve < 100)
+        if (weights.Count > 0 && weights.Values.Sum() == 0 && sector + reserve + republic < 100)
         { _budgetError.SetMessage("Укажите ненулевую долю хотя бы одного ведомства."); return; }
         _budgetError.SetMessage("");
-        _owner.SubmitBudget(_budgetEditorRevision, sector, reserve, weights);
+        _owner.SubmitBudget(_budgetEditorRevision, sector, reserve, republic, weights);
     }
 
     private void BuildFinanceReserve(SWMinistryWorkConsoleState state)

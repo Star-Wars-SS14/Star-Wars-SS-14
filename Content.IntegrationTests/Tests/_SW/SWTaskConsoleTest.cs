@@ -119,10 +119,10 @@ public sealed class SWTaskConsoleTest
     }
 
     [TestCase("sw-task-console-title")]
-    [TestCase("sw-task-console-header-name")]
-    [TestCase("sw-task-console-header-description")]
-    [TestCase("sw-task-console-header-status")]
-    [TestCase("sw-task-console-status")]
+    [TestCase("sw-task-console-summary")]
+    [TestCase("sw-task-console-percent")]
+    [TestCase("sw-task-console-score")]
+    [TestCase("sw-task-console-reward")]
     [TestCase("sw-task-console-officers-only")]
     public async Task TextsExist(string key)
     {

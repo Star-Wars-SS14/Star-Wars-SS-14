@@ -68,6 +68,8 @@ namespace Content.Client.Cargo.BUI
                 orderRequester = string.Empty;
 
             _orderMenu = new SWCargoConsoleOrderMenu();
+            ApplyOwnerAccent(_menu);
+            ApplyOwnerAccent(_orderMenu);
 
             _menu.OnClose += Close;
 

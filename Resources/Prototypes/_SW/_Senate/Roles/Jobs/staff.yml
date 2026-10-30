@@ -69,7 +69,7 @@
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 0
-  startingGear: UsherGear
+  startingGear: UsherGearJob
   icon: "JobIconUsher"
   supervisors: job-supervisors-empire
   access:
@@ -83,7 +83,7 @@
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 0
-  startingGear: SenateGuardHeadGear
+  startingGear: SenateGuardHeadGearJob
   icon: "JobIconSenateGuardHead"
   supervisors: job-supervisors-empire
   access:
@@ -98,7 +98,7 @@
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 0
-  startingGear: SenateGuardOfficerGear
+  startingGear: SenateGuardOfficerGearJob
   icon: "JobIconSenateGuardOfficer"
   supervisors: job-supervisors-empire
   access:
@@ -112,7 +112,7 @@
   requirements:
   - !type:OverallPlaytimeRequirement
     time: 0
-  startingGear: SenateDoctorGear
+  startingGear: SenateDoctorGearJob
   icon: "JobIconSenateDoctor"
   supervisors: job-supervisors-empire
   access:
@@ -162,6 +162,51 @@
     id: SWSenateDoctorPDA
     ears: SWClothingHeadsetSenateMedical
     jumpsuit: ClothingUniformJumpsuitMedicalDoctor
+    outerClothing: SWMedicRepublicSuit
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    belt: ClothingBeltMedicalFilled
+    back: ClothingBackpack
+
+- type: startingGear
+  id: UsherGearJob
+  equipment:
+    id: SWUsherPDA
+    ears: SWClothingHeadsetSenateUsher
+    shoes: SWClothingShoesBootsCitizen
+    gloves: SWClothingHandsGlovesСitizen
+    back: ClothingBackpack
+    belt: ClothingBeltSecurityFilled
+
+- type: startingGear
+  id: SenateGuardHeadGearJob
+  equipment:
+    id: SWSenateGuardHeadPDA
+    ears: SWClothingHeadsetSenateGuardHead
+    outerClothing: SWLieutenantRepublicSuit
+    head: SW_ClothingHeadLieutenantRepublicHelmet
+    shoes: SWClothingShoesBootsJackFilled
+    belt: ClothingBeltAssault
+    back: ClothingBackpackMilitarySatchel
+    suitstorage: SWH206Renegade
+
+- type: startingGear
+  id: SenateGuardOfficerGearJob
+  equipment:
+    id: SWSenateGuardOfficerPDA
+    ears: SWClothingHeadsetSenateGuard
+    outerClothing: SWRepublicSuit
+    head: SW_ClothingHeadRepublicHelmet
+    shoes: SWClothingShoesBootsJackFilled
+    belt: ClothingBeltAssault
+    back: ClothingBackpackMilitarySatchel
+    suitstorage: SWH206Renegade
+
+- type: startingGear
+  id: SenateDoctorGearJob
+  equipment:
+    id: SWSenateDoctorPDA
+    ears: SWClothingHeadsetSenateMedical
     outerClothing: SWMedicRepublicSuit
     shoes: SWClothingShoesBootsCitizen
     gloves: SWClothingHandsGlovesСitizen

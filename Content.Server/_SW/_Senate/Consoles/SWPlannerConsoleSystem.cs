@@ -33,6 +33,7 @@ public sealed class SWPlannerConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWPlannerConsoleComponent, SWPlannerRescheduleMessage>(OnReschedule);
         SubscribeLocalEvent<SWPlannerConsoleComponent, SWPlannerBlockMessage>(OnBlock);
         SubscribeLocalEvent<SWPlannerConsoleComponent, SWPlannerRemoveBlockMessage>(OnRemoveBlock);
+        SubscribeLocalEvent<SWPlannerConsoleComponent, SWPlannerRescheduleBlockMessage>(OnRescheduleBlock);
         SubscribeLocalEvent<SWPlannerConsoleComponent, SWPlannerViewMessage>(OnView);
     }
 
@@ -135,6 +136,19 @@ public sealed class SWPlannerConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
+    private void OnRescheduleBlock(Entity<SWPlannerConsoleComponent> ent, ref SWPlannerRescheduleBlockMessage args)
+    {
+        if (GetMe(ent) is not { } me)
+            return;
+
+        if (_planner.RescheduleBlock(me, args.BlockId, args.Day, args.Slot, args.Duration))
+            _popup.PopupCursor("Блок перенесён.", args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor("Не удалось перенести блок: проверьте время и доступ.", args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
     private void OnView(Entity<SWPlannerConsoleComponent> ent, ref SWPlannerViewMessage args)
     {
         ent.Comp.ViewPerson = args.Person;
@@ -191,6 +205,7 @@ public sealed class SWPlannerConsoleSystem : EntitySystem
             GameTime = _time.TimeString(),
             Today = today,
             NowSlot = _planner.NowSlot(),
+            EarliestStartSlot = _planner.EarliestStartSlot(),
             Roster = _planner.BuildRoster(),
         };
 

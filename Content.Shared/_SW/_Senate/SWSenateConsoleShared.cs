@@ -3154,6 +3154,7 @@ public sealed class SWPlannerMeetingEntry
     public bool Invited;
     public SWInviteStatus MyStatus;
     public List<string> ParticipantLines = new();
+    public List<string> InviteeNames = new();
     public string Warning = string.Empty;
 }
 
@@ -3166,6 +3167,7 @@ public sealed class SWPlannerConsoleState : BoundUserInterfaceState
     public string GameTime = string.Empty;
     public int Today;
     public int NowSlot = -1;
+    public int EarliestStartSlot = SWPlannerSlots.PerDay;
     public ulong MyBusyToday;
     public ulong MyBusyTomorrow;
     public List<SWPlannerPersonEntry> Roster = new();
@@ -3271,6 +3273,23 @@ public sealed class SWPlannerRemoveBlockMessage : BoundUserInterfaceMessage
     public SWPlannerRemoveBlockMessage(int blockId)
     {
         BlockId = blockId;
+    }
+}
+
+[Serializable, NetSerializable]
+public sealed class SWPlannerRescheduleBlockMessage : BoundUserInterfaceMessage
+{
+    public int BlockId;
+    public int Day;
+    public int Slot;
+    public int Duration;
+
+    public SWPlannerRescheduleBlockMessage(int blockId, int day, int slot, int duration)
+    {
+        BlockId = blockId;
+        Day = day;
+        Slot = slot;
+        Duration = duration;
     }
 }
 
@@ -3633,3 +3652,5 @@ public sealed class SWSenateDiploReplyMessage : BoundUserInterfaceMessage
         Text = text;
     }
 }
+
+

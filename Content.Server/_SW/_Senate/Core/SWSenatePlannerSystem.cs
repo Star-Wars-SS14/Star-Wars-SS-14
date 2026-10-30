@@ -200,6 +200,19 @@ public sealed class SWSenatePlannerSystem : EntitySystem
     public bool RemoveBlock(string owner, int blockId) =>
         _blocks.RemoveAll(b => b.Id == blockId && b.Owner == owner) > 0;
 
+    public bool RescheduleBlock(string owner, int blockId, int day, int slot, int duration)
+    {
+        var block = _blocks.FirstOrDefault(b => b.Id == blockId && b.Owner == owner);
+        if (block == null || block.Day < _time.Day || slot < 0 || slot >= SWPlannerSlots.PerDay
+            || !ValidWindow(day, slot, duration, 16))
+            return false;
+
+        block.Day = day;
+        block.StartSlot = slot;
+        block.Duration = duration;
+        return true;
+    }
+
     // --- Views ---
 
     private bool IsPolitical(string person) =>
@@ -460,6 +473,7 @@ public sealed class SWSenatePlannerSystem : EntitySystem
 
             foreach (var (name, status) in meeting.Invites)
             {
+                entry.InviteeNames.Add(name);
                 var line = status switch
                 {
                     SWInviteStatus.Accepted => $"{name} - принял",
@@ -549,6 +563,17 @@ public sealed class SWSenatePlannerSystem : EntitySystem
         if (!_time.DayActive)
             return -1;
         return Math.Clamp((_time.CurrentHour - SWSenateTimeSystem.StartHour) * 4 + _time.CurrentMinute / 15, 0, SWPlannerSlots.PerDay - 1);
+    }
+
+    public int EarliestStartSlot()
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return SWPlannerSlots.PerDay;
+
+        var minutes = _time.CalendarGameMinutes - _time.Day * 1440d - SWSenateTimeSystem.StartHour * 60d;
+        if (minutes < 0d || minutes >= SWPlannerSlots.PerDay * 15d)
+            return SWPlannerSlots.PerDay;
+        return Math.Clamp((int) Math.Ceiling(minutes / 15d), 0, SWPlannerSlots.PerDay);
     }
 
     private sealed class Meeting

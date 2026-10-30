@@ -55,6 +55,11 @@ public sealed class SWPlannerConsoleBoundUserInterface : BoundUserInterface
         SendMessage(new SWPlannerBlockMessage(day, slot, duration, label));
     }
 
+    public void RescheduleBlock(int blockId, int day, int slot, int duration)
+    {
+        SendMessage(new SWPlannerRescheduleBlockMessage(blockId, day, slot, duration));
+    }
+
     public void RemoveBlock(int blockId)
     {
         SendMessage(new SWPlannerRemoveBlockMessage(blockId));
@@ -74,3 +79,4 @@ public sealed class SWPlannerConsoleBoundUserInterface : BoundUserInterface
         _menu?.Dispose();
     }
 }
+

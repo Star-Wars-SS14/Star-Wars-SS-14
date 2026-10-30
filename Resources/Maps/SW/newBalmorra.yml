@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 07/18/2026 10:56:57
-  entityCount: 82957
+  entityCount: 82959
 maps:
 - 1
 grids:
@@ -596470,6 +596470,20 @@ entities:
     components:
     - type: Transform
       pos: -157.5,-36.5
+      parent: 2
+- proto: SWSpawnPointNeutralBartender
+  entities:
+  - uid: 82958
+    components:
+    - type: Transform
+      pos: 17.5,-27.5
+      parent: 2
+- proto: SWSpawnPointNeutralBartenderLJ
+  entities:
+  - uid: 82959
+    components:
+    - type: Transform
+      pos: 17.5,-27.5
       parent: 2
 - proto: SWSpawnPointRepublicCaptainLJ
   entities:

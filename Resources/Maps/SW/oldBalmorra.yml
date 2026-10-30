@@ -339901,32 +339901,6 @@ entities:
           ents: []
 - proto: SWTurret
   entities:
-  - uid: 55025
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -136.5,-102.5
-      parent: 2
-    - type: DeviceLinkSource
-      linkedPorts:
-        55031:
-        - - SWTurretSender
-          - SWTurretConsoleReceiver
-    missingComponents:
-    - ActiveRadio
-  - uid: 55026
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -136.5,-98.5
-      parent: 2
-    - type: DeviceLinkSource
-      linkedPorts:
-        55031:
-        - - SWTurretSender
-          - SWTurretConsoleReceiver
-    missingComponents:
-    - ActiveRadio
   - uid: 55027
     components:
     - type: Transform
@@ -340043,6 +340017,34 @@ entities:
         SWSobrikCaptain: False
         SWSobrikMedic: False
         SWSobrikOfficer: False
+- proto: SWTurretRepublic
+  entities:
+  - uid: 55025
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -136.5,-102.5
+      parent: 2
+    - type: DeviceLinkSource
+      linkedPorts:
+        55031:
+        - - SWTurretSender
+          - SWTurretConsoleReceiver
+    missingComponents:
+    - ActiveRadio
+  - uid: 55026
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -136.5,-98.5
+      parent: 2
+    - type: DeviceLinkSource
+      linkedPorts:
+        55031:
+        - - SWTurretSender
+          - SWTurretConsoleReceiver
+    missingComponents:
+    - ActiveRadio
 - proto: SWUIHBP
   entities:
   - uid: 6170

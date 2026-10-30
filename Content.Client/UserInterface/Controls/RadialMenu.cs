@@ -421,10 +421,10 @@ public class RadialMenuButtonWithSector : RadialMenuButton, IRadialMenuItemWithS
     private bool _isWholeCircle;
     private Vector2? _parentCenter;
 
-    private Color _backgroundColorSrgb = Color.ToSrgb(new Color(70, 73, 102, 128));
-    private Color _hoverBackgroundColorSrgb = Color.ToSrgb(new Color(87, 91, 127, 128));
-    private Color _borderColorSrgb = Color.ToSrgb(new Color(173, 216, 230, 70));
-    private Color _hoverBorderColorSrgb = Color.ToSrgb(new Color(87, 91, 127, 128));
+    private Color _backgroundColorSrgb = Color.ToSrgb(new Color(12, 14, 15, 215)); //SW
+    private Color _hoverBackgroundColorSrgb = Color.ToSrgb(new Color(52, 56, 66, 235)); //SW
+    private Color _borderColorSrgb = Color.ToSrgb(new Color(124, 132, 147, 200)); //SW
+    private Color _hoverBorderColorSrgb = Color.ToSrgb(new Color(225, 225, 239, 220)); //SW
 
     /// <summary>
     /// Marker, that controls if border of segment should be rendered. Is false by default.

@@ -23,6 +23,7 @@ public sealed class SWBuyConsoleBounderUserInterfaceState : SWBasePayableBounder
 {
     public List<ProtoId<SWCargoProductPrototype>> Products = new();
     public List<ProtoId<SWCurrencyPrototype>> Currencies = new();
+    public int MaxOrderAmount;
     public SWBuyConsoleBounderUserInterfaceState()
     {
 

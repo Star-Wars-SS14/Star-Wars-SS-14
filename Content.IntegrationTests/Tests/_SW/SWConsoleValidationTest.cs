@@ -18,6 +18,7 @@ using Content.Shared.Access.Components;
 using Content.Shared.Echo.CaptureConsole;
 using Content.Shared.Echo.GameTicking.Components;
 using Robust.Shared.GameObjects;
+using Robust.Shared.Localization;
 using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 
@@ -40,12 +41,40 @@ public sealed class SWConsoleValidationTest
     private static void Send(TestPair pair, EntityUid console, BoundUserInterfaceMessage message, EntityUid actor = default)
     {
         message.Actor = actor;
+        message.UiKey = SWBuyConsoleUIKey.Key;
         pair.Server.EntMan.EventBus.RaiseLocalEvent(console, (object) message, true);
     }
 
     private static Dictionary<ProtoId<SWCurrencyPrototype>, float> Balance(TestPair pair, EntityUid console)
     {
         return pair.Server.EntMan.GetComponent<SWBankAccountAccessorComponent>(console).Account!.Value.Comp.CurrentAmount;
+    }
+
+    [TestCase("sw-console-no-account")]
+    [TestCase("sw-economy-not-enough-money")]
+    [TestCase("sw-economy-payout-disabled")]
+    [TestCase("sw-economy-payout-invalid")]
+    [TestCase("sw-economy-deposit-disabled")]
+    [TestCase("sw-economy-deposit-nothing")]
+    [TestCase("sw-economy-order-invalid-amount")]
+    [TestCase("sw-economy-order-unavailable")]
+    [TestCase("sw-economy-exchange-same-currency")]
+    [TestCase("sw-economy-exchange-invalid-amount")]
+    [TestCase("sw-economy-exchange-unavailable")]
+    [TestCase("sw-economy-exchange-too-small")]
+    [TestCase("sw-economy-bill-cannot-pay")]
+    [TestCase("sw-artillery-bad-coordinates")]
+    [TestCase("sw-artillery-cooldown")]
+    [TestCase("sw-artillery-no-attacks")]
+    [TestCase("sw-capture-console-not-member")]
+    [TestCase("sw-capture-console-own-station")]
+    [TestCase("sw-capture-console-timeout")]
+    public async Task RefusalHasText(string key)
+    {
+        await using var pair = await PoolManager.GetServerClient();
+        var loc = pair.Server.ResolveDependency<ILocalizationManager>();
+        Assert.That(loc.HasString(key), key);
+        await pair.CleanReturnAsync();
     }
 
     [Test]

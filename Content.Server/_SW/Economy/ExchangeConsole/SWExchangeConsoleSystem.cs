@@ -41,30 +41,41 @@ public sealed class SWExchangeConsoleSystem : EntitySystem
 
     private void OnTryExchange(Entity<SWExchangeConsoleComponent> ent, ref SWTryExchangeMessage args)
     {
-        if (args.CurrencyFrom == args.CurrencyTo || args.Amount <= 0)
+        if (args.CurrencyFrom == args.CurrencyTo)
         {
+            _swPayable.Refuse(args.Actor, "sw-economy-exchange-same-currency");
+            return;
+        }
+
+        if (args.Amount <= 0)
+        {
+            _swPayable.Refuse(args.Actor, "sw-economy-exchange-invalid-amount");
             return;
         }
 
         if (!ent.Comp.AllowedCurrencies.Contains(args.CurrencyFrom)
             || !ent.Comp.AllowedCurrencies.Contains(args.CurrencyTo))
         {
+            _swPayable.Refuse(args.Actor, "sw-economy-exchange-unavailable");
             return;
         }
 
         if (!TryComp<SWBankAccountAccessorComponent>(ent, out var accComp)
             || accComp.Account == null)
         {
+            _swPayable.Refuse(args.Actor, "sw-console-no-account");
             return;
         }
 
         if (!_bankSystem.TransferCurrency(args.Amount, args.CurrencyFrom, args.CurrencyTo, out var resultAmount)) {
+            _swPayable.Refuse(args.Actor, "sw-economy-exchange-unavailable");
             return;
         }
 
         // Rounding down must not eat the money: 1 RC is worth 0 IC.
         if (resultAmount <= 0)
         {
+            _swPayable.Refuse(args.Actor, "sw-economy-exchange-too-small");
             return;
         }
 
@@ -75,6 +86,10 @@ public sealed class SWExchangeConsoleSystem : EntitySystem
         if (_bankSystem.TryPayAll(request, balance))
         {
             balance[args.CurrencyTo] = balance.GetValueOrDefault(args.CurrencyTo) + resultAmount;
+        }
+        else
+        {
+            _swPayable.Refuse(args.Actor, "sw-economy-not-enough-money");
         }
 
         UpdateInterface(ent);

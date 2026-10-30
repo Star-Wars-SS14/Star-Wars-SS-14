@@ -57,6 +57,8 @@ namespace Content.Server._SW.Artillery
             }
             if (!CanCall(ent.Comp))
             {
+                var reason = ent.Comp.AttacksLeft > 0 ? "sw-artillery-cooldown" : "sw-artillery-no-attacks";
+                _popupSystem.PopupCursor(Loc.GetString(reason), args.Actor, PopupType.Medium);
                 return;
             }
             MapId id = _sharedTransformSystem.GetMapId(ent.Owner);
@@ -64,6 +66,7 @@ namespace Content.Server._SW.Artillery
             // A strike off the grid hits nothing and still costs an attack.
             if (!_mapManager.TryFindGridAt(target, out _, out _))
             {
+                _popupSystem.PopupCursor(Loc.GetString("sw-artillery-bad-coordinates"), args.Actor, PopupType.Medium);
                 return;
             }
             var title = Loc.GetString(ent.Comp.Title);

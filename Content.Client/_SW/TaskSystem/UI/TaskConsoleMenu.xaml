@@ -2,24 +2,19 @@
     xmlns="https://spacestation14.io"
     xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
     xmlns:ui="clr-namespace:Content.Client.Materials.UI"
-    Title="task"
+    Title="{Loc 'sw-task-console-title'}"
     MinSize="800 500"
     SetSize="800 500">
     <BoxContainer Orientation="Vertical">
-        <Button
-                        Name="UpdateTasksButton"
-                        Text="Update"
-                        TextAlign="Center">
-        </Button>
         <BoxContainer Orientation="Horizontal">
             <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-                <Label Text="Название" HorizontalExpand="True" Margin="20 20 20 20" HorizontalAlignment="Center"/>
+                <Label Text="{Loc 'sw-task-console-header-name'}" HorizontalExpand="True" Margin="20 20 20 20" HorizontalAlignment="Center"/>
             </BoxContainer>
             <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-                <Label Text="Описание" HorizontalExpand="True" Margin="20 20 20 20" HorizontalAlignment="Center"/>
+                <Label Text="{Loc 'sw-task-console-header-description'}" HorizontalExpand="True" Margin="20 20 20 20" HorizontalAlignment="Center"/>
             </BoxContainer>
             <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-                <Label Text="Статус" HorizontalExpand="True" Margin="20 20 20 20" MinWidth="200" HorizontalAlignment="Center"/>
+                <Label Text="{Loc 'sw-task-console-header-status'}" HorizontalExpand="True" Margin="20 20 20 20" MinWidth="200" HorizontalAlignment="Center"/>
             </BoxContainer>
         </BoxContainer>
         <PanelContainer VerticalExpand="True">

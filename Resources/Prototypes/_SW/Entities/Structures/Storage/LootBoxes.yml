@@ -108,16 +108,16 @@
       prob: 0.50
       maxAmount: 3
     - id: SheetGlass1
-      prob: 0.20
+      prob: 0.10
       maxAmount: 5
     - id: SheetSteel1
-      prob: 0.20
+      prob: 0.10
       maxAmount: 5
     - id: MaterialWoodPlank1
-      prob: 0.30
+      prob: 0.10
       maxAmount: 5
     - id: MaterialCloth10
-      prob: 0.30
+      prob: 0.10
       maxAmount: 2
     - id: SWJ111Rancor
       prob: 0.05
@@ -234,22 +234,22 @@
       prob: 0.50
       maxAmount: 4
     - id: SheetGlass10
-      prob: 0.40
+      prob: 0.20
       maxAmount: 2
     - id: SheetSteel10
-      prob: 0.40
+      prob: 0.20
       maxAmount: 2
     - id: SheetRGlass1
-      prob: 0.40
+      prob: 0.20
       maxAmount: 5
     - id: SheetPGlass1
-      prob: 0.40
+      prob: 0.20
       maxAmount: 5
     - id: SheetPlasteel1
-      prob: 0.40
+      prob: 0.20
       maxAmount: 5
     - id: SheetPlasma1
-      prob: 0.40
+      prob: 0.20
       maxAmount: 5
     - id: SWE1BlasterRifle
       prob: 0.05
@@ -350,37 +350,37 @@
   - type: StorageFill
     contents:
     - id: SheetGlass
-      prob: 0.50
+      prob: 0.25
       maxAmount: 1
     - id: SheetSteel
-      prob: 0.50
+      prob: 0.25
       maxAmount: 1
     - id: SheetRGlass1
-      prob: 0.50
+      prob: 0.25
       maxAmount: 20
     - id: SheetPGlass1
-      prob: 0.50
+      prob: 0.25
       maxAmount: 20
     - id: SheetPlasteel10
-      prob: 0.50
+      prob: 0.25
       maxAmount: 2
     - id: SheetPlasma10
-      prob: 0.50
+      prob: 0.25
       maxAmount: 2
     - id: SheetRPGlass1
-      prob: 0.50
+      prob: 0.25
       maxAmount: 6
     - id: SheetUGlass1
-      prob: 0.50
+      prob: 0.25
       maxAmount: 6
     - id: SheetRUGlass1
-      prob: 0.50
+      prob: 0.25
       maxAmount: 6
     - id: SheetPlastic1
-      prob: 0.50
+      prob: 0.25
       maxAmount: 6
     - id: SheetUranium1
-      prob: 0.50
+      prob: 0.25
       maxAmount: 6
     - id: SWP301Destroyer
       prob: 0.40
@@ -404,37 +404,37 @@
   - type: StorageFill
     contents:
     - id: SheetGlass
-      prob: 0.50
+      prob: 0.25
       maxAmount: 1
     - id: SheetSteel
-      prob: 0.50
+      prob: 0.25
       maxAmount: 1
     - id: SheetRGlass1
-      prob: 0.50
+      prob: 0.25
       maxAmount: 20
     - id: SheetPGlass1
-      prob: 0.50
+      prob: 0.25
       maxAmount: 20
     - id: SheetPlasteel10
-      prob: 0.50
+      prob: 0.25
       maxAmount: 2
     - id: SheetPlasma10
-      prob: 0.50
+      prob: 0.25
       maxAmount: 2
     - id: SheetRPGlass1
-      prob: 0.50
+      prob: 0.25
       maxAmount: 6
     - id: SheetUGlass1
-      prob: 0.50
+      prob: 0.25
       maxAmount: 6
     - id: SheetRUGlass1
-      prob: 0.50
+      prob: 0.25
       maxAmount: 6
     - id: SheetPlastic1
-      prob: 0.50
+      prob: 0.25
       maxAmount: 6
     - id: SheetUranium1
-      prob: 0.50
+      prob: 0.25
       maxAmount: 6
     - id: SWP301Destroyer
       prob: 0.40

@@ -37,6 +37,9 @@
     ears: SWClothingHeadsetGarnison
     back: SWImperialBackpack
     suitstorage: SWE1BlasterRifle
+  storage:
+    back:
+    - SWFirstAidKitFilled
 
 ###Empire
 - type: startingGear
@@ -93,6 +96,9 @@
     ears: SWClothingHeadsetRegular
     back: SWImperialBackpack
     suitstorage: SWE1BlasterRifle
+  storage:
+    back:
+    - SWFirstAidKitFilled
 
 - type: startingGear
   id: EmpireMoffGear
@@ -282,6 +288,9 @@
     ears: SWClothingHeadsetRepublic
     back: SWRepublicBackpack
     suitstorage: SWH206Renegade
+  storage:
+    back:
+    - SWFirstAidKitFilled
 
 - type: startingGear
   id: RepublicRecruitGear
@@ -426,6 +435,9 @@
     shoes: SWClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok
     suitstorage: SWH206Renegade
+  storage:
+    back:
+    - SWFirstAidKitFilled
 
 - type: startingGear
   id: RepublicCommanderStormtrooperGear

@@ -11,9 +11,54 @@ using static Robust.Client.UserInterface.Controls.MenuBar;
 namespace Content.Client._SW.Economy.UI.BasePayAble;
 public abstract partial class SWBasePayableBoundUserInterface : BoundUserInterface
 {
+    private SWWithdrawalWindow? _withdrawal;
+
     public SWBasePayableBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
     }
+
+    protected void OpenWithdrawal(List<ProtoId<SWCurrencyPrototype>> currencies)
+    {
+        CloseWithdrawal();
+        _withdrawal = new SWWithdrawalWindow();
+        _withdrawal.PopulateCurrencies(currencies);
+        _withdrawal.OpenCenteredRight();
+        _withdrawal.OnConfirmButtonPressedAction += OnWithdrawal;
+    }
+
+    private void CloseWithdrawal()
+    {
+        _withdrawal?.Close();
+        _withdrawal?.Dispose();
+        _withdrawal = null;
+    }
+
+    protected override void ReceiveMessage(BoundUserInterfaceMessage message)
+    {
+        base.ReceiveMessage(message);
+        if (message is SWConsoleActionSucceededMessage result)
+        {
+            OnActionSucceeded(result.Action);
+        }
+    }
+
+    protected virtual void OnActionSucceeded(SWConsoleAction action)
+    {
+        if (action == SWConsoleAction.Payout)
+        {
+            CloseWithdrawal();
+        }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        if (disposing)
+        {
+            CloseWithdrawal();
+        }
+    }
+
     protected virtual void OnWithdrawal(Dictionary<ProtoId<SWCurrencyPrototype>, float> dict)
     {
         SendMessage(new SWTryPayoutMessage(dict));

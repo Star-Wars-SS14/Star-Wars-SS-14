@@ -37,6 +37,10 @@ public sealed partial class SWExchangeMenu : FancyWindow
 
     public void OnExchange()
     {
+        if (Currencies.Count == 0)
+        {
+            return;
+        }
         var from = Currencies[CurrencyExchangeFrom.SelectedId];
         var to = Currencies[CurrencyExchangeTo.SelectedId];
         int amount = 0;
@@ -59,7 +63,7 @@ public sealed partial class SWExchangeMenu : FancyWindow
 
     public void UpdateExchange()
     {
-        if (SharedBankSystem == null)
+        if (SharedBankSystem == null || Currencies.Count == 0)
         {
             return;
         }
@@ -87,6 +91,11 @@ public sealed partial class SWExchangeMenu : FancyWindow
 
     public void PopulateCurrencies(List<SWCurrencyPrototype> currencies)
     {
+        // Clearing resets both dropdowns to one currency, and the next exchange would be refused.
+        if (Currencies.SequenceEqual(currencies))
+        {
+            return;
+        }
         Currencies = currencies;
         CurrencyExchangeFrom.Clear();
         CurrencyExchangeTo.Clear();

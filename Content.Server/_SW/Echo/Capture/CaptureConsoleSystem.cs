@@ -2,12 +2,14 @@ using System.Linq;
 using Content.Server._SW.TaskSystem;
 using Content.Server.Chat.Systems;
 using Content.Server.Echo.GameTicking.Rules.Components;
+using Content.Server.Popups;
 using Content.Server.Station.Systems;
 using Content.Shared._SW.TaskSystem;
 using Content.Shared.Access.Systems;
 using Content.Shared.Audio;
 using Content.Shared.Echo.CaptureConsole;
 using Content.Shared.Echo.GameTicking.Components;
+using Content.Shared.Popups;
 using Content.Shared.UserInterface;
 using Robust.Server.GameObjects;
 using Robust.Shared.Audio.Components;
@@ -35,6 +37,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly SectorWarRuleSystem _sectorWarRule = default!;
     [Dependency] private readonly SWBankSystem _sWBank = default!;
+    [Dependency] private readonly PopupSystem _popup = default!;
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -192,8 +195,15 @@ public sealed class CaptureConsoleSystem : EntitySystem
         CaptureConsoleButtonPressedMessage args)
     {
         // The window disables the button in these cases, the server has to refuse them too.
-        if (component.IsTimeout || !TryComp<SWFactionMemberComponent>(args.Actor, out var factionComp))
+        if (component.IsTimeout)
         {
+            _popup.PopupCursor(Loc.GetString("sw-capture-console-timeout"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (!TryComp<SWFactionMemberComponent>(args.Actor, out var factionComp))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-capture-console-not-member"), args.Actor, PopupType.Medium);
             return;
         }
 
@@ -202,6 +212,7 @@ public sealed class CaptureConsoleSystem : EntitySystem
             && TryComp<CapturableStationComponent>(owningStation, out var capturable)
             && capturable.Fraction == factionComp.Faction)
         {
+            _popup.PopupCursor(Loc.GetString("sw-capture-console-own-station"), args.Actor, PopupType.Medium);
             return;
         }
 

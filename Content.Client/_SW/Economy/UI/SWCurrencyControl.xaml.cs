@@ -27,6 +27,6 @@ public sealed partial class SWCurrencyControl : Control
         {
             CurrencyName.Text = Loc.GetString(proto.LocalizedName);
         }
-        CurrencyAmount.Text = amount.ToString();
+        CurrencyAmount.Text = amount.ToString("0.##");
     }
 }

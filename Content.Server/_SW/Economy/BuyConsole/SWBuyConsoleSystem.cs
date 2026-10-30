@@ -1,6 +1,7 @@
 using Content.Server._SW.FinanceConsole;
 using Content.Server._SW.TurretConsole;
 using Content.Server.Cargo.Components;
+using Content.Server.Popups;
 using Content.Shared._SW.Economy.BankSystem;
 using Content.Shared._SW.Economy.Messages;
 using Content.Shared._SW.Economy.Prototypes;
@@ -8,6 +9,7 @@ using Content.Shared.Cargo.Prototypes;
 using Content.Shared.Coordinates;
 using Content.Shared.DeviceLinking;
 using Content.Shared.DeviceLinking.Events;
+using Content.Shared.Popups;
 using Content.Shared.UserInterface;
 using Robust.Server.GameObjects;
 using Robust.Shared.Prototypes;
@@ -28,6 +30,7 @@ public sealed class SWBuyConsoleSystem : EntitySystem
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly SharedTransformSystem _sharedTransform = default!;
+    [Dependency] private readonly PopupSystem _popup = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -87,6 +90,7 @@ public sealed class SWBuyConsoleSystem : EntitySystem
         state.CurrentAmount = _swPayable.GetBalance(ent.Owner);
         state.Products = ent.Comp.AvailableProducts.ToList();
         state.Currencies = ent.Comp.AllowedCurrencies.ToList();
+        state.MaxOrderAmount = ent.Comp.MaxOrderAmount;
         _uiSystem.SetUiState(ent.Owner, SWBuyConsoleUIKey.Key, state);
     }
 
@@ -98,12 +102,19 @@ public sealed class SWBuyConsoleSystem : EntitySystem
         }
         if (accComp.Account == null)
         {
+            _swPayable.Refuse(args.Actor, "sw-console-no-account");
             return;
         }
-        if (args.Amount <= 0
-            || args.Amount > ent.Comp.MaxOrderAmount
-            || !ent.Comp.AvailableProducts.Contains(args.CargoProductId))
+        if (args.Amount <= 0 || args.Amount > ent.Comp.MaxOrderAmount)
         {
+            _popup.PopupCursor(Loc.GetString("sw-economy-order-invalid-amount", ("max", ent.Comp.MaxOrderAmount)),
+                args.Actor,
+                PopupType.Medium);
+            return;
+        }
+        if (!ent.Comp.AvailableProducts.Contains(args.CargoProductId))
+        {
+            _swPayable.Refuse(args.Actor, "sw-economy-order-unavailable");
             return;
         }
         var account = accComp.Account.Value;
@@ -117,6 +128,11 @@ public sealed class SWBuyConsoleSystem : EntitySystem
         if (_sWSharedBankSystem.TryPayAny(totalCost, account.Comp.CurrentAmount))
         {
             SpawnEntities(ent, proto.Product, args.Amount);
+            _uiSystem.ServerSendUiMessage(ent.Owner, args.UiKey, new SWConsoleActionSucceededMessage(SWConsoleAction.Purchase), args.Actor);
+        }
+        else
+        {
+            _swPayable.Refuse(args.Actor, "sw-economy-not-enough-money");
         }
         UpdateInterface(ent);
     }

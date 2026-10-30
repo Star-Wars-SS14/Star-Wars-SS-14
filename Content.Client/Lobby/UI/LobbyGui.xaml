@@ -20,9 +20,9 @@
                 <Control Name="DefaultState" VerticalExpand="True">
                     <BoxContainer Name="TopLeft" Orientation="Vertical">
                         <!-- Left Top Panel -->
-                        <PanelContainer StyleClasses="BackgroundPanel" HorizontalAlignment="Left" Name="LeftSideTop"
+                        <PanelContainer StyleClasses="BackgroundPanel" HorizontalAlignment="Stretch" Name="LeftSideTop"
                                         VerticalAlignment="Top">
-                            <BoxContainer Orientation="Vertical" HorizontalAlignment="Center" MaxWidth="800">
+                            <BoxContainer Orientation="Vertical" HorizontalExpand="True">
                                 <info:LinkBanner Name="LinkBanner" VerticalExpand="false" HorizontalAlignment="Center"
                                                  Margin="3 3 3 3" />
                                 <controls:StripeBack>
@@ -33,8 +33,7 @@
                                                             WindowType="{x:Type lobbyUi:ObserveWarningWindow}" />
                                         <Label Name="StartTime"
                                                Access="Public"
-                                               Align="Left"
-                                               FontColorOverride="{x:Static maths:Color.DarkGray}"
+                                               Align="Center"
                                                StyleClasses="LabelBig" HorizontalExpand="True" />
                                         <Button Name="ReadyButton" Access="Public" ToggleMode="True"
                                                 Text="{Loc 'ui-lobby-ready-up-button'}"
@@ -51,7 +50,7 @@
                     <!-- Vertical Padding-->
                     <Control VerticalExpand="True" />
                     <!-- Left Bot Panel -->
-                    <BoxContainer Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Bottom">
+                    <BoxContainer Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Bottom">
                         <info:DevInfoBanner Name="DevInfoBanner" VerticalExpand="false" Margin="3 3 3 3" />
                         <PanelContainer StyleClasses="BackgroundPanel" Margin="3 3 3 3">
                             <BoxContainer Orientation="Vertical" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="3 3 3 3">
@@ -128,3 +127,4 @@
         </PanelContainer>
     </BoxContainer>
 </lobbyUi:LobbyGui>
+<!-- #SW: the command bar and the credits fill the left column, the ready button is the main action -->

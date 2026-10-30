@@ -39,4 +39,21 @@ public sealed partial class SWVars : CVars
     /// </summary>
     public static readonly CVarDef<float> TimerSpeedup =
         CVarDef.Create("sw.timer_speedup", 1f, CVar.SERVERONLY);
+
+    /*
+     * TERMINAL UI
+     */
+
+    /// <summary>
+    ///     Draws the whole interface in the SW terminal style. Off gives the plain Nanotrasen look at once.
+    /// </summary>
+    public static readonly CVarDef<bool> UITerminal =
+        CVarDef.Create("sw.ui_terminal", true, CVar.CLIENTONLY | CVar.ARCHIVE);
+
+    /// <summary>
+    ///     Colours the lines of the whole terminal interface with the local player's faction after spawning.
+    ///     Off by default: the colour then belongs to the consoles that a faction owns.
+    /// </summary>
+    public static readonly CVarDef<bool> UIPlayerAccent =
+        CVarDef.Create("sw.ui_player_accent", false, CVar.CLIENTONLY | CVar.ARCHIVE);
 }

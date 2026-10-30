@@ -258218,6 +258218,8 @@ entities:
           - 13644
           - 13647
           - 13646
+    missingComponents:
+    - StorageFill
   - uid: 13762
     components:
     - type: Transform
@@ -258279,6 +258281,8 @@ entities:
           - 13631
     - type: Physics
       canCollide: False
+    missingComponents:
+    - StorageFill
   - uid: 13763
     components:
     - type: Transform

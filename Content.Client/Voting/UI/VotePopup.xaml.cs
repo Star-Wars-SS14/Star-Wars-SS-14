@@ -27,7 +27,7 @@ namespace Content.Client.Voting.UI
             IoCManager.InjectDependencies(this);
             RobustXamlLoader.Load(this);
 
-            Stylesheet = IoCManager.Resolve<IStylesheetManager>().SheetSystem;
+            //SW: takes the active sheet, so that the terminal look reaches it.
 
             if (_vote.TargetEntity != null && _vote.TargetEntity != 0)
             {

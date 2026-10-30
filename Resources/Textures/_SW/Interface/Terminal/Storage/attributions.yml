@@ -1,0 +1,4 @@
+- files: ["piece_bottom.png", "piece_bottomLeft.png", "piece_bottomRight.png", "piece_center.png", "piece_left.png", "piece_right.png", "piece_top.png", "piece_topLeft.png", "piece_topRight.png", "sidebar_bottom.png", "sidebar_fat.png", "sidebar_mid.png", "sidebar_top.png"]
+  license: "CC-BY-NC-SA-3.0"
+  copyright: "Recoloured by Tools/_SW/make_terminal_hud.py from Textures/Interface/Default/Storage"
+  source: "https://github.com/Star-Wars-SS14/Star-Wars-SS-14"

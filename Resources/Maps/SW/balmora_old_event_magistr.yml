@@ -58131,11 +58131,6 @@ entities:
           hard: False
           restitution: 0
           friction: 0.4
-    - type: ThrownItem
-      playLandSound: True
-      landTime: 22353.9368238
-      thrownTime: 22353.7109796
-      thrower: invalid
 - proto: ClothingHeadHatBeretBrigmedic
   entities:
   - uid: 36
@@ -293476,11 +293471,6 @@ entities:
           hard: False
           restitution: 0
           friction: 0.4
-    - type: ThrownItem
-      playLandSound: True
-      landTime: 22357.1302816
-      thrownTime: 22356.9443097
-      thrower: invalid
   - uid: 48515
     components:
     - type: Transform
@@ -293752,11 +293742,6 @@ entities:
           hard: False
           restitution: 0
           friction: 0.4
-    - type: ThrownItem
-      playLandSound: True
-      landTime: 22350.8656892
-      thrownTime: 22350.644316
-      thrower: invalid
   - uid: 48561
     components:
     - type: Transform
@@ -298418,7 +298403,6 @@ entities:
         49065:
         - - SWTurretSender
           - SWTurretConsoleReceiver
-    - type: SWTurretConfig
     missingComponents:
     - ActiveRadio
   - uid: 49064
@@ -298432,7 +298416,6 @@ entities:
         49065:
         - - SWTurretSender
           - SWTurretConsoleReceiver
-    - type: SWTurretConfig
     missingComponents:
     - ActiveRadio
 - proto: SWTurretConsoleEmpire
@@ -298531,7 +298514,6 @@ entities:
         49066:
         - - SWTurretSender
           - SWTurretConsoleReceiver
-    - type: SWTurretConfig
     missingComponents:
     - ActiveRadio
   - uid: 49062
@@ -298545,7 +298527,6 @@ entities:
         49066:
         - - SWTurretSender
           - SWTurretConsoleReceiver
-    - type: SWTurretConfig
     missingComponents:
     - ActiveRadio
 - proto: SWVibroDagger

@@ -18,16 +18,16 @@
         Heat: 12
   - type: ItemToggleMeleeWeapon
     activatedSoundOnHit:
-      path: /Audio/Weapons/eblade1.ogg
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaber1.ogg
       params:
         variation: 0.250
     activatedSoundOnHitNoDamage:
-      path: /Audio/Weapons/eblade1.ogg
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaber1.ogg
       params:
         variation: 0.250
         volume: -10
     activatedSoundOnSwing:
-      path: /Audio/Weapons/eblademiss.ogg
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsabermiss.ogg
       params:
         variation: 0.125
     activatedDamage:
@@ -37,6 +37,13 @@
             Structural: 20
   - type: ItemToggle
     onActivate: false
+    soundActivate:
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberon.ogg
+    soundDeactivate:
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberoff.ogg
+  - type: ItemToggleActiveSound
+    activeSound:
+      path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberhum.ogg
   - type: Tag
     tags:
     - SWEnergySwordTag

@@ -1,5 +1,7 @@
+using Content.Client._SW.UserInterface;
 using Content.Shared._SW.Economy.Messages;
 using Content.Shared._SW.Economy.Prototypes;
+using Robust.Client.UserInterface;
 using Robust.Shared.Prototypes;
 using System;
 using System.Collections.Generic;
@@ -15,6 +17,14 @@ public abstract partial class SWBasePayableBoundUserInterface : BoundUserInterfa
 
     public SWBasePayableBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
+    }
+
+    /// <summary>
+    /// Gives a window of this console the accent of the faction that owns it.
+    /// </summary>
+    protected void ApplyOwnerAccent(Control window)
+    {
+        IoCManager.Resolve<IUserInterfaceManager>().GetUIController<SWTerminalStyleUIController>().ApplyOwnerAccent(window, Owner);
     }
 
     protected void OpenWithdrawal(List<ProtoId<SWCurrencyPrototype>> currencies)

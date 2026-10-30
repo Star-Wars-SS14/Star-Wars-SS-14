@@ -239,7 +239,7 @@
     stackType: Bloodpack
     count: 10
   - type: StackPrice
-    price: 10
+    price: 4 #SW was 10: sold for more than it costs
 
 - type: entity
   parent: Bloodpack

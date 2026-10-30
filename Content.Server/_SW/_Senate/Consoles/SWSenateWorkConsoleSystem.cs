@@ -135,7 +135,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     {
         var committeeId = _committee.RouteBill(bill.Effects);
         if (committeeId != null)
-            _senate.ReferToCommittee(bill, committeeId, _committee.CommitteeName(committeeId), _time.Day);
+            _committee.ReferBill(bill, committeeId, _time.Day);
         else
             _senate.PlaceOnFloor(bill);
     }
@@ -1237,7 +1237,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     {
         var committeeId = _committee.RouteBill(bill.Effects);
         if (committeeId != null)
-            _senate.ReferToCommittee(bill, committeeId, _committee.CommitteeName(committeeId), _time.Day);
+            _committee.ReferBill(bill, committeeId, _time.Day);
     }
 
     private void OnSubmitPreset(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSubmitPresetMessage args)
@@ -1862,3 +1862,5 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     }
 
 }
+
+

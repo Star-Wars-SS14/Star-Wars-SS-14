@@ -1274,8 +1274,8 @@ public sealed partial class SWSenateStateSystem : EntitySystem
 
     public static string ReservedLabel(int hour)
     {
-        if (hour == 14)
-            return "Обед";
+        if (hour == SWSenateCommitteeSystem.AfternoonCommitteeHour)
+            return "Обед / работа комитетов";
         if (hour == 8)
             return "Собрание Кабинета и комитетов";
         return "Личное время";

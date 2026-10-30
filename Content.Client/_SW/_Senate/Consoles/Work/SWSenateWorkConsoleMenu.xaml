@@ -94,16 +94,71 @@
                                 <senate:SWConsoleButton Name="CancelRevisionButton" Text="Отменить" />
                             </BoxContainer>
                             <BoxContainer Name="AmendmentTargetBox" Orientation="Vertical" HorizontalExpand="True" Margin="0 0 0 8" Visible="False" />
-                            <Label Text="Название законопроекта" StyleClasses="LabelKeyText" />
-                            <LineEdit Name="BillNameEdit" PlaceHolder="Название..." Margin="0 2 0 8" />
-                            <Label Name="DraftEffectsLabel" Text="Изменения" StyleClasses="LabelKeyText" />
-                            <ScrollContainer HScrollEnabled="False" VerticalExpand="True" Margin="0 2 0 4">
-                                <BoxContainer Name="DraftStatList" Orientation="Vertical" HorizontalExpand="True" />
+                            <BoxContainer Name="DraftNarrowTabs" Orientation="Horizontal" Margin="0 0 0 6" Visible="False">
+                                <senate:SWConsoleButton Name="DraftDocumentTab" Text="Документ" />
+                                <senate:SWConsoleButton Name="DraftChangesTab" Text="Изменения" Margin="6 0 0 0" />
+                            </BoxContainer>
+                            <BoxContainer Name="DraftWorkspace" Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
+                                <BoxContainer Name="DraftDocument" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="0 0 8 0">
+                                    <senate:SWConsoleButton Name="ClearDraftButton" Text="Очистить черновик" />
+                                    <BoxContainer Name="ClearDraftConfirm" Orientation="Vertical" Visible="False">
+                                        <Label Text="Очистить название, текст и изменения?" />
+                                        <BoxContainer Orientation="Horizontal">
+                                            <senate:SWConsoleButton Name="ClearDraftConfirmButton" Text="Очистить" />
+                                            <senate:SWConsoleButton Name="ClearDraftCancelButton" Text="Отмена" Margin="6 0 0 0" />
+                                        </BoxContainer>
+                                    </BoxContainer>
+                                    <senate:SWConsoleButton Name="DraftSuggestButton" Text="Предложить текст" />
+                                    <RichTextLabel Name="DraftSuggestHint" />
+                                    <BoxContainer Name="DraftSuggestPanel" Orientation="Vertical" Visible="False" Margin="0 3 0 4">
+                                        <BoxContainer Orientation="Horizontal">
+                                            <senate:SWConsoleButton Name="DraftSuggestion1" Text="Вариант 1" />
+                                            <senate:SWConsoleButton Name="DraftSuggestion2" Text="Вариант 2" />
+                                            <senate:SWConsoleButton Name="DraftSuggestion3" Text="Вариант 3" />
+                                        </BoxContainer>
+                                        <ScrollContainer HScrollEnabled="False" MinHeight="65" MaxHeight="110" VerticalExpand="True">
+                                            <BoxContainer Name="DraftSuggestionText" Orientation="Vertical" HorizontalExpand="True" />
+                                        </ScrollContainer>
+                                        <RichTextLabel Name="DraftSuggestionStatus" />
+                                        <OptionButton Name="DraftSuggestionFields" HorizontalExpand="True" />
+                                        <BoxContainer Orientation="Horizontal">
+                                            <senate:SWConsoleButton Name="DraftSuggestionUse" Text="Использовать" />
+                                            <senate:SWConsoleButton Name="DraftSuggestionUpdate" Text="Обновить" Margin="4 0 0 0" />
+                                            <senate:SWConsoleButton Name="DraftSuggestionCancel" Text="Закрыть" Margin="4 0 0 0" />
+                                        </BoxContainer>
+                                    </BoxContainer>
+                                    <Label Text="Название законопроекта" StyleClasses="LabelKeyText" />
+                                    <LineEdit Name="BillNameEdit" PlaceHolder="Название..." Margin="0 2 0 8" />
+                                    <Label Text="Описание" StyleClasses="LabelKeyText" />
+                                    <senate:SWConsoleTextEdit Name="BillDescEdit" PlaceHolder="Описание..." Margin="0 2 0 8" VerticalExpand="True" />
+                                </BoxContainer>
+                                <BoxContainer Name="DraftChanges" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                                    <Label Name="DraftEffectsLabel" Text="Изменения" StyleClasses="LabelKeyText" />
+                                    <BoxContainer Orientation="Horizontal" Margin="0 3 0 3">
+                                        <senate:SWConsoleButton Name="DraftAdd" Text="Добавить показатель" />
+                                        <senate:SWConsoleButton Name="DraftReset" Text="Сбросить изменения" Margin="5 0 0 0" />
+                                    </BoxContainer>
+                                    <BoxContainer Name="DraftCatalog" Orientation="Vertical" Visible="False" Margin="0 0 0 4">
+                                        <LineEdit Name="DraftSearch" PlaceHolder="Поиск показателя" />
+                                        <OptionButton Name="DraftCategory" HorizontalExpand="True" />
+                                        <ScrollContainer HScrollEnabled="False" MinHeight="80" MaxHeight="130">
+                                            <BoxContainer Name="DraftCatalogList" Orientation="Vertical" HorizontalExpand="True" />
+                                        </ScrollContainer>
+                                    </BoxContainer>
+                                    <ScrollContainer HScrollEnabled="False" VerticalExpand="True" Margin="0 2 0 4">
+                                        <BoxContainer Name="DraftStatList" Orientation="Vertical" HorizontalExpand="True" />
+                                    </ScrollContainer>
+                                </BoxContainer>
+                            </BoxContainer>
+                            <ScrollContainer Name="DraftPreview" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True" Visible="False">
+                                <BoxContainer Name="DraftPreviewContent" Orientation="Vertical" HorizontalExpand="True" />
                             </ScrollContainer>
-                            <RichTextLabel Name="BudgetLabel" Margin="0 0 0 8" />
-                            <Label Text="Описание" StyleClasses="LabelKeyText" />
-                            <senate:SWConsoleTextEdit Name="BillDescEdit" PlaceHolder="Описание..." Margin="0 2 0 8" />
-                            <senate:SWConsoleButton Name="SubmitBillButton" Text="Внести законопроект" />
+                            <RichTextLabel Name="BudgetLabel" Margin="0 0 0 3" />
+                            <RichTextLabel Name="DraftError" Margin="0 0 0 3" />
+                            <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+                                <senate:SWConsoleButton Name="DraftPreviewButton" Text="Просмотр" />
+                                <senate:SWConsoleButton Name="SubmitBillButton" Text="Внести законопроект" HorizontalExpand="True" Margin="6 0 0 0" />
+                            </BoxContainer>
                         </BoxContainer>
                         <ScrollContainer Name="PresetPanel" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                             <BoxContainer Name="PresetsList" Orientation="Vertical" HorizontalExpand="True" />

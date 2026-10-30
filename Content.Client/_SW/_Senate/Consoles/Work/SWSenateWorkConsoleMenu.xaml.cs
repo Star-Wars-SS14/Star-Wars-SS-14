@@ -30,13 +30,25 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     private (Label Header, Button[] Buttons)[] _navGroups = System.Array.Empty<(Label, Button[])>();
     private readonly Dictionary<string, Slider> _draftSliders = new();
     private readonly Dictionary<string, Label> _draftValueLabels = new();
-    private readonly List<(BoxContainer Panel, Button Header, string Name, List<string> SubIds)> _draftSubPanels = new();
+    private readonly Dictionary<string, BoxContainer> _draftRows = new();
+    private readonly Dictionary<string, LineEdit> _draftInputs = new();
+    private readonly Dictionary<string, (string Name, string Category, Color Color, string GlobalId)> _draftStats = new();
+    private List<SWBillTextSuggestion> _draftSuggestions = new();
+    private string _suggestionSnapshot = string.Empty;
+    private int _suggestionSelected;
+    private readonly HashSet<string> _draftSelected = new(), _draftInvalid = new();
+    private readonly List<string> _draftCategories = new();
+    private bool _draftSync, _draftPreview, _draftNarrowChanges;
+    private Label? _draftEmpty;
     private readonly Dictionary<string, Slider> _decreeSliders = new();
     private readonly Dictionary<string, Label> _decreeValueLabels = new();
     private bool _decreeBuilt;
+    private static readonly IComparer<string> BudgetSectorIdComparer = Comparer<string>.Create(string.CompareOrdinal);
     private readonly Dictionary<string, LineEdit> _budgetEdits = new();
     private readonly HashSet<string> _situationExpanded = new();
     private string _budgetSignature = string.Empty;
+    private string _budgetDraftKey = string.Empty;
+    private readonly Dictionary<string, string> _budgetDraft = new();
     private string _committeesSignature = string.Empty;
     private readonly SWConsoleDocuments _agendaDocuments = new();
     private readonly SWConsoleDocuments _signatureDocuments = new();
@@ -309,6 +321,32 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BillNameEdit.OnTextChanged += _ => RecomputeBudget();
         BillDescEdit.Editor.OnTextChanged += _ => RecomputeBudget();
         CancelRevisionButton.OnPressed += _ => CancelRevision();
+        DraftAdd.OnPressed += _ => { DraftCatalog.Visible = !DraftCatalog.Visible; if (DraftCatalog.Visible) RefreshDraftCatalog(); };
+        DraftReset.OnPressed += _ => ResetDraftEffects();
+        ClearDraftButton.OnPressed += _ =>
+        {
+            if (_revisingBillId>=0 || _amendingLawId>=0) return;
+            if (!string.IsNullOrWhiteSpace(BillNameEdit.Text) || !string.IsNullOrWhiteSpace(BillDescEdit.Text) || _draftSelected.Count>0)
+                ClearDraftConfirm.Visible=true;
+            else CancelRevision();
+        };
+        ClearDraftConfirmButton.OnPressed += _ => { if (_revisingBillId<0 && _amendingLawId<0) CancelRevision(); ClearDraftConfirm.Visible=false; };
+        ClearDraftCancelButton.OnPressed += _ => ClearDraftConfirm.Visible=false;
+        DraftSearch.OnTextChanged += _ => RefreshDraftCatalog();
+        DraftCategory.OnItemSelected += e => { DraftCategory.SelectId(e.Id); RefreshDraftCatalog(); };
+        DraftDocumentTab.OnPressed += _ => { _draftNarrowChanges=false; RefreshDraftLayout(); };
+        DraftChangesTab.OnPressed += _ => { _draftNarrowChanges=true; RefreshDraftLayout(); };
+        DraftWorkspace.OnResized += RefreshDraftLayout;
+        DraftPreviewButton.OnPressed += _ => ToggleDraftPreview();
+        DraftSuggestButton.OnPressed += _ => GenerateDraftSuggestions();
+        DraftSuggestionUpdate.OnPressed += _ => GenerateDraftSuggestions();
+        DraftSuggestionCancel.OnPressed += _ => { DraftSuggestPanel.Visible=false; DraftSuggestHint.SetMessage(""); };
+        DraftSuggestion1.OnPressed += _ => SelectDraftSuggestion(0);
+        DraftSuggestion2.OnPressed += _ => SelectDraftSuggestion(1);
+        DraftSuggestion3.OnPressed += _ => SelectDraftSuggestion(2);
+        DraftSuggestionFields.AddItem("Название и описание",0); DraftSuggestionFields.AddItem("Только название",1); DraftSuggestionFields.AddItem("Только описание",2); DraftSuggestionFields.SelectId(0);
+        DraftSuggestionFields.OnItemSelected += e => DraftSuggestionFields.SelectId(e.Id);
+        DraftSuggestionUse.OnPressed += _ => ApplyDraftSuggestion();
         IssueDecreeButton.OnPressed += _ => OnIssueDecreePressed();
         DecreeIntro.SetMessage("Немедленное вступление в силу. Рост тирании, снижение легитимности.");
 
@@ -1048,7 +1086,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         }
         else
         {
-            var hint = SWConsoleStyle.Text("Голосование — в комитетский час (08:00)", SWConsoleStyle.TextDim, SWConsoleStyle.Small);
+            var hint = SWConsoleStyle.Text("Голосование — в комитетские часы (08:00–09:00 и 14:00–15:00)", SWConsoleStyle.TextDim, SWConsoleStyle.Small);
             hint.Margin = new Thickness(0, 3, 0, 0);
             box.AddChild(hint);
         }
@@ -1735,6 +1773,16 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         }
     }
 
+    private void FillBudgetEvenly(string[] sectorIds, int pool)
+    {
+        if (sectorIds.Length == 0) return;
+        var total = Math.Max(0, pool);
+        var each = total / sectorIds.Length;
+        var remainder = total % sectorIds.Length;
+        for (var i = 0; i < sectorIds.Length; i++)
+            _budgetDraft[sectorIds[i]] = (each + (i < remainder ? 1 : 0)).ToString();
+    }
+
     private void BuildBudgetSection(SWSenateWorkConsoleState state)
     {
         var phaseText = state.BudgetLocked ? "[одобрен]" : state.BudgetProjectPending ? "[на одобрении]" : "[проект не подан]";
@@ -1742,10 +1790,38 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             $"Бюджет дня: {state.BudgetTotal:N0} кр.   Сектора: {state.BudgetSectorPool:N0} кр   Ведомства: {state.BudgetMinistryPool:N0} кр   Республиканский резерв: {state.BudgetRepublicReservePool:N0} кр   {phaseText}" +
             (state.BudgetAutoApplied ? $"\nСтандартное распределение: {state.BudgetAutoReason}" : ""));
 
-        // Rebuild only when the phase / sector set changes, so the periodic refresh never wipes inputs.
-        var signature = state.BudgetDay + ":" + (state.BudgetLocked ? "A:" : state.BudgetProjectPending ? "P:" : "N:") + state.BudgetSectorPool + ":";
-        foreach (var sector in state.BudgetSectors)
-            signature += sector.SectorId + ",";
+        // The project identity owns the draft. Pool and recipient changes within the same
+        // project preserve existing entries; newly added recipients start at zero.
+        var draftKey = $"{state.BudgetDay}:{state.BudgetRevision}";
+        if (state.IsChancellorView && state.BudgetProjectPending && !state.BudgetLocked)
+        {
+            var ids = state.BudgetSectors.Select(sector => sector.SectorId).OrderBy(id => id, BudgetSectorIdComparer).ToArray();
+            if (_budgetDraftKey != draftKey)
+            {
+                _budgetDraftKey = draftKey;
+                _budgetDraft.Clear();
+                if (state.BudgetSectors.Any(sector => sector.Amount != 0))
+                {
+                    foreach (var sector in state.BudgetSectors)
+                        _budgetDraft[sector.SectorId] = sector.Amount.ToString();
+                }
+                else
+                    FillBudgetEvenly(ids, state.BudgetSectorPool);
+            }
+            else
+            {
+                foreach (var id in ids)
+                    _budgetDraft.TryAdd(id, "0");
+                foreach (var id in _budgetDraft.Keys.Except(ids).ToArray())
+                    _budgetDraft.Remove(id);
+            }
+        }
+
+        // Include the revision and permissions: callbacks must never retain an old project.
+        var signature = state.BudgetDay + ":" + state.BudgetRevision + ":" +
+            (state.BudgetLocked ? "A:" : state.BudgetProjectPending ? "P:" : "N:") +
+            state.IsChancellorView + ":" + state.CanApproveBudget + ":" + state.CanRejectBudget + ":" + state.BudgetSectorPool + ":" +
+            string.Join(",", state.BudgetSectors.OrderBy(sector => sector.SectorId, BudgetSectorIdComparer).Select(sector => $"{sector.SectorId}={sector.Amount}"));
 
         if (signature == _budgetSignature)
             return;
@@ -1801,6 +1877,15 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             BudgetAllocPanel.AddChild(SWConsoleStyle.Section($"РАСПРЕДЕЛЕНИЕ СЕКТОРОВ (пул {state.BudgetSectorPool} кр)"));
             BudgetAllocPanel.AddChild(new Control { MinHeight = 4 });
             var remaining = SWConsoleStyle.Wrap("", SWConsoleStyle.Brass);
+            var even = SWConsoleStyle.Action("Распределить поровну", SWConsoleStyle.Accent);
+            even.OnPressed += _ =>
+            {
+                FillBudgetEvenly(_budgetEdits.Keys.OrderBy(id => id, BudgetSectorIdComparer).ToArray(), state.BudgetSectorPool);
+                foreach (var (id, edit) in _budgetEdits)
+                    edit.Text = _budgetDraft[id];
+                UpdateRemaining();
+            };
+            BudgetAllocPanel.AddChild(even);
             void UpdateRemaining()
             {
                 long allocated = 0;
@@ -1820,10 +1905,10 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                 nameLbl.VerticalAlignment = Control.VAlignment.Center;
                 row.AddChild(nameLbl);
 
-                var edit = new LineEdit { Text = sector.Amount.ToString(), MinWidth = 100 };
+                var edit = new LineEdit { Text = _budgetDraft[sector.SectorId], MinWidth = 100 };
                 _budgetEdits[sector.SectorId] = edit;
 
-                edit.OnTextChanged += _ => UpdateRemaining();
+                edit.OnTextChanged += _ => { _budgetDraft[sector.SectorId] = edit.Text; UpdateRemaining(); };
                 row.AddChild(edit);
                 BudgetAllocPanel.AddChild(row);
             }
@@ -1835,7 +1920,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         var budgetError = SWConsoleStyle.Wrap("", SWConsoleStyle.Bad);
         BudgetAllocPanel.AddChild(budgetError);
 
-        if (state.CanApproveBudget)
+        if (state.IsChancellorView && state.CanApproveBudget)
         {
             var approve = SWConsoleStyle.Action("Принять бюджет", SWConsoleStyle.Good);
             approve.HorizontalExpand = true;
@@ -2424,12 +2509,28 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             if (preset.Effects.Count > 0)
                 box.AddChild(MakeEffectsRow(preset.Effects));
 
-            var id = preset.Id;
-            var submit = SWConsoleStyle.Action("Внести", SWConsoleStyle.Accent);
-            submit.HorizontalAlignment = Control.HAlignment.Left;
-            submit.Margin = new Thickness(0, 4, 0, 0);
-            submit.OnPressed += _ => _owner.SubmitPreset(id);
-            box.AddChild(submit);
+            var detail = new BoxContainer { Orientation=BoxContainer.LayoutOrientation.Vertical, Visible=false, HorizontalExpand=true };
+            var open = SWConsoleStyle.Action("Просмотреть шаблон", SWConsoleStyle.Accent);
+            var direct = SWConsoleStyle.Action("Внести шаблон", SWConsoleStyle.Accent);
+            var copy = SWConsoleStyle.Action("Взять за основу", SWConsoleStyle.Accent);
+            var message = SWConsoleStyle.Wrap("", SWConsoleStyle.Warn);
+            var confirm = false;
+            open.OnPressed += _ => { detail.Visible=!detail.Visible; };
+            direct.OnPressed += _ => _owner.SubmitPreset(preset.Id);
+            copy.OnPressed += _ =>
+            {
+                if (_revisingBillId>=0 || _amendingLawId>=0) return;
+                var prototypes=IoCManager.Resolve<IPrototypeManager>();
+                if (!prototypes.TryIndex<SWBillPresetPrototype>(preset.Id,out var prototype)) { message.SetMessage("Данные шаблона недоступны."); return; }
+                if (prototype.Effects.Any(effect => !float.IsFinite(effect.Value) || effect.Value < -MaxEffect || effect.Value > MaxEffect || MathF.Round(effect.Value)!=effect.Value || !_draftSliders.ContainsKey(effect.Key.Id)))
+                { message.SetMessage("Шаблон содержит значения, недоступные для точного редактирования."); return; }
+                var dirty=!string.IsNullOrWhiteSpace(BillNameEdit.Text) || !string.IsNullOrWhiteSpace(BillDescEdit.Text) || _draftSelected.Count>0;
+                if (dirty && !confirm) { confirm=true; message.SetMessage("Черновик будет заменён. Нажмите «Взять за основу» ещё раз."); return; }
+                confirm=false; if (_draftPreview) ToggleDraftPreview(); ResetDraftEffects(); BillNameEdit.Text=prototype.Name; BillDescEdit.Text=prototype.Description;
+                foreach (var (stat,delta) in prototype.Effects) { AddDraftStat(stat.Id); SetDraftValue(stat.Id,(int)delta); }
+                ShowDraftMode(true); RecomputeBudget();
+            };
+            detail.AddChild(direct); detail.AddChild(copy); detail.AddChild(message); box.AddChild(open); box.AddChild(detail);
 
             card.AddChild(box);
             PresetsList.AddChild(card);
@@ -2468,79 +2569,175 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void BuildDraft(SWSenateWorkConsoleState state)
     {
-        _draftBudget = state.DraftBudget;
+        _draftBudget=state.DraftBudget;
         DraftStatList.RemoveAllChildren();
-        _draftSliders.Clear();
-        _draftValueLabels.Clear();
-        _draftSubPanels.Clear();
-
+        _draftSliders.Clear(); _draftValueLabels.Clear(); _draftRows.Clear(); _draftInputs.Clear();
+        _draftStats.Clear(); _draftSelected.Clear(); _draftInvalid.Clear(); _draftCategories.Clear();
+        DraftCategory.Clear(); DraftCategory.AddItem("Все категории",0); DraftCategory.SelectId(0);
+        _draftEmpty = SWConsoleStyle.Text("Показатели ещё не добавлены", SWConsoleStyle.TextDim, SWConsoleStyle.Body);
+        DraftStatList.AddChild(_draftEmpty);
         foreach (var global in state.Globals)
         {
-            var subPanel = new BoxContainer
-            {
-                Orientation = BoxContainer.LayoutOrientation.Vertical,
-                Margin = new Thickness(16, 0, 0, 6),
-                Visible = false,
-            };
-
-            var header = new Button
-            {
-                Text = $"[+] {global.Name}",
-                HorizontalExpand = true,
-                Margin = new Thickness(0, 2, 0, 0),
-            };
-            header.OnPressed += _ =>
-            {
-                subPanel.Visible = !subPanel.Visible;
-                header.Text = (subPanel.Visible ? "[-] " : "[+] ") + global.Name;
-            };
-            DraftStatList.AddChild(header);
-
+            _draftCategories.Add(global.Name); DraftCategory.AddItem(global.Name,_draftCategories.Count);
             foreach (var sub in global.Subs)
             {
-                var row = new BoxContainer
-                {
-                    Orientation = BoxContainer.LayoutOrientation.Horizontal,
-                    HorizontalExpand = true,
-                    Margin = new Thickness(0, 1, 0, 1),
-                };
-
-                row.AddChild(new Label { Text = sub.Name, FontColorOverride = global.Color, MinWidth = 150 });
-
-                var slider = new Slider
-                {
-                    MinValue = -MaxEffect,
-                    MaxValue = MaxEffect,
-                    Value = 0,
-                    HorizontalExpand = true,
-                    MinWidth = 180,
-                };
-
-                var valueLabel = new Label { Text = "0", MinWidth = 40, HorizontalAlignment = Control.HAlignment.Right };
-
+                var id=sub.Id; _draftStats[id]=(sub.Name,global.Name,global.Color,global.Id);
+                var row=new BoxContainer { Orientation=BoxContainer.LayoutOrientation.Vertical, HorizontalExpand=true, Visible=false, Margin=new Thickness(0,2,0,6) };
+                row.AddChild(MakeWrap(sub.Name,global.Color));
+                var controls=new BoxContainer { Orientation=BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand=true };
+                var minus=SWConsoleStyle.TabButton("−"); var plus=SWConsoleStyle.TabButton("+");
+                var input=new LineEdit { Text="0", MinWidth=55, HorizontalExpand=true };
+                var remove=SWConsoleStyle.TabButton("Удалить");
+                controls.AddChild(minus); controls.AddChild(input); controls.AddChild(plus); controls.AddChild(remove); row.AddChild(controls);
+                var slider=new Slider { MinValue=-MaxEffect, MaxValue=MaxEffect, Value=0, HorizontalExpand=true };
+                var valueLabel=new Label { Text="0" };
+                var scale=new BoxContainer { Orientation=BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand=true };
+                scale.AddChild(SWConsoleStyle.Text("−10",SWConsoleStyle.TextDim,SWConsoleStyle.Small));
+                scale.AddChild(slider);
+                scale.AddChild(SWConsoleStyle.Text("+10",SWConsoleStyle.TextDim,SWConsoleStyle.Small));
+                row.AddChild(scale); row.AddChild(valueLabel); DraftStatList.AddChild(row);
+                _draftRows[id]=row; _draftSliders[id]=slider; _draftInputs[id]=input; _draftValueLabels[id]=valueLabel;
                 slider.OnValueChanged += _ =>
                 {
+                    if (_draftSync) return;
+                    SetDraftValue(id,(int)MathF.Round(slider.Value));
+                };
+                minus.OnPressed += _ => SetDraftValue(id,(int)MathF.Round(slider.Value)-1);
+                plus.OnPressed += _ => SetDraftValue(id,(int)MathF.Round(slider.Value)+1);
+                remove.OnPressed += _ => { SetDraftValue(id,0); _draftSelected.Remove(id); row.Visible=false; UpdateDraftEmpty(); RefreshDraftCatalog(); RecomputeBudget(); };
+                input.OnTextChanged += _ =>
+                {
+                    if (_draftSync) return;
+                    if (int.TryParse(input.Text,out var value) && value>=-MaxEffect && value<=MaxEffect)
+                    {
+                        _draftInvalid.Remove(id); _draftSync=true; slider.Value=value; _draftSync=false;
+                    }
+                    else _draftInvalid.Add(id);
                     RecomputeBudget();
                 };
-
-                row.AddChild(slider);
-                row.AddChild(valueLabel);
-                subPanel.AddChild(row);
-
-                _draftSliders[sub.Id] = slider;
-                _draftValueLabels[sub.Id] = valueLabel;
+                input.OnFocusExit += _ =>
+                {
+                    if (int.TryParse(input.Text,out var value) && value>=-MaxEffect && value<=MaxEffect)
+                        SetDraftValue(id,value);
+                };
             }
-
-            DraftStatList.AddChild(subPanel);
-            _draftSubPanels.Add((subPanel, header, global.Name, global.Subs.Select(s => s.Id).ToList()));
         }
+        _draftBuilt=true; UpdateDraftEmpty(); RecomputeBudget();
+    }
 
-        RecomputeBudget();
-        _draftBuilt = true;
+    private void SetDraftValue(string id, int value)
+    {
+        value=Math.Clamp(value,-(int)MaxEffect,(int)MaxEffect);
+        _draftSync=true; _draftSliders[id].Value=value; _draftInputs[id].Text=value.ToString(); _draftSync=false;
+        _draftInvalid.Remove(id); RecomputeBudget();
+    }
+    private void UpdateDraftEmpty() { if (_draftEmpty!=null) _draftEmpty.Visible=_draftSelected.Count==0; }
+    private void AddDraftStat(string id)
+    {
+        if (!_draftRows.TryGetValue(id,out var row) || !_draftSelected.Add(id)) return;
+        row.Visible=true; UpdateDraftEmpty(); RefreshDraftCatalog(); RecomputeBudget();
+    }
+    private void ResetDraftEffects()
+    {
+        foreach (var id in _draftSliders.Keys.ToArray()) SetDraftValue(id,0);
+        _draftSelected.Clear(); foreach (var row in _draftRows.Values) row.Visible=false;
+        _draftInvalid.Clear(); UpdateDraftEmpty(); RefreshDraftCatalog(); RecomputeBudget();
+    }
+    private void RefreshDraftCatalog()
+    {
+        DraftCatalogList.RemoveAllChildren(); var query=DraftSearch.Text.Trim();
+        var category=DraftCategory.SelectedId>0 && DraftCategory.SelectedId<=_draftCategories.Count ? _draftCategories[DraftCategory.SelectedId-1] : null;
+        var found=false;
+        foreach (var (id, info) in _draftStats.OrderBy(x=>x.Value.Name))
+        {
+            if (category!=null && info.Category!=category || query.Length>0 && !info.Name.Contains(query,StringComparison.OrdinalIgnoreCase)) continue;
+            found=true; var button=SWConsoleStyle.TabButton(info.Name + (_draftSelected.Contains(id) ? " (добавлен)" : ""));
+            button.Disabled=_draftSelected.Contains(id); button.OnPressed += _ => AddDraftStat(id); DraftCatalogList.AddChild(button);
+        }
+        if (!found) DraftCatalogList.AddChild(SWConsoleStyle.Text("Показатели не найдены",SWConsoleStyle.TextDim,SWConsoleStyle.Body));
+    }
+    private void RefreshDraftLayout()
+    {
+        var narrow=DraftWorkspace.Size.X<680;
+        DraftNarrowTabs.Visible=narrow && !_draftPreview;
+        DraftDocument.Visible=!narrow || !_draftNarrowChanges;
+        DraftChanges.Visible=!narrow || _draftNarrowChanges;
+        StyleToggle(DraftDocumentTab,!_draftNarrowChanges); StyleToggle(DraftChangesTab,_draftNarrowChanges);
+    }
+    private void ToggleDraftPreview()
+    {
+        _draftPreview=!_draftPreview; DraftWorkspace.Visible=!_draftPreview; DraftPreview.Visible=_draftPreview;
+        DraftPreviewButton.Text=_draftPreview ? "Вернуться к редактору" : "Просмотр";
+        if (_draftPreview)
+        {
+            DraftPreviewContent.RemoveAllChildren();
+            DraftPreviewContent.AddChild(MakeWrap(string.IsNullOrWhiteSpace(BillNameEdit.Text) ? "Без названия" : BillNameEdit.Text,SWConsoleStyle.Accent));
+            if (_amendingLawId>=0) DraftPreviewContent.AddChild(MakeWrap($"Поправка к закону № {_amendingLawId}: {_amendingLawName}",SWConsoleStyle.TextDim));
+            DraftPreviewContent.AddChild(MakeWrap(BillDescEdit.Text,SWConsoleStyle.TextBright));
+            foreach (var id in _draftSelected)
+            {
+                var delta=MathF.Round(_draftSliders[id].Value); if (delta==0) continue;
+                var info=_draftStats[id]; var text=$"{info.Name}: {delta:+0;-0;0}";
+                if (_amendingLawId>=0) { var previous=_amendmentBaseValues.GetValueOrDefault(id); text=$"{info.Name}: действие закона {previous:+0;-0;0} → {previous+delta:+0;-0;0}"; }
+                DraftPreviewContent.AddChild(MakeWrap(text,info.Color));
+            }
+        }
+        RefreshDraftLayout();
+    }
+
+    private List<SWBillTextEffect> DraftSuggestionEffects() => _draftSelected
+        .Where(id => _draftSliders.ContainsKey(id) && MathF.Round(_draftSliders[id].Value)!=0)
+        .OrderBy(id => id, BudgetSectorIdComparer)
+        .Select(id => new SWBillTextEffect { StatId=id, StatName=_draftStats[id].Name, GlobalId=_draftStats[id].GlobalId,
+            GlobalName=_draftStats[id].Category, Delta=(int)MathF.Round(_draftSliders[id].Value) }).ToList();
+
+    private string DraftSuggestionSnapshot(List<SWBillTextEffect> effects) =>
+        $"{_revisingBillId}:{_amendingLawId}:{_amendingLawName.Length}:{_amendingLawName}:{FindAmendmentTarget()?.CanAmend}:" +
+        string.Join("|",effects.Select(effect => $"{effect.StatId}:{effect.Delta}"));
+
+    private void GenerateDraftSuggestions()
+    {
+        if (_draftInvalid.Count>0) { DraftSuggestHint.SetMessage("Исправьте неверные значения показателей."); RefreshDraftSuggestionStatus(); return; }
+        var effects=DraftSuggestionEffects();
+        if (effects.Count==0) { DraftSuggestHint.SetMessage("Добавьте ненулевое изменение показателя."); RefreshDraftSuggestionStatus(); return; }
+        var suggestions=SWBillTextGenerator.Generate(effects,_amendingLawId>=0 ? _amendingLawName : null);
+        if (suggestions.Count==0) { DraftSuggestHint.SetMessage("Нет доступных вариантов текста."); return; }
+        _draftSuggestions=suggestions; _suggestionSnapshot=DraftSuggestionSnapshot(effects); _suggestionSelected=0;
+        DraftSuggestHint.SetMessage(""); DraftSuggestPanel.Visible=true; SelectDraftSuggestion(0);
+    }
+    private void SelectDraftSuggestion(int index)
+    {
+        if (index<0 || index>=_draftSuggestions.Count) return;
+        _suggestionSelected=index; var suggestion=_draftSuggestions[index]; DraftSuggestionText.RemoveAllChildren();
+        // Wrap builds a FormattedMessage with AddText, so user-controlled names are never parsed as markup.
+        DraftSuggestionText.AddChild(SWConsoleStyle.Wrap(suggestion.Title,SWConsoleStyle.Accent,280));
+        DraftSuggestionText.AddChild(SWConsoleStyle.Wrap(suggestion.Description,SWConsoleStyle.TextBright,280));
+        StyleToggle(DraftSuggestion1,index==0); StyleToggle(DraftSuggestion2,index==1); StyleToggle(DraftSuggestion3,index==2);
+        RefreshDraftSuggestionStatus();
+    }
+    private void RefreshDraftSuggestionStatus()
+    {
+        if (!DraftSuggestPanel.Visible) return;
+        var stale=_draftInvalid.Count>0 || _amendingLawId>=0 && FindAmendmentTarget()?.CanAmend!=true ||
+            _revisingBillId>=0 && _lastState?.ReturnedBills.Any(bill => bill.Id==_revisingBillId)!=true ||
+            _suggestionSnapshot!=DraftSuggestionSnapshot(DraftSuggestionEffects());
+        DraftSuggestionUse.Disabled=stale || _draftSuggestions.Count==0;
+        DraftSuggestionUpdate.Visible=stale;
+        DraftSuggestionStatus.SetMessage(stale ? "Изменения черновика изменились. Обновите варианты." : "");
+    }
+    private void ApplyDraftSuggestion()
+    {
+        RefreshDraftSuggestionStatus();
+        if (DraftSuggestionUse.Disabled || _suggestionSelected<0 || _suggestionSelected>=_draftSuggestions.Count) return;
+        var suggestion=_draftSuggestions[_suggestionSelected];
+        if (DraftSuggestionFields.SelectedId is 0 or 1) BillNameEdit.Text=suggestion.Title;
+        if (DraftSuggestionFields.SelectedId is 0 or 2) BillDescEdit.Text=suggestion.Description;
+        DraftSuggestPanel.Visible=false; DraftSuggestHint.SetMessage(""); RecomputeBudget();
     }
 
     private void RecomputeBudget()
     {
+        RefreshDraftSuggestionStatus();
         var net = 0f;
         foreach (var (id, slider) in _draftSliders)
         {
@@ -2551,7 +2748,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             {
                 var current = _amendmentBaseValues.GetValueOrDefault(id);
                 valueLabel.MinWidth = 145;
-                valueLabel.Text = $"Сейчас: {current:+0;-0;0}\nПосле: {current + delta:+0;-0;0} ({delta:+0;-0;0})";
+                valueLabel.Text = $"Действие закона: {current:+0;-0;0} → {current + delta:+0;-0;0} ({delta:+0;-0;0})";
             }
             else
             {
@@ -2563,6 +2760,11 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         var remaining = _draftBudget - net;
         BudgetLabel.SetMessage($"Очки: {remaining:0} из бюджета {_draftBudget}");
         var permitted = _lastState is { IsSenateCard: true, InOffice: true, Position: SWSenatePosition.Senator };
+        var error = !permitted ? "Вносить законопроекты может сенатор при исполнении." :
+            _draftInvalid.Count>0 ? "Укажите целые значения показателей в допустимых пределах." :
+            string.IsNullOrWhiteSpace(BillNameEdit.Text) ? "Укажите название законопроекта." :
+            remaining<0 ? "Превышен бюджет очков." :
+            _amendingLawId<0 && !_draftSliders.Values.Any(slider => MathF.Round(slider.Value)!=0) ? "Добавьте ненулевое изменение." : "";
         if (_amendingLawId >= 0)
         {
             permitted &= (_revisingBillId >= 0 ? _lastState?.CanReviseBills : _lastState?.CanSubmitAmendments) == true &&
@@ -2572,7 +2774,17 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         }
         if (_revisingBillId >= 0)
             permitted &= _lastState?.CanReviseBills == true && _lastState.ReturnedBills.Any(bill => bill.Id == _revisingBillId);
-        SubmitBillButton.Disabled = remaining < 0 || !permitted;
+        if (_amendingLawId>=0 && FindAmendmentTarget()?.CanAmend!=true) error="Исходный закон недоступен для поправок.";
+        else if (_revisingBillId>=0 && _lastState?.ReturnedBills.Any(bill => bill.Id==_revisingBillId)!=true) error="Возвращённый законопроект больше недоступен.";
+        else if (_amendingLawId>=0 && string.IsNullOrWhiteSpace(BillDescEdit.Text) && !_draftSliders.Values.Any(slider => MathF.Round(slider.Value)!=0)) error="Укажите текст или изменение поправки.";
+        else if (!permitted && error.Length==0) error="Внесение сейчас недоступно.";
+        DraftError.SetMessage(error);
+        foreach (var (id, label) in _draftValueLabels)
+        {
+            label.FontColorOverride=_draftInvalid.Contains(id) ? SWConsoleStyle.Bad : SWConsoleStyle.TextDim;
+            if (_draftInvalid.Contains(id)) label.Text="Введите целое число от −10 до 10";
+        }
+        SubmitBillButton.Disabled = error.Length>0 || !permitted;
         StyleButton(SubmitBillButton, SubmitBillButton.Disabled ? SWConsoleStyle.TextDim : SWConsoleStyle.Accent);
     }
 
@@ -2596,12 +2808,11 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             _owner.SubmitAmendment(_amendingLawId, BillNameEdit.Text, BillDescEdit.Text, effects);
         else
             _owner.SubmitBill(BillNameEdit.Text, BillDescEdit.Text, effects);
-
-        CancelRevision();
     }
 
     private void LoadRevision(SWReturnedBillEntry bill)
     {
+        if (_draftPreview) ToggleDraftPreview();
         _revisingBillId = bill.Id;
         _revisionName = bill.Name;
         _amendingLawId = bill.AmendsLawId ?? -1;
@@ -2612,18 +2823,9 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         BillNameEdit.Text = bill.Name;
         BillDescEdit.Text = bill.Description;
 
-        foreach (var slider in _draftSliders.Values)
-            slider.Value = 0;
+        ResetDraftEffects();
         foreach (var (statId, delta) in bill.EffectValues)
-            if (_draftSliders.TryGetValue(statId, out var slider))
-                slider.Value = delta;
-
-        foreach (var (panel, header, name, subIds) in _draftSubPanels)
-        {
-            var has = subIds.Any(bill.EffectValues.ContainsKey);
-            panel.Visible = has;
-            header.Text = (has ? "[-] " : "[+] ") + name;
-        }
+            if (_draftSliders.ContainsKey(statId)) { AddDraftStat(statId); SetDraftValue(statId,(int)MathF.Round(delta)); }
 
         RecomputeBudget();
         UpdateRevisionBanner();
@@ -2634,6 +2836,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         var current = _lastState?.Bills.FirstOrDefault(entry => entry.Id == bill.Id);
         if (_lastState?.CanSubmitAmendments != true || current?.CanAmend != true)
             return;
+        if (_draftPreview) ToggleDraftPreview();
 
         _revisingBillId = -1;
         _revisionName = string.Empty;
@@ -2644,14 +2847,9 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         ShowDraftMode(true);
         BillNameEdit.Text = $"Поправки к закону № {current.Id}";
         BillDescEdit.Text = string.Empty;
-        foreach (var slider in _draftSliders.Values)
-            slider.Value = 0;
-        foreach (var (panel, header, name, subIds) in _draftSubPanels)
-        {
-            var has = subIds.Any(current.EffectValues.ContainsKey);
-            panel.Visible = has;
-            header.Text = (has ? "[-] " : "[+] ") + name;
-        }
+        ResetDraftEffects();
+        foreach (var statId in current.EffectValues.Keys)
+            AddDraftStat(statId);
         RecomputeBudget();
         UpdateRevisionBanner();
     }
@@ -2692,6 +2890,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void CancelRevision()
     {
+        if (_draftPreview) ToggleDraftPreview();
         _revisingBillId = -1;
         _revisionName = string.Empty;
         _amendingLawId = -1;
@@ -2700,8 +2899,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         RefreshAmendmentTarget();
         BillNameEdit.Text = string.Empty;
         BillDescEdit.Text = string.Empty;
-        foreach (var slider in _draftSliders.Values)
-            slider.Value = 0;
+        ResetDraftEffects();
         RecomputeBudget();
         UpdateRevisionBanner();
     }
@@ -2710,6 +2908,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     {
         var revising = _revisingBillId >= 0;
         var amending = _amendingLawId >= 0;
+        ClearDraftButton.Visible = !revising && !amending;
+        ClearDraftConfirm.Visible = false;
         RevisionBanner.Visible = revising || amending;
         RevisionLabel.SetMessage(revising ? $"Доработка: {_revisionName}" : amending ? "Поправки к действующему закону" : string.Empty);
         DraftModePreset.Visible = !revising && !amending;

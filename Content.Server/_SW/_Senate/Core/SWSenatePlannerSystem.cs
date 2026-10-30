@@ -307,6 +307,12 @@ public sealed class SWSenatePlannerSystem : EntitySystem
                 continue;
             }
 
+            if (slot == (SWSenateCommitteeSystem.AfternoonCommitteeHour - SWSenateTimeSystem.StartHour) * 4 && _committee.IsAnyMember(person))
+            {
+                items.Add(new SWPlannerItemEntry { StartSlot = slot, Duration = duration, Kind = 1, Label = "Комитетский час" });
+                continue;
+            }
+
             items.Add(new SWPlannerItemEntry { StartSlot = slot, Duration = duration, Kind = 0, Label = label });
         }
 

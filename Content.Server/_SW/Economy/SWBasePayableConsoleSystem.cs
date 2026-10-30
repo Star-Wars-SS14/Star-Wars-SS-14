@@ -64,6 +64,11 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
                 ev.Account = new Entity<SWBankAccountContainerComponent>(ent, comp);
                 ev.Handled = true;
             }
+            else if (HasComp<SWFinanceConsoleComponent>(ent))
+            {
+                // A finance console uses its faction's account, and presets without faction rules have no factions.
+                _s.Debug($"{ent.Owner} has no faction to take an account from");
+            }
             else
             {
                 _s.Error($"{ent.Owner} account is not set");

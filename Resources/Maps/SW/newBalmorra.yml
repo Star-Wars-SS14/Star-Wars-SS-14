@@ -596970,30 +596970,6 @@ entities:
           - SWTurretConsoleReceiver
     missingComponents:
     - ActiveRadio
-  - uid: 72243
-    components:
-    - type: Transform
-      pos: -152.5,58.5
-      parent: 2
-    - type: DeviceLinkSource
-      linkedPorts:
-        72248:
-        - - SWTurretSender
-          - SWTurretConsoleReceiver
-    missingComponents:
-    - ActiveRadio
-  - uid: 72244
-    components:
-    - type: Transform
-      pos: -152.5,54.5
-      parent: 2
-    - type: DeviceLinkSource
-      linkedPorts:
-        72248:
-        - - SWTurretSender
-          - SWTurretConsoleReceiver
-    missingComponents:
-    - ActiveRadio
   - uid: 72245
     components:
     - type: Transform
@@ -597103,6 +597079,32 @@ entities:
         SWSobrikCaptain: False
         SWSobrikMedic: False
         SWSobrikOfficer: False
+- proto: SWTurretRepublic
+  entities:
+  - uid: 72243
+    components:
+    - type: Transform
+      pos: -152.5,58.5
+      parent: 2
+    - type: DeviceLinkSource
+      linkedPorts:
+        72248:
+        - - SWTurretSender
+          - SWTurretConsoleReceiver
+    missingComponents:
+    - ActiveRadio
+  - uid: 72244
+    components:
+    - type: Transform
+      pos: -152.5,54.5
+      parent: 2
+    - type: DeviceLinkSource
+      linkedPorts:
+        72248:
+        - - SWTurretSender
+          - SWTurretConsoleReceiver
+    missingComponents:
+    - ActiveRadio
 - proto: SWVehicleFabricator
   entities:
   - uid: 72249

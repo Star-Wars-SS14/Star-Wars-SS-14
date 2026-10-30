@@ -446,6 +446,7 @@ public sealed partial class SWSenateStateSystem : EntitySystem
 
         Chancellor = holder;
         _electionForced = false;
+        CancelVacantChancellorElections();
         return true;
     }
 
@@ -645,6 +646,23 @@ public sealed partial class SWSenateStateSystem : EntitySystem
     }
 
     // --- Chancellor elections ---
+
+    private void CancelVacantChancellorElections()
+    {
+        _vacancyHours = 0f;
+        _chancellorElect = null;
+        foreach (var bill in _bills.Where(b => b.IsElection && b.Stage == SWBillStage.Voting))
+        {
+            bill.Stage = SWBillStage.Rejected;
+            bill.ReturnReason = "Выборы отменены: должность канцлера занята.";
+            foreach (var session in _sessions.Where(s => !s.IsAmendmentSession && s.BillId == bill.Id))
+            {
+                session.Status = SWSessionStatus.Rejected;
+                _announcedSessions.Remove(session.Id);
+            }
+            RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Сенат", bill.ReturnReason));
+        }
+    }
 
     private void TickChancellorElection(float frameTime)
     {
@@ -1831,7 +1849,9 @@ public sealed partial class SWSenateStateSystem : EntitySystem
         if (bill.Stage == SWBillStage.AwaitingSignature)
             return Loc.GetString("sw-senate-bill-stage-signature");
         if (bill.Stage == SWBillStage.Rejected)
-            return Loc.GetString("sw-senate-bill-stage-rejected");
+            return bill.IsElection && bill.ReturnReason != null
+                ? bill.ReturnReason
+                : Loc.GetString("sw-senate-bill-stage-rejected");
         if (bill.AwaitingTiebreak)
             return Loc.GetString("sw-senate-bill-stage-tiebreak");
 
@@ -1928,6 +1948,8 @@ public sealed partial class SWSenateStateSystem : EntitySystem
         if (!_time.ModeActive)
             return;
 
+        if (Chancellor != null)
+            CancelVacantChancellorElections();
         ResolveExpiredSessions();
         AnnounceStartedSessions();
         TickChancellorElection(frameTime);

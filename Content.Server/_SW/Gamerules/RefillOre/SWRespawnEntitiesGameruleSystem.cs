@@ -1,4 +1,5 @@
 using Content.Server._SW.Gamerules.Respawn;
+using Content.Server._SW.Gamerules.TimerSpeedup;
 using Content.Server.Chat.Managers;
 using Content.Server.Chat.Systems;
 using Content.Server.GameTicking.Rules;
@@ -22,6 +23,7 @@ public sealed class SWRespawnEntitiesGameruleSystem : GameRuleSystem<SWRespawnEn
     [Dependency] private readonly SharedTransformSystem _sharedTransformSystem = default!;
     [Dependency] private readonly IChatManager _chatManager = default!;
     [Dependency] private readonly EntityWhitelistSystem _whitelistSystem = default!;
+    [Dependency] private readonly SWTimerSpeedupSystem _timerSpeedup = default!;
 
     /// <summary>
     /// Half the diagonal of a tile, so the check covers the whole tile the rock would fill.
@@ -31,8 +33,8 @@ public sealed class SWRespawnEntitiesGameruleSystem : GameRuleSystem<SWRespawnEn
     protected override void Started(EntityUid uid, SWRespawnEntitiesGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
         base.Started(uid, component, gameRule, args);
-        component.NextSpawn = _gameTiming.CurTime + component.Delay;
-        component.NextWarning = component.NextSpawn - component.DelayBeforeSpawn;
+        component.NextSpawn = _gameTiming.CurTime + _timerSpeedup.Scale(component.Delay);
+        component.NextWarning = component.NextSpawn - _timerSpeedup.Scale(component.DelayBeforeSpawn);
         component.WarningDispatched = false;
         component.InitialSpawnDone = false;
     }
@@ -70,8 +72,9 @@ public sealed class SWRespawnEntitiesGameruleSystem : GameRuleSystem<SWRespawnEn
         _chatManager.DispatchServerAnnouncement(Loc.GetString(component.AnnouncementId),
                                                               component.AnnounceColor);
         Respawn();
-        component.NextSpawn = _gameTiming.CurTime + component.Delay;
-        component.NextWarning = _gameTiming.CurTime + component.Delay - component.DelayBeforeSpawn;
+        var delay = _timerSpeedup.Scale(component.Delay);
+        component.NextSpawn = _gameTiming.CurTime + delay;
+        component.NextWarning = _gameTiming.CurTime + delay - _timerSpeedup.Scale(component.DelayBeforeSpawn);
         component.WarningDispatched = false;
     }
 

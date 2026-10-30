@@ -1,3 +1,4 @@
+using Content.Server._SW.Gamerules.TimerSpeedup;
 using Content.Server._SW.TaskSystem;
 using Content.Server.Actions;
 using Content.Server.Chat.Managers;
@@ -33,6 +34,7 @@ public sealed partial class SWRespawnGameruleSystem : GameRuleSystem<SWRespawnGa
     [Dependency] private readonly GameTicker _gameTicker = default!;
     [Dependency] private readonly MindSystem _mind = default!;
     [Dependency] private readonly RoleSystem _roles = default!;
+    [Dependency] private readonly SWTimerSpeedupSystem _timerSpeedup = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -59,7 +61,7 @@ public sealed partial class SWRespawnGameruleSystem : GameRuleSystem<SWRespawnGa
             return;
         }
 
-        var message = Loc.GetString(GameRuleSingleton.WaitMessage, ("count", GameRuleSingleton.DelayBeforeCanRespawn));
+        var message = Loc.GetString(GameRuleSingleton.WaitMessage, ("count", _timerSpeedup.Scale(GameRuleSingleton.DelayBeforeCanRespawn)));
         _chatManager.DispatchServerMessage(session, message);
     }
 
@@ -103,7 +105,7 @@ public sealed partial class SWRespawnGameruleSystem : GameRuleSystem<SWRespawnGa
             }
 
             if (_timing.CurTime > ghostComp.TimeOfDeath +
-                TimeSpan.FromSeconds(GameRuleSingleton.DelayBeforeCanRespawn)
+                TimeSpan.FromSeconds(_timerSpeedup.Scale(GameRuleSingleton.DelayBeforeCanRespawn))
                 && IsDeadPlayerGhost(uid))
             {
                 var comp = EnsureComp<SWWaitingRespawnComponent>(uid);

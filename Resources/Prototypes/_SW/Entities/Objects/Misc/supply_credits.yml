@@ -48,7 +48,7 @@
   id: SWSupplyScoresEmpireCreditsStack
   name: очки снабжения империи
   unit: materials-unit-bill
-  stackEntity: SWCredits
+  stackEntity: SWSupplyScoresEmpireCredits
   icon: { sprite: _SW/Economy/empire_cash.rsi, state: cash }
   price: 1
 
@@ -177,7 +177,7 @@
   id: SWSupplyScoresRepublicCreditsStack
   name: очки снабжения республики
   unit: materials-unit-bill
-  stackEntity: SWCredits
+  stackEntity: SWSupplyScoresRepublicCredits
   icon: { sprite: _SW/Economy/republic_cash.rsi, state: cash }
   price: 1
 
@@ -296,7 +296,7 @@
   id: SWBlackMarketSupplyCreditsStack
   name: очки снабжения чёрного рынка
   unit: materials-unit-bill
-  stackEntity: SWCredits
+  stackEntity: SWBlackMarketSupplyCredits
   icon: { sprite: _SW/Economy/empire_cash.rsi, state: cash }
   price: 1
 
@@ -425,7 +425,7 @@
   id: SWMandalorianSupplyStack
   name: очки снабжения мандалора
   unit: materials-unit-bill
-  stackEntity: SWCredits
+  stackEntity: SWMandalorianSupplyCredits
   icon: { sprite: _SW/Economy/empire_cash.rsi, state: cash }
   price: 1
 
@@ -433,7 +433,7 @@
   id: SWMandalorianSupplyStack
   name: очки снабжения мандалора
   icon: { sprite: _SW/Economy/empire_cash.rsi, state: cash }
-  spawn: SWMandalorianSupply
+  spawn: SWMandalorianSupplyCredits
 
 - type: entity
   parent: SWMandalorianSupplyCredits

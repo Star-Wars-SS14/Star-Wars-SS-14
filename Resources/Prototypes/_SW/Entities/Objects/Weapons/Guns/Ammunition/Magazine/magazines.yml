@@ -21,7 +21,7 @@
     - MagazineBlast
   - type: Appearance
   - type: BatteryAmmoProvider
-    proto: SWYellowBulletBlast
+    proto: SWE-1Bullet
   - type: MagazineVisuals
     magState: mag
     steps: 8
@@ -50,7 +50,7 @@
     - MagazineBlast
   - type: Appearance
   - type: BatteryAmmoProvider
-    proto: SWYellowBulletBlast
+    proto: SWE-1Bullet
   - type: MagazineVisuals
     magState: mag
     steps: 3

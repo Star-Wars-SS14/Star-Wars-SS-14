@@ -787,3 +787,16 @@ SpawnPointBoxer: null
 FigureSpawner: MechFigurineSpawner50
 ToySpawner: PlushieSpawner50
 SpacemenFigureSpawner: SpacemenFigurineSpawner90
+
+# SW 2026-10-30
+SWMobEmpiдтнааreIntelligenceAgent: SWMobEmpireIntelligenceAgent
+RedCartridgeBlast: null
+SWZ1RedCartridgeBlast: null
+SWGreenCartridgeBlast: null
+SWH206GreenCartridgeBlast: null
+SWBlueCartridgeBlast: null
+SWCannonBlueCartridgeBlast: null
+SWSniperRifleBlueCartridgeBlast: null
+SWYellowCartridgeBlast: null
+SWCannonYellowCartridgeBlast: null
+SWSniperRifleYellowCartridgeBlast: null

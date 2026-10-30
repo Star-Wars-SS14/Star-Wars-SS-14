@@ -25,6 +25,7 @@ using Content.Shared.Popups;
 using Robust.Server.GameObjects;
 using Robust.Shared.Configuration;
 using Robust.Shared.Map;
+using Robust.Shared.Timing;
 using Content.Shared._SW.Artillery;
 using static Content.Shared.Administration.Notes.AdminMessageEuiState;
 
@@ -38,14 +39,18 @@ namespace Content.Server._SW.Artillery
         [Dependency] private readonly AccessReaderSystem _accessReaderSystem = default!;
         [Dependency] private readonly PopupSystem _popupSystem = default!;
         [Dependency] private readonly IMapManager _mapManager = default!;
+        [Dependency] private readonly IGameTiming _timing = default!;
 
-        private const float UIUpdateInterval = 5.0f;
+        private static readonly TimeSpan UIUpdateInterval = TimeSpan.FromSeconds(1);
+
+        private TimeSpan _nextUIUpdate;
 
         public override void Initialize()
         {
             SubscribeLocalEvent<ArtilleryConsoleComponent, ArtilleryConsoleCallArtileryMessage>(OnCallArtillery);
             SubscribeLocalEvent<ArtilleryConsoleComponent, MapInitEvent>(OnCommunicationsConsoleMapInit);
             SubscribeLocalEvent<ArtilleryConsoleComponent, ComponentInit>((uid, comp, _) => UpdateArtilleryConsoleInterface(uid, comp));
+            SubscribeLocalEvent<ArtilleryConsoleComponent, BoundUIOpenedEvent>((uid, comp, _) => UpdateArtilleryConsoleInterface(uid, comp));
         }
 
         private void OnCallArtillery(Entity<ArtilleryConsoleComponent> ent, ref ArtilleryConsoleCallArtileryMessage args)
@@ -75,6 +80,7 @@ namespace Content.Server._SW.Artillery
             Spawn(ent.Comp.ArtilleryProto, target);
             ent.Comp.CurrentDelay = ent.Comp.DelayBetweenCalls;
             ent.Comp.AttacksLeft--;
+            UpdateArtilleryConsoleInterface(ent.Owner, ent.Comp);
         }
         public void UpdateArtilleryConsoleInterface(EntityUid uid, ArtilleryConsoleComponent comp)
         {
@@ -93,16 +99,25 @@ namespace Content.Server._SW.Artillery
 
         public override void Update(float frameTime)
         {
+            var updateUI = _timing.CurTime >= _nextUIUpdate;
+            if (updateUI)
+            {
+                _nextUIUpdate = _timing.CurTime + UIUpdateInterval;
+            }
+
             var query = EntityQueryEnumerator<ArtilleryConsoleComponent>();
             while (query.MoveNext(out var uid, out var comp))
             {
-                // TODO refresh the UI in a less horrible way
                 if (comp.CurrentDelay >= 0f)
                 {
                     comp.CurrentDelay -= frameTime;
                 }
 
-                UpdateArtilleryConsoleInterface(uid, comp);
+                // The countdown shows whole seconds, and a closed console gets its state when it opens.
+                if (updateUI && _uiSystem.IsUiOpen(uid, ArtilleryConsoleUiKey.Key))
+                {
+                    UpdateArtilleryConsoleInterface(uid, comp);
+                }
             }
 
             base.Update(frameTime);

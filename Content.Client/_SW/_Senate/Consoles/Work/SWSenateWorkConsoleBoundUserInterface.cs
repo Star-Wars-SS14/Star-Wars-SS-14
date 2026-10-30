@@ -1,4 +1,5 @@
 using Content.Shared._SW._Senate.Ministries;
+using Content.Shared._SW._Senate.Empire;
 using Content.Shared._SW._Senate;
 
 namespace Content.Client._SW._Senate.Consoles.Work;
@@ -59,6 +60,7 @@ public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
     public void SecuritySabotageDecision(int caseId, bool approve) =>
         SendMessage(new SWSecuritySabotageDecisionMessage(caseId, approve));
 
+    public void DiplomacyDecision(int id, SWEmpireDiplomacyDecision decision) => SendMessage(new SWEmpireDiplomacyDecisionMessage(id, decision));
     public void HealthQuarantineDecision(int id, bool approve, bool lift = false) => SendMessage(new SWHealthQuarantineDecisionMessage(id, approve, lift));
     public void ApproveStimulus()
     {

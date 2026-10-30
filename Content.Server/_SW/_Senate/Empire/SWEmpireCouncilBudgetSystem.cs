@@ -99,6 +99,18 @@ public sealed class SWEmpireCouncilBudgetSystem : EntitySystem
     }
     public bool HasReservation(SWEmpireCouncilSphere sphere, string requestId) =>
         _reservations.TryGetValue(requestId, out var held) && held.Sphere == sphere;
+    public bool HasReservation(SWEmpireCouncilSphere sphere, string requestId, int amount) =>
+        _reservations.TryGetValue(requestId, out var held) && held.Sphere == sphere && held.Amount == amount;
+    /// <summary>Settle actual expenditure and release the unused part of a held reservation.</summary>
+    public bool CompleteReservation(SWEmpireCouncilSphere sphere, string requestId, int spent)
+    {
+        if (!_reservations.TryGetValue(requestId, out var held) || held.Sphere != sphere || spent < 0 || spent > held.Amount ||
+            _balances[sphere] > int.MaxValue - (held.Amount - spent)) return false;
+        _balances[sphere] += held.Amount - spent;
+        _spent[sphere] += spent;
+        _reservations.Remove(requestId);
+        return true;
+    }
     public bool Refund(SWEmpireCouncilSphere sphere, string requestId)
     {
         if (!_reservations.TryGetValue(requestId, out var held) || held.Sphere != sphere || _balances[sphere] > int.MaxValue - held.Amount) return false;
@@ -111,3 +123,4 @@ public sealed class SWEmpireCouncilBudgetSystem : EntitySystem
         _used.Add(requestId); _balances[source] -= amount; _balances[target] += amount; _received[target] += amount; return true;
     }
 }
+

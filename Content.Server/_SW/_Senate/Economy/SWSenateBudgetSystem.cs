@@ -110,6 +110,7 @@ public sealed class SWSenateBudgetSystem : EntitySystem
             Purpose = purpose, Time = _time.AbsoluteHour.ToString() });
     }
     public void CreditTreasury(int amount) { EnsureDay(); if (amount > 0) _treasury = (int) Math.Min(int.MaxValue, (long) _treasury + amount); }
+    public bool CanCreditTreasury(int amount) { EnsureDay(); return amount >= 0 && (long) _treasury + amount <= int.MaxValue; }
     public bool DebitTreasury(int amount)
     {
         EnsureDay();

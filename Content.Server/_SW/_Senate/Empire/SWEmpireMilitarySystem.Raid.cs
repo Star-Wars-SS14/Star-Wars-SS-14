@@ -16,7 +16,7 @@ public sealed partial class SWEmpireMilitarySystem
         var leader = fleet.EscortLeader != 0 && _fleets.TryGetValue(fleet.EscortLeader, out var followed)
             && followed.World == fleet.World ? followed : fleet;
         var id = leader.RaidEventId;
-        if (!_defense.MinisterActive) return false;
+        if (!_defense.ImperialOperationsAllowed) return false;
         if (id != 0 && !leader.RaidUsesBorder && _defense.ImperialRaidReady(id)
             && _defense.GetImperialDefenders(id).Count > 0) return true;
         return leader.EventId != 0 && _defense.ImperialCrossingReady(leader.EventId)
@@ -24,7 +24,7 @@ public sealed partial class SWEmpireMilitarySystem
     }
 
     private bool RaidTargetSecured(Fleet fleet) => fleet.RaidEventId != 0
-        && (fleet.RaidUsesBorder ? CrossingOpen(fleet.Crossing) && _defense.ImperialCrossingReady(fleet.RaidEventId)
+        && (fleet.RaidUsesBorder ? CrossingPassable(fleet.Crossing) && _defense.ImperialCrossingReady(fleet.RaidEventId)
             : _securedRaids.Contains(fleet.RaidEventId) && _defense.ImperialRaidReady(fleet.RaidEventId))
         && _defense.GetImperialDefenders(fleet.RaidEventId).Count == 0;
 
@@ -49,7 +49,7 @@ public sealed partial class SWEmpireMilitarySystem
         if (fleet.RaidEventId == 0)
         {
             if (fleet.Order != SWEmpireMilitaryAction.Raid || fleet.Next != null || fleet.Path.Count != 0
-                || fleet.World != fleet.Target || !Republic(fleet.World) || !_defense.MinisterActive || !CrossingOpen(fleet.Crossing)) return;
+                || fleet.World != fleet.Target || !Republic(fleet.World) || !_defense.ImperialOperationsAllowed || !CrossingPassable(fleet.Crossing)) return;
             var crossing = _links.FirstOrDefault(l => l.ID == fleet.Crossing);
             var borderWorld = crossing == null ? null : Republic(crossing.From) ? crossing.From : crossing.To;
             if (fleet.World == borderWorld)
@@ -68,7 +68,7 @@ public sealed partial class SWEmpireMilitarySystem
         { LeaveRaidEngagement(fleet); return; }
         // The crossing battle already handles the border endpoint. Never tick it twice.
         if (fleet.RaidUsesBorder) return;
-        if (!_defense.MinisterActive || !_defense.ImperialRaidReady(fleet.RaidEventId)) return;
+        if (!_defense.ImperialOperationsAllowed || !_defense.ImperialRaidReady(fleet.RaidEventId)) return;
         var active = _fleets.Values.Where(f => f.Alive && f.Next == null && f.World == fleet.World &&
             (f.Order == SWEmpireMilitaryAction.Raid || f.RaidPending != null) && f.RaidEventId == fleet.RaidEventId).OrderBy(f => f.Id).ToArray();
         if (active.Length == 0 || active[0].Id != fleet.Id || !_raidTickedThisUpdate.Add(fleet.RaidEventId)) return;
@@ -80,6 +80,7 @@ public sealed partial class SWEmpireMilitarySystem
             return;
         }
         _securedRaids.Remove(fleet.RaidEventId);
+        _defense.MarkImperialRaidBattle(fleet.RaidEventId);
         foreach (var raider in active)
             if (raider.RaidPending != null) _republicEconomy.Runner?.CancelExternalTransfer(raider.RaidPending);
         var ids = active.Select(f => f.Id).ToHashSet();
@@ -115,6 +116,7 @@ public sealed partial class SWEmpireMilitarySystem
     {
         var source = _republicEconomy.Runner;
         var destination = _economy.Runner;
+        if (fleet.RaidPending != null && !CrossingPassable(fleet.Crossing)) source?.CancelExternalTransfer(fleet.RaidPending);
         if (fleet.RaidPending != null && source?.GetExternalTransferResult(fleet.RaidPending) is { } taken)
         {
             // A formation which left before the worker acknowledged the loading cannot receive it remotely.
@@ -138,9 +140,9 @@ public sealed partial class SWEmpireMilitarySystem
                 fleet.DepositPending = id;
             return;
         }
-        if (fleet.Order != SWEmpireMilitaryAction.Raid || fleet.RaidAttempted || fleet.RaidPending != null
+        if (HostilitiesBlocked(fleet) || fleet.Order != SWEmpireMilitaryAction.Raid || fleet.RaidAttempted || fleet.RaidPending != null
             || fleet.CargoAmount > 1e-9 || fleet.Next != null || fleet.Path.Count != 0 || fleet.World != fleet.Target
-            || !Republic(fleet.World) || !_defense.MinisterActive || !CrossingOpen(fleet.Crossing) || source?.Snapshot == null)
+            || !Republic(fleet.World) || !_defense.ImperialOperationsAllowed || !CrossingPassable(fleet.Crossing) || source?.Snapshot == null)
         { fleet.RaidReadyAt = 0; return; }
         // A crossing victory alone does not establish control of the actual raid target.
         // Target engagement must authorize loading before any withdrawal can be queued.

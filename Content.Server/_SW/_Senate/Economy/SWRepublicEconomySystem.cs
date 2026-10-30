@@ -136,7 +136,7 @@ public sealed class SWRepublicEconomySystem : EntitySystem
     {
         if (_runner == null)
             return;
-        if (!_defense.MinisterActive)
+        if (!_defense.ImperialOperationsAllowed)
             _runner.CancelPendingExternalWithdrawals();
         var running = _time.ModeActive && _time.DayActive;
         var activeHours = (double) _time.ActiveSeconds(frameTime) / SWSenateTimeSystem.RealSecondsPerGameHour;

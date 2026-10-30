@@ -16,6 +16,11 @@ public sealed class SWEmpireCouncilConsoleBoundUserInterface : BoundUserInterfac
         _menu.OpenCentered();
     }
 
+    public void QuoteIntelligence(SWEmpireIntelligenceRequest request) => SendMessage(new SWEmpireIntelligenceQuoteMessage(request));
+    public void SubmitIntelligence(SWEmpireIntelligenceRequest request) => SendMessage(new SWEmpireIntelligenceCommandMessage(request));
+    public void QuoteDiplomacy(SWEmpireDiplomacyRequest request) => SendMessage(new SWEmpireDiplomacyQuoteMessage(request));
+    public void SubmitDiplomacy(SWEmpireDiplomacyRequest request) => SendMessage(new SWEmpireDiplomacyCommandMessage(request));
+    public void BreakDiplomacy(int id) => SendMessage(new SWEmpireDiplomacyBreakMessage(id));
     public void QuoteMilitary(SWEmpireMilitaryRequest request) => SendMessage(new SWEmpireMilitaryQuoteMessage(request));
     public void SubmitMilitary(SWEmpireMilitaryRequest request) => SendMessage(new SWEmpireMilitaryCommandMessage(request));
     public void Quote(SWEmpireIndustryRequest request) => SendMessage(new SWEmpireIndustryQuoteMessage(request));

@@ -32,7 +32,7 @@ public sealed class SWEmpireMilitaryPanel : BoxContainer
     private SWEmpireCouncilConsoleState? _state;
     private SWEmpireCouncilSphere? _lastSphere;
     private int? _selected;
-    private string? _target, _sector, _system, _borderId;
+    private string? _target, _worldTarget, _sector, _system, _borderId;
     private string? _quoteId;
     private SWEmpireMilitaryRequest? _pending;
     private bool _submitted;
@@ -91,7 +91,7 @@ public sealed class SWEmpireMilitaryPanel : BoxContainer
             ? SWGalacticMapViews.PoliticalSector(_visible, sector) : SWGalacticMapViews.Overview(_visible);
         _host.RemoveAllChildren();
         _map = new SWGalacticMapControl(_view, focusSystem: system, focusPoliticalSector: sector) { MinHeight = 180 };
-        _map.WorldSelected += id => { _target = id; _borderId = null; _draftAction = null; InvalidateQuote(); Refresh(); };
+        _map.WorldSelected += id => { _target = id; _worldTarget = id; _borderId = null; _draftAction = null; InvalidateQuote(); Refresh(); };
         _map.WorldActivated += id =>
         {
             var world = _view.Worlds.FirstOrDefault(w => w.Id == id);
@@ -133,7 +133,12 @@ public sealed class SWEmpireMilitaryPanel : BoxContainer
 
     private void ChooseAction(SWEmpireMilitaryAction action)
     {
-        if (_draftAction != action) { _draftAction = action; InvalidateQuote(); }
+        if (_draftAction != action)
+        {
+            if (action == SWEmpireMilitaryAction.Escort) { _worldTarget = _target; _target = null; }
+            else if (_draftAction == SWEmpireMilitaryAction.Escort) _target = _worldTarget;
+            _draftAction = action; InvalidateQuote();
+        }
         Refresh();
     }
 
@@ -248,37 +253,58 @@ public sealed class SWEmpireMilitaryPanel : BoxContainer
         var orderCard = Stack();
         _details.AddChild(orderCard);
         var selectors = Stack();
-        foreach (var escort in _state.Military.Options.Where(o => selected != null && o.FleetId == selected.Id && o.Action == SWEmpireMilitaryAction.Escort && o.Target.StartsWith("fleet:")).DistinctBy(o => o.Target))
+        var escortOptions = _state.Military.Options.Where(o => selected != null && o.FleetId == selected.Id
+            && o.Action == SWEmpireMilitaryAction.Escort && o.Target.StartsWith("fleet:")
+            && int.TryParse(o.Target.AsSpan(6), out var leaderId)
+            && _state.Military.Fleets.Any(f => f.Id == leaderId && f.Phase != "Утрачен"))
+            .DistinctBy(o => o.Target).ToArray();
+        if (_draftAction == SWEmpireMilitaryAction.Escort)
         {
-            var target = escort.Target;
-            var escortTarget = SWConsoleStyle.TabButton(TargetName(target));
-            escortTarget.OnPressed += _ => { _target = target; _draftAction = SWEmpireMilitaryAction.Escort; InvalidateQuote(); Refresh(); };
-            selectors.AddChild(escortTarget);
+            orderCard.AddChild(SWConsoleStyle.Text("Ведущее соединение", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
+            var picker = new OptionButton { Name = "EmpireEscortLeader", HorizontalExpand = true };
+            picker.AddItem("Выберите флот", 0);
+            picker.SelectId(0);
+            for (var i = 0; i < escortOptions.Length; i++)
+            {
+                var leader = _state.Military.Fleets.First(f => $"fleet:{f.Id}" == escortOptions[i].Target);
+                var leaderStatus = leader.Phase == "Бой" ? "Идёт бой" : leader.Status;
+                picker.AddItem($"{leader.Name}  {TargetName(leader.WorldId)}  {leaderStatus}", i + 1);
+                if (escortOptions[i].Target == _target) picker.SelectId(i + 1);
+            }
+            picker.OnItemSelected += args =>
+            {
+                if (args.Id <= 0 || args.Id > escortOptions.Length) return;
+                _target = escortOptions[args.Id - 1].Target; InvalidateQuote(); Refresh();
+            };
+            orderCard.AddChild(picker);
         }
         foreach (var border in _state.Military.Borders.Where(b => b.OwnWorldId == _target || b.ForeignSectorId == _target))
         {
             var captured = border;
             var borderButton = SWConsoleStyle.TabButton(border.Name);
             borderButton.Name = "EmpireMilitaryBorder";
-            borderButton.OnPressed += _ => { _borderId = captured.Id; _target = captured.ForeignSectorId; _draftAction = null; InvalidateQuote(); Refresh(); };
+            borderButton.OnPressed += _ => { _borderId = captured.Id; _target = captured.ForeignSectorId; _worldTarget = _target; _draftAction = null; InvalidateQuote(); Refresh(); };
             selectors.AddChild(borderButton);
         }
         var selectedBorder = _state.Military.Borders.FirstOrDefault(b => b.Id == _borderId);
         if (selectedBorder != null)
         {
             selectors.AddChild(SWConsoleStyle.Text(selectedBorder.Status, SWConsoleStyle.TextBright, SWConsoleStyle.Small));
-            if (selectedBorder.ReadyAt is { } ready) selectors.AddChild(SWConsoleStyle.Text($"Ожидание  {Math.Max(0, ready - _state.Military.NowHours):0.0} ч", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
+            if (selectedBorder.ReadyAt is { } ready) selectors.AddChild(SWConsoleStyle.Text($"На ответ  {Math.Max(0, ready - _state.Military.NowHours):0.0} ч", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
             if (!string.IsNullOrEmpty(selectedBorder.Warning)) selectors.AddChild(SWConsoleStyle.Wrap(selectedBorder.Warning, SWConsoleStyle.Warn));
         }
         var options = _state.Military.Options.Where(o => o.Target == _target &&
             (o.Action == SWEmpireMilitaryAction.Recruit && o.FleetId == 0 || selected != null && o.FleetId == selected.Id)).ToArray();
         if (_target != null && options.Length == 0) _details.AddChild(SWConsoleStyle.Text("Приказы недоступны", SWConsoleStyle.TextDim, SWConsoleStyle.Small));
-        if (_draftAction == null || !options.Any(o => o.Action == _draftAction))
+        if (_draftAction == null || _draftAction != SWEmpireMilitaryAction.Escort && !options.Any(o => o.Action == _draftAction))
             _draftAction = options.FirstOrDefault(o => o.Available)?.Action ?? options.FirstOrDefault()?.Action;
         var tasks = new WrapContainer { HorizontalExpand = true, SeparationOverride = 4, CrossSeparationOverride = 4 };
-        if (options.Length > 0) _details.AddChild(SWConsoleStyle.Section("Задача"));
+        var taskTarget = _draftAction == SWEmpireMilitaryAction.Escort ? _worldTarget : _target;
+        var taskOptions = _state.Military.Options.Where(o => o.Target == taskTarget &&
+            (o.Action == SWEmpireMilitaryAction.Recruit && o.FleetId == 0 || selected != null && o.FleetId == selected.Id)).ToArray();
+        if (taskOptions.Length > 0 || escortOptions.Length > 0) _details.AddChild(SWConsoleStyle.Section("Задача"));
         _details.AddChild(tasks);
-        foreach (var option in options)
+        foreach (var option in taskOptions)
         {
             var action = option.Action;
             var button = SWConsoleStyle.TabButton(ActionName(action));
@@ -286,6 +312,14 @@ public sealed class SWEmpireMilitaryPanel : BoxContainer
             SWConsoleStyle.StyleTabButton(button, action == _draftAction);
             button.OnPressed += _ => ChooseAction(action);
             tasks.AddChild(button);
+        }
+        if (escortOptions.Length > 0)
+        {
+            var help = SWConsoleStyle.TabButton("Помочь флоту");
+            help.Name = "EmpireMilitaryActionEscort";
+            SWConsoleStyle.StyleTabButton(help, _draftAction == SWEmpireMilitaryAction.Escort);
+            help.OnPressed += _ => ChooseAction(SWEmpireMilitaryAction.Escort);
+            tasks.AddChild(help);
         }
         var draft = options.FirstOrDefault(o => o.Action == _draftAction);
         if (draft != null)
@@ -336,7 +370,7 @@ public sealed class SWEmpireMilitaryPanel : BoxContainer
     {
         SWEmpireMilitaryAction.Move => "Переместить", SWEmpireMilitaryAction.Guard => "Охранять",
         SWEmpireMilitaryAction.Patrol => "Патрулировать", SWEmpireMilitaryAction.Recon => "Разведка",
-        SWEmpireMilitaryAction.Escort => "Сопровождение", SWEmpireMilitaryAction.BorderConflict => "Пограничный бой",
+        SWEmpireMilitaryAction.Escort => "Помочь флоту", SWEmpireMilitaryAction.BorderConflict => "Пограничный бой",
         SWEmpireMilitaryAction.Raid => "Рейд", SWEmpireMilitaryAction.Blockade => "Блокада",
         SWEmpireMilitaryAction.Return => "Вернуться", SWEmpireMilitaryAction.Repair => "Ремонт",
         SWEmpireMilitaryAction.Train => "Подготовка", SWEmpireMilitaryAction.Recruit => "Сформировать", _ => "Приказ",

@@ -274,6 +274,20 @@ public sealed partial class SWMinistryDefenseSystem
         var supplies = _economy.GetNavySupplyState();
         state.SupplyHour = supplies.Hour;
         state.SupplyFlows = supplies.Flows.ToList();
+        if (includeOrderOptions)
+            foreach (var ev in _incidents.Where(e => !e.Resolved))
+            {
+                if (_imperialCrossings.ContainsKey(ev.Id))
+                {
+                    if (ev.ImperialPhase != SWImperialCrossingPhase.Battle) continue;
+                    foreach (var defender in GetImperialDefenders(ev.Id))
+                        state.SupportTargets.Add(new SWDefenseSupportTargetView { LeaderFleetId = defender.Id, EventId = ev.Id });
+                }
+                else
+                    foreach (var defender in _groups.Where(g => g.Alive && g.EventId == ev.Id && g.Order == SWDefenseFleetOrder.Respond
+                                 && g.Phase == SWDefenseOperationPhase.Execution))
+                        state.SupportTargets.Add(new SWDefenseSupportTargetView { LeaderFleetId = defender.Id, EventId = ev.Id });
+            }
         foreach (var link in _links)
         {
             var military = !link.Accessible && (_worlds[link.From].Faction == "empire" || _worlds[link.To].Faction == "empire");

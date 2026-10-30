@@ -37,9 +37,11 @@ public sealed class SWStrategicMapDisclosure
                 EdgeId = links.Contains(e.EdgeId) ? e.EdgeId : string.Empty,
                 Kind = e.Kind, Severity = e.Severity, EnemyStrength = e.EnemyStrength,
                 ExpiresAt = e.ExpiresAt, Resolved = e.Resolved, DirectorCreated = e.DirectorCreated,
+                ImperialCrossing = e.ImperialCrossing, ImperialRaid = e.ImperialRaid, ImperialPhase = e.ImperialPhase,
                 Status = Text(e.Status), Risk = Text(e.Risk),
             }).ToList();
         var events = state.Events.Select(e => e.Id).ToHashSet();
+        state.SupportTargets = state.SupportTargets.Where(o => events.Contains(o.EventId)).ToList();
         state.OrderOptions = state.OrderOptions.Where(o => o.EventId == 0 || events.Contains(o.EventId)).ToList();
         foreach (var option in state.OrderOptions)
         {

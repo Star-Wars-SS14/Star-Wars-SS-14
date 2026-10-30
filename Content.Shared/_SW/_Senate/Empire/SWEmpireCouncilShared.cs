@@ -75,11 +75,16 @@ public sealed class SWEmpireCouncilConsoleState : BoundUserInterfaceState
     public SWEconomyView Economy = new() { ViewerFaction = "empire" };
     public string Result = string.Empty;
     public string ResultRequestId = string.Empty;
+    public bool ActionResultIsCommand;
     public int QuoteCost;
     public bool QuoteAllowed;
     public SWEmpireIndustryQuote Quote = new();
     public SWEmpireMilitaryState Military = new();
     public SWEmpireMilitaryQuote MilitaryQuote = new();
+    public SWEmpireIntelligenceState Intelligence = new();
+    public SWEmpireIntelligenceQuote IntelligenceQuote = new();
+    public SWEmpireDiplomacyState Diplomacy = new();
+    public SWEmpireDiplomacyQuote DiplomacyQuote = new();
     public double IncomePerHour;
 }
 

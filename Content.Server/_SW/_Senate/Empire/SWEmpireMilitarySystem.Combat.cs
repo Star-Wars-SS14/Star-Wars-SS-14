@@ -3,12 +3,60 @@ using System.Linq;
 using System.Collections.Generic;
 using Content.Shared._SW._Senate.Economy;
 using Content.Shared._SW._Senate.Empire;
+using Content.Shared._SW._Senate;
+using Content.Server._SW._Senate.Core;
 
 namespace Content.Server._SW._Senate.Empire;
 
 public sealed partial class SWEmpireMilitarySystem
 {
+    private bool TreatyBlocksPath(string from, IEnumerable<string> path)
+    {
+        foreach (var next in path)
+        {
+            var edge = Link(from, next);
+            if (_diplomacy.BlocksHostileAction(next, out _) || edge != null && _diplomacy.BlocksHostileTransit(edge.ID, out _)) return true;
+            from = next;
+        }
+        return false;
+    }
+
+    private bool HostilitiesBlocked(Fleet fleet)
+    {
+        if (fleet.Order == SWEmpireMilitaryAction.Return) return false;
+        if (fleet.Order is not (SWEmpireMilitaryAction.Raid or SWEmpireMilitaryAction.Blockade or SWEmpireMilitaryAction.BorderConflict)
+            && fleet.EventId == 0 && fleet.RaidEventId == 0) return false;
+        if (fleet.BlockedLeg != null && _diplomacy.BlocksHostileTransit(fleet.BlockedLeg, out _)) return true;
+        fleet.BlockedLeg = null;
+        if (fleet.Next != null && Link(fleet.World, fleet.Next) is { } currentLeg &&
+            _diplomacy.BlocksHostileTransit(currentLeg.ID, out _))
+        { fleet.BlockedLeg = currentLeg.ID; return true; }
+        if (fleet.Next != null && _diplomacy.BlocksHostileAction(fleet.Next, out _)) return true;
+        if (_diplomacy.BlocksHostileAction(fleet.Target, out _) || _diplomacy.BlocksHostileAction(fleet.World, out _)) return true;
+        if (TreatyBlocksPath(fleet.World, fleet.Path)) return true;
+        if (fleet.Crossing == null) return false;
+        var edge = _links.FirstOrDefault(l => l.ID == fleet.Crossing);
+        return _diplomacy.BlocksHostileTransit(fleet.Crossing, out _) || edge != null &&
+            (_diplomacy.BlocksHostileAction(edge.From, out _) || _diplomacy.BlocksHostileAction(edge.To, out _));
+    }
     private bool Republic(string world) => _worlds.TryGetValue(world, out var w) && w.Faction == "republic";
+    private string SystemKey(string world) => _worlds.TryGetValue(world, out var w) && !string.IsNullOrWhiteSpace(w.SystemId) ? w.SystemId : world;
+
+    private void AnnounceHostileArrival(Fleet fleet, string previous)
+    {
+        if (!fleet.Alive || !Republic(fleet.World) || fleet.Order is SWEmpireMilitaryAction.Return or SWEmpireMilitaryAction.Move
+            || SystemKey(previous) == SystemKey(fleet.World)) return;
+        var system = SystemKey(fleet.World);
+        if (_announcedSystemsThisUpdate.Contains(system) || _fleets.Values.Any(other => other.Id != fleet.Id && other.Alive
+            && Republic(other.World) && SystemKey(other.World) == system
+            && (other.Next == null || SystemKey(other.Next) == system))) return;
+        _announcedSystemsThisUpdate.Add(system);
+        var world = _worlds[fleet.World];
+        var name = string.IsNullOrWhiteSpace(world.SystemName) ? world.Name : world.SystemName;
+        var message = $"Имперский флот вторгся в систему {name}.";
+        _defense.AddLog(message);
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Штаб обороны", message, SWSenateAnnouncementKind.Defense));
+    }
     // Geography is public; this function never exposes fleet or economic state.
     private static string PublicWorld(string world) => world;
 
@@ -17,6 +65,8 @@ public sealed partial class SWEmpireMilitarySystem
         || (l.To == world && Republic(l.From) && PublicWorld(l.From) == target));
     private bool CrossingOpen(string? id) => id != null && _fleets.Values.Any(f => f.Alive && f.EventId != 0
         && f.Permit == id && _defense.HasImperialEngagement(f.EventId));
+    private bool CrossingPassable(string? id) => id != null && _fleets.Values.Any(f => f.Alive && f.EventId != 0
+        && f.Permit == id && _defense.ImperialCrossingIsHeld(f.EventId) && _defense.GetImperialDefenders(f.EventId).Count == 0);
 
     private List<string>? RepublicPath(string from, string sector, bool exact = false)
     {
@@ -74,8 +124,8 @@ public sealed partial class SWEmpireMilitarySystem
         if (escort.World == leader.World && leader.Next != null)
         {
             var edge = Link(escort.World, leader.Next);
-            if (!_defense.MinisterActive && (Republic(escort.World) || Republic(leader.Next))) return;
-            var crossing = edge != null && edge.ID == leader.Crossing && leader.Permit == edge.ID && CrossingOpen(edge.ID);
+            if (!_defense.ImperialOperationsAllowed && (Republic(escort.World) || Republic(leader.Next))) return;
+            var crossing = edge != null && edge.ID == leader.Crossing && leader.Permit == edge.ID && CrossingPassable(edge.ID);
             if (edge == null || !(Imperial(escort.World) && Imperial(leader.Next)
                 || edge.Accessible && Republic(escort.World) && Republic(leader.Next) && leader.Permit != null
                 || crossing)) return;
@@ -111,7 +161,7 @@ public sealed partial class SWEmpireMilitarySystem
         if (fleet.EventId == 0) return;
         if (!_defense.HasImperialEngagement(fleet.EventId))
         { fleet.EventId = 0; fleet.Permit = null; return; }
-        if (!_defense.MinisterActive || !_defense.ImperialCrossingReady(fleet.EventId)) return;
+        if (!_defense.ImperialOperationsAllowed || !_defense.ImperialCrossingReady(fleet.EventId)) return;
         if (fleet.Supply < 10)
         {
             _defense.FinishImperialCrossing(fleet.EventId, false);
@@ -121,8 +171,10 @@ public sealed partial class SWEmpireMilitarySystem
         var defenders = _defense.GetImperialDefenders(fleet.EventId);
         var crossing = _links.FirstOrDefault(l => l.ID == fleet.Crossing);
         var foreignEntry = crossing == null ? null : Republic(crossing.From) ? crossing.From : crossing.To;
-        var holding = _fleets.Values.Any(f => f.Alive && f.Next == null && f.World == foreignEntry
-            && (f.Id == fleet.Id || f.EscortLeader == fleet.Id || f.Permit == fleet.Crossing));
+        var ownEntry = crossing == null ? null : foreignEntry == crossing.From ? crossing.To : crossing.From;
+        var holding = _fleets.Values.Any(f => f.Alive && f.Next == null
+            && (f.World == foreignEntry && (f.Id == fleet.Id || f.EscortLeader == fleet.Id || f.Permit == fleet.Crossing)
+                || f.World == ownEntry && (f.Id == fleet.Id || f.EscortLeader == fleet.Id)));
         if (fleet.Permit != null && defenders.Count > 0 && Republic(fleet.World) && fleet.World != foreignEntry && !holding)
         {
             _defense.FinishImperialCrossing(fleet.EventId, false);
@@ -131,12 +183,13 @@ public sealed partial class SWEmpireMilitarySystem
         }
         if (defenders.Count == 0)
         {
-            if (fleet.Permit == null && _defense.FinishImperialCrossing(fleet.EventId, true)) fleet.Permit = fleet.Crossing;
+            if (_defense.FinishImperialCrossing(fleet.EventId, true)) fleet.Permit = fleet.Crossing;
             return;
         }
-        var battleWorld = Republic(fleet.World) && fleet.World != foreignEntry ? foreignEntry : fleet.World;
-        var participants = _fleets.Values.Where(f => f.Alive && f.Next == null && f.World == battleWorld &&
-            (f.Id == fleet.Id || f.EscortLeader == fleet.Id || f.Permit == fleet.Crossing)).ToArray();
+        _defense.MarkImperialCrossingBattle(fleet.EventId);
+        var participants = _fleets.Values.Where(f => f.Alive && f.Next == null &&
+            (f.World == foreignEntry && (f.Id == fleet.Id || f.EscortLeader == fleet.Id || f.Permit == fleet.Crossing)
+                || f.World == ownEntry && (f.Id == fleet.Id || f.EscortLeader == fleet.Id))).ToArray();
         var effective = participants.Sum(f => f.Strength * (1 - f.Damage / 125) * (.25 + f.Supply / 133.333) * (.75 + f.Training / 200));
         var opposition = defenders.Sum(d => d.Effective);
         foreach (var defender in defenders)

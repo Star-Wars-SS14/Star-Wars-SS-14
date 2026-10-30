@@ -31,6 +31,9 @@ public sealed partial class SWMinistryDefenseSystem
     public bool ImperialThreatsEnabled { get; set; } = true;
     public bool AutoImperialThreatsAllowed { get; set; } = true;
     public bool MinisterActive => _ministry.IsHolderActive(DefenseMinistryId);
+    public bool AllowImperialWithoutMinister { get; private set; }
+    public bool ImperialOperationsAllowed => MinisterActive || AllowImperialWithoutMinister;
+    public void SetImperialMinisterOverride(bool enabled) => AllowImperialWithoutMinister = enabled;
     public bool HasBorderFleet => _groups.Any(g => g.Alive && g.Order == SWDefenseFleetOrder.Border && g.Phase == SWDefenseOperationPhase.Standing);
     public int FleetUpkeep => (int) (_groups.Count(g => g.Alive) * UpkeepPerHour);
     public int FleetSize => _groups.Count(g => g.Alive);
@@ -46,6 +49,7 @@ public sealed partial class SWMinistryDefenseSystem
         _nextIncident = 0;
         ImperialThreatsEnabled = true;
         AutoImperialThreatsAllowed = true;
+        AllowImperialWithoutMinister = false;
         _incidents.Clear();
         _imperialCrossings.Clear();
         _imperialBlockades.Clear();
@@ -148,9 +152,14 @@ public sealed partial class SWMinistryDefenseSystem
         {
             if (_imperialCrossings.TryGetValue(ev.Id, out var crossing))
             {
-                if (!MinisterActive)
+                if (!ImperialOperationsAllowed || _diplomacy.BlocksHostileAction(ev.WorldId, out _) ||
+                    !string.IsNullOrEmpty(crossing.LinkId) && _diplomacy.BlocksHostileTransit(crossing.LinkId, out _))
                 {
-                    if (now < crossing.ReadyAt) _imperialCrossings[ev.Id] = crossing with { ReadyAt = crossing.ReadyAt + hours };
+                    var ready = crossing.ReadyAt + hours;
+                    var deadline = !crossing.Raid && !crossing.BattleStarted
+                        ? crossing.ResponseDeadline + hours : crossing.ResponseDeadline;
+                    _imperialCrossings[ev.Id] = crossing with { ReadyAt = ready, ResponseDeadline = deadline };
+                    if (!crossing.Raid) ev.ExpiresAt = deadline;
                     _imperialBlockades.Remove(ev.Id);
                 }
                 continue;
@@ -190,8 +199,11 @@ public sealed partial class SWMinistryDefenseSystem
             { BeginReturn(group); continue; }
             if (group.Phase == SWDefenseOperationPhase.Travel && now >= group.Until)
             {
+                var blockedLeg = group.Order == SWDefenseFleetOrder.Respond && _incidents.Any(e=>e.Id==group.EventId &&
+                    e.Kind is SWDefenseEventKind.Incursion or SWDefenseEventKind.Blockade or SWDefenseEventKind.Raid) && group.Next != null &&
+                    Link(group.World, group.Next) is { } currentLeg && _diplomacy.BlocksHostileTransit(currentLeg.ID, out _);
                 group.World = group.Next!; group.Next = null;
-                if (MustRecallOperation(group)) BeginReturn(group);
+                if (blockedLeg || MustRecallOperation(group)) BeginReturn(group);
                 else if (!StartNextLeg(group)) Arrive(group);
             }
             else if (group.Phase == SWDefenseOperationPhase.Preparation && now >= group.Until)
@@ -234,9 +246,24 @@ public sealed partial class SWMinistryDefenseSystem
         ApplyRouteRestrictions();
     }
 
+    private bool TreatyBlocksOperation(SWFleetGroup group)
+    {
+        if (group.Order != SWDefenseFleetOrder.Respond || !_incidents.Any(e => e.Id == group.EventId &&
+            e.Kind is SWDefenseEventKind.Incursion or SWDefenseEventKind.Blockade or SWDefenseEventKind.Raid)) return false;
+        if (_diplomacy.BlocksHostileAction(group.Target, out _) || _diplomacy.BlocksHostileAction(group.World, out _)) return true;
+        var current = group.World;
+        foreach (var next in group.Path)
+        {
+            var edge = Link(current, next);
+            if (edge != null && _diplomacy.BlocksHostileTransit(edge.ID, out _)) return true;
+            current = next;
+        }
+        return false;
+    }
+
     private bool MustRecallOperation(SWFleetGroup group) => group.EventId != 0
         && group.Phase != SWDefenseOperationPhase.Recovery
-        && ((!MinisterActive && !_imperialCrossings.ContainsKey(group.EventId)) || !_incidents.Any(e => e.Id == group.EventId && !e.Resolved));
+        && (TreatyBlocksOperation(group) || (!MinisterActive && !_imperialCrossings.ContainsKey(group.EventId)) || !_incidents.Any(e => e.Id == group.EventId && !e.Resolved));
 
     private string ProjectId(string purpose) => $"navy-{purpose}-{_nextProjectId++}";
     private void TickSupply(SWFleetGroup group)
@@ -331,6 +358,10 @@ public sealed partial class SWMinistryDefenseSystem
         else if (!MinisterActive) preview.Reason = "Министр не на службе";
         else if (!CanChangeOrder(group, order)) preview.Reason = "Флот занят; возможен отзыв незавершённой операции";
         else if (!_worlds.TryGetValue(destination, out var world)) preview.Reason = "Нет цели";
+        else if (order == SWDefenseFleetOrder.Respond && (ev?.Kind is SWDefenseEventKind.Incursion or SWDefenseEventKind.Blockade or SWDefenseEventKind.Raid) && (_diplomacy.BlocksHostileAction(destination, out _) ||
+            route != null && route.Aggregate((Current: group.Next ?? group.World, Blocked: false), (state, next) =>
+                (next, state.Blocked || Link(state.Current, next) is { } edge && _diplomacy.BlocksHostileTransit(edge.ID, out _))).Blocked))
+            preview.Reason = "Действует локальное перемирие";
         else if (order == SWDefenseFleetOrder.Move && group.Phase == SWDefenseOperationPhase.Standing && destination == group.World) preview.Reason = "Флот уже находится здесь";
         else if (world.Faction != "republic" && (order != SWDefenseFleetOrder.Respond || ev?.Kind != SWDefenseEventKind.Raid)) preview.Reason = "Разрешены только ограниченные рейды";
         else if (world.Faction != "republic" && _stance < SWDefenseStance.Mobilization) preview.Reason = "Рейд требует DEFCON 1–2";
@@ -338,11 +369,13 @@ public sealed partial class SWMinistryDefenseSystem
         else if (order == SWDefenseFleetOrder.Patrol && _links.FirstOrDefault(l => l.ID == target) is { } patrol
             && (!patrol.Accessible || _worlds[patrol.From].Faction != "republic" || _worlds[patrol.To].Faction != "republic")) preview.Reason = "Патруль требует разрешённой линии Республики";
         else if (order == SWDefenseFleetOrder.Repair && (!world.Shipyard || group.Damage <= 0 && group.Strength >= 100)) preview.Reason = "Нужны повреждения и верфь";
-        else if (order == SWDefenseFleetOrder.Respond && (ev == null || _groups.Any(g => g.Alive && g.EventId == eventId))) preview.Reason = "Событие занято или недоступно";
+        else if (order == SWDefenseFleetOrder.Respond && ev == null) preview.Reason = "Событие недоступно";
         else if (order != SWDefenseFleetOrder.Return && group.Supply < 15) preview.Reason = "Нет снабжения";
         else if (_dilemma.GetMinistryBudget(DefenseMinistryId) < preview.Cost) preview.Reason = "Нет средств министерства";
         else preview.Available = true;
-        if (ev != null) preview.Risk = $"Сила флота {Effective(group):0}, противника {ev.EnemyStrength:0}. При тяжёлых потерях — отход; возможна гибель.";
+        if (ev != null) preview.Risk = _imperialCrossings.ContainsKey(ev.Id)
+            ? "Силы противника оцениваются по ходу столкновения. При тяжёлых потерях — отход; возможна гибель."
+            : $"Сила флота {Effective(group):0}, противника {ev.EnemyStrength:0}. При тяжёлых потерях — отход; возможна гибель.";
         return preview;
     }
 

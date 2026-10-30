@@ -69,6 +69,14 @@ public sealed partial class SWDirectorSystem : EntitySystem
     public bool CouncilPlayerControl { get; private set; }
     public bool AutoAntagsAllowed => Mode == SWDirectorMode.Autopilot && !CouncilPlayerControl;
 
+    public void SetImperialMinisterOverride(bool enabled)
+    {
+        if (_defense.AllowImperialWithoutMinister == enabled) return;
+        _defense.SetImperialMinisterOverride(enabled);
+        AddChronicle(enabled ? "имперские атаки разрешены без действующего министра обороны" : "имперские атаки вновь требуют действующего министра обороны");
+        Updated?.Invoke();
+    }
+
     public event Action? Updated;
 
     private float _influence = StartInfluence;
@@ -638,6 +646,7 @@ public sealed partial class SWDirectorSystem : EntitySystem
             JusticeCases = _justice.BuildInspectionState().ActiveCases,
             Mode = Mode,
             CouncilPlayerControl = CouncilPlayerControl,
+            AllowImperialWithoutMinister = _defense.AllowImperialWithoutMinister,
             ControllerName = ControllerName,
             IAmController = Controller == viewer,
             Influence = (int) MathF.Round(_influence),

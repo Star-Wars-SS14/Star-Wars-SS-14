@@ -6,6 +6,7 @@ using Content.Shared.GameTicking;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Content.Server._SW._Senate.Economy;
+using Content.Server._SW._Senate.Empire;
 
 namespace Content.Server._SW._Senate.Core;
 
@@ -16,6 +17,7 @@ public sealed partial class SWMinistryDefenseSystem : EntitySystem
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
+    [Dependency] private readonly SWEmpireDiplomacySystem _diplomacy = default!;
 
     public const string DefenseMinistryId = "SWMinistryDefense";
 

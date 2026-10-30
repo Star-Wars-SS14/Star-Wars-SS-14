@@ -13,6 +13,7 @@ namespace Content.Client._SW._Senate.Director;
 public sealed partial class SWDirectorWindow : FancyWindow
 {
     public event Action<SWDirectorMode>? OnSetMode;
+    public event Action<bool>? OnSetImperialMinisterOverride;
     public event Action<SWDirectorActionKind, string, string, string>? OnAction;
     public event Action<string, bool>? OnSendNote;
     public event Action<SWDefenseDirectorEventMessage>? OnDefenseEvent;
@@ -110,6 +111,16 @@ public sealed partial class SWDirectorWindow : FancyWindow
         NoticeLabel.Text = state.Notice;
 
         Body.RemoveAllChildren();
+
+        Body.AddChild(SWConsoleStyle.Section("АДМИНИСТРАТИВНАЯ ПРОВЕРКА"));
+        var overrideEnabled = state.AllowImperialWithoutMinister;
+        var ministerOverride = SWConsoleStyle.Action(
+            $"Имперские атаки без министра обороны: {(overrideEnabled ? "ВКЛ" : "ВЫКЛ")}",
+            overrideEnabled ? SWConsoleStyle.Good : SWConsoleStyle.TextBright);
+        ministerOverride.Name = "DirectorImperialMinisterOverride";
+        ministerOverride.ToolTip = "Для одиночной проверки, до конца раунда";
+        ministerOverride.OnPressed += _ => OnSetImperialMinisterOverride?.Invoke(!overrideEnabled);
+        Body.AddChild(ministerOverride);
 
         if (state.DefenseMap is { } defenseMap)
         {

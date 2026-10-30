@@ -62,7 +62,11 @@ public sealed class SWDefenseOperationsPanel : BoxContainer
             var world = state?.Worlds.FirstOrDefault(w => w.Id == incident.WorldId)?.Name ?? incident.WorldId;
             row.Location.Text = $"{world}   Угроза {incident.Severity:0}   Сила противника {incident.EnemyStrength:0}";
             row.Location.ToolTip = incident.EdgeId;
-            row.Deadline.Text = $"До эскалации: {SWSenateDuration.FormatHours(Math.Max(0, incident.ExpiresAt - (state?.NowHours ?? 0)))}";
+            row.Deadline.Text = incident.ImperialRaid ? "Рейд продолжается"
+                : incident.ImperialCrossing && incident.ImperialPhase == SWImperialCrossingPhase.Held ? "Переход удерживается"
+                : incident.ImperialCrossing && incident.ImperialPhase == SWImperialCrossingPhase.Battle ? "Идёт бой"
+                : incident.ImperialCrossing ? $"На ответ: {SWSenateDuration.FormatHours(Math.Max(0, incident.ExpiresAt - (state?.NowHours ?? 0)))}"
+                : $"До эскалации: {SWSenateDuration.FormatHours(Math.Max(0, incident.ExpiresAt - (state?.NowHours ?? 0)))}";
             var assigned = state?.Fleets.Where(f => f.EventId == incident.Id).Select(f => $"{f.Name}: {SWDefenseMapPanel.PhaseName(f.Phase)}").ToArray();
             row.Status.Text = incident.Status + (assigned is { Length: > 0 } ? "\n" + string.Join("\n", assigned) : "");
             row.Risk.Text = incident.Risk;

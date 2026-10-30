@@ -7,7 +7,9 @@ public readonly record struct SWEmpireRepublicFleetSnapshot(int Id, float Streng
 
 public sealed partial class SWMinistryDefenseSystem
 {
-    private sealed record ImperialCrossing(string FleetId, string LinkId, double ReadyAt, bool Raid = false);
+    private sealed record ImperialCrossing(string FleetId, string LinkId, double ReadyAt, bool Raid = false,
+        double ResponseDeadline = 0, bool BattleStarted = false);
+    public const double ImperialBorderResponseHours = 6;
     private readonly Dictionary<int, ImperialCrossing> _imperialCrossings = new();
     private readonly Dictionary<int, string> _imperialBlockades = new();
 
@@ -46,17 +48,20 @@ public sealed partial class SWMinistryDefenseSystem
         eventId = 0;
         reason = "Пограничная операция недоступна";
         EnsureGroups();
-        if (string.IsNullOrWhiteSpace(fleetId) || fleetId.Length > 128 || !_time.ModeActive || !_time.DayActive || !MinisterActive || !ImperialThreatsEnabled)
+        if (string.IsNullOrWhiteSpace(fleetId) || fleetId.Length > 128 || !_time.ModeActive || !_time.DayActive || !ImperialOperationsAllowed || !ImperialThreatsEnabled)
             return false;
         var border = _borders.FirstOrDefault(b => b.Id == linkId && b.Faction == "empire");
         if (border == null || _imperialCrossings.Any(p => p.Value.FleetId == fleetId && _incidents.Any(e => e.Id == p.Key && !e.Resolved)))
             return false;
-        if (!CreateIncident(border.RepublicWorldId, border.Id, SWDefenseEventKind.Incursion, 55, 1, 24, false, "Имперское пограничное вторжение"))
+        if (!CreateIncident(border.RepublicWorldId, border.Id, SWDefenseEventKind.Incursion, 55, 1, ImperialBorderResponseHours, false, "Имперское пограничное вторжение"))
             return false;
         eventId = _nextEventId - 1;
-        _imperialCrossings.Add(eventId, new ImperialCrossing(fleetId, linkId, _time.ActiveGameHours + .5));
+        _imperialCrossings.Add(eventId, new ImperialCrossing(fleetId, linkId, _time.ActiveGameHours + .5,
+            ResponseDeadline: _time.ActiveGameHours + ImperialBorderResponseHours));
         var createdId = eventId;
         var incident = _incidents.First(e => e.Id == createdId);
+        incident.ImperialCrossing = true;
+        incident.ImperialPhase = SWImperialCrossingPhase.WaitingResponse;
         incident.Status = "Пограничное предупреждение: подготовка ответа";
         incident.Risk = "Обнаружен имперский флот; исход зависит от реальных сил на границе.";
         reason = string.Empty;
@@ -67,7 +72,7 @@ public sealed partial class SWMinistryDefenseSystem
     {
         eventId = 0; reason = "Рейд недоступен";
         EnsureGroups();
-        if (string.IsNullOrWhiteSpace(fleetId) || fleetId.Length > 128 || !_time.ModeActive || !_time.DayActive || !MinisterActive || !ImperialThreatsEnabled ||
+        if (string.IsNullOrWhiteSpace(fleetId) || fleetId.Length > 128 || !_time.ModeActive || !_time.DayActive || !ImperialOperationsAllowed || !ImperialThreatsEnabled ||
             !_worlds.TryGetValue(worldId, out var world) || world.Faction != "republic") return false;
         var existing = _incidents.FirstOrDefault(e => !e.Resolved && e.WorldId == worldId && _imperialCrossings.TryGetValue(e.Id, out var op) && op.Raid);
         if (existing != null) { eventId = existing.Id; reason = string.Empty; return true; }
@@ -76,18 +81,27 @@ public sealed partial class SWMinistryDefenseSystem
         var createdId = eventId;
         _imperialCrossings.Add(eventId, new ImperialCrossing(fleetId, "", _time.ActiveGameHours + .5, true));
         var incident = _incidents.First(e => e.Id == createdId);
+        incident.ImperialRaid = true;
         incident.Status = "Предупреждение: имперский флот у цели";
         incident.Risk = "Исход зависит от реальных сил на атакованном мире.";
         reason = string.Empty; return true;
     }
 
     public bool ImperialRaidReady(int eventId) => _imperialCrossings.TryGetValue(eventId, out var operation) && operation.Raid && ImperialCrossingReady(eventId);
+    public void MarkImperialRaidBattle(int eventId)
+    {
+        if (!_imperialCrossings.TryGetValue(eventId, out var operation) || !operation.Raid || !HasImperialEngagement(eventId)) return;
+        var incident = _incidents.FirstOrDefault(e => e.Id == eventId && !e.Resolved);
+        if (incident == null) return;
+        incident.ImperialPhase = SWImperialCrossingPhase.Battle;
+        incident.Status = "Бой у цели рейда";
+    }
     public bool FinishImperialRaid(int eventId, bool empireWon)
     {
         if (!_imperialCrossings.TryGetValue(eventId, out var operation) || !operation.Raid) return false;
         var incident = _incidents.FirstOrDefault(e => e.Id == eventId && !e.Resolved);
-        if (incident == null || empireWon && (!MinisterActive || !ImperialRaidReady(eventId) || GetImperialDefenders(eventId).Count != 0)) return false;
-        if (empireWon) { incident.Status = "Имперский флот проводит рейд"; return true; }
+        if (incident == null || empireWon && (!ImperialOperationsAllowed || !ImperialRaidReady(eventId) || GetImperialDefenders(eventId).Count != 0)) return false;
+        if (empireWon) { incident.Status = "Имперский флот проводит рейд"; incident.ImperialPhase = SWImperialCrossingPhase.Held; return true; }
         ResolveIncident(incident, !empireWon);
         incident.Status = "Имперский рейд завершён";
         foreach (var group in _groups.Where(g => g.Alive && g.EventId == eventId).ToArray()) BeginReturn(group);
@@ -96,7 +110,20 @@ public sealed partial class SWMinistryDefenseSystem
 
     public bool ImperialCrossingReady(int eventId) => HasImperialEngagement(eventId)
         && _time.ModeActive && _time.DayActive && _time.ActiveGameHours >= _imperialCrossings[eventId].ReadyAt;
-    public double? ImperialCrossingReadyAt(int eventId) => HasImperialEngagement(eventId) ? _imperialCrossings[eventId].ReadyAt : null;
+    public double? ImperialCrossingReadyAt(int eventId) => HasImperialEngagement(eventId) && !_imperialCrossings[eventId].Raid
+        && !_imperialCrossings[eventId].BattleStarted ? _imperialCrossings[eventId].ResponseDeadline : null;
+    public bool ImperialCrossingBattleStarted(int eventId) => _imperialCrossings.TryGetValue(eventId, out var crossing) && crossing.BattleStarted;
+    public bool ImperialCrossingIsHeld(int eventId) => HasImperialEngagement(eventId)
+        && _incidents.Any(e => e.Id == eventId && e.ImperialPhase == SWImperialCrossingPhase.Held);
+    public void MarkImperialCrossingBattle(int eventId)
+    {
+        if (_imperialCrossings.TryGetValue(eventId, out var crossing) && !crossing.Raid && HasImperialEngagement(eventId))
+        {
+            if (!crossing.BattleStarted) _imperialCrossings[eventId] = crossing with { BattleStarted = true };
+            var incident = _incidents.FirstOrDefault(e => e.Id == eventId && !e.Resolved);
+            if (incident != null) { incident.Status = "Бой на границе"; incident.ImperialPhase = SWImperialCrossingPhase.Battle; }
+        }
+    }
     public bool HasImperialEngagement(int eventId) => _imperialCrossings.ContainsKey(eventId)
         && _incidents.Any(e => e.Id == eventId && !e.Resolved);
 
@@ -128,11 +155,13 @@ public sealed partial class SWMinistryDefenseSystem
     public bool FinishImperialCrossing(int eventId, bool empireWon)
     {
         var incident = _incidents.FirstOrDefault(e => e.Id == eventId && !e.Resolved);
-        if (incident == null || !_imperialCrossings.ContainsKey(eventId) ||
-            (empireWon && (!MinisterActive || !ImperialCrossingReady(eventId) || GetImperialDefenders(eventId).Count != 0))) return false;
+        if (incident == null || !_imperialCrossings.TryGetValue(eventId, out var crossing) || crossing.Raid ||
+            (empireWon && (!ImperialOperationsAllowed || !ImperialCrossingReady(eventId) || GetImperialDefenders(eventId).Count != 0
+                || !crossing.BattleStarted && _time.ActiveGameHours < crossing.ResponseDeadline))) return false;
         if (empireWon)
         {
             incident.Status = "Имперский флот удерживает пограничный переход";
+            incident.ImperialPhase = SWImperialCrossingPhase.Held;
             return true;
         }
         ResolveIncident(incident, !empireWon);

@@ -10,6 +10,8 @@ using Robust.Shared.Containers;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using Content.Server._SW._Senate.Core;
+using Content.Server._SW._Senate.Empire;
+using Content.Shared._SW._Senate.Empire;
 using Content.Server._SW._Senate.Debate;
 using Content.Server._SW._Senate.Director;
 using Content.Server._SW._Senate.Economy;
@@ -41,6 +43,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
     [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
     [Dependency] private readonly SWMinistryHealthSystem _health = default!;
+    [Dependency] private readonly SWEmpireDiplomacySystem _diplomacy = default!;
     [Dependency] private readonly SWStatisticsConsoleSystem _mapStatistics = default!;
     [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
     [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
@@ -90,6 +93,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWHealthApproveEmergencyMessage>(OnApproveHealthEmergency);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWHealthRejectEmergencyMessage>(OnRejectHealthEmergency);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWHealthQuarantineDecisionMessage>(OnHealthQuarantineDecision);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmpireDiplomacyDecisionMessage>(OnDiplomacyDecision);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEconomyApproveStimulusMessage>(OnApproveStimulus);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEconomyRejectStimulusMessage>(OnRejectStimulus);
         SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWFinanceApproveEmissionMessage>(OnApproveEmission);
@@ -630,6 +634,15 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         UpdateUi(ent);
     }
 
+    private void OnDiplomacyDecision(Entity<SWSenateWorkConsoleComponent> ent, ref SWEmpireDiplomacyDecisionMessage args)
+    {
+        if (!CanConfirmAs(ent,args.Actor) || !_diplomacy.CanDecide(args.Actor) || !Enum.IsDefined(args.Decision)) return;
+        var applied = args.Decision switch { SWEmpireDiplomacyDecision.Approve => _diplomacy.Decide(args.Id,true,args.Actor),
+            SWEmpireDiplomacyDecision.Reject => _diplomacy.Decide(args.Id,false,args.Actor),
+            SWEmpireDiplomacyDecision.Break => _diplomacy.BreakRepublic(args.Id,args.Actor), _ => false };
+        if (!applied) _popup.PopupCursor("Соглашение недоступно или уже рассмотрено.",args.Actor,PopupType.Medium);
+        UpdateUi(ent);
+    }
     private void OnHealthQuarantineDecision(Entity<SWSenateWorkConsoleComponent> ent, ref SWHealthQuarantineDecisionMessage args)
     {
         if (!CanConfirmAs(ent, args.Actor) || !_health.CanDecideQuarantine(args.Actor))
@@ -1738,6 +1751,8 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         state.MapCrises = _mapStatistics.BuildMapCrises();
         state.CanApproveHealthEmergency = CanConfirmAs(ent);
         state.HealthQuarantines = _health.BuildQuarantines();
+        state.CanDecideDiplomacy = CanConfirmAs(ent) && GetCardPosition(ent) == SWSenatePosition.Chancellor;
+        if (state.CanDecideDiplomacy) state.ImperialDiplomacy = _diplomacy.BuildRepublicState();
         state.StimulusProposed = _economy.StimulusPending;
         state.CanApproveStimulus = _economy.StimulusPending && CanConfirmAs(ent);
         state.EmissionProposed = _finance.EmissionPending;

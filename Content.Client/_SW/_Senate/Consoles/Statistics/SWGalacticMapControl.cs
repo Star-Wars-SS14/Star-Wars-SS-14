@@ -207,7 +207,7 @@ public sealed partial class SWGalacticMapControl : Control
             _lastClickWorld = null;
             return;
         }
-        if (ActivateSecurityAt(position) || ActivateMedicalSupply(position) || ActivateCrisisAt(position) || ActivateDefenseAt(position))
+        if (ActivateIntelligenceAt(position) || ActivateSecurityAt(position) || ActivateMedicalSupply(position) || ActivateCrisisAt(position) || ActivateDefenseAt(position))
         {
             _lastClickWorld = null;
             return;
@@ -313,6 +313,7 @@ public sealed partial class SWGalacticMapControl : Control
         ToolTip = null;
         DefaultCursorShape = _pointer is { } cursor && (HitTestDefenseFleet(cursor) != null || HitTestCrisis(cursor) != null)
             ? CursorShape.Hand : CursorShape.Arrow;
+        if (_pointer is { } intelPointer && IntelligenceToolTip(intelPointer) is { } intelTip) { DefaultCursorShape = CursorShape.Hand; ToolTip = intelTip; return; }
         if (_pointer is { } crisisPointer && CrisisToolTip(crisisPointer) is { } crisisTip)
         {
             ToolTip = crisisTip;
@@ -433,6 +434,7 @@ public sealed partial class SWGalacticMapControl : Control
         AdvanceMedicalSupply(args.DeltaSeconds);
         AdvanceDefense(args.DeltaSeconds);
         AdvanceSecurity(args.DeltaSeconds);
+        AdvanceIntelligence(args.DeltaSeconds);
         if (!IsTransitioning || Width <= 64 || Height <= 56) return;
         _transitionTime += args.DeltaSeconds;
         if (_transitionTime < TransitionDuration && !_configuration.GetCVar(CCVars.ReducedMotion)) return;
@@ -544,6 +546,7 @@ public sealed partial class SWGalacticMapControl : Control
         DrawSecurity(handle);
         DrawCrisisMarkers(handle);
         DrawMedicalSupply(handle);
+        DrawIntelligence(handle);
     }
 
     private void Stroke(DrawingHandleScreen handle, Vector2 a, Vector2 b, Color color, float width)

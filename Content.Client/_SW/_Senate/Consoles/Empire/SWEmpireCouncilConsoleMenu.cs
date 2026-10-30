@@ -22,12 +22,14 @@ public sealed class SWEmpireCouncilConsoleMenu : FancyWindow
 {
     private readonly SWEmpireCouncilConsoleBoundUserInterface _owner;
     private readonly SWEmpireMilitaryPanel _military;
+    private readonly SWEmpireIntelligencePanel _intelligence;
+    private readonly SWEmpireDiplomacyPanel _diplomacy;
     private readonly IPrototypeManager _proto = IoCManager.Resolve<IPrototypeManager>();
     private readonly SWGalacticMapPrototype _geography;
     private readonly SWRepublicMapBrowser _atlas = new(compactEconomy: true, showMedicalToggle: false, viewerFaction: "empire");
     private readonly BoxContainer _pages = VerticalStack(0);
-    private readonly Button[] _tabs = new Button[5];
-    private readonly Control[] _panels = new Control[5];
+    private readonly Button[] _tabs = new Button[7];
+    private readonly Control[] _panels = new Control[7];
     private readonly Label _role = SWConsoleStyle.Text("", SWConsoleStyle.TextDim, SWConsoleStyle.Small);
     private readonly Label _treasury = SWConsoleStyle.Text("", SWConsoleStyle.Brass, SWConsoleStyle.Strong);
     private readonly Label _feedback = SWConsoleStyle.Text("", SWConsoleStyle.Warn, SWConsoleStyle.Small);
@@ -57,6 +59,8 @@ public sealed class SWEmpireCouncilConsoleMenu : FancyWindow
     {
         _owner = owner;
         _military = new SWEmpireMilitaryPanel(owner);
+        _intelligence = new SWEmpireIntelligencePanel(owner);
+        _diplomacy = new SWEmpireDiplomacyPanel(owner);
         _geography = _proto.Index<SWGalacticMapPrototype>("SenateRepublic");
         Title = "Совет Империи";
         SetSize = new Vector2(1120, 720);
@@ -82,7 +86,7 @@ public sealed class SWEmpireCouncilConsoleMenu : FancyWindow
         headerRow.AddChild(balance);
         layout.AddChild(header);
         var bar = new WrapContainer { Margin = new Thickness(8, 4), HorizontalExpand = true, SeparationOverride = 5 };
-        var names = new[] { "Карта", "Заказы", "Развитие", "Финансы", "Флот" };
+        var names = new[] { "Карта", "Заказы", "Развитие", "Финансы", "Флот", "Разведка", "Дипломатия" };
         for (var i = 0; i < names.Length; i++)
         {
             var index = i;
@@ -114,6 +118,7 @@ public sealed class SWEmpireCouncilConsoleMenu : FancyWindow
         ((ScrollContainer) _panels[3]).AddChild(_finance);
         BuildFinance();
         _panels[4] = _military;
+        _panels[5] = _intelligence; _panels[6] = _diplomacy;
         foreach (var page in _panels) _pages.AddChild(page);
         UpdateTabs(SWEmpireCouncilSphere.None);
     }
@@ -147,7 +152,7 @@ public sealed class SWEmpireCouncilConsoleMenu : FancyWindow
             foreach (var panel in _panels) panel.Visible = false;
             return;
         }
-        ShowTab(sphere == SWEmpireCouncilSphere.MilitaryOffense ? 4 : 0);
+        ShowTab(sphere == SWEmpireCouncilSphere.MilitaryOffense ? 4 : sphere == SWEmpireCouncilSphere.Intelligence ? 5 : sphere == SWEmpireCouncilSphere.ExpansionDiplomacy ? 6 : 0);
     }
 
     private void ShowTab(int tab)
@@ -167,6 +172,7 @@ public sealed class SWEmpireCouncilConsoleMenu : FancyWindow
         _currentSphere = state.Sphere;
         _state = state;
         _military.SetState(state);
+        _intelligence.SetState(state); _diplomacy.SetState(state);
         if (previousSphere != state.Sphere)
         {
             ResetTransfer();

@@ -1524,6 +1524,8 @@ public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
     public bool HealthEmergencyProposed;
     public bool CanApproveHealthEmergency;
     public List<Content.Shared._SW._Senate.Ministries.SWHealthQuarantineView> HealthQuarantines = new();
+    public Content.Shared._SW._Senate.Empire.SWEmpireDiplomacyState ImperialDiplomacy = new();
+    public bool CanDecideDiplomacy;
     public bool StimulusProposed;
     public bool CanApproveStimulus;
     public bool EmissionProposed;

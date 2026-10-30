@@ -61,6 +61,7 @@ public sealed class SWDirectorEuiState : EuiStateBase
     public List<SWJusticeCaseView> JusticeCases = new();
     public SWDirectorMode Mode;
     public bool CouncilPlayerControl;
+    public bool AllowImperialWithoutMinister;
     public string ControllerName = string.Empty;
     public bool IAmController;
     public int Influence;
@@ -88,6 +89,12 @@ public sealed class SWDirectorEuiState : EuiStateBase
     public int CostDilemma;
     public int CostStrike;
     public int CostMerc;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWDirectorSetImperialMinisterOverrideMessage(bool enabled) : EuiMessageBase
+{
+    public bool Enabled = enabled;
 }
 
 [Serializable, NetSerializable]

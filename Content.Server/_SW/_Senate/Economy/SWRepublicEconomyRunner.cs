@@ -84,6 +84,23 @@ public sealed class SWRepublicEconomyRunner
 
     public EconomyExternalTransferResult? GetExternalTransferResult(string id) => _externalResults.GetValueOrDefault(id);
 
+    /// <summary>Game-thread view of the currently submitted civilian transit restrictions.</summary>
+    public bool AllowsExternalTransit(string edge, string from, string to, string good)
+    {
+        if (_transitSources.Values.Any(source => source.TryGetValue(edge, out var factor) && factor <= 0))
+            return false;
+        foreach (var rule in _quarantines)
+        {
+            var insideFrom = rule.Worlds.Contains(from);
+            var insideTo = rule.Worlds.Contains(to);
+            if (insideFrom == insideTo) continue;
+            if (!insideFrom && insideTo && rule.Humanitarian &&
+                good is "water" or "fresh_food" or "synth_food" or "rations" or "drugs" or "medical_supplies") continue;
+            return false;
+        }
+        return true;
+    }
+
     /// <summary>Stops unexecuted hostile withdrawals without touching transfers already acknowledged.</summary>
     public void CancelPendingExternalWithdrawals()
     {

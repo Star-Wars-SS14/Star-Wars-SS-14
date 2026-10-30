@@ -19,10 +19,19 @@ public sealed class SWEmpireCouncilConsoleSystem : EntitySystem
     [Dependency] private readonly SWEmpireEconomySystem _economy = default!;
     [Dependency] private readonly SWEmpireIndustrySystem _industry = default!;
     [Dependency] private readonly SWEmpireMilitarySystem _military = default!;
+    [Dependency] private readonly SWEmpireIntelligenceSystem _intelligence = default!;
+    [Dependency] private readonly SWEmpireDiplomacySystem _diplomacy = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     private readonly Dictionary<(EntityUid Actor, SWEmpireCouncilSphere Sphere), (string Id, string Result, SWEmpireIndustryQuote Quote)> _results = new();
     private readonly Dictionary<(EntityUid Actor, SWEmpireCouncilSphere Sphere), SWEmpireMilitaryQuote> _militaryQuotes = new();
     private readonly HashSet<string> _militaryRequests = new();
+    private readonly HashSet<string> _intelligenceRequests = new(), _diplomacyRequests = new();
+    private readonly Dictionary<(EntityUid Actor, SWEmpireCouncilSphere Sphere), SWEmpireIntelligenceQuote> _intelligenceQuotes = new();
+    private readonly Dictionary<(EntityUid Actor, SWEmpireCouncilSphere Sphere), SWEmpireDiplomacyQuote> _diplomacyQuotes = new();
+    private const int NewRequestLimit = 4096;
+    private readonly Dictionary<(EntityUid Actor, SWEmpireCouncilSphere Sphere), bool> _newActionResultIsCommand = new();
+    private readonly Dictionary<EntityUid, (SWEmpireIntelligenceRequest Request, SWEmpireIntelligenceQuote Quote)> _pendingIntel = new();
+    private readonly Dictionary<EntityUid, (SWEmpireDiplomacyRequest Request, SWEmpireDiplomacyQuote Quote)> _pendingDiplomacy = new();
     private float _elapsed;
     private object? _viewSnapshot;
     private bool _viewPaused;
@@ -39,11 +48,91 @@ public sealed class SWEmpireCouncilConsoleSystem : EntitySystem
         SubscribeLocalEvent<SWEmpireCouncilConsoleComponent, SWEmpireMaterialCommandMessage>(OnMaterialCommand);
         SubscribeLocalEvent<SWEmpireCouncilConsoleComponent, SWEmpireMaterialRejectMessage>(OnMaterialReject);
         SubscribeLocalEvent<SWEmpireCouncilConsoleComponent, SWEmpireBudgetTransferMessage>(OnTransfer);
+        SubscribeLocalEvent<SWEmpireCouncilConsoleComponent, SWEmpireIntelligenceQuoteMessage>(OnIntelligenceQuote);
+        SubscribeLocalEvent<SWEmpireCouncilConsoleComponent, SWEmpireIntelligenceCommandMessage>(OnIntelligenceCommand);
+        SubscribeLocalEvent<SWEmpireCouncilConsoleComponent, SWEmpireDiplomacyQuoteMessage>(OnDiplomacyQuote);
+        SubscribeLocalEvent<SWEmpireCouncilConsoleComponent, SWEmpireDiplomacyCommandMessage>(OnDiplomacyCommand);
+        SubscribeLocalEvent<SWEmpireCouncilConsoleComponent, SWEmpireDiplomacyBreakMessage>(OnDiplomacyBreak);
         SubscribeLocalEvent<SWEmpireCouncilConsoleComponent, SWEmpireMilitaryQuoteMessage>(OnMilitaryQuote);
         SubscribeLocalEvent<SWEmpireCouncilConsoleComponent, SWEmpireMilitaryCommandMessage>(OnMilitaryCommand);
-        SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => { _results.Clear(); _militaryQuotes.Clear(); _militaryRequests.Clear(); _sent.Clear(); _cachedView = null; _viewSnapshot = null; _elapsed = 0; });
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => { _results.Clear(); _militaryQuotes.Clear(); _militaryRequests.Clear(); _intelligenceRequests.Clear(); _diplomacyRequests.Clear(); _intelligenceQuotes.Clear(); _diplomacyQuotes.Clear(); _pendingIntel.Clear(); _pendingDiplomacy.Clear(); _newActionResultIsCommand.Clear(); _sent.Clear(); _cachedView = null; _viewSnapshot = null; _elapsed = 0; });
     }
 
+    // A group may naturally finish an already confirmed leg while the player reads the quote.
+    private static bool RouteStillMatches(IReadOnlyList<string> confirmed, IReadOnlyList<string> current)
+    {
+        if (current.Count > confirmed.Count) return false;
+        for (var i = 0; i < current.Count; i++)
+            if (confirmed[confirmed.Count - current.Count + i] != current[i]) return false;
+        return true;
+    }
+    private static SWEmpireIntelligenceRequest CopyIntelligence(SWEmpireIntelligenceRequest r) => new() { RequestId = r.RequestId, Action = r.Action, GroupId = r.GroupId, WorldId = r.WorldId, TargetId = r.TargetId };
+    private static bool SameIntelligence(SWEmpireIntelligenceRequest a, SWEmpireIntelligenceRequest b) => a.RequestId == b.RequestId && a.Action == b.Action && a.GroupId == b.GroupId && a.WorldId == b.WorldId && a.TargetId == b.TargetId;
+    private static SWEmpireDiplomacyRequest CopyDiplomacy(SWEmpireDiplomacyRequest r) => new() { RequestId = r.RequestId, Action = r.Action, Term = r.Term, Party = r.Party, Scope = r.Scope, TargetId = r.TargetId, Hours = r.Hours, Good = r.Good, Amount = r.Amount, SourceWorld = r.SourceWorld, DestinationWorld = r.DestinationWorld };
+    private static bool SameDiplomacy(SWEmpireDiplomacyRequest a, SWEmpireDiplomacyRequest b) => a.RequestId == b.RequestId && a.Action == b.Action && a.Term == b.Term && a.Party == b.Party && a.Scope == b.Scope && a.TargetId == b.TargetId && a.Hours == b.Hours && a.Good == b.Good && a.Amount == b.Amount && a.SourceWorld == b.SourceWorld && a.DestinationWorld == b.DestinationWorld;
+    private void OnIntelligenceQuote(Entity<SWEmpireCouncilConsoleComponent> ent, ref SWEmpireIntelligenceQuoteMessage args)
+    {
+        if (!Authorized(ent.Owner, args.Actor, out var sphere) || sphere != SWEmpireCouncilSphere.Intelligence || args.Request == null) return;
+        _newActionResultIsCommand[(args.Actor, sphere)] = false;
+        _intelligence.TryQuote(args.Request, out var quote);
+        _pendingIntel[args.Actor] = (CopyIntelligence(args.Request), quote);
+        _intelligenceQuotes[(args.Actor, sphere)] = quote;
+        _results[(args.Actor, sphere)] = (args.Request.RequestId, quote.Reason, new()); Send(ent.Owner, args.Actor);
+    }
+    private void OnIntelligenceCommand(Entity<SWEmpireCouncilConsoleComponent> ent, ref SWEmpireIntelligenceCommandMessage args)
+    {
+        if (!Authorized(ent.Owner, args.Actor, out var sphere) || sphere != SWEmpireCouncilSphere.Intelligence || args.Request == null) return;
+        var request = args.Request;
+        if (string.IsNullOrWhiteSpace(request.RequestId) || request.RequestId.Length > 128 || _intelligenceRequests.Count >= NewRequestLimit || !_intelligenceRequests.Add(request.RequestId)) return;
+        _newActionResultIsCommand[(args.Actor, sphere)] = true;
+        if (!_intelligence.TryQuote(request, out var quote) || !quote.Allowed)
+        { _intelligenceQuotes[(args.Actor, sphere)] = quote; _results[(args.Actor, sphere)] = (request.RequestId, quote.Reason, new()); Send(ent.Owner, args.Actor); return; }
+        if (!_pendingIntel.Remove(args.Actor, out var pending) || !SameIntelligence(pending.Request, request) || !pending.Quote.Allowed ||
+            pending.Quote.Cost != quote.Cost || quote.RiskPercent - pending.Quote.RiskPercent >= 5 || pending.Quote.Result != quote.Result ||
+            !RouteStillMatches(pending.Quote.RouteWorldIds, quote.RouteWorldIds) || Math.Abs(pending.Quote.WorkHours - quote.WorkHours) > .001)
+        { _intelligenceQuotes[(args.Actor, sphere)] = quote; _results[(args.Actor, sphere)] = (request.RequestId, "Условия изменились. Рассчитайте приказ заново", new()); Send(ent.Owner, args.Actor); return; }
+        if (quote.Cost < 0 || quote.Cost > 0 && !_budget.TryReserve(sphere, quote.Cost, request.RequestId, out _))
+        { _results[(args.Actor, sphere)] = (request.RequestId, "Недостаточно средств сферы", new()); Send(ent.Owner, args.Actor); return; }
+        bool ok; string reason;
+        try { ok = _intelligence.TrySubmit(request, out reason); }
+        catch { if (quote.Cost > 0) _budget.Refund(sphere, request.RequestId); throw; }
+        if (quote.Cost > 0) { if (ok) _budget.Commit(sphere, request.RequestId); else _budget.Refund(sphere, request.RequestId); }
+        _intelligenceQuotes[(args.Actor, sphere)] = new(); _results[(args.Actor, sphere)] = (request.RequestId, ok ? "Приказ принят" : reason, new()); Send(ent.Owner, args.Actor);
+    }
+    private void OnDiplomacyQuote(Entity<SWEmpireCouncilConsoleComponent> ent, ref SWEmpireDiplomacyQuoteMessage args)
+    {
+        if (!Authorized(ent.Owner, args.Actor, out var sphere) || sphere != SWEmpireCouncilSphere.ExpansionDiplomacy || args.Request == null) return;
+        _newActionResultIsCommand[(args.Actor, sphere)] = false;
+        _diplomacy.TryQuote(args.Request, out var quote); _pendingDiplomacy[args.Actor] = (CopyDiplomacy(args.Request), quote); _diplomacyQuotes[(args.Actor, sphere)] = quote;
+        _results[(args.Actor, sphere)] = (args.Request.RequestId, quote.Reason, new()); Send(ent.Owner, args.Actor);
+    }
+    private void OnDiplomacyCommand(Entity<SWEmpireCouncilConsoleComponent> ent, ref SWEmpireDiplomacyCommandMessage args)
+    {
+        if (!Authorized(ent.Owner, args.Actor, out var sphere) || sphere != SWEmpireCouncilSphere.ExpansionDiplomacy || args.Request == null) return;
+        var request = args.Request;
+        if (string.IsNullOrWhiteSpace(request.RequestId) || request.RequestId.Length > 128 || _diplomacyRequests.Count >= NewRequestLimit || !_diplomacyRequests.Add(request.RequestId)) return;
+        _newActionResultIsCommand[(args.Actor, sphere)] = true;
+        if (!_diplomacy.TryQuote(request, out var quote) || !quote.Allowed)
+        { _diplomacyQuotes[(args.Actor, sphere)] = quote; _results[(args.Actor, sphere)] = (request.RequestId, quote.Reason, new()); Send(ent.Owner, args.Actor); return; }
+        if (!_pendingDiplomacy.Remove(args.Actor, out var pending) || !SameDiplomacy(pending.Request, request) || !pending.Quote.Allowed || pending.Quote.Cost != quote.Cost ||
+            !pending.Quote.Request.RouteWorlds.SequenceEqual(quote.Request.RouteWorlds) || !pending.Quote.Request.RouteLinks.SequenceEqual(quote.Request.RouteLinks) ||
+            request.Action == SWEmpireDiplomacyAction.ShipCargo && pending.Quote.Reason != quote.Reason)
+        { _diplomacyQuotes[(args.Actor, sphere)] = quote; _results[(args.Actor, sphere)] = (request.RequestId, "Условия изменились. Рассчитайте предложение заново", new()); Send(ent.Owner, args.Actor); return; }
+        if (quote.Cost < 0 || quote.Cost > 0 && !_budget.TryReserve(sphere, quote.Cost, request.RequestId, out _))
+        { _results[(args.Actor, sphere)] = (request.RequestId, "Недостаточно средств сферы", new()); Send(ent.Owner, args.Actor); return; }
+        bool ok; string reason;
+        try { ok = _diplomacy.TrySubmit(request, out reason); }
+        catch { if (quote.Cost > 0) _budget.Refund(sphere, request.RequestId); throw; }
+        if (quote.Cost > 0) { if (!ok) _budget.Refund(sphere, request.RequestId); else if (request.Term != SWEmpireDiplomacyTerm.Supply) _budget.Commit(sphere, request.RequestId); }
+        _diplomacyQuotes[(args.Actor, sphere)] = new(); _results[(args.Actor, sphere)] = (request.RequestId, ok ? request.Action == SWEmpireDiplomacyAction.ShipCargo ? "Заявка на груз принята" : "Предложение отправлено" : reason, new()); Send(ent.Owner, args.Actor);
+    }
+    private void OnDiplomacyBreak(Entity<SWEmpireCouncilConsoleComponent> ent, ref SWEmpireDiplomacyBreakMessage args)
+    {
+        if (!Authorized(ent.Owner, args.Actor, out var sphere) || sphere != SWEmpireCouncilSphere.ExpansionDiplomacy) return;
+        _newActionResultIsCommand[(args.Actor, sphere)] = true;
+        var ok = _diplomacy.TryBreak(args.Id, out var reason);
+        _results[(args.Actor, sphere)] = (string.Empty, ok ? "Договор расторгнут" : reason, new()); Send(ent.Owner, args.Actor);
+    }
     private void OnMilitaryQuote(Entity<SWEmpireCouncilConsoleComponent> ent, ref SWEmpireMilitaryQuoteMessage args)
     {
         if (!Authorized(ent.Owner, args.Actor, out var sphere) || sphere != SWEmpireCouncilSphere.MilitaryOffense || args.Request == null) return;
@@ -185,6 +274,9 @@ public sealed class SWEmpireCouncilConsoleSystem : EntitySystem
         }
         var projects = _industry.BuildProjects();
         var military = _military.BuildState();
+        var intelligence = _intelligence.BuildState();
+        if (sphere != SWEmpireCouncilSphere.Intelligence) intelligence = new SWEmpireIntelligenceState { Revision = intelligence.Revision, Reports = intelligence.Reports };
+        var diplomacy = _diplomacy.BuildState();
         var hash = new HashCode();
         hash.Add(snapshot); hash.Add(paused); hash.Add(sphere); hash.Add(_budget.Treasury); hash.Add(_budget.NextAllocationDay);
         foreach (var entry in _budget.Balances) { hash.Add(entry.Key); hash.Add(entry.Value); }
@@ -198,6 +290,14 @@ public sealed class SWEmpireCouncilConsoleSystem : EntitySystem
         foreach (var b in military.Borders) { hash.Add(b.Id); hash.Add(b.Name); hash.Add(b.OwnWorldId); hash.Add(b.ForeignSectorId); hash.Add(b.Status); hash.Add(b.Warning); hash.Add(b.ReadyAt); }
         hash.Add(military.SupplyHour);
         foreach (var flow in military.SupplyFlows) hash.Add(flow);
+        hash.Add(intelligence.Revision);
+        foreach (var g in intelligence.Groups) { hash.Add(g.Id); hash.Add(g.Status); hash.Add(g.WorldId); hash.Add(g.DestinationId); hash.Add(g.NextWorldId); hash.Add(g.LegStartedAt); hash.Add(g.LegEndsAt); hash.Add(g.Readiness); hash.Add(g.EtaHours); foreach (var point in g.Route) hash.Add(point); }
+        foreach (var r in intelligence.Reports) { hash.Add(r.WorldId); hash.Add(r.Hour); hash.Add(r.Summary); foreach (var target in r.Targets) { hash.Add(target.Id); hash.Add(target.Name); hash.Add(target.Action); } }
+        foreach (var network in intelligence.Networks) { hash.Add(network.WorldId); hash.Add(network.WorldName); }
+        foreach (var e in intelligence.Effects) { hash.Add(e.WorldId); hash.Add(e.Status); hash.Add(e.RemainingHours); }
+        hash.Add(diplomacy.ClockRunning); if (diplomacy.ClockRunning) hash.Add(diplomacy.NowHours);
+        foreach (var a in diplomacy.Agreements) { hash.Add(a.Id); hash.Add(a.Status); hash.Add(a.Reason); hash.Add(a.StartsAt); hash.Add(a.EndsAt); }
+        foreach (var cargo in diplomacy.Cargo) { hash.Add(cargo.Id); hash.Add(cargo.AgreementId); hash.Add(cargo.Phase); hash.Add(cargo.CurrentWorld); hash.Add(cargo.NextWorld); hash.Add(cargo.LegStartedAt); hash.Add(cargo.LegEndsAt); hash.Add(cargo.Delivered); hash.Add(cargo.EtaHours); hash.Add(cargo.Reason); foreach (var point in cargo.Route) hash.Add(point); }
         var signature = hash.ToHashCode();
         if (!force && _sent.TryGetValue((console, actor), out var previous) && previous == signature) return;
         _sent[(console, actor)] = signature;
@@ -209,7 +309,10 @@ public sealed class SWEmpireCouncilConsoleSystem : EntitySystem
             Spent = _budget.Spent.ToDictionary(p => p.Key, p => p.Value), Received = _budget.Received.ToDictionary(p => p.Key, p => p.Value),
             IncomePerHour = _budget.IncomePerHour, Economy = _cachedView, Projects = projects, Military = military,
             MilitaryQuote = _militaryQuotes.GetValueOrDefault((actor, sphere)) ?? new(),
+            Intelligence = intelligence, IntelligenceQuote = _intelligenceQuotes.GetValueOrDefault((actor, sphere)) ?? new(),
+            Diplomacy = diplomacy, DiplomacyQuote = _diplomacyQuotes.GetValueOrDefault((actor, sphere)) ?? new(),
             ResultRequestId = result.Id ?? string.Empty, Result = result.Result ?? string.Empty,
+            ActionResultIsCommand = _newActionResultIsCommand.GetValueOrDefault((actor, sphere)),
             Quote = result.Quote ?? new(), QuoteAllowed = result.Quote?.Allowed ?? false, QuoteCost = result.Quote?.Cost ?? 0,
         };
         _ui.ServerSendUiMessage(console, Key, new SWEmpireCouncilUpdateMessage(state), actor);

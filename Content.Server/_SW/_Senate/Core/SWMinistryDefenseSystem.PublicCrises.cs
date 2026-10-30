@@ -28,7 +28,12 @@ public sealed partial class SWMinistryDefenseSystem
                 LocationLabel = world?.Name ?? ev.WorldId,
                 SectorIds = sector.Length > 0 ? new() { sector } : new(),
                 EffectsLabel = "Воздействие за игровой час",
-                Consequences = _imperialCrossings.ContainsKey(ev.Id) ? "Исход зависит от столкновения флотов; при отсутствии министра бой приостановлен."
+                Consequences = _imperialCrossings.ContainsKey(ev.Id) ? !ImperialOperationsAllowed
+                        ? "Операция и срок ответа приостановлены: министр обороны отсутствует."
+                        : ev.ImperialRaid ? "Исход рейда зависит от столкновения реальных флотов."
+                        : ev.ImperialPhase == SWImperialCrossingPhase.Held ? "Империя удерживает переход до отхода или поражения."
+                        : ev.ImperialPhase == SWImperialCrossingPhase.Battle ? "На границе идёт бой; его исход решают реальные флоты."
+                        : "У Республики шесть игровых часов на ответ; без защитников Империя получит право вторжения."
                     : MinisterActive ? $"По истечении угрозы: пограничное давление +{ev.Severity * .03f:0.###}, усталость от войны +{ev.Severity * .015f:0.###}."
                     : "Министр отсутствует: угроза деэскалирует без штрафов.",
             };

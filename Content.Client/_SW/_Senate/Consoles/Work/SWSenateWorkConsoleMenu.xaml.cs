@@ -266,6 +266,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             .ToArray();
 
         StyleChrome();
+        InitializeDesktop();
 
         DraftModeCustom.OnPressed += _ => ShowDraftMode(true);
         DraftModePreset.OnPressed += _ => ShowDraftMode(false);
@@ -291,7 +292,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             }
         };
 
-        ShowSection(OfficeTab);
+        ShowDesktop();
         ShowDraftMode(true);
         ShowDilemmaMode(0);
         ShowPartiesMode(0);
@@ -350,33 +351,14 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         IssueDecreeButton.OnPressed += _ => OnIssueDecreePressed();
         DecreeIntro.SetMessage("Немедленное вступление в силу. Рост тирании, снижение легитимности.");
 
-        for (var d = 1; d <= 4; d++)
-            DurationOption.AddItem($"{d}ч", d);
-        DurationOption.SelectId(_selectedDuration);
-
-        BillOption.OnItemSelected += args =>
-        {
-            BillOption.SelectId(args.Id);
-            _selectedBillId = args.Id;
-            if (_lastState is { } state)
-                BuildGroupedAmendments(state);
-        };
-        StartHourOption.OnItemSelected += args =>
-        {
-            StartHourOption.SelectId(args.Id);
-            _selectedStartHour = args.Id;
-            UpdateScheduleAction();
-        };
-        DurationOption.OnItemSelected += args =>
-        {
-            DurationOption.SelectId(args.Id);
-            _selectedDuration = args.Id;
-        };
+        InitializeScheduleBoard();
         ScheduleButton.OnPressed += _ => OnSchedulePressed();
     }
 
     public void SetState(SWSenateWorkConsoleState state)
     {
+        _scheduleSubmitted = false;
+        var previousState = _lastState;
         _lastState = state;
         TrackVisibilityTransitions();
         HeaderClock.Text = string.IsNullOrEmpty(state.GameTime) ? "-" : state.GameTime;
@@ -417,6 +399,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
         NavAnnounce.Visible = isLeader && state.InOffice;
         NavCourt.Visible = state.IsSenateCard && state.Position == SWSenatePosition.Chancellor && state.InOffice;
         NavDiplomacy.Visible = state.CanDiplomacy;
+
+        UpdateDesktop(state, previousState);
 
         foreach (var (header, buttons) in _navGroups)
             header.Visible = buttons.Any(b => b.Visible);
@@ -1787,7 +1771,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     {
         var phaseText = state.BudgetLocked ? "[одобрен]" : state.BudgetProjectPending ? "[на одобрении]" : "[проект не подан]";
         BudgetSectionSummary.SetMessage(
-            $"Бюджет дня: {state.BudgetTotal:N0} кр.   Сектора: {state.BudgetSectorPool:N0} кр   Ведомства: {state.BudgetMinistryPool:N0} кр   Республиканский резерв: {state.BudgetRepublicReservePool:N0} кр   {phaseText}" +
+            $"Бюджет дня: {state.BudgetTotal:N0} кр.   Сектора: {state.BudgetSectorPool:N0} кр   Фонд Республики: {state.BudgetRepublicPool:N0} кр{(state.BudgetLocked ? $" (остаток {state.BudgetRepublicRemaining:N0} кр)" : "")}   Ведомства: {state.BudgetMinistryPool:N0} кр   Республиканский резерв: {state.BudgetRepublicReservePool:N0} кр   {phaseText}" +
             (state.BudgetAutoApplied ? $"\nСтандартное распределение: {state.BudgetAutoReason}" : ""));
 
         // The project identity owns the draft. Pool and recipient changes within the same
@@ -1895,7 +1879,7 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
                     { remaining.SetMessage("Проверьте суммы секторов."); return; }
                     allocated += value;
                 }
-                remaining.SetMessage($"Общереспубликанские нужды: {state.BudgetSectorPool - allocated:N0} кр");
+                remaining.SetMessage($"Дополнительно в фонд Республики: {state.BudgetSectorPool - allocated:N0} кр");
             }
             BudgetAllocPanel.AddChild(remaining);
             foreach (var sector in state.BudgetSectors)
@@ -2451,6 +2435,9 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
 
     private void ShowSection(Control target)
     {
+        if (!PrepareDesktopSection(target))
+            return;
+        if (target != ScheduleTab) _scheduleBoard.CancelInteraction();
         var wasHidden = !target.Visible;
         foreach (var (nav, panel) in _sections)
         {
@@ -2458,6 +2445,8 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             panel.Visible = active;
             StyleNavButton(nav, active);
         }
+
+        ApprovalTab.Visible = target == ApprovalTab;
 
         // Content built while this tab was hidden never got a real layout pass - force one now that
         // it's actually on screen, instead of waiting on the next periodic refresh.
@@ -3040,127 +3029,6 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             })));
     }
 
-    private void BuildSchedule(SWSenateWorkConsoleState state)
-    {
-        var signature = new System.Text.StringBuilder();
-        signature.Append(state.OfficesVacant).Append('=').Append(state.CanScheduleSessions).Append('=').Append(state.CanConfirmSessions).Append('|');
-        foreach (var row in state.Schedule)
-            signature.Append(row.Hour).Append('=').Append(row.IsNow).Append('=').Append(row.Text).Append(',');
-        signature.Append('|');
-        foreach (var bill in state.SchedulableBills)
-            signature.Append(bill.Id).Append('=').Append(bill.Name).Append('=').Append(bill.Emergency)
-                .Append('=').Append(bill.AmendsLawId).Append('=').Append(bill.AmendsLawName).Append('=')
-                .Append(state.Bills.FirstOrDefault(entry => entry.Id == bill.Id)?.Author).Append(',');
-        signature.Append('|').Append(string.Join(",", state.FreeStartHours)).Append('|');
-        foreach (var session in state.PendingSessions)
-            signature.Append(session.Id).Append('=').Append(session.TimeRange).Append('=').Append(session.BillName)
-                .Append('=').Append(string.Join(";", session.BillNames)).Append(',');
-
-        if (signature.ToString() == _scheduleSignature)
-            return;
-
-        _scheduleSignature = signature.ToString();
-
-        ScheduleGrid.RemoveAllChildren();
-        ScheduleGrid.AddChild(SWConsoleStyle.Section("Расписание дня"));
-        ScheduleGrid.AddChild(new Control { MinHeight = 6 });
-
-        if (state.OfficesVacant)
-        {
-            ScheduleGrid.AddChild(SWConsoleStyle.Text(
-                "Автоматическое ведение заседаний",
-                SWConsoleStyle.Warn, SWConsoleStyle.Small));
-            ScheduleGrid.AddChild(new Control { MinHeight = 6 });
-        }
-
-        foreach (var row in state.Schedule)
-        {
-            var timeText = row.IsNow ? "> " + row.TimeLabel : "  " + row.TimeLabel;
-            var timeColor = row.IsNow ? SWConsoleStyle.Accent : SWConsoleStyle.TextDim;
-
-            if (row.Free)
-            {
-                var flat = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true, Margin = new Thickness(8, 3, 8, 5) };
-                flat.AddChild(SWConsoleStyle.Text(timeText, timeColor, SWConsoleStyle.Strong, 90));
-                flat.AddChild(SWConsoleStyle.Text(row.Text, SWConsoleStyle.TextDim, SWConsoleStyle.Body));
-                ScheduleGrid.AddChild(flat);
-                continue;
-            }
-
-            var panel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel, row.IsNow ? SWConsoleStyle.Accent : null);
-            var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-            box.AddChild(SWConsoleStyle.Text(timeText, timeColor, SWConsoleStyle.Strong, 90));
-            box.AddChild(SWConsoleStyle.Text(row.Text, ScheduleColor(row.Color), SWConsoleStyle.Body));
-            panel.AddChild(box);
-            ScheduleGrid.AddChild(panel);
-        }
-
-        var isSpeaker = state.CanScheduleSessions;
-        var isChancellor = state.CanConfirmSessions;
-        SpeakerPanel.Visible = isSpeaker;
-        ChancellorPanel.Visible = isChancellor;
-
-        if (isSpeaker)
-        {
-            var regularBills = state.SchedulableBills.Where(b => !b.Emergency).ToList();
-            BuildEmergencyBills(state.SchedulableBills);
-            PopulateBillOption(regularBills);
-            PopulateHourOption(state.FreeStartHours);
-            BuildGroupedAmendments(state);
-
-            SpeakerPendingList.RemoveAllChildren();
-            foreach (var session in state.PendingSessions)
-            {
-                var panel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel);
-                var rowBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-                rowBox.AddChild(BuildSessionDescription(session));
-                var id = session.Id;
-                var remove = SWConsoleStyle.Action("Удалить", SWConsoleStyle.Bad);
-                remove.OnPressed += _ => _owner.RemoveSession(id);
-                rowBox.AddChild(remove);
-                panel.AddChild(rowBox);
-                SpeakerPendingList.AddChild(panel);
-            }
-        }
-        else
-        {
-            _groupedBillIds.Clear();
-            _groupPrimaryBillId = -1;
-            GroupedAmendmentsBox.Visible = false;
-            UpdateScheduleAction();
-        }
-
-        if (isChancellor)
-        {
-            ChancellorPendingList.RemoveAllChildren();
-            if (state.PendingSessions.Count == 0)
-            {
-                ChancellorPendingList.AddChild(SWConsoleStyle.Text("Нет заседаний на подтверждение.", SWConsoleStyle.TextDim, SWConsoleStyle.Body));
-            }
-            else
-            {
-                foreach (var session in state.PendingSessions)
-                {
-                    var panel = SWConsoleStyle.Row(SWConsoleStyle.BgPanel);
-                    var rowBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, HorizontalExpand = true };
-                    rowBox.AddChild(BuildSessionDescription(session));
-
-                    var id = session.Id;
-                    var confirm = SWConsoleStyle.Action("Подтвердить", SWConsoleStyle.Good);
-                    confirm.OnPressed += _ => _owner.ConfirmSession(id);
-                    var reject = SWConsoleStyle.Action("Отклонить", SWConsoleStyle.Bad);
-                    reject.Margin = new Thickness(6, 0, 0, 0);
-                    reject.OnPressed += _ => _owner.RejectSession(id);
-
-                    rowBox.AddChild(confirm);
-                    rowBox.AddChild(reject);
-                    panel.AddChild(rowBox);
-                    ChancellorPendingList.AddChild(panel);
-                }
-            }
-        }
-    }
-
     private static Control BuildSessionDescription(SWSessionEntry session)
     {
         var details = new BoxContainer
@@ -3264,8 +3132,11 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
     {
         var selected = GetSelectedSessionBills();
         ScheduleButton.Disabled = _lastState?.CanScheduleSessions != true || selected.Count == 0 ||
-            _lastState?.FreeStartHours.Contains(_selectedStartHour) != true;
-        ScheduleButton.Text = selected.Count > 1 ? $"Запланировать группу: {selected.Count}" : "Запланировать";
+            _selectedDuration is < 1 or > 4 ||
+            !Enumerable.Range(_selectedStartHour, _selectedDuration).All(hour => _lastState?.FreeStartHours.Contains(hour) == true);
+        ScheduleButton.Disabled |= !_scheduleBoard.DraftValid || _scheduleBoard.DraftBillId != _selectedBillId ||
+            _scheduleBoard.DraftStartHour != _selectedStartHour || _scheduleBoard.DraftDuration != _selectedDuration || _scheduleSubmitted;
+        ScheduleButton.Text = selected.Count > 1 ? $"Предложить заседание: {selected.Count}" : "Предложить заседание";
         StyleButton(ScheduleButton, ScheduleButton.Disabled ? SWConsoleStyle.TextDim : SWConsoleStyle.Accent);
     }
 
@@ -3276,10 +3147,13 @@ public sealed partial class SWSenateWorkConsoleMenu : FancyWindow
             return;
 
         var selected = GetSelectedSessionBills();
+        _scheduleSubmitted = true;
+        UpdateScheduleAction();
         if (selected.Count > 1)
             _owner.ScheduleAmendmentSession(selected, _selectedStartHour, _selectedDuration);
         else
             _owner.ScheduleSession(selected[0], _selectedStartHour, _selectedDuration);
+        RefreshScheduleInspector();
     }
 
     private void BuildEmergencyBills(List<SWBillOption> bills)

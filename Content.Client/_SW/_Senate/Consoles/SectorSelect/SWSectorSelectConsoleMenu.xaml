@@ -1,23 +1,37 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
     xmlns:senate="clr-namespace:Content.Client._SW._Senate"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-    Title="Выбор сектора"
-    MinSize="480 480">
+    xmlns:sector="clr-namespace:Content.Client._SW._Senate.Consoles.SectorSelect"
+    Title="Представительство секторов" MinSize="720 500">
     <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
-        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+        <sector:SWSectorSelectLayout HorizontalExpand="True" VerticalExpand="True">
             <PanelContainer Name="HeaderPanel">
-                <BoxContainer Orientation="Horizontal" Margin="14 10" SeparationOverride="0">
+                <BoxContainer Orientation="Horizontal" Margin="14 8" SeparationOverride="0">
                     <senate:SWConsoleSeal Margin="0 0 12 0" />
                     <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="2">
                         <Label Name="HeaderNetwork" Text="РЕСПУБЛИКА / ГОЛОНЕТ" />
-                        <Label Name="HeaderTitle" HorizontalExpand="True" ClipText="True" />
+                        <Label Name="HeaderTitle" Text="Представительство секторов" ClipText="True" />
                     </BoxContainer>
                 </BoxContainer>
             </PanelContainer>
-            <Label Name="StatusLabel" Margin="12 8 12 6" />
-            <ScrollContainer HorizontalExpand="True" VerticalExpand="True" Margin="8">
-                <GridContainer Name="SectorGrid" Columns="2" HSeparationOverride="6" VSeparationOverride="6" />
-            </ScrollContainer>
-        </BoxContainer>
+            <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True" Margin="12 8" SeparationOverride="12">
+                <BoxContainer Orientation="Vertical" MinWidth="220" MaxWidth="240" SeparationOverride="5">
+                    <LineEdit Name="Search" PlaceHolder="Поиск секторов" HorizontalExpand="True" />
+                    <CheckBox Name="FreeOnly" Text="Только свободные" Pressed="True" />
+                    <Label Name="FreeCount" />
+                    <Button Name="MySector" Text="Мой сектор" Visible="False" />
+                    <ScrollContainer Name="ListScroll" HScrollEnabled="False" VerticalExpand="True" HorizontalExpand="True">
+                        <BoxContainer Name="SectorList" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="4" />
+                    </ScrollContainer>
+                </BoxContainer>
+                <ScrollContainer Name="DetailScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                    <BoxContainer Name="Detail" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10" />
+                </ScrollContainer>
+            </BoxContainer>
+            <BoxContainer Name="Footer" Orientation="Vertical" Margin="12 0 12 10" SeparationOverride="4">
+                <BoxContainer Name="FooterText" Orientation="Vertical" HorizontalExpand="True" />
+                <Button Name="ClaimButton" Text="Занять место" HorizontalExpand="True" />
+            </BoxContainer>
+        </sector:SWSectorSelectLayout>
     </PanelContainer>
 </controls:FancyWindow>

@@ -21,6 +21,22 @@ public sealed class SWSectorSelectConsoleSystem : EntitySystem
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly SharedIdCardSystem _idCard = default!;
 
+    private float _refreshElapsed;
+
+    public override void Update(float frameTime)
+    {
+        _refreshElapsed += frameTime;
+        if (_refreshElapsed < 3f)
+            return;
+        _refreshElapsed = 0f;
+        var query = EntityQueryEnumerator<SWSectorSelectConsoleComponent>();
+        while (query.MoveNext(out var uid, out var comp))
+        {
+            if (_ui.IsUiOpen(uid, SWSectorSelectConsoleUiKey.Key))
+                UpdateUi((uid, comp));
+        }
+    }
+
     public override void Initialize()
     {
         SubscribeLocalEvent<SWSectorSelectConsoleComponent, BoundUIOpenedEvent>(OnOpened);
@@ -36,18 +52,12 @@ public sealed class SWSectorSelectConsoleSystem : EntitySystem
 
     private void OnInserted(Entity<SWSectorSelectConsoleComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
 
     private void OnRemoved(Entity<SWSectorSelectConsoleComponent> ent, ref EntRemovedFromContainerMessage args)
     {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
@@ -55,29 +65,40 @@ public sealed class SWSectorSelectConsoleSystem : EntitySystem
     private void OnSelect(Entity<SWSectorSelectConsoleComponent> ent, ref SWSelectSectorMessage args)
     {
         if (!_time.ModeActive || !_time.DayActive)
+        {
+            _popup.PopupCursor("Представительство доступно только днём во время работы Сената.", args.Actor, PopupType.Medium);
+            UpdateUi(ent);
             return;
+        }
 
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         if (card == null)
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-select-no-card"), args.Actor, PopupType.Medium);
+            UpdateUi(ent);
             return;
         }
 
         if (!TryComp<SWSenatePositionCardComponent>(card, out var position) || position.Position != SWSenatePosition.Senator)
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-select-not-senator"), args.Actor, PopupType.Medium);
+            UpdateUi(ent);
             return;
         }
 
         if (TryComp<SWSenateSectorComponent>(card, out var existing) && existing.Sector != null)
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-select-already-assigned"), args.Actor, PopupType.Medium);
+            UpdateUi(ent);
             return;
         }
 
         if (!_proto.TryIndex<SWSectorPrototype>(args.SectorId, out var sectorProto))
+        {
+            _popup.PopupCursor("Сектор не найден.", args.Actor, PopupType.Medium);
+            UpdateUi(ent);
             return;
+        }
 
         if (!_senate.TryClaim(args.SectorId, Name(args.Actor)))
         {
@@ -121,12 +142,19 @@ public sealed class SWSectorSelectConsoleSystem : EntitySystem
                 Name = proto.Name,
                 Color = proto.Color,
                 Claimed = _senate.IsClaimed(proto.ID),
+                Description = proto.Description,
+                Representative = _senate.SectorHolders.GetValueOrDefault(proto.ID),
+                Shipyard = proto.Shipyard,
             });
         }
 
         sectors.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
 
         _ui.SetUiState(ent.Owner, SWSectorSelectConsoleUiKey.Key,
-            new SWSectorSelectConsoleState(sectors, card != null, isSenatorCard, currentSector, currentSectorName));
+            new SWSectorSelectConsoleState(sectors, card != null, isSenatorCard, currentSector, currentSectorName)
+            {
+                ModeActive = _time.ModeActive,
+                DayActive = _time.DayActive,
+            });
     }
 }

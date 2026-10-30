@@ -1474,18 +1474,12 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
     private void OnInserted(Entity<SWSenateWorkConsoleComponent> ent, ref EntInsertedIntoContainerMessage args)
     {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
 
     private void OnRemoved(Entity<SWSenateWorkConsoleComponent> ent, ref EntRemovedFromContainerMessage args)
     {
-        if (!_time.ModeActive || !_time.DayActive)
-            return;
-
         if (args.Container.ID == ent.Comp.IdSlot)
             UpdateUi(ent);
     }
@@ -1615,6 +1609,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
         var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
         state.HasCard = card != null;
+        state.CardIdentity = card != null ? GetNetEntity(card.Value) : null;
         state.Globals = _senate.BuildGlobalEntries();
         state.Roster = BuildRoster();
         state.Bills = _senate.BuildBillEntries();

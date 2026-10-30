@@ -65,6 +65,9 @@ public sealed class SWSectorEntry
     public string Name = string.Empty;
     public Color Color;
     public bool Claimed;
+    public string Description = string.Empty;
+    public string? Representative;
+    public bool Shipyard;
     public List<SWStatEntry> Stats = new();
 }
 
@@ -159,6 +162,8 @@ public sealed class SWSectorSelectConsoleState : BoundUserInterfaceState
     public bool IsSenatorCard;
     public string? CurrentSector;
     public string? CurrentSectorName;
+    public bool ModeActive;
+    public bool DayActive;
 
     public SWSectorSelectConsoleState(List<SWSectorEntry> sectors, bool hasCard, bool isSenatorCard, string? currentSector, string? currentSectorName)
     {
@@ -1477,6 +1482,7 @@ public sealed class SWSenateRosterEntry
 [Serializable, NetSerializable]
 public sealed class SWSenateWorkConsoleState : BoundUserInterfaceState
 {
+    public NetEntity? CardIdentity;
     public List<SWSituationalStatView> SituationalStats = new();
     public bool HasCard;
     public bool IsSenateCard;
@@ -2506,6 +2512,12 @@ public sealed class SWScheduleRow
     public Color Color;
     public bool IsNow;
     public bool Free;
+    public int? SessionId;
+    public double SessionStartHour;
+    public double SessionDuration;
+    public string SessionTitle = string.Empty;
+    public bool SessionConfirmed;
+    public bool SessionEmergency;
 }
 
 [Serializable, NetSerializable]

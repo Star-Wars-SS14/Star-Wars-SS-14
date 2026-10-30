@@ -1487,6 +1487,16 @@ public sealed partial class SWSenateStateSystem : EntitySystem
             var session = _sessions.FirstOrDefault(s =>
                 s.Status != SWSessionStatus.Rejected && hour < s.EndHour && s.StartHour < hour + 1);
 
+            if (session != null)
+            {
+                row.SessionId = session.Id;
+                row.SessionStartHour = session.StartHour;
+                row.SessionDuration = session.Duration;
+                row.SessionTitle = GetSessionName(session);
+                row.SessionConfirmed = session.Status == SWSessionStatus.Confirmed;
+                row.SessionEmergency = session.Emergency;
+            }
+
             if (session is { Emergency: true })
             {
                 row.Text = hour == (int) Math.Floor(session.StartHour)

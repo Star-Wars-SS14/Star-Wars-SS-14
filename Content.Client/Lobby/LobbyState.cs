@@ -1,3 +1,4 @@
+using Content.Client.Stylesheets;
 using Content.Client.Audio;
 using Content.Client.GameTicking.Managers;
 using Content.Client.LateJoin;
@@ -184,12 +185,23 @@ namespace Content.Client.Lobby
                 Lobby!.ReadyButton.ToggleMode = false;
                 Lobby!.ReadyButton.Pressed = false;
                 Lobby!.ObserveButton.Disabled = false;
+                //SW start
+                Lobby!.ReadyStatus.Visible = false;
+                Lobby!.ReadyButton.AddStyleClass(StyleClass.Positive);
+                //SW end
             }
             else
             {
                 Lobby!.StartTime.Text = string.Empty;
                 Lobby!.ReadyButton.Pressed = _gameTicker.AreWeReady;
-                Lobby!.ReadyButton.Text = Loc.GetString(Lobby!.ReadyButton.Pressed ? "lobby-state-player-status-ready": "lobby-state-player-status-not-ready");
+                //SW start: players read the old label as an action, so the button names the action and the state stands apart.
+                Lobby!.ReadyButton.Text = Loc.GetString(Lobby!.ReadyButton.Pressed ? "sw-lobby-ready-cancel" : "sw-lobby-ready-action");
+                Lobby!.ReadyStatus.Visible = Lobby!.ReadyButton.Pressed;
+                if (Lobby!.ReadyButton.Pressed)
+                    Lobby!.ReadyButton.RemoveStyleClass(StyleClass.Positive);
+                else
+                    Lobby!.ReadyButton.AddStyleClass(StyleClass.Positive);
+                //SW end
                 Lobby!.ReadyButton.ToggleMode = true;
                 Lobby!.ReadyButton.Disabled = false;
                 Lobby!.ObserveButton.Disabled = true;

@@ -18,7 +18,7 @@ public sealed partial class TaskConsoleBoundUserInterface : BoundUserInterface
         base.Open();
         _menu = this.CreateWindow<TaskConsoleMenu>();
         if (EntMan.TryGetComponent<TaskConsoleComponent>(Owner, out var console))
-            _menu.SetFaction(console.Faction);
+            _menu.SetOwner(console.Faction);
         _menu.OpenCenteredRight();
         
         //_menu.OnServerListButtonPressed += _ =>

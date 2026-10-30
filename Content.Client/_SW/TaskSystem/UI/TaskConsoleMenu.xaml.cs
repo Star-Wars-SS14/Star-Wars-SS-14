@@ -14,6 +14,15 @@ public sealed partial class TaskConsoleMenu : SWTerminalWindow
         RobustXamlLoader.Load(this);
     }
 
+    /// <summary>
+    /// Colours the window for the console's faction and names it, because some accents look alike with colour blindness.
+    /// </summary>
+    public void SetOwner(string? faction)
+    {
+        SetFaction(faction);
+        FactionName.Text = UserInterfaceManager.GetUIController<SWTerminalStyleUIController>().GetFactionName(faction);
+    }
+
     public void PopulateTasks(List<TaskInfo> list)
     {
         var done = list.Count(task => task.Status.Float() >= 1f);

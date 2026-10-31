@@ -20,6 +20,7 @@
           SWSenateGuardHead: [ 1, 1 ]
           SWSenateGuardOfficer: [ 4, 4 ]
           SWSenateDoctor: [ 1, 1 ]
+          SWHolonetCorrespondent: [ 3, 3 ]
           SWChiefJustice: [ 1, 1 ]
           SWRepublicJudge: [ 2, 2 ]
           SWProsecutor: [ 1, 1 ]

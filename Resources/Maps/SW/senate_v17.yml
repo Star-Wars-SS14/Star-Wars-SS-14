@@ -7,7 +7,7 @@ meta:
   forkVersion: ""
   time: "2026-10-17T12:00:00"
   postmapinit: false
-  entityCount: 8481
+  entityCount: 8487
 maps:
   - 1
 grids:
@@ -60318,6 +60318,43 @@ entities:
   - proto: "SWDelegationPoint"
     entities:
       - uid: 8650
+        components:
+          - type: "Transform"
+            pos: "66.5,-94.5"
+            parent: 2
+  - proto: "SWSpawnPointHolonetCorrespondent"
+    entities:
+      - uid: 8498
+        components:
+          - type: "Transform"
+            pos: "66.5,-94.5"
+            parent: 2
+  - proto: "SWSpawnPointHolonetCorrespondentLJ"
+    entities:
+      - uid: 8499
+        components:
+          - type: "Transform"
+            pos: "66.5,-94.5"
+            parent: 2
+  - proto: "SWPressVideoScreen"
+    entities:
+      - uid: 8501
+        components:
+          - type: "Transform"
+            pos: "67.5,-94.5"
+            parent: 2
+            anchored: true
+  - proto: "SWPressVideoTripod"
+    entities:
+      - uid: 8502
+        components:
+          - type: "Transform"
+            pos: "65.5,-93.5"
+            parent: 2
+            anchored: true
+  - proto: "SWHolonetPressTerminal"
+    entities:
+      - uid: 8500
         components:
           - type: "Transform"
             pos: "66.5,-94.5"

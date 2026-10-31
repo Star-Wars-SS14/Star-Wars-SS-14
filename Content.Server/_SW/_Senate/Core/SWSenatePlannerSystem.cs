@@ -7,7 +7,7 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Server._SW._Senate.Core;
 
-public sealed class SWSenatePlannerSystem : EntitySystem
+public sealed partial class SWSenatePlannerSystem : EntitySystem
 {
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
@@ -41,10 +41,21 @@ public sealed class SWSenatePlannerSystem : EntitySystem
         _nextMeetingId = 1;
         _nextBlockId = 1;
         _day = -1;
+        _guestPruneElapsed = 0f;
     }
 
     public override void Update(float frameTime)
     {
+        if (_time.ModeActive)
+        {
+            _guestPruneElapsed += frameTime;
+            if (_guestPruneElapsed >= 3f)
+            {
+                _guestPruneElapsed = 0f;
+                PruneGuestRequests();
+            }
+        }
+
         frameTime = _time.ActiveSeconds(frameTime);
         if (frameTime <= 0f)
             return;
@@ -126,7 +137,7 @@ public sealed class SWSenatePlannerSystem : EntitySystem
     public bool Respond(string person, int meetingId, bool accept, string reason)
     {
         var meeting = _meetings.FirstOrDefault(m => m.Id == meetingId);
-        if (meeting == null || !meeting.Invites.ContainsKey(person))
+        if (meeting == null || meeting.GuestOwner != null || !meeting.Invites.ContainsKey(person))
             return false;
 
         meeting.Invites[person] = accept ? SWInviteStatus.Accepted : SWInviteStatus.Declined;
@@ -154,7 +165,7 @@ public sealed class SWSenatePlannerSystem : EntitySystem
 
     public bool Cancel(string host, int meetingId)
     {
-        var meeting = _meetings.FirstOrDefault(m => m.Id == meetingId && m.Host == host);
+        var meeting = _meetings.FirstOrDefault(m => m.Id == meetingId && m.Host == host && m.GuestOwner == null);
         if (meeting == null)
             return false;
 
@@ -166,7 +177,7 @@ public sealed class SWSenatePlannerSystem : EntitySystem
 
     public bool Reschedule(string host, int meetingId, int day, int slot, int duration)
     {
-        var meeting = _meetings.FirstOrDefault(m => m.Id == meetingId && m.Host == host);
+        var meeting = _meetings.FirstOrDefault(m => m.Id == meetingId && m.Host == host && m.GuestOwner == null);
         if (meeting == null || !ValidWindow(day, slot, duration, 4))
             return false;
 
@@ -242,7 +253,7 @@ public sealed class SWSenatePlannerSystem : EntitySystem
         (52, 4, "Личное время"),
     };
 
-    public ulong BusyMask(string person, int day)
+    public ulong BusyMask(string person, int day, int excludeMeetingId = -1)
     {
         ulong mask = 0;
         foreach (var (slot, duration, _) in Presets)
@@ -256,10 +267,11 @@ public sealed class SWSenatePlannerSystem : EntitySystem
 
         foreach (var meeting in _meetings)
         {
-            if (meeting.Day != day)
+            if (meeting.Day != day || meeting.Id == excludeMeetingId)
                 continue;
-            var attends = meeting.Host == person
-                || (meeting.Invites.TryGetValue(person, out var status) && status == SWInviteStatus.Accepted);
+            var attends = meeting.GuestOwner != null
+                ? GuestAttends(meeting, person)
+                : meeting.Host == person || (meeting.Invites.TryGetValue(person, out var status) && status == SWInviteStatus.Accepted);
             if (attends)
                 mask |= SWPlannerSlots.Mask(meeting.StartSlot, meeting.Duration);
         }
@@ -400,13 +412,14 @@ public sealed class SWSenatePlannerSystem : EntitySystem
         {
             if (meeting.Day != day)
                 continue;
-            var attends = meeting.Host == person
-                || (meeting.Invites.TryGetValue(person, out var status) && status == SWInviteStatus.Accepted);
+            var attends = meeting.GuestOwner != null
+                ? GuestAttends(meeting, person)
+                : meeting.Host == person || (meeting.Invites.TryGetValue(person, out var status) && status == SWInviteStatus.Accepted);
             if (!attends)
                 continue;
 
             var involved = viewer == person || meeting.Host == viewer || meeting.Invites.ContainsKey(viewer);
-            if (meeting.Private && !involved)
+            if (meeting.GuestOwner != null || meeting.Private && !involved)
             {
                 items.Add(new SWPlannerItemEntry
                 {
@@ -449,6 +462,8 @@ public sealed class SWSenatePlannerSystem : EntitySystem
 
         foreach (var meeting in _meetings)
         {
+            if (meeting.GuestOwner != null)
+                continue;
             var isHost = meeting.Host == person;
             var invited = meeting.Invites.ContainsKey(person);
             if (!isHost && !invited)
@@ -532,6 +547,8 @@ public sealed class SWSenatePlannerSystem : EntitySystem
 
         foreach (var meeting in _meetings)
         {
+            if (meeting.GuestOwner != null)
+                continue;
             roles.TryAdd(meeting.Host, "Участник");
             foreach (var name in meeting.Invites.Keys)
                 roles.TryAdd(name, "Участник");
@@ -587,6 +604,13 @@ public sealed class SWSenatePlannerSystem : EntitySystem
         public string Location = string.Empty;
         public string Host = string.Empty;
         public bool Private;
+        public int GuestRevision;
+        public Robust.Shared.Network.NetUserId? GuestOwner;
+        public Robust.Shared.Network.NetUserId? GuestTarget;
+        public EntityUid? GuestOwnerBody;
+        public EntityUid? GuestTargetBody;
+        public Content.Shared._SW._Senate.Planner.SWGuestRequestKind GuestKind;
+        public string GuestTargetKey = string.Empty;
         public readonly Dictionary<string, SWInviteStatus> Invites = new();
         public readonly Dictionary<string, string> Reasons = new();
     }

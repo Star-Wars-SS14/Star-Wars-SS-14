@@ -81,5 +81,4 @@ public sealed class SWDashAbilitySystem : EntitySystem
 
 public sealed partial class DashRequestedEvent : InstantActionEvent
 {
-
 }

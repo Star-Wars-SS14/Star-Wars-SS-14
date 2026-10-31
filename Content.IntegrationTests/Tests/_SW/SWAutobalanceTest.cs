@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Content.IntegrationTests.Pair;
+using Content.Server._SW.Autobalance;
 using Content.Server.GameTicking;
 using Content.Server.Station.Components;
 using Content.Server.Station.Systems;
@@ -186,6 +187,55 @@ public sealed class SWAutobalanceTest
         {
             Assert.That(server.PlayerMan.SessionsDict[pair.Client.User!.Value].AttachedEntity, Is.Null);
             Assert.That(RepublicSlots(pair, Republic), Is.EqualTo(0));
+        });
+
+        await server.WaitPost(() => ticker.RestartRound());
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>
+    /// A tutorial graduate gets one slot with no budget for it. The recount after the spawn must neither take it away
+    /// before the spawn nor leave a second free slot after it.
+    /// </summary>
+    [Test]
+    public async Task GraduateSlotIsGoodForOneSpawn()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings
+        {
+            DummyTicker = false,
+            Connected = true,
+            InLobby = true,
+        });
+
+        var server = pair.Server;
+        server.CfgMan.SetCVar(CCVars.GameMap, Map);
+        var ticker = server.System<GameTicker>();
+        var autobalance = server.System<SWAutobalanceGameruleSystem>();
+
+        // The graduate stays in the lobby through the round start, not ready.
+        var dummies = await server.AddDummySessions(1);
+        await pair.RunTicksSync(5);
+        await pair.SetJobPriorities((Empire, JobPriority.High));
+        ticker.ToggleReady(pair.Player!, true);
+        await server.WaitPost(() =>
+        {
+            ticker.StartGameRule(Rule);
+            ticker.StartRound();
+        });
+        await pair.RunTicksSync(10);
+
+        await server.WaitAssertion(() =>
+        {
+            var query = server.EntMan.EntityQueryEnumerator<StationJobsComponent>();
+            Assert.That(query.MoveNext(out var station, out _));
+            Assert.That(RepublicSlots(pair, Republic), Is.EqualTo(0), "1 Empire player gives no Republic budget");
+
+            autobalance.GrantExtraSlot(station, Republic);
+            Assert.That(RepublicSlots(pair, Republic), Is.EqualTo(1));
+
+            ticker.MakeJoinGame(dummies[0], station, Republic);
+            Assert.That(dummies[0].AttachedEntity, Is.Not.Null);
+            Assert.That(RepublicSlots(pair, Republic), Is.EqualTo(0), "The slot must be gone after one spawn");
         });
 
         await server.WaitPost(() => ticker.RestartRound());

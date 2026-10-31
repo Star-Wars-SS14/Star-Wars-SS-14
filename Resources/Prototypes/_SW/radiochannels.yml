@@ -19,7 +19,7 @@
   name: Имперская Разведка
   keycode: 'и'
   frequency: 2026
-  color: "#800080"
+  color: "#e052e0"
   longRange: true
 
 - type: radioChannel
@@ -35,7 +35,7 @@
   name: Хавок
   keycode: 'х'
   frequency: 2028
-  color: "#dc143c"
+  color: "#f0607d"
   longRange: true
 
 - type: radioChannel
@@ -67,7 +67,7 @@
   name: Пилоты Республики
   keycode: 'л'
   frequency: 2045
-  color: "#4955fc"
+  color: "#afb4fe"
   longRange: true
 
 - type: radioChannel
@@ -83,7 +83,7 @@
   name: Обмен
   keycode: 'о'
   frequency: 2043
-  color: "#8c0e0e"
+  color: "#ee5757"
   longRange: true
 
 - type: radioChannel
@@ -91,5 +91,5 @@
   name: Черное Солнце
   keycode: 'ч'
   frequency: 2044
-  color: "#a61414"
+  color: "#f7bfbf"
   longRange: true

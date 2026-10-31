@@ -13,7 +13,7 @@ public sealed class SWDashAbilityVisualsSystem : EntitySystem
     [Dependency] private readonly SpriteSystem _sprite = default!;
     [Dependency] private readonly MobStateSystem _mobState = default!;
 
-    // Порог скорости, ниже которого считаем, что персонаж стоит на месте
+    // A speed threshold below which we consider the character to be standing still
     private const float StandingThreshold = 0.1f;
 
     public override void Update(float frameTime)
@@ -21,7 +21,7 @@ public sealed class SWDashAbilityVisualsSystem : EntitySystem
         var query = EntityQueryEnumerator<SWDashAbilityComponent, MobStateComponent>();
         while (query.MoveNext(out var ent, out var comp, out var mobState))
         {
-            // 1. Если персонаж в крите или мёртв — полностью перестаём управлять спрайтом
+            // 1. If a character is in a critical state or dead, we stop controlling the sprite entirely.
             if (_mobState.IsDead(ent, mobState) || _mobState.IsCritical(ent, mobState))
             {
                 if (comp.IsDashing)
@@ -32,41 +32,41 @@ public sealed class SWDashAbilityVisualsSystem : EntitySystem
                 continue;
             }
 
-            // 2. Проверяем, движется ли персонаж
+            // 2. Check whether the character is moving
             bool isMoving = false;
             if (TryComp<PhysicsComponent>(ent, out var physics))
             {
-                // Используем LengthSquared, чтобы избежать дорогого sqrt
+                
                 isMoving = physics.LinearVelocity.LengthSquared() > StandingThreshold * StandingThreshold;
             }
 
-            // 3. Логика спринта
+            // 3. Sprint logic
             if (comp.IsDashing)
             {
                 if (_gameTiming.CurTime >= comp.DashEndTime)
                 {
-                    // Спринт закончился по таймеру
+                    // The sprint ended when the timer ran out.
                     comp.IsDashing = false;
                     comp.SwayTime = 0f;
                     _sprite.SetRotation(ent, Angle.Zero);
                 }
                 else if (isMoving)
                 {
-                    // Применяем покачивание ТОЛЬКО если персонаж движется
+                    // Apply swaying ONLY if the character is moving
                     comp.SwayTime += frameTime;
                     float swayAngle = MathF.Sin(comp.SwayTime * comp.SwayFrequency) * comp.SwayAmplitude;
                     _sprite.SetRotation(ent, new Angle(swayAngle));
                 }
                 else
                 {
-                    // Персонаж стоит на месте — сбрасываем спрайт в вертикальное положение
+                    // The character is standing still — reset the sprite to a vertical position
                     _sprite.SetRotation(ent, Angle.Zero);
-                    // НЕ сбрасываем SwayTime, чтобы при возобновлении движения не было скачка
+                    // Do NOT reset SwayTime, so that there is no sudden jump when movement resumes.
                 }
             }
             else
             {
-                // Спринт не активен — сбрасываем спрайт
+                // Sprint is not active — reset the sprite
                 if (TryComp<SpriteComponent>(ent, out var sprite) && sprite.Rotation.Theta != 0)
                 {
                     _sprite.SetRotation(ent, Angle.Zero);

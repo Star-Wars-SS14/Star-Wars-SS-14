@@ -15,3 +15,7 @@ ent-SWStormCaller = StormCaller
   .desc = A heavily armed and well-armored repulsor tank of the Sith Empire from the Battle of Denova.
 ent-SWStormCallerDestroyed = destroyed StormCaller
   .desc = The burnt-out wreck of a StormCaller repulsor tank.
+ent-SWTurretMounted = Mounted Turret
+  .desc = A stationary weapon. Sit and shoot.
+ent-SWTurretGunPart = mounted turret gun
+  .desc = Gun for the mounted turret.

@@ -1,0 +1,10 @@
+# Yellow lightsaber
+- type: entity
+  parent: SWEnergySwordBase
+  id: SWEnergySwordYellow
+  name: Yellow Lightsaber
+  description: A lightsaber with a yellow blade.
+  components:
+  - type: EnergySword
+    colorOptions:
+      - Yellow

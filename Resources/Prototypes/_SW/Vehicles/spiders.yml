@@ -55,7 +55,7 @@
         buckleCoords: "0.0, -1.2"
       driver_seat:
         entProto: SWVehicleSeat
-        buckleCoords: "0.0, -0.35"
+        buckleCoords: "0.0, 0.35"
   - type: ActivatableUI
     key: enum.SWVehicleMenuUiKey.Key
   - type: UserInterface
@@ -112,13 +112,13 @@
     vehicleParts:
       cannon:
         entProto: SWSpiderCannon
-        buckleCoords: "0.0, 1.2"
+        buckleCoords: "0.0, -1.2"
       driver_seat:
         entProto: SWVehicleSeat
         buckleCoords: "0.0, 0.35"
       passenger1_seat:
         entProto: SWVehicleSeat
-        buckleCoords: "0.0, -0.4"        
+        buckleCoords: "0.0, 0.7"        
 
 - type: swVehicleRole
   id: SWVehicleRoleDriver

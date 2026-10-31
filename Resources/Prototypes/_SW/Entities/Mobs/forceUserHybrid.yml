@@ -1,0 +1,31 @@
+# Sith-Jedi Hybrid
+- type: entity
+  parent: ForceUserBase
+  id: ForceUserHybrid
+  name: Sith-Jedi
+  description: Wields both the dark and light sides of the Force.
+  components:
+  # sith abilities
+  - type: SWLightningAbility
+    damage:
+      types:
+        Heat: 50
+  - type: SWStrangulateAbility
+  
+  # jedi abilities
+  - type: SWPushAbility
+  - type: SWHealAbility
+    damageContainers:
+      - Biological
+    modifyBloodLevel: 30
+    delay: 1
+    damage:
+      groups:
+        Burn: -15
+        Toxin: -15
+        Airloss: -15
+        Brute: -15
+    healingBeginSound:
+      path: "/Audio/Items/Medical/ointment_begin.ogg"
+    healingEndSound:
+      path: "/Audio/Items/Medical/ointment_end.ogg"

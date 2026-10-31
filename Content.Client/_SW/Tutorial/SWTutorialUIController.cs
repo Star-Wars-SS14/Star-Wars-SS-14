@@ -145,12 +145,13 @@ public sealed class SWTutorialUIController : UIController, IOnStateEntered<Lobby
         {
             Text = Loc.GetString("sw-tutorial-lobby-button"),
             StyleClasses = { "ButtonBig" },
+            Margin = new Thickness(3, 0, 3, 3),
+            HorizontalAlignment = Control.HAlignment.Left,
         };
         _lobbyButton.OnPressed += _ => OpenChoice(false);
 
-        // LobbyGui.xaml stays untouched, the button goes next to the ready button.
-        lobby.ReadyButton.Parent?.AddChild(_lobbyButton);
-        _lobbyButton.SetPositionInParent(lobby.ReadyButton.GetPositionInParent());
+        // LobbyGui.xaml stays untouched. In the ready row a third button would push the ready button under the right panel.
+        lobby.ReadyButton.Parent?.Parent?.AddChild(_lobbyButton);
     }
 
     public void OnStateExited(LobbyState state)

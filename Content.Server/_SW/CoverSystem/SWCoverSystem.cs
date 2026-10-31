@@ -37,7 +37,10 @@ public sealed partial class SWCoverSystem : EntitySystem
 
         //ISawmill _s = Logger.GetSawmill("cover");
         //_s.Fatal("1");
-        if (!TryComp<ProjectileComponent>(args.OtherEntity, out var comp) || comp.Shooter == null)
+        // A bolt outlives its shooter when the shooter is deleted, for example a destroyed droid or a gibbed body.
+        if (!TryComp<ProjectileComponent>(args.OtherEntity, out var comp)
+            || comp.Shooter == null
+            || TerminatingOrDeleted(comp.Shooter.Value))
         {
             return;
         }

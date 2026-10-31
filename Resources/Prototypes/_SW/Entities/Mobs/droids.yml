@@ -196,6 +196,7 @@
   - type: Construction
     graph: SWDroidGraph
     node: working
+    deconstructionTarget: null
     containers:
     - borg_brain
     - borg_module
@@ -216,6 +217,7 @@
   - type: Construction
     graph: SWDroidGraph
     node: chassis
+    deconstructionTarget: null
     containers:
     - borg_brain
     - borg_module
@@ -247,6 +249,7 @@
   - type: Construction
     graph: SWDroidGraph
     node: broken
+    deconstructionTarget: null
     containers:
     - borg_brain
     - borg_module

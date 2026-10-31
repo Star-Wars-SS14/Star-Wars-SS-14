@@ -21,6 +21,7 @@ public sealed partial class SWMinistryFinanceSystem
     private readonly Dictionary<string, string> _taxSectors = new();
     private readonly Dictionary<string, string> _taxCategories = new();
     private readonly Dictionary<string, int> _additionalTax = new();
+    private readonly HashSet<(string Sector, string Good)> _producedGoods = new();
     private readonly Dictionary<string, int> _relief = new();
     private readonly Dictionary<string, SWFinanceSectorRevenue> _revenue = new();
     private double _lastTaxHour = -1;
@@ -50,7 +51,7 @@ public sealed partial class SWMinistryFinanceSystem
 
     private void ResetTaxAccounting()
     {
-        _additionalTax.Clear(); _relief.Clear(); _revenue.Clear();
+        _additionalTax.Clear(); _relief.Clear(); _revenue.Clear(); _producedGoods.Clear();
         _lastTaxHour = -1; _creditFraction = 0; _taxDay = -1;
         _recentTax.Clear(); _sectorTaxSteps.Clear(); _recentTaxSum = 0; _firstTaxHour = -1;
         TaxResultRequestId = string.Empty; TaxResult = string.Empty;
@@ -59,8 +60,72 @@ public sealed partial class SWMinistryFinanceSystem
     public bool SetCommodityTax(string id, int rate, bool relief)
     {
         if (string.IsNullOrWhiteSpace(id) || rate < 0 || rate > 100 || (relief ? !_taxCategories.ContainsKey(id) : !_taxGoods.ContainsKey(id))) return false;
-        (relief ? _relief : _additionalTax)[id] = rate;
+        var rates = relief ? _relief : _additionalTax;
+        var previous = rates.GetValueOrDefault(id);
+        rates[id] = rate;
+        if (previous != rate)
+            RaiseLocalEvent(new SWFinanceTaxSettingsChangedEvent(id, relief));
         return true;
+    }
+
+    public bool TaxSettingAffectsCommodity(string goodId, string? changedId, bool relief) =>
+        changedId == null || (!relief && changedId == goodId)
+        || (relief && _taxGoods.TryGetValue(goodId, out var good) && good.Category == changedId);
+
+    /// <summary>Products present in the most recent accepted production step.</summary>
+    public IReadOnlySet<(string Sector, string Good)> ProducedGoods => _producedGoods;
+
+    /// <summary>Returns the global commodity surcharge and the actual rate used in accounting.</summary>
+    public bool TryGetCommodityTax(string goodId, out int surcharge, out int effectiveRate)
+    {
+        surcharge = 0;
+        effectiveRate = 0;
+        if (!_taxGoods.TryGetValue(goodId, out var good))
+            return false;
+
+        surcharge = _additionalTax.GetValueOrDefault(goodId);
+        effectiveRate = CommodityEffectiveRate(good.Category, surcharge);
+        return true;
+    }
+
+    public bool TryGetCommodityName(string goodId, out string name)
+    {
+        if (_taxGoods.TryGetValue(goodId, out var good))
+        {
+            name = good.Name;
+            return true;
+        }
+
+        name = string.Empty;
+        return false;
+    }
+
+    private int CommodityEffectiveRate(string category, int surcharge)
+    {
+        var baseRate = _taxLevel switch { 0 => 10, 2 => 30, _ => 20 };
+        return Math.Clamp(baseRate + surcharge - _relief.GetValueOrDefault(category), 0, 100);
+    }
+
+    /// <summary>Closest lower surcharge which actually decreases this commodity's effective tax.</summary>
+    public bool TryGetLowerCommodityTax(string goodId, out int surcharge, out int effectiveRate)
+    {
+        surcharge = 0;
+        effectiveRate = 0;
+        if (!_taxGoods.TryGetValue(goodId, out var good)
+            || !TryGetCommodityTax(goodId, out var current, out var currentEffective))
+            return false;
+
+        for (var candidate = current - 1; candidate >= 0; candidate--)
+        {
+            var rate = CommodityEffectiveRate(good.Category, candidate);
+            if (rate >= currentEffective)
+                continue;
+            surcharge = candidate;
+            effectiveRate = rate;
+            return true;
+        }
+
+        return false;
     }
 
     public void ReportTaxResult(string requestId, bool success)
@@ -102,6 +167,7 @@ public sealed partial class SWMinistryFinanceSystem
         if (_taxDay != day) { _taxDay = day; _revenue.Clear(); }
         var tax = 0d;
         var sectorTax = new Dictionary<string, (double Assessed, double Tax)>();
+        _producedGoods.Clear();
         foreach (var activity in snapshot.Goods)
         {
             if (!_taxSectors.TryGetValue(activity.World, out var sector)
@@ -117,9 +183,9 @@ public sealed partial class SWMinistryFinanceSystem
                 if (!row.Reasons.Contains(reason) && row.Reasons.Count < 5) row.Reasons.Add(reason);
             }
             if (activity.Produced <= 0) continue;
+            _producedGoods.Add((sector, activity.Good));
             var value = activity.Produced * good.Value;
-            var baseRate = _taxLevel switch { 0 => 10, 2 => 30, _ => 20 };
-            var rate = Math.Clamp(baseRate + _additionalTax.GetValueOrDefault(activity.Good) - _relief.GetValueOrDefault(good.Category), 0, 100);
+            var rate = CommodityEffectiveRate(good.Category, _additionalTax.GetValueOrDefault(activity.Good));
             var collected = value * rate / 100d;
             var sectorTotals = sectorTax.GetValueOrDefault(sector);
             sectorTax[sector] = (sectorTotals.Assessed + value, sectorTotals.Tax + collected);

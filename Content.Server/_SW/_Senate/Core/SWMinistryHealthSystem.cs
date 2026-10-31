@@ -47,6 +47,7 @@ public sealed partial class SWMinistryHealthSystem : EntitySystem
     public int HospitalsBuilt => _hospitalsBuilt;
     public int HospitalServicePercent => (int) MathF.Round(Weighted(Care) * 100);
     public bool PathogenActive => _active;
+    public int PathogenEpisode => _episode;
     public string PathogenName => _name;
     public int PathogenStrain => _strain;
     public int Virulence => (int) MathF.Round(_virulence * 100);
@@ -84,6 +85,11 @@ public sealed partial class SWMinistryHealthSystem : EntitySystem
     private World? ResolveWorld(string? id) => id == null ? null : _worlds.GetValueOrDefault(id) ??
         _worlds.Values.Where(w => w.Map.Sector?.Id == id).OrderByDescending(w => w.Infection).ThenByDescending(w => w.Map.Anchor).FirstOrDefault();
     public float PlanetInfection(string world) => _worlds.GetValueOrDefault(world)?.Infection ?? 0;
+    /// <summary>Republic worlds with a current outbreak, for selecting a real aid destination.</summary>
+    public List<(string Id, string Name, string Sector)> InfectedWorlds() => !_active
+        ? new()
+        : _worlds.Values.Where(w => w.Infection > 1f && w.Map.Sector != null)
+            .Select(w => (w.Map.Id, w.Map.Name, w.Map.Sector!.Value.Id)).ToList();
     public float SectorInfection(string sector) => Weighted(w => w.Infection, sector);
     public float InfectionAvg() => Weighted(w => w.Infection);
     private float Care(string id) => _worlds.TryGetValue(id, out var world) ? Care(world) : 0;

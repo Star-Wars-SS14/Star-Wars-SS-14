@@ -65,6 +65,9 @@ public sealed class SWMinistrySystem : EntitySystem
         && TryComp<MobStateComponent>(entity, out var mob)
         && mob.CurrentState == MobState.Alive;
 
+    public EntityUid? GetActiveHolderEntity(string ministryId) =>
+        IsHolderActive(ministryId) && _holderEntities.TryGetValue(ministryId, out var entity) ? entity : null;
+
     public bool IsActiveHolder(string ministryId, EntityUid actor) =>
         _holderEntities.TryGetValue(ministryId, out var holder) && holder == actor && IsHolderActive(ministryId);
 

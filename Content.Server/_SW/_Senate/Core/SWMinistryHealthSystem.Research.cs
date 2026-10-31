@@ -192,6 +192,10 @@ public sealed partial class SWMinistryHealthSystem
         AddLog($"Заказано {quantity} партий для {_worlds[target].Map.Name}.");
         return true;
     }
+    public bool CanOrderAid(string world) => CanManage && _worlds.TryGetValue(world, out var target)
+        && target.Reserve < 3.5f && !_medicalOrders.Any(o => o.Aid && !o.Applied && o.Target == world)
+        && _dilemma.GetMinistryBudget(HealthMinistryId) >= AidCost;
+
     public bool SendAid(string world)
     {
         if (!CanManage || !_worlds.TryGetValue(world, out var target) || target.Reserve >= 3.5f
@@ -202,6 +206,7 @@ public sealed partial class SWMinistryHealthSystem
             Medical: new EconomyMedicalProject(EconomyMedicalProjectKind.Relief, "", world, 1));
         if (!QueuePaid(request, AidCost)) return false;
         _medicalOrders.Add(new MedicalOrder(id, world, world, _episode, _strain, 0, 1, true));
+        RaiseLocalEvent(new SWHealthAidOrderedEvent(id, world, _episode));
         AddLog($"Заказ помощи: {target.Map.Name}.");
         return true;
     }
@@ -240,7 +245,13 @@ public sealed partial class SWMinistryHealthSystem
             if (snapshot.Projects.FirstOrDefault(p => p.Id == order.Id) is not { CompletedHour: not null } project) continue;
             order.Applied = true;
             if (!_worlds.TryGetValue(order.Target, out var world)) continue;
-            if (order.Aid) world.Reserve = Math.Min(8, world.Reserve + 4);
+            if (order.Aid)
+            {
+                var oldReserve = world.Reserve;
+                world.Reserve = Math.Min(8, world.Reserve + 4);
+                if (world.Reserve > oldReserve)
+                    RaiseLocalEvent(new SWHealthAidAppliedEvent(order.Id, order.Target, order.Episode, world.Reserve - oldReserve));
+            }
             else if (order.Episode == _episode)
             {
                 var amount = (float) Math.Clamp(project.DeliveredQuantity, 0, order.Quantity);

@@ -60315,6 +60315,13 @@ entities:
             pos: "53.5,-88.5"
             parent: 2
             anchored: true
+  - proto: "SWDelegationPoint"
+    entities:
+      - uid: 8650
+        components:
+          - type: "Transform"
+            pos: "66.5,-94.5"
+            parent: 2
   - proto: "SpawnPointLatejoin"
     entities:
       - uid: 8489

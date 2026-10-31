@@ -64,8 +64,8 @@ public sealed partial class SWDelegationSystem : EntitySystem
         SubscribeLocalEvent<SWDelegationMemberComponent, GhostRoleSpawnerUsedEvent>(OnSpawned);
         SubscribeLocalEvent<SWDelegationMemberComponent, PlayerAttachedEvent>(OnAttached);
         SubscribeLocalEvent<SWDelegationMemberComponent, GetVerbsEvent<AlternativeVerb>>(OnVerbs);
-        SubscribeLocalEvent<ActorComponent, SWGuestRequestAuthorizeEvent>(OnGuestAuthorize);
-        SubscribeLocalEvent<ActorComponent, SWGuestRequestRespondAuthorizeEvent>(OnGuestRespond);
+        SubscribeLocalEvent<MobStateComponent, SWGuestRequestAuthorizeEvent>(OnGuestAuthorize);
+        SubscribeLocalEvent<MobStateComponent, SWGuestRequestRespondAuthorizeEvent>(OnGuestRespond);
         SubscribeLocalEvent<ActorComponent, GetVerbsEvent<AlternativeVerb>>(OnPlannerVerbs);
         SubscribeLocalEvent<SWGuestRequestValidateEvent>(OnGuestValidate);
         SubscribeLocalEvent<SWFinanceTaxSettingsChangedEvent>(OnTaxSettingsChanged);

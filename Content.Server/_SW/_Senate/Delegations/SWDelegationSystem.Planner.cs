@@ -3,6 +3,7 @@ using Content.Server._SW._Senate.Core;
 using Content.Shared._SW._Senate.Delegations;
 using Content.Shared._SW._Senate.Planner;
 using Content.Shared.IdentityManagement;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Verbs;
 using Robust.Shared.Enums;
 using Robust.Shared.Player;
@@ -25,7 +26,7 @@ public sealed partial class SWDelegationSystem
         return owner || _ministry.IsActiveHolder(Ministry(visit), actor);
     }
 
-    private void OnGuestAuthorize(Entity<ActorComponent> ent, ref SWGuestRequestAuthorizeEvent ev)
+    private void OnGuestAuthorize(Entity<MobStateComponent> ent, ref SWGuestRequestAuthorizeEvent ev)
     {
         if (ev.Kind != SWGuestRequestKind.Delegation || _visit is not { } visit || ev.TargetKey != VisitTarget(visit)
             || !PlannerViewer(ent.Owner, visit, out var owner) || !owner)
@@ -41,11 +42,12 @@ public sealed partial class SWDelegationSystem
             ev.TargetDisplayName = Name(body);
     }
 
-    private void OnGuestRespond(Entity<ActorComponent> ent, ref SWGuestRequestRespondAuthorizeEvent ev)
+    private void OnGuestRespond(Entity<MobStateComponent> ent, ref SWGuestRequestRespondAuthorizeEvent ev)
     {
         if (ev.Kind != SWGuestRequestKind.Delegation || _visit is not { } visit || ev.TargetKey != VisitTarget(visit)
             || !PlannerViewer(ent.Owner, visit, out var owner) || owner
-            || ent.Comp.PlayerSession.UserId != ev.ExpectedTargetUserId)
+            || !TryComp<ActorComponent>(ent.Owner, out var actor)
+            || actor.PlayerSession.UserId != ev.ExpectedTargetUserId)
             return;
         ev.Authorized = true;
     }

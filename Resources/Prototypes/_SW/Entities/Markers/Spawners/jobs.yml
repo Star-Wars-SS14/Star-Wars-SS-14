@@ -395,6 +395,17 @@
     layers:
     - state: green
 
+- type: entity
+  id: SWSpawnPointNeutralBartender
+  parent: SpawnPointJobBase
+  name: Neutral Bartender
+  components:
+  - type: SpawnPoint
+    job_id: SWNeutralBartender
+  - type: Sprite
+    layers:
+    - state: green
+
 #Force users
 
 - type: entity

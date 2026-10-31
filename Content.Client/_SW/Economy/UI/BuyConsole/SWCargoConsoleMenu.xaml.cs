@@ -195,15 +195,4 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
         var selected = _category == null ? 0 : _categoryStrings.IndexOf(_category);
         SetCategoryText(selected < 0 ? 0 : selected);
     }
-
-    protected override void FrameUpdate(FrameEventArgs args)
-    {
-        base.FrameUpdate(args);
-        BalanceContainer.Children.Clear();
-        foreach (var (currency, amount) in Balance)
-        {
-            var cntrl = new SWCurrencyControl(currency, amount, false);
-            BalanceContainer.AddChild(cntrl);
-        }
-    }
 }

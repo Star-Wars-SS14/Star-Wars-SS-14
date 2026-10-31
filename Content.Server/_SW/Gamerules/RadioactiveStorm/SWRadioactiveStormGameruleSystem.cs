@@ -84,7 +84,8 @@ public sealed class SWRadioactiveStormGameruleSystem : GameRuleSystem<SWRadioact
             return;
         }
 
-        var query = EntityQueryEnumerator<DamageableComponent, MobStateComponent>();
+        // The first component drives the walk: few mobs, tens of thousands of damageable entities.
+        var query = EntityQueryEnumerator<MobStateComponent, DamageableComponent>();
 
         while (query.MoveNext(out var entity, out var _, out var _))
         {

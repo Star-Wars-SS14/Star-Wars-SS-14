@@ -604,6 +604,7 @@ public sealed partial class SWSenatePlannerSystem : EntitySystem
         public string Location = string.Empty;
         public string Host = string.Empty;
         public bool Private;
+        public int GuestRevision;
         public Robust.Shared.Network.NetUserId? GuestOwner;
         public Robust.Shared.Network.NetUserId? GuestTarget;
         public EntityUid? GuestOwnerBody;

@@ -15,11 +15,12 @@ public sealed partial class SWPressMeetingsWindow : FancyWindow
     private string _targetKey = string.Empty;
     private int _selectedId;
     private SWPressGuestEntry? _selected;
+    private bool _selectionOutdated;
 
     public SWPressMeetingsWindow()
     {
         RobustXamlLoader.Load(this);
-        NewRequest.OnPressed += _ => { _selectedId = 0; _selected = null; _targetKey = ""; Subject.Text = ""; Description.Text = ""; Location.Text = ""; Context.SetMessage("Выберите адресата."); UpdateControls(); };
+        NewRequest.OnPressed += _ => { _selectedId = 0; _selected = null; _selectionOutdated = false; _targetKey = ""; Subject.Text = ""; Description.Text = ""; Location.Text = ""; Context.SetMessage("Выберите адресата."); UpdateControls(); };
         Refresh.OnPressed += _ => Send(SWPressAction.Refresh);
         Create.OnPressed += _ => SendTimed(SWPressAction.GuestCreate);
         Reschedule.OnPressed += _ => SendTimed(SWPressAction.GuestReschedule);
@@ -38,7 +39,7 @@ public sealed partial class SWPressMeetingsWindow : FancyWindow
         foreach (var target in state.GuestTargets)
         {
             var button = new Button { Text = Short(target.Label), HorizontalExpand = true };
-            button.OnPressed += _ => { if (_selectedId != 0) { Subject.Text = ""; Description.Text = ""; Location.Text = ""; } _targetKey = target.Key; _selectedId = 0; _selected = null; Context.SetMessage("Адресат: " + target.Label); UpdateControls(); };
+            button.OnPressed += _ => { if (_selectedId != 0) { Subject.Text = ""; Description.Text = ""; Location.Text = ""; } _targetKey = target.Key; _selectedId = 0; _selected = null; _selectionOutdated = false; Context.SetMessage("Адресат: " + target.Label); UpdateControls(); };
             Targets.AddChild(button);
         }
         Requests.RemoveAllChildren();
@@ -51,11 +52,16 @@ public sealed partial class SWPressMeetingsWindow : FancyWindow
         }
         if (_selectedId != 0)
         {
-            _selected = state.GuestRequests.FirstOrDefault(q => q.Id == _selectedId);
-            if (_selected == null)
+            var current = state.GuestRequests.FirstOrDefault(q => q.Id == _selectedId);
+            if (current == null)
             {
-                _selectedId = 0; _targetKey = ""; Subject.Text = ""; Description.Text = "";
+                _selectedId = 0; _selected = null; _selectionOutdated = false; _targetKey = ""; Subject.Text = ""; Description.Text = "";
                 Location.Text = ""; Context.SetMessage("Встреча недоступна.");
+            }
+            else if (_selected == null || current.Revision != _selected.Revision)
+            {
+                _selectionOutdated = true;
+                Context.SetMessage("Встреча изменилась. Выберите её заново, чтобы увидеть актуальные условия.");
             }
         }
         UpdateControls();
@@ -63,7 +69,7 @@ public sealed partial class SWPressMeetingsWindow : FancyWindow
 
     private void Select(SWPressGuestEntry request)
     {
-        _selectedId = request.Id; _selected = request; _targetKey = "";
+        _selectedId = request.Id; _selected = request; _selectionOutdated = false; _targetKey = "";
         if (request.Stale)
             Context.SetMessage("Адресат изменился. Запрос можно отменить.");
         else
@@ -81,15 +87,15 @@ public sealed partial class SWPressMeetingsWindow : FancyWindow
     private void UpdateControls()
     {
         Create.Disabled = _selectedId != 0 || string.IsNullOrEmpty(_targetKey);
-        Accept.Disabled = _selected == null || !_selected.IsTarget || _selected.Stale || _selected.Status != 0;
+        Accept.Disabled = _selectionOutdated || _selected == null || !_selected.IsTarget || _selected.Stale || _selected.Status != 0;
         Decline.Disabled = Accept.Disabled;
-        Cancel.Disabled = _selected == null || !_selected.IsOwner;
-        Reschedule.Disabled = _selected == null || !_selected.IsOwner || _selected.Stale;
+        Cancel.Disabled = _selectionOutdated || _selected == null || !_selected.IsOwner;
+        Reschedule.Disabled = _selectionOutdated || _selected == null || !_selected.IsOwner || _selected.Stale;
     }
 
     private void Send(SWPressAction action, bool accept = false) => Action?.Invoke(new SWPressActionMessage
     {
-        Action = action, Id = _selectedId, Accept = accept,
+        Action = action, Id = _selectedId, Revision = _selected?.Revision ?? 0, Accept = accept,
     });
 
     private void SendTimed(SWPressAction action)
@@ -105,7 +111,7 @@ public sealed partial class SWPressMeetingsWindow : FancyWindow
         }
         Action?.Invoke(new SWPressActionMessage
         {
-            Action = action, Id = _selectedId, TargetKey = _targetKey, Day = _state.Today + day,
+            Action = action, Id = _selectedId, Revision = _selected?.Revision ?? 0, TargetKey = _targetKey, Day = _state.Today + day,
             Slot = (hour - 7) * 4 + minute / 15, Duration = minutes / 15,
             Title = Subject.Text, Body = Description.Text, Location = Location.Text,
         });

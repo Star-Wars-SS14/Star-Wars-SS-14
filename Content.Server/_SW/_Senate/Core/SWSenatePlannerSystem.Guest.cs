@@ -142,13 +142,13 @@ public sealed partial class SWSenatePlannerSystem
             {
                 if (meeting.GuestOwner == user && GuestOwnerMayCancel(actor, meeting))
                     result.Add(new SWGuestRequestView(meeting.Id, -1, 0, 0, string.Empty, string.Empty,
-                        string.Empty, string.Empty, string.Empty, SWInviteStatus.Pending, true, false, true, meeting.GuestKind));
+                        string.Empty, string.Empty, string.Empty, SWInviteStatus.Pending, true, false, true, meeting.GuestKind, meeting.GuestRevision));
                 continue;
             }
             var invite = meeting.Invites.First();
             result.Add(new SWGuestRequestView(meeting.Id, meeting.Day, meeting.StartSlot, meeting.Duration,
                 meeting.Title, meeting.Description, meeting.Location, meeting.Host, invite.Key,
-                invite.Value, owner, target, false, meeting.GuestKind));
+                invite.Value, owner, target, false, meeting.GuestKind, meeting.GuestRevision));
         }
         return result;
     }
@@ -182,7 +182,7 @@ public sealed partial class SWSenatePlannerSystem
             Id = _nextMeetingId++, Day = day, StartSlot = startSlot, Duration = duration,
             Host = Name(actor), Title = subject.Trim(), Description = description.Trim(), Location = location.Trim(),
             Private = true, GuestOwner = user, GuestTarget = target, GuestOwnerBody = actor, GuestTargetBody = targetBody,
-            GuestKind = kind, GuestTargetKey = targetKey,
+            GuestKind = kind, GuestTargetKey = targetKey, GuestRevision = 1,
         };
         meeting.Invites[targetName] = SWInviteStatus.Pending;
         _meetings.Add(meeting);
@@ -190,11 +190,12 @@ public sealed partial class SWSenatePlannerSystem
         return true;
     }
 
-    public bool TryRespondGuestRequest(EntityUid actor, int meetingId, bool accept, out string error)
+    public bool TryRespondGuestRequest(EntityUid actor, int meetingId, int expectedRevision, bool accept, out string error)
     {
         error = "Запрос недоступен или ваши полномочия изменились.";
         var meeting = _meetings.FirstOrDefault(m => m.Id == meetingId && m.GuestOwner != null);
-        if (meeting == null || !GuestTargetAllowed(actor, meeting) || !UniqueActiveName(actor, Name(actor))
+        if (meeting == null || meeting.GuestRevision != expectedRevision || meeting.GuestRevision == int.MaxValue
+            || !GuestTargetAllowed(actor, meeting) || !UniqueActiveName(actor, Name(actor))
             || meeting.Invites.Values.FirstOrDefault() != SWInviteStatus.Pending)
             return false;
         var ownerSession = _guestPlayers.Sessions.FirstOrDefault(s => s.UserId == meeting.GuestOwner && s.Status == SessionStatus.InGame);
@@ -211,24 +212,26 @@ public sealed partial class SWSenatePlannerSystem
             error = "Участник занят в выбранное время."; return false;
         }
         meeting.Invites[meeting.Invites.Keys.First()] = accept ? SWInviteStatus.Accepted : SWInviteStatus.Declined;
+        meeting.GuestRevision++;
         error = string.Empty; return true;
     }
 
-    public bool TryCancelGuestRequest(EntityUid actor, int meetingId, out string error)
+    public bool TryCancelGuestRequest(EntityUid actor, int meetingId, int expectedRevision, out string error)
     {
         error = "Запрос недоступен или ваши полномочия изменились.";
         var meeting = _meetings.FirstOrDefault(m => m.Id == meetingId && m.GuestOwner != null);
-        if (meeting == null || !TryGuestActor(actor, out var user) || meeting.GuestOwner != user
+        if (meeting == null || meeting.GuestRevision != expectedRevision || !TryGuestActor(actor, out var user) || meeting.GuestOwner != user
             || !GuestOwnerMayCancel(actor, meeting))
             return false;
         _meetings.Remove(meeting); error = string.Empty; return true;
     }
 
-    public bool TryRescheduleGuestRequest(EntityUid actor, int meetingId, int day, int slot, int duration, out string error)
+    public bool TryRescheduleGuestRequest(EntityUid actor, int meetingId, int expectedRevision, int day, int slot, int duration, out string error)
     {
         error = "Не удалось перенести запрос: проверьте полномочия, участников и время.";
         var meeting = _meetings.FirstOrDefault(m => m.Id == meetingId && m.GuestOwner != null);
-        if (meeting == null || !GuestValid(meeting) || meeting.GuestOwnerBody != actor || !TryGuestActor(actor, out var user) || meeting.GuestOwner != user
+        if (meeting == null || meeting.GuestRevision != expectedRevision || meeting.GuestRevision == int.MaxValue
+            || !GuestValid(meeting) || meeting.GuestOwnerBody != actor || !TryGuestActor(actor, out var user) || meeting.GuestOwner != user
             || !UniqueActiveName(actor, Name(actor)) || !_time.DayActive || !GuestValidWindow(day, slot, duration)
             || day == _time.Day && slot < EarliestStartSlot()
             || !TryGuestPolicy(actor, meeting.GuestKind, meeting.GuestTargetKey, out var target, out var targetName)
@@ -241,9 +244,10 @@ public sealed partial class SWSenatePlannerSystem
         }
         meeting.Day = day; meeting.StartSlot = slot; meeting.Duration = duration;
         meeting.Invites[meeting.Invites.Keys.First()] = SWInviteStatus.Pending;
+        meeting.GuestRevision++;
         error = string.Empty; return true;
     }
 }
 
 public sealed record SWGuestRequestView(int Id, int Day, int StartSlot, int Duration, string Subject,
-    string Description, string Location, string Host, string Target, SWInviteStatus Status, bool IsOwner, bool IsTarget, bool Stale, SWGuestRequestKind Kind);
+    string Description, string Location, string Host, string Target, SWInviteStatus Status, bool IsOwner, bool IsTarget, bool Stale, SWGuestRequestKind Kind, int Revision);

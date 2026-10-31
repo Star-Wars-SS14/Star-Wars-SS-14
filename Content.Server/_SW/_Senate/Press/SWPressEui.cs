@@ -46,7 +46,7 @@ public sealed class SWPressEui : BaseEui
     private string AccessFingerprint()
     {
         if (!TryActor(out var actor)) return "unavailable";
-        var guest = string.Join(",", Planner.GetGuestRequests(actor).Select(g => $"{g.Id}:{g.Status}:{g.Stale}"));
+        var guest = string.Join(",", Planner.GetGuestRequests(actor).Select(g => $"{g.Id}:{g.Status}:{g.Stale}:{g.Revision}"));
         var mail = string.Join(",", Mail.GetMail(actor).Select(m => $"{m.Id}:{m.Messages.Count}"));
         var targets = string.Join(",", GuestPolicy.GetTargets(actor).Select(t => t.Key + ":" + t.Label));
         var mailTargets = string.Join(",", GuestPolicy.GetMailTargets(actor).Select(t => t.Key + ":" + t.Label));
@@ -81,7 +81,7 @@ public sealed class SWPressEui : BaseEui
         foreach (var guest in Planner.GetGuestRequests(actor))
         {
             if (guest.Kind != SWGuestRequestKind.Press) continue;
-            state.GuestRequests.Add(new SWPressGuestEntry { Id = guest.Id, Day = guest.Day, StartSlot = guest.StartSlot,
+            state.GuestRequests.Add(new SWPressGuestEntry { Id = guest.Id, Revision = guest.Revision, Day = guest.Day, StartSlot = guest.StartSlot,
                 Duration = guest.Duration, Subject = guest.Subject, Description = guest.Description, Location = guest.Location,
                 Host = guest.Host, Target = guest.Target, Status = (int) guest.Status, IsOwner = guest.IsOwner,
                 IsTarget = guest.IsTarget, Stale = guest.Stale });
@@ -159,9 +159,9 @@ public sealed class SWPressEui : BaseEui
             {
                 SWPressAction.GuestCreate => Planner.TryCreateGuestRequest(actor, SWGuestRequestKind.Press, action.TargetKey,
                     action.Day, action.Slot, action.Duration, action.Title, action.Body, action.Location, out _, out error),
-                SWPressAction.GuestRespond => Planner.TryRespondGuestRequest(actor, action.Id, action.Accept, out error),
-                SWPressAction.GuestCancel => Planner.TryCancelGuestRequest(actor, action.Id, out error),
-                SWPressAction.GuestReschedule => Planner.TryRescheduleGuestRequest(actor, action.Id, action.Day, action.Slot, action.Duration, out error),
+                SWPressAction.GuestRespond => Planner.TryRespondGuestRequest(actor, action.Id, action.Revision, action.Accept, out error),
+                SWPressAction.GuestCancel => Planner.TryCancelGuestRequest(actor, action.Id, action.Revision, out error),
+                SWPressAction.GuestReschedule => Planner.TryRescheduleGuestRequest(actor, action.Id, action.Revision, action.Day, action.Slot, action.Duration, out error),
                 _ => false,
             };
             _notice = changed ? "Запрос встречи обновлён." : string.IsNullOrEmpty(error)

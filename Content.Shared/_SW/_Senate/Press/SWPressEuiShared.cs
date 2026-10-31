@@ -85,7 +85,7 @@ public sealed class SWPressGuestTarget
 [Serializable, NetSerializable]
 public sealed class SWPressGuestEntry
 {
-    public int Id, Day, StartSlot, Duration;
+    public int Id, Day, StartSlot, Duration, Revision;
     public string Subject = string.Empty, Description = string.Empty, Location = string.Empty;
     public string Host = string.Empty, Target = string.Empty;
     public int Status;

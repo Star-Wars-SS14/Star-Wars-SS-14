@@ -23,9 +23,9 @@ public sealed partial class SWGetScoreByTargetJobSystem : EntitySystem
             return;
         }
 
-        if (comp.JobOfTarget != null)
+        if (comp.JobOfTarget != null && ent.Comp.JobsToScores.TryGetValue(comp.JobOfTarget, out var score))
         {
-            args.Score = ent.Comp.JobsToScores[comp.JobOfTarget];
+            args.Score = score;
             args.Handled = true;
         }
     }

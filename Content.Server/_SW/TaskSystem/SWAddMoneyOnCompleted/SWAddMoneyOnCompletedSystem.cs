@@ -76,7 +76,7 @@ public sealed class SWAddMoneyOnCompletedSystem : EntitySystem
             return;
 
         var account = _bankSystem.GetFactionAccount(taskComp.OwningFaction);
-        int scores = scoreComp.JobsToScores[comp.JobOfTarget];
+        scoreComp.JobsToScores.TryGetValue(comp.JobOfTarget, out var scores);
 
         var amount = ent.Comp.MoneyPerScore.ToDictionary(kvp => kvp.Key, kvp => kvp.Value * scores);
 

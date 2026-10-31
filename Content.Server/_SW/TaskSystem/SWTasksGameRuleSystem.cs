@@ -85,7 +85,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             {
                 continue;
             }
-            comp.NextAddTime = TimeSpan.FromSeconds(component.DelayBeforeAddingStartTasksInSeconds + comp.AddIntervalInSeconds);
+            comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(component.DelayBeforeAddingStartTasksInSeconds + comp.AddIntervalInSeconds);
         }
     }
     public void AddStartTasks()

@@ -65,9 +65,13 @@ public sealed class SWFinanceConsoleSystem : EntitySystem
     {
         if (ent.Comp.Account == null)
         {
+            _swPayable.Refuse(args.Actor, "sw-console-no-account");
             return;
         }
-        _bankSystem.TryPayBill(ent.Comp.Account.Value.Owner, args.Bill);
+        if (!_bankSystem.TryPayBill(ent.Comp.Account.Value.Owner, args.BillId))
+        {
+            _swPayable.Refuse(args.Actor, "sw-economy-bill-cannot-pay");
+        }
         UpdateInterface(ent, ent.Comp.Account.Value);
     }
     private void UpdateInterface(EntityUid console, Entity<SWBankAccountContainerComponent> account)

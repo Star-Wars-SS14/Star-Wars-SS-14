@@ -27,5 +27,11 @@ public sealed partial class SWBuyConsoleComponent : Component
     [DataField]
     public ProtoId<SourcePortPrototype> Port = "SWBuyConsoleSender";
 
+    /// <summary>
+    /// The most items one order can hold.
+    /// </summary>
+    [DataField]
+    public int MaxOrderAmount = 100;
+
     public HashSet<ProtoId<SWCargoProductPrototype>> AvailableProducts = new();
 }

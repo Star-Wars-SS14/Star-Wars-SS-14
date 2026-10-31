@@ -24,7 +24,6 @@ namespace Content.Client.Cargo.BUI
     {
         [ViewVariables]
         private SWCargoConsoleMenu? _menu;
-        private SWWithdrawalWindow? _withdrawal = null;
 
         /// <summary>
         /// This is the separate popup window for individual orders.
@@ -91,13 +90,7 @@ namespace Content.Client.Cargo.BUI
                 _orderMenu.OpenCentered();
             };
 
-            _orderMenu.SubmitButton.OnPressed += (_) =>
-            {
-                if (TryPurchase())
-                {
-                    _orderMenu.Close();
-                }
-            };
+            _orderMenu.SubmitButton.OnPressed += (_) => TryPurchase();
             _menu.OnWithdrawalButtonPressed += OpenWithdrawal;
             _menu.OnAddMoneyButtonPressed += OnAddMoney;
             _menu.OpenCentered();
@@ -109,10 +102,7 @@ namespace Content.Client.Cargo.BUI
             {
                 return;
             }
-            _withdrawal = this.CreateWindow<SWWithdrawalWindow>();
-            _withdrawal.PopulateCurrencies(_menu.Balance.Keys.ToList());
-            _withdrawal.OpenCenteredRight();
-            _withdrawal.OnConfirmButtonPressedAction += OnWithdrawal;
+            OpenWithdrawal(_menu.Balance.Keys.ToList());
         }
         private void Populate()
         {
@@ -122,10 +112,13 @@ namespace Content.Client.Cargo.BUI
             _menu.PopulateProducts();
             _menu.PopulateCategories();
         }
-        protected override void OnWithdrawal(Dictionary<ProtoId<SWCurrencyPrototype>, float> dict)
+        protected override void OnActionSucceeded(SWConsoleAction action)
         {
-            base.OnWithdrawal(dict);
-            _withdrawal?.Close();
+            base.OnActionSucceeded(action);
+            if (action == SWConsoleAction.Purchase)
+            {
+                _orderMenu?.Close();
+            }
         }
 
         public override void PopulateBalance(Dictionary<ProtoId<SWCurrencyPrototype>, float> amount)
@@ -151,6 +144,10 @@ namespace Content.Client.Cargo.BUI
                 return;
             _menu.CurrencyPrototypeIds = cState.Currencies;
             _menu.ProductCatalogue = cState.Products.ToHashSet();
+            if (_orderMenu != null)
+            {
+                _orderMenu.Amount.IsValid = n => n >= 1 && n <= cState.MaxOrderAmount;
+            }
 
             Populate();
         }
@@ -166,19 +163,13 @@ namespace Content.Client.Cargo.BUI
             _orderMenu?.Dispose();
         }
 
-        private bool TryPurchase()
+        private void TryPurchase()
         {
-            var orderAmt = _orderMenu?.Amount.Value ?? 0;
-            if (orderAmt < 1)
-            {
-                return false;
-            }
             if (_product != null)
             {
                 SendMessage(new SWTryPurchaseMessage(_product.ID,
-                    orderAmt));
+                    _orderMenu?.Amount.Value ?? 0));
             }
-            return true;
         }
     }
 }

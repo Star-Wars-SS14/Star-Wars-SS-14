@@ -1,0 +1,14 @@
+- type: entity
+  parent: BaseItem
+  id: SWWinterSnowball
+  name: snowball
+  description: Packed snow, for throwing at friends and enemies. It hurts no one and falls apart where it lands.
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Misc/snowball.rsi
+    state: icon
+  - type: Item
+    size: Tiny
+    sprite: _SW/Objects/Misc/snowball.rsi
+  - type: TriggerOnLand
+  - type: DeleteOnTrigger

@@ -1,24 +1,20 @@
-<Control xmlns="https://spacestation14.io">
-    <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-        <BoxContainer Name="TaskContainer" HorizontalExpand="True" Margin="0"/>
-
-        <BoxContainer VerticalExpand="True" HorizontalExpand="False"
-                     HorizontalAlignment="Center" VerticalAlignment="Center"
-                     Margin="20 20 10 20">
-            
-            <RichTextLabel Name="TaskName" HorizontalExpand="False"/>
+<Control xmlns="https://spacestation14.io" Margin="0 0 0 8">
+    <PanelContainer StyleClasses="SWTermCard" />
+    <BoxContainer Orientation="Vertical" Margin="10 8" SeparationOverride="6">
+        <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+            <Label Name="TaskName" StyleClasses="SWTermHeading" HorizontalExpand="True" ClipText="True" VAlign="Center" />
+            <BoxContainer Name="RewardList" Orientation="Horizontal" SeparationOverride="4" />
         </BoxContainer>
-
-        <BoxContainer VerticalExpand="True" HorizontalExpand="False"
-                     HorizontalAlignment="Left" VerticalAlignment="Center"
-                     Margin="10 20 10 20" MinWidth="200" MaxWidth="300">
-            <RichTextLabel Name="TaskDescription" HorizontalExpand="False"/>
-        </BoxContainer>
-
-        <BoxContainer VerticalExpand="False" HorizontalExpand="False"
-                     Margin="10 20 20 20" HorizontalAlignment="Right"
-                     VerticalAlignment="Center" MinWidth="150" MaxWidth="200">
-            <RichTextLabel Name="TaskStatus" HorizontalExpand="False"/>
+        <RichTextLabel Name="TaskDescription" StyleClasses="SWTermText" />
+        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+            <PanelContainer StyleClasses="SWTermBarFrame" HorizontalExpand="True" VerticalAlignment="Center">
+                <ProgressBar Name="TaskProgress" Margin="2" MinHeight="12" MinValue="0" MaxValue="1" />
+            </PanelContainer>
+            <Label Name="TaskPercent" StyleClasses="SWTermValue" MinWidth="48" Align="Right" VAlign="Center" />
+            <PanelContainer Name="TaskDone" StyleClasses="SWTermDoneFrame" Visible="False" SetSize="22 22" VerticalAlignment="Center">
+                <TextureRect TexturePath="/Textures/_SW/Interface/Misc/tick.png" ModulateSelfOverride="#5CB353"
+                             Stretch="Scale" Margin="4" />
+            </PanelContainer>
         </BoxContainer>
     </BoxContainer>
 </Control>

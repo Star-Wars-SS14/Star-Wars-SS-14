@@ -34,6 +34,7 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayableBo
     {
         base.Open();
         _menu = this.CreateWindow<SWFinanceConsoleMenu>();
+        ApplyOwnerAccent(_menu);
         _menu.OpenCenteredRight();
         _menu.OnPayButtonPressed += SendPayBillMessage;
         _menu.OnWithdrawalButtonPressed += OpenWithdrawal;

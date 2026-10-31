@@ -42,11 +42,15 @@ public sealed class TaskInfo
     public string TaskName;
     public string TaskDesc;
     public FixedPoint2 Status;
-    public TaskInfo(string tn, string td, FixedPoint2 s)
+    public List<string> Rewards;
+    public string Score;
+    public TaskInfo(string tn, string td, FixedPoint2 s, List<string> rewards, string score)
     {
         TaskName = tn;
         TaskDesc = td;
         Status = s;
+        Rewards = rewards;
+        Score = score;
     }
 
     public override bool Equals(object? obj)
@@ -54,7 +58,9 @@ public sealed class TaskInfo
         return obj is TaskInfo other
             && TaskName == other.TaskName
             && TaskDesc == other.TaskDesc
-            && Status == other.Status;
+            && Status == other.Status
+            && Rewards.SequenceEqual(other.Rewards)
+            && Score == other.Score;
     }
 
     public override int GetHashCode()

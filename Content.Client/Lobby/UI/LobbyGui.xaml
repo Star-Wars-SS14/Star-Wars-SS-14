@@ -26,18 +26,26 @@
                                 <info:LinkBanner Name="LinkBanner" VerticalExpand="false" HorizontalAlignment="Center"
                                                  Margin="3 3 3 3" />
                                 <controls:StripeBack>
+                                    <BoxContainer Orientation="Vertical">
+                                    <!-- #SW: the long timer has its own row, or it pushes the ready button under the right panel -->
+                                    <Label Name="StartTime"
+                                           Access="Public"
+                                           Align="Center"
+                                           ClipText="True"
+                                           StyleClasses="LabelBig" HorizontalExpand="True" />
                                     <BoxContainer Orientation="Horizontal" SeparationOverride="6" Margin="3 3 3 3">
+                                        <!-- #SW: ready comes first: a long playtime line can push the row under the right panel -->
+                                        <Button Name="ReadyButton" Access="Public" ToggleMode="True"
+                                                Text="{Loc 'ui-lobby-ready-up-button'}"
+                                                StyleClasses="ButtonBig" MinWidth="137" />
                                         <cc:UICommandButton Command="observe" Name="ObserveButton" Access="Public"
                                                             Text="{Loc 'ui-lobby-observe-button'}"
                                                             StyleClasses="ButtonBig"
                                                             WindowType="{x:Type lobbyUi:ObserveWarningWindow}" />
-                                        <Label Name="StartTime"
-                                               Access="Public"
-                                               Align="Center"
-                                               StyleClasses="LabelBig" HorizontalExpand="True" />
-                                        <Button Name="ReadyButton" Access="Public" ToggleMode="True"
-                                                Text="{Loc 'ui-lobby-ready-up-button'}"
-                                                StyleClasses="ButtonBig" MinWidth="137" />
+                                        <Label Name="ReadyStatus" Access="Public" Visible="False" VAlign="Center"
+                                               Text="{Loc 'sw-lobby-ready-status'}" /> <!-- #SW -->
+                                        <Control HorizontalExpand="True" />
+                                    </BoxContainer>
                                     </BoxContainer>
                                 </controls:StripeBack>
                                 <RichTextLabel Name="PlaytimeComment" Visible="False" Access="Public" HorizontalAlignment="Center" />

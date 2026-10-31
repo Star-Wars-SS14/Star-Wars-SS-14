@@ -14,13 +14,14 @@
                      RectClipContent="True" />
         <Label Name="ProductName"
                Access="Public"
-               HorizontalExpand="True" />
-        <PanelContainer StyleClasses="BackgroundDark">
-            <Label Name="PointCost"
-                   Access="Public"
-                   MinSize="52 32"
-                   Align="Right"
-                   Margin="0 0 5 0"/>
-        </PanelContainer>
+               HorizontalExpand="True"
+               ClipText="True" />
+        <Label Name="PointCost"
+               Access="Public"
+               StyleClasses="SWTermPrice"
+               MinSize="150 32"
+               Align="Right"
+               VAlign="Center"
+               Margin="6 0 8 0" />
     </BoxContainer>
 </PanelContainer>

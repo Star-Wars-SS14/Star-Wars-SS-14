@@ -1,15 +1,21 @@
 using System.Linq;
 using Content.Client.Lobby;
 using Content.Client.Stylesheets;
+using Content.Client.UserInterface.Controls;
+using Content.Client.UserInterface.Systems.Hands.Controls;
+using Content.Client.UserInterface.Systems.Hotbar.Widgets;
+using Content.Shared._SW.TaskSystem;
 using Content.Shared._SW.UserInterface;
 using Content.Shared.CCVar;
 using Robust.Client.ResourceManagement;
 using Robust.Client.State;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
+using Robust.Client.UserInterface.CustomControls;
 using Robust.Client.UserInterface.Themes;
 using Robust.Shared;
 using Robust.Shared.Configuration;
+using Robust.Shared.Prototypes;
 
 namespace Content.Client._SW.UserInterface;
 
@@ -19,8 +25,11 @@ namespace Content.Client._SW.UserInterface;
 public sealed class SWTerminalStyleUIController : UIController
 {
     private const string TerminalTheme = "SWTerminalTheme";
+    private const string HandPanelOutline = "HighlightPanel";
 
+    [Dependency] private readonly IComponentFactory _factory = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
+    [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly IResourceCache _res = default!;
     [Dependency] private readonly IStateManager _state = default!;
     [Dependency] private readonly IStylesheetManager _sheets = default!;
@@ -38,6 +47,7 @@ public sealed class SWTerminalStyleUIController : UIController
         _state.OnStateChanged += OnStateChanged;
         _cfg.OnValueChanged(SWVars.UITerminal, _ => Apply());
         _cfg.OnValueChanged(SWVars.UIPlayerAccent, _ => Apply());
+        _cfg.OnValueChanged(CVars.InterfaceTheme, _ => ApplyHandAccent());
     }
 
     /// <summary>
@@ -53,6 +63,30 @@ public sealed class SWTerminalStyleUIController : UIController
 
         // Some windows hide this property with one of their own, so go through the base type.
         window.Stylesheet = GetTerminal(SWTerminalStyle.AccentOf(console.Faction));
+
+        // Some accents look alike with colour blindness, so the owner is also named.
+        if (GetFactionName(console.Faction) is not { } name)
+            return;
+
+        if (window is DefaultWindow defaultWindow)
+            defaultWindow.Title = Loc.GetString("sw-terminal-owner-title", ("title", defaultWindow.Title ?? string.Empty), ("faction", name));
+        else if (window is FancyWindow fancyWindow)
+            fancyWindow.Title = Loc.GetString("sw-terminal-owner-title", ("title", fancyWindow.Title ?? string.Empty), ("faction", name));
+    }
+
+    /// <summary>
+    /// The name players know a faction by, or null if the ID is not a faction.
+    /// </summary>
+    public string? GetFactionName(string? faction)
+    {
+        if (faction == null
+            || !_proto.TryIndex<EntityPrototype>(faction, out var proto)
+            || !proto.TryGetComponent<SWFactionComponent>(out var comp, _factory))
+        {
+            return null;
+        }
+
+        return comp.Name;
     }
 
     /// <summary>
@@ -86,6 +120,33 @@ public sealed class SWTerminalStyleUIController : UIController
             UIManager.Stylesheet = wanted;
 
         ApplyTheme();
+        ApplyHandAccent();
+    }
+
+    /// <summary>
+    /// Colours the outline of the active hand and its status panel with the local player's faction.
+    /// </summary>
+    public void ApplyHandAccent()
+    {
+        if (UIManager.ActiveScreen?.GetWidget<HotbarGui>() is not { } hotbar)
+            return;
+
+        // Only our theme's outline is white. A tint would spoil the colours of any other theme.
+        var color = UIManager.CurrentTheme.ID == TerminalTheme ? SWTerminalStyle.AccentColor(_playerAccent) : Color.White;
+        TintHandOutlines(hotbar, color);
+    }
+
+    private static void TintHandOutlines(Control control, Color color)
+    {
+        if (control is HandButton hand)
+            hand.HighlightRect.Modulate = color;
+        else if (control.Name == HandPanelOutline)
+            control.Modulate = color;
+
+        foreach (var child in control.Children)
+        {
+            TintHandOutlines(child, color);
+        }
     }
 
     /// <summary>

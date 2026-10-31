@@ -1,0 +1,10 @@
+<DefaultWindow xmlns="https://spacestation14.io" Title="Камера прессы" SetSize="480 250" MinSize="400 230">
+  <BoxContainer Orientation="Vertical" Margin="12" SeparationOverride="8">
+    <Label Text="Тема эфира" />
+    <LineEdit Name="Topic" PlaceHolder="Введите тему (до 120 символов)" />
+    <Label Name="Status" Text="Эфир выключен" />
+    <Button Name="StartButton" Text="Начать эфир" />
+    <Button Name="StopButton" Text="Завершить эфир" Disabled="True" />
+    <Label Text="Звук не передаётся." />
+  </BoxContainer>
+</DefaultWindow>

@@ -412,6 +412,7 @@ public sealed partial class ChatSystem : SharedChatSystem
                 speech = proto;
         }
 
+        var displayedName = name;
         name = FormattedMessage.EscapeText(name);
 
         var wrappedMessage = Loc.GetString(speech.Bold ? "chat-manager-entity-say-bold-wrap-message" : "chat-manager-entity-say-wrap-message",
@@ -421,7 +422,9 @@ public sealed partial class ChatSystem : SharedChatSystem
             ("fontSize", speech.FontSize),
             ("message", FormattedMessage.EscapeText(message)));
 
-        SendInVoiceRange(ChatChannel.Local, message, wrappedMessage, source, range);
+        var audibleRecipients = new List<EntityUid>();
+        SendInVoiceRange(ChatChannel.Local, message, wrappedMessage, source, range, audibleRecipients: audibleRecipients);
+        RaiseLocalEvent(new SWPressLocalSpeechEvent(displayedName, message, audibleRecipients));
 
         var ev = new EntitySpokeEvent(source, message, originalMessage, null, null);
         RaiseLocalEvent(source, ev, true);
@@ -674,7 +677,7 @@ public sealed partial class ChatSystem : SharedChatSystem
     /// <summary>
     ///     Sends a chat message to the given players in range of the source entity.
     /// </summary>
-    private void SendInVoiceRange(ChatChannel channel, string message, string wrappedMessage, EntityUid source, ChatTransmitRange range, NetUserId? author = null)
+    private void SendInVoiceRange(ChatChannel channel, string message, string wrappedMessage, EntityUid source, ChatTransmitRange range, NetUserId? author = null, List<EntityUid>? audibleRecipients = null)
     {
         foreach (var (session, data) in GetRecipients(source, VoiceRange))
         {
@@ -683,6 +686,14 @@ public sealed partial class ChatSystem : SharedChatSystem
                 continue;
             var entHideChat = entRange == MessageRangeCheckResult.HideChat;
             _chatManager.ChatMessageToOne(channel, message, wrappedMessage, source, entHideChat, session.Channel, author: author);
+            if (audibleRecipients != null && entRange == MessageRangeCheckResult.Full && !data.Observer
+                && session.AttachedEntity is { } listener
+                && TryComp<TransformComponent>(source, out var sourceTransform)
+                && TryComp<TransformComponent>(listener, out var listenerTransform)
+                && sourceTransform.MapID == listenerTransform.MapID
+                && sourceTransform.Coordinates.TryDistance(EntityManager, listenerTransform.Coordinates, out var distance)
+                && distance < VoiceRange)
+                audibleRecipients.Add(listener);
         }
 
         _replay.RecordServerMessage(new ChatMessage(channel, message, wrappedMessage, GetNetEntity(source), null, MessageRangeHideChatForReplay(range)));

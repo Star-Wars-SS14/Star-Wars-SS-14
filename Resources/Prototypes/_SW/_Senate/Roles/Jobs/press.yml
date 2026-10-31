@@ -1,0 +1,60 @@
+- type: playTimeTracker
+  id: JobSWHolonetCorrespondent
+
+- type: job
+  id: SWHolonetCorrespondent
+  name: Корреспондент Голонета
+  playTimeTracker: JobSWHolonetCorrespondent
+  requirements:
+  - !type:OverallPlaytimeRequirement
+    time: 0
+  startingGear: SWHolonetCorrespondentGear
+  icon: JobIconPassenger
+  supervisors: job-supervisors-empire
+  access: []
+
+- type: startingGear
+  id: SWHolonetCorrespondentGear
+  equipment:
+    id: SWHolonetCorrespondentPDA
+    jumpsuit: ClothingUniformJumpsuitReporter
+    shoes: SWClothingShoesBootsCitizen
+    back: ClothingBackpack
+  storage:
+    back:
+    - SWHolonetPressTerminal
+    - SWPressVideoCamera
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWHolonetCorrespondentIDCard
+  name: ID-карта корреспондента Голонета
+  components:
+  - type: PresetIdCard
+    job: SWHolonetCorrespondent
+
+- type: entity
+  parent: BasePDA
+  id: SWHolonetCorrespondentPDA
+  name: КПК корреспондента Голонета
+  components:
+  - type: Pda
+    id: SWHolonetCorrespondentIDCard
+
+- type: entity
+  parent: BaseItem
+  id: SWHolonetPressTerminal
+  name: редакционный датапад Голонета
+  description: Доступ к публичной ленте и инструментам корреспондента.
+  components:
+  - type: Sprite
+    sprite: Objects/Devices/forensic_scanner.rsi
+    state: icon
+  - type: Item
+    size: Small
+  - type: SWPressTerminal
+  - type: PointLight
+    enabled: false
+    radius: 1.2
+    energy: 1
+    color: "#FF3030"

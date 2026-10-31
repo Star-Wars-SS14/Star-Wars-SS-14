@@ -1,0 +1,9 @@
+<DefaultWindow xmlns="https://spacestation14.io" xmlns:viewport="clr-namespace:Content.Client.Viewport"
+               Title="Голос Республики — прямой эфир" SetSize="700 700" MinSize="500 500">
+  <BoxContainer Orientation="Vertical" Margin="10" SeparationOverride="6">
+    <RichTextLabel Name="Details" />
+    <viewport:ScalingViewport Name="CameraView" HorizontalExpand="True" VerticalExpand="True"
+                              MinSize="400 400" MouseFilter="Ignore" />
+    <Label Text="Звук не передаётся." />
+  </BoxContainer>
+</DefaultWindow>

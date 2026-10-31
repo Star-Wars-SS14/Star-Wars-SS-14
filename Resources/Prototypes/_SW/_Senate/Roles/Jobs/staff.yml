@@ -60,6 +60,7 @@
   - SWSenateGuardHead
   - SWSenateGuardOfficer
   - SWSenateDoctor
+  - SWHolonetCorrespondent
   weight: 1990
 
 - type: job

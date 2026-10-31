@@ -13,7 +13,7 @@
                 <!-- AI panel -->
                 <PanelContainer>
                     <PanelContainer.PanelOverride>
-                        <gfx:StyleBoxFlat BackgroundColor="#1B1B1E" />
+                        <gfx:StyleBoxFlat BackgroundColor="#16181C" />
                     </PanelContainer.PanelOverride>
 
                     <BoxContainer Orientation="Vertical">
@@ -170,3 +170,4 @@
         </BoxContainer>
     </BoxContainer>
 </controls:FancyWindow>
+<!-- #SW: terminal colours -->

@@ -20,7 +20,7 @@
                 HorizontalAlignment="Center" />
             <PanelContainer VerticalExpand="True" HorizontalExpand="True">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#1B1B1E" />
+                    <gfx:StyleBoxFlat BackgroundColor="#16181C" />
                 </PanelContainer.PanelOverride>
                 <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
                     <BoxContainer
@@ -45,7 +45,7 @@
                 StyleClasses="ButtonSquare" />
             <PanelContainer HorizontalExpand="True">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#252529" />
+                    <gfx:StyleBoxFlat BackgroundColor="#1B1D23" />
                 </PanelContainer.PanelOverride>
                 <BoxContainer Orientation="Vertical" Margin="5">
                     <Label
@@ -72,7 +72,7 @@
                 Margin="0 8 0 0" />
             <PanelContainer VerticalExpand="True" HorizontalExpand="True">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#1B1B1E" />
+                    <gfx:StyleBoxFlat BackgroundColor="#16181C" />
                 </PanelContainer.PanelOverride>
                 <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
                     <BoxContainer
@@ -86,3 +86,4 @@
         </BoxContainer>
     </BoxContainer>
 </DefaultWindow>
+<!-- #SW: terminal colours -->

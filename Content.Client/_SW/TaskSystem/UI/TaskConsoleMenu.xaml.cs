@@ -10,12 +10,10 @@ namespace Content.Client._SW.TaskSystem.UI;
 [GenerateTypedNameReferences]
 public sealed partial class TaskConsoleMenu : DefaultWindow
 {
-    public event Action<BaseButton.ButtonEventArgs>? UpdateTasksEvent;
     public TaskConsoleMenu()
     {
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
-        UpdateTasksButton.OnPressed += a => UpdateTasksEvent?.Invoke(a);
     }
 
     public void PopulateTasks(List<TaskInfo> list)
@@ -30,7 +28,6 @@ public sealed partial class TaskConsoleMenu : DefaultWindow
 
     private string CreateTaskStatusString(FixedPoint2 value)
     {
-        string res = $"Выполнено на {value * 100}%";
-        return res;
+        return Loc.GetString("sw-task-console-status", ("percent", (value * 100).Float()));
     }
 }

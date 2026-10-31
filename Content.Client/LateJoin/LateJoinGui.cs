@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Numerics;
+using Content.Client._SW.Loadouts; //SW
 using Content.Client.CrewManifest;
 using Content.Client.GameTicking.Managers;
 using Content.Client.Lobby;
@@ -47,7 +48,7 @@ namespace Content.Client.LateJoin
 
         public LateJoinGui()
         {
-            MinSize = SetSize = new Vector2(450, 560);
+            MinSize = SetSize = new Vector2(640, 560); //SW
             IoCManager.InjectDependencies(this);
             _sprites = _entitySystem.GetEntitySystem<SpriteSystem>();
             _crewManifest = _entitySystem.GetEntitySystem<CrewManifestSystem>();
@@ -258,7 +259,26 @@ namespace Content.Client.LateJoin
 
                         jobSelector.AddChild(jobLabel);
                         jobButton.AddChild(jobSelector);
-                        category.AddChild(jobButton);
+                        //SW start
+                        // Gear can be changed from here, without leaving the join window for the character editor.
+                        var swLoadouts = UserInterfaceManager.GetUIController<SWLoadoutUIController>();
+                        // Its own button beside the job's, with a gap: a click on the job's button spawns at once.
+                        var swRow = new BoxContainer { Orientation = LayoutOrientation.Horizontal, SeparationOverride = 8 };
+                        jobButton.HorizontalExpand = true;
+                        swRow.AddChild(jobButton);
+                        if (swLoadouts.CanOpen(prototype))
+                        {
+                            var swGear = new Button();
+                            void SWUpdateGear() => swGear.Text = swLoadouts.HasChoice(prototype)
+                                ? Loc.GetString("sw-loadout-tab-changed", ("name", Loc.GetString("sw-loadout-latejoin-button")))
+                                : Loc.GetString("sw-loadout-latejoin-button");
+                            SWUpdateGear();
+                            swGear.OnPressed += _ => swLoadouts.Open(prototype, SWUpdateGear);
+                            swRow.AddChild(swGear);
+                        }
+
+                        category.AddChild(swRow);
+                        //SW end
 
                         jobButton.OnPressed += _ => SelectedId.Invoke((id, jobButton.JobId));
 

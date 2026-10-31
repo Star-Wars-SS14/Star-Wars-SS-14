@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Server._SW.CantEquipOnSlot;
+namespace Content.Shared._SW.CantEquipOnSlot;
 
 [RegisterComponent]
 public sealed partial class SWDisableSlotComponent : Component

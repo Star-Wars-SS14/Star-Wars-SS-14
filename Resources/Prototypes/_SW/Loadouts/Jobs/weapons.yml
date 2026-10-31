@@ -1,0 +1,147 @@
+# Numbers are hypotheses from the design advisor until there is data. A swap, never an extra.
+- type: loadout
+  id: SWLoadoutWeaponUIHBP
+  equipment:
+    suitstorage: SWUIHBP
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SWLoadoutGateWeapons
+
+- type: loadout
+  id: SWLoadoutWeaponScoutBlasterSmall
+  equipment:
+    suitstorage: SWScoutBlasterSmall
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SWLoadoutGateWeapons
+
+- type: loadout
+  id: SWLoadoutWeaponM44
+  equipment:
+    suitstorage: SWM44
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SWLoadoutGateHeavyPistol
+
+- type: loadout
+  id: SWLoadoutWeaponZ1BlasterCarbine
+  equipment:
+    suitstorage: SWZ1BlasterCarbine
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SWLoadoutGateWeapons
+
+- type: loadout
+  id: SWLoadoutWeaponMK3BlasterRifle
+  equipment:
+    suitstorage: SWMK3BlasterRifle
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SWLoadoutGateWeapons
+
+- type: loadout
+  id: SWLoadoutWeaponAnarchy
+  equipment:
+    suitstorage: SWAnarchy
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SWLoadoutGateWeapons
+
+- type: loadout
+  id: SWLoadoutWeaponJ111Rancor
+  equipment:
+    suitstorage: SWJ111Rancor
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SWLoadoutGateWeapons
+
+- type: loadout
+  id: SWLoadoutWeaponH206Renegade
+  equipment:
+    suitstorage: SWH206Renegade
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SWLoadoutGateWeapons
+
+- type: loadout
+  id: SWLoadoutWeaponE1BlasterRifle
+  equipment:
+    suitstorage: SWE1BlasterRifle
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SWLoadoutGateWeapons
+
+- type: loadoutGroup
+  id: SWWeaponsRepublic
+  name: sw-loadout-group-weapon
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutWeaponUIHBP
+  - SWLoadoutWeaponScoutBlasterSmall
+  - SWLoadoutWeaponM44
+
+- type: loadoutGroup
+  id: SWWeaponsEmpire
+  name: sw-loadout-group-weapon
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutWeaponUIHBP
+  - SWLoadoutWeaponScoutBlasterSmall
+  - SWLoadoutWeaponM44
+
+- type: loadoutGroup
+  id: SWWeaponsMandalorian
+  name: sw-loadout-group-weapon
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutWeaponZ1BlasterCarbine
+  - SWLoadoutWeaponMK3BlasterRifle
+  - SWLoadoutWeaponAnarchy
+
+- type: loadoutGroup
+  id: SWWeaponsBlackSun
+  name: sw-loadout-group-weapon
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutWeaponJ111Rancor
+  - SWLoadoutWeaponMK3BlasterRifle
+  - SWLoadoutWeaponAnarchy
+
+- type: loadoutGroup
+  id: SWWeaponsExchange
+  name: sw-loadout-group-weapon
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutWeaponZ1BlasterCarbine
+  - SWLoadoutWeaponJ111Rancor
+  - SWLoadoutWeaponUIHBP
+
+- type: loadoutGroup
+  id: SWWeaponsHavokHeavy
+  name: sw-loadout-group-weapon
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutWeaponH206Renegade
+
+- type: loadoutGroup
+  id: SWWeaponsAgent
+  name: sw-loadout-group-weapon
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutWeaponE1BlasterRifle
+  - SWLoadoutWeaponUIHBP
+
+- type: loadoutGroup
+  id: SWWeaponsCaretaker
+  name: sw-loadout-group-weapon
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutWeaponE1BlasterRifle

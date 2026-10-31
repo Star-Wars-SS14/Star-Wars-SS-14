@@ -1,0 +1,66 @@
+# Same stats as the parent, older art of ours.
+- type: entity
+  parent: SWRepublicSuit
+  id: SWLoadoutSuitRepublicVest
+  name: field vest
+  description: A Republic suit, cut as a field vest. It protects as the regular suit does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Vests/rebel_vest.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Vests/rebel_vest.rsi
+
+- type: entity
+  parent: SWLieutenantRepublicSuit
+  id: SWLoadoutSuitRepublicOfficerVest
+  name: officer's field vest
+  description: A Republic officer's suit, cut as a field vest. It protects as the regular suit does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Vests/rebel_vest.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Vests/rebel_vest.rsi
+
+- type: entity
+  parent: SWLieutenantImperialSuit
+  id: SWLoadoutSuitImperialOfficerVest
+  name: officer's vest
+  description: An Imperial officer's suit, cut as a vest. It protects as the regular suit does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Vests/imperial_officer.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Vests/imperial_officer.rsi
+
+- type: entity
+  parent: SW_ClothingHeadRepublicHelmet
+  id: SWLoadoutCapRepublic
+  name: field cap
+  description: A Republic field cap with the helmet's display in the visor.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Hats/officer.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Hats/officer.rsi
+
+- type: entity
+  parent: SW_ClothingHeadRepublicHelmet
+  id: SWLoadoutHelmetRepublicField
+  name: field helmet
+  description: An older Republic helmet with the regular display.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Helmets/rebelhelmet.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Helmets/rebelhelmet.rsi
+
+- type: entity
+  parent: SW_ClothingHeadImperialHelmet
+  id: SWLoadoutCapImperial
+  name: field cap
+  description: An Imperial field cap with the helmet's display in the visor.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Hats/impcccap.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Hats/impcccap.rsi

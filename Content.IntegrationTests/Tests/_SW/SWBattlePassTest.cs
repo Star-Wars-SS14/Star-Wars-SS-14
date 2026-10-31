@@ -629,6 +629,49 @@ public sealed class SWBattlePassTest
     }
 
     [Test]
+    public async Task WearKeepsWhatThePlayerChoseByHand()
+    {
+        var (pair, _, _, _) = await Setup();
+        var server = pair.Server;
+        const string group = "SWCosmeticsNeck";
+        const string first = "SWCosmeticScarfWatch";
+        const string second = "SWCosmeticScarfFrost";
+        const string chosen = "SWCosmeticScarfCoal";
+        const string chosenRole = "JobSWRepublicMedic";
+
+        await server.WaitAssertion(() =>
+        {
+            var proto = server.ProtoMan;
+            var profile = new HumanoidCharacterProfile();
+            var entMan = server.EntMan;
+
+            var worn = SWCosmeticWear.Wear(profile, first, group, null, entMan, proto);
+            Assert.That(worn.Changed, Is.GreaterThan(10));
+            profile = worn.Profile;
+            Assert.That(profile.Loadouts.ContainsKey("JobSWJedi") && profile.Loadouts["JobSWJedi"].SelectedLoadouts.ContainsKey(group), Is.False,
+                "a job with its own neck item is left alone");
+
+            // The player picks something else for one job, by hand.
+            var medic = profile.Loadouts[chosenRole].Clone();
+            medic.SelectedLoadouts[group] = new List<Loadout> { new() { Prototype = chosen } };
+            profile = profile.WithLoadout(medic);
+
+            var again = SWCosmeticWear.Wear(profile, second, group, null, entMan, proto);
+            Assert.That(again.KeptOther, Is.EqualTo(1));
+            Assert.That(again.Changed, Is.EqualTo(worn.Changed - 1));
+            Assert.That(again.Profile.Loadouts[chosenRole].SelectedLoadouts[group][0].Prototype.Id, Is.EqualTo(chosen));
+            Assert.That(again.Profile.Loadouts["JobSWRepublicSoldier"].SelectedLoadouts[group][0].Prototype.Id, Is.EqualTo(second));
+
+            var off = SWCosmeticWear.TakeOff(again.Profile, second, group, null, entMan, proto);
+            Assert.That(off.Changed, Is.EqualTo(again.Changed));
+            Assert.That(off.Profile.Loadouts[chosenRole].SelectedLoadouts[group][0].Prototype.Id, Is.EqualTo(chosen));
+            Assert.That(off.Profile.Loadouts["JobSWRepublicSoldier"].SelectedLoadouts[group], Is.Empty);
+        });
+
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
     public async Task KillsPayOnlyForEnemyPlayersWithinTheLimits()
     {
         var (pair, pass, season, _) = await Setup();

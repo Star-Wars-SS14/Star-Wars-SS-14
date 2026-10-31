@@ -1,3 +1,4 @@
+using Content.Shared._SW.Loadouts; //SW
 using System.Linq;
 using Content.Client.Guidebook;
 using Content.Client.Corvax.TTS;
@@ -441,6 +442,37 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
         }
     }
 
+    //SW start
+    /// <summary>
+    /// Dresses the dummy in what the character would spawn in. A failed item is deleted here, as nothing else would.
+    /// </summary>
+    private void SWDressDummy(EntityUid dummy, HumanoidCharacterProfile profile, JobPrototype job)
+    {
+        if (!_inventory.TryGetSlots(dummy, out var slots))
+            return;
+
+        var roleId = LoadoutSystem.GetJobPrototype(job.ID);
+        _prototypeManager.TryIndex<RoleLoadoutPrototype>(roleId, out var role);
+        var loadout = role == null
+            ? null
+            : profile.GetLoadoutOrDefault(roleId, _playerManager.LocalSession, profile.Species, EntityManager, _prototypeManager);
+
+        _prototypeManager.Resolve(job.StartingGear, out var jobGear);
+        IEquipmentLoadout gear = SWMergedGear.Build(jobGear, loadout, role, _prototypeManager);
+
+        foreach (var slot in slots)
+        {
+            var itemType = gear.GetGear(slot.Name);
+            if (itemType == string.Empty || !SWSpeciesSlots.CanWear(profile.Species, slot.Name, _prototypeManager, EntityManager.ComponentFactory))
+                continue;
+
+            var item = EntityManager.SpawnEntity(itemType, MapCoordinates.Nullspace);
+            if (!_inventory.TryEquip(dummy, item, slot.Name, silent: true))
+                EntityManager.DeleteEntity(item);
+        }
+    }
+    //SW end
+
     /// <summary>
     /// Applies the specified job's clothes to the dummy.
     /// </summary>
@@ -555,13 +587,7 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
         {
             DebugTools.Assert(job != null);
 
-            GiveDummyJobClothes(dummyEnt, humanoid, job);
-
-            if (_prototypeManager.HasIndex<RoleLoadoutPrototype>(LoadoutSystem.GetJobPrototype(job.ID)))
-            {
-                var loadout = humanoid.GetLoadoutOrDefault(LoadoutSystem.GetJobPrototype(job.ID), _playerManager.LocalSession, humanoid.Species, EntityManager, _prototypeManager);
-                GiveDummyLoadout(dummyEnt, loadout);
-            }
+            SWDressDummy(dummyEnt, humanoid, job); //SW
         }
 
         return dummyEnt;

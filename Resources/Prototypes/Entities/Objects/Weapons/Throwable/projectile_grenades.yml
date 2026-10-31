@@ -138,4 +138,4 @@
       path: "/Audio/Weapons/Guns/Gunshots/batrifle.ogg"
     positional: true
   - type: StaticPrice
-    price: 1500
+    price: 190 #SW was 1500: sold for more than it costs

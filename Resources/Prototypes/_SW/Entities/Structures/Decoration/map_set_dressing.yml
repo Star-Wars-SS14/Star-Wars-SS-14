@@ -1,0 +1,120 @@
+# Set dressing for maps: our sprites with no interface and no link to any faction, and always powered lamps in accent colours.
+
+- type: entity
+  parent: BaseStructure
+  id: SWDecorDroidFabricator
+  name: dead droid fabricator
+  description: An assembly platform with burnt-out controllers. Whatever it made is walking around now.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Machines/droid_fabricator.rsi
+    drawdepth: HighFloorObjects
+    layers:
+    - state: fabricator
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-1.6,-1.9,1.6,1"
+        density: 190
+        mask:
+        - MachineMask
+        layer:
+        - WallLayer
+
+- type: entity
+  parent: SWAlwaysPoweredWallLight
+  id: SWAlwaysPoweredLightBright
+  name: bright lamp
+  suffix: Always powered
+  components:
+  - type: PointLight
+    color: "#EEEEFF"
+    energy: 2.5
+    radius: 10
+    softness: 0.9
+    offset: "0, -0.5"
+
+- type: entity
+  parent: SWAlwaysPoweredWallLight
+  id: SWAlwaysPoweredLightRed
+  name: emergency lamp
+  suffix: Always powered
+  components:
+  - type: PointLight
+    color: "#FB4747"
+    energy: 3
+    radius: 8
+    softness: 0.5
+    offset: "0, -0.5"
+
+- type: entity
+  parent: SWAlwaysPoweredWallLight
+  id: SWAlwaysPoweredLightAmber
+  name: amber lamp
+  suffix: Always powered
+  components:
+  - type: PointLight
+    color: "#FFAF38"
+    energy: 1.8
+    radius: 10
+    softness: 0.9
+    offset: "0, -0.5"
+
+- type: entity
+  parent: BaseStructure
+  id: SWDecorSignalTower
+  name: dead signal tower
+  description: A mast with a burnt-out transmitter. You can see it from anywhere in the yard, and so can they.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Machines/comm_tower.rsi
+    noRot: true
+    scale: 1.6,1.6
+    offset: 0,1.1
+    drawdepth: Overdoors
+    layers:
+    - state: comm_tower
+  - type: PointLight
+    color: "#FB4747"
+    energy: 2
+    radius: 5
+    softness: 1
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 50
+        mask:
+        - MachineMask
+        layer:
+        - WallLayer
+
+- type: entity
+  parent: SWAlwaysPoweredWallLight
+  id: SWAlwaysPoweredLightBlue
+  name: blue lamp
+  suffix: Always powered
+  components:
+  - type: PointLight
+    color: "#6FA8FF"
+    energy: 1.8
+    radius: 10
+    softness: 0.9
+    offset: "0, -0.5"
+
+- type: entity
+  parent: SWAlwaysPoweredWallLight
+  id: SWAlwaysPoweredLightGreen
+  name: green lamp
+  suffix: Always powered
+  components:
+  - type: PointLight
+    color: "#7CFC6A"
+    energy: 1.5
+    radius: 10
+    softness: 0.9
+    offset: "0, -0.5"

@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Server._SW._Senate.Economy;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;

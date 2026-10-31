@@ -41,6 +41,12 @@ see_own_notes = true
 new_player_threshold = 120
 
 [ic]
-random_characters = true
+random_characters = false #SW: a random character wears no loadout, so the battle pass cosmetics could not be seen
 random_species_weights = ""
 ssd_sleep_time = 3600
+
+#SW start
+[sw]
+battlepass_preseason_open = true
+battlepass_min_players = 1
+#SW end

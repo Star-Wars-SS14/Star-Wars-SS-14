@@ -1,0 +1,543 @@
+- type: loadout
+  id: SWNewYearRepublicSuit
+  equipment:
+    outerClothing: SWNewYearRepublicSuit
+
+- type: loadout
+  id: SWNewYearImperialSuit
+  equipment:
+    outerClothing: SWNewYearImperialSuit
+
+- type: loadout
+  id: SWNewYearRepublicCap
+  equipment:
+    head: SWNewYearRepublicCap
+
+- type: loadout
+  id: SWNewYearImperialCap
+  equipment:
+    head: SWNewYearImperialCap
+
+- type: loadout
+  id: SWNewYearCourierSuit
+  equipment:
+    outerClothing: SWNewYearCourierSuit
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWNewYearCourierCap
+  equipment:
+    head: SWNewYearCourierCap
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWNewYearSnowmanSuit
+  equipment:
+    outerClothing: SWNewYearSnowmanSuit
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWNewYearSnowmanHead
+  equipment:
+    head: SWNewYearSnowmanHead
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadoutGroup
+  id: SWNewYearRepublicSoldierSuit
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWNewYearRepublicSuit
+  - SWWinterRepublicGarrisonSuit
+  - SWWinterRepublicColdWarSuit
+  - SWWinterRepublicVeteranSuit
+  - SWWinterRepublicParkaSuit
+  - SWWinterRepublicFrostSuit
+  - SWWinterRepublicPonchoSuit
+
+- type: loadoutGroup
+  id: SWNewYearRepublicSoldierHead
+  name: sw-loadout-group-head
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWNewYearRepublicCap
+  - SWWinterRepublicSnowHelmet
+  - SWWinterRepublicCoverHelmet
+
+- type: loadoutGroup
+  id: SWNewYearImperialSoldierSuit
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWNewYearImperialSuit
+  - SWWinterImperialGarrisonSuit
+  - SWWinterImperialColdWarSuit
+  - SWWinterImperialVeteranSuit
+  - SWWinterImperialParkaSuit
+  - SWWinterImperialFrostSuit
+  - SWWinterImperialPonchoSuit
+
+- type: loadoutGroup
+  id: SWNewYearImperialSoldierHead
+  name: sw-loadout-group-head
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWNewYearImperialCap
+  - SWWinterImperialSnowHelmet
+  - SWWinterImperialCoverHelmet
+
+- type: loadoutGroup
+  id: SWNewYearCitizenSuit
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWNewYearDedMorozSuit
+  - SWNewYearSweater
+  - SWNewYearCourierSuit
+  - SWNewYearSnowmanSuit
+
+- type: loadoutGroup
+  id: SWNewYearCitizenHead
+  name: sw-loadout-group-head
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWNewYearCourierCap
+  - SWNewYearSnowmanHead
+
+- type: loadout
+  id: SWNewYearCloakRed
+  equipment:
+    neck: SWNewYearCloakRed
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterCloakWool
+  equipment:
+    neck: SWWinterCloakWool
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWNewYearDedMorozSuit
+  equipment:
+    outerClothing: SWNewYearDedMorozSuit
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWNewYearSweater
+  equipment:
+    outerClothing: SWNewYearSweater
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterMandalorianFurSuit
+  equipment:
+    outerClothing: SWWinterMandalorianFurSuit
+
+- type: loadout
+  id: SWWinterBlackSunFurSuit
+  equipment:
+    outerClothing: SWWinterBlackSunFurSuit
+
+- type: loadout
+  id: SWWinterImperialOfficerSuit
+  equipment:
+    outerClothing: SWWinterImperialOfficerSuit
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterRepublicOfficerSuit
+  equipment:
+    outerClothing: SWWinterRepublicOfficerSuit
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+# The red cloak reads as the Empire and the blue as the Republic, so each side only gets its own.
+- type: loadoutGroup
+  id: SWNewYearCloakEmpire
+  name: sw-loadout-group-cosmetics
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWNewYearCloakRed
+  - SWWinterCloakWool
+  - SWWinterCloakFrost
+  - SWWinterCloakLeather
+  - SWWinterCloakDark
+  - SWNewYearCloakGreen
+  - SWWinterCloakFur
+  - SWWinterCloakPlaid
+
+- type: loadoutGroup
+  id: SWNewYearCloakRepublic
+  name: sw-loadout-group-cosmetics
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWNewYearCloakBlue
+  - SWWinterCloakWool
+  - SWWinterCloakFrost
+  - SWWinterCloakLeather
+  - SWWinterCloakDark
+  - SWNewYearCloakGreen
+  - SWWinterCloakFur
+  - SWWinterCloakPlaid
+
+- type: loadoutGroup
+  id: SWNewYearCloakNeutral
+  name: sw-loadout-group-cosmetics
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWWinterCloakWool
+  - SWWinterCloakFrost
+  - SWWinterCloakLeather
+  - SWWinterCloakDark
+  - SWNewYearCloakGreen
+  - SWWinterCloakFur
+  - SWWinterCloakPlaid
+
+- type: loadoutGroup
+  id: SWNewYearImperialOfficerSuit
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWWinterImperialOfficerSuit
+  - SWWinterImperialGreatcoat
+
+- type: loadoutGroup
+  id: SWNewYearRepublicOfficerSuit
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWWinterRepublicOfficerSuit
+  - SWWinterRepublicGreatcoat
+
+- type: loadoutGroup
+  id: SWNewYearBlackSunSuit
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWWinterBlackSunFurSuit
+
+- type: loadout
+  id: SWWinterRepublicGarrisonSuit
+  equipment:
+    outerClothing: SWWinterRepublicGarrisonSuit
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterImperialGarrisonSuit
+  equipment:
+    outerClothing: SWWinterImperialGarrisonSuit
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterRepublicColdWarSuit
+  equipment:
+    outerClothing: SWWinterRepublicColdWarSuit
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterImperialColdWarSuit
+  equipment:
+    outerClothing: SWWinterImperialColdWarSuit
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterRepublicVeteranSuit
+  equipment:
+    outerClothing: SWWinterRepublicVeteranSuit
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterImperialVeteranSuit
+  equipment:
+    outerClothing: SWWinterImperialVeteranSuit
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterRepublicSnowHelmet
+  equipment:
+    head: SWWinterRepublicSnowHelmet
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterImperialSnowHelmet
+  equipment:
+    head: SWWinterImperialSnowHelmet
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterCloakFrost
+  equipment:
+    neck: SWWinterCloakFrost
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterCloakLeather
+  equipment:
+    neck: SWWinterCloakLeather
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterCloakDark
+  equipment:
+    neck: SWWinterCloakDark
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWNewYearCloakBlue
+  equipment:
+    neck: SWNewYearCloakBlue
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterRepublicParkaSuit
+  equipment:
+    outerClothing: SWWinterRepublicParkaSuit
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterRepublicFrostSuit
+  equipment:
+    outerClothing: SWWinterRepublicFrostSuit
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterRepublicPonchoSuit
+  equipment:
+    outerClothing: SWWinterRepublicPonchoSuit
+
+- type: loadout
+  id: SWWinterImperialParkaSuit
+  equipment:
+    outerClothing: SWWinterImperialParkaSuit
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterImperialFrostSuit
+  equipment:
+    outerClothing: SWWinterImperialFrostSuit
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterImperialPonchoSuit
+  equipment:
+    outerClothing: SWWinterImperialPonchoSuit
+
+- type: loadout
+  id: SWWinterRepublicWorkCoat
+  equipment:
+    outerClothing: SWWinterRepublicWorkCoat
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterImperialWorkCoat
+  equipment:
+    outerClothing: SWWinterImperialWorkCoat
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterRepublicFlightCoat
+  equipment:
+    outerClothing: SWWinterRepublicFlightCoat
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterImperialFlightCoat
+  equipment:
+    outerClothing: SWWinterImperialFlightCoat
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterRepublicGreatcoat
+  equipment:
+    outerClothing: SWWinterRepublicGreatcoat
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterImperialGreatcoat
+  equipment:
+    outerClothing: SWWinterImperialGreatcoat
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterRepublicCoverHelmet
+  equipment:
+    head: SWWinterRepublicCoverHelmet
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterImperialCoverHelmet
+  equipment:
+    head: SWWinterImperialCoverHelmet
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWNewYearCloakGreen
+  equipment:
+    neck: SWNewYearCloakGreen
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterCloakFur
+  equipment:
+    neck: SWWinterCloakFur
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadout
+  id: SWWinterCloakPlaid
+  equipment:
+    neck: SWWinterCloakPlaid
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+
+- type: loadoutGroup
+  id: SWNewYearRepublicEngineerSuit
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWWinterRepublicWorkCoat
+
+- type: loadoutGroup
+  id: SWNewYearImperialEngineerSuit
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWWinterImperialWorkCoat
+
+- type: loadoutGroup
+  id: SWNewYearRepublicPilotSuit
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWWinterRepublicFlightCoat
+
+- type: loadoutGroup
+  id: SWNewYearImperialPilotSuit
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWWinterImperialFlightCoat

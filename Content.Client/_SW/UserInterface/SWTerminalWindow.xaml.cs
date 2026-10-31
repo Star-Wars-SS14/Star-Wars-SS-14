@@ -44,6 +44,25 @@ public partial class SWTerminalWindow : BaseWindow
     }
 
     /// <summary>
+    /// Colours the window with an accent that belongs to no faction.
+    /// </summary>
+    public void SetAccent(string accent)
+    {
+        Accent = accent;
+        AccentLine.SetOnlyStyleClass(SWTerminalStyle.AccentLine + accent);
+    }
+
+    /// <summary>
+    /// Gives the whole window to its contents, for a window that draws its own title and cross.
+    /// </summary>
+    protected void HideHeader()
+    {
+        HeaderRow.Visible = false;
+        AccentLine.Visible = false;
+        ContentsContainer.Margin = new Thickness(0);
+    }
+
+    /// <summary>
     /// A row with a name on the left and an amount of money on the right, for the card of a terminal window.
     /// </summary>
     public static BoxContainer CreateValueRow(string name, string value)

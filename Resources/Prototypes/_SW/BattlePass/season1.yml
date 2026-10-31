@@ -1,0 +1,226 @@
+# Season 1. The numbers come from the season design. and are hypotheses until
+# two weeks of data exist. The paid track holds fixed items only: no cases and no snowflakes, because a case bought
+# through a paid track would be a paid random box. SWBattlePassTest holds it to that.
+- type: swBattlePassSeason
+  id: SWSeasonColdWar
+  name: sw-battlepass-season-coldwar
+  banner: /Textures/_SW/Interface/BattlePass/season1_banner.png
+  start: "2026-10-31"
+  end: "2027-01-31"
+  xpPerTier: 3000
+  firstOpenXp: 4000
+  catchUpPerDay: 750
+  overtimeCase: SWCaseColdWar
+  civilianJobs:
+  - SWCivialian
+  - SWNeutralBartender
+  dailyQuestCount: 3
+  dailyQuests:
+  - id: finishRound
+    name: sw-battlepass-quest-finish-round
+    kind: RoundsFinished
+    target: 1
+    xp: 150
+  - id: taskAlive
+    name: sw-battlepass-quest-task-alive
+    kind: FactionTasksAlive
+    target: 1
+    xp: 150
+  - id: kills
+    name: sw-battlepass-quest-kills
+    kind: EnemyKills
+    target: 2
+    xp: 150
+  - id: oneLife
+    name: sw-battlepass-quest-one-life
+    kind: MinutesOneLife
+    target: 1
+    xp: 150
+  - id: heal
+    name: sw-battlepass-quest-heal
+    kind: Heals
+    target: 1
+    xp: 150
+  - id: comeBack
+    name: sw-battlepass-quest-come-back
+    kind: ReturnsAfterDeath
+    target: 1
+    xp: 150
+  weeklyQuests:
+  - id: weekRounds
+    name: sw-battlepass-quest-week-rounds
+    kind: RoundsFinished
+    target: 5
+    xp: 1000
+  - id: weekTasks
+    name: sw-battlepass-quest-week-tasks
+    kind: FactionTasksAlive
+    target: 10
+    xp: 1000
+  - id: weekKills
+    name: sw-battlepass-quest-week-kills
+    kind: EnemyKills
+    target: 15
+    xp: 1000
+  tiers:
+  - free: # 1
+      cosmetic: SWCosmeticScarfWatch
+    paid:
+      cosmetic: SWCosmeticScarfFrost
+  - free: # 2
+      case: SWCaseColdWar
+    paid:
+      title: sw-battlepass-title-watchman
+  - paid: # 3
+      cosmetic: SWNewYearCourierSuit
+      also:
+      - SWNewYearCourierCap
+  - paid: # 4
+      title: sw-battlepass-title-winter-soldier
+  - free: # 5
+      snowflakes: 15
+    paid:
+      cosmetic: SWWinterRepublicCoverHelmet
+      also:
+      - SWWinterImperialCoverHelmet
+  - paid: # 6
+      title: sw-battlepass-title-frostproof
+  - free: # 7
+      case: SWCaseColdWar
+    paid:
+      cosmetic: SWNewYearCloakGreen
+  - free: # 8
+      cosmetic: SWCosmeticHatGarrison
+    paid:
+      cosmetic: SWCosmeticHatFrost
+  - paid: # 9
+      cosmetic: SWWinterRepublicWorkCoat
+      also:
+      - SWWinterImperialWorkCoat
+  - free: # 10
+      cosmetic: SWWinterCloakFrost
+    paid:
+      cosmetic: SWWinterCloakDark
+  - free: # 11
+      case: SWCaseColdWar
+    paid:
+      title: sw-battlepass-title-snow-ghost
+  - free: # 12
+      snowflakes: 15
+    paid:
+      cosmetic: SWWinterRepublicParkaSuit
+      also:
+      - SWWinterImperialParkaSuit
+  - free: # 13
+      title: sw-battlepass-title-winter-veteran
+    paid:
+      title: sw-battlepass-title-night-patrol
+  - paid: # 14
+      cosmetic: SWNewYearDedMorozSuit
+  - free: # 15
+      case: SWCaseColdWar
+    paid:
+      cosmetic: SWCosmeticScarfBalmora
+      also:
+      - SWNewYearSweater
+  - paid: # 16
+      title: sw-battlepass-title-balmora-wolf
+  - free: # 17
+      snowflakes: 15
+    paid:
+      cosmetic: SWWinterCloakFur
+  - free: # 18
+      case: SWCaseColdWar
+    paid:
+      cosmetic: SWNewYearCloakRed
+      also:
+      - SWNewYearCloakBlue
+  - paid: # 19
+      cosmetic: SWWinterRepublicOfficerSuit
+      also:
+      - SWWinterImperialOfficerSuit
+  - free: # 20
+      cosmetic: SWNewYearSnowmanSuit
+      also:
+      - SWNewYearSnowmanHead
+    paid:
+      cosmetic: SWWinterRepublicGarrisonSuit
+      also:
+      - SWWinterImperialGarrisonSuit
+  - free: # 21
+      snowflakes: 15
+    paid:
+      title: sw-battlepass-title-last-round
+  - free: # 22
+      case: SWCaseColdWar
+    paid:
+      cosmetic: SWWinterRepublicFrostSuit
+      also:
+      - SWWinterImperialFrostSuit
+  - free: # 23
+      cosmetic: SWWinterRepublicVeteranSuit
+      also:
+      - SWWinterImperialVeteranSuit
+    paid:
+      title: sw-battlepass-title-cold-blooded
+  - free: # 24
+      snowflakes: 15
+    paid:
+      cosmetic: SWWinterRepublicFlightCoat
+      also:
+      - SWWinterImperialFlightCoat
+  - free: # 25
+      title: sw-battlepass-title-cold-war
+    paid:
+      title: sw-battlepass-title-frontline
+  - paid: # 26
+      cosmetic: SWWinterCloakWool
+  - free: # 27
+      snowflakes: 15
+    paid:
+      cosmetic: SWWinterCloakPlaid
+  - free: # 28
+      case: SWCaseColdWar
+    paid:
+      title: sw-battlepass-title-ice-and-ash
+  - paid: # 29
+      cosmetic: SWWinterRepublicGreatcoat
+      also:
+      - SWWinterImperialGreatcoat
+  - free: # 30
+      cosmetic: SWWinterCloakLeather
+    paid:
+      cosmetic: SWWinterRepublicColdWarSuit
+      also:
+      - SWWinterRepublicSnowHelmet
+      - SWWinterImperialColdWarSuit
+      - SWWinterImperialSnowHelmet
+      title: sw-battlepass-title-cold-war-paid
+
+- type: swBattlePassCase
+  id: SWCaseColdWar
+  name: sw-battlepass-case-coldwar
+  icon:
+    sprite: _SW/Interface/BattlePass/icons.rsi
+    state: case
+  pityAfter: 8
+  pityRarity: Rare
+  firstEntry: 1
+  entries:
+  - chance: 60
+    snowflakes: 10
+  - chance: 15
+    cosmetic: SWCosmeticScarfHeather
+    rarity: Common
+    duplicateSnowflakes: 15
+    price: 40
+  - chance: 20
+    cosmetic: SWCosmeticScarfStar
+    rarity: Rare
+    duplicateSnowflakes: 40
+    price: 100
+  - chance: 5
+    cosmetic: SWCosmeticCapeNorth
+    rarity: Legendary
+    duplicateSnowflakes: 100
+    price: 250

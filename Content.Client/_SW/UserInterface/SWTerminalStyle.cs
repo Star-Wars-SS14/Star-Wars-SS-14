@@ -32,6 +32,13 @@ public static class SWTerminalStyle
     public const string Money = "SWTermMoney";
     public const string Price = "SWTermPrice";
     public const string Button = "SWTermButton";
+    public const string ButtonSmall = "SWTermButtonSmall";
+    public const string Tab = "SWTermTab";
+    public const string TabActive = "SWTermTabActive";
+    public const string BigNumber = "SWTermBigNumber";
+    public const string Hero = "SWTermHero";
+    public const string CellWord = "SWTermCellWord";
+    public const string ClaimButton = "SWTermMainButtonClaim";
     public const string MainButton = "SWTermMainButton";
     public const string Option = "SWTermOption";
     public const string OptionItem = "SWTermOptionItem";
@@ -65,6 +72,7 @@ public static class SWTerminalStyle
         ("Exchange", Color.FromHex("#2BBBB3"), Color.FromHex("#0F6B68"), Color.FromHex("#13807C"), Color.FromHex("#22A39C")),
         (NeutralAccent, Color.FromHex("#8E97A8"), Color.FromHex("#3A3F4A"), Color.FromHex("#474D5A"), Color.FromHex("#7C8493")),
         (MoneyAccent, MoneyColor, Color.FromHex("#7A5A17"), Color.FromHex("#936D1C"), Color.FromHex("#B0862C")),
+        ("Season", Color.FromHex("#9BE7FF"), Color.FromHex("#1F5468"), Color.FromHex("#286A82"), Color.FromHex("#4FA6C4")),
     };
 
     /// <summary>
@@ -108,6 +116,7 @@ public static class SWTerminalStyle
     public static readonly Color DividerColor = Color.FromHex("#25282E");
     public static readonly Color SectionDividerColor = Color.FromHex("#5D6476");
     private static readonly Color Green = Color.FromHex("#5CB353");
+    private static readonly Color SeasonUnderline = Color.FromHex("#9BE7FF");
     public static readonly Color ButtonFill = Color.FromHex("#272A30");
     public static readonly Color ButtonHover = Color.FromHex("#343842");
     public static readonly Color ButtonBorder = Color.FromHex("#5D6476");
@@ -183,6 +192,32 @@ public static class SWTerminalStyle
             E<ContainerButton>().Class(Button).PseudoDisabled().Modulate(Color.White).Box(Box(Disabled, DividerColor, 1, 8, 7)),
             E<ContainerButton>().Class(Button).ParentOf(E<Label>()).Font(regular).FontColor(TextBright).AlignMode(Label.AlignMode.Center),
 
+            // The one loud thing in the window: ice with a dark word.
+            E<ContainerButton>().Class(ClaimButton).PseudoNormal().Modulate(Color.White).Box(Box(SeasonUnderline, SeasonUnderline, 1, 12, 6)),
+            E<ContainerButton>().Class(ClaimButton).PseudoHovered().Modulate(Color.White).Box(Box(Color.FromHex("#C4F0FF"), Color.FromHex("#C4F0FF"), 1, 12, 6)),
+            E<ContainerButton>().Class(ClaimButton).PseudoPressed().Modulate(Color.White).Box(Box(Color.FromHex("#7CCBE4"), Color.FromHex("#7CCBE4"), 1, 12, 6)),
+            E<ContainerButton>().Class(ClaimButton).PseudoDisabled().Modulate(Color.White).Box(Box(Disabled, ButtonBorder, 1, 12, 6)),
+            E<ContainerButton>().Class(ClaimButton).PseudoDisabled().ParentOf(E<Label>()).FontColor(TextOff),
+            E<ContainerButton>().Class(ClaimButton).ParentOf(E<Label>()).Font(heading).FontColor(Background).AlignMode(Label.AlignMode.Center),
+
+            E<ContainerButton>().Class(ButtonSmall).PseudoNormal().Modulate(Color.White).Box(Box(ButtonFill, ButtonBorder, 1, 6, 3)),
+            E<ContainerButton>().Class(ButtonSmall).PseudoHovered().Modulate(Color.White).Box(Box(ButtonHover, ButtonBorder, 1, 6, 3)),
+            E<ContainerButton>().Class(ButtonSmall).PseudoPressed().Modulate(Color.White).Box(Box(FieldFill, ButtonBorder, 1, 6, 3)),
+            E<ContainerButton>().Class(ButtonSmall).PseudoDisabled().Modulate(Color.White).Box(Box(Disabled, DividerColor, 1, 6, 3)),
+            E<ContainerButton>().Class(ButtonSmall).ParentOf(E<Label>()).Font(regular).FontColor(TextBright).AlignMode(Label.AlignMode.Center),
+
+            E<ContainerButton>().Class(Tab).PseudoNormal().Modulate(Color.White).Box(TabBox(Color.Transparent, Color.Transparent)),
+            E<ContainerButton>().Class(Tab).PseudoHovered().Modulate(Color.White).Box(TabBox(ButtonFill, Color.Transparent)),
+            E<ContainerButton>().Class(Tab).PseudoPressed().Modulate(Color.White).Box(TabBox(FieldFill, Color.Transparent)),
+            E<ContainerButton>().Class(Tab).ParentOf(E<Label>()).Font(chip).FontColor(TextDim).AlignMode(Label.AlignMode.Center),
+            E<ContainerButton>().Class(TabActive).PseudoNormal().Modulate(Color.White).Box(TabBox(Color.Transparent, SeasonUnderline)),
+            E<ContainerButton>().Class(TabActive).PseudoHovered().Modulate(Color.White).Box(TabBox(Color.Transparent, SeasonUnderline)),
+            E<ContainerButton>().Class(TabActive).PseudoPressed().Modulate(Color.White).Box(TabBox(Color.Transparent, SeasonUnderline)),
+            E<ContainerButton>().Class(TabActive).ParentOf(E<Label>()).Font(chip).FontColor(TextBright).AlignMode(Label.AlignMode.Center),
+            E<Label>().Class(BigNumber).Font(res.GetFont(BoldFont, 24)).FontColor(Background),
+            E<Label>().Class(CellWord).Font(res.GetFont(BoldFont, 10)),
+            E<Label>().Class(Hero).Font(res.GetFont(BoldFont, 22)).FontColor(Color.White),
+
             E<OptionButton>().Class(Option).PseudoNormal().Modulate(Color.White).Box(Box(FieldFill, ButtonBorder, 1, 6, 7)),
             E<OptionButton>().Class(Option).PseudoHovered().Modulate(Color.White).Box(Box(ButtonFill, ButtonBorder, 1, 6, 7)),
             E<OptionButton>().Class(Option).PseudoPressed().Modulate(Color.White).Box(Box(ButtonFill, ButtonBorder, 1, 6, 7)),
@@ -202,6 +237,23 @@ public static class SWTerminalStyle
         });
 
         return rules.ToArray();
+    }
+
+    /// <summary>
+    /// A tab is a word with a line under it, because a row of boxes above a track of boxes is only noise.
+    /// </summary>
+    private static StyleBoxFlat TabBox(Color fill, Color underline)
+    {
+        var box = new StyleBoxFlat
+        {
+            BackgroundColor = fill,
+            BorderColor = underline,
+            BorderThickness = new Thickness(0, 0, 0, 3),
+        };
+        box.SetContentMarginOverride(StyleBox.Margin.Left, 12);
+        box.SetContentMarginOverride(StyleBox.Margin.Right, 12);
+        box.SetContentMarginOverride(StyleBox.Margin.Vertical, 3);
+        return box;
     }
 
     public static StyleBoxFlat Fill(Color color)

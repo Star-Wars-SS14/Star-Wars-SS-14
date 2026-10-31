@@ -126,10 +126,10 @@ public sealed class SWPressGuestPolicySystem : EntitySystem
             && _tokens.TryGetValue(ev.TargetKey, out var user))
         {
             ev.Authorized = true; ev.TargetUserId = user;
-            if (OnlineActor(user) is { } target && _press.TryGetCorrespondent(target, out _)
-                && Identity.Name(target, EntityManager, ent.Owner) == Name(target)
-                && Identity.Name(ent.Owner, EntityManager, target) == Name(ent.Owner))
-                ev.TargetDisplayName = Name(target);
+            if (OnlineActor(user) is { } reporterActor && _press.TryGetCorrespondent(reporterActor, out _)
+                && Identity.Name(reporterActor, EntityManager, ent.Owner) == Name(reporterActor)
+                && Identity.Name(ent.Owner, EntityManager, reporterActor) == Name(ent.Owner))
+                ev.TargetDisplayName = Name(reporterActor);
         }
     }
 

@@ -109,6 +109,9 @@ public static class SWTerminalGlobalRules
             E().Class(StyleClass.BackgroundPanelOpenLeft).Panel(Box(Background, CardBorder, 1, 8, 14, 2)).Modulate(Color.White),
             E().Class(StyleClass.BackgroundPanelOpenRight).Panel(Box(Background, CardBorder, 1, 14, 8, 2)).Modulate(Color.White),
 
+            // The Nanotrasen logo in window footers is not ours. A rule removes it from every window at once.
+            E<TextureRect>().Class("NTLogoDark").Prop(TextureRect.StylePropertyTexture, Texture.Transparent),
+
             E<PanelContainer>().Class(StyleClass.PanelLight).Panel(Fill(PanelLightFill)),
             E<PanelContainer>().Class("PdaContentBackground").Panel(Fill(Background)).Modulate(Color.White),
             E<PanelContainer>().Class("PdaBackground").Panel(Fill(Background)).Modulate(Color.White),

@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Numerics;
 using Content.Client.Message;
+using Content.Shared._SW._Senate;
 using Content.Shared.GameTicking;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
@@ -13,13 +14,16 @@ namespace Content.Client.RoundEnd
     {
         private readonly IEntityManager _entityManager;
         public int RoundId;
+        public bool IsSenate { get; private set; }
+        private RichTextLabel? _personalHistory;
 
         public RoundEndSummaryWindow(string gm, string roundEnd, TimeSpan roundTimeSpan, int roundId,
-            RoundEndMessageEvent.RoundEndPlayerInfo[] info, IEntityManager entityManager)
+            RoundEndMessageEvent.RoundEndPlayerInfo[] info, IEntityManager entityManager, SWSenateRoundHistory? history = null)
         {
             _entityManager = entityManager;
+            IsSenate = history != null;
 
-            MinSize = SetSize = new Vector2(520, 580);
+            MinSize = SetSize = history == null ? new Vector2(520, 580) : new Vector2(1000, 700);
 
             Title = Loc.GetString("round-end-summary-window-title");
 
@@ -31,6 +35,8 @@ namespace Content.Client.RoundEnd
 
             RoundId = roundId;
             var roundEndTabs = new TabContainer();
+            if (history != null)
+                roundEndTabs.AddChild(MakeSenateHistoryTab(history, roundTimeSpan));
             roundEndTabs.AddChild(MakeRoundEndSummaryTab(gm, roundEnd, roundTimeSpan, roundId));
             roundEndTabs.AddChild(MakePlayerManifestTab(info));
 
@@ -38,6 +44,74 @@ namespace Content.Client.RoundEnd
 
             OpenCenteredRight();
             MoveToFront();
+        }
+
+        private BoxContainer MakeSenateHistoryTab(SWSenateRoundHistory history, TimeSpan duration)
+        {
+            var tab = new BoxContainer { Orientation = LayoutOrientation.Vertical, Name = "История Сената" };
+            var scroll = new ScrollContainer { VerticalExpand = true, HorizontalExpand = true, HScrollEnabled = false, Margin = new Thickness(20) };
+            var content = new BoxContainer { Orientation = LayoutOrientation.Vertical, HorizontalExpand = true, SeparationOverride = 12 };
+
+            void Add(string text)
+            {
+                var label = new RichTextLabel { HorizontalExpand = true };
+                var message = new FormattedMessage();
+                message.AddText(text);
+                label.SetMessage(message);
+                content.AddChild(label);
+            }
+
+            Add("СОЗЫВ ЗАВЕРШЁН");
+            Add($"История Республики • игровых дней: {history.Days} • длительность раунда: {(int) duration.TotalHours:00}:{duration.Minutes:00}:{duration.Seconds:00}");
+            Add("Показатели Республики\nНачало → конец (изменение за созыв)");
+            if (history.Stats.Length == 0)
+                Add("Данные о показателях недоступны.");
+            foreach (var stat in history.Stats)
+                Add($"{stat.Name}: {stat.Start:0.0} → {stat.End:0.0} ({stat.End - stat.Start:+0.0;-0.0;0.0})");
+
+            Add("Показатели секторов");
+            if (history.Sectors.Length == 0)
+                Add("Данные о секторах недоступны.");
+            foreach (var sector in history.Sectors)
+            {
+                Add(sector.Name);
+                foreach (var stat in sector.Stats)
+                    Add($"{stat.Name}: {stat.Start:0.0} → {stat.End:0.0} ({stat.End - stat.Start:+0.0;-0.0;0.0})");
+            }
+            Add("Принятые законы и поправки");
+            if (history.Laws.Length == 0)
+                Add("Принятых законов не зафиксировано.");
+            foreach (var law in history.Laws)
+                Add($"• {law.Name} — автор: {law.Author}{(law.Amendment ? " (поправка)" : "")}{(law.Repealed ? " (впоследствии отменён)" : "")}");
+            if (history.AdditionalLaws > 0)
+                Add($"Ещё решений: {history.AdditionalLaws}.");
+            Add("Личный результат");
+            _personalHistory = new RichTextLabel { HorizontalExpand = true };
+            SetPersonalHistory(Array.Empty<string>());
+            content.AddChild(_personalHistory);
+            Add("Завершённые проекты экономического развития");
+            if (history.Projects.Length == 0) Add("Завершённые проекты не зафиксированы в опубликованных данных.");
+            foreach (var project in history.Projects) Add($"• {project}");
+            Add("Экономические события • последние 20");
+            if (history.Events.Length == 0) Add("Экономических событий не зафиксировано.");
+            foreach (var ev in history.Events) Add($"• {ev}");
+            Add("Ведомства и суд");
+            foreach (var line in history.DepartmentSummary) Add(line);
+            Add("Подтверждённая история остальных ведомств недоступна.");
+            scroll.AddChild(content);
+            tab.AddChild(scroll);
+            return tab;
+        }
+
+        public void SetPersonalHistory(string[] lines)
+        {
+            if (_personalHistory == null)
+                return;
+            var message = new FormattedMessage();
+            message.AddText(lines.Length == 0
+                ? "Нет подтверждённого личного результата. Для должностей без надёжной привязки или при смене владельца оценка недоступна."
+                : string.Join("\n", lines));
+            _personalHistory.SetMessage(message);
         }
 
         private BoxContainer MakeRoundEndSummaryTab(string gamemode, string roundEnd, TimeSpan roundDuration, int roundId)

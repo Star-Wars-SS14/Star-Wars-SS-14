@@ -100,7 +100,7 @@ public sealed class SWSectorSelectConsoleSystem : EntitySystem
             return;
         }
 
-        if (!_senate.TryClaim(args.SectorId, Name(args.Actor)))
+        if (!_senate.TryClaim(args.SectorId, Name(args.Actor), args.Actor))
         {
             _popup.PopupCursor(Loc.GetString("sw-senate-select-taken"), args.Actor, PopupType.Medium);
             UpdateUi(ent);

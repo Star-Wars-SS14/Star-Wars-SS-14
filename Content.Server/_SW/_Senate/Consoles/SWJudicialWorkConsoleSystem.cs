@@ -151,7 +151,7 @@ public sealed class SWJudicialWorkConsoleSystem : EntitySystem
             return;
         }
 
-        if (_court.TakeOffice(id.Position, id.Name))
+        if (_court.TakeOffice(id.Position, id.Name, args.Actor))
         {
             _cards.SynchronizeHolder(id.Name, id.Position);
             _popup.PopupCursor("Судебные полномочия приняты.", args.Actor, PopupType.Medium);

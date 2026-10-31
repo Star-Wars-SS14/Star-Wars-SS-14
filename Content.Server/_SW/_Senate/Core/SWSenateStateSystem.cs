@@ -426,25 +426,31 @@ public sealed partial class SWSenateStateSystem : EntitySystem
     public string? GetSectorHolder(string sectorId) =>
         _sectorHolders.TryGetValue(sectorId, out var holder) ? holder : null;
 
-    public bool TryClaim(string sectorId, string holder)
+    public bool TryClaim(string sectorId, string holder, EntityUid? actor = null)
     {
         if (!_sectorGlobals.ContainsKey(sectorId) || _sectorHolders.ContainsKey(sectorId))
             return false;
 
         _sectorHolders[sectorId] = holder;
+        RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent(sectorId, actor));
         return true;
     }
 
-    public void Unclaim(string sectorId) => _sectorHolders.Remove(sectorId);
+    public void Unclaim(string sectorId)
+    {
+        if (_sectorHolders.Remove(sectorId))
+            RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent(sectorId, null));
+    }
 
     private readonly HashSet<string> _barredChancellors = new();
 
-    public bool TryTakeChancellor(string holder)
+    public bool TryTakeChancellor(string holder, EntityUid? actor = null)
     {
         if (Chancellor != null || _barredChancellors.Contains(holder))
             return false;
 
         Chancellor = holder;
+        RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent(SWSenateDilemmaSystem.RepublicOwner, actor));
         _electionForced = false;
         CancelVacantChancellorElections();
         return true;
@@ -453,7 +459,10 @@ public sealed partial class SWSenateStateSystem : EntitySystem
     public void ResignChancellor()
     {
         if (Chancellor is { } holder)
+        {
             _cards.RevokeHolder(holder, SWSenatePosition.Chancellor);
+            RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent(SWSenateDilemmaSystem.RepublicOwner, null));
+        }
         Chancellor = null;
     }
 
@@ -586,6 +595,7 @@ public sealed partial class SWSenateStateSystem : EntitySystem
             Author = author,
             Effects = effects,
             Stage = SWBillStage.Passed,
+            IsDecree = true,
         };
 
         _bills.Add(bill);
@@ -856,12 +866,13 @@ public sealed partial class SWSenateStateSystem : EntitySystem
         return true;
     }
 
-    public bool ConfirmChancellorElect(string name, string sectorId)
+    public bool ConfirmChancellorElect(string name, string sectorId, EntityUid? actor = null)
     {
         if (_chancellorElect == null || _chancellorElect != name || Chancellor != null)
             return false;
 
         Chancellor = name;
+        RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent(SWSenateDilemmaSystem.RepublicOwner, actor));
         _chancellorElect = null;
         _electionForced = false;
         Unclaim(sectorId);

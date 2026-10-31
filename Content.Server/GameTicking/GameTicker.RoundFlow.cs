@@ -486,6 +486,7 @@ namespace Content.Server.GameTicking
             _sawmill.Info("Ending round!");
 
             RunLevel = GameRunLevel.PostRound;
+            EntityManager.System<Content.Server._SW._Senate.Core.SWSenateRoundHistorySystem>().MarkEnding();
 
             try
             {
@@ -599,6 +600,8 @@ namespace Content.Server.GameTicking
                 listOfPlayerInfoFinal,
                 sound
             );
+            roundEndMessageEvent.SenateHistory = EntityManager.System<Content.Server._SW._Senate.Core.SWSenateRoundHistorySystem>().Capture();
+            EntityManager.System<Content.Server._SW._Senate.Core.SWSenateRoundHistorySystem>().RememberScoreboard(roundEndMessageEvent);
             RaiseNetworkEvent(roundEndMessageEvent);
             RaiseLocalEvent(roundEndMessageEvent);
             RaiseLocalEvent(new RoundEndedEvent(RoundId, roundDuration)); // Corvax

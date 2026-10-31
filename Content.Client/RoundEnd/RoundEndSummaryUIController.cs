@@ -1,4 +1,5 @@
 using Content.Client.GameTicking.Managers;
+using Content.Client._SW._Senate;
 using Content.Shared.GameTicking;
 using Content.Shared.Input;
 using JetBrains.Annotations;
@@ -29,6 +30,7 @@ public sealed class RoundEndSummaryUIController : UIController,
         else
         {
             _window.OpenCenteredRight();
+            if (_window.IsSenate) EntityManager.System<SWSenatePersonalHistoryClientSystem>().Request();
             _window.MoveToFront();
         }
     }
@@ -37,14 +39,22 @@ public sealed class RoundEndSummaryUIController : UIController,
     {
         // Don't open duplicate windows (mainly for replays).
         if (_window?.RoundId == message.RoundId)
-            return;
+        {
+            // An administrator can show a preliminary scoreboard before the Senate ends.
+            if (_window.IsSenate || message.SenateHistory == null)
+                return;
+            _window.Close();
+        }
 
         _window = new RoundEndSummaryWindow(message.GamemodeTitle, message.RoundEndText,
-            message.RoundDuration, message.RoundId, message.AllPlayersEndInfo, EntityManager);
+            message.RoundDuration, message.RoundId, message.AllPlayersEndInfo, EntityManager, message.SenateHistory);
+        if (message.SenateHistory != null)
+            EntityManager.System<SWSenatePersonalHistoryClientSystem>().Request();
     }
 
     public void OnSystemLoaded(ClientGameTicker system)
     {
+        EntityManager.System<SWSenatePersonalHistoryClientSystem>().Received += lines => _window?.SetPersonalHistory(lines);
         _input.SetInputCommand(ContentKeyFunctions.ToggleRoundEndSummaryWindow,
             InputCmdHandler.FromDelegate(ToggleScoreboardWindow));
     }

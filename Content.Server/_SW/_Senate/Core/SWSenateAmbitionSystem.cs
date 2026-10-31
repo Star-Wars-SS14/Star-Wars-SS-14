@@ -9,6 +9,8 @@ using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
+using Robust.Shared.Network;
+using Robust.Shared.Player;
 
 namespace Content.Server._SW._Senate.Core;
 
@@ -17,6 +19,7 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _proto = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
+    [Dependency] private readonly SWSenateRoundHistorySystem _history = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWSenatePartySystem _party = default!;
     [Dependency] private readonly SWEmergencyPowersSystem _powers = default!;
@@ -44,6 +47,12 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
     // ministry/department/bureau id for a minister-role office); persists across game days and is only
     // wiped on round restart, and stays with the OFFICE even if its holder changes.
     private readonly Dictionary<string, List<SWActiveAmbition>> _assigned = new();
+    private readonly Dictionary<string, NetUserId> _officePlayers = new();
+    private readonly Dictionary<string, EntityUid> _officeBodies = new();
+    private readonly Dictionary<string, NetUserId> _assignedPlayers = new();
+    private readonly HashSet<string> _ambiguousOffices = new();
+    private readonly Dictionary<NetUserId, List<string>> _personalFinal = new();
+    private bool _personalFinalized;
     private float _accumulator;
 
     public override void Initialize()
@@ -51,12 +60,57 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
         UpdatesBefore.Add(typeof(SWSenateTimeSystem));
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
         SubscribeLocalEvent<RoundEndTextAppendEvent>(OnRoundEnd);
+        SubscribeLocalEvent<SWSenateOfficeHolderChangedEvent>(OnOfficeChanged);
+        SubscribeLocalEvent<PlayerAttachedEvent>(OnPlayerAttached);
+        SubscribeNetworkEvent<SWSenatePersonalHistoryRequest>(OnPersonalRequest);
     }
 
     private void OnRoundRestart(RoundRestartCleanupEvent ev)
     {
         _accumulator = 0f;
         _assigned.Clear();
+        _officePlayers.Clear();
+        _officeBodies.Clear();
+        _assignedPlayers.Clear();
+        _ambiguousOffices.Clear();
+        _personalFinal.Clear();
+        _personalFinalized = false;
+    }
+
+    private void OnOfficeChanged(SWSenateOfficeHolderChangedEvent ev)
+    {
+        if (_assigned.ContainsKey(ev.Owner))
+            _ambiguousOffices.Add(ev.Owner);
+        _officePlayers.Remove(ev.Owner);
+        _officeBodies.Remove(ev.Owner);
+        if (ev.Actor is { } uid && TryComp<ActorComponent>(uid, out var actor))
+        {
+            _officePlayers[ev.Owner] = actor.PlayerSession.UserId;
+            _officeBodies[ev.Owner] = uid;
+        }
+    }
+
+    private void OnPlayerAttached(PlayerAttachedEvent ev)
+    {
+        foreach (var (office, body) in _officeBodies)
+        {
+            if (!_officePlayers.TryGetValue(office, out var player))
+                continue;
+            // A different controller of the office body, or this player moving to another
+            // body, makes subsequent office activity impossible to attribute safely.
+            if ((body == ev.Entity && player != ev.Player.UserId)
+                || (body != ev.Entity && player == ev.Player.UserId))
+                _ambiguousOffices.Add(office);
+        }
+    }
+
+    private void OnPersonalRequest(SWSenatePersonalHistoryRequest ev, EntitySessionEventArgs args)
+    {
+        if (!_history.Ending || !_personalFinalized)
+            return;
+        var lines = _personalFinal.TryGetValue(args.SenderSession.UserId, out var result)
+            ? result.ToArray() : Array.Empty<string>();
+        RaiseNetworkEvent(new SWSenatePersonalHistoryResponse { Lines = lines }, args.SenderSession);
     }
 
     public override void Update(float frameTime)
@@ -129,6 +183,8 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
         }
 
         _assigned[owner] = list;
+        if (_officePlayers.TryGetValue(owner, out var player))
+            _assignedPlayers[owner] = player;
     }
 
     private string? PickRivalSector(string? self)
@@ -446,9 +502,13 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
         EnsureCourtAssigned();
 
         if (_assigned.Count == 0)
+        {
+            if (_history.Ending) _personalFinalized = true;
             return;
+        }
 
         var standings = new List<(string Label, int Score, int Total, List<string> Lines)>();
+        var capturePersonal = _history.Ending && !_personalFinalized;
         foreach (var (owner, ambitions) in _assigned)
         {
             if (ambitions.Count == 0)
@@ -465,6 +525,7 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
 
             var score = 0;
             var lines = new List<string>();
+            var personal = new List<string>();
             foreach (var active in ambitions)
             {
                 if (!_proto.TryIndex<SWAmbitionPrototype>(active.AmbitionId, out var proto))
@@ -476,16 +537,30 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
 
                 var mark = met ? "[color=#2ECC71]выполнено[/color]" : "[color=gray]провалено[/color]";
                 lines.Add($"    - {proto.Name}: {mark} ({progress})");
+                personal.Add($"{proto.Name}: {(met ? "выполнено" : "не выполнено")} ({progress})");
             }
 
             standings.Add((label, score, ambitions.Count, lines));
+            if (capturePersonal && !_ambiguousOffices.Contains(owner) && _assignedPlayers.TryGetValue(owner, out var player))
+            {
+                if (!_personalFinal.TryGetValue(player, out var results))
+                    _personalFinal[player] = results = new List<string>();
+                results.Add(label);
+                results.AddRange(personal);
+            }
         }
 
+        if (capturePersonal)
+            _personalFinalized = true;
         if (standings.Count == 0)
             return;
 
         standings.Sort((a, b) => b.Score.CompareTo(a.Score));
         var best = standings.Max(s => s.Score);
+
+        // Office ambitions do not identify the player who earned them. Do not publish them as personal results.
+        if (_history.SessionActive)
+            return;
 
         args.AddLine("[bold]Амбиции Сената:[/bold]");
         if (best > 0)

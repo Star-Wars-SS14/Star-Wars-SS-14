@@ -193,6 +193,8 @@ namespace Content.Shared.GameTicking
             public bool Connected;
         }
 
+        public Content.Shared._SW._Senate.SWSenateRoundHistory? SenateHistory;
+
         public string GamemodeTitle { get; }
         public string RoundEndText { get; }
         public TimeSpan RoundDuration { get; }

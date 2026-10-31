@@ -77,12 +77,14 @@ public sealed class SWMinistrySystem : EntitySystem
         _holderCards[ministryId] = card;
         if (actor is { } entity)
             _holderEntities[ministryId] = entity;
+        RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent(ministryId, actor));
         return true;
     }
 
     public void Unclaim(string ministryId)
     {
-        _holders.Remove(ministryId);
+        if (_holders.Remove(ministryId))
+            RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent(ministryId, null));
         _holderCards.Remove(ministryId);
         _holderEntities.Remove(ministryId);
     }
@@ -98,11 +100,13 @@ public sealed class SWMinistrySystem : EntitySystem
             return false;
 
         _holders.Remove(fromId);
+        RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent(fromId, null));
         _holderCards.Remove(fromId);
         _holders[toId] = holder;
         _holderCards[toId] = card;
         if (_holderEntities.Remove(fromId, out var entity))
             _holderEntities[toId] = entity;
+        RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent(toId, _holderEntities.TryGetValue(toId, out var transferred) ? transferred : null));
         return true;
     }
 

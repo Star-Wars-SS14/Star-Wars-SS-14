@@ -130,7 +130,7 @@ public sealed partial class SWDirectorSystem : EntitySystem
     // The full imperial ledger - covert ops included - goes public once the round is over.
     private void OnRoundEnd(RoundEndTextAppendEvent args)
     {
-        if (_chronicle.Count == 0)
+        if (EntityManager.System<Content.Server._SW._Senate.Core.SWSenateRoundHistorySystem>().SessionActive || _chronicle.Count == 0)
             return;
 
         args.AddLine(string.Empty);

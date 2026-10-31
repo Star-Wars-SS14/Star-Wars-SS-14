@@ -39,6 +39,7 @@ public sealed class SWSenateBill
     public SWEmergencyPower SpecialMotionPower;
     public int RequiredPercent;
 
+    public bool IsDecree;
     public bool IsElection;
     public List<string> Candidates = new();
     public Dictionary<string, string> ElectionVotes = new();

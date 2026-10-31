@@ -460,7 +460,7 @@ public sealed class SWImperialStrikeSystem : EntitySystem
 
     private void OnRoundEnd(RoundEndTextAppendEvent args)
     {
-        if (!Launched || _task is not { } task)
+        if (EntityManager.System<Content.Server._SW._Senate.Core.SWSenateRoundHistorySystem>().SessionActive || !Launched || _task is not { } task)
             return;
 
         var result = task switch

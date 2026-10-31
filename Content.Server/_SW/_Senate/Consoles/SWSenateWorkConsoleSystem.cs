@@ -854,7 +854,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (!_time.ModeActive || !_time.DayActive)
             return;
 
-        if (_court.RespondNomination(Name(args.Actor), args.Accept))
+        if (_court.RespondNomination(Name(args.Actor), args.Accept, args.Actor))
             _popup.PopupCursor(args.Accept ? "Согласие передано в Сенат." : "Предложение отклонено.", args.Actor, PopupType.Medium);
 
         UpdateUi(ent);
@@ -990,7 +990,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
             || Name(args.Actor) != name)
             return;
 
-        if (!_senate.ConfirmChancellorElect(name, sectorId))
+        if (!_senate.ConfirmChancellorElect(name, sectorId, args.Actor))
             return;
 
         _idCard.TryChangeFullName(card.Value, name);
@@ -1522,7 +1522,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
                 break;
 
             case SWSenatePosition.Chancellor:
-                if (_senate.TryTakeChancellor(Name(args.Actor)))
+                if (_senate.TryTakeChancellor(Name(args.Actor), args.Actor))
                 {
                     _idCard.TryChangeFullName(card.Value, Name(args.Actor));
                     _cards.Synchronize(card.Value, SWSenatePosition.Chancellor);

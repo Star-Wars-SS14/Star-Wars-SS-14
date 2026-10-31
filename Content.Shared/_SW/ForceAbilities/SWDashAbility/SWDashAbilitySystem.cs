@@ -59,7 +59,7 @@ public sealed class SWDashAbilitySystem : EntitySystem
         }
     }
 
-        private void StopDashing(EntityUid uid, SWDashAbilityComponent comp)
+    private void StopDashing(EntityUid uid, SWDashAbilityComponent comp)
     {
         comp.IsDashing = false;
         _movementSpeedModifierSystem.RefreshMovementSpeedModifiers(uid);
@@ -81,5 +81,4 @@ public sealed class SWDashAbilitySystem : EntitySystem
 
 public sealed partial class DashRequestedEvent : InstantActionEvent
 {
-
 }

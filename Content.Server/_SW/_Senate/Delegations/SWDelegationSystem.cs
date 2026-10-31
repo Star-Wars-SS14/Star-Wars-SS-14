@@ -3,6 +3,7 @@ using Content.Server._SW._Senate.Core;
 using Content.Server.Ghost.Roles.Events;
 using Content.Server.Mind;
 using Content.Shared.GameTicking;
+using Content.Shared._SW._Senate.Planner;
 using Content.Shared.Mobs;
 using Content.Shared.Verbs;
 using Content.Shared.Mobs.Components;
@@ -26,6 +27,7 @@ public sealed partial class SWDelegationSystem : EntitySystem
     {
         public required int Id;
         public required bool Health;
+        public long PlannerOfficeRevision;
         public int Episode;
         public int TargetEffective;
         public TaxObligation? TaxObligation;
@@ -62,6 +64,10 @@ public sealed partial class SWDelegationSystem : EntitySystem
         SubscribeLocalEvent<SWDelegationMemberComponent, GhostRoleSpawnerUsedEvent>(OnSpawned);
         SubscribeLocalEvent<SWDelegationMemberComponent, PlayerAttachedEvent>(OnAttached);
         SubscribeLocalEvent<SWDelegationMemberComponent, GetVerbsEvent<AlternativeVerb>>(OnVerbs);
+        SubscribeLocalEvent<ActorComponent, SWGuestRequestAuthorizeEvent>(OnGuestAuthorize);
+        SubscribeLocalEvent<ActorComponent, SWGuestRequestRespondAuthorizeEvent>(OnGuestRespond);
+        SubscribeLocalEvent<ActorComponent, GetVerbsEvent<AlternativeVerb>>(OnPlannerVerbs);
+        SubscribeLocalEvent<SWGuestRequestValidateEvent>(OnGuestValidate);
         SubscribeLocalEvent<SWFinanceTaxSettingsChangedEvent>(OnTaxSettingsChanged);
         SubscribeLocalEvent<SWSenateOfficeHolderChangedEvent>(OnOfficeChanged);
         SubscribeLocalEvent<PlayerDetachedEvent>(OnPlayerDetached);
@@ -240,9 +246,13 @@ public sealed partial class SWDelegationSystem : EntitySystem
 
     private void OnOfficeChanged(SWSenateOfficeHolderChangedEvent ev)
     {
-        if (_visit is not { Declined: false } visit || visit.Proposal.Agreed || ev.Owner != Ministry(visit))
+        if (_visit is not { Declined: false } visit || ev.Owner != Ministry(visit))
             return;
-        visit.Proposal.InvalidateTerms();
+        // Bind calendar requests to the actual appointment, even if the same player returns later.
+        if (visit.PlannerOfficeRevision < long.MaxValue)
+            visit.PlannerOfficeRevision++;
+        if (!visit.Proposal.Agreed)
+            visit.Proposal.InvalidateTerms();
         Changed();
     }
 

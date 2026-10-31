@@ -178,15 +178,27 @@ public sealed class SWDelegationEui : BaseEui
     [Dependency] private readonly IEntityManager _entity = default!;
     private SWDelegationSystem System => _entity.System<SWDelegationSystem>();
     private readonly int _visitId;
+    private string _plannerNotice = string.Empty;
     public SWDelegationEui(int visitId) { _visitId = visitId; IoCManager.InjectDependencies(this); }
     public override void Opened() { base.Opened(); System.Updated += OnUpdated; StateDirty(); }
     public override void Closed() { base.Closed(); System.Updated -= OnUpdated; }
     private void OnUpdated() => StateDirty();
-    public override EuiStateBase GetNewState() => System.BuildState(Player, _visitId);
+    public override EuiStateBase GetNewState()
+    {
+        var state = System.BuildState(Player, _visitId);
+        System.BuildPlannerState(Player, _visitId, state);
+        state.PlannerNotice = _plannerNotice;
+        return state;
+    }
     public override void HandleMessage(EuiMessageBase message)
     {
         base.HandleMessage(message);
         if (message is SWDelegationActionMessage action)
             System.HandleAction(Player, _visitId, action);
+        if (message is SWDelegationPlannerMessage planner)
+        {
+            _plannerNotice = System.HandlePlannerAction(Player, _visitId, planner);
+            StateDirty();
+        }
     }
 }

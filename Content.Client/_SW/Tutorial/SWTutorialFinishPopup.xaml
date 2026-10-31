@@ -1,0 +1,25 @@
+<Control xmlns="https://spacestation14.io"
+         xmlns:parallax="clr-namespace:Content.Client.Parallax"
+         VerticalExpand="True" HorizontalExpand="True"
+         MouseFilter="Stop">
+    <parallax:ParallaxControl SpeedX="20"/>
+    <PanelContainer StyleClasses="SWTermWindow"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    MinWidth="560">
+        <BoxContainer Orientation="Vertical" SeparationOverride="8" Margin="16">
+            <Label Text="{Loc 'sw-tutorial-finish-title'}" StyleClasses="SWTermTitle" />
+            <PanelContainer StyleClasses="SWTermAccentNeutral" MinHeight="3" />
+            <Label Text="{Loc 'sw-tutorial-finish-next'}" StyleClasses="SWTermText" />
+            <Button Name="RepublicButton" MinHeight="40" />
+            <Button Name="EmpireButton" MinHeight="40" />
+            <Label Name="WaitLabel"
+                   Text="{Loc 'sw-tutorial-finish-wait'}"
+                   StyleClasses="SWTermText" />
+            <Button Name="CloseButton"
+                    Text="{Loc 'sw-tutorial-finish-close'}"
+                    StyleClasses="SWTermButton"
+                    MinHeight="30" />
+        </BoxContainer>
+    </PanelContainer>
+</Control>

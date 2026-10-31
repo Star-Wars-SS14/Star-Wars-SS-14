@@ -143,10 +143,27 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
 
                 // Slots are lives: a death opens the budget again, but never gives the used slot back.
                 autobalance.JobsSpawned.TryGetValue(id, out var spawned);
-                var slots = Math.Max(0, Math.Min(availableOfFirstFaction, amount.Value - spawned));
+                autobalance.ExtraSlots.TryGetValue(id, out var extra);
+                var slots = Math.Max(0, Math.Min(availableOfFirstFaction, amount.Value + extra - spawned));
                 _stationJobsSystem.TrySetJobSlot(station, id, slots);
             }
         }
+    }
+
+    /// <summary>
+    /// Opens one more slot of a job, for one spawn. The recount after a spawn would close a slot that is only set on
+    /// the station, so it is also remembered in the rule.
+    /// </summary>
+    public void GrantExtraSlot(EntityUid station, string job)
+    {
+        var rules = QueryActiveRules();
+        if (rules.MoveNext(out _, out _, out var comp, out _))
+        {
+            comp.ExtraSlots.TryGetValue(job, out var extra);
+            comp.ExtraSlots[job] = extra + 1;
+        }
+
+        _stationJobsSystem.TryAdjustJobSlot(station, job, 1, createSlot: true);
     }
 
     /// <summary>

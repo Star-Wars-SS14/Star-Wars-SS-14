@@ -1,0 +1,81 @@
+- type: loadout
+  id: SWLoadoutSidearmHandCannon
+  equipment:
+    pocket2: SWBalmorraHandCannon
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SWLoadoutGateWeapons
+  - !type:PointsCostLoadoutEffect
+    cost: 1
+
+- type: loadout
+  id: SWLoadoutSidearmAnarchy
+  equipment:
+    pocket2: SWAnarchy
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SWLoadoutGateWeapons
+  - !type:PointsCostLoadoutEffect
+    cost: 1
+
+- type: loadout
+  id: SWLoadoutSidearmVibroDagger
+  equipment:
+    pocket2: SWVibroDagger
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SWLoadoutGateWeapons
+  - !type:PointsCostLoadoutEffect
+    cost: 1
+
+- type: loadoutGroup
+  id: SWSidearms
+  name: sw-loadout-group-sidearm
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutSidearmHandCannon
+  - SWLoadoutSidearmAnarchy
+  - SWLoadoutSidearmVibroDagger
+
+- type: loadout
+  id: SWLoadoutVibroSwordVeteran
+  inhand:
+  - SWVibroSword
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SWLoadoutVibroSwordVeteranGate
+  - !type:PointsCostLoadoutEffect
+    cost: 2
+
+- type: loadoutGroup
+  id: SWSidearmsMandalorianVeteran
+  name: sw-loadout-group-sidearm
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutSidearmHandCannon
+  - SWLoadoutSidearmAnarchy
+  - SWLoadoutSidearmVibroDagger
+  - SWLoadoutVibroSwordVeteran
+
+- type: loadout
+  id: SWLoadoutVibroSwordLeader
+  inhand:
+  - SWVibroSword
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SWLoadoutVibroSwordLeaderGate
+  - !type:PointsCostLoadoutEffect
+    cost: 2
+
+- type: loadoutGroup
+  id: SWSidearmsMandalorianLeader
+  name: sw-loadout-group-sidearm
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutSidearmHandCannon
+  - SWLoadoutSidearmAnarchy
+  - SWLoadoutSidearmVibroDagger
+  - SWLoadoutVibroSwordLeader

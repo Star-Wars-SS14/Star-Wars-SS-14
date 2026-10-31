@@ -128,7 +128,11 @@ public abstract class SharedStationSpawningSystem : EntitySystem
                 if (!string.IsNullOrEmpty(equipmentStr))
                 {
                     var equipmentEntity = Spawn(equipmentStr, xform.Coordinates);
-                    InventorySystem.TryEquip(entity, equipmentEntity, slot.Name, silent: true, force: false); //SW
+                    //SW start
+                    // A species can refuse a slot, and the item must not then lie at the feet of every such spawn.
+                    if (!InventorySystem.TryEquip(entity, equipmentEntity, slot.Name, silent: true, force: false))
+                        Del(equipmentEntity);
+                    //SW end
                 }
             }
         }

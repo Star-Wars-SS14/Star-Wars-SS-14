@@ -2,6 +2,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using Content.Client.Humanoid;
+using Content.Client._SW.Loadouts; //SW
 using Content.Client.Lobby.UI.Loadouts;
 using Content.Client.Lobby.UI.Roles;
 using Content.Client.Message;
@@ -64,7 +65,7 @@ namespace Content.Client.Lobby.UI
         private TextEdit? _flavorTextEdit;
 
         // One at a time.
-        private LoadoutWindow? _loadoutWindow;
+        private SWLoadoutWindow? _loadoutWindow; //SW
 
         private TTSTab? _ttsTab; // Corvax-TTS
 
@@ -1088,37 +1089,16 @@ namespace Content.Client.Lobby.UI
             JobOverride = jobProto;
             var session = _playerManager.LocalSession;
 
-            _loadoutWindow = new LoadoutWindow(Profile, roleLoadout, roleLoadoutProto, _playerManager.LocalSession, collection)
-            {
-                Title = Loc.GetString("loadout-window-title-loadout", ("job", $"{jobProto?.LocalizedName}")),
-            };
+            //SW start
+            _loadoutWindow = new SWLoadoutWindow(Profile, roleLoadout, roleLoadoutProto, jobProto, "sw-loadout-hint-editor", session, collection);
+            _loadoutWindow.OpenCentered();
 
-            // Refresh the buttons etc.
-            _loadoutWindow.RefreshLoadouts(roleLoadout, session, collection);
-            _loadoutWindow.OpenCenteredLeft();
-
-            _loadoutWindow.OnNameChanged += name =>
+            _loadoutWindow.OnLoadoutChanged += changed =>
             {
-                roleLoadout.EntityName = name;
-                Profile = Profile.WithLoadout(roleLoadout);
-                SetDirty();
-            };
-
-            _loadoutWindow.OnLoadoutPressed += (loadoutGroup, loadoutProto) =>
-            {
-                roleLoadout.AddLoadout(loadoutGroup, loadoutProto, _prototypeManager);
-                _loadoutWindow.RefreshLoadouts(roleLoadout, session, collection);
-                Profile = Profile?.WithLoadout(roleLoadout);
+                Profile = Profile?.WithLoadout(changed);
                 ReloadPreview();
             };
-
-            _loadoutWindow.OnLoadoutUnpressed += (loadoutGroup, loadoutProto) =>
-            {
-                roleLoadout.RemoveLoadout(loadoutGroup, loadoutProto, _prototypeManager);
-                _loadoutWindow.RefreshLoadouts(roleLoadout, session, collection);
-                Profile = Profile?.WithLoadout(roleLoadout);
-                ReloadPreview();
-            };
+            //SW end
 
             JobOverride = jobProto;
             ReloadPreview();

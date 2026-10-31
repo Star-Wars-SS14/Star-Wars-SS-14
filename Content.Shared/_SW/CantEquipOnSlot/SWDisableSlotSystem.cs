@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Content.Server._SW.CantEquipOnSlot;
+namespace Content.Shared._SW.CantEquipOnSlot;
 public sealed class SWDisableSlotSystem : EntitySystem
 {
     [Dependency] private readonly InventorySystem _inventorySystem = default!;

@@ -1,0 +1,463 @@
+# All jobs in one table: order here is the order of the window's tabs.
+- type: roleLoadout
+  id: JobSWRepublicGeneral
+  points: 3
+  groups:
+  - SWWeaponsRepublic
+  - SWSidearms
+  - SWKit
+  - SWUniformRepublicOfficer
+  - SWHeadRepublicOfficer
+  - SWCosmeticsNeck
+  - SWNewYearCloakRepublic
+  - SWRepublicTacticalVisor
+
+- type: roleLoadout
+  id: JobSWRepublicCaptain
+  points: 3
+  groups:
+  - SWWeaponsRepublic
+  - SWSidearms
+  - SWKit
+  - SWUniformRepublicOfficer
+  - SWHeadRepublicOfficer
+  - SWCosmeticsNeck
+  - SWNewYearCloakRepublic
+  - SWRepublicTacticalVisor
+
+- type: roleLoadout
+  id: JobSWRepublicLieutenant
+  points: 3
+  groups:
+  - SWWeaponsRepublic
+  - SWSidearms
+  - SWKit
+  - SWUniformRepublicOfficer
+  - SWNewYearRepublicOfficerSuit
+  - SWHeadRepublicOfficer
+  - SWCosmeticsNeck
+  - SWNewYearCloakRepublic
+  - SWRepublicTacticalVisor
+
+- type: roleLoadout
+  id: JobSWRepublicSoldier
+  points: 2
+  groups:
+  - SWWeaponsRepublic
+  - SWSidearms
+  - SWKit
+  - SWUniformRepublic
+  - SWHeadRepublic
+  - SWNewYearRepublicSoldierSuit
+  - SWNewYearRepublicSoldierHead
+  - SWCosmeticsNeck
+  - SWNewYearCloakRepublic
+  - SWRepublicTacticalVisor
+
+- type: roleLoadout
+  id: JobSWRepublicRecruit
+  points: 2
+  groups:
+  - SWKit
+  - SWUniformRepublic
+  - SWHeadRepublic
+  - SWNewYearRepublicSoldierSuit
+  - SWNewYearRepublicSoldierHead
+  - SWCosmeticsNeck
+  - SWNewYearCloakRepublic
+  - SWRepublicTacticalVisor
+
+- type: roleLoadout
+  id: JobSWRepublicMedic
+  points: 3
+  groups:
+  - SWWeaponsRepublic
+  - SWSidearms
+  - SWKitMedic
+  - SWUniformRepublicOfficer
+  - SWHeadRepublic
+  - SWCosmeticsNeck
+  - SWNewYearCloakRepublic
+  - SWRepublicTacticalVisor
+
+- type: roleLoadout
+  id: JobSWRepublicEngineer
+  points: 3
+  groups:
+  - SWWeaponsRepublic
+  - SWSidearms
+  - SWKit
+  - SWUniformRepublic
+  - SWHeadRepublic
+  - SWNewYearRepublicSoldierSuit
+  - SWNewYearRepublicEngineerSuit
+  - SWNewYearRepublicSoldierHead
+  - SWCosmeticsNeck
+  - SWNewYearCloakRepublic
+  - SWRepublicTacticalVisor
+
+- type: roleLoadout
+  id: JobSWRepublicPilot
+  points: 3
+  groups:
+  - SWKit
+  - SWUniformRepublicPilot
+  - SWNewYearRepublicPilotSuit
+  - SWHeadRepublic
+  - SWCosmeticsNeck
+  - SWNewYearCloakRepublic
+  - SWRepublicTacticalVisor
+
+- type: roleLoadout
+  id: JobSWRepublicCommanderCommander
+  points: 3
+  groups:
+  - SWWeaponsHavokHeavy
+  - SWSidearms
+  - SWKit
+  - SWUniformFighter
+  - SWHeadHavok
+  - SWRepublicTacticalVisor
+
+- type: roleLoadout
+  id: JobSWRepublicCommanderLieutenant
+  points: 3
+  groups:
+  - SWWeaponsRepublic
+  - SWSidearms
+  - SWKit
+  - SWUniformFighter
+  - SWHeadHavok
+  - SWCosmeticsNeck
+  - SWNewYearCloakRepublic
+  - SWRepublicTacticalVisor
+
+- type: roleLoadout
+  id: JobSWRepublicCommanderMedic
+  points: 3
+  groups:
+  - SWWeaponsRepublic
+  - SWSidearms
+  - SWKitMedic
+  - SWUniformFighter
+  - SWHeadHavok
+  - SWCosmeticsNeck
+  - SWNewYearCloakRepublic
+  - SWRepublicTacticalVisor
+
+- type: roleLoadout
+  id: JobSWRepublicCommanderStormtrooper
+  points: 2
+  groups:
+  - SWWeaponsHavokHeavy
+  - SWSidearms
+  - SWKit
+  - SWUniformFighter
+  - SWHeadHavok
+  - SWCosmeticsNeck
+  - SWNewYearCloakRepublic
+  - SWRepublicTacticalVisor
+
+- type: roleLoadout
+  id: JobSWRepublicCommanderSniper
+  points: 2
+  groups:
+  - SWWeaponsHavokHeavy
+  - SWSidearms
+  - SWKit
+  - SWUniformFighter
+  - SWHeadHavok
+  - SWCosmeticsNeck
+  - SWNewYearCloakRepublic
+  - SWRepublicTacticalVisor
+
+- type: roleLoadout
+  id: JobSWEmpireMoff
+  points: 3
+  groups:
+  - SWWeaponsEmpire
+  - SWSidearms
+  - SWKit
+  - SWUniformEmpireOfficer
+  - SWHeadEmpire
+  - SWCosmeticsNeck
+  - SWNewYearCloakEmpire
+  - SWEmpireTacticalVisor
+
+- type: roleLoadout
+  id: JobSWEmpireMajor
+  points: 3
+  groups:
+  - SWWeaponsEmpire
+  - SWSidearms
+  - SWKit
+  - SWUniformEmpireOfficer
+  - SWHeadEmpire
+  - SWCosmeticsNeck
+  - SWNewYearCloakEmpire
+  - SWEmpireTacticalVisor
+
+- type: roleLoadout
+  id: JobSWEmpireLieutenant
+  points: 3
+  groups:
+  - SWWeaponsEmpire
+  - SWSidearms
+  - SWKit
+  - SWUniformEmpireOfficer
+  - SWNewYearImperialOfficerSuit
+  - SWHeadEmpire
+  - SWCosmeticsNeck
+  - SWNewYearCloakEmpire
+  - SWEmpireTacticalVisor
+
+- type: roleLoadout
+  id: JobSWEmpireSoldier
+  points: 2
+  groups:
+  - SWWeaponsEmpire
+  - SWSidearms
+  - SWKit
+  - SWUniformEmpire
+  - SWHeadEmpire
+  - SWNewYearImperialSoldierSuit
+  - SWNewYearImperialSoldierHead
+  - SWCosmeticsNeck
+  - SWNewYearCloakEmpire
+  - SWEmpireTacticalVisor
+
+- type: roleLoadout
+  id: JobSWEmpireMedic
+  points: 3
+  groups:
+  - SWWeaponsEmpire
+  - SWSidearms
+  - SWKitMedic
+  - SWUniformEmpire
+  - SWHeadEmpire
+  - SWCosmeticsNeck
+  - SWNewYearCloakEmpire
+  - SWEmpireTacticalVisor
+
+- type: roleLoadout
+  id: JobSWEmpireEngineer
+  points: 3
+  groups:
+  - SWWeaponsEmpire
+  - SWSidearms
+  - SWKit
+  - SWUniformEmpire
+  - SWHeadEmpire
+  - SWNewYearImperialSoldierSuit
+  - SWNewYearImperialEngineerSuit
+  - SWNewYearImperialSoldierHead
+  - SWCosmeticsNeck
+  - SWNewYearCloakEmpire
+  - SWEmpireTacticalVisor
+
+- type: roleLoadout
+  id: JobSWEmpirePilot
+  points: 3
+  groups:
+  - SWKit
+  - SWUniformEmpire
+  - SWNewYearImperialPilotSuit
+  - SWHeadEmpire
+  - SWCosmeticsNeck
+  - SWNewYearCloakEmpire
+  - SWEmpireTacticalVisor
+
+- type: roleLoadout
+  id: JobSWEmpireIntelligenceAgent
+  points: 2
+  groups:
+  - SWWeaponsAgent
+  - SWSidearms
+  - SWKit
+  - SWUniformIntelligence
+  - SWHeadEmpire
+  - SWCosmeticsNeck
+  - SWNewYearCloakEmpire
+  - SWEmpireTacticalVisor
+
+- type: roleLoadout
+  id: JobSWEmpireIntelligenceCaretaker
+  points: 2
+  groups:
+  - SWWeaponsCaretaker
+  - SWSidearms
+  - SWKit
+  - SWUniformIntelligence
+  - SWHeadEmpire
+  - SWCosmeticsNeck
+  - SWNewYearCloakEmpire
+  - SWEmpireTacticalVisor
+
+- type: roleLoadout
+  id: JobSWSobrikCaptain
+  points: 3
+  groups:
+  - SWWeaponsEmpire
+  - SWSidearms
+  - SWKit
+  - SWUniformFighter
+  - SWHeadSobrik
+  - SWCosmeticsNeck
+  - SWNewYearCloakEmpire
+  - SWEmpireTacticalVisor
+
+- type: roleLoadout
+  id: JobSWSobrikOfficer
+  points: 2
+  groups:
+  - SWWeaponsEmpire
+  - SWSidearms
+  - SWKit
+  - SWUniformFighter
+  - SWHeadSobrik
+  - SWCosmeticsHead
+  - SWCosmeticsNeck
+  - SWNewYearCloakEmpire
+  - SWEmpireTacticalVisor
+
+- type: roleLoadout
+  id: JobSWSobrikMedic
+  points: 3
+  groups:
+  - SWWeaponsEmpire
+  - SWSidearms
+  - SWKitMedic
+  - SWUniformFighter
+  - SWHeadSobrik
+  - SWCosmeticsHead
+  - SWCosmeticsNeck
+  - SWNewYearCloakEmpire
+  - SWEmpireTacticalVisor
+
+- type: roleLoadout
+  id: JobSWMandalorianRecruit
+  points: 3
+  groups:
+  - SWWeaponsMandalorian
+  - SWSidearms
+  - SWKit
+  - SWMandoRecruit
+  - SWHeadMandalorian
+  - SWCosmeticsNeck
+  - SWNewYearCloakNeutral
+
+- type: roleLoadout
+  id: JobSWMandalorianWarrior
+  points: 3
+  groups:
+  - SWWeaponsMandalorian
+  - SWSidearms
+  - SWKit
+  - SWMandoWarrior
+  - SWHeadMandalorian
+  - SWCosmeticsNeck
+  - SWNewYearCloakNeutral
+
+- type: roleLoadout
+  id: JobSWMandalorianVeteran
+  points: 3
+  groups:
+  - SWWeaponsMandalorian
+  - SWSidearmsMandalorianVeteran
+  - SWKit
+  - SWMandoVeteran
+  - SWHeadMandalorianVeteran
+
+- type: roleLoadout
+  id: JobSWMandalorianLeader
+  points: 3
+  groups:
+  - SWWeaponsMandalorian
+  - SWSidearmsMandalorianLeader
+  - SWKit
+  - SWMandoLeader
+  - SWHeadMandalorianVeteran
+  - SWCosmeticsNeck
+  - SWNewYearCloakNeutral
+
+- type: roleLoadout
+  id: JobSWBlackSun
+  points: 3
+  groups:
+  - SWWeaponsBlackSun
+  - SWSidearms
+  - SWKit
+  - SWUniformFighter
+  - SWHeadBlackSunLeader
+  - SWCosmeticsNeck
+  - SWNewYearCloakNeutral
+
+- type: roleLoadout
+  id: JobSWBlackSunMercenary
+  points: 3
+  groups:
+  - SWWeaponsBlackSun
+  - SWSidearms
+  - SWKit
+  - SWUniformFighter
+  - SWNewYearBlackSunSuit
+  - SWHeadFree
+  - SWCosmeticsNeck
+  - SWNewYearCloakNeutral
+
+- type: roleLoadout
+  id: JobSWExchangeCaptain
+  points: 3
+  groups:
+  - SWWeaponsExchange
+  - SWSidearms
+  - SWKit
+  - SWUniformFighter
+  - SWHeadFree
+  - SWCosmeticsNeck
+  - SWNewYearCloakNeutral
+
+- type: roleLoadout
+  id: JobSWExchangeOperative
+  points: 3
+  groups:
+  - SWWeaponsExchange
+  - SWSidearms
+  - SWKit
+  - SWUniformFighter
+  - SWHeadFree
+  - SWCosmeticsNeck
+  - SWNewYearCloakNeutral
+
+- type: roleLoadout
+  id: JobSWJedi
+  groups:
+  - SWJediloadout
+  - SWHeadJedi
+  - SWRepublicTacticalVisor
+
+- type: roleLoadout
+  id: JobSWSith
+  groups:
+  - SWSithloadout
+  - SWHeadSith
+  - SWEmpireTacticalVisor
+
+- type: roleLoadout
+  id: JobSWCivialian
+  groups:
+  - SWUniformCivilian
+  - SWNewYearCitizenSuit
+  - SWHeadFree
+  - SWNewYearCitizenHead
+  - SWCosmeticsHead
+  - SWCosmeticsNeck
+  - SWNewYearCloakNeutral
+
+- type: roleLoadout
+  id: JobSWNeutralBartender
+  groups:
+  - SWUniformFighter
+  - SWHeadFree
+  - SWCosmeticsNeck
+  - SWNewYearCloakNeutral

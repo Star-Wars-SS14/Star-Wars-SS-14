@@ -1,0 +1,149 @@
+# ChameleonJobLoadoutTest wants an outfit for every job with starting gear and a role loadout.
+
+- type: chameleonOutfit
+  id: SWBlackSunChameleonOutfit
+  job: SWBlackSun
+
+- type: chameleonOutfit
+  id: SWBlackSunMercenaryChameleonOutfit
+  job: SWBlackSunMercenary
+
+- type: chameleonOutfit
+  id: SWCivialianChameleonOutfit
+  job: SWCivialian
+
+- type: chameleonOutfit
+  id: SWEmpireEngineerChameleonOutfit
+  job: SWEmpireEngineer
+
+- type: chameleonOutfit
+  id: SWEmpireIntelligenceAgentChameleonOutfit
+  job: SWEmpireIntelligenceAgent
+
+- type: chameleonOutfit
+  id: SWEmpireIntelligenceCaretakerChameleonOutfit
+  job: SWEmpireIntelligenceCaretaker
+
+- type: chameleonOutfit
+  id: SWEmpireLieutenantChameleonOutfit
+  job: SWEmpireLieutenant
+
+- type: chameleonOutfit
+  id: SWEmpireMajorChameleonOutfit
+  job: SWEmpireMajor
+
+- type: chameleonOutfit
+  id: SWEmpireMedicChameleonOutfit
+  job: SWEmpireMedic
+
+- type: chameleonOutfit
+  id: SWEmpireMoffChameleonOutfit
+  job: SWEmpireMoff
+
+- type: chameleonOutfit
+  id: SWEmpirePilotChameleonOutfit
+  job: SWEmpirePilot
+
+- type: chameleonOutfit
+  id: SWEmpireSoldierChameleonOutfit
+  job: SWEmpireSoldier
+
+- type: chameleonOutfit
+  id: SWExchangeCaptainChameleonOutfit
+  job: SWExchangeCaptain
+
+- type: chameleonOutfit
+  id: SWExchangeOperativeChameleonOutfit
+  job: SWExchangeOperative
+
+- type: chameleonOutfit
+  id: SWJediChameleonOutfit
+  job: SWJedi
+
+- type: chameleonOutfit
+  id: SWMandalorianLeaderChameleonOutfit
+  job: SWMandalorianLeader
+
+- type: chameleonOutfit
+  id: SWMandalorianRecruitChameleonOutfit
+  job: SWMandalorianRecruit
+
+- type: chameleonOutfit
+  id: SWMandalorianVeteranChameleonOutfit
+  job: SWMandalorianVeteran
+
+- type: chameleonOutfit
+  id: SWMandalorianWarriorChameleonOutfit
+  job: SWMandalorianWarrior
+
+- type: chameleonOutfit
+  id: SWNeutralBartenderChameleonOutfit
+  job: SWNeutralBartender
+
+- type: chameleonOutfit
+  id: SWRepublicCaptainChameleonOutfit
+  job: SWRepublicCaptain
+
+- type: chameleonOutfit
+  id: SWRepublicCommanderCommanderChameleonOutfit
+  job: SWRepublicCommanderCommander
+
+- type: chameleonOutfit
+  id: SWRepublicCommanderLieutenantChameleonOutfit
+  job: SWRepublicCommanderLieutenant
+
+- type: chameleonOutfit
+  id: SWRepublicCommanderMedicChameleonOutfit
+  job: SWRepublicCommanderMedic
+
+- type: chameleonOutfit
+  id: SWRepublicCommanderSniperChameleonOutfit
+  job: SWRepublicCommanderSniper
+
+- type: chameleonOutfit
+  id: SWRepublicCommanderStormtrooperChameleonOutfit
+  job: SWRepublicCommanderStormtrooper
+
+- type: chameleonOutfit
+  id: SWRepublicEngineerChameleonOutfit
+  job: SWRepublicEngineer
+
+- type: chameleonOutfit
+  id: SWRepublicGeneralChameleonOutfit
+  job: SWRepublicGeneral
+
+- type: chameleonOutfit
+  id: SWRepublicLieutenantChameleonOutfit
+  job: SWRepublicLieutenant
+
+- type: chameleonOutfit
+  id: SWRepublicMedicChameleonOutfit
+  job: SWRepublicMedic
+
+- type: chameleonOutfit
+  id: SWRepublicPilotChameleonOutfit
+  job: SWRepublicPilot
+
+- type: chameleonOutfit
+  id: SWRepublicRecruitChameleonOutfit
+  job: SWRepublicRecruit
+
+- type: chameleonOutfit
+  id: SWRepublicSoldierChameleonOutfit
+  job: SWRepublicSoldier
+
+- type: chameleonOutfit
+  id: SWSithChameleonOutfit
+  job: SWSith
+
+- type: chameleonOutfit
+  id: SWSobrikCaptainChameleonOutfit
+  job: SWSobrikCaptain
+
+- type: chameleonOutfit
+  id: SWSobrikMedicChameleonOutfit
+  job: SWSobrikMedic
+
+- type: chameleonOutfit
+  id: SWSobrikOfficerChameleonOutfit
+  job: SWSobrikOfficer

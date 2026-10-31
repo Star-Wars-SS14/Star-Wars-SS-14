@@ -4,7 +4,7 @@
                      MinWidth="200" MinHeight="150">
     <PanelContainer StyleClasses="SWTermWindow" />
     <BoxContainer Orientation="Vertical" Margin="1">
-        <BoxContainer Orientation="Horizontal" Margin="12 6 6 6">
+        <BoxContainer Name="HeaderRow" Orientation="Horizontal" Margin="12 6 6 6">
             <Label Name="WindowTitle" StyleClasses="SWTermTitle" HorizontalExpand="True" VAlign="Center" ClipText="True" />
             <PanelContainer StyleClasses="SWTermFrame" SetSize="22 22" VerticalAlignment="Top">
                 <TextureButton Name="CloseButton" StyleClasses="SWTermClose" Scale="0.6 0.6"

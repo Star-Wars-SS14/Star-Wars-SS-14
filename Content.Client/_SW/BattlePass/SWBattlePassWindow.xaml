@@ -1,0 +1,220 @@
+<ui:SWTerminalWindow
+    xmlns="https://spacestation14.io"
+    xmlns:ui="clr-namespace:Content.Client._SW.UserInterface"
+    xmlns:bp="clr-namespace:Content.Client._SW.BattlePass"
+    Title="{Loc 'sw-battlepass-window-title'}"
+    MinSize="939 448"
+    SetSize="939 448">
+    <BoxContainer Orientation="Vertical">
+        <!-- The season: picture, the goal on the player's own body, and where the player stands -->
+        <Control Name="Banner" SetHeight="174" RectClipContent="True">
+            <TextureRect Name="BannerArt" Stretch="KeepAspectCovered" />
+
+            <BoxContainer Name="BannerWide" Orientation="Horizontal" Margin="10 6 6 8" SeparationOverride="10">
+                <Control SetWidth="130">
+                    <SpriteView Name="BigPreview" Scale="5 5" SetSize="130 160" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <PanelContainer StyleClasses="SWTermAccentSeason" SetSize="104 3" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
+                    <TextureRect Name="BigIcon" SetSize="96 96" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="KeepAspectCentered" Visible="False" />
+                </Control>
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                    <BoxContainer Orientation="Horizontal" SeparationOverride="10">
+                        <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                            <Label Name="GoalCaption" StyleClasses="SWTermValue" />
+                            <Label Name="BigName" StyleClasses="SWTermHero" ClipText="True" />
+                            <Label Name="BigLeft" StyleClasses="SWTermText" />
+                            <Label Name="NextLabel" StyleClasses="SWTermValue" ClipText="True" Visible="False" />
+                        </BoxContainer>
+                        <BoxContainer Orientation="Vertical" VerticalAlignment="Top">
+                            <Label Name="BannerTitle" StyleClasses="SWTermHeading" Align="Right" />
+                            <Label Name="EndLabel" StyleClasses="SWTermText" Align="Right" />
+                        </BoxContainer>
+                        <TextureButton Name="BannerClose" StyleClasses="SWTermClose" Scale="0.6 0.6" VerticalAlignment="Top" />
+                    </BoxContainer>
+                    <Control VerticalExpand="True" />
+                    <BoxContainer Orientation="Horizontal" SeparationOverride="8" Margin="0 0 4 0">
+                        <PanelContainer StyleClasses="SWTermAccentSeason" SetSize="44 44">
+                            <Label Name="TierNumber" StyleClasses="SWTermBigNumber" Align="Center" VAlign="Center" />
+                        </PanelContainer>
+                        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="2">
+                            <BoxContainer Orientation="Horizontal" SeparationOverride="12">
+                                <Label Name="TierLabel" StyleClasses="SWTermValue" HorizontalExpand="True" VAlign="Center" />
+                                <BoxContainer Name="Chips" Orientation="Horizontal" SeparationOverride="4" />
+                                <Label Name="XpLabel" StyleClasses="SWTermValue" VAlign="Center" />
+                            </BoxContainer>
+                            <PanelContainer StyleClasses="SWTermBarFrame">
+                                <ProgressBar Name="XpBar" StyleClasses="SWTermBarOpenSeason" Margin="2" MinHeight="16" MinValue="0" MaxValue="1" />
+                            </PanelContainer>
+                        </BoxContainer>
+                    </BoxContainer>
+                </BoxContainer>
+            </BoxContainer>
+
+            <!-- The other tabs need the room for their own contents -->
+            <BoxContainer Name="BannerStrip" Orientation="Horizontal" Margin="10 8 8 8" SeparationOverride="10" Visible="False">
+                <Label Name="StripTitle" StyleClasses="SWTermHeading" VAlign="Center" />
+                <Label Name="StripTier" StyleClasses="SWTermValue" VAlign="Center" />
+                <PanelContainer StyleClasses="SWTermBarFrame" HorizontalExpand="True" VerticalAlignment="Center">
+                    <ProgressBar Name="StripBar" StyleClasses="SWTermBarOpenSeason" Margin="2" MinHeight="10" MinValue="0" MaxValue="1" />
+                </PanelContainer>
+                <Label Name="StripXp" StyleClasses="SWTermValue" VAlign="Center" />
+                <TextureButton Name="StripClose" StyleClasses="SWTermClose" Scale="0.6 0.6" VerticalAlignment="Center" />
+            </BoxContainer>
+        </Control>
+        <PanelContainer StyleClasses="SWTermAccentSeason" MinHeight="2" />
+
+        <!-- Tabs, and what just happened on the free side of them -->
+        <BoxContainer Orientation="Horizontal" SeparationOverride="4" Margin="10 2 10 0">
+            <Button Name="TabTrack" StyleClasses="SWTermTab" Text="{Loc 'sw-battlepass-tab-track'}" />
+            <Button Name="TabQuests" StyleClasses="SWTermTab" Text="{Loc 'sw-battlepass-tab-quests'}" />
+            <Button Name="TabCases" StyleClasses="SWTermTab" />
+            <Button Name="TabItems" StyleClasses="SWTermTab" Text="{Loc 'sw-battlepass-tab-items'}" />
+            <Label Name="StatusLabel" StyleClasses="SWTermValue" HorizontalExpand="True" Align="Right" VAlign="Center" ClipText="True" />
+        </BoxContainer>
+        <PanelContainer StyleClasses="SWTermDivider" MinHeight="2" />
+
+        <!-- Track -->
+        <BoxContainer Name="TrackTab" Orientation="Vertical" VerticalExpand="True">
+            <Control>
+                <!-- The premium band runs under the labels and the cells, from edge to edge of the window -->
+                <BoxContainer Orientation="Vertical">
+                    <Control MinHeight="96" />
+                    <PanelContainer Name="PremiumBand" MinHeight="78" />
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal" SeparationOverride="4" Margin="10 0">
+                    <BoxContainer Orientation="Vertical" MinWidth="76">
+                        <Control MinHeight="28" />
+                        <Label Text="{Loc 'sw-battlepass-track-free'}" StyleClasses="SWTermText" MinHeight="66" VAlign="Center" />
+                        <Control MinHeight="2" />
+                        <Label Text="{Loc 'sw-battlepass-track-paid'}" StyleClasses="SWTermPrice" MinHeight="78" VAlign="Center" />
+                    </BoxContainer>
+                    <Control HorizontalExpand="True">
+                        <ScrollContainer Name="TrackScroll" MinHeight="182" HScrollEnabled="True" VScrollEnabled="False">
+                            <BoxContainer Orientation="Vertical">
+                                <BoxContainer Name="Ruler" Orientation="Horizontal" SeparationOverride="6" MinHeight="20" />
+                                <PanelContainer StyleClasses="SWTermBarFrame">
+                                    <ProgressBar Name="RulerBar" StyleClasses="SWTermBarOpenSeason" MinHeight="4" MinValue="0" MaxValue="1" />
+                                </PanelContainer>
+                                <Control MinHeight="2" />
+                                <BoxContainer Name="FreeRow" Orientation="Horizontal" SeparationOverride="6" />
+                                <Control MinHeight="8" />
+                                <BoxContainer Name="PaidRow" Orientation="Horizontal" SeparationOverride="6" />
+                                <Control MinHeight="14" />
+                            </BoxContainer>
+                        </ScrollContainer>
+                        <!-- More to the right, not a cut-off cell -->
+                        <TextureRect Name="TrackFade" HorizontalAlignment="Right" SetWidth="46" Stretch="Scale"
+                                     TexturePath="/Textures/_SW/Interface/BattlePass/track_fade.png" />
+                        <Label Text="›" StyleClasses="SWTermTitle" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 6 0" />
+                    </Control>
+                </BoxContainer>
+            </Control>
+            <BoxContainer Orientation="Horizontal" SeparationOverride="8" VerticalExpand="True" Margin="10 0">
+                <Button Name="QuestsLink" StyleClasses="SWTermTab" VerticalAlignment="Center" />
+                <Button Name="PremiumSoon" Disabled="True" StyleClasses="SWTermTab" Text="{Loc 'sw-battlepass-premium-soon'}" VerticalAlignment="Center" />
+                <Control HorizontalExpand="True" />
+                <Button Name="MainButton" StyleClasses="SWTermMainButtonClaim" MinWidth="160" MinHeight="36" VerticalAlignment="Center" />
+            </BoxContainer>
+        </BoxContainer>
+
+        <!-- Quests -->
+        <BoxContainer Name="QuestsTab" Orientation="Horizontal" VerticalExpand="True" Margin="10 6 10 8" SeparationOverride="12" Visible="False">
+            <ScrollContainer HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" ReserveScrollbarSpace="True">
+                <BoxContainer Name="QuestList" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="6" />
+            </ScrollContainer>
+            <ScrollContainer MinWidth="320" MaxWidth="320" VerticalExpand="True" HScrollEnabled="False">
+                <BoxContainer Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True">
+                    <Label Text="{Loc 'sw-battlepass-how-title'}" StyleClasses="SWTermValue" />
+                    <RichTextLabel Name="HowText" StyleClasses="SWTermText" />
+                    <Control MinHeight="8" />
+                    <Label Text="{Loc 'sw-battlepass-last-round'}" StyleClasses="SWTermValue" />
+                    <RichTextLabel Name="LastRoundText" StyleClasses="SWTermText" />
+                </BoxContainer>
+            </ScrollContainer>
+        </BoxContainer>
+
+        <!-- Cases: one scene. The chance of each line stays on it until the result is shown. -->
+        <BoxContainer Name="CasesTab" Orientation="Vertical" VerticalExpand="True" Visible="False">
+            <Control Name="CaseScene" SetHeight="334" RectClipContent="True">
+                <TextureRect Name="SceneArt" Stretch="KeepAspectCovered" />
+
+                <BoxContainer Name="CaseStage" Orientation="Vertical">
+                    <Control VerticalExpand="True">
+                        <BoxContainer Name="CaseClosed" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" SeparationOverride="48">
+                            <Control SetSize="176 150">
+                                <TextureRect Name="CaseGlow" SetSize="256 256" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Scale"
+                                             TexturePath="/Textures/_SW/Interface/BattlePass/case_glow.png" />
+                                <TextureRect Name="CaseIcon" SetSize="176 150" Stretch="KeepCentered" TextureScale="7 7" />
+                                <PanelContainer StyleClasses="SWTermAccentSeason" SetSize="156 3" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
+                                <PanelContainer Name="CaseCountChip" StyleClasses="SWTermAccentSeason" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                    <Label Name="CaseCount" StyleClasses="SWTermHeading" FontColorOverride="#0C0E0F" Margin="7 3" />
+                                </PanelContainer>
+                            </Control>
+                            <BoxContainer Orientation="Vertical" VerticalAlignment="Center" SeparationOverride="6">
+                                <Label Name="CaseName" StyleClasses="SWTermHero" />
+                                <Label Name="CaseFirst" StyleClasses="SWTermValue" />
+                                <Button Name="OpenCase" StyleClasses="SWTermMainButtonClaim" MinWidth="244" MinHeight="50" HorizontalAlignment="Left" Text="{Loc 'sw-battlepass-case-open'}" />
+                                <Label Name="CaseNote" StyleClasses="SWTermValue" />
+                            </BoxContainer>
+                        </BoxContainer>
+
+                        <BoxContainer Name="CaseRolling" Orientation="Vertical" VerticalAlignment="Center" SeparationOverride="2" Visible="False">
+                            <bp:SWCaseReel Name="Reel" />
+                            <Label Text="{Loc 'sw-battlepass-case-skip-hint'}" StyleClasses="SWTermValue" Align="Center" />
+                        </BoxContainer>
+                    </Control>
+                    <BoxContainer Name="OddsTiles" Orientation="Horizontal" SeparationOverride="8" Margin="10 0 10 8" />
+                </BoxContainer>
+
+                <BoxContainer Name="CaseReveal" Orientation="Horizontal" VerticalAlignment="Center" SeparationOverride="8" Visible="False">
+                    <Control SetSize="440 300">
+                        <TextureRect Name="RevealGlow" SetSize="320 320" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Scale"
+                                     TexturePath="/Textures/_SW/Interface/BattlePass/case_glow.png" />
+                        <TextureRect Name="RevealRays" SetSize="400 400" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Scale" />
+                        <EntityPrototypeView Name="ResultView" SetSize="300 240" Scale="8 8" Stretch="None" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        <TextureRect Name="ResultIcon" SetSize="192 192" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="KeepAspectCentered" />
+                        <PanelContainer Name="RevealLine" SetSize="160 3" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 200 0 0" />
+                    </Control>
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="4">
+                        <Label Name="RevealRarity" StyleClasses="SWTermHeading" />
+                        <Label Name="RevealName" StyleClasses="SWTermHero" ClipText="True" />
+                        <Label Name="RevealNote" StyleClasses="SWTermText" />
+                        <BoxContainer Orientation="Horizontal" SeparationOverride="10" Margin="0 8 0 0">
+                            <Button Name="WearResult" StyleClasses="SWTermMainButtonClaim" Text="{Loc 'sw-battlepass-wear'}" MinWidth="188" MinHeight="46" />
+                            <Button Name="MoreCases" StyleClasses="SWTermButton" MinWidth="172" MinHeight="46" />
+                        </BoxContainer>
+                    </BoxContainer>
+                </BoxContainer>
+
+                <BoxContainer Name="CaseOdds" Orientation="Vertical" Margin="14 10" SeparationOverride="6" Visible="False">
+                    <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                        <Label Text="{Loc 'sw-battlepass-case-col-item'}" StyleClasses="SWTermValue" HorizontalExpand="True" />
+                        <Label Text="{Loc 'sw-battlepass-case-col-base'}" StyleClasses="SWTermValue" SetWidth="60" Align="Right" />
+                        <Label Text="{Loc 'sw-battlepass-case-col-long'}" StyleClasses="SWTermValue" SetWidth="96" Align="Right" />
+                        <Control SetWidth="210" />
+                    </BoxContainer>
+                    <BoxContainer Name="OddsList" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="4" />
+                    <PanelContainer StyleClasses="SWTermDivider" MinHeight="2" />
+                    <RichTextLabel Name="CaseRules" StyleClasses="SWTermText" />
+                </BoxContainer>
+            </Control>
+            <PanelContainer StyleClasses="SWTermDivider" MinHeight="2" />
+            <BoxContainer Orientation="Horizontal" SeparationOverride="8" MinHeight="44" Margin="10 0">
+                <Label Name="PityLabel" StyleClasses="SWTermValue" VAlign="Center" />
+                <Label Name="PityLeft" StyleClasses="SWTermValue" VAlign="Center" />
+                <BoxContainer Name="PitySegments" Orientation="Horizontal" SeparationOverride="3" VerticalAlignment="Center" Margin="8 0 20 0" />
+                <Label Name="Snowflakes" StyleClasses="SWTermValue" VAlign="Center" HorizontalExpand="True" />
+                <Button Name="CaseOddsLink" StyleClasses="SWTermTab" VerticalAlignment="Center" />
+            </BoxContainer>
+        </BoxContainer>
+
+        <!-- Owned items -->
+        <BoxContainer Name="ItemsTab" Orientation="Vertical" VerticalExpand="True" Margin="10 6 10 8" SeparationOverride="6" Visible="False">
+            <RichTextLabel Name="WearHint" StyleClasses="SWTermText" />
+            <ScrollContainer VerticalExpand="True" HScrollEnabled="False" ReserveScrollbarSpace="True">
+                <GridContainer Name="ItemsGrid" Columns="2" HorizontalExpand="True" VSeparationOverride="6" HSeparationOverride="6" />
+            </ScrollContainer>
+        </BoxContainer>
+    </BoxContainer>
+    <bp:SWConfetti Name="Confetti" />
+    <PanelContainer Name="RevealFlash" Visible="False" />
+</ui:SWTerminalWindow>

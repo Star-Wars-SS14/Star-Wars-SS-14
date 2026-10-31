@@ -1,0 +1,305 @@
+- type: loadout
+  id: SWCosmeticScarfWatch
+  equipment:
+    neck: SWCosmeticItemScarfWatch
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticScarfFrost
+  equipment:
+    neck: SWCosmeticItemScarfFrost
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticScarfCoal
+  equipment:
+    neck: SWCosmeticItemScarfCoal
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticScarfBalmora
+  equipment:
+    neck: SWCosmeticItemScarfBalmora
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticScarfResistance
+  equipment:
+    neck: SWCosmeticItemScarfResistance
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticScarfAsh
+  equipment:
+    neck: SWCosmeticItemScarfAsh
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticScarfHeather
+  equipment:
+    neck: SWCosmeticItemScarfHeather
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticScarfStar
+  equipment:
+    neck: SWCosmeticItemScarfStar
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticCapeSnow
+  equipment:
+    neck: SWCosmeticItemCapeSnow
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticCapeShadow
+  equipment:
+    neck: SWCosmeticItemCapeShadow
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticCapeAsh
+  equipment:
+    neck: SWCosmeticItemCapeAsh
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticCapeVeteran
+  equipment:
+    neck: SWCosmeticItemCapeVeteran
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticCapeNorth
+  equipment:
+    neck: SWCosmeticItemCapeNorth
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticCapeColdWar
+  equipment:
+    neck: SWCosmeticItemCapeColdWar
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticScarfDusk
+  equipment:
+    neck: SWCosmeticItemScarfDusk
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticScarfSteel
+  equipment:
+    neck: SWCosmeticItemScarfSteel
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticScarfMoss
+  equipment:
+    neck: SWCosmeticItemScarfMoss
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticScarfWormwood
+  equipment:
+    neck: SWCosmeticItemScarfWormwood
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticScarfFog
+  equipment:
+    neck: SWCosmeticItemScarfFog
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticCapeBlizzard
+  equipment:
+    neck: SWCosmeticItemCapeBlizzard
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticCapeDusk
+  equipment:
+    neck: SWCosmeticItemCapeDusk
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticCapeIce
+  equipment:
+    neck: SWCosmeticItemCapeIce
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticHatGarrison
+  equipment:
+    head: SWCosmeticItemHatGarrison
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+    - Twilek
+    - Nautolan
+
+- type: loadout
+  id: SWCosmeticHatFrost
+  equipment:
+    head: SWCosmeticItemHatFrost
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+    - Twilek
+    - Nautolan
+
+- type: loadout
+  id: SWCosmeticHatSnowstorm
+  equipment:
+    head: SWCosmeticItemHatSnowstorm
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+    - Twilek
+    - Nautolan
+
+- type: loadout
+  id: SWCosmeticHatGraphite
+  equipment:
+    head: SWCosmeticItemHatGraphite
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    seasonal: false
+    notOwnedText: sw-battlepass-cosmetic-not-owned
+    blockedSpecies:
+    - Colicoid
+    - Twilek
+    - Nautolan
+
+- type: loadoutGroup
+  id: SWCosmeticsHead
+  name: sw-battlepass-loadout-group-head
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWCosmeticWinterHat
+  - SWCosmeticHatGarrison
+  - SWCosmeticHatFrost
+  - SWCosmeticHatSnowstorm
+  - SWCosmeticHatGraphite

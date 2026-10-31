@@ -619,6 +619,42 @@ namespace Content.Server.Database
 
         #endregion
 
+        //SW start
+        #region SW battle pass
+
+        public async Task<SWBattlePassProgress?> GetSWBattlePassProgress(Guid player, string season, CancellationToken cancel)
+        {
+            await using var db = await GetDb(cancel);
+
+            return await db.DbContext.SWBattlePassProgress
+                .AsNoTracking()
+                .SingleOrDefaultAsync(p => p.PlayerUserId == player && p.SeasonId == season, cancel);
+        }
+
+        public async Task SaveSWBattlePassProgress(Guid player, string season, int xp, bool paid, string state)
+        {
+            await using var db = await GetDb();
+
+            var row = await db.DbContext.SWBattlePassProgress
+                .SingleOrDefaultAsync(p => p.PlayerUserId == player && p.SeasonId == season);
+
+            if (row == null)
+            {
+                row = new SWBattlePassProgress { PlayerUserId = player, SeasonId = season };
+                db.DbContext.SWBattlePassProgress.Add(row);
+            }
+
+            row.Xp = xp;
+            row.Paid = paid;
+            row.State = state;
+            row.UpdatedAt = DateTime.UtcNow;
+
+            await db.DbContext.SaveChangesAsync();
+        }
+
+        #endregion
+        //SW end
+
         #region Player Records
         /*
          * PLAYER RECORDS

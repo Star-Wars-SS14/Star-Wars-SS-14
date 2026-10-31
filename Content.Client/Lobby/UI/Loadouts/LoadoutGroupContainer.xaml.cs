@@ -1,4 +1,5 @@
 using Content.Corvax.Interfaces.Shared;
+using Content.Shared._SW.Cosmetics; //SW
 using Content.Shared.Clothing;
 using Content.Shared.Preferences;
 using Content.Shared.Preferences.Loadouts;
@@ -23,6 +24,7 @@ public sealed partial class LoadoutGroupContainer : BoxContainer
     private Dictionary<string, bool> _openedGroups = new();
 
     private readonly LoadoutGroupPrototype _groupProto;
+    private readonly HashSet<string> _swCosmeticLines = new(); //SW
 
     public event Action<ProtoId<LoadoutPrototype>>? OnLoadoutPressed;
     public event Action<ProtoId<LoadoutPrototype>>? OnLoadoutUnpressed;
@@ -44,6 +46,7 @@ public sealed partial class LoadoutGroupContainer : BoxContainer
         var protoMan = collection.Resolve<IPrototypeManager>();
         var loadoutSystem = collection.Resolve<IEntityManager>().System<LoadoutSystem>();
         RestrictionsContainer.RemoveAllChildren();
+        _swCosmeticLines.Clear(); //SW
 
         if (_groupProto.MinLimit > 0)
         {
@@ -233,6 +236,16 @@ public sealed partial class LoadoutGroupContainer : BoxContainer
         var enabled = loadout.IsValid(profile, session, proto.ID, collection, out var reason);
 
         var cont = new LoadoutContainer(proto, !enabled, reason);
+
+        //SW start
+        // A plain line as well as the tooltip on the disabled button, once per text.
+        if (reason != null && proto.Effects.Any(e => e is SWCosmeticLoadoutEffect) && _swCosmeticLines.Add(reason.ToString()))
+        {
+            var line = new RichTextLabel { Margin = new Thickness(5, 0, 5, 5) };
+            line.SetMessage(reason);
+            RestrictionsContainer.AddChild(line);
+        }
+        //SW end
 
         cont.Text = loadoutSystem.GetName(proto);
 

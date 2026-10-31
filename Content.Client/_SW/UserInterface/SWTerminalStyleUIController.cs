@@ -2,6 +2,8 @@ using System.Linq;
 using Content.Client.Lobby;
 using Content.Client.Stylesheets;
 using Content.Client.UserInterface.Controls;
+using Content.Client.UserInterface.Systems.Hands.Controls;
+using Content.Client.UserInterface.Systems.Hotbar.Widgets;
 using Content.Shared._SW.TaskSystem;
 using Content.Shared._SW.UserInterface;
 using Content.Shared.CCVar;
@@ -23,6 +25,7 @@ namespace Content.Client._SW.UserInterface;
 public sealed class SWTerminalStyleUIController : UIController
 {
     private const string TerminalTheme = "SWTerminalTheme";
+    private const string HandPanelOutline = "HighlightPanel";
 
     [Dependency] private readonly IComponentFactory _factory = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
@@ -44,6 +47,7 @@ public sealed class SWTerminalStyleUIController : UIController
         _state.OnStateChanged += OnStateChanged;
         _cfg.OnValueChanged(SWVars.UITerminal, _ => Apply());
         _cfg.OnValueChanged(SWVars.UIPlayerAccent, _ => Apply());
+        _cfg.OnValueChanged(CVars.InterfaceTheme, _ => ApplyHandAccent());
     }
 
     /// <summary>
@@ -116,6 +120,33 @@ public sealed class SWTerminalStyleUIController : UIController
             UIManager.Stylesheet = wanted;
 
         ApplyTheme();
+        ApplyHandAccent();
+    }
+
+    /// <summary>
+    /// Colours the outline of the active hand and its status panel with the local player's faction.
+    /// </summary>
+    public void ApplyHandAccent()
+    {
+        if (UIManager.ActiveScreen?.GetWidget<HotbarGui>() is not { } hotbar)
+            return;
+
+        // Only our theme's outline is white. A tint would spoil the colours of any other theme.
+        var color = UIManager.CurrentTheme.ID == TerminalTheme ? SWTerminalStyle.AccentColor(_playerAccent) : Color.White;
+        TintHandOutlines(hotbar, color);
+    }
+
+    private static void TintHandOutlines(Control control, Color color)
+    {
+        if (control is HandButton hand)
+            hand.HighlightRect.Modulate = color;
+        else if (control.Name == HandPanelOutline)
+            control.Modulate = color;
+
+        foreach (var child in control.Children)
+        {
+            TintHandOutlines(child, color);
+        }
     }
 
     /// <summary>

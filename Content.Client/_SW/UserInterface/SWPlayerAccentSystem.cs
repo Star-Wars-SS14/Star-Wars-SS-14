@@ -1,4 +1,5 @@
 using Content.Shared._SW.TaskSystem;
+using Content.Shared.Ghost;
 using Robust.Client.Player;
 using Robust.Client.UserInterface;
 using Robust.Shared.Player;
@@ -36,9 +37,10 @@ public sealed class SWPlayerAccentSystem : EntitySystem
     private void Update(EntityUid body)
     {
         // A ghost has no faction: dying must not swap the whole interface at a bad moment, so the last accent stays.
-        if (!TryComp<SWFactionMemberComponent>(body, out var member))
+        if (HasComp<GhostComponent>(body))
             return;
 
-        _ui.GetUIController<SWTerminalStyleUIController>().SetPlayerAccent(SWTerminalStyle.AccentOf(member.Faction));
+        TryComp<SWFactionMemberComponent>(body, out var member);
+        _ui.GetUIController<SWTerminalStyleUIController>().SetPlayerAccent(SWTerminalStyle.AccentOf(member?.Faction));
     }
 }

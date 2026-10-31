@@ -117,8 +117,9 @@ def main():
         write(path.relative_to(SOURCE).as_posix(), slot)
     for name in ("SlotBackground", "template_small", "item_status_left", "item_status_right"):
         write(f"Default/{name}.png", slot)
+    # White, because the game tints the active hand's outline with the player's faction.
     for name in ("slot_highlight", "item_status_left_highlight", "item_status_right_highlight"):
-        write(f"Default/{name}.png", lambda s: tint(s, HIGHLIGHT))
+        write(f"Default/{name}.png", lambda s: tint(s, (255, 255, 255)))
     for path in sorted((default / "Storage").glob("piece_*.png")):
         write(path.relative_to(SOURCE).as_posix(), piece)
     for path in sorted((default / "Storage").glob("sidebar_*.png")):

@@ -51,7 +51,7 @@
   id: SWRepublicCreditsStack
   name: республиканский кредит
   unit: materials-unit-bill
-  stackEntity: SWCredits
+  stackEntity: SWRepublicCredits
   icon: { sprite: _SW/Economy/republic_cash.rsi, state: cash }
   price: 1
 

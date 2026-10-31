@@ -48,7 +48,7 @@
   id: SWReinforcementCreditsStack
   name: очки подкреплений
   unit: materials-unit-bill
-  stackEntity: SWCredits
+  stackEntity: SWReinforcementCredits
   icon: { sprite: _SW/Economy/empire_cash.rsi, state: cash }
   price: 1
 

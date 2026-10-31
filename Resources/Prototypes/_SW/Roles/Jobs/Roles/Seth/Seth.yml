@@ -398,7 +398,7 @@
     id: SWIDCardHavokCommander
     neck: SWClothingNeckHavok
     shoes: SWClothingShoesBootsCombatFilled
-    ears: SWClothingHeadsetHavok
+    ears: SWClothingHeadsetHavokCommander
     suitstorage: SWP301Destroyer
 
 - type: startingGear

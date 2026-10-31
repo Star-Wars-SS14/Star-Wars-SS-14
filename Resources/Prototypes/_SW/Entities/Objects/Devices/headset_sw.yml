@@ -23,16 +23,20 @@
     containers:
       key_slots:
       - SWEncryptionKeyGarnison
+      - SWEncryptionKeyRegular
 
 - type: entity
   parent: SWClothingHeadset
   id: SWClothingHeadsetGarnisonCaptain
   name: garnison captain headset
   components:
+  - type: EncryptionKeyHolder
+    keySlots: 3
   - type: ContainerFill
     containers:
       key_slots:
       - SWEncryptionKeyGarnison
+      - SWEncryptionKeyRegular
       - SWEncryptionKeyComEmpire
 
 - type: entity
@@ -151,6 +155,21 @@
       key_slots:
       - SWEncryptionKeyRepublic
       - SWEncryptionKeyHavok
+      - SWEncryptionKeyRepublicPilots
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetHavokCommander
+  name: havok commander headset
+  components:
+  - type: EncryptionKeyHolder
+    keySlots: 4
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyRepublic
+      - SWEncryptionKeyHavok
+      - SWEncryptionKeyComRepublic
       - SWEncryptionKeyRepublicPilots
 
 - type: entity

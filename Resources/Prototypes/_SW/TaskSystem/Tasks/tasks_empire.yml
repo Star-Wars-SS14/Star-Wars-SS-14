@@ -25,7 +25,7 @@
     - SWRepublicCommanderStormtrooper
     - SWRepublicCommanderSniper
     - SWRepublicCommanderLieutenant
-    - SWRepublicCommanderMediс
+    - SWRepublicCommanderMedic
   - type: SWCapturePerson
   - type: SWGetScoreByTargetJob
     jobsToScores:

@@ -144,7 +144,7 @@
   - type: EncryptionKey
     channels:
     - SWEmpirePilots
-    defaultChannel: SWRepublicPilots
+    defaultChannel: SWEmpirePilots
   - type: Sprite
     layers:
     - state: crypt_blue

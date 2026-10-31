@@ -11,24 +11,12 @@ public sealed partial class SWPressCameraWindow : DefaultWindow
 {
     public event Action<string>? Start;
     public event Action? Stop;
-    public event Action<bool>? Consent;
-    private bool _setting;
 
     public SWPressCameraWindow()
     {
         RobustXamlLoader.Load(this);
         StartButton.OnPressed += _ => Start?.Invoke(Topic.Text);
         StopButton.OnPressed += _ => Stop?.Invoke();
-        SpeakerConsent.OnToggled += e => { if (!_setting) Consent?.Invoke(e.Pressed); };
-    }
-
-    public void SetConsent(SWPressSpeakerConsentResult result)
-    {
-        _setting = true;
-        SpeakerConsent.Pressed = result.Enabled;
-        _setting = false;
-        ConsentStatus.Text = result.Enabled ? "Передача вашей речи включена"
-            : result.Requested ? "Согласие не включено: подойдите к камере" : "Передача вашей речи выключена";
     }
 
     public void SetState(SWPressVideoState state)
@@ -37,14 +25,5 @@ public sealed partial class SWPressCameraWindow : DefaultWindow
         Status.Text = !live ? "Эфир выключен" : state.IsSource ? "Идёт эфир с этой камеры" : "Идёт эфир с другой камеры";
         StartButton.Disabled = live;
         StopButton.Disabled = !state.IsSource;
-        SoundStatus.Text = state.SoundStatus;
-        SpeakerConsent.Disabled = !state.IsSource;
-        if (!state.IsSource)
-        {
-            _setting = true;
-            SpeakerConsent.Pressed = false;
-            ConsentStatus.Text = string.Empty;
-            _setting = false;
-        }
     }
 }

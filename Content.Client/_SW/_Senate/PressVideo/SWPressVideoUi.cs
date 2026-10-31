@@ -52,15 +52,7 @@ public sealed class SWPressCameraBoundUserInterface : BoundUserInterface
         _window.OnClose += Close;
         _window.Start += topic => SendMessage(new SWPressStartMessage(topic));
         _window.Stop += () => SendMessage(new SWPressStopMessage());
-        _window.Consent += enabled => SendMessage(new SWPressSpeakerConsentMessage(enabled));
         _window.OpenCentered();
-    }
-
-    protected override void ReceiveMessage(BoundUserInterfaceMessage message)
-    {
-        base.ReceiveMessage(message);
-        if (message is SWPressSpeakerConsentResult result)
-            _window?.SetConsent(result);
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)
@@ -83,12 +75,10 @@ public sealed class SWPressViewerBoundUserInterface : BoundUserInterface
     private NetEntity? _target;
     private EntityUid? _eye;
     private readonly SWPressVideoEyeSystem _eyes;
-    private readonly SWPressAudioSystem _audio;
 
     public SWPressViewerBoundUserInterface(EntityUid owner, Enum key) : base(owner, key)
     {
         _eyes = EntMan.System<SWPressVideoEyeSystem>();
-        _audio = EntMan.System<SWPressAudioSystem>();
     }
 
     protected override void Open()
@@ -97,13 +87,6 @@ public sealed class SWPressViewerBoundUserInterface : BoundUserInterface
         _window = new SWPressViewerWindow();
         _window.OnClose += Close;
         _window.Tick += RefreshEye;
-        _window.SetPlaybackFailed(_audio.PlaybackFailed);
-        _audio.PlaybackFailureChanged += OnPlaybackFailureChanged;
-        _window.ListenChanged += enabled =>
-        {
-            var token = _audio.SetListening(Owner, enabled);
-            SendMessage(new SWPressViewerAudioMessage(enabled, token));
-        };
         _window.OpenCentered();
     }
 
@@ -120,7 +103,12 @@ public sealed class SWPressViewerBoundUserInterface : BoundUserInterface
         RefreshEye();
     }
 
-    private void OnPlaybackFailureChanged(bool failed) => _window?.SetPlaybackFailed(failed);
+    protected override void ReceiveMessage(BoundUserInterfaceMessage message)
+    {
+        base.ReceiveMessage(message);
+        if (message is SWPressVideoSpeechMessage speech)
+            _window?.AddSpeech(speech);
+    }
 
     private void RefreshEye()
     {
@@ -147,8 +135,6 @@ public sealed class SWPressViewerBoundUserInterface : BoundUserInterface
     protected override void Dispose(bool disposing)
     {
         ReleaseEye();
-        _audio.SetListening(Owner, false);
-        _audio.PlaybackFailureChanged -= OnPlaybackFailureChanged;
         base.Dispose(disposing);
         if (disposing) _window?.Dispose();
     }

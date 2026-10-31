@@ -4,8 +4,8 @@ using Robust.Client.Graphics;
 using Robust.Client.UserInterface.Controls;
 using Robust.Client.UserInterface.CustomControls;
 using Robust.Client.UserInterface.XAML;
-using Robust.Shared.Timing;
 using Robust.Shared.Graphics;
+using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
 namespace Content.Client._SW._Senate.PressVideo;
@@ -14,50 +14,56 @@ namespace Content.Client._SW._Senate.PressVideo;
 public sealed partial class SWPressViewerWindow : DefaultWindow
 {
     private readonly FixedEye _emptyEye = new();
+    private readonly List<string> _speech = new();
+    private long _feedId;
+    private bool _live;
     public event Action? Tick;
-    public event Action<bool>? ListenChanged;
-    private bool _setting;
-    private bool _playbackFailed;
-    private string _soundStatus = string.Empty;
 
     public SWPressViewerWindow()
     {
         RobustXamlLoader.Load(this);
         CameraView.ViewportSize = new Vector2i(500, 500);
         CameraView.Eye = _emptyEye;
-        Listen.OnToggled += e => { if (!_setting) ListenChanged?.Invoke(e.Pressed); };
         SetState(new SWPressVideoState());
     }
 
     public void SetState(SWPressVideoState state)
     {
+        var live = state.Camera != null;
+        if (!live || state.FeedId != _feedId)
+        {
+            _speech.Clear();
+            UpdateSpeech();
+        }
+        _live = live;
+        _feedId = live ? state.FeedId : 0;
+
         var text = new FormattedMessage();
-        text.AddText(state.Camera == null ? "Сейчас нет прямого эфира." :
+        text.AddText(!live ? "Сейчас нет прямого эфира." :
             $"Тема: {state.Topic}\nВедущий: {state.Presenter}\nИздание: {state.Edition}");
         Details.SetMessage(text);
-        _soundStatus = state.SoundStatus;
-        UpdateSoundStatus();
-        Listen.Disabled = state.Camera == null;
-        if (state.Camera == null)
-        {
-            if (Listen.Pressed) ListenChanged?.Invoke(false);
-            _setting = true;
-            Listen.Pressed = false;
-            _setting = false;
-        }
-        if (state.Camera == null) CameraView.Visible = false;
+        if (!live) CameraView.Visible = false;
     }
 
-    public void SetPlaybackFailed(bool failed)
+    public void AddSpeech(SWPressVideoSpeechMessage message)
     {
-        _playbackFailed = failed;
-        UpdateSoundStatus();
+        if (!_live || message.FeedId != _feedId || string.IsNullOrEmpty(message.Text))
+            return;
+        _speech.Insert(0, message.Text);
+        if (_speech.Count > 5)
+            _speech.RemoveAt(_speech.Count - 1);
+        UpdateSpeech();
     }
 
-    private void UpdateSoundStatus()
+    private void UpdateSpeech()
     {
-        SoundStatus.Text = _playbackFailed || string.IsNullOrEmpty(_soundStatus)
-            ? "Звук недоступен" : _soundStatus;
+        var text = new FormattedMessage();
+        if (_speech.Count == 0)
+            text.AddText("Здесь появится речь рядом с камерой.");
+        else
+            foreach (var line in _speech)
+                text.AddText($"Голос в эфире: {line}\n");
+        SpeechText.SetMessage(text);
     }
 
     public void SetEye(IEye? eye)

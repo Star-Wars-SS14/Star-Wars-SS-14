@@ -35,7 +35,7 @@ public sealed partial class SWPressVideoSystem : EntitySystem
 
     public override void Initialize()
     {
-        InitializeAudio();
+        InitializeSpeech();
         SubscribeLocalEvent<SWPressCameraComponent, ComponentShutdown>(OnCameraShutdown);
         SubscribeLocalEvent<SWPressCameraComponent, BoundUIOpenedEvent>(OnCameraOpen);
         SubscribeLocalEvent<SWPressCameraComponent, PowerCellChangedEvent>(OnCellChanged);
@@ -71,7 +71,9 @@ public sealed partial class SWPressVideoSystem : EntitySystem
         if (topic.Length is < 1 or > 120 || topic.Any(char.IsControl))
             return;
         _source = uid;
-        _broadcaster = args.Actor;
+        _feedId++;
+        _speechCount = 0;
+        _speechWindow = _timing.CurTime;
         _chargeTimer = 0f;
         _topic = topic;
         _presenter = Identity.Name(args.Actor, EntityManager);
@@ -128,7 +130,6 @@ public sealed partial class SWPressVideoSystem : EntitySystem
 
     private void OnDetached(PlayerDetachedEvent args)
     {
-        RemoveAudioActor(args.Entity);
         if (!_screens.Remove(args.Entity))
             return;
         if (_eye is { } eye && !Deleted(eye))
@@ -137,7 +138,6 @@ public sealed partial class SWPressVideoSystem : EntitySystem
 
     private void RemoveViewer(EntityUid screen, EntityUid actor)
     {
-        RemoveAudioScreen(screen, actor);
         if (!_screens.TryGetValue(actor, out var screens) || !screens.Remove(screen) || screens.Count != 0)
             return;
         _screens.Remove(actor);
@@ -159,7 +159,6 @@ public sealed partial class SWPressVideoSystem : EntitySystem
 
     private void Stop()
     {
-        StopAudio();
         var eye = _eye;
         if (eye is { } activeEye && !Deleted(activeEye))
             foreach (var actor in _screens.Keys)
@@ -175,13 +174,6 @@ public sealed partial class SWPressVideoSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
-        _audioCooldown = Math.Max(0f, _audioCooldown - frameTime);
-        if (_activeSpeaker is { } speaker && (_source is not { } activeCamera
-            || !AudioConfigured() || !SourceValid(speaker, _activeSpeakerUser, activeCamera)))
-        {
-            _activeSpeaker = null;
-            InvalidateAudio();
-        }
         if (_source is not { } source)
             return;
         if (!_time.ModeActive || Deleted(source) || _eye == null || Deleted(_eye.Value))
@@ -192,12 +184,6 @@ public sealed partial class SWPressVideoSystem : EntitySystem
         _chargeTimer += frameTime;
         if (_chargeTimer < 1f)
             return;
-        var status = AudioStatus();
-        if (_lastAudioStatus != status)
-        {
-            _lastAudioStatus = status;
-            Refresh();
-        }
         var seconds = _chargeTimer;
         _chargeTimer = 0f;
         if (!_power.TryUseCharge(source, seconds))
@@ -223,6 +209,6 @@ public sealed partial class SWPressVideoSystem : EntitySystem
 
     private SWPressVideoState MakeState(EntityUid? camera = null) => new()
     {
-        SoundStatus = AudioStatus(), Camera = GetNetEntity(_eye), IsSource = _source != null && _source == camera, Topic = _topic, Presenter = _presenter, Edition = _edition,
+        FeedId = _source == null ? 0 : _feedId, Camera = GetNetEntity(_eye), IsSource = _source != null && _source == camera, Topic = _topic, Presenter = _presenter, Edition = _edition,
     };
 }

@@ -11,7 +11,7 @@ public sealed class SWPressVideoState : BoundUserInterfaceState
 {
     public NetEntity? Camera;
     public bool IsSource;
-    public string SoundStatus = string.Empty;
+    public long FeedId;
     public string Topic = string.Empty;
     public string Presenter = string.Empty;
     public string Edition = string.Empty;
@@ -25,29 +25,8 @@ public sealed class SWPressStartMessage(string topic) : BoundUserInterfaceMessag
 public sealed class SWPressStopMessage : BoundUserInterfaceMessage;
 
 [Serializable, NetSerializable]
-public sealed class SWPressSpeakerConsentMessage(bool enabled) : BoundUserInterfaceMessage
+public sealed class SWPressVideoSpeechMessage(long feedId, string text) : BoundUserInterfaceMessage
 {
-    public bool Enabled = enabled;
-}
-
-[Serializable, NetSerializable]
-public sealed class SWPressViewerAudioMessage(bool enabled, long token) : BoundUserInterfaceMessage
-{
-    public bool Enabled = enabled;
-    public long Token = token;
-}
-[Serializable, NetSerializable]
-public sealed class SWPressAudioPlayEvent(byte[] data, long token) : EntityEventArgs
-{
-    public byte[] Data = data;
-    public long Token = token;
-}
-
-[Serializable, NetSerializable]
-public sealed class SWPressAudioStopEvent : EntityEventArgs;
-[Serializable, NetSerializable]
-public sealed class SWPressSpeakerConsentResult(bool requested, bool enabled) : BoundUserInterfaceMessage
-{
-    public bool Requested = requested;
-    public bool Enabled = enabled;
+    public long FeedId = feedId;
+    public string Text = text;
 }

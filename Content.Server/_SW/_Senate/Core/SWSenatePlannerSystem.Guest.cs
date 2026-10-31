@@ -1,6 +1,7 @@
 using System.Linq;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Planner;
+using Content.Shared.Access.Components;
 using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
@@ -68,7 +69,8 @@ public sealed partial class SWSenatePlannerSystem
         foreach (var session in _guestPlayers.Sessions)
         {
             if (session.Status != SessionStatus.InGame || session.AttachedEntity is not { } actor
-                || !EntityManager.EntityExists(actor) || Name(actor) != person || !TryGuestActor(actor, out var user))
+                || !EntityManager.EntityExists(actor) || !TryGuestActor(actor, out var user)
+                || (Name(actor) != person && !IsAssignedMinistryCardAlias(actor, person)))
                 continue;
             if (meeting.GuestOwner == user && meeting.GuestOwnerBody == actor
                 || meeting.GuestTarget == user && meeting.GuestTargetBody == actor
@@ -76,6 +78,55 @@ public sealed partial class SWSenatePlannerSystem
                 return true;
         }
         return false;
+    }
+
+    // A ministry's held card and living holder are an explicit binding, unlike two equal names.
+    // This only supplies conservative busy information; it never grants access to a meeting.
+    private bool IsAssignedMinistryCardAlias(EntityUid actor, string alias)
+    {
+        foreach (var ministry in _ministry.Holders.Keys)
+        {
+            if (_ministry.GetActiveHolderEntity(ministry) != actor || _ministry.GetHolderCard(ministry) is not { } card
+                || !TryComp<IdCardComponent>(card, out var id) || id.FullName != alias)
+                continue;
+            return true;
+        }
+        return false;
+    }
+
+    private bool LegacyCalendarNameMatches(string storedName, string viewerName)
+    {
+        if (storedName == viewerName)
+            return true;
+        foreach (var ministry in _ministry.Holders.Keys)
+        {
+            if (_ministry.GetActiveHolderEntity(ministry) is not { } actor || Name(actor) != viewerName
+                || !UniqueActiveName(actor, viewerName))
+                continue;
+            if (IsAssignedMinistryCardAlias(actor, storedName))
+                return true;
+        }
+        return false;
+    }
+
+    // Legacy meetings keep their historical mutual-overlap behaviour. This mask contains
+    // only guest meetings; identity is supplemented by a verified live actor when available.
+    private ulong GuestOnlyBusyMask(string person, int day, EntityUid? verifiedActor, int excludeMeetingId = -1)
+    {
+        NetUserId actorUser = default;
+        var hasActor = verifiedActor is { } actor && TryGuestActor(actor, out actorUser);
+        ulong mask = 0;
+        foreach (var meeting in _meetings)
+        {
+            if (meeting.Day != day || meeting.Id == excludeMeetingId || meeting.GuestOwner == null)
+                continue;
+            var actorAttends = hasActor && (meeting.GuestOwner == actorUser && meeting.GuestOwnerBody == verifiedActor
+                || meeting.GuestTarget == actorUser && meeting.GuestTargetBody == verifiedActor
+                   && meeting.Invites.Values.FirstOrDefault() == SWInviteStatus.Accepted);
+            if (actorAttends || GuestAttends(meeting, person))
+                mask |= SWPlannerSlots.Mask(meeting.StartSlot, meeting.Duration);
+        }
+        return mask;
     }
 
     private bool GuestValidWindow(int day, int slot, int duration) =>

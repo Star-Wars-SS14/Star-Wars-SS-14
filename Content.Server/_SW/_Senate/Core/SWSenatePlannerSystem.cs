@@ -95,16 +95,17 @@ public sealed partial class SWSenatePlannerSystem : EntitySystem
             return false;
         if (duration < 1 || duration > maxDuration)
             return false;
-        return slot >= 0 && slot + duration <= SWPlannerSlots.PerDay;
+        return slot >= 0 && slot <= SWPlannerSlots.PerDay - duration;
     }
 
     // --- Meetings ---
 
     public bool CreateMeeting(string host, int day, int slot, int duration, string title, string description,
-        string location, bool priv, List<string> invitees)
+        string location, bool priv, List<string> invitees, EntityUid? verifiedActor = null)
     {
         title = title.Trim();
-        if (title.Length == 0 || !ValidWindow(day, slot, duration, 4))
+        if (title.Length == 0 || !ValidWindow(day, slot, duration, 4)
+            || (GuestOnlyBusyMask(host, day, verifiedActor) & SWPlannerSlots.Mask(slot, duration)) != 0)
             return false;
         if (_meetings.Count(m => m.Host == host) >= MaxMeetingsPerHost)
             return false;
@@ -134,10 +135,13 @@ public sealed partial class SWSenatePlannerSystem : EntitySystem
         return true;
     }
 
-    public bool Respond(string person, int meetingId, bool accept, string reason)
+    public bool Respond(string person, int meetingId, bool accept, string reason, EntityUid? verifiedActor = null)
     {
         var meeting = _meetings.FirstOrDefault(m => m.Id == meetingId);
         if (meeting == null || meeting.GuestOwner != null || !meeting.Invites.ContainsKey(person))
+            return false;
+        if (accept && (GuestOnlyBusyMask(person, meeting.Day, verifiedActor, meeting.Id)
+                       & SWPlannerSlots.Mask(meeting.StartSlot, meeting.Duration)) != 0)
             return false;
 
         meeting.Invites[person] = accept ? SWInviteStatus.Accepted : SWInviteStatus.Declined;
@@ -175,10 +179,11 @@ public sealed partial class SWSenatePlannerSystem : EntitySystem
         return true;
     }
 
-    public bool Reschedule(string host, int meetingId, int day, int slot, int duration)
+    public bool Reschedule(string host, int meetingId, int day, int slot, int duration, EntityUid? verifiedActor = null)
     {
         var meeting = _meetings.FirstOrDefault(m => m.Id == meetingId && m.Host == host && m.GuestOwner == null);
-        if (meeting == null || !ValidWindow(day, slot, duration, 4))
+        if (meeting == null || !ValidWindow(day, slot, duration, 4)
+            || (GuestOnlyBusyMask(host, day, verifiedActor, meetingId) & SWPlannerSlots.Mask(slot, duration)) != 0)
             return false;
 
         meeting.Day = day;
@@ -261,7 +266,7 @@ public sealed partial class SWSenatePlannerSystem : EntitySystem
 
         foreach (var block in _blocks)
         {
-            if (block.Owner == person && block.Day == day)
+            if (LegacyCalendarNameMatches(block.Owner, person) && block.Day == day)
                 mask |= SWPlannerSlots.Mask(block.StartSlot, block.Duration);
         }
 
@@ -271,7 +276,9 @@ public sealed partial class SWSenatePlannerSystem : EntitySystem
                 continue;
             var attends = meeting.GuestOwner != null
                 ? GuestAttends(meeting, person)
-                : meeting.Host == person || (meeting.Invites.TryGetValue(person, out var status) && status == SWInviteStatus.Accepted);
+                : LegacyCalendarNameMatches(meeting.Host, person)
+                  || meeting.Invites.Any(invite => invite.Value == SWInviteStatus.Accepted
+                      && LegacyCalendarNameMatches(invite.Key, person));
             if (attends)
                 mask |= SWPlannerSlots.Mask(meeting.StartSlot, meeting.Duration);
         }
@@ -412,14 +419,19 @@ public sealed partial class SWSenatePlannerSystem : EntitySystem
         {
             if (meeting.Day != day)
                 continue;
+            var exactLegacyAttends = meeting.Host == person
+                || meeting.Invites.TryGetValue(person, out var legacyStatus) && legacyStatus == SWInviteStatus.Accepted;
             var attends = meeting.GuestOwner != null
                 ? GuestAttends(meeting, person)
-                : meeting.Host == person || (meeting.Invites.TryGetValue(person, out var status) && status == SWInviteStatus.Accepted);
+                : exactLegacyAttends || LegacyCalendarNameMatches(meeting.Host, person)
+                  || meeting.Invites.Any(invite => invite.Value == SWInviteStatus.Accepted
+                      && LegacyCalendarNameMatches(invite.Key, person));
             if (!attends)
                 continue;
 
             var involved = viewer == person || meeting.Host == viewer || meeting.Invites.ContainsKey(viewer);
-            if (meeting.GuestOwner != null || meeting.Private && !involved)
+            // An alias establishes occupancy only. It never authorizes legacy meeting details.
+            if (meeting.GuestOwner != null || !exactLegacyAttends || meeting.Private && !involved)
             {
                 items.Add(new SWPlannerItemEntry
                 {

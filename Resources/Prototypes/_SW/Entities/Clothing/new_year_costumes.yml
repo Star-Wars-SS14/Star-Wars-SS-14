@@ -1,0 +1,499 @@
+# New Year costumes, chosen in a job's loadout. Each is a child of that job's own item, so that armour, job icons and everything else stay. Only the look changes.
+- type: entity
+  parent: SWRepublicSuit
+  id: SWNewYearRepublicSuit
+  name: holiday republic armour
+  description: Republic armour with a red fur-trimmed cape. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/republic.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/republic.rsi
+
+- type: entity
+  parent: SWImperialSuit
+  id: SWNewYearImperialSuit
+  name: holiday imperial armour
+  description: Imperial armour with a crimson fur-trimmed cape. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/imperial.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/imperial.rsi
+
+- type: entity
+  parent: SW_ClothingHeadRepublicHelmet
+  id: SWNewYearRepublicCap
+  name: holiday republic helmet
+  description: A helmet under a red fur-trimmed cap. It protects as the regular helmet does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/NewYear/cap_red.rsi
+    state: icon
+  - type: Clothing
+    sprite: _SW/Clothing/Head/NewYear/cap_red.rsi
+
+- type: entity
+  parent: SW_ClothingHeadImperialHelmet
+  id: SWNewYearImperialCap
+  name: holiday imperial helmet
+  description: A helmet under a crimson fur-trimmed cap. It protects as the regular helmet does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/NewYear/cap_crimson.rsi
+    state: icon
+  - type: Clothing
+    sprite: _SW/Clothing/Head/NewYear/cap_crimson.rsi
+
+- type: entity
+  parent: SWCitizenClothing
+  id: SWNewYearCourierSuit
+  name: holiday courier's clothes
+  description: A green padded jacket, with a sack of gifts on the back.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/courier.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/courier.rsi
+
+- type: entity
+  parent: SWBattlePassHeadBase
+  id: SWNewYearCourierCap
+  name: holiday courier's cap
+  description: A green cap with a white fur band.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/NewYear/cap_green.rsi
+    state: icon
+  - type: Clothing
+    sprite: _SW/Clothing/Head/NewYear/cap_green.rsi
+
+- type: entity
+  parent: SWCitizenClothing
+  id: SWNewYearSnowmanSuit
+  name: snowman suit
+  description: Two round lumps of padded white cloth and a red scarf.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/snowman.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/snowman.rsi
+
+- type: entity
+  parent: SWBattlePassHeadBase
+  id: SWNewYearSnowmanHead
+  name: snowman head
+  description: A round padded head with a carrot nose and a black hat.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/NewYear/snowman.rsi
+    state: icon
+  - type: Clothing
+    sprite: _SW/Clothing/Head/NewYear/snowman_worn.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWNewYearCloakRed
+  name: red holiday cloak
+  description: A full red cloak with white fur at the collar and hem.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/NewYear/cloak_red.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Neck/NewYear/cloak_red.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWWinterCloakWool
+  name: grey wool cloak
+  description: A heavy grey wool cloak with a fur collar.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/NewYear/cloak_wool.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Neck/NewYear/cloak_wool.rsi
+
+- type: entity
+  parent: SWCitizenClothing
+  id: SWNewYearDedMorozSuit
+  name: Grandfather Frost's coat
+  description: A long red coat with white fur trim.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/ded_moroz.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/ded_moroz.rsi
+
+- type: entity
+  parent: SWCitizenClothing
+  id: SWNewYearSweater
+  name: knitted holiday sweater
+  description: A thick red and white sweater with snowflakes.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/sweater.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/sweater.rsi
+
+- type: entity
+  parent: SWMandalorianWarriorSuit
+  id: SWWinterMandalorianFurSuit
+  name: warrior's armour with a fur cloak
+  description: Warrior's armour under a heavy cloak of shaggy fur. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/mandalorian_fur.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/mandalorian_fur.rsi
+
+- type: entity
+  parent: SWBlackSunArmor
+  id: SWWinterBlackSunFurSuit
+  name: syndicate armour with a fur mantle
+  description: Black armour under a fur mantle. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/black_sun_fur.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/black_sun_fur.rsi
+
+- type: entity
+  parent: SWLieutenantImperialSuit
+  id: SWWinterImperialOfficerSuit
+  name: imperial officer's armour with a fur mantle
+  description: An officer's armour under a fur-lined mantle. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/imperial_officer_fur.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/imperial_officer_fur.rsi
+
+- type: entity
+  parent: SWLieutenantRepublicSuit
+  id: SWWinterRepublicOfficerSuit
+  name: republic officer's armour with a fur mantle
+  description: An officer's armour under a white fur-lined mantle. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/republic_officer_fur.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/NewYear/republic_officer_fur.rsi
+
+- type: entity
+  parent: SWRepublicSuit
+  id: SWWinterRepublicGarrisonSuit
+  name: republic garrison armour
+  description: Republic armour with heavy fur-trimmed pauldrons and fur at the boots. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_garrison.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_garrison.rsi
+
+- type: entity
+  parent: SWImperialSuit
+  id: SWWinterImperialGarrisonSuit
+  name: imperial garrison armour
+  description: Imperial armour with heavy fur-trimmed pauldrons and fur at the boots. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_garrison.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_garrison.rsi
+
+- type: entity
+  parent: SWRepublicSuit
+  id: SWWinterRepublicColdWarSuit
+  name: republic field cloak armour
+  description: Republic armour under a long dark field cloak. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_cold_war.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_cold_war.rsi
+
+- type: entity
+  parent: SWImperialSuit
+  id: SWWinterImperialColdWarSuit
+  name: imperial field cloak armour
+  description: Imperial armour under a long dark field cloak. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_cold_war.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_cold_war.rsi
+
+- type: entity
+  parent: SWRepublicSuit
+  id: SWWinterRepublicVeteranSuit
+  name: republic veteran armour
+  description: Worn Republic armour with leather straps. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_veteran.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_veteran.rsi
+
+- type: entity
+  parent: SWImperialSuit
+  id: SWWinterImperialVeteranSuit
+  name: imperial veteran armour
+  description: Worn Imperial armour with leather straps. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_veteran.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_veteran.rsi
+
+- type: entity
+  parent: SW_ClothingHeadRepublicHelmet
+  id: SWWinterRepublicSnowHelmet
+  name: snow-covered republic helmet
+  description: A Republic helmet with snow on top. It protects as the regular helmet does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Winter/republic_snow.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Winter/republic_snow.rsi
+
+- type: entity
+  parent: SW_ClothingHeadImperialHelmet
+  id: SWWinterImperialSnowHelmet
+  name: snow-covered imperial helmet
+  description: An Imperial helmet with snow on top. It protects as the regular helmet does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Winter/imperial_snow.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Winter/imperial_snow.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWWinterCloakFrost
+  name: frost cloak
+  description: A full pale blue cloak with white fur at the collar and hem.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/NewYear/cloak_frost.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Neck/NewYear/cloak_frost.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWWinterCloakLeather
+  name: leather cloak
+  description: A full brown leather cloak with a fur collar.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/NewYear/cloak_leather.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Neck/NewYear/cloak_leather.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWWinterCloakDark
+  name: dark army cloak
+  description: A full dark army cloak.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/NewYear/cloak_dark.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Neck/NewYear/cloak_dark.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWNewYearCloakBlue
+  name: blue holiday cloak
+  description: A full blue cloak with white fur at the collar and hem.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/NewYear/cloak_blue.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Neck/NewYear/cloak_blue.rsi
+
+- type: entity
+  parent: SWRepublicSuit
+  id: SWWinterRepublicParkaSuit
+  name: parka over republic armour
+  description: A fur-trimmed winter parka over republic armour. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_parka.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_parka.rsi
+
+- type: entity
+  parent: SWRepublicSuit
+  id: SWWinterRepublicFrostSuit
+  name: frosted republic armour
+  description: Republic armour under frost and snow. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_frost.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_frost.rsi
+
+- type: entity
+  parent: SWRepublicSuit
+  id: SWWinterRepublicPonchoSuit
+  name: republic snow poncho
+  description: A loose snow poncho over republic armour. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_poncho.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_poncho.rsi
+
+- type: entity
+  parent: SWImperialSuit
+  id: SWWinterImperialParkaSuit
+  name: parka over imperial armour
+  description: A fur-trimmed winter parka over imperial armour. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_parka.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_parka.rsi
+
+- type: entity
+  parent: SWImperialSuit
+  id: SWWinterImperialFrostSuit
+  name: frosted imperial armour
+  description: Imperial armour under frost and snow. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_frost.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_frost.rsi
+
+- type: entity
+  parent: SWImperialSuit
+  id: SWWinterImperialPonchoSuit
+  name: imperial snow poncho
+  description: A loose snow poncho over imperial armour. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_poncho.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_poncho.rsi
+
+- type: entity
+  parent: SWRepublicSuit
+  id: SWWinterRepublicWorkCoat
+  name: republic hazard coat
+  description: A bright work coat over Republic armour. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_work_coat.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_work_coat.rsi
+
+- type: entity
+  parent: SWImperialSuit
+  id: SWWinterImperialWorkCoat
+  name: imperial hazard coat
+  description: A bright work coat over Imperial armour. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_work_coat.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_work_coat.rsi
+
+- type: entity
+  parent: SWPilotRepublicSuit
+  id: SWWinterRepublicFlightCoat
+  name: republic flight coat
+  description: A sheepskin flight coat over a Republic pilot's suit. It protects as the regular suit does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_flight_coat.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_flight_coat.rsi
+
+- type: entity
+  parent: SWPilotImperialSuit
+  id: SWWinterImperialFlightCoat
+  name: imperial flight coat
+  description: A sheepskin flight coat over an Imperial pilot's suit. It protects as the regular suit does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_flight_coat.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_flight_coat.rsi
+
+- type: entity
+  parent: SWLieutenantRepublicSuit
+  id: SWWinterRepublicGreatcoat
+  name: republic officer's greatcoat
+  description: A long greatcoat over a Republic officer's armour. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_greatcoat.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/republic_greatcoat.rsi
+
+- type: entity
+  parent: SWLieutenantImperialSuit
+  id: SWWinterImperialGreatcoat
+  name: imperial officer's greatcoat
+  description: A long greatcoat over an Imperial officer's armour. It protects as the regular armour does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_greatcoat.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/OuterClothing/Suits/Winter/imperial_greatcoat.rsi
+
+- type: entity
+  parent: SW_ClothingHeadRepublicHelmet
+  id: SWWinterRepublicCoverHelmet
+  name: covered republic helmet
+  description: A Republic helmet under a cloth cover. It protects as the regular helmet does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Winter/republic_cover.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Winter/republic_cover.rsi
+
+- type: entity
+  parent: SW_ClothingHeadImperialHelmet
+  id: SWWinterImperialCoverHelmet
+  name: covered imperial helmet
+  description: An Imperial helmet under a cloth cover. It protects as the regular helmet does.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Head/Winter/imperial_cover.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Head/Winter/imperial_cover.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWNewYearCloakGreen
+  name: green holiday cloak
+  description: A full green cloak with white fur at the collar and a red band at the hem.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/NewYear/cloak_green.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Neck/NewYear/cloak_green.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWWinterCloakFur
+  name: fur cloak
+  description: A full cloak of layered shaggy fur.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/NewYear/cloak_fur.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Neck/NewYear/cloak_fur.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWWinterCloakPlaid
+  name: plaid cloak
+  description: A full woven plaid cloak with a fur collar.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Neck/NewYear/cloak_plaid.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Neck/NewYear/cloak_plaid.rsi

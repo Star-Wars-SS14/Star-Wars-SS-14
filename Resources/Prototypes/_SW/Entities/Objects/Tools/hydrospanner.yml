@@ -1,0 +1,12 @@
+- type: entity
+  parent: BaseItem
+  id: SWHydrospanner
+  name: hydrospanner
+  description: A long thin mechanic's tool.
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Tools/hydrospanner.rsi
+    state: icon
+  - type: Item
+    size: Small
+    sprite: _SW/Objects/Tools/hydrospanner.rsi

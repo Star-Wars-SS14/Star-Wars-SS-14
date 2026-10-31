@@ -73969,11 +73969,6 @@ entities:
           hard: False
           restitution: 0
           friction: 0.4
-    - type: ThrownItem
-      playLandSound: True
-      landTime: 22353.9368238
-      thrownTime: 22353.7109796
-      thrower: invalid
   - uid: 6978
     components:
     - type: Transform
@@ -290692,11 +290687,6 @@ entities:
           hard: False
           restitution: 0
           friction: 0.4
-    - type: ThrownItem
-      playLandSound: True
-      landTime: 2609.19081
-      thrownTime: 2609.1640575
-      thrower: invalid
   - uid: 46803
     components:
     - type: Transform
@@ -292978,17 +292968,11 @@ entities:
     - type: Transform
       pos: 169.5,-130.5
       parent: 2
-    - type: DeviceNetwork
-      configurators:
-      - invalid
   - uid: 47157
     components:
     - type: Transform
       pos: 171.5,-130.5
       parent: 2
-    - type: DeviceNetwork
-      configurators:
-      - invalid
   - uid: 47158
     components:
     - type: Transform
@@ -293021,9 +293005,6 @@ entities:
     - type: Transform
       pos: 170.5,-130.5
       parent: 2
-    - type: DeviceNetwork
-      configurators:
-      - invalid
 - proto: ShuttleWindow
   entities:
   - uid: 47164
@@ -293801,9 +293782,6 @@ entities:
       rot: 3.141592653589793 rad
       pos: 168.5,-130.5
       parent: 2
-    - type: DeviceNetwork
-      configurators:
-      - invalid
     - type: Fixtures
       fixtures: {}
 - proto: SignArmory
@@ -333202,11 +333180,6 @@ entities:
           hard: False
           restitution: 0
           friction: 0.4
-    - type: ThrownItem
-      playLandSound: True
-      landTime: 22357.1302816
-      thrownTime: 22356.9443097
-      thrower: invalid
   - uid: 54168
     components:
     - type: Transform
@@ -333488,11 +333461,6 @@ entities:
           hard: False
           restitution: 0
           friction: 0.4
-    - type: ThrownItem
-      playLandSound: True
-      landTime: 22350.8656892
-      thrownTime: 22350.644316
-      thrower: invalid
   - uid: 54216
     components:
     - type: Transform
@@ -339921,32 +339889,6 @@ entities:
           ents: []
 - proto: SWTurret
   entities:
-  - uid: 55025
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -136.5,-102.5
-      parent: 2
-    - type: DeviceLinkSource
-      linkedPorts:
-        55031:
-        - - SWTurretSender
-          - SWTurretConsoleReceiver
-    missingComponents:
-    - ActiveRadio
-  - uid: 55026
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -136.5,-98.5
-      parent: 2
-    - type: DeviceLinkSource
-      linkedPorts:
-        55031:
-        - - SWTurretSender
-          - SWTurretConsoleReceiver
-    missingComponents:
-    - ActiveRadio
   - uid: 55027
     components:
     - type: Transform
@@ -340063,6 +340005,34 @@ entities:
         SWSobrikCaptain: False
         SWSobrikMedic: False
         SWSobrikOfficer: False
+- proto: SWTurretRepublic
+  entities:
+  - uid: 55025
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -136.5,-102.5
+      parent: 2
+    - type: DeviceLinkSource
+      linkedPorts:
+        55031:
+        - - SWTurretSender
+          - SWTurretConsoleReceiver
+    missingComponents:
+    - ActiveRadio
+  - uid: 55026
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -136.5,-98.5
+      parent: 2
+    - type: DeviceLinkSource
+      linkedPorts:
+        55031:
+        - - SWTurretSender
+          - SWTurretConsoleReceiver
+    missingComponents:
+    - ActiveRadio
 - proto: SWUIHBP
   entities:
   - uid: 6170

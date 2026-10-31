@@ -26,4 +26,17 @@ public sealed partial class SWVars : CVars
     /// </summary>
     public static readonly CVarDef<bool> AdminAhelpRelayShowDiscord =
         CVarDef.Create("discord.ahelp_relay_show_discord", true, CVar.SERVERONLY);
+
+    /*
+     * DESIGN TESTING
+     */
+
+    /// <summary>
+    ///     Speeds up SW round timers for design tests: task start delay and add interval, the faction task
+    ///     pipeline, the respawn delay, the end-round check and vote timers, the ore refill.
+    ///     10 makes them 10 times shorter. Combat, movement and the engine tick rate are not affected.
+    ///     Multiplied with the speedup of an active <c>SWTimerSpeedupGamerule</c> (the <c>SWTestPreset</c>).
+    /// </summary>
+    public static readonly CVarDef<float> TimerSpeedup =
+        CVarDef.Create("sw.timer_speedup", 1f, CVar.SERVERONLY);
 }

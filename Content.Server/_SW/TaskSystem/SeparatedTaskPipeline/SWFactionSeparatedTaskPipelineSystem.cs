@@ -1,3 +1,4 @@
+using Content.Server._SW.Gamerules.TimerSpeedup;
 using Content.Server.GameTicking;
 using Content.Shared.GameTicking;
 using Content.Shared._SW.TaskSystem;
@@ -13,6 +14,7 @@ public sealed class SWFactionSeparatedTaskPipelineSystem : EntitySystem
 {
     [Dependency] private readonly SWTasksGameRuleSystem _taskSystem = default!;
     [Dependency] private readonly GameTicker _gameTicker = default!;
+    [Dependency] private readonly SWTimerSpeedupSystem _timerSpeedup = default!;
 
     public override void Update(float frameTime)
     {
@@ -29,7 +31,7 @@ public sealed class SWFactionSeparatedTaskPipelineSystem : EntitySystem
         {
             foreach (var task in pipelineComp.Tasks)
             {
-                if (task.TaskAddTime <= _gameTicker.RoundDuration() && !task.Added)
+                if (_timerSpeedup.Scale(task.TaskAddTime) <= _gameTicker.RoundDuration() && !task.Added)
                 {
                     var result = _taskSystem.TryAddTask(Prototype(uid)!.ID, task.TaskId);
                     if (result != null || !task.TryAddUntilSuccess)

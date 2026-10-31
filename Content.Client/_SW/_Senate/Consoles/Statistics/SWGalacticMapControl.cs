@@ -311,7 +311,7 @@ public sealed partial class SWGalacticMapControl : Control
         if (_hover != hovered) _labelsDirty = true;
         _hover = hovered;
         ToolTip = null;
-        DefaultCursorShape = _pointer is { } cursor && (HitTestDefenseFleet(cursor) != null || HitTestCrisis(cursor) != null)
+        DefaultCursorShape = _pointer is { } cursor && (HitTestDefenseFleet(cursor) != null || IntruderAt(cursor) != null || HitTestCrisis(cursor) != null)
             ? CursorShape.Hand : CursorShape.Arrow;
         if (_pointer is { } intelPointer && IntelligenceToolTip(intelPointer) is { } intelTip) { DefaultCursorShape = CursorShape.Hand; ToolTip = intelTip; return; }
         if (_pointer is { } crisisPointer && CrisisToolTip(crisisPointer) is { } crisisTip)

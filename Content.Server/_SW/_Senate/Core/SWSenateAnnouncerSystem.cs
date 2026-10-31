@@ -19,6 +19,7 @@ public sealed class SWSenateAnnouncerSystem : EntitySystem
     private static readonly SoundSpecifier BillRejectedSound = new SoundPathSpecifier("/Audio/_SW/_Senate/Announcements/senate_voice_bill_rejected.wav");
     private static readonly SoundSpecifier PartyWhipSound = new SoundPathSpecifier("/Audio/_SW/_Senate/Announcements/senate_voice_party_whip.wav");
     private static readonly SoundSpecifier DefenseSound = new SoundPathSpecifier("/Audio/_SW/_Senate/Announcements/senate_voice_ministry_defense.wav");
+    private static readonly SoundSpecifier InvasionSound = new SoundPathSpecifier("/Audio/Misc/siren.ogg");
     private static readonly SoundSpecifier SecuritySound = new SoundPathSpecifier("/Audio/_SW/_Senate/Announcements/senate_voice_ministry_security.wav");
     private static readonly SoundSpecifier HealthSound = new SoundPathSpecifier("/Audio/_SW/_Senate/Announcements/senate_voice_ministry_health.wav");
     private static readonly SoundSpecifier EconomySound = new SoundPathSpecifier("/Audio/_SW/_Senate/Announcements/senate_voice_ministry_economy.wav");
@@ -107,6 +108,7 @@ public sealed class SWSenateAnnouncerSystem : EntitySystem
     private static SoundSpecifier SoundFor(SWSenateAnnouncementKind kind) => kind switch
     {
         SWSenateAnnouncementKind.Defense => DefenseSound,
+        SWSenateAnnouncementKind.Invasion => InvasionSound,
         SWSenateAnnouncementKind.Security => SecuritySound,
         SWSenateAnnouncementKind.Health => HealthSound,
         SWSenateAnnouncementKind.Economy => EconomySound,

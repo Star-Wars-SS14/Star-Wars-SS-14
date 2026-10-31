@@ -22,6 +22,7 @@ public sealed class SWDefenseMapPanel : BoxContainer
     private readonly BoxContainer _mapHost = Stack();
     private readonly WrapContainer _fleetList = new() { HorizontalExpand = true, SeparationOverride = 4, CrossSeparationOverride = 4 };
     private readonly BoxContainer _details = Stack();
+    private readonly SWStrategicBattlePanel _battles = new();
     private readonly Label _title = SWConsoleStyle.Text("Галактика", SWConsoleStyle.Brass, SWConsoleStyle.Strong);
     private readonly Label _zoom = SWConsoleStyle.Text("100%", SWConsoleStyle.TextDim, SWConsoleStyle.Small);
     private readonly Button _galaxy = SWConsoleStyle.TabButton("Галактика");
@@ -109,6 +110,7 @@ public sealed class SWDefenseMapPanel : BoxContainer
         _fleetList.AddChild(_empty);
 
         var scroll = new ScrollContainer { Name = "DefenseOrdersScroll", HScrollEnabled = false, HorizontalExpand = true, VerticalExpand = true };
+        _details.AddChild(_battles);
         _details.AddChild(_selectionHint);
         _details.AddChild(_selectedDetails);
         _selectedDetails.AddChild(_fleetName);
@@ -171,6 +173,7 @@ public sealed class SWDefenseMapPanel : BoxContainer
     public void SetState(SWDefenseMapState? state)
     {
         _state = state;
+        _battles.SetState(state?.Battles, state?.NowHours ?? 0);
         _submitted = false;
         var active = state?.Fleets.Where(f => f.Phase != SWDefenseOperationPhase.Lost).ToArray() ?? Array.Empty<SWDefenseFleetView>();
         var ids = active.Select(f => f.Id).ToHashSet();
@@ -235,6 +238,7 @@ public sealed class SWDefenseMapPanel : BoxContainer
         _submitted = false;
         _draftOrder = SWDefenseFleetOrder.Respond;
         _eventId = id;
+        _battles.Open(id);
         _targetEdge = string.IsNullOrEmpty(incident.EdgeId) ? null : incident.EdgeId;
         RefreshDetails();
     }
@@ -337,6 +341,14 @@ public sealed class SWDefenseMapPanel : BoxContainer
             RefreshDetails();
         };
         Map.DefenseFleetSelected += id => SelectFleet(id, false);
+        Map.DetectedImperialFleetSelected += id =>
+        {
+            var fleet = _state?.DetectedImperialFleets.FirstOrDefault(f => f.Id == id);
+            if (fleet == null) return;
+            var incident = _state?.Events.FirstOrDefault(e => !e.Resolved && e.Id == fleet.EventId && e.WorldId == fleet.WorldId);
+            if (incident != null) SelectEvent(incident.Id);
+            else SelectWorld(fleet.WorldId);
+        };
         Map.DefenseEventSelected += SelectEvent;
         Map.ViewChanged += () => _zoom.Text = $"{Map.Zoom * 100:0}%";
         _mapHost.AddChild(Map);

@@ -38,6 +38,64 @@ public sealed partial class SWGalacticMapControl
     }
     public event Action<int>? DefenseFleetSelected;
     public event Action<int>? DefenseEventSelected;
+    public event Action<int>? DetectedImperialFleetSelected;
+    private readonly Dictionary<int, Vector2> _intruderPositions = new();
+    private bool _intruderLayoutDirty = true;
+
+    private Vector2? IntruderPosition(SWDetectedImperialFleetView fleet)
+    {
+        LayoutIntruders();
+        return _intruderPositions.TryGetValue(fleet.Id, out var position) ? position : null;
+    }
+
+    private UIBox2 IntruderBounds(Vector2 position, int id)
+    {
+        var badge = DefenseBadgeBox(position + new Vector2(10, -8), $"И{id}");
+        return new UIBox2(position - new Vector2(10), new Vector2(Math.Max(position.X + 10, badge.Right), Math.Max(position.Y + 10, badge.Bottom)));
+    }
+
+    private void LayoutIntruders()
+    {
+        if (!_intruderLayoutDirty) return;
+        _intruderLayoutDirty = false;
+        _intruderPositions.Clear();
+        if (_defense == null) return;
+        var occupied = _defense.Fleets.Select(f => DefenseFleetHitBox(f.Id)).Where(b => b.HasValue).Select(b => b!.Value).ToList();
+        foreach (var incident in _defense.Events.Where(e => !e.Resolved))
+            if (DefenseEventPosition(incident) is { } p)
+            {
+                occupied.Add(new UIBox2(p - new Vector2(12), p + new Vector2(12)));
+                occupied.Add(DefenseBadgeBox(p + new Vector2(11, -5), $"{incident.Id}"));
+            }
+        foreach (var border in _defense.Borders)
+            if (DefenseBorderPosition(border) is { } p) occupied.Add(DefenseBadgeBox(p, BorderBadgeText(border)));
+        foreach (var fleet in _defense.DetectedImperialFleets.OrderBy(f => f.Id))
+        {
+            if (DefenseWorld(fleet.WorldId) is not { } world) continue;
+            var anchor = MapToLocal(world.Position);
+            var preferred = anchor + new Vector2(24, 26);
+            var best = preferred;
+            var bestCost = float.PositiveInfinity;
+            for (var x = -4; x <= 4; x++)
+            for (var y = -4; y <= 4; y++)
+            {
+                var point = preferred + new Vector2(x * 42, y * 42);
+                var bounds = IntruderBounds(point, fleet.Id);
+                var cost = Vector2.DistanceSquared(point, preferred);
+                if (UIBox2.FromDimensions(Vector2.Zero, Size).Contains(anchor)
+                    && (bounds.Left < 0 || bounds.Top < 0 || bounds.Right > Width || bounds.Bottom > Height)) cost += 1000000;
+                if (occupied.Any(b => b.Intersects(bounds))) cost += 1000000;
+                if (_map.Worlds.Any(w => bounds.Contains(MapToLocal(w.Position)))) cost += 1000000;
+                if (cost >= bestCost) continue;
+                bestCost = cost; best = point;
+            }
+            _intruderPositions[fleet.Id] = best;
+            occupied.Add(IntruderBounds(best, fleet.Id));
+        }
+    }
+
+    private SWDetectedImperialFleetView? IntruderAt(Vector2 point) => _defense?.DetectedImperialFleets
+        .FirstOrDefault(f => IntruderPosition(f) is { } p && IntruderBounds(p, f.Id).Contains(point));
 
     public void SetDefense(SWDefenseMapState? state, int? selectedFleet = null)
     {
@@ -78,6 +136,7 @@ public sealed partial class SWGalacticMapControl
     {
         if (_defense == null || !_defense.ClockRunning || !float.IsFinite(seconds) || seconds <= 0 || _defense.RealSecondsPerHour <= 0) return;
         _defenseElapsed += Math.Min(seconds, .25f) / _defense.RealSecondsPerHour;
+        _intruderLayoutDirty = true;
         AdvanceDefenseSupply(seconds);
         AdvanceDefenseTasks(seconds);
     }
@@ -158,7 +217,7 @@ public sealed partial class SWGalacticMapControl
         return first + new Vector2(index % columns * 72, index / columns * 60);
     }
 
-    private void InvalidateDefenseLayout() => _defenseClusterOrigins.Clear();
+    private void InvalidateDefenseLayout() { _defenseClusterOrigins.Clear(); _intruderLayoutDirty = true; }
 
     private Vector2? DefenseTravelPosition(SWDefenseFleetView fleet)
     {
@@ -228,6 +287,11 @@ public sealed partial class SWGalacticMapControl
             DefenseEventSelected?.Invoke(incident.Id);
             return true;
         }
+        if (IntruderAt(point) is { } intruder)
+        {
+            DetectedImperialFleetSelected?.Invoke(intruder.Id);
+            return true;
+        }
         if (DefenseBorderAt(point) is { } border)
         {
             var route = _paths.FirstOrDefault(p => SWTransitLinkPrototype.LinkId(p.Route.From, p.Route.To) == border.Id).Route;
@@ -253,8 +317,10 @@ public sealed partial class SWGalacticMapControl
         foreach (var incident in _defense.Events.Where(e => !e.Resolved))
         {
             if (DefenseEventPosition(incident) is not { } position || Vector2.Distance(point, position) > 12) continue;
-            return $"Событие {incident.Id}: {incident.Title}\n{incident.Status}\nУгроза {incident.Severity:0}; противник {incident.EnemyStrength:0}\n{incident.Risk}";
+            var strength = incident.ImperialCrossing || incident.ImperialRaid ? "Состав — в окне боя" : $"Угроза {incident.Severity:0}; противник {incident.EnemyStrength:0}";
+            return $"Событие {incident.Id}: {incident.Title}\n{incident.Status}\n{strength}\n{incident.Risk}";
         }
+        if (IntruderAt(point) is { } intruder) return $"{intruder.Name}\n{DefenseWorldName(intruder.WorldId)}\nНажмите, чтобы выбрать";
         if (DefenseBorderAt(point) is { } border)
             return $"{DefenseWorldName(border.RepublicWorldId)} — {DefenseWorldName(border.ForeignWorldId)}\nПрикрытие {border.Coverage:0}; давление {border.Pressure:0}";
         return null;
@@ -385,6 +451,12 @@ public sealed partial class SWGalacticMapControl
     private void DrawDefense(DrawingHandleScreen handle)
     {
         if (_defense == null) return;
+        foreach (var intruder in _defense.DetectedImperialFleets)
+        {
+            if (IntruderPosition(intruder) is not { } position) continue;
+            handle.DrawCircle(position * UIScale, 9 * UIScale, SWConsoleStyle.Bad);
+            Badge(handle, position + new Vector2(10, -8), $"И{intruder.Id}", SWConsoleStyle.Bad);
+        }
         foreach (var border in _defense.Borders)
         {
             if (DefenseBorderPosition(border) is not { } position) continue;

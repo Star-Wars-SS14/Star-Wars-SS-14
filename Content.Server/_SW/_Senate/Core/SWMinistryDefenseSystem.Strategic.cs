@@ -161,6 +161,7 @@ public sealed partial class SWMinistryDefenseSystem
                     _imperialCrossings[ev.Id] = crossing with { ReadyAt = ready, ResponseDeadline = deadline };
                     if (!crossing.Raid) ev.ExpiresAt = deadline;
                     _imperialBlockades.Remove(ev.Id);
+                    ev.ImperialBlockade = false;
                 }
                 continue;
             }

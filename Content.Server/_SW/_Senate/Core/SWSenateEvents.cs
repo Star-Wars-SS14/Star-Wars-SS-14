@@ -96,6 +96,7 @@ public enum SWSenateAnnouncementKind : byte
 {
     Notice,
     Defense,
+    Invasion,
     Security,
     Health,
     Economy,

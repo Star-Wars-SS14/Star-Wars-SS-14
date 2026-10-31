@@ -23,13 +23,16 @@ public sealed partial class SWMinistryDefenseSystem
             var defense = ev.Kind is SWDefenseEventKind.Incursion or SWDefenseEventKind.Blockade ? -ev.Severity * .002f * harm : 0;
             var entry = new SWMapCrisisEntry
             {
-                Id = $"defense:{ev.Id}", Title = ev.Title, Description = IncidentTitle(ev.Kind),
+                Id = $"defense:{ev.Id}", Title = ev.ImperialBlockade ? "Имперская блокада" : ev.Title,
+                Description = ev.ImperialBlockade ? "Имперская блокада гиперлинии" : IncidentTitle(ev.Kind),
                 WorldId = ev.WorldId, EdgeId = _imperialCrossings.ContainsKey(ev.Id) ? string.Empty : ev.EdgeId, Severity = ev.Severity, Status = ev.Status,
                 LocationLabel = world?.Name ?? ev.WorldId,
                 SectorIds = sector.Length > 0 ? new() { sector } : new(),
                 EffectsLabel = "Воздействие за игровой час",
                 Consequences = _imperialCrossings.ContainsKey(ev.Id) ? !ImperialOperationsAllowed
                         ? "Операция и срок ответа приостановлены: министр обороны отсутствует."
+                        : ev.ImperialBlockade ? "Гиперлиния заблокирована имперским флотом. Направьте соединение для снятия блокады."
+                        : ev.ImperialContact ? "Направьте флот к обнаруженному соединению; если оно уйдёт, контакт будет потерян."
                         : ev.ImperialRaid ? "Исход рейда зависит от столкновения реальных флотов."
                         : ev.ImperialPhase == SWImperialCrossingPhase.Held ? "Империя удерживает переход до отхода или поражения."
                         : ev.ImperialPhase == SWImperialCrossingPhase.Battle ? "На границе идёт бой; его исход решают реальные флоты."

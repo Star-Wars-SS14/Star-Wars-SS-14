@@ -33,11 +33,11 @@ public sealed class SWStrategicMapDisclosure
         state.Events = state.Events.Where(e => !Hidden(e.WorldId) || e.Kind == SWDefenseEventKind.Raid)
             .Select(e => new SWDefenseEventView
             {
-                Id = e.Id, Title = Text(e.Title), WorldId = World(e.WorldId),
+                Id = e.Id, Title = e.ImperialBlockade ? "Имперское вторжение и блокада" : Text(e.Title), WorldId = World(e.WorldId),
                 EdgeId = links.Contains(e.EdgeId) ? e.EdgeId : string.Empty,
                 Kind = e.Kind, Severity = e.Severity, EnemyStrength = e.EnemyStrength,
                 ExpiresAt = e.ExpiresAt, Resolved = e.Resolved, DirectorCreated = e.DirectorCreated,
-                ImperialCrossing = e.ImperialCrossing, ImperialRaid = e.ImperialRaid, ImperialPhase = e.ImperialPhase,
+                ImperialCrossing = e.ImperialCrossing, ImperialRaid = e.ImperialRaid, ImperialContact = e.ImperialContact, ImperialBlockade = e.ImperialBlockade, ImperialPhase = e.ImperialPhase,
                 Status = Text(e.Status), Risk = Text(e.Risk),
             }).ToList();
         var events = state.Events.Select(e => e.Id).ToHashSet();

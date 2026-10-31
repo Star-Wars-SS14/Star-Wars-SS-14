@@ -21,6 +21,7 @@ public sealed class SWEmpireMilitaryPanel : BoxContainer
     private readonly WrapContainer _fleets = new() { HorizontalExpand = true, SeparationOverride = 4, CrossSeparationOverride = 4 };
     private readonly Label _empty = SWConsoleStyle.Text("Соединения отсутствуют", SWConsoleStyle.TextDim, SWConsoleStyle.Small);
     private readonly BoxContainer _details = Stack();
+    private readonly SWStrategicBattlePanel _battles = new();
     private readonly Dictionary<int, (BoxContainer Cell, Button Button, Label Location)> _fleetRows = new();
     private SWEmpireMilitaryAction? _draftAction;
     private readonly Label _title = SWConsoleStyle.Text("Галактика", SWConsoleStyle.Brass, SWConsoleStyle.Strong);
@@ -73,6 +74,7 @@ public sealed class SWEmpireMilitaryPanel : BoxContainer
         AddChild(_fleets);
         _fleets.AddChild(_empty);
         var side = Stack();
+        side.AddChild(_battles);
         side.AddChild(_details);
         var scroll = new ScrollContainer { HScrollEnabled = false, HorizontalExpand = true, VerticalExpand = true };
         scroll.AddChild(side);
@@ -116,9 +118,11 @@ public sealed class SWEmpireMilitaryPanel : BoxContainer
         if (_lastSphere != state.Sphere)
         {
             InvalidateQuote(); _draftAction = null; _commandId = null; _result = string.Empty;
+            _battles.ClearSelection();
         }
         _lastSphere = state.Sphere;
         _state = state;
+        _battles.SetState(state.Military.Battles, state.Military.NowHours);
         if (_submitted && _commandId == state.ResultRequestId) { _result = state.Result; _submitted = false; _commandId = null; _pending = null; _quoteId = null; }
         if (_selected != null && !state.Military.Fleets.Any(f => f.Id == _selected && f.Phase != "Утрачен")) { _selected = null; _draftAction = null; InvalidateQuote(); }
         UpdateMap();
@@ -128,6 +132,8 @@ public sealed class SWEmpireMilitaryPanel : BoxContainer
     private void SelectFleet(int id)
     {
         if (_selected != id) { _selected = id; _draftAction = null; InvalidateQuote(); }
+        var battle = _state?.Military.Battles.FirstOrDefault(b => b.Opponent.Any(f => f.Id == id));
+        if (battle != null) _battles.Open(battle.EventId);
         UpdateMap(); Refresh();
     }
 

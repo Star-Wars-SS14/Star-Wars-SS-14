@@ -6,6 +6,7 @@ using Content.Server._SW._Senate.Economy;
 using Content.Server._SW._Senate.Economy.Simulation;
 using Content.Shared._SW._Senate.Economy;
 using Content.Shared._SW._Senate.Empire;
+using Content.Shared._SW._Senate.Ministries;
 using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;
 using Robust.Shared.Prototypes;
@@ -30,6 +31,7 @@ public sealed partial class SWEmpireMilitarySystem : EntitySystem
     private readonly Dictionary<string, int> _raidTargets = new();
     private readonly HashSet<int> _securedRaids = new();
     private readonly HashSet<int> _raidTickedThisUpdate = new();
+    private readonly HashSet<int> _borderTickedThisUpdate = new();
     private readonly HashSet<string> _announcedSystemsThisUpdate = new();
     private readonly HashSet<string> _requests = new();
     private bool _initialized;
@@ -39,9 +41,9 @@ public sealed partial class SWEmpireMilitarySystem : EntitySystem
     {
         public int Id;
         public string Name = string.Empty, Home = string.Empty, World = string.Empty, Target = string.Empty;
-        public string? Next, WorkProject, Crossing, CivilianBase, BaseSupplyWorld, BlockedLeg;
+        public string? Next, WorkProject, Crossing, CivilianBase, BaseSupplyWorld, BlockedLeg, ContactWorld;
         public int EventId, RaidEventId;
-        public bool RaidUsesBorder;
+        public bool RaidUsesBorder, Contact;
         public int EscortLeader;
         public string? Permit;
         public string? CargoGood, RaidPending, RaidGood, RaidWorld, DepositPending;
@@ -63,7 +65,7 @@ public sealed partial class SWEmpireMilitarySystem : EntitySystem
     private void Reset()
     {
         _initialized = false; _nextFleet = 1; _nextProject = 1;
-        _fleets.Clear(); _worlds.Clear(); _links.Clear(); _supplyPorts.Clear(); _construction.Clear(); _observations.Clear(); _raidTargets.Clear(); _securedRaids.Clear(); _raidTickedThisUpdate.Clear(); _announcedSystemsThisUpdate.Clear(); _requests.Clear();
+        _fleets.Clear(); _worlds.Clear(); _links.Clear(); _supplyPorts.Clear(); _construction.Clear(); _observations.Clear(); _raidTargets.Clear(); _securedRaids.Clear(); _raidTickedThisUpdate.Clear(); _borderTickedThisUpdate.Clear(); _announcedSystemsThisUpdate.Clear(); _requests.Clear();
     }
 
     private void EnsureInitialized()
@@ -85,6 +87,26 @@ public sealed partial class SWEmpireMilitarySystem : EntitySystem
 
     private bool Own(string world) => _economy.Definition?.Worlds.Any(w => w.Id == world && w.Active) == true;
     private bool Imperial(string world) => _worlds.TryGetValue(world, out var w) && w.Faction == "empire";
+    public List<SWDetectedImperialFleetView> GetDetectedRepublicIntruders()
+    {
+        EnsureInitialized();
+        return _fleets.Values.Where(f => f.Alive && f.Next == null && f.Crossing != null
+                && Republic(f.World) && f.World != f.CivilianBase)
+            .Select(f => new SWDetectedImperialFleetView { Id = f.Id, Name = f.Name, WorldId = f.World, EventId = DetectedEngagement(f) }).ToList();
+    }
+
+    private int DetectedEngagement(Fleet fleet)
+    {
+        if (fleet.RaidEventId != 0 && _defense.HasImperialEngagement(fleet.RaidEventId)) return fleet.RaidEventId;
+        if (fleet.EscortLeader != 0 && _fleets.TryGetValue(fleet.EscortLeader, out var leader)
+            && leader.Alive && leader.Next == null && leader.World == fleet.World && leader.RaidEventId != 0
+            && _defense.HasImperialEngagement(leader.RaidEventId)) return leader.RaidEventId;
+        var edge = _links.FirstOrDefault(l => l.ID == fleet.Crossing);
+        var foreign = edge == null ? null : Republic(edge.From) ? edge.From : edge.To;
+        if (fleet.World != foreign) return 0;
+        return _fleets.Values.FirstOrDefault(f => f.Alive && f.EventId != 0 && f.Crossing == fleet.Crossing
+            && _defense.HasImperialEngagement(f.EventId))?.EventId ?? 0;
+    }
     private SWTransitLinkPrototype? Link(string from, string to) => _links.FirstOrDefault(l =>
         l.From == from && l.To == to || l.From == to && l.To == from);
 
@@ -183,6 +205,7 @@ public sealed partial class SWEmpireMilitarySystem : EntitySystem
         if (hours <= 0) return;
         EnsureInitialized();
         _raidTickedThisUpdate.Clear();
+        _borderTickedThisUpdate.Clear();
         _announcedSystemsThisUpdate.Clear();
         foreach (var (id, world) in _construction.ToArray())
         {
@@ -200,6 +223,7 @@ public sealed partial class SWEmpireMilitarySystem : EntitySystem
             { fleet.Damage = 0; fleet.Strength = Math.Min(100, fleet.Strength + 30); fleet.WorkProject = null; fleet.Order = SWEmpireMilitaryAction.Guard; }
             fleet.Supply = Math.Max(0, fleet.Supply - hours * (fleet.Next == null ? 3 : 7));
             var forbidden = HostilitiesBlocked(fleet);
+            if (forbidden && fleet.Contact) LeaveRaidEngagement(fleet);
             if (forbidden && fleet.RaidPending != null) _republicEconomy.Runner?.CancelExternalTransfer(fleet.RaidPending);
             TickRaidCargo(fleet);
             // Resolve the completed leg before looking for a real port kit. Otherwise a
@@ -212,15 +236,11 @@ public sealed partial class SWEmpireMilitarySystem : EntitySystem
             }
             TickSupply(fleet, hours);
             TickEscort(fleet);
+            if (!forbidden) EnsureStationaryContact(fleet);
             if (!forbidden) { TickBorderBattle(fleet, hours); TickRaidBattle(fleet, hours); }
             ObserveBorder(fleet);
             if (fleet.Next == null && Republic(fleet.World) && fleet.Permit == null && fleet.Order is SWEmpireMilitaryAction.Raid or SWEmpireMilitaryAction.Blockade)
                 QueueRetreat(fleet);
-            if (fleet.Order == SWEmpireMilitaryAction.Blockade && Republic(fleet.World))
-            {
-                var owner = fleet.EventId != 0 ? fleet : _fleets.Values.FirstOrDefault(f => f.EventId != 0 && f.Permit == fleet.Crossing);
-                if (owner != null) _defense.TrySetImperialBlockade(owner.EventId, !forbidden && _defense.ImperialOperationsAllowed);
-            }
             if (fleet.Next == null && fleet.Path.Count == 0 && fleet.Order == SWEmpireMilitaryAction.Train && Own(fleet.World))
                 fleet.Training = Math.Min(100, fleet.Training + hours * 2);
             if (fleet.Next == null && fleet.Path.Count == 0 && fleet.Order == SWEmpireMilitaryAction.Patrol && Imperial(fleet.World))
@@ -250,6 +270,20 @@ public sealed partial class SWEmpireMilitarySystem : EntitySystem
             { fleet.Path.Clear(); continue; }
             fleet.Next = next; fleet.LegStartedAt = _time.ActiveGameHours;
             fleet.Until = fleet.LegStartedAt + Math.Clamp(edge.TravelHours * .4, .1, .3);
+        }
+        // A formation can be destroyed by another fleet's combat tick and therefore
+        // never enter its own iteration. Do not leave its crossing attached to it.
+        foreach (var lost in _fleets.Values.Where(f => !f.Alive && f.EventId != 0).ToArray())
+            ReleaseCrossing(lost);
+        // Reconcile once after movement and combat. One departing blockader must not
+        // remove the restriction while another formation still maintains it.
+        foreach (var owner in _fleets.Values.Where(f => f.EventId != 0))
+        {
+            var active = owner.Alive && _defense.ImperialOperationsAllowed && _fleets.Values.Any(f => f.Alive
+                && f.Order == SWEmpireMilitaryAction.Blockade && f.Crossing == owner.Crossing
+                && f.Next == null && f.Path.Count == 0 && f.World == f.Target && Republic(f.World)
+                && !HostilitiesBlocked(f));
+            _defense.TrySetImperialBlockade(owner.EventId, active);
         }
     }
 }

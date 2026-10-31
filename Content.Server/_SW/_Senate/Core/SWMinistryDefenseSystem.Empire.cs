@@ -36,10 +36,18 @@ public sealed partial class SWMinistryDefenseSystem
     public bool SetImperialBlockade(int eventId, string republicLinkId, bool enabled)
     {
         if (!HasImperialEngagement(eventId)) return false;
-        if (!enabled) { _imperialBlockades.Remove(eventId); ApplyRouteRestrictions(); return true; }
+        if (!enabled)
+        {
+            if (!_imperialBlockades.Remove(eventId)) return true;
+            var removedIncident = _incidents.FirstOrDefault(e => e.Id == eventId);
+            if (removedIncident != null) removedIncident.ImperialBlockade = false;
+            ApplyRouteRestrictions(); return true;
+        }
         var incident = _incidents.First(e => e.Id == eventId);
         var link = _links.FirstOrDefault(l => l.ID == republicLinkId && l.Accessible && (l.From == incident.WorldId || l.To == incident.WorldId));
         if (link == null || _worlds[link.From].Faction != "republic" || _worlds[link.To].Faction != "republic") return false;
+        incident.ImperialBlockade = true;
+        if (_imperialBlockades.TryGetValue(eventId, out var old) && old == republicLinkId) return true;
         _imperialBlockades[eventId] = republicLinkId; ApplyRouteRestrictions(); return true;
     }
 
@@ -68,7 +76,7 @@ public sealed partial class SWMinistryDefenseSystem
         return true;
     }
 
-    public bool TryStartImperialRaid(string fleetId, string worldId, out int eventId, out string reason)
+    public bool TryStartImperialRaid(string fleetId, string worldId, out int eventId, out string reason, bool contact = false)
     {
         eventId = 0; reason = "Рейд недоступен";
         EnsureGroups();
@@ -76,34 +84,44 @@ public sealed partial class SWMinistryDefenseSystem
             !_worlds.TryGetValue(worldId, out var world) || world.Faction != "republic") return false;
         var existing = _incidents.FirstOrDefault(e => !e.Resolved && e.WorldId == worldId && _imperialCrossings.TryGetValue(e.Id, out var op) && op.Raid);
         if (existing != null) { eventId = existing.Id; reason = string.Empty; return true; }
-        if (!CreateIncident(worldId, "", SWDefenseEventKind.Raid, 55, 1, 24, false, "Имперский рейд")) return false;
+        if (!CreateIncident(worldId, "", SWDefenseEventKind.Raid, contact ? 0 : 55, 1, 24, false, contact ? "Имперское соединение" : "Имперский рейд", contact)) return false;
         eventId = _nextEventId - 1;
         var createdId = eventId;
         _imperialCrossings.Add(eventId, new ImperialCrossing(fleetId, "", _time.ActiveGameHours + .5, true));
         var incident = _incidents.First(e => e.Id == createdId);
         incident.ImperialRaid = true;
-        incident.Status = "Предупреждение: имперский флот у цели";
+        incident.ImperialContact = contact;
+        incident.Status = contact ? "Обнаружено имперское соединение" : "Предупреждение: имперский флот у цели";
         incident.Risk = "Исход зависит от реальных сил на атакованном мире.";
         reason = string.Empty; return true;
     }
 
     public bool ImperialRaidReady(int eventId) => _imperialCrossings.TryGetValue(eventId, out var operation) && operation.Raid && ImperialCrossingReady(eventId);
+    public void PromoteImperialRaid(int eventId)
+    {
+        var incident = _incidents.FirstOrDefault(e => e.Id == eventId && !e.Resolved && e.ImperialContact);
+        if (incident == null) return;
+        incident.ImperialContact = false;
+        incident.Title = "Имперский рейд";
+        incident.Severity = 55;
+        incident.Status = "Предупреждение: имперский флот у цели";
+    }
     public void MarkImperialRaidBattle(int eventId)
     {
         if (!_imperialCrossings.TryGetValue(eventId, out var operation) || !operation.Raid || !HasImperialEngagement(eventId)) return;
         var incident = _incidents.FirstOrDefault(e => e.Id == eventId && !e.Resolved);
         if (incident == null) return;
         incident.ImperialPhase = SWImperialCrossingPhase.Battle;
-        incident.Status = "Бой у цели рейда";
+        incident.Status = incident.ImperialContact ? "Бой с обнаруженным соединением" : "Бой у цели рейда";
     }
-    public bool FinishImperialRaid(int eventId, bool empireWon)
+    public bool FinishImperialRaid(int eventId, bool empireWon, bool contactLost = false)
     {
         if (!_imperialCrossings.TryGetValue(eventId, out var operation) || !operation.Raid) return false;
         var incident = _incidents.FirstOrDefault(e => e.Id == eventId && !e.Resolved);
         if (incident == null || empireWon && (!ImperialOperationsAllowed || !ImperialRaidReady(eventId) || GetImperialDefenders(eventId).Count != 0)) return false;
-        if (empireWon) { incident.Status = "Имперский флот проводит рейд"; incident.ImperialPhase = SWImperialCrossingPhase.Held; return true; }
-        ResolveIncident(incident, !empireWon);
-        incident.Status = "Имперский рейд завершён";
+        if (empireWon) { incident.Status = incident.ImperialContact ? "Имперское соединение удерживает позицию" : "Имперский флот проводит рейд"; incident.ImperialPhase = SWImperialCrossingPhase.Held; return true; }
+        ResolveIncident(incident, !empireWon && !incident.ImperialContact && !contactLost);
+        incident.Status = incident.ImperialContact || contactLost ? "Контакт потерян" : "Имперский рейд завершён";
         foreach (var group in _groups.Where(g => g.Alive && g.EventId == eventId).ToArray()) BeginReturn(group);
         return true;
     }
@@ -126,6 +144,14 @@ public sealed partial class SWMinistryDefenseSystem
     }
     public bool HasImperialEngagement(int eventId) => _imperialCrossings.ContainsKey(eventId)
         && _incidents.Any(e => e.Id == eventId && !e.Resolved);
+
+    public bool TransferImperialCrossing(int eventId, string fleetId)
+    {
+        if (string.IsNullOrWhiteSpace(fleetId) || !_imperialCrossings.TryGetValue(eventId, out var crossing)
+            || crossing.Raid || !HasImperialEngagement(eventId)) return false;
+        _imperialCrossings[eventId] = crossing with { FleetId = fleetId };
+        return true;
+    }
 
     public List<SWEmpireRepublicFleetSnapshot> GetImperialDefenders(int eventId)
     {
@@ -165,7 +191,7 @@ public sealed partial class SWMinistryDefenseSystem
             return true;
         }
         ResolveIncident(incident, !empireWon);
-        _imperialBlockades.Remove(eventId); ApplyRouteRestrictions();
+        _imperialBlockades.Remove(eventId); incident.ImperialBlockade = false; ApplyRouteRestrictions();
         incident.Status = "Имперский флот отступил";
         foreach (var group in _groups.Where(g => g.Alive && g.EventId == eventId).ToArray()) BeginReturn(group);
         return true;

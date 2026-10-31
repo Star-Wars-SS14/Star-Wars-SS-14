@@ -11,6 +11,26 @@ public sealed partial class SWEmpireMilitarySystem
     // A narrow server-side catalogue avoids publishing enemy warehouses to the player.
     private static readonly string[] RaidGoods = { "military_supplies", "parts", "circuits", "ship_fuel" };
 
+    private void EnsureStationaryContact(Fleet fleet)
+    {
+        if (!fleet.Alive || fleet.RaidEventId != 0 || fleet.Next != null || fleet.Path.Count != 0
+            || fleet.Crossing == null || !Republic(fleet.World) || fleet.World == fleet.CivilianBase
+            || fleet.Order == SWEmpireMilitaryAction.Raid && CrossingPassable(fleet.Crossing) || !_defense.ImperialOperationsAllowed) return;
+        if (fleet.EscortLeader != 0 && _fleets.TryGetValue(fleet.EscortLeader, out var leader)
+            && leader.Alive && leader.Order == SWEmpireMilitaryAction.Raid && leader.World == fleet.World && leader.Next == null
+            && (leader.RaidEventId != 0 || CrossingPassable(leader.Crossing))) return;
+        var crossing = _links.FirstOrDefault(l => l.ID == fleet.Crossing);
+        var borderWorld = crossing == null ? null : Republic(crossing.From) ? crossing.From : crossing.To;
+        if (borderWorld == fleet.World && _fleets.Values.Any(f => f.Alive && f.EventId != 0 && f.Crossing == fleet.Crossing
+            && _defense.HasImperialEngagement(f.EventId))) return;
+        if (!_raidTargets.TryGetValue(fleet.World, out var id) || !_defense.HasImperialEngagement(id))
+        {
+            if (!_defense.TryStartImperialRaid(fleet.Id.ToString(), fleet.World, out id, out _, true)) return;
+            _raidTargets[fleet.World] = id;
+        }
+        fleet.RaidEventId = id; fleet.Contact = true; fleet.ContactWorld = fleet.World;
+    }
+
     private bool RaidCombatVisible(Fleet fleet)
     {
         var leader = fleet.EscortLeader != 0 && _fleets.TryGetValue(fleet.EscortLeader, out var followed)
@@ -33,9 +53,10 @@ public sealed partial class SWEmpireMilitarySystem
         var id = fleet.RaidEventId;
         if (id == 0) return;
         var border = fleet.RaidUsesBorder;
-        fleet.RaidEventId = 0; fleet.RaidUsesBorder = false;
+        var contact = fleet.Contact;
+        fleet.RaidEventId = 0; fleet.RaidUsesBorder = false; fleet.Contact = false; fleet.ContactWorld = null;
         if (border || _fleets.Values.Any(f => f.Alive && f.RaidEventId == id)) return;
-        _defense.FinishImperialRaid(id, false);
+        _defense.FinishImperialRaid(id, false, contact);
         _securedRaids.Remove(id);
         foreach (var world in _raidTargets.Where(p => p.Value == id).Select(p => p.Key).ToArray()) _raidTargets.Remove(world);
     }
@@ -43,8 +64,10 @@ public sealed partial class SWEmpireMilitarySystem
     private void TickRaidBattle(Fleet fleet, double hours)
     {
         if (!fleet.Alive) { LeaveRaidEngagement(fleet); return; }
-        if (fleet.RaidEventId != 0 && (fleet.Next != null || fleet.Order != SWEmpireMilitaryAction.Raid && fleet.RaidPending == null
-            || fleet.Order == SWEmpireMilitaryAction.Raid && fleet.World != fleet.Target))
+        if (fleet.RaidEventId != 0 && (fleet.Contact
+                ? fleet.Next != null || fleet.Path.Count != 0 || fleet.World != fleet.ContactWorld
+                : fleet.Next != null || fleet.Order != SWEmpireMilitaryAction.Raid && fleet.RaidPending == null
+                    || fleet.Order == SWEmpireMilitaryAction.Raid && fleet.World != fleet.Target))
             LeaveRaidEngagement(fleet);
         if (fleet.RaidEventId == 0)
         {
@@ -59,7 +82,7 @@ public sealed partial class SWEmpireMilitarySystem
                 fleet.RaidEventId = owner.EventId; fleet.RaidUsesBorder = true;
             }
             else if (_raidTargets.TryGetValue(fleet.World, out var existing) && _defense.HasImperialEngagement(existing))
-                fleet.RaidEventId = existing;
+            { fleet.RaidEventId = existing; _defense.PromoteImperialRaid(existing); }
             else if (_defense.TryStartImperialRaid(fleet.Id.ToString(), fleet.World, out var id, out _))
             { fleet.RaidEventId = id; _raidTargets[fleet.World] = id; }
             return;
@@ -70,7 +93,8 @@ public sealed partial class SWEmpireMilitarySystem
         if (fleet.RaidUsesBorder) return;
         if (!_defense.ImperialOperationsAllowed || !_defense.ImperialRaidReady(fleet.RaidEventId)) return;
         var active = _fleets.Values.Where(f => f.Alive && f.Next == null && f.World == fleet.World &&
-            (f.Order == SWEmpireMilitaryAction.Raid || f.RaidPending != null) && f.RaidEventId == fleet.RaidEventId).OrderBy(f => f.Id).ToArray();
+            (f.Contact && f.Path.Count == 0 || !f.Contact && (f.Order == SWEmpireMilitaryAction.Raid || f.RaidPending != null))
+            && f.RaidEventId == fleet.RaidEventId).OrderBy(f => f.Id).ToArray();
         if (active.Length == 0 || active[0].Id != fleet.Id || !_raidTickedThisUpdate.Add(fleet.RaidEventId)) return;
         var defenders = _defense.GetImperialDefenders(fleet.RaidEventId);
         if (defenders.Count == 0)
@@ -107,6 +131,7 @@ public sealed partial class SWEmpireMilitarySystem
             }
             if (participant.Strength >= 25 && participant.Damage <= 75 && participant.Supply >= 10) continue;
             participant.EscortLeader = 0;
+            ReleaseCrossing(participant);
             LeaveRaidEngagement(participant);
             QueueRetreat(participant);
         }

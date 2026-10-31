@@ -44,10 +44,12 @@ public sealed partial class SWEmpireMilitarySystem
 
     private void AnnounceHostileArrival(Fleet fleet, string previous)
     {
-        if (!fleet.Alive || !Republic(fleet.World) || fleet.Order is SWEmpireMilitaryAction.Return or SWEmpireMilitaryAction.Move
+        if (!fleet.Alive || !Republic(fleet.World) || fleet.Crossing == null || fleet.World == fleet.CivilianBase
+            || fleet.Order is SWEmpireMilitaryAction.Return or SWEmpireMilitaryAction.Move
             || SystemKey(previous) == SystemKey(fleet.World)) return;
         var system = SystemKey(fleet.World);
         if (_announcedSystemsThisUpdate.Contains(system) || _fleets.Values.Any(other => other.Id != fleet.Id && other.Alive
+            && other.Crossing != null && other.World != other.CivilianBase
             && Republic(other.World) && SystemKey(other.World) == system
             && (other.Next == null || SystemKey(other.Next) == system))) return;
         _announcedSystemsThisUpdate.Add(system);
@@ -55,7 +57,7 @@ public sealed partial class SWEmpireMilitarySystem
         var name = string.IsNullOrWhiteSpace(world.SystemName) ? world.Name : world.SystemName;
         var message = $"Имперский флот вторгся в систему {name}.";
         _defense.AddLog(message);
-        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Штаб обороны", message, SWSenateAnnouncementKind.Defense));
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Штаб обороны", message, SWSenateAnnouncementKind.Invasion));
     }
     // Geography is public; this function never exposes fleet or economic state.
     private static string PublicWorld(string world) => world;
@@ -156,16 +158,32 @@ public sealed partial class SWEmpireMilitarySystem
         escort.Path.Clear(); foreach (var step in path) escort.Path.Enqueue(step);
     }
 
+    private void ReleaseCrossing(Fleet fleet)
+    {
+        if (fleet.EventId == 0) return;
+        var eventId = fleet.EventId;
+        var successor = _fleets.Values.Where(f => f.Id != fleet.Id && f.Alive && f.EventId == 0
+                && f.Crossing == fleet.Crossing && f.Permit == fleet.Crossing
+                && f.Order == SWEmpireMilitaryAction.Blockade && f.Next == null && f.Path.Count == 0
+                && f.World == f.Target && Republic(f.World))
+            .OrderBy(f => f.Id).FirstOrDefault();
+        if (successor != null && _defense.TransferImperialCrossing(eventId, successor.Id.ToString()))
+            successor.EventId = eventId;
+        else
+            _defense.FinishImperialCrossing(eventId, false);
+        fleet.EventId = 0; fleet.Permit = null;
+    }
+
     private void TickBorderBattle(Fleet fleet, double hours)
     {
         if (fleet.EventId == 0) return;
         if (!_defense.HasImperialEngagement(fleet.EventId))
         { fleet.EventId = 0; fleet.Permit = null; return; }
         if (!_defense.ImperialOperationsAllowed || !_defense.ImperialCrossingReady(fleet.EventId)) return;
+        if (!_borderTickedThisUpdate.Add(fleet.EventId)) return;
         if (fleet.Supply < 10)
         {
-            _defense.FinishImperialCrossing(fleet.EventId, false);
-            fleet.EventId = 0; fleet.Permit = null;
+            ReleaseCrossing(fleet);
             QueueRetreat(fleet); return;
         }
         var defenders = _defense.GetImperialDefenders(fleet.EventId);
@@ -214,8 +232,7 @@ public sealed partial class SWEmpireMilitarySystem
             { participant.EscortLeader = 0; QueueRetreat(participant); }
         }
         if (fleet.Strength >= 25 && fleet.Damage <= 75 && fleet.Supply >= 10) return;
-        _defense.FinishImperialCrossing(fleet.EventId, false);
-        fleet.EventId = 0; fleet.Permit = null;
+        ReleaseCrossing(fleet);
         if (!fleet.Alive)
         { fleet.Path.Clear(); fleet.Next = null; fleet.WorkProject = null; fleet.CargoGood = null; fleet.CargoAmount = 0; }
         QueueRetreat(fleet);

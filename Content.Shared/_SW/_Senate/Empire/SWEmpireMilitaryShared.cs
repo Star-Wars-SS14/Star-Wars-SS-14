@@ -76,6 +76,7 @@ public sealed class SWEmpireMilitaryState
     public double SupplyHour;
     public bool ClockRunning;
     public List<SWEmpireMilitaryFleetView> Fleets = new();
+    public List<SWStrategicBattleView> Battles = new();
     public List<SWEmpireMilitaryOptionView> Options = new();
     public List<SWEmpireMilitaryObservationView> Observations = new();
     public List<SWEmpireMilitaryBorderView> Borders = new();

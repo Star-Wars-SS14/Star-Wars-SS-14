@@ -94,7 +94,7 @@ public sealed partial class SWMinistryDefenseSystem
         var requests = new List<SWDefenseSupportRequestView>();
         foreach (var world in worlds)
         {
-            var threats = _incidents.Where(e => !e.Resolved && e.WorldId == world.WorldId).OrderByDescending(e => e.Severity).ToArray();
+            var threats = _incidents.Where(e => !e.Resolved && !e.ImperialContact && e.WorldId == world.WorldId).OrderByDescending(e => e.Severity).ToArray();
             foreach (var threat in threats.Take(1))
             {
                 var program = threat.Kind is SWDefenseEventKind.Unrest or SWDefenseEventKind.Incursion ? GarrisonProgramId : OrbitalProgramId;

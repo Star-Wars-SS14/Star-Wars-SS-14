@@ -12,6 +12,7 @@ using Robust.Shared.Containers;
 using Robust.Shared.Prototypes;
 using Content.Server._SW._Senate.Core;
 using Content.Server._SW._Senate.Economy;
+using Content.Server._SW._Senate.Empire;
 
 namespace Content.Server._SW._Senate.Consoles;
 
@@ -24,6 +25,7 @@ public sealed partial class SWMinistryWorkConsoleSystem : EntitySystem
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
     [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
+    [Dependency] private readonly SWEmpireMilitarySystem _imperialMilitary = default!;
     [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
     [Dependency] private readonly SWMinistryHealthSystem _health = default!;
     [Dependency] private readonly Content.Server._SW._Senate.Economy.SWRepublicEconomyPublicationSystem _healthEconomy = default!;
@@ -667,6 +669,8 @@ public sealed partial class SWMinistryWorkConsoleSystem : EntitySystem
                 {
                     state.IsDefense = true;
                     state.DefenseMap = new SWStrategicMapDisclosure(_proto).Defense(_defense.BuildMapState());
+                    state.DefenseMap.DetectedImperialFleets = _imperialMilitary.GetDetectedRepublicIntruders();
+                    state.DefenseMap.Battles = _imperialMilitary.BuildBattles(false, state.DefenseMap);
                     state.DefensePlanetary = _defense.BuildPlanetaryState();
                     state.Stance = _defense.Stance;
                     state.DefconLevel = SWMinistryDefenseSystem.DefconLevel(_defense.Stance);

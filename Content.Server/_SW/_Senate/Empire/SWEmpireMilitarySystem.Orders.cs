@@ -198,10 +198,10 @@ public sealed partial class SWEmpireMilitarySystem
         else if (request.Action == SWEmpireMilitaryAction.Raid && Republic(_fleets[request.FleetId].World))
         {
             var fleet = _fleets[request.FleetId]; var path = request.Target == fleet.World ? new System.Collections.Generic.List<string>() : RepublicPath(fleet.World, request.Target)!;
-            var owner = fleet.EventId != 0 ? fleet : _fleets.Values.FirstOrDefault(f => f.EventId != 0 && f.Permit == fleet.Crossing);
-            if (owner != null) _defense.TrySetImperialBlockade(owner.EventId, false);
             fleet.Path.Clear(); foreach (var step in path) fleet.Path.Enqueue(step);
             fleet.Target = path.Count == 0 ? fleet.World : path.Last(); fleet.Order = request.Action; fleet.RaidAttempted = false; fleet.RaidReadyAt = 0;
+            if (fleet.Contact && path.Count == 0)
+            { _defense.PromoteImperialRaid(fleet.RaidEventId); fleet.Contact = false; fleet.ContactWorld = null; }
         }
         else if (request.Action is SWEmpireMilitaryAction.Raid or SWEmpireMilitaryAction.Blockade)
         {
@@ -214,9 +214,7 @@ public sealed partial class SWEmpireMilitarySystem
         else if (request.Action == SWEmpireMilitaryAction.Return && Republic(_fleets[request.FleetId].World) && _fleets[request.FleetId].World != _fleets[request.FleetId].CivilianBase)
         {
             var fleet = _fleets[request.FleetId]; var edge = _links.First(l => l.ID == fleet.Crossing);
-            var owner = fleet.EventId != 0 ? fleet : _fleets.Values.FirstOrDefault(f => f.EventId != 0 && f.Permit == fleet.Crossing);
-            if (owner != null) _defense.TrySetImperialBlockade(owner.EventId, false);
-            if (fleet.EventId != 0) { _defense.FinishImperialCrossing(fleet.EventId, false); fleet.EventId = 0; }
+            if (fleet.EventId != 0) ReleaseCrossing(fleet);
             var foreign = Republic(edge.From) ? edge.From : edge.To;
             var own = foreign == edge.From ? edge.To : edge.From;
             fleet.Path.Clear(); foreach (var step in RepublicPath(fleet.World, foreign, true)!) fleet.Path.Enqueue(step);
@@ -235,8 +233,8 @@ public sealed partial class SWEmpireMilitarySystem
             fleet.EscortLeader = 0;
             if (fleet.EventId != 0)
             {
-                _defense.FinishImperialCrossing(fleet.EventId, false);
-                fleet.EventId = 0; fleet.Permit = null; fleet.Crossing = null;
+                ReleaseCrossing(fleet);
+                fleet.Crossing = null;
             }
             var target = request.Action == SWEmpireMilitaryAction.Return ? fleet.Home : request.Target;
             var path = request.Action is SWEmpireMilitaryAction.Move or SWEmpireMilitaryAction.Return
@@ -255,6 +253,7 @@ public sealed partial class SWEmpireMilitarySystem
     {
         EnsureInitialized();
         var state = new SWEmpireMilitaryState { NowHours = _time.ActiveGameHours, ClockRunning = _time.ModeActive && _time.DayActive };
+        state.Battles = BuildBattles(true, _defense.BuildMapState(false));
         var supply = SWRepublicNavySupplyPublication.Create(_economy.Snapshot, _economy.GoodNames);
         state.SupplyHour = supply.Hour; state.SupplyFlows = supply.Flows.Where(f => Own(f.From) && Own(f.To) && Own(f.TargetWorldId)).ToList();
         foreach (var observation in _observations.Values)

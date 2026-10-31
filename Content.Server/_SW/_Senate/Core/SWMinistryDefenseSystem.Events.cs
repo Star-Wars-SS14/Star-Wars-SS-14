@@ -10,7 +10,7 @@ public sealed partial class SWMinistryDefenseSystem
 {
     private void GenerateIncident()
     {
-        if (_incidents.Count(e => !e.Resolved) >= 4) return;
+        if (_incidents.Count(e => !e.Resolved && !e.ImperialContact) >= 4) return;
         // Threat selection is weighted by local institutions and uncovered crossings.
         var candidates = new List<(string World, string Edge, SWDefenseEventKind Kind, float Weight)>();
         foreach (var world in _worlds.Values.Where(w => w.Faction == "republic" && w.SectorId.Length > 0))
@@ -46,7 +46,7 @@ public sealed partial class SWMinistryDefenseSystem
 
     private void GenerateMinorDisruption()
     {
-        if (_incidents.Any(e => !e.Resolved)) return;
+        if (_incidents.Any(e => !e.Resolved && !e.ImperialContact)) return;
         var worlds = _worlds.Values.Where(w => w.Faction == "republic" && w.SectorId.Length > 0).ToArray();
         if (worlds.Length == 0) return;
         var world = worlds[_random.Next(worlds.Length)];
@@ -76,7 +76,7 @@ public sealed partial class SWMinistryDefenseSystem
     public bool TryCreateImperialIncident(string sectorId, bool blockade)
     {
         EnsureGroups();
-        if (!_time.ModeActive || !_time.DayActive || !MinisterActive || !ImperialThreatsEnabled || _incidents.Count(e => !e.Resolved) >= 4) return false;
+        if (!_time.ModeActive || !_time.DayActive || !MinisterActive || !ImperialThreatsEnabled || _incidents.Count(e => !e.Resolved && !e.ImperialContact) >= 4) return false;
         var crossing = _borders.FirstOrDefault(b => b.Faction == "empire" && _worlds[b.RepublicWorldId].SectorId == sectorId);
         if (crossing == null) return false;
         return CreateIncident(crossing.RepublicWorldId, crossing.Id, blockade ? SWDefenseEventKind.Blockade : SWDefenseEventKind.Incursion,
@@ -91,9 +91,9 @@ public sealed partial class SWMinistryDefenseSystem
     };
 
     private bool CreateIncident(string world, string edge, SWDefenseEventKind kind, float severity, float enemy,
-        double duration, bool director, string title)
+        double duration, bool director, string title, bool allowDuplicate = false)
     {
-        if (_incidents.Any(e => !e.Resolved && e.WorldId == world && e.Kind == kind)) return false;
+        if (!allowDuplicate && _incidents.Any(e => !e.Resolved && !e.ImperialContact && e.WorldId == world && e.Kind == kind)) return false;
         var incident = new SWDefenseEventView { Id = _nextEventId++, Title = title.Length == 0 ? IncidentTitle(kind) : title,
             WorldId = world, EdgeId = edge, Kind = kind, Severity = severity, EnemyStrength = enemy,
             ExpiresAt = _time.ActiveGameHours + duration, DirectorCreated = director, Status = "Требует реагирования",
@@ -132,7 +132,7 @@ public sealed partial class SWMinistryDefenseSystem
         if (ev != null && _imperialCrossings.ContainsKey(ev.Id)) return false;
         if (ev == null)
         {
-            if (_incidents.Count(e => !e.Resolved) >= 8) return false;
+            if (_incidents.Count(e => !e.Resolved && !e.ImperialContact) >= 8) return false;
             return CreateIncident(worldId, edgeId, kind, severity, enemyStrength, durationHours, true, title.Trim());
         }
         // Editing an assigned operation cannot teleport its objective underneath a traveling formation.

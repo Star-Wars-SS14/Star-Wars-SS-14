@@ -12,7 +12,7 @@ namespace Content.Client.RoundEnd;
 
 [UsedImplicitly]
 public sealed class RoundEndSummaryUIController : UIController,
-    IOnSystemLoaded<ClientGameTicker>
+    IOnSystemLoaded<ClientGameTicker>, IOnSystemUnloaded<ClientGameTicker>
 {
     [Dependency] private readonly IInputManager _input = default!;
 
@@ -50,6 +50,12 @@ public sealed class RoundEndSummaryUIController : UIController,
             message.RoundDuration, message.RoundId, message.AllPlayersEndInfo, EntityManager, message.SenateHistory);
         if (message.SenateHistory != null)
             EntityManager.System<SWSenatePersonalHistoryClientSystem>().Request();
+    }
+
+    public void OnSystemUnloaded(ClientGameTicker system)
+    {
+        _window?.Close();
+        _window = null;
     }
 
     public void OnSystemLoaded(ClientGameTicker system)

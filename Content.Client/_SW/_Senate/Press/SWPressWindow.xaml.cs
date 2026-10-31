@@ -21,7 +21,7 @@ public sealed partial class SWPressWindow : FancyWindow
     private bool _release;
     private bool _canEditPublication;
     private bool _withdrawn;
-    private static readonly string[] Editions = { "Республиканский вестник", "Голоса Республики", "Корусантская трибуна", "Галактический обозреватель" };
+    private static readonly string[] Editions = { "Республиканский вестник", "Голос миров", "Корусантская трибуна", "Галактический обозреватель" };
 
     public SWPressWindow()
     {

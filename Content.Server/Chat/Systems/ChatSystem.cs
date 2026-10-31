@@ -16,6 +16,8 @@ using Content.Shared.Database;
 using Content.Shared.Examine;
 using Content.Shared.Ghost;
 using Content.Shared.IdentityManagement;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
 using Content.Shared.Mobs.Systems;
 using Content.Shared.Players;
 using Content.Shared.Players.RateLimiting;
@@ -28,6 +30,7 @@ using Robust.Shared.Audio.Systems;
 using Robust.Shared.Configuration;
 using Robust.Shared.Console;
 using Robust.Shared.Network;
+using Robust.Shared.Enums;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
@@ -230,7 +233,7 @@ public sealed partial class ChatSystem : SharedChatSystem
         switch (desiredType)
         {
             case InGameICChatType.Speak:
-                SendEntitySpeak(source, message, range, nameOverride, hideLog, ignoreActionBlocker);
+                SendEntitySpeak(source, message, range, nameOverride, hideLog, ignoreActionBlocker, player);
                 break;
             case InGameICChatType.Whisper:
                 SendEntityWhisper(source, message, range, null, nameOverride, hideLog, ignoreActionBlocker);
@@ -383,7 +386,8 @@ public sealed partial class ChatSystem : SharedChatSystem
         ChatTransmitRange range,
         string? nameOverride,
         bool hideLog = false,
-        bool ignoreActionBlocker = false
+        bool ignoreActionBlocker = false,
+        ICommonSession? originatingPlayer = null
         )
     {
         if (!_actionBlocker.CanSpeak(source) && !ignoreActionBlocker)
@@ -422,9 +426,16 @@ public sealed partial class ChatSystem : SharedChatSystem
             ("fontSize", speech.FontSize),
             ("message", FormattedMessage.EscapeText(message)));
 
-        var audibleRecipients = new List<EntityUid>();
+        // Capture only authenticated player-originated ordinary speech. Relays, telephones,
+        // NPCs and system-generated speech call this path without the originating session.
+        var trustedPlayerSpeech = originatingPlayer != null && originatingPlayer.Status == SessionStatus.InGame
+            && originatingPlayer.AttachedEntity == source && TryComp<ActorComponent>(source, out var speakingActor)
+            && speakingActor.PlayerSession == originatingPlayer && TryComp<MobStateComponent>(source, out var mob)
+            && mob.CurrentState == MobState.Alive;
+        var audibleRecipients = trustedPlayerSpeech ? new List<EntityUid>() : null;
         SendInVoiceRange(ChatChannel.Local, message, wrappedMessage, source, range, audibleRecipients: audibleRecipients);
-        RaiseLocalEvent(new SWPressLocalSpeechEvent(displayedName, message, audibleRecipients));
+        if (trustedPlayerSpeech && originatingPlayer != null && audibleRecipients != null)
+            RaiseLocalEvent(new SWPressLocalSpeechEvent(source, originatingPlayer.UserId, displayedName, message, audibleRecipients));
 
         var ev = new EntitySpokeEvent(source, message, originalMessage, null, null);
         RaiseLocalEvent(source, ev, true);

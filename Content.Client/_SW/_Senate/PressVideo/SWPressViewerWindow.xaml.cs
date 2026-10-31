@@ -15,12 +15,17 @@ public sealed partial class SWPressViewerWindow : DefaultWindow
 {
     private readonly FixedEye _emptyEye = new();
     public event Action? Tick;
+    public event Action<bool>? ListenChanged;
+    private bool _setting;
+    private bool _playbackFailed;
+    private string _soundStatus = string.Empty;
 
     public SWPressViewerWindow()
     {
         RobustXamlLoader.Load(this);
         CameraView.ViewportSize = new Vector2i(500, 500);
         CameraView.Eye = _emptyEye;
+        Listen.OnToggled += e => { if (!_setting) ListenChanged?.Invoke(e.Pressed); };
         SetState(new SWPressVideoState());
     }
 
@@ -30,7 +35,29 @@ public sealed partial class SWPressViewerWindow : DefaultWindow
         text.AddText(state.Camera == null ? "Сейчас нет прямого эфира." :
             $"Тема: {state.Topic}\nВедущий: {state.Presenter}\nИздание: {state.Edition}");
         Details.SetMessage(text);
+        _soundStatus = state.SoundStatus;
+        UpdateSoundStatus();
+        Listen.Disabled = state.Camera == null;
+        if (state.Camera == null)
+        {
+            if (Listen.Pressed) ListenChanged?.Invoke(false);
+            _setting = true;
+            Listen.Pressed = false;
+            _setting = false;
+        }
         if (state.Camera == null) CameraView.Visible = false;
+    }
+
+    public void SetPlaybackFailed(bool failed)
+    {
+        _playbackFailed = failed;
+        UpdateSoundStatus();
+    }
+
+    private void UpdateSoundStatus()
+    {
+        SoundStatus.Text = _playbackFailed || string.IsNullOrEmpty(_soundStatus)
+            ? "Звук недоступен" : _soundStatus;
     }
 
     public void SetEye(IEye? eye)

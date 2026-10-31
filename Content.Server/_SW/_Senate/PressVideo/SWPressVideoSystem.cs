@@ -16,7 +16,7 @@ public sealed partial class SWPressCameraComponent : Component;
 [RegisterComponent]
 public sealed partial class SWPressViewerComponent : Component;
 
-public sealed class SWPressVideoSystem : EntitySystem
+public sealed partial class SWPressVideoSystem : EntitySystem
 {
     [Dependency] private readonly SWSenatePressSystem _press = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
@@ -35,6 +35,7 @@ public sealed class SWPressVideoSystem : EntitySystem
 
     public override void Initialize()
     {
+        InitializeAudio();
         SubscribeLocalEvent<SWPressCameraComponent, ComponentShutdown>(OnCameraShutdown);
         SubscribeLocalEvent<SWPressCameraComponent, BoundUIOpenedEvent>(OnCameraOpen);
         SubscribeLocalEvent<SWPressCameraComponent, PowerCellChangedEvent>(OnCellChanged);
@@ -70,13 +71,14 @@ public sealed class SWPressVideoSystem : EntitySystem
         if (topic.Length is < 1 or > 120 || topic.Any(char.IsControl))
             return;
         _source = uid;
+        _broadcaster = args.Actor;
         _chargeTimer = 0f;
         _topic = topic;
         _presenter = Identity.Name(args.Actor, EntityManager);
         _edition = edition switch
         {
-            PressEdition.RepublicHerald => "Вестник Республики",
-            PressEdition.VoicesOfRepublic => "Голоса Республики",
+            PressEdition.RepublicHerald => "Республиканский вестник",
+            PressEdition.VoicesOfRepublic => "Голос миров",
             PressEdition.CoruscantTribune => "Корусантская трибуна",
             PressEdition.GalacticObserver => "Галактический обозреватель",
             _ => string.Empty,
@@ -126,6 +128,7 @@ public sealed class SWPressVideoSystem : EntitySystem
 
     private void OnDetached(PlayerDetachedEvent args)
     {
+        RemoveAudioActor(args.Entity);
         if (!_screens.Remove(args.Entity))
             return;
         if (_eye is { } eye && !Deleted(eye))
@@ -134,6 +137,7 @@ public sealed class SWPressVideoSystem : EntitySystem
 
     private void RemoveViewer(EntityUid screen, EntityUid actor)
     {
+        RemoveAudioScreen(screen, actor);
         if (!_screens.TryGetValue(actor, out var screens) || !screens.Remove(screen) || screens.Count != 0)
             return;
         _screens.Remove(actor);
@@ -155,6 +159,7 @@ public sealed class SWPressVideoSystem : EntitySystem
 
     private void Stop()
     {
+        StopAudio();
         var eye = _eye;
         if (eye is { } activeEye && !Deleted(activeEye))
             foreach (var actor in _screens.Keys)
@@ -170,6 +175,13 @@ public sealed class SWPressVideoSystem : EntitySystem
 
     public override void Update(float frameTime)
     {
+        _audioCooldown = Math.Max(0f, _audioCooldown - frameTime);
+        if (_activeSpeaker is { } speaker && (_source is not { } activeCamera
+            || !AudioConfigured() || !SourceValid(speaker, _activeSpeakerUser, activeCamera)))
+        {
+            _activeSpeaker = null;
+            InvalidateAudio();
+        }
         if (_source is not { } source)
             return;
         if (!_time.ModeActive || Deleted(source) || _eye == null || Deleted(_eye.Value))
@@ -180,6 +192,12 @@ public sealed class SWPressVideoSystem : EntitySystem
         _chargeTimer += frameTime;
         if (_chargeTimer < 1f)
             return;
+        var status = AudioStatus();
+        if (_lastAudioStatus != status)
+        {
+            _lastAudioStatus = status;
+            Refresh();
+        }
         var seconds = _chargeTimer;
         _chargeTimer = 0f;
         if (!_power.TryUseCharge(source, seconds))
@@ -205,6 +223,6 @@ public sealed class SWPressVideoSystem : EntitySystem
 
     private SWPressVideoState MakeState(EntityUid? camera = null) => new()
     {
-        Camera = GetNetEntity(_eye), IsSource = _source != null && _source == camera, Topic = _topic, Presenter = _presenter, Edition = _edition,
+        SoundStatus = AudioStatus(), Camera = GetNetEntity(_eye), IsSource = _source != null && _source == camera, Topic = _topic, Presenter = _presenter, Edition = _edition,
     };
 }

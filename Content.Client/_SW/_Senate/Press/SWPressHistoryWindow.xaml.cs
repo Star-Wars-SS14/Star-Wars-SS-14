@@ -10,7 +10,7 @@ namespace Content.Client._SW._Senate.Press;
 [GenerateTypedNameReferences]
 public sealed partial class SWPressHistoryWindow : FancyWindow
 {
-    private static readonly string[] Editions = { "Республиканский вестник", "Голоса Республики", "Корусантская трибуна", "Галактический обозреватель" };
+    private static readonly string[] Editions = { "Республиканский вестник", "Голос миров", "Корусантская трибуна", "Галактический обозреватель" };
 
     public SWPressHistoryWindow() => RobustXamlLoader.Load(this);
 

@@ -162,7 +162,7 @@ public sealed partial class SWSenatePressSystem
         var edition = publication.Edition switch
         {
             PressEdition.RepublicHerald => "Республиканский вестник",
-            PressEdition.VoicesOfRepublic => "Голоса Республики",
+            PressEdition.VoicesOfRepublic => "Голос миров",
             PressEdition.CoruscantTribune => "Корусантская трибуна",
             PressEdition.GalacticObserver => "Галактический обозреватель",
             _ => "Голонет",

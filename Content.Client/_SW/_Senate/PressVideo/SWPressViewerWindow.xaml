@@ -4,6 +4,6 @@
     <RichTextLabel Name="Details" />
     <viewport:ScalingViewport Name="CameraView" HorizontalExpand="True" VerticalExpand="True"
                               MinSize="400 400" MouseFilter="Ignore" />
-    <Label Text="Звук не передаётся." />
+    <Label Name="SoundStatus" Text="Звук недоступен" /><CheckBox Name="Listen" Disabled="True" Text="Слушать речь участников, давших согласие" />
   </BoxContainer>
 </DefaultWindow>

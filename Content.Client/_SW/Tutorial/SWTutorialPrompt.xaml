@@ -1,0 +1,20 @@
+<tutorial:SWTutorialPrompt xmlns="https://spacestation14.io"
+                          xmlns:tutorial="clr-namespace:Content.Client._SW.Tutorial">
+    <PanelContainer StyleClasses="SWTermWindow">
+        <BoxContainer Orientation="Horizontal" SeparationOverride="12" Margin="12 8">
+            <BoxContainer Orientation="Vertical" SeparationOverride="2" VerticalAlignment="Center">
+                <Label Name="PromptLabel" />
+                <Label Name="NoteLabel" />
+            </BoxContainer>
+            <Button Name="ReturnButton"
+                    Text="{Loc 'sw-tutorial-return-button'}"
+                    StyleClasses="SWTermMainButtonNeutral"
+                    MinHeight="30"
+                    Visible="False" />
+            <Button Name="ExitButton"
+                    Text="{Loc 'sw-tutorial-exit-button'}"
+                    StyleClasses="SWTermButton"
+                    MinHeight="30" />
+        </BoxContainer>
+    </PanelContainer>
+</tutorial:SWTutorialPrompt>

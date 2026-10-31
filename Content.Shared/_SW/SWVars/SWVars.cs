@@ -40,6 +40,40 @@ public sealed partial class SWVars : CVars
     public static readonly CVarDef<float> TimerSpeedup =
         CVarDef.Create("sw.timer_speedup", 1f, CVar.SERVERONLY);
 
+    /*
+     * TUTORIAL
+     */
+
+    /// <summary>
+    ///     The choice screen is offered on entry to players with less overall play time than this, in minutes.
+    /// </summary>
+    public static readonly CVarDef<float> TutorialOfferMinutes =
+        CVarDef.Create("sw.tutorial_offer_minutes", 15f, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     How long a disconnected student keeps the private tutorial map, in seconds.
+    /// </summary>
+    public static readonly CVarDef<float> TutorialDisconnectTimeout =
+        CVarDef.Create("sw.tutorial_disconnect_timeout", 300f, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     The map every student gets a copy of. Any map with the points the scenario asks for works.
+    /// </summary>
+    public static readonly CVarDef<string> TutorialMap =
+        CVarDef.Create("sw.tutorial_map", "/Maps/SW/Tutorial/factory.yml", CVar.SERVERONLY);
+
+    /// <summary>
+    ///     How many students can be on their maps at once. Each entry costs a map load inside a server tick.
+    /// </summary>
+    public static readonly CVarDef<int> TutorialMaxStudents =
+        CVarDef.Create("sw.tutorial_max_students", 8, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     A graduate with no soldier slot left gets one extra slot, on the side with fewer living.
+    /// </summary>
+    public static readonly CVarDef<bool> TutorialGraduateExtraSlot =
+        CVarDef.Create("sw.tutorial_graduate_extra_slot", true, CVar.SERVERONLY);
+
     /// <summary>
     ///     Draws the whole interface in the SW terminal style. Off gives the plain Nanotrasen look at once.
     /// </summary>

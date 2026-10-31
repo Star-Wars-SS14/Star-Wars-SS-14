@@ -61,6 +61,12 @@ public sealed partial class SWRespawnGameruleSystem : GameRuleSystem<SWRespawnGa
             return;
         }
 
+        // The tutorial has a death scene with its own way back.
+        if (HasComp<Content.Server._SW.Tutorial.SWTutorialPlayerComponent>(ev.Target))
+        {
+            return;
+        }
+
         var message = Loc.GetString(GameRuleSingleton.WaitMessage, ("count", _timerSpeedup.Scale(GameRuleSingleton.DelayBeforeCanRespawn)));
         _chatManager.DispatchServerMessage(session, message);
     }

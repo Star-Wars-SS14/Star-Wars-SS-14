@@ -29,4 +29,9 @@ public sealed partial class SWAutoBalanceGameruleComponent : Component
     /// Spawns per job this round. Slots are lives, so this one never goes down.
     /// </summary>
     public Dictionary<string, int> JobsSpawned = new Dictionary<string, int>();
+
+    /// <summary>
+    /// Slots given on top of the map's amount per job this round, for tutorial graduates.
+    /// </summary>
+    public Dictionary<string, int> ExtraSlots = new Dictionary<string, int>();
 }

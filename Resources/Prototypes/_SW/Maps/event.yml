@@ -1,6 +1,6 @@
 - type: gameMap
   id: newBalmoraEvent
-  mapName: 'Нью Балмора блять!!1!1!'
+  mapName: 'Новая Балмора'
   mapPath: /Maps/SW/newBalmorra.yml
   minPlayers: 0
   maxPlayers: 200

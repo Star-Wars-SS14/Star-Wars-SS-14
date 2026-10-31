@@ -1,6 +1,7 @@
 - type: job
   id: SWRepublicPilot
   name: Пилот Сил Республики
+  description: job-description-sw-republic-pilot
   playTimeTracker: Job_Republic_Pilot
   requirements:
   - !type:OverallPlaytimeRequirement

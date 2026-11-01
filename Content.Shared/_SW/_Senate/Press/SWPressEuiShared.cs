@@ -6,6 +6,7 @@ namespace Content.Shared._SW._Senate.Press;
 [Serializable, NetSerializable]
 public sealed class SWPressEuiState : EuiStateBase
 {
+    public bool PublicOnly;
     public bool CanWrite;
     public bool CanRelease;
     public string Office = string.Empty;
@@ -113,7 +114,7 @@ public sealed class SWPressQuoteEntry
 }
 
 [Serializable, NetSerializable]
-public enum SWPressAction : byte { Refresh, SelectEdition, Save, Delete, Publish, Correct, Withdraw, Print, ToggleRecording, AttachQuote, RemoveQuote, SendRelease, PrintRelease, GuestCreate, GuestRespond, GuestCancel, GuestReschedule, MailCreate, MailReply, MailCopyToDraft, HistoryOpen, HistoryClose }
+public enum SWPressAction : byte { Refresh, SelectEdition, Save, Delete, Publish, Correct, Withdraw, Print, ToggleRecording, AttachQuote, RemoveQuote, SendRelease, PrintRelease, GuestCreate, GuestRespond, GuestCancel, GuestReschedule, MailCreate, MailReply, MailCopyToDraft, HistoryOpen, HistoryClose, LeaveEdition }
 
 [Serializable, NetSerializable]
 public sealed class SWPressActionMessage : EuiMessageBase

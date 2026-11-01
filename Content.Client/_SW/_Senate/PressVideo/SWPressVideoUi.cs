@@ -115,7 +115,10 @@ public sealed class SWPressViewerBoundUserInterface : BoundUserInterface
         if (_window == null || _target == null) return;
         var uid = EntMan.GetEntity(_target);
         if (uid == null || !EntMan.TryGetComponent<EyeComponent>(uid, out var eye) || eye.Eye == null)
+        {
+            ReleaseEye();
             return;
+        }
         if (_eye != uid)
         {
             ReleaseEye();

@@ -19,6 +19,7 @@ public sealed partial class SWPressMailWindow : FancyWindow
     public SWPressMailWindow()
     {
         RobustXamlLoader.Load(this);
+        SWConsoleStyle.StyleRoot(RootPanel);
         NewMail.OnPressed += _ => Clear();
         Refresh.OnPressed += _ => Send(SWPressAction.Refresh);
         SendNew.OnPressed += _ => Send(SWPressAction.MailCreate);
@@ -34,7 +35,7 @@ public sealed partial class SWPressMailWindow : FancyWindow
         if (state.MailTargets.Count == 0) Targets.AddChild(new Label { Text = "Нет доступных адресатов." });
         foreach (var target in state.MailTargets)
         {
-            var button = new Button { Text = Short(target.Label), HorizontalExpand = true };
+            var button = new SWConsoleButton { Text = Short(target.Label), HorizontalExpand = true };
             button.OnPressed += _ => { Clear(); _targetKey = target.Key; Context.Text = "Адресат: " + Short(target.Label); UpdateControls(); };
             Targets.AddChild(button);
         }
@@ -42,7 +43,7 @@ public sealed partial class SWPressMailWindow : FancyWindow
         if (state.Mail.Count == 0) Threads.AddChild(new Label { Text = "Обращений пока нет." });
         foreach (var thread in state.Mail)
         {
-            var button = new Button { Text = Short(thread.Subject), HorizontalExpand = true };
+            var button = new SWConsoleButton { Text = Short(thread.Subject), HorizontalExpand = true };
             button.OnPressed += _ => Select(thread);
             Threads.AddChild(button);
         }

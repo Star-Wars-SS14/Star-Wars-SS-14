@@ -60351,7 +60351,7 @@ entities:
           - type: "Transform"
             pos: "65.5,-93.5"
             parent: 2
-            anchored: true
+            anchored: false
   - proto: "SWHolonetPressTerminal"
     entities:
       - uid: 8500

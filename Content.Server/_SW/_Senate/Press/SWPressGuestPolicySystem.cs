@@ -61,13 +61,13 @@ public sealed class SWPressGuestPolicySystem : EntitySystem
         var isOfficial = _press.TryGetOfficialOffice(actor, out _);
         if (!isReporter && !isOfficial) return Array.Empty<PressInviteTarget>();
         var targets = new List<PressInviteTarget>();
+        if (isReporter)
+            targets.AddRange(_press.GetPressOfficeTargets().Select(t => new PressInviteTarget(t.Key, t.Label)));
         foreach (var session in _players.Sessions)
         {
             if (session.Status != SessionStatus.InGame || session.AttachedEntity is not { } target || target == actor)
                 continue;
-            if (isReporter && _press.TryGetOfficialIdentity(target, out var officeKey, out var office))
-                targets.Add(new PressInviteTarget(officeKey, $"{office} — {Identity.Name(target, EntityManager, actor)}"));
-            else if (isOfficial && _press.TryGetCorrespondent(target, out var user) && user != current
+            if (isOfficial && _press.TryGetCorrespondent(target, out var user) && user != current
                 && Token(user) is { } token)
                 targets.Add(new PressInviteTarget(token, $"Корреспондент — {Identity.Name(target, EntityManager, actor)}"));
         }
@@ -79,14 +79,14 @@ public sealed class SWPressGuestPolicySystem : EntitySystem
         if (!_press.TryLivePressActor(actor, out var sender)) return Array.Empty<PressInviteTarget>();
         var isReporter = _press.TryGetCorrespondent(actor, out _);
         var targets = new List<PressInviteTarget>();
+        if (isReporter)
+            targets.AddRange(_press.GetPressOfficeTargets().Select(t => new PressInviteTarget(t.Key, t.Label)));
         foreach (var session in _players.Sessions)
         {
             if (session.Status != SessionStatus.InGame || session.UserId == sender || session.AttachedEntity is not { } target)
                 continue;
             if (_press.TryGetCorrespondent(target, out var user) && Token(user) is { } token)
                 targets.Add(new PressInviteTarget(token, $"Корреспондент — {Identity.Name(target, EntityManager, actor)}"));
-            else if (isReporter && _press.TryGetOfficialIdentity(target, out var officeKey, out var office))
-                targets.Add(new PressInviteTarget(officeKey, $"{office} — {Identity.Name(target, EntityManager, actor)}"));
         }
         return targets.OrderBy(t => t.Label, StringComparer.Ordinal).ToArray();
     }
@@ -98,7 +98,7 @@ public sealed class SWPressGuestPolicySystem : EntitySystem
         if (key.StartsWith("office:", StringComparison.Ordinal))
         {
             if (!_press.TryGetCorrespondent(actor, out _) || !_press.TryGetPressOfficeBinding(key, out target, out user)
-                || !_press.TryGetOfficialOffice(target, out _)) return false;
+                || !EntityManager.EntityExists(target)) return false;
         }
         else
         {

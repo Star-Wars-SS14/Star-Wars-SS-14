@@ -12,7 +12,11 @@ public sealed partial class SWPressHistoryWindow : FancyWindow
 {
     private static readonly string[] Editions = { "Республиканский вестник", "Голос миров", "Корусантская трибуна", "Галактический обозреватель" };
 
-    public SWPressHistoryWindow() => RobustXamlLoader.Load(this);
+    public SWPressHistoryWindow()
+    {
+        RobustXamlLoader.Load(this);
+        SWConsoleStyle.StyleRoot(RootPanel);
+    }
 
     public void SetState(SWPressEuiState state)
     {

@@ -30,6 +30,11 @@
   id: SWHolonetCorrespondentIDCard
   name: ID-карта корреспондента Голонета
   components:
+  - type: Sprite
+    layers:
+    - state: image22
+  - type: IdCard
+    jobPrototype: SWHolonetCorrespondent
   - type: PresetIdCard
     job: SWHolonetCorrespondent
 
@@ -38,13 +43,14 @@
   id: SWHolonetCorrespondentPDA
   name: КПК корреспондента Голонета
   components:
+  - type: SWPressNewsAccess
   - type: Pda
     id: SWHolonetCorrespondentIDCard
 
 - type: entity
   parent: BaseItem
   id: SWHolonetPressTerminal
-  name: редакционный датапад Голонета
+  name: Голонет — новости и редакция
   description: Доступ к публичной ленте и инструментам корреспондента.
   components:
   - type: Sprite

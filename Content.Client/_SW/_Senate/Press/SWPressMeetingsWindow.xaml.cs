@@ -20,6 +20,7 @@ public sealed partial class SWPressMeetingsWindow : FancyWindow
     public SWPressMeetingsWindow()
     {
         RobustXamlLoader.Load(this);
+        SWConsoleStyle.StyleRoot(RootPanel);
         NewRequest.OnPressed += _ => { _selectedId = 0; _selected = null; _selectionOutdated = false; _targetKey = ""; Subject.Text = ""; Description.Text = ""; Location.Text = ""; Context.SetMessage("Выберите адресата."); UpdateControls(); };
         Refresh.OnPressed += _ => Send(SWPressAction.Refresh);
         Create.OnPressed += _ => SendTimed(SWPressAction.GuestCreate);
@@ -38,7 +39,7 @@ public sealed partial class SWPressMeetingsWindow : FancyWindow
         if (state.GuestTargets.Count == 0) Targets.AddChild(new Label { Text = "Нет доступных адресатов." });
         foreach (var target in state.GuestTargets)
         {
-            var button = new Button { Text = Short(target.Label), HorizontalExpand = true };
+            var button = new SWConsoleButton { Text = Short(target.Label), HorizontalExpand = true };
             button.OnPressed += _ => { if (_selectedId != 0) { Subject.Text = ""; Description.Text = ""; Location.Text = ""; } _targetKey = target.Key; _selectedId = 0; _selected = null; _selectionOutdated = false; Context.SetMessage("Адресат: " + target.Label); UpdateControls(); };
             Targets.AddChild(button);
         }
@@ -46,7 +47,7 @@ public sealed partial class SWPressMeetingsWindow : FancyWindow
         if (state.GuestRequests.Count == 0) Requests.AddChild(new Label { Text = "Встреч и приглашений нет." });
         foreach (var request in state.GuestRequests)
         {
-            var button = new Button { Text = request.Stale ? "Запрос недоступен" : Short(request.Subject), HorizontalExpand = true };
+            var button = new SWConsoleButton { Text = request.Stale ? "Запрос недоступен" : Short(request.Subject), HorizontalExpand = true };
             button.OnPressed += _ => Select(request);
             Requests.AddChild(button);
         }

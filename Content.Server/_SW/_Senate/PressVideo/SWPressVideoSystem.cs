@@ -26,6 +26,8 @@ public sealed partial class SWPressVideoSystem : EntitySystem
 
     private EntityUid? _source;
     private EntityUid? _eye;
+    private EntityUid? _presenterActor;
+    private PressEdition _presenterEdition;
     private string _topic = string.Empty;
     private string _presenter = string.Empty;
     private string _edition = string.Empty;
@@ -71,6 +73,8 @@ public sealed partial class SWPressVideoSystem : EntitySystem
         if (topic.Length is < 1 or > 120 || topic.Any(char.IsControl))
             return;
         _source = uid;
+        _presenterActor = args.Actor;
+        _presenterEdition = edition;
         _feedId++;
         _speechCount = 0;
         _speechWindow = _timing.CurTime;
@@ -85,7 +89,8 @@ public sealed partial class SWPressVideoSystem : EntitySystem
             PressEdition.GalacticObserver => "Галактический обозреватель",
             _ => string.Empty,
         };
-        _eye = SpawnAttachedTo("SWPressVideoEye", uid.ToCoordinates());
+        // Keep the view on the map, outside the camera's hand/storage container hierarchy.
+        _eye = Spawn("SWPressVideoEye", _speechTransform.GetMapCoordinates(uid));
         foreach (var actor in _screens.Keys)
             Subscribe(actor);
         Refresh();
@@ -165,6 +170,7 @@ public sealed partial class SWPressVideoSystem : EntitySystem
                 if (TryComp<ActorComponent>(actor, out var player))
                     _views.RemoveViewSubscriber(activeEye, player.PlayerSession);
         _source = null;
+        _presenterActor = null;
         _eye = null;
         _topic = _presenter = _edition = string.Empty;
         if (eye != null && !Deleted(eye.Value))
@@ -176,11 +182,14 @@ public sealed partial class SWPressVideoSystem : EntitySystem
     {
         if (_source is not { } source)
             return;
-        if (!_time.ModeActive || Deleted(source) || _eye == null || Deleted(_eye.Value))
+        if (!_time.ModeActive || Deleted(source) || _eye == null || Deleted(_eye.Value)
+            || _presenterActor is not { } presenter || !_press.TryGetEdition(presenter, out var edition)
+            || edition != _presenterEdition)
         {
             Stop();
             return;
         }
+        _speechTransform.SetMapCoordinates(_eye.Value, _speechTransform.GetMapCoordinates(source));
         _chargeTimer += frameTime;
         if (_chargeTimer < 1f)
             return;

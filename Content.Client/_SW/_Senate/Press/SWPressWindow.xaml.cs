@@ -21,11 +21,21 @@ public sealed partial class SWPressWindow : FancyWindow
     private bool _release;
     private bool _canEditPublication;
     private bool _withdrawn;
+    private int _portal;
+    private int _lastEdition = -1;
+    private readonly List<SWConsoleButton> _portalButtons = new();
     private static readonly string[] Editions = { "Республиканский вестник", "Голос миров", "Корусантская трибуна", "Галактический обозреватель" };
 
     public SWPressWindow()
     {
         RobustXamlLoader.Load(this);
+        SWConsoleStyle.StyleRoot(RootPanel);
+        SWConsoleStyle.StyleHeader(HeaderPanel);
+        LibraryTabs.SetTabTitle(0, "Лента");
+        LibraryTabs.SetTabTitle(1, "Черновики");
+        LibraryTabs.SetTabTitle(2, "Релизы");
+        LibraryTabs.SetTabTitle(3, "Диктофон");
+        LeaveEdition.OnPressed += _ => Send(SWPressAction.LeaveEdition);
         Meetings.OnPressed += _ => _meetings.OpenCentered();
         MailButton.OnPressed += _ => _mail.OpenCentered();
         _mail.Action += message => Action?.Invoke(message);
@@ -44,9 +54,17 @@ public sealed partial class SWPressWindow : FancyWindow
                 EditionButtons.AddChild(editionRow);
             }
             var index = i;
-            var button = new Button { Text = Editions[i], HorizontalExpand = true };
+            var button = new SWConsoleButton { Text = Editions[i], HorizontalExpand = true };
             button.OnPressed += _ => Send(SWPressAction.SelectEdition, edition: index);
             editionRow!.AddChild(button);
+        }
+        for (var i = 0; i < Editions.Length; i++)
+        {
+            var index = i;
+            var button = new SWConsoleButton { Text = Editions[i], HorizontalExpand = true };
+            button.OnPressed += _ => { _portal = index; UpdatePortal(); };
+            _portalButtons.Add(button);
+            PortalButtons.AddChild(button);
         }
         Refresh.OnPressed += _ => Send(SWPressAction.Refresh);
         Record.OnPressed += _ => Send(SWPressAction.ToggleRecording);
@@ -58,7 +76,6 @@ public sealed partial class SWPressWindow : FancyWindow
         Publish.OnPressed += _ => Send(SWPressAction.Publish);
         Correct.OnPressed += _ => Send(SWPressAction.Correct);
         Withdraw.OnPressed += _ => Send(SWPressAction.Withdraw);
-        Print.OnPressed += _ => Send(_release ? SWPressAction.PrintRelease : SWPressAction.Print);
         UpdateControls();
     }
 
@@ -75,11 +92,26 @@ public sealed partial class SWPressWindow : FancyWindow
         {
             _id = 0; _revision = 0; TitleEdit.Text = ""; BodyEdit.Text = ""; AttachedQuotes.RemoveAllChildren();
         }
+        if (state.Edition >= 0 && state.Edition < Editions.Length && state.Edition != _lastEdition)
+            _portal = state.Edition;
+        _lastEdition = state.Edition;
         _state = state;
+        Title = state.PublicOnly ? $"Голонет · {Editions[_portal]}" : "Голонет: редакция и лента";
+        MailButton.Visible = Meetings.Visible = NewDraft.Visible = NewRelease.Visible = !state.PublicOnly;
+        Save.Visible = Delete.Visible = Publish.Visible = SendRelease.Visible = !state.PublicOnly;
+        Correct.Visible = Withdraw.Visible = !state.PublicOnly;
+        LibraryTabs.SetTabVisible(1, !state.PublicOnly);
+        LibraryTabs.SetTabVisible(3, !state.PublicOnly);
+        TitleEdit.Editable = !state.PublicOnly;
+        BodyEdit.Editor.Editable = !state.PublicOnly;
+
         _meetings.SetState(state);
         _mail.SetState(state);
         _history.SetState(state);
-        Notice.Text = state.Notice + " После изменения записи выберите её заново." + (state.Edition >= 0 && state.Edition < Editions.Length ? $"  Издание: {Editions[state.Edition]}" : "  Выберите издание.");
+        Notice.Text = state.Notice;
+        EditionLabel.Text = state.PublicOnly ? $"Голонет · {Editions[_portal]}" : state.Edition >= 0 && state.Edition < Editions.Length ? Editions[state.Edition] : "Голонет";
+        EditionButtons.Visible = state.CanWrite && state.Edition < 0;
+        LeaveEdition.Visible = state.CanWrite && state.Edition >= 0;
         Record.Text = state.IsRecording ? "● Запись включена — остановить" : "Начать запись (держите датапад)";
         Record.Disabled = !state.CanWrite;
         RecordedList.RemoveAllChildren();
@@ -87,7 +119,7 @@ public sealed partial class SWPressWindow : FancyWindow
             RecordedList.AddChild(new Label { Text = "Записей пока нет." });
         foreach (var quote in state.RecordedQuotes)
         {
-            var button = new Button { Text = Short(quote.DisplayName + ": " + quote.Text), HorizontalExpand = true };
+            var button = new SWConsoleButton { Text = Short(quote.DisplayName + ": " + quote.Text), HorizontalExpand = true };
             button.OnPressed += _ => Send(SWPressAction.AttachQuote, quoteId: quote.Id);
             button.Disabled = !state.CanWrite || _publication || _id == 0;
             RecordedList.AddChild(button);
@@ -97,7 +129,7 @@ public sealed partial class SWPressWindow : FancyWindow
             DraftList.AddChild(new Label { Text = "Черновиков пока нет." });
         foreach (var draft in state.Drafts)
         {
-            var button = new Button { Text = Short(draft.Title), HorizontalExpand = true };
+            var button = new SWConsoleButton { Text = Short(draft.Title), HorizontalExpand = true };
             button.OnPressed += _ => SelectDraft(draft);
             DraftList.AddChild(button);
         }
@@ -106,19 +138,11 @@ public sealed partial class SWPressWindow : FancyWindow
             ReleaseList.AddChild(new Label { Text = "Релизов пока нет." });
         foreach (var release in state.Releases)
         {
-            var button = new Button { Text = Short(release.Title), HorizontalExpand = true };
+            var button = new SWConsoleButton { Text = Short(release.Title), HorizontalExpand = true };
             button.OnPressed += _ => SelectRelease(release);
             ReleaseList.AddChild(button);
         }
-        FeedList.RemoveAllChildren();
-        if (state.Publications.Count == 0)
-            FeedList.AddChild(new Label { Text = "Публикаций пока нет." });
-        foreach (var publication in state.Publications)
-        {
-            var button = new Button { Text = Short(publication.Title) + (publication.Withdrawn ? " [отозвано]" : ""), HorizontalExpand = true };
-            button.OnPressed += _ => SelectPublication(publication);
-            FeedList.AddChild(button);
-        }
+        UpdatePortal();
         if (_publication && !_release && _id != 0)
         {
             var current = state.Publications.FirstOrDefault(p => p.Id == _id);
@@ -142,6 +166,27 @@ public sealed partial class SWPressWindow : FancyWindow
             }
         }
         UpdateControls();
+    }
+
+    private void UpdatePortal()
+    {
+        if (_state.PublicOnly)
+        {
+            Title = $"Голонет · {Editions[_portal]}";
+            EditionLabel.Text = Title;
+        }
+        for (var i = 0; i < _portalButtons.Count; i++)
+            _portalButtons[i].SetAppearance(SWConsoleStyle.TextBright, selected: i == _portal);
+        FeedList.RemoveAllChildren();
+        var publications = _state.Publications.Where(p => p.Edition == _portal).ToArray();
+        if (publications.Length == 0)
+            FeedList.AddChild(SWConsoleStyle.Wrap("Издание пока не опубликовало статей", SWConsoleStyle.TextDim, 260));
+        foreach (var publication in publications)
+        {
+            var button = new SWConsoleButton { Text = ShortPortalTitle(publication.Title) + (publication.Withdrawn ? " [отозвано]" : ""), HorizontalExpand = true };
+            button.OnPressed += _ => SelectPublication(publication);
+            FeedList.AddChild(button);
+        }
     }
 
     private void SelectDraft(SWPressDraftEntry draft)
@@ -186,7 +231,7 @@ public sealed partial class SWPressWindow : FancyWindow
             AttachedQuotes.AddChild(label);
             if (!_publication && _state.CanWrite)
             {
-                var remove = new Button { Text = "Убрать цитату" };
+                var remove = new SWConsoleButton { Text = "Убрать цитату" };
                 remove.OnPressed += _ => Send(SWPressAction.RemoveQuote, quoteId: quote.Id);
                 AttachedQuotes.AddChild(remove);
             }
@@ -203,11 +248,12 @@ public sealed partial class SWPressWindow : FancyWindow
         Publish.Disabled = !_state.CanWrite || _publication || _id == 0 || _state.Edition < 0;
         Correct.Disabled = !_state.CanWrite || !_publication || !_canEditPublication || _withdrawn;
         Withdraw.Disabled = Correct.Disabled;
-        Print.Disabled = !_publication || _withdrawn;
         History.Disabled = !_publication || _release || _withdrawn;
         if (!_publication)
-            Context.Text = _release ? $"Новый официальный релиз · {_state.Office}" : _id == 0 ? "Новый черновик" : $"Черновик · версия {_revision}";
+            Context.Text = _state.PublicOnly ? "Выберите новость в ленте слева." : _release ? $"Новый официальный релиз · {_state.Office}" : _id == 0 ? "Новый черновик" : $"Черновик · версия {_revision}";
     }
+
+    private static string ShortPortalTitle(string text) => text.Length > 24 ? text[..24] + "…" : text;
 
     private static string Short(string text) => text.Length > 38 ? text[..38] + "…" : text;
 }

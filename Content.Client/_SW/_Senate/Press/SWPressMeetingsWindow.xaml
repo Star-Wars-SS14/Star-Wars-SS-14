@@ -1,11 +1,13 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
+    xmlns:senate="clr-namespace:Content.Client._SW._Senate"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
     Title="Пресс-встречи" MinSize="780 560">
+    <PanelContainer Name="RootPanel">
     <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10">
         <Label Name="Notice" Text="Выберите адресата или существующий запрос." />
         <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
             <BoxContainer Orientation="Vertical" MinWidth="260" MaxWidth="320" HorizontalExpand="True" VerticalExpand="True">
-                <Button Name="NewRequest" Text="Новый запрос" />
+                <senate:SWConsoleButton Name="NewRequest" Text="Новый запрос" />
                 <Label Text="Доступные адресаты" Margin="0 6 0 2" />
                 <ScrollContainer VerticalExpand="True" HorizontalExpand="True">
                     <BoxContainer Name="Targets" Orientation="Vertical" HorizontalExpand="True" />
@@ -14,7 +16,7 @@
                 <ScrollContainer VerticalExpand="True" HorizontalExpand="True">
                     <BoxContainer Name="Requests" Orientation="Vertical" HorizontalExpand="True" />
                 </ScrollContainer>
-                <Button Name="Refresh" Text="Обновить" />
+                <senate:SWConsoleButton Name="Refresh" Text="Обновить" />
             </BoxContainer>
             <ScrollContainer HorizontalExpand="True" VerticalExpand="True" Margin="12 0 0 0">
               <BoxContainer Orientation="Vertical" HorizontalExpand="True">
@@ -32,16 +34,17 @@
                 <Label Text="Длительность: 15, 30, 45 или 60 минут" />
                 <LineEdit Name="Duration" Text="30" />
                 <BoxContainer Orientation="Horizontal" Margin="0 8 0 0">
-                    <Button Name="Create" Text="Пригласить" HorizontalExpand="True" />
-                    <Button Name="Accept" Text="Принять" HorizontalExpand="True" />
-                    <Button Name="Decline" Text="Отклонить" HorizontalExpand="True" />
+                    <senate:SWConsoleButton Name="Create" Text="Пригласить" HorizontalExpand="True" />
+                    <senate:SWConsoleButton Name="Accept" Text="Принять" HorizontalExpand="True" />
+                    <senate:SWConsoleButton Name="Decline" Text="Отклонить" HorizontalExpand="True" />
                 </BoxContainer>
                 <BoxContainer Orientation="Horizontal">
-                    <Button Name="Reschedule" Text="Перенести" HorizontalExpand="True" />
-                    <Button Name="Cancel" Text="Отменить встречу" HorizontalExpand="True" />
+                    <senate:SWConsoleButton Name="Reschedule" Text="Перенести" HorizontalExpand="True" />
+                    <senate:SWConsoleButton Name="Cancel" Text="Отменить встречу" HorizontalExpand="True" />
                 </BoxContainer>
               </BoxContainer>
             </ScrollContainer>
         </BoxContainer>
     </BoxContainer>
+    </PanelContainer>
 </controls:FancyWindow>

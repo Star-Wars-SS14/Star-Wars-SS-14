@@ -2,8 +2,9 @@
   parent: BasePDA
   id: SWSenatorPDA
   name: КПК сенатора
-  description: Персональный датапад члена Сената Республики.
+  description: Персональный датапад члена Сената Республики. Новости Голонета доступны в меню действий КПК.
   components:
+  - type: SWPressNewsAccess
   - type: Pda
     id: SWSenatorIDCard
   - type: Sprite
@@ -34,8 +35,9 @@
   parent: BasePDA
   id: SWChancellorPDA
   name: КПК Верховного Канцлера
-  description: Персональный датапад главы исполнительной власти Республики.
+  description: Персональный датапад главы исполнительной власти Республики. Новости Голонета доступны в меню действий КПК.
   components:
+  - type: SWPressNewsAccess
   - type: Pda
     id: SWChancellorIDCard
   - type: Sprite
@@ -66,8 +68,9 @@
   parent: BasePDA
   id: SWSpeakerPDA
   name: КПК Спикера Сената
-  description: Персональный датапад председателя Сената Республики.
+  description: Персональный датапад председателя Сената Республики. Новости Голонета доступны в меню действий КПК.
   components:
+  - type: SWPressNewsAccess
   - type: Pda
     id: SWSpeakerIDCard
   - type: Sprite
@@ -98,8 +101,9 @@
   parent: BasePDA
   id: SWMinisterPDA
   name: КПК министра
-  description: Персональный датапад члена исполнительной власти Республики.
+  description: Персональный датапад члена исполнительной власти Республики. Новости Голонета доступны в меню действий КПК.
   components:
+  - type: SWPressNewsAccess
   - type: Pda
     id: SWMinisterIDCard
   - type: Sprite
@@ -130,8 +134,9 @@
   parent: BasePDA
   id: SWUsherPDA
   name: КПК пристава
-  description: Персональный датапад пристава Сената.
+  description: Персональный датапад пристава Сената. Новости Голонета доступны в меню действий КПК.
   components:
+  - type: SWPressNewsAccess
   - type: Pda
     id: SWUsherIDCard
   - type: Sprite
@@ -162,8 +167,9 @@
   parent: BasePDA
   id: SWSenateGuardHeadPDA
   name: КПК главы Сенатской Гвардии
-  description: Персональный датапад командующего Сенатской Гвардией.
+  description: Персональный датапад командующего Сенатской Гвардией. Новости Голонета доступны в меню действий КПК.
   components:
+  - type: SWPressNewsAccess
   - type: Pda
     id: SWSenateGuardHeadIDCard
   - type: Sprite
@@ -194,8 +200,9 @@
   parent: BasePDA
   id: SWSenateGuardOfficerPDA
   name: КПК офицера Сенатской Гвардии
-  description: Персональный датапад офицера Сенатской Гвардии.
+  description: Персональный датапад офицера Сенатской Гвардии. Новости Голонета доступны в меню действий КПК.
   components:
+  - type: SWPressNewsAccess
   - type: Pda
     id: SWSenateGuardOfficerIDCard
   - type: Sprite
@@ -226,8 +233,9 @@
   parent: BasePDA
   id: SWSenateDoctorPDA
   name: КПК сенатского врача
-  description: Персональный датапад врача медслужбы Сената.
+  description: Персональный датапад врача медслужбы Сената. Новости Голонета доступны в меню действий КПК.
   components:
+  - type: SWPressNewsAccess
   - type: Pda
     id: SWSenateDoctorIDCard
   - type: Sprite
@@ -258,8 +266,9 @@
   parent: BasePDA
   id: SWChiefJusticePDA
   name: КПК Верховного Судьи
-  description: Персональный датапад председателя Верховного Суда.
+  description: Персональный датапад председателя Верховного Суда. Новости Голонета доступны в меню действий КПК.
   components:
+  - type: SWPressNewsAccess
   - type: Pda
     id: SWChiefJusticeIDCard
   - type: Sprite
@@ -290,8 +299,9 @@
   parent: BasePDA
   id: SWRepublicJudgePDA
   name: КПК Республиканского Судьи
-  description: Персональный датапад члена Верховного Суда.
+  description: Персональный датапад члена Верховного Суда. Новости Голонета доступны в меню действий КПК.
   components:
+  - type: SWPressNewsAccess
   - type: Pda
     id: SWRepublicJudgeIDCard
   - type: Sprite
@@ -322,8 +332,9 @@
   parent: BasePDA
   id: SWProsecutorPDA
   name: КПК Обвинителя
-  description: Персональный датапад стороны обвинения.
+  description: Персональный датапад стороны обвинения. Новости Голонета доступны в меню действий КПК.
   components:
+  - type: SWPressNewsAccess
   - type: Pda
     id: SWProsecutorIDCard
   - type: Sprite
@@ -354,8 +365,9 @@
   parent: BasePDA
   id: SWDefenderPDA
   name: КПК Защитника
-  description: Персональный датапад стороны защиты.
+  description: Персональный датапад стороны защиты. Новости Голонета доступны в меню действий КПК.
   components:
+  - type: SWPressNewsAccess
   - type: Pda
     id: SWDefenderIDCard
   - type: Sprite

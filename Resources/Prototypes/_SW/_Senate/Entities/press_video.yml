@@ -31,9 +31,9 @@
 
 - type: entity
   id: SWPressVideoTripod
-  parent: [ BaseStructure, PowerCellSlotSmallItem ]
+  parent: [ BaseStructureDynamic, PowerCellSlotSmallItem ]
   name: видеокамера на штативе
-  description: Неподвижная камера прямого эфира с питанием от малого элемента.
+  description: Передвижная камера прямого эфира. Её можно тянуть за собой или закрепить ключом. Работает от малого элемента питания.
   components:
   - type: Sprite
     sprite: Objects/Devices/camera_bug.rsi
@@ -49,9 +49,10 @@
 - type: entity
   id: SWPressVideoScreen
   parent: BaseComputer
-  name: экран прямого эфира
-  description: Публичный экран трансляции Голонета.
+  name: экран Голонета — эфир и новости
+  description: Публичный экран трансляции. Опубликованные статьи доступны через действие «Новости Голонета» в меню экрана.
   components:
+  - type: SWPressNewsAccess
   - type: SWPressViewer
   - type: ActivatableUI
     key: enum.SWPressViewerUiKey.Key

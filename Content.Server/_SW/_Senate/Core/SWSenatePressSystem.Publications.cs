@@ -3,7 +3,6 @@ using Robust.Shared.Network;
 using Robust.Shared.Player;
 using Robust.Shared.Enums;
 using Robust.Shared.Utility;
-using Content.Shared.Paper;
 using Content.Shared.IdentityManagement;
 using Content.Server._SW._Senate.Press;
 using Content.Shared.Mobs;
@@ -21,9 +20,6 @@ public sealed partial class SWSenatePressSystem
     private const int MaxBodyLength = 1000;
     private readonly Dictionary<int, PressDraft> _drafts = new();
     private readonly Dictionary<int, PressPublication> _publications = new();
-    [Dependency] private readonly PaperSystem _paper = default!;
-    private readonly Dictionary<NetUserId, int> _printCounts = new();
-    private int _printTotal;
     private int _nextDraftId;
     private int _nextPublicationId;
 
@@ -34,8 +30,6 @@ public sealed partial class SWSenatePressSystem
         _knownOfficeUsers.Clear();
         _releases.Clear();
         _nextReleaseId = 0;
-        _printCounts.Clear();
-        _printTotal = 0;
         _drafts.Clear();
         _publications.Clear();
         _nextDraftId = 0;
@@ -142,35 +136,6 @@ public sealed partial class SWSenatePressSystem
         var previous = publication.Versions[^1];
         publication.Versions.Add(new PressVersion(expectedVersion + 1, previous.Title, previous.Body, Timestamp(), true, previous.Quotes.ToArray()));
         PublicationsChanged?.Invoke();
-        return true;
-    }
-
-    public bool Print(EntityUid actor, int id, int expectedVersion)
-    {
-        if (!_time.ModeActive || !TryComp<ActorComponent>(actor, out var player)
-            || player.PlayerSession.Status != SessionStatus.InGame || player.PlayerSession.AttachedEntity != actor
-            || !TryComp<MobStateComponent>(actor, out var mob) || mob.CurrentState != MobState.Alive
-            || !_publications.TryGetValue(id, out var publication) || publication.Versions.Count != expectedVersion
-            || publication.Versions[^1].Withdrawn || _printTotal >= 100)
-            return false;
-        var user = player.PlayerSession.UserId;
-        _printCounts.TryGetValue(user, out var count);
-        if (count >= 5)
-            return false;
-        var version = publication.Versions[^1];
-        var paper = Spawn("Paper", Transform(actor).Coordinates);
-        var edition = publication.Edition switch
-        {
-            PressEdition.RepublicHerald => "Республиканский вестник",
-            PressEdition.VoicesOfRepublic => "Голос миров",
-            PressEdition.CoruscantTribune => "Корусантская трибуна",
-            PressEdition.GalacticObserver => "Галактический обозреватель",
-            _ => "Голонет",
-        };
-        var quotes = string.Join("\n\n", version.Quotes.Select(q => $"Цитата: {q.DisplayName} ({q.Time})\n«{q.Text}»"));
-        _paper.SetContent(paper, FormattedMessage.EscapeText($"{edition}\n{version.Title}\n{publication.Author} · {version.Time} · версия {version.Number}\n\n{version.Body}\n\n{quotes}"));
-        _printCounts[user] = count + 1;
-        _printTotal++;
         return true;
     }
 

@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Server._SW._Senate.Economy;
 using Content.Shared._SW._Senate.Ministries;
 using Content.Shared._SW._Senate.Sectors;
+using Content.Shared._SW._Senate;
 using Content.Shared.Mobs;
 using Content.Shared.IdentityManagement;
 using Content.Shared.Mobs.Components;
@@ -26,7 +27,8 @@ public sealed partial class SWSenatePressSystem
     private void OnPressOfficeChanged(SWSenateOfficeHolderChangedEvent ev)
     {
         _pressOffices.Remove(ev.Owner);
-        if (ev.Actor is { } actor && TryLivePressActor(actor, out var user))
+        if (ev.Actor is { } actor && _mind.TryGetMind(actor, out _, out var mind)
+            && mind.UserId is { } user)
         {
             _pressOffices[ev.Owner] = new PressOfficeBinding(actor, user);
             _knownOfficeUsers.Add(user);
@@ -54,8 +56,10 @@ public sealed partial class SWSenatePressSystem
     public bool TryGetOfficialIdentity(EntityUid actor, out string key, out string office)
     {
         key = string.Empty; office = string.Empty;
-        if (!TryLivePressActor(actor, out var user)) return false;
-        if (_senate.Chancellor != null && HasBinding(SWSenateDilemmaSystem.RepublicOwner, actor, user))
+        if (!TryLivePressActor(actor, out var user) || !_idCards.TryFindIdCard(actor, out var card)) return false;
+        if (_senate.Chancellor != null && HasBinding(SWSenateDilemmaSystem.RepublicOwner, actor, user)
+            && TryComp<SWSenatePositionCardComponent>(card, out var position)
+            && position.Position == SWSenatePosition.Chancellor)
         {
             key = "office:" + SWSenateDilemmaSystem.RepublicOwner;
             office = "Верховный канцлер";
@@ -63,7 +67,9 @@ public sealed partial class SWSenatePressSystem
         }
         foreach (var sector in _senate.SectorHolders.Keys)
         {
-            if (!HasBinding(sector, actor, user) || !_prototypes.TryIndex<SWSectorPrototype>(sector, out var proto))
+            if (!HasBinding(sector, actor, user)
+                || !TryComp<SWSenateSectorComponent>(card, out var sectorCard) || sectorCard.Sector != sector
+                || !_prototypes.TryIndex<SWSectorPrototype>(sector, out var proto))
                 continue;
             key = "office:" + sector;
             office = $"Сенатор: {proto.Name}";
@@ -72,6 +78,7 @@ public sealed partial class SWSenatePressSystem
         foreach (var ministry in _ministry.Holders.Keys)
         {
             if (!HasBinding(ministry, actor, user) || !_ministry.IsActiveHolder(ministry, actor)
+                || _ministry.GetHolderCard(ministry) != card.Owner
                 || !_prototypes.TryIndex<SWMinistryPrototype>(ministry, out var proto))
                 continue;
             key = "office:" + ministry;
@@ -100,6 +107,19 @@ public sealed partial class SWSenatePressSystem
 
     public bool HasKnownPressOffice(NetUserId user) => _knownOfficeUsers.Contains(user);
 
+    // The address book describes appointed offices, not the currently connected player list.
+    public IEnumerable<(string Key, string Label)> GetPressOfficeTargets()
+    {
+        if (_senate.Chancellor != null)
+            yield return ("office:" + SWSenateDilemmaSystem.RepublicOwner, "Верховный канцлер");
+        foreach (var sector in _senate.SectorHolders.Keys)
+            if (_prototypes.TryIndex<SWSectorPrototype>(sector, out var sectorPrototype))
+                yield return ("office:" + sector, $"Сенатор: {sectorPrototype.Name}");
+        foreach (var ministry in _ministry.Holders.Keys)
+            if (_prototypes.TryIndex<SWMinistryPrototype>(ministry, out var ministryPrototype))
+                yield return ("office:" + ministry, ministryPrototype.Name);
+    }
+
     public bool HasBoundPressOffice(NetUserId user)
     {
         foreach (var (id, binding) in _pressOffices)
@@ -113,20 +133,6 @@ public sealed partial class SWSenatePressSystem
             return false;
         _releases.Add(new OfficialPressRelease(++_nextReleaseId, Identity.Name(actor, EntityManager), office, title.Trim(), body.Trim(), Timestamp()));
         PublicationsChanged?.Invoke();
-        return true;
-    }
-
-    public bool PrintRelease(EntityUid actor, int id)
-    {
-        if (!TryLivePressActor(actor, out var user) || _printTotal >= 100)
-            return false;
-        var release = _releases.FirstOrDefault(r => r.Id == id);
-        _printCounts.TryGetValue(user, out var count);
-        if (release == null || count >= 5) return false;
-        var paper = Spawn("Paper", Transform(actor).Coordinates);
-        _paper.SetContent(paper, FormattedMessage.EscapeText($"Официальный пресс-релиз\n{release.Title}\n{release.Office} · {release.Author} · {release.Time}\n\n{release.Body}"));
-        _printCounts[user] = count + 1;
-        _printTotal++;
         return true;
     }
 

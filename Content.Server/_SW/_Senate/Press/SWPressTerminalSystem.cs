@@ -13,6 +13,7 @@ public sealed partial class SWPressTerminalComponent : Component { }
 public sealed class SWPressTerminalSystem : EntitySystem
 {
     [Dependency] private readonly EuiManager _euis = default!;
+    [Dependency] private readonly SharedInteractionSystem _interaction = default!;
     private readonly Dictionary<NetUserId, SWPressEui> _open = new();
 
     public override void Initialize()
@@ -30,9 +31,24 @@ public sealed class SWPressTerminalSystem : EntitySystem
     }
 
     private void OnShutdown(Entity<SWPressTerminalComponent> ent, ref ComponentShutdown args)
+        => CloseFor(ent.Owner);
+
+    public void CloseFor(EntityUid source)
     {
-        foreach (var eui in _open.Values.Where(e => e.Terminal == ent.Owner).ToArray())
+        foreach (var eui in _open.Values.Where(e => e.Terminal == source).ToArray())
             if (!eui.IsShutDown) eui.Close();
+    }
+
+    public void OpenPublic(EntityUid source, EntityUid user)
+    {
+        if (!EntityManager.EntityExists(source) || !_interaction.InRangeUnobstructed(user, source)
+            || !TryComp<ActorComponent>(user, out var actor) || actor.PlayerSession.AttachedEntity != user)
+            return;
+        if (_open.TryGetValue(actor.PlayerSession.UserId, out var previous) && !previous.IsShutDown)
+            previous.Close();
+        var eui = new SWPressEui(source, publicOnly: true);
+        _open[actor.PlayerSession.UserId] = eui;
+        _euis.OpenEui(eui, actor.PlayerSession);
     }
 
     public void Forget(NetUserId user, SWPressEui eui)

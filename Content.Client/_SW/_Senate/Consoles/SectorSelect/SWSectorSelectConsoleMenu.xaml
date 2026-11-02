@@ -7,15 +7,15 @@
         <sector:SWSectorSelectLayout HorizontalExpand="True" VerticalExpand="True">
             <PanelContainer Name="HeaderPanel">
                 <BoxContainer Orientation="Horizontal" Margin="14 8" SeparationOverride="0">
-                    <senate:SWConsoleSeal Margin="0 0 12 0" />
+                    <TextureRect Name="RepublicSeal" SetSize="44 44" Margin="0 0 12 0" />
                     <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="2">
-                        <Label Name="HeaderNetwork" Text="РЕСПУБЛИКА / ГОЛОНЕТ" />
-                        <Label Name="HeaderTitle" Text="Представительство секторов" ClipText="True" />
+                        <Label Name="HeaderNetwork" Text="СЕНАТ РЕСПУБЛИКИ / РЕЕСТР СЕКТОРОВ" />
+                        <Label Name="HeaderTitle" Text="Выбор представительства" ClipText="True" />
                     </BoxContainer>
                 </BoxContainer>
             </PanelContainer>
             <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True" Margin="12 8" SeparationOverride="12">
-                <BoxContainer Orientation="Vertical" MinWidth="220" MaxWidth="240" SeparationOverride="5">
+                <PanelContainer Name="CataloguePanel" MinWidth="220" MaxWidth="240"><BoxContainer Orientation="Vertical" SeparationOverride="5">
                     <LineEdit Name="Search" PlaceHolder="Поиск секторов" HorizontalExpand="True" />
                     <CheckBox Name="FreeOnly" Text="Только свободные" Pressed="True" />
                     <Label Name="FreeCount" />
@@ -23,14 +23,27 @@
                     <ScrollContainer Name="ListScroll" HScrollEnabled="False" VerticalExpand="True" HorizontalExpand="True">
                         <BoxContainer Name="SectorList" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="4" />
                     </ScrollContainer>
-                </BoxContainer>
-                <ScrollContainer Name="DetailScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
-                    <BoxContainer Name="Detail" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10" />
-                </ScrollContainer>
+                </BoxContainer></PanelContainer>
+                <PanelContainer Name="DossierPanel" HorizontalExpand="True" VerticalExpand="True"><ScrollContainer Name="DetailScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10">
+                        <sector:SWSectorResponsivePair HorizontalExpand="True" Separation="14" BreakWidth="570" SecondWidth="310">
+                            <BoxContainer Name="DetailIntro" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="5" />
+                            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="3">
+                                <sector:SWSectorMiniMap Name="SectorMap" HorizontalAlignment="Center" />
+                                <BoxContainer Name="MapCaption" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="3" />
+                            </BoxContainer>
+                        </sector:SWSectorResponsivePair>
+                        <BoxContainer Name="Detail" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10" />
+                        <sector:SWSectorResponsivePair HorizontalExpand="True" Separation="16" BreakWidth="400">
+                            <BoxContainer Name="Infrastructure" Orientation="Vertical" HorizontalExpand="True" />
+                            <BoxContainer Name="Representative" Orientation="Vertical" HorizontalExpand="True" />
+                        </sector:SWSectorResponsivePair>
+                    </BoxContainer>
+                </ScrollContainer></PanelContainer>
             </BoxContainer>
-            <BoxContainer Name="Footer" Orientation="Vertical" Margin="12 0 12 10" SeparationOverride="4">
+            <BoxContainer Name="Footer" Orientation="Horizontal" Margin="12 0 12 10" SeparationOverride="12">
                 <BoxContainer Name="FooterText" Orientation="Vertical" HorizontalExpand="True" />
-                <Button Name="ClaimButton" Text="Занять место" HorizontalExpand="True" />
+                <Button Name="ClaimButton" Text="Занять место" MinWidth="210" VerticalAlignment="Center" />
             </BoxContainer>
         </sector:SWSectorSelectLayout>
     </PanelContainer>

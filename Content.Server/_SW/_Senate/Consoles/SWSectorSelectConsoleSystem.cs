@@ -111,6 +111,7 @@ public sealed class SWSectorSelectConsoleSystem : EntitySystem
         sectorComp.Sector = args.SectorId;
 
         _idCard.TryChangeJobTitle(card.Value, Loc.GetString("sw-senate-senator-title", ("sector", sectorProto.Name)));
+        EntityManager.System<SWSenateRoundHistorySystem>().RecordCard(card.Value);
 
         _popup.PopupCursor(Loc.GetString("sw-senate-select-success", ("sector", sectorProto.Name)), args.Actor, PopupType.Medium);
         UpdateUi(ent);

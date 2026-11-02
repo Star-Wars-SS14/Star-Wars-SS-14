@@ -19,7 +19,7 @@ namespace Content.Client.RoundEnd
         private RichTextLabel? _personalHistory;
 
         public RoundEndSummaryWindow(string gm, string roundEnd, TimeSpan roundTimeSpan, int roundId,
-            RoundEndMessageEvent.RoundEndPlayerInfo[] info, IEntityManager entityManager, SWSenateRoundHistory? history = null)
+            RoundEndMessageEvent.RoundEndPlayerInfo[] info, IEntityManager entityManager, SWSenateRoundHistory? history = null, Action? replayFinale = null)
         {
             _entityManager = entityManager;
             IsSenate = history != null;
@@ -39,8 +39,7 @@ namespace Content.Client.RoundEnd
             var roundEndTabs = new TabContainer();
             if (history != null)
             {
-                roundEndTabs.AddChild(new SWSenateFinale(history, roundTimeSpan, () => roundEndTabs.CurrentTab = 1));
-                roundEndTabs.AddChild(MakeSenateHistoryTab(history, roundTimeSpan));
+                roundEndTabs.AddChild(MakeSenateHistoryTab(history, roundTimeSpan, replayFinale));
             }
             roundEndTabs.AddChild(MakeRoundEndSummaryTab(gm, roundEnd, roundTimeSpan, roundId));
             roundEndTabs.AddChild(MakePlayerManifestTab(info));
@@ -51,9 +50,15 @@ namespace Content.Client.RoundEnd
             MoveToFront();
         }
 
-        private BoxContainer MakeSenateHistoryTab(SWSenateRoundHistory history, TimeSpan duration)
+        private BoxContainer MakeSenateHistoryTab(SWSenateRoundHistory history, TimeSpan duration, Action? replayFinale)
         {
             var tab = new BoxContainer { Orientation = LayoutOrientation.Vertical, Name = "История Сената" };
+            if (replayFinale != null)
+            {
+                var replay = new Button { Text = "Повторить титры", HorizontalAlignment = HAlignment.Left, Margin = new Thickness(20, 10) };
+                replay.OnPressed += _ => replayFinale();
+                tab.AddChild(replay);
+            }
             var scroll = new ScrollContainer { VerticalExpand = true, HorizontalExpand = true, HScrollEnabled = false, Margin = new Thickness(20) };
             var content = new BoxContainer { Orientation = LayoutOrientation.Vertical, HorizontalExpand = true, SeparationOverride = 12 };
 

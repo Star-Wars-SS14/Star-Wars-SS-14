@@ -7,12 +7,9 @@ using Robust.Server.Player;
 using Robust.Shared.Enums;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
-using Content.Shared.IdentityManagement;
-using Content.Shared.Ghost;
-using Content.Shared.Mind;
-using Content.Server.Roles;
-using Content.Shared.Roles.Components;
-using Robust.Shared.Network;
+using Content.Shared.Access.Components;
+using Content.Shared.Access.Systems;
+using Content.Shared.Inventory;
 
 namespace Content.Server._SW._Senate.Core;
 
@@ -28,7 +25,8 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
     [Dependency] private readonly SWSenateBudgetSystem _budget = default!;
     [Dependency] private readonly SWSenateCourtSystem _court = default!;
     [Dependency] private readonly IPlayerManager _players = default!;
-    [Dependency] private readonly RoleSystem _roles = default!;
+    [Dependency] private readonly InventorySystem _inventory = default!;
+    [Dependency] private readonly SharedIdCardSystem _idCard = default!;
 
     private Dictionary<string, float>? _start;
     private int _startDay;
@@ -38,6 +36,7 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
     private readonly HashSet<long> _seenVoteResolutions = new();
     private readonly List<SWSenateCloseVote> _closeVotes = new();
     private int _closestVote = int.MaxValue;
+    private readonly HashSet<(EntityUid Card, string Name)> _participants = new();
     public bool Ending { get; private set; }
     public bool SessionActive => _start != null;
 
@@ -45,6 +44,7 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
     {
         SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => Reset());
         SubscribeLocalEvent<SWSenateBillVotesResolvedEvent>(OnVoteResolved);
+        SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnPlayerSpawned);
         _players.PlayerStatusChanged += OnStatusChanged;
     }
 
@@ -78,6 +78,7 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
         _seenVoteResolutions.Clear();
         _closeVotes.Clear();
         _closestVote = int.MaxValue;
+        _participants.Clear();
         Ending = false;
     }
 
@@ -92,6 +93,23 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
     }
 
     public void MarkEnding() => Ending = _start != null;
+
+    private void OnPlayerSpawned(PlayerSpawnCompleteEvent ev)
+    {
+        if (!_time.ModeActive || !_inventory.TryGetSlotEntity(ev.Mob, "id", out var slot) ||
+            !_idCard.TryGetIdCard(slot.Value, out var card))
+            return;
+        RecordCard(card.Owner);
+    }
+
+    /// <summary>Called only for a card in a successful, authoritative office operation.</summary>
+    public void RecordCard(EntityUid card)
+    {
+        if (!_time.ModeActive || Ending || _snapshot != null || !TryComp<IdCardComponent>(card, out var id) ||
+            string.IsNullOrWhiteSpace(id.FullName))
+            return;
+        _participants.Add((card, id.FullName));
+    }
 
     private void OnVoteResolved(SWSenateBillVotesResolvedEvent ev)
     {
@@ -163,7 +181,7 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
             },
             Laws = laws.Take(50).Select(law => new SWSenateHistoryLaw { Name = law.Name, Author = Limit(law.Author), Amendment = law.Amendment, Repealed = law.Repealed }).ToArray(),
             AdditionalLaws = Math.Max(0, laws.Length - 50),
-            Participants = CaptureParticipants(),
+            Participants = _participants.Select(entry => Limit(entry.Name)).OrderBy(name => name, StringComparer.Ordinal).ToArray(),
             PassedLaws = laws.Count(law => !law.Amendment),
             PassedAmendments = laws.Count(law => law.Amendment),
             CloseVotes = _closeVotes.ToArray(),
@@ -172,33 +190,5 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
     }
 
     private static string Limit(string value) => value.Length <= 160 ? value : value[..160] + "…";
-
-    private string[] CaptureParticipants()
-    {
-        // Multiple minds belonging to one player are deliberately not attributed to a body.
-        var bodies = new Dictionary<NetUserId, List<EntityUid?>>();
-        var minds = EntityQueryEnumerator<MindComponent>();
-        while (minds.MoveNext(out var uid, out var mind))
-        {
-            if (_roles.MindHasRole<ObserverRoleComponent>(uid))
-                continue;
-            var user = mind.UserId ?? mind.OriginalOwnerUserId;
-            if (user == null)
-                continue;
-            if (!bodies.TryGetValue(user.Value, out var entries))
-                bodies[user.Value] = entries = new List<EntityUid?>();
-            entries.Add(mind.CurrentEntity);
-        }
-
-        return bodies.Values.Select(entries =>
-        {
-            if (entries.Count != 1 || entries[0] is not { } body ||
-                HasComp<GhostComponent>(body) || !TryComp<MetaDataComponent>(body, out var meta) ||
-                meta.EntityLifeStage <= EntityLifeStage.Initializing || !EntityManager.EntityExists(body))
-                return "Участник без публичного снимка";
-            var name = Identity.Name(body, EntityManager);
-            return string.IsNullOrWhiteSpace(name) ? "Участник без публичного снимка" : Limit(name);
-        }).OrderBy(name => name, StringComparer.Ordinal).ToArray();
-    }
 
 }

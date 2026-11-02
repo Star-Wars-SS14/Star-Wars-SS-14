@@ -78,6 +78,7 @@ public sealed class SWMinistrySystem : EntitySystem
 
         _holders[ministryId] = holder;
         _holderCards[ministryId] = card;
+        EntityManager.System<SWSenateRoundHistorySystem>().RecordCard(card);
         if (actor is { } entity)
             _holderEntities[ministryId] = entity;
         RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent(ministryId, actor));
@@ -107,6 +108,7 @@ public sealed class SWMinistrySystem : EntitySystem
         _holderCards.Remove(fromId);
         _holders[toId] = holder;
         _holderCards[toId] = card;
+        EntityManager.System<SWSenateRoundHistorySystem>().RecordCard(card);
         if (_holderEntities.Remove(fromId, out var entity))
             _holderEntities[toId] = entity;
         RaiseLocalEvent(new SWSenateOfficeHolderChangedEvent(toId, _holderEntities.TryGetValue(toId, out var transferred) ? transferred : null));

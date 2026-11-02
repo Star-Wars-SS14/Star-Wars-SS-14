@@ -995,6 +995,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
 
         _idCard.TryChangeFullName(card.Value, name);
         _cards.SynchronizeHolder(name, SWSenatePosition.Chancellor);
+        EntityManager.System<SWSenateRoundHistorySystem>().RecordCard(card.Value);
         _floor.SetChancellor(args.Actor);
         RaiseLocalEvent(new SWSenateCustomAnnouncementEvent(
             Loc.GetString("sw-senate-announce-sender"),
@@ -1526,6 +1527,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
                 {
                     _idCard.TryChangeFullName(card.Value, Name(args.Actor));
                     _cards.Synchronize(card.Value, SWSenatePosition.Chancellor);
+                    EntityManager.System<SWSenateRoundHistorySystem>().RecordCard(card.Value);
                     _floor.SetChancellor(args.Actor);
                     _popup.PopupCursor(Loc.GetString("sw-senate-work-took-office"), args.Actor, PopupType.Medium);
                 }
@@ -1538,6 +1540,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
                 {
                     _idCard.TryChangeFullName(card.Value, Name(args.Actor));
                     _cards.Synchronize(card.Value, SWSenatePosition.Speaker);
+                    EntityManager.System<SWSenateRoundHistorySystem>().RecordCard(card.Value);
                     _floor.SetSpeaker(args.Actor);
                     _popup.PopupCursor(Loc.GetString("sw-senate-work-took-office"), args.Actor, PopupType.Medium);
                 }

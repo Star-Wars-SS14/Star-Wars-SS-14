@@ -39,7 +39,7 @@ public sealed class SWSenateFinale : LayoutContainer
             HorizontalAlignment = HAlignment.Center,
             MouseFilter = MouseFilterMode.Ignore,
             Margin = new Thickness(0, top, 0, bottom),
-            Stylesheet = new Stylesheet(new[] { StylesheetHelpers.Element<RichTextLabel>().Prop("font", font) }),
+            Stylesheet = new Stylesheet(new StyleRule[] { StylesheetHelpers.Element<RichTextLabel>().Prop("font", font) }),
         };
         var message = new FormattedMessage();
         message.PushColor(color);

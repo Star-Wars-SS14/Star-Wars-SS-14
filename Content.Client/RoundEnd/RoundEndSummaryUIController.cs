@@ -59,7 +59,8 @@ public sealed class RoundEndSummaryUIController : UIController,
         var history = message.SenateHistory;
         _window = new RoundEndSummaryWindow(message.GamemodeTitle, message.RoundEndText,
             message.RoundDuration, message.RoundId, message.AllPlayersEndInfo, EntityManager, history,
-            history == null ? null : () => ShowFinale(history, message.RoundDuration));
+            history == null ? null : () => ShowFinale(history, message.RoundDuration),
+            history == null ? null : () => EntityManager.System<SWSenatePersonalHistoryClientSystem>().Request());
         if (history != null)
             ShowFinale(history, message.RoundDuration);
         if (message.SenateHistory != null)

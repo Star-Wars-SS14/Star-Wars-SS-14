@@ -106,11 +106,17 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
 
     private void OnPersonalRequest(SWSenatePersonalHistoryRequest ev, EntitySessionEventArgs args)
     {
-        if (!_history.Ending || !_personalFinalized)
+        if (!_history.Ending || !_personalFinalized || _history.ScoreboardRoundId is not { } roundId)
             return;
         var lines = _personalFinal.TryGetValue(args.SenderSession.UserId, out var result)
             ? result.ToArray() : Array.Empty<string>();
-        RaiseNetworkEvent(new SWSenatePersonalHistoryResponse { Lines = lines }, args.SenderSession);
+        RaiseNetworkEvent(new SWSenatePersonalHistoryResponse
+        {
+            Lines = lines,
+            RoundId = roundId,
+            Player = args.SenderSession.Name,
+            Characters = _history.PersonalCharacters(args.SenderSession.UserId),
+        }, args.SenderSession);
     }
 
     public override void Update(float frameTime)

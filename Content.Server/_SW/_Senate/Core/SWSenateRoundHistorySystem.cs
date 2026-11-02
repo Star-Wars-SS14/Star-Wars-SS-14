@@ -10,6 +10,7 @@ using Robust.Shared.Prototypes;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Shared.Inventory;
+using Robust.Shared.Network;
 
 namespace Content.Server._SW._Senate.Core;
 
@@ -39,6 +40,7 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
     private readonly HashSet<(EntityUid Card, string Name)> _participants = new();
     public bool Ending { get; private set; }
     public bool SessionActive => _start != null;
+    public int? ScoreboardRoundId => _roundEndMessage?.RoundId;
 
     public override void Initialize()
     {
@@ -68,6 +70,15 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
             message.RoundDuration, message.RoundId, message.PlayerCount, message.AllPlayersEndInfo, null)
             { SenateHistory = message.SenateHistory };
     }
+
+    public SWSenatePersonalCharacter[] PersonalCharacters(NetUserId user) =>
+        _roundEndMessage?.AllPlayersEndInfo.Where(info => info.PlayerGuid == user)
+            .Select(info => new SWSenatePersonalCharacter
+            {
+                Name = Limit(info.PlayerICName ?? ""),
+                Role = info.Role,
+                Observer = info.Observer,
+            }).ToArray() ?? Array.Empty<SWSenatePersonalCharacter>();
 
     private void Reset()
     {

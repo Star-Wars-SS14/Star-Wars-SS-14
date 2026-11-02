@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using Content.Shared._SW._Senate;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
@@ -53,12 +54,14 @@ public sealed class SWSenateFinale : LayoutContainer
     {
         _finish = finish;
         MouseFilter = MouseFilterMode.Ignore;
-        _scroll = new ScrollContainer { HScrollEnabled = false, MouseFilter = MouseFilterMode.Ignore };
+        _scroll = new ScrollContainer { HScrollEnabled = false, MouseFilter = MouseFilterMode.Ignore, MaxWidth = 760 };
         AddChild(_scroll);
-        SetAnchorLeft(_scroll, 0.5f);
-        SetAnchorRight(_scroll, 0.5f);
+        SetAnchorLeft(_scroll, 0f);
+        SetAnchorRight(_scroll, 1f);
         SetAnchorTop(_scroll, 0f);
         SetAnchorBottom(_scroll, 1f);
+        SetMarginLeft(_scroll, 24);
+        SetMarginRight(_scroll, -24);
         SetMarginTop(_scroll, 24);
         SetMarginBottom(_scroll, -88);
         _content = new BoxContainer { Orientation = LayoutOrientation.Vertical, HorizontalExpand = true, MouseFilter = MouseFilterMode.Ignore };
@@ -78,11 +81,39 @@ public sealed class SWSenateFinale : LayoutContainer
             _content.AddChild(CreditText("Участники не зафиксированы.", fact, SWConsoleStyle.TextDim, bottom: 28));
         foreach (var name in history.Participants)
             _content.AddChild(CreditText(name, nameFont, SWConsoleStyle.TextBright, bottom: 28));
+        void Section(string title) => _content.AddChild(CreditText(title, heading, SWConsoleStyle.Brass, top: 64, bottom: 28));
+        void Line(string text) => _content.AddChild(CreditText(text, fact, SWConsoleStyle.TextBright, bottom: 20));
+        Section("РЕСПУБЛИКА");
+        if (history.Stats.Length == 0) Line("Показатели недоступны.");
+        foreach (var stat in history.Stats)
+            Line($"{stat.Name}: начало {stat.Start:0.0}; итог {stat.End:0.0}; изменение {stat.End - stat.Start:+0.0;-0.0;0.0}");
+        Section("СЕКТОРА");
+        if (history.Sectors.Length == 0) Line("Данные о секторах недоступны.");
+        foreach (var sector in history.Sectors)
+        {
+            Line(sector.Name);
+            foreach (var stat in sector.Stats)
+                Line($"{stat.Name}: начало {stat.Start:0.0}; итог {stat.End:0.0}; изменение {stat.End - stat.Start:+0.0;-0.0;0.0}");
+        }
+        Section("ЗАКОНЫ И ПОПРАВКИ");
+        if (history.Laws.Length == 0) Line("Принятых законов не зафиксировано.");
+        foreach (var law in history.Laws)
+            Line($"{law.Name} — автор: {law.Author}{(law.Amendment ? " (поправка)" : "")}{(law.Repealed ? " (отменён)" : "")}");
+        if (history.AdditionalLaws > 0) Line($"Других решений: {history.AdditionalLaws}.");
+        Section("ВЕДОМСТВА И СУД");
+        foreach (var line in history.DepartmentSummary) Line(line);
+        Line("Подтверждённая история остальных ведомств недоступна.");
+        Section("ЗАВЕРШЁННЫЕ ПРОЕКТЫ");
+        if (history.Projects.Length == 0) Line("Завершённые проекты не зафиксированы.");
+        foreach (var project in history.Projects) Line(project);
+        Section("ЭКОНОМИЧЕСКИЕ СОБЫТИЯ · ПОСЛЕДНИЕ 20");
+        if (history.Events.Length == 0) Line("Экономические события не зафиксированы.");
+        foreach (var ev in history.Events) Line(ev);
         if (history.CloseVotes.Length > 0)
         {
-            _content.AddChild(CreditText("ЗАЛ РАЗДЕЛИЛСЯ", heading, SWConsoleStyle.Brass, top: 64, bottom: 28));
+            Section("ЗАЛ РАЗДЕЛИЛСЯ");
             foreach (var vote in history.CloseVotes)
-                _content.AddChild(CreditText($"{vote.Name} — голоса секторов: за {vote.For}, против {vote.Against}", fact, SWConsoleStyle.TextBright, bottom: 28));
+                Line($"{vote.Name} — голоса секторов: за {vote.For}, против {vote.Against}");
         }
         _tail = new Control { MouseFilter = MouseFilterMode.Ignore };
         _content.AddChild(_tail);
@@ -121,14 +152,15 @@ public sealed class SWSenateFinale : LayoutContainer
         _finish();
     }
 
-    protected override void Resized()
+    protected override Vector2 MeasureOverride(Vector2 availableSize)
     {
-        base.Resized();
-        var width = Math.Min(760f, Math.Max(1f, Width - 48f));
-        SetMarginLeft(_scroll, -width / 2f);
-        SetMarginRight(_scroll, width / 2f);
-        _lead.MinHeight = Math.Max(1, Height - 112f);
-        _tail.MinHeight = Math.Max(1, Height - 112f);
+        var height = float.IsFinite(availableSize.Y) ? availableSize.Y : 720f;
+        // The lead leaves the heading visible on first layout, including an empty session.
+        var lead = Math.Max(1, height - 240f);
+        var tail = Math.Max(1, height - 112f);
+        if (_lead.MinHeight != lead) _lead.MinHeight = lead;
+        if (_tail.MinHeight != tail) _tail.MinHeight = tail;
+        return base.MeasureOverride(availableSize);
     }
 
     protected override void FrameUpdate(FrameEventArgs args)

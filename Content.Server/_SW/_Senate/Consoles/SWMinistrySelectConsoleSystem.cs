@@ -110,6 +110,7 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
 
         var comp = EnsureComp<SWMinistryComponent>(card.Value);
         comp.Ministry = args.MinistryId;
+        EntityManager.System<SWSenateAmbitionSystem>().ConfirmOfficeCard(args.MinistryId, card.Value, args.Actor);
 
         var title = Loc.GetString(TitleKey(proto.Kind), ("name", proto.TitleName));
         _idCard.TryChangeJobTitle(card.Value, title);

@@ -86,6 +86,12 @@ public sealed class SWSenateFinale : LayoutContainer
             if (participant.Titles.Length > 0)
                 _content.AddChild(CreditText(string.Join(", ", participant.Titles), fact, SWConsoleStyle.TextDim, bottom: 28));
         }
+        if (history.CompletedAmbitions.Length > 0)
+        {
+            _content.AddChild(CreditText("ВСЕ АМБИЦИИ ВЫПОЛНЕНЫ", heading, SWConsoleStyle.Brass, top: 64, bottom: 28));
+            foreach (var name in history.CompletedAmbitions)
+                _content.AddChild(CreditText(name, nameFont, SWConsoleStyle.TextBright, bottom: 28));
+        }
         void Section(string title) => _content.AddChild(CreditText(title, heading, SWConsoleStyle.Brass, top: 64, bottom: 28));
         void Line(string text) => _content.AddChild(CreditText(text, fact, SWConsoleStyle.TextBright, bottom: 20));
         Section("РЕСПУБЛИКА");
@@ -99,14 +105,11 @@ public sealed class SWSenateFinale : LayoutContainer
                 float.IsFinite(stat.Start) && float.IsFinite(stat.End) && stat.Start >= stat.Min && stat.Start <= stat.Max && stat.End >= stat.Min && stat.End <= stat.Max)
                 _content.AddChild(new ComparisonBar(stat));
         }
-        Section("РЕШЕНИЯ СОЗЫВА");
-        if (history.Laws.Length > 0) Line($"Принято: {history.Laws[0].Name}");
-        if (history.Projects.Length > 0) Line($"Завершён проект: {history.Projects[0]}");
-        if (history.CloseVotes.Length > 0)
+        foreach (var award in history.Awards.Take(3))
         {
-            Section("ЗАЛ РАЗДЕЛИЛСЯ");
-            foreach (var vote in history.CloseVotes)
-                Line($"{vote.Name} — голоса секторов: за {vote.For}, против {vote.Against}");
+            Section(award.Title);
+            Line(award.Fact);
+            foreach (var recipient in award.Recipients) Line(recipient);
         }
         _tail = new Control { MouseFilter = MouseFilterMode.Ignore };
         _content.AddChild(_tail);

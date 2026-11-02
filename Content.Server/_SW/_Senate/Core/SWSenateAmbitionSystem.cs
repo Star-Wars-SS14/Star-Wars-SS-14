@@ -7,6 +7,7 @@ using Content.Shared._SW._Senate.Ambitions;
 using Content.Shared._SW._Senate.Ministries;
 using Content.Shared._SW._Senate.Sectors;
 using Content.Shared.GameTicking;
+using Content.Shared.Access.Components;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using Robust.Shared.Network;
@@ -50,6 +51,7 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
     private readonly Dictionary<string, NetUserId> _officePlayers = new();
     private readonly Dictionary<string, EntityUid> _officeBodies = new();
     private readonly Dictionary<string, NetUserId> _assignedPlayers = new();
+    private readonly Dictionary<string, (NetUserId Player, EntityUid Card, string Name)> _officeCards = new();
     private readonly HashSet<string> _ambiguousOffices = new();
     private readonly Dictionary<NetUserId, List<string>> _personalFinal = new();
     private bool _personalFinalized;
@@ -72,6 +74,7 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
         _officePlayers.Clear();
         _officeBodies.Clear();
         _assignedPlayers.Clear();
+        _officeCards.Clear();
         _ambiguousOffices.Clear();
         _personalFinal.Clear();
         _personalFinalized = false;
@@ -83,11 +86,35 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
             _ambiguousOffices.Add(ev.Owner);
         _officePlayers.Remove(ev.Owner);
         _officeBodies.Remove(ev.Owner);
+        _officeCards.Remove(ev.Owner);
         if (ev.Actor is { } uid && TryComp<ActorComponent>(uid, out var actor))
         {
             _officePlayers[ev.Owner] = actor.PlayerSession.UserId;
             _officeBodies[ev.Owner] = uid;
         }
+    }
+
+    public void ConfirmOfficeCard(string office, EntityUid card, EntityUid actor)
+    {
+        if (!_time.ModeActive || !TryComp<ActorComponent>(actor, out var controller) || controller.PlayerSession.AttachedEntity != actor ||
+            !_officePlayers.TryGetValue(office, out var player) || player != controller.PlayerSession.UserId ||
+            !TryComp<IdCardComponent>(card, out var id) || string.IsNullOrWhiteSpace(id.FullName))
+            return;
+        _officeCards[office] = (player, card, id.FullName);
+    }
+
+    public bool TryConfirmAuthor(string office, EntityUid card, EntityUid actor, out NetUserId player, out string name)
+    {
+        player = default;
+        name = string.Empty;
+        if (_ambiguousOffices.Contains(office) || !_officeCards.TryGetValue(office, out var known) || known.Card != card ||
+            !_officeBodies.TryGetValue(office, out var body) || body != actor ||
+            !TryComp<ActorComponent>(actor, out var controller) || controller.PlayerSession.UserId != known.Player || controller.PlayerSession.AttachedEntity != actor ||
+            !TryComp<IdCardComponent>(card, out var identity) || string.IsNullOrWhiteSpace(identity.FullName))
+            return false;
+        player = known.Player;
+        name = identity.FullName;
+        return true;
     }
 
     private void OnPlayerAttached(PlayerAttachedEvent ev)
@@ -549,6 +576,8 @@ public sealed class SWSenateAmbitionSystem : EntitySystem
             standings.Add((label, score, ambitions.Count, lines));
             if (capturePersonal && !_ambiguousOffices.Contains(owner) && _assignedPlayers.TryGetValue(owner, out var player))
             {
+                if (score == ambitions.Count && _officeCards.TryGetValue(owner, out var card) && card.Player == player)
+                    _history.RecordCompletedAmbition(card.Name);
                 if (!_personalFinal.TryGetValue(player, out var results))
                     _personalFinal[player] = results = new List<string>();
                 results.Add(label);

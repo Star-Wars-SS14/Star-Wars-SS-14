@@ -1,0 +1,12 @@
+sw-finale-award-close-title = Один голос — и домой
+sw-finale-award-close-fact = Заседание могло закончиться совсем иначе.
+sw-finale-award-tie-title = Поровну вопросов
+sw-finale-award-tie-fact = Каждый голос нашёл себе оппонента.
+sw-finale-award-law-title = Прошло без замечаний
+sw-finale-award-law-fact = Закон добрался до финального чтения.
+sw-finale-award-amendment-title = Это была маленькая поправка
+sw-finale-award-amendment-fact = Всего пара слов, а документ уже другой.
+sw-finale-award-project-title = Бумага выдержала
+sw-finale-award-project-fact = Проект дошёл до конца не только в протоколе.
+sw-finale-award-fallback-title = Теперь это закон
+sw-finale-award-fallback-fact = Текст получил официальный статус.

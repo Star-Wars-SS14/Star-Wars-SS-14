@@ -99,6 +99,11 @@ namespace Content.Client.RoundEnd
             Section("УЧАСТНИКИ");
             if (history.Participants.Length == 0) Add("Участники не зафиксированы.");
             foreach (var participant in history.Participants) Add(participant);
+            if (history.CompletedAmbitions.Length > 0)
+            {
+                Section("ВСЕ АМБИЦИИ ВЫПОЛНЕНЫ");
+                foreach (var name in history.CompletedAmbitions) Add(name);
+            }
             Section("ПОКАЗАТЕЛИ РЕСПУБЛИКИ");
             Add("Начало → конец (изменение за созыв)");
             if (history.Stats.Length == 0)
@@ -136,6 +141,17 @@ namespace Content.Client.RoundEnd
                 Section("ЗАЛ РАЗДЕЛИЛСЯ");
                 foreach (var vote in history.CloseVotes)
                     Add($"{vote.Name}: за {vote.For}, против {vote.Against}; решающий голос не включён.");
+            }
+            if (history.Awards.Length > 0)
+            {
+                Section("ТИТУЛЫ СОЗЫВА");
+                foreach (var award in history.Awards)
+                {
+                    Add(award.Title);
+                    Add(award.Fact);
+                    foreach (var recipient in award.Recipients) Add(recipient);
+                }
+                if (history.AdditionalAwards > 0) Add($"Ещё категорий: {history.AdditionalAwards}.");
             }
             scroll.AddChild(content);
             tab.AddChild(scroll);

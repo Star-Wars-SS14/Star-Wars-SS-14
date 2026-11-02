@@ -13,20 +13,20 @@ public sealed class SWPressNewsAccessSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<SWPressNewsAccessComponent, GetVerbsEvent<AlternativeVerb>>(OnVerbs);
+        SubscribeLocalEvent<SWPressNewsAccessComponent, GetVerbsEvent<InteractionVerb>>(OnVerbs);
         SubscribeLocalEvent<SWPressNewsAccessComponent, ComponentShutdown>(OnShutdown);
     }
 
     private void OnShutdown(EntityUid uid, SWPressNewsAccessComponent component, ComponentShutdown args)
         => _press.CloseFor(uid);
 
-    private void OnVerbs(EntityUid uid, SWPressNewsAccessComponent component, GetVerbsEvent<AlternativeVerb> args)
+    private void OnVerbs(EntityUid uid, SWPressNewsAccessComponent component, GetVerbsEvent<InteractionVerb> args)
     {
         if (!args.CanInteract || !args.CanAccess)
             return;
 
         var user = args.User;
-        args.Verbs.Add(new AlternativeVerb
+        args.Verbs.Add(new InteractionVerb
         {
             Text = "Новости Голонета",
             Act = () => _press.OpenPublic(uid, user),

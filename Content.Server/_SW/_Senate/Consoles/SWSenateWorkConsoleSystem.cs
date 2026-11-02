@@ -211,6 +211,15 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         return sectorId != null && _senate.SectorHolders.TryGetValue(sectorId, out var name) ? name : null;
     }
 
+    private void RecordFinaleAuthor(Entity<SWSenateWorkConsoleComponent> ent, EntityUid actor, SWSenateBill bill)
+    {
+        var office = GetSectorOwner(ent);
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (office == null || card == null || !_ambition.TryConfirmAuthor(office, card.Value, actor, out var player, out var name))
+            return;
+        EntityManager.System<SWSenateRoundHistorySystem>().RecordBillAuthor(bill.Id, player, card.Value, name);
+    }
+
     private void OnJoinCommittee(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateJoinCommitteeMessage args)
     {
         if (!_time.ModeActive || !_time.DayActive)
@@ -1152,7 +1161,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (!TryPrepareDraft(ent, args.Actor, args.Name, args.Effects, out var name, out var effects))
             return;
 
-        ReferBill(_senate.SubmitBill(name, args.Description.Trim(), author, effects));
+        var bill = _senate.SubmitBill(name, args.Description.Trim(), author, effects);
+        RecordFinaleAuthor(ent, args.Actor, bill);
+        ReferBill(bill);
         _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
         UpdateUi(ent);
     }
@@ -1189,6 +1200,7 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (amendment == null)
             return;
 
+        RecordFinaleAuthor(ent, args.Actor, amendment);
         ReferBill(amendment);
         _popup.PopupCursor("Поправки внесены на рассмотрение.", args.Actor, PopupType.Medium);
         UpdateUi(ent);
@@ -1290,7 +1302,9 @@ public sealed class SWSenateWorkConsoleSystem : EntitySystem
         if (effects.Count == 0)
             return;
 
-        ReferBill(_senate.SubmitBill(preset.Name, preset.Description, author, effects));
+        var bill = _senate.SubmitBill(preset.Name, preset.Description, author, effects);
+        RecordFinaleAuthor(ent, args.Actor, bill);
+        ReferBill(bill);
         _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
         UpdateUi(ent);
     }

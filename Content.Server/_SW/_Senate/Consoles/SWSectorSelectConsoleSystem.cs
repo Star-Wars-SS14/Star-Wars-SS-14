@@ -109,6 +109,7 @@ public sealed class SWSectorSelectConsoleSystem : EntitySystem
 
         var sectorComp = EnsureComp<SWSenateSectorComponent>(card.Value);
         sectorComp.Sector = args.SectorId;
+        EntityManager.System<SWSenateAmbitionSystem>().ConfirmOfficeCard(args.SectorId, card.Value, args.Actor);
 
         _idCard.TryChangeJobTitle(card.Value, Loc.GetString("sw-senate-senator-title", ("sector", sectorProto.Name)));
         EntityManager.System<SWSenateRoundHistorySystem>().RecordCard(card.Value);

@@ -36,8 +36,11 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
     private RoundEndMessageEvent? _roundEndMessage;
     private readonly HashSet<long> _seenVoteResolutions = new();
     private readonly List<SWSenateCloseVote> _closeVotes = new();
+    private readonly HashSet<int> _closeBillIds = new();
     private int _closestVote = int.MaxValue;
     private readonly HashSet<(EntityUid Card, string Name)> _participants = new();
+    private readonly List<string> _completedAmbitions = new();
+    private readonly Dictionary<int, (NetUserId Player, EntityUid Card, string Name)> _billAuthors = new();
     private readonly Dictionary<(EntityUid Card, string Name), List<string>> _titles = new();
     public bool Ending { get; private set; }
     public bool SessionActive => _start != null;
@@ -89,8 +92,11 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
         _roundEndMessage = null;
         _seenVoteResolutions.Clear();
         _closeVotes.Clear();
+        _closeBillIds.Clear();
         _closestVote = int.MaxValue;
         _participants.Clear();
+        _completedAmbitions.Clear();
+        _billAuthors.Clear();
         _titles.Clear();
         Ending = false;
     }
@@ -106,6 +112,18 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
     }
 
     public void MarkEnding() => Ending = _start != null;
+
+    public void RecordCompletedAmbition(string publicName)
+    {
+        if (!Ending || _snapshot != null || string.IsNullOrWhiteSpace(publicName)) return;
+        _completedAmbitions.Add(Limit(publicName));
+    }
+
+    public void RecordBillAuthor(int billId, NetUserId player, EntityUid card, string name)
+    {
+        if (!_time.ModeActive || Ending || _snapshot != null || string.IsNullOrWhiteSpace(name)) return;
+        _billAuthors.TryAdd(billId, (player, card, Limit(name)));
+    }
 
     private void OnPlayerSpawned(PlayerSpawnCompleteEvent ev)
     {
@@ -149,9 +167,11 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
         if (difference < _closestVote)
         {
             _closeVotes.Clear();
+            _closeBillIds.Clear();
             _closestVote = difference;
         }
         _closeVotes.Add(new SWSenateCloseVote { Name = Limit(ev.BillName), For = votesFor, Against = votesAgainst });
+        _closeBillIds.Add(ev.BillId);
     }
 
     public SWSenateRoundHistory? Capture()
@@ -162,6 +182,7 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
             return _snapshot;
 
         var final = _state.GetRepublicGlobals();
+        var passedBills = _state.Bills.Where(b => b.Stage == SWBillStage.Passed && !b.IsElection && b.SpecialMotionType == null && !b.IsDecree && !string.IsNullOrWhiteSpace(b.Name)).ToArray();
         var stats = _prototypes.EnumeratePrototypes<SWGlobalStatPrototype>()
             .OrderBy(p => p.Order).ThenBy(p => p.ID)
             .Where(p => _start.ContainsKey(p.ID) && final.ContainsKey(p.ID))
@@ -186,6 +207,7 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
             .Select(p => Limit($"{p.Name} — {p.WorldName}")).ToArray();
         var events = _economy.BuildEconomyEvents().Take(20)
             .Select(e => Limit($"{e.Title} — {e.WorldName}: {e.Status}")).ToArray();
+        var awards = BuildAwards(passedBills, projects);
         _snapshot = new SWSenateRoundHistory
         {
             Days = Math.Max(1, _time.Day - _startDay + 1),
@@ -202,14 +224,69 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
             Laws = laws.Take(50).Select(law => new SWSenateHistoryLaw { Name = law.Name, Author = Limit(law.Author), Amendment = law.Amendment, Repealed = law.Repealed }).ToArray(),
             AdditionalLaws = Math.Max(0, laws.Length - 50),
             Participants = _participants.Select(entry => Limit(entry.Name)).OrderBy(name => name, StringComparer.Ordinal).ToArray(),
+            CompletedAmbitions = _completedAmbitions.OrderBy(name => name, StringComparer.Ordinal).ToArray(),
             FinaleParticipants = _titles.OrderBy(entry => entry.Key.Name, StringComparer.Ordinal).Select(entry => new SWSenateFinaleParticipant { Name = Limit(entry.Key.Name), Titles = entry.Value.ToArray() }).ToArray(),
             PassedLaws = laws.Count(law => !law.Amendment),
             PassedAmendments = laws.Count(law => law.Amendment),
             CloseVotes = _closeVotes.ToArray(),
+            Awards = awards.Take(16).ToArray(),
+            AdditionalAwards = Math.Max(0, awards.Length - 16),
         };
         return _snapshot;
     }
 
     private static string Limit(string value) => value.Length <= 160 ? value : value[..160] + "…";
+
+    private SWSenateFinaleAward[] BuildAwards(SWSenateBill[] passed, string[] projects)
+    {
+        var awards = new List<SWSenateFinaleAward>();
+        var recognizedBills = new HashSet<int>();
+        var awardedConditions = new HashSet<SWSenateAwardCondition>();
+        foreach (var proto in _prototypes.EnumeratePrototypes<SWSenateFinaleAwardPrototype>().OrderByDescending(p => p.Priority).ThenBy(p => p.ID, StringComparer.Ordinal))
+        {
+            if (proto.MinThreshold < 1 || awardedConditions.Contains(proto.Condition)) continue;
+            var recipients = new List<string>();
+            switch (proto.Condition)
+            {
+                case SWSenateAwardCondition.CloseVote when proto.Recipient == SWSenateAwardRecipient.Project:
+                    if (_closeVotes.Count >= proto.MinThreshold)
+                    {
+                        recipients.AddRange(_closeVotes.Select(v => $"{v.Name} — за {v.For}, против {v.Against}"));
+                        recognizedBills.UnionWith(_closeBillIds);
+                    }
+                    break;
+                case SWSenateAwardCondition.AuthoredLaw or SWSenateAwardCondition.AuthoredAmendment when proto.Recipient == SWSenateAwardRecipient.Author:
+                    var amendment = proto.Condition == SWSenateAwardCondition.AuthoredAmendment;
+                    var groups = passed.Where(b => (b.AmendsLawId != null) == amendment && _billAuthors.ContainsKey(b.Id))
+                        .GroupBy(b => (_billAuthors[b.Id].Player, _billAuthors[b.Id].Card, _billAuthors[b.Id].Name)).ToArray();
+                    if (groups.Length == 0) break;
+                    var maximum = groups.Max(g => g.Count());
+                    if (maximum < proto.MinThreshold) break;
+                    foreach (var group in groups.Where(g => g.Count() == maximum).OrderBy(g => g.Key.Name, StringComparer.Ordinal).ThenBy(g => g.Key.Player.ToString(), StringComparer.Ordinal).ThenBy(g => g.Key.Card.ToString(), StringComparer.Ordinal))
+                    {
+                        recipients.Add($"{_billAuthors[group.First().Id].Name} — принято: {maximum}");
+                        foreach (var bill in group) recognizedBills.Add(bill.Id);
+                    }
+                    break;
+                case SWSenateAwardCondition.CompletedProject when proto.Recipient == SWSenateAwardRecipient.Project:
+                    if (projects.Length >= proto.MinThreshold) recipients.Add(projects[0]);
+                    break;
+                case SWSenateAwardCondition.PassedLaw when proto.Recipient == SWSenateAwardRecipient.Law:
+                    var available = passed.Where(b => b.AmendsLawId == null && !recognizedBills.Contains(b.Id)).ToArray();
+                    if (available.Length >= proto.MinThreshold) recipients.Add(Limit(available[0].Name));
+                    break;
+            }
+            if (recipients.Count == 0) continue;
+            awardedConditions.Add(proto.Condition);
+            var omitted = Math.Max(0, recipients.Count - 256);
+            var visible = recipients.Take(256).ToList();
+            if (omitted > 0) visible.Add($"Ещё получателей: {omitted}.");
+            var tie = proto.Condition == SWSenateAwardCondition.CloseVote && _closestVote == 0;
+            var titleKey = tie && proto.TieTitleKey != null ? proto.TieTitleKey : proto.TitleKey;
+            var factKey = tie && proto.TieFactKey != null ? proto.TieFactKey : proto.FactKey;
+            awards.Add(new SWSenateFinaleAward { Title = Loc.GetString(titleKey), Fact = Loc.GetString(factKey), Recipients = visible.ToArray() });
+        }
+        return awards.ToArray();
+    }
 
 }

@@ -19,6 +19,8 @@ namespace Content.Client._SW._Senate.Consoles.SectorSelect;
 public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
 {
     private readonly SWSectorSelectConsoleBoundUserInterface _owner;
+    private readonly Font _bodyFont;
+    private readonly Font _sectorTitleFont;
     private SWSectorSelectConsoleState? _state;
     private string? _selected;
     private string? _detailSelection;
@@ -26,24 +28,29 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
     private bool _revealSelected;
     private Control? _revealRow;
     private bool _updatingFilters;
+    private Vector2 _viewport;
 
     public SWSectorSelectConsoleMenu(SWSectorSelectConsoleBoundUserInterface owner)
     {
         RobustXamlLoader.Load(this);
         TitleClass = "LabelKeyText";
         _owner = owner;
+        var font = IoCManager.Resolve<IResourceCache>().GetResource<FontResource>("/Fonts/NotoSans/NotoSans-Regular.ttf");
+        _bodyFont = new VectorFont(font, 14);
+        _sectorTitleFont = new VectorFont(font, 26);
         SWConsoleStyle.StyleRoot(RootPanel);
+        FitViewport(true);
         SWConsoleStyle.StyleHeader(HeaderPanel);
         RepublicSeal.Texture = IoCManager.Resolve<IResourceCache>().GetResource<TextureResource>("/Textures/_SW/Interface/Senate/republic-seal.png").Texture;
-        CataloguePanel.PanelOverride = new StyleBoxFlat { BackgroundColor = Color.FromHex("#0B191F"), BorderColor = SWConsoleStyle.Edge, BorderThickness = new Thickness(1), ContentMarginLeftOverride = 10, ContentMarginRightOverride = 10, ContentMarginTopOverride = 10, ContentMarginBottomOverride = 10 };
-        DossierPanel.PanelOverride = new StyleBoxFlat { BackgroundColor = Color.FromHex("#10262D"), BorderColor = SWConsoleStyle.Edge, BorderThickness = new Thickness(1), ContentMarginLeftOverride = 12, ContentMarginRightOverride = 12, ContentMarginTopOverride = 10, ContentMarginBottomOverride = 10 };
+        CataloguePanel.PanelOverride = new SWSectorInset { Background = Color.FromHex("#0B191F"), ContentMarginLeftOverride = 10, ContentMarginRightOverride = 10, ContentMarginTopOverride = 10, ContentMarginBottomOverride = 10 };
+        DossierPanel.PanelOverride = new SWSectorInset { Background = Color.FromHex("#10262D"), ContentMarginLeftOverride = 12, ContentMarginRightOverride = 12, ContentMarginTopOverride = 10, ContentMarginBottomOverride = 10 };
         RootPanel.PanelOverride = new SWSectorFrame { ContentMarginLeftOverride = 8, ContentMarginRightOverride = 8, ContentMarginTopOverride = 8, ContentMarginBottomOverride = 8 };
         HeaderPanel.PanelOverride = new StyleBoxFlat { BackgroundColor = Color.FromHex("#202F36"), BorderColor = SWConsoleStyle.Brass, BorderThickness = new Thickness(0, 0, 0, 1) };
-        ClaimButton.StyleBoxOverride = new SWConsoleSurface { Background = SWConsoleStyle.Brass, Accent = SWConsoleStyle.Brass, CutCorner = true, ContentMarginTopOverride = 8, ContentMarginBottomOverride = 8 };
-        ClaimButton.Label.FontColorOverride = SWConsoleStyle.Navigation;
+        CardCaption.FontOverride = SWConsoleStyle.Small;
+        CardCaption.FontColorOverride = SWConsoleStyle.Brass;
         HeaderNetwork.FontOverride = SWConsoleStyle.Small;
         HeaderNetwork.FontColorOverride = SWConsoleStyle.Brass;
-        HeaderTitle.FontOverride = SWConsoleStyle.Header;
+        HeaderTitle.FontOverride = new VectorFont(font, 22);
         HeaderTitle.FontColorOverride = SWConsoleStyle.TextBright;
         Search.OnTextChanged += _ => { if (!_updatingFilters) RefreshList(); };
         FreeOnly.OnToggled += _ => { if (!_updatingFilters) RefreshList(); };
@@ -147,15 +154,15 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
             var button = new ContainerButton { HorizontalExpand = true };
             button.StyleBoxOverride = new StyleBoxFlat
             {
-                BackgroundColor = sector.Id == _selected ? SWConsoleStyle.BgRowAlt : SWConsoleStyle.BgPanel,
+                BackgroundColor = sector.Id == _selected ? Color.FromHex("#29454A") : Color.FromHex("#0B191F"),
                 BorderColor = sector.Id == _selected ? SWConsoleStyle.Brass : SWConsoleStyle.Edge,
                 BorderThickness = new Thickness(3, 0, 0, 0),
                 ContentMarginLeftOverride = 8, ContentMarginRightOverride = 8,
                 ContentMarginTopOverride = 6, ContentMarginBottomOverride = 6,
             };
             var contents = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
-            contents.AddChild(SWConsoleStyle.Wrap(sector.Name, sector.Color, 180));
-            contents.AddChild(SWConsoleStyle.Wrap(sector.Claimed ? "Место занято" : "Свободно", SWConsoleStyle.TextDim, 180));
+            contents.AddChild(Wrap(sector.Name, sector.Id == _selected ? SWConsoleStyle.Brass : SWConsoleStyle.TextBright, 180));
+            contents.AddChild(Wrap(sector.Claimed ? "Место занято" : "Свободно", SWConsoleStyle.TextDim, 180));
             button.AddChild(contents);
             var id = sector.Id;
             button.OnPressed += _ => Select(id);
@@ -167,7 +174,7 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
         {
             var message = FreeOnly.Pressed && !_state.Sectors.Any(s => !s.Claimed)
                 ? "Свободных мест нет" : "Секторы не найдены";
-            SectorList.AddChild(SWConsoleStyle.Wrap(message, SWConsoleStyle.TextDim, 180));
+            SectorList.AddChild(Wrap(message, SWConsoleStyle.TextDim, 180));
         }
         ListScroll.SetScrollValue(scroll);
     }
@@ -175,6 +182,7 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
     protected override void FrameUpdate(FrameEventArgs args)
     {
         base.FrameUpdate(args);
+        FitViewport(false);
         if (_revealRow == null || _revealRow.Height <= 0)
             return;
         ListScroll.VScroll = _revealRow.Position.Y;
@@ -182,6 +190,37 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
         _revealSelected = false;
     }
 
+    private void FitViewport(bool initial)
+    {
+        // WindowRoot.Size is in logical UI units (physical pixels / UI scale).
+        var root = IoCManager.Resolve<IUserInterfaceManager>().WindowRoot;
+        var viewport = root.Size;
+        if (initial && (viewport.X <= 0 || viewport.Y <= 0) && root.UIScale > 0)
+            viewport = (Vector2) IoCManager.Resolve<IClyde>().ScreenSize / root.UIScale;
+        if (viewport.X <= 0 || viewport.Y <= 0 || !float.IsFinite(viewport.X) || !float.IsFinite(viewport.Y)) return;
+        if (!initial && viewport == _viewport) return;
+        _viewport = viewport;
+        var limit = Vector2.Max(Vector2.One, viewport - new Vector2(24));
+        MinSize = Vector2.Min(new Vector2(640, 460), limit);
+        var current = initial ? new Vector2(1100, 780) : SetSize;
+        if (!float.IsFinite(current.X) || !float.IsFinite(current.Y)) current = Size;
+        SetSize = Vector2.Min(current, limit);
+        if (!initial && IsOpen)
+        {
+            Measure(Vector2Helpers.Infinity);
+            RecenterWindow(new Vector2(0.5f, 0.5f));
+        }
+    }
+
+    private RichTextLabel Wrap(string text, Color color, float fallbackWidth)
+    {
+        var label = SWConsoleStyle.Wrap(text, color, fallbackWidth);
+        label.Stylesheet = new Stylesheet(new StyleRule[]
+        {
+            StylesheetHelpers.Element<RichTextLabel>().Prop("font", _bodyFont),
+        });
+        return label;
+    }
     private void RefreshDetail()
     {
         if (_state == null) return;
@@ -197,25 +236,25 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
         MapCaption.RemoveAllChildren();
         if (sector != null)
         {
-            MapCaption.AddChild(SWConsoleStyle.Wrap(sector.Name, SWConsoleStyle.Brass, 310));
-            MapCaption.AddChild(SWConsoleStyle.Wrap(SectorMap.Caption, SWConsoleStyle.TextDim, 310));
+            MapCaption.AddChild(Wrap(sector.Name, SWConsoleStyle.Brass, 310));
+            MapCaption.AddChild(Wrap(SectorMap.Caption, SWConsoleStyle.TextDim, 310));
         }
         if (sector == null)
-            Detail.AddChild(SWConsoleStyle.Wrap("Выберите сектор, чтобы узнать о нём больше.", SWConsoleStyle.TextDim, 350));
+            Detail.AddChild(Wrap("Выберите сектор, чтобы узнать о нём больше.", SWConsoleStyle.TextDim, 350));
         else
         {
-            var title = SWConsoleStyle.Wrap(sector.Name, sector.Color, 350);
+            var title = Wrap(sector.Name, SWConsoleStyle.TextBright, 350);
             title.Stylesheet = new Stylesheet(new StyleRule[]
             {
-                StylesheetHelpers.Element<RichTextLabel>().Prop("font", SWConsoleStyle.Header),
+                StylesheetHelpers.Element<RichTextLabel>().Prop("font", _sectorTitleFont),
             });
             DetailIntro.AddChild(title);
-            DetailIntro.AddChild(SWConsoleStyle.Wrap(sector.Claimed ? "Место занято" : "Свободно", sector.Claimed ? SWConsoleStyle.TextDim : SWConsoleStyle.Good, 350));
-            Detail.AddChild(SWConsoleStyle.Wrap(sector.Description, SWConsoleStyle.TextBright, 350));
-            Infrastructure.AddChild(SWConsoleStyle.Wrap("ИНФРАСТРУКТУРА", SWConsoleStyle.TextDim, 180));
-            Infrastructure.AddChild(SWConsoleStyle.Wrap(sector.Shipyard ? "Верфи" : "Верфи отсутствуют", SWConsoleStyle.Brass, 180));
-            Representative.AddChild(SWConsoleStyle.Wrap("ПРЕДСТАВИТЕЛЬ", SWConsoleStyle.TextDim, 180));
-            Representative.AddChild(SWConsoleStyle.Wrap(!string.IsNullOrEmpty(sector.Representative) ? sector.Representative : sector.Claimed ? "Неизвестен" : "Место не занято", SWConsoleStyle.TextBright, 180));
+            DetailIntro.AddChild(Wrap(sector.Claimed ? "Место занято" : "Свободно", sector.Claimed ? SWConsoleStyle.TextDim : SWConsoleStyle.Good, 350));
+            Detail.AddChild(Wrap(sector.Description, SWConsoleStyle.TextBright, 350));
+            Infrastructure.AddChild(Wrap("ИНФРАСТРУКТУРА", SWConsoleStyle.TextDim, 180));
+            Infrastructure.AddChild(Wrap(sector.Shipyard ? "Верфи" : "Верфи отсутствуют", SWConsoleStyle.Brass, 180));
+            Representative.AddChild(Wrap("ПРЕДСТАВИТЕЛЬ", SWConsoleStyle.TextDim, 180));
+            Representative.AddChild(Wrap(!string.IsNullOrEmpty(sector.Representative) ? sector.Representative : sector.Claimed ? "Неизвестен" : "Место не занято", SWConsoleStyle.TextBright, 180));
         }
         var reason = !_state.HasCard ? "Вставьте карту сенатора" :
             !_state.IsSenatorCard ? "Нужна карта сенатора" :
@@ -224,7 +263,7 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
             !_state.DayActive ? "Занять место можно только днём" :
             sector == null ? "Выберите сектор" :
             sector.Claimed ? "Это место уже занято" : $"Выбрано: {sector.Name}";
-        FooterText.AddChild(SWConsoleStyle.Wrap(reason, SWConsoleStyle.TextBright, 600));
+        FooterText.AddChild(Wrap(reason, SWConsoleStyle.TextBright, 600));
         ClaimButton.Disabled = _pending || !_state.HasCard || !_state.IsSenatorCard || _state.CurrentSector != null ||
                                !_state.ModeActive || !_state.DayActive || sector == null || sector.Claimed;
         DetailScroll.SetScrollValue(scroll);
@@ -269,47 +308,84 @@ public sealed class SWSectorSelectLayout : Container
 }
 
 
-/// <summary>Two columns where they fit, stacked inside the dossier scroll at narrower widths.</summary>
-public sealed class SWSectorResponsivePair : Container
+/// <summary>Measure both columns at the same widths used during arrangement.</summary>
+public sealed class SWSectorColumns : Container
 {
-    public float Separation { get; set; } = 12;
-    public float BreakWidth { get; set; } = 400;
-    // Zero shares the available width equally; otherwise the second column is fixed.
-    public float SecondWidth { get; set; }
+    public float LeftFraction { get; set; } = 0.5f;
+    public float RightWidth { get; set; }
+    public float Gap { get; set; } = 12;
+    private float _measuredWidth;
+
+    private (float Left, float Right) Widths(float width)
+    {
+        var available = Math.Max(0, width - Gap);
+        var right = RightWidth > 0 ? Math.Min(RightWidth, available) : available * (1 - Math.Clamp(LeftFraction, 0, 1));
+        return (available - right, right);
+    }
 
     protected override Vector2 MeasureOverride(Vector2 availableSize)
     {
         if (ChildCount != 2) return base.MeasureOverride(availableSize);
-        var width = float.IsFinite(availableSize.X) ? availableSize.X : BreakWidth;
-        var sideBySide = width >= BreakWidth;
-        if (sideBySide)
-        {
-            var right = SecondWidth > 0 ? SecondWidth : Math.Max(0, (width - Separation) / 2);
-            var left = Math.Max(0, width - Separation - right);
-            Children[0].Measure(new Vector2(left, availableSize.Y));
-            Children[1].Measure(new Vector2(right, availableSize.Y));
-            return new Vector2(width, Math.Max(Children[0].DesiredSize.Y, Children[1].DesiredSize.Y));
-        }
-        foreach (var child in Children) child.Measure(new Vector2(width, availableSize.Y));
-        return new Vector2(width, Children[0].DesiredSize.Y + Separation + Children[1].DesiredSize.Y);
+        _measuredWidth = float.IsFinite(availableSize.X) ? Math.Max(0, availableSize.X) : 600;
+        var (left, right) = Widths(_measuredWidth);
+        Children[0].Measure(new Vector2(left, availableSize.Y));
+        Children[1].Measure(new Vector2(right, availableSize.Y));
+        return new Vector2(_measuredWidth, Math.Max(Children[0].DesiredSize.Y, Children[1].DesiredSize.Y));
     }
 
     protected override Vector2 ArrangeOverride(Vector2 finalSize)
     {
         if (ChildCount != 2) return base.ArrangeOverride(finalSize);
-        if (finalSize.X >= BreakWidth)
-        {
-            var right = SecondWidth > 0 ? SecondWidth : Math.Max(0, (finalSize.X - Separation) / 2);
-            var left = Math.Max(0, finalSize.X - Separation - right);
-            Children[0].Arrange(UIBox2.FromDimensions(Vector2.Zero, new Vector2(left, finalSize.Y)));
-            Children[1].Arrange(UIBox2.FromDimensions(new Vector2(left + Separation, 0), new Vector2(right, finalSize.Y)));
-        }
-        else
-        {
-            var top = Children[0].DesiredSize.Y;
-            Children[0].Arrange(UIBox2.FromDimensions(Vector2.Zero, new Vector2(finalSize.X, top)));
-            Children[1].Arrange(UIBox2.FromDimensions(new Vector2(0, top + Separation), new Vector2(finalSize.X, Math.Max(0, finalSize.Y - top - Separation))));
-        }
+        // ScrollContainer can arrange wider than its measured constraint when its scrollbar is hidden.
+        // Keep the measured widths so text and map heights remain valid on the first layout pass.
+        var (left, right) = Widths(Math.Min(finalSize.X, _measuredWidth));
+        Children[0].Arrange(UIBox2.FromDimensions(Vector2.Zero, new Vector2(left, finalSize.Y)));
+        Children[1].Arrange(UIBox2.FromDimensions(new Vector2(left + Gap, 0), new Vector2(right, finalSize.Y)));
         return finalSize;
+    }
+}
+
+public sealed class SWSectorClaimButton : Button
+{
+    public SWSectorClaimButton()
+    {
+        ModulateSelfOverride = Color.White;
+        Refresh();
+    }
+
+    protected override void DrawModeChanged()
+    {
+        base.DrawModeChanged();
+        if (Label != null) Refresh();
+    }
+
+    private void Refresh()
+    {
+        var bg = Disabled ? Color.FromHex("#354041") : DrawMode is DrawModeEnum.Hover or DrawModeEnum.Pressed
+            ? Color.FromHex("#E6CD98") : SWConsoleStyle.Brass;
+        Label.FontColorOverride = Disabled ? SWConsoleStyle.TextDim : SWConsoleStyle.Navigation;
+        Label.FontOverride = SWConsoleStyle.Strong;
+        StyleBoxOverride = new SWConsoleSurface { Background = bg, Accent = SWConsoleStyle.Brass, CutCorner = true,
+            ContentMarginLeftOverride = 12, ContentMarginRightOverride = 12, ContentMarginTopOverride = 9, ContentMarginBottomOverride = 9 };
+    }
+}
+
+/// <summary>Card-shaped inset in the fixed footer, independent of card authorization.</summary>
+public sealed class SWSectorCardIcon : Control
+{
+    public SWSectorCardIcon()
+    {
+        SetSize = new Vector2(34, 38);
+        VerticalAlignment = VAlignment.Center;
+        MouseFilter = MouseFilterMode.Ignore;
+    }
+
+    protected override void Draw(DrawingHandleScreen handle)
+    {
+        base.Draw(handle);
+        handle.DrawRect(UIBox2.FromDimensions(Vector2.Zero, PixelSize), Color.FromHex("#647571"));
+        handle.DrawRect(UIBox2.FromDimensions(new Vector2(5, 7) * UIScale, new Vector2(22, 2) * UIScale), SWConsoleStyle.Brass);
+        handle.DrawRect(UIBox2.FromDimensions(new Vector2(5, 12) * UIScale, new Vector2(16, 2) * UIScale), SWConsoleStyle.TextBright);
+        handle.DrawRect(UIBox2.FromDimensions(new Vector2(8, 26) * UIScale, new Vector2(18, 4) * UIScale), SWConsoleStyle.Navigation);
     }
 }

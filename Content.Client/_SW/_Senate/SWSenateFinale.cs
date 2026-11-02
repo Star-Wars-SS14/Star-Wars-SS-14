@@ -98,7 +98,6 @@ public sealed class SWSenateFinale : LayoutContainer
             if (float.IsFinite(stat.Min) && float.IsFinite(stat.Max) && stat.Max > stat.Min &&
                 float.IsFinite(stat.Start) && float.IsFinite(stat.End) && stat.Start >= stat.Min && stat.Start <= stat.Max && stat.End >= stat.Min && stat.End <= stat.Max)
                 _content.AddChild(new ComparisonBar(stat));
-            if (stat.Max > stat.Min) Line($"Шкала: {stat.Min:0.0}–{stat.Max:0.0}. Верхняя полоса — начало, нижняя — итог.");
         }
         Section("РЕШЕНИЯ СОЗЫВА");
         if (history.Laws.Length > 0) Line($"Принято: {history.Laws[0].Name}");

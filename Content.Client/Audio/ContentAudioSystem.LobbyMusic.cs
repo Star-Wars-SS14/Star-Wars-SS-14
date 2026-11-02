@@ -29,6 +29,34 @@ public sealed partial class ContentAudioSystem
     /// EntityUid of lobby restart sound component.
     /// </summary>
     private EntityUid? _lobbyRoundRestartAudioStream;
+    private EntityUid? _senateFinaleStream;
+    private bool _senateFinaleActive;
+
+    public void StartSenateFinaleMusic()
+    {
+        StopSenateFinaleMusic();
+        _senateFinaleActive = true;
+        _ambientMusicStream = _audio.Stop(_ambientMusicStream);
+        EndLobbyMusic();
+        _audio.Stop(_lobbyRoundRestartAudioStream);
+        _lobbyRoundRestartAudioStream = null;
+        if (!_configManager.GetCVar(CCVars.RestartSoundsEnabled)) return;
+        _senateFinaleStream = _audio.PlayGlobal("/Audio/Lobby/endless_space.ogg", Filter.Local(), false,
+            _lobbySoundtrackParams.WithVolume(_lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(_configManager.GetCVar(CCVars.LobbyMusicVolume))))?.Entity;
+        FadeIn(_senateFinaleStream, duration: 1f);
+    }
+
+    public void StopSenateFinaleMusic()
+    {
+        _senateFinaleActive = false;
+        PauseSenateFinaleMusic();
+    }
+
+    public void PauseSenateFinaleMusic()
+    {
+        _audio.Stop(_senateFinaleStream);
+        _senateFinaleStream = null;
+    }
 
     /// <summary>
     /// Shuffled list of soundtrack file-names.
@@ -69,6 +97,7 @@ public sealed partial class ContentAudioSystem
     {
         Subs.CVar(_configManager, CCVars.LobbyMusicEnabled, LobbyMusicCVarChanged);
         Subs.CVar(_configManager, CCVars.LobbyMusicVolume, LobbyMusicVolumeCVarChanged);
+        Subs.CVar(_configManager, CCVars.RestartSoundsEnabled, RestartSoundsChanged);
 
         _state.OnStateChanged += StateManagerOnStateChanged;
 
@@ -88,6 +117,7 @@ public sealed partial class ContentAudioSystem
         switch (args.NewState)
         {
             case LobbyState:
+                StopSenateFinaleMusic();
                 StartLobbyMusic();
                 break;
             default:
@@ -98,11 +128,20 @@ public sealed partial class ContentAudioSystem
 
     private void OnLeave(object? sender, PlayerEventArgs args)
     {
+        StopSenateFinaleMusic();
         EndLobbyMusic();
     }
 
     private void LobbyMusicVolumeCVarChanged(float volume)
     {
+        if (_senateFinaleStream is { } finale)
+        {
+            var target = _lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(volume);
+            if (_fadingIn.TryGetValue(finale, out var fade))
+                _fadingIn[finale] = (fade.VolumeChange, target);
+            else
+                _audio.SetVolume(finale, target);
+        }
         if (_lobbySoundtrackInfo != null)
         {
             _audio.SetVolume(
@@ -110,6 +149,11 @@ public sealed partial class ContentAudioSystem
                 _lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(_configManager.GetCVar(CCVars.LobbyMusicVolume))
             );
         }
+    }
+
+    private void RestartSoundsChanged(bool enabled)
+    {
+        if (!enabled) PauseSenateFinaleMusic();
     }
 
     private void LobbyMusicCVarChanged(bool musicEnabled)
@@ -233,6 +277,7 @@ public sealed partial class ContentAudioSystem
 
     private void ShutdownLobbyMusic()
     {
+        StopSenateFinaleMusic();
         _state.OnStateChanged -= StateManagerOnStateChanged;
 
         _client.PlayerLeaveServer -= OnLeave;

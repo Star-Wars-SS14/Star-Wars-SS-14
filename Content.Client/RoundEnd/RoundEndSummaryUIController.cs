@@ -1,5 +1,6 @@
 using Content.Client.GameTicking.Managers;
 using Content.Client.Gameplay;
+using Content.Client.Audio;
 using Content.Client._SW._Senate;
 using Content.Shared.GameTicking;
 using Content.Shared.Input;
@@ -78,13 +79,16 @@ public sealed class RoundEndSummaryUIController : UIController,
     {
         RemoveFinale();
         _window?.Close();
-        _finale = new SWSenateFinale(history, duration, ShowDetails);
+        var audio = EntityManager.System<ContentAudioSystem>();
+        audio.StartSenateFinaleMusic();
+        _finale = new SWSenateFinale(history, duration, ShowDetails, audio.PauseSenateFinaleMusic, audio.StartSenateFinaleMusic);
         UIManager.WindowRoot.AddChild(_finale);
         LayoutContainer.SetAnchorPreset(_finale, LayoutContainer.LayoutPreset.Wide);
     }
 
     private void RemoveFinale()
     {
+        if (_finale != null) EntityManager.System<ContentAudioSystem>().StopSenateFinaleMusic();
         _finale?.Orphan();
         _finale = null;
     }

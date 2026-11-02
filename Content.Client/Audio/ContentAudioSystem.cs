@@ -42,6 +42,7 @@ public sealed partial class ContentAudioSystem : SharedContentAudioSystem
 
     private void OnRoundCleanup(RoundRestartCleanupEvent ev)
     {
+        StopSenateFinaleMusic();
         _fadingOut.Clear();
 
         // Preserve lobby music but everything else should get dumped.

@@ -38,6 +38,7 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
     private readonly List<SWSenateCloseVote> _closeVotes = new();
     private int _closestVote = int.MaxValue;
     private readonly HashSet<(EntityUid Card, string Name)> _participants = new();
+    private readonly Dictionary<(EntityUid Card, string Name), List<string>> _titles = new();
     public bool Ending { get; private set; }
     public bool SessionActive => _start != null;
     public int? ScoreboardRoundId => _roundEndMessage?.RoundId;
@@ -90,6 +91,7 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
         _closeVotes.Clear();
         _closestVote = int.MaxValue;
         _participants.Clear();
+        _titles.Clear();
         Ending = false;
     }
 
@@ -120,6 +122,13 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
             string.IsNullOrWhiteSpace(id.FullName))
             return;
         _participants.Add((card, id.FullName));
+        var key = (card, id.FullName);
+        if (!_titles.TryGetValue(key, out var titles))
+            _titles[key] = titles = new List<string>();
+        var title = id.LocalizedJobTitle;
+        if (!string.IsNullOrWhiteSpace(title)) title = Limit(title);
+        if (!string.IsNullOrWhiteSpace(title) && !titles.Contains(title))
+            titles.Add(title);
     }
 
     private void OnVoteResolved(SWSenateBillVotesResolvedEvent ev)
@@ -157,7 +166,7 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
             .OrderBy(p => p.Order).ThenBy(p => p.ID)
             .Where(p => _start.ContainsKey(p.ID) && final.ContainsKey(p.ID))
             .Take(32)
-            .Select(p => new SWSenateHistoryStat { Name = Limit(p.Name), Start = _start[p.ID], End = final[p.ID] })
+            .Select(p => new SWSenateHistoryStat { Id = p.ID, Name = Limit(p.Name), Min = p.Min, Max = p.Max, Start = _start[p.ID], End = final[p.ID] })
             .ToArray();
         var laws = _state.Bills.Where(b => b.Stage == SWBillStage.Passed && !b.IsElection && b.SpecialMotionType == null && !b.IsDecree)
             .Where(b => !string.IsNullOrWhiteSpace(b.Name))
@@ -193,6 +202,7 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
             Laws = laws.Take(50).Select(law => new SWSenateHistoryLaw { Name = law.Name, Author = Limit(law.Author), Amendment = law.Amendment, Repealed = law.Repealed }).ToArray(),
             AdditionalLaws = Math.Max(0, laws.Length - 50),
             Participants = _participants.Select(entry => Limit(entry.Name)).OrderBy(name => name, StringComparer.Ordinal).ToArray(),
+            FinaleParticipants = _titles.OrderBy(entry => entry.Key.Name, StringComparer.Ordinal).Select(entry => new SWSenateFinaleParticipant { Name = Limit(entry.Key.Name), Titles = entry.Value.ToArray() }).ToArray(),
             PassedLaws = laws.Count(law => !law.Amendment),
             PassedAmendments = laws.Count(law => law.Amendment),
             CloseVotes = _closeVotes.ToArray(),

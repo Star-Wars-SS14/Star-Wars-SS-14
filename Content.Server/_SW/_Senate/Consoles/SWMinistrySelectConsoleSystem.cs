@@ -113,6 +113,7 @@ public sealed class SWMinistrySelectConsoleSystem : EntitySystem
 
         var title = Loc.GetString(TitleKey(proto.Kind), ("name", proto.TitleName));
         _idCard.TryChangeJobTitle(card.Value, title);
+        EntityManager.System<SWSenateRoundHistorySystem>().RecordCard(card.Value);
 
         _popup.PopupCursor(Loc.GetString("sw-ministry-select-success", ("title", title)), args.Actor, PopupType.Medium);
         UpdateUi(ent);

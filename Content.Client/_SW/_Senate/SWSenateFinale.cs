@@ -1,5 +1,6 @@
 using System;
 using System.Numerics;
+using System.Linq;
 using Content.Shared._SW._Senate;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
@@ -50,7 +51,7 @@ public sealed class SWSenateFinale : LayoutContainer
         return label;
     }
 
-    public SWSenateFinale(SWSenateRoundHistory history, TimeSpan duration, Action finish)
+    public SWSenateFinale(SWSenateRoundHistory history, TimeSpan duration, Action finish, Action pauseMusic, Action replayMusic)
     {
         _finish = finish;
         MouseFilter = MouseFilterMode.Ignore;
@@ -77,38 +78,31 @@ public sealed class SWSenateFinale : LayoutContainer
         _content.AddChild(CreditText($"Длительность: {(int) duration.TotalHours:00}:{duration.Minutes:00}:{duration.Seconds:00}", fact, SWConsoleStyle.TextDim, bottom: 8));
         _content.AddChild(CreditText($"Принято законов: {history.PassedLaws}, поправок: {history.PassedAmendments}", fact, SWConsoleStyle.TextDim));
         _content.AddChild(CreditText("УЧАСТНИКИ СОЗЫВА", heading, SWConsoleStyle.Brass, top: 64, bottom: 28));
-        if (history.Participants.Length == 0)
+        if (history.FinaleParticipants.Length == 0)
             _content.AddChild(CreditText("Участники не зафиксированы.", fact, SWConsoleStyle.TextDim, bottom: 28));
-        foreach (var name in history.Participants)
-            _content.AddChild(CreditText(name, nameFont, SWConsoleStyle.TextBright, bottom: 28));
+        foreach (var participant in history.FinaleParticipants)
+        {
+            _content.AddChild(CreditText(participant.Name, nameFont, SWConsoleStyle.TextBright, bottom: 8));
+            if (participant.Titles.Length > 0)
+                _content.AddChild(CreditText(string.Join(", ", participant.Titles), fact, SWConsoleStyle.TextDim, bottom: 28));
+        }
         void Section(string title) => _content.AddChild(CreditText(title, heading, SWConsoleStyle.Brass, top: 64, bottom: 28));
         void Line(string text) => _content.AddChild(CreditText(text, fact, SWConsoleStyle.TextBright, bottom: 20));
         Section("РЕСПУБЛИКА");
         if (history.Stats.Length == 0) Line("Показатели недоступны.");
-        foreach (var stat in history.Stats)
-            Line($"{stat.Name}: начало {stat.Start:0.0}; итог {stat.End:0.0}; изменение {stat.End - stat.Start:+0.0;-0.0;0.0}");
-        Section("СЕКТОРА");
-        if (history.Sectors.Length == 0) Line("Данные о секторах недоступны.");
-        foreach (var sector in history.Sectors)
+        foreach (var (id, name) in new[] { ("SWGlobalEconomy", "Экономика"), ("SWGlobalSecurity", "Безопасность"), ("SWGlobalHealthcare", "Здравоохранение") })
         {
-            Line(sector.Name);
-            foreach (var stat in sector.Stats)
-                Line($"{stat.Name}: начало {stat.Start:0.0}; итог {stat.End:0.0}; изменение {stat.End - stat.Start:+0.0;-0.0;0.0}");
+            var stat = history.Stats.FirstOrDefault(item => item.Id == id);
+            if (stat == null || !float.IsFinite(stat.Start) || !float.IsFinite(stat.End)) { Line($"{name}: данные недоступны."); continue; }
+            Line($"{stat.Name}: начало {stat.Start:0.0}; итог {stat.End:0.0}; изменение {stat.End - stat.Start:+0.0;-0.0;0.0}");
+            if (float.IsFinite(stat.Min) && float.IsFinite(stat.Max) && stat.Max > stat.Min &&
+                float.IsFinite(stat.Start) && float.IsFinite(stat.End) && stat.Start >= stat.Min && stat.Start <= stat.Max && stat.End >= stat.Min && stat.End <= stat.Max)
+                _content.AddChild(new ComparisonBar(stat));
+            if (stat.Max > stat.Min) Line($"Шкала: {stat.Min:0.0}–{stat.Max:0.0}. Верхняя полоса — начало, нижняя — итог.");
         }
-        Section("ЗАКОНЫ И ПОПРАВКИ");
-        if (history.Laws.Length == 0) Line("Принятых законов не зафиксировано.");
-        foreach (var law in history.Laws)
-            Line($"{law.Name} — автор: {law.Author}{(law.Amendment ? " (поправка)" : "")}{(law.Repealed ? " (отменён)" : "")}");
-        if (history.AdditionalLaws > 0) Line($"Других решений: {history.AdditionalLaws}.");
-        Section("ВЕДОМСТВА И СУД");
-        foreach (var line in history.DepartmentSummary) Line(line);
-        Line("Подтверждённая история остальных ведомств недоступна.");
-        Section("ЗАВЕРШЁННЫЕ ПРОЕКТЫ");
-        if (history.Projects.Length == 0) Line("Завершённые проекты не зафиксированы.");
-        foreach (var project in history.Projects) Line(project);
-        Section("ЭКОНОМИЧЕСКИЕ СОБЫТИЯ · ПОСЛЕДНИЕ 20");
-        if (history.Events.Length == 0) Line("Экономические события не зафиксированы.");
-        foreach (var ev in history.Events) Line(ev);
+        Section("РЕШЕНИЯ СОЗЫВА");
+        if (history.Laws.Length > 0) Line($"Принято: {history.Laws[0].Name}");
+        if (history.Projects.Length > 0) Line($"Завершён проект: {history.Projects[0]}");
         if (history.CloseVotes.Length > 0)
         {
             Section("ЗАЛ РАЗДЕЛИЛСЯ");
@@ -126,15 +120,32 @@ public sealed class SWSenateFinale : LayoutContainer
         SetMarginTop(actions, -60);
         SetMarginBottom(actions, -16);
         _pause = new Button { Text = "Пауза" };
-        _pause.OnPressed += _ => { _paused = !_paused; _pause.Text = _paused ? "Продолжить" : "Пауза"; };
+        _pause.OnPressed += _ => { _paused = !_paused; if (_paused) pauseMusic(); _pause.Text = _paused ? "Продолжить" : "Пауза"; };
         actions.AddChild(_pause);
         var replay = new Button { Text = "С начала" };
-        replay.OnPressed += _ => Replay();
+        replay.OnPressed += _ => { Replay(); replayMusic(); };
         actions.AddChild(replay);
         actions.AddChild(new Control { HorizontalExpand = true, MouseFilter = MouseFilterMode.Ignore });
         var skip = new Button { Text = "К итогам" };
         skip.OnPressed += _ => Complete();
         actions.AddChild(skip);
+    }
+
+    private sealed class ComparisonBar : Control
+    {
+        private readonly SWSenateHistoryStat _stat;
+        public ComparisonBar(SWSenateHistoryStat stat) { _stat = stat; MinHeight = 20; MouseFilter = MouseFilterMode.Ignore; }
+        protected override void Draw(DrawingHandleScreen handle)
+        {
+            base.Draw(handle);
+            var width = PixelWidth;
+            var start = (_stat.Start - _stat.Min) / (_stat.Max - _stat.Min) * width;
+            var end = (_stat.End - _stat.Min) / (_stat.Max - _stat.Min) * width;
+            handle.DrawRect(new UIBox2(0, 0, width, 4 * UIScale), Color.FromHex("#314959"));
+            handle.DrawRect(new UIBox2(0, 0, start, 4 * UIScale), SWConsoleStyle.TextDim);
+            handle.DrawRect(new UIBox2(0, 9 * UIScale, width, 13 * UIScale), Color.FromHex("#314959"));
+            handle.DrawRect(new UIBox2(0, 9 * UIScale, end, 13 * UIScale), SWConsoleStyle.Brass);
+        }
     }
 
     private void Replay()

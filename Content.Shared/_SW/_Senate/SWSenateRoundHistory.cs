@@ -15,6 +15,7 @@ public sealed class SWSenateRoundHistory
     public SWSenateHistoryLaw[] Laws = Array.Empty<SWSenateHistoryLaw>();
     public int AdditionalLaws;
     public string[] Participants = Array.Empty<string>();
+    public SWSenateFinaleParticipant[] FinaleParticipants = Array.Empty<SWSenateFinaleParticipant>();
     public int PassedLaws;
     public int PassedAmendments;
     public SWSenateCloseVote[] CloseVotes = Array.Empty<SWSenateCloseVote>();
@@ -31,9 +32,19 @@ public sealed class SWSenateCloseVote
 [Serializable, NetSerializable]
 public sealed class SWSenateHistoryStat
 {
+    public string Id = string.Empty;
+    public float Min;
+    public float Max;
     public string Name = string.Empty;
     public float Start;
     public float End;
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateFinaleParticipant
+{
+    public string Name = string.Empty;
+    public string[] Titles = Array.Empty<string>();
 }
 
 [Serializable, NetSerializable]

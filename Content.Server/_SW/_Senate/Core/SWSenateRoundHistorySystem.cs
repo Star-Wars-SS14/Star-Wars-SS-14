@@ -7,6 +7,12 @@ using Robust.Server.Player;
 using Robust.Shared.Enums;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
+using Content.Shared.IdentityManagement;
+using Content.Shared.Ghost;
+using Content.Shared.Mind;
+using Content.Server.Roles;
+using Content.Shared.Roles.Components;
+using Robust.Shared.Network;
 
 namespace Content.Server._SW._Senate.Core;
 
@@ -22,6 +28,7 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
     [Dependency] private readonly SWSenateBudgetSystem _budget = default!;
     [Dependency] private readonly SWSenateCourtSystem _court = default!;
     [Dependency] private readonly IPlayerManager _players = default!;
+    [Dependency] private readonly RoleSystem _roles = default!;
 
     private Dictionary<string, float>? _start;
     private int _startDay;
@@ -95,7 +102,7 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
             .ToArray();
         var laws = _state.Bills.Where(b => b.Stage == SWBillStage.Passed && !b.IsElection && b.SpecialMotionType == null && !b.IsDecree)
             .Where(b => !string.IsNullOrWhiteSpace(b.Name))
-            .Select(b => new SWSenateHistoryLaw { Name = Limit(b.Name), Author = string.IsNullOrWhiteSpace(b.Author) ? "неизвестен" : Limit(b.Author), Amendment = b.AmendsLawId != null, Repealed = b.Repealed })
+            .Select(b => new SWSenateHistoryLaw { Name = Limit(b.Name), Author = string.IsNullOrWhiteSpace(b.Author) ? "неизвестен" : b.Author, Amendment = b.AmendsLawId != null, Repealed = b.Repealed })
             .ToArray();
         var sectors = _prototypes.EnumeratePrototypes<SWSectorPrototype>()
             .OrderBy(p => p.Name, StringComparer.Ordinal).Take(100)
@@ -124,11 +131,43 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
                 $"Здравоохранение: больниц введено в работу — {_health.HospitalsBuilt}, обеспеченность медицинской помощью — {_health.HospitalServicePercent}%.",
                 $"Суд: завершено дел с решением — {_court.CasesResolved}, закрыто без решения — {_court.CasesUnresolved}; отменено законов — {_court.LawsRepealed}.",
             },
-            Laws = laws.Take(50).ToArray(),
+            Laws = laws.Take(50).Select(law => new SWSenateHistoryLaw { Name = law.Name, Author = Limit(law.Author), Amendment = law.Amendment, Repealed = law.Repealed }).ToArray(),
             AdditionalLaws = Math.Max(0, laws.Length - 50),
+            Participants = CaptureParticipants(),
+            PassedLaws = laws.Count(law => !law.Amendment),
+            PassedAmendments = laws.Count(law => law.Amendment),
         };
         return _snapshot;
     }
 
     private static string Limit(string value) => value.Length <= 160 ? value : value[..160] + "…";
+
+    private string[] CaptureParticipants()
+    {
+        // Multiple minds belonging to one player are deliberately not attributed to a body.
+        var bodies = new Dictionary<NetUserId, List<EntityUid?>>();
+        var minds = EntityQueryEnumerator<MindComponent>();
+        while (minds.MoveNext(out var uid, out var mind))
+        {
+            if (_roles.MindHasRole<ObserverRoleComponent>(uid))
+                continue;
+            var user = mind.UserId ?? mind.OriginalOwnerUserId;
+            if (user == null)
+                continue;
+            if (!bodies.TryGetValue(user.Value, out var entries))
+                bodies[user.Value] = entries = new List<EntityUid?>();
+            entries.Add(mind.CurrentEntity);
+        }
+
+        return bodies.Values.Select(entries =>
+        {
+            if (entries.Count != 1 || entries[0] is not { } body ||
+                HasComp<GhostComponent>(body) || !TryComp<MetaDataComponent>(body, out var meta) ||
+                meta.EntityLifeStage <= EntityLifeStage.Initializing || !EntityManager.EntityExists(body))
+                return "Участник без публичного снимка";
+            var name = Identity.Name(body, EntityManager);
+            return string.IsNullOrWhiteSpace(name) ? "Участник без публичного снимка" : Limit(name);
+        }).OrderBy(name => name, StringComparer.Ordinal).ToArray();
+    }
+
 }

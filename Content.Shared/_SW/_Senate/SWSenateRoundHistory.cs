@@ -14,6 +14,9 @@ public sealed class SWSenateRoundHistory
     public SWSenateHistoryStat[] Stats = Array.Empty<SWSenateHistoryStat>();
     public SWSenateHistoryLaw[] Laws = Array.Empty<SWSenateHistoryLaw>();
     public int AdditionalLaws;
+    public string[] Participants = Array.Empty<string>();
+    public int PassedLaws;
+    public int PassedAmendments;
 }
 
 [Serializable, NetSerializable]

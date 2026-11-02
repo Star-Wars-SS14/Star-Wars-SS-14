@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Numerics;
 using Content.Client.Message;
+using Content.Client._SW._Senate;
 using Content.Shared._SW._Senate;
 using Content.Shared.GameTicking;
 using Robust.Client.UserInterface.Controls;
@@ -23,7 +24,8 @@ namespace Content.Client.RoundEnd
             _entityManager = entityManager;
             IsSenate = history != null;
 
-            MinSize = SetSize = history == null ? new Vector2(520, 580) : new Vector2(1000, 700);
+            MinSize = history == null ? new Vector2(520, 580) : new Vector2(720, 500);
+            SetSize = history == null ? new Vector2(520, 580) : new Vector2(1000, 620);
 
             Title = Loc.GetString("round-end-summary-window-title");
 
@@ -36,7 +38,10 @@ namespace Content.Client.RoundEnd
             RoundId = roundId;
             var roundEndTabs = new TabContainer();
             if (history != null)
+            {
+                roundEndTabs.AddChild(new SWSenateFinale(history, roundTimeSpan, () => roundEndTabs.CurrentTab = 1));
                 roundEndTabs.AddChild(MakeSenateHistoryTab(history, roundTimeSpan));
+            }
             roundEndTabs.AddChild(MakeRoundEndSummaryTab(gm, roundEnd, roundTimeSpan, roundId));
             roundEndTabs.AddChild(MakePlayerManifestTab(info));
 

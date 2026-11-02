@@ -17,6 +17,15 @@ public sealed class SWSenateRoundHistory
     public string[] Participants = Array.Empty<string>();
     public int PassedLaws;
     public int PassedAmendments;
+    public SWSenateCloseVote[] CloseVotes = Array.Empty<SWSenateCloseVote>();
+}
+
+[Serializable, NetSerializable]
+public sealed class SWSenateCloseVote
+{
+    public string Name = string.Empty;
+    public int For;
+    public int Against;
 }
 
 [Serializable, NetSerializable]

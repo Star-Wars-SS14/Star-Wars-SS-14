@@ -7,7 +7,7 @@ using static Robust.Client.UserInterface.Controls.BoxContainer;
 
 namespace Content.Client._SW._Senate;
 
-/// <summary>A static, immediately skippable opening for the Senate's public round history.</summary>
+/// <summary>Manually paced, immediately skippable public Senate credits.</summary>
 public sealed class SWSenateFinale : BoxContainer
 {
     public SWSenateFinale(SWSenateRoundHistory history, TimeSpan duration, Action showDetails)
@@ -37,21 +37,79 @@ public sealed class SWSenateFinale : BoxContainer
         var participants = new BoxContainer { Orientation = LayoutOrientation.Vertical, HorizontalExpand = true, SeparationOverride = 8 };
         columns.AddChild(participants);
         participants.AddChild(SWConsoleStyle.Text("УЧАСТНИКИ", SWConsoleStyle.Brass, SWConsoleStyle.Strong));
-        participants.AddChild(SWConsoleStyle.Wrap("Публичные имена в конце созыва. Портреты недоступны.", SWConsoleStyle.TextDim, 350));
+        participants.AddChild(SWConsoleStyle.Wrap("Публичные имена в конце созыва", SWConsoleStyle.TextDim, 350));
         var scroll = new ScrollContainer { VerticalExpand = true, HorizontalExpand = true, HScrollEnabled = false };
         participants.AddChild(scroll);
         var content = new BoxContainer { Orientation = LayoutOrientation.Vertical, HorizontalExpand = true, SeparationOverride = 8 };
         scroll.AddChild(content);
-        if (history.Participants.Length == 0)
-            content.AddChild(SWConsoleStyle.Wrap("Участники не зафиксированы.", SWConsoleStyle.TextBright));
-        foreach (var participant in history.Participants)
-            content.AddChild(SWConsoleStyle.Wrap(participant, SWConsoleStyle.TextBright, 350));
+        const int perPage = 4;
+        var page = 0;
+        var pageCount = Math.Max(1, (history.Participants.Length + perPage - 1) / perPage);
+        var controls = new BoxContainer { Orientation = LayoutOrientation.Horizontal, SeparationOverride = 8 };
+        participants.AddChild(controls);
+        var previous = new Button { Text = "Назад" };
+        var next = new Button { Text = "Далее" };
+        var replay = new Button { Text = "С начала" };
+        var pageLabel = SWConsoleStyle.Text("", SWConsoleStyle.TextDim, SWConsoleStyle.Small);
+        controls.AddChild(previous);
+        controls.AddChild(next);
+        controls.AddChild(replay);
+        controls.AddChild(pageLabel);
 
+        void ShowPage()
+        {
+            content.RemoveAllChildren();
+            if (history.Participants.Length == 0)
+                content.AddChild(SWConsoleStyle.Wrap("Участники не зафиксированы.", SWConsoleStyle.TextBright, 350));
+            var end = Math.Min(history.Participants.Length, (page + 1) * perPage);
+            for (var i = page * perPage; i < end; i++)
+            {
+                var row = new BoxContainer { Orientation = LayoutOrientation.Horizontal, SeparationOverride = 12 };
+                content.AddChild(row);
+                var portrait = new PanelContainer
+                {
+                    SetSize = new System.Numerics.Vector2(48, 56),
+                    PanelOverride = new StyleBoxFlat { BackgroundColor = Color.FromHex("#28343A") },
+                };
+                portrait.AddChild(new Label
+                {
+                    Text = "?",
+                    FontOverride = SWConsoleStyle.Title,
+                    FontColorOverride = SWConsoleStyle.TextDim,
+                    HorizontalAlignment = HAlignment.Center,
+                    VerticalAlignment = VAlignment.Center,
+                });
+                row.AddChild(portrait);
+                var identity = new BoxContainer { Orientation = LayoutOrientation.Vertical, HorizontalExpand = true, SeparationOverride = 3 };
+                identity.AddChild(SWConsoleStyle.Wrap(history.Participants[i], SWConsoleStyle.TextBright, 280));
+                identity.AddChild(SWConsoleStyle.Wrap("Портрет недоступен", SWConsoleStyle.TextDim, 280));
+                row.AddChild(identity);
+            }
+            pageLabel.Text = $"{page + 1} / {pageCount}";
+            previous.Disabled = page == 0;
+            next.Disabled = page + 1 >= pageCount;
+            replay.Disabled = page == 0;
+        }
+
+        previous.OnPressed += _ => { page--; ShowPage(); };
+        next.OnPressed += _ => { page++; ShowPage(); };
+        replay.OnPressed += _ => { page = 0; ShowPage(); };
+        ShowPage();
+
+        var factsScroll = new ScrollContainer { VerticalExpand = true, HorizontalExpand = true, HScrollEnabled = false };
+        columns.AddChild(factsScroll);
         var facts = new BoxContainer { Orientation = LayoutOrientation.Vertical, HorizontalExpand = true, SeparationOverride = 10 };
-        columns.AddChild(facts);
+        factsScroll.AddChild(facts);
         facts.AddChild(SWConsoleStyle.Text("РЕШЕНИЯ СОЗЫВА", SWConsoleStyle.Brass, SWConsoleStyle.Strong));
         facts.AddChild(SWConsoleStyle.Wrap($"Принято законов: {history.PassedLaws}", SWConsoleStyle.TextBright, 350));
         facts.AddChild(SWConsoleStyle.Wrap($"Принято поправок: {history.PassedAmendments}", SWConsoleStyle.TextBright, 350));
         facts.AddChild(SWConsoleStyle.Wrap("Подробная история решений доступна в итогах.", SWConsoleStyle.TextDim, 350));
+        if (history.CloseVotes.Length > 0)
+        {
+            facts.AddChild(SWConsoleStyle.Text("ЗАЛ РАЗДЕЛИЛСЯ", SWConsoleStyle.Brass, SWConsoleStyle.Strong));
+            facts.AddChild(SWConsoleStyle.Wrap("Ближайшие голоса секторов по публичным законопроектам; решающий голос не включён.", SWConsoleStyle.TextDim, 350));
+            foreach (var vote in history.CloseVotes)
+                facts.AddChild(SWConsoleStyle.Wrap($"{vote.Name} — за: {vote.For}, против: {vote.Against}", SWConsoleStyle.TextBright, 350));
+        }
     }
 }

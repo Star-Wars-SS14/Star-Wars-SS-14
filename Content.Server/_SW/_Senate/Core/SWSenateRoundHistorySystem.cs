@@ -35,12 +35,16 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
     private Dictionary<string, Dictionary<string, float>>? _startSectors;
     private SWSenateRoundHistory? _snapshot;
     private RoundEndMessageEvent? _roundEndMessage;
+    private readonly HashSet<long> _seenVoteResolutions = new();
+    private readonly List<SWSenateCloseVote> _closeVotes = new();
+    private int _closestVote = int.MaxValue;
     public bool Ending { get; private set; }
     public bool SessionActive => _start != null;
 
     public override void Initialize()
     {
         SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => Reset());
+        SubscribeLocalEvent<SWSenateBillVotesResolvedEvent>(OnVoteResolved);
         _players.PlayerStatusChanged += OnStatusChanged;
     }
 
@@ -71,6 +75,9 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
         _startSectors = null;
         _snapshot = null;
         _roundEndMessage = null;
+        _seenVoteResolutions.Clear();
+        _closeVotes.Clear();
+        _closestVote = int.MaxValue;
         Ending = false;
     }
 
@@ -85,6 +92,29 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
     }
 
     public void MarkEnding() => Ending = _start != null;
+
+    private void OnVoteResolved(SWSenateBillVotesResolvedEvent ev)
+    {
+        if (!SessionActive || Ending || ev.PublicVotesFor is not > 0 || ev.PublicVotesAgainst is not > 0 ||
+            !_seenVoteResolutions.Add(ev.ResolutionId))
+            return;
+        var bill = _state.Bills.FirstOrDefault(b => b.Id == ev.BillId);
+        if (bill == null || bill.IsElection || bill.IsDecree || bill.SpecialMotionType != null ||
+            bill.AmendsLawId != null || string.IsNullOrWhiteSpace(ev.BillName))
+            return;
+
+        var votesFor = ev.PublicVotesFor.Value;
+        var votesAgainst = ev.PublicVotesAgainst.Value;
+        var difference = Math.Abs(votesFor - votesAgainst);
+        if (difference > 1 || difference > _closestVote)
+            return;
+        if (difference < _closestVote)
+        {
+            _closeVotes.Clear();
+            _closestVote = difference;
+        }
+        _closeVotes.Add(new SWSenateCloseVote { Name = Limit(ev.BillName), For = votesFor, Against = votesAgainst });
+    }
 
     public SWSenateRoundHistory? Capture()
     {
@@ -136,6 +166,7 @@ public sealed class SWSenateRoundHistorySystem : EntitySystem
             Participants = CaptureParticipants(),
             PassedLaws = laws.Count(law => !law.Amendment),
             PassedAmendments = laws.Count(law => law.Amendment),
+            CloseVotes = _closeVotes.ToArray(),
         };
         return _snapshot;
     }

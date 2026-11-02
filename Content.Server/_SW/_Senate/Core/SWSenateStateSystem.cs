@@ -976,13 +976,13 @@ public sealed partial class SWSenateStateSystem : EntitySystem
         {
             // Passed the vote, but now awaits the Chancellor's formal signature before it becomes law.
             bill.Stage = SWBillStage.AwaitingSignature;
-            RaiseVotesResolved(bill, true);
+            RaiseVotesResolved(bill, true, bill.TiebreakVotesFor, bill.TiebreakVotesAgainst);
         }
         else
         {
             bill.Stage = SWBillStage.Rejected;
             RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, false));
-            RaiseVotesResolved(bill, false);
+            RaiseVotesResolved(bill, false, bill.TiebreakVotesFor, bill.TiebreakVotesAgainst);
         }
 
         AdvanceAmendmentAgenda(bill.Id);
@@ -1036,8 +1036,10 @@ public sealed partial class SWSenateStateSystem : EntitySystem
         return list;
     }
 
-    private void RaiseVotesResolved(SWSenateBill bill, bool passed) =>
-        RaiseLocalEvent(new SWSenateBillVotesResolvedEvent(bill.Id, bill.Name, passed, new Dictionary<string, SWVoteChoice>(bill.Votes)));
+    private long _voteResolutionSerial;
+
+    private void RaiseVotesResolved(SWSenateBill bill, bool passed, int? votesFor = null, int? votesAgainst = null) =>
+        RaiseLocalEvent(new SWSenateBillVotesResolvedEvent(bill.Id, bill.Name, passed, new Dictionary<string, SWVoteChoice>(bill.Votes), ++_voteResolutionSerial, votesFor, votesAgainst));
 
     private void ResolveBill(SWSenateBill bill, bool allowTiebreak)
     {
@@ -1060,23 +1062,25 @@ public sealed partial class SWSenateStateSystem : EntitySystem
         {
             // Passed the vote, but now awaits the Chancellor's formal signature before it becomes law.
             bill.Stage = SWBillStage.AwaitingSignature;
-            RaiseVotesResolved(bill, true);
+            RaiseVotesResolved(bill, true, votesFor, votesAgainst);
         }
         else if (votesAgainst > votesFor)
         {
             bill.Stage = SWBillStage.Rejected;
             RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, false));
-            RaiseVotesResolved(bill, false);
+            RaiseVotesResolved(bill, false, votesFor, votesAgainst);
         }
         else if (allowTiebreak)
         {
+            bill.TiebreakVotesFor = votesFor;
+            bill.TiebreakVotesAgainst = votesAgainst;
             bill.AwaitingTiebreak = true;
         }
         else
         {
             bill.Stage = SWBillStage.Rejected;
             RaiseLocalEvent(new SWSenateBillResolvedEvent(bill.Name, false));
-            RaiseVotesResolved(bill, false);
+            RaiseVotesResolved(bill, false, votesFor, votesAgainst);
         }
     }
 

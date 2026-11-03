@@ -325,8 +325,9 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
             .Select(group => (group.Key.Name, group.Key.Prototype, group.Key.CanTake,
                 First: group.First().Entity, Count: group.Sum(item => item.Count)))
             // A fixed order: the server lists taken goods last, and the cells used to jump under the cursor.
-            .OrderBy(group => group.Name, StringComparer.CurrentCulture)
-            .ThenBy(group => group.Prototype?.ToString(), StringComparer.Ordinal)
+            // StringComparer is not on the client sandbox whitelist, so the comparers are built by hand.
+            .OrderBy(group => group.Name, Comparer<string>.Create((a, b) => string.Compare(a, b, StringComparison.CurrentCulture)))
+            .ThenBy(group => group.Prototype?.ToString(), Comparer<string?>.Create((a, b) => string.CompareOrdinal(a, b)))
             .ThenByDescending(group => group.CanTake)
             .ToList();
         var key = $"{state.Arsenal}|" + string.Join('|', groups.Select(group => $"{group.Name}/{group.CanTake}/{group.Count}/{group.First}"));

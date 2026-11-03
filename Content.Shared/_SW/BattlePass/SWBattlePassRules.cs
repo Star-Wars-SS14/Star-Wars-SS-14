@@ -192,8 +192,13 @@ public static class SWBattlePassRules
     /// </summary>
     public static string WeekKey(DateTime utc)
     {
+        // ISO 8601 by hand: System.Globalization.ISOWeek is not on the client sandbox whitelist.
+        // A week belongs to the year of its Thursday and is numbered from that year's first Thursday.
         var day = MoscowDay(utc);
-        return $"{ISOWeek.GetYear(day)}-W{ISOWeek.GetWeekOfYear(day):00}";
+        var weekday = ((int) day.DayOfWeek + 6) % 7; // Monday 0 .. Sunday 6
+        var thursday = day.AddDays(3 - weekday);
+        var week = (thursday.DayOfYear - 1) / 7 + 1;
+        return $"{thursday.Year}-W{week:00}";
     }
 
     public static bool IsEvening(SWBattlePassXpRules rules, DateTime utc)

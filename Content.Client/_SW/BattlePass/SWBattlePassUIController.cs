@@ -405,7 +405,8 @@ public sealed class SWBattlePassUIController : UIController, IOnStateEntered<Lob
             }
         }
 
-        names.Sort(StringComparer.CurrentCulture);
+        // StringComparer is not on the client sandbox whitelist.
+        names.Sort((a, b) => string.Compare(a, b, StringComparison.CurrentCulture));
         return names;
     }
 

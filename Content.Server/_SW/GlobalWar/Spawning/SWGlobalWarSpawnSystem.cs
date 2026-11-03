@@ -194,8 +194,9 @@ public sealed partial class SWGlobalWarSpawnSystem : EntitySystem
             reason = Loc.GetString("sw-global-war-spawn-no-slots");
             return false;
         }
-        // Only the respawn transaction may replace a recorded life; lobby entry never does.
-        if (_respawn is not { } ticket || ticket.User != session.UserId || ticket.Job != requestedRole)
+        // Only the respawn transaction may replace a recorded life; lobby entry never does, except for an admin.
+        if ((_respawn is not { } ticket || ticket.User != session.UserId || ticket.Job != requestedRole) &&
+            !MayJoinOverLife(session))
         {
             if (_lives.TryGetValue(session.UserId, out var life))
             {

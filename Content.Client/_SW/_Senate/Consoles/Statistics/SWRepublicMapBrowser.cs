@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Content.Client._SW._Senate.Consoles.Economy;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Economy;

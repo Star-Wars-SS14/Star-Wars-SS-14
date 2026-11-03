@@ -37,6 +37,7 @@ public sealed partial class SWGlobalWarAssignmentsSystem : EntitySystem
         SubscribeLocalEvent<SWGlobalWarCampaignStoppedEvent>(OnStopped);
         SubscribeLocalEvent<MobStateChangedEvent>(OnMobStateChanged);
         InitializeSpawning();
+        InitializeAdminActors();
         SubscribeLocalEvent<RulePlayerJobsAssignedEvent>(OnInitialAllocationComplete);
         _players.PlayerStatusChanged += OnPlayerStatusChanged;
     }
@@ -63,6 +64,9 @@ public sealed partial class SWGlobalWarAssignmentsSystem : EntitySystem
     public bool TryGetAssignment(NetUserId user, out SWGlobalWarAssignment assignment)
     {
         assignment = default!;
+        // Admin debugging: an active admin in an aghost or a body outside the campaign reads as the local head.
+        if (TryGetAdminActor(user, out assignment))
+            return true;
         return TryGetRegistry(out var registry) && registry.Comp.Assignments.TryGetValue(user, out assignment!);
     }
 
@@ -78,6 +82,9 @@ public sealed partial class SWGlobalWarAssignmentsSystem : EntitySystem
         out SWGlobalWarAssignment assignment)
     {
         assignment = default!;
+        // Admin debugging: an active admin's aghost or body outside the campaign acts with the full rights of the local side.
+        if (session.Status == SessionStatus.InGame && TryGetAdminActor(session.UserId, out assignment))
+            return assignment.Generation == generation && assignment.Revision == revision;
         return session.Status == SessionStatus.InGame && session.AttachedEntity is { } body &&
                _identity.TryGetActor(session, body, out var mind, out var faction) && _mobs.IsAlive(body) &&
                TryGetAssignment(session.UserId, out assignment) && assignment.Generation == generation &&
@@ -90,6 +97,9 @@ public sealed partial class SWGlobalWarAssignmentsSystem : EntitySystem
     {
         if (!TryGetAssignment(assignment.User, out var current) || current != assignment)
             return SWGlobalWarAuthority.None;
+        // Admin debugging: every office of the side at once.
+        if (IsAdminActor(assignment))
+            return Enum.GetValues<SWGlobalWarAuthority>().Aggregate(SWGlobalWarAuthority.None, (all, one) => all | one);
         var authority = assignment.Role switch
         {
             SWGlobalWarRole.Head => SWGlobalWarAuthority.Diplomacy | SWGlobalWarAuthority.Treasury,
@@ -143,6 +153,10 @@ public sealed partial class SWGlobalWarAssignmentsSystem : EntitySystem
         out SWGlobalWarAssignmentReservation reservation)
     {
         reservation = default!;
+        // Admin debugging: an active admin entering again gives up the old office; that body stays as a plain NPC.
+        if (TryGetRegistry(out var current) && current.Comp.Generation == generation &&
+            current.Comp.Assignments.TryGetValue(user, out var held) && IsActiveAdmin(user, out _))
+            Remove(current, held);
         if (!TryGetRegistry(out var registry) || registry.Comp.Generation != generation ||
             !TryGetRole(registry.Owner, job, out var faction, out var role) || !_identity.CanJoin(user, faction) ||
             registry.Comp.Assignments.ContainsKey(user) || registry.Comp.ForceCarriers.ContainsKey(user))

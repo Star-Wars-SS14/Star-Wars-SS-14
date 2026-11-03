@@ -1,5 +1,6 @@
 #nullable enable
 using System.Linq;
+using Content.Server.Administration.Managers;
 using Content.Server._SW.GlobalWar.Identity;
 using Content.Shared.Explosion;
 using Content.Shared.Mind;
@@ -20,7 +21,6 @@ public sealed partial class GlobalWarMechanicsTest
         {
             DummyTicker = false, Connected = true, InLobby = true, Dirty = true,
         });
-        // The client session is the host admin in tests; the dummy soldier is an ordinary player.
         var campaign = await Start(pair, "SWGlobalWarRepublicCitizen", "SWGlobalWarRepublicSoldier");
         var server = pair.Server;
         var entities = server.EntMan;
@@ -35,8 +35,12 @@ public sealed partial class GlobalWarMechanicsTest
             return attempt.Cancelled;
         }
 
+        // Local test sessions are host admins; the soldier here must be an ordinary player.
+        await server.WaitPost(() => server.ResolveDependency<IAdminManager>().DeAdmin(campaign.Sessions[1]));
+        await pair.RunTicksSync(5);
         await server.WaitAssertion(() =>
         {
+            Assert.That(server.ResolveDependency<IAdminManager>().IsAdmin(campaign.Sessions[1]), Is.False);
             var soldier = campaign.Actor(1);
             Assert.That(identity.TryGetIdentity(soldier.Body, out _, out _), Is.True);
             Assert.That(Cancelled(soldier.Body), Is.True, "Peace closes combat for the campaign body.");

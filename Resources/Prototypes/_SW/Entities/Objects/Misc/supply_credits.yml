@@ -54,7 +54,7 @@
 
 - type: stack
   id: SWSupplyScoresEmpireCreditsStack
-  name: очки снабжения империи
+  name: stack-sw-supply-scores-empire-credits
   icon: { sprite: _SW/Economy/empire_cash.rsi, state: cash }
   spawn: SWSupplyScoresEmpireCredits
 
@@ -183,7 +183,7 @@
 
 - type: stack
   id: SWSupplyScoresRepublicCreditsStack
-  name: очки снабжения республики
+  name: stack-sw-supply-scores-republic-credits
   icon: { sprite: _SW/Economy/republic_cash.rsi, state: cash }
   spawn: SWSupplyScoresRepublicCredits
 
@@ -302,7 +302,7 @@
 
 - type: stack
   id: SWBlackMarketSupplyCreditsStack
-  name: очки снабжения чёрного рынка
+  name: stack-sw-black-market-supply-credits
   icon: { sprite: _SW/Economy/empire_cash.rsi, state: cash }
   spawn: SWBlackMarketSupplyCredits
 
@@ -431,7 +431,7 @@
 
 - type: stack
   id: SWMandalorianSupplyStack
-  name: очки снабжения мандалора
+  name: stack-sw-mandalorian-supply
   icon: { sprite: _SW/Economy/empire_cash.rsi, state: cash }
   spawn: SWMandalorianSupplyCredits
 

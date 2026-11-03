@@ -570,7 +570,7 @@
     back: ClothingBackpack
     gloves: SW_ClothingHandsGlovesRebel
     shoes: ClothingShoesCult
-    ears: SWClothingHeadsetGrey
+    ears: ClothingHeadsetGrey
     outerClothing: SWClothingOuterVestRebel
     head: SWRebelHelmet
 
@@ -596,8 +596,8 @@
     back: ClothingBackpack
     gloves: ClothingHandsGlovesColorBlack
     shoes: ClothingShoesSwat
-    ears: SWClothingHeadsetGrey
-    head: SWStormtrooperHelmet
+    ears: ClothingHeadsetGrey
+    head: SWStromtrooperHelmet
     outerClothing: SWStormtrooperArmor
 
 - type: startingGear
@@ -605,7 +605,7 @@
   equipment:
     jumpsuit: SWClothingUniformJumpsuitImperialGeneral
     shoes: SWClothingShoesBootsImperialOfficers
-    ears: SWClothingHeadsetGrey
+    ears: ClothingHeadsetGrey
 
 - type: startingGear
   id: ImperialOfficersGear
@@ -614,5 +614,5 @@
     back: ClothingBackpack
     gloves: ClothingHandsGlovesColorBlack
     shoes: SWClothingShoesBootsOfficers
-    ears: SWClothingHeadsetGrey
+    ears: ClothingHeadsetGrey
     head: SW_ClothingHeadCapOfficers

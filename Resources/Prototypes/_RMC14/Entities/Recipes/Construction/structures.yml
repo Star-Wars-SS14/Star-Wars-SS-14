@@ -6,9 +6,6 @@
   startNode: start
   targetNode: girder
   category: construction-category-cm-structures
-  icon:
-    sprite: _RMC14/Structures/Walls/girder.rsi
-    state: girder
   objectType: Structure
   placementMode: SnapgridCenter
   canRotate: false
@@ -42,9 +39,6 @@
   startNode: start
   targetNode: wall
   category: construction-category-cm-structures
-  icon:
-    sprite: _RMC14/Structures/Walls/metal.rsi
-    state: full
   objectType: Structure
   placementMode: SnapgridCenter
   canRotate: false
@@ -59,9 +53,6 @@
   startNode: start
   targetNode: reinforcedWall
   category: construction-category-cm-structures
-  icon:
-    sprite: _RMC14/Structures/Walls/rwall.rsi
-    state: full
   objectType: Structure
   placementMode: SnapgridCenter
   canRotate: false
@@ -77,9 +68,6 @@
   startNode: start
   targetNode: airlock
   category: construction-category-cm-structures
-  icon:
-    sprite: _RMC14/Structures/Doors/airlock_assemblies.rsi
-    state: as_3
   objectType: Structure
   placementMode: SnapgridCenter
   canBuildInImpassable: false
@@ -93,9 +81,6 @@
   startNode: start
   targetNode: glassAirlock
   category: construction-category-cm-structures
-  icon:
-    sprite: _RMC14/Structures/Doors/airlock_assemblies.rsi
-    state: as_g3
   objectType: Structure
   placementMode: SnapgridCenter
   canBuildInImpassable: false
@@ -111,9 +96,6 @@
   startNode: start
   targetNode: windoor
   category: construction-category-cm-structures
-  icon:
-    sprite: _RMC14/Structures/Doors/windoor_assemblies.rsi
-    state: windoor_assembly01
   objectType: Structure
   placementMode: SnapgridCenter
   canBuildInImpassable: true
@@ -127,9 +109,6 @@
   startNode: start
   targetNode: windoorSecure
   category: construction-category-cm-structures
-  icon:
-    sprite: _RMC14/Structures/Doors/windoor_assemblies.rsi
-    state: secure_assembly01
   objectType: Structure
   placementMode: SnapgridCenter
   canBuildInImpassable: true
@@ -145,9 +124,6 @@
   targetNode: Catwalk
   category: construction-category-cm-structures
   placementMode: SnapgridCenter
-  icon:
-    sprite: _RMC14/Structures/catwalk.rsi
-    state: catwalk
   conditions:
   - !type:TileNotBlocked
     failIfSpace: false
@@ -163,9 +139,6 @@
   startNode: start
   targetNode: fenceMetal
   category: construction-category-cm-structures
-  icon:
-    sprite: _RMC14/Structures/fences.rsi
-    state: fence0
   objectType: Structure
   placementMode: SnapgridCenter
   canRotate: false

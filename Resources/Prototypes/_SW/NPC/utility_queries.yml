@@ -4,7 +4,6 @@
     - !type:ComponentQuery
       components:
         - type: HumanoidAppearance
-          species: randomshit
     - !type:ComponentQuery
       components:
         - type: Body

@@ -2,9 +2,9 @@
 
 - type: entity
   id: SWP301Bullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -20,9 +20,9 @@
 
 - type: entity
   id: SWZ1Bullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -38,9 +38,9 @@
 
 - type: entity
   id: SWH206Bullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -56,9 +56,9 @@
   
 - type: entity
   id: SWJ111Bullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -74,9 +74,9 @@
 
 - type: entity
   id: SWE-1Bullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -95,9 +95,9 @@
 
 - type: entity
   id: SWF11DCannonBullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -113,9 +113,9 @@
 
 - type: entity
   id: SWEL34Bullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -131,9 +131,9 @@
 
 - type: entity
   id: SWGT13Bullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -149,9 +149,9 @@
 
 - type: entity
   id: SWGallantryBullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -167,9 +167,9 @@
 
 - type: entity
   id: SWMK1Bullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -188,9 +188,9 @@
 
 - type: entity
   id: SWF11DSniperRifleBullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -206,9 +206,9 @@
 
 - type: entity
   id: SWBeryarMK3Bullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -224,9 +224,9 @@
 
 - type: entity
   id: SWK406RipperBullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -242,9 +242,9 @@
 
 - type: entity
   id: SWScoutBlasterBullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -260,9 +260,9 @@
 
 - type: entity
   id: SWBalmorraHandGunBullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -278,9 +278,9 @@
 
 - type: entity
   id: SWMK3Bullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -296,9 +296,9 @@
 
 - type: entity
   id: SWAnarchyBullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -314,9 +314,9 @@
 
 - type: entity
   id: SWM44Bullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:
@@ -332,9 +332,9 @@
 
 - type: entity
   id: SWUIHBPBullet
+  categories: [ HideSpawnMenu ]
   name: Blast
   parent: BaseBullet
-  noSpawn: true
   components:
   - type: Projectile
     damage:

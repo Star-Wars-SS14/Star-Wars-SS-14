@@ -1,0 +1,12 @@
+sw-radio-channel-empire-garnison = Имперский Гарнизон
+sw-radio-channel-empire-regular = Регулярные Силы Империи
+sw-radio-channel-empire-intelligence = Имперская Разведка
+sw-radio-channel-republic = Республика
+sw-radio-channel-republic-havok = Хавок
+sw-radio-channel-mandalorian = Мандалориан
+sw-radio-channel-empire-commander = Командование Империи
+sw-radio-channel-republic-commander = Командование Республики
+sw-radio-channel-republic-pilots = Пилоты Республики
+sw-radio-channel-empire-pilots = Пилоты Империи
+sw-radio-channel-exchange = Обмен
+sw-radio-channel-black-sun = Черное Солнце

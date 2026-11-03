@@ -4,7 +4,7 @@
   name: Имперская Консоль связи
   components:
   - type: CommunicationsConsole
-    title: Имперский Гарнизон
+    title: sw-comms-console-title-empire-garnison
     color: "#f0f0f0"
     fractionType: 0
     canShuttle: false

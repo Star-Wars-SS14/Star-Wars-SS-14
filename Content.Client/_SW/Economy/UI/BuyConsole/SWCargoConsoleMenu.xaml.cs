@@ -151,7 +151,7 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
         foreach (var (curProtoId, amount) in costs)
         {
             var curProto = _protoManager.Index(curProtoId);
-            builder.Append(curProto.ShortName);
+            builder.Append(Loc.GetString(curProto.ShortName));
             builder.Append(' ');
             builder.Append(amount.ToString("0.##"));
             builder.Append('/');

@@ -1,8 +1,8 @@
 - type: entity
   id: ActionSithForceLightning
+  categories: [ HideSpawnMenu ]
   name: Молния
   description: Используя тёмную силу вы испускаете разряд!
-  noSpawn: true
   components:
   - type: Action
     icon: _SW/Interface/Actions/lighting.png
@@ -16,9 +16,9 @@
 
 - type: entity
   id: ActionForcePush
+  categories: [ HideSpawnMenu ]
   name: Толчок
   description: Уроните вашего врага на землю!
-  noSpawn: true
   components:
   - type: Action
     icon: Interface/Actions/disarm.png
@@ -32,9 +32,9 @@
 
 - type: entity
   id: ActionForceAttract
+  categories: [ HideSpawnMenu ]
   name: Притянуть предмет
   description: Притяние объект!
-  noSpawn: true
   components:
   - type: Action
     icon: _SW/Interface/Actions/force_attract.png
@@ -48,9 +48,9 @@
 
 - type: entity
   id: ActionStrangulate
+  categories: [ HideSpawnMenu ]
   name: Задушить
   description: Задушите кого-нибудь
-  noSpawn: true
   components:
   - type: Action
     icon: _SW/Interface/Actions/strangulate.png

@@ -1,5 +1,6 @@
 - type: entity
   id: SectorWarStation
+  categories: [ HideSpawnMenu ]
   parent:
     - BaseStation
     - BaseStationCargo
@@ -9,13 +10,12 @@
     - BaseStationAlertLevels
     - BaseStationSiliconLawCrewsimov
     - BaseStationAllEventsEligible
-  noSpawn: true
   components:
     - type: Transform
     - type: GridSpawn
       groups:
         mining: !type:GridSpawnGroup
           paths:
-          - /Maps/Shuttles/corvax_mining.yml
+          - /Maps/Corvax/Shuttles/corvax_mining.yml
     - type: StationCargoShuttle
       path: /Maps/Shuttles/cargo_mayhen.yml

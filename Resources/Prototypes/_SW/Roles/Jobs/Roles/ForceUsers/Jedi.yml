@@ -19,7 +19,6 @@
   - !type:AddComponentSpecial
     components:
     - type: Stamina
-      critThreshold: 400
       baseCritThreshold: 400
     - type: SWFactionMember
       faction: RepublicFaction

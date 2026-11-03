@@ -9,9 +9,6 @@
   objectType: Structure
   placementMode: SnapgridCenter
   canBuildInImpassable: false
-  icon:
-    sprite: _RMC14/Structures/Walls/Barricades/barricade.rsi
-    state: metal
   conditions:
     - !type:TileNotBlocked
 
@@ -25,9 +22,6 @@
   objectType: Structure
   placementMode: SnapgridCenter
   canBuildInImpassable: false
-  icon:
-    sprite: _RMC14/Structures/Walls/Barricades/barricade.rsi
-    state: turnstile
   conditions:
     - !type:TileNotBlocked
 
@@ -41,9 +35,6 @@
   objectType: Structure
   placementMode: SnapgridCenter
   canBuildInImpassable: false
-  icon:
-    sprite: _RMC14/Structures/Walls/Barricades/barricade.rsi
-    state: turnstile_med
   conditions:
     - !type:TileNotBlocked
 
@@ -57,9 +48,6 @@
   objectType: Structure
   placementMode: SnapgridCenter
   canBuildInImpassable: false
-  icon:
-    sprite: _RMC14/Structures/Walls/Barricades/barricade.rsi
-    state: folding_metal
   conditions:
     - !type:TileNotBlocked
 

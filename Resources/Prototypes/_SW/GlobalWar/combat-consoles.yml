@@ -105,7 +105,7 @@
   parent: BaseComputer
   id: SWGlobalWarDefenceConsole
   name: droid defence console
-  description: Use its context menu to command friendly droids. A holder of the war budget can also order new ones here.
+  description: Commands friendly droids. A holder of the war budget can also order new ones here.
   components:
   - type: Sprite
     layers:
@@ -123,8 +123,12 @@
   - type: SWGlobalWarMapAnchor
     anchorId: defencePrimary
     kind: Defence
+  - type: ActivatableUI
+    key: enum.SWGlobalWarDefenceUiKey.Key
   - type: UserInterface
     interfaces:
+      enum.SWGlobalWarDefenceUiKey.Key:
+        type: SWGlobalWarDefenceBoundUserInterface
       enum.WiresUiKey.Key:
         type: WiresBoundUserInterface
 

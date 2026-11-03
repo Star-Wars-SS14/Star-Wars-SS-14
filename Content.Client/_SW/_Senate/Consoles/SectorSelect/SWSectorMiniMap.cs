@@ -21,6 +21,9 @@ public sealed class SWSectorMiniMap : Control
     private readonly IConfigurationManager _configuration;
     private readonly Dictionary<string, SWGalacticMapWorld> _worlds = new();
     private readonly List<(Vector2 A, Vector2 B)> _boundary = new();
+    private readonly List<UIBox2> _politicalLabelBoxes = new();
+    private readonly List<(SWGalacticMapPoliticalArea Area, Vector2[] Source, Vector2[] Screen)> _territories = new();
+    private float _territoryReveal;
     private float _motion;
     private SWGalacticMapWorld[] _selected = Array.Empty<SWGalacticMapWorld>();
     private string? _sector;
@@ -41,6 +44,12 @@ public sealed class SWSectorMiniMap : Control
         if (_map != null)
         {
             foreach (var world in _map.Worlds.Where(Valid)) _worlds.TryAdd(world.Id, world);
+            foreach (var area in _map.PoliticalAreas)
+            {
+                if (area.Faction is not ("republic" or "empire" or "neutral")) continue;
+                var triangles = Triangulate(area.Boundary);
+                _territories.Add((area, triangles, new Vector2[triangles.Length]));
+            }
             // Only edges literally shared by the two non-contested public political polygons.
             var empire = _map.PoliticalAreas.Where(a => a.Faction == "empire" && !a.Contested).ToArray();
             foreach (var area in _map.PoliticalAreas.Where(a => a.Faction == "republic" && !a.Contested))
@@ -53,6 +62,43 @@ public sealed class SWSectorMiniMap : Control
                     _boundary.Add((a, b));
             }
         }
+    }
+
+    // Ear clipping handles the real concave polygons; invalid polygons never produce partial fills.
+    // Each edge is split into eight segments so fill and outline use the same projected geometry.
+    private static Vector2[] Triangulate(IReadOnlyList<Vector2> boundary)
+    {
+        if (boundary.Count < 3) return Array.Empty<Vector2>();
+        static float Cross(Vector2 a, Vector2 b) => a.X * b.Y - a.Y * b.X;
+        var polygon = boundary.ToList();
+        var area = 0f;
+        for (var i = 0; i < polygon.Count; i++) area += Cross(polygon[i], polygon[(i + 1) % polygon.Count]);
+        if (area < 0) polygon.Reverse();
+        var triangles = new List<Vector2>();
+        void Subdivide(Vector2 a, Vector2 b, Vector2 c, int depth)
+        {
+            if (depth == 0) { triangles.Add(a); triangles.Add(b); triangles.Add(c); return; }
+            var ab = (a + b) / 2; var bc = (b + c) / 2; var ca = (c + a) / 2;
+            Subdivide(a, ab, ca, depth - 1); Subdivide(ab, b, bc, depth - 1);
+            Subdivide(ca, bc, c, depth - 1); Subdivide(ab, bc, ca, depth - 1);
+        }
+        while (polygon.Count > 2)
+        {
+            var found = false;
+            for (var i = 0; i < polygon.Count; i++)
+            {
+                var a = polygon[(i + polygon.Count - 1) % polygon.Count];
+                var b = polygon[i]; var c = polygon[(i + 1) % polygon.Count];
+                if (Cross(b - a, c - b) <= .00001f) continue;
+                var occupied = polygon.Any(p => p != a && p != b && p != c &&
+                    Cross(b - a, p - a) >= -.00001f && Cross(c - b, p - b) >= -.00001f && Cross(a - c, p - c) >= -.00001f);
+                if (occupied) continue;
+                Subdivide(a, b, c, 3);
+                polygon.RemoveAt(i); found = true; break;
+            }
+            if (!found) return Array.Empty<Vector2>();
+        }
+        return triangles.ToArray();
     }
 
     public bool HasBoundary => _boundary.Count > 0;
@@ -78,12 +124,16 @@ public sealed class SWSectorMiniMap : Control
         if (!VisibleInTree) return;
         if (_configuration.GetCVar(CCVars.ReducedMotion))
         {
-            _intro = _marker = 1;
+            _intro = _marker = _territoryReveal = 1;
             return;
         }
         var delta = Math.Max(0, args.DeltaSeconds);
         _intro = Math.Min(1, _intro + delta / 0.75f);
-        if (_intro >= 1) _marker = Math.Min(1, _marker + delta / 0.35f);
+        if (_intro >= 1)
+        {
+            _marker = Math.Min(1, _marker + delta / 0.35f);
+            _territoryReveal = Math.Min(1, _territoryReveal + delta / 0.3f);
+        }
         _angle = (_angle + delta * (2 * MathF.PI / 105f)) % (2 * MathF.PI);
         _motion = (_motion + delta) % (10 * MathF.PI);
     }
@@ -96,13 +146,14 @@ public sealed class SWSectorMiniMap : Control
         var radiusX = Math.Max(0, MathF.Min(PixelWidth / 2 - 3 * UIScale, (PixelHeight / 2 - 3 * UIScale) / .43f));
         var radius = new Vector2(radiusX, radiusX * .43f);
         Vector2 ProjectDisk(Vector2 p) => center + p * radius;
+        var rotationCos = MathF.Cos(_angle);
+        var rotationSin = MathF.Sin(_angle);
         Vector2 Galaxy(Vector2 p)
         {
             var n = Vector2.Clamp(p / _map.Size * 2 - Vector2.One, -Vector2.One, Vector2.One);
             // Continuous mapping of the rectangular global extent onto the disk; all geometry uses it.
             var disk = new Vector2(n.X * MathF.Sqrt(1 - n.Y * n.Y / 2), n.Y * MathF.Sqrt(1 - n.X * n.X / 2));
-            var c = MathF.Cos(_angle); var s = MathF.Sin(_angle);
-            return new Vector2(disk.X * c - disk.Y * s, disk.X * s + disk.Y * c);
+            return new Vector2(disk.X * rotationCos - disk.Y * rotationSin, disk.X * rotationSin + disk.Y * rotationCos);
         }
         for (var i = 0; i < _disk.Length; i++)
         {
@@ -110,6 +161,21 @@ public sealed class SWSectorMiniMap : Control
             _disk[i] = ProjectDisk(new Vector2(MathF.Cos(a), MathF.Sin(a)));
         }
         handle.DrawPrimitives(DrawPrimitiveTopology.TriangleFan, _disk, Color.ToSrgb(Color.FromHex("#10252B")));
+        // Apply the same nonlinear projection to a subdivided, cached triangulation.
+        // Neutral overlays restore the disk background in prototype order, preserving enclaves.
+        if (_territoryReveal > 0)
+        foreach (var (area, source, screen) in _territories)
+        {
+            if (source.Length == 0) continue;
+            for (var i = 0; i < source.Length; i++) screen[i] = ProjectDisk(Galaxy(source[i]));
+            var color = area.Faction switch
+            {
+                "republic" => new Color(.14f, .44f, .68f, .30f * _territoryReveal),
+                "empire" => new Color(.67f, .20f, .23f, .30f * _territoryReveal),
+                _ => Color.FromHex("#10252B").WithAlpha(_territoryReveal),
+            };
+            handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, screen, Color.ToSrgb(color));
+        }
         var grid = Color.FromHex("#284A60");
         var reduced = _configuration.GetCVar(CCVars.ReducedMotion);
         const int rings = 6;
@@ -147,6 +213,28 @@ public sealed class SWSectorMiniMap : Control
                 previous = next;
             }
         }
+        if (_territoryReveal > 0)
+        foreach (var (area, _, _) in _territories)
+        {
+            var color = area.Faction switch
+            {
+                "republic" => Color.FromHex("#5597BB"),
+                "empire" => Color.FromHex("#C67579"),
+                _ => Color.FromHex("#788C92"),
+            };
+            color = color.WithAlpha(.70f * _territoryReveal);
+            for (var edge = 0; edge < area.Boundary.Count; edge++)
+            {
+                var start = area.Boundary[edge]; var end = area.Boundary[(edge + 1) % area.Boundary.Count];
+                var previous = Galaxy(start);
+                for (var i = 1; i <= 8; i++)
+                {
+                    var next = Galaxy(Vector2.Lerp(start, end, i / 8f));
+                    handle.DrawLine(ProjectDisk(previous), ProjectDisk(next), color);
+                    previous = next;
+                }
+            }
+        }
         foreach (var (start, end) in _boundary)
         {
             var previous = Galaxy(start);
@@ -157,6 +245,30 @@ public sealed class SWSectorMiniMap : Control
                     handle.DrawLine(ProjectDisk(previous), ProjectDisk(next), Color.FromHex("#99A9B6"));
                 previous = next;
             }
+        }
+        _politicalLabelBoxes.Clear();
+        if (_territoryReveal >= 1)
+        foreach (var (area, source, _) in _territories)
+        {
+            if (source.Length == 0 || string.IsNullOrWhiteSpace(area.Label)) continue;
+            var position = ProjectDisk(Galaxy(area.LabelPosition));
+            var size = handle.GetDimensions(SWConsoleStyle.Small, area.Label, UIScale);
+            var topLeft = position - size / 2;
+            if (topLeft.X < 4 * UIScale || topLeft.Y < 4 * UIScale ||
+                topLeft.X + size.X > PixelWidth - 4 * UIScale || topLeft.Y + size.Y > PixelHeight - 4 * UIScale) continue;
+            var box = UIBox2.FromDimensions(topLeft, size);
+            var padding = 6 * UIScale;
+            var padded = new UIBox2(box.Left - padding, box.Top - padding, box.Right + padding, box.Bottom + padding);
+            if (_politicalLabelBoxes.Any(other => other.Intersects(padded)) ||
+                _selected.Any(w => padded.Contains(ProjectDisk(Galaxy(w.Position))))) continue;
+            _politicalLabelBoxes.Add(box);
+            var color = area.Faction switch
+            {
+                "republic" => Color.FromHex("#A0CEDF"),
+                "empire" => Color.FromHex("#E0A8AA"),
+                _ => Color.FromHex("#C6C9BE"),
+            };
+            handle.DrawString(SWConsoleStyle.Small, topLeft, area.Label, UIScale, color);
         }
         foreach (var world in _worlds.Values.Where(w => w.Overview))
         {

@@ -2,8 +2,10 @@ using Content.Server._SW.Droids;
 using Content.Server._SW.GlobalWar.Identity;
 using Content.Server._SW.GlobalWar.Politics;
 using Content.Server._SW.Targeting;
+using Content.Server.Popups;
 using Content.Shared._SW.Droids;
 using Content.Shared._SW.GlobalWar;
+using Content.Shared._SW.GlobalWar.Politics;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
@@ -13,6 +15,7 @@ using Content.Shared.Explosion;
 using Content.Shared.Projectiles;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
+using Robust.Shared.Timing;
 
 namespace Content.Server._SW.GlobalWar.Combat;
 
@@ -24,8 +27,15 @@ public sealed class SWGlobalWarHostilitySystem : EntitySystem
     [Dependency] private readonly SWGlobalWarPoliticsSystem _politics = default!;
     [Dependency] private readonly SWGlobalWarIdentitySystem _identity = default!;
     [Dependency] private readonly SharedMapSystem _maps = default!;
+    [Dependency] private readonly PopupSystem _popup = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
+
+    /// <summary>A blocked trigger is pulled many times a second; say why once in a while.</summary>
+    private static readonly TimeSpan PeaceNoticeInterval = TimeSpan.FromSeconds(3);
+
     private readonly HashSet<EntityUid> _knownActors = new();
     private readonly Dictionary<EntityUid, EntityUid> _explosiveUsers = new();
+    private readonly Dictionary<EntityUid, TimeSpan> _peaceNotices = new();
 
     public override void Initialize()
     {
@@ -40,6 +50,7 @@ public sealed class SWGlobalWarHostilitySystem : EntitySystem
         {
             _knownActors.Clear();
             _explosiveUsers.Clear();
+            _peaceNotices.Clear();
         });
     }
 
@@ -62,7 +73,21 @@ public sealed class SWGlobalWarHostilitySystem : EntitySystem
 
     private void OnShot(Entity<GunComponent> ent, ref ShotAttemptedEvent args)
     {
-        if (!Allowed(args.User, args.User)) args.Cancel();
+        if (Allowed(args.User, args.User))
+            return;
+        args.Cancel();
+        NotifyPeace(args.User);
+    }
+
+    /// <summary>Peace closes combat by design; without a word the shooter takes it for a broken gun.</summary>
+    private void NotifyPeace(EntityUid shooter)
+    {
+        if (!_politics.TryGetPolitics(out var politics) || politics.Comp.Relations != SWGlobalWarRelations.Peace ||
+            !_identity.TryGetIdentity(shooter, out _, out _) ||
+            _peaceNotices.TryGetValue(shooter, out var next) && _timing.CurTime < next)
+            return;
+        _peaceNotices[shooter] = _timing.CurTime + PeaceNoticeInterval;
+        _popup.PopupEntity(Loc.GetString("sw-global-war-hostility-peace"), shooter, shooter);
     }
 
     private void OnDamage(Entity<DamageableComponent> ent, ref BeforeDamageChangedEvent args)

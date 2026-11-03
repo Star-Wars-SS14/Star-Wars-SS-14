@@ -57,6 +57,10 @@ public sealed class GlobalWarIdentityTest
             var replacementBody = entities.SpawnEntity(null, MapCoordinates.Nullspace);
             minds.TransferTo(mind, replacementBody);
             Assert.That(forged.IsLeader, Is.False);
+            // A body entered outside the campaign spawn, such as by controlmob, carries no side until enrolled.
+            Assert.That(identity.TryGetActor(session, replacementBody, out _, out _), Is.False);
+            Assert.That(identity.TryGetIdentity(body, out _, out _), Is.False);
+            Assert.That(identity.TryEnroll(mind, SWGlobalWarFaction.Republic, generation), Is.True);
             Assert.That(identity.TryGetActor(session, replacementBody, out _, out faction), Is.True);
             Assert.That(faction, Is.EqualTo(SWGlobalWarFaction.Republic));
 

@@ -48,7 +48,7 @@ namespace Content.IntegrationTests.Tests._SW.GlobalWar;
 [TestFixture]
 // Client windows render text, and the client font cache is not safe for two clients at once.
 [NonParallelizable]
-public sealed class GlobalWarMechanicsTest
+public sealed partial class GlobalWarMechanicsTest
 {
     private sealed class Campaign
     {

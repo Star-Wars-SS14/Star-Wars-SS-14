@@ -1,6 +1,7 @@
 {
   "version": 1,
-  "copyright": "@zgalnic discord",
+  "license": "CC-BY-NC-SA-3.0",
+  "copyright": "@zgalnic (discord) for Star-Wars-SS14, https://github.com/Star-Wars-SS14/Star-Wars-SS-14",
   "size": {
     "x": 32,
     "y": 32

@@ -4,8 +4,8 @@
     "x": 32,
     "y": 32
   },
-  "license": "SW-license",
-  "copyright": "Narisoval krutoi zgal",
+  "license": "CC-BY-NC-SA-3.0",
+  "copyright": "zgal (name from original meta.json), added by p0etus (GitHub) for Star-Wars-SS14, https://github.com/Star-Wars-SS14/Star-Wars-SS-14",
   "states": [
     {
       "name": "landmine-inactive"

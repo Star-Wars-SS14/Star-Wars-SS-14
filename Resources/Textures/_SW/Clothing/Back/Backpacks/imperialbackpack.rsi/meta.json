@@ -1,6 +1,7 @@
 {
   "version": 1,
-  "copyright": "Corvax SW",
+  "license": "CC-BY-NC-SA-3.0",
+  "copyright": "kalane15 (GitHub) for Star-Wars-SS14, https://github.com/Star-Wars-SS14/Star-Wars-SS-14",
   "size": {
     "x": 32,
     "y": 32
@@ -32,6 +33,9 @@
     {
       "name": "inhand-right",
       "directions": 4
+    },
+    {
+      "name": "icon_broken"
     }
   ]
 }

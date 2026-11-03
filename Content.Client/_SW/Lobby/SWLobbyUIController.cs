@@ -21,9 +21,7 @@ public sealed class SWLobbyUIController : UIController, IOnStateEntered<LobbySta
     private const float SwordShare = 574f / 1890f;
     private const float SmallRootHeight = 620;
     private const float NarrowRootWidth = 1200;
-
-    /// <summary>Characters a half-width tile holds at its full size in the wide column.</summary>
-    private const int LongTileValue = 18;
+    private const int SmallestTileFont = 10;
 
     [UISystemDependency] private readonly ClientGameTicker _ticker = default!;
 
@@ -147,9 +145,9 @@ public sealed class SWLobbyUIController : UIController, IOnStateEntered<LobbySta
             _players.Value.FontOverride = SWGlobalWarConsoleStyle.Bold(narrow ? 15 : 18);
         if (_mode != null)
             _mode.Value.FontOverride = SWGlobalWarConsoleStyle.Bold(narrow ? 12 : 14);
-        // Two starting worlds make a long value: at 14 it was cut in half on a 1280 screen.
+        // Two starting worlds make a long value, cut in half at the tile's usual size: it takes the largest that fits.
         if (_map != null)
-            _map.Value.FontOverride = SWGlobalWarConsoleStyle.Bold(narrow || (_map.Value.Text?.Length ?? 0) > LongTileValue ? 12 : 14);
+            _map.Value.FontOverride = Fit(_map.Value.Text ?? string.Empty, _map.Value.Size.X, narrow ? 12 : 14);
         gui.FactsDescriptionVisible(!small);
         // Never narrower than the longest countdown and its plate's margins: the timer was cut at both ends.
         var width = Math.Max(small ? 320 : root.Y < 900 ? 420 : 560, (int) MathF.Ceiling(gui.StartTimeSizer.DesiredSize.X) + 24);
@@ -163,6 +161,23 @@ public sealed class SWLobbyUIController : UIController, IOnStateEntered<LobbySta
         gui.MainActions.Margin = new Thickness(x, 0, 0, gui.MainActions.Margin.Bottom);
         var links = gui.LinksPlate.Size.X;
         gui.LinksPlate.Margin = new Thickness(Math.Clamp(axis - inset - links / 2f, 0, Math.Max(0, leftWidth - links)), 0, 0, 0);
+    }
+
+    /// <summary>The bold font at <paramref name="size"/>, or the largest smaller one that keeps the text within the width.</summary>
+    private static Font Fit(string text, float width, int size)
+    {
+        var font = SWGlobalWarConsoleStyle.Bold(size);
+        for (; size > SmallestTileFont && width > 0 && TextWidth(font, text) > width; size--)
+            font = SWGlobalWarConsoleStyle.Bold(size - 1);
+        return font;
+    }
+
+    private static float TextWidth(Font font, string text)
+    {
+        var width = 0f;
+        foreach (var rune in text.EnumerateRunes())
+            width += font.GetCharMetrics(rune, 1)?.Advance ?? 0;
+        return width;
     }
 
     private static float Sword(LobbyGui gui, Vector2 root)

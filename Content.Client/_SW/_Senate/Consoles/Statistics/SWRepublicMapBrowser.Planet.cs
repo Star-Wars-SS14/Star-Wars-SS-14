@@ -43,7 +43,7 @@ public sealed partial class SWRepublicMapBrowser
         if (!_fullPlanetScreen || _focusedFlow == null) return view;
         var flow = _focusedFlow;
         var route = _data.Routes.FirstOrDefault(r => SWTransitLinkPrototype.LinkId(r.From, r.To) == flow.Edge);
-        if (route == null || route.Proposed || !_worlds.TryGetValue(flow.From, out var from) || !_worlds.TryGetValue(flow.To, out var to) ||
+        if (route == null || IsPlannedRoute(route) || !_worlds.TryGetValue(flow.From, out var from) || !_worlds.TryGetValue(flow.To, out var to) ||
             Vector2.DistanceSquared(from.Position, to.Position) < .0001f)
         {
             _overviewFlowNoGeometry = true;
@@ -57,16 +57,43 @@ public sealed partial class SWRepublicMapBrowser
 
     private void UpdateOverviewFlowNotice()
     {
-        if (!_fullPlanetScreen || CurrentSectorId != null || CurrentSystemId != null || CurrentPoliticalSectorId != null || Surface != null || _planetOpen || !_showTraffic)
+        var overview = _fullPlanetScreen && CurrentSectorId == null && CurrentSystemId == null &&
+            CurrentPoliticalSectorId == null && Surface == null && !_planetOpen;
+        if (!overview)
         {
             _flowGeometryNotice.Visible = false;
+            _coincidentPicker.Visible = false;
             return;
         }
-        _flowGeometryNotice.Visible = _overviewFlowNoGeometry || _economyView is { Ready: true } view && view.Flows.Any(flow =>
+
+        // A published link is accessible independently of the traffic layer or its current rate.
+        // Do not manufacture a line between endpoints with the same global position.
+        var published = _economyView is { Ready: true } economy ? economy.Links.Select(link => link.Edge).ToHashSet() : new HashSet<string>();
+        var routes = _data.Routes.Where(route => published.Contains(SWTransitLinkPrototype.LinkId(route.From, route.To)) &&
+                _worlds.TryGetValue(route.From, out var from) && _worlds.TryGetValue(route.To, out var to) &&
+                Vector2.DistanceSquared(from.Position, to.Position) < .0001f)
+            .OrderBy(route => route.From, Comparer<string>.Create(string.CompareOrdinal))
+            .ThenBy(route => route.To, Comparer<string>.Create(string.CompareOrdinal)).ToArray();
+        var signature = string.Join("|", routes.Select(route => SWTransitLinkPrototype.LinkId(route.From, route.To)));
+        if (signature != _coincidentSignature)
+        {
+            _coincidentSignature = signature;
+            _coincidentRoutes = routes;
+            _coincidentPicker.Clear();
+            _coincidentPicker.AddItem($"Связи с совпадающими координатами: {routes.Length}", 0);
+            _coincidentPicker.SetItemDisabled(0, true);
+            for (var i = 0; i < routes.Length; i++)
+                _coincidentPicker.AddItem($"{WorldName(routes[i].From)} — {WorldName(routes[i].To)}", i + 1);
+            _coincidentPicker.SelectId(0);
+        }
+        _coincidentPicker.Visible = routes.Length > 0;
+        var missingFlowGeometry = _showTraffic && _economyView is { Ready: true } view && view.Flows.Any(flow =>
             (flow.UnitsPerHour > 0 || flow.InTransit > 0) && (_commodityFilter == null || flow.Good == _commodityFilter) &&
             (!_worlds.TryGetValue(flow.From, out var from) || !_worlds.TryGetValue(flow.To, out var to) ||
              Vector2.DistanceSquared(from.Position, to.Position) < .0001f ||
-             !_data.Routes.Any(route => !route.Proposed && SWTransitLinkPrototype.LinkId(route.From, route.To) == flow.Edge)));
+             !_data.Routes.Any(route => !IsPlannedRoute(route) && SWTransitLinkPrototype.LinkId(route.From, route.To) == flow.Edge)));
+        _flowGeometryNotice.Text = routes.Length > 0 ? "Часть опубликованных связей неразличима на общей карте." : "Путь неразличим на этом масштабе";
+        _flowGeometryNotice.Visible = routes.Length > 0 || _overviewFlowNoGeometry || missingFlowGeometry;
     }
 
     // When a local coordinate is absent, use an explicitly schematic graph rather than
@@ -95,6 +122,8 @@ public sealed partial class SWRepublicMapBrowser
 
     private RichTextLabel AtlasWrap(string text, Color color, float width = 660) => _fullPlanetScreen
         ? SWStatisticsText.Wrap(text, color, width) : SWConsoleStyle.Wrap(text, color, width);
+
+    public SWGalacticMapWorld? GetUniqueSectorAnchor(string sectorId) => UniqueAnchor(sectorId);
 
     private SWGalacticMapWorld? UniqueAnchor(string? sector)
     {
@@ -126,6 +155,7 @@ public sealed partial class SWRepublicMapBrowser
         _route = null;
         Surface = null;
         _planetOpen = true;
+        UpdateSectorSchemeControls();
         _galaxyButton.Visible = _lockedSector == null;
         _galaxyButton.Disabled = false;
         _galaxyButton.Text = CurrentSystemId != null ? "Назад к системе" : CurrentSectorId != null ? "Назад к сектору" : "Назад к галактике";
@@ -134,8 +164,9 @@ public sealed partial class SWRepublicMapBrowser
         var left = VerticalStack(8);
         left.HorizontalExpand = left.VerticalExpand = true;
         left.AddChild(SWStatisticsText.Wrap(world.Name, SWConsoleStyle.Brass, 240));
-        var symbol = new SWStatisticsPlanetSymbol { HorizontalExpand = true, MinHeight = 140, MaxHeight = 180 };
+        var symbol = new SWStatisticsPlanetSymbol(world) { HorizontalExpand = true, MinHeight = 140, MaxHeight = 180 };
         left.AddChild(symbol);
+        left.AddChild(SWStatisticsText.Wrap(symbol.HasTexture ? "Условное изображение" : "Изображение недоступно", SWConsoleStyle.TextDim, 240));
         left.AddChild(SWStatisticsText.Wrap("Межпланетные перевозки", SWConsoleStyle.TextBright, 240));
         _planetPaths = VerticalStack(5);
         _planetPathsSignature = string.Empty;
@@ -170,6 +201,13 @@ public sealed partial class SWRepublicMapBrowser
     public bool TryNavigateBack()
     {
         if (_statisticsAtlas?.CloseDrawer() == true) return true;
+        if (_selectedSchemeSector != null)
+        {
+            _selectedSchemeSector = null;
+            Map.ClearSectorSchemeSelection();
+            RefreshDetails();
+            return true;
+        }
         if (_fullPlanetScreen && Map != null && Map.IsTransitioning) return true;
         if (_selectedCrisisIds.Length > 0)
         {
@@ -238,16 +276,51 @@ public sealed partial class SWRepublicMapBrowser
             _detail.AddChild(SWStatisticsText.Wrap(world.Description, SWConsoleStyle.TextBright, 500));
     }
 
+    private void OpenPlanetRoute(string worldId, SWGalacticMapRoute route)
+    {
+        if (_planetLayout?.IsTransitioning == true || !FocusWorldImmediately(worldId)) return;
+        var edge = SWTransitLinkPrototype.LinkId(route.From, route.To);
+        var projected = View.Routes.FirstOrDefault(r => SWTransitLinkPrototype.LinkId(r.From, r.To) == edge);
+        if (projected == null) return;
+        if (IsPlannedRoute(projected) || _focusedFlow != null && _focusedFlow.Edge != edge)
+        {
+            _focusedFlow = null;
+            Map.SetFocusedTraffic(null, null, null, null);
+        }
+        ClearCrisisSelection();
+        _route = projected;
+        SelectedWorldId = null;
+        Map.SelectRoute(projected);
+        RefreshDetails();
+    }
+
     private void RefreshPlanetPaths()
     {
         if (!_planetOpen || _planetPaths == null || SelectedWorldId is not { } id) return;
         var visibleFlows = VisibleFlows().Where(f => f.From == id || f.To == id).ToArray();
-        var signature = $"{id}|{_viewerFaction}|{_commodityFilter}|{_showTraffic}|{_economyView?.Ready}|{_economyView?.Paused}|{_focusedFlow?.Edge}|{_focusedFlow?.From}|{_focusedFlow?.To}|{_focusedFlow?.Good}|" +
+        var routes = _data.Routes.Where(r => (r.From == id || r.To == id) && _worlds.ContainsKey(r.From) && _worlds.ContainsKey(r.To)).ToArray();
+        var routeSignature = string.Join(";", routes.Select(r => $"{r.From}:{r.To}:{IsPlannedRoute(r)}"));
+        var signature = routeSignature + "|" + $"{id}|{_viewerFaction}|{_commodityFilter}|{_showTraffic}|{_economyView?.Ready}|{_economyView?.Paused}|{_focusedFlow?.Edge}|{_focusedFlow?.From}|{_focusedFlow?.To}|{_focusedFlow?.Good}|" +
             string.Join(";", visibleFlows.Select(f => $"{f.Edge}:{f.From}:{f.To}:{f.Good}:{f.UnitsPerHour}:{f.InTransit}"));
         if (_planetPathsSignature == signature) return;
         _planetPathsSignature = signature;
         var position = _planetPathScroll?.GetScrollValue();
         _planetPaths.RemoveAllChildren();
+        _planetPaths.AddChild(SWConsoleStyle.Section("Маршруты мира"));
+        if (routes.Length == 0)
+            _planetPaths.AddChild(SWStatisticsText.Wrap("Опубликованных связей нет", SWConsoleStyle.TextDim, 240));
+        foreach (var route in routes)
+        {
+            var planned = IsPlannedRoute(route);
+            var other = route.From == id ? route.To : route.From;
+            var open = SWConsoleStyle.TabButton(WorldName(other));
+            open.ToolTip = planned ? "Маршрут проектируется" : "Опубликованная связь";
+            open.OnPressed += _ => OpenPlanetRoute(id, route);
+            _planetPaths.AddChild(open);
+            _planetPaths.AddChild(new SWStatisticsRouteLine { Planned = planned });
+            _planetPaths.AddChild(SWStatisticsText.Wrap(planned ? "Проектируется" : "Опубликованная связь", SWConsoleStyle.TextDim, 240));
+        }
+        _planetPaths.AddChild(SWConsoleStyle.Section("Межпланетные перевозки"));
         if (!_showTraffic)
         {
             _planetPaths.AddChild(SWStatisticsText.Wrap("Слой потоков выключен", SWConsoleStyle.TextDim, 240));
@@ -291,25 +364,47 @@ public sealed partial class SWRepublicMapBrowser
                 };
                 _planetPaths.AddChild(button);
                 _planetPaths.AddChild(new SWStatisticsFlowLine { Highlighted = selected, Paused = economy.Paused });
-                _planetPaths.AddChild(SWStatisticsText.Wrap($"{GoodName(flow.Good)} · {Number(flow.UnitsPerHour)} ед./ч · в пути {Number(flow.InTransit)}", SWConsoleStyle.TextDim, 240));
+                _planetPaths.AddChild(SWStatisticsText.Wrap($"{GoodName(flow.Good)} — {Number(flow.UnitsPerHour)} ед./ч — в пути {Number(flow.InTransit)}", SWConsoleStyle.TextDim, 240));
             }
         }
         if (position is { } saved) _planetPathScroll?.SetScrollValue(saved);
     }
 }
 
-/// <summary>Neutral symbol; it does not claim to depict an actual world.</summary>
-public sealed class SWStatisticsPlanetSymbol : Control
+/// <summary>A published connection, with no implied direction or cargo.</summary>
+public sealed class SWStatisticsRouteLine : Control
 {
-    public SWStatisticsPlanetSymbol() { MouseFilter = MouseFilterMode.Ignore; }
+    public bool Planned { get; init; }
+    public SWStatisticsRouteLine() { SetHeight = 12; HorizontalExpand = true; MouseFilter = MouseFilterMode.Ignore; }
     protected override void Draw(DrawingHandleScreen handle)
     {
         base.Draw(handle);
-        var center = PixelSize / 2;
-        var radius = MathF.Max(0, MathF.Min(PixelWidth, PixelHeight) * .38f);
-        handle.DrawCircle(center, radius, Color.ToSrgb(Color.FromHex("#173644")));
-        handle.DrawCircle(center, radius, Color.ToSrgb(SWConsoleStyle.Edge), false);
-        handle.DrawCircle(center, radius * .68f, Color.ToSrgb(Color.FromHex("#315864")), false);
+        var y = PixelHeight / 2f;
+        var start = 4 * UIScale;
+        var end = Math.Max(start, PixelWidth - 4 * UIScale);
+        if (!Planned) { handle.DrawLine(new Vector2(start, y), new Vector2(end, y), SWConsoleStyle.TextDim); return; }
+        for (var x = start; x < end; x += 10 * UIScale)
+            handle.DrawLine(new Vector2(x, y), new Vector2(Math.Min(end, x + 5 * UIScale), y), SWConsoleStyle.TextDim);
+    }
+}
+
+/// <summary>Illustration is conditional and is not a claim about a world's biome.</summary>
+public sealed class SWStatisticsPlanetSymbol : Control
+{
+    public Texture? Texture { get; }
+    public bool HasTexture => Texture != null;
+    public SWStatisticsPlanetSymbol(SWGalacticMapWorld? world)
+    {
+        Texture = SWStatisticsWorldArt.Get(world, true);
+        MouseFilter = MouseFilterMode.Ignore;
+    }
+    protected override void Draw(DrawingHandleScreen handle)
+    {
+        base.Draw(handle);
+        if (Texture is not { } texture) return;
+        var side = MathF.Max(0, MathF.Min(64 * UIScale, MathF.Min(PixelWidth, PixelHeight)));
+        var size = new Vector2(side);
+        handle.DrawTextureRect(texture, UIBox2.FromDimensions((PixelSize - size) / 2, size));
     }
 }
 
@@ -351,10 +446,11 @@ public sealed class SWStatisticsPlanetLayout : Container
         var smooth = t * t * (3 - 2 * t);
         var target = _symbol.GlobalPosition - GlobalPosition + _symbol.Size / 2;
         var center = Vector2.Lerp(origin, target, smooth) * UIScale;
-        var radius = (5 + (MathF.Min(_symbol.Width, _symbol.Height) * .38f - 5) * smooth) * UIScale;
+        if (_symbol.Texture is not { } texture) return;
+        var targetSide = MathF.Min(64, MathF.Min(_symbol.Width, _symbol.Height));
+        var side = MathF.Max(0, (32 + (targetSide - 32) * smooth) * UIScale);
         var alpha = 1 - Math.Clamp((t - .45f) / .55f, 0, 1);
-        handle.DrawCircle(center, Math.Max(0, radius), Color.ToSrgb(Color.FromHex("#315864").WithAlpha(alpha)));
-        handle.DrawCircle(center, Math.Max(0, radius), Color.ToSrgb(SWConsoleStyle.Brass.WithAlpha(alpha)), false);
+        handle.DrawTextureRect(texture, UIBox2.FromDimensions(center - new Vector2(side / 2), new Vector2(side)), Color.White.WithAlpha(alpha));
     }
     protected override Vector2 MeasureOverride(Vector2 availableSize)
     {

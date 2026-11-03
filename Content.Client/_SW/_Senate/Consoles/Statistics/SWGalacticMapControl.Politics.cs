@@ -97,7 +97,7 @@ public sealed partial class SWGalacticMapControl
         }
     }
 
-    private void DrawPoliticalLabels(DrawingHandleScreen handle)
+    private void LayoutPoliticalLabels(DrawingHandleScreen handle)
     {
         _politicalLabels.Clear();
         foreach (var area in _map.PoliticalAreas)
@@ -107,7 +107,12 @@ public sealed partial class SWGalacticMapControl
             var p = MapToLocal(area.LabelPosition) - size / 2;
             if (p.X < 4 || p.Y < 4 || p.X + size.X > Width - 4 || p.Y + size.Y > Height - 4) continue;
             _politicalLabels.Add((area, UIBox2.FromDimensions(p - new Vector2(5), size + new Vector2(10))));
-            handle.DrawString(SWConsoleStyle.Small, p * UIScale, area.Label, UIScale, PoliticalColor(area.Faction));
         }
+    }
+
+    private void DrawPoliticalLabels(DrawingHandleScreen handle)
+    {
+        foreach (var (area, box) in _politicalLabels)
+            handle.DrawString(SWConsoleStyle.Small, (box.TopLeft + new Vector2(5)) * UIScale, area.Label!, UIScale, PoliticalColor(area.Faction));
     }
 }

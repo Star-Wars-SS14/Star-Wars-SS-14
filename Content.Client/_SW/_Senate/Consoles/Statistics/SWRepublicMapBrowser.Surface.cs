@@ -42,6 +42,7 @@ public sealed partial class SWRepublicMapBrowser
         SelectWorld(id);
         var surface = new SWPlanetSurfaceControl(IoCManager.Resolve<IPrototypeManager>().Index<SWPlanetSurfacePrototype>(id));
         Surface = surface;
+        UpdateSectorSchemeControls();
         if (_fullPlanetScreen) surface.BeginReveal();
         _planetOpen = false;
         _surfaceReturnsToPlanet = returnToPlanet;

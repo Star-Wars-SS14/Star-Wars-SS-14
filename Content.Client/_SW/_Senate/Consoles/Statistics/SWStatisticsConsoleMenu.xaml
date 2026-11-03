@@ -15,6 +15,10 @@
                 </BoxContainer>
             </PanelContainer>
             <PanelContainer Name="TabBarPanel"><WrapContainer Name="TabBar" Margin="8 4" /></PanelContainer>
+            <BoxContainer Orientation="Vertical" Margin="16 8 16 2" SeparationOverride="2">
+                <Label Name="PageTitle" ClipText="True" />
+                <Label Name="PageSubtitle" ClipText="True" />
+            </BoxContainer>
             <BoxContainer Name="ContentHost" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
                 <BoxContainer Name="GalaxyPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="12" SeparationOverride="8" />
                 <BoxContainer Name="CommoditiesPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="12" />
@@ -34,6 +38,9 @@
                     <BoxContainer Name="LawsList" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" />
                 </BoxContainer>
             </BoxContainer>
+            <PanelContainer Name="FooterPanel">
+                <Label Name="FooterText" Margin="16 6" ClipText="True" />
+            </PanelContainer>
         </BoxContainer>
     </PanelContainer>
 </controls:FancyWindow>

@@ -17,17 +17,21 @@ public sealed class SWStatisticsAtlasLayout : Container
     private const float BreakWidth = 680;
     private const float Gap = 16;
     private const float Duration = .16f;
+    private readonly bool _deferHeight;
     private readonly Control _map;
     private readonly PanelContainer _details;
     private readonly Button _toggle;
     private readonly IConfigurationManager _configuration = IoCManager.Resolve<IConfigurationManager>();
     private bool _narrow;
     private bool _drawerOpen;
+    private bool _hasFiniteMeasure;
+    private bool _showAfterFirstMeasure;
     private float _drawerProgress;
     private float _measuredWidth;
 
-    public SWStatisticsAtlasLayout(Control map, Control details)
+    public SWStatisticsAtlasLayout(Control map, Control details, bool deferHeight = false)
     {
+        _deferHeight = deferHeight;
         _map = map;
         _map.MinHeight = 0;
         _details = new PanelContainer
@@ -57,8 +61,19 @@ public sealed class SWStatisticsAtlasLayout : Container
         if (_narrow) SetDrawer(true);
     }
 
+    public void ShowDetailsWhenReady()
+    {
+        if (!_hasFiniteMeasure) { _showAfterFirstMeasure = true; return; }
+        ShowDetails();
+    }
+
     public bool CloseDrawer()
     {
+        if (_showAfterFirstMeasure)
+        {
+            _showAfterFirstMeasure = false;
+            return true;
+        }
         if (!_narrow || !_drawerOpen) return false;
         SetDrawer(false);
         return true;
@@ -104,6 +119,20 @@ public sealed class SWStatisticsAtlasLayout : Container
             _drawerProgress = 0;
             _toggle.Text = "Открыть досье";
         }
+        if (float.IsFinite(availableSize.X) && availableSize.X > 0)
+        {
+            _hasFiniteMeasure = true;
+            if (_showAfterFirstMeasure)
+            {
+                _showAfterFirstMeasure = false;
+                if (narrow)
+                {
+                    _drawerOpen = true;
+                    _drawerProgress = _configuration.GetCVar(CCVars.ReducedMotion) ? 1 : 0;
+                    _toggle.Text = "Закрыть досье";
+                }
+            }
+        }
         _toggle.Visible = narrow;
         _details.Visible = !narrow || _drawerOpen || _drawerProgress > 0;
         var detailsWidth = narrow ? Math.Min(_measuredWidth * .72f, 410) : Math.Clamp(_measuredWidth * .37f, 300, 410);
@@ -111,7 +140,9 @@ public sealed class SWStatisticsAtlasLayout : Container
         _map.Measure(new Vector2(mapWidth, height));
         _details.Measure(new Vector2(detailsWidth, height));
         _toggle.Measure(new Vector2(_measuredWidth, height));
-        return new Vector2(_measuredWidth, height);
+        // In a vertical BoxContainer, expansion assigns the remaining height after
+        // later siblings (such as the commodity legend) have been measured.
+        return new Vector2(_measuredWidth, _deferHeight ? 0 : height);
     }
 
     protected override Vector2 ArrangeOverride(Vector2 finalSize)
@@ -119,6 +150,14 @@ public sealed class SWStatisticsAtlasLayout : Container
         var width = Math.Min(finalSize.X, _measuredWidth);
         var detailsWidth = _narrow ? Math.Min(width * .72f, 410) : Math.Clamp(width * .37f, 300, 410);
         var mapWidth = _narrow ? width : Math.Max(0, width - Gap - detailsWidth);
+        // BoxContainer may assign less height than its initial measure after laying out
+        // the legend. Measure children again against their actual arranged viewport.
+        if (_deferHeight)
+        {
+            _map.Measure(new Vector2(mapWidth, finalSize.Y));
+            _details.Measure(new Vector2(detailsWidth, finalSize.Y));
+            _toggle.Measure(new Vector2(width, finalSize.Y));
+        }
         _map.Arrange(UIBox2.FromDimensions(Vector2.Zero, new Vector2(mapWidth, finalSize.Y)));
         var eased = _drawerProgress * (2 - _drawerProgress);
         var x = _narrow ? width - detailsWidth * eased : mapWidth + Gap;

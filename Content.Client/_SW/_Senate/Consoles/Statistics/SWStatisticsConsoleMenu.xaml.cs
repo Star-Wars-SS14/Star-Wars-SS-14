@@ -44,8 +44,9 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
     private readonly Dictionary<string, (SWConsoleButton Button, Label Status)> _metricButtons = new();
     private readonly BoxContainer _operationDetail = VerticalStack(12);
     private readonly Button[] _operationButtons;
-    private readonly SWConsoleDocuments _crises = new();
-    private readonly SWConsoleDocuments _laws = new();
+    private readonly SWStatisticsDocuments _crises = new();
+    private readonly SWStatisticsDocuments _laws = new();
+    private SWStatisticsAtlasLayout? _commodityLayout;
     private readonly RichTextLabel _crisisSummary = SWStatisticsText.Wrap(string.Empty, SWConsoleStyle.TextDim);
     public string? SelectedMetricId => _metricId;
     public string? SelectedSectorId => _sectorId;
@@ -67,6 +68,13 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
         HeaderTitle.FontColorOverride = SWConsoleStyle.TextBright;
         HeaderClock.FontOverride = SWConsoleStyle.Small;
         HeaderClock.FontColorOverride = SWConsoleStyle.TextDim;
+        SWConsoleStyle.StyleTabBar(FooterPanel);
+        PageTitle.FontOverride = new VectorFont(headingFont, 18);
+        PageTitle.FontColorOverride = SWConsoleStyle.TextBright;
+        PageSubtitle.FontOverride = SWConsoleStyle.Small;
+        PageSubtitle.FontColorOverride = SWConsoleStyle.TextDim;
+        FooterText.FontOverride = SWConsoleStyle.Small;
+        FooterText.FontColorOverride = SWConsoleStyle.TextDim;
         _panels = new Control[] { RepublicPanel, SectorsPanel, OperationsPanel, CrisesPanel, LawsPanel, GalaxyPanel, CommoditiesPanel };
         var names = new[] { "Обзор", "Сектора", "Обстановка", "Кризисы", "Законы", "Галактика", "Товары" };
         _tabs = new Button[names.Length];
@@ -82,6 +90,17 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
         InitializeSectors();
         InitializeGalaxy();
         Commodities = new SWRepublicCommodityBrowser();
+        var workspace = Commodities.Children.OfType<SWProductionWorkspace>().Single();
+        var workspaceIndex = Commodities.Children.ToList().IndexOf(workspace);
+        var diagram = workspace.Diagram;
+        var inspector = workspace.Inspector;
+        workspace.RemoveChild(diagram);
+        workspace.RemoveChild(inspector);
+        Commodities.RemoveChild(workspace);
+        _commodityLayout = new SWStatisticsAtlasLayout(diagram, inspector, deferHeight: true);
+        Commodities.AddChild(_commodityLayout);
+        _commodityLayout.SetPositionInParent(workspaceIndex);
+        Commodities.Graph.NodeSelected += _ => _commodityLayout?.ShowDetails();
         Commodities.WorldRequested += id =>
         {
             _galaxy.FocusWorldImmediately(id);
@@ -105,11 +124,23 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
             _operationButtons[i] = button;
             operationNav.AddChild(button);
         }
-        OperationsContent.AddChild(new SWConsoleColumns(operationNav, _operationDetail, 215, 700, fixedFirst: true));
+        OperationsContent.AddChild(new SWConsoleColumns(PagePanel(operationNav), PagePanel(_operationDetail), 215, 700, fixedFirst: true));
         CrisesList.AddChild(_crisisSummary);
         CrisesList.AddChild(_crises);
         LawsList.AddChild(_laws);
         ShowTab(0);
+    }
+
+    private static PanelContainer PagePanel(Control child)
+    {
+        var panel = new PanelContainer { HorizontalExpand = true, PanelOverride = new SWConsoleSurface
+        {
+            Background = SWConsoleStyle.BgPanel,
+            ContentMarginLeftOverride = 12, ContentMarginRightOverride = 12,
+            ContentMarginTopOverride = 12, ContentMarginBottomOverride = 12,
+        } };
+        panel.AddChild(child);
+        return panel;
     }
 
     public void ShowTab(int index)
@@ -117,6 +148,26 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
         if (index < 0 || index >= _panels.Length) return;
         var changed = _active != index;
         _active = index;
+        var headings = new[]
+        {
+            ("Глобальные показатели", "Фактическое состояние и политика Республики"),
+            ("Сектора Республики", "Реестр, показатели и представительство"),
+            ("Обстановка", "Сводки по направлениям"),
+            ("Кризисы", "Действующие кризисы и связанные документы"),
+            ("Действующие законы", "Реестр документов и полный текст"),
+            ("Галактическая карта", "Миры, представительства и маршруты"),
+            ("Товары", "Производственные связи и движение"),
+        };
+        PageTitle.Text = headings[index].Item1;
+        PageSubtitle.Text = headings[index].Item2;
+        FooterText.Text = index switch
+        {
+            GalaxyTab => "Сведения карты обновляются по опубликованным данным.",
+            CommoditiesTab => "Выберите товар или участок производственной схемы.",
+            3 => "Выберите кризис, чтобы открыть документ.",
+            4 => "Чтение закона не запускает голосование.",
+            _ => "Выберите показатель или раздел для просмотра сведений.",
+        };
         if (changed) _tabReveal = 0;
         for (var i = 0; i < _panels.Length; i++)
         {
@@ -147,6 +198,7 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
     {
         base.KeyBindDown(args);
         if (args.Handled || args.Function != EngineKeyFunctions.CloseModals) return;
+        if (_active == CommoditiesTab && _commodityLayout?.CloseDrawer() == true) { args.Handle(); return; }
         if (_active != GalaxyTab || !_galaxy.TryNavigateBack()) Close();
         args.Handle();
     }

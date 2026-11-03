@@ -63,7 +63,7 @@ public sealed partial class SWStatisticsConsoleMenu
         _analysis.AddChild(disclosures);
         _analysis.AddChild(_components);
         _analysis.AddChild(_observations);
-        RepublicStats.AddChild(new SWConsoleColumns(_metrics, _analysis, 215, 700, fixedFirst: true));
+        RepublicStats.AddChild(new SWConsoleColumns(PagePanel(_metrics), PagePanel(_analysis), 215, 700, fixedFirst: true));
     }
 
     private void RefreshOverview()

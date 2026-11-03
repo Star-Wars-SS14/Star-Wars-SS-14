@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Linq;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -39,7 +40,10 @@ public sealed partial class SWStatisticsConsoleMenu
         filters.AddChild(_sort);
         SectorTable.AddChild(filters);
         SectorTable.AddChild(_sectorReference);
-        SectorTable.AddChild(new SWConsoleColumns(_ranking, _sectorDetail, 265, 740));
+        var register = VerticalStack(6);
+        register.AddChild(SWStatisticsText.Wrap("Сектор / показатель / представительство", SWConsoleStyle.TextDim));
+        register.AddChild(_ranking);
+        SectorTable.AddChild(new SWConsoleColumns(PagePanel(register), PagePanel(_sectorDetail), 300, 740));
         _sectorMetric.OnItemSelected += args =>
         {
             _sectorMetric.SelectId(args.Id);
@@ -85,6 +89,7 @@ public sealed partial class SWStatisticsConsoleMenu
             row.Bar.Maximum = g?.Max ?? 100;
             row.Bar.Reference = g?.Actual;
             row.Bar.Fill = stat == null ? SWConsoleStyle.TextDim : SWStatisticsPresentation.LevelColor(stat.Value, row.Bar.Minimum, row.Bar.Maximum);
+            row.Status.Text = sector.Claimed ? "Представлен" : "Нет представителя";
             row.Button.ToolTip = sector.Claimed ? "Сектор представлен в Сенате" : "У сектора нет назначенного сенатора";
         }
         foreach (var id in _sectorRows.Keys.Where(id => _state.Sectors.All(s => s.Id != id)).ToArray())
@@ -104,13 +109,21 @@ public sealed partial class SWStatisticsConsoleMenu
             return;
         }
         var breakdown = _state.SituationalStats.Where(x => x.SectorId == selected.Id && x.GlobalId == g?.Id).ToArray();
-        var signature = selected.Id + "|" + selected.Name + "|" + selected.Claimed + "|" + selected.Representative + "|" + g?.Id + "|" +
+        var anchor = _galaxy.GetUniqueSectorAnchor(selected.Id);
+        var signature = (anchor?.Id ?? "no-unique-anchor") + "|" + (anchor?.Kind ?? "") + "|" + selected.Id + "|" + selected.Name + "|" + selected.Claimed + "|" + selected.Representative + "|" + g?.Id + "|" +
             string.Join(";", _state.Globals.Select(x => $"{x.Id}:{x.Name}:{x.Min}:{x.Max}:{x.Actual}")) + "|" +
             string.Join(";", selected.Stats.Select(x => $"{x.Id}:{x.Value}")) + "|" + SituationSignature(breakdown);
         if (signature == _sectorDetailSignature) return;
         _sectorDetailSignature = signature;
         _sectorDetail.RemoveAllChildren();
         _sectorDetail.AddChild(SWStatisticsText.Wrap(selected.Name, SWConsoleStyle.Brass));
+        if (anchor != null)
+        {
+            var image = new SWStatisticsPlanetSymbol(anchor) { SetSize = new Vector2(64, 64), HorizontalAlignment = Control.HAlignment.Center };
+            _sectorDetail.AddChild(image);
+            _sectorDetail.AddChild(SWStatisticsText.Wrap(image.HasTexture ? $"Опорный мир: {anchor.Name}. Условное изображение." : $"Опорный мир: {anchor.Name}. Изображение недоступно.", SWConsoleStyle.TextDim));
+        }
+        else _sectorDetail.AddChild(SWStatisticsText.Wrap("Единственный опорный мир не определён.", SWConsoleStyle.TextDim));
         _sectorDetail.AddChild(SWStatisticsText.Wrap(selected.Claimed ? "Представлен в Сенате" : "Сенатор не назначен", SWConsoleStyle.TextDim));
         if (!string.IsNullOrWhiteSpace(selected.Representative))
             _sectorDetail.AddChild(SWStatisticsText.Wrap($"Представитель: {selected.Representative}", SWConsoleStyle.TextBright));
@@ -138,6 +151,7 @@ public sealed partial class SWStatisticsConsoleMenu
         public readonly RichTextLabel Name;
         public readonly Label Value = SWConsoleStyle.Text(string.Empty, SWConsoleStyle.TextBright, SWConsoleStyle.Strong);
         public readonly SWStatisticsBar Bar = new();
+        public readonly Label Status = SWConsoleStyle.Text(string.Empty, SWConsoleStyle.TextDim, SWConsoleStyle.Small);
         public SectorRow(string name)
         {
             Button.Label.Visible = false;
@@ -148,6 +162,7 @@ public sealed partial class SWStatisticsConsoleMenu
             head.AddChild(Value);
             box.AddChild(head);
             box.AddChild(Bar);
+            box.AddChild(Status);
             Button.AddChild(box);
         }
     }

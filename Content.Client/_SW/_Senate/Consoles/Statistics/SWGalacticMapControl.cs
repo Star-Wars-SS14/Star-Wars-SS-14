@@ -4,6 +4,7 @@ using System.Linq;
 using System.Numerics;
 using Content.Shared._SW._Senate;
 using Content.Shared._SW._Senate.Sectors;
+using Content.Shared._SW._Senate.Economy;
 using Content.Shared.CCVar;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
@@ -31,6 +32,34 @@ public sealed partial class SWGalacticMapControl : Control
     private readonly IGameTiming _timing;
     private readonly IConfigurationManager _configuration;
     private readonly Dictionary<string, SWGalacticMapWorld> _worlds;
+    private readonly HashSet<string> _overviewRouteWorlds = new();
+    private readonly HashSet<string> _visibleWorldGlyphs = new();
+    private bool _worldGlyphsDirty = true;
+
+    private bool DisplayWorldGlyph(SWGalacticMapWorld world) => DisplayWorld(world) &&
+        (!_markExternalLabels || _visibleWorldGlyphs.Contains(world.Id));
+
+    private void EnsureWorldGlyphLayout()
+    {
+        if (!_markExternalLabels || !_worldGlyphsDirty) return;
+        _worldGlyphsDirty = false;
+        _visibleWorldGlyphs.Clear();
+        var occupied = new List<UIBox2>();
+        foreach (var world in _map.Worlds.Where(DisplayWorld)
+                     .OrderByDescending(w => w.Id == _selectedWorld)
+                     .ThenByDescending(IsExternalWorld)
+                     .ThenByDescending(w => w.LabelPriority)
+                     .ThenByDescending(w => w.Anchor)
+                     .ThenBy(w => w.Id, Comparer<string>.Create(string.CompareOrdinal)))
+        {
+            var center = MapToLocal(world.Position);
+            var radius = IsExternalWorld(world) ? 7f : world.Id == _selectedWorld ? 26f : 18f;
+            var bounds = UIBox2.FromDimensions(center - new Vector2(radius), new Vector2(radius * 2));
+            if (occupied.Any(previous => previous.Intersects(bounds))) continue;
+            occupied.Add(bounds);
+            _visibleWorldGlyphs.Add(world.Id);
+        }
+    }
     private readonly Dictionary<string, SWGalacticMapCorridor> _corridors;
     private readonly HashSet<string> _hubs;
     private readonly List<(SWGalacticMapRoute Route, Vector2[] Points)> _paths = new();
@@ -87,6 +116,11 @@ public sealed partial class SWGalacticMapControl : Control
         {
             if (!_worlds.TryGetValue(route.From, out var a) || !_worlds.TryGetValue(route.To, out var b))
                 continue;
+            if (Vector2.DistanceSquared(a.Position, b.Position) >= .0001f)
+            {
+                _overviewRouteWorlds.Add(a.Id);
+                _overviewRouteWorlds.Add(b.Id);
+            }
             var control = route.Control ?? (a.Position + b.Position) / 2;
             var points = new Vector2[49];
             for (var i = 0; i < points.Length; i++)
@@ -115,6 +149,8 @@ public sealed partial class SWGalacticMapControl : Control
         if (!_worlds.TryGetValue(id, out var world)) return;
         if (_markExternalLabels && _selectedWorld != id && !_configuration.GetCVar(CCVars.ReducedMotion)) _selectionPulse = 1;
         _selectedWorld = id;
+        _worldGlyphsDirty = true;
+        _selectedSchemeSector = null;
         _selectedRoute = null;
         if (focus && Zoom > 1)
         {
@@ -127,6 +163,8 @@ public sealed partial class SWGalacticMapControl : Control
 
     public void SelectRoute(SWGalacticMapRoute route)
     {
+        _selectedSchemeSector = null;
+        _worldGlyphsDirty = true;
         _selectedRoute = route;
         _selectedWorld = null;
         _labelsDirty = true;
@@ -195,6 +233,7 @@ public sealed partial class SWGalacticMapControl : Control
         _crisisLayoutDirty = true;
         _lastClickWorld = null;
         _labelsDirty = true;
+        _worldGlyphsDirty = true;
         _labels.Clear();
         UpdateHover();
         ViewChanged?.Invoke();
@@ -208,7 +247,7 @@ public sealed partial class SWGalacticMapControl : Control
         ViewUpdated();
     }
 
-    private bool DisplayRoute(SWGalacticMapRoute route) => !_markExternalLabels || !route.Proposed && (IsLocalView ||
+    private bool DisplayRoute(SWGalacticMapRoute route) => !_markExternalLabels || (IsLocalView ||
         DisplayWorld(_worlds[route.From]) && DisplayWorld(_worlds[route.To]) &&
         Vector2.DistanceSquared(_worlds[route.From].Position, _worlds[route.To].Position) >= .0001f);
 
@@ -216,18 +255,25 @@ public sealed partial class SWGalacticMapControl : Control
     {
         if (IsTransitioning) return null;
         if (position.X < 0 || position.Y < 0 || position.X > Width || position.Y > Height) return null;
+        EnsureWorldGlyphLayout();
         string? best = null;
-        var distance = 16f * 16;
+        var distance = _markExternalLabels ? float.PositiveInfinity : 16f * 16;
         foreach (var world in _map.Worlds)
         {
-            if (!DisplayWorld(world)) continue;
-            var next = Vector2.DistanceSquared(position, MapToLocal(world.Position));
+            if (!DisplayWorldGlyph(world)) continue;
+            var center = MapToLocal(world.Position);
+            if (_markExternalLabels)
+            {
+                var half = IsExternalWorld(world) ? 6f : 16f;
+                if (!UIBox2.FromDimensions(center - new Vector2(half), new Vector2(half * 2)).Contains(position)) continue;
+            }
+            var next = Vector2.DistanceSquared(position, center);
             if (next >= distance) continue;
             distance = next;
             best = world.Id;
         }
         // Visible nodes take priority; a label takes priority over another node's padded hit area.
-        if (best != null && distance <= 8 * 8) return best;
+        if (best != null && (_markExternalLabels || distance <= 8 * 8)) return best;
         return _labels.Where(l => l.Box.Contains(position)).Select(l => l.Id).FirstOrDefault() ?? best;
     }
 
@@ -273,7 +319,19 @@ public sealed partial class SWGalacticMapControl : Control
                 best = path.Route;
             }
         }
-        if (best == null) return;
+        if (best == null)
+        {
+            if (HitTestSectorScheme(position) is { } sector)
+            {
+                _selectedSchemeSector = sector;
+                _selectedWorld = null;
+                _worldGlyphsDirty = true;
+                _selectedRoute = null;
+                _labelsDirty = true;
+                SectorSelected?.Invoke(sector);
+            }
+            return;
+        }
         SelectRoute(best);
         RouteSelected?.Invoke(best);
     }
@@ -395,6 +453,8 @@ public sealed partial class SWGalacticMapControl : Control
         if (hovered == null) return;
         var world = _worlds[hovered];
         ToolTip = world.Name;
+        if (_markExternalLabels && !IsExternalWorld(world))
+            ToolTip += SWStatisticsWorldArt.Get(world, false) != null ? "\nУсловное изображение" : "\nИзображение недоступно";
         if (_financeSectors != null && world.Sector is { } financeSector && _financeSectors.TryGetValue(financeSector.Id, out var finance))
             ToolTip += $"\n{finance.Name}\nНалоговые поступления с начала дня {finance.Tax:N0} кр";
         if (_economyMapMode >= 0 && EconomySectorSummary(world.Id) is { } economySummary)
@@ -521,7 +581,9 @@ public sealed partial class SWGalacticMapControl : Control
     private void DrawGraph(DrawingHandleScreen handle, float reveal = 1)
     {
         Vector2 Screen(Vector2 point) => MapToLocal(point) * UIScale;
-        DrawPoliticalAreas(handle, false);
+        EnsureWorldGlyphLayout();
+        if (SectorSchemeVisible) DrawSectorScheme(handle);
+        else DrawPoliticalAreas(handle, false);
         if (IsLocalView && !_markExternalLabels)
         {
             var boundary = new UIBox2(Screen(new Vector2(18, 16)), Screen(new Vector2(102, 84)));
@@ -530,6 +592,7 @@ public sealed partial class SWGalacticMapControl : Control
         var sectorId = _selectedWorld != null ? _worlds[_selectedWorld].Sector : null;
         foreach (var region in _map.Regions)
         {
+            if (SectorSchemeVisible) continue;
             // Combined display regions are not individual Senate-sector borders.
             if (_markExternalLabels && region.Sectors.Count != 1) continue;
             var selected = sectorId.HasValue && region.Sectors.Contains(sectorId.Value);
@@ -539,7 +602,15 @@ public sealed partial class SWGalacticMapControl : Control
             for (var i = 0; i < points.Length; i++)
                 handle.DrawLine(points[i], points[(i + 1) % points.Length], selected ? SWConsoleStyle.Accent : SWConsoleStyle.Edge);
         }
-        DrawPoliticalAreas(handle, true);
+        if (!SectorSchemeVisible) DrawPoliticalAreas(handle, true);
+        // Compute all occupied labels before placing traffic, even on the first frame.
+        if (SectorSchemeVisible) _politicalLabels.Clear();
+        else LayoutPoliticalLabels(handle);
+        if (_labelsDirty || _labelSize != Size || _labelScale != UIScale)
+        {
+            LayoutSectorSchemeLabels(handle);
+            LayoutLabels(handle);
+        }
         foreach (var path in _paths.OrderBy(p => !p.Route.Proposed))
         {
             var route = path.Route;
@@ -549,14 +620,15 @@ public sealed partial class SWGalacticMapControl : Control
             if (routeReveal <= 0) continue;
             var color = route.Corridor != null && _corridors.TryGetValue(route.Corridor, out var corridor)
                 ? corridor.Color : selected ? SWConsoleStyle.TextBright : IsLocalView ? SWConsoleStyle.TextDim : SWConsoleStyle.Edge;
-            color = TrafficRouteColor(route, color, selected);
+            var planned = route.Proposed && (!_markExternalLabels || !_publishedTrafficEdges.Contains(SWTransitLinkPrototype.LinkId(route.From, route.To)));
+            if (!_markExternalLabels || !planned) color = TrafficRouteColor(route, color, selected);
             color = color.WithAlpha(color.A * routeReveal);
             var length = 0f;
             for (var i = 1; i < path.Points.Length; i++)
             {
                 var a = Screen(path.Points[i - 1]);
                 var b = Screen(path.Points[i]);
-                if (route.Proposed)
+                if (planned)
                 {
                     var segment = Vector2.Distance(a, b);
                     if (segment < .001f) continue;
@@ -585,7 +657,7 @@ public sealed partial class SWGalacticMapControl : Control
         var worldIndex = 0;
         foreach (var world in _map.Worlds)
         {
-            if (!DisplayWorld(world)) continue;
+            if (!DisplayWorldGlyph(world)) continue;
             var start = .61f + .20f * worldIndex++ / Math.Max(1, _map.Worlds.Count);
             var worldReveal = reveal >= 1 ? 1 : Math.Clamp((reveal - start) / .19f, 0, 1);
             if (worldReveal <= 0) continue;
@@ -604,6 +676,31 @@ public sealed partial class SWGalacticMapControl : Control
                     ? finance.Reasons.Count > 0 ? SWConsoleStyle.Warn : SWConsoleStyle.Good
                     : SWConsoleStyle.TextDim;
             color = color.WithAlpha(color.A * worldReveal);
+            if (_markExternalLabels && !IsExternalWorld(world))
+            {
+                var half = 16 * UIScale;
+                var glyph = UIBox2.FromDimensions(p - new Vector2(half), new Vector2(half * 2));
+                var texture = SWStatisticsWorldArt.Get(world, false);
+                if (texture != null) handle.DrawTextureRect(texture, glyph, Color.White.WithAlpha(worldReveal));
+                else
+                {
+                    handle.DrawRect(glyph, SWConsoleStyle.Navigation);
+                    handle.DrawRect(glyph, color, false);
+                    handle.DrawLine(glyph.TopLeft, glyph.BottomRight, color);
+                    handle.DrawLine(new Vector2(glyph.Left, glyph.Bottom), new Vector2(glyph.Right, glyph.Top), color);
+                }
+                if (selected || hover)
+                {
+                    var border = half + 3 * UIScale;
+                    handle.DrawRect(new UIBox2(p - new Vector2(border), p + new Vector2(border)), color, false);
+                }
+                if (selected && _selectionPulse > 0)
+                {
+                    var border = half + (3 + 6 * (1 - _selectionPulse)) * UIScale;
+                    handle.DrawRect(new UIBox2(p - new Vector2(border), p + new Vector2(border)), SWConsoleStyle.Brass.WithAlpha(_selectionPulse * worldReveal), false);
+                }
+                continue;
+            }
             if (selected || hover) handle.DrawCircle(p, (selected ? 11 : 9) * UIScale, Color.ToSrgb(color), false);
             if (selected && _markExternalLabels && _selectionPulse > 0)
                 handle.DrawCircle(p, (11 + 6 * (1 - _selectionPulse)) * UIScale, Color.ToSrgb(SWConsoleStyle.Brass.WithAlpha(_selectionPulse * worldReveal)), false);
@@ -620,9 +717,8 @@ public sealed partial class SWGalacticMapControl : Control
             if (hub) handle.DrawCircle(p, 2 * UIScale, Color.ToSrgb(color));
         }
         if (reveal < .85f) return;
-        DrawPoliticalLabels(handle);
-        if (_labelsDirty || _labelSize != Size || _labelScale != UIScale)
-            LayoutLabels(handle);
+        if (SectorSchemeVisible) DrawSectorSchemeLabels(handle);
+        else DrawPoliticalLabels(handle);
         foreach (var (id, box) in _labels)
         {
             var p = MapToLocal(_worlds[id].Position);
@@ -656,6 +752,7 @@ public sealed partial class SWGalacticMapControl : Control
     public void SetExternalLabels(bool enabled)
     {
         _markExternalLabels = enabled;
+        _worldGlyphsDirty = true;
         CanKeyboardFocus = enabled;
         KeyboardFocusOnClick = enabled;
         _labelsDirty = true;
@@ -663,7 +760,7 @@ public sealed partial class SWGalacticMapControl : Control
 
     private string FinanceLabel(SWGalacticMapWorld world)
     {
-        if (_markExternalLabels && IsExternalWorld(world)) return $"{world.Name} · вне области";
+        if (_markExternalLabels && IsExternalWorld(world)) return $"{world.Name} — вне области";
         if (_financeSectors != null && world.Anchor && world.Sector is { } sector
             && _financeSectors.TryGetValue(sector.Id, out var revenue))
             return $"{world.Name}  {revenue.Tax:N0} кр";
@@ -679,8 +776,8 @@ public sealed partial class SWGalacticMapControl : Control
         _labelSize = Size;
         _labelScale = UIScale;
         _labelsDirty = false;
-        var points = _map.Worlds.Where(DisplayWorld).ToDictionary(w => w.Id, w => MapToLocal(w.Position));
-        foreach (var world in _map.Worlds.Where(DisplayWorld).OrderByDescending(w => w.Id == _selectedWorld || w.Id == _hover)
+        var points = _map.Worlds.Where(DisplayWorldGlyph).ToDictionary(w => w.Id, w => MapToLocal(w.Position));
+        foreach (var world in _map.Worlds.Where(DisplayWorldGlyph).OrderByDescending(w => w.Id == _selectedWorld || w.Id == _hover)
                      .ThenByDescending(w => _markExternalLabels && IsExternalWorld(w))
                      .ThenByDescending(w => w.LabelPriority)
                      .ThenByDescending(w => w.Anchor).ThenByDescending(w => _hubs.Contains(w.Id)))
@@ -692,6 +789,7 @@ public sealed partial class SWGalacticMapControl : Control
             // ViewUpdated clears old bounds when zoom, pan or window size changes.
             if (_financeSectors == null && (world.Id == _selectedWorld || world.Id == _hover) && previous.TryGetValue(world.Id, out var prior)
                 && !OverlayIntersectsLabel(prior)
+                && !_sectorSchemeLabels.Any(l => l.Box.Intersects(prior))
                 && !_labels.Any(l => l.Box.Intersects(new UIBox2(prior.Left - 4, prior.Top - 3, prior.Right + 4, prior.Bottom + 3))))
             {
                 _labels.Add((world.Id, prior));
@@ -699,18 +797,24 @@ public sealed partial class SWGalacticMapControl : Control
             }
             UIBox2? best = null;
             var cost = float.PositiveInfinity;
+            var radius = _markExternalLabels && !IsExternalWorld(world) ? (world.Id == _selectedWorld ? 28f : 20f) : 10f;
             var yOffsets = IsLocalView || world.LabelPriority >= 3 || world.Id == _selectedWorld || world.Id == _hover
-                ? new[] { -size.Y - 10, 10, -size.Y - 28, 28, -size.Y - 46, 46 }
-                : new[] { -size.Y - 10, 10 };
+                ? new[] { -size.Y - radius, radius, -size.Y - radius - 18, radius + 18, -size.Y - radius - 36, radius + 36 }
+                : new[] { -size.Y - radius, radius };
             foreach (var y in yOffsets)
-            foreach (var x in new[] { -size.X / 2, 10, -size.X - 10 })
+            foreach (var x in new[] { -size.X / 2, radius, -size.X - radius })
             {
                 var box = UIBox2.FromDimensions(point + new Vector2(x, y), size);
                 if (box.Left < 4 || box.Right > Width - 4 || box.Top < 4 || box.Bottom > Height - 4) continue;
                 if (OverlayIntersectsLabel(box)) continue;
                 if (_politicalLabels.Any(l => l.Box.Intersects(box))) continue;
+                if (_sectorSchemeLabels.Any(l => l.Box.Intersects(box))) continue;
                 if (_labels.Any(l => l.Box.Intersects(new UIBox2(box.Left - 4, box.Top - 3, box.Right + 4, box.Bottom + 3)))) continue;
-                if (points.Any(p => p.Key != world.Id && new UIBox2(box.Left - 7, box.Top - 7, box.Right + 7, box.Bottom + 7).Contains(p.Value))) continue;
+                if (points.Any(p =>
+                {
+                    var half = _markExternalLabels && !IsExternalWorld(_worlds[p.Key]) ? (p.Key == _selectedWorld ? 26f : 18f) : 7f;
+                    return new UIBox2(box.Left - half, box.Top - half, box.Right + half, box.Bottom + half).Contains(p.Value);
+                })) continue;
                 var score = Math.Abs(y) + Math.Abs(x + size.X / 2) * .2f;
                 if (score >= cost) continue;
                 best = box;

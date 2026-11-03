@@ -21,6 +21,8 @@ public sealed partial class SWRepublicMapBrowser
     private readonly OptionButton _commodityPicker = new() { Name = "TrafficCommodityFilter", Filterable = true, MinWidth = 210 };
     private readonly Button _trafficToggle = SWConsoleStyle.TabButton("Потоки");
     private readonly Label _economyStatus = SWConsoleStyle.Text("Ожидание данных", SWConsoleStyle.TextDim, SWConsoleStyle.Small);
+    private readonly RichTextLabel _trafficLegend = SWStatisticsText.Wrap(string.Empty, SWConsoleStyle.TextDim);
+    private readonly SWStatisticsDirectionMarker _selectedFlowDirection = new() { Visible = false };
     private SWCommodityPrototype[] _commodities = Array.Empty<SWCommodityPrototype>();
     private string? _commodityFilter;
     private bool _showTraffic = true;
@@ -51,6 +53,7 @@ public sealed partial class SWRepublicMapBrowser
         SWConsoleStyle.StyleTabButton(_trafficToggle, true);
         bar.AddChild(_commodityPicker);
         bar.AddChild(_trafficToggle);
+        if (_fullPlanetScreen) bar.AddChild(_selectedFlowDirection);
         _medicalToggle.Name = "MedicalSupplyToggle";
         _medicalToggle.Visible = !_compactEconomy && _showMedicalToggle;
         _medicalToggle.OnPressed += _ => SetMedicalSupplyVisible(!_showMedicalSupply);
@@ -58,6 +61,7 @@ public sealed partial class SWRepublicMapBrowser
         _economyStatus.Margin = new Thickness(8, 6);
         bar.AddChild(_economyStatus);
         AddChild(bar);
+        if (_fullPlanetScreen) AddChild(_trafficLegend);
     }
 
     protected override void EnteredTree()
@@ -195,6 +199,14 @@ public sealed partial class SWRepublicMapBrowser
 
     private void RefreshEconomyStatus()
     {
+        _selectedFlowDirection.Visible = _fullPlanetScreen && Surface == null && _focusedFlow != null;
+        _trafficLegend.Visible = _fullPlanetScreen && Surface == null && (_showTraffic || _focusedFlow != null);
+        if (_trafficLegend.Visible)
+            _trafficLegend.SetMessage(_focusedFlow is { } selected
+                ? $"Выбранный поток: {WorldName(selected.From)} → {WorldName(selected.To)} — {GoodName(selected.Good)}"
+                : _commodityFilter == null
+                    ? "Стрелки поочерёдно показывают отдельные товары. Полный список доступен в досье маршрута."
+                    : "Стрелка показывает поток выбранного товара, а не отдельный корабль.", defaultColor: SWConsoleStyle.TextDim);
         UpdateOverviewFlowNotice();
         _economyStatus.Text = _economyView is not { Ready: true } ? "Ожидание данных"
             : !_showTraffic ? "Потоки скрыты"
@@ -262,7 +274,7 @@ public sealed partial class SWRepublicMapBrowser
         _detailHeading.RemoveAllChildren();
         _detail.RemoveAllChildren();
         if (_fullPlanetScreen && _focusedFlow is { } focused)
-            _detailHeading.AddChild(AtlasWrap($"Выбранный поток: {WorldName(focused.From)} → {WorldName(focused.To)} · {GoodName(focused.Good)} · {Number(focused.UnitsPerHour)} ед./ч", SWConsoleStyle.Brass));
+            _detailHeading.AddChild(AtlasWrap($"Выбранный поток: {WorldName(focused.From)} → {WorldName(focused.To)} — {GoodName(focused.Good)} — {Number(focused.UnitsPerHour)} ед./ч", SWConsoleStyle.Brass));
         if (_route is { } route)
         {
             RouteDetails(route);
@@ -510,7 +522,7 @@ public sealed partial class SWRepublicMapBrowser
                 choose.SetAppearance(SWConsoleStyle.TextBright, selected: _commodityFilter == good.Good, quiet: true);
                 choose.OnPressed += _ => SelectCommodity(good.Good);
                 row.AddChild(choose);
-                row.AddChild(AtlasWrap($"Запас: {Number(good.Stock)} / {Number(good.Capacity)} · выпуск {Number(good.ProducedPerHour)} ед./ч · расход {Number(good.ConsumedPerHour)} ед./ч", SWConsoleStyle.TextDim, 400));
+                row.AddChild(AtlasWrap($"Запас: {Number(good.Stock)} / {Number(good.Capacity)} — выпуск {Number(good.ProducedPerHour)} ед./ч — расход {Number(good.ConsumedPerHour)} ед./ч", SWConsoleStyle.TextDim, 400));
                 _detail.AddChild(row);
             }
             return;
@@ -557,6 +569,15 @@ public sealed partial class SWRepublicMapBrowser
 
     private void RouteDetails(SWGalacticMapRoute route)
     {
+        if (_fullPlanetScreen && IsPlannedRoute(route))
+        {
+            _detailHeading.AddChild(AtlasWrap("Маршрут проектируется", SWConsoleStyle.Brass));
+            _detailHeading.AddChild(AtlasWrap($"{WorldName(route.From)} / {WorldName(route.To)}", SWConsoleStyle.TextBright));
+            Empty("Статус пути на карте: проектируется. Подтверждение действующей связи не опубликовано.");
+            WorldButton(route.From);
+            WorldButton(route.To);
+            return;
+        }
         var corridor = _data.Corridors.FirstOrDefault(c => c.Id == route.Corridor);
         _detailHeading.AddChild(AtlasWrap(corridor?.Name ?? "Местный гиперпуть", SWConsoleStyle.Brass));
         _detailHeading.AddChild(AtlasWrap($"{WorldName(route.From)} / {WorldName(route.To)}", SWConsoleStyle.TextBright));

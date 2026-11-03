@@ -568,7 +568,7 @@ public sealed class SWSenateIntro : LayoutContainer
         handle.DrawCircle(center, radius, ink);
         handle.DrawCircle(center, radius * 0.83f, SWConsoleStyle.Navigation.WithAlpha(alpha));
         handle.DrawCircle(center, radius * 0.34f, ink);
-        Span<Vector2> spoke = stackalloc Vector2[4];
+        var spoke = new Vector2[4];
         for (var i = 0; i < 8; i++)
         {
             var angle = i * MathF.PI / 4;

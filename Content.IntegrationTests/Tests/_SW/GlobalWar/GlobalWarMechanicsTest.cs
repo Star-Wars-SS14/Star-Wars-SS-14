@@ -337,11 +337,18 @@ public sealed partial class GlobalWarMechanicsTest
             Assert.That(defence.TryOrderDroid(console, campaign.Actor(1).Body, out _), Is.False, "A head with a minister in place has no war budget.");
             Assert.That(defence.TryOrderDroid(console, campaign.Actor(2).Body, out _), Is.False, "An enemy cannot order here.");
             Assert.That(Budget(), Is.EqualTo(budget));
+            var enemy = defence.GetView(console, campaign.Actor(2).Body);
+            Assert.That(enemy.Reason, Is.EqualTo("sw-global-war-defence-ui-not-yours"));
+            Assert.That(enemy.CanCommand || enemy.CanOrder, Is.False, "The window refuses an enemy too.");
+            Assert.That(defence.GetView(console, campaign.Actor(1).Body).CanOrder, Is.False);
 
             for (var i = 0; i < 3; i++)
                 Assert.That(defence.TryOrderDroid(console, campaign.Actor(0).Body, out var failure), Is.True, failure);
             Assert.That(defence.TryOrderDroid(console, campaign.Actor(0).Body, out var limit), Is.False);
             Assert.That(limit, Is.EqualTo("sw-global-war-defence-order-location-limit"));
+            var view = defence.GetView(console, campaign.Actor(0).Body);
+            Assert.That((view.Reason, view.Here, view.Ordered, view.CanCommand, view.CanOrder),
+                Is.EqualTo((string.Empty, 3, 3, true, true)), "The window counts ordered droids.");
 
             Assert.That(Budget(), Is.EqualTo(budget - 3 * 8000));
             Assert.That(Droids(), Is.Empty, "Nothing stands there before the build time.");

@@ -1,0 +1,30 @@
+<ui:SWGlobalWarWindow xmlns="https://spacestation14.io"
+                      xmlns:ui="clr-namespace:Content.Client._SW.GlobalWar.UI"
+                      Title="{Loc 'sw-global-war-defence-ui-title'}" MinSize="480 340" SetSize="560 400">
+    <BoxContainer Orientation="Vertical" SeparationOverride="8" Margin="14 10">
+        <BoxContainer SeparationOverride="16">
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                <Label Name="HereValue" />
+                <Label Name="HereLabel" Text="{Loc 'sw-global-war-defence-ui-here'}" />
+            </BoxContainer>
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                <Label Name="SideValue" />
+                <Label Name="SideLabel" Text="{Loc 'sw-global-war-defence-ui-side'}" />
+            </BoxContainer>
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True">
+                <Label Name="NearbyValue" />
+                <Label Name="NearbyLabel" Text="{Loc 'sw-global-war-defence-ui-nearby'}" />
+            </BoxContainer>
+            <Label Name="HelpMark" Text="?" StyleClasses="SWTermValue" MouseFilter="Stop" VerticalAlignment="Top" />
+        </BoxContainer>
+        <PanelContainer StyleClasses="SWTermDivider" MinHeight="1" />
+        <GridContainer Columns="2" HSeparationOverride="8" VSeparationOverride="8">
+            <ui:SWGlobalWarConsoleButton Name="Hold" Text="{Loc 'sw-global-war-defence-ui-hold'}" HorizontalExpand="True" MinHeight="36" />
+            <ui:SWGlobalWarConsoleButton Name="Objective" Text="{Loc 'sw-global-war-defence-ui-objective'}" HorizontalExpand="True" MinHeight="36" />
+            <ui:SWGlobalWarConsoleButton Name="Retreat" Text="{Loc 'sw-global-war-defence-ui-retreat'}" HorizontalExpand="True" MinHeight="36" />
+            <ui:SWGlobalWarConsoleButton Name="Follow" Text="{Loc 'sw-global-war-defence-ui-follow'}" HorizontalExpand="True" MinHeight="36" />
+        </GridContainer>
+        <ui:SWGlobalWarConsoleButton Name="Order" HorizontalExpand="True" MinHeight="44" />
+        <RichTextLabel Name="Status" HorizontalExpand="True" VerticalExpand="True" />
+    </BoxContainer>
+</ui:SWGlobalWarWindow>

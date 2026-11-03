@@ -9,6 +9,7 @@ using Content.Server.Popups;
 using Content.Server.Power.EntitySystems;
 using Content.Shared._SW.Droids;
 using Content.Shared._SW.GlobalWar;
+using Content.Shared._SW.GlobalWar.Combat;
 using Content.Shared._SW.GlobalWar.Mapping;
 using Content.Shared._SW.GlobalWar.Politics;
 using Content.Shared.ActionBlocker;
@@ -28,7 +29,10 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._SW.GlobalWar.Combat;
 
-/// <summary>A real station device commanding faction droids and taking funded orders for finite new ones.</summary>
+/// <summary>
+/// A real station device commanding faction droids and taking funded orders for finite new ones.
+/// Its window gives the same commands as its context menu.
+/// </summary>
 [RegisterComponent]
 public sealed partial class SWGlobalWarDefenceConsoleComponent : Component;
 
@@ -53,6 +57,7 @@ public sealed class SWGlobalWarDefenceSystem : EntitySystem
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly SharedMapSystem _maps = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly UserInterfaceSystem _ui = default!;
 
     private const long DroidPrice = 8000;
     // Droids stop a small raid and buy time. Scripted, five armed soldiers beat three droids and die to four.
@@ -65,6 +70,7 @@ public sealed class SWGlobalWarDefenceSystem : EntitySystem
     private static readonly EntProtoId EmpireDroid = "SWGlobalWarDroidEmpire";
 
     private readonly Dictionary<Guid, DroidOrder> _orders = new();
+    private readonly Dictionary<(EntityUid Console, EntityUid Actor), (Guid Subscription, string Result)> _viewers = new();
     private Guid _generation;
     private TimeSpan _nextUpdate;
 
@@ -72,6 +78,12 @@ public sealed class SWGlobalWarDefenceSystem : EntitySystem
     {
         SubscribeLocalEvent<SWGlobalWarDefenceConsoleComponent, GetVerbsEvent<ActivationVerb>>(OnVerbs);
         SubscribeLocalEvent<SWGlobalWarDefenceConsoleComponent, ExaminedEvent>(OnExamined);
+        SubscribeLocalEvent<SWGlobalWarDefenceConsoleComponent, BoundUIClosedEvent>(OnClosed);
+        Subs.BuiEvents<SWGlobalWarDefenceConsoleComponent>(SWGlobalWarDefenceUiKey.Key, subs =>
+        {
+            subs.Event<SWGlobalWarDefenceOpen>(OnOpen);
+            subs.Event<SWGlobalWarDefenceRequest>(OnRequest);
+        });
         SubscribeLocalEvent<SWDroidCommandableComponent, EntityTerminatingEvent>(OnDroidTerminating);
         SubscribeLocalEvent<SWGlobalWarCampaignStartedEvent>((ref SWGlobalWarCampaignStartedEvent ev) => Reset(ev.Generation));
         SubscribeLocalEvent<SWGlobalWarCampaignStoppedEvent>((ref SWGlobalWarCampaignStoppedEvent _) => Reset(Guid.Empty));
@@ -93,6 +105,7 @@ public sealed class SWGlobalWarDefenceSystem : EntitySystem
     private void Reset(Guid generation)
     {
         _orders.Clear();
+        _viewers.Clear();
         _generation = generation;
         _nextUpdate = TimeSpan.Zero;
     }
@@ -267,6 +280,8 @@ public sealed class SWGlobalWarDefenceSystem : EntitySystem
             _orders.Remove(id);
             Spawn(order.Faction == SWGlobalWarFaction.Republic ? RepublicDroid : EmpireDroid, post);
         }
+        foreach (var (console, actor) in _viewers.Keys.ToArray())
+            SendView(console, actor);
     }
 
     private void CancelOrder(Guid id, DroidOrder order)
@@ -315,9 +330,10 @@ public sealed class SWGlobalWarDefenceSystem : EntitySystem
         return false;
     }
 
-    private void Execute(EntityUid console, EntityUid body, string command)
+    /// <summary>Gives the order to every friendly droid within 64 m. Null when this body may not command here.</summary>
+    private int? Execute(EntityUid console, EntityUid body, string command)
     {
-        if (!Context(console, body, out var assignment, out var planet, out var location)) return;
+        if (!Context(console, body, out var assignment, out var planet, out var location)) return null;
         var destination = Transform(console).Coordinates;
         if (command == "objective")
         {
@@ -327,7 +343,7 @@ public sealed class SWGlobalWarDefenceSystem : EntitySystem
                 Location = location,
                 AnchorId = "capturePrimary",
             };
-            if (!_anchors.TryResolveAnchor(address, out var objective)) return;
+            if (!_anchors.TryResolveAnchor(address, out var objective)) return null;
             destination = Transform(objective.Value).Coordinates;
         }
         var faction = FactionName(assignment.Faction);
@@ -345,15 +361,113 @@ public sealed class SWGlobalWarDefenceSystem : EntitySystem
             _ => SWDroidOrderType.GoTo,
         };
         var count = 0;
-        var query = EntityQueryEnumerator<SWDroidCommandableComponent>();
-        while (query.MoveNext(out var droid, out var settings))
+        foreach (var droid in NearbyDroids(console, faction))
         {
-            if (count >= 32 || settings.Faction != faction || Transform(droid).MapUid != Transform(console).MapUid ||
-                Vector2.DistanceSquared(_transform.GetWorldPosition(droid), _transform.GetWorldPosition(console)) > 64 * 64)
-                continue;
+            if (count >= 32)
+                break;
             if (_droids.TrySetDefenceOrder(droid, body, faction, rank, order, destination)) count++;
         }
         _popup.PopupEntity(Loc.GetString("sw-global-war-defence-issued", ("count", count)), console, body);
+        return count;
+    }
+
+    private List<EntityUid> NearbyDroids(EntityUid console, string faction)
+    {
+        var droids = new List<EntityUid>();
+        var map = Transform(console).MapUid;
+        var position = _transform.GetWorldPosition(console);
+        var query = EntityQueryEnumerator<SWDroidCommandableComponent>();
+        while (query.MoveNext(out var droid, out var settings))
+        {
+            if (settings.Faction == faction && Transform(droid).MapUid == map &&
+                Vector2.DistanceSquared(_transform.GetWorldPosition(droid), position) <= 64 * 64)
+                droids.Add(droid);
+        }
+        return droids;
+    }
+
+    private void OnOpen(Entity<SWGlobalWarDefenceConsoleComponent> ent, ref SWGlobalWarDefenceOpen args)
+    {
+        if (args.Subscription == Guid.Empty || !_ui.IsUiOpen(ent.Owner, SWGlobalWarDefenceUiKey.Key, args.Actor))
+            return;
+        _viewers[(ent, args.Actor)] = (args.Subscription, string.Empty);
+        SendView(ent, args.Actor);
+    }
+
+    private void OnClosed(Entity<SWGlobalWarDefenceConsoleComponent> ent, ref BoundUIClosedEvent args)
+    {
+        _viewers.Remove((ent, args.Actor));
+    }
+
+    private void OnRequest(Entity<SWGlobalWarDefenceConsoleComponent> ent, ref SWGlobalWarDefenceRequest args)
+    {
+        if (!_viewers.TryGetValue((ent, args.Actor), out var viewer) || viewer.Subscription != args.Subscription)
+            return;
+        string result;
+        if (args.Command == SWGlobalWarDefenceCommand.Order)
+        {
+            result = TryOrderDroid(ent, args.Actor, out var failure)
+                ? Loc.GetString("sw-global-war-defence-order-accepted", ("seconds", (int) DroidBuildTime.TotalSeconds))
+                : Loc.GetString(failure);
+        }
+        else
+        {
+            var count = Execute(ent, args.Actor, args.Command.ToString().ToLowerInvariant());
+            result = count is { } issued
+                ? Loc.GetString("sw-global-war-defence-issued", ("count", issued))
+                : Loc.GetString("sw-global-war-defence-ui-denied");
+        }
+        _viewers[(ent, args.Actor)] = (viewer.Subscription, result);
+        SendView(ent, args.Actor);
+    }
+
+    private void SendView(EntityUid console, EntityUid actor)
+    {
+        if (!_viewers.TryGetValue((console, actor), out var viewer))
+            return;
+        if (TerminatingOrDeleted(console) || !_ui.IsUiOpen(console, SWGlobalWarDefenceUiKey.Key, actor))
+        {
+            _viewers.Remove((console, actor));
+            return;
+        }
+        _ui.ServerSendUiMessage(console, SWGlobalWarDefenceUiKey.Key,
+            new SWGlobalWarDefenceSnapshot(GetView(console, actor, viewer.Result), viewer.Subscription,
+                GetNetEntity(actor)), actor);
+    }
+
+    /// <summary>Only this side's own droids are counted; anyone else sees why the console refuses them.</summary>
+    public SWGlobalWarDefenceView GetView(EntityUid console, EntityUid body, string result = "")
+    {
+        var seconds = (int) DroidBuildTime.TotalSeconds;
+        if (!Context(console, body, out var assignment, out var planet, out var location))
+            return new(Denial(console, body), 0, DroidsPerLocation, 0, DroidsPerSide, 0, 0, false, false,
+                DroidPrice, seconds, result);
+        var ordered = _orders.Values.Count(o => o.Faction == assignment.Faction && o.Planet == planet && o.Location == location);
+        return new(string.Empty, CountDroids(assignment.Faction, planet, location), DroidsPerLocation,
+            CountDroids(assignment.Faction), DroidsPerSide, NearbyDroids(console, FactionName(assignment.Faction)).Count,
+            ordered, true, (_assignments.GetAuthority(assignment) & SWGlobalWarAuthority.WarBudget) != 0,
+            DroidPrice, seconds, result);
+    }
+
+    /// <summary>The first condition of <see cref="Context"/> that this body fails, as a locale key.</summary>
+    private string Denial(EntityUid console, EntityUid body)
+    {
+        if (!_campaign.TryGetCampaign(out var campaign) || campaign.Comp.Phase != SWGlobalWarCampaignPhase.Running)
+            return "sw-global-war-defence-ui-closed";
+        if (!Transform(console).Anchored || !this.IsPowered(console, EntityManager) ||
+            TryComp<DestructibleComponent>(console, out var damage) && damage.IsBroken)
+            return "sw-global-war-defence-ui-unpowered";
+        if (!TryComp<ActorComponent>(body, out var actor) ||
+            !_assignments.TryGetAssignment(actor.PlayerSession.UserId, out var assignment))
+            return "sw-global-war-defence-ui-no-side";
+        if (!_planets.TryGetPhysicalLocation(console, out var planet, out var location) ||
+            (location == SWGlobalWarPlanetLocation.Orbit ? Comp<SWGlobalWarPlanetComponent>(planet).OrbitOwner :
+                Comp<SWGlobalWarPlanetComponent>(planet).SurfaceOwner) != assignment.Faction)
+            return "sw-global-war-defence-ui-not-yours";
+        if (assignment.Role is not (SWGlobalWarRole.Soldier or SWGlobalWarRole.Pilot or SWGlobalWarRole.ForceUser) &&
+            (_assignments.GetAuthority(assignment) & SWGlobalWarAuthority.MilitaryCommand) == 0)
+            return "sw-global-war-defence-ui-no-rank";
+        return "sw-global-war-defence-ui-reach";
     }
 
     private sealed record DroidOrder(EntityUid Console, EntityUid Planet, SWGlobalWarPlanetLocation Location,

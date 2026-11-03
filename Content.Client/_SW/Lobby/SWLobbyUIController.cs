@@ -21,6 +21,7 @@ public sealed class SWLobbyUIController : UIController, IOnStateEntered<LobbySta
     private const float SwordShare = 574f / 1890f;
     private const float SmallRootHeight = 620;
     private const float NarrowRootWidth = 1200;
+    private const int SmallestTileFont = 10;
 
     [UISystemDependency] private readonly ClientGameTicker _ticker = default!;
 
@@ -30,6 +31,7 @@ public sealed class SWLobbyUIController : UIController, IOnStateEntered<LobbySta
     private SWGlobalWarStatTile? _round;
     private SWGlobalWarStatTile? _players;
     private SWGlobalWarStatTile? _map;
+    private string _mapCaption = string.Empty;
     private SWGlobalWarStatTile? _mode;
     private RichTextLabel? _description;
 
@@ -60,7 +62,8 @@ public sealed class SWLobbyUIController : UIController, IOnStateEntered<LobbySta
         first.AddChild(_players);
         var second = new BoxContainer { SeparationOverride = 6 };
         _mode = new SWGlobalWarStatTile(Loc.GetString("sw-lobby-mode"), 14);
-        _map = new SWGlobalWarStatTile(Loc.GetString("sw-lobby-map"), 14);
+        _mapCaption = Loc.GetString("sw-lobby-map");
+        _map = new SWGlobalWarStatTile(_mapCaption, 14);
         second.AddChild(_mode);
         second.AddChild(_map);
         _description = new RichTextLabel();
@@ -100,9 +103,20 @@ public sealed class SWLobbyUIController : UIController, IOnStateEntered<LobbySta
             ? facts.Players.ToString()
             : Loc.GetString("sw-lobby-players-ready", ("players", facts.Players), ("ready", facts.Ready));
         _mode!.Value.Text = facts.Mode;
+        // The tile's caption is fixed when it is made, and the campaign names its starting worlds instead of a map.
+        var caption = facts.MapCaption.Length != 0 ? facts.MapCaption : Loc.GetString("sw-lobby-map");
+        if (caption != _mapCaption && _map!.Parent is { } row)
+        {
+            var at = _map.GetPositionInParent();
+            row.RemoveChild(_map);
+            _map = new SWGlobalWarStatTile(caption, 14);
+            row.AddChild(_map);
+            _map.SetPositionInParent(at);
+            _mapCaption = caption;
+        }
+
         _map!.Value.Text = facts.Map;
-        // A round on the campaign's empty map has nothing to say here.
-        _map.Visible = facts.Map.Length != 0 && facts.Map != "Empty";
+        _map.Visible = facts.Map.Length != 0;
         _description!.SetMessage(FormattedMessage.FromUnformatted(facts.Description), defaultColor: SWGlobalWarConsoleStyle.TextBright);
     }
 
@@ -131,8 +145,9 @@ public sealed class SWLobbyUIController : UIController, IOnStateEntered<LobbySta
             _players.Value.FontOverride = SWGlobalWarConsoleStyle.Bold(narrow ? 15 : 18);
         if (_mode != null)
             _mode.Value.FontOverride = SWGlobalWarConsoleStyle.Bold(narrow ? 12 : 14);
+        // Two starting worlds make a long value, cut in half at the tile's usual size: it takes the largest that fits.
         if (_map != null)
-            _map.Value.FontOverride = SWGlobalWarConsoleStyle.Bold(narrow ? 12 : 14);
+            _map.Value.FontOverride = Fit(_map.Value.Text ?? string.Empty, _map.Value.Size.X, narrow ? 12 : 14);
         gui.FactsDescriptionVisible(!small);
         // Never narrower than the longest countdown and its plate's margins: the timer was cut at both ends.
         var width = Math.Max(small ? 320 : root.Y < 900 ? 420 : 560, (int) MathF.Ceiling(gui.StartTimeSizer.DesiredSize.X) + 24);
@@ -146,6 +161,23 @@ public sealed class SWLobbyUIController : UIController, IOnStateEntered<LobbySta
         gui.MainActions.Margin = new Thickness(x, 0, 0, gui.MainActions.Margin.Bottom);
         var links = gui.LinksPlate.Size.X;
         gui.LinksPlate.Margin = new Thickness(Math.Clamp(axis - inset - links / 2f, 0, Math.Max(0, leftWidth - links)), 0, 0, 0);
+    }
+
+    /// <summary>The bold font at <paramref name="size"/>, or the largest smaller one that keeps the text within the width.</summary>
+    private static Font Fit(string text, float width, int size)
+    {
+        var font = SWGlobalWarConsoleStyle.Bold(size);
+        for (; size > SmallestTileFont && width > 0 && TextWidth(font, text) > width; size--)
+            font = SWGlobalWarConsoleStyle.Bold(size - 1);
+        return font;
+    }
+
+    private static float TextWidth(Font font, string text)
+    {
+        var width = 0f;
+        foreach (var rune in text.EnumerateRunes())
+            width += font.GetCharMetrics(rune, 1)?.Advance ?? 0;
+        return width;
     }
 
     private static float Sword(LobbyGui gui, Vector2 root)

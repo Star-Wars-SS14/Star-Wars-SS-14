@@ -11,10 +11,6 @@ public sealed partial class SWGlobalWarCampaignComponent : Component
     [DataField]
     public TimeSpan NeutralFundingDuration = TimeSpan.FromMinutes(30);
 
-    /// <summary>Maximum paid contribution per faction and neutral sector for this generation.</summary>
-    [DataField]
-    public long NeutralFundingLimit = 30000;
-
     /// <summary>Earliest active campaign time for a declaration of war.</summary>
     [DataField]
     public TimeSpan PeaceDuration = TimeSpan.FromMinutes(60);

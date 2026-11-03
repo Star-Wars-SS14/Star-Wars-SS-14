@@ -17,7 +17,6 @@ sw-global-war-politics-denied-border-no-claim = В этом секторе не�
 sw-global-war-politics-denied-border-own-claim = Притязание в этом секторе принадлежит вашей стороне. Оспаривать его не нужно.
 sw-global-war-politics-denied-sponsor-no-civil-war = В этом секторе нет гражданской войны. Финансировать некого.
 sw-global-war-politics-denied-sponsor-closed = Срок финансирования нейтральных секторов истёк.
-sw-global-war-politics-denied-sponsor-limit = Сумма превышает остаток лимита финансирования этого сектора. Уменьшите её.
 sw-global-war-politics-denied-amount = Введите сумму больше нуля.
 sw-global-war-politics-denied-surrender-closed = Время кампании истекло. Капитуляция больше невозможна.
 sw-global-war-sanction-imposed = { $faction } вводит запрет экспорта товара «{ $commodity }» противной стороне.

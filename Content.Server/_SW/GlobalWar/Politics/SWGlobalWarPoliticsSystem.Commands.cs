@@ -130,12 +130,12 @@ public sealed partial class SWGlobalWarPoliticsSystem
                     reason = "sw-global-war-politics-denied-amount";
                     return false;
                 }
+                // Any amount the treasury can pay; the ledger refuses the rest.
                 var contribution = head.Faction == SWGlobalWarFaction.Republic
                     ? funding.RepublicContribution : funding.EmpireContribution;
-                if (contribution > campaign.Comp.NeutralFundingLimit ||
-                    command.Amount > campaign.Comp.NeutralFundingLimit - contribution)
+                if (command.Amount > long.MaxValue - contribution)
                 {
-                    reason = "sw-global-war-politics-denied-sponsor-limit";
+                    reason = "sw-global-war-politics-insufficient-funds";
                     return false;
                 }
                 if (!_ledger.TryGetLedger(out var ledger))

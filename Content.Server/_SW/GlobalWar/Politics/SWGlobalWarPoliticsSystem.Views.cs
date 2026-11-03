@@ -51,10 +51,9 @@ public sealed partial class SWGlobalWarPoliticsSystem
             var contribution = assignment.Faction == SWGlobalWarFaction.Republic
                 ? neutral.RepublicContribution : neutral.EmpireContribution;
             return new SWGlobalWarNeutralView(pair.Key, neutral.Phase, neutral.Claimant, neutral.Remaining,
-                neutral.ActiveCaptures.Count != 0, head ? contribution : null,
-                head ? campaign.Comp.NeutralFundingLimit : null, campaign.Comp.NeutralFundingDuration,
+                neutral.ActiveCaptures.Count != 0, head ? contribution : null, campaign.Comp.NeutralFundingDuration,
                 head && running && neutral.Phase == SWGlobalWarNeutralPhase.CivilWar &&
-                now < campaign.Comp.NeutralFundingDuration && contribution < campaign.Comp.NeutralFundingLimit,
+                now < campaign.Comp.NeutralFundingDuration,
                 head && running && state.Relations == SWGlobalWarRelations.Peace &&
                 neutral.Phase == SWGlobalWarNeutralPhase.Annexing && neutral.Claimant != assignment.Faction &&
                 neutral.Claimant != SWGlobalWarFaction.Neutral);

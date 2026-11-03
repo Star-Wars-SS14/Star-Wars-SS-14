@@ -17,7 +17,6 @@ sw-global-war-politics-denied-border-no-claim = No rival accession claim exists 
 sw-global-war-politics-denied-border-own-claim = The claim in this sector is your own side's. There is nothing to contest.
 sw-global-war-politics-denied-sponsor-no-civil-war = There is no civil war in this sector. There is no one to fund.
 sw-global-war-politics-denied-sponsor-closed = The funding period for neutral sectors has ended.
-sw-global-war-politics-denied-sponsor-limit = The amount exceeds this sector's remaining funding limit. Lower it.
 sw-global-war-politics-denied-amount = Enter an amount above zero.
 sw-global-war-politics-denied-surrender-closed = Campaign time has expired. Surrender is no longer possible.
 sw-global-war-sanction-imposed = The { $faction } bans exports of { $commodity } to the opposing side.

@@ -280,7 +280,9 @@ public sealed partial class SWGlobalWarMarketConsoleMenu
         }
         if (_flowCommodities.Length == 0)
         {
-            _flowCommodities = _commodities.Select(c => c.Id).ToArray();
+            // Only goods the markets trade. Weapons, armour and medicine move as whole items through supply instead.
+            var traded = _state.Planets.SelectMany(p => p.Goods).Select(g => g.Commodity.Id).ToHashSet();
+            _flowCommodities = _commodities.Select(c => c.Id).Where(traded.Contains).ToArray();
             for (var i = 0; i < _flowCommodities.Length; i++)
                 FlowCommodity.AddItem(Loc.GetString(_prototypes.Index<SWGlobalWarCommodityPrototype>(_flowCommodities[i]).Name), i);
         }

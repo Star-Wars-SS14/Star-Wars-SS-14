@@ -302,6 +302,9 @@ public sealed partial class SWGlobalWarMarketSimulation
         foreach (var flow in _flows.Values)
         {
             var minute = flow.PerMinute * UnitsPerItem * TimeSpan.TicksPerMinute;
+            // A slow flow of whole items saves up for one item instead of capping below it.
+            if (_commodities[flow.Commodity].WholeItems && flow.PerMinute > 0)
+                minute = Math.Max(minute, (decimal) UnitsPerItem * TimeSpan.TicksPerMinute);
             flow.DispatchBudget = Math.Min(minute, flow.DispatchBudget + flow.PerMinute * UnitsPerItem * StepDuration.Ticks);
         }
         var dispatched = false;
@@ -400,7 +403,13 @@ public sealed partial class SWGlobalWarMarketSimulation
         }
         if (eligible == 0)
             flow.WaitReason = "sw-global-war-market-wait-policy";
-        return Math.Min(quantity, eligible);
+        return WholeQuantity(flow.Commodity, Math.Min(quantity, eligible));
+    }
+
+    /// <summary>Whole-item goods leave only in whole items; anything less waits for the next step.</summary>
+    private int WholeQuantity(string commodity, int quantity)
+    {
+        return _commodities[commodity].WholeItems ? quantity - quantity % UnitsPerItem : quantity;
     }
 
     private int DispatchFlow(SWGlobalWarMarketFlow flow, int allocation)
@@ -420,7 +429,9 @@ public sealed partial class SWGlobalWarMarketSimulation
                 break;
             if (batch.Quantity == batch.Reserved || !AllowsDispatch(batch, flow.Commodity, route))
                 continue;
-            var quantity = Math.Min(remaining, batch.Quantity - batch.Reserved);
+            var quantity = WholeQuantity(flow.Commodity, Math.Min(remaining, batch.Quantity - batch.Reserved));
+            if (quantity == 0)
+                continue;
             var cargo = TakeBatch(good, batch, quantity);
             recipient.Incoming += quantity;
             var obligation = (flow.Id, flow.Destination, flow.Commodity);

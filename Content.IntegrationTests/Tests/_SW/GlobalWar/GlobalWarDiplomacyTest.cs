@@ -60,6 +60,7 @@ using Robust.Shared.Timing;
 namespace Content.IntegrationTests.Tests._SW.GlobalWar;
 
 [TestFixture]
+
 // Client windows render text, and the client font cache is not safe for two clients at once.
 [NonParallelizable]
 public sealed partial class GlobalWarDiplomacyTest
@@ -1388,17 +1389,17 @@ public sealed partial class GlobalWarDiplomacyTest
                         Assert.That(politicalNotified, Is.True);
                         Assert.That(politics.Execute(sessions[0], first).Success, Is.True);
                         Assert.That(politics.Execute(sessions[0], first with { Amount = 1 }).Success, Is.False);
-                        Assert.That(Sponsor(0, "SWDiplomacyTestN0", 10_001), Is.False);
-                        Assert.That(Sponsor(0, "SWDiplomacyTestN0", 10_000), Is.True);
-                        Assert.That(Sponsor(0, "SWDiplomacyTestN0", 1), Is.False);
+                        // No cap per sector: any amount the treasury holds.
+                        Assert.That(Sponsor(0, "SWDiplomacyTestN0", 40_000), Is.True);
+                        Assert.That(Sponsor(0, "SWDiplomacyTestN0", 390_001), Is.False);
                         Assert.That(Sponsor(1, "SWDiplomacyTestN0", 30_000), Is.True);
                         Assert.That(Sponsor(0, "SWDiplomacyTestN1", 30_000), Is.True);
                         Assert.That(Sponsor(1, "SWDiplomacyTestN1", 30_000), Is.True);
-                        Assert.That(n0.RepublicContribution, Is.EqualTo(30_000));
+                        Assert.That(n0.RepublicContribution, Is.EqualTo(60_000));
                         Assert.That(n0.EmpireContribution, Is.EqualTo(30_000));
                         Assert.That(n1.RepublicContribution, Is.EqualTo(30_000));
                         Assert.That(n1.EmpireContribution, Is.EqualTo(30_000));
-                        Assert.That(ledger.GetBalance(r, SWGlobalWarAccount.Treasury).Balance, Is.EqualTo(390_000));
+                        Assert.That(ledger.GetBalance(r, SWGlobalWarAccount.Treasury).Balance, Is.EqualTo(360_000));
                         Assert.That(ledger.GetBalance(e, SWGlobalWarAccount.Treasury).Balance, Is.EqualTo(390_000));
                         Assert.That(Sponsor(0, "SWDiplomacyTestN0", long.MaxValue), Is.False);
                         Assert.That(Sponsor(0, "SWDiplomacyTestN0", 0), Is.False);
@@ -1419,8 +1420,8 @@ public sealed partial class GlobalWarDiplomacyTest
                         Assert.That(registry.TryExecute(sessions[6], new SWGlobalWarAppointmentCommand(gen,
                             Guid.NewGuid(), SWGlobalWarAppointmentAction.ClaimHead, civilian.Revision, civilian.User,
                             civilian.Revision, Vacancy: vacancy, Stage: stage), out _), Is.True);
-                        Assert.That(Sponsor(6, "SWDiplomacyTestN0", 2), Is.False);
                         Assert.That(Sponsor(6, "SWDiplomacyTestN0", 1), Is.True);
+                        Assert.That(n0.RepublicContribution, Is.EqualTo(30_000), "The side keeps its contribution across a new head.");
                         At(1800, update: false);
                         Assert.That(Sponsor(6, "SWDiplomacyTestN1", 1), Is.False);
                         Assert.That(n1.RepublicContribution, Is.Zero);

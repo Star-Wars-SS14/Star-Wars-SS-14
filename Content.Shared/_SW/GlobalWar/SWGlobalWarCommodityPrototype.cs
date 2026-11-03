@@ -20,6 +20,10 @@ public sealed partial class SWGlobalWarCommodityPrototype : IPrototype
     [DataField]
     public double CargoVolume = 1;
 
+    /// <summary>Counted in whole items, never in fractions: a weapon or a board, not ore or sheets.</summary>
+    [DataField]
+    public bool WholeItems;
+
     /// <summary>Credits per unit of actual mandatory civilian consumption; production and transport pay no tax.</summary>
     [DataField(serverOnly: true)]
     public int ConsumptionTax;

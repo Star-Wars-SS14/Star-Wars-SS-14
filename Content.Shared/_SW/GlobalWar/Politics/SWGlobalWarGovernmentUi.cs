@@ -25,7 +25,7 @@ public sealed record SWGlobalWarDiplomacyView(Guid Generation, long Revision, lo
 [Serializable, NetSerializable]
 public sealed record SWGlobalWarNeutralView(ProtoId<SWGlobalWarPlanetPrototype> Planet,
     SWGlobalWarNeutralPhase Phase, SWGlobalWarFaction Claimant, TimeSpan Remaining, bool Paused,
-    long? OwnContribution, long? ContributionLimit, TimeSpan FundingEndsAt, bool CanSponsor, bool CanContest);
+    long? OwnContribution, TimeSpan FundingEndsAt, bool CanSponsor, bool CanContest);
 
 [Serializable, NetSerializable]
 public sealed record SWGlobalWarSanctionView(SWGlobalWarFaction Faction, ProtoId<SWGlobalWarCommodityPrototype> Commodity);

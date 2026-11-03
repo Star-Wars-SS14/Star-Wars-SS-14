@@ -54,6 +54,7 @@
   name: sw-global-war-commodity-advanced-electronics
   entity: SWAdvancedElectronics
   cargoVolume: 1
+  wholeItems: true
 
 - type: entity
   parent: WheatBushel

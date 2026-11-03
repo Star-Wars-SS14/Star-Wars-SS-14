@@ -1,4 +1,14 @@
 - files: ["SWTOR_Eternal_Empire.ogg"]
   license: "Custom"
-  copyright: "Track \"The Eternal Empire Main Theme\" (artist tag: SWTOR) from the Star Wars: The Old Republic soundtrack. Proprietary game music, not under a free license; rights belong to its rights holders."
+  copyright: "Track \"The Eternal Empire Main Theme\" (artist tag: SWTOR) from the Star Wars: The Old Republic soundtrack. Proprietary game music, not under a free license; rights belong to the game's rights holders (BioWare, Electronic Arts, Lucasfilm)."
+  source: "NA"
+
+- files: ["The_Sith_Endar_Spire.ogg"]
+  license: "Custom"
+  copyright: "Track \"The sith/Endar Spire\" (artist tag: KOTOR) from the Star Wars: Knights of the Old Republic soundtrack, composed by Jeremy Soule. Proprietary game music, not under a free license; rights belong to the game's rights holders (LucasArts / Lucasfilm, BioWare)."
+  source: "NA"
+
+- files: ["Mandalorian-Vode-An.ogg"]
+  license: "Custom"
+  copyright: "Track \"Vode An\" (artist tag: KARIMAU). Author and license terms of the original are not known; not confirmed as free."
   source: "NA"

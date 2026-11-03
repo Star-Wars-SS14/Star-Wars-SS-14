@@ -65,6 +65,7 @@ public sealed class SWGlobalWarIdentitySystem : EntitySystem
         _participationGenerations[user] = generation;
         identity.Generation = generation;
         identity.Faction = faction;
+        identity.Body = mind.Comp.OwnedEntity;
         if (mind.Comp.OwnedEntity is { } body)
             UpdateBody(body, faction);
         return true;
@@ -116,7 +117,8 @@ public sealed class SWGlobalWarIdentitySystem : EntitySystem
             !_minds.TryGetMind(user, out var current) || current.Value.Owner != mind ||
             !TryComp<SWGlobalWarIdentityComponent>(mind, out var identity) ||
             identity.Generation != rule.Comp.Generation ||
-            !_memberships.TryGetValue(user, out var locked) || locked != identity.Faction)
+            !_memberships.TryGetValue(user, out var locked) || locked != identity.Faction ||
+            identity.Body != body)
             return false;
         mindUid = mind;
         faction = identity.Faction;
@@ -134,7 +136,12 @@ public sealed class SWGlobalWarIdentitySystem : EntitySystem
 
     private void OnMindAdded(Entity<SWGlobalWarIdentityComponent> ent, ref MindGotAddedEvent args)
     {
-        if (_rules.TryGetGlobalWarGamerule(out var rule) && ent.Comp.Generation == rule.Comp.Generation)
+        if (!_rules.TryGetGlobalWarGamerule(out var rule) || ent.Comp.Generation != rule.Comp.Generation ||
+            HasComp<GhostComponent>(args.Container.Owner))
+            return;
+        // A mind enrolled before it had a body takes the first one; any later body stays outside the campaign.
+        ent.Comp.Body ??= args.Container.Owner;
+        if (ent.Comp.Body == args.Container.Owner)
             UpdateBody(args.Container.Owner, ent.Comp.Faction);
     }
 

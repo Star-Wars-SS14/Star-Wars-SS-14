@@ -463,4 +463,49 @@ public sealed class GlobalWarTravelTest
         });
         await pair.CleanReturnAsync();
     }
+
+    [Test]
+    public async Task HelmFtlGoesOnlyAlongHyperroutes()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Dirty = true, Connected = true });
+        var server = pair.Server;
+        var entities = server.EntMan;
+        var planets = server.System<SWGlobalWarPlanetSystem>();
+        var shuttles = server.System<ShuttleSystem>();
+        await server.WaitAssertion(() =>
+        {
+            server.System<GameTicker>().StartGameRule("TravelTestRule", out var rule);
+            var generation = entities.GetComponent<SWGlobalWarGameruleComponent>(rule).Generation;
+            Assert.That(planets.TryGetPlanet("TravelTestAlpha", out var alpha), Is.True);
+            Assert.That(planets.TryGetPlanet("TravelTestBeta", out var beta), Is.True);
+            Assert.That(planets.TryEnsureLocation(alpha!.Value, SWGlobalWarPlanetLocation.Orbit, out var orbit, out _), Is.True);
+            Assert.That(planets.TryEnsureLocation(alpha.Value, SWGlobalWarPlanetLocation.Surface, out var surface, out _), Is.True);
+            Assert.That(planets.TryEnsureLocation(beta!.Value, SWGlobalWarPlanetLocation.Orbit, out var next, out _), Is.True);
+            // A surface is never a jump target, so the helm's map does not list it.
+            Assert.That(entities.HasComponent<FTLDestinationComponent>(surface!.Value), Is.False);
+
+            var manager = server.ResolveDependency<IMapManager>();
+            var grid = manager.CreateGridEntity(server.Transform(orbit!.Value).MapID);
+            var ship = grid.Owner;
+            server.System<MapSystem>().SetTiles(ship, grid.Comp,
+                new List<(Vector2i, Tile)> { (Vector2i.Zero, new Tile(1)), (new Vector2i(1, 0), new Tile(1)) });
+            var pilot = entities.SpawnEntity(null, new EntityCoordinates(ship, .5f, .5f));
+            var minds = server.System<SharedMindSystem>();
+            var mind = minds.CreateMind(server.PlayerMan.Sessions.Single().UserId);
+            minds.TransferTo(mind, pilot);
+            Assert.That(server.System<SWGlobalWarIdentitySystem>().TryEnroll(mind, SWGlobalWarFaction.Republic, generation), Is.True);
+
+            void Jump(EntityUid map) => shuttles.FTLToCoordinates(ship, entities.GetComponent<ShuttleComponent>(ship),
+                new EntityCoordinates(map, 1000, 1000), Angle.Zero);
+            // A hop inside the current orbit used to start a flight that never found its way out of hyperspace.
+            Jump(orbit.Value);
+            Assert.That(entities.HasComponent<FTLComponent>(ship), Is.False, "No jump inside the current orbit.");
+            Jump(surface.Value);
+            Assert.That(entities.HasComponent<FTLComponent>(ship), Is.False, "No jump to a surface.");
+            Assert.That(entities.HasComponent<SWGlobalWarTravelComponent>(ship), Is.False);
+            Jump(next!.Value);
+            Assert.That(entities.HasComponent<FTLComponent>(ship), Is.True, "A jump along the route still goes.");
+        });
+        await pair.CleanReturnAsync();
+    }
 }

@@ -16,6 +16,7 @@ using Content.Shared.CombatMode;
 using Content.Server._SW.Lathe.SWLathe;
 using Content.Server.Atmos.Components;
 using Content.Shared.Station.Components;
+using Content.Shared.Shuttles.Components;
 using Content.Shared.Trigger.Components;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
@@ -183,6 +184,10 @@ public sealed class SWGlobalWarPlanetSystem : EntitySystem
             link.Location = location;
             link.EmptySince = _timing.CurTime;
             AddComp<SWGlobalWarGuardedMapComponent>(map.Value);
+            // Every station map becomes an open FTL destination. A ship never jumps to a surface, so the helm's map
+            // must not offer one.
+            if (location == SWGlobalWarPlanetLocation.Surface)
+                RemComp<FTLDestinationComponent>(map.Value);
             if (!_maps.IsInitialized(mapId))
                 _maps.InitializeMap(mapId);
 

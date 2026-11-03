@@ -3,6 +3,7 @@ using Content.Client.Audio;
 using Content.Client.GameTicking.Managers;
 using Content.Client.Lobby;
 using Content.Shared._SW._Senate.Intro;
+using Content.Shared.CCVar;
 using Content.Shared.Preferences;
 using Robust.Client.UserInterface.Controllers;
 using Robust.Client.UserInterface.Controls;
@@ -120,8 +121,9 @@ public sealed class SWSenateIntroUIController : UIController, IOnStateEntered<Lo
         if (_intro != null)
             return;
 
-        _intro = new SWSenateIntro(ResolveRole(), _config.GetCVar(SWSenateIntroCVars.Autoplay));
+        _intro = new SWSenateIntro(ResolveRole(), _config.GetCVar(SWSenateIntroCVars.Autoplay), _config.GetCVar(CCVars.ReducedMotion));
         _intro.Finished += () => Close(true);
+        _intro.Replayed += () => EntityManager.System<ContentAudioSystem>().StartSenateIntroMusic();
         _intro.ReadyToggled += ready =>
         {
             if (!EntityManager.System<ClientGameTicker>().IsGameStarted)

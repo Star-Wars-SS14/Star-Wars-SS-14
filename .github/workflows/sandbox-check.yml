@@ -1,0 +1,57 @@
+name: Sandbox Check
+
+# Fast check that the client and shared assemblies only use what the client sandbox allows.
+# A violation makes the build fail to load for players, and SandboxTest is easy to miss in the
+# long integration test run, so it gets its own check.
+
+on:
+  push:
+    branches: [ master, staging, stable ]
+    paths:
+      - '**.cs'
+      - '**.csproj'
+      - '**.sln'
+      - '**/Directory.Packages.props'
+      - 'RobustToolbox'
+      - 'RobustToolbox/**'
+      - '.github/workflows/sandbox-check.yml'
+  merge_group:
+  pull_request:
+    types: [ opened, reopened, synchronize, ready_for_review ]
+    branches: [ master, staging, stable ]
+    paths:
+      - '**.cs'
+      - '**.csproj'
+      - '**.sln'
+      - '**/Directory.Packages.props'
+      - 'RobustToolbox'
+      - 'RobustToolbox/**'
+      - '.github/workflows/sandbox-check.yml'
+
+jobs:
+  sandbox:
+    name: Sandbox Check
+    if: github.actor != 'IanComradeBot' && github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - name: Setup submodule
+        run: |
+          git submodule update --init --recursive
+      - name: Pull engine updates
+        uses: space-wizards/submodule-dependency@v0.1.5
+      - name: Update Engine Submodules
+        run: |
+          cd RobustToolbox/
+          git submodule update --init --recursive
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v4.1.0
+        with:
+          dotnet-version: 9.0.x
+      - name: Install dependencies
+        run: dotnet restore Content.IntegrationTests/Content.IntegrationTests.csproj
+      - name: Build
+        run: dotnet build Content.IntegrationTests/Content.IntegrationTests.csproj --configuration Release --no-restore /p:WarningsAsErrors= /m
+      - name: Run SandboxTest
+        run: dotnet test --no-build --configuration Release Content.IntegrationTests/Content.IntegrationTests.csproj --filter "FullyQualifiedName~Content.IntegrationTests.Tests.Utility.SandboxTest" -- NUnit.ConsoleOut=0

@@ -17,6 +17,12 @@ public sealed partial class SWRepublicMapBrowser
 
     public void SetCrises(IReadOnlyList<SWMapCrisisEntry> crises)
     {
+        var edge = _route == null ? null : SWTransitLinkPrototype.LinkId(_route.From, _route.To);
+        var before = _mapCrises.Where(c => _selectedCrisisIds.Length > 0
+            ? _selectedCrisisIds.Contains(c.Id) : edge != null && c.Routes.Any(r => r.EdgeId == edge)).ToArray();
+        var after = crises.Where(c => _selectedCrisisIds.Length > 0
+            ? _selectedCrisisIds.Contains(c.Id) : edge != null && c.Routes.Any(r => r.EdgeId == edge)).ToArray();
+        var detailsChanged = before.Length != after.Length || before.Zip(after, CrisisEquals).Any(equal => !equal);
         _mapCrises = crises;
         Map.SetCrises(crises, _data.Worlds);
         _crisisButton.Visible = true;
@@ -26,10 +32,20 @@ public sealed partial class SWRepublicMapBrowser
         {
             _selectedCrisisIds = _selectedCrisisIds.Where(id => crises.Any(c => c.Id == id)).ToArray();
             Map.SelectCrises(_selectedCrisisIds);
-            RefreshDetails();
+            if (detailsChanged) RefreshDetails();
         }
-        else if (_route != null) RefreshDetails();
+        else if (_route != null && detailsChanged) RefreshDetails();
     }
+
+    private static bool CrisisEquals(SWMapCrisisEntry a, SWMapCrisisEntry b) =>
+        a.Id == b.Id && a.Title == b.Title && a.Description == b.Description && a.Status == b.Status &&
+        a.LocationLabel == b.LocationLabel && a.Consequences == b.Consequences && a.WorldId == b.WorldId &&
+        a.EdgeId == b.EdgeId && a.Severity == b.Severity && a.EffectsLabel == b.EffectsLabel &&
+        a.SectorIds.SequenceEqual(b.SectorIds) && a.Effects.Count == b.Effects.Count &&
+        a.Effects.Zip(b.Effects, (x, y) => x.StatName == y.StatName && x.Color == y.Color && x.Delta == y.Delta && x.PerHour == y.PerHour).All(equal => equal) &&
+        a.Routes.Count == b.Routes.Count && a.Routes.Zip(b.Routes, (x, y) => x.EdgeId == y.EdgeId &&
+            x.CapacityMultiplier == y.CapacityMultiplier && x.BaseCapacity == y.BaseCapacity &&
+            x.UsedSlotsPerHour == y.UsedSlotsPerHour && x.HasUsage == y.HasUsage).All(equal => equal);
 
     public void SelectCrises(IEnumerable<string> ids)
     {
@@ -40,6 +56,42 @@ public sealed partial class SWRepublicMapBrowser
         _selectedCrisisIds = selected;
         Map.SelectCrises(selected);
         RefreshDetails();
+    }
+
+    public void FocusCrisis(string id)
+    {
+        var crisis = _mapCrises.FirstOrDefault(c => c.Id == id);
+        if (crisis == null) return;
+        if (_fullPlanetScreen && _lockedSector == null)
+        {
+            if (crisis.WorldId.Length > 0 && _worlds.ContainsKey(crisis.WorldId))
+                FocusWorldImmediately(crisis.WorldId);
+            else
+            {
+                Map.FinishTransition();
+                _systemParentSector = null;
+                if (crisis.SectorIds.Count == 1 && _sectorPrototypes.Any(s => s.ID == crisis.SectorIds[0]))
+                {
+                    SwitchView(crisis.SectorIds[0]);
+                    if (UniqueAnchor(crisis.SectorIds[0]) is { } anchor) SelectWorld(anchor.Id, true);
+                }
+                else SwitchView(null);
+            }
+            SelectCrises(new[] { id });
+            _statisticsAtlas?.ShowDetails();
+            return;
+        }
+        if (crisis.WorldId.Length > 0 && _worlds.ContainsKey(crisis.WorldId))
+        {
+            ShowGalaxy();
+            SelectWorld(crisis.WorldId, true);
+        }
+        else if (crisis.SectorIds.Count == 1 && OpenSector(crisis.SectorIds[0]))
+        {
+            if (UniqueAnchor(crisis.SectorIds[0]) is { } anchor) SelectWorld(anchor.Id, true);
+        }
+        else ShowGalaxy();
+        SelectCrises(new[] { id });
     }
 
     private void ClearCrisisSelection()
@@ -89,6 +141,7 @@ public sealed partial class SWRepublicMapBrowser
                     card.AddChild(Pair("Фактическая загрузка, мест/ч", Number(route.UsedSlotsPerHour), SWConsoleStyle.TextDim));
             }
             var location = crisis.WorldId.Length > 0 ? _worlds.GetValueOrDefault(crisis.WorldId)
+                : _fullPlanetScreen ? crisis.SectorIds.Count == 1 ? UniqueAnchor(crisis.SectorIds[0]) : null
                 : _data.Worlds.FirstOrDefault(w => w.Anchor && crisis.SectorIds.Contains(w.Sector?.Id ?? ""));
             if (location != null)
             {

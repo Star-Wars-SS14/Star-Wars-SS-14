@@ -1,16 +1,16 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
     xmlns:senate="clr-namespace:Content.Client._SW._Senate"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-    Title="Статистика Республики" SetSize="1100 760" MinSize="760 620">
+    Title="Статистика Республики" SetSize="1400 860" MinSize="760 620">
     <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
         <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="0">
             <PanelContainer Name="HeaderPanel">
                 <BoxContainer Orientation="Horizontal" Margin="14 10" SeparationOverride="0">
-                    <senate:SWConsoleSeal Name="RepublicSeal" Margin="0 0 12 0" />
                     <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="2">
-                        <Label Name="HeaderNetwork" Text="РЕСПУБЛИКА / ГОЛОНЕТ" />
-                        <Label Name="HeaderTitle" Text="Аналитика Республики" ClipText="True" />
+                        <Label Name="HeaderNetwork" Text="РЕСПУБЛИКА / АНАЛИТИЧЕСКАЯ СЛУЖБА" />
+                        <Label Name="HeaderTitle" Text="Статистика Республики" ClipText="True" />
                     </BoxContainer>
+                    <senate:SWConsoleSeal Name="RepublicSeal" Margin="12 0" />
                     <Label Name="HeaderClock" Margin="12 0 0 0" VerticalAlignment="Center" />
                 </BoxContainer>
             </PanelContainer>

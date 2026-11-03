@@ -142,9 +142,21 @@ public sealed partial class SWPlanetSurfaceControl
         }
     }
 
+    public void BeginReveal()
+    {
+        _revealEnabled = true;
+        CanKeyboardFocus = true;
+        KeyboardFocusOnClick = true;
+        _reveal = _configuration.GetCVar(CCVars.ReducedMotion) ? 1 : 0;
+    }
+
     protected override void FrameUpdate(FrameEventArgs args)
     {
         base.FrameUpdate(args);
+        if (VisibleInTree && _reveal < 1)
+            _reveal = _configuration.GetCVar(CCVars.ReducedMotion) ? 1 : Math.Min(1, _reveal + Math.Max(0, args.DeltaSeconds) / .32f);
+        if (_revealEnabled)
+            _selectionPulse = _configuration.GetCVar(CCVars.ReducedMotion) ? 0 : Math.Max(0, _selectionPulse - Math.Max(0, args.DeltaSeconds) / .16f);
         AdvanceTraffic(args.DeltaSeconds);
     }
 

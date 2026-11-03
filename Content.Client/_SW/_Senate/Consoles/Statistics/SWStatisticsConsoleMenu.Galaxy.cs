@@ -9,7 +9,7 @@ public sealed partial class SWStatisticsConsoleMenu
 
     private void InitializeGalaxy()
     {
-        _galaxy = new SWRepublicMapBrowser(showProductionRecipes: true, showMedicalToggle: false, viewerFaction: "none");
+        _galaxy = new SWRepublicMapBrowser(showProductionRecipes: true, showMedicalToggle: false, viewerFaction: "none", fullPlanetScreen: true);
         _galaxy.SelectionChanged += () => _sectorId = _galaxy.SelectedLiveSectorId;
         _galaxy.SectorSummaryRequested += OpenSectorSummary;
         GalaxyPanel.AddChild(_galaxy);

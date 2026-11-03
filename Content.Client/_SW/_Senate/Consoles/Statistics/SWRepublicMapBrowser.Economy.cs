@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Content.Client._SW._Senate.Consoles.Economy;
 using Content.Client._SW._Senate.Economy;
 using Content.Shared._SW._Senate.Economy;
@@ -46,6 +48,7 @@ public sealed partial class SWRepublicMapBrowser
             Map.SetTrafficFilter(_commodityFilter, _showTraffic);
             Surface?.SetTrafficFilter(_commodityFilter, _showTraffic);
             RefreshEconomyStatus();
+            if (_planetOpen) RefreshDetails();
         };
         SWConsoleStyle.StyleTabButton(_trafficToggle, true);
         bar.AddChild(_commodityPicker);
@@ -78,21 +81,106 @@ public sealed partial class SWRepublicMapBrowser
 
     private void OnEconomyChanged() => SetEconomy(_economyClient?.View);
 
+    private static readonly JsonSerializerOptions SnapshotOptions = new()
+    {
+        IncludeFields = true,
+        NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
+    };
+
+    private static string SnapshotKey(object value) => JsonSerializer.Serialize(value, SnapshotOptions);
+
+    private string EconomyDetailsKey(SWEconomyView? view)
+    {
+        var world = SelectedWorldId;
+        var sector = world != null && _worlds.TryGetValue(world, out var entry) ? entry.Sector?.Id : null;
+        var edge = _route == null ? null : SWTransitLinkPrototype.LinkId(_route.From, _route.To);
+        var live = view?.Worlds.FirstOrDefault(w => w.World == world);
+        var surfaceControl = Surface;
+        var selectedSite = surfaceControl?.SelectedSiteId;
+        var site = surfaceControl?.Surface.Sites.FirstOrDefault(s => s.Id == selectedSite);
+        var recipeIds = site?.Recipes.Select(r => r.Id).ToHashSet();
+        var surface = surfaceControl != null;
+        var needsSupply = surface ? site?.Kind == "settlement" : _detailPage == 0 && edge == null;
+        var needsGoods = surface ? site?.Kind == "storage" : _detailPage == 1 && edge == null;
+        var needsEquipment = !surface && _detailPage == 4 && edge == null;
+        var needsFreight = edge != null || (surface ? site?.Kind is "port" or "settlement" : _detailPage is 0 or 2);
+        var visibleFlows = view?.Flows.Where(f => (_commodityFilter == null || f.Good == _commodityFilter) &&
+            (edge != null ? f.Edge == edge : world != null && (f.From == world || f.To == world))).ToArray();
+        SWPlanetSurfaceFlow[]? localFlows = null;
+        if (surfaceControl != null)
+        {
+            if (site != null) localFlows = surfaceControl.TrafficFlows.Where(f => f.From == site.Id || f.To == site.Id).ToArray();
+            else if (surfaceControl.SelectedCell is { } cell && surfaceControl.RoadAt(cell) != null)
+                localFlows = surfaceControl.FlowsAt(cell).ToArray();
+        }
+        return SnapshotKey(new
+        {
+            Available = view != null, Ready = view?.Ready, Paused = view?.Paused,
+            FirstStep = needsSupply && view?.Hour <= 0,
+            WorldAvailable = live != null, GoodsAvailable = live?.Goods.Count > 0,
+            HasWorldEconomy = world != null && HasWorldEconomy(world, live),
+            Services = needsSupply ? live?.Services : null, Diet = needsSupply ? live?.Diet : null,
+            Goods = needsGoods ? live?.Goods.Where(g => _commodityFilter == null || g.Good == _commodityFilter).ToArray() : null,
+            Capacity = needsEquipment || surface && (site?.Kind == "power" || site?.Kind == "settlement" || site?.Recipes.Count > 0) ? live?.Capacity : null,
+            Assets = needsEquipment ? live?.Assets.Where(a => _commodityFilter == null || a.Good == _commodityFilter).ToArray() : null,
+            Orders = needsEquipment ? live?.Orders.Where(o => _commodityFilter == null || o.Good == _commodityFilter).ToArray() : null,
+            Production = surface && site != null ? live?.Production.Where(p => recipeIds?.Contains(p.Recipe) == true).ToArray() : null,
+            Governor = surface && site == null || !surface && !_planetOpen && _detailPage == 3
+                ? view?.Governors.FirstOrDefault(g => g.Sector == sector) : null,
+            Flows = needsFreight ? visibleFlows : null, LocalFlows = localFlows,
+            Focused = _focusedFlow is not { } focused ? null : view?.Flows.FirstOrDefault(f => f.Edge == focused.Edge &&
+                f.From == focused.From && f.To == focused.To && f.Good == focused.Good),
+            Link = edge == null ? null : view?.Links.FirstOrDefault(l => l.Edge == edge),
+            Medical = _selectedMedicalShipmentId == null ? null : view?.MedicalSupplyFlows,
+        });
+    }
+
     public void SetEconomy(SWEconomyView? view)
     {
         if (view != null && view.ViewerFaction != _viewerFaction) view = null;
+        if (view != null && _economyView != null && view.Revision == _economyView.Revision &&
+            view.Ready == _economyView.Ready && view.Paused == _economyView.Paused && view.ViewerFaction == _economyView.ViewerFaction)
+            return;
+        var oldDetails = _fullPlanetScreen ? EconomyDetailsKey(_economyView) : null;
+        var previousFocused = _focusedFlow;
         _economyView = view;
+        if (_surfaceSavedFlow is { } savedFlow)
+            _surfaceSavedFlow = view?.Flows.FirstOrDefault(f => f.Edge == savedFlow.Edge && f.From == savedFlow.From && f.To == savedFlow.To && f.Good == savedFlow.Good);
+        if (_focusedFlow is { } previousFlow)
+        {
+            _focusedFlow = view?.Flows.FirstOrDefault(f => f.Edge == previousFlow.Edge && f.From == previousFlow.From && f.To == previousFlow.To && f.Good == previousFlow.Good);
+            if (_focusedFlow == null && _route == null) Map.ClearRouteHighlight();
+        }
         Map.SetEconomy(view);
         Surface?.SetEconomy(view?.Worlds.FirstOrDefault(w => w.World == SelectedWorldId), view?.Paused ?? false, view?.Ready ?? false);
         RefreshEconomyStatus();
+        if (_fullPlanetScreen && Surface == null && _selectedCrisisIds.Length > 0)
+            return; // Crisis details are driven by their own public snapshot.
+        if (_planetOpen && _detailPage == 3 && _route == null &&
+            previousFocused?.UnitsPerHour == _focusedFlow?.UnitsPerHour &&
+            previousFocused?.Edge == _focusedFlow?.Edge && previousFocused?.From == _focusedFlow?.From &&
+            previousFocused?.To == _focusedFlow?.To && previousFocused?.Good == _focusedFlow?.Good)
+        {
+            RefreshPlanetPaths();
+            return;
+        }
+        if (_fullPlanetScreen && oldDetails == EconomyDetailsKey(view))
+        {
+            RefreshPlanetPaths();
+            return;
+        }
         RefreshDetails();
     }
 
     private void RefreshEconomyStatus()
     {
+        UpdateOverviewFlowNotice();
         _economyStatus.Text = _economyView is not { Ready: true } ? "Ожидание данных"
-            : Surface != null ? (!_showTraffic ? "Потоки скрыты" : _economyView.Paused ? "Потоки на поверхности: пауза" : "Потоки на поверхности")
-            : !_showTraffic ? "Потоки скрыты" : _economyView.Paused ? "Движение приостановлено" : "Движение грузов";
+            : !_showTraffic ? "Потоки скрыты"
+            : _economyView.Paused ? "Движение приостановлено"
+            : Surface != null ? (Surface.TrafficFlows.Any(f => _commodityFilter == null || f.Good == _commodityFilter)
+                ? "Местное распределение" : "Нет местных потоков выбранного товара")
+            : VisibleFlows().Length == 0 ? "Нет опубликованных потоков выбранного товара" : "Межпланетные перевозки";
         _economyStatus.FontColorOverride = _showTraffic && _economyView is { Ready: true, Paused: false }
             ? SWConsoleStyle.Accent : SWConsoleStyle.TextDim;
     }
@@ -117,26 +205,43 @@ public sealed partial class SWRepublicMapBrowser
     public void SelectCommodity(string? id)
     {
         var index = id == null ? -1 : Array.FindIndex(_commodities, g => g.ID == id);
-        _commodityFilter = index < 0 ? null : id;
+        var next = index < 0 ? null : id;
+        if (_fullPlanetScreen && _commodityFilter != next) _pageReveal = 0;
+        _commodityFilter = next;
+        if (_surfaceSavedFlow != null && _surfaceSavedFlow.Good != next) _surfaceSavedFlow = null;
         _commodityPicker.SelectId(index + 1);
         Map.SetTrafficFilter(_commodityFilter, _showTraffic);
         Map.SetEconomyMapMode(_economyMapMode, _commodityFilter);
         Surface?.SetTrafficFilter(_commodityFilter, _showTraffic);
+        UpdateOverviewFlowNotice();
+        if (_focusedFlow != null && _focusedFlow.Good != _commodityFilter)
+        {
+            _focusedFlow = null;
+            if (_route == null) Map.ClearRouteHighlight();
+        }
+        RestoreFocusedFlow();
         RefreshDetails();
         CommodityChanged?.Invoke(_commodityFilter);
     }
 
     public void ShowEconomyPage(int page)
     {
-        _detailPage = Math.Clamp(page, 0, 4);
+        if (_planetOpen && _planetLayout?.IsTransitioning == true) return;
+        var next = Math.Clamp(page, 0, 4);
+        if (_fullPlanetScreen && _detailPage != next) _pageReveal = 0;
+        _detailPage = next;
         RefreshDetails();
     }
 
     private void RefreshEconomyDetails()
     {
         if (_detailHeading == null) return;
+        RefreshPlanetPaths();
+        var savedScroll = _detailScroll?.GetScrollValue();
         _detailHeading.RemoveAllChildren();
         _detail.RemoveAllChildren();
+        if (_fullPlanetScreen && _focusedFlow is { } focused)
+            _detailHeading.AddChild(AtlasWrap($"Выбранный поток: {WorldName(focused.From)} → {WorldName(focused.To)} · {GoodName(focused.Good)} · {Number(focused.UnitsPerHour)} ед./ч", SWConsoleStyle.Brass));
         if (_route is { } route)
         {
             RouteDetails(route);
@@ -145,12 +250,24 @@ public sealed partial class SWRepublicMapBrowser
         }
         if (SelectedWorldId is not { } id) return;
         var world = _worlds[id];
-        _detailHeading.AddChild(SWConsoleStyle.Wrap(world.Name, SWConsoleStyle.Brass));
-        _detailHeading.AddChild(SWConsoleStyle.Wrap(world.Sector is { } owner
+        if (_fullPlanetScreen && !_planetOpen && Surface == null && !_financeOnly)
+        {
+            if (CurrentSectorId != null && HasSystem(world))
+            {
+                var openSystem = SWConsoleStyle.TabButton("Открыть систему");
+                openSystem.OnPressed += _ => { if (OpenSystem(world.SystemId)) SelectWorld(id); };
+                _detailHeading.AddChild(openSystem);
+            }
+            var openPlanet = SWConsoleStyle.TabButton("Открыть мир");
+            openPlanet.OnPressed += _ => OpenPlanet(id);
+            _detailHeading.AddChild(openPlanet);
+        }
+        _detailHeading.AddChild(AtlasWrap(world.Name, SWConsoleStyle.Brass));
+        _detailHeading.AddChild(AtlasWrap(world.Sector is { } owner
             ? $"{world.Kind} / {SectorName(owner.Id)}" : world.Kind, SWConsoleStyle.TextDim));
         if (world.Sector != null && _data.GetWorldFaction(world) == "empire")
-            _detailHeading.AddChild(SWConsoleStyle.Wrap(_data.GetWorldPoliticalName(world), SWConsoleStyle.Warn));
-        if (!CanReadWorldState(world))
+            _detailHeading.AddChild(AtlasWrap(_data.GetWorldPoliticalName(world), SWConsoleStyle.Warn));
+        if (!CanReadWorldState(world) && !_planetOpen)
         {
             WorldDetails(world);
             Empty("Текущее состояние мира неизвестно");
@@ -158,7 +275,7 @@ public sealed partial class SWRepublicMapBrowser
             return;
         }
         var live = _economyView?.Worlds.FirstOrDefault(w => w.World == id);
-        if (world.Sector == null && !HasWorldEconomy(world.Id, live))
+        if (!_planetOpen && world.Sector == null && !HasWorldEconomy(world.Id, live))
         {
             WorldDetails(world);
             SelectionChanged?.Invoke();
@@ -183,13 +300,18 @@ public sealed partial class SWRepublicMapBrowser
             territory.OnPressed += _ => OpenSurface(id);
             _detailHeading.AddChild(territory);
         }
-        if (_detailPage == 3) WorldDetails(world);
+        if (_planetOpen && !CanOpenSurface(id))
+            _detail.AddChild(AtlasWrap("Поверхность недоступна: данные территории не опубликованы.", SWConsoleStyle.TextDim));
+        if (_planetOpen && !CanReadWorldState(world) && _detailPage != 3) Empty("Данные состояния мира недоступны");
+        else if (_detailPage == 3 && _planetOpen) PlanetWorldDetails(world);
+        else if (_detailPage == 3) WorldDetails(world);
         else if (_economyView is not { Ready: true }) Empty("Ожидание данных экономики");
         else if (_detailPage == 2) FreightDetails(id);
         else if (_detailPage == 4 && live != null) EquipmentDetails(live);
         else if (live == null || live.Goods.Count == 0) Empty("Вне производственной сети");
         else if (_detailPage == 0) SupplyDetails(live);
         else GoodsDetails(live);
+        if (savedScroll is { } offset) _detailScroll?.SetScrollValue(offset);
         SelectionChanged?.Invoke();
     }
 
@@ -216,7 +338,7 @@ public sealed partial class SWRepublicMapBrowser
         else
         {
             var worst = required.Min(s => Math.Min(1, s.ServedPerHour / s.RequiredPerHour));
-            var status = SWConsoleStyle.Wrap(worst >= .999 ? "Потребности обеспечены" : "Дефицит снабжения",
+            var status = AtlasWrap(worst >= .999 ? "Потребности обеспечены" : "Дефицит снабжения",
                 worst >= .999 ? SWConsoleStyle.Good : SWConsoleStyle.Warn);
             status.Name = "EconomySupplyStatus";
             _detail.AddChild(status);
@@ -298,7 +420,7 @@ public sealed partial class SWRepublicMapBrowser
             var row = VerticalStack(3);
             row.Name = $"EconomyAsset_{asset.Good}";
             row.Margin = new Thickness(0, 4);
-            row.AddChild(SWConsoleStyle.Wrap(GoodName(asset.Good), SWConsoleStyle.TextBright));
+            row.AddChild(AtlasWrap(GoodName(asset.Good), SWConsoleStyle.TextBright));
             row.AddChild(Pair("Введено", $"{Number(asset.Installed)} ед.", SWConsoleStyle.TextBright));
             var ratio = Math.Clamp(asset.Operational / asset.Installed, 0, 1);
             var color = ratio >= .999 ? SWConsoleStyle.Accent : SWConsoleStyle.Warn;
@@ -308,7 +430,7 @@ public sealed partial class SWRepublicMapBrowser
                 Name = $"EconomyAssetReadiness_{asset.Good}", Value = (float) ratio, Maximum = 1,
                 Fill = color, MinHeight = 4, MaxHeight = 4, ToolTip = $"Обеспеченность эксплуатации: {ratio * 100:0}%",
             });
-            row.AddChild(SWConsoleStyle.Wrap(AssetEffect(asset), color));
+            row.AddChild(AtlasWrap(AssetEffect(asset), color));
             _detail.AddChild(row);
         }
         _detail.AddChild(SWConsoleStyle.Section("Проекты оснащения"));
@@ -329,7 +451,7 @@ public sealed partial class SWRepublicMapBrowser
                 Fill = color, MinHeight = 4, MaxHeight = 4,
             });
             if (order.CompletedHour is { } completed)
-                row.AddChild(SWConsoleStyle.Wrap($"Завершён: {Number(completed)} ч", SWConsoleStyle.TextDim));
+                row.AddChild(AtlasWrap($"Завершён: {Number(completed)} ч", SWConsoleStyle.TextDim));
             _detail.AddChild(row);
         }
     }
@@ -352,6 +474,26 @@ public sealed partial class SWRepublicMapBrowser
 
     private void GoodsDetails(SWEconomyWorldView world)
     {
+        if (_planetOpen)
+        {
+            var goods = world.Goods.Where(g => _commodityFilter == null || g.Good == _commodityFilter)
+                .Where(g => g.Stock > 0 || g.Capacity > 0 || g.ProducedPerHour > 0 || g.ConsumedPerHour > 0 || g.Incoming > 0)
+                .OrderBy(g => _commodities.FirstOrDefault(c => c.ID == g.Good)?.Order ?? 999).ToArray();
+            if (goods.Length == 0) Empty("Нет опубликованных запасов выбранного товара");
+            foreach (var good in goods)
+            {
+                var row = VerticalStack(3);
+                var choose = new SWConsoleButton { HorizontalExpand = true };
+                choose.Label.Visible = false;
+                choose.AddChild(AtlasWrap(GoodName(good.Good), SWConsoleStyle.TextBright, 400));
+                choose.SetAppearance(SWConsoleStyle.TextBright, selected: _commodityFilter == good.Good, quiet: true);
+                choose.OnPressed += _ => SelectCommodity(good.Good);
+                row.AddChild(choose);
+                row.AddChild(AtlasWrap($"Запас: {Number(good.Stock)} / {Number(good.Capacity)} · выпуск {Number(good.ProducedPerHour)} ед./ч · расход {Number(good.ConsumedPerHour)} ед./ч", SWConsoleStyle.TextDim, 400));
+                _detail.AddChild(row);
+            }
+            return;
+        }
         var rows = world.Goods.Where(g => _commodityFilter == null || g.Good == _commodityFilter)
             .Where(g => g.Stock > 0 || g.ProducedPerHour > 0 || g.ConsumedPerHour > 0 || g.RequiredPerHour > 0 || g.Incoming > 0)
             .OrderByDescending(g => g.ProducedPerHour > 0).ThenBy(g => _commodities.FirstOrDefault(c => c.ID == g.Good)?.Order ?? 999).ToArray();
@@ -359,7 +501,7 @@ public sealed partial class SWRepublicMapBrowser
         columns.AddChild(NumberCell("Запас", SWConsoleStyle.TextDim, 58));
         columns.AddChild(NumberCell("Выпуск/ч", SWConsoleStyle.Accent, 72));
         columns.AddChild(NumberCell("Расход/ч", SWConsoleStyle.TextDim, 72));
-        _detail.AddChild(new SWConsoleColumns(SWConsoleStyle.Wrap("Товар", SWConsoleStyle.TextDim), columns, 202, 0));
+        _detail.AddChild(new SWConsoleColumns(AtlasWrap("Товар", SWConsoleStyle.TextDim), columns, 202, 0));
         if (rows.Length == 0) Empty("Нет запасов и операций");
         foreach (var good in rows)
         {
@@ -367,7 +509,7 @@ public sealed partial class SWRepublicMapBrowser
             values.AddChild(NumberCell(Number(good.Stock), SWConsoleStyle.TextBright, 58));
             values.AddChild(NumberCell(Number(good.ProducedPerHour), SWConsoleStyle.Accent, 72));
             values.AddChild(NumberCell(Number(good.ConsumedPerHour), SWConsoleStyle.TextDim, 72));
-            var title = SWConsoleStyle.Wrap(GoodName(good.Good), SWConsoleStyle.TextBright);
+            var title = AtlasWrap(GoodName(good.Good), SWConsoleStyle.TextBright);
             var row = new SWConsoleColumns(title, values, 202, 0) { Name = $"EconomyGood_{good.Good}", Margin = new Thickness(0, 4) };
             row.ToolTip = $"{GoodName(good.Good)}\nЗапас: {Number(good.Stock)} ед.\nВместимость: {Number(good.Capacity)} ед.\nПотребность: {Number(good.RequiredPerHour)} ед./ч\nПрибыло: {Number(good.ImportedPerHour)} ед./ч\nОтправлено: {Number(good.ExportedPerHour)} ед./ч\nВ пути сюда: {Number(good.Incoming)} ед.";
             _detail.AddChild(row);
@@ -380,6 +522,7 @@ public sealed partial class SWRepublicMapBrowser
 
     private void FreightDetails(string world)
     {
+        _detail.AddChild(SWConsoleStyle.Section("Межпланетные перевозки"));
         var flows = VisibleFlows().Where(f => f.From == world || f.To == world).ToArray();
         if (flows.Length == 0) { Empty("Нет перевозок выбранных товаров"); return; }
         foreach (var inbound in new[] { true, false })
@@ -394,8 +537,8 @@ public sealed partial class SWRepublicMapBrowser
     private void RouteDetails(SWGalacticMapRoute route)
     {
         var corridor = _data.Corridors.FirstOrDefault(c => c.Id == route.Corridor);
-        _detailHeading.AddChild(SWConsoleStyle.Wrap(corridor?.Name ?? "Местный гиперпуть", SWConsoleStyle.Brass));
-        _detailHeading.AddChild(SWConsoleStyle.Wrap($"{WorldName(route.From)} / {WorldName(route.To)}", SWConsoleStyle.TextBright));
+        _detailHeading.AddChild(AtlasWrap(corridor?.Name ?? "Местный гиперпуть", SWConsoleStyle.Brass));
+        _detailHeading.AddChild(AtlasWrap($"{WorldName(route.From)} / {WorldName(route.To)}", SWConsoleStyle.TextBright));
         var edge = SWTransitLinkPrototype.LinkId(route.From, route.To);
         if (!CanReadWorldState(_worlds[route.From]) || !CanReadWorldState(_worlds[route.To]))
         {
@@ -412,7 +555,7 @@ public sealed partial class SWRepublicMapBrowser
         if (!_transitLinks.TryGetValue(edge, out var link)) return;
         if (!link.Accessible)
         {
-            var closed = SWConsoleStyle.Wrap("Маршрут закрыт", SWConsoleStyle.Bad);
+            var closed = AtlasWrap("Маршрут закрыт", SWConsoleStyle.Bad);
             closed.Name = "TransitClosed";
             _detail.AddChild(closed);
         }
@@ -425,7 +568,7 @@ public sealed partial class SWRepublicMapBrowser
                 var used = live.LoadedSlotsPerHour + live.EmptySlotsPerHour;
                 var ratio = live.CapacitySlotsPerHour > 0 ? used / live.CapacitySlotsPerHour : 0;
                 var color = ratio >= .95 ? SWConsoleStyle.Warn : SWConsoleStyle.Accent;
-                var title = SWConsoleStyle.Wrap($"Загрузка {ratio * 100:0}%", color);
+                var title = AtlasWrap($"Загрузка {ratio * 100:0}%", color);
                 title.Name = "TransitLiveLoad";
                 _detail.AddChild(title);
                 _detail.AddChild(new SWStatisticsBar { Name = "TransitCapacityBar", Value = (float) used, Maximum = (float) live.CapacitySlotsPerHour, Fill = color });
@@ -452,11 +595,17 @@ public sealed partial class SWRepublicMapBrowser
         var box = VerticalStack(2);
         box.Margin = new Thickness(0, 4);
         box.ToolTip = "Отправлено по маршруту за игровой час; в пути — ещё не доставленный груз.";
-        if (location.Length > 0) box.AddChild(SWConsoleStyle.Wrap(location, SWConsoleStyle.TextDim));
+        if (location.Length > 0) box.AddChild(AtlasWrap(location, SWConsoleStyle.TextDim));
         var button = SWConsoleStyle.TabButton(GoodName(flow.Good));
         button.TextAlign = Label.AlignMode.Left;
         button.Label.ClipText = true;
-        button.OnPressed += _ => SelectCommodity(flow.Good);
+        button.OnPressed += _ =>
+        {
+            SelectCommodity(flow.Good);
+            _focusedFlow = flow;
+            RestoreFocusedFlow();
+            RefreshDetails();
+        };
         box.AddChild(button);
         box.AddChild(Pair($"{Number(flow.UnitsPerHour)} ед./ч", $"В пути {Number(flow.InTransit)}", SWConsoleStyle.Accent));
         _detail.AddChild(box);
@@ -465,8 +614,8 @@ public sealed partial class SWRepublicMapBrowser
     private void WorldDetails(SWGalacticMapWorld world)
     {
         if (CanReadWorldState(world) && _viewerFaction == "republic") AddGovernorCard(world.Sector?.Id);
-        _detail.AddChild(SWConsoleStyle.Wrap(_data.GetWorldPoliticalName(world), SWConsoleStyle.TextDim));
-        if (world.Description.Length > 0) _detail.AddChild(SWConsoleStyle.Wrap(world.Description, SWConsoleStyle.TextDim));
+        _detail.AddChild(AtlasWrap(_data.GetWorldPoliticalName(world), SWConsoleStyle.TextDim));
+        if (world.Description.Length > 0) _detail.AddChild(AtlasWrap(world.Description, SWConsoleStyle.TextDim));
         if (world.Sector is { } owner && CurrentSectorId != owner.Id && _lockedSector == null)
         {
             var open = SWConsoleStyle.TabButton("Открыть сектор");
@@ -493,6 +642,7 @@ public sealed partial class SWRepublicMapBrowser
             summary.OnPressed += _ => SectorSummaryRequested?.Invoke(sector.Id);
             _detail.AddChild(summary);
         }
+        if (_planetOpen) return; // Sector statistics belong to the sector, not to this world.
         foreach (var stat in sector.Stats)
         {
             var global = _globals.FirstOrDefault(g => g.Id == stat.Id);
@@ -503,7 +653,7 @@ public sealed partial class SWRepublicMapBrowser
             _detail.AddChild(SWSituationalStatDisplay.Make(detail, _situationExpanded));
     }
 
-    private void Empty(string text) => _detail.AddChild(SWConsoleStyle.Wrap(text, SWConsoleStyle.TextDim));
+    private void Empty(string text) => _detail.AddChild(AtlasWrap(text, SWConsoleStyle.TextDim));
     private string GoodName(string id) => IoCManager.Resolve<IPrototypeManager>().TryIndex<SWCommodityPrototype>(id, out var good) && !string.IsNullOrWhiteSpace(good.Name) ? good.Name : "Неизвестный товар";
     public string GetWorldName(string id) => _worlds.TryGetValue(id, out var world) && !string.IsNullOrWhiteSpace(world.Name) ? world.Name : "Неизвестный мир";
     public string GetSectorName(string id) => _sectorPrototypes.FirstOrDefault(s => s.ID == id)?.Name is { Length: > 0 } name ? name : "Неизвестный сектор";

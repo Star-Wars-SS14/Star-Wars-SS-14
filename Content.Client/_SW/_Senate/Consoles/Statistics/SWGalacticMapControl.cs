@@ -50,6 +50,7 @@ public sealed partial class SWGalacticMapControl : Control
     private bool _dragged;
     private string? _hover;
     private string? _selectedWorld;
+    private float _selectionPulse;
     private SWGalacticMapRoute? _selectedRoute;
     private string? _lastClickWorld;
     private TimeSpan _lastClickTime;
@@ -58,8 +59,9 @@ public sealed partial class SWGalacticMapControl : Control
     private string? _transitionWorld;
     private float _transitionTime;
     private bool _enteringSector;
-    private const float TransitionDuration = 0.36f;
+    private float _transitionDuration = 0.36f;
     public bool IsTransitioning => _transitionFrom != null;
+    public float TransitionProgress => IsTransitioning ? Math.Clamp(_transitionTime / _transitionDuration, 0, 1) : 1;
     public float Zoom { get; private set; } = 1;
     public string? SelectedWorldId => _selectedWorld;
     public event Action<string>? WorldSelected;
@@ -111,6 +113,7 @@ public sealed partial class SWGalacticMapControl : Control
     public void SelectWorld(string id, bool focus = false)
     {
         if (!_worlds.TryGetValue(id, out var world)) return;
+        if (_markExternalLabels && _selectedWorld != id && !_configuration.GetCVar(CCVars.ReducedMotion)) _selectionPulse = 1;
         _selectedWorld = id;
         _selectedRoute = null;
         if (focus && Zoom > 1)
@@ -129,11 +132,35 @@ public sealed partial class SWGalacticMapControl : Control
         _labelsDirty = true;
     }
 
+    public void HighlightRoute(SWGalacticMapRoute route)
+    {
+        _selectedRoute = route;
+        _labelsDirty = true;
+    }
+
+    public void ClearRouteHighlight()
+    {
+        SetFocusedTraffic(null, null, null, null);
+        _selectedRoute = null;
+        _labelsDirty = true;
+    }
+
     public Vector2 MapToLocal(Vector2 position)
     {
         var extent = Vector2.Max(Size - new Vector2(64, 56), Vector2.One);
         var fitted = new Vector2(32, 28) + position / _map.Size * extent;
         return (fitted - Size / 2) * Zoom + Size / 2 + _pan;
+    }
+
+    public (float Zoom, Vector2 Pan) CaptureView() => (Zoom, _pan);
+
+    public void RestoreView(float zoom, Vector2 pan)
+    {
+        if (!float.IsFinite(zoom) || !float.IsFinite(pan.X) || !float.IsFinite(pan.Y)) return;
+        Zoom = Math.Clamp(zoom, 1, 4);
+        _pan = pan;
+        if (Size.X > 0 && Size.Y > 0) ClampPan();
+        ViewUpdated();
     }
 
     public void ResetView()
@@ -181,6 +208,10 @@ public sealed partial class SWGalacticMapControl : Control
         ViewUpdated();
     }
 
+    private bool DisplayRoute(SWGalacticMapRoute route) => !_markExternalLabels || !route.Proposed && (IsLocalView ||
+        DisplayWorld(_worlds[route.From]) && DisplayWorld(_worlds[route.To]) &&
+        Vector2.DistanceSquared(_worlds[route.From].Position, _worlds[route.To].Position) >= .0001f);
+
     public string? HitTestWorld(Vector2 position)
     {
         if (IsTransitioning) return null;
@@ -189,6 +220,7 @@ public sealed partial class SWGalacticMapControl : Control
         var distance = 16f * 16;
         foreach (var world in _map.Worlds)
         {
+            if (!DisplayWorld(world)) continue;
             var next = Vector2.DistanceSquared(position, MapToLocal(world.Position));
             if (next >= distance) continue;
             distance = next;
@@ -231,12 +263,15 @@ public sealed partial class SWGalacticMapControl : Control
         SWGalacticMapRoute? best = null;
         var distance = 6f;
         foreach (var path in _paths)
-        for (var i = 1; i < path.Points.Length; i++)
         {
-            var next = SegmentDistance(position, MapToLocal(path.Points[i - 1]), MapToLocal(path.Points[i]));
-            if (next >= distance) continue;
-            distance = next;
-            best = path.Route;
+            if (!DisplayRoute(path.Route)) continue;
+            for (var i = 1; i < path.Points.Length; i++)
+            {
+                var next = SegmentDistance(position, MapToLocal(path.Points[i - 1]), MapToLocal(path.Points[i]));
+                if (next >= distance) continue;
+                distance = next;
+                best = path.Route;
+            }
         }
         if (best == null) return;
         SelectRoute(best);
@@ -253,6 +288,33 @@ public sealed partial class SWGalacticMapControl : Control
     protected override void KeyBindDown(GUIBoundKeyEventArgs args)
     {
         base.KeyBindDown(args);
+        if (_markExternalLabels && HasKeyboardFocus())
+        {
+            if (args.Function == EngineKeyFunctions.TextSubmit)
+            {
+                if (!IsTransitioning && _selectedWorld != null) WorldActivated?.Invoke(_selectedWorld);
+                args.Handle();
+                return;
+            }
+            var forward = args.Function == EngineKeyFunctions.TextCursorRight || args.Function == EngineKeyFunctions.TextCursorDown;
+            var backward = args.Function == EngineKeyFunctions.TextCursorLeft || args.Function == EngineKeyFunctions.TextCursorUp;
+            if (forward || backward)
+            {
+                if (!IsTransitioning)
+                {
+                    var worlds = _map.Worlds.Where(DisplayWorld).OrderBy(w => w.Name).ThenBy(w => w.Id).ToArray();
+                    if (worlds.Length > 0)
+                    {
+                        var index = Array.FindIndex(worlds, w => w.Id == _selectedWorld);
+                        index = index < 0 ? 0 : (index + (forward ? 1 : worlds.Length - 1)) % worlds.Length;
+                        SelectWorld(worlds[index].Id);
+                        WorldSelected?.Invoke(worlds[index].Id);
+                    }
+                }
+                args.Handle();
+                return;
+            }
+        }
         if (args.Function != EngineKeyFunctions.UIClick && args.Function != EngineKeyFunctions.Use) return;
         if (IsTransitioning) { args.Handle(); return; }
         _press = args.RelativePosition;
@@ -350,14 +412,18 @@ public sealed partial class SWGalacticMapControl : Control
         base.Draw(handle);
         if (Width <= 64 || Height <= 56) return;
         handle.DrawRect(UIBox2.FromDimensions(Vector2.Zero, PixelSize), SWConsoleStyle.Navigation);
+        if (_markExternalLabels && HasKeyboardFocus())
+            handle.DrawRect(UIBox2.FromDimensions(Vector2.Zero, PixelSize), SWConsoleStyle.Brass, false);
         if (_transitionFrom is not { } previous || _transitionWorld is not { } world)
         {
             DrawGraph(handle);
             return;
         }
 
-        var t = Math.Clamp(_transitionTime / TransitionDuration, 0, 1);
-        var ease = t * t * (3 - 2 * t);
+        var t = Math.Clamp(_transitionTime / _transitionDuration, 0, 1);
+        var staged = _markExternalLabels && _enteringSector;
+        var camera = staged ? Math.Clamp((t - .25f) / .36f, 0, 1) : t;
+        var ease = camera * camera * (3 - 2 * camera);
         var fit = (Vector2) PixelSize / (Vector2) previous.PixelSize;
         var origin = previous.MapToLocal(previous._worlds[world].Position) * previous.UIScale * fit;
         var destination = MapToLocal(_worlds[world].Position) * UIScale;
@@ -382,12 +448,19 @@ public sealed partial class SWGalacticMapControl : Control
         var modulate = handle.Modulate;
         try
         {
-            handle.Modulate = modulate.WithAlpha(modulate.A * (1 - ease));
+            var outgoingAlpha = staged ? 1 - Math.Clamp((t - .61f) / .39f, 0, 1) : 1 - ease;
+            var incomingAlpha = staged ? Math.Clamp((t - .25f) / .36f, 0, 1) : ease;
+            handle.Modulate = modulate.WithAlpha(modulate.A * outgoingAlpha);
             handle.SetTransform(outgoing * transform);
             previous.DrawGraph(handle);
-            handle.Modulate = modulate.WithAlpha(modulate.A * ease);
+            if (staged && t < .25f)
+            {
+                var chosen = previous.MapToLocal(previous._worlds[world].Position) * previous.UIScale;
+                handle.DrawCircle(chosen, 13 * previous.UIScale, Color.ToSrgb(SWConsoleStyle.Brass), false);
+            }
+            handle.Modulate = modulate.WithAlpha(modulate.A * incomingAlpha);
             handle.SetTransform(incoming * transform);
-            DrawGraph(handle);
+            DrawGraph(handle, staged ? t : 1);
         }
         finally
         {
@@ -407,6 +480,7 @@ public sealed partial class SWGalacticMapControl : Control
         _transitionFrom = previous;
         _transitionWorld = world;
         _enteringSector = enteringSector;
+        _transitionDuration = _markExternalLabels && !enteringSector ? .22f : .36f;
         _transitionTime = 0;
         _lastClickWorld = null;
         _press = null;
@@ -430,6 +504,8 @@ public sealed partial class SWGalacticMapControl : Control
     protected override void FrameUpdate(FrameEventArgs args)
     {
         base.FrameUpdate(args);
+        if (_markExternalLabels)
+            _selectionPulse = _configuration.GetCVar(CCVars.ReducedMotion) ? 0 : Math.Max(0, _selectionPulse - Math.Max(0, args.DeltaSeconds) / .16f);
         AdvanceTraffic(args.DeltaSeconds);
         AdvanceMedicalSupply(args.DeltaSeconds);
         AdvanceDefense(args.DeltaSeconds);
@@ -437,16 +513,16 @@ public sealed partial class SWGalacticMapControl : Control
         AdvanceIntelligence(args.DeltaSeconds);
         if (!IsTransitioning || Width <= 64 || Height <= 56) return;
         _transitionTime += args.DeltaSeconds;
-        if (_transitionTime < TransitionDuration && !_configuration.GetCVar(CCVars.ReducedMotion)) return;
+        if (_transitionTime < _transitionDuration && !_configuration.GetCVar(CCVars.ReducedMotion)) return;
         FinishTransition();
         UpdateHover();
     }
 
-    private void DrawGraph(DrawingHandleScreen handle)
+    private void DrawGraph(DrawingHandleScreen handle, float reveal = 1)
     {
         Vector2 Screen(Vector2 point) => MapToLocal(point) * UIScale;
         DrawPoliticalAreas(handle, false);
-        if (IsLocalView)
+        if (IsLocalView && !_markExternalLabels)
         {
             var boundary = new UIBox2(Screen(new Vector2(18, 16)), Screen(new Vector2(102, 84)));
             handle.DrawRect(boundary, SWConsoleStyle.Edge, false);
@@ -454,6 +530,8 @@ public sealed partial class SWGalacticMapControl : Control
         var sectorId = _selectedWorld != null ? _worlds[_selectedWorld].Sector : null;
         foreach (var region in _map.Regions)
         {
+            // Combined display regions are not individual Senate-sector borders.
+            if (_markExternalLabels && region.Sectors.Count != 1) continue;
             var selected = sectorId.HasValue && region.Sectors.Contains(sectorId.Value);
             var points = region.Boundary.Select(Screen).ToArray();
             if (points.Length < 3) continue;
@@ -465,10 +543,14 @@ public sealed partial class SWGalacticMapControl : Control
         foreach (var path in _paths.OrderBy(p => !p.Route.Proposed))
         {
             var route = path.Route;
+            if (!DisplayRoute(route)) continue;
             var selected = route == _selectedRoute || _selectedWorld != null && (route.From == _selectedWorld || route.To == _selectedWorld);
+            var routeReveal = reveal >= 1 ? 1 : route == _selectedRoute ? Math.Clamp((reveal - .25f) / .36f, 0, 1) : Math.Clamp((reveal - .61f) / .39f, 0, 1);
+            if (routeReveal <= 0) continue;
             var color = route.Corridor != null && _corridors.TryGetValue(route.Corridor, out var corridor)
                 ? corridor.Color : selected ? SWConsoleStyle.TextBright : IsLocalView ? SWConsoleStyle.TextDim : SWConsoleStyle.Edge;
             color = TrafficRouteColor(route, color, selected);
+            color = color.WithAlpha(color.A * routeReveal);
             var length = 0f;
             for (var i = 1; i < path.Points.Length; i++)
             {
@@ -491,7 +573,7 @@ public sealed partial class SWGalacticMapControl : Control
                 }
                 else
                 {
-                    Stroke(handle, a, b, SWConsoleStyle.Navigation, selected ? 5 : 4);
+                    Stroke(handle, a, b, SWConsoleStyle.Navigation.WithAlpha(routeReveal), selected ? 5 : 4);
                     Stroke(handle, a, b, color, selected ? 2.8f : 1.8f);
                 }
             }
@@ -499,9 +581,14 @@ public sealed partial class SWGalacticMapControl : Control
         DrawCrisisRoutes(handle);
         DrawDefenseSupply(handle);
         DrawDefenseRoutes(handle);
-        DrawTraffic(handle);
+        if (reveal >= .61f) DrawTraffic(handle);
+        var worldIndex = 0;
         foreach (var world in _map.Worlds)
         {
+            if (!DisplayWorld(world)) continue;
+            var start = .61f + .20f * worldIndex++ / Math.Max(1, _map.Worlds.Count);
+            var worldReveal = reveal >= 1 ? 1 : Math.Clamp((reveal - start) / .19f, 0, 1);
+            if (worldReveal <= 0) continue;
             var p = Screen(world.Position);
             var selected = world.Id == _selectedWorld;
             var hover = world.Id == _hover;
@@ -516,7 +603,10 @@ public sealed partial class SWGalacticMapControl : Control
                 color = world.Sector is { } financeSector && _financeSectors.TryGetValue(financeSector.Id, out var finance)
                     ? finance.Reasons.Count > 0 ? SWConsoleStyle.Warn : SWConsoleStyle.Good
                     : SWConsoleStyle.TextDim;
+            color = color.WithAlpha(color.A * worldReveal);
             if (selected || hover) handle.DrawCircle(p, (selected ? 11 : 9) * UIScale, Color.ToSrgb(color), false);
+            if (selected && _markExternalLabels && _selectionPulse > 0)
+                handle.DrawCircle(p, (11 + 6 * (1 - _selectionPulse)) * UIScale, Color.ToSrgb(SWConsoleStyle.Brass.WithAlpha(_selectionPulse * worldReveal)), false);
             if (IsExternalWorld(world))
             {
                 var radius = 6 * UIScale;
@@ -529,6 +619,7 @@ public sealed partial class SWGalacticMapControl : Control
             handle.DrawCircle(p, (hub ? 6 : 4) * UIScale, Color.ToSrgb(color), world.Anchor && !hub);
             if (hub) handle.DrawCircle(p, 2 * UIScale, Color.ToSrgb(color));
         }
+        if (reveal < .85f) return;
         DrawPoliticalLabels(handle);
         if (_labelsDirty || _labelSize != Size || _labelScale != UIScale)
             LayoutLabels(handle);
@@ -561,8 +652,18 @@ public sealed partial class SWGalacticMapControl : Control
         handle.DrawPrimitives(DrawPrimitiveTopology.TriangleFan, _strokeVertices, Color.ToSrgb(color));
     }
 
+    private bool _markExternalLabels;
+    public void SetExternalLabels(bool enabled)
+    {
+        _markExternalLabels = enabled;
+        CanKeyboardFocus = enabled;
+        KeyboardFocusOnClick = enabled;
+        _labelsDirty = true;
+    }
+
     private string FinanceLabel(SWGalacticMapWorld world)
     {
+        if (_markExternalLabels && IsExternalWorld(world)) return $"{world.Name} · вне области";
         if (_financeSectors != null && world.Anchor && world.Sector is { } sector
             && _financeSectors.TryGetValue(sector.Id, out var revenue))
             return $"{world.Name}  {revenue.Tax:N0} кр";
@@ -578,8 +679,9 @@ public sealed partial class SWGalacticMapControl : Control
         _labelSize = Size;
         _labelScale = UIScale;
         _labelsDirty = false;
-        var points = _map.Worlds.ToDictionary(w => w.Id, w => MapToLocal(w.Position));
-        foreach (var world in _map.Worlds.OrderByDescending(w => w.Id == _selectedWorld || w.Id == _hover)
+        var points = _map.Worlds.Where(DisplayWorld).ToDictionary(w => w.Id, w => MapToLocal(w.Position));
+        foreach (var world in _map.Worlds.Where(DisplayWorld).OrderByDescending(w => w.Id == _selectedWorld || w.Id == _hover)
+                     .ThenByDescending(w => _markExternalLabels && IsExternalWorld(w))
                      .ThenByDescending(w => w.LabelPriority)
                      .ThenByDescending(w => w.Anchor).ThenByDescending(w => _hubs.Contains(w.Id)))
         {

@@ -19,9 +19,12 @@ public sealed partial class SWGalacticMapControl
     private const int MaxTrafficMarkers = 256;
     private const int TrailSegments = 4;
     private readonly List<TrafficPath> _trafficPaths = new();
+    private readonly HashSet<string> _overviewTrafficWorlds = new();
+    private bool DisplayWorld(SWGalacticMapWorld world) => !_markExternalLabels || IsLocalView || world.Overview || world.Id == _selectedWorld || _overviewTrafficWorlds.Contains(world.Id);
     private readonly Dictionary<string, TrafficPath> _trafficByEdge = new();
     private readonly Dictionary<SWGalacticMapRoute, TrafficPath> _trafficByRoute = new();
     private readonly Dictionary<string, int> _cargoSizes = new();
+    private readonly Dictionary<string, Color> _trafficGoodColors = new();
     private readonly Vector2[] _trailPoints = new Vector2[TrailSegments + 1];
     private DrawVertexUV2DColor[] _trafficVertices = Array.Empty<DrawVertexUV2DColor>();
     private int _trafficVertexCount;
@@ -79,6 +82,18 @@ public sealed partial class SWGalacticMapControl
         return goods.Any(g => g.ProducedPerHour > 0) ? SWConsoleStyle.Good : SWConsoleStyle.TextDim;
     }
 
+    private string? _focusedTrafficEdge;
+    private string? _focusedTrafficFrom;
+    private string? _focusedTrafficTo;
+    private string? _focusedTrafficGood;
+    public void SetFocusedTraffic(string? edge, string? from, string? to, string? good)
+    {
+        _focusedTrafficEdge = edge;
+        _focusedTrafficFrom = from;
+        _focusedTrafficTo = to;
+        _focusedTrafficGood = good;
+    }
+
     private string? _trafficCommodity;
     private bool _showTraffic = true;
     private bool _hasTraffic;
@@ -100,8 +115,16 @@ public sealed partial class SWGalacticMapControl
             var count = 0;
             foreach (var path in _trafficPaths)
             {
-                if (path.Forward.Present) count++;
-                if (path.Reverse.Present) count++;
+                if (_markExternalLabels && _trafficCommodity == null)
+                {
+                    count += path.ForwardGoods.Values.Count(d => d.Present);
+                    count += path.ReverseGoods.Values.Count(d => d.Present);
+                }
+                else
+                {
+                    if (path.Forward.Present) count++;
+                    if (path.Reverse.Present) count++;
+                }
             }
             return count;
         }
@@ -115,6 +138,10 @@ public sealed partial class SWGalacticMapControl
         public readonly float[] Distances = new float[points.Length];
         public readonly TrafficDirection Forward = new();
         public readonly TrafficDirection Reverse = new();
+        public readonly Dictionary<string, TrafficDirection> ForwardGoods = new();
+        public readonly Dictionary<string, TrafficDirection> ReverseGoods = new();
+        public KeyValuePair<string, TrafficDirection>[] ForwardOrdered = Array.Empty<KeyValuePair<string, TrafficDirection>>();
+        public KeyValuePair<string, TrafficDirection>[] ReverseOrdered = Array.Empty<KeyValuePair<string, TrafficDirection>>();
         public readonly float Phase = phase;
         public readonly float MapLength = GetPathLength(points);
         public double Capacity;
@@ -164,15 +191,24 @@ public sealed partial class SWGalacticMapControl
             }
             var prototypes = IoCManager.Resolve<IPrototypeManager>();
             foreach (var good in prototypes.EnumeratePrototypes<SWCommodityPrototype>())
+            {
                 _cargoSizes[good.ID] = good.CargoSlots;
+                _trafficGoodColors[good.ID] = TrafficCommodityColor(good.ID);
+            }
         }
         foreach (var path in _trafficPaths)
         {
             path.Forward.Clear();
             path.Reverse.Clear();
+            path.ForwardGoods.Clear();
+            path.ReverseGoods.Clear();
+            path.ForwardOrdered = Array.Empty<KeyValuePair<string, TrafficDirection>>();
+            path.ReverseOrdered = Array.Empty<KeyValuePair<string, TrafficDirection>>();
             path.Capacity = 0;
         }
         _hasTraffic = false;
+        _overviewTrafficWorlds.Clear();
+        _labelsDirty = true;
         if (_economy is not { Ready: true } || !_showTraffic) return;
         foreach (var link in _economy.Links)
             if (_trafficByEdge.TryGetValue(link.Edge, out var path))
@@ -182,10 +218,17 @@ public sealed partial class SWGalacticMapControl
         {
             if (_trafficCommodity != null && flow.Good != _trafficCommodity
                 || !_trafficByEdge.TryGetValue(flow.Edge, out var path)
-                || path.Capacity <= 0
-                || !_cargoSizes.TryGetValue(flow.Good, out var cargo) || cargo <= 0
+                || _markExternalLabels && path.Route.Proposed
+                || !_markExternalLabels && path.Capacity <= 0
                 || !double.IsFinite(flow.UnitsPerHour) || !double.IsFinite(flow.InTransit)
                 || !double.IsFinite(flow.TravelHours)) continue;
+            if (!_cargoSizes.TryGetValue(flow.Good, out var cargo) || cargo <= 0)
+            {
+                if (!_markExternalLabels) continue;
+                cargo = 0; // Unknown cargo size gives no inferred capacity or intensity.
+            }
+            if (_markExternalLabels && !IsLocalView && _worlds.TryGetValue(flow.From, out var source) &&
+                _worlds.TryGetValue(flow.To, out var target) && Vector2.DistanceSquared(source.Position, target.Position) < .0001f) continue;
             TrafficDirection direction;
             if (flow.From == path.Route.From && flow.To == path.Route.To) direction = path.Forward;
             else if (flow.From == path.Route.To && flow.To == path.Route.From) direction = path.Reverse;
@@ -205,12 +248,33 @@ public sealed partial class SWGalacticMapControl
                         units = Math.Max(0, units - medical.Quantity / .25);
                 }
             }
-            direction.Units += units;
-            direction.Transit += transit;
-            direction.Slots += units * cargo;
-            direction.TransitSlots += transit * cargo;
-            direction.WeightedHours += (units + transit) * Math.Max(.25, flow.TravelHours);
+            void Add(TrafficDirection target)
+            {
+                target.Units += units;
+                target.Transit += transit;
+                target.Slots += units * cargo;
+                target.TransitSlots += transit * cargo;
+                target.WeightedHours += (units + transit) * Math.Max(.25, flow.TravelHours);
+            }
+            Add(direction);
+            if (_markExternalLabels && _trafficCommodity == null)
+            {
+                var goods = flow.From == path.Route.From ? path.ForwardGoods : path.ReverseGoods;
+                if (!goods.TryGetValue(flow.Good, out var goodDirection)) goods[flow.Good] = goodDirection = new TrafficDirection();
+                Add(goodDirection);
+            }
             _hasTraffic |= direction.Present;
+            if (_markExternalLabels && !IsLocalView && direction.Present)
+            {
+                _overviewTrafficWorlds.Add(flow.From);
+                _overviewTrafficWorlds.Add(flow.To);
+            }
+        }
+        if (_markExternalLabels && _trafficCommodity == null)
+        foreach (var path in _trafficPaths)
+        {
+            path.ForwardOrdered = path.ForwardGoods.OrderBy(p => p.Key, StringComparer.Ordinal).ToArray();
+            path.ReverseOrdered = path.ReverseGoods.OrderBy(p => p.Key, StringComparer.Ordinal).ToArray();
         }
         _commodityColor = TrafficCommodityColor(_trafficCommodity);
         _reverseTrafficColor = _trafficCommodity == null ? Color.FromHex("#E9C17E") : Color.InterpolateBetween(_commodityColor, Color.White, .3f);
@@ -252,6 +316,11 @@ public sealed partial class SWGalacticMapControl
         if (!_hasTraffic) return color.WithAlpha(selected ? .8f : .45f);
         var active = _trafficByRoute.TryGetValue(route, out var path)
             && (path.Forward.Present || path.Reverse.Present);
+        if (_focusedTrafficEdge != null)
+        {
+            var focused = SWTransitLinkPrototype.LinkId(route.From, route.To) == _focusedTrafficEdge;
+            return focused && active ? SWConsoleStyle.Brass.WithAlpha(.8f) : color.WithAlpha(active ? .16f : .08f);
+        }
         if (selected) return active ? _commodityColor.WithAlpha(.65f) : color.WithAlpha(.55f);
         return color.WithAlpha(active ? .27f : .12f);
     }
@@ -294,8 +363,35 @@ public sealed partial class SWGalacticMapControl
             var focused = FocusedTraffic(path);
             if (focused != (pass == 0) || path.Length <= 22 * UIScale) continue;
             var alpha = focused ? 1f : _selectedRoute != null || _selectedWorld != null ? .48f : .72f;
-            DrawTrafficDirection(path, path.Forward, false, _commodityColor, alpha, focused, ref remaining, ref remainingDirections);
-            DrawTrafficDirection(path, path.Reverse, true, _reverseTrafficColor, alpha, focused, ref remaining, ref remainingDirections);
+            if (_markExternalLabels && _trafficCommodity == null)
+            {
+                var index = 0;
+                foreach (var (good, direction) in path.ForwardOrdered)
+                {
+                    var color = _trafficGoodColors.GetValueOrDefault(good, _commodityColor);
+                    var chosen = _focusedTrafficEdge == SWTransitLinkPrototype.LinkId(path.Route.From, path.Route.To) &&
+                        _focusedTrafficFrom == path.Route.From && _focusedTrafficTo == path.Route.To && _focusedTrafficGood == good;
+                    var opacity = _focusedTrafficEdge == null ? alpha : chosen ? 1 : .18f;
+                    DrawTrafficDirection(path, direction, false, chosen ? SWConsoleStyle.Brass : color, opacity, chosen || _focusedTrafficEdge == null && focused, ref remaining, ref remainingDirections, index++ * .137f);
+                }
+                foreach (var (good, direction) in path.ReverseOrdered)
+                {
+                    var color = _trafficGoodColors.GetValueOrDefault(good, _reverseTrafficColor);
+                    var chosen = _focusedTrafficEdge == SWTransitLinkPrototype.LinkId(path.Route.From, path.Route.To) &&
+                        _focusedTrafficFrom == path.Route.To && _focusedTrafficTo == path.Route.From && _focusedTrafficGood == good;
+                    var opacity = _focusedTrafficEdge == null ? alpha : chosen ? 1 : .18f;
+                    DrawTrafficDirection(path, direction, true, chosen ? SWConsoleStyle.Brass : color, opacity, chosen || _focusedTrafficEdge == null && focused, ref remaining, ref remainingDirections, index++ * .137f);
+                }
+                if (remaining == 0) break;
+                continue;
+            }
+            var sameEdge = _focusedTrafficEdge != null && SWTransitLinkPrototype.LinkId(path.Route.From, path.Route.To) == _focusedTrafficEdge;
+            var forwardSelected = sameEdge && _focusedTrafficFrom == path.Route.From && _focusedTrafficTo == path.Route.To;
+            var reverseSelected = sameEdge && _focusedTrafficFrom == path.Route.To && _focusedTrafficTo == path.Route.From;
+            var forwardAlpha = _focusedTrafficEdge == null ? alpha : forwardSelected ? 1f : .18f;
+            var reverseAlpha = _focusedTrafficEdge == null ? alpha : reverseSelected ? 1f : .18f;
+            DrawTrafficDirection(path, path.Forward, false, forwardSelected ? SWConsoleStyle.Brass : _commodityColor, forwardAlpha, forwardSelected || _focusedTrafficEdge == null && focused, ref remaining, ref remainingDirections);
+            DrawTrafficDirection(path, path.Reverse, true, reverseSelected ? SWConsoleStyle.Brass : _reverseTrafficColor, reverseAlpha, reverseSelected || _focusedTrafficEdge == null && focused, ref remaining, ref remainingDirections);
             if (remaining == 0) break;
         }
         if (_trafficVertexCount != 0)
@@ -304,11 +400,11 @@ public sealed partial class SWGalacticMapControl
     }
 
     private void DrawTrafficDirection(TrafficPath path, TrafficDirection direction, bool reverse,
-        Color color, float alpha, bool focused, ref int remaining, ref int remainingDirections)
+        Color color, float alpha, bool focused, ref int remaining, ref int remainingDirections, float phaseOffset = 0)
     {
         if (!direction.Present || remaining <= 0) return;
         var hours = direction.WeightedHours / (direction.Units + direction.Transit);
-        var load = Math.Clamp(Math.Max(direction.Slots, direction.TransitSlots / hours) / path.Capacity, 0, 1);
+        var load = path.Capacity > 0 ? Math.Clamp(Math.Max(direction.Slots, direction.TransitSlots / hours) / path.Capacity, 0, 1) : 0;
         // Preserve at least one marker for the other visible directions before spending
         // the budget on density. A busy Core cannot hide all Outer Rim freight.
         var available = Math.Min(remaining, Math.Max(1, remaining - remainingDirections + 1));
@@ -318,13 +414,13 @@ public sealed partial class SWGalacticMapControl
         remaining -= markers;
         // A restrained visual cadence, independent of how often the server publishes. Longer
         // transfers move a little slower; it is deliberately not a shipment position estimate.
-        var period = Math.Clamp(path.MapLength * .18, 3, 18) * Math.Sqrt(hours);
+        var period = _markExternalLabels ? 3d : Math.Clamp(path.MapLength * .18, 3, 18) * Math.Sqrt(hours);
         var trim = 11 * UIScale;
         var usable = path.Length - trim * 2;
         var laneOffset = path.Forward.Present && path.Reverse.Present ? 3.6f * UIScale : 0;
         for (var marker = 0; marker < markers; marker++)
         {
-            var phase = (float) ((_trafficSeconds / period + path.Phase + marker / (double) markers) % 1);
+            var phase = (float) ((_trafficSeconds / period + path.Phase + phaseOffset + marker / (double) markers) % 1);
             var distance = trim + phase * usable;
             var fade = Math.Min(1, Math.Min(phase, 1 - phase) * 12);
             var intensity = alpha * fade;

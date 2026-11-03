@@ -11,6 +11,8 @@ namespace Content.Client._SW._Senate.Consoles.Statistics;
 public sealed partial class SWStatisticsConsoleMenu
 {
     private bool _strongFirst;
+    private string _sectorDetailSignature = string.Empty;
+    private readonly Dictionary<string, float> _changedSectorRows = new();
     private readonly OptionButton _sectorMetric = new() { MinWidth = 190 };
     private readonly LineEdit _sectorSearch = new() { PlaceHolder = "Найти сектор…", MinWidth = 190 };
     private readonly Button _sort = SWConsoleStyle.TabButton("По возрастанию");
@@ -43,8 +45,8 @@ public sealed partial class SWStatisticsConsoleMenu
             _sectorMetric.SelectId(args.Id);
             if (_state != null && args.Id >= 0 && args.Id < _state.Globals.Count) SelectMetric(_state.Globals[args.Id].Id);
         };
-        _sectorSearch.OnTextChanged += _ => RefreshSectors();
-        _sort.OnPressed += _ => { _strongFirst = !_strongFirst; _sort.Text = _strongFirst ? "По убыванию" : "По возрастанию"; RefreshSectors(); };
+        _sectorSearch.OnTextChanged += _ => { _filterReveal = 0; RefreshSectors(); };
+        _sort.OnPressed += _ => { _filterReveal = 0; _strongFirst = !_strongFirst; _sort.Text = _strongFirst ? "По убыванию" : "По возрастанию"; RefreshSectors(); };
     }
 
     private void RefreshSectors()
@@ -75,7 +77,9 @@ public sealed partial class SWStatisticsConsoleMenu
             row.Button.SetPositionInParent(_ranking.ChildCount - 1);
             row.Button.SetAppearance(SWConsoleStyle.TextBright, selected: sector.Id == _sectorId, quiet: true);
             row.Name.SetMessage(sector.Name, defaultColor: SWConsoleStyle.TextBright);
-            row.Value.Text = SWStatisticsPresentation.Number(stat?.Value ?? float.NaN);
+            var value = SWStatisticsPresentation.Number(stat?.Value ?? float.NaN);
+            if (!string.IsNullOrEmpty(row.Value.Text) && row.Value.Text != value) _changedSectorRows[sector.Id] = .10f;
+            row.Value.Text = value;
             row.Bar.Value = stat?.Value ?? float.NaN;
             row.Bar.Minimum = g?.Min ?? 0;
             row.Bar.Maximum = g?.Max ?? 100;
@@ -87,23 +91,45 @@ public sealed partial class SWStatisticsConsoleMenu
         {
             _ranking.RemoveChild(_sectorRows[id].Button);
             _sectorRows.Remove(id);
+            _changedSectorRows.Remove(id);
         }
-        _sectorDetail.RemoveAllChildren();
         var selected = sectors.FirstOrDefault(s => s.Id == _sectorId);
         if (selected == null)
         {
-            _sectorDetail.AddChild(SWConsoleStyle.Wrap(_state.Sectors.Count == 0 ? "Данных о секторах нет." : "Секторы не найдены.", SWConsoleStyle.TextDim));
+            var emptyKey = _state.Sectors.Count == 0 ? "empty" : "not-found";
+            if (_sectorDetailSignature == emptyKey) return;
+            _sectorDetailSignature = emptyKey;
+            _sectorDetail.RemoveAllChildren();
+            _sectorDetail.AddChild(SWStatisticsText.Wrap(_state.Sectors.Count == 0 ? "Данных о секторах нет." : "Секторы не найдены.", SWConsoleStyle.TextDim));
             return;
         }
-        _sectorDetail.AddChild(SWConsoleStyle.Wrap(selected.Name, SWConsoleStyle.Brass));
-        _sectorDetail.AddChild(SWConsoleStyle.Wrap(selected.Claimed ? "Представлен в Сенате" : "Сенатор не назначен", SWConsoleStyle.TextDim));
+        var breakdown = _state.SituationalStats.Where(x => x.SectorId == selected.Id && x.GlobalId == g?.Id).ToArray();
+        var signature = selected.Id + "|" + selected.Name + "|" + selected.Claimed + "|" + selected.Representative + "|" + g?.Id + "|" +
+            string.Join(";", _state.Globals.Select(x => $"{x.Id}:{x.Name}:{x.Min}:{x.Max}:{x.Actual}")) + "|" +
+            string.Join(";", selected.Stats.Select(x => $"{x.Id}:{x.Value}")) + "|" + SituationSignature(breakdown);
+        if (signature == _sectorDetailSignature) return;
+        _sectorDetailSignature = signature;
+        _sectorDetail.RemoveAllChildren();
+        _sectorDetail.AddChild(SWStatisticsText.Wrap(selected.Name, SWConsoleStyle.Brass));
+        _sectorDetail.AddChild(SWStatisticsText.Wrap(selected.Claimed ? "Представлен в Сенате" : "Сенатор не назначен", SWConsoleStyle.TextDim));
+        if (!string.IsNullOrWhiteSpace(selected.Representative))
+            _sectorDetail.AddChild(SWStatisticsText.Wrap($"Представитель: {selected.Representative}", SWConsoleStyle.TextBright));
         foreach (var global in _state.Globals)
         {
             var stat = SWStatisticsPresentation.SectorMetric(selected, global.Id);
             _sectorDetail.AddChild(Metric(global.Name, stat?.Value ?? float.NaN, global.Min, global.Max, reference: global.Actual));
         }
-        var breakdown = _state.SituationalStats.Where(x => x.SectorId == selected.Id && x.GlobalId == g?.Id).ToArray();
         foreach (var entry in breakdown) _sectorDetail.AddChild(SWSituationalStatDisplay.Make(entry, _situationExpanded));
+    }
+
+    private void AdvanceSectorRows(float seconds, bool reduced)
+    {
+        foreach (var id in _changedSectorRows.Keys.ToArray())
+        {
+            var left = reduced ? 0 : Math.Max(0, _changedSectorRows[id] - Math.Max(0, seconds));
+            if (_sectorRows.TryGetValue(id, out var row)) row.Button.Modulate = Color.White.WithAlpha(.75f + .25f * (1 - left / .10f));
+            if (left <= 0) _changedSectorRows.Remove(id); else _changedSectorRows[id] = left;
+        }
     }
 
     private sealed class SectorRow
@@ -115,7 +141,7 @@ public sealed partial class SWStatisticsConsoleMenu
         public SectorRow(string name)
         {
             Button.Label.Visible = false;
-            Name = SWConsoleStyle.Wrap(name, SWConsoleStyle.TextBright);
+            Name = SWStatisticsText.Wrap(name, SWConsoleStyle.TextBright);
             var box = VerticalStack(4);
             var head = new BoxContainer { HorizontalExpand = true };
             head.AddChild(Name);

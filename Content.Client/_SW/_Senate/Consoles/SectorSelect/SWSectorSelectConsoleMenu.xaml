@@ -1,56 +1,66 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
-    xmlns:senate="clr-namespace:Content.Client._SW._Senate"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
     xmlns:sector="clr-namespace:Content.Client._SW._Senate.Consoles.SectorSelect"
     Title="Представительство секторов" MinSize="640 460" SetSize="1100 780">
     <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
         <sector:SWSectorSelectLayout HorizontalExpand="True" VerticalExpand="True">
-            <PanelContainer Name="HeaderPanel">
-                <BoxContainer Orientation="Horizontal" Margin="14 8" SeparationOverride="0">
-                    <TextureRect Name="RepublicSeal" SetSize="48 48" Stretch="KeepAspectCentered" CanShrink="True" Margin="0 0 12 0" />
-                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="2">
-                        <Label Name="HeaderNetwork" Text="СЕНАТ РЕСПУБЛИКИ / РЕЕСТР СЕКТОРОВ" />
-                        <Label Name="HeaderTitle" Text="Выбор представительства" ClipText="True" />
+            <BoxContainer Orientation="Vertical" SeparationOverride="8" Margin="8 8 8 0">
+                <PanelContainer Name="HeaderPanel">
+                    <BoxContainer Orientation="Horizontal" Margin="8 5" SeparationOverride="10">
+                        <TextureRect Name="RepublicSeal" SetSize="30 30" Stretch="KeepAspectCentered" CanShrink="True" />
+                        <Label Name="HeaderTitle" Text="СЕНАТ / ВЫБОР ПРЕДСТАВИТЕЛЬСТВА" ClipText="True" HorizontalExpand="True" VerticalAlignment="Center" />
                     </BoxContainer>
-                </BoxContainer>
-            </PanelContainer>
-            <sector:SWSectorColumns HorizontalExpand="True" VerticalExpand="True" Margin="12 8" LeftFraction="0.32" Gap="12">
-                <PanelContainer Name="CataloguePanel"><BoxContainer Orientation="Vertical" SeparationOverride="5">
-                    <LineEdit Name="Search" PlaceHolder="Поиск секторов" HorizontalExpand="True" />
-                    <CheckBox Name="FreeOnly" Text="Только свободные" Pressed="True" />
-                    <Label Name="FreeCount" />
-                    <Button Name="MySector" Text="Мой сектор" Visible="False" />
-                    <ScrollContainer Name="ListScroll" HScrollEnabled="False" VerticalExpand="True" HorizontalExpand="True">
-                        <BoxContainer Name="SectorList" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="4" />
-                    </ScrollContainer>
-                </BoxContainer></PanelContainer>
-                <PanelContainer Name="DossierPanel" HorizontalExpand="True" VerticalExpand="True"><ScrollContainer Name="DetailScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
-                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10">
-                        <sector:SWSectorColumns HorizontalExpand="True" Gap="14" LeftFraction="0.40">
+                </PanelContainer>
+                <PanelContainer Name="FilterPanel">
+                    <BoxContainer Orientation="Horizontal" Margin="8 5" SeparationOverride="10">
+                        <LineEdit Name="Search" PlaceHolder="Поиск сектора" SetWidth="160" />
+                        <CheckBox Name="FreeOnly" Text="Только свободные" Pressed="True" VerticalAlignment="Center" />
+                        <Button Name="MySector" Text="Мой сектор" Disabled="True" VerticalAlignment="Center" />
+                        <Label Name="FreeCount" HorizontalExpand="True" HorizontalAlignment="Right" VerticalAlignment="Center" ClipText="True" />
+                    </BoxContainer>
+                </PanelContainer>
+            </BoxContainer>
+            <sector:SWSectorTriptych HorizontalExpand="True" VerticalExpand="True" Margin="8 8" Gap="8">
+                <PanelContainer Name="CataloguePanel">
+                    <BoxContainer Orientation="Vertical" SeparationOverride="5">
+                        <Label Name="CatalogueTitle" Text="ПРЕДСТАВИТЕЛЬСТВА" ClipText="True" />
+                        <ScrollContainer Name="ListScroll" HScrollEnabled="False" VerticalExpand="True" HorizontalExpand="True">
+                            <BoxContainer Name="SectorList" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="3" />
+                        </ScrollContainer>
+                    </BoxContainer>
+                </PanelContainer>
+                <PanelContainer Name="MapPanel">
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="5">
+                        <Label Name="MapTitle" Text="ГАЛАКТИЧЕСКОЕ ПОЛОЖЕНИЕ" ClipText="True" />
+                        <BoxContainer Name="MapHeading" Orientation="Vertical" HorizontalExpand="True" />
+                        <sector:SWSectorMiniMap Name="SectorMap" HorizontalExpand="True" VerticalExpand="True" />
+                        <BoxContainer Name="MapCaption" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="3" />
+                    </BoxContainer>
+                </PanelContainer>
+                <PanelContainer Name="DossierPanel">
+                    <ScrollContainer Name="DetailScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                        <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="8">
+                            <sector:SWSectorNeutralPreview HorizontalExpand="True" />
                             <BoxContainer Name="DetailIntro" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="5" />
-                            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="3">
-                                <sector:SWSectorMiniMap Name="SectorMap" HorizontalExpand="True" />
-                                <BoxContainer Name="MapCaption" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="3" />
-                            </BoxContainer>
-                        </sector:SWSectorColumns>
-                        <BoxContainer Name="Detail" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="10" />
-                        <sector:SWSectorColumns HorizontalExpand="True" Gap="16" LeftFraction="0.50">
+                            <BoxContainer Name="Detail" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="8" />
                             <BoxContainer Name="Infrastructure" Orientation="Vertical" HorizontalExpand="True" />
                             <BoxContainer Name="Representative" Orientation="Vertical" HorizontalExpand="True" />
-                        </sector:SWSectorColumns>
+                        </BoxContainer>
+                    </ScrollContainer>
+                </PanelContainer>
+            </sector:SWSectorTriptych>
+            <PanelContainer Name="FooterPanel" Margin="8 0 8 8">
+                <sector:SWSectorColumns Gap="12" RightWidth="210">
+                    <BoxContainer Orientation="Horizontal" HorizontalExpand="True" SeparationOverride="10">
+                        <sector:SWSectorCardIcon />
+                        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="2">
+                            <Label Name="CardCaption" Text="КАРТА СЕНАТОРА" />
+                            <BoxContainer Name="FooterText" Orientation="Vertical" HorizontalExpand="True" />
+                        </BoxContainer>
                     </BoxContainer>
-                </ScrollContainer></PanelContainer>
-            </sector:SWSectorColumns>
-            <sector:SWSectorColumns Name="Footer" Margin="12 0 12 10" Gap="12" RightWidth="210">
-                <BoxContainer Orientation="Horizontal" HorizontalExpand="True" SeparationOverride="10">
-                    <sector:SWSectorCardIcon />
-                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="2">
-                        <Label Name="CardCaption" Text="КАРТА СЕНАТОРА" />
-                        <BoxContainer Name="FooterText" Orientation="Vertical" HorizontalExpand="True" />
-                    </BoxContainer>
-                </BoxContainer>
-                <sector:SWSectorClaimButton Name="ClaimButton" Text="Занять место" VerticalAlignment="Center" />
-            </sector:SWSectorColumns>
+                    <sector:SWSectorClaimButton Name="ClaimButton" Text="Занять место" VerticalAlignment="Center" />
+                </sector:SWSectorColumns>
+            </PanelContainer>
         </sector:SWSectorSelectLayout>
     </PanelContainer>
 </controls:FancyWindow>

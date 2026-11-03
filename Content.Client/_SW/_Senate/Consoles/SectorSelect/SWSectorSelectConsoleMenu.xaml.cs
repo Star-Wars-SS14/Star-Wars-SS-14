@@ -35,22 +35,31 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
         RobustXamlLoader.Load(this);
         TitleClass = "LabelKeyText";
         _owner = owner;
-        var font = IoCManager.Resolve<IResourceCache>().GetResource<FontResource>("/Fonts/NotoSans/NotoSans-Regular.ttf");
-        _bodyFont = new VectorFont(font, 14);
-        _sectorTitleFont = new VectorFont(font, 26);
+        var font = IoCManager.Resolve<IResourceCache>().GetResource<FontResource>("/Fonts/RobotoMono/RobotoMono-Regular.ttf");
+        _bodyFont = new VectorFont(font, 12);
+        _sectorTitleFont = new VectorFont(font, 21);
         SWConsoleStyle.StyleRoot(RootPanel);
         FitViewport(true);
-        SWConsoleStyle.StyleHeader(HeaderPanel);
+        var rules = RootPanel.Stylesheet?.Rules ?? Array.Empty<StyleRule>();
+        RootPanel.Stylesheet = new Stylesheet(rules.Concat(new[] { StylesheetHelpers.Element<LineEdit>().Prop("font", _bodyFont) }).ToArray());
+        FreeOnly.Label.FontOverride = _bodyFont;
+        MySector.Label.FontOverride = _bodyFont;
+        FreeCount.FontOverride = _bodyFont;
+        ClaimButton.Label.FontOverride = _bodyFont;
         RepublicSeal.Texture = IoCManager.Resolve<IResourceCache>().GetResource<TextureResource>("/Textures/_SW/Interface/Senate/republic-seal.png").Texture;
-        CataloguePanel.PanelOverride = new SWSectorInset { Background = Color.FromHex("#0B191F"), ContentMarginLeftOverride = 10, ContentMarginRightOverride = 10, ContentMarginTopOverride = 10, ContentMarginBottomOverride = 10 };
-        DossierPanel.PanelOverride = new SWSectorInset { Background = Color.FromHex("#10262D"), ContentMarginLeftOverride = 12, ContentMarginRightOverride = 12, ContentMarginTopOverride = 10, ContentMarginBottomOverride = 10 };
+        CataloguePanel.PanelOverride = new SWSectorInset { Background = Color.FromHex("#0C1722"), ContentMarginLeftOverride = 10, ContentMarginRightOverride = 10, ContentMarginTopOverride = 10, ContentMarginBottomOverride = 10 };
+        DossierPanel.PanelOverride = new SWSectorInset { Background = Color.FromHex("#0C1722"), ContentMarginLeftOverride = 12, ContentMarginRightOverride = 12, ContentMarginTopOverride = 10, ContentMarginBottomOverride = 10 };
         RootPanel.PanelOverride = new SWSectorFrame { ContentMarginLeftOverride = 8, ContentMarginRightOverride = 8, ContentMarginTopOverride = 8, ContentMarginBottomOverride = 8 };
-        HeaderPanel.PanelOverride = new StyleBoxFlat { BackgroundColor = Color.FromHex("#202F36"), BorderColor = SWConsoleStyle.Brass, BorderThickness = new Thickness(0, 0, 0, 1) };
+        HeaderPanel.PanelOverride = new SWSectorInset { Background = Color.FromHex("#0B141F") };
+        FilterPanel.PanelOverride = new SWSectorInset { Background = Color.FromHex("#111F2B") };
+        MapPanel.PanelOverride = new SWSectorInset { Background = Color.FromHex("#091521"), ContentMarginLeftOverride = 10, ContentMarginRightOverride = 10, ContentMarginTopOverride = 10, ContentMarginBottomOverride = 10 };
+        FooterPanel.PanelOverride = new SWSectorInset { Background = Color.FromHex("#0B141F"), ContentMarginLeftOverride = 10, ContentMarginRightOverride = 10, ContentMarginTopOverride = 7, ContentMarginBottomOverride = 7 };
         CardCaption.FontOverride = SWConsoleStyle.Small;
         CardCaption.FontColorOverride = SWConsoleStyle.Brass;
-        HeaderNetwork.FontOverride = SWConsoleStyle.Small;
-        HeaderNetwork.FontColorOverride = SWConsoleStyle.Brass;
-        HeaderTitle.FontOverride = new VectorFont(font, 22);
+        CatalogueTitle.FontOverride = new VectorFont(font, 10);
+        MapTitle.FontOverride = new VectorFont(font, 10);
+        CatalogueTitle.FontColorOverride = MapTitle.FontColorOverride = Color.FromHex("#8EAABB");
+        HeaderTitle.FontOverride = new VectorFont(font, 17);
         HeaderTitle.FontColorOverride = SWConsoleStyle.TextBright;
         Search.OnTextChanged += _ => { if (!_updatingFilters) RefreshList(); };
         FreeOnly.OnToggled += _ => { if (!_updatingFilters) RefreshList(); };
@@ -92,7 +101,7 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
             _selected = initial?.Id;
         }
         _updatingFilters = false;
-        MySector.Visible = state.CurrentSector != null;
+        MySector.Disabled = state.CurrentSector == null;
         var sectorsChanged = previous == null || !SameSectors(previous, state);
         if (sectorsChanged || previousSelection != _selected || _revealSelected)
             RefreshList();
@@ -154,14 +163,14 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
             var button = new ContainerButton { HorizontalExpand = true };
             button.StyleBoxOverride = new StyleBoxFlat
             {
-                BackgroundColor = sector.Id == _selected ? Color.FromHex("#29454A") : Color.FromHex("#0B191F"),
-                BorderColor = sector.Id == _selected ? SWConsoleStyle.Brass : SWConsoleStyle.Edge,
+                BackgroundColor = sector.Id == _selected ? Color.FromHex("#19405A") : Color.FromHex("#101F2B"),
+                BorderColor = sector.Id == _selected ? Color.FromHex("#7CC8E8") : SWConsoleStyle.Edge,
                 BorderThickness = new Thickness(3, 0, 0, 0),
                 ContentMarginLeftOverride = 8, ContentMarginRightOverride = 8,
-                ContentMarginTopOverride = 6, ContentMarginBottomOverride = 6,
+                ContentMarginTopOverride = 3, ContentMarginBottomOverride = 3,
             };
             var contents = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, HorizontalExpand = true };
-            contents.AddChild(Wrap(sector.Name, sector.Id == _selected ? SWConsoleStyle.Brass : SWConsoleStyle.TextBright, 180));
+            contents.AddChild(Wrap(sector.Name, SWConsoleStyle.TextBright, 180));
             contents.AddChild(Wrap(sector.Claimed ? "Место занято" : "Свободно", SWConsoleStyle.TextDim, 180));
             button.AddChild(contents);
             var id = sector.Id;
@@ -234,9 +243,11 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
         var sector = _state.Sectors.FirstOrDefault(s => s.Id == _selected);
         SectorMap.Select(sector?.Id);
         MapCaption.RemoveAllChildren();
+        MapHeading.RemoveAllChildren();
         if (sector != null)
         {
-            MapCaption.AddChild(Wrap(sector.Name, SWConsoleStyle.Brass, 310));
+            MapHeading.AddChild(Wrap($"Сектор {sector.Name}", SWConsoleStyle.Brass, 310));
+            MapCaption.AddChild(Wrap(SectorMap.HasBoundary ? "Схематическая граница областей Республики и Империи" : "Общая граница областей не задана", SWConsoleStyle.TextDim, 310));
             MapCaption.AddChild(Wrap(SectorMap.Caption, SWConsoleStyle.TextDim, 310));
         }
         if (sector == null)
@@ -361,10 +372,9 @@ public sealed class SWSectorClaimButton : Button
 
     private void Refresh()
     {
-        var bg = Disabled ? Color.FromHex("#354041") : DrawMode is DrawModeEnum.Hover or DrawModeEnum.Pressed
-            ? Color.FromHex("#E6CD98") : SWConsoleStyle.Brass;
-        Label.FontColorOverride = Disabled ? SWConsoleStyle.TextDim : SWConsoleStyle.Navigation;
-        Label.FontOverride = SWConsoleStyle.Strong;
+        var bg = Disabled ? Color.FromHex("#354452") : DrawMode is DrawModeEnum.Hover or DrawModeEnum.Pressed
+            ? Color.FromHex("#3277A0") : Color.FromHex("#205A80");
+        Label.FontColorOverride = Disabled ? SWConsoleStyle.TextDim : SWConsoleStyle.TextBright;
         StyleBoxOverride = new SWConsoleSurface { Background = bg, Accent = SWConsoleStyle.Brass, CutCorner = true,
             ContentMarginLeftOverride = 12, ContentMarginRightOverride = 12, ContentMarginTopOverride = 9, ContentMarginBottomOverride = 9 };
     }
@@ -387,5 +397,57 @@ public sealed class SWSectorCardIcon : Control
         handle.DrawRect(UIBox2.FromDimensions(new Vector2(5, 7) * UIScale, new Vector2(22, 2) * UIScale), SWConsoleStyle.Brass);
         handle.DrawRect(UIBox2.FromDimensions(new Vector2(5, 12) * UIScale, new Vector2(16, 2) * UIScale), SWConsoleStyle.TextBright);
         handle.DrawRect(UIBox2.FromDimensions(new Vector2(8, 26) * UIScale, new Vector2(18, 4) * UIScale), SWConsoleStyle.Navigation);
+    }
+}
+
+
+/// <summary>Three stable columns measured using the same widths used to arrange them.</summary>
+public sealed class SWSectorTriptych : Container
+{
+    public float Gap { get; set; } = 8;
+    private float _width;
+    private (float Left, float Middle, float Right) Widths(float width)
+    {
+        var available = Math.Max(0, width - 2 * Gap);
+        var left = available * .20f;
+        var right = available * .27f;
+        return (left, available - left - right, right);
+    }
+    protected override Vector2 MeasureOverride(Vector2 availableSize)
+    {
+        if (ChildCount != 3) return base.MeasureOverride(availableSize);
+        _width = float.IsFinite(availableSize.X) ? Math.Max(0, availableSize.X) : 1000;
+        var (left, middle, right) = Widths(_width);
+        Children[0].Measure(new Vector2(left, availableSize.Y));
+        Children[1].Measure(new Vector2(middle, availableSize.Y));
+        Children[2].Measure(new Vector2(right, availableSize.Y));
+        return new Vector2(_width, Math.Max(Children[0].DesiredSize.Y, Math.Max(Children[1].DesiredSize.Y, Children[2].DesiredSize.Y)));
+    }
+    protected override Vector2 ArrangeOverride(Vector2 finalSize)
+    {
+        if (ChildCount != 3) return base.ArrangeOverride(finalSize);
+        var (left, middle, right) = Widths(Math.Min(finalSize.X, _width));
+        Children[0].Arrange(UIBox2.FromDimensions(Vector2.Zero, new Vector2(left, finalSize.Y)));
+        Children[1].Arrange(UIBox2.FromDimensions(new Vector2(left + Gap, 0), new Vector2(middle, finalSize.Y)));
+        Children[2].Arrange(UIBox2.FromDimensions(new Vector2(left + middle + 2 * Gap, 0), new Vector2(right, finalSize.Y)));
+        return finalSize;
+    }
+}
+
+/// <summary>A neutral registry symbol, not an illustration of the selected world.</summary>
+public sealed class SWSectorNeutralPreview : Control
+{
+    public SWSectorNeutralPreview() { MinHeight = 70; MouseFilter = MouseFilterMode.Ignore; }
+    protected override void Draw(DrawingHandleScreen handle)
+    {
+        base.Draw(handle);
+        var center = PixelSize / 2;
+        var radius = MathF.Min(PixelWidth / 3, PixelHeight / 2 - 4 * UIScale);
+        if (radius <= 0) return;
+        var color = Color.ToSrgb(Color.FromHex("#446F85"));
+        handle.DrawCircle(center, radius, color, false);
+        handle.DrawCircle(center, radius * .7f, color, false);
+        handle.DrawLine(center - new Vector2(radius * .8f, 0), center + new Vector2(radius * .8f, 0), Color.FromHex("#446F85"));
+        handle.DrawLine(center - new Vector2(0, radius * .8f), center + new Vector2(0, radius * .8f), Color.FromHex("#446F85"));
     }
 }

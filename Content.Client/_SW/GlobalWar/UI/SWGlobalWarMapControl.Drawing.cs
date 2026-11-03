@@ -176,7 +176,9 @@ public sealed partial class SWGlobalWarMapControl
         _spheresKey = key;
         if (_spaceImage == null)
         {
-            using var stream = IoCManager.Resolve<IResourceManager>().ContentFileRead(new ResPath("/Textures/" + ArtPath + "space.rsi/background.png"));
+            // A plain PNG, not an RSI state: the release client packs every RSI into one file, so a state's own PNG
+            // is not there to read, and the chart stayed black.
+            using var stream = IoCManager.Resolve<IResourceManager>().ContentFileRead(new ResPath("/Textures/" + ArtPath + "windows/space.png"));
             _spaceImage = Image.Load<Rgba32>(stream);
         }
 

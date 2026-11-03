@@ -388,14 +388,19 @@ public sealed partial class SWGlobalWarMapControl : Control
     private void UpdateHover()
     {
         var planet = _pointer is { } point ? HitTestPlanet(point) : null;
+        var route = _pointer is { } pointer && planet == null ? HitTestRoute(pointer) : null;
+        // The engine shows a control's tooltip once per visit and keeps it while the mouse stays on the control, which
+        // here is the whole chart: the first planet's name hung on after the mouse left it or moved to another one.
+        if (planet != _hovered || route != _hoveredRoute)
+            HideTooltip();
         _hovered = planet;
-        _hoveredRoute = _pointer is { } pointer && planet == null ? HitTestRoute(pointer) : null;
+        _hoveredRoute = route;
         DefaultCursorShape = planet != null || _marketState != null && _hoveredRoute != null ? CursorShape.Hand : CursorShape.Arrow;
         ToolTip = planet is { } id
             ? _planets[id].Name
-            : _hoveredRoute is { } route ? Loc.GetString("sw-global-war-travel-route-tooltip",
-                ("from", _planets[route.From].Name), ("to", _planets[route.To].Name),
-                ("direction", route.Bidirectional ? "↔" : "→")) : null;
+            : _hoveredRoute is { } line ? Loc.GetString("sw-global-war-travel-route-tooltip",
+                ("from", _planets[line.From].Name), ("to", _planets[line.To].Name),
+                ("direction", line.Bidirectional ? "↔" : "→")) : null;
         if (_marketState != null)
         {
             if (planet is { } marketPlanet)

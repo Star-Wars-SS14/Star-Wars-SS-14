@@ -57,29 +57,32 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
     public void SetSituationalStats(IReadOnlyList<SWSituationalStatView> stats)
     {
         if (SelectedWorldId is { } id && _worlds.TryGetValue(id, out var world) && world.Sector is { } sector)
-            _worldSituationChanged |= SituationKey(_situationalStats, sector.Id) != SituationKey(stats, sector.Id);
+            _worldSituationChanged |= !SituationKey(_situationalStats, sector.Id).SequenceEqual(SituationKey(stats, sector.Id));
         _situationalStats = stats;
     }
 
-    private static string SituationKey(IReadOnlyList<SWSituationalStatView> stats, string sector) => SnapshotKey(
-        stats.Where(s => s.SectorId == sector).Select(s => new
+    private static System.Collections.Generic.List<object?> SituationKey(IReadOnlyList<SWSituationalStatView> stats, string sector)
+    {
+        var key = new SnapshotValues();
+        key.AddList(stats.Where(s => s.SectorId == sector), stat =>
         {
-            s.SubstatId, s.SubstatName, s.GlobalId, s.SectorId, s.BaseValue, s.RawTotal, s.AppliedTotal, s.EffectiveValue,
-            Sources = s.Sources.Select(x => new { x.Source, x.SourceName, x.SectorId, x.SectorName, x.RawValue }).ToArray(),
-        }).ToArray());
+            key.Add(stat.SubstatId, stat.SubstatName, stat.GlobalId, stat.SectorId, stat.BaseValue, stat.RawTotal, stat.AppliedTotal, stat.EffectiveValue);
+            key.AddList(stat.Sources, source => key.Add(source.Source, source.SourceName, source.SectorId, source.SectorName, source.RawValue));
+        });
+        return key.Values;
+    }
 
-    private static string WorldStatsKey(IReadOnlyList<SWSectorEntry> sectors, IReadOnlyList<SWGlobalStatEntry> globals, string? sectorId)
+    private static System.Collections.Generic.List<object?> WorldStatsKey(IReadOnlyList<SWSectorEntry> sectors, IReadOnlyList<SWGlobalStatEntry> globals, string? sectorId)
     {
         var sector = sectors.FirstOrDefault(s => s.Id == sectorId);
-        return SnapshotKey(new
+        var key = new SnapshotValues();
+        key.Add(sector != null);
+        key.AddList(sector?.Stats, stat =>
         {
-            Present = sector != null,
-            Stats = sector?.Stats.Select(s =>
-            {
-                var global = globals.FirstOrDefault(g => g.Id == s.Id);
-                return new { s.Id, s.Name, s.Value, Min = global?.Min ?? s.Min, Max = global?.Max ?? s.Max, Reference = global?.Actual };
-            }).ToArray(),
+            var global = globals.FirstOrDefault(g => g.Id == stat.Id);
+            key.Add(stat.Id, stat.Name, stat.Value, global?.Min ?? stat.Min, global?.Max ?? stat.Max, global?.Actual);
         });
+        return key.Values;
     }
     private SWGalacticMapRoute? _route;
     private string? _lockedSector;
@@ -462,7 +465,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
     {
         var sectorId = SelectedWorldId is { } id && _worlds.TryGetValue(id, out var world) ? world.Sector?.Id : null;
         var summaryChanged = sectorId != null && _sectors.Any(s => s.Id == sectorId) != sectors.Any(s => s.Id == sectorId);
-        var detailsChanged = _worldSituationChanged || WorldStatsKey(_sectors, _globals, sectorId) != WorldStatsKey(sectors, globals, sectorId);
+        var detailsChanged = _worldSituationChanged || !WorldStatsKey(_sectors, _globals, sectorId).SequenceEqual(WorldStatsKey(sectors, globals, sectorId));
         _worldSituationChanged = false;
         _sectors = sectors;
         _globals = globals;

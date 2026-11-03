@@ -1,7 +1,5 @@
 using System;
 using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Content.Client._SW._Senate.Consoles.Economy;
 using Content.Client._SW._Senate.Economy;
 using Content.Shared._SW._Senate.Economy;
@@ -81,15 +79,41 @@ public sealed partial class SWRepublicMapBrowser
 
     private void OnEconomyChanged() => SetEconomy(_economyClient?.View);
 
-    private static readonly JsonSerializerOptions SnapshotOptions = new()
+    // Boxed primitive values retain ordinal string and numeric equality without culture or hash collisions.
+    private sealed class SnapshotValues
     {
-        IncludeFields = true,
-        NumberHandling = JsonNumberHandling.AllowNamedFloatingPointLiterals,
-    };
+        public readonly System.Collections.Generic.List<object?> Values = new();
+        public void Add(params object?[] values) => Values.AddRange(values);
+        public void AddList<T>(System.Collections.Generic.IEnumerable<T>? items, Action<T> add)
+        {
+            if (items == null) { Add(-1); return; }
+            var array = items.ToArray();
+            Add(array.Length);
+            foreach (var item in array) add(item);
+        }
+        public void Service(SWEconomyServiceView x) => Add(x.Group, x.RequiredPerHour, x.ServedPerHour);
+        public void Good(SWEconomyGoodView x) => Add(x.Good, x.Stock, x.AvailableForProjects, x.Capacity, x.ProducedPerHour, x.ConsumedPerHour, x.RequiredPerHour, x.ImportedPerHour, x.ExportedPerHour, x.Incoming);
+        public void Asset(SWEconomyAssetView x) => Add(x.Good, x.Installed, x.Operational, x.Target, x.Effect, x.EffectiveBonus);
+        public void Order(SWEconomyOrderView x) => Add(x.Good, x.Ordered, x.Delivered, x.CompletedHour);
+        public void Production(SWEconomyProductionView x) => Add(x.Recipe, x.CompletedCyclesPerHour, x.StartedCyclesPerHour, x.WorkInProgress, x.BaseCyclesPerHour, x.EffectiveCyclesPerHour);
+        public void Flow(SWEconomyRouteFlow x) => Add(x.Edge, x.From, x.To, x.Good, x.UnitsPerHour, x.InTransit, x.TravelHours);
+        public void LocalFlow(SWPlanetSurfaceFlow x) => Add(x.From, x.To, x.Good, x.UnitsPerHour);
+        public void Medical(SWHealthSupplyFlowView x) => Add(x.Id, x.ProjectId, x.Kind, x.Payload, x.StrainId, x.TargetWorldId, x.EdgeId, x.From, x.To, x.Good, x.GoodName, x.Quantity, x.DepartAtHours, x.ArriveAtHours, x.DeliveryAtHours, x.FinalLeg, x.RouteBlocked);
+        public void Diet(SWEconomyDietView? x) { Add(x != null); if (x != null) Add(x.Consumed, x.Quality); }
+        public void Capacity(SWEconomyCapacityView? x) { Add(x != null); if (x != null) Add(x.ProductionMultiplier, x.LaborCapacity, x.StorageMultiplier, x.DomesticPower, x.ReactorCapacityPower, x.FleetCapacity, x.FleetOccupied); }
+        public void Link(SWEconomyLinkView? x) { Add(x != null); if (x != null) Add(x.Edge, x.LoadedSlotsPerHour, x.EmptySlotsPerHour, x.CapacitySlotsPerHour); }
+        public void Focused(SWEconomyRouteFlow? x) { Add(x != null); if (x != null) Flow(x); }
+        public void Governor(SWGovernorView? x)
+        {
+            Add(x != null);
+            if (x == null) return;
+            Add(x.Sector, x.Name, x.Status, x.Priority, x.Project, x.World, x.WorldName, x.ProjectStatus, x.Budget, x.Reserve, x.RequestedCredits, x.ProjectProgress, x.LastDecisionHour, x.HasRequest);
+            AddList(x.Traits, value => Add(value));
+            AddList(x.History, value => Add(value));
+        }
+    }
 
-    private static string SnapshotKey(object value) => JsonSerializer.Serialize(value, SnapshotOptions);
-
-    private string EconomyDetailsKey(SWEconomyView? view)
+    private System.Collections.Generic.List<object?> EconomyDetailsKey(SWEconomyView? view)
     {
         var world = SelectedWorldId;
         var sector = world != null && _worlds.TryGetValue(world, out var entry) ? entry.Sector?.Id : null;
@@ -113,26 +137,23 @@ public sealed partial class SWRepublicMapBrowser
             else if (surfaceControl.SelectedCell is { } cell && surfaceControl.RoadAt(cell) != null)
                 localFlows = surfaceControl.FlowsAt(cell).ToArray();
         }
-        return SnapshotKey(new
-        {
-            Available = view != null, Ready = view?.Ready, Paused = view?.Paused,
-            FirstStep = needsSupply && view?.Hour <= 0,
-            WorldAvailable = live != null, GoodsAvailable = live?.Goods.Count > 0,
-            HasWorldEconomy = world != null && HasWorldEconomy(world, live),
-            Services = needsSupply ? live?.Services : null, Diet = needsSupply ? live?.Diet : null,
-            Goods = needsGoods ? live?.Goods.Where(g => _commodityFilter == null || g.Good == _commodityFilter).ToArray() : null,
-            Capacity = needsEquipment || surface && (site?.Kind == "power" || site?.Kind == "settlement" || site?.Recipes.Count > 0) ? live?.Capacity : null,
-            Assets = needsEquipment ? live?.Assets.Where(a => _commodityFilter == null || a.Good == _commodityFilter).ToArray() : null,
-            Orders = needsEquipment ? live?.Orders.Where(o => _commodityFilter == null || o.Good == _commodityFilter).ToArray() : null,
-            Production = surface && site != null ? live?.Production.Where(p => recipeIds?.Contains(p.Recipe) == true).ToArray() : null,
-            Governor = surface && site == null || !surface && !_planetOpen && _detailPage == 3
-                ? view?.Governors.FirstOrDefault(g => g.Sector == sector) : null,
-            Flows = needsFreight ? visibleFlows : null, LocalFlows = localFlows,
-            Focused = _focusedFlow is not { } focused ? null : view?.Flows.FirstOrDefault(f => f.Edge == focused.Edge &&
-                f.From == focused.From && f.To == focused.To && f.Good == focused.Good),
-            Link = edge == null ? null : view?.Links.FirstOrDefault(l => l.Edge == edge),
-            Medical = _selectedMedicalShipmentId == null ? null : view?.MedicalSupplyFlows,
-        });
+        var key = new SnapshotValues();
+        key.Add(view != null, view?.Ready, view?.Paused, needsSupply && view?.Hour <= 0,
+            live != null, live?.Goods.Count > 0, world != null && HasWorldEconomy(world, live));
+        key.AddList(needsSupply ? live?.Services : null, key.Service);
+        key.Diet(needsSupply ? live?.Diet : null);
+        key.AddList(needsGoods ? live?.Goods.Where(g => _commodityFilter == null || g.Good == _commodityFilter) : null, key.Good);
+        key.Capacity(needsEquipment || surface && (site?.Kind == "power" || site?.Kind == "settlement" || site?.Recipes.Count > 0) ? live?.Capacity : null);
+        key.AddList(needsEquipment ? live?.Assets.Where(a => _commodityFilter == null || a.Good == _commodityFilter) : null, key.Asset);
+        key.AddList(needsEquipment ? live?.Orders.Where(o => _commodityFilter == null || o.Good == _commodityFilter) : null, key.Order);
+        key.AddList(surface && site != null ? live?.Production.Where(p => recipeIds?.Contains(p.Recipe) == true) : null, key.Production);
+        key.Governor(surface && site == null || !surface && !_planetOpen && _detailPage == 3 ? view?.Governors.FirstOrDefault(g => g.Sector == sector) : null);
+        key.AddList(needsFreight ? visibleFlows : null, key.Flow);
+        key.AddList(localFlows, key.LocalFlow);
+        key.Focused(_focusedFlow is not { } focused ? null : view?.Flows.FirstOrDefault(f => f.Edge == focused.Edge && f.From == focused.From && f.To == focused.To && f.Good == focused.Good));
+        key.Link(edge == null ? null : view?.Links.FirstOrDefault(l => l.Edge == edge));
+        key.AddList(_selectedMedicalShipmentId == null ? null : view?.MedicalSupplyFlows, key.Medical);
+        return key.Values;
     }
 
     public void SetEconomy(SWEconomyView? view)
@@ -164,7 +185,7 @@ public sealed partial class SWRepublicMapBrowser
             RefreshPlanetPaths();
             return;
         }
-        if (_fullPlanetScreen && oldDetails == EconomyDetailsKey(view))
+        if (_fullPlanetScreen && oldDetails != null && oldDetails.SequenceEqual(EconomyDetailsKey(view)))
         {
             RefreshPlanetPaths();
             return;

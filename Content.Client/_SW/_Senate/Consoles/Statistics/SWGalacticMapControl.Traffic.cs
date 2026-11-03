@@ -273,8 +273,8 @@ public sealed partial class SWGalacticMapControl
         if (_markExternalLabels && _trafficCommodity == null)
         foreach (var path in _trafficPaths)
         {
-            path.ForwardOrdered = path.ForwardGoods.OrderBy(p => p.Key, StringComparer.Ordinal).ToArray();
-            path.ReverseOrdered = path.ReverseGoods.OrderBy(p => p.Key, StringComparer.Ordinal).ToArray();
+            path.ForwardOrdered = path.ForwardGoods.OrderBy(p => p.Key, Comparer<string>.Create(string.CompareOrdinal)).ToArray();
+            path.ReverseOrdered = path.ReverseGoods.OrderBy(p => p.Key, Comparer<string>.Create(string.CompareOrdinal)).ToArray();
         }
         _commodityColor = TrafficCommodityColor(_trafficCommodity);
         _reverseTrafficColor = _trafficCommodity == null ? Color.FromHex("#E9C17E") : Color.InterpolateBetween(_commodityColor, Color.White, .3f);

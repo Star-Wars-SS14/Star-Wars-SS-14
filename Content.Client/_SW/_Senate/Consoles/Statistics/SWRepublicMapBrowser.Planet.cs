@@ -77,7 +77,7 @@ public sealed partial class SWRepublicMapBrowser
         if (!_fullPlanetScreen || sector == null && system == null && political == null) return view;
         bool Own(SWGalacticMapWorld world) => sector != null ? world.Sector?.Id == sector
             : system != null ? world.SystemId == system : world.PoliticalSectorId == political;
-        var worlds = view.Worlds.Where(Own).OrderBy(w => w.Id, StringComparer.Ordinal).ToArray();
+        var worlds = view.Worlds.Where(Own).OrderBy(w => w.Id, Comparer<string>.Create(string.CompareOrdinal)).ToArray();
         if (worlds.Length == 0 || worlds.All(w => w.LocalPosition is { } p &&
                 float.IsFinite(p.X) && float.IsFinite(p.Y) && p.X >= 0 && p.Y >= 0 && p.X <= view.Size.X && p.Y <= view.Size.Y) &&
             worlds.Select(w => w.LocalPosition!.Value).Distinct().Count() == worlds.Length) return view;

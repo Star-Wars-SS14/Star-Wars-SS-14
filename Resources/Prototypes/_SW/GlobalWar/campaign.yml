@@ -98,7 +98,7 @@
     SWGlobalWarR2: { travelTime: 60, capacity: 64 }
     SWGlobalWarR7: { travelTime: 60, capacity: 64 }
     SWGlobalWarR8: { travelTime: 60, capacity: 64 }
-  name: 'Каньон'
+  name: 'Утапау'
   initialOwner: Republic
   kind: Mining
   mapPosition: -48,18
@@ -155,7 +155,7 @@
     SWGlobalWarR5: { travelTime: 60, capacity: 64 }
     SWGlobalWarR8: { travelTime: 60, capacity: 64 }
     SWGlobalWarR9: { travelTime: 60, capacity: 64 }
-  name: 'Арсенал'
+  name: 'Кореллия'
   initialOwner: Republic
   kind: Industry
   mapPosition: -48,36
@@ -279,7 +279,7 @@
     SWGlobalWarE7: { travelTime: 60, capacity: 64 }
     SWGlobalWarE8: { travelTime: 60, capacity: 64 }
     SWGlobalWarN1: { travelTime: 60, capacity: 64 }
-  name: 'Базальт'
+  name: 'Салласт'
   initialOwner: Empire
   kind: Mining
   mapPosition: 60,18
@@ -297,7 +297,7 @@
     SWGlobalWarE7: { travelTime: 60, capacity: 64 }
     SWGlobalWarE8: { travelTime: 60, capacity: 64 }
     SWGlobalWarN1: { travelTime: 60, capacity: 64 }
-  name: 'Красная пыль'
+  name: 'Джеонозис'
   initialOwner: Empire
   kind: Mining
   mapPosition: 48,18
@@ -354,7 +354,7 @@
     SWGlobalWarE9: { travelTime: 60, capacity: 64 }
     SWGlobalWarN0: { travelTime: 60, capacity: 64 }
     SWGlobalWarN1: { travelTime: 60, capacity: 64 }
-  name: 'Литейная'
+  name: 'Зиост'
   initialOwner: Empire
   kind: Industry
   mapPosition: 48,36
@@ -376,7 +376,7 @@
     SWGlobalWarE9: { travelTime: 60, capacity: 64 }
     SWGlobalWarN0: { travelTime: 60, capacity: 64 }
     SWGlobalWarN1: { travelTime: 60, capacity: 64 }
-  name: 'Тяжёлые стапели'
+  name: 'Фондор'
   initialOwner: Empire
   kind: Industry
   mapPosition: 36,36

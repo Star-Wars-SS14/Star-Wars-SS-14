@@ -120,8 +120,8 @@ public sealed partial class SWRepublicMapBrowser
         if (!View.Worlds.Any(w => w.Id == id)) SelectWorld(id);
         if (!View.Worlds.Any(w => w.Id == id)) return false;
         var displayed = View.Worlds.First(w => w.Id == id);
-        Vector2? origin = originOverride ?? (Map.Parent != null && Map.Width > 0 && Map.Height > 0
-            ? Map.GlobalPosition + Map.MapToLocal(displayed.Position) - _body.GlobalPosition : null);
+        Vector2? origin = originOverride ?? (Map is { Parent: not null } map && map.Width > 0 && map.Height > 0
+            ? map.GlobalPosition + map.MapToLocal(displayed.Position) - _body.GlobalPosition : null);
         SelectedWorldId = id;
         _route = null;
         Surface = null;

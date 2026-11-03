@@ -7,12 +7,15 @@ namespace Content.Shared._SW.Lobby;
 /// be shown as a wall of it.
 /// </summary>
 [Serializable, NetSerializable]
-public sealed class SWLobbyFactsEvent(int roundId, int players, int ready, string map, string mode, string description) : EntityEventArgs
+public sealed class SWLobbyFactsEvent(int roundId, int players, int ready, string map, string mapCaption, string mode, string description) : EntityEventArgs
 {
     public readonly int RoundId = roundId;
     public readonly int Players = players;
     public readonly int Ready = ready;
     public readonly string Map = map;
+
+    /// <summary>What the map tile calls its value: the map, or for the campaign the worlds its players start on.</summary>
+    public readonly string MapCaption = mapCaption;
     public readonly string Mode = mode;
     public readonly string Description = description;
 }

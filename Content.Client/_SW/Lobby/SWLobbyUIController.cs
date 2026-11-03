@@ -30,6 +30,7 @@ public sealed class SWLobbyUIController : UIController, IOnStateEntered<LobbySta
     private SWGlobalWarStatTile? _round;
     private SWGlobalWarStatTile? _players;
     private SWGlobalWarStatTile? _map;
+    private string _mapCaption = string.Empty;
     private SWGlobalWarStatTile? _mode;
     private RichTextLabel? _description;
 
@@ -60,7 +61,8 @@ public sealed class SWLobbyUIController : UIController, IOnStateEntered<LobbySta
         first.AddChild(_players);
         var second = new BoxContainer { SeparationOverride = 6 };
         _mode = new SWGlobalWarStatTile(Loc.GetString("sw-lobby-mode"), 14);
-        _map = new SWGlobalWarStatTile(Loc.GetString("sw-lobby-map"), 14);
+        _mapCaption = Loc.GetString("sw-lobby-map");
+        _map = new SWGlobalWarStatTile(_mapCaption, 14);
         second.AddChild(_mode);
         second.AddChild(_map);
         _description = new RichTextLabel();
@@ -100,9 +102,20 @@ public sealed class SWLobbyUIController : UIController, IOnStateEntered<LobbySta
             ? facts.Players.ToString()
             : Loc.GetString("sw-lobby-players-ready", ("players", facts.Players), ("ready", facts.Ready));
         _mode!.Value.Text = facts.Mode;
+        // The tile's caption is fixed when it is made, and the campaign names its starting worlds instead of a map.
+        var caption = facts.MapCaption.Length != 0 ? facts.MapCaption : Loc.GetString("sw-lobby-map");
+        if (caption != _mapCaption && _map!.Parent is { } row)
+        {
+            var at = _map.GetPositionInParent();
+            row.RemoveChild(_map);
+            _map = new SWGlobalWarStatTile(caption, 14);
+            row.AddChild(_map);
+            _map.SetPositionInParent(at);
+            _mapCaption = caption;
+        }
+
         _map!.Value.Text = facts.Map;
-        // A round on the campaign's empty map has nothing to say here.
-        _map.Visible = facts.Map.Length != 0 && facts.Map != "Empty";
+        _map.Visible = facts.Map.Length != 0;
         _description!.SetMessage(FormattedMessage.FromUnformatted(facts.Description), defaultColor: SWGlobalWarConsoleStyle.TextBright);
     }
 

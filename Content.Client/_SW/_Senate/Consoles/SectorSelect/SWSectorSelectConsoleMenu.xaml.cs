@@ -41,7 +41,7 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
         SWConsoleStyle.StyleRoot(RootPanel);
         FitViewport(true);
         var rules = RootPanel.Stylesheet?.Rules ?? Array.Empty<StyleRule>();
-        RootPanel.Stylesheet = new Stylesheet(rules.Concat(new[] { StylesheetHelpers.Element<LineEdit>().Prop("font", _bodyFont) }).ToArray());
+        RootPanel.Stylesheet = new Stylesheet(rules.Concat(new StyleRule[] { StylesheetHelpers.Element<LineEdit>().Prop("font", _bodyFont) }).ToArray());
         FreeOnly.Label.FontOverride = _bodyFont;
         MySector.Label.FontOverride = _bodyFont;
         FreeCount.FontOverride = _bodyFont;

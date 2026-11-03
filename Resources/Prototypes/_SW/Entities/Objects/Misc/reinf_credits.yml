@@ -54,7 +54,7 @@
 
 - type: stack
   id: SWReinforcementCreditsStack
-  name: очки подкреплений
+  name: stack-sw-reinforcement-credits
   icon: { sprite: _SW/Economy/empire_cash.rsi, state: cash }
   spawn: SWReinforcementCredits
 

@@ -57,7 +57,7 @@
 
 - type: stack
   id: SWEmpireCreditsStack
-  name: имперский кредит
+  name: stack-sw-empire-credits
   icon: { sprite: _SW/Economy/empire_cash.rsi, state: cash }
   spawn: SWEmpireCredits
 

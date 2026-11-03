@@ -32,7 +32,7 @@
     graph: Airlock
     node: glassAirlock
   - type: Paintable
-    group: Glass
+    group: AirlockGlass
   - type: RadiationBlocker
     resistance: 2
   - type: Tag

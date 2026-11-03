@@ -1,0 +1,16 @@
+sw-currency-empire-credit-currency-name = Имперский кредит
+sw-currency-republic-credit-currency-name = Республиканский кредит
+sw-currency-vanilla-currency-name = Местный кредит
+sw-currency-reinforcement-score-name = Очки подкреплений
+sw-currency-supply-scores-empire-name = Очки специального снабжения Империи
+sw-currency-supply-scores-republic-name = Очки специального снабжения Республики
+sw-currency-black-market-supply-scores-name = Очки снабжения чёрного рынка
+sw-currency-mandalorian-supply-scores-name = Очки снабжения мандалора
+sw-currency-empire-credit-currency-short = ИК
+sw-currency-republic-credit-currency-short = РК
+sw-currency-vanilla-currency-short = МК
+sw-currency-reinforcement-score-short = ОП
+sw-currency-supply-scores-empire-short = ОСИ
+sw-currency-supply-scores-republic-short = ОСР
+sw-currency-black-market-supply-scores-short = ОСЧР
+sw-currency-mandalorian-supply-scores-short = ОСМ

@@ -1,6 +1,6 @@
 - type: stack
   id: CMPhoron
-  name: phoron
+  name: stack-plasma
   icon: { sprite: /Textures/_RMC14/Objects/Materials/Sheets/phoron.rsi, state: phoron }
   spawn: CMSheetPhoron
   maxCount: 50

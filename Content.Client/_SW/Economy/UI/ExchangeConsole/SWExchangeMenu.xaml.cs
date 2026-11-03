@@ -107,8 +107,8 @@ public sealed partial class SWExchangeMenu : SWTerminalWindow
         CurrencyExchangeFrom.Clear();
         CurrencyExchangeTo.Clear();
         for (int i = 0; i < Currencies.Count; i++) {
-            CurrencyExchangeFrom.AddItem(Currencies[i].LocalizedName, i);
-            CurrencyExchangeTo.AddItem(Currencies[i].LocalizedName, i);
+            CurrencyExchangeFrom.AddItem(Loc.GetString(Currencies[i].LocalizedName), i);
+            CurrencyExchangeTo.AddItem(Loc.GetString(Currencies[i].LocalizedName), i);
         }
         if (Currencies.Count > 1)
         {

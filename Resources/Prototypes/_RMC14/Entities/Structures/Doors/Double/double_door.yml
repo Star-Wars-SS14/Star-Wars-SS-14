@@ -52,8 +52,6 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/Double/command_glass.rsi
-  - type: Paintable
-    department: Command
 
 - type: entity
   parent: CMDoubleDoorBase
@@ -63,8 +61,6 @@
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/Double/command_solid.rsi
   - type: Occluder
-  - type: Paintable
-    department: Command
 
 - type: entity
   parent: CMDoubleDoorBase
@@ -73,8 +69,6 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/Double/engineer_glass.rsi
-  - type: Paintable
-    department: Engineering
 
 - type: entity
   parent: CMDoubleDoorBase
@@ -84,8 +78,6 @@
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/Double/engineer_solid.rsi
   - type: Occluder
-  - type: Paintable
-    department: Engineering
 
 - type: entity
   parent: CMDoubleDoorBase
@@ -111,8 +103,6 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/Double/medical_glass.rsi
-  - type: Paintable
-    department: Command
 
 - type: entity
   parent: CMDoubleDoorBase
@@ -122,8 +112,6 @@
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/Double/medical_solid.rsi
   - type: Occluder
-  - type: Paintable
-    department: Command
 
 - type: entity
   parent: CMDoubleDoorBase
@@ -189,8 +177,6 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/Double/security_glass.rsi
-  - type: Paintable
-    department: Command
 
 - type: entity
   parent: CMDoubleDoorBase
@@ -200,5 +186,3 @@
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/Double/security_solid.rsi
   - type: Occluder
-  - type: Paintable
-    department: Command

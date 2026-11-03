@@ -21,7 +21,7 @@ public sealed partial class SWWithdrawalControl : Control
         RobustXamlLoader.Load(this);
         IoCManager.InjectDependencies(this);
         var proto = _prototypeManager.Index(currency);
-        CurrencyName.Text = proto.ShortName;
+        CurrencyName.Text = Loc.GetString(proto.ShortName);
         Currency = currency;
     }
 

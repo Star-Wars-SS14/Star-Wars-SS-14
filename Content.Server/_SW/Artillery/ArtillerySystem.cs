@@ -60,6 +60,9 @@ public sealed class ArtillerySystem : EntitySystem
 
     private void HandleTriggerArtillery(Entity<ArtilleryOnTriggerComponent> ent, ref TriggerEvent args)
     {
+        if (args.Key != null && !ent.Comp.KeysIn.Contains(args.Key))
+            return;
+
         if (ent.Comp.BombSound != null)
         {
             ent.Comp.PlayingBombSoundInfo = _audioSystem.PlayPvs(new SoundPathSpecifier(ent.Comp.BombSound), ent.Owner.ToCoordinates());

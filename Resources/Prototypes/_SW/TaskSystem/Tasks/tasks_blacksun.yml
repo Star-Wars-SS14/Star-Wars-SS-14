@@ -15,7 +15,6 @@
     name:  Обезглавливание (выбор)
     description: Убейте или захватите главу "Обмена".
   - type: SWTargetSelector
-    factions: [ExchangeFaction]
     jobs:
     - SWExchangeCaptain
   - type: SWSubtaskContainer

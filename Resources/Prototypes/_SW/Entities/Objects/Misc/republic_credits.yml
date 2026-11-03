@@ -57,7 +57,7 @@
 
 - type: stack
   id: SWRepublicCreditsStack
-  name: республиканский кредит
+  name: stack-sw-republic-credits
   icon: { sprite: _SW/Economy/republic_cash.rsi, state: cash }
   spawn: SWRepublicCredits
 

@@ -1,0 +1,108 @@
+# Radio channels from upstream that radio_channels.yml has commented out.
+# Upstream entities (borgs, ghost roles, cargo and salvage systems) still reference them by id.
+# Keycodes that clash with an SW channel (г т и р х м к н л п о ч) are replaced by digits,
+# because every channel needs a unique keycode (SharedChatSystem.CacheRadios).
+
+- type: radioChannel
+  id: CentCom
+  name: chat-radio-centcom
+  keycode: 'ц'
+  frequency: 1337
+  color: "#2681a5"
+  longRange: true
+
+- type: radioChannel
+  id: Command
+  name: chat-radio-command
+  keycode: '1'
+  frequency: 1353
+  color: "#fcdf03"
+
+- type: radioChannel
+  id: Engineering
+  name: chat-radio-engineering
+  keycode: '2'
+  frequency: 1357
+  color: "#ff733c"
+
+- type: radioChannel
+  id: Medical
+  name: chat-radio-medical
+  keycode: '3'
+  frequency: 1355
+  color: "#57b8f0"
+
+- type: radioChannel
+  id: Science
+  name: chat-radio-science
+  keycode: '4'
+  frequency: 1351
+  color: "#cd7ccd"
+
+- type: radioChannel
+  id: Security
+  name: chat-radio-security
+  keycode: '5'
+  frequency: 1359
+  color: "#ff4242"
+
+- type: radioChannel
+  id: Service
+  name: chat-radio-service
+  keycode: 'с'
+  frequency: 1349
+  color: "#539c00"
+
+- type: radioChannel
+  id: Supply
+  name: chat-radio-supply
+  keycode: '6'
+  frequency: 1347
+  color: "#b48b57"
+
+- type: radioChannel
+  id: Syndicate
+  name: chat-radio-syndicate
+  keycode: '7'
+  frequency: 1213
+  color: "#8f4a4b"
+  longRange: true
+
+- type: radioChannel
+  id: Handheld
+  name: chat-radio-handheld
+  frequency: 1330
+  color: "#967101"
+  longRange: true
+
+- type: radioChannel
+  id: Binary
+  name: chat-radio-binary
+  keycode: 'д'
+  frequency: 1001
+  color: "#5ed7aa"
+  longRange: true
+
+- type: radioChannel
+  id: Freelance
+  name: chat-radio-freelance
+  keycode: 'ф'
+  frequency: 1984
+  color: "#f6ce64"
+  longRange: true
+
+- type: radioChannel
+  id: Xenoborg
+  name: chat-radio-xenoborg
+  keycode: 'x'
+  frequency: 2002
+  color: "#2288ff"
+  longRange: true
+
+- type: radioChannel
+  id: Mothership
+  name: chat-radio-mothership
+  keycode: 'z'
+  frequency: 2003
+  color: "#ff2222"
+  longRange: true

@@ -80,6 +80,7 @@ public sealed partial class SWTutorialSystem : EntitySystem
         base.Shutdown();
 
         ShutdownSteps();
+        EntityManager.EntityInitialized -= OnPracticeOutput;
         _player.PlayerStatusChanged -= OnPlayerStatusChanged;
     }
 
@@ -139,7 +140,8 @@ public sealed partial class SWTutorialSystem : EntitySystem
     /// <param name="session">The player.</param>
     /// <param name="mode">The chosen mode.</param>
     /// <param name="error">Why the player could not start.</param>
-    public bool TryStart(ICommonSession session, SWTutorialChoice mode, out LocId? error)
+    /// <param name="restart">Ignore saved module boundaries for this practice run.</param>
+    public bool TryStart(ICommonSession session, SWTutorialChoice mode, out LocId? error, bool restart = false)
     {
         error = null;
         if (IsStudent(session.UserId))
@@ -175,7 +177,7 @@ public sealed partial class SWTutorialSystem : EntitySystem
             return false;
         }
 
-        var mapPath = new ResPath(_cfg.GetCVar(SWVars.TutorialMap));
+        var mapPath = new ResPath(scenario.Map ?? _cfg.GetCVar(SWVars.TutorialMap));
         var options = DeserializationOptions.Default with { InitializeMaps = true };
         if (!_loader.TryLoadMap(mapPath, out var map, out _, options))
         {
@@ -199,8 +201,10 @@ public sealed partial class SWTutorialSystem : EntitySystem
         _students[session.UserId] = student;
 
         // Before PlayerJoinGame: the client has to know about the tutorial when it loads the game screen.
-        student.StepIndex = 0;
-        SendState(session, student, FirstStep(student));
+        student.StepIndex = restart ? 0 : FindCheckpoint(session, scenario);
+        for (var i = 0; i <= student.StepIndex; i++)
+            student.Unlocked.UnionWith(_proto.Index(scenario.Steps[i]).Show);
+        SendState(session, student);
         _ticker.PlayerJoinGame(session, silent: true);
         KeepOutOfRoundStart(session);
 
@@ -220,7 +224,8 @@ public sealed partial class SWTutorialSystem : EntitySystem
 
         _adminLog.Add(LogType.Action, LogImpact.Low, $"{ToPrettyString(mob):player} started the tutorial in mode {mode}.");
         Funnel(student, $"start mode={mode}");
-        StartStep(session, student, 0);
+        RunActions(student, scenario.Setup);
+        StartStep(session, student, student.StepIndex);
         return true;
     }
 
@@ -367,9 +372,12 @@ public sealed partial class SWTutorialSystem : EntitySystem
                 if (_userDb.IsLoadComplete(session))
                     SetFlag(session, SWTutorialTrackers.Seen);
                 break;
+            case SWTutorialChoice.Restart:
             case SWTutorialChoice.NewToGame:
             case SWTutorialChoice.NewToServer:
-                if (!TryStart(session, ev.Choice, out var error) && error != null)
+            case SWTutorialChoice.Production:
+            case SWTutorialChoice.InfantryMedicine:
+                if (!TryStart(session, ev.Choice == SWTutorialChoice.Restart ? SWTutorialChoice.NewToGame : ev.Choice, out var error, ev.Restart || ev.Choice == SWTutorialChoice.Restart) && error != null)
                     _chat.DispatchServerMessage(session, Loc.GetString(error.Value));
                 break;
         }
@@ -408,6 +416,12 @@ public sealed partial class SWTutorialSystem : EntitySystem
                 break;
             case SessionStatus.InGame:
                 // GameTicker puts the player back into the body, the client has lost the prompt.
+                if (student.DisconnectedAt is { } disconnectedAt)
+                {
+                    var suspended = _timing.CurTime - disconnectedAt;
+                    student.StepStartedAt += suspended;
+                    student.SuspendedTime += suspended;
+                }
                 student.DisconnectedAt = null;
                 SendState(args.Session, student);
                 break;
@@ -466,23 +480,29 @@ public sealed partial class SWTutorialSystem : EntitySystem
 
         public EntityUid Body;
         public TimeSpan? DisconnectedAt;
+        public TimeSpan SuspendedTime;
 
+        public readonly Guid Attempt = Guid.NewGuid();
+        public readonly HashSet<SWTutorialHudElement> Unlocked = new();
+        public int Revision;
+        public bool Blocked;
         public int StepIndex;
         public TimeSpan StepStartedAt;
         public EntityCoordinates StepStartPosition;
-        public int HintsFired;
         public int MistakesMade;
 
         public LocId? Prompt;
-        public bool Big;
         public SWTutorialHighlight Highlight;
         public LocId? Note;
+        public int Beat = -1;
 
         /// <summary>
         /// The item this step needs is not in the hands.
         /// </summary>
         public bool MissingItem;
 
+        public readonly HashSet<EntityUid> PracticeHits = new();
+        public readonly Dictionary<EntityUid, float> PatientDamage = new();
         public float DamageMark;
         public string? LastChannel;
         public bool ReturnPressed;

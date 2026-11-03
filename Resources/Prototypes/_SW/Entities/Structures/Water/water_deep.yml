@@ -1,0 +1,13 @@
+- type: entity
+  parent: SWFloorWaterEntity
+  id: SWFloorWaterDeepBlue
+  name: deep water
+  description: How deep is it...
+  suffix: Wall, blue
+  components:
+  - type: Sprite
+    sprite: Corvax/Tiles/Planet/azure_water.rsi
+    color: "#4F7FC0"
+    drawdepth: BelowFloor
+    layers:
+      - state: shoreline_azure_water

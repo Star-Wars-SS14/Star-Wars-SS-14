@@ -1,0 +1,18 @@
+# SW: Explicit initial agricultural programs for physical sector map entities.
+- type: entity
+  parent: SWGlobalWarFactoryStorage
+  id: SWGlobalWarRationFactory
+  name: campaign ration production line
+  components:
+  - type: SWGlobalWarFactory
+    kind: Ration
+    autoStart: true
+
+- type: entity
+  parent: SWGlobalWarFactoryStorage
+  id: SWGlobalWarMedicineFactory
+  name: campaign medicine production line
+  components:
+  - type: SWGlobalWarFactory
+    kind: Medicine
+    autoStart: true

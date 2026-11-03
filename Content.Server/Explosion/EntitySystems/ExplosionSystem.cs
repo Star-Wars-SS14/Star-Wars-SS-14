@@ -245,7 +245,10 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
 
         var posFound = _transformSystem.TryGetMapOrGridCoordinates(uid, out var gridPos, pos);
 
-        QueueExplosion(mapPos, typeId, totalIntensity, slope, maxTileIntensity, uid, tileBreakScale, maxTileBreak, canCreateVacuum, addLog: false);
+        //SW start
+        QueueExplosion(mapPos, typeId, totalIntensity, slope, maxTileIntensity, uid, tileBreakScale, maxTileBreak,
+            canCreateVacuum, addLog: false, user: user);
+        //SW end
 
         if (!addLog)
             return;
@@ -281,10 +284,19 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         float tileBreakScale = 1f,
         int maxTileBreak = int.MaxValue,
         bool canCreateVacuum = true,
-        bool addLog = true)
+        bool addLog = true, //SW
+        EntityUid? user = null) //SW
     {
         if (totalIntensity <= 0 || slope <= 0)
             return;
+
+        //SW start
+        var authorization = new SWExplosionAttemptEvent(epicenter, cause, user);
+        RaiseLocalEvent(ref authorization);
+        if (authorization.Cancelled)
+            return;
+        user = authorization.User;
+        //SW end
 
         if (!_prototypeManager.TryIndex<ExplosionPrototype>(typeId, out var type))
         {
@@ -299,8 +311,11 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         foreach (var queued in _queuedExplosions)
         {
             // ignore different types or those on different maps
-            if (queued.Proto.ID != type.ID || queued.Epicenter.MapId != epicenter.MapId)
+            //SW start
+            if (queued.Proto.ID != type.ID || queued.Epicenter.MapId != epicenter.MapId ||
+                ((authorization.SeparateInitiators || queued.SeparateInitiators) && queued.User != user))
                 continue;
+            //SW end
 
             var dst2 = queued.Proto.MaxCombineDistance * queued.Proto.MaxCombineDistance;
             var direction = queued.Epicenter.Position - epicenter.Position;
@@ -321,7 +336,9 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             TileBreakScale = tileBreakScale,
             MaxTileBreak = maxTileBreak,
             CanCreateVacuum = canCreateVacuum,
-            Cause = cause
+            Cause = cause, //SW
+            User = user, //SW
+            SeparateInitiators = authorization.SeparateInitiators, //SW
         };
         _explosionQueue.Enqueue(boom);
         _queuedExplosions.Add(boom);
@@ -337,6 +354,13 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
         var pos = queued.Epicenter;
         if (!_map.MapExists(pos.MapId))
             return null;
+
+        //SW start
+        var authorization = new SWExplosionAttemptEvent(pos, queued.Cause, queued.User);
+        RaiseLocalEvent(ref authorization);
+        if (authorization.Cancelled)
+            return null;
+        //SW end
 
         var results = GetExplosionTiles(pos, queued.Proto.ID, queued.TotalIntensity, queued.Slope, queued.MaxTileIntensity);
 
@@ -396,6 +420,7 @@ public sealed partial class ExplosionSystem : SharedExplosionSystem
             EntityManager,
             visualEnt,
             queued.Cause,
+            queued.User, //SW
             _map,
             _damageableSystem);
     }

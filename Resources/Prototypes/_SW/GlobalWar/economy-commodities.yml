@@ -1,0 +1,68 @@
+- type: swGlobalWarCommodity
+  id: SWGlobalWarF
+  consumptionTax: 100
+  name: sw-global-war-commodity-food
+  entity: SWGlobalWarFoodUnit
+  cargoVolume: 1
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarFe
+  name: sw-global-war-commodity-iron
+  entity: SteelOre1
+  cargoVolume: 1
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarC
+  name: sw-global-war-commodity-coal
+  entity: Coal1
+  cargoVolume: 1
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarAu
+  name: sw-global-war-commodity-gold
+  entity: GoldOre1
+  cargoVolume: 1
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarLn
+  name: sw-global-war-commodity-lanthanide
+  entity: SWLantanidOre1
+  cargoVolume: 1
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarS
+  name: sw-global-war-commodity-steel
+  entity: SheetSteel1
+  cargoVolume: 1
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarE
+  consumptionTax: 2000
+  name: sw-global-war-commodity-electronics
+  entity: SWElectronics1
+  cargoVolume: 1
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarL
+  consumptionTax: 1000
+  name: sw-global-war-commodity-luxury
+  entity: SWGlobalWarLuxuryUnit
+  cargoVolume: 1
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarAE
+  name: sw-global-war-commodity-advanced-electronics
+  entity: SWAdvancedElectronics
+  cargoVolume: 1
+
+- type: entity
+  parent: WheatBushel
+  id: SWGlobalWarFoodUnit
+  name: agricultural food supply
+  description: One unit of agricultural raw food for campaign supply and processing.
+
+- type: entity
+  parent: FoodSnackChocolate
+  id: SWGlobalWarLuxuryUnit
+  name: civilian luxury supply
+  description: One unit of civilian luxury goods for campaign supply.

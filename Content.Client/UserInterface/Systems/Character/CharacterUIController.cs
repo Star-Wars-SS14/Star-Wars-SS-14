@@ -255,4 +255,16 @@ public sealed class CharacterUIController : UIController, IOnStateEntered<Gamepl
             _window.Open();
         }
     }
+
+    //SW start
+    /// <summary>Opens the existing character menu after an explicit service-notification click.</summary>
+    public void OpenServiceMenu()
+    {
+        if (_window == null)
+            return;
+        _characterInfo.RequestCharacterInfo();
+        if (!_window.IsOpen)
+            _window.Open();
+    }
+    //SW end
 }

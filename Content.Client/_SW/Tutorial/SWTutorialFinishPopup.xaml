@@ -6,15 +6,14 @@
     <PanelContainer StyleClasses="SWTermWindow"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    MinWidth="560">
+                    MinWidth="520" MaxWidth="680">
         <BoxContainer Orientation="Vertical" SeparationOverride="8" Margin="16">
             <Label Text="{Loc 'sw-tutorial-finish-title'}" StyleClasses="SWTermTitle" />
             <PanelContainer StyleClasses="SWTermAccentNeutral" MinHeight="3" />
-            <Label Text="{Loc 'sw-tutorial-finish-next'}" StyleClasses="SWTermText" />
+            <RichTextLabel Name="NextLabel" MaxWidth="630" />
             <Button Name="RepublicButton" MinHeight="40" />
             <Button Name="EmpireButton" MinHeight="40" />
-            <Label Name="WaitLabel"
-                   Text="{Loc 'sw-tutorial-finish-wait'}"
+            <RichTextLabel Name="WaitLabel"
                    StyleClasses="SWTermText" />
             <Button Name="CloseButton"
                     Text="{Loc 'sw-tutorial-finish-close'}"

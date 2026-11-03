@@ -51,13 +51,17 @@ public sealed class GuidebookUIController : UIController, IOnStateEntered<LobbyS
         _guideWindow.OnClose += OnWindowClosed;
         _guideWindow.OnOpen += OnWindowOpen;
 
+        // SW start: the tutorial owns the automatic first-visit offer. Manual guidebook opening remains unchanged.
         if (state is LobbyState &&
+            !_prototypeManager.EnumeratePrototypes<Content.Shared._SW.Tutorial.SWTutorialScenarioPrototype>().Any() &&
             _jobRequirements.FetchOverallPlaytime() < TimeSpan.FromMinutes(PlaytimeOpenGuidebook))
         {
             OpenGuidebook();
             _guideWindow.RecenterWindow(new(0.5f, 0.5f));
             _guideWindow.SetPositionFirst();
         }
+
+        // SW end
 
         // setup keybinding
         CommandBinds.Builder

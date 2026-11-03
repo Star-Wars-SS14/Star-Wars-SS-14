@@ -216,6 +216,7 @@ namespace Content.Client.Lobby
             if (minutesToday > 60)
             {
                 Lobby!.PlaytimeComment.Visible = true;
+                Lobby!.PlaytimePlate.Visible = true; //SW
 
                 var hoursToday = Math.Round(minutesToday / 60f, 1);
 

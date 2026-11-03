@@ -2,8 +2,8 @@
     xmlns="https://spacestation14.io"
     xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
     Title="{Loc 'sw-lathe-menu-title'}"
-    MinSize="900 460"
-    SetSize="960 520">
+    MinSize="720 400"
+    SetSize="840 460">
     <BoxContainer
         Orientation="Horizontal"
         VerticalExpand="True"

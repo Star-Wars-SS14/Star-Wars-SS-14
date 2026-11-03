@@ -1,0 +1,483 @@
+# Campaign manifest. Each sector is bound to its own Surface and Orbit map; maps load on first visit.
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarR0
+  surface: SWGlobalWarR0Surface
+  orbit: SWGlobalWarR0Orbit
+  economyProfile: SWGlobalWarEconomyCapital
+  tradeConnections:
+    SWGlobalWarR3: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR4: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR5: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR6: { travelTime: 120, capacity: 64 }
+    SWGlobalWarR7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR8: { travelTime: 60, capacity: 64 }
+  name: 'Корусант'
+  initialOwner: Republic
+  kind: Capital
+  mapPosition: -60,0
+  connections: [SWGlobalWarR1, SWGlobalWarR2, SWGlobalWarR9, SWGlobalWarR5, SWGlobalWarR6]
+  travelTimes:
+    SWGlobalWarR6: 120
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarR1
+  surface: SWGlobalWarR1Surface
+  orbit: SWGlobalWarR1Orbit
+  economyProfile: SWGlobalWarEconomyAgriculture
+  tradeConnections:
+    SWGlobalWarN0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR3: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR4: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR5: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR8: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR9: { travelTime: 60, capacity: 64 }
+  name: 'Дантуин'
+  initialOwner: Republic
+  kind: Agriculture
+  mapPosition: -48,0
+  connections: [SWGlobalWarR0, SWGlobalWarR3]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarR2
+  surface: SWGlobalWarR2Surface
+  orbit: SWGlobalWarR2Orbit
+  economyProfile: SWGlobalWarEconomyAgriculture
+  tradeConnections:
+    SWGlobalWarN0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR3: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR4: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR5: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR8: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR9: { travelTime: 60, capacity: 64 }
+  name: 'Набу'
+  initialOwner: Republic
+  kind: Agriculture
+  mapPosition: -36,0
+  connections: [SWGlobalWarR7, SWGlobalWarR0]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarR3
+  surface: SWGlobalWarR3Surface
+  orbit: SWGlobalWarR3Orbit
+  economyProfile: SWGlobalWarEconomyIron
+  tradeConnections:
+    SWGlobalWarR0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR8: { travelTime: 60, capacity: 64 }
+  name: 'Аркания'
+  initialOwner: Republic
+  kind: Mining
+  mapPosition: -60,18
+  connections: [SWGlobalWarR1, SWGlobalWarR7, SWGlobalWarN0]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarR4
+  surface: SWGlobalWarR4Surface
+  orbit: SWGlobalWarR4Orbit
+  economyProfile: SWGlobalWarEconomyCoal
+  tradeConnections:
+    SWGlobalWarR0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR8: { travelTime: 60, capacity: 64 }
+  name: 'Каньон'
+  initialOwner: Republic
+  kind: Mining
+  mapPosition: -48,18
+  connections: [SWGlobalWarR9, SWGlobalWarR8, SWGlobalWarE4]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarR5
+  surface: SWGlobalWarR5Surface
+  orbit: SWGlobalWarR5Orbit
+  lanthanumReserve: true
+  economyProfile: SWGlobalWarEconomyGold
+  tradeConnections:
+    SWGlobalWarR0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR8: { travelTime: 60, capacity: 64 }
+  name: 'Илум'
+  initialOwner: Republic
+  kind: Mining
+  mapPosition: -36,18
+  connections: [SWGlobalWarR8, SWGlobalWarR0, SWGlobalWarE6]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarR6
+  surface: SWGlobalWarR6Surface
+  orbit: SWGlobalWarR6Orbit
+  economyProfile: SWGlobalWarEconomyLanthanide
+  tradeConnections:
+    SWGlobalWarR0: { travelTime: 120, capacity: 64 }
+  name: 'Белсавис'
+  initialOwner: Republic
+  kind: Mining
+  mapPosition: -60,36
+  enclave: true
+  connections: [SWGlobalWarR0, SWGlobalWarE5]
+  travelTimes:
+    SWGlobalWarR0: 120
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarR7
+  surface: SWGlobalWarR7Surface
+  orbit: SWGlobalWarR7Orbit
+  economyProfile: SWGlobalWarEconomyIndustry
+  tradeConnections:
+    SWGlobalWarN0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR3: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR4: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR5: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR8: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR9: { travelTime: 60, capacity: 64 }
+  name: 'Арсенал'
+  initialOwner: Republic
+  kind: Industry
+  mapPosition: -48,36
+  connections: [SWGlobalWarR3, SWGlobalWarR2, SWGlobalWarN1]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarR8
+  surface: SWGlobalWarR8Surface
+  orbit: SWGlobalWarR8Orbit
+  economyProfile: SWGlobalWarEconomyDockworks
+  tradeConnections:
+    SWGlobalWarN0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR3: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR4: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR5: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR9: { travelTime: 60, capacity: 64 }
+  name: 'Куат'
+  initialOwner: Republic
+  kind: Industry
+  mapPosition: -36,36
+  connections: [SWGlobalWarR4, SWGlobalWarR5]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarR9
+  surface: SWGlobalWarR9Surface
+  orbit: SWGlobalWarR9Orbit
+  economyProfile: SWGlobalWarEconomyForce
+  tradeConnections:
+    SWGlobalWarR1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR8: { travelTime: 60, capacity: 64 }
+  name: 'Тайтон'
+  initialOwner: Republic
+  kind: Force
+  mapPosition: -60,54
+  connections: [SWGlobalWarR0, SWGlobalWarR4]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarE0
+  surface: SWGlobalWarE0Surface
+  orbit: SWGlobalWarE0Orbit
+  economyProfile: SWGlobalWarEconomyCapital
+  tradeConnections:
+    SWGlobalWarE3: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE4: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE5: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE6: { travelTime: 120, capacity: 64 }
+    SWGlobalWarE7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE8: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN1: { travelTime: 60, capacity: 64 }
+  name: 'Дромунд-Каас'
+  initialOwner: Empire
+  kind: Capital
+  mapPosition: 60,0
+  connections: [SWGlobalWarE1, SWGlobalWarE2, SWGlobalWarE9, SWGlobalWarE5, SWGlobalWarE6]
+  travelTimes:
+    SWGlobalWarE6: 120
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarE1
+  surface: SWGlobalWarE1Surface
+  orbit: SWGlobalWarE1Orbit
+  economyProfile: SWGlobalWarEconomyAgriculture
+  tradeConnections:
+    SWGlobalWarE0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE3: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE4: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE5: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE8: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE9: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN1: { travelTime: 60, capacity: 64 }
+  name: 'Датомир'
+  initialOwner: Empire
+  kind: Agriculture
+  mapPosition: 48,0
+  connections: [SWGlobalWarE0, SWGlobalWarE3]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarE2
+  surface: SWGlobalWarE2Surface
+  orbit: SWGlobalWarE2Orbit
+  economyProfile: SWGlobalWarEconomyAgriculture
+  tradeConnections:
+    SWGlobalWarE0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE3: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE4: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE5: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE8: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE9: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN1: { travelTime: 60, capacity: 64 }
+  name: 'Рилот'
+  initialOwner: Empire
+  kind: Agriculture
+  mapPosition: 36,0
+  connections: [SWGlobalWarE7, SWGlobalWarE0]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarE3
+  surface: SWGlobalWarE3Surface
+  orbit: SWGlobalWarE3Orbit
+  economyProfile: SWGlobalWarEconomyIron
+  tradeConnections:
+    SWGlobalWarE0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE8: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN1: { travelTime: 60, capacity: 64 }
+  name: 'Базальт'
+  initialOwner: Empire
+  kind: Mining
+  mapPosition: 60,18
+  connections: [SWGlobalWarE1, SWGlobalWarE7, SWGlobalWarN0]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarE4
+  surface: SWGlobalWarE4Surface
+  orbit: SWGlobalWarE4Orbit
+  economyProfile: SWGlobalWarEconomyCoal
+  tradeConnections:
+    SWGlobalWarE0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE8: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN1: { travelTime: 60, capacity: 64 }
+  name: 'Красная пыль'
+  initialOwner: Empire
+  kind: Mining
+  mapPosition: 48,18
+  connections: [SWGlobalWarE9, SWGlobalWarE8, SWGlobalWarR4]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarE5
+  surface: SWGlobalWarE5Surface
+  orbit: SWGlobalWarE5Orbit
+  lanthanumReserve: true
+  economyProfile: SWGlobalWarEconomyGold
+  tradeConnections:
+    SWGlobalWarE0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE8: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN1: { travelTime: 60, capacity: 64 }
+  name: 'Кессель'
+  initialOwner: Empire
+  kind: Mining
+  mapPosition: 36,18
+  connections: [SWGlobalWarE8, SWGlobalWarE0, SWGlobalWarR6]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarE6
+  surface: SWGlobalWarE6Surface
+  orbit: SWGlobalWarE6Orbit
+  economyProfile: SWGlobalWarEconomyLanthanide
+  tradeConnections:
+    SWGlobalWarE0: { travelTime: 120, capacity: 64 }
+  name: 'Мустафар'
+  initialOwner: Empire
+  kind: Mining
+  mapPosition: 60,36
+  enclave: true
+  connections: [SWGlobalWarE0, SWGlobalWarR5]
+  travelTimes:
+    SWGlobalWarE0: 120
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarE7
+  surface: SWGlobalWarE7Surface
+  orbit: SWGlobalWarE7Orbit
+  economyProfile: SWGlobalWarEconomyIndustry
+  tradeConnections:
+    SWGlobalWarE0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE3: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE4: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE5: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE8: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE9: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN1: { travelTime: 60, capacity: 64 }
+  name: 'Литейная'
+  initialOwner: Empire
+  kind: Industry
+  mapPosition: 48,36
+  connections: [SWGlobalWarE3, SWGlobalWarE2, SWGlobalWarN1]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarE8
+  surface: SWGlobalWarE8Surface
+  orbit: SWGlobalWarE8Orbit
+  economyProfile: SWGlobalWarEconomyDockworks
+  tradeConnections:
+    SWGlobalWarE0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE3: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE4: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE5: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE9: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN1: { travelTime: 60, capacity: 64 }
+  name: 'Тяжёлые стапели'
+  initialOwner: Empire
+  kind: Industry
+  mapPosition: 36,36
+  connections: [SWGlobalWarE4, SWGlobalWarE5]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarE9
+  surface: SWGlobalWarE9Surface
+  orbit: SWGlobalWarE9Orbit
+  economyProfile: SWGlobalWarEconomyForce
+  tradeConnections:
+    SWGlobalWarE1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE8: { travelTime: 60, capacity: 64 }
+  name: 'Коррибан'
+  initialOwner: Empire
+  kind: Force
+  mapPosition: 60,54
+  connections: [SWGlobalWarE0, SWGlobalWarE4]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarN0
+  surface: SWGlobalWarN0Surface
+  orbit: SWGlobalWarN0Orbit
+  economyProfile: SWGlobalWarEconomyNeutralLuxury
+  tradeConnections:
+    SWGlobalWarE0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE8: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR8: { travelTime: 60, capacity: 64 }
+  name: 'Альдераан'
+  initialOwner: Neutral
+  kind: Tourism
+  mapPosition: 0,0
+  connections: [SWGlobalWarR3, SWGlobalWarE3]
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarN1
+  surface: SWGlobalWarN1Surface
+  orbit: SWGlobalWarN1Orbit
+  economyProfile: SWGlobalWarEconomyNeutralIndustry
+  tradeConnections:
+    SWGlobalWarE0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE3: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE4: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE5: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarE8: { travelTime: 60, capacity: 64 }
+    SWGlobalWarN0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR0: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR1: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR2: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR3: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR4: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR5: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR7: { travelTime: 60, capacity: 64 }
+    SWGlobalWarR8: { travelTime: 60, capacity: 64 }
+  name: 'Орд-Мантелл'
+  initialOwner: Neutral
+  kind: Industry
+  mapPosition: 0,36
+  connections: [SWGlobalWarR7, SWGlobalWarE7]
+
+# Internal rule; no public gamePreset until physical maps and spawn/role content are ready.
+- type: entity
+  parent: SWGlobalWar
+  id: SWGlobalWarCampaign
+  components:
+  - type: SWGlobalWarCampaign
+  - type: SWGlobalWarStartingFleet
+  - type: SWGlobalWarGamerule
+    planets:
+    - SWGlobalWarR0
+    - SWGlobalWarR1
+    - SWGlobalWarR2
+    - SWGlobalWarR3
+    - SWGlobalWarR4
+    - SWGlobalWarR5
+    - SWGlobalWarR6
+    - SWGlobalWarR7
+    - SWGlobalWarR8
+    - SWGlobalWarR9
+    - SWGlobalWarE0
+    - SWGlobalWarE1
+    - SWGlobalWarE2
+    - SWGlobalWarE3
+    - SWGlobalWarE4
+    - SWGlobalWarE5
+    - SWGlobalWarE6
+    - SWGlobalWarE7
+    - SWGlobalWarE8
+    - SWGlobalWarE9
+    - SWGlobalWarN0
+    - SWGlobalWarN1

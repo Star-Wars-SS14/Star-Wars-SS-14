@@ -6,17 +6,18 @@
         <controls:NanoHeading Name="Header" Text="{Loc 'lobby-character-preview-panel-header'}">
 
         </controls:NanoHeading>
-        <BoxContainer Name="Loaded" Orientation="Vertical"
+        <!-- #SW start: the picture beside the words, so that the chat keeps the height -->
+        <BoxContainer Name="Loaded" Orientation="Horizontal" SeparationOverride="8"
                       Visible="False">
-            <Label Name="Summary" HorizontalAlignment="Center" Margin="3 3"/>
             <BoxContainer Name="ViewBox" Orientation="Horizontal" HorizontalAlignment="Center">
 
             </BoxContainer>
-            <controls:VSpacer/>
-            <Button Name="CharacterSetup" Text="{Loc 'lobby-character-preview-panel-character-setup-button'}"
-                    HorizontalAlignment="Center"
-                    Margin="0 5 0 0"/>
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="6">
+                <Label Name="Summary" HorizontalAlignment="Left" ClipText="True" />
+                <Button Name="CharacterSetup" Text="{Loc 'lobby-character-preview-panel-character-setup-button'}" />
+            </BoxContainer>
         </BoxContainer>
+        <!-- #SW end -->
         <Label Name="Unloaded" Text="{Loc 'lobby-character-preview-panel-unloaded-preferences-label'}"/>
     </BoxContainer>
 </Control>

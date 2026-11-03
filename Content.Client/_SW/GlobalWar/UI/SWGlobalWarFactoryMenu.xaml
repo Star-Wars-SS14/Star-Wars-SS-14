@@ -1,0 +1,77 @@
+<ui:SWGlobalWarWindow xmlns="https://spacestation14.io"
+                      xmlns:ui="clr-namespace:Content.Client._SW.GlobalWar.UI"
+                      Title="{Loc 'sw-global-war-factory-title'}" MinSize="480 160" SetSize="920 560">
+    <BoxContainer Orientation="Vertical" SeparationOverride="0">
+        <Control Name="LineStrip" RectClipContent="True" SetHeight="120">
+            <TextureRect Name="BandArt" Stretch="KeepAspectCovered" Modulate="#737373" HorizontalExpand="True" VerticalExpand="True" />
+            <BoxContainer Margin="24 4 16 4" SeparationOverride="12">
+                <TextureRect Name="MachineIcon" Stretch="KeepCentered" SetSize="96 96" VerticalAlignment="Center" />
+                <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="3">
+                    <BoxContainer SeparationOverride="12">
+                        <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="2">
+                            <Label Name="StateWord" />
+                            <BoxContainer SeparationOverride="6">
+                                <ui:SWGlobalWarChip Name="PowerChip" />
+                                <ui:SWGlobalWarChip Name="LineChip" />
+                            </BoxContainer>
+                        </BoxContainer>
+                        <Label Name="Timer" VAlign="Center" />
+                        <Label Name="HelpMark" Text="?" StyleClasses="SWTermValue" MouseFilter="Stop" VerticalAlignment="Top" />
+                    </BoxContainer>
+                    <ui:SWGlobalWarMarketBar Name="Progress" />
+                    <Label Name="CurrentProduct" ClipText="True" />
+                </BoxContainer>
+            </BoxContainer>
+        </Control>
+        <PanelContainer StyleClasses="SWTermDivider" MinHeight="1" />
+        <BoxContainer Orientation="Vertical" VerticalExpand="True" SeparationOverride="8" Margin="12 10">
+            <RichTextLabel Name="Status" />
+            <ui:SWGlobalWarConsoleButton Name="Recruit" Text="{Loc 'sw-global-war-factory-recruit'}" MinHeight="44" />
+            <ui:SWGlobalWarConsoleButton Name="CargoWork" MinHeight="44" Visible="False" />
+            <RichTextLabel Name="CargoWorkHint" Visible="False" />
+            <BoxContainer Orientation="Horizontal" SeparationOverride="12" VerticalExpand="True" HorizontalExpand="True">
+                <BoxContainer Name="ProductColumn" Orientation="Vertical" SetWidth="272" SeparationOverride="4">
+                    <Label Text="{Loc 'sw-global-war-factory-products'}" StyleClasses="SWTermValue" />
+                    <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+                        <BoxContainer Name="Products" Orientation="Vertical" SeparationOverride="6" HorizontalExpand="True" />
+                    </ScrollContainer>
+                </BoxContainer>
+                <BoxContainer Name="ProductDetails" Orientation="Vertical" SetWidth="332" SeparationOverride="8">
+                    <BoxContainer SeparationOverride="12">
+                        <PanelContainer StyleClasses="SWTermCard" SetSize="96 96" RectClipContent="True">
+                            <EntityPrototypeView Name="ProductIcon" SetSize="108 108" Stretch="Fill" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </PanelContainer>
+                        <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="2">
+                            <Label Name="ProductName" ClipText="True" />
+                            <Label Name="ProductNameSecond" ClipText="True" Visible="False" />
+                            <Label Name="ProductYield" />
+                        </BoxContainer>
+                    </BoxContainer>
+                    <BoxContainer Name="Costs" Orientation="Vertical" SeparationOverride="6" VerticalExpand="True" />
+                    <BoxContainer SeparationOverride="8">
+                        <ui:SWGlobalWarConsoleButton Name="Start" Text="{Loc 'sw-global-war-factory-start'}" HorizontalExpand="True" MinHeight="44" />
+                        <ui:SWGlobalWarConsoleButton Name="Produce" Text="{Loc 'sw-global-war-factory-produce'}" HorizontalExpand="True" MinHeight="44" />
+                        <ui:SWGlobalWarConsoleButton Name="Stop" Text="{Loc 'sw-global-war-factory-stop'}" SetWidth="110" MinHeight="44" />
+                    </BoxContainer>
+                    <ui:SWGlobalWarConsoleButton Name="Insert" Text="{Loc 'sw-global-war-factory-insert'}" MinHeight="36" />
+                    <BoxContainer Name="MaterialRow" SeparationOverride="8">
+                        <OptionButton Name="Material" SetWidth="120" />
+                        <ui:SWGlobalWarConsoleButton Name="Materialize" Text="{Loc 'sw-global-war-factory-materialize'}" HorizontalExpand="True" MinHeight="36" />
+                    </BoxContainer>
+                </BoxContainer>
+                <BoxContainer Name="StockColumn" Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True" VerticalExpand="True">
+                    <Label Name="StockTitle" Text="{Loc 'sw-global-war-factory-stock'}" StyleClasses="SWTermValue" />
+                    <Label Name="EmptyStock" Text="{Loc 'sw-global-war-factory-stock-empty'}" Visible="False" />
+                    <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
+                        <BoxContainer Name="Items" Orientation="Vertical" SeparationOverride="8" />
+                    </ScrollContainer>
+                    <BoxContainer Name="Pager" SeparationOverride="8">
+                        <ui:SWGlobalWarConsoleButton Name="PreviousPage" Text="&lt;" SetSize="44 32" ToolTip="{Loc 'sw-global-war-factory-previous'}" />
+                        <Label Name="Page" HorizontalExpand="True" Align="Center" VAlign="Center" />
+                        <ui:SWGlobalWarConsoleButton Name="NextPage" Text="&gt;" SetSize="44 32" ToolTip="{Loc 'sw-global-war-factory-next'}" />
+                    </BoxContainer>
+                </BoxContainer>
+            </BoxContainer>
+        </BoxContainer>
+    </BoxContainer>
+</ui:SWGlobalWarWindow>

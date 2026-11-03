@@ -1,0 +1,586 @@
+- type: job
+  id: SWGlobalWarRepublicHead
+  name: job-name-sw-gw-republic-head
+  description: job-description-sw-gw-republic-head
+  playTimeTracker: Job_SWGlobalWarRepublicHead
+  startingGear: SWGlobalWarRepublicHeadGear
+  icon: "JobIconRepublicGeneral"
+  supervisors: job-supervisors-sw-gw-republic
+  access:
+  - SWRepublicBase
+  - SWRepublicCommander
+  - SWRepublicArsenal
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: RepublicFaction
+      job: SWGlobalWarRepublicHead
+
+- type: job
+  id: SWGlobalWarRepublicWarMinister
+  name: job-name-sw-gw-republic-warminister
+  description: job-description-sw-gw-republic-warminister
+  playTimeTracker: Job_SWGlobalWarRepublicWarMinister
+  startingGear: SWGlobalWarRepublicWarMinisterGear
+  icon: "JobIconRepublicGeneral"
+  supervisors: job-supervisors-sw-gw-republic
+  access:
+  - SWRepublicBase
+  - SWRepublicCommander
+  - SWRepublicArsenal
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: RepublicFaction
+      job: SWGlobalWarRepublicWarMinister
+
+- type: job
+  id: SWGlobalWarRepublicLogisticsMinister
+  name: job-name-sw-gw-republic-logisticsminister
+  description: job-description-sw-gw-republic-logisticsminister
+  playTimeTracker: Job_SWGlobalWarRepublicLogisticsMinister
+  startingGear: SWGlobalWarRepublicLogisticsMinisterGear
+  icon: "JobIconRepublicGeneral"
+  supervisors: job-supervisors-sw-gw-republic
+  access:
+  - SWRepublicBase
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: RepublicFaction
+      job: SWGlobalWarRepublicLogisticsMinister
+
+- type: job
+  id: SWGlobalWarRepublicIndustryMinister
+  name: job-name-sw-gw-republic-industryminister
+  description: job-description-sw-gw-republic-industryminister
+  playTimeTracker: Job_SWGlobalWarRepublicIndustryMinister
+  startingGear: SWGlobalWarRepublicIndustryMinisterGear
+  icon: "JobIconRepublicGeneral"
+  supervisors: job-supervisors-sw-gw-republic
+  access:
+  - SWRepublicBase
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: RepublicFaction
+      job: SWGlobalWarRepublicIndustryMinister
+
+- type: job
+  id: SWGlobalWarRepublicLogisticsWorker
+  name: job-name-sw-gw-republic-logisticsworker
+  description: job-description-sw-gw-republic-logisticsworker
+  playTimeTracker: Job_SWGlobalWarRepublicLogisticsWorker
+  startingGear: SWGlobalWarRepublicLogisticsWorkerGear
+  icon: "JobIconStationEngineer"
+  supervisors: job-supervisors-sw-gw-republic
+  access:
+  - SWRepublicBase
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: RepublicFaction
+      job: SWGlobalWarRepublicLogisticsWorker
+
+- type: job
+  id: SWGlobalWarRepublicIndustryWorker
+  name: job-name-sw-gw-republic-industryworker
+  description: job-description-sw-gw-republic-industryworker
+  playTimeTracker: Job_SWGlobalWarRepublicIndustryWorker
+  startingGear: SWGlobalWarRepublicIndustryWorkerGear
+  icon: "JobIconStationEngineer"
+  supervisors: job-supervisors-sw-gw-republic
+  access:
+  - SWRepublicBase
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: RepublicFaction
+      job: SWGlobalWarRepublicIndustryWorker
+
+- type: job
+  id: SWGlobalWarRepublicSeniorOfficer
+  name: job-name-sw-gw-republic-seniorofficer
+  description: job-description-sw-gw-republic-seniorofficer
+  playTimeTracker: Job_SWGlobalWarRepublicSeniorOfficer
+  startingGear: SWGlobalWarRepublicSeniorOfficerGear
+  icon: "JobIconRepublicGeneral"
+  supervisors: job-supervisors-sw-gw-republic
+  access:
+  - SWRepublicBase
+  - SWRepublicCommander
+  - SWRepublicArsenal
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: RepublicFaction
+      job: SWGlobalWarRepublicSeniorOfficer
+
+- type: job
+  id: SWGlobalWarRepublicJuniorOfficer
+  name: job-name-sw-gw-republic-juniorofficer
+  description: job-description-sw-gw-republic-juniorofficer
+  playTimeTracker: Job_SWGlobalWarRepublicJuniorOfficer
+  startingGear: SWGlobalWarRepublicJuniorOfficerGear
+  icon: "JobIconRepublicLieutenant"
+  supervisors: job-supervisors-sw-gw-republic
+  access:
+  - SWRepublicBase
+  - SWRepublicCommander
+  - SWRepublicArsenal
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: RepublicFaction
+      job: SWGlobalWarRepublicJuniorOfficer
+
+- type: job
+  id: SWGlobalWarRepublicPilot
+  name: job-name-sw-gw-republic-pilot
+  description: job-description-sw-gw-republic-pilot
+  playTimeTracker: Job_SWGlobalWarRepublicPilot
+  startingGear: SWGlobalWarRepublicPilotGear
+  icon: "JobIconRepublicSoldier"
+  supervisors: job-supervisors-sw-gw-republic
+  access:
+  - SWRepublicBase
+  - SWRepublicArsenal
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: RepublicFaction
+      job: SWGlobalWarRepublicPilot
+
+- type: job
+  id: SWGlobalWarRepublicSoldier
+  name: job-name-sw-gw-republic-soldier
+  description: job-description-sw-gw-republic-soldier
+  playTimeTracker: Job_SWGlobalWarRepublicSoldier
+  startingGear: SWGlobalWarRepublicSoldierGear
+  icon: "JobIconRepublicSoldier"
+  supervisors: job-supervisors-sw-gw-republic
+  access:
+  - SWRepublicBase
+  - SWRepublicArsenal
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: RepublicFaction
+      job: SWGlobalWarRepublicSoldier
+
+- type: job
+  id: SWGlobalWarRepublicForceUser
+  name: job-name-sw-gw-republic-forceuser
+  description: job-description-sw-gw-republic-forceuser
+  playTimeTracker: Job_SWGlobalWarRepublicForceUser
+  # The saber goes to a pocket, and a Colicoid's pockets need a backpack this kit does not have.
+  requirements:
+  - !type:SWSpeciesJobRequirement
+    disallowedSpecies: [ Colicoid ]
+  startingGear: ForceUserJediGear
+  icon: "JobIconJedi"
+  supervisors: job-supervisors-sw-gw-republic
+  access:
+  - SWRepublicBase
+  - SWRepublicCommander
+  - SWRepublicArsenal
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: Stamina
+      critThreshold: 400
+      baseCritThreshold: 400
+    - type: SWFactionMember
+      faction: RepublicFaction
+      job: SWGlobalWarRepublicForceUser
+    - type: ForceAbilityDistanceInteract
+    - type: MobThresholds
+      thresholds:
+        0: Alive
+        400: Critical
+        500: Dead
+    - type: SWForceUserBlock
+    - type: SWDashAbility
+    - type: SlowOnDamage
+      speedModifierThresholds:
+        100: 0.8
+        150: 0.6
+        200: 0.5
+    - type: SWAbilityThrowSword
+    - type: Inventory
+      templateId: forceUserTemplate
+    - type: Tag
+      tags:
+        - ForceUser
+        - DoorBumpOpener
+        - CanPilot
+    - type: NoSlip
+    - type: Barotrauma
+      damage:
+        types:
+          Blunt: 0.05
+    - type: Temperature
+      heatDamageThreshold: 340
+      coldDamageThreshold: 230
+      currentTemperature: 310.15
+      specificHeat: 42
+      coldDamage:
+        types:
+          Cold: 0.2
+      heatDamage:
+        types:
+          Heat: 0.3
+    - type: Respirator
+      damage:
+        types:
+          Asphyxiation: 0.5
+      damageRecovery:
+        types:
+          Asphyxiation: -5.0
+    - type: SWPushAbility
+    - type: SWHealAbility
+      damageContainers:
+        - Biological
+      modifyBloodLevel: 30
+      delay: 1
+      damage:
+        groups:
+          Burn: -15
+          Toxin: -15
+          Airloss: -15
+          Brute: -15
+      healingBeginSound:
+        path: "/Audio/Items/Medical/ointment_begin.ogg"
+      healingEndSound:
+        path: "/Audio/Items/Medical/ointment_end.ogg"
+    - type: SWSendMessageAbility
+
+- type: job
+  id: SWGlobalWarRepublicIntelligence
+  name: job-name-sw-gw-republic-intelligence
+  description: job-description-sw-gw-republic-intelligence
+  playTimeTracker: Job_SWGlobalWarRepublicIntelligence
+  startingGear: SWGlobalWarRepublicIntelligenceGear
+  icon: "JobIconRepublicSoldier"
+  supervisors: job-supervisors-sw-gw-republic
+  access:
+  - SWRepublicBase
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: RepublicFaction
+      job: SWGlobalWarRepublicIntelligence
+
+- type: job
+  id: SWGlobalWarRepublicCitizen
+  name: job-name-sw-gw-republic-citizen
+  description: job-description-sw-gw-republic-citizen
+  playTimeTracker: Job_SWGlobalWarRepublicCitizen
+  startingGear: SWGlobalWarRepublicCitizenGear
+  icon: "JobIconCivilian"
+  supervisors: job-supervisors-sw-gw-republic
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: RepublicFaction
+      job: SWGlobalWarRepublicCitizen
+
+- type: job
+  id: SWGlobalWarEmpireHead
+  name: job-name-sw-gw-empire-head
+  description: job-description-sw-gw-empire-head
+  playTimeTracker: Job_SWGlobalWarEmpireHead
+  startingGear: SWGlobalWarEmpireHeadGear
+  icon: "JobIconEmpireMoff"
+  supervisors: job-supervisors-sw-gw-empire
+  access:
+  - SWEmpireBase
+  - SWEmpireCommander
+  - SWEmpireArsenal
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: EmpireFaction
+      job: SWGlobalWarEmpireHead
+
+- type: job
+  id: SWGlobalWarEmpireWarMinister
+  name: job-name-sw-gw-empire-warminister
+  description: job-description-sw-gw-empire-warminister
+  playTimeTracker: Job_SWGlobalWarEmpireWarMinister
+  startingGear: SWGlobalWarEmpireWarMinisterGear
+  icon: "JobIconEmpireMajor"
+  supervisors: job-supervisors-sw-gw-empire
+  access:
+  - SWEmpireBase
+  - SWEmpireCommander
+  - SWEmpireArsenal
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: EmpireFaction
+      job: SWGlobalWarEmpireWarMinister
+
+- type: job
+  id: SWGlobalWarEmpireLogisticsMinister
+  name: job-name-sw-gw-empire-logisticsminister
+  description: job-description-sw-gw-empire-logisticsminister
+  playTimeTracker: Job_SWGlobalWarEmpireLogisticsMinister
+  startingGear: SWGlobalWarEmpireLogisticsMinisterGear
+  icon: "JobIconEmpireMajor"
+  supervisors: job-supervisors-sw-gw-empire
+  access:
+  - SWEmpireBase
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: EmpireFaction
+      job: SWGlobalWarEmpireLogisticsMinister
+
+- type: job
+  id: SWGlobalWarEmpireIndustryMinister
+  name: job-name-sw-gw-empire-industryminister
+  description: job-description-sw-gw-empire-industryminister
+  playTimeTracker: Job_SWGlobalWarEmpireIndustryMinister
+  startingGear: SWGlobalWarEmpireIndustryMinisterGear
+  icon: "JobIconEmpireMajor"
+  supervisors: job-supervisors-sw-gw-empire
+  access:
+  - SWEmpireBase
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: EmpireFaction
+      job: SWGlobalWarEmpireIndustryMinister
+
+- type: job
+  id: SWGlobalWarEmpireLogisticsWorker
+  name: job-name-sw-gw-empire-logisticsworker
+  description: job-description-sw-gw-empire-logisticsworker
+  playTimeTracker: Job_SWGlobalWarEmpireLogisticsWorker
+  startingGear: SWGlobalWarEmpireLogisticsWorkerGear
+  icon: "JobIconStationEngineer"
+  supervisors: job-supervisors-sw-gw-empire
+  access:
+  - SWEmpireBase
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: EmpireFaction
+      job: SWGlobalWarEmpireLogisticsWorker
+
+- type: job
+  id: SWGlobalWarEmpireIndustryWorker
+  name: job-name-sw-gw-empire-industryworker
+  description: job-description-sw-gw-empire-industryworker
+  playTimeTracker: Job_SWGlobalWarEmpireIndustryWorker
+  startingGear: SWGlobalWarEmpireIndustryWorkerGear
+  icon: "JobIconStationEngineer"
+  supervisors: job-supervisors-sw-gw-empire
+  access:
+  - SWEmpireBase
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: EmpireFaction
+      job: SWGlobalWarEmpireIndustryWorker
+
+- type: job
+  id: SWGlobalWarEmpireSeniorOfficer
+  name: job-name-sw-gw-empire-seniorofficer
+  description: job-description-sw-gw-empire-seniorofficer
+  playTimeTracker: Job_SWGlobalWarEmpireSeniorOfficer
+  startingGear: SWGlobalWarEmpireSeniorOfficerGear
+  icon: "JobIconEmpireMoff"
+  supervisors: job-supervisors-sw-gw-empire
+  access:
+  - SWEmpireBase
+  - SWEmpireCommander
+  - SWEmpireArsenal
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: EmpireFaction
+      job: SWGlobalWarEmpireSeniorOfficer
+
+- type: job
+  id: SWGlobalWarEmpireJuniorOfficer
+  name: job-name-sw-gw-empire-juniorofficer
+  description: job-description-sw-gw-empire-juniorofficer
+  playTimeTracker: Job_SWGlobalWarEmpireJuniorOfficer
+  startingGear: SWGlobalWarEmpireJuniorOfficerGear
+  icon: "JobIconEmpireLieutenant"
+  supervisors: job-supervisors-sw-gw-empire
+  access:
+  - SWEmpireBase
+  - SWEmpireCommander
+  - SWEmpireArsenal
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: EmpireFaction
+      job: SWGlobalWarEmpireJuniorOfficer
+
+- type: job
+  id: SWGlobalWarEmpirePilot
+  name: job-name-sw-gw-empire-pilot
+  description: job-description-sw-gw-empire-pilot
+  playTimeTracker: Job_SWGlobalWarEmpirePilot
+  startingGear: SWGlobalWarEmpirePilotGear
+  icon: "JobIconEmpireSoldier"
+  supervisors: job-supervisors-sw-gw-empire
+  access:
+  - SWEmpireBase
+  - SWEmpireArsenal
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: EmpireFaction
+      job: SWGlobalWarEmpirePilot
+
+- type: job
+  id: SWGlobalWarEmpireSoldier
+  name: job-name-sw-gw-empire-soldier
+  description: job-description-sw-gw-empire-soldier
+  playTimeTracker: Job_SWGlobalWarEmpireSoldier
+  startingGear: SWGlobalWarEmpireSoldierGear
+  icon: "JobIconEmpireSoldier"
+  supervisors: job-supervisors-sw-gw-empire
+  access:
+  - SWEmpireBase
+  - SWEmpireArsenal
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: EmpireFaction
+      job: SWGlobalWarEmpireSoldier
+
+- type: job
+  id: SWGlobalWarEmpireForceUser
+  name: job-name-sw-gw-empire-forceuser
+  description: job-description-sw-gw-empire-forceuser
+  playTimeTracker: Job_SWGlobalWarEmpireForceUser
+  # The saber goes to a pocket, and a Colicoid's pockets need a backpack this kit does not have.
+  requirements:
+  - !type:SWSpeciesJobRequirement
+    disallowedSpecies: [ Colicoid ]
+  startingGear: ForceUserSithGear
+  icon: "JobIconSith"
+  supervisors: job-supervisors-sw-gw-empire
+  access:
+  - SWEmpireBase
+  - SWEmpireCommander
+  - SWEmpireArsenal
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: Stamina
+      critThreshold: 400
+      baseCritThreshold: 400
+    - type: SWFactionMember
+      faction: EmpireFaction
+      job: SWGlobalWarEmpireForceUser
+    - type: ForceAbilityDistanceInteract
+    - type: MobThresholds
+      thresholds:
+        0: Alive
+        400: Critical
+        500: Dead
+    - type: SWForceUserBlock
+    - type: SWDashAbility
+    - type: SlowOnDamage
+      speedModifierThresholds:
+        100: 0.8
+        150: 0.6
+        200: 0.5
+    - type: SWAbilityThrowSword
+    - type: Inventory
+      templateId: forceUserTemplate
+    - type: Tag
+      tags:
+        - ForceUser
+        - DoorBumpOpener
+        - CanPilot
+    - type: NoSlip
+    - type: Barotrauma
+      damage:
+        types:
+          Blunt: 0.05
+    - type: Temperature
+      heatDamageThreshold: 340
+      coldDamageThreshold: 230
+      currentTemperature: 310.15
+      specificHeat: 42
+      coldDamage:
+        types:
+          Cold: 0.2
+      heatDamage:
+        types:
+          Heat: 0.3
+    - type: Respirator
+      damage:
+        types:
+          Asphyxiation: 0.5
+      damageRecovery:
+        types:
+          Asphyxiation: -5.0
+    - type: SWLightningAbility
+      damage:
+        types:
+          Heat: 25
+    - type: SWStrangulateAbility
+    - type: SWSendMessageAbility
+
+- type: job
+  id: SWGlobalWarEmpireIntelligence
+  name: job-name-sw-gw-empire-intelligence
+  description: job-description-sw-gw-empire-intelligence
+  playTimeTracker: Job_SWGlobalWarEmpireIntelligence
+  startingGear: SWGlobalWarEmpireIntelligenceGear
+  icon: "JobIconImperialIntelligenceAgent"
+  supervisors: job-supervisors-sw-gw-empire
+  access:
+  - SWEmpireBase
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: EmpireFaction
+      job: SWGlobalWarEmpireIntelligence
+
+- type: job
+  id: SWGlobalWarEmpireCitizen
+  name: job-name-sw-gw-empire-citizen
+  description: job-description-sw-gw-empire-citizen
+  playTimeTracker: Job_SWGlobalWarEmpireCitizen
+  startingGear: SWGlobalWarEmpireCitizenGear
+  icon: "JobIconCivilian"
+  supervisors: job-supervisors-sw-gw-empire
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: SWFactionMember
+      faction: EmpireFaction
+      job: SWGlobalWarEmpireCitizen

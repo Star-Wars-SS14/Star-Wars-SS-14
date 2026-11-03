@@ -1,0 +1,53 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Original pixel geometry drawn in code by Codex for Star-Wars-SS14, 2026. No source bitmap was copied or modified.",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+        {
+            "name": "dock"
+        },
+        {
+            "name": "surface"
+        },
+        {
+            "name": "orbit"
+        },
+        {
+            "name": "hub"
+        },
+        {
+            "name": "factory"
+        },
+        {
+            "name": "stock"
+        },
+        {
+            "name": "recruitment"
+        },
+        {
+            "name": "supply"
+        },
+        {
+            "name": "command"
+        },
+        {
+            "name": "arrow"
+        },
+        {
+            "name": "intake"
+        },
+        {
+            "name": "dispatch"
+        },
+        {
+            "name": "acceptance"
+        },
+        {
+            "name": "returns"
+        }
+    ]
+}

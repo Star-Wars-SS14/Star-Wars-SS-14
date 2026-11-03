@@ -137,7 +137,7 @@ public sealed class SWBattlePassCosmeticsTest
 
         Assert.Multiple(() =>
         {
-            foreach (var job in proto.EnumeratePrototypes<JobPrototype>().Where(j => j.ID.StartsWith("SW") && j.SetPreference))
+            foreach (var job in SWLobbyJobs.Enumerate(proto).Where(j => j.SetPreference))
             {
                 Assert.That(proto.TryIndex<RoleLoadoutPrototype>($"Job{job.ID}", out var role), $"{job.ID} has no loadout");
                 if (role == null)

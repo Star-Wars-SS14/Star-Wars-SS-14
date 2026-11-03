@@ -13,6 +13,8 @@ public sealed partial class SWTutorialChoicePopup : Control
     /// </summary>
     public event Action<SWTutorialChoice?>? OnChoice;
 
+    public bool RestartSelected => RestartSelectedCheck.Pressed;
+
     /// <param name="isOffer">
     /// True when the server offers the tutorial on entry, where the last answer is final.
     /// False when the player opened this from the lobby button, where it only goes back.
@@ -33,6 +35,9 @@ public sealed partial class SWTutorialChoicePopup : Control
 
         NewToGameButton.OnPressed += _ => OnChoice?.Invoke(SWTutorialChoice.NewToGame);
         NewToServerButton.OnPressed += _ => OnChoice?.Invoke(SWTutorialChoice.NewToServer);
+        ProductionButton.OnPressed += _ => OnChoice?.Invoke(SWTutorialChoice.Production);
+        InfantryButton.OnPressed += _ => OnChoice?.Invoke(SWTutorialChoice.InfantryMedicine);
+        RestartButton.OnPressed += _ => OnChoice?.Invoke(SWTutorialChoice.Restart);
         SkipButton.OnPressed += _ => OnChoice?.Invoke(isOffer ? SWTutorialChoice.Skip : null);
     }
 }

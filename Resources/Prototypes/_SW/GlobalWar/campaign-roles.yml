@@ -1,0 +1,87 @@
+- type: entity
+  parent: [ BaseStation, BaseStationJobsSpawning ]
+  id: SWGlobalWarRoleStation
+  categories: [ HideSpawnMenu ]
+
+- type: entity
+  parent: SWGlobalWarCampaign
+  id: SWGlobalWarCampaignProduction
+  components:
+  # First-version values for 10-30 players, see the design decision of 2026-11-02.
+  - type: SWGlobalWarCampaign
+    peaceDuration: 1200
+    neutralFundingDuration: 600
+    maximumDuration: 7200
+    timeLimitVictory: true
+    disabledShipClasses: [ Battleship ]
+  - type: SWGlobalWarStartingArsenal
+  - type: SWGlobalWarSpawnConfiguration
+    civilianRoles: {Republic: SWGlobalWarRepublicCitizen, Empire: SWGlobalWarEmpireCitizen}
+    roles:
+      SWGlobalWarRepublicHead: {faction: Republic, role: Head}
+      SWGlobalWarRepublicWarMinister: {faction: Republic, role: WarMinister}
+      SWGlobalWarRepublicLogisticsMinister: {faction: Republic, role: LogisticsMinister}
+      SWGlobalWarRepublicIndustryMinister: {faction: Republic, role: IndustryMinister}
+      SWGlobalWarRepublicLogisticsWorker: {faction: Republic, role: LogisticsWorker}
+      SWGlobalWarRepublicIndustryWorker: {faction: Republic, role: IndustryWorker}
+      SWGlobalWarRepublicSeniorOfficer: {faction: Republic, role: SeniorOfficer}
+      SWGlobalWarRepublicJuniorOfficer: {faction: Republic, role: JuniorOfficer}
+      SWGlobalWarRepublicPilot: {faction: Republic, role: Pilot}
+      SWGlobalWarRepublicSoldier: {faction: Republic, role: Soldier}
+      SWGlobalWarRepublicForceUser: {faction: Republic, role: ForceUser, force: true}
+      SWGlobalWarRepublicIntelligence: {faction: Republic, role: Intelligence}
+      SWGlobalWarRepublicCitizen: {faction: Republic, role: Civilian}
+      SWGlobalWarEmpireHead: {faction: Empire, role: Head}
+      SWGlobalWarEmpireWarMinister: {faction: Empire, role: WarMinister}
+      SWGlobalWarEmpireLogisticsMinister: {faction: Empire, role: LogisticsMinister}
+      SWGlobalWarEmpireIndustryMinister: {faction: Empire, role: IndustryMinister}
+      SWGlobalWarEmpireLogisticsWorker: {faction: Empire, role: LogisticsWorker}
+      SWGlobalWarEmpireIndustryWorker: {faction: Empire, role: IndustryWorker}
+      SWGlobalWarEmpireSeniorOfficer: {faction: Empire, role: SeniorOfficer}
+      SWGlobalWarEmpireJuniorOfficer: {faction: Empire, role: JuniorOfficer}
+      SWGlobalWarEmpirePilot: {faction: Empire, role: Pilot}
+      SWGlobalWarEmpireSoldier: {faction: Empire, role: Soldier}
+      SWGlobalWarEmpireForceUser: {faction: Empire, role: ForceUser, force: true}
+      SWGlobalWarEmpireIntelligence: {faction: Empire, role: Intelligence}
+      SWGlobalWarEmpireCitizen: {faction: Empire, role: Civilian}
+    stations:
+      Republic:
+        stationProto: SWGlobalWarRoleStation
+        components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Галактическая Республика'
+        - type: StationJobs
+          availableJobs:
+            SWGlobalWarRepublicHead: [1, 1]
+            SWGlobalWarRepublicWarMinister: [1, 1]
+            SWGlobalWarRepublicLogisticsMinister: [1, 1]
+            SWGlobalWarRepublicIndustryMinister: [1, 1]
+            SWGlobalWarRepublicLogisticsWorker: [3, 3]
+            SWGlobalWarRepublicIndustryWorker: [3, 3]
+            SWGlobalWarRepublicSeniorOfficer: [1, 1]
+            SWGlobalWarRepublicJuniorOfficer: [2, 2]
+            SWGlobalWarRepublicPilot: [2, 2]
+            SWGlobalWarRepublicSoldier: [5, 5]
+            SWGlobalWarRepublicForceUser: [1, 1]
+            SWGlobalWarRepublicIntelligence: [1, 1]
+            SWGlobalWarRepublicCitizen: [-1, -1]
+      Empire:
+        stationProto: SWGlobalWarRoleStation
+        components:
+        - type: StationNameSetup
+          mapNameTemplate: 'Империя ситхов'
+        - type: StationJobs
+          availableJobs:
+            SWGlobalWarEmpireHead: [1, 1]
+            SWGlobalWarEmpireWarMinister: [1, 1]
+            SWGlobalWarEmpireLogisticsMinister: [1, 1]
+            SWGlobalWarEmpireIndustryMinister: [1, 1]
+            SWGlobalWarEmpireLogisticsWorker: [3, 3]
+            SWGlobalWarEmpireIndustryWorker: [3, 3]
+            SWGlobalWarEmpireSeniorOfficer: [1, 1]
+            SWGlobalWarEmpireJuniorOfficer: [2, 2]
+            SWGlobalWarEmpirePilot: [2, 2]
+            SWGlobalWarEmpireSoldier: [5, 5]
+            SWGlobalWarEmpireForceUser: [1, 1]
+            SWGlobalWarEmpireIntelligence: [1, 1]
+            SWGlobalWarEmpireCitizen: [-1, -1]

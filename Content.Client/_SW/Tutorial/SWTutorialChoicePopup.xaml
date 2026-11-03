@@ -10,6 +10,7 @@
         <BoxContainer Orientation="Vertical" SeparationOverride="8" Margin="16">
             <Label Text="{Loc 'sw-tutorial-choice-question'}" StyleClasses="SWTermTitle" />
             <PanelContainer StyleClasses="SWTermAccentNeutral" MinHeight="3" />
+            <CheckBox Name="RestartSelectedCheck" Text="{Loc 'sw-tutorial-choice-restart-selected'}" />
             <Button Name="NewToGameButton"
                     Text="{Loc 'sw-tutorial-choice-new-to-game'}"
                     StyleClasses="SWTermMainButtonNeutral"
@@ -17,6 +18,9 @@
             <Button Name="NewToServerButton"
                     StyleClasses="SWTermButton"
                     MinHeight="40" />
+            <Button Name="ProductionButton" Text="{Loc 'sw-tutorial-choice-production'}" StyleClasses="SWTermButton" MinHeight="40" />
+            <Button Name="InfantryButton" Text="{Loc 'sw-tutorial-choice-infantry'}" StyleClasses="SWTermButton" MinHeight="40" />
+            <Button Name="RestartButton" Text="{Loc 'sw-tutorial-choice-restart'}" StyleClasses="SWTermButton" MinHeight="40" />
             <Button Name="SkipButton"
                     StyleClasses="SWTermButton"
                     MinHeight="40" />

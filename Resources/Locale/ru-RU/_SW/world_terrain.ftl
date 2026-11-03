@@ -1,0 +1,10 @@
+ent-SWCanyonDrop = пропасть
+    .desc = Дна не видно. Только огни далеко внизу.
+ent-SWIceCrevasse = расщелина
+    .desc = Синий лёд уходит вниз, пока не станет чёрным.
+ent-SWFloorWaterDeepBlue = вода
+    .desc = Как глубоко...
+ent-SWFloorWaterSwampDeep = чёрная вода
+    .desc = Дно отсюда не видно. И лучше не проверять.
+ent-SWFloorWaterSwampShallow = болотная вода
+    .desc = По колено. Что-то шевелится у самых сапог.

@@ -1,42 +1,18 @@
 sw-tutorial-choice-question = Вы играли в Space Station 14?
-sw-tutorial-choice-new-to-game = Нет, научите (около 5 минут)
-sw-tutorial-choice-new-to-server = Да, расскажите, что тут своего (около 3 минут)
-sw-tutorial-choice-new-to-server-soon = Да, расскажите, что тут своего (скоро)
+sw-tutorial-choice-new-to-game = Начать обучение
+sw-tutorial-choice-new-to-server = Знаю игру: производство и снабжение
+sw-tutorial-choice-new-to-server-soon = Знаю игру (скоро)
 sw-tutorial-choice-skip = Пропустить
 sw-tutorial-choice-back = Назад
-sw-tutorial-choice-hint = Вернуться к обучению можно в любой момент кнопкой в лобби.
+sw-tutorial-choice-hint = Этап сохраняется. Выйти можно в любой момент.
 sw-tutorial-lobby-button = Обучение
 sw-tutorial-exit-button = Выйти
-sw-tutorial-return-button = Вернуться в бой
+sw-tutorial-return-button = Вернуться
 
-sw-tutorial-step-walk = Идите к стрелке: { $up } { $left } { $down } { $right }
-sw-tutorial-step-walk-big = { $up } { $left } { $down } { $right }: так ходят
-sw-tutorial-step-rifle = Подойдите к винтовке и кликните по ней
-sw-tutorial-step-rifle-far = Далеко. Подойдите ближе
-sw-tutorial-step-rifle-busy = Эта рука занята. { $swap }: другая рука
-sw-tutorial-step-combat = Без боевого режима оружие молчит: нажмите кнопку в рамке
-sw-tutorial-step-combat-mistake = Сначала боевой режим: кнопка в рамке
-sw-tutorial-step-target = Кликните по мишени: это выстрел
-sw-tutorial-step-target-wield = Пули мимо? { $wield }: возьмите винтовку двумя руками
-sw-tutorial-step-target-near = Мишень ближе. { $wield }: две руки, потом стреляйте
-sw-tutorial-step-target-one-hand = С одной руки повезло. Новая мишень: { $wield }, две руки
-sw-tutorial-step-corridor = Мишень разбита. Идите к стрелке, дальше коридор
-sw-tutorial-step-enemy = Значок над головой: свой. Без значка: стреляйте
-sw-tutorial-step-dropped-rifle = Винтовка на полу. Подойдите и кликните по ней
-sw-tutorial-step-dropped-injector = Инъектор не в руке. Поднимите его или возьмите второй из кармана
-sw-tutorial-step-enemy-friend = Это свой: у него значок
-sw-tutorial-step-wounded = Вас ранили. Кликните по инъектору в кармане, внизу экрана
-sw-tutorial-step-inject = { $wield }: уколите себя инъектором
-sw-tutorial-step-radio = Доложите по рации: Enter, затем :у готов, Enter
-sw-tutorial-step-radio-local = Это слышат только рядом. В начале строки нужно :у
-sw-tutorial-step-dead = Вы погибли. В бою каждая смерть тратит резерв стороны
-sw-tutorial-step-shuttle = Идите к шаттлу: там настоящая война
 
-sw-tutorial-popup-wounded = Вас задело из-за угла
-sw-tutorial-popup-volley = Залп
 
 sw-tutorial-finish-title = Учебка окончена
-sw-tutorial-finish-next = В раунде идите к старшему и слушайте приказы. Старшего нет: идите на фронт.
+sw-tutorial-finish-next = В раунде иди к старшему. Старшего нет: на фронт.
 sw-tutorial-finish-republic = За Республику: живых { $alive } { $weaker ->
     [true] (сторона меньше)
    *[false] {""}
@@ -45,23 +21,27 @@ sw-tutorial-finish-empire = За Империю: живых { $alive } { $weaker
     [true] (сторона меньше)
    *[false] {""}
 }
-sw-tutorial-finish-wait = Раунд ещё не начался: нажмите «Готов» в лобби.
+sw-tutorial-finish-wait = Раунд не начался. Нажми «Готов» в лобби.
+sw-tutorial-finish-campaign-next = Практика окончена. Начни гражданским, смотри местные поручения.
+sw-tutorial-finish-campaign-republic = Гражданский Республики
+sw-tutorial-finish-campaign-empire = Гражданский Империи
+sw-tutorial-finish-campaign-wait = Кампании сейчас нет. Выбери роль в лобби.
 sw-tutorial-finish-close = В лобби
 
 sw-tutorial-error-already-started = Вы уже в обучении.
 sw-tutorial-error-not-started = Вы не в обучении.
 sw-tutorial-error-not-in-lobby = Обучение запускается только из лобби.
-sw-tutorial-error-not-loaded = Ваши данные ещё загружаются, попробуйте через пару секунд.
+sw-tutorial-error-not-loaded = Данные загружаются. Попробуй через пару секунд.
 sw-tutorial-error-map = Не удалось загрузить карту обучения.
-sw-tutorial-error-full = Сейчас обучение проходит слишком много игроков, попробуйте через пару минут.
+sw-tutorial-error-full = Обучение занято. Попробуй через пару минут.
 sw-tutorial-error-mode-not-ready = Этот режим обучения ещё не готов.
-sw-tutorial-error-no-slot = На этой стороне нет мест. Выберите роль через «Присоединиться» в лобби.
+sw-tutorial-error-no-slot = Мест нет. Выбери роль в лобби.
 
 cmd-swtutorial-desc = Запускает обучение или выходит из него.
 cmd-swtutorial-help = Использование: swtutorial [new|server|exit]
 
 job-name-sw-tutorial-soldier = Ученик
-job-description-sw-tutorial-soldier = Проходит обучение. В настоящем раунде этой работы нет.
+job-description-sw-tutorial-soldier = Проходит обучение.
 
 sw-tutorial-radio-channel = Учебный канал
 

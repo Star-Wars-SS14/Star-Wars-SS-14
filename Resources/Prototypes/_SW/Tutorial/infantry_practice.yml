@@ -1,0 +1,299 @@
+# Optional private range and casualty care; does not enlist the student or issue campaign authority.
+- type: swTutorialScenario
+  id: SWTutorialInfantryMedicine
+  mode: InfantryMedicine
+  version: 1
+  guidedPractice: true
+  map: /Maps/SW/Tutorial/factory.yml
+  gear: SWTutorialCivilianGear
+  steps: [SWTutorialInfantryLoad, SWTutorialInfantryIdentify, SWTutorialInfantryWithdraw, SWTutorialMedicineBurn, SWTutorialMedicineChanged, SWTutorialMedicineReport]
+
+- type: entity
+  parent: SWE1Magazine
+  id: SWTutorialEmptyMagazine
+  categories: [HideSpawnMenu]
+  components:
+  - type: Battery
+    startingCharge: 0
+
+- type: entity
+  parent: SWE1BlasterRifle
+  id: SWTutorialUnloadedRifle
+  categories: [HideSpawnMenu]
+  components:
+  - type: ItemSlots
+    slots:
+      gun_magazine:
+        name: Magazine
+        startingItem: SWTutorialEmptyMagazine
+        insertSound: /Audio/Weapons/Guns/MagIn/batrifle_magin.ogg
+        ejectSound: /Audio/Weapons/Guns/MagOut/batrifle_magout.ogg
+        whitelist:
+          tags: [E-1Magazine]
+
+- type: entity
+  parent: SWTutorialDroidDummy
+  id: SWTutorialIdentifiedTarget
+  categories: [HideSpawnMenu]
+  components:
+  - type: SWTutorialEnemy
+
+- type: swTutorialStep
+  id: SWTutorialInfantryLoad
+  checkpoint: true
+  onStart:
+  - !type:SWTutorialSpawnAction
+    proto: SWTutorialUnloadedRifle
+    point: rifle
+    tag: weapon
+  - !type:SWTutorialSpawnAction
+    proto: SWE1Magazine
+    point: rifle
+    offset: 1, 0
+    tag: magazine
+  show: [Hands]
+  beats:
+  - hint: sw-tutorial-beat-take-rifle
+    focus:
+      tag: weapon
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: weapon
+    - !type:SWTutorialActiveHoldingCondition
+      tag: weapon
+    hint: sw-tutorial-beat-swap
+    highlight: OtherHand
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: weapon
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialActiveHoldingCondition
+        tag: weapon
+    hint: sw-tutorial-beat-take-mag
+    focus:
+      tag: magazine
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: weapon
+    - !type:SWTutorialHoldingCondition
+      tag: magazine
+    - !type:SWTutorialActiveHoldingCondition
+      tag: magazine
+    hint: sw-tutorial-beat-load
+    highlight: OtherHand
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: weapon
+    - !type:SWTutorialHoldingCondition
+      tag: magazine
+    - !type:SWTutorialActiveHoldingCondition
+      tag: weapon
+    hint: sw-tutorial-beat-swap
+    highlight: OtherHand
+  completion: !type:SWTutorialLoadedCondition
+
+
+- type: swTutorialStep
+  id: SWTutorialInfantryIdentify
+  showActions:
+  - ActionCombatModeToggle
+  onStart:
+  - !type:SWTutorialFreeHandAction
+  - !type:SWTutorialSpawnAction
+    proto: SWTutorialIdentifiedTarget
+    point: targetNear
+    tag: target
+  - !type:SWTutorialSpawnAction
+    proto: SWTutorialFriendDummy
+    point: targetFar
+    offset: 0, 1
+    tag: friend
+  show: [Hands, Actions]
+  beats:
+  - hint: sw-tutorial-beat-take-rifle
+    focus:
+      tag: weapon
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: weapon
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialActiveHoldingCondition
+        tag: weapon
+    hint: sw-tutorial-beat-swap
+    highlight: OtherHand
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: weapon
+    - !type:SWTutorialActiveHoldingCondition
+      tag: weapon
+    hint: sw-tutorial-beat-wield
+    highlight: ActiveHand
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: weapon
+    - !type:SWTutorialWieldedCondition
+      tag: weapon
+    hint: sw-tutorial-beat-combat
+    highlight: CombatAction
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: weapon
+    - !type:SWTutorialWieldedCondition
+      tag: weapon
+    - !type:SWTutorialCombatModeCondition
+    hint: sw-tutorial-beat-shoot
+    focus:
+      tag: target
+  completion: !type:SWTutorialDefeatedCondition
+    retry:
+    - !type:SWTutorialSpawnAction
+      proto: SWTutorialIdentifiedTarget
+      point: targetNear
+      tag: target
+  mistakes:
+  - mistake: HitAlly
+    prompt: sw-tutorial-beat-hit-ally
+
+
+- type: swTutorialStep
+  id: SWTutorialInfantryWithdraw
+  beats:
+  - hint: sw-tutorial-beat-withdraw
+    focus:
+      point: rangeExit
+  completion: !type:SWTutorialReachCondition
+    point: rangeExit
+
+
+- type: swTutorialStep
+  id: SWTutorialMedicineBurn
+  checkpoint: true
+  showActions:
+  - ActionCombatModeToggle
+  onStart:
+  - !type:SWTutorialFreeHandAction
+  - !type:SWTutorialSpawnAction
+    proto: SWTutorialFriendDummy
+    point: friend
+    tag: patient
+  - !type:SWTutorialDamagePatientAction
+    damage:
+      types:
+        Heat: 30
+  - !type:SWTutorialSpawnAction
+    proto: Ointment
+    point: heal
+    tag: medicine
+  - !type:SWTutorialSpawnAction
+    proto: Brutepack
+    point: heal
+    offset: 0, 1
+    tag: otherMedicine
+  beats:
+  - hint: sw-tutorial-beat-take-ointment
+    focus:
+      tag: medicine
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: medicine
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialActiveHoldingCondition
+        tag: medicine
+    hint: sw-tutorial-beat-swap
+    highlight: OtherHand
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: medicine
+    - !type:SWTutorialActiveHoldingCondition
+      tag: medicine
+    hint: sw-tutorial-beat-treat
+    focus:
+      tag: patient
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: otherMedicine
+    hint: sw-tutorial-beat-wrong-ointment
+    focus:
+      tag: medicine
+  - when:
+    - !type:SWTutorialCombatModeCondition
+    hint: sw-tutorial-beat-combat-off
+    highlight: CombatAction
+  completion: !type:SWTutorialPatientHealedCondition
+
+
+- type: swTutorialStep
+  id: SWTutorialMedicineChanged
+  checkpoint: true
+  showActions:
+  - ActionCombatModeToggle
+  onStart:
+  - !type:SWTutorialDeleteAction
+    tag: patient
+  - !type:SWTutorialDeleteAction
+    tag: medicine
+  - !type:SWTutorialDeleteAction
+    tag: otherMedicine
+  - !type:SWTutorialFreeHandAction
+  - !type:SWTutorialSpawnAction
+    proto: SWTutorialFriendDummy
+    point: droid
+    tag: patient
+  - !type:SWTutorialDamagePatientAction
+    damage:
+      types:
+        Blunt: 30
+  - !type:SWTutorialSpawnAction
+    proto: Ointment
+    point: heal
+    tag: medicine
+  - !type:SWTutorialSpawnAction
+    proto: Brutepack
+    point: heal
+    offset: 0, 1
+    tag: otherMedicine
+  beats:
+  - hint: sw-tutorial-beat-take-pack
+    focus:
+      tag: otherMedicine
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: otherMedicine
+    - !type:SWTutorialNotCondition
+      condition: !type:SWTutorialActiveHoldingCondition
+        tag: otherMedicine
+    hint: sw-tutorial-beat-swap
+    highlight: OtherHand
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: otherMedicine
+    - !type:SWTutorialActiveHoldingCondition
+      tag: otherMedicine
+    hint: sw-tutorial-beat-treat
+    focus:
+      tag: patient
+  - when:
+    - !type:SWTutorialHoldingCondition
+      tag: medicine
+    hint: sw-tutorial-beat-wrong-pack
+    focus:
+      tag: otherMedicine
+  - when:
+    - !type:SWTutorialCombatModeCondition
+    hint: sw-tutorial-beat-combat-off
+    highlight: CombatAction
+  completion: !type:SWTutorialPatientHealedCondition
+
+
+- type: swTutorialStep
+  id: SWTutorialMedicineReport
+  show: [Hands, Chat]
+  beats:
+  - hint: sw-tutorial-beat-radio-medic
+    highlight: ChatInput
+  completion: !type:SWTutorialSaidOnRadioCondition
+    channel: SWTutorialRadio
+  mistakes:
+  - mistake: NotOnRadio
+    prompt: sw-tutorial-beat-radio-local
+

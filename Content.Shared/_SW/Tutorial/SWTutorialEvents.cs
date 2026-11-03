@@ -1,3 +1,4 @@
+using Robust.Shared.Map;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Serialization;
 
@@ -26,6 +27,9 @@ public enum SWTutorialChoice : byte
     NewToGame,
     NewToServer,
     Skip,
+    Restart,
+    Production,
+    InfantryMedicine,
 }
 
 [Serializable, NetSerializable]
@@ -52,9 +56,10 @@ public sealed class SWTutorialSeenEvent : EntityEventArgs;
 /// Client to server: the answer on the choice screen.
 /// </summary>
 [Serializable, NetSerializable]
-public sealed class SWTutorialChoiceEvent(SWTutorialChoice choice) : EntityEventArgs
+public sealed class SWTutorialChoiceEvent(SWTutorialChoice choice, bool restart = false) : EntityEventArgs
 {
     public readonly SWTutorialChoice Choice = choice;
+    public readonly bool Restart = restart;
 }
 
 /// <summary>
@@ -79,18 +84,33 @@ public sealed class SWTutorialStateEvent(
     bool active,
     ProtoId<SWTutorialStepPrototype>? step = null,
     LocId? prompt = null,
-    bool big = false,
     SWTutorialHighlight highlight = SWTutorialHighlight.None,
-    LocId? note = null) : EntityEventArgs
+    LocId? note = null,
+    Guid attempt = default,
+    int revision = 0,
+    SWTutorialHudElement[]? unlocked = null,
+    int beat = 0,
+    NetEntity? focusEntity = null,
+    NetCoordinates? focusCoordinates = null) : EntityEventArgs
 {
+    public readonly int Beat = beat;
+
+    /// <summary>
+    /// What the trail on the floor leads to. An entity follows the thing; coordinates mark a place.
+    /// </summary>
+    public readonly NetEntity? FocusEntity = focusEntity;
+    public readonly NetCoordinates? FocusCoordinates = focusCoordinates;
+
+    public readonly Guid Attempt = attempt;
+    public readonly int Revision = revision;
+    public readonly SWTutorialHudElement[] Unlocked = unlocked ?? [];
     public readonly bool Active = active;
     public readonly ProtoId<SWTutorialStepPrototype>? Step = step;
     public readonly LocId? Prompt = prompt;
-    public readonly bool Big = big;
     public readonly SWTutorialHighlight Highlight = highlight;
 
     /// <summary>
-    /// What went wrong a moment ago, under the prompt. It stays until the next step, so it can be read at any pace.
+    /// What went wrong a moment ago. It stays until the next step, so it can be read at any pace.
     /// </summary>
     public readonly LocId? Note = note;
 }
@@ -99,11 +119,14 @@ public sealed class SWTutorialStateEvent(
 /// Server to client: the scenario is finished, show what comes next.
 /// </summary>
 [Serializable, NetSerializable]
-public sealed class SWTutorialFinishedEvent(bool roundStarted, int republicAlive, int empireAlive) : EntityEventArgs
+public sealed class SWTutorialFinishedEvent(bool roundStarted, int republicAlive, int empireAlive, bool campaign = false) : EntityEventArgs
 {
     public readonly bool RoundStarted = roundStarted;
     public readonly int RepublicAlive = republicAlive;
     public readonly int EmpireAlive = empireAlive;
+
+    /// <summary>A campaign offers civilian entry; other modes offer a side with a soldier slot.</summary>
+    public readonly bool Campaign = campaign;
 }
 
 /// <summary>
@@ -113,4 +136,13 @@ public sealed class SWTutorialFinishedEvent(bool roundStarted, int republicAlive
 public sealed class SWTutorialJoinSideEvent(SWTutorialSide side) : EntityEventArgs
 {
     public readonly SWTutorialSide Side = side;
+}
+
+/// <summary>Bound to a specific scene revision: retries and late packets cannot affect the next exercise.</summary>
+[Serializable, NetSerializable]
+public sealed class SWTutorialHelpEvent(Guid attempt, int revision, bool retry = false) : EntityEventArgs
+{
+    public readonly Guid Attempt = attempt;
+    public readonly int Revision = revision;
+    public readonly bool Retry = retry;
 }

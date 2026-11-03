@@ -47,8 +47,8 @@ public sealed class SWJobLoadoutsTest
 
     private static IEnumerable<JobPrototype> PlayableJobs(IPrototypeManager protos)
     {
-        return protos.EnumeratePrototypes<JobPrototype>()
-            .Where(j => j.SetPreference && j.ID.StartsWith("SW") && j.StartingGear != null);
+        return SWLobbyJobs.Enumerate(protos)
+            .Where(j => j.SetPreference && j.StartingGear != null);
     }
 
     private static RoleLoadout Choose(RoleLoadoutPrototype role, LoadoutGroupPrototype group, LoadoutPrototype item, HumanoidCharacterProfile profile, IPrototypeManager protos)

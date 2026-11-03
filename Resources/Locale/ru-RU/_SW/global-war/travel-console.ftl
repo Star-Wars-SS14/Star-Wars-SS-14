@@ -51,3 +51,4 @@ sw-global-war-travel-kind-mining = Шахтёрский мир
 sw-global-war-travel-kind-industry = Промышленный мир
 sw-global-war-travel-kind-force = Мир Силы
 sw-global-war-travel-kind-tourism = Курортный мир
+sw-global-war-travel-helm-refused = Прыжок только по гиперпространственному маршруту, на орбиту соседнего мира. Маршрут: правая кнопка мыши по консоли.

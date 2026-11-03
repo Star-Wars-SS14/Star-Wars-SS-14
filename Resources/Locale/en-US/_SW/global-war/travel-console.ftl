@@ -51,3 +51,4 @@ sw-global-war-travel-kind-mining = Mining world
 sw-global-war-travel-kind-industry = Industrial world
 sw-global-war-travel-kind-force = Force world
 sw-global-war-travel-kind-tourism = Resort world
+sw-global-war-travel-helm-refused = Jumps go only along a hyperspace route, to the orbit of a connected world. Route: right-click this console.

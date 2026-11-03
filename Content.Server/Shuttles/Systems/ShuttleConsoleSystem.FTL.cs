@@ -1,5 +1,6 @@
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Events;
+using Content.Shared.Popups; //SW
 using Content.Shared.Shuttles.BUIStates;
 using Content.Shared.Shuttles.Components;
 using Content.Shared.Shuttles.Events;
@@ -163,5 +164,13 @@ public sealed partial class ShuttleConsoleSystem
         RaiseLocalEvent(ref ev);
 
         _shuttle.FTLToCoordinates(shuttleUid.Value, shuttleComp, adjustedCoordinates, targetAngle);
+        //SW start
+        // GlobalWar refuses jumps off its hyperroutes. The helm window covers the world, so tell its pilots at the cursor.
+        if (!HasComp<FTLComponent>(shuttleUid.Value))
+        {
+            foreach (var pilot in ent.Comp.SubscribedPilots)
+                _popup.PopupCursor(Loc.GetString("sw-global-war-travel-helm-refused"), pilot, PopupType.Medium);
+        }
+        //SW end
     }
 }

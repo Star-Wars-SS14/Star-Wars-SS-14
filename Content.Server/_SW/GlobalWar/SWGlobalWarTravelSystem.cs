@@ -611,10 +611,15 @@ public sealed partial class SWGlobalWarTravelSystem : EntitySystem
         if (!HasComp<SWGlobalWarPlanetMapComponent>(origin.MapUid) &&
             !HasComp<SWGlobalWarPlanetMapComponent>(target.MapUid))
             return;
+        // A campaign jump goes only along a hyperroute, from one orbit to the orbit of a connected world. The helm's
+        // own FTL map would reach any point of any map: orbits off the route, the current orbit and planet surfaces.
         if (HasComp<FTLComponent>(args.Shuttle) ||
             !_planets.TryGetPhysicalLocation(args.Shuttle, out var source, out var from) ||
             !_planets.TryGetPhysicalLocation(args.Destination.EntityId, out var destination, out var to) ||
-            from != SWGlobalWarPlanetLocation.Orbit || to != SWGlobalWarPlanetLocation.Orbit ||
+            from != SWGlobalWarPlanetLocation.Orbit || to != SWGlobalWarPlanetLocation.Orbit || source == destination ||
+            _planets.IsPlanetStationGrid(source, args.Shuttle) ||
+            !_planets.CanTravel(Comp<SWGlobalWarPlanetComponent>(source).Prototype,
+                Comp<SWGlobalWarPlanetComponent>(destination).Prototype) ||
             !TryEvaluateCrew(args.Shuttle, destination, false, out _))
         {
             args.Cancelled = true;

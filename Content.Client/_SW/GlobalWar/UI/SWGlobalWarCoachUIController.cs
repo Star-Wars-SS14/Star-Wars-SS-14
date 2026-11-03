@@ -5,6 +5,7 @@ using Content.Shared._SW.GlobalWar.Politics;
 using Content.Shared.CCVar;
 using Robust.Client.Audio;
 using Robust.Client.Graphics;
+using Robust.Client.Player;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controllers;
 using Robust.Client.UserInterface.Controls;
@@ -39,6 +40,7 @@ public sealed class SWGlobalWarCoachUIController : UIController
     [Dependency] private readonly IConfigurationManager _config = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly IOverlayManager _overlays = default!;
+    [Dependency] private readonly IPlayerManager _player = default!;
 
     private SWTutorialPrompt? _prompt;
     private SWTutorialFocusOverlay? _overlay;
@@ -107,7 +109,8 @@ public sealed class SWGlobalWarCoachUIController : UIController
 
         var inWindow = UpdateHighlight(reduced);
         var shown = !inWindow && IsShown();
-        ShowFocus(shown ? _focus : null);
+        // The frame points at the console to use. Once its window is open the frame would only sit on the console under it.
+        ShowFocus(shown && !UsingConsole() ? _focus : null);
 
         // A line over a window would lie on its rows. The pointer in the world stays.
         var covered = WindowOver(UIManager, -LeftOfCenter, SWTutorialPrompt.AboveBottom, PlateWidth, PlateHeight);
@@ -168,6 +171,12 @@ public sealed class SWGlobalWarCoachUIController : UIController
 
         _focusShown = focus;
         _overlay?.SetFocus(null, focus);
+    }
+
+    private bool UsingConsole()
+    {
+        return EntityManager.TryGetComponent<UserInterfaceUserComponent>(_player.LocalEntity, out var user) &&
+               user.OpenInterfaces.Count > 0;
     }
 
     private bool IsShown()

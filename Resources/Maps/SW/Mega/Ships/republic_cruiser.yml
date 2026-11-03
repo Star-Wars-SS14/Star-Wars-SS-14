@@ -1127,18 +1127,6 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 6.5,5.5
       parent: 1
-- proto: ButtonFrameCautionSecurity
-  entities:
-  - uid: 25
-    components:
-    - type: Transform
-      pos: 0.5,8.5
-      parent: 1
-  - uid: 26
-    components:
-    - type: Transform
-      pos: 1.5,8.5
-      parent: 1
 - proto: C4
   entities:
   - uid: 28
@@ -9472,13 +9460,6 @@ entities:
       storage: 439
 - proto: SignalButton
   entities:
-  - uid: 805
-    components:
-    - type: Transform
-      pos: 1.5,8.5
-      parent: 1
-    - type: Fixtures
-      fixtures: {}
   - uid: 806
     components:
     - type: Transform
@@ -9519,15 +9500,6 @@ entities:
         20:
         - - Pressed
           - Toggle
-    - type: Fixtures
-      fixtures: {}
-- proto: SignalSwitch
-  entities:
-  - uid: 809
-    components:
-    - type: Transform
-      pos: 0.5,8.5
-      parent: 1
     - type: Fixtures
       fixtures: {}
 - proto: SignMedical

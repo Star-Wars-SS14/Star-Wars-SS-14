@@ -22,6 +22,9 @@ public sealed class SWLobbyUIController : UIController, IOnStateEntered<LobbySta
     private const float SmallRootHeight = 620;
     private const float NarrowRootWidth = 1200;
 
+    /// <summary>Characters a half-width tile holds at its full size in the wide column.</summary>
+    private const int LongTileValue = 18;
+
     [UISystemDependency] private readonly ClientGameTicker _ticker = default!;
 
     private LobbyGui? _gui;
@@ -144,8 +147,9 @@ public sealed class SWLobbyUIController : UIController, IOnStateEntered<LobbySta
             _players.Value.FontOverride = SWGlobalWarConsoleStyle.Bold(narrow ? 15 : 18);
         if (_mode != null)
             _mode.Value.FontOverride = SWGlobalWarConsoleStyle.Bold(narrow ? 12 : 14);
+        // Two starting worlds make a long value: at 14 it was cut in half on a 1280 screen.
         if (_map != null)
-            _map.Value.FontOverride = SWGlobalWarConsoleStyle.Bold(narrow ? 12 : 14);
+            _map.Value.FontOverride = SWGlobalWarConsoleStyle.Bold(narrow || (_map.Value.Text?.Length ?? 0) > LongTileValue ? 12 : 14);
         gui.FactsDescriptionVisible(!small);
         // Never narrower than the longest countdown and its plate's margins: the timer was cut at both ends.
         var width = Math.Max(small ? 320 : root.Y < 900 ? 420 : 560, (int) MathF.Ceiling(gui.StartTimeSizer.DesiredSize.X) + 24);

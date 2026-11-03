@@ -4,7 +4,7 @@ using Content.Server.Maps;
 using Content.Shared._SW.GlobalWar;
 using Content.Shared._SW.Lobby;
 using Content.Shared.GameTicking;
-using Content.Shared.GameTicking.Prototypes;
+using Content.Server.GameTicking.Presets;
 
 // ReSharper disable once CheckNamespace
 namespace Content.Server.GameTicking;

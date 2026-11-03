@@ -1,0 +1,26 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Original pixel icons drawn in code by Codex for Star-Wars-SS14, 2026.",
+    "size": {
+        "x": 16,
+        "y": 16
+    },
+    "states": [
+        {
+            "name": "peace"
+        },
+        {
+            "name": "war"
+        },
+        {
+            "name": "truce_pending"
+        },
+        {
+            "name": "truce"
+        },
+        {
+            "name": "sanction"
+        }
+    ]
+}

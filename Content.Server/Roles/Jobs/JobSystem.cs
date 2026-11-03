@@ -48,6 +48,8 @@ public sealed class JobSystem : SharedJobSystem
         if (!MindTryGetJob(mindId, out var prototype))
             return;
 
+        if (EntityManager.System<Content.Server.GameTicking.GameTicker>().IsGameRuleAdded<Content.Server._SW.GlobalWar.SWGlobalWarGameruleComponent>()) return; //SW: the campaign greets in one line of its own
+
         _chat.DispatchServerMessage(session, Loc.GetString("job-greet-introduce-job-name",
             ("jobName", CultureInfo.CurrentCulture.TextInfo.ToTitleCase(prototype.LocalizedName))));
 

@@ -1,0 +1,37 @@
+- type: swGlobalWarPlanet
+  id: SWGlobalWarTestAlpha
+  name: Alpha
+  mapPosition: "20, 30"
+  hyperspaceTime: 20
+  orbit: SWGlobalWarTestAsteroid
+  surface: oldBalmora
+  connections: [SWGlobalWarTestBeta]
+  market:
+    SWGlobalWarOre:
+      initialStock: 1500
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarTestBeta
+  name: Beta
+  mapPosition: "60, 60"
+  hyperspaceTime: 30
+  orbit: SWGlobalWarTestAsteroid
+  surface: oldBalmora
+  connections: [SWGlobalWarTestAlpha, SWGlobalWarTestGamma]
+  market:
+    SWGlobalWarOre:
+      initialStock: 20
+      consumptionPerMinute: 8
+
+- type: swGlobalWarPlanet
+  id: SWGlobalWarTestGamma
+  name: Gamma
+  mapPosition: "100, 25"
+  hyperspaceTime: 40
+  orbit: SWGlobalWarTestAsteroid
+  surface: oldBalmora
+  connections: [SWGlobalWarTestBeta]
+  market:
+    SWGlobalWarOre:
+      initialStock: 10
+      consumptionPerMinute: 3

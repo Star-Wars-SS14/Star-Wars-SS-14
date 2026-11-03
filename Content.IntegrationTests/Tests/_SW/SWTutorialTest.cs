@@ -1,4 +1,10 @@
 using System.Linq;
+using Content.Server._SW.Lathe.SWLathe;
+using Content.Server.Radio.EntitySystems;
+using Content.Shared.Hands.EntitySystems;
+using Content.Shared.Storage.EntitySystems;
+using Robust.Shared.Map;
+using Robust.Shared.Containers;
 using Content.Server._SW.Tutorial;
 using Content.Server.GameTicking;
 using Content.Shared._SW.TaskSystem;
@@ -11,6 +17,8 @@ using Robust.Shared.GameObjects;
 namespace Content.IntegrationTests.Tests._SW;
 
 [TestFixture]
+// Client windows render text, and the client font cache is not safe for two clients at once.
+[NonParallelizable]
 [TestOf(typeof(SWTutorialSystem))]
 public sealed class SWTutorialTest
 {
@@ -57,7 +65,7 @@ public sealed class SWTutorialTest
             var query = entMan.EntityQueryEnumerator<SWTutorialPointComponent, TransformComponent>();
             while (query.MoveNext(out var point, out var xform))
             {
-                if (point.Point == "door" && xform.MapUid == mapUid)
+                if (point.Point == "supply" && xform.MapUid == mapUid)
                     server.System<SharedTransformSystem>().SetCoordinates(session.AttachedEntity!.Value, xform.Coordinates);
             }
         });
@@ -67,7 +75,7 @@ public sealed class SWTutorialTest
         await server.WaitAssertion(() =>
         {
             var session = pair.Player!;
-            Assert.That(tutorial.GetStudentStep(session.UserId), Is.EqualTo("SWTutorialStepRifle"),
+            Assert.That(tutorial.GetStudentStep(session.UserId), Is.EqualTo("SWTutorialCivilPick"),
                 "Reaching the door did not finish the first step.");
 
             Assert.That(tutorial.TryExit(session), Is.True);
@@ -143,8 +151,8 @@ public sealed class SWTutorialTest
         await server.WaitAssertion(() =>
         {
             var session = pair.Player!;
-            Assert.That(tutorial.TryStart(session, SWTutorialChoice.NewToServer, out var notReady), Is.False);
-            Assert.That(notReady?.Id, Is.EqualTo("sw-tutorial-error-mode-not-ready"));
+            Assert.That(tutorial.GetScenario(SWTutorialChoice.NewToServer), Is.Not.Null,
+                "Experienced SS14 players must have a real short production scenario.");
 
             server.CfgMan.SetCVar(SWVars.TutorialMaxStudents, 0);
             Assert.That(tutorial.TryStart(session, SWTutorialChoice.NewToGame, out var full), Is.False);
@@ -152,6 +160,117 @@ public sealed class SWTutorialTest
             server.CfgMan.SetCVar(SWVars.TutorialMaxStudents, SWVars.TutorialMaxStudents.DefaultValue);
         });
 
+        await pair.CleanReturnAsync();
+    }
+
+    /// <summary>Real inputs and output, not a Next button or a synthetic completion event.</summary>
+    [Test]
+    public async Task CivilianProductionAndCheckpoint()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Connected = true, InLobby = true, Dirty = true });
+        var server = pair.Server;
+        var entities = server.EntMan;
+        var tutorial = server.System<SWTutorialSystem>();
+        var hands = server.System<SharedHandsSystem>();
+        var storage = server.System<SharedEntityStorageSystem>();
+        var transform = server.System<SharedTransformSystem>();
+        EntityUid body = default, map = default, material = default, box = default, machine = default;
+        await pair.RunTicksSync(5);
+        EntityCoordinates Point(string name)
+        {
+            var query = entities.EntityQueryEnumerator<SWTutorialPointComponent, TransformComponent>();
+            while (query.MoveNext(out var point, out var coordinates))
+                if (point.Point == name && coordinates.MapUid == map)
+                    return coordinates.Coordinates;
+            throw new AssertionException($"Missing point {name}");
+        }
+        EntityUid Item(string prototype)
+        {
+            var query = entities.EntityQueryEnumerator<MetaDataComponent, TransformComponent>();
+            while (query.MoveNext(out var uid, out var metadata, out var coordinates))
+                if (metadata.EntityPrototype?.ID == prototype && coordinates.MapUid == map)
+                    return uid;
+            throw new AssertionException($"Missing item {prototype}");
+        }
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(tutorial.TryStart(pair.Player!, SWTutorialChoice.NewToGame, out var error, restart: true), Is.True, error?.Id);
+            body = pair.Player!.AttachedEntity!.Value;
+            map = entities.GetComponent<TransformComponent>(body).MapUid!.Value;
+            transform.SetCoordinates(body, Point("supply"));
+        });
+        await pair.RunTicksSync(30);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(tutorial.GetStudentStep(pair.Player!.UserId), Is.EqualTo("SWTutorialCivilPick"));
+            material = Item("SWSheetLantanid1");
+            box = Item("CrateGenericSteel");
+            machine = Item("SWTutorialElectronicsLathe");
+            transform.SetCoordinates(body, Point("material"));
+            Assert.That(hands.TryPickupAnyHand(body, material), Is.True);
+        });
+        await pair.RunTicksSync(30);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(tutorial.GetStudentStep(pair.Player!.UserId), Is.EqualTo("SWTutorialCivilStore"));
+            // Exercise the actual storage container; no tutorial condition or stage is mutated.
+            Assert.That(storage.Insert(material, box), Is.True);
+        });
+        await pair.RunTicksSync(30);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(tutorial.GetStudentStep(pair.Player!.UserId), Is.EqualTo("SWTutorialCivilRetrieve"));
+            storage.OpenStorage(box);
+            transform.SetCoordinates(body, entities.GetComponent<TransformComponent>(material).Coordinates);
+            Assert.That(hands.TryPickupAnyHand(body, material), Is.True);
+        });
+        await pair.RunTicksSync(30);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(tutorial.GetStudentStep(pair.Player!.UserId), Is.EqualTo("SWTutorialCivilProduce"));
+            transform.SetCoordinates(body, Point("machineInput"));
+            Assert.That(hands.TryDrop(body, material, Point("machineInput")), Is.True);
+        });
+        await pair.RunTicksSync(180);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entities.EntityExists(material), Is.False, "The real lathe must consume the delivered sheet.");
+            var module = Item("SWElectronics1");
+            Assert.That(module.Valid, Is.True);
+            Assert.That(tutorial.GetStudentStep(pair.Player!.UserId), Is.EqualTo("SWTutorialCivilProduce"), "The step ends with the module in hand.");
+            transform.SetCoordinates(body, entities.GetComponent<TransformComponent>(module).Coordinates);
+            Assert.That(hands.TryPickupAnyHand(body, module), Is.True);
+        });
+        await pair.RunTicksSync(30);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(tutorial.GetStudentStep(pair.Player!.UserId), Is.EqualTo("SWTutorialCivilRadio"));
+            Assert.That(tutorial.TryExit(pair.Player!), Is.True);
+        });
+        await pair.RunTicksSync(10);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(tutorial.TryStart(pair.Player!, SWTutorialChoice.NewToGame, out var error), Is.True, error?.Id);
+            Assert.That(tutorial.GetStudentStep(pair.Player!.UserId), Is.EqualTo("SWTutorialCivilRadio"), "Resume the exercise boundary, not the old entity UIDs.");
+            Assert.That(entities.GetComponent<TransformComponent>(pair.Player!.AttachedEntity!.Value).MapUid, Is.Not.EqualTo(map));
+            Assert.That(tutorial.TryExit(pair.Player!), Is.True);
+        });
+        await pair.RunTicksSync(10);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(tutorial.TryStart(pair.Player!, SWTutorialChoice.NewToGame, out var error, restart: true), Is.True, error?.Id);
+            Assert.That(tutorial.GetStudentStep(pair.Player!.UserId), Is.EqualTo("SWTutorialCivilOrient"));
+            Assert.That(tutorial.TryExit(pair.Player!), Is.True);
+        });
+        await pair.RunTicksSync(10);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(tutorial.TryStart(pair.Player!, SWTutorialChoice.NewToGame, out var error), Is.True, error?.Id);
+            Assert.That(tutorial.GetStudentStep(pair.Player!.UserId), Is.EqualTo("SWTutorialCivilOrient"),
+                "An explicit restart must replace the old later checkpoint before a subsequent resume.");
+            Assert.That(tutorial.TryExit(pair.Player!), Is.True);
+        });
+        await pair.RunTicksSync(10);
         await pair.CleanReturnAsync();
     }
 

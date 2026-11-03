@@ -1,0 +1,25 @@
+- type: entity
+  parent: BaseMachinePowered
+  id: SWGlobalWarOrbitalHub
+  name: orbital freight hub
+  description: A registered orbital freight controller. Local upgrades increase its independent receiving and sending throughput.
+  components:
+  - type: Transform
+    anchored: true
+  - type: Sprite
+    sprite: Structures/Machines/silo.rsi
+    snapCardinals: true
+    layers:
+    - state: silo
+    - sprite: _SW/Structures/Machines/MegaMode/orbital_hub.rsi
+      state: base
+  - type: SWGlobalWarHub
+  - type: SWGlobalWarMapAnchor
+    anchorId: logisticsHub
+    kind: Logistics
+  - type: ActivatableUI
+    key: enum.SWGlobalWarHubUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWGlobalWarHubUiKey.Key:
+        type: SWGlobalWarHubBoundUserInterface

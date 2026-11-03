@@ -1,0 +1,74 @@
+- type: entity
+  parent: SWBaseLathe
+  id: SWGlobalWarFactoryStorage
+  name: campaign production line
+  description: Powered production line and its physical factory inventory.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    layers:
+    - state: lathe_base
+      rotation: 90
+    - state: blaster
+      rotation: 90
+    - state: up_arrow
+    - state: down_arrow
+  - type: SWGlobalWarFactory
+    factory: true
+  - type: ActivatableUI
+    key: enum.SWGlobalWarFactoryUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWGlobalWarFactoryUiKey.Key:
+        type: SWGlobalWarFactoryBoundUserInterface
+
+- type: entity
+  parent: BaseComputer
+  id: SWGlobalWarMarketStorage
+  name: campaign cargo storage
+  description: Registered physical cargo store. Procurement and transport are managed through the market console.
+  components:
+  - type: SWGlobalWarFactory
+  - type: ActivatableUI
+    key: enum.SWGlobalWarFactoryUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWGlobalWarFactoryUiKey.Key:
+        type: SWGlobalWarFactoryBoundUserInterface
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: supply
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+
+- type: entity
+  parent: SWGlobalWarMarketStorage
+  id: SWGlobalWarMiningDrill
+  name: campaign mining drill
+  description: Extracts six ore units per powered minute from the planet's finite physical deposit.
+  components:
+  - type: SWGlobalWarFactory
+    mining: true
+
+- type: entity
+  parent: SWGlobalWarMarketStorage
+  id: SWGlobalWarEquipmentStorage
+  name: campaign equipment arsenal
+  description: Accepts actual procured equipment and issues existing items to current service members.
+  components:
+  - type: SWGlobalWarFactory
+    arsenal: true
+
+- type: entity
+  parent: SWGlobalWarMarketStorage
+  id: SWGlobalWarRecruitmentConsole
+  name: campaign recruitment console
+  description: Present an ID card to enlist your current civilian character. Equipment comes from the real arsenal.
+  components:
+  - type: SWGlobalWarFactory
+    recruitment: true

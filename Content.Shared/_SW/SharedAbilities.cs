@@ -38,13 +38,13 @@ public sealed partial class ForceTryPushAbilityEvent : EntityTargetActionEvent
 
 }
 
-[Serializable, NetSerializable]
-public sealed class MasteryUpEvent : EntityEventArgs
+[Serializable, NetSerializable, DataDefinition]
+public sealed partial class MasteryUpEvent : EntityEventArgs
 {
 }
 
-[Serializable, NetSerializable]
-public sealed class MasteryLightingUpgradeEvent : EntityEventArgs
+[Serializable, NetSerializable, DataDefinition]
+public sealed partial class MasteryLightingUpgradeEvent : EntityEventArgs
 {
 }
 public sealed class StopMovingByForceEvent : EntityEventArgs

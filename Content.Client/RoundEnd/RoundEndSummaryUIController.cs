@@ -33,6 +33,16 @@ public sealed class RoundEndSummaryUIController : UIController,
         }
     }
 
+    //SW start: the campaign's verdict comes instead, and keeps this window behind a button.
+    public void SWHideWindow() => _window?.Close();
+
+    public void SWShowWindow()
+    {
+        if (_window is { IsOpen: false })
+            ToggleScoreboardWindow();
+    }
+    //SW end
+
     public void OpenRoundEndSummaryWindow(RoundEndMessageEvent message)
     {
         // Don't open duplicate windows (mainly for replays).

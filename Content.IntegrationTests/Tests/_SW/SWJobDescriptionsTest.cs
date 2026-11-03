@@ -1,4 +1,5 @@
 #nullable enable
+using System.Linq;
 using Content.Shared.Roles;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Localization;
@@ -19,11 +20,14 @@ public sealed class SWJobDescriptionsTest
         var protoMan = pair.Server.ResolveDependency<IPrototypeManager>();
         var loc = pair.Server.ResolveDependency<ILocalizationManager>();
 
+        // Jobs defined inside tests belong to no department.
+        var inDepartment = protoMan.EnumeratePrototypes<DepartmentPrototype>().SelectMany(d => d.Roles).ToHashSet();
+
         Assert.Multiple(() =>
         {
             foreach (var job in protoMan.EnumeratePrototypes<JobPrototype>())
             {
-                if (!job.ID.StartsWith("SW"))
+                if (!job.ID.StartsWith("SW") || !inDepartment.Contains(job.ID))
                     continue;
 
                 Assert.That(job.Description, Is.Not.Null, $"{job.ID} has no description.");

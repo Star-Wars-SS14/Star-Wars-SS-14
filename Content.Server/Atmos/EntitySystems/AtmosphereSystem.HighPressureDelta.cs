@@ -213,12 +213,7 @@ namespace Content.Server.Atmos.EntitySystems
 
             // TODO ATMOS stuns?
 
-            var maxForce = MathF.Sqrt(pressureDifference) * 2.25f;
-            var moveProb = 100f;
-
-            if (component.PressureResistance > 0)
-                moveProb = MathF.Abs((pressureDifference / component.PressureResistance * MovedByPressureComponent.ProbabilityBasePercent) -
-                                     MovedByPressureComponent.ProbabilityOffset);
+            var (maxForce, moveProb) = GetPressureMovementStrength(component, pressureDifference); //SW
 
             // Can we yeet the thing (due to probability, strength, etc.)
             if (moveProb > MovedByPressureComponent.ProbabilityOffset && _random.Prob(MathF.Min(moveProb / 100f, 1f))
@@ -261,5 +256,37 @@ namespace Content.Server.Atmos.EntitySystems
                 }
             }
         }
+
+        //SW start
+        /// <summary>
+        /// Checks whether a solver pressure difference can affect this body's physics using the same resistance
+        /// calculation as pressure movement. Does not roll chance, change the body or predict future gas flow.
+        /// </summary>
+        public bool CanPressureMove(EntityUid body, float pressureDifference)
+        {
+            if (!float.IsFinite(pressureDifference) || pressureDifference < 0)
+                return true;
+            if (!SpaceWind || !TryComp<MovedByPressureComponent>(body, out var pressure) || !pressure.Enabled ||
+                !TryComp<PhysicsComponent>(body, out var physics) || float.IsPositiveInfinity(pressure.MoveResist))
+                return false;
+            var (force, probability) = GetPressureMovementStrength(pressure, pressureDifference);
+            // The stock static branch is independent of probability; keep that distinction in the read-only query.
+            return physics.BodyType == BodyType.Static
+                ? force >= pressure.MoveResist * MovedByPressureComponent.MoveForceForcePushRatio
+                : probability > MovedByPressureComponent.ProbabilityOffset &&
+                  force >= pressure.MoveResist * MovedByPressureComponent.MoveForcePushRatio;
+        }
+
+        private static (float Force, float Probability) GetPressureMovementStrength(
+            MovedByPressureComponent component, float difference)
+        {
+            var force = MathF.Sqrt(difference) * 2.25f;
+            var probability = component.PressureResistance > 0
+                ? MathF.Abs(difference / component.PressureResistance * MovedByPressureComponent.ProbabilityBasePercent -
+                            MovedByPressureComponent.ProbabilityOffset)
+                : 100f;
+            return (force, probability);
+        }
+        //SW end
     }
 }

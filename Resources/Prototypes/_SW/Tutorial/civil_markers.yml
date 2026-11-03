@@ -1,0 +1,71 @@
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialCivilPointSupply
+  name: tutorial supply point
+  components:
+  - type: SWTutorialPoint
+    point: supply
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialCivilPointMaterial
+  name: tutorial material point
+  components:
+  - type: SWTutorialPoint
+    point: material
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialCivilPointBox
+  name: tutorial box point
+  components:
+  - type: SWTutorialPoint
+    point: box
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialCivilPointMachine
+  name: tutorial machine point
+  components:
+  - type: SWTutorialPoint
+    point: machine
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialCivilPointMachineInput
+  name: tutorial machineInput point
+  components:
+  - type: SWTutorialPoint
+    point: machineInput
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialCivilPointSecondMaterial
+  name: tutorial secondMaterial point
+  components:
+  - type: SWTutorialPoint
+    point: secondMaterial
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialCivilPointSecondMachine
+  name: tutorial secondMachine point
+  components:
+  - type: SWTutorialPoint
+    point: secondMachine
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialCivilPointSecondInput
+  name: tutorial secondInput point
+  components:
+  - type: SWTutorialPoint
+    point: secondInput
+
+- type: entity
+  parent: SWTutorialPointBase
+  id: SWTutorialCivilPointAcceptance
+  name: tutorial acceptance point
+  components:
+  - type: SWTutorialPoint
+    point: acceptance

@@ -1,0 +1,39 @@
+- type: entity
+  parent: BaseStructure
+  id: SWGlobalWarPlanetTeleporter
+  name: planetary teleporter
+  description: Transfers personnel between a planet's surface and orbital station. Activate it to travel.
+  components:
+  - type: SWGlobalWarPlanetTeleporter
+  - type: InteractionOutline
+  - type: Transform
+    anchored: true
+  - type: Physics
+    bodyType: Static
+  - type: Sprite
+    sprite: Structures/Machines/gateway.rsi
+    noRot: true
+    layers:
+    - state: frame
+    - state: portal
+      shader: unshaded
+      visible: false
+      map: ["enum.GatewayVisualLayers.Portal"]
+  - type: Fixtures
+    fixtures:
+      teleporter:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.25,-0.48,0.25,0.48"
+        mask:
+        - FullTileMask
+        layer:
+        - WallLayer
+        hard: false
+  - type: Appearance
+  - type: GenericVisualizer
+    visuals:
+      enum.GatewayVisuals.Active:
+        enum.GatewayVisualLayers.Portal:
+          True: { visible: true }
+          False: { visible: false }

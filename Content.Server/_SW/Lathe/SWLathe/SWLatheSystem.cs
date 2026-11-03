@@ -1,4 +1,6 @@
 using Content.Server.Power.Components;
+using Content.Server._SW.GlobalWar.Market;
+using Content.Shared._SW.GlobalWar;
 using Content.Server.Power.EntitySystems;
 using Content.Shared._SW.Lathe;
 using Content.Shared.Lathe;
@@ -29,12 +31,14 @@ public sealed class SWLatheSystem : EntitySystem
     [Dependency] private readonly SharedPhysicsSystem _physicsSystem = default!;
     [Dependency] private readonly TransformSystem _transformSystem = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
+    [Dependency] private readonly SWGlobalWarMarketSystem _campaignProduction = default!;
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<SWLatheComponent, BeforeActivatableUIOpenEvent>(OnBeforeUiOpen);
         SubscribeLocalEvent<SWLatheComponent, SWLatheSelectRecipeMessage>(OnSelectRecipe);
+        SubscribeLocalEvent<SWLatheComponent, AfterActivatableUIOpenEvent>(OnAfterUiOpen);
         //SubscribeLocalEvent<SWLatheComponent, StartCollideEvent>(OnStartCollide);
     }
 
@@ -45,6 +49,8 @@ public sealed class SWLatheSystem : EntitySystem
 
     private void OnSelectRecipe(Entity<SWLatheComponent> ent, ref SWLatheSelectRecipeMessage args)
     {
+        if (_campaignProduction.IsCampaignProductionLocation(ent))
+            return;
         ent.Comp.ProductionDisabled = args.ProductionDisabled;
 
         if (string.IsNullOrEmpty(args.Recipe))
@@ -60,6 +66,14 @@ public sealed class SWLatheSystem : EntitySystem
 
         ent.Comp.SelectedRecipe = selectedRecipe;
         UpdateUserInterface(ent);
+    }
+
+    private void OnAfterUiOpen(Entity<SWLatheComponent> ent, ref AfterActivatableUIOpenEvent args)
+    {
+        if (!_campaignProduction.IsCampaignProductionLocation(ent))
+            return;
+        _uiSystem.CloseUi(ent.Owner, SWLatheUiKey.Key, args.User);
+        _uiSystem.TryOpenUi(ent.Owner, SWGlobalWarFactoryUiKey.Key, args.User);
     }
 
     //private void OnStartCollide(Entity<SWLatheComponent> ent, ref StartCollideEvent args)
@@ -104,6 +118,8 @@ public sealed class SWLatheSystem : EntitySystem
 
         while (query.MoveNext(out var uid, out var comp, out var fixComp))
         {
+            if (_campaignProduction.IsCampaignProductionLocation(uid))
+                continue;
             if (!_chargeSystem.IsPowered(uid, EntityManager))
             {
                 continue;
@@ -160,6 +176,8 @@ public sealed class SWLatheSystem : EntitySystem
 
     public void FinishProduction(Entity<SWLatheComponent> ent)
     {
+        if (_campaignProduction.IsCampaignProductionLocation(ent))
+            return;
         DebugTools.Assert(ent.Comp.CurrentRecipeProducting != null);
         var coords = _transformSystem.ToMapCoordinates(new EntityCoordinates(ent, ent.Comp.SpawnPointOut));
         foreach (var (id, amount) in ent.Comp.CurrentRecipeProducting.Result)
@@ -201,6 +219,8 @@ public sealed class SWLatheSystem : EntitySystem
 
     public bool TryAddMaterial(Entity<SWLatheComponent> ent, EntityUid material)
     {
+        if (_campaignProduction.IsCampaignProductionLocation(ent))
+            return false;
         if (!CanAcceptMaterialEntity(material))
         {
             return false;
@@ -235,6 +255,8 @@ public sealed class SWLatheSystem : EntitySystem
 
     public bool TryStartProducingAnything(Entity<SWLatheComponent> ent)
     {
+        if (_campaignProduction.IsCampaignProductionLocation(ent))
+            return false;
         if (ent.Comp.CurrentRecipeProducting != null)
         {
             return false;

@@ -3,9 +3,10 @@ using Content.Server._SW.Droids;
 using Content.Server._SW.Targeting;
 using Content.Server.Popups;
 using Content.Server.Radio.EntitySystems;
+using Content.Server._SW.Lathe.SWLathe;
 using Content.Shared._SW.Tutorial;
+using Content.Shared.Storage.Components;
 using Content.Shared.Chat;
-using Content.Shared.Chemistry.EntitySystems;
 using Content.Shared.CombatMode;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
@@ -40,7 +41,6 @@ public sealed partial class SWTutorialSystem
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly SharedCombatModeSystem _combat = default!;
     [Dependency] private readonly SharedContainerSystem _containers = default!;
-    [Dependency] private readonly SharedSolutionContainerSystem _solutions = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly SharedInteractionSystem _interaction = default!;
     [Dependency] private readonly SharedWieldableSystem _wieldable = default!;
@@ -69,6 +69,8 @@ public sealed partial class SWTutorialSystem
         SubscribeLocalEvent<SWTutorialAllyComponent, BeforeDamageChangedEvent>(OnAllyDamage);
         SubscribeLocalEvent<SWTutorialEnemyComponent, BeforeDamageChangedEvent>(OnEnemyDamage);
         SubscribeNetworkEvent<SWTutorialReturnEvent>(OnReturnPressed);
+        SubscribeNetworkEvent<SWTutorialHelpEvent>(OnHelp);
+        InitializePractice();
 
         CommandBinds.Builder
             .BindBefore(EngineKeyFunctions.Use, new PointerInputCmdHandler(OnStudentClick), typeof(SharedInteractionSystem))
@@ -87,19 +89,22 @@ public sealed partial class SWTutorialSystem
             if (student.DisconnectedAt != null || !_player.TryGetSessionById(user, out var session))
                 continue;
 
+            if (TerminatingOrDeleted(student.Map) || !InPractice(student, student.Body))
+            {
+                FunnelLeft(student, "scene unavailable");
+                Leave(session, student);
+                _chat.DispatchServerMessage(session, Loc.GetString("sw-tutorial-technical-error"));
+                continue;
+            }
             var step = CurrentStep(student);
-            ReloadIfEmpty(student);
+            if (!student.Scenario.GuidedPractice)
+                ReloadIfEmpty(student);
             UpdateMissingItem(session, student, step);
-            FireTimedHints(session, student, step);
+            UpdateBeat(session, student, step);
 
-            if (IsDone(session, student, step.Completion))
+            if (!student.Blocked && IsDone(session, student, step.Completion))
                 FinishStep(session, student);
         }
-    }
-
-    private SWTutorialStepPrototype FirstStep(Student student)
-    {
-        return _proto.Index(student.Scenario.Steps[0]);
     }
 
     private SWTutorialStepPrototype CurrentStep(Student student)
@@ -111,16 +116,65 @@ public sealed partial class SWTutorialSystem
     {
         step ??= CurrentStep(student);
         var prompt = student.MissingItem && step.RequiresHeld != null ? step.RequiresHeld.Prompt : student.Prompt ?? step.Prompt;
-        var big = !student.MissingItem && student.Big;
-        RaiseNetworkEvent(new SWTutorialStateEvent(true, step.ID, prompt, big, student.Highlight, student.Note), session);
+        var (focusEntity, focusCoordinates) = GetFocus(student, step);
+        RaiseNetworkEvent(new SWTutorialStateEvent(true, step.ID, prompt, student.Highlight, student.Note, student.Attempt, student.Revision, student.Unlocked.ToArray(), student.Beat, focusEntity, focusCoordinates), session);
+    }
+
+    private (NetEntity?, NetCoordinates?) GetFocus(Student student, SWTutorialStepPrototype step)
+    {
+        if (student.MissingItem || student.Beat < 0 || student.Beat >= step.Beats.Count
+            || step.Beats[student.Beat].Focus is not { } focus)
+            return (null, null);
+
+        if (focus.Tag != null)
+        {
+            foreach (var entity in GetTagged(student, focus.Tag))
+            {
+                if (InPractice(student, entity))
+                    return (GetNetEntity(entity), null);
+            }
+        }
+
+        if (focus.Point != null && student.Points.TryGetValue(focus.Point, out var points) && points.Count > 0)
+            return (null, GetNetCoordinates(points[0]));
+
+        return (null, null);
+    }
+
+    /// <summary>
+    /// The last beat whose conditions hold. Its line and highlight replace the step's own.
+    /// </summary>
+    private int PickBeat(ICommonSession session, Student student, SWTutorialStepPrototype step)
+    {
+        for (var i = step.Beats.Count - 1; i >= 0; i--)
+        {
+            if (step.Beats[i].When.All(condition => IsDone(session, student, condition)))
+                return i;
+        }
+
+        return -1;
+    }
+
+    private void UpdateBeat(ICommonSession session, Student student, SWTutorialStepPrototype step)
+    {
+        var beat = PickBeat(session, student, step);
+        if (beat == student.Beat || beat < 0)
+            return;
+
+        student.Beat = beat;
+        student.Prompt = step.Beats[beat].Hint;
+        student.Highlight = step.Beats[beat].Highlight;
+        student.Note = null;
+        SendState(session, student, step);
     }
 
     private void StartStep(ICommonSession session, Student student, int index)
     {
         student.StepIndex = index;
+        student.Revision++;
+        student.Blocked = false;
         student.StepStartedAt = _timing.CurTime;
         student.StepStartPosition = Transform(student.Body).Coordinates;
-        student.HintsFired = 0;
         student.MistakesMade = 0;
         student.LastChannel = null;
         student.ReturnPressed = false;
@@ -128,11 +182,20 @@ public sealed partial class SWTutorialSystem
         student.MissingItem = false;
 
         var step = CurrentStep(student);
+        student.Unlocked.UnionWith(step.Show);
+        if (step.Checkpoint)
+            SaveCheckpoint(session, student.Scenario, index);
         student.Prompt = step.Prompt;
-        student.Big = false;
         student.Highlight = step.Highlight;
+        student.Beat = -1;
 
         RunActions(student, step.OnStart);
+        student.Beat = PickBeat(session, student, step);
+        if (student.Beat >= 0)
+        {
+            student.Prompt = step.Beats[student.Beat].Hint;
+            student.Highlight = step.Beats[student.Beat].Highlight;
+        }
         SendState(session, student, step);
     }
 
@@ -143,7 +206,7 @@ public sealed partial class SWTutorialSystem
             ? $" enemiesleft={GetTagged(student, over.Tag).Count(e => !AllGone(e))} standing={_mobState.IsAlive(student.Body)}"
             : string.Empty;
         Funnel(student,
-            $"step {step.ID} secs={(_timing.CurTime - student.StepStartedAt).TotalSeconds:F1} hints={student.HintsFired} mistakes={student.MistakesMade}{fight}");
+            $"step {step.ID} secs={(_timing.CurTime - student.StepStartedAt).TotalSeconds:F1} mistakes={student.MistakesMade}{fight}");
 
         foreach (var entity in student.UntilStepEnd)
         {
@@ -201,47 +264,13 @@ public sealed partial class SWTutorialSystem
             || proto != null && MetaData(item).EntityPrototype?.ID == proto);
     }
 
-    private void FireTimedHints(ICommonSession session, Student student, SWTutorialStepPrototype step)
-    {
-        var elapsed = _timing.CurTime - student.StepStartedAt;
-        foreach (var (hint, index) in step.Hints.Select((hint, index) => (hint, index)))
-        {
-            // Hints are listed by time, and each one fires once.
-            if (index < student.HintsFired || elapsed < hint.After)
-                continue;
-
-            student.HintsFired = index + 1;
-            if (hint.OnlyIfNotMoved && !IsStillAtStepStart(student))
-                continue;
-
-            if (hint.Prompt != null)
-            {
-                student.Prompt = hint.Prompt;
-                student.Big = hint.Big;
-                student.Note = null;
-            }
-
-            if (hint.Highlight != SWTutorialHighlight.None)
-                student.Highlight = hint.Highlight;
-
-            RunActions(student, hint.Actions);
-            SendState(session, student, step);
-        }
-    }
-
-    private bool IsStillAtStepStart(Student student)
-    {
-        return _transform.InRange(Transform(student.Body).Coordinates, student.StepStartPosition, 1f);
-    }
-
     private void ReportMistake(ICommonSession session, Student student, SWTutorialMistake mistake, string? tag = null)
     {
-        // Counted even with no hint: shots at allies in the fight belong in the funnel, and that step says nothing.
-        student.MistakesMade++;
         var hint = CurrentStep(student).Mistakes.FirstOrDefault(m => m.Mistake == mistake && (m.Tag == null || m.Tag == tag));
         if (hint == null)
             return;
 
+        student.MistakesMade++;
         student.Note = hint.Prompt;
         SendState(session, student);
     }
@@ -257,6 +286,46 @@ public sealed partial class SWTutorialSystem
             case SWTutorialHoldingCondition holding:
                 return IsHolding(student, holding.Tag, holding.Proto);
 
+            case SWTutorialContainedCondition contained:
+                return IsContained(student, contained);
+
+            case SWTutorialLoadedCondition loaded:
+                return IsPracticeLoaded(student, loaded);
+
+            case SWTutorialDefeatedCondition defeated:
+                return IsPracticeDefeated(session, student, defeated);
+
+            case SWTutorialPatientHealedCondition patient:
+                return IsPatientHealed(student, patient);
+
+            case SWTutorialPoweredCondition powered:
+                return IsPracticePowered(student, powered);
+
+            case SWTutorialProducedCondition:
+                return GetTagged(student, "product").Any(item => InPractice(student, item));
+
+            case SWTutorialPlacedCondition placed:
+                return IsPlaced(student, placed);
+
+            case SWTutorialNotCondition not:
+                return !IsDone(session, student, not.Condition);
+
+            case SWTutorialActiveHoldingCondition active:
+                return _hands.GetActiveItem(student.Body) is { } activeItem && GetTagged(student, active.Tag).Contains(activeItem);
+
+            case SWTutorialBoxOpenCondition box:
+                return GetTagged(student, box.Tag).Any(item => TryComp<EntityStorageComponent>(item, out var storage) && storage.Open);
+
+            case SWTutorialUiOpenCondition ui:
+                return TryComp<UserInterfaceUserComponent>(student.Body, out var user)
+                       && GetTagged(student, ui.Tag).Any(user.OpenInterfaces.ContainsKey);
+
+            case SWTutorialLatheRunningCondition running:
+                return GetTagged(student, running.Tag).Any(item => TryComp<SWLatheComponent>(item, out var lathe) && !lathe.ProductionDisabled);
+
+            case SWTutorialWieldedCondition wielded:
+                return IsWielded(student, wielded.Tag);
+
             case SWTutorialCombatModeCondition:
                 return _combat.IsInCombatMode(student.Body);
 
@@ -264,38 +333,41 @@ public sealed partial class SWTutorialSystem
                 return IsGone(session, student, gone);
 
             case SWTutorialHealedCondition healed:
-                return TotalDamage(student.Body) < student.DamageMark || HoldsEmptyInjector(student, healed);
+                return TotalDamage(student.Body) < student.DamageMark;
 
             case SWTutorialSaidOnRadioCondition radio:
                 return student.LastChannel == radio.Channel.Id;
 
             case SWTutorialFightOverCondition fight:
-                return AllGone(student, fight.Tag)
-                       || !_mobState.IsAlive(student.Body)
-                       || _timing.CurTime - student.StepStartedAt >= fight.Timeout;
+                return GetTagged(student, fight.Tag).Count > 0 && AllGone(student, fight.Tag) && _mobState.IsAlive(student.Body);
 
             case SWTutorialReturnPressedCondition:
                 return student.ReturnPressed;
 
             default:
                 Log.Error($"Unknown tutorial condition {condition.GetType().Name}");
-                return true;
+                student.Blocked = true;
+                student.Note = "sw-tutorial-technical-error";
+                student.Unlocked.Add(SWTutorialHudElement.All);
+                SendState(session, student);
+                return false;
         }
     }
 
-    private bool HoldsEmptyInjector(Student student, SWTutorialHealedCondition healed)
+    private bool IsPlaced(Student student, SWTutorialPlacedCondition placed)
     {
-        foreach (var item in _hands.EnumerateHeld(student.Body))
-        {
-            if (MetaData(item).EntityPrototype?.ID == healed.Injector
-                && _solutions.TryGetSolution(item, healed.Solution, out _, out var solution)
-                && solution.Volume == 0)
-            {
-                return true;
-            }
-        }
+        var items = GetTagged(student, placed.Tag);
+        if (items.Count == 0 || IsHolding(student, placed.Tag, null))
+            return false;
 
-        return false;
+        var places = new List<EntityCoordinates>();
+        if (placed.Point != null && student.Points.TryGetValue(placed.Point, out var points))
+            places.AddRange(points);
+        if (placed.NearTag != null)
+            places.AddRange(GetTagged(student, placed.NearTag).Where(e => InPractice(student, e)).Select(e => Transform(e).Coordinates));
+
+        return items.All(item => !InPractice(student, item)
+                                 || places.Any(p => _transform.InRange(Transform(item).Coordinates, p, placed.Range)));
     }
 
     private bool IsGone(ICommonSession session, Student student, SWTutorialGoneCondition gone)
@@ -351,10 +423,14 @@ public sealed partial class SWTutorialSystem
     {
         switch (action)
         {
+            case SWTutorialDamagePatientAction patient:
+                DamagePracticePatient(student, patient);
+                break;
+
             case SWTutorialSpawnAction spawn:
                 foreach (var coordinates in student.Points[spawn.Point])
                 {
-                    var entity = Spawn(spawn.Proto, coordinates);
+                    var entity = Spawn(spawn.Proto, coordinates.Offset(spawn.Offset));
                     if (spawn.Tag != null)
                     {
                         if (!student.Tagged.TryGetValue(spawn.Tag, out var list))
@@ -502,9 +578,11 @@ public sealed partial class SWTutorialSystem
             if (step.Completion is SWTutorialReachCondition reach)
                 yield return reach.Point;
 
-            var actions = step.OnStart.Concat(step.Hints.SelectMany(h => h.Actions));
+            var actions = scenario.Setup.Concat(step.OnStart);
             if (step.Completion is SWTutorialGoneCondition gone)
                 actions = actions.Concat(gone.Retry);
+            if (step.Completion is SWTutorialDefeatedCondition defeated)
+                actions = actions.Concat(defeated.Retry);
 
             foreach (var action in actions)
             {
@@ -532,8 +610,7 @@ public sealed partial class SWTutorialSystem
             return;
         }
 
-        student.LastChannel = args.Channel?.ID;
-        if (CurrentStep(student).Completion is SWTutorialSaidOnRadioCondition radio && student.LastChannel != radio.Channel.Id)
+        if (CurrentStep(student).Completion is SWTutorialSaidOnRadioCondition radio && args.Channel?.ID != radio.Channel.Id)
             ReportMistake(session, student, SWTutorialMistake.NotOnRadio);
     }
 
@@ -578,6 +655,8 @@ public sealed partial class SWTutorialSystem
     /// </summary>
     private void OnAllyDamage(Entity<SWTutorialAllyComponent> ent, ref BeforeDamageChangedEvent args)
     {
+        if (!args.Damage.AnyPositive())
+            return;
         if (args.Origin is not { } origin
             || !HasComp<SWTutorialPlayerComponent>(origin)
             || !_player.TryGetSessionByEntity(origin, out var session)
@@ -619,7 +698,7 @@ public sealed partial class SWTutorialSystem
         if (tag == null)
             return false;
 
-        if (!_combat.IsInCombatMode(student.Body))
+        if (!student.Scenario.GuidedPractice && !_combat.IsInCombatMode(student.Body))
             ReportMistake(session, student, SWTutorialMistake.NoCombatMode, tag);
 
         if (!_interaction.InRangeUnobstructed(student.Body, uid))
@@ -633,12 +712,12 @@ public sealed partial class SWTutorialSystem
     private void Funnel(Student student, string line)
     {
         // No player name or id: a counter is enough to follow one run through the log.
-        _funnel.Info($"run={student.Run} scenario={student.Scenario.ID} {line}");
+        _funnel.Info($"run={student.Run} scenario={student.Scenario.ID} version={student.Scenario.Version} {line}");
     }
 
     private void FunnelLeft(Student student, string reason)
     {
         Funnel(student,
-            $"left reason={reason} step={CurrentStep(student).ID} stepsecs={(_timing.CurTime - student.StepStartedAt).TotalSeconds:F1} totalsecs={(_timing.CurTime - student.StartedAt).TotalSeconds:F1} hints={student.HintsFired}");
+            $"left reason={reason} step={CurrentStep(student).ID} stepsecs={(_timing.CurTime - student.StepStartedAt).TotalSeconds:F1} totalsecs={(_timing.CurTime - student.StartedAt - student.SuspendedTime).TotalSeconds:F1}");
     }
 }

@@ -24,9 +24,13 @@ public sealed partial class SWTutorialFinishPopup : Control
         RepublicButton.Visible = ev.RoundStarted;
         EmpireButton.Visible = ev.RoundStarted;
         WaitLabel.Visible = !ev.RoundStarted;
+        NextLabel.SetMessage(Loc.GetString(ev.Campaign ? "sw-tutorial-finish-campaign-next" : "sw-tutorial-finish-next"));
+        WaitLabel.SetMessage(Loc.GetString(ev.Campaign ? "sw-tutorial-finish-campaign-wait" : "sw-tutorial-finish-wait"));
 
-        SetSide(RepublicButton, "sw-tutorial-finish-republic", ev.RepublicAlive, ev.RepublicAlive < ev.EmpireAlive);
-        SetSide(EmpireButton, "sw-tutorial-finish-empire", ev.EmpireAlive, ev.EmpireAlive < ev.RepublicAlive);
+        var republic = ev.Campaign ? "sw-tutorial-finish-campaign-republic" : "sw-tutorial-finish-republic";
+        var empire = ev.Campaign ? "sw-tutorial-finish-campaign-empire" : "sw-tutorial-finish-empire";
+        SetSide(RepublicButton, republic, ev.RepublicAlive, ev.RepublicAlive < ev.EmpireAlive);
+        SetSide(EmpireButton, empire, ev.EmpireAlive, ev.EmpireAlive < ev.RepublicAlive);
 
         RepublicButton.OnPressed += _ => OnSide?.Invoke(SWTutorialSide.Republic);
         EmpireButton.OnPressed += _ => OnSide?.Invoke(SWTutorialSide.Empire);

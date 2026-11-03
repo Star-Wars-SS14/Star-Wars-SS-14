@@ -1,3 +1,4 @@
+using System.Numerics;
 using Content.Shared.Damage;
 using Content.Shared.Radio;
 using Content.Shared.Roles;
@@ -20,6 +21,20 @@ public sealed partial class SWTutorialScenarioPrototype : IPrototype
     /// </summary>
     [DataField(required: true)]
     public SWTutorialChoice Mode;
+
+    /// <summary>Checkpoint namespace. Increment only when saved exercises are incompatible.</summary>
+    [DataField]
+    public int Version = 1;
+
+    [DataField]
+    public bool GuidedPractice;
+
+    [DataField]
+    public string? Map;
+
+    /// <summary>Reconstructed in every private instance, including after a saved checkpoint.</summary>
+    [DataField]
+    public List<SWTutorialAction> Setup = new();
 
     /// <summary>
     /// What the student wears from the start.
@@ -50,8 +65,8 @@ public sealed partial class SWTutorialStepPrototype : IPrototype
     public LocId? Prompt;
 
     /// <summary>
-    /// The parts of the HUD to show. Anything not listed is hidden, except the world, the exit button and the
-    /// buttons of the escape menu and admin help.
+    /// Teaching controls unlocked by this step. Unlocks accumulate; alerts, chat, guidebook, escape/settings,
+    /// admin help and unknown upstream widgets retain their normal visibility.
     /// </summary>
     [DataField]
     public List<SWTutorialHudElement> Show = new();
@@ -86,6 +101,10 @@ public sealed partial class SWTutorialStepPrototype : IPrototype
     [DataField]
     public bool ReturnButton;
 
+    /// <summary>A resumable exercise boundary whose OnStart restores its finite learning resources.</summary>
+    [DataField]
+    public bool Checkpoint;
+
     /// <summary>
     /// What this step cannot be done without. If it is not in the hands, the prompt says so instead of the step's own,
     /// which would talk about a thing the student no longer holds.
@@ -100,10 +119,11 @@ public sealed partial class SWTutorialStepPrototype : IPrototype
     public SWTutorialCondition Completion = default!;
 
     /// <summary>
-    /// Help that comes when the step takes too long.
+    /// What to do right now inside the step, picked from the state of the world. The last beat whose conditions all
+    /// hold is the one on screen, so dropping an item leads back to picking it up with no extra data.
     /// </summary>
     [DataField]
-    public List<SWTutorialTimedHint> Hints = new();
+    public List<SWTutorialBeat> Beats = new();
 
     /// <summary>
     /// Help that comes right after a known mistake.
@@ -142,6 +162,11 @@ public enum SWTutorialHighlight : byte
     CombatAction,
     PocketSlot,
     ReturnButton,
+    ActiveHand,
+    OtherHand,
+    ChatInput,
+    ApcBreaker,
+    LatheMode,
 }
 
 [Serializable, NetSerializable]
@@ -179,6 +204,53 @@ public enum SWTutorialMistake : byte
 }
 
 [DataDefinition]
+public sealed partial class SWTutorialBeat
+{
+    /// <summary>
+    /// All have to hold. Empty always holds, which makes the first beat the fallback.
+    /// </summary>
+    [DataField]
+    public List<SWTutorialCondition> When = new();
+
+    /// <summary>
+    /// One short line. The world and the HUD show the rest. Null shows no line at all.
+    /// </summary>
+    [DataField]
+    public LocId? Hint;
+
+    [DataField]
+    public SWTutorialFocus? Focus;
+
+    [DataField]
+    public SWTutorialHighlight Highlight;
+
+    /// <summary>
+    /// The student only has to wait here, so the time does not count as being stuck.
+    /// </summary>
+    [DataField]
+    public bool Wait;
+
+    /// <summary>
+    /// The four movement keys over the character, until the first step.
+    /// </summary>
+    [DataField]
+    public bool MoveKeys;
+}
+
+/// <summary>
+/// Where the trail on the floor and the pulsing brackets point: a tagged entity, or a named point of the map.
+/// </summary>
+[DataDefinition]
+public sealed partial class SWTutorialFocus
+{
+    [DataField]
+    public string? Tag;
+
+    [DataField]
+    public string? Point;
+}
+
+[DataDefinition]
 public sealed partial class SWTutorialRequiredItem
 {
     [DataField]
@@ -189,37 +261,6 @@ public sealed partial class SWTutorialRequiredItem
 
     [DataField(required: true)]
     public LocId Prompt;
-}
-
-[DataDefinition]
-public sealed partial class SWTutorialTimedHint
-{
-    /// <summary>
-    /// How long after the start of the step this comes.
-    /// </summary>
-    [DataField(required: true)]
-    public TimeSpan After;
-
-    [DataField]
-    public LocId? Prompt;
-
-    /// <summary>
-    /// Shows the prompt in large letters.
-    /// </summary>
-    [DataField]
-    public bool Big;
-
-    [DataField]
-    public SWTutorialHighlight Highlight;
-
-    /// <summary>
-    /// Comes only if the student is still where the step started.
-    /// </summary>
-    [DataField]
-    public bool OnlyIfNotMoved;
-
-    [DataField]
-    public List<SWTutorialAction> Actions = new();
 }
 
 [DataDefinition]
@@ -249,6 +290,9 @@ public abstract partial class SWTutorialAction;
 /// </summary>
 public sealed partial class SWTutorialSpawnAction : SWTutorialAction
 {
+    /// <summary>Local offset from the authored anchor; never a hidden campaign destination.</summary>
+    [DataField] public Vector2 Offset;
+
     [DataField(required: true)]
     public EntProtoId Proto;
 
@@ -362,6 +406,78 @@ public sealed partial class SWTutorialHoldingCondition : SWTutorialCondition
 }
 
 public sealed partial class SWTutorialCombatModeCondition : SWTutorialCondition;
+
+/// <summary>
+/// The tagged items left the hands and lie at a point or by another tagged entity, or a machine took them.
+/// </summary>
+public sealed partial class SWTutorialPlacedCondition : SWTutorialCondition
+{
+    [DataField(required: true)]
+    public string Tag = string.Empty;
+
+    [DataField]
+    public string? Point;
+
+    [DataField]
+    public string? NearTag;
+
+    [DataField]
+    public float Range = 1.5f;
+}
+
+/// <summary>
+/// The opposite of another condition.
+/// </summary>
+public sealed partial class SWTutorialNotCondition : SWTutorialCondition
+{
+    [DataField(required: true)]
+    public SWTutorialCondition Condition = default!;
+}
+
+/// <summary>
+/// The tagged item is in the active hand, not just in some hand.
+/// </summary>
+public sealed partial class SWTutorialActiveHoldingCondition : SWTutorialCondition
+{
+    [DataField(required: true)]
+    public string Tag = string.Empty;
+}
+
+/// <summary>
+/// The tagged crate stands open.
+/// </summary>
+public sealed partial class SWTutorialBoxOpenCondition : SWTutorialCondition
+{
+    [DataField(required: true)]
+    public string Tag = string.Empty;
+}
+
+/// <summary>
+/// The student has the window of the tagged entity open.
+/// </summary>
+public sealed partial class SWTutorialUiOpenCondition : SWTutorialCondition
+{
+    [DataField(required: true)]
+    public string Tag = string.Empty;
+}
+
+/// <summary>
+/// The tagged lathe is not on pause.
+/// </summary>
+public sealed partial class SWTutorialLatheRunningCondition : SWTutorialCondition
+{
+    [DataField(required: true)]
+    public string Tag = string.Empty;
+}
+
+/// <summary>
+/// The tagged item is held in both hands.
+/// </summary>
+public sealed partial class SWTutorialWieldedCondition : SWTutorialCondition
+{
+    [DataField(required: true)]
+    public string Tag = string.Empty;
+}
 
 /// <summary>
 /// Every tagged entity is destroyed or dead.

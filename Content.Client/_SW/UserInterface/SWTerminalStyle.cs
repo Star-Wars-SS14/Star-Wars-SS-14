@@ -52,7 +52,7 @@ public static class SWTerminalStyle
     /// <summary>
     /// Gold means money in every window, so that a reward or a balance reads the same everywhere.
     /// </summary>
-    private static readonly Color MoneyColor = Color.FromHex("#D9A441");
+    public static readonly Color MoneyColor = Color.FromHex("#D9A441");
 
     /// <summary>
     /// The Mandalorian accent is gold too, and their score must not read as money.
@@ -90,6 +90,20 @@ public static class SWTerminalStyle
     }
 
     /// <summary>
+    /// The main button's colours of an accent, for a control that draws its own box.
+    /// </summary>
+    public static (Color Fill, Color Hover, Color Border) AccentFills(string accent)
+    {
+        foreach (var (name, _, fill, hover, border) in Accents)
+        {
+            if (name == accent)
+                return (fill, hover, border);
+        }
+
+        return (ButtonFill, ButtonHover, ButtonBorder);
+    }
+
+    /// <summary>
     /// Picks the accent for a faction prototype ID. Anything else, or no faction, is neutral.
     /// </summary>
     public static string AccentOf(string? faction)
@@ -115,7 +129,7 @@ public static class SWTerminalStyle
     private static readonly Color ChipBorder = Color.FromHex("#697387");
     public static readonly Color DividerColor = Color.FromHex("#25282E");
     public static readonly Color SectionDividerColor = Color.FromHex("#5D6476");
-    private static readonly Color Green = Color.FromHex("#5CB353");
+    public static readonly Color Green = Color.FromHex("#5CB353");
     private static readonly Color SeasonUnderline = Color.FromHex("#9BE7FF");
     public static readonly Color ButtonFill = Color.FromHex("#272A30");
     public static readonly Color ButtonHover = Color.FromHex("#343842");
@@ -123,10 +137,10 @@ public static class SWTerminalStyle
     public static readonly Color FieldFill = Color.FromHex("#1B1D23");
     public static readonly Color Disabled = Color.FromHex("#16181C");
     public static readonly Color TextBright = Color.FromHex("#E1E1EF");
-    private static readonly Color TextDim = Color.FromHex("#AEB3BF");
-    private static readonly Color TextBody = Color.FromHex("#CBCBD5");
+    public static readonly Color TextDim = Color.FromHex("#AEB3BF");
+    public static readonly Color TextBody = Color.FromHex("#CBCBD5");
     private static readonly Color TextDoneColor = Color.FromHex("#8A91A0");
-    private static readonly Color TextOff = Color.FromHex("#697387");
+    public static readonly Color TextOff = Color.FromHex("#697387");
 
     public static StyleRule[] GetRules(IResourceCache res)
     {

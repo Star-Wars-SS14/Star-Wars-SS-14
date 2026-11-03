@@ -4,7 +4,7 @@
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
     xmlns:ui="clr-namespace:Content.Client._SW.Droids.UI"
     Title="{Loc 'sw-droid-control-datapad-window-title'}"
-    MinSize="980 640"
+    MinSize="900 500"
     SetSize="1040 680">
     <BoxContainer Name="MainContent" Orientation="Vertical" Margin="8">
         <TabContainer Name="Tabs" VerticalExpand="True">

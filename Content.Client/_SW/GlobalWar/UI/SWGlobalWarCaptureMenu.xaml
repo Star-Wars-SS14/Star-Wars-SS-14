@@ -1,0 +1,46 @@
+<ui:SWGlobalWarWindow xmlns="https://spacestation14.io"
+                      xmlns:ui="clr-namespace:Content.Client._SW.GlobalWar.UI"
+                      Title="{Loc 'sw-global-war-capture-title'}" MinSize="560 340" SetSize="640 396">
+    <BoxContainer Orientation="Vertical" SeparationOverride="8">
+        <Control VerticalExpand="True" RectClipContent="True" SetHeight="256">
+            <TextureRect Name="Scene" Stretch="KeepAspectCovered" HorizontalExpand="True" VerticalExpand="True" />
+            <BoxContainer Orientation="Vertical" SetWidth="102" Margin="14 12 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" SeparationOverride="2">
+                <TextureRect Name="LeftIcon" Stretch="KeepCentered" SetSize="48 48" HorizontalAlignment="Center" />
+                <Label Name="LeftWord" Align="Center" />
+                <Label Name="LeftName" Align="Center" />
+            </BoxContainer>
+            <TextureRect Name="HubMark" Stretch="KeepCentered" SetSize="96 96" Margin="74 56 0 0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+            <BoxContainer Orientation="Vertical" Margin="0 6 0 0" HorizontalAlignment="Center" VerticalAlignment="Top" SeparationOverride="0">
+                <PanelContainer Name="PlacePlate" HorizontalAlignment="Center">
+                    <Label Name="Place" Align="Center" Margin="8 0" />
+                </PanelContainer>
+                <Label Name="StatusWord" Align="Center" />
+                <Label Name="Timer" Align="Center" />
+            </BoxContainer>
+            <Label Name="ResetWord" Align="Center" Visible="False" Margin="0 0 0 70" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
+            <BoxContainer Name="RightColumn" Orientation="Vertical" SetWidth="102" Margin="0 12 14 0" HorizontalAlignment="Right" VerticalAlignment="Top" SeparationOverride="2">
+                <TextureRect Name="RightIcon" Stretch="KeepCentered" SetSize="48 48" HorizontalAlignment="Center" />
+                <Label Name="RightWord" Align="Center" />
+                <Label Name="RightName" Align="Center" />
+            </BoxContainer>
+            <BoxContainer Orientation="Vertical" VerticalAlignment="Bottom" Margin="14 0 14 2" SeparationOverride="2">
+                <BoxContainer SeparationOverride="8">
+                    <TextureRect Name="BarLeftIcon" Stretch="KeepCentered" SetSize="32 32" VerticalAlignment="Center" />
+                    <ui:SWGlobalWarCaptureBar Name="Bar" />
+                    <TextureRect Name="BarRightIcon" Stretch="KeepCentered" SetSize="32 32" VerticalAlignment="Center" />
+                </BoxContainer>
+                <PanelContainer Name="TimingPlate" HorizontalAlignment="Center">
+                    <Label Name="Timing" Align="Center" Margin="8 0" />
+                </PanelContainer>
+            </BoxContainer>
+        </Control>
+        <BoxContainer SeparationOverride="8" Margin="14 0">
+            <Label Name="Reason" HorizontalExpand="True" ClipText="True" VAlign="Center" />
+            <Label Name="HelpMark" Text="?" StyleClasses="SWTermValue" MouseFilter="Stop" VAlign="Center" />
+        </BoxContainer>
+        <BoxContainer SeparationOverride="8" Margin="14 0 14 12">
+            <ui:SWGlobalWarConsoleButton Name="Start" Text="{Loc 'sw-global-war-capture-start'}" Disabled="True" HorizontalExpand="True" SizeFlagsStretchRatio="1.63" MinHeight="44" />
+            <ui:SWGlobalWarConsoleButton Name="Cancel" Text="{Loc 'sw-global-war-capture-cancel'}" Disabled="True" HorizontalExpand="True" MinHeight="44" />
+        </BoxContainer>
+    </BoxContainer>
+</ui:SWGlobalWarWindow>

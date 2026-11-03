@@ -33,6 +33,8 @@ public static class SWTerminalGlobalRules
     private const string TerminalPath = "/Textures/_SW/Interface/Terminal/";
     private const string RadialPath = TerminalPath + "Nano/Radial/";
 
+    /// <summary>The fill of inventory slots, so that the top bar, the hotbar and the chat read as one dark HUD with the windows.</summary>
+    private static readonly Color HudFill = Color.FromHex("#101215");
     private static readonly Color ButtonPressed = Color.FromHex("#3A3F4A");
     private static readonly Color ButtonPressedBorder = Color.FromHex("#8E97A8");
     private static readonly Color PanelLightFill = Color.FromHex("#16181C");
@@ -266,8 +268,8 @@ public static class SWTerminalGlobalRules
         {
             rules.AddRange(new StyleRule[]
             {
-                E<MenuButton>().MaybeClass(kind).PseudoNormal().Modulate(Color.White).Box(Box(ButtonFill, ButtonBorder, 1)),
-                E<MenuButton>().MaybeClass(kind).PseudoHovered().Modulate(Color.White).Box(Box(ButtonHover, ButtonBorder, 1)),
+                E<MenuButton>().MaybeClass(kind).PseudoNormal().Modulate(Color.White).Box(Box(HudFill, CardBorder, 1)),
+                E<MenuButton>().MaybeClass(kind).PseudoHovered().Modulate(Color.White).Box(Box(ButtonFill, ButtonBorder, 1)),
                 E<MenuButton>().MaybeClass(kind).PseudoPressed().Modulate(Color.White).Box(Box(ButtonPressed, ButtonPressedBorder, 1)),
                 E<MenuButton>().MaybeClass(kind).PseudoDisabled().Modulate(Color.White).Box(Box(Disabled, DividerColor, 1)),
             });

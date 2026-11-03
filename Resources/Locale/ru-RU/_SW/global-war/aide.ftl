@@ -1,0 +1,25 @@
+ent-SWGlobalWarAideRepublic = офицер связи
+    .desc = Офицер связи Республики.
+ent-SWGlobalWarAideEmpire = офицер связи
+    .desc = Офицер связи Империи.
+
+sw-global-war-aide-otherworld-republic = Обратно только через телепорт. Запомните, где он.
+sw-global-war-aide-otherworld-empire = Уйти отсюда можно только телепортом. Запомните место.
+sw-global-war-aide-boarded-republic = Перед прыжком сядьте и пристегнитесь, пожалуйста.
+sw-global-war-aide-boarded-empire = Сядьте и пристегнитесь. Прыжок ждать не будет.
+sw-global-war-aide-war-republic = Война началась. Держитесь отряда и слушайте рацию.
+sw-global-war-aide-war-empire = Война. Держитесь отряда, приказы идут по рации.
+sw-global-war-aide-owncapture-republic = Захват идёт пять минут. Прикройте консоль.
+sw-global-war-aide-owncapture-empire = Пять минут до захвата. Никого не подпускайте.
+sw-global-war-aide-enemycapture-republic = Враг захватывает наш сектор. Пять минут на ответ.
+sw-global-war-aide-enemycapture-empire = Враг у консоли сектора. У вас пять минут.
+sw-global-war-aide-sectorlost-republic = Сектор потерян. Спросите по рации, куда отходить.
+sw-global-war-aide-sectorlost-empire = Сектор потерян. Запросите новый приказ по рации.
+sw-global-war-aide-returned-republic = С возвращением. Возьмите комплект, запас в арсенале конечен.
+sw-global-war-aide-returned-empire = Снова в строю. Комплект в арсенале, запас конечен.
+sw-global-war-aide-arsenalempty-republic = Арсенал пуст. Подберите оружие у павших.
+sw-global-war-aide-arsenalempty-empire = Арсенал пуст. Оружие павших теперь ваше.
+sw-global-war-aide-delivery-republic = Груз принят. На таких рейсах держится фронт.
+sw-global-war-aide-delivery-empire = Груз принят. Фронт снабжается такими рейсами.
+sw-global-war-aide-truce-republic = Перемирие. Покиньте чужие сектора и не стреляйте.
+sw-global-war-aide-truce-empire = Перемирие. Оставьте чужие сектора, оружие опустить.

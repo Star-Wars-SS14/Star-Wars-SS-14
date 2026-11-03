@@ -1,0 +1,77 @@
+- type: playTimeTracker
+  id: Job_SWGlobalWarRepublicHead
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarRepublicWarMinister
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarRepublicLogisticsMinister
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarRepublicIndustryMinister
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarRepublicLogisticsWorker
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarRepublicIndustryWorker
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarRepublicSeniorOfficer
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarRepublicJuniorOfficer
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarRepublicPilot
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarRepublicSoldier
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarRepublicForceUser
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarRepublicIntelligence
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarRepublicCitizen
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarEmpireHead
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarEmpireWarMinister
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarEmpireLogisticsMinister
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarEmpireIndustryMinister
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarEmpireLogisticsWorker
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarEmpireIndustryWorker
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarEmpireSeniorOfficer
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarEmpireJuniorOfficer
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarEmpirePilot
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarEmpireSoldier
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarEmpireForceUser
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarEmpireIntelligence
+
+- type: playTimeTracker
+  id: Job_SWGlobalWarEmpireCitizen

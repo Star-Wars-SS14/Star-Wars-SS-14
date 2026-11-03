@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 11/03/2026 12:28:41
-  entityCount: 6205
+  entityCount: 6193
 maps:
 - 1
 grids:
@@ -35511,78 +35511,6 @@ entities:
     - type: Transform
       pos: 108.5,88.5
       parent: 2
-  - uid: 6188
-    components:
-    - type: Transform
-      anchored: False
-      pos: -0.5,47.5
-      parent: 1
-  - uid: 6189
-    components:
-    - type: Transform
-      anchored: False
-      pos: -0.5,48.5
-      parent: 1
-  - uid: 6190
-    components:
-    - type: Transform
-      anchored: False
-      pos: -0.5,49.5
-      parent: 1
-  - uid: 6191
-    components:
-    - type: Transform
-      anchored: False
-      pos: 55.5,-0.5
-      parent: 1
-  - uid: 6192
-    components:
-    - type: Transform
-      anchored: False
-      pos: 56.5,-0.5
-      parent: 1
-  - uid: 6193
-    components:
-    - type: Transform
-      anchored: False
-      pos: 57.5,-0.5
-      parent: 1
-  - uid: 6194
-    components:
-    - type: Transform
-      anchored: False
-      pos: 55.5,96.5
-      parent: 1
-  - uid: 6195
-    components:
-    - type: Transform
-      anchored: False
-      pos: 56.5,96.5
-      parent: 1
-  - uid: 6196
-    components:
-    - type: Transform
-      anchored: False
-      pos: 57.5,96.5
-      parent: 1
-  - uid: 6197
-    components:
-    - type: Transform
-      anchored: False
-      pos: 112.5,47.5
-      parent: 1
-  - uid: 6198
-    components:
-    - type: Transform
-      anchored: False
-      pos: 112.5,48.5
-      parent: 1
-  - uid: 6199
-    components:
-    - type: Transform
-      anchored: False
-      pos: 112.5,49.5
-      parent: 1
 - proto: ShelfMetal
   entities:
   - uid: 6094

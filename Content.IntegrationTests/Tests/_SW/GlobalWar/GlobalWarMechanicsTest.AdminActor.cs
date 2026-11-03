@@ -16,8 +16,8 @@ namespace Content.IntegrationTests.Tests._SW.GlobalWar;
 public sealed partial class GlobalWarMechanicsTest
 {
     /// <summary>
-    /// An active admin debugs the campaign: an aghost acts as the head of the side that owns the location, the
-    /// admin's attacks ignore peace, and entering again over a living character gives up the old office.
+    /// An active admin debugs the campaign: an aghost acts as the head of the side that owns the location, a body
+    /// outside the campaign ignores peace, and entering again over a living character gives up the old office.
     /// </summary>
     [Test]
     public async Task AnActiveAdminActsAsTheLocalHeadAndMayEnterAgain()
@@ -43,10 +43,14 @@ public sealed partial class GlobalWarMechanicsTest
             var soldier = campaign.Actor(0);
             Assert.That(soldier.Role, Is.EqualTo(SWGlobalWarRole.Soldier), "In their own body the admin is the soldier.");
 
-            // Peace closes combat, except for an active admin.
-            var attempt = new SWExplosionAttemptEvent(transform.GetMapCoordinates(soldier.Body), null, soldier.Body);
-            entities.EventBus.RaiseEvent(EventSource.Local, ref attempt);
-            Assert.That(attempt.Cancelled, Is.False);
+            // In their own campaign body an admin plays by the rules: peace closes combat.
+            bool Cancelled(EntityUid user)
+            {
+                var attempt = new SWExplosionAttemptEvent(transform.GetMapCoordinates(user), null, user);
+                entities.EventBus.RaiseEvent(EventSource.Local, ref attempt);
+                return attempt.Cancelled;
+            }
+            Assert.That(Cancelled(soldier.Body), Is.True);
 
             // An aghost on a Republic world acts as the Republic head with every office.
             var ghost = entities.SpawnEntity("AdminObserver", entities.GetComponent<TransformComponent>(soldier.Body).Coordinates);
@@ -83,6 +87,15 @@ public sealed partial class GlobalWarMechanicsTest
                 out var reservation), Is.True);
             Assert.That(registry.Comp.Assignments.Keys.Any(user => user == session.UserId), Is.False);
             assignments.ReleaseEntry(campaign.Generation, reservation.Id);
+
+            // A humanoid spawned and taken over by the admin is outside the campaign: it fights in peace and acts
+            // as the local head at the consoles.
+            var puppet = entities.SpawnEntity("MobHuman", entities.GetComponent<TransformComponent>(soldier.Body).Coordinates);
+            minds.TransferTo(soldier.Mind, puppet);
+            Assert.That(Cancelled(puppet), Is.False);
+            Assert.That(assignments.TryGetAssignment(session.UserId, out var puppetHead), Is.True);
+            Assert.That(puppetHead.Role, Is.EqualTo(SWGlobalWarRole.Head));
+            Assert.That(puppetHead.Body, Is.EqualTo(puppet));
         });
         await pair.CleanReturnAsync();
     }

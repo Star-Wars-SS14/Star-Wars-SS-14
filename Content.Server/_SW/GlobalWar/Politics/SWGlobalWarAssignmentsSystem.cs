@@ -64,7 +64,7 @@ public sealed partial class SWGlobalWarAssignmentsSystem : EntitySystem
     public bool TryGetAssignment(NetUserId user, out SWGlobalWarAssignment assignment)
     {
         assignment = default!;
-        // Admin debugging: an active admin away from their own campaign body reads as the head of the local side.
+        // Admin debugging: an active admin in an aghost or a body outside the campaign reads as the local head.
         if (TryGetAdminActor(user, out assignment))
             return true;
         return TryGetRegistry(out var registry) && registry.Comp.Assignments.TryGetValue(user, out assignment!);
@@ -82,7 +82,7 @@ public sealed partial class SWGlobalWarAssignmentsSystem : EntitySystem
         out SWGlobalWarAssignment assignment)
     {
         assignment = default!;
-        // Admin debugging: an aghost or any body of an active admin acts with the full rights of the local side.
+        // Admin debugging: an active admin's aghost or body outside the campaign acts with the full rights of the local side.
         if (session.Status == SessionStatus.InGame && TryGetAdminActor(session.UserId, out assignment))
             return assignment.Generation == generation && assignment.Revision == revision;
         return session.Status == SessionStatus.InGame && session.AttachedEntity is { } body &&

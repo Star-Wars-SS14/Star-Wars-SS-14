@@ -62,8 +62,10 @@ public sealed class SWGlobalWarHostilitySystem : EntitySystem
     {
         if (!_campaign.TryGetCampaign(out var campaign) || !_planets.TryGetPhysicalLocation(target, out var planet, out _))
             return true;
-        // Admin debugging: an active admin's attack is never cancelled, peace included.
-        if (TryComp<ActorComponent>(actor, out var player) && _admins.HasAdminFlag(player.PlayerSession, AdminFlags.Admin))
+        // Admin debugging: an active admin's attack from a body outside the campaign is never cancelled, peace
+        // included. In their own campaign body an admin plays by the rules of their side.
+        if (TryComp<ActorComponent>(actor, out var player) && _admins.HasAdminFlag(player.PlayerSession, AdminFlags.Admin) &&
+            !_identity.TryGetIdentity(actor, out _, out _))
             return true;
         if (_identity.TryGetIdentity(actor, out _, out _))
         {

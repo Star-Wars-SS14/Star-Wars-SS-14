@@ -6,6 +6,7 @@ using Content.Shared._SW.GlobalWar;
 using Content.Shared._SW.GlobalWar.Politics;
 using Content.Shared.Administration;
 using Content.Shared.GameTicking;
+using Content.Shared.Ghost;
 using Content.Shared.Roles;
 using Robust.Shared.Network;
 using Robust.Shared.Player;
@@ -16,7 +17,8 @@ namespace Content.Server._SW.GlobalWar.Politics;
 
 /// <summary>
 /// Admin debugging: an active admin acts at every campaign console as the head of the side that owns the location,
-/// from an aghost or from any body that is not their own campaign body. The office is never written to the registry,
+/// from an aghost or from a body with no campaign side, such as one taken by controlmob. In their own campaign body,
+/// or as an ordinary dead ghost, an admin plays by the normal rules. The office is never written to the registry,
 /// so it takes no slot, starts no succession and nobody else sees it.
 /// </summary>
 public sealed partial class SWGlobalWarAssignmentsSystem
@@ -47,14 +49,12 @@ public sealed partial class SWGlobalWarAssignmentsSystem
         return _players.TryGetSessionById(user, out session!) && _admins.HasAdminFlag(session, AdminFlags.Admin);
     }
 
-    /// <summary>The head office an active admin holds where they stand, if they do not stand in their own body.</summary>
+    /// <summary>The head office an active admin holds where they stand while debugging.</summary>
     private bool TryGetAdminActor(NetUserId user, out SWGlobalWarAssignment assignment)
     {
         assignment = default!;
-        if (!IsActiveAdmin(user, out var session) || session.AttachedEntity is not { } body ||
-            !TryGetRegistry(out var registry) ||
-            registry.Comp.Assignments.TryGetValue(user, out var own) && own.Body == body ||
-            !_minds.TryGetMind(user, out var mind))
+        if (!IsActiveAdmin(user, out var session) || session.AttachedEntity is not { } body || !IsDebugBody(body) ||
+            !TryGetRegistry(out var registry) || !_minds.TryGetMind(user, out var mind))
             return false;
 
         var faction = SWGlobalWarFaction.Neutral;
@@ -72,6 +72,14 @@ public sealed partial class SWGlobalWarAssignmentsSystem
         assignment = new SWGlobalWarAssignment(id, registry.Comp.Generation, user, mind.Value.Owner, body, faction,
             SWGlobalWarRole.Head, job, AdminActorRevision, false);
         return true;
+    }
+
+    /// <summary>An aghost, or a body outside the campaign; never a dead player's ghost or a campaign body.</summary>
+    private bool IsDebugBody(EntityUid body)
+    {
+        return TryComp<GhostComponent>(body, out var ghost)
+            ? ghost.CanGhostInteract
+            : !_identity.TryGetOwnedBodyIdentity(body, out _, out _);
     }
 
     private bool IsAdminActor(SWGlobalWarAssignment assignment)

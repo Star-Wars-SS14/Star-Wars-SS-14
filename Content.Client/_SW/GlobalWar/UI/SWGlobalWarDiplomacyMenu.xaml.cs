@@ -345,8 +345,7 @@ public sealed partial class SWGlobalWarDiplomacyMenu : SWGlobalWarWindow
         }
         var neutral = view.Neutrals.FirstOrDefault(n => n.Planet == _neutral);
         var validAmount = long.TryParse(Amount.Text, NumberStyles.None, CultureInfo.InvariantCulture, out var amount) && amount > 0;
-        Sponsor.Disabled = _pending != null || neutral?.CanSponsor != true || !validAmount ||
-                           amount > neutral.ContributionLimit - neutral.OwnContribution || amount > view.Treasury;
+        Sponsor.Disabled = _pending != null || neutral?.CanSponsor != true || !validAmount || amount > view.Treasury;
         Contest.Disabled = _pending != null || neutral?.CanContest != true;
         Plain(NeutralDetails, NeutralDescription(neutral, view));
         var sanction = _commodity is { } good && view.Sanctions.Any(s => s.Faction == view.Faction && s.Commodity == good);
@@ -374,7 +373,7 @@ public sealed partial class SWGlobalWarDiplomacyMenu : SWGlobalWarWindow
         if (neutral.OwnContribution is { } paid)
         {
             text += "\n" + Loc.GetString("sw-global-war-diplomacy-contribution",
-                ("paid", paid), ("limit", neutral.ContributionLimit!.Value), ("treasury", view.Treasury ?? 0));
+                ("paid", paid), ("treasury", view.Treasury ?? 0));
             if (neutral.Phase == SWGlobalWarNeutralPhase.CivilWar && view.Time < neutral.FundingEndsAt)
                 text += "\n" + Loc.GetString("sw-global-war-diplomacy-funding-time",
                     ("time", Clock(neutral.FundingEndsAt - view.Time)));

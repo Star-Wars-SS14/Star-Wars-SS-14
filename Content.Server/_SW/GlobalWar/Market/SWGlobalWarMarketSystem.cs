@@ -80,7 +80,7 @@ public sealed partial class SWGlobalWarMarketSystem : EntitySystem
             throw new ArgumentException("Automatic trade needs a finite non-negative capacity and a positive travel time.");
 
         var commodities = _prototypes.EnumeratePrototypes<SWGlobalWarCommodityPrototype>()
-            .Select(prototype => new SWGlobalWarCommodityDefinition(prototype.ID, prototype.CargoVolume)).ToArray();
+            .Select(prototype => new SWGlobalWarCommodityDefinition(prototype.ID, prototype.CargoVolume, prototype.WholeItems)).ToArray();
         var active = globalWarGamerule.Planets.ToHashSet();
         var profiles = globalWarGamerule.Planets.Any(id => _prototypes.Index(id).EconomyProfile != null);
         var markets = new List<SWGlobalWarMarketDefinition>();

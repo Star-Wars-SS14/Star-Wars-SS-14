@@ -4,7 +4,7 @@ using Content.Shared._SW.GlobalWar;
 
 namespace Content.Server._SW.GlobalWar.Market;
 
-public sealed record SWGlobalWarCommodityDefinition(string Id, double CargoVolume);
+public sealed record SWGlobalWarCommodityDefinition(string Id, double CargoVolume, bool WholeItems = false);
 public sealed record SWGlobalWarMarketGoodDefinition(string Commodity, int Stock, int ConsumptionPerMinute);
 public sealed record SWGlobalWarMarketDefinition(string Planet, IReadOnlyList<SWGlobalWarMarketGoodDefinition> Goods,
     SWGlobalWarFaction Owner = SWGlobalWarFaction.Neutral, SWGlobalWarEconomyProfilePrototype? Profile = null,

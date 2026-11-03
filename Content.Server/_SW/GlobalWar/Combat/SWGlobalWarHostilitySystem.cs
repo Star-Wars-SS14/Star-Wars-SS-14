@@ -2,10 +2,12 @@ using Content.Server._SW.Droids;
 using Content.Server._SW.GlobalWar.Identity;
 using Content.Server._SW.GlobalWar.Politics;
 using Content.Server._SW.Targeting;
+using Content.Server.Administration.Managers;
 using Content.Server.Popups;
 using Content.Shared._SW.Droids;
 using Content.Shared._SW.GlobalWar;
 using Content.Shared._SW.GlobalWar.Politics;
+using Content.Shared.Administration;
 using Content.Shared.Damage;
 using Content.Shared.Damage.Components;
 using Content.Shared.Damage.Systems;
@@ -15,6 +17,7 @@ using Content.Shared.Explosion;
 using Content.Shared.Projectiles;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
+using Robust.Shared.Player;
 using Robust.Shared.Timing;
 
 namespace Content.Server._SW.GlobalWar.Combat;
@@ -29,6 +32,7 @@ public sealed class SWGlobalWarHostilitySystem : EntitySystem
     [Dependency] private readonly SharedMapSystem _maps = default!;
     [Dependency] private readonly PopupSystem _popup = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly IAdminManager _admins = default!;
 
     /// <summary>A blocked trigger is pulled many times a second; say why once in a while.</summary>
     private static readonly TimeSpan PeaceNoticeInterval = TimeSpan.FromSeconds(3);
@@ -57,6 +61,9 @@ public sealed class SWGlobalWarHostilitySystem : EntitySystem
     private bool Allowed(EntityUid actor, EntityUid target)
     {
         if (!_campaign.TryGetCampaign(out var campaign) || !_planets.TryGetPhysicalLocation(target, out var planet, out _))
+            return true;
+        // Admin debugging: an active admin's attack is never cancelled, peace included.
+        if (TryComp<ActorComponent>(actor, out var player) && _admins.HasAdminFlag(player.PlayerSession, AdminFlags.Admin))
             return true;
         if (_identity.TryGetIdentity(actor, out _, out _))
         {

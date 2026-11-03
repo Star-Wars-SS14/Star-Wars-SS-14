@@ -392,7 +392,7 @@ public sealed partial class SWGlobalWarMapControl : Control
         // The engine shows a control's tooltip once per visit and keeps it while the mouse stays on the control, which
         // here is the whole chart: the first planet's name hung on after the mouse left it or moved to another one.
         if (planet != _hovered || route != _hoveredRoute)
-            UserInterfaceManager.HideTooltipFor(this);
+            HideTooltip();
         _hovered = planet;
         _hoveredRoute = route;
         DefaultCursorShape = planet != null || _marketState != null && _hoveredRoute != null ? CursorShape.Hand : CursorShape.Arrow;

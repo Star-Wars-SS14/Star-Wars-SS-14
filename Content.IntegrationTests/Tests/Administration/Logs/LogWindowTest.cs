@@ -37,11 +37,26 @@ public sealed class LogWindowTest : InteractionTest
         var refresh = logWindow.Logs.RefreshButton;
         var cont = logWindow.Logs.LogsContainer;
 
+        // The log is saved and queried on the database thread in real time, which a fixed number of ticks does not
+        // wait for. Press refresh until the log shows up, instead of failing when the database answers late.
+        async Task<AdminLogLabel[]> RefreshUntilFound()
+        {
+            var result = Array.Empty<AdminLogLabel>();
+            for (var attempt = 0; attempt < 20 && result.Length == 0; attempt++)
+            {
+                await ClickControl(refresh);
+                await RunTicks(5);
+                await Task.Delay(100);
+                await RunTicks(5);
+                result = cont.Children.Where(x => x.Visible && x is AdminLogLabel).Cast<AdminLogLabel>().ToArray();
+            }
+
+            return result;
+        }
+
         // Search for the log we added earlier.
         await Client.WaitPost(() => search.Text = guid.ToString());
-        await ClickControl(refresh);
-        await RunTicks(5);
-        var searchResult = cont.Children.Where(x => x.Visible && x is AdminLogLabel).Cast<AdminLogLabel>().ToArray();
+        var searchResult = await RefreshUntilFound();
         Assert.That(searchResult.Length, Is.EqualTo(1));
         Assert.That(searchResult[0].Log.Message, Contains.Substring($" test log 1: {guid}"));
 
@@ -51,9 +66,7 @@ public sealed class LogWindowTest : InteractionTest
 
         // Update the search and refresh
         await Client.WaitPost(() => search.Text = guid.ToString());
-        await ClickControl(refresh);
-        await RunTicks(5);
-        searchResult = cont.Children.Where(x => x.Visible && x is AdminLogLabel).Cast<AdminLogLabel>().ToArray();
+        searchResult = await RefreshUntilFound();
         Assert.That(searchResult.Length, Is.EqualTo(1));
         Assert.That(searchResult[0].Log.Message, Contains.Substring($" test log 2: {guid}"));
     }

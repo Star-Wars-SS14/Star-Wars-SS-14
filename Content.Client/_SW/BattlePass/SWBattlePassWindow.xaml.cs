@@ -620,7 +620,7 @@ public sealed partial class SWBattlePassWindow : SWTerminalWindow
         }
 
         var bigName = RewardName(reward);
-        BigName.Text = bigName.Length == 0 ? bigName : char.ToUpper(bigName[0], CultureInfo.GetCultureInfo("ru-RU")) + bigName[1..];
+        BigName.Text = Capitalized(bigName);
         BigLeft.Text = goalTier > tier
             ? Loc.GetString("sw-battlepass-big-left", ("left", goalTier - tier))
             : Loc.GetString("sw-battlepass-big-tier");
@@ -863,7 +863,9 @@ public sealed partial class SWBattlePassWindow : SWTerminalWindow
 
     private static string Capitalized(string text)
     {
-        return text.Length == 0 ? text : char.ToUpper(text[0], CultureInfo.GetCultureInfo("ru-RU")) + text[1..];
+        // Upper-case a one-letter string, not a char: char + string compiles to a ReadOnlySpan<char>
+        // constructor that the client sandbox forbids.
+        return text.Length == 0 ? text : text[..1].ToUpper(CultureInfo.GetCultureInfo("ru-RU")) + text[1..];
     }
 
     private static string RarityWord(SWCosmeticRarity rarity)

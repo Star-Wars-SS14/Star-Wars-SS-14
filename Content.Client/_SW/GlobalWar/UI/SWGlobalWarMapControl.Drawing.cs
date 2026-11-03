@@ -5,6 +5,7 @@ using Content.Shared._SW.GlobalWar;
 using Content.Shared.CCVar;
 using Robust.Client.GameObjects;
 using Robust.Client.Graphics;
+using Robust.Client.Utility;
 using Robust.Shared.ContentPack;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Utility;
@@ -213,6 +214,8 @@ public sealed partial class SWGlobalWarMapControl
 
         var colours = new[] { new Rgba32(62, 155, 224), new Rgba32(224, 29, 30), new Rgba32(142, 151, 168) };
         using var image = new Image<Rgba32>(_spaceImage.Width, _spaceImage.Height);
+        // The sandbox forbids the Image<T> pixel getter, so read the source through its span.
+        var space = _spaceImage.GetPixelSpan();
         for (var py = 0; py < image.Height; py++)
         for (var px = 0; px < image.Width; px++)
         {
@@ -229,7 +232,7 @@ public sealed partial class SWGlobalWarMapControl
                 alpha = Math.Clamp(strength[x, y] / .34f, 0, 1) * 80f / 255f;
             }
 
-            var under = _spaceImage[px, py];
+            var under = space[py * _spaceImage.Width + px];
             image[px, py] = new Rgba32(
                 (byte) (under.R + (paint.R - under.R) * alpha),
                 (byte) (under.G + (paint.G - under.G) * alpha),

@@ -951,19 +951,6 @@ entities:
     - type: Transform
       pos: 11.5,20.5
       parent: 1
-- proto: ButtonFrameCautionSecurity
-  entities:
-  - uid: 15
-    components:
-    - type: Transform
-      pos: 0.5,9.5
-      parent: 1
-  - uid: 16
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: -0.5,7.5
-      parent: 1
 - proto: ButtonFrameJanitor
   entities:
   - uid: 17
@@ -10328,23 +10315,6 @@ entities:
       canCollide: False
     - type: InsideEntityStorage
       storage: 714
-- proto: SignalButton
-  entities:
-  - uid: 724
-    components:
-    - type: Transform
-      rot: 1.5707963267948966 rad
-      pos: -0.5,7.5
-      parent: 1
-    - type: Fixtures
-      fixtures: {}
-  - uid: 725
-    components:
-    - type: Transform
-      pos: 0.5,9.5
-      parent: 1
-    - type: Fixtures
-      fixtures: {}
 - proto: SignalSwitch
   entities:
   - uid: 726

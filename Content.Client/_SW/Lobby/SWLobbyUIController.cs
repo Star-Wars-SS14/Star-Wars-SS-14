@@ -109,6 +109,14 @@ public sealed class SWLobbyUIController : UIController, IOnStateEntered<LobbySta
     /// <summary>The cover stretch moves the sword on screens that are not 16:9, so it is measured every frame.</summary>
     private void Place(LobbyGui gui)
     {
+        // The character setup takes the whole screen, as in the base game. The column kept its fixed width beside it,
+        // so the base game's rule left it shown on wide screens, over the setup's tabs and its close button.
+        if (gui.CharacterSetupState.Visible)
+        {
+            gui.RightSide.Visible = false;
+            return;
+        }
+
         var root = gui.Size;
         var small = root.Y < SmallRootHeight;
         var narrow = root.X < NarrowRootWidth;

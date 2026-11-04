@@ -5,7 +5,7 @@ meta:
   forkId: CorvaxStarWars
   forkVersion: 2bc115ee446799d556395422c4c702d0ee3f5304
   time: 01/17/2026 06:01:15
-  entityCount: 50707
+  entityCount: 50708
 maps:
 - 1
 grids:
@@ -200795,38 +200795,6 @@ entities:
       parent: 2
 - proto: Dresser
   entities:
-  - uid: 31866
-    components:
-    - type: Transform
-      pos: -68.5,-218.5
-      parent: 2
-  - uid: 31867
-    components:
-    - type: Transform
-      pos: -71.5,-218.5
-      parent: 2
-  - uid: 31868
-    components:
-    - type: Transform
-      pos: -73.5,-218.5
-      parent: 2
-  - uid: 31869
-    components:
-    - type: Transform
-      pos: -100.5,-222.5
-      parent: 2
-  - uid: 31870
-    components:
-    - type: Transform
-      pos: 13.5,-174.5
-      parent: 2
-  - uid: 31871
-    components:
-    - type: Transform
-      pos: -52.5,-152.5
-      parent: 2
-- proto: DresserFilled
-  entities:
   - uid: 5246
     components:
     - type: Transform
@@ -200947,6 +200915,38 @@ entities:
           occludes: True
           ents:
           - 5473
+  - uid: 31866
+    components:
+    - type: Transform
+      pos: -68.5,-218.5
+      parent: 2
+  - uid: 31867
+    components:
+    - type: Transform
+      pos: -71.5,-218.5
+      parent: 2
+  - uid: 31868
+    components:
+    - type: Transform
+      pos: -73.5,-218.5
+      parent: 2
+  - uid: 31869
+    components:
+    - type: Transform
+      pos: -100.5,-222.5
+      parent: 2
+  - uid: 31870
+    components:
+    - type: Transform
+      pos: 13.5,-174.5
+      parent: 2
+  - uid: 31871
+    components:
+    - type: Transform
+      pos: -52.5,-152.5
+      parent: 2
+- proto: DresserFilled
+  entities:
   - uid: 31872
     components:
     - type: Transform
@@ -298014,6 +298014,13 @@ entities:
     components:
     - type: Transform
       pos: -37.5,13.5
+      parent: 2
+- proto: SWSpawnPointNeutralBartenderLJ
+  entities:
+  - uid: 50708
+    components:
+    - type: Transform
+      pos: 114.5,-161.5
       parent: 2
 - proto: SWSpawnPointRepublicCaptainLJ
   entities:

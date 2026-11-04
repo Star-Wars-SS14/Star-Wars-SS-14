@@ -261,7 +261,7 @@ public sealed partial class SWLoadoutWindow : SWTerminalWindow
                 order = hint.Order;
             }
 
-            var row = new SWLoadoutRow(_loadouts.GetFirstOrNull(item), _loadouts.GetName(item), CostOf(item), isSelected, Accent, reason);
+            var row = new SWLoadoutRow(IconOf(item), _loadouts.GetName(item), CostOf(item), isSelected, Accent, reason);
             SetUpHover(row, group, item, reason != null);
             row.OnPressed += _ => Press(group, item, isSelected);
 
@@ -341,9 +341,18 @@ public sealed partial class SWLoadoutWindow : SWTerminalWindow
 
     private string DescriptionOf(LoadoutPrototype item)
     {
-        return _loadouts.GetFirstOrNull(item) is { } entity && _proto.TryIndex(entity, out var entityProto)
+        return IconOf(item) is { } entity && _proto.TryIndex(entity, out var entityProto)
             ? entityProto.Description
             : string.Empty;
+    }
+
+    /// <summary>
+    /// The entity shown for a loadout: its <see cref="LoadoutPrototype.DummyEntity"/>, which <c>GetName</c> already uses,
+    /// or its only item. A loadout of several items, like a robe with its hood, needs the dummy to get an icon.
+    /// </summary>
+    private EntProtoId? IconOf(LoadoutPrototype item)
+    {
+        return item.DummyEntity ?? _loadouts.GetFirstOrNull(item);
     }
 
     private void SetUpHover(SWLoadoutRow row, LoadoutGroupPrototype group, LoadoutPrototype item, bool closed)

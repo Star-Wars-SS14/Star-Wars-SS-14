@@ -9,8 +9,10 @@
 - type: loadout
   id: SWJediCoat
   name: Плащ джедая
+  dummyEntity: SWJediCoat # keeps the coat icon and name now that the hood comes with it
   equipment:
     outerClothing: SWJediCoat
+    head: SWClothingHeadHatHoodJediCloak
 
 - type: loadout
   id: SWJediArmor1

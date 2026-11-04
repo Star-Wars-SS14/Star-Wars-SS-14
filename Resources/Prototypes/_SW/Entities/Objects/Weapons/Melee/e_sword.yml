@@ -21,11 +21,12 @@
       path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaber1.ogg
       params:
         variation: 0.250
+        volume: 5 # lightsaber1.ogg is 5 dB quieter than the stock eblade1.ogg
     activatedSoundOnHitNoDamage:
       path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaber1.ogg
       params:
         variation: 0.250
-        volume: -10
+        volume: -5
     activatedSoundOnSwing:
       path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsabermiss.ogg
       params:
@@ -44,6 +45,8 @@
   - type: ItemToggleActiveSound
     activeSound:
       path: /Audio/_SW/Weapons/Melee/Lightsaber/lightsaberhum.ogg
+      params:
+        volume: -4 # lightsaberhum.ogg is 4 dB louder than the stock ebladehum.ogg and drowned out the hits
   - type: Tag
     tags:
     - SWEnergySwordTag

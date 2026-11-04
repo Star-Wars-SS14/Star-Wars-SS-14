@@ -186,9 +186,14 @@ public sealed partial class SWSenateFinale
     /// <summary>Longest run of characters without a break; longer runs are broken onto the next line.</summary>
     private const int MaxRun = 24;
 
+    /// <summary>Combining marks kept after one base character; the rest are dropped so stacked marks stay in the line.</summary>
+    private const int MaxMarks = 3;
+
     /// <summary>
     /// Prepares server text for literal display: control and format characters become spaces or are dropped, the
-    /// text is cut to <paramref name="maxLength"/> text elements with an ellipsis, and long unbroken runs are split.
+    /// text is cut to <paramref name="maxLength"/> characters with an ellipsis, and long unbroken runs are split.
+    /// Works on <see cref="Rune"/>s (sandbox-allowed), so surrogate pairs are never split; combining marks stay with
+    /// their base character and never start a new line. Invalid lone surrogates become U+FFFD.
     /// The result is still passed through FormattedMessage.AddText, never parsed as markup.
     /// </summary>
     private static string Clean(string? text, int maxLength)
@@ -199,30 +204,43 @@ public sealed partial class SWSenateFinale
         var builder = new StringBuilder(Math.Min(text.Length, maxLength * 2));
         var run = 0;
         var count = 0;
+        var marks = 0;
         var truncated = false;
-        var elements = StringInfo.GetTextElementEnumerator(text);
-        while (elements.MoveNext())
+        foreach (var rune in text.EnumerateRunes())
         {
+            var category = Rune.GetUnicodeCategory(rune);
+            if (category is UnicodeCategory.NonSpacingMark or UnicodeCategory.SpacingCombiningMark or UnicodeCategory.EnclosingMark)
+            {
+                // A mark belongs to the previous character: kept only after a visible one, and only a few of them.
+                if (run > 0 && marks < MaxMarks)
+                {
+                    builder.Append(rune.ToString());
+                    marks++;
+                }
+
+                continue;
+            }
+
             if (count >= maxLength)
             {
                 truncated = true;
                 break;
             }
 
-            var element = elements.GetTextElement();
-            var category = CharUnicodeInfo.GetUnicodeCategory(element, 0);
-            if (char.IsWhiteSpace(element, 0) || category == UnicodeCategory.Control)
+            // Bidi overrides and other invisible format characters must not reorder or hide the line. They are dropped
+            // without touching the mark counter, so they cannot be used to stack more marks on the same character.
+            if (category == UnicodeCategory.Format)
+                continue;
+
+            if (Rune.IsWhiteSpace(rune) || category == UnicodeCategory.Control)
             {
                 if (builder.Length > 0 && builder[builder.Length - 1] != ' ' && builder[builder.Length - 1] != '\n')
                     builder.Append(' ');
                 run = 0;
+                marks = 0;
                 count++;
                 continue;
             }
-
-            // Bidi overrides and other invisible format characters must not reorder or hide the line.
-            if (category == UnicodeCategory.Format)
-                continue;
 
             if (run >= MaxRun)
             {
@@ -230,8 +248,10 @@ public sealed partial class SWSenateFinale
                 run = 0;
             }
 
-            builder.Append(element);
+            // The counter restarts only when a new base character is actually appended.
+            builder.Append(rune.ToString());
             run++;
+            marks = 0;
             count++;
         }
 

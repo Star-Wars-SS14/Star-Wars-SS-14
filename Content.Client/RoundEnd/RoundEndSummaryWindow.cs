@@ -18,6 +18,14 @@ namespace Content.Client.RoundEnd
         public bool IsSenate { get; private set; }
         private RichTextLabel? _personalHistory;
         private RichTextLabel? _personalIdentity;
+        private Button? _replayFinale;
+
+        /// <summary>Hides the outro replay once its round is over, so an old chronicle never plays in a new round.</summary>
+        public void SetFinaleReplayAvailable(bool available)
+        {
+            if (_replayFinale != null)
+                _replayFinale.Visible = available;
+        }
 
         public RoundEndSummaryWindow(string gm, string roundEnd, TimeSpan roundTimeSpan, int roundId,
             RoundEndMessageEvent.RoundEndPlayerInfo[] info, IEntityManager entityManager, SWSenateRoundHistory? history = null, Action? replayFinale = null, Action? requestPersonal = null)
@@ -57,9 +65,9 @@ namespace Content.Client.RoundEnd
             var tab = new BoxContainer { Orientation = LayoutOrientation.Vertical, Name = "Мои итоги" };
             if (replayFinale != null)
             {
-                var replay = new Button { Text = "Повторить титры", HorizontalAlignment = HAlignment.Left, Margin = new Thickness(20, 10) };
-                replay.OnPressed += _ => replayFinale();
-                tab.AddChild(replay);
+                _replayFinale = new Button { Text = "Повторить аутро", ToolTip = "Хроника созыва", HorizontalAlignment = HAlignment.Left, Margin = new Thickness(20, 10) };
+                _replayFinale.OnPressed += _ => replayFinale();
+                tab.AddChild(_replayFinale);
             }
             var scroll = new ScrollContainer { VerticalExpand = true, HorizontalExpand = true, HScrollEnabled = false, Margin = new Thickness(20) };
             var content = new BoxContainer { Orientation = LayoutOrientation.Vertical, HorizontalExpand = true, SeparationOverride = 12 };

@@ -86,31 +86,41 @@
   parent: SWBoxWood
   suffix: Лёгкий лут
   components:
-  # Sheets, blasters and magazines each roll in an orGroup: at most one of each kind, so the
-  # whole fill fits the 6x6 grid. An entry without id is the chance of getting nothing.
+  # Food, sheets, blasters and magazines each roll in an orGroup (one entry of each group), so
+  # the worst fill is 16 (blaster) + 4 (sheet stack) + 2 (magazine) + 6 (3 food) = 28 of 36
+  # cells in the 6x6 grid. An entry without id is the chance of getting nothing.
   - type: StorageFill
     contents:
     - id: FoodBreadPlainSlice
-      prob: 0.50
+      orGroup: SWLootFood
+      prob: 0.14
       maxAmount: 3
     - id: FoodCorn
-      prob: 0.50
+      orGroup: SWLootFood
+      prob: 0.14
       maxAmount: 3
     - id: DrinkWaterBottleFull
-      prob: 0.50
+      orGroup: SWLootFood
+      prob: 0.14
       maxAmount: 3
     - id: FoodPotato
-      prob: 0.50
+      orGroup: SWLootFood
+      prob: 0.14
       maxAmount: 3
     - id: FoodSnackChocolate
-      prob: 0.50
+      orGroup: SWLootFood
+      prob: 0.14
       maxAmount: 3
     - id: FoodApple
-      prob: 0.50
+      orGroup: SWLootFood
+      prob: 0.14
       maxAmount: 3
     - id: FoodOrange
-      prob: 0.50
+      orGroup: SWLootFood
+      prob: 0.14
       maxAmount: 3
+    - orGroup: SWLootFood
+      prob: 0.02
     - id: SheetGlass1
       orGroup: SWLootSheets
       prob: 0.10
@@ -224,55 +234,67 @@
   parent: SWBoxSteel
   suffix: Средний лут
   components:
-  # Sheets, blasters and magazines roll in orGroups (at most one of each kind) so the fill fits
-  # the grid. An entry without id is the chance of getting nothing.
+  # Food, sheets, blasters and magazines each roll in an orGroup (one entry of each group), so
+  # the worst fill is 16 (blaster) + 4 (sheet stack) + 2 (magazine) + 8 (4 food) = 30 of 35
+  # cells in the 7x5 grid. An entry without id is the chance of getting nothing.
   - type: StorageFill
     contents:
     - id: FoodBreadPlainSlice
-      prob: 0.40
+      orGroup: SWLootFood
+      prob: 0.14
       maxAmount: 4
     - id: FoodCorn
-      prob: 0.40
+      orGroup: SWLootFood
+      prob: 0.14
       maxAmount: 4
     - id: DrinkWaterBottleFull
-      prob: 0.40
+      orGroup: SWLootFood
+      prob: 0.14
       maxAmount: 4
     - id: FoodPotato
-      prob: 0.40
+      orGroup: SWLootFood
+      prob: 0.14
       maxAmount: 4
     - id: FoodSnackChocolate
-      prob: 0.40
+      orGroup: SWLootFood
+      prob: 0.14
       maxAmount: 4
     - id: FoodApple
-      prob: 0.40
+      orGroup: SWLootFood
+      prob: 0.14
       maxAmount: 4
     - id: FoodOrange
-      prob: 0.50
+      orGroup: SWLootFood
+      prob: 0.14
       maxAmount: 4
+    - orGroup: SWLootFood
+      prob: 0.02
     - id: SheetGlass10
       orGroup: SWLootSheets
-      prob: 0.20
+      prob: 0.10
       maxAmount: 2
     - id: SheetSteel10
       orGroup: SWLootSheets
-      prob: 0.20
+      prob: 0.10
       maxAmount: 2
     - id: SheetRGlass1
       orGroup: SWLootSheets
-      prob: 0.20
+      prob: 0.10
       maxAmount: 5
     - id: SheetPGlass1
       orGroup: SWLootSheets
-      prob: 0.20
+      prob: 0.10
       maxAmount: 5
     - id: SheetPlasteel1
       orGroup: SWLootSheets
-      prob: 0.20
+      prob: 0.10
       maxAmount: 5
     - id: SheetPlasma1
       orGroup: SWLootSheets
-      prob: 0.20
+      prob: 0.10
       maxAmount: 5
+    - orGroup: SWLootSheets
+      prob: 0.40
     - id: SWE1BlasterRifle
       orGroup: SWLootGuns
       prob: 0.05
@@ -373,43 +395,62 @@
   parent: SWBoxSteeldouble
   suffix: Тяжёлый лут
   components:
-  # Blasters and magazines roll in orGroups (at most one of each kind) so the fill fits
-  # the grid. An entry without id is the chance of getting nothing.
+  # Sheets roll in three orGroups (glass, uranium, metals) and each kind stacks into one 2x2
+  # stack; blasters and magazines roll in orGroups too. The worst fill is 12 (3 sheet stacks)
+  # + 16 (blaster) + 6 (3 magazines) = 34 cells, the grid has 63 (double box) or 64 (big box).
+  # An entry without id is the chance of getting nothing.
   - type: StorageFill
     contents:
     - id: SheetGlass
-      prob: 0.25
-      maxAmount: 1
-    - id: SheetSteel
-      prob: 0.25
+      orGroup: SWLootGlass
+      prob: 0.17
       maxAmount: 1
     - id: SheetRGlass1
-      prob: 0.25
+      orGroup: SWLootGlass
+      prob: 0.17
       maxAmount: 20
     - id: SheetPGlass1
-      prob: 0.25
+      orGroup: SWLootGlass
+      prob: 0.17
       maxAmount: 20
-    - id: SheetPlasteel10
-      prob: 0.25
-      maxAmount: 2
-    - id: SheetPlasma10
-      prob: 0.25
-      maxAmount: 2
     - id: SheetRPGlass1
-      prob: 0.25
+      orGroup: SWLootGlass
+      prob: 0.17
       maxAmount: 6
+    - orGroup: SWLootGlass
+      prob: 0.32
     - id: SheetUGlass1
-      prob: 0.25
+      orGroup: SWLootUranium
+      prob: 0.19
       maxAmount: 6
     - id: SheetRUGlass1
-      prob: 0.25
-      maxAmount: 6
-    - id: SheetPlastic1
-      prob: 0.25
+      orGroup: SWLootUranium
+      prob: 0.19
       maxAmount: 6
     - id: SheetUranium1
-      prob: 0.25
+      orGroup: SWLootUranium
+      prob: 0.19
       maxAmount: 6
+    - orGroup: SWLootUranium
+      prob: 0.43
+    - id: SheetSteel
+      orGroup: SWLootMetals
+      prob: 0.17
+      maxAmount: 1
+    - id: SheetPlasteel10
+      orGroup: SWLootMetals
+      prob: 0.17
+      maxAmount: 2
+    - id: SheetPlasma10
+      orGroup: SWLootMetals
+      prob: 0.17
+      maxAmount: 2
+    - id: SheetPlastic1
+      orGroup: SWLootMetals
+      prob: 0.17
+      maxAmount: 6
+    - orGroup: SWLootMetals
+      prob: 0.32
     - id: SWP301Destroyer
       orGroup: SWLootGuns
       prob: 0.40
@@ -435,43 +476,62 @@
   parent: SWBoxPlastic
   suffix: Тяжелый лут
   components:
-  # Blasters and magazines roll in orGroups (at most one of each kind) so the fill fits
-  # the grid. An entry without id is the chance of getting nothing.
+  # Sheets roll in three orGroups (glass, uranium, metals) and each kind stacks into one 2x2
+  # stack; blasters and magazines roll in orGroups too. The worst fill is 12 (3 sheet stacks)
+  # + 16 (blaster) + 6 (3 magazines) = 34 cells, the grid has 63 (double box) or 64 (big box).
+  # An entry without id is the chance of getting nothing.
   - type: StorageFill
     contents:
     - id: SheetGlass
-      prob: 0.25
-      maxAmount: 1
-    - id: SheetSteel
-      prob: 0.25
+      orGroup: SWLootGlass
+      prob: 0.17
       maxAmount: 1
     - id: SheetRGlass1
-      prob: 0.25
+      orGroup: SWLootGlass
+      prob: 0.17
       maxAmount: 20
     - id: SheetPGlass1
-      prob: 0.25
+      orGroup: SWLootGlass
+      prob: 0.17
       maxAmount: 20
-    - id: SheetPlasteel10
-      prob: 0.25
-      maxAmount: 2
-    - id: SheetPlasma10
-      prob: 0.25
-      maxAmount: 2
     - id: SheetRPGlass1
-      prob: 0.25
+      orGroup: SWLootGlass
+      prob: 0.17
       maxAmount: 6
+    - orGroup: SWLootGlass
+      prob: 0.32
     - id: SheetUGlass1
-      prob: 0.25
+      orGroup: SWLootUranium
+      prob: 0.19
       maxAmount: 6
     - id: SheetRUGlass1
-      prob: 0.25
-      maxAmount: 6
-    - id: SheetPlastic1
-      prob: 0.25
+      orGroup: SWLootUranium
+      prob: 0.19
       maxAmount: 6
     - id: SheetUranium1
-      prob: 0.25
+      orGroup: SWLootUranium
+      prob: 0.19
       maxAmount: 6
+    - orGroup: SWLootUranium
+      prob: 0.43
+    - id: SheetSteel
+      orGroup: SWLootMetals
+      prob: 0.17
+      maxAmount: 1
+    - id: SheetPlasteel10
+      orGroup: SWLootMetals
+      prob: 0.17
+      maxAmount: 2
+    - id: SheetPlasma10
+      orGroup: SWLootMetals
+      prob: 0.17
+      maxAmount: 2
+    - id: SheetPlastic1
+      orGroup: SWLootMetals
+      prob: 0.17
+      maxAmount: 6
+    - orGroup: SWLootMetals
+      prob: 0.32
     - id: SWP301Destroyer
       orGroup: SWLootGuns
       prob: 0.40

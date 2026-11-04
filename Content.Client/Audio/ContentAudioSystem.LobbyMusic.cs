@@ -32,6 +32,64 @@ public sealed partial class ContentAudioSystem
     private EntityUid? _senateFinaleStream;
     private bool _senateFinaleActive;
 
+    public const string SenateIntroTrack = "/Audio/_SW/Lobby/SWTOR_Eternal_Empire.ogg";
+    private EntityUid? _senateIntroStream;
+    private bool _senateIntroActive;
+
+    /// <summary>
+    /// Replaces lobby music with the Senate intro track from the beginning; calling it again restarts the track.
+    /// Lobby music is stopped only after the intro track has loaded, so a broken resource never leaves the lobby silent.
+    /// </summary>
+    public void StartSenateIntroMusic()
+    {
+        _audio.Stop(_senateIntroStream);
+        _senateIntroStream = null;
+        _senateIntroActive = true;
+        if (!_configManager.GetCVar(CCVars.LobbyMusicEnabled))
+            return;
+
+        if (!_resourceCache.TryGetResource(new ResPath(SenateIntroTrack), out AudioResource? _))
+        {
+            _sawmill.Warning($"Senate intro track '{SenateIntroTrack}' could not be loaded; keeping lobby music.");
+            _senateIntroActive = false;
+            ResumeLobbyMusicAfterIntro();
+            return;
+        }
+
+        var stream = _audio.PlayGlobal(SenateIntroTrack, Filter.Local(), false, SenateIntroParams())?.Entity;
+        if (stream == null)
+        {
+            _sawmill.Warning($"Senate intro track '{SenateIntroTrack}' did not start; keeping lobby music.");
+            _senateIntroActive = false;
+            ResumeLobbyMusicAfterIntro();
+            return;
+        }
+
+        EndLobbyMusic();
+        _senateIntroStream = stream;
+        FadeIn(_senateIntroStream, duration: 2f);
+    }
+
+    /// <summary>Stops the intro track. Lobby music resumes only when requested and the client is still in the lobby.</summary>
+    public void StopSenateIntroMusic(bool resumeLobby)
+    {
+        var wasActive = _senateIntroActive;
+        _senateIntroActive = false;
+        _audio.Stop(_senateIntroStream);
+        _senateIntroStream = null;
+        if (wasActive && resumeLobby)
+            ResumeLobbyMusicAfterIntro();
+    }
+
+    private AudioParams SenateIntroParams() =>
+        _lobbySoundtrackParams.WithVolume(_lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(_configManager.GetCVar(CCVars.LobbyMusicVolume)));
+
+    private void ResumeLobbyMusicAfterIntro()
+    {
+        if (_senateIntroStream == null && _state.CurrentState is LobbyState)
+            StartLobbyMusic();
+    }
+
     public void StartSenateFinaleMusic()
     {
         StopSenateFinaleMusic();
@@ -121,6 +179,7 @@ public sealed partial class ContentAudioSystem
                 StartLobbyMusic();
                 break;
             default:
+                StopSenateIntroMusic(false);
                 EndLobbyMusic();
                 break;
         }
@@ -129,11 +188,20 @@ public sealed partial class ContentAudioSystem
     private void OnLeave(object? sender, PlayerEventArgs args)
     {
         StopSenateFinaleMusic();
+        StopSenateIntroMusic(false);
         EndLobbyMusic();
     }
 
     private void LobbyMusicVolumeCVarChanged(float volume)
     {
+        if (_senateIntroStream is { } intro)
+        {
+            var target = _lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(volume);
+            if (_fadingIn.TryGetValue(intro, out var fade))
+                _fadingIn[intro] = (fade.VolumeChange, target);
+            else
+                _audio.SetVolume(intro, target);
+        }
         if (_senateFinaleStream is { } finale)
         {
             var target = _lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(volume);
@@ -158,6 +226,19 @@ public sealed partial class ContentAudioSystem
 
     private void LobbyMusicCVarChanged(bool musicEnabled)
     {
+        if (!musicEnabled)
+        {
+            _audio.Stop(_senateIntroStream);
+            _senateIntroStream = null;
+        }
+
+        if (musicEnabled && _senateIntroActive)
+        {
+            // Music re-enabled mid-intro: play the intro track rather than the lobby playlist.
+            StartSenateIntroMusic();
+            return;
+        }
+
         if (musicEnabled && _state.CurrentState is LobbyState)
         {
             StartLobbyMusic();
@@ -181,6 +262,12 @@ public sealed partial class ContentAudioSystem
         }
 
         EndLobbyMusic();
+        if (_senateIntroActive)
+        {
+            _lobbyPlaylist = playlist;
+            return;
+        }
+
         StartLobbyMusic(playlistChangedEvent.Playlist);
     }
 

@@ -1,0 +1,26 @@
+{
+  "_comment": "Weights for Tools/_SW/ci_shard.py, in seconds of run time. Classes not listed weigh seconds_per_test per [Test]/[TestCase] plus seconds_per_case_source per [TestCaseSource]. Measured values come from local TRX runs on the dev PC (2026-11); replace them with CI numbers when known. Classes in 'heavy' go to different shards first.",
+  "seconds_per_test": 2,
+  "seconds_per_case_source": 10,
+  "classes": {
+    "PostMapInitTest": 975,
+    "GlobalWarEconomyLongRunTest": 755,
+    "GlobalWarRespawnTest": 525,
+    "GlobalWarEconomyIntegrationTest": 225,
+    "GlobalWarFleetCampaignTest": 210,
+    "GlobalWarSpawnTest": 145,
+    "GlobalWarLandingTest": 85,
+    "GlobalWarAdmissionTest": 40,
+    "GlobalWarWorldTest": 40,
+    "EntityTest": 150,
+    "PrototypeSaveTest": 60,
+    "DummyIconTest": 40,
+    "SaveLoadMapTest": 30
+  },
+  "heavy": [
+    "PostMapInitTest",
+    "GlobalWarEconomyLongRunTest",
+    "GlobalWarRespawnTest",
+    "GlobalWarEconomyIntegrationTest"
+  ]
+}

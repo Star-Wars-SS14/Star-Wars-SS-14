@@ -12,10 +12,20 @@ jobs:
   build:
     if: github.actor != 'IanComradeBot' && github.event.pull_request.draft == false
     strategy:
+      fail-fast: false #SW: every shard reports its own failures
       matrix:
         os: [ubuntu-latest]
+        #SW start: Content.IntegrationTests run in shards, each its own testhost with its own 20-minute
+        # PoolManagerTestEventHandler limit. Tools/_SW/ci_shard.py picks the classes; keep this list 0..SW_SHARD_COUNT-1.
+        shard: [0, 1, 2, 3]
+        #SW end
 
     runs-on: ${{ matrix.os }}
+
+    #SW start
+    env:
+      SW_SHARD_COUNT: 4
+    #SW end
 
     steps:
     - name: Checkout Master
@@ -38,6 +48,11 @@ jobs:
       with:
         dotnet-version: 9.0.x
 
+    #SW start
+    - name: Check test shards
+      run: python3 Tools/_SW/ci_shard.py --count "$SW_SHARD_COUNT" --check
+    #SW end
+
     - name: Install dependencies
       run: dotnet restore
 
@@ -45,18 +60,34 @@ jobs:
       run: dotnet build --configuration DebugOpt --no-restore /m
 
     - name: Run Content.Tests
+      if: matrix.shard == 0 #SW
       run: dotnet test --no-build --configuration DebugOpt Content.Tests/Content.Tests.csproj -- NUnit.ConsoleOut=0
 
-    - name: Run Content.IntegrationTests
+    #SW start: the real test list from the build must split cleanly too; one shard checking it is enough
+    - name: Check test shards against the built test list
+      if: matrix.shard == 0
+      run: |
+        dotnet vstest bin/Content.IntegrationTests/Content.IntegrationTests.dll --ListFullyQualifiedTests --ListTestsTargetPath:"$RUNNER_TEMP/integration-tests.txt"
+        python3 Tools/_SW/ci_shard.py --count "$SW_SHARD_COUNT" --check --tests "$RUNNER_TEMP/integration-tests.txt"
+    #SW end
+
+    - name: Run Content.IntegrationTests (shard ${{ matrix.shard }}) #SW
       shell: pwsh
       run: |
         $env:DOTNET_gcServer=1
-        dotnet test --no-build --configuration DebugOpt Content.IntegrationTests/Content.IntegrationTests.csproj -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed
+        #SW start
+        $filter = python3 Tools/_SW/ci_shard.py --index ${{ matrix.shard }} --count $env:SW_SHARD_COUNT
+        if ($LASTEXITCODE -ne 0 -or -not $filter) { throw "ci_shard.py failed" }
+        dotnet test --no-build --configuration DebugOpt Content.IntegrationTests/Content.IntegrationTests.csproj --filter "$filter" -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed
+        #SW end
   ci-success:
     name: Build & Test Debug
     needs:
       - build
+    #SW start: a skipped required check counts as passed, so run always and fail when any shard failed
+    if: always()
+    #SW end
     runs-on: ubuntu-latest
     steps:
       - name: CI succeeded
-        run: exit 0
+        run: exit ${{ (needs.build.result == 'failure' || needs.build.result == 'cancelled') && 1 || 0 }} #SW

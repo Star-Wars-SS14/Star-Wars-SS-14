@@ -92,6 +92,10 @@
         true
       NavClimb: !type:Bool
         true
+      # Doors with an access reader, even an empty one, are only routed through with prying.
+      # The droid cannot pry; SWDroidDoorNavigation opens them with the faction chip's access.
+      NavPry: !type:Bool
+        true
       NavSmash: !type:Bool
         true
   - type: SWDroidCommandable

@@ -302,6 +302,11 @@ public sealed partial class SWGalacticMapControl : Control
             _lastClickWorld = null;
             return;
         }
+        if (HitCoincidentTraffic(position) is { } flowPosition)
+        {
+            CoincidentTrafficSelected?.Invoke(flowPosition);
+            return;
+        }
         if (HitTestWorld(position) is { } world)
         {
             if (ActivateSystemGroup(world)) return;
@@ -473,10 +478,19 @@ public sealed partial class SWGalacticMapControl : Control
             return;
         }
         if (_pointer is { } medicalPointer && MedicalSupplyToolTip(medicalPointer) is { } medicalTip) { ToolTip = medicalTip; return; }
+        if (_pointer is { } trafficPointer && HitCoincidentTraffic(trafficPointer) is { } trafficPosition)
+        {
+            var count = CoincidentFlows(_economy, trafficPosition).Select(flow => (flow.From, flow.To)).Distinct().Count();
+            ToolTip = $"Внутренние потоки: {count}";
+            DefaultCursorShape = CursorShape.Hand;
+            return;
+        }
         if (hovered == null) return;
         var world = _worlds[hovered];
         ToolTip = _markExternalLabels && !IsLocalView && !string.IsNullOrWhiteSpace(world.SystemId) && !string.IsNullOrWhiteSpace(world.SystemName)
             ? world.SystemName : world.Name;
+        if (_markExternalLabels && IsLocalView && !IsExternalWorld(world) && !SWStatisticsWorldArt.CanDraw(world, false))
+            ToolTip += "\nИзображение недоступно";
         if (_financeSectors != null && world.Sector is { } financeSector && _financeSectors.TryGetValue(financeSector.Id, out var finance))
             ToolTip += $"\n{finance.Name}\nНалоговые поступления с начала дня {finance.Tax:N0} кр";
         if (_economyMapMode >= 0 && EconomySectorSummary(world.Id) is { } economySummary)
@@ -713,13 +727,15 @@ public sealed partial class SWGalacticMapControl : Control
                     handle.DrawLine(p - new Vector2(glow, 0), p + new Vector2(glow, 0), star);
                     handle.DrawLine(p - new Vector2(0, glow), p + new Vector2(0, glow), star);
                 }
-                else if (SWStatisticsWorldArt.CanDraw(world)) SWStatisticsWorldArt.Draw(handle, world, glyph, false, worldReveal);
+                else if (SWStatisticsWorldArt.CanDraw(world, false)) SWStatisticsWorldArt.Draw(handle, world, glyph, false, worldReveal);
                 else
                 {
-                    handle.DrawRect(glyph, SWConsoleStyle.Navigation);
-                    handle.DrawRect(glyph, color, false);
-                    handle.DrawLine(glyph.TopLeft, glyph.BottomRight, color);
-                    handle.DrawLine(new Vector2(glyph.Left, glyph.Bottom), new Vector2(glyph.Right, glyph.Top), color);
+                    // A missing texture remains an identifiable, selectable object on the map.
+                    handle.DrawRect(glyph, SWConsoleStyle.Navigation.WithAlpha(worldReveal));
+                    handle.DrawRect(glyph, SWConsoleStyle.Warn.WithAlpha(worldReveal), false);
+                    var mark = "!";
+                    var size = handle.GetDimensions(SWConsoleStyle.Small, mark, UIScale);
+                    handle.DrawString(SWConsoleStyle.Small, p - size / 2, mark, UIScale, SWConsoleStyle.Warn.WithAlpha(worldReveal));
                 }
                 if (selected || hover)
                 {
@@ -749,6 +765,7 @@ public sealed partial class SWGalacticMapControl : Control
             if (hub) handle.DrawCircle(p, 2 * UIScale, Color.ToSrgb(color));
         }
         if (reveal < .85f) return;
+        DrawCoincidentTraffic(handle);
         if (SectorSchemeVisible) DrawSectorSchemeLabels(handle);
         else DrawPoliticalLabels(handle);
         foreach (var (id, box) in _labels)
@@ -790,8 +807,16 @@ public sealed partial class SWGalacticMapControl : Control
         _labelsDirty = true;
     }
 
+    private bool WorldArtUnavailable(SWGalacticMapWorld world) =>
+        _markExternalLabels && IsLocalView && !IsExternalWorld(world) && !SWStatisticsWorldArt.CanDraw(world, false);
+
+    public SWGalacticMapWorld[] MissingWorldImages() => !_markExternalLabels || !IsLocalView
+        ? Array.Empty<SWGalacticMapWorld>()
+        : _map.Worlds.Where(WorldArtUnavailable).OrderBy(world => world.Name).ThenBy(world => world.Id).ToArray();
+
     private string FinanceLabel(SWGalacticMapWorld world)
     {
+        if (WorldArtUnavailable(world)) return $"{world.Name} — изображение недоступно";
         if (_markExternalLabels && !IsLocalView && !string.IsNullOrWhiteSpace(world.SystemId) && !string.IsNullOrWhiteSpace(world.SystemName))
             return world.SystemName;
         if (_financeSectors != null && world.Anchor && world.Sector is { } sector
@@ -810,7 +835,9 @@ public sealed partial class SWGalacticMapControl : Control
         _labelScale = UIScale;
         _labelsDirty = false;
         var points = _map.Worlds.Where(DisplayWorldGlyph).ToDictionary(w => w.Id, w => MapToLocal(w.Position));
+        var hasUnavailable = _map.Worlds.Any(WorldArtUnavailable);
         foreach (var world in _map.Worlds.Where(DisplayWorldGlyph).OrderByDescending(w => w.Id == _selectedWorld || w.Id == _hover)
+                     .ThenByDescending(WorldArtUnavailable)
                      .ThenByDescending(w => _markExternalLabels && IsExternalWorld(w))
                      .ThenByDescending(w => w.LabelPriority)
                      .ThenByDescending(w => w.Anchor).ThenByDescending(w => _hubs.Contains(w.Id)))
@@ -820,7 +847,7 @@ public sealed partial class SWGalacticMapControl : Control
             var size = handle.GetDimensions(SWConsoleStyle.Small, FinanceLabel(world), UIScale) / UIScale;
             // A selected label must stay under the pointer between the two clicks.
             // ViewUpdated clears old bounds when zoom, pan or window size changes.
-            if (_financeSectors == null && (world.Id == _selectedWorld || world.Id == _hover) && previous.TryGetValue(world.Id, out var prior)
+            if (_financeSectors == null && !hasUnavailable && (world.Id == _selectedWorld || world.Id == _hover) && previous.TryGetValue(world.Id, out var prior)
                 && !OverlayIntersectsLabel(prior)
                 && !_sectorSchemeLabels.Any(l => l.Box.Intersects(prior))
                 && !_labels.Any(l => l.Box.Intersects(new UIBox2(prior.Left - 4, prior.Top - 3, prior.Right + 4, prior.Bottom + 3))))
@@ -839,7 +866,7 @@ public sealed partial class SWGalacticMapControl : Control
             {
                 var box = UIBox2.FromDimensions(point + new Vector2(x, y), size);
                 if (box.Left < 4 || box.Right > Width - 4 || box.Top < 4 || box.Bottom > Height - 4) continue;
-                if (OverlayIntersectsLabel(box)) continue;
+                if (OverlayIntersectsLabel(box) || CoincidentTrafficIntersects(box)) continue;
                 if (_politicalLabels.Any(l => l.Box.Intersects(box))) continue;
                 if (_sectorSchemeLabels.Any(l => l.Box.Intersects(box))) continue;
                 if (_labels.Any(l => l.Box.Intersects(new UIBox2(box.Left - 4, box.Top - 3, box.Right + 4, box.Bottom + 3)))) continue;
@@ -853,7 +880,7 @@ public sealed partial class SWGalacticMapControl : Control
                 best = box;
                 cost = score;
             }
-            // Declutter a crowded overview. Hover and zoom reveal the same world's full label.
+            // If a missing-image label cannot fit, the named error list remains available.
             if (best is { } bounds) _labels.Add((world.Id, bounds));
         }
     }

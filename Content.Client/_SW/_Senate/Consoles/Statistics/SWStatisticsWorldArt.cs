@@ -14,20 +14,109 @@ public static class SWStatisticsWorldArt
     // Only IDs and variants explicitly confirmed for this map belong here.
     private static readonly Dictionary<string, string> WorldVariants = new()
     {
-        ["alderaan"] = "continental",
-        ["hoth"] = "ice",
+        ["ilum"] = "ice",
+        ["dantooine"] = "continental",
+        ["ord_mantell"] = "archipelago",
+        ["taris"] = "neutral-obscured",
         ["korriban"] = "arid",
-        ["tatooine"] = "arid",
+        ["ziost"] = "ice",
+        ["begeren"] = "neutral-obscured",
+        ["ashas_ree"] = "continental",
+        ["athiss"] = "neutral-obscured",
         ["dromund_kaas"] = "continental",
-        ["dac"] = "archipelago",
+        ["dromund_ixin"] = "neutral-obscured",
         ["dromund_kalakar"] = "gas",
+        ["dromund_fels"] = "arid",
+        ["dromund_tyne"] = "neutral-obscured",
+        ["voss"] = "neutral-obscured",
+        ["coruscant"] = "urban-coruscant",
+        ["brentaal"] = "arid",
+        ["tython"] = "continental",
+        ["alderaan"] = "continental",
+        ["kuat"] = "continental",
+        ["balmorra"] = "neutral-obscured",
+        ["corellia"] = "continental",
+        ["onderon"] = "neutral-obscured",
+        ["kashyyyk"] = "forest-kashyyyk",
+        ["quesh"] = "toxic-swamp-quesh",
+        ["nal_hutta"] = "swamp-hutta",
+        ["bothawui"] = "continental",
+        ["tatooine"] = "arid",
+        ["ryloth"] = "arid",
+        ["abregado_rae"] = "neutral-obscured",
+        ["thyferra"] = "neutral-obscured",
+        ["sullust"] = "volcanic",
+        ["eriadu"] = "neutral-obscured",
+        ["hoth"] = "ice",
+        ["belsavis"] = "ice-rifts-belsavis",
+        ["chandrila"] = "neutral-obscured",
+        ["denon"] = "neutral-obscured",
+        ["fondor"] = "neutral-obscured",
+        ["anaxes"] = "neutral-obscured",
+        ["telos"] = "neutral-obscured",
+        ["dac"] = "archipelago",
+        ["ithor"] = "continental",
+        ["bonadan"] = "neutral-obscured",
+        ["ruusan"] = "neutral-obscured",
+        ["duro"] = "neutral-obscured",
+        ["rendili"] = "neutral-obscured",
+        ["corulag"] = "neutral-obscured",
+        ["ralltiir"] = "neutral-obscured",
+        ["carida"] = "neutral-obscured",
+        ["contruum"] = "neutral-obscured",
+        ["yag_dhul"] = "neutral-obscured",
+        ["duneeden"] = "neutral-obscured",
+        ["utrost"] = "neutral-obscured",
+        ["quenk"] = "neutral-obscured",
+        ["ashla"] = "neutral-obscured",
+        ["bogan"] = "neutral-obscured",
+        ["delaya"] = "neutral-obscured",
+        ["selonia"] = "neutral-obscured",
+        ["drall"] = "neutral-obscured",
+        ["talus"] = "neutral-obscured",
+        ["tralus"] = "continental",
+        ["monadin"] = "neutral-obscured",
+        ["bormea"] = "neutral-obscured",
+        ["nopces"] = "neutral-obscured",
+        ["iseno"] = "neutral-obscured",
+        ["kommendor"] = "neutral-obscured",
+        ["procopia"] = "archipelago",
+        ["achillea"] = "neutral-obscured",
+        ["aleron"] = "neutral-obscured",
+        ["anthus"] = "neutral-obscured",
+        ["agomar"] = "neutral-obscured",
+        ["belloria"] = "neutral-obscured",
+        ["adras"] = "neutral-obscured",
+        ["tavris"] = "neutral-obscured",
+        ["artus_prime"] = "neutral-obscured",
+        ["kestos_minor"] = "neutral-obscured",
+        ["anobis"] = "continental",
+        ["aleen"] = "neutral-obscured",
+        ["bestin"] = "neutral-obscured",
+        ["gravlex_med"] = "continental",
+        ["alurion"] = "neutral-obscured",
+        ["pammant"] = "neutral-obscured",
+        ["pinperu"] = "neutral-obscured",
+        ["kothlis"] = "archipelago",
+        ["krant"] = "neutral-obscured",
+        ["mytaranor"] = "neutral-obscured",
+        ["randon"] = "neutral-obscured",
+        ["arthon"] = "neutral-obscured",
+        ["orocco"] = "neutral-obscured",
+        ["garnib"] = "neutral-obscured",
+        ["brodogon"] = "neutral-obscured",
+        ["belkadan"] = "continental",
+        ["sernpidal"] = "neutral-obscured",
+        ["ruuria"] = "continental",
+        ["nez_peron"] = "neutral-obscured",
+        ["taral_v"] = "continental",
     };
     private static readonly Dictionary<string, Texture?> Textures = new();
 
     public static Texture? Get(SWGalacticMapWorld? world, bool detail)
     {
         if (world == null || world.Kind is "Орбитальная станция" or "Верфи") return null;
-        if (!WorldVariants.TryGetValue(world.Id, out var variant)) return null;
+        if (!WorldVariants.TryGetValue(world.Id, out var variant)) variant = "neutral-obscured";
         var key = $"{variant}-{(detail ? 64 : 32)}";
         if (Textures.TryGetValue(key, out var cached)) return cached;
         var path = $"/Textures/_SW/Interface/Senate/Statistics/Worlds/planet-{key}.png";
@@ -37,7 +126,8 @@ public static class SWStatisticsWorldArt
         return result;
     }
 
-    public static bool CanDraw(SWGalacticMapWorld? world) => world != null;
+    public static bool CanDraw(SWGalacticMapWorld? world, bool detail = true) =>
+        world != null && (world.Kind is "Орбитальная станция" or "Верфи" || Get(world, detail) != null);
 
     private static void DrawInstallation(DrawingHandleScreen handle, UIBox2 bounds, bool shipyard, float alpha)
     {
@@ -84,10 +174,6 @@ public static class SWStatisticsWorldArt
             return;
         }
 
-        var center = (bounds.TopLeft + bounds.BottomRight) / 2;
-        var radius = System.MathF.Min(bounds.Width, bounds.Height) * 0.42f;
-        handle.DrawCircle(center, radius, Color.ToSrgb(new Color(0.12f, 0.22f, 0.28f, alpha)));
-        handle.DrawCircle(center, radius * 0.90f, Color.ToSrgb(new Color(0.32f, 0.47f, 0.51f, alpha)));
-        handle.DrawCircle(center, radius, Color.ToSrgb(new Color(0.53f, 0.70f, 0.72f, alpha)), false);
+
     }
 }

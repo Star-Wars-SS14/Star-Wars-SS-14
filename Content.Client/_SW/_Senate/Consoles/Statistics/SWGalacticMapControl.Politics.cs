@@ -150,7 +150,9 @@ public sealed partial class SWGalacticMapControl
             var size = handle.GetDimensions(SWConsoleStyle.Small, area.Label, UIScale) / UIScale;
             var p = MapToLocal(area.LabelPosition) - size / 2;
             if (p.X < 4 || p.Y < 4 || p.X + size.X > Width - 4 || p.Y + size.Y > Height - 4) continue;
-            _politicalLabels.Add((area, UIBox2.FromDimensions(p - new Vector2(5), size + new Vector2(10))));
+            var box = UIBox2.FromDimensions(p - new Vector2(5), size + new Vector2(10));
+            if (CoincidentTrafficIntersects(box)) continue;
+            _politicalLabels.Add((area, box));
         }
     }
 

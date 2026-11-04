@@ -244,7 +244,7 @@ public sealed partial class SWGalacticMapControl
                 if (!group.Any(part => SchemeContains(part, padded.TopLeft)) || !group.Any(part => SchemeContains(part, padded.BottomRight)) ||
                     !group.Any(part => SchemeContains(part, new Vector2(padded.Left, padded.Bottom))) ||
                     !group.Any(part => SchemeContains(part, new Vector2(padded.Right, padded.Top)))) continue;
-                if (_sectorSchemeLabels.Any(label => label.Box.Intersects(padded)) || OverlayIntersectsLabel(padded)) continue;
+                if (_sectorSchemeLabels.Any(label => label.Box.Intersects(padded)) || OverlayIntersectsLabel(padded) || CoincidentTrafficIntersects(padded)) continue;
                 if (_map.Worlds.Where(DisplayWorldGlyph).Any(w =>
                 {
                     var radius = w.Id == _selectedWorld ? 26f : 20f;

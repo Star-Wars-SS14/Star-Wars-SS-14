@@ -45,6 +45,7 @@ public sealed partial class SWRepublicMapBrowser
         UpdateSectorSchemeControls();
         if (_fullPlanetScreen) surface.BeginReveal();
         _planetOpen = false;
+        RefreshMissingWorldImages();
         _surfaceReturnsToPlanet = returnToPlanet;
         _surfaceReturnSystem = returnSystem;
         _surfaceReturnSector = returnSector;

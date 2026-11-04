@@ -111,6 +111,7 @@ public sealed partial class SWRepublicMapBrowser
         _route = null;
         Surface = null;
         _planetOpen = true;
+        RefreshMissingWorldImages();
         UpdateSectorSchemeControls();
         _galaxyButton.Visible = _lockedSector == null;
         _galaxyButton.Disabled = false;

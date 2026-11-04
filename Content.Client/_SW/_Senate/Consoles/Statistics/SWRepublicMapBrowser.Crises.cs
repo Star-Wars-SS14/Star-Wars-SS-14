@@ -151,7 +151,7 @@ public sealed partial class SWRepublicMapBrowser
                 {
                     if (location.Sector is { } sector) OpenSector(sector.Id);
                     else ShowGalaxy();
-                    SelectWorld(location.Id, true);
+                    SelectWorldByUser(location.Id, true);
                     SelectCrises(new[] { crisis.Id });
                 };
                 card.AddChild(open);

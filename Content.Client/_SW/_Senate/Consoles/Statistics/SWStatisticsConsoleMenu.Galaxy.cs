@@ -15,7 +15,7 @@ public sealed partial class SWStatisticsConsoleMenu
         GalaxyPanel.AddChild(_galaxy);
     }
 
-    public void SelectGalaxyWorld(string id, bool focus = false) => _galaxy.SelectWorld(id, focus);
+    public void SelectGalaxyWorld(string id, bool focus = false) => _galaxy.SelectWorldByUser(id, focus);
 
     private void RefreshGalaxy()
     {

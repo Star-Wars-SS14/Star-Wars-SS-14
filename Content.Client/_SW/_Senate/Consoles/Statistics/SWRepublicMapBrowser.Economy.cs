@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Numerics;
 using Content.Client._SW._Senate.Consoles.Economy;
 using Content.Client._SW._Senate.Economy;
 using Content.Shared._SW._Senate.Economy;
@@ -20,6 +21,9 @@ public sealed partial class SWRepublicMapBrowser
     private SWRepublicEconomyClientSystem? _economyClient;
     private readonly OptionButton _commodityPicker = new() { Name = "TrafficCommodityFilter", Filterable = true, MinWidth = 210 };
     private readonly Button _trafficToggle = SWConsoleStyle.TabButton("Потоки");
+    private readonly OptionButton _trafficScopePicker = new() { Name = "TrafficScope", MinWidth = 180 };
+    private bool _selectedSectorTrafficOnly;
+    private string? _trafficSector;
     private readonly Label _economyStatus = SWConsoleStyle.Text("Ожидание данных", SWConsoleStyle.TextDim, SWConsoleStyle.Small);
     private readonly RichTextLabel _trafficLegend = SWStatisticsText.Wrap(string.Empty, SWConsoleStyle.TextDim);
     private readonly SWStatisticsDirectionMarker _selectedFlowDirection = new() { Visible = false };
@@ -48,12 +52,30 @@ public sealed partial class SWRepublicMapBrowser
             Map.SetTrafficFilter(_commodityFilter, _showTraffic);
             Surface?.SetTrafficFilter(_commodityFilter, _showTraffic);
             RefreshEconomyStatus();
-            if (_planetOpen) RefreshDetails();
+            if (_planetOpen || _coincidentFlowPositions != null) RefreshDetails();
         };
         SWConsoleStyle.StyleTabButton(_trafficToggle, true);
         bar.AddChild(_commodityPicker);
         bar.AddChild(_trafficToggle);
-        if (_fullPlanetScreen) bar.AddChild(_selectedFlowDirection);
+        if (_fullPlanetScreen)
+        {
+            StylePicker(_trafficScopePicker);
+            _trafficScopePicker.AddItem("Все потоки", 0);
+            _trafficScopePicker.AddItem("Выбранный сектор", 1);
+            _trafficScopePicker.SelectId(0);
+            _trafficScopePicker.ToolTip = "Потоки, у которых хотя бы один конечный мир относится к выбранному сектору.";
+            _trafficScopePicker.OnItemSelected += args =>
+            {
+                _selectedSectorTrafficOnly = args.Id == 1;
+                _trafficScopePicker.SelectId(args.Id);
+                Map.SetTrafficScope(_selectedSectorTrafficOnly, _trafficSector);
+                if (_coincidentFlowPositions != null) _coincidentFlowPositions = Map.ExpandCoincidentGroups(_coincidentFlowPositions);
+                if (_coincidentFlowPositions != null) RefreshDetails();
+                else RefreshEconomyStatus();
+            };
+            bar.AddChild(_trafficScopePicker);
+            bar.AddChild(_selectedFlowDirection);
+        }
         _medicalToggle.Name = "MedicalSupplyToggle";
         _medicalToggle.Visible = !_compactEconomy && _showMedicalToggle;
         _medicalToggle.OnPressed += _ => SetMedicalSupplyVisible(!_showMedicalSupply);
@@ -157,6 +179,8 @@ public sealed partial class SWRepublicMapBrowser
         key.Focused(_focusedFlow is not { } focused ? null : view?.Flows.FirstOrDefault(f => f.Edge == focused.Edge && f.From == focused.From && f.To == focused.To && f.Good == focused.Good));
         key.Link(edge == null ? null : view?.Links.FirstOrDefault(l => l.Edge == edge));
         key.AddList(_selectedMedicalShipmentId == null ? null : view?.MedicalSupplyFlows, key.Medical);
+        var positions = _coincidentFlowPositions ?? (world != null && _worlds.TryGetValue(world, out var current) ? Map.CoincidentFlowGroup(current.Position) : null);
+        key.AddList(positions is { Length: > 0 } ? Map.CoincidentFlows(view, positions) : null, key.Flow);
         return key.Values;
     }
 
@@ -177,6 +201,7 @@ public sealed partial class SWRepublicMapBrowser
             if (_focusedFlow == null && _route == null) Map.ClearRouteHighlight();
         }
         Map.SetEconomy(view);
+        if (_coincidentFlowPositions != null) _coincidentFlowPositions = Map.ExpandCoincidentGroups(_coincidentFlowPositions);
         Surface?.SetEconomy(view?.Worlds.FirstOrDefault(w => w.World == SelectedWorldId), view?.Paused ?? false, view?.Ready ?? false);
         RefreshEconomyStatus();
         if (_fullPlanetScreen && Surface == null && _selectedCrisisIds.Length > 0)
@@ -197,14 +222,83 @@ public sealed partial class SWRepublicMapBrowser
         RefreshDetails();
     }
 
+    private void ShowCoincidentFlows(Vector2 position) => ShowCoincidentFlows(Map.CoincidentFlowGroup(position));
+
+    private void ShowCoincidentFlows(Vector2[] positions)
+    {
+        if (positions.Length == 0 || Map.CoincidentFlows(_economyView, positions).Length == 0) return;
+        _coincidentFlowPositions = positions;
+        _systemSummaryActive = false;
+        _selectedSchemeSector = null;
+        _selectedMedicalShipmentId = null;
+        SelectedWorldId = null;
+        _route = null;
+        _focusedFlow = null;
+        ClearCrisisSelection();
+        Map.SetFocusedTraffic(null, null, null, null);
+        Map.ClearWorldSelection();
+        _detailScroll?.SetScrollValue(default);
+        RefreshDetails();
+        _statisticsAtlas?.ShowDetailsWhenReady();
+    }
+
+    private void RefreshCoincidentFlows(Vector2[] positions)
+    {
+        _detailHeading.RemoveAllChildren();
+        _detail.RemoveAllChildren();
+        _detailHeading.AddChild(AtlasWrap("Внутренние потоки", SWConsoleStyle.Brass));
+        var flows = Map.CoincidentFlows(_economyView, positions);
+        if (flows.Length == 0) { Empty("Нет активных потоков"); return; }
+        foreach (var group in flows.GroupBy(flow => (flow.Edge, flow.From, flow.To)))
+        {
+            if (!_worlds.TryGetValue(group.Key.From, out var from) || !_worlds.TryGetValue(group.Key.To, out var to) ||
+                !CanReadWorldState(from) || !CanReadWorldState(to))
+            {
+                Empty("Данные о перевозках недоступны");
+                continue;
+            }
+            var edge = group.Key.Edge;
+            var open = SWConsoleStyle.TabButton($"{from.Name} → {to.Name}");
+            open.TextAlign = Label.AlignMode.Left;
+            open.OnPressed += _ =>
+            {
+                if (!Map.CoincidentFlows(_economyView, positions).Any(flow => flow.Edge == edge && flow.From == from.Id && flow.To == to.Id)) return;
+                _coincidentFlowPositions = null;
+                if (SelectEconomyRoute(edge)) _statisticsAtlas?.ShowDetailsWhenReady();
+            };
+            _detail.AddChild(open);
+            foreach (var flow in group) FlowRow(flow, string.Empty);
+        }
+    }
+
+    private void SetTrafficSector(string? sector)
+    {
+        var changed = _trafficSector != sector;
+        _trafficSector = sector;
+        _trafficScopePicker.ToolTip = sector == null ? "Выберите сектор на карте или через поиск."
+            : $"Сектор: {SectorName(sector)}. Показаны потоки с конечным миром в этом секторе.";
+        if (!_fullPlanetScreen || Map == null) return;
+        Map.SetTrafficScope(_selectedSectorTrafficOnly, sector);
+        if (_coincidentFlowPositions != null) _coincidentFlowPositions = Map.ExpandCoincidentGroups(_coincidentFlowPositions);
+        if (changed && (SelectedWorldId != null || _coincidentFlowPositions != null)) RefreshDetails();
+        else RefreshEconomyStatus();
+    }
+
     private void RefreshEconomyStatus()
     {
+        var global = _fullPlanetScreen && Surface == null && !_planetOpen && CurrentSectorId == null && CurrentSystemId == null && CurrentPoliticalSectorId == null;
+        _trafficScopePicker.Visible = global;
+        RefreshMissingWorldImages();
         _selectedFlowDirection.Visible = _fullPlanetScreen && Surface == null && _focusedFlow != null;
         _trafficLegend.Visible = _fullPlanetScreen && Surface == null && _focusedFlow != null;
         if (_trafficLegend.Visible && _focusedFlow is { } selected)
             _trafficLegend.SetMessage($"Выбранный поток: {WorldName(selected.From)} → {WorldName(selected.To)} — {GoodName(selected.Good)}", defaultColor: SWConsoleStyle.TextDim);
         _economyStatus.Text = _economyView is not { Ready: true } ? "Ожидание данных"
             : !_showTraffic ? "Потоки скрыты"
+            : global && _selectedSectorTrafficOnly && _trafficSector == null ? "Выберите сектор"
+            : global && _selectedSectorTrafficOnly && !VisibleFlows().Any(flow =>
+                _worlds.TryGetValue(flow.From, out var from) && from.Sector?.Id == _trafficSector ||
+                _worlds.TryGetValue(flow.To, out var to) && to.Sector?.Id == _trafficSector) ? "Нет потоков выбранного сектора"
             : _economyView.Paused ? "Движение приостановлено"
             : Surface != null ? (Surface.TrafficFlows.Any(f => _commodityFilter == null || f.Good == _commodityFilter)
                 ? "Местное распределение" : "Нет местных потоков выбранного товара")
@@ -239,6 +333,7 @@ public sealed partial class SWRepublicMapBrowser
         if (_surfaceSavedFlow != null && _surfaceSavedFlow.Good != next) _surfaceSavedFlow = null;
         _commodityPicker.SelectId(index + 1);
         Map.SetTrafficFilter(_commodityFilter, _showTraffic);
+        if (_coincidentFlowPositions != null) _coincidentFlowPositions = Map.ExpandCoincidentGroups(_coincidentFlowPositions);
         Map.SetEconomyMapMode(_economyMapMode, _commodityFilter);
         Surface?.SetTrafficFilter(_commodityFilter, _showTraffic);
         if (_focusedFlow != null && _focusedFlow.Good != _commodityFilter)
@@ -277,6 +372,13 @@ public sealed partial class SWRepublicMapBrowser
         }
         if (SelectedWorldId is not { } id) return;
         var world = _worlds[id];
+        if (_fullPlanetScreen && Surface == null && !_planetOpen && CurrentSectorId == null && CurrentSystemId == null && CurrentPoliticalSectorId == null &&
+            Map.CoincidentFlowGroup(world.Position).Length > 0)
+        {
+            var internalFlows = SWConsoleStyle.TabButton("Внутренние потоки");
+            internalFlows.OnPressed += _ => ShowCoincidentFlows(world.Position);
+            _detailHeading.AddChild(internalFlows);
+        }
         if (_fullPlanetScreen && !_planetOpen && Surface == null && !_financeOnly)
         {
             if (CurrentSectorId != null && HasSystem(world))
@@ -655,13 +757,13 @@ public sealed partial class SWRepublicMapBrowser
         if (world.Sector is { } owner && CurrentSectorId != owner.Id && _lockedSector == null)
         {
             var open = SWConsoleStyle.TabButton("Открыть сектор");
-            open.OnPressed += _ => { OpenSector(owner.Id); SelectWorld(world.Id); };
+            open.OnPressed += _ => { OpenSector(owner.Id); SelectWorldByUser(world.Id); };
             _detail.AddChild(open);
         }
         if (_lockedSector == null && world.Sector == null && HasSystem(world) && CurrentSystemId != world.SystemId)
         {
             var open = SWConsoleStyle.TabButton("Открыть систему");
-            open.OnPressed += _ => { if (OpenSystem(world.SystemId)) SelectWorld(world.Id); };
+            open.OnPressed += _ => { if (OpenSystem(world.SystemId)) SelectWorldByUser(world.Id); };
             _detail.AddChild(open);
         }
         if (CanReadWorldState(world) && (world.Sector != null || HasWorldEconomy(world.Id, _economyView?.Worlds.FirstOrDefault(w => w.World == world.Id))))

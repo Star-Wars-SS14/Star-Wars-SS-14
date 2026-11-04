@@ -8,6 +8,7 @@ using Content.Shared._SW._Senate.Economy;
 using Content.Shared._SW._Senate.Sectors;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
+using Robust.Shared.Input;
 using Robust.Shared.IoC;
 using Robust.Shared.Maths;
 using Robust.Shared.Prototypes;
@@ -37,12 +38,16 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
     private readonly Dictionary<string, SWTransitLinkPrototype> _transitLinks;
     private readonly SWSectorPrototype[] _sectorPrototypes;
     private readonly OptionButton _search = new() { Name = "MapSearch", Filterable = true, MinWidth = 210, PrefixMargin = false };
+    private readonly OptionButton _missingArtPicker = new() { Name = "MissingWorldImages", MinWidth = 210, PrefixMargin = false, Visible = false };
+    private SWGalacticMapWorld[] _missingWorldImages = Array.Empty<SWGalacticMapWorld>();
+    private int _missingArtKeyboardIndex = -1;
     private readonly LineEdit _searchFilter;
     private readonly Button _galaxyButton = SWConsoleStyle.TabButton("К галактике");
     private readonly Button _sectorSchemeButton = SWConsoleStyle.TabButton("Политический контроль");
     private readonly Label _sectorSchemeNotice = SWConsoleStyle.Text("Схематические границы секторов", SWConsoleStyle.TextDim, SWConsoleStyle.Small);
     private bool _showSectorScheme = true;
     private string? _selectedSchemeSector;
+    private Vector2[]? _coincidentFlowPositions;
     private readonly Label _zoom = SWConsoleStyle.Text("100%", SWConsoleStyle.TextDim, SWConsoleStyle.Small);
     private readonly Label _title = SWConsoleStyle.Text("Карта галактики", SWConsoleStyle.Brass, SWConsoleStyle.Strong);
     private readonly Button _systemShortcut = SWConsoleStyle.TabButton("Открыть систему");
@@ -184,10 +189,42 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
                 else if (!world.Overview && !string.IsNullOrEmpty(world.PoliticalSectorId)) OpenPoliticalSector(world.PoliticalSectorId);
                 else ShowGalaxy();
             }
-            SelectWorld(world.Id, true);
+            SelectWorldByUser(world.Id, true);
             _searchFilter.SetText(string.Empty, invokeEvent: true);
         };
         toolbar.AddChild(_search);
+        if (_fullPlanetScreen)
+        {
+            StylePicker(_missingArtPicker);
+            _missingArtPicker.CanKeyboardFocus = true;
+            _missingArtPicker.KeyboardFocusOnClick = true;
+            _missingArtPicker.ToolTip = "Выбрать мир: стрелки и Enter";
+            _missingArtPicker.OnKeyBindDown += args =>
+            {
+                if (_missingWorldImages.Length == 0) return;
+                var forward = args.Function == EngineKeyFunctions.TextCursorRight || args.Function == EngineKeyFunctions.TextCursorDown;
+                var backward = args.Function == EngineKeyFunctions.TextCursorLeft || args.Function == EngineKeyFunctions.TextCursorUp;
+                if (forward || backward)
+                {
+                    _missingArtKeyboardIndex = _missingArtKeyboardIndex < 0 ? (forward ? 0 : _missingWorldImages.Length - 1)
+                        : (_missingArtKeyboardIndex + (forward ? 1 : _missingWorldImages.Length - 1)) % _missingWorldImages.Length;
+                    _missingArtPicker.SelectId(_missingArtKeyboardIndex + 1);
+                    args.Handle();
+                }
+                else if (args.Function == EngineKeyFunctions.TextSubmit && _missingArtKeyboardIndex >= 0)
+                {
+                    (_missingArtPicker.OptionsScroll.Parent as Popup)?.Close();
+                    SelectMissingWorldImage(_missingArtKeyboardIndex);
+                    args.Handle();
+                }
+            };
+            _missingArtPicker.OnItemSelected += args =>
+            {
+                if (args.Id <= 0 || args.Id > _missingWorldImages.Length) return;
+                SelectMissingWorldImage(args.Id - 1);
+            };
+            toolbar.AddChild(_missingArtPicker);
+        }
         var minus = SWConsoleStyle.TabButton("−");
         minus.ToolTip = "Отдалить";
         minus.OnPressed += _ => ChangeAtlasZoom(1 / 1.2f);
@@ -224,6 +261,39 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         if (_fullPlanetScreen) _body.SetPositionInParent(1);
         SwitchView(null);
         RebuildSearch();
+    }
+
+    private void RefreshMissingWorldImages()
+    {
+        var missing = Map.MissingWorldImages();
+        var visible = _fullPlanetScreen && Surface == null && !_planetOpen && missing.Length > 0;
+        var changed = !_missingWorldImages.Select(w => (w.Id, w.Name)).SequenceEqual(missing.Select(w => (w.Id, w.Name)));
+        if (!visible || changed)
+            (_missingArtPicker.OptionsScroll.Parent as Popup)?.Close();
+        _missingArtPicker.Visible = visible;
+        if (!changed) return;
+        _missingWorldImages = missing;
+        _missingArtKeyboardIndex = -1;
+        _missingArtPicker.Clear();
+        _missingArtPicker.AddItem($"Изображения недоступны: {_missingWorldImages.Length}", 0);
+        _missingArtPicker.SetItemDisabled(0, true);
+        for (var i = 0; i < _missingWorldImages.Length; i++)
+        {
+            var world = _missingWorldImages[i];
+            var duplicateName = _missingWorldImages.Count(other => other.Name == world.Name) > 1;
+            _missingArtPicker.AddItem(duplicateName ? $"{world.Name} ({world.Id})" : world.Name, i + 1);
+        }
+        _missingArtPicker.SelectId(0);
+    }
+
+    private void SelectMissingWorldImage(int index)
+    {
+        if (index < 0 || index >= _missingWorldImages.Length) return;
+        var id = _missingWorldImages[index].Id;
+        SelectWorldByUser(id, true);
+        _statisticsAtlas?.ShowDetailsWhenReady();
+        _missingArtKeyboardIndex = -1;
+        _missingArtPicker.SelectId(0);
     }
 
     private void UpdateSystemShortcut()
@@ -273,6 +343,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         _chosenSectorSystem = null;
         _chosenSystemSector = null;
         _systemSummaryActive = false;
+        _trafficSector = null;
         var prototypes = IoCManager.Resolve<IPrototypeManager>();
         _data = SWGalacticMapViews.ForFaction(_source, faction, id => prototypes.TryIndex<SWSectorPrototype>(id, out var sector) ? sector.Name : id);
         _worlds = _data.Worlds.ToDictionary(w => w.Id);
@@ -369,6 +440,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
     private void SwitchView(string? sectorId, bool animate = false, string? systemId = null, string? politicalSectorId = null)
     {
         var fromPlanet = _planetOpen;
+        _coincidentFlowPositions = null;
         _planetOpen = false;
         _selectedSchemeSector = null;
         if (Surface != null)
@@ -419,6 +491,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         if (_fullPlanetScreen && previous != null) Map.RestoreTrafficAnimationSeconds(previous.TrafficAnimationSeconds);
         if (_fullPlanetScreen && _mapViews.TryGetValue(MapKey(), out var savedView)) Map.RestoreView(savedView.Zoom, savedView.Pan);
         Map.SetExternalLabels(_fullPlanetScreen);
+        RefreshMissingWorldImages();
         if (_fullPlanetScreen)
         {
             Map.SetSectorSchemeNames(_sectorPrototypes.ToDictionary(s => s.ID, s => s.Name));
@@ -434,6 +507,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         Map.SetCrises(_mapCrises, _data.Worlds);
         Map.CrisesSelected += ids => { SelectCrises(ids); _statisticsAtlas?.ShowDetails(); };
         Map.SetTrafficFilter(_commodityFilter, _showTraffic);
+        Map.SetTrafficScope(_selectedSectorTrafficOnly, _trafficSector);
         RefreshEconomyStatus();
         Map.SystemSelected += systemId =>
         {
@@ -442,6 +516,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
             {
                 _chosenSectorSystem = systemId;
                 _chosenSystemSector = systemSector;
+                SetTrafficSector(systemSector);
                 _systemSummaryActive = true;
                 SelectedWorldId = null;
                 _route = null;
@@ -451,8 +526,10 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
                 _statisticsAtlas?.ShowDetailsWhenReady();
                 return;
             }
+            SetTrafficSector(null);
             OpenSystem(systemId);
         };
+        Map.CoincidentTrafficSelected += ShowCoincidentFlows;
         Map.WorldSelected += id =>
         {
             if (CurrentSectorId == _chosenSystemSector && _worlds[id].SystemId != _chosenSectorSystem)
@@ -462,7 +539,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
                 UpdateSystemShortcut();
             }
             _selectedSchemeSector = null;
-            SelectWorld(id);
+            SelectWorldByUser(id);
             _statisticsAtlas?.ShowDetails();
         };
         Map.WorldActivated += id =>
@@ -490,6 +567,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         };
         Map.RouteSelected += route =>
         {
+            _coincidentFlowPositions = null;
             _systemSummaryActive = false;
             _selectedSchemeSector = null;
             if (_focusedFlow != null && (_fullPlanetScreen && IsPlannedRoute(route) || _focusedFlow.Edge != SWTransitLinkPrototype.LinkId(route.From, route.To)))
@@ -580,6 +658,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         _sectors = sectors;
         _globals = globals;
         Map.SetState(sectors);
+        RefreshMissingWorldImages();
         if (_selectedSchemeSector != null && schemeChanged) RefreshDetails();
         if (_selectedSchemeSector == null && Surface == null && _detailPage == 3 && _route == null && _selectedCrisisIds.Length == 0 &&
             (_planetOpen ? summaryChanged : detailsChanged)) RefreshDetails();
@@ -599,12 +678,20 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         else if (!world.Overview && !string.IsNullOrEmpty(world.PoliticalSectorId)) SwitchView(null, politicalSectorId: world.PoliticalSectorId);
         else SwitchView(null);
         if (!View.Worlds.Any(w => w.Id == id)) return false;
-        SelectWorld(id, true);
+        SelectWorldByUser(id, true);
         return true;
+    }
+
+    public void SelectWorldByUser(string id, bool focus = false)
+    {
+        SelectWorld(id, focus);
+        if (_fullPlanetScreen && SelectedWorldId == id && _worlds.TryGetValue(id, out var world))
+            SetTrafficSector(world.Sector?.Id);
     }
 
     public void SelectWorld(string id, bool focus = false)
     {
+        _coincidentFlowPositions = null;
         _systemSummaryActive = false;
         _selectedSchemeSector = null;
         _selectedMedicalShipmentId = null;
@@ -635,6 +722,8 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
 
     private void SelectSectorScheme(string sectorId)
     {
+        _coincidentFlowPositions = null;
+        SetTrafficSector(sectorId);
         _systemSummaryActive = false;
         _selectedSchemeSector = sectorId;
         SelectedWorldId = null;
@@ -686,6 +775,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         if (route == null || _fullPlanetScreen && IsPlannedRoute(route) || !_worlds.TryGetValue(route.From, out var world)) return false;
         if (_focusedFlow != null && _focusedFlow.Edge != id) _focusedFlow = null;
         if (world.Sector is { } sector) { if (!OpenSector(sector.Id)) return false; }
+        else if (_fullPlanetScreen && HasSystem(world)) { if (!OpenSystem(world.SystemId)) return false; }
         else if (!ShowGalaxy()) return false;
         route = View.Routes.FirstOrDefault(r => SWTransitLinkPrototype.LinkId(r.From, r.To) == id);
         if (route == null) return false;
@@ -719,6 +809,12 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
 
     private void RefreshDetailsCore()
     {
+        if (_fullPlanetScreen && _coincidentFlowPositions is { } flowPositions && Surface == null && !_planetOpen &&
+            CurrentSectorId == null && CurrentSystemId == null && CurrentPoliticalSectorId == null)
+        {
+            RefreshCoincidentFlows(flowPositions);
+            return;
+        }
         if (_systemSummaryActive && CurrentSectorId == _chosenSystemSector && _chosenSectorSystem is { } systemId && Surface == null && !_planetOpen)
         {
             _detailHeading.RemoveAllChildren();
@@ -759,7 +855,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
     {
         var button = SWConsoleStyle.TabButton(_worlds[id].Name);
         button.TextAlign = Label.AlignMode.Left;
-        button.OnPressed += _ => SelectWorld(id, true);
+        button.OnPressed += _ => SelectWorldByUser(id, true);
         _detail.AddChild(button);
     }
 }

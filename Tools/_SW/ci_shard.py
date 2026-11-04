@@ -458,10 +458,11 @@ def main():
         return
     if args.index is None or not 0 <= args.index < args.count:
         parser.error('--index must be in [0, count)')
+    excluded = ''.join(f'&FullyQualifiedName!~{t}' for t in load_weights().get('excluded', {}))
     for k in range(args.parts):
         part = shard_filter(flat, args.index * args.parts + k)
         if part:  # a shard of one class has empty parts; print only the parts that run something
-            print(part)
+            print(f'({part}){excluded}' if excluded and '|' in part else part + excluded)
 
 
 if __name__ == '__main__':

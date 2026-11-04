@@ -177,7 +177,7 @@ namespace Content.Server.GameTicking
                     return;
             }
 
-            SpawnPlayer(player, character, station, jobId, false, silent);
+            SpawnPlayer(player, character, station, jobId, lateJoin && IsGameRuleAdded<Content.Server._SW.GlobalWar.SWGlobalWarGameruleComponent>(), silent); //SW: late join is forced off (#29) except in the GlobalWar campaign
         }
 
         private bool SpawnPlayer(ICommonSession player, //SW: report only completed spawns to rules.

@@ -18,17 +18,20 @@ public sealed partial class SWGlobalWarAssignmentsSystem
         if (!TryGetRegistry(out var registry))
             return EmptyCharacter(netBody, Guid.Empty, SWGlobalWarViewAvailability.Unavailable);
         if (session.Status != SessionStatus.InGame || session.AttachedEntity is not { } body ||
-            GetNetEntity(body) != netBody || !_identity.TryGetActor(session, body, out var mind, out var faction))
+            GetNetEntity(body) != netBody || !TryGetPersonnelActor(session, body, out var mind, out var faction))
             return EmptyCharacter(netBody, registry.Comp.Generation, SWGlobalWarViewAvailability.Forbidden);
 
         // Advance before capturing any projection fields. The network owner suppresses nested refreshes.
         SWGlobalWarSuccessionView? succession = null;
         if (TryGetSuccession(faction, session.UserId, out var vacancy, out var stage, out var remaining, out var eligible))
             succession = new(vacancy, stage, remaining, eligible);
-        registry.Comp.Assignments.TryGetValue(session.UserId, out var actor);
+        // Admin debugging: an aghost or foreign body of an admin sees the head's choices of the side it acts for.
+        var debugging = TryGetAdminActor(session.UserId, out var actor);
+        if (!debugging)
+            registry.Comp.Assignments.TryGetValue(session.UserId, out actor);
         if (actor != null && (actor.Mind != mind || actor.Body != body || actor.Faction != faction))
             actor = null;
-        var living = _mobs.IsAlive(body);
+        var living = debugging || _mobs.IsAlive(body);
         var revision = actor?.Revision ?? 0;
         var offers = registry.Comp.Offers.Values.Where(o => o.Recipient == session.UserId && o.Mind == mind &&
                 o.Body == body && o.RecipientRevision == revision)

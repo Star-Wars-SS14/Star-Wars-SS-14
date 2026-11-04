@@ -75,11 +75,15 @@ public sealed partial class SWGlobalWarPoliticsSystem
     /// <summary>Political capture gate for F; F separately checks objective, physical presence and contesting defenders.</summary>
     public bool CanCapture(EntityUid actor, EntityUid planet, SWGlobalWarPlanetLocation location, Guid generation)
     {
+        // Admin debugging: an admin's aghost or foreign body captures for the side it acts for, with no office or
+        // life, but by the same ownership and war rules.
+        var debugging = _appointments.TryGetAdminActor(actor, out var admin);
+        var faction = admin?.Faction ?? default;
         if (!Enum.IsDefined(location) || !TryGetPolitics(out var politics) || politics.Comp.Generation != generation ||
             !_campaign.TryGetCampaign(out var campaign) || campaign.Comp.Phase != SWGlobalWarCampaignPhase.Running ||
-            politics.Comp.Withdrawals.ContainsKey(actor) ||
-            !_identity.TryGetIdentity(actor, out var mind, out var faction) || !_mobs.IsAlive(actor) ||
-            !HasCombatRole(actor, mind, politics.Comp.Relations) ||
+            !debugging && (politics.Comp.Withdrawals.ContainsKey(actor) ||
+                !_identity.TryGetIdentity(actor, out var mind, out faction) || !_mobs.IsAlive(actor) ||
+                !HasCombatRole(actor, mind, politics.Comp.Relations)) ||
             !TryComp<SWGlobalWarPlanetComponent>(planet, out var target) ||
             target.GlobalWarGamerule != politics.Owner || !CombatOpen(politics.Comp, target))
             return false;
@@ -98,9 +102,12 @@ public sealed partial class SWGlobalWarPoliticsSystem
     {
         return TryGetPolitics(out var politics) && politics.Comp.Generation == generation &&
                _campaign.TryGetCampaign(out var campaign) && campaign.Comp.Phase == SWGlobalWarCampaignPhase.Running &&
-               !politics.Comp.Withdrawals.ContainsKey(actor) &&
-               _identity.TryGetIdentity(actor, out var mind, out _) && _mobs.IsAlive(actor) &&
-               HasCombatRole(actor, mind, politics.Comp.Relations) &&
+               // Admin debugging: an admin's aghost or foreign body fights for the side it acts for, such as to take
+               // a ship or to contest a capture, but only where the war rules open combat.
+               (_appointments.TryGetAdminActor(actor, out _) ||
+                !politics.Comp.Withdrawals.ContainsKey(actor) &&
+                _identity.TryGetIdentity(actor, out var mind, out _) && _mobs.IsAlive(actor) &&
+                HasCombatRole(actor, mind, politics.Comp.Relations)) &&
                TryComp<SWGlobalWarPlanetComponent>(planet, out var target) &&
                target.GlobalWarGamerule == politics.Owner && CombatOpen(politics.Comp, target);
     }

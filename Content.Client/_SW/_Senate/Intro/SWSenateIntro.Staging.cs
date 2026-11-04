@@ -89,16 +89,16 @@ public sealed partial class SWSenateIntro
                 new Pin(12.6f, 17.8f, "СЕНАТОРЫ", 470, 330),
                 new Pin(13.4f, 17.8f, "ГВАРДИЯ", 640, 372),
                 new Pin(19.6f, 24.4f, "СПИКЕР", 760, 336),
-                new Pin(26.8f, 31.0f, "КАНЦЛЕР", 760, 118),
+                new Pin(26.8f, 31.0f, "КАНЦЛЕР", 808, 82),
                 new Pin(33.4f, CourtWipe, "МИНИСТРЫ", 300, 112),
             }),
         new(CourtWipe, DeskWipe + WipeLength, Art.Court, 0f, true,
-            new[] { new CameraKey(CourtWipe, 330, 135), new CameraKey(DeskWipe + 1f, 390, 135) },
+            new[] { new CameraKey(CourtWipe, 330, 135), new CameraKey(DeskWipe + 1f, 360, 135) },
             new[]
             {
                 new Pin(38.0f, 47.8f, "СУДЬИ", 360, 92),
-                new Pin(38.6f, 47.8f, "ОБВИНИТЕЛЬ", 200, 190),
-                new Pin(39.2f, 47.8f, "ЗАЩИТНИК", 520, 190),
+                new Pin(38.6f, 47.8f, "ОБВИНИТЕЛЬ", 165, 168),
+                new Pin(39.2f, 47.8f, "ЗАЩИТНИК", 565, 170),
                 new Pin(45.2f, 47.8f, "ГОЛОНЕТ", 548, 74),
             }),
         new(DeskWipe, Duration, Art.DeskBackground, 0f, true,
@@ -405,7 +405,8 @@ public sealed partial class SWSenateIntro
         if (t <= 0f || t >= 1f)
             return;
 
-        DrawSprite(handle, Art.Shuttle, Vector2.Lerp(ShuttleFrom, ShuttleTo, EaseInOut(t)), SpriteFrame, alpha);
+        // The shuttle settles over the dome; it fades out there instead of vanishing.
+        DrawSprite(handle, Art.Shuttle, Vector2.Lerp(ShuttleFrom, ShuttleTo, EaseInOut(t)), SpriteFrame, alpha * (1f - Phase(8.6f, 0.4f)));
     }
 
     private void DrawDrone(DrawingHandleScreen handle, float alpha)

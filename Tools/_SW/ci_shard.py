@@ -21,6 +21,11 @@ With --parts P each shard's classes are split again, by weight, into P parts, an
 CI runs the parts one after another, each in its own testhost: a testhost's memory grows with the tests it has run (the
 GlobalWar classes load the real campaign maps), and each testhost gets its own 20-minute pool watchdog. The last part
 of the last shard is the catch-all.
+
+A class named in the weights file's 'split' table is packed per method instead of whole: each listed method is its own
+item with its own weight and filter `FullyQualifiedName~Ns.Class.Method`. Methods of that class that are not listed run
+in the catch-all part. --check fails when one listed method's name is a prefix of another's, since the substring filter
+would then run the longer one twice.
 """
 import argparse
 import json
@@ -242,20 +247,50 @@ def lookup(table, fqn):
     return table.get(short)
 
 
+METHOD_ITEMS = set()  # items that are one method of a split class, `Ns.Class.Method`; every other item is a class
+
+
+def method_exists(name):
+    pattern = re.compile(r'\b(?:Task|void)\s+' + re.escape(name) + r'\s*\(')
+    for root, _, files in os.walk(TESTS_DIR):
+        for f in files:
+            if f.endswith('.cs'):
+                with open(os.path.join(root, f), encoding='utf-8-sig', errors='replace') as h:
+                    if pattern.search(h.read()):
+                        return True
+    return False
+
+
 def weigh(found, config):
     per_test = config.get('seconds_per_test', 2)
     per_source = config.get('seconds_per_case_source', 10)
     overrides = config.get('classes', {})
+    split_table = config.get('split', {})
     weights = {}
+    METHOD_ITEMS.clear()
     for fqn, (tests, sources) in found.items():
+        methods = lookup(split_table, fqn)
+        if methods is not None:
+            for method, w in methods.items():
+                item = f'{fqn}.{method}'
+                weights[item] = float(w)
+                METHOD_ITEMS.add(item)
+            continue
         w = lookup(overrides, fqn)
         weights[fqn] = float(w) if w is not None else tests * per_test + sources * per_source
     heavy = set()
     for name in config.get('heavy', []):
         matched = [f for f in found if f == name or f.rsplit('.', 1)[-1] == name]
         heavy.update(matched)
-    unknown = [n for n in list(overrides) + config.get('heavy', [])
+    unknown = [n for n in list(overrides) + config.get('heavy', []) + list(split_table)
                if not any(f == n or f.rsplit('.', 1)[-1] == n for f in found)]
+    # A split class is packed by its methods; when the class is heavy, each of its methods is.
+    split_heavy = {f for f in heavy if lookup(split_table, f) is not None}
+    heavy -= {f for f in found if lookup(split_table, f) is not None}
+    heavy.update(m for m in METHOD_ITEMS if m.rsplit('.', 1)[0] in split_heavy)
+    for item in sorted(METHOD_ITEMS):
+        if not method_exists(item.rsplit('.', 1)[1]):
+            unknown.append(item)
     return weights, heavy, unknown
 
 
@@ -283,6 +318,9 @@ def pack(weights, heavy, count):
 
 def token(fqn):
     # Trailing dot: `Foo.` must not also match `FooBar.Method`. Nested classes appear as `Outer+Inner` in the name.
+    # A method item has no dot: `Ns.Class.Method` also matches its cases, `Ns.Class.Method(1)`.
+    if fqn in METHOD_ITEMS:
+        return fqn
     return fqn + '.'
 
 
@@ -339,11 +377,17 @@ def check(count, tests_file=None, parts=1):
     total = len(flat)
     filters = [shard_filter(flat, i) for i in range(total)]
     errors = []
-    for fqn in sorted(found):
-        sample = token(fqn) + 'SomeTest'
-        hits = [i for i, f in enumerate(filters) if matches(f, sample)]
-        if len(hits) != 1:
-            errors.append(f'{fqn}: in shards {hits}')
+    for item in sorted(weights):
+        samples = [item, item + '(1)'] if item in METHOD_ITEMS else [token(item) + 'SomeTest']
+        for sample in samples:
+            hits = [i for i, f in enumerate(filters) if matches(f, sample)]
+            if len(hits) != 1:
+                errors.append(f'{sample}: in parts {hits}')
+    for fqn in sorted({m.rsplit('.', 1)[0] for m in METHOD_ITEMS}):
+        # An unlisted method of a split class must run too, in the catch-all part only.
+        hits = [i for i, f in enumerate(filters) if matches(f, fqn + '.SWUnlistedMethod')]
+        if hits != [total - 1]:
+            errors.append(f'unlisted method of {fqn} lands in parts {hits}, expected [{total - 1}]')
     # A test the scanner does not know about must still run somewhere, and only once.
     stray = f'{ASSEMBLY_PREFIX}.Tests.SWUnscannedTestClass.SomeTest'
     hits = [i for i, f in enumerate(filters) if matches(f, stray)]
@@ -355,22 +399,27 @@ def check(count, tests_file=None, parts=1):
             names = [line.strip() for line in f if line.strip()]
         per_shard = [0] * total
         caught = set()
+        used = set()
         for name in names:
             hits = [i for i, f in enumerate(filters) if matches(f, name)]
             if len(hits) != 1:
                 errors.append(f'test {name}: in shards {hits}')
                 continue
             per_shard[hits[0]] += 1
-            if hits[0] == total - 1 and not any(name.startswith(token(c)) for c in found):
+            used.update(m for m in METHOD_ITEMS if m in name)
+            if hits[0] == total - 1 and not any(name.startswith(token(c)) for c in weights):
                 caught.add(name.split('(')[0].rsplit('.', 1)[0])
         print(f'{len(names)} listed tests per part: {per_shard}')
+        for m in sorted(METHOD_ITEMS - used):
+            errors.append(f'split method {m} matches no listed test')
         for c in sorted(caught):
             print(f'note: {c} is not found by the scanner; it runs in the catch-all shard')
     heavy_bins = [sum(1 for f in b['classes'] if f in heavy) for b in bins]
     if len(heavy) <= count and any(h > 1 for h in heavy_bins):
         errors.append(f'heavy classes share a shard: {heavy_bins}')
     for name in unknown:
-        errors.append(f'{os.path.basename(WEIGHTS_FILE)} names {name}, which is not a test class')
+        kind = 'a test method' if name in METHOD_ITEMS else 'a test class'
+        errors.append(f'{os.path.basename(WEIGHTS_FILE)} names {name}, which is not {kind}')
     print(f'{len(found)} test classes, {sum(t for t, _ in found.values())} tests + '
           f'{sum(s for _, s in found.values())} case sources, {count} shards')
     for i, b in enumerate(bins):

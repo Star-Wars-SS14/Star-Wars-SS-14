@@ -1,5 +1,5 @@
 {
-  "_comment": "Weights for Tools/_SW/ci_shard.py, in seconds of CI run time (2-core, 8 GB private-repo runner). Classes not listed weigh seconds_per_test per [Test]/[TestCase] plus seconds_per_case_source per [TestCaseSource]. Calibrated 2026-11-04 from run 41827585917 (PostMapInitTest alone 6.5 min, GlobalWarEconomyLongRunTest alone 8.5 min, GlobalWarRespawnTest shard 2.3 min, 176 small tests 7.5 min) and a local TRX of the GlobalWar classes times 2.2 (CI/local ratio of the same shard). The CI log prints every test with its time; refine from it. Classes in 'heavy' go to different bins first. EntityTest is heavy since run 41839146549: next to GlobalWar classes its spawn-all tests ran the runner out of memory.",
+  "_comment": "Weights for Tools/_SW/ci_shard.py, in seconds of CI run time (2-core, 8 GB private-repo runner). Classes not listed weigh seconds_per_test per [Test]/[TestCase] plus seconds_per_case_source per [TestCaseSource]. Calibrated 2026-11-04 from run 41827585917 (PostMapInitTest alone 6.5 min, GlobalWarEconomyLongRunTest alone 8.5 min, GlobalWarRespawnTest shard 2.3 min, 176 small tests 7.5 min) and a local TRX of the GlobalWar classes times 2.2 (CI/local ratio of the same shard). The CI log prints every test with its time; refine from it. Classes in 'heavy' go to different shards first; a heavy split class makes each listed method heavy. 'split' packs a class per method (seconds per method): EntityTest alone ran past the 20-minute watchdog in run 41849018067 (four methods 1-2 min each, then SpawnAndDirtyAllEntities still running at 20 min; alone locally it takes 1 m 53 s, so about 4-5 min on CI), and next to GlobalWar classes its spawn-all tests ran the runner out of memory (run 41839146549).",
   "seconds_per_test": 3,
   "seconds_per_case_source": 15,
   "classes": {
@@ -12,7 +12,6 @@
     "GlobalWarLandingTest": 85,
     "GlobalWarAdmissionTest": 40,
     "GlobalWarWorldTest": 40,
-    "EntityTest": 400,
     "PrototypeSaveTest": 60,
     "DummyIconTest": 40,
     "SaveLoadMapTest": 30
@@ -24,5 +23,14 @@
     "GlobalWarEconomyIntegrationTest",
     "GlobalWarRespawnTest",
     "EntityTest"
-  ]
+  ],
+  "split": {
+    "EntityTest": {
+      "SpawnAndDirtyAllEntities": 300,
+      "SpawnAndDeleteEntityCountTest": 130,
+      "SpawnAndDeleteAllEntitiesOnDifferentMaps": 75,
+      "SpawnAndDeleteAllEntitiesInTheSameSpot": 70,
+      "AllComponentsOneToOneDeleteTest": 65
+    }
+  }
 }

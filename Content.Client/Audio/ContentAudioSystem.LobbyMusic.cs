@@ -51,6 +51,7 @@ public sealed partial class ContentAudioSystem
         if (!_resourceCache.TryGetResource(new ResPath(SenateIntroTrack), out AudioResource? _))
         {
             _sawmill.Warning($"Senate intro track '{SenateIntroTrack}' could not be loaded; keeping lobby music.");
+            _senateIntroActive = false;
             ResumeLobbyMusicAfterIntro();
             return;
         }
@@ -59,6 +60,7 @@ public sealed partial class ContentAudioSystem
         if (stream == null)
         {
             _sawmill.Warning($"Senate intro track '{SenateIntroTrack}' did not start; keeping lobby music.");
+            _senateIntroActive = false;
             ResumeLobbyMusicAfterIntro();
             return;
         }

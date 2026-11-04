@@ -19,7 +19,7 @@ public sealed class SWSenateIntroStatusEvent : EntityEventArgs
 [CVarDefs]
 public sealed class SWSenateIntroCVars
 {
-    /// <summary>Show the Senate intro automatically in the lobby during the last minute before round start.</summary>
+    /// <summary>Show the Senate intro automatically in the lobby shortly before a Senate round starts.</summary>
     public static readonly CVarDef<bool> Autoplay =
         CVarDef.Create("sw.senate_intro_autoplay", true, CVar.CLIENTONLY | CVar.ARCHIVE);
 }

@@ -24,9 +24,10 @@ public sealed class SWSenateIntroUIController : UIController, IOnStateEntered<Lo
     [Dependency] private readonly IConsoleHost _console = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
-    /// <summary>The intro is offered automatically only when at least this much of the countdown remains.</summary>
-    private static readonly TimeSpan AutoplayWindow = TimeSpan.FromSeconds(60);
-    private static readonly TimeSpan AutoplayMinimum = TimeSpan.FromSeconds(8);
+    /// <summary>The intro starts automatically when this much of the countdown remains, so it ends before the round.</summary>
+    private static readonly TimeSpan AutoplayWindow = TimeSpan.FromSeconds(SWSenateIntro.Duration + 6);
+    /// <summary>Autoplay needs room for the whole intro, so the round start never cuts it off.</summary>
+    private static readonly TimeSpan AutoplayMinimum = TimeSpan.FromSeconds(SWSenateIntro.Duration + 1);
 
     private static readonly Dictionary<string, SWSenateIntroRole> Roles = new()
     {
@@ -49,6 +50,7 @@ public sealed class SWSenateIntroUIController : UIController, IOnStateEntered<Lo
     private Button? _button;
     private TimeSpan? _autoShownFor;
     private bool _available;
+    private bool _closeRequested;
 
     public void OnStateEntered(LobbyState state)
     {
@@ -82,6 +84,13 @@ public sealed class SWSenateIntroUIController : UIController, IOnStateEntered<Lo
             _button.Visible = available;
             if (!available)
                 Close(true);
+        }
+
+        // The intro asks to close from its own update or input; it is removed here, outside its own tree walk.
+        if (_closeRequested)
+        {
+            _closeRequested = false;
+            Close(true);
         }
 
         var ticker = EntityManager.System<ClientGameTicker>();
@@ -122,7 +131,7 @@ public sealed class SWSenateIntroUIController : UIController, IOnStateEntered<Lo
             return;
 
         _intro = new SWSenateIntro(ResolveRole(), _config.GetCVar(SWSenateIntroCVars.Autoplay), _config.GetCVar(CCVars.ReducedMotion));
-        _intro.Finished += () => Close(true);
+        _intro.Finished += () => _closeRequested = true;
         _intro.Replayed += () => EntityManager.System<ContentAudioSystem>().StartSenateIntroMusic();
         _intro.ReadyToggled += ready =>
         {
@@ -142,6 +151,7 @@ public sealed class SWSenateIntroUIController : UIController, IOnStateEntered<Lo
 
     private void Close(bool resumeLobbyMusic)
     {
+        _closeRequested = false;
         if (_intro == null)
             return;
 

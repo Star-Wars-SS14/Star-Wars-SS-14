@@ -26,8 +26,8 @@ public sealed class SWSenateIntroSystem : EntitySystem
 
     private void OnJoinedLobby(PlayerJoinedLobbyEvent ev)
     {
-        _available = IsSenateNext();
-        RaiseNetworkEvent(new SWSenateIntroStatusEvent(_available), ev.PlayerSession.Channel);
+        // Answer the joiner directly; the cached broadcast state is only advanced by Update.
+        RaiseNetworkEvent(new SWSenateIntroStatusEvent(IsSenateNext()), ev.PlayerSession.Channel);
     }
 
     public override void Update(float frameTime)

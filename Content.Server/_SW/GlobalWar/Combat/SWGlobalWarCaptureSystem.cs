@@ -195,8 +195,13 @@ public sealed class SWGlobalWarCaptureSystem : EntitySystem
         while (players.MoveNext(out var body, out var actor))
         {
             if (actor.PlayerSession.Status != SessionStatus.InGame || actor.PlayerSession.AttachedEntity != body ||
-                !InZone(body, objective) || !_mobs.IsAlive(body) || !_blocker.CanInteract(body, null) ||
-                !_identity.TryGetIdentity(body, out _, out var faction))
+                !InZone(body, objective) || !_blocker.CanInteract(body, null))
+                continue;
+            // Admin debugging: an admin's aghost or foreign body holds the zone for the side it acts for.
+            SWGlobalWarFaction faction;
+            if (_assignments.TryGetAdminActor(body, out var admin))
+                faction = admin.Faction;
+            else if (!_mobs.IsAlive(body) || !_identity.TryGetIdentity(body, out _, out faction))
                 continue;
             if (faction == objective.Attacker)
                 attackers |= CanCapture(body, faction, objective);

@@ -13,7 +13,6 @@ namespace Content.Server._SW.GlobalWar.Politics;
 public sealed class SWGlobalWarCharacterUiSystem : EntitySystem
 {
     [Dependency] private readonly SWGlobalWarAssignmentsSystem _assignments = default!;
-    [Dependency] private readonly SWGlobalWarIdentitySystem _identity = default!;
     [Dependency] private readonly SWGlobalWarPoliticsSystem _politics = default!;
     [Dependency] private readonly IPlayerManager _players = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
@@ -88,7 +87,7 @@ public sealed class SWGlobalWarCharacterUiSystem : EntitySystem
                 SWGlobalWarAssignmentsSystem.EmptyCharacter(netBody, Guid.Empty, SWGlobalWarViewAvailability.Unavailable)), session);
             return;
         }
-        if (!_identity.TryGetActor(session, body, out var mind, out _))
+        if (!_assignments.TryGetPersonnelActor(session, body, out var mind, out _))
         {
             RaiseNetworkEvent(new SWGlobalWarCharacterSnapshot(msg.Cookie, 1,
                 SWGlobalWarAssignmentsSystem.EmptyCharacter(netBody, registry.Comp.Generation,
@@ -108,7 +107,7 @@ public sealed class SWGlobalWarCharacterUiSystem : EntitySystem
     private bool Valid(Watch watch)
     {
         return watch.Session.Status == SessionStatus.InGame && watch.Session.AttachedEntity == watch.Body &&
-            _identity.TryGetActor(watch.Session, watch.Body, out var mind, out _) && mind == watch.Mind &&
+            _assignments.TryGetPersonnelActor(watch.Session, watch.Body, out var mind, out _) && mind == watch.Mind &&
             _assignments.TryGetRegistry(out var registry) && registry.Comp.Generation == watch.Generation;
     }
 

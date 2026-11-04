@@ -17,7 +17,8 @@ namespace Content.Server._SW.GlobalWar.Politics;
 
 /// <summary>
 /// Admin debugging: an active admin acts at every campaign console as the head of the side that owns the location,
-/// from an aghost or from a body with no campaign side, such as one taken by controlmob. In their own campaign body,
+/// or of the side picked with <see cref="SWGlobalWarAdminSideCommand"/>, from an aghost or from a body with no campaign
+/// side, such as one taken by controlmob. In their own campaign body,
 /// or as an ordinary dead ghost, an admin plays by the normal rules. The office is never written to the registry,
 /// so it takes no slot, starts no succession and nobody else sees it.
 /// </summary>
@@ -34,6 +35,7 @@ public sealed partial class SWGlobalWarAssignmentsSystem
 
     private readonly Dictionary<(NetUserId User, SWGlobalWarFaction Faction), Guid> _adminActors = new();
     private readonly Dictionary<NetUserId, TimeSpan> _adminNotices = new();
+    private readonly Dictionary<NetUserId, SWGlobalWarFaction> _adminSides = new();
 
     private void InitializeAdminActors()
     {
@@ -42,6 +44,35 @@ public sealed partial class SWGlobalWarAssignmentsSystem
             _adminActors.Clear();
             _adminNotices.Clear();
         });
+    }
+
+    /// <summary>Null returns to the side that owns the location. The choice lasts until changed.</summary>
+    public void SetAdminSide(NetUserId user, SWGlobalWarFaction? side)
+    {
+        if (side is { } chosen)
+            _adminSides[user] = chosen;
+        else
+            _adminSides.Remove(user);
+    }
+
+    /// <summary>The admin debug office of whoever controls this body, if that body is the one attached right now.</summary>
+    public bool TryGetAdminActor(EntityUid body, out SWGlobalWarAssignment assignment)
+    {
+        assignment = default!;
+        return TryComp<ActorComponent>(body, out var actor) && actor.PlayerSession.AttachedEntity == body &&
+               TryGetAdminActor(actor.PlayerSession.UserId, out assignment);
+    }
+
+    /// <summary>The mind and side of a campaign actor, or of an admin debugging in an aghost or a foreign body.</summary>
+    public bool TryGetPersonnelActor(ICommonSession session, EntityUid body, out EntityUid mind, out SWGlobalWarFaction faction)
+    {
+        if (session.AttachedEntity == body && TryGetAdminActor(session.UserId, out var admin))
+        {
+            mind = admin.Mind;
+            faction = admin.Faction;
+            return true;
+        }
+        return _identity.TryGetActor(session, body, out mind, out faction);
     }
 
     private bool IsActiveAdmin(NetUserId user, out ICommonSession session)
@@ -58,8 +89,10 @@ public sealed partial class SWGlobalWarAssignmentsSystem
             return false;
 
         var faction = SWGlobalWarFaction.Neutral;
-        if (_planets.TryGetPhysicalLocation(body, out var planet, out var location) &&
-            TryComp<SWGlobalWarPlanetComponent>(planet, out var world))
+        if (_adminSides.TryGetValue(user, out var chosen))
+            faction = chosen;
+        else if (_planets.TryGetPhysicalLocation(body, out var planet, out var location) &&
+                 TryComp<SWGlobalWarPlanetComponent>(planet, out var world))
             faction = location == SWGlobalWarPlanetLocation.Orbit ? world.OrbitOwner : world.SurfaceOwner;
         if (faction == SWGlobalWarFaction.Neutral || !TryGetHeadJob(registry.Owner, faction, out var job))
         {

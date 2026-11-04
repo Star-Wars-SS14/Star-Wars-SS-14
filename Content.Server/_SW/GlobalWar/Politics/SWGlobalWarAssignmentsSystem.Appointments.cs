@@ -86,7 +86,9 @@ public sealed partial class SWGlobalWarAssignmentsSystem
         failure = SWGlobalWarAppointmentFailure.Changed;
         if (!LivingActor(session, out var mind, out var faction))
             return false;
-        registry.Comp.Assignments.TryGetValue(session.UserId, out var actor);
+        // Admin debugging: an admin's aghost or foreign body appoints as the head of the side it acts for.
+        if (!TryGetAdminActor(session.UserId, out var actor))
+            registry.Comp.Assignments.TryGetValue(session.UserId, out actor);
         if ((actor?.Revision ?? 0) != command.ActorRevision ||
             actor != null && (actor.Mind != mind || actor.Body != session.AttachedEntity))
         {
@@ -269,6 +271,13 @@ public sealed partial class SWGlobalWarAssignmentsSystem
     {
         mind = default;
         faction = default;
+        // Admin debugging: an admin's aghost or foreign body counts as a living actor of the side it acts for.
+        if (session.Status == SessionStatus.InGame && TryGetAdminActor(session.UserId, out var admin))
+        {
+            mind = admin.Mind;
+            faction = admin.Faction;
+            return true;
+        }
         return session.Status == SessionStatus.InGame && session.AttachedEntity is { } body &&
                _identity.TryGetActor(session, body, out mind, out faction) && _mobs.IsAlive(body);
     }

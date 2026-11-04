@@ -62,7 +62,9 @@ public sealed partial class SWGlobalWarPoliticsSystem
     {
         return TryGetPolitics(out var politics) && politics.Comp.Generation == generation &&
                _campaign.TryGetCampaign(out var campaign) && campaign.Comp.Phase == SWGlobalWarCampaignPhase.Running &&
-               !politics.Comp.Withdrawals.ContainsKey(actor) && _identity.TryGetIdentity(actor, out _, out _);
+               !politics.Comp.Withdrawals.ContainsKey(actor) &&
+               // Admin debugging: an admin's aghost or foreign body buys for the side it acts for.
+               (_identity.TryGetIdentity(actor, out _, out _) || _appointments.TryGetAdminActor(actor, out _));
     }
 
     private void BeginWithdrawals(Entity<SWGlobalWarPoliticsComponent> politics, EntityUid? sector = null)

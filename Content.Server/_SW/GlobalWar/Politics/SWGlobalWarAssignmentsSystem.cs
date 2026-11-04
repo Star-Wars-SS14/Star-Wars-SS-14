@@ -153,10 +153,15 @@ public sealed partial class SWGlobalWarAssignmentsSystem : EntitySystem
         out SWGlobalWarAssignmentReservation reservation)
     {
         reservation = default!;
-        // Admin debugging: an active admin entering again gives up the old office; that body stays as a plain NPC.
-        if (TryGetRegistry(out var current) && current.Comp.Generation == generation &&
-            current.Comp.Assignments.TryGetValue(user, out var held) && IsActiveAdmin(user, out _))
-            Remove(current, held);
+        // Admin debugging: an active admin entering again gives up the old office and Force carrier; that body stays
+        // as a plain NPC.
+        if (TryGetRegistry(out var current) && current.Comp.Generation == generation && IsActiveAdmin(user, out _))
+        {
+            if (current.Comp.Assignments.TryGetValue(user, out var held))
+                Remove(current, held);
+            if (current.Comp.ForceCarriers.Remove(user))
+                Changed(current);
+        }
         if (!TryGetRegistry(out var registry) || registry.Comp.Generation != generation ||
             !TryGetRole(registry.Owner, job, out var faction, out var role) || !_identity.CanJoin(user, faction) ||
             registry.Comp.Assignments.ContainsKey(user) || registry.Comp.ForceCarriers.ContainsKey(user))

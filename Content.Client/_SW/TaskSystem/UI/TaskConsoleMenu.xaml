@@ -1,38 +1,16 @@
-<DefaultWindow
+<ui:SWTerminalWindow
     xmlns="https://spacestation14.io"
-    xmlns:gfx="clr-namespace:Robust.Client.Graphics;assembly=Robust.Client"
-    xmlns:ui="clr-namespace:Content.Client.Materials.UI"
-    Title="task"
-    MinSize="800 500"
-    SetSize="800 500">
-    <BoxContainer Orientation="Vertical">
-        <Button
-                        Name="UpdateTasksButton"
-                        Text="Update"
-                        TextAlign="Center">
-        </Button>
-        <BoxContainer Orientation="Horizontal">
-            <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-                <Label Text="Название" HorizontalExpand="True" Margin="20 20 20 20" HorizontalAlignment="Center"/>
-            </BoxContainer>
-            <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-                <Label Text="Описание" HorizontalExpand="True" Margin="20 20 20 20" HorizontalAlignment="Center"/>
-            </BoxContainer>
-            <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
-                <Label Text="Статус" HorizontalExpand="True" Margin="20 20 20 20" MinWidth="200" HorizontalAlignment="Center"/>
-            </BoxContainer>
+    xmlns:ui="clr-namespace:Content.Client._SW.UserInterface"
+    Title="{Loc 'sw-task-console-title'}"
+    MinSize="440 280"
+    SetSize="520 400">
+    <BoxContainer Orientation="Vertical" SeparationOverride="8">
+        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+            <Label Name="FactionName" StyleClasses="SWTermValue" HorizontalExpand="True" ClipText="True" />
+            <Label Name="Summary" StyleClasses="SWTermText" />
         </BoxContainer>
-        <PanelContainer VerticalExpand="True">
-            <ScrollContainer VerticalExpand="True" HScrollEnabled="False">
-                <BoxContainer
-                    Name="TaskList"
-                    Orientation="Vertical"
-                    HorizontalExpand="True"
-                    VerticalExpand="True"
-                    RectClipContent="True"
-                    MinHeight="50">
-                </BoxContainer>
-            </ScrollContainer>
-        </PanelContainer>
+        <ScrollContainer VerticalExpand="True" HScrollEnabled="False" ReserveScrollbarSpace="True">
+            <BoxContainer Name="TaskList" Orientation="Vertical" HorizontalExpand="True" />
+        </ScrollContainer>
     </BoxContainer>
-</DefaultWindow>
+</ui:SWTerminalWindow>

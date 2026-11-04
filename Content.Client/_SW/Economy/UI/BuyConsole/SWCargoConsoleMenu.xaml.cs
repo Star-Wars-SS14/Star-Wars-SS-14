@@ -137,7 +137,8 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
     private string GetCostText(SWCargoProductPrototype prototype)
     {
         // Work on a copy so we don't mutate the prototype's original costs.
-        var costs = prototype.Cost.ToDictionary(p => p.Key, p => p.Value);
+        // In float: the server charges 22.5 for a price that int would show as 22.
+        var costs = prototype.Cost.ToDictionary(p => p.Key, p => (float) p.Value);
         _swBankSystem.FillCurrencies(CurrencyPrototypeIds, ref costs);
         // Build a human-readable cost string like "$ 10/€ 8".
         // If there are no costs, return an empty string.
@@ -150,9 +151,9 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
         foreach (var (curProtoId, amount) in costs)
         {
             var curProto = _protoManager.Index(curProtoId);
-            builder.Append(curProto.ShortName);
+            builder.Append(Loc.GetString(curProto.ShortName));
             builder.Append(' ');
-            builder.Append(amount);
+            builder.Append(amount.ToString("0.##"));
             builder.Append('/');
         }
         // Remove the trailing '/'
@@ -189,16 +190,9 @@ public sealed partial class SWCargoConsoleMenu : FancyWindow
         {
             Categories.AddItem(str);
         }
-    }
 
-    protected override void FrameUpdate(FrameEventArgs args)
-    {
-        base.FrameUpdate(args);
-        BalanceContainer.Children.Clear();
-        foreach (var (currency, amount) in Balance)
-        {
-            var cntrl = new SWCurrencyControl(currency, amount, false);
-            BalanceContainer.AddChild(cntrl);
-        }
+        // Clear() reset the dropdown to "all": keep it matching the filter on every state.
+        var selected = _category == null ? 0 : _categoryStrings.IndexOf(_category);
+        SetCategoryText(selected < 0 ? 0 : selected);
     }
 }

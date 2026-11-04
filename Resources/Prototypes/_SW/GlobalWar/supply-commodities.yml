@@ -1,0 +1,48 @@
+- type: swGlobalWarCommodity
+  id: SWGlobalWarSupplyT1
+  name: sw-global-war-supply-kind-t1
+  entity: SWScoutBlasterSmall
+  cargoVolume: 1
+  wholeItems: true
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarSupplyT2
+  name: sw-global-war-supply-kind-t2
+  entity: SWH206Renegade
+  cargoVolume: 1
+  wholeItems: true
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarSupplyArmor
+  name: sw-global-war-supply-kind-armor
+  entity: SWRepublicSuit
+  cargoVolume: 1
+  wholeItems: true
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarSupplyMagazine
+  name: sw-global-war-supply-kind-magazine
+  entity: SWH206Magazine
+  cargoVolume: 1
+  wholeItems: true
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarSupplyRation
+  name: sw-global-war-supply-kind-ration
+  entity: SWBoxMRE
+  cargoVolume: 1
+  wholeItems: true
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarSupplyKolto
+  name: sw-global-war-supply-kolto-item
+  entity: SWKoltoMedipen
+  cargoVolume: 1
+  wholeItems: true
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarSupplyBacta
+  name: sw-global-war-supply-bacta-item
+  entity: SWBactaMedipen
+  cargoVolume: 1
+  wholeItems: true

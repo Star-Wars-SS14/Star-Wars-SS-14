@@ -1,0 +1,29 @@
+<ui:SWGlobalWarWindow xmlns="https://spacestation14.io"
+                      xmlns:ui="clr-namespace:Content.Client._SW.GlobalWar.UI"
+                      Title="{Loc 'sw-global-war-galaxy-title'}"
+                      MinSize="700 480" SetSize="1237 707">
+    <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="0">
+            <PanelContainer Name="MapPanel" HorizontalExpand="True" VerticalExpand="True" RectClipContent="True">
+                <ui:SWGlobalWarMapControl Name="Map" HorizontalExpand="True" VerticalExpand="True" Margin="1" />
+            </PanelContainer>
+            <BoxContainer Orientation="Horizontal" MinHeight="30" SeparationOverride="14">
+                <Label Name="LegendRepublic" VAlign="Center" />
+                <Label Name="LegendEmpire" VAlign="Center" />
+                <Label Name="LegendSplit" VAlign="Center" HorizontalExpand="True" />
+                <Label Name="Count" VAlign="Center" />
+            </BoxContainer>
+        </BoxContainer>
+        <BoxContainer Orientation="Vertical" SetWidth="300" SeparationOverride="8">
+            <PanelContainer Name="Card">
+                <BoxContainer Orientation="Vertical" Margin="12 10" SeparationOverride="6">
+                    <Label Name="PlanetName" />
+                    <Label Name="Station" />
+                    <Label Name="Surface" />
+                    <Label Name="Split" />
+                </BoxContainer>
+            </PanelContainer>
+            <RichTextLabel Name="Hint" />
+        </BoxContainer>
+    </BoxContainer>
+</ui:SWGlobalWarWindow>

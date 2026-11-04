@@ -102,12 +102,12 @@
 
 - type: stack
   id: CMSandbagEmpty
-  name: пустые мешки для песка
+  name: stack-sw-cm-sandbag-empty
   spawn: CMSandbagEmpty
   maxCount: 50
 
 - type: stack
   id: CMSandbagFull
-  name: пустые мешки для песка
+  name: stack-sw-cm-sandbag-empty
   spawn: CMSandbagFull
   maxCount: 50

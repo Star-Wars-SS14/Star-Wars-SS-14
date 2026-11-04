@@ -51,13 +51,13 @@
   id: SWEmpireCreditsStack
   name: имперский кредит
   unit: materials-unit-bill
-  stackEntity: SWCredits
+  stackEntity: SWEmpireCredits
   icon: { sprite: _SW/Economy/empire_cash.rsi, state: cash }
   price: 1
 
 - type: stack
   id: SWEmpireCreditsStack
-  name: имперский кредит
+  name: stack-sw-empire-credits
   icon: { sprite: _SW/Economy/empire_cash.rsi, state: cash }
   spawn: SWEmpireCredits
 

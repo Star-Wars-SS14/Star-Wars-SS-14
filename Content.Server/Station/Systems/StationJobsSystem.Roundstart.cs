@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Server._SW.GlobalWar.Spawning; //SW
 using Content.Server.Administration.Managers;
 using Content.Server.Antag;
 using Content.Server.Players.PlayTimeTracking;
@@ -54,7 +55,8 @@ public sealed partial class StationJobsSystem
     /// as there may end up being more round-start slots than available slots, which can cause weird behavior.
     /// A warning to all who enter ye cursed lands: This function is long and mildly incomprehensible. Best used without touching.
     /// </remarks>
-    public Dictionary<NetUserId, (ProtoId<JobPrototype>?, EntityUid)> AssignJobs(Dictionary<NetUserId, HumanoidCharacterProfile> profiles, IReadOnlyList<EntityUid> stations, bool useRoundStartJobs = true)
+    public Dictionary<NetUserId, (ProtoId<JobPrototype>?, EntityUid)> AssignJobs(Dictionary<NetUserId, HumanoidCharacterProfile> profiles, IReadOnlyList<EntityUid> stations, bool useRoundStartJobs = true,
+        IReadOnlyDictionary<NetUserId, (ProtoId<JobPrototype>?, EntityUid)>? reservedJobs = null) //SW
     {
         DebugTools.Assert(stations.Count > 0);
 
@@ -62,6 +64,12 @@ public sealed partial class StationJobsSystem
 
         if (profiles.Count == 0)
             return new();
+
+        //SW start
+        var allocation = new SWGlobalWarJobAllocationEvent(stations) { PriorAllocations = reservedJobs };
+        RaiseLocalEvent(ref allocation);
+        var selectionOrder = stations.ToList();
+        //SW end
 
         // We need to modify this collection later, so make a copy of it.
         profiles = profiles.ShallowClone();
@@ -82,6 +90,20 @@ public sealed partial class StationJobsSystem
                 stationJobs.Add(station, GetJobs(station).ToDictionary(x => x.Key, x => x.Value));
             }
         }
+
+        //SW start
+        // A later admission pass cannot reuse finite places allocated earlier in this same synchronous batch.
+        if (reservedJobs != null)
+        {
+            foreach (var (user, (job, station)) in reservedJobs)
+            {
+                if (!allocation.AlreadyCounted.Contains(user) && job is { } id &&
+                    stationJobs.TryGetValue(station, out var slots) &&
+                    slots.TryGetValue(id, out var available) && available is { } amount)
+                    slots[id] = Math.Max(0, amount - 1);
+            }
+        }
+        //SW end
 
 
         // We reuse this collection. It tracks what jobs we're currently trying to select players for.
@@ -203,7 +225,12 @@ public sealed partial class StationJobsSystem
                 foreach (var station in stations)
                 {
                     // Calculates the percent share then multiplies.
-                    stationShares[station] = (int)Math.Floor(((float)stationTotalSlots[station] / totalSlots) * candidates.Count);
+                    //SW start
+                    // Faction role stations are separate admission pools, not populations to equalize.
+                    stationShares[station] = allocation.BalanceStations
+                        ? (int)Math.Floor(((float)stationTotalSlots[station] / totalSlots) * candidates.Count)
+                        : candidates.Count;
+                    //SW end
                     distributed += stationShares[station];
                 }
 
@@ -227,7 +254,12 @@ public sealed partial class StationJobsSystem
                 }
 
                 // Actual meat, goes through each station and shakes the tree until everyone has a job.
-                foreach (var station in stations)
+                //SW start
+                // Equal-priority choices spanning factions must not always prefer the first configured faction.
+                if (!allocation.BalanceStations)
+                    _random.Shuffle(selectionOrder);
+                //SW end
+                foreach (var station in selectionOrder) //SW
                 {
                     if (stationShares[station] == 0)
                         continue;
@@ -292,6 +324,12 @@ public sealed partial class StationJobsSystem
         IReadOnlyDictionary<NetUserId, HumanoidCharacterProfile> profiles,
         IReadOnlyList<EntityUid> stations)
     {
+        //SW start
+        var overflow = new SWGlobalWarOverflowJobsEvent(assignedJobs, allPlayersToAssign, profiles);
+        RaiseLocalEvent(ref overflow);
+        if (overflow.Handled)
+            return;
+        //SW end
         var givenStations = stations.ToList();
         if (givenStations.Count == 0)
             return; // Don't attempt to assign them if there are no stations.

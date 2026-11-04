@@ -58131,11 +58131,6 @@ entities:
           hard: False
           restitution: 0
           friction: 0.4
-    - type: ThrownItem
-      playLandSound: True
-      landTime: 22353.9368238
-      thrownTime: 22353.7109796
-      thrower: invalid
 - proto: ClothingHeadHatBeretBrigmedic
   entities:
   - uid: 36
@@ -293476,11 +293471,6 @@ entities:
           hard: False
           restitution: 0
           friction: 0.4
-    - type: ThrownItem
-      playLandSound: True
-      landTime: 22357.1302816
-      thrownTime: 22356.9443097
-      thrower: invalid
   - uid: 48515
     components:
     - type: Transform
@@ -293752,11 +293742,6 @@ entities:
           hard: False
           restitution: 0
           friction: 0.4
-    - type: ThrownItem
-      playLandSound: True
-      landTime: 22350.8656892
-      thrownTime: 22350.644316
-      thrower: invalid
   - uid: 48561
     components:
     - type: Transform
@@ -298407,34 +298392,6 @@ entities:
           ents: []
 - proto: SWTurret
   entities:
-  - uid: 49061
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -136.5,-102.5
-      parent: 2
-    - type: DeviceLinkSource
-      linkedPorts:
-        49066:
-        - - SWTurretSender
-          - SWTurretConsoleReceiver
-    - type: SWTurretConfig
-    missingComponents:
-    - ActiveRadio
-  - uid: 49062
-    components:
-    - type: Transform
-      rot: 3.141592653589793 rad
-      pos: -136.5,-98.5
-      parent: 2
-    - type: DeviceLinkSource
-      linkedPorts:
-        49066:
-        - - SWTurretSender
-          - SWTurretConsoleReceiver
-    - type: SWTurretConfig
-    missingComponents:
-    - ActiveRadio
   - uid: 49063
     components:
     - type: Transform
@@ -298446,7 +298403,6 @@ entities:
         49065:
         - - SWTurretSender
           - SWTurretConsoleReceiver
-    - type: SWTurretConfig
     missingComponents:
     - ActiveRadio
   - uid: 49064
@@ -298460,7 +298416,6 @@ entities:
         49065:
         - - SWTurretSender
           - SWTurretConsoleReceiver
-    - type: SWTurretConfig
     missingComponents:
     - ActiveRadio
 - proto: SWTurretConsoleEmpire
@@ -298546,6 +298501,34 @@ entities:
         SWSobrikCaptain: False
         SWSobrikMedic: False
         SWSobrikOfficer: False
+- proto: SWTurretRepublic
+  entities:
+  - uid: 49061
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -136.5,-102.5
+      parent: 2
+    - type: DeviceLinkSource
+      linkedPorts:
+        49066:
+        - - SWTurretSender
+          - SWTurretConsoleReceiver
+    missingComponents:
+    - ActiveRadio
+  - uid: 49062
+    components:
+    - type: Transform
+      rot: 3.141592653589793 rad
+      pos: -136.5,-98.5
+      parent: 2
+    - type: DeviceLinkSource
+      linkedPorts:
+        49066:
+        - - SWTurretSender
+          - SWTurretConsoleReceiver
+    missingComponents:
+    - ActiveRadio
 - proto: SWVibroDagger
   entities:
   - uid: 5202

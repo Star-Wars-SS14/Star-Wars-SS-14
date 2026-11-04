@@ -201,16 +201,20 @@ public class SWSharedBankSystem : EntitySystem
     {
         foreach (var (currency, amount) in requests)
         {
-            if (!balance.ContainsKey(currency))
-            {
-                return false;
-            }
-            if (amount > balance[currency])
+            if (!IsValidAmount(amount) || !balance.TryGetValue(currency, out var current) || amount > current)
             {
                 return false;
             }
         }
         return true;
+    }
+
+    /// <summary>
+    /// Amounts come from client messages too: a negative or NaN amount must never reach a balance.
+    /// </summary>
+    public bool IsValidAmount(float amount)
+    {
+        return float.IsFinite(amount) && amount >= 0;
     }
 
     public void SendBill(Entity<SWBillContainerComponent?> account, ref SWBill bill)
@@ -222,7 +226,10 @@ public class SWSharedBankSystem : EntitySystem
 
         account.Comp.Bills.Add(bill);
     }
-    public bool TryPayBill(Entity<SWBankAccountContainerComponent?> ent, SWBill bill)
+    /// <summary>
+    /// Pays the account's own bill with this ID. Clients send only the ID, so they cannot change the amounts.
+    /// </summary>
+    public bool TryPayBill(Entity<SWBankAccountContainerComponent?> ent, int billId)
     {
         if (!Resolve(ent, ref ent.Comp))
         {
@@ -230,6 +237,12 @@ public class SWSharedBankSystem : EntitySystem
         }
 
         var billComp = EnsureComp<SWBillContainerComponent>(ent);
+        var bill = billComp.Bills.Find(x => x.Id == billId);
+        if (bill == null)
+        {
+            return false;
+        }
+
         if (TryPayAll(bill.CurrencyRequests, ent.Comp.CurrentAmount))
         {
             bill.Paid = true;
@@ -277,7 +290,7 @@ public class SWSharedBankSystem : EntitySystem
     {
         foreach (var (currency, amount) in requests)
         {
-            if (amount <= balance[currency])
+            if (IsValidAmount(amount) && balance.TryGetValue(currency, out var current) && amount <= current)
             {
                 var newCost = new Dictionary<ProtoId<SWCurrencyPrototype>, float>();
                 newCost[currency] = amount;

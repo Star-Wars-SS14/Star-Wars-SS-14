@@ -1,0 +1,226 @@
+# Campaign kits carry no weapons or armour: those come from the finite arsenal stock.
+- type: startingGear
+  id: SWGlobalWarRepublicHeadGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsJackFilled
+    ears: SWClothingHeadsetRepublic
+    back: SWRepublicBackpack
+    id: SWIDCardRepublicGeneral
+
+- type: startingGear
+  id: SWGlobalWarRepublicWarMinisterGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsJackFilled
+    ears: SWClothingHeadsetRepublic
+    back: SWRepublicBackpack
+    id: SWIDCardRepublicCaptain
+
+- type: startingGear
+  id: SWGlobalWarRepublicLogisticsMinisterGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsJackFilled
+    ears: SWClothingHeadsetRepublic
+    back: SWRepublicBackpack
+    id: SWIDCardRepublicCaptain
+
+- type: startingGear
+  id: SWGlobalWarRepublicIndustryMinisterGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsJackFilled
+    ears: SWClothingHeadsetRepublic
+    back: SWRepublicBackpack
+    id: SWIDCardRepublicCaptain
+
+- type: startingGear
+  id: SWGlobalWarRepublicLogisticsWorkerGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsJackFilled
+    ears: SWClothingHeadsetRepublic
+    back: SWRepublicBackpack
+    id: SWIDCardRepublicEngineer
+
+- type: startingGear
+  id: SWGlobalWarRepublicIndustryWorkerGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsJackFilled
+    ears: SWClothingHeadsetRepublic
+    back: SWRepublicBackpack
+    id: SWIDCardRepublicEngineer
+
+- type: startingGear
+  id: SWGlobalWarRepublicSeniorOfficerGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsJackFilled
+    ears: SWClothingHeadsetRepublic
+    back: SWRepublicBackpack
+    id: SWIDCardRepublicGeneral
+
+- type: startingGear
+  id: SWGlobalWarRepublicJuniorOfficerGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsJackFilled
+    ears: SWClothingHeadsetRepublic
+    back: SWRepublicBackpack
+    id: SWIDCardRepublicLieutenant
+
+- type: startingGear
+  id: SWGlobalWarRepublicPilotGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsJackFilled
+    ears: SWClothingHeadsetRepublicPilot
+    back: SWRepublicBackpack
+    id: SWIDCardRepublicPilot
+
+- type: startingGear
+  id: SWGlobalWarRepublicSoldierGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsJackFilled
+    ears: SWClothingHeadsetRepublic
+    back: SWRepublicBackpack
+    id: SWIDCardRepublicSoldier
+
+- type: startingGear
+  id: SWGlobalWarRepublicIntelligenceGear
+  # In hand, not a pocket: a species without a uniform slot has no pocket, and its item would be deleted.
+  inhand:
+  - SWGlobalWarReconDatapad
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsJackFilled
+    ears: SWClothingHeadsetRepublic
+    back: SWRepublicBackpack
+    id: SWIDCardRepublicSoldier
+
+- type: startingGear
+  id: SWGlobalWarRepublicCitizenGear
+  equipment:
+    back: SWRepublicBackpack
+    id: SWIDCardCivilian
+    outerClothing: SWCitizenClothing
+    shoes: SWClothingShoesBootsCitizen
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    ears: SWClothingHeadsetRepublic
+    pocket1: FlashlightLantern
+
+- type: startingGear
+  id: SWGlobalWarEmpireHeadGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsCombatFilled
+    ears: SWClothingHeadsetRegular
+    back: SWImperialBackpack
+    id: SWIDCardEmpireMoff
+
+- type: startingGear
+  id: SWGlobalWarEmpireWarMinisterGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsCombatFilled
+    ears: SWClothingHeadsetRegular
+    back: SWImperialBackpack
+    id: SWIDCardEmpireMajor
+
+- type: startingGear
+  id: SWGlobalWarEmpireLogisticsMinisterGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsCombatFilled
+    ears: SWClothingHeadsetRegular
+    back: SWImperialBackpack
+    id: SWIDCardEmpireMajor
+
+- type: startingGear
+  id: SWGlobalWarEmpireIndustryMinisterGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsCombatFilled
+    ears: SWClothingHeadsetRegular
+    back: SWImperialBackpack
+    id: SWIDCardEmpireMajor
+
+- type: startingGear
+  id: SWGlobalWarEmpireLogisticsWorkerGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsCombatFilled
+    ears: SWClothingHeadsetRegular
+    back: SWImperialBackpack
+    id: SWIDCardEmpireEngineer
+
+- type: startingGear
+  id: SWGlobalWarEmpireIndustryWorkerGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsCombatFilled
+    ears: SWClothingHeadsetRegular
+    back: SWImperialBackpack
+    id: SWIDCardEmpireEngineer
+
+- type: startingGear
+  id: SWGlobalWarEmpireSeniorOfficerGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsCombatFilled
+    ears: SWClothingHeadsetRegular
+    back: SWImperialBackpack
+    id: SWIDCardEmpireMoff
+
+- type: startingGear
+  id: SWGlobalWarEmpireJuniorOfficerGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsCombatFilled
+    ears: SWClothingHeadsetRegular
+    back: SWImperialBackpack
+    id: SWIDCardEmpireLieutenant
+
+- type: startingGear
+  id: SWGlobalWarEmpirePilotGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsCombatFilled
+    ears: SWClothingHeadsetEmpirePilot
+    back: SWImperialBackpack
+    id: SWIDCardEmpirePilot
+
+- type: startingGear
+  id: SWGlobalWarEmpireSoldierGear
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsCombatFilled
+    ears: SWClothingHeadsetRegular
+    back: SWImperialBackpack
+    id: SWIDCardEmpireSoldier
+
+- type: startingGear
+  id: SWGlobalWarEmpireIntelligenceGear
+  # In hand, not a pocket: a species without a uniform slot has no pocket, and its item would be deleted.
+  inhand:
+  - SWGlobalWarReconDatapad
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    shoes: SWClothingShoesBootsCombatFilled
+    ears: SWClothingHeadsetRegular
+    back: SWImperialBackpack
+    id: SWIDCardEmpireSoldier
+
+- type: startingGear
+  id: SWGlobalWarEmpireCitizenGear
+  equipment:
+    back: SWImperialBackpack
+    id: SWIDCardCivilian
+    outerClothing: SWCitizenClothing
+    shoes: SWClothingShoesBootsCitizen
+    jumpsuit: SWClothingUniformJumpsuitFleece
+    ears: SWClothingHeadsetRegular
+    pocket1: FlashlightLantern

@@ -139,6 +139,10 @@
           collection: MetalBreak
       - !type:ChangeConstructionNodeBehavior
         node: electronicsLatheDestroyed
+  - type: SWGlobalWarFactory
+    factory: true
+    kind: Magazine
+    extraKinds: [AdvancedElectronics]
   - type: SWLathe
     recipes:
     - SWAdvancedCableSLR
@@ -148,6 +152,8 @@
     key: enum.SWLatheUiKey.Key
   - type: UserInterface
     interfaces:
+      enum.SWGlobalWarFactoryUiKey.Key:
+        type: SWGlobalWarFactoryBoundUserInterface
       enum.SWLatheUiKey.Key:
         type: SWLatheBoundUserInterface
 
@@ -179,6 +185,10 @@
           collection: MetalBreak
       - !type:ChangeConstructionNodeBehavior
         node: blasterLatheDestroyed
+  - type: SWGlobalWarFactory
+    factory: true
+    kind: T2
+    extraKinds: [Armor]
   - type: SWLathe
     recipes:
     - SWBarrelSLR
@@ -189,6 +199,8 @@
     key: enum.SWLatheUiKey.Key
   - type: UserInterface
     interfaces:
+      enum.SWGlobalWarFactoryUiKey.Key:
+        type: SWGlobalWarFactoryBoundUserInterface
       enum.SWLatheUiKey.Key:
         type: SWLatheBoundUserInterface
 
@@ -220,6 +232,9 @@
           collection: MetalBreak
       - !type:ChangeConstructionNodeBehavior
         node: smeltLatheDestroyed
+  - type: SWGlobalWarFactory
+    factory: true
+    autoStart: false
   - type: SWLathe
     recipes:
     - SWOreToSteelSLR
@@ -231,6 +246,8 @@
     key: enum.SWLatheUiKey.Key
   - type: UserInterface
     interfaces:
+      enum.SWGlobalWarFactoryUiKey.Key:
+        type: SWGlobalWarFactoryBoundUserInterface
       enum.SWLatheUiKey.Key:
         type: SWLatheBoundUserInterface
 
@@ -261,6 +278,9 @@
     graph: SWLatheGraph
     node: vehicleFabricator
   - type: Godmode
+  - type: SWGlobalWarFactory
+    factory: true
+    autoStart: false
   - type: SWLathe
     spawnPointOut: "0.0, 0.0"
     recipes:
@@ -271,6 +291,8 @@
     key: enum.SWLatheUiKey.Key
   - type: UserInterface
     interfaces:
+      enum.SWGlobalWarFactoryUiKey.Key:
+        type: SWGlobalWarFactoryBoundUserInterface
       enum.SWLatheUiKey.Key:
         type: SWLatheBoundUserInterface
 
@@ -301,6 +323,9 @@
     graph: SWLatheGraph
     node: droidFabricator
   - type: Godmode
+  - type: SWGlobalWarFactory
+    factory: true
+    autoStart: false
   - type: SWLathe
     spawnPointOut: "0.0, 0.0"
     recipes:
@@ -311,6 +336,8 @@
     key: enum.SWLatheUiKey.Key
   - type: UserInterface
     interfaces:
+      enum.SWGlobalWarFactoryUiKey.Key:
+        type: SWGlobalWarFactoryBoundUserInterface
       enum.SWLatheUiKey.Key:
         type: SWLatheBoundUserInterface
 

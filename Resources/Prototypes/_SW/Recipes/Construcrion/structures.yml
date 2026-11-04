@@ -1,14 +1,11 @@
 - type: construction
-  name: Airlock
+  name: sw-construction-airlock-name
   id: SWAirlock
   graph: Airlock
   startNode: start
   targetNode: airlock
   category: construction-category-structures
-  description: It opens, it closes, and maybe crushes you.
-  icon:
-    sprite: _SW/Structures/Doors/Airlocks/Glass/basic.rsi
-    state: assembly
+  description: sw-construction-airlock-desc
   objectType: Structure
   placementMode: SnapgridCenter
   canBuildInImpassable: false

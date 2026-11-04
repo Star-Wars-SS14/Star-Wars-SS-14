@@ -60,3 +60,9 @@
 
 - type: cargoMarket
   id: SWMiscMarket
+
+- type: cargoMarket
+  id: SWRepublicEquipmentMarket
+
+- type: cargoMarket
+  id: SWEmpireEquipmentMarket

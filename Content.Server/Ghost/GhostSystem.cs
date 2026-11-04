@@ -372,6 +372,7 @@ namespace Content.Server.Ghost
                     continue;
 
                 if (attached == except) continue;
+                if (HasComp<Content.Server._SW.Tutorial.SWTutorialPlayerComponent>(attached)) continue; //SW
 
                 TryComp<MindContainerComponent>(attached, out var mind);
 

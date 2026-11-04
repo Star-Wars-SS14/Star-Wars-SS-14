@@ -1,0 +1,52 @@
+<ui:SWGlobalWarWindow xmlns="https://spacestation14.io"
+                      xmlns:ui="clr-namespace:Content.Client._SW.GlobalWar.UI"
+                      xmlns:term="clr-namespace:Content.Client._SW.UserInterface"
+                      Title="{Loc 'sw-global-war-round-end-window'}" MinSize="760 480" SetSize="950 541">
+    <BoxContainer Orientation="Vertical" SeparationOverride="0">
+        <Control Name="Hero" RectClipContent="True">
+            <TextureRect Name="HeroScene" Stretch="KeepAspectCovered" HorizontalExpand="True" VerticalExpand="True" />
+            <ui:SWGlobalWarRoundEndRays Name="HeroRays" />
+            <TextureRect Name="HeroTroops" Stretch="KeepAspectCovered" HorizontalExpand="True" VerticalExpand="True" />
+            <BoxContainer Name="HeroWords" Orientation="Vertical" SeparationOverride="4" VerticalAlignment="Top" HorizontalAlignment="Left">
+                <Label Name="Heading" Text="{Loc 'sw-global-war-round-end-heading'}" />
+                <Label Name="Verdict" />
+                <RichTextLabel Name="Reason" />
+                <PanelContainer Name="StampPlate" HorizontalAlignment="Left">
+                    <Label Name="Personal" Margin="10 3" />
+                </PanelContainer>
+            </BoxContainer>
+            <PanelContainer StyleClasses="SWTermFrame" SetSize="22 22" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 8 8 0">
+                <term:SWTerminalCloseButton Name="Cross" />
+            </PanelContainer>
+        </Control>
+        <PanelContainer Name="HeroLine" MinHeight="3" />
+        <PanelContainer Name="ScoreBand">
+            <BoxContainer Orientation="Vertical" Margin="20 8" SeparationOverride="10" VerticalAlignment="Center">
+                <BoxContainer SeparationOverride="12">
+                    <TextureRect Name="RepublicIcon" Stretch="KeepCentered" SetSize="48 48" VerticalAlignment="Center" />
+                    <Label Name="RepublicCount" MinWidth="150" VAlign="Center" />
+                    <BoxContainer Name="ScoreCells" HorizontalExpand="True" SeparationOverride="2" VerticalAlignment="Center" />
+                    <Label Name="EmpireCount" MinWidth="122" Align="Right" VAlign="Center" />
+                    <TextureRect Name="EmpireIcon" Stretch="KeepCentered" SetSize="48 48" VerticalAlignment="Center" />
+                </BoxContainer>
+                <BoxContainer Margin="62 0">
+                    <Label Name="RepublicWord" Text="{Loc 'sw-global-war-round-end-stat-republic'}" HorizontalExpand="True" />
+                    <Label Name="OtherCount" HorizontalExpand="True" Align="Center" />
+                    <Label Name="EmpireWord" Text="{Loc 'sw-global-war-round-end-stat-empire'}" HorizontalExpand="True" Align="Right" />
+                </BoxContainer>
+            </BoxContainer>
+        </PanelContainer>
+        <BoxContainer Margin="20 0" SeparationOverride="10" VerticalExpand="True">
+            <Label Name="TimelineTitle" Text="{Loc 'sw-global-war-round-end-timeline'}" VAlign="Center" />
+            <Label Text="0" VAlign="Center" />
+            <ui:SWGlobalWarRoundEndTimeline Name="Timeline" VerticalAlignment="Center" />
+            <Label Name="TimelineEnd" VAlign="Center" />
+        </BoxContainer>
+        <PanelContainer StyleClasses="SWTermDivider" MinHeight="1" />
+        <BoxContainer Margin="20 0 12 0" SeparationOverride="12" MinHeight="46">
+            <Label Name="Details" HorizontalExpand="True" VAlign="Center" />
+            <ui:SWGlobalWarConsoleButton Name="Summary" Text="{Loc 'sw-global-war-round-end-summary'}" SetSize="130 30" VerticalAlignment="Center" />
+            <ui:SWGlobalWarConsoleButton Name="Close" Text="{Loc 'sw-global-war-round-end-close'}" SetSize="130 30" VerticalAlignment="Center" />
+        </BoxContainer>
+    </BoxContainer>
+</ui:SWGlobalWarWindow>

@@ -14,8 +14,5 @@ public sealed partial class SWAddMoneyOnCompletedComponent : Component
     [DataField]
     public Dictionary<ProtoId<SWCurrencyPrototype>, float> Amount = new Dictionary<ProtoId<SWCurrencyPrototype>, float>();
 
-    [DataField]
-    public LocId DescriptionId = "sw-add-money-on-completed";
-
     public bool Added = false;
 }

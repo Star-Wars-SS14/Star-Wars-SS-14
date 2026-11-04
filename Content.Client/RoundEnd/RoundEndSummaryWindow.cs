@@ -50,6 +50,7 @@ namespace Content.Client.RoundEnd
 
             var roundEndSummaryContainerScrollbox = new ScrollContainer
             {
+                HScrollEnabled = false, //SW long task lines wrap instead of running off the window
                 VerticalExpand = true,
                 Margin = new Thickness(10)
             };
@@ -99,6 +100,7 @@ namespace Content.Client.RoundEnd
 
             var playerInfoContainerScrollbox = new ScrollContainer
             {
+                HScrollEnabled = false, //SW
                 VerticalExpand = true,
                 Margin = new Thickness(10)
             };

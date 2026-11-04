@@ -1,0 +1,43 @@
+# Black swamp water for Dromund Kaas: the same two waters, deep stops a body, shallow slows it, in the colour of the place.
+
+- type: entity
+  parent: SWFloorWaterEntity
+  id: SWFloorWaterSwampDeep
+  name: black water
+  description: You cannot see the bottom from here. Better not to check.
+  suffix: Wall, swamp
+  components:
+  - type: Sprite
+    sprite: Tiles/Planet/water.rsi
+    color: "#2F4A50"
+    drawdepth: BelowFloor
+    layers:
+      - state: shoreline_water
+
+- type: entity
+  parent: FloorWaterEntity
+  id: SWFloorWaterSwampShallow
+  name: swamp water
+  description: Knee deep. Something stirs right by your boots.
+  suffix: swamp
+  components:
+  - type: Sprite
+    sprite: Tiles/Planet/water.rsi
+    color: "#3D5852"
+    drawdepth: BelowFloor
+    layers:
+      - state: shoreline_water
+
+- type: entity
+  parent: SWFloorWaterEntity
+  id: SWFloorAlgaeVat
+  name: algae vat
+  description: Thick amber sludge. Rations are made from it. Better not to know how.
+  suffix: Wall, amber
+  components:
+  - type: Sprite
+    sprite: Tiles/Planet/liquid_plasma.rsi
+    color: "#C8922E"
+    drawdepth: BelowFloor
+    layers:
+      - state: plasma

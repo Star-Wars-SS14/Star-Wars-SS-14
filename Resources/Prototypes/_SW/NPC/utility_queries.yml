@@ -4,7 +4,7 @@
     - !type:ComponentQuery
       components:
         - type: HumanoidAppearance
-          species: randomshit
+          species: Human # required field, only the component type is used by the query
     - !type:ComponentQuery
       components:
         - type: Body

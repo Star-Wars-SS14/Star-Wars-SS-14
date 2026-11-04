@@ -1,6 +1,6 @@
 - type: stack
   id: RMCCable
-  name: катушка кабеля
+  name: stack-sw-rmc-cable-coil
   icon: { sprite: _RMC14/Objects/Power/coil.rsi, state: coil1 }
   spawn: RMCCableCoil
   maxCount: 30

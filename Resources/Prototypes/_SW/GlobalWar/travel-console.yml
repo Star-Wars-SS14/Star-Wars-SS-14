@@ -1,0 +1,27 @@
+- type: entity
+  parent: BaseComputer
+  id: SWGlobalWarTravelConsole
+  name: interplanetary navigation console
+  description: Plots hyperspace routes between Global War orbital stations.
+  components:
+  - type: SWGlobalWarTravelConsole
+  - type: ActivatableUI
+    key: enum.SWGlobalWarTravelConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWGlobalWarTravelConsoleUiKey.Key:
+        type: SWGlobalWarTravelConsoleBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: shuttle
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+    - map: ["enum.WiresVisualLayers.MaintenancePanel"]
+      state: generic_panel_open

@@ -23,6 +23,17 @@ public sealed class TaskConsoleBounderUserInterfaceState : BoundUserInterfaceSta
     {
         Tasklist = list;
     }
+
+    // SetUiState skips a state equal to the last one, so polling sends only real changes.
+    public override bool Equals(object? obj)
+    {
+        return obj is TaskConsoleBounderUserInterfaceState other && Tasklist.SequenceEqual(other.Tasklist);
+    }
+
+    public override int GetHashCode()
+    {
+        return Tasklist.Count;
+    }
 }
 
 [Serializable]
@@ -31,16 +42,29 @@ public sealed class TaskInfo
     public string TaskName;
     public string TaskDesc;
     public FixedPoint2 Status;
-    public TaskInfo(string tn, string td, FixedPoint2 s)
+    public List<string> Rewards;
+    public string Score;
+    public TaskInfo(string tn, string td, FixedPoint2 s, List<string> rewards, string score)
     {
         TaskName = tn;
         TaskDesc = td;
         Status = s;
+        Rewards = rewards;
+        Score = score;
     }
-}
 
-[Serializable, NetSerializable]
-public sealed class UpdateTasksMessage : BoundUserInterfaceMessage
-{
+    public override bool Equals(object? obj)
+    {
+        return obj is TaskInfo other
+            && TaskName == other.TaskName
+            && TaskDesc == other.TaskDesc
+            && Status == other.Status
+            && Rewards.SequenceEqual(other.Rewards)
+            && Score == other.Score;
+    }
 
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(TaskName, TaskDesc, Status);
+    }
 }

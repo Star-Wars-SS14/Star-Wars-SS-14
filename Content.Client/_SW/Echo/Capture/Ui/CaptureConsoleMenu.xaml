@@ -29,7 +29,7 @@
         <customControls:VSeparator StyleClasses="LowDivider" />
         <PanelContainer Margin="10 10 10 10" HorizontalExpand="True" SizeFlagsStretchRatio="3">
             <PanelContainer.PanelOverride>
-                <gfx:StyleBoxFlat BackgroundColor="#000000FF" />
+                <gfx:StyleBoxFlat BackgroundColor="#0C0E0F" />
             </PanelContainer.PanelOverride>
             <BoxContainer Margin="10 10 10 10" Orientation="Horizontal">
                 <BoxContainer Orientation="Vertical" HorizontalExpand="True">
@@ -42,3 +42,4 @@
         </PanelContainer>
     </BoxContainer>
 </controls:FancyWindow>
+<!-- #SW: terminal colours -->

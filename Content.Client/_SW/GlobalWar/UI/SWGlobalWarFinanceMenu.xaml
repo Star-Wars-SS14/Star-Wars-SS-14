@@ -1,0 +1,84 @@
+<ui:SWGlobalWarWindow xmlns="https://spacestation14.io"
+    xmlns:ui="clr-namespace:Content.Client._SW.GlobalWar.UI"
+    Title="{Loc 'sw-global-war-finance-title'}" MinSize="640 400" SetSize="1180 770">
+    <BoxContainer Orientation="Vertical" SeparationOverride="0">
+        <ui:SWGlobalWarBand Name="TreasuryBand" SetHeight="100">
+            <BoxContainer Name="TreasuryRow" SeparationOverride="8" Margin="170 8 34 8" Visible="False">
+                <ui:SWGlobalWarPlate Name="TreasuryPlate" SetWidth="400">
+                    <BoxContainer Orientation="Vertical" SeparationOverride="0" Margin="12 4" VerticalAlignment="Center">
+                        <Label Name="TreasuryWord" Text="{Loc 'sw-global-war-finance-treasury-free'}" />
+                        <Label Name="TreasuryFree" />
+                        <Label Name="TreasuryTotals" />
+                    </BoxContainer>
+                </ui:SWGlobalWarPlate>
+                <ui:SWGlobalWarPlate HorizontalExpand="True">
+                    <BoxContainer Orientation="Vertical" SeparationOverride="4" Margin="12 6" VerticalAlignment="Center">
+                        <Label Name="ShareWord" />
+                        <ui:SWGlobalWarShareBar Name="Shares" SetHeight="16" />
+                        <BoxContainer Name="ShareLegend" SeparationOverride="14" />
+                    </BoxContainer>
+                </ui:SWGlobalWarPlate>
+            </BoxContainer>
+            <ui:SWGlobalWarPlate HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 6 6 0">
+                <Label Name="HelpMark" Text="?" Margin="6 0" StyleClasses="SWTermValue" MouseFilter="Stop" ToolTip="{Loc 'sw-global-war-finance-balance-hint'}" />
+            </ui:SWGlobalWarPlate>
+        </ui:SWGlobalWarBand>
+        <PanelContainer StyleClasses="SWTermDivider" MinHeight="1" />
+        <ScrollContainer VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False">
+            <BoxContainer Orientation="Vertical" SeparationOverride="8" Margin="12 8" VerticalExpand="True">
+                <RichTextLabel Name="Status" Text="{Loc 'sw-global-war-government-loading'}" />
+                <RichTextLabel Name="Result" />
+                <ui:SWGlobalWarConsoleButton Name="Retry" Text="{Loc 'sw-global-war-government-retry'}" Visible="False" />
+                <BoxContainer Name="Content" Orientation="Vertical" SeparationOverride="8" VerticalExpand="True" Visible="False">
+                    <WrapContainer Name="Transfers" SeparationOverride="8" CrossSeparationOverride="6">
+                        <Label Text="{Loc 'sw-global-war-finance-source'}" VAlign="Center" />
+                        <OptionButton Name="AccountSelector" MinWidth="200" />
+                        <Label Text="{Loc 'sw-global-war-finance-amount-label'}" VAlign="Center" Margin="8 0 0 0" />
+                        <LineEdit Name="Amount" Text="30000" PlaceHolder="{Loc 'sw-global-war-government-amount'}" MinWidth="120" />
+                        <ui:SWGlobalWarConsoleButton Name="Add10" Text="+10к" />
+                        <ui:SWGlobalWarConsoleButton Name="Add50" Text="+50к" />
+                        <ui:SWGlobalWarConsoleButton Name="Add100" Text="+100к" />
+                        <ui:SWGlobalWarConsoleButton Name="AddAll" Text="{Loc 'sw-global-war-finance-amount-all'}" />
+                        <ui:SWGlobalWarConsoleButton Name="TreasuryOrder" Text="{Loc 'sw-global-war-finance-new-treasury-order'}" Visible="False" />
+                    </WrapContainer>
+                    <RichTextLabel Name="TransferHint" />
+                    <BoxContainer Name="TreasuryOrders" Orientation="Vertical" SeparationOverride="4" Visible="False" />
+                    <BoxContainer Name="TreasurySlot" Orientation="Vertical" Visible="False" />
+                    <BoxContainer Name="Columns" SeparationOverride="12" VerticalExpand="True" HorizontalExpand="True" />
+                    <RichTextLabel Name="BalancesNote" Visible="False" />
+                    <BoxContainer Name="MyOrders" Orientation="Vertical" SeparationOverride="4" Visible="False">
+                        <Label Name="OrdersTitle" Text="{Loc 'sw-global-war-finance-orders'}" StyleClasses="SWTermHeading" />
+                    </BoxContainer>
+                    <BoxContainer Name="OrdersPages" SeparationOverride="6" HorizontalAlignment="Right" Visible="False">
+                        <ui:SWGlobalWarConsoleButton Name="LatestOrders" Text="{Loc 'sw-global-war-finance-latest-orders'}" />
+                        <ui:SWGlobalWarConsoleButton Name="OlderOrders" Text="{Loc 'sw-global-war-finance-older-orders'}" Disabled="True" />
+                        <ui:SWGlobalWarConsoleButton Name="NewerOrders" Text="{Loc 'sw-global-war-finance-newer-orders'}" Disabled="True" />
+                    </BoxContainer>
+                    <BoxContainer Name="OrderCreation" Orientation="Vertical" SeparationOverride="6" Visible="False">
+                        <Label Name="NewOrderTitle" Text="{Loc 'sw-global-war-finance-new-order'}" />
+                        <OptionButton Name="EmployeeSelector" Filterable="True" />
+                        <LineEdit Name="Purpose" PlaceHolder="{Loc 'sw-global-war-finance-purpose'}" />
+                        <ui:SWGlobalWarConsoleButton Name="Reserve" Text="{Loc 'sw-global-war-finance-reserve'}" ToolTip="{Loc 'sw-global-war-finance-order-hint'}" MinHeight="32" />
+                        <RichTextLabel Name="ReserveHint" />
+                    </BoxContainer>
+                    <RichTextLabel Name="JournalRestricted" Text="{Loc 'sw-global-war-finance-journal-restricted'}" Visible="False" />
+                    <PanelContainer Name="JournalPanel">
+                        <BoxContainer Orientation="Vertical" SeparationOverride="4" Margin="10 6">
+                            <BoxContainer SeparationOverride="6">
+                                <Label Text="{Loc 'sw-global-war-finance-journal'}" StyleClasses="SWTermHeading" VAlign="Center" />
+                                <Label Name="NewEntries" Text="{Loc 'sw-global-war-finance-new-entries'}" Visible="False" VAlign="Center" HorizontalExpand="True" />
+                                <Control HorizontalExpand="True" />
+                                <ui:SWGlobalWarConsoleButton Name="LatestJournal" Text="{Loc 'sw-global-war-finance-latest-journal'}" />
+                                <ui:SWGlobalWarConsoleButton Name="OlderJournal" Text="{Loc 'sw-global-war-finance-older-journal'}" Disabled="True" />
+                                <ui:SWGlobalWarConsoleButton Name="NewerJournal" Text="{Loc 'sw-global-war-finance-newer-journal'}" Disabled="True" />
+                            </BoxContainer>
+                            <ScrollContainer Name="JournalScroll" SetHeight="92" HScrollEnabled="False">
+                                <BoxContainer Name="Journal" Orientation="Vertical" SeparationOverride="2" HorizontalExpand="True" />
+                            </ScrollContainer>
+                        </BoxContainer>
+                    </PanelContainer>
+                </BoxContainer>
+            </BoxContainer>
+        </ScrollContainer>
+    </BoxContainer>
+</ui:SWGlobalWarWindow>

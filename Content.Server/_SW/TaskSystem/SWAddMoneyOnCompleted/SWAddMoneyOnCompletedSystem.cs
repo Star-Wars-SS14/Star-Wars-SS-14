@@ -13,31 +13,11 @@ namespace Content.Server._SW.TaskSystem.SWAddMoneyOnCompleted;
 public sealed class SWAddMoneyOnCompletedSystem : EntitySystem
 {
     [Dependency] private readonly SWBankSystem _bankSystem = default!;
-    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     public override void Initialize()
     {
         base.Initialize();
-        SubscribeLocalEvent<SWAddMoneyOnCompletedComponent, SWTaskProvideAdditionalDescriptionEvent>(OnDescriptionProvided);
         SubscribeLocalEvent<SWAddMoneyOnCompletedComponent, SWOnTaskCompleteEvent>(OnComplete);
         SubscribeLocalEvent<SWAddMoneyBasedOnTargetScoreComponent, SWOnTaskCompleteEvent>(OnCompleteBasedOnScore);
-    }
-
-    private void OnDescriptionProvided(Entity<SWAddMoneyOnCompletedComponent> ent, ref SWTaskProvideAdditionalDescriptionEvent args)
-    {
-        var comp = EnsureComp<SWTaskComponent>(ent.Owner);
-        var message = $"\n{Loc.GetString(ent.Comp.DescriptionId)}\n";
-        foreach (var (key, amount) in ent.Comp.Amount)
-        {
-            var proto = _prototypeManager.Index(key);
-            if (proto == null)
-            {
-                continue;
-            }
-
-            message += $"-{Loc.GetString(proto.ShortName)}: {amount}\n";
-        }
-
-        args.Task.Comp.Description += message;
     }
 
     private void OnComplete(Entity<SWAddMoneyOnCompletedComponent> ent, ref SWOnTaskCompleteEvent args)
@@ -76,7 +56,7 @@ public sealed class SWAddMoneyOnCompletedSystem : EntitySystem
             return;
 
         var account = _bankSystem.GetFactionAccount(taskComp.OwningFaction);
-        int scores = scoreComp.JobsToScores[comp.JobOfTarget];
+        scoreComp.JobsToScores.TryGetValue(comp.JobOfTarget, out var scores);
 
         var amount = ent.Comp.MoneyPerScore.ToDictionary(kvp => kvp.Key, kvp => kvp.Value * scores);
 

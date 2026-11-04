@@ -1,7 +1,7 @@
 - type: swcurrency
   id : SWEmpireCreditCurrency
-  localizedName: Имперский кредит
-  shortName: ИК
+  localizedName: sw-currency-empire-credit-currency-name
+  shortName: sw-currency-empire-credit-currency-short
   cashEntity: SWEmpireCredits
   exchangeRates:
     SWRepublicCreditCurrency: 1.5
@@ -9,8 +9,8 @@
 
 - type: swcurrency
   id : SWRepublicCreditCurrency
-  localizedName: Республиканский кредит
-  shortName: РК
+  localizedName: sw-currency-republic-credit-currency-name
+  shortName: sw-currency-republic-credit-currency-short
   cashEntity: SWRepublicCredits
   exchangeRates:
     SWEmpireCreditCurrency: 0.66666667
@@ -18,8 +18,8 @@
 
 - type: swcurrency
   id : SWVanillaCurrency
-  localizedName: Местный кредит
-  shortName: МК
+  localizedName: sw-currency-vanilla-currency-name
+  shortName: sw-currency-vanilla-currency-short
   cashEntity: SpaceCash
   exchangeRates:
     SWEmpireCreditCurrency: 0.25
@@ -27,30 +27,30 @@
 
 - type: swcurrency
   id : SWReinforcementScore
-  localizedName: Очки подкреплений
-  shortName: ОП
+  localizedName: sw-currency-reinforcement-score-name
+  shortName: sw-currency-reinforcement-score-short
   cashEntity: SWReinforcementCredits
 
 - type: swcurrency
   id : SWSupplyScoresEmpire
-  localizedName: Очки специального снабжения Империи
-  shortName: ОСИ
+  localizedName: sw-currency-supply-scores-empire-name
+  shortName: sw-currency-supply-scores-empire-short
   cashEntity: SWSupplyScoresEmpireCredits
 
 - type: swcurrency
   id : SWSupplyScoresRepublic
-  localizedName: Очки специального снабжения Республики
-  shortName: ОСР
+  localizedName: sw-currency-supply-scores-republic-name
+  shortName: sw-currency-supply-scores-republic-short
   cashEntity: SWSupplyScoresRepublicCredits
 
 - type: swcurrency
   id : SWBlackMarketSupplyScores
-  localizedName: Очки снабжения чёрного рынка
-  shortName: ОСЧР
+  localizedName: sw-currency-black-market-supply-scores-name
+  shortName: sw-currency-black-market-supply-scores-short
   cashEntity: SWBlackMarketSupplyCredits
 
 - type: swcurrency
   id : SWMandalorianSupplyScores
-  localizedName: Очки снабжения мандалора
-  shortName: ОСМ
+  localizedName: sw-currency-mandalorian-supply-scores-name
+  shortName: sw-currency-mandalorian-supply-scores-short
   cashEntity: SWMandalorianSupplyCredits

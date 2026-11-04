@@ -1,0 +1,43 @@
+- type: department
+  id: SWGlobalWarRepublic
+  name: sw-gw-department-republic
+  description: sw-gw-department-republic-description
+  color: "#3A5F8A"
+  editorHidden: true
+  roles:
+  - SWGlobalWarRepublicHead
+  - SWGlobalWarRepublicWarMinister
+  - SWGlobalWarRepublicLogisticsMinister
+  - SWGlobalWarRepublicIndustryMinister
+  - SWGlobalWarRepublicLogisticsWorker
+  - SWGlobalWarRepublicIndustryWorker
+  - SWGlobalWarRepublicSeniorOfficer
+  - SWGlobalWarRepublicJuniorOfficer
+  - SWGlobalWarRepublicPilot
+  - SWGlobalWarRepublicSoldier
+  - SWGlobalWarRepublicForceUser
+  - SWGlobalWarRepublicIntelligence
+  - SWGlobalWarRepublicCitizen
+  weight: 1890
+
+- type: department
+  id: SWGlobalWarEmpire
+  name: sw-gw-department-empire
+  description: sw-gw-department-empire-description
+  color: "#8B0000"
+  editorHidden: true
+  roles:
+  - SWGlobalWarEmpireHead
+  - SWGlobalWarEmpireWarMinister
+  - SWGlobalWarEmpireLogisticsMinister
+  - SWGlobalWarEmpireIndustryMinister
+  - SWGlobalWarEmpireLogisticsWorker
+  - SWGlobalWarEmpireIndustryWorker
+  - SWGlobalWarEmpireSeniorOfficer
+  - SWGlobalWarEmpireJuniorOfficer
+  - SWGlobalWarEmpirePilot
+  - SWGlobalWarEmpireSoldier
+  - SWGlobalWarEmpireForceUser
+  - SWGlobalWarEmpireIntelligence
+  - SWGlobalWarEmpireCitizen
+  weight: 1880

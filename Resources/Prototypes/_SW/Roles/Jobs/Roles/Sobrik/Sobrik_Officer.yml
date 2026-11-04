@@ -1,6 +1,7 @@
 - type: job
   id: SWSobrikOfficer
   name: Офицер Корпуса
+  description: job-description-sw-sobrik-officer
   playTimeTracker: Job_Sobrik_Officer
   requirements:
   - !type:OverallPlaytimeRequirement

@@ -10,7 +10,7 @@ public sealed partial class PdaSettingsButton : ContainerButton
 {
     public const string StylePropertyFgColor = "foregroundColor";
     public const string StylePropertyBgColor = "backgroundColor";
-    public const string NormalBgColor = "#313138";
+    public const string NormalBgColor = "#272A30"; //SW
     public const string HoverColor = "#3E6C45";
     public const string PressedColor = "#3E6C45";
     public const string DisabledFgColor = "#5a5a5a";
@@ -18,7 +18,7 @@ public sealed partial class PdaSettingsButton : ContainerButton
 
     private readonly StyleBoxFlat _styleBox = new()
     {
-        BackgroundColor = Color.FromHex("#25252a")
+        BackgroundColor = Color.FromHex("#1B1D23") //SW
     };
 
     public string? Text

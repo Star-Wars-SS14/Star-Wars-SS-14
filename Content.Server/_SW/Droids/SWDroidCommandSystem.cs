@@ -565,6 +565,33 @@ public sealed class SWDroidCommandSystem : EntitySystem
         return true;
     }
 
+    /// <summary>
+    /// Applies an authorized strategic console order through the same AI planner as personal droid commands.
+    /// The caller supplies current campaign authority; this adapter still validates faction, hardware and rank.
+    /// </summary>
+    public bool TrySetDefenceOrder(EntityUid droid, EntityUid commander, string faction, int rank,
+        SWDroidOrderType order, EntityCoordinates coordinates)
+    {
+        if (order is not (SWDroidOrderType.Stay or SWDroidOrderType.GoTo or SWDroidOrderType.Follow) ||
+            !IsAvailableDroid(droid) || !TryComp<SWDroidCommandableComponent>(droid, out var commandable) ||
+            commandable.Faction != faction || !HasComp<HTNComponent>(droid) ||
+            commandable.ActiveCommander != commander && !CanTakeCommand(commander, commandable, rank))
+            return false;
+        if (commandable.ActiveCommander is { } previous &&
+            TryComp<SWDroidCommanderComponent>(previous, out var previousCommander))
+        {
+            previousCommander.Droids.Remove(droid);
+            UpdateOrderActions(previous, previousCommander);
+        }
+        var controller = EnsureComp<SWDroidCommanderComponent>(commander);
+        controller.Droids.Add(droid);
+        commandable.ActiveCommander = commander;
+        commandable.ActiveCommanderRank = rank;
+        Dirty(droid, commandable);
+        SetOrder(droid, commandable, commander, order, coordinates);
+        return true;
+    }
+
     public bool TryStopFollowingDatapad(EntityUid droid, EntityUid datapad)
     {
         if (!IsFollowingDatapad(droid, datapad) ||

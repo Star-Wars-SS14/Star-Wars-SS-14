@@ -1,0 +1,258 @@
+- type: loadout
+  id: SWLoadoutSuitRepublicVest
+  equipment:
+    outerClothing: SWLoadoutSuitRepublicVest
+
+- type: loadout
+  id: SWLoadoutClothingUniformJumpsuitRebel
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitRebel
+
+- type: loadout
+  id: SWLoadoutSuitRepublicOfficerVest
+  equipment:
+    outerClothing: SWLoadoutSuitRepublicOfficerVest
+
+- type: loadout
+  id: SWLoadoutClothingUniformJumpsuitImperialOfficers
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitImperialOfficers
+
+- type: loadout
+  id: SWLoadoutSuitImperialOfficerVest
+  equipment:
+    outerClothing: SWLoadoutSuitImperialOfficerVest
+
+- type: loadout
+  id: SWLoadoutClothingUniformJumpsuitImperialHeadOfficer
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitImperialHeadOfficer
+
+- type: loadout
+  id: SWLoadoutClothingUniformJumpsuitOfficers
+  equipment:
+    jumpsuit: SWClothingUniformJumpsuitOfficers
+
+- type: loadout
+  id: SWLoadoutCosmeticCoatAsh
+  equipment:
+    outerClothing: SWCosmeticCoatAsh
+
+- type: loadout
+  id: SWLoadoutCosmeticCoatSand
+  equipment:
+    outerClothing: SWCosmeticCoatSand
+
+- type: loadout
+  id: SWLoadoutHelmetRepublicField
+  equipment:
+    head: SWLoadoutHelmetRepublicField
+
+- type: loadout
+  id: SWLoadoutCapRepublic
+  equipment:
+    head: SWLoadoutCapRepublic
+
+- type: loadout
+  id: SWLoadoutCapImperial
+  equipment:
+    head: SWLoadoutCapImperial
+
+- type: loadout
+  id: SWLoadoutClothingHeadHavokHelmet
+  equipment:
+    head: SW_ClothingHeadHavokHelmet
+
+- type: loadout
+  id: SWLoadoutClothingHeadHatHoodBallamor
+  equipment:
+    head: SWClothingHeadHatHoodBallamor
+
+- type: loadout
+  id: SWLoadoutClothingHeadHatHoodMandalorianCloak
+  equipment:
+    head: SWClothingHeadHatHoodMandalorianCloak
+
+- type: loadout
+  id: SWLoadoutClothingHeadHatHoodMandalorianVeteranCloak
+  equipment:
+    head: SWClothingHeadHatHoodMandalorianVeteranCloak
+
+- type: loadout
+  id: SWLoadoutHelmetSunSquad
+  equipment:
+    head: SWHelmetSunSquad
+
+- type: loadout
+  id: SWLoadoutCosmeticCapMechanic
+  equipment:
+    head: SWCosmeticCapMechanic
+
+- type: loadout
+  id: SWLoadoutClothingHeadHatHoodJediCloak
+  equipment:
+    head: SWClothingHeadHatHoodJediCloak
+
+- type: loadout
+  id: SWLoadoutClothingHeadHatHoodSithCloak
+  equipment:
+    head: SWClothingHeadHatHoodSithCloak
+
+- type: loadoutGroup
+  id: SWUniformRepublic
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutSuitRepublicVest
+  - SWLoadoutClothingUniformJumpsuitRebel
+
+- type: loadoutGroup
+  id: SWUniformRepublicOfficer
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutSuitRepublicOfficerVest
+  - SWLoadoutClothingUniformJumpsuitRebel
+
+- type: loadoutGroup
+  id: SWUniformRepublicPilot
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutClothingUniformJumpsuitRebel
+
+- type: loadoutGroup
+  id: SWUniformEmpire
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutClothingUniformJumpsuitImperialOfficers
+
+- type: loadoutGroup
+  id: SWUniformEmpireOfficer
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutSuitImperialOfficerVest
+  - SWLoadoutClothingUniformJumpsuitImperialOfficers
+  - SWLoadoutClothingUniformJumpsuitImperialHeadOfficer
+
+- type: loadoutGroup
+  id: SWUniformFighter
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutClothingUniformJumpsuitRebel
+
+- type: loadoutGroup
+  id: SWUniformIntelligence
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutClothingUniformJumpsuitOfficers
+
+- type: loadoutGroup
+  id: SWUniformCivilian
+  name: sw-loadout-group-uniform
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutCosmeticCoatAsh
+  - SWLoadoutCosmeticCoatSand
+
+- type: loadoutGroup
+  id: SWHeadRepublic
+  name: sw-loadout-group-head
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutHelmetRepublicField
+  - SWLoadoutCapRepublic
+
+- type: loadoutGroup
+  id: SWHeadRepublicOfficer
+  name: sw-loadout-group-head
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutCapRepublic
+
+- type: loadoutGroup
+  id: SWHeadEmpire
+  name: sw-loadout-group-head
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutCapImperial
+
+- type: loadoutGroup
+  id: SWHeadHavok
+  name: sw-loadout-group-head
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutClothingHeadHavokHelmet
+
+- type: loadoutGroup
+  id: SWHeadSobrik
+  name: sw-loadout-group-head
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutClothingHeadHatHoodBallamor
+
+- type: loadoutGroup
+  id: SWHeadMandalorian
+  name: sw-loadout-group-head
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutClothingHeadHatHoodMandalorianCloak
+
+- type: loadoutGroup
+  id: SWHeadMandalorianVeteran
+  name: sw-loadout-group-head
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutClothingHeadHatHoodMandalorianVeteranCloak
+
+- type: loadoutGroup
+  id: SWHeadBlackSunLeader
+  name: sw-loadout-group-head
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutHelmetSunSquad
+  - SWLoadoutCosmeticCapMechanic
+
+- type: loadoutGroup
+  id: SWHeadFree
+  name: sw-loadout-group-head
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutCosmeticCapMechanic
+
+- type: loadoutGroup
+  id: SWHeadJedi
+  name: sw-loadout-group-head
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutClothingHeadHatHoodJediCloak
+
+- type: loadoutGroup
+  id: SWHeadSith
+  name: sw-loadout-group-head
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutClothingHeadHatHoodSithCloak

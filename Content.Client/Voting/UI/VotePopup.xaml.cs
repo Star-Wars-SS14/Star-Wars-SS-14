@@ -27,7 +27,7 @@ namespace Content.Client.Voting.UI
             IoCManager.InjectDependencies(this);
             RobustXamlLoader.Load(this);
 
-            Stylesheet = IoCManager.Resolve<IStylesheetManager>().SheetSystem;
+            //SW: takes the active sheet, so that the terminal look reaches it.
 
             if (_vote.TargetEntity != null && _vote.TargetEntity != 0)
             {
@@ -36,7 +36,7 @@ namespace Content.Client.Voting.UI
                 FollowVoteTarget.OnPressed += _ => AttemptFollowVoteEntity();
             }
 
-            Modulate = Color.White.WithAlpha(0.75f);
+            //SW: no see-through modulate, the title has to read over light lobby art.
             _voteButtons = new Button[vote.Entries.Length];
             var group = new ButtonGroup();
 

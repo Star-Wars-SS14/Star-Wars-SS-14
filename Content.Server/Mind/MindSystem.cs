@@ -108,6 +108,10 @@ public sealed class MindSystem : SharedMindSystem
 
     public override void Visit(EntityUid mindId, EntityUid entity, MindComponent? mind = null)
     {
+        //SW start
+        if (HasComp<Content.Server._SW.GlobalWar.Spawning.SWGlobalWarEndedLifeComponent>(entity))
+            return;
+        //SW end
         base.Visit(mindId, entity, mind);
 
         if (!Resolve(mindId, ref mind))
@@ -175,6 +179,12 @@ public sealed class MindSystem : SharedMindSystem
 
         if (entity == mind.OwnedEntity)
             return;
+
+        //SW start
+        // A campaign life that ended by an accepted return must not become playable again, by anyone.
+        if (HasComp<Content.Server._SW.GlobalWar.Spawning.SWGlobalWarEndedLifeComponent>(entity))
+            return;
+        //SW end
 
         Dirty(mindId, mind);
         MindContainerComponent? component = null;

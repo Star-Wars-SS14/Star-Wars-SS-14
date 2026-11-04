@@ -1,6 +1,7 @@
 - type: job
   id: SWSith
   name: Ситх
+  description: job-description-sw-sith
   playTimeTracker: Job_Sith
   requirements:
   - !type:OverallPlaytimeRequirement
@@ -21,7 +22,6 @@
   - !type:AddComponentSpecial
     components:
     - type: Stamina
-      critThreshold: 400
       baseCritThreshold: 400
     - type: SWFactionMember
       faction: EmpireFaction

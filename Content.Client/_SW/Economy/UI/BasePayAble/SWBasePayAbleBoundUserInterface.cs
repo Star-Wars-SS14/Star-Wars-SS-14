@@ -1,5 +1,7 @@
+using Content.Client._SW.UserInterface;
 using Content.Shared._SW.Economy.Messages;
 using Content.Shared._SW.Economy.Prototypes;
+using Robust.Client.UserInterface;
 using Robust.Shared.Prototypes;
 using System;
 using System.Collections.Generic;
@@ -11,9 +13,62 @@ using static Robust.Client.UserInterface.Controls.MenuBar;
 namespace Content.Client._SW.Economy.UI.BasePayAble;
 public abstract partial class SWBasePayableBoundUserInterface : BoundUserInterface
 {
+    private SWWithdrawalWindow? _withdrawal;
+
     public SWBasePayableBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
     }
+
+    /// <summary>
+    /// Gives a window of this console the accent of the faction that owns it.
+    /// </summary>
+    protected void ApplyOwnerAccent(Control window)
+    {
+        IoCManager.Resolve<IUserInterfaceManager>().GetUIController<SWTerminalStyleUIController>().ApplyOwnerAccent(window, Owner);
+    }
+
+    protected void OpenWithdrawal(List<ProtoId<SWCurrencyPrototype>> currencies)
+    {
+        CloseWithdrawal();
+        _withdrawal = new SWWithdrawalWindow();
+        _withdrawal.PopulateCurrencies(currencies);
+        _withdrawal.OpenCenteredRight();
+        _withdrawal.OnConfirmButtonPressedAction += OnWithdrawal;
+    }
+
+    private void CloseWithdrawal()
+    {
+        _withdrawal?.Close();
+        _withdrawal?.Dispose();
+        _withdrawal = null;
+    }
+
+    protected override void ReceiveMessage(BoundUserInterfaceMessage message)
+    {
+        base.ReceiveMessage(message);
+        if (message is SWConsoleActionSucceededMessage result)
+        {
+            OnActionSucceeded(result.Action);
+        }
+    }
+
+    protected virtual void OnActionSucceeded(SWConsoleAction action)
+    {
+        if (action == SWConsoleAction.Payout)
+        {
+            CloseWithdrawal();
+        }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        if (disposing)
+        {
+            CloseWithdrawal();
+        }
+    }
+
     protected virtual void OnWithdrawal(Dictionary<ProtoId<SWCurrencyPrototype>, float> dict)
     {
         SendMessage(new SWTryPayoutMessage(dict));

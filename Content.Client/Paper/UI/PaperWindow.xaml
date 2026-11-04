@@ -32,7 +32,6 @@
         <!-- Bottom buttons for editing -->
         <BoxContainer Name="EditButtons" Orientation="Horizontal" HorizontalAlignment="Right" Margin="6">
             <Button Name="SaveButton" />
-            <Button Name="PisatButton" Text="Написать" />
         </BoxContainer>
     </BoxContainer>
 </paper:PaperWindow>

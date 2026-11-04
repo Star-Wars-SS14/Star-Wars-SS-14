@@ -94,7 +94,7 @@
     sprite:
       festive: Objects/Weapons/Bombs/c4gift.rsi
   - type: StaticPrice
-    price: 625 # 5000 for a bundle of 8
+    price: 200 #SW was 625: sold for more than it costs
 
 - type: entity
   name: seismic charge

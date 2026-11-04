@@ -24,12 +24,7 @@
         reagents:
         - ReagentId: Water
           Quantity: 9999999
-  - type: SolutionRegeneration
-    solution: tank
-    generated:
-      reagents:
-      - ReagentId: Water
-        Quantity: 100
+  #SW removed SolutionRegeneration: it targeted a missing solution and dirtied every water entity each second.
   - type: DrainableSolution
     solution: pool
   - type: SpeedModifierContacts

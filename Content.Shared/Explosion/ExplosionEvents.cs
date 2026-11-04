@@ -1,7 +1,18 @@
 using Content.Shared.Damage;
 using Content.Shared.Inventory;
+using Robust.Shared.Map; //SW
 
 namespace Content.Shared.Explosion;
+
+//SW start
+/// <summary>
+/// Server authorization before queueing and before processing an explosion. The initiator survives delayed
+/// processing and removal of the source entity. Cancelling prevents further damage, tile changes and impulses.
+/// </summary>
+[ByRefEvent]
+public record struct SWExplosionAttemptEvent(MapCoordinates Epicenter, EntityUid? Cause, EntityUid? User,
+    bool Cancelled = false, bool SeparateInitiators = false);
+//SW end
 
 /// <summary>
 ///     Raised directed at an entity to determine its explosion resistance, probably right before it is about to be

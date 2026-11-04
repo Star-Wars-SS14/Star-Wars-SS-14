@@ -37,6 +37,9 @@
     ears: SWClothingHeadsetGarnison
     back: SWImperialBackpack
     suitstorage: SWE1BlasterRifle
+  storage:
+    back:
+    - SWFirstAidKitFilled
 
 ###Empire
 - type: startingGear
@@ -93,6 +96,9 @@
     ears: SWClothingHeadsetRegular
     back: SWImperialBackpack
     suitstorage: SWE1BlasterRifle
+  storage:
+    back:
+    - SWFirstAidKitFilled
 
 - type: startingGear
   id: EmpireMoffGear
@@ -282,6 +288,9 @@
     ears: SWClothingHeadsetRepublic
     back: SWRepublicBackpack
     suitstorage: SWH206Renegade
+  storage:
+    back:
+    - SWFirstAidKitFilled
 
 - type: startingGear
   id: RepublicRecruitGear
@@ -398,7 +407,7 @@
     id: SWIDCardHavokCommander
     neck: SWClothingNeckHavok
     shoes: SWClothingShoesBootsCombatFilled
-    ears: SWClothingHeadsetHavok
+    ears: SWClothingHeadsetHavokCommander
     suitstorage: SWP301Destroyer
 
 - type: startingGear
@@ -426,6 +435,9 @@
     shoes: SWClothingShoesBootsCombatFilled
     ears: SWClothingHeadsetHavok
     suitstorage: SWH206Renegade
+  storage:
+    back:
+    - SWFirstAidKitFilled
 
 - type: startingGear
   id: RepublicCommanderStormtrooperGear
@@ -558,7 +570,7 @@
     back: ClothingBackpack
     gloves: SW_ClothingHandsGlovesRebel
     shoes: ClothingShoesCult
-    ears: SWClothingHeadsetGrey
+    ears: ClothingHeadsetGrey
     outerClothing: SWClothingOuterVestRebel
     head: SWRebelHelmet
 
@@ -584,8 +596,8 @@
     back: ClothingBackpack
     gloves: ClothingHandsGlovesColorBlack
     shoes: ClothingShoesSwat
-    ears: SWClothingHeadsetGrey
-    head: SWStormtrooperHelmet
+    ears: ClothingHeadsetGrey
+    head: SWStromtrooperHelmet
     outerClothing: SWStormtrooperArmor
 
 - type: startingGear
@@ -593,7 +605,7 @@
   equipment:
     jumpsuit: SWClothingUniformJumpsuitImperialGeneral
     shoes: SWClothingShoesBootsImperialOfficers
-    ears: SWClothingHeadsetGrey
+    ears: ClothingHeadsetGrey
 
 - type: startingGear
   id: ImperialOfficersGear
@@ -602,5 +614,5 @@
     back: ClothingBackpack
     gloves: ClothingHandsGlovesColorBlack
     shoes: SWClothingShoesBootsOfficers
-    ears: SWClothingHeadsetGrey
+    ears: ClothingHeadsetGrey
     head: SW_ClothingHeadCapOfficers

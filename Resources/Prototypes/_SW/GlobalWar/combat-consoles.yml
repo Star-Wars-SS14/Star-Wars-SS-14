@@ -1,0 +1,231 @@
+- type: entity
+  parent: BaseComputer
+  id: SWGlobalWarCaptureConsole
+  name: sector control console
+  description: Controls the local surface or orbital objective. Capturing requires a military presence.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: security
+    - map: ["computerLayerKeys"]
+      state: security_key
+    - map: ["enum.WiresVisualLayers.MaintenancePanel"]
+      state: generic_panel_open
+  - type: SWGlobalWarCaptureConsole
+  - type: Computer
+    board: SWGlobalWarCaptureCircuitboard
+  - type: SWGlobalWarMapAnchor
+    anchorId: capturePrimary
+    kind: Capture
+  - type: ActivatableUI
+    key: enum.SWGlobalWarCaptureUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWGlobalWarCaptureUiKey.Key:
+        type: SWGlobalWarCaptureBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+
+- type: entity
+  parent: BaseComputerCircuitboard
+  id: SWGlobalWarCaptureCircuitboard
+  name: sector control computer board
+  description: Rebuild the sector control console at its original position to resume an interrupted capture.
+  components:
+  - type: ComputerBoard
+    prototype: SWGlobalWarCaptureConsole
+
+- type: latheRecipe
+  parent: BaseCircuitboardRecipe
+  id: SWGlobalWarCaptureCircuitboard
+  result: SWGlobalWarCaptureCircuitboard
+  categories: [Computers, Security]
+  materials:
+    Steel: 100
+    Glass: 300
+    Gold: 100
+
+- type: entity
+  parent: BaseComputer
+  id: SWGlobalWarShipyardConsole
+  name: military shipyard console
+  description: Orders real vessels against the faction's reserved military funds.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: shuttle
+    - map: ["computerLayerKeys"]
+      state: tech_key
+    - map: ["enum.WiresVisualLayers.MaintenancePanel"]
+      state: generic_panel_open
+  - type: SWGlobalWarShipyard
+    tier: SmallMedium
+  - type: SWGlobalWarMapAnchor
+    anchorId: shipyardPrimary
+    kind: Shipyard
+  - type: ActivatableUI
+    key: enum.SWGlobalWarFleetUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWGlobalWarFleetUiKey.Key:
+        type: SWGlobalWarFleetBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+
+- type: entity
+  parent: SWGlobalWarShipyardConsole
+  id: SWGlobalWarHeavyShipyardConsole
+  name: heavy military shipyard console
+  components:
+  - type: SWGlobalWarShipyard
+    tier: Heavy
+
+- type: entity
+  parent: SWGlobalWarShipyardConsole
+  id: SWGlobalWarTransportConsole
+  name: transport construction console
+  components:
+  - type: SWGlobalWarShipyard
+    tier: Transport
+  - type: SWGlobalWarMapAnchor
+    anchorId: transportConsole
+    kind: Shipyard
+
+- type: entity
+  parent: BaseComputer
+  id: SWGlobalWarDefenceConsole
+  name: droid defence console
+  description: Commands friendly droids. A holder of the war budget can also order new ones here.
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: security
+    - map: ["computerLayerKeys"]
+      state: security_key
+    - map: ["enum.WiresVisualLayers.MaintenancePanel"]
+      state: generic_panel_open
+  - type: SWGlobalWarDefenceConsole
+  - type: SWGlobalWarMapAnchor
+    anchorId: defencePrimary
+    kind: Defence
+  - type: ActivatableUI
+    key: enum.SWGlobalWarDefenceUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWGlobalWarDefenceUiKey.Key:
+        type: SWGlobalWarDefenceBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+
+- type: entity
+  parent: SWMobDroid
+  id: SWGlobalWarDroidRepublic
+  suffix: Republic garrison
+  components:
+  - type: ContainerFill
+    containers:
+      borg_module:
+      - SWDroidAICoreModule
+      - SWDroidBlasterModule
+      - SWDroidFactionChipRepublic
+
+- type: entity
+  parent: SWMobDroid
+  id: SWGlobalWarDroidEmpire
+  suffix: Empire garrison
+  components:
+  - type: ContainerFill
+    containers:
+      borg_module:
+      - SWDroidAICoreModule
+      - SWDroidBlasterModule
+      - SWDroidFactionChipEmpire
+
+- type: entity
+  parent: BaseItem
+  id: SWGlobalWarReconDatapad
+  name: intelligence datapad
+  description: Use on a reachable working device to record a dated observation. Open it to read authorized faction reports.
+  components:
+  - type: Sprite
+    sprite: _SW/Objects/Misc/Datapads/BlueDatapad.rsi
+    state: icon_empty
+  - type: Item
+    size: Small
+  - type: SWGlobalWarReconDatapad
+  - type: ActivatableUI
+    key: enum.SWGlobalWarReconUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWGlobalWarReconUiKey.Key:
+        type: SWGlobalWarReconBoundUserInterface
+
+- type: entity
+  parent: BaseComputer
+  id: SWGlobalWarGunneryConsole
+  name: ship gunnery console
+  description: Controls a selected group of physical ship guns. One operator per installation.
+  components:
+  - type: SWGlobalWarGunneryConsole
+  - type: ActivatableUI
+    key: enum.SWGlobalWarGunneryUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWGlobalWarGunneryUiKey.Key:
+        type: SWGlobalWarGunneryBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+
+- type: entity
+  parent: RedShuttleLaser
+  id: SWGlobalWarShuttleLaser
+  categories: [HideSpawnMenu]
+  components:
+  - type: HitscanBasicRaycast
+    maxDistance: 64
+
+# Finite fuel supply, with HV output matching the existing purchased vessel wiring.
+- type: entity
+  parent: SWGenerator
+  id: SWGlobalWarShipGenerator
+  name: ship plasma generator
+  description: A fueled ship generator. Its initial plasma reserve is finite and must be replenished physically.
+  components:
+  # Anchored to the ship's deck, so physics must agree it never moves.
+  - type: Physics
+    bodyType: Static
+  - type: NodeContainer
+    nodes:
+      output_hv:
+        !type:CableDeviceNode
+        nodeGroupID: HVPower
+        enabled: true
+      output_mv:
+        !type:CableDeviceNode
+        nodeGroupID: MVPower
+        enabled: false
+  - type: PowerSupplier
+    voltage: High
+  - type: PowerSwitchable
+    activeIndex: 0
+    cables:
+    - voltage: HV
+      node: output_hv
+  - type: PowerMonitoringDevice
+    loadNode: output_hv
+    loadNodes: [output_hv]

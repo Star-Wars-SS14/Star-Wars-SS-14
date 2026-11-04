@@ -1,2 +1,14 @@
 stack-lantanid-alloy = лантанид
 stack-lantanid-ore = лантанидовая руда
+stack-sw-reinforcement-credits = очки подкреплений
+stack-sw-republic-credits = республиканский кредит
+stack-sw-empire-credits = имперский кредит
+stack-sw-supply-scores-empire-credits = очки снабжения империи
+stack-sw-supply-scores-republic-credits = очки снабжения республики
+stack-sw-black-market-supply-credits = очки снабжения чёрного рынка
+stack-sw-mandalorian-supply = очки снабжения мандалора
+stack-sw-cm-burn-kit = расширенный набор для ожогов
+stack-sw-cm-trauma-kit = расширенный травмокомплект
+stack-sw-rmc-cable-coil = катушка кабеля
+stack-sw-cm-sandbag-empty = пустые мешки для песка
+stack-lantanid-sheet = лантанид

@@ -18,7 +18,6 @@ namespace Content.Client._SW.Economy.UI.FinanceConsole;
 public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayableBoundUserInterface
 {
     private SWFinanceConsoleMenu? _menu = null;
-    private SWWithdrawalWindow? _withdrawal = null;
     public SWFinanceConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
     }
@@ -35,6 +34,7 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayableBo
     {
         base.Open();
         _menu = this.CreateWindow<SWFinanceConsoleMenu>();
+        ApplyOwnerAccent(_menu);
         _menu.OpenCenteredRight();
         _menu.OnPayButtonPressed += SendPayBillMessage;
         _menu.OnWithdrawalButtonPressed += OpenWithdrawal;
@@ -47,21 +47,12 @@ public sealed partial class SWFinanceConsoleBoundUserInterface : SWBasePayableBo
         {
             return;
         }
-        _withdrawal = new SWWithdrawalWindow();
-        _withdrawal.PopulateCurrencies(_menu.Balance.Keys.ToList());
-        _withdrawal.OpenCenteredRight();
-        _withdrawal.OnConfirmButtonPressedAction += OnWithdrawal;
-    }
-
-    protected override void OnWithdrawal(Dictionary<ProtoId<SWCurrencyPrototype>, float> dict)
-    {
-        base.OnWithdrawal(dict);
-        _withdrawal?.Close();
+        OpenWithdrawal(_menu.Balance.Keys.ToList());
     }
 
     public void SendPayBillMessage(SWBill bill)
     {
-        SendMessage(new SWTryPayBillMessage(bill));
+        SendMessage(new SWTryPayBillMessage(bill.Id));
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

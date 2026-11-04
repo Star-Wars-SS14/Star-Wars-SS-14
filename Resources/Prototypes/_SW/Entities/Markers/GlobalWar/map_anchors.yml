@@ -1,0 +1,19 @@
+- type: entity
+  parent: MarkerBase
+  id: SWGlobalWarPointMarker
+  name: Global War point marker
+  description: Editor-only stable address for a prepared campaign location.
+  components:
+  - type: SWGlobalWarMapAnchor
+  - type: Sprite
+    layers:
+    - state: red
+
+- type: entity
+  parent: SWGlobalWarPointMarker
+  id: SWGlobalWarAreaMarker
+  name: Global War area marker
+  description: Editor-only bounds of a reserved campaign area.
+  components:
+  - type: SWGlobalWarMapAnchor
+    kind: Clearance

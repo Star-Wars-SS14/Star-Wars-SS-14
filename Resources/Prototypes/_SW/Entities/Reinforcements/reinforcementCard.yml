@@ -10,7 +10,6 @@
   - type: SWReinforcementsCard
   - type: Item
     sprite: _SW/Objects/Reinforcements/reinforcements.rsi
-    state: icon
     size: Tiny
 
 - type: entity

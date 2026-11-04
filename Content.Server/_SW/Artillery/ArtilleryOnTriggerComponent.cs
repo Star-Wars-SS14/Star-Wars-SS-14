@@ -1,3 +1,4 @@
+using Content.Shared.Trigger.Systems;
 using Robust.Shared.Audio.Components;
 namespace Content.Server._SW.Artillery;
 
@@ -7,6 +8,12 @@ namespace Content.Server._SW.Artillery;
 [RegisterComponent]
 public sealed partial class ArtilleryOnTriggerComponent : Component
 {
+    /// <summary>
+    /// Trigger keys that start the bombardment.
+    /// </summary>
+    [DataField]
+    public List<string> KeysIn = new() { TriggerSystem.DefaultTriggerKey };
+
     [DataField("tilesRange"), ViewVariables(VVAccess.ReadWrite)]
     public int TilesRange = 10;
 

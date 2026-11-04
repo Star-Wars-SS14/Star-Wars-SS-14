@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Content.Server.Beam;
 using Content.Shared._SW;
 using Robust.Shared.Prototypes;
+using Robust.Shared.GameObjects;
 using Content.Server.Stunnable;
 using Content.Server.Actions;
 using Content.Shared.Damage.Systems;

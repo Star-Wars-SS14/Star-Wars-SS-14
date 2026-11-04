@@ -1,3 +1,4 @@
+using Content.Server._SW.Gamerules.TimerSpeedup;
 using Content.Server.Chat.Managers;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
@@ -16,6 +17,7 @@ public sealed class SWEndRoundGameruleSystem : GameRuleSystem<SWEndRoundGamerule
     [Dependency] private readonly IChatManager _chatManager = default!;
     [Dependency] private readonly RoundEndSystem _roundEndSystem = default!;
     [Dependency] private readonly IVoteManager _voteManager = default!;
+    [Dependency] private readonly SWTimerSpeedupSystem _timerSpeedup = default!;
 
     public override void Initialize()
     {
@@ -25,12 +27,12 @@ public sealed class SWEndRoundGameruleSystem : GameRuleSystem<SWEndRoundGamerule
     protected override void Started(EntityUid uid, SWEndRoundGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
         base.Started(uid, component, gameRule, args);
-        component.NextTimeStartVote = component.DelayBeforeVote;
+        component.NextTimeStartVote = _timerSpeedup.Scale(component.DelayBeforeVote);
     }
 
     protected override void ActiveTick(EntityUid uid, SWEndRoundGameruleComponent component, GameRuleComponent gameRule, float frameTime)
     {
-        if (_gameTicker.RoundDuration() > component.DelayBeforeFirstCheck && _gameTicker.RunLevel == GameRunLevel.InRound)
+        if (_gameTicker.RoundDuration() > _timerSpeedup.Scale(component.DelayBeforeFirstCheck) && _gameTicker.RunLevel == GameRunLevel.InRound)
         {
             var query = EntityQueryEnumerator<SWFactionMemberComponent>();
 
@@ -56,7 +58,7 @@ public sealed class SWEndRoundGameruleSystem : GameRuleSystem<SWEndRoundGamerule
         if (_gameTicker.RoundDuration() > component.NextTimeStartVote)
         {
             _voteManager.CreateStandardVote(null, Shared.Voting.StandardVoteType.Restart);
-            component.NextTimeStartVote = component.NextTimeStartVote + component.DelayBetweenVotes;
+            component.NextTimeStartVote = component.NextTimeStartVote + _timerSpeedup.Scale(component.DelayBetweenVotes);
         }
     }
 

@@ -1,6 +1,6 @@
 - type: radioChannel
   id: SWEmpireGarnison
-  name: Имперский Гарнизон
+  name: sw-radio-channel-empire-garnison
   keycode: 'г'
   frequency: 2024
   color: "#ffa500"
@@ -8,23 +8,23 @@
 
 - type: radioChannel
   id: SWEmpireRegular
-  name: Регулярные Силы Империи
+  name: sw-radio-channel-empire-regular
   keycode: 'т'
   frequency: 2025
-  color: "#b22222"
+  color: "#ff9991"
   longRange: false
 
 - type: radioChannel
   id: SWEmpireIntelligence
-  name: Имперская Разведка
+  name: sw-radio-channel-empire-intelligence
   keycode: 'и'
   frequency: 2026
-  color: "#800080"
+  color: "#e052e0"
   longRange: true
 
 - type: radioChannel
   id: SWRepublic
-  name: Республика
+  name: sw-radio-channel-republic
   keycode: 'р'
   frequency: 2027
   color: "#20b2aa"
@@ -32,15 +32,15 @@
 
 - type: radioChannel
   id: SWRepublicHavok
-  name: Хавок
+  name: sw-radio-channel-republic-havok
   keycode: 'х'
   frequency: 2028
-  color: "#dc143c"
+  color: "#f0607d"
   longRange: true
 
 - type: radioChannel
   id: SWMandalorian
-  name: Мандалориан
+  name: sw-radio-channel-mandalorian
   keycode: 'м'
   frequency: 2039
   color: "#ff6347"
@@ -48,7 +48,7 @@
 
 - type: radioChannel
   id: SWEmpireCommander
-  name: Командование Империи
+  name: sw-radio-channel-empire-commander
   keycode: 'к'
   frequency: 2040
   color: "#f5f531"
@@ -56,7 +56,7 @@
 
 - type: radioChannel
   id: SWRepublicCommander
-  name: Командование Республики
+  name: sw-radio-channel-republic-commander
   keycode: 'н'
   frequency: 2041
   color: "#70fafa"
@@ -64,15 +64,15 @@
 
 - type: radioChannel
   id: SWRepublicPilots
-  name: Пилоты Республики
+  name: sw-radio-channel-republic-pilots
   keycode: 'л'
-  frequency: 2041
-  color: "#4955fc"
+  frequency: 2045
+  color: "#afb4fe"
   longRange: true
 
 - type: radioChannel
   id: SWEmpirePilots
-  name: Пилоты Империи
+  name: sw-radio-channel-empire-pilots
   keycode: 'п'
   frequency: 2042
   color: "#8c7ce6"
@@ -80,16 +80,16 @@
 
 - type: radioChannel
   id: SWExchange
-  name: Обмен
+  name: sw-radio-channel-exchange
   keycode: 'о'
   frequency: 2043
-  color: "#8c0e0e"
+  color: "#ee5757"
   longRange: true
 
 - type: radioChannel
   id: SWBlackSun
-  name: Черное Солнце
+  name: sw-radio-channel-black-sun
   keycode: 'ч'
   frequency: 2044
-  color: "#a61414"
+  color: "#f7bfbf"
   longRange: true

@@ -5,8 +5,11 @@ using Content.Server.Station.Systems;
 using Content.Shared._SW;
 using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Components;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Systems;
 using Content.Shared.Roles;
 using Robust.Shared.Network;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
 using System;
@@ -21,6 +24,7 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
     [Dependency] private readonly StationJobsSystem _stationJobsSystem = default!;
     [Dependency] private readonly IRobustRandom _random = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private readonly MobStateSystem _mobState = default!;
 
     public override void Initialize()
     {
@@ -28,6 +32,30 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
         SubscribeLocalEvent<SWModifyAssignedJobsEvent>(OnModify);
         SubscribeLocalEvent<RulePlayerJobsAssignedEvent>(OnPlayersAssigned);
         SubscribeLocalEvent<PlayerSpawnCompleteEvent>(OnSpawn);
+        SubscribeLocalEvent<SWAutoBalanceMemberComponent, MobStateChangedEvent>(OnMemberStateChanged);
+        SubscribeLocalEvent<SWAutoBalanceMemberComponent, PlayerAttachedEvent>(OnMemberAttached);
+        SubscribeLocalEvent<SWAutoBalanceMemberComponent, PlayerDetachedEvent>(OnMemberDetached);
+        SubscribeLocalEvent<SWAutoBalanceMemberComponent, ComponentShutdown>(OnMemberShutdown);
+    }
+
+    private void OnMemberStateChanged(Entity<SWAutoBalanceMemberComponent> ent, ref MobStateChangedEvent args)
+    {
+        ChangeAvailableJobsToFitAutoBalance();
+    }
+
+    private void OnMemberAttached(Entity<SWAutoBalanceMemberComponent> ent, ref PlayerAttachedEvent args)
+    {
+        ChangeAvailableJobsToFitAutoBalance();
+    }
+
+    private void OnMemberDetached(Entity<SWAutoBalanceMemberComponent> ent, ref PlayerDetachedEvent args)
+    {
+        ChangeAvailableJobsToFitAutoBalance();
+    }
+
+    private void OnMemberShutdown(Entity<SWAutoBalanceMemberComponent> ent, ref ComponentShutdown args)
+    {
+        ChangeAvailableJobsToFitAutoBalance();
     }
 
     private void OnModify(ref SWModifyAssignedJobsEvent ev)
@@ -71,12 +99,12 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
 
         if (firstFactionProto.Jobs.Contains(ev.JobId))
         {
-            autobalance.FirstFactionSpawned++;
+            EnsureComp<SWAutoBalanceMemberComponent>(ev.Mob).FirstFaction = true;
         }
 
         if (secondFactionProto.Jobs.Contains(ev.JobId))
         {
-            autobalance.SecondFactionSpawned++;
+            EnsureComp<SWAutoBalanceMemberComponent>(ev.Mob).FirstFaction = false;
         }
         if (autobalance.JobsSpawned.ContainsKey(ev.JobId))
         {
@@ -101,47 +129,69 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
         var autobalance = comp;
 
         var firstFactionProto = _prototypeManager.Index(autobalance.FirstFactionRelatedJobsId);
-        var secondFactionProto = _prototypeManager.Index(autobalance.SecondRelatedJobsId);
-        var stations = GetSpawnableStations();
-        var jobs = new List<(EntityUid station, ProtoId<JobPrototype> jobId, int amount)>();
-        foreach (var station in stations)
+        var (firstFactionAlive, secondFactionAlive) = CountLivingPlayers();
+        var availableOfFirstFaction = secondFactionAlive / autobalance.Ratio - firstFactionAlive;
+
+        foreach (var station in GetSpawnableStations())
         {
-            var availableJobs = _stationJobsSystem.GetRoundStartJobs(station);
-            foreach (var (id, amount) in availableJobs)
+            foreach (var (id, amount) in _stationJobsSystem.GetRoundStartJobs(station))
             {
-                if (amount == null)
+                if (amount == null || !firstFactionProto.Jobs.Contains(id))
                 {
                     continue;
                 }
 
-                jobs.Add(new(station, id, amount.Value));
-
-                if (!firstFactionProto.Jobs.Contains(id))
-                {
-                    continue;
-                }
-                _stationJobsSystem.TrySetJobSlot(station, id, 0);
+                // Slots are lives: a death opens the budget again, but never gives the used slot back.
+                autobalance.JobsSpawned.TryGetValue(id, out var spawned);
+                autobalance.ExtraSlots.TryGetValue(id, out var extra);
+                var slots = Math.Max(0, Math.Min(availableOfFirstFaction, amount.Value + extra - spawned));
+                _stationJobsSystem.TrySetJobSlot(station, id, slots);
             }
         }
+    }
 
-        var availableOfFirstFaction = autobalance.SecondFactionSpawned / autobalance.Ratio - autobalance.FirstFactionSpawned;
-        foreach (var job in jobs)
+    /// <summary>
+    /// Opens one more slot of a job, for one spawn. The recount after a spawn would close a slot that is only set on
+    /// the station, so it is also remembered in the rule.
+    /// </summary>
+    public void GrantExtraSlot(EntityUid station, string job)
+    {
+        var rules = QueryActiveRules();
+        if (rules.MoveNext(out _, out _, out var comp, out _))
         {
-            if (firstFactionProto.Jobs.Contains(job.jobId))
-            {
-                int amount = 0;
-                if (autobalance.JobsSpawned.TryGetValue(job.jobId, out var value))
-                {
-                    amount = Math.Min(availableOfFirstFaction, job.amount - value);
-                }
-                else
-                {
-                    amount = Math.Min(availableOfFirstFaction, job.amount);
-                }
+            comp.ExtraSlots.TryGetValue(job, out var extra);
+            comp.ExtraSlots[job] = extra + 1;
+        }
 
-                _stationJobsSystem.TryAdjustJobSlot(job.station, job.jobId, amount);
+        _stationJobsSystem.TryAdjustJobSlot(station, job, 1, createSlot: true);
+    }
+
+    /// <summary>
+    /// Counts mobs of connected players that are not dead yet. A critical player still counts.
+    /// </summary>
+    private (int First, int Second) CountLivingPlayers()
+    {
+        var first = 0;
+        var second = 0;
+        var query = EntityQueryEnumerator<SWAutoBalanceMemberComponent, ActorComponent>();
+        while (query.MoveNext(out var uid, out var member, out _))
+        {
+            if (TerminatingOrDeleted(uid) || _mobState.IsDead(uid))
+            {
+                continue;
+            }
+
+            if (member.FirstFaction)
+            {
+                first++;
+            }
+            else
+            {
+                second++;
             }
         }
+
+        return (first, second);
     }
 
     private List<EntityUid> GetSpawnableStations()
@@ -190,35 +240,30 @@ public sealed class SWAutobalanceGameruleSystem : GameRuleSystem<SWAutoBalanceGa
         {
             // No autobalance needed
             s.Info($"{firstFactionCount} * {autobalance.Ratio} <= {secondFactionCount}; no balance needed");
+            return;
         }
-        else
-        {
-            //Remove some jobs of the first faction
-            s.Info("Balancing started");
-            //We use this flag to se if there are remaining jobs that we can disable
-            bool jobRemain = true;
-            while ((firstFactionCount * autobalance.Ratio > secondFactionCount) && jobRemain)
-            {
-                jobRemain = false;
-                var keys = assignedJobs.Keys.ToArray();
-                _random.Shuffle(keys);
 
-                for (int i = 0; i < keys.Length; i++)
-                {
-                    var jobId = assignedJobs[keys[i]].Item1;
-                    if (jobId == null)
-                    {
-                        continue;
-                    }
-                    if (firstFactionProto.Jobs.Contains(jobId))
-                    {
-                        s.Info($"disabled job {assignedJobs[keys[i]].Item1} for user {keys[i]}");
-                        assignedJobs[keys[i]] = (null, assignedJobs[keys[i]].Item2);
-                        firstFactionCount--;
-                        jobRemain = true;
-                    }
-                }
+        //Remove only the excess jobs of the first faction
+        s.Info("Balancing started");
+        var keys = assignedJobs.Keys.ToArray();
+        _random.Shuffle(keys);
+
+        foreach (var key in keys)
+        {
+            if (firstFactionCount * autobalance.Ratio <= secondFactionCount)
+            {
+                break;
             }
+
+            var jobId = assignedJobs[key].Item1;
+            if (jobId == null || !firstFactionProto.Jobs.Contains(jobId))
+            {
+                continue;
+            }
+
+            s.Info($"disabled job {jobId} for user {key}");
+            assignedJobs[key] = (null, assignedJobs[key].Item2);
+            firstFactionCount--;
         }
     }
 

@@ -103,7 +103,10 @@ public sealed partial class SWTargetingConsoleSystem : EntitySystem
         if (!IsProviderEnabled(user, ent.Owner))
             return;
 
-        ent.Comp.JobsAllowed[args.Job] = !ent.Comp.JobsAllowed[args.Job];
+        if (!ent.Comp.JobsAllowed.TryGetValue(args.Job, out var allowed))
+            return;
+
+        ent.Comp.JobsAllowed[args.Job] = !allowed;
         UpdateInterface(ent.Owner, ent.Comp);
         RaiseSettingsChanged(ent.Owner, user);
     }

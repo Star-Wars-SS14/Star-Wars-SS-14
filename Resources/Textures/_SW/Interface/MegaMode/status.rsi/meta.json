@@ -1,0 +1,29 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Original pixel icons hand-placed by Claude Code for Star-Wars-SS14, 2026; waiting is a rework of diplomacy.rsi/truce_pending, drawn in code by Codex.",
+    "size": {
+        "x": 16,
+        "y": 16
+    },
+    "states": [
+        {
+            "name": "unknown"
+        },
+        {
+            "name": "restricted"
+        },
+        {
+            "name": "stale"
+        },
+        {
+            "name": "unavailable"
+        },
+        {
+            "name": "waiting"
+        },
+        {
+            "name": "returning"
+        }
+    ]
+}

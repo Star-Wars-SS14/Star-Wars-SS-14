@@ -1,8 +1,8 @@
 - type: entity
   id: ActionSithForceLightning
+  categories: [ HideSpawnMenu ]
   name: Молния
   description: Используя тёмную силу вы испускаете разряд!
-  noSpawn: true
   components:
   - type: Action
     icon: _SW/Interface/Actions/lighting.png
@@ -16,9 +16,9 @@
 
 - type: entity
   id: ActionForcePush
+  categories: [ HideSpawnMenu ]
   name: Толчок
   description: Уроните вашего врага на землю!
-  noSpawn: true
   components:
   - type: Action
     icon: Interface/Actions/disarm.png
@@ -32,9 +32,9 @@
 
 - type: entity
   id: ActionForceAttract
+  categories: [ HideSpawnMenu ]
   name: Притянуть предмет
   description: Притяние объект!
-  noSpawn: true
   components:
   - type: Action
     icon: _SW/Interface/Actions/force_attract.png
@@ -48,9 +48,9 @@
 
 - type: entity
   id: ActionStrangulate
+  categories: [ HideSpawnMenu ]
   name: Задушить
   description: Задушите кого-нибудь
-  noSpawn: true
   components:
   - type: Action
     icon: _SW/Interface/Actions/strangulate.png
@@ -117,7 +117,7 @@
 - type: entity
   id: SWForceInfluenceAction
   name: Влияние силы
-  description: Заставьте другого гуманоида подчиниться вашей воле. Учтите, что если ему сообщат о влиянии, то он избавиться от него.
+  description: Заставьте другого гуманоида подчиниться вашей воле через секунду после применения. Учтите, что если ему сообщат о влиянии, то он избавится от него.
   components:
   - type: Action
     icon: _SW/Interface/Actions/force_attract.png

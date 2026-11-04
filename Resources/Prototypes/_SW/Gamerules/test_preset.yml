@@ -1,0 +1,42 @@
+# Design-test round: the SWMainPreset rules with every SW round timer 10 times shorter.
+# Start it from the lobby console: setgamepreset SWTestPreset (alias swtest).
+# Not for production; hidden from the vote.
+
+- type: entity
+  parent: BaseGameRule
+  id: SWTimerSpeedupGamerule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWTimerSpeedupGamerule
+    speedup: 10
+
+# Restart votes would interrupt a test every 3 minutes, so they are pushed past any test length.
+# The elimination check starts at minute 10 instead of 3, so a solo tester is not ended by an empty enemy side.
+- type: entity
+  parent: SWEndRoundGamerule
+  id: SWTestEndRoundGamerule
+  components:
+  - type: SWEndRoundGamerule
+    delay: 100m
+    delayVote: 100000m
+    delaybetweenVotes: 100000m
+
+- type: gamePreset
+  id: SWTestPreset
+  alias:
+  - swtest
+  name: sw-test-preset-title
+  description: sw-test-preset-description
+  showInVote: false
+  supportedMaps: SWMainPresetMapPool
+  rules:
+  - SWTimerSpeedupGamerule
+  - TaskGamerule
+  - SWFactionArrivalRadioGamerule
+  - SWEventScheduler
+  - SWRespawnGamerule
+  - SWMineCollapseGamerule
+  - SWWantedSelectRule
+  - SWTestEndRoundGamerule
+  - SWRadioactiveStromGamerule

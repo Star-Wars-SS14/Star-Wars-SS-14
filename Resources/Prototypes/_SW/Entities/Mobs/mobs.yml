@@ -358,7 +358,7 @@
 - type: entity
   name: Intelligence Agent
   parent: BaseMobHuman
-  id: SWMobEmpiдтнааreIntelligenceAgent
+  id: SWMobEmpireIntelligenceAgent
   description: A miserable pile of secrets.
   components:
   - type: Loadout

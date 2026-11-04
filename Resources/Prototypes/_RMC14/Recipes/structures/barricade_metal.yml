@@ -57,23 +57,24 @@
         amount: 3
         doAfter: 6
 
-  - node: nodeBurnUpgrade
-    entity: CMBarricadeBurn
-    edges:
-    - to: start
-      completed:
-        - !type:SpawnPrototype
-          prototype: SheetSteel1
-          amount: 4
-        - !type:DeleteEntity
-      conditions:
-        - !type:EntityAnchored
-          anchored: false
-      steps:
-      - tool: Screwing
-        doAfter: 1
-      - tool: Prying
-        doAfter: 2
+  # SW: nodeBurnUpgrade is disabled together with CMBarricadeBurn and its edge above.
+  # - node: nodeBurnUpgrade
+  #   entity: CMBarricadeBurn
+  #   edges:
+  #   - to: start
+  #     completed:
+  #       - !type:SpawnPrototype
+  #         prototype: SheetSteel1
+  #         amount: 4
+  #       - !type:DeleteEntity
+  #     conditions:
+  #       - !type:EntityAnchored
+  #         anchored: false
+  #     steps:
+  #     - tool: Screwing
+  #       doAfter: 1
+  #     - tool: Prying
+  #       doAfter: 2
 
   - node: nodeBruteUpgrade
     entity: CMBarricadeBrute

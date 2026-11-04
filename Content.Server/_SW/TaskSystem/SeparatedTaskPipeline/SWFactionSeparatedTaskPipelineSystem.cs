@@ -1,4 +1,6 @@
+using Content.Server._SW.Gamerules.TimerSpeedup;
 using Content.Server.GameTicking;
+using Content.Shared.GameTicking;
 using Content.Shared._SW.TaskSystem;
 using Robust.Shared.Timing;
 using System;
@@ -12,17 +14,24 @@ public sealed class SWFactionSeparatedTaskPipelineSystem : EntitySystem
 {
     [Dependency] private readonly SWTasksGameRuleSystem _taskSystem = default!;
     [Dependency] private readonly GameTicker _gameTicker = default!;
+    [Dependency] private readonly SWTimerSpeedupSystem _timerSpeedup = default!;
 
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+
+        // Factions spawn during the map preload in the lobby, when RoundDuration() still counts from the last round.
+        if (_gameTicker.RunLevel != GameRunLevel.InRound)
+        {
+            return;
+        }
 
         var query = EntityQueryEnumerator<SWFactionSeparatedTaskPipelineComponent>();
         while (query.MoveNext(out var uid, out var pipelineComp))
         {
             foreach (var task in pipelineComp.Tasks)
             {
-                if (task.TaskAddTime <= _gameTicker.RoundDuration() && !task.Added)
+                if (_timerSpeedup.Scale(task.TaskAddTime) <= _gameTicker.RoundDuration() && !task.Added)
                 {
                     var result = _taskSystem.TryAddTask(Prototype(uid)!.ID, task.TaskId);
                     if (result != null || !task.TryAddUntilSuccess)

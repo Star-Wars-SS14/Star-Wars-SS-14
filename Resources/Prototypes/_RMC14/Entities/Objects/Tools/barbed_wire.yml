@@ -1,0 +1,13 @@
+# SW: BarbedComponent spawns this prototype by default, the RMC14 port had no entity for it.
+- type: entity
+  parent: BaseItem
+  id: BarbedWire1
+  name: barbed wire
+  description: A roll of barbed wire. Use it on a barricade to make it harder to climb.
+  components:
+  - type: Sprite
+    sprite: _RMC14/Objects/barbed_wire.rsi
+    state: barbed_wire
+  - type: Item
+    size: Normal
+  - type: BarbedWire

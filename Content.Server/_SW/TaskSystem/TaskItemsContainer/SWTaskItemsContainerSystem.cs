@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 namespace Content.Server._SW.TaskSystem.TaskItemsContainer;
 public sealed class SWTaskItemsContainerSystem : EntitySystem
 {
+    [Dependency] private readonly SharedContainerSystem _container = default!;
+
     public override void Initialize()
     {
         base.Initialize();
@@ -50,11 +52,15 @@ public sealed class SWTaskItemsContainerSystem : EntitySystem
                     var toCollect = comp.ObjectsToCollect.Find(x => x.ObjectsPrototypes == protolist);
                     if (collected != null && toCollect != null)
                     {
-                        if (inserted && collected.Number < toCollect.Number)
+                        if (inserted)
                         {
-                            collected.Number++;
+                            if (collected.Number < toCollect.Number)
+                            {
+                                collected.Number++;
+                            }
                         }
-                        else if (collected.Number > 0)
+                        // Spare items may stay inside after a removal: the count drops only when it is no longer true.
+                        else if (collected.Number > 0 && CountStored(ent.Comp.Faction, protolist) < collected.Number)
                         {
                             collected.Number--;
                         }
@@ -62,5 +68,31 @@ public sealed class SWTaskItemsContainerSystem : EntitySystem
                 }
             }
         }
+    }
+
+    private int CountStored(string faction, List<string> prototypes)
+    {
+        var count = 0;
+        var query = EntityQueryEnumerator<SWTaskItemsContainerComponent, ContainerManagerComponent>();
+        while (query.MoveNext(out var uid, out var safe, out var containers))
+        {
+            if (safe.Faction != faction)
+            {
+                continue;
+            }
+
+            foreach (var container in _container.GetAllContainers(uid, containers))
+            {
+                foreach (var item in container.ContainedEntities)
+                {
+                    if (TryPrototype(item, out var proto) && prototypes.Contains(proto.ID))
+                    {
+                        count++;
+                    }
+                }
+            }
+        }
+
+        return count;
     }
 }

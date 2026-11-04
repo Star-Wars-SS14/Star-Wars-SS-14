@@ -16,7 +16,7 @@
     - board
   - type: Occluder
   - type: Paintable
-    department: Command
+    group: AirlockStandard
 
 - type: entity
   parent: CMAirlock
@@ -25,8 +25,6 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/com_door.rsi
-  - type: Paintable
-    department: Command
 
 - type: entity
   parent: CMAirlock
@@ -35,8 +33,6 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/engi_door.rsi
-  - type: Paintable
-    department: Engineering
 
 - type: entity
   parent: CMAirlock
@@ -45,8 +41,6 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/medi_door.rsi
-  - type: Paintable
-    department: Command
 
 - type: entity
   parent: CMAirlock
@@ -55,8 +49,6 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/sec_door.rsi
-  - type: Paintable
-    department: Command
 
 - type: entity
   parent: CMAirlock
@@ -102,7 +94,7 @@
     graph: CMAirlock
     node: glassAirlock
   - type: Paintable
-    group: Glass
+    group: AirlockGlass
   - type: Tag
     tags:
     - GlassAirlock
@@ -114,8 +106,6 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/engi_door_glass.rsi
-  - type: Paintable
-    department: Engineering
 
 - type: entity
   parent: CMAirlockGlass
@@ -124,8 +114,6 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/medi_door_glass.rsi
-  - type: Paintable
-    department: Command
 
 - type: entity
   parent: CMAirlockGlass
@@ -134,8 +122,6 @@
   components:
   - type: Sprite
     sprite: _RMC14/Structures/Doors/Airlocks/sec_door_glass.rsi
-  - type: Paintable
-    department: Command
 
 # Prep
 - type: entity

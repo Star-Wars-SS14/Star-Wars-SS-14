@@ -137,7 +137,7 @@ public sealed partial class ShipyardConsoleMenu : FancyWindow
         foreach (var (curProtoId, amount) in balance)
         {
             var curProto = _protoManager.Index(curProtoId);
-            res += $"{curProto.ShortName} {amount}/";
+            res += $"{Loc.GetString(curProto.ShortName)} {amount}/";
         }
         res = res.Remove(res.Length - 1);
         return res;
@@ -151,7 +151,7 @@ public sealed partial class ShipyardConsoleMenu : FancyWindow
         foreach (var (curProtoId, amount) in costs)
         {
             var curProto = _protoManager.Index(curProtoId);
-            res += $"{curProto.ShortName} {amount}/";
+            res += $"{Loc.GetString(curProto.ShortName)} {amount}/";
         }
         res = res.Remove(res.Length - 1);
         return res;

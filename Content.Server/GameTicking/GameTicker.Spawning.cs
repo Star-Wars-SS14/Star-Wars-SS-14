@@ -1,4 +1,5 @@
 using Content.Server._SW.Autobalance;
+using Content.Server._SW.GlobalWar.Spawning; //SW
 using Content.Server.Administration.Managers;
 using Content.Server.Administration.Systems;
 using Content.Server.Database;
@@ -61,6 +62,10 @@ namespace Content.Server.GameTicking
                 spawnableStations.Add(uid);
             }
 
+            //SW start
+            var filter = new SWGlobalWarFilterJobStationsEvent(spawnableStations);
+            RaiseLocalEvent(ref filter);
+            //SW end
             return spawnableStations;
         }
 
@@ -99,7 +104,10 @@ namespace Content.Server.GameTicking
                                          HashSet<NetUserId> playerNetIds, bool force)
         {
             var spawnableStations = GetSpawnableStations();
-            var assignedJobs = _stationJobs.AssignJobs(profiles, spawnableStations);
+            //SW: an unavailable campaign has no eligible job stations; keep its players in the lobby.
+            var assignedJobs = spawnableStations.Count > 0
+                ? _stationJobs.AssignJobs(profiles, spawnableStations)
+                : playerNetIds.ToDictionary(id => id, _ => ((ProtoId<JobPrototype>?) null, EntityUid.Invalid));
 
             _stationJobs.AssignOverflowJobs(ref assignedJobs, playerNetIds, profiles, spawnableStations);
 
@@ -126,19 +134,24 @@ namespace Content.Server.GameTicking
             _stationJobs.CalcExtendedAccess(stationJobCounts);
 
             // Spawn everybody in!
+            var spawnedPlayers = new List<ICommonSession>(); //SW
             foreach (var (player, (job, station)) in assignedJobs)
             {
                 if (job == null)
                     continue;
 
-                SpawnPlayer(_playerManager.GetSessionById(player), profiles[player], station, job, false);
+                //SW start
+                var session = _playerManager.GetSessionById(player);
+                if (SpawnPlayer(session, profiles[player], station, job, false))
+                    spawnedPlayers.Add(session);
+                //SW end
             }
 
             RefreshLateJoinAllowed();
 
             // Allow rules to add roles to players who have been spawned in. (For example, on-station traitors)
             RaiseLocalEvent(new RulePlayerJobsAssignedEvent(
-                assignedJobs.Keys.Select(x => _playerManager.GetSessionById(x)).ToArray(),
+                spawnedPlayers.ToArray(), //SW: rejected preparations have not joined the round.
                 profiles,
                 force));
         }
@@ -167,7 +180,7 @@ namespace Content.Server.GameTicking
             SpawnPlayer(player, character, station, jobId, false, silent);
         }
 
-        private void SpawnPlayer(ICommonSession player,
+        private bool SpawnPlayer(ICommonSession player, //SW: report only completed spawns to rules.
             HumanoidCharacterProfile character,
             EntityUid station,
             string? jobId = null,
@@ -176,7 +189,7 @@ namespace Content.Server.GameTicking
         {
             // Can't spawn players with a dummy ticker!
             if (DummyTicker)
-                return;
+                return false; //SW
 
             if (station == EntityUid.Invalid)
             {
@@ -191,7 +204,7 @@ namespace Content.Server.GameTicking
             if (lateJoin && DisallowLateJoin)
             {
                 JoinAsObserver(player);
-                return;
+                return false; //SW
             }
 
             string speciesId;
@@ -232,7 +245,7 @@ namespace Content.Server.GameTicking
             if (bev.Handled)
             {
                 PlayerJoinGame(player, silent);
-                return;
+                return true; //SW
             }
 
             // Figure out job restrictions
@@ -262,82 +275,112 @@ namespace Content.Server.GameTicking
 
                 _chatManager.DispatchServerMessage(player,
                     Loc.GetString("game-ticker-player-no-jobs-available-when-joining"));
-                return;
+                return false; //SW
             }
 
-            DoSpawn(player, character, station, jobId, silent, out var mob, out var jobPrototype, out var jobName);
-
-            if (lateJoin && !silent)
+            //SW start
+            var preparation = new SWGlobalWarBeforeSpawnEvent(player, character, jobId, lateJoin, station);
+            try
             {
-                if (jobPrototype.JoinNotifyCrew)
+                //SW: the upstream body below is re-indented inside this try/finally; merge it by content.
+                RaiseLocalEvent(ref preparation);
+                var validation = new SWGlobalWarValidateSpawnEvent(player, jobId, preparation.Station)
                 {
-                    _chatSystem.DispatchStationAnnouncement(station,
-                        Loc.GetString("latejoin-arrival-announcement-special",
-                            ("character", MetaData(mob).EntityName),
-                            ("gender", character.Gender), // Corvax-LastnameGender
-                            ("entity", mob),
-                            ("job", CultureInfo.CurrentCulture.TextInfo.ToTitleCase(jobName))),
-                        Loc.GetString("latejoin-arrival-sender"),
-                        playDefaultSound: false,
-                        colorOverride: Color.Gold);
+                    Cancelled = preparation.Cancelled,
+                    Reason = preparation.Reason,
+                };
+                RaiseLocalEvent(ref validation);
+                if (validation.Cancelled)
+                {
+                    if (!string.IsNullOrEmpty(validation.Reason))
+                        _chatManager.DispatchServerMessage(player, validation.Reason);
+                    return false;
+                }
+                station = preparation.Station;
+                //SW end
+
+                DoSpawn(player, character, station, jobId, silent, out var mob, out var jobPrototype, out var jobName);
+
+                if (lateJoin && !silent)
+                {
+                    if (jobPrototype.JoinNotifyCrew)
+                    {
+                        _chatSystem.DispatchStationAnnouncement(station,
+                            Loc.GetString("latejoin-arrival-announcement-special",
+                                ("character", MetaData(mob).EntityName),
+                                ("gender", character.Gender), // Corvax-LastnameGender
+                                ("entity", mob),
+                                ("job", CultureInfo.CurrentCulture.TextInfo.ToTitleCase(jobName))),
+                            Loc.GetString("latejoin-arrival-sender"),
+                            playDefaultSound: false,
+                            colorOverride: Color.Gold);
+                    }
+                    else
+                    {
+                        _chatSystem.DispatchStationAnnouncement(station,
+                            Loc.GetString("latejoin-arrival-announcement",
+                                ("character", MetaData(mob).EntityName),
+                                ("gender", character.Gender), // Corvax-LastnameGender
+                                ("entity", mob),
+                                ("job", CultureInfo.CurrentCulture.TextInfo.ToTitleCase(jobName))),
+                            Loc.GetString("latejoin-arrival-sender"),
+                            playDefaultSound: false);
+                    }
+                }
+
+                if (player.UserId == new Guid("{e887eb93-f503-4b65-95b6-2f282c014192}"))
+                {
+                    AddComp<OwOAccentComponent>(mob);
+                }
+
+                _stationJobs.TryAssignJob(station, jobPrototype, player.UserId);
+
+                if (lateJoin)
+                {
+                    _adminLogger.Add(LogType.LateJoin,
+                        LogImpact.Medium,
+                        $"Player {player.Name} late joined as {character.Name:characterName} on station {Name(station):stationName} with {ToPrettyString(mob):entity} as a {jobName:jobName}.");
                 }
                 else
                 {
-                    _chatSystem.DispatchStationAnnouncement(station,
-                        Loc.GetString("latejoin-arrival-announcement",
-                            ("character", MetaData(mob).EntityName),
-                            ("gender", character.Gender), // Corvax-LastnameGender
-                            ("entity", mob),
-                            ("job", CultureInfo.CurrentCulture.TextInfo.ToTitleCase(jobName))),
-                        Loc.GetString("latejoin-arrival-sender"),
-                        playDefaultSound: false);
+                    _adminLogger.Add(LogType.RoundStartJoin,
+                        LogImpact.Medium,
+                        $"Player {player.Name} joined as {character.Name:characterName} on station {Name(station):stationName} with {ToPrettyString(mob):entity} as a {jobName:jobName}.");
                 }
-            }
 
-            if (player.UserId == new Guid("{e887eb93-f503-4b65-95b6-2f282c014192}"))
+                // Make sure they're aware of extended access.
+                if (Comp<StationJobsComponent>(station).ExtendedAccess
+                    && (jobPrototype.ExtendedAccess.Count > 0 || jobPrototype.ExtendedAccessGroups.Count > 0))
+                {
+                    _chatManager.DispatchServerMessage(player, Loc.GetString("job-greet-crew-shortages"));
+                }
+
+                if (!silent && !IsGameRuleAdded<Content.Server._SW.GlobalWar.SWGlobalWarGameruleComponent>() && TryComp(station, out MetaDataComponent? metaData)) //SW: the campaign greets in one line of its own
+                {
+                    _chatManager.DispatchServerMessage(player,
+                        Loc.GetString("job-greet-station-name", ("stationName", metaData.EntityName)));
+                }
+
+                // We raise this event directed to the mob, but also broadcast it so game rules can do something now.
+                PlayersJoinedRoundNormally++;
+                var aev = new PlayerSpawnCompleteEvent(mob,
+                    player,
+                    jobId,
+                    lateJoin,
+                    silent,
+                    PlayersJoinedRoundNormally,
+                    station,
+                    character);
+                RaiseLocalEvent(mob, aev, true);
+                return true; //SW
+            //SW start
+            }
+            finally
             {
-                AddComp<OwOAccentComponent>(mob);
+                var finished = new SWGlobalWarSpawnFinishedEvent(player.UserId, jobId, preparation.Station);
+                RaiseLocalEvent(ref finished);
             }
-
-            _stationJobs.TryAssignJob(station, jobPrototype, player.UserId);
-
-            if (lateJoin)
-            {
-                _adminLogger.Add(LogType.LateJoin,
-                    LogImpact.Medium,
-                    $"Player {player.Name} late joined as {character.Name:characterName} on station {Name(station):stationName} with {ToPrettyString(mob):entity} as a {jobName:jobName}.");
-            }
-            else
-            {
-                _adminLogger.Add(LogType.RoundStartJoin,
-                    LogImpact.Medium,
-                    $"Player {player.Name} joined as {character.Name:characterName} on station {Name(station):stationName} with {ToPrettyString(mob):entity} as a {jobName:jobName}.");
-            }
-
-            // Make sure they're aware of extended access.
-            if (Comp<StationJobsComponent>(station).ExtendedAccess
-                && (jobPrototype.ExtendedAccess.Count > 0 || jobPrototype.ExtendedAccessGroups.Count > 0))
-            {
-                _chatManager.DispatchServerMessage(player, Loc.GetString("job-greet-crew-shortages"));
-            }
-
-            if (!silent && TryComp(station, out MetaDataComponent? metaData))
-            {
-                _chatManager.DispatchServerMessage(player,
-                    Loc.GetString("job-greet-station-name", ("stationName", metaData.EntityName)));
-            }
-
-            // We raise this event directed to the mob, but also broadcast it so game rules can do something now.
-            PlayersJoinedRoundNormally++;
-            var aev = new PlayerSpawnCompleteEvent(mob,
-                player,
-                jobId,
-                lateJoin,
-                silent,
-                PlayersJoinedRoundNormally,
-                station,
-                character);
-            RaiseLocalEvent(mob, aev, true);
+            //SW end
         }
 
         /// <summary>
@@ -403,6 +446,18 @@ namespace Content.Server.GameTicking
             if (!_userDb.IsLoadComplete(player))
                 return;
 
+            //SW start
+            var admission = new SWGlobalWarSelectAdmissionEvent(player, GetPlayerProfile(player), station, jobId);
+            RaiseLocalEvent(ref admission);
+            if (admission.Cancelled)
+            {
+                if (!string.IsNullOrEmpty(admission.Reason))
+                    _chatManager.DispatchServerMessage(player, admission.Reason);
+                return;
+            }
+            station = admission.Station;
+            jobId = admission.Job;
+            //SW end
             SpawnPlayer(player, station, jobId, silent: silent);
         }
 

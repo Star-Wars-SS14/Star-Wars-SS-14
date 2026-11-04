@@ -1,0 +1,25 @@
+ent-SWGlobalWarAideRepublic = liaison officer
+    .desc = A liaison officer of the Republic.
+ent-SWGlobalWarAideEmpire = liaison officer
+    .desc = A liaison officer of the Empire.
+
+sw-global-war-aide-otherworld-republic = The teleporter is the only way back. Remember it.
+sw-global-war-aide-otherworld-empire = The teleporter is the only way out. Remember it.
+sw-global-war-aide-boarded-republic = Please sit and buckle up before the jump.
+sw-global-war-aide-boarded-empire = Sit and buckle up. The jump will not wait.
+sw-global-war-aide-war-republic = The war has begun. Stay with your unit, listen to the radio.
+sw-global-war-aide-war-empire = War. Stay with your unit, orders come by radio.
+sw-global-war-aide-owncapture-republic = The capture takes five minutes. Cover the console.
+sw-global-war-aide-owncapture-empire = Five minutes to capture. Let no one near.
+sw-global-war-aide-enemycapture-republic = The enemy is taking our sector. Five minutes to respond.
+sw-global-war-aide-enemycapture-empire = The enemy is at the sector console. You have five minutes.
+sw-global-war-aide-sectorlost-republic = Sector lost. Ask on the radio where to fall back.
+sw-global-war-aide-sectorlost-empire = Sector lost. Request new orders by radio.
+sw-global-war-aide-returned-republic = Welcome back. Take a kit, the arsenal is finite.
+sw-global-war-aide-returned-empire = Back in line. Kit at the arsenal, stock is finite.
+sw-global-war-aide-arsenalempty-republic = The arsenal is empty. Take weapons from the fallen.
+sw-global-war-aide-arsenalempty-empire = The arsenal is empty. The weapons of the fallen are yours.
+sw-global-war-aide-delivery-republic = Cargo accepted. Runs like this hold the front.
+sw-global-war-aide-delivery-empire = Cargo accepted. Runs like this supply the front.
+sw-global-war-aide-truce-republic = Truce. Leave foreign sectors and hold your fire.
+sw-global-war-aide-truce-empire = Truce. Quit foreign sectors, weapons down.

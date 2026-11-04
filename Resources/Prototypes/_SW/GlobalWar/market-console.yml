@@ -1,0 +1,27 @@
+- type: entity
+  parent: BaseComputer
+  id: SWGlobalWarMarketConsole
+  name: planetary market console
+  description: A HoloNet atlas of planetary inventories, demand and automatic freight.
+  components:
+  - type: SWGlobalWarMarketConsole
+  - type: ActivatableUI
+    key: enum.SWGlobalWarMarketConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWGlobalWarMarketConsoleUiKey.Key:
+        type: SWGlobalWarMarketConsoleBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: supply
+    - map: ["computerLayerKeys"]
+      state: generic_keys
+    - map: ["enum.WiresVisualLayers.MaintenancePanel"]
+      state: generic_panel_open

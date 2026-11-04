@@ -1,7 +1,7 @@
 - type: department
   id: SWEmpire #Roles_Empire
-  name: Империя
-  description: Непосредственно основной кулак имперских сил, задача непосредственно вести экспансию, захватывать важные точки с ресурсами и т.п.
+  name: sw-department-empire-name
+  description: sw-department-empire-desc
   color: "#8B0000"
   roles:
   - SWEmpireMoff
@@ -16,8 +16,8 @@
 
 - type: department
   id: SWPepublic #Roles_Republic
-  name: Республика
-  description: Республика, после поражения, вывела войска из Балморы. Но там всё ещё оставалась подпольная ячейка республиканских солдат, которые всё время создавали плацдарм для будущего вторжения
+  name: sw-department-pepublic-name
+  description: sw-department-pepublic-desc
   color: "#8B0000"
   roles:
   - SWRepublicGeneral
@@ -33,8 +33,8 @@
 
 - type: department
   id: SWSobrik #Roles_Sobrik
-  name: Имперский корпус закрепления территорий
-  description: Охранники космопорта под сильным контролем империи.
+  name: sw-department-sobrik-name
+  description: sw-department-sobrik-desc
   color: "#8B0000"
   roles:
   - SWSobrikCaptain
@@ -44,8 +44,8 @@
 
 - type: department
   id: SWMandalorians #Roles_Mandalorians
-  name: Мандалорцы
-  description: Мандалорцы - воины, которые не боятся смерти.
+  name: sw-department-mandalorians-name
+  description: sw-department-mandalorians-desc
   color: "#8B0000"
   roles:
   - SWMandalorianLeader
@@ -69,8 +69,8 @@
 
 - type: department
   id: SWRPIntelligence #Roles_Empire_Intelligence
-  name: Имперский разведывательный отряд
-  description: Элитный отряд империи, состоящий из лучших бойцов и прошедшие подготовку в разведовательный отдел.
+  name: sw-department-rp-intelligence-name
+  description: sw-department-rp-intelligence-desc
   color: "#8B0000"
   roles:
   - SWEmpireIntelligenceCaretaker
@@ -79,8 +79,8 @@
 
 - type: department
   id: SWRPCommander #Havok
-  name: Республиканский Коммандос отряд
-  description: Элитный отряд республики, состоящий из лучших бойцов.
+  name: sw-department-rp-commander-name
+  description: sw-department-rp-commander-desc
   color: "#8B0000"
   roles:
   - SWRepublicCommanderCommander
@@ -92,8 +92,8 @@
 
 - type: department
   id: SWBlacksun #Roles_Black_Sun
-  name: Черное Солнце
-  description: Преступная организация "Черное Солнце", осколок группировки "Обмен".
+  name: sw-department-blacksun-name
+  description: sw-department-blacksun-desc
   color: "#8B0000"
   roles:
   - SWBlackSunMercenary
@@ -102,8 +102,8 @@
 
 - type: department
   id: SWExchange #Roles_Exchange
-  name: Обмен
-  description: Преступная организация "Обмен"
+  name: sw-department-exchange-name
+  description: sw-department-exchange-desc
   color: "#8B0000"
   roles:
   - SWExchangeCaptain
@@ -112,8 +112,8 @@
 
 - type: department
   id: SWCivilian
-  name: Обычные жители
-  description: Обычные жители планеты
+  name: sw-department-civilian-name
+  description: sw-department-civilian-desc
   color: "#8B0000"
   roles:
   - SWCivialian

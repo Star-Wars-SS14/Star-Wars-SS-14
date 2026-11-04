@@ -1,0 +1,20 @@
+# Campaign upgrades retain the base rifle's magazines and damage. Initial tuning reduces recoil growth by 20%.
+- type: entity
+  parent: SWH206Renegade
+  id: SWGlobalWarImprovedRepublicRifle
+  name: upgraded H-206 rifle
+  description: An H-206 with improved recoil control electronics. Uses standard H-206 magazines.
+  components:
+  - type: Gun
+    angleIncrease: 0.4
+    angleDecay: 5
+
+- type: entity
+  parent: SWE1BlasterRifle
+  id: SWGlobalWarImprovedEmpireRifle
+  name: upgraded E-1 rifle
+  description: An E-1 with improved recoil control electronics. Uses standard E-1 magazines.
+  components:
+  - type: Gun
+    angleIncrease: 0.4
+    angleDecay: 5

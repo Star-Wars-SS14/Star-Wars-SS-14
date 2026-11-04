@@ -236,7 +236,7 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
     private void RefreshWorldPreview(string? sectorId)
     {
         // Always clear the previous selection before resolving the new world.
-        SectorWorldPreview.Texture = null;
+        SectorWorldPreview.RemoveAllChildren();
         SectorWorldPreview.Visible = false;
         SectorWorldPreviewStatus.RemoveAllChildren();
         if (sectorId == null) return;
@@ -258,15 +258,13 @@ public sealed partial class SWSectorSelectConsoleMenu : FancyWindow
             SectorWorldPreviewStatus.AddChild(Wrap("Идентификатор опорного мира отсутствует или неоднозначен.", SWConsoleStyle.TextDim, 250));
             return;
         }
-        var texture = SWStatisticsWorldArt.Get(anchor, true);
-        if (texture == null)
+        if (!SWStatisticsWorldArt.CanDraw(anchor))
         {
             SectorWorldPreviewStatus.AddChild(Wrap("Изображение опорного мира недоступно.", SWConsoleStyle.TextDim, 250));
             return;
         }
-        SectorWorldPreview.Texture = texture;
+        SectorWorldPreview.AddChild(new SWStatisticsPlanetSymbol(anchor) { SetSize = new Vector2(64, 64) });
         SectorWorldPreview.Visible = true;
-        SectorWorldPreviewStatus.AddChild(Wrap("Условное изображение", SWConsoleStyle.TextDim, 250));
     }
 
     private void RefreshDetail()

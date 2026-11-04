@@ -35,8 +35,8 @@ public sealed partial class SWStatisticsConsoleMenu
         _sectorDetail.Margin = new Thickness(0, 0, 12, 0);
         _sectorMetric.Margin = new Thickness(0, 0, 8, 4);
         _sectorSearch.Margin = new Thickness(0, 0, 8, 4);
-        filters.AddChild(_sectorMetric);
         filters.AddChild(_sectorSearch);
+        filters.AddChild(_sectorMetric);
         filters.AddChild(_sort);
         SectorTable.AddChild(filters);
         SectorTable.AddChild(_sectorReference);
@@ -121,7 +121,7 @@ public sealed partial class SWStatisticsConsoleMenu
         {
             var image = new SWStatisticsPlanetSymbol(anchor) { SetSize = new Vector2(64, 64), HorizontalAlignment = Control.HAlignment.Center };
             _sectorDetail.AddChild(image);
-            _sectorDetail.AddChild(SWStatisticsText.Wrap(image.HasTexture ? $"Опорный мир: {anchor.Name}. Условное изображение." : $"Опорный мир: {anchor.Name}. Изображение недоступно.", SWConsoleStyle.TextDim));
+            _sectorDetail.AddChild(SWStatisticsText.Wrap(image.HasTexture ? $"Опорный мир: {anchor.Name}" : $"Опорный мир: {anchor.Name}. Изображение недоступно.", SWConsoleStyle.TextDim));
         }
         else _sectorDetail.AddChild(SWStatisticsText.Wrap("Единственный опорный мир не определён.", SWConsoleStyle.TextDim));
         _sectorDetail.AddChild(SWStatisticsText.Wrap(selected.Claimed ? "Представлен в Сенате" : "Сенатор не назначен", SWConsoleStyle.TextDim));

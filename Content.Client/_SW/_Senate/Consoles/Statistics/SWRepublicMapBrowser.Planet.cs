@@ -24,7 +24,6 @@ public sealed partial class SWRepublicMapBrowser
     private SWStatisticsPlanetLayout? _planetLayout;
     private string? _systemParentSector;
     private bool _schematicPlacement;
-    private bool _overviewFlowNoGeometry;
     private readonly Dictionary<string, (float Zoom, Vector2 Pan)> _mapViews = new();
     private string MapKey() => $"{CurrentSectorId}|{CurrentSystemId}|{CurrentPoliticalSectorId}";
     private bool _surfaceReturnsToPlanet;
@@ -39,61 +38,18 @@ public sealed partial class SWRepublicMapBrowser
 
     private SWGalacticMapPrototype IncludeOverviewFlow(SWGalacticMapPrototype view)
     {
-        _overviewFlowNoGeometry = false;
         if (!_fullPlanetScreen || _focusedFlow == null) return view;
         var flow = _focusedFlow;
         var route = _data.Routes.FirstOrDefault(r => SWTransitLinkPrototype.LinkId(r.From, r.To) == flow.Edge);
         if (route == null || IsPlannedRoute(route) || !_worlds.TryGetValue(flow.From, out var from) || !_worlds.TryGetValue(flow.To, out var to) ||
             Vector2.DistanceSquared(from.Position, to.Position) < .0001f)
         {
-            _overviewFlowNoGeometry = true;
             return view;
         }
         if (!view.Worlds.Any(w => w.Id == from.Id)) view.Worlds.Add(from);
         if (!view.Worlds.Any(w => w.Id == to.Id)) view.Worlds.Add(to);
         if (!view.Routes.Any(r => SWTransitLinkPrototype.LinkId(r.From, r.To) == flow.Edge)) view.Routes.Add(route);
         return view;
-    }
-
-    private void UpdateOverviewFlowNotice()
-    {
-        var overview = _fullPlanetScreen && CurrentSectorId == null && CurrentSystemId == null &&
-            CurrentPoliticalSectorId == null && Surface == null && !_planetOpen;
-        if (!overview)
-        {
-            _flowGeometryNotice.Visible = false;
-            _coincidentPicker.Visible = false;
-            return;
-        }
-
-        // A published link is accessible independently of the traffic layer or its current rate.
-        // Do not manufacture a line between endpoints with the same global position.
-        var published = _economyView is { Ready: true } economy ? economy.Links.Select(link => link.Edge).ToHashSet() : new HashSet<string>();
-        var routes = _data.Routes.Where(route => published.Contains(SWTransitLinkPrototype.LinkId(route.From, route.To)) &&
-                _worlds.TryGetValue(route.From, out var from) && _worlds.TryGetValue(route.To, out var to) &&
-                Vector2.DistanceSquared(from.Position, to.Position) < .0001f)
-            .OrderBy(route => route.From, Comparer<string>.Create(string.CompareOrdinal))
-            .ThenBy(route => route.To, Comparer<string>.Create(string.CompareOrdinal)).ToArray();
-        var signature = string.Join("|", routes.Select(route => SWTransitLinkPrototype.LinkId(route.From, route.To)));
-        if (signature != _coincidentSignature)
-        {
-            _coincidentSignature = signature;
-            _coincidentRoutes = routes;
-            _coincidentPicker.Clear();
-            _coincidentPicker.AddItem($"Связи с совпадающими координатами: {routes.Length}", 0);
-            _coincidentPicker.SetItemDisabled(0, true);
-            for (var i = 0; i < routes.Length; i++)
-                _coincidentPicker.AddItem($"{WorldName(routes[i].From)} — {WorldName(routes[i].To)}", i + 1);
-            _coincidentPicker.SelectId(0);
-        }
-        _coincidentPicker.Visible = routes.Length > 0;
-        var missingFlowGeometry = _showTraffic && _economyView is { Ready: true } view && view.Flows.Any(flow =>
-            (flow.UnitsPerHour > 0 || flow.InTransit > 0) && (_commodityFilter == null || flow.Good == _commodityFilter) &&
-            (!_worlds.TryGetValue(flow.From, out var from) || !_worlds.TryGetValue(flow.To, out var to) ||
-             Vector2.DistanceSquared(from.Position, to.Position) < .0001f ||
-             !_data.Routes.Any(route => !IsPlannedRoute(route) && SWTransitLinkPrototype.LinkId(route.From, route.To) == flow.Edge)));
-        _flowGeometryNotice.Text = routes.Length > 0 ? "Часть опубликованных связей неразличима на общей карте." : "Путь неразличим на этом масштабе";
-        _flowGeometryNotice.Visible = routes.Length > 0 || _overviewFlowNoGeometry || missingFlowGeometry;
     }
 
     // When a local coordinate is absent, use an explicitly schematic graph rather than
@@ -166,7 +122,7 @@ public sealed partial class SWRepublicMapBrowser
         left.AddChild(SWStatisticsText.Wrap(world.Name, SWConsoleStyle.Brass, 240));
         var symbol = new SWStatisticsPlanetSymbol(world) { HorizontalExpand = true, MinHeight = 140, MaxHeight = 180 };
         left.AddChild(symbol);
-        left.AddChild(SWStatisticsText.Wrap(symbol.HasTexture ? "Условное изображение" : "Изображение недоступно", SWConsoleStyle.TextDim, 240));
+        if (!symbol.HasTexture) left.AddChild(SWStatisticsText.Wrap("Изображение недоступно", SWConsoleStyle.TextDim, 240));
         left.AddChild(SWStatisticsText.Wrap("Межпланетные перевозки", SWConsoleStyle.TextBright, 240));
         _planetPaths = VerticalStack(5);
         _planetPathsSignature = string.Empty;
@@ -391,20 +347,19 @@ public sealed class SWStatisticsRouteLine : Control
 /// <summary>Illustration is conditional and is not a claim about a world's biome.</summary>
 public sealed class SWStatisticsPlanetSymbol : Control
 {
-    public Texture? Texture { get; }
-    public bool HasTexture => Texture != null;
+    public SWGalacticMapWorld? World { get; }
+    public bool HasTexture => SWStatisticsWorldArt.CanDraw(World);
     public SWStatisticsPlanetSymbol(SWGalacticMapWorld? world)
     {
-        Texture = SWStatisticsWorldArt.Get(world, true);
+        World = world;
         MouseFilter = MouseFilterMode.Ignore;
     }
     protected override void Draw(DrawingHandleScreen handle)
     {
         base.Draw(handle);
-        if (Texture is not { } texture) return;
         var side = MathF.Max(0, MathF.Min(64 * UIScale, MathF.Min(PixelWidth, PixelHeight)));
         var size = new Vector2(side);
-        handle.DrawTextureRect(texture, UIBox2.FromDimensions((PixelSize - size) / 2, size));
+        SWStatisticsWorldArt.Draw(handle, World, UIBox2.FromDimensions((PixelSize - size) / 2, size), true);
     }
 }
 
@@ -446,11 +401,10 @@ public sealed class SWStatisticsPlanetLayout : Container
         var smooth = t * t * (3 - 2 * t);
         var target = _symbol.GlobalPosition - GlobalPosition + _symbol.Size / 2;
         var center = Vector2.Lerp(origin, target, smooth) * UIScale;
-        if (_symbol.Texture is not { } texture) return;
         var targetSide = MathF.Min(64, MathF.Min(_symbol.Width, _symbol.Height));
         var side = MathF.Max(0, (32 + (targetSide - 32) * smooth) * UIScale);
         var alpha = 1 - Math.Clamp((t - .45f) / .55f, 0, 1);
-        handle.DrawTextureRect(texture, UIBox2.FromDimensions(center - new Vector2(side / 2), new Vector2(side)), Color.White.WithAlpha(alpha));
+        SWStatisticsWorldArt.Draw(handle, _symbol.World, UIBox2.FromDimensions(center - new Vector2(side / 2), new Vector2(side)), true, alpha);
     }
     protected override Vector2 MeasureOverride(Vector2 availableSize)
     {
@@ -459,12 +413,14 @@ public sealed class SWStatisticsPlanetLayout : Container
         var left = Math.Max(0, (_width - Gap) * .28f);
         Children[0].Measure(new Vector2(left, height));
         Children[1].Measure(new Vector2(Math.Max(0, _width - Gap - left), height));
-        return new Vector2(_width, height);
+        return new Vector2(_width, 0);
     }
     protected override Vector2 ArrangeOverride(Vector2 finalSize)
     {
         var width = Math.Min(_width, finalSize.X);
         var left = Math.Max(0, (width - Gap) * .28f);
+        Children[0].Measure(new Vector2(left, finalSize.Y));
+        Children[1].Measure(new Vector2(Math.Max(0, width - Gap - left), finalSize.Y));
         Children[0].Arrange(UIBox2.FromDimensions(Vector2.Zero, new Vector2(left, finalSize.Y)));
         Children[1].Arrange(UIBox2.FromDimensions(new Vector2(left + Gap, 0), new Vector2(Math.Max(0, width - Gap - left), finalSize.Y)));
         return finalSize;

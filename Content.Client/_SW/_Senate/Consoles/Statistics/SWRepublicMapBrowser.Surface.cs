@@ -68,7 +68,7 @@ public sealed partial class SWRepublicMapBrowser
         sidebar.AddChild(scroll);
         if (_fullPlanetScreen)
         {
-            _statisticsAtlas = new SWStatisticsAtlasLayout(surface, sidebar);
+            _statisticsAtlas = new SWStatisticsAtlasLayout(surface, sidebar, deferHeight: true);
             _body.AddChild(new SWStatisticsReveal(_statisticsAtlas, .32f));
         }
         else

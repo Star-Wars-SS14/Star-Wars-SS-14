@@ -200,14 +200,9 @@ public sealed partial class SWRepublicMapBrowser
     private void RefreshEconomyStatus()
     {
         _selectedFlowDirection.Visible = _fullPlanetScreen && Surface == null && _focusedFlow != null;
-        _trafficLegend.Visible = _fullPlanetScreen && Surface == null && (_showTraffic || _focusedFlow != null);
-        if (_trafficLegend.Visible)
-            _trafficLegend.SetMessage(_focusedFlow is { } selected
-                ? $"Выбранный поток: {WorldName(selected.From)} → {WorldName(selected.To)} — {GoodName(selected.Good)}"
-                : _commodityFilter == null
-                    ? "Стрелки поочерёдно показывают отдельные товары. Полный список доступен в досье маршрута."
-                    : "Стрелка показывает поток выбранного товара, а не отдельный корабль.", defaultColor: SWConsoleStyle.TextDim);
-        UpdateOverviewFlowNotice();
+        _trafficLegend.Visible = _fullPlanetScreen && Surface == null && _focusedFlow != null;
+        if (_trafficLegend.Visible && _focusedFlow is { } selected)
+            _trafficLegend.SetMessage($"Выбранный поток: {WorldName(selected.From)} → {WorldName(selected.To)} — {GoodName(selected.Good)}", defaultColor: SWConsoleStyle.TextDim);
         _economyStatus.Text = _economyView is not { Ready: true } ? "Ожидание данных"
             : !_showTraffic ? "Потоки скрыты"
             : _economyView.Paused ? "Движение приостановлено"
@@ -246,7 +241,6 @@ public sealed partial class SWRepublicMapBrowser
         Map.SetTrafficFilter(_commodityFilter, _showTraffic);
         Map.SetEconomyMapMode(_economyMapMode, _commodityFilter);
         Surface?.SetTrafficFilter(_commodityFilter, _showTraffic);
-        UpdateOverviewFlowNotice();
         if (_focusedFlow != null && _focusedFlow.Good != _commodityFilter)
         {
             _focusedFlow = null;

@@ -37,9 +37,8 @@ public sealed partial class SWStatisticsConsoleMenu
         _value.Margin = new Thickness(0, 0, 24, 0);
         readings.AddChild(_value);
         readings.AddChild(_policy);
-        _analysis.AddChild(readings);
-        _analysis.AddChild(_change);
-        var periods = new WrapContainer();
+        readings.AddChild(_change);
+        var periods = new WrapContainer { SeparationOverride = 4 };
         foreach (var (minutes, title) in new[] { (360, "6 часов"), (720, "12 часов"), (0, "Весь журнал") })
         {
             var button = SWConsoleStyle.TabButton(title);
@@ -47,7 +46,8 @@ public sealed partial class SWStatisticsConsoleMenu
             _periodButtons.Add(minutes, button);
             periods.AddChild(button);
         }
-        _analysis.AddChild(periods);
+        readings.AddChild(periods);
+        _analysis.AddChild(readings);
         _analysis.AddChild(_trend);
         var legend = new BoxContainer { SeparationOverride = 10 };
         legend.AddChild(new SWStatisticsKey());

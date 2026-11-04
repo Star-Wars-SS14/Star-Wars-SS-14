@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Content.Shared._SW._Senate;
+using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 using Robust.Shared.Maths;
@@ -47,9 +48,10 @@ public sealed class SWStatisticsDocuments : BoxContainer
         _document = new BoxContainer { Orientation = LayoutOrientation.Vertical, HorizontalExpand = true, SeparationOverride = 8 };
         _documentScroll = new ScrollContainer { HScrollEnabled = false, HorizontalExpand = true, VerticalExpand = true };
         _documentScroll.AddChild(_document);
-        var dossier = new PanelContainer { HorizontalExpand = true, VerticalExpand = true, PanelOverride = new SWConsoleSurface
+        var dossier = new PanelContainer { HorizontalExpand = true, VerticalExpand = true, PanelOverride = new StyleBoxFlat
         {
-            Background = SWConsoleStyle.BgPanel,
+            BackgroundColor = SWConsoleStyle.BgPanel,
+            BorderColor = SWConsoleStyle.Edge, BorderThickness = new Thickness(1),
             ContentMarginLeftOverride = 12, ContentMarginRightOverride = 12,
             ContentMarginTopOverride = 12, ContentMarginBottomOverride = 12,
         } };

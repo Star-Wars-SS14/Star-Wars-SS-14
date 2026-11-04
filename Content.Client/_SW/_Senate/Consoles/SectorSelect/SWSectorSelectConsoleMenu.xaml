@@ -40,7 +40,7 @@
                 <PanelContainer Name="DossierPanel">
                     <ScrollContainer Name="DetailScroll" HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
                         <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="8">
-                            <TextureRect Name="SectorWorldPreview" SetSize="64 64" HorizontalAlignment="Center" Stretch="KeepAspectCentered" CanShrink="True" />
+                            <BoxContainer Name="SectorWorldPreview" SetSize="64 64" HorizontalAlignment="Center" />
                             <BoxContainer Name="SectorWorldPreviewStatus" Orientation="Vertical" HorizontalExpand="True" />
                             <BoxContainer Name="DetailIntro" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="5" />
                             <BoxContainer Name="Detail" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="8" />

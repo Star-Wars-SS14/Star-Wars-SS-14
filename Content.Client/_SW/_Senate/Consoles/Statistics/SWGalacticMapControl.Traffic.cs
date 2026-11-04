@@ -25,10 +25,6 @@ public sealed partial class SWGalacticMapControl
     private readonly Dictionary<string, TrafficPath> _trafficByEdge = new();
     private readonly Dictionary<SWGalacticMapRoute, TrafficPath> _trafficByRoute = new();
     private readonly Dictionary<string, int> _cargoSizes = new();
-    private readonly Dictionary<string, Color> _trafficGoodColors = new();
-    private readonly Dictionary<string, string> _trafficGoodNames = new();
-    private readonly List<(UIBox2 Box, string Text, Color Color)> _trafficLabels = new();
-    private readonly List<UIBox2> _trafficMarkerBounds = new();
     private readonly Vector2[] _trailPoints = new Vector2[TrailSegments + 1];
     private DrawVertexUV2DColor[] _trafficVertices = Array.Empty<DrawVertexUV2DColor>();
     private int _trafficVertexCount;
@@ -86,6 +82,7 @@ public sealed partial class SWGalacticMapControl
         return goods.Any(g => g.ProducedPerHour > 0) ? SWConsoleStyle.Good : SWConsoleStyle.TextDim;
     }
 
+    private readonly Dictionary<string, Color> _trafficGoodColors = new();
     private string? _focusedTrafficEdge;
     private string? _focusedTrafficFrom;
     private string? _focusedTrafficTo;
@@ -112,6 +109,10 @@ public sealed partial class SWGalacticMapControl
     private Color _trafficModulate = Color.White;
 
     public double TrafficAnimationSeconds => _trafficSeconds;
+    public void RestoreTrafficAnimationSeconds(double seconds)
+    {
+        if (double.IsFinite(seconds) && seconds >= 0) _trafficSeconds = seconds;
+    }
     public int TrafficDirectionCount
     {
         get
@@ -174,13 +175,22 @@ public sealed partial class SWGalacticMapControl
     /// <summary>Additional per-view motion preference; the global reduced-motion option also applies.</summary>
     public void SetReducedMotion(bool enabled) => _reduceTrafficMotion = enabled;
 
+    private static float TrafficPhase(string edge)
+    {
+        uint hash = 2166136261;
+        foreach (var ch in edge) hash = unchecked((hash ^ ch) * 16777619);
+        return (hash % 10000) / 10000f;
+    }
+
     private void RebuildTraffic()
     {
         if (_trafficPaths.Count == 0)
         {
             foreach (var path in _paths)
             {
-                var traffic = new TrafficPath(path.Route, path.Points, (.17f + _trafficPaths.Count * .381966f) % 1);
+                var phase = _markExternalLabels ? TrafficPhase(SWTransitLinkPrototype.LinkId(path.Route.From, path.Route.To))
+                    : (.17f + _trafficPaths.Count * .381966f) % 1;
+                var traffic = new TrafficPath(path.Route, path.Points, phase);
                 _trafficPaths.Add(traffic);
                 _trafficByEdge[SWTransitLinkPrototype.LinkId(path.Route.From, path.Route.To)] = traffic;
                 _trafficByRoute[path.Route] = traffic;
@@ -190,7 +200,6 @@ public sealed partial class SWGalacticMapControl
             {
                 _cargoSizes[good.ID] = good.CargoSlots;
                 _trafficGoodColors[good.ID] = TrafficCommodityColor(good.ID);
-                _trafficGoodNames[good.ID] = string.IsNullOrWhiteSpace(good.Name) ? good.ID : good.Name;
             }
         }
         foreach (var path in _trafficPaths)
@@ -261,8 +270,8 @@ public sealed partial class SWGalacticMapControl
             if (_markExternalLabels && _trafficCommodity == null)
             {
                 var goods = flow.From == path.Route.From ? path.ForwardGoods : path.ReverseGoods;
-                if (!goods.TryGetValue(flow.Good, out var goodDirection)) goods[flow.Good] = goodDirection = new TrafficDirection();
-                Add(goodDirection);
+                if (!goods.TryGetValue(flow.Good, out var item)) goods[flow.Good] = item = new TrafficDirection();
+                Add(item);
             }
             _hasTraffic |= direction.Present;
             if (_markExternalLabels && !IsLocalView && direction.Present)
@@ -352,8 +361,6 @@ public sealed partial class SWGalacticMapControl
     private void DrawTraffic(DrawingHandleScreen handle)
     {
         _trafficVertexCount = 0;
-        _trafficLabels.Clear();
-        _trafficMarkerBounds.Clear();
         if (!_showTraffic || _economy is not { Ready: true } || _trafficVertices.Length == 0) return;
         UpdateTrafficGeometry();
         _trafficModulate = handle.Modulate;
@@ -373,79 +380,36 @@ public sealed partial class SWGalacticMapControl
             var reverseAlpha = _focusedTrafficEdge == null ? alpha : reverseSelected ? 1f : .18f;
             if (_markExternalLabels && _trafficCommodity == null)
             {
-                var forward = RotatingGood(path.ForwardOrdered, forwardSelected ? _focusedTrafficGood : null);
-                var reverse = RotatingGood(path.ReverseOrdered, reverseSelected ? _focusedTrafficGood : null);
-                if (forward is { } f)
-                    DrawTrafficDirection(handle, path, f.Value, false, forwardSelected ? SWConsoleStyle.Brass : _trafficGoodColors.GetValueOrDefault(f.Key, _commodityColor), forwardAlpha, forwardSelected || _focusedTrafficEdge == null && focused, ref remaining, ref remainingDirections, f.Key);
-                if (reverse is { } r)
-                    DrawTrafficDirection(handle, path, r.Value, true, reverseSelected ? SWConsoleStyle.Brass : _trafficGoodColors.GetValueOrDefault(r.Key, _reverseTrafficColor), reverseAlpha, reverseSelected || _focusedTrafficEdge == null && focused, ref remaining, ref remainingDirections, r.Key);
+                for (var priority = 0; priority < 2; priority++)
+                {
+                    foreach (var (good, direction) in path.ForwardOrdered)
+                    {
+                        var chosen = forwardSelected && good == _focusedTrafficGood;
+                        if (chosen != (priority == 0)) continue;
+                        DrawTrafficDirection(handle, path, direction, false, chosen ? SWConsoleStyle.Brass : _trafficGoodColors.GetValueOrDefault(good, _commodityColor), forwardAlpha, chosen, ref remaining, ref remainingDirections, TrafficPhase(good));
+                    }
+                    foreach (var (good, direction) in path.ReverseOrdered)
+                    {
+                        var chosen = reverseSelected && good == _focusedTrafficGood;
+                        if (chosen != (priority == 0)) continue;
+                        DrawTrafficDirection(handle, path, direction, true, chosen ? SWConsoleStyle.Brass : _trafficGoodColors.GetValueOrDefault(good, _reverseTrafficColor), reverseAlpha, chosen, ref remaining, ref remainingDirections, TrafficPhase(good));
+                    }
+                }
             }
             else
             {
-                DrawTrafficDirection(handle, path, path.Forward, false, forwardSelected ? SWConsoleStyle.Brass : _commodityColor, forwardAlpha, forwardSelected || _focusedTrafficEdge == null && focused, ref remaining, ref remainingDirections, _markExternalLabels ? _trafficCommodity : null);
-                DrawTrafficDirection(handle, path, path.Reverse, true, reverseSelected ? SWConsoleStyle.Brass : _reverseTrafficColor, reverseAlpha, reverseSelected || _focusedTrafficEdge == null && focused, ref remaining, ref remainingDirections, _markExternalLabels ? _trafficCommodity : null);
+                DrawTrafficDirection(handle, path, path.Forward, false, forwardSelected ? SWConsoleStyle.Brass : _commodityColor, forwardAlpha, forwardSelected || _focusedTrafficEdge == null && focused, ref remaining, ref remainingDirections);
+                DrawTrafficDirection(handle, path, path.Reverse, true, reverseSelected ? SWConsoleStyle.Brass : _reverseTrafficColor, reverseAlpha, reverseSelected || _focusedTrafficEdge == null && focused, ref remaining, ref remainingDirections);
             }
             if (remaining == 0) break;
         }
         if (_trafficVertexCount != 0)
             handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, Texture.White,
                 new ReadOnlySpan<DrawVertexUV2DColor>(_trafficVertices, 0, _trafficVertexCount));
-        foreach (var label in _trafficLabels)
-        {
-            handle.DrawRect(new UIBox2(label.Box.TopLeft * UIScale, label.Box.BottomRight * UIScale), SWConsoleStyle.Navigation);
-            handle.DrawString(SWConsoleStyle.Small, (label.Box.TopLeft + new Vector2(3, 1)) * UIScale, label.Text, UIScale, label.Color);
-        }
-    }
-
-    private KeyValuePair<string, TrafficDirection>? RotatingGood(KeyValuePair<string, TrafficDirection>[] goods, string? selected)
-    {
-        if (selected != null)
-        {
-            foreach (var item in goods)
-                if (item.Key == selected) return item;
-            return null;
-        }
-        if (goods.Length == 0) return null;
-        return goods[(int) (_trafficSeconds / 3d % goods.Length)];
-    }
-
-    private bool TrafficOccupied(UIBox2 box)
-    {
-        if (box.Left < 4 || box.Top < 4 || box.Right > Width - 4 || box.Bottom > Height - 4) return true;
-        if (_trafficLabels.Any(l => l.Box.Intersects(box)) || _trafficMarkerBounds.Any(b => b.Intersects(box)) ||
-            _labels.Any(l => l.Box.Intersects(box)) || _politicalLabels.Any(l => l.Box.Intersects(box)) ||
-            _sectorSchemeLabels.Any(l => l.Box.Intersects(box)) || OverlayIntersectsLabel(box)) return true;
-        foreach (var world in _map.Worlds)
-        {
-            if (!DisplayWorldGlyph(world)) continue;
-            var center = MapToLocal(world.Position);
-            var radius = _markExternalLabels && !IsExternalWorld(world) ? (world.Id == _selectedWorld ? 26f : 20f) : world.Id == _selectedWorld || world.Id == _hover ? 13f : 8f;
-            if (UIBox2.FromDimensions(center - new Vector2(radius), new Vector2(radius * 2)).Intersects(box)) return true;
-        }
-        return false;
-    }
-
-    private bool TryTrafficLabel(DrawingHandleScreen handle, Vector2 pixelHead, string good, Color color)
-    {
-        var name = _trafficGoodNames.GetValueOrDefault(good, good);
-        var size = handle.GetDimensions(SWConsoleStyle.Small, name, UIScale) / UIScale;
-        var p = pixelHead / UIScale;
-        var marker = UIBox2.FromDimensions(p - new Vector2(7), new Vector2(14));
-        if (TrafficOccupied(marker)) return false;
-        foreach (var dy in new[] { -size.Y - 9, 9f })
-        {
-            var box = UIBox2.FromDimensions(p + new Vector2(-size.X / 2, dy), size);
-            var padded = new UIBox2(box.Left - 3, box.Top - 1, box.Right + 3, box.Bottom + 1);
-            if (TrafficOccupied(padded)) continue;
-            _trafficMarkerBounds.Add(marker);
-            _trafficLabels.Add((padded, name, color));
-            return true;
-        }
-        return false;
     }
 
     private void DrawTrafficDirection(DrawingHandleScreen handle, TrafficPath path, TrafficDirection direction, bool reverse,
-        Color color, float alpha, bool focused, ref int remaining, ref int remainingDirections, string? good = null)
+        Color color, float alpha, bool focused, ref int remaining, ref int remainingDirections, float phaseOffset = 0)
     {
         if (!direction.Present || remaining <= 0) return;
         var hours = direction.WeightedHours / (direction.Units + direction.Transit);
@@ -464,33 +428,13 @@ public sealed partial class SWGalacticMapControl
         var laneOffset = path.Forward.Present && path.Reverse.Present ? 3.6f * UIScale : 0;
         for (var marker = 0; marker < markers; marker++)
         {
-            var phase = (float) ((_trafficSeconds / period + path.Phase + marker / (double) markers) % 1);
+            var phase = (float) ((_trafficSeconds / period + path.Phase + phaseOffset + marker / (double) markers) % 1);
             var distance = trim + phase * usable;
             var stopped = _economy is { Paused: true } || _reduceTrafficMotion || _configuration.GetCVar(CCVars.ReducedMotion);
             var fade = _markExternalLabels && (focused || stopped) ? 1 : Math.Min(1, Math.Min(phase, 1 - phase) * 12);
             var intensity = alpha * fade;
             if (intensity <= .01f) continue;
-            if (good != null)
-            {
-                var placed = false;
-                // Search the real path for a free position; selection and paused views
-                // use the same deterministic candidates until the viewport changes.
-                for (var attempt = 0; attempt < 12; attempt++)
-                {
-                    var candidatePhase = (phase + attempt / 12f) % 1;
-                    var candidateDistance = trim + candidatePhase * usable;
-                    var candidate = TrafficPoint(path, candidateDistance, reverse, laneOffset, out _);
-                    if (!TryTrafficLabel(handle, candidate, good, color.WithAlpha(alpha))) continue;
-                    distance = candidateDistance;
-                    placed = true;
-                    break;
-                }
-                if (!placed) continue;
-            }
             remaining--;
-            // Statistics reserves the arrowhead box; omit the decorative trail so its
-            // pixels cannot escape that occupied area. Other map modes retain their trail.
-            if (!_markExternalLabels)
             {
                 var trail = Math.Min((focused ? 27 : 20) * UIScale, usable * .24f);
                 for (var segment = 0; segment <= TrailSegments; segment++)

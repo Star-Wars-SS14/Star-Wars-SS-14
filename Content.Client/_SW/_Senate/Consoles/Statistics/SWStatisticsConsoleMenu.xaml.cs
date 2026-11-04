@@ -58,8 +58,13 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
         RobustXamlLoader.Load(this);
         TitleClass = "LabelKeyText";
         SWConsoleStyle.StyleRoot(RootPanel);
+        RootPanel.PanelOverride = new SWStatisticsFrame
+        {
+            ContentMarginLeftOverride = 9, ContentMarginRightOverride = 9,
+            ContentMarginTopOverride = 9, ContentMarginBottomOverride = 9,
+        };
         FitViewport(true);
-        SWConsoleStyle.StyleHeader(HeaderPanel);
+        HeaderPanel.PanelOverride = new StyleBoxFlat { BackgroundColor = SWConsoleStyle.BgDark, BorderColor = SWConsoleStyle.Edge, BorderThickness = new Thickness(0, 0, 0, 1) };
         SWConsoleStyle.StyleTabBar(TabBarPanel);
         HeaderNetwork.FontOverride = SWConsoleStyle.Small;
         HeaderNetwork.FontColorOverride = SWConsoleStyle.Brass;
@@ -81,8 +86,9 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
         for (var i = 0; i < names.Length; i++)
         {
             var index = i;
-            _tabs[i] = SWConsoleStyle.TabButton(names[i]);
+            _tabs[i] = new Button { Text = names[i], MinWidth = 90, Margin = new Thickness(0, 0, 6, 2), ModulateSelfOverride = Color.White };
             _tabs[i].Label.FontOverride = SWStatisticsText.Body;
+            _tabs[i].TextAlign = Label.AlignMode.Left;
             _tabs[i].OnPressed += _ => ShowTab(index);
             TabBar.AddChild(_tabs[i]);
         }
@@ -133,9 +139,10 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
 
     private static PanelContainer PagePanel(Control child)
     {
-        var panel = new PanelContainer { HorizontalExpand = true, PanelOverride = new SWConsoleSurface
+        var panel = new PanelContainer { HorizontalExpand = true, PanelOverride = new StyleBoxFlat
         {
-            Background = SWConsoleStyle.BgPanel,
+            BackgroundColor = SWConsoleStyle.BgPanel,
+            BorderColor = SWConsoleStyle.Edge, BorderThickness = new Thickness(1),
             ContentMarginLeftOverride = 12, ContentMarginRightOverride = 12,
             ContentMarginTopOverride = 12, ContentMarginBottomOverride = 12,
         } };
@@ -172,9 +179,22 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
         for (var i = 0; i < _panels.Length; i++)
         {
             _panels[i].Visible = i == index;
-            SWConsoleStyle.StyleTabButton(_tabs[i], i == index);
+            StyleMainTab(_tabs[i], i == index);
         }
         RefreshActive();
+    }
+
+    private static void StyleMainTab(Button button, bool active)
+    {
+        button.StyleBoxOverride = new StyleBoxFlat
+        {
+            BackgroundColor = active ? SWConsoleStyle.Selected : SWConsoleStyle.BgDark,
+            BorderColor = active ? SWConsoleStyle.Brass : SWConsoleStyle.Edge,
+            BorderThickness = new Thickness(1),
+            ContentMarginLeftOverride = 12, ContentMarginRightOverride = 12,
+            ContentMarginTopOverride = 7, ContentMarginBottomOverride = 7,
+        };
+        button.Label.FontColorOverride = active ? SWConsoleStyle.TextBright : SWConsoleStyle.TextDim;
     }
 
     private void FitViewport(bool initial)
@@ -214,6 +234,13 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
         base.FrameUpdate(args);
         if (!VisibleInTree) return;
         FitViewport(false);
+        var visibleTabs = _tabs.Count(tab => tab.Visible);
+        if (visibleTabs > 0 && TabBar.Width > 0)
+        {
+            var width = Math.Clamp(TabBar.Width / visibleTabs - 6, 90, 170);
+            foreach (var tab in _tabs)
+                if (!float.IsFinite(tab.SetWidth) || Math.Abs(tab.SetWidth - width) > .5f) tab.SetWidth = width;
+        }
         var reduced = IoCManager.Resolve<IConfigurationManager>().GetCVar(CCVars.ReducedMotion);
         _windowReveal = reduced ? 1 : Math.Min(1, _windowReveal + Math.Max(0, args.DeltaSeconds) / .18f);
         _tabReveal = reduced ? 1 : Math.Min(1, _tabReveal + Math.Max(0, args.DeltaSeconds) / .12f);
@@ -412,5 +439,28 @@ public sealed partial class SWStatisticsConsoleMenu : FancyWindow
         if (_state == null) return;
         _laws.SetDocuments(_state.ActiveLaws.Select(law => new SWConsoleDocumentEntry(law.Id, law.Name,
             $"№ {law.Id}, {law.Author}", SWConsoleDocument.Revision(law), () => SWConsoleDocument.Bill(law))));
+    }
+}
+
+/// <summary>Clipped frame shared by the statistics console's pages.</summary>
+public sealed class SWStatisticsFrame : StyleBox
+{
+    private readonly Vector2[] _vertices = new Vector2[8];
+    protected override float GetDefaultContentMargin(Margin margin) => 0;
+
+    protected override void DoDraw(DrawingHandleScreen handle, UIBox2 box, float uiScale)
+    {
+        var cut = MathF.Min(14 * uiScale, MathF.Min(box.Width, box.Height) / 4);
+        _vertices[0] = new Vector2(box.Left + cut, box.Top);
+        _vertices[1] = new Vector2(box.Right - cut, box.Top);
+        _vertices[2] = new Vector2(box.Right, box.Top + cut);
+        _vertices[3] = new Vector2(box.Right, box.Bottom - cut);
+        _vertices[4] = new Vector2(box.Right - cut, box.Bottom);
+        _vertices[5] = new Vector2(box.Left + cut, box.Bottom);
+        _vertices[6] = new Vector2(box.Left, box.Bottom - cut);
+        _vertices[7] = new Vector2(box.Left, box.Top + cut);
+        handle.DrawPrimitives(DrawPrimitiveTopology.TriangleFan, _vertices, Color.ToSrgb(SWConsoleStyle.BgDark));
+        for (var i = 0; i < _vertices.Length; i++)
+            handle.DrawLine(_vertices[i], _vertices[(i + 1) % _vertices.Length], SWConsoleStyle.Edge);
     }
 }

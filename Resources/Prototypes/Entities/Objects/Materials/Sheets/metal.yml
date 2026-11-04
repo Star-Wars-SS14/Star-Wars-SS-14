@@ -137,6 +137,8 @@
           Quantity: 3.3
         - ReagentId: Copper
           Quantity: 6.7
+      steel: #SW: the Edible of SheetMetalBase eats this one
+        canReact: false #SW
 
 - type: entity
   parent: SheetBrass

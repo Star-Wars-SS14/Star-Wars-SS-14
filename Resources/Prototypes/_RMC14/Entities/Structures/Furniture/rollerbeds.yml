@@ -45,6 +45,8 @@
   components:
   - type: Foldable
     folded: true
+  - type: Strap #SW: folded beds start with the strap off, as upstream RollerBedSpawnFolded
+    enabled: False #SW
 
 - type: entity
   parent: CMRollerBed
@@ -71,5 +73,7 @@
   components:
   - type: Foldable
     folded: true
+  - type: Strap #SW: folded beds start with the strap off, as upstream RollerBedSpawnFolded
+    enabled: False #SW
 
 # TODO RMC14 medevac stretcher

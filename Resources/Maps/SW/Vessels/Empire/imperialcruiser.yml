@@ -5394,22 +5394,6 @@ entities:
     - type: IFF
       color: '#FF0000FF'
     - type: NavMap
-- proto: ActionToggleLight
-  entities:
-  - uid: 2590
-    components:
-    - type: Transform
-      parent: 2589
-    - type: InstantAction
-      originalIconColor: '#FFFFFFFF'
-      container: 2589
-  - uid: 5841
-    components:
-    - type: Transform
-      parent: 5840
-    - type: InstantAction
-      originalIconColor: '#FFFFFFFF'
-      container: 5840
 - proto: AirCanister
   entities:
   - uid: 9794
@@ -49612,20 +49596,12 @@ entities:
     - type: Transform
       pos: 6.8693285,-17.361965
       parent: 1
-    - type: HandheldLight
-      toggleActionEntity: 5841
     - type: ContainerContainer
       containers:
         cell_slot: !type:ContainerSlot
           showEnts: False
           occludes: True
           ent: null
-        actions: !type:Container
-          showEnts: False
-          occludes: True
-          ents:
-          - 5841
-    - type: ActionsContainer
 - proto: filingCabinet
   entities:
   - uid: 6422
@@ -61196,22 +61172,14 @@ entities:
     - type: Transform
       pos: 18.552702,3.7403798
       parent: 1
-    - type: HandheldLight
-      toggleActionEntity: 2590
     - type: ContainerContainer
       containers:
         cell_slot: !type:ContainerSlot
           showEnts: False
           occludes: True
           ent: null
-        actions: !type:Container
-          showEnts: False
-          occludes: True
-          ents:
-          - 2590
     - type: Physics
       canCollide: True
-    - type: ActionsContainer
   - uid: 4013
     components:
     - type: Transform
@@ -72207,9 +72175,6 @@ entities:
     components:
     - type: Transform
       parent: 2507
-    - type: SpecialRespawn
-      stationMap:
-        invalid: 1
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage

@@ -326,6 +326,7 @@ public sealed class GlobalWarTravelTest
     [TestCase(false, true, true, false)]
     [TestCase(true, true, true, false)]
     [TestCase(true, false, false, true)]
+    [TestCase(false, false, true, false)]
     public async Task OrdinaryFtlChecksPassengersAndReevaluatesOwnershipBeforeArrival(
         bool dock, bool captured, bool sourceCaptured, bool realDocks)
     {
@@ -431,21 +432,8 @@ public sealed class GlobalWarTravelTest
                     SWGlobalWarFaction.Empire, 0, generation, Guid.NewGuid(), out _), Is.True);
         });
         await pair.RunSeconds(6);
-        if (sourceCaptured)
-        {
-            await server.WaitAssertion(() =>
-            {
-                Assert.That(server.Transform(ship).MapUid, Is.Not.EqualTo(sourceMap));
-                Assert.That(server.Transform(ship).MapUid, Is.Not.EqualTo(destinationMap));
-                Assert.That(server.Transform(actor).GridUid, Is.EqualTo(ship));
-                Assert.That(entities.GetComponent<FTLComponent>(ship).State, Is.EqualTo(FTLState.Arriving));
-                Assert.That(entities.GetComponent<SWGlobalWarTravelComponent>(ship).Returning, Is.True);
-                Assert.That(entities.GetComponent<SWGlobalWarPlanetMapComponent>(destinationMap).IncomingTravellers, Is.Empty);
-                Assert.That(planets.TryChangeOwnership(sourcePlanet, SWGlobalWarPlanetLocation.Orbit,
-                    SWGlobalWarFaction.Republic, 1, generation, Guid.NewGuid(), out _), Is.True);
-            });
-            await pair.RunSeconds(12);
-        }
+        // A ship turned back comes out at the orbit it left even when that orbit changed hands during the flight.
+        // It used to wait in hyperspace, retrying every 10 s, until the old owner took the orbit back.
         await server.WaitAssertion(() =>
         {
             Assert.That(server.Transform(ship).MapUid, Is.EqualTo(captured ? sourceMap : destinationMap));
@@ -505,6 +493,74 @@ public sealed class GlobalWarTravelTest
             Assert.That(entities.HasComponent<SWGlobalWarTravelComponent>(ship), Is.False);
             Jump(next!.Value);
             Assert.That(entities.HasComponent<FTLComponent>(ship), Is.True, "A jump along the route still goes.");
+        });
+        await pair.CleanReturnAsync();
+    }
+
+    [Test]
+    public async Task TurnedBackShipComesOutWhenItsDeparturePointIsClosed()
+    {
+        await using var pair = await PoolManager.GetServerClient(new PoolSettings { Dirty = true, Connected = true });
+        var server = pair.Server;
+        var entities = server.EntMan;
+        var planets = server.System<SWGlobalWarPlanetSystem>();
+        var shuttles = server.System<ShuttleSystem>();
+        var transforms = server.System<SharedTransformSystem>();
+        EntityUid ship = default;
+        EntityUid sourceMap = default;
+        EntityUid destinationPlanet = default;
+        Vector2 departure = default;
+        Guid generation = default;
+        await server.WaitAssertion(() =>
+        {
+            var config = server.ResolveDependency<IConfigurationManager>();
+            config.SetCVar(CCVars.FTLStartupTime, .1f);
+            config.SetCVar(CCVars.FTLTravelTime, 4f);
+            config.SetCVar(CCVars.FTLArrivalTime, .2f);
+            config.SetCVar(CCVars.FTLCooldown, .1f);
+            server.System<GameTicker>().StartGameRule("TravelTestRule", out var rule);
+            generation = entities.GetComponent<SWGlobalWarGameruleComponent>(rule).Generation;
+            Assert.That(planets.TryGetPlanet("TravelTestAlpha", out var source), Is.True);
+            Assert.That(planets.TryGetPlanet("TravelTestBeta", out var destination), Is.True);
+            destinationPlanet = destination!.Value;
+            Assert.That(planets.TryEnsureLocation(source!.Value, SWGlobalWarPlanetLocation.Orbit, out var sm, out _), Is.True);
+            Assert.That(planets.TryEnsureLocation(destinationPlanet, SWGlobalWarPlanetLocation.Orbit, out var dm, out _), Is.True);
+            sourceMap = sm!.Value;
+            var grid = server.ResolveDependency<IMapManager>().CreateGridEntity(server.Transform(sourceMap).MapID);
+            ship = grid.Owner;
+            server.System<MapSystem>().SetTiles(ship, grid.Comp,
+                new List<(Vector2i, Tile)> { (Vector2i.Zero, new Tile(1)), (new Vector2i(1, 0), new Tile(1)) });
+            departure = transforms.GetWorldPosition(ship);
+            var pilot = entities.SpawnEntity(null, new EntityCoordinates(ship, .5f, .5f));
+            var minds = server.System<SharedMindSystem>();
+            var mind = minds.CreateMind(server.PlayerMan.Sessions.Single().UserId);
+            minds.TransferTo(mind, pilot);
+            Assert.That(server.System<SWGlobalWarIdentitySystem>().TryEnroll(mind, SWGlobalWarFaction.Republic, generation), Is.True);
+            shuttles.FTLToCoordinates(ship, entities.GetComponent<ShuttleComponent>(ship),
+                new EntityCoordinates(dm!.Value, 1000, 1000), Angle.Zero);
+            Assert.That(entities.HasComponent<FTLComponent>(ship), Is.True);
+        });
+        await pair.RunSeconds(1);
+        await server.WaitAssertion(() =>
+        {
+            // The destination falls to the enemy and the place the ship left is closed to FTL exits.
+            Assert.That(planets.TryChangeOwnership(destinationPlanet, SWGlobalWarPlanetLocation.Orbit,
+                SWGlobalWarFaction.Empire, 0, generation, Guid.NewGuid(), out _), Is.True);
+            entities.SpawnEntity("TravelTestExclusion", new EntityCoordinates(sourceMap, departure));
+        });
+        await pair.RunSeconds(10);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(entities.GetComponent<SWGlobalWarTravelComponent>(ship).Returning, Is.True);
+            Assert.That(server.Transform(ship).MapUid, Is.Not.EqualTo(sourceMap));
+        });
+        // The ordinary search waits out MaximumDestinationWait (30 s), then the wide one finds a point; one retry is 10 s.
+        await pair.RunSeconds(45);
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(server.Transform(ship).MapUid, Is.EqualTo(sourceMap), "A ship turned back always comes out.");
+            Assert.That(entities.HasComponent<FTLComponent>(ship), Is.False);
+            Assert.That(entities.HasComponent<SWGlobalWarTravelComponent>(ship), Is.False);
         });
         await pair.CleanReturnAsync();
     }

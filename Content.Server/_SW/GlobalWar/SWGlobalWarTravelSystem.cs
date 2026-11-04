@@ -4,6 +4,7 @@ using Content.Server._SW.GlobalWar.Politics;
 using Content.Server._SW.GlobalWar.Combat;
 using Content.Server._SW.GlobalWar.Market;
 using Content.Server._SW.GlobalWar.Access;
+using Content.Server.Chat.Managers;
 using Content.Server.Popups;
 using Content.Server.Power.EntitySystems;
 using Content.Server.Shuttles.Components;
@@ -26,6 +27,7 @@ using Robust.Shared.Map;
 using Robust.Shared.Map.Components;
 using Robust.Shared.Physics;
 using Robust.Shared.Physics.Components;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 
@@ -50,6 +52,7 @@ public sealed partial class SWGlobalWarTravelSystem : EntitySystem
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly SWGlobalWarShipOwnershipSystem _shipOwnership = default!;
     [Dependency] private readonly SWGlobalWarShipControlSystem _controls = default!;
+    [Dependency] private readonly IChatManager _chat = default!;
 
     // Extra clearance in meters between the station's bounding circle and the ship's FTL safety circle.
     private TimeSpan _nextInterfaceUpdate;
@@ -60,6 +63,8 @@ public sealed partial class SWGlobalWarTravelSystem : EntitySystem
 
     // Number of search rings, directions per ring, and radial spacing in meters.
     private const int ArrivalSearchRingCount = 4;
+    // A ship turned back that still finds no exit searches this many rings around its departure point.
+    private const int ReturnSearchRingCount = 16;
     private const int ArrivalSearchDirectionCount = 16;
     private const float ArrivalSearchRingSpacing = 64f;
     private static readonly TimeSpan MaximumDestinationWait = TimeSpan.FromSeconds(30);
@@ -384,7 +389,9 @@ public sealed partial class SWGlobalWarTravelSystem : EntitySystem
     /// <param name="ship">Arriving ship grid whose size determines the required clearance.</param>
     /// <param name="flight">Destination and arrival reservation updated when a safe point is found.</param>
     /// <param name="coordinates">Ship origin coordinates for FTLToCoordinates on success.</param>
-    private bool TryFindArrival(EntityUid ship, SWGlobalWarTravelComponent flight, out EntityCoordinates coordinates)
+    /// <param name="wide">For a ship turned back that has waited: more rings and no exclusion zones, collisions still checked.</param>
+    private bool TryFindArrival(EntityUid ship, SWGlobalWarTravelComponent flight, out EntityCoordinates coordinates,
+        bool wide = false)
     {
         coordinates = default;
         if (TerminatingOrDeleted(flight.DestinationMap) || !TryComp<PhysicsComponent>(ship, out var body))
@@ -395,7 +402,7 @@ public sealed partial class SWGlobalWarTravelSystem : EntitySystem
         var exclusionQuery = AllEntityQuery<FTLExclusionComponent, TransformComponent>();
         while (exclusionQuery.MoveNext(out var exclusion, out var xform))
         {
-            if (exclusion.Enabled)
+            if (exclusion.Enabled && !wide)
                 exclusions.Add(new ShuttleExclusionObject(GetNetCoordinates(xform.Coordinates), exclusion.Range, string.Empty));
         }
 
@@ -430,7 +437,7 @@ public sealed partial class SWGlobalWarTravelSystem : EntitySystem
         }
 
         // Search evenly spaced points on concentric rings, starting with the nearest ring.
-        for (var ring = 0; ring < ArrivalSearchRingCount; ring++)
+        for (var ring = 0; ring < (wide ? ReturnSearchRingCount : ArrivalSearchRingCount); ring++)
         {
             for (var direction = 0; direction < ArrivalSearchDirectionCount; direction++)
             {
@@ -490,10 +497,10 @@ public sealed partial class SWGlobalWarTravelSystem : EntitySystem
                       rule.Owner == ent.Comp.GlobalWarGamerule && rule.Comp.Generation == ent.Comp.Generation;
         var allowed = current && TryEvaluateCrew(ent.Owner, ent.Comp.DestinationPlanet, true, out _);
         if (!ent.Comp.Returning && !allowed)
-            BeginReturn(ent);
-        // Returning from hyperspace is a new entry. It must not inherit local garrison movement rights.
-        if (ent.Comp.Returning && active &&
-            (!current || !TryEvaluateCrew(ent.Owner, ent.Comp.DestinationPlanet, true, out _)))
+            BeginReturn(ent, "sw-global-war-travel-turned-back");
+        // A ship turned back always goes home to the orbit it left, even if that orbit changed hands or no minded crew
+        // is aboard any more. Hyperspace has no other exit, and a check here would hold the ship there for good.
+        if (ent.Comp.Returning && active && !current)
         {
             args.Cancelled = true;
             args.RetryDelay = TimeSpan.FromSeconds(10);
@@ -517,11 +524,16 @@ public sealed partial class SWGlobalWarTravelSystem : EntitySystem
                 return;
             }
         }
-        if (!TryFindArrival(ent.Owner, ent.Comp, out var coordinates))
+        // A ship turned back has nowhere else to go. Once it has waited, it takes the nearest free point around the place
+        // it left, never one by the station: a friendly ship parked at the departure point must not land it at an enemy station.
+        if (!TryFindArrival(ent.Owner, ent.Comp, out var coordinates) &&
+            !(ent.Comp.Returning && ent.Comp.BlockedSince is { } blocked &&
+              _timing.CurTime - blocked >= MaximumDestinationWait &&
+              TryFindArrival(ent.Owner, ent.Comp, out coordinates, wide: true)))
         {
             ent.Comp.BlockedSince ??= _timing.CurTime;
             if (!ent.Comp.Returning && _timing.CurTime - ent.Comp.BlockedSince >= MaximumDestinationWait)
-                BeginReturn(ent);
+                BeginReturn(ent, "sw-global-war-travel-no-exit");
             args.Cancelled = true;
             args.RetryDelay = TimeSpan.FromSeconds(ent.Comp.Returning ? 10 : 2);
             return;
@@ -543,10 +555,20 @@ public sealed partial class SWGlobalWarTravelSystem : EntitySystem
         return false;
     }
 
-    private void BeginReturn(Entity<SWGlobalWarTravelComponent> ent)
+    private void BeginReturn(Entity<SWGlobalWarTravelComponent> ent, string reason)
     {
+        // Players in hyperspace see no popup over the helm window, so the crew reads why in chat.
+        var message = Loc.GetString(reason, ("planet", _prototypes.Index(ent.Comp.Destination).Name),
+            ("source", _prototypes.Index(ent.Comp.Source).Name));
+        var crew = AllEntityQuery<ActorComponent, TransformComponent>();
+        while (crew.MoveNext(out var actor, out var transform))
+        {
+            if (transform.GridUid == ent.Owner)
+                _chat.DispatchServerMessage(actor.PlayerSession, message);
+        }
         _planets.ReleaseArrival(ent.Comp.DestinationMap, ent.Owner);
         ent.Comp.Returning = true;
+        ent.Comp.BlockedSince = null;
         ent.Comp.Destination = ent.Comp.Source;
         ent.Comp.DestinationPlanet = ent.Comp.SourcePlanet;
         ent.Comp.DestinationMap = ent.Comp.SourceMap;

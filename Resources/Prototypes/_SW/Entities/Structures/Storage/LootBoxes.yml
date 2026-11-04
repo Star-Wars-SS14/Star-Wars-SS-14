@@ -86,6 +86,9 @@
   parent: SWBoxWood
   suffix: Лёгкий лут
   components:
+  - type: Storage # the random fill below must fit, or items past the grid are deleted on spawn
+    grid:
+    - 0,0,7,6
   - type: StorageFill
     contents:
     - id: FoodBreadPlainSlice
@@ -212,6 +215,9 @@
   parent: SWBoxSteel
   suffix: Средний лут
   components:
+  - type: Storage # the random fill below must fit, or items past the grid are deleted on spawn
+    grid:
+    - 0,0,8,7
   - type: StorageFill
     contents:
     - id: FoodBreadPlainSlice
@@ -349,6 +355,9 @@
   parent: SWBoxSteeldouble
   suffix: Тяжёлый лут
   components:
+  - type: Storage # the random fill below must fit, or items past the grid are deleted on spawn
+    grid:
+    - 0,0,8,7
   - type: StorageFill
     contents:
     - id: SheetGlass

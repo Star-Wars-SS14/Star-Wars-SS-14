@@ -39,6 +39,7 @@
     "Content.IntegrationTests.Tests.Round.JobTest.JobPriorityTest": "upstream roles and antags are switched off in this fork (setPreference: false), so this upstream test cannot pass; excluded by the owner's decision of 2026-11-04",
     "Content.IntegrationTests.Tests.Round.JobTest.JobWeightTest": "upstream roles and antags are switched off in this fork (setPreference: false), so this upstream test cannot pass; excluded by the owner's decision of 2026-11-04",
     "Content.IntegrationTests.Tests.Round.JobTest.StartRoundTest": "upstream roles and antags are switched off in this fork (setPreference: false), so this upstream test cannot pass; excluded by the owner's decision of 2026-11-04",
-    "Content.IntegrationTests.Tests.GameRules.NukeOpsTest.TryStopNukeOpsFromConstantlyFailing": "upstream roles and antags are switched off in this fork (setPreference: false), so this upstream test cannot pass; excluded by the owner's decision of 2026-11-04"
+    "Content.IntegrationTests.Tests.GameRules.NukeOpsTest.TryStopNukeOpsFromConstantlyFailing": "upstream roles and antags are switched off in this fork (setPreference: false), so this upstream test cannot pass; excluded by the owner's decision of 2026-11-04",
+    "Content.IntegrationTests.Tests.Round.JobTest.JobPreferenceTest": "upstream roles and antags are switched off in this fork (setPreference: false), so this upstream test cannot pass; excluded by the owner's decision of 2026-11-04"
   }
 }

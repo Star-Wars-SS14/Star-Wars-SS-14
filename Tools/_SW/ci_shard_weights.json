@@ -1,13 +1,13 @@
 {
-  "_comment": "Weights for Tools/_SW/ci_shard.py, in seconds of run time. Classes not listed weigh seconds_per_test per [Test]/[TestCase] plus seconds_per_case_source per [TestCaseSource]. Measured values come from local TRX runs on the dev PC (2026-11); replace them with CI numbers when known. Classes in 'heavy' go to different shards first.",
-  "seconds_per_test": 2,
-  "seconds_per_case_source": 10,
+  "_comment": "Weights for Tools/_SW/ci_shard.py, in seconds of CI run time (2-core, 8 GB private-repo runner). Classes not listed weigh seconds_per_test per [Test]/[TestCase] plus seconds_per_case_source per [TestCaseSource]. Calibrated 2026-11-04 from run 41827585917 (PostMapInitTest alone 6.5 min, GlobalWarEconomyLongRunTest alone 8.5 min, GlobalWarRespawnTest shard 2.3 min, 176 small tests 7.5 min) and a local TRX of the GlobalWar classes times 2.2 (CI/local ratio of the same shard). The CI log prints every test with its time; refine from it. Classes in 'heavy' go to different bins first.",
+  "seconds_per_test": 3,
+  "seconds_per_case_source": 15,
   "classes": {
-    "PostMapInitTest": 975,
-    "GlobalWarEconomyLongRunTest": 755,
-    "GlobalWarRespawnTest": 525,
-    "GlobalWarEconomyIntegrationTest": 225,
-    "GlobalWarFleetCampaignTest": 210,
+    "PostMapInitTest": 400,
+    "GlobalWarEconomyLongRunTest": 520,
+    "GlobalWarRespawnTest": 150,
+    "GlobalWarEconomyIntegrationTest": 200,
+    "GlobalWarFleetCampaignTest": 300,
     "GlobalWarSpawnTest": 145,
     "GlobalWarLandingTest": 85,
     "GlobalWarAdmissionTest": 40,
@@ -20,7 +20,8 @@
   "heavy": [
     "PostMapInitTest",
     "GlobalWarEconomyLongRunTest",
-    "GlobalWarRespawnTest",
-    "GlobalWarEconomyIntegrationTest"
+    "GlobalWarFleetCampaignTest",
+    "GlobalWarEconomyIntegrationTest",
+    "GlobalWarRespawnTest"
   ]
 }

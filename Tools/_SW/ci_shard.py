@@ -4,6 +4,7 @@
     python Tools/_SW/ci_shard.py --index 0 --count 4      # filter for shard 0 of 4
     python Tools/_SW/ci_shard.py --count 4 --list         # table of shards, weights and classes
     python Tools/_SW/ci_shard.py --count 4 --check        # every test class lands in exactly one shard
+    python Tools/_SW/ci_shard.py --index 0 --count 4 --parts 2   # two filters, one per line, run one after another
 
 Test classes are found by scanning the C# sources: a class is a test class when it is not abstract and it, or a base
 class, has [Test], [TestCase] or [TestCaseSource] methods. Partial classes are merged by full name.
@@ -15,6 +16,11 @@ greedily (largest first, into the lightest shard).
 
 The last shard is a catch-all: instead of listing its classes it excludes the classes of every other shard. A test
 class the scanner misses, or one added later, therefore still runs, in the last shard.
+
+With --parts P each shard's classes are split again, by weight, into P parts, and --index prints one filter per part.
+CI runs the parts one after another, each in its own testhost: a testhost's memory grows with the tests it has run (the
+GlobalWar classes load the real campaign maps), and each testhost gets its own 20-minute pool watchdog. The last part
+of the last shard is the catch-all.
 """
 import argparse
 import json
@@ -296,21 +302,42 @@ def matches(filter_text, name):
         if '!~' in t:
             return t.split('!~', 1)[1] not in name
         return t.split('~', 1)[1] in name
+    if not filter_text:  # an empty part runs nothing
+        return False
     if '&' in filter_text:
         return all(term(t) for t in filter_text.split('&'))
     return any(term(t) for t in filter_text.split('|'))
 
 
-def build(count, config=None):
+def split(bins, weights, parts):
+    """Split every shard into `parts` parts by weight; return the flat list, shard-major (shard j part k = j*parts+k)."""
+    flat = []
+    for j, b in enumerate(bins):
+        sub = [{'load': 0.0, 'classes': [], 'heavy': 0} for _ in range(parts)]
+        for fqn in sorted(b['classes'], key=lambda f: (-weights[f], f)):
+            s = min(sub, key=lambda s: s['load'])
+            s['classes'].append(fqn)
+            s['load'] += weights[fqn]
+        if j == len(bins) - 1:  # catch-all part last; the one with the most classes gives the shortest negation
+            sub.sort(key=lambda s: len(s['classes']))
+        for s in sub:
+            s['classes'].sort()
+        flat.extend(sub)
+    return flat
+
+
+def build(count, config=None, parts=1):
     config = load_weights() if config is None else config
     found = test_classes(scan())
     weights, heavy, unknown = weigh(found, config)
-    return found, weights, heavy, unknown, pack(weights, heavy, count)
+    bins = pack(weights, heavy, count)
+    return found, weights, heavy, unknown, bins, split(bins, weights, parts)
 
 
-def check(count, tests_file=None):
-    found, weights, heavy, unknown, bins = build(count)
-    filters = [shard_filter(bins, i) for i in range(count)]
+def check(count, tests_file=None, parts=1):
+    found, weights, heavy, unknown, bins, flat = build(count, parts=parts)
+    total = len(flat)
+    filters = [shard_filter(flat, i) for i in range(total)]
     errors = []
     for fqn in sorted(found):
         sample = token(fqn) + 'SomeTest'
@@ -320,13 +347,13 @@ def check(count, tests_file=None):
     # A test the scanner does not know about must still run somewhere, and only once.
     stray = f'{ASSEMBLY_PREFIX}.Tests.SWUnscannedTestClass.SomeTest'
     hits = [i for i, f in enumerate(filters) if matches(f, stray)]
-    if hits != [count - 1]:
-        errors.append(f'unknown class lands in shards {hits}, expected [{count - 1}]')
+    if hits != [total - 1]:
+        errors.append(f'unknown class lands in parts {hits}, expected [{total - 1}]')
     if tests_file:
         # Real names from `dotnet vstest <dll> --ListFullyQualifiedTests --ListTestsTargetPath:<file>`.
         with open(tests_file, encoding='utf-8-sig') as f:
             names = [line.strip() for line in f if line.strip()]
-        per_shard = [0] * count
+        per_shard = [0] * total
         caught = set()
         for name in names:
             hits = [i for i, f in enumerate(filters) if matches(f, name)]
@@ -334,9 +361,9 @@ def check(count, tests_file=None):
                 errors.append(f'test {name}: in shards {hits}')
                 continue
             per_shard[hits[0]] += 1
-            if hits[0] == count - 1 and not any(name.startswith(token(c)) for c in found):
+            if hits[0] == total - 1 and not any(name.startswith(token(c)) for c in found):
                 caught.add(name.split('(')[0].rsplit('.', 1)[0])
-        print(f'{len(names)} listed tests per shard: {per_shard}')
+        print(f'{len(names)} listed tests per part: {per_shard}')
         for c in sorted(caught):
             print(f'note: {c} is not found by the scanner; it runs in the catch-all shard')
     heavy_bins = [sum(1 for f in b['classes'] if f in heavy) for b in bins]
@@ -347,8 +374,10 @@ def check(count, tests_file=None):
     print(f'{len(found)} test classes, {sum(t for t, _ in found.values())} tests + '
           f'{sum(s for _, s in found.values())} case sources, {count} shards')
     for i, b in enumerate(bins):
-        print(f'shard {i}: {len(b["classes"]):3} classes, weight {b["load"]:7.0f}, '
-              f'heavy {heavy_bins[i]}, filter {len(filters[i])} chars')
+        sizes = ', '.join(f'{flat[i * parts + k]["load"]:.0f}' for k in range(parts))
+        longest = max(len(filters[i * parts + k]) for k in range(parts))
+        print(f'shard {i}: {len(b["classes"]):3} classes, weight {b["load"]:7.0f} (parts {sizes}), '
+              f'heavy {heavy_bins[i]}, filter up to {longest} chars')
     for e in errors:
         print('ERROR', e)
     print('check ' + ('failed' if errors else 'passed'))
@@ -362,23 +391,28 @@ def main():
     parser.add_argument('--check', action='store_true', help='assert every test class lands in exactly one shard')
     parser.add_argument('--tests', help='with --check: file of fully qualified test names to check as well')
     parser.add_argument('--list', action='store_true', help='print the shards with their classes and weights')
+    parser.add_argument('--parts', type=int, default=1, help='split every shard into this many parts, run one by one')
     args = parser.parse_args()
-    if args.count < 1:
-        parser.error('--count must be at least 1')
+    if args.count < 1 or args.parts < 1:
+        parser.error('--count and --parts must be at least 1')
 
     if args.check:
-        sys.exit(0 if check(args.count, args.tests) else 1)
+        sys.exit(0 if check(args.count, args.tests, args.parts) else 1)
 
-    found, weights, heavy, unknown, bins = build(args.count)
+    found, weights, heavy, unknown, bins, flat = build(args.count, parts=args.parts)
     if args.list:
-        for i, b in enumerate(bins):
-            print(f'shard {i}: weight {b["load"]:.0f}{"  (catch-all)" if i == args.count - 1 else ""}')
-            for f in sorted(b['classes'], key=lambda f: -weights[f]):
+        for i, p in enumerate(flat):
+            last = "  (catch-all)" if i == len(flat) - 1 else ""
+            print(f'shard {i // args.parts} part {i % args.parts}: weight {p["load"]:.0f}{last}')
+            for f in sorted(p['classes'], key=lambda f: -weights[f]):
                 print(f'  {weights[f]:7.0f}  {f}{"  [heavy]" if f in heavy else ""}')
         return
     if args.index is None or not 0 <= args.index < args.count:
         parser.error('--index must be in [0, count)')
-    print(shard_filter(bins, args.index))
+    for k in range(args.parts):
+        part = shard_filter(flat, args.index * args.parts + k)
+        if part:  # a shard of one class has empty parts; print only the parts that run something
+            print(part)
 
 
 if __name__ == '__main__':

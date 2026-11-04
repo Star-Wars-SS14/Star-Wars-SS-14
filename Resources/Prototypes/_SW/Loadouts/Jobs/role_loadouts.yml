@@ -433,14 +433,12 @@
   id: JobSWJedi
   groups:
   - SWJediloadout
-  - SWHeadJedi
   - SWRepublicTacticalVisor
 
 - type: roleLoadout
   id: JobSWSith
   groups:
   - SWSithloadout
-  - SWHeadSith
   - SWEmpireTacticalVisor
 
 - type: roleLoadout

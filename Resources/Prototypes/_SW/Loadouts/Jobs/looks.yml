@@ -88,16 +88,6 @@
   equipment:
     head: SWCosmeticCapMechanic
 
-- type: loadout
-  id: SWLoadoutClothingHeadHatHoodJediCloak
-  equipment:
-    head: SWClothingHeadHatHoodJediCloak
-
-- type: loadout
-  id: SWLoadoutClothingHeadHatHoodSithCloak
-  equipment:
-    head: SWClothingHeadHatHoodSithCloak
-
 - type: loadoutGroup
   id: SWUniformRepublic
   name: sw-loadout-group-uniform
@@ -240,19 +230,3 @@
   maxLimit: 1
   loadouts:
   - SWLoadoutCosmeticCapMechanic
-
-- type: loadoutGroup
-  id: SWHeadJedi
-  name: sw-loadout-group-head
-  minLimit: 0
-  maxLimit: 1
-  loadouts:
-  - SWLoadoutClothingHeadHatHoodJediCloak
-
-- type: loadoutGroup
-  id: SWHeadSith
-  name: sw-loadout-group-head
-  minLimit: 0
-  maxLimit: 1
-  loadouts:
-  - SWLoadoutClothingHeadHatHoodSithCloak

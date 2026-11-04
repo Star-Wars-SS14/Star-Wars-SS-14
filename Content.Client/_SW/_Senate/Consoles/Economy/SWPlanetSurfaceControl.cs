@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using Content.Shared._SW._Senate.Economy;
+using Content.Shared.CCVar;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Shared.Input;
@@ -24,6 +25,10 @@ public sealed partial class SWPlanetSurfaceControl : Control
     private Vector2 _panAtPress;
     private Vector2i? _hover;
     private bool _dragged;
+    private float _reveal = 1;
+    private bool _revealEnabled;
+    private float _selectionPulse;
+    private Vector2i? _keyboardCell;
     private bool _ready;
     private bool _paused;
     private string? _commodity;
@@ -76,8 +81,10 @@ public sealed partial class SWPlanetSurfaceControl : Control
 
     public void SelectSite(string id)
     {
+        if (_reveal < 1) return;
         var site = Surface.Sites.FirstOrDefault(s => s.Id == id);
         if (site == null) return;
+        if (_revealEnabled && SelectedCell != site.Cell && !_configuration.GetCVar(CCVars.ReducedMotion)) _selectionPulse = 1;
         SelectedSiteId = site.Id;
         SelectedCell = site.Cell;
         SiteSelected?.Invoke(id);
@@ -85,7 +92,8 @@ public sealed partial class SWPlanetSurfaceControl : Control
 
     public void ActivateAt(Vector2 position)
     {
-        if (HitTestCell(position) is not { } cell) return;
+        if (_reveal < 1 || HitTestCell(position) is not { } cell) return;
+        if (_revealEnabled && SelectedCell != cell && !_configuration.GetCVar(CCVars.ReducedMotion)) _selectionPulse = 1;
         SelectedCell = cell;
         SelectedSiteId = _sites.GetValueOrDefault(cell)?.Id;
         SiteSelected?.Invoke(SelectedSiteId);
@@ -127,7 +135,30 @@ public sealed partial class SWPlanetSurfaceControl : Control
     protected override void KeyBindDown(GUIBoundKeyEventArgs args)
     {
         base.KeyBindDown(args);
+        if (_revealEnabled && HasKeyboardFocus())
+        {
+            if (args.Function == EngineKeyFunctions.TextSubmit)
+            {
+                if (_reveal >= 1 && _keyboardCell is { } activeCell) ActivateAt(CellToLocal(activeCell));
+                args.Handle();
+                return;
+            }
+            var dx = args.Function == EngineKeyFunctions.TextCursorRight ? 1 : args.Function == EngineKeyFunctions.TextCursorLeft ? -1 : 0;
+            var dy = args.Function == EngineKeyFunctions.TextCursorDown ? 1 : args.Function == EngineKeyFunctions.TextCursorUp ? -1 : 0;
+            if (dx != 0 || dy != 0)
+            {
+                if (_reveal >= 1)
+                {
+                    var cursor = _keyboardCell ?? SelectedCell ?? Vector2i.Zero;
+                    _keyboardCell = new Vector2i(Math.Clamp(cursor.X + dx, 0, Surface.Width - 1), Math.Clamp(cursor.Y + dy, 0, Surface.Height - 1));
+                    _hover = _keyboardCell;
+                }
+                args.Handle();
+                return;
+            }
+        }
         if (args.Function != EngineKeyFunctions.UIClick && args.Function != EngineKeyFunctions.Use) return;
+        if (_reveal < 1) { args.Handle(); return; }
         _press = args.RelativePosition;
         _panAtPress = _pan;
         _dragged = false;

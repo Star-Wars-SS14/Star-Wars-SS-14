@@ -201,6 +201,7 @@ public sealed class SWMinistryEntry
     public Color Color;
     public int KindGroup;
     public string KindLabel = string.Empty;
+    public string? ParentId;
     public string? ParentName;
     public bool Claimed;
     public string? Holder;
@@ -216,14 +217,18 @@ public sealed class SWMinistrySelectConsoleState : BoundUserInterfaceState
     public bool IsMinisterCard;
     public string? Current;
     public string? CurrentName;
+    public bool ModeActive;
+    public bool DayActive;
 
-    public SWMinistrySelectConsoleState(List<SWMinistryEntry> ministries, bool hasCard, bool isMinisterCard, string? current, string? currentName)
+    public SWMinistrySelectConsoleState(List<SWMinistryEntry> ministries, bool hasCard, bool isMinisterCard, string? current, string? currentName, bool modeActive, bool dayActive)
     {
         Ministries = ministries;
         HasCard = hasCard;
         IsMinisterCard = isMinisterCard;
         Current = current;
         CurrentName = currentName;
+        ModeActive = modeActive;
+        DayActive = dayActive;
     }
 }
 

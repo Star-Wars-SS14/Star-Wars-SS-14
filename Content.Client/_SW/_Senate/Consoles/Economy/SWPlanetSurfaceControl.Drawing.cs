@@ -21,6 +21,8 @@ public sealed partial class SWPlanetSurfaceControl
     {
         base.Draw(handle);
         handle.DrawRect(UIBox2.FromDimensions(Vector2.Zero, PixelSize), SWConsoleStyle.Navigation);
+        if (_revealEnabled && HasKeyboardFocus())
+            handle.DrawRect(UIBox2.FromDimensions(Vector2.Zero, PixelSize), SWConsoleStyle.Brass, false);
         var tile = TileSize;
         var origin = Origin;
         for (var y = 0; y < Surface.Height; y++)
@@ -38,9 +40,10 @@ public sealed partial class SWPlanetSurfaceControl
             handle.DrawRect(UIBox2.FromDimensions(p * UIScale, new Vector2(tile * UIScale)), new Color(0.05f, .1f, .14f, .08f), false);
         }
 
-        DrawRoads(handle, tile);
-        DrawTraffic(handle, tile);
+        if (_reveal >= .35f) DrawRoads(handle, tile);
+        if (!_revealEnabled) DrawTraffic(handle, tile);
 
+        if (_reveal >= .35f)
         foreach (var site in Surface.Sites)
         {
             var center = CellToLocal(site.Cell);
@@ -48,8 +51,18 @@ public sealed partial class SWPlanetSurfaceControl
             Building(handle, site, center - new Vector2(tile * .5f), tile, Matches(site));
         }
 
+        if (_revealEnabled && _reveal >= .70f) DrawTraffic(handle, tile);
         if (_hover is { } hover && hover != SelectedCell) CellFrame(handle, hover, tile, SWConsoleStyle.TextDim, false);
-        if (SelectedCell is { } selected) CellFrame(handle, selected, tile, SWConsoleStyle.Brass, true);
+        if (SelectedCell is { } selected)
+        {
+            CellFrame(handle, selected, tile, SWConsoleStyle.Brass, true);
+            if (_revealEnabled && _selectionPulse > 0)
+            {
+                var size = tile + (1 - _selectionPulse) * 8;
+                var pulseOrigin = CellToLocal(selected) - new Vector2(size / 2);
+                handle.DrawRect(UIBox2.FromDimensions(pulseOrigin * UIScale, new Vector2(size) * UIScale), SWConsoleStyle.Brass.WithAlpha(_selectionPulse), false);
+            }
+        }
         var bounds = UIBox2.FromDimensions(origin * UIScale, new Vector2(Surface.Width, Surface.Height) * tile * UIScale);
         handle.DrawRect(bounds, SWConsoleStyle.Edge, false);
         if (Zoom <= 1.001f)

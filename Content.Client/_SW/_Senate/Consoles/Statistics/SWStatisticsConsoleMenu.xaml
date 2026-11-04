@@ -1,20 +1,24 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
     xmlns:senate="clr-namespace:Content.Client._SW._Senate"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-    Title="Статистика Республики" SetSize="1100 760" MinSize="760 620">
+    Title="Статистика Республики" SetSize="1400 860" MinSize="760 620">
     <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
         <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="0">
             <PanelContainer Name="HeaderPanel">
                 <BoxContainer Orientation="Horizontal" Margin="14 10" SeparationOverride="0">
-                    <senate:SWConsoleSeal Name="RepublicSeal" Margin="0 0 12 0" />
                     <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="2">
-                        <Label Name="HeaderNetwork" Text="РЕСПУБЛИКА / ГОЛОНЕТ" />
-                        <Label Name="HeaderTitle" Text="Аналитика Республики" ClipText="True" />
+                        <Label Name="HeaderNetwork" Text="РЕСПУБЛИКА / АНАЛИТИЧЕСКАЯ СЛУЖБА" />
+                        <Label Name="HeaderTitle" Text="Статистика Республики" ClipText="True" />
                     </BoxContainer>
+                    <senate:SWConsoleSeal Name="RepublicSeal" Margin="12 0" />
                     <Label Name="HeaderClock" Margin="12 0 0 0" VerticalAlignment="Center" />
                 </BoxContainer>
             </PanelContainer>
             <PanelContainer Name="TabBarPanel"><WrapContainer Name="TabBar" Margin="8 4" /></PanelContainer>
+            <BoxContainer Orientation="Vertical" Margin="16 8 16 2" SeparationOverride="2">
+                <Label Name="PageTitle" ClipText="True" />
+                <Label Name="PageSubtitle" ClipText="True" />
+            </BoxContainer>
             <BoxContainer Name="ContentHost" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
                 <BoxContainer Name="GalaxyPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="12" SeparationOverride="8" />
                 <BoxContainer Name="CommoditiesPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="12" />
@@ -34,6 +38,9 @@
                     <BoxContainer Name="LawsList" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" />
                 </BoxContainer>
             </BoxContainer>
+            <PanelContainer Name="FooterPanel">
+                <Label Name="FooterText" Margin="16 6" ClipText="True" />
+            </PanelContainer>
         </BoxContainer>
     </PanelContainer>
 </controls:FancyWindow>

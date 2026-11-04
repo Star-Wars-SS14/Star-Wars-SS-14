@@ -1,4 +1,6 @@
 ﻿using Content.Server.Administration;
+using Content.Server._SW._Senate.GameTicking;
+using Content.Server.RoundEnd;
 using Content.Shared.Administration;
 using Robust.Shared.Console;
 
@@ -8,6 +10,7 @@ namespace Content.Server.GameTicking.Commands;
 public sealed class EndRoundCommand : LocalizedEntityCommands
 {
     [Dependency] private readonly GameTicker _gameTicker = default!;
+    [Dependency] private readonly RoundEndSystem _roundEnd = default!;
 
     public override string Command => "endround";
 
@@ -19,6 +22,9 @@ public sealed class EndRoundCommand : LocalizedEntityCommands
             return;
         }
 
-        _gameTicker.EndRound();
+        if (_gameTicker.IsGameRuleActive<SWSenateRuleComponent>())
+            _roundEnd.EndRound();
+        else
+            _gameTicker.EndRound();
     }
 }

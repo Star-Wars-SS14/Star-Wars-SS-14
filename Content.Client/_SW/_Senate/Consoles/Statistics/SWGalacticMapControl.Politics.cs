@@ -11,6 +11,7 @@ namespace Content.Client._SW._Senate.Consoles.Statistics;
 public sealed partial class SWGalacticMapControl
 {
     private readonly Dictionary<SWGalacticMapPoliticalArea, Vector2[]> _politicalTriangles = new();
+    private readonly Dictionary<SWGalacticMapPoliticalArea, List<(Vector2 A, Vector2 B)>> _occupationHatches = new();
     private readonly List<(SWGalacticMapPoliticalArea Area, UIBox2 Box)> _politicalLabels = new();
 
     private static Color PoliticalColor(string faction) => Color.FromHex(faction switch
@@ -23,7 +24,34 @@ public sealed partial class SWGalacticMapControl
     private void BuildPoliticalGeometry()
     {
         foreach (var area in _map.PoliticalAreas)
+        {
             _politicalTriangles[area] = TriangulateArea(area.Boundary);
+            if (area.Contested && area.Name.Contains("оккупац", StringComparison.OrdinalIgnoreCase))
+                _occupationHatches[area] = BuildOccupationHatches(area.Boundary);
+        }
+    }
+
+    private static List<(Vector2 A, Vector2 B)> BuildOccupationHatches(IReadOnlyList<Vector2> boundary)
+    {
+        var result = new List<(Vector2 A, Vector2 B)>();
+        if (boundary.Count < 3) return result;
+        var min = boundary.Min(p => p.X + p.Y);
+        var max = boundary.Max(p => p.X + p.Y);
+        for (var line = MathF.Ceiling(min / 3) * 3; line < max; line += 3)
+        {
+            var crossings = new List<Vector2>();
+            for (var i = 0; i < boundary.Count; i++)
+            {
+                var a = boundary[i]; var b = boundary[(i + 1) % boundary.Count];
+                var av = a.X + a.Y; var bv = b.X + b.Y;
+                if (!((av <= line && bv > line) || (bv <= line && av > line))) continue;
+                crossings.Add(Vector2.Lerp(a, b, (line - av) / (bv - av)));
+            }
+            crossings.Sort((a, b) => a.X.CompareTo(b.X));
+            for (var i = 0; i + 1 < crossings.Count; i += 2)
+                result.Add((crossings[i], crossings[i + 1]));
+        }
+        return result;
     }
 
     // Concave territory outlines cannot be filled by a triangle fan. Triangulate once;
@@ -97,7 +125,23 @@ public sealed partial class SWGalacticMapControl
         }
     }
 
-    private void DrawPoliticalLabels(DrawingHandleScreen handle)
+    private void DrawOccupationAreas(DrawingHandleScreen handle)
+    {
+        // The prototype publishes occupied zones as named contested polygons. A world's
+        // politicalStatus alone is not a polygon and must not create an area here.
+        foreach (var area in _map.PoliticalAreas.Where(a => a.Contested && a.Name.Contains("оккупац", StringComparison.OrdinalIgnoreCase)))
+        {
+            if (!_politicalTriangles.TryGetValue(area, out var triangles) || triangles.Length == 0) continue;
+            var points = triangles.Select(p => MapToLocal(p) * UIScale).ToArray();
+            var color = PoliticalColor(area.Faction);
+            handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, points, Color.ToSrgb(color.WithAlpha(.28f)));
+            if (_occupationHatches.TryGetValue(area, out var hatches))
+                foreach (var (a, b) in hatches)
+                    handle.DrawLine(MapToLocal(a) * UIScale, MapToLocal(b) * UIScale, color.WithAlpha(.38f));
+        }
+    }
+
+    private void LayoutPoliticalLabels(DrawingHandleScreen handle)
     {
         _politicalLabels.Clear();
         foreach (var area in _map.PoliticalAreas)
@@ -106,8 +150,15 @@ public sealed partial class SWGalacticMapControl
             var size = handle.GetDimensions(SWConsoleStyle.Small, area.Label, UIScale) / UIScale;
             var p = MapToLocal(area.LabelPosition) - size / 2;
             if (p.X < 4 || p.Y < 4 || p.X + size.X > Width - 4 || p.Y + size.Y > Height - 4) continue;
-            _politicalLabels.Add((area, UIBox2.FromDimensions(p - new Vector2(5), size + new Vector2(10))));
-            handle.DrawString(SWConsoleStyle.Small, p * UIScale, area.Label, UIScale, PoliticalColor(area.Faction));
+            var box = UIBox2.FromDimensions(p - new Vector2(5), size + new Vector2(10));
+            if (CoincidentTrafficIntersects(box)) continue;
+            _politicalLabels.Add((area, box));
         }
+    }
+
+    private void DrawPoliticalLabels(DrawingHandleScreen handle)
+    {
+        foreach (var (area, box) in _politicalLabels)
+            handle.DrawString(SWConsoleStyle.Small, (box.TopLeft + new Vector2(5)) * UIScale, area.Label!, UIScale, PoliticalColor(area.Faction));
     }
 }

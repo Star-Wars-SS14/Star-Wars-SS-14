@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Numerics;
+using Robust.Client.Graphics;
 using Content.Shared._SW._Senate;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -17,7 +19,7 @@ public static class SWStatisticsWidgets
     {
         var box = VerticalStack(4);
         var head = new BoxContainer { HorizontalExpand = true };
-        head.AddChild(SWConsoleStyle.Wrap(name, SWConsoleStyle.TextBright));
+        head.AddChild(SWStatisticsText.Wrap(name, SWConsoleStyle.TextBright));
         head.AddChild(SWConsoleStyle.Text(SWStatisticsPresentation.Number(value), SWConsoleStyle.TextBright, SWConsoleStyle.Strong));
         box.AddChild(head);
         box.AddChild(new SWStatisticsBar { Value = value, Minimum = min, Maximum = max, Fill = color ?? SWConsoleStyle.Accent, Reference = reference });
@@ -30,17 +32,17 @@ public static class SWStatisticsWidgets
         if (effects.Count == 0) return;
         target.AddChild(SWConsoleStyle.Section(perHour ? "Влияние режима за игровой час" : "Последствия"));
         foreach (var effect in effects)
-            target.AddChild(SWConsoleStyle.Wrap($"{effect.StatName}   {effect.Delta:+0.#;-0.#;0}{(perHour || effect.PerHour ? "/ч" : string.Empty)}", effect.Color));
+            target.AddChild(SWStatisticsText.Wrap($"{effect.StatName}   {effect.Delta:+0.#;-0.#;0}{(perHour || effect.PerHour ? "/ч" : string.Empty)}", effect.Color));
     }
 
     public static Control Operations(SWStatisticsConsoleState s, int section)
     {
         var b = VerticalStack(14);
-        void Text(string value) { if (!string.IsNullOrWhiteSpace(value)) b.AddChild(SWConsoleStyle.Wrap(value, SWConsoleStyle.TextBright)); }
+        void Text(string value) { if (!string.IsNullOrWhiteSpace(value)) b.AddChild(SWStatisticsText.Wrap(value, SWConsoleStyle.TextBright)); }
         void Risk(string label, int value, string status = "")
         {
             b.AddChild(Metric(label, value, color: SWConsoleStyle.SeverityColor(value)));
-            if (status.Length > 0) b.AddChild(SWConsoleStyle.Wrap(status, SWConsoleStyle.TextDim));
+            if (status.Length > 0) b.AddChild(SWStatisticsText.Wrap(status, SWConsoleStyle.TextDim));
         }
         switch (section)
         {
@@ -90,5 +92,26 @@ public static class SWStatisticsWidgets
                 break;
         }
         return b;
+    }
+}
+
+/// <summary>Persistent direction indicator for a selected published flow.</summary>
+public sealed class SWStatisticsDirectionMarker : Control
+{
+    public SWStatisticsDirectionMarker()
+    {
+        SetSize = new Vector2(36, 18);
+        MouseFilter = MouseFilterMode.Ignore;
+    }
+
+    protected override void Draw(DrawingHandleScreen handle)
+    {
+        base.Draw(handle);
+        var y = PixelHeight / 2f;
+        var end = PixelWidth - 4 * UIScale;
+        var start = 4 * UIScale;
+        handle.DrawLine(new Vector2(start, y), new Vector2(end, y), SWConsoleStyle.Brass);
+        handle.DrawLine(new Vector2(end - 6 * UIScale, y - 4 * UIScale), new Vector2(end, y), SWConsoleStyle.Brass);
+        handle.DrawLine(new Vector2(end - 6 * UIScale, y + 4 * UIScale), new Vector2(end, y), SWConsoleStyle.Brass);
     }
 }

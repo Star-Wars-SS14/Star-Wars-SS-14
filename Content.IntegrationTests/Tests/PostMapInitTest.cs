@@ -13,6 +13,7 @@ using Content.Shared.CCVar;
 using Content.Shared.Maps;
 using Content.Shared.Roles;
 using Content.Shared.Station.Components;
+using Content.Shared.Echo.Shipyard.Prototypes; //SW
 using Robust.Shared.Configuration;
 using Robust.Shared.ContentPack;
 using Robust.Shared.EntitySerialization;
@@ -164,6 +165,14 @@ namespace Content.IntegrationTests.Tests
             "SWGlobalWarR8Surface", //SW
             "SWGlobalWarR9Orbit", //SW
             "SWGlobalWarR9Surface", //SW
+            //SW start
+            "newBalmora",
+            "newBalmoraEvent",
+            "oldBalmora",
+            "oldBalmorraEventMagistr",
+            "SpaceWarRoundstart",
+            "Asteroid",
+            //SW end
         };
 
         private static readonly ProtoId<EntityCategoryPrototype> DoNotMapCategory = "DoNotMap";
@@ -510,7 +519,7 @@ namespace Content.IntegrationTests.Tests
                     var jobs = new HashSet<ProtoId<JobPrototype>>(comp.SetupAvailableJobs.Keys);
 
                     var spawnPoints = entManager.EntityQuery<SpawnPointComponent>()
-                        .Where(x => x.SpawnType == SpawnPointType.Job && x.Job != null)
+                        .Where(x => x.SpawnType is SpawnPointType.Job or SpawnPointType.LateJoinByJob && x.Job != null) //SW
                         .Select(x => x.Job.Value);
 
                     jobs.ExceptWith(spawnPoints);
@@ -550,7 +559,7 @@ namespace Content.IntegrationTests.Tests
             {
                 var spawner = (ISpawnPoint)comp;
 
-                if (spawner.SpawnType is not SpawnPointType.LateJoin
+                if (spawner.SpawnType is not (SpawnPointType.LateJoin or SpawnPointType.LateJoinByJob) //SW
                 || xform.GridUid == null
                 || !gridUids.Contains(xform.GridUid.Value))
                 {
@@ -577,6 +586,11 @@ namespace Content.IntegrationTests.Tests
                 .ToHashSet();
 
             Assert.That(gameMaps.Remove(PoolManager.TestMap));
+
+            //SW start
+            // A vessel's gameMap only sets up a station on a bought ship grid (ShipyardSystem), it is never a round map.
+            gameMaps.ExceptWith(protoMan.EnumeratePrototypes<VesselPrototype>().Select(x => x.ID));
+            //SW end
 
             Assert.That(gameMaps, Is.EquivalentTo(GameMaps.ToHashSet()), "Game map prototype missing from test cases.");
 

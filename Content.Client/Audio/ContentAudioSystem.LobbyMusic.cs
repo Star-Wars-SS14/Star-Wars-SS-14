@@ -8,6 +8,7 @@ using Robust.Client;
 using Robust.Client.ResourceManagement;
 using Robust.Client.State;
 using Robust.Shared.Audio;
+using Robust.Shared.Audio.Components;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
@@ -42,6 +43,8 @@ public sealed partial class ContentAudioSystem
     /// </summary>
     public void StartSenateIntroMusic()
     {
+        // A new intro never inherits an outro track; the intro takes the music slot itself.
+        StopSenateFinaleMusic(resumeLobby: false);
         _audio.Stop(_senateIntroStream);
         _senateIntroStream = null;
         _senateIntroActive = true;
@@ -90,9 +93,12 @@ public sealed partial class ContentAudioSystem
             StartLobbyMusic();
     }
 
+    /// <summary>Starts the Senate outro track from the beginning; calling it again restarts the same single stream.</summary>
     public void StartSenateFinaleMusic()
     {
-        StopSenateFinaleMusic();
+        // The outro takes the music slot from a running intro without resuming lobby music in between.
+        StopSenateIntroMusic(false);
+        StopSenateFinaleStream();
         _senateFinaleActive = true;
         _ambientMusicStream = _audio.Stop(_ambientMusicStream);
         EndLobbyMusic();
@@ -104,13 +110,29 @@ public sealed partial class ContentAudioSystem
         FadeIn(_senateFinaleStream, duration: 1f);
     }
 
-    public void StopSenateFinaleMusic()
+    /// <summary>
+    /// Ends the outro music. A client that watched the outro in the lobby gets its lobby music back, unless the
+    /// caller hands the music slot to another track.
+    /// </summary>
+    public void StopSenateFinaleMusic(bool resumeLobby = true)
     {
+        var wasActive = _senateFinaleActive;
         _senateFinaleActive = false;
-        PauseSenateFinaleMusic();
+        StopSenateFinaleStream();
+        if (wasActive && resumeLobby && _state.CurrentState is LobbyState)
+            StartLobbyMusic();
     }
 
-    public void PauseSenateFinaleMusic()
+    /// <summary>Pauses or resumes the outro track at its current position; does nothing without a playing stream.</summary>
+    public void SetSenateFinaleMusicPaused(bool paused)
+    {
+        if (!_senateFinaleActive || _senateFinaleStream == null)
+            return;
+
+        _audio.SetState(_senateFinaleStream, paused ? AudioState.Paused : AudioState.Playing);
+    }
+
+    private void StopSenateFinaleStream()
     {
         _audio.Stop(_senateFinaleStream);
         _senateFinaleStream = null;
@@ -187,7 +209,7 @@ public sealed partial class ContentAudioSystem
 
     private void OnLeave(object? sender, PlayerEventArgs args)
     {
-        StopSenateFinaleMusic();
+        StopSenateFinaleMusic(resumeLobby: false);
         StopSenateIntroMusic(false);
         EndLobbyMusic();
     }
@@ -221,7 +243,7 @@ public sealed partial class ContentAudioSystem
 
     private void RestartSoundsChanged(bool enabled)
     {
-        if (!enabled) PauseSenateFinaleMusic();
+        if (!enabled) StopSenateFinaleStream();
     }
 
     private void LobbyMusicCVarChanged(bool musicEnabled)
@@ -290,6 +312,14 @@ public sealed partial class ContentAudioSystem
     /// <param name="playlist">Array of soundtrack filenames for lobby playlist.</param>
     private void StartLobbyMusic(string[] playlist)
     {
+        // Single owner of the music slot: while the Senate intro or outro owns it, a playlist update, a CVar toggle
+        // or a state change only remembers the playlist; it is started when that track is stopped.
+        if (_senateFinaleActive || _senateIntroActive)
+        {
+            _lobbyPlaylist = playlist;
+            return;
+        }
+
         if (_lobbySoundtrackInfo != null || !_configManager.GetCVar(CCVars.LobbyMusicEnabled))
             return;
 
@@ -364,7 +394,7 @@ public sealed partial class ContentAudioSystem
 
     private void ShutdownLobbyMusic()
     {
-        StopSenateFinaleMusic();
+        StopSenateFinaleMusic(resumeLobby: false);
         _state.OnStateChanged -= StateManagerOnStateChanged;
 
         _client.PlayerLeaveServer -= OnLeave;

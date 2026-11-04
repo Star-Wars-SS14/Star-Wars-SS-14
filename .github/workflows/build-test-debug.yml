@@ -17,14 +17,14 @@ jobs:
         os: [ubuntu-latest]
         #SW start: Content.IntegrationTests run in shards, each its own testhost with its own 20-minute
         # PoolManagerTestEventHandler limit. Tools/_SW/ci_shard.py picks the classes; keep this list 0..SW_SHARD_COUNT-1.
-        shard: [0, 1, 2, 3, 4, 5]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
         #SW end
 
     runs-on: ${{ matrix.os }}
 
     #SW start
     env:
-      SW_SHARD_COUNT: 6
+      SW_SHARD_COUNT: 8
     #SW end
 
     steps:
@@ -71,6 +71,20 @@ jobs:
         python3 Tools/_SW/ci_shard.py --count "$SW_SHARD_COUNT" --check --tests "$RUNNER_TEMP/integration-tests.txt"
     #SW end
 
+    #SW start: log memory every 15 s, so a runner that dies of memory leaves evidence in the last step
+    - name: Start memory log
+      run: |
+        cat > "$RUNNER_TEMP/memlog.sh" <<'EOF'
+        while true; do
+          used=$(free -m | awk 'NR==2 {print $3 "/" $2}')
+          top=$(ps -eo rss,comm --sort=-rss | awk 'NR==2 {print int($1/1024) " MB " $2}')
+          echo "$(date +%T) used $used MB, top $top"
+          sleep 15
+        done
+        EOF
+        nohup sh "$RUNNER_TEMP/memlog.sh" > "$RUNNER_TEMP/memory.log" 2>&1 &
+    #SW end
+
     - name: Run Content.IntegrationTests (shard ${{ matrix.shard }}) #SW
       shell: pwsh
       run: |
@@ -80,6 +94,12 @@ jobs:
         if ($LASTEXITCODE -ne 0 -or -not $filter) { throw "ci_shard.py failed" }
         dotnet test --no-build --configuration DebugOpt Content.IntegrationTests/Content.IntegrationTests.csproj --filter "$filter" -- NUnit.ConsoleOut=0 NUnit.MapWarningTo=Failed
         #SW end
+
+    #SW start
+    - name: Show memory log
+      if: always()
+      run: tail -n 40 "$RUNNER_TEMP/memory.log" || true
+    #SW end
   ci-success:
     name: Build & Test Debug
     needs:

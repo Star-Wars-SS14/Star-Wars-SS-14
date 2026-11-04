@@ -222,7 +222,7 @@ public sealed partial class SWSenateFinale : LayoutContainer
         var end = Math.Min(start + pageLength, _total);
         _content.Modulate = Color.White.WithAlpha(FadeWindow(start, end, 0.5f, 0.4f));
 
-        var status = $"{(_paused ? "Пауза · " : string.Empty)}Хроника созыва · {sceneIndex + 1} из {_scenes.Length}";
+        var status = $"{(_paused ? "Пауза. " : string.Empty)}Хроника созыва: сцена {sceneIndex + 1} из {_scenes.Length}";
         if (_status.Text != status)
             _status.Text = status;
     }

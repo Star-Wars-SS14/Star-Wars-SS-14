@@ -65,7 +65,7 @@ public sealed partial class SWSenateFinale
         // 1. Coruscant at dusk.
         var length = duration < TimeSpan.Zero ? TimeSpan.Zero : duration;
         Add(Shot.Dusk, 6f, new Vector2(420, 195), new Vector2(540, 165),
-            new Page("СОЗЫВ ЗАВЕРШЁН", "Корускант · итоговый снимок созыва", new[]
+            new Page("СОЗЫВ ЗАВЕРШЁН", "Корускант, итоговый снимок созыва", new[]
             {
                 new Row(history.Days >= 0 ? $"Игровых дней: {history.Days}" : "Игровых дней: данные недоступны", bright, Large: true),
                 new Row($"Длительность раунда: {(int) length.TotalHours:00}:{length.Minutes:00}:{length.Seconds:00}", dim),
@@ -88,17 +88,17 @@ public sealed partial class SWSenateFinale
 
             anyStat = true;
             var delta = stat.End - stat.Start;
-            statRows.Add(new Row($"{name}: {stat.Start:0.0} → {stat.End:0.0}", bright,
-                $"   изменение {delta:+0.0;-0.0;0.0} ед.", HasValidBar(stat) ? stat : null));
+            statRows.Add(new Row($"{name}: начало {stat.Start:0.0}, итог {stat.End:0.0}", bright,
+                $", изменение {delta:+0.0;-0.0;0.0} ед.", HasValidBar(stat) ? stat : null));
         }
 
         Add(Shot.Chamber, anyStat ? 8f : 4f, new Vector2(540, 180), new Vector2(420, 180),
-            new Page("ПОСЛЕ ЗАСЕДАНИЙ", "Значения показателей: начало → итог", statRows.ToArray(), null));
+            new Page("ПОСЛЕ ЗАСЕДАНИЙ", "Значения показателей на начало и на итог созыва", statRows.ToArray(), null));
 
         // 3. Archive documents: counts and at most two decisions in the server's order.
         var lawRows = new List<Row>
         {
-            new($"Принято законов: {history.PassedLaws} · поправок: {history.PassedAmendments}", bright),
+            new($"Принято законов: {history.PassedLaws}, поправок: {history.PassedAmendments}", bright),
         };
         foreach (var law in history.Laws.Take(MaxLaws))
         {
@@ -124,7 +124,7 @@ public sealed partial class SWSenateFinale
         var projects = history.Projects.Where(text => !string.IsNullOrWhiteSpace(text)).ToArray();
         if (projects.Length > 0)
         {
-            pages.Add(new Page("К КОНЦУ СОЗЫВА", "В итоговом снимке · завершённые проекты",
+            pages.Add(new Page("К КОНЦУ СОЗЫВА", "В итоговом снимке: завершённые проекты",
                 projects.Take(MaxListed).Select(text => new Row(Clean(text, 110), bright)).ToArray(),
                 projects.Length > MaxListed ? "Ещё проекты — в полном отчёте" : null));
         }
@@ -132,7 +132,7 @@ public sealed partial class SWSenateFinale
         var events = history.Events.Where(text => !string.IsNullOrWhiteSpace(text)).ToArray();
         if (events.Length > 0)
         {
-            pages.Add(new Page("К КОНЦУ СОЗЫВА", "В итоговом снимке · экономические события",
+            pages.Add(new Page("К КОНЦУ СОЗЫВА", "В итоговом снимке: экономические события",
                 events.Take(MaxListed).Select(text => new Row(Clean(text, 110), bright)).ToArray(),
                 events.Length > MaxListed ? "Ещё события — в полном отчёте" : null));
         }
@@ -152,12 +152,12 @@ public sealed partial class SWSenateFinale
             sectorsWithMore |= sector.Stats.Length > 1;
             var sectorName = Clean(sector.Name, 48);
             var statName = Clean(stat.Name, 40);
-            sectorRows.Add(new Row($"{(sectorName.Length == 0 ? "Сектор" : sectorName)}: {(statName.Length == 0 ? "показатель" : statName)} {stat.Start:0.0} → {stat.End:0.0}", bright));
+            sectorRows.Add(new Row($"{(sectorName.Length == 0 ? "Сектор" : sectorName)}: {(statName.Length == 0 ? "показатель" : statName)}, начало {stat.Start:0.0}, итог {stat.End:0.0}", bright));
         }
 
         if (sectorRows.Count > 0)
         {
-            pages.Add(new Page("К КОНЦУ СОЗЫВА", "Выборка по секторам · начало → итог", sectorRows.ToArray(),
+            pages.Add(new Page("К КОНЦУ СОЗЫВА", "Выборка по секторам: значения на начало и на итог созыва", sectorRows.ToArray(),
                 history.Sectors.Length > sectorRows.Count || sectorsWithMore ? "Все секторы — в полном отчёте" : null));
         }
 

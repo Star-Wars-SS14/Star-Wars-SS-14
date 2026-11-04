@@ -53,7 +53,7 @@
           5: { state: reinf_construct-5, visible: true}
   - type: ReinforcedWallReplacementMarker
   - type: StaticPrice
-    price: 150
+    price: 250 # as upstream WallReinforced: it deconstructs through the same graph node
   - type: RadiationBlocker
     resistance: 5
 

@@ -5,7 +5,7 @@ meta:
   forkId: CorvaxStarWars
   forkVersion: c5dddf467762eb3393b9c5d90083a2b779b0df93
   time: 12/20/2025 09:06:18
-  entityCount: 84941
+  entityCount: 84924
 maps:
 - 1
 grids:
@@ -246770,72 +246770,6 @@ entities:
       rot: -1.5707963267948966 rad
       pos: 27.7192,-335.46005
       parent: 2
-  - uid: 13553
-    components:
-    - type: Transform
-      parent: 13552
-    - type: Physics
-      canCollide: False
-  - uid: 13554
-    components:
-    - type: Transform
-      parent: 13552
-    - type: Physics
-      canCollide: False
-  - uid: 13555
-    components:
-    - type: Transform
-      parent: 13552
-    - type: Physics
-      canCollide: False
-  - uid: 13556
-    components:
-    - type: Transform
-      parent: 13552
-    - type: Physics
-      canCollide: False
-  - uid: 13568
-    components:
-    - type: Transform
-      parent: 13567
-    - type: Physics
-      canCollide: False
-  - uid: 13569
-    components:
-    - type: Transform
-      parent: 13567
-    - type: Physics
-      canCollide: False
-  - uid: 13570
-    components:
-    - type: Transform
-      parent: 13567
-    - type: Physics
-      canCollide: False
-  - uid: 13571
-    components:
-    - type: Transform
-      parent: 13567
-    - type: Physics
-      canCollide: False
-  - uid: 13572
-    components:
-    - type: Transform
-      parent: 13567
-    - type: Physics
-      canCollide: False
-  - uid: 13573
-    components:
-    - type: Transform
-      parent: 13567
-    - type: Physics
-      canCollide: False
-  - uid: 13574
-    components:
-    - type: Transform
-      parent: 13567
-    - type: Physics
-      canCollide: False
   - uid: 13575
     components:
     - type: Transform
@@ -246852,14 +246786,6 @@ entities:
     - type: Transform
       pos: -54.51265,7.60619
       parent: 2
-- proto: CigaretteDylovene
-  entities:
-  - uid: 13557
-    components:
-    - type: Transform
-      parent: 13552
-    - type: Physics
-      canCollide: False
 - proto: CigaretteFilter1
   entities:
   - uid: 13578
@@ -246880,38 +246806,6 @@ entities:
     - type: Physics
       canCollide: False
     - type: InsideEntityStorage
-- proto: CigaretteHaloperidol
-  entities:
-  - uid: 13558
-    components:
-    - type: Transform
-      parent: 13552
-    - type: Physics
-      canCollide: False
-- proto: CigaretteIron
-  entities:
-  - uid: 13559
-    components:
-    - type: Transform
-      parent: 13552
-    - type: Physics
-      canCollide: False
-- proto: CigaretteLipolicide
-  entities:
-  - uid: 13560
-    components:
-    - type: Transform
-      parent: 13552
-    - type: Physics
-      canCollide: False
-- proto: CigaretteRobustHarvest
-  entities:
-  - uid: 13561
-    components:
-    - type: Transform
-      parent: 13552
-    - type: Physics
-      canCollide: False
 - proto: CigaretteSpent
   entities:
   - uid: 624
@@ -246948,12 +246842,6 @@ entities:
     components:
     - type: Transform
       parent: 1493
-    - type: Physics
-      canCollide: False
-  - uid: 13562
-    components:
-    - type: Transform
-      parent: 13552
     - type: Physics
       canCollide: False
   - uid: 13582
@@ -247592,42 +247480,6 @@ entities:
     - type: Transform
       pos: -129.61545,-214.47614
       parent: 2
-    - type: Storage
-      storedItems:
-        13568:
-          position: 0,0
-          _rotation: South
-        13569:
-          position: 3,1
-          _rotation: South
-        13570:
-          position: 2,0
-          _rotation: South
-        13571:
-          position: 1,0
-          _rotation: South
-        13572:
-          position: 4,0
-          _rotation: South
-        13573:
-          position: 0,1
-          _rotation: South
-        13574:
-          position: 1,1
-          _rotation: South
-    - type: ContainerContainer
-      containers:
-        storagebase: !type:Container
-          showEnts: False
-          occludes: True
-          ents:
-          - 13568
-          - 13570
-          - 13573
-          - 13574
-          - 13569
-          - 13572
-          - 13571
   - uid: 13687
     components:
     - type: Transform
@@ -247639,54 +247491,6 @@ entities:
     components:
     - type: Transform
       parent: 13551
-    - type: Storage
-      storedItems:
-        13557:
-          position: 0,0
-          _rotation: South
-        13559:
-          position: 2,1
-          _rotation: South
-        13560:
-          position: 3,0
-          _rotation: South
-        13558:
-          position: 1,1
-          _rotation: South
-        13561:
-          position: 4,1
-          _rotation: South
-        13553:
-          position: 1,0
-          _rotation: South
-        13554:
-          position: 2,0
-          _rotation: South
-        13555:
-          position: 0,1
-          _rotation: South
-        13562:
-          position: 3,1
-          _rotation: South
-        13556:
-          position: 4,0
-          _rotation: South
-    - type: ContainerContainer
-      containers:
-        storagebase: !type:Container
-          showEnts: False
-          occludes: True
-          ents:
-          - 13557
-          - 13559
-          - 13560
-          - 13558
-          - 13561
-          - 13553
-          - 13554
-          - 13562
-          - 13555
-          - 13556
     - type: Physics
       canCollide: False
   - uid: 13688
@@ -263962,8 +263766,7 @@ entities:
         entity_storage: !type:Container
           showEnts: False
           occludes: True
-          ents:
-          - invalid
+          ents: []
         paper_label: !type:ContainerSlot
           showEnts: False
           occludes: True
@@ -263978,8 +263781,7 @@ entities:
         entity_storage: !type:Container
           showEnts: False
           occludes: True
-          ents:
-          - invalid
+          ents: []
         paper_label: !type:ContainerSlot
           showEnts: False
           occludes: True
@@ -263994,8 +263796,7 @@ entities:
         entity_storage: !type:Container
           showEnts: False
           occludes: True
-          ents:
-          - invalid
+          ents: []
         paper_label: !type:ContainerSlot
           showEnts: False
           occludes: True
@@ -264010,8 +263811,7 @@ entities:
         entity_storage: !type:Container
           showEnts: False
           occludes: True
-          ents:
-          - invalid
+          ents: []
         paper_label: !type:ContainerSlot
           showEnts: False
           occludes: True
@@ -264026,8 +263826,7 @@ entities:
         entity_storage: !type:Container
           showEnts: False
           occludes: True
-          ents:
-          - invalid
+          ents: []
         paper_label: !type:ContainerSlot
           showEnts: False
           occludes: True
@@ -595778,7 +595577,6 @@ entities:
         73269:
         - - SWTurretSender
           - SWTurretConsoleReceiver
-    - type: SWTurretConfig
     missingComponents:
     - ActiveRadio
   - uid: 73265
@@ -595791,7 +595589,6 @@ entities:
         73269:
         - - SWTurretSender
           - SWTurretConsoleReceiver
-    - type: SWTurretConfig
     missingComponents:
     - ActiveRadio
   - uid: 73266
@@ -595805,7 +595602,6 @@ entities:
         73268:
         - - SWTurretSender
           - SWTurretConsoleReceiver
-    - type: SWTurretConfig
     missingComponents:
     - ActiveRadio
   - uid: 73267
@@ -595819,7 +595615,6 @@ entities:
         73268:
         - - SWTurretSender
           - SWTurretConsoleReceiver
-    - type: SWTurretConfig
     missingComponents:
     - ActiveRadio
 - proto: SWTurretConsoleEmpire

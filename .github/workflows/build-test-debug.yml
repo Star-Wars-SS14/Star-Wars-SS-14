@@ -5,8 +5,14 @@ on:
     branches: [ master, staging, stable ]
   merge_group:
   pull_request:
-    types: [ opened, reopened, synchronize, ready_for_review ]
+    types: [ opened, reopened, synchronize, ready_for_review, labeled ] #SW: labeled, for the full-tests label
     branches: [ master, staging, stable ]
+
+#SW start: a newer push to the same PR cancels the run still going; Actions minutes are paid in this private repo
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+#SW end
 
 jobs:
   build:
@@ -17,16 +23,18 @@ jobs:
         os: [ubuntu-latest]
         #SW start: Content.IntegrationTests run in shards; each shard runs SW_SHARD_PARTS parts one after another, each
         # in its own testhost with its own 20-minute PoolManagerTestEventHandler limit and memory. Tools/_SW/ci_shard.py
-        # picks the classes; keep this list 0..SW_SHARD_COUNT-1.
-        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+        # picks the classes; keep the long list 0..SW_SHARD_COUNT-1. Every shard pays about 10 minutes of checkout, restore
+        # and build, so few shards with many parts cost the fewest minutes. A pull request runs only shard 0 (build and
+        # Content.Tests) unless it has the full-tests label; pushes to master, staging and stable run everything.
+        shard: ${{ fromJSON((github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'full-tests')) && '[0, 1, 2]' || '[0]') }}
         #SW end
 
     runs-on: ${{ matrix.os }}
 
     #SW start
     env:
-      SW_SHARD_COUNT: 12
-      SW_SHARD_PARTS: 2
+      SW_SHARD_COUNT: 3
+      SW_SHARD_PARTS: 8
     #SW end
 
     steps:
@@ -67,7 +75,7 @@ jobs:
 
     #SW start: the real test list from the build must split cleanly too; one shard checking it is enough
     - name: Check test shards against the built test list
-      if: matrix.shard == 0
+      if: matrix.shard == 0 && (github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'full-tests'))
       run: |
         dotnet vstest bin/Content.IntegrationTests/Content.IntegrationTests.dll --ListFullyQualifiedTests --ListTestsTargetPath:"$RUNNER_TEMP/integration-tests.txt"
         python3 Tools/_SW/ci_shard.py --count "$SW_SHARD_COUNT" --parts "$SW_SHARD_PARTS" --check --tests "$RUNNER_TEMP/integration-tests.txt"
@@ -75,6 +83,7 @@ jobs:
 
     #SW start: log memory every 15 s, so a runner that dies of memory leaves evidence in the last step
     - name: Start memory log
+      if: (github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'full-tests'))
       run: |
         cat > "$RUNNER_TEMP/memlog.sh" <<'EOF'
         while true; do
@@ -88,6 +97,7 @@ jobs:
     #SW end
 
     - name: Run Content.IntegrationTests (shard ${{ matrix.shard }}) #SW
+      if: (github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'full-tests')) #SW
       shell: pwsh
       run: |
         $env:DOTNET_gcServer=1
@@ -112,7 +122,7 @@ jobs:
 
     #SW start
     - name: Show memory log
-      if: always()
+      if: always() && (github.event_name != 'pull_request' || contains(github.event.pull_request.labels.*.name, 'full-tests'))
       run: tail -n 40 "$RUNNER_TEMP/memory.log" || true
     #SW end
   ci-success:

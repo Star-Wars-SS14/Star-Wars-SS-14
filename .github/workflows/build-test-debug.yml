@@ -17,14 +17,14 @@ jobs:
         os: [ubuntu-latest]
         #SW start: Content.IntegrationTests run in shards, each its own testhost with its own 20-minute
         # PoolManagerTestEventHandler limit. Tools/_SW/ci_shard.py picks the classes; keep this list 0..SW_SHARD_COUNT-1.
-        shard: [0, 1, 2, 3]
+        shard: [0, 1, 2, 3, 4, 5]
         #SW end
 
     runs-on: ${{ matrix.os }}
 
     #SW start
     env:
-      SW_SHARD_COUNT: 4
+      SW_SHARD_COUNT: 6
     #SW end
 
     steps:

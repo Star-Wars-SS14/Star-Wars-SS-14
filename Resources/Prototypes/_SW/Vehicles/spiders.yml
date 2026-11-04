@@ -151,6 +151,11 @@
   suffix: НЕ МАППИТЬ, SW
   categories: [ HideSpawnMenu ]
   components:
+  # The vehicle sprite draws the cannon, so this one stays hidden; it gives the item an icon.
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Battery/laser_gun.rsi
+    state: icon
+    visible: false
   - type: Item
     size: Large
   - type: Clothing

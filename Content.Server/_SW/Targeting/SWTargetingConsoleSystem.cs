@@ -15,11 +15,13 @@ public sealed partial class SWTargetingConsoleSystem : EntitySystem
     [Dependency] private readonly SWFactionGameruleSystem _sWFaction = default!;
     [Dependency] private readonly AccessReaderSystem _accessReaderSystem = default!;
     [Dependency] private readonly PopupSystem _popupSystem = default!;
+    [Dependency] private readonly SharedMapSystem _map = default!;
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<SWTurretConsoleComponent, ComponentStartup>(OnStartup);
+        SubscribeLocalEvent<SWTurretConsoleComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SWTurretConsoleComponent, SWTurretJobToggleMessage>(OnToggle);
         SubscribeLocalEvent<SWTurretConsoleComponent, SWAllowFaction>(OnAllow);
         SubscribeLocalEvent<SWTurretConsoleComponent, SWDisallowFaction>(OnDisAllow);
@@ -151,7 +153,22 @@ public sealed partial class SWTargetingConsoleSystem : EntitySystem
         RaiseSettingsChanged(ent.Owner, user);
     }
 
+    /// <summary>
+    /// Fills the job list when the console's map is initialized, so an uninitialized console in a map file saves as
+    /// its prototype. Consoles on a live map, or loaded from an initialized save, still get it on startup.
+    /// </summary>
     private void OnStartup(Entity<SWTurretConsoleComponent> ent, ref ComponentStartup args)
+    {
+        if (_map.IsInitialized(Transform(ent).MapUid))
+            FillJobs(ent);
+    }
+
+    private void OnMapInit(Entity<SWTurretConsoleComponent> ent, ref MapInitEvent args)
+    {
+        FillJobs(ent);
+    }
+
+    private void FillJobs(Entity<SWTurretConsoleComponent> ent)
     {
         var defaultAllowed = TryComp<SWTargetingConfigTargetsComponent>(ent.Owner, out var targets) &&
                              targets.DefaultAllowedJobs;

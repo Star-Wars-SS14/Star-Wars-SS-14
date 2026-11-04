@@ -52,3 +52,5 @@ sw-global-war-travel-kind-industry = Промышленный мир
 sw-global-war-travel-kind-force = Мир Силы
 sw-global-war-travel-kind-tourism = Курортный мир
 sw-global-war-travel-helm-refused = Прыжок только по гиперпространственному маршруту, на орбиту соседнего мира. Маршрут: правая кнопка мыши по консоли.
+sw-global-war-travel-turned-back = Выход у планеты { $planet } запрещён. Корабль возвращается на орбиту планеты { $source }.
+sw-global-war-travel-no-exit = У планеты { $planet } нет безопасной точки выхода. Корабль возвращается на орбиту планеты { $source }.

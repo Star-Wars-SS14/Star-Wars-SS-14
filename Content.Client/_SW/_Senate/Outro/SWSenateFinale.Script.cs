@@ -65,7 +65,7 @@ public sealed partial class SWSenateFinale
         // 1. Coruscant at dusk.
         var length = duration < TimeSpan.Zero ? TimeSpan.Zero : duration;
         Add(Shot.Dusk, 6f, new Vector2(420, 195), new Vector2(540, 165),
-            new Page("СОЗЫВ ЗАВЕРШЁН", "Корускант, итоговый снимок созыва", new[]
+            new Page("СОЗЫВ ЗАВЕРШЁН", "Корусант, итоговый снимок созыва", new[]
             {
                 new Row(history.Days >= 0 ? $"Игровых дней: {history.Days}" : "Игровых дней: данные недоступны", bright, Large: true),
                 new Row($"Длительность раунда: {(int) length.TotalHours:00}:{length.Minutes:00}:{length.Seconds:00}", dim),

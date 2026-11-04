@@ -101,7 +101,8 @@ public sealed class GlobalWarSpawnHookTest
         await server.WaitAssertion(() =>
         {
             Assert.That(probe.Preparations, Is.EqualTo(2));
-            Assert.That(probe.LastLateJoin, Is.True);
+            // Owner's decision (2026-11-04): outside GlobalWar SpawnPlayer keeps lateJoin forced off (#29).
+            Assert.That(probe.LastLateJoin, Is.False);
             Assert.That(player.ContentData()!.Mind, Is.Null);
             Assert.That(player.AttachedEntity, Is.Null);
             Assert.That(ticker.PlayersJoinedRoundNormally, Is.Zero);
@@ -115,7 +116,7 @@ public sealed class GlobalWarSpawnHookTest
         await server.WaitAssertion(() =>
         {
             Assert.That(probe.Preparations, Is.EqualTo(3));
-            Assert.That(probe.CompletedLateJoin, Is.True);
+            Assert.That(probe.CompletedLateJoin, Is.False); // Same decision: no late join outside GlobalWar.
             Assert.That(player.ContentData()!.Mind, Is.Not.Null);
             Assert.That(player.AttachedEntity, Is.Not.Null);
             Assert.That(ticker.PlayersJoinedRoundNormally, Is.EqualTo(1));

@@ -1,3 +1,4 @@
+using Content.Shared._SW.CantEquipOnSlot; //SW
 using System.Linq;
 using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
@@ -127,10 +128,15 @@ public abstract class SharedStationSpawningSystem : EntitySystem
                 var equipmentStr = startingGear.GetGear(slot.Name);
                 if (!string.IsNullOrEmpty(equipmentStr))
                 {
-                    var equipmentEntity = Spawn(equipmentStr, xform.Coordinates);
                     //SW start
-                    // A species can refuse a slot, and the item must not then lie at the feet of every such spawn.
-                    if (!InventorySystem.TryEquip(entity, equipmentEntity, slot.Name, silent: true, force: false))
+                    // A species can refuse a slot (SWDisableSlot), and the item must not then lie at the feet of every
+                    // such spawn. Other checks are forced as upstream: gear may fill a slot whose dependency, such as
+                    // the outer suit of suit storage, is not worn.
+                    if (TryComp<SWDisableSlotComponent>(entity, out var disabled) &&
+                        (disabled.ProhibitedSlots & slot.SlotFlags) != 0)
+                        continue;
+                    var equipmentEntity = Spawn(equipmentStr, xform.Coordinates);
+                    if (!InventorySystem.TryEquip(entity, equipmentEntity, slot.Name, silent: true, force: true))
                         Del(equipmentEntity);
                     //SW end
                 }

@@ -1,4 +1,5 @@
 - type: entity
+  abstract: true
   name: SWBaseDatapad
   parent: BaseItem
   id: SWBaseDatapad
@@ -150,6 +151,7 @@
 #- Broken
 
 - type: entity
+  abstract: true
   name: SWBaseDatapadTrash
   parent: BaseItem
   id: SWBaseDatapadTrash

@@ -11,6 +11,11 @@
     - !type:ComponentQuery
       components:
         - type: BorgChassis
+    # Bodies without damage thresholds (holoparasites) cannot be killed, and TargetHealthCon logs an error on them.
+    - !type:ComponentFilter
+      components:
+        - type: MobThresholds
+          thresholds: {} # required field, only the component type is used by the filter
   considerations:
     - !type:TargetIsAliveCon
       curve: !type:BoolCurve

@@ -9,7 +9,6 @@ public sealed partial class DarkForceComponent : ForceComponent
 {
     public List<string> AbilitiesDarkPrototypes =
     [
-        "ActionJediDash",
         "ActionSithForceLightning"
     ];
 

@@ -27,12 +27,18 @@ public sealed partial class GameTicker
     /// The map the round will load, or for the campaign the worlds its players start on. The campaign's game map is an
     /// empty placeholder: its players are spawned on their own side's capital, so the lobby names those.
     /// </summary>
+    /// <remarks>
+    /// Reads the prototype's component registry directly: EntityPrototype.TryGetComponent resolves IoC in a debug
+    /// assert, and SetGamePreset (which refreshes this text) may be called off the game thread, as tests do.
+    /// </remarks>
     private (string Map, string Caption) GetSWLobbyMap(GamePresetPrototype? preset)
     {
+        var campaignName = EntityManager.ComponentFactory.GetComponentName<SWGlobalWarGameruleComponent>();
         foreach (var rule in preset?.Rules ?? [])
         {
             if (!_prototypeManager.TryIndex(rule, out var proto)
-                || !proto.TryGetComponent<SWGlobalWarGameruleComponent>(out var campaign, EntityManager.ComponentFactory))
+                || !proto.Components.TryGetValue(campaignName, out var entry)
+                || entry.Component is not SWGlobalWarGameruleComponent campaign)
             {
                 continue;
             }

@@ -15858,6 +15858,27 @@ entities:
       anchorId: defenceControl
     - type: ApcPowerReceiver
       needsPower: False
+- proto: SWGlobalWarHeavyShipyardConsole
+  entities:
+  - uid: 6179
+    components:
+    - type: Transform
+      pos: 56.5,86.5
+      parent: 2
+    - type: SWGlobalWarMapAnchor
+      links:
+        dock:
+          anchorId: dockShipyard
+          location: Orbit
+          sector: SWGlobalWarE8
+        clearance:
+          anchorId: clearShipyard
+          location: Orbit
+          sector: SWGlobalWarE8
+      kind: Shipyard
+      anchorId: shipyardPrimary
+    - type: ApcPowerReceiver
+      needsPower: False
 - proto: SWGlobalWarMarketConsole
   entities:
   - uid: 1283
@@ -15914,14 +15935,6 @@ entities:
       anchorId: landingB
 - proto: SWGlobalWarPointMarker
   entities:
-  - uid: 6179
-    components:
-    - type: Transform
-      pos: 56.5,86.5
-      parent: 2
-    - type: SWGlobalWarMapAnchor
-      kind: Shipyard
-      anchorId: shipyardPrimary
   - uid: 6180
     components:
     - type: Transform

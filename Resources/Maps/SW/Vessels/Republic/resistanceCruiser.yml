@@ -3303,43 +3303,6 @@ entities:
     - type: RadiationGridResistance
     - type: IFF
       color: '#4169E1FF'
-- proto: ActionToggleBlock
-  entities:
-  - uid: 4099
-    components:
-    - type: Transform
-      parent: 10200
-    - type: InstantAction
-      originalIconColor: '#FFFFFFFF'
-      container: 10200
-  - uid: 7146
-    components:
-    - type: Transform
-      parent: 10199
-    - type: InstantAction
-      originalIconColor: '#FFFFFFFF'
-      container: 10199
-  - uid: 9530
-    components:
-    - type: Transform
-      parent: 9529
-    - type: InstantAction
-      originalIconColor: '#FFFFFFFF'
-      container: 9529
-  - uid: 9532
-    components:
-    - type: Transform
-      parent: 9531
-    - type: InstantAction
-      originalIconColor: '#FFFFFFFF'
-      container: 9531
-  - uid: 9566
-    components:
-    - type: Transform
-      parent: 9565
-    - type: InstantAction
-      originalIconColor: '#FFFFFFFF'
-      container: 9565
 - proto: AirlockExternalGlass
   entities:
   - uid: 2857
@@ -74464,9 +74427,6 @@ entities:
     - type: Transform
       pos: 1.606829,-85.583824
       parent: 2
-    - type: SpecialRespawn
-      stationMap:
-        invalid: 2
 - proto: OperatingTable
   entities:
   - uid: 2304
@@ -76416,43 +76376,19 @@ entities:
     - type: Transform
       pos: 3.2217124,-80.37383
       parent: 2
-    - type: Blocking
-      blockingToggleActionEntity: 9566
-    - type: ActionsContainer
-    - type: ContainerContainer
-      containers:
-        actions: !type:Container
-          ents:
-          - 9566
   - uid: 10199
     components:
     - type: Transform
       parent: 4098
-    - type: Blocking
-      blockingToggleActionEntity: 7146
     - type: Physics
       canCollide: False
-    - type: ActionsContainer
-    - type: ContainerContainer
-      containers:
-        actions: !type:Container
-          ents:
-          - 7146
     - type: InsideEntityStorage
   - uid: 10200
     components:
     - type: Transform
       parent: 4095
-    - type: Blocking
-      blockingToggleActionEntity: 4099
     - type: Physics
       canCollide: False
-    - type: ActionsContainer
-    - type: ContainerContainer
-      containers:
-        actions: !type:Container
-          ents:
-          - 4099
     - type: InsideEntityStorage
 - proto: RMCInflatableDoorFolded
   entities:
@@ -77660,10 +77596,6 @@ entities:
         7795:
           position: 3,3
           _rotation: South
-    - type: UserInterface
-      actors:
-        enum.StorageUiKey.Key:
-        - invalid
     - type: ContainerContainer
       containers:
         storagebase: !type:Container
@@ -89169,30 +89101,14 @@ entities:
     components:
     - type: Transform
       parent: 9528
-    - type: Blocking
-      blockingToggleActionEntity: 9530
     - type: Physics
       canCollide: False
-    - type: ActionsContainer
-    - type: ContainerContainer
-      containers:
-        actions: !type:Container
-          ents:
-          - 9530
   - uid: 9531
     components:
     - type: Transform
       parent: 9528
-    - type: Blocking
-      blockingToggleActionEntity: 9532
     - type: Physics
       canCollide: False
-    - type: ActionsContainer
-    - type: ContainerContainer
-      containers:
-        actions: !type:Container
-          ents:
-          - 9532
 - proto: Thruster
   entities:
   - uid: 442

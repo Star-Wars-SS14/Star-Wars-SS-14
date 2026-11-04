@@ -39,6 +39,7 @@
   - type: ContainerContainer
     containers:
       ShipyardConsole-targetId: !type:ContainerSlot {}
+      board: !type:Container # kept from BaseComputer, which this list replaces
   - type: Godmode
   - type: ApcPowerReceiver
     needsPower: false

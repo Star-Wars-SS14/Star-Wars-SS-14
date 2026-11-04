@@ -69,8 +69,9 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
                 // A finance console uses its faction's account, and presets without faction rules have no factions.
                 _s.Debug($"{ent.Owner} has no faction to take an account from");
             }
-            else
+            else if (MetaData(ent).EntityPrototype != null)
             {
+                // Only a prototype can be misconfigured; code that adds the component at runtime sets the account itself.
                 _s.Error($"{ent.Owner} account is not set");
             }
         }
@@ -222,8 +223,7 @@ public sealed class SWBasePayableConsoleSystem : EntitySystem
 
     public Dictionary<ProtoId<SWCurrencyPrototype>, float> GetBalance(Entity<SWBankAccountAccessorComponent?> console)
     {
-        console.Comp = Comp<SWBankAccountAccessorComponent>(console);
-        if (console.Comp.Account == null)
+        if (!Resolve(console, ref console.Comp, false) || console.Comp.Account == null)
         {
             return new Dictionary<ProtoId<SWCurrencyPrototype>, float>();
         }

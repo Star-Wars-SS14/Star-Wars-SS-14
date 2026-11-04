@@ -21,7 +21,7 @@
       completed:
       - !type:SpawnPrototype
         prototype: SheetSteel1
-        amount: 4
+        amount: 2 #SW: the girder costs 2 steel
       - !type:DeleteEntity {}
       steps:
       - tool: Screwing
@@ -91,7 +91,7 @@
       completed:
       - !type:SpawnPrototype
         prototype: SheetSteel1
-        amount: 6
+        amount: 5 #SW: the 5 steel put in, not more
       steps:
       - tool: Welding
         doAfter: 6

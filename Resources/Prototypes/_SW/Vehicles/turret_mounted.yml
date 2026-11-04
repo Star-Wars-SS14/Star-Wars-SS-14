@@ -108,6 +108,9 @@
   - type: BallisticAmmoProvider
     proto: SWE-1Bullet
     capacity: 1000000
+  - type: ContainerContainer
+    containers:
+      ballistic-ammo: !type:Container
   - type: SWShootByVehicleGun
     angle: 360
   - type: SWVehicleProjectilePass

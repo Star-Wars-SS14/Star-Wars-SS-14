@@ -233725,38 +233725,6 @@ entities:
       parent: 2
 - proto: Dresser
   entities:
-  - uid: 36531
-    components:
-    - type: Transform
-      pos: -68.5,-218.5
-      parent: 2
-  - uid: 36532
-    components:
-    - type: Transform
-      pos: -71.5,-218.5
-      parent: 2
-  - uid: 36533
-    components:
-    - type: Transform
-      pos: -73.5,-218.5
-      parent: 2
-  - uid: 36534
-    components:
-    - type: Transform
-      pos: -100.5,-222.5
-      parent: 2
-  - uid: 36535
-    components:
-    - type: Transform
-      pos: 13.5,-174.5
-      parent: 2
-  - uid: 36536
-    components:
-    - type: Transform
-      pos: -52.5,-152.5
-      parent: 2
-- proto: DresserFilled
-  entities:
   - uid: 6909
     components:
     - type: Transform
@@ -233877,6 +233845,38 @@ entities:
           occludes: True
           ents:
           - 7147
+  - uid: 36531
+    components:
+    - type: Transform
+      pos: -68.5,-218.5
+      parent: 2
+  - uid: 36532
+    components:
+    - type: Transform
+      pos: -71.5,-218.5
+      parent: 2
+  - uid: 36533
+    components:
+    - type: Transform
+      pos: -73.5,-218.5
+      parent: 2
+  - uid: 36534
+    components:
+    - type: Transform
+      pos: -100.5,-222.5
+      parent: 2
+  - uid: 36535
+    components:
+    - type: Transform
+      pos: 13.5,-174.5
+      parent: 2
+  - uid: 36536
+    components:
+    - type: Transform
+      pos: -52.5,-152.5
+      parent: 2
+- proto: DresserFilled
+  entities:
   - uid: 36537
     components:
     - type: Transform

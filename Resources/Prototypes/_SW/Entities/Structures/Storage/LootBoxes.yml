@@ -86,6 +86,8 @@
   parent: SWBoxWood
   suffix: Лёгкий лут
   components:
+  # Sheets, blasters and magazines each roll in an orGroup: at most one of each kind, so the
+  # whole fill fits the 6x6 grid. An entry without id is the chance of getting nothing.
   - type: StorageFill
     contents:
     - id: FoodBreadPlainSlice
@@ -110,44 +112,54 @@
       prob: 0.50
       maxAmount: 3
     - id: SheetGlass1
+      orGroup: SWLootSheets
       prob: 0.10
       maxAmount: 5
     - id: SheetSteel1
+      orGroup: SWLootSheets
       prob: 0.10
       maxAmount: 5
     - id: MaterialWoodPlank1
+      orGroup: SWLootSheets
       prob: 0.10
       maxAmount: 5
     - id: MaterialCloth10
+      orGroup: SWLootSheets
       prob: 0.10
       maxAmount: 2
+    - orGroup: SWLootSheets
+      prob: 0.60
     - id: SWJ111Rancor
+      orGroup: SWLootGuns
       prob: 0.05
-      maxAmount: 1
     - id: SWZ1BlasterCarbine
+      orGroup: SWLootGuns
       prob: 0.05
-      maxAmount: 1
     - id: SWGrantekF11D1
+      orGroup: SWLootGuns
       prob: 0.05
-      maxAmount: 1
     - id: SWGT-13ST
+      orGroup: SWLootGuns
       prob: 0.05
-      maxAmount: 1
     - id: SWMK1
+      orGroup: SWLootGuns
       prob: 0.05
-      maxAmount: 1
+    - orGroup: SWLootGuns
+      prob: 0.75
     - id: SWEL34Magazine
+      orGroup: SWLootMagazines
       prob: 0.10
-      maxAmount: 1
     - id: SWF11DCannonMagazine
+      orGroup: SWLootMagazines
       prob: 0.10
-      maxAmount: 1
     - id: SWZ1Magazine
+      orGroup: SWLootMagazines
       prob: 0.10
-      maxAmount: 1
     - id: SWJ111Magazine
+      orGroup: SWLootMagazines
       prob: 0.10
-      maxAmount: 1
+    - orGroup: SWLootMagazines
+      prob: 0.60
 
 - type: entity
   id: SWRandomLootEasy
@@ -212,6 +224,8 @@
   parent: SWBoxSteel
   suffix: Средний лут
   components:
+  # Sheets, blasters and magazines roll in orGroups (at most one of each kind) so the fill fits
+  # the grid. An entry without id is the chance of getting nothing.
   - type: StorageFill
     contents:
     - id: FoodBreadPlainSlice
@@ -236,53 +250,63 @@
       prob: 0.50
       maxAmount: 4
     - id: SheetGlass10
+      orGroup: SWLootSheets
       prob: 0.20
       maxAmount: 2
     - id: SheetSteel10
+      orGroup: SWLootSheets
       prob: 0.20
       maxAmount: 2
     - id: SheetRGlass1
+      orGroup: SWLootSheets
       prob: 0.20
       maxAmount: 5
     - id: SheetPGlass1
+      orGroup: SWLootSheets
       prob: 0.20
       maxAmount: 5
     - id: SheetPlasteel1
+      orGroup: SWLootSheets
       prob: 0.20
       maxAmount: 5
     - id: SheetPlasma1
+      orGroup: SWLootSheets
       prob: 0.20
       maxAmount: 5
     - id: SWE1BlasterRifle
+      orGroup: SWLootGuns
       prob: 0.05
-      maxAmount: 1
     - id: SWH206Renegade
+      orGroup: SWLootGuns
       prob: 0.05
-      maxAmount: 1
     - id: SWEL34
+      orGroup: SWLootGuns
       prob: 0.05
-      maxAmount: 1
     - id: SWGrantekF11D2
+      orGroup: SWLootGuns
       prob: 0.05
-      maxAmount: 1
     - id: SWK406Ripper
+      orGroup: SWLootGuns
       prob: 0.05
-      maxAmount: 1
     - id: SWBeryaramk3
+      orGroup: SWLootGuns
       prob: 0.05
-      maxAmount: 1
+    - orGroup: SWLootGuns
+      prob: 0.70
     - id: SWBeryarMK3Magazine
+      orGroup: SWLootMagazines
       prob: 0.10
-      maxAmount: 1
     - id: SWEL34Magazine
+      orGroup: SWLootMagazines
       prob: 0.10
-      maxAmount: 1
     - id: SWH206Magazine
+      orGroup: SWLootMagazines
       prob: 0.10
-      maxAmount: 1
     - id: SWE1Magazine
+      orGroup: SWLootMagazines
       prob: 0.10
-      maxAmount: 1
+    - orGroup: SWLootMagazines
+      prob: 0.60
 
 - type: entity
   id: SWRandomLootMedium
@@ -349,6 +373,8 @@
   parent: SWBoxSteeldouble
   suffix: Тяжёлый лут
   components:
+  # Blasters and magazines roll in orGroups (at most one of each kind) so the fill fits
+  # the grid. An entry without id is the chance of getting nothing.
   - type: StorageFill
     contents:
     - id: SheetGlass
@@ -385,17 +411,23 @@
       prob: 0.25
       maxAmount: 6
     - id: SWP301Destroyer
+      orGroup: SWLootGuns
       prob: 0.40
-      maxAmount: 1
     - id: SWGallantry
+      orGroup: SWLootGuns
       prob: 0.40
-      maxAmount: 1
+    - orGroup: SWLootGuns
+      prob: 0.20
     - id: SWEL34Magazine
+      orGroup: SWLootMagazines
       prob: 0.30
       maxAmount: 3
     - id: SWP301Magazine
+      orGroup: SWLootMagazines
       prob: 0.30
       maxAmount: 3
+    - orGroup: SWLootMagazines
+      prob: 0.40
 
 - type: entity
   id: SWBoxPlasticHard
@@ -403,6 +435,8 @@
   parent: SWBoxPlastic
   suffix: Тяжелый лут
   components:
+  # Blasters and magazines roll in orGroups (at most one of each kind) so the fill fits
+  # the grid. An entry without id is the chance of getting nothing.
   - type: StorageFill
     contents:
     - id: SheetGlass
@@ -439,14 +473,20 @@
       prob: 0.25
       maxAmount: 6
     - id: SWP301Destroyer
+      orGroup: SWLootGuns
       prob: 0.40
-      maxAmount: 1
     - id: SWGallantry
+      orGroup: SWLootGuns
       prob: 0.40
-      maxAmount: 1
+    - orGroup: SWLootGuns
+      prob: 0.20
     - id: SWEL34Magazine
+      orGroup: SWLootMagazines
       prob: 0.30
       maxAmount: 3
     - id: SWP301Magazine
+      orGroup: SWLootMagazines
       prob: 0.30
       maxAmount: 3
+    - orGroup: SWLootMagazines
+      prob: 0.40

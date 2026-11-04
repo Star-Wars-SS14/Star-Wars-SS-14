@@ -151,11 +151,17 @@ public sealed partial class ForceSystem
 
     private void OnKyberMapInit(EntityUid uid, SWKyberCrystalComponent component, MapInitEvent args)
     {
+        if (component.KyberActionPrototype == null)
+            return;
+
         _action.AddAction(uid, ref component.KyberActionEntity, component.KyberActionPrototype);
     }
 
     private void OnGetKyber(EntityUid uid, SWKyberCrystalComponent component, GetItemActionsEvent args)
     {
+        if (component.KyberActionPrototype == null)
+            return;
+
         if (!HasComp<ForceComponent>(args.User))
             return;
 

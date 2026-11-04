@@ -11,7 +11,8 @@ public sealed partial class SWKyberCrystalComponent : Component
 
     public string CallSaberAction = "CallSaberAction";
 
-    public string KyberActionPrototype = "ActionSubdueKyber";
+    // The subdue action prototype (ActionSubdueKyber) was removed in #311; null keeps the crystal without it.
+    public string? KyberActionPrototype;
 
     public string SWSaberFragmentTag = "SWSaberFragmentTag";
 

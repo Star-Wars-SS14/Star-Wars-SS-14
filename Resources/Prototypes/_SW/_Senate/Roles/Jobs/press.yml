@@ -46,6 +46,22 @@
   - type: SWPressNewsAccess
   - type: Pda
     id: SWHolonetCorrespondentIDCard
+  - type: Sprite
+    layers:
+    - map: [ "enum.PdaVisualLayers.Base" ]
+      sprite: _SW/_Senate/Objects/Devices/special_pda.rsi
+      state: pda
+    - state: light_overlay
+      map: [ "enum.PdaVisualLayers.Flashlight" ]
+      shader: unshaded
+      visible: false
+    - state: id_overlay
+      map: [ "enum.PdaVisualLayers.IdLight" ]
+      shader: unshaded
+      visible: false
+  - type: Icon
+    sprite: _SW/_Senate/Objects/Devices/special_pda.rsi
+    state: pda
 
 - type: entity
   parent: BaseItem

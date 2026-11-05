@@ -3,6 +3,7 @@ using System.Linq;
 using System.Numerics;
 using Content.Client.Humanoid;
 using Content.Client._SW.Loadouts; //SW
+using Content.Client._SW.Names;
 using Content.Client.Lobby.UI.Loadouts;
 using Content.Client.Lobby.UI.Roles;
 using Content.Client.Message;
@@ -1592,6 +1593,7 @@ namespace Content.Client.Lobby.UI
         private void RandomizeEverything()
         {
             Profile = HumanoidCharacterProfile.Random();
+            Profile = Profile.WithName(SWProfileNames.Generate(Profile.Species, Profile.Gender, _maxNameLength, _cfgManager.GetCVar(CCVars.RestrictedNames), _prototypeManager));
             SetProfile(Profile, CharacterSlot);
             SetDirty();
         }
@@ -1599,7 +1601,7 @@ namespace Content.Client.Lobby.UI
         private void RandomizeName()
         {
             if (Profile == null) return;
-            var name = HumanoidCharacterProfile.GetName(Profile.Species, Profile.Gender);
+            var name = SWProfileNames.Generate(Profile.Species, Profile.Gender, _maxNameLength, _cfgManager.GetCVar(CCVars.RestrictedNames), _prototypeManager);
             SetName(name);
             UpdateNameEdit();
         }

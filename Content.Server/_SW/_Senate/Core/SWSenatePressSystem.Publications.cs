@@ -143,7 +143,7 @@ public sealed partial class SWSenatePressSystem
         title != null && body != null && title.Length <= MaxTitleLength && body.Length <= MaxBodyLength
         && !string.IsNullOrWhiteSpace(title) && !string.IsNullOrWhiteSpace(body);
 
-    private string Timestamp() => $"День {_time.Day}, {_time.TimeString()}";
+    private string Timestamp() => _time.TimeString();
     private static PressPublicationView View(PressPublication p) =>
         new(p.Id, p.Author, p.Edition, p.Versions.ToArray());
 

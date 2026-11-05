@@ -60336,7 +60336,7 @@ entities:
           - type: "Transform"
             pos: "66.5,-94.5"
             parent: 2
-  - proto: "SWPressVideoScreen"
+  - proto: "SWHolonetTerminal"
     entities:
       - uid: 8501
         components:

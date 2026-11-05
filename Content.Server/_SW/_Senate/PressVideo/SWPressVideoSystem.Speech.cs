@@ -66,6 +66,7 @@ public sealed partial class SWPressVideoSystem
         }
 
         // This is deliberately a neutral voice label, never the player's identity or a radio relay.
+        FeedSpeech?.Invoke(_feedId, text);
         var message = new SWPressVideoSpeechMessage(_feedId, text);
         foreach (var (actor, screens) in _screens)
         {

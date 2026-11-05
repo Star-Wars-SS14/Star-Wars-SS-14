@@ -45,18 +45,3 @@
     interfaces:
       enum.SWPressCameraUiKey.Key:
         type: SWPressCameraBoundUserInterface
-
-- type: entity
-  id: SWPressVideoScreen
-  parent: BaseComputer
-  name: экран Голонета — эфир и новости
-  description: Публичный экран трансляции. Опубликованные статьи доступны через действие «Новости Голонета» в меню экрана.
-  components:
-  - type: SWPressNewsAccess
-  - type: SWPressViewer
-  - type: ActivatableUI
-    key: enum.SWPressViewerUiKey.Key
-  - type: UserInterface
-    interfaces:
-      enum.SWPressViewerUiKey.Key:
-        type: SWPressViewerBoundUserInterface

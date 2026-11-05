@@ -28,13 +28,35 @@ public sealed class SWPressMailSystem : EntitySystem
             .Select(t => new PressMailView(t.Id, t.Subject, t.FirstName, t.SecondName, t.Messages.ToArray())).ToArray();
     }
 
-    public bool Create(EntityUid actor, string targetKey, string subject, string text)
+    public bool Create(EntityUid actor, string targetKey, string subject, string text, out string error)
     {
-        if (!_press.TryLivePressActor(actor, out var sender) || !Valid(subject, 120) || !Valid(text, 512)
-            || !_policy.TryResolveMailTarget(actor, targetKey, out var target, out var recipient)
-            || _threads.Count >= 48 || _threads.Count(t => t.FirstUser == sender || t.SecondUser == sender) >= 8
-            || _threads.Count(t => t.FirstUser == recipient || t.SecondUser == recipient) >= 8)
+        error = string.Empty;
+        if (!_press.TryLivePressActor(actor, out var sender))
+        {
+            error = Loc.GetString("sw-press-mail-error-actor");
             return false;
+        }
+        if (!Valid(subject, 120))
+        {
+            error = Loc.GetString("sw-press-mail-error-subject");
+            return false;
+        }
+        if (!Valid(text, 512))
+        {
+            error = Loc.GetString("sw-press-mail-error-body");
+            return false;
+        }
+        if (!_policy.TryResolveMailTarget(actor, targetKey, out var target, out var recipient))
+        {
+            error = Loc.GetString("sw-press-mail-error-target");
+            return false;
+        }
+        if (_threads.Count >= 48 || _threads.Count(t => t.FirstUser == sender || t.SecondUser == sender) >= 8
+            || _threads.Count(t => t.FirstUser == recipient || t.SecondUser == recipient) >= 8)
+        {
+            error = Loc.GetString("sw-press-mail-error-limit");
+            return false;
+        }
         var first = Identity.Name(actor, EntityManager, target);
         var second = Identity.Name(target, EntityManager, actor);
         var thread = new MailThread(++_nextId, subject.Trim(), sender, actor, first, recipient, target, second);
@@ -43,11 +65,30 @@ public sealed class SWPressMailSystem : EntitySystem
         return true;
     }
 
-    public bool Reply(EntityUid actor, int id, string text)
+    public bool Reply(EntityUid actor, int id, string text, out string error)
     {
-        if (!_press.TryLivePressActor(actor, out var user) || !Valid(text, 512)) return false;
+        error = string.Empty;
+        if (!_press.TryLivePressActor(actor, out var user))
+        {
+            error = Loc.GetString("sw-press-mail-error-actor");
+            return false;
+        }
+        if (!Valid(text, 512))
+        {
+            error = Loc.GetString("sw-press-mail-error-body");
+            return false;
+        }
         var thread = _threads.FirstOrDefault(t => t.Id == id && IsParticipant(t, actor, user));
-        if (thread == null || thread.Messages.Count >= 6) return false;
+        if (thread == null)
+        {
+            error = Loc.GetString("sw-press-mail-error-thread");
+            return false;
+        }
+        if (thread.Messages.Count >= 6)
+        {
+            error = Loc.GetString("sw-press-mail-error-message-limit");
+            return false;
+        }
         var name = thread.FirstUser == user ? thread.FirstName : thread.SecondName;
         thread.Messages.Add(new PressMailMessage(name, text.Trim(), Timestamp()));
         Changed?.Invoke(); return true;
@@ -71,7 +112,7 @@ public sealed class SWPressMailSystem : EntitySystem
     }
 
     private static bool Valid(string text, int maximum) => text != null && text.Length <= maximum && !string.IsNullOrWhiteSpace(text);
-    private string Timestamp() => $"День {_time.Day}, {_time.TimeString()}";
+    private string Timestamp() => _time.TimeString();
     private static bool IsParticipant(MailThread t, EntityUid actor, NetUserId user) =>
         t.FirstUser == user && t.FirstBody == actor || t.SecondUser == user && t.SecondBody == actor;
 

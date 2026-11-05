@@ -62,6 +62,13 @@ public sealed class SWPressCameraBoundUserInterface : BoundUserInterface
             _window?.SetState(video);
     }
 
+    protected override void ReceiveMessage(BoundUserInterfaceMessage message)
+    {
+        base.ReceiveMessage(message);
+        if (message is SWPressVideoErrorMessage error)
+            _window?.SetError(error.Text);
+    }
+
     protected override void Dispose(bool disposing)
     {
         base.Dispose(disposing);

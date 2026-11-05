@@ -40,6 +40,13 @@
     borderColor: "#ffaaaa"
   - type: Pda
     id: SWDarkCouncilMilitaryOffenseIDCard
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
 
 - type: entity
   parent: SWIDCardStandard
@@ -83,6 +90,13 @@
     borderColor: "#d9b3ff"
   - type: Pda
     id: SWDarkCouncilIntelligenceIDCard
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
 
 - type: entity
   parent: SWIDCardStandard
@@ -126,6 +140,13 @@
     borderColor: "#ffcf99"
   - type: Pda
     id: SWDarkCouncilProductionLogisticsIDCard
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
 
 - type: entity
   parent: SWIDCardStandard
@@ -169,6 +190,13 @@
     borderColor: "#b3caff"
   - type: Pda
     id: SWDarkCouncilExpansionDiplomacyIDCard
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
 
 - type: entity
   parent: Clothing

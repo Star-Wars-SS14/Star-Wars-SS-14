@@ -25,6 +25,12 @@ public sealed class SWPressStartMessage(string topic) : BoundUserInterfaceMessag
 public sealed class SWPressStopMessage : BoundUserInterfaceMessage;
 
 [Serializable, NetSerializable]
+public sealed class SWPressVideoErrorMessage(string text) : BoundUserInterfaceMessage
+{
+    public string Text = text;
+}
+
+[Serializable, NetSerializable]
 public sealed class SWPressVideoSpeechMessage(long feedId, string text) : BoundUserInterfaceMessage
 {
     public long FeedId = feedId;

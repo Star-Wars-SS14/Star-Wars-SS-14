@@ -43,7 +43,6 @@
   id: SWHolonetCorrespondentPDA
   name: КПК корреспондента Голонета
   components:
-  - type: SWPressNewsAccess
   - type: Pda
     id: SWHolonetCorrespondentIDCard
   - type: Sprite
@@ -62,12 +61,19 @@
   - type: Icon
     sprite: _SW/_Senate/Objects/Devices/special_pda.rsi
     state: pda
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
 
 - type: entity
   parent: BaseItem
   id: SWHolonetPressTerminal
-  name: Голонет — новости и редакция
-  description: Доступ к публичной ленте и инструментам корреспондента.
+  name: Редакция Голонета
+  description: Публикация новостей и управление материалами корреспондента.
   components:
   - type: Sprite
     sprite: Objects/Devices/forensic_scanner.rsi

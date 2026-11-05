@@ -7,6 +7,7 @@ using Content.Server._SW.GlobalWar.Politics;
 using Content.Server._SW.GlobalWar.Spawning;
 using Content.Shared._SW.GlobalWar;
 using Content.Shared._SW.GlobalWar.Politics;
+using Content.Shared.Electrocution;
 using Content.Shared.Explosion;
 using Content.Shared.Mind;
 using Robust.Shared.GameObjects;
@@ -55,6 +56,9 @@ public sealed partial class GlobalWarMechanicsTest
 
             // An aghost on a Republic world acts as the Republic head with every office.
             var ghost = entities.SpawnEntity("AdminObserver", entities.GetComponent<TransformComponent>(soldier.Body).Coordinates);
+            // Upstream ElectrocutionHUDVisualizerSystem logs an error for every CMWindoor in view when this HUD leaves
+            // the client's entity, which fails this test or the next one on the pooled pair.
+            entities.RemoveComponent<ShowElectrocutionHUDComponent>(ghost);
             minds.Visit(soldier.Mind, ghost);
             Assert.That(assignments.TryGetAssignment(session.UserId, out var head), Is.True);
             Assert.That(head.Role, Is.EqualTo(SWGlobalWarRole.Head));
@@ -104,6 +108,11 @@ public sealed partial class GlobalWarMechanicsTest
             Assert.That(assignments.TryGetAssignment(session.UserId, out var puppetHead), Is.True);
             Assert.That(puppetHead.Role, Is.EqualTo(SWGlobalWarRole.Head));
             Assert.That(puppetHead.Body, Is.EqualTo(puppet));
+
+            // The pair goes back to the pool: leave no admin ghost or puppet for the next test's client.
+            minds.TransferTo(soldier.Mind, soldier.Body);
+            entities.DeleteEntity(puppet);
+            entities.DeleteEntity(ghost);
         });
         await pair.CleanReturnAsync();
     }
@@ -130,12 +139,17 @@ public sealed partial class GlobalWarMechanicsTest
         var citizen = campaign.Sessions[1];
         var ghost = EntityUid.Invalid;
         var world = EntityUid.Invalid;
+        var mind = EntityUid.Invalid;
 
         await server.WaitAssertion(() =>
         {
             var soldier = campaign.Actor(0);
             ghost = entities.SpawnEntity("AdminObserver", entities.GetComponent<TransformComponent>(soldier.Body).Coordinates);
-            minds.Visit(soldier.Mind, ghost);
+            // Upstream ElectrocutionHUDVisualizerSystem logs an error for every CMWindoor in view when this HUD leaves
+            // the client's entity, which fails this test or the next one on the pooled pair.
+            entities.RemoveComponent<ShowElectrocutionHUDComponent>(ghost);
+            mind = soldier.Mind;
+            minds.Visit(mind, ghost);
             Assert.That(planets.TryGetPhysicalLocation(ghost, out world, out _), Is.True);
             Assert.That(assignments.TryGetAssignment(admin.UserId, out var head), Is.True);
             Assert.That(head.Faction, Is.EqualTo(SWGlobalWarFaction.Republic));
@@ -185,6 +199,10 @@ public sealed partial class GlobalWarMechanicsTest
             Assert.That(politics.CanCapture(ghost, world, SWGlobalWarPlanetLocation.Orbit, campaign.Generation), Is.True);
             Assert.That(politics.CanConductHostility(ghost, world, campaign.Generation), Is.True);
             assignments.SetAdminSide(admin.UserId, null);
+
+            // The pair goes back to the pool: leave no admin ghost for the next test's client.
+            minds.UnVisit(mind);
+            entities.DeleteEntity(ghost);
         });
         await pair.CleanReturnAsync();
     }

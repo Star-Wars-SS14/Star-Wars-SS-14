@@ -85,7 +85,7 @@ public sealed class SWPressRecorderSystem : EntitySystem
                 _quotes[user] = quotes = new List<PressQuote>();
             if (quotes.Count >= 30)
                 continue;
-            quotes.Add(new PressQuote(++_nextQuote, ev.DisplayName, ev.Message, $"День {_time.Day}, {_time.TimeString()}"));
+            quotes.Add(new PressQuote(++_nextQuote, ev.DisplayName, ev.Message, _time.TimeString()));
             Changed?.Invoke();
         }
     }

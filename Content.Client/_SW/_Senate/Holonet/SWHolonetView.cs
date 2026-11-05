@@ -435,8 +435,8 @@ public sealed partial class SWHolonetView : PanelContainer
         });
     }
 
-    private static Label Eyebrow(string text, Color? color = null) =>
-        SWConsoleStyle.Text(text, color ?? SWHolonetPalette.Mint, SWConsoleStyle.Strong);
+    private static Control Eyebrow(string text, Color? color = null) =>
+        Rich(text, color ?? SWHolonetPalette.Mint, 210f, true);
 
     private static RichTextLabel Caption(string text, Color? color = null) =>
         SWConsoleStyle.Wrap(text, color ?? SWHolonetPalette.Dim, 220f);

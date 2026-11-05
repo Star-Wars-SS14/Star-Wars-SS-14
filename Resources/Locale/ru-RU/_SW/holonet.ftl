@@ -198,7 +198,7 @@ sw-holonet-private-required = Личный канал сейчас недост�
 
 sw-holonet-persona-default = Абонент сети
 sw-holonet-role-default = Участник сети
-sw-holonet-stamp = День { $day }, { $time }
+sw-holonet-stamp = { $time }
 sw-holonet-request-repeat = Уже отправлено.
 sw-holonet-request-invalid = Запрос отклонён. Повторите действие.
 
@@ -210,3 +210,19 @@ sw-senate-pda-system-name = СЕНАТСКАЯ СЕТЬ
 
 sw-holonet-feed-full = Эфир переполнен. Повторная попытка выполняется автоматически.
 sw-holonet-feed-reconnecting = Соединение прервано. Ожидание восстановления доступа.
+
+sw-press-camera-error-busy = Уже идёт другой эфир. Дождитесь его завершения.
+sw-press-camera-error-edition = Сначала выберите редакцию в предмете «Редакция Голонета».
+sw-press-camera-error-access = Для управления эфиром нужен живой корреспондент с действующей ID-картой в активном режиме Сената.
+sw-press-camera-error-power = Вставьте заряженный элемент питания в камеру.
+sw-press-camera-error-topic = Укажите тему от 1 до 120 символов без управляющих знаков.
+sw-press-camera-error-not-source = Эта камера сейчас не ведёт эфир.
+
+sw-press-error-device = Устройство недоступно. Подойдите к нему и откройте редакцию снова.
+sw-press-mail-error-actor = Для обращения нужен живой персонаж с активным подключением в режиме Сената.
+sw-press-mail-error-subject = Укажите тему обращения от 1 до 120 символов.
+sw-press-mail-error-body = Укажите текст обращения от 1 до 512 символов.
+sw-press-mail-error-target = Адресат недоступен или право на обращение утрачено. Для письма должностному лицу нужна ID-карта корреспондента. Обновите список адресатов.
+sw-press-mail-error-limit = Достигнут лимит переписок. Повторите попытку позже.
+sw-press-mail-error-thread = Переписка недоступна или вы больше не являетесь её участником. Обновите список.
+sw-press-mail-error-message-limit = В этой переписке уже 6 сообщений. Создайте новое обращение.

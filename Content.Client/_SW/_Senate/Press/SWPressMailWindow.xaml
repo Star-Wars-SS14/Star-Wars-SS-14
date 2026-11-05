@@ -4,7 +4,7 @@
     Title="Обращения и запросы" MinSize="780 560">
     <PanelContainer Name="RootPanel">
     <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10">
-        <Label Name="Notice" Text="Письма видны только участникам до отдельной публикации." />
+        <RichTextLabel Name="Notice" />
         <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True">
             <BoxContainer Orientation="Vertical" MinWidth="250" MaxWidth="320" HorizontalExpand="True" VerticalExpand="True">
                 <senate:SWConsoleButton Name="NewMail" Text="Новое обращение" />
@@ -20,11 +20,11 @@
             </BoxContainer>
             <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="12 0 0 0">
                 <Label Name="Context" Text="Выберите адресата." />
-                <LineEdit Name="Subject" PlaceHolder="Тема обращения" />
+                <LineEdit Name="Subject" PlaceHolder="Тема обращения (обязательно, до 120 символов)" />
                 <ScrollContainer HorizontalExpand="True" VerticalExpand="True" Margin="0 6">
                     <BoxContainer Name="Messages" Orientation="Vertical" HorizontalExpand="True" />
                 </ScrollContainer>
-                <Label Text="До 512 символов; не более 6 сообщений в переписке." />
+                <Label Text="Тема и текст обязательны; текст до 512 символов, до 6 сообщений в переписке." />
                 <senate:SWConsoleTextEdit Name="Body" PlaceHolder="Текст обращения или ответа" MinHeight="90" />
                 <BoxContainer Orientation="Horizontal">
                     <senate:SWConsoleButton Name="SendNew" Text="Отправить обращение" HorizontalExpand="True" />

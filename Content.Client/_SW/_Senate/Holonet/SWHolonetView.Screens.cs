@@ -52,31 +52,31 @@ public sealed partial class SWHolonetView
             return;
         }
 
-        var row = Row();
-        var left = Column(210f);
+        var row = new SWHolonetColumns { HorizontalExpand = true };
+        var left = Column();
         left.AddChild(Eyebrow(Loc.GetString("sw-holonet-home-eyebrow")));
         left.AddChild(Heading(Loc.GetString("sw-holonet-home-title"), 1, 210f));
         left.AddChild(Caption(Loc.GetString("sw-holonet-home-subtitle")));
         left.AddChild(Rule());
         RenderHomeLinks(state, left);
-        row.AddChild(left);
+        row.AddColumn(left, 210f);
 
         var center = Column(0f, true);
         RenderHomeLead(state, center);
-        row.AddChild(center);
+        row.AddColumn(center);
 
-        var right = Column(210f);
+        var right = Column();
         right.AddChild(_map);
         RenderHomeServices(state, right);
-        row.AddChild(right);
+        row.AddColumn(right, 210f);
         Show(row);
 
         Show(Rule());
-        var bottom = Row();
+        var bottom = new SWHolonetColumns { HorizontalExpand = true };
         var voice = Column(0f, true);
         RenderHomeVoice(state, voice);
-        bottom.AddChild(voice);
-        bottom.AddChild(_advert);
+        bottom.AddColumn(voice);
+        bottom.AddColumn(_advert, 300f);
         Show(bottom);
     }
 
@@ -93,7 +93,7 @@ public sealed partial class SWHolonetView
         target.AddChild(Hero(lead.Id, Loc.GetString("sw-holonet-home-lead-caption", ("edition", lead.Edition))));
         target.AddChild(Heading(lead.Title, 1));
         target.AddChild(Paragraph(lead.Body, SWHolonetPalette.Dim));
-        target.AddChild(Detail(Loc.GetString("sw-holonet-home-byline", ("author", lead.Author), ("time", lead.Time)), SWHolonetPalette.Gold));
+        target.AddChild(Detail(Loc.GetString("sw-holonet-home-byline", ("author", lead.Author), ("time", SWConsoleStyle.PressTime(lead.Time))), SWHolonetPalette.Gold));
         target.AddChild(Primary(Loc.GetString("sw-holonet-home-read"), () => OpenArticle(lead.Id)));
     }
 
@@ -108,7 +108,7 @@ public sealed partial class SWHolonetView
         foreach (var article in state.Articles)
         {
             var id = article.Id;
-            target.AddChild(Entry(article.Title, Loc.GetString("sw-holonet-home-byline", ("author", article.Edition), ("time", article.Time)),
+            target.AddChild(Entry(article.Title, Loc.GetString("sw-holonet-home-byline", ("author", article.Edition), ("time", SWConsoleStyle.PressTime(article.Time))),
                 false, false, () => OpenArticle(id)));
         }
     }
@@ -141,7 +141,7 @@ public sealed partial class SWHolonetView
         }
 
         var id = thread.Id;
-        target.AddChild(Entry(thread.Title, Loc.GetString("sw-holonet-home-byline", ("author", thread.AuthorName), ("time", thread.LastTime)),
+        target.AddChild(Entry(thread.Title, Loc.GetString("sw-holonet-home-byline", ("author", thread.AuthorName), ("time", SWConsoleStyle.PressTime(thread.LastTime))),
             false, false, () => OpenThread(id)));
     }
 
@@ -180,7 +180,7 @@ public sealed partial class SWHolonetView
             {
                 var id = entry.Id;
                 var title = entry.Withdrawn ? Loc.GetString("sw-holonet-news-withdrawn-row", ("title", entry.Title)) : entry.Title;
-                Show(Entry(title, Loc.GetString("sw-holonet-news-row", ("edition", entry.Edition), ("author", entry.Author), ("time", entry.Time)),
+                Show(Entry(title, Loc.GetString("sw-holonet-news-row", ("edition", entry.Edition), ("author", entry.Author), ("time", SWConsoleStyle.PressTime(entry.Time))),
                     false, entry.Withdrawn, () => OpenArticle(id)));
             }
 
@@ -192,7 +192,7 @@ public sealed partial class SWHolonetView
         var main = Column(0f, true);
         main.AddChild(Eyebrow(Loc.GetString("sw-holonet-news-report", ("edition", article.Edition))));
         main.AddChild(Heading(article.Title, 1));
-        main.AddChild(Detail(Loc.GetString("sw-holonet-news-meta", ("author", article.Author), ("time", article.Time), ("version", article.Version)), SWHolonetPalette.Gold));
+        main.AddChild(Detail(Loc.GetString("sw-holonet-news-meta", ("author", article.Author), ("time", SWConsoleStyle.PressTime(article.Time)), ("version", article.Version)), SWHolonetPalette.Gold));
         if (article.Withdrawn)
         {
             main.AddChild(Rule());
@@ -206,12 +206,12 @@ public sealed partial class SWHolonetView
             {
                 var block = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical };
                 block.AddChild(Paragraph(Loc.GetString("sw-holonet-news-quote", ("text", quote.Text))));
-                block.AddChild(Detail(Loc.GetString("sw-holonet-news-quote-meta", ("speaker", quote.Speaker), ("time", quote.Time))));
+                block.AddChild(Detail(Loc.GetString("sw-holonet-news-quote-meta", ("speaker", quote.Speaker), ("time", SWConsoleStyle.PressTime(quote.Time)))));
                 main.AddChild(Card(block));
             }
         }
 
-        var side = _compact ? main : Column(220f);
+        var side = _compact ? main : Column();
         if (_compact)
             side.AddChild(Rule());
         side.AddChild(Eyebrow(Loc.GetString("sw-holonet-news-source")));
@@ -239,9 +239,9 @@ public sealed partial class SWHolonetView
             return;
         }
 
-        var row = Row();
-        row.AddChild(main);
-        row.AddChild(side);
+        var row = new SWHolonetColumns { HorizontalExpand = true };
+        row.AddColumn(main);
+        row.AddColumn(side, 220f);
         Show(row);
     }
 
@@ -258,7 +258,7 @@ public sealed partial class SWHolonetView
         if (state.Private)
             ShowDrafts(DraftKind.Thread, DraftKind.ForumReply);
 
-        var list = Column(_compact ? 0f : 280f);
+        var list = Column();
         list.AddChild(Eyebrow(Loc.GetString("sw-holonet-forum-list")));
         if (state.Threads.Count == 0)
             list.AddChild(Paragraph(Loc.GetString("sw-holonet-forum-empty"), SWHolonetPalette.Dim));
@@ -288,14 +288,14 @@ public sealed partial class SWHolonetView
             return;
         }
 
-        var row = Row();
-        row.AddChild(list);
+        var row = new SWHolonetColumns { HorizontalExpand = true };
+        row.AddColumn(list, 280f);
         var pane = Column(0f, true);
         if (state.Thread is { } opened)
             pane.AddChild(ThreadPane(state, opened));
         else
             pane.AddChild(Paragraph(Loc.GetString("sw-holonet-forum-pick"), SWHolonetPalette.Dim));
-        row.AddChild(pane);
+        row.AddColumn(pane);
         Show(row);
     }
 
@@ -304,12 +304,12 @@ public sealed partial class SWHolonetView
         var pane = Column(0f, true);
         pane.AddChild(Eyebrow(Loc.GetString(thread.ArticleId != 0 ? "sw-holonet-forum-article-thread" : "sw-holonet-forum-thread")));
         pane.AddChild(Heading(thread.Title, 2));
-        pane.AddChild(Detail(Loc.GetString("sw-holonet-forum-thread-meta", ("replies", thread.Replies), ("time", thread.LastTime))));
+        pane.AddChild(Detail(Loc.GetString("sw-holonet-forum-thread-meta", ("replies", thread.Replies), ("time", SWConsoleStyle.PressTime(thread.LastTime)))));
         pane.AddChild(Rule());
         foreach (var post in state.Posts)
         {
             pane.AddChild(Byline(post.AuthorName));
-            pane.AddChild(Detail(Loc.GetString("sw-holonet-forum-post-meta", ("role", post.AuthorRole), ("time", post.Time))));
+            pane.AddChild(Detail(Loc.GetString("sw-holonet-forum-post-meta", ("role", post.AuthorRole), ("time", SWConsoleStyle.PressTime(post.Time)))));
             pane.AddChild(Paragraph(post.Body));
             pane.AddChild(Rule());
         }
@@ -352,7 +352,7 @@ public sealed partial class SWHolonetView
         Show(heading);
         ShowDrafts(DraftKind.Mail, DraftKind.MailReply);
 
-        var boxes = Column(_compact ? 0f : 170f);
+        var boxes = Column();
         foreach (var box in state.Boxes)
         {
             var key = box.Key;
@@ -374,14 +374,14 @@ public sealed partial class SWHolonetView
         boxes.AddChild(FolderButton(Loc.GetString("sw-holonet-mail-folder-inbox"), inboxOpen, SWHolonetMailFolder.Inbox));
         boxes.AddChild(FolderButton(Loc.GetString("sw-holonet-mail-folder-sent"), !inboxOpen, SWHolonetMailFolder.Sent));
 
-        var rows = Column(_compact ? 0f : 230f);
+        var rows = Column();
         rows.AddChild(Eyebrow(Loc.GetString(inboxOpen ? "sw-holonet-mail-inbox" : "sw-holonet-mail-sent")));
         if (state.Mail.Count == 0)
             rows.AddChild(Paragraph(Loc.GetString(inboxOpen ? "sw-holonet-mail-inbox-empty" : "sw-holonet-mail-sent-empty"), SWHolonetPalette.Dim));
         foreach (var mail in state.Mail)
         {
             var id = mail.Id;
-            rows.AddChild(Entry(mail.Subject, Loc.GetString("sw-holonet-mail-row", ("name", mail.Counterpart), ("time", mail.Time)),
+            rows.AddChild(Entry(mail.Subject, Loc.GetString("sw-holonet-mail-row", ("name", mail.Counterpart), ("time", SWConsoleStyle.PressTime(mail.Time))),
                 id == state.Message?.Id, mail.Unread, () => Go(n => n.MessageId = id)));
         }
 
@@ -402,15 +402,15 @@ public sealed partial class SWHolonetView
             return;
         }
 
-        var row = Row();
-        row.AddChild(boxes);
-        row.AddChild(rows);
+        var row = new SWHolonetColumns { HorizontalExpand = true };
+        row.AddColumn(boxes, 170f);
+        row.AddColumn(rows, 230f);
         var pane = Column(0f, true);
         if (state.Message is { } message)
             pane.AddChild(MessagePane(message));
         else
             pane.AddChild(Paragraph(Loc.GetString("sw-holonet-mail-pick"), SWHolonetPalette.Dim));
-        row.AddChild(pane);
+        row.AddColumn(pane);
         Show(row);
     }
 
@@ -435,7 +435,7 @@ public sealed partial class SWHolonetView
         pane.AddChild(Heading(message.Subject, 2));
         pane.AddChild(Detail(Loc.GetString("sw-holonet-mail-from", ("title", message.From), ("signer", message.FromSigner))));
         pane.AddChild(Detail(Loc.GetString("sw-holonet-mail-to", ("title", message.To))));
-        pane.AddChild(Detail(message.Time));
+        pane.AddChild(Detail(SWConsoleStyle.PressTime(message.Time)));
         pane.AddChild(Rule());
         pane.AddChild(Paragraph(message.Body));
         pane.AddChild(Rule());

@@ -1,11 +1,12 @@
 <controls:FancyWindow xmlns="https://spacestation14.io"
     xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
     xmlns:senate="clr-namespace:Content.Client._SW._Senate"
-    Title="Голонет · камера" MinSize="480 280">
+    Title="Голонет — камера" MinSize="480 280">
   <PanelContainer Name="RootPanel">
     <BoxContainer Orientation="Vertical" Margin="12" SeparationOverride="8">
       <PanelContainer Name="HeaderPanel"><Label Text="ПРЯМОЙ ЭФИР" Margin="10 6" /></PanelContainer>
       <Label Name="Status" Text="Эфир выключен" />
+      <RichTextLabel Name="Error" Visible="False" />
       <Label Text="Тема эфира" />
       <LineEdit Name="Topic" PlaceHolder="Тема трансляции" />
       <BoxContainer Orientation="Horizontal" SeparationOverride="8">

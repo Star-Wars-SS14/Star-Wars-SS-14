@@ -150,8 +150,14 @@ public sealed class SWPressEui : BaseEui
     public override void HandleMessage(EuiMessageBase msg)
     {
         base.HandleMessage(msg);
-        if (msg is not SWPressActionMessage action || !TryActor(out var actor))
+        if (msg is not SWPressActionMessage action)
             return;
+        if (!TryActor(out var actor))
+        {
+            _notice = Loc.GetString("sw-press-error-device");
+            StateDirty();
+            return;
+        }
         if (_publicOnly && action.Action is not (SWPressAction.Refresh or SWPressAction.HistoryOpen
                 or SWPressAction.HistoryClose))
             return;
@@ -179,6 +185,7 @@ public sealed class SWPressEui : BaseEui
             StateDirty();
             return;
         }
+        var actionError = string.Empty;
         var success = action.Action switch
         {
             SWPressAction.Refresh => true,
@@ -194,12 +201,13 @@ public sealed class SWPressEui : BaseEui
             SWPressAction.AttachQuote => Press.AttachQuote(actor, action.Id, action.Revision, action.QuoteId),
             SWPressAction.RemoveQuote => Press.RemoveQuote(actor, action.Id, action.Revision, action.QuoteId),
             SWPressAction.SendRelease => Press.PublishRelease(actor, action.Title, action.Body),
-            SWPressAction.MailCreate => Mail.Create(actor, action.TargetKey, action.Title, action.Body),
-            SWPressAction.MailReply => Mail.Reply(actor, action.Id, action.Body),
+            SWPressAction.MailCreate => Mail.Create(actor, action.TargetKey, action.Title, action.Body, out actionError),
+            SWPressAction.MailReply => Mail.Reply(actor, action.Id, action.Body, out actionError),
             SWPressAction.MailCopyToDraft => Mail.CopyToDraft(actor, action.Id),
             _ => false,
         };
-        _notice = success ? "Готово." : "Действие не выполнено: проверьте права, текст и актуальность записи.";
+        _notice = success ? "Готово." : string.IsNullOrEmpty(actionError)
+            ? "Действие не выполнено: проверьте права, текст и актуальность записи." : actionError;
         StateDirty();
     }
 }

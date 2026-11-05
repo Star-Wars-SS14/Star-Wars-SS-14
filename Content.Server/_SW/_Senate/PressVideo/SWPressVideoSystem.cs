@@ -101,12 +101,28 @@ public sealed partial class SWPressVideoSystem : EntitySystem
 
     private void OnStart(EntityUid uid, SWPressCameraComponent component, SWPressStartMessage args)
     {
-        if (_source != null || !_press.TryGetEdition(args.Actor, out var edition)
-            || !_power.HasCharge(uid, 1f))
+        if (_source != null)
+        {
+            CameraError(uid, args.Actor, "sw-press-camera-error-busy");
             return;
+        }
+        if (!_press.TryGetEdition(args.Actor, out var edition))
+        {
+            CameraError(uid, args.Actor, _press.TryGetCorrespondent(args.Actor, out _)
+                ? "sw-press-camera-error-edition" : "sw-press-camera-error-access");
+            return;
+        }
+        if (!_power.HasCharge(uid, 1f))
+        {
+            CameraError(uid, args.Actor, "sw-press-camera-error-power");
+            return;
+        }
         var topic = args.Topic?.Trim() ?? string.Empty;
         if (topic.Length is < 1 or > 120 || topic.Any(char.IsControl))
+        {
+            CameraError(uid, args.Actor, "sw-press-camera-error-topic");
             return;
+        }
         _source = uid;
         _presenterActor = args.Actor;
         _presenterEdition = edition;
@@ -133,8 +149,24 @@ public sealed partial class SWPressVideoSystem : EntitySystem
 
     private void OnStop(EntityUid uid, SWPressCameraComponent component, SWPressStopMessage args)
     {
-        if (_source == uid && _press.TryGetCorrespondent(args.Actor, out _))
-            Stop();
+        if (_source != uid)
+        {
+            CameraError(uid, args.Actor, "sw-press-camera-error-not-source");
+            return;
+        }
+        if (!_press.TryGetCorrespondent(args.Actor, out _))
+        {
+            CameraError(uid, args.Actor, "sw-press-camera-error-access");
+            return;
+        }
+        Stop();
+    }
+
+    private void CameraError(EntityUid camera, EntityUid actor, string key)
+    {
+        if (_ui.IsUiOpen(camera, SWPressCameraUiKey.Key, actor))
+            _ui.ServerSendUiMessage(camera, SWPressCameraUiKey.Key,
+                new SWPressVideoErrorMessage(Loc.GetString(key)), actor);
     }
 
     private void OnCameraShutdown(EntityUid uid, SWPressCameraComponent component, ComponentShutdown args)

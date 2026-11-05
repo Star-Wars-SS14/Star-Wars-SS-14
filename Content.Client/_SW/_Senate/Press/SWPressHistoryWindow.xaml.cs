@@ -31,8 +31,8 @@ public sealed partial class SWPressHistoryWindow : FancyWindow
         foreach (var version in state.History)
         {
             var label = new RichTextLabel { HorizontalExpand = true };
-            var quotes = string.Join("\n", version.Quotes.Select(q => $"Цитата: {q.DisplayName} ({q.Time})\n«{q.Text}»"));
-            label.SetMessage($"Версия {version.Number} · {version.Time}\n{version.Title}\n{version.Body}\n{quotes}\n");
+            var quotes = string.Join("\n", version.Quotes.Select(q => $"Цитата: {q.DisplayName} ({SWConsoleStyle.PressTime(q.Time)})\n«{q.Text}»"));
+            label.SetMessage($"Версия {version.Number} · {SWConsoleStyle.PressTime(version.Time)}\n{version.Title}\n{version.Body}\n{quotes}\n");
             Versions.AddChild(label);
         }
     }

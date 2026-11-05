@@ -204,7 +204,7 @@ public sealed partial class SWPressWindow : FancyWindow
         _canEditPublication = false; _withdrawn = false;
         TitleEdit.Text = release.Title; BodyEdit.Text = release.Body;
         AttachedQuotes.RemoveAllChildren();
-        Context.Text = $"Пресс-релиз · {release.Office} · {release.Author} · {release.Time}";
+        Context.Text = $"Пресс-релиз · {release.Office} · {release.Author} · {SWConsoleStyle.PressTime(release.Time)}";
         UpdateControls();
         Send(SWPressAction.Refresh);
     }
@@ -216,7 +216,7 @@ public sealed partial class SWPressWindow : FancyWindow
         TitleEdit.Text = publication.Title; BodyEdit.Text = publication.Body;
         ShowQuotes(publication.Quotes);
         var edition = publication.Edition >= 0 && publication.Edition < Editions.Length ? Editions[publication.Edition] : "Голонет";
-        Context.Text = $"{edition} · {publication.Author} · {publication.Time} · версия {publication.Version}";
+        Context.Text = $"{edition} · {publication.Author} · {SWConsoleStyle.PressTime(publication.Time)} · версия {publication.Version}";
         UpdateControls();
         Send(SWPressAction.Refresh);
     }
@@ -227,7 +227,7 @@ public sealed partial class SWPressWindow : FancyWindow
         foreach (var quote in quotes)
         {
             var label = new RichTextLabel { HorizontalExpand = true };
-            label.SetMessage($"Цитата: {quote.DisplayName} ({quote.Time})\n«{quote.Text}»");
+            label.SetMessage($"Цитата: {quote.DisplayName} ({SWConsoleStyle.PressTime(quote.Time)})\n«{quote.Text}»");
             AttachedQuotes.AddChild(label);
             if (!_publication && _state.CanWrite)
             {

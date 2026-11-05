@@ -199,6 +199,21 @@ sw-holonet-private-required = Your personal channel is unavailable right now. Ne
 
 sw-holonet-persona-default = Network subscriber
 sw-holonet-role-default = Network participant
-sw-holonet-stamp = Day { $day }, { $time }
+sw-holonet-stamp = { $time }
 sw-holonet-request-repeat = Already sent.
 sw-holonet-request-invalid = Request rejected. Please try again.
+
+sw-press-camera-error-busy = Another broadcast is already live. Wait until it ends.
+sw-press-camera-error-edition = First choose an editorial office using Holonet Editorial.
+sw-press-camera-error-access = A living correspondent with a valid ID is required while Senate mode is active.
+sw-press-camera-error-power = Insert a charged power cell into the camera.
+sw-press-camera-error-topic = Enter a topic of 1 to 120 characters without control characters.
+sw-press-camera-error-not-source = This camera is not broadcasting.
+sw-press-error-device = The device is unavailable. Approach it and reopen the editorial interface.
+sw-press-mail-error-actor = A living connected character is required while Senate mode is active.
+sw-press-mail-error-subject = Enter a subject of 1 to 120 characters.
+sw-press-mail-error-body = Enter a message of 1 to 512 characters.
+sw-press-mail-error-target = The recipient is unavailable or your access has changed. An official requires a correspondent ID. Refresh the recipient list.
+sw-press-mail-error-limit = The conversation limit has been reached. Try again later.
+sw-press-mail-error-thread = The conversation is unavailable or you are no longer a participant. Refresh the list.
+sw-press-mail-error-message-limit = This conversation already has 6 messages. Start a new one.

@@ -82,9 +82,80 @@ public sealed class SWHolonetArt : Control
         if (_aspect <= 0f)
             return base.MeasureOverride(availableSize);
 
-        // Leave room for siblings during measure; arrange supplies the actual image width.
-        var width = Width > 1f ? Width : float.IsFinite(availableSize.X) ? availableSize.X : 320f;
-        return new Vector2(0f, width / _aspect);
+        // The column layout supplies the image's allocated width even on the first pass.
+        var width = float.IsFinite(availableSize.X) ? Math.Max(0f, availableSize.X) : Width > 1f ? Width : 320f;
+        var height = width / _aspect;
+        _image.Measure(new Vector2(width, height));
+        return new Vector2(0f, height);
+    }
+}
+
+/// <summary>
+/// Measures fixed and flexible columns using their own allocated widths. BoxContainer measures children
+/// in order, so a flexible middle column can otherwise starve a fixed trailing column during measure.
+/// </summary>
+public sealed class SWHolonetColumns : Control
+{
+    private const float Gap = 12f;
+    private readonly List<(Control Control, float FixedWidth)> _columns = new();
+
+    /// <param name="fixedWidth">Zero gives this column an equal share of the remaining width.</param>
+    public void AddColumn(Control child, float fixedWidth = 0f)
+    {
+        _columns.Add((child, fixedWidth));
+        AddChild(child);
+    }
+
+    private float[] Widths(float width)
+    {
+        var sizes = new float[_columns.Count];
+        var available = Math.Max(0f, width - Gap * Math.Max(0, _columns.Count - 1));
+        var fixedTotal = 0f;
+        var flexible = 0;
+        foreach (var (_, fixedWidth) in _columns)
+            if (fixedWidth > 0f)
+                fixedTotal += fixedWidth;
+            else
+                flexible++;
+
+        // On an unexpectedly narrow arrange, shrink the fixed columns as well; no child has a
+        // hard MinWidth that could force it outside the slot supplied here.
+        var scale = fixedTotal > available && fixedTotal > 0f ? available / fixedTotal : 1f;
+        var remaining = Math.Max(0f, available - fixedTotal * scale);
+        for (var i = 0; i < _columns.Count; i++)
+            sizes[i] = _columns[i].FixedWidth > 0f
+                ? _columns[i].FixedWidth * scale
+                : flexible > 0 ? remaining / flexible : 0f;
+        return sizes;
+    }
+
+    protected override Vector2 MeasureOverride(Vector2 availableSize)
+    {
+        var width = float.IsFinite(availableSize.X) ? Math.Max(0f, availableSize.X) : 880f;
+        var sizes = Widths(width);
+        var height = 0f;
+        for (var i = 0; i < _columns.Count; i++)
+        {
+            var child = _columns[i].Control;
+            child.Measure(new Vector2(sizes[i], availableSize.Y));
+            height = Math.Max(height, child.DesiredSize.Y);
+        }
+        return new Vector2(width, height);
+    }
+
+    protected override Vector2 ArrangeOverride(Vector2 finalSize)
+    {
+        var sizes = Widths(finalSize.X);
+        var x = 0f;
+        for (var i = 0; i < _columns.Count; i++)
+        {
+            var child = _columns[i].Control;
+            // A scrollbar or resize may have changed the actual width since the measure pass.
+            child.Measure(new Vector2(sizes[i], float.PositiveInfinity));
+            child.Arrange(UIBox2.FromDimensions(new Vector2(x, 0f), new Vector2(sizes[i], finalSize.Y)));
+            x += sizes[i] + Gap;
+        }
+        return finalSize;
     }
 }
 
@@ -103,7 +174,7 @@ public sealed class SWHolonetAdvert : BoxContainer
 
     private readonly IConfigurationManager _configuration = IoCManager.Resolve<IConfigurationManager>();
     private readonly SWHolonetArt _art;
-    private readonly Label _caption;
+    private readonly RichTextLabel _caption;
     private float _time;
     private int _frame;
 
@@ -119,12 +190,14 @@ public sealed class SWHolonetAdvert : BoxContainer
             MouseFilter = MouseFilterMode.Ignore,
         };
         text.AddChild(SWConsoleStyle.Text(Loc.GetString("sw-holonet-ad-label"), SWHolonetPalette.Dim, SWConsoleStyle.Small));
-        _caption = SWConsoleStyle.Text(Loc.GetString(Frames[0].Caption), SWHolonetPalette.Bright, SWConsoleStyle.Strong);
+        _caption = SWConsoleStyle.Wrap(Loc.GetString(Frames[0].Caption), SWHolonetPalette.Bright, 160f);
         text.AddChild(_caption);
-        AddChild(text);
         // 5:3 of the 4:3 source stays inside the central 80% safe area listed in the asset manifest.
         _art = new SWHolonetArt(Frames[0].File) { SetSize = new Vector2(120, 72) };
-        AddChild(_art);
+        var columns = new SWHolonetColumns { HorizontalExpand = true };
+        columns.AddColumn(text);
+        columns.AddColumn(_art, 120f);
+        AddChild(columns);
     }
 
     protected override void FrameUpdate(FrameEventArgs args)
@@ -145,7 +218,11 @@ public sealed class SWHolonetAdvert : BoxContainer
             _time = 0f;
             _frame = (_frame + 1) % Frames.Length;
             _art.SetFile(Frames[_frame].File);
-            _caption.Text = Loc.GetString(Frames[_frame].Caption);
+            var message = new FormattedMessage();
+            message.PushColor(SWHolonetPalette.Bright);
+            message.AddText(Loc.GetString(Frames[_frame].Caption));
+            message.Pop();
+            _caption.SetMessage(message);
         }
 
         // Gentle fade in at the frame start and out at its end.

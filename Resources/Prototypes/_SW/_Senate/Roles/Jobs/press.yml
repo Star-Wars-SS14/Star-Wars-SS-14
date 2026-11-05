@@ -56,8 +56,8 @@
 - type: entity
   parent: BaseItem
   id: SWHolonetPressTerminal
-  name: Голонет — новости и редакция
-  description: Доступ к публичной ленте и инструментам корреспондента.
+  name: Редакция Голонета
+  description: Публикация новостей и управление материалами корреспондента.
   components:
   - type: Sprite
     sprite: Objects/Devices/forensic_scanner.rsi

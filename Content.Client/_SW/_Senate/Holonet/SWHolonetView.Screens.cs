@@ -7,7 +7,21 @@ namespace Content.Client._SW._Senate.Holonet;
 
 public sealed partial class SWHolonetView
 {
-    private static readonly string[] NewsArt = { "news-port.png", "news-coruscant.png", "news-senate.png" };
+    private static readonly string[] NewsArt =
+    {
+        "news-01-senate.png",
+        "news-02-diplomacy.png",
+        "news-03-city.png",
+        "news-04-port.png",
+        "news-05-medicine.png",
+        "news-06-industry.png",
+        "news-07-research.png",
+        "news-08-evacuation.png",
+        "news-09-agriculture.png",
+        "news-10-republic.png",
+        "news-11-empire-city.png",
+        "news-12-empire-research.png",
+    };
 
     /// <summary>The picture is decorative and chosen by publication number, not a claim about its content.</summary>
     private static string ArtFor(int articleId) => NewsArt[Math.Abs(articleId % NewsArt.Length)];

@@ -20,7 +20,7 @@ sw-holonet-cancel = Отмена
 sw-holonet-markup-hint = Текст, до { $limit } символов. Разметка не применяется.
 sw-holonet-publish-as = Публикуется от имени: { $name } / { $role }
 
-sw-holonet-art-note = Стилизованная иллюстрация, не кадр события.
+sw-holonet-art-note = Стилизованная иллюстрация, не кадр события. Вымышленная сцена не связана с материалом.
 
 sw-holonet-ad-label = РЕКЛАМА
 sw-holonet-ad-carrier = Грузовые перевозки

@@ -25,7 +25,7 @@ sw-holonet-cancel = Cancel
 sw-holonet-markup-hint = Text, up to { $limit } characters. Markup is not applied.
 sw-holonet-publish-as = Published as: { $name } / { $role }
 
-sw-holonet-art-note = Stylized illustration, not footage of the event.
+sw-holonet-art-note = Stylized illustration, not footage of the event. The fictional scene is unrelated to the story.
 
 sw-holonet-ad-label = ADVERTISEMENT
 sw-holonet-ad-carrier = Cargo hauling

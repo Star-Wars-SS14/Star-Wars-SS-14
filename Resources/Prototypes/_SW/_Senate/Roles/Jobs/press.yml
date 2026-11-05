@@ -46,6 +46,13 @@
   - type: SWPressNewsAccess
   - type: Pda
     id: SWHolonetCorrespondentIDCard
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
 
 - type: entity
   parent: BaseItem

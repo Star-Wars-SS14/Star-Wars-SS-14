@@ -7,6 +7,13 @@
   - type: SWPressNewsAccess
   - type: Pda
     id: SWSenatorIDCard
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
   - type: Sprite
     sprite: _SW/_Senate/Objects/Devices/pda.rsi
     layers:
@@ -40,6 +47,13 @@
   - type: SWPressNewsAccess
   - type: Pda
     id: SWChancellorIDCard
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
   - type: Sprite
     sprite: _SW/_Senate/Objects/Devices/pda.rsi
     layers:
@@ -73,6 +87,13 @@
   - type: SWPressNewsAccess
   - type: Pda
     id: SWSpeakerIDCard
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
   - type: Sprite
     sprite: _SW/_Senate/Objects/Devices/pda.rsi
     layers:
@@ -106,6 +127,13 @@
   - type: SWPressNewsAccess
   - type: Pda
     id: SWMinisterIDCard
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
   - type: Sprite
     sprite: _SW/_Senate/Objects/Devices/pda.rsi
     layers:
@@ -139,6 +167,13 @@
   - type: SWPressNewsAccess
   - type: Pda
     id: SWUsherIDCard
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
   - type: Sprite
     sprite: _SW/_Senate/Objects/Devices/pda.rsi
     layers:
@@ -172,6 +207,13 @@
   - type: SWPressNewsAccess
   - type: Pda
     id: SWSenateGuardHeadIDCard
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
   - type: Sprite
     sprite: _SW/_Senate/Objects/Devices/pda.rsi
     layers:
@@ -205,6 +247,13 @@
   - type: SWPressNewsAccess
   - type: Pda
     id: SWSenateGuardOfficerIDCard
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
   - type: Sprite
     sprite: _SW/_Senate/Objects/Devices/pda.rsi
     layers:
@@ -238,6 +287,13 @@
   - type: SWPressNewsAccess
   - type: Pda
     id: SWSenateDoctorIDCard
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
   - type: Sprite
     sprite: _SW/_Senate/Objects/Devices/pda.rsi
     layers:
@@ -271,6 +327,13 @@
   - type: SWPressNewsAccess
   - type: Pda
     id: SWChiefJusticeIDCard
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
   - type: Sprite
     sprite: _SW/_Senate/Objects/Devices/pda.rsi
     layers:
@@ -304,6 +367,13 @@
   - type: SWPressNewsAccess
   - type: Pda
     id: SWRepublicJudgeIDCard
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
   - type: Sprite
     sprite: _SW/_Senate/Objects/Devices/pda.rsi
     layers:
@@ -337,6 +407,13 @@
   - type: SWPressNewsAccess
   - type: Pda
     id: SWProsecutorIDCard
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
   - type: Sprite
     sprite: _SW/_Senate/Objects/Devices/pda.rsi
     layers:
@@ -370,6 +447,13 @@
   - type: SWPressNewsAccess
   - type: Pda
     id: SWDefenderIDCard
+  - type: CartridgeLoader
+    preinstalled:
+    - CrewManifestCartridge
+    - NotekeeperCartridge
+    - NanoTaskCartridge
+    - NewsReaderCartridge
+    - SWHolonetCartridge
   - type: Sprite
     sprite: _SW/_Senate/Objects/Devices/pda.rsi
     layers:

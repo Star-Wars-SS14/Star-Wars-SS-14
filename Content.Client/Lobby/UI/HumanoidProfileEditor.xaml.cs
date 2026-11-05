@@ -1593,7 +1593,7 @@ namespace Content.Client.Lobby.UI
         private void RandomizeEverything()
         {
             Profile = HumanoidCharacterProfile.Random();
-            Profile = Profile.WithName(SWProfileNames.Generate(Profile.Species, Profile.Gender, _maxNameLength, _cfgManager.GetCVar(CCVars.RestrictedNames), _prototypeManager));
+            Profile = Profile.WithName(SWProfileNames.Generate(Profile.Species, Profile.Gender, _maxNameLength, _cfgManager.GetCVar(CCVars.RestrictedNames), _prototypeManager, _cfgManager.GetCVar(CCVars.ICNameCase)));
             SetProfile(Profile, CharacterSlot);
             SetDirty();
         }
@@ -1601,7 +1601,7 @@ namespace Content.Client.Lobby.UI
         private void RandomizeName()
         {
             if (Profile == null) return;
-            var name = SWProfileNames.Generate(Profile.Species, Profile.Gender, _maxNameLength, _cfgManager.GetCVar(CCVars.RestrictedNames), _prototypeManager);
+            var name = SWProfileNames.Generate(Profile.Species, Profile.Gender, _maxNameLength, _cfgManager.GetCVar(CCVars.RestrictedNames), _prototypeManager, _cfgManager.GetCVar(CCVars.ICNameCase));
             SetName(name);
             UpdateNameEdit();
         }

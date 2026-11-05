@@ -36,7 +36,7 @@ public static class SWProfileNames
                 ? Loc.GetString(families.Values[family]) + "'" + personal + "'" + Loc.GetString(endings.Values[ending])
                 : Loc.GetString(familyCores.Values[family]) + personal + Loc.GetString(endingCores.Values[ending]);
             if (name.Length > 0)
-                name = char.ToUpperInvariant(name[0]) + name[1..];
+                name = string.Concat(char.ToUpperInvariant(name[0]).ToString(), name.Substring(1));
         }
         else if (species == "Colicoid"
                  && prototypes.TryIndex<LocalizedDatasetPrototype>("SWNameColicoidStart", out var colicoid)

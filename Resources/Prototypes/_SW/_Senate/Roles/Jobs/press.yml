@@ -43,7 +43,6 @@
   id: SWHolonetCorrespondentPDA
   name: КПК корреспондента Голонета
   components:
-  - type: SWPressNewsAccess
   - type: Pda
     id: SWHolonetCorrespondentIDCard
   - type: CartridgeLoader

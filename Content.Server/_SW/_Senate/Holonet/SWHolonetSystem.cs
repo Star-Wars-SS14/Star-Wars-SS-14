@@ -30,6 +30,7 @@ namespace Content.Server._SW._Senate.Holonet;
 public sealed partial class SWHolonetSystem : EntitySystem
 {
     [Dependency] private readonly SWSenatePressSystem _press = default!;
+    [Dependency] private readonly SWPressVideoSystem _video = default!;
     [Dependency] private readonly SWSenateTimeSystem _time = default!;
     [Dependency] private readonly SWSenateStateSystem _senate = default!;
     [Dependency] private readonly SWMinistrySystem _ministry = default!;
@@ -62,12 +63,16 @@ public sealed partial class SWHolonetSystem : EntitySystem
         SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => Reset());
         InitializeContext();
         _press.PublicationsChanged += MarkAllDirty;
+        _video.FeedChanged += OnFeedChanged;
+        _video.FeedSpeech += OnFeedSpeech;
     }
 
     public override void Shutdown()
     {
         base.Shutdown();
         _press.PublicationsChanged -= MarkAllDirty;
+        _video.FeedChanged -= OnFeedChanged;
+        _video.FeedSpeech -= OnFeedSpeech;
     }
 
     private void MarkAllDirty() => _allDirty = true;
@@ -76,7 +81,10 @@ public sealed partial class SWHolonetSystem : EntitySystem
     {
         // The context counter survives on purpose: numbers from the previous round must stay invalid.
         foreach (var viewer in _viewers.Values)
+        {
+            StopVideo(viewer);
             Revoke(viewer);
+        }
 
         foreach (var terminal in _terminals.Values.ToArray())
         {
@@ -132,7 +140,11 @@ public sealed partial class SWHolonetSystem : EntitySystem
     public void ForgetTerminal(NetUserId user, SWHolonetEui terminal)
     {
         if (_terminals.TryGetValue(user, out var current) && current == terminal)
+        {
             _terminals.Remove(user);
+            if (_viewers.TryGetValue((user, terminal.Device), out var viewer) && viewer.Terminal == terminal)
+                StopVideo(viewer);
+        }
     }
 
     public void HandleTerminal(SWHolonetEui terminal, EntityUid actor, SWHolonetRequest request)
@@ -312,9 +324,13 @@ public sealed partial class SWHolonetSystem : EntitySystem
         _closedViewers.Clear();
         foreach (var (key, viewer) in _viewers)
         {
+            if (viewer.VideoSubscribed && !VideoAllowed(viewer))
+                StopVideo(viewer);
+
             if (viewer.Session.Status == SessionStatus.Disconnected
                 || poll && (!EntityManager.EntityExists(viewer.Device) || !IsDeviceOpen(viewer)))
             {
+                StopVideo(viewer);
                 Revoke(viewer);
                 _closedViewers.Add(key);
                 continue;
@@ -337,6 +353,11 @@ public sealed partial class SWHolonetSystem : EntitySystem
                 BindContext(viewer, who);
             else
                 Revoke(viewer);
+
+            // A viewer can remain on the same page while temporarily losing access. Revalidate
+            // every part of its current context before restoring the eye subscription.
+            if (poll && !viewer.VideoSubscribed && VideoAllowed(viewer))
+                StartVideo(viewer);
 
             var isPublic = !resolved && CanShowPublic(viewer);
             var fingerprint = resolved
@@ -416,6 +437,10 @@ public sealed partial class SWHolonetSystem : EntitySystem
         public bool AckOk;
         public string Notice = string.Empty;
         public SWHolonetNavigateRequest View = new();
+        public bool VideoSubscribed;
+        public EntityUid VideoActor;
+        public ulong VideoSerial;
+        public ulong VideoGeneration;
     }
 
     private sealed class Persona(EntityUid mind, int number, string name)

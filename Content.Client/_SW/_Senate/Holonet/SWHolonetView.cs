@@ -20,20 +20,29 @@ public sealed partial class SWHolonetView : PanelContainer
     private const string CoruscantSector = "SWSectorCoruscant";
 
     public readonly NetEntity Device;
-    private readonly bool _compact;
+    private readonly bool _pda;
+    private bool _compact;
+    private readonly BoxContainer _header;
+    private readonly BoxContainer _identity;
+    private readonly BoxContainer _tabBar;
+    private readonly BoxContainer _channel;
+    private readonly ContainerButton _brandButton;
     private readonly Action<SWHolonetRequest> _send;
-    private readonly float _textWidth;
+    private float _textWidth;
     private readonly SWHolonetNavigateRequest _nav = new();
 
     private readonly BoxContainer _content;
     private readonly ScrollContainer _scroll;
-    private readonly Label _persona;
-    private readonly Label _role;
-    private readonly Label _notice;
+    private readonly RichTextLabel _persona;
+    private readonly RichTextLabel _role;
+    private readonly RichTextLabel _notice;
     private readonly PanelContainer _noticeBar;
     private readonly SWHolonetTicker _ticker = new();
     private readonly SWSectorMiniMap _map = new();
     private readonly SWHolonetAdvert _advert = new();
+    private readonly SWHolonetFeedPanel _feedPanel = new();
+    private ulong _videoSerial;
+    private ulong _videoGeneration;
     private readonly Dictionary<SWHolonetSection, Button> _tabs = new();
 
     private SWHolonetStateEvent? _state;
@@ -50,6 +59,7 @@ public sealed partial class SWHolonetView : PanelContainer
     public SWHolonetView(NetEntity device, bool compact, Action<SWHolonetRequest> send)
     {
         Device = device;
+        _pda = compact;
         _compact = compact;
         _send = send;
         _textWidth = compact ? 500f : 600f;
@@ -68,7 +78,7 @@ public sealed partial class SWHolonetView : PanelContainer
             PanelOverride = new StyleBoxFlat { BackgroundColor = SWHolonetPalette.Mint },
         });
 
-        var header = new BoxContainer
+        var header = _header = new BoxContainer
         {
             Orientation = compact ? BoxContainer.LayoutOrientation.Vertical : BoxContainer.LayoutOrientation.Horizontal,
             Margin = new Thickness(16, 8, 16, 6),
@@ -76,9 +86,9 @@ public sealed partial class SWHolonetView : PanelContainer
         };
         root.AddChild(header);
 
-        var identity = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
+        var identity = _identity = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal };
         // The brand is the way back to the home page, which has no tab of its own in the design.
-        var brandButton = new ContainerButton { HorizontalExpand = compact };
+        var brandButton = _brandButton = new ContainerButton { HorizontalExpand = compact };
         var brand = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical };
         brand.AddChild(SWConsoleStyle.Text(Loc.GetString("sw-holonet-brand"), SWHolonetPalette.Bright, SWConsoleStyle.Title));
         brand.AddChild(SWConsoleStyle.Text(Loc.GetString("sw-holonet-brand-subtitle"), SWHolonetPalette.Dim, SWConsoleStyle.Small));
@@ -87,7 +97,7 @@ public sealed partial class SWHolonetView : PanelContainer
         identity.AddChild(brandButton);
         header.AddChild(identity);
 
-        var tabs = new BoxContainer
+        var tabs = _tabBar = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Horizontal,
             VerticalAlignment = VAlignment.Center,
@@ -96,8 +106,9 @@ public sealed partial class SWHolonetView : PanelContainer
         AddTab(tabs, SWHolonetSection.News, Loc.GetString("sw-holonet-tab-news"));
         AddTab(tabs, SWHolonetSection.Forum, Loc.GetString("sw-holonet-tab-forum"));
         AddTab(tabs, SWHolonetSection.Mail, Loc.GetString("sw-holonet-tab-mail"));
+        AddTab(tabs, SWHolonetSection.Feed, Loc.GetString("sw-holonet-tab-feed"));
 
-        var channel = new BoxContainer
+        var channel = _channel = new BoxContainer
         {
             Orientation = BoxContainer.LayoutOrientation.Vertical,
             HorizontalAlignment = HAlignment.Right,
@@ -105,10 +116,8 @@ public sealed partial class SWHolonetView : PanelContainer
             // A clipping label measures as zero width, so the channel block needs its own fixed width.
             SetWidth = compact ? 170 : 190,
         };
-        _role = SWConsoleStyle.Text(string.Empty, SWHolonetPalette.Dim, SWConsoleStyle.Small);
-        _role.ClipText = true;
-        _persona = SWConsoleStyle.Text(string.Empty, SWHolonetPalette.Bright, SWConsoleStyle.Strong);
-        _persona.ClipText = true;
+        _role = SWConsoleStyle.Wrap(string.Empty, SWHolonetPalette.Dim, 190);
+        _persona = SWConsoleStyle.Wrap(string.Empty, SWHolonetPalette.Bright, 190);
         channel.AddChild(_role);
         channel.AddChild(_persona);
 
@@ -125,8 +134,7 @@ public sealed partial class SWHolonetView : PanelContainer
 
         root.AddChild(Rule());
 
-        _notice = SWConsoleStyle.Text(string.Empty, SWHolonetPalette.Warn, SWConsoleStyle.Strong);
-        _notice.ClipText = true;
+        _notice = SWConsoleStyle.Wrap(string.Empty, SWHolonetPalette.Warn);
         _noticeBar = new PanelContainer
         {
             Visible = false,
@@ -172,11 +180,18 @@ public sealed partial class SWHolonetView : PanelContainer
         _holonet = IoCManager.Resolve<IEntitySystemManager>().GetEntitySystem<SWHolonetClientSystem>();
         _holonet.Register(this);
         _epoch = _holonet.NextEpoch();
+        _videoGeneration = 0;
         SendNavigation();
     }
 
     protected override void ExitedTree()
     {
+        if (_nav.Section == SWHolonetSection.Feed)
+        {
+            _nav.Section = SWHolonetSection.Home;
+            SendNavigation();
+        }
+        _feedPanel.Reset();
         base.ExitedTree();
         // A view can outlive a client shutdown order; only look the system up while it still exists.
         if (IoCManager.Resolve<IEntitySystemManager>().TryGetEntitySystem<SWHolonetClientSystem>(out var system))
@@ -187,12 +202,50 @@ public sealed partial class SWHolonetView : PanelContainer
     {
         base.FrameUpdate(args);
         UpdateDraftTimeouts(args.DeltaSeconds);
+        UpdateResponsiveLayout();
 
         // Restored only after layout has measured the rebuilt content.
         if (_pendingScroll is not { } value || --_pendingScrollFrames > 0)
             return;
         _scroll.SetScrollValue(value);
         _pendingScroll = null;
+    }
+
+    private void UpdateResponsiveLayout()
+    {
+        if (Width <= 1f)
+            return;
+        var compact = _pda || Width < 880f;
+        if (compact == _compact)
+            return;
+        _compact = compact;
+        _textWidth = compact ? 500f : 600f;
+        _header.Orientation = compact ? BoxContainer.LayoutOrientation.Vertical : BoxContainer.LayoutOrientation.Horizontal;
+        _header.SeparationOverride = compact ? 4 : 20;
+        _brandButton.HorizontalExpand = compact;
+        _tabBar.HorizontalExpand = !compact;
+        _channel.Orphan();
+        _channel.SetWidth = compact ? 170 : 190;
+        if (compact)
+            _identity.AddChild(_channel);
+        else
+            _header.AddChild(_channel);
+        if (_state is { Available: true } state && !FormOpen)
+        {
+            var scroll = _scroll.GetScrollValue();
+            Render(state);
+            _pendingScroll = scroll;
+            _pendingScrollFrames = 2;
+        }
+    }
+
+    public void ApplyFeed(SWHolonetFeedEvent ev)
+    {
+        if (ev.Epoch != _epoch || ev.Serial != _videoSerial || _nav.Section != SWHolonetSection.Feed
+            || ev.Generation < _videoGeneration)
+            return;
+        _videoGeneration = ev.Generation;
+        _feedPanel.Apply(ev);
     }
 
     public void Apply(SWHolonetStateEvent state)
@@ -280,9 +333,9 @@ public sealed partial class SWHolonetView : PanelContainer
 
     private void UpdateChrome(SWHolonetStateEvent state)
     {
-        _persona.Text = state.Persona;
-        _role.Text = state.Available ? state.Role : string.Empty;
-        _notice.Text = state.Notice;
+        SetLabelText(_persona, state.Persona, SWHolonetPalette.Bright);
+        SetLabelText(_role, state.Available ? state.Role : string.Empty, SWHolonetPalette.Dim);
+        SetLabelText(_notice, state.Notice, SWHolonetPalette.Warn);
         _noticeBar.Visible = state.Notice.Length > 0;
         _ticker.SetItems(state.Ticker);
         // As in the design, the home page is the news front page, so its tab stays lit there.
@@ -305,6 +358,9 @@ public sealed partial class SWHolonetView : PanelContainer
             case SWHolonetSection.Mail:
                 RenderMail(state);
                 break;
+            case SWHolonetSection.Feed:
+                Show(_feedPanel);
+                break;
             default:
                 RenderHome(state);
                 break;
@@ -315,6 +371,7 @@ public sealed partial class SWHolonetView : PanelContainer
     {
         // Leaving any form also removes previously delivered private text from the screen; drafts remain.
         SuspendForm();
+        _feedPanel.Reset();
         ClearContent();
         Show(Eyebrow(Loc.GetString("sw-holonet-denied-title")));
         Show(Paragraph(state.Reason, SWHolonetPalette.Dim));
@@ -325,6 +382,7 @@ public sealed partial class SWHolonetView : PanelContainer
         // Long-lived animated parts keep their state instead of replaying their intro on every update.
         _map.Orphan();
         _advert.Orphan();
+        _feedPanel.Orphan();
         _content.DisposeAllChildren();
     }
 
@@ -333,10 +391,12 @@ public sealed partial class SWHolonetView : PanelContainer
     private void SendNavigation()
     {
         // Without a context the mail fields below are ignored by the server, and they are empty anyway.
+        _videoSerial++;
         _send(new SWHolonetNavigateRequest
         {
             Context = _context,
             Epoch = _epoch,
+            VideoSerial = _videoSerial,
             Section = _nav.Section,
             ArticleId = _nav.ArticleId,
             NewsPage = _nav.NewsPage,
@@ -364,6 +424,7 @@ public sealed partial class SWHolonetView : PanelContainer
         StoreForm();
         _activeDraft = null;
         _resumeDraft = null;
+        _feedPanel.Reset();
         Go(n =>
         {
             n.Section = section;
@@ -377,11 +438,16 @@ public sealed partial class SWHolonetView : PanelContainer
     private static Label Eyebrow(string text, Color? color = null) =>
         SWConsoleStyle.Text(text, color ?? SWHolonetPalette.Mint, SWConsoleStyle.Strong);
 
-    private static Label Caption(string text, Color? color = null)
+    private static RichTextLabel Caption(string text, Color? color = null) =>
+        SWConsoleStyle.Wrap(text, color ?? SWHolonetPalette.Dim, 220f);
+
+    private static void SetLabelText(RichTextLabel label, string text, Color color)
     {
-        var label = SWConsoleStyle.Text(text, color ?? SWHolonetPalette.Dim, SWConsoleStyle.Small);
-        label.ClipText = true;
-        return label;
+        var message = new FormattedMessage();
+        message.PushColor(color);
+        message.AddText(text);
+        message.Pop();
+        label.SetMessage(message);
     }
 
     private Control Paragraph(string text, Color? color = null) =>

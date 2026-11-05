@@ -42,7 +42,11 @@ public sealed partial class SWHolonetSystem
     {
         foreach (var viewer in _viewers.Values)
         {
-            if (viewer.Session.UserId == args.Player.UserId && viewer.BoundActor == args.Entity)
+            if (viewer.Session.UserId != args.Player.UserId)
+                continue;
+            if (viewer.VideoSubscribed && viewer.VideoActor == args.Entity)
+                StopVideo(viewer);
+            if (viewer.BoundActor == args.Entity)
                 Revoke(viewer);
         }
     }
@@ -76,6 +80,7 @@ public sealed partial class SWHolonetSystem
         if (viewer.ContextId == 0)
             return;
 
+        StopVideo(viewer);
         var ended = viewer.ContextId;
         viewer.ContextId = 0;
         viewer.BoundMind = null;
@@ -142,7 +147,9 @@ public sealed partial class SWHolonetSystem
     /// </summary>
     private void HandleNavigation(Viewer viewer, SWHolonetNavigateRequest request)
     {
-        if (request.Epoch < viewer.Epoch || !Enum.IsDefined(request.Section) || !Enum.IsDefined(request.Folder))
+        if (request.Epoch < viewer.Epoch
+            || request.Epoch == viewer.Epoch && request.VideoSerial < viewer.VideoSerial
+            || !Enum.IsDefined(request.Section) || !Enum.IsDefined(request.Folder))
             return;
 
         // A newer epoch means the client has dropped everything older, so the old number ends with it.
@@ -152,16 +159,24 @@ public sealed partial class SWHolonetSystem
             viewer.Epoch = request.Epoch;
         }
 
+        StopVideo(viewer);
+        viewer.VideoSerial = request.VideoSerial;
         var isPrivate = request.Context != 0;
         Who who = default;
         if (isPrivate && !TryAcceptContext(viewer, request.Context, out who))
+        {
+            // An invalid private request must not revive the page the user has left.
+            viewer.View.Section = SWHolonetSection.Home;
             return;
+        }
 
         ApplyPublicNavigation(viewer, request);
         if (isPrivate)
             ApplyPrivateNavigation(viewer, request, who);
 
         viewer.Dirty = true;
+        if (request.Section == SWHolonetSection.Feed && VideoAllowed(viewer))
+            StartVideo(viewer);
     }
 
     private static Guid RequestIdOf(SWHolonetRequest request) => request switch

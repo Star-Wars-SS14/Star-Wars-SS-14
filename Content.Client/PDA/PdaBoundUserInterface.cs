@@ -1,4 +1,5 @@
 using Content.Client.CartridgeLoader;
+using Content.Shared._SW._Senate.Holonet;
 using Content.Shared.CartridgeLoader;
 using Content.Shared.Containers.ItemSlots;
 using Content.Shared.PDA;
@@ -78,12 +79,15 @@ namespace Content.Client.PDA
             _menu.ProgramCloseButton.OnPressed += _ => DeactivateActiveCartridge();
 
             var borderColorComponent = GetBorderColorComponent();
-            if (borderColorComponent == null)
-                return;
+            if (borderColorComponent != null)
+            {
+                _menu.BorderColor = borderColorComponent.BorderColor;
+                _menu.AccentHColor = borderColorComponent.AccentHColor;
+                _menu.AccentVColor = borderColorComponent.AccentVColor;
+            }
 
-            _menu.BorderColor = borderColorComponent.BorderColor;
-            _menu.AccentHColor = borderColorComponent.AccentHColor;
-            _menu.AccentVColor = borderColorComponent.AccentVColor;
+            if (EntMan.HasComponent<SWSenatePdaStyleComponent>(Owner))
+                _menu.ApplySenateStyle();
         }
 
         protected override void UpdateState(BoundUserInterfaceState state)

@@ -36,7 +36,7 @@ public sealed partial class SWHolonetView
     private SWConsoleTextEdit? _bodyEdit;
     private LineEdit? _searchEdit;
     private BoxContainer? _formDynamic;
-    private Label? _recipientLabel;
+    private RichTextLabel? _recipientLabel;
     private Button? _submitButton;
     private Button? _deleteButton;
     private Control? _sendingNotice;
@@ -74,9 +74,11 @@ public sealed partial class SWHolonetView
     /// </summary>
     public void HidePrivateContent()
     {
+        _feedPanel.Reset();
         SuspendForm();
         _context = 0;
         _epoch = _holonet?.NextEpoch() ?? _epoch + 1;
+        _videoGeneration = 0;
 
         // These belonged to the context that just ended; the next one starts from its own mailbox.
         _nav.MailBox = string.Empty;
@@ -96,8 +98,8 @@ public sealed partial class SWHolonetView
         _pendingScroll = null;
         ClearContent();
         Show(new Label { Text = Loc.GetString("sw-holonet-connecting"), FontColorOverride = SWHolonetPalette.Dim });
-        _persona.Text = string.Empty;
-        _role.Text = string.Empty;
+        SetLabelText(_persona, string.Empty, SWHolonetPalette.Bright);
+        SetLabelText(_role, string.Empty, SWHolonetPalette.Dim);
         _noticeBar.Visible = false;
         foreach (var button in _tabs.Values)
             SWConsoleStyle.StyleTabButton(button, false);
@@ -229,7 +231,7 @@ public sealed partial class SWHolonetView
 
     private void ShowLocalNotice(string text)
     {
-        _notice.Text = text;
+        SetLabelText(_notice, text, SWHolonetPalette.Warn);
         _noticeBar.Visible = true;
     }
 
@@ -515,9 +517,9 @@ public sealed partial class SWHolonetView
 
         if (_recipientLabel != null && !_recipientLabel.Disposed)
         {
-            _recipientLabel.Text = draft.ToTitle.Length > 0
+            SetLabelText(_recipientLabel, draft.ToTitle.Length > 0
                 ? Loc.GetString("sw-holonet-mail-to", ("title", draft.ToTitle))
-                : Loc.GetString("sw-holonet-mail-no-recipient");
+                : Loc.GetString("sw-holonet-mail-no-recipient"), SWHolonetPalette.Bright);
         }
 
         if (isReply)

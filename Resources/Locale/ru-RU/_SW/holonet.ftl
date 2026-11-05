@@ -201,3 +201,12 @@ sw-holonet-role-default = Участник сети
 sw-holonet-stamp = День { $day }, { $time }
 sw-holonet-request-repeat = Уже отправлено.
 sw-holonet-request-invalid = Запрос отклонён. Повторите действие.
+
+sw-holonet-tab-feed = ЭФИРЫ
+sw-holonet-feed-offline = Сейчас нет прямого эфира.
+sw-holonet-feed-speech = Речь в эфире
+sw-holonet-feed-waiting = Здесь появится речь рядом с камерой.
+sw-senate-pda-system-name = СЕНАТСКАЯ СЕТЬ
+
+sw-holonet-feed-full = Эфир переполнен. Повторная попытка выполняется автоматически.
+sw-holonet-feed-reconnecting = Соединение прервано. Ожидание восстановления доступа.

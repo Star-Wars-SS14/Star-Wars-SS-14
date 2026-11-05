@@ -70,12 +70,21 @@ public sealed class SWHolonetArt : Control
         Visible = Loaded;
     }
 
+    protected override void Resized()
+    {
+        base.Resized();
+        if (_aspect > 0f)
+            InvalidateMeasure();
+    }
+
     protected override Vector2 MeasureOverride(Vector2 availableSize)
     {
-        var size = base.MeasureOverride(availableSize);
-        return _aspect > 0f && float.IsFinite(availableSize.X)
-            ? new Vector2(availableSize.X, availableSize.X / _aspect)
-            : size;
+        if (_aspect <= 0f)
+            return base.MeasureOverride(availableSize);
+
+        // Leave room for siblings during measure; arrange supplies the actual image width.
+        var width = Width > 1f ? Width : float.IsFinite(availableSize.X) ? availableSize.X : 320f;
+        return new Vector2(0f, width / _aspect);
     }
 }
 

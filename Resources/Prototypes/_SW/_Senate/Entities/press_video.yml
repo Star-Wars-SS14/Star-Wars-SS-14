@@ -50,13 +50,6 @@
   id: SWPressVideoScreen
   parent: BaseComputer
   name: экран Голонета — эфир и новости
-  description: Публичный экран трансляции. Опубликованные статьи доступны через действие «Новости Голонета» в меню экрана.
+  description: Публичный экран галактической сети.
   components:
-  - type: SWPressNewsAccess
-  - type: SWPressViewer
-  - type: ActivatableUI
-    key: enum.SWPressViewerUiKey.Key
-  - type: UserInterface
-    interfaces:
-      enum.SWPressViewerUiKey.Key:
-        type: SWPressViewerBoundUserInterface
+  - type: SWHolonetTerminal

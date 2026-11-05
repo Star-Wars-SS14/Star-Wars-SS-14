@@ -34,6 +34,41 @@ public sealed partial class SWPressVideoSystem : EntitySystem
     // Each actor may open multiple screens; this eye belongs exclusively to the feed.
     private readonly Dictionary<EntityUid, HashSet<EntityUid>> _screens = new();
     private float _chargeTimer;
+    private readonly Dictionary<EntityUid, int> _portalActors = new();
+    public event Action? FeedChanged;
+    public event Action<long, string>? FeedSpeech;
+
+    public SWPressVideoState CurrentFeed() => MakeState();
+
+    // Share one eye subscription between every screen and portal open for the actor.
+    public bool AddPortalViewer(EntityUid actor)
+    {
+        if (_portalActors.TryGetValue(actor, out var count))
+        {
+            _portalActors[actor] = count + 1;
+            return true;
+        }
+        if (!_screens.ContainsKey(actor) && _screens.Keys.Union(_portalActors.Keys).Count() >= 64)
+            return false;
+        _portalActors.Add(actor, 1);
+        if (!_screens.ContainsKey(actor))
+            Subscribe(actor);
+        return true;
+    }
+
+    public void RemovePortalViewer(EntityUid actor, ICommonSession session)
+    {
+        if (!_portalActors.TryGetValue(actor, out var count))
+            return;
+        if (count > 1)
+        {
+            _portalActors[actor] = count - 1;
+            return;
+        }
+        _portalActors.Remove(actor);
+        if (!_screens.ContainsKey(actor) && _eye is { } eye && !Deleted(eye))
+            _views.RemoveViewSubscriber(eye, session);
+    }
 
     public override void Initialize()
     {
@@ -91,7 +126,7 @@ public sealed partial class SWPressVideoSystem : EntitySystem
         };
         // Keep the view on the map, outside the camera's hand/storage container hierarchy.
         _eye = Spawn("SWPressVideoEye", _speechTransform.GetMapCoordinates(uid));
-        foreach (var actor in _screens.Keys)
+        foreach (var actor in _screens.Keys.Union(_portalActors.Keys))
             Subscribe(actor);
         Refresh();
     }
@@ -112,14 +147,15 @@ public sealed partial class SWPressVideoSystem : EntitySystem
     {
         if (!TryComp<ActorComponent>(args.Actor, out var actor) || actor.PlayerSession.AttachedEntity != args.Actor)
             return;
-        if (!_screens.ContainsKey(args.Actor) && _screens.Count >= 64)
+        if (!_screens.ContainsKey(args.Actor) && !_portalActors.ContainsKey(args.Actor)
+            && _screens.Keys.Union(_portalActors.Keys).Count() >= 64)
         {
             _ui.CloseUi(uid, SWPressViewerUiKey.Key, args.Actor);
             return;
         }
         if (!_screens.TryGetValue(args.Actor, out var screens))
             _screens[args.Actor] = screens = new HashSet<EntityUid>();
-        if (screens.Add(uid) && screens.Count == 1)
+        if (screens.Add(uid) && screens.Count == 1 && !_portalActors.ContainsKey(args.Actor))
             Subscribe(args.Actor);
         RefreshViewer(uid);
     }
@@ -135,7 +171,9 @@ public sealed partial class SWPressVideoSystem : EntitySystem
 
     private void OnDetached(PlayerDetachedEvent args)
     {
-        if (!_screens.Remove(args.Entity))
+        var hadScreens = _screens.Remove(args.Entity);
+        var hadPortal = _portalActors.Remove(args.Entity);
+        if (!hadScreens && !hadPortal)
             return;
         if (_eye is { } eye && !Deleted(eye))
             _views.RemoveViewSubscriber(eye, args.Player);
@@ -146,7 +184,8 @@ public sealed partial class SWPressVideoSystem : EntitySystem
         if (!_screens.TryGetValue(actor, out var screens) || !screens.Remove(screen) || screens.Count != 0)
             return;
         _screens.Remove(actor);
-        if (_eye is { } eye && !Deleted(eye) && TryComp<ActorComponent>(actor, out var player))
+        if (!_portalActors.ContainsKey(actor) && _eye is { } eye && !Deleted(eye)
+            && TryComp<ActorComponent>(actor, out var player))
             _views.RemoveViewSubscriber(eye, player.PlayerSession);
     }
 
@@ -160,13 +199,14 @@ public sealed partial class SWPressVideoSystem : EntitySystem
     {
         Stop();
         _screens.Clear();
+        _portalActors.Clear();
     }
 
     private void Stop()
     {
         var eye = _eye;
         if (eye is { } activeEye && !Deleted(activeEye))
-            foreach (var actor in _screens.Keys)
+            foreach (var actor in _screens.Keys.Union(_portalActors.Keys))
                 if (TryComp<ActorComponent>(actor, out var player))
                     _views.RemoveViewSubscriber(activeEye, player.PlayerSession);
         _source = null;
@@ -201,6 +241,7 @@ public sealed partial class SWPressVideoSystem : EntitySystem
 
     private void Refresh()
     {
+        FeedChanged?.Invoke();
         var cameras = EntityQueryEnumerator<SWPressCameraComponent>();
         while (cameras.MoveNext(out var uid, out _))
             if (_ui.IsUiOpen(uid, SWPressCameraUiKey.Key))

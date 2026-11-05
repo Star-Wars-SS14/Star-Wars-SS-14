@@ -132,6 +132,23 @@ namespace Content.Client.PDA
             ToHomeScreen();
         }
 
+        public void ApplySenateStyle()
+        {
+            ApplySenateWindowStyle();
+            SystemNameLabel.Text = Loc.GetString("sw-senate-pda-system-name");
+            foreach (var child in NavigationBar.Children)
+            {
+                if (child is not PdaNavigationButton button)
+                    continue;
+                button.InactiveBgColor = "#0C2129";
+                button.ActiveBgColor = "#1D4A50";
+                button.InactiveFgColor = "#A9BABB";
+                button.ActiveFgColor = "#7DD9C8";
+                button.IsCurrent = button.IsCurrent;
+                button.IsActive = button.IsActive;
+            }
+        }
+
         public void UpdateState(PdaUpdateState state)
         {
             FlashLightToggleButton.IsActive = state.FlashlightEnabled;

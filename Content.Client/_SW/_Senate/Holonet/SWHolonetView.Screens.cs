@@ -25,13 +25,11 @@ public sealed partial class SWHolonetView
         {
             Orientation = BoxContainer.LayoutOrientation.Vertical,
             HorizontalExpand = true,
-            HorizontalAlignment = HAlignment.Left,
             MaxWidth = HeroMaxWidth,
         };
         var art = new SWHolonetArt(ArtFor(articleId), HeroAspect);
         box.AddChild(art);
-        var label = SWConsoleStyle.Text(caption, SWHolonetPalette.Background, SWConsoleStyle.Strong);
-        label.ClipText = true;
+        var label = SWConsoleStyle.Wrap(caption, SWHolonetPalette.Background, 400f);
         box.AddChild(Card(label, SWHolonetPalette.Mint));
         // Published stories have no pictures of their own, so the reader is told this is not event footage.
         if (art.Loaded)

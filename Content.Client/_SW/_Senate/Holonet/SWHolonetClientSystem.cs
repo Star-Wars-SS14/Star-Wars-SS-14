@@ -22,6 +22,7 @@ public sealed class SWHolonetClientSystem : EntitySystem
     {
         base.Initialize();
         SubscribeNetworkEvent<SWHolonetStateEvent>(OnState);
+        SubscribeNetworkEvent<SWHolonetFeedEvent>(OnFeed);
         SubscribeNetworkEvent<SWHolonetContextRevokedEvent>(OnRevoked);
         SubscribeLocalEvent<LocalPlayerAttachedEvent>(OnAttached);
         SubscribeLocalEvent<LocalPlayerDetachedEvent>(OnDetached);
@@ -54,6 +55,13 @@ public sealed class SWHolonetClientSystem : EntitySystem
             if (view.Device == ev.Device)
                 view.Apply(ev);
         }
+    }
+
+    private void OnFeed(SWHolonetFeedEvent ev)
+    {
+        foreach (var view in _views)
+            if (view.Device == ev.Device)
+                view.ApplyFeed(ev);
     }
 
     private void OnRevoked(SWHolonetContextRevokedEvent ev)

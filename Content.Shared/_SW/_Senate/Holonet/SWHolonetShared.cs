@@ -1,14 +1,20 @@
 using System.Globalization;
 using System.Text;
 using Content.Shared.CartridgeLoader;
+using Content.Shared._SW._Senate.PressVideo;
 using Content.Shared.Eui;
 using Robust.Shared.Serialization;
+using Robust.Shared.GameStates;
 
 namespace Content.Shared._SW._Senate.Holonet;
 
 /// <summary>Marks a stationary terminal that opens the Holonet interface.</summary>
 [RegisterComponent]
 public sealed partial class SWHolonetTerminalComponent : Component { }
+
+/// <summary>Enables the Senate PDA shell without affecting other devices.</summary>
+[RegisterComponent, NetworkedComponent]
+public sealed partial class SWSenatePdaStyleComponent : Component { }
 
 /// <summary>Marks the PDA program that opens the Holonet interface.</summary>
 [RegisterComponent]
@@ -21,6 +27,7 @@ public enum SWHolonetSection : byte
     News,
     Forum,
     Mail,
+    Feed,
 }
 
 [Serializable, NetSerializable]
@@ -109,6 +116,7 @@ public sealed class SWHolonetNavigateRequest : SWHolonetRequest
 {
     /// <summary>Raised by the client whenever it hides private content; echoed in the private states after it.</summary>
     public ulong Epoch;
+    public ulong VideoSerial;
     public SWHolonetSection Section;
     public int ArticleId;
     public int NewsPage;
@@ -290,6 +298,19 @@ public sealed class SWHolonetContextRevokedEvent : EntityEventArgs
 /// Personalized view sent only to the session of its viewer. PDA interface states are shared by the
 /// entity and retained for its next user, so private data must never travel through them.
 /// </summary>
+[Serializable, NetSerializable]
+public sealed class SWHolonetFeedEvent : EntityEventArgs
+{
+    public NetEntity Device;
+    public ulong Epoch;
+    public ulong Serial;
+    public ulong Generation;
+    public SWPressVideoState? State;
+    public string Error = string.Empty;
+    public long FeedId;
+    public string Speech = string.Empty;
+}
+
 [Serializable, NetSerializable]
 public sealed class SWHolonetStateEvent : EntityEventArgs
 {

@@ -21,6 +21,20 @@ namespace Content.Client._SW._Senate.Consoles.Statistics;
 public sealed partial class SWGalacticMapControl : Control
 {
     private readonly SWGalacticMapPrototype _map;
+    private SWGalacticMapPrototype? _geography;
+    private Dictionary<string, SWGalacticMapWorld>? _geographicWorlds;
+    private bool _schematic;
+
+    // The view may use local or synthetic coordinates; political lookup always uses galaxy coordinates.
+    public void SetGeography(SWGalacticMapPrototype geography, bool schematic)
+    {
+        _geography = geography;
+        _geographicWorlds = geography.Worlds.ToDictionary(w => w.Id);
+        _schematic = schematic;
+    }
+
+    private SWGalacticMapWorld GeographicWorld(SWGalacticMapWorld world) =>
+        _geographicWorlds?.GetValueOrDefault(world.Id) ?? world;
     private readonly string? _focusSector;
     private readonly string? _focusSystem;
     private readonly string? _focusPoliticalSector;
@@ -495,8 +509,8 @@ public sealed partial class SWGalacticMapControl : Control
             ToolTip += $"\n{finance.Name}\nНалоговые поступления с начала дня {finance.Tax:N0} кр";
         if (_economyMapMode >= 0 && EconomySectorSummary(world.Id) is { } economySummary)
             ToolTip += $"\n{economySummary}";
-        if (!string.IsNullOrWhiteSpace(world.Faction) || _map.PoliticalAreas.Count > 0)
-            ToolTip += $"\n{_map.GetWorldPoliticalName(world)}";
+        if (!string.IsNullOrWhiteSpace(world.Faction) || (_geography ?? _map).PoliticalAreas.Count > 0)
+            ToolTip += $"\n{(_geography ?? _map).GetWorldPoliticalName(GeographicWorld(world))}";
         if (world.Sector is { } sectorId && _sectors.TryGetValue(sectorId.Id, out var sector))
             ToolTip += $"\n{sector.Name}\n{(sector.Claimed ? "Представлен в Сенате" : "Сенатор не назначен")}";
         if (_canOpenSectors && world.Sector is { } target && target.Id != _focusSector)
@@ -570,7 +584,7 @@ public sealed partial class SWGalacticMapControl : Control
     {
         FinishTransition();
         previous.FinishTransition();
-        if (previous == this || previous.Width <= 64 || previous.Height <= 56
+        if (previous == this || _schematic || previous._schematic || previous.Width <= 64 || previous.Height <= 56
             || !previous._worlds.ContainsKey(world) || !_worlds.ContainsKey(world)
             || _configuration.GetCVar(CCVars.ReducedMotion)) return;
         _transitionFrom = previous;
@@ -701,7 +715,7 @@ public sealed partial class SWGalacticMapControl : Control
             var p = Screen(world.Position);
             var selected = world.Id == _selectedWorld;
             var hover = world.Id == _hover;
-            var baseColor = _map.GetWorldFaction(world) switch
+            var baseColor = (_geography ?? _map).GetWorldFaction(GeographicWorld(world)) switch
             {
                 "empire" => PoliticalColor("empire"),
                 "republic" => SWConsoleStyle.TextBright,

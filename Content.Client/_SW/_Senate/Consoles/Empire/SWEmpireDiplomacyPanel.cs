@@ -53,7 +53,7 @@ public sealed class SWEmpireDiplomacyPanel : BoxContainer
         _editor.Visible=false; _new.Visible=false; _budget.Visible=false;
         _geography=SWGalacticMapViews.ForFaction(_proto.Index<SWGalacticMapPrototype>("SenateRepublic"),"empire");
         var toolbar=new WrapContainer { HorizontalExpand=true,SeparationOverride=5,CrossSeparationOverride=3 }; AddChild(toolbar);
-        var back=SWConsoleStyle.TabButton("Галактика"); back.OnPressed += _ => SwitchView(null,null); toolbar.AddChild(back); toolbar.AddChild(_title);
+        var back=SWConsoleStyle.TabButton("Галактика"); back.OnPressed += _ => { if (_system != null && _sector != null) SwitchView(_sector, null); else SwitchView(null, null); }; toolbar.AddChild(back); toolbar.AddChild(_title);
         var minus=SWConsoleStyle.TabButton("−"); minus.OnPressed += _ => _map.ChangeZoom(1/1.2f); toolbar.AddChild(minus); var plus=SWConsoleStyle.TabButton("+"); plus.OnPressed += _ => _map.ChangeZoom(1.2f); toolbar.AddChild(plus);
         var modes = new WrapContainer { HorizontalExpand = true, SeparationOverride = 5, CrossSeparationOverride = 3 }; AddChild(modes);
         var names = new[] { "Транзит", "Закупки", "Базирование", "Перемирие", "Грузы" };
@@ -80,8 +80,17 @@ public sealed class SWEmpireDiplomacyPanel : BoxContainer
     private void SwitchView(string? sector,string? system)
     {
         var zoom=_map?.Zoom ?? 1; _sector=sector; _system=system;
-        var view=system!=null ? SWGalacticMapViews.System(_geography,system) : sector!=null ? SWGalacticMapViews.PoliticalSector(_geography,sector) : SWGalacticMapViews.Overview(_geography);
+        var view=system!=null ? SWGalacticMapViews.System(_geography,system) : sector!=null ? SWGalacticMapViews.PoliticalSector(_geography,sector) : SWGalacticAtlas.Overview(_geography);
+        view = SWGalacticAtlas.MakeSchematicIfNeeded(view, null, system, sector, out var schematic);
         _host.RemoveAllChildren(); _map=new SWGalacticMapControl(view,focusSystem:system,focusPoliticalSector:sector) { MinHeight=180 };
+        _map.SetGeography(_geography, schematic);
+        _map.SetExternalLabels(true);
+        _map.SystemSelected += id =>
+        {
+            var world = _geography.Worlds.FirstOrDefault(w => w.SystemId == id);
+            if (!string.IsNullOrEmpty(world?.PoliticalSectorId)) SwitchView(world.PoliticalSectorId, null);
+            else SwitchView(null, id);
+        };
         _map.WorldSelected += id =>
         {
             if (!CanEdit || !_editing) return;

@@ -54,7 +54,6 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
     private string? _chosenSectorSystem;
     private string? _chosenSystemSector;
     private bool _systemSummaryActive;
-    private readonly Label _schematicNotice = SWConsoleStyle.Text("Расположение условное", SWConsoleStyle.Warn, SWConsoleStyle.Small);
     private readonly Label _occupationLegend = SWConsoleStyle.Text("Зона оккупации", SWConsoleStyle.Warn, SWConsoleStyle.Small);
     private readonly BoxContainer _body = VerticalStack(0);
     private BoxContainer _detail = default!;
@@ -154,9 +153,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         location.AddChild(_title);
         _systemShortcut.Visible = false;
         _systemShortcut.OnPressed += _ => { if (_chosenSectorSystem is { } id) OpenSystem(id); };
-        if (_fullPlanetScreen) location.AddChild(_systemShortcut);
-        _schematicNotice.Visible = false;
-        location.AddChild(_schematicNotice);
+        location.AddChild(_systemShortcut);
         if (_fullPlanetScreen)
         {
             location.AddChild(_sectorSchemeNotice);
@@ -298,7 +295,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
 
     private void UpdateSystemShortcut()
     {
-        _systemShortcut.Visible = _fullPlanetScreen && CurrentSectorId != null && CurrentSectorId == _chosenSystemSector &&
+        _systemShortcut.Visible = CurrentSectorId != null && CurrentSectorId == _chosenSystemSector &&
             _chosenSectorSystem != null && _data.Worlds.Any(w => w.SystemId == _chosenSectorSystem && w.Sector?.Id == CurrentSectorId);
         if (!_systemShortcut.Visible) return;
         var name = _data.Worlds.FirstOrDefault(w => w.SystemId == _chosenSectorSystem && !string.IsNullOrWhiteSpace(w.SystemName))?.SystemName;
@@ -375,10 +372,9 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
     public bool ShowGalaxy()
     {
         if (_fullPlanetScreen && Map != null && Map.IsTransitioning) return false;
-        if (_lockedSector != null) return false;
         if (Surface != null && _surfaceReturnsToPlanet) { ReturnToPlanetFromSurface(); return true; }
         if (_planetOpen) { BackFromPlanet(); return true; }
-        if (_fullPlanetScreen && CurrentSystemId != null && _systemParentSector != null)
+        if (CurrentSystemId != null && _systemParentSector != null)
         {
             var selected = SelectedWorldId;
             var sector = _systemParentSector;
@@ -387,6 +383,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
             if (selected != null && View.Worlds.Any(w => w.Id == selected)) SelectWorld(selected);
             return true;
         }
+        if (_lockedSector != null) return false;
         if (CurrentSystemId != null && SelectedWorldId is { } systemWorld && _worlds.TryGetValue(systemWorld, out var current)
             && !string.IsNullOrEmpty(current.PoliticalSectorId))
         {
@@ -425,14 +422,14 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         return true;
     }
 
-    private bool HasSystem(SWGalacticMapWorld world) => !string.IsNullOrEmpty(world.SystemId)
-        && (_fullPlanetScreen || _data.Worlds.Count(w => w.SystemId == world.SystemId) > 1);
+    private bool HasSystem(SWGalacticMapWorld world) => !string.IsNullOrEmpty(world.SystemId);
 
     public bool OpenSystem(string systemId)
     {
         if (_fullPlanetScreen && Map != null && Map.IsTransitioning) return false;
-        if (_lockedSector != null || !_data.Worlds.Any(w => w.SystemId == systemId && HasSystem(w))) return false;
-        if (_fullPlanetScreen && CurrentSectorId != null) _systemParentSector = CurrentSectorId;
+        if (!_data.Worlds.Any(w => w.SystemId == systemId && HasSystem(w)) ||
+            _lockedSector != null && _data.Worlds.Any(w => w.SystemId == systemId && w.Sector?.Id != _lockedSector)) return false;
+        if (CurrentSectorId != null) _systemParentSector = CurrentSectorId;
         if (CurrentSystemId != systemId || Surface != null) SwitchView(null, animate: true, systemId: systemId);
         return true;
     }
@@ -455,7 +452,7 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         Surface = null;
         _trafficToggle.Visible = _economyMapMode < 0;
         var previous = Map;
-        if (_fullPlanetScreen && previous != null) _mapViews[MapKey()] = previous.CaptureView();
+        if (previous != null) _mapViews[MapKey()] = previous.CaptureView();
         var throughSector = sectorId ?? CurrentSectorId;
         var throughWorld = SelectedWorldId is { } selected && _worlds[selected].Sector?.Id == throughSector
             && (sectorId != null || _worlds[selected].Overview) ? selected
@@ -476,21 +473,18 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         View = sectorId != null ? SWGalacticMapViews.Sector(_data, sectorId)
             : systemId != null ? SWGalacticMapViews.System(_data, systemId)
             : politicalSectorId != null ? SWGalacticMapViews.PoliticalSector(_data, politicalSectorId)
-            : _fullPlanetScreen ? new SWGalacticMapPrototype
-            {
-                Size = _data.Size, Worlds = _data.Worlds.ToList(), Routes = _data.Routes.ToList(),
-                Regions = _data.Regions, Corridors = _data.Corridors, PoliticalAreas = _data.PoliticalAreas,
-            } : SWGalacticMapViews.Overview(_data);
+            : SWGalacticAtlas.Overview(_data);
         if (sectorId == null && systemId == null && politicalSectorId == null) View = IncludeOverviewFlow(View);
-        View = MakeSchematicIfNeeded(View, sectorId, systemId, politicalSectorId);
+        View = SWGalacticAtlas.MakeSchematicIfNeeded(View, sectorId, systemId, politicalSectorId, out var schematic);
         _galaxyButton.Text = systemId != null && (_systemParentSector != null || _data.Worlds.Any(w => w.SystemId == systemId && !string.IsNullOrEmpty(w.PoliticalSectorId))) ? "К сектору" : "К галактике";
-        _galaxyButton.Visible = _lockedSector == null;
+        _galaxyButton.Visible = _lockedSector == null || systemId != null;
         _galaxyButton.Disabled = sectorId == null && systemId == null && politicalSectorId == null;
         _body.RemoveAllChildren();
         Map = new SWGalacticMapControl(View, sectorId, _lockedSector == null, systemId, politicalSectorId);
-        if (_fullPlanetScreen && previous != null) Map.RestoreTrafficAnimationSeconds(previous.TrafficAnimationSeconds);
-        if (_fullPlanetScreen && _mapViews.TryGetValue(MapKey(), out var savedView)) Map.RestoreView(savedView.Zoom, savedView.Pan);
-        Map.SetExternalLabels(_fullPlanetScreen);
+        Map.SetGeography(_data, schematic);
+        if (previous != null) Map.RestoreTrafficAnimationSeconds(previous.TrafficAnimationSeconds);
+        if (_mapViews.TryGetValue(MapKey(), out var savedView)) Map.RestoreView(savedView.Zoom, savedView.Pan);
+        Map.SetExternalLabels(true);
         RefreshMissingWorldImages();
         if (_fullPlanetScreen)
         {
@@ -544,18 +538,18 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         };
         Map.WorldActivated += id =>
         {
+            var activated = _worlds[id];
+            if (CurrentSectorId != null && activated.Sector?.Id == CurrentSectorId && HasSystem(activated))
+            {
+                if (OpenSystem(activated.SystemId)) SelectWorld(id, true);
+                return;
+            }
             if (_fullPlanetScreen && !_financeOnly && _lockedSector == null)
             {
-                var activated = _worlds[id];
                 if (CurrentSystemId != null && activated.SystemId == CurrentSystemId) { OpenPlanet(id); return; }
-                if (CurrentSectorId != null && activated.Sector?.Id == CurrentSectorId)
-                {
-                    if (HasSystem(activated) && OpenSystem(activated.SystemId)) SelectWorld(id, true);
-                    else OpenPlanet(id);
-                    return;
-                }
+                if (CurrentSectorId != null && activated.Sector?.Id == CurrentSectorId) { OpenPlanet(id); return; }
             }
-            if (_viewerFaction == "empire" && CurrentSystemId != null && _worlds[id].SystemId == CurrentSystemId) { if (!_financeOnly) OpenSurface(id); }
+            if (CurrentSystemId != null && _worlds[id].SystemId == CurrentSystemId) { if (!_financeOnly) OpenSurface(id); }
             else if (_viewerFaction == "empire" && CurrentPoliticalSectorId != null && _worlds[id].PoliticalSectorId == CurrentPoliticalSectorId && !HasSystem(_worlds[id])) { if (!_financeOnly) OpenSurface(id); }
             else if (_viewerFaction == "empire" && CurrentSystemId == null && CurrentPoliticalSectorId == null && !string.IsNullOrEmpty(_worlds[id].PoliticalSectorId) && OpenPoliticalSector(_worlds[id].PoliticalSectorId)) SelectWorld(id, true);
             else if (_viewerFaction == "empire" && CurrentSystemId == null && HasSystem(_worlds[id]) && OpenSystem(_worlds[id].SystemId)) SelectWorld(id, true);
@@ -609,7 +603,6 @@ public sealed partial class SWRepublicMapBrowser : BoxContainer
         _title.Text = sectorId != null ? (_financeOnly ? SectorName(sectorId) : $"Сектор: {SectorName(sectorId)}")
             : systemId != null ? _data.Worlds.First(w => w.SystemId == systemId).SystemName
             : politicalSectorId != null ? _data.Worlds.First(w => w.PoliticalSectorId == politicalSectorId).PoliticalSectorName : "Карта галактики";
-        _schematicNotice.Visible = _schematicPlacement;
         var initial = _fullPlanetScreen && sectorId != null ? UniqueAnchor(sectorId)
             : _fullPlanetScreen && systemId != null ? View.Worlds.FirstOrDefault(w => w.Id == SelectedWorldId && w.SystemId == systemId)
             : View.Worlds.FirstOrDefault(w => w.Anchor && (sectorId == null ? w.Id == "coruscant" : w.Sector?.Id == sectorId))

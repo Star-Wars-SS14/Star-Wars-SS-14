@@ -50,7 +50,7 @@ public sealed class SWEmpireMilitaryPanel : BoxContainer
         var source = IoCManager.Resolve<IPrototypeManager>().Index<SWGalacticMapPrototype>("SenateRepublic");
         _visible = SWGalacticMapViews.ForFaction(source, "empire");
         var toolbar = new WrapContainer { SeparationOverride = 5, CrossSeparationOverride = 4, HorizontalExpand = true };
-        _back.OnPressed += _ => SwitchView(null, null);
+        _back.OnPressed += _ => { if (_system != null && _sector != null) SwitchView(_sector, null); else SwitchView(null, null); };
         toolbar.AddChild(_back);
         toolbar.AddChild(_title);
         var minus = SWConsoleStyle.TabButton("−");
@@ -90,9 +90,18 @@ public sealed class SWEmpireMilitaryPanel : BoxContainer
         var zoom = _map?.Zoom ?? 1f;
         _sector = sector; _system = system;
         _view = system != null ? SWGalacticMapViews.System(_visible, system) : sector != null
-            ? SWGalacticMapViews.PoliticalSector(_visible, sector) : SWGalacticMapViews.Overview(_visible);
+            ? SWGalacticMapViews.PoliticalSector(_visible, sector) : SWGalacticAtlas.Overview(_visible);
+        _view = SWGalacticAtlas.MakeSchematicIfNeeded(_view, null, system, sector, out var schematic);
         _host.RemoveAllChildren();
         _map = new SWGalacticMapControl(_view, focusSystem: system, focusPoliticalSector: sector) { MinHeight = 180 };
+        _map.SetGeography(_visible, schematic);
+        _map.SetExternalLabels(true);
+        _map.SystemSelected += id =>
+        {
+            var world = _visible.Worlds.FirstOrDefault(w => w.SystemId == id);
+            if (!string.IsNullOrEmpty(world?.PoliticalSectorId)) SwitchView(world.PoliticalSectorId, null);
+            else SwitchView(null, id);
+        };
         _map.WorldSelected += id => { _target = id; _worldTarget = id; _borderId = null; _draftAction = null; InvalidateQuote(); Refresh(); };
         _map.WorldActivated += id =>
         {

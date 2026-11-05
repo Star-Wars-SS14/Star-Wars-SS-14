@@ -79,7 +79,7 @@ public sealed class SWDefenseMapPanel : BoxContainer
         SeparationOverride = 8;
         _source = IoCManager.Resolve<IPrototypeManager>().Index<SWGalacticMapPrototype>("SenateRepublic");
         var toolbar = new WrapContainer { SeparationOverride = 6, CrossSeparationOverride = 4, HorizontalExpand = true };
-        _galaxy.OnPressed += _ => ShowGalaxy();
+        _galaxy.OnPressed += _ => { if (_systemId != null && CurrentSectorId != null) SwitchView(CurrentSectorId); else ShowGalaxy(); };
         toolbar.AddChild(_galaxy);
         toolbar.AddChild(_title);
         var minus = SWConsoleStyle.TabButton("−");
@@ -315,22 +315,42 @@ public sealed class SWDefenseMapPanel : BoxContainer
     public void OpenSector(string sectorId) => SwitchView(sectorId);
     public void ShowGalaxy() => SwitchView(null);
 
-    private void SwitchView(string? sectorId)
+    private string? _systemId;
+
+    private void SwitchView(string? sectorId, string? systemId = null)
     {
-        if (Map != null && sectorId == CurrentSectorId) return;
+        if (Map != null && sectorId == CurrentSectorId && systemId == _systemId) return;
         var previous = Map;
         var throughSector = sectorId ?? CurrentSectorId;
         var anchor = _source.Worlds.FirstOrDefault(w => w.Anchor && w.Sector?.Id == throughSector)?.Id;
-        CurrentSectorId = sectorId;
+        CurrentSectorId = sectorId; _systemId = systemId;
         var visible = SWGalacticMapViews.ForFaction(_source, "republic");
-        View = sectorId == null ? SWGalacticMapViews.Overview(visible) : SWGalacticMapViews.Sector(visible, sectorId);
+        View = systemId != null ? SWGalacticMapViews.System(visible, systemId) : sectorId == null ? SWGalacticAtlas.Overview(visible) : SWGalacticMapViews.Sector(visible, sectorId);
+        View = SWGalacticAtlas.MakeSchematicIfNeeded(View, systemId == null ? sectorId : null, systemId, null, out var schematic);
         _mapHost.RemoveAllChildren();
-        Map = new SWGalacticMapControl(View, sectorId);
+        Map = new SWGalacticMapControl(View, systemId == null ? sectorId : null, focusSystem: systemId);
+        Map.SetGeography(visible, schematic);
+        Map.SetExternalLabels(true);
+        Map.SystemSelected += id =>
+        {
+            var world = visible.Worlds.FirstOrDefault(w => w.SystemId == id);
+            if (world?.Sector is { } parent) SwitchView(parent.Id);
+            else SwitchView(null, id);
+        };
         Map.MinHeight = 260;
         Map.SetDefenseSupplyVisible(_supplies.Pressed);
         Map.SetDefense(_state, SelectedFleetId);
         Map.WorldSelected += SelectWorld;
-        Map.WorldActivated += id => { var world = View.Worlds.FirstOrDefault(w => w.Id == id); if (world?.Sector is { } sector) { OpenSector(sector.Id); SelectWorld(id); } };
+        Map.WorldActivated += id =>
+        {
+            var world = visible.Worlds.FirstOrDefault(w => w.Id == id);
+            if (world == null) return;
+            if (_systemId == null && CurrentSectorId != null && world.Sector?.Id == CurrentSectorId && !string.IsNullOrEmpty(world.SystemId))
+                SwitchView(CurrentSectorId, world.SystemId);
+            else if (_systemId == null && world.Sector is { } parent && parent.Id != CurrentSectorId)
+                SwitchView(parent.Id);
+            SelectWorld(id);
+        };
         Map.RouteSelected += route =>
         {
             _targetEdge = SWTransitLinkPrototype.LinkId(route.From, route.To);
@@ -352,8 +372,9 @@ public sealed class SWDefenseMapPanel : BoxContainer
         Map.DefenseEventSelected += SelectEvent;
         Map.ViewChanged += () => _zoom.Text = $"{Map.Zoom * 100:0}%";
         _mapHost.AddChild(Map);
-        _title.Text = sectorId == null ? "Галактика" : _source.Worlds.FirstOrDefault(w => w.Anchor && w.Sector?.Id == sectorId)?.Name ?? sectorId;
-        _galaxy.Visible = sectorId != null;
+        _title.Text = systemId != null ? "Система" : sectorId == null ? "Галактика" : _source.Worlds.FirstOrDefault(w => w.Anchor && w.Sector?.Id == sectorId)?.Name ?? sectorId;
+        _galaxy.Visible = sectorId != null || systemId != null;
+        _galaxy.Text = systemId != null && sectorId != null ? "К сектору" : "Галактика";
         _zoom.Text = "100%";
         if (_targetWorld != null) Map.SelectWorld(_targetWorld);
         if (previous != null && anchor != null) Map.TransitionFrom(previous, anchor, sectorId != null);

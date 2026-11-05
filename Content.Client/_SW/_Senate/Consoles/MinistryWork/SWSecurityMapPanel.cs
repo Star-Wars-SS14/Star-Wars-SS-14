@@ -24,7 +24,7 @@ public sealed class SWSecurityMapPanel : BoxContainer
     private readonly Button _galaxy = SWConsoleStyle.TabButton("Галактика");
     private SWSecurityMapState? _state;
     private string? _revision;
-    private string? _sector, _world;
+    private string? _sector, _system, _world;
     private int? _team, _case;
     private bool _cluesOpen, _materialsOpen;
     private readonly ScrollContainer _scroll = new() { HScrollEnabled = false, HorizontalExpand = true, VerticalExpand = true };
@@ -41,7 +41,7 @@ public sealed class SWSecurityMapPanel : BoxContainer
         Orientation = LayoutOrientation.Vertical;
         HorizontalExpand = VerticalExpand = true;
         var bar = new WrapContainer { HorizontalExpand = true, SeparationOverride = 5, CrossSeparationOverride = 4 };
-        _galaxy.OnPressed += _ => SwitchView(null);
+        _galaxy.OnPressed += _ => { if (_system != null && _sector != null) SwitchView(_sector); else SwitchView(null); };
         bar.AddChild(_galaxy); bar.AddChild(_title);
         var minus = SWConsoleStyle.TabButton("−"); minus.OnPressed += _ => _map.ChangeZoom(1 / 1.2f); bar.AddChild(minus);
         var plus = SWConsoleStyle.TabButton("+"); plus.OnPressed += _ => _map.ChangeZoom(1.2f); bar.AddChild(plus);
@@ -91,26 +91,45 @@ public sealed class SWSecurityMapPanel : BoxContainer
         else if (_sector == null && !world.Anchor) SwitchView(world.Sector?.Id);
         _world = id; _map.SelectWorld(id); Refresh();
     }
-    private void SwitchView(string? sector)
+    private void SwitchView(string? sector, string? system = null)
     {
-        if (_map != null && sector == _sector) return;
+        if (_map != null && sector == _sector && system == _system) return;
         var previous = _map;
         var anchor = _source.Worlds.FirstOrDefault(w => w.Anchor && w.Sector?.Id == (sector ?? _sector))?.Id;
-        _sector = sector;
+        _sector = sector; _system = system;
         var visible = SWGalacticMapViews.ForFaction(_source, "republic");
-        var view = sector == null ? SWGalacticMapViews.Overview(visible) : SWGalacticMapViews.Sector(visible, sector);
+        var view = system != null ? SWGalacticMapViews.System(visible, system) : sector == null ? SWGalacticAtlas.Overview(visible) : SWGalacticMapViews.Sector(visible, sector);
+        view = SWGalacticAtlas.MakeSchematicIfNeeded(view, system == null ? sector : null, system, null, out var schematic);
         _host.RemoveAllChildren();
-        _map = new SWGalacticMapControl(view, sector) { MinHeight = 260 };
+        _map = new SWGalacticMapControl(view, system == null ? sector : null, focusSystem: system) { MinHeight = 260 };
+        _map.SetGeography(visible, schematic);
+        _map.SetExternalLabels(true);
+        _map.SystemSelected += id =>
+        {
+            var world = visible.Worlds.FirstOrDefault(w => w.SystemId == id);
+            if (world?.Sector is { } parent) SwitchView(parent.Id);
+            else SwitchView(null, id);
+        };
         _map.SetSecurity(_state, _team);
         _map.WorldSelected += id => { _world = id; Refresh(); };
-        _map.WorldActivated += id => { var w = _source.Worlds.FirstOrDefault(x => x.Id == id); if (w?.Sector is { } sectorId) { SwitchView(sectorId.Id); _world = id; _map.SelectWorld(id); Refresh(); } };
+        _map.WorldActivated += id =>
+        {
+            var world = visible.Worlds.FirstOrDefault(w => w.Id == id);
+            if (world == null) return;
+            if (_system == null && _sector != null && world.Sector?.Id == _sector && !string.IsNullOrEmpty(world.SystemId))
+                SwitchView(_sector, world.SystemId);
+            else if (_system == null && world.Sector is { } parent && parent.Id != _sector)
+                SwitchView(parent.Id);
+            _world = id; _map.SelectWorld(id); Refresh();
+        };
         _map.SecurityTeamSelected += ChooseTeam;
         _map.SecurityCaseSelected += id => { SelectCase(id); CaseSelected?.Invoke(id); };
         _map.SecurityCellSelected += SelectWorld;
         _map.ViewChanged += () => _zoom.Text = $"{_map.Zoom * 100:0}%";
         _host.AddChild(_map);
-        _galaxy.Visible = sector != null;
-        _title.Text = sector == null ? "Галактика" : _source.Worlds.FirstOrDefault(w => w.Anchor && w.Sector?.Id == sector)?.Name ?? "Сектор";
+        _galaxy.Visible = sector != null || system != null;
+        _galaxy.Text = system != null && sector != null ? "К сектору" : "Галактика";
+        _title.Text = system != null ? "Система" : sector == null ? "Галактика" : _source.Worlds.FirstOrDefault(w => w.Anchor && w.Sector?.Id == sector)?.Name ?? "Сектор";
         if (_world != null) _map.SelectWorld(_world);
         if (previous != null && anchor != null) _map.TransitionFrom(previous, anchor, sector != null);
     }

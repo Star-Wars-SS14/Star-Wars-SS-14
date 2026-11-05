@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Shared._SW._Senate.Holonet;
+using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
 
 namespace Content.Client._SW._Senate.Holonet;

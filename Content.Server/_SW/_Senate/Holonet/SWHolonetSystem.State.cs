@@ -190,7 +190,7 @@ public sealed partial class SWHolonetSystem
         return dto;
     }
 
-    private static string EditionName(PressEdition edition) => Loc.GetString(edition switch
+    private string EditionName(PressEdition edition) => Loc.GetString(edition switch
     {
         PressEdition.RepublicHerald => "sw-holonet-edition-herald",
         PressEdition.VoicesOfRepublic => "sw-holonet-edition-voices",

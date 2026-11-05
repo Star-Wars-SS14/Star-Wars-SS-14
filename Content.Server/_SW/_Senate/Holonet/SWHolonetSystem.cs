@@ -369,7 +369,7 @@ public sealed partial class SWHolonetSystem : EntitySystem
     }
 
     /// <summary>A retried request whose first attempt succeeded is confirmed again and not repeated.</summary>
-    private static bool IsRepeat(Viewer viewer, Persona persona, Guid request, out bool invalid)
+    private bool IsRepeat(Viewer viewer, Persona persona, Guid request, out bool invalid)
     {
         invalid = request == Guid.Empty;
         if (invalid)

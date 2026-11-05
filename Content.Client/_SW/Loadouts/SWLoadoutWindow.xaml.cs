@@ -348,11 +348,18 @@ public sealed partial class SWLoadoutWindow : SWTerminalWindow
 
     /// <summary>
     /// The entity shown for a loadout: its <see cref="LoadoutPrototype.DummyEntity"/>, which <c>GetName</c> already uses,
-    /// or its only item. A loadout of several items, like a robe with its hood, needs the dummy to get an icon.
+    /// or its only item. A set of several items without a dummy, like a Mandalorian armour with its helmet, shows its
+    /// suit, or else its first item; the dummy would also replace the set's own name, so these sets keep none.
     /// </summary>
     private EntProtoId? IconOf(LoadoutPrototype item)
     {
-        return item.DummyEntity ?? _loadouts.GetFirstOrNull(item);
+        if ((item.DummyEntity ?? _loadouts.GetFirstOrNull(item)) is { } icon)
+            return icon;
+
+        if (item.Equipment.TryGetValue("outerClothing", out var suit))
+            return suit;
+
+        return item.Equipment.Values.Cast<EntProtoId?>().FirstOrDefault();
     }
 
     private void SetUpHover(SWLoadoutRow row, LoadoutGroupPrototype group, LoadoutPrototype item, bool closed)

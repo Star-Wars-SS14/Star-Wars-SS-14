@@ -3,7 +3,9 @@ using System.Linq;
 using System.Numerics;
 using Content.Client.Humanoid;
 using Content.Client._SW.Loadouts; //SW
+//SW start Генерация расовых имён
 using Content.Client._SW.Names;
+//SW end
 using Content.Client.Lobby.UI.Loadouts;
 using Content.Client.Lobby.UI.Roles;
 using Content.Client.Message;
@@ -1593,7 +1595,9 @@ namespace Content.Client.Lobby.UI
         private void RandomizeEverything()
         {
             Profile = HumanoidCharacterProfile.Random();
+            //SW start Генерация расовых имён
             Profile = Profile.WithName(SWProfileNames.Generate(Profile.Species, Profile.Gender, _maxNameLength, _cfgManager.GetCVar(CCVars.RestrictedNames), _prototypeManager, _cfgManager.GetCVar(CCVars.ICNameCase)));
+            //SW end
             SetProfile(Profile, CharacterSlot);
             SetDirty();
         }
@@ -1601,7 +1605,9 @@ namespace Content.Client.Lobby.UI
         private void RandomizeName()
         {
             if (Profile == null) return;
+            //SW start Генерация расовых имён
             var name = SWProfileNames.Generate(Profile.Species, Profile.Gender, _maxNameLength, _cfgManager.GetCVar(CCVars.RestrictedNames), _prototypeManager, _cfgManager.GetCVar(CCVars.ICNameCase));
+            //SW end
             SetName(name);
             UpdateNameEdit();
         }

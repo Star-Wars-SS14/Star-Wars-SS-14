@@ -1,9 +1,15 @@
 using Content.Server._SW.TaskSystem.SWAddMoneyOnCompleted;
 using Content.Server.Communications;
+using Content.Server.Administration;
+using Content.Server.Administration.Managers;
+using Content.Server.GameTicking;
 using Content.Shared._SW.Economy.Prototypes;
 using Content.Shared._SW.TaskSystem;
+using Content.Shared.Administration;
 using Content.Shared.Communications;
+using Content.Shared.Ghost;
 using Robust.Server.GameObjects;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using System;
@@ -15,6 +21,8 @@ using System.Threading.Tasks;
 namespace Content.Server._SW.TaskSystem;
 public sealed partial class TaskConsoleSystem : EntitySystem
 {
+    [Dependency] private readonly IAdminManager _admins = default!;
+    [Dependency] private readonly SWSharedTaskConsoleystem _sharedConsole = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly SWTasksGameRuleSystem _sWTasks = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
@@ -26,21 +34,67 @@ public sealed partial class TaskConsoleSystem : EntitySystem
     private static readonly TimeSpan RefreshInterval = TimeSpan.FromSeconds(1);
 
     private TimeSpan _nextRefresh;
+    private readonly HashSet<(EntityUid Console, EntityUid Actor)> _adminGhostViewers = new();
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<TaskConsoleComponent, BoundUIOpenedEvent>(OnOpened);
+        SubscribeLocalEvent<TaskConsoleComponent, BoundUIClosedEvent>(OnClosed);
+        SubscribeLocalEvent<TaskConsoleComponent, SWTaskConsoleAdminGhostAccessEvent>(OnAdminGhostAccess);
+        _admins.OnPermsChanged += OnAdminPermsChanged;
+    }
+
+    public override void Shutdown()
+    {
+        _admins.OnPermsChanged -= OnAdminPermsChanged;
+        base.Shutdown();
+    }
+
+    private void OnAdminPermsChanged(AdminPermsChangedEventArgs args)
+    {
+        ValidateAdminGhostViewers();
     }
 
     private void OnOpened(Entity<TaskConsoleComponent> ent, ref BoundUIOpenedEvent args)
     {
+        if (HasComp<GhostComponent>(args.Actor) && !_sharedConsole.HasOrdinaryAccess(args.Actor, ent))
+        {
+            if (!CanAdminGhostView(args.Actor, ent))
+            {
+                _uiSystem.CloseUi(ent.Owner, TaskConsoleUiKey.Key, args.Actor);
+                return;
+            }
+
+            _adminGhostViewers.Add((ent.Owner, args.Actor));
+        }
         UpdateTaskConsoleInterface(ent.Owner, ent.Comp);
+    }
+
+    private void OnClosed(Entity<TaskConsoleComponent> ent, ref BoundUIClosedEvent args)
+    {
+        if (Equals(args.UiKey, TaskConsoleUiKey.Key))
+            _adminGhostViewers.Remove((ent.Owner, args.Actor));
+    }
+
+    private void OnAdminGhostAccess(Entity<TaskConsoleComponent> ent, ref SWTaskConsoleAdminGhostAccessEvent args)
+    {
+        args.Allowed = CanAdminGhostView(args.User, ent);
+    }
+
+    private bool CanAdminGhostView(EntityUid user, Entity<TaskConsoleComponent> console)
+    {
+        return SWSharedTaskConsoleystem.IsMainFactionConsole(console)
+            && Prototype(user)?.ID == GameTicker.AdminObserverPrototypeName.Id
+            && TryComp<GhostComponent>(user, out var ghost) && ghost.CanGhostInteract
+            && TryComp<ActorComponent>(user, out var actor) && actor.PlayerSession.AttachedEntity == user
+            && _admins.HasAdminFlag(actor.PlayerSession, AdminFlags.Admin);
     }
 
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
+        ValidateAdminGhostViewers();
 
         if (_timing.CurTime < _nextRefresh)
         {
@@ -59,6 +113,27 @@ public sealed partial class TaskConsoleSystem : EntitySystem
         }
     }
 
+    private void ValidateAdminGhostViewers()
+    {
+        // Track subscriptions, not permissions: revalidate even if the ghost component is removed.
+        foreach (var (console, actor) in _adminGhostViewers.ToArray())
+        {
+            if (!TryComp<TaskConsoleComponent>(console, out var component) ||
+                !_uiSystem.IsUiOpen(console, TaskConsoleUiKey.Key, actor))
+            {
+                _adminGhostViewers.Remove((console, actor));
+                continue;
+            }
+
+            if (_sharedConsole.HasOrdinaryAccess(actor, (console, component)) || CanAdminGhostView(actor, (console, component)))
+                continue;
+
+            _adminGhostViewers.Remove((console, actor));
+            _uiSystem.CloseUi(console, TaskConsoleUiKey.Key, actor);
+        }
+
+    }
+
     private void UpdateTaskConsoleInterface(EntityUid uid, TaskConsoleComponent comp)
     {
         List<Entity<SWTaskComponent>> list = _sWTasks.GetFactionTasks(comp.Faction);
@@ -72,6 +147,7 @@ public sealed partial class TaskConsoleSystem : EntitySystem
         }
         var state = new TaskConsoleBounderUserInterfaceState(listComp);
 
+        ValidateAdminGhostViewers();
         _uiSystem.SetUiState(uid, TaskConsoleUiKey.Key, state);
     }
 

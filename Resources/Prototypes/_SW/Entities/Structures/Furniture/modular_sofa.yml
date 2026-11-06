@@ -1,0 +1,54 @@
+- type: entity
+  abstract: true
+  id: SWModularSofaBase
+  parent: StoolBase
+  name: modular sofa
+  description: A comfortable section of a modular sofa.
+  components:
+  - type: Rotatable
+    rotateWhileAnchored: false
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.45,-0.45,0.45,0.45"
+        density: 100
+        mask:
+        - TableMask
+        layer:
+        - MachineLayer
+  - type: Sprite
+    sprite: _SW/Structures/Furniture/modular_sofa.rsi
+
+- type: entity
+  id: SWModularSofaStraight
+  parent: SWModularSofaBase
+  suffix: Straight
+  components:
+  - type: Sprite
+    state: straight
+
+- type: entity
+  id: SWModularSofaEndLeft
+  parent: SWModularSofaBase
+  suffix: Left end
+  components:
+  - type: Sprite
+    state: end_left
+
+- type: entity
+  id: SWModularSofaEndRight
+  parent: SWModularSofaBase
+  suffix: Right end
+  components:
+  - type: Sprite
+    state: end_right
+
+- type: entity
+  id: SWModularSofaCorner
+  parent: SWModularSofaBase
+  suffix: Corner
+  components:
+  - type: Sprite
+    state: corner

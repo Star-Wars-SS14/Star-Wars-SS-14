@@ -12,7 +12,7 @@
       enum.SWStatisticsConsoleUiKey.Key:
         type: SWStatisticsConsoleBoundUserInterface
   - type: Sprite
-    sprite: _SW/_Senate/Structures/Machines/RepublicStatisticsComputer.rsi
+    sprite: _SW/_Senate/Structures/Machines/RepublicStatisticsComputerSenateVisual.rsi
     layers:
     - map: ["computerLayerBody"]
       state: computer
@@ -274,7 +274,7 @@
       enum.SWSenateInfoConsoleUiKey.Key:
         type: SWSenateInfoConsoleBoundUserInterface
   - type: Sprite
-    sprite: _SW/_Senate/Structures/Machines/RepublicSenateInfoComputer.rsi
+    sprite: _SW/_Senate/Structures/Machines/RepublicSenateInfoComputerSenateVisual.rsi
     layers:
     - map: ["computerLayerBody"]
       state: computer

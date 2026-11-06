@@ -5,7 +5,7 @@
   suffix: Канцлер
   components:
   - type: Sprite
-    sprite: _SW/_Senate/Structures/Doors/Airlocks/RepublicChancellorAirlock.rsi
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/SenateChancellorVisual.rsi
   - type: AccessReader
     access: [["SWSenateChancellor"]]
 
@@ -16,7 +16,7 @@
   suffix: Спикер
   components:
   - type: Sprite
-    sprite: _SW/_Senate/Structures/Doors/Airlocks/RepublicSpeakerAirlock.rsi
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/SenateSpeakerVisual.rsi
   - type: AccessReader
     access: [["SWSenateChancellor"], ["SWSenateSpeaker"]]
 
@@ -27,7 +27,7 @@
   suffix: Сенатор
   components:
   - type: Sprite
-    sprite: _SW/_Senate/Structures/Doors/Airlocks/RepublicSenateAirlock.rsi
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/SenateSenatorVisual.rsi
   - type: AccessReader
     access: [["SWSenateChancellor"], ["SWSenateSpeaker"], ["SWSenateSenator"]]
 
@@ -38,7 +38,7 @@
   suffix: Министр
   components:
   - type: Sprite
-    sprite: _SW/_Senate/Structures/Doors/Airlocks/RepublicMinisterAirlock.rsi
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/SenateMinisterVisual.rsi
   - type: AccessReader
     access: [["SWSenateChancellor"], ["SWMinister"]]
 
@@ -49,7 +49,7 @@
   suffix: Сенат
   components:
   - type: Sprite
-    sprite: _SW/_Senate/Structures/Doors/Airlocks/RepublicSenateAirlock.rsi
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/SenateServiceVisual.rsi
   - type: AccessReader
     access: [["SWSenate"]]
 
@@ -60,6 +60,6 @@
   suffix: Суд
   components:
   - type: Sprite
-    sprite: _SW/_Senate/Structures/Doors/Airlocks/RepublicSenateAirlock.rsi
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/SenateCourtVisual.rsi
   - type: AccessReader
     access: [["SWSenateCourt"]]

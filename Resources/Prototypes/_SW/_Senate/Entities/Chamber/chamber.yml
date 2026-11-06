@@ -30,6 +30,7 @@
   - type: InteractionOutline
   - type: Sprite
     sprite: _SW/_Senate/Structures/Specific/Chamber/desk_microphone.rsi
+    noRot: true
     drawdepth: SmallObjects
     state: senator
   - type: SWSenateMic
@@ -49,6 +50,7 @@
   - type: InteractionOutline
   - type: Sprite
     sprite: _SW/_Senate/Structures/Specific/Chamber/desk_microphone.rsi
+    noRot: true
     drawdepth: SmallObjects
     state: chancellor
   - type: SWSenateMic
@@ -68,6 +70,7 @@
   - type: InteractionOutline
   - type: Sprite
     sprite: _SW/_Senate/Structures/Specific/Chamber/desk_microphone.rsi
+    noRot: true
     drawdepth: SmallObjects
     state: speaker
   - type: SWSenateMic

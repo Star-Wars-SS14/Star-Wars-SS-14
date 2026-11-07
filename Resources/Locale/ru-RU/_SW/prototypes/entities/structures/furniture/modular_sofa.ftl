@@ -1,10 +1,14 @@
 ent-SWModularSofaBase = модульный диван
     .desc = Удобная секция модульного дивана.
 ent-SWModularSofaStraight = { ent-SWModularSofaBase }
+    .desc = { ent-SWModularSofaBase.desc }
     .suffix = Прямой
 ent-SWModularSofaEndLeft = { ent-SWModularSofaBase }
+    .desc = { ent-SWModularSofaBase.desc }
     .suffix = Левый торец
 ent-SWModularSofaEndRight = { ent-SWModularSofaBase }
+    .desc = { ent-SWModularSofaBase.desc }
     .suffix = Правый торец
 ent-SWModularSofaCorner = { ent-SWModularSofaBase }
+    .desc = { ent-SWModularSofaBase.desc }
     .suffix = Угловой

@@ -52,13 +52,15 @@ public sealed class SWHudHands
             // The highlight stays visible, it tells which hand is active; only its picture goes.
             hand.HighlightRect.Modulate = Color.Transparent;
             var empty = hand.Entity == null;
-            hand.ButtonRect.Visible = empty;
+            // SlotControl handles input on ButtonRect, including for occupied hands.
+            // Keep it visible for hit testing and hide only its picture.
+            hand.ButtonRect.Visible = true;
+            hand.ButtonRect.Modulate = empty ? Color.White.WithAlpha(.5f) : Color.Transparent;
             if (empty)
             {
                 var icon = Load(hand.HandLocation == Content.Shared.Hands.Components.HandLocation.Left ? "hand_l" : "hand_r");
                 if (hand.ButtonRect.Texture != icon)
                     hand.ButtonRect.Texture = icon;
-                hand.ButtonRect.Modulate = Color.White.WithAlpha(.5f);
                 // At its own 32 px in the middle of the slot, as in the mock, not stretched over it.
                 hand.ButtonRect.Stretch = TextureRect.StretchMode.KeepCentered;
             }

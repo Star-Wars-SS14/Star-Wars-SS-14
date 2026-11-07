@@ -170,7 +170,7 @@
     availableModes:
     - SemiAuto
     soundGunshot:
-      path: /Audio/_SW/Weapons/Guns/Gunshots/blaster_sound.ogg
+      path: /Audio/_SW/Weapons/Guns/Gunshots/speeder-attack.ogg
   - type: PredictedBattery 
     maxCharge: 1000
     startingCharge: 1000

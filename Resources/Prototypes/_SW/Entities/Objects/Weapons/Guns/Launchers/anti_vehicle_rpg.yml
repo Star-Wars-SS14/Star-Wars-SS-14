@@ -12,6 +12,7 @@
     - suitStorage
   - type: Wieldable
     unwieldOnUse: false
+    wieldedInhandPrefix: null
   - type: EyeCursorOffset
     maxOffset: 8
     pvsIncrease: 0.8

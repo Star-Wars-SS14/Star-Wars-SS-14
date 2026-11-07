@@ -282,6 +282,7 @@
     maxAngle: 10    
     angleDecay: 4
   - type: Wieldable # MultiHandedItem kept both hands busy, so the gun could not be reloaded in hand.
+    wieldedInhandPrefix: null
   - type: GunRequiresWield
   - type: ItemSlots
     slots:
@@ -311,6 +312,7 @@
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/MachineGuns/grantekF11D.rsi
   - type: Wieldable # MultiHandedItem kept both hands busy, so the gun could not be reloaded in hand.
+    wieldedInhandPrefix: null
   - type: GunRequiresWield
   - type: HeldSpeedModifier
     walkModifier: 0.4
@@ -382,6 +384,7 @@
     walkModifier: 0.8
     sprintModifier: 0.8
   - type: Wieldable # MultiHandedItem kept both hands busy, so the gun could not be reloaded in hand.
+    wieldedInhandPrefix: null
   - type: GunRequiresWield
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/MachineGuns/GT13ST.rsi
@@ -440,6 +443,7 @@
     maxAngle: 10  
     angleDecay: 4
   - type: Wieldable # MultiHandedItem kept both hands busy, so the gun could not be reloaded in hand.
+    wieldedInhandPrefix: null
   - type: GunRequiresWield
   - type: ItemSlots
     slots:
@@ -462,6 +466,7 @@
     walkModifier: 0.8
     sprintModifier: 0.8
   - type: Wieldable # MultiHandedItem kept both hands busy, so the gun could not be reloaded in hand.
+    wieldedInhandPrefix: null
   - type: GunRequiresWield
   - type: Sprite
     sprite: _SW/Objects/Weapons/Guns/MachineGuns/MK1.rsi

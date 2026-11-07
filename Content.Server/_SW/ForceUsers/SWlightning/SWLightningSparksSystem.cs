@@ -5,23 +5,23 @@ using System;
 
 namespace Content.Server._SW;
 
-public sealed class LightningSparksSystem : EntitySystem
+public sealed class SWLightningSparksSystem : EntitySystem
 {
     [Dependency] private readonly IGameTiming _timing = default!;
     
-    private const float SparkSpawnInterval = 0.2f; // Спавн искр каждые 0.2 секунды
+    private const float SparkSpawnInterval = 0.2f; 
     
     public void AddLightningSparks(EntityUid target, float duration)
     {
         // Remove any old sparks, if present
-        if (TryComp<LightningSparksComponent>(target, out var oldComp))
+        if (TryComp<SWLightningSparksComponent>(target, out var oldComp))
         {
             oldComp.Active = false;
-            RemComp<LightningSparksComponent>(target);
+            RemComp<SWLightningSparksComponent>(target);
         }
         
         // Adding a tracking component
-        var comp = EnsureComp<LightningSparksComponent>(target);
+        var comp = EnsureComp<SWLightningSparksComponent>(target);
         comp.Active = true;
         comp.Timer = 0f;
         
@@ -29,7 +29,7 @@ public sealed class LightningSparksSystem : EntitySystem
         ScheduleSparks(target, comp, duration);
     }
     
-    private void ScheduleSparks(EntityUid target, LightningSparksComponent comp, float remainingTime)
+    private void ScheduleSparks(EntityUid target, SWLightningSparksComponent comp, float remainingTime)
     {
         if (remainingTime <= 0 || !comp.Active)
         {
@@ -57,7 +57,7 @@ public sealed class LightningSparksSystem : EntitySystem
 }
 
 [RegisterComponent]
-public sealed partial class LightningSparksComponent : Component
+public sealed partial class SWLightningSparksComponent : Component
 {
     public bool Active;
     public float Timer;

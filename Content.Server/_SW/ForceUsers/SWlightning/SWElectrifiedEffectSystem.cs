@@ -5,15 +5,15 @@ using System;
 
 namespace Content.Server._SW;
 
-public sealed class ElectrifiedEffectSystem : EntitySystem
+public sealed class SWElectrifiedEffectSystem : EntitySystem
 {
     public void AddElectrifiedEffect(EntityUid target, float duration)
     {
         // Remove the old effect, if present
-        if (TryComp<ElectrifiedEffectComponent>(target, out var oldComp) && oldComp.EffectEntity.IsValid())
+        if (TryComp<SWElectrifiedEffectComponent>(target, out var oldComp) && oldComp.EffectEntity.IsValid())
         {
             EntityManager.DeleteEntity(oldComp.EffectEntity);
-            RemComp<ElectrifiedEffectComponent>(target);
+            RemComp<SWElectrifiedEffectComponent>(target);
         }
 
         var transform = EntityManager.GetComponent<TransformComponent>(target);
@@ -24,17 +24,23 @@ public sealed class ElectrifiedEffectSystem : EntitySystem
         effectTransform.AttachParent(target);
         
         // Adding a tracking component
-        var comp = EnsureComp<ElectrifiedEffectComponent>(target);
+        var comp = EnsureComp<SWElectrifiedEffectComponent>(target);
         comp.EffectEntity = effect;
         
         // Remove the effect after a specified time
         Timer.Spawn(TimeSpan.FromSeconds(duration), () =>
         {
-            if (TryComp<ElectrifiedEffectComponent>(target, out var c) && c.EffectEntity.IsValid())
+            if (TryComp<SWElectrifiedEffectComponent>(target, out var c) && c.EffectEntity.IsValid())
             {
                 EntityManager.DeleteEntity(c.EffectEntity);
-                RemComp<ElectrifiedEffectComponent>(target);
+                RemComp<SWElectrifiedEffectComponent>(target);
             }
         });
     }
+}
+
+[RegisterComponent]
+public sealed partial class SWElectrifiedEffectComponent : Component
+{
+    public EntityUid EffectEntity;
 }

@@ -49,6 +49,27 @@ public enum SWTrainingArt
     MarkVeto,
     MarkMutation,
     MarkClock,
+
+    // Pictures of the staged chapters, delivered separately by the art owner.
+    FigDoctorConsole,
+    ShiftConsole,
+    ShiftConsoleBg,
+    UiPointer,
+    GearBeltMedicalClosed,
+    FigDoctorTreat,
+    ConsoleCloseupMounted,
+    FigSpeakerConsole,
+    WorkConsole,
+
+    // Action poses for single stages; the plain figures stay in every other scene. Frame 0 stands, frame 1 acts.
+    /// <summary>The guard head in slot A pointing right, towards slot B.</summary>
+    FigGuardHeadPoint,
+    /// <summary>The guard officer in slot A with a hand at the headset.</summary>
+    FigGuardOfficerRadio,
+    /// <summary>The usher in slot B with the staff, the open palm pointing left, towards slot A.</summary>
+    FigUsherGuide,
+    /// <summary>The doctor at the treatment position looking the patient over, without touching.</summary>
+    FigDoctorExamine,
 }
 
 /// <summary>Whole sheet size in art pixels; a sheet holds <paramref name="Frames"/> equal frames side by side.</summary>
@@ -65,10 +86,13 @@ public enum SWTrainingScene
     Dossier,
     Terminal,
     Console,
+    /// <summary>The console with the card reader on its post, for every shot where a hand uses it.</summary>
+    ConsoleMounted,
     Entrance,
     Bench,
     Clinic,
     Lab,
+    ShiftRoom,
 }
 
 /// <summary>Background layers, bottom first, and the view centre in the pixels of the first layer.</summary>
@@ -76,7 +100,40 @@ public sealed record SWTrainingSceneDef(SWTrainingScene Scene, float CameraX, fl
 
 public static class SWSenateTrainingArt
 {
-    public const int NewFileCount = 26;
+    public const int NewFileCount = 39;
+
+    /// <summary>The checked treatment layer goes over the patient; its frames are wider than the standing doctor's.</summary>
+    public const int TreatDoctorX = 305;
+
+    /// <summary>The examining doctor shares the treatment position, so the patient keeps one place in every shot.</summary>
+    public const int ExamineDoctorX = 305;
+
+    /// <summary>The doctor and the shift console share the frame's origin; the art owner confirms this composition.</summary>
+    public const int ShiftDoctorX = 330;
+    public const int ShiftDoctorY = 100;
+    public const int ShiftConsoleX = 375;
+    public const int ShiftConsoleY = 110;
+
+    /// <summary>A figure at the work console; the two sheets are drawn together, so the hand meets the console.</summary>
+    public const int WorkFigureX = 330;
+    public const int WorkFigureY = 100;
+    public const int WorkConsoleX = 375;
+    public const int WorkConsoleY = 110;
+
+    /// <summary>The console screen in the frame. Illustrations of game windows are placed inside it.</summary>
+    public const int ScreenLeft = 150;
+    public const int ScreenTop = 20;
+    public const int ScreenRight = 570;
+    public const int ScreenBottom = 172;
+
+    /// <summary>In the shift room the illustration stands left of the doctor, so the console stays in the picture.</summary>
+    public const int RoomPanelLeft = 44;
+    public const int RoomPanelRight = 322;
+
+    /// <summary>The part of the frame given to an illustration; it always ends above the text zone.</summary>
+    public static (int Left, int Top, int Right, int Bottom) PanelBox(SWTrainingScene scene) => scene == SWTrainingScene.ShiftRoom
+        ? (RoomPanelLeft, ScreenTop, RoomPanelRight, ScreenBottom)
+        : (ScreenLeft, ScreenTop, ScreenRight, ScreenBottom);
 
     /// <summary>Frame size of the staging: overlay positions are given in it and its centre is the view centre.</summary>
     public const int FrameWidth = 720;
@@ -98,12 +155,8 @@ public static class SWSenateTrainingArt
     public const int PatientX = 364;
     public const int PatientY = SlotY;
 
-    /// <summary>The doctor's place in the shots with the patient: close enough for the hand to touch them.</summary>
-    public const int DoctorWithPatientX = 345;
-
-    /// <summary>Centre of the hand holding the brutepack, inside frame 1 of fig_doctor.</summary>
-    public const int DoctorHandX = 88;
-    public const int DoctorHandY = 82;
+    /// <summary>The standing doctor alone, roughly where the treatment layer's figure stands when the patient appears.</summary>
+    public const int DoctorAloneX = 312;
 
     private const string Root = "/Textures/_SW/_Senate/RoleTraining/";
     private const string Intro = "/Textures/_SW/_Senate/Intro/";
@@ -153,6 +206,19 @@ public static class SWSenateTrainingArt
         new(SWTrainingArt.MarkVeto, Root + "mark_veto.png", 32, 32, 1, true),
         new(SWTrainingArt.MarkMutation, Root + "mark_mutation.png", 32, 32, 1, true),
         new(SWTrainingArt.MarkClock, Root + "mark_clock.png", 32, 32, 1, true),
+        new(SWTrainingArt.FigDoctorConsole, Root + "fig_doctor_console.png", 192, 160, 2, true),
+        new(SWTrainingArt.ShiftConsole, Root + "shift_console.png", 256, 160, 2, true),
+        new(SWTrainingArt.ShiftConsoleBg, Root + "shift_console_bg.png", 720, 270, 1, true),
+        new(SWTrainingArt.UiPointer, Root + "ui_pointer.png", 48, 24, 2, true),
+        new(SWTrainingArt.GearBeltMedicalClosed, Root + "gear_belt_medical_closed.png", 720, 270, 1, true),
+        new(SWTrainingArt.FigDoctorTreat, Root + "fig_doctor_treat.png", 512, 160, 4, true),
+        new(SWTrainingArt.ConsoleCloseupMounted, Root + "console_closeup_mounted.png", 720, 270, 1, true),
+        new(SWTrainingArt.FigSpeakerConsole, Root + "fig_speaker_console.png", 192, 160, 2, true),
+        new(SWTrainingArt.WorkConsole, Root + "work_console.png", 256, 160, 2, true),
+        new(SWTrainingArt.FigGuardHeadPoint, Root + "fig_guard_head_point.png", 192, 160, 2, true),
+        new(SWTrainingArt.FigGuardOfficerRadio, Root + "fig_guard_officer_radio.png", 192, 160, 2, true),
+        new(SWTrainingArt.FigUsherGuide, Root + "fig_usher_guide.png", 192, 160, 2, true),
+        new(SWTrainingArt.FigDoctorExamine, Root + "fig_doctor_examine.png", 192, 160, 2, true),
     };
 
     public static readonly SWTrainingSceneDef[] Scenes =
@@ -173,10 +239,12 @@ public static class SWSenateTrainingArt
         new(SWTrainingScene.Dossier, 480, 225, new[] { SWTrainingArt.ArchiveDesk, SWTrainingArt.ArchiveLamp }),
         new(SWTrainingScene.Terminal, 480, 225, new[] { SWTrainingArt.SectorTerminal }),
         new(SWTrainingScene.Console, 360, 135, new[] { SWTrainingArt.ConsoleCloseupBg }),
+        new(SWTrainingScene.ConsoleMounted, 360, 135, new[] { SWTrainingArt.ConsoleCloseupMounted }),
         new(SWTrainingScene.Entrance, 360, 135, new[] { SWTrainingArt.HallEntranceBg }),
         new(SWTrainingScene.Bench, 360, 135, new[] { SWTrainingArt.GearBenchBg }),
         new(SWTrainingScene.Clinic, 360, 135, new[] { SWTrainingArt.ClinicBg }),
         new(SWTrainingScene.Lab, 360, 135, new[] { SWTrainingArt.LabBg }),
+        new(SWTrainingScene.ShiftRoom, 360, 135, new[] { SWTrainingArt.ShiftConsoleBg }),
     };
 
     private static readonly Dictionary<SWTrainingArt, SWTrainingArtFile> ByArt = BuildByArt();

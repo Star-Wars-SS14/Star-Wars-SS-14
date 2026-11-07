@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Client.ResourceManagement;
+using Robust.Client.UserInterface;
 using Robust.Shared.IoC;
 using Robust.Shared.Log;
 using Robust.Shared.Maths;
@@ -33,6 +34,12 @@ public sealed partial class SWSenateTraining
     private const float AdvanceTime = 2f;
     private const float EdgeFade = 0.5f;
     private const float CrossFade = 0.8f;
+    private const float MinPanelHeight = 200f;
+    private const float PopupSeconds = 4f;
+    private const float MinAnnotationWidth = 180f;
+    private const float PointerTravel = 1.5f;
+    private const float PointerUiSize = 24f;
+    private const float PopupMaxWidth = 320f;
 
     private static readonly Color Backdrop = Color.FromHex("#0A0F16");
     private static readonly Color PlateFill = Backdrop.WithAlpha(0.92f);
@@ -49,6 +56,7 @@ public sealed partial class SWSenateTraining
     private readonly record struct PageLayout(TextMode Mode, float Pixel, UIBox2 Canvas, bool Stacked, float PlateLeft, float PlateWidth, float PlateAnchor);
 
     private (string Chapter, Vector2 Size, float Ui, float Reserve)? _layoutKey;
+    private (string Chapter, Vector2 Size, float Ui)? _overflowFor;
     private PageLayout _layout;
 
     // Per-scene drawing state, in art pixels of the current scene.
@@ -57,6 +65,7 @@ public sealed partial class SWSenateTraining
     private float _left;
     private float _top;
     private Vector2 _origin;
+    private bool _canvasDrawn;
 
     private static Font LoadFont(string variant, int size) =>
         new VectorFont(IoCManager.Resolve<IResourceCache>().GetResource<FontResource>($"/Fonts/NotoSans/NotoSans-{variant}.ttf"), size);
@@ -101,7 +110,8 @@ public sealed partial class SWSenateTraining
         // The controller moves the text to the mode chosen here, outside the UI tree walk.
         _wantedMode = layout.Mode;
         var shot = _chapter.Shots[_shotIndex];
-        if (layout.Pixel > 0f)
+        _canvasDrawn = layout.Pixel > 0f;
+        if (_canvasDrawn)
             DrawCanvas(handle, layout, shot, UIScale);
 
         if (layout.Mode == TextMode.Drawn && _textMode == TextMode.Drawn)
@@ -141,9 +151,11 @@ public sealed partial class SWSenateTraining
     {
         var room = MathF.Max(1f, size.Y - _barReserve * ui);
         var margin = (size.X / ui < NarrowWindow ? NarrowMargin : WideMargin) * ui;
+        var needsPanel = SWSenateTrainingScript.HasPanels(chapter);
+        var overflowed = _overflowFor == (chapter.Id, size, ui);
 
         var pixel = FitPixel(size.X, room);
-        if (pixel >= 1f)
+        if (pixel >= 1f && (!needsPanel || (!overflowed && PanelsFit(chapter, size.X, pixel, ui))))
         {
             var view = size.X / pixel;
             var zoneRight = (SWSenateTrainingArt.ZoneRight - (SWSenateTrainingArt.FrameWidth - view) / 2f) * pixel;
@@ -165,12 +177,16 @@ public sealed partial class SWSenateTraining
         {
             var stackedPixel = FitPixel(size.X, room - plate - gap);
             var pictureHeight = SWSenateTrainingArt.FrameHeight * stackedPixel;
-            if (pictureHeight < MinCanvasHeight * ui)
+            if (pictureHeight < MinCanvasHeight * ui && !needsPanel)
                 return new PageLayout(TextMode.Drawn, 0f, default, true, left, stackedWidth, MathF.Floor((room - plate) / 2f));
 
-            var stackedTop = MathF.Floor((room - pictureHeight - gap - plate) / 2f);
-            var stackedCanvas = new UIBox2(0f, stackedTop, size.X, stackedTop + pictureHeight);
-            return new PageLayout(TextMode.Drawn, stackedPixel, stackedCanvas, true, left, stackedWidth, stackedCanvas.Bottom + gap);
+            // A chapter with illustrations stays here only if they fit the picture; otherwise they join the scroll area.
+            if (pictureHeight >= MinCanvasHeight * ui && (!needsPanel || (!overflowed && PanelsFit(chapter, size.X, stackedPixel, ui))))
+            {
+                var stackedTop = MathF.Floor((room - pictureHeight - gap - plate) / 2f);
+                var stackedCanvas = new UIBox2(0f, stackedTop, size.X, stackedTop + pictureHeight);
+                return new PageLayout(TextMode.Drawn, stackedPixel, stackedCanvas, true, left, stackedWidth, stackedCanvas.Bottom + gap);
+            }
         }
 
         // The panel keeps its place while the text can still get a usable scroll area above it.
@@ -188,6 +204,41 @@ public sealed partial class SWSenateTraining
         return new PageLayout(TextMode.Scroll, scrollPixel, scrollCanvas, true, margin, size.X - margin * 2f, scrollCanvas.Bottom + gap);
     }
 
+    /// <summary>The illustration's part of the frame on screen, cropped to what a narrow window shows.</summary>
+    private static UIBox2 PanelBoxOnScreen(SWTrainingScene scene, UIBox2 canvas, float pixel)
+    {
+        var box = SWSenateTrainingArt.PanelBox(scene);
+        var view = canvas.Width / pixel;
+        var frameLeft = canvas.Left - (SWSenateTrainingArt.FrameWidth - view) / 2f * pixel;
+        return new UIBox2(
+            MathF.Max(frameLeft + box.Left * pixel, canvas.Left),
+            canvas.Top + box.Top * pixel,
+            MathF.Min(frameLeft + box.Right * pixel, canvas.Right),
+            canvas.Top + box.Bottom * pixel);
+    }
+
+    private static bool PanelsFit(SWTrainingChapter chapter, float width, float pixel, float ui)
+    {
+        var canvas = new UIBox2(0f, 0f, width, SWSenateTrainingArt.FrameHeight * pixel);
+        foreach (var shot in chapter.Shots)
+        {
+            if (shot.Stages == null)
+                continue;
+
+            foreach (var stage in shot.Stages)
+            {
+                if (stage.Panel == null)
+                    continue;
+
+                var box = PanelBoxOnScreen(stage.Visual.Scene, canvas, pixel);
+                if (box.Width < SWTrainingUiPanels.MinWidth(stage.Panel) * ui || box.Height < MinPanelHeight * ui)
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
     // ---- text -------------------------------------------------------------
 
     private float WorstPlateHeight(DrawingHandleScreen handle, SWTrainingChapter chapter, float scale, float width)
@@ -203,8 +254,11 @@ public sealed partial class SWSenateTraining
         var inner = MathF.Max(1f, width - PlatePadding * 2f * scale);
         var title = Wrap(handle, _titleFont!, scale, shot.Title, inner).Count * _titleFont!.GetLineHeight(scale);
         var text = Wrap(handle, _textFont!, scale, shot.Text, inner).Count * _textFont!.GetLineHeight(scale);
-        var note = Wrap(handle, _textFont!, scale, shot.Note, inner).Count * _textFont!.GetLineHeight(scale);
-        return PlatePadding * 2f * scale + title + PlateGap * scale + text + PlateGap * scale + note;
+        // The optional line takes no room when a shot has nothing to add.
+        var note = shot.Note.Length == 0
+            ? 0f
+            : PlateGap * scale + Wrap(handle, _textFont!, scale, shot.Note, inner).Count * _textFont!.GetLineHeight(scale);
+        return PlatePadding * 2f * scale + title + PlateGap * scale + text + note;
     }
 
     /// <summary>Plain plate: all lines in full, no ellipsis, no accent bar and no markers.</summary>
@@ -292,15 +346,20 @@ public sealed partial class SWSenateTraining
     {
         _pixel = layout.Pixel;
         _canvas = layout.Canvas;
-        var visual = shot.Visual;
+        var stage = CurrentStage;
+        var visual = stage?.Visual ?? shot.Visual;
         var shotTime = _shotTime;
-        var duration = SWSenateTrainingScript.ShotDuration(_chapter!, shot);
+        var duration = SWSenateTrainingScript.ShotDuration(_chapter!, shot, _reducedMotion);
 
         var delivered = BeginScene(visual.Scene);
         if (visual.Then is not { } then)
         {
             if (delivered)
-                DrawDetails(handle, visual, shotTime, ui);
+            {
+                // A stage starts its pictures' own time at its beginning.
+                var localTime = stage != null ? shotTime - StageStart(stage) : shotTime;
+                DrawDetails(handle, visual, localTime, ui, stage != null);
+            }
         }
         else
         {
@@ -355,7 +414,7 @@ public sealed partial class SWSenateTraining
         }
     }
 
-    private void DrawDetails(DrawingHandleScreen handle, SWTrainingVisual visual, float shotTime, float ui)
+    private void DrawDetails(DrawingHandleScreen handle, SWTrainingVisual visual, float shotTime, float ui, bool staged)
     {
         DrawLayers(handle, visual.Scene, 1f);
 
@@ -364,11 +423,133 @@ public sealed partial class SWSenateTraining
             DrawSchema(handle, visual, ui);
 
         foreach (var overlay in visual.Overlays)
-            DrawOverlay(handle, overlay, shotTime);
+        {
+            // In a staged shot the clock goes above the illustration, in DrawTop.
+            if (!staged || overlay.Art != SWTrainingArt.MarkClock)
+                DrawOverlay(handle, overlay, shotTime);
+        }
 
         DrawFocus(handle, visual.Focus);
-        if (visual.ClockText != null)
+        if (visual.ClockText != null && !staged)
             DrawClockText(handle, visual.ClockText, ui);
+    }
+
+    // ---- stage layer ------------------------------------------------------
+
+    /// <summary>Called by the top layer after the illustration; it reuses the camera the canvas set this frame.</summary>
+    private void DrawTop(DrawingHandleScreen handle)
+    {
+        if (_chapter == null || CurrentStage is not { } stage)
+            return;
+
+        var ui = UIScale;
+        var visual = stage.Visual;
+        // In the scroll modes the clock and the notes are part of the text instead of covering it.
+        if (_textMode == TextMode.Drawn && _canvasDrawn && _art.ContainsKey(SWSenateTrainingArt.Scene(visual.Scene).Layers[0]))
+        {
+            foreach (var overlay in visual.Overlays)
+            {
+                if (overlay.Art == SWTrainingArt.MarkClock)
+                    DrawOverlay(handle, overlay, 0f);
+            }
+
+            if (visual.ClockText != null)
+                DrawClockText(handle, visual.ClockText, ui);
+
+            if (stage.Annotations != null)
+            {
+                foreach (var annotation in stage.Annotations)
+                    DrawAnnotation(handle, annotation, ui);
+            }
+        }
+
+        if (!_panelArea.Visible)
+            return;
+
+        // A state without a target, such as an approved budget, still shows its popup at the illustration.
+        Control anchor = _panelTarget ?? _panelArea;
+        // Controls built this frame have no place yet; the pointer and the popup appear with the next one.
+        if (anchor.PixelSize.X <= 0)
+            return;
+
+        var position = (Vector2) (anchor.GlobalPixelPosition - GlobalPixelPosition);
+        var target = UIBox2.FromDimensions(position, (Vector2) anchor.PixelSize);
+        if (_panelTarget != null)
+        {
+            // Without movement the outline tells the aim from the press: dim, then bright.
+            if (stage.Pointer == SWTrainingPointer.Press)
+                handle.DrawRect(target, SWConsoleStyle.Accent, false);
+            else if (stage.Pointer == SWTrainingPointer.Travel && _reducedMotion)
+                handle.DrawRect(target, SWConsoleStyle.TextDim, false);
+
+            DrawPointer(handle, stage, target, ui);
+        }
+
+        // A popup is brief in the game too; its stage stays on screen and the scroll area keeps its words.
+        if (stage.Popup != null && _shotTime - StageStart(stage) < PopupSeconds)
+            DrawPopup(handle, stage.Popup, target, ui);
+    }
+
+    private void DrawPointer(DrawingHandleScreen handle, SWTrainingStage stage, UIBox2 target, float ui)
+    {
+        if (stage.Pointer == SWTrainingPointer.None || !_art.TryGetValue(SWTrainingArt.UiPointer, out var texture))
+            return;
+
+        var size = PointerUiSize * ui;
+        var position = target.Center;
+        // Under reduced motion the pointer stands still on the control.
+        if (stage.Pointer == SWTrainingPointer.Travel && !_reducedMotion)
+        {
+            var t = Math.Clamp((_shotTime - StageStart(stage)) / PointerTravel, 0f, 1f);
+            t = t * t * (3f - 2f * t);
+            position += new Vector2(90f, 60f) * ui * (1f - t);
+        }
+
+        var frame = stage.Pointer == SWTrainingPointer.Press ? 1 : 0;
+        var region = new UIBox2(PointerUiSize * frame, 0f, PointerUiSize * (frame + 1), PointerUiSize);
+        handle.DrawTextureRectRegion(texture, UIBox2.FromDimensions(position, new Vector2(size, size)), region, Color.White);
+    }
+
+    /// <summary>A popup, as the game shows it at the cursor: brief, apart from the window, and over it.</summary>
+    private void DrawPopup(DrawingHandleScreen handle, string text, UIBox2 target, float ui)
+    {
+        var padding = 6f * ui;
+        var width = PopupMaxWidth * ui;
+        var lines = Wrap(handle, _labelFont!, ui, text, width - padding * 2f);
+        var height = lines.Count * _labelFont!.GetLineHeight(ui) + padding * 2f;
+        var size = (Vector2) PixelSize;
+        var left = Math.Clamp(target.Center.X - width / 2f, 0f, MathF.Max(0f, size.X - width));
+        var top = MathF.Max(0f, target.Top - height - 4f * ui);
+        var box = UIBox2.FromDimensions(new Vector2(left, top), new Vector2(width, height));
+        handle.DrawRect(box, PlateFill);
+        handle.DrawRect(box, SWConsoleStyle.Brass, false);
+        DrawLines(handle, _labelFont!, ui, text, box.Left + padding, box.Top + padding, width - padding * 2f, SWConsoleStyle.TextBright);
+    }
+
+    private void DrawAnnotation(DrawingHandleScreen handle, SWTrainingAnnotation annotation, float ui)
+    {
+        var padding = 6f * ui;
+        var width = MathF.Max(annotation.Width * _pixel, MinAnnotationWidth * ui);
+        var inner = MathF.Max(1f, width - padding * 2f);
+        var color = annotation.Tone switch
+        {
+            SWTrainingTone.Teaching => SWConsoleStyle.Brass,
+            SWTrainingTone.GameWarning => SWConsoleStyle.Warn,
+            _ => SWConsoleStyle.TextBright,
+        };
+
+        var heading = annotation.Heading == null ? 0f : Wrap(handle, _labelFont!, ui, annotation.Heading, inner).Count * _labelFont!.GetLineHeight(ui);
+        var height = heading + Wrap(handle, _textFont!, ui, annotation.Text, inner).Count * _textFont!.GetLineHeight(ui) + padding * 2f;
+        var anchor = ToScreen(_origin + new Vector2(annotation.X, annotation.Y));
+        // The requested right edge is kept where a wider minimum applies, so a note never grows over a face.
+        var right = anchor.X + annotation.Width * _pixel;
+        var left = MathF.Max(_canvas.Left, right - width);
+        var box = UIBox2.FromDimensions(new Vector2(left, anchor.Y), new Vector2(width, height));
+        handle.DrawRect(box, PlateFill);
+        var y = box.Top + padding;
+        if (annotation.Heading != null)
+            y = DrawLines(handle, _labelFont!, ui, annotation.Heading, box.Left + padding, y, inner, SWConsoleStyle.TextBright);
+        DrawLines(handle, _textFont!, ui, annotation.Text, box.Left + padding, y, inner, color);
     }
 
     private void DrawOverlay(DrawingHandleScreen handle, SWTrainingOverlay overlay, float shotTime)
@@ -381,6 +562,12 @@ public sealed partial class SWSenateTraining
         // Under reduced motion only the finished state of an action is shown.
         if (overlay.Advance)
             frame = _reducedMotion || shotTime >= AdvanceTime ? 1 : 0;
+        else if (overlay.Sequence > 0f && !_reducedMotion)
+        {
+            var step = (int) (shotTime / overlay.Sequence * file.Frames);
+            frame = overlay.Reverse ? file.Frames - 1 - step : step;
+        }
+
         frame = Math.Clamp(frame, 0, file.Frames - 1);
 
         var frameWidth = (float) file.Width / file.Frames;

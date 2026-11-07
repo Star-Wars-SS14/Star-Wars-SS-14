@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -23,7 +24,8 @@ public sealed partial class SWSenateTraining : LayoutContainer
     private const float BarEdge = 12f;
     private const float CompactEdge = 4f;
 
-    private const string ManualHint = "Этот кадр не сменится сам. Чтобы перейти дальше, нажмите «Пропустить».";
+    private const string ManualHint = "Этот кадр не сменится сам. «Пропустить» показывает следующий шаг или кадр, «Назад» возвращает предыдущий.";
+    private const float StageEpsilon = 0.01f;
 
     /// <summary>Where the shot's text is. In the last two modes the window cannot show it whole, so it scrolls.</summary>
     private enum TextMode
@@ -46,6 +48,7 @@ public sealed partial class SWSenateTraining : LayoutContainer
     private readonly Button _menuBack;
 
     private readonly PanelContainer _textArea;
+    private readonly PanelContainer _panelArea;
     private readonly BoxContainer _bar;
     private readonly Label _shotHeading;
     private readonly Label _barStatus;
@@ -66,7 +69,10 @@ public sealed partial class SWSenateTraining : LayoutContainer
 
     private TextMode _textMode = TextMode.Drawn;
     private TextMode _wantedMode = TextMode.Drawn;
-    private (string Chapter, int Shot, TextMode Mode)? _shownText;
+    private (string Chapter, int Shot, int Stage, TextMode Mode)? _shownText;
+    private SWTrainingPanelState? _shownPanel;
+    private PanelHost? _panelHost;
+    private Control? _panelTarget;
 
     /// <summary>The player asked to leave the training. The controller removes the control.</summary>
     public event Action? CloseRequested;
@@ -121,7 +127,16 @@ public sealed partial class SWSenateTraining : LayoutContainer
         AddChild(_textArea);
         SetAnchorPreset(_textArea, LayoutPreset.Wide);
 
-        _bar = new BoxContainer { Orientation = LayoutOrientation.Vertical, SeparationOverride = (int) BarSeparation, Visible = false };
+        _panelArea = new PanelContainer { Visible = false, RectClipContent = true };
+        AddChild(_panelArea);
+        SetAnchorPreset(_panelArea, LayoutPreset.TopLeft);
+
+        // Clock, remarks, pointer and popups belong above the illustration, which is a child control.
+        var topLayer = new TopLayer(this);
+        AddChild(topLayer);
+        SetAnchorPreset(topLayer, LayoutPreset.Wide);
+
+        _bar =new BoxContainer { Orientation = LayoutOrientation.Vertical, SeparationOverride = (int) BarSeparation, Visible = false };
         AddChild(_bar);
         SetAnchorPreset(_bar, LayoutPreset.BottomWide);
         SetMarginLeft(_bar, 24);
@@ -137,9 +152,9 @@ public sealed partial class SWSenateTraining : LayoutContainer
         _buttons = new GridContainer { Columns = ButtonCount, HorizontalExpand = true };
         _bar.AddChild(_buttons);
         AddBarButton("К главам", () => _pending = ReturnToChapters);
-        _previous = AddBarButton("Назад", PreviousShot);
+        _previous = AddBarButton("Назад", StepBack);
         _pause = AddBarButton("Пауза", () => _paused = !_paused);
-        AddBarButton("Пропустить", NextShot);
+        AddBarButton("Пропустить", StepForward);
         AddBarButton("С начала", RestartChapter);
         AddBarButton("Выйти", () => CloseRequested?.Invoke());
 
@@ -185,6 +200,7 @@ public sealed partial class SWSenateTraining : LayoutContainer
         }
 
         SyncText();
+        SyncPanelArea();
     }
 
     /// <summary>Mirrors the lobby countdown as plain text. It does not offer any lobby action.</summary>
@@ -272,6 +288,7 @@ public sealed partial class SWSenateTraining : LayoutContainer
         {
             _wantedMode = TextMode.Drawn;
             SetTextMode(TextMode.Drawn);
+            ClearPanelArea();
         }
 
         _menu.Visible = !playing;
@@ -300,15 +317,69 @@ public sealed partial class SWSenateTraining : LayoutContainer
             ShowRoles();
     }
 
-    private void PreviousShot()
+    // ---- stages -----------------------------------------------------------
+
+    private SWTrainingStage[]? CurrentStages => _chapter?.Shots[_shotIndex].Stages;
+
+    private float StageStart(SWTrainingStage stage) => _reducedMotion ? stage.ReducedStart : stage.Start;
+
+    /// <summary>The stage follows from the shot's time alone, so every control below keeps it consistent.</summary>
+    private int CurrentStageIndex()
+    {
+        var stages = CurrentStages;
+        if (stages == null)
+            return 0;
+
+        var index = 0;
+        for (var i = 1; i < stages.Length; i++)
+        {
+            if (_shotTime >= StageStart(stages[i]))
+                index = i;
+        }
+
+        return index;
+    }
+
+    private SWTrainingStage? CurrentStage => CurrentStages is { } stages ? stages[CurrentStageIndex()] : null;
+
+    /// <summary>While the player holds the time, the buttons walk through the stages instead of skipping them.</summary>
+    private bool StepsThroughStages => _paused || _textMode != TextMode.Drawn;
+
+    private void StepBack()
     {
         if (_chapter == null)
             return;
 
         _chapterDone = false;
         _pending = null;
+        var stages = CurrentStages;
+        var index = CurrentStageIndex();
+        if (StepsThroughStages && stages != null && index > 0)
+        {
+            _shotTime = StageStart(stages[index - 1]);
+            return;
+        }
+
         _shotIndex = Math.Max(0, _shotIndex - 1);
         _shotTime = 0f;
+        if (StepsThroughStages && CurrentStages is { } previous)
+            _shotTime = StageStart(previous[^1]);
+    }
+
+    private void StepForward()
+    {
+        if (_chapter == null || _chapterDone)
+            return;
+
+        var stages = CurrentStages;
+        var index = CurrentStageIndex();
+        if (StepsThroughStages && stages != null && index + 1 < stages.Length)
+        {
+            _shotTime = StageStart(stages[index + 1]);
+            return;
+        }
+
+        NextShot();
     }
 
     private void NextShot()
@@ -349,16 +420,28 @@ public sealed partial class SWSenateTraining : LayoutContainer
         var manual = _textMode != TextMode.Drawn;
         if (!_chapterDone && !_paused)
         {
-            var duration = SWSenateTrainingScript.ShotDuration(_chapter, _chapter.Shots[_shotIndex]);
-            _shotTime += args.DeltaSeconds;
-            // Text that may need scrolling is never taken away: the shot waits, short of its closing fade.
+            var duration = SWSenateTrainingScript.ShotDuration(_chapter, _chapter.Shots[_shotIndex], _reducedMotion);
+
+            // The next stage's start is fixed before time moves, so no frame, however long, can pass over a stage.
+            var nextStart = float.PositiveInfinity;
+            if (CurrentStages is { } stages && CurrentStageIndex() + 1 < stages.Length)
+                nextStart = StageStart(stages[CurrentStageIndex() + 1]);
+
             if (manual)
-                _shotTime = MathF.Min(_shotTime, duration - EdgeFade);
-            else if (_shotTime >= duration)
-                NextShot();
+            {
+                // Text that may need scrolling is never taken away: the shot waits in its stage, short of the closing fade.
+                var limit = MathF.Min(duration - EdgeFade, nextStart - StageEpsilon);
+                _shotTime = MathF.Min(_shotTime + args.DeltaSeconds, MathF.Max(_shotTime, limit));
+            }
+            else
+            {
+                _shotTime = MathF.Min(_shotTime + args.DeltaSeconds, nextStart);
+                if (_shotTime >= duration)
+                    NextShot();
+            }
         }
 
-        _previous.Disabled = _shotIndex == 0;
+        _previous.Disabled = _shotIndex == 0 && (!StepsThroughStages || CurrentStageIndex() == 0);
         _pause.Disabled = manual;
         var pauseText = _paused ? "Продолжить" : "Пауза";
         if (_pause.Text != pauseText)
@@ -437,7 +520,8 @@ public sealed partial class SWSenateTraining : LayoutContainer
         SetMarginTop(_textArea, _layout.PlateAnchor / ui);
         SetMarginBottom(_textArea, compact ? -CompactEdge : -_barReserve);
 
-        var shown = (_chapter.Id, _shotIndex, _textMode);
+        var stage = CurrentStage;
+        var shown = (_chapter.Id, _shotIndex, CurrentStageIndex(), _textMode);
         if (_shownText == shown)
             return;
 
@@ -451,7 +535,10 @@ public sealed partial class SWSenateTraining : LayoutContainer
         var shot = _chapter.Shots[_shotIndex];
         box.AddChild(SWConsoleStyle.Wrap(shot.Title, SWConsoleStyle.Brass));
         box.AddChild(SWConsoleStyle.Wrap(shot.Text, SWConsoleStyle.TextBright));
-        box.AddChild(SWConsoleStyle.Wrap(shot.Note, SWConsoleStyle.TextDim));
+        if (shot.Note.Length > 0)
+            box.AddChild(SWConsoleStyle.Wrap(shot.Note, SWConsoleStyle.TextDim));
+        if (stage != null)
+            AddStageToScroll(box, stage);
         box.AddChild(SWConsoleStyle.Wrap(ManualHint, SWConsoleStyle.TextDim));
         if (compact)
             box.AddChild(_bar);
@@ -460,5 +547,138 @@ public sealed partial class SWSenateTraining : LayoutContainer
 
         scroll.AddChild(box);
         _textArea.AddChild(scroll);
+    }
+
+    /// <summary>
+    /// In the scroll modes everything the stage says joins the text, whether or not a small picture is shown above it,
+    /// so the text does not depend on the picture and cannot go stale when a resize adds or removes it.
+    /// </summary>
+    private void AddStageToScroll(BoxContainer box, SWTrainingStage stage)
+    {
+        if (stage.Visual.ClockText != null)
+            box.AddChild(SWConsoleStyle.Wrap($"Игровое время: {stage.Visual.ClockText}", SWConsoleStyle.TextBright));
+
+        if (stage.Annotations != null)
+        {
+            foreach (var annotation in stage.Annotations)
+            {
+                var text = annotation.Heading == null ? annotation.Text : $"{annotation.Heading}: {annotation.Text}";
+                box.AddChild(SWConsoleStyle.Wrap(text, annotation.Tone == SWTrainingTone.Teaching ? SWConsoleStyle.Brass : SWConsoleStyle.TextBright));
+            }
+        }
+
+        if (stage.Popup != null)
+            box.AddChild(SWConsoleStyle.Wrap($"Всплывающее сообщение: {stage.Popup}", SWConsoleStyle.Brass));
+
+        if (stage.Panel == null)
+            return;
+
+        // No pointer can be drawn on a control in the scroll area, so the action is said in words and framed.
+        var acting = stage.Pointer != SWTrainingPointer.None;
+        if (acting && SWTrainingUiPanels.TargetLabel(stage.Panel) is { } label)
+        {
+            var line = stage.Pointer == SWTrainingPointer.Press ? $"Нажатие: {label}." : $"Следующее действие: {label}.";
+            box.AddChild(SWConsoleStyle.Wrap(line, SWConsoleStyle.Accent));
+        }
+
+        box.AddChild(SWTrainingUiPanels.Build(stage.Panel, out _, acting));
+    }
+
+    // ---- illustration area ------------------------------------------------
+
+    private void ClearPanelArea()
+    {
+        _panelArea.Visible = false;
+        _panelArea.RemoveAllChildren();
+        _shownPanel = null;
+        _panelHost = null;
+        _panelTarget = null;
+    }
+
+    /// <summary>Keeps the illustration in its part of the frame; it never reaches the figures or the text zone.</summary>
+    private void SyncPanelArea()
+    {
+        var stage = CurrentStage;
+        var panel = stage?.Panel;
+        if (_chapter == null || stage == null || panel == null || _layoutKey is not { } key || _textMode != TextMode.Drawn || _layout.Mode != TextMode.Drawn || _layout.Pixel <= 0f)
+        {
+            ClearPanelArea();
+            return;
+        }
+
+        var ui = UIScale;
+        var box = PanelBoxOnScreen(stage.Visual.Scene, _layout.Canvas, _layout.Pixel);
+        var width = MathF.Min(SWTrainingUiPanels.MaxWidth(panel) * ui, box.Width);
+        var left = box.Left + (box.Width - width) / 2f;
+        SetMarginLeft(_panelArea, left / ui);
+        SetMarginRight(_panelArea, (left + width) / ui);
+        SetMarginTop(_panelArea, box.Top / ui);
+        SetMarginBottom(_panelArea, box.Bottom / ui);
+        _panelArea.Visible = true;
+
+        // The target must be visible without scrolling. If this window cannot hold the panel, the chapter moves to
+        // the scroll area, where the action is also said in words.
+        if (_panelHost is { NeededHeight: > 0f } host && host.Height > 1f && host.NeededHeight > host.Height + 1f)
+        {
+            _overflowFor = (key.Chapter, key.Size, key.Ui);
+            _layoutKey = null;
+            return;
+        }
+
+        // Stages with the same state keep their controls, so the pointer's target does not jump.
+        if (panel == _shownPanel)
+            return;
+
+        _shownPanel = panel;
+        _panelArea.RemoveAllChildren();
+        _panelHost = new PanelHost(SWTrainingUiPanels.Build(panel, out _panelTarget));
+        _panelArea.AddChild(_panelHost);
+    }
+
+    /// <summary>Measures the illustration at its full height, so a window too low for it can be recognised.</summary>
+    private sealed class PanelHost : Container
+    {
+        private readonly Control _content;
+
+        public float NeededHeight { get; private set; }
+
+        public PanelHost(Control content)
+        {
+            _content = content;
+            HorizontalExpand = true;
+            VerticalExpand = true;
+            AddChild(content);
+        }
+
+        protected override Vector2 MeasureOverride(Vector2 availableSize)
+        {
+            _content.Measure(new Vector2(availableSize.X, float.PositiveInfinity));
+            NeededHeight = _content.DesiredSize.Y;
+            return new Vector2(_content.DesiredSize.X, MathF.Min(NeededHeight, availableSize.Y));
+        }
+
+        protected override Vector2 ArrangeOverride(Vector2 finalSize)
+        {
+            _content.Arrange(UIBox2.FromDimensions(Vector2.Zero, finalSize));
+            return finalSize;
+        }
+    }
+
+    /// <summary>Draws above the illustration. It takes no input.</summary>
+    private sealed class TopLayer : Control
+    {
+        private readonly SWSenateTraining _owner;
+
+        public TopLayer(SWSenateTraining owner)
+        {
+            _owner = owner;
+            MouseFilter = MouseFilterMode.Ignore;
+        }
+
+        protected override void Draw(DrawingHandleScreen handle)
+        {
+            base.Draw(handle);
+            _owner.DrawTop(handle);
+        }
     }
 }

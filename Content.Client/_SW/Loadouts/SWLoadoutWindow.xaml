@@ -4,9 +4,9 @@
                      SetSize="720 500"
                      Resizable="True">
     <BoxContainer Orientation="Vertical" SeparationOverride="8">
-        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
-            <BoxContainer Name="Tabs" Orientation="Horizontal" SeparationOverride="2" HorizontalExpand="True" />
-        </BoxContainer>
+        <ScrollContainer HScrollEnabled="True" VScrollEnabled="False" MinHeight="48" HorizontalExpand="True">
+            <BoxContainer Name="Tabs" Orientation="Horizontal" SeparationOverride="2" />
+        </ScrollContainer>
 
         <BoxContainer Name="NameBox" Orientation="Horizontal" SeparationOverride="8" Visible="False">
             <Label Name="NameLabel" StyleClasses="SWTermText" VAlign="Center" />

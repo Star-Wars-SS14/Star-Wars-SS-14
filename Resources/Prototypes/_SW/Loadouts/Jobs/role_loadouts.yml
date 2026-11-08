@@ -434,6 +434,7 @@
   groups:
   - SWJediloadout
   - SWRepublicTacticalVisor
+  - SWSaberHiltChoice
   - SWSaberEmitterChoice
   - SWJediCrystalChoice
 
@@ -442,6 +443,7 @@
   groups:
   - SWSithloadout
   - SWEmpireTacticalVisor
+  - SWSaberHiltChoice
   - SWSaberEmitterChoice
   - SWSithCrystalChoice
 
@@ -468,11 +470,13 @@
 - type: roleLoadout
   id: JobSWGlobalWarRepublicForceUser
   groups:
+  - SWSaberHiltChoice
   - SWSaberEmitterChoice
   - SWJediCrystalChoice
 
 - type: roleLoadout
   id: JobSWGlobalWarEmpireForceUser
   groups:
+  - SWSaberHiltChoice
   - SWSaberEmitterChoice
   - SWSithCrystalChoice

@@ -204,7 +204,8 @@ public sealed partial class SWGlobalWarSpawnSystem
     /// <summary>Keep the original kit on the old body; omit only the known kit from this return's spawn gear.</summary>
     private static void RemoveReturnSaberKit(SWMergedGear gear)
     {
-        if (gear.Equipment.TryGetValue("pocket1", out var hilt) && hilt == "SWModularSaber")
+        if (gear.Equipment.TryGetValue("pocket1", out var hilt) &&
+            (hilt == "SWModularSaber" || hilt == "SWModularSaberDouble"))
             gear.Equipment.Remove("pocket1");
 
         if (!gear.Storage.TryGetValue("belt", out var items))

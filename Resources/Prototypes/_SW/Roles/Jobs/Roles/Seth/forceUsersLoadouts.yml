@@ -8,7 +8,6 @@
     ears: SWClothingHeadsetAllEmpire
     id: SWIDCardSith
     neck: SWClothingNeckCloakSithCloak
-    pocket1: SWModularSaber
   storage:
     belt:
     - SWSaberFocusStandard
@@ -23,7 +22,6 @@
     ears: SWClothingHeadsetRepublicAll
     id: SWIDCardJedi
     neck: SWClothingNeckCloakJediCloak
-    pocket1: SWModularSaber
   storage:
     belt:
     - SWSaberFocusStandard

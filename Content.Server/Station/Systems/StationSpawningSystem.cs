@@ -1,4 +1,5 @@
 using Content.Shared._SW.Loadouts; //SW
+using Content.Server._SW.Loadouts; // SW
 using Content.Server.Access.Systems;
 using Content.Server.Humanoid;
 using Content.Server.Mind;
@@ -152,6 +153,8 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
 
         //SW start
         _prototypeManager.Resolve(prototype?.StartingGear, out var jobGear);
+        if (loadout != null && roleProto != null && prototype != null)
+            loadout = SWSaberLoadoutNormalization.Normalize(prototype.ID, loadout, roleProto, _prototypeManager);
         var mergedGear = SWMergedGear.Build(jobGear, loadout, roleProto, _prototypeManager);
         adjustGear?.Invoke(mergedGear);
         EquipStartingGear(entity.Value, mergedGear, raiseEvent: false);

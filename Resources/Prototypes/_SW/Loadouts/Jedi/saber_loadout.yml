@@ -1,4 +1,23 @@
 - type: loadoutGroup
+  id: SWSaberHiltChoice
+  name: sw-loadout-saber-hilt
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - SWSaberHiltSingleLoadout
+  - SWSaberHiltDoubleLoadout
+
+- type: loadout
+  id: SWSaberHiltSingleLoadout
+  equipment:
+    pocket1: SWModularSaber
+
+- type: loadout
+  id: SWSaberHiltDoubleLoadout
+  equipment:
+    pocket1: SWModularSaberDouble
+
+- type: loadoutGroup
   id: SWSaberEmitterChoice
   name: sw-loadout-saber-emitter
   minLimit: 1

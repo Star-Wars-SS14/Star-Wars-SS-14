@@ -22,5 +22,6 @@ sw-loadout-time-short = { $hours } more hours of play needed.
 sw-loadout-time-short-job = { $hours } more hours in this job needed.
 sw-loadout-species-blocked = Does not fit this species.
 
+sw-loadout-saber-hilt = Lightsaber hilt
 sw-loadout-saber-emitter = Lightsaber emitter
 sw-loadout-saber-crystal = Kyber crystal

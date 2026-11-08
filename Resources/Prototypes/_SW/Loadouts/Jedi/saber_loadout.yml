@@ -16,6 +16,8 @@
   loadouts:
   - SWJediCrystalBlueLoadout
   - SWJediCrystalGreenLoadout
+  - SWJediCrystalYellowLoadout
+  - SWJediCrystalPurpleLoadout
 
 - type: loadoutGroup
   id: SWSithCrystalChoice
@@ -49,6 +51,16 @@
   id: SWJediCrystalGreenLoadout
   storage:
     belt: [ SWKyberCrystalGreen ]
+
+- type: loadout
+  id: SWJediCrystalYellowLoadout
+  storage:
+    belt: [ SWKyberCrystalYellow ]
+
+- type: loadout
+  id: SWJediCrystalPurpleLoadout
+  storage:
+    belt: [ SWKyberCrystalPurple ]
 
 - type: loadout
   id: SWSithCrystalRedLoadout

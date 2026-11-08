@@ -216,6 +216,8 @@ public sealed partial class SWGlobalWarSpawnSystem
         items.Remove("SWSaberEmitterSlash");
         items.Remove("SWKyberCrystalBlue");
         items.Remove("SWKyberCrystalGreen");
+        items.Remove("SWKyberCrystalYellow");
+        items.Remove("SWKyberCrystalPurple");
         items.Remove("SWKyberCrystalRed");
     }
 

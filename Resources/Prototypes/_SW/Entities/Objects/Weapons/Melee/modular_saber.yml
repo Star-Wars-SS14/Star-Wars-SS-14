@@ -4,6 +4,9 @@
   name: modular lightsaber hilt
   description: A lightsaber hilt with replaceable components.
   components:
+  - type: Construction
+    graph: SWSaberHilt
+    node: finished
   - type: ItemToggle
     predictable: false
     onActivate: false
@@ -38,6 +41,9 @@
   name: double-bladed modular lightsaber hilt
   description: A two-handed lightsaber hilt with replaceable components.
   components:
+  - type: Construction
+    graph: SWSaberDoubleHilt
+    node: finished
   - type: Wieldable
     wieldSound: null
   - type: ItemToggle
@@ -62,6 +68,9 @@
   name: standard lightsaber emitter
   description: A standard emitter for a modular lightsaber.
   components:
+  - type: Construction
+    graph: SWSaberEmitterStandard
+    node: finished
   - type: Sprite
     sprite: Objects/Misc/stock_parts.rsi
     state: capacitor
@@ -82,6 +91,9 @@
   name: standard lightsaber focusing assembly
   description: A standard focusing assembly for a modular lightsaber.
   components:
+  - type: Construction
+    graph: SWSaberFocusStandard
+    node: finished
   - type: Sprite
     sprite: Objects/Misc/stock_parts.rsi
     state: adv_scan_module
@@ -96,6 +108,9 @@
   id: SWSaberEmitterHeat
   name: thermal lightsaber emitter
   components:
+  - type: Construction
+    graph: SWSaberEmitterHeat
+    node: finished
   - type: SWSaberEmitter
     damage:
       types:
@@ -110,6 +125,9 @@
   id: SWSaberEmitterSlash
   name: cutting lightsaber emitter
   components:
+  - type: Construction
+    graph: SWSaberEmitterSlash
+    node: finished
   - type: SWSaberEmitter
     damage:
       types:
@@ -124,6 +142,9 @@
   id: SWSaberFocusFast
   name: rapid lightsaber focusing assembly
   components:
+  - type: Construction
+    graph: SWSaberFocusFast
+    node: finished
   - type: SWSaberFocus
     damageMultiplier: 0.9
     attackRateMultiplier: 1.1
@@ -135,6 +156,9 @@
   id: SWSaberFocusHeavy
   name: heavy lightsaber focusing assembly
   components:
+  - type: Construction
+    graph: SWSaberFocusHeavy
+    node: finished
   - type: SWSaberFocus
     damageMultiplier: 1.1
     attackRateMultiplier: 0.9

@@ -44,6 +44,7 @@
   - type: Construction
     graph: SWSaberDoubleHilt
     node: finished
+  - type: SWDoubleSaberThrowVisual
   - type: Wieldable
     wieldSound: null
   - type: ItemToggle
@@ -59,6 +60,11 @@
       visible: false
       shader: unshaded
       map: [ "blade" ]
+    - state: e_sword_double_blade
+      color: "#FFFFFF"
+      visible: false
+      shader: unshaded
+      map: [ "thrown-blade" ]
   - type: Item
     sprite: Objects/Weapons/Melee/e_sword_double-inhands.rsi
 

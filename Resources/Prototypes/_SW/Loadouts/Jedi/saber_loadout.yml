@@ -1,0 +1,56 @@
+- type: loadoutGroup
+  id: SWSaberEmitterChoice
+  name: sw-loadout-saber-emitter
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - SWSaberEmitterStandardLoadout
+  - SWSaberEmitterHeatLoadout
+  - SWSaberEmitterSlashLoadout
+
+- type: loadoutGroup
+  id: SWJediCrystalChoice
+  name: sw-loadout-saber-crystal
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - SWJediCrystalBlueLoadout
+  - SWJediCrystalGreenLoadout
+
+- type: loadoutGroup
+  id: SWSithCrystalChoice
+  name: sw-loadout-saber-crystal
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - SWSithCrystalRedLoadout
+
+- type: loadout
+  id: SWSaberEmitterStandardLoadout
+  storage:
+    belt: [ SWSaberEmitterStandard ]
+
+- type: loadout
+  id: SWSaberEmitterHeatLoadout
+  storage:
+    belt: [ SWSaberEmitterHeat ]
+
+- type: loadout
+  id: SWSaberEmitterSlashLoadout
+  storage:
+    belt: [ SWSaberEmitterSlash ]
+
+- type: loadout
+  id: SWJediCrystalBlueLoadout
+  storage:
+    belt: [ SWKyberCrystalBlue ]
+
+- type: loadout
+  id: SWJediCrystalGreenLoadout
+  storage:
+    belt: [ SWKyberCrystalGreen ]
+
+- type: loadout
+  id: SWSithCrystalRedLoadout
+  storage:
+    belt: [ SWKyberCrystalRed ]

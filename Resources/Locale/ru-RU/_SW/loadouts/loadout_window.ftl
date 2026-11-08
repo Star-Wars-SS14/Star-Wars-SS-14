@@ -21,3 +21,6 @@ sw-loadout-hint-saved = Сохраняется само. Действует пр
 sw-loadout-time-short = Нужно ещё { $hours } ч игры.
 sw-loadout-time-short-job = Нужно ещё { $hours } ч на этой профессии.
 sw-loadout-species-blocked = Не подходит этому виду.
+
+sw-loadout-saber-emitter = Эмиттер светового меча
+sw-loadout-saber-crystal = Кайбер-кристалл

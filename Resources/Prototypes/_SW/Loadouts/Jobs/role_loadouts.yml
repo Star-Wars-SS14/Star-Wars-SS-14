@@ -434,12 +434,16 @@
   groups:
   - SWJediloadout
   - SWRepublicTacticalVisor
+  - SWSaberEmitterChoice
+  - SWJediCrystalChoice
 
 - type: roleLoadout
   id: JobSWSith
   groups:
   - SWSithloadout
   - SWEmpireTacticalVisor
+  - SWSaberEmitterChoice
+  - SWSithCrystalChoice
 
 - type: roleLoadout
   id: JobSWCivialian
@@ -459,3 +463,16 @@
   - SWHeadFree
   - SWCosmeticsNeck
   - SWNewYearCloakNeutral
+
+
+- type: roleLoadout
+  id: JobSWGlobalWarRepublicForceUser
+  groups:
+  - SWSaberEmitterChoice
+  - SWJediCrystalChoice
+
+- type: roleLoadout
+  id: JobSWGlobalWarEmpireForceUser
+  groups:
+  - SWSaberEmitterChoice
+  - SWSithCrystalChoice

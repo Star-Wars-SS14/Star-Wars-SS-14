@@ -372,8 +372,14 @@ public sealed partial class SWGlobalWarSpawnSystem : EntitySystem
             throw new InvalidOperationException("GlobalWar character creation requires a prepared GameTicker spawn.");
         try
         {
+            // Only the exact return ticket can suppress the replacement kit.
+            var returningForceUser = _respawn is { } ticket && ticket.User == prepared.Plan.User &&
+                ticket.Job == prepared.Plan.Job &&
+                (prepared.Plan.Job == "SWGlobalWarRepublicForceUser" ||
+                 prepared.Plan.Job == "SWGlobalWarEmpireForceUser");
             var body = _spawning.SpawnPlayerMob(prepared.Plan.Coordinates, args.Job,
-                args.HumanoidCharacterProfile, args.Station);
+                args.HumanoidCharacterProfile, args.Station,
+                adjustGear: returningForceUser ? RemoveReturnSaberKit : null);
             args.SpawnResult = body;
             _spawned.Add(body, prepared.Plan);
         }

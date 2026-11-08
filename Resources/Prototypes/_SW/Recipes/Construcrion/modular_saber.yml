@@ -1,0 +1,175 @@
+- type: construction
+  id: SWSaberHilt
+  graph: SWSaberHilt
+  startNode: start
+  targetNode: finished
+  category: construction-category-weapons
+  objectType: Item
+
+- type: constructionGraph
+  id: SWSaberHilt
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finished
+      steps:
+      - material: Steel
+        amount: 4
+        doAfter: 5
+  - node: finished
+    entity: SWModularSaber
+
+- type: construction
+  id: SWSaberDoubleHilt
+  graph: SWSaberDoubleHilt
+  startNode: start
+  targetNode: finished
+  category: construction-category-weapons
+  objectType: Item
+
+- type: constructionGraph
+  id: SWSaberDoubleHilt
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finished
+      steps:
+      - material: Steel
+        amount: 6
+        doAfter: 5
+  - node: finished
+    entity: SWModularSaberDouble
+
+- type: construction
+  id: SWSaberEmitterStandard
+  graph: SWSaberEmitterStandard
+  startNode: start
+  targetNode: finished
+  category: construction-category-weapons
+  objectType: Item
+
+- type: constructionGraph
+  id: SWSaberEmitterStandard
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finished
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 5
+  - node: finished
+    entity: SWSaberEmitterStandard
+
+- type: construction
+  id: SWSaberFocusStandard
+  graph: SWSaberFocusStandard
+  startNode: start
+  targetNode: finished
+  category: construction-category-weapons
+  objectType: Item
+
+- type: constructionGraph
+  id: SWSaberFocusStandard
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finished
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 5
+  - node: finished
+    entity: SWSaberFocusStandard
+
+- type: construction
+  id: SWSaberEmitterHeat
+  graph: SWSaberEmitterHeat
+  startNode: start
+  targetNode: finished
+  category: construction-category-weapons
+  objectType: Item
+
+- type: constructionGraph
+  id: SWSaberEmitterHeat
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finished
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 5
+  - node: finished
+    entity: SWSaberEmitterHeat
+
+- type: construction
+  id: SWSaberEmitterSlash
+  graph: SWSaberEmitterSlash
+  startNode: start
+  targetNode: finished
+  category: construction-category-weapons
+  objectType: Item
+
+- type: constructionGraph
+  id: SWSaberEmitterSlash
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finished
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 5
+  - node: finished
+    entity: SWSaberEmitterSlash
+
+- type: construction
+  id: SWSaberFocusFast
+  graph: SWSaberFocusFast
+  startNode: start
+  targetNode: finished
+  category: construction-category-weapons
+  objectType: Item
+
+- type: constructionGraph
+  id: SWSaberFocusFast
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finished
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 5
+  - node: finished
+    entity: SWSaberFocusFast
+
+- type: construction
+  id: SWSaberFocusHeavy
+  graph: SWSaberFocusHeavy
+  startNode: start
+  targetNode: finished
+  category: construction-category-weapons
+  objectType: Item
+
+- type: constructionGraph
+  id: SWSaberFocusHeavy
+  start: start
+  graph:
+  - node: start
+    edges:
+    - to: finished
+      steps:
+      - material: Steel
+        amount: 2
+        doAfter: 5
+  - node: finished
+    entity: SWSaberFocusHeavy

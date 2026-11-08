@@ -1,0 +1,21 @@
+sw-modular-saber-incomplete = The saber needs a kyber crystal, an emitter and a focusing assembly.
+sw-modular-saber-slot-crystal = Kyber crystal
+sw-modular-saber-slot-emitter = Emitter
+sw-modular-saber-slot-focus = Focusing assembly
+
+ent-SWModularSaber = modular lightsaber hilt
+    .desc = A lightsaber hilt with replaceable components.
+ent-SWModularSaberDouble = double-bladed modular lightsaber hilt
+    .desc = A two-handed lightsaber hilt with replaceable components.
+ent-SWSaberEmitterStandard = standard lightsaber emitter
+    .desc = A standard emitter for a modular lightsaber.
+ent-SWSaberEmitterHeat = thermal lightsaber emitter
+    .desc = An emitter that favors heat damage over cutting damage.
+ent-SWSaberEmitterSlash = cutting lightsaber emitter
+    .desc = An emitter that favors cutting damage over heat damage.
+ent-SWSaberFocusStandard = standard lightsaber focusing assembly
+    .desc = A standard focusing assembly for a modular lightsaber.
+ent-SWSaberFocusFast = rapid lightsaber focusing assembly
+    .desc = Increases attack speed while reducing blade damage.
+ent-SWSaberFocusHeavy = heavy lightsaber focusing assembly
+    .desc = Increases blade damage while reducing attack speed.

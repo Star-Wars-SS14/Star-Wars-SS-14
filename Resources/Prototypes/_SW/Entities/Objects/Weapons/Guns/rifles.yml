@@ -281,6 +281,7 @@
     minAngle: 3
     maxAngle: 10    
     angleDecay: 4
+  - type: SWAutoWieldOnPickup
   - type: Wieldable # MultiHandedItem kept both hands busy, so the gun could not be reloaded in hand.
     wieldedInhandPrefix: null
   - type: GunRequiresWield
@@ -311,6 +312,7 @@
       map: [ "enum.GunVisualLayers.Base" ]
   - type: Clothing
     sprite: _SW/Objects/Weapons/Guns/MachineGuns/grantekF11D.rsi
+  - type: SWAutoWieldOnPickup
   - type: Wieldable # MultiHandedItem kept both hands busy, so the gun could not be reloaded in hand.
     wieldedInhandPrefix: null
   - type: GunRequiresWield
@@ -383,6 +385,7 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.8
     sprintModifier: 0.8
+  - type: SWAutoWieldOnPickup
   - type: Wieldable # MultiHandedItem kept both hands busy, so the gun could not be reloaded in hand.
     wieldedInhandPrefix: null
   - type: GunRequiresWield
@@ -442,6 +445,7 @@
     minAngle: 0
     maxAngle: 10  
     angleDecay: 4
+  - type: SWAutoWieldOnPickup
   - type: Wieldable # MultiHandedItem kept both hands busy, so the gun could not be reloaded in hand.
     wieldedInhandPrefix: null
   - type: GunRequiresWield
@@ -465,6 +469,7 @@
   - type: ClothingSpeedModifier
     walkModifier: 0.8
     sprintModifier: 0.8
+  - type: SWAutoWieldOnPickup
   - type: Wieldable # MultiHandedItem kept both hands busy, so the gun could not be reloaded in hand.
     wieldedInhandPrefix: null
   - type: GunRequiresWield

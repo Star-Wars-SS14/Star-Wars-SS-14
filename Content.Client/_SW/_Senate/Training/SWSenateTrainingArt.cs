@@ -70,6 +70,16 @@ public enum SWTrainingArt
     FigUsherGuide,
     /// <summary>The doctor at the treatment position looking the patient over, without touching.</summary>
     FigDoctorExamine,
+
+    // Single items of the usher's filled security belt, each shown large while it is explained.
+    /// <summary>The game's stun baton, enlarged.</summary>
+    GearItemStunbaton,
+    /// <summary>The game's handcuffs, enlarged.</summary>
+    GearItemHandcuffs,
+    /// <summary>The first frame of the game's security holoprojector, enlarged.</summary>
+    GearItemHoloprojector,
+    /// <summary>The game's handheld security radio, enlarged.</summary>
+    GearItemRadio,
 }
 
 /// <summary>Whole sheet size in art pixels; a sheet holds <paramref name="Frames"/> equal frames side by side.</summary>
@@ -100,7 +110,19 @@ public sealed record SWTrainingSceneDef(SWTrainingScene Scene, float CameraX, fl
 
 public static class SWSenateTrainingArt
 {
-    public const int NewFileCount = 39;
+    public const int NewFileCount = 43;
+
+    /// <summary>
+    /// Where a single belt item is shown: inside the part of the frame every window keeps (x 120 to 599), above the text
+    /// zone and left of the remarks, on a light plate. The plate reaches <see cref="BackingPad"/> pixels around the item:
+    /// from x 130 to 238, inside the kept part and clear of the belt's edge.
+    /// </summary>
+    public const int BeltItemX = 136;
+    public const int BeltItemY = 40;
+    public const int BeltItemSize = 96;
+
+    /// <summary>Art pixels of the neutral plate around a backed picture.</summary>
+    public const int BackingPad = 6;
 
     /// <summary>The checked treatment layer goes over the patient; its frames are wider than the standing doctor's.</summary>
     public const int TreatDoctorX = 305;
@@ -219,6 +241,12 @@ public static class SWSenateTrainingArt
         new(SWTrainingArt.FigGuardOfficerRadio, Root + "fig_guard_officer_radio.png", 192, 160, 2, true),
         new(SWTrainingArt.FigUsherGuide, Root + "fig_usher_guide.png", 192, 160, 2, true),
         new(SWTrainingArt.FigDoctorExamine, Root + "fig_doctor_examine.png", 192, 160, 2, true),
+
+        // 96×96 enlargements of the game's own item sprites, delivered for the training.
+        new(SWTrainingArt.GearItemStunbaton, Root + "gear_detail_stunbaton.png", 96, 96, 1, true),
+        new(SWTrainingArt.GearItemHandcuffs, Root + "gear_detail_handcuffs.png", 96, 96, 1, true),
+        new(SWTrainingArt.GearItemHoloprojector, Root + "gear_detail_holoprojector.png", 96, 96, 1, true),
+        new(SWTrainingArt.GearItemRadio, Root + "gear_detail_radio.png", 96, 96, 1, true),
     };
 
     public static readonly SWTrainingSceneDef[] Scenes =

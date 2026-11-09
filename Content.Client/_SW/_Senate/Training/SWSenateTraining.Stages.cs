@@ -69,7 +69,13 @@ public sealed record SWTrainingAnnotation(string Text, SWTrainingTone Tone, int 
 /// <summary>
 /// One meaningful state of a shot. The stage on screen is found from the shot's time alone, so pause, back, skip and
 /// replay cannot lose or reorder it. Under reduced motion the same stages are held as still pictures from
-/// <paramref name="ReducedStart"/>. <paramref name="Alternative"/> marks a different case, never a continuation.
+/// <paramref name="ReducedStart"/>. <paramref name="Alternative"/> marks a stage of a case other than the one the
+/// shot follows; such stages always come after it, at the end of the shot. <paramref name="Opens"/> marks the first
+/// stage of each such case: it states the condition and shows the scene before anything is done in that case. The
+/// following stages of the same case carry it on; a neighbouring, independent case opens again.
+/// <paramref name="Resumes"/> marks the first stage of a shot that follows another case: before anything is done it
+/// shows the main line's state again and its remark names that state, so the shot does not look like a continuation
+/// of the other case.
 /// </summary>
 public sealed record SWTrainingStage(
     float Start,
@@ -79,7 +85,9 @@ public sealed record SWTrainingStage(
     SWTrainingPointer Pointer = SWTrainingPointer.None,
     string? Popup = null,
     SWTrainingAnnotation[]? Annotations = null,
-    bool Alternative = false);
+    bool Alternative = false,
+    bool Opens = false,
+    bool Resumes = false);
 
 /// <summary>
 /// Timelines of the three first chapters with stages. Names and numbers of people and money are examples; the
@@ -89,6 +97,9 @@ public static partial class SWTrainingSamples
 {
     public const string ExampleName = "Тала Вен";
     public const string OtherExampleName = "Кир Дан";
+
+    /// <summary>The senate doctor of 01А and 28: a member of staff, not one of the senators.</summary>
+    public const string DoctorName = "Мира Тессе";
 
     /// <summary>The healing item's real local name and the time of one use on another character.</summary>
     public const string HealingItem = "набор для ушибов";
@@ -159,7 +170,7 @@ public static partial class SWTrainingSamples
     private static SWTrainingAnnotation[] TooFar() => new[]
     {
         new SWTrainingAnnotation("Проведите базовое медицинское обследование на небольшом расстоянии.", SWTrainingTone.Game, 130, 24, 190),
-        new SWTrainingAnnotation("Другой случай: пациент далеко, действие недоступно.", SWTrainingTone.Teaching, 130, 84, 190),
+        new SWTrainingAnnotation("Если пациент далеко, это действие недоступно.", SWTrainingTone.Teaching, 130, 84, 190),
     };
 
     private static SWTrainingAnnotation[] HealthResult(string line, string remark) => new[]
@@ -173,9 +184,9 @@ public static partial class SWTrainingSamples
 
     // ---- 01А --------------------------------------------------------------
 
-    private static SWTrainingShiftPanel ShiftOff(string notice = "") => new(ExampleName, true, false, notice);
+    private static SWTrainingShiftPanel ShiftOff(string notice = "") => new(DoctorName, true, false, notice);
 
-    private static SWTrainingShiftPanel ShiftOn(string notice = "") => new(ExampleName, true, true, notice);
+    private static SWTrainingShiftPanel ShiftOn(string notice = "") => new(DoctorName, true, true, notice);
 
     public static SWTrainingStage[] ShiftOpen() => new SWTrainingStage[]
     {
@@ -197,20 +208,35 @@ public static partial class SWTrainingSamples
     {
         new(0f, 0f, ShiftRoom(0, 1), ShiftOn()),
         new(12f, 12f, ShiftRoom(0, 1), new SWTrainingShiftPanel(OtherExampleName, false, false, string.Empty),
-            Annotations: RoomNote("Другой случай: должность не опознана, кнопки нет."), Alternative: true),
+            Annotations: RoomNote("У Кира Дана должность не опознана, поэтому кнопки нет."), Alternative: true, Opens: true),
     };
 
+    /// <summary>The account as the apartment console shows it: the tenant line is the owner of the account, lease or not.</summary>
+    public static SWTrainingFormPanel ApartmentBalance(int balance) => Form("Аренда апартаментов",
+        Dim("РЕСПУБЛИКА / ГОЛОНЕТ"),
+        Txt($"Наниматель: {DoctorName}, личный счёт: {balance} кр."));
+
+    /// <summary>
+    /// The salary is credited at the start of a game hour of the working day to whoever is on shift at that moment: the
+    /// balance before, the shift still running when the hour turns, the balance seen later. No instant payment is claimed.
+    /// </summary>
     public static SWTrainingStage[] ShiftPay() => new SWTrainingStage[]
     {
-        new(0f, 0f, ShiftRoom(0, 1, "10:59"), ShiftOn()),
-        new(4f, 4f, ShiftRoom(0, 1, "11:00"), ShiftOn(), Annotations: RoomNote("Час сменился: зарплата начислена. Счёта в этом окне нет.")),
+        new(0f, 0f, Closeup("10:50"), ApartmentBalance(110),
+            Annotations: ScreenNote("Мира Тессе на смене. Перед обходом она смотрит свой счёт у консоли аренды апартаментов."), Resumes: true),
+        new(4f, 4f, ShiftRoom(0, 1, "10:59"), ShiftOn(), Annotations: RoomNote("Мира на смене, до нового часа минута.")),
+        new(8f, 8f, ShiftRoom(0, 1, "11:00"), ShiftOn(), Annotations: RoomNote("11:00, она всё ещё на смене. В начале часа дежурным начисляется оклад.")),
+        new(12f, 12f, Closeup("11:20"), ApartmentBalance(165), Annotations: ScreenNote("Вернувшись к консоли, Мира видит 165 кр: оклад врача за час, 55 кр, пришёл. Жильё для этого снимать не нужно.")),
+        new(20f, 20f, ShiftRoom(1, 1, "11:30"), ShiftOff("Смена сдана."),
+            Annotations: RoomNote("Если сдать смену посреди часа, за этот неполный час оклад может не прийти."), Alternative: true, Opens: true),
     };
 
     public static SWTrainingStage[] ShiftEnd() => new SWTrainingStage[]
     {
-        new(0f, 0f, ShiftRoom(0, 1), ShiftOn(), SWTrainingPointer.Travel),
-        new(2f, 3f, ShiftRoom(1, 1), ShiftOn(), SWTrainingPointer.Press),
-        new(3f, 6f, ShiftRoom(1, 1), ShiftOff("Смена сдана.")),
+        new(0f, 0f, ShiftRoom(0, 1), ShiftOn(), Annotations: RoomNote("Посреди часа Мира смену не сдавала: она всё ещё на смене."), Resumes: true),
+        new(4f, 4f, ShiftRoom(0, 1), ShiftOn(), SWTrainingPointer.Travel),
+        new(6f, 7f, ShiftRoom(1, 1), ShiftOn(), SWTrainingPointer.Press),
+        new(7f, 10f, ShiftRoom(1, 1), ShiftOff("Смена сдана.")),
     };
 
     // ---- 05А --------------------------------------------------------------
@@ -229,7 +255,7 @@ public static partial class SWTrainingSamples
     {
         new(0f, 0f, Closeup("07:30"), Draft(40, 40), SWTrainingPointer.Travel),
         new(2f, 3f, Closeup("07:30"), Draft(40, 40), SWTrainingPointer.Press),
-        new(3f, 6f, Closeup("07:30"), Draft(45, 35), Annotations: ScreenNote("Введена только доля секторов, доля ведомств пересчиталась сама. Числа и состав для примера.")),
+        new(3f, 6f, Closeup("07:30"), Draft(45, 35), Annotations: ScreenNote("Введена только доля секторов, доля ведомств пересчиталась сама.")),
     };
 
     public static SWTrainingStage[] BudgetSubmit() => new SWTrainingStage[]
@@ -238,30 +264,34 @@ public static partial class SWTrainingSamples
         new(2f, 3f, Closeup(), Draft(45, 35, true), SWTrainingPointer.Press),
         new(3f, 6f, Closeup(), Submitted(), Popup: "Проект бюджета подан Канцлеру на одобрение."),
         new(11f, 14f, Closeup(), Draft(45, 35) with { Stale = true },
-            Annotations: ScreenNote("Другой случай: проект устарел, поэтому его сперва нужно загрузить заново."), Alternative: true),
+            Annotations: ScreenNote("Если проект успел измениться на сервере, сначала загрузите актуальную версию."), Alternative: true, Opens: true),
     };
 
     public static SWTrainingStage[] BudgetApprove() => new SWTrainingStage[]
     {
-        new(0f, 0f, Closeup(), Chancellor(SWTrainingBudgetPhase.Pending), SWTrainingPointer.Travel),
-        new(2f, 3f, Closeup(), Chancellor(SWTrainingBudgetPhase.Pending), SWTrainingPointer.Press),
-        new(3f, 6f, Closeup(), Chancellor(SWTrainingBudgetPhase.Approved), Popup: "Бюджет утверждён. Средства переданы министерствам и секторам."),
-        new(11f, 14f, Closeup(), Chancellor(SWTrainingBudgetPhase.Pending, rejectText: RejectExample), SWTrainingPointer.Press,
-            Annotations: ScreenNote("Другой выбор: отклонить можно только с замечанием."), Alternative: true),
+        new(0f, 0f, Closeup(), Chancellor(SWTrainingBudgetPhase.Pending),
+            Annotations: ScreenNote("Проект Минфина подан без помех и ждёт решения канцлера."), Resumes: true),
+        new(4f, 4f, Closeup(), Chancellor(SWTrainingBudgetPhase.Pending), SWTrainingPointer.Travel),
+        new(6f, 7f, Closeup(), Chancellor(SWTrainingBudgetPhase.Pending), SWTrainingPointer.Press),
+        new(7f, 10f, Closeup(), Chancellor(SWTrainingBudgetPhase.Approved), Popup: "Бюджет утверждён. Средства переданы министерствам и секторам."),
+        // The other case opens on the project as it was before the approval, and only then the rejection is pressed.
+        new(15f, 18f, Closeup(), Chancellor(SWTrainingBudgetPhase.Pending),
+            Annotations: ScreenNote("Если канцлер не согласен, отклонить проект можно только с замечанием."), Alternative: true, Opens: true),
+        new(19f, 22f, Closeup(), Chancellor(SWTrainingBudgetPhase.Pending, rejectText: RejectExample), SWTrainingPointer.Press, Alternative: true),
         // The popup goes to whoever decided, at their cursor; the finance ministry sees the returned draft separately.
-        new(13f, 17f, Closeup(), Chancellor(SWTrainingBudgetPhase.NotSubmitted), Popup: "Проект бюджета отклонён. Минфин уведомлён.",
-            Annotations: ScreenNote("Другой выбор: это сообщение видит тот, кто отклонил проект."), Alternative: true),
-        new(21f, 25f, Closeup(), new SWTrainingFinancePanel("Отклонён - переделайте", 45, 35, 10, 10, true, RejectReason: RejectExample),
-            Annotations: ScreenNote("Другой выбор, панель Минфина: черновик вернулся с замечанием."), Alternative: true),
+        new(21f, 25f, Closeup(), Chancellor(SWTrainingBudgetPhase.NotSubmitted), Popup: "Проект бюджета отклонён. Минфин уведомлён.",
+            Annotations: ScreenNote("Это сообщение видит сам канцлер, отклонивший проект."), Alternative: true),
+        new(29f, 33f, Closeup(), new SWTrainingFinancePanel("Отклонён - переделайте", 45, 35, 10, 10, true, RejectReason: RejectExample),
+            Annotations: ScreenNote("У министра финансов черновик вернулся с замечанием."), Alternative: true),
     };
 
     /// <summary>A separate outcome: nobody presses anything, and no popup is promised.</summary>
     public static SWTrainingStage[] BudgetDeadline() => new SWTrainingStage[]
     {
         new(0f, 0f, Closeup("08:59"), Chancellor(SWTrainingBudgetPhase.Pending),
-            Annotations: ScreenNote("Другой случай: проект не утверждён к сроку.")),
+            Annotations: ScreenNote("Проект подан, но канцлер занят карантином и не успел его рассмотреть: ни одобрения, ни отказа."), Resumes: true),
         new(4f, 4f, Closeup("09:00"), Chancellor(SWTrainingBudgetPhase.Approved, "Срок утверждения бюджета истёк"),
-            Annotations: ScreenNote("Другой случай: проект не утверждён к сроку.")),
+            Annotations: ScreenNote("В 09:00 поданный проект применился сам.")),
     };
 
     /// <summary>A separate outcome: the finance ministry has no minister.</summary>
@@ -269,11 +299,11 @@ public static partial class SWTrainingSamples
     {
         new(0f, 0f, new SWTrainingVisual(SWTrainingScene.Desk, new[] { Clock() }, ClockText: "07:59")),
         new(2f, 4f, Closeup("07:59"), new SWTrainingBudgetStatusPanel(SWTrainingBudgetPhase.NotSubmitted),
-            Annotations: ScreenNote("Другой случай: в Минфине нет министра.")),
+            Annotations: ScreenNote("В Минфине сегодня нет министра, проект никто не подал.")),
         new(4f, 8f, Closeup("08:00"), new SWTrainingBudgetStatusPanel(SWTrainingBudgetPhase.Pending),
-            Annotations: ScreenNote("Пример, когда канцлер или спикер на месте: проект подан и ждёт решения. Его доли зависят от созыва, поэтому здесь не показаны.")),
+            Annotations: ScreenNote("Канцлер или спикер на месте: стандартный проект подан и ждёт их решения.")),
         new(12f, 16f, Closeup("08:00"), new SWTrainingBudgetStatusPanel(SWTrainingBudgetPhase.Approved, "Нет канцлера и спикера"),
-            Annotations: ScreenNote("Другой случай: нет ни канцлера, ни спикера. Поданный проект применяется сразу, ожидания нет."), Alternative: true),
+            Annotations: ScreenNote("Если нет ни канцлера, ни спикера, поданный проект применяется сразу."), Alternative: true, Opens: true),
     };
 
     // ---- 28 ---------------------------------------------------------------
@@ -299,14 +329,18 @@ public static partial class SWTrainingSamples
         new(0f, 0f, Examining(0)),
         new(2f, 3f, Examining(1), Annotations: OpenActions()),
         new(5f, 6f, Examining(1), Annotations: ChooseHealth()),
-        new(8f, 9f, Examining(1), Annotations: HealthResult("…несколько ушибов.", "Пример: текст зависит от вида и тяжести повреждений.")),
-        new(16f, 17f, Examining(0), Annotations: TooFar(), Alternative: true),
+        new(8f, 9f, Examining(1), Annotations: HealthResult("Он имеет несколько ушибов.","Несколько ушибов: это механическая травма, ей подходит набор для ушибов.")),
+        new(16f, 17f, Examining(0), Annotations: TooFar(), Alternative: true, Opens: true),
     };
 
     /// <summary>One use only: the hand reaches the patient, the 3 seconds run, the stack loses one unit.</summary>
     public static SWTrainingStage[] HealingUse() => new SWTrainingStage[]
     {
-        new(0f, 0f, Treating(0), Annotations: Count(10)),
+        new(0f, 0f, Treating(0), Annotations: new[]
+        {
+            new SWTrainingAnnotation("Количество: 10", SWTrainingTone.Game, 130, 24, 190),
+            new SWTrainingAnnotation("Мира Тессе стоит вплотную к пациенту.", SWTrainingTone.Teaching, 130, 56, 190),
+        }, Resumes: true),
         new(ReachStart, 3f, Treating(2, ReachSeconds), Annotations: Count(10)),
         new(ContactStart, 6f, Treating(3), Annotations: new[]
         {
@@ -326,6 +360,6 @@ public static partial class SWTrainingSamples
         new(0f, 0f, Treating(0, ReachSeconds, true)),
         new(2f, 3f, Examining(1), Annotations: OpenActions()),
         new(5f, 6f, Examining(1), Annotations: ChooseHealth()),
-        new(8f, 9f, Examining(1), Annotations: HealthResult("…лёгкий ушиб.", "Один из возможных итогов. Текст может не измениться, полное восстановление не обещано.")),
+        new(8f, 9f, Examining(1), Annotations: HealthResult("Он имеет лёгкий ушиб.","Остался лёгкий ушиб: травма стала меньше. Если описание не меняется, продолжайте лечение.")),
     };
 }

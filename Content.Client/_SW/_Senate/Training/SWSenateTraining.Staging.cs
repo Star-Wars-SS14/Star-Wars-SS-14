@@ -8,6 +8,7 @@ using Robust.Shared.IoC;
 using Robust.Shared.Log;
 using Robust.Shared.Maths;
 using Robust.Shared.Utility;
+using TextMode = Content.Client._SW._Senate.Training.SWTrainingTextMode;
 
 namespace Content.Client._SW._Senate.Training;
 
@@ -19,24 +20,13 @@ public sealed partial class SWSenateTraining
 {
     private const float PlatePadding = 10f;
     private const float PlateGap = 4f;
-    private const float PlateMaxWidth = 540f;
-    private const float StackedMaxWidth = 720f;
-    private const float StackGap = 8f;
-    private const float WideMargin = 24f;
-    private const float NarrowMargin = 8f;
-    private const float NarrowWindow = 400f;
-    private const float ZoneBottomGap = 12f;
-    private const float MinPlateWidth = 240f;
-    private const float MinCanvasHeight = 48f;
-    private const float MinScrollRoom = 96f;
-    private const float MinScrollPicture = 72f;
-    private const float MaxScrollPictureShare = 0.4f;
     private const float AdvanceTime = 2f;
-    private const float EdgeFade = 0.5f;
+    private const float EdgeFade = SWSenateTrainingScript.EdgeFade;
     private const float CrossFade = 0.8f;
-    private const float MinPanelHeight = 200f;
-    private const float PopupSeconds = 4f;
-    private const float MinAnnotationWidth = 180f;
+
+    /// <summary>The plate under a backed picture: art pixels around it and its colour, light enough for dark metal.</summary>
+    private const float BackingPad = SWSenateTrainingArt.BackingPad;
+    private static readonly Color BackingFill = new(0.80f, 0.79f, 0.74f, 0.92f);
     private const float PointerTravel = 1.5f;
     private const float PointerUiSize = 24f;
     private const float PopupMaxWidth = 320f;
@@ -52,12 +42,9 @@ public sealed partial class SWSenateTraining
     private readonly Dictionary<SWTrainingArt, Texture> _art = new();
     private readonly Dictionary<(string Text, Font Font, float Scale, int Width), List<string>> _wrapCache = new();
 
-    /// <summary>In the scroll modes PlateLeft and PlateAnchor give the left and top edges of the scroll area, in pixels.</summary>
-    private readonly record struct PageLayout(TextMode Mode, float Pixel, UIBox2 Canvas, bool Stacked, float PlateLeft, float PlateWidth, float PlateAnchor);
-
     private (string Chapter, Vector2 Size, float Ui, float Reserve)? _layoutKey;
     private (string Chapter, Vector2 Size, float Ui)? _overflowFor;
-    private PageLayout _layout;
+    private SWTrainingPage _layout;
 
     // Per-scene drawing state, in art pixels of the current scene.
     private float _pixel = 1f;
@@ -120,17 +107,7 @@ public sealed partial class SWSenateTraining
 
     // ---- layout -----------------------------------------------------------
 
-    /// <summary>Whole-number scale when possible; below 1 only to keep the frame's main part and full height visible.</summary>
-    private static float FitPixel(float width, float room)
-    {
-        var fit = MathF.Min(room / SWSenateTrainingArt.FrameHeight, width / SWSenateTrainingArt.MinViewWidth);
-        if (fit <= 0f)
-            return 0f;
-
-        return fit >= 1f ? MathF.Floor(fit) : fit;
-    }
-
-    private PageLayout GetLayout(DrawingHandleScreen handle, SWTrainingChapter chapter, Vector2 size, float ui)
+    private SWTrainingPage GetLayout(DrawingHandleScreen handle, SWTrainingChapter chapter, Vector2 size, float ui)
     {
         var key = (chapter.Id, size, ui, _barReserve);
         if (_layoutKey == key)
@@ -141,103 +118,27 @@ public sealed partial class SWSenateTraining
         return _layout;
     }
 
-    /// <summary>
-    /// The layout holds for the whole chapter, sized by its longest shot, so the picture does not jump between shots.
-    /// The plate covers the free corner of the frame when it fits there; otherwise it moves under the picture, which
-    /// shrinks as a whole. The font never shrinks: a window that cannot hold the whole text gets a scroll area above
-    /// the buttons and, when even that has no room, one scroll area with the text and the buttons together.
-    /// </summary>
-    private PageLayout ComputeLayout(DrawingHandleScreen handle, SWTrainingChapter chapter, Vector2 size, float ui)
-    {
-        var room = MathF.Max(1f, size.Y - _barReserve * ui);
-        var margin = (size.X / ui < NarrowWindow ? NarrowMargin : WideMargin) * ui;
-        var needsPanel = SWSenateTrainingScript.HasPanels(chapter);
-        var overflowed = _overflowFor == (chapter.Id, size, ui);
+    /// <summary>The rules are in <see cref="SWTrainingPageLayout.Compute"/>; only the plate is measured here, with the real fonts.</summary>
+    private SWTrainingPage ComputeLayout(DrawingHandleScreen handle, SWTrainingChapter chapter, Vector2 size, float ui) =>
+        SWTrainingPageLayout.Compute(chapter, size, ui, _barReserve, _overflowFor == (chapter.Id, size, ui),
+            width => WorstPlateHeight(handle, chapter, ui, width), Measure(handle, ui));
 
-        var pixel = FitPixel(size.X, room);
-        if (pixel >= 1f && (!needsPanel || (!overflowed && PanelsFit(chapter, size.X, pixel, ui))))
+    /// <summary>The remark and game time boxes as DrawAnnotation and DrawClockText draw them, with the real fonts.</summary>
+    private SWTrainingMeasure Measure(DrawingHandleScreen handle, float ui) => new(
+        (note, width) =>
         {
-            var view = size.X / pixel;
-            var zoneRight = (SWSenateTrainingArt.ZoneRight - (SWSenateTrainingArt.FrameWidth - view) / 2f) * pixel;
-            var zoneHeight = (SWSenateTrainingArt.FrameHeight - SWSenateTrainingArt.ZoneTop) * pixel;
-            var width = MathF.Min(PlateMaxWidth * ui, zoneRight - margin);
-            if (width >= MinPlateWidth * ui && WorstPlateHeight(handle, chapter, ui, width) + ZoneBottomGap * ui <= zoneHeight)
-            {
-                var top = MathF.Floor((room - SWSenateTrainingArt.FrameHeight * pixel) / 2f);
-                var canvas = new UIBox2(0f, top, size.X, top + SWSenateTrainingArt.FrameHeight * pixel);
-                return new PageLayout(TextMode.Drawn, pixel, canvas, false, margin, width, canvas.Bottom - ZoneBottomGap * ui);
-            }
-        }
-
-        var stackedWidth = MathF.Max(1f, MathF.Min(StackedMaxWidth * ui, size.X - margin * 2f));
-        var plate = WorstPlateHeight(handle, chapter, ui, stackedWidth);
-        var gap = StackGap * ui;
-        var left = MathF.Floor((size.X - stackedWidth) / 2f);
-        if (plate <= room)
+            var padding = SWTrainingPageLayout.NotePadding * ui;
+            var inner = MathF.Max(1f, width - padding * 2f);
+            var heading = note.Heading == null ? 0f : Wrap(handle, _labelFont!, ui, note.Heading, inner).Count * _labelFont!.GetLineHeight(ui);
+            return heading + Wrap(handle, _textFont!, ui, note.Text, inner).Count * _textFont!.GetLineHeight(ui) + padding * 2f;
+        },
+        text =>
         {
-            var stackedPixel = FitPixel(size.X, room - plate - gap);
-            var pictureHeight = SWSenateTrainingArt.FrameHeight * stackedPixel;
-            if (pictureHeight < MinCanvasHeight * ui && !needsPanel)
-                return new PageLayout(TextMode.Drawn, 0f, default, true, left, stackedWidth, MathF.Floor((room - plate) / 2f));
+            var size = handle.GetDimensions(_titleFont!, text, ui);
+            var padding = SWTrainingPageLayout.ClockPadding * ui;
+            return new Vector2(size.X + padding * 2f, size.Y + padding * 2f);
+        });
 
-            // A chapter with illustrations stays here only if they fit the picture; otherwise they join the scroll area.
-            if (pictureHeight >= MinCanvasHeight * ui && (!needsPanel || (!overflowed && PanelsFit(chapter, size.X, stackedPixel, ui))))
-            {
-                var stackedTop = MathF.Floor((room - pictureHeight - gap - plate) / 2f);
-                var stackedCanvas = new UIBox2(0f, stackedTop, size.X, stackedTop + pictureHeight);
-                return new PageLayout(TextMode.Drawn, stackedPixel, stackedCanvas, true, left, stackedWidth, stackedCanvas.Bottom + gap);
-            }
-        }
-
-        // The panel keeps its place while the text can still get a usable scroll area above it.
-        var edge = CompactEdge * ui;
-        if (room < MinScrollRoom * ui)
-            return new PageLayout(TextMode.Compact, 0f, default, true, edge, size.X - edge * 2f, edge);
-
-        // The text comes first here; the picture only takes what the text can spare.
-        var scrollPixel = FitPixel(size.X, MathF.Min(room * MaxScrollPictureShare, room - MinScrollRoom * ui - gap));
-        var scrollPicture = SWSenateTrainingArt.FrameHeight * scrollPixel;
-        if (scrollPicture < MinScrollPicture * ui)
-            return new PageLayout(TextMode.Scroll, 0f, default, true, margin, size.X - margin * 2f, edge);
-
-        var scrollCanvas = new UIBox2(0f, 0f, size.X, scrollPicture);
-        return new PageLayout(TextMode.Scroll, scrollPixel, scrollCanvas, true, margin, size.X - margin * 2f, scrollCanvas.Bottom + gap);
-    }
-
-    /// <summary>The illustration's part of the frame on screen, cropped to what a narrow window shows.</summary>
-    private static UIBox2 PanelBoxOnScreen(SWTrainingScene scene, UIBox2 canvas, float pixel)
-    {
-        var box = SWSenateTrainingArt.PanelBox(scene);
-        var view = canvas.Width / pixel;
-        var frameLeft = canvas.Left - (SWSenateTrainingArt.FrameWidth - view) / 2f * pixel;
-        return new UIBox2(
-            MathF.Max(frameLeft + box.Left * pixel, canvas.Left),
-            canvas.Top + box.Top * pixel,
-            MathF.Min(frameLeft + box.Right * pixel, canvas.Right),
-            canvas.Top + box.Bottom * pixel);
-    }
-
-    private static bool PanelsFit(SWTrainingChapter chapter, float width, float pixel, float ui)
-    {
-        var canvas = new UIBox2(0f, 0f, width, SWSenateTrainingArt.FrameHeight * pixel);
-        foreach (var shot in chapter.Shots)
-        {
-            if (shot.Stages == null)
-                continue;
-
-            foreach (var stage in shot.Stages)
-            {
-                if (stage.Panel == null)
-                    continue;
-
-                var box = PanelBoxOnScreen(stage.Visual.Scene, canvas, pixel);
-                if (box.Width < SWTrainingUiPanels.MinWidth(stage.Panel) * ui || box.Height < MinPanelHeight * ui)
-                    return false;
-            }
-        }
-
-        return true;
-    }
 
     // ---- text -------------------------------------------------------------
 
@@ -262,7 +163,7 @@ public sealed partial class SWSenateTraining
     }
 
     /// <summary>Plain plate: all lines in full, no ellipsis, no accent bar and no markers.</summary>
-    private void DrawPlate(DrawingHandleScreen handle, PageLayout layout, SWTrainingShot shot)
+    private void DrawPlate(DrawingHandleScreen handle, SWTrainingPage layout, SWTrainingShot shot)
     {
         var scale = UIScale;
         var height = PlateHeight(handle, shot, scale, layout.PlateWidth);
@@ -342,7 +243,7 @@ public sealed partial class SWSenateTraining
 
     // ---- canvas -----------------------------------------------------------
 
-    private void DrawCanvas(DrawingHandleScreen handle, PageLayout layout, SWTrainingShot shot, float ui)
+    private void DrawCanvas(DrawingHandleScreen handle, SWTrainingPage layout, SWTrainingShot shot, float ui)
     {
         _pixel = layout.Pixel;
         _canvas = layout.Canvas;
@@ -444,8 +345,11 @@ public sealed partial class SWSenateTraining
 
         var ui = UIScale;
         var visual = stage.Visual;
-        // In the scroll modes the clock and the notes are part of the text instead of covering it.
-        if (_textMode == TextMode.Drawn && _canvasDrawn && _art.ContainsKey(SWSenateTrainingArt.Scene(visual.Scene).Layers[0]))
+        // In the scroll modes the clock and the notes are part of the text instead of covering it. A drawn page of a
+        // chapter with stages always has a picture (SWTrainingPageLayout.Compute), so these words are never lost; they
+        // stay even where the scene's background is missing.
+        // Both the shown mode and the layout must be the drawn page, so a frame of a mode change never draws unchecked boxes.
+        if (_textMode == TextMode.Drawn && _layout.Mode == TextMode.Drawn && _canvasDrawn)
         {
             foreach (var overlay in visual.Overlays)
             {
@@ -453,13 +357,16 @@ public sealed partial class SWSenateTraining
                     DrawOverlay(handle, overlay, 0f);
             }
 
-            if (visual.ClockText != null)
-                DrawClockText(handle, visual.ClockText, ui);
-
-            if (stage.Annotations != null)
+            if (CurrentStages is { } stages)
             {
-                foreach (var annotation in stage.Annotations)
-                    DrawAnnotation(handle, annotation, ui);
+                // The same boxes the layout checked: inside the picture, clear of the plate and of each other.
+                var index = CurrentStageIndex();
+                var boxes = SWTrainingPageLayout.StageBoxes(stages, index, _canvas, _pixel, ui, Measure(handle, ui));
+                var next = 0;
+                if (visual.ClockText != null)
+                    DrawClockBox(handle, visual.ClockText, boxes[next++], ui);
+                foreach (var annotation in SWSenateTrainingScript.VisibleAnnotations(stages, index))
+                    DrawAnnotation(handle, annotation, boxes[next++], ui);
             }
         }
 
@@ -486,8 +393,10 @@ public sealed partial class SWSenateTraining
         }
 
         // A popup is brief in the game too; its stage stays on screen and the scroll area keeps its words.
-        if (stage.Popup != null && _shotTime - StageStart(stage) < PopupSeconds)
-            DrawPopup(handle, stage.Popup, target, ui);
+        // The popup stays as long as its stage: the stage lasts until the shot's lines, its remark and the popup are all
+        // read, a pause stops the clock, the manual mode holds the stage until the next step, and stepping back shows it again.
+        if (stage.Popup is { } popup && CurrentStages is { } popupStages && SWSenateTrainingScript.PopupShown(popupStages, _shotTime, _reducedMotion))
+            DrawPopup(handle, popup, target, ui);
     }
 
     private void DrawPointer(DrawingHandleScreen handle, SWTrainingStage stage, UIBox2 target, float ui)
@@ -526,11 +435,11 @@ public sealed partial class SWSenateTraining
         DrawLines(handle, _labelFont!, ui, text, box.Left + padding, box.Top + padding, width - padding * 2f, SWConsoleStyle.TextBright);
     }
 
-    private void DrawAnnotation(DrawingHandleScreen handle, SWTrainingAnnotation annotation, float ui)
+    /// <summary>A remark in the box <see cref="SWTrainingPageLayout.StageBoxes"/> gave it.</summary>
+    private void DrawAnnotation(DrawingHandleScreen handle, SWTrainingAnnotation annotation, UIBox2 box, float ui)
     {
-        var padding = 6f * ui;
-        var width = MathF.Max(annotation.Width * _pixel, MinAnnotationWidth * ui);
-        var inner = MathF.Max(1f, width - padding * 2f);
+        var padding = SWTrainingPageLayout.NotePadding * ui;
+        var inner = MathF.Max(1f, box.Width - padding * 2f);
         var color = annotation.Tone switch
         {
             SWTrainingTone.Teaching => SWConsoleStyle.Brass,
@@ -538,13 +447,6 @@ public sealed partial class SWSenateTraining
             _ => SWConsoleStyle.TextBright,
         };
 
-        var heading = annotation.Heading == null ? 0f : Wrap(handle, _labelFont!, ui, annotation.Heading, inner).Count * _labelFont!.GetLineHeight(ui);
-        var height = heading + Wrap(handle, _textFont!, ui, annotation.Text, inner).Count * _textFont!.GetLineHeight(ui) + padding * 2f;
-        var anchor = ToScreen(_origin + new Vector2(annotation.X, annotation.Y));
-        // The requested right edge is kept where a wider minimum applies, so a note never grows over a face.
-        var right = anchor.X + annotation.Width * _pixel;
-        var left = MathF.Max(_canvas.Left, right - width);
-        var box = UIBox2.FromDimensions(new Vector2(left, anchor.Y), new Vector2(width, height));
         handle.DrawRect(box, PlateFill);
         var y = box.Top + padding;
         if (annotation.Heading != null)
@@ -573,6 +475,16 @@ public sealed partial class SWSenateTraining
         var frameWidth = (float) file.Width / file.Frames;
         var region = new UIBox2(frameWidth * frame, 0f, frameWidth * (frame + 1), file.Height);
         var dest = UIBox2.FromDimensions(_origin + new Vector2(overlay.X, overlay.Y), new Vector2(frameWidth, file.Height));
+        if (overlay.Backed)
+        {
+            // A light neutral plate, cropped to the canvas like the picture itself.
+            var plate = ToScreen(new UIBox2(dest.Left - BackingPad, dest.Top - BackingPad, dest.Right + BackingPad, dest.Bottom + BackingPad));
+            var shown = new UIBox2(MathF.Max(plate.Left, _canvas.Left), MathF.Max(plate.Top, _canvas.Top),
+                MathF.Min(plate.Right, _canvas.Right), MathF.Min(plate.Bottom, _canvas.Bottom));
+            if (shown.Width > 0f && shown.Height > 0f)
+                handle.DrawRect(shown, BackingFill);
+        }
+
         Blit(handle, texture, dest, region, Color.White);
     }
 
@@ -714,10 +626,16 @@ public sealed partial class SWSenateTraining
     /// <summary>The exact time named by the script, under the clock mark.</summary>
     private void DrawClockText(DrawingHandleScreen handle, string text, float ui)
     {
-        var anchor = ToScreen(_origin + new Vector2(546f, 62f));
+        var anchor = ToScreen(_origin + new Vector2(SWTrainingPageLayout.ClockX, SWTrainingPageLayout.ClockY));
         var size = handle.GetDimensions(_titleFont!, text, ui);
-        var padding = 4f * ui;
+        var padding = SWTrainingPageLayout.ClockPadding * ui;
         var box = UIBox2.FromDimensions(anchor - new Vector2(size.X / 2f + padding, 0f), new Vector2(size.X + padding * 2f, size.Y + padding * 2f));
+        DrawClockBox(handle, text, box, ui);
+    }
+
+    private void DrawClockBox(DrawingHandleScreen handle, string text, UIBox2 box, float ui)
+    {
+        var padding = SWTrainingPageLayout.ClockPadding * ui;
         Fill(handle, box, PlateFill);
         handle.DrawString(_titleFont!, box.TopLeft + new Vector2(padding, padding), text, ui, SWConsoleStyle.TextBright);
     }

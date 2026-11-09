@@ -7,6 +7,7 @@ using Robust.Shared.Input;
 using Robust.Shared.Maths;
 using Robust.Shared.Timing;
 using static Robust.Client.UserInterface.Controls.BoxContainer;
+using TextMode = Content.Client._SW._Senate.Training.SWTrainingTextMode;
 
 namespace Content.Client._SW._Senate.Training;
 
@@ -22,21 +23,9 @@ public sealed partial class SWSenateTraining : LayoutContainer
     private const float ButtonRowHeight = 36f;
     private const float BarSeparation = 4f;
     private const float BarEdge = 12f;
-    private const float CompactEdge = 4f;
+    private const float CompactEdge = SWTrainingPageLayout.CompactEdge;
 
     private const string ManualHint = "Этот кадр не сменится сам. «Пропустить» показывает следующий шаг или кадр, «Назад» возвращает предыдущий.";
-    private const float StageEpsilon = 0.01f;
-
-    /// <summary>Where the shot's text is. In the last two modes the window cannot show it whole, so it scrolls.</summary>
-    private enum TextMode
-    {
-        /// <summary>Drawn on a plate; the shots change by themselves.</summary>
-        Drawn,
-        /// <summary>In a scroll area above the button panel; the shots change by hand.</summary>
-        Scroll,
-        /// <summary>Too low even for that: text and buttons share one scroll area; the shots change by hand.</summary>
-        Compact,
-    }
 
     private readonly string? _recommendedJob;
     private readonly bool _reducedMotion;
@@ -223,13 +212,13 @@ public sealed partial class SWSenateTraining : LayoutContainer
         _menuHeading.Text = "Обучение Сената: выберите занятие";
         _rows.RemoveAllChildren();
         _rows.AddChild(SWConsoleStyle.Wrap(
-            "Сначала посмотрите общий выпуск, затем главы своего занятия. Обучение только показывает порядок действий: оно не назначает должность и не меняет готовность.",
+            "Сначала посмотрите общий выпуск, затем главы своего занятия.",
             SWConsoleStyle.TextDim));
 
         foreach (var role in SWSenateTrainingScript.Roles)
         {
             if (role.JobId != null && role.JobId == _recommendedJob)
-                AddRoleRow(role, "Выбрано в настройках персонажа. Это не гарантирует назначение на должность.");
+                AddRoleRow(role, "Выбрано в настройках персонажа.");
         }
 
         foreach (var role in SWSenateTrainingScript.Roles)
@@ -321,24 +310,11 @@ public sealed partial class SWSenateTraining : LayoutContainer
 
     private SWTrainingStage[]? CurrentStages => _chapter?.Shots[_shotIndex].Stages;
 
-    private float StageStart(SWTrainingStage stage) => _reducedMotion ? stage.ReducedStart : stage.Start;
+    private float StageStart(SWTrainingStage stage) => SWSenateTrainingScript.StageStart(stage, _reducedMotion);
 
     /// <summary>The stage follows from the shot's time alone, so every control below keeps it consistent.</summary>
-    private int CurrentStageIndex()
-    {
-        var stages = CurrentStages;
-        if (stages == null)
-            return 0;
-
-        var index = 0;
-        for (var i = 1; i < stages.Length; i++)
-        {
-            if (_shotTime >= StageStart(stages[i]))
-                index = i;
-        }
-
-        return index;
-    }
+    private int CurrentStageIndex() =>
+        CurrentStages is { } stages ? SWSenateTrainingScript.StageIndexAt(stages, _shotTime, _reducedMotion) : 0;
 
     private SWTrainingStage? CurrentStage => CurrentStages is { } stages ? stages[CurrentStageIndex()] : null;
 
@@ -356,7 +332,7 @@ public sealed partial class SWSenateTraining : LayoutContainer
         var index = CurrentStageIndex();
         if (StepsThroughStages && stages != null && index > 0)
         {
-            _shotTime = StageStart(stages[index - 1]);
+            _shotTime = SWSenateTrainingScript.BackWithinShot(stages, index, _reducedMotion);
             return;
         }
 
@@ -418,27 +394,15 @@ public sealed partial class SWSenateTraining : LayoutContainer
 
         FitBar();
         var manual = _textMode != TextMode.Drawn;
-        if (!_chapterDone && !_paused)
+        if (!_chapterDone)
         {
-            var duration = SWSenateTrainingScript.ShotDuration(_chapter, _chapter.Shots[_shotIndex], _reducedMotion);
-
-            // The next stage's start is fixed before time moves, so no frame, however long, can pass over a stage.
-            var nextStart = float.PositiveInfinity;
-            if (CurrentStages is { } stages && CurrentStageIndex() + 1 < stages.Length)
-                nextStart = StageStart(stages[CurrentStageIndex() + 1]);
-
-            if (manual)
-            {
-                // Text that may need scrolling is never taken away: the shot waits in its stage, short of the closing fade.
-                var limit = MathF.Min(duration - EdgeFade, nextStart - StageEpsilon);
-                _shotTime = MathF.Min(_shotTime + args.DeltaSeconds, MathF.Max(_shotTime, limit));
-            }
-            else
-            {
-                _shotTime = MathF.Min(_shotTime + args.DeltaSeconds, nextStart);
-                if (_shotTime >= duration)
-                    NextShot();
-            }
+            // The same rules the contract plays through: a pause keeps the time, no frame passes over a stage, and the
+            // manual mode waits in its stage, short of the closing fade, for the player.
+            var (time, ended) = SWSenateTrainingScript.Advance(_chapter, _chapter.Shots[_shotIndex], _shotTime, args.DeltaSeconds,
+                _reducedMotion, manual, _paused);
+            _shotTime = time;
+            if (ended)
+                NextShot();
         }
 
         _previous.Disabled = _shotIndex == 0 && (!StepsThroughStages || CurrentStageIndex() == 0);
@@ -537,8 +501,8 @@ public sealed partial class SWSenateTraining : LayoutContainer
         box.AddChild(SWConsoleStyle.Wrap(shot.Text, SWConsoleStyle.TextBright));
         if (shot.Note.Length > 0)
             box.AddChild(SWConsoleStyle.Wrap(shot.Note, SWConsoleStyle.TextDim));
-        if (stage != null)
-            AddStageToScroll(box, stage);
+        if (stage != null && CurrentStages is { } stages)
+            AddStageToScroll(box, stages, CurrentStageIndex());
         box.AddChild(SWConsoleStyle.Wrap(ManualHint, SWConsoleStyle.TextDim));
         if (compact)
             box.AddChild(_bar);
@@ -553,35 +517,25 @@ public sealed partial class SWSenateTraining : LayoutContainer
     /// In the scroll modes everything the stage says joins the text, whether or not a small picture is shown above it,
     /// so the text does not depend on the picture and cannot go stale when a resize adds or removes it.
     /// </summary>
-    private void AddStageToScroll(BoxContainer box, SWTrainingStage stage)
+    private void AddStageToScroll(BoxContainer box, SWTrainingStage[] stages, int index)
     {
-        if (stage.Visual.ClockText != null)
-            box.AddChild(SWConsoleStyle.Wrap($"Игровое время: {stage.Visual.ClockText}", SWConsoleStyle.TextBright));
-
-        if (stage.Annotations != null)
+        var stage = stages[index];
+        // The same words as on the picture: game time, remarks, the popup for the whole stage, and the action in words.
+        foreach (var (text, tone) in SWTrainingPageLayout.StageScrollLines(stages, index))
         {
-            foreach (var annotation in stage.Annotations)
+            var color = tone switch
             {
-                var text = annotation.Heading == null ? annotation.Text : $"{annotation.Heading}: {annotation.Text}";
-                box.AddChild(SWConsoleStyle.Wrap(text, annotation.Tone == SWTrainingTone.Teaching ? SWConsoleStyle.Brass : SWConsoleStyle.TextBright));
-            }
+                SWTrainingScrollTone.Teaching or SWTrainingScrollTone.Popup => SWConsoleStyle.Brass,
+                SWTrainingScrollTone.Action => SWConsoleStyle.Accent,
+                _ => SWConsoleStyle.TextBright,
+            };
+            box.AddChild(SWConsoleStyle.Wrap(text, color));
         }
-
-        if (stage.Popup != null)
-            box.AddChild(SWConsoleStyle.Wrap($"Всплывающее сообщение: {stage.Popup}", SWConsoleStyle.Brass));
 
         if (stage.Panel == null)
             return;
 
-        // No pointer can be drawn on a control in the scroll area, so the action is said in words and framed.
-        var acting = stage.Pointer != SWTrainingPointer.None;
-        if (acting && SWTrainingUiPanels.TargetLabel(stage.Panel) is { } label)
-        {
-            var line = stage.Pointer == SWTrainingPointer.Press ? $"Нажатие: {label}." : $"Следующее действие: {label}.";
-            box.AddChild(SWConsoleStyle.Wrap(line, SWConsoleStyle.Accent));
-        }
-
-        box.AddChild(SWTrainingUiPanels.Build(stage.Panel, out _, acting));
+        box.AddChild(SWTrainingUiPanels.Build(stage.Panel, out _, stage.Pointer != SWTrainingPointer.None));
     }
 
     // ---- illustration area ------------------------------------------------
@@ -607,13 +561,12 @@ public sealed partial class SWSenateTraining : LayoutContainer
         }
 
         var ui = UIScale;
-        var box = PanelBoxOnScreen(stage.Visual.Scene, _layout.Canvas, _layout.Pixel);
-        var width = MathF.Min(SWTrainingUiPanels.MaxWidth(panel) * ui, box.Width);
-        var left = box.Left + (box.Width - width) / 2f;
-        SetMarginLeft(_panelArea, left / ui);
-        SetMarginRight(_panelArea, (left + width) / ui);
-        SetMarginTop(_panelArea, box.Top / ui);
-        SetMarginBottom(_panelArea, box.Bottom / ui);
+        // The same rectangle the layout kept the clock and the remarks clear of.
+        var rect = SWTrainingPageLayout.PanelRectOnScreen(stage.Visual.Scene, panel, _layout.Canvas, _layout.Pixel, ui);
+        SetMarginLeft(_panelArea, rect.Left / ui);
+        SetMarginRight(_panelArea, rect.Right / ui);
+        SetMarginTop(_panelArea, rect.Top / ui);
+        SetMarginBottom(_panelArea, rect.Bottom / ui);
         _panelArea.Visible = true;
 
         // The target must be visible without scrolling. If this window cannot hold the panel, the chapter moves to

@@ -11,13 +11,15 @@ public static partial class SWTrainingSamples
 {
     private const string MinistryConsole = "Рабочая консоль министерства";
     private const string DepartmentConsole = "Рабочая консоль департамента";
-    private const string SchemeNote = "Учебная схема, не карта игры.";
+    private const string LineName = "Стерильные расходные материалы";
+    private const string LineWorld = "Дунидин";
+    private const string RouteName = "Корусант — Дунидин";
 
     // One array per set of buttons: rows compare them by reference.
     private static readonly string[] SecurityTabs = { "Политика безопасности", "Карта и группы", "Расследования" };
     private static readonly string[] PostureLabels = { "Чрезвычайное положение", "Усиленный", "Наблюдение", "Гражданский" };
     private static readonly string[] EconomyProgramTabs = { "Доступные проекты", "Выполнение и поставки", "Потрясения" };
-    private static readonly string[] EconomyGoods = { "Выберите товар", "Товар для примера" };
+    private static readonly string[] EconomyGoods = { "Выберите товар", "Медицинские расходники" };
     private static readonly string[] FinanceTabs = { "Монетарка", "ДОЛГ" };
     private static readonly string[] RateLabels = { "0%", "3%", "6%", "9%", "12%", "16%" };
     private static readonly string[] TaxLabels = { "Низкие 10%", "Средние 20%", "Высокие 30%" };
@@ -88,33 +90,36 @@ public static partial class SWTrainingSamples
         HandIn(),
         Aim(TabRow(MinistryConsole, SecurityTabs, 0)),
         Press(TabRow(MinistryConsole, SecurityTabs, 0)),
-        Result(SecurityGauges("Умеренная", 40, "Напряжение", 35), note: Example));
+        Result(SecurityGauges("Умеренная", 40, "Напряжение", 35), note: "После вспышки лихорадки в Корусанте недовольство растёт, а подполье этим пользуется."));
 
     public static SWTrainingStage[] SecurityMode() => Steps(
         Aim(SecurityPosture(2, 1)),
         Press(SecurityPosture(2, 1)),
         Result(SecurityPosture(1), note: "Режим сменился. Угроза и накал от этого меняются постепенно."),
+        Case("Министр может пойти дальше и объявить чрезвычайное положение.", SecurityPosture(1)),
         Aim(SecurityPosture(1, 0), true),
         Press(SecurityPosture(1, 0), true),
-        Result(SecurityPosture(1, pending: true), note: "Другой случай: канцлер или спикер на месте, чрезвычайное положение ждёт решения.", alternative: true),
-        Result(SecurityPosture(0), note: "Другой случай: нет ни канцлера, ни спикера, режим сменился сразу.", alternative: true));
+        Result(SecurityPosture(1, pending: true), note: "Чрезвычайное положение ждёт решения, если канцлер или спикер на месте.", alternative: true, continues: true),
+        Result(SecurityPosture(0), note: "Если нет ни канцлера, ни спикера, режим меняется сразу.", alternative: true));
 
     public static SWTrainingStage[] SecurityRequest() => Steps(
+        Back("Режим усилен, а затем министр запросил и чрезвычайное положение. Канцлер на месте: запрос ждёт его решения.", EmergencyRequest()),
         Aim(EmergencyRequest(aimApprove: true)),
         Press(EmergencyRequest(aimApprove: true)),
-        Result(SecurityPosture(0), note: "В этом примере запрос одобрен: режим изменён."),
+        Result(SecurityPosture(0), note: "Канцлер одобрил: в Республике чрезвычайное положение."),
+        Case("Канцлер может и отказать в чрезвычайном положении.", EmergencyRequest()),
         Aim(EmergencyRequest(aimReject: true), true),
         Press(EmergencyRequest(aimReject: true), true),
-        Result(SecurityPosture(1), note: "Другой выбор: запрос отклонён, режим прежний.", alternative: true));
+        Result(SecurityPosture(1), note: "Запрос отклонён, режим остался прежним.", alternative: true, continues: true));
 
     public static SWTrainingStage[] SecurityWatch() => Steps(
-        Picture(ChartView(), 3f, ScreenNote(SchemeNote)),
-        Hold(SecurityGauges("Умеренная", 40, "Напряжение", 35), Example, 4f),
-        Result(SecurityGauges("Высокая", 58, "Напряжение", 40), note: "Показатели изменились, режим тот же. Причину ищите в делах и на карте."));
+        Back("Канцлер одобрил: в Республике чрезвычайное положение. Ночью на складах Утроста нашли оружейный тайник.", Picture(ChartView(), 3f)),
+        Hold(SecurityGauges("Умеренная", 40, "Напряжение", 35), "Утром угроза была умеренной.", 4f),
+        Result(SecurityGauges("Высокая", 58, "Напряжение", 40), note: "После находки угроза выросла, режим тот же. Подробности в делах и на карте."));
 
     public static SWTrainingStage[] SecurityOutcome() => Steps(
-        Hold(SecurityGauges("Высокая", 58, "Напряжение", 40, PostureLabels[1]), Example, 4f),
-        Result(SecurityGauges("Высокая", 55, "Напряжение", 41, PostureLabels[1]),
+        Hold(SecurityGauges("Высокая", 58, "Напряжение", 40, PostureLabels[0]), "Чрезвычайное положение действует второй час.", 4f),
+        Result(SecurityGauges("Высокая", 55, "Напряжение", 41, PostureLabels[0]),
             note: "Угроза снижается постепенно, а накал может расти. Выбранный режим сам по себе проблему не решает."));
 
     // ---- 09 ---------------------------------------------------------------
@@ -126,10 +131,10 @@ public static partial class SWTrainingSamples
 
     private static SWTrainingFormPanel EconomyCandidate(string status, bool aim = false, bool available = true) => Form("Программы и поставки",
         Choice(EconomyProgramTabs, 0),
-        Txt("Товар для примера: доступно 1 из 2"),
-        Txt("Линия для примера, Дунидин, Корусант"),
+        Txt("Медицинские расходники: доступно 1 из 2"),
+        Txt($"{LineName} — {LineWorld}, Корусант"),
         Dim("Стоимость: 1200 кр   Выпуск: +2 ед/ч"),
-        Dim("Материалы: материал для примера, 4 ед."),
+        Dim("Материалы: строительные модули 4 ед."),
         Dim("Работы: 3 ч после доставки"),
         Dim(status),
         Btn("Финансировать", aim, !available));
@@ -144,7 +149,7 @@ public static partial class SWTrainingSamples
 
     private static SWTrainingRow[] LineProject(int progress, string status, string materials, string work) => new[]
     {
-        Txt($"Линия для примера / Дунидин   {progress}%"),
+        Txt($"{LineName} / {LineWorld}   {progress}%"),
         Dim(status),
         Dim(materials),
         Dim(work),
@@ -153,7 +158,7 @@ public static partial class SWTrainingSamples
     private static SWTrainingFormPanel EconomyRoute(string status, bool aim = false, bool available = true) => Form("Программы и поставки",
         Choice(EconomyProgramTabs, 0),
         Sec("Транспортные модернизации"),
-        Txt("Маршрут для примера"),
+        Txt(RouteName),
         Dim("Стройплощадка: Дунидин"),
         Dim("Стоимость: 1800 кр"),
         Dim(status),
@@ -165,32 +170,33 @@ public static partial class SWTrainingSamples
         Aim(EconomyPicker(0, true)),
         Press(EconomyPicker(0, true, true)),
         Hold(EconomyPicker(1, open: true)),
-        Result(EconomyCandidate("Доступно"), note: "Выбор товара ничего не заказывает. " + Example));
+        Result(EconomyCandidate("Доступно"), note: "Новым клиникам Дунидина нужны расходники. Линия в самом Дунидине их и выпустит."));
 
     public static SWTrainingStage[] EconomyFund() => Steps(
         Aim(EconomyCandidate("Доступно", true)),
         Press(EconomyCandidate("Доступно", true)),
-        Result(EconomyOrders(LineProject(0, "Заказ принят", "Материал для примера: 0 / 4 ед.", "Работы: 0 / 3 ч")), note: "Деньги списаны, проект появился в поставках. Завода ещё нет."),
-        Result(EconomyCandidate("Недостаточно бюджета", available: false), note: "Другой случай: денег мало, кнопка отключена, проекта нет.", alternative: true));
+        Result(EconomyOrders(LineProject(0, "Заказ принят", "Строительные модули: 0 / 4 ед.", "Работы: 0 / 3 ч")), note: "1200 кр списаны, проект появился в поставках. Цеха ещё нет."),
+        Result(EconomyCandidate("Недостаточно бюджета", available: false), note: "Если бюджета мало, кнопка отключена и проекта нет.", alternative: true));
 
     public static SWTrainingStage[] EconomyWait() => Steps(
-        Hold(EconomyOrders(LineProject(0, "Ожидает материалов", "Материал для примера: 0 / 4 ед.", "Работы: 0 / 3 ч")), Example, 4f),
-        Hold(EconomyOrders(LineProject(25, "Материалы в пути", "Материал для примера: 2 / 4 ед.", "Работы: 0 / 3 ч")), hold: 4f),
-        Result(EconomyOrders(LineProject(75, "Монтаж", "Материал для примера: 4 / 4 ед.", "Работы: 1,5 / 3 ч")), note: "Материалы на месте, идёт монтаж. Выпуск вырастет только после завершения."));
+        Back("Бюджета хватило: проект оплачен. Модули ещё на складах Корусанта.",
+            EconomyOrders(LineProject(0, "Ожидает материалов", "Строительные модули: 0 / 4 ед.", "Работы: 0 / 3 ч"))),
+        Hold(EconomyOrders(LineProject(25, "Материалы в пути", "Строительные модули: 2 / 4 ед.", "Работы: 0 / 3 ч")), "Половина модулей уже в Дунидине.", 4f),
+        Result(EconomyOrders(LineProject(75, "Монтаж", "Строительные модули: 4 / 4 ед.", "Работы: 1,5 / 3 ч")), note: "Материалы на месте, идёт монтаж. Выпуск вырастет, когда он закончится."));
 
     public static SWTrainingStage[] EconomyRouteFund() => Steps(
         Aim(EconomyRoute("Доступно", true)),
         Press(EconomyRoute("Доступно", true)),
-        Result(EconomyRoute("Расширение оплачено", available: false), note: "Маршрут оплачивается отдельно от линии. Второй раз заказать его нельзя. " + Example),
-        Result(EconomyRoute("Нет действующего узла для строительства", available: false), note: "Другой случай: строить негде, кнопка отключена.", alternative: true));
+        Result(EconomyRoute("Расширение оплачено", available: false), note: "Чтобы расходники быстрее доходили до столицы, расширяется и маршрут. Он оплачивается отдельно и только один раз."),
+        Result(EconomyRoute("Нет действующего узла для строительства", available: false), note: "Если строить негде, кнопка отключена.", alternative: true));
 
     public static SWTrainingStage[] EconomyBoth() => Steps(
-        Hold(EconomyOrders(
-            Txt("Линия для примера / Дунидин   75%"), Dim("Монтаж"),
-            Txt("Маршрут для примера / Дунидин   25%"), Dim("Материалы в пути")), Example, 4f),
+        Back("Узел для строительства нашёлся, расширение маршрута оплачено. Оба проекта идут параллельно.", EconomyOrders(
+            Txt($"{LineName} / {LineWorld}   75%"), Dim("Монтаж"),
+            Txt($"Маршрут {RouteName} / {LineWorld}   25%"), Dim("Материалы в пути"))),
         Result(EconomyOrders(
-            Txt("Линия для примера / Дунидин   100%"), Fine("Завершён"),
-            Txt("Маршрут для примера / Дунидин   50%"), Dim("Монтаж")), note: "У каждого проекта своя поставка и свой срок. Один завершён, второй ещё идёт."));
+            Txt($"{LineName} / {LineWorld}   100%"), Fine("Завершён"),
+            Txt($"Маршрут {RouteName} / {LineWorld}   50%"), Dim("Монтаж")), note: "Линия готова и выпускает расходники. Маршрут ещё строится."));
 
     // ---- 10 ---------------------------------------------------------------
 
@@ -236,7 +242,7 @@ public static partial class SWTrainingSamples
         HandIn(),
         Aim(TabRow(MinistryConsole, FinanceTabs, 0)),
         Press(TabRow(MinistryConsole, FinanceTabs, 0)),
-        Result(Monetary("5%", -1, "Средние", 1), note: "Казна, инфляция, ставка и налог видны на одной вкладке. " + Example));
+        Result(Monetary("5%", -1, "Средние", 1), note: "Утро нового созыва: инфляция под контролем, рейтинг A. Казна, ставка и налог на одной вкладке."));
 
     public static SWTrainingStage[] FinanceParameters() => Steps(
         Aim(Monetary("5%", -1, "Средние", 1, 2)),
@@ -249,50 +255,54 @@ public static partial class SWTrainingSamples
     public static SWTrainingStage[] FinanceBonds() => Steps(
         Aim(Debt(0, "0", RepayNone, aimIssue: true)),
         Press(Debt(0, "0", RepayNone, aimIssue: true)),
-        Result(Debt(15, "19 000", RepayBond, canRepay: true), note: "В казну поступило 17 000 кр, вернуть нужно 19 000 кр. Числа зависят от рейтинга."));
+        Result(Debt(15, "19 000", RepayBond, canRepay: true), note: "В казну поступило 17 000 кр, вернуть нужно 19 000 кр. Чем выше рейтинг, тем выгоднее выпуск."));
 
     public static SWTrainingStage[] FinanceRepay() => Steps(
         Aim(Debt(15, "19 000", RepayBond, aimRepay: true, canRepay: true)),
         Press(Debt(15, "19 000", RepayBond, aimRepay: true, canRepay: true)),
-        Result(Debt(0, "0", RepayNone), note: "Выпуск погашен, деньги списаны из казны. " + Example),
-        Result(Debt(15, "19 000", RepayBond), note: "Другой случай: в казне мало денег, кнопка отключена, долг прежний.", alternative: true));
+        Result(Debt(0, "0", RepayNone), note: "Выпуск погашен, 19 000 кр ушли из казны. Долга больше нет."),
+        Result(Debt(15, "19 000", RepayBond), note: "Если в казне меньше нужной суммы, кнопка отключена и долг остаётся.", alternative: true));
 
     public static SWTrainingStage[] FinanceEmission() => Steps(
+        Back("Денег в казне хватило: выпуск погашен, долга нет.", EmissionOffer()),
         Aim(EmissionOffer(true)),
         Press(EmissionOffer(true)),
         Hold(EmissionWaiting()),
         Aim(EmissionRequest(aimApprove: true)),
         Press(EmissionRequest(aimApprove: true)),
         Result(Form("Монетарка", Txt("Казна пополнена"), Warn("Высокая   45/100, цены 125%"), Sec("События"), Dim("Денежная эмиссия: казна полна, инфляция подскочила.")),
-            note: "В этом примере запрос одобрен: инфляция выросла вместе с казной."),
+            note: "Канцлер одобрил: казна полна, но инфляция подскочила."),
+        Case("Канцлер может и отказать в эмиссии.", EmissionRequest()),
         Aim(EmissionRequest(aimReject: true), true),
         Press(EmissionRequest(aimReject: true), true),
-        Result(EmissionOffer(), note: "Другой выбор: запрос отклонён, казна и инфляция прежние.", alternative: true));
+        Result(EmissionOffer(), note: "Эмиссия отклонена: казна и инфляция остались прежними, а министр может запросить снова.", alternative: true, continues: true));
 
     // ---- 11 ---------------------------------------------------------------
 
-    private const string InstitutionExample = "Учреждение для примера";
-    private const string CaseExample = "Дело для примера";
+    private const string InstitutionName = "Районная больница Дунидина";
+    private const string CaseName = "Закупки бакты по двойной цене";
+    private const string FirstCheck = "Сверка счетов";
+    private const string SecondCheck = "Опрос персонала";
 
     private static SWTrainingFormPanel Institution(bool open, bool aim = false) => Form("Проверки",
         Sec("Учреждения"),
         Txt("Дунидин"),
-        Txt(InstitutionExample),
-        open ? Btn("Перейти к делу") : Dim("Вид учреждения для примера"),
+        Txt(InstitutionName),
+        open ? Btn("Перейти к делу") : Dim("Больница"),
         Btn("Открыть проверку", aim, open),
         open ? Warn("Уже проводится проверка") : Dim(string.Empty),
         Dim(open ? "Дела: 1/4   Проверки: 0/2" : "Дела: 0/4   Проверки: 0/2"));
 
     private static SWTrainingFormPanel CheckList(string first, string? second, bool aim = false, string? reason = null)
     {
-        var material = first == "Завершена" ? Btn("Открыть: материал А") : Dim(string.Empty);
+        var material = first == "Завершена" ? Btn($"Открыть: {FirstCheck}") : Dim(string.Empty);
         // As in the game, only a check not yet started has the button.
         var run = second != null ? Dim(string.Empty) : Btn("Провести проверку", aim, reason != null);
         return Form("Дела",
-            Txt(CaseExample),
+            Txt(CaseName),
             Sec("Проверки"),
-            Dim($"Проверка А: {first}"),
-            Dim($"Проверка Б: {second ?? "300 кр, 2 ч 00 мин"}"),
+            Dim($"{FirstCheck}: {first}"),
+            Dim($"{SecondCheck}: {second ?? "300 кр, 2 ч 00 мин"}"),
             run,
             reason == null ? Sec("Материалы") : Warn(reason),
             material);
@@ -303,9 +313,9 @@ public static partial class SWTrainingSamples
         var reason = conclusion < 0 ? "Не выбрано заключение" : !(firstOn && secondOn) ? "Нужно выбрать два материала" : string.Empty;
         return Form("Дела",
             Sec("Материалы"),
-            Btn("Открыть: материал А"),
+            Btn($"Открыть: {FirstCheck}"),
             Check("Использовать в заключении", firstOn, aimCheck == 0),
-            Btn("Открыть: материал Б"),
+            Btn($"Открыть: {SecondCheck}"),
             Check("Использовать в заключении", secondOn, aimCheck == 1),
             Sec("Заключение"),
             Choice(Conclusions, conclusion, aimConclusion),
@@ -339,16 +349,17 @@ public static partial class SWTrainingSamples
         HandIn(),
         Aim(Institution(false, true)),
         Press(Institution(false, true)),
-        Result(Institution(true), note: "Проверка открыта, дело появилось на вкладке «Дела». " + Example));
+        Result(Institution(true), note: "Больница закупает бакту вдвое дороже соседей. Дело открыто на вкладке «Дела»."));
 
     public static SWTrainingStage[] JusticeChecks() => Steps(
         Aim(CheckList("Завершена", null, true)),
         Press(CheckList("Завершена", null, true)),
-        Hold(CheckList("Завершена", "Выполняется: 2 ч 00 мин"), "Материал появится только после проверки. " + Example, 4f),
-        Result(CheckList("Завершена", "Завершена"), note: "Проверка завершена, материал получен."),
-        Result(CheckList("Завершена", null, reason: "Все специалисты заняты"), note: "Другой случай: нет свободного специалиста, проверку не начать.", alternative: true));
+        Hold(CheckList("Завершена", "Выполняется: 2 ч 00 мин"), "Счета уже сверены. Опрос персонала займёт два часа.", 4f),
+        Result(CheckList("Завершена", "Завершена"), note: "Опрос закончен, второй материал получен."),
+        Result(CheckList("Завершена", null, reason: "Все специалисты заняты"), note: "Если свободного специалиста нет, проверку не начать.", alternative: true));
 
     public static SWTrainingStage[] JusticeConclude() => Steps(
+        Back("Свободный специалист нашёлся: счета сверены, персонал опрошен, оба материала собраны.", CheckList("Завершена", "Завершена")),
         Aim(ConclusionForm(false, false, -1, 0)),
         Press(ConclusionForm(false, false, -1, 0)),
         Aim(ConclusionForm(true, false, -1, 1)),
@@ -368,8 +379,8 @@ public static partial class SWTrainingSamples
         Hold(RemedyRunning(true)),
         Aim(RemedyRunning(true, true)),
         Press(RemedyRunning(true, true)),
-        Result(CaseArchive("Заключение подтверждено", "Халатность"), note: Example),
-        Result(CaseArchive("Повторная проверка выявила ошибочное заключение", "Нарушений нет"), note: "Другой исход: вывод оказался неверным.", alternative: true));
+        Result(CaseArchive("Заключение подтверждено", "Халатность"), note: "Больница действительно переплачивала по небрежности. Вывод верный."),
+        Result(CaseArchive("Повторная проверка выявила ошибочное заключение", "Нарушений нет"), note: "Если вывод был неверным, доверие к ведомству падает.", alternative: true));
 
     // ---- 12 ---------------------------------------------------------------
 
@@ -413,15 +424,15 @@ public static partial class SWTrainingSamples
     public static SWTrainingStage[] HealthFind() => Steps(
         HandOut(),
         HandIn(),
-        Picture(ChartView(1), 3f, ScreenNote(SchemeNote)),
-        Result(HealthWorld("12%"), note: "Заражение выше 1% отмечает очаг. " + Example));
+        Picture(ChartView(1), 3f, ScreenNote("Риммианская лихорадка вышла из Корусанта.")),
+        Result(HealthWorld("12%"), note: "В Дунидине заражён каждый восьмой. Заражение выше 1% отмечает очаг."));
 
     public static SWTrainingStage[] HealthPick() => Steps(
-        Picture(new SWTrainingVisual(SWTrainingScene.Console, new[] { new SWTrainingOverlay(SWTrainingArt.PlanetNeutralStone, 328, 62) }), 3f, ScreenNote("Условное изображение мира.")),
+        Picture(new SWTrainingVisual(SWTrainingScene.Console, new[] { new SWTrainingOverlay(SWTrainingArt.PlanetNeutralStone, 328, 62) }), 3f, ScreenNote("Дунидин, нижние уровни.")),
         Hold(HealthWorld("12%")),
         Aim(HealthSectionChoice()),
         Press(HealthSectionChoice()),
-        Result(HealthDevelopment("2 ч"), note: "Цель выбрана, заказа ещё нет. Перечень программ зависит от мира. " + Example));
+        Result(HealthDevelopment("2 ч"), note: "Запаса помощи в Дунидине осталось на два часа. Заказа ещё нет."));
 
     /// <summary>
     /// The order goes through the supply list: it starts there, stays alone for this world, and its delivery has no promised date.
@@ -430,21 +441,22 @@ public static partial class SWTrainingSamples
     public static SWTrainingStage[] HealthOrder() => Steps(
         Aim(HealthDevelopment("2 ч", true)),
         Press(HealthDevelopment("2 ч", true)),
-        Result(HealthSupply(0, "Заказ принят", 0), note: "Оплачено 750 кр. Заявка появилась в разделе «Снабжение», помощи в мире ещё нет. " + Example),
-        Result(HealthSupply(0, "Заказ принят", 0), note: "Другой случай: повторное нажатие не даст второй заявки, пока эта не доставлена.", alternative: true),
-        Result(HealthDevelopment("4 ч"), note: "Другой случай: при запасе от 3,5 ч заказ не будет принят.", alternative: true),
-        Result(HealthDevelopment("2 ч", canAid: false), note: "Другой случай: денег мало или рабочий день окончен, кнопка отключена.", alternative: true));
+        Result(HealthSupply(0, "Заказ принят", 0), note: "Оплачено 750 кр. Заявка появилась в разделе «Снабжение», помощь ещё в пути."),
+        Result(HealthSupply(0, "Заказ принят", 0), note: "Повторное нажатие не даст второй заявки, пока эта не доставлена.", alternative: true),
+        Result(HealthDevelopment("4 ч"), note: "При запасе от 3,5 ч новый заказ не примут.", alternative: true),
+        Result(HealthDevelopment("2 ч", canAid: false), note: "Если денег мало или рабочий день окончен, кнопка отключена.", alternative: true));
 
     public static SWTrainingStage[] HealthDelivery() => Steps(
-        Hold(HealthSupply(0, "Ожидание материалов", 0, AidMaterial), "Срока доставки игра не обещает.", 4f),
+        Back("Принят один заказ помощи для Дунидина. Лекарства собирают на складах; когда они придут, зависит от снабжения.",
+            HealthSupply(0, "Ожидание материалов", 0, AidMaterial)),
         Result(HealthSupply(0, "Снабжение ожидает транспорт", 0, AidMaterial), note: "Заявка ждёт транспорт. Запас помощи пока прежний."),
         Aim(HealthSupplyEmpty()),
         Press(HealthSupplyEmpty()),
         Result(HealthSupply(1, "Доставлено", 100, completed: true), note: "После доставки заявка перешла в «Завершено»."),
-        Result(HealthSupply(0, "Снабжение остановлено: маршрут недоступен", 0, AidMaterial), note: "Другой случай: маршрут недоступен, поставка стоит.", alternative: true));
+        Result(HealthSupply(0, "Снабжение остановлено: маршрут недоступен", 0, AidMaterial), note: "Если маршрут недоступен, поставка стоит.", alternative: true));
 
     public static SWTrainingStage[] HealthEffect() => Steps(
-        Hold(HealthDevelopment("2 ч"), "До доставки. " + Example, 4f),
+        Back("Маршрут был открыт, и помощь доставлена. До доставки запас был на два часа.", HealthDevelopment("2 ч")),
         Result(HealthDevelopment("6 ч"), note: "Доставка добавила 4 ч запаса, не больше 8 ч всего."),
         Result(HealthWorld("15%"), note: "Запас вырос, но заражение могло вырасти тоже. Одного заказа может быть мало."));
 
@@ -454,7 +466,7 @@ public static partial class SWTrainingSamples
     {
         var all = new SWTrainingRow[rows.Length + 3];
         all[0] = Choice(ResearchStages, stage);
-        all[1] = Dim("Возбудитель для примера   штамм 1   бюджет 3000 кр");
+        all[1] = Dim("Риммианская лихорадка   штамм 1   бюджет 3000 кр");
         all[2] = Txt(status);
         rows.CopyTo(all, 3);
         return new SWTrainingFormPanel("Исследование", all);
@@ -507,25 +519,26 @@ public static partial class SWTrainingSamples
         Btn("Получить образец нового штамма", aim));
 
     public static SWTrainingStage[] VaccineSamples() => Steps(
-        Picture(ChartView(1), 3f, ScreenNote(SchemeNote)),
+        Picture(ChartView(1), 3f, ScreenNote("Лихорадка держится в Дунидине и Квенке.")),
         Aim(Samples(0, 0, true)),
         Press(Samples(0, 0, true)),
-        Result(Samples(1, 0), note: "Первая проба получена, идёт сбор наблюдений. " + Example),
+        Result(Samples(1, 0), note: "Первая проба из Дунидина, идёт сбор наблюдений."),
         Aim(Samples(1, 1, true)),
         Press(Samples(1, 1, true)),
         Result(Samples(2, 1, canTake: false), note: "Вторая проба с другого мира. Больше двух не берут."),
-        Result(Samples(1, 0, canTake: false), note: "Другой случай: второй раз из того же мира пробу не взять.", alternative: true));
+        Result(Samples(1, 0, canTake: false), note: "Второй раз из того же мира пробу не взять.", alternative: true));
 
     public static SWTrainingStage[] VaccineFunding() => Steps(
-        Hold(Funding(0, "Сбор наблюдений", "Этап: Образцы   0%   Ожидание поставок или возобновления   0 кр/ч", 0), "На паузе исследование не идёт.", 4f),
+        Back("Пробы взяты с двух миров, из Дунидина и Квенка. На паузе исследование не идёт.",
+            Funding(0, "Сбор наблюдений", "Этап: Образцы   0%   Ожидание поставок или возобновления   0 кр/ч", 0)),
         Aim(Funding(0, "Сбор наблюдений", "Этап: Образцы   0%   Ожидание поставок или возобновления   0 кр/ч", 0, 1)),
         Press(Funding(0, "Сбор наблюдений", "Этап: Образцы   0%   Ожидание поставок или возобновления   0 кр/ч", 0, 1)),
-        Hold(Funding(0, "Сбор наблюдений", "Этап: Образцы   40%   0,3 активных ч   60 кр/ч", 1), "Бюджет расходуется, пока идёт работа. " + Example, 4f),
+        Hold(Funding(0, "Сбор наблюдений", "Этап: Образцы   40%   0,3 активных ч   60 кр/ч", 1), "Работа идёт, бюджет расходуется по 60 кр в час.", 4f),
         Result(Funding(1, "Анализ данных", "Этап: Анализ   50%   0,3 активных ч   60 кр/ч", 1), note: "Кандидат появится только после анализа."));
 
     public static SWTrainingStage[] VaccineCandidate() => Steps(
         Picture(new SWTrainingVisual(SWTrainingScene.Lab, new[] { new SWTrainingOverlay(SWTrainingArt.LabVials, SWSenateTrainingArt.VialsX, SWSenateTrainingArt.VialsY, 0, true) }), 3f),
-        Hold(Candidates(), "Эффективность здесь предварительная оценка.", 4f),
+        Hold(Candidates(), "Лихорадка меняется быстро, поэтому выбран устойчивый препарат.", 4f),
         Aim(Candidates(true)),
         Press(Candidates(true)),
         Result(Trials("Готов к испытаниям", "0", "Начать испытания за 450 кр", enabled: true), note: "Препарат выбран, исследование перешло к испытаниям. Вакцины ещё нет."));
@@ -534,23 +547,23 @@ public static partial class SWTrainingSamples
         Aim(Trials("Готов к испытаниям", "0", "Начать испытания за 450 кр", true, true)),
         Press(Trials("Готов к испытаниям", "0", "Начать испытания за 450 кр", true, true)),
         Hold(Trials("Ожидание материалов лаборатории", "0", "Испытания запущены"), "Деньги списаны, лаборатории нужны материалы.", 4f),
-        Hold(Trials("Испытания идут", "3", "Испытания запущены"), Example, 4f),
+        Hold(Trials("Испытания идут", "3", "Испытания запущены"), "Материалы пришли, наблюдения копятся.", 4f),
         Result(Trials("Испытания завершены", "7", "Испытания завершены"), note: "Теперь вакцину можно заказать."),
         Result(Trials("Готов к испытаниям", "0", "Начать испытания за 450 кр", warn: "Недостаточно средств: требуется 450 кр, доступно 200 кр"),
-            note: "Другой случай: денег мало, испытания не начать.", alternative: true),
-        Result(Production("1600", 0, canOrder: false), note: "Другой случай: пока испытания не завершены, кнопка заказа отключена.", alternative: true));
+            note: "Если денег мало, испытания не начать.", alternative: true),
+        Result(Production("1600", 0, canOrder: false), note: "Пока испытания не завершены, кнопка заказа отключена.", alternative: true));
 
     public static SWTrainingStage[] VaccineOrder() => Steps(
-        Hold(Production("1600", 0), Example, 4f),
+        Back("Денег хватило, испытания завершены. Квенк может выпускать вакцину и ближе всех к Дунидину.", Production("1600", 0)),
         Aim(Production("1600", 0, 1)),
         Press(Production("1600", 0, 1)),
         Aim(Production("3200", 1, aimOrder: true)),
         Press(Production("3200", 1, aimOrder: true)),
         Result(Delivery(), note: "Заказ оплачен, партии ждут материалов и производства."),
-        Result(Production("1600", 0), note: "Другой случай: у этого получателя активная поставка, новый заказ не будет принят.", alternative: true));
+        Result(Production("1600", 0), note: "Пока у Дунидина есть активная поставка, новый заказ для него не примут.", alternative: true));
 
     public static SWTrainingStage[] VaccineCurrency() => Steps(
-        Picture(MutationChart(), 4f, ScreenNote(SchemeNote)),
+        Back("Две партии вакцины для Дунидина в работе. Через день лихорадка мутировала.", Picture(MutationChart(), 4f)),
         Hold(Mutated(), "Партии в пути доедут, но подойдут хуже.", 4f),
         Aim(Mutated(true)),
         Press(Mutated(true)),
@@ -600,26 +613,27 @@ public static partial class SWTrainingSamples
         HandIn(),
         Aim(TabRow(DepartmentConsole, HealthcareTabs, 1)),
         Press(TabRow(DepartmentConsole, HealthcareTabs, 1)),
-        Result(CallCard("2.0"), note: Example));
+        Result(CallCard("2.0"), note: "На верфи Корусанта разгерметизировался док. На решение два часа."));
 
     public static SWTrainingStage[] CareDeadline() => Steps(
-        Hold(CallCard("1.4"), Example, 4f),
+        Hold(CallCard("1.4"), "Прошло полчаса.", 4f),
         Result(CallCard("0.3"), note: "Срок идёт и без вашего решения."),
-        Result(CareJournal("[11:00] Авария на верфи: вызов сгорел без ответа (Корусант)."), note: "Другой случай: срок истёк, вызов исчез, последствия в журнале.", alternative: true));
+        Result(CareJournal("[11:00] Авария на верфи: вызов сгорел без ответа (Корусант)."), note: "Если срок истёк, вызов исчезает, а последствия видны в журнале.", alternative: true));
 
     public static SWTrainingStage[] CareCompare() => Steps(
+        Back("Вызов ещё в силе: он сгорит примерно через 1.4 ч.", CallOptions()),
         Aim(CallOptions(aimBasic: true)),
         Hold(CallOptions(aimBasic: true), "Вероятность меняется вместе с готовностью и запасами.", 4f),
         Aim(CallOptions(aimReinforced: true)),
-        Result(CallOptions(aimReinforced: true), note: "Сравните запасы, цену и вероятность. " + Example));
+        Result(CallOptions(aimReinforced: true), note: "Обычный выезд дешевле, но успех не гарантирован. Усиленный надёжен и дороже."));
 
     public static SWTrainingStage[] CareReinforced() => Steps(
-        Result(CallOptions(), note: "Успех усиленного выезда гарантирован, но он расходует больше запасов и деньги ведомства. " + Example),
-        Result(CallOptions(canReinforced: false, line: "Бюджет: 400 кр"), note: "Другой случай: не хватает денег, усиленный выезд отключён.", alternative: true),
-        Result(CallOptions(canBasic: false, canReinforced: false, line: "Бригады: свободно 0/3, на выезде: 3"), note: "Другой случай: нет свободной бригады, обе кнопки отключены.", alternative: true));
+        Result(CallOptions(), note: "Успех усиленного выезда гарантирован, но он берёт больше запасов и 500 кр ведомства."),
+        Result(CallOptions(canReinforced: false, line: "Бюджет: 400 кр"), note: "Если денег не хватает, усиленный выезд отключён.", alternative: true),
+        Result(CallOptions(canBasic: false, canReinforced: false, line: "Бригады: свободно 0/3, на выезде: 3"), note: "Если свободной бригады нет, обе кнопки отключены.", alternative: true));
 
     public static SWTrainingStage[] CareDispatch() => Steps(
-        Hold(CareWork(80, "Бригады рвутся в бой", 70, "Склады полны", 3, 0), Example, 4f),
+        Back("Денег и бригад хватает: все три бригады на базе.", CareWork(80, "Бригады рвутся в бой", 70, "Склады полны", 3, 0)),
         Aim(CallOptions(aimBasic: true)),
         Press(CallOptions(aimBasic: true)),
         Result(CareWork(72, "Бригады рвутся в бой", 60, "Склады полны", 2, 1), note: "Запасы и готовность снизились, бригада занята на игровой час."));
@@ -627,9 +641,9 @@ public static partial class SWTrainingSamples
     public static SWTrainingStage[] CareResult() => Steps(
         Hold(CareWork(72, "Бригады рвутся в бой", 60, "Склады полны", 2, 1), hold: 4f),
         Result(CareWork(75, "Бригады рвутся в бой", 60, "Склады полны", 3, 0), note: "Выезд завершён, бригада вернулась."),
-        Result(CareJournal("[10:00] Авария на верфи: бригада справилась (Корусант).", "[09:00] Бригада вылетела: Авария на верфи (Корусант)."), note: Example),
+        Result(CareJournal("[10:00] Авария на верфи: бригада справилась (Корусант).", "[09:00] Бригада вылетела: Авария на верфи (Корусант)."), note: "Рабочих верфи спасли."),
         Result(CareJournal("[10:00] Авария на верфи: выезд прошёл тяжело, потери среди пострадавших.", "[09:00] Бригада вылетела: Авария на верфи (Корусант)."),
-            note: "Другой исход: обычный выезд может закончиться неудачей.", alternative: true));
+            note: "Обычный выезд может закончиться и так.", alternative: true));
 
     // ---- 14 ---------------------------------------------------------------
 
@@ -674,32 +688,35 @@ public static partial class SWTrainingSamples
         Aim(GuardRecruit("Выполнить", true)),
         Press(GuardRecruit("Выполнить", true)),
         Result(GuardWork(5, 5), note: "Набор оплачен из бюджета, отряд сформирован. Следующий набор будет доступен позже."),
-        Result(GuardRecruit("штат укомплектован", available: false), note: "Другой случай: уже шесть отрядов, больше не набрать.", alternative: true));
+        Result(GuardRecruit("штат укомплектован", available: false), note: "Когда отрядов шесть, набор закрыт.", alternative: true));
 
     public static SWTrainingStage[] GuardPost() => Steps(
-        Aim(GuardWork(4, 4, aimPlus: true)),
-        Press(GuardWork(4, 4, aimPlus: true)),
-        Result(GuardWork(4, 3, corridors: 1), note: "Отряд ушёл на пост: всего столько же, резерв меньше."),
-        Aim(GuardWork(4, 3, corridors: 1, aimPlus: true)),
-        Press(GuardWork(4, 3, corridors: 1, aimPlus: true)),
-        Result(GuardWork(4, 2, corridors: 2), note: "На посту два отряда, кнопка «+» у него отключена."),
-        Result(GuardWork(4, 0, hall: 2, corridors: 2), note: "Другой случай: резерв пуст, добавить отряд нельзя ни на один пост.", alternative: true));
+        Back("Новый отряд набран: всего пять, все в резерве, посты пусты.", GuardWork(5, 5)),
+        Aim(GuardWork(5, 5, aimPlus: true)),
+        Press(GuardWork(5, 5, aimPlus: true)),
+        Result(GuardWork(5, 4, corridors: 1), note: "Отряд ушёл на пост: всего столько же, резерв меньше."),
+        Aim(GuardWork(5, 4, corridors: 1, aimPlus: true)),
+        Press(GuardWork(5, 4, corridors: 1, aimPlus: true)),
+        Result(GuardWork(5, 3, corridors: 2), note: "На посту два отряда, кнопка «+» у него отключена."),
+        Result(GuardWork(4, 0, hall: 2, corridors: 2), note: "Если бы отрядов было четыре и два из них уже стояли в зале, резерв опустел бы и кнопки «+» отключились бы на всех постах.", alternative: true));
 
     public static SWTrainingStage[] GuardWrit() => Steps(
+        Back("В коридорах стоят два отряда, в зале никого. В резерве три.", GuardWork(5, 3, corridors: 2)),
         Aim(TabRow(DepartmentConsole, GuardTabs, 1)),
         Press(TabRow(DepartmentConsole, GuardTabs, 1)),
-        Result(Writ(2), note: "В резерве два отряда, поэтому доступны оба варианта. " + Example));
+        Result(Writ(3), note: "Суд ждёт обвиняемого. В резерве три отряда, поэтому доступны оба варианта."));
 
     public static SWTrainingStage[] GuardDispatch() => Steps(
-        Aim(Writ(2, true, "1.6")),
-        Press(Writ(2, true, "1.6")),
-        Result(GuardJournal(4, 1, "[09:00] Гвардия выдвинулась: Конвой заключённого (1 отр.)."), note: "Отряд ушёл из резерва на игровой час."),
-        Result(Writ(0), note: "Другой случай: резерва нет, обе кнопки отключены, ордер ждёт.", alternative: true));
+        Aim(Writ(3, true, "1.6")),
+        Press(Writ(3, true, "1.6")),
+        Result(GuardJournal(5, 2, "[09:00] Гвардия выдвинулась: Конвой заключённого (1 отр.)."), note: "Отряд ушёл из резерва на игровой час."),
+        Result(Writ(0), note: "Без резерва обе кнопки отключены, и ордер ждёт.", alternative: true));
 
     public static SWTrainingStage[] GuardResult() => Steps(
-        Hold(GuardJournal(4, 1, "[09:00] Гвардия выдвинулась: Конвой заключённого (1 отр.)."), hold: 4f),
-        Result(GuardJournal(4, 2, "[10:00] Конвой заключённого: исполнено. Суды разгружены, взыскано 300 кр.", "[09:00] Гвардия выдвинулась: Конвой заключённого (1 отр.)."), note: Example),
-        Result(GuardJournal(4, 2, "[10:00] Конвой заключённого: провал. Гвардия опозорилась.", "[09:00] Гвардия выдвинулась: Конвой заключённого (1 отр.)."),
-            note: "Другой исход: отряд вернулся, но ордер не исполнен.", alternative: true),
-        Result(GuardJournal(4, 2, "[11:00] Конвой заключённого: ордер просрочен без исполнения."), note: "Другой случай: за два часа ордер не взяли в работу.", alternative: true));
+        Back("Резерв был, и один отряд ушёл с конвоем. В резерве остались два.",
+            GuardJournal(5, 2, "[09:00] Гвардия выдвинулась: Конвой заключённого (1 отр.).")),
+        Result(GuardJournal(5, 3, "[10:00] Конвой заключённого: исполнено. Суды разгружены, взыскано 300 кр.", "[09:00] Гвардия выдвинулась: Конвой заключённого (1 отр.)."), note: "Обвиняемый доставлен, отряд вернулся в резерв."),
+        Result(GuardJournal(5, 3, "[10:00] Конвой заключённого: провал. Гвардия опозорилась.", "[09:00] Гвардия выдвинулась: Конвой заключённого (1 отр.)."),
+            note: "Отряд может вернуться и ни с чем.", alternative: true),
+        Result(GuardJournal(5, 3, "[11:00] Конвой заключённого: ордер просрочен без исполнения."), note: "Если за два часа ордер не взяли в работу, он сгорает.", alternative: true));
 }

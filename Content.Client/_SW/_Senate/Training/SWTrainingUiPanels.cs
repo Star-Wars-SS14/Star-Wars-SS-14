@@ -78,7 +78,6 @@ public sealed class SWTrainingAdaptiveRow : Container
 /// </summary>
 public static class SWTrainingUiPanels
 {
-    private const string IllustrationMark = "Учебная иллюстрация, не окно игры";
     private const int ExampleDayBudget = 100000;
     private const string FirstMinistry = "Министерство обороны";
     private const string SecondMinistry = "Министерство финансов";
@@ -139,7 +138,6 @@ public static class SWTrainingUiPanels
         SWConsoleStyle.StyleRoot(root);
         var box = new BoxContainer { Orientation = LayoutOrientation.Vertical, HorizontalExpand = true, SeparationOverride = 4, Margin = new Thickness(10, 6, 10, 8) };
         root.AddChild(box);
-        box.AddChild(SWConsoleStyle.Wrap(IllustrationMark, SWConsoleStyle.TextDim));
 
         switch (state)
         {
@@ -543,8 +541,11 @@ public static class SWTrainingUiPanels
         for (var i = 0; i < labels.Length; i++)
         {
             var button = InertButton(labels[i], SWConsoleStyle.Accent);
-            // As in the game, the option already in effect cannot be chosen again.
-            button.Disabled = i == row.Current;
+            // As in the game, the option already in effect cannot be chosen again; a disabled row turns every button off.
+            // A row of toggles (Chosen) keeps the current one available and shows it pressed instead.
+            button.Disabled = row.Disabled || !row.Chosen && i == row.Current;
+            if (row.Chosen)
+                SWConsoleStyle.StyleTabButton(button, i == row.Current);
             wrap.AddChild(Slot(button, mark && i == row.TargetIndex));
             if (i == row.TargetIndex)
                 target = button;

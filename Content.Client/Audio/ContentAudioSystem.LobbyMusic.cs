@@ -40,6 +40,10 @@ public sealed partial class ContentAudioSystem
     /// </summary>
     private LobbySoundtrackInfo? _lobbySoundtrackInfo;
 
+    // SW start: temporary value while editing the options slider.
+    private float? _lobbyVolumePreview;
+    // SW end
+
     private Action<LobbySoundtrackChangedEvent>? _lobbySoundtrackChanged;
 
     /// <summary>
@@ -101,16 +105,36 @@ public sealed partial class ContentAudioSystem
         EndLobbyMusic();
     }
 
+    // SW start: preview lobby music without saving the options CVar.
+    public void PreviewLobbyMusicVolume(float volume)
+    {
+        _lobbyVolumePreview = volume;
+        ApplyLobbyMusicVolume(volume);
+    }
+
+    public void ClearLobbyMusicVolumePreview()
+    {
+        _lobbyVolumePreview = null;
+        ApplyLobbyMusicVolume(_configManager.GetCVar(CCVars.LobbyMusicVolume));
+    }
+
     private void LobbyMusicVolumeCVarChanged(float volume)
+    {
+        _lobbyVolumePreview = null;
+        ApplyLobbyMusicVolume(volume);
+    }
+
+    private void ApplyLobbyMusicVolume(float volume)
     {
         if (_lobbySoundtrackInfo != null)
         {
             _audio.SetVolume(
                 _lobbySoundtrackInfo.MusicStreamEntityUid,
-                _lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(_configManager.GetCVar(CCVars.LobbyMusicVolume))
+                _lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(volume)
             );
         }
     }
+    // SW end
 
     private void LobbyMusicCVarChanged(bool musicEnabled)
     {
@@ -182,7 +206,9 @@ public sealed partial class ContentAudioSystem
             soundtrackFilename,
             Filter.Local(),
             false,
-            _lobbySoundtrackParams.WithVolume(_lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(_configManager.GetCVar(CCVars.LobbyMusicVolume)))
+            // SW start: keep the preview across tracks.
+            _lobbySoundtrackParams.WithVolume(_lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(_lobbyVolumePreview ?? _configManager.GetCVar(CCVars.LobbyMusicVolume)))
+            // SW end
         );
         if (playResult == null)
         {

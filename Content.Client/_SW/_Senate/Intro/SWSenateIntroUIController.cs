@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Client._SW._Senate.Training;
 using Content.Client.Audio;
 using Content.Client.GameTicking.Managers;
 using Content.Client.Lobby;
@@ -51,6 +52,9 @@ public sealed class SWSenateIntroUIController : UIController, IOnStateEntered<Lo
     private TimeSpan? _autoShownFor;
     private bool _available;
     private bool _closeRequested;
+
+    /// <summary>The Senate training does not open over a running intro.</summary>
+    public bool IsOpen => _intro != null;
 
     public void OnStateEntered(LobbyState state)
     {
@@ -108,6 +112,10 @@ public sealed class SWSenateIntroUIController : UIController, IOnStateEntered<Lo
             return;
 
         _autoShownFor = ticker.StartTime;
+        // An open training keeps the screen; this countdown's automatic showing is simply given up.
+        if (UIManager.GetUIController<SWSenateTrainingUIController>().IsOpen)
+            return;
+
         Show();
     }
 

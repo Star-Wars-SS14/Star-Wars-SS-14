@@ -6,3 +6,24 @@
   components:
   - type: Strap
     position: Stand
+
+- type: entity
+  name: turret gun
+  id: SWTurretGunPart
+  suffix: НЕ МАППИТЬ, SW
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Strap
+    position: Stand
+  - type: Gun
+    fireRate: 6
+    selectedMode: FullAuto
+    availableModes:
+    - FullAuto
+    soundGunshot: /Audio/_SW/Weapons/Guns/Gunshots/turret_blaster_sound.ogg
+  - type: BallisticAmmoProvider
+    proto: SWE-1Bullet
+    capacity: 1000000
+  - type: ContainerContainer
+    containers:
+      ballistic-ammo: !type:Container

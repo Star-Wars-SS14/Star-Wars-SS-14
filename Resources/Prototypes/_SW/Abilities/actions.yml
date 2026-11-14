@@ -34,7 +34,7 @@
   id: ActionForceAttract
   categories: [ HideSpawnMenu ]
   name: Притянуть предмет
-  description: Притяние объект!
+  description: Притяните объект!
   components:
   - type: Action
     icon: _SW/Interface/Actions/force_attract.png
@@ -128,5 +128,3 @@
   - type: EntityTargetAction    
     event: !type:SWRequestSendMessageEvent
     canTargetSelf: false
-
-    

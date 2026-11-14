@@ -37,8 +37,8 @@ public sealed class SWActiveAbilityIndicatorSystem : EntitySystem
             return;
         }
 
-        // Источник истины движка: какое действие сейчас прицеливается.
-        // Работает для любых таргетных способностей (SW и ванильных).
+        // The engine's source of truth: which action is currently being aimed.
+        // Works for all targeted abilities (SW and vanilla).
         var selecting = _ui.GetUIController<ActionUIController>().SelectingTargetFor;
 
         if (selecting == null || !selecting.Value.IsValid())

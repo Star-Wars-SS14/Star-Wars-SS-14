@@ -1,5 +1,5 @@
 using Robust.Client.Graphics;
-using Robust.Shared.Enums;      // <-- ДОБАВЛЕНО: для OverlaySpace
+using Robust.Shared.Enums;      
 using Robust.Shared.Maths;
 using System.Numerics;
 
@@ -7,7 +7,7 @@ namespace Content.Client._SW.Overlays;
 
 public sealed class SWActiveAbilityIndicatorOverlay : Overlay
 {
-    // Теперь компилятор знает, где искать OverlaySpace
+   
     public override OverlaySpace Space => OverlaySpace.ScreenSpace;
 
     private readonly Texture _icon;
@@ -33,7 +33,7 @@ public sealed class SWActiveAbilityIndicatorOverlay : Overlay
         var handle = args.ScreenHandle;
         
         var iconSize = new Vector2(_size, _size);
-        // Рисуем по центру указанной точки
+        
         var drawBox = UIBox2.FromDimensions(_position - iconSize * 0.5f, iconSize);
         
         handle.DrawTextureRect(_icon, drawBox, Color.White);

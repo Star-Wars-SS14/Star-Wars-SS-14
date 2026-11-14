@@ -114,3 +114,9 @@
 
 - type: Tag
   id: SWCartridgeAntiVehicleRocket # Anti-vehicle ammo for SWWeaponLauncherAntiVehicleRocket.
+
+- type: Tag
+  id: SWSaberEmitter
+
+- type: Tag
+  id: SWSaberFocus

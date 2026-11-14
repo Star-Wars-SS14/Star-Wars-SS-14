@@ -1,0 +1,172 @@
+- type: entity
+  parent: SWEnergySwordBase
+  id: SWModularSaber
+  name: modular lightsaber hilt
+  description: A lightsaber hilt with replaceable components.
+  components:
+  - type: Construction
+    graph: SWSaberHilt
+    node: finished
+  - type: ItemToggle
+    predictable: false
+    onActivate: false
+  - type: EnergySword
+    colorOptions: []
+  - type: SWModularSaber
+    crystal:
+      swap: false
+      insertOnInteract: false
+      disableEject: true
+      name: sw-modular-saber-slot-crystal
+      whitelist:
+        tags: [ KyberCrystalTag ]
+    emitter:
+      swap: false
+      insertOnInteract: false
+      disableEject: true
+      name: sw-modular-saber-slot-emitter
+      whitelist:
+        tags: [ SWSaberEmitter ]
+    focus:
+      swap: false
+      insertOnInteract: false
+      disableEject: true
+      name: sw-modular-saber-slot-focus
+      whitelist:
+        tags: [ SWSaberFocus ]
+
+- type: entity
+  parent: SWModularSaber
+  id: SWModularSaberDouble
+  name: double-bladed modular lightsaber hilt
+  description: A two-handed lightsaber hilt with replaceable components.
+  components:
+  - type: Construction
+    graph: SWSaberDoubleHilt
+    node: finished
+  - type: SWDoubleSaberThrowVisual
+  - type: Wieldable
+    wieldSound: null
+  - type: ItemToggle
+    onUse: false
+    onActivate: false
+    predictable: false
+  - type: Sprite
+    sprite: Objects/Weapons/Melee/e_sword_double.rsi
+    layers:
+    - state: e_sword_double
+    - state: e_sword_double_blade
+      color: "#FFFFFF"
+      visible: false
+      shader: unshaded
+      map: [ "blade" ]
+    - state: e_sword_double_blade
+      color: "#FFFFFF"
+      visible: false
+      shader: unshaded
+      map: [ "thrown-blade" ]
+  - type: Item
+    sprite: Objects/Weapons/Melee/e_sword_double-inhands.rsi
+
+- type: entity
+  parent: BaseItem
+  id: SWSaberEmitterStandard
+  name: standard lightsaber emitter
+  description: A standard emitter for a modular lightsaber.
+  components:
+  - type: Construction
+    graph: SWSaberEmitterStandard
+    node: finished
+  - type: Sprite
+    sprite: Objects/Misc/stock_parts.rsi
+    state: capacitor
+  - type: Item
+    size: Tiny
+  - type: Tag
+    tags: [ SWSaberEmitter ]
+  - type: SWSaberEmitter
+    damage:
+      types:
+        Slash: 25
+        Heat: 35
+        Structural: 20
+
+- type: entity
+  parent: BaseItem
+  id: SWSaberFocusStandard
+  name: standard lightsaber focusing assembly
+  description: A standard focusing assembly for a modular lightsaber.
+  components:
+  - type: Construction
+    graph: SWSaberFocusStandard
+    node: finished
+  - type: Sprite
+    sprite: Objects/Misc/stock_parts.rsi
+    state: adv_scan_module
+  - type: Item
+    size: Tiny
+  - type: Tag
+    tags: [ SWSaberFocus ]
+  - type: SWSaberFocus
+
+- type: entity
+  parent: SWSaberEmitterStandard
+  id: SWSaberEmitterHeat
+  name: thermal lightsaber emitter
+  components:
+  - type: Construction
+    graph: SWSaberEmitterHeat
+    node: finished
+  - type: SWSaberEmitter
+    damage:
+      types:
+        Slash: 20
+        Heat: 40
+        Structural: 20
+  - type: Sprite
+    state: adv_capacitor
+
+- type: entity
+  parent: SWSaberEmitterStandard
+  id: SWSaberEmitterSlash
+  name: cutting lightsaber emitter
+  components:
+  - type: Construction
+    graph: SWSaberEmitterSlash
+    node: finished
+  - type: SWSaberEmitter
+    damage:
+      types:
+        Slash: 30
+        Heat: 30
+        Structural: 20
+  - type: Sprite
+    state: super_capacitor
+
+- type: entity
+  parent: SWSaberFocusStandard
+  id: SWSaberFocusFast
+  name: rapid lightsaber focusing assembly
+  components:
+  - type: Construction
+    graph: SWSaberFocusFast
+    node: finished
+  - type: SWSaberFocus
+    damageMultiplier: 0.9
+    attackRateMultiplier: 1.1
+  - type: Sprite
+    state: scan_module
+
+- type: entity
+  parent: SWSaberFocusStandard
+  id: SWSaberFocusHeavy
+  name: heavy lightsaber focusing assembly
+  components:
+  - type: Construction
+    graph: SWSaberFocusHeavy
+    node: finished
+  - type: SWSaberFocus
+    damageMultiplier: 1.1
+    attackRateMultiplier: 0.9
+  - type: Sprite
+    state: adv_scan_module_static

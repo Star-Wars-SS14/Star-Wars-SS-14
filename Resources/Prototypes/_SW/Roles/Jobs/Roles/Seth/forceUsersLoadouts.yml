@@ -8,7 +8,9 @@
     ears: SWClothingHeadsetAllEmpire
     id: SWIDCardSith
     neck: SWClothingNeckCloakSithCloak
-    pocket1: SWEnergySwordSith
+  storage:
+    belt:
+    - SWSaberFocusStandard
 
 
 - type: startingGear
@@ -20,4 +22,41 @@
     ears: SWClothingHeadsetRepublicAll
     id: SWIDCardJedi
     neck: SWClothingNeckCloakJediCloak
-    pocket1: SWEnergySwordJedi
+  storage:
+    belt:
+    - SWSaberFocusStandard
+
+
+# Standalone NPC kits: player choices are applied through role loadouts.
+- type: startingGear
+  id: ForceUserSithNpcGear
+  equipment:
+    belt: SWSithBelt
+    jumpsuit: SWClothingUniformJumpsuitSith
+    gloves: ClothingHandsGlovesColorBlack
+    shoes: SWClothingShoesBootsSith
+    ears: SWClothingHeadsetAllEmpire
+    id: SWIDCardSith
+    neck: SWClothingNeckCloakSithCloak
+    pocket1: SWModularSaber
+  storage:
+    belt:
+    - SWSaberFocusStandard
+    - SWSaberEmitterStandard
+    - SWKyberCrystalRed
+
+- type: startingGear
+  id: ForceUserJediNpcGear
+  equipment:
+    belt: SWJediBelt
+    jumpsuit: SWClothingUniformJumpsuitJedi
+    shoes: SWClothingShoesBootsJedi
+    ears: SWClothingHeadsetRepublicAll
+    id: SWIDCardJedi
+    neck: SWClothingNeckCloakJediCloak
+    pocket1: SWModularSaber
+  storage:
+    belt:
+    - SWSaberFocusStandard
+    - SWSaberEmitterStandard
+    - SWKyberCrystalBlue

@@ -19,6 +19,7 @@
   id: SWCultistSelectionTemplate
   categories: [ HideSpawnMenu ]
   components:
+  - type: SWCultistForceSelection
   - type: AntagSelection
     definitions:
     - prefRoles: [ SWCultist ]

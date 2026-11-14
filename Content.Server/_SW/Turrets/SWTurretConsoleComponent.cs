@@ -32,6 +32,7 @@ public sealed partial class SWTurretConsoleComponent : Component
         "SWMandalorianRecruit",
         "SWMandalorianVeteran",
         "SWMandalorianWarrior",
+        "SWNeutralBartender",
         "SWRepublicCaptain",
         "SWRepublicCommanderCommander",
         "SWRepublicCommanderLieutenant",

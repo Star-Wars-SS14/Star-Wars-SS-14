@@ -51,7 +51,7 @@ public sealed class SWTurretAimSystem : EntitySystem
             if (!TryComp<TransformComponent>(turretUid, out var turretXform))
                 continue;
 
-            // Плавный доворот к цели по кратчайшей дуге, с ограничением скорости.
+            // A smooth turn toward the target along the shortest arc, with a speed limit.
             var current = _transform.GetWorldRotation(turretXform).Theta;
             var target = aim.TargetAngle.Theta;
 

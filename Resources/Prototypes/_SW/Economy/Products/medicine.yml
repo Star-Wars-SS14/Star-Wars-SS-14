@@ -168,7 +168,7 @@
 - type: swCargoProduct
   id: SWCrateBactaCP
   icon:
-    sprite: _SW/Objects/Chemistry/kolto_medipen.rsi
+    sprite: _SW/Objects/Chemistry/bacta_medipen.rsi
     state: icon
   product: SWCrateBacta
   cost:

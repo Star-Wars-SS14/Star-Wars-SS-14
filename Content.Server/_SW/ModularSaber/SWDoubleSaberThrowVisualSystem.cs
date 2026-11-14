@@ -19,6 +19,7 @@ public sealed partial class SWDoubleSaberThrowVisualComponent : Component
     public bool SuppressUnwieldDeactivation;
     public bool ThrowSucceeded;
     public bool RestoredForFlight;
+    public EntityUid? ReturnUser;
 }
 
 public sealed class SWDoubleSaberThrowVisualSystem : EntitySystem
@@ -77,6 +78,7 @@ public sealed class SWDoubleSaberThrowVisualSystem : EntitySystem
             return;
 
         ent.Comp.ThrowSucceeded = true;
+        ent.Comp.ReturnUser = args.User;
         ent.Comp.RestoredForFlight = ent.Comp.WasActive && ent.Comp.UnwieldedForThrow && _toggle.IsActivated(ent.Owner);
         _appearance.SetData(ent.Owner, SWDoubleSaberThrowVisuals.Flying, false);
     }
@@ -100,13 +102,19 @@ public sealed class SWDoubleSaberThrowVisualSystem : EntitySystem
     private void OnLand(Entity<SWDoubleSaberThrowVisualComponent> ent, ref LandEvent args)
     {
         if (!HasComp<BeingAttractedByForceComponent>(ent.Owner))
+        {
+            ent.Comp.ReturnUser = null;
             EndFlight(ent);
+        }
     }
 
     private void OnStopThrow(Entity<SWDoubleSaberThrowVisualComponent> ent, ref StopThrowEvent args)
     {
         if (!HasComp<BeingAttractedByForceComponent>(ent.Owner))
+        {
+            ent.Comp.ReturnUser = null;
             EndFlight(ent);
+        }
     }
 
     private void OnInserted(Entity<SWDoubleSaberThrowVisualComponent> ent, ref EntGotInsertedIntoContainerMessage args)
@@ -118,6 +126,7 @@ public sealed class SWDoubleSaberThrowVisualSystem : EntitySystem
     {
         if (!TryComp<SWDoubleSaberThrowVisualComponent>(ent.Owner, out var visual))
             return;
+        visual.ReturnUser = null;
         if (TryComp<ThrownItemComponent>(ent.Owner, out var thrown) && !thrown.Landed)
             return;
         EndFlight((ent.Owner, visual));

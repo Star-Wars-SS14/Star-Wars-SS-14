@@ -7,7 +7,6 @@
   components:
   - type: Clickable
   - type: InteractionOutline
-  # ВАЖНО: Rotatable может мешать, оставляем выключенным или удаляем эту строку
   
   - type: Sprite
     sprite: Objects/Weapons/Guns/Turrets/turrets.rsi
@@ -60,16 +59,15 @@
   - type: NoRotateOnInteract
   - type: NoRotateOnMove
 
-  # ФИЗИКА: Полностью отключаем собственное вращение транспорта
   - type: SWInertialVehicle
     acceleration: 0
     reverseAcceleration: 0
     brakeAcceleration: 100
     maxForwardSpeed: 0
     maxReverseSpeed: 0
-    turnAcceleration: 0         # <-- 0
-    maxAngularVelocity: 0       # <-- 0
-    angularDamping: 100         # <-- 100 (мгновенно гасит инерцию)
+    turnAcceleration: 0         
+    maxAngularVelocity: 0       
+    angularDamping: 100         
     rollingFriction: 100
     sidewaysFriction: 100
 
@@ -82,5 +80,5 @@
     energy: 2
     color: "#e8f2ff"
 
-  # Наш маркер для системы наведения
+
   - type: SWTurretAim

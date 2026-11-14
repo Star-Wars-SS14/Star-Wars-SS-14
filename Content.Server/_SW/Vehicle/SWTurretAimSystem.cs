@@ -68,7 +68,7 @@ public sealed class SWTurretAimSystem : EntitySystem
             if (TryComp<PhysicsComponent>(turretUid, out var physics))
                 _physics.SetAngularVelocity(turretUid, 0f, body: physics);
 
-            // Стрелок следует за текущим (уже сглаженным) поворотом турели.
+            // The gunner follows the current (already smoothed) rotation of the turret.
             _transform.SetWorldRotation(gunnerXform, newRotation + aim.GunnerOffset);
         }
     }

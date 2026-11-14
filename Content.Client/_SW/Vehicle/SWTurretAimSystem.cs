@@ -22,7 +22,6 @@ public sealed class SWTurretAimSystem : EntitySystem
     {
         base.Update(frameTime);
 
-        // Только ЛОКАЛЬНЫЙ стрелок, не все подряд.
         if (_player.LocalEntity is not { } local)
             return;
 
@@ -51,7 +50,6 @@ public sealed class SWTurretAimSystem : EntitySystem
         var angle = (mapPos.Position - turretMap.Position).ToWorldAngle();
         var theta = (float) angle.Theta;
 
-        // Не спамим сеть: шлём только при заметном изменении угла.
         if (_lastSent.TryGetValue(turretUid, out var last) && MathF.Abs(theta - last) < 0.005f)
             return;
 

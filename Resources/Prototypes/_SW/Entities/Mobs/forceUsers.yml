@@ -60,6 +60,7 @@
   components:
   - type: Loadout
     prototypes: [ForceUserSithNpcGear]
+  - type: SWSaberInitialAssembly
   - type: SWLightningAbility
     damage:
       types:
@@ -74,6 +75,7 @@
   components:
   - type: Loadout
     prototypes: [ForceUserJediNpcGear]
+  - type: SWSaberInitialAssembly
   - type: SWPushAbility
   - type: SWHealAbility
     damageContainers:

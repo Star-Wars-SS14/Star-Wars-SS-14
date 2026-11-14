@@ -157,6 +157,9 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
             loadout = SWSaberLoadoutNormalization.Normalize(prototype.ID, loadout, roleProto, _prototypeManager);
         var mergedGear = SWMergedGear.Build(jobGear, loadout, roleProto, _prototypeManager);
         adjustGear?.Invoke(mergedGear);
+        if (adjustGear == null && prototype?.ID is "SWJedi" or "SWSith" or
+            "SWGlobalWarRepublicForceUser" or "SWGlobalWarEmpireForceUser")
+            EnsureComp<SWSaberInitialAssemblyComponent>(entity.Value);
         EquipStartingGear(entity.Value, mergedGear, raiseEvent: false);
 
         if (loadout != null)

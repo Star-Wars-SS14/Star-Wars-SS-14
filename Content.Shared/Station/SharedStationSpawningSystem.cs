@@ -119,6 +119,10 @@ public abstract class SharedStationSpawningSystem : EntitySystem
         if (startingGear == null)
             return;
 
+        var prepare = new PrepareStartingGearEvent(entity, startingGear);
+        RaiseLocalEvent(entity, ref prepare);
+        startingGear = prepare.Gear;
+
         var xform = _xformQuery.GetComponent(entity);
 
         if (InventorySystem.TryGetSlots(entity, out var slotDefinitions))
@@ -181,6 +185,12 @@ public abstract class SharedStationSpawningSystem : EntitySystem
                     }
                 }
             }
+        }
+
+        if (prepare.Saber is { } saber)
+        {
+            var complete = new CompleteStartingSaberEvent(saber);
+            RaiseLocalEvent(entity, ref complete);
         }
 
         if (raiseEvent)

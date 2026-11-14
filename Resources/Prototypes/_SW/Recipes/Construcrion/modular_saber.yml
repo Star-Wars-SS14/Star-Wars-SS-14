@@ -87,15 +87,15 @@
     entity: SWSaberFocusStandard
 
 - type: construction
-  id: SWSaberEmitterHeat
-  graph: SWSaberEmitterHeat
+  id: SWSaberEmitterReinforced
+  graph: SWSaberEmitterReinforced
   startNode: start
   targetNode: finished
   category: construction-category-weapons
   objectType: Item
 
 - type: constructionGraph
-  id: SWSaberEmitterHeat
+  id: SWSaberEmitterReinforced
   start: start
   graph:
   - node: start
@@ -106,29 +106,7 @@
         amount: 2
         doAfter: 5
   - node: finished
-    entity: SWSaberEmitterHeat
-
-- type: construction
-  id: SWSaberEmitterSlash
-  graph: SWSaberEmitterSlash
-  startNode: start
-  targetNode: finished
-  category: construction-category-weapons
-  objectType: Item
-
-- type: constructionGraph
-  id: SWSaberEmitterSlash
-  start: start
-  graph:
-  - node: start
-    edges:
-    - to: finished
-      steps:
-      - material: Steel
-        amount: 2
-        doAfter: 5
-  - node: finished
-    entity: SWSaberEmitterSlash
+    entity: SWSaberEmitterReinforced
 
 - type: construction
   id: SWSaberFocusFast

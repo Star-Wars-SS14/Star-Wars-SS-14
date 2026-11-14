@@ -1,0 +1,52 @@
+- type: antag
+  id: SWCultist
+  name: sw-cultist-role-name
+  antagonist: true
+  setPreference: true
+  objective: sw-cultist-role-description
+
+- type: entity
+  parent: BaseMindRoleAntag
+  id: MindRoleSWCultist
+  name: Cultist Role
+  components:
+  - type: MindRole
+    antagPrototype: SWCultist
+    exclusiveAntag: true
+    subtype: sw-cultist-role-name
+
+- type: entity
+  id: SWCultistSelectionTemplate
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: AntagSelection
+    definitions:
+    - prefRoles: [ SWCultist ]
+      mindRoles: [ MindRoleSWCultist ]
+      components:
+      - type: SWPushAbility
+      - type: SWStrangulateAbility
+
+- type: entity
+  parent: BaseGameRule
+  id: SWCultistGameRule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWCultistGameRule
+
+- type: entity
+  parent: BaseObjective
+  id: SWCultistMainObjective
+  name: Цель культа
+  components:
+  - type: Objective
+    difficulty: 1
+    issuer: sw-cultist-objective-issuer
+    icon: { sprite: Objects/Weapons/Melee/e_sword.rsi, state: icon }
+  - type: SWCultistObjective
+
+- type: entity
+  parent: SWCultistMainObjective
+  id: SWCultistSurvivalObjective
+  name: Выживание культа

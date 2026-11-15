@@ -6,6 +6,7 @@ using Content.Shared.Damage;
 using Content.Shared.Damage.Prototypes;
 using Content.Shared.Damage.Systems;
 using Content.Shared.DeviceLinking.Events;
+using Content.Shared.Inventory.Events;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
@@ -14,7 +15,8 @@ using System;
 namespace Content.Server._SW.Items;
 
 /// <summary>
-///     Applies the shock to the wearer when the collar receives its device link signal.
+///     Applies the shock to the wearer when the collar receives its device link signal,
+///     and plays the equip sound server-side (single networked playback).
 /// </summary>
 public sealed class SWElectricCollarSignalSystem : EntitySystem
 {
@@ -23,12 +25,19 @@ public sealed class SWElectricCollarSignalSystem : EntitySystem
     [Dependency] private readonly StunSystem _stun = default!;
     [Dependency] private readonly SWElectrifiedEffectSystem _electrified = default!;
     [Dependency] private readonly SWLightningSparksSystem _sparks = default!;
+    [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly IPrototypeManager _proto = default!;
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<SWElectricCollarComponent, SignalReceivedEvent>(OnSignalReceived);
+        SubscribeLocalEvent<SWElectricCollarComponent, GotEquippedEvent>(OnGotEquipped);
+    }
+
+    private void OnGotEquipped(Entity<SWElectricCollarComponent> ent, ref GotEquippedEvent args)
+    {
+        _audio.PlayPvs(ent.Comp.EquipSound, ent);
     }
 
     private void OnSignalReceived(Entity<SWElectricCollarComponent> ent, ref SignalReceivedEvent args)
@@ -49,7 +58,11 @@ public sealed class SWElectricCollarSignalSystem : EntitySystem
         // Victim-side Sith lightning effects (no beam).
         _electrified.AddElectrifiedEffect(wearer, seconds);
         _sparks.AddLightningSparks(wearer, seconds);
-        Spawn("EffectSparks", Transform(wearer).Coordinates);
+
+        // Attach the initial sparks to the wearer so they follow it.
+        var spark = Spawn("EffectSparks", Transform(wearer).Coordinates);
+        _transform.SetParent(spark, wearer);
+
         _audio.PlayPvs(ent.Comp.ShockSound, wearer);
 
         var damage = ent.Comp.Damage.Empty

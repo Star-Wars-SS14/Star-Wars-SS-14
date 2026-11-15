@@ -24,10 +24,16 @@ public sealed partial class SWElectricCollarComponent : Component
     public TimeSpan StunTime = TimeSpan.FromSeconds(2);
 
     /// <summary>
-    ///     Sound played on the wearer on activation.
+    ///     Shock sound played on the wearer on activation.
     /// </summary>
     [DataField]
-    public SoundPathSpecifier ShockSound = new("/Audio/Effects/Lightning/swlightningshock.ogg");
+    public SoundPathSpecifier ShockSound = new("/Audio/_SW/discharge.ogg");
+
+    /// <summary>
+    ///     Sound played when the collar is equipped onto someone.
+    /// </summary>
+    [DataField]
+    public SoundPathSpecifier EquipSound = new("/Audio/Items/belt_equip.ogg");
 
     /// <summary>
     ///     Device link sink port that triggers the shock.

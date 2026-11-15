@@ -26,6 +26,7 @@ using Robust.Shared.Containers;
 using Robust.Shared.Audio;
 using Robust.Shared.Enums;
 using Robust.Shared.Player;
+using Robust.Shared.Random;
 
 namespace Content.Server._SW.Cultist;
 

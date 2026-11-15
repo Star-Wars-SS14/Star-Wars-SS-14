@@ -1,4 +1,3 @@
-# --- Mounted Turret (Base) ---
 - type: entity
   id: SWTurretMounted
   name: Mounted Turret
@@ -6,12 +5,9 @@
   suffix: SW
   parent: BaseStructure
   components:
-  # Make object clickable and visible for interaction
   - type: Clickable
   - type: InteractionOutline
-  - type: Rotatable
-
-  # Visual (copy from regular turret)
+  
   - type: Sprite
     sprite: Objects/Weapons/Guns/Turrets/turrets.rsi
     drawdepth: Mobs
@@ -39,7 +35,6 @@
           - !type:DoActsBehavior
             acts: [ "Destruction" ]
 
-  # Vehicle system (make it a "vehicle")
   - type: SWVehicle
     rolesInfo:
       driver:
@@ -52,7 +47,6 @@
         entProto: SWVehicleSeat
         buckleCoords: "0.0, 0.5"
 
-  # Vehicle control menu
   - type: ActivatableUI
     key: enum.SWVehicleMenuUiKey.Key
   - type: UserInterface
@@ -60,29 +54,24 @@
       enum.SWVehicleMenuUiKey.Key:
         type: SWVehicleBoundUserInterface
 
-  # Player input
   - type: Input
     context: "human"
   - type: NoRotateOnInteract
   - type: NoRotateOnMove
 
-  # Vehicle physics (immobile but can rotate)
   - type: SWInertialVehicle
     acceleration: 0
     reverseAcceleration: 0
     brakeAcceleration: 100
     maxForwardSpeed: 0
     maxReverseSpeed: 0
-    turnAcceleration: 50
-    maxAngularVelocity: 20
-    angularDamping: 5
+    turnAcceleration: 0         
+    maxAngularVelocity: 0       
+    angularDamping: 100         
     rollingFriction: 100
     sidewaysFriction: 100
 
-  # Headlight (like on speeder)
   - type: SWVehicleHeadlight
-
-  # Point light for the headlight
   - type: PointLight
     enabled: false
     mask: /Textures/Effects/LightMasks/cone.png
@@ -91,26 +80,5 @@
     energy: 2
     color: "#e8f2ff"
 
-# --- Gun part (for vehicle system) ---
-- type: entity
-  id: SWTurretGunPart
-  name: Mounted Turret Gun
-  description: Gun for the mounted turret.
-  suffix: SW
-  categories: [ HideSpawnMenu ]
-  components:
-  - type: Gun
-    fireRate: 6
-    selectedMode: FullAuto
-    availableModes:
-      - FullAuto
-    soundGunshot: /Audio/_SW/Weapons/Guns/Gunshots/turret_blaster_sound.ogg
-  - type: BallisticAmmoProvider
-    proto: SWE-1Bullet
-    capacity: 1000000
-  - type: ContainerContainer
-    containers:
-      ballistic-ammo: !type:Container
-  - type: SWShootByVehicleGun
-    angle: 360
-  - type: SWVehicleProjectilePass
+
+  - type: SWTurretAim

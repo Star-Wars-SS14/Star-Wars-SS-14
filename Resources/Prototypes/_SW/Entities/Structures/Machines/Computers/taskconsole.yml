@@ -52,8 +52,6 @@
   components:
   - type: TaskConsole
     faction: BlackSunFaction
-    leaderJobs:
-    - SWBlackSun
   - type: Sprite
     sprite: _SW/Structures/Machines/SunComputer.rsi
     layers:
@@ -72,8 +70,6 @@
   components:
   - type: TaskConsole
     faction: ExchangeFaction
-    leaderJobs:
-    - SWExchangeCaptain
   - type: Sprite
     sprite: _SW/Structures/Machines/ExchangeComputer.rsi
     layers:
@@ -92,8 +88,6 @@
   components:
   - type: TaskConsole
     faction: MandalorianFaction
-    leaderJobs:
-    - SWMandalorianLeader
   - type: Sprite
     sprite: _SW/Structures/Machines/MandolorianTaskComputer.rsi
     layers:

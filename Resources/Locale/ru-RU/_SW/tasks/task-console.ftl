@@ -7,4 +7,4 @@ sw-task-console-score = { $score } { $score ->
     [few] очка
    *[other] очков
 }
-sw-task-console-officers-only = Задания фракции доступны только офицерам.
+sw-task-console-access-denied = Для просмотра заданий требуется подходящий доступ.

@@ -4,6 +4,15 @@
     Title="{Loc 'sw-quest-board-title'}"
     MinSize="700 500" SetSize="840 600">
     <BoxContainer Orientation="Vertical" SeparationOverride="8" Margin="10">
+        <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
+            <Control HorizontalExpand="True" />
+            <PanelContainer StyleClasses="SWTermFrame">
+                <BoxContainer Orientation="Horizontal" SeparationOverride="6" Margin="6,2">
+                    <TextureRect Name="ViewerIcon" MinSize="24 24" Stretch="KeepAspectCentered" Visible="False" />
+                    <Label Name="ViewerName" StyleClasses="SWTermText" />
+                </BoxContainer>
+            </PanelContainer>
+        </BoxContainer>
         <BoxContainer Orientation="Horizontal" SeparationOverride="8" VerticalExpand="True">
             <PanelContainer StyleClasses="SWTermFrame" MinWidth="260">
                 <BoxContainer Orientation="Vertical" SeparationOverride="6" Margin="6">
@@ -34,6 +43,7 @@
                             <Button Name="TakeButton" Text="{Loc 'sw-quest-board-take'}" />
                             <Button Name="LeaveButton" Text="{Loc 'sw-quest-board-leave'}" />
                             <Button Name="CommentButton" Text="{Loc 'sw-quest-board-comment'}" />
+                            <Button Name="CompleteButton" Text="{Loc 'sw-quest-board-complete'}" />
                             <Button Name="QuestCloseButton" Text="{Loc 'sw-quest-board-close'}" />
                         </BoxContainer>
                         <BoxContainer Name="CommentForm" Orientation="Vertical" Visible="False" SeparationOverride="4">

@@ -3,6 +3,8 @@ using Content.Shared._SW.QuestBoard;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
 using Content.Shared.Inventory;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
 using Content.Shared.PDA;
 using Content.Shared.Popups;
 using Content.Shared.Stacks;
@@ -25,10 +27,14 @@ public sealed class SWQuestBoardSystem : EntitySystem
     [Dependency] private readonly AccessReaderSystem _accessReader = default!;
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
+    [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
     private readonly List<SWQuestRecord> _quests = new();
     private int _nextId = 1;
+
+    private string? _marker;
+    private float _pollT;
 
     private readonly Dictionary<EntityUid, TimeSpan> _lastCreate = new();
     private readonly Dictionary<EntityUid, HashSet<EntityUid>> _viewers = new();
@@ -44,9 +50,9 @@ public sealed class SWQuestBoardSystem : EntitySystem
         SubscribeLocalEvent<SWQuestBoardComponent, SWQuestLeaveMessage>(OnLeave);
         SubscribeLocalEvent<SWQuestBoardComponent, SWQuestCloseMessage>(OnClose);
         SubscribeLocalEvent<SWQuestBoardComponent, SWQuestCommentMessage>(OnComment);
+        SubscribeLocalEvent<SWQuestBoardComponent, SWQuestCompleteMessage>(OnComplete);
         SubscribeLocalEvent<SWQuestBoardComponent, SWQuestSelectMessage>(OnSelect);
         SubscribeLocalEvent<SWQuestBoardComponent, SWQuestUiBeepMessage>(OnUiBeep);
-        SubscribeLocalEvent<TryTransferObject>(OnTransfer);
     }
 
     private void Beep(Entity<SWQuestBoardComponent> ent) => _audio.PlayPvs(ent.Comp.BeepSound, ent);
@@ -85,6 +91,21 @@ public sealed class SWQuestBoardSystem : EntitySystem
                 Needed = ent.Comp.ParasiteNeeded,
                 CashProto = ent.Comp.CashProto,
                 CashReward = ent.Comp.ParasiteReward,
+            });
+            _quests.Add(new SWQuestRecord
+            {
+                Id = _nextId++,
+                Title = ent.Comp.FarnellTitle,
+                Description = ent.Comp.FarnellDescription,
+                Reward = $"{ent.Comp.FarnellReward} кредитов",
+                Contact = ent.Comp.FarnellGiver,
+                Giver = ent.Comp.FarnellGiver,
+                GiverIcon = ent.Comp.FarnellIcon,
+                IsServerQuest = true,
+                CarcassProto = ent.Comp.FarnellProto,
+                Needed = ent.Comp.FarnellNeeded,
+                CashProto = ent.Comp.CashProto,
+                CashReward = ent.Comp.FarnellReward,
             });
         }
         RefreshAll();
@@ -133,6 +154,67 @@ public sealed class SWQuestBoardSystem : EntitySystem
         return $"{card.FullName}{job}";
     }
 
+    // Resolve the marker (OwnerFaction string) used by this fork's board pallets.
+    private string? ResolveMarker()
+    {
+        var boards = EntityQueryEnumerator<SWQuestBoardComponent>();
+        while (boards.MoveNext(out _, out var bc))
+            return bc.BoardPalletFaction;
+        return null;
+    }
+
+    // Collect items on ALL board pallets into a single HashSet so an item spanning
+    // multiple pallets is counted exactly once.
+    private HashSet<EntityUid> ItemsOnBoardPallets(string protoId)
+    {
+        var result = new HashSet<EntityUid>();
+        var marker = ResolveMarker();
+        if (marker == null) return result;
+
+        var pallets = EntityQueryEnumerator<SWTransferPalletComponent>();
+        while (pallets.MoveNext(out var uid, out var pc))
+        {
+            if (pc.OwnerFaction != marker) continue;
+            foreach (var obj in _lookup.GetEntitiesIntersecting(uid, LookupFlags.Dynamic | LookupFlags.Sundries))
+            {
+                if (result.Contains(obj)) continue; // dedupe across pallets
+                if (TryComp<MobStateComponent>(obj, out var mob) && mob.CurrentState == MobState.Alive) continue;
+                if (TryPrototype(obj, out var proto) && proto != null && proto.ID == protoId)
+                    result.Add(obj);
+            }
+        }
+        return result;
+    }
+
+    private void DeleteEntities(IEnumerable<EntityUid> ids)
+    {
+        foreach (var d in ids)
+            Del(d);
+    }
+
+    // Keep live progress fresh while items sit on pallets.
+    public override void Update(float frameTime)
+    {
+        base.Update(frameTime);
+        _pollT += frameTime;
+        if (_pollT < 1f) return;
+        _pollT = 0f;
+
+        var changed = false;
+        foreach (var q in _quests)
+        {
+            if (!q.IsServerQuest || q.Closed || string.IsNullOrEmpty(q.CarcassProto)) continue;
+            var live = Math.Min(ItemsOnBoardPallets(q.CarcassProto).Count, q.Needed);
+            if (live != q.Collected)
+            {
+                q.Collected = live;
+                q.Progress = q.Needed > 0 ? (float) live / q.Needed : 0f;
+                changed = true;
+            }
+        }
+        if (changed) RefreshAll();
+    }
+
     private void OnCreate(Entity<SWQuestBoardComponent> ent, ref SWQuestCreateMessage msg)
     {
         var uid = GetEntity(msg.Actor);
@@ -165,7 +247,7 @@ public sealed class SWQuestBoardSystem : EntitySystem
 
         AnnounceNewQuest(title, giver);
         RefreshAll();
-        Beep(ent);
+        _audio.PlayPvs(ent.Comp.NewTaskSound, ent);
     }
 
     private void OnTake(Entity<SWQuestBoardComponent> ent, ref SWQuestTakeMessage msg)
@@ -212,7 +294,7 @@ public sealed class SWQuestBoardSystem : EntitySystem
         if (q == null || q.Closed || q.GiverNet != GetNetEntity(uid)) return;
         q.Closed = true;
         RefreshAll();
-        Beep(ent);
+        _audio.PlayPvs(ent.Comp.TaskCompleteSound, ent);
     }
 
     private void OnComment(Entity<SWQuestBoardComponent> ent, ref SWQuestCommentMessage msg)
@@ -234,39 +316,44 @@ public sealed class SWQuestBoardSystem : EntitySystem
         Beep(ent);
     }
 
+    // Button-driven completion: spawn cash at the board where the button was pressed,
+    // then delete exactly N matching items (deduped across pallets) from any board pallets.
+    private void OnComplete(Entity<SWQuestBoardComponent> ent, ref SWQuestCompleteMessage msg)
+    {
+        var uid = GetEntity(msg.Actor); var id = msg.Id;
+        if (!IsViewer(ent, uid)) return;
+        if (!TryGetCard(uid, out var card))
+        {
+            _popup.PopupEntity(Loc.GetString("sw-quest-board-no-id"), uid, uid);
+            Buzz(ent, uid);
+            return;
+        }
+        var q = _quests.FirstOrDefault(x => x.Id == id);
+        if (q == null || q.Closed || !q.IsServerQuest || string.IsNullOrEmpty(q.CarcassProto)) return;
+
+        var items = ItemsOnBoardPallets(q.CarcassProto);
+        if (items.Count < q.Needed) return;
+
+        // Deduplicated already; take exactly Needed.
+        DeleteEntities(items.Take(q.Needed));
+
+        q.Collected = q.Needed;
+        q.Progress = 1f;
+        q.Closed = true;
+
+        if (!string.IsNullOrEmpty(q.CashProto))
+        {
+            var cash = Spawn(q.CashProto, Transform(ent).Coordinates);
+            if (TryComp<StackComponent>(cash, out var stack))
+                _stack.SetCount(cash, q.CashReward, stack);
+        }
+
+        RefreshAll();
+        _audio.PlayPvs(ent.Comp.TaskCompleteSound, ent);
+    }
+
     private void OnSelect(Entity<SWQuestBoardComponent> ent, ref SWQuestSelectMessage msg) => Beep(ent);
     private void OnUiBeep(Entity<SWQuestBoardComponent> ent, ref SWQuestUiBeepMessage msg) => Beep(ent);
-
-    private void OnTransfer(ref TryTransferObject ev)
-    {
-        if (ev.Handled) return;
-        if (!TryPrototype(ev.PlacedUid, out var proto) || proto == null) return;
-
-        var q = _quests.FirstOrDefault(x => x.IsServerQuest && !x.Closed
-            && !string.IsNullOrEmpty(x.CarcassProto) && x.CarcassProto == proto.ID
-            && x.Collected < x.Needed);
-        if (q == null) return;
-
-        q.Collected++;
-        q.Progress = (float) q.Collected / q.Needed;
-        ev.Handled = true;
-
-        if (q.Collected >= q.Needed)
-        {
-            q.Closed = true;
-            if (!string.IsNullOrEmpty(q.CashProto))
-            {
-                var board = EntityQueryEnumerator<SWQuestBoardComponent>();
-                if (board.MoveNext(out var uid, out _))
-                {
-                    var cash = Spawn(q.CashProto, Transform(uid).Coordinates);
-                    if (TryComp<StackComponent>(cash, out var stack))
-                        _stack.SetCount(cash, q.CashReward, stack);
-                }
-            }
-        }
-        RefreshAll();
-    }
 
     // Admin moderation: drop a quest entirely (e.g. rule-breaking posts).
     public bool RemoveQuest(int id)

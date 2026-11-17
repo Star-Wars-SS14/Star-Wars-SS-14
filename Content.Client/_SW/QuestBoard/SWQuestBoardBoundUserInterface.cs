@@ -26,6 +26,7 @@ public sealed class SWQuestBoardBoundUserInterface : BoundUserInterface
         _menu.OnLeave += id => SendMessage(new SWQuestLeaveMessage { Actor = LocalActor(), Id = id });
         _menu.OnClose += id => SendMessage(new SWQuestCloseMessage { Actor = LocalActor(), Id = id });
         _menu.OnComment += (id, text) => SendMessage(new SWQuestCommentMessage { Actor = LocalActor(), Id = id, Text = text });
+        _menu.OnComplete += id => SendMessage(new SWQuestCompleteMessage { Actor = LocalActor(), Id = id });
         _menu.OnSelect += id => SendMessage(new SWQuestSelectMessage { Id = id });
         _menu.OnUiBeep += () => SendMessage(new SWQuestUiBeepMessage());
         _menu.OnSubmit += (t, d, r, c) => SendMessage(new SWQuestCreateMessage

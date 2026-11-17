@@ -47,6 +47,13 @@ public sealed class SWQuestCommentMessage : BoundUserInterfaceMessage
     public string Text = "";
 }
 
+[Serializable, NetSerializable]
+public sealed class SWQuestCompleteMessage : BoundUserInterfaceMessage
+{
+    public NetEntity Actor;
+    public int Id;
+}
+
 // Pure UI feedback pings: selecting a quest or toggling a form.
 [Serializable, NetSerializable]
 public sealed class SWQuestSelectMessage : BoundUserInterfaceMessage

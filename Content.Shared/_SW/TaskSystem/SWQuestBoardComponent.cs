@@ -14,12 +14,16 @@ public sealed partial class SWQuestBoardComponent : Component
     public List<SWQuestRecord> Quests = new();
 
     [DataField, AutoNetworkedField]
-    public string NewsTicker = "Сектор стабилизирован. Правительство напоминает: сдача туш вредителей на постах продажи оплачивается из казны. Следите за доской заданий. Галактическая Империя и Республика заключили перемирие. Секта 'Серых провидцев' продолжает атаки на государственных чиновников. Синдикаты укрепляют свою власть.";
+    public string NewsTicker = "Сектор стабилизирован. Правительство напоминает: сдача туш вредителей на постах продажи оплачивается из казны. Следите за доской заданий. Галактическая Империя и Республика заключили перемирие. Секта 'Серых отшельников' продолжает атаки на государственных чиновников. Синдикаты укрепляют свою власть. У раба, прибывшего на Коррибан, обнаружена мощная связь с силой. Республика начала активную фазу по восстановлению Тариса. 'Обмен' подозревается в серии похищений.";
 
     [DataField] public SoundPathSpecifier BeepSound = new("/Audio/_SW/board/beep_board.ogg");
     [DataField] public SoundPathSpecifier BuzzSound = new("/Audio/_RMC14/Machines/buzz_two.ogg");
+    [DataField] public SoundPathSpecifier NewTaskSound = new("/Audio/_SW/board/new_task.ogg");
+    [DataField] public SoundPathSpecifier TaskCompleteSound = new("/Audio/_SW/board/task_complete.ogg");
 
-    [DataField] public string GovernmentName = "Правительство";
+    [DataField] public string BoardPalletFaction = "SWQuestBoardPublic";
+
+    [DataField] public string GovernmentName = "Ассоциация фермеров Балморры";
     [DataField] public string GovernmentIcon = "JobIconUnknown";
 
     [DataField] public string StarterTitle = "Охота на борму";
@@ -34,6 +38,14 @@ public sealed partial class SWQuestBoardComponent : Component
     [DataField] public string ParasiteProto = "SWMobParasitAggressiveAi";
     [DataField] public int ParasiteNeeded = 5;
     [DataField] public int ParasiteReward = 2000;
+
+    [DataField] public string FarnellTitle = "Конспирация";
+    [DataField] public string FarnellDescription = "В исследовательском центре Фарнелл произошла катастрофа: подопытные вырвались наружу и перебили персонал. НИИ \"Вейланд\" хочет вернуть исследовательские документы. Добудьте 3 датапада и поместите их на грузовой поддон доски заданий.";
+    [DataField] public string FarnellProto = "SWFarnelDatapad";
+    [DataField] public int FarnellNeeded = 3;
+    [DataField] public int FarnellReward = 4000;
+    [DataField] public string FarnellGiver = "НИИ \"Вейланд\"";
+    [DataField] public string FarnellIcon = "JobIconUnknown";
 
     [DataField] public int MaxQuests = 20;
     [DataField] public int MaxLength = 400;

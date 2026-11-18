@@ -33,21 +33,33 @@ public sealed partial class SWQuestBoardMenu : SWTerminalWindow
     public event Action? OnUiBeep;
     public event Action<string, string, string, string>? OnSubmit;
 
+    // One list row: keeps controls and the converging truncation state together.
+    private sealed class RowEntry
+    {
+        public int Id;
+        public Label Label = default!;
+        public Button Button = default!;
+        public string Title = "";
+        public int MaxChars;
+        public bool Fitted;
+    }
+
     private List<SWQuestRecord> _quests = new();
     private int _selected = -1;
 
+    private readonly List<RowEntry> _rows = new();
+    private bool _fitPending;
+
     private IGameTiming _timing = default!;
-    private string _loop = "";
-    private int _window = 32;
-    private float _charW;
-    private bool _measure = true;
-    private float _settleT;
-    private const float TickerSpeed = 19.5f; // pixels per second, calm news crawl
+    private string _tickerText = "";
+    private float _tickerOffset;
+    private const float TickerSpeed = 19.5f; // pixels per second
 
     public SWQuestBoardMenu()
     {
         RobustXamlLoader.Load(this);
         _timing = IoCManager.Resolve<IGameTiming>();
+        GuideBody.SetMessage(Loc.GetString("sw-board-guide-body"));
         CreateButton.OnPressed += _ => { SetCreateMode(!CreateForm.Visible); OnUiBeep?.Invoke(); };
         CancelButton.OnPressed += _ => { SetCreateMode(false); OnUiBeep?.Invoke(); };
         SubmitButton.OnPressed += _ =>
@@ -70,72 +82,114 @@ public sealed partial class SWQuestBoardMenu : SWTerminalWindow
         QuestCloseButton.OnPressed += _ => { if (_selected >= 0) OnClose?.Invoke(_selected); };
     }
 
+    // Two copies of the full text sit side by side; only coordinates move.
     public void SetTicker(string text)
     {
         var loop = (text ?? "") + "   •   ";
-        if (loop == _loop) return; // do not restart anything on repeated state pushes
-        _loop = loop;
-        _window = 32;
-        _charW = 0;
-        _measure = true;
-        _settleT = 0.3f; // let the probe lay out before measuring
-        TickerText.Text = _loop.Substring(0, Math.Min(32, _loop.Length));
+        if (loop == _tickerText) return;
+        _tickerText = loop;
+        TickerTextA.Text = loop;
+        TickerTextB.Text = loop;
     }
 
-    // Char-window marquee. Position is derived from the shared server clock, so every
-    // client shows the same offset at the same moment and the crawl never restarts.
     protected override void FrameUpdate(FrameEventArgs args)
     {
         base.FrameUpdate(args);
-        if (_loop.Length == 0)
+
+        // DesiredSize is the unclamped text width; Width would be clamped by the panel.
+        var copyWidth = TickerTextA.DesiredSize.X;
+        if (copyWidth > 0)
         {
-            TickerText.Text = "";
-            return;
+            _tickerOffset += TickerSpeed * args.DeltaSeconds;
+            if (_tickerOffset >= copyWidth) _tickerOffset -= copyWidth;
+            TickerRow.Margin = new Thickness(6 - _tickerOffset, 5, 0, 0);
         }
 
-        if (_measure)
+        FitRowTitles();
+    }
+
+    // Converging truncation: cut one character per frame until the label (with its
+    // ellipsis) actually fits the button, so the "…" is never clipped itself.
+    private void FitRowTitles()
+    {
+        if (!_fitPending) return;
+        var allFitted = true;
+        foreach (var row in _rows)
         {
-            _settleT -= args.DeltaSeconds;
-            if (_settleT > 0) return;
-            if (TickerText.DesiredSize.X <= 0) return;
-            _charW = TickerText.DesiredSize.X / Math.Min(32, _loop.Length);
-            _measure = false;
+            if (row.Fitted) continue;
+            if (row.Button.Width <= 0)
+            {
+                allFitted = false;
+                continue;
+            }
+
+            var currentText = row.Label.Text ?? string.Empty;
+            if (currentText.Length == 0)
+            {
+                row.Fitted = true;
+                continue;
+            }
+
+            if (row.Label.DesiredSize.X <= row.Button.Width - 4)
+            {
+                row.Fitted = true;
+                continue;
+            }
+
+            allFitted = false;
+            if (row.MaxChars <= 4)
+            {
+                row.Fitted = true;
+                continue;
+            }
+
+            row.MaxChars--;
+            row.Label.Text = row.Title.Length <= row.MaxChars
+                ? row.Title
+                : row.Title.Substring(0, row.MaxChars - 1) + "…";
         }
-        if (_charW <= 0) _charW = 8f;
-
-        var panelW = TickerText.Parent?.Width ?? 0f;
-        if (panelW > 0)
-        {
-            var target = (int) Math.Ceiling(panelW / _charW) + 2;
-            if (target > 0) _window = target;
-        }
-
-        var pos = (float) _timing.CurTime.TotalSeconds * TickerSpeed / _charW;
-        var idx = (int) pos % _loop.Length;
-        var frac = pos - (float) Math.Floor(pos);
-
-        var chars = new char[_window];
-        for (var i = 0; i < _window; i++)
-            chars[i] = _loop[(idx + i) % _loop.Length];
-        TickerText.Text = new string(chars);
-        TickerText.Margin = new Thickness(6 - frac * _charW, 5, 0, 0);
+        if (allFitted) _fitPending = false;
     }
 
     private void SetCreateMode(bool on)
     {
         CreateForm.Visible = on;
-        DetailsPanel.Visible = !on;
+        DetailsPanel.Visible = !on && _selected >= 0;
+        GuidePanel.Visible = !on && _selected < 0;
     }
 
-    private static string Trunc(string s, int n)
+    private void ShowGuide()
     {
-        return s.Length <= n ? s : s.Substring(0, n) + "…";
+        GuidePanel.Visible = true;
+        DetailsPanel.Visible = false;
+        CreateForm.Visible = false;
+    }
+
+    private void SelectQuest(int questId, Button button)
+    {
+        SetCreateMode(false);
+        CommentForm.Visible = false;
+        if (_selected == questId)
+        {
+            // Second click deselects and returns to the starter guide.
+            _selected = -1;
+            button.Pressed = false;
+            ShowGuide();
+        }
+        else
+        {
+            _selected = questId;
+            foreach (var row in _rows)
+                row.Button.Pressed = row.Id == questId;
+            ShowDetails();
+        }
+        OnSelect?.Invoke(questId);
     }
 
     private void SetJobIcon(TextureRect view, string iconId)
     {
-        var proto = IoCManager.Resolve<IPrototypeManager>();
-        if (!string.IsNullOrEmpty(iconId) && proto.TryIndex<JobIconPrototype>(iconId, out var icon))
+        var prototypes = IoCManager.Resolve<IPrototypeManager>();
+        if (!string.IsNullOrEmpty(iconId) && prototypes.TryIndex<JobIconPrototype>(iconId, out var icon))
         {
             var sprite = IoCManager.Resolve<IEntityManager>().System<SpriteSystem>();
             view.Texture = sprite.GetFrame(icon.Icon, TimeSpan.Zero);
@@ -150,7 +204,7 @@ public sealed partial class SWQuestBoardMenu : SWTerminalWindow
     // Framed viewer identity at the top-right, read from their ID card / PDA.
     private void UpdateViewer()
     {
-        var ent = IoCManager.Resolve<IEntityManager>();
+        var entities = IoCManager.Resolve<IEntityManager>();
         var local = IoCManager.Resolve<IPlayerManager>().LocalEntity;
         if (local == null)
         {
@@ -160,15 +214,15 @@ public sealed partial class SWQuestBoardMenu : SWTerminalWindow
         }
 
         IdCardComponent? card = null;
-        var access = ent.System<AccessReaderSystem>();
+        var access = entities.System<AccessReaderSystem>();
         if (access.FindAccessItemsInventory(local.Value, out var items))
         {
             foreach (var item in items)
             {
-                if (ent.TryGetComponent<IdCardComponent>(item, out var id)) { card = id; break; }
-                if (ent.TryGetComponent<PdaComponent>(item, out var pda) &&
+                if (entities.TryGetComponent<IdCardComponent>(item, out var idCard)) { card = idCard; break; }
+                if (entities.TryGetComponent<PdaComponent>(item, out var pda) &&
                     pda.ContainedId != null &&
-                    ent.TryGetComponent<IdCardComponent>(pda.ContainedId, out id)) { card = id; break; }
+                    entities.TryGetComponent<IdCardComponent>(pda.ContainedId, out idCard)) { card = idCard; break; }
             }
         }
 
@@ -189,103 +243,115 @@ public sealed partial class SWQuestBoardMenu : SWTerminalWindow
         _quests = quests;
         UpdateViewer();
         QuestList.Children.Clear();
-        foreach (var q in quests.OrderBy(q => q.Closed))
+        _rows.Clear();
+        foreach (var quest in quests.OrderBy(record => record.Closed))
         {
-            var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, SeparationOverride = 4 };
+            var rowBox = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, SeparationOverride = 4 };
             var icon = new TextureRect { MinSize = new Vector2(32, 32), Stretch = TextureRect.StretchMode.KeepAspectCentered };
-            var btn = new Button { ToggleMode = true, HorizontalExpand = true };
-            var lbl = new Label
+            var button = new Button { ToggleMode = true, HorizontalExpand = true };
+            var displayTitle = (quest.Closed ? "[✔] " : "") + quest.Title;
+            var label = new Label { Text = displayTitle, ClipText = true, HorizontalExpand = true };
+            button.AddChild(label);
+            var questId = quest.Id;
+            button.OnPressed += _ => SelectQuest(questId, button);
+            rowBox.AddChild(icon);
+            rowBox.AddChild(button);
+            QuestList.AddChild(rowBox);
+            _rows.Add(new RowEntry
             {
-                Text = q.Closed ? $"[✔] {Trunc(q.Title, 20)}" : Trunc(q.Title, 20),
-                ClipText = true,
-                HorizontalExpand = true,
-            };
-            btn.AddChild(lbl);
-            var id = q.Id;
-            btn.OnPressed += _ =>
-            {
-                _selected = id;
-                SetCreateMode(false);
-                CommentForm.Visible = false;
-                ShowDetails();
-                OnSelect?.Invoke(id);
-            };
-            row.AddChild(icon);
-            row.AddChild(btn);
-            QuestList.AddChild(row);
-            SetJobIcon(icon, q.GiverIcon);
+                Id = questId,
+                Label = label,
+                Button = button,
+                Title = displayTitle,
+                MaxChars = displayTitle.Length,
+                Fitted = false,
+            });
+            SetJobIcon(icon, quest.GiverIcon);
         }
-        ShowDetails();
+
+        foreach (var row in _rows)
+            row.Button.Pressed = row.Id == _selected;
+        _fitPending = true;
+
+        if (_selected >= 0 && quests.Any(record => record.Id == _selected))
+            ShowDetails();
+        else
+        {
+            _selected = -1;
+            ShowGuide();
+        }
     }
 
     private void ShowDetails()
     {
-        var q = _quests.FirstOrDefault(x => x.Id == _selected);
+        var quest = _quests.FirstOrDefault(record => record.Id == _selected);
+        if (quest == null)
+        {
+            ShowGuide();
+            return;
+        }
+
+        GuidePanel.Visible = false;
+        DetailsPanel.Visible = true;
+        CreateForm.Visible = false;
+
         var local = IoCManager.Resolve<IPlayerManager>().LocalEntity;
-        var localNet = local != null
+        var viewerNetEntity = local != null
             ? IoCManager.Resolve<IEntityManager>().GetNetEntity(local.Value)
             : NetEntity.Invalid;
         TakersList.Children.Clear();
         CommentsList.Children.Clear();
-        if (q == null)
-        {
-            DetailTitle.SetMessage(""); DetailGiver.Text = ""; DetailReward.Text = "";
-            DetailContact.Text = ""; DetailTakersHeader.Text = "";
-            DetailDescription.SetMessage("");
-            CommentsHeader.Text = "";
-            DetailProgress.Visible = false;
-            GiverIcon.Visible = false;
-            TakeButton.Visible = LeaveButton.Visible = QuestCloseButton.Visible = CommentButton.Visible = CompleteButton.Visible = false;
-            return;
-        }
-        DetailTitle.SetMessage(Loc.GetString("sw-quest-board-id-title", ("id", q.Id), ("title", q.Title)));
-        DetailGiver.Text = Loc.GetString("sw-quest-board-giver", ("name", q.Giver));
-        DetailReward.Text = Loc.GetString("sw-quest-board-reward", ("reward", q.Reward));
-        DetailContact.Text = Loc.GetString("sw-quest-board-contact", ("contact", q.Contact));
-        DetailTakersHeader.Text = Loc.GetString("sw-quest-board-takers", ("list", ""));
-        DetailDescription.SetMessage(q.Description);
 
-        for (var i = 0; i < q.Takers.Count; i++)
+        DetailTitle.SetMessage(Loc.GetString("sw-quest-board-id-title", ("id", quest.Id), ("title", quest.Title)));
+        DetailGiver.Text = Loc.GetString("sw-quest-board-giver", ("name", quest.Giver));
+        DetailReward.Text = Loc.GetString("sw-quest-board-reward", ("reward", quest.Reward));
+        DetailContact.Text = Loc.GetString("sw-quest-board-contact", ("contact", quest.Contact));
+        DetailTakersHeader.Text = Loc.GetString("sw-quest-board-takers", ("list", ""));
+        DetailDescription.SetMessage(quest.Description);
+
+        for (var index = 0; index < quest.Takers.Count; index++)
         {
             var row = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, SeparationOverride = 4 };
-            var tIcon = new TextureRect { MinSize = new Vector2(24, 24), Stretch = TextureRect.StretchMode.KeepAspectCentered };
-            var tName = new Label { Text = q.Takers[i], StyleClasses = { "SWTermText" } };
-            row.AddChild(tIcon);
-            row.AddChild(tName);
+            var takerIcon = new TextureRect { MinSize = new Vector2(24, 24), Stretch = TextureRect.StretchMode.KeepAspectCentered };
+            var takerName = new Label { Text = quest.Takers[index], StyleClasses = { "SWTermText" } };
+            row.AddChild(takerIcon);
+            row.AddChild(takerName);
             TakersList.AddChild(row);
-            if (i < q.TakerIcons.Count) SetJobIcon(tIcon, q.TakerIcons[i]);
+            if (index < quest.TakerIcons.Count) SetJobIcon(takerIcon, quest.TakerIcons[index]);
         }
 
-        // Comments: name+job with icon on top, comment text below.
-        CommentsHeader.Text = q.Comments.Count > 0 ? Loc.GetString("sw-quest-board-comments") : "";
-        foreach (var c in q.Comments)
+        CommentsHeader.Text = quest.Comments.Count > 0 ? Loc.GetString("sw-quest-board-comments") : "";
+        foreach (var comment in quest.Comments)
         {
             var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, SeparationOverride = 2, HorizontalExpand = true };
             var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, SeparationOverride = 4 };
-            var cIcon = new TextureRect { MinSize = new Vector2(24, 24), Stretch = TextureRect.StretchMode.KeepAspectCentered };
-            var cName = new Label { Text = c.Name, StyleClasses = { "SWTermText" } };
-            head.AddChild(cIcon);
-            head.AddChild(cName);
-            var cText = new RichTextLabel { HorizontalExpand = true };
-            cText.SetMessage(c.Text);
+            var commentIcon = new TextureRect { MinSize = new Vector2(24, 24), Stretch = TextureRect.StretchMode.KeepAspectCentered };
+            var commentName = new Label { Text = comment.Name, StyleClasses = { "SWTermText" } };
+            head.AddChild(commentIcon);
+            head.AddChild(commentName);
+            var commentText = new RichTextLabel { HorizontalExpand = true };
+            commentText.SetMessage(comment.Text);
             box.AddChild(head);
-            box.AddChild(cText);
+            box.AddChild(commentText);
             CommentsList.AddChild(box);
-            SetJobIcon(cIcon, c.Icon);
+            SetJobIcon(commentIcon, comment.Icon);
         }
 
-        DetailProgress.Visible = q.IsServerQuest;
-        DetailProgress.MaxValue = 1f; // progress arrives as 0..1, not percent
-        DetailProgress.Value = q.Progress;
-        SetJobIcon(GiverIcon, q.GiverIcon);
+        ProgressRow.Visible = quest.IsServerQuest;
+        DetailProgress.MaxValue = 1f;
+        DetailProgress.Value = quest.Progress;
+        DetailProgressCount.Text = Loc.GetString("sw-board-progress-count",
+            ("collected", quest.Collected), ("needed", quest.Needed));
+        SetJobIcon(GiverIcon, quest.GiverIcon);
 
-        var isTaker = q.TakerNets.Contains(localNet);
-        var isGiver = q.GiverNet == localNet;
-        TakeButton.Visible = !q.Closed && !isTaker && !isGiver;
-        LeaveButton.Visible = !q.Closed && isTaker;
-        CommentButton.Visible = !q.Closed;
-        CompleteButton.Visible = !q.Closed && q.IsServerQuest;
-        CompleteButton.Disabled = q.Collected < q.Needed;
-        QuestCloseButton.Visible = !q.Closed && isGiver;
+        var isTaker = quest.TakersNetEntities.Contains(viewerNetEntity);
+        var isGiver = quest.GiverNetEntity == viewerNetEntity;
+        TakeButton.Visible = !quest.Closed && !isTaker && !isGiver;
+        LeaveButton.Visible = !quest.Closed && isTaker;
+        CommentButton.Visible = true;
+        // Only a registered taker may hand in a server quest.
+        CompleteButton.Visible = !quest.Closed && quest.IsServerQuest && isTaker;
+        CompleteButton.Disabled = quest.Collected < quest.Needed;
+        QuestCloseButton.Visible = !quest.Closed && isGiver;
     }
 }

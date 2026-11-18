@@ -2,7 +2,6 @@ using Content.Server._SW.TransferSystem;
 using Content.Shared._SW.QuestBoard;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
-using Content.Shared.Inventory;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.PDA;
@@ -28,23 +27,20 @@ public sealed class SWQuestBoardSystem : EntitySystem
     [Dependency] private readonly SharedPopupSystem _popup = default!;
     [Dependency] private readonly SharedAudioSystem _audio = default!;
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
+    [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
 
-    private readonly List<SWQuestRecord> _quests = new();
+    private List<SWQuestRecord> _quests = new();
     private int _nextId = 1;
+    private float _pollTimer;
 
-    private string? _marker;
-    private float _pollT;
-
-    private readonly Dictionary<EntityUid, TimeSpan> _lastCreate = new();
-    private readonly Dictionary<EntityUid, HashSet<EntityUid>> _viewers = new();
+    private Dictionary<EntityUid, TimeSpan> _lastCreate = new();
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<SWQuestBoardComponent, MapInitEvent>(OnMapInit);
         SubscribeLocalEvent<SWQuestBoardComponent, BoundUIOpenedEvent>(OnOpened);
-        SubscribeLocalEvent<SWQuestBoardComponent, BoundUIClosedEvent>(OnClosed);
         SubscribeLocalEvent<SWQuestBoardComponent, SWQuestCreateMessage>(OnCreate);
         SubscribeLocalEvent<SWQuestBoardComponent, SWQuestTakeMessage>(OnTake);
         SubscribeLocalEvent<SWQuestBoardComponent, SWQuestLeaveMessage>(OnLeave);
@@ -56,94 +52,55 @@ public sealed class SWQuestBoardSystem : EntitySystem
     }
 
     private void Beep(Entity<SWQuestBoardComponent> ent) => _audio.PlayPvs(ent.Comp.BeepSound, ent);
-    private void Buzz(Entity<SWQuestBoardComponent> ent, EntityUid uid) => _audio.PlayPvs(ent.Comp.BuzzSound, uid);
+    private void Buzz(Entity<SWQuestBoardComponent> ent, EntityUid actor) => _audio.PlayPvs(ent.Comp.BuzzSound, actor);
 
     private void OnMapInit(Entity<SWQuestBoardComponent> ent, ref MapInitEvent args)
     {
         if (_quests.Count == 0)
         {
-            _quests.Add(new SWQuestRecord
+            foreach (var starterId in ent.Comp.Starters)
             {
-                Id = _nextId++,
-                Title = ent.Comp.StarterTitle,
-                Description = ent.Comp.StarterDescription,
-                Reward = $"{ent.Comp.CashReward} кредитов",
-                Contact = ent.Comp.GovernmentName,
-                Giver = ent.Comp.GovernmentName,
-                GiverIcon = ent.Comp.GovernmentIcon,
-                IsServerQuest = true,
-                CarcassProto = ent.Comp.CarcassProto,
-                Needed = ent.Comp.CarcassNeeded,
-                CashProto = ent.Comp.CashProto,
-                CashReward = ent.Comp.CashReward,
-            });
-            _quests.Add(new SWQuestRecord
-            {
-                Id = _nextId++,
-                Title = ent.Comp.ParasiteTitle,
-                Description = ent.Comp.ParasiteDescription,
-                Reward = $"{ent.Comp.ParasiteReward} кредитов",
-                Contact = ent.Comp.GovernmentName,
-                Giver = ent.Comp.GovernmentName,
-                GiverIcon = ent.Comp.GovernmentIcon,
-                IsServerQuest = true,
-                CarcassProto = ent.Comp.ParasiteProto,
-                Needed = ent.Comp.ParasiteNeeded,
-                CashProto = ent.Comp.CashProto,
-                CashReward = ent.Comp.ParasiteReward,
-            });
-            _quests.Add(new SWQuestRecord
-            {
-                Id = _nextId++,
-                Title = ent.Comp.FarnellTitle,
-                Description = ent.Comp.FarnellDescription,
-                Reward = $"{ent.Comp.FarnellReward} кредитов",
-                Contact = ent.Comp.FarnellGiver,
-                Giver = ent.Comp.FarnellGiver,
-                GiverIcon = ent.Comp.FarnellIcon,
-                IsServerQuest = true,
-                CarcassProto = ent.Comp.FarnellProto,
-                Needed = ent.Comp.FarnellNeeded,
-                CashProto = ent.Comp.CashProto,
-                CashReward = ent.Comp.FarnellReward,
-            });
+                if (!_prototype.TryIndex(starterId, out SWBoardQuestPrototype? starter))
+                    continue;
+
+                var giver = Loc.GetString(starter.Giver);
+                var contact = string.IsNullOrEmpty(starter.Contact) ? giver : Loc.GetString(starter.Contact);
+                _quests.Add(new SWQuestRecord
+                {
+                    Id = _nextId++,
+                    Title = Loc.GetString(starter.Title),
+                    Description = Loc.GetString(starter.Description),
+                    Reward = Loc.GetString("sw-board-quest-reward-cash", ("amount", starter.CashReward)),
+                    Contact = contact,
+                    Giver = giver,
+                    GiverIcon = starter.GiverIcon,
+                    IsServerQuest = true,
+                    ItemProto = starter.ItemProto,
+                    Needed = starter.Needed,
+                    CashProto = starter.CashProto,
+                    CashReward = starter.CashReward,
+                });
+            }
         }
         RefreshAll();
     }
 
     private void OnOpened(Entity<SWQuestBoardComponent> ent, ref BoundUIOpenedEvent args)
     {
-        if (!_viewers.TryGetValue(ent, out var set))
-        {
-            set = new HashSet<EntityUid>();
-            _viewers[ent] = set;
-        }
-        set.Add(args.Actor);
         Beep(ent);
         Push(ent);
     }
 
-    private void OnClosed(Entity<SWQuestBoardComponent> ent, ref BoundUIClosedEvent args)
-    {
-        if (_viewers.TryGetValue(ent, out var set))
-            set.Remove(args.Actor);
-    }
-
-    private bool IsViewer(EntityUid board, EntityUid uid)
-    {
-        return _viewers.TryGetValue(board, out var set) && set.Contains(uid);
-    }
-
-    private bool TryGetCard(EntityUid uid, out IdCardComponent card)
+    private bool TryGetCard(EntityUid actor, out IdCardComponent card)
     {
         card = null!;
-        if (!_accessReader.FindAccessItemsInventory(uid, out var items))
+        if (!_accessReader.FindAccessItemsInventory(actor, out var items))
             return false;
         foreach (var item in items)
         {
-            if (TryComp<IdCardComponent>(item, out var id)) { card = id; return true; }
-            if (TryComp<PdaComponent>(item, out var pda) && pda.ContainedId != null && TryComp(pda.ContainedId, out id))
-            { card = id; return true; }
+            if (TryComp<IdCardComponent>(item, out var idCard)) { card = idCard; return true; }
+            if (TryComp<PdaComponent>(item, out var pda) && pda.ContainedId != null && TryComp(pda.ContainedId, out idCard))
+            { card = idCard; return true; }
         }
         return false;
     }
@@ -154,61 +111,60 @@ public sealed class SWQuestBoardSystem : EntitySystem
         return $"{card.FullName}{job}";
     }
 
-    // Resolve the marker (OwnerFaction string) used by this fork's board pallets.
     private string? ResolveMarker()
     {
         var boards = EntityQueryEnumerator<SWQuestBoardComponent>();
-        while (boards.MoveNext(out _, out var bc))
-            return bc.BoardPalletFaction;
+        while (boards.MoveNext(out _, out var boardComponent))
+            return boardComponent.BoardPalletFaction;
         return null;
     }
 
     // Collect items on ALL board pallets into a single HashSet so an item spanning
     // multiple pallets is counted exactly once.
-    private HashSet<EntityUid> ItemsOnBoardPallets(string protoId)
+    private HashSet<EntityUid> ItemsOnBoardPallets(string itemProtoId)
     {
         var result = new HashSet<EntityUid>();
         var marker = ResolveMarker();
         if (marker == null) return result;
 
         var pallets = EntityQueryEnumerator<SWTransferPalletComponent>();
-        while (pallets.MoveNext(out var uid, out var pc))
+        while (pallets.MoveNext(out var palletUid, out var palletComponent))
         {
-            if (pc.OwnerFaction != marker) continue;
-            foreach (var obj in _lookup.GetEntitiesIntersecting(uid, LookupFlags.Dynamic | LookupFlags.Sundries))
+            if (palletComponent.OwnerFaction != marker) continue;
+            foreach (var item in _lookup.GetEntitiesIntersecting(palletUid, LookupFlags.Dynamic | LookupFlags.Sundries))
             {
-                if (result.Contains(obj)) continue; // dedupe across pallets
-                if (TryComp<MobStateComponent>(obj, out var mob) && mob.CurrentState == MobState.Alive) continue;
-                if (TryPrototype(obj, out var proto) && proto != null && proto.ID == protoId)
-                    result.Add(obj);
+                if (result.Contains(item)) continue;
+                if (TryComp<MobStateComponent>(item, out var mobState) && mobState.CurrentState == MobState.Alive) continue;
+                if (TryPrototype(item, out var entityPrototype) && entityPrototype != null && entityPrototype.ID == itemProtoId)
+                    result.Add(item);
             }
         }
         return result;
     }
 
-    private void DeleteEntities(IEnumerable<EntityUid> ids)
+    private void QueueDeleteEntities(IEnumerable<EntityUid> entities)
     {
-        foreach (var d in ids)
-            Del(d);
+        foreach (var entity in entities)
+            QueueDel(entity);
     }
 
     // Keep live progress fresh while items sit on pallets.
     public override void Update(float frameTime)
     {
         base.Update(frameTime);
-        _pollT += frameTime;
-        if (_pollT < 1f) return;
-        _pollT = 0f;
+        _pollTimer += frameTime;
+        if (_pollTimer < 1f) return;
+        _pollTimer = 0f;
 
         var changed = false;
-        foreach (var q in _quests)
+        foreach (var quest in _quests)
         {
-            if (!q.IsServerQuest || q.Closed || string.IsNullOrEmpty(q.CarcassProto)) continue;
-            var live = Math.Min(ItemsOnBoardPallets(q.CarcassProto).Count, q.Needed);
-            if (live != q.Collected)
+            if (!quest.IsServerQuest || quest.Closed || string.IsNullOrEmpty(quest.ItemProto)) continue;
+            var live = Math.Min(ItemsOnBoardPallets(quest.ItemProto).Count, quest.Needed);
+            if (live != quest.Collected)
             {
-                q.Collected = live;
-                q.Progress = q.Needed > 0 ? (float) live / q.Needed : 0f;
+                quest.Collected = live;
+                quest.Progress = quest.Needed > 0 ? (float) live / quest.Needed : 0f;
                 changed = true;
             }
         }
@@ -217,32 +173,31 @@ public sealed class SWQuestBoardSystem : EntitySystem
 
     private void OnCreate(Entity<SWQuestBoardComponent> ent, ref SWQuestCreateMessage msg)
     {
-        var uid = GetEntity(msg.Actor);
-        if (!IsViewer(ent, uid)) return;
-        if (!TryGetCard(uid, out var card))
+        var actor = msg.Actor;
+        if (!TryGetCard(actor, out var card))
         {
-            _popup.PopupEntity(Loc.GetString("sw-quest-board-no-id"), uid, uid);
-            Buzz(ent, uid);
+            _popup.PopupEntity(Loc.GetString("sw-quest-board-no-id"), actor, actor);
+            Buzz(ent, actor);
             return;
         }
 
-        if (_lastCreate.TryGetValue(uid, out var last) && (_timing.CurTime - last).TotalSeconds < ent.Comp.CreateCooldown)
+        if (_lastCreate.TryGetValue(actor, out var last) && (_timing.CurTime - last).TotalSeconds < ent.Comp.CreateCooldown)
             return;
-        if (_quests.Count(q => !q.Closed) >= ent.Comp.MaxQuests) return;
+        if (_quests.Count(quest => !quest.Closed) >= ent.Comp.MaxQuests) return;
 
-        string Trim(string s) => (s ?? "").Trim();
-        var title = Trim(msg.Title); var desc = Trim(msg.Description);
+        string Trim(string value) => (value ?? "").Trim();
+        var title = Trim(msg.Title); var description = Trim(msg.Description);
         var reward = Trim(msg.Reward); var contact = Trim(msg.Contact);
-        if (title.Length == 0 || desc.Length == 0) return;
-        if (desc.Length > ent.Comp.MaxLength || reward.Length > ent.Comp.MaxLength || contact.Length > ent.Comp.MaxLength) return;
+        if (title.Length == 0 || description.Length == 0) return;
+        if (description.Length > ent.Comp.MaxLength || reward.Length > ent.Comp.MaxLength || contact.Length > ent.Comp.MaxLength) return;
 
-        _lastCreate[uid] = _timing.CurTime;
+        _lastCreate[actor] = _timing.CurTime;
         var giver = FormatIdentity(card);
         _quests.Add(new SWQuestRecord
         {
             Id = _nextId++,
-            Title = title, Description = desc, Reward = reward, Contact = contact,
-            Giver = giver, GiverIcon = card.JobIcon, GiverNet = GetNetEntity(uid),
+            Title = title, Description = description, Reward = reward, Contact = contact,
+            Giver = giver, GiverIcon = card.JobIcon, GiverNetEntity = GetNetEntity(actor),
         });
 
         AnnounceNewQuest(title, giver);
@@ -252,100 +207,101 @@ public sealed class SWQuestBoardSystem : EntitySystem
 
     private void OnTake(Entity<SWQuestBoardComponent> ent, ref SWQuestTakeMessage msg)
     {
-        var uid = GetEntity(msg.Actor); var id = msg.Id;
-        var net = GetNetEntity(uid);
-        if (!IsViewer(ent, uid)) return;
-        if (!TryGetCard(uid, out var card))
+        var actor = msg.Actor; var questId = msg.Id;
+        var takerNetEntity = GetNetEntity(actor);
+        if (!TryGetCard(actor, out var card))
         {
-            _popup.PopupEntity(Loc.GetString("sw-quest-board-no-id"), uid, uid);
-            Buzz(ent, uid);
+            _popup.PopupEntity(Loc.GetString("sw-quest-board-no-id"), actor, actor);
+            Buzz(ent, actor);
             return;
         }
-        var q = _quests.FirstOrDefault(x => x.Id == id);
-        if (q == null || q.Closed || q.GiverNet == net || q.TakerNets.Contains(net)) return;
-        q.TakerNets.Add(net);
-        q.Takers.Add(FormatIdentity(card));
-        q.TakerIcons.Add(card.JobIcon);
+        var quest = _quests.FirstOrDefault(record => record.Id == questId);
+        if (quest == null || quest.Closed || quest.GiverNetEntity == takerNetEntity || quest.TakersNetEntities.Contains(takerNetEntity)) return;
+        quest.TakersNetEntities.Add(takerNetEntity);
+        quest.Takers.Add(FormatIdentity(card));
+        quest.TakerIcons.Add(card.JobIcon);
         RefreshAll();
         Beep(ent);
     }
 
     private void OnLeave(Entity<SWQuestBoardComponent> ent, ref SWQuestLeaveMessage msg)
     {
-        var uid = GetEntity(msg.Actor); var id = msg.Id;
-        var net = GetNetEntity(uid);
-        if (!IsViewer(ent, uid)) return;
-        var q = _quests.FirstOrDefault(x => x.Id == id);
-        if (q == null) return;
-        var i = q.TakerNets.IndexOf(net);
-        if (i < 0) return;
-        q.TakerNets.RemoveAt(i);
-        q.Takers.RemoveAt(i);
-        if (i < q.TakerIcons.Count) q.TakerIcons.RemoveAt(i);
+        var actor = msg.Actor; var questId = msg.Id;
+        var takerNetEntity = GetNetEntity(actor);
+        var quest = _quests.FirstOrDefault(record => record.Id == questId);
+        if (quest == null) return;
+        var index = quest.TakersNetEntities.IndexOf(takerNetEntity);
+        if (index < 0) return;
+        quest.TakersNetEntities.RemoveAt(index);
+        quest.Takers.RemoveAt(index);
+        if (index < quest.TakerIcons.Count) quest.TakerIcons.RemoveAt(index);
         RefreshAll();
         Beep(ent);
     }
 
     private void OnClose(Entity<SWQuestBoardComponent> ent, ref SWQuestCloseMessage msg)
     {
-        var uid = GetEntity(msg.Actor); var id = msg.Id;
-        if (!IsViewer(ent, uid)) return;
-        var q = _quests.FirstOrDefault(x => x.Id == id);
-        if (q == null || q.Closed || q.GiverNet != GetNetEntity(uid)) return;
-        q.Closed = true;
+        var actor = msg.Actor; var questId = msg.Id;
+        var quest = _quests.FirstOrDefault(record => record.Id == questId);
+        if (quest == null || quest.Closed || quest.GiverNetEntity != GetNetEntity(actor)) return;
+        quest.Closed = true;
         RefreshAll();
         _audio.PlayPvs(ent.Comp.TaskCompleteSound, ent);
     }
 
     private void OnComment(Entity<SWQuestBoardComponent> ent, ref SWQuestCommentMessage msg)
     {
-        var uid = GetEntity(msg.Actor); var id = msg.Id;
-        if (!IsViewer(ent, uid)) return;
-        if (!TryGetCard(uid, out var card))
+        var actor = msg.Actor; var questId = msg.Id;
+        if (!TryGetCard(actor, out var card))
         {
-            _popup.PopupEntity(Loc.GetString("sw-quest-board-no-id"), uid, uid);
-            Buzz(ent, uid);
+            _popup.PopupEntity(Loc.GetString("sw-quest-board-no-id"), actor, actor);
+            Buzz(ent, actor);
             return;
         }
         var text = (msg.Text ?? "").Trim();
         if (text.Length == 0 || text.Length > ent.Comp.MaxLength) return;
-        var q = _quests.FirstOrDefault(x => x.Id == id);
-        if (q == null || q.Closed) return;
-        q.Comments.Add(new SWQuestComment { Name = FormatIdentity(card), Icon = card.JobIcon, Text = text });
+        var quest = _quests.FirstOrDefault(record => record.Id == questId);
+        if (quest == null) return;
+        quest.Comments.Add(new SWQuestComment { Name = FormatIdentity(card), Icon = card.JobIcon, Text = text });
         RefreshAll();
         Beep(ent);
     }
 
-    // Button-driven completion: spawn cash at the board where the button was pressed,
-    // then delete exactly N matching items (deduped across pallets) from any board pallets.
+    // Button-driven completion: only a registered taker may hand in a server quest.
+    // Cash spawns at the board where the button was pressed; exactly N matching
+    // items (deduped across pallets) are queued for deletion.
     private void OnComplete(Entity<SWQuestBoardComponent> ent, ref SWQuestCompleteMessage msg)
     {
-        var uid = GetEntity(msg.Actor); var id = msg.Id;
-        if (!IsViewer(ent, uid)) return;
-        if (!TryGetCard(uid, out var card))
+        var actor = msg.Actor; var questId = msg.Id;
+        if (!TryGetCard(actor, out var card))
         {
-            _popup.PopupEntity(Loc.GetString("sw-quest-board-no-id"), uid, uid);
-            Buzz(ent, uid);
+            _popup.PopupEntity(Loc.GetString("sw-quest-board-no-id"), actor, actor);
+            Buzz(ent, actor);
             return;
         }
-        var q = _quests.FirstOrDefault(x => x.Id == id);
-        if (q == null || q.Closed || !q.IsServerQuest || string.IsNullOrEmpty(q.CarcassProto)) return;
+        var quest = _quests.FirstOrDefault(record => record.Id == questId);
+        if (quest == null || quest.Closed || !quest.IsServerQuest || string.IsNullOrEmpty(quest.ItemProto)) return;
 
-        var items = ItemsOnBoardPallets(q.CarcassProto);
-        if (items.Count < q.Needed) return;
-
-        // Deduplicated already; take exactly Needed.
-        DeleteEntities(items.Take(q.Needed));
-
-        q.Collected = q.Needed;
-        q.Progress = 1f;
-        q.Closed = true;
-
-        if (!string.IsNullOrEmpty(q.CashProto))
+        if (!quest.TakersNetEntities.Contains(GetNetEntity(actor)))
         {
-            var cash = Spawn(q.CashProto, Transform(ent).Coordinates);
+            _popup.PopupEntity(Loc.GetString("sw-board-not-taker"), actor, actor);
+            return;
+        }
+
+        var items = ItemsOnBoardPallets(quest.ItemProto);
+        if (items.Count < quest.Needed) return;
+
+        QueueDeleteEntities(items.Take(quest.Needed));
+
+        quest.Collected = quest.Needed;
+        quest.Progress = 1f;
+        quest.Closed = true;
+
+        if (!string.IsNullOrEmpty(quest.CashProto))
+        {
+            var cash = Spawn(quest.CashProto, Transform(ent).Coordinates);
             if (TryComp<StackComponent>(cash, out var stack))
-                _stack.SetCount(cash, q.CashReward, stack);
+                _stack.SetCount(cash, quest.CashReward, stack);
         }
 
         RefreshAll();
@@ -356,25 +312,25 @@ public sealed class SWQuestBoardSystem : EntitySystem
     private void OnUiBeep(Entity<SWQuestBoardComponent> ent, ref SWQuestUiBeepMessage msg) => Beep(ent);
 
     // Admin moderation: drop a quest entirely (e.g. rule-breaking posts).
-    public bool RemoveQuest(int id)
+    public bool RemoveQuest(int questId)
     {
-        var q = _quests.FirstOrDefault(x => x.Id == id);
-        if (q == null) return false;
-        _quests.Remove(q);
+        var quest = _quests.FirstOrDefault(record => record.Id == questId);
+        if (quest == null) return false;
+        _quests.Remove(quest);
         RefreshAll();
         return true;
     }
 
     private void RefreshAll()
     {
-        var active = _quests.Any(q => !q.Closed && !q.IsServerQuest);
+        var active = _quests.Any(quest => !quest.Closed && !quest.IsServerQuest);
         var query = EntityQueryEnumerator<SWQuestBoardComponent>();
-        while (query.MoveNext(out var uid, out var comp))
+        while (query.MoveNext(out var uid, out var component))
         {
-            comp.Quests = _quests;
-            Dirty(uid, comp);
+            component.Quests = _quests;
+            Dirty(uid, component);
             _appearance.SetData(uid, SWQuestBoardVisuals.HasActive, active);
-            Push((uid, comp));
+            Push((uid, component));
         }
     }
 

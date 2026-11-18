@@ -41,3 +41,9 @@
       enum.SWQuestBoardUiKey.Key:
         type: SWQuestBoardBoundUserInterface
   - type: SWQuestBoard
+    starters:
+    - SWBoardQuestBormu
+    - SWBoardQuestParasite
+    - SWBoardQuestFarnell
+    - SWBoardQuestStormCaller
+    - SWBoardQuestZ1

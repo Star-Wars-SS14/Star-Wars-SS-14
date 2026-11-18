@@ -14,35 +14,30 @@ public sealed class SWQuestBoardState : BoundUserInterfaceState
 [Serializable, NetSerializable]
 public sealed class SWQuestCreateMessage : BoundUserInterfaceMessage
 {
-    public NetEntity Actor;
     public string Title = "", Description = "", Reward = "", Contact = "";
 }
 
 [Serializable, NetSerializable]
 public sealed class SWQuestTakeMessage : BoundUserInterfaceMessage
 {
-    public NetEntity Actor;
     public int Id;
 }
 
 [Serializable, NetSerializable]
 public sealed class SWQuestLeaveMessage : BoundUserInterfaceMessage
 {
-    public NetEntity Actor;
     public int Id;
 }
 
 [Serializable, NetSerializable]
 public sealed class SWQuestCloseMessage : BoundUserInterfaceMessage
 {
-    public NetEntity Actor;
     public int Id;
 }
 
 [Serializable, NetSerializable]
 public sealed class SWQuestCommentMessage : BoundUserInterfaceMessage
 {
-    public NetEntity Actor;
     public int Id;
     public string Text = "";
 }
@@ -50,7 +45,6 @@ public sealed class SWQuestCommentMessage : BoundUserInterfaceMessage
 [Serializable, NetSerializable]
 public sealed class SWQuestCompleteMessage : BoundUserInterfaceMessage
 {
-    public NetEntity Actor;
     public int Id;
 }
 

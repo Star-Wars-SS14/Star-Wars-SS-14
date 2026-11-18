@@ -2,7 +2,7 @@
     xmlns="https://spacestation14.io"
     xmlns:ui="clr-namespace:Content.Client._SW.UserInterface;assembly=Content.Client"
     Title="{Loc 'sw-quest-board-title'}"
-    MinSize="700 500" SetSize="840 600">
+    MinSize="760 520" SetSize="900 620">
     <BoxContainer Orientation="Vertical" SeparationOverride="8" Margin="10">
         <BoxContainer Orientation="Horizontal" HorizontalExpand="True">
             <Control HorizontalExpand="True" />
@@ -25,9 +25,16 @@
             </PanelContainer>
             <PanelContainer StyleClasses="SWTermFrame" HorizontalExpand="True">
                 <BoxContainer Orientation="Vertical" SeparationOverride="6" Margin="6" HorizontalExpand="True">
+                    <BoxContainer Name="GuidePanel" Orientation="Vertical" SeparationOverride="6" HorizontalExpand="True" Visible="False">
+                        <Label Text="{Loc 'sw-board-guide-title'}" StyleClasses="SWTermValue" />
+                        <RichTextLabel Name="GuideBody" HorizontalExpand="True" VerticalExpand="True" />
+                    </BoxContainer>
                     <BoxContainer Name="DetailsPanel" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="6">
                         <RichTextLabel Name="DetailTitle" StyleClasses="SWTermValue" />
-                        <ProgressBar Name="DetailProgress" MinHeight="6" Visible="False" />
+                        <BoxContainer Name="ProgressRow" Orientation="Vertical" SeparationOverride="2" Visible="False">
+                            <ProgressBar Name="DetailProgress" MinHeight="6" HorizontalExpand="True" />
+                            <Label Name="DetailProgressCount" StyleClasses="SWTermText" />
+                        </BoxContainer>
                         <BoxContainer Orientation="Horizontal" SeparationOverride="6">
                             <TextureRect Name="GiverIcon" MinSize="32 32" Stretch="KeepAspectCentered" Visible="False" />
                             <Label Name="DetailGiver" StyleClasses="SWTermText" VerticalExpand="True" />
@@ -68,8 +75,11 @@
                 </BoxContainer>
             </PanelContainer>
         </BoxContainer>
-        <PanelContainer StyleClasses="SWTermFrame" MinHeight="30" RectClipContent="True" Margin="0">
-            <Label Name="TickerText" StyleClasses="SWTermText" Margin="6,5" />
+        <PanelContainer StyleClasses="SWTermFrame" MinHeight="30" HorizontalExpand="True" RectClipContent="True">
+            <BoxContainer Name="TickerRow" Orientation="Horizontal" SeparationOverride="0" Margin="6,5">
+                <Label Name="TickerTextA" StyleClasses="SWTermText" />
+                <Label Name="TickerTextB" StyleClasses="SWTermText" />
+            </BoxContainer>
         </PanelContainer>
     </BoxContainer>
 </ui:SWTerminalWindow>

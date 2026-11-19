@@ -67,6 +67,8 @@
   - type: SlowOnDamage
     speedModifierThresholds:
       300: 0.7
+  - type: StaticPrice
+    price: 250
 
 - type: entity
   name: Спавнер Борму

@@ -597031,6 +597031,7 @@ entities:
       parent: 2
     - type: SWTurretConsole
       jobsAllowed:
+        SWNeutralBartender: True
         SWEmpireMoff: True
         SWEmpireMajor: True
         SWEmpireLieutenant: True
@@ -597072,6 +597073,7 @@ entities:
       parent: 2
     - type: SWTurretConsole
       jobsAllowed:
+        SWNeutralBartender: True
         SWRepublicGeneral: True
         SWRepublicCaptain: True
         SWRepublicLieutenant: True

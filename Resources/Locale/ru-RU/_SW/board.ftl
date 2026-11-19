@@ -56,3 +56,4 @@ ent-SWQuestBoard = Доска заданий
 desc-SWQuestBoard = Публичная доска объявлений. Берите задания или оставляйте свои.
 ent-SWCargoPalletQuestBoard = грузовой поддон доски заданий
 desc-SWCargoPalletQuestBoard = Публичный поддон для заданий доски объявлений. Положите туши или датапады сюда, чтобы сдать их.
+sw-board-contact-board = Доска заданий

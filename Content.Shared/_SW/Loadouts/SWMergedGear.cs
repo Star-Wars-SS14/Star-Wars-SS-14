@@ -1,5 +1,6 @@
 using System.Linq;
 using Content.Shared.Preferences.Loadouts;
+using Content.Shared.Inventory;
 using Content.Shared.Roles;
 using Robust.Shared.Prototypes;
 
@@ -26,7 +27,8 @@ public sealed class SWMergedGear : IEquipmentLoadout
         RoleLoadout? loadout,
         RoleLoadoutPrototype? role,
         IPrototypeManager protoMan,
-        bool suppressSaberKit = false)
+        bool suppressSaberKit = false,
+        IEnumerable<SlotDefinition>? inventorySlots = null)
     {
         var merged = new SWMergedGear();
         merged.Add(jobGear);
@@ -50,14 +52,14 @@ public sealed class SWMergedGear : IEquipmentLoadout
                 if (protoMan.TryIndex(proto.StartingGear, out var gear))
                 {
                     if (groupProto?.SWSaberKit == true)
-                        merged.PreserveOverwrittenPockets(gear);
+                        merged.PreserveOverwrittenPockets(gear, inventorySlots);
                     merged.Add(gear);
                     if (groupProto?.SWSaberKit == true)
                         (merged.SaberKit ??= new SWMergedGear()).Add(gear);
                 }
 
                 if (groupProto?.SWSaberKit == true)
-                    merged.PreserveOverwrittenPockets(proto);
+                    merged.PreserveOverwrittenPockets(proto, inventorySlots);
                 merged.Add(proto);
                 if (groupProto?.SWSaberKit == true)
                     (merged.SaberKit ??= new SWMergedGear()).Add(proto);
@@ -67,11 +69,15 @@ public sealed class SWMergedGear : IEquipmentLoadout
         return merged;
     }
 
-    private void PreserveOverwrittenPockets(IEquipmentLoadout gear)
+    private void PreserveOverwrittenPockets(IEquipmentLoadout gear, IEnumerable<SlotDefinition>? inventorySlots)
     {
-        foreach (var slot in new[] { "pocket1", "pocket2", "pocket3" })
+        if (inventorySlots == null)
+            return;
+
+        foreach (var slot in inventorySlots)
         {
-            if (!gear.Equipment.ContainsKey(slot) || !Equipment.Remove(slot, out var displaced))
+            if ((slot.SlotFlags & SlotFlags.POCKET) == 0 ||
+                !gear.Equipment.ContainsKey(slot.Name) || !Equipment.Remove(slot.Name, out var displaced))
                 continue;
             // Inventory templates do not all have the same pockets. The normal in-hand equip path
             // keeps an overflow item at the spawn point if there is no free hand.

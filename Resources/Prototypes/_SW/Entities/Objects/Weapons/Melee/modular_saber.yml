@@ -13,28 +13,29 @@
   - type: EnergySword
     colorOptions: []
   - type: SWModularSaber
-    crystal:
-      swap: false
-      insertOnInteract: false
-      disableEject: true
-      name: sw-modular-saber-slot-crystal
-      whitelist:
-        tags: [ KyberCrystalTag ]
-    emitter:
-      swap: false
-      insertOnInteract: false
-      disableEject: true
-      name: sw-modular-saber-slot-emitter
-      whitelist:
-        tags: [ SWSaberEmitter ]
-    focus:
-      swap: false
-      insertOnInteract: false
-      disableEject: true
-      name: sw-modular-saber-slot-focus
-      whitelist:
-        tags: [ SWSaberFocus ]
-
+  - type: ItemSlots
+    slots:
+      saber-crystal:
+        swap: false
+        insertOnInteract: false
+        disableEject: true
+        name: sw-modular-saber-slot-crystal
+        whitelist:
+          tags: [ KyberCrystalTag ]
+      saber-emitter:
+        swap: false
+        insertOnInteract: false
+        disableEject: true
+        name: sw-modular-saber-slot-emitter
+        whitelist:
+          tags: [ SWSaberEmitter ]
+      saber-focus:
+        swap: false
+        insertOnInteract: false
+        disableEject: true
+        name: sw-modular-saber-slot-focus
+        whitelist:
+          tags: [ SWSaberFocus ]
 - type: entity
   parent: SWModularSaber
   id: SWModularSaberDouble

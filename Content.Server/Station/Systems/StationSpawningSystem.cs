@@ -154,7 +154,8 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
         _prototypeManager.Resolve(prototype?.StartingGear, out var jobGear);
         if (loadout != null && roleProto != null && prototype != null)
             loadout = SWSaberLoadoutNormalization.Normalize(loadout, roleProto, _prototypeManager);
-        var mergedGear = SWMergedGear.Build(jobGear, loadout, roleProto, _prototypeManager, suppressSaberKit);
+        InventorySystem.TryGetSlots(entity.Value, out var inventorySlots);
+        var mergedGear = SWMergedGear.Build(jobGear, loadout, roleProto, _prototypeManager, suppressSaberKit, inventorySlots);
         if (!suppressSaberKit && SWSaberLoadoutNormalization.HasSaberKit(roleProto, _prototypeManager))
             EnsureComp<SWSaberInitialAssemblyComponent>(entity.Value);
         EquipStartingGear(entity.Value, mergedGear, raiseEvent: false);

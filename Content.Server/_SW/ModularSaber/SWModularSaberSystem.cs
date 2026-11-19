@@ -9,6 +9,7 @@ using Content.Shared.Tag;
 using Content.Shared.Item.ItemToggle;
 using Content.Shared.Item.ItemToggle.Components;
 using Content.Shared.Toggleable;
+using Content.Shared.Whitelist;
 using Robust.Shared.Containers;
 
 namespace Content.Server._SW.ModularSaber;
@@ -22,6 +23,7 @@ public sealed class SWModularSaberSystem : EntitySystem
     [Dependency] private readonly SharedInteractionSystem _interaction = default!;
     [Dependency] private readonly ActionBlockerSystem _blocker = default!;
     [Dependency] private readonly ItemSlotsSystem _slots = default!;
+    [Dependency] private readonly EntityWhitelistSystem _whitelist = default!;
     [Dependency] private readonly ItemToggleSystem _toggle = default!;
     [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
 
@@ -44,17 +46,17 @@ public sealed class SWModularSaberSystem : EntitySystem
 
     private void OnInit(EntityUid uid, SWModularSaberComponent comp, ComponentInit args)
     {
-        _slots.AddItemSlot(uid, "saber-crystal", comp.Crystal);
-        _slots.AddItemSlot(uid, "saber-emitter", comp.Emitter);
-        _slots.AddItemSlot(uid, "saber-focus", comp.Focus);
+        _slots.TryGetSlot(uid, "saber-crystal", out comp.Crystal);
+        _slots.TryGetSlot(uid, "saber-emitter", out comp.Emitter);
+        _slots.TryGetSlot(uid, "saber-focus", out comp.Focus);
     }
 
     private void OnRemove(EntityUid uid, SWModularSaberComponent comp, ComponentRemove args)
     {
         ReleaseContents(uid, comp);
-        _slots.RemoveItemSlot(uid, comp.Crystal);
-        _slots.RemoveItemSlot(uid, comp.Emitter);
-        _slots.RemoveItemSlot(uid, comp.Focus);
+        if (comp.Crystal != null) _slots.RemoveItemSlot(uid, comp.Crystal);
+        if (comp.Emitter != null) _slots.RemoveItemSlot(uid, comp.Emitter);
+        if (comp.Focus != null) _slots.RemoveItemSlot(uid, comp.Focus);
     }
 
     // Generic item-slot entry points must never bypass the server-side transaction.
@@ -88,7 +90,8 @@ public sealed class SWModularSaberSystem : EntitySystem
         ItemSlot? slot = HasComp<SWSaberCrystalComponent>(args.Used) ? ent.Comp.Crystal :
                          HasComp<SWSaberEmitterComponent>(args.Used) ? ent.Comp.Emitter :
                          HasComp<SWSaberFocusComponent>(args.Used) ? ent.Comp.Focus : null;
-        if (slot?.ContainerSlot == null || slot.HasItem || !_containers.CanInsert(args.Used, slot.ContainerSlot))
+        if (slot?.ContainerSlot == null || slot.HasItem || !FitsSlot(args.Used, slot) ||
+            !_containers.CanInsert(args.Used, slot.ContainerSlot))
             return;
 
         args.Handled = true;
@@ -96,15 +99,21 @@ public sealed class SWModularSaberSystem : EntitySystem
             return;
 
         // Insertion can fail after drop if another event changes the container. Preserve the item.
-        if (!CanModify(ent.Owner, args.User) || slot.HasItem ||
+        if (!CanModify(ent.Owner, args.User) || slot.HasItem || !FitsSlot(args.Used, slot) ||
             !_containers.CanInsert(args.Used, slot.ContainerSlot) ||
             !_containers.Insert(args.Used, slot.ContainerSlot))
             _hands.PickupOrDrop(args.User, args.Used, dropNear: true);
     }
 
+    private bool FitsSlot(EntityUid part, ItemSlot slot) =>
+        !_whitelist.IsWhitelistFail(slot.Whitelist, part) && !_whitelist.IsWhitelistPass(slot.Blacklist, part);
+
     private void OnVerbs(Entity<SWModularSaberComponent> ent, ref GetVerbsEvent<AlternativeVerb> args)
     {
         if (!args.CanAccess || !args.CanInteract || !CanModify(ent.Owner, args.User))
+            return;
+
+        if (ent.Comp.Crystal == null || ent.Comp.Emitter == null || ent.Comp.Focus == null)
             return;
 
         AddEjectVerb(ent, ent.Comp.Crystal, args, "sw-modular-saber-slot-crystal");
@@ -159,16 +168,16 @@ public sealed class SWModularSaberSystem : EntitySystem
         var destination = _transform.ToCoordinates(_transform.GetMapCoordinates(uid));
         foreach (var slot in new[] { comp.Crystal, comp.Emitter, comp.Focus })
         {
-            if (slot.Item is { } item && slot.ContainerSlot != null)
+            if (slot?.Item is { } item && slot.ContainerSlot != null)
                 _containers.Remove(item, slot.ContainerSlot, force: true, destination: destination);
         }
     }
 
     private void OnActivateAttempt(Entity<SWModularSaberComponent> ent, ref ItemToggleActivateAttemptEvent args)
     {
-        if (ent.Comp.Crystal.Item is not { } crystal || !TryComp<SWSaberCrystalComponent>(crystal, out var color) ||
-            ent.Comp.Emitter.Item is not { } emitter || !TryComp<SWSaberEmitterComponent>(emitter, out var emitterComp) ||
-            ent.Comp.Focus.Item is not { } focus || !TryComp<SWSaberFocusComponent>(focus, out var focusComp))
+        if (ent.Comp.Crystal?.Item is not { } crystal || !TryComp<SWSaberCrystalComponent>(crystal, out var color) ||
+            ent.Comp.Emitter?.Item is not { } emitter || !TryComp<SWSaberEmitterComponent>(emitter, out var emitterComp) ||
+            ent.Comp.Focus?.Item is not { } focus || !TryComp<SWSaberFocusComponent>(focus, out var focusComp))
         {
             args.Cancelled = true;
             args.Popup = Loc.GetString("sw-modular-saber-incomplete");
@@ -195,7 +204,7 @@ public sealed class SWModularSaberSystem : EntitySystem
         if (!TryComp<MeleeWeaponComponent>(ent, out var melee))
             return;
 
-        melee.AttackRate = args.Activated && ent.Comp.Focus.Item is { } focus &&
+        melee.AttackRate = args.Activated && ent.Comp.Focus?.Item is { } focus &&
                            TryComp<SWSaberFocusComponent>(focus, out var focusComp)
             ? focusComp.AttackRateMultiplier
             : 1f;

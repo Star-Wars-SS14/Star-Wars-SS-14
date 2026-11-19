@@ -7,9 +7,9 @@ namespace Content.Server._SW.ModularSaber;
 [RegisterComponent]
 public sealed partial class SWModularSaberComponent : Component
 {
-    [DataField] public ItemSlot Crystal = new();
-    [DataField] public ItemSlot Emitter = new();
-    [DataField] public ItemSlot Focus = new();
+    public ItemSlot? Crystal;
+    public ItemSlot? Emitter;
+    public ItemSlot? Focus;
 }
 
 [RegisterComponent]

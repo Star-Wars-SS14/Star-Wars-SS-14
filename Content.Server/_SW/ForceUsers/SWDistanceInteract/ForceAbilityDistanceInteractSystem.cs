@@ -104,11 +104,17 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
                                       visual.ReturnUser == uid;
                     var wasActive = returnSaber && _toggle.IsActivated(item);
                     StopAttractingByForce(uid, comp);
-                    if ((usercords.Position - targetcords.Position).Length() < SharedInteractionSystem.InteractionRange &&
-                        (returnSaber ? _handsSystem.TryPickupAnyHand(uid, item) : _handsSystem.TryPickup(uid, item)) &&
-                        returnSaber)
+                    if ((usercords.Position - targetcords.Position).Length() >= SharedInteractionSystem.InteractionRange)
+                        continue;
+
+                    if (returnSaber)
                     {
-                        WieldReturnedSaber(uid, item, wasActive);
+                        if (_handsSystem.TryPickupAnyHand(uid, item))
+                            WieldReturnedSaber(uid, item, wasActive);
+                    }
+                    else
+                    {
+                        _handsSystem.TryPickup(uid, item);
                     }
                 }
             }

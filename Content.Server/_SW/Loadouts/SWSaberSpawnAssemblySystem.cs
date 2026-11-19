@@ -90,23 +90,18 @@ public sealed class SWSaberSpawnAssemblySystem : EntitySystem
             emitterEntity = Spawn(emitter.Value, coordinates);
             focusEntity = Spawn(focus.Value, coordinates);
             if (!TryComp<SWModularSaberComponent>(saber.Value, out var modular) ||
-                modular.Crystal.ContainerSlot is not { } crystalSlot ||
-                modular.Emitter.ContainerSlot is not { } emitterSlot ||
-                modular.Focus.ContainerSlot is not { } focusSlot ||
+                modular.Crystal?.ContainerSlot is not { } crystalSlot ||
+                modular.Emitter?.ContainerSlot is not { } emitterSlot ||
+                modular.Focus?.ContainerSlot is not { } focusSlot ||
                 !FitsSlot(crystalEntity.Value, modular.Crystal) ||
-                !FitsSlot(emitterEntity.Value, modular.Emitter) ||
-                !FitsSlot(focusEntity.Value, modular.Focus) ||
                 !_containers.Insert(crystalEntity.Value, crystalSlot) ||
+                !FitsSlot(emitterEntity.Value, modular.Emitter) ||
                 !_containers.Insert(emitterEntity.Value, emitterSlot) ||
+                !FitsSlot(focusEntity.Value, modular.Focus) ||
                 !_containers.Insert(focusEntity.Value, focusSlot))
                 return;
 
             assembled = true;
-        }
-        catch (Exception error)
-        {
-            Log.Error($"Failed to assemble initial lightsaber: {error}");
-            return;
         }
         finally
         {
@@ -128,32 +123,25 @@ public sealed class SWSaberSpawnAssemblySystem : EntitySystem
     private void OnComplete(Entity<InventoryComponent> entity, ref CompleteStartingSaberEvent args)
     {
         var saber = args.Saber;
-        try
+        if (_inventory.TryGetSlots(entity, out var slots))
         {
-            if (_inventory.TryGetSlots(entity, out var slots))
+            foreach (var slot in slots
+                         .Where(slot => (slot.SlotFlags & SlotFlags.POCKET) != 0)
+                         .OrderBy(slot => slot.Name switch { "pocket1" => 0, "pocket2" => 1, _ => 2 })
+                         .ThenBy(slot => slot.Name, StringComparer.Ordinal))
             {
-                foreach (var slot in slots
-                             .Where(slot => (slot.SlotFlags & SlotFlags.POCKET) != 0)
-                             .OrderBy(slot => slot.Name switch { "pocket1" => 0, "pocket2" => 1, _ => 2 })
-                             .ThenBy(slot => slot.Name, StringComparer.Ordinal))
-                {
-                    if (TryComp<SWDisableSlotComponent>(entity, out var disabled) &&
-                        (disabled.ProhibitedSlots & slot.SlotFlags) != 0)
-                        continue;
-                    if (_inventory.TryEquip(entity, saber, slot.Name, silent: true))
-                        return;
-                }
+                if (TryComp<SWDisableSlotComponent>(entity, out var disabled) &&
+                    (disabled.ProhibitedSlots & slot.SlotFlags) != 0)
+                    continue;
+                if (_inventory.TryEquip(entity, saber, slot.Name, silent: true))
+                    return;
             }
-
-            if (_hands.TryPickupAnyHand(entity, saber, animate: false))
-                return;
-        }
-        catch (Exception error)
-        {
-            Log.Error($"Could not equip initial lightsaber: {error}");
         }
 
-        Log.Error("Could not equip initial lightsaber; it remains at the spawn location.");
+        if (_hands.TryPickupAnyHand(entity, saber, animate: false))
+            return;
+
+        Log.Warning("Could not equip initial lightsaber; it remains at its current location.");
     }
 
     private bool FitsSlot(EntityUid part, ItemSlot slot) =>

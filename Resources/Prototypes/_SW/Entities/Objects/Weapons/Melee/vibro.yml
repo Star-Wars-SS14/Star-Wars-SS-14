@@ -47,6 +47,9 @@
     size: Normal
     shape:
     - 0,0,1,3
+  - type: ItemToggleSize
+    activatedSize: Huge
+  - type: SWItemToggleNoPocket
   - type: ItemToggle
     soundActivate:
       path: /Audio/_SW/Weapons/Melee/vibro.ogg

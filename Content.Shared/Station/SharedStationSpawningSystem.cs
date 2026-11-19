@@ -147,19 +147,14 @@ public abstract class SharedStationSpawningSystem : EntitySystem
             }
         }
 
-        if (_handsQuery.TryComp(entity, out var handsComponent))
+        // Spawn in-hand gear even when this body has no hands; in that case it stays at the spawn point.
+        _handsQuery.TryComp(entity, out var handsComponent);
+        var inhandCoords = xform.Coordinates;
+        foreach (var prototype in startingGear.Inhand)
         {
-            var inhand = startingGear.Inhand;
-            var coords = xform.Coordinates;
-            foreach (var prototype in inhand)
-            {
-                var inhandEntity = Spawn(prototype, coords);
-
-                if (_handsSystem.TryGetEmptyHand((entity, handsComponent), out var emptyHand))
-                {
-                    _handsSystem.TryPickup(entity, inhandEntity, emptyHand, checkActionBlocker: false, handsComp: handsComponent);
-                }
-            }
+            var inhandEntity = Spawn(prototype, inhandCoords);
+            if (handsComponent != null && _handsSystem.TryGetEmptyHand((entity, handsComponent), out var emptyHand))
+                _handsSystem.TryPickup(entity, inhandEntity, emptyHand, checkActionBlocker: false, handsComp: handsComponent);
         }
 
         if (startingGear.Storage.Count > 0)

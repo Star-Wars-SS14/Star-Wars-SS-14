@@ -6,15 +6,21 @@ namespace Content.Server._SW.Loadouts;
 /// <summary>Fills the required saber choices for force-user spawns outside the normal preference validation path.</summary>
 public static class SWSaberLoadoutNormalization
 {
-    public static RoleLoadout Normalize(string job, RoleLoadout loadout, RoleLoadoutPrototype role, IPrototypeManager prototypes)
+    public static bool HasSaberKit(RoleLoadoutPrototype? role, IPrototypeManager prototypes)
     {
-        var crystalGroup = job switch
+        if (role == null)
+            return false;
+        foreach (var id in role.Groups)
         {
-            "SWJedi" or "SWGlobalWarRepublicForceUser" => "SWJediCrystalChoice",
-            "SWSith" or "SWGlobalWarEmpireForceUser" => "SWSithCrystalChoice",
-            _ => null,
-        };
-        if (crystalGroup == null)
+            if (prototypes.TryIndex(id, out var group) && group.SWSaberKit)
+                return true;
+        }
+        return false;
+    }
+
+    public static RoleLoadout Normalize(RoleLoadout loadout, RoleLoadoutPrototype role, IPrototypeManager prototypes)
+    {
+        if (!HasSaberKit(role, prototypes))
             return loadout;
 
         var copy = loadout.Clone();
@@ -29,9 +35,11 @@ public static class SWSaberLoadoutNormalization
         foreach (var id in role.Groups)
             SanitizeGroup(copy, prototypes, id);
 
-        NormalizeGroup(copy, role, prototypes, "SWSaberHiltChoice");
-        NormalizeGroup(copy, role, prototypes, "SWSaberEmitterChoice");
-        NormalizeGroup(copy, role, prototypes, crystalGroup);
+        foreach (var id in role.Groups)
+        {
+            if (prototypes.TryIndex(id, out var group) && group.SWSaberKit)
+                NormalizeGroup(copy, role, prototypes, id);
+        }
         return copy;
     }
 

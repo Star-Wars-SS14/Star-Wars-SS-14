@@ -8,10 +8,6 @@
     ears: SWClothingHeadsetAllEmpire
     id: SWIDCardSith
     neck: SWClothingNeckCloakSithCloak
-  storage:
-    belt:
-    - SWSaberFocusStandard
-
 
 - type: startingGear
   id: ForceUserJediGear
@@ -22,10 +18,6 @@
     ears: SWClothingHeadsetRepublicAll
     id: SWIDCardJedi
     neck: SWClothingNeckCloakJediCloak
-  storage:
-    belt:
-    - SWSaberFocusStandard
-
 
 # Standalone NPC kits: player choices are applied through role loadouts.
 - type: startingGear

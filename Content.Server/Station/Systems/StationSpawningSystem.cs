@@ -89,7 +89,7 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
         HumanoidCharacterProfile? profile,
         EntityUid? station,
         EntityUid? entity = null,
-        Action<SWMergedGear>? adjustGear = null) // SW
+        bool suppressSaberKit = false) // SW
     {
         _prototypeManager.Resolve(job, out var prototype);
         RoleLoadout? loadout = null;
@@ -107,8 +107,7 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
                 loadout = new RoleLoadout(jobLoadout);
                 // SW start: force-user kits need their mandatory selections even for profile-less spawns.
                 var defaultProfile = profile;
-                if (defaultProfile == null && prototype?.ID is "SWJedi" or "SWSith" or
-                    "SWGlobalWarRepublicForceUser" or "SWGlobalWarEmpireForceUser")
+                if (defaultProfile == null && SWSaberLoadoutNormalization.HasSaberKit(roleProto, _prototypeManager))
                     defaultProfile = HumanoidCharacterProfile.DefaultWithSpecies();
                 loadout.SetDefault(defaultProfile, _actors.GetSession(entity), _prototypeManager);
                 // SW end
@@ -154,11 +153,9 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
         //SW start
         _prototypeManager.Resolve(prototype?.StartingGear, out var jobGear);
         if (loadout != null && roleProto != null && prototype != null)
-            loadout = SWSaberLoadoutNormalization.Normalize(prototype.ID, loadout, roleProto, _prototypeManager);
-        var mergedGear = SWMergedGear.Build(jobGear, loadout, roleProto, _prototypeManager);
-        adjustGear?.Invoke(mergedGear);
-        if (adjustGear == null && prototype?.ID is "SWJedi" or "SWSith" or
-            "SWGlobalWarRepublicForceUser" or "SWGlobalWarEmpireForceUser")
+            loadout = SWSaberLoadoutNormalization.Normalize(loadout, roleProto, _prototypeManager);
+        var mergedGear = SWMergedGear.Build(jobGear, loadout, roleProto, _prototypeManager, suppressSaberKit);
+        if (!suppressSaberKit && SWSaberLoadoutNormalization.HasSaberKit(roleProto, _prototypeManager))
             EnsureComp<SWSaberInitialAssemblyComponent>(entity.Value);
         EquipStartingGear(entity.Value, mergedGear, raiseEvent: false);
 

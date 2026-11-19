@@ -178,11 +178,10 @@ public sealed partial class SWGlobalWarSpawnSystem
             reason = Loc.GetString("sw-global-war-respawn-force-not-carrier");
             return false;
         }
-        foreach (var (id, entry) in configuration.Roles)
+        if (configuration.Roles.TryGetValue(life.Job, out var entry) &&
+            entry.Force && entry.Faction == life.Faction)
         {
-            if (!entry.Force || entry.Faction != life.Faction)
-                continue;
-            job = id;
+            job = life.Job;
             role = entry;
             return true;
         }
@@ -199,26 +198,6 @@ public sealed partial class SWGlobalWarSpawnSystem
         if (body != null && !TerminatingOrDeleted(body.Value))
             QueueDel(body.Value);
         _minds.SetUserId(oldMind, user);
-    }
-
-    /// <summary>Keep the original kit on the old body; omit only the known kit from this return's spawn gear.</summary>
-    private static void RemoveReturnSaberKit(SWMergedGear gear)
-    {
-        if (gear.Equipment.TryGetValue("pocket1", out var hilt) &&
-            (hilt == "SWModularSaber" || hilt == "SWModularSaberDouble"))
-            gear.Equipment.Remove("pocket1");
-
-        if (!gear.Storage.TryGetValue("belt", out var items))
-            return;
-
-        items.Remove("SWSaberFocusStandard");
-        items.Remove("SWSaberEmitterStandard");
-        items.Remove("SWSaberEmitterReinforced");
-        items.Remove("SWKyberCrystalBlue");
-        items.Remove("SWKyberCrystalGreen");
-        items.Remove("SWKyberCrystalYellow");
-        items.Remove("SWKyberCrystalPurple");
-        items.Remove("SWKyberCrystalRed");
     }
 
     private void EndLife(SWGlobalWarLife life, EntityUid oldMind, EntityUid? oldCurrent)

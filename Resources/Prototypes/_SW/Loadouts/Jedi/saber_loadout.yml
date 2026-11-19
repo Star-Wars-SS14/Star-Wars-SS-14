@@ -1,6 +1,7 @@
 - type: loadoutGroup
   id: SWSaberHiltChoice
   name: sw-loadout-saber-hilt
+  swSaberKit: true
   minLimit: 1
   maxLimit: 1
   loadouts:
@@ -11,15 +12,20 @@
   id: SWSaberHiltSingleLoadout
   equipment:
     pocket1: SWModularSaber
+  storage:
+    belt: [ SWSaberFocusStandard ]
 
 - type: loadout
   id: SWSaberHiltDoubleLoadout
   equipment:
     pocket1: SWModularSaberDouble
+  storage:
+    belt: [ SWSaberFocusStandard ]
 
 - type: loadoutGroup
   id: SWSaberEmitterChoice
   name: sw-loadout-saber-emitter
+  swSaberKit: true
   minLimit: 1
   maxLimit: 1
   loadouts:
@@ -29,6 +35,7 @@
 - type: loadoutGroup
   id: SWJediCrystalChoice
   name: sw-loadout-saber-crystal
+  swSaberKit: true
   minLimit: 1
   maxLimit: 1
   loadouts:
@@ -40,6 +47,7 @@
 - type: loadoutGroup
   id: SWSithCrystalChoice
   name: sw-loadout-saber-crystal
+  swSaberKit: true
   minLimit: 1
   maxLimit: 1
   loadouts:

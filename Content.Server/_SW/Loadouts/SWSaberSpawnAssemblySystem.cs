@@ -4,6 +4,9 @@ using Content.Shared._SW.Loadouts;
 using Content.Shared.Inventory;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Station;
+using Content.Shared.Roles;
+using Content.Shared.Containers.ItemSlots;
+using Content.Shared.Whitelist;
 using Robust.Shared.Containers;
 using Robust.Shared.Prototypes;
 
@@ -12,6 +15,8 @@ namespace Content.Server._SW.Loadouts;
 /// <summary>Assembles the saber kit in a single starting-gear operation, including NPC kits.</summary>
 public sealed class SWSaberSpawnAssemblySystem : EntitySystem
 {
+    [Dependency] private readonly EntityWhitelistSystem _whitelist = default!;
+    [Dependency] private readonly IPrototypeManager _prototypes = default!;
     [Dependency] private readonly InventorySystem _inventory = default!;
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly SharedContainerSystem _containers = default!;
@@ -30,8 +35,23 @@ public sealed class SWSaberSpawnAssemblySystem : EntitySystem
         if (!HasComp<SWSaberInitialAssemblyComponent>(entity))
             return;
         RemComp<SWSaberInitialAssemblyComponent>(entity);
-        if (!args.Gear.Equipment.TryGetValue("pocket1", out var hilt) ||
-            (hilt != "SWModularSaber" && hilt != "SWModularSaberDouble"))
+        // Player gear records exactly which contributions came from kit groups. NPC kits are
+        // dedicated starting-gear prototypes and therefore use the whole gear as their source.
+        var kit = args.Gear is SWMergedGear merged ? merged.SaberKit : args.Gear;
+        if (kit == null)
+            return;
+        string? hiltSlot = null;
+        EntProtoId hilt = default;
+        foreach (var (slot, prototype) in kit.Equipment)
+        {
+            if (!HasPrototypeComponent<SWModularSaberComponent>(prototype) ||
+                !args.Gear.Equipment.TryGetValue(slot, out var equipped) || equipped != prototype)
+                continue;
+            hiltSlot = slot;
+            hilt = prototype;
+            break;
+        }
+        if (hiltSlot == null)
             return;
 
         // Do not create anything in nullspace or on a map that is being deleted.
@@ -47,14 +67,13 @@ public sealed class SWSaberSpawnAssemblySystem : EntitySystem
         foreach (var (slot, items) in args.Gear.Storage)
             gear.Storage[slot] = new(items);
 
-        gear.Equipment.Remove("pocket1");
-        gear.Storage.TryGetValue("belt", out var belt);
-        var emitter = Take(belt, "SWSaberEmitterStandard", "SWSaberEmitterReinforced") ?? "SWSaberEmitterStandard";
-        var crystal = Take(belt, "SWKyberCrystalBlue", "SWKyberCrystalGreen", "SWKyberCrystalYellow",
-            "SWKyberCrystalPurple", "SWKyberCrystalRed") ??
-            (gear.Equipment.TryGetValue("belt", out var beltId) && beltId == "SWSithBelt"
-                ? "SWKyberCrystalRed" : "SWKyberCrystalBlue");
-        var focus = Take(belt, "SWSaberFocusStandard") ?? "SWSaberFocusStandard";
+        gear.Equipment.Remove(hiltSlot);
+        var emitter = Take<SWSaberEmitterComponent>(kit, gear);
+        var crystal = Take<SWSaberCrystalComponent>(kit, gear);
+        var focus = Take<SWSaberFocusComponent>(kit, gear);
+        // Never synthesize free parts when the configured kit is incomplete.
+        if (emitter == null || crystal == null || focus == null)
+            return;
 
         // Build temporary entities on the map. On any failure the original snapshot remains intact.
         var coordinates = _transform.GetMapCoordinates(entity);
@@ -66,13 +85,16 @@ public sealed class SWSaberSpawnAssemblySystem : EntitySystem
         try
         {
             saber = Spawn(hilt, coordinates);
-            crystalEntity = Spawn(crystal, coordinates);
-            emitterEntity = Spawn(emitter, coordinates);
-            focusEntity = Spawn(focus, coordinates);
+            crystalEntity = Spawn(crystal.Value, coordinates);
+            emitterEntity = Spawn(emitter.Value, coordinates);
+            focusEntity = Spawn(focus.Value, coordinates);
             if (!TryComp<SWModularSaberComponent>(saber.Value, out var modular) ||
                 modular.Crystal.ContainerSlot is not { } crystalSlot ||
                 modular.Emitter.ContainerSlot is not { } emitterSlot ||
                 modular.Focus.ContainerSlot is not { } focusSlot ||
+                !FitsSlot(crystalEntity.Value, modular.Crystal) ||
+                !FitsSlot(emitterEntity.Value, modular.Emitter) ||
+                !FitsSlot(focusEntity.Value, modular.Focus) ||
                 !_containers.Insert(crystalEntity.Value, crystalSlot) ||
                 !_containers.Insert(emitterEntity.Value, emitterSlot) ||
                 !_containers.Insert(focusEntity.Value, focusSlot))
@@ -109,7 +131,7 @@ public sealed class SWSaberSpawnAssemblySystem : EntitySystem
         {
             if (_inventory.TryGetSlots(entity, out var slots))
             {
-                foreach (var name in new[] { "pocket1", "pocket2" })
+                foreach (var name in new[] { "pocket1", "pocket2", "pocket3" })
                 {
                     foreach (var slot in slots)
                     {
@@ -134,15 +156,26 @@ public sealed class SWSaberSpawnAssemblySystem : EntitySystem
         Log.Error("Could not equip initial lightsaber; it remains at the spawn location.");
     }
 
-    private static EntProtoId? Take(List<EntProtoId>? items, params EntProtoId[] candidates)
+    private bool FitsSlot(EntityUid part, ItemSlot slot) =>
+        !_whitelist.IsWhitelistFail(slot.Whitelist, part) && !_whitelist.IsWhitelistPass(slot.Blacklist, part);
+
+    private bool HasPrototypeComponent<T>(EntProtoId id) where T : Component, new()
     {
-        if (items == null)
-            return null;
-        foreach (var candidate in candidates)
+        return _prototypes.TryIndex(id, out var prototype) &&
+               prototype.TryGetComponent<T>(out _, EntityManager.ComponentFactory);
+    }
+
+    private EntProtoId? Take<T>(IEquipmentLoadout kit, SWMergedGear gear) where T : Component, new()
+    {
+        foreach (var (slot, items) in kit.Storage)
         {
-            if (!items.Remove(candidate))
+            if (!gear.Storage.TryGetValue(slot, out var available))
                 continue;
-            return candidate;
+            foreach (var item in items)
+            {
+                if (HasPrototypeComponent<T>(item) && available.Remove(item))
+                    return item;
+            }
         }
         return null;
     }

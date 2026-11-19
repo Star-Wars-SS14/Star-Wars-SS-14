@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Shared.Preferences.Loadouts;
 using Content.Shared.Roles;
 using Robust.Shared.Prototypes;
@@ -17,11 +18,15 @@ public sealed class SWMergedGear : IEquipmentLoadout
 
     public Dictionary<string, List<EntProtoId>> Storage { get; set; } = new();
 
+    /// <summary>Gear contributed by marked kit groups, used to assemble only those items.</summary>
+    public SWMergedGear? SaberKit { get; private set; }
+
     public static SWMergedGear Build(
         StartingGearPrototype? jobGear,
         RoleLoadout? loadout,
         RoleLoadoutPrototype? role,
-        IPrototypeManager protoMan)
+        IPrototypeManager protoMan,
+        bool suppressSaberKit = false)
     {
         var merged = new SWMergedGear();
         merged.Add(jobGear);
@@ -29,8 +34,11 @@ public sealed class SWMergedGear : IEquipmentLoadout
         if (loadout == null || role == null)
             return merged;
 
-        foreach (var group in role.Groups)
+        foreach (var group in role.Groups.OrderBy(id => protoMan.TryIndex(id, out var entry) && entry.SWSaberKit))
         {
+            if (protoMan.TryIndex(group, out var groupProto) && groupProto.SWSaberKit && suppressSaberKit)
+                continue;
+
             if (!loadout.SelectedLoadouts.TryGetValue(group, out var selected))
                 continue;
 
@@ -40,13 +48,35 @@ public sealed class SWMergedGear : IEquipmentLoadout
                     continue;
 
                 if (protoMan.TryIndex(proto.StartingGear, out var gear))
+                {
+                    if (groupProto?.SWSaberKit == true)
+                        merged.PreserveOverwrittenPockets(gear);
                     merged.Add(gear);
+                    if (groupProto?.SWSaberKit == true)
+                        (merged.SaberKit ??= new SWMergedGear()).Add(gear);
+                }
 
+                if (groupProto?.SWSaberKit == true)
+                    merged.PreserveOverwrittenPockets(proto);
                 merged.Add(proto);
+                if (groupProto?.SWSaberKit == true)
+                    (merged.SaberKit ??= new SWMergedGear()).Add(proto);
             }
         }
 
         return merged;
+    }
+
+    private void PreserveOverwrittenPockets(IEquipmentLoadout gear)
+    {
+        foreach (var slot in new[] { "pocket1", "pocket2", "pocket3" })
+        {
+            if (!gear.Equipment.ContainsKey(slot) || !Equipment.Remove(slot, out var displaced))
+                continue;
+            // Inventory templates do not all have the same pockets. The normal in-hand equip path
+            // keeps an overflow item at the spawn point if there is no free hand.
+            Inhand.Add(displaced);
+        }
     }
 
     private void Add(IEquipmentLoadout? gear)

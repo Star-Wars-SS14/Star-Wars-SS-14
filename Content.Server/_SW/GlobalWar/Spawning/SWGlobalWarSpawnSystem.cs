@@ -375,11 +375,11 @@ public sealed partial class SWGlobalWarSpawnSystem : EntitySystem
             // Only the exact return ticket can suppress the replacement kit.
             var returningForceUser = _respawn is { } ticket && ticket.User == prepared.Plan.User &&
                 ticket.Job == prepared.Plan.Job &&
-                (prepared.Plan.Job == "SWGlobalWarRepublicForceUser" ||
-                 prepared.Plan.Job == "SWGlobalWarEmpireForceUser");
+                TryComp<SWGlobalWarSpawnConfigurationComponent>(rule.Owner, out var spawnConfiguration) &&
+                spawnConfiguration.Roles.TryGetValue(prepared.Plan.Job, out var spawnRole) && spawnRole.Force;
             var body = _spawning.SpawnPlayerMob(prepared.Plan.Coordinates, args.Job,
                 args.HumanoidCharacterProfile, args.Station,
-                adjustGear: returningForceUser ? RemoveReturnSaberKit : null);
+                suppressSaberKit: returningForceUser);
             args.SpawnResult = body;
             _spawned.Add(body, prepared.Plan);
         }
@@ -413,7 +413,7 @@ public sealed partial class SWGlobalWarSpawnSystem : EntitySystem
             return;
         if (!_identity.TryEnroll(mind.Value.Owner, plan.Faction, plan.Generation))
             throw new InvalidOperationException("Prepared GlobalWar identity became invalid during synchronous spawn.");
-        _lives[plan.User] = new SWGlobalWarLife(Guid.NewGuid(), args.Mob, mind.Value.Owner, plan.Faction);
+        _lives[plan.User] = new SWGlobalWarLife(Guid.NewGuid(), args.Mob, mind.Value.Owner, plan.Faction, plan.Job);
         EnsureComp<SWGlobalWarLifeComponent>(args.Mob).User = plan.User;
         ConfirmEntry(args.Player, plan);
     }
@@ -469,8 +469,9 @@ public sealed record SWGlobalWarSpawnPlan(NetUserId User, Guid Generation, Proto
 public sealed record SWGlobalWarSpawnReservation(Guid Token, SWGlobalWarSpawnPlan Plan);
 
 /// <summary>One player's current body. Replaced only by a committed respawn, and never reused for a new body.</summary>
-public sealed class SWGlobalWarLife(Guid id, EntityUid body, EntityUid mind, SWGlobalWarFaction faction)
+public sealed class SWGlobalWarLife(Guid id, EntityUid body, EntityUid mind, SWGlobalWarFaction faction, ProtoId<JobPrototype> job)
 {
+    public readonly ProtoId<JobPrototype> Job = job;
     public readonly Guid Id = id;
     public readonly EntityUid Body = body;
     public readonly EntityUid Mind = mind;

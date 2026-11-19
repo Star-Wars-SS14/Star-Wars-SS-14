@@ -17,6 +17,9 @@ public sealed partial class AudioTab : Control
     [Dependency] private readonly IAudioManager _audio = default!;
     [Dependency] private readonly IClientAdminManager _admin = default!;
     [Dependency] private readonly IConfigurationManager _cfg = default!;
+    // SW start: access lobby music preview.
+    [Dependency] private readonly IEntityManager _entities = default!;
+    // SW end
 
     public AudioTab()
     {
@@ -51,10 +54,12 @@ public sealed partial class AudioTab : Control
             SliderVolumeAmbience,
             scale: ContentAudioSystem.AmbienceMultiplier);
 
-        Control.AddOptionPercentSlider(
+        // SW start: retain the lobby slider for live preview.
+        var lobbyVolume = Control.AddOptionPercentSlider(
             CCVars.LobbyMusicVolume,
             SliderVolumeLobby,
             scale: ContentAudioSystem.LobbyMultiplier);
+        // SW end
 
         Control.AddOptionPercentSlider(
             CCVars.InterfaceVolume,
@@ -74,6 +79,9 @@ public sealed partial class AudioTab : Control
         Control.AddOptionCheckBox(CCVars.BwoinkSoundEnabled, BwoinkSoundCheckBox);
 
         Control.Initialize();
+        // SW start: preview changes before applying settings.
+        lobbyVolume.ImmediateValueChanged += OnLobbyVolumeSliderChanged;
+        // SW end
     }
 
     protected override void EnteredTree()
@@ -87,6 +95,9 @@ public sealed partial class AudioTab : Control
     {
         base.ExitedTree();
         _admin.AdminStatusUpdated -= UpdateAdminButtonsVisibility;
+        // SW start: discard unsaved preview when the window closes.
+        _entities.System<ContentAudioSystem>().ClearLobbyMusicVolumePreview();
+        // SW end
     }
 
 
@@ -94,6 +105,13 @@ public sealed partial class AudioTab : Control
     {
         BwoinkSoundCheckBox.Visible = _admin.IsActive();
     }
+
+    // SW start: apply the scaled slider value to lobby music.
+    private void OnLobbyVolumeSliderChanged(float value)
+    {
+        _entities.System<ContentAudioSystem>().PreviewLobbyMusicVolume(value);
+    }
+    // SW end
 
     private void OnMasterVolumeSliderChanged(float value)
     {

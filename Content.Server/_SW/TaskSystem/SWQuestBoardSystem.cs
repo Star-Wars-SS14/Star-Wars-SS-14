@@ -1,4 +1,5 @@
 using Content.Server._SW.TransferSystem;
+using Content.Server.GameTicking;
 using Content.Shared._SW.QuestBoard;
 using Content.Shared.Access.Components;
 using Content.Shared.Access.Systems;
@@ -29,6 +30,7 @@ public sealed class SWQuestBoardSystem : EntitySystem
     [Dependency] private readonly EntityLookupSystem _lookup = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
+    [Dependency] private readonly GameTicker _gameTicker = default!;
 
     private List<SWQuestRecord> _quests = new();
     private int _nextId = 1;
@@ -54,6 +56,15 @@ public sealed class SWQuestBoardSystem : EntitySystem
     private void Beep(Entity<SWQuestBoardComponent> ent) => _audio.PlayPvs(ent.Comp.BeepSound, ent);
     private void Buzz(Entity<SWQuestBoardComponent> ent, EntityUid actor) => _audio.PlayPvs(ent.Comp.BuzzSound, actor);
 
+    // Elapsed time since the round started, for the quest journal stamps.
+    private TimeSpan RoundTime() => _gameTicker.RoundDuration();
+
+    // Journal entry stamped with the round time.
+    private SWQuestComment MakeLog(SWQuestCommentKind kind)
+    {
+        return new SWQuestComment { Kind = kind, RoundTime = RoundTime() };
+    }
+
     private void OnMapInit(Entity<SWQuestBoardComponent> ent, ref MapInitEvent args)
     {
         if (_quests.Count == 0)
@@ -65,7 +76,7 @@ public sealed class SWQuestBoardSystem : EntitySystem
 
                 var giver = Loc.GetString(starter.Giver);
                 var contact = string.IsNullOrEmpty(starter.Contact) ? giver : Loc.GetString(starter.Contact);
-                _quests.Add(new SWQuestRecord
+                var record = new SWQuestRecord
                 {
                     Id = _nextId++,
                     Title = Loc.GetString(starter.Title),
@@ -79,7 +90,9 @@ public sealed class SWQuestBoardSystem : EntitySystem
                     Needed = starter.Needed,
                     CashProto = starter.CashProto,
                     CashReward = starter.CashReward,
-                });
+                };
+                record.Comments.Add(MakeLog(SWQuestCommentKind.Created));
+                _quests.Add(record);
             }
         }
         RefreshAll();
@@ -193,12 +206,14 @@ public sealed class SWQuestBoardSystem : EntitySystem
 
         _lastCreate[actor] = _timing.CurTime;
         var giver = FormatIdentity(card);
-        _quests.Add(new SWQuestRecord
+        var record = new SWQuestRecord
         {
             Id = _nextId++,
             Title = title, Description = description, Reward = reward, Contact = contact,
             Giver = giver, GiverIcon = card.JobIcon, GiverNetEntity = GetNetEntity(actor),
-        });
+        };
+        record.Comments.Add(MakeLog(SWQuestCommentKind.Created));
+        _quests.Add(record);
 
         AnnounceNewQuest(title, giver);
         RefreshAll();
@@ -245,6 +260,7 @@ public sealed class SWQuestBoardSystem : EntitySystem
         var quest = _quests.FirstOrDefault(record => record.Id == questId);
         if (quest == null || quest.Closed || quest.GiverNetEntity != GetNetEntity(actor)) return;
         quest.Closed = true;
+        quest.Comments.Add(MakeLog(SWQuestCommentKind.Closed));
         RefreshAll();
         _audio.PlayPvs(ent.Comp.TaskCompleteSound, ent);
     }
@@ -262,14 +278,19 @@ public sealed class SWQuestBoardSystem : EntitySystem
         if (text.Length == 0 || text.Length > ent.Comp.MaxLength) return;
         var quest = _quests.FirstOrDefault(record => record.Id == questId);
         if (quest == null) return;
-        quest.Comments.Add(new SWQuestComment { Name = FormatIdentity(card), Icon = card.JobIcon, Text = text });
+        quest.Comments.Add(new SWQuestComment
+        {
+            Kind = SWQuestCommentKind.Comment,
+            Name = FormatIdentity(card),
+            Icon = card.JobIcon,
+            Text = text,
+            RoundTime = RoundTime(),
+        });
         RefreshAll();
         Beep(ent);
     }
 
     // Button-driven completion: only a registered taker may hand in a server quest.
-    // Cash spawns at the board where the button was pressed; exactly N matching
-    // items (deduped across pallets) are queued for deletion.
     private void OnComplete(Entity<SWQuestBoardComponent> ent, ref SWQuestCompleteMessage msg)
     {
         var actor = msg.Actor; var questId = msg.Id;
@@ -296,6 +317,7 @@ public sealed class SWQuestBoardSystem : EntitySystem
         quest.Collected = quest.Needed;
         quest.Progress = 1f;
         quest.Closed = true;
+        quest.Comments.Add(MakeLog(SWQuestCommentKind.Closed));
 
         if (!string.IsNullOrEmpty(quest.CashProto))
         {

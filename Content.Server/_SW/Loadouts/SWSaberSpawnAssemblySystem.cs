@@ -1,3 +1,4 @@
+using System.Linq;
 using Content.Server._SW.ModularSaber;
 using Content.Shared._SW.CantEquipOnSlot;
 using Content.Shared._SW.Loadouts;
@@ -131,17 +132,16 @@ public sealed class SWSaberSpawnAssemblySystem : EntitySystem
         {
             if (_inventory.TryGetSlots(entity, out var slots))
             {
-                foreach (var name in new[] { "pocket1", "pocket2", "pocket3" })
+                foreach (var slot in slots
+                             .Where(slot => (slot.SlotFlags & SlotFlags.POCKET) != 0)
+                             .OrderBy(slot => slot.Name switch { "pocket1" => 0, "pocket2" => 1, _ => 2 })
+                             .ThenBy(slot => slot.Name, StringComparer.Ordinal))
                 {
-                    foreach (var slot in slots)
-                    {
-                        if (slot.Name != name ||
-                            (TryComp<SWDisableSlotComponent>(entity, out var disabled) &&
-                             (disabled.ProhibitedSlots & slot.SlotFlags) != 0))
-                            continue;
-                        if (_inventory.TryEquip(entity, saber, name, silent: true))
-                            return;
-                    }
+                    if (TryComp<SWDisableSlotComponent>(entity, out var disabled) &&
+                        (disabled.ProhibitedSlots & slot.SlotFlags) != 0)
+                        continue;
+                    if (_inventory.TryEquip(entity, saber, slot.Name, silent: true))
+                        return;
                 }
             }
 

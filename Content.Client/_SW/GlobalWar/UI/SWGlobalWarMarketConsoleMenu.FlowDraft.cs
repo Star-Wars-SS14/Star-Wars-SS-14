@@ -6,35 +6,6 @@ namespace Content.Client._SW.GlobalWar.UI;
 
 public sealed partial class SWGlobalWarMarketConsoleMenu
 {
-    private string? _suggestedDestination;
-    private string? _suggestedCommodity;
-
-    private void ConfigureDeliveryHere(string commodity)
-    {
-        if (_selected is not { } destination || _state == null || FlowPending)
-            return;
-        _suggestedDestination = destination.Id;
-        _suggestedCommodity = commodity;
-        RefreshFlowEditor();
-        GoodsScroll.Visible = FreightScroll.Visible = false;
-        FlowsScroll.Visible = true;
-        GrowthScroll.Visible = false;
-        var match = _state.Flows.FirstOrDefault(f => f.Settings.Destination == destination && f.Settings.Commodity.Id == commodity);
-        if (match != null)
-        {
-            LoadFlow(match);
-            FlowPicker.SelectId(Array.IndexOf(_flowIds, match.Id));
-            return;
-        }
-        _editingFlow = null;
-        _editingRevision = -1;
-        FlowPicker.SelectId(-1);
-        FlowDestination.SelectId(Array.IndexOf(_flowPlanets, destination.Id));
-        FlowCommodity.SelectId(Array.IndexOf(_flowCommodities, commodity));
-        SetText(FlowCurrent, Loc.GetString("sw-global-war-economy-flow-new"));
-        CaptureFlowDraft();
-        RefreshFlowContext();
-    }
     private void PrepareFlowDraft(SWGlobalWarMarketConsoleState state)
     {
         if (state.Generation == Guid.Empty || state.Assignment == Guid.Empty ||

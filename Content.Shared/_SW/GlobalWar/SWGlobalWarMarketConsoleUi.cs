@@ -133,3 +133,17 @@ public sealed record SWGlobalWarSupplyTransportView(Guid Purchase, int Number, i
 public sealed record SWGlobalWarMarketCaptureView(Guid Operation, Guid TransferOperation,
     ProtoId<SWGlobalWarPlanetPrototype> Node, Guid Batch, double Quantity,
     SWGlobalWarFaction PreviousOwner, SWGlobalWarFaction NewOwner);
+
+[Serializable, NetSerializable]
+public sealed class SWGlobalWarDemandRequest(Guid subscription, Guid generation, long revision, string planet,
+    string commodity, int units, bool once, long demandRevision) : BoundUserInterfaceMessage
+{
+    public readonly Guid Subscription = subscription;
+    public readonly Guid Generation = generation;
+    public readonly long Revision = revision;
+    public readonly string Planet = planet;
+    public readonly string Commodity = commodity;
+    public readonly int Units = units;
+    public readonly bool Once = once;
+    public readonly long DemandRevision = demandRevision;
+}

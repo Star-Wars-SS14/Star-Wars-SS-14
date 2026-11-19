@@ -27,6 +27,8 @@ public sealed partial class SWGlobalWarFactoryComponent : Component
     /// <summary>Further base program lines the same machine serves from the start, one batch at a time.</summary>
     [DataField] public List<SWGlobalWarSupplyKind> ExtraKinds = new();
 
+    public bool MarketAccess => !Factory && !Mining && !Recruitment;
+
     public Guid Generation;
     public bool Enabled;
     public TimeSpan LastUpdate;

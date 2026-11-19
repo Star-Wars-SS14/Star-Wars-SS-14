@@ -25,8 +25,8 @@
 - type: entity
   parent: BaseComputer
   id: SWGlobalWarMarketStorage
-  name: campaign cargo storage
-  description: Registered physical cargo store. Procurement and transport are managed through the market console.
+  name: planetary market terminal
+  description: Withdraw and deposit goods in the local planetary market.
   components:
   - type: SWGlobalWarFactory
   - type: ActivatableUI
@@ -58,8 +58,8 @@
 - type: entity
   parent: SWGlobalWarMarketStorage
   id: SWGlobalWarEquipmentStorage
-  name: campaign equipment arsenal
-  description: Accepts actual procured equipment and issues existing items to current service members.
+  name: military vending machine
+  description: Dispenses and accepts military equipment from the local planetary market.
   components:
   - type: SWGlobalWarFactory
     arsenal: true
@@ -68,7 +68,7 @@
   parent: SWGlobalWarMarketStorage
   id: SWGlobalWarRecruitmentConsole
   name: campaign recruitment console
-  description: Present an ID card to enlist your current civilian character. Equipment comes from the real arsenal.
+  description: Present an ID card to enlist your current civilian character. Equipment is available at the military vending machine.
   components:
   - type: SWGlobalWarFactory
     recruitment: true

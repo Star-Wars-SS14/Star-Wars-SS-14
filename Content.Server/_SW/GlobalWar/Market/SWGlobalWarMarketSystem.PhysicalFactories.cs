@@ -26,7 +26,7 @@ public sealed partial class SWGlobalWarMarketSystem
     private readonly Dictionary<(EntityUid Store, EntityUid Actor), Guid> _factorySubscriptions = new();
     private readonly Dictionary<(EntityUid Store, EntityUid Actor), int> _factoryPages = new();
     [Dependency] private readonly SharedIdCardSystem _factoryIds = default!;
-    private readonly Dictionary<(Guid Assignment, SWGlobalWarSupplyKind Kind), HashSet<Guid>> _factoryIssued = new();
+    private readonly HashSet<Guid> _issuedKits = new();
     private TimeSpan _factoryNextView;
     private const string FactoryRejectedOperator = "sw-global-war-factory-rejected-operator";
     private const string FactoryRejectedBusy = "sw-global-war-factory-rejected-busy";
@@ -50,7 +50,8 @@ public sealed partial class SWGlobalWarMarketSystem
             ReleaseFactoryLease(factory);
         _factorySubscriptions.Clear();
         _factoryPages.Clear();
-        _factoryIssued.Clear();
+        _issuedKits.Clear();
+        _marketExchanges.Clear();
         _factoryMaterializations.Clear();
         _factoryRecipeWork.Clear();
         _physicalCargo.Clear();
@@ -68,7 +69,7 @@ public sealed partial class SWGlobalWarMarketSystem
             return false;
         var world = Comp<SWGlobalWarPlanetComponent>(planet).Prototype;
         if (!model.Markets.TryGetValue(world.Id, out var market) ||
-            !ent.Comp.Recruitment && !TryRegisterSupplyStore(generation, ent, ent.Comp.Arsenal))
+            !ent.Comp.Recruitment && !ent.Comp.MarketAccess && !TryRegisterSupplyStore(generation, ent, ent.Comp.Arsenal))
             return false;
         owner = market.Owner;
         if (owner is not (SWGlobalWarFaction.Republic or SWGlobalWarFaction.Empire))
@@ -90,7 +91,7 @@ public sealed partial class SWGlobalWarMarketSystem
                     TryRegisterSupplyConsumer(generation, ent, kind);
             }
         }
-        return ent.Comp.Recruitment || TryGetSupplyStore(generation, ent, owner, out _, out _);
+        return ent.Comp.MarketAccess || ent.Comp.Recruitment || TryGetSupplyStore(generation, ent, owner, out _, out _);
     }
 
     private bool FactoryActor(Entity<SWGlobalWarFactoryComponent> ent, EntityUid body,
@@ -126,8 +127,31 @@ public sealed partial class SWGlobalWarMarketSystem
             !FactoryActor(ent, args.Actor, out var actor) || actor.Generation != args.Generation ||
             actor.Revision != args.Revision)
             return;
+        if (ent.Comp.MarketAccess)
+        {
+            if (args.Action is not (SWGlobalWarFactoryAction.BuyMarket or SWGlobalWarFactoryAction.DepositMarket) ||
+                _marketExchanges.Contains(args.Request))
+                return;
+            var reason = "sw-global-war-factory-rejected";
+            using var notifications = _ledger.DeferNotifications();
+            _settling = true;
+            try
+            {
+                if (ExchangeMarketItem(ent, actor, args.Request, args.Action, args.Selection, ref reason))
+                {
+                    _marketExchanges.Add(args.Request);
+                    reason = "sw-global-war-factory-success";
+                }
+            }
+            finally
+            {
+                _settling = false;
+            }
+            ent.Comp.Feedback = Loc.GetString(reason);
+            SendFactoryView(ent, args.Actor);
+            return;
+        }
         var success = false;
-        // Without a more specific reason below, a line control refused for the role names the role.
         var rejected = args.Action is SWGlobalWarFactoryAction.Start or SWGlobalWarFactoryAction.Stop &&
             (ent.Comp.Factory || ent.Comp.Mining) && !FactoryOperator(actor)
                 ? FactoryRejectedOperator : "sw-global-war-factory-rejected";
@@ -372,40 +396,19 @@ public sealed partial class SWGlobalWarMarketSystem
                 !FactoryOperator(actor) ? FactoryRejectedOperator : null;
         if (record.Generation != actor.Generation || record.Owner != actor.Faction)
             return FactoryRejectedItem;
-        if (!ent.Comp.Arsenal)
-            return !FactoryOperator(actor) ? FactoryRejectedOperator :
-                record.Market || record.Order != null ? FactoryRejectedItem : null;
-        if (!record.Accepted)
-            return FactoryRejectedItem;
-        if (actor.Role is not (SWGlobalWarRole.Soldier or SWGlobalWarRole.Pilot or
-            SWGlobalWarRole.JuniorOfficer or SWGlobalWarRole.SeniorOfficer or SWGlobalWarRole.Intelligence))
-            return "sw-global-war-factory-rejected-arsenal-role";
-        var limit = record.Kind switch
-        {
-            SWGlobalWarSupplyKind.Magazine => 3,
-            SWGlobalWarSupplyKind.Ration or SWGlobalWarSupplyKind.Medicine => 2,
-            SWGlobalWarSupplyKind.AdvancedElectronics => 0,
-            _ => 1,
-        };
-        var allowed = !_factoryIssued.TryGetValue((actor.Id, record.Kind), out var issued) ? limit > 0 :
-            issued.Contains(record.Unit) || issued.Count < limit;
-        return allowed ? null : "sw-global-war-factory-rejected-issue-limit";
+        return !FactoryOperator(actor) ? FactoryRejectedOperator :
+            record.Market || record.Order != null ? FactoryRejectedItem : null;
     }
 
-    /// <summary>Whether this service member has drawn a weapon or armour from an arsenal.</summary>
-    public bool HasDrawnKit(Guid assignment)
-    {
-        return _factoryIssued.Any(pair => pair.Key.Assignment == assignment && pair.Value.Count > 0 &&
-                                          pair.Key.Kind is SWGlobalWarSupplyKind.T1 or SWGlobalWarSupplyKind.T2 or SWGlobalWarSupplyKind.Armor);
-    }
+    public bool HasDrawnKit(Guid assignment) => _issuedKits.Contains(assignment);
 
     /// <summary>Whether this arsenal still holds a weapon or armour to issue to this side.</summary>
     public bool ArsenalHasKit(Guid generation, EntityUid arsenal, SWGlobalWarFaction faction)
     {
-        return TryGetSupplyStore(generation, arsenal, faction, out _, out var inventory) &&
-               inventory.ContainedEntities.Any(item => _supplyItems.TryGetValue(item, out var record) &&
-                   record.Accepted && record.Owner == faction &&
-                   record.Kind is SWGlobalWarSupplyKind.T1 or SWGlobalWarSupplyKind.T2 or SWGlobalWarSupplyKind.Armor);
+        return Simulation?.Generation == generation && TryGetTerminalMarket(arsenal, out var market) &&
+            market.Owner == faction && MilitaryGoods.Any(entry => entry.Value.Kind is (SWGlobalWarSupplyKind.T1 or SWGlobalWarSupplyKind.T2 or
+                SWGlobalWarSupplyKind.Armor) && market.Goods.TryGetValue(entry.Key, out var good) &&
+                good.Available >= Simulation.UnitsPerItem);
     }
 
     private bool TakeFactoryItem(Entity<SWGlobalWarFactoryComponent> ent, SWGlobalWarAssignment actor, EntityUid item,
@@ -416,24 +419,10 @@ public sealed partial class SWGlobalWarMarketSystem
             rejected = failure;
             return false;
         }
-        if (!ent.Comp.Arsenal)
-        {
-            if (TakeFactoryOutput(ent, actor, item))
-                return true;
-            rejected = HasComp<ItemComponent>(item)
-                ? "sw-global-war-factory-rejected-hands" : "sw-global-war-factory-rejected-platform";
-            return false;
-        }
-        var record = _supplyItems[item];
-        var key = (actor.Id, record.Kind);
-        if (!_factoryIssued.TryGetValue(key, out var issued))
-            _factoryIssued[key] = issued = new();
-        var added = issued.Add(record.Unit);
-        if (_supplyHands.TryPickupAnyHand(actor.Body, item))
+        if (TakeFactoryOutput(ent, actor, item))
             return true;
-        if (added)
-            issued.Remove(record.Unit);
-        rejected = "sw-global-war-factory-rejected-hands";
+        rejected = HasComp<ItemComponent>(item)
+            ? "sw-global-war-factory-rejected-hands" : "sw-global-war-factory-rejected-platform";
         return false;
     }
 
@@ -447,6 +436,11 @@ public sealed partial class SWGlobalWarMarketSystem
             return;
         }
         var valid = FactoryActor(ent, body, out var actor);
+        if (ent.Comp.MarketAccess)
+        {
+            SendTerminalView(ent, body, subscription, valid ? actor : null);
+            return;
+        }
         var rows = new List<SWGlobalWarFactoryItem>();
         var remaining = 0d;
         var total = 0d;
@@ -455,12 +449,7 @@ public sealed partial class SWGlobalWarMarketSystem
         var pages = 1;
         if (valid && TryGetSupplyStore(actor.Generation, ent, actor.Faction, out _, out var inventory))
         {
-            var listed = ent.Comp.Arsenal
-                ? inventory.ContainedEntities.GroupBy(e => Name(e)).Select(g =>
-                    new SWGlobalWarFactoryItem(GetNetEntity(g.FirstOrDefault(e => CanTakeFactoryItem(ent, actor, e), g.First())),
-                        g.Key, g.Any(e => CanTakeFactoryItem(ent, actor, e)),
-                        MetaData(g.First()).EntityPrototype?.ID, g.Count())).ToList()
-                : inventory.ContainedEntities.Select(e => new SWGlobalWarFactoryItem(GetNetEntity(e), Name(e),
+            var listed = inventory.ContainedEntities.Select(e => new SWGlobalWarFactoryItem(GetNetEntity(e), Name(e),
                     CanTakeFactoryItem(ent, actor, e), MetaData(e).EntityPrototype?.ID)).ToList();
             pages = Math.Max(1, (listed.Count + 79) / 80);
             page = Math.Clamp(_factoryPages.GetValueOrDefault((ent, body)), 0, pages - 1);

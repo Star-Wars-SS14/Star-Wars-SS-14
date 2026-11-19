@@ -97,6 +97,7 @@ public sealed partial class SWGlobalWarMarketSystem : EntitySystem
                     throw new ArgumentException($"Invalid hub capacity for {id}.");
                 var goods = new List<SWGlobalWarMarketGoodDefinition>();
                 foreach (var commodity in commodities.Where(c =>
+                             MilitaryGoods.ContainsKey(c.Id) || c.Id == "SWGlobalWarAE" ||
                              _prototypes.EnumeratePrototypes<SWGlobalWarEconomyProfilePrototype>().Any(p =>
                                  p.Mandatory.ContainsKey(c.Id) || p.OpeningStock.ContainsKey(c.Id) ||
                                  p.Recipes.Any(r => r.Output.Id == c.Id || r.Inputs.ContainsKey(c.Id)))))
@@ -345,7 +346,8 @@ public sealed partial class SWGlobalWarMarketSystem : EntitySystem
                 pair.Value.ConsumptionPerMinute / scale, pair.Value.Incoming / scale, pair.Value.TargetStock / scale,
                 pair.Value.Reserved / scale, (double) market.State.ProductionOrders.GetValueOrDefault(pair.Key),
                 pair.Value.ProductionDemandPerMinute / scale, pair.Value.GrowthDemandPerMinute / scale,
-                pair.Value.Capacity / scale, pair.Value.ReservedIncoming / scale)).ToList();
+                pair.Value.Capacity / scale, pair.Value.ReservedIncoming / scale, pair.Value.DeliveryRemaining / scale,
+                pair.Value.RequestedStock / scale, pair.Value.DemandRevision)).ToList();
     }
 
     public bool TryAddStock(ProtoId<SWGlobalWarPlanetPrototype> planet, ProtoId<SWGlobalWarCommodityPrototype> commodity, int quantity) =>

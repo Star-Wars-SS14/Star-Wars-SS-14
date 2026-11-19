@@ -194,7 +194,7 @@ public sealed partial class SWGlobalWarMarketSystem
     {
         if (!CanMutateCampaign(generation) || !_supplyProduction.TryGetValue(operation, out var production) ||
             production.Request.Generation != generation ||
-            !TryGetSupplyStore(generation, production.Request.Store, production.Request.Faction, out _, out var destination))
+            !TryGetSupplyStore(generation, production.Request.Store, production.Request.Faction, out var store, out var destination))
             return false;
         if (production.Stage == SWGlobalWarSupplyStage.Complete)
             return production.Output.SequenceEqual(output);
@@ -225,9 +225,23 @@ public sealed partial class SWGlobalWarMarketSystem
                 }
                 moved.Add(item);
             }
+            var commodity = SupplyCommodity(production.Request.Kind, production.Request.Bacta);
+            var marketCount = Math.Max(0, production.MarketQuantity - assigned);
+            if (marketCount > 0 && !Simulation.DepositMarketStock(store.Planet, commodity,
+                    marketCount * Simulation.UnitsPerItem))
+            {
+                foreach (var prepared in moved)
+                    _supplyContainers.Insert(prepared, staging, force: true);
+                return false;
+            }
             for (var i = 0; i < output.Count; i++)
             {
                 var item = output[i];
+                if (i >= assigned && i < production.MarketQuantity)
+                {
+                    Del(item);
+                    continue;
+                }
                 _supplyItems.Add(item, new(generation, production.Request.Kind, production.Request.Bacta,
                     production.Request.Faction, production.Request.Faction, SWGlobalWarSupplyOrigin.Industrial,
                     operation, Guid.NewGuid(), Order: i < assigned ? purchase!.Request.Operation : null,

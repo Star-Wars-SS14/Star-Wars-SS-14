@@ -33,6 +33,9 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
     private bool _lineEnabled;
     private bool _operate;
     private bool _sized;
+    private List<SWGlobalWarTerminalGood> _marketGoods = new();
+    private bool _marketPowered;
+    private bool _canBuyEquipment;
     private SWGlobalWarFactoryCargoWork? _cargoWork;
 
     public SWGlobalWarFactoryMenu()
@@ -61,6 +64,18 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
         ProductName.FontOverride = ProductNameSecond.FontOverride = SWGlobalWarConsoleStyle.Bold(17);
         ProductName.FontColorOverride = ProductNameSecond.FontColorOverride = Color.White;
 
+        MarketPicker.OnItemSelected += args =>
+        {
+            MarketPicker.SelectId(args.Id);
+            UpdateMarketSelection();
+        };
+        MarketBuy.SetAppearance(SWGlobalWarConsoleStyle.TextBright, money: true);
+        MarketBuy.OnPressed += _ =>
+        {
+            if (_marketGoods.ElementAtOrDefault(MarketPicker.SelectedId) is { } good)
+                Request(SWGlobalWarFactoryAction.BuyMarket, selection: good.Commodity);
+        };
+        MarketDeposit.OnPressed += _ => Request(SWGlobalWarFactoryAction.DepositMarket);
         Start.OnPressed += _ => Request(SWGlobalWarFactoryAction.Start);
         Stop.OnPressed += _ => Request(SWGlobalWarFactoryAction.Stop);
         Insert.OnPressed += _ => Request(SWGlobalWarFactoryAction.Insert);
@@ -85,6 +100,31 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
 
     public void UpdateState(SWGlobalWarFactoryState state)
     {
+        if (state.MarketGoods is { } goods)
+        {
+            SetCampaignTitle(Loc.GetString(state.Arsenal ? "sw-global-war-terminal-vendor" : "sw-global-war-terminal-title"));
+            if (!_sized)
+                SetSize = new Vector2(500, 300);
+            _sized = true;
+            LineStrip.Visible = ProductColumn.Visible = ProductDetails.Visible = StockColumn.Visible = Recruit.Visible = false;
+            MarketPanel.Visible = true;
+            Status.SetMessage(SWGlobalWarConsoleStyle.MoneyMessage(state.Status));
+            if (!_marketGoods.Select(g => g.Commodity).SequenceEqual(goods.Select(g => g.Commodity)))
+            {
+                var selected = _marketGoods.ElementAtOrDefault(MarketPicker.SelectedId)?.Commodity;
+                MarketPicker.Clear();
+                for (var i = 0; i < goods.Count; i++)
+                    MarketPicker.AddItem(goods[i].Name, i);
+                if (goods.Count > 0)
+                    MarketPicker.SelectId(Math.Max(0, goods.FindIndex(g => g.Commodity == selected)));
+            }
+            _marketGoods = goods;
+            _marketPowered = state.Operate && state.Powered;
+            _canBuyEquipment = state.CanBuyEquipment;
+            MarketDeposit.Disabled = !_marketPowered;
+            UpdateMarketSelection();
+            return;
+        }
         SetCampaignTitle(Loc.GetString(state.Recruitment ? "sw-global-war-factory-title-recruit" :
             state.Arsenal ? "sw-global-war-factory-title-arsenal" : "sw-global-war-factory-title"));
         _lineKind = state.Kind;
@@ -126,6 +166,17 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
         Page.Text = Loc.GetString("sw-global-war-factory-page", ("page", state.Page + 1), ("pages", state.Pages));
         PreviousPage.Disabled = state.Page <= 0;
         NextPage.Disabled = state.Page >= state.Pages - 1;
+    }
+
+    private void UpdateMarketSelection()
+    {
+        var good = _marketGoods.ElementAtOrDefault(MarketPicker.SelectedId);
+        MarketBuy.Disabled = !_marketPowered || good == null || good.Stock < 1 || good.Price > 0 && !_canBuyEquipment;
+        MarketBuy.Text = good is { Price: > 0 }
+            ? Loc.GetString("sw-global-war-terminal-buy", ("price", good.Price))
+            : Loc.GetString("sw-global-war-terminal-take");
+        MarketBalance.Text = good == null ? string.Empty : Loc.GetString("sw-global-war-terminal-stock",
+            ("stock", good.Stock.ToString("0.###")), ("incoming", good.Incoming.ToString("0.###")));
     }
 
     private void UpdateCargoWork(SWGlobalWarFactoryCargoWork? work)

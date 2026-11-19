@@ -41,8 +41,6 @@ public sealed class SWGlobalWarFlowDraft
     public SWGlobalWarReturnSelection? ReturnPart;
     public string? ReturnDestination;
     public NetEntity? ReturnStore;
-    public NetEntity? SupplyArsenal;
-    public SWGlobalWarSupplyArsenalDecision? SupplyArsenalDecision;
     public Guid ReturnGrant;
     public SWGlobalWarFlowWorkerView? ReturnWorker;
     public string ReturnMinutes = "10";
@@ -59,26 +57,9 @@ public sealed class SWGlobalWarFlowDraft
     public string SupplyLocal = "25";
     public bool SupplyBacta;
     public bool SupplyHead;
-    public Guid SupplyOrder;
     public SWGlobalWarSupplyCommand? PendingSupply;
-    public readonly Dictionary<Guid, SWGlobalWarSupplyCommand> SupplyReturnRetries = new();
     public readonly Dictionary<Guid, SWGlobalWarSupplyResult> SupplySeenResults = new();
     public string SupplyFeedback = string.Empty;
-    public NetEntity? SupplySource;
-    public NetEntity? SupplyRecipient;
-    public string SupplyQuantity = "1";
-    public bool SupplyPurchaseBacta;
-    public SWGlobalWarSupplyCommand? SupplyQuoteRequest;
-    public SWGlobalWarSupplyQuote? SupplyQuote;
-    public Guid SupplyDelivery;
-    public NetEntity? SupplyDeliveryCarrier;
-    public Guid SupplyWork;
-    public NetEntity? SupplyWorkCarrier;
-    public string SupplyWorkQuantity = "1";
-    public bool SupplyWorkHead;
-    public SWGlobalWarSupplyWorkCommand? PendingSupplyWork;
-    public string SupplyWorkFeedback = string.Empty;
-    public readonly Dictionary<Guid, SWGlobalWarSupplyWorkResult> SupplyWorkSeenResults = new();
 
     public void Clear()
     {
@@ -111,8 +92,6 @@ public sealed class SWGlobalWarFlowDraft
         ReturnPart = null;
         ReturnDestination = null;
         ReturnStore = null;
-        SupplyArsenal = null;
-        SupplyArsenalDecision = null;
         ReturnGrant = Guid.Empty;
         ReturnWorker = null;
         ReturnMinutes = "10";
@@ -128,23 +107,8 @@ public sealed class SWGlobalWarFlowDraft
         SupplyRevision = -1;
         SupplyLocal = "25";
         SupplyBacta = SupplyHead = false;
-        SupplyOrder = Guid.Empty;
         PendingSupply = null;
-        SupplyReturnRetries.Clear();
         SupplySeenResults.Clear();
         SupplyFeedback = string.Empty;
-        SupplySource = SupplyRecipient = null;
-        SupplyQuantity = "1";
-        SupplyPurchaseBacta = false;
-        SupplyQuoteRequest = null;
-        SupplyQuote = null;
-        SupplyDelivery = SupplyWork = Guid.Empty;
-        SupplyDeliveryCarrier = null;
-        SupplyWorkCarrier = null;
-        SupplyWorkQuantity = "1";
-        SupplyWorkHead = false;
-        PendingSupplyWork = null;
-        SupplyWorkFeedback = string.Empty;
-        SupplyWorkSeenResults.Clear();
     }
 }

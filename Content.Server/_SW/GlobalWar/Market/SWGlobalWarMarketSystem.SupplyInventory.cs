@@ -131,22 +131,13 @@ public sealed partial class SWGlobalWarMarketSystem
 
     private int CountAcceptedSupplyStock(SWGlobalWarFaction faction, SWGlobalWarSupplyKind kind)
     {
-        if (_campaignGeneration is not { } generation)
+        if (Simulation is not { } model)
             return 0;
-        var items = new HashSet<EntityUid>();
-        foreach (var store in _supplyStores.Keys)
-        {
-            if (!TryGetSupplyStore(generation, store, faction, out var binding, out var container) || !binding.Arsenal)
-                continue;
-            foreach (var item in container.ContainedEntities)
-            {
-                if (_supplyItems.TryGetValue(item, out var record) && record.Generation == generation &&
-                    record.Owner == faction && record.Kind == kind && record.Accepted &&
-                    IsSuitableSupplyItem(item, kind, faction, record.Bacta))
-                    items.Add(item);
-            }
-        }
-        return items.Count;
+        var normal = SupplyCommodity(kind, false);
+        var alternative = SupplyCommodity(kind, true);
+        return model.Markets.Values.Where(m => m.Owner == faction).Sum(m =>
+            (m.Goods.GetValueOrDefault(normal)?.Available ?? 0) / model.UnitsPerItem +
+            (alternative == normal ? 0 : (m.Goods.GetValueOrDefault(alternative)?.Available ?? 0) / model.UnitsPerItem));
     }
 
     private void CaptureSupplyStores(IReadOnlyList<SWGlobalWarMarketOwnershipChange> changes)

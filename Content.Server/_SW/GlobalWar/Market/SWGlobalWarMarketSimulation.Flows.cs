@@ -284,6 +284,12 @@ public sealed partial class SWGlobalWarMarketSimulation
         var incoming = _flowIncoming.GetValueOrDefault((flow.Id, flow.Destination, flow.Commodity));
         var wanted = decimal.Ceiling((good.TargetStock + use * UnitsPerItem * minutes - stock -
                                      good.ReservedIncoming) * share) - incoming;
+        if (good.RequestedStock > 0 || good.DeliveryRemaining > 0)
+        {
+            // Automatic deliveries share the destination with scheduled flows.
+            var totalNeed = Math.Max(good.DeliveryRemaining, good.TargetStock + use * UnitsPerItem * minutes - stock);
+            wanted = Math.Min(wanted, decimal.Ceiling(totalNeed) - good.Incoming - good.ReservedIncoming);
+        }
         return (int) Math.Min(Math.Max(0, wanted), good.Capacity - good.Stock - good.Incoming - good.ReservedIncoming);
     }
 

@@ -66,3 +66,16 @@ sw-global-war-factory-cargo-collect = Load the task cargo: { $item }, { $count }
 sw-global-war-factory-cargo-accept = Hand over the task cargo: { $item }, { $count } pcs.
 sw-global-war-factory-cargo-no-carrier = Pull a crate or hold a container in your active hand: the same container you took this task with.
 sw-global-war-factory-cargo-too-far = Come closer: both you and the container must be within two tiles of this point.
+
+sw-global-war-terminal-title = Planetary market terminal
+sw-global-war-terminal-vendor = Military vending machine
+sw-global-war-terminal-deposit = Deposit held item
+sw-global-war-terminal-buy = Buy for { $price } GC
+sw-global-war-terminal-take = Withdraw one unit
+sw-global-war-terminal-stock = Available: { $stock } · In transit: { $incoming }
+sw-global-war-terminal-no-funds = Insufficient funds in the war budget.
+sw-global-war-demand-once = Deliver once
+sw-global-war-demand-maintain = Maintain stock
+sw-global-war-demand-quantity = Enter 0 to 600. Zero clears the selected setting.
+sw-global-war-demand-summary = { $name } · Still to deliver: { $remaining } · Stock target: { $target }
+sw-global-war-terminal-service = Equipment is available to service members, the head of government and the war minister.

@@ -8,7 +8,7 @@ public enum SWGlobalWarFactoryUiKey : byte { Key }
 [Serializable, NetSerializable]
 public enum SWGlobalWarFactoryAction : byte
 {
-    Start, Stop, Insert, Take, Recruit, Materialize, Produce, PreviousPage, NextPage, CargoWork,
+    Start, Stop, Insert, Take, Recruit, Materialize, Produce, PreviousPage, NextPage, CargoWork, BuyMarket, DepositMarket,
 }
 
 [Serializable, NetSerializable]
@@ -44,13 +44,19 @@ public sealed record SWGlobalWarFactoryChoice(string Id, string Name);
 public sealed record SWGlobalWarFactoryCargoWork(Guid Work, bool Accept, string Item, int Count, NetEntity? Carrier, bool InReach);
 
 [Serializable, NetSerializable]
+public sealed record SWGlobalWarTerminalGood(string Commodity, string Name, double Stock, double Incoming, int Price);
+
+[Serializable, NetSerializable]
 public sealed class SWGlobalWarFactoryState(Guid generation, long revision, bool operate, bool factory, bool recruitment,
     SWGlobalWarSupplyKind kind, string status, List<SWGlobalWarFactoryItem> items,
     List<SWGlobalWarFactoryChoice> materials, List<SWGlobalWarFactoryChoice> recipes,
     int page, int pages, SWGlobalWarSupplyKind[] kinds, bool mining, bool arsenal = false,
     bool powered = false, bool enabled = false, int remainingSeconds = 0, int totalSeconds = 0, string detail = "",
-    List<SWGlobalWarFactoryProduct>? products = null, SWGlobalWarFactoryCargoWork? cargoWork = null) : BoundUserInterfaceState
+    List<SWGlobalWarFactoryProduct>? products = null, SWGlobalWarFactoryCargoWork? cargoWork = null,
+    List<SWGlobalWarTerminalGood>? marketGoods = null, bool canBuyEquipment = false) : BoundUserInterfaceState
 {
+    public readonly List<SWGlobalWarTerminalGood>? MarketGoods = marketGoods;
+    public readonly bool CanBuyEquipment = canBuyEquipment;
     public readonly Guid Generation = generation;
     public readonly long Revision = revision;
     public readonly bool Operate = operate;

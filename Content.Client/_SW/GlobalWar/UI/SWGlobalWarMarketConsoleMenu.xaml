@@ -73,11 +73,6 @@
                                 <ui:SWGlobalWarConsoleButton Name="SupplyToggle" Text="{Loc 'sw-global-war-supply-title'}" />
                                 <BoxContainer Name="SupplyBody" Orientation="Vertical" SeparationOverride="8" HorizontalExpand="True" Visible="False">
                                   <OptionButton Name="SupplyKindPicker" HorizontalExpand="True" />
-                                  <RichTextLabel Name="SupplySummary" />
-                                  <RichTextLabel Name="SupplyWindow" />
-                                  <RichTextLabel Name="SupplyPhysical" />
-                                  <RichTextLabel Name="SupplyFunds" />
-                                  <RichTextLabel Name="SupplyWaiting" />
                                   <CheckBox Name="SupplyHeadDecision" Text="{Loc 'sw-global-war-economy-head-decision'}" />
                                   <BoxContainer Name="SupplyLineControls" Orientation="Vertical" SeparationOverride="6">
                                     <RichTextLabel Name="SupplyServerValues" />
@@ -90,47 +85,6 @@
                                     <ui:SWGlobalWarConsoleButton Name="SupplyReapply" Text="{Loc 'sw-global-war-economy-reapply'}" />
                                     <ui:SWGlobalWarConsoleButton Name="SupplySave" Text="{Loc 'sw-global-war-supply-save-line'}" />
                                   </BoxContainer>
-                                  <ui:SWGlobalWarConsoleButton Name="SupplyResume" Text="{Loc 'sw-global-war-supply-resume'}" />
-                                  <BoxContainer Name="SupplyPurchaseControls" Orientation="Vertical" SeparationOverride="6">
-                                    <Label Text="{Loc 'sw-global-war-supply-new-purchase'}" StyleClasses="SWTermHeading" />
-                                    <Label Text="{Loc 'sw-global-war-supply-source'}" />
-                                    <OptionButton Name="SupplySourcePicker" HorizontalExpand="True" />
-                                    <Label Text="{Loc 'sw-global-war-supply-recipient'}" />
-                                    <OptionButton Name="SupplyRecipientPicker" HorizontalExpand="True" />
-                                    <Label Text="{Loc 'sw-global-war-supply-quantity'}" />
-                                    <LineEdit Name="SupplyQuantity" Text="1" />
-                                    <RichTextLabel Name="SupplyQuantityError" />
-                                    <CheckBox Name="SupplyPurchaseBacta" Text="{Loc 'sw-global-war-supply-buy-bacta'}" />
-                                    <ui:SWGlobalWarConsoleButton Name="SupplyPreview" Text="{Loc 'sw-global-war-supply-preview'}" />
-                                    <RichTextLabel Name="SupplyQuoteDetails" />
-                                    <RichTextLabel Name="SupplyQuoteMaterials" />
-                                    <RichTextLabel Name="SupplyQuotePhysical" />
-                                    <RichTextLabel Name="SupplyQuoteArsenals" />
-                                    <RichTextLabel Name="SupplyQuoteFailure" />
-                                    <ui:SWGlobalWarConsoleButton Name="SupplyBuy" Text="{Loc 'sw-global-war-supply-buy'}" />
-                                  </BoxContainer>
-                                  <Label Text="{Loc 'sw-global-war-supply-orders'}" StyleClasses="SWTermHeading" />
-                                  <OptionButton Name="SupplyOrderPicker" HorizontalExpand="True" />
-                                  <WrapContainer SeparationOverride="6" CrossSeparationOverride="6">
-                                    <ui:SWGlobalWarConsoleButton Name="SupplyPrevious" Text="{Loc 'sw-global-war-supply-previous'}" />
-                                    <ui:SWGlobalWarConsoleButton Name="SupplyNext" Text="{Loc 'sw-global-war-supply-next'}" />
-                                  </WrapContainer>
-                                  <RichTextLabel Name="SupplyOrderDetails" />
-                                  <RichTextLabel Name="SupplyOrderTransport" />
-                                  <RichTextLabel Name="SupplyOrderParts" />
-                                  <RichTextLabel Name="SupplyBatchDetails" />
-                                  <RichTextLabel Name="SupplyAllocation" />
-                                  <RichTextLabel Name="SupplyOrderPayment" />
-                                  <RichTextLabel Name="SupplyAllowedArsenals" />
-                                  <BoxContainer Name="SupplyArsenalControls" Orientation="Vertical" SeparationOverride="6">
-                                    <OptionButton Name="SupplyArsenalPicker" HorizontalExpand="True" />
-                                    <RichTextLabel Name="SupplyArsenalChanged" />
-                                    <ui:SWGlobalWarConsoleButton Name="SupplyArsenalReload" Text="{Loc 'sw-global-war-supply-arsenal-reload'}" />
-                                    <ui:SWGlobalWarConsoleButton Name="SupplyApproveArsenal" Text="{Loc 'sw-global-war-supply-approve-arsenal'}" />
-                                  </BoxContainer>
-                                  <RichTextLabel Name="SupplyCancelConsequences" />
-                                  <ui:SWGlobalWarConsoleButton Name="SupplyCancel" Text="{Loc 'sw-global-war-supply-cancel'}" />
-                                  <ui:SWGlobalWarConsoleButton Name="SupplyRetry" Text="{Loc 'sw-global-war-supply-retry'}" />
                                   <RichTextLabel Name="SupplyResult" />
                                 </BoxContainer>
                               </BoxContainer>
@@ -289,32 +243,6 @@
                         </ScrollContainer>
                         <ScrollContainer Name="FreightScroll" VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False" Visible="False">
                             <BoxContainer Orientation="Vertical" SeparationOverride="10" HorizontalExpand="True">
-                                <BoxContainer Name="SupplyWorkPanel" Orientation="Vertical" SeparationOverride="6" Visible="False">
-                                    <ui:SWGlobalWarConsoleButton Name="SupplyWorkToggle" Text="{Loc 'sw-global-war-supply-work-title'}" />
-                                    <BoxContainer Name="SupplyWorkBody" Orientation="Vertical" SeparationOverride="6" Visible="False">
-                                        <OptionButton Name="SupplyDeliveryPicker" HorizontalExpand="True" />
-                                        <RichTextLabel Name="SupplyDeliveryDetails" />
-                                        <Label Text="{Loc 'sw-global-war-supply-quantity'}" />
-                                        <LineEdit Name="SupplyWorkQuantity" Text="1" />
-                                        <RichTextLabel Name="SupplyWorkQuantityError" />
-                                        <ui:SWGlobalWarConsoleButton Name="SupplyWorkClaim" Text="{Loc 'sw-global-war-supply-work-claim'}" />
-                                        <WrapContainer SeparationOverride="6" CrossSeparationOverride="4">
-                                            <ui:SWGlobalWarConsoleButton Name="SupplyWorkPrevious" Text="{Loc 'sw-global-war-market-previous-page'}" />
-                                            <ui:SWGlobalWarConsoleButton Name="SupplyWorkNext" Text="{Loc 'sw-global-war-market-next-page'}" />
-                                        </WrapContainer>
-                                        <OptionButton Name="SupplyWorkPicker" HorizontalExpand="True" />
-                                        <RichTextLabel Name="SupplyWorkDetails" />
-                                        <Label Text="{Loc 'sw-global-war-supply-work-carrier'}" />
-                                        <OptionButton Name="SupplyWorkCarrierPicker" HorizontalExpand="True" />
-                                        <CheckBox Name="SupplyWorkHead" Text="{Loc 'sw-global-war-supply-work-head'}" />
-                                        <ui:SWGlobalWarConsoleButton Name="SupplyWorkCollect" Text="{Loc 'sw-global-war-supply-work-collect'}" />
-                                        <ui:SWGlobalWarConsoleButton Name="SupplyWorkAccept" Text="{Loc 'sw-global-war-supply-work-accept'}" />
-                                        <ui:SWGlobalWarConsoleButton Name="SupplyWorkRelease" Text="{Loc 'sw-global-war-supply-work-release'}" />
-                                        <ui:SWGlobalWarConsoleButton Name="SupplyWorkRevoke" Text="{Loc 'sw-global-war-supply-work-revoke'}" />
-                                        <ui:SWGlobalWarConsoleButton Name="SupplyWorkRetry" Text="{Loc 'sw-global-war-economy-retry'}" />
-                                        <RichTextLabel Name="SupplyWorkFeedback" />
-                                    </BoxContainer>
-                                </BoxContainer>
                                 <RichTextLabel Name="FreightSummary" />
                                 <BoxContainer SeparationOverride="6">
                                     <ui:SWGlobalWarConsoleButton Name="PreviousPage" Text="{Loc 'sw-global-war-market-previous-page'}" />
@@ -349,9 +277,13 @@
                                 <BoxContainer Name="ShipmentRows" Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True" />
                             </BoxContainer>
                         </ScrollContainer>
-                        <BoxContainer Name="DeliveryFoot" SeparationOverride="12" Visible="False">
+                        <BoxContainer Name="DeliveryFoot" Orientation="Vertical" SeparationOverride="4" Visible="False">
                             <Label Name="DeliveryLine" HorizontalExpand="True" ClipText="True" VAlign="Center" />
-                            <ui:SWGlobalWarConsoleButton Name="Delivery" MinWidth="280" MinHeight="44" />
+                            <BoxContainer SeparationOverride="6">
+                                <LineEdit Name="DemandQuantity" Text="1" SetWidth="66" ToolTip="{Loc 'sw-global-war-demand-quantity'}" />
+                                <ui:SWGlobalWarConsoleButton Name="Delivery" Text="{Loc 'sw-global-war-demand-once'}" HorizontalExpand="True" />
+                                <ui:SWGlobalWarConsoleButton Name="Maintain" Text="{Loc 'sw-global-war-demand-maintain'}" HorizontalExpand="True" />
+                            </BoxContainer>
                         </BoxContainer>
                     </BoxContainer>
                 </PanelContainer>

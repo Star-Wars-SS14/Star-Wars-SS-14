@@ -87,8 +87,12 @@ public sealed class SWGlobalWarMarketGoodState
     public long RecipeConsumed { get; internal set; }
     public long GrowthConsumed { get; internal set; }
     public long UnmetConsumption { get; internal set; }
-    public int TargetStock => Math.Max(MinimumBuffer, ImportPerMinute * SWGlobalWarMarketConstants.StockBufferMinutes);
-    public int Demand => Math.Max(0, TargetStock - Stock);
+    public long DemandRevision { get; internal set; }
+    public int RequestedStock { get; internal set; }
+    public int DeliveryRemaining { get; internal set; }
+    public int TargetStock => Math.Max(RequestedStock, Math.Max(MinimumBuffer,
+        ImportPerMinute * SWGlobalWarMarketConstants.StockBufferMinutes));
+    public int Demand => Math.Max(DeliveryRemaining, TargetStock - Available);
     public int Supply => Math.Max(0, Available - TargetStock);
     // Immediate uncovered demand; dispatch additionally accounts for consumption along each candidate route.
     public int ImportNeed => Math.Max(0, Demand - Incoming);

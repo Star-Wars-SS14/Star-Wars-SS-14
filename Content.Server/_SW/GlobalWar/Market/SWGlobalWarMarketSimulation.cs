@@ -248,7 +248,8 @@ public sealed partial class SWGlobalWarMarketSimulation
                 if (node.Profile != null)
                 {
                     var receiveVolume = _commodities[shipment.Commodity].CargoVolume;
-                    var received = TransferQuantity(shipment.Quantity, node.ReceiveBudget, receiveVolume);
+                    var received = WholeQuantity(shipment.Commodity,
+                        TransferQuantity(shipment.Quantity, node.ReceiveBudget, receiveVolume));
                     if (received == 0)
                     {
                         shipment.HoldReason = "sw-global-war-market-wait-receive";
@@ -272,6 +273,7 @@ public sealed partial class SWGlobalWarMarketSimulation
                 var good = _markets[shipment.Destination].Goods[shipment.Commodity];
                 AddBatch(good, shipment.Batch! with { Owner = _markets[shipment.Destination].Owner });
                 good.Incoming -= shipment.Quantity;
+                good.DeliveryRemaining = Math.Max(0, good.DeliveryRemaining - shipment.Quantity);
                 if (shipment.Flow is { } flowId && _flows.TryGetValue(flowId, out var flow))
                 {
                     flow.GetStatistics(shipment.Commodity).Received += shipment.Quantity;
@@ -296,7 +298,7 @@ public sealed partial class SWGlobalWarMarketSimulation
             if (Generation != null && sender.Profile != null)
                 capacity = Math.Min(capacity, sender.SendBudget);
             var cargoVolume = _commodities[shipment.Commodity].CargoVolume;
-            var quantity = TransferQuantity(shipment.Quantity, capacity, cargoVolume);
+            var quantity = WholeQuantity(shipment.Commodity, TransferQuantity(shipment.Quantity, capacity, cargoVolume));
             if (quantity == 0)
             {
                 shipment.HoldReason = Generation != null && sender.Profile != null && sender.SendBudget < cargoVolume
@@ -343,11 +345,14 @@ public sealed partial class SWGlobalWarMarketSimulation
         if (Generation != null || _flows.Count > 0)
         {
             DispatchFlows();
-            if (_flows.Count > 0 || IsActive?.Invoke() == false)
+            if (IsActive?.Invoke() == false)
                 return;
         }
         var needs = _markets.Values.SelectMany(market => market.Goods
-            .Where(pair => pair.Value.ImportPerMinute > 0 && !pair.Value.LocallyProduced)
+            .Where(pair => pair.Value.DeliveryRemaining > pair.Value.Incoming ||
+                pair.Value.RequestedStock > 0 && pair.Value.ImportNeed > 0 ||
+                pair.Value.ImportPerMinute > 0 && !pair.Value.LocallyProduced &&
+                (_flows.Count == 0 || pair.Value.ImportNeed > 0 && FlowsTo(market.Planet, pair.Key).Count == 0))
             .Select(pair => (Market: market, Commodity: pair.Key, Good: pair.Value)))
             .OrderBy(need => need.Market.Planet, StringComparer.Ordinal).ThenBy(need => need.Commodity, StringComparer.Ordinal).ToArray();
         if (needs.Length == 0)
@@ -357,7 +362,7 @@ public sealed partial class SWGlobalWarMarketSimulation
         var turn = (int) (_dispatchTurn % needs.Length);
         var dispatched = false;
         foreach (var need in needs.Select((need, index) => (Need: need, Tie: (index + turn) % needs.Length))
-                     .OrderBy(entry => (double) entry.Need.Good.Stock / entry.Need.Good.ImportPerMinute).ThenBy(entry => entry.Tie))
+                     .OrderBy(entry => (double) entry.Need.Good.Stock / Math.Max(1, entry.Need.Good.ImportPerMinute)).ThenBy(entry => entry.Tie))
         {
             // A full stock still needs replacement cargo before consumption during delivery creates a deficit.
             while (true)
@@ -378,10 +383,10 @@ public sealed partial class SWGlobalWarMarketSimulation
                 if (Generation != null)
                 {
                     var batch = source.Goods[commodity].MutableBatches!.Values
-                        .FirstOrDefault(b => b.Quantity > b.Reserved && AllowsDispatch(b, commodity, route));
+                        .FirstOrDefault(b => WholeQuantity(commodity, b.Quantity - b.Reserved) > 0 && AllowsDispatch(b, commodity, route));
                     if (batch == null)
                         break;
-                    quantity = Math.Min(quantity, batch.Quantity - batch.Reserved);
+                    quantity = WholeQuantity(commodity, Math.Min(quantity, batch.Quantity - batch.Reserved));
                     cargo = TakeBatch(source.Goods[commodity], batch, quantity);
                 }
                 else
@@ -414,13 +419,14 @@ public sealed partial class SWGlobalWarMarketSimulation
         var recipient = _markets[destination].Goods[commodity];
         foreach (var source in _markets.Values)
         {
-            if (source.Planet == destination || !source.Goods.TryGetValue(commodity, out var good) || good.Supply == 0)
+            if (_flows.Count > 0 && source.Owner != _markets[destination].Owner ||
+                source.Planet == destination || !source.Goods.TryGetValue(commodity, out var good) || good.Supply == 0)
                 continue;
-            var route = FindRoute(source.Planet, destination, cargoVolume);
+            var route = FindRoute(source.Planet, destination, _commodities[commodity].WholeItems ? cargoVolume * UnitsPerItem : cargoVolume);
             if (route == null)
                 continue;
             if (Generation != null && !good.MutableBatches!.Values.Any(batch =>
-                    batch.Quantity > batch.Reserved && AllowsDispatch(batch, commodity, route)))
+                    WholeQuantity(commodity, batch.Quantity - batch.Reserved) > 0 && AllowsDispatch(batch, commodity, route)))
                 continue;
 
             var time = TimeSpan.Zero;
@@ -439,7 +445,8 @@ public sealed partial class SWGlobalWarMarketSimulation
             }
             // Departure uses the first link's capacity; narrower transit links split cargo when it reaches them.
             var quantity = TransferQuantity(Math.Min(good.Supply, GetImportNeed(recipient, time)), capacity, cargoVolume);
-            if (quantity == 0 || time >= bestTime)
+            quantity = WholeQuantity(commodity, quantity);
+            if (quantity <= 0 || time >= bestTime)
                 continue;
             bestTime = time;
             result = (source, route, quantity);
@@ -453,10 +460,10 @@ public sealed partial class SWGlobalWarMarketSimulation
     private static int GetImportNeed(SWGlobalWarMarketGoodState recipient, TimeSpan deliveryTime)
     {
         var consumption = decimal.Ceiling((decimal) recipient.ImportPerMinute * deliveryTime.Ticks / TimeSpan.TicksPerMinute);
-        var need = Math.Max(0m, recipient.TargetStock + consumption - recipient.Stock - recipient.Incoming);
+        var need = Math.Max(0m, recipient.TargetStock + consumption - recipient.Available - recipient.Incoming);
         // Reserve integer storage space for incoming cargo as well as the current stock.
         var headroom = recipient.Capacity - recipient.Stock - recipient.Incoming - recipient.ReservedIncoming;
-        return (int) Math.Min(need, headroom);
+        return (int) Math.Min(Math.Max(need, recipient.DeliveryRemaining - recipient.Incoming), headroom);
     }
 
     private static int TransferQuantity(int limit, double capacity, double cargoVolume) =>
@@ -544,6 +551,30 @@ public sealed partial class SWGlobalWarMarketSimulation
         if (Generation != null || !ValidConsumption(perMinute) || !TryGetGood(planet, commodity, out var good))
             return false;
         good.ConsumptionPerMinute = perMinute;
+        return true;
+    }
+
+    internal bool SetMarketDemand(string planet, string commodity, int units, bool once, long? expectedRevision = null)
+    {
+        if (!_markets.TryGetValue(planet, out var market) || !market.Goods.TryGetValue(commodity, out var good) ||
+            expectedRevision != null && expectedRevision != good.DemandRevision ||
+            units < 0 || units > good.Capacity / UnitsPerItem)
+            return false;
+        good.DemandRevision++;
+        if (once)
+            good.DeliveryRemaining = units * UnitsPerItem;
+        else
+            good.RequestedStock = units * UnitsPerItem;
+        return true;
+    }
+
+    internal bool DepositMarketStock(string planet, string commodity, int quantity)
+    {
+        if (Generation is not { } generation || !_markets.TryGetValue(planet, out var market) ||
+            !market.Goods.TryGetValue(commodity, out var good) || quantity <= 0 ||
+            quantity > good.Capacity - good.Stock - good.Incoming - good.ReservedIncoming)
+            return false;
+        AddBatch(good, new(Guid.NewGuid(), generation, market.Owner, market.Owner, quantity));
         return true;
     }
 

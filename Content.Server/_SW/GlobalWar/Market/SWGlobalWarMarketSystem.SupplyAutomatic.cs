@@ -1,6 +1,5 @@
 using System.Linq;
 using Content.Shared._SW.GlobalWar;
-using Content.Shared._SW.GlobalWar.Politics;
 
 namespace Content.Server._SW.GlobalWar.Market;
 
@@ -40,23 +39,9 @@ public sealed partial class SWGlobalWarMarketSystem
         _supplyAutomaticRunning = true;
         try
         {
-            foreach (var (faction, program) in model.SupplyPrograms)
+            foreach (var faction in model.SupplyPrograms.Keys)
             foreach (var kind in Enum.GetValues<SWGlobalWarSupplyKind>())
             {
-                if (!CanMutateCampaign(generation, _ownershipCatchUp))
-                    return;
-                if (program.Window > 0 && program.Windows[program.Window].Budgets[kind] > 0)
-                {
-                    var key = (faction, program.Window, kind);
-                    if (!_supplyIntents.TryGetValue(key, out var intent))
-                    {
-                        intent = new(Guid.NewGuid(), generation, faction, program.Window, kind,
-                            program.Windows[program.Window].Budgets[kind]);
-                        _supplyIntents.Add(key, intent);
-                    }
-                    if (!intent.Suspended)
-                        FulfillSupplyIntent(intent);
-                }
                 if (!CanMutateCampaign(generation, _ownershipCatchUp))
                     return;
                 PrepareBaseSupply(generation, faction, kind);
@@ -65,95 +50,6 @@ public sealed partial class SWGlobalWarMarketSystem
         finally
         {
             _supplyAutomaticRunning = false;
-        }
-    }
-
-    private void FulfillSupplyIntent(SWGlobalWarSupplyIntent intent)
-    {
-        var program = Simulation!.SupplyPrograms[intent.Faction];
-        var outstanding = program.Orders.Values.Where(o => o.Kind == intent.Kind).Sum(o => (long) o.Outstanding);
-        var wanted = Math.Min(program.RemainingQuota(intent.Kind), Math.Max(0L,
-            SWGlobalWarSupplyProgram.Target(intent.Kind, program.Participants) -
-            CountAcceptedSupplyStock(intent.Faction, intent.Kind) - outstanding));
-        if (wanted == 0)
-        {
-            intent.Failure = SWGlobalWarSupplyFailure.None;
-            return;
-        }
-        // Changing a factory recipe does not authorize replacing the military program's kolto with dearer bacta.
-        // Bacta procurement requires an explicit purchase request with its own composition and price.
-        const bool bacta = false;
-        var unitPrice = SWGlobalWarSupplyProgram.UnitPrice(intent.Kind, bacta);
-        var affordable = _ledger.GetBalance(intent.Faction, SWGlobalWarAccount.War).Available / unitPrice;
-        if (affordable == 0)
-        {
-            intent.Failure = SWGlobalWarSupplyFailure.Funds;
-            return;
-        }
-        var quantity = (int) Math.Min(120L, Math.Min(wanted, affordable));
-        intent.Failure = SWGlobalWarSupplyFailure.Unavailable;
-        // The capital arsenal is the program's primary receiver. A world's own arsenal is only the last fallback,
-        // otherwise a farm would keep its output at home whenever its map happened to register first.
-        var recipients = _supplyStores.OrderBy(p => Simulation.Markets[p.Value.Planet].Kind switch
-        {
-            SWGlobalWarSectorKind.Capital => 0,
-            SWGlobalWarSectorKind.Industry => 1,
-            _ => 2,
-        }).Select(p => p.Key).ToArray();
-        foreach (var source in _supplyStores.Keys)
-        {
-            if (!TryGetSupplyStore(intent.Generation, source, intent.Faction, out var sourceBinding, out var inventory) ||
-                sourceBinding.Arsenal || !_supplyConsumers.Contains((source, intent.Kind)))
-                continue;
-            foreach (var recipient in recipients)
-            {
-                if (!TryGetSupplyStore(intent.Generation, recipient, intent.Faction, out var recipientBinding, out _) ||
-                    !recipientBinding.Arsenal ||
-                    (recipientBinding.Planet != sourceBinding.Planet && !IsHomeSupplyArsenal(recipientBinding, intent.Faction)) ||
-                    !_ledger.TryGetLedger(out var ledger))
-                    continue;
-                // Remote orders use the physical manifest consumer and its current policy checks before any reservation.
-                var request = new SWGlobalWarSupplyPurchaseRequest(intent.Generation, Guid.NewGuid(), ledger.Comp.Revision,
-                    intent.Faction, source, recipient, intent.Kind, quantity, bacta, Intent: intent.Id);
-                var ready = inventory.ContainedEntities.Count(e => IsUnpaidSupplyItem(e, request));
-                var deficit = SupplyProductionDeficit(intent.Generation, intent.Faction, intent.Kind);
-                var recipe = SupplyRecipe(intent.Kind, bacta);
-                var line = program.Lines[intent.Kind];
-                // Only a positive total deficit permits another whole recipe. Local goods and unallocated WIP
-                // already cover that target, even when they cannot be purchased from the market allocation.
-                var batches = (deficit + recipe.Output - 1) / recipe.Output;
-                var newMarket = batches == 0 ? 0L : (long) decimal.Floor(line.MarketRemainder +
-                    batches * recipe.Output * (100m - line.LocalPercent) / 100m);
-                var possible = (int) Math.Min(quantity, ready + newMarket);
-                if (possible == 0)
-                {
-                    intent.Failure = SWGlobalWarSupplyFailure.ExistingSupply;
-                    continue;
-                }
-                request = request with { Quantity = possible };
-                if (ReserveSupplyPurchase(request, out var purchase, out var failure, automatic: true))
-                {
-                    intent.Orders.Add(purchase.Request.Operation);
-                    intent.Failure = SWGlobalWarSupplyFailure.None;
-                    return;
-                }
-                intent.Failure = failure;
-                // An unavailable new recipe must not hold up the already existing usable market portion.
-                if (ready > 0 && ready < request.Quantity && failure is SWGlobalWarSupplyFailure.Materials or
-                    SWGlobalWarSupplyFailure.LineBusy or SWGlobalWarSupplyFailure.Rate or
-                    SWGlobalWarSupplyFailure.OutputSpace or SWGlobalWarSupplyFailure.LocalOnly or
-                    SWGlobalWarSupplyFailure.Revision)
-                {
-                    request = request with { Operation = Guid.NewGuid(), Quantity = ready };
-                    if (ReserveSupplyPurchase(request, out purchase, out failure, automatic: true))
-                    {
-                        intent.Orders.Add(purchase.Request.Operation);
-                        intent.Failure = SWGlobalWarSupplyFailure.None;
-                        return;
-                    }
-                    intent.Failure = failure;
-                }
-            }
         }
     }
 

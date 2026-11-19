@@ -96,6 +96,28 @@ public sealed partial class GlobalWarEconomyIntegrationTest
             Assert.That(oldMarketNonce, Is.Not.EqualTo(Guid.Empty));
             Assert.That(oldTravelNonce, Is.Not.EqualTo(Guid.Empty));
         });
+        var demandPlanet = oldMarketState.Flows.Single(f => f.Id == "SWSpawnTestEconomyViewFoodR").Settings.Destination;
+        const string good = "SWGlobalWarSupplyT2";
+        await client.WaitAssertion(() =>
+        {
+            var menu = Menu();
+            menu.FindControl<SWGlobalWarMapControl>("Map").SelectPlanet(demandPlanet);
+            var rows = (System.Collections.IDictionary) Read<object>(menu, "_goodsRows");
+            Press((BaseButton) rows[new Robust.Shared.Prototypes.ProtoId<SWGlobalWarCommodityPrototype>(good)]!);
+            menu.FindControl<LineEdit>("DemandQuantity").Text = "7";
+            Press(menu.FindControl<SWGlobalWarConsoleButton>("Delivery"));
+        });
+        await pair.RunTicksSync(30);
+        await server.WaitAssertion(() => Assert.That(server.System<SWGlobalWarMarketSystem>().Simulation!
+            .Markets[demandPlanet.Id].Goods[good].DeliveryRemaining, Is.EqualTo(SWGlobalWarMarketUnits.FromUnits(7))));
+        await client.WaitPost(() =>
+        {
+            Menu().FindControl<LineEdit>("DemandQuantity").Text = "12";
+            Press(Menu().FindControl<SWGlobalWarConsoleButton>("Maintain"));
+        });
+        await pair.RunTicksSync(30);
+        await server.WaitAssertion(() => Assert.That(server.System<SWGlobalWarMarketSystem>().Simulation!
+            .Markets[demandPlanet.Id].Goods[good].RequestedStock, Is.EqualTo(SWGlobalWarMarketUnits.FromUnits(12))));
         SWGlobalWarFlowCommand flowCommand = default!;
         await client.WaitAssertion(() =>
         {

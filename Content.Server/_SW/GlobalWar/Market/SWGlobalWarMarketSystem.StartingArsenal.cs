@@ -1,7 +1,4 @@
-using System.Linq;
-using Content.Server._SW.GlobalWar.Production;
 using Content.Shared._SW.GlobalWar;
-using Robust.Shared.Containers;
 
 namespace Content.Server._SW.GlobalWar.Market;
 
@@ -40,53 +37,22 @@ public sealed partial class SWGlobalWarMarketSystem
             return;
         _nextStartingArsenal = _factoryTiming.CurTime + TimeSpan.FromSeconds(5);
 
-        var query = AllEntityQuery<SWGlobalWarFactoryComponent>();
-        while (query.MoveNext(out var uid, out var factory))
+        foreach (var market in Simulation.Markets.Values)
         {
-            if (!factory.Arsenal || !BindFactory((uid, factory), out var owner) ||
-                !_hubPlanets.TryGetPhysicalLocation(uid, out var planet, out _) ||
-                _prototypes.Index(Comp<SWGlobalWarPlanetComponent>(planet).Prototype) is not
-                    { Kind: SWGlobalWarSectorKind.Capital } world || world.InitialOwner != owner ||
-                !TryGetSupplyStore(generation, uid, owner, out _, out var container))
+            var owner = market.Owner;
+            if (market.Kind != SWGlobalWarSectorKind.Capital || market.OriginalOwner != owner ||
+                owner is not (SWGlobalWarFaction.Republic or SWGlobalWarFaction.Empire))
                 continue;
-
             var participants = Math.Clamp(_identity.CountSupplyParticipants(generation, owner), StartingKitMinimum,
                 StartingKitMaximum);
             var kits = (int) Math.Ceiling(StartingKitsPerParticipant * participants);
             var stocked = _startingArsenals.GetValueOrDefault((generation, owner));
             if (kits <= stocked)
                 continue;
+            foreach (var (kind, count) in StartingKit)
+                Simulation.DepositMarketStock(market.Planet, SupplyCommodity(kind, false),
+                    (kits - stocked) * count * Simulation.UnitsPerItem);
             _startingArsenals[(generation, owner)] = kits;
-            var source = Guid.NewGuid();
-            for (var i = stocked; i < kits; i++)
-            {
-                foreach (var (kind, count) in StartingKit)
-                {
-                    for (var j = 0; j < count; j++)
-                        AddStartingItem(uid, container, generation, owner, source, kind);
-                }
-            }
         }
-    }
-
-    private void AddStartingItem(EntityUid store, BaseContainer container, Guid generation, SWGlobalWarFaction owner,
-        Guid source, SWGlobalWarSupplyKind kind)
-    {
-        var item = Spawn(SupplyPrototype(kind, owner), Transform(store).Coordinates);
-        // Rifles are issued empty: magazines are counted and drawn separately.
-        if (_supplyContainers.TryGetContainer(item, "gun_magazine", out var magazine))
-        {
-            foreach (var loaded in magazine.ContainedEntities.ToArray())
-                Del(loaded);
-        }
-
-        if (!_supplyContainers.Insert(item, container))
-        {
-            Del(item);
-            return;
-        }
-
-        _supplyItems.Add(item, new(generation, kind, false, owner, owner, SWGlobalWarSupplyOrigin.Starting, source,
-            Guid.NewGuid(), Accepted: true));
     }
 }

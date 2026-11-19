@@ -181,7 +181,7 @@ public sealed partial class GlobalWarMarketFlowTest
         model.TradePolicy = Allow;
         model.DemographyEnabled = false;
         model.Advance(TimeSpan.FromSeconds(1));
-        var original = model.Shipments.Single();
+        var original = model.Shipments.Single(s => s.Flow == "contract");
         var batch = original.Batch!.Id;
         var departure = original.DepartureReceipt;
         var request = new SWGlobalWarFlowEdit(generation, Guid.NewGuid(), "contract", 0,
@@ -197,7 +197,7 @@ public sealed partial class GlobalWarMarketFlowTest
         Assert.That(model.Markets["C"].Goods["E"].Incoming, Is.Zero);
         Assert.That(model.Flows["contract"].Dispatched, Is.Zero, "The new commodity must not inherit F statistics.");
         model.Advance(TimeSpan.FromSeconds(1));
-        Assert.That(model.Shipments.Single(s => s.Commodity == "E").Source, Is.EqualTo("D"));
+        Assert.That(model.Shipments.Single(s => s.Flow == "contract" && s.Commodity == "E").Source, Is.EqualTo("D"));
         Assert.That(model.Markets["C"].Goods["E"].Incoming, Is.EqualTo(Q(1)));
         Assert.That(model.TryEditFlow(request, out var replay), Is.True);
         Assert.That(replay, Is.SameAs(receipt));
@@ -212,16 +212,15 @@ public sealed partial class GlobalWarMarketFlowTest
         Assert.That(model.TryEditFlow(request with { Operation = Guid.NewGuid(), ExpectedRevision = 1,
             Settings = request.Settings with { Enabled = false } }, out _), Is.True);
         model.Advance(TimeSpan.FromSeconds(2));
-        Assert.That(model.Shipments, Is.Empty);
-        Assert.That(model.Markets["B"].Goods["F"].Incoming, Is.Zero);
+        Assert.That(model.Shipments.Any(s => s.Flow == "contract"), Is.False);
         Assert.That(model.Markets["C"].Goods["E"].Incoming, Is.Zero);
         Assert.That(model.Flows["contract"].Statistics["F"].Received, Is.EqualTo(Q(1)));
         Assert.That(model.Flows["contract"].Statistics["F"].Dispatched, Is.EqualTo(Q(1)));
         Assert.That(model.Flows["contract"].Statistics["E"].Received, Is.EqualTo(Q(1)));
         Assert.That(model.Flows["contract"].Statistics["E"].Dispatched, Is.EqualTo(Q(1)));
         Assert.That(model.Flows["unrelated"].Revision, Is.Zero);
-        Assert.That(model.Markets.Values.Sum(m => m.Goods["F"].Stock), Is.EqualTo(Q(200)));
-        Assert.That(model.Markets.Values.Sum(m => m.Goods["E"].Stock), Is.EqualTo(Q(200)));
+        Assert.That(model.Markets.Values.Sum(m => m.Goods["F"].Stock + m.Goods["F"].Incoming), Is.EqualTo(Q(200)));
+        Assert.That(model.Markets.Values.Sum(m => m.Goods["E"].Stock + m.Goods["E"].Incoming), Is.EqualTo(Q(200)));
     }
 
     [Test]

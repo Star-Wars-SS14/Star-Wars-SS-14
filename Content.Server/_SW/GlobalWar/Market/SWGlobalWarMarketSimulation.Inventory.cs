@@ -160,6 +160,9 @@ public sealed partial class SWGlobalWarMarketSimulation
             market.CapturedAt = at ?? Time;
             foreach (var good in market.Goods.Values)
             {
+                good.DemandRevision++;
+                good.DeliveryRemaining = 0;
+                good.RequestedStock = 0;
                 if (good.MutableBatches == null)
                     continue;
                 foreach (var batch in good.MutableBatches.Values.ToArray())

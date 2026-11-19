@@ -231,8 +231,7 @@ public sealed partial class SWGlobalWarMarketConsoleMenu
         NewFlow.Disabled = SaveFlow.Disabled;
         FlowPicker.Disabled = FlowPending;
         RetryFlow.Disabled = !FlowPending;
-        var ids = _state.Flows.OrderByDescending(f => f.Settings.Destination.Id == _suggestedDestination &&
-            f.Settings.Commodity.Id == _suggestedCommodity).Select(f => f.Id).ToArray();
+        var ids = _state.Flows.Select(f => f.Id).ToArray();
         if (!_flowIds.SequenceEqual(ids))
         {
             _flowIds = ids;

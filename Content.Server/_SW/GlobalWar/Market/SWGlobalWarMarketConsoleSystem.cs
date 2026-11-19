@@ -30,6 +30,7 @@ public sealed class SWGlobalWarMarketConsoleSystem : EntitySystem
         Subs.BuiEvents<SWGlobalWarMarketConsoleComponent>(SWGlobalWarMarketConsoleUiKey.Key, subs =>
         {
             subs.Event<SWGlobalWarMarketPageRequest>(OnPageRequest);
+            subs.Event<SWGlobalWarDemandRequest>(OnDemand);
             subs.Event<SWGlobalWarMarketOpen>(OnSubscribe);
             subs.Event<SWGlobalWarFlowRequest>(OnFlowRequest);
             subs.Event<SWGlobalWarFlowGrantRequest>(OnFlowGrant);
@@ -38,12 +39,23 @@ public sealed class SWGlobalWarMarketConsoleSystem : EntitySystem
             subs.Event<SWGlobalWarReturnRequest>(OnReturn);
             subs.Event<SWGlobalWarLanthanumRequest>(OnLanthanum);
             subs.Event<SWGlobalWarSupplyRequest>(OnSupply);
-            subs.Event<SWGlobalWarSupplyWorkRequest>(OnSupplyWork);
         });
         SubscribeLocalEvent<SWGlobalWarAssignmentsChangedEvent>((ref SWGlobalWarAssignmentsChangedEvent _) => Refresh());
         SubscribeLocalEvent<SWGlobalWarOwnershipChangedEvent>((ref SWGlobalWarOwnershipChangedEvent _) => Refresh());
         SubscribeLocalEvent<SWGlobalWarCampaignStartedEvent>((ref SWGlobalWarCampaignStartedEvent _) => Invalidate());
         SubscribeLocalEvent<SWGlobalWarCampaignStoppedEvent>((ref SWGlobalWarCampaignStoppedEvent _) => Invalidate());
+    }
+
+    private void OnDemand(Entity<SWGlobalWarMarketConsoleComponent> ent, ref SWGlobalWarDemandRequest args)
+    {
+        if (!ValidSubscription(ent, args.Actor, args.Subscription) ||
+            !_markets.TryGetMarketObserver(args.Actor, out var actor) || actor.Generation != args.Generation ||
+            actor.Revision != args.Revision || !_markets.CanManageFlowWork(actor) ||
+            _markets.Simulation is not { } model || args.Planet == null || args.Commodity == null ||
+            !model.Markets.TryGetValue(args.Planet, out var market) || actor.Faction != market.Owner)
+            return;
+        model.SetMarketDemand(args.Planet, args.Commodity, args.Units, args.Once, args.DemandRevision);
+        SendView(ent, args.Actor);
     }
 
     private bool ValidSubscription(EntityUid console, EntityUid actor, Guid subscription)
@@ -63,20 +75,9 @@ public sealed class SWGlobalWarMarketConsoleSystem : EntitySystem
         Refresh();
     }
 
-    private void OnSupplyWork(Entity<SWGlobalWarMarketConsoleComponent> ent, ref SWGlobalWarSupplyWorkRequest args)
-    {
-        if (args.Command == null || !ValidSubscription(ent.Owner, args.Actor, args.Subscription) ||
-            !TryComp<ActorComponent>(args.Actor, out var player))
-            return;
-        _markets.TryExecuteSupplyWork(player.PlayerSession, args.Command, out var result);
-        _ui.ServerSendUiMessage(ent.Owner, SWGlobalWarMarketConsoleUiKey.Key,
-            new SWGlobalWarSupplyWorkReply(result, args.Subscription, GetNetEntity(args.Actor)), args.Actor);
-        Refresh();
-    }
-
     private void OnSupply(Entity<SWGlobalWarMarketConsoleComponent> ent, ref SWGlobalWarSupplyRequest args)
     {
-        if (args.Command == null || !ValidSubscription(ent.Owner, args.Actor, args.Subscription) ||
+        if (args.Command?.Action != SWGlobalWarSupplyAction.ConfigureLine || !ValidSubscription(ent.Owner, args.Actor, args.Subscription) ||
             !TryComp<ActorComponent>(args.Actor, out var player))
             return;
         _markets.TryConfigureSupply(player.PlayerSession, args.Command, out var result);
@@ -331,9 +332,7 @@ public sealed class SWGlobalWarMarketConsoleSystem : EntitySystem
             hasObserver ? _markets.GetReturnGrants(observer) : [], hasObserver ? _markets.GetReturnResults(observer) : [],
             hasObserver ? _markets.GetLanthanumView(observer) : null, hasObserver ? _markets.GetLanthanumResults(observer) : [],
             hasObserver ? _markets.GetSupplyView(observer, query.SupplyPage, query.SupplyKind) : null,
-            hasObserver ? _markets.GetSupplyResults(observer) : [],
-            hasObserver ? _markets.GetSupplyWorkBoard(observer, query.SupplyWorkPage) : null,
-            hasObserver ? _markets.GetSupplyWorkResults(observer) : []);
+            hasObserver ? _markets.GetSupplyResults(observer) : []);
     }
 
     private static (string A, string B) Lane(string from, string to) =>

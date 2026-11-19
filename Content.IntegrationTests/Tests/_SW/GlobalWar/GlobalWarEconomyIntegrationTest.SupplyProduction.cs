@@ -121,15 +121,16 @@ public sealed partial class GlobalWarEconomyIntegrationTest
                 Assert.That(markets.TryCompleteSupplyProduction(generation, request.Operation, pens), Is.False);
                 Assert.That(solutions.TryAddReagent(pen.Value, "SWKolto", 15), Is.True);
                 Assert.That(markets.TryCompleteSupplyProduction(generation, request.Operation, pens), Is.True);
-                Assert.That(stock!.ContainedEntities, Is.EquivalentTo(pens));
+                Assert.That(stock!.ContainedEntities, Is.EquivalentTo(pens.Skip(medicine.MarketQuantity)));
+                Assert.That(model.Markets[world].Goods["SWGlobalWarSupplyKolto"].Stock, Is.EqualTo(Q(3)));
                 Assert.That(markets.TryCompleteSupplyProduction(generation, request.Operation, pens), Is.True);
                 var secondPens = Enumerable.Range(0, 5).Select(_ => server.EntMan.SpawnEntity("SWKoltoMedipen",
                     markets.SupplyProductionOutputCoordinates(request.Operation))).ToArray();
                 Assert.That(markets.TryCompleteSupplyProduction(generation, request.Operation, secondPens), Is.False);
-                Assert.That(stock.ContainedEntities, Has.Count.EqualTo(5));
+                Assert.That(stock.ContainedEntities, Has.Count.EqualTo(2));
                 Assert.That(food.Stock, Is.EqualTo(Q(90)));
-                Assert.That(model.AcceptedSupplyStock!(faction, SWGlobalWarSupplyKind.Medicine), Is.Zero,
-                    "Factory production does not claim army acceptance or payment.");
+                Assert.That(model.AcceptedSupplyStock!(faction, SWGlobalWarSupplyKind.Medicine), Is.EqualTo(3),
+                    "Only the market share is available to vending machines.");
 
                 var wire = server.EntMan.SpawnEntity("SWAdvancedCables10", position);
                 Assert.That(containers.Insert(wire, stock), Is.True);

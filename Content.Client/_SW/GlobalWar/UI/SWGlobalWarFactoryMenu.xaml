@@ -26,6 +26,12 @@
         <PanelContainer StyleClasses="SWTermDivider" MinHeight="1" />
         <BoxContainer Orientation="Vertical" VerticalExpand="True" SeparationOverride="8" Margin="12 10">
             <RichTextLabel Name="Status" />
+            <BoxContainer Name="MarketPanel" Orientation="Vertical" SeparationOverride="8" Visible="False">
+                <OptionButton Name="MarketPicker" HorizontalExpand="True" />
+                <Label Name="MarketBalance" StyleClasses="SWTermValue" />
+                <ui:SWGlobalWarConsoleButton Name="MarketBuy" MinHeight="38" />
+                <ui:SWGlobalWarConsoleButton Name="MarketDeposit" Text="{Loc 'sw-global-war-terminal-deposit'}" MinHeight="38" />
+            </BoxContainer>
             <ui:SWGlobalWarConsoleButton Name="Recruit" Text="{Loc 'sw-global-war-factory-recruit'}" MinHeight="44" />
             <ui:SWGlobalWarConsoleButton Name="CargoWork" MinHeight="44" Visible="False" />
             <RichTextLabel Name="CargoWorkHint" Visible="False" />

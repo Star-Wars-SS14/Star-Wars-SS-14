@@ -50,7 +50,6 @@ public sealed partial class SWGlobalWarMarketConsoleMenu : SWGlobalWarWindow
         InitializeReturns();
         InitializeLanthanum();
         InitializeSupply();
-        InitializeSupplyWork();
         InitializeMarketLayout();
         Map.PlanetSelected += id =>
         {
@@ -152,7 +151,6 @@ public sealed partial class SWGlobalWarMarketConsoleMenu : SWGlobalWarWindow
         RefreshReturns();
         RefreshLanthanum();
         RefreshSupply();
-        RefreshSupplyWork();
         if (_selected is { } selected && !_planetNames.ContainsKey(selected))
             _selected = null;
         if (_route is { } route && !state.Connections.Any(link => SameLane(link.From, link.To, route.From, route.To)))
@@ -322,15 +320,10 @@ public sealed partial class SWGlobalWarMarketConsoleMenu : SWGlobalWarWindow
         if (good == null)
             return;
 
-        var totals = SWGlobalWarMarketTotals.From(good);
-        var name = Loc.GetString(_prototypes.Index(good.Key).Name);
-        _deliveryAvailable = _selected != null && _state?.Assignment != Guid.Empty
-            && (!MarketLayout.ShowMap || totals.Uncovered > 0);
-        Delivery.Text = Loc.GetString("sw-global-war-market-order-delivery", ("name", name));
-        DeliveryLine.Text = totals.Uncovered > 0
-            ? Loc.GetString("sw-global-war-market-short-line", ("name", name), ("count", totals.Uncovered.ToString("0.###")))
-            : string.Empty;
-        DeliveryLine.Visible = MarketLayout.ShowMap == false;
+        _deliveryAvailable = _selected != null && _state?.CanManageFlows == true;
+        var entry = good.First();
+        DeliveryLine.Text = Loc.GetString("sw-global-war-demand-summary", ("name", Loc.GetString(_prototypes.Index(good.Key).Name)),
+            ("remaining", entry.DeliveryRemaining.ToString("0.###")), ("target", entry.RequestedStock.ToString("0.###")));
     }
 
     private void RefreshShipments()
@@ -399,7 +392,16 @@ public sealed partial class SWGlobalWarMarketConsoleMenu : SWGlobalWarWindow
             RefreshShipmentTimes();
         // The other tabs hide this scroll without telling the goods page.
         DeliveryFoot.Visible = GoodsScroll.Visible && _deliveryAvailable;
-        Delivery.Disabled = FlowPending;
+        Delivery.Disabled = Maintain.Disabled = !int.TryParse(DemandQuantity.Text, out var units) || units is < 0 or > 600;
+    }
+
+    public event Action<string, string, int, bool, long>? DemandRequested;
+
+    private void RequestDemand(bool once)
+    {
+        if (_selected is { } planet && _openGood is { } commodity && int.TryParse(DemandQuantity.Text, out var units) &&
+            _state?.Planets.FirstOrDefault(p => p.Planet == planet)?.Goods.FirstOrDefault(g => g.Commodity == commodity) is { } good)
+            DemandRequested?.Invoke(planet.Id, commodity.Id, units, once, good.DemandRevision);
     }
 
     private void RefreshShipmentTimes()
@@ -466,21 +468,15 @@ public sealed partial class SWGlobalWarMarketConsoleMenu : SWGlobalWarWindow
         DeliveryLine.FontColorOverride = SWGlobalWarConsoleStyle.Bad;
         Delivery.MainFont = SWGlobalWarConsoleStyle.MainButton;
         Delivery.SetAppearance(SWGlobalWarConsoleStyle.TextBright, primary: true);
-        Delivery.OnPressed += _ =>
-        {
-            if (_openGood is { } good)
-                ConfigureDeliveryHere(good.Id);
-        };
+        Delivery.OnPressed += _ => RequestDemand(true);
+        Maintain.OnPressed += _ => RequestDemand(false);
         TrafficToggle.SetAppearance(SWGlobalWarConsoleStyle.TextBright, selected: true);
-        SupplyBuy.SetAppearance(SWGlobalWarConsoleStyle.TextBright, money: true);
         // Explanations wait under the control they explain, so that a form reads as a form.
         SupplySave.ToolTip = Loc.GetString("sw-global-war-supply-future-line");
-        SupplyApproveArsenal.ToolTip = Loc.GetString("sw-global-war-supply-approve-help");
         LanthanumToggle.ToolTip = string.Join("\n", Loc.GetString("sw-global-war-ln-help"),
             Loc.GetString("sw-global-war-ln-cost"), Loc.GetString("sw-global-war-ln-details"));
         NewFlow.ToolTip = Loc.GetString("sw-global-war-economy-flow-help");
         GrowthSave.ToolTip = Loc.GetString("sw-global-war-growth-help");
-        SupplyWorkToggle.ToolTip = Loc.GetString("sw-global-war-supply-work-help");
         ReturnSend.ToolTip = Loc.GetString("sw-global-war-return-help");
     }
 }

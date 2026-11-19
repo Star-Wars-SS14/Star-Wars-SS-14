@@ -9,6 +9,8 @@ public sealed class SWGlobalWarMarketConsoleBoundUserInterface(EntityUid owner, 
 
     private long _lastSequence;
     private Guid _subscription;
+    private Guid _generation;
+    private long _revision;
 
     protected override void Open()
     {
@@ -18,13 +20,14 @@ public sealed class SWGlobalWarMarketConsoleBoundUserInterface(EntityUid owner, 
         EntMan.System<SWGlobalWarMarketViewSystem>().Invalidated += Invalidate;
         _menu = this.CreateWindow<SWGlobalWarMarketConsoleMenu>();
         _menu.FlowDraft = EntMan.System<SWGlobalWarMarketViewSystem>().GetDraft(EntMan.GetNetEntity(Owner));
+        _menu.DemandRequested += (planet, commodity, units, once, revision) =>
+            SendPredictedMessage(new SWGlobalWarDemandRequest(_subscription, _generation, _revision, planet, commodity, units, once, revision));
         _menu.PageRequested += query => SendPredictedMessage(new SWGlobalWarMarketPageRequest(query, _subscription));
         _menu.FlowRequested += command => SendPredictedMessage(new SWGlobalWarFlowRequest(command, _subscription));
         _menu.GrowthRequested += command => SendPredictedMessage(new SWGlobalWarGrowthRequest(command, _subscription));
         _menu.ReturnRequested += command => SendPredictedMessage(new SWGlobalWarReturnRequest(command, _subscription));
         _menu.LanthanumRequested += command => SendPredictedMessage(new SWGlobalWarLanthanumRequest(command, _subscription));
         _menu.SupplyRequested += command => SendPredictedMessage(new SWGlobalWarSupplyRequest(command, _subscription));
-        _menu.SupplyWorkRequested += command => SendPredictedMessage(new SWGlobalWarSupplyWorkRequest(command, _subscription));
         _menu.FlowGrantRequested += command => SendPredictedMessage(new SWGlobalWarFlowGrantRequest(command, _subscription));
         _menu.FlowRevokeRequested += command =>
             SendPredictedMessage(new SWGlobalWarFlowRevokeRequest(command, _subscription));
@@ -36,9 +39,6 @@ public sealed class SWGlobalWarMarketConsoleBoundUserInterface(EntityUid owner, 
     protected override void ReceiveMessage(BoundUserInterfaceMessage message)
     {
         base.ReceiveMessage(message);
-        if (IsOpened && message is SWGlobalWarSupplyWorkReply work && _subscription != Guid.Empty &&
-            work.Subscription == _subscription && EntMan.System<SWGlobalWarMarketViewSystem>().IsCurrentViewer(work.Viewer))
-            _menu?.ReceiveSupplyWorkResult(work.Result);
         if (IsOpened && message is SWGlobalWarSupplyReply supply && _subscription != Guid.Empty &&
             supply.Subscription == _subscription && EntMan.System<SWGlobalWarMarketViewSystem>().IsCurrentViewer(supply.Viewer))
             _menu?.ReceiveSupplyResult(supply.Result);
@@ -59,6 +59,8 @@ public sealed class SWGlobalWarMarketConsoleBoundUserInterface(EntityUid owner, 
             EntMan.System<SWGlobalWarMarketViewSystem>().IsCurrentViewer(snapshot.Viewer))
         {
             _lastSequence = snapshot.Sequence;
+            _generation = snapshot.State.Generation;
+            _revision = snapshot.State.AssignmentRevision;
             _menu?.UpdateState(snapshot.State);
         }
     }

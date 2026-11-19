@@ -12,6 +12,7 @@
     peaceDuration: 1200
     neutralFundingDuration: 600
     maximumDuration: 7200
+    participantAbsenceDuration: 86400
     timeLimitVictory: true
     disabledShipClasses: [ Battleship ]
   - type: SWGlobalWarStartingArsenal

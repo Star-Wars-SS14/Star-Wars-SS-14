@@ -40,11 +40,21 @@ public enum SWQuestBoardUiKey : byte { Key }
 public enum SWQuestBoardVisuals : byte { HasActive, Warning }
 
 [Serializable, NetSerializable]
+public enum SWQuestCommentKind : byte
+{
+    Comment,
+    Created,
+    Closed,
+}
+
+[Serializable, NetSerializable]
 public sealed class SWQuestComment
 {
+    public SWQuestCommentKind Kind = SWQuestCommentKind.Comment;
     public string Name = "";
     public string Icon = "";
     public string Text = "";
+    public TimeSpan RoundTime;
 }
 
 [Serializable, NetSerializable]

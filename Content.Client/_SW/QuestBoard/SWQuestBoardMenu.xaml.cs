@@ -151,6 +151,11 @@ public sealed partial class SWQuestBoardMenu : SWTerminalWindow
         if (allFitted) _fitPending = false;
     }
 
+    private static string FormatRoundTime(TimeSpan time)
+    {
+        return $"[{time.Hours:D2}:{time.Minutes:D2}:{time.Seconds:D2}]";
+    }
+
     private void SetCreateMode(bool on)
     {
         CreateForm.Visible = on;
@@ -303,7 +308,7 @@ public sealed partial class SWQuestBoardMenu : SWTerminalWindow
         CommentsList.Children.Clear();
 
         DetailTitle.SetMessage(Loc.GetString("sw-quest-board-id-title", ("id", quest.Id), ("title", quest.Title)));
-        DetailGiver.Text = Loc.GetString("sw-quest-board-giver", ("name", quest.Giver));
+        DetailGiver.Text = quest.Giver;
         DetailReward.Text = Loc.GetString("sw-quest-board-reward", ("reward", quest.Reward));
         DetailContact.Text = Loc.GetString("sw-quest-board-contact", ("contact", quest.Contact));
         DetailTakersHeader.Text = Loc.GetString("sw-quest-board-takers", ("list", ""));
@@ -320,13 +325,29 @@ public sealed partial class SWQuestBoardMenu : SWTerminalWindow
             if (index < quest.TakerIcons.Count) SetJobIcon(takerIcon, quest.TakerIcons[index]);
         }
 
-        CommentsHeader.Text = quest.Comments.Count > 0 ? Loc.GetString("sw-quest-board-comments") : "";
+        // Journal: created/closed log lines interleaved with player comments, all timed.
+        CommentsHeader.Text = Loc.GetString("sw-quest-board-comments");
         foreach (var comment in quest.Comments)
         {
+            var timeText = FormatRoundTime(comment.RoundTime);
+            if (comment.Kind != SWQuestCommentKind.Comment)
+            {
+                var logLabel = new Label
+                {
+                    Text = $"{timeText} {Loc.GetString(comment.Kind == SWQuestCommentKind.Created ? "sw-board-log-created" : "sw-board-log-closed")}",
+                    StyleClasses = { "SWTermValue" },
+                    HorizontalExpand = true,
+                };
+                CommentsList.AddChild(logLabel);
+                continue;
+            }
+
             var box = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Vertical, SeparationOverride = 2, HorizontalExpand = true };
             var head = new BoxContainer { Orientation = BoxContainer.LayoutOrientation.Horizontal, SeparationOverride = 4 };
+            var timeLabel = new Label { Text = timeText, StyleClasses = { "SWTermText" } };
             var commentIcon = new TextureRect { MinSize = new Vector2(24, 24), Stretch = TextureRect.StretchMode.KeepAspectCentered };
             var commentName = new Label { Text = comment.Name, StyleClasses = { "SWTermText" } };
+            head.AddChild(timeLabel);
             head.AddChild(commentIcon);
             head.AddChild(commentName);
             var commentText = new RichTextLabel { HorizontalExpand = true };

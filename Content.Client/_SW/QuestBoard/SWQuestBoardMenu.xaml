@@ -25,27 +25,32 @@
             </PanelContainer>
             <PanelContainer StyleClasses="SWTermFrame" HorizontalExpand="True">
                 <BoxContainer Orientation="Vertical" SeparationOverride="6" Margin="6" HorizontalExpand="True">
-                    <BoxContainer Name="GuidePanel" Orientation="Vertical" SeparationOverride="6" HorizontalExpand="True" Visible="False">
+                    <BoxContainer Name="GuidePanel" Orientation="Vertical" SeparationOverride="6" HorizontalExpand="True" VerticalExpand="True" Visible="False">
                         <Label Text="{Loc 'sw-board-guide-title'}" StyleClasses="SWTermValue" />
                         <RichTextLabel Name="GuideBody" HorizontalExpand="True" VerticalExpand="True" />
                     </BoxContainer>
-                    <BoxContainer Name="DetailsPanel" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="6">
-                        <RichTextLabel Name="DetailTitle" StyleClasses="SWTermValue" />
-                        <BoxContainer Name="ProgressRow" Orientation="Vertical" SeparationOverride="2" Visible="False">
-                            <ProgressBar Name="DetailProgress" MinHeight="6" HorizontalExpand="True" />
-                            <Label Name="DetailProgressCount" StyleClasses="SWTermText" />
-                        </BoxContainer>
-                        <BoxContainer Orientation="Horizontal" SeparationOverride="6">
-                            <TextureRect Name="GiverIcon" MinSize="32 32" Stretch="KeepAspectCentered" Visible="False" />
-                            <Label Name="DetailGiver" StyleClasses="SWTermText" VerticalExpand="True" />
-                        </BoxContainer>
-                        <Label Name="DetailReward" StyleClasses="SWTermText" />
-                        <Label Name="DetailContact" StyleClasses="SWTermText" />
-                        <Label Name="DetailTakersHeader" StyleClasses="SWTermText" />
-                        <BoxContainer Name="TakersList" Orientation="Vertical" SeparationOverride="2" />
-                        <RichTextLabel Name="DetailDescription" HorizontalExpand="True" />
-                        <Label Name="CommentsHeader" StyleClasses="SWTermText" />
-                        <BoxContainer Name="CommentsList" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="6" />
+                    <BoxContainer Name="DetailsPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="6">
+                        <ScrollContainer VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False" ReserveScrollbarSpace="True">
+                            <BoxContainer Orientation="Vertical" HorizontalExpand="True" SeparationOverride="6">
+                                <RichTextLabel Name="DetailTitle" StyleClasses="SWTermValue" />
+                                <BoxContainer Name="ProgressRow" Orientation="Vertical" SeparationOverride="2" Visible="False">
+                                    <ProgressBar Name="DetailProgress" MinHeight="6" HorizontalExpand="True" />
+                                    <Label Name="DetailProgressCount" StyleClasses="SWTermText" />
+                                </BoxContainer>
+                                <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+                                    <Label Name="DetailGiverPrefix" StyleClasses="SWTermText" Text="{Loc 'sw-quest-board-giver-prefix'}" />
+                                    <TextureRect Name="GiverIcon" MinSize="32 32" Stretch="KeepAspectCentered" Visible="False" />
+                                    <Label Name="DetailGiver" StyleClasses="SWTermText" VerticalExpand="True" />
+                                </BoxContainer>
+                                <Label Name="DetailReward" StyleClasses="SWTermText" />
+                                <Label Name="DetailContact" StyleClasses="SWTermText" />
+                                <Label Name="DetailTakersHeader" StyleClasses="SWTermText" />
+                                <BoxContainer Name="TakersList" Orientation="Vertical" SeparationOverride="2" />
+                                <RichTextLabel Name="DetailDescription" HorizontalExpand="True" />
+                                <Label Name="CommentsHeader" StyleClasses="SWTermText" />
+                                <BoxContainer Name="CommentsList" Orientation="Vertical" HorizontalExpand="True" SeparationOverride="6" />
+                            </BoxContainer>
+                        </ScrollContainer>
                         <BoxContainer Orientation="Horizontal" SeparationOverride="6">
                             <Button Name="TakeButton" Text="{Loc 'sw-quest-board-take'}" />
                             <Button Name="LeaveButton" Text="{Loc 'sw-quest-board-leave'}" />

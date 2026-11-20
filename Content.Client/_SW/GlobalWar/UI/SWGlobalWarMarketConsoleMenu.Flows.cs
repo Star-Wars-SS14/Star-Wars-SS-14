@@ -34,16 +34,6 @@ public sealed partial class SWGlobalWarMarketConsoleMenu
         FlowWorker.SelectId(-1);
         FlowGrantPicker.AddItem(Loc.GetString("sw-global-war-economy-no-grant"), -1);
         FlowGrantPicker.SelectId(-1);
-        FlowsTab.OnPressed += _ =>
-        {
-            GoodsScroll.Visible = FreightScroll.Visible = false;
-            FlowsScroll.Visible = true;
-            GrowthScroll.Visible = false;
-            GoodsTab.SetAppearance(SWGlobalWarConsoleStyle.TextBright, selected: false, tab: true);
-            FreightTab.SetAppearance(SWGlobalWarConsoleStyle.TextBright, selected: false, tab: true);
-            FlowsTab.SetAppearance(SWGlobalWarConsoleStyle.TextBright, selected: true, tab: true);
-            GrowthTab.SetAppearance(SWGlobalWarConsoleStyle.TextBright, selected: false, tab: true);
-        };
         foreach (var picker in new[] { FlowSource, FlowDestination, FlowCommodity, FlowWorker, FlowGrantPicker })
             picker.OnItemSelected += args =>
             {
@@ -224,7 +214,6 @@ public sealed partial class SWGlobalWarMarketConsoleMenu
         FlowHeadDecision.Visible = _state.Head;
         var selectionLost = false;
         FlowDelegation.Visible = _state.CanManageFlows;
-        FlowsTab.Disabled = _state.Generation == Guid.Empty || _state.Assignment == Guid.Empty;
         SaveFlow.Disabled = FlowPending ||
             !_state.CanManageFlows && !_state.FlowGrants.Any(g => !g.Revoked && g.Expires > _state.Time);
         GrantFlow.Disabled = !_state.CanManageFlows || FlowPending;

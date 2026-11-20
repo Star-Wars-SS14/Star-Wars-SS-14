@@ -29,6 +29,11 @@
             <BoxContainer Name="MarketPanel" Orientation="Vertical" SeparationOverride="8" Visible="False">
                 <OptionButton Name="MarketPicker" HorizontalExpand="True" />
                 <Label Name="MarketBalance" StyleClasses="SWTermValue" />
+                <BoxContainer SeparationOverride="8">
+                    <Label Text="{Loc 'sw-global-war-supply-quantity'}" VerticalAlignment="Center" />
+                    <LineEdit Name="MarketQuantity" Text="1" SetWidth="100" MinHeight="32" />
+                </BoxContainer>
+                <Label Name="MarketPallets" />
                 <ui:SWGlobalWarConsoleButton Name="MarketBuy" MinHeight="38" />
                 <ui:SWGlobalWarConsoleButton Name="MarketDeposit" Text="{Loc 'sw-global-war-terminal-deposit'}" MinHeight="38" />
             </BoxContainer>

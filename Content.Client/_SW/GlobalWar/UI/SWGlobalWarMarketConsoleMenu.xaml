@@ -64,7 +64,6 @@
                         <BoxContainer SeparationOverride="4">
                             <ui:SWGlobalWarConsoleButton Name="GoodsTab" Text="{Loc 'sw-global-war-market-goods'}" />
                             <ui:SWGlobalWarConsoleButton Name="FreightTab" Text="{Loc 'sw-global-war-market-freight'}" />
-                            <ui:SWGlobalWarConsoleButton Name="FlowsTab" Text="{Loc 'sw-global-war-economy-flows'}" />
                             <ui:SWGlobalWarConsoleButton Name="GrowthTab" Text="{Loc 'sw-global-war-growth-tab'}" />
                         </BoxContainer>
                         <ScrollContainer Name="GoodsScroll" VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False">
@@ -280,10 +279,11 @@
                         <BoxContainer Name="DeliveryFoot" Orientation="Vertical" SeparationOverride="4" Visible="False">
                             <Label Name="DeliveryLine" HorizontalExpand="True" ClipText="True" VAlign="Center" />
                             <BoxContainer SeparationOverride="6">
-                                <LineEdit Name="DemandQuantity" Text="1" SetWidth="66" ToolTip="{Loc 'sw-global-war-demand-quantity'}" />
-                                <ui:SWGlobalWarConsoleButton Name="Delivery" Text="{Loc 'sw-global-war-demand-once'}" HorizontalExpand="True" />
-                                <ui:SWGlobalWarConsoleButton Name="Maintain" Text="{Loc 'sw-global-war-demand-maintain'}" HorizontalExpand="True" />
+                                <Label Text="{Loc 'sw-global-war-supply-quantity'}" VerticalAlignment="Center" />
+                                <LineEdit Name="DemandQuantity" Text="1" SetWidth="66" MinHeight="32" ToolTip="{Loc 'sw-global-war-demand-quantity'}" />
                             </BoxContainer>
+                            <ui:SWGlobalWarConsoleButton Name="Delivery" Text="{Loc 'sw-global-war-demand-once'}" HorizontalExpand="True" MinHeight="44" />
+                            <ui:SWGlobalWarConsoleButton Name="Maintain" Text="{Loc 'sw-global-war-demand-maintain'}" HorizontalExpand="True" MinHeight="44" />
                         </BoxContainer>
                     </BoxContainer>
                 </PanelContainer>

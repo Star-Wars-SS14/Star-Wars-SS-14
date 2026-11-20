@@ -211,7 +211,6 @@ public sealed partial class SWGlobalWarMarketConsoleMenu : SWGlobalWarWindow
     {
         FlowsScroll.Visible = false;
         GrowthScroll.Visible = false;
-        FlowsTab.SetAppearance(SWGlobalWarConsoleStyle.TextBright, selected: false, tab: true);
         GrowthTab.SetAppearance(SWGlobalWarConsoleStyle.TextBright, selected: false, tab: true);
         _freightPage = freight;
         GoodsScroll.Visible = !freight;
@@ -466,8 +465,8 @@ public sealed partial class SWGlobalWarMarketConsoleMenu : SWGlobalWarWindow
         GoodsHeaderSlot.AddChild(SWGlobalWarMarketGoodRow.Header());
         DeliveryLine.FontOverride = SWGlobalWarConsoleStyle.Body;
         DeliveryLine.FontColorOverride = SWGlobalWarConsoleStyle.Bad;
-        Delivery.MainFont = SWGlobalWarConsoleStyle.MainButton;
         Delivery.SetAppearance(SWGlobalWarConsoleStyle.TextBright, primary: true);
+        Maintain.SetAppearance(SWGlobalWarConsoleStyle.TextBright, primary: true);
         Delivery.OnPressed += _ => RequestDemand(true);
         Maintain.OnPressed += _ => RequestDemand(false);
         TrafficToggle.SetAppearance(SWGlobalWarConsoleStyle.TextBright, selected: true);

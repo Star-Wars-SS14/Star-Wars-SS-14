@@ -21,7 +21,6 @@ public sealed partial class SWGlobalWarMarketConsoleMenu
             GrowthScroll.Visible = true;
             GoodsTab.SetAppearance(SWGlobalWarConsoleStyle.TextBright, selected: false, tab: true);
             FreightTab.SetAppearance(SWGlobalWarConsoleStyle.TextBright, selected: false, tab: true);
-            FlowsTab.SetAppearance(SWGlobalWarConsoleStyle.TextBright, selected: false, tab: true);
             GrowthTab.SetAppearance(SWGlobalWarConsoleStyle.TextBright, selected: true, tab: true);
         };
         GrowthPercent.OnTextChanged += _ => { FlowDraft.GrowthPercent = GrowthPercent.Text; RefreshGrowth(); };

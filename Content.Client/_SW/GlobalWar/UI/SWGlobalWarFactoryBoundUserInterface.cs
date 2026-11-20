@@ -14,11 +14,11 @@ public sealed class SWGlobalWarFactoryBoundUserInterface(EntityUid owner, Enum u
         base.Open();
         _subscription = Guid.NewGuid();
         _menu = this.CreateWindow<SWGlobalWarFactoryMenu>();
-        _menu.Requested += (action, kind, item, selection) =>
+        _menu.Requested += (action, kind, item, selection, quantity) =>
         {
             if (_state is { } state)
                 SendPredictedMessage(new SWGlobalWarFactoryRequest(state.Generation, Guid.NewGuid(), state.Revision,
-                    action, kind, item, selection));
+                    action, kind, item, selection, quantity));
         };
         _menu.OpenCentered();
         SendPredictedMessage(new SWGlobalWarFactoryOpen(_subscription));

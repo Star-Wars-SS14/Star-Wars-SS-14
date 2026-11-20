@@ -72,3 +72,36 @@
   components:
   - type: SWGlobalWarFactory
     recruitment: true
+
+- type: entity
+  parent: BaseCargoPallet
+  id: SWGlobalWarMarketOutputPallet
+  name: planetary market output pallet
+  description: Receives goods purchased at nearby planetary market terminals. Connect it edge-to-edge to matching pallets, with at least one within eight tiles of a terminal.
+  components:
+  - type: SWGlobalWarMarketPallet
+  - type: Sprite
+    sprite: Structures/cargo_pallets.rsi
+  - type: Icon
+    sprite: Structures/cargo_pallets.rsi
+    state: cargo_pallet_buy
+  - type: IconSmooth
+    key: sw_global_war_market_output
+    base: cargo_pallet_buy_
+
+- type: entity
+  parent: BaseCargoPallet
+  id: SWGlobalWarMarketInputPallet
+  name: planetary market input pallet
+  description: Place goods here and deposit them using a nearby planetary market terminal. Connect it edge-to-edge to matching pallets, with at least one within eight tiles of a terminal.
+  components:
+  - type: SWGlobalWarMarketPallet
+    deposit: true
+  - type: Sprite
+    sprite: Structures/cargo_pallets.rsi
+  - type: Icon
+    sprite: Structures/cargo_pallets.rsi
+    state: cargo_pallet_sell
+  - type: IconSmooth
+    key: sw_global_war_market_input
+    base: cargo_pallet_sell_

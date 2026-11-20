@@ -22,7 +22,7 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
     private const float StockCell = 82;
     private const int NameLine = 16;
 
-    public event Action<SWGlobalWarFactoryAction, SWGlobalWarSupplyKind, NetEntity?, string>? Requested;
+    public event Action<SWGlobalWarFactoryAction, SWGlobalWarSupplyKind, NetEntity?, string, int>? Requested;
     private List<SWGlobalWarFactoryChoice> _materials = new();
     private SWGlobalWarFactoryProduct? _selected;
     private List<SWGlobalWarFactoryProduct> _products = new();
@@ -36,6 +36,7 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
     private List<SWGlobalWarTerminalGood> _marketGoods = new();
     private bool _marketPowered;
     private bool _canBuyEquipment;
+    private bool _hasOutputPallet;
     private SWGlobalWarFactoryCargoWork? _cargoWork;
 
     public SWGlobalWarFactoryMenu()
@@ -69,11 +70,13 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
             MarketPicker.SelectId(args.Id);
             UpdateMarketSelection();
         };
+        MarketQuantity.OnTextChanged += _ => UpdateMarketSelection();
         MarketBuy.SetAppearance(SWGlobalWarConsoleStyle.TextBright, money: true);
         MarketBuy.OnPressed += _ =>
         {
-            if (_marketGoods.ElementAtOrDefault(MarketPicker.SelectedId) is { } good)
-                Request(SWGlobalWarFactoryAction.BuyMarket, selection: good.Commodity);
+            if (_marketGoods.ElementAtOrDefault(MarketPicker.SelectedId) is { } good &&
+                int.TryParse(MarketQuantity.Text, out var quantity) && quantity > 0)
+                Request(SWGlobalWarFactoryAction.BuyMarket, selection: good.Commodity, quantity: quantity);
         };
         MarketDeposit.OnPressed += _ => Request(SWGlobalWarFactoryAction.DepositMarket);
         Start.OnPressed += _ => Request(SWGlobalWarFactoryAction.Start);
@@ -93,9 +96,9 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
         NextPage.OnPressed += _ => Request(SWGlobalWarFactoryAction.NextPage);
     }
 
-    private void Request(SWGlobalWarFactoryAction action, NetEntity? item = null, string selection = "")
+    private void Request(SWGlobalWarFactoryAction action, NetEntity? item = null, string selection = "", int quantity = 1)
     {
-        Requested?.Invoke(action, _selected?.Kind ?? _lineKind, item, selection);
+        Requested?.Invoke(action, _selected?.Kind ?? _lineKind, item, selection, quantity);
     }
 
     public void UpdateState(SWGlobalWarFactoryState state)
@@ -104,7 +107,7 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
         {
             SetCampaignTitle(Loc.GetString(state.Arsenal ? "sw-global-war-terminal-vendor" : "sw-global-war-terminal-title"));
             if (!_sized)
-                SetSize = new Vector2(500, 300);
+                SetSize = new Vector2(520, 380);
             _sized = true;
             LineStrip.Visible = ProductColumn.Visible = ProductDetails.Visible = StockColumn.Visible = Recruit.Visible = false;
             MarketPanel.Visible = true;
@@ -121,7 +124,10 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
             _marketGoods = goods;
             _marketPowered = state.Operate && state.Powered;
             _canBuyEquipment = state.CanBuyEquipment;
-            MarketDeposit.Disabled = !_marketPowered;
+            _hasOutputPallet = state.OutputPallets > 0;
+            MarketPallets.Text = Loc.GetString("sw-global-war-terminal-pallets",
+                ("output", state.OutputPallets), ("input", state.InputPallets));
+            MarketDeposit.Disabled = !_marketPowered || state.InputPallets == 0;
             UpdateMarketSelection();
             return;
         }
@@ -171,9 +177,11 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
     private void UpdateMarketSelection()
     {
         var good = _marketGoods.ElementAtOrDefault(MarketPicker.SelectedId);
-        MarketBuy.Disabled = !_marketPowered || good == null || good.Stock < 1 || good.Price > 0 && !_canBuyEquipment;
+        var valid = int.TryParse(MarketQuantity.Text, out var quantity) && quantity > 0;
+        MarketBuy.Disabled = !_marketPowered || !_hasOutputPallet || !valid || good == null ||
+            good.Stock < quantity || good.Price > 0 && !_canBuyEquipment;
         MarketBuy.Text = good is { Price: > 0 }
-            ? Loc.GetString("sw-global-war-terminal-buy", ("price", good.Price))
+            ? Loc.GetString("sw-global-war-terminal-buy", ("price", valid ? (long) good.Price * quantity : 0))
             : Loc.GetString("sw-global-war-terminal-take");
         MarketBalance.Text = good == null ? string.Empty : Loc.GetString("sw-global-war-terminal-stock",
             ("stock", good.Stock.ToString("0.###")), ("incoming", good.Incoming.ToString("0.###")));

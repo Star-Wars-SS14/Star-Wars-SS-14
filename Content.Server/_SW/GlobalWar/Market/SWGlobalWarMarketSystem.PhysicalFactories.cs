@@ -137,7 +137,7 @@ public sealed partial class SWGlobalWarMarketSystem
             _settling = true;
             try
             {
-                if (ExchangeMarketItem(ent, actor, args.Request, args.Action, args.Selection, ref reason))
+                if (ExchangeMarketItem(ent, actor, args.Request, args.Action, args.Selection, args.Quantity, ref reason))
                 {
                     _marketExchanges.Add(args.Request);
                     reason = "sw-global-war-factory-success";

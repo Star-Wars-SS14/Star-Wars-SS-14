@@ -53,8 +53,10 @@ public sealed class SWGlobalWarFactoryState(Guid generation, long revision, bool
     int page, int pages, SWGlobalWarSupplyKind[] kinds, bool mining, bool arsenal = false,
     bool powered = false, bool enabled = false, int remainingSeconds = 0, int totalSeconds = 0, string detail = "",
     List<SWGlobalWarFactoryProduct>? products = null, SWGlobalWarFactoryCargoWork? cargoWork = null,
-    List<SWGlobalWarTerminalGood>? marketGoods = null, bool canBuyEquipment = false) : BoundUserInterfaceState
+    List<SWGlobalWarTerminalGood>? marketGoods = null, bool canBuyEquipment = false, int outputPallets = 0, int inputPallets = 0) : BoundUserInterfaceState
 {
+    public readonly int OutputPallets = outputPallets;
+    public readonly int InputPallets = inputPallets;
     public readonly List<SWGlobalWarTerminalGood>? MarketGoods = marketGoods;
     public readonly bool CanBuyEquipment = canBuyEquipment;
     public readonly Guid Generation = generation;
@@ -84,7 +86,7 @@ public sealed class SWGlobalWarFactoryState(Guid generation, long revision, bool
 [Serializable, NetSerializable]
 public sealed class SWGlobalWarFactoryRequest(Guid generation, Guid request, long revision,
     SWGlobalWarFactoryAction action, SWGlobalWarSupplyKind kind, NetEntity? item = null,
-    string selection = "") : BoundUserInterfaceMessage
+    string selection = "", int quantity = 1) : BoundUserInterfaceMessage
 {
     public readonly Guid Generation = generation;
     public readonly Guid Request = request;
@@ -93,4 +95,5 @@ public sealed class SWGlobalWarFactoryRequest(Guid generation, Guid request, lon
     public readonly SWGlobalWarSupplyKind Kind = kind;
     public readonly NetEntity? Item = item;
     public readonly string Selection = selection;
+    public readonly int Quantity = quantity;
 }

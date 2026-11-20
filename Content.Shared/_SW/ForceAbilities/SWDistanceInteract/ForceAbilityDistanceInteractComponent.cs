@@ -18,6 +18,8 @@ public sealed partial class ForceAbilityDistanceInteractComponent : Component
     public bool IsAttracting = false;
     [DataField]
     public string ActionAttractPrototype = "ActionForceAttract";
+    [DataField]
+    public bool GrantAttractAction = true;
 
     //Moving objects
     [DataField]

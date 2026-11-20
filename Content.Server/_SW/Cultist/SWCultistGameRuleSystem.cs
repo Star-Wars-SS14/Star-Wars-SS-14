@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Server._SW.ModularSaber;
 using Content.Server.Antag;
 using Content.Server.Antag.Components;
 using Content.Server.GameTicking;
@@ -18,6 +19,7 @@ using Content.Shared.Mind;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Objectives.Components;
+using Content.Shared.Roles;
 using Content.Shared.Roles.Jobs;
 using Content.Shared.Storage;
 using Content.Shared.Storage.EntitySystems;
@@ -26,13 +28,34 @@ using Robust.Shared.Containers;
 using Robust.Shared.Audio;
 using Robust.Shared.Enums;
 using Robust.Shared.Player;
+using Robust.Shared.Network;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Random;
+using Robust.Shared.Utility;
 
 namespace Content.Server._SW.Cultist;
 
 [RegisterComponent]
 public sealed partial class SWCultistGameRuleComponent : Component
 {
+    [DataField] public HashSet<ProtoId<JobPrototype>> EligibleJobs = new();
+    [DataField] public HashSet<ProtoId<JobPrototype>> TargetJobs = new();
+    [DataField] public Dictionary<ProtoId<JobPrototype>, EntProtoId> CommandIds = new();
+    [DataField] public Dictionary<ProtoId<JobPrototype>, EntProtoId> LegacySwords = new();
+    [DataField] public HashSet<EntProtoId> ModularSwords = new();
+    [DataField] public EntProtoId DeliverySword;
+    [DataField] public EntProtoId MindRole;
+    [DataField] public EntProtoId SelectionTemplate;
+    [DataField] public EntProtoId MainObjective;
+    [DataField] public EntProtoId SurvivalObjective;
+    [DataField] public SoundSpecifier BriefingSound = default!;
+    [DataField] public int SelectionMinSeconds = 300;
+    [DataField] public int SelectionMaxSeconds = 600;
+    [DataField] public int NoCultistWeight = 50;
+    [DataField] public int OneCultistWeight = 45;
+    [DataField] public int TwoCultistWeight = 5;
+    public readonly List<(EntityUid Mind, EntityUid Body)> PendingAutomaticRoles = new();
+    public bool AutomaticSelectionPending;
     public TimeSpan SelectionAt;
     public bool SelectionDone;
     public readonly List<(EntityUid Mind, EntityUid Body)> Members = new();
@@ -40,10 +63,12 @@ public sealed partial class SWCultistGameRuleComponent : Component
     public bool ConfirmedTargetGib;
     public EntityUid? TargetItem;
     public bool ObjectiveAssigned;
+    public string ObjectiveText = string.Empty;
     public bool ItemObjective;
     public readonly HashSet<EntityUid> Delivered = new();
     public readonly HashSet<EntityUid> Cancelled = new();
     public readonly Dictionary<EntityUid, EntityUid> Attempts = new();
+    public readonly Dictionary<EntityUid, HashSet<EntityUid>> AttemptParts = new();
     public readonly Dictionary<EntityUid, ContainerSlot> AttemptSlots = new();
     public readonly Dictionary<EntityUid, TimeSpan> NextAttempt = new();
     public SWCultistManualPlan? ManualPlan;
@@ -93,22 +118,10 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
     [Dependency] private readonly SharedContainerSystem _containers = default!;
     [Dependency] private readonly MetaDataSystem _metadata = default!;
 
-    private static readonly HashSet<string> EligibleJobs = new() { "SWCivialian", "SWEmpireSoldier", "SWRepublicSoldier" };
-    private static readonly HashSet<string> TargetJobs = new() { "SWJedi", "SWSith", "SWRepublicGeneral", "SWEmpireMoff" };
-
-    // Only a card captured from the character's ID slot after normal spawning is eligible.
-    private readonly record struct IssuedCommandId(EntityUid Mind, EntityUid Card, string Job, string CardName, string CharacterName);
+    // A player has at most one current spawn snapshot; the exact issued entity is retained.
+    private readonly record struct IssuedCommandId(EntityUid Mind, EntityUid Body, EntityUid Card, ProtoId<JobPrototype> Job);
     private readonly record struct CultistItemTarget(EntityUid Item, EntityUid Owner, bool IsIdCard);
-    private readonly Dictionary<EntityUid, IssuedCommandId> _issuedCommandIds = new();
-    private static readonly Dictionary<string, string> CommandIds = new()
-    {
-        ["SWEmpireMoff"] = "SWIDCardEmpireMoff",
-        ["SWEmpireMajor"] = "SWIDCardEmpireMajor",
-        ["SWEmpireLieutenant"] = "SWIDCardEmpireLieutenant",
-        ["SWRepublicGeneral"] = "SWIDCardRepublicGeneral",
-        ["SWRepublicCaptain"] = "SWIDCardRepublicCaptain",
-        ["SWRepublicLieutenant"] = "SWIDCardRepublicLieutenant",
-    };
+    private readonly Dictionary<NetUserId, IssuedCommandId> _issuedCommandIds = new();
 
     public override void Initialize()
     {
@@ -123,7 +136,7 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
 
     protected override void Started(EntityUid uid, SWCultistGameRuleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
-        component.SelectionAt = TimeSpan.FromSeconds(RobustRandom.Next(300, 601));
+        component.SelectionAt = TimeSpan.FromSeconds(RobustRandom.Next(component.SelectionMinSeconds, component.SelectionMaxSeconds + 1));
     }
 
     protected override void ActiveTick(EntityUid uid, SWCultistGameRuleComponent component, GameRuleComponent gameRule, float frameTime)
@@ -134,6 +147,12 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
         {
             component.SelectionDone = true;
             Select(uid, component);
+        }
+        if (component.AutomaticSelectionPending)
+        {
+            ResolveAutomaticRoles(uid, component);
+            if (component.AutomaticSelectionPending)
+                return;
         }
         if (component.ManualPlan is { } manual)
         {
@@ -180,20 +199,24 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
 
     private void OnPlayerSpawnComplete(PlayerSpawnCompleteEvent args)
     {
-        _issuedCommandIds.Remove(args.Mob);
-        if (args.JobId is not { } job || !CommandIds.TryGetValue(job, out var expected) ||
-            !_inventory.TryGetSlotEntity(args.Mob, "id", out var equipped) ||
-            !_idCards.TryGetIdCard(equipped.Value, out var card) ||
-            MetaData(card.Owner).EntityPrototype?.ID != expected ||
-            string.IsNullOrWhiteSpace(card.Comp.FullName) || card.Comp.FullName != Name(args.Mob) ||
-            !_minds.TryGetMind(args.Mob, out var mind, out var mindComp) ||
-            mindComp.OwnedEntity != args.Mob || mindComp.CharacterName != args.Profile.Name)
+        var user = args.Player.UserId;
+        _issuedCommandIds.Remove(user);
+        if (!_minds.TryGetMind(args.Mob, out var mind, out var mindComp) ||
+            mindComp.OwnedEntity != args.Mob || mindComp.UserId != user)
             return;
-
-        _issuedCommandIds[args.Mob] = new IssuedCommandId(mind, card.Owner, job, card.Comp.FullName!, args.Profile.Name);
+        if (args.JobId is not { } job ||
+            !_inventory.TryGetContainerSlotEnumerator((args.Mob, null), out var slots, SlotFlags.IDCARD))
+            return;
+        while (slots.NextItem(out var equipped))
+        {
+            if (!_idCards.TryGetIdCard(equipped, out var card))
+                continue;
+            _issuedCommandIds[user] = new IssuedCommandId(mind, args.Mob, card.Owner, job);
+            return;
+        }
     }
 
-    private List<CultistItemTarget> CollectItemTargets(HashSet<EntityUid> excludedBodies)
+    private List<CultistItemTarget> CollectItemTargets(SWCultistGameRuleComponent rule, HashSet<EntityUid> excludedBodies)
     {
         var result = new List<CultistItemTarget>();
         var seen = new HashSet<EntityUid>();
@@ -201,29 +224,59 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
         {
             if (!TryPlayer(session, out var body, out var mind, out var job) || excludedBodies.Contains(body))
                 continue;
-
-            var swordPrototype = job == "SWJedi" ? "SWEnergySwordJedi" : job == "SWSith" ? "SWEnergySwordSith" : null;
-            if (swordPrototype != null)
+            var inventory = PersonalInventory(body);
+            if (rule.LegacySwords.TryGetValue(job, out var legacy))
             {
-                var query = EntityQueryEnumerator<MetaDataComponent>();
-                while (query.MoveNext(out var item, out var meta))
+                foreach (var item in inventory)
                 {
-                    if (meta.EntityPrototype?.ID == swordPrototype && InPersonalInventory(body, item) && seen.Add(item))
+                    if (TryComp<MetaDataComponent>(item, out var meta) &&
+                        IsTargetSword(rule, item, meta, legacy) && seen.Add(item))
                         result.Add(new CultistItemTarget(item, body, false));
                 }
             }
-
-            if (!CommandIds.TryGetValue(job, out var cardPrototype) ||
-                !_issuedCommandIds.TryGetValue(body, out var issued) || issued.Mind != mind || issued.Job != job ||
-                TerminatingOrDeleted(issued.Card) || MetaData(issued.Card).EntityPrototype?.ID != cardPrototype ||
-                !TryComp<IdCardComponent>(issued.Card, out var idCard) ||
-                string.IsNullOrWhiteSpace(idCard.FullName) || idCard.FullName != issued.CardName ||
-                !TryComp<MindComponent>(mind, out var mindComp) || mindComp.CharacterName != issued.CharacterName ||
-                !InPersonalInventory(body, issued.Card) || !seen.Add(issued.Card))
+            if (!rule.CommandIds.TryGetValue(job, out var cardPrototype) ||
+                !_issuedCommandIds.TryGetValue(session.UserId, out var issued) ||
+                issued.Mind != mind || issued.Body != body || issued.Job != job ||
+                TerminatingOrDeleted(issued.Card) || MetaData(issued.Card).EntityPrototype?.ID != cardPrototype.Id ||
+                !HasComp<IdCardComponent>(issued.Card) || !inventory.Contains(issued.Card) || !seen.Add(issued.Card))
                 continue;
             result.Add(new CultistItemTarget(issued.Card, body, true));
         }
         return result;
+    }
+
+    private bool IsTargetSword(SWCultistGameRuleComponent rule, EntityUid item, MetaDataComponent meta, EntProtoId legacy)
+    {
+        var id = meta.EntityPrototype?.ID;
+        if (id == legacy.Id)
+            return true;
+        if (id == null || !rule.ModularSwords.Contains(new EntProtoId(id)) ||
+            !TryComp<SWModularSaberComponent>(item, out var saber))
+            return false;
+        return saber.Crystal?.Item is { } crystal && HasComp<SWSaberCrystalComponent>(crystal) &&
+               saber.Emitter?.Item is { } emitter && HasComp<SWSaberEmitterComponent>(emitter) &&
+               saber.Focus?.Item is { } focus && HasComp<SWSaberFocusComponent>(focus);
+    }
+
+    private HashSet<EntityUid> PersonalInventory(EntityUid body)
+    {
+        var visited = new HashSet<EntityUid>();
+        if (TerminatingOrDeleted(body))
+            return visited;
+        var pending = new Stack<EntityUid>(_hands.EnumerateHeld((body, null)));
+        if (_inventory.TryGetContainerSlotEnumerator((body, null), out var slots))
+            while (slots.NextItem(out var root)) pending.Push(root);
+        while (pending.TryPop(out var current))
+        {
+            if (current == body || TerminatingOrDeleted(current) || !visited.Add(current))
+                continue;
+            if (!TryComp<ContainerManagerComponent>(current, out var manager))
+                continue;
+            foreach (var container in _containers.GetAllContainers(current, manager))
+                foreach (var child in container.ContainedEntities)
+                    pending.Push(child);
+        }
+        return visited;
     }
 
     private string ItemObjectiveText(CultistItemTarget target)
@@ -235,11 +288,11 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
             ("owner", ownerName), ("item", Name(target.Item)));
     }
 
-    private bool TryPlayer(ICommonSession session, out EntityUid body, out EntityUid mind, out string job)
+    private bool TryPlayer(ICommonSession session, out EntityUid body, out EntityUid mind, out ProtoId<JobPrototype> job)
     {
         body = default;
         mind = default;
-        job = string.Empty;
+        job = default;
         if (session.Status != SessionStatus.InGame || session.AttachedEntity is not { } current ||
             GameTicker.PlayerGameStatuses.GetValueOrDefault(session.UserId) != PlayerGameStatus.JoinedGame ||
             HasComp<GhostComponent>(current) || !IsLiving(current) ||
@@ -249,38 +302,75 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
             return false;
         body = current;
         mind = mindId;
-        job = jobId.Value.Id;
+        job = jobId.Value;
         return true;
     }
 
     private void Select(EntityUid uid, SWCultistGameRuleComponent rule)
     {
-        var roll = RobustRandom.Next(100);
-        var count = roll < 50 ? 0 : roll < 95 ? 1 : 2;
+        var total = rule.NoCultistWeight + rule.OneCultistWeight + rule.TwoCultistWeight;
+        if (total <= 0)
+            return;
+        var roll = RobustRandom.Next(total);
+        var count = roll < rule.NoCultistWeight ? 0 : roll < rule.NoCultistWeight + rule.OneCultistWeight ? 1 : 2;
         if (count == 0)
             return;
-        var template = Spawn("SWCultistSelectionTemplate");
+        var template = Spawn(rule.SelectionTemplate);
         if (!TryComp<AntagSelectionComponent>(template, out var selection) ||
-            !_antags.TryGetNextAvailableDefinition((template, selection), out var definition, 20))
+            !_antags.TryGetNextAvailableDefinition((template, selection), out var definition,
+                _players.Sessions.Count(session => TryPlayer(session, out _, out _, out _))))
         {
             QueueDel(template);
             return;
         }
-        var candidates = _players.Sessions.Where(s => TryPlayer(s, out _, out _, out var job) && EligibleJobs.Contains(job)).ToList();
+        var candidates = _players.Sessions.Where(s => TryPlayer(s, out _, out _, out var job) && rule.EligibleJobs.Contains(job)).ToList();
         RobustRandom.Shuffle(candidates);
         foreach (var session in candidates)
         {
             if (rule.Members.Count >= count)
                 break;
-            if (!TryPlayer(session, out var body, out var mind, out _) ||
-                !_antags.TryMakeAntag((template, selection), session, definition.Value))
+            if (!TryPlayer(session, out var body, out var mind, out _))
                 continue;
-            rule.Members.Add((mind, body));
+            try
+            {
+                if (!_antags.TryMakeAntag((template, selection), session, definition.Value))
+                    continue;
+            }
+            catch (Exception e)
+            {
+                Log.Error($"Automatic cultist assignment for {session.Name} failed after a possible mutation: {e}");
+            }
+            var actualRole = HasCultistRole(rule, mind);
+            if (actualRole == true)
+                rule.Members.Add((mind, body));
+            else if (actualRole == null)
+            {
+                rule.PendingAutomaticRoles.Add((mind, body));
+                break;
+            }
         }
         QueueDel(template);
-        if (rule.Members.Count == 0)
+        rule.AutomaticSelectionPending = true;
+        ResolveAutomaticRoles(uid, rule);
+    }
+
+    private void ResolveAutomaticRoles(EntityUid uid, SWCultistGameRuleComponent rule)
+    {
+        for (var i = rule.PendingAutomaticRoles.Count - 1; i >= 0; i--)
+        {
+            var candidate = rule.PendingAutomaticRoles[i];
+            var hasRole = HasCultistRole(rule, candidate.Mind);
+            if (hasRole == null)
+                continue;
+            if (hasRole == true && !rule.Members.Any(member => member.Mind == candidate.Mind))
+                rule.Members.Add(candidate);
+            rule.PendingAutomaticRoles.RemoveAt(i);
+        }
+        if (rule.PendingAutomaticRoles.Count != 0)
             return;
-        AssignObjectives(uid, rule);
+        rule.AutomaticSelectionPending = false;
+        if (rule.Members.Count != 0)
+            AssignObjectives(uid, rule);
     }
 
     /// <summary>Administrative, explicit test setup. Never replaces an existing team or objective.</summary>
@@ -300,7 +390,7 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
             error = Loc.GetString("sw-cultist-test-rule-unavailable");
             return false;
         }
-        if (rule.Members.Count != 0 || rule.ObjectiveAssigned || rule.ManualPlan != null)
+        if (rule.Members.Count != 0 || rule.ObjectiveAssigned || rule.ManualPlan != null || rule.AutomaticSelectionPending)
         {
             error = Loc.GetString("sw-cultist-test-already-assigned");
             return false;
@@ -314,7 +404,7 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
         var chosen = new List<(ICommonSession Session, EntityUid Body, EntityUid Mind)>();
         foreach (var player in players)
         {
-            if (!TryPlayer(player, out var body, out var mind, out var job) || !EligibleJobs.Contains(job))
+            if (!TryPlayer(player, out var body, out var mind, out var job) || !rule.EligibleJobs.Contains(job))
             {
                 error = Loc.GetString("sw-cultist-test-invalid-player", ("player", player.Name));
                 return false;
@@ -333,7 +423,7 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
         var excludedBodies = chosen.Select(candidate => candidate.Body).ToHashSet();
         if (itemObjective)
         {
-            foreach (var candidate in CollectItemTargets(excludedBodies))
+            foreach (var candidate in CollectItemTargets(rule, excludedBodies))
             {
                 if (candidate.Item != target)
                     continue;
@@ -346,7 +436,7 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
         {
             foreach (var session in _players.Sessions)
             {
-                if (TryPlayer(session, out var body, out _, out var job) && TargetJobs.Contains(job) &&
+                if (TryPlayer(session, out var body, out _, out var job) && rule.TargetJobs.Contains(job) &&
                     !excludedBodies.Contains(body) && body == target)
                 {
                     targetOwner = body;
@@ -360,11 +450,12 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
             return false;
         }
 
-        var template = Spawn("SWCultistSelectionTemplate");
+        var template = Spawn(rule.SelectionTemplate);
         try
         {
             if (!TryComp<AntagSelectionComponent>(template, out var selection) ||
-                !_antags.TryGetNextAvailableDefinition((template, selection), out var definition, 20))
+                !_antags.TryGetNextAvailableDefinition((template, selection), out var definition,
+                _players.Sessions.Count(session => TryPlayer(session, out _, out _, out _))))
             {
                 error = Loc.GetString("sw-cultist-test-selection-unavailable");
                 return false;
@@ -399,12 +490,14 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
                 catch (Exception e)
                 {
                     Log.Error($"Manual cultist assignment for {candidate.Session.Name} failed after a possible mutation: {e}");
-                    plan.Uncertain = true;
-                    var actualRole = HasManualCultistRole(candidate.Mind);
+                    var actualRole = HasCultistRole(rule, candidate.Mind);
                     if (actualRole == true)
                         rule.Members.Add((candidate.Mind, candidate.Body));
                     else if (actualRole == null)
+                    {
+                        plan.Uncertain = true;
                         plan.Unresolved.Add((candidate.Mind, candidate.Body));
+                    }
                     assignedAll = false;
                     break;
                 }
@@ -413,13 +506,15 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
                     assignedAll = false;
                     break;
                 }
-                var hasRole = HasManualCultistRole(candidate.Mind);
+                var hasRole = HasCultistRole(rule, candidate.Mind);
                 if (hasRole != true)
                 {
                     // TryMakeAntag's boolean does not certify that its void MakeAntag completed.
-                    plan.Uncertain = true;
                     if (hasRole == null)
+                    {
+                        plan.Uncertain = true;
                         plan.Unresolved.Add((candidate.Mind, candidate.Body));
+                    }
                     assignedAll = false;
                     break;
                 }
@@ -433,6 +528,7 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
                 error = Loc.GetString("sw-cultist-test-assignment-failed", ("count", 0));
                 return false;
             }
+            rule.ObjectiveText = text;
             TryPublishManual(ruleUid, rule, plan);
             if (!assignedAll || !plan.Published || plan.Uncertain)
             {
@@ -447,23 +543,25 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
         }
     }
 
-    private bool? HasManualCultistRole(EntityUid mindId)
+    private bool? HasCultistRole(SWCultistGameRuleComponent rule, EntityUid mindId)
     {
         try
         {
+            if (TerminatingOrDeleted(mindId))
+                return false;
             if (!TryComp<MindComponent>(mindId, out var mind))
                 return null;
             foreach (var role in mind.MindRoleContainer.ContainedEntities)
             {
                 if (!TerminatingOrDeleted(role) && TryComp<MetaDataComponent>(role, out var meta) &&
-                    meta.EntityPrototype?.ID == "MindRoleSWCultist")
+                    meta.EntityPrototype?.ID == rule.MindRole.Id)
                     return true;
             }
             return false;
         }
         catch (Exception e)
         {
-            Log.Error($"Could not inspect manual cultist role for {mindId}: {e}");
+            Log.Error($"Could not inspect cultist role for {mindId}: {e}");
             return null;
         }
     }
@@ -477,15 +575,33 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
         for (var i = plan.Unresolved.Count - 1; i >= 0; i--)
         {
             var candidate = plan.Unresolved[i];
-            var hasRole = HasManualCultistRole(candidate.Mind);
+            var hasRole = HasCultistRole(rule, candidate.Mind);
             if (hasRole == null)
                 continue;
             if (hasRole == true && !rule.Members.Any(member => member.Mind == candidate.Mind))
                 rule.Members.Add(candidate);
             plan.Unresolved.RemoveAt(i);
         }
-        if (plan.Unresolved.Count != 0 || rule.Members.Count == 0)
+        // A previously confirmed role can disappear while publication is waiting.
+        for (var i = rule.Members.Count - 1; i >= 0; i--)
+        {
+            var member = rule.Members[i];
+            var hasRole = HasCultistRole(rule, member.Mind);
+            if (hasRole == true)
+                continue;
+            rule.Members.RemoveAt(i);
+            if (hasRole == null)
+                plan.Unresolved.Add(member);
+        }
+        plan.Uncertain = plan.Unresolved.Count != 0;
+        if (plan.Uncertain)
             return;
+        if (rule.Members.Count == 0)
+        {
+            // All previously unreadable outcomes are now known and none has the role.
+            plan.Published = true;
+            return;
+        }
         // A published-looking main objective must not be counted as a win while recovery is incomplete.
         rule.ObjectiveAssigned = false;
         try
@@ -508,12 +624,12 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
                 }
                 plan.TargetPrepared = true;
             }
-            plan.MainObjective ??= Spawn("SWCultistMainObjective");
+            plan.MainObjective ??= Spawn(rule.MainObjective);
             var main = plan.MainObjective.Value;
             Comp<SWCultistObjectiveComponent>(main).Rule = uid;
             _metadata.SetEntityName(main, plan.Text);
             _metadata.SetEntityDescription(main, plan.Text);
-            plan.SurvivalObjective ??= Spawn("SWCultistSurvivalObjective");
+            plan.SurvivalObjective ??= Spawn(rule.SurvivalObjective);
             var survival = plan.SurvivalObjective.Value;
             var survivalComp = Comp<SWCultistObjectiveComponent>(survival);
             survivalComp.Rule = uid;
@@ -522,7 +638,7 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
 
             foreach (var member in rule.Members)
             {
-                if (!TryComp<MindComponent>(member.Mind, out var mind) || HasManualCultistRole(member.Mind) != true)
+                if (!TryComp<MindComponent>(member.Mind, out var mind) || HasCultistRole(rule, member.Mind) != true)
                     return;
                 if (!mind.Objectives.Contains(main))
                     _minds.AddObjective(member.Mind, mind, main);
@@ -539,11 +655,7 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
                     continue;
                 try
                 {
-                    var partners = rule.Members.Where(x => x.Mind != member.Mind).Select(x => Name(x.Body)).ToArray();
-                    var partner = partners.Length > 0
-                        ? Loc.GetString("sw-cultist-partner", ("partner", string.Join(", ", partners)))
-                        : Loc.GetString("sw-cultist-alone");
-                    _antags.SendBriefing(member.Body, Loc.GetString("sw-cultist-briefing", ("partner", partner), ("objective", plan.Text)), null, new SoundPathSpecifier("/Audio/Ambience/Antag/traitor_start.ogg"));
+                    SendCultistBriefing(rule, member, plan.Text);
                 }
                 catch (Exception e)
                 {
@@ -559,15 +671,15 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
 
     private void AssignObjectives(EntityUid uid, SWCultistGameRuleComponent rule)
     {
-        var people = new List<(EntityUid Body, EntityUid Mind, string Job)>();
+        var people = new List<(EntityUid Body, EntityUid Mind, ProtoId<JobPrototype> Job)>();
         foreach (var session in _players.Sessions)
         {
-            if (TryPlayer(session, out var body, out var mind, out var job) && TargetJobs.Contains(job) &&
+            if (TryPlayer(session, out var body, out var mind, out var job) && rule.TargetJobs.Contains(job) &&
                 !rule.Members.Any(m => m.Body == body))
                 people.Add((body, mind, job));
         }
         var excludedBodies = rule.Members.Select(member => member.Body).ToHashSet();
-        var items = CollectItemTargets(excludedBodies);
+        var items = CollectItemTargets(rule, excludedBodies);
         var options = new List<bool>();
         if (people.Count > 0) options.Add(false);
         if (items.Count > 0) options.Add(true);
@@ -598,12 +710,13 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
 
     private void PublishObjectives(EntityUid uid, SWCultistGameRuleComponent rule, string text)
     {
-        var main = Spawn("SWCultistMainObjective");
+        rule.ObjectiveText = text;
+        var main = Spawn(rule.MainObjective);
         var mainComp = Comp<SWCultistObjectiveComponent>(main);
         mainComp.Rule = uid;
         _metadata.SetEntityName(main, text);
         _metadata.SetEntityDescription(main, text);
-        var survival = Spawn("SWCultistSurvivalObjective");
+        var survival = Spawn(rule.SurvivalObjective);
         var survivalComp = Comp<SWCultistObjectiveComponent>(survival);
         survivalComp.Rule = uid;
         survivalComp.Survival = true;
@@ -617,10 +730,17 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
             }
             _minds.AddObjective(member.Mind, mind, main);
             _minds.AddObjective(member.Mind, mind, survival);
-            var partners = rule.Members.Where(x => x.Mind != member.Mind).Select(x => Name(x.Body)).ToArray();
-            var partnerText = partners.Length > 0 ? Loc.GetString("sw-cultist-partner", ("partner", string.Join(", ", partners))) : Loc.GetString("sw-cultist-alone");
-            _antags.SendBriefing(member.Body, Loc.GetString("sw-cultist-briefing", ("partner", partnerText), ("objective", text)), null, new SoundPathSpecifier("/Audio/Ambience/Antag/traitor_start.ogg"));
+            SendCultistBriefing(rule, member, text);
         }
+    }
+
+    private void SendCultistBriefing(SWCultistGameRuleComponent rule, (EntityUid Mind, EntityUid Body) member, string text)
+    {
+        var partners = rule.Members.Where(x => x.Mind != member.Mind).Select(x => Name(x.Body)).ToArray();
+        var partner = partners.Length > 0
+            ? Loc.GetString("sw-cultist-partner", ("partner", string.Join(", ", partners)))
+            : Loc.GetString("sw-cultist-alone");
+        _antags.SendBriefing(member.Body, Loc.GetString("sw-cultist-briefing", ("partner", partner), ("objective", text)), null, rule.BriefingSound);
     }
 
     private bool InPersonalInventory(EntityUid body, EntityUid item)
@@ -713,8 +833,13 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
         if (!CloseAttemptSlot(rule, mind))
             return false;
         rule.Attempts.Remove(mind);
+        rule.AttemptParts.Remove(mind);
         return true;
     }
+
+    private bool ControlsAttempt(SWCultistGameRuleComponent rule, EntityUid mind, EntityUid sword) =>
+        rule.AttemptSlots.TryGetValue(mind, out var slot) && slot.Contains(sword) ||
+        !_containers.TryGetContainingContainer(sword, out _) && Transform(sword).MapUid == null;
 
     private void CleanupAttempt(SWCultistGameRuleComponent rule, EntityUid mind)
     {
@@ -728,17 +853,34 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
         {
             rule.Delivered.Add(mind);
             if (CloseAttemptSlot(rule, mind))
+            {
                 rule.Attempts.Remove(mind);
+                rule.AttemptParts.Remove(mind);
+            }
             return;
         }
-        var inOurSlot = rule.AttemptSlots.TryGetValue(mind, out var slot) && slot.Contains(sword);
-        var uncontainedNullspace = !_containers.TryGetContainingContainer(sword, out _) && Transform(sword).MapUid == null;
-        if (inOurSlot || uncontainedNullspace)
+        if (ControlsAttempt(rule, mind, sword))
         {
-            // This entity was created only for this attempt and has not entered the player's inventory.
-            Del(sword);
-            FinishAttempt(rule, mind);
-            return;
+            // Delete only parts created with this clone and still in its own slots. The
+            // saber releases other contents on termination, and callbacks may move it.
+            if (TryComp<SWModularSaberComponent>(sword, out var saber) &&
+                rule.AttemptParts.TryGetValue(mind, out var ownedParts))
+            {
+                foreach (var part in new[] { saber.Crystal?.Item, saber.Emitter?.Item, saber.Focus?.Item })
+                {
+                    if (!ControlsAttempt(rule, mind, sword))
+                        break;
+                    if (part is { } uid && ownedParts.Contains(uid) && !Deleted(uid) &&
+                        _containers.TryGetContainingContainer(uid, out var container) && container.Owner == sword)
+                        Del(uid);
+                }
+            }
+            if (ControlsAttempt(rule, mind, sword))
+            {
+                Del(sword);
+                FinishAttempt(rule, mind);
+                return;
+            }
         }
         // Do not destroy or duplicate an entity moved by an unexpected callback.
         rule.Cancelled.Add(mind);
@@ -747,9 +889,10 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
 
     private bool HasDeliverySpace(EntityUid body)
     {
-        if ((_inventory.HasSlot(body, "pocket1") && !_inventory.TryGetSlotEntity(body, "pocket1", out _)) ||
-            (_inventory.HasSlot(body, "pocket2") && !_inventory.TryGetSlotEntity(body, "pocket2", out _)))
-            return true;
+        if (_inventory.TryGetContainerSlotEnumerator((body, null), out var pockets, SlotFlags.POCKET))
+            while (pockets.MoveNext(out var pocket))
+                if (pocket.ContainedEntity == null)
+                    return true;
         if (!_inventory.TryGetContainerSlotEnumerator((body, null), out var slots))
             return false;
         while (slots.NextItem(out var item))
@@ -771,15 +914,26 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
         rule.AttemptSlots.Add(mind, slot);
         try
         {
-            var sword = Spawn("SWEnergySwordYellow");
+            var sword = Spawn(rule.DeliverySword);
             rule.Attempts.Add(mind, sword);
+            if (TryComp<SWModularSaberComponent>(sword, out var saber))
+            {
+                var parts = new HashSet<EntityUid>();
+                foreach (var part in new[] { saber.Crystal?.Item, saber.Emitter?.Item, saber.Focus?.Item })
+                    if (part is { } uid) parts.Add(uid);
+                rule.AttemptParts.Add(mind, parts);
+            }
             if (!_containers.Insert(sword, slot))
                 return;
-            if (_inventory.TryEquip(body, sword, "pocket1", silent: true) ||
-                _inventory.TryEquip(body, sword, "pocket2", silent: true))
+            if (_inventory.TryGetContainerSlotEnumerator((body, null), out var pockets, SlotFlags.POCKET))
             {
-                rule.Delivered.Add(mind);
-                return;
+                while (pockets.MoveNext(out var pocket))
+                {
+                    if (!_inventory.TryEquip(body, sword, pocket.ID, silent: true))
+                        continue;
+                    rule.Delivered.Add(mind);
+                    return;
+                }
             }
             if (!_inventory.TryGetContainerSlotEnumerator((body, null), out var slots))
                 return;
@@ -861,7 +1015,17 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
     protected override void AppendRoundEndText(EntityUid uid, SWCultistGameRuleComponent component, GameRuleComponent gameRule, ref RoundEndTextAppendEvent args)
     {
         if (component.Members.Count == 0) return;
-        var success = MainSuccess(component) && Survival(component);
-        args.AddLine(Loc.GetString(success ? "sw-cultist-roundend-success" : "sw-cultist-roundend-failure"));
+        var mainSuccess = MainSuccess(component);
+        var survival = Survival(component);
+        var success = mainSuccess && survival;
+        var outcome = Loc.GetString(success ? "sw-cultist-roundend-success" : "sw-cultist-roundend-failure");
+        var objective = string.IsNullOrEmpty(component.ObjectiveText)
+            ? Loc.GetString("sw-cultist-objective-unavailable")
+            : component.ObjectiveText;
+        var mainStatus = Loc.GetString(mainSuccess ? "sw-cultist-roundend-completed" : "sw-cultist-roundend-not-completed");
+        var survivalStatus = Loc.GetString(survival ? "sw-cultist-roundend-survived" : "sw-cultist-roundend-none-survived");
+        args.AddPriorityLine($"[color={(success ? "#66ff99" : "#ff7777")}]{FormattedMessage.EscapeText(outcome)}[/color]\n" +
+            $"[color=#fff2a8]{FormattedMessage.EscapeText(objective)} — {FormattedMessage.EscapeText(mainStatus)}\n" +
+            $"{FormattedMessage.EscapeText(survivalStatus)}[/color]");
     }
 }

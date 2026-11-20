@@ -518,7 +518,7 @@ namespace Content.Server.GameTicking
             var textEv = new RoundEndTextAppendEvent();
             RaiseLocalEvent(textEv);
 
-            var roundEndText = $"{text}\n{textEv.Text}";
+            var roundEndText = $"{textEv.PriorityText}{text}\n{textEv.Text}";
 
             //Get the timespan of the round.
             var roundDuration = RoundDuration();
@@ -981,6 +981,11 @@ namespace Content.Server.GameTicking
     public sealed class RoundEndTextAppendEvent
     {
         private bool _doNewLine;
+
+        public string PriorityText { get; private set; } = string.Empty;
+
+        /// <summary>Add a line before the supplied round result and other summary text.</summary>
+        public void AddPriorityLine(string text) => PriorityText += text + "\n";
 
         /// <summary>
         ///     Text to display in the round end summary screen.

@@ -30,3 +30,8 @@ sw-cultist-test-success = Культистов назначено: {$count}. С�
 
 sw-cultist-test-pending = Назначено игроков: {$count}. Назначение частичное или публикация задач ещё восстанавливается; повтор команды заблокирован.
 sw-cultist-test-uncertain = Неопределённая частичная выдача. Подтверждённых культистов: {$count}. Повтор и победа заблокированы; проверьте журнал и состояние ролей.
+
+sw-cultist-roundend-completed = выполнена
+sw-cultist-roundend-not-completed = не выполнена
+sw-cultist-roundend-survived = Хотя бы один культист выжил.
+sw-cultist-roundend-none-survived = Ни один культист не выжил.

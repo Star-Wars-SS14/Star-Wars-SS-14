@@ -30,3 +30,8 @@ sw-cultist-test-success = Cultists assigned: {$count}. No random selection will 
 
 sw-cultist-test-pending = Players assigned: {$count}. Assignment was partial or objective publication is still recovering; repeating this command is blocked.
 sw-cultist-test-uncertain = Assignment may have partially mutated state. Confirmed cultists: {$count}. Reassignment and victory are blocked; inspect the logs and roles.
+
+sw-cultist-roundend-completed = completed
+sw-cultist-roundend-not-completed = not completed
+sw-cultist-roundend-survived = At least one cultist survived.
+sw-cultist-roundend-none-survived = No cultists survived.

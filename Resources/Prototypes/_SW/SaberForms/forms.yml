@@ -2,12 +2,13 @@
   id: SWFormShiiCho
   name: sw-saber-form-shii-cho-name
   description: sw-saber-form-shii-cho-description
+  swingAnimation: SWSaberArcShiiCho
 
 - type: swSaberForm
   id: SWFormMakashi
   name: sw-saber-form-makashi-name
   description: sw-saber-form-makashi-description
-  swingAnimation: WeaponArcThrust
+  swingAnimation: SWSaberArcMakashi
   visualArcMultiplier: 0.45
   riposteWindow: 1.15
   riposteAttackRateMultiplier: 1.35
@@ -17,7 +18,7 @@
   id: SWFormSoresu
   name: sw-saber-form-soresu-name
   description: sw-saber-form-soresu-description
-  swingAnimation: WeaponArcSlash
+  swingAnimation: SWSaberArcSoresu
   visualArcMultiplier: 0.65
   guardDurationMultiplier: 1.25
   guardReflectionSparks: true
@@ -35,3 +36,30 @@
       state: icon
   - type: InstantAction
     event: !type:SWSaberFormsActionEvent
+
+- type: entity
+  id: SWSaberArcShiiCho
+  parent: WeaponArcSlash
+  components:
+  - type: TimedDespawn
+    lifetime: 0.24
+  - type: SWSaberSwingTrailVisuals
+    shape: Crescent
+
+- type: entity
+  id: SWSaberArcMakashi
+  parent: WeaponArcThrust
+  components:
+  - type: TimedDespawn
+    lifetime: 0.24
+  - type: SWSaberSwingTrailVisuals
+    shape: Thrust
+
+- type: entity
+  id: SWSaberArcSoresu
+  parent: WeaponArcSlash
+  components:
+  - type: TimedDespawn
+    lifetime: 0.24
+  - type: SWSaberSwingTrailVisuals
+    shape: TwinArcs

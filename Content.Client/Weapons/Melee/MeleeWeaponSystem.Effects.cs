@@ -1,6 +1,8 @@
 using System.Numerics;
+using Content.Client._SW.SaberForms;
 using Content.Client.Animations;
 using Content.Client.Weapons.Melee.Components;
+using Content.Shared.Toggleable;
 using Content.Shared.Weapons.Melee;
 using Robust.Client.Animations;
 using Robust.Client.GameObjects;
@@ -11,6 +13,8 @@ namespace Content.Client.Weapons.Melee;
 
 public sealed partial class MeleeWeaponSystem
 {
+    [Dependency] private readonly SharedAppearanceSystem _appearance = default!;
+
     private const string FadeAnimationKey = "melee-fade";
     private const string SlashAnimationKey = "melee-slash";
     private const string ThrustAnimationKey = "melee-thrust";
@@ -55,6 +59,18 @@ public sealed partial class MeleeWeaponSystem
 
             if (meleeWeaponComponent.SwingLeft)
                 angle *= -1;
+
+            if (TryComp<SWSaberSwingTrailVisualsComponent>(animationUid, out var trail))
+            {
+                // Very close aim still shows part of the blade, inside the weapon's reach.
+                const float minimumTrailReach = 0.55f;
+                trail.Direction = localPos.ToWorldAngle();
+                trail.Sweep = angle;
+                trail.Reach = MathF.Min(meleeWeaponComponent.Range, MathF.Max(minimumTrailReach, localPos.Length()));
+                trail.StartedAt = Timing.RealTime;
+                if (_appearance.TryGetData<Color>(weapon, ToggleableVisuals.Color, out var tint))
+                    trail.Tint = tint;
+            }
         }
         _sprite.SetRotation((animationUid, sprite), localPos.ToWorldAngle());
         var distance = Math.Clamp(localPos.Length() / 2f, 0.2f, 1f);

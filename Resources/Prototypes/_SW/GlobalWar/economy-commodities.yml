@@ -1,5 +1,6 @@
 - type: swGlobalWarCommodity
   id: SWGlobalWarF
+  purchasePrice: 20
   consumptionTax: 100
   name: sw-global-war-commodity-food
   entity: SWGlobalWarFoodUnit
@@ -7,36 +8,42 @@
 
 - type: swGlobalWarCommodity
   id: SWGlobalWarFe
+  purchasePrice: 10
   name: sw-global-war-commodity-iron
   entity: SteelOre1
   cargoVolume: 1
 
 - type: swGlobalWarCommodity
   id: SWGlobalWarC
+  purchasePrice: 10
   name: sw-global-war-commodity-coal
   entity: Coal1
   cargoVolume: 1
 
 - type: swGlobalWarCommodity
   id: SWGlobalWarAu
+  purchasePrice: 40
   name: sw-global-war-commodity-gold
   entity: GoldOre1
   cargoVolume: 1
 
 - type: swGlobalWarCommodity
   id: SWGlobalWarLn
+  purchasePrice: 100
   name: sw-global-war-commodity-lanthanide
   entity: SWLantanidOre1
   cargoVolume: 1
 
 - type: swGlobalWarCommodity
   id: SWGlobalWarS
+  purchasePrice: 30
   name: sw-global-war-commodity-steel
   entity: SheetSteel1
   cargoVolume: 1
 
 - type: swGlobalWarCommodity
   id: SWGlobalWarE
+  purchasePrice: 100
   consumptionTax: 2000
   name: sw-global-war-commodity-electronics
   entity: SWElectronics1
@@ -44,6 +51,7 @@
 
 - type: swGlobalWarCommodity
   id: SWGlobalWarL
+  purchasePrice: 150
   consumptionTax: 1000
   name: sw-global-war-commodity-luxury
   entity: SWGlobalWarLuxuryUnit
@@ -51,6 +59,7 @@
 
 - type: swGlobalWarCommodity
   id: SWGlobalWarAE
+  purchasePrice: 300
   name: sw-global-war-commodity-advanced-electronics
   entity: SWAdvancedElectronics
   cargoVolume: 1

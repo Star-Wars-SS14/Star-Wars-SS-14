@@ -54,9 +54,10 @@ public sealed partial class SWGlobalWarMarketSystem
                 if (ent.Comp.Arsenal && !military)
                     continue;
                 var name = Loc.GetString(_prototypes.Index<SWGlobalWarCommodityPrototype>(commodity).Name);
-                goods.Add(new(commodity, name, stock.Available / (double) Simulation!.UnitsPerItem,
-                    stock.Incoming / (double) Simulation.UnitsPerItem,
-                    military ? SWGlobalWarSupplyProgram.UnitPrice(item.Kind, item.Bacta) : 0));
+                goods.Add(new(commodity, name, ent.Comp.Warehouse ? market.FactoryStock.GetValueOrDefault(commodity) : stock.Available / (double) Simulation!.UnitsPerItem,
+                    ent.Comp.Warehouse ? 0 : stock.Incoming / (double) Simulation!.UnitsPerItem,
+                    ent.Comp.Warehouse ? 0 : ent.Comp.IndustrialSupply ? IndustrialPrice(commodity) :
+                    IndustrialPrice(commodity)));
             }
             if (!powered)
                 status += " · " + Loc.GetString("sw-global-war-factory-rejected-power");
@@ -66,11 +67,13 @@ public sealed partial class SWGlobalWarMarketSystem
                 status += " · " + ent.Comp.Feedback;
         }
         _factoryUi.ServerSendUiMessage(ent.Owner, SWGlobalWarFactoryUiKey.Key,
-            new SWGlobalWarFactorySnapshot(new(actor?.Generation ?? Guid.Empty, actor?.Revision ?? 0, actor != null,
+            new SWGlobalWarFactorySnapshot(new(actor?.Generation ?? Guid.Empty, actor?.Revision ?? 0, actor != null && (!(ent.Comp.Warehouse || ent.Comp.IndustrialSupply || ent.Comp.IndustrialOutput) || FactoryOperator(actor)),
                 false, false, default, status, [], [], [], 0, 1, [], false, ent.Comp.Arsenal, powered,
-                marketGoods: goods, canBuyEquipment: powered && actor != null && CanBuyEquipment(actor),
+                marketGoods: goods, canBuyEquipment: powered && actor != null && (CanBuyEquipment(actor) || FactoryOperator(actor)),
                 outputPallets: actor == null ? 0 : FindMarketPallets(ent, false).Count,
-                inputPallets: actor == null ? 0 : FindMarketPallets(ent, true).Count),
+                inputPallets: actor == null ? 0 : FindMarketPallets(ent, true).Count,
+                warehouse: ent.Comp.Warehouse, industrialSupply: ent.Comp.IndustrialSupply,
+                industrialOutput: ent.Comp.IndustrialOutput, purchaseRates: new(ent.Comp.PurchaseRates)),
                 subscription, GetNetEntity(viewer)), viewer);
     }
 
@@ -82,13 +85,15 @@ public sealed partial class SWGlobalWarMarketSystem
             rejected = "sw-global-war-factory-rejected-power";
             return false;
         }
+        if (ent.Comp.IndustrialSupply || ent.Comp.IndustrialOutput || ent.Comp.Warehouse)
+            return IndustrialRequest(ent, actor, request, market, action, commodity, quantity, ref rejected);
         if (action == SWGlobalWarFactoryAction.DepositMarket)
             return DepositPalletItems(ent, actor, market, ref rejected);
         if (commodity == null || !market.Goods.TryGetValue(commodity, out var good) ||
             quantity <= 0 || quantity > good.Available / Simulation!.UnitsPerItem)
             return false;
         var military = MilitaryGoods.TryGetValue(commodity, out var supply);
-        if (ent.Comp.Arsenal && !military || military && !CanBuyEquipment(actor))
+        if (ent.Comp.Arsenal && !military || military && !CanBuyEquipment(actor) || !military && IndustrialPrice(commodity) > 0 && !FactoryOperator(actor))
             return false;
         var pallets = FindMarketPallets(ent, deposit: false);
         if (pallets.Count == 0)
@@ -96,9 +101,10 @@ public sealed partial class SWGlobalWarMarketSystem
             rejected = "sw-global-war-terminal-no-output";
             return false;
         }
-        var unitPrice = military ? SWGlobalWarSupplyProgram.UnitPrice(supply.Kind, supply.Bacta) : 0;
+        var unitPrice = IndustrialPrice(commodity);
+        var account = military ? SWGlobalWarAccount.War : SWGlobalWarAccount.Industry;
         var price = (long) unitPrice * quantity;
-        if (price > 0 && _ledger.GetBalance(actor.Faction, SWGlobalWarAccount.War).Available < price)
+        if (price > 0 && _ledger.GetBalance(actor.Faction, account).Available < price)
         {
             rejected = "sw-global-war-terminal-no-funds";
             return false;
@@ -140,7 +146,7 @@ public sealed partial class SWGlobalWarMarketSystem
                 receipt.Price = unitPrice;
             }
             if (price > 0 && !_ledger.TryExecuteSystem(new(actor.Generation, Guid.NewGuid(), 0,
-                    SWGlobalWarLedgerAction.Debit, actor.Faction, SWGlobalWarAccount.War, price,
+                    SWGlobalWarLedgerAction.Debit, actor.Faction, account, price,
                     Purpose: "planetary-market-purchase"), out _))
             {
                 rejected = "sw-global-war-terminal-no-funds";

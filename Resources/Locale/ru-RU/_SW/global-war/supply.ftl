@@ -1,5 +1,5 @@
 sw-global-war-supply-head-decision = Глава принял явное решение по программе снабжения вашего ведомства. Изменение записано в журнал.
-sw-global-war-supply-title = Снабжение программы
+sw-global-war-supply-title = Распределение продукции
 sw-global-war-supply-kind-t2 = Штатные винтовки
 sw-global-war-supply-kind-t1 = Резервное оружие
 sw-global-war-supply-kind-armor = Броня
@@ -14,7 +14,7 @@ sw-global-war-supply-no-consumer = Запланировано; физическ�
 sw-global-war-supply-physical-required = Материальный резерв не означает выпуск. Нужны работа реальной линии, перевозка и фактическая приёмка изделий.
 sw-global-war-supply-funds = Доступно военному ведомству: { $amount } ГК. Резерв оплачивается промышленности только при фактической приёмке.
 sw-global-war-supply-future-line = Настройка базовой линии стороны действует только на будущие резервы. Уже закреплённые партии и изделия не перераспределяются.
-sw-global-war-supply-local-percent = Местному складу, % (0–100)
+sw-global-war-supply-local-percent = На склад завода, % (0–100); остальное — продажа на рынок
 sw-global-war-supply-produce-bacta = Будущие партии — бакта. Автоматическая закупка колто не меняется.
 sw-global-war-supply-save-line = Сохранить настройку будущего выпуска
 sw-global-war-supply-conflict = Настройка уже изменилась. Сравните значения: примените свой черновик к актуальной ревизии либо замените ввод серверными значениями кнопкой загрузки.

@@ -83,15 +83,17 @@ public sealed partial class SWGlobalWarMarketSystem
             var stock = market.Goods[commodity];
             var units = _supplyStacks.GetCount(item);
             var total = (long) totals.GetValueOrDefault(commodity) + units;
-            var space = stock.Capacity - stock.Stock - stock.Incoming - stock.ReservedIncoming;
-            if (units <= 0 || total > space / Simulation!.UnitsPerItem)
+            var space = ent.Comp.Warehouse
+                ? int.MaxValue - market.FactoryStock.GetValueOrDefault(commodity)
+                : (stock.Capacity - stock.Stock - stock.Incoming - stock.ReservedIncoming) / Simulation!.UnitsPerItem;
+            if (units <= 0 || total > space)
             {
                 rejected = FactoryRejectedSpace;
                 return false;
             }
             totals[commodity] = (int) total;
             items.Add((item, commodity, units));
-            if (TryComp<SWGlobalWarMarketReceiptComponent>(item, out var receipt) &&
+            if (!ent.Comp.Warehouse && TryComp<SWGlobalWarMarketReceiptComponent>(item, out var receipt) &&
                 receipt.Generation == actor.Generation && receipt.Commodity == commodity && receipt.Price > 0)
                 refunds.Add(new(actor.Generation, Guid.NewGuid(), 0, SWGlobalWarLedgerAction.Credit,
                     receipt.Payer, SWGlobalWarAccount.War, receipt.Price, Purpose: "planetary-market-refund"));
@@ -104,8 +106,12 @@ public sealed partial class SWGlobalWarMarketSystem
         if (refunds.Count > 0 && !_ledger.TryExecuteSystemBatch(Guid.NewGuid(), refunds))
             return false;
         foreach (var (commodity, units) in totals)
-            if (!Simulation!.DepositMarketStock(market.Planet, commodity, units * Simulation.UnitsPerItem))
+        {
+            if (ent.Comp.Warehouse)
+                market.FactoryStock[commodity] = market.FactoryStock.GetValueOrDefault(commodity) + units;
+            else if (!Simulation!.DepositMarketStock(market.Planet, commodity, units * Simulation.UnitsPerItem))
                 throw new InvalidOperationException("Prepared pallet deposit exceeded market capacity.");
+        }
         foreach (var (item, _, _) in items)
         {
             _supplyItems.Remove(item);

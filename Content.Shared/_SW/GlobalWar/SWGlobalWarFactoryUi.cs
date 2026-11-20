@@ -8,7 +8,7 @@ public enum SWGlobalWarFactoryUiKey : byte { Key }
 [Serializable, NetSerializable]
 public enum SWGlobalWarFactoryAction : byte
 {
-    Start, Stop, Insert, Take, Recruit, Materialize, Produce, PreviousPage, NextPage, CargoWork, BuyMarket, DepositMarket,
+    Start, Stop, Insert, Take, Recruit, Materialize, Produce, PreviousPage, NextPage, CargoWork, BuyMarket, DepositMarket, ConfigureIndustrialRate,
 }
 
 [Serializable, NetSerializable]
@@ -53,8 +53,13 @@ public sealed class SWGlobalWarFactoryState(Guid generation, long revision, bool
     int page, int pages, SWGlobalWarSupplyKind[] kinds, bool mining, bool arsenal = false,
     bool powered = false, bool enabled = false, int remainingSeconds = 0, int totalSeconds = 0, string detail = "",
     List<SWGlobalWarFactoryProduct>? products = null, SWGlobalWarFactoryCargoWork? cargoWork = null,
-    List<SWGlobalWarTerminalGood>? marketGoods = null, bool canBuyEquipment = false, int outputPallets = 0, int inputPallets = 0) : BoundUserInterfaceState
+    List<SWGlobalWarTerminalGood>? marketGoods = null, bool canBuyEquipment = false, int outputPallets = 0, int inputPallets = 0, bool warehouse = false, bool industrialSupply = false,
+    bool industrialOutput = false, Dictionary<string, int>? purchaseRates = null) : BoundUserInterfaceState
 {
+    public readonly bool Warehouse = warehouse;
+    public readonly bool IndustrialSupply = industrialSupply;
+    public readonly bool IndustrialOutput = industrialOutput;
+    public readonly Dictionary<string, int> PurchaseRates = purchaseRates ?? new();
     public readonly int OutputPallets = outputPallets;
     public readonly int InputPallets = inputPallets;
     public readonly List<SWGlobalWarTerminalGood>? MarketGoods = marketGoods;

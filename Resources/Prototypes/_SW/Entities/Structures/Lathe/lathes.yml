@@ -12,7 +12,7 @@
       base:
         shape:
           !type:PhysShapeAabb
-          bounds: "-0.4,-0.4, 0.4,0.4"
+          bounds: "-0.4,-0.4,0.4,0.4"
         mask:
         - FullTileMask
         layer:
@@ -21,7 +21,7 @@
       in1:
         shape:
           !type:PhysShapeAabb
-          bounds: "0.6, 0.0, -0.6, -0.8"
+          bounds: "-0.6,-0.8,0.6,0"
         density: 190
         mask:
         - ItemMask
@@ -56,7 +56,7 @@
       in_ore:
         shape:
           !type:PhysShapeAabb
-          bounds: "0.35, 0.85, -0.35, 0.5"
+          bounds: "-0.35,0.5,0.35,0.85"
         density: 190
         mask:
         - ItemMask
@@ -124,7 +124,7 @@
       - state: electronics
         rotation: 90
       - state: up_arrow
-      - state: down_arrow  
+      - state: down_arrow
   - type: Construction
     graph: SWLatheGraph
     node: electronicsLathe
@@ -170,7 +170,7 @@
       - state: blaster
         rotation: 90
       - state: up_arrow
-      - state: down_arrow   
+      - state: down_arrow
   - type: Construction
     graph: SWLatheGraph
     node: blasterLathe
@@ -217,7 +217,7 @@
       - state: fire
         rotation: 90
       - state: up_arrow
-      - state: down_arrow   
+      - state: down_arrow
   - type: Construction
     graph: SWLatheGraph
     node: smeltLathe
@@ -352,7 +352,7 @@
       base:
         shape:
           !type:PhysShapeAabb
-          bounds: "-0.4,-0.4, 0.4,0.4"
+          bounds: "-0.4,-0.4,0.4,0.4"
         mask:
         - FullTileMask
         layer:
@@ -469,7 +469,7 @@
       in:
         shape:
           !type:PhysShapeAabb
-          bounds: "0.5, -0.3, -0.5, -0.6"
+          bounds: "-0.5,-0.6,0.5,-0.3"
         density: 190
         mask:
         - ItemMask
@@ -515,7 +515,7 @@
       in:
         shape:
           !type:PhysShapeAabb
-          bounds: "0.5, -0.3, -0.5, -0.6"
+          bounds: "-0.5,-0.6,0.5,-0.3"
         density: 190
         mask:
         - ItemMask
@@ -561,7 +561,7 @@
       in1: #down
         shape:
           !type:PhysShapeAabb
-          bounds: "0.4, -0.3, -0.4, -0.5"
+          bounds: "-0.4,-0.5,0.4,-0.3"
         density: 190
         mask:
         - ItemMask
@@ -571,7 +571,7 @@
       in4: #up
         shape:
           !type:PhysShapeAabb
-          bounds: "0.4, 0.5, -0.4, 0.3"
+          bounds: "-0.4,0.3,0.4,0.5"
         density: 190
         mask:
         - ItemMask
@@ -581,7 +581,7 @@
       in2: #left
         shape:
           !type:PhysShapeAabb
-          bounds: "-0.3, 0.4, -0.5, -0.4" 
+          bounds: "-0.5,-0.4,-0.3,0.4"
         density: 190
         mask:
         - ItemMask
@@ -591,7 +591,7 @@
       in3: #right
         shape:
           !type:PhysShapeAabb
-          bounds: "0.5, 0.4, 0.3, -0.4"
+          bounds: "0.3,-0.4,0.5,0.4"
         density: 190
         mask:
         - ItemMask

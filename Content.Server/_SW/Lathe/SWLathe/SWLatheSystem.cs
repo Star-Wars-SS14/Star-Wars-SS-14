@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 namespace Content.Server._SW.Lathe.SWLathe;
 public sealed class SWLatheSystem : EntitySystem
 {
+    [Dependency] private readonly SharedStackSystem _stacks = default!;
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly PowerChargeSystem _chargeSystem = default!;
@@ -31,15 +32,12 @@ public sealed class SWLatheSystem : EntitySystem
     [Dependency] private readonly SharedPhysicsSystem _physicsSystem = default!;
     [Dependency] private readonly TransformSystem _transformSystem = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
-    [Dependency] private readonly SWGlobalWarMarketSystem _campaignProduction = default!;
 
     public override void Initialize()
     {
         base.Initialize();
         SubscribeLocalEvent<SWLatheComponent, BeforeActivatableUIOpenEvent>(OnBeforeUiOpen);
         SubscribeLocalEvent<SWLatheComponent, SWLatheSelectRecipeMessage>(OnSelectRecipe);
-        SubscribeLocalEvent<SWLatheComponent, AfterActivatableUIOpenEvent>(OnAfterUiOpen);
-        //SubscribeLocalEvent<SWLatheComponent, StartCollideEvent>(OnStartCollide);
     }
 
     private void OnBeforeUiOpen(Entity<SWLatheComponent> ent, ref BeforeActivatableUIOpenEvent args)
@@ -49,8 +47,6 @@ public sealed class SWLatheSystem : EntitySystem
 
     private void OnSelectRecipe(Entity<SWLatheComponent> ent, ref SWLatheSelectRecipeMessage args)
     {
-        if (_campaignProduction.IsCampaignProductionLocation(ent))
-            return;
         ent.Comp.ProductionDisabled = args.ProductionDisabled;
 
         if (string.IsNullOrEmpty(args.Recipe))
@@ -67,37 +63,6 @@ public sealed class SWLatheSystem : EntitySystem
         ent.Comp.SelectedRecipe = selectedRecipe;
         UpdateUserInterface(ent);
     }
-
-    private void OnAfterUiOpen(Entity<SWLatheComponent> ent, ref AfterActivatableUIOpenEvent args)
-    {
-        if (!_campaignProduction.IsCampaignProductionLocation(ent))
-            return;
-        _uiSystem.CloseUi(ent.Owner, SWLatheUiKey.Key, args.User);
-        _uiSystem.TryOpenUi(ent.Owner, SWGlobalWarFactoryUiKey.Key, args.User);
-    }
-
-    //private void OnStartCollide(Entity<SWLatheComponent> ent, ref StartCollideEvent args)
-    //{
-    //    if (!_chargeSystem.IsPowered(ent, EntityManager))
-    //    {
-    //        return;
-    //    }
-
-    //    if (!args.OurFixtureId.StartsWith(ent.Comp.FixtureInPrefix))
-    //    {
-    //        return;
-    //    }
-
-    //    if (CanUseInAnyRecipe(ent.Comp, args.OtherEntity) == null)
-    //    {
-    //        return;
-    //    }
-
-    //    if (TryAddMaterial(ent, args.OtherEntity))
-    //    {
-    //        Del(args.OtherEntity);
-    //    }
-    //}
 
     public List<SWLatheRecipePrototype> GetRecipes(SWLatheComponent comp)
     {
@@ -118,14 +83,15 @@ public sealed class SWLatheSystem : EntitySystem
 
         while (query.MoveNext(out var uid, out var comp, out var fixComp))
         {
-            if (_campaignProduction.IsCampaignProductionLocation(uid))
-                continue;
-            if (!_chargeSystem.IsPowered(uid, EntityManager))
+            if (!Transform(uid).Anchored || !_chargeSystem.IsPowered(uid, EntityManager))
             {
+                if (comp.CurrentRecipeProducting != null)
+                {
+                    comp.ProductionStartTime += TimeSpan.FromSeconds(frameTime);
+                    comp.ProductionEndTime += TimeSpan.FromSeconds(frameTime);
+                }
                 continue;
             }
-
-            //var fix = fixComp.
 
             foreach (var otherEntity in GetEntitiesInInputFixtures(uid, comp, fixComp))
             {
@@ -136,7 +102,6 @@ public sealed class SWLatheSystem : EntitySystem
 
                 if (TryAddMaterial(new Entity<SWLatheComponent>(uid, comp), otherEntity))
                 {
-                    Del(otherEntity);
                     UpdateUserInterface((uid, comp));
                 }
             }
@@ -176,8 +141,6 @@ public sealed class SWLatheSystem : EntitySystem
 
     public void FinishProduction(Entity<SWLatheComponent> ent)
     {
-        if (_campaignProduction.IsCampaignProductionLocation(ent))
-            return;
         DebugTools.Assert(ent.Comp.CurrentRecipeProducting != null);
         var coords = _transformSystem.ToMapCoordinates(new EntityCoordinates(ent, ent.Comp.SpawnPointOut));
         foreach (var (id, amount) in ent.Comp.CurrentRecipeProducting.Result)
@@ -193,70 +156,49 @@ public sealed class SWLatheSystem : EntitySystem
 
     public string? CanUseInAnyRecipe(SWLatheComponent comp, EntityUid material)
     {
-        if (!CanAcceptMaterialEntity(material))
-        {
+        if (TerminatingOrDeleted(material))
             return null;
-        }
-
-        var protos = GetRecipes(comp);
-
-        var matProto = Prototype(material);
-        if (matProto == null)
-        {
+        var prototype = Prototype(material);
+        if (prototype == null)
             return null;
-        }
-
-        foreach (var proto in protos)
+        var stack = CompOrNull<StackComponent>(material);
+        if (stack is { Unlimited: true } || stack is { Count: <= 0 })
+            return null;
+        foreach (var recipe in GetRecipes(comp))
+        foreach (var ingredient in recipe.Materials.Keys)
         {
-            if (proto.Materials.Keys.Contains(matProto.ID))
-            {
-                return matProto.ID;
-            }
+            if (prototype.ID == ingredient)
+                return ingredient;
+            if (stack != null && _prototype.Index<EntityPrototype>(ingredient)
+                    .TryGetComponent<StackComponent>(out var expected, EntityManager.ComponentFactory) &&
+                stack.StackTypeId == expected.StackTypeId)
+                return ingredient;
         }
-
         return null;
     }
 
+    /// <summary>Consumes only the quantity accepted into the machine; any excess stays on the input.</summary>
     public bool TryAddMaterial(Entity<SWLatheComponent> ent, EntityUid material)
     {
-        if (_campaignProduction.IsCampaignProductionLocation(ent))
+        if (CanUseInAnyRecipe(ent.Comp, material) is not { } ingredient)
             return false;
-        if (!CanAcceptMaterialEntity(material))
-        {
+        var stored = ent.Comp.StashedMaterials.GetValueOrDefault(ingredient);
+        var quantity = Math.Min(_stacks.GetCount(material), ent.Comp.MaxMaterialAmount - stored);
+        if (quantity <= 0)
             return false;
-        }
-
-        var matProto = Prototype(material);
-        if (matProto == null)
+        if (TryComp<StackComponent>(material, out var stack))
         {
-            return false;
-        }
-        if (ent.Comp.StashedMaterials.TryGetValue(matProto, out var amount))
-        {
-            if (amount < ent.Comp.MaxMaterialAmount)
-            {
-                ent.Comp.StashedMaterials[matProto]++;
-                return true;
-            }
+            if (!_stacks.TryUse((material, stack), quantity))
+                return false;
         }
         else
-        {
-            ent.Comp.StashedMaterials[matProto] = 1;
-            return true;
-        }
-
-        return false;
-    }
-
-    private bool CanAcceptMaterialEntity(EntityUid material)
-    {
-        return !TryComp<StackComponent>(material, out var stack) || stack.Count <= 1;
+            Del(material);
+        ent.Comp.StashedMaterials[ingredient] = stored + quantity;
+        return true;
     }
 
     public bool TryStartProducingAnything(Entity<SWLatheComponent> ent)
     {
-        if (_campaignProduction.IsCampaignProductionLocation(ent))
-            return false;
         if (ent.Comp.CurrentRecipeProducting != null)
         {
             return false;

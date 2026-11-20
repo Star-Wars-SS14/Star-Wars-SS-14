@@ -63,6 +63,8 @@ public sealed partial class SWGlobalWarMarketSystem
     private bool BindFactory(Entity<SWGlobalWarFactoryComponent> ent, out SWGlobalWarFaction owner)
     {
         owner = default;
+        if (HasComp<Content.Server._SW.Lathe.SWLathe.SWLatheComponent>(ent))
+            return false;
         if (Simulation is not { Generation: { } generation } model || !CanMutateCampaign(generation) || !Transform(ent).Anchored ||
             !_hubPlanets.TryGetPhysicalLocation(ent, out var planet, out var location) ||
             location != SWGlobalWarPlanetLocation.Surface)
@@ -77,6 +79,10 @@ public sealed partial class SWGlobalWarMarketSystem
         if (ent.Comp.Generation != generation)
         {
             ent.Comp.Generation = generation;
+            ent.Comp.PurchaseRates.Clear();
+            ent.Comp.LocalRemainders.Clear();
+            ent.Comp.SaleRemainder = 0;
+            ent.Comp.IndustrialElapsed = 0;
             ent.Comp.Enabled = (ent.Comp.Factory || ent.Comp.Mining) && ent.Comp.AutoStart;
             ent.Comp.MiningTime = TimeSpan.Zero;
             ent.Comp.MiningOutput = null;
@@ -129,7 +135,7 @@ public sealed partial class SWGlobalWarMarketSystem
             return;
         if (ent.Comp.MarketAccess)
         {
-            if (args.Action is not (SWGlobalWarFactoryAction.BuyMarket or SWGlobalWarFactoryAction.DepositMarket) ||
+            if (args.Action is not (SWGlobalWarFactoryAction.BuyMarket or SWGlobalWarFactoryAction.DepositMarket or SWGlobalWarFactoryAction.ConfigureIndustrialRate) ||
                 _marketExchanges.Contains(args.Request))
                 return;
             var reason = "sw-global-war-factory-rejected";
@@ -229,6 +235,7 @@ public sealed partial class SWGlobalWarMarketSystem
     internal void UpdatePhysicalFactories(float frameTime)
     {
         UpdateStartingArsenals();
+        UpdateIndustrialPallets(frameTime);
         TrackPhysicalFlights();
         // A reserved batch must wake its location before the usual unpaused entity query can see it.
         var query = EntityManager.AllEntityQueryEnumerator<SWGlobalWarFactoryComponent>();

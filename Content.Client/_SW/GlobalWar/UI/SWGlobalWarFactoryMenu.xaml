@@ -29,7 +29,8 @@
             <BoxContainer Name="MarketPanel" Orientation="Vertical" SeparationOverride="8" Visible="False">
                 <OptionButton Name="MarketPicker" HorizontalExpand="True" />
                 <Label Name="MarketBalance" StyleClasses="SWTermValue" />
-                <BoxContainer SeparationOverride="8">
+                <RichTextLabel Name="IndustrialHint" Visible="False" />
+                <BoxContainer Name="MarketQuantityRow" SeparationOverride="8">
                     <Label Text="{Loc 'sw-global-war-supply-quantity'}" VerticalAlignment="Center" />
                     <LineEdit Name="MarketQuantity" Text="1" SetWidth="100" MinHeight="32" />
                 </BoxContainer>

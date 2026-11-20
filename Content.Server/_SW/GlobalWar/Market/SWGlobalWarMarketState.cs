@@ -16,6 +16,7 @@ public sealed class SWGlobalWarMarketState(string planet)
 {
     public string Planet { get; } = planet;
     public Dictionary<string, SWGlobalWarMarketGoodState> Goods { get; } = new();
+    public Dictionary<string, int> FactoryStock { get; } = new();
     public SWGlobalWarFaction Owner { get; internal set; }
     public SWGlobalWarFaction OriginalOwner { get; internal set; }
     public SWGlobalWarSectorKind Kind { get; internal set; }

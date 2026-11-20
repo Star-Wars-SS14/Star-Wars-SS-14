@@ -24,6 +24,9 @@ public sealed partial class SWGlobalWarCommodityPrototype : IPrototype
     [DataField]
     public bool WholeItems;
 
+    [DataField]
+    public int PurchasePrice;
+
     /// <summary>Credits per unit of actual mandatory civilian consumption; production and transport pay no tax.</summary>
     [DataField(serverOnly: true)]
     public int ConsumptionTax;

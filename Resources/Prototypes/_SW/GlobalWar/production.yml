@@ -105,3 +105,54 @@
   - type: IconSmooth
     key: sw_global_war_market_input
     base: cargo_pallet_sell_
+
+- type: entity
+  parent: SWGlobalWarMarketStorage
+  id: SWGlobalWarFactoryWarehouse
+  name: factory warehouse terminal
+  description: Access the shared virtual factory warehouse of this planet.
+  components:
+  - type: SWGlobalWarFactory
+    warehouse: true
+
+- type: entity
+  parent: BaseCargoPallet
+  id: SWGlobalWarIndustrialSupplyPallet
+  name: industrial supply pallet
+  description: Automatically buys configured quantities per second from the planetary market using the industry budget.
+  components:
+  - type: SWGlobalWarFactory
+    industrialSupply: true
+  - type: ApcPowerReceiver
+    powerLoad: 100
+  - type: ExtensionCableReceiver
+  - type: InteractionOutline
+  - type: ActivatableUI
+    key: enum.SWGlobalWarFactoryUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWGlobalWarFactoryUiKey.Key:
+        type: SWGlobalWarFactoryBoundUserInterface
+  - type: Sprite
+    sprite: Structures/cargo_pallets.rsi
+  - type: Icon
+    sprite: Structures/cargo_pallets.rsi
+    state: cargo_pallet_buy
+  - type: IconSmooth
+    key: sw_global_war_industrial_supply
+    base: cargo_pallet_buy_
+
+- type: entity
+  parent: SWGlobalWarIndustrialSupplyPallet
+  id: SWGlobalWarIndustrialOutputPallet
+  name: industrial collection pallet
+  description: Automatically sells products or stores them in the planetary factory warehouse.
+  components:
+  - type: SWGlobalWarFactory
+    industrialSupply: false
+    industrialOutput: true
+  - type: Icon
+    state: cargo_pallet_sell
+  - type: IconSmooth
+    key: sw_global_war_industrial_output
+    base: cargo_pallet_sell_

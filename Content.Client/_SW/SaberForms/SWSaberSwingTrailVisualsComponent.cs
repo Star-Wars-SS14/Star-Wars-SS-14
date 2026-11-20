@@ -18,5 +18,5 @@ public enum SWSaberSwingTrail : byte
 {
     Crescent,
     Thrust,
-    TwinArcs,
+    GuardSweep,
 }

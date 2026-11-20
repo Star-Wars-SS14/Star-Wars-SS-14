@@ -38,8 +38,7 @@
                         </PanelContainer>
                         <PanelContainer Name="TimerPlate" Access="Public">
                             <BoxContainer Orientation="Vertical" Margin="8 3">
-                                <Label Name="ReadyStatus" Access="Public" Visible="False" Align="Center"
-                                       Text="{Loc 'sw-lobby-ready-status'}" />
+                                <Label Name="ReadyStatus" Access="Public" Visible="False" Align="Center" />
                                 <Control>
                                     <!-- The longest countdown, unseen: the plate is never narrower than it. -->
                                     <Label Name="StartTimeSizer" Access="Public" Align="Center" StyleClasses="LabelBig" Text="{Loc 'sw-lobby-timer-longest'}" Modulate="#00000000" />
@@ -48,8 +47,8 @@
                                 <Label Name="StationTime" Access="Public" Align="Center" FontColorOverride="{x:Static maths:Color.LightGray}" />
                             </BoxContainer>
                         </PanelContainer>
-                        <Button Name="ReadyButton" Access="Public" ToggleMode="True"
-                                Text="{Loc 'ui-lobby-ready-up-button'}" StyleClasses="ButtonBig" />
+                        <Button Name="ReadyButton" Access="Public"
+                                Text="{Loc 'sw-lobby-ready-action'}" StyleClasses="ButtonBig" />
                         <BoxContainer Name="TutorialSlot" Access="Public" SeparationOverride="6">
                             <cc:UICommandButton Command="observe" Name="ObserveButton" Access="Public"
                                                 Text="{Loc 'ui-lobby-observe-button'}" StyleClasses="ButtonBig" HorizontalExpand="True"

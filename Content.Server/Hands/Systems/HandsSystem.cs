@@ -2,6 +2,7 @@ using System.Numerics;
 using Content.Server.Stack;
 using Content.Server.Stunnable;
 using Content.Shared.ActionBlocker;
+using Content.Shared._SW.ModularSaber; // SW
 using Content.Shared.Body.Part;
 using Content.Shared.CombatMode;
 using Content.Shared.Damage.Systems;
@@ -186,13 +187,34 @@ namespace Content.Server.Hands.Systems
             if (ev.Cancelled)
                 return true;
 
-            // This can grief the above event so we raise it afterwards
-            if (IsHolding((player, hands), throwEnt, out _) && !TryDrop(player, throwEnt.Value))
-                return false;
+            // SW: bracket the actual held-item drop/throw so item-specific systems can
+            // synchronously roll back temporary state when TryThrow does not emit ThrownEvent.
+            var heldAtThrow = IsHolding((player, hands), throwEnt, out _);
+            var saberThrowScope = heldAtThrow && ev.ItemUid == throwEnt.Value;
+            try
+            {
+                if (saberThrowScope)
+                {
+                    var started = new SWSaberThrowAttemptStartedEvent(player);
+                    RaiseLocalEvent(throwEnt.Value, ref started);
+                }
 
-            _throwingSystem.TryThrow(ev.ItemUid, ev.Direction, ev.ThrowSpeed, ev.PlayerUid, compensateFriction: !HasComp<LandAtCursorComponent>(ev.ItemUid));
+                // This can grief the above event so we raise it afterwards
+                if (heldAtThrow && !TryDrop(player, throwEnt.Value))
+                    return false;
 
-            return true;
+                _throwingSystem.TryThrow(ev.ItemUid, ev.Direction, ev.ThrowSpeed, ev.PlayerUid, compensateFriction: !HasComp<LandAtCursorComponent>(ev.ItemUid));
+                return true;
+            }
+            finally
+            {
+                if (saberThrowScope && !Deleted(throwEnt.Value))
+                {
+                    var finished = new SWSaberThrowAttemptFinishedEvent(player);
+                    RaiseLocalEvent(throwEnt.Value, ref finished);
+                }
+            }
+            // SW end
         }
 
         private void OnDropHandItems(Entity<HandsComponent> entity, ref DropHandItemsEvent args)

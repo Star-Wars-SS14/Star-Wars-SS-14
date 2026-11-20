@@ -200481,6 +200481,7 @@ entities:
       parent: 29762
     - type: SWTurretConsole
       jobsAllowed:
+        SWNeutralBartender: True
         SWEmpireMoff: True
         SWEmpireMajor: True
         SWEmpireLieutenant: True
@@ -200521,6 +200522,7 @@ entities:
       parent: 29762
     - type: SWTurretConsole
       jobsAllowed:
+        SWNeutralBartender: True
         SWEmpireMoff: True
         SWEmpireMajor: True
         SWEmpireLieutenant: True
@@ -200563,6 +200565,7 @@ entities:
       parent: 28644
     - type: SWTurretConsole
       jobsAllowed:
+        SWNeutralBartender: True
         SWRepublicGeneral: True
         SWRepublicCaptain: True
         SWRepublicLieutenant: True

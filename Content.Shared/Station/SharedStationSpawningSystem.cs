@@ -119,6 +119,10 @@ public abstract class SharedStationSpawningSystem : EntitySystem
         if (startingGear == null)
             return;
 
+        var prepare = new PrepareStartingGearEvent(entity, startingGear);
+        RaiseLocalEvent(entity, ref prepare);
+        startingGear = prepare.Gear;
+
         var xform = _xformQuery.GetComponent(entity);
 
         if (InventorySystem.TryGetSlots(entity, out var slotDefinitions))
@@ -143,19 +147,14 @@ public abstract class SharedStationSpawningSystem : EntitySystem
             }
         }
 
-        if (_handsQuery.TryComp(entity, out var handsComponent))
+        // Spawn in-hand gear even when this body has no hands; in that case it stays at the spawn point.
+        _handsQuery.TryComp(entity, out var handsComponent);
+        var inhandCoords = xform.Coordinates;
+        foreach (var prototype in startingGear.Inhand)
         {
-            var inhand = startingGear.Inhand;
-            var coords = xform.Coordinates;
-            foreach (var prototype in inhand)
-            {
-                var inhandEntity = Spawn(prototype, coords);
-
-                if (_handsSystem.TryGetEmptyHand((entity, handsComponent), out var emptyHand))
-                {
-                    _handsSystem.TryPickup(entity, inhandEntity, emptyHand, checkActionBlocker: false, handsComp: handsComponent);
-                }
-            }
+            var inhandEntity = Spawn(prototype, inhandCoords);
+            if (handsComponent != null && _handsSystem.TryGetEmptyHand((entity, handsComponent), out var emptyHand))
+                _handsSystem.TryPickup(entity, inhandEntity, emptyHand, checkActionBlocker: false, handsComp: handsComponent);
         }
 
         if (startingGear.Storage.Count > 0)
@@ -181,6 +180,12 @@ public abstract class SharedStationSpawningSystem : EntitySystem
                     }
                 }
             }
+        }
+
+        if (prepare.Saber is { } saber)
+        {
+            var complete = new CompleteStartingSaberEvent(saber);
+            RaiseLocalEvent(entity, ref complete);
         }
 
         if (raiseEvent)

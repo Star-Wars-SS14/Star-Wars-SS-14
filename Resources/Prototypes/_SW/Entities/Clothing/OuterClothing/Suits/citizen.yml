@@ -15,7 +15,7 @@
     - SWEquipmentForceWL
 
 - type: entity
-  parent: ClothingOuterStorageBase
+  parent: [ClothingOuterStorageBase, AllowSuitStorageClothing]
   id: SWClothingOuterVestRebel
   name: rebel vest
   components:

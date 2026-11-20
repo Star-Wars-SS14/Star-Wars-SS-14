@@ -45,7 +45,7 @@ public sealed class MeleeArcOverlay : Overlay
             return;
         }
 
-        if (!_melee.TryGetWeapon(player.Value, out _, out var weapon))
+        if (!_melee.TryGetWeapon(player.Value, out var weaponUid, out var weapon))
             return;
 
         var mousePos = _inputManager.MouseScreenPosition;
@@ -67,10 +67,11 @@ public sealed class MeleeArcOverlay : Overlay
         diff = diff.Normalized() * Math.Min(weapon.Range, diff.Length());
         args.WorldHandle.DrawLine(playerPos.Position, playerPos.Position + diff, Color.Aqua);
 
-        if (weapon.Angle.Theta == 0)
+        var angle = _melee.GetAttackAngle(player.Value, weaponUid, weapon);
+        if (angle.Theta == 0)
             return;
 
-        args.WorldHandle.DrawLine(playerPos.Position, playerPos.Position + new Angle(-weapon.Angle / 2).RotateVec(diff), Color.Orange);
-        args.WorldHandle.DrawLine(playerPos.Position, playerPos.Position + new Angle(weapon.Angle / 2).RotateVec(diff), Color.Orange);
+        args.WorldHandle.DrawLine(playerPos.Position, playerPos.Position + new Angle(-angle / 2).RotateVec(diff), Color.Orange);
+        args.WorldHandle.DrawLine(playerPos.Position, playerPos.Position + new Angle(angle / 2).RotateVec(diff), Color.Orange);
     }
 }

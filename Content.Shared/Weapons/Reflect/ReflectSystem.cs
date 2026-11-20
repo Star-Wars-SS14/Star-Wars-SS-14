@@ -138,6 +138,8 @@ public sealed class ReflectSystem : EntitySystem
             _adminLogger.Add(LogType.BulletHit, LogImpact.Medium, $"{ToPrettyString(user)} reflected {ToPrettyString(projectile)}");
         }
 
+        var ev = new ReflectionSucceededEvent(user, projectile.Owner);
+        RaiseLocalEvent(reflector.Owner, ref ev);
         return true;
     }
     private bool TryReflectHitscan(
@@ -167,6 +169,8 @@ public sealed class ReflectSystem : EntitySystem
         else
             _adminLogger.Add(LogType.HitScanHit, LogImpact.Medium, $"{ToPrettyString(user)} reflected hitscan from {ToPrettyString(shotSource)}");
 
+        var ev = new ReflectionSucceededEvent(user, shotSource);
+        RaiseLocalEvent(reflector.Owner, ref ev);
         return true;
     }
 
@@ -230,3 +234,7 @@ public sealed class ReflectSystem : EntitySystem
     }
     #endregion
 }
+
+/// <summary>Raised on the reflecting item after a projectile or hitscan has been successfully redirected.</summary>
+[ByRefEvent]
+public readonly record struct ReflectionSucceededEvent(EntityUid User, EntityUid Source);

@@ -10,6 +10,7 @@ using Content.Shared._SW.ForceAbilities;
 using Content.Shared._SW.ForceAbilities.SWHealAbility;
 using Content.Shared._SW.ForceAbilities.SWStrangulatуAbility;
 using Content.Shared._SW.GlobalWar;
+using Content.Shared._SW.SaberForms;
 using Content.Shared.Actions;
 using Content.Shared.GameTicking;
 using Content.Shared.Ghost;
@@ -254,6 +255,7 @@ public sealed partial class SWGlobalWarSpawnSystem
                 _actions.RemoveAction(action.AsNullable());
         }
         RemComp<ForceAbilityDistanceInteractComponent>(body);
+        RemComp<SWSaberFormComponent>(body);
         RemComp<SWForceUserBlockComponent>(body);
         RemComp<SWAbilityThrowSwordComponent>(body);
         RemComp<SWPushAbilityComponent>(body);

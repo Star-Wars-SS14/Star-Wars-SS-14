@@ -30,6 +30,7 @@
         400: Critical
         500: Dead
     - type: SWForceUserBlock
+    - type: SWSaberForm
     - type: SWDashAbility
     - type: SlowOnDamage
       speedModifierThresholds:

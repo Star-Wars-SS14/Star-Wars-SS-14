@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
+using Content.Shared._SW.SaberForms;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Actions.Events;
 using Content.Shared.Administration.Components;
@@ -66,6 +67,8 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
     [Dependency] protected readonly SharedTransformSystem TransformSystem = default!;
     [Dependency] private   readonly SharedStaminaSystem _stamina = default!;
     [Dependency] private   readonly DamageExamineSystem _damageExamine = default!;
+
+    [Dependency] private readonly SharedSWSaberFormSystem _saberForms = default!;
 
     private const int AttackMask = (int) (CollisionGroup.MobMask | CollisionGroup.Opaque);
 
@@ -212,6 +215,10 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
         {
             return;
         }
+
+        // Force users with a narrow saber form normally swing using the heavy-attack route.
+        if (_saberForms.TryGetActiveForm(user, weaponUid, out var form) && form.VisualArcMultiplier < 1f)
+            return;
 
         AttemptAttack(user, weaponUid, weapon, msg, args.SenderSession);
     }
@@ -408,6 +415,11 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
                 break;
         }
 
+        var timing = new MeleeAttackPreCooldownEvent();
+        RaiseLocalEvent(weaponUid, ref timing);
+        if (weapon.NextAttack > curTime)
+            return false;
+
         // Windup time checked elsewhere.
         var fireRate = TimeSpan.FromSeconds(1f / GetAttackRate(weaponUid, user, weapon));
         var swings = 0;
@@ -438,6 +450,14 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
             return false;
         }
 
+        var sweepAngle = weapon.Angle;
+        SWSaberFormPrototype? saberForm = null;
+        if (attack is LightAttackEvent or HeavyAttackEvent &&
+            _saberForms.TryGetActiveForm(user, weaponUid, out saberForm))
+        {
+            sweepAngle = GetFormAdjustedAngle(sweepAngle, saberForm);
+        }
+
         // Attack confirmed
         for (var i = 0; i < swings; i++)
         {
@@ -456,7 +476,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
                     animation = weapon.Animation;
                     break;
                 case HeavyAttackEvent heavy:
-                    if (!DoHeavyAttack(user, heavy, weaponUid, weapon, session))
+                    if (!DoHeavyAttack(user, heavy, weaponUid, weapon, sweepAngle, saberForm?.VisualArcMultiplier < 1f, session))
                         return false;
 
                     animation = weapon.WideAnimation;
@@ -465,7 +485,8 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
                     throw new NotImplementedException();
             }
 
-            DoLungeAnimation(user, weaponUid, weapon.Angle, TransformSystem.ToMapCoordinates(GetCoordinates(attack.Coordinates)), weapon.Range, animation);
+            DoLungeAnimation(user, weaponUid, sweepAngle, TransformSystem.ToMapCoordinates(GetCoordinates(attack.Coordinates)),
+                weapon.Range, saberForm?.SwingAnimation?.Id ?? animation);
         }
 
         var attackEv = new MeleeAttackEvent(weaponUid);
@@ -576,7 +597,19 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
 
     protected abstract void DoDamageEffect(List<EntityUid> targets, EntityUid? user,  TransformComponent targetXform);
 
-    private bool DoHeavyAttack(EntityUid user, HeavyAttackEvent ev, EntityUid meleeUid, MeleeWeaponComponent component, ICommonSession? session)
+    public Angle GetAttackAngle(EntityUid user, EntityUid weapon, MeleeWeaponComponent component)
+    {
+        return _saberForms.TryGetActiveForm(user, weapon, out var form)
+            ? GetFormAdjustedAngle(component.Angle, form)
+            : component.Angle;
+    }
+
+    private static Angle GetFormAdjustedAngle(Angle angle, SWSaberFormPrototype form)
+    {
+        return new Angle(angle.Theta * form.VisualArcMultiplier);
+    }
+
+    private bool DoHeavyAttack(EntityUid user, HeavyAttackEvent ev, EntityUid meleeUid, MeleeWeaponComponent component, Angle angle, bool enforceArc, ICommonSession? session)
     {
         // TODO: This is copy-paste as fuck with DoPreciseAttack
         if (!TryComp(user, out TransformComponent? userXform))
@@ -630,10 +663,11 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
             if (ArcRaySuccessful(entities[i],
                     userPos,
                     direction.ToWorldAngle(),
-                    component.Angle,
+                    angle,
                     distance,
                     userXform.MapID,
                     user,
+                    enforceArc,
                     session))
             {
                 continue;
@@ -795,6 +829,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
         float range,
         MapId mapId,
         EntityUid ignore,
+        bool enforceArc,
         ICommonSession? session)
     {
         // Only matters for server.

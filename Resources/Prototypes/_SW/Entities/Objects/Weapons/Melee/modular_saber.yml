@@ -13,6 +13,11 @@
   - type: EnergySword
     colorOptions: []
   - type: SWModularSaber
+  - type: ContainerContainer
+    containers:
+      saber-crystal: !type:ContainerSlot
+      saber-emitter: !type:ContainerSlot
+      saber-focus: !type:ContainerSlot
   - type: ItemSlots
     slots:
       saber-crystal:

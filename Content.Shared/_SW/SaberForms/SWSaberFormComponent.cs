@@ -11,7 +11,7 @@ public sealed partial class SWSaberFormComponent : Component
     public ProtoId<SWSaberFormPrototype> ActiveForm = "SWFormShiiCho";
 
     [DataField]
-    public List<ProtoId<SWSaberFormPrototype>> AllowedForms = ["SWFormShiiCho", "SWFormMakashi", "SWFormSoresu"];
+    public List<ProtoId<SWSaberFormPrototype>> AllowedForms = new() { "SWFormShiiCho", "SWFormMakashi", "SWFormSoresu" };
 
     [DataField]
     public EntProtoId Action = "ActionSWSaberForms";

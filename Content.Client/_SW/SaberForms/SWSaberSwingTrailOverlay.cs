@@ -71,8 +71,8 @@ public sealed class SWSaberSwingTrailOverlay : Overlay
             signedSweep = MathF.CopySign(FallbackRibbonSweep, signedSweep);
 
         var (tail, head) = GetArcPose(age, guard);
-        var haloWidth = guard ? 0.086f : 0.110f;
-        var tailLight = guard ? 0.19f : 0.46f;
+        var haloWidth = guard ? 0.122f : 0.110f;
+        var tailLight = guard ? 0.32f : 0.46f;
 
         for (var sample = 0; sample <= TrailSegments; sample++)
         {
@@ -81,7 +81,7 @@ public sealed class SWSaberSwingTrailOverlay : Overlay
             // The stock slash starts at +sweep/2 and finishes at -sweep/2, including left swings.
             var direction = (aim + new Angle(signedSweep * (0.5f - path))).ToWorldVec();
             var bow = MathF.Sin(MathF.PI * path);
-            var radius = reach * (guard ? 0.50f + 0.17f * bow : 0.82f + 0.04f * bow);
+            var radius = reach * (guard ? 0.56f + 0.16f * bow : 0.82f + 0.04f * bow);
             var taper = GetEndTaper(fraction);
             var leading = SmoothProgress(fraction, 0.47f, 0.40f);
             var width = MathF.Min(haloWidth * taper * (0.67f + 0.33f * leading), reach - radius);
@@ -104,7 +104,7 @@ public sealed class SWSaberSwingTrailOverlay : Overlay
             var taper = GetEndTaper(fraction);
             var leading = SmoothProgress(fraction, 0.46f, 0.43f);
             var reachLimit = MathF.Sqrt(MathF.Max(0f, reach * reach - distance * distance));
-            var width = MathF.Min(0.078f * taper * (0.54f + 0.46f * leading), reachLimit);
+            var width = MathF.Min(0.104f * taper * (0.54f + 0.46f * leading), reachLimit);
             var light = opacity * taper * (0.27f + 0.73f * leading);
 
             SetSample(sample, origin + forward * distance, side, width, light, halo, core);
@@ -149,9 +149,9 @@ public sealed class SWSaberSwingTrailOverlay : Overlay
     {
         var vertex = sample * VerticesPerSample;
         var edge = halo.WithAlpha(0f);
-        var shoulder = halo.WithAlpha(opacity * 0.34f);
+        var shoulder = halo.WithAlpha(opacity * 0.55f);
         var offset = normal * width;
-        var inner = offset * 0.28f;
+        var inner = offset * 0.42f;
 
         // Shared rails give the bright center and soft edges one alpha gradient, without layered overdraw.
         _vertices[vertex] = new(center - offset, edge);

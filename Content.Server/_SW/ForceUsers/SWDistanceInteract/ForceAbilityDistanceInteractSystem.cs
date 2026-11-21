@@ -39,7 +39,8 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
 
     private void OnCompInit(Entity<ForceAbilityDistanceInteractComponent> ent, ref ComponentInit args)
     {
-        _actionsSystem.AddAction(ent.Owner, ent.Comp.ActionAttractPrototype);
+        if (ent.Comp.GrantAttractAction)
+            _actionsSystem.AddAction(ent.Owner, ent.Comp.ActionAttractPrototype);
     }
 
     private void OnAttractRequested(Entity<ForceAbilityDistanceInteractComponent> ent, ref AttractByForceRequestedEvent args)

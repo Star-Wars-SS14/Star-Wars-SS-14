@@ -1,0 +1,83 @@
+- type: antag
+  id: SWCultist
+  name: sw-cultist-role-name
+  antagonist: true
+  setPreference: true
+  objective: sw-cultist-role-description
+
+- type: entity
+  parent: BaseMindRoleAntag
+  id: MindRoleSWCultist
+  name: Cultist Role
+  components:
+  - type: MindRole
+    antagPrototype: SWCultist
+    exclusiveAntag: true
+    subtype: sw-cultist-role-name
+
+- type: entity
+  id: SWCultistSelectionTemplate
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: SWCultistForceSelection
+  - type: AntagSelection
+    definitions:
+    - prefRoles: [ SWCultist ]
+      min: 1
+      max: 2
+      playerRatio: 1
+      mindRoles: [ MindRoleSWCultist ]
+      components:
+      - type: SWPushAbility
+      - type: SWStrangulateAbility
+      - type: SWAbilityThrowSword
+      - type: ForceAbilityDistanceInteract
+        grantAttractAction: false
+
+- type: entity
+  parent: BaseGameRule
+  id: SWCultistGameRule
+  components:
+  - type: GameRule
+    minPlayers: 0
+  - type: SWCultistGameRule
+    eligibleJobs: [ SWCivialian, SWEmpireSoldier, SWRepublicSoldier ]
+    targetJobs: [ SWJedi, SWSith, SWRepublicGeneral, SWEmpireMoff ]
+    commandIds:
+      SWEmpireMoff: SWIDCardEmpireMoff
+      SWEmpireMajor: SWIDCardEmpireMajor
+      SWEmpireLieutenant: SWIDCardEmpireLieutenant
+      SWRepublicGeneral: SWIDCardRepublicGeneral
+      SWRepublicCaptain: SWIDCardRepublicCaptain
+      SWRepublicLieutenant: SWIDCardRepublicLieutenant
+    legacySwords:
+      SWJedi: SWEnergySwordJedi
+      SWSith: SWEnergySwordSith
+    modularSwords: [ SWModularSaber, SWModularSaberDouble ]
+    deliverySword: SWCultistModularSaber
+    mindRole: MindRoleSWCultist
+    selectionTemplate: SWCultistSelectionTemplate
+    mainObjective: SWCultistMainObjective
+    survivalObjective: SWCultistSurvivalObjective
+    briefingSound: /Audio/Ambience/Antag/traitor_start.ogg
+    selectionMinSeconds: 300
+    selectionMaxSeconds: 600
+    noCultistWeight: 50
+    oneCultistWeight: 45
+    twoCultistWeight: 5
+
+- type: entity
+  parent: BaseObjective
+  id: SWCultistMainObjective
+  name: Цель культа
+  components:
+  - type: Objective
+    difficulty: 1
+    issuer: sw-cultist-objective-issuer
+    icon: { sprite: Objects/Weapons/Melee/e_sword.rsi, state: icon }
+  - type: SWCultistObjective
+
+- type: entity
+  parent: SWCultistMainObjective
+  id: SWCultistSurvivalObjective
+  name: Выживание культа

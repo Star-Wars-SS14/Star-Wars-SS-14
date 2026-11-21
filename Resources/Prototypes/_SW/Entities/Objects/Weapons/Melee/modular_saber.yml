@@ -43,6 +43,20 @@
           tags: [ SWSaberFocus ]
 - type: entity
   parent: SWModularSaber
+  id: SWCultistModularSaber
+  name: yellow modular lightsaber
+  components:
+  - type: ContainerFill
+    containers:
+      saber-crystal:
+      - SWKyberCrystalYellow
+      saber-emitter:
+      - SWSaberEmitterStandard
+      saber-focus:
+      - SWSaberFocusStandard
+
+- type: entity
+  parent: SWModularSaber
   id: SWModularSaberDouble
   name: double-bladed modular lightsaber hilt
   description: A two-handed lightsaber hilt with replaceable components.

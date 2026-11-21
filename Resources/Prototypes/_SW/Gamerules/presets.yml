@@ -11,6 +11,9 @@
     - SWRespawnGamerule
     - SWMineCollapseGamerule
     - SWWantedSelectRule
+    # SW start - delayed cultist selection
+    - SWCultistGameRule
+    # SW end
     - SWEndRoundGamerule
     - SWRadioactiveStromGamerule
     - SWAutoBalanceGamerule
@@ -28,6 +31,9 @@
     - SWRespawnGamerule
     - SWMineCollapseGamerule
     - SWWantedSelectRule
+    # SW start - delayed cultist selection
+    - SWCultistGameRule
+    # SW end
     - SWAutoBalanceGamerule
     - SWEndRoundGamerule
     - SWRadioactiveStromGamerule
@@ -45,6 +51,9 @@
     - SWRespawnGamerule
     - SWMineCollapseGamerule
     - SWWantedSelectRule
+    # SW start - delayed cultist selection
+    - SWCultistGameRule
+    # SW end
     - SWAutoBalanceGamerule
     - SWEndRoundGamerule
 

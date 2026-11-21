@@ -422,7 +422,7 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
         return GetHighPriorityJob(profile) ?? _prototypeManager.Index<JobPrototype>(SharedGameTicker.FallbackOverflowJob);
     }
 
-    private JobPrototype? GetHighPriorityJob(HumanoidCharacterProfile profile)
+    internal JobPrototype? GetHighPriorityJob(HumanoidCharacterProfile profile)
     {
         var jobId = profile.JobPriorities.FirstOrDefault(p => p.Value == JobPriority.High).Key;
         return !string.IsNullOrEmpty(jobId.Id) && _prototypeManager.TryIndex(jobId, out var job) ? job : null;

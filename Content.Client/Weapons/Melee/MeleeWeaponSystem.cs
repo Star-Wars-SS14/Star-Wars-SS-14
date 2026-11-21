@@ -1,4 +1,5 @@
 using System.Linq;
+using Content.Client._SW.SaberForms;
 using Content.Client.Gameplay;
 using Content.Shared._SW;
 using Content.Shared._SW.ForceAbilities;
@@ -26,6 +27,7 @@ namespace Content.Client.Weapons.Melee;
 public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
 {
     [Dependency] private readonly IEyeManager _eyeManager = default!;
+    [Dependency] private readonly IOverlayManager _overlays = default!;
     [Dependency] private readonly IInputManager _inputManager = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
     [Dependency] private readonly IStateManager _stateManager = default!;
@@ -45,8 +47,15 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
     {
         base.Initialize();
         _xformQuery = GetEntityQuery<TransformComponent>();
+        _overlays.AddOverlay(new SWSaberSwingTrailOverlay(EntityManager, TransformSystem, Timing));
         SubscribeNetworkEvent<MeleeLungeEvent>(OnMeleeLunge);
         UpdatesOutsidePrediction = true;
+    }
+
+    public override void Shutdown()
+    {
+        _overlays.RemoveOverlay<SWSaberSwingTrailOverlay>();
+        base.Shutdown();
     }
 
     public override void FrameUpdate(float frameTime)
@@ -239,7 +248,8 @@ public sealed partial class MeleeWeaponSystem : SharedMeleeWeaponSystem
 
         // This should really be improved. GetEntitiesInArc uses pos instead of bounding boxes.
         // Server will validate it with InRangeUnobstructed.
-        var entities = GetNetEntityList(ArcRayCast(userPos, direction.ToWorldAngle(), component.Angle, distance, userXform.MapID, user).ToList());
+        var angle = GetAttackAngle(user, meleeUid, component);
+        var entities = GetNetEntityList(ArcRayCast(userPos, direction.ToWorldAngle(), angle, distance, userXform.MapID, user).ToList());
         RaisePredictiveEvent(new HeavyAttackEvent(GetNetEntity(meleeUid), entities.GetRange(0, Math.Min(MaxTargets, entities.Count)), GetNetCoordinates(coordinates)));
     }
 

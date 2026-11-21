@@ -11,6 +11,7 @@ using Content.Shared.Projectiles;
 using Content.Shared.Weapons.Ranged.Components;
 using Content.Shared.Weapons.Ranged.Events;
 using Robust.Shared.Audio.Systems;
+using Robust.Shared.Map;
 using Robust.Shared.Network;
 using Robust.Shared.Physics.Components;
 using Robust.Shared.Physics.Systems;
@@ -138,6 +139,9 @@ public sealed class ReflectSystem : EntitySystem
             _adminLogger.Add(LogType.BulletHit, LogImpact.Medium, $"{ToPrettyString(user)} reflected {ToPrettyString(projectile)}");
         }
 
+        var outgoing = _physics.GetMapLinearVelocity(projectile, component: physics);
+        var ev = new ReflectionSucceededEvent(user, existingVelocity, outgoing, _transform.GetMapCoordinates(projectile));
+        RaiseLocalEvent(reflector.Owner, ref ev);
         return true;
     }
     private bool TryReflectHitscan(
@@ -167,6 +171,8 @@ public sealed class ReflectSystem : EntitySystem
         else
             _adminLogger.Add(LogType.HitScanHit, LogImpact.Medium, $"{ToPrettyString(user)} reflected hitscan from {ToPrettyString(shotSource)}");
 
+        var ev = new ReflectionSucceededEvent(user, direction, newDirection.Value);
+        RaiseLocalEvent(reflector.Owner, ref ev);
         return true;
     }
 
@@ -230,3 +236,11 @@ public sealed class ReflectSystem : EntitySystem
     }
     #endregion
 }
+
+/// <summary>Raised on the reflecting item after a projectile or hitscan has been successfully redirected.</summary>
+[ByRefEvent]
+public readonly record struct ReflectionSucceededEvent(
+    EntityUid User,
+    Vector2 Incoming,
+    Vector2 Outgoing,
+    MapCoordinates? Contact = null);

@@ -62,6 +62,7 @@ public sealed class SWDashAbilitySystem : EntitySystem
         private void StopDashing(EntityUid uid, SWDashAbilityComponent comp)
     {
         comp.IsDashing = false;
+        Dirty(uid, comp);
         _movementSpeedModifierSystem.RefreshMovementSpeedModifiers(uid);
         comp.SwayTime = 0f;
     }
@@ -70,12 +71,15 @@ public sealed class SWDashAbilitySystem : EntitySystem
     {
         ent.Comp.IsDashing = true;
         ent.Comp.DashEndTime = _gameTiming.CurTime + TimeSpan.FromSeconds(ent.Comp.DashDuration);
+        Dirty(ent);
         _movementSpeedModifierSystem.RefreshMovementSpeedModifiers(ent.Owner);
     }
 
     private void OnCompInit(Entity<SWDashAbilityComponent> ent, ref ComponentInit args)
     {
-        _actions.AddAction(ent.Owner, ent.Comp.Action);
+        // The server already supplies the action when the dash component is replicated.
+        if (!_gameTiming.ApplyingState)
+            _actions.AddAction(ent.Owner, ent.Comp.Action);
     }
 }
 

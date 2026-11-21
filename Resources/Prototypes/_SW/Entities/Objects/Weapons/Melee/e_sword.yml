@@ -4,6 +4,7 @@
   id: SWEnergySwordBase
   description: A very loud & dangerous sword with a beam made of pure, concentrated plasma. Cuts through unarmored targets like butter.
   components:
+  - type: SWSaberFormWeapon
   - type: SWWeaponBlock
     blocksMelee: true
     blocksProjectiles: true

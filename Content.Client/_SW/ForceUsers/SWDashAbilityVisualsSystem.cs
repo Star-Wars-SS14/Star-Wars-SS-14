@@ -25,10 +25,10 @@ public sealed class SWDashAbilityVisualsSystem : EntitySystem
             // 1. If a character is in a critical state or dead, we stop controlling the sprite entirely.
             if (_mobState.IsDead(ent, mobState) || _mobState.IsCritical(ent, mobState))
             {
-                if (comp.IsDashing)
+                if (comp.SwayTime != 0f)
                 {
-                    comp.IsDashing = false;
                     comp.SwayTime = 0f;
+                    _sprite.SetRotation(ent, Angle.Zero);
                 }
                 continue;
             }
@@ -46,8 +46,6 @@ public sealed class SWDashAbilityVisualsSystem : EntitySystem
             {
                 if (_gameTiming.CurTime >= comp.DashEndTime)
                 {
-                    // The sprint ended when the timer ran out.
-                    comp.IsDashing = false;
                     comp.SwayTime = 0f;
                     _sprite.SetRotation(ent, Angle.Zero);
                 }

@@ -69,8 +69,8 @@ public abstract class SWSharedMeleeWeaponSystem : EntitySystem
             args.Handled = true;
             PopupSystem.PopupPredicted(Loc.GetString(HitBlockedPopup), ent.Owner, null, PopupType.Medium);
             DisableBlock(blockWeapon);
-            if (_tag.HasTag(args.Weapon, LightsaberTag) && _toggle.IsActivated(args.Weapon))
-                _forms.OnSaberParry(entity, blockWeapon.Owner, args.User);
+            var fromLightsaber = _tag.HasTag(args.Weapon, LightsaberTag) && _toggle.IsActivated(args.Weapon);
+            _forms.OnMeleeBlock(entity, blockWeapon.Owner, args.User, fromLightsaber);
 
             break;
         }

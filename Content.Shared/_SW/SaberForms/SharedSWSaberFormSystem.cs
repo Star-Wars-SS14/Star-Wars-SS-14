@@ -55,7 +55,24 @@ public sealed class SharedSWSaberFormSystem : EntitySystem
             _prototypes.TryIndex(forms.ActiveForm, out form);
     }
 
-    public void OnSaberParry(EntityUid user, EntityUid weapon, EntityUid attacker)
+    public float GetArcMultiplier(EntityUid user, SWSaberFormPrototype form)
+    {
+        if (form.DashArcMultiplier != 1f && TryComp<SWDashAbilityComponent>(user, out var dash) &&
+            dash.IsDashing && dash.DashEndTime > _timing.CurTime)
+        {
+            return form.VisualArcMultiplier * form.DashArcMultiplier;
+        }
+
+        return form.VisualArcMultiplier;
+    }
+
+    public bool HasRiposte(EntityUid user, EntityUid weapon)
+    {
+        return TryComp<SWSaberFormComponent>(user, out var forms) &&
+            forms.RiposteWeapon == weapon && forms.RiposteUntil > _timing.CurTime;
+    }
+
+    public void OnMeleeBlock(EntityUid user, EntityUid weapon, EntityUid attacker, bool fromLightsaber)
     {
         if (!TryGetActiveForm(user, weapon, out var form) ||
             !TryComp<SWSaberFormComponent>(user, out var forms))
@@ -63,15 +80,16 @@ public sealed class SharedSWSaberFormSystem : EntitySystem
             return;
         }
 
-        var playClash = form.RiposteWindow > 0;
-        if (playClash)
+        var armed = form.RiposteWindow > 0 && (fromLightsaber || form.RiposteFromAnyMelee);
+        if (armed)
         {
             forms.RiposteWeapon = weapon;
             forms.RiposteUntil = _timing.CurTime + TimeSpan.FromSeconds(form.RiposteWindow);
             Dirty(user, forms);
         }
 
-        if (form.ParryVisual == SWSaberDefenseVisual.None && !playClash)
+        var playClash = armed && fromLightsaber && form.RiposteAttackRateMultiplier != 1f;
+        if (!fromLightsaber || form.ParryVisual == SWSaberDefenseVisual.None && !playClash)
             return;
 
         var defender = _transform.GetMapCoordinates(user);
@@ -90,16 +108,20 @@ public sealed class SharedSWSaberFormSystem : EntitySystem
         if (ent.Comp.RiposteWeapon != args.Weapon)
             return;
 
-        if (ent.Comp.RiposteUntil > _timing.CurTime &&
-            TryGetActiveForm(ent.Owner, args.Weapon, out var form) &&
-            form.RiposteAttackRateMultiplier > 0 &&
-            TryComp<MeleeWeaponComponent>(args.Weapon, out var melee))
+        if (ent.Comp.RiposteUntil > _timing.CurTime && TryGetActiveForm(ent.Owner, args.Weapon, out var form))
         {
-            var recovery = melee.NextAttack - _timing.CurTime;
-            if (recovery > TimeSpan.Zero)
+            if (args.IsDisarm && form.RiposteDamageMultiplier != 1f)
+                return;
+
+            if (form.RiposteAttackRateMultiplier > 0 && form.RiposteAttackRateMultiplier != 1f &&
+                TryComp<MeleeWeaponComponent>(args.Weapon, out var melee))
             {
-                melee.NextAttack = _timing.CurTime + recovery / form.RiposteAttackRateMultiplier;
-                DirtyField(args.Weapon, melee, nameof(MeleeWeaponComponent.NextAttack));
+                var recovery = melee.NextAttack - _timing.CurTime;
+                if (recovery > TimeSpan.Zero)
+                {
+                    melee.NextAttack = _timing.CurTime + recovery / form.RiposteAttackRateMultiplier;
+                    DirtyField(args.Weapon, melee, nameof(MeleeWeaponComponent.NextAttack));
+                }
             }
         }
 

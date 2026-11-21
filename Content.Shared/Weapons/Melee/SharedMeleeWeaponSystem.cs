@@ -216,8 +216,8 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
             return;
         }
 
-        // Force users with a narrow saber form normally swing using the heavy-attack route.
-        if (_saberForms.TryGetActiveForm(user, weaponUid, out var form) && form.VisualArcMultiplier < 1f)
+        // Form-specific cones use the normal saber heavy-attack route.
+        if (_saberForms.TryGetActiveForm(user, weaponUid, out var form) && UsesFormCone(form))
             return;
 
         AttemptAttack(user, weaponUid, weapon, msg, args.SenderSession);
@@ -451,11 +451,20 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
         }
 
         var sweepAngle = weapon.Angle;
-        SWSaberFormPrototype? saberForm = null;
+        var checkFormCone = false;
+        var damageMultiplier = 1f;
+        EntProtoId? formAnimation = null;
         if (attack is LightAttackEvent or HeavyAttackEvent &&
-            _saberForms.TryGetActiveForm(user, weaponUid, out saberForm))
+            _saberForms.TryGetActiveForm(user, weaponUid, out var form))
         {
-            sweepAngle = GetFormAdjustedAngle(sweepAngle, saberForm);
+            sweepAngle = GetFormAdjustedAngle(user, sweepAngle, form);
+            checkFormCone = UsesFormCone(form);
+            formAnimation = form.SwingAnimation;
+            if (_saberForms.HasRiposte(user, weaponUid))
+            {
+                damageMultiplier = form.RiposteDamageMultiplier;
+                formAnimation = form.RiposteSwingAnimation ?? formAnimation;
+            }
         }
 
         // Attack confirmed
@@ -466,7 +475,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
             switch (attack)
             {
                 case LightAttackEvent light:
-                    DoLightAttack(user, light, weaponUid, weapon, session);
+                    DoLightAttack(user, light, weaponUid, weapon, damageMultiplier, session);
                     animation = weapon.Animation;
                     break;
                 case DisarmAttackEvent disarm:
@@ -476,7 +485,7 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
                     animation = weapon.Animation;
                     break;
                 case HeavyAttackEvent heavy:
-                    if (!DoHeavyAttack(user, heavy, weaponUid, weapon, sweepAngle, saberForm?.VisualArcMultiplier < 1f, session))
+                    if (!DoHeavyAttack(user, heavy, weaponUid, weapon, sweepAngle, checkFormCone, damageMultiplier, session))
                         return false;
 
                     animation = weapon.WideAnimation;
@@ -486,10 +495,10 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
             }
 
             DoLungeAnimation(user, weaponUid, sweepAngle, TransformSystem.ToMapCoordinates(GetCoordinates(attack.Coordinates)),
-                weapon.Range, saberForm?.SwingAnimation?.Id ?? animation);
+                weapon.Range, formAnimation?.Id ?? animation);
         }
 
-        var attackEv = new MeleeAttackEvent(weaponUid);
+        var attackEv = new MeleeAttackEvent(weaponUid, attack is DisarmAttackEvent);
         RaiseLocalEvent(user, ref attackEv);
 
         weapon.Attacking = true;
@@ -499,10 +508,14 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
 
     protected abstract bool InRange(EntityUid user, EntityUid target, float range, ICommonSession? session);
 
-    protected virtual void DoLightAttack(EntityUid user, LightAttackEvent ev, EntityUid meleeUid, MeleeWeaponComponent component, ICommonSession? session)
+    protected virtual void DoLightAttack(EntityUid user, LightAttackEvent ev, EntityUid meleeUid, MeleeWeaponComponent component,
+        float damageMultiplier, ICommonSession? session)
     {
         // If I do not come back later to fix Light Attacks being Heavy Attacks you can throw me in the spider pit -Errant
         var damage = GetDamage(meleeUid, user, component) * GetHeavyDamageModifier(meleeUid, user, component);
+        if (damageMultiplier != 1f)
+            damage *= damageMultiplier;
+
         var target = GetEntity(ev.Target);
         var resistanceBypass = GetResistanceBypass(meleeUid, user, component);
 
@@ -600,16 +613,22 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
     public Angle GetAttackAngle(EntityUid user, EntityUid weapon, MeleeWeaponComponent component)
     {
         return _saberForms.TryGetActiveForm(user, weapon, out var form)
-            ? GetFormAdjustedAngle(component.Angle, form)
+            ? GetFormAdjustedAngle(user, component.Angle, form)
             : component.Angle;
     }
 
-    private static Angle GetFormAdjustedAngle(Angle angle, SWSaberFormPrototype form)
+    private Angle GetFormAdjustedAngle(EntityUid user, Angle angle, SWSaberFormPrototype form)
     {
-        return new Angle(angle.Theta * form.VisualArcMultiplier);
+        return new Angle(angle.Theta * _saberForms.GetArcMultiplier(user, form));
     }
 
-    private bool DoHeavyAttack(EntityUid user, HeavyAttackEvent ev, EntityUid meleeUid, MeleeWeaponComponent component, Angle angle, bool enforceArc, ICommonSession? session)
+    private static bool UsesFormCone(SWSaberFormPrototype form)
+    {
+        return form.VisualArcMultiplier != 1f || form.DashArcMultiplier != 1f;
+    }
+
+    private bool DoHeavyAttack(EntityUid user, HeavyAttackEvent ev, EntityUid meleeUid, MeleeWeaponComponent component,
+        Angle angle, bool enforceArc, float damageMultiplier, ICommonSession? session)
     {
         // TODO: This is copy-paste as fuck with DoPreciseAttack
         if (!TryComp(user, out TransformComponent? userXform))
@@ -625,6 +644,9 @@ public abstract class SharedMeleeWeaponSystem : EntitySystem
         var distance = Math.Min(component.Range, direction.Length());
 
         var damage = GetDamage(meleeUid, user, component);
+        if (damageMultiplier != 1f)
+            damage *= damageMultiplier;
+
         var resistanceBypass = GetResistanceBypass(meleeUid, user, component);
         var entities = GetEntityList(ev.Entities);
 

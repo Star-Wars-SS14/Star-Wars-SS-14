@@ -17,12 +17,24 @@ public sealed partial class SWSaberFormPrototype : IPrototype
     [DataField]
     public EntProtoId? SwingAnimation;
 
+    [DataField]
+    public EntProtoId? RiposteSwingAnimation;
+
     /// <summary>Modifier shared by the wide attack arc and its animation.</summary>
     [DataField]
     public float VisualArcMultiplier = 1f;
 
     [DataField]
+    public float DashArcMultiplier = 1f;
+
+    [DataField]
     public float RiposteWindow;
+
+    [DataField]
+    public bool RiposteFromAnyMelee;
+
+    [DataField]
+    public float RiposteDamageMultiplier = 1f;
 
     [DataField]
     public float RiposteAttackRateMultiplier = 1f;

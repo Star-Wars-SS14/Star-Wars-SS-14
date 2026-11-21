@@ -26,6 +26,24 @@
   reflectionVisual: ReflectionCurl
   guardExitAttackDelay: 0.35
 
+- type: swSaberForm
+  id: SWFormAtaru
+  name: sw-saber-form-ataru-name
+  description: sw-saber-form-ataru-description
+  swingAnimation: SWSaberArcAtaru
+  dashArcMultiplier: 1.25
+  guardDurationMultiplier: 0.8
+
+- type: swSaberForm
+  id: SWFormDjemSo
+  name: sw-saber-form-djem-so-name
+  description: sw-saber-form-djem-so-description
+  swingAnimation: SWSaberArcDjemSo
+  riposteSwingAnimation: SWSaberArcDjemSoRiposte
+  riposteWindow: 1.2
+  riposteFromAnyMelee: true
+  riposteDamageMultiplier: 1.2
+
 - type: entity
   id: ActionSWSaberForms
   parent: BaseAction
@@ -65,3 +83,28 @@
     lifetime: 0.24
   - type: SWSaberSwingTrailVisuals
     shape: GuardSweep
+
+- type: entity
+  id: SWSaberArcAtaru
+  parent: WeaponArcSlash
+  components:
+  - type: TimedDespawn
+    lifetime: 0.24
+  - type: SWSaberSwingTrailVisuals
+    shape: DashSweep
+
+- type: entity
+  id: SWSaberArcDjemSo
+  parent: WeaponArcSlash
+  components:
+  - type: TimedDespawn
+    lifetime: 0.24
+  - type: SWSaberSwingTrailVisuals
+    shape: PowerCut
+
+- type: entity
+  id: SWSaberArcDjemSoRiposte
+  parent: SWSaberArcDjemSo
+  components:
+  - type: SWSaberSwingTrailVisuals
+    shape: CounterCut

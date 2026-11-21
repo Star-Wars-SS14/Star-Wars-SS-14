@@ -19,4 +19,7 @@ public enum SWSaberSwingTrail : byte
     Crescent,
     Thrust,
     GuardSweep,
+    DashSweep,
+    PowerCut,
+    CounterCut,
 }

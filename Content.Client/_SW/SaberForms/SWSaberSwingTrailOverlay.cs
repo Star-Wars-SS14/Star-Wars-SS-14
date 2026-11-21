@@ -54,10 +54,19 @@ public sealed class SWSaberSwingTrailOverlay : Overlay
             var core = Color.FromSrgb(Color.InterpolateBetween(trail.Tint, Color.White, 0.72f));
             var opacity = PeakOpacity * (1f - SmoothProgress(age, 0.079f, TrailDuration - 0.079f));
 
-            if (trail.Shape == SWSaberSwingTrail.Thrust)
-                FillThrust(origin, aim, trail.Reach, age, opacity, halo, core);
-            else
-                FillArc(origin, aim, trail.Sweep, trail.Reach, age, trail.Shape == SWSaberSwingTrail.GuardSweep, opacity, halo, core);
+            switch (trail.Shape)
+            {
+                case SWSaberSwingTrail.Thrust:
+                    FillThrust(origin, aim, trail.Reach, age, opacity, halo, core);
+                    break;
+                case SWSaberSwingTrail.DashSweep or SWSaberSwingTrail.PowerCut or SWSaberSwingTrail.CounterCut:
+                    FillDrivingArc(origin, aim, trail, age, opacity, halo, core);
+                    break;
+                default:
+                    FillArc(origin, aim, trail.Sweep, trail.Reach, age, trail.Shape == SWSaberSwingTrail.GuardSweep,
+                        opacity, halo, core);
+                    break;
+            }
 
             args.WorldHandle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, Texture.White, Indices, _vertices);
         }
@@ -66,9 +75,7 @@ public sealed class SWSaberSwingTrailOverlay : Overlay
     private void FillArc(Vector2 origin, Angle aim, Angle swing, float reach, float age, bool guard, float opacity,
         Color halo, Color core)
     {
-        var signedSweep = (float) swing.Theta;
-        if (MathF.Abs(signedSweep) < 0.001f)
-            signedSweep = MathF.CopySign(FallbackRibbonSweep, signedSweep);
+        var signedSweep = GetVisualSweep(swing);
 
         var (tail, head) = GetArcPose(age, guard);
         var haloWidth = guard ? 0.122f : 0.110f;
@@ -89,6 +96,36 @@ public sealed class SWSaberSwingTrailOverlay : Overlay
 
             SetSample(sample, origin + direction * radius, direction, width, light, halo, core);
         }
+    }
+
+    private void FillDrivingArc(Vector2 origin, Angle aim, SWSaberSwingTrailVisualsComponent trail, float age,
+        float opacity, Color halo, Color core)
+    {
+        var outward = trail.Shape == SWSaberSwingTrail.DashSweep;
+        var counter = trail.Shape == SWSaberSwingTrail.CounterCut;
+        var sweep = GetVisualSweep(trail.Sweep) * (outward ? 1f : 0.72f);
+        var (tail, head) = GetArcPose(age, guard: false);
+        var haloWidth = outward ? 0.105f : counter ? 0.176f : 0.128f;
+
+        for (var sample = 0; sample <= TrailSegments; sample++)
+        {
+            var fraction = (float) sample / TrailSegments;
+            var path = tail + (head - tail) * fraction;
+            var direction = (aim + new Angle(sweep * (0.5f - path))).ToWorldVec();
+            var taper = GetEndTaper(fraction);
+            // Ataru sweeps outward into a long curved tail, while the power cut drives inward.
+            var radius = trail.Reach * (outward ? 0.43f + 0.50f * path : 0.91f - 0.43f * path);
+            var intensity = opacity * taper * (outward ? 0.32f + 0.68f * fraction : 0.58f + 0.42f * fraction);
+            var width = MathF.Min(haloWidth * taper, trail.Reach - radius);
+
+            SetSample(sample, origin + direction * radius, direction, width, intensity, halo, core);
+        }
+    }
+
+    private static float GetVisualSweep(Angle angle)
+    {
+        var sweep = (float) angle.Theta;
+        return MathF.Abs(sweep) < 0.001f ? MathF.CopySign(FallbackRibbonSweep, sweep) : sweep;
     }
 
     private void FillThrust(Vector2 origin, Angle aim, float reach, float age, float opacity, Color halo, Color core)

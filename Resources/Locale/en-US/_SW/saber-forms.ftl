@@ -11,5 +11,10 @@ sw-saber-form-makashi-description = A narrow thrust. Recover faster from a ripos
 sw-saber-form-soresu-name = Soresu
 sw-saber-form-soresu-description = A compact slash and a longer guard. Pressing attack lowers the guard. You can strike after a brief recovery.
 
+sw-saber-form-ataru-name = Ataru
+sw-saber-form-ataru-description = Your saber sweeps wider while your dash ability is active. Your guard is shorter.
+sw-saber-form-djem-so-name = Djem So
+sw-saber-form-djem-so-description = Blocking a melee attack briefly empowers your next swing. A missed swing still spends the counter.
+
 ent-ActionSWSaberForms = { sw-saber-forms-action }
     .desc = { sw-saber-forms-action-description }

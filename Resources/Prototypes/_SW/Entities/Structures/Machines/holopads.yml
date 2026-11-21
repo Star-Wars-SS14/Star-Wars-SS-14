@@ -37,8 +37,7 @@
       - Unlimited
       blacklist:
         tags:
-          - SWHolopadRepublic
-
+          - SWHolopadRepublicAdmin
 
 - type: entity
   id: SWHolopadRepublic
@@ -62,13 +61,12 @@
       - Unlimited
       blacklist:
         tags:
-          - SWHolopadEmpire
-
+          - SWHolopadEmpireAdmin
 
 - type: entity
   id: SWHolopadRepublicAdmin
   suffix: Республика админ командование
-  parent: SWHolopadRepublic
+  parent: Holopad
   name: голопад
   components:
     - type: Label
@@ -77,12 +75,21 @@
       tags:
         - SWHolopadAdmin
         - SWHolopadRepublic
-
+        - SWHolopadRepublicAdmin
+    - type: Telephone
+      ringTone: /Audio/Machines/double_ring.ogg
+      listeningRange: 2.5
+      speakerVolume: Speak
+      transmissionRange: Unlimited
+      compatibleRanges:
+      - Grid
+      - Map
+      - Unlimited
 
 - type: entity
   id: SWHolopadEmpireAdmin
   suffix: Империя админ командование
-  parent: SWHolopadEmpire
+  parent: Holopad
   name: голопад
   components:
     - type: Label
@@ -91,3 +98,101 @@
       tags:
         - SWHolopadAdmin
         - SWHolopadEmpire
+        - SWHolopadEmpireAdmin
+    - type: Telephone
+      ringTone: /Audio/Machines/double_ring.ogg
+      listeningRange: 2.5
+      speakerVolume: Speak
+      transmissionRange: Unlimited
+      compatibleRanges:
+      - Grid
+      - Map
+      - Unlimited
+
+- type: entity
+  id: SWHolopadExchange
+  suffix: Обмен
+  parent: Holopad
+  name: голопад
+  components:
+    - type: Label
+      currentLabel: обмен
+    - type: Telephone
+      ringTone: /Audio/Machines/double_ring.ogg
+      listeningRange: 2.5
+      speakerVolume: Speak
+      transmissionRange: Unlimited
+      compatibleRanges:
+      - Grid
+      - Map
+      - Unlimited
+      blacklist:
+        tags:
+          - SWHolopadEmpireAdmin
+          - SWHolopadRepublicAdmin
+
+- type: entity
+  id: SWHolopadBlackSun
+  suffix: Чёрное солнце
+  parent: Holopad
+  name: голопад
+  components:
+    - type: Label
+      currentLabel: чёрное солнце
+    - type: Telephone
+      ringTone: /Audio/Machines/double_ring.ogg
+      listeningRange: 2.5
+      speakerVolume: Speak
+      transmissionRange: Unlimited
+      compatibleRanges:
+      - Grid
+      - Map
+      - Unlimited
+      blacklist:
+        tags:
+          - SWHolopadEmpireAdmin
+          - SWHolopadRepublicAdmin
+
+- type: entity
+  id: SWHolopadMandalorian
+  suffix: Мандалорцы
+  parent: Holopad
+  name: голопад
+  components:
+    - type: Label
+      currentLabel: мандалорцы
+    - type: Telephone
+      ringTone: /Audio/Machines/double_ring.ogg
+      listeningRange: 2.5
+      speakerVolume: Speak
+      transmissionRange: Unlimited
+      compatibleRanges:
+      - Grid
+      - Map
+      - Unlimited
+      blacklist:
+        tags:
+          - SWHolopadEmpireAdmin
+          - SWHolopadRepublicAdmin
+
+- type: entity
+  id: SWHolopadCity
+  suffix: Городской (общественный)
+  parent: Holopad
+  name: голопад
+  components:
+    - type: Label
+      currentLabel: городской
+    - type: Telephone
+      ringTone: /Audio/Machines/double_ring.ogg
+      listeningRange: 2.5
+      speakerVolume: Speak
+      transmissionRange: Unlimited
+      compatibleRanges:
+      - Grid
+      - Map
+      - Unlimited
+      blacklist:
+        tags:
+          - SWHolopadEmpireAdmin
+          - SWHolopadRepublicAdmin

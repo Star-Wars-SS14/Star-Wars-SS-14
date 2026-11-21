@@ -91,8 +91,11 @@ public sealed class SWGlobalWarMarketGoodState
     public long DemandRevision { get; internal set; }
     public int RequestedStock { get; internal set; }
     public int DeliveryRemaining { get; internal set; }
-    public int TargetStock => Math.Max(RequestedStock, Math.Max(MinimumBuffer,
-        ImportPerMinute * SWGlobalWarMarketConstants.StockBufferMinutes));
+    // Independent from the player's requested reserve: each configured unit/s adds one stock unit.
+    public int AutomaticPurchaseStock { get; internal set; }
+    public int TargetStock => (int) Math.Min(int.MaxValue,
+        Math.Max(RequestedStock, Math.Max(MinimumBuffer,
+            (long) ImportPerMinute * SWGlobalWarMarketConstants.StockBufferMinutes)) + AutomaticPurchaseStock);
     public int Demand => Math.Max(DeliveryRemaining, TargetStock - Available);
     public int Supply => Math.Max(0, Available - TargetStock);
     // Immediate uncovered demand; dispatch additionally accounts for consumption along each candidate route.

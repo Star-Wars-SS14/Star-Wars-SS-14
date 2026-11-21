@@ -350,7 +350,7 @@ public sealed partial class SWGlobalWarMarketSimulation
         }
         var needs = _markets.Values.SelectMany(market => market.Goods
             .Where(pair => pair.Value.DeliveryRemaining > pair.Value.Incoming ||
-                pair.Value.RequestedStock > 0 && pair.Value.ImportNeed > 0 ||
+                (pair.Value.RequestedStock > 0 || pair.Value.AutomaticPurchaseStock > 0) && pair.Value.ImportNeed > 0 ||
                 pair.Value.ImportPerMinute > 0 && !pair.Value.LocallyProduced &&
                 (_flows.Count == 0 || pair.Value.ImportNeed > 0 && FlowsTo(market.Planet, pair.Key).Count == 0))
             .Select(pair => (Market: market, Commodity: pair.Key, Good: pair.Value)))

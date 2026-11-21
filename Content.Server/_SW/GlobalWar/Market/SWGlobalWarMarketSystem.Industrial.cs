@@ -38,6 +38,7 @@ public sealed partial class SWGlobalWarMarketSystem
                 ent.Comp.PurchaseRates.Remove(commodity);
             else
                 ent.Comp.PurchaseRates[commodity] = quantity;
+            RefreshAutomaticPurchaseDemand();
             return true;
         }
         if (!ent.Comp.Warehouse || action != SWGlobalWarFactoryAction.BuyMarket || quantity <= 0 ||
@@ -94,10 +95,37 @@ public sealed partial class SWGlobalWarMarketSystem
         }
     }
 
+    /// <summary>Rebuild contributions instead of incrementing manual demand, so removal/movement cannot leak demand.</summary>
+    private void RefreshAutomaticPurchaseDemand()
+    {
+        if (Simulation?.Generation is not { } generation)
+            return;
+        var totals = new Dictionary<(string Planet, string Commodity), long>();
+        var query = EntityManager.AllEntityQueryEnumerator<SWGlobalWarFactoryComponent>();
+        while (query.MoveNext(out var uid, out var component))
+        {
+            if (TerminatingOrDeleted(uid) || component.Generation != generation ||
+                !(component.AutomaticMarketAccess || component.IndustrialSupply) ||
+                !Transform(uid).Anchored || !TryGetTerminalMarket(uid, out var market))
+                continue;
+            foreach (var (commodity, rate) in component.PurchaseRates)
+            {
+                if (rate <= 0 || !market.Goods.ContainsKey(commodity))
+                    continue;
+                var key = (market.Planet, commodity);
+                totals[key] = Math.Min(int.MaxValue, totals.GetValueOrDefault(key) + (long) rate * Simulation.UnitsPerItem);
+            }
+        }
+        foreach (var (planet, market) in Simulation.Markets)
+        foreach (var (commodity, good) in market.Goods)
+            good.AutomaticPurchaseStock = (int) totals.GetValueOrDefault((planet, commodity));
+    }
+
     private void UpdateIndustrialPallets(float frameTime)
     {
         if (Simulation?.Generation is not { } generation || !CanMutateCampaign(generation))
             return;
+        RefreshAutomaticPurchaseDemand();
         var query = EntityQueryEnumerator<SWGlobalWarFactoryComponent>();
         while (query.MoveNext(out var uid, out var component))
         {

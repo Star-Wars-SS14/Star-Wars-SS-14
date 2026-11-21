@@ -109,4 +109,4 @@ sw-global-war-mining-state-working = mining; timer shows time until the next uni
 sw-global-war-auto-purchase-rate = Auto-purchase, units/s:
 sw-global-war-auto-purchase-save = Save auto-purchase for selected commodity
 sw-global-war-auto-purchase-status = Configured: { $rate } units/s. Cost: up to { $cost } credits/s from the industry budget.
-sw-global-war-auto-purchase-hint = Configure each commodity separately. 0 disables purchasing. Available goods are purchased once per second within the budget. Output goes to connected output pallets; purchasing pauses without them. You can close this window.
+sw-global-war-auto-purchase-hint = Configure each commodity separately. 0 disables purchasing. The rate adds to the market target stock: 10 units/s adds 10 units; reducing it to 8 removes 2. Available goods are purchased once per second within the budget. Output goes to connected output pallets; purchasing pauses without them. You can close this window.

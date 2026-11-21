@@ -4,6 +4,7 @@
   name: sw test lathe
   description: debug
   components:
+  - type: RCDDeconstructable
   - type: Physics
     bodyType: Static
   - type: Appearance

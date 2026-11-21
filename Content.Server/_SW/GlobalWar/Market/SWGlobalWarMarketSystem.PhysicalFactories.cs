@@ -48,6 +48,8 @@ public sealed partial class SWGlobalWarMarketSystem
         var query = EntityManager.AllEntityQueryEnumerator<SWGlobalWarFactoryComponent>();
         while (query.MoveNext(out _, out var factory))
             ReleaseFactoryLease(factory);
+        _builderViewers.Clear();
+        _builderNextView = TimeSpan.Zero;
         _factorySubscriptions.Clear();
         _factoryPages.Clear();
         _issuedKits.Clear();
@@ -231,6 +233,7 @@ public sealed partial class SWGlobalWarMarketSystem
 
     internal void UpdatePhysicalFactories(float frameTime)
     {
+        UpdateBuilderViews();
         UpdateStartingArsenals();
         UpdateIndustrialPallets(frameTime);
         TrackPhysicalFlights();

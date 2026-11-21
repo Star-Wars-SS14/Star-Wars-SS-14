@@ -38,6 +38,7 @@ public sealed partial class SWGlobalWarMarketSystem : EntitySystem
         SubscribeLocalEvent<RoundRestartCleanupEvent>(_ => Reset());
         InitializeHubs();
         InitializePhysicalFactories();
+        InitializeFactoryBuilder();
         SubscribeLocalEvent<RulePlayerJobsAssignedEvent>(_ =>
         {
             if (Simulation?.Generation != null)

@@ -1,0 +1,244 @@
+- type: entity
+  parent: RCD
+  id: SWFactoryBuilder
+  name: factory construction device
+  description: Instantly builds factory machinery using planetary market resources and the industry budget.
+  components:
+  - type: SWFactoryBuilder
+  - type: Sprite
+    color: "#E7AD48"
+  - type: RCD
+    availablePrototypes:
+    - SWFactoryBuildElectronics
+    - SWFactoryBuildBlaster
+    - SWFactoryBuildSmelter
+    - SWFactoryBuildVehicle
+    - SWFactoryBuildDroid
+    - SWFactoryBuildDispenser
+    - SWFactoryBuildConveyor
+    - SWFactoryBuildSplitterLeft
+    - SWFactoryBuildSplitterRight
+    - SWFactoryBuildIntersection
+    - SWFactoryDeconstruct
+  - type: UserInterface
+    interfaces:
+      enum.RcdUiKey.Key:
+        type: SWFactoryBuilderBoundUserInterface
+
+- type: rcd
+  id: SWFactoryDeconstruct
+  name: sw-builder-dismantle
+  category: Main
+  sprite: /Textures/Interface/Radial/RCD/deconstruct.png
+  mode: Deconstruct
+  prototype: EffectRCDDeconstructPreview
+  rotation: Camera
+  cost: 0
+  delay: 0
+
+- type: swFactoryBuildRecipe
+  id: SWFactoryBuildElectronics
+  entity: SWElectronicsLathe
+  radius: 0
+  materials:
+    SWGlobalWarS: 5
+    SWGlobalWarE: 1
+    SWGlobalWarPartAdvancedCables: 1
+
+- type: rcd
+  id: SWFactoryBuildElectronics
+  name: sw-builder-title
+  category: Main
+  sprite: /Textures/Interface/Radial/RCD/multicoil.png
+  mode: ConstructObject
+  prototype: SWElectronicsLathe
+  cost: 0
+  delay: 0
+  collisionMask: FullTileMask
+  rotation: User
+
+- type: swFactoryBuildRecipe
+  id: SWFactoryBuildBlaster
+  entity: SWBlasterLathe
+  radius: 0
+  materials:
+    SWGlobalWarS: 5
+    SWGlobalWarE: 1
+    SWGlobalWarPartAdvancedCables: 1
+
+- type: rcd
+  id: SWFactoryBuildBlaster
+  name: sw-builder-title
+  category: Main
+  sprite: /Textures/Interface/Radial/RCD/multicoil.png
+  mode: ConstructObject
+  prototype: SWBlasterLathe
+  cost: 0
+  delay: 0
+  collisionMask: FullTileMask
+  rotation: User
+
+- type: swFactoryBuildRecipe
+  id: SWFactoryBuildSmelter
+  entity: SWSmeltLathe
+  radius: 0
+  materials:
+    SWGlobalWarS: 5
+    SWGlobalWarE: 1
+    SWGlobalWarPartAdvancedCables: 1
+
+- type: rcd
+  id: SWFactoryBuildSmelter
+  name: sw-builder-title
+  category: Main
+  sprite: /Textures/Interface/Radial/RCD/multicoil.png
+  mode: ConstructObject
+  prototype: SWSmeltLathe
+  cost: 0
+  delay: 0
+  collisionMask: FullTileMask
+  rotation: User
+
+- type: swFactoryBuildRecipe
+  id: SWFactoryBuildVehicle
+  entity: SWVehicleFabricator
+  radius: 1
+  materials:
+    SWGlobalWarS: 8
+    SWGlobalWarE: 1
+    SWGlobalWarPartAdvancedCables: 2
+    SWGlobalWarAE: 1
+
+- type: rcd
+  id: SWFactoryBuildVehicle
+  name: sw-builder-title
+  category: Main
+  sprite: /Textures/Interface/Radial/RCD/multicoil.png
+  mode: ConstructObject
+  prototype: SWVehicleFabricator
+  cost: 0
+  delay: 0
+  collisionMask: FullTileMask
+  rotation: User
+
+- type: swFactoryBuildRecipe
+  id: SWFactoryBuildDroid
+  entity: SWDroidFabricator
+  radius: 1
+  materials:
+    SWGlobalWarS: 8
+    SWGlobalWarE: 1
+    SWGlobalWarPartAdvancedCables: 2
+    SWGlobalWarAE: 1
+
+- type: rcd
+  id: SWFactoryBuildDroid
+  name: sw-builder-title
+  category: Main
+  sprite: /Textures/Interface/Radial/RCD/multicoil.png
+  mode: ConstructObject
+  prototype: SWDroidFabricator
+  cost: 0
+  delay: 0
+  collisionMask: FullTileMask
+  rotation: User
+
+- type: swFactoryBuildRecipe
+  id: SWFactoryBuildDispenser
+  entity: SWOreDispenser
+  radius: 0
+  materials:
+    SWGlobalWarS: 3
+    SWGlobalWarE: 1
+    SWGlobalWarPartAdvancedCables: 1
+
+- type: rcd
+  id: SWFactoryBuildDispenser
+  name: sw-builder-title
+  category: Main
+  sprite: /Textures/Interface/Radial/RCD/multicoil.png
+  mode: ConstructObject
+  prototype: SWOreDispenser
+  cost: 0
+  delay: 0
+  collisionMask: FullTileMask
+  rotation: User
+
+- type: swFactoryBuildRecipe
+  id: SWFactoryBuildConveyor
+  entity: SWConveyorBelt
+  radius: 0
+  materials:
+    SWGlobalWarS: 1
+
+- type: rcd
+  id: SWFactoryBuildConveyor
+  name: sw-builder-title
+  category: Main
+  sprite: /Textures/Interface/Radial/RCD/multicoil.png
+  mode: ConstructObject
+  prototype: SWConveyorBelt
+  cost: 0
+  delay: 0
+  collisionMask: FullTileMask
+  rotation: User
+
+- type: swFactoryBuildRecipe
+  id: SWFactoryBuildSplitterLeft
+  entity: SWDistributorLeftLathe
+  radius: 0
+  materials:
+    SWGlobalWarS: 2
+    SWGlobalWarPartAdvancedCables: 1
+
+- type: rcd
+  id: SWFactoryBuildSplitterLeft
+  name: sw-builder-title
+  category: Main
+  sprite: /Textures/Interface/Radial/RCD/multicoil.png
+  mode: ConstructObject
+  prototype: SWDistributorLeftLathe
+  cost: 0
+  delay: 0
+  collisionMask: FullTileMask
+  rotation: User
+
+- type: swFactoryBuildRecipe
+  id: SWFactoryBuildSplitterRight
+  entity: SWDistributorRightLathe
+  radius: 0
+  materials:
+    SWGlobalWarS: 2
+    SWGlobalWarPartAdvancedCables: 1
+
+- type: rcd
+  id: SWFactoryBuildSplitterRight
+  name: sw-builder-title
+  category: Main
+  sprite: /Textures/Interface/Radial/RCD/multicoil.png
+  mode: ConstructObject
+  prototype: SWDistributorRightLathe
+  cost: 0
+  delay: 0
+  collisionMask: FullTileMask
+  rotation: User
+
+- type: swFactoryBuildRecipe
+  id: SWFactoryBuildIntersection
+  entity: SWIntersectionLathe
+  radius: 0
+  materials:
+    SWGlobalWarS: 2
+    SWGlobalWarPartAdvancedCables: 1
+
+- type: rcd
+  id: SWFactoryBuildIntersection
+  name: sw-builder-title
+  category: Main
+  sprite: /Textures/Interface/Radial/RCD/multicoil.png
+  mode: ConstructObject
+  prototype: SWIntersectionLathe
+  cost: 0
+  delay: 0
+  collisionMask: FullTileMask
+  rotation: User

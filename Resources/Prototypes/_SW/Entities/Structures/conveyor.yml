@@ -6,6 +6,7 @@
   placement:
     mode: SnapgridCenter
   components:
+  - type: RCDDeconstructable
   - type: Pullable
   - type: Anchorable
   - type: Rotatable

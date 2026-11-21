@@ -63,7 +63,7 @@ public sealed partial class MeleeWeaponSystem
             if (TryComp<SWSaberSwingTrailVisualsComponent>(animationUid, out var trail))
             {
                 // Very close aim still shows part of the blade, inside the weapon's reach.
-                const float minimumTrailReach = 0.55f;
+                const float minimumTrailReach = 0.90f;
                 trail.Direction = localPos.ToWorldAngle();
                 trail.Sweep = angle;
                 trail.Reach = MathF.Min(meleeWeaponComponent.Range, MathF.Max(minimumTrailReach, localPos.Length()));

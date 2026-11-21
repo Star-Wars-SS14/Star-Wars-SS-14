@@ -1,6 +1,7 @@
 using System.Numerics;
 using Robust.Client.Graphics;
 using Robust.Shared.Enums;
+using Robust.Shared.Prototypes;
 using Robust.Shared.Timing;
 using ContentDrawDepth = Content.Shared.DrawDepth.DrawDepth;
 
@@ -8,19 +9,22 @@ namespace Content.Client._SW.SaberForms;
 
 public sealed class SWSaberSwingTrailOverlay : Overlay
 {
-    internal const float TrailDuration = 0.232f;
+    internal const float TrailDuration = 0.298f;
 
     private const float FallbackRibbonSweep = 0.30f;
-    private const float PeakOpacity = 0.60f;
+    private const float PeakOpacity = 0.77f;
     private const int TrailSegments = 16;
-    private const int VerticesPerSample = 5;
+    private const int VerticesPerSample = 7;
 
+    private static readonly ProtoId<ShaderPrototype> Unshaded = "unshaded";
     private static readonly ushort[] Indices = BuildTrailIndices();
 
     private readonly IEntityManager _entities;
     private readonly SharedTransformSystem _transform;
     private readonly IGameTiming _timing;
     private readonly DrawVertexUV2DColor[] _vertices = new DrawVertexUV2DColor[(TrailSegments + 1) * VerticesPerSample];
+
+    private ShaderInstance? _unshadedShader;
 
     public override OverlaySpace Space => OverlaySpace.WorldSpaceEntities;
 
@@ -33,6 +37,21 @@ public sealed class SWSaberSwingTrailOverlay : Overlay
     }
 
     protected override void Draw(in OverlayDrawArgs args)
+    {
+        var handle = args.WorldHandle;
+        var oldShader = handle.GetShader();
+        try
+        {
+            handle.UseShader(_unshadedShader ??= IoCManager.Resolve<IPrototypeManager>().Index(Unshaded).Instance());
+            DrawTrails(args);
+        }
+        finally
+        {
+            handle.UseShader(oldShader);
+        }
+    }
+
+    private void DrawTrails(in OverlayDrawArgs args)
     {
         var now = _timing.RealTime;
         var query = _entities.EntityQueryEnumerator<SWSaberSwingTrailVisualsComponent, TransformComponent>();
@@ -50,9 +69,15 @@ public sealed class SWSaberSwingTrailOverlay : Overlay
                 continue;
 
             var aim = _transform.GetWorldRotation(xform.ParentUid) + trail.Direction;
-            var halo = Color.FromSrgb(Color.InterpolateBetween(trail.Tint, Color.White, 0.15f));
-            var core = Color.FromSrgb(Color.InterpolateBetween(trail.Tint, Color.White, 0.72f));
-            var opacity = PeakOpacity * (1f - SmoothProgress(age, 0.079f, TrailDuration - 0.079f));
+            var halo = Color.FromSrgb(Color.InterpolateBetween(trail.Tint, Color.White, 0.36f));
+            var core = Color.FromSrgb(Color.InterpolateBetween(trail.Tint, Color.White, 0.89f));
+            var peak = trail.Shape switch
+            {
+                SWSaberSwingTrail.DashSweep => 0.81f,
+                SWSaberSwingTrail.CounterCut => 0.84f,
+                _ => PeakOpacity,
+            };
+            var opacity = peak * (1f - SmoothProgress(age, 0.104f, TrailDuration - 0.104f));
 
             switch (trail.Shape)
             {
@@ -78,8 +103,8 @@ public sealed class SWSaberSwingTrailOverlay : Overlay
         var signedSweep = GetVisualSweep(swing);
 
         var (tail, head) = GetArcPose(age, guard);
-        var haloWidth = guard ? 0.122f : 0.110f;
-        var tailLight = guard ? 0.32f : 0.46f;
+        var haloWidth = guard ? 0.164f : 0.152f;
+        var tailLight = guard ? 0.40f : 0.52f;
 
         for (var sample = 0; sample <= TrailSegments; sample++)
         {
@@ -105,7 +130,7 @@ public sealed class SWSaberSwingTrailOverlay : Overlay
         var counter = trail.Shape == SWSaberSwingTrail.CounterCut;
         var sweep = GetVisualSweep(trail.Sweep) * (outward ? 1f : 0.72f);
         var (tail, head) = GetArcPose(age, guard: false);
-        var haloWidth = outward ? 0.105f : counter ? 0.176f : 0.128f;
+        var haloWidth = outward ? 0.159f : counter ? 0.220f : 0.159f;
 
         for (var sample = 0; sample <= TrailSegments; sample++)
         {
@@ -115,7 +140,7 @@ public sealed class SWSaberSwingTrailOverlay : Overlay
             var taper = GetEndTaper(fraction);
             // Ataru sweeps outward into a long curved tail, while the power cut drives inward.
             var radius = trail.Reach * (outward ? 0.43f + 0.50f * path : 0.91f - 0.43f * path);
-            var intensity = opacity * taper * (outward ? 0.32f + 0.68f * fraction : 0.58f + 0.42f * fraction);
+            var intensity = opacity * taper * (outward ? 0.42f + 0.58f * fraction : 0.62f + 0.38f * fraction);
             var width = MathF.Min(haloWidth * taper, trail.Reach - radius);
 
             SetSample(sample, origin + direction * radius, direction, width, intensity, halo, core);
@@ -141,8 +166,8 @@ public sealed class SWSaberSwingTrailOverlay : Overlay
             var taper = GetEndTaper(fraction);
             var leading = SmoothProgress(fraction, 0.46f, 0.43f);
             var reachLimit = MathF.Sqrt(MathF.Max(0f, reach * reach - distance * distance));
-            var width = MathF.Min(0.104f * taper * (0.54f + 0.46f * leading), reachLimit);
-            var light = opacity * taper * (0.27f + 0.73f * leading);
+            var width = MathF.Min(0.151f * taper * (0.60f + 0.40f * leading), reachLimit);
+            var light = opacity * taper * (0.39f + 0.61f * leading);
 
             SetSample(sample, origin + forward * distance, side, width, light, halo, core);
         }
@@ -153,10 +178,10 @@ public sealed class SWSaberSwingTrailOverlay : Overlay
     {
         var windup = guard ? 0.011f : 0.016f;
         var duration = guard ? 0.078f : 0.086f;
-        var lag = guard ? 0.047f : 0.059f;
+        var lag = guard ? 0.064f : 0.084f;
         var head = 0.07f + 0.93f * SmoothProgress(age, windup, duration);
         var tail = SmoothProgress(age, windup + lag, duration)
-            * (guard ? 0.83f : 0.70f) * (0.78f + 0.22f * SmoothProgress(age, 0.12f, 0.09f));
+            * (guard ? 0.73f : 0.59f) * (0.78f + 0.22f * SmoothProgress(age, 0.126f, 0.122f));
         return (tail, head);
     }
 
@@ -164,8 +189,8 @@ public sealed class SWSaberSwingTrailOverlay : Overlay
     internal static (float Tail, float Head) GetThrustPose(float age)
     {
         var extend = SmoothProgress(age, 0f, 0.064f);
-        var retract = SmoothProgress(age, 0.063f, 0.091f);
-        var settle = SmoothProgress(age, 0.129f, 0.096f);
+        var retract = SmoothProgress(age, 0.073f, 0.109f);
+        var settle = SmoothProgress(age, 0.147f, 0.125f);
         var head = 0.32f + 0.66f * extend - 0.37f * retract - 0.09f * settle;
         var length = (0.18f + 0.37f * extend) * (1f - 0.55f * retract);
         return (head - length, head);
@@ -186,16 +211,18 @@ public sealed class SWSaberSwingTrailOverlay : Overlay
     {
         var vertex = sample * VerticesPerSample;
         var edge = halo.WithAlpha(0f);
-        var shoulder = halo.WithAlpha(opacity * 0.55f);
+        var shoulder = halo.WithAlpha(opacity * 0.51f);
+        var inner = Color.InterpolateBetween(halo, core, 0.66f).WithAlpha(opacity * 0.84f);
         var offset = normal * width;
-        var inner = offset * 0.42f;
 
-        // Shared rails give the bright center and soft edges one alpha gradient, without layered overdraw.
+        // One gradient mesh keeps the hot core and tinted glow from compositing into an opaque fill.
         _vertices[vertex] = new(center - offset, edge);
-        _vertices[vertex + 1] = new(center - inner, shoulder);
-        _vertices[vertex + 2] = new(center, core.WithAlpha(opacity));
-        _vertices[vertex + 3] = new(center + inner, shoulder);
-        _vertices[vertex + 4] = new(center + offset, edge);
+        _vertices[vertex + 1] = new(center - offset * 0.62f, shoulder);
+        _vertices[vertex + 2] = new(center - offset * 0.22f, inner);
+        _vertices[vertex + 3] = new(center, core.WithAlpha(opacity));
+        _vertices[vertex + 4] = new(center + offset * 0.22f, inner);
+        _vertices[vertex + 5] = new(center + offset * 0.62f, shoulder);
+        _vertices[vertex + 6] = new(center + offset, edge);
     }
 
     private static ushort[] BuildTrailIndices()

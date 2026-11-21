@@ -38,7 +38,6 @@ public sealed class SWGlobalWarGunnerySystem : EntitySystem
     [Dependency] private readonly SWGlobalWarAssignmentsSystem _assignments = default!;
     [Dependency] private readonly SWGlobalWarShipOwnershipSystem _ownership = default!;
     [Dependency] private readonly SWGlobalWarPlanetSystem _planets = default!;
-    [Dependency] private readonly SWGlobalWarPoliticsSystem _politics = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
     [Dependency] private readonly SharedInteractionSystem _interaction = default!;
     [Dependency] private readonly ActionBlockerSystem _blocker = default!;
@@ -115,8 +114,7 @@ public sealed class SWGlobalWarGunnerySystem : EntitySystem
             !_blocker.CanInteract(body, console) || !_interaction.InRangeUnobstructed(body, console, range: 2f) ||
             Transform(console).GridUid is not { } grid || Transform(body).GridUid != grid ||
             !_ownership.TryGetOwner(grid, generation, out var owner, out _) || assignment.Faction != owner ||
-            !_planets.TryGetPhysicalLocation(console, out var planet, out _) ||
-            !_politics.CanConductHostility(body, planet, generation)) return false;
+            !_planets.TryGetPhysicalLocation(console, out _, out _)) return false;
         ship = grid;
         return true;
     }

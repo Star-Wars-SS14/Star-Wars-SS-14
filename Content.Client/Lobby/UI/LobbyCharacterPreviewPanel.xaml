@@ -12,8 +12,13 @@
             <BoxContainer Name="ViewBox" Orientation="Horizontal" HorizontalAlignment="Center">
 
             </BoxContainer>
-            <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="6">
-                <Label Name="Summary" HorizontalAlignment="Left" ClipText="True" />
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" SeparationOverride="6">
+                <BoxContainer Name="CharacterDetails" Orientation="Vertical" SeparationOverride="2" Visible="False">
+                    <Label Name="CharacterName" StyleClasses="LabelHeading" ClipText="True"
+                           HorizontalAlignment="Stretch" Align="Left" MouseFilter="Pass" />
+                    <Label Name="PriorityJob" ClipText="True"
+                           HorizontalAlignment="Stretch" Align="Left" MouseFilter="Pass" />
+                </BoxContainer>
                 <Button Name="CharacterSetup" Text="{Loc 'lobby-character-preview-panel-character-setup-button'}" />
             </BoxContainer>
         </BoxContainer>

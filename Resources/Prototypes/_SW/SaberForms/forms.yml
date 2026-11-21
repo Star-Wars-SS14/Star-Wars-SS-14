@@ -3,12 +3,14 @@
   name: sw-saber-form-shii-cho-name
   description: sw-saber-form-shii-cho-description
   swingAnimation: SWSaberArcShiiCho
+  parryVisual: SparkFan
 
 - type: swSaberForm
   id: SWFormMakashi
   name: sw-saber-form-makashi-name
   description: sw-saber-form-makashi-description
   swingAnimation: SWSaberArcMakashi
+  parryVisual: RiposteGlint
   visualArcMultiplier: 0.45
   riposteWindow: 1.15
   riposteAttackRateMultiplier: 1.35
@@ -21,7 +23,7 @@
   swingAnimation: SWSaberArcSoresu
   visualArcMultiplier: 0.65
   guardDurationMultiplier: 1.25
-  guardReflectionSparks: true
+  reflectionVisual: ReflectionCurl
   guardExitAttackDelay: 0.35
 
 - type: entity

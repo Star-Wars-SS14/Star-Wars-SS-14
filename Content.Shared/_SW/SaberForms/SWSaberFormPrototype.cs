@@ -34,7 +34,10 @@ public sealed partial class SWSaberFormPrototype : IPrototype
     public float GuardReflectChanceMultiplier = 1f;
 
     [DataField]
-    public bool GuardReflectionSparks;
+    public SWSaberDefenseVisual ParryVisual;
+
+    [DataField]
+    public SWSaberDefenseVisual ReflectionVisual;
 
     [DataField]
     public float GuardExitAttackDelay;

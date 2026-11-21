@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using Content.Shared._SW.ForceAbilities;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Hands;
@@ -57,16 +58,31 @@ public sealed class SharedSWSaberFormSystem : EntitySystem
     public void OnSaberParry(EntityUid user, EntityUid weapon, EntityUid attacker)
     {
         if (!TryGetActiveForm(user, weapon, out var form) ||
-            form.RiposteWindow <= 0 ||
             !TryComp<SWSaberFormComponent>(user, out var forms))
         {
             return;
         }
 
-        forms.RiposteWeapon = weapon;
-        forms.RiposteUntil = _timing.CurTime + TimeSpan.FromSeconds(form.RiposteWindow);
-        Dirty(user, forms);
-        RaiseDefenseEffect(user, attacker, playClash: true);
+        var playClash = form.RiposteWindow > 0;
+        if (playClash)
+        {
+            forms.RiposteWeapon = weapon;
+            forms.RiposteUntil = _timing.CurTime + TimeSpan.FromSeconds(form.RiposteWindow);
+            Dirty(user, forms);
+        }
+
+        if (form.ParryVisual == SWSaberDefenseVisual.None && !playClash)
+            return;
+
+        var defender = _transform.GetMapCoordinates(user);
+        var delta = Vector2.Zero;
+        if (TryComp<TransformComponent>(attacker, out var attackerTransform) && attackerTransform.MapID == defender.MapId)
+            delta = _transform.GetWorldPosition(attackerTransform) - defender.Position;
+
+        var distance = delta.Length();
+        var axis = distance > 0.001f ? delta / distance : Vector2.UnitX;
+        var contact = new MapCoordinates(defender.Position + axis * MathF.Min(0.55f, distance / 2f), defender.MapId);
+        RaiseDefenseEffect(user, contact, form.ParryVisual, axis, axis, playClash);
     }
 
     private void OnMeleeAttack(Entity<SWSaberFormComponent> ent, ref MeleeAttackEvent args)
@@ -147,32 +163,37 @@ public sealed class SharedSWSaberFormSystem : EntitySystem
 
     private void OnReflectionSucceeded(Entity<SWSaberFormWeaponComponent> ent, ref ReflectionSucceededEvent args)
     {
-        if (TryComp<SWWeaponBlockComponent>(ent.Owner, out var block) &&
-            block.IsBlocking &&
-            block.BlockEndTime > _timing.CurTime &&
-            TryGetActiveForm(args.User, ent.Owner, out var form) &&
-            form.GuardReflectionSparks)
+        if (!TryComp<SWWeaponBlockComponent>(ent.Owner, out var block) ||
+            !block.IsBlocking ||
+            block.BlockEndTime <= _timing.CurTime ||
+            block.CurrentUser is not { } user ||
+            !TryGetActiveForm(user, ent.Owner, out var form) ||
+            form.ReflectionVisual == SWSaberDefenseVisual.None)
         {
-            RaiseDefenseEffect(args.User, args.Source);
+            return;
         }
+
+        var defender = _transform.GetMapCoordinates(user);
+        var outgoing = args.Outgoing.LengthSquared() > 0.0001f ? args.Outgoing.Normalized() : Vector2.UnitX;
+        var source = args.Incoming.LengthSquared() > 0.0001f ? -args.Incoming.Normalized() : outgoing;
+        // Hitscan reflection currently starts from the target. For a moving projectile use its collision position.
+        var contact = args.Contact is { } impact && impact.MapId == defender.MapId
+            ? impact
+            : new MapCoordinates(defender.Position + source * 0.34f, defender.MapId);
+        RaiseDefenseEffect(user, contact, form.ReflectionVisual, outgoing, source);
     }
 
-    private void RaiseDefenseEffect(EntityUid user, EntityUid source, bool playClash = false)
+    private void RaiseDefenseEffect(EntityUid user, MapCoordinates contact, SWSaberDefenseVisual visual,
+        Vector2 direction, Vector2 source, bool playClash = false)
     {
-        var userPos = _transform.GetMapCoordinates(user);
-        if (userPos.MapId == MapId.Nullspace)
+        var userTransform = Transform(user);
+        if (contact.MapId == MapId.Nullspace || (userTransform.GridUid ?? userTransform.MapUid) is not { } anchor)
             return;
 
-        var contact = userPos.Position;
-        if (TryComp<TransformComponent>(source, out var xform) && xform.MapID == userPos.MapId)
-        {
-            var delta = _transform.GetWorldPosition(xform) - contact;
-            if (delta.LengthSquared() > 0)
-                contact += delta.Normalized() * MathF.Min(0.55f, delta.Length() / 2);
-        }
-
-        var coordinates = _transform.ToCoordinates(new MapCoordinates(contact, userPos.MapId));
-        var ev = new SWSaberFormDefenseEvent(coordinates, playClash);
+        var coordinates = _transform.ToCoordinates(anchor, contact);
+        var rotation = _transform.GetWorldRotation(anchor);
+        var ev = new SWSaberFormDefenseEvent(coordinates, visual, direction.ToAngle() - rotation,
+            source.ToAngle() - rotation, playClash);
         RaiseLocalEvent(user, ref ev);
     }
 }

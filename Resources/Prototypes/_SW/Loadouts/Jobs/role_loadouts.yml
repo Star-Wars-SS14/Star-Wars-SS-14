@@ -427,6 +427,7 @@
   - SWRepublicTacticalVisor
   - SWSaberHiltChoice
   - SWSaberEmitterChoice
+  - SWSaberFocusChoice
   - SWJediCrystalChoice
 
 - type: roleLoadout
@@ -436,6 +437,7 @@
   - SWEmpireTacticalVisor
   - SWSaberHiltChoice
   - SWSaberEmitterChoice
+  - SWSaberFocusChoice
   - SWSithCrystalChoice
 
 - type: roleLoadout
@@ -463,6 +465,7 @@
   groups:
   - SWSaberHiltChoice
   - SWSaberEmitterChoice
+  - SWSaberFocusChoice
   - SWJediCrystalChoice
 
 - type: roleLoadout
@@ -470,4 +473,5 @@
   groups:
   - SWSaberHiltChoice
   - SWSaberEmitterChoice
+  - SWSaberFocusChoice
   - SWSithCrystalChoice

@@ -12,15 +12,11 @@
   id: SWSaberHiltSingleLoadout
   equipment:
     pocket1: SWModularSaber
-  storage:
-    belt: [ SWSaberFocusStandard ]
 
 - type: loadout
   id: SWSaberHiltDoubleLoadout
   equipment:
     pocket1: SWModularSaberDouble
-  storage:
-    belt: [ SWSaberFocusStandard ]
 
 - type: loadoutGroup
   id: SWSaberEmitterChoice
@@ -31,6 +27,17 @@
   loadouts:
   - SWSaberEmitterStandardLoadout
   - SWSaberEmitterReinforcedLoadout
+
+- type: loadoutGroup
+  id: SWSaberFocusChoice
+  name: sw-loadout-saber-focus
+  swSaberKit: true
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - SWSaberFocusStandardLoadout
+  - SWSaberFocusFastLoadout
+  - SWSaberFocusHeavyLoadout
 
 - type: loadoutGroup
   id: SWJediCrystalChoice
@@ -62,6 +69,21 @@
   id: SWSaberEmitterReinforcedLoadout
   storage:
     belt: [ SWSaberEmitterReinforced ]
+
+- type: loadout
+  id: SWSaberFocusStandardLoadout
+  storage:
+    belt: [ SWSaberFocusStandard ]
+
+- type: loadout
+  id: SWSaberFocusFastLoadout
+  storage:
+    belt: [ SWSaberFocusFast ]
+
+- type: loadout
+  id: SWSaberFocusHeavyLoadout
+  storage:
+    belt: [ SWSaberFocusHeavy ]
 
 - type: loadout
   id: SWJediCrystalBlueLoadout

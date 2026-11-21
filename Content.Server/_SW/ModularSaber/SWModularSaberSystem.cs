@@ -1,3 +1,4 @@
+using Content.Shared._SW.ModularSaber;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;

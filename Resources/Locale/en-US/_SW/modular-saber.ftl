@@ -18,7 +18,12 @@ ent-SWSaberFocusFast = rapid lightsaber focusing assembly
 ent-SWSaberFocusHeavy = heavy lightsaber focusing assembly
     .desc = Increases blade damage while reducing attack speed.
 
-sw-loadout-saber-emitter-damage = Base damage per hit — { $damage }
+sw-loadout-saber-emitter-damage =
+    Base damage per hit
+    { $damage }
 sw-loadout-saber-emitter-damage-value = { $type } { $amount }
-sw-loadout-saber-focus-stats = Blade damage — { $damage }% of base damage. Attack speed — { $rate }% of base speed. The emitter sets structural damage.
+sw-loadout-saber-focus-stats =
+    Blade damage — { $damage }% of base damage
+    Attack speed — { $rate }% of base speed
+    The emitter sets structural damage.
 sw-loadout-saber-crystal-color = Determines the blade color.

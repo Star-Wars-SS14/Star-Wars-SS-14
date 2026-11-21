@@ -18,7 +18,12 @@ ent-SWSaberFocusFast = скоростной фокусирующий блок с
 ent-SWSaberFocusHeavy = тяжёлый фокусирующий блок светового меча
     .desc = Повышает урон клинка, снижая скорость атак.
 
-sw-loadout-saber-emitter-damage = Базовый урон за удар — { $damage }
+sw-loadout-saber-emitter-damage =
+    Базовый урон за удар
+    { $damage }
 sw-loadout-saber-emitter-damage-value = { $type } { $amount }
-sw-loadout-saber-focus-stats = Урон клинка — { $damage }% от базового. Скорость атак — { $rate }% от базовой. Структурный урон задаёт эмиттер.
+sw-loadout-saber-focus-stats =
+    Урон клинка — { $damage }% от базового
+    Скорость атак — { $rate }% от базовой
+    Структурный урон задаёт эмиттер.
 sw-loadout-saber-crystal-color = Определяет цвет клинка.

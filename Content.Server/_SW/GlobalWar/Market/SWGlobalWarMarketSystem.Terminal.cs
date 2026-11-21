@@ -73,7 +73,8 @@ public sealed partial class SWGlobalWarMarketSystem
                 outputPallets: actor == null ? 0 : FindMarketPallets(ent, false).Count,
                 inputPallets: actor == null ? 0 : FindMarketPallets(ent, true).Count,
                 warehouse: ent.Comp.Warehouse, industrialSupply: ent.Comp.IndustrialSupply,
-                industrialOutput: ent.Comp.IndustrialOutput, purchaseRates: new(ent.Comp.PurchaseRates)),
+                industrialOutput: ent.Comp.IndustrialOutput, purchaseRates: new(ent.Comp.PurchaseRates),
+                canConfigurePurchases: actor != null && FactoryOperator(actor) && ent.Comp.AutomaticMarketAccess),
                 subscription, GetNetEntity(viewer)), viewer);
     }
 
@@ -85,7 +86,8 @@ public sealed partial class SWGlobalWarMarketSystem
             rejected = "sw-global-war-factory-rejected-power";
             return false;
         }
-        if (ent.Comp.IndustrialSupply || ent.Comp.IndustrialOutput || ent.Comp.Warehouse)
+        if (action == SWGlobalWarFactoryAction.ConfigureIndustrialRate ||
+            ent.Comp.IndustrialSupply || ent.Comp.IndustrialOutput || ent.Comp.Warehouse)
             return IndustrialRequest(ent, actor, request, market, action, commodity, quantity, ref rejected);
         if (action == SWGlobalWarFactoryAction.DepositMarket)
             return DepositPalletItems(ent, actor, market, ref rejected);

@@ -1,0 +1,12 @@
+sw-global-war-part-goldingot = Gold ingots
+sw-global-war-part-lanthanidesheet = Lanthanide sheets
+sw-global-war-part-lanthanidealloy = Lanthanide alloy
+sw-global-war-part-advancedcables = Advanced cables
+sw-global-war-part-reinforcedsteel = Reinforced steel
+sw-global-war-part-armorplate = Armor plates
+sw-global-war-part-blasterbarrel = Blaster barrels
+sw-global-war-part-blasterframe = Blaster frames
+sw-global-war-part-droidai = Droid AI cores
+sw-global-war-part-droidblaster = Droid blaster modules
+sw-global-war-part-droidrepublicchip = Republic droid faction chips
+sw-global-war-part-droidempirechip = Empire droid faction chips

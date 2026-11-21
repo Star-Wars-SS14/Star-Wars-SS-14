@@ -1,0 +1,105 @@
+# Physical intermediate goods for the lathe production chains. No automatic production or opening stock.
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarPartGoldIngot
+  name: sw-global-war-part-goldingot
+  entity: IngotGold1
+  cargoVolume: 1
+  purchasePrice: 120
+  campaignMarket: true
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarPartLanthanideSheet
+  name: sw-global-war-part-lanthanidesheet
+  entity: SWSheetLantanid1
+  cargoVolume: 1
+  purchasePrice: 300
+  campaignMarket: true
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarPartLanthanideAlloy
+  name: sw-global-war-part-lanthanidealloy
+  entity: SWSheetLantanidAlloy1
+  cargoVolume: 1
+  purchasePrice: 220
+  campaignMarket: true
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarPartAdvancedCables
+  name: sw-global-war-part-advancedcables
+  entity: SWAdvancedCables1
+  cargoVolume: 1
+  purchasePrice: 240
+  campaignMarket: true
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarPartReinforcedSteel
+  name: sw-global-war-part-reinforcedsteel
+  entity: SWReinforcedSteel
+  cargoVolume: 1
+  purchasePrice: 50
+  campaignMarket: true
+  wholeItems: true
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarPartArmorPlate
+  name: sw-global-war-part-armorplate
+  entity: SWArmorPlate
+  cargoVolume: 1
+  purchasePrice: 250
+  campaignMarket: true
+  wholeItems: true
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarPartBlasterBarrel
+  name: sw-global-war-part-blasterbarrel
+  entity: SWBlasterBarrel
+  cargoVolume: 1
+  purchasePrice: 660
+  campaignMarket: true
+  wholeItems: true
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarPartBlasterFrame
+  name: sw-global-war-part-blasterframe
+  entity: SWBlasterFrame
+  cargoVolume: 1
+  purchasePrice: 90
+  campaignMarket: true
+  wholeItems: true
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarPartDroidAI
+  name: sw-global-war-part-droidai
+  entity: SWDroidAICoreModule
+  cargoVolume: 1
+  purchasePrice: 340
+  campaignMarket: true
+  wholeItems: true
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarPartDroidBlaster
+  name: sw-global-war-part-droidblaster
+  entity: SWDroidBlasterModule
+  cargoVolume: 1
+  purchasePrice: 850
+  campaignMarket: true
+  wholeItems: true
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarPartDroidRepublicChip
+  name: sw-global-war-part-droidrepublicchip
+  entity: SWDroidFactionChipRepublic
+  cargoVolume: 1
+  purchasePrice: 100
+  campaignMarket: true
+  wholeItems: true
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarPartDroidEmpireChip
+  name: sw-global-war-part-droidempirechip
+  entity: SWDroidFactionChipEmpire
+  cargoVolume: 1
+  purchasePrice: 100
+  campaignMarket: true
+  wholeItems: true

@@ -27,6 +27,10 @@ public sealed partial class SWGlobalWarCommodityPrototype : IPrototype
     [DataField]
     public int PurchasePrice;
 
+    /// <summary>Include this commodity in every campaign market, even without virtual production or consumption.</summary>
+    [DataField]
+    public bool CampaignMarket;
+
     /// <summary>Credits per unit of actual mandatory civilian consumption; production and transport pay no tax.</summary>
     [DataField(serverOnly: true)]
     public int ConsumptionTax;

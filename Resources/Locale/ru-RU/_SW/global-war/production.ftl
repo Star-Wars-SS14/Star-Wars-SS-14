@@ -45,8 +45,8 @@ sw-global-war-factory-kind-4 = Паёк
 sw-global-war-factory-kind-5 = Медицина
 sw-global-war-factory-kind-6 = Продвинутая электроника
 ent-SWGlobalWarMiningDrill = планетарный бур
-    .desc = Добывает шесть единиц руды за минуту работы с питанием из конечной физической залежи планеты.
-sw-global-war-factory-mining = Добыча: 6 ед./мин при питании; не более двух буров на мир. Остаток общей залежи: { $remaining } / 2400.
+    .desc = Добывает руду из бесконечной залежи и выдаёт её на ближайший закреплённый конвейер в пределах 1,5 клетки. Лоток со стрелкой поворачивается к конвейеру.
+sw-global-war-factory-mining = Добыча: 6 ед./мин при питании; не более двух буров на мир. Залежь бесконечная. Для выдачи нужен закреплённый конвейер в пределах 1,5 клетки.
 sw-global-war-factory-materialize = Выдать сырьё
 sw-global-war-factory-produce = Изготовить одну партию
 sw-global-war-factory-previous = Назад
@@ -116,3 +116,26 @@ ent-SWGlobalWarIndustrialSupplyPallet = поддон закупки ресурс
     .desc = Автоматически покупает ресурсы с планетарного рынка за бюджет промышленности.
 ent-SWGlobalWarIndustrialOutputPallet = поддон приёмки продукции
     .desc = Автоматически отправляет продукцию на склад завода или продаёт на планетарный рынок.
+
+sw-global-war-mining-title = Планетарный бур
+sw-global-war-mining-start = Включить добычу
+sw-global-war-mining-stop = Остановить добычу
+sw-global-war-mining-no-resource = нет подходящей залежи
+sw-global-war-mining-details = Добываемый ресурс: { $resource }
+    Скорость: 1 единица каждые 10 секунд (6 в минуту).
+    Запас залежи: бесконечный.
+    Выдача: на ближайший закреплённый конвейер в радиусе 1,5 клетки.
+    Состояние: { $state }
+sw-global-war-mining-state-anchor = закрепите бур
+sw-global-war-mining-state-unavailable = нет доступа или привязки к планете
+sw-global-war-mining-state-stopped = добыча выключена
+sw-global-war-mining-state-power = нет питания
+sw-global-war-mining-state-planet = на этой планете нет подходящей залежи
+sw-global-war-mining-state-conveyor = рядом нет закреплённого конвейера
+sw-global-war-mining-state-limit = добыча недоступна: проверьте лимит двух буров на планету
+sw-global-war-mining-state-working = добыча идёт; таймер показывает время до следующей единицы
+
+sw-global-war-auto-purchase-rate = Автозакупка, ед./с:
+sw-global-war-auto-purchase-save = Сохранить автозакупку выбранного товара
+sw-global-war-auto-purchase-status = Настроено: { $rate } ед./с. Стоимость: до { $cost } кредитов/с из бюджета промышленности.
+sw-global-war-auto-purchase-hint = Каждый товар настраивается отдельно. 0 отключает закупку. Раз в секунду покупается доступное количество в пределах бюджета. Выдача — на подключённые поддоны выдачи; без них закупка приостанавливается. Закрывать окно можно.

@@ -72,6 +72,13 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
             MarketPicker.SelectId(args.Id);
             UpdateMarketSelection();
         };
+        AutoPurchaseQuantity.OnTextChanged += _ => UpdateMarketSelection();
+        AutoPurchaseSave.OnPressed += _ =>
+        {
+            if (_marketGoods.ElementAtOrDefault(MarketPicker.SelectedId) is { } good &&
+                int.TryParse(AutoPurchaseQuantity.Text, out var rate) && rate >= 0)
+                Request(SWGlobalWarFactoryAction.ConfigureIndustrialRate, selection: good.Commodity, quantity: rate);
+        };
         MarketQuantity.OnTextChanged += _ => UpdateMarketSelection();
         MarketBuy.SetAppearance(SWGlobalWarConsoleStyle.TextBright, money: true);
         MarketBuy.OnPressed += _ =>
@@ -81,6 +88,8 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
                 Request(_industrialSupply ? SWGlobalWarFactoryAction.ConfigureIndustrialRate : SWGlobalWarFactoryAction.BuyMarket, selection: good.Commodity, quantity: quantity);
         };
         MarketDeposit.OnPressed += _ => Request(SWGlobalWarFactoryAction.DepositMarket);
+        MiningStart.OnPressed += _ => Request(SWGlobalWarFactoryAction.Start);
+        MiningStop.OnPressed += _ => Request(SWGlobalWarFactoryAction.Stop);
         Start.OnPressed += _ => Request(SWGlobalWarFactoryAction.Start);
         Stop.OnPressed += _ => Request(SWGlobalWarFactoryAction.Stop);
         Insert.OnPressed += _ => Request(SWGlobalWarFactoryAction.Insert);
@@ -109,7 +118,7 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
         {
             SetCampaignTitle(Loc.GetString(state.Warehouse ? "sw-global-war-warehouse-title" : state.IndustrialSupply ? "sw-global-war-industrial-supply-title" : state.IndustrialOutput ? "sw-global-war-industrial-output-title" : state.Arsenal ? "sw-global-war-terminal-vendor" : "sw-global-war-terminal-title"));
             if (!_sized)
-                SetSize = new Vector2(520, 380);
+                SetSize = new Vector2(580, 620);
             _sized = true;
             LineStrip.Visible = ProductColumn.Visible = ProductDetails.Visible = StockColumn.Visible = Recruit.Visible = false;
             MarketPanel.Visible = true;
@@ -125,6 +134,7 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
             }
             _industrialSupply = state.IndustrialSupply;
             _purchaseRates = state.PurchaseRates;
+            AutoPurchasePanel.Visible = state.CanConfigurePurchases;
             MarketPicker.Visible = MarketQuantityRow.Visible = MarketBalance.Visible = MarketBuy.Visible = !state.IndustrialOutput;
             MarketDeposit.Visible = !(state.IndustrialSupply || state.IndustrialOutput);
             MarketDeposit.Text = Loc.GetString(state.Warehouse ? "sw-global-war-warehouse-deposit" : "sw-global-war-terminal-deposit");
@@ -139,6 +149,27 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
                 ("output", state.OutputPallets), ("input", state.InputPallets));
             MarketDeposit.Disabled = !_marketPowered || state.InputPallets == 0;
             UpdateMarketSelection();
+            return;
+        }
+        MiningControls.Visible = state.Mining;
+        if (state.Mining)
+        {
+            SetCampaignTitle(Loc.GetString("sw-global-war-mining-title"));
+            if (!_sized)
+                SetSize = new Vector2(600, 380);
+            _sized = true;
+            ProductColumn.Visible = ProductDetails.Visible = StockColumn.Visible = Recruit.Visible =
+                MarketPanel.Visible = CargoWork.Visible = CargoWorkHint.Visible = false;
+            LineStrip.Visible = true;
+            UpdateStrip(state);
+            CurrentProduct.Visible = false;
+            HelpMark.ToolTip = state.Status;
+            MachineIcon.Texture = IoCManager.Resolve<IEntityManager>().System<SpriteSystem>().Frame0(
+                new SpriteSpecifier.Rsi(new ResPath("_SW/Structures/Machines/lathe.rsi"), "ore_dispenser"));
+            Status.Visible = true;
+            Status.SetMessage(state.Status);
+            MiningStart.Disabled = !state.Operate || state.Enabled;
+            MiningStop.Disabled = !state.Operate || !state.Enabled;
             return;
         }
         SetCampaignTitle(Loc.GetString(state.Recruitment ? "sw-global-war-factory-title-recruit" :
@@ -187,6 +218,11 @@ public sealed partial class SWGlobalWarFactoryMenu : SWGlobalWarWindow
     private void UpdateMarketSelection()
     {
         var good = _marketGoods.ElementAtOrDefault(MarketPicker.SelectedId);
+        AutoPurchaseSave.Disabled = !_marketPowered || good == null || good.Price <= 0 ||
+            !int.TryParse(AutoPurchaseQuantity.Text, out var rate) || rate < 0;
+        AutoPurchaseStatus.SetMessage(good == null ? string.Empty : Loc.GetString("sw-global-war-auto-purchase-status",
+            ("rate", _purchaseRates.GetValueOrDefault(good.Commodity)),
+            ("cost", (long) _purchaseRates.GetValueOrDefault(good.Commodity) * good.Price)));
         var valid = int.TryParse(MarketQuantity.Text, out var quantity) && quantity >= (_industrialSupply ? 0 : 1);
         if (_industrialSupply)
         {

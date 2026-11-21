@@ -47,13 +47,26 @@
       state: generic_keys
 
 - type: entity
-  parent: SWGlobalWarMarketStorage
+  parent: SWBaseLathe
   id: SWGlobalWarMiningDrill
   name: campaign mining drill
-  description: Extracts six ore units per powered minute from the planet's finite physical deposit.
+  description: Extracts six ore units per powered minute from an infinite deposit, dispensing onto the nearest adjacent conveyor.
   components:
   - type: SWGlobalWarFactory
     mining: true
+  - type: Sprite
+    sprite: _SW/Structures/Machines/lathe.rsi
+    noRot: false
+    layers:
+    - state: ore_dispenser
+    - state: up_arrow
+      rotation: 180
+  - type: ActivatableUI
+    key: enum.SWGlobalWarFactoryUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWGlobalWarFactoryUiKey.Key:
+        type: SWGlobalWarFactoryBoundUserInterface
 
 - type: entity
   parent: SWGlobalWarMarketStorage

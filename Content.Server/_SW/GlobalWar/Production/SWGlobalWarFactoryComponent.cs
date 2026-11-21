@@ -15,7 +15,7 @@ public sealed partial class SWGlobalWarFactoryComponent : Component
     /// <summary>Whether this endpoint recruits the current civilian without spawning equipment.</summary>
     [DataField] public bool Recruitment;
 
-    /// <summary>Extracts the separate finite physical ore deposit at six units per powered minute.</summary>
+    /// <summary>Extracts infinite physical ore onto an adjacent conveyor at six units per powered minute.</summary>
     [DataField] public bool Mining;
 
     /// <summary>Starts the base supply program when a new campaign binds this physical line.</summary>
@@ -35,6 +35,8 @@ public sealed partial class SWGlobalWarFactoryComponent : Component
     public decimal SaleRemainder;
     public float IndustrialElapsed;
 
+    public bool AutomaticMarketAccess => MarketAccess && !Arsenal && !Warehouse && !IndustrialSupply && !IndustrialOutput;
+
     public bool MarketAccess => !Factory && !Mining && !Recruitment;
 
     public Guid Generation;
@@ -42,8 +44,6 @@ public sealed partial class SWGlobalWarFactoryComponent : Component
     public TimeSpan LastUpdate;
     public SWGlobalWarLocationLease? WorkLease;
     public TimeSpan MiningTime;
-    public EntityUid? MiningOutput;
-    public EntityUid? MiningEscrow;
     public string Feedback = string.Empty;
     public readonly Dictionary<Guid, SWGlobalWarPhysicalProduction> Work = new();
 }

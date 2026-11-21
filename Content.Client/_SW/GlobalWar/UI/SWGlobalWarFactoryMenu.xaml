@@ -36,7 +36,20 @@
                 </BoxContainer>
                 <Label Name="MarketPallets" />
                 <ui:SWGlobalWarConsoleButton Name="MarketBuy" MinHeight="38" />
+                <BoxContainer Name="AutoPurchasePanel" Orientation="Vertical" SeparationOverride="6" Visible="False">
+                    <RichTextLabel Name="AutoPurchaseStatus" />
+                    <BoxContainer SeparationOverride="8">
+                        <Label Text="{Loc 'sw-global-war-auto-purchase-rate'}" VerticalAlignment="Center" />
+                        <LineEdit Name="AutoPurchaseQuantity" Text="0" SetWidth="100" MinHeight="32" />
+                    </BoxContainer>
+                    <ui:SWGlobalWarConsoleButton Name="AutoPurchaseSave" Text="{Loc 'sw-global-war-auto-purchase-save'}" MinHeight="38" />
+                    <RichTextLabel Text="{Loc 'sw-global-war-auto-purchase-hint'}" />
+                </BoxContainer>
                 <ui:SWGlobalWarConsoleButton Name="MarketDeposit" Text="{Loc 'sw-global-war-terminal-deposit'}" MinHeight="38" />
+            </BoxContainer>
+            <BoxContainer Name="MiningControls" Visible="False" SeparationOverride="8">
+                <ui:SWGlobalWarConsoleButton Name="MiningStart" Text="{Loc 'sw-global-war-mining-start'}" HorizontalExpand="True" MinHeight="40" />
+                <ui:SWGlobalWarConsoleButton Name="MiningStop" Text="{Loc 'sw-global-war-mining-stop'}" HorizontalExpand="True" MinHeight="40" />
             </BoxContainer>
             <ui:SWGlobalWarConsoleButton Name="Recruit" Text="{Loc 'sw-global-war-factory-recruit'}" MinHeight="44" />
             <ui:SWGlobalWarConsoleButton Name="CargoWork" MinHeight="44" Visible="False" />

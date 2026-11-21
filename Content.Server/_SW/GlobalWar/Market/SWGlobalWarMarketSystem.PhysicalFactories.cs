@@ -56,7 +56,6 @@ public sealed partial class SWGlobalWarMarketSystem
         _factoryRecipeWork.Clear();
         _physicalCargo.Clear();
         _physicalFlights.Clear();
-        _physicalMiningDeposits.Clear();
         _physicalMiningSites.Clear();
     }
 
@@ -71,7 +70,7 @@ public sealed partial class SWGlobalWarMarketSystem
             return false;
         var world = Comp<SWGlobalWarPlanetComponent>(planet).Prototype;
         if (!model.Markets.TryGetValue(world.Id, out var market) ||
-            !ent.Comp.Recruitment && !ent.Comp.MarketAccess && !TryRegisterSupplyStore(generation, ent, ent.Comp.Arsenal))
+            !ent.Comp.Recruitment && !ent.Comp.Mining && !ent.Comp.MarketAccess && !TryRegisterSupplyStore(generation, ent, ent.Comp.Arsenal))
             return false;
         owner = market.Owner;
         if (owner is not (SWGlobalWarFaction.Republic or SWGlobalWarFaction.Empire))
@@ -85,8 +84,6 @@ public sealed partial class SWGlobalWarMarketSystem
             ent.Comp.IndustrialElapsed = 0;
             ent.Comp.Enabled = (ent.Comp.Factory || ent.Comp.Mining) && ent.Comp.AutoStart;
             ent.Comp.MiningTime = TimeSpan.Zero;
-            ent.Comp.MiningOutput = null;
-            ent.Comp.MiningEscrow = null;
             ent.Comp.Work.Clear();
             ent.Comp.Feedback = string.Empty;
             ReleaseFactoryLease(ent.Comp);
@@ -97,7 +94,7 @@ public sealed partial class SWGlobalWarMarketSystem
                     TryRegisterSupplyConsumer(generation, ent, kind);
             }
         }
-        return ent.Comp.MarketAccess || ent.Comp.Recruitment || TryGetSupplyStore(generation, ent, owner, out _, out _);
+        return ent.Comp.MarketAccess || ent.Comp.Recruitment || ent.Comp.Mining || TryGetSupplyStore(generation, ent, owner, out _, out _);
     }
 
     private bool FactoryActor(Entity<SWGlobalWarFactoryComponent> ent, EntityUid body,
@@ -482,9 +479,18 @@ public sealed partial class SWGlobalWarMarketSystem
             ("enabled", Loc.GetString(ent.Comp.Enabled ? "sw-global-war-factory-yes" : "sw-global-war-factory-no")),
             ("seconds", (int) Math.Ceiling(remaining)));
         var detail = valid ? ent.Comp.Feedback : string.Empty;
-        if (valid && ent.Comp.Mining && _supplyStores.TryGetValue(ent, out var miningStore))
-            detail = (detail.Length > 0 ? detail + "\n" : string.Empty) + Loc.GetString("sw-global-war-factory-mining",
-                ("remaining", _physicalMiningDeposits.GetValueOrDefault(miningStore.Planet, PhysicalMiningDeposit)));
+        if (ent.Comp.Mining)
+        {
+            detail = MiningDescription(ent, valid);
+            if (valid && ent.Comp.Enabled && this.IsPowered(ent, EntityManager) &&
+                CanRunPhysicalMine(ent, actor.Faction, out _, out _))
+            {
+                total = PhysicalMiningInterval.TotalSeconds;
+                remaining = Math.Max(0, total - ent.Comp.MiningTime.TotalSeconds);
+            }
+            status = detail;
+            detail = string.Empty;
+        }
         if (detail.Length > 0)
             status += "\n" + detail;
         _factoryUi.ServerSendUiMessage(ent.Owner, SWGlobalWarFactoryUiKey.Key,

@@ -1,7 +1,7 @@
 sw-global-war-factory-title = Production and inventory
 sw-global-war-supply-physical-worlds = Last verified cargo worlds: { $worlds }
 sw-global-war-supply-physical-unload = Bring the physical container to the designated store and confirm unloading.
-sw-global-war-factory-mining = Extraction: 6 units/min while powered; at most two drills per world. Shared deposit remaining: { $remaining } / 2400.
+sw-global-war-factory-mining = Extraction: 6 units/min while powered; at most two drills per world. Infinite deposit. Requires an anchored conveyor within 1.5 tiles.
 sw-global-war-supply-order-awaiting-physical = Waiting for a real carrier: claim delivery, load the cargo, fly to its destination and unload at the receiving arsenal.
 sw-global-war-factory-materialize = Withdraw one material unit
 sw-global-war-factory-produce = Manufacture one batch
@@ -87,3 +87,26 @@ ent-SWGlobalWarMarketOutputPallet = planetary market output pallet
     .desc = Purchased goods appear here. Connect matching pallets edge-to-edge, with at least one within 8 tiles of the terminal.
 ent-SWGlobalWarMarketInputPallet = planetary market input pallet
     .desc = Place goods here and deposit them using a nearby terminal. Connect matching pallets edge-to-edge, with at least one within 8 tiles of the terminal.
+
+sw-global-war-mining-title = Planetary drill
+sw-global-war-mining-start = Start mining
+sw-global-war-mining-stop = Stop mining
+sw-global-war-mining-no-resource = no suitable deposit
+sw-global-war-mining-details = Resource: { $resource }
+    Rate: 1 unit every 10 seconds (6 per minute).
+    Deposit: infinite.
+    Output: nearest anchored conveyor within 1.5 tiles.
+    Status: { $state }
+sw-global-war-mining-state-anchor = anchor the drill
+sw-global-war-mining-state-unavailable = access or planet binding unavailable
+sw-global-war-mining-state-stopped = mining disabled
+sw-global-war-mining-state-power = no power
+sw-global-war-mining-state-planet = no suitable deposit on this planet
+sw-global-war-mining-state-conveyor = no anchored conveyor nearby
+sw-global-war-mining-state-limit = mining unavailable; check the limit of two drills per planet
+sw-global-war-mining-state-working = mining; timer shows time until the next unit
+
+sw-global-war-auto-purchase-rate = Auto-purchase, units/s:
+sw-global-war-auto-purchase-save = Save auto-purchase for selected commodity
+sw-global-war-auto-purchase-status = Configured: { $rate } units/s. Cost: up to { $cost } credits/s from the industry budget.
+sw-global-war-auto-purchase-hint = Configure each commodity separately. 0 disables purchasing. Available goods are purchased once per second within the budget. Output goes to connected output pallets; purchasing pauses without them. You can close this window.

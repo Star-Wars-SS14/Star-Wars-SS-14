@@ -28,7 +28,7 @@ public sealed partial class SWGlobalWarMarketSystem
             return false;
         if (ent.Comp.Warehouse && action == SWGlobalWarFactoryAction.DepositMarket)
             return DepositPalletItems(ent, actor, market, ref rejected);
-        if (ent.Comp.IndustrialSupply)
+        if (ent.Comp.IndustrialSupply || ent.Comp.AutomaticMarketAccess)
         {
             if (action != SWGlobalWarFactoryAction.ConfigureIndustrialRate || quantity < 0 ||
                 !market.Goods.TryGetValue(commodity, out var good) ||
@@ -101,7 +101,8 @@ public sealed partial class SWGlobalWarMarketSystem
         var query = EntityQueryEnumerator<SWGlobalWarFactoryComponent>();
         while (query.MoveNext(out var uid, out var component))
         {
-            if (!component.IndustrialSupply && !component.IndustrialOutput)
+            if (!component.IndustrialSupply && !component.IndustrialOutput &&
+                !(component.AutomaticMarketAccess && component.PurchaseRates.Count > 0))
                 continue;
             if (!BindFactory((uid, component), out var owner) || !this.IsPowered(uid, EntityManager) ||
                 !TryGetTerminalMarket(uid, out var market))
@@ -117,10 +118,13 @@ public sealed partial class SWGlobalWarMarketSystem
             _settling = true;
             try
             {
-                if (component.IndustrialSupply)
+                if (component.IndustrialSupply || component.AutomaticMarketAccess)
                 {
+                    var outputs = component.IndustrialSupply ? new List<EntityUid> { uid } : FindMarketPallets(uid, false);
+                    if (outputs.Count == 0)
+                        continue;
                     foreach (var (commodity, rate) in component.PurchaseRates)
-                        BuyIndustrialStock(uid, generation, market, commodity, rate);
+                        BuyIndustrialStock(outputs, generation, market, commodity, rate);
                 }
                 else
                     CollectIndustrialOutput((uid, component), generation, market);
@@ -132,7 +136,7 @@ public sealed partial class SWGlobalWarMarketSystem
         }
     }
 
-    private void BuyIndustrialStock(EntityUid pallet, Guid generation, SWGlobalWarMarketState market,
+    private void BuyIndustrialStock(IReadOnlyList<EntityUid> outputs, Guid generation, SWGlobalWarMarketState market,
         string commodity, int rate)
     {
         var price = IndustrialPrice(commodity);
@@ -158,8 +162,8 @@ public sealed partial class SWGlobalWarMarketSystem
             if (!Simulation.TryCommitStock(generation, operation, out _))
                 throw new InvalidOperationException("Prepared industrial withdrawal failed.");
             committed = true;
-            foreach (var item in items)
-                _supplyTransforms.SetCoordinates(item, Transform(pallet).Coordinates);
+            for (var i = 0; i < items.Count; i++)
+                _supplyTransforms.SetCoordinates(items[i], Transform(outputs[i % outputs.Count]).Coordinates);
         }
         finally
         {

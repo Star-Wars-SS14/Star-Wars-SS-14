@@ -1,0 +1,12 @@
+sw-global-war-part-goldingot = Золотые слитки
+sw-global-war-part-lanthanidesheet = Лантаниды
+sw-global-war-part-lanthanidealloy = Лантанидовый сплав
+sw-global-war-part-advancedcables = Провода высокого класса
+sw-global-war-part-reinforcedsteel = Укреплённая сталь
+sw-global-war-part-armorplate = Бронепластины
+sw-global-war-part-blasterbarrel = Стволы бластеров
+sw-global-war-part-blasterframe = Каркасы бластеров
+sw-global-war-part-droidai = Модули ИИ дроидов
+sw-global-war-part-droidblaster = Бластерные модули дроидов
+sw-global-war-part-droidrepublicchip = Чипы дроидов Республики
+sw-global-war-part-droidempirechip = Чипы дроидов Империи

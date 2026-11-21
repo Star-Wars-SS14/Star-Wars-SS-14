@@ -98,6 +98,7 @@ public sealed partial class SWGlobalWarMarketSystem : EntitySystem
                 var goods = new List<SWGlobalWarMarketGoodDefinition>();
                 foreach (var commodity in commodities.Where(c =>
                              MilitaryGoods.ContainsKey(c.Id) || c.Id == "SWGlobalWarAE" ||
+                             _prototypes.Index<SWGlobalWarCommodityPrototype>(c.Id).CampaignMarket ||
                              _prototypes.EnumeratePrototypes<SWGlobalWarEconomyProfilePrototype>().Any(p =>
                                  p.Mandatory.ContainsKey(c.Id) || p.OpeningStock.ContainsKey(c.Id) ||
                                  p.Recipes.Any(r => r.Output.Id == c.Id || r.Inputs.ContainsKey(c.Id)))))

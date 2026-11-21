@@ -54,8 +54,9 @@ public sealed class SWGlobalWarFactoryState(Guid generation, long revision, bool
     bool powered = false, bool enabled = false, int remainingSeconds = 0, int totalSeconds = 0, string detail = "",
     List<SWGlobalWarFactoryProduct>? products = null, SWGlobalWarFactoryCargoWork? cargoWork = null,
     List<SWGlobalWarTerminalGood>? marketGoods = null, bool canBuyEquipment = false, int outputPallets = 0, int inputPallets = 0, bool warehouse = false, bool industrialSupply = false,
-    bool industrialOutput = false, Dictionary<string, int>? purchaseRates = null) : BoundUserInterfaceState
+    bool industrialOutput = false, Dictionary<string, int>? purchaseRates = null, bool canConfigurePurchases = false) : BoundUserInterfaceState
 {
+    public readonly bool CanConfigurePurchases = canConfigurePurchases;
     public readonly bool Warehouse = warehouse;
     public readonly bool IndustrialSupply = industrialSupply;
     public readonly bool IndustrialOutput = industrialOutput;

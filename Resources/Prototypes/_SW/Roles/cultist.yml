@@ -32,7 +32,28 @@
       - type: SWStrangulateAbility
       - type: SWAbilityThrowSword
       - type: ForceAbilityDistanceInteract
-        grantAttractAction: false
+      - type: SWForceUserBlock
+      - type: SWDashAbility
+      - type: SWLightningAbility
+        damage:
+          types:
+            Heat: 25
+      - type: SWSendMessageAbility
+      - type: SWHealAbility
+        damageContainers:
+          - Biological
+        modifyBloodLevel: 30
+        delay: 1
+        damage:
+          groups:
+            Burn: -15
+            Toxin: -15
+            Airloss: -15
+            Brute: -15
+        healingBeginSound:
+          path: "/Audio/Items/Medical/ointment_begin.ogg"
+        healingEndSound:
+          path: "/Audio/Items/Medical/ointment_end.ogg"
 
 - type: entity
   parent: BaseGameRule

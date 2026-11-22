@@ -20,6 +20,8 @@ public class SWSharedTaskConsoleystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<TaskConsoleComponent, ActivatableUIOpenAttemptEvent>(OnOpen);
+        if (_net.IsServer)
+            SubscribeLocalEvent<TaskConsoleComponent, BoundUserInterfaceMessageAttempt>(OnBoundUiOpenAttempt);
     }
 
     protected void OnOpen(Entity<TaskConsoleComponent> ent, ref ActivatableUIOpenAttemptEvent args)
@@ -28,7 +30,7 @@ public class SWSharedTaskConsoleystem : EntitySystem
         {
             return;
         }
-        if (HasOrdinaryAccess(args.User, ent) || CanAdminGhostView(args.User, ent))
+        if (CanView(args.User, ent))
         {
             return;
         }
@@ -40,9 +42,24 @@ public class SWSharedTaskConsoleystem : EntitySystem
         }
     }
 
+    private void OnBoundUiOpenAttempt(Entity<TaskConsoleComponent> ent, ref BoundUserInterfaceMessageAttempt args)
+    {
+        if (args.Cancelled || args.UiKey is not TaskConsoleUiKey.Key || args.Message is not OpenBoundInterfaceMessage)
+            return;
+
+        // Client requests always come from an attached player. Internal code can open a UI for an unattached entity.
+        if (HasComp<ActorComponent>(args.Actor) && !CanView(args.Actor, ent))
+            args.Cancel();
+    }
+
+    private bool CanView(EntityUid user, Entity<TaskConsoleComponent> console)
+    {
+        return HasOrdinaryAccess(user, console) || CanAdminGhostView(user, console);
+    }
+
     public bool HasOrdinaryAccess(EntityUid user, Entity<TaskConsoleComponent> console)
     {
-        return _accessReaderSystem.IsAllowed(user, console) && IsOfficer(user, console);
+        return !HasComp<GhostComponent>(user) && _accessReaderSystem.IsAllowed(user, console);
     }
 
     // The client only predicts the interaction; the server decides from its own session state.
@@ -65,7 +82,7 @@ public class SWSharedTaskConsoleystem : EntitySystem
     }
 
     /// <summary>
-    /// Only officers of the console's faction see its task list.
+    /// Checks whether the user meets the console faction's officer requirements.
     /// Ranks are read from the faction prototype because clients never get the faction entity.
     /// </summary>
     public bool IsOfficer(EntityUid user, Entity<TaskConsoleComponent> console)

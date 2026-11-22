@@ -6,4 +6,4 @@ sw-task-console-score = { $score } { $score ->
     [one] point
    *[other] points
 }
-sw-task-console-officers-only = Only officers can read faction tasks.
+sw-task-console-officers-only = You don't have access to this task console.

@@ -60,7 +60,7 @@ public sealed partial class TaskConsoleSystem : EntitySystem
     {
         if (HasComp<GhostComponent>(args.Actor) && !_sharedConsole.HasOrdinaryAccess(args.Actor, ent))
         {
-            if (!CanAdminGhostView(args.Actor, ent))
+            if (!CanAdminGhostView(args.Actor))
             {
                 _uiSystem.CloseUi(ent.Owner, TaskConsoleUiKey.Key, args.Actor);
                 return;
@@ -79,13 +79,12 @@ public sealed partial class TaskConsoleSystem : EntitySystem
 
     private void OnAdminGhostAccess(Entity<TaskConsoleComponent> ent, ref SWTaskConsoleAdminGhostAccessEvent args)
     {
-        args.Allowed = CanAdminGhostView(args.User, ent);
+        args.Allowed = CanAdminGhostView(args.User);
     }
 
-    private bool CanAdminGhostView(EntityUid user, Entity<TaskConsoleComponent> console)
+    private bool CanAdminGhostView(EntityUid user)
     {
-        return SWSharedTaskConsoleystem.IsMainFactionConsole(console)
-            && Prototype(user)?.ID == GameTicker.AdminObserverPrototypeName.Id
+        return Prototype(user)?.ID == GameTicker.AdminObserverPrototypeName.Id
             && TryComp<GhostComponent>(user, out var ghost) && ghost.CanGhostInteract
             && TryComp<ActorComponent>(user, out var actor) && actor.PlayerSession.AttachedEntity == user
             && _admins.HasAdminFlag(actor.PlayerSession, AdminFlags.Admin);
@@ -125,7 +124,7 @@ public sealed partial class TaskConsoleSystem : EntitySystem
                 continue;
             }
 
-            if (_sharedConsole.HasOrdinaryAccess(actor, (console, component)) || CanAdminGhostView(actor, (console, component)))
+            if (_sharedConsole.HasOrdinaryAccess(actor, (console, component)) || CanAdminGhostView(actor))
                 continue;
 
             _adminGhostViewers.Remove((console, actor));

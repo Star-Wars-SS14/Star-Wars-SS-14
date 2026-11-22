@@ -1,220 +1,139 @@
 - type: entity
-  id: SWHolopadAdmin
-  parent: Holopad
-  components:
-    - type: Tag
-      tags:
-        - SWHolopadAdmin
-    - type: Telephone
-      ringTone: /Audio/Machines/double_ring.ogg
-      listeningRange: 2.5
-      speakerVolume: Speak
-      transmissionRange: Unlimited
-      compatibleRanges:
-      - Grid
-      - Map
-      - Unlimited
-
-- type: entity
-  id: SWHolopadEmpire
+  parent: BaseStructure
+  id: SWTurret
+  name: укрепленная турель
   suffix: Империя
-  parent: Holopad
-  name: голопад
   components:
-    - type: Tag
-      tags:
-        - SWHolopadEmpire
-    - type: Label
-      currentLabel: империя
-    - type: Telephone
-      ringTone: /Audio/Machines/double_ring.ogg
-      listeningRange: 2.5
-      speakerVolume: Speak
-      transmissionRange: Unlimited
-      compatibleRanges:
-      - Grid
-      - Map
-      - Unlimited
-      blacklist:
-        tags:
-          - SWHolopadRepublicAdmin
+  - type: Clickable
+  - type: InteractionOutline
+  - type: Actions
+  - type: Fixtures
+    fixtures:
+      fix1:
+        shape:
+          !type:PhysShapeAabb
+          bounds: "-0.2,-0.2,0.2,0.2"
+        density: 60
+        mask:
+          - MachineMask
+        layer:
+          - MachineLayer
+  - type: Sprite
+    sprite: Objects/Weapons/Guns/Turrets/turrets.rsi
+    drawdepth: Mobs
+    layers:
+      - state: syndie_lethal
+  - type: InteractionPopup
+    interactDelay: 0.2
+    successChance: 0.8
+    interactSuccessString: petting-success-generic
+    interactFailureString: petting-failure-generic
+    interactSuccessSound:
+      path: /Audio/Effects/double_beep.ogg
+  - type: CombatMode
+    toggleMouseRotator: false
+  - type: Damageable
+    damageContainer: Inorganic
+  - type: Destructible
+    thresholds:
+      - trigger:
+          !type:DamageTrigger
+          damage: 1500
+        behaviors:
+          - !type:DoActsBehavior
+            acts: [ "Destruction" ]
+  - type: Gun
+    fireRate: 6
+    selectedMode: FullAuto
+    availableModes:
+      - FullAuto
+    soundGunshot: /Audio/_SW/Weapons/Guns/Gunshots/turret_blaster_sound.ogg
+  # TODO: Power ammo provider?
+  - type: BallisticAmmoProvider
+    proto: SWE-1Bullet
+    capacity: 1000000
+  - type: HTN
+    rootTask:
+      task: SWTurretCompound
+    blackboard:
+      RangedRange: !type:Single
+        13
+      RotateSpeed: !type:Single
+        3.141
+      SoundTargetInLOS: !type:SoundPathSpecifier
+        path: /Audio/Effects/double_beep.ogg
+  - type: MouseRotator
+    angleTolerance: 5
+    rotationSpeed: 180
+    simple4DirMode: false
+  - type: NoRotateOnInteract
+  - type: NoRotateOnMove
+  - type: Input
+    context: "human"
+  - type: DeviceList
+  - type: DeviceNetwork
+    deviceNetId: Wired
+  - type: DeviceLinkSource
+    range: 30
+    ports:
+      - SWTurretSender
+  - type: EncryptionKeyHolder
+    keySlots: 3
+    keysExtractionMethod: Prying
+  - type: RadioMicrophone
+    powerRequired: true
+    unobstructedRequired: true
+    listenRange: 2
+    toggleOnInteract: false
+    broadcastChannel: SWEmpireRegular
+  - type: RadioSpeaker
+    toggleOnInteract: false
+    channels:
+    - SWEmpireRegular
+  - type: ActiveRadio
+    channels:
+    - SWEmpireRegular
+  - type: ContainerContainer
+    containers:
+      ballistic-ammo: !type:Container
+      key_slots: !type:Container
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyRegular
+  - type: SWReportOnDamaged
+    channelId: SWEmpireRegular
+  - type: SWTurretSayOnTargetLos
+    messageId: sw-turret-say-empire
 
 - type: entity
-  id: SWHolopadRepublic
+  parent: SWTurret
+  id: SWTurretRepublic
   suffix: Республика
-  parent: Holopad
-  name: голопад
   components:
-    - type: Tag
-      tags:
-        - SWHolopadRepublic
-    - type: Label
-      currentLabel: республика
-    - type: Telephone
-      ringTone: /Audio/Machines/double_ring.ogg
-      listeningRange: 2.5
-      speakerVolume: Speak
-      transmissionRange: Unlimited
-      compatibleRanges:
-      - Grid
-      - Map
-      - Unlimited
-      blacklist:
-        tags:
-          - SWHolopadEmpireAdmin
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyRepublic
+  - type: SWTurretSayOnTargetLos
+    messageId: sw-turret-say-republic
+  - type: SWReportOnDamaged
+    channelId: SWRepublic
 
 - type: entity
-  id: SWHolopadRepublicAdmin
-  suffix: Республика админ командование
-  parent: Holopad
-  name: голопад
+  parent: WeaponTurretAllHostile
+  id: SWWeaponTurretAllHostile
+  name: турель
+  suffix: Враждебна всем SW
   components:
-    - type: Label
-      currentLabel: Генеральный Штаб Республиканской Армии
-    - type: Tag
-      tags:
-        - SWHolopadAdmin
-        - SWHolopadRepublic
-        - SWHolopadRepublicAdmin
-    - type: Telephone
-      ringTone: /Audio/Machines/double_ring.ogg
-      listeningRange: 2.5
-      speakerVolume: Speak
-      transmissionRange: Unlimited
-      compatibleRanges:
-      - Grid
-      - Map
-      - Unlimited
-
-- type: entity
-  id: SWHolopadEmpireAdmin
-  suffix: Империя админ командование
-  parent: Holopad
-  name: голопад
-  components:
-    - type: Label
-      currentLabel: Министерство войны
-    - type: Tag
-      tags:
-        - SWHolopadAdmin
-        - SWHolopadEmpire
-        - SWHolopadEmpireAdmin
-    - type: Telephone
-      ringTone: /Audio/Machines/double_ring.ogg
-      listeningRange: 2.5
-      speakerVolume: Speak
-      transmissionRange: Unlimited
-      compatibleRanges:
-      - Grid
-      - Map
-      - Unlimited
-
-- type: entity
-  id: SWHolopadExchange
-  suffix: Обмен
-  parent: Holopad
-  name: голопад
-  components:
-    - type: Label
-      currentLabel: обмен
-    - type: Telephone
-      ringTone: /Audio/Machines/double_ring.ogg
-      listeningRange: 2.5
-      speakerVolume: Speak
-      transmissionRange: Unlimited
-      compatibleRanges:
-      - Grid
-      - Map
-      - Unlimited
-      blacklist:
-        tags:
-          - SWHolopadEmpireAdmin
-          - SWHolopadRepublicAdmin
-
-- type: entity
-  id: SWHolopadBlackSun
-  suffix: Чёрное солнце
-  parent: Holopad
-  name: голопад
-  components:
-    - type: Label
-      currentLabel: чёрное солнце
-    - type: Telephone
-      ringTone: /Audio/Machines/double_ring.ogg
-      listeningRange: 2.5
-      speakerVolume: Speak
-      transmissionRange: Unlimited
-      compatibleRanges:
-      - Grid
-      - Map
-      - Unlimited
-      blacklist:
-        tags:
-          - SWHolopadEmpireAdmin
-          - SWHolopadRepublicAdmin
-
-- type: entity
-  id: SWHolopadMandalorian
-  suffix: Мандалорцы
-  parent: Holopad
-  name: голопад
-  components:
-    - type: Label
-      currentLabel: мандалорцы
-    - type: Telephone
-      ringTone: /Audio/Machines/double_ring.ogg
-      listeningRange: 2.5
-      speakerVolume: Speak
-      transmissionRange: Unlimited
-      compatibleRanges:
-      - Grid
-      - Map
-      - Unlimited
-      blacklist:
-        tags:
-          - SWHolopadEmpireAdmin
-          - SWHolopadRepublicAdmin
-
-- type: entity
-  id: SWHolopadCity
-  suffix: Городской (общественный)
-  parent: Holopad
-  name: голопад
-  components:
-    - type: Label
-      currentLabel: городской
-    - type: Telephone
-      ringTone: /Audio/Machines/double_ring.ogg
-      listeningRange: 2.5
-      speakerVolume: Speak
-      transmissionRange: Unlimited
-      compatibleRanges:
-      - Grid
-      - Map
-      - Unlimited
-      blacklist:
-        tags:
-          - SWHolopadEmpireAdmin
-          - SWHolopadRepublicAdmin
-
-- type: entity
-  id: SWHolopadFactory
-  suffix: Заводской
-  parent: Holopad
-  name: голопад
-  components:
-    - type: Label
-      currentLabel: завод
-    - type: Telephone
-      ringTone: /Audio/Machines/double_ring.ogg
-      listeningRange: 2.5
-      speakerVolume: Speak
-      transmissionRange: Unlimited
-      compatibleRanges:
-      - Grid
-      - Map
-      - Unlimited
-      blacklist:
-        tags:
-          - SWHolopadEmpireAdmin
-          - SWHolopadRepublicAdmin
+  - type: BallisticAmmoProvider
+    proto: SWE-1Bullet
+    capacity: 1000000
+  - type: Gun
+    fireRate: 5
+    selectedMode: FullAuto
+    availableModes:
+      - FullAuto
+    soundGunshot: /Audio/_SW/Weapons/Guns/Gunshots/turret_blaster_sound.ogg
+  - type: SWTurretSayOnTargetLos
+    messageId: sw-turret-say-allhostile

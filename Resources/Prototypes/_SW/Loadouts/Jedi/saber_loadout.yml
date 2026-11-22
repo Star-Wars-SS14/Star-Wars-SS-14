@@ -52,6 +52,7 @@
   maxLimit: 1
   loadouts:
   - SWSithCrystalRedLoadout
+  - SWJediCrystalPurpleLoadout
 
 - type: loadout
   id: SWSaberEmitterStandardLoadout

@@ -10,3 +10,4 @@ sw-radio-channel-republic-pilots = Пилоты Республики
 sw-radio-channel-empire-pilots = Пилоты Империи
 sw-radio-channel-exchange = Обмен
 sw-radio-channel-black-sun = Черное Солнце
+sw-radio-channel-order = Орден

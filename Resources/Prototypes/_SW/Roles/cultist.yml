@@ -83,9 +83,9 @@
     briefingSound: /Audio/Ambience/Antag/traitor_start.ogg
     selectionMinSeconds: 300
     selectionMaxSeconds: 600
-    noCultistWeight: 50
-    oneCultistWeight: 45
-    twoCultistWeight: 5
+    noCultistWeight: 20
+    oneCultistWeight: 70
+    twoCultistWeight: 10
 
 - type: entity
   parent: BaseObjective

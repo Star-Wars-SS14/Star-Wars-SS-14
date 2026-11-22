@@ -3,6 +3,7 @@ using Content.Shared.Ghost;
 using Content.Shared.Popups;
 using Content.Shared.UserInterface;
 using Robust.Shared.Network;
+using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 
 namespace Content.Shared._SW.TaskSystem;

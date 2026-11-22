@@ -51,6 +51,10 @@ public sealed partial class LoadoutGroupPrototype : IPrototype, IInheritingProto
     [DataField]
     public bool Hidden;
 
+    /// <summary>Selections in this group belong to the initial modular saber kit.</summary>
+    [DataField("swSaberKit")]
+    public bool SWSaberKit;
+
     [AlwaysPushInheritance]
     [DataField(required: true)]
     public List<ProtoId<LoadoutPrototype>> Loadouts = new();

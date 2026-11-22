@@ -26,6 +26,9 @@ public sealed class SWVehicleMobCollisionSystem : EntitySystem
             return;
         }
 
-        _stun.TryUpdateParalyzeDuration(args.OtherEntity, ent.Comp.ParalyzeTime);
+        if (ent.Comp.KnockdownTime is { } knockdownTime)
+            _stun.TryCrawling(args.OtherEntity, knockdownTime, drop: false);
+        else
+            _stun.TryUpdateParalyzeDuration(args.OtherEntity, ent.Comp.ParalyzeTime);
     }
 }

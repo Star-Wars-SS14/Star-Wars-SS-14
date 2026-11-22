@@ -9,8 +9,10 @@
 - type: loadout
   id: SWJediCoat
   name: Плащ джедая
+  dummyEntity: SWJediCoat
   equipment:
     outerClothing: SWJediCoat
+    neck: SWClothingNeckCloakJediCloakPlain
 
 - type: loadout
   id: SWJediArmor1

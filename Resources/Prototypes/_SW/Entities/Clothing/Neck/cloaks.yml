@@ -1,11 +1,17 @@
 - type: entity
   parent: ClothingNeckBase
-  id: SWClothingNeckCloakSithCloak
+  id: SWClothingNeckCloakSithCloakPlain
+  localizationId: ent-SWClothingNeckCloakSithCloak
   name: Sith cloak
   description: A cloak made from the hide of resilient fauna from a distant planet, though its protective value has faded with its age.
   components:
   - type: Sprite
     sprite: _SW/Clothing/Neck/Cloaks/sith.rsi
+
+- type: entity
+  parent: SWClothingNeckCloakSithCloakPlain
+  id: SWClothingNeckCloakSithCloak
+  components:
   - type: ToggleableClothing
     clothingPrototype: SWClothingHeadHatHoodSithCloak
     requiredSlot:
@@ -17,12 +23,18 @@
 
 - type: entity
   parent: ClothingNeckBase
-  id: SWClothingNeckCloakJediCloak
+  id: SWClothingNeckCloakJediCloakPlain
+  localizationId: ent-SWClothingNeckCloakJediCloak
   name: Jedi cloak
   description: A cloak made from the hide of resilient fauna from a distant planet, though its protective value has faded with its age.
   components:
   - type: Sprite
     sprite: _SW/Clothing/Neck/Cloaks/jedi.rsi
+
+- type: entity
+  parent: SWClothingNeckCloakJediCloakPlain
+  id: SWClothingNeckCloakJediCloak
+  components:
   - type: ToggleableClothing
     clothingPrototype: SWClothingHeadHatHoodJediCloak
     requiredSlot:

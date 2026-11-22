@@ -8,6 +8,14 @@
     sprite: _SW/Clothing/OuterClothing/Vests/sith_coat.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Vests/sith_coat.rsi
+  - type: ToggleableClothing
+    clothingPrototype: SWClothingHeadHatHoodSithCloak
+    requiredSlot:
+    - outerClothing
+    slot: head
+  - type: ContainerContainer
+    containers:
+      toggleable-clothing: !type:ContainerSlot {}
   - type: TemperatureProtection
     heatingCoefficient: 0.1
     coolingCoefficient: 0.1
@@ -29,3 +37,5 @@
     sprite: _SW/Clothing/OuterClothing/Vests/jedi_coat.rsi
   - type: Clothing
     sprite: _SW/Clothing/OuterClothing/Vests/jedi_coat.rsi
+  - type: ToggleableClothing
+    clothingPrototype: SWClothingHeadHatHoodJediCloak

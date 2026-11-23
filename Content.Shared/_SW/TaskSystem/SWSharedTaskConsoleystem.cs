@@ -48,7 +48,7 @@ public class SWSharedTaskConsoleystem : EntitySystem
     // The client only predicts the interaction; the server decides from its own session state.
     private bool CanAdminGhostView(EntityUid user, Entity<TaskConsoleComponent> console)
     {
-        if (!IsMainFactionConsole(console) || !TryComp<GhostComponent>(user, out var ghost) || !ghost.CanGhostInteract)
+        if (!TryComp<GhostComponent>(user, out var ghost) || !ghost.CanGhostInteract)
             return false;
 
         if (_net.IsClient)
@@ -57,11 +57,6 @@ public class SWSharedTaskConsoleystem : EntitySystem
         var ev = new SWTaskConsoleAdminGhostAccessEvent(user);
         RaiseLocalEvent(console.Owner, ref ev);
         return ev.Allowed;
-    }
-
-    public static bool IsMainFactionConsole(Entity<TaskConsoleComponent> console)
-    {
-        return console.Comp.Faction is "EmpireFaction" or "RepublicFaction";
     }
 
     /// <summary>

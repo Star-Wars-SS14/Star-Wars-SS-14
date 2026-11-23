@@ -5,6 +5,7 @@
   description: Transfers personnel between a planet's surface and orbital station. Activate it to travel.
   components:
   - type: SWGlobalWarPlanetTeleporter
+    droidTransferRadius: 3
   - type: InteractionOutline
   - type: Transform
     anchored: true

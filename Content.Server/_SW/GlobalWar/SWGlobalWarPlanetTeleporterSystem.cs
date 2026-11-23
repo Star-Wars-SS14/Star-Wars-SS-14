@@ -1,3 +1,6 @@
+using Content.Server._SW.Droids;
+using Content.Server._SW.GlobalWar.Identity;
+using Content.Shared._SW.Droids;
 using System.Numerics;
 using Content.Server.Popups;
 using Content.Server._SW.GlobalWar.Mapping;
@@ -50,6 +53,9 @@ public sealed class SWGlobalWarPlanetTeleporterSystem : EntitySystem
     [Dependency] private readonly PullingSystem _pulling = default!;
     [Dependency] private readonly IGameTiming _timing = default!;
     [Dependency] private readonly ISharedAdminLogManager _adminLog = default!;
+
+    [Dependency] private readonly SWDroidCommandSystem _droids = default!;
+    [Dependency] private readonly SWGlobalWarIdentitySystem _identity = default!;
 
     private const float ExitDistance = 1f;
     private const float ExitHalfSize = .35f;
@@ -286,20 +292,43 @@ public sealed class SWGlobalWarPlanetTeleporterSystem : EntitySystem
                 return false;
             }
 
-            // Never silently leave a patient or cargo behind. A cargo crate is the only towed load that crosses,
-            // because the policy above judged only the user and nobody can be inside it.
+            // Validate the whole group before moving any entity.
             var load = TryComp<PullerComponent>(user, out var pulling) ? pulling.Pulling : null;
             if (TryComp<PullableComponent>(user, out var attached) && attached.BeingPulled ||
-                load != null && !IsCargoLoad(load.Value))
+                load != null && !IsCargoLoad(load.Value) && !CanTransferDroid(load.Value, user))
             {
                 reason = Loc.GetString("sw-global-war-teleporter-linked-load");
                 return false;
             }
+            var radius = source.DroidTransferRadius;
+            if (!float.IsFinite(radius) || radius < 0) radius = 0;
             var loadCoordinates = coordinates;
-            if (load != null && !TryFindExit(target, out loadCoordinates, coordinates))
+            if (load != null && !(HasComp<SWDroidCommandableComponent>(load.Value)
+                    ? TryFindDroidExit(target, radius, new List<EntityCoordinates> { coordinates }, out loadCoordinates)
+                    : TryFindExit(target, out loadCoordinates, coordinates)))
             {
                 reason = Loc.GetString("sw-global-war-teleporter-blocked");
                 return false;
+            }
+
+            var placements = new List<(EntityUid Droid, EntityCoordinates Position)>();
+            var reserved = new List<EntityCoordinates> { coordinates };
+            if (load != null) reserved.Add(loadCoordinates);
+            var followers = AllEntityQuery<SWDroidCommandableComponent>();
+            while (followers.MoveNext(out var droid, out _))
+            {
+                if (droid == load || !_droids.IsFollowingDatapad(droid, user) ||
+                    !_transform.InRange(droid, teleporter, radius))
+                    continue;
+                if (!CanTransferDroid(droid, user) ||
+                    TryComp<PullableComponent>(droid, out var tow) && tow.BeingPulled ||
+                    !TryFindDroidExit(target, radius, reserved, out var position))
+                {
+                    reason = Loc.GetString("sw-global-war-teleporter-group-blocked");
+                    return false;
+                }
+                reserved.Add(position);
+                placements.Add((droid, position));
             }
 
             decision = _policy.EvaluateTransition(user, planet, peer.Location, SWGlobalWarTransitionKind.Landing,
@@ -326,6 +355,15 @@ public sealed class SWGlobalWarPlanetTeleporterSystem : EntitySystem
                     _physics.SetLinearVelocity(load.Value, Vector2.Zero, body: loadBody);
                 _towsToResume.Add((user, load.Value, _timing.CurTime + TowResumeDelay));
             }
+            foreach (var (droid, position) in placements)
+            {
+                _transform.SetCoordinates(droid, position);
+                if (TryComp<PhysicsComponent>(droid, out var droidBody))
+                    _physics.SetLinearVelocity(droid, Vector2.Zero, body: droidBody);
+                _droids.TrySetFollowTarget(droid, user);
+            }
+            if (load is { } towed && _droids.IsFollowingDatapad(towed, user))
+                _droids.TrySetFollowTarget(towed, user);
             _audio.PlayPvs(destination.ArrivalSound, target);
             reason = string.Empty;
             return true;
@@ -334,6 +372,51 @@ public sealed class SWGlobalWarPlanetTeleporterSystem : EntitySystem
         {
             _planets.ReleaseArrival(map.Value, user);
         }
+    }
+
+    private bool CanTransferDroid(EntityUid droid, EntityUid user)
+    {
+        if (!TryComp<SWDroidCommandableComponent>(droid, out var commandable) ||
+            !_identity.TryGetIdentity(user, out _, out var faction) ||
+            commandable.Faction != (faction == SWGlobalWarFaction.Republic ? "RepublicFaction" : "EmpireFaction") ||
+            Transform(droid).Anchored || _containers.IsEntityInContainer(droid) ||
+            TryComp<BuckleComponent>(droid, out var buckle) && buckle.Buckled ||
+            TryComp<PullerComponent>(droid, out var pulling) && pulling.Pulling != null ||
+            TryComp<MindContainerComponent>(droid, out var mind) && mind.HasMind)
+            return false;
+        var children = Transform(droid).ChildEnumerator;
+        while (children.MoveNext(out var child))
+            if (HoldsPerson(child)) return false;
+        return true;
+    }
+
+    private bool TryFindDroidExit(EntityUid target, float radius, List<EntityCoordinates> reserved,
+        out EntityCoordinates coordinates)
+    {
+        coordinates = default;
+        var transform = Transform(target);
+        if (transform.GridUid is not { } gridUid || !TryComp<MapGridComponent>(gridUid, out var grid))
+            return false;
+        // Search outward, reserving a distinct tile for every member of the group.
+        for (var ring = 0; ring <= MathF.Ceiling(radius); ring++)
+        for (var x = -ring; x <= ring; x++)
+        for (var y = -ring; y <= ring; y++)
+        {
+            if (Math.Max(Math.Abs(x), Math.Abs(y)) != ring || x * x + y * y > radius * radius)
+                continue;
+            var candidate = transform.Coordinates.Offset(transform.LocalRotation.RotateVec(new Vector2(x, y)));
+            var occupied = false;
+            foreach (var taken in reserved)
+                if (Vector2.DistanceSquared(candidate.Position, taken.Position) < 1f) occupied = true;
+            if (occupied || _maps.GetTileRef(gridUid, grid, candidate).Tile.IsEmpty) continue;
+            var position = _transform.ToMapCoordinates(candidate);
+            if (_lookup.AnyEntitiesIntersecting(position.MapId,
+                    Box2.CenteredAround(position.Position, new Vector2(ExitHalfSize * 2)),
+                    LookupFlags.Static | LookupFlags.Dynamic)) continue;
+            coordinates = candidate;
+            return true;
+        }
+        return false;
     }
 
     /// <summary>A towed crate or box carrying no mob or mind. Anyone inside would skip the transition policy.</summary>

@@ -82,8 +82,7 @@ public sealed partial class SWGlobalWarPoliticsSystem
         if (!Enum.IsDefined(location) || !TryGetPolitics(out var politics) || politics.Comp.Generation != generation ||
             !_campaign.TryGetCampaign(out var campaign) || campaign.Comp.Phase != SWGlobalWarCampaignPhase.Running ||
             !debugging && (politics.Comp.Withdrawals.ContainsKey(actor) ||
-                !_identity.TryGetIdentity(actor, out var mind, out faction) || !_mobs.IsAlive(actor) ||
-                !HasCombatRole(actor, mind, politics.Comp.Relations)) ||
+                !_identity.TryGetIdentity(actor, out _, out faction) || !_mobs.IsAlive(actor)) ||
             !TryComp<SWGlobalWarPlanetComponent>(planet, out var target) ||
             target.GlobalWarGamerule != politics.Owner || !CombatOpen(politics.Comp, target))
             return false;
@@ -95,8 +94,8 @@ public sealed partial class SWGlobalWarPoliticsSystem
     }
 
     /// <summary>
-    /// Political gate for lethal attacks, explosions and production sabotage in F; this does not apply damage.
-    /// Permitted nonlethal escape actions use their own action-specific gate, not this broad combat permission.
+    /// Political gate for boarding and contesting captures, independent of the participant's role.
+    /// Weapon use and damage are not restricted by this policy.
     /// </summary>
     public bool CanConductHostility(EntityUid actor, EntityUid planet, Guid generation)
     {
@@ -106,8 +105,7 @@ public sealed partial class SWGlobalWarPoliticsSystem
                // a ship or to contest a capture, but only where the war rules open combat.
                (_appointments.TryGetAdminActor(actor, out _) ||
                 !politics.Comp.Withdrawals.ContainsKey(actor) &&
-                _identity.TryGetIdentity(actor, out var mind, out _) && _mobs.IsAlive(actor) &&
-                HasCombatRole(actor, mind, politics.Comp.Relations)) &&
+                _identity.TryGetIdentity(actor, out _, out _) && _mobs.IsAlive(actor)) &&
                TryComp<SWGlobalWarPlanetComponent>(planet, out var target) &&
                target.GlobalWarGamerule == politics.Owner && CombatOpen(politics.Comp, target);
     }
@@ -125,12 +123,6 @@ public sealed partial class SWGlobalWarPoliticsSystem
         return TryComp<MindComponent>(mind, out var data) && data.UserId is { } user &&
                _appointments.TryGetForceCarrier(user, out var carrier) && carrier.Generation == generation &&
                carrier.Body == body && carrier.Mind == mind && carrier.User == user;
-    }
-
-    private bool HasCombatRole(EntityUid body, EntityUid mind, SWGlobalWarRelations relations)
-    {
-        var role = GetBodyRole(body, mind);
-        return IsMilitary(role) && (role != SWGlobalWarRole.Intelligence || relations == SWGlobalWarRelations.War);
     }
 
     private static bool IsMilitary(SWGlobalWarRole? role)

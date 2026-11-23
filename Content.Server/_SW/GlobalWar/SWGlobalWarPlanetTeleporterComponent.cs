@@ -7,6 +7,10 @@ namespace Content.Server._SW.GlobalWar;
 [RegisterComponent, Access(typeof(SWGlobalWarPlanetTeleporterSystem))]
 public sealed partial class SWGlobalWarPlanetTeleporterComponent : Component
 {
+    /// <summary>Radius in tiles for collecting droids and placing them at the destination.</summary>
+    [DataField]
+    public float DroidTransferRadius = 3f;
+
     [ViewVariables]
     public EntityUid? Planet;
 

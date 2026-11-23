@@ -138,12 +138,6 @@ public sealed class SWGlobalWarCaptureSystem : EntitySystem
             : _politics.CanCapture(body, objective.Planet, objective.Location, _generation);
     }
 
-    private bool CanCancel(SWGlobalWarAssignment actor, Objective objective)
-    {
-        return actor.Body == objective.Initiator ||
-               (_assignments.GetAuthority(actor) & SWGlobalWarAuthority.MilitaryCommand) != 0;
-    }
-
     private bool CanMaintain(Objective objective)
     {
         return objective.Ship is { } ship
@@ -240,7 +234,7 @@ public sealed class SWGlobalWarCaptureSystem : EntitySystem
         if (cancel)
         {
             if (objective.Operation == Guid.Empty || objective.Attacker != actor.Faction ||
-                !CanCancel(actor, objective) || !CanCapture(actor.Body, actor.Faction, objective))
+                !CanCapture(actor.Body, actor.Faction, objective))
                 return false;
             Stop(objective);
         }
@@ -426,7 +420,7 @@ public sealed class SWGlobalWarCaptureSystem : EntitySystem
             objective.Attacker, objective.Location, objective.Status, (float) objective.Progress.TotalSeconds,
             (float) objective.Duration.TotalSeconds, (float) grace,
             allowed && objective.Operation == Guid.Empty,
-            allowed && objective.Operation != Guid.Empty && objective.Attacker == actor.Faction && CanCancel(actor, objective),
+            allowed && objective.Operation != Guid.Empty && objective.Attacker == actor.Faction,
             allowed ? "sw-global-war-capture-hold" : "sw-global-war-capture-denied", objective.Ship != null);
     }
 

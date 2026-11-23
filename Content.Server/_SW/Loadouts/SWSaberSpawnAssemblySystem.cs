@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Server._SW.ModularSaber;
 using Content.Shared._SW.CantEquipOnSlot;
 using Content.Shared._SW.Loadouts;
+using Content.Shared._SW.ModularSaber;
 using Content.Shared.Inventory;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Station;

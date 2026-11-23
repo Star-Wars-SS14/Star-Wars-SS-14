@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 11/03/2026 12:26:37
-  entityCount: 6827
+  entityCount: 6826
 maps:
 - 1
 grids:
@@ -19732,17 +19732,6 @@ entities:
     - type: Transform
       pos: 80.5,80.5
       parent: 2
-    - type: ApcPowerReceiver
-      needsPower: False
-- proto: SWGlobalWarDefenceConsole
-  entities:
-  - uid: 6818
-    components:
-    - type: Transform
-      pos: 80.5,90.5
-      parent: 2
-    - type: SWGlobalWarMapAnchor
-      anchorId: defenceControl
     - type: ApcPowerReceiver
       needsPower: False
 - proto: SWGlobalWarEquipmentStorage

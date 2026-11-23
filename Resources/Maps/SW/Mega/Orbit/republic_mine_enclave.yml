@@ -5,7 +5,7 @@ meta:
   forkId: ""
   forkVersion: ""
   time: 11/02/2026 11:17:09
-  entityCount: 1483
+  entityCount: 1482
 maps:
 - 1
 grids:
@@ -5115,17 +5115,6 @@ entities:
       links: {}
       kind: Capture
       anchorId: capturePrimary
-- proto: SWGlobalWarDefenceConsole
-  entities:
-  - uid: 1277
-    components:
-    - type: Transform
-      pos: 40.5,50.5
-      parent: 2
-    - type: SWGlobalWarMapAnchor
-      links: {}
-      kind: Defence
-      anchorId: defenceControl
 - proto: SWGlobalWarMarketConsole
   entities:
   - uid: 195

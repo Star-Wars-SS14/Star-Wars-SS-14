@@ -102,37 +102,6 @@
     kind: Shipyard
 
 - type: entity
-  parent: BaseComputer
-  id: SWGlobalWarDefenceConsole
-  name: droid defence console
-  description: Commands friendly droids. A holder of the war budget can also order new ones here.
-  components:
-  - type: Sprite
-    layers:
-    - map: ["computerLayerBody"]
-      state: computer
-    - map: ["computerLayerKeyboard"]
-      state: generic_keyboard
-    - map: ["computerLayerScreen"]
-      state: security
-    - map: ["computerLayerKeys"]
-      state: security_key
-    - map: ["enum.WiresVisualLayers.MaintenancePanel"]
-      state: generic_panel_open
-  - type: SWGlobalWarDefenceConsole
-  - type: SWGlobalWarMapAnchor
-    anchorId: defencePrimary
-    kind: Defence
-  - type: ActivatableUI
-    key: enum.SWGlobalWarDefenceUiKey.Key
-  - type: UserInterface
-    interfaces:
-      enum.SWGlobalWarDefenceUiKey.Key:
-        type: SWGlobalWarDefenceBoundUserInterface
-      enum.WiresUiKey.Key:
-        type: WiresBoundUserInterface
-
-- type: entity
   parent: SWMobDroid
   id: SWGlobalWarDroidRepublic
   suffix: Republic garrison

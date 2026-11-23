@@ -13,7 +13,7 @@
 - type: loadout
   id: SWSithCoat
   name: Плащ ситха
-  dummyEntity: SWSithCoat # keeps the coat icon and name now that the hood comes with it
+  dummyEntity: SWSithCoat
   equipment:
     outerClothing: SWSithCoat
-    head: SWClothingHeadHatHoodSithCloak
+    neck: SWClothingNeckCloakSithCloakPlain

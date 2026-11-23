@@ -1,4 +1,4 @@
-- type: swLatheRecipe
+ type: swLatheRecipe
   id: SWDroidChassisSLR
   materials:
     SWAdvancedElectronics: 1
@@ -27,3 +27,21 @@
   result:
     SWDroidBlasterModule: 1
   produceTime: 15
+
+- type: swLatheRecipe
+  id: SWDroidFactionChipRepublicSLR
+  materials:
+    SWElectronics1: 1
+    SheetSteel1: 2
+  result:
+    SWDroidFactionChipRepublic: 1
+  produceTime: 3
+
+- type: swLatheRecipe
+  id: SWDroidFactionChipEmpireSLR
+  materials:
+    SWElectronics1: 1
+    SheetSteel1: 2
+  result:
+    SWDroidFactionChipEmpire: 1
+  produceTime: 3

@@ -62,7 +62,6 @@ namespace Content.Client.Lobby.UI
 
         // CCvar.
         private int _maxNameLength;
-        private bool _allowFlavorText;
 
         private FlavorText.FlavorText? _flavorText;
         private TextEdit? _flavorTextEdit;
@@ -145,7 +144,6 @@ namespace Content.Client.Lobby.UI
             _sprite = _entManager.System<SpriteSystem>();
 
             _maxNameLength = _cfgManager.GetCVar(CCVars.MaxNameLength);
-            _allowFlavorText = _cfgManager.GetCVar(CCVars.FlavorText);
 
             ImportButton.OnPressed += args =>
             {
@@ -476,7 +474,7 @@ namespace Content.Client.Lobby.UI
         /// </summary>
         public void RefreshFlavorText()
         {
-            if (_allowFlavorText)
+            if (_cfgManager.GetCVar(CCVars.FlavorText))
             {
                 if (_flavorText != null)
                     return;
@@ -485,6 +483,7 @@ namespace Content.Client.Lobby.UI
                 TabContainer.AddChild(_flavorText);
                 TabContainer.SetTabTitle(TabContainer.ChildCount - 1, Loc.GetString("humanoid-profile-editor-flavortext-tab"));
                 _flavorTextEdit = _flavorText.CFlavorTextInput;
+                UpdateFlavorTextEdit();
 
                 _flavorText.OnFlavorTextChanged += OnFlavorTextChange;
             }
@@ -493,7 +492,16 @@ namespace Content.Client.Lobby.UI
                 if (_flavorText == null)
                     return;
 
+                var flavorTab = _flavorText.GetPositionInParent();
+                var selectedTab = TabContainer.CurrentTab;
+                // TabContainer keeps its selected index when a child is removed.
+                if (selectedTab >= flavorTab)
+                    TabContainer.CurrentTab = 0;
+
                 TabContainer.RemoveChild(_flavorText);
+                if (selectedTab > flavorTab)
+                    TabContainer.CurrentTab = selectedTab - 1;
+
                 _flavorText.OnFlavorTextChanged -= OnFlavorTextChange;
                 _flavorText.Dispose();
                 _flavorTextEdit?.Dispose();

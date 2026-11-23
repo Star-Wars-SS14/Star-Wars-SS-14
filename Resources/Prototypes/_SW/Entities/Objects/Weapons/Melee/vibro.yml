@@ -50,6 +50,7 @@
   - type: ItemToggleSize
     activatedSize: Huge
   - type: SWItemToggleNoPocket
+  - type: SWItemToggleNoFootwearSlot
   - type: ItemToggle
     soundActivate:
       path: /Audio/_SW/Weapons/Melee/vibro.ogg

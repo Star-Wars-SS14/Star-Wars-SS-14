@@ -45,18 +45,13 @@
   parent: SWModularSaber
   id: SWModularSaberDouble
   name: double-bladed modular lightsaber hilt
-  description: A two-handed lightsaber hilt with replaceable components.
+  description: A one-handed double-bladed lightsaber hilt with replaceable components.
   components:
   - type: Construction
     graph: SWSaberDoubleHilt
     node: finished
-  - type: SWDoubleSaberThrowVisual
-  - type: Wieldable
-    wieldSound: null
-  - type: ItemToggle
-    onUse: false
-    onActivate: false
-    predictable: false
+  - type: SWSwordThrowable
+    returnToAnyHand: true
   - type: Sprite
     sprite: Objects/Weapons/Melee/e_sword_double.rsi
     layers:
@@ -66,11 +61,6 @@
       visible: false
       shader: unshaded
       map: [ "blade" ]
-    - state: e_sword_double_blade
-      color: "#FFFFFF"
-      visible: false
-      shader: unshaded
-      map: [ "thrown-blade" ]
   - type: Item
     sprite: Objects/Weapons/Melee/e_sword_double-inhands.rsi
 

@@ -50,6 +50,8 @@
   - type: Construction
     graph: SWSaberDoubleHilt
     node: finished
+  - type: SWSaberFormWeapon
+    enabled: false
   - type: SWDoubleSaberThrowVisual
   - type: Wieldable
     wieldSound: null

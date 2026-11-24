@@ -3,7 +3,7 @@ using Robust.Shared.GameStates;
 
 namespace Content.Shared._SW.ForceAbilities;
 
-[RegisterComponent, NetworkedComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState, AutoGenerateComponentPause]
 public sealed partial class SWWeaponBlockComponent : Component
 {
     [DataField]
@@ -18,20 +18,27 @@ public sealed partial class SWWeaponBlockComponent : Component
     [DataField]
     public float ProjectileReflectProb = 1f;
 
-    public EntityUid? CurrentUser = null;
+    [AutoNetworkedField]
+    public EntityUid? CurrentUser;
 
-    public float? StoredReflectProb = null;
+    [AutoNetworkedField]
+    public float? StoredReflectProb;
 
     [DataField]
     public float BlockDuration = 5f;
 
+    [AutoNetworkedField, AutoPausedField]
     public TimeSpan BlockEndTime;
 
     [DataField]
     public float DelayBetweenBlocks = 1f;
 
+    [AutoNetworkedField, AutoPausedField]
     public TimeSpan NextReflectionAvailable;
 
-    [ViewVariables]
-    public bool IsBlocking = false;
+    [AutoNetworkedField]
+    public TimeSpan AttackDelayAfterGuard;
+
+    [ViewVariables, AutoNetworkedField]
+    public bool IsBlocking;
 }

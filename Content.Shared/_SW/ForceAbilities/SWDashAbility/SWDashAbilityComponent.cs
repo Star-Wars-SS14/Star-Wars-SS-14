@@ -1,3 +1,4 @@
+using Robust.Shared.GameStates;
 using Robust.Shared.Prototypes;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Content.Shared._SW.ForceAbilities;
 
-[RegisterComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class SWDashAbilityComponent : Component
 {
     [DataField("sprintModifier"), ViewVariables(VVAccess.ReadWrite)]
@@ -22,8 +23,11 @@ public sealed partial class SWDashAbilityComponent : Component
 
     [DataField("duration"), ViewVariables(VVAccess.ReadWrite)]
     public float DashDuration = 5f;
+
+    [AutoNetworkedField]
     public TimeSpan DashEndTime;
 
+    [AutoNetworkedField]
     public bool IsDashing = false;
 
     // Sprite swaying parameters during a dash

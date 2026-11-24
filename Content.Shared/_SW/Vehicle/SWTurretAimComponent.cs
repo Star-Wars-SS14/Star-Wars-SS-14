@@ -20,8 +20,20 @@ public sealed partial class SWTurretAimComponent : Component
 
     /// <summary>
     /// Rotation speed toward the cursor, deg/s.
-    /// 120 = 180 / 1.5 (base turret MouseRotator = 180).
     /// </summary>
     [DataField]
     public float RotationSpeed = 120f;
+
+    /// <summary>
+    /// Half-angle of the allowed firing cone around the barrel, degrees.
+    /// Networked so the predicted client gate uses the real value.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public float FiringCone = 25f;
+
+    /// <summary>
+    /// Vehicle part id of the gun this aim component gates.
+    /// </summary>
+    [DataField, AutoNetworkedField]
+    public string GunPartId = "cannon";
 }

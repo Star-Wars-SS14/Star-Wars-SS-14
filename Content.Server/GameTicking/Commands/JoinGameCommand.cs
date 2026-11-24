@@ -1,4 +1,5 @@
 using Content.Server.Administration.Managers;
+using Content.Server._SW.GlobalWar; //SW
 using Content.Server.Station.Systems;
 using Content.Shared.Administration;
 using Content.Shared.CCVar;
@@ -67,7 +68,11 @@ namespace Content.Server.GameTicking.Commands
 
                 var station = _entManager.GetEntity(new NetEntity(sid));
                 var jobPrototype = _prototypeManager.Index<JobPrototype>(id);
-                if(stationJobs.TryGetJobSlot(station, jobPrototype, out var slots) == false || slots == 0)
+                //SW start
+                // Campaign admission may select a consented civilian fallback before validating its actual slot.
+                var campaign = _entManager.System<SWGlobalWarGameruleSystem>().TryGetGlobalWarGamerule(out _);
+                if (!campaign && (!stationJobs.TryGetJobSlot(station, jobPrototype, out var slots) || slots == 0))
+                //SW end
                 {
                     shell.WriteLine($"{jobPrototype.LocalizedName} has no available slots.");
                     return;

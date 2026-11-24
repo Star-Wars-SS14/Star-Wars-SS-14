@@ -36,7 +36,6 @@
     - state: crypt_red
     - state: sobrik_comendant
 
-
 - type: entity
   parent: SWEncryptionKeyBase
   id: SWEncryptionKeyIntelligence
@@ -64,7 +63,6 @@
     layers:
     - state: crypt_blue
     - state: republic
-
 
 - type: entity
   parent: SWEncryptionKeyBase
@@ -144,7 +142,7 @@
   - type: EncryptionKey
     channels:
     - SWEmpirePilots
-    defaultChannel: SWRepublicPilots
+    defaultChannel: SWEmpirePilots
   - type: Sprite
     layers:
     - state: crypt_blue
@@ -177,3 +175,17 @@
     layers:
     - state: crypt_gray
     - state: exchange
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeyOrder
+  name: order encryption key
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWOrder
+    defaultChannel: SWOrder
+  - type: Sprite
+    layers:
+    - state: crypt_gray
+    - state: mandalorian

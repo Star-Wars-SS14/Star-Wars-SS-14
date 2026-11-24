@@ -1,6 +1,6 @@
 - type: gameMap
   id: newBalmoraEvent
-  mapName: 'Нью Балмора блять!!1!1!'
+  mapName: 'Новая Балмора'
   mapPath: /Maps/SW/newBalmorra.yml
   minPlayers: 0
   maxPlayers: 200
@@ -66,7 +66,7 @@
   minPlayers: 0
   maxPlayers: 200
   stations:
-    SWBalmorra:
+    SWBalmora:
       stationProto: SWStandardStation
       components:
       - type: StationEventEligible
@@ -92,29 +92,9 @@
           SWMandalorianWarrior: [ 3, 3 ]
           SWMandalorianRecruit: [ 3, 3 ]
 
-          SWRepublicGeneral: [ 1, 1 ]
-          SWRepublicCaptain: [ 1, 1 ]
-          SWRepublicLieutenant: [ 2, 2 ]
-          SWRepublicSoldier: [ 6, 6 ]
-          SWRepublicMedic: [ 2, 2 ]
-          SWRepublicRecruit: [ 4, 4 ]
-
           SWEmpireIntelligenceCaretaker: [ 1, 1 ]
           SWEmpireIntelligenceAgent: [ 3, 3 ]
 
-          SWRepublicCommanderCommander: [ 1, 1 ]
-          SWRepublicCommanderLieutenant: [ 1, 1 ]
-          SWRepublicCommanderMedic: [ 1, 1 ]
-          SWRepublicCommanderStormtrooper: [ 1, 1 ]
-          SWRepublicCommanderSniper: [ 1, 1 ]
-
-          SWBlackSun: [ 1, 1 ]
-          SWBlackSunMercenary: [ 4, 4 ]
-
-          SWExchangeCaptain: [ 1, 1 ]
-          SWExchangeOperative: [ 4, 4 ]
-
           SWNeutralBartender: [1, 1]
           SWCivialian: [-1, -1]
-          SWJedi: [ 2, 2 ]
           SWSith: [ 2, 2 ]

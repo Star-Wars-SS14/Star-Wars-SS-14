@@ -1,3 +1,4 @@
+using Content.Server._SW.Gamerules.TimerSpeedup;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
 using Content.Shared._SW.TaskSystem;
@@ -26,6 +27,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     [Dependency] IGameTiming _timing = default!;
     [Dependency] SWFactionGameruleSystem _swFaction = default!;
     [Dependency] IPrototypeManager _prototypeManager = default!;
+    [Dependency] private readonly SWTimerSpeedupSystem _timerSpeedup = default!;
     ISawmill _sawmill = default!;
     public static LocId TimeDescriptionId = "sw-time-limit-task";
 
@@ -77,7 +79,8 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 
     protected override void Started(EntityUid uid, SWTaskGameruleComponent component, GameRuleComponent gameRule, GameRuleStartedEvent args)
     {
-        component.TimeToAddStartTasks = _timing.CurTime + TimeSpan.FromSeconds(component.DelayBeforeAddingStartTasksInSeconds);
+        component.TimeToAddStartTasks = _timing.CurTime
+            + TimeSpan.FromSeconds(_timerSpeedup.Scale(component.DelayBeforeAddingStartTasksInSeconds));
         var factions = _swFaction.GetFactions();
         foreach (var (_, factionEntity) in factions)
         {
@@ -85,7 +88,8 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             {
                 continue;
             }
-            comp.NextAddTime = TimeSpan.FromSeconds(component.DelayBeforeAddingStartTasksInSeconds + comp.AddIntervalInSeconds);
+            comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(
+                _timerSpeedup.Scale(component.DelayBeforeAddingStartTasksInSeconds + comp.AddIntervalInSeconds));
         }
     }
     public void AddStartTasks()
@@ -123,7 +127,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                             addedTasksProtos[faction].Add(proto.ID);
                         }
                     }
-                    comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(comp.AddIntervalInSeconds);
+                    comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(_timerSpeedup.Scale(comp.AddIntervalInSeconds));
                 }
             }
         }
@@ -152,7 +156,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                 if (proto != null)
                 {
                     AddRandomTask(new Entity<SWTaskContainerComponent>(factionUid, comp), proto.ID);
-                    comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(comp.AddIntervalInSeconds);
+                    comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(_timerSpeedup.Scale(comp.AddIntervalInSeconds));
                 }
             }
         }
@@ -238,7 +242,66 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         }
     }
 
-    private HashSet<Entity<SWFactionComponent>> CalculateWinner(EntityQueryEnumerator<SWFactionComponent> query)
+    /// <summary>
+    /// The factions that win if the round ends now. With <paramref name="liveScore"/> false, major factions are
+    /// compared by <see cref="SWFactionComponent.CurrentScore"/>, which is only filled at round end; with true, by
+    /// <see cref="GetLiveScore"/>. An empty set is a draw.
+    /// </summary>
+    public HashSet<Entity<SWFactionComponent>> GetWinners(bool liveScore = false)
+    {
+        return CalculateWinner(EntityQueryEnumerator<SWFactionComponent>(), liveScore);
+    }
+
+    /// <summary>
+    /// The faction's score right now: its round-end score so far plus every completed top-level task.
+    /// Unlike <see cref="AppendRoundEndText"/> it changes nothing.
+    /// </summary>
+    public int GetLiveScore(Entity<SWFactionComponent> faction)
+    {
+        var score = faction.Comp.CurrentScore;
+        if (!TryComp<SWTaskContainerComponent>(faction, out var taskComp))
+        {
+            return score;
+        }
+
+        foreach (var task in taskComp.CurrentTasks)
+        {
+            if (task.Comp.ParentTask != null)
+            {
+                continue;
+            }
+
+            UpdateTaskProgress(task.Owner, task.Comp);
+            if (task.Comp.Completeness == 1.0)
+            {
+                score += GetTaskScore(task);
+            }
+        }
+        return score;
+    }
+
+    /// <summary>
+    /// The score a completed task gives, the same way <see cref="AppendRoundEndText"/> counts it.
+    /// </summary>
+    public int GetTaskScore(Entity<SWTaskComponent> task)
+    {
+        var ev = new SWTaskGetScoreEvent();
+        RaiseLocalEvent(task.Owner, ref ev);
+        return ev.Handled ? ev.Score : task.Comp.Score;
+    }
+
+    /// <summary>
+    /// Marks a task as completed whatever its real progress is, and pays its reward. For design tests.
+    /// </summary>
+    public void ForceCompleteTask(Entity<SWTaskComponent> task)
+    {
+        EnsureComp<SWForceCompletedTaskComponent>(task);
+        task.Comp.Completeness = 1.0;
+        RaiseLocalEvent(task.Owner, new SWOnTaskCompleteEvent());
+    }
+
+    private HashSet<Entity<SWFactionComponent>> CalculateWinner(EntityQueryEnumerator<SWFactionComponent> query,
+        bool liveScore = false)
     {
         HashSet<Entity<SWFactionComponent>> majorFactions = new();
         HashSet<Entity<SWFactionComponent>> minorFactions = new();
@@ -281,13 +344,13 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 
         foreach (var fact in majorFactions)
         {
-            maxScoreAmongMajors = Math.Max(fact.Comp.CurrentScore, maxScoreAmongMajors);
+            maxScoreAmongMajors = Math.Max(liveScore ? GetLiveScore(fact) : fact.Comp.CurrentScore, maxScoreAmongMajors);
         }
 
         HashSet<Entity<SWFactionComponent>> majorsWithMaxScore = new();
         foreach (var fact in majorFactions)
         {
-            if (fact.Comp.CurrentScore == maxScoreAmongMajors)
+            if ((liveScore ? GetLiveScore(fact) : fact.Comp.CurrentScore) == maxScoreAmongMajors)
             {
                 majorsWithMaxScore.Add(fact);
             }
@@ -360,6 +423,11 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                 _sawmill.Error("Tried to update task progress on object that doesn't semm to be a task");
                 return;
             }
+        }
+        if (HasComp<SWForceCompletedTaskComponent>(taskUid))
+        {
+            comp.Completeness = 1.0;
+            return;
         }
         var ev = new SWGetProgressEvent();
         RaiseLocalEvent(taskUid, ref ev);

@@ -11,6 +11,10 @@ namespace Content.Shared.Doors.Components
     [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
     public sealed partial class FirelockComponent : Component
     {
+        //SW start
+        public const float DefaultPressureThreshold = 20;
+        public const float DefaultTemperatureThreshold = 330;
+        //SW end
         #region Settings
 
         /// <summary>
@@ -25,14 +29,14 @@ namespace Content.Shared.Doors.Components
         /// </summary>
         [DataField("pressureThreshold"), ViewVariables(VVAccess.ReadWrite)]
         [GuidebookData]
-        public float PressureThreshold = 20;
+        public float PressureThreshold = DefaultPressureThreshold; //SW
 
         /// <summary>
         /// Maximum temperature difference before the firelock will refuse to open, in k.
         /// </summary>
         [DataField("temperatureThreshold"), ViewVariables(VVAccess.ReadWrite)]
         [GuidebookData]
-        public float TemperatureThreshold = 330;
+        public float TemperatureThreshold = DefaultTemperatureThreshold; //SW
         // this used to check for hot-spots, but because accessing that data is a a mess this now just checks
         // temperature. This does mean a cold room will trigger hot-air pop-ups
 

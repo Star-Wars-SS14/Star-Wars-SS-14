@@ -1,0 +1,124 @@
+# The set for sale: the items the owner kept when the cosmetics were rebuilt from real sprites.
+- type: loadout
+  id: SWCosmeticDrapeLeather
+  equipment:
+    neck: SWCosmeticDrapeLeather
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticDrapeSand
+  equipment:
+    neck: SWCosmeticDrapeSand
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticWinterScarf
+  equipment:
+    neck: SWClothingNeckWinterScarf
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticBandana
+  equipment:
+    neck: SWClothingNeckBandana
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    blockedSpecies:
+    - Colicoid
+
+- type: loadout
+  id: SWCosmeticWinterHat
+  equipment:
+    head: SWClothingHeadWinterHat
+  effects:
+  - !type:SWCosmeticLoadoutEffect
+    blockedSpecies:
+    - Colicoid
+    - Twilek
+    - Nautolan
+
+# Free for everyone with a free neck.
+- type: loadout
+  id: SWLoadoutNeckCapeBlack
+  equipment:
+    neck: SWCapeBlack
+
+- type: loadout
+  id: SWLoadoutNeckCapeForest
+  equipment:
+    neck: SWCapeForest
+
+- type: loadout
+  id: SWLoadoutNeckCapeWhite
+  equipment:
+    neck: SWCapeWhite
+
+- type: loadout
+  id: SWLoadoutNeckKamaBlack
+  equipment:
+    neck: SWKamaBlack
+
+- type: loadout
+  id: SWLoadoutNeckKamaBrown
+  equipment:
+    neck: SWKamaBrown
+
+- type: loadout
+  id: SWLoadoutNeckKamaForest
+  equipment:
+    neck: SWKamaForest
+
+- type: loadout
+  id: SWLoadoutNeckKamaWhite
+  equipment:
+    neck: SWKamaWhite
+
+# Not on jobs that already wear something on the neck: their own gear would fall to the floor.
+- type: loadoutGroup
+  id: SWCosmeticsNeck
+  name: sw-loadout-group-cosmetics
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWLoadoutNeckCapeBlack
+  - SWLoadoutNeckCapeForest
+  - SWLoadoutNeckCapeWhite
+  - SWLoadoutNeckKamaBlack
+  - SWLoadoutNeckKamaBrown
+  - SWLoadoutNeckKamaForest
+  - SWLoadoutNeckKamaWhite
+  - SWCosmeticDrapeLeather
+  - SWCosmeticDrapeSand
+  - SWCosmeticWinterScarf
+  - SWCosmeticBandana
+  - SWCosmeticScarfWatch
+  - SWCosmeticScarfFrost
+  - SWCosmeticScarfCoal
+  - SWCosmeticScarfBalmora
+  - SWCosmeticScarfResistance
+  - SWCosmeticScarfAsh
+  - SWCosmeticScarfHeather
+  - SWCosmeticScarfStar
+  - SWCosmeticScarfDusk
+  - SWCosmeticScarfSteel
+  - SWCosmeticScarfMoss
+  - SWCosmeticScarfWormwood
+  - SWCosmeticScarfFog
+  - SWCosmeticCapeSnow
+  - SWCosmeticCapeShadow
+  - SWCosmeticCapeAsh
+  - SWCosmeticCapeVeteran
+  - SWCosmeticCapeNorth
+  - SWCosmeticCapeColdWar
+  - SWCosmeticCapeBlizzard
+  - SWCosmeticCapeDusk
+  - SWCosmeticCapeIce

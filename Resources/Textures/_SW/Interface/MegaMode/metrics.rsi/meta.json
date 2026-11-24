@@ -1,0 +1,41 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Original pixel icons for Star-Wars-SS14, 2026: treasury and ministry_budget drawn in code by Codex; food_bulk, electronics, advanced_electronics, luxury, stock, reserved, throughput and in_transit hand-placed by Claude Code in the same palette.",
+    "size": {
+        "x": 16,
+        "y": 16
+    },
+    "states": [
+        {
+            "name": "treasury"
+        },
+        {
+            "name": "ministry_budget"
+        },
+        {
+            "name": "food_bulk"
+        },
+        {
+            "name": "electronics"
+        },
+        {
+            "name": "advanced_electronics"
+        },
+        {
+            "name": "luxury"
+        },
+        {
+            "name": "stock"
+        },
+        {
+            "name": "reserved"
+        },
+        {
+            "name": "throughput"
+        },
+        {
+            "name": "in_transit"
+        }
+    ]
+}

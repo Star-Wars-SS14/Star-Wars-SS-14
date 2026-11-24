@@ -1,0 +1,115 @@
+- type: entity
+  parent: BaseComputer
+  id: SWGlobalWarRepublicDiplomacyConsole
+  name: Republic diplomacy console
+  description: A government terminal for diplomacy and official correspondence.
+  components:
+  - type: SWGlobalWarGovernmentConsole
+    faction: Republic
+    kind: Diplomacy
+  - type: ActivatableUI
+    key: enum.SWGlobalWarGovernmentUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWGlobalWarGovernmentUiKey.Key:
+        type: SWGlobalWarDiplomacyBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: Sprite
+    # These bodies have integrated controls. Legacy keyboard/keys/panel graphics are not overlaid on them.
+    # BaseComputer retains power and maintenance behavior; its absent visual layers remain blank.
+    layers:
+    - map: ["computerLayerBody"]
+      sprite: _SW/Structures/Machines/RepublicTaskComputer.rsi
+      state: computer
+    - map: ["computerLayerScreen"]
+      sprite: _SW/Structures/Machines/MegaMode/screens_republic.rsi
+      state: diplomacy
+
+- type: entity
+  parent: SWGlobalWarRepublicDiplomacyConsole
+  id: SWGlobalWarEmpireDiplomacyConsole
+  name: Empire diplomacy console
+  components:
+  - type: SWGlobalWarGovernmentConsole
+    faction: Empire
+    kind: Diplomacy
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      sprite: _SW/Structures/Machines/ImperialTaskComputer.rsi
+      state: computer
+    - map: ["computerLayerScreen"]
+      sprite: _SW/Structures/Machines/MegaMode/screens_empire.rsi
+      state: diplomacy
+
+- type: entity
+  parent: BaseComputer
+  id: SWGlobalWarRepublicFinanceConsole
+  name: Republic budget console
+  description: A government terminal for accounts, funded orders, and the financial journal.
+  components:
+  - type: SWGlobalWarGovernmentConsole
+    faction: Republic
+    kind: Finance
+  - type: ActivatableUI
+    key: enum.SWGlobalWarGovernmentUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWGlobalWarGovernmentUiKey.Key:
+        type: SWGlobalWarFinanceBoundUserInterface
+      enum.WiresUiKey.Key:
+        type: WiresBoundUserInterface
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      sprite: _SW/Structures/Machines/RepublicFinanceComputer.rsi
+      state: computer
+    - map: ["computerLayerScreen"]
+      sprite: _SW/Structures/Machines/RepublicFinanceComputer.rsi
+      state: financialcontrol_monitor
+
+- type: entity
+  parent: SWGlobalWarRepublicFinanceConsole
+  id: SWGlobalWarEmpireFinanceConsole
+  name: Empire budget console
+  components:
+  - type: SWGlobalWarGovernmentConsole
+    faction: Empire
+    kind: Finance
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      sprite: _SW/Structures/Machines/ImperialFinanceComputer.rsi
+      state: computer
+    - map: ["computerLayerScreen"]
+      sprite: _SW/Structures/Machines/ImperialFinanceComputer.rsi
+      state: financialcontrol_monitor
+
+- type: entity
+  parent: SWGlobalWarTravelConsole
+  id: SWGlobalWarRepublicTravelConsole
+  name: Republic navigation console
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      sprite: _SW/Structures/Machines/RepublicTaskComputer.rsi
+      state: computer
+    - map: ["computerLayerScreen"]
+      sprite: _SW/Structures/Machines/MegaMode/screens_republic.rsi
+      state: galmap
+
+- type: entity
+  parent: SWGlobalWarTravelConsole
+  id: SWGlobalWarEmpireTravelConsole
+  name: Empire navigation console
+  components:
+  - type: Sprite
+    layers:
+    - map: ["computerLayerBody"]
+      sprite: _SW/Structures/Machines/ImperialTaskComputer.rsi
+      state: computer
+    - map: ["computerLayerScreen"]
+      sprite: _SW/Structures/Machines/MegaMode/screens_empire.rsi
+      state: galmap

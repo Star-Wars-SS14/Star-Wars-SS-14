@@ -1,5 +1,4 @@
 using Content.Shared.Temperature;
-using Content.Shared.Temperature.Components;
 using Content.Shared.Trigger.Systems;
 using System;
 using System.Collections.Generic;
@@ -14,19 +13,7 @@ public sealed class SWTriggerOnHighTemperatureSystem : EntitySystem
     public override void Initialize()
     {
         base.Initialize();
-    }
-
-    public override void Update(float frameTime)
-    {
-        base.Update(frameTime);
-        var query = EntityQueryEnumerator<TemperatureComponent, SWTriggerOnHighTemperatureComponent>();
-        while (query.MoveNext(out var uid, out var tempComp, out var trigComp))
-        {
-            if (tempComp.CurrentTemperature > trigComp.TriggerThreshold)
-            {
-                _triggerSystem.Trigger(uid);
-            }
-        }
+        SubscribeLocalEvent<SWTriggerOnHighTemperatureComponent, OnTemperatureChangeEvent>(OnTempChange);
     }
 
     private void OnTempChange(Entity<SWTriggerOnHighTemperatureComponent> ent, ref OnTemperatureChangeEvent args)

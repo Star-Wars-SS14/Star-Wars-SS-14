@@ -16,7 +16,6 @@
     name: Крупная охота за головами
     description: Тут ничего нет.
   - type: SWTargetSelector
-    factions: [RepublicFaction, EmpireFaction]
     jobs:
     - SWEmpireMajor
     - SWEmpireLieutenant
@@ -53,7 +52,6 @@
     name: Малая охота за головами
     description: Тут ничего нет.
   - type: SWTargetSelector
-    factions: [RepublicFaction, EmpireFaction]
     jobs:
     - SWEmpireSoldier
     - SWEmpireMedic

@@ -16,7 +16,6 @@ public sealed class SWExchangeConsoleBoundUserInterface : SWBasePayableBoundUser
 {
     [Dependency] IPrototypeManager _prototypeManager = default!;
     private SWExchangeMenu? _menu;
-    private SWWithdrawalWindow? _withdrawal = null;
 
     public SWExchangeConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
     {
@@ -52,16 +51,7 @@ public sealed class SWExchangeConsoleBoundUserInterface : SWBasePayableBoundUser
         {
             return;
         }
-        _withdrawal = new SWWithdrawalWindow();
-        _withdrawal.PopulateCurrencies(_menu.Balance.Keys.ToList());
-        _withdrawal.OpenCenteredRight();
-        _withdrawal.OnConfirmButtonPressedAction += OnWithdrawal;
-    }
-
-    protected override void OnWithdrawal(Dictionary<ProtoId<SWCurrencyPrototype>, float> dict)
-    {
-        base.OnWithdrawal(dict);
-        _withdrawal?.Close();
+        OpenWithdrawal(_menu.Balance.Keys.ToList());
     }
 
     protected override void UpdateState(BoundUserInterfaceState state)

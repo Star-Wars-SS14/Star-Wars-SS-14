@@ -1,0 +1,114 @@
+- type: loadoutGroup
+  id: SWSaberHiltChoice
+  name: sw-loadout-saber-hilt
+  swSaberKit: true
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - SWSaberHiltSingleLoadout
+  - SWSaberHiltDoubleLoadout
+
+- type: loadout
+  id: SWSaberHiltSingleLoadout
+  name: ent-SWModularSaber
+  equipment:
+    pocket1: SWModularSaber
+
+- type: loadout
+  id: SWSaberHiltDoubleLoadout
+  name: ent-SWModularSaberDouble
+  equipment:
+    pocket1: SWModularSaberDouble
+
+- type: loadoutGroup
+  id: SWSaberEmitterChoice
+  name: sw-loadout-saber-emitter
+  swSaberKit: true
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - SWSaberEmitterStandardLoadout
+  - SWSaberEmitterReinforcedLoadout
+
+- type: loadoutGroup
+  id: SWSaberFocusChoice
+  name: sw-loadout-saber-focus
+  swSaberKit: true
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - SWSaberFocusStandardLoadout
+  - SWSaberFocusFastLoadout
+  - SWSaberFocusHeavyLoadout
+
+- type: loadoutGroup
+  id: SWJediCrystalChoice
+  name: sw-loadout-saber-crystal
+  swSaberKit: true
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - SWJediCrystalBlueLoadout
+  - SWJediCrystalGreenLoadout
+  - SWJediCrystalYellowLoadout
+  - SWJediCrystalPurpleLoadout
+
+- type: loadoutGroup
+  id: SWSithCrystalChoice
+  name: sw-loadout-saber-crystal
+  swSaberKit: true
+  minLimit: 1
+  maxLimit: 1
+  loadouts:
+  - SWSithCrystalRedLoadout
+  - SWJediCrystalPurpleLoadout
+
+- type: loadout
+  id: SWSaberEmitterStandardLoadout
+  storage:
+    belt: [ SWSaberEmitterStandard ]
+
+- type: loadout
+  id: SWSaberEmitterReinforcedLoadout
+  storage:
+    belt: [ SWSaberEmitterReinforced ]
+
+- type: loadout
+  id: SWSaberFocusStandardLoadout
+  storage:
+    belt: [ SWSaberFocusStandard ]
+
+- type: loadout
+  id: SWSaberFocusFastLoadout
+  storage:
+    belt: [ SWSaberFocusFast ]
+
+- type: loadout
+  id: SWSaberFocusHeavyLoadout
+  storage:
+    belt: [ SWSaberFocusHeavy ]
+
+- type: loadout
+  id: SWJediCrystalBlueLoadout
+  storage:
+    belt: [ SWKyberCrystalBlue ]
+
+- type: loadout
+  id: SWJediCrystalGreenLoadout
+  storage:
+    belt: [ SWKyberCrystalGreen ]
+
+- type: loadout
+  id: SWJediCrystalYellowLoadout
+  storage:
+    belt: [ SWKyberCrystalYellow ]
+
+- type: loadout
+  id: SWJediCrystalPurpleLoadout
+  storage:
+    belt: [ SWKyberCrystalPurple ]
+
+- type: loadout
+  id: SWSithCrystalRedLoadout
+  storage:
+    belt: [ SWKyberCrystalRed ]

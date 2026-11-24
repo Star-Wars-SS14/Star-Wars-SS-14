@@ -1,6 +1,7 @@
 using Content.Client.Gameplay;
 using Content.Client.Hands.Systems;
 using Content.Client.UserInterface.Controls;
+using Content.Client._SW.UserInterface; //SW
 using Content.Client.UserInterface.Systems.Hands.Controls;
 using Content.Client.UserInterface.Systems.Hotbar.Widgets;
 using Content.Shared.Hands.Components;
@@ -301,6 +302,7 @@ public sealed class HandsUIController : UIController, IOnStateEntered<GameplaySt
 
         handControl.Highlight = true;
         _activeHand = handControl;
+        UIManager.GetUIController<SWTerminalStyleUIController>().ApplyHandAccent(); //SW
 
         if (HandsGui != null &&
             _playerHandsComponent != null &&

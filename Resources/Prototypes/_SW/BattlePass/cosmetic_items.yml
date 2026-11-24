@@ -1,0 +1,301 @@
+# A cosmetic has no effect on play: SWBattlePassCosmeticsTest and SWCosmeticSalesTest hold every one of them to that.
+# The head base has BaseItem as its parent and not ClothingHeadBase, for the reason SWCosmeticNeckBase gives.
+- type: entity
+  abstract: true
+  parent: BaseItem
+  id: SWBattlePassHeadBase
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    state: icon
+  - type: Clothing
+    slots:
+    - HEAD
+  - type: CargoSellBlacklist
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemScarfWatch
+  name: Watch scarf
+  description: A plain moss-green scarf of a night watch.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/scarfwatch.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/scarfwatch.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemScarfFrost
+  name: Frost scarf
+  description: A pale scarf the colour of old ice.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/scarffrost.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/scarffrost.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemScarfCoal
+  name: Coal scarf
+  description: A black scarf with a band the colour of embers.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/scarfcoal.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/scarfcoal.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemScarfBalmora
+  name: Balmora scarf
+  description: Local weave the colour of sand, from the Balmoran markets.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/scarfbalmora.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/scarfbalmora.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemScarfResistance
+  name: Resistance scarf
+  description: Worn brown cloth of the Balmoran underground.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/scarfresistance.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/scarfresistance.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemScarfAsh
+  name: Ash scarf
+  description: Cloth the colour of a burnt-out street.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/scarfash.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/scarfash.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemScarfHeather
+  name: Heather scarf
+  description: A muted mauve scarf, a rare colour on this front.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/scarfheather.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/scarfheather.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemScarfStar
+  name: Star scarf
+  description: Deep plum with a cream band.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/scarfstar.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/scarfstar.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemScarfDusk
+  name: Dusk scarf
+  description: A dim grey scarf with a touch of violet.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/scarfdusk.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/scarfdusk.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemScarfSteel
+  name: Steel scarf
+  description: Cold grey cloth, nothing more.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/scarfsteel.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/scarfsteel.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemScarfMoss
+  name: Moss scarf
+  description: A dark green scarf from the northern ridges.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/scarfmoss.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/scarfmoss.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemScarfWormwood
+  name: Wormwood scarf
+  description: A pale scarf the colour of dry wormwood.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/scarfwormwood.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/scarfwormwood.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemScarfFog
+  name: Fog scarf
+  description: A whitish scarf, hard to tell from the morning air.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/scarffog.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/scarffog.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemCapeSnow
+  name: Snow cape
+  description: A short cape with a white fur collar.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/capesnow.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/capesnow.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemCapeShadow
+  name: Shadow cape
+  description: A short black cape with a white collar.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/capeshadow.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/capeshadow.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemCapeAsh
+  name: Ash cape
+  description: A short cape the colour of a burnt-out street.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/capeash.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/capeash.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemCapeVeteran
+  name: Veteran cape
+  description: Worn leather and tan fur, patched more than once.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/capeveteran.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/capeveteran.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemCapeNorth
+  name: Northern cape
+  description: Deep plum cloth and frost-white fur.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/capenorth.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/capenorth.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemCapeColdWar
+  name: Cold War cape
+  description: A black cape with a collar of pale gold, the mark of a whole winter on Balmora.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/capecoldwar.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/capecoldwar.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemCapeBlizzard
+  name: Blizzard cape
+  description: A short pale grey cape.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/capeblizzard.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/capeblizzard.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemCapeDusk
+  name: Twilight cape
+  description: A short cape of dark violet grey.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/capedusk.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/capedusk.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticItemCapeIce
+  name: Ice cape
+  description: A short cape the colour of old ice.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/capeice.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/capeice.rsi
+
+- type: entity
+  parent: SWBattlePassHeadBase
+  id: SWCosmeticItemHatGarrison
+  name: Garrison hat
+  description: A plain knitted hat for those not issued a helmet.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/hatgarrison.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/hatgarrison.rsi
+
+- type: entity
+  parent: SWBattlePassHeadBase
+  id: SWCosmeticItemHatFrost
+  name: Frost hat
+  description: A pale knitted hat.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/hatfrost.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/hatfrost.rsi
+
+- type: entity
+  parent: SWBattlePassHeadBase
+  id: SWCosmeticItemHatSnowstorm
+  name: Snowstorm hat
+  description: A whitish knitted hat.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/hatsnowstorm.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/hatsnowstorm.rsi
+
+- type: entity
+  parent: SWBattlePassHeadBase
+  id: SWCosmeticItemHatGraphite
+  name: Graphite hat
+  description: A dark knitted hat.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/BattlePass/hatgraphite.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/BattlePass/hatgraphite.rsi

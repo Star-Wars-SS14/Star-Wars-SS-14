@@ -1,0 +1,48 @@
+# Design-test soldier bots: spawn them with the swbots admin command or the balance runner.
+- type: entity
+  abstract: true
+  parent: MobHuman
+  id: SWBotSoldierBase
+  components:
+  - type: HTN
+    rootTask:
+      task: SWBotSoldierCompound
+    blackboard:
+      SWBotObjectiveRange: !type:Single
+        3
+      SWBotHoldTime: !type:Single
+        2
+      NavInteract: !type:Bool
+        true
+      NavClimb: !type:Bool
+        true
+      # SW base doors are only routed through with prying; SWDroidDoorNavigation then opens them with the bot's ID.
+      NavPry: !type:Bool
+        true
+      NavSmash: !type:Bool
+        false
+  - type: SWDroidDoorNavigation
+  - type: SWAutoTargetingGun
+    range: 12
+
+- type: entity
+  parent: SWBotSoldierBase
+  id: SWBotSoldierRepublic
+  name: Republic soldier bot
+  description: A test bot. It wears a Republic soldier's kit and attacks the Empire.
+  components:
+  - type: SWCombatBot
+    faction: RepublicFaction
+    enemyFaction: EmpireFaction
+    job: SWRepublicSoldier
+
+- type: entity
+  parent: SWBotSoldierBase
+  id: SWBotSoldierEmpire
+  name: Imperial soldier bot
+  description: A test bot. It wears an Imperial soldier's kit and attacks the Republic.
+  components:
+  - type: SWCombatBot
+    faction: EmpireFaction
+    enemyFaction: RepublicFaction
+    job: SWEmpireSoldier

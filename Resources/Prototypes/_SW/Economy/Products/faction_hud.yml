@@ -1,0 +1,21 @@
+- type: swCargoProduct
+  id: SWRepublicTacticalVisorCP
+  icon:
+    sprite: Clothing/Eyes/Hud/sec.rsi
+    state: icon
+  product: SWClothingEyesHudRepublic
+  cost:
+    SWRepublicCreditCurrency: 100
+  category: sw-category-tools
+  group: SWRepublicEquipmentMarket
+
+- type: swCargoProduct
+  id: SWEmpireTacticalVisorCP
+  icon:
+    sprite: Clothing/Eyes/Hud/sec.rsi
+    state: icon
+  product: SWClothingEyesHudEmpire
+  cost:
+    SWEmpireCreditCurrency: 100
+  category: sw-category-tools
+  group: SWEmpireEquipmentMarket

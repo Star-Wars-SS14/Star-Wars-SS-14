@@ -188,7 +188,7 @@ namespace Content.Server.GameTicking
 
         public void PlayerJoinGame(ICommonSession session, bool silent = false)
         {
-            if (!silent)
+            if (!silent && !IsGameRuleAdded<Content.Server._SW.GlobalWar.SWGlobalWarGameruleComponent>()) //SW: the campaign greets in one line of its own
                 _chatManager.DispatchServerMessage(session, Loc.GetString("game-ticker-player-join-game-message"));
 
             _playerGameStatuses[session.UserId] = PlayerGameStatus.JoinedGame;
@@ -215,6 +215,7 @@ namespace Content.Server.GameTicking
             RaiseNetworkEvent(new TickerJoinLobbyEvent(), client);
             RaiseNetworkEvent(GetStatusMsg(session), client);
             RaiseNetworkEvent(GetInfoMsg(), client);
+            RaiseNetworkEvent(GetSWLobbyFacts(), client); //SW
             RaiseLocalEvent(new PlayerJoinedLobbyEvent(session));
         }
 

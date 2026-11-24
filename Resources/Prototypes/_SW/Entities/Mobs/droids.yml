@@ -11,6 +11,10 @@
     layers:
     - map: [ "enum.DamageStateVisualLayers.Base" ]
       state: base
+    # The borg system switches this layer; a droid has no separate light on its sprite.
+    - map: [ "enum.BorgVisualLayers.Light" ]
+      state: base
+      visible: false
   - type: DamageStateVisuals
     states:
       Alive:
@@ -88,6 +92,10 @@
         true
       NavClimb: !type:Bool
         true
+      # Doors with an access reader, even an empty one, are only routed through with prying.
+      # The droid cannot pry; SWDroidDoorNavigation opens them with the faction chip's access.
+      NavPry: !type:Bool
+        true
       NavSmash: !type:Bool
         true
   - type: SWDroidCommandable
@@ -107,6 +115,8 @@
     canBeStripped: false
   - type: BorgChassis
     active: true
+    hasMindState: base
+    noMindState: base
     maxModules: 4
     moduleWhitelist:
       tags:
@@ -190,6 +200,7 @@
   - type: Construction
     graph: SWDroidGraph
     node: working
+    deconstructionTarget: null
     containers:
     - borg_brain
     - borg_module
@@ -210,6 +221,7 @@
   - type: Construction
     graph: SWDroidGraph
     node: chassis
+    deconstructionTarget: null
     containers:
     - borg_brain
     - borg_module
@@ -241,6 +253,7 @@
   - type: Construction
     graph: SWDroidGraph
     node: broken
+    deconstructionTarget: null
     containers:
     - borg_brain
     - borg_module

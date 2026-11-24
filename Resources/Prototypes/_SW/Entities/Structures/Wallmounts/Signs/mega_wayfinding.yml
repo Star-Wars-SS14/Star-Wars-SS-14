@@ -1,0 +1,167 @@
+- type: entity
+  parent: BaseSign
+  id: SWGlobalWarSignDock
+  name: docking port sign
+  description: Marks the approach to a docking port.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Wallmounts/Signs/MegaMode/wayfinding.rsi
+    state: dock
+  - type: Transform
+    anchored: true
+
+- type: entity
+  parent: BaseSign
+  id: SWGlobalWarSignSurface
+  name: surface access sign
+  description: Marks the route to the surface landing area.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Wallmounts/Signs/MegaMode/wayfinding.rsi
+    state: surface
+  - type: Transform
+    anchored: true
+
+- type: entity
+  parent: BaseSign
+  id: SWGlobalWarSignOrbit
+  name: orbital access sign
+  description: Marks the route to orbital transport.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Wallmounts/Signs/MegaMode/wayfinding.rsi
+    state: orbit
+  - type: Transform
+    anchored: true
+
+- type: entity
+  parent: BaseSign
+  id: SWGlobalWarSignHub
+  name: logistics hub sign
+  description: Marks the logistics hub control point.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Wallmounts/Signs/MegaMode/wayfinding.rsi
+    state: hub
+  - type: Transform
+    anchored: true
+
+- type: entity
+  parent: BaseSign
+  id: SWGlobalWarSignFactory
+  name: factory sign
+  description: Marks the entrance to the production area.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Wallmounts/Signs/MegaMode/wayfinding.rsi
+    state: factory
+  - type: Transform
+    anchored: true
+
+- type: entity
+  parent: BaseSign
+  id: SWGlobalWarSignStock
+  name: warehouse sign
+  description: Marks the storage area. Stored goods are not necessarily accepted deliveries.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Wallmounts/Signs/MegaMode/wayfinding.rsi
+    state: stock
+  - type: Transform
+    anchored: true
+
+- type: entity
+  parent: BaseSign
+  id: SWGlobalWarSignRecruitment
+  name: recruitment sign
+  description: Marks the recruitment point. Enlistment and equipment issue are separate operations.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Wallmounts/Signs/MegaMode/wayfinding.rsi
+    state: recruitment
+  - type: Transform
+    anchored: true
+
+- type: entity
+  parent: BaseSign
+  id: SWGlobalWarSignSupply
+  name: equipment issue sign
+  description: Marks the equipment issue point.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Wallmounts/Signs/MegaMode/wayfinding.rsi
+    state: supply
+  - type: Transform
+    anchored: true
+
+- type: entity
+  parent: BaseSign
+  id: SWGlobalWarSignCommand
+  name: command sign
+  description: Marks the command area.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Wallmounts/Signs/MegaMode/wayfinding.rsi
+    state: command
+  - type: Transform
+    anchored: true
+
+- type: entity
+  parent: BaseSignDirectional
+  id: SWGlobalWarSignArrow
+  name: direction sign
+  description: Points toward the destination on the adjacent sign.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Wallmounts/Signs/MegaMode/wayfinding.rsi
+    state: arrow
+  - type: Transform
+    anchored: true
+
+- type: entity
+  parent: BaseSign
+  id: SWGlobalWarSignIntake
+  name: raw material intake sign
+  description: Marks the raw material unloading area.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Wallmounts/Signs/MegaMode/wayfinding.rsi
+    state: intake
+  - type: Transform
+    anchored: true
+
+- type: entity
+  parent: BaseSign
+  id: SWGlobalWarSignDispatch
+  name: carrier pickup sign
+  description: Marks the place to collect an assigned delivery.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Wallmounts/Signs/MegaMode/wayfinding.rsi
+    state: dispatch
+  - type: Transform
+    anchored: true
+
+- type: entity
+  parent: BaseSign
+  id: SWGlobalWarSignAcceptance
+  name: delivery acceptance sign
+  description: Marks the delivery handover point. Confirm acceptance at the terminal.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Wallmounts/Signs/MegaMode/wayfinding.rsi
+    state: acceptance
+  - type: Transform
+    anchored: true
+
+- type: entity
+  parent: BaseSign
+  id: SWGlobalWarSignReturns
+  name: returns sign
+  description: Marks the return area. Returning goods does not by itself accept or pay a delivery.
+  components:
+  - type: Sprite
+    sprite: _SW/Structures/Wallmounts/Signs/MegaMode/wayfinding.rsi
+    state: returns
+  - type: Transform
+    anchored: true

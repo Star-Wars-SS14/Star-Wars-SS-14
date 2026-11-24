@@ -1,5 +1,10 @@
 using System.Linq;
 using System.Numerics;
+using Content.Client._SW.Loadouts; //SW
+using Content.Client._SW.LateJoin; //SW
+using Content.Client._SW.GlobalWar.UI; //SW
+using Content.Shared._SW.GlobalWar; //SW
+using Robust.Shared.Timing; //SW
 using Content.Client.CrewManifest;
 using Content.Client.GameTicking.Managers;
 using Content.Client.Lobby;
@@ -41,13 +46,35 @@ namespace Content.Client.LateJoin
 
         private readonly Dictionary<NetEntity, Dictionary<string, List<JobButton>>> _jobButtons = new();
         private readonly Dictionary<NetEntity, Dictionary<string, BoxContainer>> _jobCategories = new();
-        private readonly List<ScrollContainer> _jobLists = new();
+        private readonly Dictionary<NetEntity, SWLateJoinScrollContainer> _jobLists = new(); //SW
+
+        private readonly Dictionary<(NetEntity Station, string Job), List<Button>> _swGearButtons = new(); //SW
+        //SW start
+        private const string SWCampaignJobPrefix = "SWGlobalWar";
+        private const float SWWindowMargin = 24;
+        private const float SWDescriptionHeight = 40;
+        private static readonly TimeSpan SWJoinAnswerTimeout = TimeSpan.FromSeconds(6);
+        private readonly SWGlobalWarEntrySystem _swEntry;
+        private readonly Content.Client._SW.Lobby.SWLobbySideLine _swLine = new() { Visible = false };
+        private readonly RichTextLabel _swNotice = new() { Visible = false };
+        private readonly RichTextLabel _swStatus = new() { Visible = false };
+        private readonly BoxContainer _swSides = new() { Orientation = LayoutOrientation.Horizontal, SeparationOverride = 8, Visible = false };
+        private bool _swCampaign;
+        private TimeSpan _swPendingFor;
+        private bool _swPending;
+        //SW end
 
         private readonly Control _base;
 
         public LateJoinGui()
         {
-            MinSize = SetSize = new Vector2(450, 560);
+            //SW start
+            var size = new Vector2(640, 560);
+            var viewport = UserInterfaceManager.WindowRoot.Size;
+            if (viewport.X > 0 && viewport.Y > 0)
+                size = Vector2.Min(size, viewport - new Vector2(SWWindowMargin));
+            MinSize = SetSize = size;
+            //SW end
             IoCManager.InjectDependencies(this);
             _sprites = _entitySystem.GetEntitySystem<SpriteSystem>();
             _crewManifest = _entitySystem.GetEntitySystem<CrewManifestSystem>();
@@ -62,7 +89,17 @@ namespace Content.Client.LateJoin
                 VerticalExpand = true,
             };
 
-            ContentsContainer.AddChild(_base);
+            //SW start
+            // Campaign entry reports the server's answer here instead of closing on the request.
+            _swEntry = _entitySystem.GetEntitySystem<SWGlobalWarEntrySystem>();
+            _swEntry.JoinResult += SWOnJoinResult;
+            ContentsContainer.AddChild(new BoxContainer
+            {
+                Orientation = LayoutOrientation.Vertical,
+                VerticalExpand = true,
+                Children = { _swLine, _swNotice, _swSides, _base, _swStatus },
+            });
+            //SW end
 
             _jobRequirements.Updated += RebuildUI;
             RebuildUI();
@@ -72,18 +109,156 @@ namespace Content.Client.LateJoin
                 var (station, jobId) = x;
                 _sawmill.Info($"Late joining as ID: {jobId}");
                 _consoleHost.ExecuteCommand($"joingame {CommandParsing.Escape(jobId)} {station}");
+                //SW start
+                if (jobId.StartsWith(SWCampaignJobPrefix))
+                {
+                    SWBeginWaiting();
+                    return;
+                }
+                //SW end
                 Close();
             };
 
             _gameTicker.LobbyJobsAvailableUpdated += JobsAvailableUpdated;
         }
 
+        //SW start
+        private void SWBeginWaiting()
+        {
+            _swPending = true;
+            _swPendingFor = TimeSpan.Zero;
+            SWSetStatus(Loc.GetString("sw-global-war-latejoin-pending"));
+            _base.Visible = false;
+            _swSides.Visible = false;
+        }
+
+        private void SWEndWaiting(string message)
+        {
+            _swPending = false;
+            _base.Visible = true;
+            _swSides.Visible = _swCampaign;
+            SWSetStatus(message);
+        }
+
+        private void SWSetStatus(string message)
+        {
+            _swStatus.SetMessage(message);
+            _swStatus.Visible = true;
+        }
+
+        private void SWOnJoinResult(SWGlobalWarJoinResultEvent result)
+        {
+            if (result.Success)
+            {
+                _swPending = false;
+                Close();
+                return;
+            }
+            // The selection and the window stay: a refusal must be readable and answerable from here.
+            SWEndWaiting(result.Message);
+        }
+
+        protected override void FrameUpdate(FrameEventArgs args)
+        {
+            base.FrameUpdate(args);
+            if (!_swPending)
+                return;
+            _swPendingFor += TimeSpan.FromSeconds(args.DeltaSeconds);
+            if (_swPendingFor >= SWJoinAnswerTimeout)
+                SWEndWaiting(Loc.GetString("sw-global-war-spawn-no-answer"));
+        }
+
+        /// <summary>Both sides are named equally at the top, so nobody misses the one whose list is not showing.</summary>
+        private void SWBuildSideTabs()
+        {
+            _swSides.DisposeAllChildren();
+            _swSides.Visible = _swCampaign && !_swPending;
+            if (!_swCampaign)
+                return;
+            var group = new ButtonGroup();
+            foreach (var (id, list) in _jobLists)
+            {
+                if (_jobButtons[id].Count == 0)
+                    continue;
+                var side = new SWGlobalWarConsoleButton
+                {
+                    Text = _gameTicker.StationNames[id],
+                    HorizontalExpand = true,
+                    ToggleMode = true,
+                    Group = group,
+                    Pressed = list.Visible,
+                    MinHeight = 36,
+                    Accent = _gameTicker.JobsAvailable[id].Keys.Any(job => job.Id.Contains("Empire")) ? "Empire" : "Republic",
+                };
+                side.SetAppearance(SWGlobalWarConsoleStyle.TextBright);
+                side.OnPressed += _ =>
+                {
+                    foreach (var section in _jobLists.Values)
+                        section.Visible = false;
+                    list.Visible = true;
+                };
+                _swSides.AddChild(side);
+            }
+        }
+
+        private void SWUpdateNotice(bool campaign)
+        {
+            _swCampaign = campaign;
+            _swNotice.Visible = campaign;
+            _swLine.Visible = campaign;
+            Title = Loc.GetString(campaign ? "sw-global-war-latejoin-title" : "late-join-gui-title");
+            if (!campaign)
+                return;
+            var profile = (HumanoidCharacterProfile?) _preferencesManager.Preferences?.SelectedCharacter;
+            _swNotice.SetMessage(Loc.GetString(profile?.PreferenceUnavailable == PreferenceUnavailableMode.SpawnAsOverflow
+                ? "sw-global-war-latejoin-notice-overflow"
+                : "sw-global-war-latejoin-notice-stay"));
+        }
+
+        /// <summary>Availability in words and the role's function, because grey and a zero explain nothing.</summary>
+        private void SWDescribeCampaignJob(JobPrototype job, Label label, BoxContainer selector, int? amount)
+        {
+            label.Text = amount switch
+            {
+                null => Loc.GetString("sw-global-war-latejoin-role-open", ("jobName", job.LocalizedName)),
+                0 => Loc.GetString("sw-global-war-latejoin-role-full", ("jobName", job.LocalizedName)),
+                _ => Loc.GetString("sw-global-war-latejoin-role-free", ("jobName", job.LocalizedName), ("amount", amount)),
+            };
+            if (job.LocalizedDescription is not { } description)
+                return;
+            // Up to two lines: the whole text is in the tooltip.
+            var function = new RichTextLabel
+            {
+                HorizontalExpand = true,
+                MaxHeight = SWDescriptionHeight,
+                RectClipContent = true,
+                MouseFilter = MouseFilterMode.Ignore,
+                Margin = new Thickness(5f, 0, 0, 0),
+            };
+            function.SetMessage(FormattedMessage.FromUnformatted(description), defaultColor: SWGlobalWarConsoleStyle.TextDim);
+            selector.RemoveChild(label);
+            selector.AddChild(new BoxContainer
+            {
+                Orientation = LayoutOrientation.Vertical,
+                HorizontalExpand = true,
+                Children = { label, function },
+            });
+            selector.ToolTip = description;
+        }
+        //SW end
+
         private void RebuildUI()
         {
-            _base.RemoveAllChildren();
+            //SW start
+            var selectedStation = _jobLists.Where(p => p.Value.Visible).Select(p => (NetEntity?) p.Key).FirstOrDefault();
+            var scrollPositions = _jobLists.ToDictionary(p => p.Key, p => p.Value.SavedScroll);
+            _base.DisposeAllChildren();
+            //SW end
             _jobLists.Clear();
             _jobButtons.Clear();
             _jobCategories.Clear();
+            _swGearButtons.Clear(); //SW
+            SWUpdateNotice(_gameTicker.JobsAvailable.Values.Any(jobs => jobs.Keys.Any(job => job.Id.StartsWith(SWCampaignJobPrefix)))); //SW
 
             if (!_gameTicker.DisallowedLateJoin && _gameTicker.StationNames.Count == 0)
                 _sawmill.Warning("No stations exist, nothing to display in late-join GUI");
@@ -145,23 +320,25 @@ namespace Content.Client.LateJoin
                     _base.AddChild(crewManifestButton);
                 }
 
-                var jobListScroll = new ScrollContainer()
+                var jobListScroll = new SWLateJoinScrollContainer() //SW
                 {
                     VerticalExpand = true,
+                    HScrollEnabled = false, //SW: so that a post's description wraps to its second line
                     Children = { jobList },
                     Visible = false,
                 };
 
-                if (_jobLists.Count == 0)
-                    jobListScroll.Visible = true;
-
-                _jobLists.Add(jobListScroll);
+                //SW start
+                if (scrollPositions.TryGetValue(id, out var scroll))
+                    jobListScroll.RestoreScroll(scroll);
+                _jobLists.Add(id, jobListScroll);
+                //SW end
 
                 _base.AddChild(jobListScroll);
 
                 collapseButton.OnToggled += _ =>
                 {
-                    foreach (var section in _jobLists)
+                    foreach (var section in _jobLists.Values) //SW
                     {
                         section.Visible = false;
                     }
@@ -258,7 +435,40 @@ namespace Content.Client.LateJoin
 
                         jobSelector.AddChild(jobLabel);
                         jobButton.AddChild(jobSelector);
-                        category.AddChild(jobButton);
+                        //SW start
+                        if (prototype.ID.StartsWith(SWCampaignJobPrefix))
+                            SWDescribeCampaignJob(prototype, jobLabel, jobSelector, value);
+                        // Gear can be changed from here, without leaving the join window for the character editor.
+                        var swLoadouts = UserInterfaceManager.GetUIController<SWLoadoutUIController>();
+                        // Its own button beside the job's, with a gap: a click on the job's button spawns at once.
+                        var swRow = new BoxContainer { Orientation = LayoutOrientation.Horizontal, SeparationOverride = 8 };
+                        jobButton.HorizontalExpand = true;
+                        swRow.AddChild(jobButton);
+                        if (swLoadouts.CanOpen(prototype))
+                        {
+                            var swGear = new Button();
+                            var gearKey = (id, prototype.ID);
+                            if (!_swGearButtons.TryGetValue(gearKey, out var gearButtons))
+                                _swGearButtons.Add(gearKey, gearButtons = new());
+                            gearButtons.Add(swGear);
+                            void SWUpdateGear()
+                            {
+                                // An open loadout editor can outlive a rebuilt row; update its current replacements.
+                                if (Disposed || !_swGearButtons.TryGetValue(gearKey, out var currentButtons))
+                                    return;
+                                var text = swLoadouts.HasChoice(prototype)
+                                    ? Loc.GetString("sw-loadout-tab-changed", ("name", Loc.GetString("sw-loadout-latejoin-button")))
+                                    : Loc.GetString("sw-loadout-latejoin-button");
+                                foreach (var button in currentButtons)
+                                    button.Text = text;
+                            }
+                            SWUpdateGear();
+                            swGear.OnPressed += _ => swLoadouts.Open(prototype, SWUpdateGear);
+                            swRow.AddChild(swGear);
+                        }
+
+                        category.AddChild(swRow);
+                        //SW end
 
                         jobButton.OnPressed += _ => SelectedId.Invoke((id, jobButton.JobId));
 
@@ -296,41 +506,25 @@ namespace Content.Client.LateJoin
                     }
                 }
                 //SW start
-                if (_jobButtons[id].Count == 0)
+                if (_jobButtons[id].Count == 0 || _swCampaign)
                 {
                     stripe.Visible = false;
                     crewManifestButton.Visible = false;
                 }
                 //SW end
             }
+            //SW start
+            if (selectedStation is not { } selected || !_jobButtons.TryGetValue(selected, out var selectedJobs) || selectedJobs.Count == 0)
+                selectedStation = _jobLists.Keys.Where(id => _jobButtons[id].Count > 0).Select(id => (NetEntity?) id).FirstOrDefault();
+            if (selectedStation is { } visible)
+                _jobLists[visible].Visible = true;
+            SWBuildSideTabs();
+            //SW end
         }
 
         private void JobsAvailableUpdated(IReadOnlyDictionary<NetEntity, Dictionary<ProtoId<JobPrototype>, int?>> updatedJobs)
         {
-            foreach (var stationEntries in updatedJobs)
-            {
-                if (_jobButtons.ContainsKey(stationEntries.Key))
-                {
-                    var jobsAvailable = stationEntries.Value;
-
-                    var existingJobEntries = _jobButtons[stationEntries.Key];
-                    foreach (var existingJobEntry in existingJobEntries)
-                    {
-                        if (jobsAvailable.ContainsKey(existingJobEntry.Key))
-                        {
-                            var updatedJobValue = jobsAvailable[existingJobEntry.Key];
-                            foreach (var matchingJobButton in existingJobEntry.Value)
-                            {
-                                if (matchingJobButton.Amount != updatedJobValue)
-                                {
-                                    matchingJobButton.RefreshLabel(updatedJobValue);
-                                    matchingJobButton.Disabled |= matchingJobButton.Amount == 0;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            RebuildUI(); //SW: the event is a full snapshot, including removals and renewed role restrictions.
         }
 
         protected override void Dispose(bool disposing)
@@ -343,6 +537,8 @@ namespace Content.Client.LateJoin
                 _gameTicker.LobbyJobsAvailableUpdated -= JobsAvailableUpdated;
                 _jobButtons.Clear();
                 _jobCategories.Clear();
+                _swGearButtons.Clear(); //SW
+                _swEntry.JoinResult -= SWOnJoinResult; //SW
             }
         }
     }

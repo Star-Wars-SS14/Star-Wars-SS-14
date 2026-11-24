@@ -1,0 +1,99 @@
+# None of these gives any advantage: SWWinterCosmeticsTest holds them to that. Cloth and clothing come from real sprites of ours.
+- type: entity
+  parent: SWCitizenClothing
+  id: SWCosmeticCoatAsh
+  name: ash coat
+  description: Citizen's clothing, in the grey of a burnt-out street.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Cosmetics/coat_ash.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Cosmetics/coat_ash.rsi
+
+- type: entity
+  parent: SWCitizenClothing
+  id: SWCosmeticCoatSand
+  name: sand coat
+  description: Citizen's clothing, in the colour of Balmoran dust.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Cosmetics/coat_sand.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Cosmetics/coat_sand.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticDrapeLeather
+  name: leather drape
+  description: Old dark leather slung over one shoulder.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Cosmetics/drape_leather.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Cosmetics/drape_leather.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWCosmeticDrapeSand
+  name: sand drape
+  description: Dusty cloth slung over one shoulder.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Cosmetics/drape_sand.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Cosmetics/drape_sand.rsi
+
+- type: entity
+  parent: ClothingHeadBase
+  id: SWCosmeticCapMechanic
+  name: mechanic's cap
+  description: A plain drab cap with a short peak.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Cosmetics/cap_mechanic.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Cosmetics/cap_mechanic.rsi
+
+- type: entity
+  parent: SWBattlePassHeadBase
+  id: SWClothingHeadWinterHat
+  name: knitted hat
+  description: A plain knitted hat for those not issued a helmet.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Cosmetics/winter_hat.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Cosmetics/winter_hat_worn.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWClothingNeckWinterScarf
+  name: winter scarf
+  description: A long striped scarf.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Cosmetics/scarf.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Cosmetics/scarf.rsi
+
+- type: entity
+  parent: SWCosmeticNeckBase
+  id: SWClothingNeckBandana
+  name: bandana
+  description: A worn cloth tied at the neck.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Cosmetics/bandana_sand.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Cosmetics/bandana_sand.rsi
+
+- type: entity
+  parent: ClothingEyesBase
+  id: SWClothingEyesDustGoggles
+  name: dust goggles
+  description: Plain goggles against the dust.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Eyes/dust_goggles.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Eyes/dust_goggles.rsi

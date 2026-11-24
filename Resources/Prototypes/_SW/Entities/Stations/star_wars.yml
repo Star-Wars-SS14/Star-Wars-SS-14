@@ -1,10 +1,10 @@
 - type: entity
   id: SWStandardStation
+  categories: [ HideSpawnMenu ]
   parent:
     - BaseStation
     - BaseStationJobsSpawning
     - BaseStationAlertLevels
     - BaseStationNanotrasen
-  noSpawn: true
   components:
     - type: Transform

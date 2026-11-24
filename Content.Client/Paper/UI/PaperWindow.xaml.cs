@@ -61,8 +61,6 @@ namespace Content.Client.Paper.UI
             RobustXamlLoader.Load(this);
 
             // We can't configure the RichTextLabel contents from xaml, so do it here:
-            PisatButton.Visible = true;
-
             BlankPaperIndicator.SetMessage(Loc.GetString("paper-ui-blank-page-message"), null, DefaultTextColor);
 
             // Hook up the close button:
@@ -94,36 +92,12 @@ namespace Content.Client.Paper.UI
 
             SaveButton.Text = Loc.GetString("paper-ui-save-button",
                 ("keybind", _inputManager.GetKeyFunctionButtonString(EngineKeyFunctions.MultilineTextSubmit)));
-
-            PisatButton.OnPressed += _ =>
-            {
-                RunOnWrite();
-            };
-
-            Input.OnKeyBindDown += args =>
-            {
-                if (args.Function == EngineKeyFunctions.Use)
-                {
-                    RunOnWrite();
-                    args.Handle();
-                }
-            };
         }
 
         /// <summary>
         ///     Initialize this UI according to <code>visuals</code> Initializes
         ///     textures, recalculates sizes, and applies some layout rules.
         /// </summary>
-        private void RunOnWrite()
-        {
-            InputContainer.Visible = true;
-            SaveButton.Visible = true;
-            WrittenTextLabel.Visible = false;
-            BlankPaperIndicator.Visible = false;
-
-            Input.GrabKeyboardFocus();
-        }
-
         public void InitVisuals(EntityUid entity, PaperVisualsComponent visuals)
         {
             // Randomize the placement of any stamps based on the entity UID
@@ -272,10 +246,9 @@ namespace Content.Client.Paper.UI
         public void Populate(PaperComponent.PaperBoundUserInterfaceState state)
         {
             bool isEditing = state.Mode == PaperComponent.PaperAction.Write;
+            bool wasEditing = InputContainer.Visible; //SW
             InputContainer.Visible = isEditing;
-            SaveButton.Visible = isEditing;
-            PisatButton.Visible = true;
-            EditButtons.Visible = true;
+            EditButtons.Visible = isEditing; //SW
 
             var msg = new FormattedMessage();
             msg.AddMarkupPermissive(state.Text);
@@ -283,7 +256,7 @@ namespace Content.Client.Paper.UI
             // For premade documents, we want to be able to edit them rather than
             // replace them.
             var shouldCopyText = 0 == Input.TextLength && 0 != state.Text.Length;
-            if (!InputContainer.Visible || shouldCopyText)
+            if (!wasEditing || shouldCopyText) //SW
             {
                 // We can get repeated messages with state.Mode == Write if another
                 // player opens the UI for reading. In this case, don't update the

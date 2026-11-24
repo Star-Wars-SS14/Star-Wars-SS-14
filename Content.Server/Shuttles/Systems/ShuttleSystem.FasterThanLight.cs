@@ -1,6 +1,8 @@
+using Content.Server._SW.GlobalWar.Combat; //SW
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Numerics;
+using Content.Server._SW.GlobalWar.Access; //SW
 using Content.Server.Shuttles.Components;
 using Content.Server.Shuttles.Events;
 using Content.Server.Station.Events;
@@ -228,8 +230,13 @@ public sealed partial class ShuttleSystem
         if (TryComp<PhysicsComponent>(shuttleUid, out var shuttlePhysics))
         {
 
+            //SW start
+            var massLimit = new SWGlobalWarFtlMassLimitEvent(FTLMassLimit);
+            RaiseLocalEvent(shuttleUid, ref massLimit);
+            var allowedMass = float.IsFinite(massLimit.Limit) ? massLimit.Limit : FTLMassLimit;
+            //SW end
             // Too large to FTL
-            if (FTLMassLimit > 0 &&  shuttlePhysics.Mass > FTLMassLimit)
+            if (allowedMass > 0 && shuttlePhysics.Mass > allowedMass) //SW
             {
                 reason = Loc.GetString("shuttle-console-mass");
                 return false;
@@ -267,6 +274,12 @@ public sealed partial class ShuttleSystem
         float? hyperspaceTime = null,
         string? priorityTag = null)
     {
+        //SW start
+        var permission = new SWGlobalWarFtlAttemptEvent(shuttleUid, coordinates);
+        RaiseLocalEvent(ref permission);
+        if (permission.Cancelled)
+            return;
+        //SW end
         if (!TrySetupFTL(shuttleUid, component, out var hyperspace))
             return;
 
@@ -302,6 +315,12 @@ public sealed partial class ShuttleSystem
         float? hyperspaceTime = null,
         string? priorityTag = null)
     {
+        //SW start
+        var permission = new SWGlobalWarFtlAttemptEvent(shuttleUid, new EntityCoordinates(target, Vector2.Zero), target);
+        RaiseLocalEvent(ref permission);
+        if (permission.Cancelled)
+            return;
+        //SW end
         if (!TrySetupFTL(shuttleUid, component, out var hyperspace))
             return;
 
@@ -459,6 +478,17 @@ public sealed partial class ShuttleSystem
     /// </summary>
     private void UpdateFTLArriving(Entity<FTLComponent, ShuttleComponent> entity)
     {
+        //SW start
+        // Let GlobalWar adjust the arrival point or keep the ship in hyperspace until a safe exit is available.
+        var attempt = new FTLBeforeArrivalEvent();
+        RaiseLocalEvent(entity.Owner, ref attempt);
+        if (attempt.Cancelled)
+        {
+            entity.Comp1.StateTime = StartEndTime.FromCurTime(_gameTiming, attempt.RetryDelay);
+            return;
+        }
+        //SW end
+
         var uid = entity.Owner;
         var xform = _xformQuery.GetComponent(uid);
         var body = _physicsQuery.GetComponent(uid);

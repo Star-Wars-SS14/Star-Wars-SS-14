@@ -13,7 +13,7 @@
             HorizontalExpand="True" />
         <PanelContainer>
             <PanelContainer.PanelOverride>
-                <gfx:StyleBoxFlat BackgroundColor="#252825" />
+                <gfx:StyleBoxFlat BackgroundColor="#1B1D23" />
             </PanelContainer.PanelOverride>
 
             <Label Name="Price"
@@ -24,3 +24,4 @@
         </PanelContainer>
     </BoxContainer>
 </PanelContainer>
+<!-- #SW: terminal colours -->

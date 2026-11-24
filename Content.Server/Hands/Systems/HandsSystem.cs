@@ -191,7 +191,6 @@ namespace Content.Server.Hands.Systems
                 return false;
 
             _throwingSystem.TryThrow(ev.ItemUid, ev.Direction, ev.ThrowSpeed, ev.PlayerUid, compensateFriction: !HasComp<LandAtCursorComponent>(ev.ItemUid));
-
             return true;
         }
 

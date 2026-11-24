@@ -22,7 +22,7 @@ public sealed partial class SWCargoPalletMenu : FancyWindow
 
     public void SetAppraisal(int amount)
     {
-        AppraisalLabel.Text = $"{amount} {CurrencyProto?.ShortName}";
+        AppraisalLabel.Text = $"{amount} {(CurrencyProto == null ? null : Loc.GetString(CurrencyProto.ShortName))}";
     }
 
     public void SetCount(int count)

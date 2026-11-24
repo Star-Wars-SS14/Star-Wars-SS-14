@@ -1,6 +1,7 @@
 - type: job
   id: SWMandalorianLeader
   name: Лидер Мандалорцев
+  description: job-description-sw-mandalorian-leader
   playTimeTracker: Job_Mandalorian_Leader
   requirements:
   - !type:OverallPlaytimeRequirement

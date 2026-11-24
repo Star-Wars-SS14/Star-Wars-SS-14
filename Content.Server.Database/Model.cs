@@ -46,6 +46,9 @@ namespace Content.Server.Database
         public DbSet<RoleWhitelist> RoleWhitelists { get; set; } = null!;
         public DbSet<BanTemplate> BanTemplate { get; set; } = null!;
         public DbSet<IPIntelCache> IPIntelCache { get; set; } = null!;
+        //SW start
+        public DbSet<SWBattlePassProgress> SWBattlePassProgress { get; set; } = null!;
+        //SW end
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

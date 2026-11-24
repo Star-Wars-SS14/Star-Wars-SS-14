@@ -10,10 +10,8 @@ namespace Content.Server._SW.Force.Components;
 [RegisterComponent]
 public partial class ForceComponent : Component
 {
-    public List<string> AbilitiesPrototypes =
-    [
-        "ActionJediDash"
-    ];
+    // ActionJediDash was removed in #222 (SWDashAction replaced it), so no base abilities are left.
+    public List<string> AbilitiesPrototypes = [];
 
     [DataField("exp")]
     public int Experience;

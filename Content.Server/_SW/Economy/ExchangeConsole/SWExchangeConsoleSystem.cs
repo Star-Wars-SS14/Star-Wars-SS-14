@@ -43,25 +43,53 @@ public sealed class SWExchangeConsoleSystem : EntitySystem
     {
         if (args.CurrencyFrom == args.CurrencyTo)
         {
+            _swPayable.Refuse(args.Actor, "sw-economy-exchange-same-currency");
+            return;
+        }
+
+        if (args.Amount <= 0)
+        {
+            _swPayable.Refuse(args.Actor, "sw-economy-exchange-invalid-amount");
+            return;
+        }
+
+        if (!ent.Comp.AllowedCurrencies.Contains(args.CurrencyFrom)
+            || !ent.Comp.AllowedCurrencies.Contains(args.CurrencyTo))
+        {
+            _swPayable.Refuse(args.Actor, "sw-economy-exchange-unavailable");
             return;
         }
 
         if (!TryComp<SWBankAccountAccessorComponent>(ent, out var accComp)
             || accComp.Account == null)
         {
+            _swPayable.Refuse(args.Actor, "sw-console-no-account");
             return;
         }
 
         if (!_bankSystem.TransferCurrency(args.Amount, args.CurrencyFrom, args.CurrencyTo, out var resultAmount)) {
+            _swPayable.Refuse(args.Actor, "sw-economy-exchange-unavailable");
+            return;
+        }
+
+        // Rounding down must not eat the money: 1 RC is worth 0 IC.
+        if (resultAmount <= 0)
+        {
+            _swPayable.Refuse(args.Actor, "sw-economy-exchange-too-small");
             return;
         }
 
         var request = new Dictionary<ProtoId<SWCurrencyPrototype>, float>();
         request[args.CurrencyFrom] = args.Amount;
 
-        if (_bankSystem.TryPayAll(request, accComp.Account.Value.Comp.CurrentAmount))
+        var balance = accComp.Account.Value.Comp.CurrentAmount;
+        if (_bankSystem.TryPayAll(request, balance))
         {
-            accComp.Account.Value.Comp.CurrentAmount[args.CurrencyTo] += resultAmount;
+            balance[args.CurrencyTo] = balance.GetValueOrDefault(args.CurrencyTo) + resultAmount;
+        }
+        else
+        {
+            _swPayable.Refuse(args.Actor, "sw-economy-not-enough-money");
         }
 
         UpdateInterface(ent);

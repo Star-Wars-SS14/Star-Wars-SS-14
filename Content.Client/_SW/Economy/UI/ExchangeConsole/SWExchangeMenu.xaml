@@ -1,61 +1,26 @@
-<controls:FancyWindow xmlns="https://spacestation14.io"
-                      xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
-            SetSize="650 400"
-            MinSize="650 400"
-            Title= "Обменный автомат">
-    <BoxContainer Orientation="Vertical" Margin="5">
-        <Label Text="Баланс" HorizontalAlignment="Center"/>
-        <BoxContainer Orientation="Horizontal"
-            SeparationOverride="4"
-            Margin="20 20 20 20"
-            HorizontalExpand="True">
-            <BoxContainer Name="BalanceContainer" Orientation="Vertical" Margin="0">
-            </BoxContainer>
-            <BoxContainer Orientation="Vertical" Margin="0">
-                <Button
-                    Name="MoneyInButton"
-                    HorizontalExpand="True"
-                    Margin="0">
-                    <Label Text="Внести" HorizontalExpand="True" />
-                </Button>
-                <Button
-                    Name="MoneyOutButton"
-                    HorizontalExpand="True"
-                    Margin="0">
-                    <Label Text="Вывести" HorizontalExpand="True" />
-                </Button>
-            </BoxContainer>
+<ui:SWTerminalWindow xmlns="https://spacestation14.io"
+                     xmlns:ui="clr-namespace:Content.Client._SW.UserInterface"
+                     SetSize="630 372"
+                     MinSize="630 372"
+                     Title="{Loc 'sw-exchange-title'}">
+    <BoxContainer Orientation="Vertical" SeparationOverride="10">
+        <Label Text="{Loc 'sw-exchange-balance'}" StyleClasses="SWTermHeading" />
+        <Control>
+            <PanelContainer StyleClasses="SWTermCard" />
+            <BoxContainer Name="BalanceContainer" Orientation="Vertical" />
+        </Control>
+        <BoxContainer Orientation="Horizontal" SeparationOverride="12" Margin="16 0">
+            <Button Name="MoneyInButton" Text="{Loc 'sw-exchange-deposit'}" StyleClasses="SWTermButton" HorizontalExpand="True" />
+            <Button Name="MoneyOutButton" Text="{Loc 'sw-exchange-withdraw'}" StyleClasses="SWTermButton" HorizontalExpand="True" />
         </BoxContainer>
-
-        <BoxContainer Orientation="Horizontal" Margin="5">
-            <BoxContainer Orientation="Horizontal" Margin="5" MinWidth="200">
-                <OptionButton
-                Name="CurrencyExchangeFrom"
-                MinWidth="200"
-                StyleClasses="ButtonSquare"/>
-                <LineEdit
-                Name="AmountEdit"
-                PlaceHolder="{Loc 'lathe-menu-search-designs'}"
-                HorizontalExpand="True"
-                MinWidth="100">
-                </LineEdit>
-            </BoxContainer>
-            <BoxContainer Orientation="Horizontal" Margin="10" MaxWidth="300">
-                <Label Text="на" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </BoxContainer>
-            <BoxContainer Orientation="Horizontal" Margin="5" MinWidth="200">
-                <OptionButton
-               Name="CurrencyExchangeTo"
-               MinWidth="200"
-               StyleClasses="ButtonSquare"/>
-                <Label Name="ResultAmountLabel" Text="-" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            </BoxContainer>
+        <PanelContainer StyleClasses="SWTermSectionDivider" MinHeight="2" Margin="0 4" />
+        <BoxContainer Orientation="Horizontal" SeparationOverride="6">
+            <OptionButton Name="CurrencyExchangeFrom" StyleClasses="SWTermOption" PrefixMargin="False" MinWidth="226" />
+            <LineEdit Name="AmountEdit" StyleClasses="SWTermField" PlaceHolder="{Loc 'sw-exchange-amount'}" HorizontalExpand="True" MinWidth="50" />
+            <Label Text="{Loc 'sw-exchange-to'}" StyleClasses="SWTermText" VAlign="Center" />
+            <OptionButton Name="CurrencyExchangeTo" StyleClasses="SWTermOption" PrefixMargin="False" MinWidth="226" />
+            <Label Name="ResultAmountLabel" StyleClasses="SWTermMoney" Text="0" MinWidth="30" Align="Right" VAlign="Center" />
         </BoxContainer>
-        <Button
-            Name="ConfirmButton"
-            HorizontalExpand="True"
-            Margin="0">
-            <Label Text="Перевести" HorizontalExpand="True" />
-        </Button>
+        <Button Name="ConfirmButton" Text="{Loc 'sw-exchange-confirm'}" StyleClasses="SWTermMainButtonMoney" MinHeight="38" Margin="0 4 0 0" />
     </BoxContainer>
-</controls:FancyWindow>
+</ui:SWTerminalWindow>

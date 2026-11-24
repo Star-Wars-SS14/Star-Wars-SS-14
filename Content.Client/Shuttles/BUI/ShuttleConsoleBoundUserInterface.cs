@@ -21,6 +21,7 @@ public sealed class ShuttleConsoleBoundUserInterface : BoundUserInterface
     {
         base.Open();
         _window = this.CreateWindow<ShuttleConsoleWindow>();
+        Content.Client._SW.UserInterface.SWWindowFit.Fit(_window); //SW: 960x762 runs off a 1280x720 screen at UI scale 1.36
 
         _window.RequestFTL += OnFTLRequest;
         _window.RequestBeaconFTL += OnFTLBeaconRequest;

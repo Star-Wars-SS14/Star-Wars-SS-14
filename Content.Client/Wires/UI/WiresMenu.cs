@@ -43,7 +43,7 @@ namespace Content.Client.Wires.UI
             var back = new StyleBoxTexture
             {
                 Texture = panelTex,
-                Modulate = Color.FromHex("#25252A"),
+                Modulate = Color.FromHex("#1B1D23"), //SW
             };
             back.SetPatchMargin(StyleBox.Margin.All, 10);
 
@@ -70,7 +70,7 @@ namespace Content.Client.Wires.UI
                     new PanelContainer
                     {
                         MinSize = new Vector2(2, 0),
-                        PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#525252ff")}
+                        PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#5D6476FF")} //SW
                     },
                     new PanelContainer
                     {
@@ -82,7 +82,7 @@ namespace Content.Client.Wires.UI
                     new PanelContainer
                     {
                         MinSize = new Vector2(2, 0),
-                        PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#525252ff")}
+                        PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#5D6476FF")} //SW
                     },
                 }
             };
@@ -195,7 +195,7 @@ namespace Content.Client.Wires.UI
 
             var middle = new PanelContainer
             {
-                PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#202025")},
+                PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#16181C")}, //SW
                 Children =
                 {
                     new BoxContainer
@@ -217,13 +217,13 @@ namespace Content.Client.Wires.UI
             _topContainer.AddChild(new PanelContainer
             {
                 MinSize = new Vector2(0, 2),
-                PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#525252ff")}
+                PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#5D6476FF")} //SW
             });
             _topContainer.AddChild(middle);
             _topContainer.AddChild(new PanelContainer
             {
                 MinSize = new Vector2(0, 2),
-                PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#525252ff")}
+                PanelOverride = new StyleBoxFlat {BackgroundColor = Color.FromHex("#5D6476FF")} //SW
             });
             CloseButton.OnPressed += _ => Close();
             SetHeight = 200;

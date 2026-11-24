@@ -37,15 +37,14 @@ namespace Content.Client.Lobby.UI
             RobustXamlLoader.Load(this);
             IoCManager.InjectDependencies(this);
 
-            var panelTex = _resourceCache.GetTexture("/Textures/Interface/Nano/button.svg.96dpi.png");
-            var back = new StyleBoxTexture
+            //SW start
+            BackgroundPanel.PanelOverride = new StyleBoxFlat
             {
-                Texture = panelTex,
-                Modulate = new Color(37, 37, 42)
+                BackgroundColor = Color.FromHex("#0C0E0F"),
+                BorderColor = Color.FromHex("#7C8493"),
+                BorderThickness = new Thickness(1),
             };
-            back.SetPatchMargin(StyleBox.Margin.All, 10);
-
-            BackgroundPanel.PanelOverride = back;
+            //SW end
 
             _createNewCharacterButton = new Button
             {

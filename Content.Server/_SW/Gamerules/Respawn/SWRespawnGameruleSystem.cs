@@ -1,12 +1,17 @@
+using Content.Server._SW.Gamerules.TimerSpeedup;
+using Content.Server._SW.Tutorial;
 using Content.Server.Actions;
 using Content.Server.Chat.Managers;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
+using Content.Server.Mind;
+using Content.Server.Roles;
 using Content.Shared._SW;
 using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Ghost;
 using Content.Shared.Mobs;
+using Content.Shared.Roles.Components;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
 
@@ -18,6 +23,9 @@ public sealed partial class SWRespawnGameruleSystem : GameRuleSystem<SWRespawnGa
     [Dependency] private readonly ActionsSystem _actions = default!;
     [Dependency] private readonly ISharedPlayerManager _player = default!;
     [Dependency] private readonly GameTicker _gameTicker = default!;
+    [Dependency] private readonly MindSystem _mind = default!;
+    [Dependency] private readonly RoleSystem _roles = default!;
+    [Dependency] private readonly SWTimerSpeedupSystem _timerSpeedup = default!;
     public override void Initialize()
     {
         base.Initialize();
@@ -61,7 +69,13 @@ public sealed partial class SWRespawnGameruleSystem : GameRuleSystem<SWRespawnGa
             return;
         }
 
-        var message = Loc.GetString(rule.Comp.WaitMessage, ("count", rule.Comp.DelayBeforeCanRespawn));
+        // The tutorial has a death scene with its own way back.
+        if (HasComp<SWTutorialPlayerComponent>(ev.Target))
+        {
+            return;
+        }
+
+        var message = Loc.GetString(rule.Comp.WaitMessage, ("count", _timerSpeedup.Scale(rule.Comp.DelayBeforeCanRespawn)));
         _chatManager.DispatchServerMessage(session, message);
     }
 
@@ -102,7 +116,8 @@ public sealed partial class SWRespawnGameruleSystem : GameRuleSystem<SWRespawnGa
         if (args.Handled
             || !TryGetActiveRule(out var rule)
             || !TryComp<GhostComponent>(ent, out var ghost)
-            || _timing.CurTime < ghost.TimeOfDeath + TimeSpan.FromSeconds(rule.Comp.DelayBeforeCanRespawn))
+            || _timing.CurTime < ghost.TimeOfDeath + TimeSpan.FromSeconds(_timerSpeedup.Scale(rule.Comp.DelayBeforeCanRespawn))
+            || !IsDeadPlayerGhost(ent))
             return;
 
         if (!_player.TryGetSessionByEntity(ent, out var session))
@@ -123,16 +138,31 @@ public sealed partial class SWRespawnGameruleSystem : GameRuleSystem<SWRespawnGa
             return;
         }
 
+        var delay = TimeSpan.FromSeconds(_timerSpeedup.Scale(component.DelayBeforeCanRespawn));
         var query = EntityQueryEnumerator<GhostComponent>();
         while (query.MoveNext(out var uid, out var ghostComp))
         {
             if (!HasComp<SWWaitingRespawnComponent>(uid)
-                && _timing.CurTime >= ghostComp.TimeOfDeath + TimeSpan.FromSeconds(component.DelayBeforeCanRespawn))
+                && _timing.CurTime >= ghostComp.TimeOfDeath + delay
+                && IsDeadPlayerGhost(uid))
             {
                 var comp = EnsureComp<SWWaitingRespawnComponent>(uid);
                 _actions.AddAction(uid, ref comp.RespawnActionId, component.RespawnActionId);
             }
         }
+    }
+
+    /// <summary>
+    /// Observers and admin ghosts also have a GhostComponent, but they have nothing to respawn from.
+    /// </summary>
+    private bool IsDeadPlayerGhost(EntityUid ghost)
+    {
+        if (Prototype(ghost)?.ID == GameTicker.AdminObserverPrototypeName.Id)
+        {
+            return false;
+        }
+
+        return _mind.TryGetMind(ghost, out var mind, out _) && !_roles.MindHasRole<ObserverRoleComponent>(mind);
     }
 }
 

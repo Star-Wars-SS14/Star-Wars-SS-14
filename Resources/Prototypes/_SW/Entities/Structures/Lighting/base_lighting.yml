@@ -79,6 +79,7 @@
     enabled: false
   - type: PoweredLight
     bulb: Tube
+  - type: DamageOnInteract
     damage:
       types:
         Heat: 5
@@ -120,6 +121,7 @@
     enabled: true
   - type: PoweredLight
     hasLampOnSpawn: LightTube
+  - type: DamageOnInteract
     damage:
       types:
         Heat: 5

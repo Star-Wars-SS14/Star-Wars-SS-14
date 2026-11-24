@@ -1,0 +1,12 @@
+<PanelContainer xmlns="https://spacestation14.io" xmlns:ui="clr-namespace:Content.Client._SW.GlobalWar.UI" SetWidth="340" MouseFilter="Ignore" StyleClasses="SWTermWindow">
+    <BoxContainer Orientation="Vertical" SeparationOverride="0" Margin="1">
+        <PanelContainer Name="AccentLine" StyleClasses="SWTermAccentNeutral" MinHeight="3" MouseFilter="Ignore" />
+        <BoxContainer Orientation="Vertical" SeparationOverride="8" Margin="10 8">
+            <BoxContainer SeparationOverride="10">
+                <TextureRect Name="SideMark" Stretch="KeepCentered" SetSize="40 40" VerticalAlignment="Top" Visible="False" MouseFilter="Ignore" />
+                <RichTextLabel Name="Message" HorizontalExpand="True" MouseFilter="Ignore" />
+            </BoxContainer>
+            <ui:SWGlobalWarConsoleButton Name="Details" Text="{Loc 'sw-global-war-service-details'}" />
+        </BoxContainer>
+    </BoxContainer>
+</PanelContainer>

@@ -1,0 +1,95 @@
+- type: localizedDataset
+  id: SWNameHumanStart
+  values:
+    prefix: sw-name-human-start-
+    count: 50
+
+- type: localizedDataset
+  id: SWNameHumanEnd
+  values:
+    prefix: sw-name-human-end-
+    count: 40
+
+- type: localizedDataset
+  id: SWNameTwilekStart
+  values:
+    prefix: sw-name-twilek-start-
+    count: 50
+
+- type: localizedDataset
+  id: SWNameTwilekEnd
+  values:
+    prefix: sw-name-twilek-end-
+    count: 40
+
+- type: localizedDataset
+  id: SWNameNautolanStart
+  values:
+    prefix: sw-name-nautolan-start-
+    count: 50
+
+- type: localizedDataset
+  id: SWNameNautolanEnd
+  values:
+    prefix: sw-name-nautolan-end-
+    count: 40
+
+- type: localizedDataset
+  id: SWNameZabrakStart
+  values:
+    prefix: sw-name-zabrak-start-
+    count: 50
+
+- type: localizedDataset
+  id: SWNameZabrakEnd
+  values:
+    prefix: sw-name-zabrak-end-
+    count: 40
+
+- type: localizedDataset
+  id: SWNameZeltronStart
+  values:
+    prefix: sw-name-zeltron-start-
+    count: 50
+
+- type: localizedDataset
+  id: SWNameZeltronEnd
+  values:
+    prefix: sw-name-zeltron-end-
+    count: 40
+
+- type: localizedDataset
+  id: SWNameColicoidStart
+  values:
+    prefix: sw-name-colicoid-start-
+    count: 48
+
+- type: localizedDataset
+  id: SWNameChissStart
+  values:
+    prefix: sw-name-chiss-start-
+    count: 12
+
+- type: localizedDataset
+  id: SWNameChissMiddle
+  values:
+    prefix: sw-name-chiss-middle-
+    count: 16
+
+- type: localizedDataset
+  id: SWNameChissEnd
+  values:
+    prefix: sw-name-chiss-end-
+    count: 12
+
+- type: localizedDataset
+  id: SWNameChissCoreStart
+  values:
+    prefix: sw-name-chiss-corestart-
+    count: 12
+
+- type: localizedDataset
+  id: SWNameChissCoreEnd
+  values:
+    prefix: sw-name-chiss-coreend-
+    count: 12

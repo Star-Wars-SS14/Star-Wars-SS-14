@@ -22,13 +22,15 @@ public sealed class SWDroidTargetingTabletSystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<SWDroidTargetingTabletComponent, ComponentStartup>(OnTabletStartup);
+        SubscribeLocalEvent<SWDroidTargetingTabletComponent, MapInitEvent>(OnTabletMapInit);
         SubscribeLocalEvent<SWDroidTargetingTabletComponent, ExaminedEvent>(OnTabletExamined);
         SubscribeLocalEvent<SWDroidTargetingTabletComponent, SWTargetingProviderAvailableEvent>(OnProviderAvailable);
         SubscribeLocalEvent<SWDroidCommandableComponent, InteractUsingEvent>(OnDroidInteractUsing);
     }
 
-    private void OnTabletStartup(Entity<SWDroidTargetingTabletComponent> ent, ref ComponentStartup args)
+    // MapInit, not startup: an uninitialized tablet in a map file must save as its prototype. The id is also
+    // ensured lazily wherever it is shown.
+    private void OnTabletMapInit(Entity<SWDroidTargetingTabletComponent> ent, ref MapInitEvent args)
     {
         EnsureControlId(ent.Owner, ent.Comp);
     }

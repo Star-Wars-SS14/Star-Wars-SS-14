@@ -56,6 +56,14 @@ namespace Content.Client.Lobby.UI
             }
         }
 
+        //SW start
+        public void FactsDescriptionVisible(bool visible)
+        {
+            if (FactsSlot.ChildCount > 0)
+                FactsSlot.GetChild(FactsSlot.ChildCount - 1).Visible = visible;
+        }
+        //SW end
+
         private void TogglePanel(bool value)
         {
             RightSide.Visible = value;

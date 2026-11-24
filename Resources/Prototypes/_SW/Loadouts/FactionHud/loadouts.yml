@@ -1,0 +1,25 @@
+- type: loadout
+  id: SWRepublicTacticalVisor
+  equipment:
+    eyes: SWClothingEyesHudRepublic
+
+- type: loadout
+  id: SWEmpireTacticalVisor
+  equipment:
+    eyes: SWClothingEyesHudEmpire
+
+- type: loadoutGroup
+  id: SWRepublicTacticalVisor
+  name: sw-loadout-group-tactical-visor
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWRepublicTacticalVisor
+
+- type: loadoutGroup
+  id: SWEmpireTacticalVisor
+  name: sw-loadout-group-tactical-visor
+  minLimit: 0
+  maxLimit: 1
+  loadouts:
+  - SWEmpireTacticalVisor

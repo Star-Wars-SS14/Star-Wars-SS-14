@@ -4,6 +4,27 @@
   name: шкаф альянса
   description: Название было непонятным?
   components:
+  - type: Sprite
+    sprite: Structures/Storage/closet.rsi
+    noRot: true
+    layers:
+    - state: combine_secure
+      sprite: _SW/Structures/Storage/closet_combine.rsi
+      map: ["enum.StorageVisualLayers.Base"]
+    - state: combine_secure_door
+      sprite: _SW/Structures/Storage/closet_combine.rsi
+      map: ["enum.StorageVisualLayers.Door"]
+    - state: locked
+      map: ["enum.LockVisualLayers.Lock"]
+      shader: unshaded
+    - state: welded
+      visible: false
+      map: ["enum.WeldableLayers.BaseWelded"]
+    - state: paper
+      visible: false
+      sprite: Structures/Storage/closet_labels.rsi
+      offset: "-0.065,0"
+      map: ["enum.PaperLabelVisuals.Layer"]
   - type: Appearance
   - type: EntityStorageVisuals
     stateBaseClosed: combine_secure

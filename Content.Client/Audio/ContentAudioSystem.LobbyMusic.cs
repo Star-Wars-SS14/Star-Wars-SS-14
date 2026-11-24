@@ -59,7 +59,7 @@ public sealed partial class ContentAudioSystem
             return;
         }
 
-        var stream = _audio.PlayGlobal(SenateIntroTrack, Filter.Local(), false, SenateIntroParams())?.Entity;
+        var stream = _audio.PlayGlobal(SenateIntroTrack, Filter.Local(), false, LobbyMusicParams())?.Entity;
         if (stream == null)
         {
             _sawmill.Warning($"Senate intro track '{SenateIntroTrack}' did not start; keeping lobby music.");
@@ -84,8 +84,9 @@ public sealed partial class ContentAudioSystem
             ResumeLobbyMusicAfterIntro();
     }
 
-    private AudioParams SenateIntroParams() =>
-        _lobbySoundtrackParams.WithVolume(_lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(_configManager.GetCVar(CCVars.LobbyMusicVolume)));
+    private AudioParams LobbyMusicParams() =>
+        _lobbySoundtrackParams.WithVolume(_lobbySoundtrackParams.Volume +
+            SharedAudioSystem.GainToVolume(_lobbyVolumePreview ?? _configManager.GetCVar(CCVars.LobbyMusicVolume)));
 
     private void ResumeLobbyMusicAfterIntro()
     {
@@ -105,8 +106,7 @@ public sealed partial class ContentAudioSystem
         _audio.Stop(_lobbyRoundRestartAudioStream);
         _lobbyRoundRestartAudioStream = null;
         if (!_configManager.GetCVar(CCVars.RestartSoundsEnabled)) return;
-        _senateFinaleStream = _audio.PlayGlobal("/Audio/Lobby/endless_space.ogg", Filter.Local(), false,
-            _lobbySoundtrackParams.WithVolume(_lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(_configManager.GetCVar(CCVars.LobbyMusicVolume))))?.Entity;
+        _senateFinaleStream = _audio.PlayGlobal("/Audio/Lobby/endless_space.ogg", Filter.Local(), false, LobbyMusicParams())?.Entity;
         FadeIn(_senateFinaleStream, duration: 1f);
     }
 
@@ -147,6 +147,10 @@ public sealed partial class ContentAudioSystem
     /// Short info about lobby soundtrack currently playing. Is null if soundtrack is not playing.
     /// </summary>
     private LobbySoundtrackInfo? _lobbySoundtrackInfo;
+
+    // SW start: temporary value while editing the options slider.
+    private float? _lobbyVolumePreview;
+    // SW end
 
     private Action<LobbySoundtrackChangedEvent>? _lobbySoundtrackChanged;
 
@@ -214,11 +218,30 @@ public sealed partial class ContentAudioSystem
         EndLobbyMusic();
     }
 
+    // SW start: preview lobby music without saving the options CVar.
+    public void PreviewLobbyMusicVolume(float volume)
+    {
+        _lobbyVolumePreview = volume;
+        ApplyLobbyMusicVolume(volume);
+    }
+
+    public void ClearLobbyMusicVolumePreview()
+    {
+        _lobbyVolumePreview = null;
+        ApplyLobbyMusicVolume(_configManager.GetCVar(CCVars.LobbyMusicVolume));
+    }
+
     private void LobbyMusicVolumeCVarChanged(float volume)
     {
+        _lobbyVolumePreview = null;
+        ApplyLobbyMusicVolume(volume);
+    }
+
+    private void ApplyLobbyMusicVolume(float volume)
+    {
+        var target = _lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(volume);
         if (_senateIntroStream is { } intro)
         {
-            var target = _lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(volume);
             if (_fadingIn.TryGetValue(intro, out var fade))
                 _fadingIn[intro] = (fade.VolumeChange, target);
             else
@@ -226,7 +249,6 @@ public sealed partial class ContentAudioSystem
         }
         if (_senateFinaleStream is { } finale)
         {
-            var target = _lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(volume);
             if (_fadingIn.TryGetValue(finale, out var fade))
                 _fadingIn[finale] = (fade.VolumeChange, target);
             else
@@ -234,12 +256,10 @@ public sealed partial class ContentAudioSystem
         }
         if (_lobbySoundtrackInfo != null)
         {
-            _audio.SetVolume(
-                _lobbySoundtrackInfo.MusicStreamEntityUid,
-                _lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(_configManager.GetCVar(CCVars.LobbyMusicVolume))
-            );
+            _audio.SetVolume(_lobbySoundtrackInfo.MusicStreamEntityUid, target);
         }
     }
+    // SW end
 
     private void RestartSoundsChanged(bool enabled)
     {
@@ -343,7 +363,9 @@ public sealed partial class ContentAudioSystem
             soundtrackFilename,
             Filter.Local(),
             false,
-            _lobbySoundtrackParams.WithVolume(_lobbySoundtrackParams.Volume + SharedAudioSystem.GainToVolume(_configManager.GetCVar(CCVars.LobbyMusicVolume)))
+            // SW start: keep the preview across tracks.
+            LobbyMusicParams()
+            // SW end
         );
         if (playResult == null)
         {

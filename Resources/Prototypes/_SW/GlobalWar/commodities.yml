@@ -1,0 +1,17 @@
+- type: swGlobalWarCommodity
+  id: SWGlobalWarOre
+  name: sw-global-war-commodity-ore
+  entity: SteelOre1
+  cargoVolume: 1
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarFuel
+  name: sw-global-war-commodity-fuel
+  entity: SheetPlasma1
+  cargoVolume: 1
+
+- type: swGlobalWarCommodity
+  id: SWGlobalWarSupplies
+  name: sw-global-war-commodity-supplies
+  entity: SWBoxMRE
+  cargoVolume: 2

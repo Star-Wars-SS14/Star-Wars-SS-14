@@ -1,4 +1,5 @@
 - type: entity
+  abstract: true
   name: SWBaseDatapad
   parent: BaseItem
   id: SWBaseDatapad
@@ -7,7 +8,7 @@
   - type: Paper
   - type: ActivatableUI
     key: enum.PaperUiKey.Key
-    requireHands: false
+    requiresComplex: false
   - type: UserInterface
     interfaces:
       enum.PaperUiKey.Key:
@@ -150,6 +151,7 @@
 #- Broken
 
 - type: entity
+  abstract: true
   name: SWBaseDatapadTrash
   parent: BaseItem
   id: SWBaseDatapadTrash

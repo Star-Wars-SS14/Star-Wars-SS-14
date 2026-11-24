@@ -1,0 +1,16 @@
+<ui:SWTerminalWindow xmlns="https://spacestation14.io"
+                     xmlns:ui="clr-namespace:Content.Client._SW.UserInterface"
+                     MouseFilter="Stop"
+                     MinWidth="200" MinHeight="150">
+    <PanelContainer StyleClasses="SWTermWindow" />
+    <BoxContainer Orientation="Vertical" Margin="1">
+        <BoxContainer Name="HeaderRow" Orientation="Horizontal" Margin="12 6 6 6">
+            <Label Name="WindowTitle" StyleClasses="SWTermTitle" HorizontalExpand="True" VAlign="Center" ClipText="True" />
+            <PanelContainer StyleClasses="SWTermFrame" SetSize="22 22" VerticalAlignment="Top">
+                <ui:SWTerminalCloseButton Name="CloseButton" />
+            </PanelContainer>
+        </BoxContainer>
+        <PanelContainer Name="AccentLine" StyleClasses="SWTermAccentNeutral" MinHeight="3" Margin="8 0" />
+        <Control Access="Public" Name="ContentsContainer" VerticalExpand="True" RectClipContent="True" Margin="10" />
+    </BoxContainer>
+</ui:SWTerminalWindow>

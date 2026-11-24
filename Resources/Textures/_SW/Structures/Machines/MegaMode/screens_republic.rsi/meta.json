@@ -1,0 +1,19 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Original screen overlays drawn in code by Codex for Star-Wars-SS14, 2026. Geometry matched to Task computer bodies by @londorondondon (CC-BY-SA-3.0); original body PNGs are reused unchanged.",
+    "size": {
+        "x": 32,
+        "y": 32
+    },
+    "states": [
+        {
+            "name": "diplomacy",
+            "directions": 4
+        },
+        {
+            "name": "galmap",
+            "directions": 4
+        }
+    ]
+}

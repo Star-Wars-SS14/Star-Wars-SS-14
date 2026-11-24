@@ -37,6 +37,7 @@ namespace Content.Server.GameTicking
 
         public void UpdateInfoText()
         {
+            RaiseNetworkEvent(GetSWLobbyFacts(), Filter.Empty().AddPlayers(_playerManager.NetworkedSessions)); //SW
             RaiseNetworkEvent(GetInfoMsg(), Filter.Empty().AddPlayers(_playerManager.NetworkedSessions));
         }
 

@@ -13,16 +13,12 @@ public sealed partial class TaskConsoleBoundUserInterface : BoundUserInterface
     {
        
     }
-     private void RequestUpdateTasks()
-    {
-        SendMessage(new UpdateTasksMessage());
-    }
     protected override void Open()
     {
         base.Open();
         _menu = this.CreateWindow<TaskConsoleMenu>();
-        _menu.UpdateTasksEvent += _ => { RequestUpdateTasks(); };
-
+        if (EntMan.TryGetComponent<TaskConsoleComponent>(Owner, out var console))
+            _menu.SetOwner(console.Faction);
         _menu.OpenCenteredRight();
         
         //_menu.OnServerListButtonPressed += _ =>

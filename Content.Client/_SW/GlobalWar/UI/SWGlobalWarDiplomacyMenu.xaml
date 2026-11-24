@@ -1,0 +1,88 @@
+<ui:SWGlobalWarWindow xmlns="https://spacestation14.io"
+    xmlns:ui="clr-namespace:Content.Client._SW.GlobalWar.UI"
+    Title="{Loc 'sw-global-war-diplomacy-title'}" MinSize="640 400" SetSize="1060 690">
+        <BoxContainer Orientation="Vertical" SeparationOverride="8">
+        <ui:SWGlobalWarBand Name="Scene" SetHeight="170">
+            <ui:SWGlobalWarPlate HorizontalAlignment="Center" VerticalAlignment="Center">
+                <BoxContainer Orientation="Vertical" SeparationOverride="0" Margin="28 8">
+                    <TextureRect Name="RelationIcon" Stretch="KeepCentered" SetSize="48 48" HorizontalAlignment="Center" />
+                    <Label Name="RelationWord" Align="Center" />
+                    <RichTextLabel Name="WarTime" HorizontalAlignment="Center" />
+                </BoxContainer>
+            </ui:SWGlobalWarPlate>
+        </ui:SWGlobalWarBand>
+        <RichTextLabel Name="Status" Text="{Loc 'sw-global-war-government-loading'}" />
+        <RichTextLabel Name="Result" />
+        <ui:SWGlobalWarConsoleButton Name="Retry" Text="{Loc 'sw-global-war-government-retry'}" Visible="False" />
+        <BoxContainer Name="Columns" Orientation="Horizontal" SeparationOverride="12" VerticalExpand="True" HorizontalExpand="True">
+            <ScrollContainer ReserveScrollbarSpace="True" Name="Scroll" VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False">
+            <BoxContainer Name="Content" Orientation="Vertical" SeparationOverride="10" HorizontalExpand="True" Visible="False">
+                <RichTextLabel Name="Relations" Visible="False" />
+                <BoxContainer Name="ProposalRow" Orientation="Horizontal" SeparationOverride="8">
+                    <TextureRect Name="ProposalIcon" MinSize="16 16" VerticalAlignment="Center" />
+                    <RichTextLabel Name="Proposals" HorizontalExpand="True" />
+                </BoxContainer>
+                <BoxContainer Name="Actions" Orientation="Vertical" SeparationOverride="4" />
+                <PanelContainer Name="ConfirmationPanel" StyleClasses="SWTermCard" Visible="False">
+                    <BoxContainer Orientation="Vertical" SeparationOverride="6" Margin="8">
+                        <RichTextLabel Name="ConfirmationText" />
+                        <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                            <ui:SWGlobalWarConsoleButton Name="Confirm" Text="{Loc 'sw-global-war-government-confirm'}" />
+                            <ui:SWGlobalWarConsoleButton Name="Cancel" Text="{Loc 'sw-global-war-government-cancel'}" />
+                        </BoxContainer>
+                    </BoxContainer>
+                </PanelContainer>
+                <BoxContainer Name="Correspondence" Orientation="Vertical" SeparationOverride="8" Visible="False">
+                    <PanelContainer StyleClasses="SWTermDivider" MinHeight="2" />
+                    <Label Text="{Loc 'sw-global-war-diplomacy-correspondence'}" StyleClasses="SWTermHeading" />
+                    <RichTextLabel Text="{Loc 'sw-global-war-diplomacy-message-hint'}" />
+                    <PanelContainer StyleClasses="SWTermCard">
+                        <TextEdit Name="Draft" MinHeight="100" Margin="6 4" />
+                    </PanelContainer>
+                    <BoxContainer SeparationOverride="6">
+                        <ui:SWGlobalWarConsoleButton Name="SendPrivate" Text="{Loc 'sw-global-war-action-statemessage'}" />
+                        <ui:SWGlobalWarConsoleButton Name="SendPublic" Text="{Loc 'sw-global-war-action-publicaddress'}" />
+                    </BoxContainer>
+                    <BoxContainer SeparationOverride="6">
+                        <ui:SWGlobalWarConsoleButton Name="Latest" Text="{Loc 'sw-global-war-government-latest'}" />
+                        <ui:SWGlobalWarConsoleButton Name="Older" Text="{Loc 'sw-global-war-government-older'}" Disabled="True" />
+                        <ui:SWGlobalWarConsoleButton Name="Newer" Text="{Loc 'sw-global-war-government-newer'}" Disabled="True" />
+                    </BoxContainer>
+                    <Label Name="NewMessages" Text="{Loc 'sw-global-war-government-new-messages'}" Visible="False" />
+                    <ScrollContainer Name="HistoryScroll" MinHeight="180" MaxHeight="300" HScrollEnabled="False">
+                        <RichTextLabel Name="History" HorizontalExpand="True" />
+                    </ScrollContainer>
+                </BoxContainer>
+            </BoxContainer>
+        </ScrollContainer>
+        <ScrollContainer Name="SectorScroll" ReserveScrollbarSpace="True" VerticalExpand="True" SetWidth="440" HScrollEnabled="False">
+            <BoxContainer Name="SectorPanel" Orientation="Vertical" SeparationOverride="10" HorizontalExpand="True">
+                                    <Label Text="{Loc 'sw-global-war-diplomacy-neutrals'}" StyleClasses="SWTermHeading" />
+                <OptionButton Name="NeutralSelector" Filterable="True" />
+                <PanelContainer Name="NeutralCard">
+                    <BoxContainer SeparationOverride="10" Margin="8">
+                        <TextureRect Name="NeutralPlanet" Stretch="KeepCentered" SetSize="60 60" VerticalAlignment="Center" />
+                        <RichTextLabel Name="NeutralDetails" HorizontalExpand="True" VerticalAlignment="Center" />
+                    </BoxContainer>
+                </PanelContainer>
+                <BoxContainer SeparationOverride="6">
+                    <LineEdit Name="Amount" Text="1000" MinWidth="130" PlaceHolder="{Loc 'sw-global-war-government-amount'}" />
+                    <ui:SWGlobalWarConsoleButton Name="Sponsor" Text="{Loc 'sw-global-war-action-sponsor'}" />
+                </BoxContainer>
+                <ui:SWGlobalWarConsoleButton Name="Contest" Text="{Loc 'sw-global-war-action-openborderconflict'}" />
+                <PanelContainer StyleClasses="SWTermDivider" MinHeight="2" />
+                <BoxContainer Orientation="Horizontal" SeparationOverride="8">
+                    <TextureRect Name="SanctionIcon" MinSize="16 16" VerticalAlignment="Center" />
+                    <Label Text="{Loc 'sw-global-war-diplomacy-sanctions-title'}" StyleClasses="SWTermHeading" ToolTip="{Loc 'sw-global-war-diplomacy-sanctions'}" MouseFilter="Stop" HorizontalExpand="True" />
+                </BoxContainer>
+                <RichTextLabel Name="Sanctions" />
+                <OptionButton Name="CommoditySelector" Filterable="True" />
+                <BoxContainer SeparationOverride="6">
+                    <ui:SWGlobalWarConsoleButton Name="Impose" Text="{Loc 'sw-global-war-diplomacy-impose'}" />
+                    <ui:SWGlobalWarConsoleButton Name="Lift" Text="{Loc 'sw-global-war-diplomacy-lift'}" />
+                </BoxContainer>
+            </BoxContainer>
+        </ScrollContainer>
+        </BoxContainer>
+    </BoxContainer>
+</ui:SWGlobalWarWindow>

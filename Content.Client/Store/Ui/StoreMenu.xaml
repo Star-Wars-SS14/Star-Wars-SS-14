@@ -26,7 +26,7 @@
             <LineEdit Name="SearchBar" Margin="4" PlaceHolder="Search" HorizontalExpand="True"/>
                 <PanelContainer VerticalExpand="True">
                 <PanelContainer.PanelOverride>
-                    <gfx:StyleBoxFlat BackgroundColor="#000000FF" />
+                    <gfx:StyleBoxFlat BackgroundColor="#0C0E0F" />
                 </PanelContainer.PanelOverride>
                 <BoxContainer Orientation="Horizontal" VerticalExpand="True">
                     <PanelContainer VerticalExpand="True">
@@ -68,3 +68,4 @@
         </BoxContainer>
     </BoxContainer>
 </DefaultWindow>
+<!-- #SW: terminal colours -->

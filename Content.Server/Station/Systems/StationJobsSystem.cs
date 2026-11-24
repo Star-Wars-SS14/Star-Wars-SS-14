@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using Content.Server._SW.GlobalWar.Spawning; //SW
 using System.Linq;
 using Content.Server.GameTicking;
 using Content.Server.Station.Components;
@@ -106,8 +107,13 @@ public sealed partial class StationJobsSystem : EntitySystem
         if (!Resolve(station, ref stationJobs, false))
             return false;
 
-        if (!TryAdjustJobSlot(station, jobPrototypeId, -1, false, false, stationJobs))
+        //SW start
+        var assignment = new SWGlobalWarAssignJobEvent(station, jobPrototypeId, netUserId);
+        RaiseLocalEvent(ref assignment);
+        if (assignment.Handled ? !assignment.Allowed :
+            !TryAdjustJobSlot(station, jobPrototypeId, -1, false, false, stationJobs))
             return false;
+        //SW end
 
         stationJobs.PlayerJobs.TryAdd(netUserId, new());
         stationJobs.PlayerJobs[netUserId].Add(jobPrototypeId);
@@ -406,6 +412,13 @@ public sealed partial class StationJobsSystem : EntitySystem
         if (!Resolve(station, ref stationJobs))
             throw new ArgumentException("Tried to use a non-station entity as a station!", nameof(station));
 
+        //SW start
+        var snapshot = new SWGlobalWarRoundStartJobsEvent(station);
+        RaiseLocalEvent(ref snapshot);
+        if (snapshot.Jobs != null)
+            return snapshot.Jobs;
+        //SW end
+
         return stationJobs.SetupAvailableJobs.ToDictionary(
             x => x.Key,
             x=> (int?)(x.Value[0] < 0 ? null : x.Value[0]));
@@ -494,9 +507,17 @@ public sealed partial class StationJobsSystem : EntitySystem
         var stationNames = new Dictionary<NetEntity, string>();
 
         var query = EntityQueryEnumerator<StationJobsComponent>();
-
-        while (query.MoveNext(out var station, out var comp))
+        //SW start
+        var stations = new List<EntityUid>();
+        while (query.MoveNext(out var candidate, out _))
+            stations.Add(candidate);
+        var filter = new SWGlobalWarFilterJobStationsEvent(stations);
+        RaiseLocalEvent(ref filter);
+        foreach (var station in stations)
         {
+            if (!TryComp<StationJobsComponent>(station, out var comp))
+                continue;
+            //SW end
             var netStation = GetNetEntity(station);
             var list = comp.JobList.ToDictionary(x => x.Key, x => x.Value);
             jobs.Add(netStation, list);

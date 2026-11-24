@@ -1,0 +1,9 @@
+<tutorial:SWTutorialPrompt xmlns="https://spacestation14.io"
+                          xmlns:tutorial="clr-namespace:Content.Client._SW.Tutorial" MouseFilter="Ignore">
+    <PanelContainer Name="Pill" HorizontalAlignment="Left">
+        <BoxContainer Orientation="Horizontal" SeparationOverride="6" Margin="8 3">
+            <BoxContainer Name="Line" Orientation="Horizontal" SeparationOverride="4" />
+            <Button Name="ReturnButton" Text="{Loc 'sw-tutorial-return-button'}" StyleClasses="SWTermMainButtonNeutral" Visible="False" />
+        </BoxContainer>
+    </PanelContainer>
+</tutorial:SWTutorialPrompt>

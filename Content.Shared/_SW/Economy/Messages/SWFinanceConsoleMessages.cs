@@ -23,11 +23,11 @@ public sealed class SWFinanceConsoleBounderUserInterfaceState : SWBasePayableBou
 [Serializable, NetSerializable]
 public sealed class SWTryPayBillMessage : BoundUserInterfaceMessage
 {
-    public SWBill Bill;
+    public int BillId;
 
-    public SWTryPayBillMessage(SWBill num)
+    public SWTryPayBillMessage(int billId)
     {
-        Bill = num;
+        BillId = billId;
     }
 }
 

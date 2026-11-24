@@ -15,7 +15,7 @@ public sealed partial class BlockComponent : Component
     public bool IsCooldownBlocking;
 
     [DataField("blockingToggleAction", customTypeSerializer: typeof(PrototypeIdSerializer<EntityPrototype>))]
-    public string BlockingAction = "ActionBlockLightSaber";
+    public string? BlockingAction; // ActionBlockLightSaber was removed in #311, so there is no default action.
 
     [DataField, AutoNetworkedField]
     public EntityUid? BlockingActionEntity;

@@ -36,6 +36,11 @@
         hard: False
   - type: Conveyor
   - type: SWAutoSetConveyor
+  - type: DeviceLinkSink # ConveyorController ensures these ports on startup
+    ports:
+      - Reverse
+      - Forward
+      - Off
   - type: Appearance
   - type: GenericVisualizer
     visuals:

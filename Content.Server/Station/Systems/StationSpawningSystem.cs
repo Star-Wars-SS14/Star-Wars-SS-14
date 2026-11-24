@@ -1,3 +1,5 @@
+using Content.Shared._SW.Loadouts; //SW
+using Content.Server._SW.Loadouts; // SW
 using Content.Server.Access.Systems;
 using Content.Server.Humanoid;
 using Content.Server.Mind;
@@ -86,7 +88,8 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
         ProtoId<JobPrototype>? job,
         HumanoidCharacterProfile? profile,
         EntityUid? station,
-        EntityUid? entity = null)
+        EntityUid? entity = null,
+        bool suppressSaberKit = false) // SW
     {
         _prototypeManager.Resolve(job, out var prototype);
         RoleLoadout? loadout = null;
@@ -102,7 +105,12 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
             if (loadout == null)
             {
                 loadout = new RoleLoadout(jobLoadout);
-                loadout.SetDefault(profile, _actors.GetSession(entity), _prototypeManager);
+                // SW start: force-user kits need their mandatory selections even for profile-less spawns.
+                var defaultProfile = profile;
+                if (defaultProfile == null && SWSaberLoadoutNormalization.HasSaberKit(roleProto, _prototypeManager))
+                    defaultProfile = HumanoidCharacterProfile.DefaultWithSpecies();
+                loadout.SetDefault(defaultProfile, _actors.GetSession(entity), _prototypeManager);
+                // SW end
             }
         }
 
@@ -138,20 +146,23 @@ public sealed class StationSpawningSystem : SharedStationSpawningSystem
 
             if (profile.FlavorText != "" && _configurationManager.GetCVar(CCVars.FlavorText))
             {
-                AddComp<DetailExaminableComponent>(entity.Value).Content = profile.FlavorText;
+                AddComp<DetailExaminableComponent>(entity.Value).Content = FormattedMessage.EscapeText(profile.FlavorText);
             }
         }
 
-        if (loadout != null)
-        {
-            EquipRoleLoadout(entity.Value, loadout, roleProto!);
-        }
+        //SW start
+        _prototypeManager.Resolve(prototype?.StartingGear, out var jobGear);
+        if (loadout != null && roleProto != null && prototype != null)
+            loadout = SWSaberLoadoutNormalization.Normalize(loadout, roleProto, _prototypeManager);
+        InventorySystem.TryGetSlots(entity.Value, out var inventorySlots);
+        var mergedGear = SWMergedGear.Build(jobGear, loadout, roleProto, _prototypeManager, suppressSaberKit, inventorySlots);
+        if (!suppressSaberKit && SWSaberLoadoutNormalization.HasSaberKit(roleProto, _prototypeManager))
+            EnsureComp<SWSaberInitialAssemblyComponent>(entity.Value);
+        EquipStartingGear(entity.Value, mergedGear, raiseEvent: false);
 
-        if (prototype?.StartingGear != null)
-        {
-            var startingGear = _prototypeManager.Index<StartingGearPrototype>(prototype.StartingGear);
-            EquipStartingGear(entity.Value, startingGear, raiseEvent: false);
-        }
+        if (loadout != null)
+            EquipRoleName(entity.Value, loadout, roleProto!);
+        //SW end
 
         var gearEquippedEv = new StartingGearEquippedEvent(entity.Value);
         RaiseLocalEvent(entity.Value, ref gearEquippedEv);

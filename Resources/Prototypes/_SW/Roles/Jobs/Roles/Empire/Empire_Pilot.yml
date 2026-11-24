@@ -1,6 +1,7 @@
 - type: job
   id: SWEmpirePilot
   name: Пилот Сил Империи
+  description: job-description-sw-empire-pilot
   playTimeTracker: Job_Empire_Pilot
   requirements:
   - !type:OverallPlaytimeRequirement

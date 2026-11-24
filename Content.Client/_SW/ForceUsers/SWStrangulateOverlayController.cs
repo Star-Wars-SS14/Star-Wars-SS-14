@@ -24,14 +24,20 @@ public sealed partial class SWStrangulateOverlayController : EntitySystem
         _overlay = new SWStrangulateOverlay();
         SubscribeLocalEvent<LocalPlayerAttachedEvent>(OnPlayerAttach);
         SubscribeLocalEvent<LocalPlayerDetachedEvent>(OnPlayerDetached);
-        SubscribeLocalEvent<SWUpdateStrangulateEvent>(OnUpdate);
+        SubscribeLocalEvent<SWBeingStrangulatedComponent, ComponentStartup>(OnStrangulationStart);
+        SubscribeLocalEvent<SWBeingStrangulatedComponent, ComponentShutdown>(OnStrangulationEnd);
     }
 
-    private void OnUpdate(SWUpdateStrangulateEvent ev)
+    private void OnStrangulationStart(Entity<SWBeingStrangulatedComponent> ent, ref ComponentStartup args)
     {
-        if (ev.Entity != _playerManager.LocalEntity)
-            return;
-        UpdateOverlay(ev.Entity);
+        if (ent.Owner == _playerManager.LocalEntity)
+            _overlay.Enabled = true;
+    }
+
+    private void OnStrangulationEnd(Entity<SWBeingStrangulatedComponent> ent, ref ComponentShutdown args)
+    {
+        if (ent.Owner == _playerManager.LocalEntity)
+            _overlay.Enabled = false;
     }
 
     private void OnPlayerAttach(LocalPlayerAttachedEvent args)

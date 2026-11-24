@@ -108,7 +108,6 @@
         - !type:MetabolizerTypeCondition
           type: [ SWParasit ]
           inverted: true
-        scaleByQuantity: true
         ignoreResistances: true
         damage:
           types:

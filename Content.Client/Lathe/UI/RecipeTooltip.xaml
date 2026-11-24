@@ -5,8 +5,8 @@
         <PanelContainer.PanelOverride>
             <gfx:StyleBoxFlat 
                 BorderThickness="2" 
-                BorderColor="#464966"
-                BackgroundColor="#25252A"
+                BorderColor="#4F5666"
+                BackgroundColor="#1B1D23"
             />
         </PanelContainer.PanelOverride>
         <BoxContainer 
@@ -17,3 +17,4 @@
         </BoxContainer>
     </PanelContainer>
 </Control>
+<!-- #SW: terminal colours -->

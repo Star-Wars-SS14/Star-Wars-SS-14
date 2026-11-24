@@ -1,0 +1,61 @@
+# Set dressing for Empire worlds: no interface and no link to any faction.
+
+- type: entity
+  parent: LightPostSmall
+  id: SWLightPostRed
+  name: red lamp post
+  description: An Empire post with a red light. Seen from afar, including through a scope.
+  suffix: Always Powered
+  components:
+  - type: PointLight
+    color: "#FB4747"
+    energy: 2.2
+    radius: 6
+    softness: 0.8
+
+- type: entity
+  parent: SWDecorSignalTower
+  id: SWDecorLightningRod
+  name: lightning rod
+  description: The citadel mast catches the storm's lightning. The air around it smells of ozone.
+  components:
+  - type: PointLight
+    color: "#A8C8FF"
+    energy: 2.5
+    radius: 6
+    softness: 0.8
+
+- type: entity
+  parent: StatueVenusRed
+  id: SWDecorSithStatue
+  name: black statue
+  description: Its face is chipped away. Nobody dares read the name on the plinth.
+  components:
+  - type: Sprite
+    color: "#4A4650"
+
+- type: entity
+  parent: SWAlwaysPoweredWallLight
+  id: SWAlwaysPoweredLightWarm
+  name: warm lamp
+  suffix: Always powered
+  components:
+  - type: PointLight
+    color: "#FFDDB0"
+    energy: 1.8
+    radius: 8
+    softness: 0.9
+    offset: "0, -0.5"
+
+- type: entity
+  parent: LightPostSmall
+  id: SWLightPostWarm
+  name: lamp post
+  description: A short post with a warm light over the road.
+  suffix: Always Powered
+  components:
+  - type: PointLight
+    color: "#FFD8A0"
+    energy: 2
+    radius: 7
+    softness: 0.9

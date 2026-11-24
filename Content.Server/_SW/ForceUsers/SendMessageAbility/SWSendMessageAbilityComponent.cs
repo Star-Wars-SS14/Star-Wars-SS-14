@@ -14,4 +14,7 @@ public sealed partial class SWSendMessageAbilityComponent : Component
 
     [DataField]
     public string Action = "SWForceInfluenceAction";
+
+    [DataField]
+    public TimeSpan Delay = TimeSpan.FromSeconds(1);
 }

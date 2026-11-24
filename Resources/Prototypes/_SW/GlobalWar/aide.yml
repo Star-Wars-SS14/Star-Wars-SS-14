@@ -1,0 +1,105 @@
+# The liaison officer on a campaign card. Drawn from the officers' own clothes, standing and not a mob, because the card
+# spawns the prototype on the client alone.
+- type: entity
+  categories: [ HideSpawnMenu ]
+  id: SWGlobalWarAideRepublic
+  name: liaison officer
+  components:
+  - type: Sprite
+    layers:
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: torso_m
+      color: "#D9B394"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: head_m
+      color: "#D9B394"
+    - sprite: Mobs/Customization/eyes.rsi
+      state: eyes
+      color: "#2F2A26"
+    - sprite: Mobs/Customization/human_hair.rsi
+      state: a
+      color: "#3B2A20"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: r_arm
+      color: "#D9B394"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: l_arm
+      color: "#D9B394"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: r_hand
+      color: "#D9B394"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: l_hand
+      color: "#D9B394"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: r_leg
+      color: "#D9B394"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: l_leg
+      color: "#D9B394"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: r_foot
+      color: "#D9B394"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: l_foot
+      color: "#D9B394"
+    - sprite: _SW/Clothing/Uniforms/Jumpsuit/officer.rsi
+      state: equipped-INNERCLOTHING
+    - sprite: _SW/Clothing/Hands/Gloves/citizen.rsi
+      state: equipped-HAND
+    - sprite: _SW/Clothing/Shoes/Boots/officer.rsi
+      state: equipped-FEET
+    - sprite: _SW/Clothing/Head/Hats/officer.rsi
+      state: equipped-HELMET
+
+- type: entity
+  categories: [ HideSpawnMenu ]
+  id: SWGlobalWarAideEmpire
+  name: liaison officer
+  components:
+  - type: Sprite
+    layers:
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: torso_m
+      color: "#D9B394"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: head_m
+      color: "#D9B394"
+    - sprite: Mobs/Customization/eyes.rsi
+      state: eyes
+      color: "#2F2A26"
+    - sprite: Mobs/Customization/human_hair.rsi
+      state: a
+      color: "#3B2A20"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: r_arm
+      color: "#D9B394"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: l_arm
+      color: "#D9B394"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: r_hand
+      color: "#D9B394"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: l_hand
+      color: "#D9B394"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: r_leg
+      color: "#D9B394"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: l_leg
+      color: "#D9B394"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: r_foot
+      color: "#D9B394"
+    - sprite: Mobs/Species/Human/parts.rsi
+      state: l_foot
+      color: "#D9B394"
+    - sprite: _SW/Clothing/Uniforms/Jumpsuit/imperial_officer.rsi
+      state: equipped-INNERCLOTHING
+    - sprite: _SW/Clothing/Hands/Gloves/citizen.rsi
+      state: equipped-HAND
+    - sprite: _SW/Clothing/Shoes/Boots/imperial_officer.rsi
+      state: equipped-FEET
+    - sprite: _SW/Clothing/Head/Hats/impcccap.rsi
+      state: equipped-HELMET

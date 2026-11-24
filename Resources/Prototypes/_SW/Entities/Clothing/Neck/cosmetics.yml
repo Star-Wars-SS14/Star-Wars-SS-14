@@ -1,0 +1,16 @@
+# A base without Clothing or ClothingNeckBase on purpose. Those add a sell price, butchering into cloth, recycling and
+# chameleon copying, and a paid item that comes back with every respawn must not turn into money or materials.
+- type: entity
+  abstract: true
+  parent: BaseItem
+  id: SWCosmeticNeckBase
+  components:
+  - type: Item
+    size: Small
+  - type: Sprite
+    state: icon
+  - type: Clothing
+    quickEquip: true
+    slots:
+    - neck
+  - type: CargoSellBlacklist

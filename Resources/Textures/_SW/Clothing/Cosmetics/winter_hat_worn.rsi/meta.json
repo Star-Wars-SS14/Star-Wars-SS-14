@@ -1,0 +1,15 @@
+{
+    "version": 1,
+    "license": "CC-BY-SA-3.0",
+    "copyright": "Made for Star-Wars-SS14: drawn by hand by Claude Code from a shape generated with OpenAI Codex image generation",
+    "size": {
+        "x": 32,
+        "y": 48
+    },
+    "states": [
+        {
+            "name": "equipped-HELMET",
+            "directions": 4
+        }
+    ]
+}

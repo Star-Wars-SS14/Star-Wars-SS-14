@@ -123,8 +123,7 @@
     key: walls
     mode: NoSprite
   - type: Paintable
-    group: Standard
-    department: Command
+    group: AirlockStandard
   - type: AccessReader
   - type: StaticPrice
     price: 150

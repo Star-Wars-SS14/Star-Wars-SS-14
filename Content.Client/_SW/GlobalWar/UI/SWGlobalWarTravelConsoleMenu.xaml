@@ -1,0 +1,50 @@
+<ui:SWGlobalWarWindow xmlns="https://spacestation14.io"
+                      xmlns:ui="clr-namespace:Content.Client._SW.GlobalWar.UI"
+                      Title="{Loc 'sw-global-war-travel-title'}"
+                      MinSize="700 480" SetSize="1237 707">
+    <ui:SWGlobalWarAtlasLayout HorizontalExpand="True" VerticalExpand="True">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="0">
+            <PanelContainer Name="MapPanel" HorizontalExpand="True" VerticalExpand="True" RectClipContent="True">
+                <ui:SWGlobalWarMapControl Name="Map" HorizontalExpand="True" VerticalExpand="True" Margin="1" />
+            </PanelContainer>
+            <BoxContainer Orientation="Horizontal" MinHeight="30" SeparationOverride="6">
+                <ui:SWGlobalWarMapLegendMark Name="SelectedMark" />
+                <Label Name="SelectedLegend" Text="{Loc 'sw-global-war-travel-legend-selected'}" VAlign="Center" />
+                <ui:SWGlobalWarMapLegendMark Name="AvailableMark" Margin="8 0 0 0" />
+                <Label Name="AvailableLegend" Text="{Loc 'sw-global-war-travel-legend-available'}" VAlign="Center" />
+                <ui:SWGlobalWarMapLegendMark Name="UnavailableMark" Margin="8 0 0 0" />
+                <Label Name="UnavailableLegend" Text="{Loc 'sw-global-war-travel-legend-unavailable'}" VAlign="Center" HorizontalExpand="True" />
+                <Label Name="PlanetCount" VAlign="Center" />
+            </BoxContainer>
+        </BoxContainer>
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" SeparationOverride="4">
+            <RichTextLabel Name="Status" Visible="False" />
+            <PanelContainer Name="PlanetCard" StyleClasses="SWTermCard" RectClipContent="True" MinHeight="150">
+                <TextureRect Name="CardSpace" Stretch="KeepAspectCovered" HorizontalExpand="True" VerticalExpand="True" />
+                <TextureRect Name="CardPlanet" Stretch="KeepCentered" HorizontalAlignment="Right" VerticalAlignment="Center" />
+                <BoxContainer Orientation="Vertical" Margin="12 8" SeparationOverride="2">
+                    <RichTextLabel Name="SelectionHint" Text="{Loc 'sw-global-war-travel-select-planet'}" />
+                    <Label Name="PlanetKind" Visible="False" HorizontalAlignment="Left" />
+                    <Label Name="PlanetName" Visible="False" HorizontalAlignment="Left" />
+                    <Label Name="Availability" Visible="False" HorizontalAlignment="Left" SetWidth="240" ClipText="True" />
+                    <Label Name="HyperspaceTime" Visible="False" HorizontalAlignment="Left" />
+                    <RichTextLabel Name="Connections" Visible="False" HorizontalAlignment="Left" MaxWidth="240" />
+                </BoxContainer>
+            </PanelContainer>
+            <Label Text="{Loc 'sw-global-war-travel-destinations'}" StyleClasses="SWTermHeading" />
+            <RichTextLabel Name="NoDestinations" Text="{Loc 'sw-global-war-travel-no-destinations'}" Visible="False" />
+            <ScrollContainer Name="DestinationScroll" HorizontalExpand="True" HScrollEnabled="False">
+                <BoxContainer Name="Destinations" Orientation="Vertical" SeparationOverride="2" HorizontalExpand="True" />
+            </ScrollContainer>
+            <PanelContainer StyleClasses="SWTermDivider" MinHeight="2" />
+            <BoxContainer Name="MarketInfo" Orientation="Vertical" SeparationOverride="4" Visible="False" VerticalExpand="True">
+                <Label Name="MarketTitle" Text="{Loc 'sw-global-war-market-title'}" StyleClasses="SWTermHeading" />
+                <RichTextLabel Name="MarketNote" Visible="False" />
+                <ScrollContainer Name="MarketScroll" VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False">
+                    <BoxContainer Name="MarketGoods" Orientation="Vertical" SeparationOverride="4" HorizontalExpand="True" />
+                </ScrollContainer>
+            </BoxContainer>
+            <ui:SWGlobalWarConsoleButton Name="Travel" Text="{Loc 'sw-global-war-travel-jump'}" Disabled="True" Visible="False" MinHeight="42" />
+        </BoxContainer>
+    </ui:SWGlobalWarAtlasLayout>
+</ui:SWGlobalWarWindow>

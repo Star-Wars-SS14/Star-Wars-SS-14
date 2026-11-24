@@ -22,5 +22,5 @@
 - type: localizedDataset
   id: SWNamesFirstMilitaryPilot
   values:
-    prefix: name-sw-first-pilot-
+    prefix: names-sw-first-pilot-
     count: 1

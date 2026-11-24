@@ -36,6 +36,8 @@ namespace Content.Server.Preferences.Managers
         private readonly Dictionary<NetUserId, PlayerPrefData> _cachedPlayerPrefs =
             new();
 
+        private readonly Dictionary<NetUserId, Task> _pendingWrites = new(); //SW
+
         private ISawmill _sawmill = default!;
 
         // private int MaxCharacterSlots => _cfg.GetCVar(CCVars.GameMaxCharacterSlots); // Corvax-Sponsors
@@ -79,7 +81,7 @@ namespace Content.Server.Preferences.Managers
 
             if (ShouldStorePrefs(message.MsgChannel.AuthType))
             {
-                await _db.SaveSelectedCharacterIndexAsync(message.MsgChannel.UserId, message.SelectedCharacterIndex);
+                await QueueWrite(userId, () => _db.SaveSelectedCharacterIndexAsync(userId, index)); //SW
             }
         }
 
@@ -91,8 +93,50 @@ namespace Content.Server.Preferences.Managers
             if (message.Profile == null)
                 _sawmill.Error($"User {userId} sent a {nameof(MsgUpdateCharacter)} with a null profile in slot {message.Slot}.");
             else
-                await SetProfile(userId, message.Slot, message.Profile);
+            {
+                //SW start
+                // Async void: an exception that leaves this method ends the server process.
+                try
+                {
+                    await SetProfile(userId, message.Slot, message.Profile);
+                }
+                catch (Exception e)
+                {
+                    _sawmill.Error($"Failed to update a profile of user {userId} in slot {message.Slot}: {e}");
+                }
+                //SW end
+            }
         }
+
+        //SW start
+        /// <summary>
+        /// Runs database writes of one player one at a time, in the order they came, so the last write wins.
+        /// Two parallel saves of one slot delete the same rows, and EF then throws DbUpdateConcurrencyException.
+        /// The handlers are async void, so a failure must stop here: it is logged and the next write still runs.
+        /// The cached preferences keep the new value after a failed write, until the player reconnects.
+        /// </summary>
+        private Task QueueWrite(NetUserId userId, Func<Task> write)
+        {
+            _pendingWrites.TryGetValue(userId, out var previous);
+            var task = RunWrite(previous ?? Task.CompletedTask, userId, write);
+            _pendingWrites[userId] = task;
+            return task;
+        }
+
+        private async Task RunWrite(Task previous, NetUserId userId, Func<Task> write)
+        {
+            await previous;
+
+            try
+            {
+                await write();
+            }
+            catch (Exception e)
+            {
+                _sawmill.Error($"Failed to save preferences of user {userId}: {e}");
+            }
+        }
+        //SW end
 
         public async Task SetProfile(NetUserId userId, int slot, ICharacterProfile profile)
         {
@@ -123,7 +167,7 @@ namespace Content.Server.Preferences.Managers
             prefsData.Prefs = new PlayerPreferences(profiles, slot, curPrefs.AdminOOCColor, curPrefs.ConstructionFavorites);
 
             if (ShouldStorePrefs(session.Channel.AuthType))
-                await _db.SaveCharacterSlotAsync(userId, profile, slot);
+                await QueueWrite(userId, () => _db.SaveCharacterSlotAsync(userId, profile, slot)); //SW
         }
 
         public async Task SetConstructionFavorites(NetUserId userId, List<ProtoId<ConstructionPrototype>> favorites)
@@ -139,7 +183,7 @@ namespace Content.Server.Preferences.Managers
 
             var session = _playerManager.GetSessionById(userId);
             if (ShouldStorePrefs(session.Channel.AuthType))
-                await _db.SaveConstructionFavoritesAsync(userId, favorites);
+                await QueueWrite(userId, () => _db.SaveConstructionFavoritesAsync(userId, favorites)); //SW
         }
 
         private async void HandleDeleteCharacterMessage(MsgDeleteCharacter message)
@@ -185,11 +229,11 @@ namespace Content.Server.Preferences.Managers
             {
                 if (nextSlot != null)
                 {
-                    await _db.DeleteSlotAndSetSelectedIndex(userId, slot, nextSlot.Value);
+                    await QueueWrite(userId, () => _db.DeleteSlotAndSetSelectedIndex(userId, slot, nextSlot.Value)); //SW
                 }
                 else
                 {
-                    await _db.SaveCharacterSlotAsync(userId, null, slot);
+                    await QueueWrite(userId, () => _db.SaveCharacterSlotAsync(userId, null, slot)); //SW
                 }
             }
         }
@@ -224,7 +268,7 @@ namespace Content.Server.Preferences.Managers
 
             if (ShouldStorePrefs(message.MsgChannel.AuthType))
             {
-                await _db.SaveConstructionFavoritesAsync(userId, validatedList);
+                await QueueWrite(userId, () => _db.SaveConstructionFavoritesAsync(userId, validatedList)); //SW
             }
         }
 
@@ -294,6 +338,7 @@ namespace Content.Server.Preferences.Managers
         public void OnClientDisconnected(ICommonSession session)
         {
             _cachedPlayerPrefs.Remove(session.UserId);
+            _pendingWrites.Remove(session.UserId); //SW
         }
 
         public bool HavePreferencesLoaded(ICommonSession session)

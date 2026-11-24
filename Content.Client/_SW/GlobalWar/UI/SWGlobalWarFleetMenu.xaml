@@ -1,0 +1,31 @@
+<ui:SWGlobalWarWindow xmlns="https://spacestation14.io"
+                      xmlns:ui="clr-namespace:Content.Client._SW.GlobalWar.UI"
+                      Title="{Loc 'sw-global-war-fleet-title'}" MinSize="480 280" SetSize="840 720">
+    <BoxContainer Orientation="Vertical" SeparationOverride="0">
+        <ui:SWGlobalWarBand Name="Scene" SetHeight="120">
+            <ui:SWGlobalWarPlate HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12 0 0 0">
+                <BoxContainer Orientation="Vertical" SeparationOverride="0" Margin="14 8 28 8">
+                    <Label Name="BudgetWord" Text="{Loc 'sw-global-war-fleet-budget-word'}" />
+                    <Label Name="BudgetValue" />
+                </BoxContainer>
+            </ui:SWGlobalWarPlate>
+            <ui:SWGlobalWarPlate HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 6 6 0">
+                <Label Name="HelpMark" Text="?" Margin="6 0" StyleClasses="SWTermValue" MouseFilter="Stop" />
+            </ui:SWGlobalWarPlate>
+        </ui:SWGlobalWarBand>
+        <PanelContainer StyleClasses="SWTermDivider" MinHeight="1" />
+        <BoxContainer Orientation="Vertical" SeparationOverride="8" Margin="12 8" VerticalExpand="True">
+            <RichTextLabel Name="Budget" Visible="False" />
+            <RichTextLabel Name="Reason" Text="{Loc 'sw-global-war-fleet-denied'}" />
+            <CheckBox Name="HeadDecision" Text="{Loc 'sw-global-war-fleet-head-decision'}" Visible="False" />
+            <ScrollContainer VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False">
+                <BoxContainer Orientation="Vertical" SeparationOverride="8" HorizontalExpand="True">
+                    <BoxContainer Name="Offers" Orientation="Vertical" SeparationOverride="8" />
+                    <Label Text="{Loc 'sw-global-war-fleet-queue-title'}" StyleClasses="SWTermValue" />
+                    <Label Name="EmptyOrders" Text="{Loc 'sw-global-war-fleet-queue-empty'}" />
+                    <BoxContainer Name="Orders" Orientation="Vertical" SeparationOverride="4" />
+                </BoxContainer>
+            </ScrollContainer>
+        </BoxContainer>
+    </BoxContainer>
+</ui:SWGlobalWarWindow>

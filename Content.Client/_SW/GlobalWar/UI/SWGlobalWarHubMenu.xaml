@@ -1,0 +1,53 @@
+<ui:SWGlobalWarWindow xmlns="https://spacestation14.io"
+                      xmlns:ui="clr-namespace:Content.Client._SW.GlobalWar.UI"
+                      Title="{Loc 'sw-global-war-hub-title'}" MinSize="520 380" SetSize="680 600">
+    <ScrollContainer ReserveScrollbarSpace="True" Name="HubScroll" VerticalExpand="True" HorizontalExpand="True" HScrollEnabled="False">
+        <BoxContainer Orientation="Vertical" SeparationOverride="10" Margin="12">
+            <ui:SWGlobalWarBand Name="Scene" SetHeight="170">
+                <ui:SWGlobalWarPlate HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20 0 0 4">
+                    <Label Name="HubWord" Text="{Loc 'sw-global-war-hub-word'}" Margin="8 0" />
+                </ui:SWGlobalWarPlate>
+                <ui:SWGlobalWarPlate VerticalAlignment="Center" Margin="190 0 110 0">
+                    <BoxContainer Orientation="Vertical" SeparationOverride="2" Margin="12 6">
+                        <RichTextLabel Name="Overview" Text="{Loc 'sw-global-war-hub-unavailable'}" />
+                        <BoxContainer Name="StepRow" Orientation="Vertical" SeparationOverride="0" Visible="False">
+                            <Label Text="{Loc 'sw-global-war-hub-step'}" StyleClasses="SWTermValue" />
+                            <Label Name="StepValue" />
+                            <Label Name="StepPrice" />
+                        </BoxContainer>
+                    </BoxContainer>
+                </ui:SWGlobalWarPlate>
+                <ui:SWGlobalWarPlate HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 6 6 0">
+                    <Label Name="HelpMark" Text="?" Margin="6 0" StyleClasses="SWTermValue" MouseFilter="Stop" />
+                </ui:SWGlobalWarPlate>
+            </ui:SWGlobalWarBand>
+            <CheckBox Name="HeadDecision" Text="{Loc 'sw-global-war-hub-head-option'}" Visible="False" />
+            <Label Text="{Loc 'sw-global-war-hub-funding-label'}" StyleClasses="SWTermValue" />
+            <OptionButton Name="GrantPicker" Filterable="True" HorizontalExpand="True" />
+            <RichTextLabel Name="Funding" />
+            <RichTextLabel Name="Reason" />
+            <WrapContainer SeparationOverride="8" CrossSeparationOverride="8">
+                <ui:SWGlobalWarConsoleButton Name="Start" Text="{Loc 'sw-global-war-hub-start'}" Disabled="True" MinHeight="44" />
+                <ui:SWGlobalWarConsoleButton Name="Cancel" Text="{Loc 'sw-global-war-hub-cancel'}" Disabled="True" MinHeight="44" />
+                <ui:SWGlobalWarConsoleButton Name="Retry" Text="{Loc 'sw-global-war-hub-retry'}" Disabled="True" MinHeight="44" />
+            </WrapContainer>
+            <RichTextLabel Name="Progress" />
+            <RichTextLabel Name="Result" />
+            <RichTextLabel Name="Receipt" />
+            <BoxContainer Name="Management" Orientation="Vertical" SeparationOverride="8" Visible="False">
+                <PanelContainer StyleClasses="SWTermDivider" MinHeight="2" />
+                <Label Text="{Loc 'sw-global-war-hub-grant-title'}" StyleClasses="SWTermHeading" />
+                <RichTextLabel Text="{Loc 'sw-global-war-hub-grant-help'}" />
+                <OptionButton Name="OrderPicker" Filterable="True" HorizontalExpand="True" />
+                <WrapContainer SeparationOverride="8" CrossSeparationOverride="8">
+                    <Label Text="{Loc 'sw-global-war-hub-maximum'}" />
+                    <LineEdit Name="Maximum" MinWidth="70" />
+                    <Label Text="{Loc 'sw-global-war-hub-duration'}" />
+                    <LineEdit Name="Minutes" Text="10" MinWidth="60" />
+                    <ui:SWGlobalWarConsoleButton Name="Grant" Text="{Loc 'sw-global-war-hub-grant'}" Disabled="True" />
+                    <ui:SWGlobalWarConsoleButton Name="Revoke" Text="{Loc 'sw-global-war-hub-revoke'}" Disabled="True" />
+                </WrapContainer>
+            </BoxContainer>
+        </BoxContainer>
+    </ScrollContainer>
+</ui:SWGlobalWarWindow>

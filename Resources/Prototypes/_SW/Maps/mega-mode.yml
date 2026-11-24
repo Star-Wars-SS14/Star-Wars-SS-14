@@ -1,0 +1,623 @@
+# SW: Physical sector maps. Faction admission is owned by the campaign role stations.
+- type: entity
+  id: SWGlobalWarSectorStation
+  parent: BaseStation
+  categories: [ HideSpawnMenu ]
+  components:
+  - type: Transform
+
+- type: gameMap
+  id: SWGlobalWarE0Orbit
+  mapName: 'Дромунд-Каас: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/dromund_kaas.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Дромунд-Каас: орбита'
+
+- type: gameMap
+  id: SWGlobalWarE0Surface
+  mapName: 'Дромунд-Каас: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/dromund_kaas.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Дромунд-Каас: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarE1Orbit
+  mapName: 'Датомир: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/empire_agri_wetlands.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Датомир: орбита'
+
+- type: gameMap
+  id: SWGlobalWarE1Surface
+  mapName: 'Датомир: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/empire_agri_wetlands.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Датомир: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarE2Orbit
+  mapName: 'Рилот: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/empire_agri_silos.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Рилот: орбита'
+
+- type: gameMap
+  id: SWGlobalWarE2Surface
+  mapName: 'Рилот: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/empire_agri_silos.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Рилот: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarE3Orbit
+  mapName: 'Салласт: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/empire_mine_basalt.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Салласт: орбита'
+
+- type: gameMap
+  id: SWGlobalWarE3Surface
+  mapName: 'Салласт: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/empire_mine_basalt.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Салласт: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarE4Orbit
+  mapName: 'Джеонозис: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/empire_mine_red_dust.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Джеонозис: орбита'
+
+- type: gameMap
+  id: SWGlobalWarE4Surface
+  mapName: 'Джеонозис: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/empire_mine_red_dust.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Джеонозис: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarE5Orbit
+  mapName: 'Кессель: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/empire_mine_deep_vein.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Кессель: орбита'
+
+- type: gameMap
+  id: SWGlobalWarE5Surface
+  mapName: 'Кессель: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/empire_mine_deep_vein.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Кессель: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarE6Orbit
+  mapName: 'Мустафар: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/empire_mine_enclave.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Мустафар: орбита'
+
+- type: gameMap
+  id: SWGlobalWarE6Surface
+  mapName: 'Мустафар: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/empire_mine_enclave.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Мустафар: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarE7Orbit
+  mapName: 'Зиост: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/empire_industry_foundry.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Зиост: орбита'
+
+- type: gameMap
+  id: SWGlobalWarE7Surface
+  mapName: 'Зиост: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/empire_industry_foundry.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Зиост: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarE8Orbit
+  mapName: 'Фондор: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/empire_industry_dockworks.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Фондор: орбита'
+
+- type: gameMap
+  id: SWGlobalWarE8Surface
+  mapName: 'Фондор: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/empire_industry_dockworks.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Фондор: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarE9Orbit
+  mapName: 'Коррибан: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/korriban.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Коррибан: орбита'
+
+- type: gameMap
+  id: SWGlobalWarE9Surface
+  mapName: 'Коррибан: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/korriban.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Коррибан: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarN0Orbit
+  mapName: 'Альдераан: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/alderaan.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Альдераан: орбита'
+
+- type: gameMap
+  id: SWGlobalWarN0Surface
+  mapName: 'Альдераан: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/alderaan.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Альдераан: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarN1Orbit
+  mapName: 'Орд-Мантелл: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/ord_mantell.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Орд-Мантелл: орбита'
+
+- type: gameMap
+  id: SWGlobalWarN1Surface
+  mapName: 'Орд-Мантелл: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/ord_mantell.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Орд-Мантелл: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarR0Orbit
+  mapName: 'Корусант: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/coruscant.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Корусант: орбита'
+
+- type: gameMap
+  id: SWGlobalWarR0Surface
+  mapName: 'Корусант: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/coruscant.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Корусант: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarR1Orbit
+  mapName: 'Дантуин: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/republic_agri_terraces.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Дантуин: орбита'
+
+- type: gameMap
+  id: SWGlobalWarR1Surface
+  mapName: 'Дантуин: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/republic_agri_terraces.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Дантуин: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarR2Orbit
+  mapName: 'Набу: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/republic_agri_glasshouse.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Набу: орбита'
+
+- type: gameMap
+  id: SWGlobalWarR2Surface
+  mapName: 'Набу: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/republic_agri_glasshouse.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Набу: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarR3Orbit
+  mapName: 'Аркания: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/republic_mine_quarry.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Аркания: орбита'
+
+- type: gameMap
+  id: SWGlobalWarR3Surface
+  mapName: 'Аркания: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/republic_mine_quarry.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Аркания: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarR4Orbit
+  mapName: 'Утапау: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/republic_mine_canyon.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Утапау: орбита'
+
+- type: gameMap
+  id: SWGlobalWarR4Surface
+  mapName: 'Утапау: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/republic_mine_canyon.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Утапау: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarR5Orbit
+  mapName: 'Илум: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/republic_mine_glacier.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Илум: орбита'
+
+- type: gameMap
+  id: SWGlobalWarR5Surface
+  mapName: 'Илум: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/republic_mine_glacier.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Илум: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarR6Orbit
+  mapName: 'Белсавис: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/republic_mine_enclave.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Белсавис: орбита'
+
+- type: gameMap
+  id: SWGlobalWarR6Surface
+  mapName: 'Белсавис: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/republic_mine_enclave.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Белсавис: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarR7Orbit
+  mapName: 'Кореллия: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/republic_industry_arsenal.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Кореллия: орбита'
+
+- type: gameMap
+  id: SWGlobalWarR7Surface
+  mapName: 'Кореллия: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/republic_industry_arsenal.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Кореллия: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarR8Orbit
+  mapName: 'Куат: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/republic_industry_dockworks.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Куат: орбита'
+
+- type: gameMap
+  id: SWGlobalWarR8Surface
+  mapName: 'Куат: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/republic_industry_dockworks.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Куат: поверхность'
+
+- type: gameMap
+  id: SWGlobalWarR9Orbit
+  mapName: 'Тайтон: орбита'
+  mapPath: /Maps/SW/Mega/Orbit/tython.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Тайтон: орбита'
+
+- type: gameMap
+  id: SWGlobalWarR9Surface
+  mapName: 'Тайтон: поверхность'
+  mapPath: /Maps/SW/Mega/Surface/tython.yml
+  minPlayers: 0
+  maxRandomOffset: 0
+  randomRotation: false
+  stations:
+    MegaStation:
+      stationProto: SWGlobalWarSectorStation
+      components:
+      - type: StationNameSetup
+        mapNameTemplate: 'Тайтон: поверхность'

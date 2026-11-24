@@ -184,10 +184,15 @@ public abstract partial class SharedShuttleSystem : EntitySystem
         return range;
     }
 
+    //SW start
+    // GlobalWar uses planet routes to determine reachability, so it can disable the coordinate range check.
     /// <summary>
     /// Returns true if the spot is free to be FTLd to (not close to any objects and in range).
     /// </summary>
-    public bool FTLFree(EntityUid shuttleUid, EntityCoordinates coordinates, Angle angle, List<ShuttleExclusionObject>? exclusionZones)
+    /// <param name="checkRange">Disable only when a separate route system determines inter-map reachability.</param>
+    public bool FTLFree(EntityUid shuttleUid, EntityCoordinates coordinates, Angle angle, List<ShuttleExclusionObject>? exclusionZones,
+        bool checkRange = true)
+    //SW end
     {
         if (!_physicsQuery.TryGetComponent(shuttleUid, out var shuttlePhysics) ||
             !_xformQuery.TryGetComponent(shuttleUid, out var shuttleXform))
@@ -204,11 +209,13 @@ public abstract partial class SharedShuttleSystem : EntitySystem
         // This is the already adjusted position
         var targetPosition = mapCoordinates.Position;
 
-        // Check range even if it's cross-map.
-        if ((targetPosition - ourPos).Length() > FTLRange)
+        //SW start
+        // Coordinates on different planet maps do not represent travel distance; keep the range check for standard FTL.
+        if (checkRange && (targetPosition - ourPos).Length() > FTLRange)
         {
             return false;
         }
+        //SW end
 
         // Check exclusion zones.
         // This needs to be passed in manually due to PVS.

@@ -1,0 +1,25 @@
+- type: loadoutEffectGroup
+  id: SWLoadoutGateWeapons
+  effects:
+  - !type:SWPlayTimeLoadoutEffect
+    time: 7200 # 2h
+
+- type: loadoutEffectGroup
+  id: SWLoadoutGateHeavyPistol
+  effects:
+  - !type:SWPlayTimeLoadoutEffect
+    time: 18000 # 5h
+
+- type: loadoutEffectGroup
+  id: SWLoadoutVibroSwordVeteranGate
+  effects:
+  - !type:SWPlayTimeLoadoutEffect
+    time: 36000 # 10h
+    tracker: Job_Mandalorian_Veteran
+
+- type: loadoutEffectGroup
+  id: SWLoadoutVibroSwordLeaderGate
+  effects:
+  - !type:SWPlayTimeLoadoutEffect
+    time: 36000 # 10h
+    tracker: Job_Mandalorian_Leader

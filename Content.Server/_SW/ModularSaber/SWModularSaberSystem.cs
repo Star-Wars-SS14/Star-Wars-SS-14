@@ -219,9 +219,15 @@ public sealed class SWModularSaberSystem : EntitySystem
             return;
         }
 
-        var damage = emitterComp.Damage * focusComp.DamageMultiplier;
+        var bladeDamage = emitterComp.Damage;
+        if (ent.Comp.ActivatedDamageBonus is { } bonus)
+            bladeDamage += bonus;
+
+        var damage = bladeDamage * focusComp.DamageMultiplier;
         if (emitterComp.Damage.DamageDict.TryGetValue("Structural", out var structural))
             damage.DamageDict["Structural"] = structural;
+        else if (ent.Comp.ActivatedDamageBonus != null)
+            damage.DamageDict.Remove("Structural");
         toggleMelee.ActivatedDamage = damage;
         Dirty(ent, toggleMelee);
         if (TryComp<AppearanceComponent>(ent, out var appearance))
@@ -235,7 +241,7 @@ public sealed class SWModularSaberSystem : EntitySystem
 
         melee.AttackRate = args.Activated && ent.Comp.Focus?.Item is { } focus &&
                            TryComp<SWSaberFocusComponent>(focus, out var focusComp)
-            ? focusComp.AttackRateMultiplier
+            ? ent.Comp.BaseAttackRate * focusComp.AttackRateMultiplier
             : 1f;
         DirtyField(ent, melee, nameof(MeleeWeaponComponent.AttackRate));
     }

@@ -1,7 +1,7 @@
 - type: entity
   parent: SWEnergySwordBase
   id: SWModularSaber
-  name: modular lightsaber hilt
+  name: modular single-bladed lightsaber
   description: A lightsaber hilt with replaceable components.
   components:
   - type: Construction
@@ -44,7 +44,7 @@
 - type: entity
   parent: SWModularSaber
   id: SWModularSaberDouble
-  name: double-bladed modular lightsaber hilt
+  name: modular double-bladed lightsaber
   description: A one-handed double-bladed lightsaber hilt with replaceable components.
   components:
   - type: Construction
@@ -67,7 +67,7 @@
 - type: entity
   parent: SWModularSaber
   id: SWModularSaberDualPhase
-  name: dual-phase lightsaber hilt
+  name: modular dual-phase lightsaber
   description: A modular hilt for a longer, more powerful blade with slower swings.
   components:
   - type: Construction
@@ -97,7 +97,7 @@
 - type: entity
   parent: SWModularSaber
   id: SWModularSaberLongHilt
-  name: long lightsaber hilt
+  name: modular long-hilt lightsaber
   description: An elongated modular hilt designed for reach and a longer guard.
   components:
   - type: Construction

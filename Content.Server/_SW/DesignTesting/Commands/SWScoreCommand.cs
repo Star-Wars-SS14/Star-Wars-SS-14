@@ -49,6 +49,11 @@ public sealed class SWScoreCommand : LocalizedEntityCommands
             foreach (var task in _tasks.GetFactionTasks(id))
             {
                 number++;
+                if (task.Comp.FinalOnly)
+                {
+                    shell.WriteLine($"{number}. {task.Comp.Name}: {Loc.GetString("sw-task-console-final-only")}");
+                    continue;
+                }
                 var done = task.Comp.Completeness == 1.0;
                 shell.WriteLine(Loc.GetString("sw-cmd-score-task",
                     ("number", number),

@@ -7,3 +7,5 @@ sw-task-console-score = { $score } { $score ->
    *[other] points
 }
 sw-task-console-officers-only = You don't have access to this task console.
+
+sw-task-console-final-only = The result will be revealed after the round

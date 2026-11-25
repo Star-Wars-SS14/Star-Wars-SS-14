@@ -5,6 +5,7 @@ using Content.Shared._SW.TaskSystem;
 using Content.Shared.Atmos.Components;
 using Content.Shared.FixedPoint;
 using Content.Shared.GameTicking.Components;
+using Content.Shared.GameTicking;
 using Content.Shared.Random;
 using Content.Shared.Random.Helpers;
 using Robust.Shared.GameObjects;
@@ -80,6 +81,8 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         {
             return;
         }
+        if (comp.FinalOnly)
+            return;
         comp.Completeness = args.NewProgress;
         if (comp.Completeness == 1.0)
         {
@@ -93,11 +96,19 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         component.TimeToAddStartTasks = _timing.CurTime
             + TimeSpan.FromSeconds(_timerSpeedup.Scale(component.DelayBeforeAddingStartTasksInSeconds));
         var factions = _swFaction.GetFactions();
-        foreach (var (_, factionEntity) in factions)
+        foreach (var (factionId, factionEntity) in factions)
         {
             if (!TryComp<SWTaskContainerComponent>(factionEntity, out var comp))
             {
                 continue;
+            }
+            if (!component.ManualTasksOnly)
+            {
+                foreach (var task in comp.RequiredStartTasks)
+                {
+                    if (!comp.CurrentTasks.Any(existing => Prototype(existing.Owner)?.ID == task.Id))
+                        AddTask(factionId, task.Id);
+                }
             }
             comp.NextAddTime = _timing.CurTime + TimeSpan.FromSeconds(
                 _timerSpeedup.Scale(component.DelayBeforeAddingStartTasksInSeconds + comp.AddIntervalInSeconds));
@@ -213,7 +224,12 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                 {
                     continue;
                 }
-                UpdateTaskProgress(task.Owner, task.Comp);
+                if (task.Comp.FinalOnly && GameTicker.RunLevel != GameRunLevel.PostRound)
+                {
+                    args.AddLine($"- Задание \"{task.Comp.Name}\": {Loc.GetString("sw-task-console-final-only")}");
+                    continue;
+                }
+                UpdateTaskProgress(task.Owner, task.Comp, final: true);
                 string text = $"""- Задание "{task.Comp.Name}": """;
                 if (task.Comp.Completeness == 1.0)
                 {
@@ -225,7 +241,13 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                         score = ev.Score;
                         task.Comp.Score = ev.Score;
                     }
-                    factionComp.CurrentScore += score;
+                    if (!task.Comp.FinalOnly)
+                        factionComp.CurrentScore += score;
+                    else if (TryComp<SWFinalTaskStateComponent>(task, out var finalState) && !finalState.Scored)
+                    {
+                        factionComp.CurrentScore += score;
+                        finalState.Scored = true;
+                    }
                     text += $"Выполнено. Очков получено: {score}.";
                 }
                 else
@@ -282,6 +304,11 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                 continue;
             }
 
+            // The sealed result is unavailable live, and once credited it is already in CurrentScore.
+            if (task.Comp.FinalOnly && (GameTicker.RunLevel != GameRunLevel.PostRound ||
+                (TryComp<SWFinalTaskStateComponent>(task, out var finalState) && finalState.Scored)))
+                continue;
+
             UpdateTaskProgress(task.Owner, task.Comp);
             if (task.Comp.Completeness == 1.0)
             {
@@ -306,6 +333,8 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     /// </summary>
     public void ForceCompleteTask(Entity<SWTaskComponent> task)
     {
+        if (task.Comp.FinalOnly)
+            return;
         EnsureComp<SWForceCompletedTaskComponent>(task);
         task.Comp.Completeness = 1.0;
         RaiseLocalEvent(task.Owner, new SWOnTaskCompleteEvent());
@@ -314,6 +343,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
     private HashSet<Entity<SWFactionComponent>> CalculateWinner(EntityQueryEnumerator<SWFactionComponent> query,
         bool liveScore = false)
     {
+        var ignoreFinal = liveScore && GameTicker.RunLevel != GameRunLevel.PostRound;
         HashSet<Entity<SWFactionComponent>> majorFactions = new();
         HashSet<Entity<SWFactionComponent>> minorFactions = new();
         HashSet<Entity<SWFactionComponent>> majorCompletedAllTasks = new();
@@ -327,7 +357,8 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             if (fComp.IsMajor)
             {
                 majorFactions.Add(new Entity<SWFactionComponent>(fuid, fComp));
-                if (FactionCompletedAllTasks(fuid, fComp) && taskComp.CurrentTasks.Count() != 0)
+                if (FactionCompletedAllTasks(fuid, fComp, ignoreFinal: ignoreFinal) &&
+                    taskComp.CurrentTasks.Any(task => !ignoreFinal || !task.Comp.FinalOnly))
                 {
                     majorCompletedAllTasks.Add(new Entity<SWFactionComponent>(fuid, fComp));
                 }
@@ -335,7 +366,8 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
             else
             {
                 minorFactions.Add(new Entity<SWFactionComponent>(fuid, fComp));
-                if (FactionCompletedAllTasks(fuid, fComp) && taskComp.CurrentTasks.Count() != 0)
+                if (FactionCompletedAllTasks(fuid, fComp, ignoreFinal: ignoreFinal) &&
+                    taskComp.CurrentTasks.Any(task => !ignoreFinal || !task.Comp.FinalOnly))
                 {
                     minorCompletedAllTasks.Add(new Entity<SWFactionComponent>(fuid, fComp));
                 }
@@ -371,7 +403,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
 
         foreach (var fact in minorFactions)
         {
-            if (GetTotalScore(fact) > maxScoreAmongMajors)
+            if (GetTotalScore(fact, ignoreFinal) > maxScoreAmongMajors)
             {
                 minorScoreMoreMajors.Add(fact);
             }
@@ -390,7 +422,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         }
     }
 
-    private int GetTotalScore(Entity<SWFactionComponent> ent)
+    private int GetTotalScore(Entity<SWFactionComponent> ent, bool ignoreFinal = false)
     {
         if (!TryComp<SWTaskContainerComponent>(ent, out var taskComp))
         {
@@ -400,12 +432,13 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         int res = 0;
         foreach (var task in taskComp.CurrentTasks)
         {
-            res += task.Comp.Score;
+            if (!ignoreFinal || !task.Comp.FinalOnly)
+                res += task.Comp.Score;
         }
         return res;
     }
 
-    private bool FactionCompletedAllTasks(EntityUid factionUid, SWFactionComponent comp, bool ignoreSubTasks = true)
+    private bool FactionCompletedAllTasks(EntityUid factionUid, SWFactionComponent comp, bool ignoreSubTasks = true, bool ignoreFinal = false)
     {
         if (!TryComp<SWTaskContainerComponent>(factionUid, out var taskComp))
         {
@@ -413,7 +446,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         }
         foreach (var task in taskComp.CurrentTasks)
         {
-            if (ignoreSubTasks && task.Comp.ParentTask != null)
+            if ((ignoreSubTasks && task.Comp.ParentTask != null) || (ignoreFinal && task.Comp.FinalOnly))
             {
                 continue;
             }
@@ -425,7 +458,7 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
         return true;
     }
 
-    private void UpdateTaskProgress(EntityUid taskUid, SWTaskComponent? comp = null)
+    private void UpdateTaskProgress(EntityUid taskUid, SWTaskComponent? comp = null, bool final = false)
     {
         if (comp == null)
         {
@@ -435,7 +468,13 @@ public sealed partial class SWTasksGameRuleSystem : GameRuleSystem<SWTaskGamerul
                 return;
             }
         }
-        if (HasComp<SWForceCompletedTaskComponent>(taskUid))
+        if (comp.FinalOnly)
+        {
+            if (!final || GameTicker.RunLevel != GameRunLevel.PostRound || HasComp<SWFinalTaskStateComponent>(taskUid))
+                return;
+            EnsureComp<SWFinalTaskStateComponent>(taskUid);
+        }
+        if (!comp.FinalOnly && HasComp<SWForceCompletedTaskComponent>(taskUid))
         {
             comp.Completeness = 1.0;
             return;

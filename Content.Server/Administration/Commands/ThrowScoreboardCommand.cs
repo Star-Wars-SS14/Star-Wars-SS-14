@@ -1,4 +1,6 @@
 ﻿using Content.Server.GameTicking;
+using Content.Server._SW.Cultist;
+using Content.Shared.GameTicking;
 using Content.Shared.Administration;
 using Robust.Shared.Console;
 
@@ -22,6 +24,12 @@ public sealed class ThrowScoreboardCommand : IConsoleCommand
             shell.WriteLine(Help);
             return;
         }
-        _e.System<GameTicker>().ShowRoundEndScoreboard();
+        var ticker = _e.System<GameTicker>();
+        if (ticker.RunLevel == GameRunLevel.InRound && _e.System<SWCultistGameRuleSystem>().HasCultistRule())
+        {
+            shell.WriteLine(Loc.GetString("sw-task-console-final-only"));
+            return;
+        }
+        ticker.ShowRoundEndScoreboard();
     }
 }

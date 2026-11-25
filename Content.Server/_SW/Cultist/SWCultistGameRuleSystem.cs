@@ -17,6 +17,7 @@ using Content.Shared.Hands.Components;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Inventory;
 using Content.Shared.Mind;
+using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Objectives.Components;
@@ -106,6 +107,20 @@ public sealed partial class SWCultistObjectiveComponent : Component
     public bool Survival;
 }
 
+// Track the last physical body without evaluating the objective during play.
+[RegisterComponent]
+public sealed partial class SWCultistBodyTrackerComponent : Component
+{
+    public EntityUid Body;
+    public bool ConfirmedDeath;
+}
+
+[RegisterComponent]
+public sealed partial class SWCultistTrackedBodyComponent : Component
+{
+    public EntityUid Mind;
+}
+
 public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleComponent>
 {
     [Dependency] private readonly IPlayerManager _players = default!;
@@ -129,6 +144,9 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
         base.Initialize();
         SubscribeLocalEvent<SWCultistObjectiveComponent, ObjectiveGetProgressEvent>(OnProgress);
         SubscribeLocalEvent<SWCultistTargetBodyComponent, BeingGibbedEvent>(OnTargetGibbed);
+        SubscribeLocalEvent<SWCultistTrackedBodyComponent, BeingGibbedEvent>(OnCultistGibbed);
+        SubscribeLocalEvent<SWCultistTrackedBodyComponent, EntityTerminatingEvent>(OnCultistBodyTerminating);
+        SubscribeLocalEvent<SWCultistBodyTrackerComponent, MindGotAddedEvent>(OnCultistMindAdded);
         SubscribeLocalEvent<SWCultistGameRuleComponent, ComponentShutdown>(OnShutdown);
         SubscribeLocalEvent<RoundEndedEvent>(OnRoundEnded);
         SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
@@ -332,6 +350,7 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
                 break;
             if (!TryPlayer(session, out var body, out var mind, out _))
                 continue;
+            TrackCultistBody(mind, body);
             try
             {
                 if (!_antags.TryMakeAntag((template, selection), session, definition.Value))
@@ -343,7 +362,7 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
             }
             var actualRole = HasCultistRole(rule, mind);
             if (actualRole == true)
-                rule.Members.Add((mind, body));
+                AddCultistMember(rule, mind, body);
             else if (actualRole == null)
             {
                 rule.PendingAutomaticRoles.Add((mind, body));
@@ -364,7 +383,7 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
             if (hasRole == null)
                 continue;
             if (hasRole == true && !rule.Members.Any(member => member.Mind == candidate.Mind))
-                rule.Members.Add(candidate);
+                AddCultistMember(rule, candidate.Mind, candidate.Body);
             rule.PendingAutomaticRoles.RemoveAt(i);
         }
         if (rule.PendingAutomaticRoles.Count != 0)
@@ -482,6 +501,7 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
             var assignedAll = true;
             foreach (var candidate in chosen)
             {
+                TrackCultistBody(candidate.Mind, candidate.Body);
                 bool accepted;
                 try
                 {
@@ -493,7 +513,7 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
                     Log.Error($"Manual cultist assignment for {candidate.Session.Name} failed after a possible mutation: {e}");
                     var actualRole = HasCultistRole(rule, candidate.Mind);
                     if (actualRole == true)
-                        rule.Members.Add((candidate.Mind, candidate.Body));
+                        AddCultistMember(rule, candidate.Mind, candidate.Body);
                     else if (actualRole == null)
                     {
                         plan.Uncertain = true;
@@ -519,7 +539,7 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
                     assignedAll = false;
                     break;
                 }
-                rule.Members.Add((candidate.Mind, candidate.Body));
+                AddCultistMember(rule, candidate.Mind, candidate.Body);
             }
             if (rule.Members.Count == 0 && !plan.Uncertain)
             {
@@ -580,7 +600,7 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
             if (hasRole == null)
                 continue;
             if (hasRole == true && !rule.Members.Any(member => member.Mind == candidate.Mind))
-                rule.Members.Add(candidate);
+                AddCultistMember(rule, candidate.Mind, candidate.Body);
             plan.Unresolved.RemoveAt(i);
         }
         // A previously confirmed role can disappear while publication is waiting.
@@ -962,6 +982,107 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
                 Log.Error($"Could not clean up cultist sword attempt for {mind}: {e}");
             }
         }
+    }
+
+    private void AddCultistMember(SWCultistGameRuleComponent rule, EntityUid mind, EntityUid body)
+    {
+        TrackCultistBody(mind, body);
+        rule.Members.Add((mind, body));
+    }
+
+    private void TrackCultistBody(EntityUid mind, EntityUid body)
+    {
+        if (TerminatingOrDeleted(mind) || TerminatingOrDeleted(body))
+            return;
+        var tracker = EnsureComp<SWCultistBodyTrackerComponent>(mind);
+        // If the mind has already moved, follow its current physical body.
+        if (TryComp<MindComponent>(mind, out var mindComp) && mindComp.OwnedEntity is { } current &&
+            !HasComp<GhostComponent>(current) && HasComp<MobStateComponent>(current))
+            body = current;
+        if (tracker.Body != body)
+        {
+            tracker.Body = body;
+            tracker.ConfirmedDeath = false;
+        }
+        EnsureComp<SWCultistTrackedBodyComponent>(body).Mind = mind;
+    }
+
+    private void OnCultistMindAdded(Entity<SWCultistBodyTrackerComponent> ent, ref MindGotAddedEvent args)
+    {
+        var body = args.Container.Owner;
+        // Minds also move to brains during surgery and gibbing; only mobs replace the body.
+        if (!HasComp<GhostComponent>(body) && HasComp<MobStateComponent>(body))
+            TrackCultistBody(ent.Owner, body);
+    }
+
+    private void OnCultistGibbed(Entity<SWCultistTrackedBodyComponent> ent, ref BeingGibbedEvent args)
+    {
+        if (TryComp<SWCultistBodyTrackerComponent>(ent.Comp.Mind, out var tracker) && tracker.Body == ent.Owner)
+            tracker.ConfirmedDeath = true;
+    }
+
+    private void OnCultistBodyTerminating(Entity<SWCultistTrackedBodyComponent> ent, ref EntityTerminatingEvent args)
+    {
+        if (TryComp<SWCultistBodyTrackerComponent>(ent.Comp.Mind, out var tracker) && tracker.Body == ent.Owner &&
+            TryComp<MobStateComponent>(ent.Owner, out var state) && state.CurrentState == MobState.Dead)
+            tracker.ConfirmedDeath = true;
+    }
+
+    public bool HasCultistRule()
+    {
+        var rules = AllEntityQuery<SWCultistGameRuleComponent>();
+        while (rules.MoveNext(out var uid, out _))
+        {
+            if (HasComp<GameRuleComponent>(uid))
+                return true;
+        }
+        return false;
+    }
+
+    // Called only by the sealed task during the actual post-round summary. Unknown is failure.
+    public bool AllAssignedCultistsDead()
+    {
+        if (GameTicker.RunLevel != GameRunLevel.PostRound)
+            return false;
+        var rules = AllEntityQuery<SWCultistGameRuleComponent>();
+        while (rules.MoveNext(out var uid, out var rule))
+        {
+            if (!HasComp<GameRuleComponent>(uid))
+                continue;
+            foreach (var pending in rule.PendingAutomaticRoles.Concat(rule.ManualPlan?.Unresolved ?? new()))
+            {
+                var role = HasCultistRole(rule, pending.Mind);
+                if (role == null || (role == true && !IsCultistDead(pending.Mind, pending.Body)))
+                    return false;
+            }
+            foreach (var member in rule.Members)
+            {
+                if (!IsCultistDead(member.Mind, member.Body))
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    private bool IsCultistDead(EntityUid mind, EntityUid originalBody)
+    {
+        var body = originalBody;
+        var gibbed = false;
+        if (TryComp<SWCultistBodyTrackerComponent>(mind, out var tracker))
+        {
+            body = tracker.Body;
+            gibbed = tracker.ConfirmedDeath;
+        }
+        if (TryComp<MindComponent>(mind, out var mindComp) && mindComp.OwnedEntity is { } current &&
+            !HasComp<GhostComponent>(current) && HasComp<MobStateComponent>(current))
+        {
+            if (current != body)
+                gibbed = false;
+            body = current;
+        }
+        if (!TerminatingOrDeleted(body))
+            return TryComp<MobStateComponent>(body, out var state) && state.CurrentState == MobState.Dead;
+        return gibbed;
     }
 
     private bool IsLiving(EntityUid body) => !TerminatingOrDeleted(body) &&

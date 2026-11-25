@@ -8,3 +8,5 @@ sw-task-console-score = { $score } { $score ->
    *[other] очков
 }
 sw-task-console-officers-only = У вас нет доступа к этой консоли заданий.
+
+sw-task-console-final-only = Результат станет известен после раунда

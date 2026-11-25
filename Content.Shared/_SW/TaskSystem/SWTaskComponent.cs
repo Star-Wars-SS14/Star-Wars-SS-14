@@ -22,6 +22,10 @@ public sealed partial class SWTaskComponent : Component
     [DataField, ViewVariables(VVAccess.ReadWrite)]
     public string Description = "Тут ничего нет";
 
+    // Progress is evaluated only during the real round-end summary.
+    [DataField]
+    public bool FinalOnly;
+
     [DataField]
     public int Score = 1;
 

@@ -7,6 +7,8 @@
   loadouts:
   - SWSaberHiltSingleLoadout
   - SWSaberHiltDoubleLoadout
+  - SWSaberHiltDualPhaseLoadout
+  - SWSaberHiltLongHiltLoadout
 
 - type: loadout
   id: SWSaberHiltSingleLoadout
@@ -19,6 +21,18 @@
   name: ent-SWModularSaberDouble
   equipment:
     pocket1: SWModularSaberDouble
+
+- type: loadout
+  id: SWSaberHiltDualPhaseLoadout
+  name: ent-SWModularSaberDualPhase
+  equipment:
+    pocket1: SWModularSaberDualPhase
+
+- type: loadout
+  id: SWSaberHiltLongHiltLoadout
+  name: ent-SWModularSaberLongHilt
+  equipment:
+    pocket1: SWModularSaberLongHilt
 
 - type: loadoutGroup
   id: SWSaberEmitterChoice

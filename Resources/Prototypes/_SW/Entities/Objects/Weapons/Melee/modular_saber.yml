@@ -65,6 +65,66 @@
     sprite: Objects/Weapons/Melee/e_sword_double-inhands.rsi
 
 - type: entity
+  parent: SWModularSaber
+  id: SWModularSaberDualPhase
+  name: dual-phase lightsaber hilt
+  description: A modular hilt for a longer, more powerful blade with slower swings.
+  components:
+  - type: Construction
+    deconstructionTarget: null
+  - type: SWModularSaber
+    activatedDamageBonus:
+      types:
+        Slash: 8
+        Heat: 10
+    baseAttackRate: 0.65
+  - type: MeleeWeapon
+    range: 1.80
+  - type: SWWeaponBlock
+    blockDuration: 4
+    delayBetweenBlocks: 1.2
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Melee/dual_phase_saber.rsi
+    layers:
+    - state: hilt
+    - state: blade
+      visible: false
+      shader: unshaded
+      map: [ "blade" ]
+  - type: Item
+    sprite: _SW/Objects/Weapons/Melee/dual_phase_saber.rsi
+
+- type: entity
+  parent: SWModularSaber
+  id: SWModularSaberLongHilt
+  name: long lightsaber hilt
+  description: An elongated modular hilt designed for reach and a longer guard.
+  components:
+  - type: Construction
+    deconstructionTarget: null
+  - type: SWModularSaber
+    activatedDamageBonus:
+      types:
+        Slash: 3
+        Heat: 2
+    baseAttackRate: 0.85
+  - type: MeleeWeapon
+    range: 1.65
+  - type: SWWeaponBlock
+    blockDuration: 6.5
+    delayBetweenBlocks: 0.8
+  - type: Sprite
+    sprite: _SW/Objects/Weapons/Melee/long_hilt_saber.rsi
+    layers:
+    - state: hilt
+    - state: blade
+      visible: false
+      shader: unshaded
+      map: [ "blade" ]
+  - type: Item
+    sprite: _SW/Objects/Weapons/Melee/long_hilt_saber.rsi
+
+- type: entity
   parent: BaseItem
   id: SWSaberEmitterStandard
   name: standard lightsaber emitter

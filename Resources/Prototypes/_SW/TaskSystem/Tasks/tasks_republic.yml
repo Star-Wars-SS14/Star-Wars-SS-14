@@ -1,8 +1,8 @@
 - type: weightedRandom
   id: RepublicTasksSet
   weights:
-    KillRandomEmpireByName: 1
-    KillByJobRepublic: 1
+    # KillRandomEmpireByName: 1
+    # KillByJobRepublic: 1
     StealIdCardsEmpire: 1
     CaptureEmpire: 1
     GetFarnellDocumentsRepublic: 1

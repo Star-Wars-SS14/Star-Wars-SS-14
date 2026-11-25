@@ -1012,7 +1012,7 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
             (objective.Comp.Survival ? Survival(rule) : MainSuccess(rule)) ? 1 : 0;
     }
 
-    protected override void AppendRoundEndText(EntityUid uid, SWCultistGameRuleComponent component, GameRuleComponent gameRule, ref RoundEndTextAppendEvent args)
+    internal void AppendCultistRoundEndText(SWCultistGameRuleComponent component, RoundEndTextAppendEvent args)
     {
         if (component.Members.Count == 0) return;
         var mainSuccess = MainSuccess(component);
@@ -1024,7 +1024,7 @@ public sealed class SWCultistGameRuleSystem : GameRuleSystem<SWCultistGameRuleCo
             : component.ObjectiveText;
         var mainStatus = Loc.GetString(mainSuccess ? "sw-cultist-roundend-completed" : "sw-cultist-roundend-not-completed");
         var survivalStatus = Loc.GetString(survival ? "sw-cultist-roundend-survived" : "sw-cultist-roundend-none-survived");
-        args.AddPriorityLine($"[color={(success ? "#66ff99" : "#ff7777")}]{FormattedMessage.EscapeText(outcome)}[/color]\n" +
+        args.AddLine($"[color={(success ? "#66ff99" : "#ff7777")}]{FormattedMessage.EscapeText(outcome)}[/color]\n" +
             $"[color=#fff2a8]{FormattedMessage.EscapeText(objective)} — {FormattedMessage.EscapeText(mainStatus)}\n" +
             $"{FormattedMessage.EscapeText(survivalStatus)}[/color]");
     }

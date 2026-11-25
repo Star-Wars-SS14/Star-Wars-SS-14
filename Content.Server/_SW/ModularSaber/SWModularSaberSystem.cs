@@ -1,3 +1,4 @@
+using Content.Shared._SW.ModularSaber;
 using Content.Shared.ActionBlocker;
 using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
@@ -35,7 +36,6 @@ public sealed class SWModularSaberSystem : EntitySystem
         SubscribeLocalEvent<SWModularSaberComponent, GetVerbsEvent<AlternativeVerb>>(OnVerbs);
         SubscribeLocalEvent<SWModularSaberComponent, DestructionEventArgs>(OnDestruction);
         SubscribeLocalEvent<SWModularSaberComponent, BreakageEventArgs>(OnBreakage);
-        SubscribeLocalEvent<SWModularSaberComponent, EntityTerminatingEvent>(OnTerminating);
         SubscribeLocalEvent<SWModularSaberComponent, ComponentRemove>(OnRemove);
         SubscribeLocalEvent<SWModularSaberComponent, ItemSlotInsertAttemptEvent>(OnInsertAttempt);
         SubscribeLocalEvent<SWModularSaberComponent, ItemSlotEjectAttemptEvent>(OnEjectAttempt);
@@ -46,6 +46,9 @@ public sealed class SWModularSaberSystem : EntitySystem
 
     private void OnInit(EntityUid uid, SWModularSaberComponent comp, ComponentInit args)
     {
+        if (!HasComp<ItemSlotsComponent>(uid))
+            return;
+
         _slots.TryGetSlot(uid, "saber-crystal", out comp.Crystal);
         _slots.TryGetSlot(uid, "saber-emitter", out comp.Emitter);
         _slots.TryGetSlot(uid, "saber-focus", out comp.Focus);
@@ -53,10 +56,27 @@ public sealed class SWModularSaberSystem : EntitySystem
 
     private void OnRemove(EntityUid uid, SWModularSaberComponent comp, ComponentRemove args)
     {
+        if (TerminatingOrDeleted(uid))
+            return;
+
         ReleaseContents(uid, comp);
-        if (comp.Crystal != null) _slots.RemoveItemSlot(uid, comp.Crystal);
-        if (comp.Emitter != null) _slots.RemoveItemSlot(uid, comp.Emitter);
-        if (comp.Focus != null) _slots.RemoveItemSlot(uid, comp.Focus);
+        foreach (var slot in new[] { comp.Crystal, comp.Emitter, comp.Focus })
+        {
+            if (TerminatingOrDeleted(uid))
+                return;
+
+            // A dying child must remain in its transform hierarchy, but no longer occupy a slot
+            // that is about to be shut down (which would otherwise try to delete it again).
+            if (slot?.Item is { } item && !Deleted(item) && Terminating(item) && slot.ContainerSlot != null)
+                _containers.Remove(item, slot.ContainerSlot, reparent: false, force: true);
+
+            if (TerminatingOrDeleted(uid))
+                return;
+
+            // ShutdownContainer deletes any remaining item; never destroy a live, unejected part.
+            if (slot is { Item: null })
+                _slots.RemoveItemSlot(uid, slot);
+        }
     }
 
     // Generic item-slot entry points must never bypass the server-side transaction.
@@ -153,23 +173,32 @@ public sealed class SWModularSaberSystem : EntitySystem
         ReleaseContents(uid, comp);
     }
 
-    private void OnTerminating(Entity<SWModularSaberComponent> ent, ref EntityTerminatingEvent args)
-    {
-        ReleaseContents(ent.Owner, ent.Comp);
-    }
-
     private void ReleaseContents(EntityUid uid, SWModularSaberComponent comp)
     {
-        var xform = Transform(uid);
-        if (xform.MapUid is not { } map || Terminating(map))
-            return;
-
-        // Use map coordinates, never a parent container which may itself be terminating.
-        var destination = _transform.ToCoordinates(_transform.GetMapCoordinates(uid));
         foreach (var slot in new[] { comp.Crystal, comp.Emitter, comp.Focus })
         {
-            if (slot?.Item is { } item && slot.ContainerSlot != null)
+            // Container callbacks can delete the hilt or map while releasing an earlier part.
+            if (TerminatingOrDeleted(uid))
+                return;
+
+            var map = Transform(uid).MapUid;
+            if (map != null && TerminatingOrDeleted(map))
+                return;
+            if (slot?.Item is not { } item || TerminatingOrDeleted(item) || slot.ContainerSlot == null)
+                continue;
+
+            if (map != null)
+            {
+                // Use map coordinates, never a parent container which may itself be terminating.
+                var destination = _transform.ToCoordinates(_transform.GetMapCoordinates(uid));
                 _containers.Remove(item, slot.ContainerSlot, force: true, destination: destination);
+            }
+            else if (_containers.Remove(item, slot.ContainerSlot, reparent: false, force: true) &&
+                     !TerminatingOrDeleted(item) && Transform(item).ParentUid == uid)
+            {
+                // No map exists: preserve the part in nullspace without leaving it parented to the hilt.
+                _transform.DetachEntity(item);
+            }
         }
     }
 
@@ -190,9 +219,15 @@ public sealed class SWModularSaberSystem : EntitySystem
             return;
         }
 
-        var damage = emitterComp.Damage * focusComp.DamageMultiplier;
+        var bladeDamage = emitterComp.Damage;
+        if (ent.Comp.ActivatedDamageBonus is { } bonus)
+            bladeDamage += bonus;
+
+        var damage = bladeDamage * focusComp.DamageMultiplier;
         if (emitterComp.Damage.DamageDict.TryGetValue("Structural", out var structural))
             damage.DamageDict["Structural"] = structural;
+        else if (ent.Comp.ActivatedDamageBonus != null)
+            damage.DamageDict.Remove("Structural");
         toggleMelee.ActivatedDamage = damage;
         Dirty(ent, toggleMelee);
         if (TryComp<AppearanceComponent>(ent, out var appearance))
@@ -206,7 +241,7 @@ public sealed class SWModularSaberSystem : EntitySystem
 
         melee.AttackRate = args.Activated && ent.Comp.Focus?.Item is { } focus &&
                            TryComp<SWSaberFocusComponent>(focus, out var focusComp)
-            ? focusComp.AttackRateMultiplier
+            ? ent.Comp.BaseAttackRate * focusComp.AttackRateMultiplier
             : 1f;
         DirtyField(ent, melee, nameof(MeleeWeaponComponent.AttackRate));
     }

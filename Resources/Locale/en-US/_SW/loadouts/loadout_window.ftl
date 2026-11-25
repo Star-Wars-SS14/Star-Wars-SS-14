@@ -24,4 +24,5 @@ sw-loadout-species-blocked = Does not fit this species.
 
 sw-loadout-saber-hilt = Lightsaber hilt
 sw-loadout-saber-emitter = Lightsaber emitter
+sw-loadout-saber-focus = Lightsaber focusing assembly
 sw-loadout-saber-crystal = Kyber crystal

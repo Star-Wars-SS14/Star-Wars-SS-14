@@ -88,12 +88,13 @@ public sealed class SWTaskConsoleTest
         var ui = server.System<UserInterfaceSystem>();
         var tasks = server.System<SWTasksGameRuleSystem>();
         var console = EntityUid.Invalid;
-        var tasksOnOpen = 0;
+        TaskConsoleBounderUserInterfaceState? stateOnOpen = null;
+        var addedTask = EntityUid.Invalid;
 
         await server.WaitAssertion(() =>
         {
             ticker.StartGameRule("FactionsOnlyGamerule");
-            tasks.AddTask(Republic, "SWTaskPreserveCell");
+            tasks.AddTask(Republic, "SWTaskBase");
 
             console = entMan.SpawnEntity("SWTaskConsoleRepublic", map.GridCoords);
             var user = entMan.SpawnEntity("MobHuman", map.GridCoords);
@@ -102,9 +103,11 @@ public sealed class SWTaskConsoleTest
             ui.OpenUi(console, TaskConsoleUiKey.Key, user);
             Assert.That(ui.TryGetUiState<TaskConsoleBounderUserInterfaceState>(console, TaskConsoleUiKey.Key, out var state));
             Assert.That(state!.Tasklist, Is.Not.Empty);
-            tasksOnOpen = state.Tasklist.Count;
+            stateOnOpen = state;
 
-            tasks.AddTask(Republic, "SWTaskSabotageFactory");
+            var task = tasks.AddTask(Republic, "SWTaskBase")!.Value;
+            task.Comp.Name = "Task to delete";
+            addedTask = task.Owner;
         });
 
         await pair.RunSeconds(2);
@@ -112,7 +115,16 @@ public sealed class SWTaskConsoleTest
         await server.WaitAssertion(() =>
         {
             Assert.That(ui.TryGetUiState<TaskConsoleBounderUserInterfaceState>(console, TaskConsoleUiKey.Key, out var state));
-            Assert.That(state!.Tasklist, Has.Count.GreaterThan(tasksOnOpen), "An open console must follow new tasks");
+            Assert.That(state!.Tasklist.Exists(task => task.TaskName == "Task to delete"), Is.True);
+            entMan.DeleteEntity(addedTask);
+        });
+
+        await pair.RunSeconds(2);
+
+        await server.WaitAssertion(() =>
+        {
+            Assert.That(ui.TryGetUiState<TaskConsoleBounderUserInterfaceState>(console, TaskConsoleUiKey.Key, out var state));
+            Assert.That(state, Is.EqualTo(stateOnOpen), "Deleting a task must remove only its own console entry");
         });
 
         await pair.CleanReturnAsync();

@@ -13,10 +13,6 @@ using Content.Server.Actions;
 using Content.Shared.Mobs;
 using Content.Shared.Mobs.Components;
 using Content.Server._SW.Unpickuppable;
-using Content.Server._SW.ModularSaber;
-using Content.Shared.Item.ItemToggle;
-using Content.Shared.Wieldable;
-using Content.Shared.Wieldable.Components;
 using Content.Shared._SW.ForceAbilities;
 
 namespace Content.Server._SW;
@@ -27,8 +23,6 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
     [Dependency] private readonly SharedPhysicsSystem _physicsSystem = default!;
     [Dependency] private readonly SharedTransformSystem _transformSystem = default!;
     [Dependency] private readonly ActionsSystem _actionsSystem = default!;
-    [Dependency] private readonly SharedWieldableSystem _wieldable = default!;
-    [Dependency] private readonly ItemToggleSystem _toggle = default!;
     public override void Initialize()
     {
         SubscribeLocalEvent<ForceAbilityDistanceInteractComponent, ComponentInit>(OnCompInit);
@@ -101,48 +95,25 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
                 else
                 {
                     var item = comp.CurrentAttractingItem.Value;
-                    var returnSaber = TryComp<SWDoubleSaberThrowVisualComponent>(item, out var visual) &&
-                                      visual.ReturnUser == uid;
-                    var wasActive = returnSaber && _toggle.IsActivated(item);
+                    var returnToAnyHand = comp.ReturnToAnyHand;
                     StopAttractingByForce(uid, comp);
                     if ((usercords.Position - targetcords.Position).Length() >= SharedInteractionSystem.InteractionRange)
                         continue;
 
-                    if (returnSaber)
-                    {
-                        if (_handsSystem.TryPickupAnyHand(uid, item))
-                            WieldReturnedSaber(uid, item, wasActive);
-                    }
+                    if (returnToAnyHand)
+                        _handsSystem.TryPickupAnyHand(uid, item);
                     else
-                    {
                         _handsSystem.TryPickup(uid, item);
-                    }
                 }
             }
         }
     }
 
-    private void WieldReturnedSaber(EntityUid user, EntityUid saber, bool wasActive)
-    {
-        if (TerminatingOrDeleted(user) || TerminatingOrDeleted(saber) ||
-            !TryComp<WieldableComponent>(saber, out var wieldable) || wieldable.Wielded ||
-            !_handsSystem.IsHolding(user, saber) || !_handsSystem.TryGetEmptyHand(user, out _))
-            return;
-
-        // Never drop an unrelated held item. Roll back a partial wield if spawning a virtual hand fails.
-        if (!_wieldable.TryWield(saber, wieldable, user, dropOthers: false, quiet: true))
-        {
-            if (wieldable.Wielded)
-                _wieldable.TryUnwield(saber, wieldable, user, force: true);
-            return;
-        }
-
-        // Wielding may turn the blade on automatically; preserve an intentionally inactive blade.
-        if (!wasActive && _toggle.IsActivated(saber))
-            _toggle.TryDeactivate(saber, user, predicted: false);
-    }
-
-    public void StartAttractingByForce(EntityUid forceUser, EntityUid target, ForceAbilityDistanceInteractComponent? comp = null)
+    public void StartAttractingByForce(
+        EntityUid forceUser,
+        EntityUid target,
+        ForceAbilityDistanceInteractComponent? comp = null,
+        bool returnToAnyHand = false)
     {
         if (!TryComp(forceUser, out comp))
         {
@@ -159,13 +130,17 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
         }
 
         if (comp.IsAttracting && comp.CurrentAttractingItem == target)
+        {
+            comp.ReturnToAnyHand |= returnToAnyHand;
             return;
+        }
 
         if (comp.CurrentAttractingItem != null)
             StopAttractingByForce(forceUser, comp);
 
         comp.IsAttracting = true;
         comp.CurrentAttractingItem = target;
+        comp.ReturnToAnyHand = returnToAnyHand;
         EnsureComp<BeingAttractedByForceComponent>(target).User = forceUser;
         EnsureComp<SWUnpickuppableComponent>(target);
     }
@@ -189,6 +164,7 @@ public sealed partial class ForceAbilityDistanceInteractSystem : EntitySystem
         var item = comp.CurrentAttractingItem.Value;
         comp.IsAttracting = false;
         comp.CurrentAttractingItem = null;
+        comp.ReturnToAnyHand = false;
         if (TerminatingOrDeleted(item))
             return;
 

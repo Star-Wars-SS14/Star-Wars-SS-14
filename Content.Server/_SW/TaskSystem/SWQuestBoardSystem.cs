@@ -36,6 +36,9 @@ public sealed class SWQuestBoardSystem : EntitySystem
     private int _nextId = 1;
     private float _pollTimer;
 
+    // Map the quest pool was seeded for; a different map means a new round.
+    private EntityUid? _seededMapUid;
+
     private Dictionary<EntityUid, TimeSpan> _lastCreate = new();
 
     public override void Initialize()
@@ -67,6 +70,16 @@ public sealed class SWQuestBoardSystem : EntitySystem
 
     private void OnMapInit(Entity<SWQuestBoardComponent> ent, ref MapInitEvent args)
     {
+        // A fresh map means a fresh round: wipe the persistent quest pool and re-seed.
+        var mapUid = Transform(ent).MapUid;
+        if (_seededMapUid != mapUid)
+        {
+            _seededMapUid = mapUid;
+            _quests.Clear();
+            _nextId = 1;
+            _lastCreate.Clear();
+        }
+
         if (_quests.Count == 0)
         {
             foreach (var starterId in ent.Comp.Starters)

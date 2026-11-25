@@ -24,4 +24,5 @@ sw-loadout-species-blocked = Не подходит этому виду.
 
 sw-loadout-saber-hilt = Рукоять светового меча
 sw-loadout-saber-emitter = Эмиттер светового меча
+sw-loadout-saber-focus = Фокусирующий блок
 sw-loadout-saber-crystal = Кайбер-кристалл

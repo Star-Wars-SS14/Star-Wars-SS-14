@@ -176,22 +176,21 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
     /// </summary>
     private void RefreshLobbyPreview()
     {
-        if (PreviewPanel == null)
+        if (PreviewPanel is not { } panel)
             return;
 
-        // Get selected character, load it, then set it
-        var character = _preferencesManager.Preferences?.SelectedCharacter;
-
-        if (character is not HumanoidCharacterProfile humanoid)
+        if (!_preferencesManager.ServerDataLoaded ||
+            _preferencesManager.Preferences?.SelectedCharacter is not HumanoidCharacterProfile humanoid)
         {
-            PreviewPanel.SetSprite(EntityUid.Invalid);
-            PreviewPanel.SetSummaryText(string.Empty);
+            panel.SetSprite(EntityUid.Invalid);
+            panel.SetCharacterDetails(null, null);
             return;
         }
 
-        var dummy = LoadProfileEntity(humanoid, null, true);
-        PreviewPanel.SetSprite(dummy);
-        PreviewPanel.SetSummaryText(humanoid.Summary);
+        var priorityJob = GetHighPriorityJob(humanoid);
+        var dummy = LoadProfileEntity(humanoid, priorityJob, true);
+        panel.SetSprite(dummy);
+        panel.SetCharacterDetails(humanoid.Name, priorityJob?.LocalizedName);
     }
 
     private void RefreshProfileEditor()
@@ -420,9 +419,13 @@ public sealed partial class LobbyUIController : UIController, IOnStateEntered<Lo
     /// </summary>
     public JobPrototype GetPreferredJob(HumanoidCharacterProfile profile)
     {
-        var highPriorityJob = profile.JobPriorities.FirstOrDefault(p => p.Value == JobPriority.High).Key;
-        // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract (what is resharper smoking?)
-        return _prototypeManager.Index<JobPrototype>(highPriorityJob.Id ?? SharedGameTicker.FallbackOverflowJob);
+        return GetHighPriorityJob(profile) ?? _prototypeManager.Index<JobPrototype>(SharedGameTicker.FallbackOverflowJob);
+    }
+
+    internal JobPrototype? GetHighPriorityJob(HumanoidCharacterProfile profile)
+    {
+        var jobId = profile.JobPriorities.FirstOrDefault(p => p.Value == JobPriority.High).Key;
+        return !string.IsNullOrEmpty(jobId.Id) && _prototypeManager.TryIndex(jobId, out var job) ? job : null;
     }
 
     public void GiveDummyLoadout(EntityUid uid, RoleLoadout? roleLoadout)

@@ -16,6 +16,7 @@ public sealed partial class ForceAbilityDistanceInteractComponent : Component
     public float AttractByForceSpeed = 12f;
     public EntityUid? CurrentAttractingItem;
     public bool IsAttracting = false;
+    public bool ReturnToAnyHand;
     [DataField]
     public string ActionAttractPrototype = "ActionForceAttract";
     [DataField]

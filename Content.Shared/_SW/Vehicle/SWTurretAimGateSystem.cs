@@ -7,9 +7,11 @@ using Robust.Shared.Maths;
 namespace Content.Shared._SW.Vehicle;
 
 /// <summary>
-/// Shared (predicted) firing-cone gate for mounted turrets.
-/// Must live in Content.Shared so the client cancels the shot BEFORE playing
-/// muzzle flash / sound / projectile, and PopupClient shows the reason.
+/// Shared firing-direction gate for mounted turrets: redirects the shot along the
+/// continuous smoothed barrel angle. The 8-direction sprite is only a visual
+/// approximation; the projectile must NOT be snapped to the sprite views, otherwise
+/// the turret fires only along the 8 compass directions.
+/// Lives in Content.Shared so client prediction and server agree.
 /// </summary>
 public sealed class SWTurretAimGateSystem : EntitySystem
 {
@@ -24,12 +26,6 @@ public sealed class SWTurretAimGateSystem : EntitySystem
 
     private void OnGunAttemptShoot(Entity<SWTurretAimGunComponent> gun, ref AttemptShootEvent args)
     {
-        if (args.Cancelled)
-            return;
-
-        if (args.ToCoordinates is not EntityCoordinates targetCoords)
-            return;
-
         var query = EntityQueryEnumerator<SWTurretAimComponent, TransformComponent>();
         while (query.MoveNext(out var turretUid, out var aim, out var turretXform))
         {
@@ -38,24 +34,13 @@ public sealed class SWTurretAimGateSystem : EntitySystem
                 continue;
 
             var turretMap = _transform.GetMapCoordinates(turretUid, xform: turretXform);
-            var targetMap = _transform.ToMapCoordinates(targetCoords);
-            if (targetMap.MapId != turretMap.MapId)
-                return;
+            var barrel = _transform.GetWorldRotation(turretXform);
 
-            // By construction of the aim system the barrel world angle equals
-            // the turret world rotation, so no sprite-forward offset is needed.
-            var desired = (targetMap.Position - turretMap.Position).ToWorldAngle().Theta;
-            var barrel = _transform.GetWorldRotation(turretXform).Theta;
-
-            var delta = desired - barrel;
-            while (delta > Math.PI) delta -= 2 * Math.PI;
-            while (delta < -Math.PI) delta += 2 * Math.PI;
-
-            if (Math.Abs(delta) * (180.0 / Math.PI) > aim.FiringCone)
-            {
-                args.Cancelled = true;
-                args.Message = Loc.GetString("sw-turret-aim-out-of-cone");
-            }
+            // Continuous angle: no 45-degree snap. ShotAngleOffset is the empirical
+            // compensation, applied once here at shot time (never per-tick in Update).
+            var forward = new Angle(barrel.Theta + aim.ShotAngleOffset.Theta).ToVec();
+            var target = turretMap.Position + forward * 10f;
+            args.ToCoordinates = _transform.ToCoordinates(new MapCoordinates(target, turretMap.MapId));
             return;
         }
     }

@@ -57,22 +57,16 @@ public sealed class HumanoidAppearanceSystem : SharedHumanoidAppearanceSystem
     private static bool IsHidden(HumanoidAppearanceComponent humanoid, HumanoidVisualLayers layer)
         => humanoid.HiddenLayers.ContainsKey(layer) || humanoid.PermanentlyHidden.Contains(layer);
 
-        private void UpdateLayers(Entity<HumanoidAppearanceComponent, SpriteComponent> entity)
+            private void UpdateLayers(Entity<HumanoidAppearanceComponent, SpriteComponent> entity)
     {
         var component = entity.Comp1;
         var sprite = entity.Comp2;
-
-        // Defensive: a null/unknown species (a non-humanoid entity that wrongly carries
-        // HumanoidAppearanceComponent) must not throw on every state apply, which
-        // previously lagged every client inside the entity's PVS range.
-        if (string.IsNullOrEmpty(component.Species)
-            || !_prototypeManager.TryIndex(component.Species, out SpeciesPrototype? speciesProto))
-            return;
 
         var oldLayers = new HashSet<HumanoidVisualLayers>(component.BaseLayers.Keys);
         component.BaseLayers.Clear();
 
         // add default species layers
+        var speciesProto = _prototypeManager.Index(component.Species);
         var baseSprites = _prototypeManager.Index(speciesProto.SpriteSet);
         foreach (var (key, id) in baseSprites.Sprites)
         {

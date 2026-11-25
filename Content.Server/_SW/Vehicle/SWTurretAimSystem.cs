@@ -32,6 +32,8 @@ public sealed class SWTurretAimSystem : EntitySystem
         if (!TryComp<SWTurretAimComponent>(turretUid, out var aim))
             return;
 
+        // No offset: rotation = cursor angle is the empirically proven convention
+        // where the 8-direction view tracks the cursor correctly.
         aim.TargetAngle = new Angle(ev.Angle);
         Dirty(turretUid, aim);
     }

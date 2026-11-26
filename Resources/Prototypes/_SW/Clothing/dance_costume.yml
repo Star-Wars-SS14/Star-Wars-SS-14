@@ -1,0 +1,27 @@
+- type: entity
+  parent: ClothingUniformBase
+  id: SWDanceCostume
+  name: dance costume
+  description: A dazzling dancer's costume, all sequins and flowing silk.
+  components:
+  - type: Sprite
+    sprite: _SW/Clothing/Uniforms/dance_costume.rsi
+  - type: Clothing
+    sprite: _SW/Clothing/Uniforms/dance_costume.rsi
+    slots:
+    - innerClothing
+  - type: Storage
+    grid:
+    - 0,0,1,1
+    maxItemSize: Small
+  - type: ContainerContainer
+    containers:
+      storagebase: !type:Container
+        ents: []
+  - type: UserInterface
+    interfaces:
+      enum.StorageUiKey.Key:
+        type: StorageBoundUserInterface
+  # to prevent storage open spam
+  - type: UseDelay
+    delay: 0.5

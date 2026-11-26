@@ -3,7 +3,7 @@ using Robust.Client.UserInterface;
 
 namespace Content.Client._SW.GlobalWar.UI;
 
-public sealed class SWGlobalWarMarketConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : BoundUserInterface(owner, uiKey)
+public sealed class SWGlobalWarMarketConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : SWGlobalWarBoundUserInterface(owner, uiKey)
 {
     private SWGlobalWarMarketConsoleMenu? _menu;
 
@@ -15,7 +15,7 @@ public sealed class SWGlobalWarMarketConsoleBoundUserInterface(EntityUid owner, 
     protected override void Open()
     {
         base.Open();
-        _subscription = Guid.NewGuid();
+        _subscription = Guid.Empty;
         _lastSequence = 0;
         EntMan.System<SWGlobalWarMarketViewSystem>().Invalidated += Invalidate;
         _menu = this.CreateWindow<SWGlobalWarMarketConsoleMenu>();
@@ -31,9 +31,6 @@ public sealed class SWGlobalWarMarketConsoleBoundUserInterface(EntityUid owner, 
         _menu.FlowGrantRequested += command => SendPredictedMessage(new SWGlobalWarFlowGrantRequest(command, _subscription));
         _menu.FlowRevokeRequested += command =>
             SendPredictedMessage(new SWGlobalWarFlowRevokeRequest(command, _subscription));
-        _menu.OpenCentered();
-        // Keep the subscription behind the predicted interaction that opens the server-side UI.
-        SendPredictedMessage(new SWGlobalWarMarketOpen(_subscription));
     }
 
     protected override void ReceiveMessage(BoundUserInterfaceMessage message)
@@ -54,10 +51,11 @@ public sealed class SWGlobalWarMarketConsoleBoundUserInterface(EntityUid owner, 
         if (IsOpened && message is SWGlobalWarFlowReply reply && _subscription != Guid.Empty &&
             reply.Subscription == _subscription && EntMan.System<SWGlobalWarMarketViewSystem>().IsCurrentViewer(reply.Viewer))
             _menu?.ReceiveFlowResult(reply.Result);
-        if (IsOpened && message is SWGlobalWarMarketSnapshot snapshot && _subscription != Guid.Empty &&
-            snapshot.Subscription == _subscription && snapshot.Sequence > _lastSequence &&
+        if (IsOpened && message is SWGlobalWarMarketSnapshot snapshot && snapshot.Subscription != Guid.Empty &&
+            snapshot.Sequence > _lastSequence &&
             EntMan.System<SWGlobalWarMarketViewSystem>().IsCurrentViewer(snapshot.Viewer))
         {
+            _subscription = snapshot.Subscription;
             _lastSequence = snapshot.Sequence;
             _generation = snapshot.State.Generation;
             _revision = snapshot.State.AssignmentRevision;

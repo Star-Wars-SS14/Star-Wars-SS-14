@@ -7,7 +7,7 @@ using Robust.Client.UserInterface.Controls;
 
 namespace Content.Client._SW.GlobalWar.UI;
 
-public sealed class SWFactoryBuilderBoundUserInterface(EntityUid owner, Enum uiKey) : BoundUserInterface(owner, uiKey)
+public sealed class SWFactoryBuilderBoundUserInterface(EntityUid owner, Enum uiKey) : SWGlobalWarBoundUserInterface(owner, uiKey)
 {
     private SWFactoryBuilderMenu? _menu;
     private SWFactoryBuilderSnapshot? _snapshot;

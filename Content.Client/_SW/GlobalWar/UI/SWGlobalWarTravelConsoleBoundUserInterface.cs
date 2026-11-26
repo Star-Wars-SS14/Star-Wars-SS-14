@@ -4,7 +4,7 @@ using Robust.Shared.Prototypes;
 
 namespace Content.Client._SW.GlobalWar.UI;
 
-public sealed class SWGlobalWarTravelConsoleBoundUserInterface : BoundUserInterface
+public sealed class SWGlobalWarTravelConsoleBoundUserInterface : SWGlobalWarBoundUserInterface
 {
     private SWGlobalWarTravelConsoleMenu? _menu;
 

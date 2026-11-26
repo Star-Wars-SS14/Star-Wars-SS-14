@@ -3,7 +3,7 @@ using Robust.Client.UserInterface;
 
 namespace Content.Client._SW.GlobalWar.UI;
 
-public sealed class SWGlobalWarReconBoundUserInterface(EntityUid owner, Enum uiKey) : BoundUserInterface(owner, uiKey)
+public sealed class SWGlobalWarReconBoundUserInterface(EntityUid owner, Enum uiKey) : SWGlobalWarBoundUserInterface(owner, uiKey)
 {
     private SWGlobalWarReconMenu? _menu;
     private Guid _subscription;

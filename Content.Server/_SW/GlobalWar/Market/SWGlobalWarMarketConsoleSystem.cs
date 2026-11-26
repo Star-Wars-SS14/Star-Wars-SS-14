@@ -182,8 +182,9 @@ public sealed class SWGlobalWarMarketConsoleSystem : EntitySystem
     {
         if (Equals(args.UiKey, SWGlobalWarMarketConsoleUiKey.Key))
         {
-            _subscriptions.Remove((ent.Owner, args.Actor));
+            _subscriptions[(ent.Owner, args.Actor)] = Guid.NewGuid();
             _queries.Remove((ent.Owner, args.Actor));
+            SendView(ent.Owner, args.Actor);
         }
     }
 

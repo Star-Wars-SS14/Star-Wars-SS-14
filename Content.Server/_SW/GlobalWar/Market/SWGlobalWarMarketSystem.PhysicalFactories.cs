@@ -36,6 +36,8 @@ public sealed partial class SWGlobalWarMarketSystem
     private void InitializePhysicalFactories()
     {
         SubscribeLocalEvent<SWGlobalWarShipArrivalCommittedEvent>(OnPhysicalFreightArrival);
+        SubscribeLocalEvent<SWGlobalWarFactoryComponent, BoundUIOpenedEvent>(OnFactoryUiOpened);
+        SubscribeLocalEvent<SWGlobalWarFactoryComponent, BoundUIClosedEvent>(OnFactoryUiClosed);
         Subs.BuiEvents<SWGlobalWarFactoryComponent>(SWGlobalWarFactoryUiKey.Key, subs =>
         {
             subs.Event<SWGlobalWarFactoryOpen>(OnFactoryOpen);
@@ -114,6 +116,21 @@ public sealed partial class SWGlobalWarMarketSystem
     {
         return actor.Role is SWGlobalWarRole.Head or SWGlobalWarRole.IndustryMinister or
             SWGlobalWarRole.IndustryWorker or SWGlobalWarRole.LogisticsMinister or SWGlobalWarRole.LogisticsWorker;
+    }
+
+    private void OnFactoryUiOpened(Entity<SWGlobalWarFactoryComponent> ent, ref BoundUIOpenedEvent args)
+    {
+        if (!Equals(args.UiKey, SWGlobalWarFactoryUiKey.Key)) return;
+        _factorySubscriptions[(ent, args.Actor)] = Guid.NewGuid();
+        _factoryPages[(ent, args.Actor)] = 0;
+        SendFactoryView(ent, args.Actor);
+    }
+
+    private void OnFactoryUiClosed(Entity<SWGlobalWarFactoryComponent> ent, ref BoundUIClosedEvent args)
+    {
+        if (!Equals(args.UiKey, SWGlobalWarFactoryUiKey.Key)) return;
+        _factorySubscriptions.Remove((ent, args.Actor));
+        _factoryPages.Remove((ent, args.Actor));
     }
 
     private void OnFactoryOpen(Entity<SWGlobalWarFactoryComponent> ent, ref SWGlobalWarFactoryOpen args)

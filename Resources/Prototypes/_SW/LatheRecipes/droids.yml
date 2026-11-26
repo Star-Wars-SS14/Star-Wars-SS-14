@@ -1,4 +1,4 @@
- type: swLatheRecipe
+- type: swLatheRecipe
   id: SWDroidChassisSLR
   materials:
     SWAdvancedElectronics: 1

@@ -22,8 +22,7 @@ public sealed partial class SWGlobalWarMarketSystem
             market is not { Kind: SWGlobalWarSectorKind.Mining, Profile: { } profile })
             return false;
         world = market.Planet;
-        commodity = profile.Recipes.FirstOrDefault(r => r.Inputs.Count == 0 && r.Output.Id is
-            "SWGlobalWarFe" or "SWGlobalWarC" or "SWGlobalWarAu" or "SWGlobalWarLn")?.Output.Id ?? string.Empty;
+        commodity = profile.MiningResource?.Id ?? string.Empty;
         if (commodity.Length == 0)
             return false;
         if (!_physicalMiningSites.TryGetValue(world, out var sites))
@@ -74,9 +73,8 @@ public sealed partial class SWGlobalWarMarketSystem
     {
         var resource = Loc.GetString("sw-global-war-mining-no-resource");
         if (TryGetTerminalMarket(ent, out var market) && market.Kind == SWGlobalWarSectorKind.Mining &&
-            market.Profile?.Recipes.FirstOrDefault(r => r.Inputs.Count == 0 && r.Output.Id is
-                "SWGlobalWarFe" or "SWGlobalWarC" or "SWGlobalWarAu" or "SWGlobalWarLn") is { } recipe)
-            resource = Loc.GetString(_prototypes.Index<SWGlobalWarCommodityPrototype>(recipe.Output).Name);
+            market.Profile?.MiningResource is { } commodity)
+            resource = Loc.GetString(_prototypes.Index(commodity).Name);
         var state = !Transform(ent).Anchored ? "anchor" : !valid ? "unavailable" :
             !ent.Comp.Enabled ? "stopped" : !this.IsPowered(ent, EntityManager) ? "power" :
             market == null || market.Kind != SWGlobalWarSectorKind.Mining ? "planet" :

@@ -21,6 +21,7 @@
                     <Label Name="Station" />
                     <Label Name="Surface" />
                     <Label Name="Split" />
+                    <RichTextLabel Name="MiningResources" />
                 </BoxContainer>
             </PanelContainer>
             <RichTextLabel Name="Hint" />

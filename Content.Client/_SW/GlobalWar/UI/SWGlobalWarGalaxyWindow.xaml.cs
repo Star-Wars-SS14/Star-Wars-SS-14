@@ -66,6 +66,10 @@ public sealed partial class SWGlobalWarGalaxyWindow : SWGlobalWarWindow
             return;
 
         PlanetName.Text = _prototypes.Index(world.Planet).Name;
+        var mining = world.MiningResource is { } resource
+            ? Loc.GetString("sw-global-war-galaxy-mining", ("resource", Loc.GetString(_prototypes.Index(resource).Name)))
+            : Loc.GetString("sw-global-war-galaxy-no-mining");
+        MiningResources.SetMessage(FormattedMessage.FromUnformatted(mining), defaultColor: SWGlobalWarConsoleStyle.TextBright);
         Station.Text = Loc.GetString("sw-global-war-galaxy-station", ("side", Side(world.Orbit)));
         Station.FontColorOverride = SWGlobalWarConsoleStyle.SideText(world.Orbit);
         Surface.Text = Loc.GetString("sw-global-war-galaxy-surface", ("side", Side(world.Surface)));

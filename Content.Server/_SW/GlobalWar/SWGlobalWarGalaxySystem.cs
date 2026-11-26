@@ -3,6 +3,7 @@ using Content.Shared._SW.GlobalWar;
 using Content.Shared.GameTicking;
 using Robust.Shared.Enums;
 using Robust.Shared.Player;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server._SW.GlobalWar;
 
@@ -12,6 +13,8 @@ public sealed class SWGlobalWarGalaxySystem : EntitySystem
     private const float CheckSeconds = 1;
 
     [Dependency] private readonly SWGlobalWarGameruleSystem _rules = default!;
+
+    [Dependency] private readonly IPrototypeManager _prototypes = default!;
 
     private readonly HashSet<ICommonSession> _viewers = new();
     private string _lastKey = string.Empty;
@@ -49,7 +52,7 @@ public sealed class SWGlobalWarGalaxySystem : EntitySystem
         _untilCheck = CheckSeconds;
         _viewers.RemoveWhere(viewer => viewer.Status is SessionStatus.Disconnected or SessionStatus.Zombie);
         var worlds = Snapshot();
-        var key = string.Join(',', worlds.Select(world => $"{world.Planet.Id}:{(int) world.Orbit}{(int) world.Surface}"));
+        var key = string.Join(',', worlds.Select(world => $"{world.Planet.Id}:{(int) world.Orbit}{(int) world.Surface}:{world.MiningResource}"));
         if (key == _lastKey)
             return;
 
@@ -67,7 +70,13 @@ public sealed class SWGlobalWarGalaxySystem : EntitySystem
         foreach (var (id, uid) in rule.Comp.PlanetEntities)
         {
             if (TryComp<SWGlobalWarPlanetComponent>(uid, out var planet))
-                worlds.Add(new SWGlobalWarGalaxyWorld(id, planet.OrbitOwner, planet.SurfaceOwner));
+            {
+                var definition = _prototypes.Index(id);
+                ProtoId<SWGlobalWarCommodityPrototype>? resource = null;
+                if (definition.Kind == SWGlobalWarSectorKind.Mining && definition.EconomyProfile is { } profile)
+                    resource = _prototypes.Index(profile).MiningResource;
+                worlds.Add(new SWGlobalWarGalaxyWorld(id, planet.OrbitOwner, planet.SurfaceOwner, resource));
+            }
         }
 
         return worlds;

@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using Robust.Shared.Prototypes;
 
@@ -20,6 +21,10 @@ public sealed partial class SWGlobalWarEconomyProfilePrototype : IPrototype
 
     /// <summary>Independent production recipes, including primary extraction with an empty input vector.</summary>
     [DataField] public List<SWGlobalWarEconomyRecipe> Recipes = new();
+
+    /// <summary>The resource supported by physical drills, shared with the planet information UI.</summary>
+    public ProtoId<SWGlobalWarCommodityPrototype>? MiningResource => Recipes.FirstOrDefault(r =>
+        r.Inputs.Count == 0 && r.Output.Id is "SWGlobalWarFe" or "SWGlobalWarC" or "SWGlobalWarAu" or "SWGlobalWarLn")?.Output;
 
     /// <summary>Independent receive and send capacity, in cargo units per minute.</summary>
     [DataField] public int HubCapacity = 25;

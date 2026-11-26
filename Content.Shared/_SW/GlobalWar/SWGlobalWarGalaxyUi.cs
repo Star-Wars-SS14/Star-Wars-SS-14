@@ -12,7 +12,8 @@ public sealed class SWGlobalWarGalaxyRequestEvent(bool open) : EntityEventArgs
 
 /// <summary>Who holds each world's station and surface. Public in the campaign: every navigation console shows it.</summary>
 [Serializable, NetSerializable]
-public sealed record SWGlobalWarGalaxyWorld(ProtoId<SWGlobalWarPlanetPrototype> Planet, SWGlobalWarFaction Orbit, SWGlobalWarFaction Surface);
+public sealed record SWGlobalWarGalaxyWorld(ProtoId<SWGlobalWarPlanetPrototype> Planet, SWGlobalWarFaction Orbit, SWGlobalWarFaction Surface,
+    ProtoId<SWGlobalWarCommodityPrototype>? MiningResource = null);
 
 [Serializable, NetSerializable]
 public sealed class SWGlobalWarGalaxyStateEvent(List<SWGlobalWarGalaxyWorld> worlds) : EntityEventArgs

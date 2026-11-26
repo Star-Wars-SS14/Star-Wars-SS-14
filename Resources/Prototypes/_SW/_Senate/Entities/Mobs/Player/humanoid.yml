@@ -1,0 +1,107 @@
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidSenator
+  name: Сенатор
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [SenatorGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidChancellor
+  name: Верховный Канцлер
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [ChancellorGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidSpeaker
+  name: Спикер Сената
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [SpeakerGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidMinister
+  name: Министр
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [MinisterGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidUsher
+  name: Пристав Сената
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [UsherGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidSenateGuardHead
+  name: Глава Сенатской Гвардии
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [SenateGuardHeadGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidSenateGuardOfficer
+  name: Офицер Сенатской Гвардии
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [SenateGuardOfficerGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidSenateDoctor
+  name: Сенатский врач
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [SenateDoctorGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidChiefJustice
+  name: Верховный Судья
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [ChiefJusticeGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidRepublicJudge
+  name: Республиканский Судья
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [RepublicJudgeGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidProsecutor
+  name: Обвинитель Республики
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [ProsecutorGear]
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidDefender
+  name: Защитник Республики
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [DefenderGear]

@@ -1,0 +1,502 @@
+# Готовые варианты дверей: слот и класс уже зашиты - маппер просто ставит нужную из меню спавна.
+# Слоты 1-20 эконом, 21-40 стандарт, 41-50 люкс. Один слот = одна дверь на карте, не дублировать.
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy1
+  suffix: Эконом, слот 1
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot1]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy2
+  suffix: Эконом, слот 2
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot2]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy3
+  suffix: Эконом, слот 3
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot3]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy4
+  suffix: Эконом, слот 4
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot4]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy5
+  suffix: Эконом, слот 5
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot5]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy6
+  suffix: Эконом, слот 6
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot6]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy7
+  suffix: Эконом, слот 7
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot7]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy8
+  suffix: Эконом, слот 8
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot8]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy9
+  suffix: Эконом, слот 9
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot9]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy10
+  suffix: Эконом, слот 10
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot10]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy11
+  suffix: Эконом, слот 11
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot11]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy12
+  suffix: Эконом, слот 12
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot12]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy13
+  suffix: Эконом, слот 13
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot13]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy14
+  suffix: Эконом, слот 14
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot14]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy15
+  suffix: Эконом, слот 15
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot15]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy16
+  suffix: Эконом, слот 16
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot16]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy17
+  suffix: Эконом, слот 17
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot17]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy18
+  suffix: Эконом, слот 18
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot18]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy19
+  suffix: Эконом, слот 19
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot19]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorEconomy20
+  suffix: Эконом, слот 20
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot20]]
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard1
+  suffix: Стандарт, слот 21
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot21]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard2
+  suffix: Стандарт, слот 22
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot22]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard3
+  suffix: Стандарт, слот 23
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot23]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard4
+  suffix: Стандарт, слот 24
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot24]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard5
+  suffix: Стандарт, слот 25
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot25]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard6
+  suffix: Стандарт, слот 26
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot26]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard7
+  suffix: Стандарт, слот 27
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot27]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard8
+  suffix: Стандарт, слот 28
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot28]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard9
+  suffix: Стандарт, слот 29
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot29]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard10
+  suffix: Стандарт, слот 30
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot30]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard11
+  suffix: Стандарт, слот 31
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot31]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard12
+  suffix: Стандарт, слот 32
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot32]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard13
+  suffix: Стандарт, слот 33
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot33]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard14
+  suffix: Стандарт, слот 34
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot34]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard15
+  suffix: Стандарт, слот 35
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot35]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard16
+  suffix: Стандарт, слот 36
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot36]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard17
+  suffix: Стандарт, слот 37
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot37]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard18
+  suffix: Стандарт, слот 38
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot38]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard19
+  suffix: Стандарт, слот 39
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot39]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorStandard20
+  suffix: Стандарт, слот 40
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot40]]
+  - type: SWApartmentDoor
+    classId: SWApartmentStandard
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorLux1
+  suffix: Люкс, слот 41
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot41]]
+  - type: SWApartmentDoor
+    classId: SWApartmentLux
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorLux2
+  suffix: Люкс, слот 42
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot42]]
+  - type: SWApartmentDoor
+    classId: SWApartmentLux
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorLux3
+  suffix: Люкс, слот 43
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot43]]
+  - type: SWApartmentDoor
+    classId: SWApartmentLux
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorLux4
+  suffix: Люкс, слот 44
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot44]]
+  - type: SWApartmentDoor
+    classId: SWApartmentLux
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorLux5
+  suffix: Люкс, слот 45
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot45]]
+  - type: SWApartmentDoor
+    classId: SWApartmentLux
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorLux6
+  suffix: Люкс, слот 46
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot46]]
+  - type: SWApartmentDoor
+    classId: SWApartmentLux
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorLux7
+  suffix: Люкс, слот 47
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot47]]
+  - type: SWApartmentDoor
+    classId: SWApartmentLux
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorLux8
+  suffix: Люкс, слот 48
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot48]]
+  - type: SWApartmentDoor
+    classId: SWApartmentLux
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorLux9
+  suffix: Люкс, слот 49
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot49]]
+  - type: SWApartmentDoor
+    classId: SWApartmentLux
+
+- type: entity
+  parent: SWApartmentDoor
+  id: SWApartmentDoorLux10
+  suffix: Люкс, слот 50
+  components:
+  - type: AccessReader
+    access: [[SWApartmentSlot50]]
+  - type: SWApartmentDoor
+    classId: SWApartmentLux

@@ -1,0 +1,215 @@
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateDepartmentHealthcare
+  suffix: Department of Healthcare
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-department-healthcare
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateDepartmentJustice
+  suffix: Department of Justice
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-department-justice
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateDepartmentArbitrage
+  suffix: Department of Arbitration
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-department-arbitrage
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateDepartmentExpenditure
+  suffix: Department of Expenditure Accounting
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-department-expenditure
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateHall
+  suffix: Senate Hall
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-hall
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateArchive
+  suffix: Archive
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-archive
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateChancellor
+  suffix: Supreme Chancellor
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-chancellor
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateSpeaker
+  suffix: Senate Speaker
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-speaker
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateMinistryDefense
+  suffix: Ministry of Defense
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-ministry-defense
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateMinistryInternalSecurity
+  suffix: Ministry of Internal Security
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-ministry-internal-security
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateMinistryEconomy
+  suffix: Ministry of Economic Development
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-ministry-economy
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateMinistryFinance
+  suffix: Ministry of Finance
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-ministry-finance
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateMinistryJustice
+  suffix: Ministry of Justice
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-ministry-justice
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateMinistryHealth
+  suffix: Ministry of Health
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-ministry-health
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateBureauShips
+  suffix: Bureau of Ships and Services
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-bureau-ships
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateBureauWeapons
+  suffix: Bureau of Weapons Regulation
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-bureau-weapons
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateBureauTransit
+  suffix: Bureau of Travel and Transit
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-bureau-transit
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateReception
+  suffix: Chancellor and Speaker Reception
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-reception
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateCourt
+  suffix: Republic Court
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-court
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateChiefJustice
+  suffix: Chief Justice
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-chief-justice
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateJudgesRoom
+  suffix: Judges' Chambers
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-judges-room
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateProsecutor
+  suffix: Republic Prosecutor
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-prosecutor
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateDefender
+  suffix: Republic Defender
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-defender
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateUsher
+  suffix: Senate Usher
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-usher
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateGuard
+  suffix: Senate Guard
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-guard
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateMedbay
+  suffix: Senate Medbay
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-medbay
+
+- type: entity
+  parent: SWHolopadRepublic
+  id: SWHolopadSenateHolonet
+  suffix: Holonet Newsroom
+  components:
+  - type: Label
+    currentLabel: sw-holopad-senate-holonet

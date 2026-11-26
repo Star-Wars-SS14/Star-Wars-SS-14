@@ -1,0 +1,96 @@
+using Content.Shared._SW._Senate;
+
+namespace Content.Client._SW._Senate.Consoles.Vote;
+
+public sealed class SWSenateVoteConsoleBoundUserInterface : BoundUserInterface
+{
+    [ViewVariables]
+    private SWSenateVoteConsoleMenu? _menu;
+
+    public SWSenateVoteConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
+    {
+    }
+
+    protected override void Open()
+    {
+        base.Open();
+
+        _menu = new SWSenateVoteConsoleMenu(this);
+        _menu.OnClose += Close;
+        _menu.OpenCentered();
+    }
+
+    protected override void UpdateState(BoundUserInterfaceState state)
+    {
+        base.UpdateState(state);
+
+        if (state is not SWSenateVoteConsoleState castState)
+            return;
+
+        _menu?.SetState(castState);
+    }
+
+    public void Vote(SWVoteChoice choice, int billId)
+    {
+        SendMessage(new SWSenateCastVoteMessage(choice, billId));
+    }
+
+    public void EndVote(int billId)
+    {
+        SendMessage(new SWSenateEndVoteMessage(billId));
+    }
+
+    public void Tiebreak(SWVoteChoice choice, int billId)
+    {
+        SendMessage(new SWSenateTiebreakMessage(choice, billId));
+    }
+
+    public void GrantFloor(NetEntity target)
+    {
+        SendMessage(new SWSenateGrantFloorMessage(target));
+    }
+
+    public void RevokeFloor()
+    {
+        SendMessage(new SWSenateRevokeFloorMessage());
+    }
+
+    public void RemoveFromQueue(NetEntity target)
+    {
+        SendMessage(new SWSenateRemoveFromQueueMessage(target));
+    }
+
+    public void GrantChancellor()
+    {
+        SendMessage(new SWSenateGrantChancellorMessage());
+    }
+
+    public void PartyWhip(int billId)
+    {
+        SendMessage(new SWSenatePartyWhipMessage(billId));
+    }
+
+    public void Nominate()
+    {
+        SendMessage(new SWSenateNominateMessage());
+    }
+
+    public void ElectionVote(string candidate)
+    {
+        SendMessage(new SWSenateElectionVoteMessage(candidate));
+    }
+
+    public void CourtConfirmVote(bool approve)
+    {
+        SendMessage(new SWCourtConfirmVoteMessage(approve));
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        if (!disposing)
+            return;
+
+        _menu?.Dispose();
+    }
+}

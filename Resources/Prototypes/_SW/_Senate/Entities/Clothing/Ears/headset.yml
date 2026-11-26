@@ -1,0 +1,121 @@
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetSenate
+  name: senate headset
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeySenate
+      - SWEncryptionKeyCommittees
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetSenateLeader
+  name: senate leader headset
+  components:
+  - type: EncryptionKeyHolder
+    keySlots: 4
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyChancellery
+      - SWEncryptionKeySenate
+      - SWEncryptionKeySenateStaff
+      - SWEncryptionKeyCommittees
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetSenateMinister
+  name: minister headset
+  components:
+  - type: EncryptionKeyHolder
+    keySlots: 3
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyMinistry
+      - SWEncryptionKeyChancellery
+      - SWEncryptionKeySenate
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetSenateMedical
+  name: senate medical headset
+  components:
+  - type: EncryptionKeyHolder
+    keySlots: 2
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeySenate
+      - SWEncryptionKeySenateStaff
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetSenateGuard
+  name: senate guard headset
+  components:
+  - type: EncryptionKeyHolder
+    keySlots: 2
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyGuard
+      - SWEncryptionKeySenateStaff
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetSenateGuardHead
+  name: senate guard command headset
+  components:
+  - type: EncryptionKeyHolder
+    keySlots: 3
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyGuard
+      - SWEncryptionKeySenate
+      - SWEncryptionKeyChancellery
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetSenateUsher
+  name: senate usher headset
+  components:
+  - type: EncryptionKeyHolder
+    keySlots: 4
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyGuard
+      - SWEncryptionKeySenate
+      - SWEncryptionKeySenateStaff
+      - SWEncryptionKeyChancellery
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetCourt
+  name: court headset
+  components:
+  - type: EncryptionKeyHolder
+    keySlots: 2
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyCourt
+      - SWEncryptionKeySenate
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWClothingHeadsetCourtChief
+  name: chief justice headset
+  components:
+  - type: EncryptionKeyHolder
+    keySlots: 3
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyCourt
+      - SWEncryptionKeySenate
+      - SWEncryptionKeyChancellery

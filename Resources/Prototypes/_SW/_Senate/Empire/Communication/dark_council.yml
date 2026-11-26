@@ -1,0 +1,32 @@
+- type: radioChannel
+  id: SWDarkCouncil
+  name: Тёмный совет
+  keycode: 'ы'
+  frequency: 2057
+  color: "#a12b45"
+  longRange: true
+
+- type: entity
+  parent: SWEncryptionKeyBase
+  id: SWEncryptionKeyDarkCouncil
+  name: ключ шифрования Тёмного совета
+  components:
+  - type: EncryptionKey
+    channels:
+    - SWDarkCouncil
+    defaultChannel: SWDarkCouncil
+  - type: Sprite
+    layers:
+    - state: crypt_red
+    - state: commander_empire
+
+- type: entity
+  parent: SWClothingHeadset
+  id: SWDarkCouncilHeadset
+  name: гарнитура Тёмного совета
+  components:
+  - type: ContainerFill
+    containers:
+      key_slots:
+      - SWEncryptionKeyDarkCouncil
+      - SWEncryptionKeyComEmpire

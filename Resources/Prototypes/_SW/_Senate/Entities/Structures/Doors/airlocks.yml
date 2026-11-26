@@ -1,0 +1,65 @@
+- type: entity
+  id: SWAirlockChancellor
+  parent: CMAirlockCommand
+  name: шлюз Канцлера
+  suffix: Канцлер
+  components:
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/SenateChancellorVisual.rsi
+  - type: AccessReader
+    access: [["SWSenateChancellor"]]
+
+- type: entity
+  id: SWAirlockSpeaker
+  parent: CMAirlockCommand
+  name: шлюз Спикера
+  suffix: Спикер
+  components:
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/SenateSpeakerVisual.rsi
+  - type: AccessReader
+    access: [["SWSenateChancellor"], ["SWSenateSpeaker"]]
+
+- type: entity
+  id: SWAirlockSenator
+  parent: CMAirlockCommand
+  name: сенатский шлюз
+  suffix: Сенатор
+  components:
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/SenateSenatorVisual.rsi
+  - type: AccessReader
+    access: [["SWSenateChancellor"], ["SWSenateSpeaker"], ["SWSenateSenator"]]
+
+- type: entity
+  id: SWAirlockMinister
+  parent: CMAirlockCommand
+  name: министерский шлюз
+  suffix: Министр
+  components:
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/SenateMinisterVisual.rsi
+  - type: AccessReader
+    access: [["SWSenateChancellor"], ["SWMinister"]]
+
+- type: entity
+  id: SWAirlockSenate
+  parent: CMAirlockCommand
+  name: служебный шлюз Сената
+  suffix: Сенат
+  components:
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/SenateServiceVisual.rsi
+  - type: AccessReader
+    access: [["SWSenate"]]
+
+- type: entity
+  id: SWAirlockCourt
+  parent: CMAirlockCommand
+  name: шлюз Верховного Суда
+  suffix: Суд
+  components:
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/SenateCourtVisual.rsi
+  - type: AccessReader
+    access: [["SWSenateCourt"]]

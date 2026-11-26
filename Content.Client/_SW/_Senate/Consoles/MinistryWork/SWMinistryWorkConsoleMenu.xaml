@@ -1,0 +1,97 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+    xmlns:senate="clr-namespace:Content.Client._SW._Senate"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    Title="Рабочая консоль министерства"
+    SetSize="1000 700"
+    MinSize="640 600">
+    <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+            <PanelContainer Name="HeaderPanel">
+                <BoxContainer Orientation="Horizontal" Margin="14 10" SeparationOverride="0">
+                    <senate:SWConsoleSeal Margin="0 0 12 0" />
+                    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalAlignment="Center" SeparationOverride="2">
+                        <Label Name="HeaderNetwork" Text="РЕСПУБЛИКА / ГОЛОНЕТ" />
+                        <Label Name="HeaderTitle" HorizontalExpand="True" ClipText="True" />
+                    </BoxContainer>
+                    <BoxContainer Name="DefenseHeaderBudgetPanel" Orientation="Vertical" Margin="12 0 0 0" VerticalAlignment="Center" SeparationOverride="1" Visible="False">
+                        <Label Name="DefenseHeaderBudget" />
+                        <Label Name="DefenseHeaderUpkeep" />
+                        <Label Name="DefenseHeaderBudgetPhase" Visible="False" />
+                    </BoxContainer>
+                    <Label Name="HeaderClock" Margin="12 0 0 0" VerticalAlignment="Center" />
+                </BoxContainer>
+            </PanelContainer>
+            <PanelContainer Name="TabBarPanel">
+                <WrapContainer Name="TabBar" Margin="6 4" />
+            </PanelContainer>
+            <BoxContainer Name="ContentHost" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+                <ScrollContainer Name="OverviewPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="OverviewContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="RepublicPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="RepublicContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <BoxContainer Name="RequestsPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                    <BoxContainer Name="RequestsContent" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" />
+                </BoxContainer>
+                <ScrollContainer Name="CommandPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="CommandContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <BoxContainer Name="FleetPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                    <BoxContainer Name="FleetContent" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" />
+                </BoxContainer>
+                <ScrollContainer Name="OpsPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="OpsContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="ControlPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="ControlContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <BoxContainer Name="NetworkPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
+                <ScrollContainer Name="SecOpsPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="SecOpsContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="EpidemicPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="EpidemicContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="OutbreakPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="OutbreakContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <BoxContainer Name="HealthProgramsPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                    <BoxContainer Name="HealthProgramsContent" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" />
+                </BoxContainer>
+                <BoxContainer Name="HealthQuarantinePanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
+                <ScrollContainer Name="EconomyPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="EconomyContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <BoxContainer Name="ProjectsPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                    <BoxContainer Name="ProjectsContent" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" />
+                </BoxContainer>
+                <BoxContainer Name="RoutesPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+                    <BoxContainer Name="RoutesHeader" Orientation="Vertical" HorizontalExpand="True" />
+                    <ScrollContainer Name="RoutesScroll" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False">
+                        <BoxContainer Name="RoutesContent" Orientation="Vertical" HorizontalExpand="True" />
+                    </ScrollContainer>
+                </BoxContainer>
+                <ScrollContainer Name="MonetaryPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="MonetaryContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="DebtPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="DebtContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <ScrollContainer Name="BudgetsPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="BudgetsContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <BoxContainer Name="ReservePanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
+                <BoxContainer Name="FinanceMapPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
+                <ScrollContainer Name="FinanceTaxesPanel" HorizontalExpand="True" VerticalExpand="True" HScrollEnabled="False" Margin="10">
+                    <BoxContainer Name="FinanceTaxesContent" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <BoxContainer Name="CasesPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
+                <BoxContainer Name="JusticePanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
+                <BoxContainer Name="ArchivePanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
+                <BoxContainer Name="JusticeJournalPanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
+                <BoxContainer Name="PlanetaryDefensePanel" Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10" />
+            </BoxContainer>
+        </BoxContainer>
+    </PanelContainer>
+</controls:FancyWindow>

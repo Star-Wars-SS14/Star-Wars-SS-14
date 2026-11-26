@@ -147,6 +147,7 @@ public sealed partial class ContentAudioSystem
 
     private void UpdateAmbientMusic()
     {
+        if (_senateFinaleActive) return;
         // Update still runs in lobby so just ignore it.
         if (_state.CurrentState is not GameplayState)
         {

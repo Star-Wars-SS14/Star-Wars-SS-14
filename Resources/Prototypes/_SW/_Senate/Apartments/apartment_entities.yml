@@ -1,0 +1,245 @@
+# Generic pool of per-apartment access tags. A mapper placing a physical SWApartmentDoor picks one
+# unused slot here, sets it as that door's sole AccessReader access entry, and sets the matching
+# ClassId on the door's SWApartmentDoorComponent - the slot tag IS the apartment's identity, the
+# apartment console discovers doors by querying the map, no other bookkeeping needed.
+- type: accessLevel
+  id: SWApartmentSlot1
+  name: Апартаменты 1
+
+- type: accessLevel
+  id: SWApartmentSlot2
+  name: Апартаменты 2
+
+- type: accessLevel
+  id: SWApartmentSlot3
+  name: Апартаменты 3
+
+- type: accessLevel
+  id: SWApartmentSlot4
+  name: Апартаменты 4
+
+- type: accessLevel
+  id: SWApartmentSlot5
+  name: Апартаменты 5
+
+- type: accessLevel
+  id: SWApartmentSlot6
+  name: Апартаменты 6
+
+- type: accessLevel
+  id: SWApartmentSlot7
+  name: Апартаменты 7
+
+- type: accessLevel
+  id: SWApartmentSlot8
+  name: Апартаменты 8
+
+- type: accessLevel
+  id: SWApartmentSlot9
+  name: Апартаменты 9
+
+- type: accessLevel
+  id: SWApartmentSlot10
+  name: Апартаменты 10
+
+- type: accessLevel
+  id: SWApartmentSlot11
+  name: Апартаменты 11
+
+- type: accessLevel
+  id: SWApartmentSlot12
+  name: Апартаменты 12
+
+- type: accessLevel
+  id: SWApartmentSlot13
+  name: Апартаменты 13
+
+- type: accessLevel
+  id: SWApartmentSlot14
+  name: Апартаменты 14
+
+- type: accessLevel
+  id: SWApartmentSlot15
+  name: Апартаменты 15
+
+- type: accessLevel
+  id: SWApartmentSlot16
+  name: Апартаменты 16
+
+- type: accessLevel
+  id: SWApartmentSlot17
+  name: Апартаменты 17
+
+- type: accessLevel
+  id: SWApartmentSlot18
+  name: Апартаменты 18
+
+- type: accessLevel
+  id: SWApartmentSlot19
+  name: Апартаменты 19
+
+- type: accessLevel
+  id: SWApartmentSlot20
+  name: Апартаменты 20
+
+- type: accessLevel
+  id: SWApartmentSlot21
+  name: Апартаменты 21
+
+- type: accessLevel
+  id: SWApartmentSlot22
+  name: Апартаменты 22
+
+- type: accessLevel
+  id: SWApartmentSlot23
+  name: Апартаменты 23
+
+- type: accessLevel
+  id: SWApartmentSlot24
+  name: Апартаменты 24
+
+- type: accessLevel
+  id: SWApartmentSlot25
+  name: Апартаменты 25
+
+- type: accessLevel
+  id: SWApartmentSlot26
+  name: Апартаменты 26
+
+- type: accessLevel
+  id: SWApartmentSlot27
+  name: Апартаменты 27
+
+- type: accessLevel
+  id: SWApartmentSlot28
+  name: Апартаменты 28
+
+- type: accessLevel
+  id: SWApartmentSlot29
+  name: Апартаменты 29
+
+- type: accessLevel
+  id: SWApartmentSlot30
+  name: Апартаменты 30
+
+- type: accessLevel
+  id: SWApartmentSlot31
+  name: Апартаменты 31
+
+- type: accessLevel
+  id: SWApartmentSlot32
+  name: Апартаменты 32
+
+- type: accessLevel
+  id: SWApartmentSlot33
+  name: Апартаменты 33
+
+- type: accessLevel
+  id: SWApartmentSlot34
+  name: Апартаменты 34
+
+- type: accessLevel
+  id: SWApartmentSlot35
+  name: Апартаменты 35
+
+- type: accessLevel
+  id: SWApartmentSlot36
+  name: Апартаменты 36
+
+- type: accessLevel
+  id: SWApartmentSlot37
+  name: Апартаменты 37
+
+- type: accessLevel
+  id: SWApartmentSlot38
+  name: Апартаменты 38
+
+- type: accessLevel
+  id: SWApartmentSlot39
+  name: Апартаменты 39
+
+- type: accessLevel
+  id: SWApartmentSlot40
+  name: Апартаменты 40
+
+- type: accessLevel
+  id: SWApartmentSlot41
+  name: Апартаменты 41
+
+- type: accessLevel
+  id: SWApartmentSlot42
+  name: Апартаменты 42
+
+- type: accessLevel
+  id: SWApartmentSlot43
+  name: Апартаменты 43
+
+- type: accessLevel
+  id: SWApartmentSlot44
+  name: Апартаменты 44
+
+- type: accessLevel
+  id: SWApartmentSlot45
+  name: Апартаменты 45
+
+- type: accessLevel
+  id: SWApartmentSlot46
+  name: Апартаменты 46
+
+- type: accessLevel
+  id: SWApartmentSlot47
+  name: Апартаменты 47
+
+- type: accessLevel
+  id: SWApartmentSlot48
+  name: Апартаменты 48
+
+- type: accessLevel
+  id: SWApartmentSlot49
+  name: Апартаменты 49
+
+- type: accessLevel
+  id: SWApartmentSlot50
+  name: Апартаменты 50
+
+# Placeholder door: place one per physical apartment, then on THAT instance override
+# `access: [["SWApartmentSlotN"]]` and `classId: SWApartmentEconomy|SWApartmentStandard|SWApartmentLux`
+# to a free slot number. WARNING: an empty access list means the door is UNLOCKED for everyone
+# (RobustToolbox treats "no requirements configured" as public, not restricted) - never leave a
+# placed instance without its own access override, or the room is a public one, not a private rental.
+- type: entity
+  parent: CMAirlockCommand
+  id: SWApartmentDoor
+  name: дверь апартаментов
+  suffix: Апартаменты, задать слот вручную
+  components:
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Doors/Airlocks/RepublicSenateAirlock.rsi
+  - type: AccessReader
+    access: []
+  - type: SWApartmentDoor
+    classId: SWApartmentEconomy
+
+- type: entity
+  parent: BaseComputer
+  id: SWApartmentConsole
+  name: консоль аренды апартаментов
+  description: Учёт свободных и занятых апартаментов Сената. Оплата — с личного счёта.
+  components:
+  - type: SWApartmentConsole
+  - type: ActivatableUI
+    key: enum.SWApartmentConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWApartmentConsoleUiKey.Key:
+        type: SWApartmentConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicSenateInfoComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: senate_info_monitor
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Godmode

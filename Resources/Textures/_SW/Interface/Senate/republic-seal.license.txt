@@ -1,0 +1,1 @@
+republic-seal.png: cropped and recolored from Resources/Textures/_SW/Structures/Decoration/bannerRepublic.rsi/banner.png. Copyright STAR WARS SS 14. Licensed under CC-BY-SA-3.0: https://creativecommons.org/licenses/by-sa/3.0/.

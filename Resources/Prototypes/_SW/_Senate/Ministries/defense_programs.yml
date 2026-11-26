@@ -1,0 +1,32 @@
+- type: swDefenseProgram
+  id: SWDefenseProgramRecruitment
+  name: Призыв резервистов
+  description: Кампания набора пополняет резерв вооружённых сил Республики.
+  order: 0
+  policyEffects:
+    SWStatReserve: 7
+
+- type: swDefenseProgram
+  id: SWDefenseProgramShipyards
+  name: Загрузка военных верфей
+  description: Военные заказы на верфях усиливают флот Республики.
+  order: 1
+  policyEffects:
+    SWStatFleet: 7
+
+- type: swDefenseProgram
+  id: SWDefenseProgramDrills
+  name: Войсковые учения
+  description: Масштабные манёвры поднимают боеготовность армии.
+  order: 2
+  policyEffects:
+    SWStatArmy: 7
+
+- type: swDefenseProgram
+  id: SWDefenseProgramBorderWatch
+  name: Пограничные манёвры
+  description: Демонстративное присутствие у границы весь день сдерживает Империю.
+  order: 3
+  policyEffects:
+    SWStatEmpireBorder: 5
+  borderDelta: -15

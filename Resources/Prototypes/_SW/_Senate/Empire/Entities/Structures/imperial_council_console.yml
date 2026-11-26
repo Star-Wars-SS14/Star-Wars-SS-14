@@ -1,0 +1,23 @@
+- type: entity
+  parent: BaseComputer
+  id: SWEmpireCouncilConsole
+  name: консоль Тёмного совета
+  description: Имперское производство, логистика и бюджеты сфер.
+  components:
+  - type: SWEmpireCouncilConsole
+  - type: ActivatableUI
+    key: enum.SWEmpireCouncilConsoleUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWEmpireCouncilConsoleUiKey.Key:
+        type: SWEmpireCouncilConsoleBoundUserInterface
+  - type: Sprite
+    sprite: _SW/_Senate/Structures/Machines/RepublicStatisticsComputer.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerScreen"]
+      state: statistics_monitor
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Godmode

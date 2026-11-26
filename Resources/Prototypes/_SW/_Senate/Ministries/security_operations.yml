@@ -1,0 +1,75 @@
+- type: swSecurityOperation
+  id: SWSecurityOpCounterIntel
+  name: Контрразведывательный рейд
+  description: Сеть СИС прочёсывает Республику, сбивая подрывную активность.
+  order: 0
+  cost: 2000
+  adminCost: 1
+  cooldown: 4
+  threatDelta: -18
+  policyEffects:
+    SWStatIntel: 3
+    SWStatCounter: 3
+    SWStatRights: -2
+
+- type: swSecurityOperation
+  id: SWSecurityOpSectorSweep
+  name: Зачистка сектора
+  description: Жёсткая полицейская операция наводит порядок, но злит население.
+  order: 1
+  cost: 1800
+  adminCost: 1
+  cooldown: 4
+  target: Sector
+  unrestDelta: 4
+  sectorEffects:
+    SWGlobalSecurity: 6
+    SWGlobalSociety: -2
+
+- type: swSecurityOperation
+  id: SWSecurityOpInfoOp
+  name: Информационная операция
+  description: Двухчасовая кампания пропаганды охлаждает улицы ценой свобод.
+  order: 2
+  cost: 1500
+  adminCost: 1
+  cooldown: 4
+  duration: 2
+  unrestDelta: -8
+  policyEffects:
+    SWStatMorale: 5
+    SWStatCensorship: 3
+    SWStatRights: -2
+
+- type: swSecurityOperation
+  id: SWSecurityOpContraband
+  name: Антиконтрабандная облава
+  description: Двухчасовая операция против контрабандных сетей в секторе.
+  order: 3
+  cost: 2000
+  adminCost: 1
+  cooldown: 5
+  duration: 2
+  target: Sector
+  threatDelta: -6
+  sectorEffects:
+    SWGlobalSecurity: 4
+    SWGlobalEconomy: -2
+  policyEffects:
+    SWStatCounter: 3
+
+- type: swSecurityOperation
+  id: SWSecurityOpPurge
+  name: Чистка
+  description: Тотальная зачистка подполья резко гасит угрозу, но ломает права и мораль. Только при чрезвычайном положении.
+  order: 4
+  cost: 3000
+  adminCost: 2
+  cooldown: 8
+  requirePosture: Emergency
+  threatDelta: -35
+  unrestDelta: 10
+  policyEffects:
+    SWStatIntel: 3
+    SWStatRights: -6
+    SWStatMorale: -5

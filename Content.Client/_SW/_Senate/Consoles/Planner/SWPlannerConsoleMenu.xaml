@@ -1,0 +1,67 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+    xmlns:senate="clr-namespace:Content.Client._SW._Senate"
+    xmlns:planner="clr-namespace:Content.Client._SW._Senate.Consoles.Planner"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    Title="Планировщик Сената" MinSize="780 560">
+    <PanelContainer Name="RootPanel" HorizontalExpand="True" VerticalExpand="True">
+        <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True">
+            <PanelContainer Name="HeaderPanel">
+                <BoxContainer Orientation="Horizontal" Margin="10 6">
+                    <Label Name="HeaderTitle" Text="Планировщик сената" HorizontalExpand="True" />
+                    <Label Name="HeaderClock" />
+                </BoxContainer>
+            </PanelContainer>
+            <WrapContainer Name="Toolbar" Margin="8 4">
+                <OptionButton Name="PersonOption" MinWidth="170" />
+                <senate:SWConsoleButton Name="TodayButton" Text="Сегодня" />
+                <senate:SWConsoleButton Name="TomorrowButton" Text="Завтра" />
+                <senate:SWConsoleButton Name="NowButton" Text="Сейчас" />
+                <senate:SWConsoleButton Name="MeetingButton" Text="Встреча" />
+                <senate:SWConsoleButton Name="BlockButton" Text="Запись" />
+                <senate:SWConsoleButton Name="InvitationsButton" Text="Приглашения" />
+            </WrapContainer>
+            <BoxContainer Orientation="Horizontal" Margin="8" HorizontalExpand="True" VerticalExpand="True">
+                <planner:SWPlannerCalendarControl Name="Calendar" HorizontalExpand="True" VerticalExpand="True" MinWidth="300" />
+                <BoxContainer Orientation="Vertical" MinWidth="330" HorizontalExpand="True" VerticalExpand="True" Margin="8 0 0 0">
+                    <ScrollContainer HScrollEnabled="False" HorizontalExpand="True" VerticalExpand="True">
+                        <BoxContainer Name="Inspector" Orientation="Vertical" HorizontalExpand="True">
+                            <Label Name="InspectorTitle" Text="Выберите время или событие" ClipText="True" />
+                            <Label Name="DraftStatus" ClipText="True" />
+                            <BoxContainer Name="Details" Orientation="Vertical" HorizontalExpand="True" />
+                            <BoxContainer Name="MeetingForm" Orientation="Vertical" HorizontalExpand="True" Visible="False">
+                                <Label Text="Организатор — я" />
+                                <Label Text="Участники" Margin="0 6 0 0" />
+                                <LineEdit Name="SearchEdit" PlaceHolder="Поиск по имени или должности" />
+                                <BoxContainer Name="SelectedInvitees" Orientation="Vertical" />
+                                <BoxContainer Name="InviteeList" Orientation="Vertical" />
+                                <senate:SWConsoleButton Name="FindTimeButton" Text="Ближайшее общее время" />
+                                <Label Name="TimeHint" ClipText="True" />
+                                <Label Text="Название" Margin="0 6 0 0" />
+                                <LineEdit Name="TitleEdit" PlaceHolder="Название встречи" />
+                                <Label Text="Время и длительность" Margin="0 6 0 0" />
+                                <BoxContainer Orientation="Horizontal">
+                                    <OptionButton Name="MeetingSlot" HorizontalExpand="True" />
+                                    <OptionButton Name="MeetingDuration" HorizontalExpand="True" />
+                                </BoxContainer>
+                                <senate:SWConsoleButton Name="PrivateButton" Text="Приватная: нет" />
+                                <LineEdit Name="LocationEdit" PlaceHolder="Место (необязательно)" />
+                                <senate:SWConsoleButton Name="AgendaButton" Text="Добавить повестку" />
+                                <LineEdit Name="AgendaEdit" PlaceHolder="Повестка (необязательно)" Visible="False" />
+                            </BoxContainer>
+                            <BoxContainer Name="BlockForm" Orientation="Vertical" HorizontalExpand="True" Visible="False">
+                                <Label Text="Личная запись в моём графике" />
+                                <LineEdit Name="BlockLabel" PlaceHolder="Чем заняты" />
+                                <Label Name="BlockTimeHint" ClipText="True" />
+                                <BoxContainer Orientation="Horizontal">
+                                    <OptionButton Name="BlockSlot" HorizontalExpand="True" />
+                                    <OptionButton Name="BlockDuration" HorizontalExpand="True" />
+                                </BoxContainer>
+                            </BoxContainer>
+                        </BoxContainer>
+                    </ScrollContainer>
+                    <senate:SWConsoleButton Name="PrimaryButton" Text="Создать встречу" Visible="False" />
+                </BoxContainer>
+            </BoxContainer>
+        </BoxContainer>
+    </PanelContainer>
+</controls:FancyWindow>

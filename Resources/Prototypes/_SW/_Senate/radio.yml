@@ -1,0 +1,55 @@
+- type: radioChannel
+  id: SWSenate
+  name: Сенат
+  keycode: 'ш'
+  frequency: 2050
+  color: "#9b59b6"
+  longRange: true
+
+- type: radioChannel
+  id: SWSenateStaff
+  name: Персонал Сената
+  keycode: 'е'
+  frequency: 2051
+  color: "#16a085"
+  longRange: true
+
+- type: radioChannel
+  id: SWSenateGuard
+  name: Гвардия
+  keycode: 'в'
+  frequency: 2052
+  color: "#c0392b"
+  longRange: true
+
+- type: radioChannel
+  id: SWChancellery
+  name: Администрация Канцлера
+  keycode: 'а'
+  frequency: 2053
+  color: "#c9a227"
+  longRange: true
+
+- type: radioChannel
+  id: SWMinistry
+  name: Министерства
+  keycode: 'б'
+  frequency: 2054
+  color: "#2980b9"
+  longRange: true
+
+- type: radioChannel
+  id: SWCourt
+  name: Суд
+  keycode: 'ю'
+  frequency: 2055
+  color: "#b8860b"
+  longRange: true
+
+- type: radioChannel
+  id: SWCommittees
+  name: Комитеты
+  keycode: 'з'
+  frequency: 2056
+  color: "#27ae60"
+  longRange: true

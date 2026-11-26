@@ -37,8 +37,10 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
         if (_lastState == null)
             return;
 
-        var accumulated = _timing.CurTime - _lastState.StartTime;
-        var remaining = _lastState.CaptureDuration - accumulated;
+        // A null start time is a paused timer; retain the server's remaining active time.
+        var remaining = _lastState.StartTime is { } start
+            ? _lastState.CaptureDuration - (_timing.CurTime - start)
+            : _lastState.TimeRemain;
 
         if (_lastState is not { Capturing: true })
         {
@@ -46,11 +48,8 @@ public sealed partial class CaptureConsoleMenu : FancyWindow
             return;
         }
 
-        if (remaining != null)
-        {
-            _lastState.TimeRemain = remaining.Value;
-            ProgressBar.Value = Math.Clamp(1.0f - (float) remaining.Value.Divide(_lastState.CaptureDuration), 0.0f, 1.0f);
-        }
+        _lastState.TimeRemain = remaining;
+        ProgressBar.Value = Math.Clamp(1.0f - (float) remaining.Divide(_lastState.CaptureDuration), 0.0f, 1.0f);
 
         UpdateInformationDisplay(_lastState);
     }

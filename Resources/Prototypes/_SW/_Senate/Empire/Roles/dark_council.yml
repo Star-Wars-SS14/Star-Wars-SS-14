@@ -1,0 +1,364 @@
+- type: department
+  id: SWDarkCouncil
+  name: Тёмный совет
+  description: Владыки сфер Тёмного совета Империи.
+  color: "#8B0000"
+  weight: 1950
+  roles:
+  - SWDarkCouncilMilitaryOffense
+  - SWDarkCouncilIntelligence
+  - SWDarkCouncilProductionLogistics
+  - SWDarkCouncilExpansionDiplomacy
+
+- type: accessLevel
+  id: SWDarkCouncil
+  name: Тёмный совет
+
+- type: accessGroup
+  id: SWDarkCouncil
+  tags:
+  - SWDarkCouncil
+  - SWDarkCouncilMilitaryOffense
+  - SWDarkCouncilIntelligence
+  - SWDarkCouncilProductionLogistics
+  - SWDarkCouncilExpansionDiplomacy
+
+- type: accessLevel
+  id: SWDarkCouncilMilitaryOffense
+  name: Владыка Сферы военного наступления
+
+- type: playTimeTracker
+  id: Job_SWDarkCouncilMilitaryOffense
+
+- type: job
+  id: SWDarkCouncilMilitaryOffense
+  name: Владыка Сферы военного наступления
+  whitelisted: true
+  playTimeTracker: Job_SWDarkCouncilMilitaryOffense
+  requirements:
+  - !type:SWSpeciesJobRequirement
+    disallowedSpecies: [ Colicoid ]
+  startingGear: SWDarkCouncilMilitaryOffenseGear
+  icon: JobIconSith
+  supervisors: job-supervisors-black-council
+  access:
+  - SWEmpireBase
+  - SWEmpireCommander
+  - SWDarkCouncil
+  - SWDarkCouncilMilitaryOffense
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: Stamina
+      critThreshold: 400
+      baseCritThreshold: 400
+    - type: SWDarkCouncilMember
+      sphere: MilitaryOffense
+    - type: SWFactionMember
+      faction: EmpireFaction
+      job: SWDarkCouncilMilitaryOffense
+    - type: ForceAbilityDistanceInteract
+    - type: MobThresholds
+      thresholds:
+        0: Alive
+        400: Critical
+        500: Dead
+    - type: SWForceUserBlock
+    - type: SWDashAbility
+    - type: SlowOnDamage
+      speedModifierThresholds:
+        100: 0.8
+        150: 0.6
+        200: 0.5
+    - type: SWAbilityThrowSword
+    - type: Inventory
+      templateId: forceUserTemplate
+    - type: Tag
+      tags:
+        - ForceUser
+        - DoorBumpOpener
+        - CanPilot
+    - type: NoSlip
+    - type: Barotrauma
+      damage:
+        types:
+          Blunt: 0.05
+    - type: Temperature
+      heatDamageThreshold: 340
+      coldDamageThreshold: 230
+      currentTemperature: 310.15
+      specificHeat: 42
+      coldDamage:
+        types:
+          Cold: 0.2
+      heatDamage:
+        types:
+          Heat: 0.3
+    - type: Respirator
+      damage:
+        types:
+          Asphyxiation: 0.5
+      damageRecovery:
+        types:
+          Asphyxiation: -5.0
+    - type: SWLightningAbility
+      damage:
+        types:
+          Heat: 25
+    - type: SWStrangulateAbility
+    - type: SWSendMessageAbility
+
+- type: accessLevel
+  id: SWDarkCouncilIntelligence
+  name: Владыка Пирамиды Имперской разведки
+
+- type: playTimeTracker
+  id: Job_SWDarkCouncilIntelligence
+
+- type: job
+  id: SWDarkCouncilIntelligence
+  name: Владыка Пирамиды Имперской разведки
+  whitelisted: true
+  playTimeTracker: Job_SWDarkCouncilIntelligence
+  requirements:
+  - !type:SWSpeciesJobRequirement
+    disallowedSpecies: [ Colicoid ]
+  startingGear: SWDarkCouncilIntelligenceGear
+  icon: JobIconSith
+  supervisors: job-supervisors-black-council
+  access:
+  - SWEmpireBase
+  - SWEmpireCommander
+  - SWDarkCouncil
+  - SWDarkCouncilIntelligence
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: Stamina
+      critThreshold: 400
+      baseCritThreshold: 400
+    - type: SWDarkCouncilMember
+      sphere: Intelligence
+    - type: SWFactionMember
+      faction: EmpireFaction
+      job: SWDarkCouncilIntelligence
+    - type: ForceAbilityDistanceInteract
+    - type: MobThresholds
+      thresholds:
+        0: Alive
+        400: Critical
+        500: Dead
+    - type: SWForceUserBlock
+    - type: SWDashAbility
+    - type: SlowOnDamage
+      speedModifierThresholds:
+        100: 0.8
+        150: 0.6
+        200: 0.5
+    - type: SWAbilityThrowSword
+    - type: Inventory
+      templateId: forceUserTemplate
+    - type: Tag
+      tags:
+        - ForceUser
+        - DoorBumpOpener
+        - CanPilot
+    - type: NoSlip
+    - type: Barotrauma
+      damage:
+        types:
+          Blunt: 0.05
+    - type: Temperature
+      heatDamageThreshold: 340
+      coldDamageThreshold: 230
+      currentTemperature: 310.15
+      specificHeat: 42
+      coldDamage:
+        types:
+          Cold: 0.2
+      heatDamage:
+        types:
+          Heat: 0.3
+    - type: Respirator
+      damage:
+        types:
+          Asphyxiation: 0.5
+      damageRecovery:
+        types:
+          Asphyxiation: -5.0
+    - type: SWLightningAbility
+      damage:
+        types:
+          Heat: 25
+    - type: SWStrangulateAbility
+    - type: SWSendMessageAbility
+
+- type: accessLevel
+  id: SWDarkCouncilProductionLogistics
+  name: Владыка Сферы производства и логистики
+
+- type: playTimeTracker
+  id: Job_SWDarkCouncilProductionLogistics
+
+- type: job
+  id: SWDarkCouncilProductionLogistics
+  name: Владыка Сферы производства и логистики
+  whitelisted: true
+  playTimeTracker: Job_SWDarkCouncilProductionLogistics
+  requirements:
+  - !type:SWSpeciesJobRequirement
+    disallowedSpecies: [ Colicoid ]
+  startingGear: SWDarkCouncilProductionLogisticsGear
+  icon: JobIconSith
+  supervisors: job-supervisors-black-council
+  access:
+  - SWEmpireBase
+  - SWEmpireCommander
+  - SWDarkCouncil
+  - SWDarkCouncilProductionLogistics
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: Stamina
+      critThreshold: 400
+      baseCritThreshold: 400
+    - type: SWDarkCouncilMember
+      sphere: ProductionLogistics
+    - type: SWFactionMember
+      faction: EmpireFaction
+      job: SWDarkCouncilProductionLogistics
+    - type: ForceAbilityDistanceInteract
+    - type: MobThresholds
+      thresholds:
+        0: Alive
+        400: Critical
+        500: Dead
+    - type: SWForceUserBlock
+    - type: SWDashAbility
+    - type: SlowOnDamage
+      speedModifierThresholds:
+        100: 0.8
+        150: 0.6
+        200: 0.5
+    - type: SWAbilityThrowSword
+    - type: Inventory
+      templateId: forceUserTemplate
+    - type: Tag
+      tags:
+        - ForceUser
+        - DoorBumpOpener
+        - CanPilot
+    - type: NoSlip
+    - type: Barotrauma
+      damage:
+        types:
+          Blunt: 0.05
+    - type: Temperature
+      heatDamageThreshold: 340
+      coldDamageThreshold: 230
+      currentTemperature: 310.15
+      specificHeat: 42
+      coldDamage:
+        types:
+          Cold: 0.2
+      heatDamage:
+        types:
+          Heat: 0.3
+    - type: Respirator
+      damage:
+        types:
+          Asphyxiation: 0.5
+      damageRecovery:
+        types:
+          Asphyxiation: -5.0
+    - type: SWLightningAbility
+      damage:
+        types:
+          Heat: 25
+    - type: SWStrangulateAbility
+    - type: SWSendMessageAbility
+
+- type: accessLevel
+  id: SWDarkCouncilExpansionDiplomacy
+  name: Владыка Сферы расширения и дипломатии
+
+- type: playTimeTracker
+  id: Job_SWDarkCouncilExpansionDiplomacy
+
+- type: job
+  id: SWDarkCouncilExpansionDiplomacy
+  name: Владыка Сферы расширения и дипломатии
+  whitelisted: true
+  playTimeTracker: Job_SWDarkCouncilExpansionDiplomacy
+  requirements:
+  - !type:SWSpeciesJobRequirement
+    disallowedSpecies: [ Colicoid ]
+  startingGear: SWDarkCouncilExpansionDiplomacyGear
+  icon: JobIconSith
+  supervisors: job-supervisors-black-council
+  access:
+  - SWEmpireBase
+  - SWEmpireCommander
+  - SWDarkCouncil
+  - SWDarkCouncilExpansionDiplomacy
+  special:
+  - !type:AddComponentSpecial
+    components:
+    - type: Stamina
+      critThreshold: 400
+      baseCritThreshold: 400
+    - type: SWDarkCouncilMember
+      sphere: ExpansionDiplomacy
+    - type: SWFactionMember
+      faction: EmpireFaction
+      job: SWDarkCouncilExpansionDiplomacy
+    - type: ForceAbilityDistanceInteract
+    - type: MobThresholds
+      thresholds:
+        0: Alive
+        400: Critical
+        500: Dead
+    - type: SWForceUserBlock
+    - type: SWDashAbility
+    - type: SlowOnDamage
+      speedModifierThresholds:
+        100: 0.8
+        150: 0.6
+        200: 0.5
+    - type: SWAbilityThrowSword
+    - type: Inventory
+      templateId: forceUserTemplate
+    - type: Tag
+      tags:
+        - ForceUser
+        - DoorBumpOpener
+        - CanPilot
+    - type: NoSlip
+    - type: Barotrauma
+      damage:
+        types:
+          Blunt: 0.05
+    - type: Temperature
+      heatDamageThreshold: 340
+      coldDamageThreshold: 230
+      currentTemperature: 310.15
+      specificHeat: 42
+      coldDamage:
+        types:
+          Cold: 0.2
+      heatDamage:
+        types:
+          Heat: 0.3
+    - type: Respirator
+      damage:
+        types:
+          Asphyxiation: 0.5
+      damageRecovery:
+        types:
+          Asphyxiation: -5.0
+    - type: SWLightningAbility
+      damage:
+        types:
+          Heat: 25
+    - type: SWStrangulateAbility
+    - type: SWSendMessageAbility

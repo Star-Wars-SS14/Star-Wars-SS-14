@@ -1,7 +1,6 @@
 using Content.Shared._SW.Loadouts; //SW
 using System.Linq;
 using Content.Client.Guidebook;
-using Content.Client.Corvax.TTS;
 using Content.Client.Humanoid;
 using Content.Client.Inventory;
 using Content.Client.Lobby.UI;

@@ -1,0 +1,171 @@
+- type: entity
+  parent: SWIDCardStandard
+  id: SWSenatorIDCard
+  name: ID-карта сенатора
+  description: Удостоверение члена Сената Республики.
+  components:
+  - type: SWSenatePositionCard
+    position: Senator
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: senator
+  - type: PresetIdCard
+    job: SWSenator
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWChancellorIDCard
+  name: ID-карта Верховного Канцлера
+  description: Удостоверение главы исполнительной власти Республики.
+  components:
+  - type: SWSenatePositionCard
+    position: Chancellor
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: chancellor
+  - type: PresetIdCard
+    job: SWChancellor
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWSpeakerIDCard
+  name: ID-карта Спикера Сената
+  description: Удостоверение председателя Сената Республики.
+  components:
+  - type: SWSenatePositionCard
+    position: Speaker
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: speaker
+  - type: PresetIdCard
+    job: SWSpeaker
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWMinisterIDCard
+  name: ID-карта министра
+  description: Удостоверение члена исполнительной власти Республики.
+  components:
+  - type: SWSenatePositionCard
+    position: Minister
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: minister
+  - type: PresetIdCard
+    job: SWMinister
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWUsherIDCard
+  name: ID-карта пристава Сената
+  description: Удостоверение пристава, следящего за порядком в зале заседаний.
+  components:
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: usher
+  - type: PresetIdCard
+    job: SWUsher
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWSenateGuardHeadIDCard
+  name: ID-карта главы Сенатской Гвардии
+  description: Удостоверение командующего Сенатской Гвардией.
+  components:
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: guard_head
+  - type: PresetIdCard
+    job: SWSenateGuardHead
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWSenateGuardOfficerIDCard
+  name: ID-карта офицера Сенатской Гвардии
+  description: Удостоверение офицера Сенатской Гвардии.
+  components:
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: guard_officer
+  - type: PresetIdCard
+    job: SWSenateGuardOfficer
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWSenateDoctorIDCard
+  name: ID-карта сенатского врача
+  description: Удостоверение врача медицинской службы Сената.
+  components:
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: doctor
+  - type: PresetIdCard
+    job: SWSenateDoctor
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWChiefJusticeIDCard
+  name: ID-карта Верховного Судьи
+  description: Удостоверение председателя Верховного Суда Республики.
+  components:
+  - type: SWSenatePositionCard
+    position: ChiefJustice
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: chief_justice
+  - type: PresetIdCard
+    job: SWChiefJustice
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWRepublicJudgeIDCard
+  name: ID-карта Республиканского Судьи
+  description: Удостоверение члена Верховного Суда Республики.
+  components:
+  - type: SWSenatePositionCard
+    position: Judge
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: judge
+  - type: PresetIdCard
+    job: SWRepublicJudge
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWProsecutorIDCard
+  name: ID-карта Обвинителя Республики
+  description: Удостоверение стороны обвинения Верховного Суда.
+  components:
+  - type: SWSenatePositionCard
+    position: Prosecutor
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: prosecutor
+  - type: PresetIdCard
+    job: SWProsecutor
+
+- type: entity
+  parent: SWIDCardStandard
+  id: SWDefenderIDCard
+  name: ID-карта Защитника Республики
+  description: Удостоверение стороны защиты Верховного Суда.
+  components:
+  - type: SWSenatePositionCard
+    position: Defender
+  - type: Sprite
+    sprite: _SW/_Senate/Objects/Misc/id_cards.rsi
+    layers:
+    - state: defender
+  - type: PresetIdCard
+    job: SWDefender

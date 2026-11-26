@@ -1,0 +1,68 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+    xmlns:senate="clr-namespace:Content.Client._SW._Senate"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    Title="Голонет: редакция и лента" MinSize="900 620">
+    <PanelContainer Name="RootPanel">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+        <PanelContainer Name="HeaderPanel">
+            <BoxContainer Orientation="Horizontal" Margin="10 6">
+                <Label Name="EditionLabel" Text="Голонет" HorizontalExpand="True" />
+                <senate:SWConsoleButton Name="LeaveEdition" Text="Покинуть издание" Visible="False" />
+            </BoxContainer>
+        </PanelContainer>
+        <Label Name="Notice" Text="Загрузка…" />
+        <BoxContainer Name="EditionButtons" Orientation="Vertical" />
+        <BoxContainer Orientation="Horizontal" HorizontalExpand="True" VerticalExpand="True" Margin="0 8 0 0">
+            <BoxContainer Orientation="Vertical" MinWidth="270" MaxWidth="340" HorizontalExpand="True" VerticalExpand="True">
+                <BoxContainer Orientation="Horizontal">
+                    <senate:SWConsoleButton Name="MailButton" Text="Почта" HorizontalExpand="True" />
+                    <senate:SWConsoleButton Name="Meetings" Text="Встречи" HorizontalExpand="True" />
+                    <senate:SWConsoleButton Name="Refresh" Text="Обновить" />
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal">
+                    <senate:SWConsoleButton Name="NewRelease" Text="Пресс-релиз" HorizontalExpand="True" />
+                    <senate:SWConsoleButton Name="NewDraft" Text="Черновик" HorizontalExpand="True" />
+                </BoxContainer>
+                <Label Text="Порталы изданий" Margin="0 8 0 0" />
+                <BoxContainer Name="PortalButtons" Orientation="Vertical" />
+                <TabContainer Name="LibraryTabs" VerticalExpand="True" HorizontalExpand="True" Margin="0 8 0 0">
+                    <ScrollContainer HScrollEnabled="False" VerticalExpand="True">
+                        <BoxContainer Name="FeedList" Orientation="Vertical" HorizontalExpand="True" />
+                    </ScrollContainer>
+                    <ScrollContainer HScrollEnabled="False" VerticalExpand="True">
+                        <BoxContainer Name="DraftList" Orientation="Vertical" HorizontalExpand="True" />
+                    </ScrollContainer>
+                    <ScrollContainer HScrollEnabled="False" VerticalExpand="True">
+                        <BoxContainer Name="ReleaseList" Orientation="Vertical" HorizontalExpand="True" />
+                    </ScrollContainer>
+                    <BoxContainer Orientation="Vertical" VerticalExpand="True">
+                        <senate:SWConsoleButton Name="Record" Text="Начать запись" />
+                        <ScrollContainer HScrollEnabled="False" VerticalExpand="True">
+                            <BoxContainer Name="RecordedList" Orientation="Vertical" HorizontalExpand="True" />
+                        </ScrollContainer>
+                    </BoxContainer>
+                </TabContainer>
+            </BoxContainer>
+            <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="12 0 0 0">
+                <Label Name="Context" Text="Выберите публикацию или создайте черновик." />
+                <LineEdit Name="TitleEdit" PlaceHolder="Заголовок" />
+                <ScrollContainer MaxHeight="130" HorizontalExpand="True">
+                    <BoxContainer Name="AttachedQuotes" Orientation="Vertical" HorizontalExpand="True" />
+                </ScrollContainer>
+                <senate:SWConsoleTextEdit Name="BodyEdit" PlaceHolder="Текст материала" VerticalExpand="True" Margin="0 6" />
+                <BoxContainer Orientation="Horizontal">
+                    <senate:SWConsoleButton Name="SendRelease" Text="Отправить релиз" HorizontalExpand="True" />
+                    <senate:SWConsoleButton Name="Save" Text="Сохранить" HorizontalExpand="True" />
+                    <senate:SWConsoleButton Name="Delete" Text="Удалить" HorizontalExpand="True" />
+                    <senate:SWConsoleButton Name="Publish" Text="Опубликовать" HorizontalExpand="True" />
+                </BoxContainer>
+                <BoxContainer Orientation="Horizontal">
+                    <senate:SWConsoleButton Name="History" Text="История" HorizontalExpand="True" />
+                    <senate:SWConsoleButton Name="Correct" Text="Исправить" HorizontalExpand="True" />
+                    <senate:SWConsoleButton Name="Withdraw" Text="Отозвать" HorizontalExpand="True" />
+                </BoxContainer>
+            </BoxContainer>
+        </BoxContainer>
+    </BoxContainer>
+    </PanelContainer>
+</controls:FancyWindow>

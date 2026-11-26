@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "license": "CC-BY-SA-3.0",
+  "copyright": "Console chassis from Star Wars SS14 ImperialCargoComputer.rsi, credited to @londorondondon. Senate monitor graphics added in Star Wars SS14 commit 3aa1f2c6c6390e44d9068e44dc1c815681a66418 and updated in 6bc73af6907c902bf5b334713865f16b07c78c27.",
+  "size": {
+    "x": 32,
+    "y": 32
+  },
+  "states": [
+    {
+      "directions": 4,
+      "name": "computer"
+    },
+    {
+      "delays": [
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ],
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ]
+      ],
+      "directions": 4,
+      "name": "bureau_work_monitor"
+    }
+  ]
+}

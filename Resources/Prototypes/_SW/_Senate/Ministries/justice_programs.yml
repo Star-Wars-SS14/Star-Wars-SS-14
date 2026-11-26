@@ -1,0 +1,34 @@
+- type: swJusticeProgram
+  id: SWJusticeProgramCourts
+  name: Расширение судов
+  description: Новые суды и судьи разгружают реестр дел.
+  order: 0
+  backlogDelta: -10
+  policyEffects:
+    SWStatPolice: 2
+
+- type: swJusticeProgram
+  id: SWJusticeProgramStandards
+  name: Правовые стандарты
+  description: Единые правовые нормы укрепляют права и свободы.
+  order: 1
+  policyEffects:
+    SWStatRights: 6
+
+- type: swJusticeProgram
+  id: SWJusticeProgramStaff
+  name: Кадры юстиции
+  description: Подготовка следователей и прокуроров усиливает правопорядок.
+  order: 2
+  policyEffects:
+    SWStatPolice: 5
+    SWStatCrime: 3
+
+- type: swJusticeProgram
+  id: SWJusticeProgramReform
+  name: Судебная реформа
+  description: Реформа процедур ускоряет суды и бережёт права.
+  order: 3
+  backlogDelta: -6
+  policyEffects:
+    SWStatRights: 3

@@ -1,0 +1,3090 @@
+# Schematic infrastructure layouts based on Imperial economy profiles, not canonical geology.
+
+- type: swPlanetSurface
+  id: ashas_ree
+  width: 16
+  height: 12
+  biome: "Лесистые рубежи и гарнизоны"
+  terrain:
+  - ffffffffffffffff
+  - ffffffffffffffff
+  - ffppppppppffffff
+  - ffppppppppffffff
+  - ffppppppppffffff
+  - ffppppppppffffff
+  - ffppppppppffffff
+  - ffppppppppffffff
+  - ffffffffffffffff
+  - ffffffffffffffff
+  - ffffffffffffffff
+  - ffffffffffffffff
+  sites:
+  - id: production_arsenal
+    name: "Военный завод"
+    kind: production
+    recipes:
+    - military_supplies
+    - ship_weapons
+    cell: 2,2
+  - id: production_civilworks
+    name: "Гражданское производство"
+    kind: production
+    recipes:
+    - droids
+    - education
+    - household
+    - life_support
+    cell: 3,2
+  - id: production_crafts
+    name: "Мастерские"
+    kind: production
+    recipes:
+    - luxury_goods
+    cell: 4,2
+  - id: production_electronics
+    name: "Электроника"
+    kind: production
+    recipes:
+    - circuits
+    - energy_cells
+    cell: 5,2
+  - id: production_farm
+    name: "Аграрный комплекс"
+    kind: production
+    recipes:
+    - farm_intensive
+    - fiber_farming
+    cell: 6,2
+  - id: production_fishery
+    name: "Рыбный промысел"
+    kind: production
+    recipes:
+    - protein_aquatic
+    cell: 7,2
+  - id: production_foodworks
+    name: "Пищевой комплекс"
+    kind: production
+    recipes:
+    - fresh
+    - luxury_food
+    - rations
+    cell: 8,2
+  - id: production_machineworks
+    name: "Машиностроение"
+    kind: production
+    recipes:
+    - parts
+    - reactor_modules
+    cell: 9,2
+  - id: production_precision
+    name: "Точное производство"
+    kind: production
+    recipes:
+    - crystal_components
+    - processors
+    - shields
+    cell: 2,3
+  - id: production_textileworks
+    name: "Текстильная фабрика"
+    kind: production
+    recipes:
+    - textiles_natural
+    - textiles_synthetic
+    cell: 3,3
+  - id: production_waterworks
+    name: "Водоснабжение"
+    kind: production
+    recipes:
+    - water_surface
+    cell: 4,3
+  - id: resource_arable
+    name: "Аграрные угодья"
+    kind: resource
+    resource: arable
+    cell: 5,3
+  - id: resource_fish_stock
+    name: "Рыбные ресурсы"
+    kind: resource
+    resource: fish_stock
+    cell: 6,3
+  - id: resource_water_source
+    name: "Источник воды"
+    kind: resource
+    resource: water_source
+    cell: 7,3
+  - id: power
+    name: "Энергетический узел"
+    kind: power
+    cell: 8,3
+  - id: storage
+    name: "Складской узел"
+    kind: storage
+    cell: 9,3
+  - id: port
+    name: "Грузовой порт"
+    kind: port
+    cell: 2,4
+  - id: settlement_1
+    name: "Жилой район 1: Ашас-Ри"
+    kind: settlement
+    cell: 3,4
+  - id: settlement_2
+    name: "Жилой район 2: Ашас-Ри"
+    kind: settlement
+    cell: 4,4
+  - id: settlement_3
+    name: "Жилой район 3: Ашас-Ри"
+    kind: settlement
+    cell: 5,4
+  - id: settlement_4
+    name: "Жилой район 4: Ашас-Ри"
+    kind: settlement
+    cell: 6,4
+  - id: settlement_5
+    name: "Жилой район 5: Ашас-Ри"
+    kind: settlement
+    cell: 7,4
+  roads:
+  - cell: 2,2
+    kind: road
+  - cell: 3,2
+    kind: road
+  - cell: 4,2
+    kind: road
+  - cell: 5,2
+    kind: road
+  - cell: 6,2
+    kind: road
+  - cell: 7,2
+    kind: road
+  - cell: 8,2
+    kind: road
+  - cell: 9,2
+    kind: road
+  - cell: 2,3
+    kind: road
+  - cell: 3,3
+    kind: road
+  - cell: 4,3
+    kind: road
+  - cell: 5,3
+    kind: road
+  - cell: 6,3
+    kind: road
+  - cell: 7,3
+    kind: road
+  - cell: 8,3
+    kind: road
+  - cell: 9,3
+    kind: road
+  - cell: 2,4
+    kind: road
+  - cell: 3,4
+    kind: road
+  - cell: 4,4
+    kind: road
+  - cell: 5,4
+    kind: road
+  - cell: 6,4
+    kind: road
+  - cell: 7,4
+    kind: road
+  - cell: 8,4
+    kind: road
+  - cell: 9,4
+    kind: road
+  - cell: 2,5
+    kind: road
+  - cell: 3,5
+    kind: road
+  - cell: 4,5
+    kind: road
+  - cell: 5,5
+    kind: road
+  - cell: 6,5
+    kind: road
+  - cell: 7,5
+    kind: road
+  - cell: 8,5
+    kind: road
+  - cell: 9,5
+    kind: road
+  - cell: 2,6
+    kind: road
+  - cell: 3,6
+    kind: road
+  - cell: 4,6
+    kind: road
+  - cell: 5,6
+    kind: road
+  - cell: 6,6
+    kind: road
+  - cell: 7,6
+    kind: road
+  - cell: 8,6
+    kind: road
+  - cell: 9,6
+    kind: road
+  - cell: 2,7
+    kind: road
+  - cell: 3,7
+    kind: road
+  - cell: 4,7
+    kind: road
+  - cell: 5,7
+    kind: road
+  - cell: 6,7
+    kind: road
+  - cell: 7,7
+    kind: road
+  - cell: 8,7
+    kind: road
+  - cell: 9,7
+    kind: road
+
+- type: swPlanetSurface
+  id: balmorra
+  width: 16
+  height: 12
+  biome: "Промышленные районы оккупированной Балморры"
+  terrain:
+  - rrrrrrrrrrrrrrrr
+  - rccccrrrrrrrrrrr
+  - rccccssssssssssr
+  - rccccssssssssssr
+  - rccccssssssssssr
+  - rccccrrrrrrrrrrr
+  - rccccssssssssssr
+  - rccccssssssssssr
+  - rccccssssssssssr
+  - rccccssssssssssr
+  - rccccrrrrrrrrrrr
+  - rrrrrrrrrrrrrrrr
+  sites:
+  - id: settlement_1
+    name: "Жилой район 1: Балморра"
+    kind: settlement
+    cell: 2,2
+  - id: settlement_2
+    name: "Жилой район 2: Балморра"
+    kind: settlement
+    cell: 4,2
+  - id: settlement_3
+    name: "Жилой район 3: Балморра"
+    kind: settlement
+    cell: 2,3
+  - id: settlement_4
+    name: "Жилой район 4: Балморра"
+    kind: settlement
+    cell: 4,4
+  - id: settlement_5
+    name: "Жилой район 5: Балморра"
+    kind: settlement
+    cell: 3,5
+  - id: port
+    name: "Грузовой порт"
+    kind: port
+    cell: 13,9
+  - id: storage
+    name: "Складской узел"
+    kind: storage
+    cell: 10,8
+  - id: power
+    name: "Энергетический узел"
+    kind: power
+    cell: 11,5
+  - id: resource_arable
+    name: "Аграрные угодья"
+    kind: resource
+    resource: arable
+    cell: 1,9
+  - id: resource_chemical_deposit
+    name: "Химическое сырьё"
+    kind: resource
+    resource: chemical_deposit
+    cell: 13,3
+  - id: resource_fuel_deposit
+    name: "Топливное сырьё"
+    kind: resource
+    resource: fuel_deposit
+    cell: 14,4
+  - id: resource_medical_biome
+    name: "Лекарственные культуры"
+    kind: resource
+    resource: medical_biome
+    cell: 1,6
+  - id: resource_rare_deposit
+    name: "Редкие металлы"
+    kind: resource
+    resource: rare_deposit
+    cell: 12,3
+  - id: resource_water_source
+    name: "Источник воды"
+    kind: resource
+    resource: water_source
+    cell: 2,9
+  - id: production_farm
+    name: "Аграрный комплекс"
+    kind: production
+    recipes:
+    - farm_intensive
+    - fiber_farming
+    cell: 2,8
+  - id: production_foodworks
+    name: "Пищевой комплекс"
+    kind: production
+    recipes:
+    - fresh
+    - luxury_food
+    - rations
+    cell: 3,9
+  - id: production_waterworks
+    name: "Водоснабжение"
+    kind: production
+    recipes:
+    - water_surface
+    cell: 1,8
+  - id: production_electronics
+    name: "Электроника"
+    kind: production
+    recipes:
+    - circuits
+    - energy_cells
+    cell: 6,2
+  - id: production_pharma
+    name: "Фармацевтический комплекс"
+    kind: production
+    recipes:
+    - medical_supplies
+    - pharma_bio
+    cell: 5,3
+  - id: production_bioreactor
+    name: "Биореактор"
+    kind: production
+    recipes:
+    - medical_culture
+    cell: 6,4
+  - id: production_chemworks
+    name: "Химический комплекс"
+    kind: production
+    recipes:
+    - chemicals
+    - composites
+    - fertilizers
+    - polymers
+    - technical_gases
+    cell: 8,3
+  - id: production_controlled_lab
+    name: "Лаборатория"
+    kind: production
+    recipes:
+    - stims_bio
+    cell: 9,2
+  - id: production_machineworks
+    name: "Машиностроение"
+    kind: production
+    recipes:
+    - parts
+    - reactor_modules
+    - sublight
+    cell: 8,5
+  - id: production_mine
+    name: "Горнодобывающий комплекс"
+    kind: production
+    recipes:
+    - mining_chemical
+    - mining_fuel
+    cell: 10,5
+  - id: production_refinery
+    name: "Топливный завод"
+    kind: production
+    recipes:
+    - reactor_fuel
+    - ship_fuel
+    cell: 12,4
+  - id: production_shipyard
+    name: "Верфь"
+    kind: production
+    recipes:
+    - hulls
+    cell: 13,5
+  roads:
+  - cell: 2,2
+    kind: road
+  - cell: 3,2
+    kind: road
+  - cell: 4,2
+    kind: road
+  - cell: 5,2
+    kind: road
+  - cell: 6,2
+    kind: road
+  - cell: 9,2
+    kind: road
+  - cell: 2,3
+    kind: road
+  - cell: 5,3
+    kind: road
+  - cell: 6,3
+    kind: road
+  - cell: 7,3
+    kind: road
+  - cell: 8,3
+    kind: road
+  - cell: 9,3
+    kind: road
+  - cell: 10,3
+    kind: road
+  - cell: 11,3
+    kind: road
+  - cell: 12,3
+    kind: road
+  - cell: 13,3
+    kind: road
+  - cell: 2,4
+    kind: road
+  - cell: 4,4
+    kind: road
+  - cell: 5,4
+    kind: road
+  - cell: 6,4
+    kind: road
+  - cell: 9,4
+    kind: road
+  - cell: 12,4
+    kind: road
+  - cell: 13,4
+    kind: road
+  - cell: 14,4
+    kind: road
+  - cell: 2,5
+    kind: road
+  - cell: 3,5
+    kind: road
+  - cell: 4,5
+    kind: road
+  - cell: 5,5
+    kind: road
+  - cell: 6,5
+    kind: road
+  - cell: 7,5
+    kind: road
+  - cell: 8,5
+    kind: road
+  - cell: 9,5
+    kind: road
+  - cell: 10,5
+    kind: road
+  - cell: 11,5
+    kind: road
+  - cell: 12,5
+    kind: road
+  - cell: 13,5
+    kind: road
+  - cell: 1,6
+    kind: road
+  - cell: 2,6
+    kind: road
+  - cell: 10,6
+    kind: road
+  - cell: 12,6
+    kind: road
+  - cell: 2,7
+    kind: road
+  - cell: 10,7
+    kind: road
+  - cell: 12,7
+    kind: road
+  - cell: 1,8
+    kind: road
+  - cell: 2,8
+    kind: road
+  - cell: 10,8
+    kind: road
+  - cell: 11,8
+    kind: road
+  - cell: 12,8
+    kind: road
+  - cell: 13,8
+    kind: road
+  - cell: 1,9
+    kind: road
+  - cell: 2,9
+    kind: road
+  - cell: 3,9
+    kind: road
+  - cell: 4,9
+    kind: road
+  - cell: 13,9
+    kind: road
+
+- type: swPlanetSurface
+  id: begeren
+  width: 16
+  height: 12
+  biome: "Равнины и имперские поселения"
+  terrain:
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  sites:
+  - id: production_arsenal
+    name: "Военный завод"
+    kind: production
+    recipes:
+    - military_supplies
+    cell: 2,2
+  - id: production_civilworks
+    name: "Гражданское производство"
+    kind: production
+    recipes:
+    - household
+    - life_support
+    - vehicles
+    cell: 3,2
+  - id: production_crafts
+    name: "Мастерские"
+    kind: production
+    recipes:
+    - luxury_goods
+    cell: 4,2
+  - id: production_farm
+    name: "Аграрный комплекс"
+    kind: production
+    recipes:
+    - farm_intensive
+    - fiber_farming
+    - farm_basic
+    cell: 5,2
+  - id: production_fishery
+    name: "Рыбный промысел"
+    kind: production
+    recipes:
+    - protein_aquatic
+    cell: 6,2
+  - id: production_foodworks
+    name: "Пищевой комплекс"
+    kind: production
+    recipes:
+    - fresh
+    - luxury_food
+    - rations
+    cell: 7,2
+  - id: production_machineworks
+    name: "Машиностроение"
+    kind: production
+    recipes:
+    - parts
+    cell: 8,2
+  - id: production_mine
+    name: "Горнодобывающий комплекс"
+    kind: production
+    recipes:
+    - mining_crystals
+    cell: 9,2
+  - id: production_quarry
+    name: "Производственный комплекс"
+    kind: production
+    recipes:
+    - mining_minerals
+    cell: 2,3
+  - id: production_shipyard
+    name: "Верфь"
+    kind: production
+    recipes:
+    - hulls
+    cell: 3,3
+  - id: production_smelter
+    name: "Металлургический комплекс"
+    kind: production
+    recipes:
+    - durasteel
+    cell: 4,3
+  - id: production_textileworks
+    name: "Текстильная фабрика"
+    kind: production
+    recipes:
+    - textiles_natural
+    cell: 5,3
+  - id: production_waterworks
+    name: "Водоснабжение"
+    kind: production
+    recipes:
+    - water_surface
+    cell: 6,3
+  - id: resource_arable
+    name: "Аграрные угодья"
+    kind: resource
+    resource: arable
+    cell: 7,3
+  - id: resource_crystal_deposit
+    name: "Кристаллическое сырьё"
+    kind: resource
+    resource: crystal_deposit
+    cell: 8,3
+  - id: resource_fish_stock
+    name: "Рыбные ресурсы"
+    kind: resource
+    resource: fish_stock
+    cell: 9,3
+  - id: resource_water_source
+    name: "Источник воды"
+    kind: resource
+    resource: water_source
+    cell: 2,4
+  - id: resource_mineral_deposit
+    name: "Минеральное сырьё"
+    kind: resource
+    resource: mineral_deposit
+    cell: 3,4
+  - id: power
+    name: "Энергетический узел"
+    kind: power
+    cell: 4,4
+  - id: storage
+    name: "Складской узел"
+    kind: storage
+    cell: 5,4
+  - id: port
+    name: "Грузовой порт"
+    kind: port
+    cell: 6,4
+  - id: settlement_1
+    name: "Жилой район 1: Бегерен"
+    kind: settlement
+    cell: 7,4
+  - id: settlement_2
+    name: "Жилой район 2: Бегерен"
+    kind: settlement
+    cell: 8,4
+  - id: settlement_3
+    name: "Жилой район 3: Бегерен"
+    kind: settlement
+    cell: 9,4
+  - id: settlement_4
+    name: "Жилой район 4: Бегерен"
+    kind: settlement
+    cell: 2,5
+  - id: settlement_5
+    name: "Жилой район 5: Бегерен"
+    kind: settlement
+    cell: 3,5
+  roads:
+  - cell: 2,2
+    kind: road
+  - cell: 3,2
+    kind: road
+  - cell: 4,2
+    kind: road
+  - cell: 5,2
+    kind: road
+  - cell: 6,2
+    kind: road
+  - cell: 7,2
+    kind: road
+  - cell: 8,2
+    kind: road
+  - cell: 9,2
+    kind: road
+  - cell: 2,3
+    kind: road
+  - cell: 3,3
+    kind: road
+  - cell: 4,3
+    kind: road
+  - cell: 5,3
+    kind: road
+  - cell: 6,3
+    kind: road
+  - cell: 7,3
+    kind: road
+  - cell: 8,3
+    kind: road
+  - cell: 9,3
+    kind: road
+  - cell: 2,4
+    kind: road
+  - cell: 3,4
+    kind: road
+  - cell: 4,4
+    kind: road
+  - cell: 5,4
+    kind: road
+  - cell: 6,4
+    kind: road
+  - cell: 7,4
+    kind: road
+  - cell: 8,4
+    kind: road
+  - cell: 9,4
+    kind: road
+  - cell: 2,5
+    kind: road
+  - cell: 3,5
+    kind: road
+  - cell: 4,5
+    kind: road
+  - cell: 5,5
+    kind: road
+  - cell: 6,5
+    kind: road
+  - cell: 7,5
+    kind: road
+  - cell: 8,5
+    kind: road
+  - cell: 9,5
+    kind: road
+  - cell: 2,6
+    kind: road
+  - cell: 3,6
+    kind: road
+  - cell: 4,6
+    kind: road
+  - cell: 5,6
+    kind: road
+  - cell: 6,6
+    kind: road
+  - cell: 7,6
+    kind: road
+  - cell: 8,6
+    kind: road
+  - cell: 9,6
+    kind: road
+  - cell: 2,7
+    kind: road
+  - cell: 3,7
+    kind: road
+  - cell: 4,7
+    kind: road
+  - cell: 5,7
+    kind: road
+  - cell: 6,7
+    kind: road
+  - cell: 7,7
+    kind: road
+  - cell: 8,7
+    kind: road
+  - cell: 9,7
+    kind: road
+
+- type: swPlanetSurface
+  id: belkadan
+  width: 16
+  height: 12
+  biome: "Равнины и поселения Северных владений"
+  terrain:
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  sites:
+  - id: production_bioreactor
+    name: "Биореактор"
+    kind: production
+    recipes:
+    - medical_culture
+    cell: 2,2
+  - id: production_chemworks
+    name: "Химический комплекс"
+    kind: production
+    recipes:
+    - chemicals
+    - composites
+    - fertilizers
+    - polymers
+    - technical_gases
+    cell: 3,2
+  - id: production_civilworks
+    name: "Гражданское производство"
+    kind: production
+    recipes:
+    - household
+    cell: 4,2
+  - id: production_crafts
+    name: "Мастерские"
+    kind: production
+    recipes:
+    - luxury_goods
+    cell: 5,2
+  - id: production_farm
+    name: "Аграрный комплекс"
+    kind: production
+    recipes:
+    - farm_intensive
+    - fiber_farming
+    cell: 6,2
+  - id: production_fishery
+    name: "Рыбный промысел"
+    kind: production
+    recipes:
+    - protein_aquatic
+    cell: 7,2
+  - id: production_foodworks
+    name: "Пищевой комплекс"
+    kind: production
+    recipes:
+    - fresh
+    - luxury_food
+    - rations
+    cell: 8,2
+  - id: production_mine
+    name: "Горнодобывающий комплекс"
+    kind: production
+    recipes:
+    - mining_chemical
+    - mining_fuel
+    cell: 9,2
+  - id: production_pharma
+    name: "Фармацевтический комплекс"
+    kind: production
+    recipes:
+    - medical_supplies
+    - pharma_bio
+    cell: 2,3
+  - id: production_quarry
+    name: "Карьер"
+    kind: production
+    recipes:
+    - mining_minerals
+    cell: 3,3
+  - id: production_refinery
+    name: "Топливный завод"
+    kind: production
+    recipes:
+    - reactor_fuel
+    - ship_fuel
+    cell: 4,3
+  - id: production_waterworks
+    name: "Водоснабжение"
+    kind: production
+    recipes:
+    - water_surface
+    cell: 5,3
+  - id: resource_arable
+    name: "Аграрные угодья"
+    kind: resource
+    resource: arable
+    cell: 6,3
+  - id: resource_chemical_deposit
+    name: "Химическое сырьё"
+    kind: resource
+    resource: chemical_deposit
+    cell: 7,3
+  - id: resource_fish_stock
+    name: "Рыбные ресурсы"
+    kind: resource
+    resource: fish_stock
+    cell: 8,3
+  - id: resource_fuel_deposit
+    name: "Топливное сырьё"
+    kind: resource
+    resource: fuel_deposit
+    cell: 9,3
+  - id: resource_medical_biome
+    name: "Лекарственные культуры"
+    kind: resource
+    resource: medical_biome
+    cell: 2,4
+  - id: resource_mineral_deposit
+    name: "Минеральное сырьё"
+    kind: resource
+    resource: mineral_deposit
+    cell: 3,4
+  - id: resource_water_source
+    name: "Источник воды"
+    kind: resource
+    resource: water_source
+    cell: 4,4
+  - id: resource_metal_deposit
+    name: "Металлическая руда"
+    kind: resource
+    resource: metal_deposit
+    cell: 5,4
+  - id: power
+    name: "Энергетический узел"
+    kind: power
+    cell: 6,4
+  - id: storage
+    name: "Складской узел"
+    kind: storage
+    cell: 7,4
+  - id: port
+    name: "Грузовой порт"
+    kind: port
+    cell: 8,4
+  - id: settlement_1
+    name: "Жилой район 1: Белкадан"
+    kind: settlement
+    cell: 9,4
+  - id: settlement_2
+    name: "Жилой район 2: Белкадан"
+    kind: settlement
+    cell: 2,5
+  - id: settlement_3
+    name: "Жилой район 3: Белкадан"
+    kind: settlement
+    cell: 3,5
+  - id: settlement_4
+    name: "Жилой район 4: Белкадан"
+    kind: settlement
+    cell: 4,5
+  - id: settlement_5
+    name: "Жилой район 5: Белкадан"
+    kind: settlement
+    cell: 5,5
+  roads:
+  - cell: 2,2
+    kind: road
+  - cell: 3,2
+    kind: road
+  - cell: 4,2
+    kind: road
+  - cell: 5,2
+    kind: road
+  - cell: 6,2
+    kind: road
+  - cell: 7,2
+    kind: road
+  - cell: 8,2
+    kind: road
+  - cell: 9,2
+    kind: road
+  - cell: 2,3
+    kind: road
+  - cell: 3,3
+    kind: road
+  - cell: 4,3
+    kind: road
+  - cell: 5,3
+    kind: road
+  - cell: 6,3
+    kind: road
+  - cell: 7,3
+    kind: road
+  - cell: 8,3
+    kind: road
+  - cell: 9,3
+    kind: road
+  - cell: 2,4
+    kind: road
+  - cell: 3,4
+    kind: road
+  - cell: 4,4
+    kind: road
+  - cell: 5,4
+    kind: road
+  - cell: 6,4
+    kind: road
+  - cell: 7,4
+    kind: road
+  - cell: 8,4
+    kind: road
+  - cell: 9,4
+    kind: road
+  - cell: 2,5
+    kind: road
+  - cell: 3,5
+    kind: road
+  - cell: 4,5
+    kind: road
+  - cell: 5,5
+    kind: road
+  - cell: 6,5
+    kind: road
+  - cell: 7,5
+    kind: road
+  - cell: 8,5
+    kind: road
+  - cell: 9,5
+    kind: road
+  - cell: 2,6
+    kind: road
+  - cell: 3,6
+    kind: road
+  - cell: 4,6
+    kind: road
+  - cell: 5,6
+    kind: road
+  - cell: 6,6
+    kind: road
+  - cell: 7,6
+    kind: road
+  - cell: 8,6
+    kind: road
+  - cell: 9,6
+    kind: road
+  - cell: 2,7
+    kind: road
+  - cell: 3,7
+    kind: road
+  - cell: 4,7
+    kind: road
+  - cell: 5,7
+    kind: road
+  - cell: 6,7
+    kind: road
+  - cell: 7,7
+    kind: road
+  - cell: 8,7
+    kind: road
+  - cell: 9,7
+    kind: road
+
+- type: swPlanetSurface
+  id: dromund_kaas
+  width: 16
+  height: 12
+  biome: "Джунгли и имперские города"
+  terrain:
+  - ffffffffffffffff
+  - fcccccsssssfffff
+  - fcccccsssssppppf
+  - fcccccsssssppppf
+  - fcccccsssssppppf
+  - fcccccsssssfffff
+  - fcccccsssssppppf
+  - fcccccsssssppppf
+  - fcccccsssssppppf
+  - fcccccsssssppppf
+  - fcccccsssssfffff
+  - ffffffffffffffff
+  sites:
+  - id: settlement_1
+    name: "Жилой район 1: Дромунд-Каас"
+    kind: settlement
+    cell: 3,2
+  - id: settlement_2
+    name: "Жилой район 2: Дромунд-Каас"
+    kind: settlement
+    cell: 5,2
+  - id: settlement_3
+    name: "Жилой район 3: Дромунд-Каас"
+    kind: settlement
+    cell: 2,3
+  - id: settlement_4
+    name: "Жилой район 4: Дромунд-Каас"
+    kind: settlement
+    cell: 4,4
+  - id: settlement_5
+    name: "Жилой район 5: Дромунд-Каас"
+    kind: settlement
+    cell: 6,4
+  - id: port
+    name: "Грузовой порт"
+    kind: port
+    cell: 13,8
+  - id: storage
+    name: "Складской узел"
+    kind: storage
+    cell: 11,8
+  - id: power
+    name: "Энергетический узел"
+    kind: power
+    cell: 9,7
+  - id: resource_arable
+    name: "Аграрные угодья"
+    kind: resource
+    resource: arable
+    cell: 2,9
+  - id: resource_fish_stock
+    name: "Рыбные ресурсы"
+    kind: resource
+    resource: fish_stock
+    cell: 1,10
+  - id: resource_fuel_deposit
+    name: "Топливное сырьё"
+    kind: resource
+    resource: fuel_deposit
+    cell: 12,3
+  - id: resource_medical_biome
+    name: "Лекарственные культуры"
+    kind: resource
+    resource: medical_biome
+    cell: 4,8
+  - id: resource_metal_deposit
+    name: "Металлическая руда"
+    kind: resource
+    resource: metal_deposit
+    cell: 13,4
+  - id: resource_rare_deposit
+    name: "Редкие металлы"
+    kind: resource
+    resource: rare_deposit
+    cell: 14,5
+  - id: resource_water_source
+    name: "Источник воды"
+    kind: resource
+    resource: water_source
+    cell: 1,9
+  - id: production_farm
+    name: "Аграрный комплекс"
+    kind: production
+    recipes:
+    - farm_intensive
+    cell: 3,9
+  - id: production_fishery
+    name: "Рыбный промысел"
+    kind: production
+    recipes:
+    - protein_aquatic
+    cell: 2,10
+  - id: production_foodworks
+    name: "Пищевой комплекс"
+    kind: production
+    recipes:
+    - fresh
+    - luxury_food
+    - rations
+    cell: 4,9
+  - id: production_waterworks
+    name: "Водоснабжение"
+    kind: production
+    recipes:
+    - water_surface
+    cell: 2,8
+  - id: production_crafts
+    name: "Мастерские"
+    kind: production
+    recipes:
+    - luxury_goods
+    cell: 5,5
+  - id: production_electronics
+    name: "Электроника"
+    kind: production
+    recipes:
+    - circuits
+    - energy_cells
+    cell: 7,4
+  - id: production_pharma
+    name: "Фармацевтический комплекс"
+    kind: production
+    recipes:
+    - kolto_refine
+    - medical_supplies
+    - pharma_bio
+    cell: 6,5
+  - id: production_bioreactor
+    name: "Биореактор"
+    kind: production
+    recipes:
+    - medical_culture
+    - synth
+    cell: 5,7
+  - id: production_chemworks
+    name: "Химический комплекс"
+    kind: production
+    recipes:
+    - technical_gases
+    cell: 8,5
+  - id: production_civilworks
+    name: "Гражданское производство"
+    kind: production
+    recipes:
+    - household
+    cell: 7,6
+  - id: production_machineworks
+    name: "Машиностроение"
+    kind: production
+    recipes:
+    - parts
+    - reactor_modules
+    cell: 9,6
+  - id: production_mine
+    name: "Горнодобывающий комплекс"
+    kind: production
+    recipes:
+    - mining_fuel
+    - mining_metal
+    - mining_rare
+    cell: 10,3
+  - id: production_refinery
+    name: "Топливный завод"
+    kind: production
+    recipes:
+    - reactor_fuel
+    - ship_fuel
+    cell: 11,4
+  - id: production_smelter
+    name: "Металлургический комплекс"
+    kind: production
+    recipes:
+    - durasteel
+    - smelt
+    - smelt_rare
+    cell: 10,5
+  roads:
+  - cell: 2,2
+    kind: road
+  - cell: 3,2
+    kind: road
+  - cell: 4,2
+    kind: road
+  - cell: 5,2
+    kind: road
+  - cell: 6,2
+    kind: road
+  - cell: 2,3
+    kind: road
+  - cell: 3,3
+    kind: road
+  - cell: 4,3
+    kind: road
+  - cell: 5,3
+    kind: road
+  - cell: 6,3
+    kind: road
+  - cell: 10,3
+    kind: road
+  - cell: 11,3
+    kind: road
+  - cell: 12,3
+    kind: road
+  - cell: 13,3
+    kind: road
+  - cell: 2,4
+    kind: road
+  - cell: 4,4
+    kind: road
+  - cell: 6,4
+    kind: road
+  - cell: 7,4
+    kind: road
+  - cell: 8,4
+    kind: road
+  - cell: 9,4
+    kind: road
+  - cell: 10,4
+    kind: road
+  - cell: 11,4
+    kind: road
+  - cell: 13,4
+    kind: road
+  - cell: 14,4
+    kind: road
+  - cell: 2,5
+    kind: road
+  - cell: 3,5
+    kind: road
+  - cell: 4,5
+    kind: road
+  - cell: 5,5
+    kind: road
+  - cell: 6,5
+    kind: road
+  - cell: 8,5
+    kind: road
+  - cell: 9,5
+    kind: road
+  - cell: 10,5
+    kind: road
+  - cell: 14,5
+    kind: road
+  - cell: 6,6
+    kind: road
+  - cell: 7,6
+    kind: road
+  - cell: 9,6
+    kind: road
+  - cell: 10,6
+    kind: road
+  - cell: 11,6
+    kind: road
+  - cell: 5,7
+    kind: road
+  - cell: 6,7
+    kind: road
+  - cell: 7,7
+    kind: road
+  - cell: 8,7
+    kind: road
+  - cell: 9,7
+    kind: road
+  - cell: 11,7
+    kind: road
+  - cell: 2,8
+    kind: road
+  - cell: 4,8
+    kind: road
+  - cell: 5,8
+    kind: road
+  - cell: 11,8
+    kind: road
+  - cell: 12,8
+    kind: road
+  - cell: 13,8
+    kind: road
+  - cell: 14,8
+    kind: road
+  - cell: 1,9
+    kind: road
+  - cell: 2,9
+    kind: road
+  - cell: 3,9
+    kind: road
+  - cell: 4,9
+    kind: road
+  - cell: 5,9
+    kind: road
+  - cell: 1,10
+    kind: road
+  - cell: 2,10
+    kind: road
+
+- type: swPlanetSurface
+  id: korriban
+  width: 16
+  height: 12
+  biome: "Пустынные долины и древние гробницы"
+  terrain:
+  - dddddddddddddddd
+  - dssssssddddddddd
+  - dssssssddddddddd
+  - dssssssddddddddd
+  - dssssssddddddddd
+  - dssssssddddddddd
+  - ddddddddddrrrrrd
+  - ddddddddddrrrrrd
+  - ddddddddddrrrrrd
+  - ddddddddddrrrrrd
+  - ddddddddddrrrrrd
+  - dddddddddddddddd
+  sites:
+  - id: settlement_1
+    name: "Жилой район 1: Коррибан"
+    kind: settlement
+    cell: 3,2
+  - id: settlement_2
+    name: "Жилой район 2: Коррибан"
+    kind: settlement
+    cell: 5,2
+  - id: settlement_3
+    name: "Жилой район 3: Коррибан"
+    kind: settlement
+    cell: 2,3
+  - id: settlement_4
+    name: "Жилой район 4: Коррибан"
+    kind: settlement
+    cell: 4,4
+  - id: settlement_5
+    name: "Жилой район 5: Коррибан"
+    kind: settlement
+    cell: 6,3
+  - id: port
+    name: "Грузовой порт"
+    kind: port
+    cell: 12,9
+  - id: storage
+    name: "Складской узел"
+    kind: storage
+    cell: 10,8
+  - id: power
+    name: "Энергетический узел"
+    kind: power
+    cell: 9,7
+  - id: resource_arable
+    name: "Аграрные угодья"
+    kind: resource
+    resource: arable
+    cell: 2,9
+  - id: resource_chemical_deposit
+    name: "Химическое сырьё"
+    kind: resource
+    resource: chemical_deposit
+    cell: 12,3
+  - id: resource_metal_deposit
+    name: "Металлическая руда"
+    kind: resource
+    resource: metal_deposit
+    cell: 13,4
+  - id: resource_mineral_deposit
+    name: "Минеральное сырьё"
+    kind: resource
+    resource: mineral_deposit
+    cell: 14,5
+  - id: resource_water_source
+    name: "Источник воды"
+    kind: resource
+    resource: water_source
+    cell: 1,9
+  - id: production_farm
+    name: "Аграрный комплекс"
+    kind: production
+    recipes:
+    - farm_intensive
+    - fiber_farming
+    cell: 3,9
+  - id: production_foodworks
+    name: "Пищевой комплекс"
+    kind: production
+    recipes:
+    - fresh
+    - luxury_food
+    cell: 4,9
+  - id: production_waterworks
+    name: "Водоснабжение"
+    kind: production
+    recipes:
+    - water_surface
+    cell: 2,8
+  - id: production_electronics
+    name: "Электроника"
+    kind: production
+    recipes:
+    - circuits
+    - energy_cells
+    cell: 7,4
+  - id: production_chemworks
+    name: "Химический комплекс"
+    kind: production
+    recipes:
+    - chemicals
+    - composites
+    - fertilizers
+    - polymers
+    cell: 8,4
+  - id: production_civilworks
+    name: "Гражданское производство"
+    kind: production
+    recipes:
+    - household
+    - vehicles
+    cell: 7,5
+  - id: production_machineworks
+    name: "Машиностроение"
+    kind: production
+    recipes:
+    - parts
+    - reactor_modules
+    - sublight
+    cell: 9,5
+  - id: production_mine
+    name: "Горнодобывающий комплекс"
+    kind: production
+    recipes:
+    - mining_chemical
+    - mining_metal
+    cell: 11,4
+  - id: production_quarry
+    name: "Карьер"
+    kind: production
+    recipes:
+    - mining_minerals
+    cell: 12,4
+  - id: production_smelter
+    name: "Металлургический комплекс"
+    kind: production
+    recipes:
+    - durasteel
+    - recycle_metal
+    - smelt
+    - smelt_rare
+    cell: 13,5
+  - id: production_textileworks
+    name: "Текстильная фабрика"
+    kind: production
+    recipes:
+    - textiles_natural
+    cell: 10,7
+  roads:
+  - cell: 2,2
+    kind: road
+  - cell: 3,2
+    kind: road
+  - cell: 4,2
+    kind: road
+  - cell: 5,2
+    kind: road
+  - cell: 6,2
+    kind: road
+  - cell: 2,3
+    kind: road
+  - cell: 3,3
+    kind: road
+  - cell: 4,3
+    kind: road
+  - cell: 5,3
+    kind: road
+  - cell: 6,3
+    kind: road
+  - cell: 7,3
+    kind: road
+  - cell: 8,3
+    kind: road
+  - cell: 12,3
+    kind: road
+  - cell: 2,4
+    kind: road
+  - cell: 3,4
+    kind: road
+  - cell: 4,4
+    kind: road
+  - cell: 5,4
+    kind: road
+  - cell: 6,4
+    kind: road
+  - cell: 7,4
+    kind: road
+  - cell: 8,4
+    kind: road
+  - cell: 11,4
+    kind: road
+  - cell: 12,4
+    kind: road
+  - cell: 13,4
+    kind: road
+  - cell: 2,5
+    kind: road
+  - cell: 6,5
+    kind: road
+  - cell: 7,5
+    kind: road
+  - cell: 8,5
+    kind: road
+  - cell: 9,5
+    kind: road
+  - cell: 10,5
+    kind: road
+  - cell: 11,5
+    kind: road
+  - cell: 13,5
+    kind: road
+  - cell: 14,5
+    kind: road
+  - cell: 2,6
+    kind: road
+  - cell: 9,6
+    kind: road
+  - cell: 2,7
+    kind: road
+  - cell: 9,7
+    kind: road
+  - cell: 10,7
+    kind: road
+  - cell: 2,8
+    kind: road
+  - cell: 3,8
+    kind: road
+  - cell: 4,8
+    kind: road
+  - cell: 10,8
+    kind: road
+  - cell: 11,8
+    kind: road
+  - cell: 12,8
+    kind: road
+  - cell: 1,9
+    kind: road
+  - cell: 2,9
+    kind: road
+  - cell: 3,9
+    kind: road
+  - cell: 4,9
+    kind: road
+  - cell: 12,9
+    kind: road
+
+- type: swPlanetSurface
+  id: nez_peron
+  width: 16
+  height: 12
+  biome: "Сельскохозяйственные равнины"
+  terrain:
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  - pppppppppppppppp
+  sites:
+  - id: production_bioreactor
+    name: "Биореактор"
+    kind: production
+    recipes:
+    - synth
+    cell: 2,2
+  - id: production_electronics
+    name: "Электроника"
+    kind: production
+    recipes:
+    - circuits
+    - energy_cells
+    cell: 3,2
+  - id: production_farm
+    name: "Аграрный комплекс"
+    kind: production
+    recipes:
+    - farm_intensive
+    - fiber_farming
+    cell: 4,2
+  - id: production_fishery
+    name: "Рыбный промысел"
+    kind: production
+    recipes:
+    - protein_aquatic
+    cell: 5,2
+  - id: production_foodworks
+    name: "Пищевой комплекс"
+    kind: production
+    recipes:
+    - fresh
+    - luxury_food
+    - rations
+    cell: 6,2
+  - id: production_medtech
+    name: "Медицинская техника"
+    kind: production
+    recipes:
+    - implants_synthetic
+    - medical_equipment
+    cell: 7,2
+  - id: production_precision
+    name: "Точное производство"
+    kind: production
+    recipes:
+    - crystal_components
+    - processors
+    - science
+    - shields
+    cell: 8,2
+  - id: production_waterworks
+    name: "Водоснабжение"
+    kind: production
+    recipes:
+    - water_surface
+    cell: 9,2
+  - id: resource_arable
+    name: "Аграрные угодья"
+    kind: resource
+    resource: arable
+    cell: 2,3
+  - id: resource_fish_stock
+    name: "Рыбные ресурсы"
+    kind: resource
+    resource: fish_stock
+    cell: 3,3
+  - id: resource_water_source
+    name: "Источник воды"
+    kind: resource
+    resource: water_source
+    cell: 4,3
+  - id: resource_medical_biome
+    name: "Лекарственные культуры"
+    kind: resource
+    resource: medical_biome
+    cell: 5,3
+  - id: power
+    name: "Энергетический узел"
+    kind: power
+    cell: 6,3
+  - id: storage
+    name: "Складской узел"
+    kind: storage
+    cell: 7,3
+  - id: port
+    name: "Грузовой порт"
+    kind: port
+    cell: 8,3
+  - id: settlement_1
+    name: "Жилой район 1: Нез-Перон"
+    kind: settlement
+    cell: 9,3
+  - id: settlement_2
+    name: "Жилой район 2: Нез-Перон"
+    kind: settlement
+    cell: 2,4
+  - id: settlement_3
+    name: "Жилой район 3: Нез-Перон"
+    kind: settlement
+    cell: 3,4
+  - id: settlement_4
+    name: "Жилой район 4: Нез-Перон"
+    kind: settlement
+    cell: 4,4
+  - id: settlement_5
+    name: "Жилой район 5: Нез-Перон"
+    kind: settlement
+    cell: 5,4
+  roads:
+  - cell: 2,2
+    kind: road
+  - cell: 3,2
+    kind: road
+  - cell: 4,2
+    kind: road
+  - cell: 5,2
+    kind: road
+  - cell: 6,2
+    kind: road
+  - cell: 7,2
+    kind: road
+  - cell: 8,2
+    kind: road
+  - cell: 9,2
+    kind: road
+  - cell: 2,3
+    kind: road
+  - cell: 3,3
+    kind: road
+  - cell: 4,3
+    kind: road
+  - cell: 5,3
+    kind: road
+  - cell: 6,3
+    kind: road
+  - cell: 7,3
+    kind: road
+  - cell: 8,3
+    kind: road
+  - cell: 9,3
+    kind: road
+  - cell: 2,4
+    kind: road
+  - cell: 3,4
+    kind: road
+  - cell: 4,4
+    kind: road
+  - cell: 5,4
+    kind: road
+  - cell: 6,4
+    kind: road
+  - cell: 7,4
+    kind: road
+  - cell: 8,4
+    kind: road
+  - cell: 9,4
+    kind: road
+  - cell: 2,5
+    kind: road
+  - cell: 3,5
+    kind: road
+  - cell: 4,5
+    kind: road
+  - cell: 5,5
+    kind: road
+  - cell: 6,5
+    kind: road
+  - cell: 7,5
+    kind: road
+  - cell: 8,5
+    kind: road
+  - cell: 9,5
+    kind: road
+  - cell: 2,6
+    kind: road
+  - cell: 3,6
+    kind: road
+  - cell: 4,6
+    kind: road
+  - cell: 5,6
+    kind: road
+  - cell: 6,6
+    kind: road
+  - cell: 7,6
+    kind: road
+  - cell: 8,6
+    kind: road
+  - cell: 9,6
+    kind: road
+  - cell: 2,7
+    kind: road
+  - cell: 3,7
+    kind: road
+  - cell: 4,7
+    kind: road
+  - cell: 5,7
+    kind: road
+  - cell: 6,7
+    kind: road
+  - cell: 7,7
+    kind: road
+  - cell: 8,7
+    kind: road
+  - cell: 9,7
+    kind: road
+
+- type: swPlanetSurface
+  id: ruuria
+  width: 16
+  height: 12
+  biome: "Лесистые равнины и поселения"
+  terrain:
+  - ffffffffffffffff
+  - ffffffffffffffff
+  - ffppppppppffffff
+  - ffppppppppffffff
+  - ffppppppppffffff
+  - ffppppppppffffff
+  - ffppppppppffffff
+  - ffppppppppffffff
+  - ffffffffffffffff
+  - ffffffffffffffff
+  - ffffffffffffffff
+  - ffffffffffffffff
+  sites:
+  - id: production_bioreactor
+    name: "Биореактор"
+    kind: production
+    recipes:
+    - medical_culture
+    cell: 2,2
+  - id: production_chemworks
+    name: "Химический комплекс"
+    kind: production
+    recipes:
+    - technical_gases
+    cell: 3,2
+  - id: production_controlled_lab
+    name: "Лаборатория"
+    kind: production
+    recipes:
+    - stims_bio
+    cell: 4,2
+  - id: production_electronics
+    name: "Электроника"
+    kind: production
+    recipes:
+    - circuits
+    - energy_cells
+    cell: 5,2
+  - id: production_farm
+    name: "Аграрный комплекс"
+    kind: production
+    recipes:
+    - farm_intensive
+    cell: 6,2
+  - id: production_foodworks
+    name: "Пищевой комплекс"
+    kind: production
+    recipes:
+    - fresh
+    - luxury_food
+    - rations
+    cell: 7,2
+  - id: production_gasworks
+    name: "Газопереработка"
+    kind: production
+    recipes:
+    - mining_tibanna
+    - tibanna_refine
+    cell: 8,2
+  - id: production_mine
+    name: "Горнодобывающий комплекс"
+    kind: production
+    recipes:
+    - mining_metal
+    - mining_rare
+    cell: 9,2
+  - id: production_pharma
+    name: "Фармацевтический комплекс"
+    kind: production
+    recipes:
+    - medical_supplies
+    - pharma_bio
+    cell: 2,3
+  - id: production_quarry
+    name: "Карьер"
+    kind: production
+    recipes:
+    - mining_minerals
+    cell: 3,3
+  - id: production_refinery
+    name: "Топливный завод"
+    kind: production
+    recipes:
+    - ship_fuel
+    cell: 4,3
+  - id: production_shipyard
+    name: "Верфь"
+    kind: production
+    recipes:
+    - freighters
+    cell: 5,3
+  - id: production_smelter
+    name: "Металлургический комплекс"
+    kind: production
+    recipes:
+    - smelt
+    - smelt_rare
+    cell: 6,3
+  - id: production_waterworks
+    name: "Водоснабжение"
+    kind: production
+    recipes:
+    - water_surface
+    cell: 7,3
+  - id: resource_arable
+    name: "Аграрные угодья"
+    kind: resource
+    resource: arable
+    cell: 8,3
+  - id: resource_medical_biome
+    name: "Лекарственные культуры"
+    kind: resource
+    resource: medical_biome
+    cell: 9,3
+  - id: resource_metal_deposit
+    name: "Металлическая руда"
+    kind: resource
+    resource: metal_deposit
+    cell: 2,4
+  - id: resource_mineral_deposit
+    name: "Минеральное сырьё"
+    kind: resource
+    resource: mineral_deposit
+    cell: 3,4
+  - id: resource_rare_deposit
+    name: "Редкие металлы"
+    kind: resource
+    resource: rare_deposit
+    cell: 4,4
+  - id: resource_tibanna_deposit
+    name: "Газ тибанна"
+    kind: resource
+    resource: tibanna_deposit
+    cell: 5,4
+  - id: resource_water_source
+    name: "Источник воды"
+    kind: resource
+    resource: water_source
+    cell: 6,4
+  - id: power
+    name: "Энергетический узел"
+    kind: power
+    cell: 7,4
+  - id: storage
+    name: "Складской узел"
+    kind: storage
+    cell: 8,4
+  - id: port
+    name: "Грузовой порт"
+    kind: port
+    cell: 9,4
+  - id: settlement_1
+    name: "Жилой район 1: Рурия"
+    kind: settlement
+    cell: 2,5
+  - id: settlement_2
+    name: "Жилой район 2: Рурия"
+    kind: settlement
+    cell: 3,5
+  - id: settlement_3
+    name: "Жилой район 3: Рурия"
+    kind: settlement
+    cell: 4,5
+  - id: settlement_4
+    name: "Жилой район 4: Рурия"
+    kind: settlement
+    cell: 5,5
+  - id: settlement_5
+    name: "Жилой район 5: Рурия"
+    kind: settlement
+    cell: 6,5
+  roads:
+  - cell: 2,2
+    kind: road
+  - cell: 3,2
+    kind: road
+  - cell: 4,2
+    kind: road
+  - cell: 5,2
+    kind: road
+  - cell: 6,2
+    kind: road
+  - cell: 7,2
+    kind: road
+  - cell: 8,2
+    kind: road
+  - cell: 9,2
+    kind: road
+  - cell: 2,3
+    kind: road
+  - cell: 3,3
+    kind: road
+  - cell: 4,3
+    kind: road
+  - cell: 5,3
+    kind: road
+  - cell: 6,3
+    kind: road
+  - cell: 7,3
+    kind: road
+  - cell: 8,3
+    kind: road
+  - cell: 9,3
+    kind: road
+  - cell: 2,4
+    kind: road
+  - cell: 3,4
+    kind: road
+  - cell: 4,4
+    kind: road
+  - cell: 5,4
+    kind: road
+  - cell: 6,4
+    kind: road
+  - cell: 7,4
+    kind: road
+  - cell: 8,4
+    kind: road
+  - cell: 9,4
+    kind: road
+  - cell: 2,5
+    kind: road
+  - cell: 3,5
+    kind: road
+  - cell: 4,5
+    kind: road
+  - cell: 5,5
+    kind: road
+  - cell: 6,5
+    kind: road
+  - cell: 7,5
+    kind: road
+  - cell: 8,5
+    kind: road
+  - cell: 9,5
+    kind: road
+  - cell: 2,6
+    kind: road
+  - cell: 3,6
+    kind: road
+  - cell: 4,6
+    kind: road
+  - cell: 5,6
+    kind: road
+  - cell: 6,6
+    kind: road
+  - cell: 7,6
+    kind: road
+  - cell: 8,6
+    kind: road
+  - cell: 9,6
+    kind: road
+  - cell: 2,7
+    kind: road
+  - cell: 3,7
+    kind: road
+  - cell: 4,7
+    kind: road
+  - cell: 5,7
+    kind: road
+  - cell: 6,7
+    kind: road
+  - cell: 7,7
+    kind: road
+  - cell: 8,7
+    kind: road
+  - cell: 9,7
+    kind: road
+
+- type: swPlanetSurface
+  id: sernpidal
+  width: 16
+  height: 12
+  biome: "Промышленные районы и верфи"
+  terrain:
+  - cccccccccccccccc
+  - cccccccccccccccc
+  - ccppppppppcccccc
+  - ccppppppppcccccc
+  - ccppppppppcccccc
+  - ccppppppppcccccc
+  - ccppppppppcccccc
+  - ccppppppppcccccc
+  - cccccccccccccccc
+  - cccccccccccccccc
+  - cccccccccccccccc
+  - cccccccccccccccc
+  sites:
+  - id: production_bioreactor
+    name: "Биореактор"
+    kind: production
+    recipes:
+    - medical_culture
+    cell: 2,2
+  - id: production_chemworks
+    name: "Химический комплекс"
+    kind: production
+    recipes:
+    - chemicals
+    - fertilizers
+    - polymers
+    - technical_gases
+    cell: 3,2
+  - id: production_civilworks
+    name: "Гражданское производство"
+    kind: production
+    recipes:
+    - communication
+    - household
+    cell: 4,2
+  - id: production_electronics
+    name: "Электроника"
+    kind: production
+    recipes:
+    - circuits
+    - energy_cells
+    cell: 5,2
+  - id: production_fishery
+    name: "Рыбный промысел"
+    kind: production
+    recipes:
+    - protein_aquatic
+    cell: 6,2
+  - id: production_foodworks
+    name: "Пищевой комплекс"
+    kind: production
+    recipes:
+    - fresh
+    - luxury_food
+    cell: 7,2
+  - id: production_machineworks
+    name: "Машиностроение"
+    kind: production
+    recipes:
+    - parts
+    - reactor_modules
+    cell: 8,2
+  - id: production_mine
+    name: "Горнодобывающий комплекс"
+    kind: production
+    recipes:
+    - mining_chemical
+    - mining_fuel
+    cell: 9,2
+  - id: production_pharma
+    name: "Фармацевтический комплекс"
+    kind: production
+    recipes:
+    - medical_supplies
+    - pharma_bio
+    cell: 2,3
+  - id: production_refinery
+    name: "Топливный завод"
+    kind: production
+    recipes:
+    - reactor_fuel
+    - ship_fuel
+    cell: 3,3
+  - id: production_textileworks
+    name: "Текстильная фабрика"
+    kind: production
+    recipes:
+    - textiles_natural
+    cell: 4,3
+  - id: production_waterworks
+    name: "Водоснабжение"
+    kind: production
+    recipes:
+    - water_surface
+    cell: 5,3
+  - id: resource_chemical_deposit
+    name: "Химическое сырьё"
+    kind: resource
+    resource: chemical_deposit
+    cell: 6,3
+  - id: resource_fish_stock
+    name: "Рыбные ресурсы"
+    kind: resource
+    resource: fish_stock
+    cell: 7,3
+  - id: resource_fuel_deposit
+    name: "Топливное сырьё"
+    kind: resource
+    resource: fuel_deposit
+    cell: 8,3
+  - id: resource_medical_biome
+    name: "Лекарственные культуры"
+    kind: resource
+    resource: medical_biome
+    cell: 9,3
+  - id: resource_water_source
+    name: "Источник воды"
+    kind: resource
+    resource: water_source
+    cell: 2,4
+  - id: resource_arable
+    name: "Аграрные угодья"
+    kind: resource
+    resource: arable
+    cell: 3,4
+  - id: power
+    name: "Энергетический узел"
+    kind: power
+    cell: 4,4
+  - id: storage
+    name: "Складской узел"
+    kind: storage
+    cell: 5,4
+  - id: port
+    name: "Грузовой порт"
+    kind: port
+    cell: 6,4
+  - id: settlement_1
+    name: "Жилой район 1: Сернпидал"
+    kind: settlement
+    cell: 7,4
+  - id: settlement_2
+    name: "Жилой район 2: Сернпидал"
+    kind: settlement
+    cell: 8,4
+  - id: settlement_3
+    name: "Жилой район 3: Сернпидал"
+    kind: settlement
+    cell: 9,4
+  - id: settlement_4
+    name: "Жилой район 4: Сернпидал"
+    kind: settlement
+    cell: 2,5
+  - id: settlement_5
+    name: "Жилой район 5: Сернпидал"
+    kind: settlement
+    cell: 3,5
+  roads:
+  - cell: 2,2
+    kind: road
+  - cell: 3,2
+    kind: road
+  - cell: 4,2
+    kind: road
+  - cell: 5,2
+    kind: road
+  - cell: 6,2
+    kind: road
+  - cell: 7,2
+    kind: road
+  - cell: 8,2
+    kind: road
+  - cell: 9,2
+    kind: road
+  - cell: 2,3
+    kind: road
+  - cell: 3,3
+    kind: road
+  - cell: 4,3
+    kind: road
+  - cell: 5,3
+    kind: road
+  - cell: 6,3
+    kind: road
+  - cell: 7,3
+    kind: road
+  - cell: 8,3
+    kind: road
+  - cell: 9,3
+    kind: road
+  - cell: 2,4
+    kind: road
+  - cell: 3,4
+    kind: road
+  - cell: 4,4
+    kind: road
+  - cell: 5,4
+    kind: road
+  - cell: 6,4
+    kind: road
+  - cell: 7,4
+    kind: road
+  - cell: 8,4
+    kind: road
+  - cell: 9,4
+    kind: road
+  - cell: 2,5
+    kind: road
+  - cell: 3,5
+    kind: road
+  - cell: 4,5
+    kind: road
+  - cell: 5,5
+    kind: road
+  - cell: 6,5
+    kind: road
+  - cell: 7,5
+    kind: road
+  - cell: 8,5
+    kind: road
+  - cell: 9,5
+    kind: road
+  - cell: 2,6
+    kind: road
+  - cell: 3,6
+    kind: road
+  - cell: 4,6
+    kind: road
+  - cell: 5,6
+    kind: road
+  - cell: 6,6
+    kind: road
+  - cell: 7,6
+    kind: road
+  - cell: 8,6
+    kind: road
+  - cell: 9,6
+    kind: road
+  - cell: 2,7
+    kind: road
+  - cell: 3,7
+    kind: road
+  - cell: 4,7
+    kind: road
+  - cell: 5,7
+    kind: road
+  - cell: 6,7
+    kind: road
+  - cell: 7,7
+    kind: road
+  - cell: 8,7
+    kind: road
+  - cell: 9,7
+    kind: road
+
+- type: swPlanetSurface
+  id: sullust
+  width: 16
+  height: 12
+  biome: "Вулканические плато и подземные города"
+  terrain:
+  - vvvvvvvvvvvvvvvv
+  - vrrrvrrrrvrrrrvv
+  - vrrvrrrrvrrrrvrv
+  - vrvrrrrvrrrrvrrv
+  - vvrrrrvrrrrvrrrv
+  - vrrrrvrrrrvrrrrv
+  - vrrrvrrrrvrrrrvv
+  - vrrvrrrrvrrrrvrv
+  - vrvrrrrvrrrrvrrv
+  - vvrrrrvrrrrvrrrv
+  - vrrrrvrrrrvrrrrv
+  - vvvvvvvvvvvvvvvv
+  sites:
+  - id: settlement_1
+    name: "Жилой район 1: Сулласт"
+    kind: settlement
+    cell: 2,2
+  - id: settlement_2
+    name: "Жилой район 2: Сулласт"
+    kind: settlement
+    cell: 4,2
+  - id: settlement_3
+    name: "Жилой район 3: Сулласт"
+    kind: settlement
+    cell: 2,3
+  - id: settlement_4
+    name: "Жилой район 4: Сулласт"
+    kind: settlement
+    cell: 4,4
+  - id: settlement_5
+    name: "Жилой район 5: Сулласт"
+    kind: settlement
+    cell: 3,5
+  - id: port
+    name: "Грузовой порт"
+    kind: port
+    cell: 12,9
+  - id: storage
+    name: "Складской узел"
+    kind: storage
+    cell: 10,9
+  - id: power
+    name: "Энергетический узел"
+    kind: power
+    cell: 10,5
+  - id: resource_chemical_deposit
+    name: "Химическое сырьё"
+    kind: resource
+    resource: chemical_deposit
+    cell: 12,2
+  - id: resource_crystal_deposit
+    name: "Кристаллическое сырьё"
+    kind: resource
+    resource: crystal_deposit
+    cell: 14,3
+  - id: resource_fuel_deposit
+    name: "Топливное сырьё"
+    kind: resource
+    resource: fuel_deposit
+    cell: 13,4
+  - id: resource_metal_deposit
+    name: "Металлическая руда"
+    kind: resource
+    resource: metal_deposit
+    cell: 2,9
+  - id: resource_mineral_deposit
+    name: "Минеральное сырьё"
+    kind: resource
+    resource: mineral_deposit
+    cell: 4,9
+  - id: resource_rare_deposit
+    name: "Редкие металлы"
+    kind: resource
+    resource: rare_deposit
+    cell: 14,6
+  - id: resource_water_source
+    name: "Источник воды"
+    kind: resource
+    resource: water_source
+    cell: 1,8
+  - id: production_waterworks
+    name: "Водоснабжение"
+    kind: production
+    recipes:
+    - water_surface
+    cell: 2,8
+  - id: production_precision
+    name: "Точное производство"
+    kind: production
+    recipes:
+    - crystal_components
+    - hyperdrives
+    - processors
+    - shields
+    cell: 9,2
+  - id: production_arsenal
+    name: "Военный завод"
+    kind: production
+    recipes:
+    - military_supplies
+    cell: 10,2
+  - id: production_buildingworks
+    name: "Строительное производство"
+    kind: production
+    recipes:
+    - building_materials
+    - building_modules
+    cell: 10,3
+  - id: production_chemworks
+    name: "Химический комплекс"
+    kind: production
+    recipes:
+    - chemicals
+    - technical_gases
+    - fertilizers
+    cell: 9,4
+  - id: production_civilworks
+    name: "Гражданское производство"
+    kind: production
+    recipes:
+    - entertainment
+    - household
+    cell: 11,4
+  - id: production_machineworks
+    name: "Машиностроение"
+    kind: production
+    recipes:
+    - parts
+    cell: 11,5
+  - id: production_medtech
+    name: "Медицинская техника"
+    kind: production
+    recipes:
+    - implants_synthetic
+    - medical_equipment
+    cell: 9,5
+  - id: production_mine
+    name: "Горнодобывающий комплекс"
+    kind: production
+    recipes:
+    - mining_crystals
+    - mining_fuel
+    - mining_metal
+    - mining_rare
+    - mining_chemical
+    cell: 3,9
+  - id: production_quarry
+    name: "Карьер"
+    kind: production
+    recipes:
+    - mining_minerals
+    cell: 4,8
+  - id: production_refinery
+    name: "Топливный завод"
+    kind: production
+    recipes:
+    - reactor_fuel
+    - ship_fuel
+    cell: 12,5
+  - id: production_smelter
+    name: "Металлургический комплекс"
+    kind: production
+    recipes:
+    - durasteel
+    - smelt
+    - smelt_rare
+    cell: 13,5
+  roads:
+  - cell: 2,2
+    kind: road
+  - cell: 3,2
+    kind: road
+  - cell: 4,2
+    kind: road
+  - cell: 9,2
+    kind: road
+  - cell: 10,2
+    kind: road
+  - cell: 11,2
+    kind: road
+  - cell: 12,2
+    kind: road
+  - cell: 2,3
+    kind: road
+  - cell: 4,3
+    kind: road
+  - cell: 9,3
+    kind: road
+  - cell: 10,3
+    kind: road
+  - cell: 11,3
+    kind: road
+  - cell: 14,3
+    kind: road
+  - cell: 2,4
+    kind: road
+  - cell: 4,4
+    kind: road
+  - cell: 5,4
+    kind: road
+  - cell: 6,4
+    kind: road
+  - cell: 8,4
+    kind: road
+  - cell: 9,4
+    kind: road
+  - cell: 10,4
+    kind: road
+  - cell: 11,4
+    kind: road
+  - cell: 12,4
+    kind: road
+  - cell: 13,4
+    kind: road
+  - cell: 14,4
+    kind: road
+  - cell: 2,5
+    kind: road
+  - cell: 3,5
+    kind: road
+  - cell: 4,5
+    kind: road
+  - cell: 6,5
+    kind: road
+  - cell: 8,5
+    kind: road
+  - cell: 9,5
+    kind: road
+  - cell: 10,5
+    kind: road
+  - cell: 11,5
+    kind: road
+  - cell: 12,5
+    kind: road
+  - cell: 13,5
+    kind: road
+  - cell: 2,6
+    kind: road
+  - cell: 6,6
+    kind: road
+  - cell: 7,6
+    kind: road
+  - cell: 8,6
+    kind: road
+  - cell: 13,6
+    kind: road
+  - cell: 14,6
+    kind: road
+  - cell: 2,7
+    kind: road
+  - cell: 8,7
+    kind: road
+  - cell: 1,8
+    kind: road
+  - cell: 2,8
+    kind: road
+  - cell: 3,8
+    kind: road
+  - cell: 4,8
+    kind: road
+  - cell: 8,8
+    kind: road
+  - cell: 9,8
+    kind: road
+  - cell: 10,8
+    kind: road
+  - cell: 2,9
+    kind: road
+  - cell: 3,9
+    kind: road
+  - cell: 4,9
+    kind: road
+  - cell: 10,9
+    kind: road
+  - cell: 11,9
+    kind: road
+  - cell: 12,9
+    kind: road
+
+- type: swPlanetSurface
+  id: tandankin
+  width: 16
+  height: 12
+  biome: "Орбитальные имперские верфи"
+  terrain:
+  - oooooooooooooooo
+  - oooooooooooooooo
+  - oooooooooooooooo
+  - oooooooooooooooo
+  - oooooooooooooooo
+  - oooooooooooooooo
+  - oooooooooooooooo
+  - oooooooooooooooo
+  - oooooooooooooooo
+  - oooooooooooooooo
+  - oooooooooooooooo
+  - oooooooooooooooo
+  sites:
+  - id: settlement_1
+    name: "Жилой сектор верфей 1: Танданкин"
+    kind: settlement
+    cell: 3,3
+  - id: settlement_2
+    name: "Жилой сектор верфей 2: Танданкин"
+    kind: settlement
+    cell: 5,3
+  - id: settlement_3
+    name: "Жилой сектор верфей 3: Танданкин"
+    kind: settlement
+    cell: 3,5
+  - id: settlement_4
+    name: "Жилой сектор верфей 4: Танданкин"
+    kind: settlement
+    cell: 5,5
+  - id: settlement_5
+    name: "Жилой сектор верфей 5: Танданкин"
+    kind: settlement
+    cell: 4,4
+  - id: port
+    name: "Грузовой порт"
+    kind: port
+    cell: 13,6
+  - id: storage
+    name: "Складской узел"
+    kind: storage
+    cell: 11,7
+  - id: power
+    name: "Энергетический узел"
+    kind: power
+    cell: 7,6
+  - id: production_foodworks
+    name: "Пищевой комплекс"
+    kind: production
+    recipes:
+    - fresh
+    - luxury_food
+    - rations
+    cell: 2,7
+  - id: production_electronics
+    name: "Электроника"
+    kind: production
+    recipes:
+    - energy_cells
+    cell: 8,3
+  - id: production_precision
+    name: "Точное производство"
+    kind: production
+    recipes:
+    - crystal_components
+    - hyperdrives
+    - processors
+    - science
+    cell: 9,4
+  - id: production_arsenal
+    name: "Военный завод"
+    kind: production
+    recipes:
+    - military_supplies
+    cell: 10,3
+  - id: production_civilworks
+    name: "Гражданское производство"
+    kind: production
+    recipes:
+    - communication
+    - household
+    cell: 6,5
+  - id: production_machineworks
+    name: "Машиностроение"
+    kind: production
+    recipes:
+    - parts
+    cell: 8,7
+  - id: production_shipyard
+    name: "Верфь"
+    kind: production
+    recipes:
+    - military_ships
+    cell: 12,5
+  - id: production_textileworks
+    name: "Текстильная фабрика"
+    kind: production
+    recipes:
+    - textiles_natural
+    cell: 2,6
+  roads:
+  - cell: 2,3
+    kind: orbital
+  - cell: 3,3
+    kind: orbital
+  - cell: 4,3
+    kind: orbital
+  - cell: 5,3
+    kind: orbital
+  - cell: 6,3
+    kind: orbital
+  - cell: 8,3
+    kind: orbital
+  - cell: 9,3
+    kind: orbital
+  - cell: 10,3
+    kind: orbital
+  - cell: 11,3
+    kind: orbital
+  - cell: 2,4
+    kind: orbital
+  - cell: 3,4
+    kind: orbital
+  - cell: 4,4
+    kind: orbital
+  - cell: 5,4
+    kind: orbital
+  - cell: 6,4
+    kind: orbital
+  - cell: 7,4
+    kind: orbital
+  - cell: 8,4
+    kind: orbital
+  - cell: 9,4
+    kind: orbital
+  - cell: 2,5
+    kind: orbital
+  - cell: 3,5
+    kind: orbital
+  - cell: 4,5
+    kind: orbital
+  - cell: 5,5
+    kind: orbital
+  - cell: 6,5
+    kind: orbital
+  - cell: 9,5
+    kind: orbital
+  - cell: 12,5
+    kind: orbital
+  - cell: 2,6
+    kind: orbital
+  - cell: 6,6
+    kind: orbital
+  - cell: 7,6
+    kind: orbital
+  - cell: 9,6
+    kind: orbital
+  - cell: 10,6
+    kind: orbital
+  - cell: 11,6
+    kind: orbital
+  - cell: 12,6
+    kind: orbital
+  - cell: 13,6
+    kind: orbital
+  - cell: 2,7
+    kind: orbital
+  - cell: 6,7
+    kind: orbital
+  - cell: 7,7
+    kind: orbital
+  - cell: 8,7
+    kind: orbital
+  - cell: 9,7
+    kind: orbital
+  - cell: 10,7
+    kind: orbital
+  - cell: 11,7
+    kind: orbital
+
+- type: swPlanetSurface
+  id: ziost
+  width: 16
+  height: 12
+  biome: "Холодные равнины и имперские поселения"
+  terrain:
+  - iiiiiiiiiiiiiiii
+  - iiiiiiiiiiiiiiii
+  - iippppppppiiiiii
+  - iippppppppiiiiii
+  - iippppppppiiiiii
+  - iippppppppiiiiii
+  - iippppppppiiiiii
+  - iippppppppiiiiii
+  - iiiiiiiiiiiiiiii
+  - iiiiiiiiiiiiiiii
+  - iiiiiiiiiiiiiiii
+  - iiiiiiiiiiiiiiii
+  sites:
+  - id: production_arsenal
+    name: "Военный завод"
+    kind: production
+    recipes:
+    - armor
+    - blasters
+    - military_supplies
+    cell: 2,2
+  - id: production_chemworks
+    name: "Химический комплекс"
+    kind: production
+    recipes:
+    - composites
+    - fertilizers
+    - technical_gases
+    cell: 3,2
+  - id: production_civilworks
+    name: "Гражданское производство"
+    kind: production
+    recipes:
+    - household
+    cell: 4,2
+  - id: production_crafts
+    name: "Мастерские"
+    kind: production
+    recipes:
+    - luxury_goods
+    cell: 5,2
+  - id: production_electronics
+    name: "Электроника"
+    kind: production
+    recipes:
+    - circuits
+    - energy_cells
+    cell: 6,2
+  - id: production_farm
+    name: "Аграрный комплекс"
+    kind: production
+    recipes:
+    - farm_intensive
+    - fiber_farming
+    cell: 7,2
+  - id: production_foodworks
+    name: "Пищевой комплекс"
+    kind: production
+    recipes:
+    - fresh
+    - luxury_food
+    - rations
+    cell: 8,2
+  - id: production_gasworks
+    name: "Газопереработка"
+    kind: production
+    recipes:
+    - mining_tibanna
+    - tibanna_refine
+    cell: 9,2
+  - id: production_illicit_lab
+    name: "Подпольная лаборатория"
+    kind: production
+    recipes:
+    - spice
+    cell: 2,3
+  - id: production_machineworks
+    name: "Машиностроение"
+    kind: production
+    recipes:
+    - machinery
+    - parts
+    - reactor_modules
+    cell: 3,3
+  - id: production_refinery
+    name: "Топливный завод"
+    kind: production
+    recipes:
+    - ship_fuel
+    cell: 4,3
+  - id: production_smelter
+    name: "Металлургический комплекс"
+    kind: production
+    recipes:
+    - recycle_metal
+    cell: 5,3
+  - id: production_waterworks
+    name: "Водоснабжение"
+    kind: production
+    recipes:
+    - water_surface
+    cell: 6,3
+  - id: resource_arable
+    name: "Аграрные угодья"
+    kind: resource
+    resource: arable
+    cell: 7,3
+  - id: resource_tibanna_deposit
+    name: "Газ тибанна"
+    kind: resource
+    resource: tibanna_deposit
+    cell: 8,3
+  - id: resource_water_source
+    name: "Источник воды"
+    kind: resource
+    resource: water_source
+    cell: 9,3
+  - id: resource_medical_biome
+    name: "Лекарственные культуры"
+    kind: resource
+    resource: medical_biome
+    cell: 2,4
+  - id: power
+    name: "Энергетический узел"
+    kind: power
+    cell: 3,4
+  - id: storage
+    name: "Складской узел"
+    kind: storage
+    cell: 4,4
+  - id: port
+    name: "Грузовой порт"
+    kind: port
+    cell: 5,4
+  - id: settlement_1
+    name: "Жилой район 1: Зиост"
+    kind: settlement
+    cell: 6,4
+  - id: settlement_2
+    name: "Жилой район 2: Зиост"
+    kind: settlement
+    cell: 7,4
+  - id: settlement_3
+    name: "Жилой район 3: Зиост"
+    kind: settlement
+    cell: 8,4
+  - id: settlement_4
+    name: "Жилой район 4: Зиост"
+    kind: settlement
+    cell: 9,4
+  - id: settlement_5
+    name: "Жилой район 5: Зиост"
+    kind: settlement
+    cell: 2,5
+  roads:
+  - cell: 2,2
+    kind: road
+  - cell: 3,2
+    kind: road
+  - cell: 4,2
+    kind: road
+  - cell: 5,2
+    kind: road
+  - cell: 6,2
+    kind: road
+  - cell: 7,2
+    kind: road
+  - cell: 8,2
+    kind: road
+  - cell: 9,2
+    kind: road
+  - cell: 2,3
+    kind: road
+  - cell: 3,3
+    kind: road
+  - cell: 4,3
+    kind: road
+  - cell: 5,3
+    kind: road
+  - cell: 6,3
+    kind: road
+  - cell: 7,3
+    kind: road
+  - cell: 8,3
+    kind: road
+  - cell: 9,3
+    kind: road
+  - cell: 2,4
+    kind: road
+  - cell: 3,4
+    kind: road
+  - cell: 4,4
+    kind: road
+  - cell: 5,4
+    kind: road
+  - cell: 6,4
+    kind: road
+  - cell: 7,4
+    kind: road
+  - cell: 8,4
+    kind: road
+  - cell: 9,4
+    kind: road
+  - cell: 2,5
+    kind: road
+  - cell: 3,5
+    kind: road
+  - cell: 4,5
+    kind: road
+  - cell: 5,5
+    kind: road
+  - cell: 6,5
+    kind: road
+  - cell: 7,5
+    kind: road
+  - cell: 8,5
+    kind: road
+  - cell: 9,5
+    kind: road
+  - cell: 2,6
+    kind: road
+  - cell: 3,6
+    kind: road
+  - cell: 4,6
+    kind: road
+  - cell: 5,6
+    kind: road
+  - cell: 6,6
+    kind: road
+  - cell: 7,6
+    kind: road
+  - cell: 8,6
+    kind: road
+  - cell: 9,6
+    kind: road
+  - cell: 2,7
+    kind: road
+  - cell: 3,7
+    kind: road
+  - cell: 4,7
+    kind: road
+  - cell: 5,7
+    kind: road
+  - cell: 6,7
+    kind: road
+  - cell: 7,7
+    kind: road
+  - cell: 8,7
+    kind: road
+  - cell: 9,7
+    kind: road

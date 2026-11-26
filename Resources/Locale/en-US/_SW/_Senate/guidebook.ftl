@@ -1,0 +1,10 @@
+sw-senate-training-lobby-button = Senate Training
+sw-guide-entry-senate = Galactic Senate
+sw-guide-entry-senate-start = Getting started
+sw-guide-entry-senate-sector = Sectors and dilemmas
+sw-guide-entry-senate-legislation = Bills, committees, and elections
+sw-guide-entry-senate-ministries = Ministries and budget
+sw-guide-entry-senate-agencies = Departments and bureaus
+sw-guide-entry-senate-court = Republic courts
+sw-guide-entry-senate-holonet = Holonet and reporting
+sw-guide-entry-senate-service = Usher, guard, and doctor

@@ -72,6 +72,13 @@ namespace Content.Server.RoundEnd
             SetAutoCallTime();
         }
 
+        public override void Shutdown()
+        {
+            _countdownTokenSource?.Cancel();
+            _cooldownTokenSource?.Cancel();
+            base.Shutdown();
+        }
+
         private void SetAutoCallTime()
         {
             AutoCallStartTime = _gameTiming.CurTime;

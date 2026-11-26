@@ -1,0 +1,79 @@
+- type: entity
+  id: SWMobDarkCouncilMilitaryOffense
+  name: Владыка Сферы военного наступления
+  suffix: Тёмный совет
+  description: Владыка Тёмного совета Ситхской империи.
+  parent: ForceUserBase
+  components:
+  - type: Loadout
+    prototypes: [SWDarkCouncilMilitaryOffenseGear]
+  - type: SWDarkCouncilMember
+    sphere: MilitaryOffense
+  - type: SWFactionMember
+    faction: EmpireFaction
+    job: SWDarkCouncilMilitaryOffense
+  - type: SWLightningAbility
+    damage:
+      types:
+        Heat: 25
+  - type: SWStrangulateAbility
+
+- type: entity
+  id: SWMobDarkCouncilIntelligence
+  name: Владыка Пирамиды Имперской разведки
+  suffix: Тёмный совет
+  description: Владыка Тёмного совета Ситхской империи.
+  parent: ForceUserBase
+  components:
+  - type: Loadout
+    prototypes: [SWDarkCouncilIntelligenceGear]
+  - type: SWDarkCouncilMember
+    sphere: Intelligence
+  - type: SWFactionMember
+    faction: EmpireFaction
+    job: SWDarkCouncilIntelligence
+  - type: SWLightningAbility
+    damage:
+      types:
+        Heat: 25
+  - type: SWStrangulateAbility
+
+- type: entity
+  id: SWMobDarkCouncilProductionLogistics
+  name: Владыка Сферы производства и логистики
+  suffix: Тёмный совет
+  description: Владыка Тёмного совета Ситхской империи.
+  parent: ForceUserBase
+  components:
+  - type: Loadout
+    prototypes: [SWDarkCouncilProductionLogisticsGear]
+  - type: SWDarkCouncilMember
+    sphere: ProductionLogistics
+  - type: SWFactionMember
+    faction: EmpireFaction
+    job: SWDarkCouncilProductionLogistics
+  - type: SWLightningAbility
+    damage:
+      types:
+        Heat: 25
+  - type: SWStrangulateAbility
+
+- type: entity
+  id: SWMobDarkCouncilExpansionDiplomacy
+  name: Владыка Сферы расширения и дипломатии
+  suffix: Тёмный совет
+  description: Владыка Тёмного совета Ситхской империи.
+  parent: ForceUserBase
+  components:
+  - type: Loadout
+    prototypes: [SWDarkCouncilExpansionDiplomacyGear]
+  - type: SWDarkCouncilMember
+    sphere: ExpansionDiplomacy
+  - type: SWFactionMember
+    faction: EmpireFaction
+    job: SWDarkCouncilExpansionDiplomacy
+  - type: SWLightningAbility
+    damage:
+      types:
+        Heat: 25
+  - type: SWStrangulateAbility

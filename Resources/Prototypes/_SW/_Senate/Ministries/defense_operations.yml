@@ -1,0 +1,85 @@
+- type: swDefenseOperation
+  id: SWDefenseOpPirateSweep
+  name: Антипиратский рейд
+  description: Зачистка пиратских гнёзд в секторе республиканскими силами.
+  order: 0
+  cost: 2500
+  adminCost: 1
+  cooldown: 4
+  target: Sector
+  sectorEffects:
+    SWGlobalSecurity: 6
+    SWGlobalDefense: 3
+    SWGlobalEconomy: -2
+
+- type: swDefenseOperation
+  id: SWDefenseOpContraband
+  name: Зачистка контрабанды
+  description: Двухчасовая операция против контрабандных сетей сектора.
+  order: 1
+  cost: 2000
+  adminCost: 1
+  cooldown: 4
+  duration: 2
+  target: Sector
+  sectorEffects:
+    SWGlobalSecurity: 5
+    SWGlobalEconomy: -2
+
+- type: swDefenseOperation
+  id: SWDefenseOpShowOfForce
+  name: Демонстрация силы
+  description: Манёвры у границы сбивают давление Империи, но настораживают нейтралов.
+  order: 2
+  cost: 2000
+  adminCost: 1
+  cooldown: 3
+  target: Border
+  requireBorderFleet: true
+  borderDelta: -18
+  policyEffects:
+    SWStatNeutral: -3
+
+- type: swDefenseOperation
+  id: SWDefenseOpWarGames
+  name: Войсковые учения
+  description: Трёхчасовые учения поднимают флот и армию, но утомляют общество.
+  order: 3
+  cost: 2000
+  adminCost: 1
+  cooldown: 5
+  duration: 3
+  policyEffects:
+    SWStatFleet: 4
+    SWStatArmy: 4
+    SWStatMorale: -2
+
+- type: swDefenseOperation
+  id: SWDefenseOpFortify
+  name: Фортификация сектора
+  description: Долгая стройка укреплений даёт сектору мощную и стойкую оборону.
+  order: 4
+  cost: 3500
+  adminCost: 1
+  cooldown: 8
+  duration: 5
+  target: Sector
+  sectorEffects:
+    SWGlobalDefense: 10
+    SWGlobalIndustry: -2
+
+- type: swDefenseOperation
+  id: SWDefenseOpPreemptive
+  name: Превентивный удар
+  description: Удар на упреждение резко сбивает давление Империи ценой дипломатии. Только при высокой готовности.
+  order: 5
+  cost: 3000
+  adminCost: 2
+  cooldown: 6
+  target: Border
+  requireStance: Mobilization
+  requireBorderFleet: true
+  borderDelta: -30
+  policyEffects:
+    SWStatNeutral: -5
+    SWStatTreaties: -4

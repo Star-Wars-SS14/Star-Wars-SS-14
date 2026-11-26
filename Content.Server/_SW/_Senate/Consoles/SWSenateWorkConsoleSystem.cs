@@ -1,0 +1,1881 @@
+using System.Linq;
+using Content.Server.Popups;
+using Content.Shared._SW._Senate;
+using Content.Shared._SW._Senate.Sectors;
+using Content.Shared.Access.Systems;
+using Content.Shared.Containers.ItemSlots;
+using Content.Shared.Popups;
+using Robust.Server.GameObjects;
+using Robust.Shared.Containers;
+using Robust.Shared.Prototypes;
+using Robust.Shared.Timing;
+using Content.Server._SW._Senate.Core;
+using Content.Server._SW._Senate.Empire;
+using Content.Shared._SW._Senate.Empire;
+using Content.Server._SW._Senate.Debate;
+using Content.Server._SW._Senate.Director;
+using Content.Server._SW._Senate.Economy;
+using Content.Shared._SW._Senate.Bills;
+using Content.Shared._SW._Senate.Ministries;
+using Content.Shared.Mobs;
+using Content.Shared.Mobs.Components;
+using Robust.Shared.Player;
+using Robust.Shared.Enums;
+
+namespace Content.Server._SW._Senate.Consoles;
+
+public sealed class SWSenateWorkConsoleSystem : EntitySystem
+{
+    [Dependency] private readonly UserInterfaceSystem _ui = default!;
+    [Dependency] private readonly SWSenateStateSystem _senate = default!;
+    [Dependency] private readonly IPrototypeManager _proto = default!;
+    [Dependency] private readonly ItemSlotsSystem _itemSlots = default!;
+    [Dependency] private readonly PopupSystem _popup = default!;
+    [Dependency] private readonly SharedIdCardSystem _idCard = default!;
+    [Dependency] private readonly SWSenateCardSystem _cards = default!;
+    [Dependency] private readonly SWSenateTimeSystem _time = default!;
+    [Dependency] private readonly SWSenateFloorSystem _floor = default!;
+    [Dependency] private readonly SWSenateDilemmaSystem _dilemma = default!;
+    [Dependency] private readonly SWSenateBudgetSystem _budget = default!;
+    [Dependency] private readonly SWSenateProgramSystem _program = default!;
+    [Dependency] private readonly SWSenateAmbitionSystem _ambition = default!;
+    [Dependency] private readonly SWSenateCrisisSystem _crisis = default!;
+    [Dependency] private readonly SWMinistryDefenseSystem _defense = default!;
+    [Dependency] private readonly SWMinistryInternalSecuritySystem _security = default!;
+    [Dependency] private readonly SWMinistryHealthSystem _health = default!;
+    [Dependency] private readonly SWEmpireDiplomacySystem _diplomacy = default!;
+    [Dependency] private readonly SWStatisticsConsoleSystem _mapStatistics = default!;
+    [Dependency] private readonly SWMinistryEconomySystem _economy = default!;
+    [Dependency] private readonly SWMinistryFinanceSystem _finance = default!;
+    [Dependency] private readonly SWMinistryJusticeSystem _justice = default!;
+    [Dependency] private readonly SWCorruptionSystem _corruption = default!;
+    [Dependency] private readonly SWEmergencyPowersSystem _powers = default!;
+    [Dependency] private readonly SWSenateCourtSystem _court = default!;
+    [Dependency] private readonly SWMinistrySystem _ministry = default!;
+    [Dependency] private readonly SWSenatePartySystem _party = default!;
+    [Dependency] private readonly SWSenateCommitteeSystem _committee = default!;
+    [Dependency] private readonly SWDirectorSystem _director = default!;
+    [Dependency] private readonly IGameTiming _timing = default!;
+
+    private const float UpdateInterval = 3f;
+    private static readonly TimeSpan AnnounceCooldown = TimeSpan.FromSeconds(12);
+    private float _accumulator;
+    private TimeSpan _nextAnnounce;
+
+    public override void Initialize()
+    {
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, BoundUIOpenedEvent>(OnOpened);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, EntInsertedIntoContainerMessage>(OnInserted);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, EntRemovedFromContainerMessage>(OnRemoved);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateTakeOfficeMessage>(OnTakeOffice);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateResignMessage>(OnResign);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSubmitBillMessage>(OnSubmitBill);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSubmitAmendmentMessage>(OnSubmitAmendment);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSubmitPresetMessage>(OnSubmitPreset);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateResolveDilemmaMessage>(OnResolveDilemma);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateApplyProgramMessage>(OnApplyProgram);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateResolveCrisisMessage>(OnResolveCrisis);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAidCrisisMessage>(OnAidCrisis);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateProposeEmergencyLawMessage>(OnProposeEmergencyLaw);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSetBudgetMessage>(OnSetBudget);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWBudgetApproveMessage>(OnApproveBudget);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWBudgetRejectMessage>(OnRejectBudget);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateScheduleSessionMessage>(OnScheduleSession);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateScheduleAmendmentSessionMessage>(OnScheduleAmendmentSession);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRemoveSessionMessage>(OnRemoveSession);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateEmergencySessionMessage>(OnEmergencySession);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateConfirmSessionMessage>(OnConfirmSession);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWDefenseApproveWarMessage>(OnApproveWar);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWDefenseRejectWarMessage>(OnRejectWar);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSecurityApproveEmergencyMessage>(OnApproveEmergency);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSecurityRejectEmergencyMessage>(OnRejectEmergency);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSecuritySabotageDecisionMessage>(OnSecuritySabotageDecision);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWHealthApproveEmergencyMessage>(OnApproveHealthEmergency);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWHealthRejectEmergencyMessage>(OnRejectHealthEmergency);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWHealthQuarantineDecisionMessage>(OnHealthQuarantineDecision);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmpireDiplomacyDecisionMessage>(OnDiplomacyDecision);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEconomyApproveStimulusMessage>(OnApproveStimulus);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEconomyRejectStimulusMessage>(OnRejectStimulus);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWFinanceApproveEmissionMessage>(OnApproveEmission);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWFinanceRejectEmissionMessage>(OnRejectEmission);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWJusticeApproveTribunalMessage>(OnApproveTribunal);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWJusticeRejectTribunalMessage>(OnRejectTribunal);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateSignBillMessage>(OnSignBill);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateVetoBillMessage>(OnVetoBill);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmergencyRelinquishMessage>(OnRelinquishPowers);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmergencyCommandMessage>(OnEmergencyCommand);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWEmergencyDismissMinisterMessage>(OnDismissMinister);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateIssueDecreeMessage>(OnIssueDecree);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateConfirmElectionMessage>(OnConfirmElection);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWCourtNominateMessage>(OnCourtNominate);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWCourtNominationResponseMessage>(OnCourtNominationResponse);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateDiploReplyMessage>(OnDiploReply);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWProposeMotionMessage>(OnProposeMotion);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectSessionMessage>(OnRejectSession);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateAnnounceMessage>(OnAnnounce);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateCreatePartyMessage>(OnCreateParty);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRequestJoinPartyMessage>(OnRequestJoinParty);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateCancelJoinPartyMessage>(OnCancelJoinParty);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateConfirmJoinPartyMessage>(OnConfirmJoinParty);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateRejectJoinPartyMessage>(OnRejectJoinParty);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateLeavePartyMessage>(OnLeaveParty);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateDisbandPartyMessage>(OnDisbandParty);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateInitiateLeaderVoteMessage>(OnInitiateLeaderVote);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateInitiateEvictVoteMessage>(OnInitiateEvictVote);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateCastLeaderVoteMessage>(OnCastLeaderVote);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateJoinCommitteeMessage>(OnJoinCommittee);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateLeaveCommitteeMessage>(OnLeaveCommittee);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateVoteChairMessage>(OnVoteChair);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWCommitteeVoteBillMessage>(OnCommitteeVoteBill);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateResubmitBillMessage>(OnResubmitBill);
+        SubscribeLocalEvent<SWSenateWorkConsoleComponent, SWSenateReviseBillMessage>(OnReviseBill);
+    }
+
+    private void RequeueBill(SWSenateBill bill)
+    {
+        var committeeId = _committee.RouteBill(bill.Effects);
+        if (committeeId != null)
+            _committee.ReferBill(bill, committeeId, _time.Day);
+        else
+            _senate.PlaceOnFloor(bill);
+    }
+
+    private void OnReviseBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateReviseBillMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var author = SenatorName(ent);
+        if (author == null)
+            return;
+
+        var bill = _senate.GetReturnedBill(args.BillId, author);
+        if (bill == null)
+            return;
+
+        if (bill.AmendsLawId is { } parentId && !_senate.CanAmendLaw(parentId))
+            return;
+
+        if (!TryPrepareDraft(ent, args.Actor, args.Name, args.Effects, out var name, out var effects,
+                bill.AmendsLawId != null && !string.IsNullOrWhiteSpace(args.Description)))
+            return;
+
+        _senate.ReviseBill(bill, name, args.Description.Trim(), effects);
+        RequeueBill(bill);
+        _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void OnCommitteeVoteBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWCommitteeVoteBillMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var name = SenatorName(ent);
+        if (name == null)
+            return;
+
+        if (args.Disposition == 2 && string.IsNullOrWhiteSpace(args.Reason))
+        {
+            _popup.PopupCursor("Укажите причину возврата.", args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (!_committee.VoteBill(name, args.CommitteeId, args.BillId, args.Disposition == 1, args.Reason.Trim()))
+            _popup.PopupCursor("Голосовать можно только в комитетский час.", args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnResubmitBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateResubmitBillMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var name = SenatorName(ent);
+        if (name == null)
+            return;
+
+        var bill = _senate.GetReturnedBill(args.BillId, name);
+        if (bill == null)
+            return;
+
+        RequeueBill(bill);
+        _popup.PopupCursor("Законопроект внесён повторно.", args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private string? SenatorName(Entity<SWSenateWorkConsoleComponent> ent)
+    {
+        var sectorId = GetSectorOwner(ent);
+        return sectorId != null && _senate.SectorHolders.TryGetValue(sectorId, out var name) ? name : null;
+    }
+
+    private void RecordFinaleAuthor(Entity<SWSenateWorkConsoleComponent> ent, EntityUid actor, SWSenateBill bill)
+    {
+        var office = GetSectorOwner(ent);
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (office == null || card == null || !_ambition.TryConfirmAuthor(office, card.Value, actor, out var player, out var name))
+            return;
+        EntityManager.System<SWSenateRoundHistorySystem>().RecordBillAuthor(bill.Id, player, card.Value, name);
+    }
+
+    private void OnJoinCommittee(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateJoinCommitteeMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var name = SenatorName(ent);
+        if (name == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-senator-hint"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (!_committee.Join(name, args.CommitteeId))
+            _popup.PopupCursor("Мест в комитете нет.", args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnLeaveCommittee(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateLeaveCommitteeMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var name = SenatorName(ent);
+        if (name != null)
+            _committee.Leave(name, args.CommitteeId);
+
+        UpdateUi(ent);
+    }
+
+    private void OnVoteChair(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateVoteChairMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var name = SenatorName(ent);
+        if (name != null)
+            _committee.VoteChair(name, args.CommitteeId, args.Candidate);
+
+        UpdateUi(ent);
+    }
+
+    private void OnInitiateEvictVote(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateInitiateEvictVoteMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        if (_party.InitiateEvict(sectorId, args.PartyId, args.SectorId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-evict-started"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnCreateParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateCreatePartyMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-senator-hint"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_party.CreateParty(sectorId, args.Name, args.Description))
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-created"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRequestJoinParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateRequestJoinPartyMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        if (_party.RequestJoin(sectorId, args.PartyId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-join-requested"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnCancelJoinParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateCancelJoinPartyMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        _party.CancelJoin(sectorId, args.PartyId);
+        UpdateUi(ent);
+    }
+
+    private void OnConfirmJoinParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateConfirmJoinPartyMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        if (_party.ConfirmJoin(sectorId, args.PartyId, args.SectorId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-member-added"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRejectJoinParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateRejectJoinPartyMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        _party.RejectJoin(sectorId, args.PartyId, args.SectorId);
+        UpdateUi(ent);
+    }
+
+    private void OnLeaveParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateLeavePartyMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        if (_party.Leave(sectorId, args.PartyId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-left"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnDisbandParty(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateDisbandPartyMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        if (_party.Disband(sectorId, args.PartyId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-disbanded"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnInitiateLeaderVote(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateInitiateLeaderVoteMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        if (_party.InitiateVote(sectorId, args.PartyId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-vote-started"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-party-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnCastLeaderVote(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateCastLeaderVoteMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+            return;
+
+        _party.CastVote(sectorId, args.PartyId, args.Support);
+        UpdateUi(ent);
+    }
+
+    private void OnAnnounce(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateAnnounceMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var position = GetCardPosition(ent);
+        if (position != SWSenatePosition.Speaker && position != SWSenatePosition.Chancellor)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-announce-only-leaders"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        var inOffice = position == SWSenatePosition.Speaker ? _senate.Speaker != null : _senate.Chancellor != null;
+        if (!inOffice)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-not-in-office"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_timing.CurTime < _nextAnnounce)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-announce-cooldown"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        var text = args.Text.Trim();
+        if (string.IsNullOrWhiteSpace(text))
+            return;
+
+        var sender = Loc.GetString(position == SWSenatePosition.Speaker
+            ? "sw-senate-work-position-speaker"
+            : "sw-senate-work-position-chancellor");
+
+        var kind = position == SWSenatePosition.Chancellor
+            ? SWSenateAnnouncementKind.Chancellor
+            : SWSenateAnnouncementKind.Notice;
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent(sender, text, kind));
+        _nextAnnounce = _timing.CurTime + AnnounceCooldown;
+        _popup.PopupCursor(Loc.GetString("sw-senate-announce-sent"), args.Actor, PopupType.Medium);
+    }
+
+    private SWSenatePosition? GetCardPosition(Entity<SWSenateWorkConsoleComponent> ent)
+    {
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null || !TryComp<SWSenatePositionCardComponent>(card, out var position))
+            return null;
+
+        return position.Position;
+    }
+
+    // When only one of the two presiding offices is filled, that officer acts for both:
+    // the lone Speaker also confirms, the lone Chancellor also schedules.
+    private bool CanScheduleAs(Entity<SWSenateWorkConsoleComponent> ent) => GetCardPosition(ent) switch
+    {
+        SWSenatePosition.Speaker => _senate.Speaker != null,
+        SWSenatePosition.Chancellor => _senate.Chancellor != null && _senate.Speaker == null,
+        _ => false,
+    };
+
+    private bool CanConfirmAs(Entity<SWSenateWorkConsoleComponent> ent) => GetCardPosition(ent) switch
+    {
+        SWSenatePosition.Chancellor => _senate.Chancellor != null,
+        SWSenatePosition.Speaker => _senate.Speaker != null && _senate.Chancellor == null,
+        _ => false,
+    };
+
+    private bool CanScheduleAs(Entity<SWSenateWorkConsoleComponent> ent, EntityUid actor) =>
+        CanScheduleAs(ent) && Name(actor) == (GetCardPosition(ent) == SWSenatePosition.Speaker ? _senate.Speaker : _senate.Chancellor);
+
+    private bool CanConfirmAs(Entity<SWSenateWorkConsoleComponent> ent, EntityUid actor) =>
+        CanConfirmAs(ent) && Name(actor) == (GetCardPosition(ent) == SWSenatePosition.Chancellor ? _senate.Chancellor : _senate.Speaker);
+
+    private void OnScheduleSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateScheduleSessionMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanScheduleAs(ent, args.Actor))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-speaker"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.TryScheduleSession(args.BillId, args.StartHour, args.Duration) == null)
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-invalid"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-added"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnScheduleAmendmentSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateScheduleAmendmentSessionMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanScheduleAs(ent, args.Actor))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-speaker"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.TryScheduleAmendmentSession(args.BillIds, args.StartHour, args.Duration) == null)
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-invalid"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-added"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRemoveSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateRemoveSessionMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanScheduleAs(ent, args.Actor))
+            return;
+
+        _senate.RemoveSession(args.SessionId);
+        UpdateUi(ent);
+    }
+
+    private void OnEmergencySession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateEmergencySessionMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanScheduleAs(ent, args.Actor))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-speaker"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        ScheduleEmergencySession(args.BillId, args.Actor);
+        UpdateUi(ent);
+    }
+
+    private void OnConfirmSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateConfirmSessionMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.ConfirmSession(args.SessionId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-confirmed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnApproveWar(Entity<SWSenateWorkConsoleComponent> ent, ref SWDefenseApproveWarMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_defense.ApproveWar())
+            _popup.PopupCursor(Loc.GetString("sw-defense-war-approved"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRejectWar(Entity<SWSenateWorkConsoleComponent> ent, ref SWDefenseRejectWarMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+            return;
+
+        _defense.RejectWar();
+        UpdateUi(ent);
+    }
+
+    private void OnApproveEmergency(Entity<SWSenateWorkConsoleComponent> ent, ref SWSecurityApproveEmergencyMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_security.ApproveEmergency())
+            _popup.PopupCursor(Loc.GetString("sw-security-emergency-approved"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRejectEmergency(Entity<SWSenateWorkConsoleComponent> ent, ref SWSecurityRejectEmergencyMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+            return;
+
+        _security.RejectEmergency();
+        UpdateUi(ent);
+    }
+
+    private void OnSecuritySabotageDecision(Entity<SWSenateWorkConsoleComponent> ent, ref SWSecuritySabotageDecisionMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive || !CanConfirmAs(ent, args.Actor))
+            return;
+
+        var applied = args.Approve ? _security.ApproveSabotage(args.CaseId) : _security.RejectSabotage(args.CaseId);
+        _popup.PopupCursor(applied
+            ? args.Approve ? "Диверсия одобрена. Министр может отдать приказ группе." : "Запрос на диверсию отклонён."
+            : "Запрос уже рассмотрен или отозван.", args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void OnDiplomacyDecision(Entity<SWSenateWorkConsoleComponent> ent, ref SWEmpireDiplomacyDecisionMessage args)
+    {
+        if (!CanConfirmAs(ent,args.Actor) || !_diplomacy.CanDecide(args.Actor) || !Enum.IsDefined(args.Decision)) return;
+        var applied = args.Decision switch { SWEmpireDiplomacyDecision.Approve => _diplomacy.Decide(args.Id,true,args.Actor),
+            SWEmpireDiplomacyDecision.Reject => _diplomacy.Decide(args.Id,false,args.Actor),
+            SWEmpireDiplomacyDecision.Break => _diplomacy.BreakRepublic(args.Id,args.Actor), _ => false };
+        if (!applied) _popup.PopupCursor("Соглашение недоступно или уже рассмотрено.",args.Actor,PopupType.Medium);
+        UpdateUi(ent);
+    }
+    private void OnHealthQuarantineDecision(Entity<SWSenateWorkConsoleComponent> ent, ref SWHealthQuarantineDecisionMessage args)
+    {
+        if (!CanConfirmAs(ent, args.Actor) || !_health.CanDecideQuarantine(args.Actor))
+            return;
+        var applied = args.Lift ? _health.LiftQuarantine(args.Id) : _health.DecideQuarantine(args.Id, args.Approve, args.Actor);
+        if (!applied) _popup.PopupCursor("Заявка уже рассмотрена или недоступна.", args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void OnApproveHealthEmergency(Entity<SWSenateWorkConsoleComponent> ent, ref SWHealthApproveEmergencyMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_health.ApproveEmergency())
+            _popup.PopupCursor(Loc.GetString("sw-health-emergency-approved"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRejectHealthEmergency(Entity<SWSenateWorkConsoleComponent> ent, ref SWHealthRejectEmergencyMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+            return;
+
+        _health.RejectEmergency();
+        UpdateUi(ent);
+    }
+
+    private void OnApproveStimulus(Entity<SWSenateWorkConsoleComponent> ent, ref SWEconomyApproveStimulusMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_economy.ApproveStimulus())
+            _popup.PopupCursor(Loc.GetString("sw-economy-stimulus-approved"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRejectStimulus(Entity<SWSenateWorkConsoleComponent> ent, ref SWEconomyRejectStimulusMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+            return;
+
+        _economy.RejectStimulus();
+        UpdateUi(ent);
+    }
+
+    private void OnApproveEmission(Entity<SWSenateWorkConsoleComponent> ent, ref SWFinanceApproveEmissionMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_finance.ApproveEmission())
+            _popup.PopupCursor(Loc.GetString("sw-finance-emission-approved"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRejectEmission(Entity<SWSenateWorkConsoleComponent> ent, ref SWFinanceRejectEmissionMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+            return;
+
+        _finance.RejectEmission();
+        UpdateUi(ent);
+    }
+
+    private void OnApproveTribunal(Entity<SWSenateWorkConsoleComponent> ent, ref SWJusticeApproveTribunalMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_justice.ApproveTribunal())
+            _popup.PopupCursor(Loc.GetString("sw-justice-tribunal-approved"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRejectTribunal(Entity<SWSenateWorkConsoleComponent> ent, ref SWJusticeRejectTribunalMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+            return;
+
+        _justice.RejectTribunal();
+        UpdateUi(ent);
+    }
+
+    private void OnSignBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSignBillMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.SignBill(args.BillId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-signed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnVetoBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateVetoBillMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor) || !_powers.HasPower(SWEmergencyPower.Veto))
+            return;
+
+        if (_senate.VetoBill(args.BillId))
+        {
+            _powers.RegisterUse(6f, 6f, false);
+            _popup.PopupCursor(Loc.GetString("sw-power-veto"), args.Actor, PopupType.Medium);
+        }
+
+        UpdateUi(ent);
+    }
+
+    private void OnRelinquishPowers(Entity<SWSenateWorkConsoleComponent> ent, ref SWEmergencyRelinquishMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+            return;
+
+        _powers.Relinquish();
+        UpdateUi(ent);
+    }
+
+    // Vote identity of the card holder: a senator's sector holder, or the Chancellor.
+    private string? SelfName(Entity<SWSenateWorkConsoleComponent> ent)
+    {
+        var owner = GetDilemmaOwner(ent);
+        if (owner == SWSenateDilemmaSystem.RepublicOwner)
+            return _senate.Chancellor;
+        return owner != null && _senate.SectorHolders.TryGetValue(owner, out var h) ? h : null;
+    }
+
+    private string? CardFullName(Entity<SWSenateWorkConsoleComponent> ent)
+    {
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null || !TryComp<Content.Shared.Access.Components.IdCardComponent>(card, out var idCard))
+            return null;
+
+        return string.IsNullOrWhiteSpace(idCard.FullName) ? null : idCard.FullName;
+    }
+
+    private void OnCourtNominate(Entity<SWSenateWorkConsoleComponent> ent, ref SWCourtNominateMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (GetCardPosition(ent) != SWSenatePosition.Chancellor || _senate.Chancellor == null
+            || _senate.Chancellor != Name(args.Actor))
+            return;
+
+        if (_court.Nominate(args.Name, args.ForChief))
+            _popup.PopupCursor("Предложение направлено кандидату.", args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor("Выдвижение невозможно.", args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnCourtNominationResponse(Entity<SWSenateWorkConsoleComponent> ent, ref SWCourtNominationResponseMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (_court.RespondNomination(Name(args.Actor), args.Accept, args.Actor))
+            _popup.PopupCursor(args.Accept ? "Согласие передано в Сенат." : "Предложение отклонено.", args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnDiploReply(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateDiploReplyMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (GetCardPosition(ent) != SWSenatePosition.Chancellor || _senate.Chancellor == null
+            || _senate.Chancellor != Name(args.Actor))
+            return;
+
+        if (_director.AddRepublicReply(_senate.Chancellor, args.Text))
+            _popup.PopupCursor("Ответ передан по имперскому дипканалу.", args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnProposeMotion(Entity<SWSenateWorkConsoleComponent> ent, ref SWProposeMotionMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var self = SelfName(ent);
+        if (self == null)
+            return;
+
+        if (args.Type == SWMotionType.NoConfidence && GetCardPosition(ent) == SWSenatePosition.Chancellor)
+            return;
+
+        var bill = _senate.SubmitEmergencyPowerMotion(args.Type, args.Level, args.Power, self, _powers.MotionThreshold(args.Type));
+        if (bill != null)
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void ScheduleEmergencySession(int billId, EntityUid actor)
+    {
+        var result = _senate.ScheduleEmergencySession(billId);
+        if (result == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-emergency-invalid"), actor, PopupType.Medium);
+            return;
+        }
+
+        RaiseLocalEvent(new SWSenateEmergencySessionScheduledEvent(_senate.GetBillName(billId), result.StartHour, result.DisplacedBill));
+        _popup.PopupCursor(Loc.GetString("sw-senate-emergency-scheduled"), actor, PopupType.Medium);
+    }
+
+    private void OnDismissMinister(Entity<SWSenateWorkConsoleComponent> ent, ref SWEmergencyDismissMinisterMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor) || !_powers.HasPower(SWEmergencyPower.MinisterControl))
+            return;
+        if (!_ministry.IsClaimed(args.MinistryId))
+            return;
+
+        var dismissed = _ministry.GetHolder(args.MinistryId);
+        if (dismissed != null)
+            _ministry.Bar(args.MinistryId, dismissed);
+        _ministry.Unclaim(args.MinistryId);
+        _powers.RegisterUse(6f, 4f, false);
+        var name = _proto.TryIndex<Content.Shared._SW._Senate.Ministries.SWMinistryPrototype>(args.MinistryId, out var proto) ? proto.Name : args.MinistryId;
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent("Канцлер", $"Министр отстранён: {name}.", SWSenateAnnouncementKind.Chancellor));
+        UpdateUi(ent);
+    }
+
+    private void OnIssueDecree(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateIssueDecreeMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor) || !_powers.HasPower(SWEmergencyPower.Decree))
+            return;
+
+        var name = args.Name.Trim();
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-no-name"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        var effects = new Dictionary<string, float>();
+        var magnitude = 0f;
+        foreach (var (statId, rawDelta) in args.Effects)
+        {
+            if (!_proto.HasIndex<SWStatPrototype>(statId) || !float.IsFinite(rawDelta))
+                continue;
+
+            var delta = Math.Clamp(rawDelta, -ent.Comp.MaxEffect, ent.Comp.MaxEffect);
+            if (delta == 0)
+                continue;
+
+            effects[statId] = delta;
+            magnitude += Math.Abs(delta);
+        }
+
+        if (effects.Count == 0)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-no-effect"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        _senate.IssueDecree(name, args.Description.Trim(), Loc.GetString("sw-senate-decree-author"), effects);
+        _powers.RegisterUse(6f + magnitude * 0.4f, 5f + magnitude * 0.4f, true);
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent(
+            Loc.GetString("sw-senate-work-position-chancellor"),
+            Loc.GetString("sw-senate-decree-announce", ("name", name)),
+            SWSenateAnnouncementKind.Chancellor));
+        _popup.PopupCursor(Loc.GetString("sw-senate-decree-issued"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void OnConfirmElection(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateConfirmElectionMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null
+            || !TryComp<SWSenatePositionCardComponent>(card, out var position)
+            || position.Position != SWSenatePosition.Senator
+            || !TryComp<SWSenateSectorComponent>(card, out var sectorComp)
+            || sectorComp.Sector is not { } sectorId)
+            return;
+
+        if (!_senate.SectorHolders.TryGetValue(sectorId, out var name) || name != _senate.ChancellorElect
+            || Name(args.Actor) != name)
+            return;
+
+        if (!_senate.ConfirmChancellorElect(name, sectorId, args.Actor))
+            return;
+
+        _idCard.TryChangeFullName(card.Value, name);
+        _cards.SynchronizeHolder(name, SWSenatePosition.Chancellor);
+        EntityManager.System<SWSenateRoundHistorySystem>().RecordCard(card.Value);
+        _floor.SetChancellor(args.Actor);
+        RaiseLocalEvent(new SWSenateCustomAnnouncementEvent(
+            Loc.GetString("sw-senate-announce-sender"),
+            Loc.GetString("sw-senate-election-took-office", ("name", name)),
+            SWSenateAnnouncementKind.Chancellor));
+        _popup.PopupCursor(Loc.GetString("sw-senate-work-took-office"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private List<SWCabinetEntry> BuildCabinet()
+    {
+        var list = new List<SWCabinetEntry>();
+        foreach (var (ministryId, holder) in _ministry.Holders)
+        {
+            if (!_proto.TryIndex<Content.Shared._SW._Senate.Ministries.SWMinistryPrototype>(ministryId, out var proto))
+                continue;
+            list.Add(new SWCabinetEntry { MinistryId = ministryId, Name = proto.Name, Holder = holder, Color = proto.Color });
+        }
+
+        list.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+        return list;
+    }
+
+    private void OnEmergencyCommand(Entity<SWSenateWorkConsoleComponent> ent, ref SWEmergencyCommandMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+            return;
+
+        switch (args.Action)
+        {
+            // Quarantine requires a Health request; departmental inspections do not confer judicial powers.
+            case >= 0 and <= 4 when args.Action != 2 && _powers.HasPower(SWEmergencyPower.Command):
+                InvokeMinistry(args.Action);
+                _powers.RegisterUse(8f, 5f, false);
+                break;
+
+            case 6 when _powers.HasPower(SWEmergencyPower.MartialLaw): // военное положение
+                InvokeMinistry(0);
+                InvokeMinistry(1);
+                _powers.RegisterUse(15f, 10f, true);
+                break;
+
+            case 7 when _powers.HasPower(SWEmergencyPower.Mobilization):
+                _senate.AddPolicy("SWStatReserve", 7f);
+                _senate.AddPolicy("SWStatArmy", 4f);
+                _senate.AddPolicy("SWStatMorale", -4f);
+                _powers.RegisterUse(8f, 5f, false);
+                break;
+
+            case 8 when _powers.HasPower(SWEmergencyPower.Censorship):
+                _senate.AddPolicy("SWStatCensorship", 6f);
+                _senate.AddPolicy("SWStatMorale", 4f);
+                _senate.AddPolicy("SWStatRights", -5f);
+                _powers.RegisterUse(8f, 6f, true);
+                break;
+
+            case 9 when _powers.HasPower(SWEmergencyPower.Purge):
+                _senate.AddPolicy("SWStatPolice", 5f);
+                _senate.AddPolicy("SWStatRights", -8f);
+                _senate.AddPolicy("SWStatMorale", -5f);
+                _powers.RegisterUse(12f, 12f, true);
+                break;
+
+            case 10 when _powers.HasPower(SWEmergencyPower.EmergencyBudget):
+                if (!_powers.TryEmergencyBudget())
+                {
+                    _popup.PopupCursor(_powers.EmergencyBudgetStatus, args.Actor, PopupType.Medium);
+                    UpdateUi(ent);
+                    return;
+                }
+                break;
+
+            default:
+                return;
+        }
+
+        _popup.PopupCursor(Loc.GetString("sw-power-command"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void InvokeMinistry(int action)
+    {
+        switch (action)
+        {
+            case 0:
+                _defense.SetStance(Content.Shared._SW._Senate.Ministries.SWDefenseStance.War);
+                _defense.ApproveWar();
+                break;
+            case 1:
+                _security.SetPosture(Content.Shared._SW._Senate.Ministries.SWSecurityPosture.Emergency);
+                _security.ApproveEmergency();
+                break;
+            case 3:
+                _economy.DeclareStimulus();
+                _economy.ApproveStimulus();
+                break;
+            case 4:
+                _finance.DeclareEmission();
+                _finance.ApproveEmission();
+                break;
+        }
+    }
+
+    private void OnRejectSession(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateRejectSessionMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.RejectSession(args.SessionId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-rejected"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnSubmitBill(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSubmitBillMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null
+            || !TryComp<SWSenatePositionCardComponent>(card, out var position)
+            || position.Position != SWSenatePosition.Senator)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-not-senator"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (!TryComp<SWSenateSectorComponent>(card, out var billSector) || billSector.Sector is not { } billSectorId || !_senate.IsClaimed(billSectorId))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-senator-hint"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        var author = SenatorName(ent);
+        if (author == null)
+            return;
+
+        if (_senate.HasActiveBill(author))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-already-active"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (!TryPrepareDraft(ent, args.Actor, args.Name, args.Effects, out var name, out var effects))
+            return;
+
+        var bill = _senate.SubmitBill(name, args.Description.Trim(), author, effects);
+        RecordFinaleAuthor(ent, args.Actor, bill);
+        ReferBill(bill);
+        _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private void OnSubmitAmendment(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSubmitAmendmentMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var author = SenatorName(ent);
+        if (author == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-senator-hint"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (!_senate.CanAmendLaw(args.LawId))
+        {
+            _popup.PopupCursor("Поправки можно предложить только к действующему закону.", args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_senate.HasActiveBill(author))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-already-active"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (!TryPrepareDraft(ent, args.Actor, args.Name, args.Effects, out var name, out var effects,
+                !string.IsNullOrWhiteSpace(args.Description)))
+            return;
+
+        var amendment = _senate.SubmitAmendment(args.LawId, name, args.Description.Trim(), author, effects);
+        if (amendment == null)
+            return;
+
+        RecordFinaleAuthor(ent, args.Actor, amendment);
+        ReferBill(amendment);
+        _popup.PopupCursor("Поправки внесены на рассмотрение.", args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private bool TryPrepareDraft(Entity<SWSenateWorkConsoleComponent> ent, EntityUid actor, string rawName,
+        IReadOnlyDictionary<string, float> rawEffects, out string name, out Dictionary<string, float> effects,
+        bool allowTextOnly = false)
+    {
+        name = rawName.Trim();
+        effects = new Dictionary<string, float>();
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-no-name"), actor, PopupType.Medium);
+            return false;
+        }
+
+        var net = 0f;
+        foreach (var (statId, rawDelta) in rawEffects)
+        {
+            if (!_proto.HasIndex<SWStatPrototype>(statId) || !float.IsFinite(rawDelta))
+                continue;
+
+            var delta = Math.Clamp(rawDelta, -ent.Comp.MaxEffect, ent.Comp.MaxEffect);
+            if (delta == 0)
+                continue;
+
+            effects[statId] = delta;
+            net += delta;
+        }
+
+        if (effects.Count == 0 && !allowTextOnly)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-no-effect"), actor, PopupType.Medium);
+            return false;
+        }
+
+        if (net > ent.Comp.DraftBudget)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-over-budget"), actor, PopupType.Medium);
+            return false;
+        }
+        return true;
+    }
+
+    private void ReferBill(SWSenateBill bill)
+    {
+        var committeeId = _committee.RouteBill(bill.Effects);
+        if (committeeId != null)
+            _committee.ReferBill(bill, committeeId, _time.Day);
+    }
+
+    private void OnSubmitPreset(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSubmitPresetMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null
+            || !TryComp<SWSenatePositionCardComponent>(card, out var position)
+            || position.Position != SWSenatePosition.Senator)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-not-senator"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (!TryComp<SWSenateSectorComponent>(card, out var presetSector) || presetSector.Sector is not { } presetSectorId || !_senate.IsClaimed(presetSectorId))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-senator-hint"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        var author = SenatorName(ent);
+        if (author == null)
+            return;
+
+        if (_senate.HasActiveBill(author))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-bill-already-active"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (!_proto.TryIndex<SWBillPresetPrototype>(args.PresetId, out var preset))
+            return;
+
+        var effects = new Dictionary<string, float>();
+        foreach (var (subId, rawDelta) in preset.Effects)
+        {
+            if (!_proto.HasIndex<SWStatPrototype>(subId))
+                continue;
+
+            var delta = Math.Clamp(rawDelta, -ent.Comp.MaxEffect, ent.Comp.MaxEffect);
+            if (delta == 0)
+                continue;
+
+            effects[subId] = delta;
+        }
+
+        if (effects.Count == 0)
+            return;
+
+        var bill = _senate.SubmitBill(preset.Name, preset.Description, author, effects);
+        RecordFinaleAuthor(ent, args.Actor, bill);
+        ReferBill(bill);
+        _popup.PopupCursor(Loc.GetString("sw-senate-bill-submitted"), args.Actor, PopupType.Medium);
+        UpdateUi(ent);
+    }
+
+    private string? GetDilemmaOwner(Entity<SWSenateWorkConsoleComponent> ent)
+    {
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null || !TryComp<SWSenatePositionCardComponent>(card, out var position))
+            return null;
+
+        if (position.Position == SWSenatePosition.Senator)
+        {
+            if (TryComp<SWSenateSectorComponent>(card, out var sector) && sector.Sector is { } claimed && _senate.IsClaimed(claimed))
+                return claimed;
+
+            return null;
+        }
+
+        if (position.Position == SWSenatePosition.Chancellor && _senate.Chancellor != null)
+            return SWSenateDilemmaSystem.RepublicOwner;
+
+        return null;
+    }
+
+    private void OnResolveDilemma(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateResolveDilemmaMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var owner = GetDilemmaOwner(ent);
+        if (owner == null)
+            return;
+
+        if (_dilemma.Resolve(args.DilemmaId, args.OptionIndex, owner))
+            _popup.PopupCursor(Loc.GetString("sw-senate-dilemma-resolved"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private string? GetSectorOwner(Entity<SWSenateWorkConsoleComponent> ent)
+    {
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null || !TryComp<SWSenatePositionCardComponent>(card, out var position) || position.Position != SWSenatePosition.Senator)
+            return null;
+
+        if (TryComp<SWSenateSectorComponent>(card, out var sector) && sector.Sector is { } claimed && _senate.IsClaimed(claimed))
+            return claimed;
+
+        return null;
+    }
+
+    private void OnApplyProgram(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateApplyProgramMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-senator-hint"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_program.Apply(sectorId, args.ProgramId, args.WorldId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-program-applied"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-program-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnResolveCrisis(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateResolveCrisisMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-senator-hint"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_crisis.ApplySolution(args.CrisisId, args.SolutionIndex, sectorId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-crisis-action"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-crisis-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnAidCrisis(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateAidCrisisMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var sectorId = GetSectorOwner(ent);
+        if (sectorId == null)
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-senator-hint"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_crisis.AidCrisis(args.CrisisId, sectorId))
+            _popup.PopupCursor(Loc.GetString("sw-senate-crisis-aided"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-crisis-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnProposeEmergencyLaw(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateProposeEmergencyLawMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var author = Name(args.Actor);
+        var sectorOwner = GetSectorOwner(ent);
+        var isChancellor = ChancellorInOffice(ent);
+
+        if (_crisis.ProposeLaw(args.CrisisId, args.LawIndex, author, sectorOwner, isChancellor))
+            _popup.PopupCursor(Loc.GetString("sw-senate-crisis-law-proposed"), args.Actor, PopupType.Medium);
+        else
+            _popup.PopupCursor(Loc.GetString("sw-senate-crisis-failed"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private bool ChancellorInOffice(Entity<SWSenateWorkConsoleComponent> ent) =>
+        GetCardPosition(ent) == SWSenatePosition.Chancellor && _senate.Chancellor != null;
+
+    private void OnSetBudget(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateSetBudgetMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+            return;
+
+        _budget.SetAllocation(args.SectorId, args.Amount);
+        UpdateUi(ent);
+    }
+
+    private void OnApproveBudget(Entity<SWSenateWorkConsoleComponent> ent, ref SWBudgetApproveMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_budget.Approve(args.Revision, args.Allocations))
+            _popup.PopupCursor(Loc.GetString("sw-budget-approved"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnRejectBudget(Entity<SWSenateWorkConsoleComponent> ent, ref SWBudgetRejectMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        if (!CanConfirmAs(ent, args.Actor))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-schedule-only-chancellor"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        if (_budget.Reject(args.Revision, args.Reason))
+            _popup.PopupCursor(Loc.GetString("sw-budget-rejected"), args.Actor, PopupType.Medium);
+
+        UpdateUi(ent);
+    }
+
+    private void OnOpened(EntityUid uid, SWSenateWorkConsoleComponent comp, BoundUIOpenedEvent args)
+    {
+        UpdateUi((uid, comp));
+    }
+
+    private void OnInserted(Entity<SWSenateWorkConsoleComponent> ent, ref EntInsertedIntoContainerMessage args)
+    {
+        if (args.Container.ID == ent.Comp.IdSlot)
+            UpdateUi(ent);
+    }
+
+    private void OnRemoved(Entity<SWSenateWorkConsoleComponent> ent, ref EntRemovedFromContainerMessage args)
+    {
+        if (args.Container.ID == ent.Comp.IdSlot)
+            UpdateUi(ent);
+    }
+
+    public override void Update(float frameTime)
+    {
+        if (!_time.ModeActive)
+            return;
+
+        _accumulator += frameTime;
+        if (_accumulator < UpdateInterval)
+            return;
+
+        _accumulator = 0f;
+
+        var query = EntityQueryEnumerator<SWSenateWorkConsoleComponent>();
+        while (query.MoveNext(out var uid, out var comp))
+        {
+            if (_ui.IsUiOpen(uid, SWSenateWorkConsoleUiKey.Key))
+                UpdateUi((uid, comp));
+        }
+    }
+
+    private void OnTakeOffice(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateTakeOfficeMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null || !TryComp<SWSenatePositionCardComponent>(card, out var position))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-no-card"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        switch (position.Position)
+        {
+            case SWSenatePosition.Senator:
+                _popup.PopupCursor(Loc.GetString("sw-senate-work-senator-hint"), args.Actor, PopupType.Medium);
+                break;
+
+            case SWSenatePosition.Chancellor:
+                if (_senate.TryTakeChancellor(Name(args.Actor), args.Actor))
+                {
+                    _idCard.TryChangeFullName(card.Value, Name(args.Actor));
+                    _cards.Synchronize(card.Value, SWSenatePosition.Chancellor);
+                    EntityManager.System<SWSenateRoundHistorySystem>().RecordCard(card.Value);
+                    _floor.SetChancellor(args.Actor);
+                    _popup.PopupCursor(Loc.GetString("sw-senate-work-took-office"), args.Actor, PopupType.Medium);
+                }
+                else
+                    _popup.PopupCursor(Loc.GetString("sw-senate-work-office-taken"), args.Actor, PopupType.Medium);
+                break;
+
+            case SWSenatePosition.Speaker:
+                if (_senate.TryTakeSpeaker(Name(args.Actor)))
+                {
+                    _idCard.TryChangeFullName(card.Value, Name(args.Actor));
+                    _cards.Synchronize(card.Value, SWSenatePosition.Speaker);
+                    EntityManager.System<SWSenateRoundHistorySystem>().RecordCard(card.Value);
+                    _floor.SetSpeaker(args.Actor);
+                    _popup.PopupCursor(Loc.GetString("sw-senate-work-took-office"), args.Actor, PopupType.Medium);
+                }
+                else
+                    _popup.PopupCursor(Loc.GetString("sw-senate-work-office-taken"), args.Actor, PopupType.Medium);
+                break;
+        }
+
+        UpdateUi(ent);
+    }
+
+    private void OnResign(Entity<SWSenateWorkConsoleComponent> ent, ref SWSenateResignMessage args)
+    {
+        if (!_time.ModeActive || !_time.DayActive)
+            return;
+
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        if (card == null || !TryComp<SWSenatePositionCardComponent>(card, out var position))
+        {
+            _popup.PopupCursor(Loc.GetString("sw-senate-work-no-card"), args.Actor, PopupType.Medium);
+            return;
+        }
+
+        switch (position.Position)
+        {
+            case SWSenatePosition.Senator:
+                if (TryComp<SWSenateSectorComponent>(card, out var sectorComp) && sectorComp.Sector is { } heldSector
+                    && _senate.SectorHolders.TryGetValue(heldSector, out var sectorHolder)
+                    && sectorHolder == Name(args.Actor))
+                {
+                    _senate.Unclaim(heldSector);
+                    sectorComp.Sector = null;
+                    _idCard.TryChangeJobTitle(card.Value, Loc.GetString("sw-senate-senator-base"));
+                    _popup.PopupCursor(Loc.GetString("sw-senate-work-resigned"), args.Actor, PopupType.Medium);
+                }
+                break;
+
+            case SWSenatePosition.Chancellor:
+                if (_senate.Chancellor != Name(args.Actor))
+                    break;
+
+                if (_powers.Active)
+                    _powers.Relinquish();
+                _senate.ResignChancellor();
+                _floor.SetChancellor(null);
+                _popup.PopupCursor(Loc.GetString("sw-senate-work-resigned"), args.Actor, PopupType.Medium);
+                break;
+
+            case SWSenatePosition.Speaker:
+                if (_senate.Speaker != Name(args.Actor))
+                    break;
+
+                _senate.ResignSpeaker();
+                _floor.SetSpeaker(null);
+                _floor.RevokeFloor();
+                _popup.PopupCursor(Loc.GetString("sw-senate-work-resigned"), args.Actor, PopupType.Medium);
+                break;
+        }
+
+        UpdateUi(ent);
+    }
+
+    private void UpdateUi(Entity<SWSenateWorkConsoleComponent> ent)
+    {
+        var state = new SWSenateWorkConsoleState();
+        state.SituationalStats = _senate.BuildSituationalStats(null);
+        foreach (var situationSector in _senate.SectorGlobals.Keys)
+            state.SituationalStats.AddRange(_senate.BuildSituationalStats(situationSector));
+
+        var card = _itemSlots.GetItemOrNull(ent.Owner, ent.Comp.IdSlot);
+        state.HasCard = card != null;
+        state.CardIdentity = card != null ? GetNetEntity(card.Value) : null;
+        state.Globals = _senate.BuildGlobalEntries();
+        state.Roster = BuildRoster();
+        state.Bills = _senate.BuildBillEntries();
+        state.Presets = _senate.BuildBillPresets();
+        state.AllDilemmas = _dilemma.BuildAllDilemmas();
+        var dilemmaOwner = GetDilemmaOwner(ent);
+        state.MyDilemmas = _dilemma.BuildOwnerDilemmas(dilemmaOwner);
+        state.MyBudgetDilemmas = _dilemma.BuildOwnerBudgetDilemmas(dilemmaOwner);
+        state.MinistryNotices = _dilemma.GetNotices(dilemmaOwner);
+        state.CanDilemmas = dilemmaOwner != null;
+
+        state.LawsAwaitingSignature = _senate.BuildBillsAwaitingSignature();
+        state.CanSignLaws = CanConfirmAs(ent);
+
+        var cardPosition = GetCardPosition(ent);
+        state.CanDiplomacy = cardPosition is SWSenatePosition.Chancellor or SWSenatePosition.Speaker;
+        state.CanDiploReply = cardPosition == SWSenatePosition.Chancellor && _senate.Chancellor != null;
+        if (state.CanDiplomacy)
+            state.Diplomacy = _director.BuildDiplomacy();
+
+        var self = SelfName(ent);
+        state.ShowPowers = self != null;
+        state.CanProposeMotions = self != null;
+        state.IsChancellorElect = self != null && self == _senate.ChancellorElect;
+        state.PowersActive = _powers.Active;
+
+        state.CourtStatusLabel = _court.BenchLabel();
+        state.CourtPendingLabel = _court.PendingLabel();
+        state.MustPromoteChief = _court.MustPromoteChief;
+        state.CanNominateJudges = GetCardPosition(ent) == SWSenatePosition.Chancellor && _senate.Chancellor != null
+            && _court.NominationsOpen && _court.PendingNominee == null
+            && (_court.MustPromoteChief || _court.SeatsTaken < 3);
+        if (state.CanNominateJudges)
+        {
+            state.CourtCandidates = _court.BuildCandidates();
+            state.CourtChiefCandidates = new List<string>(_court.Judges);
+        }
+
+        var nomineeIdentity = self ?? CardFullName(ent);
+        state.IsCourtNominee = nomineeIdentity != null && _court.IsNominee(nomineeIdentity);
+        state.CourtNominationLabel = nomineeIdentity != null ? _court.NominationLabel(nomineeIdentity) : string.Empty;
+        state.EmergencyLevel = _powers.Level;
+        state.EmergencyLevelName = _powers.LevelName();
+        state.Authority = _powers.Authority;
+        state.Legitimacy = _powers.Legitimacy;
+        state.EmergencyDaysLeft = _powers.DaysLeft;
+        state.CanUseEmergencyPowers = _powers.Active && CanConfirmAs(ent);
+        state.EmergencyBudgetAmount = _powers.EmergencyBudgetAmount;
+        state.EmergencyBudgetReserve = _powers.EmergencyBudgetReserve;
+        state.EmergencyBudgetStatus = _powers.EmergencyBudgetStatus;
+        state.CanRelinquish = _powers.Active && CanConfirmAs(ent);
+        state.HasVeto = _powers.HasPower(SWEmergencyPower.Veto);
+        state.HasCommand = _powers.HasPower(SWEmergencyPower.Command);
+        foreach (var p in Enum.GetValues<SWEmergencyPower>())
+            if (_powers.HasPower(p))
+                state.AvailablePowers.Add((int) p);
+        if (_powers.HasPower(SWEmergencyPower.MinisterControl))
+            state.Cabinet = BuildCabinet();
+
+        var viewer = dilemmaOwner == SWSenateDilemmaSystem.RepublicOwner
+            ? _senate.Chancellor
+            : dilemmaOwner != null && _senate.SectorHolders.TryGetValue(dilemmaOwner, out var h) ? h : null;
+        if (viewer != null)
+        {
+            state.HasPersonal = true;
+            state.MyCorruption = _corruption.PersonCorruptionInt(viewer);
+            state.MyAccount = _corruption.Account(viewer);
+        }
+        state.BudgetLocked = _budget.Approved;
+        state.BudgetTotal = _budget.Total();
+        state.BudgetRevision = _budget.Revision;
+        state.BudgetDay = _time.Day;
+        state.BudgetAutoApplied = _budget.AutoApplied;
+        state.BudgetAutoReason = _budget.AutoReason;
+        state.BudgetReserve = _budget.Reserve();
+        state.BudgetRepublicReservePool = _budget.ReservePool();
+        state.MyBudgetAvailable = dilemmaOwner != null ? _budget.Available(dilemmaOwner) : 0;
+        state.IsChancellorView = ChancellorInOffice(ent);
+        state.BudgetProjectPending = _budget.Pending;
+        state.BudgetSectorPool = _budget.SectorPool();
+        state.BudgetRepublicPool = _budget.RepublicPool();
+                    state.BudgetRepublicRemaining = _budget.Available(SWSenateDilemmaSystem.RepublicOwner);
+        state.BudgetRepublicPct = _budget.RepublicPct;
+        state.BudgetMinistryPool = _budget.MinistryPool();
+        state.BudgetSectorPct = _budget.SectorPct;
+        state.BudgetRejects = _budget.Rejects;
+        state.CanRejectBudget = _budget.CanReject && CanConfirmAs(ent);
+        state.CanApproveBudget = _budget.Pending && CanConfirmAs(ent);
+        state.BudgetMinistrySplit = _budget.BuildShares();
+        if (state.IsChancellorView)
+            state.BudgetSectors = BuildBudgetSectors();
+        var programOwner = GetSectorOwner(ent);
+        state.CanPrograms = programOwner != null;
+        if (programOwner != null)
+        {
+            state.Programs = _program.BuildPrograms(programOwner);
+            state.ProgramWorlds = _program.BuildWorlds(programOwner);
+        }
+        state.CanAmbitions = dilemmaOwner != null;
+        if (dilemmaOwner != null)
+            state.Ambitions = _ambition.BuildAmbitions(dilemmaOwner);
+        state.Crises = _crisis.BuildCrises(programOwner, ChancellorInOffice(ent));
+        state.CanParties = programOwner != null;
+        state.Parties = _party.BuildParties(programOwner);
+        state.MyPartyId = _party.GetPartyIdOf(programOwner);
+        state.PartyLaws = _party.BuildPartyLaws();
+        var committeeViewer = SenatorName(ent);
+        state.CanReviseBills = committeeViewer != null && _time.ModeActive && _time.DayActive;
+        state.CanSubmitAmendments = state.CanReviseBills && !_senate.HasActiveBill(committeeViewer!);
+        state.CanCommittees = committeeViewer != null;
+        state.Committees = _committee.BuildCommittees(committeeViewer);
+        foreach (var committee in state.Committees)
+            committee.Bills = _committee.BuildCommitteeBills(committee.Id, committeeViewer);
+        if (committeeViewer != null)
+            state.ReturnedBills = _senate.BuildReturnedBills(committeeViewer);
+        state.DraftBudget = ent.Comp.DraftBudget;
+        state.GameTime = _time.TimeString();
+        state.Schedule = _senate.BuildScheduleRows();
+        state.SchedulableBills = _senate.BuildSchedulableBills();
+        state.FreeStartHours = _senate.BuildFreeStartHours();
+        state.PendingSessions = _senate.BuildPendingSessions();
+        state.CanScheduleSessions = CanScheduleAs(ent);
+        state.CanConfirmSessions = CanConfirmAs(ent);
+        state.OfficesVacant = _senate.OfficesVacant;
+        state.WarProposed = _defense.WarPending;
+        state.CanApproveWar = _defense.WarPending && CanConfirmAs(ent);
+        state.PendingStanceName = _defense.PendingStance is { } pendingStance ? SWMinistryDefenseSystem.StanceName(pendingStance) : string.Empty;
+        state.EmergencyProposed = _security.EmergencyPending;
+        state.CanApproveEmergency = _security.EmergencyPending && CanConfirmAs(ent);
+        state.CanApproveSecuritySabotage = _time.ModeActive && _time.DayActive && CanConfirmAs(ent);
+        // Covert mission details are only sent to the approving office.
+        if (CanConfirmAs(ent))
+            state.SecuritySabotageRequests = _security.BuildSabotageRequests();
+            new SWStrategicMapDisclosure(_proto).Sabotage(state.SecuritySabotageRequests);
+        state.PendingPostureName = _security.PendingPosture is { } pendingPosture ? SWMinistryInternalSecuritySystem.PostureName(pendingPosture) : string.Empty;
+        state.HealthEmergencyProposed = _health.EmergencyPending;
+        state.MapCrises = _mapStatistics.BuildMapCrises();
+        state.CanApproveHealthEmergency = CanConfirmAs(ent);
+        state.HealthQuarantines = _health.BuildQuarantines();
+        state.CanDecideDiplomacy = CanConfirmAs(ent) && GetCardPosition(ent) == SWSenatePosition.Chancellor;
+        if (state.CanDecideDiplomacy) state.ImperialDiplomacy = _diplomacy.BuildRepublicState();
+        state.StimulusProposed = _economy.StimulusPending;
+        state.CanApproveStimulus = _economy.StimulusPending && CanConfirmAs(ent);
+        state.EmissionProposed = _finance.EmissionPending;
+        state.CanApproveEmission = _finance.EmissionPending && CanConfirmAs(ent);
+        state.TribunalProposed = _justice.TribunalPending;
+        state.CanApproveTribunal = _justice.TribunalPending && CanConfirmAs(ent);
+
+        if (card != null && TryComp<SWSenatePositionCardComponent>(card, out var position))
+        {
+            state.IsSenateCard = true;
+            state.Position = position.Position;
+
+            switch (position.Position)
+            {
+                case SWSenatePosition.Senator:
+                    string? sectorId = null;
+                    if (TryComp<SWSenateSectorComponent>(card, out var sectorComp) && sectorComp.Sector != null)
+                        sectorId = sectorComp.Sector;
+
+                    if (sectorId != null && _proto.TryIndex<SWSectorPrototype>(sectorId, out var sectorProto))
+                    {
+                        state.PositionLabel = Loc.GetString("sw-senate-work-position-senator", ("sector", sectorProto.Name));
+                        state.InOffice = true;
+                        state.CanResign = true;
+                        state.SectorName = sectorProto.Name;
+                        state.SectorId = sectorId;
+                        state.MapSectors = _senate.BuildSectorEntries(sectorId);
+
+                        if (_senate.SectorGlobals.ContainsKey(sectorId))
+                        {
+                            state.SectorStats = _senate.BuildSectorGlobals(sectorId);
+                            var republic = _senate.GetRepublicGlobals();
+                            foreach (var stat in state.SectorStats)
+                            {
+                                var target = republic.TryGetValue(stat.Id, out var r) ? r : stat.Value;
+                                state.SectorTrends.Add(Math.Sign(target - stat.Value));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        state.PositionLabel = Loc.GetString("sw-senate-work-position-senator-none");
+                    }
+                    break;
+
+                case SWSenatePosition.Chancellor:
+                    state.PositionLabel = Loc.GetString("sw-senate-work-position-chancellor");
+                    state.InOffice = _senate.Chancellor != null;
+                    if (state.InOffice) state.MapSectors = _senate.BuildSectorEntries();
+                    state.CanTake = _senate.Chancellor == null;
+                    state.CanResign = _senate.Chancellor != null;
+                    break;
+
+                case SWSenatePosition.Speaker:
+                    state.PositionLabel = Loc.GetString("sw-senate-work-position-speaker");
+                    state.InOffice = _senate.Speaker != null;
+                    state.CanTake = _senate.Speaker == null;
+                    state.CanResign = _senate.Speaker != null;
+                    break;
+            }
+        }
+
+        _ui.SetUiState(ent.Owner, SWSenateWorkConsoleUiKey.Key, state);
+    }
+
+    private List<SWBudgetSectorEntry> BuildBudgetSectors()
+    {
+        var list = new List<SWBudgetSectorEntry>();
+        foreach (var proto in _proto.EnumeratePrototypes<SWSectorPrototype>())
+        {
+            if (!_budget.GovernedSectors.Contains(proto.ID))
+                continue;
+
+            list.Add(new SWBudgetSectorEntry
+            {
+                SectorId = proto.ID,
+                Name = proto.Name,
+                Color = proto.Color,
+                Amount = _budget.Allocation(proto.ID),
+            });
+        }
+
+        list.Sort((a, b) => string.Compare(a.Name, b.Name, StringComparison.Ordinal));
+        return list;
+    }
+
+    private List<SWSenateRosterEntry> BuildRoster()
+    {
+        var roster = new List<SWSenateRosterEntry>();
+
+        if (_senate.Chancellor != null)
+            roster.Add(new SWSenateRosterEntry { Position = Loc.GetString("sw-senate-work-position-chancellor"), Holder = _senate.Chancellor, Color = Color.Gold });
+
+        if (_senate.Speaker != null)
+            roster.Add(new SWSenateRosterEntry { Position = Loc.GetString("sw-senate-work-position-speaker"), Holder = _senate.Speaker, Color = Color.SkyBlue });
+
+        foreach (var proto in _proto.EnumeratePrototypes<SWSectorPrototype>())
+        {
+            var holder = _senate.GetSectorHolder(proto.ID);
+            if (holder == null)
+                continue;
+
+            roster.Add(new SWSenateRosterEntry { Position = proto.Name, Holder = holder, Color = proto.Color });
+        }
+
+        return roster;
+    }
+
+}
+
+

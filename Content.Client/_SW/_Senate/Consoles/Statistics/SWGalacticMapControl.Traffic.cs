@@ -1,0 +1,668 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Numerics;
+using Content.Shared._SW._Senate.Economy;
+using Content.Shared._SW._Senate.Sectors;
+using Content.Shared.CCVar;
+using Robust.Client.Graphics;
+using Robust.Shared.IoC;
+using Robust.Shared.Maths;
+using Robust.Shared.Prototypes;
+
+namespace Content.Client._SW._Senate.Consoles.Statistics;
+
+public sealed partial class SWGalacticMapControl
+{
+    // Freight is an aggregate. These bounded, repeating markers communicate direction and
+    // intensity, never individual ships or authoritative positions along a route.
+    private const int MaxTrafficMarkers = 256;
+    private const int TrailSegments = 4;
+    private readonly List<TrafficPath> _trafficPaths = new();
+    private readonly HashSet<string> _overviewTrafficWorlds = new();
+    private readonly HashSet<Vector2> _coincidentTrafficPositions = new();
+    private readonly Dictionary<Vector2, SWEconomyRouteFlow[]> _visibleCoincidentTraffic = new();
+    public event Action<Vector2[]>? CoincidentTrafficSelected;
+    private readonly List<(Vector2 Center, List<Vector2> Positions)> _coincidentGroups = new();
+    private bool _coincidentLayoutDirty = true;
+    private Vector2 _coincidentLayoutSize;
+    private Vector2 _coincidentLayoutPan;
+    private float _coincidentLayoutZoom;
+    private readonly HashSet<string> _publishedTrafficEdges = new();
+    private bool DisplayWorld(SWGalacticMapWorld world) => !_markExternalLabels || IsLocalView || world.Overview || world.Id == _selectedWorld || _overviewRouteWorlds.Contains(world.Id) || _overviewTrafficWorlds.Contains(world.Id);
+    private readonly Dictionary<string, TrafficPath> _trafficByEdge = new();
+    private readonly Dictionary<SWGalacticMapRoute, TrafficPath> _trafficByRoute = new();
+    private readonly Dictionary<string, int> _cargoSizes = new();
+    private readonly Vector2[] _trailPoints = new Vector2[TrailSegments + 1];
+    private DrawVertexUV2DColor[] _trafficVertices = Array.Empty<DrawVertexUV2DColor>();
+    private int _trafficVertexCount;
+    private SWEconomyView? _economy;
+    private int _economyMapMode = -1;
+    private string? _economyMapGood;
+    private readonly Dictionary<string, (int Count, int Shortages, double? WorstHours, double Production)> _economySectorCache = new();
+
+    public void SetEconomyMapMode(int mode, string? good)
+    {
+        _economyMapMode = mode;
+        _economyMapGood = good;
+        _economySectorCache.Clear();
+    }
+
+    // An overview anchor represents the entire sector, including worlds hidden at galaxy scale.
+    private (int Count, int Shortages, double? WorstHours, double Production)? EconomySectorStats(string id)
+    {
+        if (IsLocalView || _economy is not { Ready: true }) return null;
+        if (_economySectorCache.TryGetValue(id, out var cached)) return cached;
+        var geography = IoCManager.Resolve<IPrototypeManager>().Index<SWGalacticMapPrototype>("SenateRepublic");
+        var anchor = geography.Worlds.FirstOrDefault(w => w.Id == id);
+        if (anchor?.Sector is not { } sector) return null;
+        var ids = geography.Worlds.Where(w => w.Sector?.Id == sector.Id).Select(w => w.Id).ToHashSet();
+        var goods = _economy.Worlds.Where(w => ids.Contains(w.World))
+            .SelectMany(w => w.Goods.Where(g => _economyMapGood == null || g.Good == _economyMapGood)
+                .Select(g => (World: w.World, Good: g))).ToArray();
+        var demand = goods.Where(g => g.Good.RequiredPerHour > 0).ToArray();
+        var result = (goods.Length, demand.Where(g => g.Good.Stock / g.Good.RequiredPerHour < 4).Select(g => g.World).Distinct().Count(),
+            demand.Length == 0 ? (double?) null : demand.Min(g => g.Good.Stock / g.Good.RequiredPerHour), goods.Sum(g => g.Good.ProducedPerHour));
+        _economySectorCache[id] = result;
+        return result;
+    }
+
+    public string? EconomySectorSummary(string id)
+    {
+        if (EconomySectorStats(id) is not { } stats) return null;
+        if (stats.Count == 0) return "Сектор: нет данных по товару";
+        var coverage = stats.WorstHours is { } hours ? $"{hours:0.0} ч" : "нет спроса";
+        return $"Сектор: проблемных миров {stats.Shortages}\nМинимальное покрытие: {coverage}\nОбщий выпуск: {stats.Production:0.##} ед/ч";
+    }
+
+    private Color? EconomyWorldColor(string id)
+    {
+        if (_economyMapMode is < 0 or > 1 || _economy is not { Ready: true }) return null;
+        if (EconomySectorStats(id) is { } sector)
+            return _economyMapMode == 0 ? (sector.Shortages > 0 ? SWConsoleStyle.Bad : SWConsoleStyle.TextDim)
+                : (sector.Production > 0 ? SWConsoleStyle.Good : SWConsoleStyle.TextDim);
+        var world = _economy.Worlds.FirstOrDefault(w => w.World == id);
+        if (world == null) return null;
+        var goods = world.Goods.Where(g => _economyMapGood == null || g.Good == _economyMapGood).ToArray();
+        if (_economyMapMode == 0)
+            return goods.Any(g => g.RequiredPerHour > 0 && g.Stock / g.RequiredPerHour < 4)
+                ? SWConsoleStyle.Bad : SWConsoleStyle.TextDim;
+        return goods.Any(g => g.ProducedPerHour > 0) ? SWConsoleStyle.Good : SWConsoleStyle.TextDim;
+    }
+
+    private readonly Dictionary<string, Color> _trafficGoodColors = new();
+    private string? _focusedTrafficEdge;
+    private string? _focusedTrafficFrom;
+    private string? _focusedTrafficTo;
+    private string? _focusedTrafficGood;
+    public void SetFocusedTraffic(string? edge, string? from, string? to, string? good)
+    {
+        _focusedTrafficEdge = edge;
+        _focusedTrafficFrom = from;
+        _focusedTrafficTo = to;
+        _focusedTrafficGood = good;
+    }
+
+    private bool _sectorTrafficOnly;
+    private string? _trafficSector;
+
+    public void SetTrafficScope(bool sectorOnly, string? sector)
+    {
+        _sectorTrafficOnly = sectorOnly;
+        _trafficSector = sector;
+        RefreshCoincidentTrafficCache();
+        _labelsDirty = true;
+        UpdateHover();
+    }
+
+    private bool TrafficRouteInScope(SWGalacticMapRoute route)
+    {
+        if (!_markExternalLabels || IsLocalView || !_sectorTrafficOnly) return true;
+        return _trafficSector != null &&
+            (_worlds.TryGetValue(route.From, out var from) && from.Sector?.Id == _trafficSector ||
+             _worlds.TryGetValue(route.To, out var to) && to.Sector?.Id == _trafficSector);
+    }
+
+    public SWEconomyRouteFlow[] CoincidentFlows(SWEconomyView? view, Vector2 position) => CoincidentFlows(view, new[] { position });
+
+    public SWEconomyRouteFlow[] CoincidentFlows(SWEconomyView? view, IReadOnlyList<Vector2> positions)
+    {
+        if (!_markExternalLabels || IsLocalView || !_showTraffic || view is not { Ready: true }) return Array.Empty<SWEconomyRouteFlow>();
+        var links = view.Links.Select(link => link.Edge).ToHashSet();
+        return view.Flows.Where(flow => (_trafficCommodity == null || flow.Good == _trafficCommodity) &&
+            double.IsFinite(flow.UnitsPerHour) && double.IsFinite(flow.InTransit) && double.IsFinite(flow.TravelHours) &&
+            (flow.UnitsPerHour > 0 || flow.InTransit > 0) && _trafficByEdge.TryGetValue(flow.Edge, out var path) &&
+            links.Contains(flow.Edge) && TrafficRouteInScope(path.Route) &&
+            (flow.From == path.Route.From && flow.To == path.Route.To || flow.From == path.Route.To && flow.To == path.Route.From) &&
+            _worlds.TryGetValue(flow.From, out var from) && _worlds.TryGetValue(flow.To, out var to) &&
+            positions.Any(position => Vector2.DistanceSquared(from.Position, position) < .0001f) && Vector2.DistanceSquared(from.Position, to.Position) < .0001f)
+            .OrderBy(flow => flow.From, Comparer<string>.Create(string.CompareOrdinal))
+            .ThenBy(flow => flow.To, Comparer<string>.Create(string.CompareOrdinal))
+            .ThenBy(flow => flow.Good, Comparer<string>.Create(string.CompareOrdinal)).ToArray();
+    }
+
+    private void RefreshCoincidentTrafficCache()
+    {
+        _visibleCoincidentTraffic.Clear();
+        _coincidentLayoutDirty = true;
+        foreach (var position in _coincidentTrafficPositions)
+        {
+            var flows = CoincidentFlows(_economy, position);
+            if (flows.Length > 0) _visibleCoincidentTraffic[position] = flows;
+        }
+    }
+
+    private Vector2 CoincidentIndicatorCenter(Vector2 position) => MapToLocal(position) + new Vector2(17, -17);
+
+    private void EnsureCoincidentLayout()
+    {
+        if (!_coincidentLayoutDirty && _coincidentLayoutSize == Size && _coincidentLayoutPan == _pan && _coincidentLayoutZoom == Zoom) return;
+        _coincidentLayoutDirty = false;
+        _coincidentLayoutSize = Size;
+        _coincidentLayoutPan = _pan;
+        _coincidentLayoutZoom = Zoom;
+        _coincidentGroups.Clear();
+        foreach (var position in _visibleCoincidentTraffic.Keys.OrderBy(p => p.X).ThenBy(p => p.Y))
+        {
+            var center = CoincidentIndicatorCenter(position);
+            var matches = _coincidentGroups.Where(group => group.Positions.Any(other =>
+                Vector2.DistanceSquared(center, CoincidentIndicatorCenter(other)) < 18 * 18)).ToArray();
+            if (matches.Length == 0)
+            {
+                _coincidentGroups.Add((center, new List<Vector2> { position }));
+                continue;
+            }
+            var target = matches[0];
+            target.Positions.Add(position);
+            foreach (var other in matches.Skip(1))
+            {
+                target.Positions.AddRange(other.Positions);
+                _coincidentGroups.Remove(other);
+            }
+        }
+    }
+
+    public Vector2[] CoincidentFlowGroup(Vector2 position)
+    {
+        EnsureCoincidentLayout();
+        foreach (var group in _coincidentGroups)
+            if (group.Positions.Any(other => Vector2.DistanceSquared(position, other) < .0001f)) return group.Positions.ToArray();
+        return Array.Empty<Vector2>();
+    }
+
+    public Vector2[] ExpandCoincidentGroups(IReadOnlyList<Vector2> positions)
+    {
+        EnsureCoincidentLayout();
+        var expanded = _coincidentGroups.Where(group => group.Positions.Any(other => positions.Any(p => Vector2.DistanceSquared(p, other) < .0001f)))
+            .SelectMany(group => group.Positions).Distinct().OrderBy(p => p.X).ThenBy(p => p.Y).ToArray();
+        return expanded.Length > 0 ? expanded : positions.ToArray();
+    }
+
+    private Vector2[]? HitCoincidentTraffic(Vector2 local)
+    {
+        if (!_markExternalLabels || IsLocalView || !_showTraffic) return null;
+        EnsureCoincidentLayout();
+        foreach (var group in _coincidentGroups)
+            if (Vector2.DistanceSquared(local, group.Center) <= 64) return group.Positions.ToArray();
+        return null;
+    }
+
+    private bool CoincidentTrafficIntersects(UIBox2 box)
+    {
+        if (!_markExternalLabels || IsLocalView || !_showTraffic) return false;
+        EnsureCoincidentLayout();
+        return _coincidentGroups.Any(group => UIBox2.FromDimensions(group.Center - new Vector2(8), new Vector2(16)).Intersects(box));
+    }
+
+    private void DrawCoincidentTraffic(DrawingHandleScreen handle)
+    {
+        if (!_markExternalLabels || IsLocalView || !_showTraffic) return;
+        EnsureCoincidentLayout();
+        foreach (var group in _coincidentGroups)
+        {
+            var center = group.Center * UIScale;
+            var r = 7 * UIScale;
+            handle.DrawCircle(center, r, Color.ToSrgb(SWConsoleStyle.Navigation));
+            handle.DrawCircle(center, r, Color.ToSrgb(SWConsoleStyle.Accent), false);
+            handle.DrawLine(center + new Vector2(-4, -2) * UIScale, center + new Vector2(4, -2) * UIScale, SWConsoleStyle.Accent);
+            handle.DrawLine(center + new Vector2(4, 2) * UIScale, center + new Vector2(-4, 2) * UIScale, SWConsoleStyle.Accent);
+            handle.DrawLine(center + new Vector2(2, -4) * UIScale, center + new Vector2(4, -2) * UIScale, SWConsoleStyle.Accent);
+            handle.DrawLine(center + new Vector2(-2, 4) * UIScale, center + new Vector2(-4, 2) * UIScale, SWConsoleStyle.Accent);
+        }
+    }
+
+    private string? _trafficCommodity;
+    private bool _showTraffic = true;
+    private bool _hasTraffic;
+    private bool _reduceTrafficMotion;
+    private double _trafficSeconds;
+    private Vector2 _trafficGeometrySize;
+    private Vector2 _trafficGeometryPan;
+    private float _trafficGeometryScale;
+    private float _trafficGeometryZoom;
+    private Color _commodityColor = Color.FromHex("#79DEEC");
+    private Color _reverseTrafficColor = Color.FromHex("#E9C17E");
+    private Color _trafficModulate = Color.White;
+
+    public double TrafficAnimationSeconds => _trafficSeconds;
+    public void RestoreTrafficAnimationSeconds(double seconds)
+    {
+        if (double.IsFinite(seconds) && seconds >= 0) _trafficSeconds = seconds;
+    }
+    public int TrafficDirectionCount
+    {
+        get
+        {
+            var count = 0;
+            foreach (var path in _trafficPaths)
+            {
+                if (path.Forward.Present) count++;
+                if (path.Reverse.Present) count++;
+            }
+            return count;
+        }
+    }
+
+    private sealed class TrafficPath(SWGalacticMapRoute route, Vector2[] points, float phase)
+    {
+        public readonly SWGalacticMapRoute Route = route;
+        public readonly Vector2[] MapPoints = points;
+        public readonly Vector2[] ScreenPoints = new Vector2[points.Length];
+        public readonly float[] Distances = new float[points.Length];
+        public readonly TrafficDirection Forward = new();
+        public readonly TrafficDirection Reverse = new();
+        public readonly Dictionary<string, TrafficDirection> ForwardGoods = new();
+        public readonly Dictionary<string, TrafficDirection> ReverseGoods = new();
+        public KeyValuePair<string, TrafficDirection>[] ForwardOrdered = Array.Empty<KeyValuePair<string, TrafficDirection>>();
+        public KeyValuePair<string, TrafficDirection>[] ReverseOrdered = Array.Empty<KeyValuePair<string, TrafficDirection>>();
+        public readonly float Phase = phase;
+        public readonly float MapLength = GetPathLength(points);
+        public double Capacity;
+        public float Length;
+    }
+
+    private sealed class TrafficDirection
+    {
+        public double Units;
+        public double Transit;
+        public double Slots;
+        public double TransitSlots;
+        public double WeightedHours;
+        public bool Present => Units > .000001 || Transit > .000001;
+        public void Clear() => Units = Transit = Slots = TransitSlots = WeightedHours = 0;
+    }
+
+    public void SetEconomy(SWEconomyView? view)
+    {
+        _economy = view;
+        _economySectorCache.Clear();
+        UpdateMedicalSupply();
+        RebuildTraffic();
+    }
+
+    public void SetTrafficFilter(string? commodity, bool showTraffic = true)
+    {
+        if (_trafficCommodity == commodity && _showTraffic == showTraffic) return;
+        _trafficCommodity = commodity;
+        _showTraffic = showTraffic;
+        RebuildTraffic();
+    }
+
+    /// <summary>Additional per-view motion preference; the global reduced-motion option also applies.</summary>
+    public void SetReducedMotion(bool enabled) => _reduceTrafficMotion = enabled;
+
+    private static float TrafficPhase(string edge)
+    {
+        uint hash = 2166136261;
+        foreach (var ch in edge) hash = unchecked((hash ^ ch) * 16777619);
+        return (hash % 10000) / 10000f;
+    }
+
+    private void RebuildTraffic()
+    {
+        if (_trafficPaths.Count == 0)
+        {
+            foreach (var path in _paths)
+            {
+                var phase = _markExternalLabels ? TrafficPhase(SWTransitLinkPrototype.LinkId(path.Route.From, path.Route.To))
+                    : (.17f + _trafficPaths.Count * .381966f) % 1;
+                var traffic = new TrafficPath(path.Route, path.Points, phase);
+                _trafficPaths.Add(traffic);
+                _trafficByEdge[SWTransitLinkPrototype.LinkId(path.Route.From, path.Route.To)] = traffic;
+                _trafficByRoute[path.Route] = traffic;
+            }
+            var prototypes = IoCManager.Resolve<IPrototypeManager>();
+            foreach (var good in prototypes.EnumeratePrototypes<SWCommodityPrototype>())
+            {
+                _cargoSizes[good.ID] = good.CargoSlots;
+                _trafficGoodColors[good.ID] = TrafficCommodityColor(good.ID);
+            }
+        }
+        foreach (var path in _trafficPaths)
+        {
+            path.Forward.Clear();
+            path.Reverse.Clear();
+            path.ForwardGoods.Clear();
+            path.ReverseGoods.Clear();
+            path.ForwardOrdered = Array.Empty<KeyValuePair<string, TrafficDirection>>();
+            path.ReverseOrdered = Array.Empty<KeyValuePair<string, TrafficDirection>>();
+            path.Capacity = 0;
+        }
+        _hasTraffic = false;
+        _overviewTrafficWorlds.Clear();
+        _coincidentTrafficPositions.Clear();
+        _visibleCoincidentTraffic.Clear();
+        _coincidentLayoutDirty = true;
+        _worldGlyphsDirty = true;
+        _publishedTrafficEdges.Clear();
+        if (_economy is { Ready: true })
+            foreach (var link in _economy.Links) _publishedTrafficEdges.Add(link.Edge);
+        _labelsDirty = true;
+        if (_economy is not { Ready: true } || !_showTraffic) return;
+        foreach (var link in _economy.Links)
+            if (_trafficByEdge.TryGetValue(link.Edge, out var path))
+                path.Capacity = double.IsFinite(link.CapacitySlotsPerHour) ? Math.Max(0, link.CapacitySlotsPerHour) : 0;
+
+        foreach (var flow in _economy.Flows)
+        {
+            if (_trafficCommodity != null && flow.Good != _trafficCommodity
+                || !_trafficByEdge.TryGetValue(flow.Edge, out var path)
+                || _markExternalLabels && path.Route.Proposed && !_publishedTrafficEdges.Contains(flow.Edge)
+                || !_markExternalLabels && path.Capacity <= 0
+                || !double.IsFinite(flow.UnitsPerHour) || !double.IsFinite(flow.InTransit)
+                || !double.IsFinite(flow.TravelHours)) continue;
+            if (!_cargoSizes.TryGetValue(flow.Good, out var cargo) || cargo <= 0)
+            {
+                if (!_markExternalLabels) continue;
+                cargo = 0; // Unknown cargo size gives no inferred capacity or intensity.
+            }
+            if (_markExternalLabels && !IsLocalView && _worlds.TryGetValue(flow.From, out var source) &&
+                _worlds.TryGetValue(flow.To, out var target) && Vector2.DistanceSquared(source.Position, target.Position) < .0001f)
+            {
+                if (_publishedTrafficEdges.Contains(flow.Edge) && (flow.UnitsPerHour > 0 || flow.InTransit > 0) &&
+                    (flow.From == path.Route.From && flow.To == path.Route.To || flow.From == path.Route.To && flow.To == path.Route.From))
+                {
+                    _coincidentTrafficPositions.Add(source.Position.X < target.Position.X ||
+                        source.Position.X == target.Position.X && source.Position.Y <= target.Position.Y
+                            ? source.Position : target.Position);
+                    _overviewTrafficWorlds.Add(flow.From);
+                    _overviewTrafficWorlds.Add(flow.To);
+                }
+                continue;
+            }
+            TrafficDirection direction;
+            if (flow.From == path.Route.From && flow.To == path.Route.To) direction = path.Forward;
+            else if (flow.From == path.Route.To && flow.To == path.Route.From) direction = path.Reverse;
+            else continue;
+            var units = Math.Max(0, flow.UnitsPerHour);
+            var transit = Math.Max(0, flow.InTransit);
+            if (_medicalVisible)
+            {
+                // Project cargo already has a finite tracked medical marker. Rendering the
+                // same volume as repeating aggregate traffic made a delivered vaccine look
+                // like a ship endlessly restarting its route.
+                foreach (var medical in _economy.MedicalSupplyFlows.Where(m => m.EdgeId == flow.Edge
+                             && m.From == flow.From && m.To == flow.To && m.Good == flow.Good))
+                {
+                    transit = Math.Max(0, transit - medical.Quantity);
+                    if (Math.Abs(medical.DepartAtHours - _economy.Hour) < 1e-7)
+                        units = Math.Max(0, units - medical.Quantity / .25);
+                }
+            }
+            void Add(TrafficDirection target)
+            {
+                target.Units += units;
+                target.Transit += transit;
+                target.Slots += units * cargo;
+                target.TransitSlots += transit * cargo;
+                target.WeightedHours += (units + transit) * Math.Max(.25, flow.TravelHours);
+            }
+            Add(direction);
+            if (_markExternalLabels && _trafficCommodity == null)
+            {
+                var goods = flow.From == path.Route.From ? path.ForwardGoods : path.ReverseGoods;
+                if (!goods.TryGetValue(flow.Good, out var item)) goods[flow.Good] = item = new TrafficDirection();
+                Add(item);
+            }
+            _hasTraffic |= direction.Present;
+            if (_markExternalLabels && !IsLocalView && direction.Present)
+            {
+                _overviewTrafficWorlds.Add(flow.From);
+                _overviewTrafficWorlds.Add(flow.To);
+            }
+        }
+        if (_markExternalLabels && _trafficCommodity == null)
+        foreach (var path in _trafficPaths)
+        {
+            path.ForwardOrdered = path.ForwardGoods.Where(p => p.Value.Present).OrderBy(p => p.Key, Comparer<string>.Create(string.CompareOrdinal)).ToArray();
+            path.ReverseOrdered = path.ReverseGoods.Where(p => p.Value.Present).OrderBy(p => p.Key, Comparer<string>.Create(string.CompareOrdinal)).ToArray();
+        }
+        RefreshCoincidentTrafficCache();
+        _commodityColor = TrafficCommodityColor(_trafficCommodity);
+        _reverseTrafficColor = _trafficCommodity == null ? Color.FromHex("#E9C17E") : Color.InterpolateBetween(_commodityColor, Color.White, .3f);
+        if (_trafficVertices.Length == 0)
+            _trafficVertices = new DrawVertexUV2DColor[MaxTrafficMarkers * (TrailSegments * 12 + 12)];
+    }
+
+    private static Color TrafficCommodityColor(string? commodity)
+    {
+        if (commodity == null || !IoCManager.Resolve<IPrototypeManager>().TryIndex<SWCommodityPrototype>(commodity, out var good))
+            return Color.FromHex("#79DEEC");
+        return Color.FromHex(good.Category.Id switch
+        {
+            "food" => "#B7D794",
+            "resources" => "#CDAF87",
+            "materials" => "#B2C8DA",
+            "energy" => "#EDC275",
+            "components" => "#8FADE8",
+            "civil" => "#83D6C7",
+            "health" => "#7EE0CF",
+            "defense" => "#E6A68B",
+            "culture" => "#C7ADE6",
+            "controlled" => "#D298B6",
+            _ => "#79DEEC",
+        });
+    }
+
+    private void AdvanceTraffic(float seconds)
+    {
+        if (_economy is not { Ready: true, Paused: false } || !_showTraffic
+            || _reduceTrafficMotion || _configuration.GetCVar(CCVars.ReducedMotion)
+            || !float.IsFinite(seconds) || seconds <= 0) return;
+        _trafficSeconds += Math.Min(seconds, .25f);
+    }
+
+    private Color TrafficRouteColor(SWGalacticMapRoute route, Color color, bool selected)
+    {
+        if (!_showTraffic || _economy is not { Ready: true }) return color;
+        if (!_hasTraffic) return color.WithAlpha(selected ? .8f : .45f);
+        var active = _trafficByRoute.TryGetValue(route, out var path)
+            && (path.Forward.Present || path.Reverse.Present);
+        if (_markExternalLabels && !IsLocalView)
+            return selected && active ? SWConsoleStyle.Brass.WithAlpha(.8f) : color.WithAlpha(active && TrafficRouteInScope(route) ? .6f : .2f);
+        if (_focusedTrafficEdge != null)
+        {
+            var focused = SWTransitLinkPrototype.LinkId(route.From, route.To) == _focusedTrafficEdge;
+            return focused && active ? SWConsoleStyle.Brass.WithAlpha(.8f) : color.WithAlpha(active ? .16f : .08f);
+        }
+        if (selected) return active ? _commodityColor.WithAlpha(.65f) : color.WithAlpha(.55f);
+        return color.WithAlpha(active ? .27f : .12f);
+    }
+
+    private void UpdateTrafficGeometry()
+    {
+        if (_trafficGeometrySize == Size && _trafficGeometryPan == _pan
+            && _trafficGeometryScale == UIScale && _trafficGeometryZoom == Zoom) return;
+        _trafficGeometrySize = Size;
+        _trafficGeometryPan = _pan;
+        _trafficGeometryScale = UIScale;
+        _trafficGeometryZoom = Zoom;
+        foreach (var path in _trafficPaths)
+        {
+            path.Length = 0;
+            for (var i = 0; i < path.MapPoints.Length; i++)
+            {
+                path.ScreenPoints[i] = MapToLocal(path.MapPoints[i]) * UIScale;
+                if (i > 0) path.Length += Vector2.Distance(path.ScreenPoints[i - 1], path.ScreenPoints[i]);
+                path.Distances[i] = path.Length;
+            }
+        }
+    }
+
+    private bool FocusedTraffic(TrafficPath path) => path.Route == _selectedRoute
+        || _selectedWorld != null && (path.Route.From == _selectedWorld || path.Route.To == _selectedWorld);
+
+    private void DrawTraffic(DrawingHandleScreen handle)
+    {
+        _trafficVertexCount = 0;
+        if (!_showTraffic || _economy is not { Ready: true } || _trafficVertices.Length == 0) return;
+        UpdateTrafficGeometry();
+        _trafficModulate = handle.Modulate;
+        var globalStatistics = _markExternalLabels && !IsLocalView;
+        var count = globalStatistics ? _trafficPaths.Where(path => DisplayRoute(path.Route) && TrafficRouteInScope(path.Route) && path.Length > .01f)
+            .Sum(path => _trafficCommodity == null ? path.ForwardOrdered.Length + path.ReverseOrdered.Length
+                : (path.Forward.Present ? 1 : 0) + (path.Reverse.Present ? 1 : 0)) : 0;
+        var remaining = globalStatistics ? count : _markExternalLabels ? 16 : MaxTrafficMarkers;
+        var remainingDirections = globalStatistics ? count : TrafficDirectionCount;
+        if (globalStatistics && count > 0)
+        {
+            var capacity = count * (TrailSegments * 12 + 12);
+            if (_trafficVertices.Length < capacity) Array.Resize(ref _trafficVertices, capacity);
+        }
+        // Reserve marker budget for the inspected connections, even in a very dense overview.
+        for (var pass = 0; pass < 2; pass++)
+        foreach (var path in _trafficPaths)
+        {
+            var focused = FocusedTraffic(path);
+            if (focused != (pass == 0) || path.Length <= (globalStatistics ? .01f : 22 * UIScale) ||
+                globalStatistics && (!DisplayRoute(path.Route) || !TrafficRouteInScope(path.Route))) continue;
+            var alpha = globalStatistics ? focused ? 1f : .72f : focused ? 1f : _selectedRoute != null || _selectedWorld != null ? .48f : .72f;
+            var sameEdge = _focusedTrafficEdge != null && SWTransitLinkPrototype.LinkId(path.Route.From, path.Route.To) == _focusedTrafficEdge;
+            var forwardSelected = sameEdge && _focusedTrafficFrom == path.Route.From && _focusedTrafficTo == path.Route.To;
+            var reverseSelected = sameEdge && _focusedTrafficFrom == path.Route.To && _focusedTrafficTo == path.Route.From;
+            var forwardAlpha = globalStatistics || _focusedTrafficEdge == null ? alpha : forwardSelected ? 1f : .18f;
+            var reverseAlpha = globalStatistics || _focusedTrafficEdge == null ? alpha : reverseSelected ? 1f : .18f;
+            if (_markExternalLabels && _trafficCommodity == null)
+            {
+                for (var priority = 0; priority < 2; priority++)
+                {
+                    foreach (var (good, direction) in path.ForwardOrdered)
+                    {
+                        var chosen = forwardSelected && good == _focusedTrafficGood;
+                        if (chosen != (priority == 0)) continue;
+                        DrawTrafficDirection(handle, path, direction, false, chosen ? SWConsoleStyle.Brass : _trafficGoodColors.GetValueOrDefault(good, _commodityColor), forwardAlpha, chosen, ref remaining, ref remainingDirections, TrafficPhase(good));
+                    }
+                    foreach (var (good, direction) in path.ReverseOrdered)
+                    {
+                        var chosen = reverseSelected && good == _focusedTrafficGood;
+                        if (chosen != (priority == 0)) continue;
+                        DrawTrafficDirection(handle, path, direction, true, chosen ? SWConsoleStyle.Brass : _trafficGoodColors.GetValueOrDefault(good, _reverseTrafficColor), reverseAlpha, chosen, ref remaining, ref remainingDirections, TrafficPhase(good));
+                    }
+                }
+            }
+            else
+            {
+                DrawTrafficDirection(handle, path, path.Forward, false, forwardSelected ? SWConsoleStyle.Brass : _commodityColor, forwardAlpha, forwardSelected || _focusedTrafficEdge == null && focused, ref remaining, ref remainingDirections);
+                DrawTrafficDirection(handle, path, path.Reverse, true, reverseSelected ? SWConsoleStyle.Brass : _reverseTrafficColor, reverseAlpha, reverseSelected || _focusedTrafficEdge == null && focused, ref remaining, ref remainingDirections);
+            }
+            if (remaining == 0) break;
+        }
+        if (_trafficVertexCount != 0)
+            handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, Texture.White,
+                new ReadOnlySpan<DrawVertexUV2DColor>(_trafficVertices, 0, _trafficVertexCount));
+    }
+
+    private void DrawTrafficDirection(DrawingHandleScreen handle, TrafficPath path, TrafficDirection direction, bool reverse,
+        Color color, float alpha, bool focused, ref int remaining, ref int remainingDirections, float phaseOffset = 0)
+    {
+        if (!direction.Present || remaining <= 0) return;
+        var hours = direction.WeightedHours / (direction.Units + direction.Transit);
+        var load = path.Capacity > 0 ? Math.Clamp(Math.Max(direction.Slots, direction.TransitSlots / hours) / path.Capacity, 0, 1) : 0;
+        // Preserve at least one marker for the other visible directions before spending
+        // the budget on density. A busy Core cannot hide all Outer Rim freight.
+        var available = Math.Min(remaining, Math.Max(1, remaining - remainingDirections + 1));
+        remainingDirections--;
+        var markers = Math.Min(available, _markExternalLabels ? 1 : Math.Min(focused ? 4 : 2, 1 + (int) (load * 4)));
+        markers = Math.Min(markers, Math.Max(1, (int) (path.Length / (70 * UIScale))));
+        // A restrained visual cadence, independent of how often the server publishes. Longer
+        // transfers move a little slower; it is deliberately not a shipment position estimate.
+        var period = _markExternalLabels ? 3d : Math.Clamp(path.MapLength * .18, 3, 18) * Math.Sqrt(hours);
+        var trim = _markExternalLabels && !IsLocalView ? Math.Min(11 * UIScale, path.Length * .16f) : 11 * UIScale;
+        var usable = path.Length - trim * 2;
+        var laneOffset = path.Forward.Present && path.Reverse.Present ? 3.6f * UIScale : 0;
+        for (var marker = 0; marker < markers; marker++)
+        {
+            var phase = (float) ((_trafficSeconds / period + path.Phase + phaseOffset + marker / (double) markers) % 1);
+            var distance = trim + phase * usable;
+            var stopped = _economy is { Paused: true } || _reduceTrafficMotion || _configuration.GetCVar(CCVars.ReducedMotion);
+            var fade = _markExternalLabels && (focused || stopped) ? 1 : Math.Min(1, Math.Min(phase, 1 - phase) * 12);
+            var intensity = alpha * fade;
+            if (intensity <= .01f) continue;
+            remaining--;
+            {
+                var trail = Math.Min((focused ? 27 : 20) * UIScale, usable * .24f);
+                for (var segment = 0; segment <= TrailSegments; segment++)
+                {
+                    var sample = Math.Max(trim, distance - trail * (1 - segment / (float) TrailSegments));
+                    _trailPoints[segment] = TrafficPoint(path, sample, reverse, laneOffset, out _);
+                }
+                for (var segment = 0; segment < TrailSegments; segment++)
+                {
+                    var startAlpha = intensity * segment / TrailSegments;
+                    var endAlpha = intensity * (segment + 1) / TrailSegments;
+                    TrafficStroke(_trailPoints[segment], _trailPoints[segment + 1], color.WithAlpha(startAlpha * .10f), color.WithAlpha(endAlpha * .10f), 7);
+                    TrafficStroke(_trailPoints[segment], _trailPoints[segment + 1], color.WithAlpha(startAlpha * .60f), color.WithAlpha(endAlpha * .80f), 1.6f);
+                }
+            }
+            var head = TrafficPoint(path, distance, reverse, laneOffset, out var tangent);
+            var normal = new Vector2(-tangent.Y, tangent.X);
+            var tip = head + tangent * 2.5f * UIScale;
+            var tail = head - tangent * 3.5f * UIScale;
+            var bright = Color.InterpolateBetween(color, Color.White, .62f).WithAlpha(intensity);
+            TrafficStroke(tail + normal * 2.6f * UIScale, tip, bright, bright, 1.25f);
+            TrafficStroke(tail - normal * 2.6f * UIScale, tip, bright, bright, 1.25f);
+        }
+    }
+
+    private static Vector2 TrafficPoint(TrafficPath path, float distance, bool reverse, float offset, out Vector2 tangent)
+    {
+        distance = Math.Clamp(reverse ? path.Length - distance : distance, 0, path.Length);
+        var low = 1;
+        var high = path.Distances.Length - 1;
+        while (low < high)
+        {
+            var mid = (low + high) / 2;
+            if (path.Distances[mid] < distance) low = mid + 1;
+            else high = mid;
+        }
+        var a = path.ScreenPoints[low - 1];
+        var b = path.ScreenPoints[low];
+        var length = path.Distances[low] - path.Distances[low - 1];
+        tangent = length > .001f ? (b - a) / length : Vector2.UnitX;
+        var point = Vector2.Lerp(a, b, length > .001f ? (distance - path.Distances[low - 1]) / length : 0);
+        if (reverse) tangent = -tangent;
+        return point + new Vector2(-tangent.Y, tangent.X) * offset;
+    }
+
+    private static float GetPathLength(Vector2[] points)
+    {
+        var length = 0f;
+        for (var i = 1; i < points.Length; i++) length += Vector2.Distance(points[i - 1], points[i]);
+        return length;
+    }
+
+    private void TrafficStroke(Vector2 a, Vector2 b, Color start, Color end, float width)
+    {
+        var delta = b - a;
+        if (delta.LengthSquared() < .0001f || _trafficVertexCount + 6 > _trafficVertices.Length) return;
+        var normal = Vector2.Normalize(new Vector2(-delta.Y, delta.X)) * width * UIScale / 2;
+        start = Color.FromSrgb(start * _trafficModulate);
+        end = Color.FromSrgb(end * _trafficModulate);
+        _trafficVertices[_trafficVertexCount++] = new DrawVertexUV2DColor(a - normal, start);
+        _trafficVertices[_trafficVertexCount++] = new DrawVertexUV2DColor(a + normal, start);
+        _trafficVertices[_trafficVertexCount++] = new DrawVertexUV2DColor(b + normal, end);
+        _trafficVertices[_trafficVertexCount++] = new DrawVertexUV2DColor(a - normal, start);
+        _trafficVertices[_trafficVertexCount++] = new DrawVertexUV2DColor(b + normal, end);
+        _trafficVertices[_trafficVertexCount++] = new DrawVertexUV2DColor(b - normal, end);
+    }
+}

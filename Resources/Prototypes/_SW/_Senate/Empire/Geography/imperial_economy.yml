@@ -1,0 +1,628 @@
+# Imperial economy profiles and internal transit capacities.
+# Resource access and specialization are game-model assumptions.
+
+- type: swPlanetEconomy
+  id: ziost
+  activeEconomy: true
+  populationUnits: 10.3838469
+  baseloadPower: 30.0626307
+  laborCapacity: 135.477842
+  bufferHours: 8
+  facilities:
+  - arsenal
+  - bioreactor
+  - chemworks
+  - civilworks
+  - crafts
+  - electronics
+  - farm
+  - foodworks
+  - gasworks
+  - illicit_lab
+  - machineworks
+  - refinery
+  - salvage
+  - smelter
+  - waterworks
+  conditions:
+  - arable
+  - illicit_network
+  - licensed_arms
+  - medical_biome
+  - scrap_feed
+  - tibanna_deposit
+  - water_source
+  naturalResources:
+  - condition: arable
+    baselineYieldPerHour:
+      crops: 3.98291816
+      fibers: 0.0290892898
+  - condition: tibanna_deposit
+    baselineYieldPerHour:
+      raw_tibanna: 0.136627731
+  - condition: water_source
+    baselineYieldPerHour:
+      water: 18.2686831
+  - condition: medical_biome
+    baselineYieldPerHour: {}
+
+- type: swPlanetEconomy
+  id: begeren
+  activeEconomy: true
+  populationUnits: 7.1955181
+  baseloadPower: 39.9827057
+  laborCapacity: 118.339019
+  bufferHours: 8
+  facilities:
+  - arsenal
+  - buildingworks
+  - civilworks
+  - crafts
+  - farm
+  - fishery
+  - foodworks
+  - machineworks
+  - mine
+  - quarry
+  - shipyard
+  - smelter
+  - textileworks
+  - waterworks
+  conditions:
+  - arable
+  - crystal_deposit
+  - fish_stock
+  - licensed_arms
+  - mineral_deposit
+  - water_source
+  naturalResources:
+  - condition: arable
+    baselineYieldPerHour:
+      crops: 15.1672287
+      fibers: 0.0665346735
+  - condition: crystal_deposit
+    baselineYieldPerHour:
+      raw_crystals: 0.0975352014
+  - condition: fish_stock
+    baselineYieldPerHour:
+      protein: 7.46417286
+  - condition: water_source
+    baselineYieldPerHour:
+      water: 24.8589567
+  - condition: mineral_deposit
+    baselineYieldPerHour:
+      minerals: 0.12838854
+
+- type: swPlanetEconomy
+  id: ashas_ree
+  activeEconomy: true
+  populationUnits: 8.78968252
+  baseloadPower: 27.5973382
+  laborCapacity: 125.912856
+  bufferHours: 8
+  facilities:
+  - arsenal
+  - civilworks
+  - crafts
+  - electronics
+  - farm
+  - fishery
+  - foodworks
+  - machineworks
+  - precision
+  - textileworks
+  - waterworks
+  conditions:
+  - arable
+  - fish_stock
+  - licensed_arms
+  - water_source
+  naturalResources:
+  - condition: arable
+    baselineYieldPerHour:
+      crops: 7.15262206
+      fibers: 0.583484989
+  - condition: fish_stock
+    baselineYieldPerHour:
+      protein: 2.49472207
+  - condition: water_source
+    baselineYieldPerHour:
+      water: 18.1747896
+
+- type: swPlanetEconomy
+  id: athiss
+  activeEconomy: false
+  populationUnits: 0
+  baseloadPower: 0
+  laborCapacity: 0
+  bufferHours: 0
+  facilities: []
+  conditions: []
+  naturalResources: []
+
+- type: swPlanetEconomy
+  id: dromund_ixin
+  activeEconomy: false
+  populationUnits: 0
+  baseloadPower: 0
+  laborCapacity: 0
+  bufferHours: 0
+  facilities: []
+  conditions: []
+  naturalResources: []
+
+- type: swPlanetEconomy
+  id: dromund_kalakar
+  activeEconomy: false
+  populationUnits: 0
+  baseloadPower: 0
+  laborCapacity: 0
+  bufferHours: 0
+  facilities: []
+  conditions: []
+  naturalResources: []
+
+- type: swPlanetEconomy
+  id: dromund_fels
+  activeEconomy: false
+  populationUnits: 0
+  baseloadPower: 0
+  laborCapacity: 0
+  bufferHours: 0
+  facilities: []
+  conditions: []
+  naturalResources: []
+
+- type: swPlanetEconomy
+  id: dromund_tyne
+  activeEconomy: false
+  populationUnits: 0
+  baseloadPower: 0
+  laborCapacity: 0
+  bufferHours: 0
+  facilities: []
+  conditions: []
+  naturalResources: []
+
+- type: swTransitLink
+  id: korriban--ziost
+  from: korriban
+  to: ziost
+  accessible: true
+  travelHours: 0.75
+  fuelPerSlot: 0.009
+  capacitySlotsPerHour: 38.52179255
+  plannedLoadedSlotsPerHour: 22.98150861
+  plannedEmptySlotsPerHour: 7.835925435
+
+- type: swTransitLink
+  id: begeren--korriban
+  from: begeren
+  to: korriban
+  accessible: true
+  travelHours: 0.75
+  fuelPerSlot: 0.009
+  capacitySlotsPerHour: 234.2750247
+  plannedLoadedSlotsPerHour: 100.6956676
+  plannedEmptySlotsPerHour: 86.72435219
+
+- type: swTransitLink
+  id: ashas_ree--korriban
+  from: ashas_ree
+  to: korriban
+  accessible: true
+  travelHours: 0.75
+  fuelPerSlot: 0.009
+  capacitySlotsPerHour: 29.71358444
+  plannedLoadedSlotsPerHour: 19.23853414
+  plannedEmptySlotsPerHour: 4.532333405
+
+- type: swTransitLink
+  id: athiss--ziost
+  from: athiss
+  to: ziost
+  accessible: true
+  travelHours: 0.75
+  fuelPerSlot: 0.009
+  capacitySlotsPerHour: 0.829645809
+  plannedLoadedSlotsPerHour: 0
+  plannedEmptySlotsPerHour: 0
+
+- type: swTransitLink
+  id: dromund_ixin--dromund_kaas
+  from: dromund_ixin
+  to: dromund_kaas
+  accessible: true
+  travelHours: 0.25
+  fuelPerSlot: 0.009
+  capacitySlotsPerHour: 0.829645809
+  plannedLoadedSlotsPerHour: 0
+  plannedEmptySlotsPerHour: 0
+
+- type: swTransitLink
+  id: dromund_kaas--dromund_kalakar
+  from: dromund_kaas
+  to: dromund_kalakar
+  accessible: true
+  travelHours: 0.25
+  fuelPerSlot: 0.009
+  capacitySlotsPerHour: 0.829645809
+  plannedLoadedSlotsPerHour: 0
+  plannedEmptySlotsPerHour: 0
+
+- type: swTransitLink
+  id: dromund_fels--dromund_kaas
+  from: dromund_fels
+  to: dromund_kaas
+  accessible: true
+  travelHours: 0.25
+  fuelPerSlot: 0.009
+  capacitySlotsPerHour: 0.829645809
+  plannedLoadedSlotsPerHour: 0
+  plannedEmptySlotsPerHour: 0
+
+- type: swTransitLink
+  id: dromund_kaas--dromund_tyne
+  from: dromund_kaas
+  to: dromund_tyne
+  accessible: true
+  travelHours: 0.25
+  fuelPerSlot: 0.009
+  capacitySlotsPerHour: 0.829645809
+  plannedLoadedSlotsPerHour: 0
+  plannedEmptySlotsPerHour: 0
+
+- type: swPlanetEconomy
+  id: belkadan
+  activeEconomy: true
+  populationUnits: 6.39408025
+  baseloadPower: 20.0446576
+  laborCapacity: 90.6321675
+  bufferHours: 8
+  facilities:
+  - bioreactor
+  - buildingworks
+  - chemworks
+  - civilworks
+  - crafts
+  - farm
+  - fishery
+  - foodworks
+  - mine
+  - pharma
+  - quarry
+  - refinery
+  - waterworks
+  conditions:
+  - arable
+  - chemical_deposit
+  - fish_stock
+  - fuel_deposit
+  - medical_biome
+  - metal_deposit
+  - mineral_deposit
+  - water_source
+  naturalResources:
+  - condition: arable
+    baselineYieldPerHour:
+      crops: 6.5409068
+      fibers: 0.257493609
+  - condition: chemical_deposit
+    baselineYieldPerHour:
+      chemical_feedstock: 5.0097428
+  - condition: fish_stock
+    baselineYieldPerHour:
+      protein: 1.4751557
+  - condition: fuel_deposit
+    baselineYieldPerHour:
+      raw_fuel: 0.862439883
+  - condition: medical_biome
+    baselineYieldPerHour:
+      medical_biomass: 0.835216989
+  - condition: mineral_deposit
+    baselineYieldPerHour:
+      minerals: 0.0706605708
+  - condition: water_source
+    baselineYieldPerHour:
+      water: 12.6654434
+  - condition: metal_deposit
+    baselineYieldPerHour: {}
+
+- type: swPlanetEconomy
+  id: sernpidal
+  activeEconomy: true
+  populationUnits: 5.5926424
+  baseloadPower: 15.9764893
+  laborCapacity: 75.3700032
+  bufferHours: 8
+  facilities:
+  - bioreactor
+  - chemworks
+  - civilworks
+  - electronics
+  - farm
+  - fishery
+  - foodworks
+  - machineworks
+  - mine
+  - pharma
+  - refinery
+  - shipyard
+  - textileworks
+  - waterworks
+  conditions:
+  - arable
+  - chemical_deposit
+  - fish_stock
+  - fuel_deposit
+  - medical_biome
+  - water_source
+  naturalResources:
+  - condition: chemical_deposit
+    baselineYieldPerHour:
+      chemical_feedstock: 1.3699988
+  - condition: fish_stock
+    baselineYieldPerHour:
+      protein: 2.10301949
+  - condition: fuel_deposit
+    baselineYieldPerHour:
+      raw_fuel: 0.408822216
+  - condition: medical_biome
+    baselineYieldPerHour:
+      medical_biomass: 0.0777593943
+  - condition: water_source
+    baselineYieldPerHour:
+      water: 8.987639
+  - condition: arable
+    baselineYieldPerHour: {}
+
+- type: swPlanetEconomy
+  id: ruuria
+  activeEconomy: true
+  populationUnits: 7.98824467
+  baseloadPower: 21.7085122
+  laborCapacity: 100.197154
+  bufferHours: 8
+  facilities:
+  - bioreactor
+  - chemworks
+  - controlled_lab
+  - electronics
+  - farm
+  - foodworks
+  - gasworks
+  - machineworks
+  - mine
+  - pharma
+  - precision
+  - quarry
+  - refinery
+  - shipyard
+  - smelter
+  - waterworks
+  conditions:
+  - arable
+  - licensed_arms
+  - licensed_stims
+  - medical_biome
+  - metal_deposit
+  - mineral_deposit
+  - rare_deposit
+  - tibanna_deposit
+  - water_source
+  naturalResources:
+  - condition: arable
+    baselineYieldPerHour:
+      crops: 1.37647811
+  - condition: medical_biome
+    baselineYieldPerHour:
+      medical_biomass: 0.300555358
+  - condition: metal_deposit
+    baselineYieldPerHour:
+      metal_ore: 1.18742878
+  - condition: mineral_deposit
+    baselineYieldPerHour:
+      minerals: 1.14911789
+  - condition: rare_deposit
+    baselineYieldPerHour:
+      rare_ore: 0.600081454
+  - condition: tibanna_deposit
+    baselineYieldPerHour:
+      raw_tibanna: 0.124710699
+  - condition: water_source
+    baselineYieldPerHour:
+      water: 12.3972661
+
+- type: swPlanetEconomy
+  id: nez_peron
+  activeEconomy: true
+  populationUnits: 3.20575141
+  baseloadPower: 13.4502179
+  laborCapacity: 61.0486572
+  bufferHours: 8
+  facilities:
+  - bioreactor
+  - chemworks
+  - electronics
+  - farm
+  - fishery
+  - foodworks
+  - medtech
+  - precision
+  - waterworks
+  conditions:
+  - arable
+  - fish_stock
+  - medical_biome
+  - water_source
+  naturalResources:
+  - condition: arable
+    baselineYieldPerHour:
+      crops: 3.71880767
+      fibers: 0.244470199
+  - condition: fish_stock
+    baselineYieldPerHour:
+      protein: 2.49535754
+  - condition: water_source
+    baselineYieldPerHour:
+      water: 6.21151789
+  - condition: medical_biome
+    baselineYieldPerHour: {}
+
+- type: swPlanetEconomy
+  id: skaross
+  activeEconomy: false
+  populationUnits: 0
+  baseloadPower: 0
+  laborCapacity: 0
+  bufferHours: 0
+  facilities: []
+  conditions: []
+  naturalResources: []
+
+- type: swPlanetEconomy
+  id: tandankin
+  activeEconomy: true
+  populationUnits: 8.78968252
+  baseloadPower: 24.3306078
+  laborCapacity: 115.459318
+  bufferHours: 8
+  facilities:
+  - arsenal
+  - buildingworks
+  - civilworks
+  - electronics
+  - farm
+  - fishery
+  - foodworks
+  - machineworks
+  - mine
+  - precision
+  - quarry
+  - shipyard
+  - textileworks
+  - waterworks
+  conditions:
+  - licensed_arms
+  naturalResources: []
+
+- type: swPlanetEconomy
+  id: taral_v
+  activeEconomy: false
+  populationUnits: 0
+  baseloadPower: 0
+  laborCapacity: 0
+  bufferHours: 0
+  facilities: []
+  conditions: []
+  naturalResources: []
+
+- type: swTransitLink
+  id: belkadan--sernpidal
+  from: belkadan
+  to: sernpidal
+  accessible: true
+  travelHours: 0.75
+  fuelPerSlot: 0.009
+  capacitySlotsPerHour: 32.6502975
+  plannedLoadedSlotsPerHour: 24.24977787
+  plannedEmptySlotsPerHour: 1.870460128
+
+- type: swTransitLink
+  id: sernpidal--skaross
+  from: sernpidal
+  to: skaross
+  accessible: true
+  travelHours: 0.75
+  fuelPerSlot: 0.009
+  capacitySlotsPerHour: 30.82867064
+  plannedLoadedSlotsPerHour: 21.80570079
+  plannedEmptySlotsPerHour: 2.857235726
+
+- type: swTransitLink
+  id: nez_peron--skaross
+  from: nez_peron
+  to: skaross
+  accessible: true
+  travelHours: 0.75
+  fuelPerSlot: 0.009
+  capacitySlotsPerHour: 33.26298569
+  plannedLoadedSlotsPerHour: 22.77942681
+  plannedEmptySlotsPerHour: 3.830961746
+
+- type: swTransitLink
+  id: korriban--nez_peron
+  from: korriban
+  to: nez_peron
+  accessible: true
+  travelHours: 0.75
+  fuelPerSlot: 0.009
+  capacitySlotsPerHour: 50.64793922
+  plannedLoadedSlotsPerHour: 35.57778572
+  plannedEmptySlotsPerHour: 4.940565652
+
+- type: swTransitLink
+  id: korriban--ruuria
+  from: korriban
+  to: ruuria
+  accessible: true
+  travelHours: 0.75
+  fuelPerSlot: 0.009
+  capacitySlotsPerHour: 65.05628125
+  plannedLoadedSlotsPerHour: 33.85796125
+  plannedEmptySlotsPerHour: 18.18706375
+
+- type: swTransitLink
+  id: dromund_kaas--tandankin
+  from: dromund_kaas
+  to: tandankin
+  accessible: true
+  travelHours: 0.75
+  fuelPerSlot: 0.009
+  capacitySlotsPerHour: 202.9496341
+  plannedLoadedSlotsPerHour: 87.45438944
+  plannedEmptySlotsPerHour: 74.90531784
+
+- type: swTransitLink
+  id: tandankin--taral_v
+  from: tandankin
+  to: taral_v
+  accessible: true
+  travelHours: 0.75
+  fuelPerSlot: 0.009
+  capacitySlotsPerHour: 0.829645809
+  plannedLoadedSlotsPerHour: 0
+  plannedEmptySlotsPerHour: 0
+
+- type: swTransitLink
+  id: dantooine--sernpidal
+  from: dantooine
+  to: sernpidal
+  accessible: false
+  travelHours: 0.75
+  fuelPerSlot: 0
+  capacitySlotsPerHour: 0
+  plannedLoadedSlotsPerHour: 0
+  plannedEmptySlotsPerHour: 0
+
+- type: swTransitLink
+  id: nez_peron--taris
+  from: nez_peron
+  to: taris
+  accessible: false
+  travelHours: 0.75
+  fuelPerSlot: 0
+  capacitySlotsPerHour: 0
+  plannedLoadedSlotsPerHour: 0
+  plannedEmptySlotsPerHour: 0
+
+- type: swTransitLink
+  id: begeren--ziost
+  from: begeren
+  to: ziost
+  accessible: true
+  travelHours: 0.75
+  fuelPerSlot: 0.009
+  capacitySlotsPerHour: 13.4858672
+  plannedLoadedSlotsPerHour: 6.162247342
+  plannedEmptySlotsPerHour: 4.626446418

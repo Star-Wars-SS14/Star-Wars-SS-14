@@ -1,28 +1,19 @@
 using Content.Server._SW.Gamerules.TimerSpeedup;
-using Content.Server._SW.TaskSystem;
+using Content.Server._SW.Tutorial;
 using Content.Server.Actions;
 using Content.Server.Chat.Managers;
-using Content.Server.Chat.Systems;
-using Content.Server.Echo.GameTicking.Rules.Components;
 using Content.Server.GameTicking;
 using Content.Server.GameTicking.Rules;
-using Content.Server.Ghost;
 using Content.Server.Mind;
 using Content.Server.Roles;
 using Content.Shared._SW;
-using Content.Shared.Actions;
+using Content.Shared.GameTicking;
 using Content.Shared.GameTicking.Components;
 using Content.Shared.Ghost;
-using Content.Shared.Mind.Components;
 using Content.Shared.Mobs;
 using Content.Shared.Roles.Components;
 using Robust.Shared.Player;
 using Robust.Shared.Timing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Content.Server._SW.Gamerules.Respawn;
 public sealed partial class SWRespawnGameruleSystem : GameRuleSystem<SWRespawnGameruleComponent>
@@ -40,9 +31,26 @@ public sealed partial class SWRespawnGameruleSystem : GameRuleSystem<SWRespawnGa
         base.Initialize();
         SubscribeLocalEvent<MobStateChangedEvent>(OnMobStateChanged);
         SubscribeLocalEvent<SWWaitingRespawnComponent, SWRequestRespawnActionEvent>(OnTryRespawn);
+        SubscribeLocalEvent<SWWaitingRespawnComponent, ComponentShutdown>(OnWaitingShutdown);
+        SubscribeLocalEvent<SWRespawnGameruleComponent, ComponentShutdown>(OnRuleShutdown);
+        SubscribeLocalEvent<RoundRestartCleanupEvent>(OnRoundRestart);
     }
 
-    public static SWRespawnGameruleComponent? GameRuleSingleton;
+    // Resolve the live rule instead of retaining a component from a previous round or server instance.
+    private bool TryGetActiveRule(out Entity<SWRespawnGameruleComponent> rule)
+    {
+        var query = QueryActiveRules();
+        while (query.MoveNext(out var uid, out _, out var comp, out _))
+        {
+            if (TerminatingOrDeleted(uid))
+                continue;
+            rule = (uid, comp);
+            return true;
+        }
+
+        rule = default;
+        return false;
+    }
 
     private void OnMobStateChanged(MobStateChangedEvent ev)
     {
@@ -51,7 +59,7 @@ public sealed partial class SWRespawnGameruleSystem : GameRuleSystem<SWRespawnGa
             return;
         }
 
-        if (GameRuleSingleton == null)
+        if (!TryGetActiveRule(out var rule))
         {
             return;
         }
@@ -62,12 +70,12 @@ public sealed partial class SWRespawnGameruleSystem : GameRuleSystem<SWRespawnGa
         }
 
         // The tutorial has a death scene with its own way back.
-        if (HasComp<Content.Server._SW.Tutorial.SWTutorialPlayerComponent>(ev.Target))
+        if (HasComp<SWTutorialPlayerComponent>(ev.Target))
         {
             return;
         }
 
-        var message = Loc.GetString(GameRuleSingleton.WaitMessage, ("count", _timerSpeedup.Scale(GameRuleSingleton.DelayBeforeCanRespawn)));
+        var message = Loc.GetString(rule.Comp.WaitMessage, ("count", _timerSpeedup.Scale(rule.Comp.DelayBeforeCanRespawn)));
         _chatManager.DispatchServerMessage(session, message);
     }
 
@@ -75,15 +83,43 @@ public sealed partial class SWRespawnGameruleSystem : GameRuleSystem<SWRespawnGa
     {
         base.Started(uid, component, gameRule, args);
 
-        if (GameRuleSingleton == null)
-        {
-            GameRuleSingleton = component;
-        }
+        ClearWaiting();
     }
 
+    protected override void Ended(EntityUid uid, SWRespawnGameruleComponent component, GameRuleComponent gameRule, GameRuleEndedEvent args)
+    {
+        base.Ended(uid, component, gameRule, args);
+        ClearWaiting();
+    }
+
+    private void OnRuleShutdown(Entity<SWRespawnGameruleComponent> ent, ref ComponentShutdown args) => ClearWaiting();
+
+    private void OnRoundRestart(RoundRestartCleanupEvent args) => ClearWaiting();
+
+    private void ClearWaiting()
+    {
+        var query = EntityQueryEnumerator<SWWaitingRespawnComponent>();
+        while (query.MoveNext(out var uid, out _))
+            RemComp<SWWaitingRespawnComponent>(uid);
+    }
+
+    private void OnWaitingShutdown(Entity<SWWaitingRespawnComponent> ent, ref ComponentShutdown args)
+    {
+        _actions.RemoveAction(ent.Comp.RespawnActionId);
+        if (ent.Comp.RespawnActionId is { } action && !TerminatingOrDeleted(action))
+            QueueDel(action);
+        ent.Comp.RespawnActionId = null;
+    }
 
     private void OnTryRespawn(Entity<SWWaitingRespawnComponent> ent, ref SWRequestRespawnActionEvent args)
     {
+        if (args.Handled
+            || !TryGetActiveRule(out var rule)
+            || !TryComp<GhostComponent>(ent, out var ghost)
+            || _timing.CurTime < ghost.TimeOfDeath + TimeSpan.FromSeconds(_timerSpeedup.Scale(rule.Comp.DelayBeforeCanRespawn))
+            || !IsDeadPlayerGhost(ent))
+            return;
+
         if (!_player.TryGetSessionByEntity(ent, out var session))
         {
             return;
@@ -97,21 +133,17 @@ public sealed partial class SWRespawnGameruleSystem : GameRuleSystem<SWRespawnGa
     {
         base.ActiveTick(ruleUid, component, gameRule, frameTime);
 
-        if (GameRuleSingleton == null)
+        if (!TryGetActiveRule(out var active) || active.Owner != ruleUid)
         {
             return;
         }
 
+        var delay = TimeSpan.FromSeconds(_timerSpeedup.Scale(component.DelayBeforeCanRespawn));
         var query = EntityQueryEnumerator<GhostComponent>();
         while (query.MoveNext(out var uid, out var ghostComp))
         {
-            if (HasComp<SWWaitingRespawnComponent>(uid))
-            {
-                continue;
-            }
-
-            if (_timing.CurTime > ghostComp.TimeOfDeath +
-                TimeSpan.FromSeconds(_timerSpeedup.Scale(GameRuleSingleton.DelayBeforeCanRespawn))
+            if (!HasComp<SWWaitingRespawnComponent>(uid)
+                && _timing.CurTime >= ghostComp.TimeOfDeath + delay
                 && IsDeadPlayerGhost(uid))
             {
                 var comp = EnsureComp<SWWaitingRespawnComponent>(uid);

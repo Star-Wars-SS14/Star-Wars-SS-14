@@ -1,0 +1,13 @@
+<controls:FancyWindow xmlns="https://spacestation14.io"
+    xmlns:senate="clr-namespace:Content.Client._SW._Senate"
+    xmlns:controls="clr-namespace:Content.Client.UserInterface.Controls"
+    Title="История публикации" MinSize="700 500">
+    <PanelContainer Name="RootPanel">
+    <BoxContainer Orientation="Vertical" HorizontalExpand="True" VerticalExpand="True" Margin="10">
+        <Label Name="Heading" Text="Загрузка истории…" />
+        <ScrollContainer HorizontalExpand="True" VerticalExpand="True" Margin="0 8 0 0">
+            <BoxContainer Name="Versions" Orientation="Vertical" HorizontalExpand="True" />
+        </ScrollContainer>
+    </BoxContainer>
+    </PanelContainer>
+</controls:FancyWindow>

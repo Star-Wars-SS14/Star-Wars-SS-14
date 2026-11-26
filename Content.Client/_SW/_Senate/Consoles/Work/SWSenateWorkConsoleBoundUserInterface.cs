@@ -1,0 +1,333 @@
+using Content.Shared._SW._Senate.Ministries;
+using Content.Shared._SW._Senate.Empire;
+using Content.Shared._SW._Senate;
+
+namespace Content.Client._SW._Senate.Consoles.Work;
+
+public sealed class SWSenateWorkConsoleBoundUserInterface : BoundUserInterface
+{
+    [ViewVariables]
+    private SWSenateWorkConsoleMenu? _menu;
+
+    public SWSenateWorkConsoleBoundUserInterface(EntityUid owner, Enum uiKey) : base(owner, uiKey)
+    {
+    }
+
+    protected override void Open()
+    {
+        base.Open();
+
+        _menu = new SWSenateWorkConsoleMenu(this);
+        _menu.OnClose += Close;
+        _menu.OpenCentered();
+    }
+
+    protected override void UpdateState(BoundUserInterfaceState state)
+    {
+        base.UpdateState(state);
+
+        if (state is not SWSenateWorkConsoleState castState)
+            return;
+
+        _menu?.SetState(castState);
+    }
+
+    public void TakeOffice()
+    {
+        SendMessage(new SWSenateTakeOfficeMessage());
+    }
+
+    public void ApproveWar()
+    {
+        SendMessage(new SWDefenseApproveWarMessage());
+    }
+
+    public void RejectWar()
+    {
+        SendMessage(new SWDefenseRejectWarMessage());
+    }
+
+    public void ApproveEmergency()
+    {
+        SendMessage(new SWSecurityApproveEmergencyMessage());
+    }
+
+    public void RejectEmergency()
+    {
+        SendMessage(new SWSecurityRejectEmergencyMessage());
+    }
+
+    public void SecuritySabotageDecision(int caseId, bool approve) =>
+        SendMessage(new SWSecuritySabotageDecisionMessage(caseId, approve));
+
+    public void DiplomacyDecision(int id, SWEmpireDiplomacyDecision decision) => SendMessage(new SWEmpireDiplomacyDecisionMessage(id, decision));
+    public void HealthQuarantineDecision(int id, bool approve, bool lift = false) => SendMessage(new SWHealthQuarantineDecisionMessage(id, approve, lift));
+    public void ApproveStimulus()
+    {
+        SendMessage(new SWEconomyApproveStimulusMessage());
+    }
+
+    public void RejectStimulus()
+    {
+        SendMessage(new SWEconomyRejectStimulusMessage());
+    }
+
+    public void ApproveEmission()
+    {
+        SendMessage(new SWFinanceApproveEmissionMessage());
+    }
+
+    public void RejectEmission()
+    {
+        SendMessage(new SWFinanceRejectEmissionMessage());
+    }
+
+    public void ApproveTribunal()
+    {
+        SendMessage(new SWJusticeApproveTribunalMessage());
+    }
+
+    public void RejectTribunal()
+    {
+        SendMessage(new SWJusticeRejectTribunalMessage());
+    }
+
+    public void SignBill(int billId)
+    {
+        SendMessage(new SWSenateSignBillMessage(billId));
+    }
+
+    public void VetoBill(int billId)
+    {
+        SendMessage(new SWSenateVetoBillMessage(billId));
+    }
+
+    public void RelinquishPowers()
+    {
+        SendMessage(new SWEmergencyRelinquishMessage());
+    }
+
+    public void EmergencyCommand(int action)
+    {
+        SendMessage(new SWEmergencyCommandMessage(action));
+    }
+
+    public void DismissMinister(string ministryId)
+    {
+        SendMessage(new SWEmergencyDismissMinisterMessage(ministryId));
+    }
+
+    public void IssueDecree(string name, string description, Dictionary<string, float> effects)
+    {
+        SendMessage(new SWSenateIssueDecreeMessage(name, description, effects));
+    }
+
+    public void ConfirmElection()
+    {
+        SendMessage(new SWSenateConfirmElectionMessage());
+    }
+
+    public void NominateJudge(string name, bool forChief)
+    {
+        SendMessage(new SWCourtNominateMessage(name, forChief));
+    }
+
+    public void RespondCourtNomination(bool accept)
+    {
+        SendMessage(new SWCourtNominationResponseMessage(accept));
+    }
+
+    public void ProposeMotion(SWMotionType type, int level, SWEmergencyPower power)
+    {
+        SendMessage(new SWProposeMotionMessage(type, level, power));
+    }
+
+    public void Resign()
+    {
+        SendMessage(new SWSenateResignMessage());
+    }
+
+    public void SubmitBill(string name, string description, Dictionary<string, float> effects)
+    {
+        SendMessage(new SWSenateSubmitBillMessage(name, description, effects));
+    }
+
+    public void SubmitAmendment(int lawId, string name, string description, Dictionary<string, float> effects)
+    {
+        SendMessage(new SWSenateSubmitAmendmentMessage(lawId, name, description, effects));
+    }
+
+    public void SubmitPreset(string presetId)
+    {
+        SendMessage(new SWSenateSubmitPresetMessage(presetId));
+    }
+
+    public void ResolveDilemma(int dilemmaId, int optionIndex)
+    {
+        SendMessage(new SWSenateResolveDilemmaMessage(dilemmaId, optionIndex));
+    }
+
+    public void ApplyProgram(string programId, string? worldId = null)
+    {
+        SendMessage(new SWSenateApplyProgramMessage(programId, worldId));
+    }
+
+    public void ResolveCrisis(int crisisId, int solutionIndex)
+    {
+        SendMessage(new SWSenateResolveCrisisMessage(crisisId, solutionIndex));
+    }
+
+    public void AidCrisis(int crisisId)
+    {
+        SendMessage(new SWSenateAidCrisisMessage(crisisId));
+    }
+
+    public void ProposeEmergencyLaw(int crisisId, int lawIndex)
+    {
+        SendMessage(new SWSenateProposeEmergencyLawMessage(crisisId, lawIndex));
+    }
+
+    public void SetBudget(string sectorId, int amount)
+    {
+        SendMessage(new SWSenateSetBudgetMessage(sectorId, amount));
+    }
+
+    public void ApproveBudget(int revision, System.Collections.Generic.Dictionary<string, int> allocations)
+    {
+        SendMessage(new SWBudgetApproveMessage(revision, allocations));
+    }
+
+    public void RejectBudget(int revision, string reason)
+    {
+        SendMessage(new SWBudgetRejectMessage(revision, reason));
+    }
+
+    public void ScheduleSession(int billId, int startHour, int duration)
+    {
+        SendMessage(new SWSenateScheduleSessionMessage(billId, startHour, duration));
+    }
+
+    public void ScheduleAmendmentSession(List<int> billIds, int startHour, int duration)
+    {
+        SendMessage(new SWSenateScheduleAmendmentSessionMessage(billIds, startHour, duration));
+    }
+
+    public void RemoveSession(int sessionId)
+    {
+        SendMessage(new SWSenateRemoveSessionMessage(sessionId));
+    }
+
+    public void EmergencySession(int billId)
+    {
+        SendMessage(new SWSenateEmergencySessionMessage(billId));
+    }
+
+    public void ConfirmSession(int sessionId)
+    {
+        SendMessage(new SWSenateConfirmSessionMessage(sessionId));
+    }
+
+    public void RejectSession(int sessionId)
+    {
+        SendMessage(new SWSenateRejectSessionMessage(sessionId));
+    }
+
+    public void Announce(string text)
+    {
+        SendMessage(new SWSenateAnnounceMessage(text));
+    }
+
+    public void DiploReply(string text)
+    {
+        SendMessage(new SWSenateDiploReplyMessage(text));
+    }
+
+    public void CreateParty(string name, string description)
+    {
+        SendMessage(new SWSenateCreatePartyMessage(name, description));
+    }
+
+    public void RequestJoinParty(int partyId)
+    {
+        SendMessage(new SWSenateRequestJoinPartyMessage(partyId));
+    }
+
+    public void CancelJoinParty(int partyId)
+    {
+        SendMessage(new SWSenateCancelJoinPartyMessage(partyId));
+    }
+
+    public void ConfirmJoinParty(int partyId, string sectorId)
+    {
+        SendMessage(new SWSenateConfirmJoinPartyMessage(partyId, sectorId));
+    }
+
+    public void RejectJoinParty(int partyId, string sectorId)
+    {
+        SendMessage(new SWSenateRejectJoinPartyMessage(partyId, sectorId));
+    }
+
+    public void LeaveParty(int partyId)
+    {
+        SendMessage(new SWSenateLeavePartyMessage(partyId));
+    }
+
+    public void DisbandParty(int partyId)
+    {
+        SendMessage(new SWSenateDisbandPartyMessage(partyId));
+    }
+
+    public void InitiateLeaderVote(int partyId)
+    {
+        SendMessage(new SWSenateInitiateLeaderVoteMessage(partyId));
+    }
+
+    public void InitiateEvictVote(int partyId, string sectorId)
+    {
+        SendMessage(new SWSenateInitiateEvictVoteMessage(partyId, sectorId));
+    }
+
+    public void CastLeaderVote(int partyId, bool support)
+    {
+        SendMessage(new SWSenateCastLeaderVoteMessage(partyId, support));
+    }
+
+    public void JoinCommittee(string committeeId)
+    {
+        SendMessage(new SWSenateJoinCommitteeMessage(committeeId));
+    }
+
+    public void LeaveCommittee(string committeeId)
+    {
+        SendMessage(new SWSenateLeaveCommitteeMessage(committeeId));
+    }
+
+    public void VoteChair(string committeeId, string candidate)
+    {
+        SendMessage(new SWSenateVoteChairMessage(committeeId, candidate));
+    }
+
+    public void CommitteeVoteBill(string committeeId, int billId, int disposition, string reason)
+    {
+        SendMessage(new SWCommitteeVoteBillMessage(committeeId, billId, disposition, reason));
+    }
+
+    public void ResubmitBill(int billId)
+    {
+        SendMessage(new SWSenateResubmitBillMessage(billId));
+    }
+
+    public void ReviseBill(int billId, string name, string description, Dictionary<string, float> effects)
+    {
+        SendMessage(new SWSenateReviseBillMessage(billId, name, description, effects));
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        base.Dispose(disposing);
+        if (!disposing)
+            return;
+
+        _menu?.Dispose();
+    }
+}

@@ -1,0 +1,112 @@
+# Наёмник синдикатов: маркеры, гост-роли, мобы, теневой терминал.
+
+- type: entity
+  id: SWMercSpawn
+  parent: MarkerBase
+  name: точка прибытия наёмника
+  suffix: Сенат
+  components:
+  - type: SWMercSpawn
+  - type: Sprite
+    layers:
+    - state: pink
+      shader: unshaded
+
+- type: entity
+  id: SWMercEvacPoint
+  parent: MarkerBase
+  name: точка эвакуации наёмника
+  suffix: Сенат
+  components:
+  - type: SWMercEvacPoint
+  - type: Sprite
+    layers:
+    - state: green
+      shader: unshaded
+
+- type: entity
+  id: SWSpawnPointMercBlackSun
+  parent: MarkerBase
+  name: black sun mercenary
+  suffix: спавнер
+  components:
+  - type: GhostRole
+    name: Наёмник «Чёрного Солнца»
+    description: Синдикат принял контракт на Корусанте. Детали будут выданы после прибытия.
+    rules: Работайте строго по контракту. Синдикат не платит за лишние трупы.
+    raffle:
+      settings: short
+    job: SWBlackSunMercenary
+  - type: GhostRoleMobSpawner
+    prototype: SWRandomHumanoidMercBlackSun
+
+- type: entity
+  id: SWSpawnPointMercExchange
+  parent: MarkerBase
+  name: exchange mercenary
+  suffix: спавнер
+  components:
+  - type: GhostRole
+    name: Наёмник «Обмена»
+    description: Синдикат принял контракт на Корусанте. Детали будут выданы после прибытия.
+    rules: Работайте строго по контракту. Синдикат не платит за лишние трупы.
+    raffle:
+      settings: short
+    job: SWExchangeOperative
+  - type: GhostRoleMobSpawner
+    prototype: SWRandomHumanoidMercExchange
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidMercBlackSun
+  name: наёмник Чёрного Солнца
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [BlackSunMercenaryGear]
+  - type: SWFactionMember
+    faction: BlackSunFaction
+    job: SWBlackSunMercenary
+  - type: SWMercMember
+
+- type: entity
+  parent: SWBaseRandomHumanoid
+  id: SWRandomHumanoidMercExchange
+  name: наёмник Обмена
+  suffix: GhostRole
+  components:
+  - type: Loadout
+    prototypes: [ExchangeOperativeGear]
+  - type: SWFactionMember
+    faction: ExchangeFaction
+    job: SWExchangeOperative
+  - type: SWMercMember
+
+- type: entity
+  parent: BaseComputer
+  id: SWShadowTerminal
+  name: терминал связи
+  description: Старый терминал внепланетной связи. Кто-то заботливо отключил его от официальных сетей.
+  components:
+  - type: SWShadowTerminal
+  - type: ActivatableUI
+    singleUser: true
+    key: enum.SWShadowTerminalUiKey.Key
+  - type: UserInterface
+    interfaces:
+      enum.SWShadowTerminalUiKey.Key:
+        type: SWShadowTerminalBoundUserInterface
+  - type: Sprite
+    sprite: _SW/Structures/Machines/computers.rsi
+    layers:
+    - map: ["computerLayerBody"]
+      state: computer
+    - map: ["computerLayerKeyboard"]
+      state: generic_keyboard
+    - map: ["computerLayerScreen"]
+      state: shipyard
+    - map: ["computerLayerKeys"]
+      state: telesci_key
+  - type: ApcPowerReceiver
+    needsPower: false
+  - type: Godmode

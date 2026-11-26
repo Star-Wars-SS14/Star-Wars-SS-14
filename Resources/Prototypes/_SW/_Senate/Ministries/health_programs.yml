@@ -1,0 +1,37 @@
+- type: swHealthProgram
+  id: SWHealthProgramVaccination
+  name: Вакцинация населения
+  description: Массовая иммунизация миров сбивает распространение и крепит эпидемконтроль.
+  order: 0
+  spreadDelta: -8
+  policyEffects:
+    SWStatEpidemic: 6
+    SWStatCoverage: 3
+
+- type: swHealthProgram
+  id: SWHealthProgramSanitation
+  name: Санитарные нормы
+  description: Ужесточение санитарии снижает заражение и поднимает медицину.
+  order: 1
+  spreadDelta: -5
+  policyEffects:
+    SWStatEpidemic: 5
+    SWStatMedicine: 2
+
+- type: swHealthProgram
+  id: SWHealthProgramStaff
+  name: Медицинские кадры
+  description: Подготовка врачей усиливает медицину и охват миров.
+  order: 2
+  policyEffects:
+    SWStatMedicine: 7
+    SWStatCoverage: 2
+
+- type: swHealthProgram
+  id: SWHealthProgramResearch
+  name: Финансирование НИОКР
+  description: Гранты лабораториям резко двигают разработку вакцины.
+  order: 3
+  researchDelta: 30
+  policyEffects:
+    SWStatMedicine: 3

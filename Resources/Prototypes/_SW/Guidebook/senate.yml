@@ -1,0 +1,54 @@
+- type: guideEntry
+  id: SWSenateGuide
+  name: sw-guide-entry-senate
+  text: "/ServerInfo/_SW/Guidebook/Senate/Index.xml"
+  priority: -1
+  children:
+  - SWSenateGuideStart
+  - SWSenateGuideSector
+  - SWSenateGuideLegislation
+  - SWSenateGuideMinistries
+  - SWSenateGuideAgencies
+  - SWSenateGuideCourt
+  - SWSenateGuideHolonet
+  - SWSenateGuideService
+
+- type: guideEntry
+  id: SWSenateGuideStart
+  name: sw-guide-entry-senate-start
+  text: "/ServerInfo/_SW/Guidebook/Senate/GettingStarted.xml"
+
+- type: guideEntry
+  id: SWSenateGuideSector
+  name: sw-guide-entry-senate-sector
+  text: "/ServerInfo/_SW/Guidebook/Senate/Senator.xml"
+
+- type: guideEntry
+  id: SWSenateGuideLegislation
+  name: sw-guide-entry-senate-legislation
+  text: "/ServerInfo/_SW/Guidebook/Senate/Legislation.xml"
+
+- type: guideEntry
+  id: SWSenateGuideMinistries
+  name: sw-guide-entry-senate-ministries
+  text: "/ServerInfo/_SW/Guidebook/Senate/Ministries.xml"
+
+- type: guideEntry
+  id: SWSenateGuideAgencies
+  name: sw-guide-entry-senate-agencies
+  text: "/ServerInfo/_SW/Guidebook/Senate/Agencies.xml"
+
+- type: guideEntry
+  id: SWSenateGuideCourt
+  name: sw-guide-entry-senate-court
+  text: "/ServerInfo/_SW/Guidebook/Senate/Court.xml"
+
+- type: guideEntry
+  id: SWSenateGuideHolonet
+  name: sw-guide-entry-senate-holonet
+  text: "/ServerInfo/_SW/Guidebook/Senate/Holonet.xml"
+
+- type: guideEntry
+  id: SWSenateGuideService
+  name: sw-guide-entry-senate-service
+  text: "/ServerInfo/_SW/Guidebook/Senate/Service.xml"

@@ -1,7 +1,7 @@
 - type: radioChannel
   id: SWSenate
   name: Сенат
-  keycode: 'с'
+  keycode: 'ш'
   frequency: 2050
   color: "#9b59b6"
   longRange: true
@@ -25,7 +25,7 @@
 - type: radioChannel
   id: SWChancellery
   name: Администрация Канцлера
-  keycode: 'ц'
+  keycode: 'а'
   frequency: 2053
   color: "#c9a227"
   longRange: true

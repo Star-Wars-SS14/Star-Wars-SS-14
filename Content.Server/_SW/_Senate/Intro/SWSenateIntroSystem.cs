@@ -5,7 +5,7 @@ using Robust.Shared.Timing;
 
 namespace Content.Server._SW._Senate.Intro;
 
-/// <summary>Announces to lobby clients whether the next round is a Senate round. The server never starts the intro itself.</summary>
+/// <summary>Announces to lobby clients whether Senate is the selected mode.</summary>
 public sealed class SWSenateIntroSystem : EntitySystem
 {
     public const string SenatePresetId = "SWSenatePreset";
@@ -22,12 +22,16 @@ public sealed class SWSenateIntroSystem : EntitySystem
         SubscribeLocalEvent<PlayerJoinedLobbyEvent>(OnJoinedLobby);
     }
 
-    private bool IsSenateNext() => _ticker.Preset?.ID == SenatePresetId;
+    private bool IsSenateSelected()
+    {
+        var preset = _ticker.RunLevel == GameRunLevel.PreRoundLobby ? _ticker.Preset : _ticker.CurrentPreset;
+        return preset?.ID == SenatePresetId;
+    }
 
     private void OnJoinedLobby(PlayerJoinedLobbyEvent ev)
     {
         // Answer the joiner directly; the cached broadcast state is only advanced by Update.
-        RaiseNetworkEvent(new SWSenateIntroStatusEvent(IsSenateNext()), ev.PlayerSession.Channel);
+        RaiseNetworkEvent(new SWSenateIntroStatusEvent(IsSenateSelected()), ev.PlayerSession.Channel);
     }
 
     public override void Update(float frameTime)
@@ -37,7 +41,7 @@ public sealed class SWSenateIntroSystem : EntitySystem
             return;
 
         _nextCheck = _timing.CurTime + TimeSpan.FromSeconds(1);
-        var available = IsSenateNext();
+        var available = IsSenateSelected();
         if (available == _available)
             return;
 

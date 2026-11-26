@@ -32,6 +32,8 @@ public sealed class SWTurretAimSystem : EntitySystem
         if (!TryComp<SWTurretAimComponent>(turretUid, out var aim))
             return;
 
+        // No offset: rotation = cursor angle is the empirically proven convention
+        // where the 8-direction view tracks the cursor correctly.
         aim.TargetAngle = new Angle(ev.Angle);
         Dirty(turretUid, aim);
     }
@@ -51,13 +53,16 @@ public sealed class SWTurretAimSystem : EntitySystem
             if (!TryComp<TransformComponent>(turretUid, out var turretXform))
                 continue;
 
-            // A smooth turn toward the target along the shortest arc, with a speed limit.
             var current = _transform.GetWorldRotation(turretXform).Theta;
             var target = aim.TargetAngle.Theta;
 
             var delta = target - current;
             while (delta > Math.PI) delta -= 2 * Math.PI;
             while (delta < -Math.PI) delta += 2 * Math.PI;
+
+            // Already aligned: skip redundant per-tick rotation writes.
+            if (Math.Abs(delta) < 0.0001)
+                continue;
 
             var maxStep = aim.RotationSpeed * (Math.PI / 180.0) * frameTime;
             var step = Math.Clamp(delta, -maxStep, maxStep);
@@ -68,7 +73,6 @@ public sealed class SWTurretAimSystem : EntitySystem
             if (TryComp<PhysicsComponent>(turretUid, out var physics))
                 _physics.SetAngularVelocity(turretUid, 0f, body: physics);
 
-            // The gunner follows the current (already smoothed) rotation of the turret.
             _transform.SetWorldRotation(gunnerXform, newRotation + aim.GunnerOffset);
         }
     }

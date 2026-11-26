@@ -27,3 +27,4 @@
   - type: ContainerContainer
     containers:
       ballistic-ammo: !type:Container
+  - type: SWTurretAimGun

@@ -47,6 +47,8 @@
   name: double-bladed modular lightsaber hilt
   description: A one-handed double-bladed lightsaber hilt with replaceable components.
   components:
+  - type: ItemTogglePrefix
+    prefixOn: wielded
   - type: Construction
     graph: SWSaberDoubleHilt
     node: finished
